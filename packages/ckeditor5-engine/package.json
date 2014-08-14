@@ -1,0 +1,14 @@
+{
+	"name": "{programmatic name of the application}",
+	"version": "{semver version}",
+	"description": "A short description",
+
+	"devDependencies": {
+	},
+
+	"author": "CKSource (http://cksource.com/)",
+	"license": "See LICENSE.md",
+
+	"homepage": "http://app.com",
+	"bugs": "http://bugs.app.com"
+}
