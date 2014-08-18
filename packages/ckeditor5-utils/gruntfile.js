@@ -10,11 +10,18 @@ module.exports = function( grunt ) {
 		jscs: {
 			src: '*.js',
 			options: jscsConfig
+		},
+
+		githooks: {
+			all: {
+				'pre-commit': 'default'
+			}
 		}
 	} );
 
 	grunt.loadNpmTasks( 'grunt-contrib-jshint' );
 	grunt.loadNpmTasks( 'grunt-jscs' );
+	grunt.loadNpmTasks( 'grunt-githooks' );
 
 	// Default tasks.
 	grunt.registerTask( 'default', [ 'jshint', 'jscs' ] );
