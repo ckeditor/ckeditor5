@@ -2,13 +2,23 @@ module.exports = function( grunt ) {
 	grunt.initConfig( {
 		pkg: grunt.file.readJSON( 'package.json' ),
 
+		jshint: {
+			files: [ '*.js' ],
+			options: jshintConfig
+		},
+
 		jscs: {
 			src: '*.js',
 			options: jscsConfig
 		}
 	} );
 
+	grunt.loadNpmTasks( 'grunt-contrib-jshint' );
 	grunt.loadNpmTasks( 'grunt-jscs' );
+};
+
+// Configurations for JSHint
+var jshintConfig = {
 };
 
 // Configurations for JSCS (JavaScript Code Style checker)
