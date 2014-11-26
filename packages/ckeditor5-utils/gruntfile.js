@@ -10,9 +10,11 @@ module.exports = function( grunt ) {
 		},
 
 		jscs: {
-			src: '*.js',
 			options: {
-				config: 'dev/tasks/jscs-config.json'
+				'excludeFiles': [
+					'node_modules/**',
+					'build/**'
+				]
 			}
 		},
 
@@ -23,8 +25,7 @@ module.exports = function( grunt ) {
 		}
 	} );
 
-	// Load all grunt plugins.
-	require( 'load-grunt-tasks' )( grunt );
+	grunt.loadTasks( 'dev/tasks' );
 
 	// Default tasks.
 	grunt.registerTask( 'default', [ 'jshint', 'jscs' ] );
