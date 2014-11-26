@@ -1,19 +1,20 @@
 {
-	"name": "",
-	"version": "",
-	"description": "",
-	"keywords": [],
-	"dependencies": {
-	},
-	"devDependencies": {
-		"grunt": "~0",
-		"grunt-jscs": "~0",
-		"grunt-contrib-jshint": "~0",
-		"grunt-githooks": "~0",
-		"load-grunt-tasks": "~1"
-	},
-	"author": "CKSource (http://cksource.com/)",
-	"license": "See LICENSE.md",
-	"homepage": "",
-	"bugs": ""
+  "name": "",
+  "version": "",
+  "description": "",
+  "keywords": [],
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "~0",
+    "grunt-contrib-jshint": "~0",
+    "grunt-githooks": "~0",
+    "load-grunt-tasks": "~1",
+    "shelljs": "~0.3",
+    "jscs": "~1",
+    "vow": "~0.4"
+  },
+  "author": "CKSource (http://cksource.com/)",
+  "license": "See LICENSE.md",
+  "homepage": "",
+  "bugs": ""
 }
