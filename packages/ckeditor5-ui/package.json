@@ -1,16 +1,16 @@
 {
-  "name": "programmatic-name-of-the-application",
-  "version": "0.1.0",
-  "description": "A short description",
-  "devDependencies": {
-    "grunt": "~0",
-    "grunt-jscs": "~0",
-    "grunt-contrib-jshint": "~0",
-    "grunt-githooks": "~0",
-    "load-grunt-tasks": "~0"
-  },
-  "author": "CKSource (http://cksource.com/)",
-  "license": "See LICENSE.md",
-  "homepage": "http://app.com",
-  "bugs": "http://bugs.app.com"
+	"name": "programmatic-name-of-the-application",
+	"version": "0.1.0",
+	"description": "A short description",
+	"devDependencies": {
+		"grunt": "~0",
+		"grunt-jscs": "~0",
+		"grunt-contrib-jshint": "~0",
+		"grunt-githooks": "~0",
+		"load-grunt-tasks": "~0"
+	},
+	"author": "CKSource (http://cksource.com/)",
+	"license": "See LICENSE.md",
+	"homepage": "http://app.com",
+	"bugs": "http://bugs.app.com"
 }
