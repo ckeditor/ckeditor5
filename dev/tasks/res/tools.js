@@ -3,9 +3,15 @@
 
 'use strict';
 
+var dirtyFiles;
+
 module.exports = {
 	getGitDirtyFiles: function() {
-		return this.shExec( 'git diff-index --name-only HEAD' ).split( '\n' );
+		// Cache it, so it is executed only once when running multiple tasks.
+		if ( !dirtyFiles ) {
+			dirtyFiles = this.shExec( 'git diff-index --name-only HEAD' ).replace( /\s*$/, '' ).split( '\n' );
+		}
+		return dirtyFiles;
 	},
 
 	shExec: function( command ) {
