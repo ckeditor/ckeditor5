@@ -1,6 +1,7 @@
 {
 	"excludeFiles": [
-		"node_modules/*"
+		"node_modules/*",
+		"build/*"
 	],
 	"requireCurlyBraces": [
 		"if", "else", "for", "while", "do", "switch", "try", "catch"
