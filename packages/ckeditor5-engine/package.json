@@ -7,7 +7,7 @@
 		"grunt-jscs": "~0",
 		"grunt-contrib-jshint": "~0",
 		"grunt-githooks": "~0",
-		"load-grunt-tasks": "~0"
+		"load-grunt-tasks": "~1"
 	},
 	"author": "CKSource (http://cksource.com/)",
 	"license": "See LICENSE.md",
