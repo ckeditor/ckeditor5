@@ -10,6 +10,9 @@ module.exports = {
 		// Cache it, so it is executed only once when running multiple tasks.
 		if ( !dirtyFiles ) {
 			dirtyFiles = this.shExec( 'git diff-index --name-only HEAD' ).replace( /\s*$/, '' ).split( '\n' );
+			if ( dirtyFiles.length == 1 && !dirtyFiles[ 0 ] ) {
+				dirtyFiles = [];
+			}
 		}
 		return dirtyFiles;
 	},
