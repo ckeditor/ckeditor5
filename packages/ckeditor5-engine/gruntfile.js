@@ -8,9 +8,7 @@ module.exports = function( grunt ) {
 
 		jshint: {
 			options: {
-				'ignores': lintIgnores,
-				'predef': [
-				]
+				'ignores': lintIgnores
 			}
 		},
 
@@ -23,7 +21,7 @@ module.exports = function( grunt ) {
 
 	grunt.loadTasks( 'dev/tasks' );
 
-	grunt.registerTask( 'default', [ 'jshint', 'jscs' ] );
+	grunt.registerTask( 'default', [ 'jshint:git', 'jscs' ] );
 };
 
 var lintIgnores = [
