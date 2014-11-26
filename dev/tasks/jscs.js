@@ -1,14 +1,14 @@
+/* global module */
+/* global require */
+/* global console */
+
 'use strict';
 
 module.exports = function( grunt ) {
-	grunt.config.merge( {
-		jscs: {
-			src: [ '**/*.js' ],
-			options: defaultConfig
-		}
+	// Register our custom jscs task.
+	grunt.registerTask( 'jscs', 'JavaScript Code Style checker', function() {
+		task.call( this, grunt );
 	} );
-
-	grunt.loadNpmTasks( 'grunt-jscs' );
 };
 
 var defaultConfig = {
@@ -76,3 +76,68 @@ var defaultConfig = {
 	'requireDotNotation': true,
 	'disallowYodaConditions': true
 };
+
+var Vow = require( 'vow' ),
+	Jscs = require( 'jscs' ),
+	tools = require( './res/tools' );
+
+function task( grunt ) {
+	// Checking is asynchronous.
+	var done = this.async();
+
+	// Get the list of files that will end up in the next commit.
+	var files = tools.getGitDirtyFiles();
+
+	// Reduce the files list to *.js.
+	files = files.filter( function( file ) {
+		// Accepts .js files only
+		return file && ( /\.js$/ ).test( file );
+	} );
+
+	// Create and configure the Checker.
+	var checker = new Jscs();
+	checker.registerDefaultRules();
+	checker.configure( defaultConfig );
+
+	// Get the check promises for each file.
+	var checks = files.map( function( file ) {
+		// Returns a check promise for each file.
+		return checker.checkPath( file );
+	} );
+
+	// Once the promises are done...
+	Vow.allResolved( checks ).spread( function() {
+		var results, errorCount = 0;
+
+		// grunt.async() hide errors, so better to catch them.
+		try {
+			results = Array.prototype.filter.call( arguments, function( promise ) {
+				return promise && promise.isFulfilled();
+			} ).map( function( promise ) {
+				// Take the jscs error object out of each promise.
+				return promise.valueOf()[ 0 ];
+			} );
+
+			// Loop throw all files with errors.
+			results.forEach( function( fileErrors ) {
+				// Loop through all errors in the file.
+				fileErrors.getErrorList().forEach( function( error ) {
+					errorCount++;
+					console.log( fileErrors.explainError( error, true ) );
+					console.log( '' );
+				} );
+			} );
+		} catch ( e ) {
+			console.log( e );
+			done( false );
+		}
+
+		if ( errorCount ) {
+			grunt.log.error( errorCount + ' code style errors found!' );
+		} else {
+			grunt.log.ok( results.length + ' files without code style errors.' );
+		}
+
+		done( !errorCount );
+	} );
+}
