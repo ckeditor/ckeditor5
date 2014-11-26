@@ -12,4 +12,5 @@ module.exports = function( grunt ) {
 };
 
 var defaultConfig = {
+	'globalstrict': true
 };
