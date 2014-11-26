@@ -6,7 +6,10 @@ module.exports = function( grunt ) {
 
 		jshint: {
 			options: {
-				'ignores': lintIgnores
+				'ignores': lintIgnores,
+				'predef': [
+					'module'
+				]
 			}
 		},
 
