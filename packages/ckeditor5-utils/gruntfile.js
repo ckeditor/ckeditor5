@@ -5,18 +5,14 @@ module.exports = function( grunt ) {
 		pkg: grunt.file.readJSON( 'package.json' ),
 
 		jshint: {
-			files: [ '*.js' ],
 			options: {
-				jshintrc: 'dev/tasks/jshint-config.json'
+				'ignores': lintIgnores
 			}
 		},
 
 		jscs: {
 			options: {
-				'excludeFiles': [
-					'node_modules/**',
-					'build/**'
-				]
+				'excludeFiles': lintIgnores
 			}
 		},
 
@@ -29,6 +25,10 @@ module.exports = function( grunt ) {
 
 	grunt.loadTasks( 'dev/tasks' );
 
-	// Default tasks.
 	grunt.registerTask( 'default', [ 'jshint', 'jscs' ] );
 };
+
+var lintIgnores = [
+	'node_modules/**',
+	'build/**'
+];
