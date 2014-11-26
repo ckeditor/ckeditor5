@@ -14,12 +14,6 @@ module.exports = function( grunt ) {
 			options: {
 				'excludeFiles': lintIgnores
 			}
-		},
-
-		githooks: {
-			all: {
-				'pre-commit': 'default'
-			}
 		}
 	} );
 
