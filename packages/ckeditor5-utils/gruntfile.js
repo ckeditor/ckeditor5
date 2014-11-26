@@ -1,3 +1,5 @@
+/* global module */
+
 'use strict';
 
 module.exports = function( grunt ) {
@@ -8,7 +10,6 @@ module.exports = function( grunt ) {
 			options: {
 				'ignores': lintIgnores,
 				'predef': [
-					'module'
 				]
 			}
 		},

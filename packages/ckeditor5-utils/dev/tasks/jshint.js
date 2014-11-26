@@ -1,3 +1,5 @@
+/* global module */
+
 'use strict';
 
 module.exports = function( grunt ) {
@@ -12,5 +14,6 @@ module.exports = function( grunt ) {
 };
 
 var defaultConfig = {
-	'globalstrict': true
+	'globalstrict': true,
+	'validthis': true
 };
