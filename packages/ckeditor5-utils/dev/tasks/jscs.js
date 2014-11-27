@@ -1,6 +1,4 @@
-/* global module */
-/* global require */
-/* global console */
+/* jshint node: true */
 
 'use strict';
 
