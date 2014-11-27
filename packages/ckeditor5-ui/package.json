@@ -6,12 +6,10 @@
   "dependencies": {},
   "devDependencies": {
     "grunt": "~0",
+    "grunt-jscs": "~1",
     "grunt-contrib-jshint": "~0",
     "grunt-githooks": "~0",
-    "load-grunt-tasks": "~1",
-    "shelljs": "~0.3",
-    "jscs": "~1",
-    "vow": "~0.4"
+    "shelljs": "~0"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "See LICENSE.md",
