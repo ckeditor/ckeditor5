@@ -5,23 +5,19 @@
 var tools = require( './res/tools' );
 
 module.exports = function( grunt ) {
-	// Point to the default configurations.
-	var config = {
-		options: grunt.file.readJSON( 'dev/tasks/jscs-config.json' )
-	};
-
-	// Create the appropriate task target.
-	if ( tools.checkTaskInQueue( grunt, 'jscs:git' ) ) {
-		config.git = tools.getGitDirtyFiles().filter( function( file ) {
-			return ( /\.js$/ ).test( file );
-		} );
-	} else {
-		config.all = [ '**/*.js' ];
-	}
-
-	// Merge over configurations set in gruntfile.js.
-	grunt.config.merge( {
-		jscs: config
+	tools.setupMultitaskConfig( grunt, {
+		task: 'jscs',
+		defaultOptions: grunt.file.readJSON( 'dev/tasks/jscs-config.json' ),
+		targets: {
+			all: function() {
+				return [ '**/*.js' ];
+			},
+			git: function() {
+				return tools.getGitDirtyFiles().filter( function( file ) {
+					return ( /\.js$/ ).test( file );
+				} );
+			}
+		}
 	} );
 
 	grunt.loadNpmTasks( 'grunt-jscs' );

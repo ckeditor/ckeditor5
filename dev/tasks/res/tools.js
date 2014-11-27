@@ -9,14 +9,41 @@ module.exports = {
 		var cliTasks = grunt.cli.tasks;
 
 		// Check if the task has been called directly.
-		var isDirectCall = ( cliTasks.indexOf( 'task' ) > -1 );
+		var isDirectCall = ( cliTasks.indexOf( task ) > -1 );
 
 		// Check if this is a "default" call and that the task is inside "default".
 		var isDefaultTask = ( cliTasks.indexOf( 'default' ) > -1 ) || !cliTasks.length,
 			// Hacking grunt hard.
-			isTaskInDefault = isDefaultTask && ( grunt.task._tasks.default.info.indexOf( '"jshint:git"' ) > -1 );
+			isTaskInDefault = isDefaultTask && ( grunt.task._tasks.default.info.indexOf( '"' + task + '"' ) > -1 );
 
 		return isDirectCall || isDefaultTask;
+	},
+
+	setupMultitaskConfig: function( grunt, options ) {
+		var that = this,
+			task = options.task,
+			taskConfig = {},
+			config = taskConfig[ task ] = {
+				options: options.defaultOptions
+			};
+
+		// "all" is the default target to be used if others are not to be run.
+		var all = options.targets.all,
+			isAll = true;
+		delete options.targets.all;
+		Object.getOwnPropertyNames( options.targets ).forEach( function( target ) {
+			if ( that.checkTaskInQueue( grunt, task + ':' + target ) ) {
+				config[ target ] = options.targets[ target ]();
+				isAll = false;
+			}
+		} );
+
+		if ( isAll ) {
+			config.all = all();
+		}
+
+		// Merge over configurations set in gruntfile.js.
+		grunt.config.merge( taskConfig );
 	},
 
 	getGitDirtyFiles: function() {
