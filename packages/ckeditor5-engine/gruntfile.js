@@ -1,4 +1,4 @@
-/* global module */
+/* jshint node: true */
 
 'use strict';
 
