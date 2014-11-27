@@ -5,6 +5,20 @@
 var dirtyFiles;
 
 module.exports = {
+	checkTaskInQueue: function( grunt, task ) {
+		var cliTasks = grunt.cli.tasks;
+
+		// Check if the task has been called directly.
+		var isDirectCall = ( cliTasks.indexOf( 'task' ) > -1 );
+
+		// Check if this is a "default" call and that the task is inside "default".
+		var isDefaultTask = ( cliTasks.indexOf( 'default' ) > -1 ) || !cliTasks.length,
+			// Hacking grunt hard.
+			isTaskInDefault = isDefaultTask && ( grunt.task._tasks.default.info.indexOf( '"jshint:git"' ) > -1 );
+
+		return isDirectCall || isDefaultTask;
+	},
+
 	getGitDirtyFiles: function() {
 		// Cache it, so it is executed only once when running multiple tasks.
 		if ( !dirtyFiles ) {
