@@ -5,25 +5,19 @@
 var tools = require( './res/tools' );
 
 module.exports = function( grunt ) {
-	// Base task configuration, targeting "all" by default.
+	// Point to the default configurations.
 	var config = {
-		all: [ '**/*.js' ],
 		options: defaultConfig
 	};
 
-	// Get information about the task being executed.
-	var isGitTask = ( grunt.cli.tasks.indexOf( 'jshint:git' ) > -1 ),
-		isDefaultTask = ( grunt.cli.tasks.indexOf( 'default' ) > -1 ) || !grunt.cli.tasks.length,
-		// Hacking grunt hard.
-		isDefaultAndGit = isDefaultTask && ( grunt.task._tasks.default.info.indexOf( '"jshint:git"' ) > -1 );
-
-	// Create the :git configuration on the fly, if necessary.
-	if ( isGitTask || isDefaultAndGit ) {
-		delete config.all;
+	// Create the appropriate task target.
+	if ( tools.checkTaskInQueue( grunt, 'jshint:git' ) ) {
 		config.git = tools.getGitDirtyFiles();
+	} else {
+		config.all = [ '**/*.js' ];
 	}
 
-	// Merge with configurations set in gruntfile.js.
+	// Merge over configurations set in gruntfile.js.
 	grunt.config.merge( {
 		jshint: config
 	} );
