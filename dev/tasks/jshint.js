@@ -7,7 +7,7 @@ var tools = require( './res/tools' );
 module.exports = function( grunt ) {
 	// Point to the default configurations.
 	var config = {
-		options: defaultConfig
+		options: grunt.file.readJSON( 'dev/tasks/jshint-config.json' )
 	};
 
 	// Create the appropriate task target.
@@ -23,9 +23,4 @@ module.exports = function( grunt ) {
 	} );
 
 	grunt.loadNpmTasks( 'grunt-contrib-jshint' );
-};
-
-var defaultConfig = {
-	'globalstrict': true,
-	'validthis': true
 };
