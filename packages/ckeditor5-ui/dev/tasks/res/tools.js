@@ -17,7 +17,7 @@ module.exports = {
 			// Hacking grunt hard.
 			isTaskInDefault = isDefaultTask && ( grunt.task._tasks.default.info.indexOf( '"' + task + '"' ) > -1 );
 
-		return isDirectCall || isDefaultTask;
+		return isDirectCall || isTaskInDefault;
 	},
 
 	setupMultitaskConfig: function( grunt, options ) {
