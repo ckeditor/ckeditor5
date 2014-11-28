@@ -20,5 +20,14 @@ module.exports = function( grunt ) {
 		}
 	} );
 
+	// Take ignore list from .gitIgnore.
+	grunt.config.merge( {
+		jscs: {
+			options: {
+				excludeFiles: tools.getGitIgnore( grunt )
+			}
+		}
+	} );
+
 	grunt.loadNpmTasks( 'grunt-jscs' );
 };
