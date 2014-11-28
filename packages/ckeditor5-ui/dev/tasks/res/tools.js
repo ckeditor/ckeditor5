@@ -2,7 +2,8 @@
 
 'use strict';
 
-var dirtyFiles;
+var dirtyFiles,
+	ignoreList;
 
 module.exports = {
 	checkTaskInQueue: function( grunt, task ) {
@@ -44,6 +45,24 @@ module.exports = {
 
 		// Merge over configurations set in gruntfile.js.
 		grunt.config.merge( taskConfig );
+	},
+
+	getGitIgnore: function( grunt ) {
+		if ( !ignoreList ) {
+			ignoreList = grunt.file.read( '.gitignore' );
+
+			ignoreList = ignoreList
+				// Remove comment lines.
+				.replace( /^#.*$/gm, '' )
+				// Transform into array.
+				.split( /\n+/ )
+				// Remove empty entries.
+				.filter( function( path ) {
+					return !!path;
+				} );
+		}
+
+		return ignoreList;
 	},
 
 	getGitDirtyFiles: function() {
