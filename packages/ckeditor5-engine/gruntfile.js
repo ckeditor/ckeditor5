@@ -4,7 +4,7 @@
 
 module.exports = function( grunt ) {
 	// First register the "default" task, so it can be analized by other tasks.
-	grunt.registerTask( 'default', [ 'jshint:git', 'jscs' ] );
+	grunt.registerTask( 'default', [ 'jshint:git', 'jscs:git' ] );
 
 	// Basic configuration, which will be overloaded by the tasks.
 	grunt.initConfig( {
