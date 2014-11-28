@@ -1,8 +1,8 @@
 Boilerplate for Git Repositories
 ================================
 
-The boilerplate used when creating the directory structure for git projects. It contains most of the files we expect to
-have inside CKEditor repositories.
+A boilerplate file structure to be used by git based projects. It contains most of the files expected to be inside
+CKEditor related repositories.
 
 This is for generic purposes, so it can be used by any project out there.
 
@@ -27,14 +27,16 @@ A template for the changelog file.
 ## Developer Resources
 
 ### gruntfile.js
-This is the grunt programming file. It exposes the following tasks:
 
- * `grunt default`: Alias for "jshint:git", "jscs:git" tasks.
+This is the [grunt](http://gruntjs.com/) configuration file. It exposes the following tasks:
+
+ * `grunt default`: Alias for `jshint:git` and `jscs:git` tasks.
  * `grunt githooks`:  Installs a git pre-commit hook to run `grunt default`.
  * `grunt jscs`: JavaScript code style checker with [JSCS](https://github.com/jscs-dev/node-jscs).
  * `grunt jshint`: Validate JavaScript files with [JSHint](https://github.com/jshint/jshint).
 
-The `jscs:git` and `joshing:git` variations run the checks on files that will endup into the next `git commit` only.
+The `jscs:git` and `jshint:git` variations run the checks on files that will endup into the next `git commit` only. It's
+therefore much faster.
 
 All grunt tasks are available inside the `dev/tasks` directory.
 
@@ -54,5 +56,61 @@ grunt tasks.
 
 ### .editorconfig
 
-Unified configurations for coding in IDEs, including the project standards. See
-[editorconfig.org](http://editorconfig.org/).
+Unified configurations for IDEs. See
+[editorconfig.org](http://editorconfig.org/) for more information.
+
+## Using this Repository
+
+This repository can be used as a starting point for new projects or to bring existing projects to a common pattern. It
+helps bringing a uniform form among different projects.
+
+The following steps assume that you're located inside your local clone of the target repository.
+
+### 1. Enabling the Boilerplate into a Repository
+
+```bash
+git remote add boilerplate https://github.com/ckeditor/ckeditor-boilerplate.git
+```
+
+### 2. Injecting the Boilerplate into Your Repository
+
+```bash
+git fetch boilerplate
+git merge boilerplate/master
+```
+
+If files are present in your repo, there may be the chance that the merge will cause conflicts. Generally it is
+straightforward to have them resolved.
+
+### 3. Get Boilerplate Updates
+
+Just repeat "2".
+
+## First Steps After Including the Boilerplate
+
+The boilerplate contains generic files, many of them serving as templates for your projects. The following are the
+things to do once you incorporate it into your project.
+
+Reviewing files content:
+
+1. **README.md**: replace this file with contents that describe your project.
+2. **CONTRIBUTING.md**: ensure that the contents of this file apply to your project.
+3. **LICENSE.md**:
+   * Replace the software name with your project name.
+   * Check if the license option fits your project.
+   * Ensure that the whole file content is good for your project.
+4. **package.json**: fill all entries accordingly.
+
+Assuming that `npm` and `grunt` are installed globally, run a few commands:
+
+1. `npm install`: download all project dependencies into node_modules.
+2. `grunt githooks`: (optional) if you want to have pre-commit linting enabled straight into your project.
+
+## Boilerplate License
+
+Copyright (c) 2014 CKSource - Frederico Knabben
+
+All boilerplate code is licensed under the terms of the [MIT license](http://opensource.org/licenses/MIT).
+
+Although `LICENSE.md` is available in this repository as a template for your project, it doesn't apply for the
+boilerplate project itself.
