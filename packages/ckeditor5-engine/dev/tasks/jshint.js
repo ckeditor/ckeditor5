@@ -13,7 +13,9 @@ module.exports = function( grunt ) {
 				return [ '**/*.js' ];
 			},
 			git: function() {
-				return tools.getGitDirtyFiles();
+				return tools.getGitDirtyFiles().filter( function( file ) {
+					return ( /\.js$/ ).test( file );
+				} );
 			}
 		}
 	} );
