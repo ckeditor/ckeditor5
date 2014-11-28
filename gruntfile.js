@@ -12,13 +12,11 @@ module.exports = function( grunt ) {
 
 		jshint: {
 			options: {
-				'ignores': lintIgnores
 			}
 		},
 
 		jscs: {
 			options: {
-				'excludeFiles': lintIgnores
 			}
 		}
 	} );
@@ -26,9 +24,3 @@ module.exports = function( grunt ) {
 	// Finally load the tasks.
 	grunt.loadTasks( 'dev/tasks' );
 };
-
-// The list of files we want to exclude from linting tasks, like jshint and jscs.
-var lintIgnores = [
-	'node_modules/**',
-	'build/**'
-];
