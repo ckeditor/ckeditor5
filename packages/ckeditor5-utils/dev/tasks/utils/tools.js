@@ -7,8 +7,8 @@ var dirtyFiles,
 
 module.exports = {
 	/**
-	 * Check if a task (including its optional target) is in the queue of tasks to be executed by grunt.
-	 * @param grunt {Object} The grunt object.
+	 * Check if a task (including its optional target) is in the queue of tasks to be executed by Grunt.
+	 * @param grunt {Object} The Grunt object.
 	 * @param task {String} The task name. May optionally include the target (e.g. 'task:target').
 	 * @returns {Boolean} "true" if the task is in the queue.
 	 */
@@ -20,15 +20,15 @@ module.exports = {
 
 		// Check if this is a "default" call and that the task is inside "default".
 		var isDefaultTask = ( cliTasks.indexOf( 'default' ) > -1 ) || !cliTasks.length,
-			// Hacking grunt hard.
+			// Hacking Grunt hard.
 			isTaskInDefault = isDefaultTask && ( grunt.task._tasks.default.info.indexOf( '"' + task + '"' ) > -1 );
 
 		return isDirectCall || isTaskInDefault;
 	},
 
 	/**
-	 * Configures a multi-task and defines targets that are queued to be run by grunt.
-	 * @param grunt {Object} The grunt object.
+	 * Configures a multi-task and defines targets that are queued to be run by Grunt.
+	 * @param grunt {Object} The Grunt object.
 	 * @param options {Object} A list of options for the method. See the jscs and jshint tasks for example.
 	 */
 	setupMultitaskConfig: function( grunt, options ) {
@@ -67,7 +67,7 @@ module.exports = {
 
 	/**
 	 * Gets the list of ignores from .gitignore.
-	 * @param grunt {Object} The grunt object.
+	 * @param grunt {Object} The Grunt object.
 	 * @returns {Array} The list of ignores.
 	 */
 	getGitIgnore: function( grunt ) {
@@ -89,7 +89,7 @@ module.exports = {
 	},
 
 	/**
-	 * Gets the list of files that are supposed to be included in the next git commit.
+	 * Gets the list of files that are supposed to be included in the next Git commit.
 	 * @returns {Array} A list of file paths.
 	 */
 	getGitDirtyFiles: function() {
@@ -98,7 +98,7 @@ module.exports = {
 			dirtyFiles = this
 				// Compare the state of index with HEAD.
 				.shExec( 'git diff-index --name-only HEAD' )
-				// Remove trailing /n, to avoid empty entry.
+				// Remove trailing /n to avoid an empty entry.
 				.replace( /\s*$/, '' )
 				// Transform into array.
 				.split( '\n' );
