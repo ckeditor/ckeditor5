@@ -21,8 +21,7 @@ module.exports = {
 	},
 
 	setupMultitaskConfig: function( grunt, options ) {
-		var that = this,
-			task = options.task,
+		var task = options.task,
 			taskConfig = {},
 			config = taskConfig[ task ] = {
 				options: options.defaultOptions
@@ -33,11 +32,11 @@ module.exports = {
 			isAll = true;
 		delete options.targets.all;
 		Object.getOwnPropertyNames( options.targets ).forEach( function( target ) {
-			if ( that.checkTaskInQueue( grunt, task + ':' + target ) ) {
+			if ( this.checkTaskInQueue( grunt, task + ':' + target ) ) {
 				config[ target ] = options.targets[ target ]();
 				isAll = false;
 			}
-		} );
+		}, this );
 
 		if ( isAll ) {
 			config.all = all();
