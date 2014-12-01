@@ -53,6 +53,14 @@ module.exports = {
 			config.all = all();
 		}
 
+		// Append .gitignore entries to the ignore list.
+		if ( options.addGitIgnore ) {
+			var ignoreProp = task + '.options.' + options.addGitIgnore,
+				ignores = grunt.config.get( ignoreProp ) || [];
+			ignores = ignores.concat( this.getGitIgnore( grunt ) );
+			grunt.config.set( ignoreProp, ignores );
+		}
+
 		// Merge over configurations set in gruntfile.js.
 		grunt.config.merge( taskConfig );
 	},
