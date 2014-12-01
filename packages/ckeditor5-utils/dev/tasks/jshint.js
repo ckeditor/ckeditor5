@@ -2,7 +2,7 @@
 
 'use strict';
 
-var tools = require( './res/tools' );
+var tools = require( './utils/tools' );
 
 module.exports = function( grunt ) {
 	tools.setupMultitaskConfig( grunt, {
