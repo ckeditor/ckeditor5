@@ -67,7 +67,15 @@ module.exports = {
 	getGitDirtyFiles: function() {
 		// Cache it, so it is executed only once when running multiple tasks.
 		if ( !dirtyFiles ) {
-			dirtyFiles = this.shExec( 'git diff-index --name-only HEAD' ).replace( /\s*$/, '' ).split( '\n' );
+			dirtyFiles = this
+				// Compare the state of index with HEAD.
+				.shExec( 'git diff-index --name-only HEAD' )
+				// Remove trailing /n, to avoid empty entry.
+				.replace( /\s*$/, '' )
+				// Transform into array.
+				.split( '\n' );
+
+			// If nothing is returned, the array will one one empty string only.
 			if ( dirtyFiles.length == 1 && !dirtyFiles[ 0 ] ) {
 				dirtyFiles = [];
 			}
