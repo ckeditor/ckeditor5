@@ -8,6 +8,7 @@ module.exports = function( grunt ) {
 	tools.setupMultitaskConfig( grunt, {
 		task: 'jshint',
 		defaultOptions: grunt.file.readJSON( 'dev/tasks/jshint-config.json' ),
+		addGitIgnore: 'ignores',
 		targets: {
 			all: function() {
 				return [ '**/*.js' ];
@@ -16,15 +17,6 @@ module.exports = function( grunt ) {
 				return tools.getGitDirtyFiles().filter( function( file ) {
 					return ( /\.js$/ ).test( file );
 				} );
-			}
-		}
-	} );
-
-	// Take ignore list from .gitIgnore.
-	grunt.config.merge( {
-		jshint: {
-			options: {
-				ignores: tools.getGitIgnore( grunt )
 			}
 		}
 	} );
