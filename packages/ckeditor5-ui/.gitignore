@@ -1,8 +1,8 @@
-# These files will be ignored by git and by our linting tools:
+# These files will be ignored by Git and by our linting tools:
 #	grunt jshint
 #	grunt jscs
 #
-# Be sure to append /** to folders to have everything inside it ignored.
+# Be sure to append /** to folders to have everything inside them ignored.
 
 node_modules/**
 build/**
