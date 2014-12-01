@@ -12,11 +12,17 @@ module.exports = function( grunt ) {
 
 		jshint: {
 			options: {
+				ignores: [
+					// Automatically loaded from .gitignore. Add more if necessary.
+				]
 			}
 		},
 
 		jscs: {
 			options: {
+				excludeFiles: [
+					// Automatically loaded from .gitignore. Add more if necessary.
+				]
 			}
 		}
 	} );
