@@ -114,13 +114,13 @@ Assuming that `npm` and `grunt` are installed globally, run a few commands:
 
 Other than the files available in this repository, it is expected that target projects will also contain the following directories:
 
-* **/src/**<br>
+* `/src/`<br>
   The source code of the project.
 
-* **/build/**<br>
+* `/build/`<br>
   If any build is created, it should be placed in this folder.
 
-* **[module|group]/tests/**<br>
+* `[module|group]/tests/`<br>
   The place for tests. Its final placement is per project. It can either stay in the project root or inside sub-directories that represent parts of the project, like modules or plugins.
 
 ## Boilerplate License
