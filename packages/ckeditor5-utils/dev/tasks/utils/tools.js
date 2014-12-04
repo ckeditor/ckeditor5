@@ -42,6 +42,7 @@ module.exports = {
 		var all = options.targets.all,
 			isAll = true;
 		delete options.targets.all;
+
 		Object.getOwnPropertyNames( options.targets ).forEach( function( target ) {
 			if ( this.checkTaskInQueue( grunt, task + ':' + target ) ) {
 				config[ target ] = options.targets[ target ]();
