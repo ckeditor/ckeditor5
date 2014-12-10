@@ -8,6 +8,7 @@ var dirtyFiles,
 module.exports = {
 	/**
 	 * Check if a task (including its optional target) is in the queue of tasks to be executed by Grunt.
+	 *
 	 * @param grunt {Object} The Grunt object.
 	 * @param task {String} The task name. May optionally include the target (e.g. 'task:target').
 	 * @returns {Boolean} "true" if the task is in the queue.
@@ -28,6 +29,7 @@ module.exports = {
 
 	/**
 	 * Configures a multi-task and defines targets that are queued to be run by Grunt.
+	 *
 	 * @param grunt {Object} The Grunt object.
 	 * @param options {Object} A list of options for the method. See the jscs and jshint tasks for example.
 	 */
@@ -68,6 +70,7 @@ module.exports = {
 
 	/**
 	 * Gets the list of ignores from .gitignore.
+	 *
 	 * @param grunt {Object} The Grunt object.
 	 * @returns {Array} The list of ignores.
 	 */
@@ -91,6 +94,7 @@ module.exports = {
 
 	/**
 	 * Gets the list of files that are supposed to be included in the next Git commit.
+	 *
 	 * @returns {Array} A list of file paths.
 	 */
 	getGitDirtyFiles: function() {
@@ -114,6 +118,7 @@ module.exports = {
 
 	/**
 	 * Executes a shell command.
+	 *
 	 * @param command {String} The command to be executed.
 	 * @returns {String} The command output.
 	 */
