@@ -43,6 +43,7 @@ module.exports = {
 		// "all" is the default target to be used if others are not to be run.
 		var all = options.targets.all,
 			isAll = true;
+
 		delete options.targets.all;
 
 		Object.getOwnPropertyNames( options.targets ).forEach( function( target ) {
@@ -69,10 +70,10 @@ module.exports = {
 	},
 
 	/**
-	 * Gets the list of ignores from .gitignore.
+	 * Gets the list of ignores from `.gitignore`.
 	 *
 	 * @param grunt {Object} The Grunt object.
-	 * @returns {Array} The list of ignores.
+	 * @returns {String[]} The list of ignores.
 	 */
 	getGitIgnore: function( grunt ) {
 		if ( !ignoreList ) {
@@ -95,7 +96,7 @@ module.exports = {
 	/**
 	 * Gets the list of files that are supposed to be included in the next Git commit.
 	 *
-	 * @returns {Array} A list of file paths.
+	 * @returns {String[]} A list of file paths.
 	 */
 	getGitDirtyFiles: function() {
 		// Cache it, so it is executed only once when running multiple tasks.
@@ -113,6 +114,7 @@ module.exports = {
 				dirtyFiles = [];
 			}
 		}
+
 		return dirtyFiles;
 	},
 
@@ -134,6 +136,7 @@ module.exports = {
 				ret.output
 			);
 		}
+
 		return ret.output;
 	}
 };
