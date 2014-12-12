@@ -13,6 +13,7 @@ module.exports = function( grunt ) {
 			all: function() {
 				return [ '**/*.js' ];
 			},
+
 			git: function() {
 				return tools.getGitDirtyFiles().filter( function( file ) {
 					return ( /\.js$/ ).test( file );
