@@ -6,23 +6,24 @@ module.exports = function( grunt ) {
 	// First register the "default" task, so it can be analyzed by other tasks.
 	grunt.registerTask( 'default', [ 'jshint:git', 'jscs:git' ] );
 
+	// Files that will be ignored by the "jscs" and "jshint" tasks.
+	var ignoreFiles = [
+		// Automatically loaded from .gitignore. Add more if necessary.
+	];
+
 	// Basic configuration which will be overloaded by the tasks.
 	grunt.initConfig( {
 		pkg: grunt.file.readJSON( 'package.json' ),
 
 		jshint: {
 			options: {
-				ignores: [
-					// Automatically loaded from .gitignore. Add more if necessary.
-				]
+				ignores: ignoreFiles
 			}
 		},
 
 		jscs: {
 			options: {
-				excludeFiles: [
-					// Automatically loaded from .gitignore. Add more if necessary.
-				]
+				excludeFiles: ignoreFiles
 			}
 		}
 	} );
