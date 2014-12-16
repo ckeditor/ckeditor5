@@ -1,8 +1,8 @@
 Software License Agreement
 ==========================
 
-CKEditor 5 - https://github.com/ckeditor/ckeditor5
-Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
+**CKEditor 5** - https://github.com/ckeditor/ckeditor5 <br>
+Copyright (c) 2003-2014, [CKSource](http://cksource.com) Frederico Knabben. All rights reserved.
 
 Licensed under the terms of any of the following licenses at your
 choice:
@@ -32,6 +32,7 @@ done by developers outside of CKSource with their express permission.
 Trademarks
 ----------
 
-CKEditor is a trademark of CKSource - Frederico Knabben. All other brand
+**CKEditor** is a trademark of [CKSource](http://cksource.com) Frederico Knabben. All other brand
 and product names are trademarks, registered trademarks or service
 marks of their respective holders.
+
