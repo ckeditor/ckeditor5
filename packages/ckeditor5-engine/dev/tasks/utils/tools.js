@@ -18,11 +18,10 @@ module.exports = {
 
 		// Check if the task has been called directly.
 		var isDirectCall = ( cliTasks.indexOf( task ) > -1 );
-
 		// Check if this is a "default" call and that the task is inside "default".
-		var isDefaultTask = ( cliTasks.indexOf( 'default' ) > -1 ) || !cliTasks.length,
-			// Hacking Grunt hard.
-			isTaskInDefault = isDefaultTask && ( grunt.task._tasks.default.info.indexOf( '"' + task + '"' ) > -1 );
+		var isDefaultTask = ( cliTasks.indexOf( 'default' ) > -1 ) || !cliTasks.length;
+		// Hacking Grunt hard.
+		var isTaskInDefault = isDefaultTask && ( grunt.task._tasks.default.info.indexOf( '"' + task + '"' ) > -1 );
 
 		return isDirectCall || isTaskInDefault;
 	},
@@ -34,15 +33,15 @@ module.exports = {
 	 * @param options {Object} A list of options for the method. See the jscs and jshint tasks for example.
 	 */
 	setupMultitaskConfig: function( grunt, options ) {
-		var task = options.task,
-			taskConfig = {},
-			config = taskConfig[ task ] = {
-				options: options.defaultOptions
-			};
+		var task = options.task;
+		var taskConfig = {};
+		var config = taskConfig[ task ] = {
+			options: options.defaultOptions
+		};
 
 		// "all" is the default target to be used if others are not to be run.
-		var all = options.targets.all,
-			isAll = true;
+		var all = options.targets.all;
+		var isAll = true;
 
 		delete options.targets.all;
 
@@ -59,8 +58,9 @@ module.exports = {
 
 		// Append .gitignore entries to the ignore list.
 		if ( options.addGitIgnore ) {
-			var ignoreProp = task + '.options.' + options.addGitIgnore,
-				ignores = grunt.config.get( ignoreProp ) || [];
+			var ignoreProp = task + '.options.' + options.addGitIgnore;
+			var ignores = grunt.config.get( ignoreProp ) || [];
+
 			ignores = ignores.concat( this.getGitIgnore( grunt ) );
 			grunt.config.set( ignoreProp, ignores );
 		}
