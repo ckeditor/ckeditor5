@@ -1,28 +1,10 @@
-{App Name} Changelog
+CKEditor 5 Changelog
 ====================
 
-## App 1.2.3
+## CKEditor 5.0.0 (DEV)
 
-**Major|Minor|Patch Release** - Build Date: yyyy-mm-dd
+**First Release** - Build Date: yyyy-mm-dd
 
-New Features:
-
-* [#Issue Number](http://issue/url): Item 1.
-* Item 2
-
-Fixed Issues:
-
-* [#Issue Number](http://issue/url): Item 1.
-* Item 2
-
-
-Other Changes:
-
-* Item 1
-* Item 2
-
----
-
-## App 1.2.2
-
-...
+TODO: For the first release, we will not list new features or changes but more specifically describe CKEditor 5,
+emphasizing its differences and relation with CKEditor 4. In few words though, just like one would expect a changelog
+file to be.
