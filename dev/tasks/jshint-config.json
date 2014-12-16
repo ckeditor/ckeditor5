@@ -1,4 +1,11 @@
 {
-	"globalstrict": true,
-	"validthis": true
+	"immed": true,
+	"latedef": "nofunc",
+	"noarg": true,
+	"nonbsp": true,
+	"undef": true,
+	"unused": true,
+	"strict": true,
+
+	"globalstrict": true
 }
