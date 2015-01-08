@@ -1,8 +1,12 @@
 {
-  "name": "",
-  "version": "",
-  "description": "",
-  "keywords": [],
+  "name": "ckeditor5",
+  "version": "5.0.0-0.dev",
+  "description": "The developer version of CKEditor; the best browser-based WYSIWYG editor.",
+  "keywords": [
+    "CKEditor",
+    "Editor",
+    "WYSIWYG"
+  ],
   "dependencies": {},
   "devDependencies": {
     "grunt": "~0",
@@ -13,7 +17,10 @@
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "See LICENSE.md",
-  "homepage": "",
-  "bugs": "",
-  "repository": ""
+  "homepage": "http://ckeditor.com",
+  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5.git"
+  }
 }
