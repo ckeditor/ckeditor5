@@ -9,6 +9,7 @@ module.exports = function( grunt ) {
 	// Files that will be ignored by the "jscs" and "jshint" tasks.
 	var ignoreFiles = [
 		// Automatically loaded from .gitignore. Add more if necessary.
+		'lib/**'
 	];
 
 	// Basic configuration which will be overloaded by the tasks.
