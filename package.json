@@ -7,7 +7,9 @@
     "Editor",
     "WYSIWYG"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "ckeditor-core": "ckeditor/ckeditor5-core"
+  },
   "devDependencies": {
     "grunt": "~0",
     "grunt-jscs": "~1",
