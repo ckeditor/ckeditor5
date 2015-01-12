@@ -3,28 +3,30 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global requirejs, define, require, window */
+/* global requirejs, define, require, window, document, location */
 
 'use strict';
 
 // This file is required for the development version of CKEditor only. It bootstraps the API.
-
-// Basic Require.js configuration.
-requirejs.config( {
-	// Modules are generally relative to the core project.
-	baseUrl: '../node_modules/ckeditor-core/src/',
-	paths: {
-		// The RequireJS "plugin" plugin.
-		plugin: '../src/plugin'
-	}
-} );
 
 ( function( root ) {
 	if ( root.CKEDITOR ) {
 		return;
 	}
 
-	root.CKEDITOR = {
+	var CKEDITOR = root.CKEDITOR = {
+		/**
+		 * The full URL for the CKEditor installation directory.
+		 *
+		 * It is possible to manually provide the base path by setting a global variable named `CKEDITOR_BASEPATH`. This
+		 * global variable must be set **before** the editor script loading.
+		 *
+		 *		alert( CKEDITOR.basePath ); // e.g. 'http://www.example.com/ckeditor/'
+		 *
+		 * @property {String}
+		 */
+		basePath: getBasePath(),
+
 		/**
 		 * Defines an AMD module.
 		 *
@@ -51,13 +53,56 @@ requirejs.config( {
 		// Documented in ckeditor-core/src/ckeditor.js.
 		// This is the development version of this method, which overrides the default one.
 		getPluginPath: function( name ) {
-			return CKEDITOR.basePath + 'node_modules/ckeditor-plugin-' + name + '/src/';
+			return this.basePath + 'node_modules/ckeditor-plugin-' + name + '/src/';
 		}
 	};
 
+	// Basic Require.js configuration.
+	requirejs.config( {
+		// Modules are generally relative to the core project.
+		baseUrl: CKEDITOR.basePath + 'node_modules/ckeditor5-core/src/',
+		paths: {
+			// The RequireJS "plugin" plugin.
+			plugin: CKEDITOR.basePath + 'src/plugin'
+		}
+	} );
+
 	// Load the core CKEDITOR object and extend/override some of its methods with the above.
-	require( [ 'ckeditor', 'tools/utils' ], function( CKEDITOR, utils ) {
+	CKEDITOR.require( [ 'ckeditor', 'utils' ], function( CKEDITOR, utils ) {
 		utils.extend( CKEDITOR, root.CKEDITOR );
 		root.CKEDITOR = CKEDITOR;
 	} );
+
+	function getBasePath() {
+		if ( window.CKEDITOR_BASEPATH ) {
+			return window.CKEDITOR_BASEPATH;
+		}
+
+		var scripts = document.getElementsByTagName( 'script' );
+
+		var basePathSrcPattern = /(^|.*[\\\/])ckeditor\.js(?:\?.*|;.*)?$/i;
+
+		var path;
+
+		// Find the first script that src matches ckeditor.js.
+		[].some.call( scripts, function( script ) {
+			var match = script.src.match( basePathSrcPattern );
+
+			if ( match ) {
+				path = match[ 1 ];
+
+				return true;
+			}
+		} );
+
+		if ( path.indexOf( ':/' ) == -1 && path.slice( 0, 2 ) != '//' ) {
+			if ( path.indexOf( '/' ) === 0 ) {
+				path = location.href.match( /^.*?:\/\/[^\/]*/ )[ 0 ] + path;
+			} else {
+				path = location.href.match( /^[^\?]*\/(?:)/ )[ 0 ] + path;
+			}
+		}
+
+		return path;
+	}
 } )( window );
