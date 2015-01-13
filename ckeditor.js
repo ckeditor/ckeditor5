@@ -63,14 +63,14 @@
 		baseUrl: CKEDITOR.basePath + 'node_modules/ckeditor5-core/src/',
 		paths: {
 			// Hide the core "ckeditor" under a different name.
-			"ckeditor-core": CKEDITOR.basePath + 'node_modules/ckeditor5-core/src/ckeditor',
+			'ckeditor-core': CKEDITOR.basePath + 'node_modules/ckeditor5-core/src/ckeditor',
 
 			// The RequireJS "plugin" plugin.
-			"plugin": CKEDITOR.basePath + 'src/plugin',
+			'plugin': CKEDITOR.basePath + 'src/plugin',
 
 			// Due to name conflict with the above, we have to save a reference to the core "plugin" module.
 			// See src/plugin.js for more details.
-			"plugin-core": CKEDITOR.basePath + 'node_modules/ckeditor5-core/src/plugin'
+			'plugin-core': CKEDITOR.basePath + 'node_modules/ckeditor5-core/src/plugin'
 		}
 	} );
 
@@ -78,6 +78,7 @@
 	define( 'ckeditor', [ 'ckeditor-core', 'utils' ], function( core, utils ) {
 		utils.extend( core, root.CKEDITOR );
 		root.CKEDITOR = core;
+
 		return core;
 	} );
 
