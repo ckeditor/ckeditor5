@@ -57,20 +57,24 @@
 		}
 	};
 
-	// Basic Require.js configuration.
+	// Basic Require.js configuration for the dev version.
 	requirejs.config( {
 		// Modules are generally relative to the core project.
 		baseUrl: CKEDITOR.basePath + 'node_modules/ckeditor5-core/src/',
 		paths: {
+			// Hide the core "ckeditor" under a different name.
+			"ckeditor-core": CKEDITOR.basePath + 'node_modules/ckeditor5-core/src/ckeditor',
+
 			// The RequireJS "plugin" plugin.
-			plugin: CKEDITOR.basePath + 'src/plugin'
+			"plugin": CKEDITOR.basePath + 'src/plugin'
 		}
 	} );
 
-	// Load the core CKEDITOR object and extend/override some of its methods with the above.
-	CKEDITOR.require( [ 'ckeditor', 'utils' ], function( CKEDITOR, utils ) {
-		utils.extend( CKEDITOR, root.CKEDITOR );
-		root.CKEDITOR = CKEDITOR;
+	// Define a new "ckeditor" module, which override the core one with dev version stuff.
+	define( 'ckeditor', [ 'ckeditor-core', 'utils' ], function( core, utils ) {
+		utils.extend( core, root.CKEDITOR );
+		root.CKEDITOR = core;
+		return core;
 	} );
 
 	function getBasePath() {
