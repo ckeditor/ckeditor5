@@ -129,8 +129,14 @@ module.exports.build = function( done ) {
 			stubModules: [ 'ckeditor-dev' ],
 
 //			onBuildWrite: replacePaths,
-//			optimize: 'uglify2',
-			optimize: 'none',
+//			optimize: 'none',
+			optimize: 'uglify2',
+			//uglify2: {
+			//	output: {
+			//		beautify: true
+			//	},
+			//	mangle: false
+			//},
 			preserveLicenseComments: false,
 			wrap: {
 				startFile: [ 'dev/tasks/build/start.frag', require.resolve( 'almond' ) ],
