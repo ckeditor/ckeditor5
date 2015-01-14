@@ -116,18 +116,22 @@ module.exports.build = function( done ) {
 			out: target + '/ckeditor.js',
 
 			baseUrl: tmp + '/ckeditor5-core/src/',
-			generateSourceMaps: false,
-			preserveLicenseComments: false,
-			include: [ 'ckeditor' ],
-//			include: ['depTree', 'ckeditor' ].concat( getPlugins() ),
-//			paths: {
+			paths: {
+				'ckeditor': '../../../ckeditor',
+				'ckeditor-dev': '../../../src/ckeditor-dev',
+				'ckeditor-core': 'ckeditor'
 //				depTree: '../../../lib/depTree',
 //				plugins: '../../../lib/plugins'
-//			},
+			},
+
+//			include: ['depTree', 'ckeditor' ].concat( getPlugins() ),
+			include: [ 'ckeditor' ],
+			stubModules: [ 'ckeditor-dev' ],
+
+//			onBuildWrite: replacePaths,
 //			optimize: 'uglify2',
 			optimize: 'none',
-//			onBuildWrite: replacePaths,
-//			stubModules: [ 'plugins' ],
+			preserveLicenseComments: false,
 			wrap: {
 				startFile: [ 'dev/tasks/build/start.frag', require.resolve( 'almond' ) ],
 				endFile: 'dev/tasks/build/end.frag'
@@ -136,8 +140,6 @@ module.exports.build = function( done ) {
 
 		requirejs.optimize( config, function() {
 			callback();
-		}, function( err ) {
-			throw err;
 		} );
 	}
 

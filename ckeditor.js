@@ -7,13 +7,9 @@
 
 'use strict';
 
-// This file is required for the development version of CKEditor only. It bootstraps the API.
+// This file is shared by the dev and release versions of CKEditor. It bootstraps the API.
 
 ( function( root ) {
-	if ( root.CKEDITOR ) {
-		return;
-	}
-
 	var CKEDITOR = root.CKEDITOR = {
 		/**
 		 * The full URL for the CKEditor installation directory.
@@ -48,35 +44,27 @@
 		 * @method
 		 * @member CKEDITOR
 		 */
-		require: require,
-
-		// Documented in ckeditor-core/src/ckeditor.js.
-		// This is the development version of this method, which overrides the default one.
-		getPluginPath: function( name ) {
-			return this.basePath + 'node_modules/ckeditor-plugin-' + name + '/src/';
-		}
+		require: require
 	};
 
-	// Basic Require.js configuration for the dev version.
 	requirejs.config( {
 		// Modules are generally relative to the core project.
 		baseUrl: CKEDITOR.basePath + 'node_modules/ckeditor5-core/src/',
+
+		// These configurations will make no difference in the build version because the following paths will be
+		// already defined there.
 		paths: {
 			// Hide the core "ckeditor" under a different name.
 			'ckeditor-core': CKEDITOR.basePath + 'node_modules/ckeditor5-core/src/ckeditor',
 
-			// The RequireJS "plugin" plugin.
-			'plugin': CKEDITOR.basePath + 'src/plugin',
-
-			// Due to name conflict with the above, we have to save a reference to the core "plugin" module.
-			// See src/plugin.js for more details.
-			'plugin-core': CKEDITOR.basePath + 'node_modules/ckeditor5-core/src/plugin'
+			// The dev version overrides for the "ckeditor" module. This is empty on release.
+			'ckeditor-dev': CKEDITOR.basePath + 'src/ckeditor-dev'
 		}
 	} );
 
-	// Define a new "ckeditor" module, which override the core one with dev version stuff.
-	define( 'ckeditor', [ 'ckeditor-core', 'utils' ], function( core, utils ) {
-		utils.extend( core, root.CKEDITOR );
+	// Define a new "ckeditor" module, which overrides the core one with the above and the dev stuff.
+	define( 'ckeditor', [ 'ckeditor-core', 'ckeditor-dev', 'utils' ], function( core, dev, utils ) {
+		utils.extend( core, root.CKEDITOR, ( dev || {} ) );
 		root.CKEDITOR = core;
 
 		return core;
