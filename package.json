@@ -11,6 +11,7 @@
     "ckeditor5-core": "ckeditor/ckeditor5-core"
   },
   "devDependencies": {
+    "almond": "~0.3.0",
     "del": "~1.1",
     "requirejs": "~2.1",
     "ncp": "~1.0",

@@ -115,7 +115,6 @@ module.exports.build = function( done ) {
 		var config = {
 			out: target + '/ckeditor.js',
 
-			almond: true,
 			baseUrl: tmp + '/ckeditor5-core/src/',
 			generateSourceMaps: false,
 			preserveLicenseComments: false,
@@ -129,9 +128,8 @@ module.exports.build = function( done ) {
 			optimize: 'none',
 //			onBuildWrite: replacePaths,
 //			stubModules: [ 'plugins' ],
-			useStrict: true,
 			wrap: {
-				startFile: 'dev/tasks/build/start.frag',
+				startFile: [ 'dev/tasks/build/start.frag', require.resolve( 'almond' ) ],
 				endFile: 'dev/tasks/build/end.frag'
 			}
 		};
