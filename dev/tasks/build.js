@@ -120,23 +120,13 @@ module.exports.build = function( done ) {
 				'ckeditor': '../../../ckeditor',
 				'ckeditor-dev': '../../../src/ckeditor-dev',
 				'ckeditor-core': 'ckeditor'
-//				depTree: '../../../lib/depTree',
-//				plugins: '../../../lib/plugins'
 			},
 
-//			include: ['depTree', 'ckeditor' ].concat( getPlugins() ),
 			include: [ 'ckeditor' ],
 			stubModules: [ 'ckeditor-dev' ],
 
-//			onBuildWrite: replacePaths,
 //			optimize: 'none',
 			optimize: 'uglify2',
-			//uglify2: {
-			//	output: {
-			//		beautify: true
-			//	},
-			//	mangle: false
-			//},
 			preserveLicenseComments: false,
 			wrap: {
 				startFile: [ 'dev/tasks/build/start.frag', require.resolve( 'almond' ) ],
