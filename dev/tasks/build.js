@@ -134,9 +134,7 @@ module.exports.build = function( done ) {
 			}
 		};
 
-		requirejs.optimize( config, function() {
-			callback();
-		} );
+		requirejs.optimize( config, callback );
 	}
 
 	function cleanupTmp( callback ) {
