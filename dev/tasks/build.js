@@ -57,7 +57,7 @@ module.exports.build = function( done ) {
 		var path = require( 'path' );
 		var fs = require( 'fs' );
 
-		var deps = JSON.parse( fs.readFileSync( 'package.json', 'utf8' ) ).dependencies;
+		var deps = require( '../../package.json' ).dependencies;
 
 		var toCopy = Object.keys( deps ).filter( function( name ) {
 				return name.indexOf( 'ckeditor5-' ) === 0;
