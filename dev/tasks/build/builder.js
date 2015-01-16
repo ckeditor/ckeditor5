@@ -193,8 +193,8 @@ Builder.prototype = {
 				optimize: 'uglify2',
 				preserveLicenseComments: false,
 				wrap: {
-					startFile: [ 'dev/tasks/build/start.frag', require.resolve( 'almond' ) ],
-					endFile: 'dev/tasks/build/end.frag'
+					startFile: [ 'src/build/start.frag', require.resolve( 'almond' ) ],
+					endFile: 'src/build/end.frag'
 				}
 			};
 
