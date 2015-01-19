@@ -31,7 +31,7 @@ module.exports = Builder = function( target ) {
 	 *
 	 * @type {string}
 	 */
-	this.tmp = 'tmp';
+	this.tmp = 'build_tmp';
 
 	/**
 	 * The list of tasks to be executed by the `build()` method. Each entry is an Array containing the name of the
@@ -52,11 +52,19 @@ Builder.prototype = {
 	/**
 	 * Builds a CKEditor release based on the current development code.
 	 *
-	 * @param {Function} [callback] Function to be called when build finishes.
+	 * @param {Function} [callback] Function to be called when build finishes. It receives `false` on error.
 	 */
 	build: function( callback ) {
 		var that = this;
 		var stepCounter = 0;
+
+		// Before starting, run the initial checkups.
+		if ( !this.checkUp() ) {
+			console.log( 'Build operation aborted.' );
+			callback( false );
+
+			return;
+		}
 
 		runNext();
 
@@ -73,6 +81,19 @@ Builder.prototype = {
 				}
 			}
 		}
+	},
+
+	checkUp: function() {
+		var fs = require( 'fs' );
+
+		// Stop if the tmp folder already exists.
+		if ( fs.existsSync( this.tmp ) ) {
+			console.log( 'The "' + this.tmp + '" directory already exists. Delete it and try again.' );
+
+			return false;
+		}
+
+		return true;
 	},
 
 	/**
@@ -114,9 +135,7 @@ Builder.prototype = {
 				return name.indexOf( 'ckeditor5-' ) === 0;
 			} );
 
-			if ( !fs.existsSync( tmp ) ) {
-				fs.mkdirSync( tmp );
-			}
+			fs.mkdirSync( tmp );
 
 			function copy() {
 				var module = toCopy.shift();
