@@ -31,7 +31,7 @@ function Builder( target ) {
 	 *
 	 * @property {String}
 	 */
-	this.tmp = 'build_tmp';
+	this.tmp = 'build-tmp';
 
 	/**
 	 * The list of tasks to be executed by the `build()` method. Each entry is an Array containing the name of the
