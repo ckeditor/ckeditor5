@@ -24,15 +24,6 @@ Where not otherwise indicated, all CKEditor content is authored by CKSource engi
 intellectual property. In some specific instances, CKEditor will incorporate work done by developers outside of CKSource
 with their express permission.
 
-(Ignore this line: %REMOVE_START%)
-
-Software available at our [repository](https://github.com/ckeditor/ckeditor5) and developer version only:
-
- * RequireJS (lib/requirejs) <br>
-   Licensed under the terms of the MIT or new BSD license. <br>
-   Copyright (c) 2010-2014, The Dojo Foundation All Rights Reserved.
-
-(Ignore this line: %REMOVE_END%)
 Trademarks
 ----------
 
