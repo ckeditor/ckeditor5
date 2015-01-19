@@ -40,7 +40,7 @@ function Builder( target ) {
 	 * @property {Array}
 	 */
 	this.taskList = [
-		[ 'cleanUp', 'Cleaning the "' + target + '" directory...' ],
+		[ 'cleanUp', 'Cleaning the "' + this.target + '" directory...' ],
 		[ 'copyToTmp', 'Copying source files for manipulation...' ],
 		[ 'removeAmdNamespace', 'AMD cleanup...' ],
 		[ 'optimize', 'Creating the optimized code...' ],
@@ -65,6 +65,8 @@ Builder.prototype = {
 
 			return;
 		}
+
+		console.log( 'Building CKEditor into the "' + this.target + '" directory:')
 
 		runNext();
 
