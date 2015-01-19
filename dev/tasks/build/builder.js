@@ -7,14 +7,14 @@
 
 'use strict';
 
-var Builder;
+module.exports = Builder;
 
 /**
  * A CKEditor 5 release builder.
  *
  * @class Builder
  */
-module.exports = Builder = function( target ) {
+function Builder( target ) {
 	/**
 	 * The target directory where to create the build.
 	 *
@@ -46,7 +46,7 @@ module.exports = Builder = function( target ) {
 		[ 'optimize', 'Creating the optimized code...' ],
 		[ 'cleanUpTmp', 'Removing the "' + this.tmp + '" directory...' ]
 	];
-};
+}
 
 Builder.prototype = {
 	/**
