@@ -6,11 +6,11 @@ Copyright (c) 2003-2014, [CKSource](http://cksource.com) Frederico Knabben. All 
 
 Licensed under the terms of any of the following licenses at your choice:
 
- - [GNU General Public License Version 2 or later (the "GPL")](http://www.gnu.org/licenses/gpl.html)
+ * [GNU General Public License Version 2 or later (the "GPL")](http://www.gnu.org/licenses/gpl.html)
 
- - [GNU Lesser General Public License Version 2.1 or later (the "LGPL")](http://www.gnu.org/licenses/lgpl.html)
+ * [GNU Lesser General Public License Version 2.1 or later (the "LGPL")](http://www.gnu.org/licenses/lgpl.html)
 
- - [Mozilla Public License Version 1.1 or later (the "MPL")](http://www.mozilla.org/MPL/MPL-1.1.html)
+ * [Mozilla Public License Version 1.1 or later (the "MPL")](http://www.mozilla.org/MPL/MPL-1.1.html)
 
 You are not required to, but if you want to explicitly declare the license you have chosen to be bound to when using,
 reproducing, modifying and distributing this software, just include a text file titled "legal.txt" in your version of
@@ -28,7 +28,7 @@ with their express permission.
 
 Software available at our [repository](https://github.com/ckeditor/ckeditor5) and developer version only:
 
- - RequireJS (lib/requirejs) <br>
+ * RequireJS (lib/requirejs) <br>
    Licensed under the terms of the MIT or new BSD license. <br>
    Copyright (c) 2010-2014, The Dojo Foundation All Rights Reserved.
 

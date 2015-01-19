@@ -40,11 +40,11 @@ module.exports = Builder = function( target ) {
 	 * @type {Array}
 	 */
 	this.taskList = [
-		[ 'cleanup', 'Cleaning the "' + target + '" directory...' ],
+		[ 'cleanUp', 'Cleaning the "' + target + '" directory...' ],
 		[ 'copyToTmp', 'Copying source files for manipulation...' ],
 		[ 'removeAmdNamespace', 'AMD cleanup...' ],
 		[ 'optimize', 'Creating the optimized code...' ],
-		[ 'cleanupTmp', 'Removing the "' + this.tmp + '" directory...' ]
+		[ 'cleanUpTmp', 'Removing the "' + this.tmp + '" directory...' ]
 	];
 };
 
@@ -107,9 +107,9 @@ Builder.prototype = {
 		 * Deletes the `target` and `tmp` directories.
 		 *
 		 * @param {Function} callback Function to be called when the task is done.
-		 * @returns {Object} The callback returned valued.
+		 * @returns {Object} The callback returned value.
 		 */
-		cleanup: function( callback ) {
+		cleanUp: function( callback ) {
 			var del = require( 'del' );
 			del.sync( this.target );
 			del.sync( this.tmp );
@@ -121,7 +121,7 @@ Builder.prototype = {
 		 * Copy the local source code of CKEditor and its dependencies to the `tmp` directory for processing.
 		 *
 		 * @param {Function} callback Function to be called when the task is done.
-		 * @returns {Object} The callback returned valued.
+		 * @returns {Object} The callback returned value.
 		 */
 		copyToTmp: function( callback ) {
 			var ncp = require( 'ncp' ).ncp;
@@ -155,7 +155,7 @@ Builder.prototype = {
 					dereference: true
 				}, function( err ) {
 					if ( err ) {
-						throw( err );
+						throw err;
 					}
 
 					copy();
@@ -169,7 +169,7 @@ Builder.prototype = {
 		 * Removes the `CKEDITOR` namespace from AMD calls in the `tmp` copy of the source code.
 		 *
 		 * @param {Function} callback Function to be called when the task is done.
-		 * @returns {Object} The callback returned valued.
+		 * @returns {Object} The callback returned value.
 		 */
 		removeAmdNamespace: function( callback ) {
 			var replace = require( 'replace' );
@@ -190,7 +190,7 @@ Builder.prototype = {
 		 * source code.
 		 *
 		 * @param {Function} callback Function to be called when the task is done.
-		 * @returns {Object} The callback returned valued.
+		 * @returns {Object} The callback returned value.
 		 */
 		optimize: function( callback ) {
 			var requirejs = require( 'requirejs' );
@@ -224,9 +224,9 @@ Builder.prototype = {
 		 * Deletes `tmp` directory.
 		 *
 		 * @param {Function} callback Function to be called when the task is done.
-		 * @returns {Object} The callback returned valued.
+		 * @returns {Object} The callback returned value.
 		 */
-		cleanupTmp: function( callback ) {
+		cleanUpTmp: function( callback ) {
 			var del = require( 'del' );
 			del.sync( this.tmp );
 

@@ -26,7 +26,7 @@
 		 * It is possible to manually provide the base path by setting a global variable named `CKEDITOR_BASEPATH`. This
 		 * global variable must be set **before** the editor script loading.
 		 *
-		 *		alert( CKEDITOR.basePath ); // e.g. 'http://www.example.com/ckeditor/'
+		 *		console.log( CKEDITOR.basePath ); // e.g. 'http://www.example.com/ckeditor/'
 		 *
 		 * @property {String}
 		 */
@@ -85,9 +85,7 @@
 		}
 
 		var scripts = document.getElementsByTagName( 'script' );
-
 		var basePathSrcPattern = /(^|.*[\\\/])ckeditor\.js(?:\?.*|;.*)?$/i;
-
 		var path;
 
 		// Find the first script that src matches ckeditor.js.

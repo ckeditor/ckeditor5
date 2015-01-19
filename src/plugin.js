@@ -21,7 +21,7 @@ define( 'plugin', [ 'plugin-core' ], function( CorePlugin ) {
 		var path = name.split( '/' );
 		path.splice( 1, 0, 'src' );
 
-		if ( path.length === 2 ) {
+		if ( path.length == 2 ) {
 			path.push( path[ 0 ] );
 		}
 

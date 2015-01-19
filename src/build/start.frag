@@ -12,7 +12,7 @@
 //  * CKEditor source code
 //  * end.frag
 
-( function ( root, factory ) {
+( function( root, factory ) {
 	// Register the CKEDITOR global.
 	root.CKEDITOR = factory();
 
@@ -22,6 +22,6 @@
 			return root.CKEDITOR;
 		} );
 	}
-} )( this, function () {
+} )( this, function() {
 
 /************************ start.frag END */
