@@ -100,7 +100,7 @@
 		} );
 
 		if ( path.indexOf( ':/' ) == -1 && path.slice( 0, 2 ) != '//' ) {
-			if ( path.indexOf( '/' ) === 0 ) {
+			if ( path[ 0 ] == '/' ) {
 				path = location.href.match( /^.*?:\/\/[^\/]*/ )[ 0 ] + path;
 			} else {
 				path = location.href.match( /^[^\?]*\/(?:)/ )[ 0 ] + path;
