@@ -60,7 +60,7 @@ Builder.prototype = {
 
 		// Before starting, run the initial checkups.
 		if ( !this.checkUp() ) {
-			console.log( 'Build operation aborted.' );
+			console.error( 'Build operation aborted.' );
 			callback( false );
 
 			return;
@@ -90,7 +90,7 @@ Builder.prototype = {
 
 		// Stop if the tmp folder already exists.
 		if ( fs.existsSync( this.tmp ) ) {
-			console.log( 'The "' + this.tmp + '" directory already exists. Delete it and try again.' );
+			console.error( 'The "' + this.tmp + '" directory already exists. Delete it and try again.' );
 
 			return false;
 		}
