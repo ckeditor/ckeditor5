@@ -20,7 +20,7 @@ module.exports = Builder = function( target ) {
 	 *
 	 * **Warning**: if existing, this directory will be deleted before processing.
 	 *
-	 * @type {string}
+	 * @property {String}
 	 */
 	this.target = target || 'build';
 
@@ -29,7 +29,7 @@ module.exports = Builder = function( target ) {
 	 *
 	 * **Warning**: if existing, this directory will be deleted before processing.
 	 *
-	 * @type {string}
+	 * @property {String}
 	 */
 	this.tmp = 'build_tmp';
 
@@ -37,7 +37,7 @@ module.exports = Builder = function( target ) {
 	 * The list of tasks to be executed by the `build()` method. Each entry is an Array containing the name of the
 	 * method inside `tasks` to execute and the message to show to the end user when executing it.
 	 *
-	 * @type {Array}
+	 * @property {Array}
 	 */
 	this.taskList = [
 		[ 'cleanUp', 'Cleaning the "' + target + '" directory...' ],
