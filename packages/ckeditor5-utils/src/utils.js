@@ -23,7 +23,7 @@ CKEDITOR.define( function() {
 		 * @returns {Object} The `target` object.
 		 */
 		extend: function( target, source ) {
-			if ( !this.isObject( source ) && !this.isFunction( source ) ) {
+			if ( !this.isObject( source ) ) {
 				return target;
 			}
 
