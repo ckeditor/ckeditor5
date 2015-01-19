@@ -12,6 +12,15 @@
 ( function( root ) {
 	var CKEDITOR = root.CKEDITOR = {
 		/**
+		 * Computes the value of the `basePath` property.
+		 *
+		 * @private
+		 * @method
+		 * @returns {String} A full URL.
+		 */
+		_getBasePath: getBasePath,
+
+		/**
 		 * The full URL for the CKEditor installation directory.
 		 *
 		 * It is possible to manually provide the base path by setting a global variable named `CKEDITOR_BASEPATH`. This
