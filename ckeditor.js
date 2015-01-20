@@ -73,10 +73,9 @@
 
 	// Define a new "ckeditor" module, which overrides the core one with the above and the dev stuff.
 	define( 'ckeditor', [ 'ckeditor-core', 'ckeditor-dev', 'utils' ], function( core, dev, utils ) {
-		utils.extend( core, root.CKEDITOR, ( dev || {} ) );
-		root.CKEDITOR = core;
+		root.CKEDITOR = utils.extend( {}, core, root.CKEDITOR, ( dev || {} ) );
 
-		return core;
+		return root.CKEDITOR;
 	} );
 
 	function getBasePath() {
