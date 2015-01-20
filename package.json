@@ -19,6 +19,7 @@
     "benderjs": "~0.1",
     "benderjs-mocha": "~0.1",
     "benderjs-chai": "~0.1.1",
+    "benderjs-coverage": "~0.1.1",
     "grunt": "~0",
     "grunt-jscs": "~1",
     "grunt-contrib-jshint": "~0",
