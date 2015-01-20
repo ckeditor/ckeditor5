@@ -27,21 +27,18 @@ CKEDITOR.define( function() {
 				return target;
 			}
 
-			var args, keys, i;
-
 			if ( arguments.length > 2 ) {
-				args = Array.prototype.splice.call( arguments, 1 );
-				i = args.length;
+				var args = Array.prototype.splice.call( arguments, 1 );
 
-				while ( i-- ) {
-					this.extend( target, args[ i ] );
+				while ( args.length ) {
+					this.extend( target, args.shift() );
 				}
 			} else {
-				keys = Object.keys( source );
-				i = keys.length;
+				var keys = Object.keys( source );
 
-				while ( i-- ) {
-					target[ keys[ i ] ] = source[ keys[ i ] ];
+				while ( keys.length ) {
+					var key = keys.shift();
+					target[ key ] = source[ key ];
 				}
 			}
 
