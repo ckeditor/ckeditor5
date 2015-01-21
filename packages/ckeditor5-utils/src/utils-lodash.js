@@ -17,7 +17,33 @@
 	// The list of Lo-Dash methods to include in "utils".
 	// It is mandatory to execute `grunt lodash` after changes to this list.
 	var lodashInclude = [
+		/**
+		 * Assigns own enumerable properties of source object(s) to the destination object.
+		 *
+		 * From Lo-Dash: https://lodash.com/docs#assign (alias)
+		 *
+		 * @member utils
+		 * @method extend
+		 *
+		 * @param {Object} object The destination object.
+		 * @param {...Object} source The source objects.
+		 * @param {Function} callback The function to customize assigning values.
+		 * @param {*} thisArg The this binding of callback.
+		 * @returns {Object} The destination object.
+		 */
 		'extend',
+
+		/**
+		 * Checks if value is a function.
+		 *
+		 * From Lo-Dash: https://lodash.com/docs#isFunction
+		 *
+		 * @member utils
+		 * @method extend
+		 *
+		 * @param {*} value The value to check.
+		 * @returns {Boolean} `true` if the value is a function, else `false`.
+		 */
 		'isFunction'
 	];
 
