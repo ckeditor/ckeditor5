@@ -7,8 +7,8 @@
 
 'use strict';
 
-describe( 'utils', function() {
-	it( 'extend() should extend and override', function( done ) {
+describe( 'extend()', function() {
+	it( 'should extend and override', function( done ) {
 		CKEDITOR.require( [ 'utils' ], function( utils ) {
 			var target = {
 				a: 1,
@@ -48,7 +48,7 @@ describe( 'utils', function() {
 		} );
 	} );
 
-	it( 'extend() should not be touched by non-objects', function( done ) {
+	it( 'should not be touched by non-objects', function( done ) {
 		CKEDITOR.require( [ 'utils' ], function( utils ) {
 			var target = {
 				a: 1
@@ -71,7 +71,7 @@ describe( 'utils', function() {
 		} );
 	} );
 
-	it( 'extend() should extend by several params in order', function( done ) {
+	it( 'should extend by several params in order', function( done ) {
 		CKEDITOR.require( [ 'utils' ], function( utils ) {
 			var target = {
 				a: 0,
@@ -98,8 +98,10 @@ describe( 'utils', function() {
 			done();
 		} );
 	} );
+} );
 
-	it( 'isFunction() should be true for functions only', function( done ) {
+describe( 'isFunction()', function() {
+	it( 'should be true for functions only', function( done ) {
 		CKEDITOR.require( [ 'utils' ], function( utils ) {
 			var f1 = function() {
 			};
@@ -122,8 +124,10 @@ describe( 'utils', function() {
 			done();
 		} );
 	} );
+} );
 
-	it( 'isObject() should be true for pure objects only', function( done ) {
+describe( 'isObject()', function() {
+	it( 'should be true for pure objects only', function( done ) {
 		CKEDITOR.require( [ 'utils' ], function( utils ) {
 			var f1 = function() {
 			};
