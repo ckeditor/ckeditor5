@@ -17,7 +17,6 @@ describe( 'CKEDITOR.require()', function() {
 	it( 'should work with a defined module', function( done ) {
 		CKEDITOR.require( [ 'testModule' ], function( testModule ) {
 			expect( testModule ).to.have.property( 'test' ).to.be.true();
-
 			done();
 		} );
 	} );
