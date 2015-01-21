@@ -33,10 +33,10 @@ describe( 'getPluginPath()', function() {
 			var basePath = CKEDITOR.basePath;
 			var path = CKEDITOR.getPluginPath( 'test' );
 
-			expect( path ).to.equal( basePath + 'plugins/test/' );
-
+			// Revert the override before assertions or it will not do it in case of errors.
 			CKEDITOR.getPluginPath = originalGetPluginPath;
 
+			expect( path ).to.equal( basePath + 'plugins/test/' );
 			done();
 		} );
 	} );
