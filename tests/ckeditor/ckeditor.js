@@ -7,8 +7,8 @@
 
 'use strict';
 
-describe( 'ckeditor', function() {
-	it( 'getPluginPath() with development source code', function( done ) {
+describe( 'getPluginPath()', function() {
+	it( 'should return a proper path', function( done ) {
 		CKEDITOR.require( [ 'ckeditor' ], function( CKEDITOR ) {
 			var basePath = CKEDITOR.basePath;
 			var path = CKEDITOR.getPluginPath( 'test' );
@@ -22,7 +22,7 @@ describe( 'ckeditor', function() {
 		} );
 	} );
 
-	it( 'getPluginPath() with production code', function( done ) {
+	it( '(the production version) should work even when in dev', function( done ) {
 		CKEDITOR.require( [ 'ckeditor', 'ckeditor-core' ], function( CKEDITOR, core ) {
 			// To be able to run this test on both dev and production code, we need to override getPluginPath with the
 			// core version of it and restore it after testing.

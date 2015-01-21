@@ -15,8 +15,8 @@ beforeEach( function() {
 	removeScripts();
 } );
 
-describe( 'ckeditor.basePath', function() {
-	it( 'Full URL', function( done ) {
+describe( 'basePath', function() {
+	it( 'should work with script tags', function( done ) {
 		CKEDITOR.require( [ 'ckeditor' ], function( CKEDITOR ) {
 			addScript( 'http://bar.com/ckeditor/ckeditor.js' );
 			expect( CKEDITOR._getBasePath() ).equals( 'http://bar.com/ckeditor/' );
@@ -24,15 +24,17 @@ describe( 'ckeditor.basePath', function() {
 		} );
 	} );
 
-	it( 'CKEDITOR_BASEPATH', function( done ) {
+	it( 'should work with the CKEDITOR_BASEPATH global', function( done ) {
 		CKEDITOR.require( [ 'ckeditor' ], function( CKEDITOR ) {
 			window.CKEDITOR_BASEPATH = 'http://foo.com/ckeditor/';
 			expect( CKEDITOR._getBasePath() ).equals( 'http://foo.com/ckeditor/' );
 			done();
 		} );
 	} );
+} );
 
-	it( 'Ensure that no browser keep script URLs absolute or relative', function( done ) {
+describe( 'This browser', function() {
+	it( 'should not keep script URLs absolute or relative', function( done ) {
 		// Browsers should convert absolute and relative URLs to full URLs.
 		// If this test fails in any browser, _getBasePath() must be reviewed to deal with such case (v4 does it).
 
