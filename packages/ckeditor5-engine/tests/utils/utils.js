@@ -33,13 +33,13 @@ describe( 'extend()', function() {
 
 			var ret = utils.extend( target, extensions );
 
-			expect( target.a ).equal( 'A' );
-			expect( target.b ).equal( 2 );
-			expect( target ).to.have.property( 'c' ).equal( 3 );
+			expect( target.a ).to.equal( 'A' );
+			expect( target.b ).to.equal( 2 );
+			expect( target ).to.have.property( 'c' ).to.equal( 3 );
 
-			expect( target ).to.have.property( 'obj' ).equal( extensions.obj );
-			expect( target ).to.have.property( 'arr' ).equal( extensions.arr );
-			expect( target ).to.have.property( 'fn' ).equal( extensions.fn );
+			expect( target ).to.have.property( 'obj' ).to.equal( extensions.obj );
+			expect( target ).to.have.property( 'arr' ).to.equal( extensions.arr );
+			expect( target ).to.have.property( 'fn' ).to.equal( extensions.fn );
 
 			// "target" should be the return value.
 			expect( ret ).to.equal( target );
@@ -54,18 +54,18 @@ describe( 'extend()', function() {
 				a: 1
 			};
 
-			expect( utils.extend( target, function() {} ) ).equal( target );
-			expect( utils.extend( target, 1 ) ).equal( target );
-			expect( utils.extend( target, 'a' ) ).equal( target );
-			expect( utils.extend( target, true ) ).equal( target );
-			expect( utils.extend( target, undefined ) ).equal( target );
-			expect( utils.extend( target, [] ) ).equal( target );
-			expect( utils.extend( target, Date.now() ) ).equal( target );
-			expect( utils.extend( target ) ).equal( target );
+			expect( utils.extend( target, function() {} ) ).to.equal( target );
+			expect( utils.extend( target, 1 ) ).to.equal( target );
+			expect( utils.extend( target, 'a' ) ).to.equal( target );
+			expect( utils.extend( target, true ) ).to.equal( target );
+			expect( utils.extend( target, undefined ) ).to.equal( target );
+			expect( utils.extend( target, [] ) ).to.equal( target );
+			expect( utils.extend( target, Date.now() ) ).to.equal( target );
+			expect( utils.extend( target ) ).to.equal( target );
 
 			// None of the above calls should have touched "target".
-			expect( target ).to.have.property( 'a' ).equal( 1 );
-			expect( Object.getOwnPropertyNames( target ).length ).equal( 1 );
+			expect( target ).to.have.property( 'a' ).to.equal( 1 );
+			expect( Object.getOwnPropertyNames( target ).length ).to.equal( 1 );
 
 			done();
 		} );
@@ -90,10 +90,10 @@ describe( 'extend()', function() {
 
 			utils.extend( target, ext1, ext2 );
 
-			expect( target ).to.have.property( 'a' ).equal( 0 );
-			expect( target ).to.have.property( 'b' ).equal( 1 );
-			expect( target ).to.have.property( 'c' ).equal( 2 );
-			expect( target ).to.have.property( 'd' ).equal( 2 );
+			expect( target ).to.have.property( 'a' ).to.equal( 0 );
+			expect( target ).to.have.property( 'b' ).to.equal( 1 );
+			expect( target ).to.have.property( 'c' ).to.equal( 2 );
+			expect( target ).to.have.property( 'd' ).to.equal( 2 );
 
 			done();
 		} );
