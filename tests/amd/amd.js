@@ -7,9 +7,9 @@
 
 'use strict';
 
-CKEDITOR.define( 'testModule', [ 'ckeditor' ], function( ckeditor ) {
+CKEDITOR.define( 'testModule', [ 'ckeditor', 'utils' ], function( ckeditor, utils ) {
 	return {
-		test: ( typeof ckeditor == 'object' )
+		test: utils.isObject( ckeditor )
 	};
 } );
 
