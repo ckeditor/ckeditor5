@@ -19,7 +19,7 @@ describe( 'basePath', function() {
 	it( 'should work with script tags', function( done ) {
 		CKEDITOR.require( [ 'ckeditor' ], function( CKEDITOR ) {
 			addScript( 'http://bar.com/ckeditor/ckeditor.js' );
-			expect( CKEDITOR._getBasePath() ).equals( 'http://bar.com/ckeditor/' );
+			expect( CKEDITOR._getBasePath() ).to.equal( 'http://bar.com/ckeditor/' );
 			done();
 		} );
 	} );
@@ -27,7 +27,7 @@ describe( 'basePath', function() {
 	it( 'should work with the CKEDITOR_BASEPATH global', function( done ) {
 		CKEDITOR.require( [ 'ckeditor' ], function( CKEDITOR ) {
 			window.CKEDITOR_BASEPATH = 'http://foo.com/ckeditor/';
-			expect( CKEDITOR._getBasePath() ).equals( 'http://foo.com/ckeditor/' );
+			expect( CKEDITOR._getBasePath() ).to.equal( 'http://foo.com/ckeditor/' );
 			done();
 		} );
 	} );

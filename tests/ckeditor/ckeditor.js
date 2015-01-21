@@ -14,9 +14,9 @@ describe( 'getPluginPath()', function() {
 			var path = CKEDITOR.getPluginPath( 'test' );
 
 			if ( CKEDITOR.isDev ) {
-				expect( path ).equals( basePath + 'node_modules/ckeditor-plugin-test/src/' );
+				expect( path ).to.equal( basePath + 'node_modules/ckeditor-plugin-test/src/' );
 			} else {
-				expect( path ).equals( basePath + 'plugins/test/' );
+				expect( path ).to.equal( basePath + 'plugins/test/' );
 			}
 			done();
 		} );
@@ -33,7 +33,7 @@ describe( 'getPluginPath()', function() {
 			var basePath = CKEDITOR.basePath;
 			var path = CKEDITOR.getPluginPath( 'test' );
 
-			expect( path ).equals( basePath + 'plugins/test/' );
+			expect( path ).to.equal( basePath + 'plugins/test/' );
 
 			CKEDITOR.getPluginPath = originalGetPluginPath;
 
