@@ -15,6 +15,20 @@ module.exports = function( grunt ) {
 	grunt.initConfig( {
 		pkg: grunt.file.readJSON( 'package.json' ),
 
+		lodash: {
+			build: {
+				dest: 'src/lib/lodash/lodash-ckeditor.js',
+				options: {
+					modifier: 'modern',
+					exports: 'amd',
+					flags: [
+						'debug'
+					],
+					include: require( './src/utils-lodash' )
+				}
+			}
+		},
+
 		jshint: {
 			options: {
 				globals: {
