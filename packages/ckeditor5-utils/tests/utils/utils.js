@@ -7,9 +7,9 @@
 
 'use strict';
 
-describe( 'extend()', function() {
-	var modules = bender.amd.require( 'utils' );
+var modules = bender.amd.require( 'utils' );
 
+describe( 'extend()', function() {
 	it( 'should extend and override', function() {
 		var utils = modules.utils;
 
@@ -97,8 +97,6 @@ describe( 'extend()', function() {
 } );
 
 describe( 'isFunction()', function() {
-	var modules = bender.amd.require( 'utils' );
-
 	it( 'should be true for functions only', function() {
 		var utils = modules.utils;
 
@@ -123,8 +121,6 @@ describe( 'isFunction()', function() {
 } );
 
 describe( 'isObject()', function() {
-	var modules = bender.amd.require( 'utils' );
-
 	it( 'should be true for pure objects only', function() {
 		var utils = modules.utils;
 
