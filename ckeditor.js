@@ -73,7 +73,7 @@
 
 	// Define a new "ckeditor" module, which overrides the core one with the above and the dev stuff.
 	define( 'ckeditor', [ 'ckeditor-core', 'ckeditor-dev', 'utils' ], function( core, dev, utils ) {
-		root.CKEDITOR = utils.extend( {}, core, root.CKEDITOR, ( dev || {} ) );
+		root.CKEDITOR = utils.extend( {}, core, root.CKEDITOR, ( dev || /* istanbul ignore next */ {} ) );
 
 		return root.CKEDITOR;
 	} );
