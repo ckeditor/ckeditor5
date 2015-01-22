@@ -59,35 +59,32 @@
 	var describeQueue = [];
 
 	// Override the original Mocha's describe() so we can pass required modules to it.
-	describe = getDescribeOverride( originalDescribe );
-	describe.skip = getDescribeOverride( originalDescribe.skip );
+	describe = function( title, fn ) {
+		if ( wasRequireCalled ) {
+			// Queue the call.
+			describeQueue.push( [ this, title, fn ] );
 
-	function getDescribeOverride( originalFn ) {
-		return function( title, fn ) {
-			if ( wasRequireCalled ) {
-				var that = this;
-
-				var task = function() {
-					originalFn.call( that, title, function() {
-						fn.apply( this, requires );
-					} );
-				};
-
-				if ( requires ) {
-					task();
-				} else {
-					describeQueue.push( task );
-				}
-			} else {
-				originalFn.apply( this, arguments );
-			}
-		};
-	}
+			// Then eventually call it for real, if `requires` have beel loaded already.
+			flushDescribeQueue();
+		} else {
+			originalDescribe.apply( this, arguments );
+		}
+	};
 
 	// Call all defined describe()s if `requires` have been loaded already.
 	function flushDescribeQueue() {
-		describeQueue.forEach( function( describeFn ) {
-			describeFn();
-		} );
+		if ( requires ) {
+			describeQueue = describeQueue.filter( function( describeEntry ) {
+				var scope = describeEntry[ 0 ];
+				var title = describeEntry[ 1 ];
+				var fn = describeEntry[ 2 ];
+
+				originalDescribe.call( scope, title, function() {
+					fn.apply( this, requires );
+				} );
+
+				return false;
+			} );
+		}
 	}
 } )();
