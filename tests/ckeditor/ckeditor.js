@@ -7,9 +7,9 @@
 
 'use strict';
 
-describe( 'getPluginPath()', function() {
-	var modules = bender.amd.require( 'ckeditor', 'ckeditor-core' );
+var modules = bender.amd.require( 'ckeditor', 'ckeditor-core' );
 
+describe( 'getPluginPath()', function() {
 	it( 'should return a proper path', function() {
 		var CKEDITOR = modules.ckeditor;
 

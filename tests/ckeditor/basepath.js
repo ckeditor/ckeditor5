@@ -7,6 +7,8 @@
 
 'use strict';
 
+var modules = bender.amd.require( 'ckeditor' );
+
 beforeEach( function() {
 	// Ensure that no CKEDITOR_BASEPATH global is available.
 	delete window.CKEDITOR_BASEPATH;
@@ -16,8 +18,6 @@ beforeEach( function() {
 } );
 
 describe( 'basePath', function() {
-	var modules = bender.amd.require( 'ckeditor' );
-
 	it( 'should work with script tags', function() {
 		var CKEDITOR = modules.ckeditor;
 
