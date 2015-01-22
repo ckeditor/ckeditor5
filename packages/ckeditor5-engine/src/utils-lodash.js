@@ -31,20 +31,7 @@
 		 * @param {*} thisArg The this binding of callback.
 		 * @returns {Object} The destination object.
 		 */
-		'extend',
-
-		/**
-		 * Checks if value is a function.
-		 *
-		 * From Lo-Dash: https://lodash.com/docs#isFunction
-		 *
-		 * @member utils
-		 * @method extend
-		 *
-		 * @param {*} value The value to check.
-		 * @returns {Boolean} `true` if the value is a function, else `false`.
-		 */
-		'isFunction'
+		'extend'
 	];
 
 	// Make this compatible with CommonJS as well so it can be used in Node (e.g. "grunt lodash").
