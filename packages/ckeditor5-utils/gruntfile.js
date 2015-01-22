@@ -18,7 +18,8 @@ module.exports = function( grunt ) {
 		jshint: {
 			options: {
 				globals: {
-					'CKEDITOR': false
+					'CKEDITOR': false,
+					'bender': false
 				},
 				ignores: ignoreFiles
 			}
