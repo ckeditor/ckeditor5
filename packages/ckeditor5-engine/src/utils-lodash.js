@@ -35,6 +35,7 @@
 	];
 
 	// Make this compatible with CommonJS as well so it can be used in Node (e.g. "grunt lodash").
+	/* istanbul ignore next: we're not able to test the following in bender so ignore it */
 	if ( typeof module == 'object' && module.exports ) {
 		module.exports = lodashInclude;
 	} else {
