@@ -38,7 +38,8 @@ var config = {
 		paths: [
 			'ckeditor.js',
 			'src/**/*.js',
-			'node_modules/ckeditor5-*/src/**/*.js'
+			'node_modules/ckeditor5-*/src/**/*.js',
+			'!node_modules/ckeditor5-*/src/lib/**'
 		]
 	}
 };
