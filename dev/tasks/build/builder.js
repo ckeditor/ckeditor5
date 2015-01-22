@@ -66,7 +66,7 @@ Builder.prototype = {
 			return;
 		}
 
-		console.log( 'Building CKEditor into the "' + this.target + '" directory:')
+		console.log( 'Building CKEditor into the "' + this.target + '" directory:' );
 
 		runNext();
 
