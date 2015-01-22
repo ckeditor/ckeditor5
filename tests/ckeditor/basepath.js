@@ -3,9 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals beforeEach, describe, it, expect, CKEDITOR, window, document */
+/* globals beforeEach, describe, it, expect, window, document */
 
 'use strict';
+
+bender.amd.require( 'ckeditor' );
 
 beforeEach( function() {
 	// Ensure that no CKEDITOR_BASEPATH global is available.
@@ -15,21 +17,15 @@ beforeEach( function() {
 	removeScripts();
 } );
 
-describe( 'basePath', function() {
-	it( 'should work with script tags', function( done ) {
-		CKEDITOR.require( [ 'ckeditor' ], function( CKEDITOR ) {
-			addScript( 'http://bar.com/ckeditor/ckeditor.js' );
-			expect( CKEDITOR._getBasePath() ).to.equal( 'http://bar.com/ckeditor/' );
-			done();
-		} );
+describe( 'basePath', function( CKEDITOR ) {
+	it( 'should work with script tags', function() {
+		addScript( 'http://bar.com/ckeditor/ckeditor.js' );
+		expect( CKEDITOR._getBasePath() ).to.equal( 'http://bar.com/ckeditor/' );
 	} );
 
-	it( 'should work with the CKEDITOR_BASEPATH global', function( done ) {
-		CKEDITOR.require( [ 'ckeditor' ], function( CKEDITOR ) {
-			window.CKEDITOR_BASEPATH = 'http://foo.com/ckeditor/';
-			expect( CKEDITOR._getBasePath() ).to.equal( 'http://foo.com/ckeditor/' );
-			done();
-		} );
+	it( 'should work with the CKEDITOR_BASEPATH global', function() {
+		window.CKEDITOR_BASEPATH = 'http://foo.com/ckeditor/';
+		expect( CKEDITOR._getBasePath() ).to.equal( 'http://foo.com/ckeditor/' );
 	} );
 } );
 
