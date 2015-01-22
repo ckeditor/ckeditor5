@@ -3,27 +3,22 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals describe, it, expect, CKEDITOR, window */
+/* globals describe, it, expect */
 
 'use strict';
 
-describe( 'Promise', function() {
-	it( 'should resolve properly', function( done ) {
-		CKEDITOR.require( [ 'promise' ], function( Promise ) {
-			var promise = new Promise( function( resolve ) {
-				// Fake an asynchronous operation.
-				window.setTimeout( function() {
-					resolve( 1 );
-				}, 0 );
-			} );
+var modules = bender.amd.require( 'promise' );
 
-			promise.then( function( value ) {
-				// then() catches errors, so we need to delay the execution.
-				window.setTimeout( function() {
-					expect( value ).to.equal( 1 );
-					done();
-				} );
-			} );
+describe( 'Promise', function() {
+	it( 'should resolve properly', function() {
+		var Promise = modules.promise;
+
+		var promise = new Promise( function( resolve ) {
+			resolve( 1 );
+		} );
+
+		return promise.then( function( value ) {
+			expect( value ).to.equal( 1 );
 		} );
 	} );
 } );
