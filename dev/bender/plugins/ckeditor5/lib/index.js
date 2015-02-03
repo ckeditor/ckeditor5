@@ -13,7 +13,7 @@ var files = [
 ];
 
 module.exports = {
-	name: 'bender-framework-ckeditor5',
+	name: 'bender-ckeditor5',
 
 	files: files,
 	include: files
