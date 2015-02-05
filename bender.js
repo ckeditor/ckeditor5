@@ -9,6 +9,7 @@ var config = {
 
 		'benderjs-mocha',
 		'benderjs-chai',
+		'benderjs-sinon',
 		'dev/bender/plugins/ckeditor5'
 	],
 
