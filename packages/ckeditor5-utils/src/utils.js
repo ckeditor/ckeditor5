@@ -64,6 +64,37 @@ CKEDITOR.define( function() {
 		 */
 		isObject: function( obj ) {
 			return typeof obj === 'object' && !!obj;
-		}
+		},
+
+		/**
+		 * Creates a spy function (ala Sinon.js) that can be used to inspect call to it.
+		 *
+		 * The following are the present features:
+		 *
+		 *  * spy.called: property set to `true` if the function has been called at least once.
+		 *
+		 * @returns {Function} The spy function.
+		 */
+		spy: function() {
+			var spy = function() {
+				spy.called = true;
+			};
+
+			return spy;
+		},
+
+		/**
+		 * Returns a unique id. This id is a number (starting from 1) which will never get repeated on successive calls
+		 * to this method.
+		 *
+		 * @returns {Number} A number representing the id.
+		 */
+		uid: ( function() {
+			var next = 1;
+
+			return function() {
+				return next++;
+			};
+		} )()
 	};
 } );
