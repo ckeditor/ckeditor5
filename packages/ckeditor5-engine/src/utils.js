@@ -13,7 +13,7 @@
  */
 
 CKEDITOR.define( function() {
-	return {
+	var utils = {
 		/**
 		 * Extends one JavaScript object with the properties defined in one or more objects. Existing properties are
 		 * overridden.
@@ -23,7 +23,7 @@ CKEDITOR.define( function() {
 		 * @returns {Object} The `target` object.
 		 */
 		extend: function( target, source ) {
-			if ( !this.isObject( source ) ) {
+			if ( !this.isObject( source ) && !this.isFunction( source ) ) {
 				return target;
 			}
 
@@ -67,6 +67,36 @@ CKEDITOR.define( function() {
 		},
 
 		/**
+		 * A mixin function to be used to implement the static `extend()` method in classes. It allows for easy creation
+		 * of subclasses.
+		 *
+		 * @param {Object} [proto] Extensions to be added to the subclass prototype.
+		 * @param {Object} [statics] Additional static properties to be added to the subclass constructor.
+		 * @returns {Object} When executed as a static method of a class, it returns the new subclass constructor.
+		 */
+		extendMixin: function( proto, statics ) {
+			var that = this;
+			var child = ( proto && proto.hasOwnProperty( 'constructor' ) ) ?
+					proto.constructor :
+					function() {
+						that.apply( this, arguments );
+					};
+
+			// Copy the statics.
+			utils.extend( child, this, statics );
+
+			// Use the same prototype.
+			child.prototype = Object.create( this.prototype );
+
+			// Add the new prototype stuff.
+			if ( proto ) {
+				utils.extend( child.prototype, proto );
+			}
+
+			return child;
+		},
+
+		/**
 		 * Creates a spy function (ala Sinon.js) that can be used to inspect call to it.
 		 *
 		 * The following are the present features:
@@ -97,4 +127,20 @@ CKEDITOR.define( function() {
 			};
 		} )()
 	};
+
+	return utils;
 } );
+
+/**
+ * Creates a subclass constructor based on this class.
+ *
+ * @member utils
+ * @method extend
+ * @abstract
+ * @static
+ * @inheritable
+ *
+ * @param {Object} [proto] Extensions to be added to the subclass prototype.
+ * @param {Object} [statics] Extension to be added as static members of the subclass constructor.
+ * @returns {Object} The subclass constructor.
+ */
