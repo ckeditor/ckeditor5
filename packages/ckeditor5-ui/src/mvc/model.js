@@ -9,9 +9,10 @@
  * The base MVC model class.
  *
  * @class Model
+ * @mixins Emitter
  */
 
-CKEDITOR.define( [ 'utils' ], function( utils ) {
+CKEDITOR.define( [ 'emitter', 'utils' ], function( EmitterMixin, utils ) {
 	/**
 	 * Creates a new Model instance.
 	 *
@@ -41,7 +42,7 @@ CKEDITOR.define( [ 'utils' ], function( utils ) {
 		}
 	}
 
-	utils.extend( Model.prototype, {
+	utils.extend( Model.prototype, EmitterMixin, {
 		/**
 		 * Creates and sets the value of a model property of this object. This property will be part of the model state
 		 * and are observable.
@@ -70,11 +71,17 @@ CKEDITOR.define( [ 'utils' ], function( utils ) {
 				},
 
 				set: function( value ) {
-					this._attributes[ name ] = value;
+					var oldValue = this._attributes[ name ];
+
+					if ( oldValue !== value ) {
+						this._attributes[ name ] = value;
+						this.fire( 'change', this, name, value, oldValue );
+						this.fire( 'change:' + name, this, value, oldValue );
+					}
 				}
 			} );
 
-			this._attributes[ name ] = value;
+			this[ name ] = value;
 		}
 	} );
 
