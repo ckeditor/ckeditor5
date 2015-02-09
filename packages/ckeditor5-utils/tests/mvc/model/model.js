@@ -9,13 +9,15 @@
 
 var modules = bender.amd.require( 'mvc/model', 'eventinfo' );
 
-var car;
+var Car, car;
 
 describe( 'Model', function() {
 	beforeEach( 'Create a test model instance', function() {
 		var Model = modules[ 'mvc/model' ];
 
-		car = new Model( {
+		Car = Model.extend();
+
+		car = new Car( {
 			color: 'red',
 			year: 2015
 		} );
@@ -45,7 +47,7 @@ describe( 'Model', function() {
 
 	//////////
 
-	describe( 'set()', function() {
+	describe( 'set', function() {
 		it( 'should work when passing an object', function() {
 			car.set( {
 				color: 'blue',	// Override
@@ -109,6 +111,19 @@ describe( 'Model', function() {
 			sinon.assert.calledWithExactly( spyColor, sinon.match.instanceOf( EventInfo ), car, 'blue', 'red' );
 			sinon.assert.calledWithExactly( spyYear, sinon.match.instanceOf( EventInfo ), car, 2003, 2015 );
 			sinon.assert.calledWithExactly( spyWheels, sinon.match.instanceOf( EventInfo ), car, 4, sinon.match.typeOf( 'undefined' ) );
+		} );
+	} );
+
+	describe( 'extend', function() {
+		it( 'should create new Model based classes', function() {
+			var Model = modules[ 'mvc/model' ];
+
+			var Truck = Car.extend();
+
+			var truck = new Truck();
+
+			expect( truck ).to.be.an.instanceof( Car );
+			expect( truck ).to.be.an.instanceof( Model );
 		} );
 	} );
 } );

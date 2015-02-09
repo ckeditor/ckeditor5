@@ -42,6 +42,11 @@ CKEDITOR.define( [ 'emitter', 'utils' ], function( EmitterMixin, utils ) {
 		}
 	}
 
+	/**
+	 * @inheritdoc utils#extend
+	 */
+	Model.extend = utils.extendMixin;
+
 	utils.extend( Model.prototype, EmitterMixin, {
 		/**
 		 * Creates and sets the value of a model property of this object. This property will be part of the model state

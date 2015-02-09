@@ -9,6 +9,45 @@
 
 var modules = bender.amd.require( 'utils' );
 
+describe( 'extendMixin', function() {
+	it( 'should extend classes', function() {
+		var utils = modules.utils;
+
+		function Car( name ) {
+			this.name = name;
+		}
+
+		Car.prototype.addGas = function() {};
+
+		Car.extend = utils.extendMixin;
+
+		var Truck = Car.extend( {
+			loadContainers: function() {}
+		} );
+
+		var volvoTruck = new Truck( 'Volvo' );
+
+		expect( volvoTruck ).to.be.an.instanceof( Truck );
+		expect( volvoTruck ).to.be.an.instanceof( Car );
+		expect( volvoTruck ).to.have.property( 'name' ).to.equals( 'Volvo' );
+		expect( volvoTruck ).to.have.property( 'addGas' ).to.be.a( 'function' );
+		expect( volvoTruck ).to.have.property( 'loadContainers' ).to.be.a( 'function' );
+
+		var Spacecraft = Truck.extend( {
+			jumpToHyperspace: function() {}
+		} );
+
+		var falcon = new Spacecraft( 'Millennium Falcon' );
+		expect( falcon ).to.be.an.instanceof( Spacecraft );
+		expect( falcon ).to.be.an.instanceof( Truck );
+		expect( falcon ).to.be.an.instanceof( Car );
+		expect( falcon ).to.have.property( 'name' ).to.equals( 'Millennium Falcon' );
+		expect( falcon ).to.have.property( 'addGas' ).to.be.a( 'function' );
+		expect( falcon ).to.have.property( 'loadContainers' ).to.be.a( 'function' );
+		expect( falcon ).to.have.property( 'jumpToHyperspace' ).to.be.a( 'function' );
+	} );
+} );
+
 describe( 'spy', function() {
 	it( 'should register calls', function() {
 		var utils = modules.utils;
