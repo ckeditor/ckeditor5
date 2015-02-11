@@ -13,7 +13,12 @@
  */
 
 CKEDITOR.define( [ 'utils' ], function( utils ) {
-	function EventInfo( name ) {
+	function EventInfo( source, name ) {
+		/**
+		 * The object that fired the event.
+		 */
+		this.source = source;
+
 		/**
 		 * The event name.
 		 */

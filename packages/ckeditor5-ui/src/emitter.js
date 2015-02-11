@@ -217,7 +217,7 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 				return;
 			}
 
-			var eventInfo = new EventInfo( event );
+			var eventInfo = new EventInfo( this, event );
 
 			// Take the list of arguments to pass to the callbacks.
 			args = Array.prototype.slice.call( arguments, 1 );
