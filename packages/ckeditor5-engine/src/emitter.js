@@ -211,32 +211,77 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 		 * @param {...*} [args] Additional arguments to be passed to the callbacks.
 		 */
 		fire: function( event, args ) {
-			var callbacks = getCallbacksIfAny( this, event );
+			var eventInfo = event instanceof EventInfo && event;
+			var eventName = eventInfo ? eventInfo.name : event;
+			var parents = this._parentEmitters;
 
-			if ( !callbacks ) {
+			var callbacks = getCallbacksIfAny( this, eventName );
+
+			if ( !callbacks && !parents ) {
 				return;
 			}
 
-			var eventInfo = new EventInfo( this, event );
+			if ( !eventInfo ) {
+				eventInfo = new EventInfo( this, eventName );
+			}
 
 			// Take the list of arguments to pass to the callbacks.
 			args = Array.prototype.slice.call( arguments, 1 );
 			args.unshift( eventInfo );
 
-			for ( var i = 0; i < callbacks.length; i++ ) {
-				callbacks[ i ].callback.apply( callbacks[ i ].ctx, args );
+			if ( callbacks ) {
+				for ( var i = 0; i < callbacks.length; i++ ) {
+					callbacks[ i ].callback.apply( callbacks[ i ].ctx, args );
 
-				if ( eventInfo.stop.called ) {
-					break;
+					if ( eventInfo.stop.called ) {
+						break;
+					}
+
+					if ( eventInfo.off.called ) {
+						// Remove the called mark for the next calls.
+						delete eventInfo.off.called;
+
+						// Remove the callback from the list (fixing the next index).
+						callbacks.splice( i, 1 );
+						i--;
+					}
 				}
+			}
 
-				if ( eventInfo.off.called ) {
-					// Remove the called mark for the next calls.
-					delete eventInfo.off.called;
+			// Fires the same event on all parents.
+			if ( parents ) {
+				for ( var e = 0; e < parents.length; e++ ) {
+					parents[ e ].fire.apply( parents[ e ], args );
+				}
+			}
+		},
 
-					// Remove the callback from the list (fixing the next index).
-					callbacks.splice( i, 1 );
-					i--;
+		/**
+		 * Adds a parent emitter to this object.
+		 *
+		 * A parent emitter fires the same events fired by its children.
+		 *
+		 * @param {Emitter} parentEmitter The parent to be added.
+		 */
+		addParentEmitter: function( parentEmitter ) {
+			if ( !this._parentEmitters ) {
+				this._parentEmitters = [];
+			}
+
+			this._parentEmitters.push( parentEmitter );
+		},
+
+		/**
+		 * Removes a parent emitter from this object.
+		 *
+		 * @param {Emitter} parentEmitter The parent to be removed.
+		 */
+		removeParentEmitter: function( parentEmitter ) {
+			if ( this._parentEmitters ) {
+				this._parentEmitters.splice( this._parentEmitters.indexOf( parentEmitter ), 1 );
+
+				if ( !this._parentEmitters.length ) {
+					delete this._parentEmitters;
 				}
 			}
 		}
