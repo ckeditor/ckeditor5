@@ -80,8 +80,8 @@ CKEDITOR.define( [ 'emitter', 'utils' ], function( EmitterMixin, utils ) {
 
 					if ( oldValue !== value ) {
 						this._attributes[ name ] = value;
-						this.fire( 'change', this, name, value, oldValue );
-						this.fire( 'change:' + name, this, value, oldValue );
+						this.fire( 'change', name, value, oldValue );
+						this.fire( 'change:' + name, value, oldValue );
 					}
 				}
 			} );
