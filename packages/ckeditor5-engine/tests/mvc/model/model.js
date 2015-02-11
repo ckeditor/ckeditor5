@@ -105,12 +105,12 @@ describe( 'Model', function() {
 			sinon.assert.calledOn( spyWheels, car );
 
 			// Check params.
-			sinon.assert.calledWithExactly( spy, sinon.match.instanceOf( EventInfo ), car, 'color', 'blue', 'red' );
-			sinon.assert.calledWithExactly( spy, sinon.match.instanceOf( EventInfo ), car, 'year', 2003, 2015 );
-			sinon.assert.calledWithExactly( spy, sinon.match.instanceOf( EventInfo ), car, 'wheels', 4, sinon.match.typeOf( 'undefined' ) );
-			sinon.assert.calledWithExactly( spyColor, sinon.match.instanceOf( EventInfo ), car, 'blue', 'red' );
-			sinon.assert.calledWithExactly( spyYear, sinon.match.instanceOf( EventInfo ), car, 2003, 2015 );
-			sinon.assert.calledWithExactly( spyWheels, sinon.match.instanceOf( EventInfo ), car, 4, sinon.match.typeOf( 'undefined' ) );
+			sinon.assert.calledWithExactly( spy, sinon.match.instanceOf( EventInfo ), 'color', 'blue', 'red' );
+			sinon.assert.calledWithExactly( spy, sinon.match.instanceOf( EventInfo ), 'year', 2003, 2015 );
+			sinon.assert.calledWithExactly( spy, sinon.match.instanceOf( EventInfo ), 'wheels', 4, sinon.match.typeOf( 'undefined' ) );
+			sinon.assert.calledWithExactly( spyColor, sinon.match.instanceOf( EventInfo ), 'blue', 'red' );
+			sinon.assert.calledWithExactly( spyYear, sinon.match.instanceOf( EventInfo ), 2003, 2015 );
+			sinon.assert.calledWithExactly( spyWheels, sinon.match.instanceOf( EventInfo ), 4, sinon.match.typeOf( 'undefined' ) );
 		} );
 	} );
 
