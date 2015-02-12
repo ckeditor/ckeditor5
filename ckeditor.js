@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global requirejs, define, require, window, document, location */
+/* global requirejs, define, require, window, document */
 
 'use strict';
 
@@ -73,10 +73,9 @@
 
 	// Define a new "ckeditor" module, which overrides the core one with the above and the dev stuff.
 	define( 'ckeditor', [ 'ckeditor-core', 'ckeditor-dev', 'utils' ], function( core, dev, utils ) {
-		utils.extend( core, root.CKEDITOR, ( dev || {} ) );
-		root.CKEDITOR = core;
+		root.CKEDITOR = utils.extend( {}, core, root.CKEDITOR, ( dev || /* istanbul ignore next */ {} ) );
 
-		return core;
+		return root.CKEDITOR;
 	} );
 
 	function getBasePath() {
@@ -98,14 +97,6 @@
 				return true;
 			}
 		} );
-
-		if ( path.indexOf( ':/' ) == -1 && path.slice( 0, 2 ) != '//' ) {
-			if ( path[ 0 ] == '/' ) {
-				path = location.href.match( /^.*?:\/\/[^\/]*/ )[ 0 ] + path;
-			} else {
-				path = location.href.match( /^[^\?]*\/(?:)/ )[ 0 ] + path;
-			}
-		}
 
 		return path;
 	}

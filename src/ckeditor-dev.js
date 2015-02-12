@@ -9,6 +9,14 @@
 
 define( 'ckeditor-dev', function() {
 	return {
+		/**
+		 * A flag specifying whether CKEditor is running in development mode (original source code).
+		 *
+		 * This property is not defined in production (compiled, build code).
+		 */
+		isDev: true,
+
+		// Documented in ckeditor-core/ckeditor.
 		getPluginPath: function( name ) {
 			return this.basePath + 'node_modules/ckeditor-plugin-' + name + '/src/';
 		}

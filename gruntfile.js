@@ -18,6 +18,9 @@ module.exports = function( grunt ) {
 
 		jshint: {
 			options: {
+				globals: {
+					'bender': false
+				},
 				ignores: ignoreFiles
 			}
 		},
