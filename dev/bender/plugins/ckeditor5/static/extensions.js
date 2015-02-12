@@ -19,7 +19,7 @@
 	 */
 	bender.amd = {
 		/**
-		 * Gets and object which holds the CKEditor modules guaranteed to be loaded before tests start.
+		 * Gets an object which holds the CKEditor modules guaranteed to be loaded before tests start.
 		 *
 		 * @params {...String} module The name of the module to load.
 		 * @returns {Object} The object that will hold the loaded modules.
