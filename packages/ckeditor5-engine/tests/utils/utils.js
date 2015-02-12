@@ -69,7 +69,7 @@ describe( 'extend()', function() {
 		expect( Object.getOwnPropertyNames( target ).length ).to.equal( 1 );
 	} );
 
-	// properties of the subsequent objects should override properties of the preceding objects
+	// Properties of the subsequent objects should override properties of the preceding objects.
 	it( 'should extend by several params in the correct order', function() {
 		var utils = modules.utils;
 
