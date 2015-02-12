@@ -69,7 +69,8 @@ describe( 'extend()', function() {
 		expect( Object.getOwnPropertyNames( target ).length ).to.equal( 1 );
 	} );
 
-	it( 'should extend by several params in order', function() {
+	// properties of the subsequent objects should override properties of the preceding objects
+	it( 'should extend by several params in the correct order', function() {
 		var utils = modules.utils;
 
 		var target = {
@@ -100,10 +101,9 @@ describe( 'isFunction()', function() {
 	it( 'should be true for functions only', function() {
 		var utils = modules.utils;
 
-		var f1 = function() {
-		};
+		var f1 = function() {};
 
-		/* jshint -W054 */	// The Function constructor is a form of eval
+		/* jshint -W054 */ // The Function constructor is a form of eval
 		var f2 = new Function( '' );
 		/* jshint +W054 */
 
@@ -124,10 +124,9 @@ describe( 'isObject()', function() {
 	it( 'should be true for pure objects only', function() {
 		var utils = modules.utils;
 
-		var f1 = function() {
-		};
+		var f1 = function() {};
 
-		/* jshint -W054 */	// The Function constructor is a form of eval
+		/* jshint -W054 */ // The Function constructor is a form of eval
 		var f2 = new Function( '' );
 		/* jshint +W054 */
 
