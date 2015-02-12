@@ -61,7 +61,7 @@ describe( 'extend()', function() {
 		expect( utils.extend( target, true ) ).to.equal( target );
 		expect( utils.extend( target, undefined ) ).to.equal( target );
 		expect( utils.extend( target, [] ) ).to.equal( target );
-		expect( utils.extend( target, Date.now() ) ).to.equal( target );
+		expect( utils.extend( target, new Date() ) ).to.equal( target );
 		expect( utils.extend( target ) ).to.equal( target );
 
 		// None of the above calls should have touched "target".
@@ -116,7 +116,7 @@ describe( 'isFunction()', function() {
 		expect( utils.isFunction( undefined ) ).to.be.false();
 		expect( utils.isFunction( [] ) ).to.be.false();
 		expect( utils.isFunction( {} ) ).to.be.false();
-		expect( utils.isFunction( Date.now() ) ).to.be.false();
+		expect( utils.isFunction( new Date() ) ).to.be.false();
 	} );
 } );
 
