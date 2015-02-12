@@ -15,11 +15,11 @@ describe( 'add', function() {
 
 		var box = getCollection();
 
-		expect( box.length ).to.equals( 0 );
+		expect( box ).to.have.length( 0 );
 
 		box.add( getItem() );
 
-		expect( box.length ).to.equals( 1 );
+		expect( box ).to.have.length( 1 );
 
 		expect( box.get( 0 ) ).to.be.an.instanceof( Model );
 	} );
@@ -55,11 +55,11 @@ describe( 'remove', function() {
 
 		box.add( item );
 
-		expect( box.length ).to.equals( 1 );
+		expect( box ).to.have.length( 1 );
 
 		box.remove( 0 );
 
-		expect( box.length ).to.equals( 0 );
+		expect( box ).to.have.length( 0 );
 	} );
 
 	it( 'should remove the model by model', function() {
@@ -68,11 +68,11 @@ describe( 'remove', function() {
 
 		box.add( item );
 
-		expect( box.length ).to.equals( 1 );
+		expect( box ).to.have.length( 1 );
 
 		box.remove( item );
 
-		expect( box.length ).to.equals( 0 );
+		expect( box ).to.have.length( 0 );
 	} );
 
 	it( 'should fire the "remove" event', function() {
