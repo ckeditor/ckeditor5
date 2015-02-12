@@ -29,7 +29,7 @@ CKEDITOR.define( [ 'emitter', 'utils' ], function( EmitterMixin, utils ) {
 		/**
 		 * The number of items available in the collection.
 		 *
-		 * @property _models
+		 * @property length
 		 */
 		Object.defineProperty( this, 'length', {
 			get: function() {
@@ -47,7 +47,7 @@ CKEDITOR.define( [ 'emitter', 'utils' ], function( EmitterMixin, utils ) {
 		/**
 		 * Adds an item into the collection.
 		 *
-		 * Note that this os an array-like collection, so the same item can be present more than once. This behavior is
+		 * Note that this is an array-like collection, so the same item can be present more than once. This behavior is
 		 * for performance purposes only and is not guaranteed to be kept in the same way in the future.
 		 *
 		 * @param {Model} model The item to be added.
