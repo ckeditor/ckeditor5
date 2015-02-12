@@ -137,7 +137,6 @@ describe( 'isObject()', function() {
 		expect( utils.isObject( 'a' ) ).to.be.false();
 		expect( utils.isObject( true ) ).to.be.false();
 		expect( utils.isObject( undefined ) ).to.be.false();
-		expect( utils.isObject( Date.now() ) ).to.be.false();
 		expect( utils.isObject( f1 ) ).to.be.false();
 		expect( utils.isObject( f2 ) ).to.be.false();
 		expect( utils.isObject( null ) ).to.be.false();
