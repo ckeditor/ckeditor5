@@ -40,7 +40,7 @@ describe( 'This browser', function() {
 	// Browsers should convert absolute and relative URLs to full URLs.
 	// If this test fails in any browser, _getBasePath() must be reviewed to deal with such case (v4 does it).
 	function testUrlIsFull( url ) {
-		it( 'should not keep script URLs absolute or relative', function() {
+		it( 'should not keep script URLs absolute or relative - ' + url, function() {
 			removeScripts();
 
 			var script = addScript( url );
