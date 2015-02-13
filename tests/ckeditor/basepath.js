@@ -46,7 +46,7 @@ describe( 'This browser', function() {
 			var script = addScript( url );
 
 			// Test if the src now contains '://'.
-			expect( /:\/\//.test( script.src ) ).to.be.true();
+			expect( script.src ).to.match( /:\/\// );
 		} );
 	}
 } );
