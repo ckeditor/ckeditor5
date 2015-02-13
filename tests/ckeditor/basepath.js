@@ -34,22 +34,21 @@ describe( 'basePath', function() {
 } );
 
 describe( 'This browser', function() {
-	it( 'should not keep script URLs absolute or relative', function() {
-		// Browsers should convert absolute and relative URLs to full URLs.
-		// If this test fails in any browser, _getBasePath() must be reviewed to deal with such case (v4 does it).
+	testUrlIsFull( '/absolute/url/ckeditor.js' );
+	testUrlIsFull( '../relative/url/ckeditor.js' );
 
-		test( '/absolute/url/ckeditor.js' );
-		test( '../relative/url/ckeditor.js' );
-
-		function test( url ) {
+	// Browsers should convert absolute and relative URLs to full URLs.
+	// If this test fails in any browser, _getBasePath() must be reviewed to deal with such case (v4 does it).
+	function testUrlIsFull( url ) {
+		it( 'should not keep script URLs absolute or relative', function() {
 			removeScripts();
 
 			var script = addScript( url );
 
 			// Test if the src now contains '://'.
 			expect( /:\/\//.test( script.src ) ).to.be.true();
-		}
-	} );
+		} );
+	}
 } );
 
 function addScript( url ) {
