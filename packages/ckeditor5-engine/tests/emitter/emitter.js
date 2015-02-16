@@ -15,9 +15,9 @@ beforeEach( refreshEmitter );
 
 describe( 'fire', function() {
 	it( 'should execute callbacks in the right order without priority', function() {
-		var spy1 = sinon.spy();
-		var spy2 = sinon.spy();
-		var spy3 = sinon.spy();
+		var spy1 = sinon.spy().named( 1 );
+		var spy2 = sinon.spy().named( 2 );
+		var spy3 = sinon.spy().named( 3 );
 
 		emitter.on( 'test', spy1 );
 		emitter.on( 'test', spy2 );
@@ -29,11 +29,11 @@ describe( 'fire', function() {
 	} );
 
 	it( 'should execute callbacks in the right order with priority defined', function() {
-		var spy1 = sinon.spy();
-		var spy2 = sinon.spy();
-		var spy3 = sinon.spy();
-		var spy4 = sinon.spy();
-		var spy5 = sinon.spy();
+		var spy1 = sinon.spy().named( 1 );
+		var spy2 = sinon.spy().named( 2 );
+		var spy3 = sinon.spy().named( 3 );
+		var spy4 = sinon.spy().named( 4 );
+		var spy5 = sinon.spy().named( 5 );
 
 		emitter.on( 'test', spy2, null, 9 );
 		emitter.on( 'test', spy3 );	// Defaults to 10.
