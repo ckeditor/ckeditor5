@@ -18,18 +18,10 @@
 	// It is mandatory to execute `grunt lodash` after changes to this list.
 	var lodashInclude = [
 		/**
-		 * Assigns own enumerable properties of source object(s) to the destination object.
-		 *
-		 * From Lo-Dash: https://lodash.com/docs#assign (alias)
+		 * See Lo-Dash: https://lodash.com/docs#assign (alias)
 		 *
 		 * @member utils
 		 * @method extend
-		 *
-		 * @param {Object} object The destination object.
-		 * @param {...Object} source The source objects.
-		 * @param {Function} callback The function to customize assigning values.
-		 * @param {*} thisArg The this binding of callback.
-		 * @returns {Object} The destination object.
 		 */
 		'extend'
 	];
