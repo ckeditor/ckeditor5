@@ -161,6 +161,23 @@ describe( 'on', function() {
 		sinon.assert.calledOnce( spy2 );
 		sinon.assert.calledTwice( spy3 );
 	} );
+
+	it( 'should take the callback off() even after stop()', function() {
+		var spy1 = sinon.spy( function( event ) {
+			event.stop();
+			event.off();
+		} );
+		var spy2 = sinon.spy();
+
+		emitter.on( 'test', spy1 );
+		emitter.on( 'test', spy2 );
+
+		emitter.fire( 'test' );
+		emitter.fire( 'test' );
+
+		sinon.assert.calledOnce( spy1 );
+		sinon.assert.calledOnce( spy2 );
+	} );
 } );
 
 describe( 'once', function() {
