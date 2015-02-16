@@ -177,14 +177,14 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 			if ( callback ) {
 				emitter.off( event, callback );
 			}
-			// Only emitter and event provided. off() all callbacks for that event.
+			// Only the emitter and event provided. off() all callbacks for that event.
 			else if ( eventCallbacks ) {
 				while ( ( callback = eventCallbacks.pop() ) ) {
 					emitter.off( event, callback );
 				}
 				delete emitterInfo.callbacks[ event ];
 			}
-			// Only emitter provided. off() all events for that emitter.
+			// Only the emitter provided. off() all events for that emitter.
 			else if ( emitterInfo ) {
 				for ( event in emitterInfo.callbacks ) {
 					this.stopListening( emitter, event );
