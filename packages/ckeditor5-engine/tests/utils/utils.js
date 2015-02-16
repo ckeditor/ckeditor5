@@ -7,7 +7,7 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'utils' );
+var modules = bender.amd.require( 'utils', 'utils-lodash' );
 
 describe( 'extend()', function() {
 	// Properties of the subsequent objects should override properties of the preceding objects. This is critical for
@@ -36,5 +36,17 @@ describe( 'extend()', function() {
 		expect( target ).to.have.property( 'b' ).to.equal( 1 );
 		expect( target ).to.have.property( 'c' ).to.equal( 2 );
 		expect( target ).to.have.property( 'd' ).to.equal( 2 );
+	} );
+} );
+
+describe( 'Lo-Dash extensions', function() {
+	// Ensures that the required Lo-Dash extensions are available in `utils`.
+	it( 'should be exposed in utils', function() {
+		var utils = modules.utils;
+		var extensions = modules[ 'utils-lodash' ];
+
+		extensions.forEach( function( extension ) {
+			expect( utils ).to.have.property( extension ).to.not.be.undefined();
+		} );
 	} );
 } );
