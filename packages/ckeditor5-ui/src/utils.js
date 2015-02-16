@@ -12,58 +12,13 @@
  * @singleton
  */
 
-CKEDITOR.define( function() {
-	return {
-		/**
-		 * Extends one JavaScript object with the properties defined in one or more objects. Existing properties are
-		 * overridden.
-		 *
-		 * @param {Object} target The object to be extended.
-		 * @param {Object} source One or more objects which properties will be copied (by reference) to `target`.
-		 * @returns {Object} The `target` object.
-		 */
-		extend: function( target, source ) {
-			if ( !this.isObject( source ) ) {
-				return target;
-			}
+CKEDITOR.define( [ 'utils-lodash', 'lib/lodash/lodash-ckeditor' ], function( lodashIncludes, lodash ) {
+	var utils = {};
 
-			if ( arguments.length > 2 ) {
-				var args = Array.prototype.splice.call( arguments, 1 );
+	// Extend "utils" with Lo-Dash methods.
+	for ( var i = 0; i < lodashIncludes.length; i++ ) {
+		utils[ lodashIncludes[ i ] ] = lodash[ lodashIncludes[ i ] ];
+	}
 
-				while ( args.length ) {
-					this.extend( target, args.shift() );
-				}
-			} else {
-				var keys = Object.keys( source );
-
-				while ( keys.length ) {
-					var key = keys.shift();
-					target[ key ] = source[ key ];
-				}
-			}
-
-			return target;
-		},
-
-		/**
-		 * Checks if the provided object is a JavaScript function.
-		 *
-		 * @param obj The object to be checked.
-		 * @returns {Boolean} `true` if the provided object is a JavaScript function. Otherwise `false`.
-		 */
-		isFunction: function( obj ) {
-			return typeof obj == 'function';
-		},
-
-		/**
-		 * Checks if the provided object is a "pure" JavaScript object. In other words, if it is not any other
-		 * JavaScript native type, like Number or String.
-		 *
-		 * @param obj The object to be checked.
-		 * @returns {Boolean} `true` if the provided object is a "pure" JavaScript object. Otherwise `false`.
-		 */
-		isObject: function( obj ) {
-			return typeof obj === 'object' && !!obj;
-		}
-	};
+	return utils;
 } );
