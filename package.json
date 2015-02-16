@@ -19,7 +19,7 @@
     "benderjs": "~0.2",
     "benderjs-mocha": "~0.1",
     "benderjs-chai": "~0.2",
-    "benderjs-sinon": "~0.2",
+    "benderjs-sinon": "~0.2.3",
     "benderjs-coverage": "~0.2",
     "grunt": "~0",
     "grunt-jscs": "~1",
