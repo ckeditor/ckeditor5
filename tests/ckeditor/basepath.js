@@ -18,12 +18,13 @@ beforeEach( function() {
 } );
 
 describe( 'basePath', function() {
-	it( 'should work with script tags', function() {
-		var CKEDITOR = modules.ckeditor;
-
-		addScript( 'http://bar.com/ckeditor/ckeditor.js' );
-		expect( CKEDITOR._getBasePath() ).to.equal( 'http://bar.com/ckeditor/' );
-	} );
+	testGetBasePathFromTag( 'http://bar.com/ckeditor/ckeditor.js', 'http://bar.com/ckeditor/' );
+	testGetBasePathFromTag( '/ckeditor/ckeditor.js', /\/ckeditor\/$/ );
+	testGetBasePathFromTag( '\\ckeditor\\ckeditor.js', /[\\\/]ckeditor[\\\/]$/ );
+	testGetBasePathFromTag( '/ckeditor/ckeditor.js?foo=1#bar', /\/ckeditor\/$/ );
+	testGetBasePathFromTag( '/ckeditor/ckeditor.js;id=foo-bar', /\/ckeditor\/$/ );
+	testGetBasePathFromTag( '/ckeditor/CKEDITOR.JS', /\/ckeditor\/$/ );
+	testGetBasePathFromTag( '../ckeditor/foo/ckeditor.JS', /\/ckeditor\/foo\/$/ );
 
 	it( 'should work with the CKEDITOR_BASEPATH global', function() {
 		var CKEDITOR = modules.ckeditor;
@@ -31,6 +32,20 @@ describe( 'basePath', function() {
 		window.CKEDITOR_BASEPATH = 'http://foo.com/ckeditor/';
 		expect( CKEDITOR._getBasePath() ).to.equal( 'http://foo.com/ckeditor/' );
 	} );
+
+	function testGetBasePathFromTag( url, expectedBasePath ) {
+		it( 'should work with script tags - ' + url, function() {
+			var CKEDITOR = modules.ckeditor;
+
+			addScript( url );
+
+			if ( typeof expectedBasePath == 'string' ) {
+				expect( CKEDITOR._getBasePath() ).to.equal( expectedBasePath );
+			} else {
+				expect( CKEDITOR._getBasePath() ).to.match( expectedBasePath );
+			}
+		} );
+	}
 } );
 
 describe( 'This browser', function() {
