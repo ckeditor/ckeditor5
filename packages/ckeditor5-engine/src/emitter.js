@@ -201,9 +201,9 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 		},
 
 		/**
-		 * Fires and event, executing all callbacks registered for it.
+		 * Fires an event, executing all callbacks registered for it.
 		 *
-		 * The first parameter passed to callbacks is a {EventInfo} object, followed by the optional `args` provided in
+		 * The first parameter passed to callbacks is an {@link EventInfo} object, followed by the optional `args` provided in
 		 * the `fire()` method call.
 		 *
 		 * @param {String} event The name of the event.
@@ -225,6 +225,7 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 			for ( var i = 0; i < callbacks.length; i++ ) {
 				callbacks[ i ].callback.apply( callbacks[ i ].ctx, args );
 
+				// Do not execute next callbacks if stop() was called.
 				if ( eventInfo.stop.called ) {
 					break;
 				}
