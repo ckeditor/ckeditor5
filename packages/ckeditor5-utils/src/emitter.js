@@ -26,7 +26,6 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 		 */
 		on: function( event, callback, ctx, priority ) {
 			var callbacks = getCallbacks( this, event );
-			var wasAdded;
 
 			// Priority defaults to 10.
 			if ( typeof priority != 'number' ) {
@@ -43,14 +42,12 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 			for ( var i = 0; i < callbacks.length; i++ ) {
 				if ( callbacks[ i ].priority > priority ) {
 					callbacks.splice( i, 0, callback );
-					wasAdded = true;
-					break;
+
+					return;
 				}
 			}
 
-			if ( !wasAdded ) {
-				callbacks.push( callback );
-			}
+			callbacks.push( callback );
 		},
 
 		/**
