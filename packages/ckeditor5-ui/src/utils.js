@@ -13,12 +13,7 @@
  */
 
 CKEDITOR.define( [ 'utils-lodash', 'lib/lodash/lodash-ckeditor' ], function( lodashIncludes, lodash ) {
-	var utils = {
-		/**
-		 * The list of methods defined in `utils` that come from lodash.
-		 */
-		_lodashIncludes: lodashIncludes
-	};
+	var utils = {};
 
 	// Extend "utils" with Lo-Dash methods.
 	for ( var i = 0; i < lodashIncludes.length; i++ ) {
