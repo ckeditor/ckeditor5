@@ -39,15 +39,15 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 			};
 
 			// Add the callback to the list in the right priority position.
-			for ( var i = 0; i < callbacks.length; i++ ) {
-				if ( callbacks[ i ].priority > priority ) {
-					callbacks.splice( i, 0, callback );
+			for ( var i = callbacks.length - 1; i >= 0; i-- ) {
+				if ( callbacks[ i ].priority <= priority ) {
+					callbacks.splice( i + 1, 0, callback );
 
 					return;
 				}
 			}
 
-			callbacks.push( callback );
+			callbacks.unshift( callback );
 		},
 
 		/**
