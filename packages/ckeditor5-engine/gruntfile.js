@@ -8,12 +8,27 @@ module.exports = function( grunt ) {
 
 	// Files that will be ignored by the "jscs" and "jshint" tasks.
 	var ignoreFiles = [
+		'src/lib/**',
 		// Automatically loaded from .gitignore. Add more if necessary.
 	];
 
 	// Basic configuration which will be overloaded by the tasks.
 	grunt.initConfig( {
 		pkg: grunt.file.readJSON( 'package.json' ),
+
+		lodash: {
+			build: {
+				dest: 'src/lib/lodash/lodash-ckeditor.js',
+				options: {
+					modifier: 'modern',
+					exports: 'amd',
+					flags: [
+						'debug'
+					],
+					include: require( './src/utils-lodash' )
+				}
+			}
+		},
 
 		jshint: {
 			options: {
