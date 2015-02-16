@@ -157,9 +157,9 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 		 * * To stop listening to all events fired by all object.
 		 *
 		 * @param {Emitter} [emitter] The object to stop listening to. If omitted, stops it for all objects.
-		 * @param {String} [event] (Requires `emitter`) The name of the event to stop listening to. If omitted, stops it
+		 * @param {String} [event] (Requires the `emitter`) The name of the event to stop listening to. If omitted, stops it
 		 * for all events from `emitter`.
-		 * @param {Function} callback (Requires `event`) The function be removed from the call list for the give
+		 * @param {Function} [callback] (Requires the `event`) The function to be removed from the call list for the given
 		 * `event`.
 		 */
 		stopListening: function( emitter, event, callback ) {
@@ -173,23 +173,26 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 				return;
 			}
 
+			// All params provided. off() that single callback.
 			if ( callback ) {
-				// All params provided. off() that single callback.
 				emitter.off( event, callback );
-			} else if ( eventCallbacks ) {
-				// Only emitter and event provided. off() all callbacks for that event.
+			}
+			// Only emitter and event provided. off() all callbacks for that event.
+			else if ( eventCallbacks ) {
 				while ( ( callback = eventCallbacks.pop() ) ) {
 					emitter.off( event, callback );
 				}
 				delete emitterInfo.callbacks[ event ];
-			} else if ( emitterInfo ) {
-				// Only emitter provided. off() all events for that emitter.
+			}
+			// Only emitter provided. off() all events for that emitter.
+			else if ( emitterInfo ) {
 				for ( event in emitterInfo.callbacks ) {
 					this.stopListening( emitter, event );
 				}
 				delete emitters[ emitterId ];
-			} else {
-				// No params provided. off() all emitters.
+			}
+			// No params provided. off() all emitters.
+			else {
 				for ( emitterId in emitters ) {
 					this.stopListening( emitters[ emitterId ].emitter );
 				}
