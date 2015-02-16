@@ -9,7 +9,7 @@
  * Mixin that injects the events API into its host.
  *
  * @class Emitter
- * @static
+ * @singleton
  */
 
 CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
@@ -26,7 +26,6 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 		 */
 		on: function( event, callback, ctx, priority ) {
 			var callbacks = getCallbacks( this, event );
-
 			var wasAdded;
 
 			// Priority defaults to 10.
@@ -56,7 +55,7 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 
 		/**
 		 * Registers a callback function to be executed on the next time the event is fired only. This is similar to
-		 * calling `on()` followed by `off()` in the callback.
+		 * calling {@link #on} followed by {@link #off} in the callback.
 		 *
 		 * @param {String} event The name of the event.
 		 * @param {Function} callback The function to be called on event.
@@ -153,12 +152,12 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 		},
 
 		/**
-		 * Stops listening for events. It can be usued at different levels:
+		 * Stops listening for events. It can be used at different levels:
 		 *
-		 *  * To stop listening to a specific callback.
-		 *  * To stop listening to a specific event.
-		 *  * To stop listening to all events fired by a specific object.
-		 *  * To stop listening to all events fired by all object.
+		 * * To stop listening to a specific callback.
+		 * * To stop listening to a specific event.
+		 * * To stop listening to all events fired by a specific object.
+		 * * To stop listening to all events fired by all object.
 		 *
 		 * @param {Emitter} [emitter] The object to stop listening to. If omitted, stops it for all objects.
 		 * @param {String} [event] (Requires `emitter`) The name of the event to stop listening to. If omitted, stops it
