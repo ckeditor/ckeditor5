@@ -40,7 +40,7 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 			};
 
 			// Add the callback to the list in the right priority position.
-			for ( var i = 0; i < callbacks.length ; i++ ) {
+			for ( var i = 0; i < callbacks.length; i++ ) {
 				if ( callbacks[ i ].priority > priority ) {
 					callbacks.splice( i, 0, callback );
 					wasAdded = true;
