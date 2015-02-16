@@ -225,11 +225,6 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 			for ( var i = 0; i < callbacks.length; i++ ) {
 				callbacks[ i ].callback.apply( callbacks[ i ].ctx, args );
 
-				// Do not execute next callbacks if stop() was called.
-				if ( eventInfo.stop.called ) {
-					break;
-				}
-
 				if ( eventInfo.off.called ) {
 					// Remove the called mark for the next calls.
 					delete eventInfo.off.called;
@@ -237,6 +232,11 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 					// Remove the callback from the list (fixing the next index).
 					callbacks.splice( i, 1 );
 					i--;
+				}
+
+				// Do not execute next callbacks if stop() was called.
+				if ( eventInfo.stop.called ) {
+					break;
 				}
 			}
 		}
