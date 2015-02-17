@@ -40,6 +40,14 @@ describe( 'extend()', function() {
 } );
 
 describe( 'spy', function() {
+	it( 'should not have `called` after creation', function() {
+		var utils = modules.utils;
+
+		var spy = utils.spy();
+
+		expect( spy.called ).to.not.be.true();
+	} );
+
 	it( 'should register calls', function() {
 		var utils = modules.utils;
 
