@@ -355,6 +355,21 @@ describe( 'stopListening', function() {
 
 		expect( listener ).to.not.have.property( '_listeningTo' );
 	} );
+
+	it( 'should not stop other emitters when a non-listened emitter is provided', function() {
+		var spy = sinon.spy();
+
+		var emitter1 = getEmitterInstance();
+		var emitter2 = getEmitterInstance();
+
+		listener.listenTo( emitter1, 'test', spy );
+
+		listener.stopListening( emitter2 );
+
+		emitter1.fire( 'test' );
+
+		sinon.assert.called( spy );
+	} );
 } );
 
 function refreshEmitter() {
