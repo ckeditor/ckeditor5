@@ -79,8 +79,10 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 		 *
 		 * @param {String} event The name of the event.
 		 * @param {Function} callback The function to stop being called.
+		 * @param {Object} [ctx] The context object to be removed, pared with the given callback. To handle cases where
+		 * the same callback is used several times with different contexts.
 		 */
-		off: function( event, callback ) {
+		off: function( event, callback, ctx ) {
 			var callbacks = getCallbacksIfAny( this, event );
 
 			if ( !callbacks ) {
@@ -89,9 +91,11 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 
 			for ( var i = 0; i < callbacks.length; i++ ) {
 				if ( callbacks[ i ].callback == callback ) {
-					// Remove the callback from the list (fixing the next index).
-					callbacks.splice( i, 1 );
-					i--;
+					if ( !ctx || ctx == callbacks[ i ].ctx ) {
+						// Remove the callback from the list (fixing the next index).
+						callbacks.splice( i, 1 );
+						i--;
+					}
 				}
 			}
 		},

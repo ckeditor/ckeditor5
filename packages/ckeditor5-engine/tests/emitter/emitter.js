@@ -251,6 +251,46 @@ describe( 'off', function() {
 	it( 'should not fail with unknown events', function() {
 		emitter.off( 'test', function() {} );
 	} );
+
+	it( 'should remove all entries for the same callback', function() {
+		var spy1 = sinon.spy().named( 1 );
+		var spy2 = sinon.spy().named( 2 );
+
+		emitter.on( 'test', spy1 );
+		emitter.on( 'test', spy2 );
+		emitter.on( 'test', spy1 );
+		emitter.on( 'test', spy2 );
+
+		emitter.fire( 'test' );
+
+		emitter.off( 'test', spy1 );
+
+		emitter.fire( 'test' );
+
+		sinon.assert.callCount( spy1, 2 );
+		sinon.assert.callCount( spy2, 4 );
+	} );
+
+	it( 'should remove the callback for a specific context only', function() {
+		var spy = sinon.spy().named( 1 );
+
+		var ctx1 = { ctx: 1 };
+		var ctx2 = { ctx: 2 };
+
+		emitter.on( 'test', spy, ctx1 );
+		emitter.on( 'test', spy, ctx2 );
+
+		emitter.fire( 'test' );
+
+		spy.reset();
+
+		emitter.off( 'test', spy, ctx1 );
+
+		emitter.fire( 'test' );
+
+		sinon.assert.calledOnce( spy );
+		sinon.assert.calledOn( spy, ctx2 );
+	} );
 } );
 
 describe( 'listenTo', function() {
