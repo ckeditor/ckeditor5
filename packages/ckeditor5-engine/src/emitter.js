@@ -107,8 +107,8 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 		 * @param {String} event The name of the event.
 		 * @param {Function} callback The function to be called on event.
 		 * @param {Object} [ctx] The object that represents `this` in the callback. Defaults to `emitter`.
-		 * @param {Number} [priority] The priority of this callback in relation to other callbacks to that same event.
-		 * Lower values are called first. Defaults to `10`.
+		 * @param {Number} [priority=10] The priority of this callback in relation to other callbacks to that same event.
+		 * Lower values are called first.
 		 */
 		listenTo: function( emitter, event, callback, ctx, priority ) {
 			var emitters, emitterId, emitterInfo, eventCallbacks;
