@@ -21,13 +21,13 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 		 * @param {Function} callback The function to be called on event.
 		 * @param {Object} [ctx] The object that represents `this` in the callback. Defaults to the object firing the
 		 * event.
-		 * @param {Number} [priority] The priority of this callback in relation to other callbacks to that same event.
-		 * Lower values are called first. Defaults to `10`.
+		 * @param {Number} [priority=10] The priority of this callback in relation to other callbacks to that same event.
+		 * Lower values are called first.
 		 */
 		on: function( event, callback, ctx, priority ) {
 			var callbacks = getCallbacks( this, event );
 
-			// Priority defaults to 10.
+			// Set the priority defaults.
 			if ( typeof priority != 'number' ) {
 				priority = 10;
 			}
@@ -58,8 +58,8 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 		 * @param {Function} callback The function to be called on event.
 		 * @param {Object} [ctx] The object that represents `this` in the callback. Defaults to the object firing the
 		 * event.
-		 * @param {Number} [priority] The priority of this callback in relation to other callbacks to that same event.
-		 * Lower values are called first. Defaults to `10`.
+		 * @param {Number} [priority=10] The priority of this callback in relation to other callbacks to that same event.
+		 * Lower values are called first.
 		 */
 		once: function( event, callback, ctx, priority ) {
 			var onceCallback = function( event ) {
