@@ -225,6 +225,7 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 			for ( var i = 0; i < callbacks.length; i++ ) {
 				callbacks[ i ].callback.apply( callbacks[ i ].ctx, args );
 
+				// Remove the callback from future requests if off() has been called.
 				if ( eventInfo.off.called ) {
 					// Remove the called mark for the next calls.
 					delete eventInfo.off.called;
