@@ -76,6 +76,30 @@ describe( 'extendMixin', function() {
 		expect( falcon ).to.have.property( 'loadContainers' ).to.be.a( 'function' );
 		expect( falcon ).to.have.property( 'jumpToHyperspace' ).to.be.a( 'function' );
 	} );
+
+	it( 'should extend the prototype and add statics', function() {
+		var utils = modules.utils;
+
+		function Car() {}
+
+		Car.extend = utils.extendMixin;
+
+		var Truck = Car.extend( {
+			property1: 1,
+			property2: function() {}
+		}, {
+			static1: 1,
+			static2: function() {}
+		} );
+
+		expect( Truck ).to.have.property( 'static1' ).to.equals( 1 );
+		expect( Truck ).to.have.property( 'static2' ).to.be.a( 'function' );
+
+		var truck = new Truck();
+
+		expect( truck ).to.have.property( 'property1' ).to.equals( 1 );
+		expect( truck ).to.have.property( 'property2' ).to.be.a( 'function' );
+	} );
 } );
 
 describe( 'spy', function() {
