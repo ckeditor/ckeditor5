@@ -23,7 +23,15 @@
 		 * @member utils
 		 * @method extend
 		 */
-		'extend'
+		'extend',
+
+		/**
+		 * See Lo-Dash: https://lodash.com/docs#isObject
+		 *
+		 * @member utils
+		 * @method isObject
+		 */
+		'isObject'
 	];
 
 	// Make this compatible with CommonJS as well so it can be used in Node (e.g. "grunt lodash").
