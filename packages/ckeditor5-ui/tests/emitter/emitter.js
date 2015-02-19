@@ -412,54 +412,6 @@ describe( 'stopListening', function() {
 	} );
 } );
 
-describe( 'addParentEmitter', function() {
-	it( 'should propagate events to the parent', function() {
-		var parentEmitter = getEmitterInstance();
-		emitter.addParentEmitter( parentEmitter );
-
-		var parentSpy = sinon.spy();
-
-		parentEmitter.on( 'test', parentSpy );
-
-		emitter.fire( 'test', 'a' );
-		emitter.fire( 'test' );
-
-		sinon.assert.calledTwice( parentSpy );
-		sinon.assert.calledWithExactly( parentSpy, sinon.match.has( 'source', emitter ) , 'a' );
-		sinon.assert.calledWithExactly( parentSpy, sinon.match.has( 'source', emitter ) );
-	} );
-} );
-
-describe( 'removeParentEmitter', function() {
-	it( 'should stop propagating events to the parent', function() {
-		var parentEmitter = getEmitterInstance();
-		emitter.addParentEmitter( parentEmitter );
-
-		var parentSpy = sinon.spy();
-		var childSpy = sinon.spy();
-
-		parentEmitter.on( 'test', parentSpy );
-		emitter.on( 'test', childSpy );
-
-		emitter.fire( 'test' );
-
-		sinon.assert.calledOnce( parentSpy );
-		sinon.assert.calledOnce( childSpy );
-
-		emitter.removeParentEmitter( parentEmitter );
-
-		parentSpy.reset();
-		childSpy.reset();
-
-		emitter.fire( 'test' );
-
-		sinon.assert.notCalled( parentSpy );
-		sinon.assert.calledOnce( childSpy );
-
-		emitter.removeParentEmitter( parentEmitter );
-	} );
-} );
-
 function refreshEmitter() {
 	emitter = getEmitterInstance();
 }

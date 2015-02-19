@@ -53,8 +53,6 @@ CKEDITOR.define( [ 'emitter', 'utils' ], function( EmitterMixin, utils ) {
 		 * @param {Model} model The item to be added.
 		 */
 		add: function( model ) {
-			model.addParentEmitter( this );
-
 			this._models.push( model );
 
 			this.fire( 'add', model );
@@ -98,7 +96,6 @@ CKEDITOR.define( [ 'emitter', 'utils' ], function( EmitterMixin, utils ) {
 				throw 'Index not found';
 			}
 
-			removedModel.removeParentEmitter( this );
 			this.fire( 'remove', removedModel );
 
 			return removedModel;

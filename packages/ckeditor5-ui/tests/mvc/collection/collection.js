@@ -114,28 +114,6 @@ describe( 'remove', function() {
 	} );
 } );
 
-describe( 'on', function() {
-	it( 'should listen to child events', function() {
-		var box = getCollection();
-		var item1 = getItem();
-		var item2 = getItem();
-		var spy = sinon.spy();
-
-		box.add( item1 );
-		box.add( item2 );
-
-		box.on( 'item-event', spy );
-
-		item1.fire( 'item-event' );
-		item2.fire( 'item-event' );
-
-		sinon.assert.calledTwice( spy );
-		sinon.assert.alwaysCalledOn( spy, box );
-		sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', item1 ) );
-		sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', item2 ) );
-	} );
-} );
-
 function getCollection() {
 	var Collection = modules[ 'mvc/collection' ];
 

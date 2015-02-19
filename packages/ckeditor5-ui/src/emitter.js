@@ -216,11 +216,9 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 		fire: function( event, args ) {
 			var eventInfo = event instanceof EventInfo && event;
 			var eventName = eventInfo ? eventInfo.name : event;
-			var parents = this._parentEmitters;
-
 			var callbacks = getCallbacksIfAny( this, eventName );
 
-			if ( !callbacks && !parents ) {
+			if ( !callbacks ) {
 				return;
 			}
 
@@ -232,61 +230,22 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 			args = Array.prototype.slice.call( arguments, 1 );
 			args.unshift( eventInfo );
 
-			if ( callbacks ) {
-				for ( var i = 0; i < callbacks.length; i++ ) {
-					callbacks[ i ].callback.apply( callbacks[ i ].ctx, args );
+			for ( var i = 0; i < callbacks.length; i++ ) {
+				callbacks[ i ].callback.apply( callbacks[ i ].ctx, args );
 
-					// Remove the callback from future requests if off() has been called.
-					if ( eventInfo.off.called ) {
-						// Remove the called mark for the next calls.
-						delete eventInfo.off.called;
+				// Remove the callback from future requests if off() has been called.
+				if ( eventInfo.off.called ) {
+					// Remove the called mark for the next calls.
+					delete eventInfo.off.called;
 
-						// Remove the callback from the list (fixing the next index).
-						callbacks.splice( i, 1 );
-						i--;
-					}
-
-					// Do not execute next callbacks if stop() was called.
-					if ( eventInfo.stop.called ) {
-						break;
-					}
+					// Remove the callback from the list (fixing the next index).
+					callbacks.splice( i, 1 );
+					i--;
 				}
-			}
 
-			// Fires the same event on all parents.
-			if ( parents ) {
-				for ( var e = 0; e < parents.length; e++ ) {
-					parents[ e ].fire.apply( parents[ e ], args );
-				}
-			}
-		},
-
-		/**
-		 * Adds a parent emitter to this object.
-		 *
-		 * A parent emitter fires the same events fired by its children.
-		 *
-		 * @param {Emitter} parentEmitter The parent to be added.
-		 */
-		addParentEmitter: function( parentEmitter ) {
-			if ( !this._parentEmitters ) {
-				this._parentEmitters = [];
-			}
-
-			this._parentEmitters.push( parentEmitter );
-		},
-
-		/**
-		 * Removes a parent emitter from this object.
-		 *
-		 * @param {Emitter} parentEmitter The parent to be removed.
-		 */
-		removeParentEmitter: function( parentEmitter ) {
-			if ( this._parentEmitters ) {
-				this._parentEmitters.splice( this._parentEmitters.indexOf( parentEmitter ), 1 );
-
-				if ( !this._parentEmitters.length ) {
-					delete this._parentEmitters;
+				// Do not execute next callbacks if stop() was called.
+				if ( eventInfo.stop.called ) {
+					break;
 				}
 			}
 		}
