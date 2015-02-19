@@ -1,7 +1,7 @@
 /**
  * @license
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
- * Build: `lodash modern exports="amd" include="extend,isObject" --debug --output src/lib/lodash/lodash-ckeditor.js`
+ * Build: `lodash modern exports="amd" include="clone,extend,isObject" --debug --output src/lib/lodash/lodash-ckeditor.js`
  * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
  * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
  * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -9,11 +9,39 @@
  */
 ;(function() {
 
+  /** Used to pool arrays and objects used internally */
+  var arrayPool = [];
+
+  /** Used as the max size of the `arrayPool` and `objectPool` */
+  var maxPoolSize = 40;
+
+  /** Used to match regexp flags from their coerced string values */
+  var reFlags = /\w*$/;
+
   /** Used to detected named functions */
   var reFuncName = /^\s*function[ \n\r\t]+\w/;
 
   /** Used to detect functions containing a `this` reference */
   var reThis = /\bthis\b/;
+
+  /** `Object#toString` result shortcuts */
+  var argsClass = '[object Arguments]',
+      arrayClass = '[object Array]',
+      boolClass = '[object Boolean]',
+      dateClass = '[object Date]',
+      funcClass = '[object Function]',
+      numberClass = '[object Number]',
+      objectClass = '[object Object]',
+      regexpClass = '[object RegExp]',
+      stringClass = '[object String]';
+
+  /** Used to identify object classifications that `_.clone` supports */
+  var cloneableClasses = {};
+  cloneableClasses[funcClass] = false;
+  cloneableClasses[argsClass] = cloneableClasses[arrayClass] =
+  cloneableClasses[boolClass] = cloneableClasses[dateClass] =
+  cloneableClasses[numberClass] = cloneableClasses[objectClass] =
+  cloneableClasses[regexpClass] = cloneableClasses[stringClass] = true;
 
   /** Used as the property descriptor for `__bindData__` */
   var descriptor = {
@@ -43,6 +71,29 @@
   }
 
   /*--------------------------------------------------------------------------*/
+
+  /**
+   * Gets an array from the array pool or creates a new one if the pool is empty.
+   *
+   * @private
+   * @returns {Array} The array from the pool.
+   */
+  function getArray() {
+    return arrayPool.pop() || [];
+  }
+
+  /**
+   * Releases the given array back to the array pool.
+   *
+   * @private
+   * @param {Array} [array] The array to release.
+   */
+  function releaseArray(array) {
+    array.length = 0;
+    if (arrayPool.length < maxPoolSize) {
+      arrayPool.push(array);
+    }
+  }
 
   /**
    * Slices the `collection` from the `start` index up to, but not including,
@@ -114,7 +165,19 @@
 
   /* Native method shortcuts for methods with the same name as other `lodash` methods */
   var nativeCreate = isNative(nativeCreate = Object.create) && nativeCreate,
+      nativeIsArray = isNative(nativeIsArray = Array.isArray) && nativeIsArray,
       nativeKeys = isNative(nativeKeys = Object.keys) && nativeKeys;
+
+  /** Used to lookup a built-in constructor by [[Class]] */
+  var ctorByClass = {};
+  ctorByClass[arrayClass] = Array;
+  ctorByClass[boolClass] = Boolean;
+  ctorByClass[dateClass] = Date;
+  ctorByClass[funcClass] = Function;
+  ctorByClass[objectClass] = Object;
+  ctorByClass[numberClass] = Number;
+  ctorByClass[regexpClass] = RegExp;
+  ctorByClass[stringClass] = String;
 
   /*--------------------------------------------------------------------------*/
 
@@ -250,6 +313,98 @@
     }
     setBindData(bound, bindData);
     return bound;
+  }
+
+  /**
+   * The base implementation of `_.clone` without argument juggling or support
+   * for `thisArg` binding.
+   *
+   * @private
+   * @param {*} value The value to clone.
+   * @param {boolean} [isDeep=false] Specify a deep clone.
+   * @param {Function} [callback] The function to customize cloning values.
+   * @param {Array} [stackA=[]] Tracks traversed source objects.
+   * @param {Array} [stackB=[]] Associates clones with source counterparts.
+   * @returns {*} Returns the cloned value.
+   */
+  function baseClone(value, isDeep, callback, stackA, stackB) {
+    if (callback) {
+      var result = callback(value);
+      if (typeof result != 'undefined') {
+        return result;
+      }
+    }
+    // inspect [[Class]]
+    var isObj = isObject(value);
+    if (isObj) {
+      var className = toString.call(value);
+      if (!cloneableClasses[className]) {
+        return value;
+      }
+      var ctor = ctorByClass[className];
+      switch (className) {
+        case boolClass:
+        case dateClass:
+          return new ctor(+value);
+
+        case numberClass:
+        case stringClass:
+          return new ctor(value);
+
+        case regexpClass:
+          result = ctor(value.source, reFlags.exec(value));
+          result.lastIndex = value.lastIndex;
+          return result;
+      }
+    } else {
+      return value;
+    }
+    var isArr = isArray(value);
+    if (isDeep) {
+      // check for circular references and return corresponding clone
+      var initedStack = !stackA;
+      stackA || (stackA = getArray());
+      stackB || (stackB = getArray());
+
+      var length = stackA.length;
+      while (length--) {
+        if (stackA[length] == value) {
+          return stackB[length];
+        }
+      }
+      result = isArr ? ctor(value.length) : {};
+    }
+    else {
+      result = isArr ? slice(value) : assign({}, value);
+    }
+    // add array properties assigned by `RegExp#exec`
+    if (isArr) {
+      if (hasOwnProperty.call(value, 'index')) {
+        result.index = value.index;
+      }
+      if (hasOwnProperty.call(value, 'input')) {
+        result.input = value.input;
+      }
+    }
+    // exit for shallow clone
+    if (!isDeep) {
+      return result;
+    }
+    // add the source value to the stack of traversed objects
+    // and associate it with its clone
+    stackA.push(value);
+    stackB.push(result);
+
+    // recursively populate clone (susceptible to call stack limits)
+    (isArr ? forEach : forOwn)(value, function(objValue, key) {
+      result[key] = baseClone(objValue, isDeep, callback, stackA, stackB);
+    });
+
+    if (initedStack) {
+      releaseArray(stackA);
+      releaseArray(stackB);
+    }
+    return result;
   }
 
   /**
@@ -494,6 +649,28 @@
   /*--------------------------------------------------------------------------*/
 
   /**
+   * Checks if `value` is an array.
+   *
+   * @static
+   * @memberOf _
+   * @type Function
+   * @category Objects
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if the `value` is an array, else `false`.
+   * @example
+   *
+   * (function() { return _.isArray(arguments); })();
+   * // => false
+   *
+   * _.isArray([1, 2, 3]);
+   * // => true
+   */
+  var isArray = nativeIsArray || function(value) {
+    return value && typeof value == 'object' && typeof value.length == 'number' &&
+      toString.call(value) == arrayClass || false;
+  };
+
+  /**
    * A fallback implementation of `Object.keys` which produces an array of the
    * given object's own enumerable property names.
    *
@@ -594,6 +771,94 @@
   };
 
   /**
+   * Creates a clone of `value`. If `isDeep` is `true` nested objects will also
+   * be cloned, otherwise they will be assigned by reference. If a callback
+   * is provided it will be executed to produce the cloned values. If the
+   * callback returns `undefined` cloning will be handled by the method instead.
+   * The callback is bound to `thisArg` and invoked with one argument; (value).
+   *
+   * @static
+   * @memberOf _
+   * @category Objects
+   * @param {*} value The value to clone.
+   * @param {boolean} [isDeep=false] Specify a deep clone.
+   * @param {Function} [callback] The function to customize cloning values.
+   * @param {*} [thisArg] The `this` binding of `callback`.
+   * @returns {*} Returns the cloned value.
+   * @example
+   *
+   * var characters = [
+   *   { 'name': 'barney', 'age': 36 },
+   *   { 'name': 'fred',   'age': 40 }
+   * ];
+   *
+   * var shallow = _.clone(characters);
+   * shallow[0] === characters[0];
+   * // => true
+   *
+   * var deep = _.clone(characters, true);
+   * deep[0] === characters[0];
+   * // => false
+   *
+   * _.mixin({
+   *   'clone': _.partialRight(_.clone, function(value) {
+   *     return _.isElement(value) ? value.cloneNode(false) : undefined;
+   *   })
+   * });
+   *
+   * var clone = _.clone(document.body);
+   * clone.childNodes.length;
+   * // => 0
+   */
+  function clone(value, isDeep, callback, thisArg) {
+    // allows working with "Collections" methods without using their `index`
+    // and `collection` arguments for `isDeep` and `callback`
+    if (typeof isDeep != 'boolean' && isDeep != null) {
+      thisArg = callback;
+      callback = isDeep;
+      isDeep = false;
+    }
+    return baseClone(value, isDeep, typeof callback == 'function' && baseCreateCallback(callback, thisArg, 1));
+  }
+
+  /**
+   * Iterates over own enumerable properties of an object, executing the callback
+   * for each property. The callback is bound to `thisArg` and invoked with three
+   * arguments; (value, key, object). Callbacks may exit iteration early by
+   * explicitly returning `false`.
+   *
+   * @static
+   * @memberOf _
+   * @type Function
+   * @category Objects
+   * @param {Object} object The object to iterate over.
+   * @param {Function} [callback=identity] The function called per iteration.
+   * @param {*} [thisArg] The `this` binding of `callback`.
+   * @returns {Object} Returns `object`.
+   * @example
+   *
+   * _.forOwn({ '0': 'zero', '1': 'one', 'length': 2 }, function(num, key) {
+   *   console.log(key);
+   * });
+   * // => logs '0', '1', and 'length' (property order is not guaranteed across environments)
+   */
+  var forOwn = function(collection, callback, thisArg) {
+    var index, iterable = collection, result = iterable;
+    if (!iterable) return result;
+    if (!objectTypes[typeof iterable]) return result;
+    callback = callback && typeof thisArg == 'undefined' ? callback : baseCreateCallback(callback, thisArg, 3);
+      var ownIndex = -1,
+          ownProps = objectTypes[typeof iterable] && keys(iterable),
+          length = ownProps ? ownProps.length : 0;
+
+      while (++ownIndex < length) {
+        index = ownProps[ownIndex];
+        if (callback(iterable[index], index, collection) === false) return result;
+      }
+    return result
+  };
+
+  /**
    * Checks if `value` is a function.
    *
    * @static
@@ -636,6 +901,51 @@
     // and avoid a V8 bug
     // http://code.google.com/p/v8/issues/detail?id=2291
     return !!(value && objectTypes[typeof value]);
+  }
+
+  /*--------------------------------------------------------------------------*/
+
+  /**
+   * Iterates over elements of a collection, executing the callback for each
+   * element. The callback is bound to `thisArg` and invoked with three arguments;
+   * (value, index|key, collection). Callbacks may exit iteration early by
+   * explicitly returning `false`.
+   *
+   * Note: As with other "Collections" methods, objects with a `length` property
+   * are iterated like arrays. To avoid this behavior `_.forIn` or `_.forOwn`
+   * may be used for object iteration.
+   *
+   * @static
+   * @memberOf _
+   * @alias each
+   * @category Collections
+   * @param {Array|Object|string} collection The collection to iterate over.
+   * @param {Function} [callback=identity] The function called per iteration.
+   * @param {*} [thisArg] The `this` binding of `callback`.
+   * @returns {Array|Object|string} Returns `collection`.
+   * @example
+   *
+   * _([1, 2, 3]).forEach(function(num) { console.log(num); }).join(',');
+   * // => logs each number and returns '1,2,3'
+   *
+   * _.forEach({ 'one': 1, 'two': 2, 'three': 3 }, function(num) { console.log(num); });
+   * // => logs each number and returns the object (property order is not guaranteed across environments)
+   */
+  function forEach(collection, callback, thisArg) {
+    var index = -1,
+        length = collection ? collection.length : 0;
+
+    callback = callback && typeof thisArg == 'undefined' ? callback : baseCreateCallback(callback, thisArg, 3);
+    if (typeof length == 'number') {
+      while (++index < length) {
+        if (callback(collection[index], index, collection) === false) {
+          break;
+        }
+      }
+    } else {
+      forOwn(collection, callback);
+    }
+    return collection;
   }
 
   /*--------------------------------------------------------------------------*/
@@ -708,13 +1018,19 @@
 
   lodash.assign = assign;
   lodash.bind = bind;
+  lodash.forEach = forEach;
+  lodash.forOwn = forOwn;
   lodash.keys = keys;
 
+  lodash.each = forEach;
   lodash.extend = assign;
 
   /*--------------------------------------------------------------------------*/
 
+  // add functions that return unwrapped values when chaining
+  lodash.clone = clone;
   lodash.identity = identity;
+  lodash.isArray = isArray;
   lodash.isFunction = isFunction;
   lodash.isObject = isObject;
   lodash.noop = noop;

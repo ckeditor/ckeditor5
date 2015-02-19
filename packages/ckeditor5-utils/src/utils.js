@@ -38,6 +38,8 @@ CKEDITOR.define( [ 'utils-lodash', 'lib/lodash/lodash-ckeditor' ], function( lod
 
 			// Add the new prototype stuff.
 			if ( proto ) {
+				proto = utils.clone( proto );
+				delete proto.constructor;
 				utils.extend( child.prototype, proto );
 			}
 

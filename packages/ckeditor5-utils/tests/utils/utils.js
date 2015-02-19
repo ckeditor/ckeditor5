@@ -100,6 +100,26 @@ describe( 'extendMixin', function() {
 		expect( truck ).to.have.property( 'property1' ).to.equals( 1 );
 		expect( truck ).to.have.property( 'property2' ).to.be.a( 'function' );
 	} );
+
+	it( 'should use a custom constructor', function() {
+		var utils = modules.utils;
+
+		function customConstructor() {}
+
+		function Car() {}
+
+		Car.extend = utils.extendMixin;
+
+		var Truck = Car.extend( {
+			constructor: customConstructor
+		} );
+
+		expect( Truck ).to.equals( customConstructor );
+		expect( Truck.prototype ).to.not.have.ownProperty( 'constructor' );
+
+		expect( new Truck() ).to.be.an.instanceof( Truck );
+		expect( new Truck() ).to.be.an.instanceof( Car );
+	} );
 } );
 
 describe( 'spy', function() {

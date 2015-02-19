@@ -18,6 +18,14 @@
 	// It is mandatory to execute `grunt lodash` after changes to this list.
 	var lodashInclude = [
 		/**
+		 * See Lo-Dash: https://lodash.com/docs#clone
+		 *
+		 * @member utils
+		 * @method clone
+		 */
+		'clone',
+
+		/**
 		 * See Lo-Dash: https://lodash.com/docs#assign (alias)
 		 *
 		 * @member utils
