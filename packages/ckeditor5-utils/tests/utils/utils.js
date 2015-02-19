@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals describe, it, expect */
+/* globals describe, it, expect, bender */
 
 'use strict';
 
@@ -36,6 +36,42 @@ describe( 'extend()', function() {
 		expect( target ).to.have.property( 'b' ).to.equal( 1 );
 		expect( target ).to.have.property( 'c' ).to.equal( 2 );
 		expect( target ).to.have.property( 'd' ).to.equal( 2 );
+	} );
+} );
+
+describe( 'spy', function() {
+	it( 'should not have `called` after creation', function() {
+		var utils = modules.utils;
+
+		var spy = utils.spy();
+
+		expect( spy.called ).to.not.be.true();
+	} );
+
+	it( 'should register calls', function() {
+		var utils = modules.utils;
+
+		var fn1 = utils.spy();
+		var fn2 = utils.spy();
+
+		fn1();
+
+		expect( fn1.called ).to.be.true();
+		expect( fn2.called ).to.not.be.true();
+	} );
+} );
+
+describe( 'uid', function() {
+	it( 'should return different ids', function() {
+		var utils = modules.utils;
+
+		var id1 = utils.uid();
+		var id2 = utils.uid();
+		var id3 = utils.uid();
+
+		expect( id1 ).to.be.a( 'number' );
+		expect( id2 ).to.be.a( 'number' ).to.not.equal( id1 ).to.not.equal( id3 );
+		expect( id3 ).to.be.a( 'number' ).to.not.equal( id1 ).to.not.equal( id2 );
 	} );
 } );
 
