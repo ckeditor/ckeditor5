@@ -15,9 +15,9 @@ beforeEach( refreshEmitter );
 
 describe( 'fire', function() {
 	it( 'should execute callbacks in the right order without priority', function() {
-		var spy1 = sinon.spy();
-		var spy2 = sinon.spy();
-		var spy3 = sinon.spy();
+		var spy1 = sinon.spy().named( 1 );
+		var spy2 = sinon.spy().named( 2 );
+		var spy3 = sinon.spy().named( 3 );
 
 		emitter.on( 'test', spy1 );
 		emitter.on( 'test', spy2 );
@@ -29,11 +29,11 @@ describe( 'fire', function() {
 	} );
 
 	it( 'should execute callbacks in the right order with priority defined', function() {
-		var spy1 = sinon.spy();
-		var spy2 = sinon.spy();
-		var spy3 = sinon.spy();
-		var spy4 = sinon.spy();
-		var spy5 = sinon.spy();
+		var spy1 = sinon.spy().named( 1 );
+		var spy2 = sinon.spy().named( 2 );
+		var spy3 = sinon.spy().named( 3 );
+		var spy4 = sinon.spy().named( 4 );
+		var spy5 = sinon.spy().named( 5 );
 
 		emitter.on( 'test', spy2, null, 9 );
 		emitter.on( 'test', spy3 );	// Defaults to 10.
@@ -161,6 +161,23 @@ describe( 'on', function() {
 		sinon.assert.calledOnce( spy2 );
 		sinon.assert.calledTwice( spy3 );
 	} );
+
+	it( 'should take the callback off() even after stop()', function() {
+		var spy1 = sinon.spy( function( event ) {
+			event.stop();
+			event.off();
+		} );
+		var spy2 = sinon.spy();
+
+		emitter.on( 'test', spy1 );
+		emitter.on( 'test', spy2 );
+
+		emitter.fire( 'test' );
+		emitter.fire( 'test' );
+
+		sinon.assert.calledOnce( spy1 );
+		sinon.assert.calledOnce( spy2 );
+	} );
 } );
 
 describe( 'once', function() {
@@ -210,7 +227,7 @@ describe( 'once', function() {
 } );
 
 describe( 'off', function() {
-	it( 'should get callbacks off', function() {
+	it( 'should get callbacks off()', function() {
 		var spy1 = sinon.spy();
 		var spy2 = sinon.spy();
 		var spy3 = sinon.spy();
@@ -231,8 +248,48 @@ describe( 'off', function() {
 		sinon.assert.calledThrice( spy3 );
 	} );
 
-	it( 'should no fail with unknown events', function() {
+	it( 'should not fail with unknown events', function() {
 		emitter.off( 'test', function() {} );
+	} );
+
+	it( 'should remove all entries for the same callback', function() {
+		var spy1 = sinon.spy().named( 1 );
+		var spy2 = sinon.spy().named( 2 );
+
+		emitter.on( 'test', spy1 );
+		emitter.on( 'test', spy2 );
+		emitter.on( 'test', spy1 );
+		emitter.on( 'test', spy2 );
+
+		emitter.fire( 'test' );
+
+		emitter.off( 'test', spy1 );
+
+		emitter.fire( 'test' );
+
+		sinon.assert.callCount( spy1, 2 );
+		sinon.assert.callCount( spy2, 4 );
+	} );
+
+	it( 'should remove the callback for a specific context only', function() {
+		var spy = sinon.spy().named( 1 );
+
+		var ctx1 = { ctx: 1 };
+		var ctx2 = { ctx: 2 };
+
+		emitter.on( 'test', spy, ctx1 );
+		emitter.on( 'test', spy, ctx2 );
+
+		emitter.fire( 'test' );
+
+		spy.reset();
+
+		emitter.off( 'test', spy, ctx1 );
+
+		emitter.fire( 'test' );
+
+		sinon.assert.calledOnce( spy );
+		sinon.assert.calledOn( spy, ctx2 );
 	} );
 } );
 
@@ -253,7 +310,7 @@ describe( 'listenTo', function() {
 describe( 'stopListening', function() {
 	beforeEach( refreshListener );
 
-	it( 'should stop listening callback on event', function() {
+	it( 'should stop listening to a specific event callback', function() {
 		var spy1 = sinon.spy();
 		var spy2 = sinon.spy();
 
@@ -272,7 +329,7 @@ describe( 'stopListening', function() {
 		sinon.assert.calledTwice( spy2 );
 	} );
 
-	it( 'should stop listening event', function() {
+	it( 'should stop listening to an specific event', function() {
 		var spy1a = sinon.spy();
 		var spy1b = sinon.spy();
 		var spy2 = sinon.spy();
@@ -294,7 +351,7 @@ describe( 'stopListening', function() {
 		sinon.assert.calledTwice( spy2 );
 	} );
 
-	it( 'should stop listening all events for emitter', function() {
+	it( 'should stop listening to all events from a specific emitter', function() {
 		var spy1 = sinon.spy();
 		var spy2 = sinon.spy();
 
@@ -313,7 +370,7 @@ describe( 'stopListening', function() {
 		sinon.assert.calledOnce( spy2 );
 	} );
 
-	it( 'should stop listening everything', function() {
+	it( 'should stop listening to everything', function() {
 		var spy1 = sinon.spy();
 		var spy2 = sinon.spy();
 
@@ -337,6 +394,21 @@ describe( 'stopListening', function() {
 		sinon.assert.calledOnce( spy2 );
 
 		expect( listener ).to.not.have.property( '_listeningTo' );
+	} );
+
+	it( 'should not stop other emitters when a non-listened emitter is provided', function() {
+		var spy = sinon.spy();
+
+		var emitter1 = getEmitterInstance();
+		var emitter2 = getEmitterInstance();
+
+		listener.listenTo( emitter1, 'test', spy );
+
+		listener.stopListening( emitter2 );
+
+		emitter1.fire( 'test' );
+
+		sinon.assert.called( spy );
 	} );
 } );
 

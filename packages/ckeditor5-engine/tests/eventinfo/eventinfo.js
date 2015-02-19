@@ -21,7 +21,7 @@ describe( 'EventInfo', function() {
 		expect( event.off.called ).to.not.be.true();
 	} );
 
-	it( 'should have cancel() and off() marked', function() {
+	it( 'should have stop() and off() marked', function() {
 		var EventInfo = modules.eventinfo;
 
 		var event = new EventInfo( this, 'test' );

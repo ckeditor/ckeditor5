@@ -9,7 +9,7 @@
  * Mixin that injects the events API into its host.
  *
  * @class Emitter
- * @static
+ * @singleton
  */
 
 CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
@@ -21,15 +21,13 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 		 * @param {Function} callback The function to be called on event.
 		 * @param {Object} [ctx] The object that represents `this` in the callback. Defaults to the object firing the
 		 * event.
-		 * @param {Number} [priority] The priority of this callback in relation to other callbacks to that same event.
-		 * Lower values are called first. Defaults to `10`.
+		 * @param {Number} [priority=10] The priority of this callback in relation to other callbacks to that same event.
+		 * Lower values are called first.
 		 */
 		on: function( event, callback, ctx, priority ) {
 			var callbacks = getCallbacks( this, event );
 
-			var wasAdded;
-
-			// Priority defaults to 10.
+			// Set the priority defaults.
 			if ( typeof priority != 'number' ) {
 				priority = 10;
 			}
@@ -41,29 +39,27 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 			};
 
 			// Add the callback to the list in the right priority position.
-			for ( var i = 0; i < callbacks.length ; i++ ) {
-				if ( callbacks[ i ].priority > priority ) {
-					callbacks.splice( i, 0, callback );
-					wasAdded = true;
-					break;
+			for ( var i = callbacks.length - 1; i >= 0; i-- ) {
+				if ( callbacks[ i ].priority <= priority ) {
+					callbacks.splice( i + 1, 0, callback );
+
+					return;
 				}
 			}
 
-			if ( !wasAdded ) {
-				callbacks.push( callback );
-			}
+			callbacks.unshift( callback );
 		},
 
 		/**
 		 * Registers a callback function to be executed on the next time the event is fired only. This is similar to
-		 * calling `on()` followed by `off()` in the callback.
+		 * calling {@link #on} followed by {@link #off} in the callback.
 		 *
 		 * @param {String} event The name of the event.
 		 * @param {Function} callback The function to be called on event.
 		 * @param {Object} [ctx] The object that represents `this` in the callback. Defaults to the object firing the
 		 * event.
-		 * @param {Number} [priority] The priority of this callback in relation to other callbacks to that same event.
-		 * Lower values are called first. Defaults to `10`.
+		 * @param {Number} [priority=10] The priority of this callback in relation to other callbacks to that same event.
+		 * Lower values are called first.
 		 */
 		once: function( event, callback, ctx, priority ) {
 			var onceCallback = function( event ) {
@@ -83,8 +79,10 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 		 *
 		 * @param {String} event The name of the event.
 		 * @param {Function} callback The function to stop being called.
+		 * @param {Object} [ctx] The context object to be removed, pared with the given callback. To handle cases where
+		 * the same callback is used several times with different contexts.
 		 */
-		off: function( event, callback ) {
+		off: function( event, callback, ctx ) {
 			var callbacks = getCallbacksIfAny( this, event );
 
 			if ( !callbacks ) {
@@ -93,9 +91,11 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 
 			for ( var i = 0; i < callbacks.length; i++ ) {
 				if ( callbacks[ i ].callback == callback ) {
-					// Remove the callback from the list (fixing the next index).
-					callbacks.splice( i, 1 );
-					i--;
+					if ( !ctx || ctx == callbacks[ i ].ctx ) {
+						// Remove the callback from the list (fixing the next index).
+						callbacks.splice( i, 1 );
+						i--;
+					}
 				}
 			}
 		},
@@ -107,8 +107,8 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 		 * @param {String} event The name of the event.
 		 * @param {Function} callback The function to be called on event.
 		 * @param {Object} [ctx] The object that represents `this` in the callback. Defaults to `emitter`.
-		 * @param {Number} [priority] The priority of this callback in relation to other callbacks to that same event.
-		 * Lower values are called first. Defaults to `10`.
+		 * @param {Number} [priority=10] The priority of this callback in relation to other callbacks to that same event.
+		 * Lower values are called first.
 		 */
 		listenTo: function( emitter, event, callback, ctx, priority ) {
 			var emitters, emitterId, emitterInfo, eventCallbacks;
@@ -153,17 +153,17 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 		},
 
 		/**
-		 * Stops listening for events. It can be usued at different levels:
+		 * Stops listening for events. It can be used at different levels:
 		 *
-		 *  * To stop listening to a specific callback.
-		 *  * To stop listening to a specific event.
-		 *  * To stop listening to all events fired by a specific object.
-		 *  * To stop listening to all events fired by all object.
+		 * * To stop listening to a specific callback.
+		 * * To stop listening to a specific event.
+		 * * To stop listening to all events fired by a specific object.
+		 * * To stop listening to all events fired by all object.
 		 *
 		 * @param {Emitter} [emitter] The object to stop listening to. If omitted, stops it for all objects.
-		 * @param {String} [event] (Requires `emitter`) The name of the event to stop listening to. If omitted, stops it
+		 * @param {String} [event] (Requires the `emitter`) The name of the event to stop listening to. If omitted, stops it
 		 * for all events from `emitter`.
-		 * @param {Function} callback (Requires `event`) The function be removed from the call list for the give
+		 * @param {Function} [callback] (Requires the `event`) The function to be removed from the call list for the given
 		 * `event`.
 		 */
 		stopListening: function( emitter, event, callback ) {
@@ -177,23 +177,26 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 				return;
 			}
 
+			// All params provided. off() that single callback.
 			if ( callback ) {
-				// All params provided. off() that single callback.
 				emitter.off( event, callback );
-			} else if ( eventCallbacks ) {
-				// Only emitter and event provided. off() all callbacks for that event.
+			}
+			// Only `emitter` and `event` provided. off() all callbacks for that event.
+			else if ( eventCallbacks ) {
 				while ( ( callback = eventCallbacks.pop() ) ) {
 					emitter.off( event, callback );
 				}
 				delete emitterInfo.callbacks[ event ];
-			} else if ( emitterInfo ) {
-				// Only emitter provided. off() all events for that emitter.
+			}
+			// Only `emitter` provided. off() all events for that emitter.
+			else if ( emitterInfo ) {
 				for ( event in emitterInfo.callbacks ) {
 					this.stopListening( emitter, event );
 				}
 				delete emitters[ emitterId ];
-			} else {
-				// No params provided. off() all emitters.
+			}
+			// No params provided. off() all emitters.
+			else {
 				for ( emitterId in emitters ) {
 					this.stopListening( emitters[ emitterId ].emitter );
 				}
@@ -202,9 +205,9 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 		},
 
 		/**
-		 * Fires and event, executing all callbacks registered for it.
+		 * Fires an event, executing all callbacks registered for it.
 		 *
-		 * The first parameter passed to callbacks is a {EventInfo} object, followed by the optional `args` provided in
+		 * The first parameter passed to callbacks is an {@link EventInfo} object, followed by the optional `args` provided in
 		 * the `fire()` method call.
 		 *
 		 * @param {String} event The name of the event.
@@ -233,10 +236,7 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 				for ( var i = 0; i < callbacks.length; i++ ) {
 					callbacks[ i ].callback.apply( callbacks[ i ].ctx, args );
 
-					if ( eventInfo.stop.called ) {
-						break;
-					}
-
+					// Remove the callback from future requests if off() has been called.
 					if ( eventInfo.off.called ) {
 						// Remove the called mark for the next calls.
 						delete eventInfo.off.called;
@@ -244,6 +244,11 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 						// Remove the callback from the list (fixing the next index).
 						callbacks.splice( i, 1 );
 						i--;
+					}
+
+					// Do not execute next callbacks if stop() was called.
+					if ( eventInfo.stop.called ) {
+						break;
 					}
 				}
 			}
