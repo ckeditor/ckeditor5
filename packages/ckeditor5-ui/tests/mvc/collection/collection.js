@@ -44,7 +44,7 @@ describe( 'get', function() {
 
 		expect( function() {
 			box.get( 1 );
-		} ).to.throw( 'Index not found' );
+		} ).to.throw( Error, 'Index not found' );
 	} );
 } );
 
@@ -101,7 +101,7 @@ describe( 'remove', function() {
 
 		expect( function() {
 			box.remove( 1 );
-		} ).to.throw( 'Index not found' );
+		} ).to.throw( Error, 'Index not found' );
 	} );
 
 	it( 'should throw error on invalid model', function() {
@@ -110,7 +110,7 @@ describe( 'remove', function() {
 
 		expect( function() {
 			box.remove( getItem() );
-		} ).to.throw( 'Model not found' );
+		} ).to.throw( Error, 'Model not found' );
 	} );
 } );
 
