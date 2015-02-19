@@ -112,6 +112,22 @@ describe( 'Model', function() {
 			sinon.assert.calledWithExactly( spyYear, sinon.match.instanceOf( EventInfo ), 2003, 2015 );
 			sinon.assert.calledWithExactly( spyWheels, sinon.match.instanceOf( EventInfo ), 4, sinon.match.typeOf( 'undefined' ) );
 		} );
+
+		it( 'should not fire "change" for same attribute value', function() {
+			var spy = sinon.spy();
+			var spyColor = sinon.spy();
+
+			car.on( 'change', spy );
+			car.on( 'change:color', spyColor );
+
+			// Set property in all possible ways.
+			car.color = 'red';
+			car.set( 'color', 'red' );
+			car.set( { color: 'red' } );
+
+			sinon.assert.notCalled( spy );
+			sinon.assert.notCalled( spyColor );
+		} );
 	} );
 
 	describe( 'extend', function() {
