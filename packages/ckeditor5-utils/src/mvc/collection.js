@@ -68,7 +68,7 @@ CKEDITOR.define( [ 'emitter', 'utils' ], function( EmitterMixin, utils ) {
 			var model = this._models[ index ];
 
 			if ( !model ) {
-				throw 'Index not found';
+				throw new Error( 'Index not found' );
 			}
 
 			return model;
@@ -86,14 +86,14 @@ CKEDITOR.define( [ 'emitter', 'utils' ], function( EmitterMixin, utils ) {
 				modelOrIndex = this._models.indexOf( modelOrIndex );
 
 				if ( modelOrIndex == -1 ) {
-					throw 'Model not found';
+					throw new Error( 'Model not found' );
 				}
 			}
 
 			var removedModel = this._models.splice( modelOrIndex, 1 )[ 0 ];
 
 			if ( !removedModel ) {
-				throw 'Index not found';
+				throw new Error( 'Index not found' );
 			}
 
 			this.fire( 'remove', removedModel );
