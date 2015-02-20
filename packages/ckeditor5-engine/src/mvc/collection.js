@@ -22,23 +22,23 @@ CKEDITOR.define( [ 'emitter', 'utils' ], function( EmitterMixin, utils ) {
 		Object.defineProperty( this, '_models', {
 			value: []
 		} );
-
-		/**
-		 * The number of items available in the collection.
-		 *
-		 * @property length
-		 */
-		Object.defineProperty( this, 'length', {
-			get: function() {
-				return this._models.length;
-			}
-		} );
 	}
 
 	/**
 	 * @inheritdoc utils#extend
 	 */
 	Collection.extend = utils.extendMixin;
+
+	/**
+	 * The number of items available in the collection.
+	 *
+	 * @property length
+	 */
+	Object.defineProperty( Collection.prototype, 'length', {
+		get: function() {
+			return this._models.length;
+		}
+	} );
 
 	utils.extend( Collection.prototype, EmitterMixin, {
 		/**
