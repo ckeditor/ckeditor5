@@ -214,17 +214,13 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 		 * @param {...*} [args] Additional arguments to be passed to the callbacks.
 		 */
 		fire: function( event, args ) {
-			var eventInfo = event instanceof EventInfo && event;
-			var eventName = eventInfo ? eventInfo.name : event;
-			var callbacks = getCallbacksIfAny( this, eventName );
+			var callbacks = getCallbacksIfAny( this, event );
 
 			if ( !callbacks ) {
 				return;
 			}
 
-			if ( !eventInfo ) {
-				eventInfo = new EventInfo( this, eventName );
-			}
+			var eventInfo = new EventInfo( this, event );
 
 			// Take the list of arguments to pass to the callbacks.
 			args = Array.prototype.slice.call( arguments, 1 );
