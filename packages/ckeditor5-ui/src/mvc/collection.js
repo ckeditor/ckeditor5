@@ -101,3 +101,17 @@ CKEDITOR.define( [ 'emitter', 'utils' ], function( EmitterMixin, utils ) {
 
 	return Collection;
 } );
+
+/**
+ * Fired when an item is added to the collection.
+ a
+ * @event add
+ * @param {Model} model The added item.
+ */
+
+/**
+ * Fired when an item is removed from the collection.
+ *
+ * @event remove
+ * @param {Model} model The removed item.
+ */

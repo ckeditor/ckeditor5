@@ -92,3 +92,20 @@ CKEDITOR.define( [ 'emitter', 'utils' ], function( EmitterMixin, utils ) {
 
 	return Model;
 } );
+
+/**
+ * Fired when an attribute changed value.
+ *
+ * @event change
+ * @param {String} name The attribute name.
+ * @param {*} value The new attribute value.
+ * @param {*} oldValue The previous attribute value.
+ */
+
+/**
+ * Fired when an specific attribute changed value.
+ *
+ * @event change:{attribute}
+ * @param {*} value The new attribute value.
+ * @param {*} oldValue The previous attribute value.
+ */
