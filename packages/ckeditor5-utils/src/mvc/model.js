@@ -9,45 +9,40 @@
  * The base MVC model class.
  *
  * @class Model
- * @mixins Emitter
+ * @extends BasicClass
  */
 
-CKEDITOR.define( [ 'emitter', 'utils' ], function( EmitterMixin, utils ) {
-	/**
-	 * Creates a new Model instance.
-	 *
-	 * @param {Object} [attributes] The model state attributes to be set during the instance creation.
-	 * @param {Object} [properties] The properties to be appended to the instance during creation.
-	 * @method constructor
-	 */
-	function Model( attributes, properties ) {
+CKEDITOR.define( [ 'basicclass', 'utils' ], function( BasicClass, utils ) {
+	var Model = BasicClass.extend( {
 		/**
-		 * The internal hash containing the model's state.
+		 * Creates a new Model instance.
 		 *
-		 * @property _attributes
-		 * @private
+		 * @param {Object} [attributes] The model state attributes to be set during the instance creation.
+		 * @param {Object} [properties] The properties to be appended to the instance during creation.
+		 * @method constructor
 		 */
-		Object.defineProperty( this, '_attributes', {
-			value: {}
-		} );
+		constructor: function Model( attributes, properties ) {
+			/**
+			 * The internal hash containing the model's state.
+			 *
+			 * @property _attributes
+			 * @private
+			 */
+			Object.defineProperty( this, '_attributes', {
+				value: {}
+			} );
 
-		// Extend this instance with the additional (out of state) properties.
-		if ( properties ) {
-			utils.extend( this, properties );
-		}
+			// Extend this instance with the additional (out of state) properties.
+			if ( properties ) {
+				utils.extend( this, properties );
+			}
 
-		// Initialize the attributes.
-		if ( attributes ) {
-			this.set( attributes );
-		}
-	}
+			// Initialize the attributes.
+			if ( attributes ) {
+				this.set( attributes );
+			}
+		},
 
-	/**
-	 * @inheritdoc utils#extend
-	 */
-	Model.extend = utils.extendMixin;
-
-	utils.extend( Model.prototype, EmitterMixin, {
 		/**
 		 * Creates and sets the value of a model attribute of this object. This attribute will be part of the model
 		 * state and will be observable.

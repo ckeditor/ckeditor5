@@ -9,38 +9,28 @@
  * Collections are ordered sets of models.
  *
  * @class Collection
+ * @extends BasicClass
  */
 
-CKEDITOR.define( [ 'emitter', 'utils' ], function( EmitterMixin, utils ) {
-	function Collection() {
+CKEDITOR.define( [ 'basicclass' ], function( BasicClass ) {
+	var Collection = BasicClass.extend( {
 		/**
-		 * The internal list of models in the collection.
+		 * Creates a new Collection instance.
 		 *
-		 * @property _models
-		 * @private
+		 * @constructor
 		 */
-		Object.defineProperty( this, '_models', {
-			value: []
-		} );
-	}
+		constructor: function Collection() {
+			/**
+			 * The internal list of models in the collection.
+			 *
+			 * @property _models
+			 * @private
+			 */
+			Object.defineProperty( this, '_models', {
+				value: []
+			} );
+		},
 
-	/**
-	 * @inheritdoc utils#extend
-	 */
-	Collection.extend = utils.extendMixin;
-
-	/**
-	 * The number of items available in the collection.
-	 *
-	 * @property length
-	 */
-	Object.defineProperty( Collection.prototype, 'length', {
-		get: function() {
-			return this._models.length;
-		}
-	} );
-
-	utils.extend( Collection.prototype, EmitterMixin, {
 		/**
 		 * Adds an item into the collection.
 		 *
@@ -96,6 +86,17 @@ CKEDITOR.define( [ 'emitter', 'utils' ], function( EmitterMixin, utils ) {
 			this.fire( 'remove', removedModel );
 
 			return removedModel;
+		}
+	} );
+
+	/**
+	 * The number of items available in the collection.
+	 *
+	 * @property length
+	 */
+	Object.defineProperty( Collection.prototype, 'length', {
+		get: function() {
+			return this._models.length;
 		}
 	} );
 
