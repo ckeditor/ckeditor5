@@ -8,9 +8,6 @@
 /**
  * Collections are ordered sets of models.
  *
- * Any event that is triggered on a model in a collection will also be triggered on the collection directly, for
- * convenience.
- *
  * @class Collection
  */
 
