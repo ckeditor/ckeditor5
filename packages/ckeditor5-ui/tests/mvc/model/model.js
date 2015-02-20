@@ -63,7 +63,7 @@ describe( 'Model', function() {
 			} );
 		} );
 
-		it( 'should work when passing key/value', function() {
+		it( 'should work when passing a key/value pair', function() {
 			car.set( 'color', 'blue' );
 			car.set( 'wheels', 4 );
 
@@ -74,7 +74,7 @@ describe( 'Model', function() {
 			} );
 		} );
 
-		it( 'should fire "change"', function() {
+		it( 'should fire the "change" event', function() {
 			var EventInfo = modules.eventinfo;
 
 			var spy = sinon.spy();
@@ -113,14 +113,14 @@ describe( 'Model', function() {
 			sinon.assert.calledWithExactly( spyWheels, sinon.match.instanceOf( EventInfo ), 4, sinon.match.typeOf( 'undefined' ) );
 		} );
 
-		it( 'should not fire "change" for same attribute value', function() {
+		it( 'should not fire the "change" event for the same attribute value', function() {
 			var spy = sinon.spy();
 			var spyColor = sinon.spy();
 
 			car.on( 'change', spy );
 			car.on( 'change:color', spyColor );
 
-			// Set property in all possible ways.
+			// Set the "color" property in all possible ways.
 			car.color = 'red';
 			car.set( 'color', 'red' );
 			car.set( { color: 'red' } );

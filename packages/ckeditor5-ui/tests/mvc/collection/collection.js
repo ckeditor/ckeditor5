@@ -10,7 +10,7 @@
 var modules = bender.amd.require( 'mvc/collection', 'mvc/model' );
 
 describe( 'add', function() {
-	it( 'should change length and enable get', function() {
+	it( 'should change the length and enable get', function() {
 		var Model = modules[ 'mvc/model' ];
 
 		var box = getCollection();
@@ -38,7 +38,7 @@ describe( 'add', function() {
 } );
 
 describe( 'get', function() {
-	it( 'should throw error on invalid index', function() {
+	it( 'should throw an error on invalid index', function() {
 		var box = getCollection();
 		box.add( getItem() );
 
@@ -95,7 +95,7 @@ describe( 'remove', function() {
 		sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', box ), item2 );
 	} );
 
-	it( 'should throw error on invalid index', function() {
+	it( 'should throw an error on invalid index', function() {
 		var box = getCollection();
 		box.add( getItem() );
 
@@ -104,7 +104,7 @@ describe( 'remove', function() {
 		} ).to.throw( Error, 'Index not found' );
 	} );
 
-	it( 'should throw error on invalid model', function() {
+	it( 'should throw an error on invalid model', function() {
 		var box = getCollection();
 		box.add( getItem() );
 
