@@ -45,6 +45,14 @@ describe( 'Model', function() {
 		expect( car.color ).to.equal( 'blue' );
 	} );
 
+	it( 'should add properties on creation', function() {
+		var car = new Car( null, {
+			prop: 1
+		} );
+
+		expect( car ).to.have.property( 'prop' ).to.equals( 1 );
+	} );
+
 	//////////
 
 	describe( 'set', function() {
