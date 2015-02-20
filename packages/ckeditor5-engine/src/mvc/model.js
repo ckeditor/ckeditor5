@@ -49,13 +49,13 @@ CKEDITOR.define( [ 'emitter', 'utils' ], function( EmitterMixin, utils ) {
 
 	utils.extend( Model.prototype, EmitterMixin, {
 		/**
-		 * Creates and sets the value of a model property of this object. This property will be part of the model state
-		 * and will be observable.
+		 * Creates and sets the value of a model attribute of this object. This attribute will be part of the model
+		 * state and will be observable.
 		 *
-		 * It accepts also a single object literal containing key/value pairs with properties to be set.
+		 * It accepts also a single object literal containing key/value pairs with attributes to be set.
 		 *
-		 * @param {String} name The property name.
-		 * @param {*} value The property value.
+		 * @param {String} name The attributes name.
+		 * @param {*} value The attributes value.
 		 */
 		set: function( name, value ) {
 			// If the first parameter is an Object, we gonna interact through its properties.
