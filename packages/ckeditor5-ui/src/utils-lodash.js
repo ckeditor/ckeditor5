@@ -18,12 +18,28 @@
 	// It is mandatory to execute `grunt lodash` after changes to this list.
 	var lodashInclude = [
 		/**
+		 * See Lo-Dash: https://lodash.com/docs#clone
+		 *
+		 * @member utils
+		 * @method clone
+		 */
+		'clone',
+
+		/**
 		 * See Lo-Dash: https://lodash.com/docs#assign (alias)
 		 *
 		 * @member utils
 		 * @method extend
 		 */
-		'extend'
+		'extend',
+
+		/**
+		 * See Lo-Dash: https://lodash.com/docs#isObject
+		 *
+		 * @member utils
+		 * @method isObject
+		 */
+		'isObject'
 	];
 
 	// Make this compatible with CommonJS as well so it can be used in Node (e.g. "grunt lodash").
