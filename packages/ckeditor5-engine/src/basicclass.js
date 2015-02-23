@@ -22,10 +22,9 @@ CKEDITOR.define( [ 'emitter', 'utils' ], function( EmitterMixin, utils ) {
 	/**
 	 * Creates a subclass constructor based on this class.
 	 *
-	 * @abstract
-	 * @static
-	 * @inheritable
+	 * The function to becuase a subclass constructor can be passed as `proto.constructor`.
 	 *
+	 * @static
 	 * @param {Object} [proto] Extensions to be added to the subclass prototype.
 	 * @param {Object} [statics] Extension to be added as static members of the subclass constructor.
 	 * @returns {Object} The subclass constructor.
