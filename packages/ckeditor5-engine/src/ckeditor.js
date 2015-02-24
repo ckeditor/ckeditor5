@@ -33,7 +33,7 @@ CKEDITOR.define( [ 'editor', 'mvc/collection', 'promise' ], function( Editor, Co
 		 *         // Manipulate "editor" here.
 		 *     } );
 		 *
-		 * @param {String|Object} element A element selector or the DOM element, which will be the source for the
+		 * @param {String|Object} element An element selector or a DOM element, which will be the source for the
 		 * created instance.
 		 * @returns {Promise} A promise, which will be fulfilled with the created editor.
 		 */

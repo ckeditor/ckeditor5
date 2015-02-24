@@ -15,7 +15,7 @@ describe( 'constructor', function() {
 
 		var editor = new Editor( document.body );
 
-		expect( editor ).to.have.property( 'element' ).to.equals( document.body );
+		expect( editor ).to.have.property( 'element' ).to.equal( document.body );
 	} );
 } );
 
