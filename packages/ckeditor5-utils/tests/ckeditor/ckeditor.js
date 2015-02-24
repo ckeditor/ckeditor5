@@ -34,17 +34,17 @@ describe( 'create', function() {
 
 		return CKEDITOR.create( content ).then( function( editor ) {
 			expect( editor ).to.be.instanceof( Editor );
-			expect( editor.element ).to.equals( content );
+			expect( editor.element ).to.equal( content );
 		} );
 	} );
 
-	it( 'should create a new editor instance (using selector)', function() {
+	it( 'should create a new editor instance (using a selector)', function() {
 		var CKEDITOR = modules.ckeditor;
 		var Editor = modules.editor;
 
 		return CKEDITOR.create( '.editor' ).then( function( editor ) {
 			expect( editor ).to.be.instanceof( Editor );
-			expect( editor.element ).to.equals( document.querySelector( '.editor' ) );
+			expect( editor.element ).to.equal( document.querySelector( '.editor' ) );
 		} );
 	} );
 
@@ -53,11 +53,11 @@ describe( 'create', function() {
 
 		return CKEDITOR.create( content ).then( function( editor ) {
 			expect( CKEDITOR.instances ).to.have.length( 1 );
-			expect( CKEDITOR.instances.get( 0 ) ).to.equals( editor );
+			expect( CKEDITOR.instances.get( 0 ) ).to.equal( editor );
 		} );
 	} );
 
-	it( 'should remove the editor from the `instances` collection on `destroy`', function() {
+	it( 'should remove the editor from the `instances` collection on `destroy` event', function() {
 		var CKEDITOR = modules.ckeditor;
 		var editor1, editor2;
 
@@ -79,7 +79,7 @@ describe( 'create', function() {
 				expect( CKEDITOR.instances ).to.have.length( 1 );
 
 				// Ensure that the remaining is the right one.
-				expect( CKEDITOR.instances.get( 0 ) ).to.equals( editor2 );
+				expect( CKEDITOR.instances.get( 0 ) ).to.equal( editor2 );
 			} );
 		} );
 	} );
@@ -91,7 +91,7 @@ describe( 'create', function() {
 			throw( 'It should not enter this function' );
 		} ).catch( function( error ) {
 			expect( error ).to.be.instanceof( Error );
-			expect( error.message ).to.equals( 'Element not found' );
+			expect( error.message ).to.equal( 'Element not found' );
 		} );
 	} );
 } );
