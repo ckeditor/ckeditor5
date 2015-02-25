@@ -34,6 +34,14 @@
 		'extend',
 
 		/**
+		 * See Lo-Dash: https://lodash.com/docs#isPlainObject
+		 *
+		 * @member utils
+		 * @method isPlainObject
+		 */
+		'isPlainObject',
+
+		/**
 		 * See Lo-Dash: https://lodash.com/docs#isObject
 		 *
 		 * @member utils
