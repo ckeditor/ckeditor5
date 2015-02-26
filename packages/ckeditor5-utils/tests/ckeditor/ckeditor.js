@@ -9,7 +9,7 @@
 
 var modules = bender.amd.require( 'ckeditor', 'editor', 'promise' );
 
-var content = document.getElementById( content );
+var content = document.getElementById( 'content' );
 
 beforeEach( function() {
 	var CKEDITOR = modules.ckeditor;
