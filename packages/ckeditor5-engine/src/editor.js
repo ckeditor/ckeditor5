@@ -36,6 +36,8 @@ CKEDITOR.define( [ 'ckeditor', 'mvc/model', 'utils' ], function( CKEDITOR, Model
 		/**
 		 * Destroys the editor instance, releasing all resources used by it. If the editor replaced an element, the
 		 * element will be recovered.
+		 *
+		 * @fires destroy
 		 */
 		destroy: function() {
 			this.fire( 'destroy' );
