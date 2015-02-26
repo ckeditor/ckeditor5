@@ -16,10 +16,17 @@ var config = {
 	framework: 'mocha',
 
 	applications: {
-		ckeditor: {
+		'ckeditor': {
 			path: '.',
 			files: [
 				'node_modules/requirejs/require.js',
+				'ckeditor.js'
+			]
+		},
+
+		'ckeditor-build': {
+			path: 'build',
+			files: [
 				'ckeditor.js'
 			]
 		}
@@ -27,6 +34,8 @@ var config = {
 
 	tests: {
 		all: {
+			// Swap the following "applications" lines to test the build version.
+			// applications: [ 'ckeditor-build' ],
 			applications: [ 'ckeditor' ],
 			paths: [
 				'tests/**',
