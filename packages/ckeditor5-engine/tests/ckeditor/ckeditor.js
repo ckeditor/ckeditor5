@@ -7,7 +7,7 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'ckeditor', 'editor', 'promise' );
+var modules = bender.amd.require( 'ckeditor', 'editor', 'promise', 'config' );
 
 var content = document.getElementById( 'content' );
 
@@ -45,6 +45,14 @@ describe( 'create', function() {
 		return CKEDITOR.create( '.editor' ).then( function( editor ) {
 			expect( editor ).to.be.instanceof( Editor );
 			expect( editor.element ).to.equal( document.querySelector( '.editor' ) );
+		} );
+	} );
+
+	it( 'should set configurations on the new editor', function() {
+		var CKEDITOR = modules.ckeditor;
+
+		return CKEDITOR.create( content, { test: 1 } ).then( function( editor ) {
+			expect( editor.config.test ).to.equals( 1 );
 		} );
 	} );
 
@@ -93,5 +101,14 @@ describe( 'create', function() {
 			expect( error ).to.be.instanceof( Error );
 			expect( error.message ).to.equal( 'Element not found' );
 		} );
+	} );
+} );
+
+describe( 'config', function() {
+	it( 'should be an instance of Config', function() {
+		var CKEDITOR = modules.ckeditor;
+		var Config = modules.config;
+
+		expect( CKEDITOR.config ).to.be.an.instanceof( Config );
 	} );
 } );

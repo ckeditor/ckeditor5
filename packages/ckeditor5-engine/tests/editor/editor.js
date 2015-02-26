@@ -7,7 +7,7 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'editor' );
+var modules = bender.amd.require( 'editor', 'editorconfig' );
 
 var editor;
 var element;
@@ -24,6 +24,14 @@ beforeEach( function() {
 describe( 'constructor', function() {
 	it( 'should create a new editor instance', function() {
 		expect( editor ).to.have.property( 'element' ).to.equal( element );
+	} );
+} );
+
+describe( 'config', function() {
+	it( 'should be an instance of EditorConfig', function() {
+		var EditorConfig = modules.editorconfig;
+
+		expect( editor.config ).to.be.an.instanceof( EditorConfig );
 	} );
 } );
 
