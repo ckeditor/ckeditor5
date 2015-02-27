@@ -18,6 +18,9 @@ CKEDITOR.define( [ 'editor', 'mvc/collection', 'promise' ], function( Editor, Co
 	var CKEDITOR = {
 		/**
 		 * A collection containing all editor instances created.
+		 *
+		 * @readonly
+		 * @property {Collection}
 		 */
 		instances: new Collection(),
 
@@ -27,13 +30,13 @@ CKEDITOR.define( [ 'editor', 'mvc/collection', 'promise' ], function( Editor, Co
 		 * The creation of editor instances is an asynchronous operation, therefore a promise is returned by this
 		 * method.
 		 *
-		 *     CKEDITOR.create( '#content' );
+		 *		CKEDITOR.create( '#content' );
 		 *
-		 *     CKEDITOR.create( '#content' ).then( function( editor ) {
-		 *         // Manipulate "editor" here.
-		 *     } );
+		 *		CKEDITOR.create( '#content' ).then( function( editor ) {
+		 *			// Manipulate "editor" here.
+		 *		} );
 		 *
-		 * @param {String|Object} element An element selector or a DOM element, which will be the source for the
+		 * @param {String|HTMLElement} element An element selector or a DOM element, which will be the source for the
 		 * created instance.
 		 * @returns {Promise} A promise, which will be fulfilled with the created editor.
 		 */

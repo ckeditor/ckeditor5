@@ -19,7 +19,7 @@ CKEDITOR.define( [ 'ckeditor', 'mvc/model', 'utils' ], function( CKEDITOR, Model
 		 * This constructor should be rarely used. When creating new editor instance use instead the
 		 * {@link CKEDITOR#create CKEDITOR.create() method}.
 		 *
-		 * @param {Object} element The DOM element that will be the source for the created editor.
+		 * @param {HTMLElement} element The DOM element that will be the source for the created editor.
 		 * @constructor
 		 */
 		constructor: function Editor( element ) {
@@ -28,7 +28,7 @@ CKEDITOR.define( [ 'ckeditor', 'mvc/model', 'utils' ], function( CKEDITOR, Model
 			 * editor creation and is not subject to be modified.
 			 *
 			 * @readonly
-			 * @property {Object}
+			 * @property {HTMLElement}
 			 */
 			this.element = element;
 		},
