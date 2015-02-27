@@ -88,7 +88,7 @@ describe( 'create', function() {
 		var CKEDITOR = modules.ckeditor;
 
 		return CKEDITOR.create( '.undefined' ).then( function() {
-			throw( 'It should not enter this function' );
+			throw new Error( 'It should not enter this function' );
 		} ).catch( function( error ) {
 			expect( error ).to.be.instanceof( Error );
 			expect( error.message ).to.equal( 'Element not found' );
