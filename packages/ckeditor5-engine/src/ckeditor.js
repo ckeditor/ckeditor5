@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals document */
+
 'use strict';
 
 /**
@@ -12,8 +14,58 @@
  * @singleton
  */
 
-CKEDITOR.define( function() {
+CKEDITOR.define( [ 'editor', 'mvc/collection', 'promise' ], function( Editor, Collection, Promise ) {
 	var CKEDITOR = {
+		/**
+		 * A collection containing all editor instances created.
+		 *
+		 * @readonly
+		 * @property {Collection}
+		 */
+		instances: new Collection(),
+
+		/**
+		 * Creates an editor instance for the provided DOM element.
+		 *
+		 * The creation of editor instances is an asynchronous operation, therefore a promise is returned by this
+		 * method.
+		 *
+		 *		CKEDITOR.create( '#content' );
+		 *
+		 *		CKEDITOR.create( '#content' ).then( function( editor ) {
+		 *			// Manipulate "editor" here.
+		 *		} );
+		 *
+		 * @param {String|HTMLElement} element An element selector or a DOM element, which will be the source for the
+		 * created instance.
+		 * @returns {Promise} A promise, which will be fulfilled with the created editor.
+		 */
+		create: function( element ) {
+			var that = this;
+
+			return new Promise( function( resolve, reject ) {
+				// If a query selector has been passed, transform it into a real element.
+				if ( typeof element == 'string' ) {
+					element = document.querySelector( element );
+
+					if ( !element ) {
+						reject( new Error( 'Element not found' ) );
+					}
+				}
+
+				var editor = new Editor( element );
+
+				that.instances.add( editor );
+
+				// Remove the editor from `instances` when destroyed.
+				editor.once( 'destroy', function() {
+					that.instances.remove( editor );
+				} );
+
+				resolve( editor );
+			} );
+		},
+
 		/**
 		 * Gets the full URL path for the specified plugin.
 		 *
