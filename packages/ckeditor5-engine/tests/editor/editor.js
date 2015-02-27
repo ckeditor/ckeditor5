@@ -3,27 +3,32 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals describe, it, expect, sinon, document */
+/* globals describe, it, expect, beforeEach, sinon, document */
 
 'use strict';
 
 var modules = bender.amd.require( 'editor' );
 
+var editor;
+var element;
+
+beforeEach( function() {
+	var Editor = modules.editor;
+
+	element = document.createElement( 'div' );
+	document.body.appendChild( element );
+
+	editor = new Editor( element );
+} );
+
 describe( 'constructor', function() {
 	it( 'should create a new editor instance', function() {
-		var Editor = modules.editor;
-
-		var editor = new Editor( document.body );
-
-		expect( editor ).to.have.property( 'element' ).to.equal( document.body );
+		expect( editor ).to.have.property( 'element' ).to.equal( element );
 	} );
 } );
 
 describe( 'destroy', function() {
 	it( 'should fire "destroy"', function() {
-		var Editor = modules.editor;
-
-		var editor = new Editor( document.body );
 		var spy = sinon.spy();
 
 		editor.on( 'destroy', spy );
@@ -34,10 +39,6 @@ describe( 'destroy', function() {
 	} );
 
 	it( 'should delete the "element" property', function() {
-		var Editor = modules.editor;
-
-		var editor = new Editor( document.body );
-
 		editor.destroy();
 
 		expect( editor ).to.not.have.property( 'element' );
