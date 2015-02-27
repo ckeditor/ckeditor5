@@ -66,7 +66,7 @@ describe( 'create', function() {
 			editor1 = editor;
 
 			// Create the second editor.
-			return CKEDITOR.create( content ).then( function( editor ) {
+			return CKEDITOR.create( '.editor' ).then( function( editor ) {
 				editor2 = editor;
 
 				// It should have 2 editors.
