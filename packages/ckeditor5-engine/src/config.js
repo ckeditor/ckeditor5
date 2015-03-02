@@ -137,7 +137,7 @@ CKEDITOR.define( [ 'ckeditor', 'mvc/model', 'utils' ], function( CKEDITOR, Model
 			var source = this;
 			//jscs:enable
 
-			// The configuration name should be split into parts if it has dots. E.g: `resize.width`.
+			// The configuration name should be split into parts if it has dots. E.g. `resize.width` -> [`resize`, `width`]
 			var parts = name.toLowerCase().split( '.' );
 
 			// Take the name of the configuration from the parts. E.g. `resize.width` -> `width`

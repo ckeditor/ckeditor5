@@ -33,7 +33,7 @@ CKEDITOR.define( [ 'mvc/model', 'editorconfig' ], function( Model, EditorConfig 
 			this.element = element;
 
 			/**
-			 * Holds all configuration specific to this editor instance.
+			 * Holds all configurations specific to this editor instance.
 			 *
 			 * This instance of the {@link Config} class is customized so its {@link Config#get} method will retrieve
 			 * global configurations available in {@link CKEDITOR.config} if configurations are not found in the
