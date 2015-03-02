@@ -14,7 +14,7 @@
  * @singleton
  */
 
-CKEDITOR.define( [ 'editor', 'mvc/collection', 'promise' ], function( Editor, Collection, Promise ) {
+CKEDITOR.define( [ 'editor', 'mvc/collection', 'promise', 'config' ], function( Editor, Collection, Promise, Config ) {
 	var CKEDITOR = {
 		/**
 		 * A collection containing all editor instances created.
@@ -40,7 +40,7 @@ CKEDITOR.define( [ 'editor', 'mvc/collection', 'promise' ], function( Editor, Co
 		 * created instance.
 		 * @returns {Promise} A promise, which will be fulfilled with the created editor.
 		 */
-		create: function( element ) {
+		create: function( element, config ) {
 			var that = this;
 
 			return new Promise( function( resolve, reject ) {
@@ -53,7 +53,7 @@ CKEDITOR.define( [ 'editor', 'mvc/collection', 'promise' ], function( Editor, Co
 					}
 				}
 
-				var editor = new Editor( element );
+				var editor = new Editor( element, config );
 
 				that.instances.add( editor );
 
@@ -65,6 +65,12 @@ CKEDITOR.define( [ 'editor', 'mvc/collection', 'promise' ], function( Editor, Co
 				resolve( editor );
 			} );
 		},
+
+		/**
+		 * Holds global configuration defaults, which will be used by editor instances when such configurations are not
+		 * available on them directly.
+		 */
+		config: new Config(),
 
 		/**
 		 * Gets the full URL path for the specified plugin.

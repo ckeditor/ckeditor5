@@ -11,7 +11,7 @@
  * @class Editor
  */
 
-CKEDITOR.define( [ 'ckeditor', 'mvc/model', 'utils' ], function( CKEDITOR, Model ) {
+CKEDITOR.define( [ 'mvc/model', 'editorconfig' ], function( Model, EditorConfig ) {
 	var Editor = Model.extend( {
 		/**
 		 * Creates a new instance of the Editor class.
@@ -22,7 +22,7 @@ CKEDITOR.define( [ 'ckeditor', 'mvc/model', 'utils' ], function( CKEDITOR, Model
 		 * @param {HTMLElement} element The DOM element that will be the source for the created editor.
 		 * @constructor
 		 */
-		constructor: function Editor( element ) {
+		constructor: function Editor( element, config ) {
 			/**
 			 * The original host page element upon which the editor is created. It is only supposed to be provided on
 			 * editor creation and is not subject to be modified.
@@ -31,6 +31,17 @@ CKEDITOR.define( [ 'ckeditor', 'mvc/model', 'utils' ], function( CKEDITOR, Model
 			 * @property {HTMLElement}
 			 */
 			this.element = element;
+
+			/**
+			 * Holds all configurations specific to this editor instance.
+			 *
+			 * This instance of the {@link Config} class is customized so its {@link Config#get} method will retrieve
+			 * global configurations available in {@link CKEDITOR.config} if configurations are not found in the
+			 * instance itself.
+			 *
+			 * @type {Config}
+			 */
+			this.config = new EditorConfig( config );
 		},
 
 		/**
