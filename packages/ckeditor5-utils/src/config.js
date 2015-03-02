@@ -63,9 +63,8 @@ CKEDITOR.define( [ 'mvc/model', 'utils' ], function( Model, utils ) {
 		 *     config.toolbar.color; // 'red'
 		 *
 		 * @param {String|Object} nameOrConfigurations The configuration name or an object from which take properties as
-		 * configuration entries.
-		 * @param {*} [value] The configuration value. Used if a name is passed to nameOrConfigurations. If undefined,
-		 * the configuration is set to `null`.
+		 * configuration entries. Configuration names are case-insensitive.
+		 * @param {*} [value=null] The configuration value. Used if a name is passed to nameOrConfigurations.
 		 */
 		set: function( name, value ) {
 			// Just pass the call to the original set() in case of an object. It'll deal with recursing through the
@@ -128,7 +127,7 @@ CKEDITOR.define( [ 'mvc/model', 'utils' ], function( Model, utils ) {
 		 *
 		 *     config.get( 'toolbar.collapsed' );
 		 *
-		 * @param {String} name The configuration name.
+		 * @param {String} name The configuration name. Configuration names are case-insensitive.
 		 * @returns {*} The configuration value or `undefined` if the configuration entry was not found.
 		 */
 		get: function( name ) {
