@@ -2,6 +2,9 @@
 
 'use strict';
 
+// Set it to true to test with the build version.
+var isBuild = false;
+
 var config = {
 	plugins: [
 		// Uncomment to enable code coverage.
@@ -22,20 +25,11 @@ var config = {
 				'node_modules/requirejs/require.js',
 				'ckeditor.js'
 			]
-		},
-
-		'ckeditor-build': {
-			path: 'build',
-			files: [
-				'ckeditor.js'
-			]
 		}
 	},
 
 	tests: {
 		all: {
-			// Swap the following "applications" lines to test the build version.
-			// applications: [ 'ckeditor-build' ],
 			applications: [ 'ckeditor' ],
 			paths: [
 				'tests/**',
@@ -53,5 +47,15 @@ var config = {
 		]
 	}
 };
+
+if ( isBuild ) {
+	// Change the 'ckeditor' application to point to the build.
+	config.applications[ 'ckeditor' ] = {
+		path: 'build',
+		files: [
+			'ckeditor.js'
+		]
+	};
+}
 
 module.exports = config;
