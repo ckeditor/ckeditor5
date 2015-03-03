@@ -30,13 +30,13 @@ beforeEach( function() {
 
 describe( 'constructor', function() {
 	it( 'should set configurations', function() {
-		expect( config ).to.have.property( 'creator' ).to.equals( 'inline' );
-		expect( config ).to.have.property( 'language' ).to.equals( 'pl' );
-		expect( config ).to.have.property( 'resize' ).to.have.property( 'minheight' ).to.equals( 300 );
-		expect( config ).to.have.property( 'resize' ).to.have.property( 'maxheight' ).to.equals( 800 );
+		expect( config ).to.have.property( 'creator' ).to.equal( 'inline' );
+		expect( config ).to.have.property( 'language' ).to.equal( 'pl' );
+		expect( config ).to.have.property( 'resize' ).to.have.property( 'minheight' ).to.equal( 300 );
+		expect( config ).to.have.property( 'resize' ).to.have.property( 'maxheight' ).to.equal( 800 );
 		expect( config ).to.have.property( 'resize' ).to.have.property( 'icon' )
-			.to.have.property( 'path' ).to.equals( 'xyz' );
-		expect( config ).to.have.property( 'toolbar' ).to.equals( 'top' );
+			.to.have.property( 'path' ).to.equal( 'xyz' );
+		expect( config ).to.have.property( 'toolbar' ).to.equal( 'top' );
 	} );
 
 	it( 'should work with no parameters', function() {
@@ -64,17 +64,17 @@ describe( 'set', function() {
 		} );
 
 		expect( config )
-			.to.have.property( 'option1' ).to.equals( 1 );
+			.to.have.property( 'option1' ).to.equal( 1 );
 
 		expect( config )
 			.to.have.property( 'option2' )
-			.to.have.property( 'suboption21' ).to.equals( 21 );
+			.to.have.property( 'suboption21' ).to.equal( 21 );
 	} );
 
 	it( 'should set configurations when passing name and value', function() {
 		config.set( 'something', 'anything' );
 
-		expect( config ).to.have.property( 'something' ).to.equals( 'anything' );
+		expect( config ).to.have.property( 'something' ).to.equal( 'anything' );
 	} );
 
 	it( 'should set configurations when passing name.with.deep and value', function() {
@@ -83,12 +83,12 @@ describe( 'set', function() {
 
 		expect( config )
 			.to.have.property( 'color' )
-			.to.have.property( 'red' ).to.equals( 'f00' );
+			.to.have.property( 'red' ).to.equal( 'f00' );
 
 		expect( config )
 			.to.have.property( 'background' )
 			.to.have.property( 'color' )
-			.to.have.property( 'blue' ).to.equals( '00f' );
+			.to.have.property( 'blue' ).to.equal( '00f' );
 	} );
 
 	it( 'should override and expand deep configurations', function() {
@@ -104,13 +104,13 @@ describe( 'set', function() {
 		} );
 
 		expect( config ).to.have.property( 'resize' );
-		expect( config.resize ).to.have.property( 'minheight' ).to.equals( 400 );
-		expect( config.resize ).to.have.property( 'maxheight' ).to.equals( 800 );	// Not touched
-		expect( config.resize ).to.have.property( 'hidden' ).to.equals( true );
+		expect( config.resize ).to.have.property( 'minheight' ).to.equal( 400 );
+		expect( config.resize ).to.have.property( 'maxheight' ).to.equal( 800 );	// Not touched
+		expect( config.resize ).to.have.property( 'hidden' ).to.equal( true );
 
 		expect( config.resize ).to.have.property( 'icon' );
-		expect( config.resize.icon ).to.have.property( 'path' ).to.equals( 'abc' );
-		expect( config.resize.icon ).to.have.property( 'url' ).to.equals( true );
+		expect( config.resize.icon ).to.have.property( 'path' ).to.equal( 'abc' );
+		expect( config.resize.icon ).to.have.property( 'url' ).to.equal( true );
 	} );
 
 	it( 'should replace a simple entry with a Config instance', function() {
@@ -122,7 +122,7 @@ describe( 'set', function() {
 		} );
 
 		expect( config.test ).to.be.an.instanceof( Config );
-		expect( config.test.prop ).to.equals( 1 );
+		expect( config.test.prop ).to.equal( 1 );
 	} );
 
 	it( 'should replace a simple entry with a Config instance when passing an object', function() {
@@ -136,7 +136,7 @@ describe( 'set', function() {
 		} );
 
 		expect( config.test ).to.be.an.instanceof( Config );
-		expect( config.test.prop ).to.equals( 1 );
+		expect( config.test.prop ).to.equal( 1 );
 	} );
 
 	it( 'should replace a simple entry with a Config instance when passing a name.with.deep', function() {
@@ -147,7 +147,7 @@ describe( 'set', function() {
 
 		expect( config.test ).to.be.an.instanceof( Config );
 		expect( config.test.prop ).to.be.an.instanceof( Config );
-		expect( config.test.prop.value ).to.equals( 1 );
+		expect( config.test.prop.value ).to.equal( 1 );
 	} );
 
 	it( 'should not create Config instances for non-pure objects', function() {
@@ -172,31 +172,31 @@ describe( 'set', function() {
 
 describe( 'get', function() {
 	it( 'should retrieve a configuration', function() {
-		expect( config.get( 'creator' ) ).to.equals( 'inline' );
+		expect( config.get( 'creator' ) ).to.equal( 'inline' );
 	} );
 
 	it( 'should retrieve a deep configuration', function() {
-		expect( config.get( 'resize.minheight' ) ).to.equals( 300 );
-		expect( config.get( 'resize.icon.path' ) ).to.equals( 'xyz' );
+		expect( config.get( 'resize.minheight' ) ).to.equal( 300 );
+		expect( config.get( 'resize.icon.path' ) ).to.equal( 'xyz' );
 	} );
 
 	it( 'should retrieve a subset of the configuration', function() {
 		var resizeConfig = config.get( 'resize' );
 
-		expect( resizeConfig ).to.have.property( 'minheight' ).to.equals( 300 );
-		expect( resizeConfig ).to.have.property( 'maxheight' ).to.equals( 800 );
-		expect( resizeConfig ).to.have.property( 'icon' ).to.have.property( 'path' ).to.equals( 'xyz' );
+		expect( resizeConfig ).to.have.property( 'minheight' ).to.equal( 300 );
+		expect( resizeConfig ).to.have.property( 'maxheight' ).to.equal( 800 );
+		expect( resizeConfig ).to.have.property( 'icon' ).to.have.property( 'path' ).to.equal( 'xyz' );
 
 		var iconConfig = resizeConfig.get( 'icon' );
 
-		expect( iconConfig ).to.have.property( 'path' ).to.equals( 'xyz' );
+		expect( iconConfig ).to.have.property( 'path' ).to.equal( 'xyz' );
 	} );
 
 	it( 'should retrieve values case-insensitively', function() {
-		expect( config.get( 'Creator' ) ).to.equals( 'inline' );
-		expect( config.get( 'CREATOR' ) ).to.equals( 'inline' );
-		expect( config.get( 'resize.minHeight' ) ).to.equals( 300 );
-		expect( config.get( 'resize.MINHEIGHT' ) ).to.equals( 300 );
+		expect( config.get( 'Creator' ) ).to.equal( 'inline' );
+		expect( config.get( 'CREATOR' ) ).to.equal( 'inline' );
+		expect( config.get( 'resize.minHeight' ) ).to.equal( 300 );
+		expect( config.get( 'resize.MINHEIGHT' ) ).to.equal( 300 );
 	} );
 
 	it( 'should return undefined for non existing configuration', function() {
@@ -223,8 +223,8 @@ describe( 'define', function() {
 		// This is for Code Coverage to ensure that it works when `definition` is already defined.
 		config.define( 'test2', 2 );
 
-		expect( config.definition ).to.have.property( 'test1' ).to.equals( 1 );
-		expect( config.definition ).to.have.property( 'test2' ).to.equals( 2 );
+		expect( config.definition ).to.have.property( 'test1' ).to.equal( 1 );
+		expect( config.definition ).to.have.property( 'test2' ).to.equal( 2 );
 	} );
 
 	it( 'should set configurations passed as object in the definition property', function() {
@@ -232,21 +232,21 @@ describe( 'define', function() {
 			test: 1
 		} );
 
-		expect( config.definition ).to.have.property( 'test' ).to.equals( 1 );
+		expect( config.definition ).to.have.property( 'test' ).to.equal( 1 );
 	} );
 
 	it( 'should not define main config properties but still be retrieved with get()', function() {
 		config.define( 'test', 1 );
 
 		expect( config ).to.not.have.property( 'test' );
-		expect( config.get( 'test' ) ).to.equals( 1 );
+		expect( config.get( 'test' ) ).to.equal( 1 );
 	} );
 
 	it( 'should be overridden by set()', function() {
 		config.define( 'test', 1 );
 		config.set( 'test', 2 );
 
-		expect( config ).to.have.property( 'test' ).to.equals( 2 );
-		expect( config.get( 'test' ) ).to.equals( 2 );
+		expect( config ).to.have.property( 'test' ).to.equal( 2 );
+		expect( config.get( 'test' ) ).to.equal( 2 );
 	} );
 } );

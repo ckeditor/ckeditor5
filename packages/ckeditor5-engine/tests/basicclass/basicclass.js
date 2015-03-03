@@ -46,12 +46,12 @@ describe( 'extend', function() {
 			static2: function() {}
 		} );
 
-		expect( Truck ).to.have.property( 'static1' ).to.equals( 1 );
+		expect( Truck ).to.have.property( 'static1' ).to.equal( 1 );
 		expect( Truck ).to.have.property( 'static2' ).to.be.a( 'function' );
 
 		var truck = new Truck();
 
-		expect( truck ).to.have.property( 'property1' ).to.equals( 1 );
+		expect( truck ).to.have.property( 'property1' ).to.equal( 1 );
 		expect( truck ).to.have.property( 'property2' ).to.be.a( 'function' );
 	} );
 
@@ -64,7 +64,7 @@ describe( 'extend', function() {
 			constructor: customConstructor
 		} );
 
-		expect( Truck ).to.equals( customConstructor );
+		expect( Truck ).to.equal( customConstructor );
 		expect( Truck.prototype ).to.not.have.ownProperty( 'constructor' );
 
 		expect( new Truck() ).to.be.an.instanceof( Truck );

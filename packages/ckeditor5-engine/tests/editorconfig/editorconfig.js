@@ -21,13 +21,13 @@ beforeEach( function() {
 
 describe( 'constructor', function() {
 	it( 'should set configurations', function() {
-		expect( config ).to.have.property( 'test' ).to.equals( 1 );
+		expect( config ).to.have.property( 'test' ).to.equal( 1 );
 	} );
 } );
 
 describe( 'get', function() {
 	it( 'should retrieve a configuration', function() {
-		expect( config.get( 'test' ) ).to.equals( 1 );
+		expect( config.get( 'test' ) ).to.equal( 1 );
 	} );
 
 	it( 'should fallback to CKEDITOR.config', function() {
@@ -37,7 +37,7 @@ describe( 'get', function() {
 			globalConfig: 2
 		} );
 
-		expect( config.get( 'globalConfig' ) ).to.equals( 2 );
+		expect( config.get( 'globalConfig' ) ).to.equal( 2 );
 	} );
 
 	it( 'should return undefined for non existing configuration', function() {
