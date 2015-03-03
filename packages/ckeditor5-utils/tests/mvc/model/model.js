@@ -50,7 +50,7 @@ describe( 'Model', function() {
 			prop: 1
 		} );
 
-		expect( car ).to.have.property( 'prop' ).to.equals( 1 );
+		expect( car ).to.have.property( 'prop' ).to.equal( 1 );
 	} );
 
 	//////////

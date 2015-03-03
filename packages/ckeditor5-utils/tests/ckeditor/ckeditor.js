@@ -52,7 +52,7 @@ describe( 'create', function() {
 		var CKEDITOR = modules.ckeditor;
 
 		return CKEDITOR.create( content, { test: 1 } ).then( function( editor ) {
-			expect( editor.config.test ).to.equals( 1 );
+			expect( editor.config.test ).to.equal( 1 );
 		} );
 	} );
 
