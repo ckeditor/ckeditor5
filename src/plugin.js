@@ -27,7 +27,7 @@ define( 'plugin', [ 'plugin-core' ], function( CorePlugin ) {
 
 		path = '../../ckeditor5-plugin-' + path.join( '/' );
 
-		require( [ path ], onload );
+		require( [ path ], onload, onload.error );
 	};
 
 	return CorePlugin;
