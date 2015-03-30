@@ -31,13 +31,17 @@
 
 			var names = [].slice.call( arguments );
 
-			CKEDITOR.require( names, function() {
-				for ( var i = 0; i < names.length; i++ ) {
-					modules[ names[ i ] ] = arguments[ i ] ;
-				}
+			// To avoid race conditions with required modules, require `ckeditor` first and then others. This guarantees
+			// that `ckeditor` will be loaded before any other module.
+			CKEDITOR.require( [ 'ckeditor' ], function() {
+				CKEDITOR.require( names, function() {
+					for ( var i = 0; i < names.length; i++ ) {
+						modules[ names[ i ] ] = arguments[ i ] ;
+					}
 
-				// Finally give green light for tests to start.
-				done();
+					// Finally give green light for tests to start.
+					done();
+				} );
 			} );
 
 			return modules;
