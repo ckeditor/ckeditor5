@@ -24,6 +24,9 @@ CKEDITOR.define( [ 'mvc/collection', 'promise' ], function( Collection, Promise 
 			Collection.apply( this );
 
 			this._editor = editor;
+
+			// The hash table used to store pointers to loaded plugins by name.
+			this._names = {};
 		},
 
 		/**
@@ -46,8 +49,11 @@ CKEDITOR.define( [ 'mvc/collection', 'promise' ], function( Collection, Promise 
 					CKEDITOR.require( [ 'plugin!' + plugin ],
 						// Success callback.
 						function( LoadedPlugin ) {
+							var loadedPlugin = new LoadedPlugin( that._editor );
+							loadedPlugin.name = plugin;
+
 							// Adds a new instance of the loaded plugin to the collection.
-							that.add( new LoadedPlugin( that._editor ) );
+							that.add( loadedPlugin );
 
 							// Done! Resolve this promise.
 							resolve();
@@ -61,6 +67,41 @@ CKEDITOR.define( [ 'mvc/collection', 'promise' ], function( Collection, Promise 
 					);
 				} );
 			}
+		},
+
+		/**
+		 * Adds a plugin to the collection.
+		 *
+		 * The `name` property must be set to the plugin object before passing it to this function. Adding plugins
+		 * with the same name has no effect and silently fails.
+		 *
+		 * @param {Plugin} plugin The plugin to be added.
+		 */
+		add: function( plugin ) {
+			// Do nothing if the plugin is already loaded.
+			if ( this._names[ plugin.name ] ) {
+				return;
+			}
+
+			// Save a pointer to the plugin by its name.
+			this._names[ plugin.name ] = plugin;
+
+			// Call the original implementation.
+			Collection.prototype.add.apply( this, arguments );
+		},
+
+		/**
+		 * Gets a plugin from the collection.
+		 *
+		 * @param {String} name The plugin name.
+		 * @returns {Plugin} The requested plugin, if available in the collection.
+		 */
+		get: function( name ) {
+			if ( typeof name != 'string' ) {
+				return Collection.prototype.get.apply( this, arguments );
+			}
+
+			return this._names[ name ];
 		}
 	} );
 
