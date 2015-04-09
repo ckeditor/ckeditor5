@@ -47,6 +47,10 @@ CKEDITOR.define( 'plugin!D', [ 'plugin', 'plugin!C' ], function() {
 	} );
 } );
 
+CKEDITOR.define( 'plugin!E', [ 'plugin' ], function( Plugin ) {
+	return Plugin.extend( {} );
+} );
+
 ///////////////////
 
 describe( 'constructor', function() {
@@ -113,6 +117,16 @@ describe( 'init', function() {
 				editor.plugins.get( 'D' ).init
 			);
 		} );
+	} );
+
+	it( 'should not fail if loading a plugin that doesn\'t define init()', function() {
+		var Editor = modules.editor;
+
+		editor = new Editor( element, {
+			plugins: 'E'
+		} );
+
+		return editor.init();
 	} );
 } );
 
