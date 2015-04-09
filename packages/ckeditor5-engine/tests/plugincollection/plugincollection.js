@@ -141,6 +141,32 @@ describe( 'load', function() {
 			} );
 	} );
 
+	it( 'should set the `path` property on loaded plugins', function() {
+		var PluginCollection = modules.plugincollection;
+
+		var plugins = new PluginCollection( editor );
+
+		return plugins.load( 'A,B' )
+			.then( function() {
+				expect( plugins.get( 'A' ).path ).to.equal( CKEDITOR.getPluginPath( 'A' ) );
+				expect( plugins.get( 'B' ).path ).to.equal( CKEDITOR.getPluginPath( 'B' ) );
+			} );
+	} );
+
+	it( 'should set the `deps` property on loaded plugins', function() {
+		var PluginCollection = modules.plugincollection;
+
+		var plugins = new PluginCollection( editor );
+
+		return plugins.load( 'A,D' )
+			.then( function() {
+				expect( plugins.get( 'A' ).deps ).to.deep.equal( [] );
+				expect( plugins.get( 'B' ).deps ).to.deep.equal( [] );
+				expect( plugins.get( 'C' ).deps ).to.deep.equal( [ 'B' ] );
+				expect( plugins.get( 'D' ).deps ).to.deep.equal( [ 'A', 'C' ] );
+			} );
+	} );
+
 	it( 'should throw error for invalid plugins', function() {
 		var PluginCollection = modules.plugincollection;
 

@@ -61,6 +61,7 @@ CKEDITOR.define( [ 'mvc/collection', 'promise' ], function( Collection, Promise 
 						function( LoadedPlugin ) {
 							var loadedPlugin = new LoadedPlugin( that._editor );
 							loadedPlugin.name = plugin;
+							loadedPlugin.path = CKEDITOR.getPluginPath( plugin );
 							loadedPlugin.deps = getPluginDeps( plugin );
 
 							loading[ plugin ] = true;
