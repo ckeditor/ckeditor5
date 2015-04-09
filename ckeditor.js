@@ -21,6 +21,12 @@
 		_getBasePath: getBasePath,
 
 		/**
+		 * The list of dependencies of **named** AMD modules created with `CKEDITOR.define`. This is mainly used to
+		 * trace the dependency tree of plugins.
+		 */
+		_dependencies: {},
+
+		/**
 		 * The full URL for the CKEditor installation directory.
 		 *
 		 * It is possible to manually provide the base path by setting a global variable named `CKEDITOR_BASEPATH`. This
@@ -40,7 +46,14 @@
 		 * @method
 		 * @member CKEDITOR
 		 */
-		define: define,
+		define: function( name, deps ) {
+			// If this is a named module with dependencies, save this in the dependency list.
+			if ( Array.isArray( deps ) && name && !this._dependencies[ name ] ) {
+				this._dependencies[ name ] = deps;
+			}
+
+			return define.apply( this, arguments );
+		},
 
 		/**
 		 * Retrieves one or more AMD modules.
