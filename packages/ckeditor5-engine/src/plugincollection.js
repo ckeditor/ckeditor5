@@ -40,7 +40,7 @@ CKEDITOR.define( [ 'mvc/collection', 'promise' ], function( Collection, Promise 
 			// The list of plugins which are being loaded (to avoid circular references issues).
 			var loading = {};
 
-			plugins = plugins.split( ',' );
+			plugins = plugins ? plugins.split( ',' ) : [];
 
 			// Creates a promise for the loading of each plugin and returns a main promise that resolves when all are
 			// done.

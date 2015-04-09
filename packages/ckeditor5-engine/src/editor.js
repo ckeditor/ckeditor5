@@ -70,17 +70,27 @@ CKEDITOR.define( [ 'mvc/model', 'editorconfig', 'plugincollection' ], function( 
 
 			// Create and cache a promise that resolves when all initialization procedures get resolved.
 			this._initPromise = this._initPromise || Promise.all( [
-				initPlugins()
+				loadPlugins().then( initPlugins )
 			] );
 
 			return this._initPromise;
 
+			function loadPlugins() {
+				return that.plugins.load( config.plugins );
+			}
+
 			function initPlugins() {
-				if ( config.plugins ) {
-					return that.plugins.load( config.plugins );
+				var rets = [];
+
+				// Call init() on every plugin, saving the return value in the rets array.
+				for ( var i = 0; i < that.plugins.length; i++ ) {
+					rets.push( that.plugins.get( i ).init() );
 				}
 
-				return Promise.resolve();
+				// Returns a promise that resolves when all initialization values are resolved. If they are promises,
+				// we will wait for them to resolve. If they are something else, they resolve immediately (as per
+				// Promise.all specs).
+				return Promise.all( rets );
 			}
 		},
 

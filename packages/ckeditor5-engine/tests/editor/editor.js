@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals describe, it, expect, before, beforeEach, sinon, document */
+/* globals describe, it, expect, beforeEach, sinon, document */
 
 'use strict';
 
@@ -11,15 +11,6 @@ var modules = bender.amd.require( 'editor', 'editorconfig', 'plugin', 'promise' 
 
 var editor;
 var element;
-
-var PluginA, PluginB;
-
-before( function() {
-	var Plugin = modules.plugin;
-
-	PluginA = Plugin.extend();
-	PluginB = Plugin.extend();
-} );
 
 beforeEach( function() {
 	var Editor = modules.editor;
@@ -30,14 +21,30 @@ beforeEach( function() {
 	editor = new Editor( element );
 } );
 
-// Define two fake plugins to be used in tests.
+// Define fake plugins to be used in tests.
 
 CKEDITOR.define( 'plugin!A', [ 'plugin' ], function() {
-	return PluginA;
+	return modules.plugin.extend( {
+		init: sinon.spy().named( 'A' )
+	} );
 } );
 
 CKEDITOR.define( 'plugin!B', [ 'plugin' ], function() {
-	return PluginB;
+	return modules.plugin.extend( {
+		init: sinon.spy().named( 'B' )
+	} );
+} );
+
+CKEDITOR.define( 'plugin!C', [ 'plugin', 'plugin!B' ], function() {
+	return modules.plugin.extend( {
+		init: sinon.spy().named( 'C' )
+	} );
+} );
+
+CKEDITOR.define( 'plugin!D', [ 'plugin', 'plugin!C' ], function() {
+	return modules.plugin.extend( {
+		init: sinon.spy().named( 'D' )
+	} );
 } );
 
 ///////////////////
@@ -72,14 +79,8 @@ describe( 'init', function() {
 
 		expect( editor.init() ).to.equal( promise );
 	} );
-} );
 
-describe( 'plugins', function() {
-	it( 'should be empty on new editor', function() {
-		expect( editor.plugins.length ).to.equal( 0 );
-	} );
-
-	it( 'should be filled on `init()`', function() {
+	it( 'should fill `plugins`', function() {
 		var Editor = modules.editor;
 		var Plugin = modules.plugin;
 
@@ -95,6 +96,29 @@ describe( 'plugins', function() {
 			expect( editor.plugins.get( 'A' ) ).to.be.an.instanceof( Plugin );
 			expect( editor.plugins.get( 'B' ) ).to.be.an.instanceof( Plugin );
 		} );
+	} );
+
+	it( 'should initialize plugins in the right order', function() {
+		var Editor = modules.editor;
+
+		editor = new Editor( element, {
+			plugins: 'A,D'
+		} );
+
+		return editor.init().then( function() {
+			sinon.assert.callOrder(
+				editor.plugins.get( 'A' ).init,
+				editor.plugins.get( 'B' ).init,
+				editor.plugins.get( 'C' ).init,
+				editor.plugins.get( 'D' ).init
+			);
+		} );
+	} );
+} );
+
+describe( 'plugins', function() {
+	it( 'should be empty on new editor', function() {
+		expect( editor.plugins.length ).to.equal( 0 );
 	} );
 } );
 

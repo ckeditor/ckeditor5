@@ -19,7 +19,9 @@ CKEDITOR.define( [ 'mvc/model' ], function( Model ) {
 			Model.apply( this );
 
 			this.editor = editor;
-		}
+		},
+
+		init: function() {}
 	} );
 
 	return Plugin;
