@@ -11,7 +11,7 @@
  * @class Editor
  */
 
-CKEDITOR.define( [ 'mvc/model', 'editorconfig' ], function( Model, EditorConfig ) {
+CKEDITOR.define( [ 'mvc/model', 'editorconfig', 'plugincollection' ], function( Model, EditorConfig, PluginCollection ) {
 	var Editor = Model.extend( {
 		/**
 		 * Creates a new instance of the Editor class.
@@ -42,6 +42,46 @@ CKEDITOR.define( [ 'mvc/model', 'editorconfig' ], function( Model, EditorConfig 
 			 * @type {Config}
 			 */
 			this.config = new EditorConfig( config );
+
+			/**
+			 * The plugins loaded and in use by this editor instance.
+			 *
+			 * @type {PluginCollection}
+			 */
+			this.plugins = new PluginCollection( this );
+		},
+
+		/**
+		 * Initializes the editor instance object after its creation.
+		 *
+		 * The initialization consists on the following procedures:
+		 *
+		 *  * Load and initialize the configured plugins.
+		 *  * TODO: Add other procedures here.
+		 *
+		 * This method should be rarely used as `CKEDITOR.create` calls it one should never use the `Editor` contrusctor
+		 * directly.
+		 *
+		 * @returns {Promise} A promise which resolves once the initialization is completed.
+		 */
+		init: function() {
+			var that = this;
+			var config = this.config;
+
+			// Create and cache a promise that resolves when all initialization procedures get resolved.
+			this._initPromise = this._initPromise || Promise.all( [
+				initPlugins()
+			] );
+
+			return this._initPromise;
+
+			function initPlugins() {
+				if ( config.plugins ) {
+					return that.plugins.load( config.plugins );
+				}
+
+				return Promise.resolve();
+			}
 		},
 
 		/**

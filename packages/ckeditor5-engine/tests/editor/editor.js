@@ -3,14 +3,23 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals describe, it, expect, beforeEach, sinon, document */
+/* globals describe, it, expect, before, beforeEach, sinon, document */
 
 'use strict';
 
-var modules = bender.amd.require( 'editor', 'editorconfig' );
+var modules = bender.amd.require( 'editor', 'editorconfig', 'plugin', 'promise' );
 
 var editor;
 var element;
+
+var PluginA, PluginB;
+
+before( function() {
+	var Plugin = modules.plugin;
+
+	PluginA = Plugin.extend();
+	PluginB = Plugin.extend();
+} );
 
 beforeEach( function() {
 	var Editor = modules.editor;
@@ -20,6 +29,18 @@ beforeEach( function() {
 
 	editor = new Editor( element );
 } );
+
+// Define two fake plugins to be used in tests.
+
+CKEDITOR.define( 'plugin!A', [ 'plugin' ], function() {
+	return PluginA;
+} );
+
+CKEDITOR.define( 'plugin!B', [ 'plugin' ], function() {
+	return PluginB;
+} );
+
+///////////////////
 
 describe( 'constructor', function() {
 	it( 'should create a new editor instance', function() {
@@ -32,6 +53,48 @@ describe( 'config', function() {
 		var EditorConfig = modules.editorconfig;
 
 		expect( editor.config ).to.be.an.instanceof( EditorConfig );
+	} );
+} );
+
+describe( 'init', function() {
+	it( 'should return a promise that resolves properly', function() {
+		var Promise = modules.promise;
+
+		var promise = editor.init();
+
+		expect( promise ).to.be.an.instanceof( Promise );
+
+		return promise;
+	} );
+
+	it( 'should return the same promise for sucessive calls', function() {
+		var promise = editor.init();
+
+		expect( editor.init() ).to.equal( promise );
+	} );
+} );
+
+describe( 'plugins', function() {
+	it( 'should be empty on new editor', function() {
+		expect( editor.plugins.length ).to.equal( 0 );
+	} );
+
+	it( 'should be filled on `init()`', function() {
+		var Editor = modules.editor;
+		var Plugin = modules.plugin;
+
+		editor = new Editor( element, {
+			plugins: 'A,B'
+		} );
+
+		expect( editor.plugins.length ).to.equal( 0 );
+
+		return editor.init().then( function() {
+			expect( editor.plugins.length ).to.equal( 2 );
+
+			expect( editor.plugins.get( 'A' ) ).to.be.an.instanceof( Plugin );
+			expect( editor.plugins.get( 'B' ) ).to.be.an.instanceof( Plugin );
+		} );
 	} );
 } );
 

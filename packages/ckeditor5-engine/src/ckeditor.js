@@ -62,7 +62,14 @@ CKEDITOR.define( [ 'editor', 'mvc/collection', 'promise', 'config' ], function( 
 					that.instances.remove( editor );
 				} );
 
-				resolve( editor );
+				resolve(
+					// Initializes the editor, which returns a promise.
+					editor.init()
+						.then( function() {
+							// After initialization, return the created editor.
+							return editor;
+						} )
+				);
 			} );
 		},
 
