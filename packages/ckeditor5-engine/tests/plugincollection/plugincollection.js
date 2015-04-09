@@ -23,11 +23,11 @@ before( function() {
 
 // Create fake plugins that will be used on tests.
 
-CKEDITOR.define( 'plugin!A', [ 'plugin' ], function() {
+CKEDITOR.define( 'plugin!A', function() {
 	return PluginA;
 } );
 
-CKEDITOR.define( 'plugin!B', [ 'plugin' ], function() {
+CKEDITOR.define( 'plugin!B', function() {
 	return PluginB;
 } );
 
