@@ -9,7 +9,7 @@
 
 var modules = bender.amd.require( 'plugincollection', 'plugin', 'editor' );
 var editor;
-var PluginA, PluginB, PluginC;
+var PluginA, PluginB;
 
 before( function() {
 	var Editor = modules.editor;
@@ -17,12 +17,11 @@ before( function() {
 
 	PluginA = Plugin.extend();
 	PluginB = Plugin.extend();
-	PluginC = Plugin.extend();
 
 	editor = new Editor( document.body.appendChild( document.createElement( 'div' ) ) );
 } );
 
-// Create 3 fake plugins that will be used on tests.
+// Create fake plugins that will be used on tests.
 
 CKEDITOR.define( 'plugin!A', [ 'plugin' ], function() {
 	return PluginA;
@@ -32,8 +31,20 @@ CKEDITOR.define( 'plugin!B', [ 'plugin' ], function() {
 	return PluginB;
 } );
 
-CKEDITOR.define( 'plugin!C', [ 'plugin' ], function() {
-	return PluginC;
+CKEDITOR.define( 'plugin!C', [ 'plugin', 'plugin!B' ], function() {
+	return modules.plugin;
+} );
+
+CKEDITOR.define( 'plugin!D', [ 'plugin', 'plugin!A', 'plugin!C' ], function() {
+	return modules.plugin;
+} );
+
+CKEDITOR.define( 'plugin!E', [ 'plugin', 'plugin!F' ], function() {
+	return modules.plugin;
+} );
+
+CKEDITOR.define( 'plugin!F', [ 'plugin', 'plugin!E' ], function() {
+	return modules.plugin;
 } );
 
 /////////////
@@ -50,6 +61,71 @@ describe( 'load', function() {
 
 				expect( plugins.get( 0 ) ).to.be.an.instanceof( PluginA );
 				expect( plugins.get( 1 ) ).to.be.an.instanceof( PluginB );
+			} );
+	} );
+
+	it( 'should load dependency plugins', function() {
+		var PluginCollection = modules.plugincollection;
+
+		var plugins = new PluginCollection( editor );
+
+		return plugins.load( 'A,C' )
+			.then( function() {
+				expect( plugins.length ).to.equal( 3 );
+
+				// The order must have dependencies first.
+				expect( plugins.get( 0 ).name ).to.equal( 'A' );
+				expect( plugins.get( 1 ).name ).to.equal( 'B' );
+				expect( plugins.get( 2 ).name ).to.equal( 'C' );
+			} );
+	} );
+
+	it( 'should be ok when dependencies are loaded first', function() {
+		var PluginCollection = modules.plugincollection;
+
+		var plugins = new PluginCollection( editor );
+
+		return plugins.load( 'A,B,C' )
+			.then( function() {
+				expect( plugins.length ).to.equal( 3 );
+
+				// The order must have dependencies first.
+				expect( plugins.get( 0 ).name ).to.equal( 'A' );
+				expect( plugins.get( 1 ).name ).to.equal( 'B' );
+				expect( plugins.get( 2 ).name ).to.equal( 'C' );
+			} );
+	} );
+
+	it( 'should load deep dependency plugins', function() {
+		var PluginCollection = modules.plugincollection;
+
+		var plugins = new PluginCollection( editor );
+
+		return plugins.load( 'D' )
+			.then( function() {
+				expect( plugins.length ).to.equal( 4 );
+
+				// The order must have dependencies first.
+				expect( plugins.get( 0 ).name ).to.equal( 'A' );
+				expect( plugins.get( 1 ).name ).to.equal( 'B' );
+				expect( plugins.get( 2 ).name ).to.equal( 'C' );
+				expect( plugins.get( 3 ).name ).to.equal( 'D' );
+			} );
+	} );
+
+	it( 'should handle cross dependency plugins', function() {
+		var PluginCollection = modules.plugincollection;
+
+		var plugins = new PluginCollection( editor );
+
+		return plugins.load( 'A,E' )
+			.then( function() {
+				expect( plugins.length ).to.equal( 3 );
+
+				// The order must have dependencies first.
+				expect( plugins.get( 0 ).name ).to.equal( 'A' );
+				expect( plugins.get( 1 ).name ).to.equal( 'F' );
+				expect( plugins.get( 2 ).name ).to.equal( 'E' );
 			} );
 	} );
 

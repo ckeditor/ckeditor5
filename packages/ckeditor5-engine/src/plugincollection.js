@@ -37,6 +37,9 @@ CKEDITOR.define( [ 'mvc/collection', 'promise' ], function( Collection, Promise 
 		load: function( plugins ) {
 			var that = this;
 
+			// The list of plugins which are being loaded (to avoid circular references issues).
+			var loading = {};
+
 			plugins = plugins.split( ',' );
 
 			// Creates a promise for the loading of each plugin and returns a main promise that resolves when all are
@@ -46,17 +49,31 @@ CKEDITOR.define( [ 'mvc/collection', 'promise' ], function( Collection, Promise 
 			// Returns a promise that will load the plugin and add it to the collection before resolving.
 			function pluginPromise( plugin ) {
 				return new Promise( function( resolve, reject ) {
+					// Do nothing if the plugin is already loaded (or if is being loaded right now).
+					if ( that._names[ plugin ] || loading[ plugin ] ) {
+						resolve();
+
+						return;
+					}
+
 					CKEDITOR.require( [ 'plugin!' + plugin ],
 						// Success callback.
 						function( LoadedPlugin ) {
 							var loadedPlugin = new LoadedPlugin( that._editor );
 							loadedPlugin.name = plugin;
+							loadedPlugin.deps = getPluginDeps( plugin );
 
-							// Adds a new instance of the loaded plugin to the collection.
-							that.add( loadedPlugin );
+							loading[ plugin ] = true;
 
-							// Done! Resolve this promise.
-							resolve();
+							// Resolve with a promise that resolves once all dependencies are loaded.
+							resolve(
+								Promise.all( loadedPlugin.deps.map( pluginPromise ) )
+									.then( function() {
+										// Once dependencies are loaded, add the new instance of the loaded plugin to
+										// the collection. This guarantees that dependecies come first in the collection.
+										that.add( loadedPlugin );
+									} )
+							);
 						},
 						// Error callback.
 						function() {
@@ -66,6 +83,23 @@ CKEDITOR.define( [ 'mvc/collection', 'promise' ], function( Collection, Promise 
 						}
 					);
 				} );
+			}
+
+			function getPluginDeps( name ) {
+				// Get the list of AMD modules that the plugin depends on.
+				var deps = CKEDITOR._dependencies[ 'plugin!' + name ] || [];
+
+				deps = deps
+					// Pick only dependencies that are other plugins.
+					.filter( function( dep ) {
+						return dep.indexOf( 'plugin!' ) === 0;
+					} )
+					// Remove the 'plugin!' prefix.
+					.map( function( dep ) {
+						return dep.substr( 7 );
+					} );
+
+				return deps;
 			}
 		},
 
