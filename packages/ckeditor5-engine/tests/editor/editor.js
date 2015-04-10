@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals describe, it, expect, beforeEach, sinon, document */
+/* globals describe, it, expect, beforeEach, sinon, document, setTimeout */
 
 'use strict';
 
@@ -49,6 +49,28 @@ CKEDITOR.define( 'plugin!D', [ 'plugin', 'plugin!C' ], function() {
 
 CKEDITOR.define( 'plugin!E', [ 'plugin' ], function( Plugin ) {
 	return Plugin.extend( {} );
+} );
+
+// Synchronous plugin that depends on an asynchronous one.
+CKEDITOR.define( 'plugin!F', [ 'plugin', 'plugin!async' ], function( Plugin ) {
+	return Plugin.extend( {
+		init: sinon.spy().named( 'F' )
+	} );
+} );
+
+var asyncSpy = sinon.spy().named( 'async-call-spy' );
+
+CKEDITOR.define( 'plugin!async', [ 'plugin' ], function( Plugin ) {
+	return Plugin.extend( {
+		init: sinon.spy( function() {
+			return new Promise( function( resolve ) {
+				setTimeout( function() {
+					asyncSpy();
+					resolve();
+				}, 0 );
+			} );
+		} )
+	} );
 } );
 
 ///////////////////
@@ -115,6 +137,23 @@ describe( 'init', function() {
 				editor.plugins.get( 'B' ).init,
 				editor.plugins.get( 'C' ).init,
 				editor.plugins.get( 'D' ).init
+			);
+		} );
+	} );
+
+	it( 'should initialize plugins in the right order, waiting for asynchronous ones', function() {
+		var Editor = modules.editor;
+
+		editor = new Editor( element, {
+			plugins: 'A,F'
+		} );
+
+		return editor.init().then( function() {
+			sinon.assert.callOrder(
+				editor.plugins.get( 'A' ).init,
+				editor.plugins.get( 'async' ).init,
+				asyncSpy,	// This one is called with delay by the async init
+				editor.plugins.get( 'F' ).init
 			);
 		} );
 	} );

@@ -80,17 +80,24 @@ CKEDITOR.define( [ 'mvc/model', 'editorconfig', 'plugincollection' ], function( 
 			}
 
 			function initPlugins() {
-				var rets = [];
+				// Start with a resolved promise.
+				var promise = Promise.resolve();
 
-				// Call init() on every plugin, saving the return value in the rets array.
+				// Chain it with promises that resolve with the init() call of every plugin.
 				for ( var i = 0; i < that.plugins.length; i++ ) {
-					rets.push( that.plugins.get( i ).init() );
+					promise = promise.then( getInitResolveFn( i ) );
 				}
 
-				// Returns a promise that resolves when all initialization values are resolved. If they are promises,
-				// we will wait for them to resolve. If they are something else, they resolve immediately (as per
-				// Promise.all specs).
-				return Promise.all( rets );
+				// Return the promise chain.
+				return promise;
+
+				function getInitResolveFn( index ) {
+					return function() {
+						// Resolve with the return value of init(). If it is a Promise, it'll inherit its state. For
+						// everything else it resolves immediately.
+						return Promise.resolve( that.plugins.get( index ).init() );
+					};
+				}
 			}
 		},
 
