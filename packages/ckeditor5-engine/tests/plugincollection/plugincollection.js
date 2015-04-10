@@ -31,20 +31,20 @@ CKEDITOR.define( 'plugin!B', function() {
 	return PluginB;
 } );
 
-CKEDITOR.define( 'plugin!C', [ 'plugin', 'plugin!B' ], function() {
-	return modules.plugin;
+CKEDITOR.define( 'plugin!C', [ 'plugin', 'plugin!B' ], function( Plugin ) {
+	return Plugin.extend();
 } );
 
-CKEDITOR.define( 'plugin!D', [ 'plugin', 'plugin!A', 'plugin!C' ], function() {
-	return modules.plugin;
+CKEDITOR.define( 'plugin!D', [ 'plugin', 'plugin!A', 'plugin!C' ], function( Plugin ) {
+	return Plugin.extend();
 } );
 
-CKEDITOR.define( 'plugin!E', [ 'plugin', 'plugin!F' ], function() {
-	return modules.plugin;
+CKEDITOR.define( 'plugin!E', [ 'plugin', 'plugin!F' ], function( Plugin ) {
+	return Plugin.extend();
 } );
 
-CKEDITOR.define( 'plugin!F', [ 'plugin', 'plugin!E' ], function() {
-	return modules.plugin;
+CKEDITOR.define( 'plugin!F', [ 'plugin', 'plugin!E' ], function( Plugin ) {
+	return Plugin.extend();
 } );
 
 /////////////

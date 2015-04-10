@@ -23,26 +23,26 @@ beforeEach( function() {
 
 // Define fake plugins to be used in tests.
 
-CKEDITOR.define( 'plugin!A', [ 'plugin' ], function() {
-	return modules.plugin.extend( {
+CKEDITOR.define( 'plugin!A', [ 'plugin' ], function( Plugin ) {
+	return Plugin.extend( {
 		init: sinon.spy().named( 'A' )
 	} );
 } );
 
-CKEDITOR.define( 'plugin!B', [ 'plugin' ], function() {
-	return modules.plugin.extend( {
+CKEDITOR.define( 'plugin!B', [ 'plugin' ], function( Plugin ) {
+	return Plugin.extend( {
 		init: sinon.spy().named( 'B' )
 	} );
 } );
 
-CKEDITOR.define( 'plugin!C', [ 'plugin', 'plugin!B' ], function() {
-	return modules.plugin.extend( {
+CKEDITOR.define( 'plugin!C', [ 'plugin', 'plugin!B' ], function( Plugin ) {
+	return Plugin.extend( {
 		init: sinon.spy().named( 'C' )
 	} );
 } );
 
-CKEDITOR.define( 'plugin!D', [ 'plugin', 'plugin!C' ], function() {
-	return modules.plugin.extend( {
+CKEDITOR.define( 'plugin!D', [ 'plugin', 'plugin!C' ], function( Plugin ) {
+	return Plugin.extend( {
 		init: sinon.spy().named( 'D' )
 	} );
 } );
