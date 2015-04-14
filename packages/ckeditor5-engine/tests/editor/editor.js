@@ -60,7 +60,7 @@ CKEDITOR.define( 'plugin!F', [ 'plugin', 'plugin!async' ], function( Plugin ) {
 
 var asyncSpy = sinon.spy().named( 'async-call-spy' );
 
-CKEDITOR.define( 'plugin!async', [ 'plugin' ], function( Plugin ) {
+CKEDITOR.define( 'plugin!async', [ 'plugin', 'promise' ], function( Plugin, Promise ) {
 	return Plugin.extend( {
 		init: sinon.spy( function() {
 			return new Promise( function( resolve ) {

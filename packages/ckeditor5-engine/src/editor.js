@@ -11,7 +11,12 @@
  * @class Editor
  */
 
-CKEDITOR.define( [ 'mvc/model', 'editorconfig', 'plugincollection' ], function( Model, EditorConfig, PluginCollection ) {
+CKEDITOR.define( [
+	'mvc/model',
+	'editorconfig',
+	'plugincollection',
+	'promise'
+], function( Model, EditorConfig, PluginCollection, Promise ) {
 	var Editor = Model.extend( {
 		/**
 		 * Creates a new instance of the Editor class.
