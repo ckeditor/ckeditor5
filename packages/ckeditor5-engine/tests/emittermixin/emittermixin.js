@@ -7,7 +7,7 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'emitter', 'eventinfo', 'utils' );
+var modules = bender.amd.require( 'emittermixin', 'eventinfo', 'utils' );
 
 var emitter, listener;
 
@@ -421,8 +421,8 @@ function refreshListener() {
 }
 
 function getEmitterInstance() {
-	var Emitter = modules.emitter;
+	var EmitterMixin = modules.emittermixin;
 	var utils = modules.utils;
 
-	return utils.extend( {}, Emitter );
+	return utils.extend( {}, EmitterMixin );
 }

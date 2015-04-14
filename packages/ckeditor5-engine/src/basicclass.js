@@ -12,7 +12,7 @@
  * @mixins Emitter
  */
 
-CKEDITOR.define( [ 'emitter', 'utils' ], function( EmitterMixin, utils ) {
+CKEDITOR.define( [ 'emittermixin', 'utils' ], function( EmitterMixin, utils ) {
 	function BasicClass() {
 	}
 
