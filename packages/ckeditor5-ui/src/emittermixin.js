@@ -8,12 +8,12 @@
 /**
  * Mixin that injects the events API into its host.
  *
- * @class Emitter
+ * @class EmitterMixin
  * @singleton
  */
 
 CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
-	var EmmitterMixin = {
+	var EmitterMixin = {
 		/**
 		 * Registers a callback function to be executed when an event is fired.
 		 *
@@ -247,7 +247,7 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 		}
 	};
 
-	return EmmitterMixin;
+	return EmitterMixin;
 
 	// Gets the internal events hash of a give object.
 	function getEvents( source ) {
