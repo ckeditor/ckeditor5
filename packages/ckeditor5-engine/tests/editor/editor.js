@@ -100,7 +100,7 @@ describe( 'init', function() {
 		return promise;
 	} );
 
-	it( 'should return the same promise for sucessive calls', function() {
+	it( 'should return the same promise for successive calls', function() {
 		var promise = editor.init();
 
 		expect( editor.init() ).to.equal( promise );

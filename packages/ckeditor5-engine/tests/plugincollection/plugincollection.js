@@ -167,7 +167,7 @@ describe( 'load', function() {
 			} );
 	} );
 
-	it( 'should throw error for invalid plugins', function() {
+	it( 'should throw an error for invalid plugins', function() {
 		var PluginCollection = modules.plugincollection;
 
 		var plugins = new PluginCollection( editor );
@@ -227,7 +227,7 @@ describe( 'add', function() {
 } );
 
 describe( 'get', function() {
-	it( 'should get plugin by name', function() {
+	it( 'should get a plugin by name', function() {
 		var PluginCollection = modules.plugincollection;
 
 		var plugins = new PluginCollection( editor );

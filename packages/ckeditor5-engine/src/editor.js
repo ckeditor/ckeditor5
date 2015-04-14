@@ -54,12 +54,12 @@ CKEDITOR.define( [ 'mvc/model', 'editorconfig', 'plugincollection' ], function( 
 		/**
 		 * Initializes the editor instance object after its creation.
 		 *
-		 * The initialization consists on the following procedures:
+		 * The initialization consists of the following procedures:
 		 *
 		 *  * Load and initialize the configured plugins.
 		 *  * TODO: Add other procedures here.
 		 *
-		 * This method should be rarely used as `CKEDITOR.create` calls it one should never use the `Editor` contrusctor
+		 * This method should be rarely used as `CKEDITOR.create` calls it one should never use the `Editor` constructor
 		 * directly.
 		 *
 		 * @returns {Promise} A promise which resolves once the initialization is completed.
