@@ -33,6 +33,8 @@ CKEDITOR.define( [ 'mvc/collection', 'promise' ], function( Collection, Promise 
 		 * Loads a set of plugins and add them to the collection.
 		 *
 		 * @param {String} plugins A comma separated list of plugin names to get loaded.
+		 * @returns {Promise} A promise which gets resolved once all plugins are loaded and available into the
+		 * collection.
 		 */
 		load: function( plugins ) {
 			var that = this;
