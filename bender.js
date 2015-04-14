@@ -50,7 +50,7 @@ var config = {
 
 if ( isBuild ) {
 	// Change the 'ckeditor' application to point to the build.
-	config.applications[ 'ckeditor' ] = {
+	config.applications.ckeditor = {
 		path: 'build',
 		files: [
 			'ckeditor.js'
