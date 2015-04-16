@@ -13,6 +13,7 @@ var config = {
 		'benderjs-mocha',
 		'benderjs-chai',
 		'benderjs-sinon',
+		'benderjs-promise',
 		'dev/bender/plugins/ckeditor5'
 	],
 
