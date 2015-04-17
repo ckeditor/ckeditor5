@@ -36,6 +36,7 @@ module.exports = function( grunt ) {
 					'CKEDITOR': false,
 					'bender': false
 				},
+				predef: [ '-Promise' ],
 				ignores: ignoreFiles
 			}
 		},

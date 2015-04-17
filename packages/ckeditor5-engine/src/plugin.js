@@ -9,12 +9,20 @@
  * The base class for CKEditor plugin classes.
  *
  * @class Plugin
+ * @extends Model
  */
 
-CKEDITOR.define( function() {
-	function Plugin( editor ) {
-		this.editor = editor;
-	}
+CKEDITOR.define( [ 'mvc/model' ], function( Model ) {
+	var Plugin = Model.extend( {
+		constructor: function Plugin( editor ) {
+			// Call the base constructor.
+			Model.apply( this );
+
+			this.editor = editor;
+		},
+
+		init: function() {}
+	} );
 
 	return Plugin;
 } );

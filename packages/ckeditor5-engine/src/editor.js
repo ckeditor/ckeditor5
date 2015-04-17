@@ -11,7 +11,12 @@
  * @class Editor
  */
 
-CKEDITOR.define( [ 'mvc/model', 'editorconfig' ], function( Model, EditorConfig ) {
+CKEDITOR.define( [
+	'mvc/model',
+	'editorconfig',
+	'plugincollection',
+	'promise'
+], function( Model, EditorConfig, PluginCollection, Promise ) {
 	var Editor = Model.extend( {
 		/**
 		 * Creates a new instance of the Editor class.
@@ -42,6 +47,63 @@ CKEDITOR.define( [ 'mvc/model', 'editorconfig' ], function( Model, EditorConfig 
 			 * @type {Config}
 			 */
 			this.config = new EditorConfig( config );
+
+			/**
+			 * The plugins loaded and in use by this editor instance.
+			 *
+			 * @type {PluginCollection}
+			 */
+			this.plugins = new PluginCollection( this );
+		},
+
+		/**
+		 * Initializes the editor instance object after its creation.
+		 *
+		 * The initialization consists of the following procedures:
+		 *
+		 *  * Load and initialize the configured plugins.
+		 *  * TODO: Add other procedures here.
+		 *
+		 * This method should be rarely used as `CKEDITOR.create` calls it one should never use the `Editor` constructor
+		 * directly.
+		 *
+		 * @returns {Promise} A promise which resolves once the initialization is completed.
+		 */
+		init: function() {
+			var that = this;
+			var config = this.config;
+
+			// Create and cache a promise that resolves when all initialization procedures get resolved.
+			this._initPromise = this._initPromise || Promise.all( [
+				loadPlugins().then( initPlugins )
+			] );
+
+			return this._initPromise;
+
+			function loadPlugins() {
+				return that.plugins.load( config.plugins );
+			}
+
+			function initPlugins() {
+				// Start with a resolved promise.
+				var promise = Promise.resolve();
+
+				// Chain it with promises that resolve with the init() call of every plugin.
+				for ( var i = 0; i < that.plugins.length; i++ ) {
+					promise = promise.then( callInit( i ) );
+				}
+
+				// Return the promise chain.
+				return promise;
+
+				function callInit( index ) {
+					return function() {
+						// Returns init(). If it is a promise, the next then() interation will be called only when it
+						// will be resolved, enabling asynchronous init().
+						return that.plugins.get( index ).init();
+					};
+				}
+			}
 		},
 
 		/**
