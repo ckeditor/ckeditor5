@@ -12,7 +12,7 @@
  * @extends Collection
  */
 
-CKEDITOR.define( [ 'mvc/collection', 'promise' ], function( Collection, Promise ) {
+CKEDITOR.define( [ 'collection', 'promise' ], function( Collection, Promise ) {
 	var PluginCollection = Collection.extend( {
 		/**
 		 * Creates an instance of the PluginCollection class, initializing it with a set of plugins.

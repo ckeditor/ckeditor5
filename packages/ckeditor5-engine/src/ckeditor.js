@@ -14,7 +14,7 @@
  * @singleton
  */
 
-CKEDITOR.define( [ 'editor', 'mvc/collection', 'promise', 'config' ], function( Editor, Collection, Promise, Config ) {
+CKEDITOR.define( [ 'editor', 'collection', 'promise', 'config' ], function( Editor, Collection, Promise, Config ) {
 	var CKEDITOR = {
 		/**
 		 * A collection containing all editor instances created.

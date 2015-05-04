@@ -12,7 +12,7 @@
  */
 
 CKEDITOR.define( [
-	'mvc/model',
+	'model',
 	'editorconfig',
 	'plugincollection',
 	'promise'

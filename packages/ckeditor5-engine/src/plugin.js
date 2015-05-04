@@ -12,7 +12,7 @@
  * @extends Model
  */
 
-CKEDITOR.define( [ 'mvc/model' ], function( Model ) {
+CKEDITOR.define( [ 'model' ], function( Model ) {
 	var Plugin = Model.extend( {
 		constructor: function Plugin( editor ) {
 			// Call the base constructor.
