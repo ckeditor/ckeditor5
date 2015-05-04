@@ -7,13 +7,13 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'mvc/model', 'eventinfo' );
+var modules = bender.amd.require( 'model', 'eventinfo' );
 
 var Car, car;
 
 describe( 'Model', function() {
 	beforeEach( 'Create a test model instance', function() {
-		var Model = modules[ 'mvc/model' ];
+		var Model = modules.model;
 
 		Car = Model.extend();
 
@@ -140,7 +140,7 @@ describe( 'Model', function() {
 
 	describe( 'extend', function() {
 		it( 'should create new Model based classes', function() {
-			var Model = modules[ 'mvc/model' ];
+			var Model = modules.model;
 
 			var Truck = Car.extend();
 
