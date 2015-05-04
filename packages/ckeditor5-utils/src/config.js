@@ -12,7 +12,7 @@
  * @extends Model
  */
 
-CKEDITOR.define( [ 'mvc/model', 'utils' ], function( Model, utils ) {
+CKEDITOR.define( [ 'model', 'utils' ], function( Model, utils ) {
 	var Config = Model.extend( {
 		/**
 		 * Creates an instance of the {@link Config} class.

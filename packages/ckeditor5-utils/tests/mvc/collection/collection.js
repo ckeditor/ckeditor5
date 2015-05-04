@@ -7,11 +7,11 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'mvc/collection', 'mvc/model' );
+var modules = bender.amd.require( 'collection', 'model' );
 
 describe( 'add', function() {
 	it( 'should change the length and enable get', function() {
-		var Model = modules[ 'mvc/model' ];
+		var Model = modules.model;
 
 		var box = getCollection();
 
@@ -115,13 +115,13 @@ describe( 'remove', function() {
 } );
 
 function getCollection() {
-	var Collection = modules[ 'mvc/collection' ];
+	var Collection = modules.collection;
 
 	return new Collection();
 }
 
 function getItem() {
-	var Model = modules[ 'mvc/model' ];
+	var Model = modules.model;
 
 	return new Model();
 }
