@@ -15,6 +15,20 @@ var files = [
 module.exports = {
 	name: 'bender-ckeditor5',
 
-	files: files,
-	include: files
+	attach: function() {
+		var that = this;
+		var bender = that;
+
+		bender.plugins.addFiles( files );
+		bender.plugins.addInclude( files );
+
+		bender.on( 'test:created', function( test ) {
+			var name = test.displayName;
+
+			name = name.replace( /node_modules\/ckeditor5-core/, 'core: ' );
+			name = name.replace( /node_modules\/ckeditor5-plugin-([^\/]+)/, 'plugin!$1: ' );
+
+			test.displayName = name;
+		} );
+	}
 };
