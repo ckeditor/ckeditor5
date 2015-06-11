@@ -105,7 +105,7 @@ CKEDITOR.define( [ 'basicclass' ], function( BasicClass ) {
 
 /**
  * Fired when an item is added to the collection.
- a
+ *
  * @event add
  * @param {Model} model The added item.
  */
