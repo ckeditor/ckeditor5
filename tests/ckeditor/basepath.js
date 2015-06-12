@@ -20,7 +20,6 @@ beforeEach( function() {
 describe( 'basePath', function() {
 	testGetBasePathFromTag( 'http://bar.com/ckeditor/ckeditor.js', 'http://bar.com/ckeditor/' );
 	testGetBasePathFromTag( '/ckeditor/ckeditor.js', /\/ckeditor\/$/ );
-	testGetBasePathFromTag( '\\ckeditor\\ckeditor.js', /[\\\/]ckeditor[\\\/]$/ );
 	testGetBasePathFromTag( '/ckeditor/ckeditor.js?foo=1#bar', /\/ckeditor\/$/ );
 	testGetBasePathFromTag( '/ckeditor/ckeditor.js;id=foo-bar', /\/ckeditor\/$/ );
 	testGetBasePathFromTag( '/ckeditor/CKEDITOR.JS', /\/ckeditor\/$/ );
