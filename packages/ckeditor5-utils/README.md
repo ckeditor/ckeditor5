@@ -1,6 +1,8 @@
 Boilerplate for Git Repositories
 ================================
 
+[![devDependency Status](https://david-dm.org/ckeditor/ckeditor-boilerplate/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor-boilerplate#info=devDependencies)
+
 A boilerplate file structure to be used by Git-based projects. It contains most of the files expected to be inside
 CKEditor-related repositories.
 
