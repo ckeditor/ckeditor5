@@ -8,6 +8,13 @@ CKEditor-related repositories.
 
 The boilerplate is generic enough to be used by any project out there.
 
+## Presets
+
+Currently there are two presets available:
+
+ * For projects using ECMAScript 5 &ndash; the [`master`](https://github.com/ckeditor/ckeditor-boilerplate/tree/master) branch,
+ * For projects using ECMAScript 2015+ (ESNext) &ndash; the [`esnext`](https://github.com/ckeditor/ckeditor-boilerplate/tree/esnext) branch.
+
 ## Documentation Resources
 
 The following section lists documentation-related files that should be available in the project.
@@ -82,7 +89,7 @@ git remote add boilerplate https://github.com/ckeditor/ckeditor-boilerplate.git
 
 ```bash
 git fetch boilerplate
-git merge boilerplate/master
+git merge boilerplate/master # or boilerplate/esnext
 ```
 
 If any files are already present in your repository, there is a chance that the merge will cause conflicts. Generally it should
