@@ -1,4 +1,6 @@
 {
+	"esnext": true,
+
 	"requireCurlyBraces": [
 		"if", "else", "for", "while", "do", "switch", "try", "catch"
 	],
