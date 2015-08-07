@@ -5,11 +5,11 @@
   "keywords": [],
   "dependencies": {},
   "devDependencies": {
-    "grunt": "~0",
-    "grunt-jscs": "~1",
-    "grunt-contrib-jshint": "~0",
-    "grunt-githooks": "~0",
-    "shelljs": "~0"
+    "grunt": "^0",
+    "grunt-jscs": "^2.0.0",
+    "grunt-contrib-jshint": "^0",
+    "grunt-githooks": "^0",
+    "shelljs": "^0"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "See LICENSE.md",
