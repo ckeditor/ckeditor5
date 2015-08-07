@@ -1,4 +1,6 @@
 {
+	"esnext": true,
+
 	"immed": true,
 	"latedef": "nofunc",
 	"noarg": true,
