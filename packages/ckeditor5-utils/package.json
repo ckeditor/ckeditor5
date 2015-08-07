@@ -7,13 +7,13 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "grunt": "~0",
-    "grunt-jscs": "~1",
-    "grunt-contrib-jshint": "~0",
-    "grunt-githooks": "~0",
-    "shelljs": "~0",
-    "lodash-cli": "~2.4.2",
-    "grunt-lodash": "~0.3.0"
+    "grunt": "^0",
+    "grunt-jscs": "^2.0.0",
+    "grunt-contrib-jshint": "^0",
+    "grunt-githooks": "^0",
+    "shelljs": "^0",
+    "lodash-cli": "^3",
+    "grunt-lodash": "^0.4.0"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "See LICENSE.md",
