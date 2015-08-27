@@ -23,7 +23,7 @@ module.exports = function( grunt ) {
 					modifier: 'modern',
 					exports: 'amd',
 					flags: [
-						'debug'
+						'development'
 					],
 					include: require( './src/utils-lodash' )
 				}
