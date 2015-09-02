@@ -32,11 +32,6 @@ module.exports = function( grunt ) {
 
 		jshint: {
 			options: {
-				globals: {
-					'CKEDITOR': false,
-					'bender': false
-				},
-				predef: [ '-Promise' ],
 				ignores: ignoreFiles
 			}
 		},
