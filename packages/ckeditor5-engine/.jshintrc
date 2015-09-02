@@ -9,5 +9,13 @@
 	"unused": true,
 	"strict": true,
 
-	"globalstrict": true
+	"globalstrict": true,
+
+	"globals": {
+		"CKEDITOR": false,
+		"bender": false
+	},
+	"predef": [
+		"-Promise"
+	]
 }
