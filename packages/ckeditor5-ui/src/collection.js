@@ -9,27 +9,34 @@
  * Collections are ordered sets of models.
  *
  * @class Collection
- * @extends BasicClass
+ * @mixins EventEmitter
  */
 
-CKEDITOR.define( [ 'basicclass' ], function( BasicClass ) {
-	var Collection = BasicClass.extend( {
+CKEDITOR.define( [ 'emittermixin', 'utils' ], function( EmitterMixin, utils ) {
+	class Collection {
 		/**
 		 * Creates a new Collection instance.
 		 *
 		 * @constructor
 		 */
-		constructor: function Collection() {
+		constructor() {
 			/**
 			 * The internal list of models in the collection.
 			 *
 			 * @property _models
 			 * @private
 			 */
-			Object.defineProperty( this, '_models', {
-				value: []
-			} );
-		},
+			this._models = [];
+		}
+
+		/**
+		 * The number of items available in the collection.
+		 *
+		 * @property length
+		 */
+		get length() {
+			return this._models.length;
+		}
 
 		/**
 		 * Adds an item into the collection.
@@ -39,11 +46,11 @@ CKEDITOR.define( [ 'basicclass' ], function( BasicClass ) {
 		 *
 		 * @param {Model} model The item to be added.
 		 */
-		add: function( model ) {
+		add( model ) {
 			this._models.push( model );
 
 			this.fire( 'add', model );
-		},
+		}
 
 		/**
 		 * Gets one item from the collection.
@@ -51,7 +58,7 @@ CKEDITOR.define( [ 'basicclass' ], function( BasicClass ) {
 		 * @param {Number} index The index to take the item from.
 		 * @returns {Model} The requested item.
 		 */
-		get: function( index ) {
+		get( index ) {
 			var model = this._models[ index ];
 
 			if ( !model ) {
@@ -59,7 +66,7 @@ CKEDITOR.define( [ 'basicclass' ], function( BasicClass ) {
 			}
 
 			return model;
-		},
+		}
 
 		/**
 		 * Removes an item from the collection.
@@ -67,7 +74,7 @@ CKEDITOR.define( [ 'basicclass' ], function( BasicClass ) {
 		 * @param {Model|Number} modelOrIndex Either the item itself or its index inside the collection.
 		 * @returns {Model} The removed item.
 		 */
-		remove: function( modelOrIndex ) {
+		remove( modelOrIndex ) {
 			// If a model has been passed, convert it to its index.
 			if ( typeof modelOrIndex != 'number' ) {
 				modelOrIndex = this._models.indexOf( modelOrIndex );
@@ -87,18 +94,9 @@ CKEDITOR.define( [ 'basicclass' ], function( BasicClass ) {
 
 			return removedModel;
 		}
-	} );
+	}
 
-	/**
-	 * The number of items available in the collection.
-	 *
-	 * @property length
-	 */
-	Object.defineProperty( Collection.prototype, 'length', {
-		get: function() {
-			return this._models.length;
-		}
-	} );
+	utils.extend( Collection.prototype, EmitterMixin );
 
 	return Collection;
 } );

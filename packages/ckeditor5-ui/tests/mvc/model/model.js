@@ -15,7 +15,7 @@ describe( 'Model', function() {
 	beforeEach( 'Create a test model instance', function() {
 		var Model = modules.model;
 
-		Car = Model.extend();
+		Car = class extends Model {};
 
 		car = new Car( {
 			color: 'red',
@@ -142,7 +142,7 @@ describe( 'Model', function() {
 		it( 'should create new Model based classes', function() {
 			var Model = modules.model;
 
-			var Truck = Car.extend();
+			class Truck extends Car {}
 
 			var truck = new Truck();
 
