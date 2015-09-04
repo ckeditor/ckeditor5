@@ -24,7 +24,7 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 		 * @param {Number} [priority=10] The priority of this callback in relation to other callbacks to that same event.
 		 * Lower values are called first.
 		 */
-		on: function( event, callback, ctx, priority ) {
+		on( event, callback, ctx, priority ) {
 			var callbacks = getCallbacks( this, event );
 
 			// Set the priority defaults.
@@ -61,7 +61,7 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 		 * @param {Number} [priority=10] The priority of this callback in relation to other callbacks to that same event.
 		 * Lower values are called first.
 		 */
-		once: function( event, callback, ctx, priority ) {
+		once( event, callback, ctx, priority ) {
 			var onceCallback = function( event ) {
 				// Go off() at the first call.
 				event.off();
@@ -82,7 +82,7 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 		 * @param {Object} [ctx] The context object to be removed, pared with the given callback. To handle cases where
 		 * the same callback is used several times with different contexts.
 		 */
-		off: function( event, callback, ctx ) {
+		off( event, callback, ctx ) {
 			var callbacks = getCallbacksIfAny( this, event );
 
 			if ( !callbacks ) {
@@ -110,7 +110,7 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 		 * @param {Number} [priority=10] The priority of this callback in relation to other callbacks to that same event.
 		 * Lower values are called first.
 		 */
-		listenTo: function( emitter, event, callback, ctx, priority ) {
+		listenTo( emitter, event, callback, ctx, priority ) {
 			var emitters, emitterId, emitterInfo, eventCallbacks;
 
 			// _listeningTo contains a list of emitters that this object is listening to.
@@ -166,7 +166,7 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 		 * @param {Function} [callback] (Requires the `event`) The function to be removed from the call list for the given
 		 * `event`.
 		 */
-		stopListening: function( emitter, event, callback ) {
+		stopListening( emitter, event, callback ) {
 			var emitters = this._listeningTo;
 			var emitterId = emitter && emitter._emitterId;
 			var emitterInfo = emitters && emitterId && emitters[ emitterId ];
@@ -213,7 +213,7 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 		 * @param {String} event The name of the event.
 		 * @param {...*} [args] Additional arguments to be passed to the callbacks.
 		 */
-		fire: function( event, args ) {
+		fire( event, args ) {
 			var callbacks = getCallbacksIfAny( this, event );
 
 			if ( !callbacks ) {
