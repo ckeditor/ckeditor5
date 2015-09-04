@@ -13,32 +13,34 @@
  */
 
 CKEDITOR.define( [ 'utils' ], function( utils ) {
-	function EventInfo( source, name ) {
-		/**
-		 * The object that fired the event.
-		 */
-		this.source = source;
+	class EventInfo {
+		constructor( source, name ) {
+			/**
+			 * The object that fired the event.
+			 */
+			this.source = source;
 
-		/**
-		 * The event name.
-		 */
-		this.name = name;
+			/**
+			 * The event name.
+			 */
+			this.name = name;
 
-		// The following methods are defined in the constructor because they must be re-created per instance.
+			// The following methods are defined in the constructor because they must be re-created per instance.
 
-		/**
-		 * Stops the event emitter to call further callbacks for this event interaction.
-		 *
-		 * @method
-		 */
-		this.stop = utils.spy();
+			/**
+			 * Stops the event emitter to call further callbacks for this event interaction.
+			 *
+			 * @method
+			 */
+			this.stop = utils.spy();
 
-		/**
-		 * Removes the current callback from future interactions of this event.
-		 *
-		 * @method
-		 */
-		this.off = utils.spy();
+			/**
+			 * Removes the current callback from future interactions of this event.
+			 *
+			 * @method
+			 */
+			this.off = utils.spy();
+		}
 	}
 
 	return EventInfo;
