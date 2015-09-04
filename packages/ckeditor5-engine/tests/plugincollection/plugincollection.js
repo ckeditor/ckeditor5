@@ -15,8 +15,8 @@ before( function() {
 	var Editor = modules.editor;
 	var Plugin = modules.plugin;
 
-	PluginA = Plugin.extend();
-	PluginB = Plugin.extend();
+	PluginA = class extends Plugin {};
+	PluginB = class extends Plugin {};
 
 	editor = new Editor( document.body.appendChild( document.createElement( 'div' ) ) );
 } );
@@ -32,19 +32,19 @@ CKEDITOR.define( 'plugin!B', function() {
 } );
 
 CKEDITOR.define( 'plugin!C', [ 'plugin', 'plugin!B' ], function( Plugin ) {
-	return Plugin.extend();
+	return class extends Plugin {};
 } );
 
 CKEDITOR.define( 'plugin!D', [ 'plugin', 'plugin!A', 'plugin!C' ], function( Plugin ) {
-	return Plugin.extend();
+	return class extends Plugin {};
 } );
 
 CKEDITOR.define( 'plugin!E', [ 'plugin', 'plugin!F' ], function( Plugin ) {
-	return Plugin.extend();
+	return class extends Plugin {};
 } );
 
 CKEDITOR.define( 'plugin!F', [ 'plugin', 'plugin!E' ], function( Plugin ) {
-	return Plugin.extend();
+	return class extends Plugin {};
 } );
 
 /////////////

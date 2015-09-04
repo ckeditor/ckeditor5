@@ -16,24 +16,13 @@
  */
 
 CKEDITOR.define( [ 'ckeditor', 'config' ], function( CKE, Config ) {
-	var EditorConfig = Config.extend( {
-		/**
-		 * Creates an instance of the {@link EditorConfig} class.
-		 *
-		 * @param {Object} [configurations] The initial configurations to be set.
-		 * @constructor
-		 */
-		constructor: function EditorConfig() {
-			// Call super-constructor.
-			Config.apply( this, arguments );
-		},
-
+	class EditorConfig extends Config {
 		/**
 		 * @inheritdoc Config#get
 		 */
-		get: function() {
+		get() {
 			// Try to take it from this editor instance.
-			var value = Config.prototype.get.apply( this, arguments );
+			var value = super.get.apply( this, arguments );
 
 			// If the configuration is not defined in the instance, try to take it from CKEDITOR.config.
 			if ( typeof value == 'undefined' ) {
@@ -44,12 +33,12 @@ CKEDITOR.define( [ 'ckeditor', 'config' ], function( CKE, Config ) {
 				// that the module is loaded.
 
 				CKE = CKE || CKEDITOR.require( 'ckeditor' );
-				value = CKE.config.get.apply( CKE.config, arguments );
+				value = super.get.apply( CKE.config, arguments );
 			}
 
 			return value;
 		}
-	} );
+	}
 
 	return EditorConfig;
 } );

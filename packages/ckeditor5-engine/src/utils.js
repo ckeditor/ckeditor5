@@ -23,7 +23,7 @@ CKEDITOR.define( [ 'utils-lodash', 'lib/lodash/lodash-ckeditor' ], function( lod
 		 *
 		 * @returns {Function} The spy function.
 		 */
-		spy: function() {
+		spy() {
 			var spy = function() {
 				spy.called = true;
 			};

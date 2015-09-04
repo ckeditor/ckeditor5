@@ -13,16 +13,15 @@
  */
 
 CKEDITOR.define( [ 'model' ], function( Model ) {
-	var Plugin = Model.extend( {
-		constructor: function Plugin( editor ) {
-			// Call the base constructor.
-			Model.apply( this );
+	class Plugin extends Model {
+		constructor( editor ) {
+			super();
 
 			this.editor = editor;
-		},
+		}
 
-		init: function() {}
-	} );
+		init() {}
+	}
 
 	return Plugin;
 } );

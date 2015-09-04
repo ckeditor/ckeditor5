@@ -23,55 +23,44 @@ beforeEach( function() {
 
 // Define fake plugins to be used in tests.
 
-CKEDITOR.define( 'plugin!A', [ 'plugin' ], function( Plugin ) {
-	return Plugin.extend( {
-		init: sinon.spy().named( 'A' )
-	} );
-} );
+CKEDITOR.define( 'plugin!A', [ 'plugin' ], pluginDefinition( 'A' ) );
 
-CKEDITOR.define( 'plugin!B', [ 'plugin' ], function( Plugin ) {
-	return Plugin.extend( {
-		init: sinon.spy().named( 'B' )
-	} );
-} );
+CKEDITOR.define( 'plugin!B', [ 'plugin' ], pluginDefinition( 'B' ) );
 
-CKEDITOR.define( 'plugin!C', [ 'plugin', 'plugin!B' ], function( Plugin ) {
-	return Plugin.extend( {
-		init: sinon.spy().named( 'C' )
-	} );
-} );
+CKEDITOR.define( 'plugin!C', [ 'plugin', 'plugin!B' ], pluginDefinition( 'C' ) );
 
-CKEDITOR.define( 'plugin!D', [ 'plugin', 'plugin!C' ], function( Plugin ) {
-	return Plugin.extend( {
-		init: sinon.spy().named( 'D' )
-	} );
-} );
+CKEDITOR.define( 'plugin!D', [ 'plugin', 'plugin!C' ], pluginDefinition( 'D' ) );
 
-CKEDITOR.define( 'plugin!E', [ 'plugin' ], function( Plugin ) {
-	return Plugin.extend( {} );
-} );
+CKEDITOR.define( 'plugin!E', [ 'plugin' ], pluginDefinition( 'E' ) );
 
 // Synchronous plugin that depends on an asynchronous one.
-CKEDITOR.define( 'plugin!F', [ 'plugin', 'plugin!async' ], function( Plugin ) {
-	return Plugin.extend( {
-		init: sinon.spy().named( 'F' )
-	} );
-} );
+CKEDITOR.define( 'plugin!F', [ 'plugin', 'plugin!async' ], pluginDefinition( 'F' ) );
 
 var asyncSpy = sinon.spy().named( 'async-call-spy' );
 
 CKEDITOR.define( 'plugin!async', [ 'plugin', 'promise' ], function( Plugin, Promise ) {
-	return Plugin.extend( {
-		init: sinon.spy( function() {
-			return new Promise( function( resolve ) {
-				setTimeout( function() {
-					asyncSpy();
-					resolve();
-				}, 0 );
-			} );
-		} )
+	class PluginAsync extends Plugin {}
+
+	PluginAsync.prototype.init = sinon.spy( function() {
+		return new Promise( function( resolve ) {
+			setTimeout( function() {
+				asyncSpy();
+				resolve();
+			}, 0 );
+		} );
 	} );
+
+	return PluginAsync;
 } );
+
+function pluginDefinition( name ) {
+	return function( Plugin ) {
+		class NewPlugin extends Plugin {}
+		NewPlugin.prototype.init = sinon.spy().named( name );
+
+		return NewPlugin;
+	};
+}
 
 ///////////////////
 

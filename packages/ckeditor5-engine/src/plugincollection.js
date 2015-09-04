@@ -13,21 +13,20 @@
  */
 
 CKEDITOR.define( [ 'collection', 'promise' ], function( Collection, Promise ) {
-	var PluginCollection = Collection.extend( {
+	class PluginCollection extends Collection {
 		/**
 		 * Creates an instance of the PluginCollection class, initializing it with a set of plugins.
 		 *
 		 * @constructor
 		 */
-		constructor: function PluginCollection( editor ) {
-			// Call the base constructor.
-			Collection.apply( this );
+		constructor( editor ) {
+			super();
 
 			this._editor = editor;
 
 			// The hash table used to store pointers to loaded plugins by name.
 			this._names = {};
-		},
+		}
 
 		/**
 		 * Loads a set of plugins and add them to the collection.
@@ -36,7 +35,7 @@ CKEDITOR.define( [ 'collection', 'promise' ], function( Collection, Promise ) {
 		 * @returns {Promise} A promise which gets resolved once all plugins are loaded and available into the
 		 * collection.
 		 */
-		load: function( plugins ) {
+		load( plugins ) {
 			var that = this;
 
 			// The list of plugins which are being loaded (to avoid circular references issues).
@@ -53,9 +52,7 @@ CKEDITOR.define( [ 'collection', 'promise' ], function( Collection, Promise ) {
 				return new Promise( function( resolve, reject ) {
 					// Do nothing if the plugin is already loaded (or if is being loaded right now).
 					if ( that._names[ plugin ] || loading[ plugin ] ) {
-						resolve();
-
-						return;
+						return resolve();
 					}
 
 					CKEDITOR.require( [ 'plugin!' + plugin ],
@@ -104,7 +101,7 @@ CKEDITOR.define( [ 'collection', 'promise' ], function( Collection, Promise ) {
 
 				return deps;
 			}
-		},
+		}
 
 		/**
 		 * Adds a plugin to the collection.
@@ -114,7 +111,7 @@ CKEDITOR.define( [ 'collection', 'promise' ], function( Collection, Promise ) {
 		 *
 		 * @param {Plugin} plugin The plugin to be added.
 		 */
-		add: function( plugin ) {
+		add( plugin ) {
 			// Do nothing if the plugin is already loaded.
 			if ( this._names[ plugin.name ] ) {
 				return;
@@ -124,8 +121,8 @@ CKEDITOR.define( [ 'collection', 'promise' ], function( Collection, Promise ) {
 			this._names[ plugin.name ] = plugin;
 
 			// Call the original implementation.
-			Collection.prototype.add.apply( this, arguments );
-		},
+			super.add.apply( this, arguments );
+		}
 
 		/**
 		 * Gets a plugin from the collection.
@@ -133,14 +130,14 @@ CKEDITOR.define( [ 'collection', 'promise' ], function( Collection, Promise ) {
 		 * @param {String} name The plugin name.
 		 * @returns {Plugin} The requested plugin, if available in the collection.
 		 */
-		get: function( name ) {
+		get( name ) {
 			if ( typeof name != 'string' ) {
-				return Collection.prototype.get.apply( this, arguments );
+				return super.get.apply( this, arguments );
 			}
 
 			return this._names[ name ];
 		}
-	} );
+	}
 
 	return PluginCollection;
 } );

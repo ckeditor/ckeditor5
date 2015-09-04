@@ -17,7 +17,7 @@ CKEDITOR.define( [
 	'plugincollection',
 	'promise'
 ], function( Model, EditorConfig, PluginCollection, Promise ) {
-	var Editor = Model.extend( {
+	class Editor extends Model {
 		/**
 		 * Creates a new instance of the Editor class.
 		 *
@@ -27,7 +27,9 @@ CKEDITOR.define( [
 		 * @param {HTMLElement} element The DOM element that will be the source for the created editor.
 		 * @constructor
 		 */
-		constructor: function Editor( element, config ) {
+		constructor( element, config ) {
+			super();
+
 			/**
 			 * The original host page element upon which the editor is created. It is only supposed to be provided on
 			 * editor creation and is not subject to be modified.
@@ -54,7 +56,7 @@ CKEDITOR.define( [
 			 * @type {PluginCollection}
 			 */
 			this.plugins = new PluginCollection( this );
-		},
+		}
 
 		/**
 		 * Initializes the editor instance object after its creation.
@@ -69,7 +71,7 @@ CKEDITOR.define( [
 		 *
 		 * @returns {Promise} A promise which resolves once the initialization is completed.
 		 */
-		init: function() {
+		init() {
 			var that = this;
 			var config = this.config;
 
@@ -104,7 +106,7 @@ CKEDITOR.define( [
 					};
 				}
 			}
-		},
+		}
 
 		/**
 		 * Destroys the editor instance, releasing all resources used by it. If the editor replaced an element, the
@@ -112,12 +114,12 @@ CKEDITOR.define( [
 		 *
 		 * @fires destroy
 		 */
-		destroy: function() {
+		destroy() {
 			this.fire( 'destroy' );
 
 			delete this.element;
 		}
-	} );
+	}
 
 	return Editor;
 } );
