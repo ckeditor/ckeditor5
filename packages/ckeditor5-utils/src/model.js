@@ -9,11 +9,11 @@
  * The base MVC model class.
  *
  * @class Model
- * @extends BasicClass
+ * @mixins EventEmitter
  */
 
-CKEDITOR.define( [ 'basicclass', 'utils' ], function( BasicClass, utils ) {
-	var Model = BasicClass.extend( {
+CKEDITOR.define( [ 'emittermixin', 'utils' ], function( EmitterMixin, utils ) {
+	class Model {
 		/**
 		 * Creates a new Model instance.
 		 *
@@ -21,16 +21,14 @@ CKEDITOR.define( [ 'basicclass', 'utils' ], function( BasicClass, utils ) {
 		 * @param {Object} [properties] The properties to be appended to the instance during creation.
 		 * @method constructor
 		 */
-		constructor: function Model( attributes, properties ) {
+		constructor( attributes, properties ) {
 			/**
 			 * The internal hash containing the model's state.
 			 *
 			 * @property _attributes
 			 * @private
 			 */
-			Object.defineProperty( this, '_attributes', {
-				value: {}
-			} );
+			this._attributes = {};
 
 			// Extend this instance with the additional (out of state) properties.
 			if ( properties ) {
@@ -41,7 +39,7 @@ CKEDITOR.define( [ 'basicclass', 'utils' ], function( BasicClass, utils ) {
 			if ( attributes ) {
 				this.set( attributes );
 			}
-		},
+		}
 
 		/**
 		 * Creates and sets the value of a model attribute of this object. This attribute will be part of the model
@@ -52,7 +50,7 @@ CKEDITOR.define( [ 'basicclass', 'utils' ], function( BasicClass, utils ) {
 		 * @param {String} name The attributes name.
 		 * @param {*} value The attributes value.
 		 */
-		set: function( name, value ) {
+		set( name, value ) {
 			// If the first parameter is an Object, we gonna interact through its properties.
 			if ( utils.isObject( name ) ) {
 				Object.keys( name ).forEach( function( attr ) {
@@ -83,7 +81,9 @@ CKEDITOR.define( [ 'basicclass', 'utils' ], function( BasicClass, utils ) {
 
 			this[ name ] = value;
 		}
-	} );
+	}
+
+	utils.extend( Model.prototype, EmitterMixin );
 
 	return Model;
 } );

@@ -13,21 +13,20 @@
  */
 
 CKEDITOR.define( [ 'model', 'utils' ], function( Model, utils ) {
-	var Config = Model.extend( {
+	class Config extends Model {
 		/**
 		 * Creates an instance of the {@link Config} class.
 		 *
 		 * @param {Object} [configurations] The initial configurations to be set.
 		 * @constructor
 		 */
-		constructor: function Config( configurations ) {
-			// Call super-constructor.
-			Model.apply( this );
+		constructor( configurations ) {
+			super();
 
 			if ( configurations ) {
 				this.set( configurations );
 			}
-		},
+		}
 
 		/**
 		 * Set configuration values.
@@ -66,11 +65,11 @@ CKEDITOR.define( [ 'model', 'utils' ], function( Model, utils ) {
 		 * configuration entries. Configuration names are case-insensitive.
 		 * @param {*} [value=null] The configuration value. Used if a name is passed to nameOrConfigurations.
 		 */
-		set: function( name, value ) {
+		set( name, value ) {
 			// Just pass the call to the original set() in case of an object. It'll deal with recursing through the
 			// object and calling set( name, value ) again for each property.
 			if ( utils.isObject( name ) ) {
-				Model.prototype.set.apply( this, arguments );
+				super.set.apply( this, arguments );
 
 				return;
 			}
@@ -115,8 +114,8 @@ CKEDITOR.define( [ 'model', 'utils' ], function( Model, utils ) {
 			}
 
 			// Call the original set() on the target.
-			Model.prototype.set.call( target, name, value );
-		},
+			super.set.call( target, name, value );
+		}
 
 		/**
 		 * Gets the value for a configuration entry.
@@ -130,7 +129,7 @@ CKEDITOR.define( [ 'model', 'utils' ], function( Model, utils ) {
 		 * @param {String} name The configuration name. Configuration names are case-insensitive.
 		 * @returns {*} The configuration value or `undefined` if the configuration entry was not found.
 		 */
-		get: function( name ) {
+		get( name ) {
 			// The target for this configuration is, for now, this object.
 			//jscs:disable safeContextKeyword
 			var source = this;
@@ -162,9 +161,7 @@ CKEDITOR.define( [ 'model', 'utils' ], function( Model, utils ) {
 			if ( this.definition ) {
 				return this.definition[ name ];
 			}
-
-			return undefined;
-		},
+		}
 
 		/**
 		 * Defines the name and default value for configurations. It accepts the same parameters as the
@@ -181,10 +178,10 @@ CKEDITOR.define( [ 'model', 'utils' ], function( Model, utils ) {
 		 * @param {*} [value] The configuration value. Used if a name is passed to nameOrConfigurations. If undefined,
 		 * the configuration is set to `null`.
 		 */
-		define: function( name, value ) {
+		define( name, value ) {
 			if ( !this.definition ) {
 				/**
-				 *
+				 * TODO
 				 *
 				 * @property
 				 * @type {Config}
@@ -194,7 +191,7 @@ CKEDITOR.define( [ 'model', 'utils' ], function( Model, utils ) {
 
 			this.definition.set( name, value );
 		}
-	} );
+	}
 
 	return Config;
 } );

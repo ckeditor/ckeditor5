@@ -21,7 +21,7 @@ CKEDITOR.define( function() {
 
 	/* istanbul ignore next: we expect this to never happen for now, so we'll not have coverage for this */
 	if ( !window.Promise ) {
-		throw 'The Promise class is not available natively. CKEditor is not compatible with this browser.';
+		throw new Error( 'The Promise class is not available natively. CKEditor is not compatible with this browser.' );
 	}
 
 	return window.Promise;
