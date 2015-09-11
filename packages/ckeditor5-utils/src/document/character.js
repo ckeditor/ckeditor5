@@ -20,15 +20,14 @@ CKEDITOR.define( [ 'document/node' ], function( Node ) {
 		constructor( parent, character, attrs ) {
 			super( parent, attrs );
 
+			/**
+			 * Described character.
+			 *
+			 * @readonly
+			 * @property {String} character
+			 */
 			this.character = character;
 		}
-
-		/**
-		 * Described character.
-		 *
-		 * @readonly
-		 * @property {String} character
-		 */
 	}
 
 	return Character;
