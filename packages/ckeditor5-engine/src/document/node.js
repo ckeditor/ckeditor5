@@ -21,22 +21,21 @@ CKEDITOR.define( function() {
 		 * @param {Array} attrs Array of attributes.
 		 */
 		constructor( parent, attrs ) {
+			/**
+			 * Parent element.
+			 *
+			 * @readonly
+			 * @property {document.Element} parent
+			 */
 			this.parent = parent;
+
+			/**
+			 * Array of attributes.
+			 *
+			 * @property {Array} attr
+			 */
 			this.attrs = attrs || [];
 		}
-
-		/**
-		 * Parent element.
-		 *
-		 * @readonly
-		 * @property {document.Element} parent
-		 */
-
-		/**
-		 * Array of attributes.
-		 *
-		 * @property {Array} attr
-		 */
 
 		/**
 		 * Dept of the node, which equals total number of its parents.

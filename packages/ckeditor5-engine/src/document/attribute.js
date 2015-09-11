@@ -24,23 +24,22 @@ CKEDITOR.define( function() {
 		 * @param {Mixed} value Attribute value
 		 */
 		constructor( key, value ) {
+			/**
+			 * Attribute key
+			 *
+			 * @readonly
+			 * @property {String} key
+			 */
 			this.key = key;
+
+			/**
+			 * Attribute value
+			 *
+			 * @readonly
+			 * @property {Mixed} value
+			 */
 			this.value = value;
 		}
-
-		/**
-		 * Attribute key
-		 *
-		 * @readonly
-		 * @property {String} key
-		 */
-
-		/**
-		 * Attribute value
-		 *
-		 * @readonly
-		 * @property {Mixed} value
-		 */
 	}
 
 	return Attribute;

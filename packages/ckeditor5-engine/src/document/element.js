@@ -24,16 +24,21 @@ CKEDITOR.define( [ 'document/node' ], function( Node ) {
 		constructor( parent, name, attrs ) {
 			super( parent, attrs );
 
+			/**
+			 * Element name.
+			 *
+			 * @readonly
+			 * @property {String} name
+			 */
 			this.name = name;
+
+			/**
+			 * Array of children nodes.
+			 *
+			 * @property {Array} children
+			 */
 			this.children = [];
 		}
-
-		/**
-		 * Element name.
-		 *
-		 * @readonly
-		 * @property {String} name
-		 */
 	}
 
 	return Element;
