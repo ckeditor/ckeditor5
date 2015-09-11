@@ -7,7 +7,9 @@ var tools = require( './utils/tools' );
 module.exports = function( grunt ) {
 	tools.setupMultitaskConfig( grunt, {
 		task: 'jshint',
-		defaultOptions: grunt.file.readJSON( '.jshintrc' ),
+		defaultOptions: {
+				jshintrc: true
+			},
 		addGitIgnore: 'ignores',
 		targets: {
 			all: function() {

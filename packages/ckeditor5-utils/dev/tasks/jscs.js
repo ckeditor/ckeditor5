@@ -7,7 +7,9 @@ var tools = require( './utils/tools' );
 module.exports = function( grunt ) {
 	tools.setupMultitaskConfig( grunt, {
 		task: 'jscs',
-		defaultOptions: grunt.file.readJSON( '.jscsrc' ),
+		defaultOptions: {
+				config: true
+			},
 		addGitIgnore: 'excludeFiles',
 		targets: {
 			all: function() {
