@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals describe, it, expect */
-
 'use strict';
 
 var modules = bender.amd.require( 'promise' );
