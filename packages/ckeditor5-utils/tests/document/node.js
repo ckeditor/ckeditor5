@@ -43,6 +43,19 @@ describe( 'tree', function() {
 		root.children.push( three );
 	} );
 
+	it( 'should have proper positionInParent', function() {
+		expect( root ).to.have.property( 'positionInParent' ).that.is.null;
+
+		expect( one ).to.have.property( 'positionInParent' ).that.equals( 0 );
+		expect( two ).to.have.property( 'positionInParent' ).that.equals( 1 );
+		expect( three ).to.have.property( 'positionInParent' ).that.equals( 2 );
+
+		expect( charB ).to.have.property( 'positionInParent' ).that.equals( 0 );
+		expect( charA ).to.have.property( 'positionInParent' ).that.equals( 1 );
+		expect( img ).to.have.property( 'positionInParent' ).that.equals( 2 );
+		expect( charR ).to.have.property( 'positionInParent' ).that.equals( 3 );
+	} );
+
 	it( 'should have proper depth', function() {
 		expect( root ).to.have.property( 'depth' ).that.equals( 0 );
 

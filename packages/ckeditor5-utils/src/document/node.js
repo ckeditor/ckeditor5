@@ -38,6 +38,16 @@ CKEDITOR.define( function() {
 		}
 
 		/**
+		 * Position of the node in the parent element.
+		 *
+		 * @readonly
+		 * @property {Number} positionInParent
+		 */
+		get positionInParent() {
+			return this.parent ? this.parent.children.indexOf( this ) : null;
+		}
+
+		/**
 		 * Dept of the node, which equals total number of its parents.
 		 *
 		 * @readonly
