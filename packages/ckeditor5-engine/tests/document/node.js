@@ -3,10 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals describe, it, before, expect, bender */
-
-/* jshint expr: true */
-
 /* bender-tags: document */
 
 'use strict';
