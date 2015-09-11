@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals describe, it, expect, beforeEach, bender, sinon */
-
 'use strict';
 
 var modules = bender.amd.require( 'model', 'eventinfo' );
