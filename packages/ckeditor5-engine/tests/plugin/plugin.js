@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals describe, it, expect, before, document */
+/* globals document */
 
 'use strict';
 

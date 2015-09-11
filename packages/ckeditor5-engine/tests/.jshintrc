@@ -1,5 +1,6 @@
 {
 	"esnext": true,
+	"expr": true,
 
 	"immed": true,
 	"latedef": "nofunc",
@@ -12,7 +13,16 @@
 	"globalstrict": true,
 
 	"globals": {
-		"CKEDITOR": false
+		"CKEDITOR": false,
+		"bender": false,
+		"describe": false,
+		"it": false,
+		"before": false,
+		"beforeEach": false,
+		"expect": false,
+		"bender": false,
+		"sinon": false,
+		"setTimeout": false
 	},
 	"predef": [
 		"-Promise"

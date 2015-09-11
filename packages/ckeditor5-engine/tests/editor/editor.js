@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals describe, it, expect, beforeEach, sinon, document, setTimeout */
+/* globals document */
 
 'use strict';
 
