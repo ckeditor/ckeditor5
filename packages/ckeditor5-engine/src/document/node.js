@@ -44,7 +44,14 @@ CKEDITOR.define( function() {
 		 * @property {Number} positionInParent
 		 */
 		get positionInParent() {
-			return this.parent ? this.parent.children.indexOf( this ) : null;
+			var pos;
+
+			// No parent or child doesn't exist in parent's children.
+			if ( !this.parent || ( pos = this.parent.children.indexOf( this ) ) == -1 ) {
+				return null;
+			}
+
+			return pos;
 		}
 
 		/**
@@ -73,14 +80,9 @@ CKEDITOR.define( function() {
 		 * @property {document.Node|Null} nextSibling
 		 */
 		get nextSibling() {
-			var i;
+			var pos = this.positionInParent;
 
-			// No parent or child doesn't exist in parent's children.
-			if ( !this.parent || ( i = this.parent.children.indexOf( this ) ) == -1 ) {
-				return null;
-			}
-
-			return this.parent.children[ i + 1 ] || null;
+			return ( pos !== null && this.parent.children[ pos + 1 ] ) || null;
 		}
 
 		/**
@@ -90,14 +92,9 @@ CKEDITOR.define( function() {
 		 * @property {document.Node|Null} previousSibling
 		 */
 		get previousSibling() {
-			var i;
+			var pos = this.positionInParent;
 
-			// No parent or child doesn't exist in parent's children.
-			if ( !this.parent || ( i = this.parent.children.indexOf( this ) ) == -1 ) {
-				return null;
-			}
-
-			return this.parent.children[ i - 1 ] || null;
+			return ( pos !== null && this.parent.children[ pos - 1 ] ) || null;
 		}
 	}
 
