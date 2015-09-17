@@ -16,49 +16,58 @@ CKEDITOR.define( function() {
 		/**
 		 * Create a position.
 		 *
-		 * @param {document.node} node Node the position is next to.
-		 * @param {Number} position Possible options: Position.BEFORE or Position.AFTER
+		 * @param {document.element} parent Parents element.
+		 * @param {Number} offset Offset in that element.
 		 */
-		constructor( node, position ) {
-			/**
-			 * Position of the node it the tree. For example:
-			 *
-			 * root          Before: []          After: []
-			 *  |- p         Before: [ 0 ]       After: [ 1 ]
-			 *  |- ul        Before: [ 1 ]       After: [ 2 ]
-			 *     |- li     Before: [ 1, 0 ]    After: [ 1, 1 ]
-			 *     |  |- f   Before: [ 1, 0, 0 ] After: [ 1, 0, 1 ]
-			 *     |  |- o   Before: [ 1, 0, 1 ] After: [ 1, 0, 2 ]
-			 *     |  |- o   Before: [ 1, 0, 2 ] After: [ 1, 0, 3 ]
-			 *     |- li     Before: [ 1, 1 ]    After: [ 1, 2 ]
-			 *        |- b   Before: [ 1, 1, 0 ] After: [ 1, 1, 1 ]
-			 *        |- a   Before: [ 1, 1, 1 ] After: [ 1, 1, 2 ]
-			 *        |- r   Before: [ 1, 1, 2 ] After: [ 1, 1, 3 ]
-			 *
-			 * @type {Array}
-			 */
-			this.position = [];
+		constructor( parent, offset ) {
+			this.parent = parent;
+			this.offset = offset;
+		}
 
-			var parent = node.parent;
+		/**
+		 * Position of the node it the tree. For example:
+		 *
+		 * root          Before: []          After: []
+		 *  |- p         Before: [ 0 ]       After: [ 1 ]
+		 *  |- ul        Before: [ 1 ]       After: [ 2 ]
+		 *     |- li     Before: [ 1, 0 ]    After: [ 1, 1 ]
+		 *     |  |- f   Before: [ 1, 0, 0 ] After: [ 1, 0, 1 ]
+		 *     |  |- o   Before: [ 1, 0, 1 ] After: [ 1, 0, 2 ]
+		 *     |  |- o   Before: [ 1, 0, 2 ] After: [ 1, 0, 3 ]
+		 *     |- li     Before: [ 1, 1 ]    After: [ 1, 2 ]
+		 *        |- b   Before: [ 1, 1, 0 ] After: [ 1, 1, 1 ]
+		 *        |- a   Before: [ 1, 1, 1 ] After: [ 1, 1, 2 ]
+		 *        |- r   Before: [ 1, 1, 2 ] After: [ 1, 1, 3 ]
+		 *
+		 * @type {Array}
+		 */
+		get path() {
+			var path = [];
 
-			while ( parent && parent.parent ) {
-				this.position.unshift( parent.positionInParent );
+			var parent = this.parent;
+
+			while ( parent.parent ) {
+				path.unshift( parent.positionInParent );
 				parent = parent.parent;
 			}
 
-			// Root have position [].
-			if ( node.parent ) {
-				if ( position === Position.BEFORE ) {
-					this.position.push( node.positionInParent );
-				} else {
-					this.position.push( node.positionInParent + 1 );
-				}
-			}
+			path.push( this.offset );
+
+			return path;
+		}
+
+		get nodeBefore() {
+			return this.parent.children[ this.offset - 1 ] || null;
+		}
+
+		get nodeAfter() {
+			return this.parent.children[ this.offset ] || null;
+		}
+
+		equals( otherPossition ) {
+			return this.offset === otherPossition.offset && this.parent === otherPossition.parent;
 		}
 	}
-
-	Position.BEFORE = -1;
-	Position.AFTER = 1;
 
 	return Position;
 } );

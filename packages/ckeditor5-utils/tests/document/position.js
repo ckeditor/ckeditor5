@@ -65,47 +65,87 @@ describe( 'position', function() {
 		li2.children.push( r );
 	} );
 
-	it( 'should create positions before elements', function() {
+	it( 'should have path', function() {
 		var Position = modules[ 'document/position' ];
 
-		expect( new Position( root, Position.BEFORE ) ).to.have.property( 'position' ).that.deep.equals( [] );
+		expect( new Position( root, 0 ) ).to.have.property( 'path' ).that.deep.equals( [ 0 ] );
+		expect( new Position( root, 1 ) ).to.have.property( 'path' ).that.deep.equals( [ 1 ] );
+		expect( new Position( root, 2 ) ).to.have.property( 'path' ).that.deep.equals( [ 2 ] );
 
-		expect( new Position( p, Position.BEFORE ) ).to.have.property( 'position' ).that.deep.equals( [ 0 ] );
+		expect( new Position( p, 0 ) ).to.have.property( 'path' ).that.deep.equals( [ 0, 0 ] );
 
-		expect( new Position( ul, Position.BEFORE ) ).to.have.property( 'position' ).that.deep.equals( [ 1 ] );
+		expect( new Position( ul, 0 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0 ] );
+		expect( new Position( ul, 1 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1 ] );
+		expect( new Position( ul, 2 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 2 ] );
 
-		expect( new Position( li1, Position.BEFORE ) ).to.have.property( 'position' ).that.deep.equals( [ 1, 0 ] );
-
-		expect( new Position( f, Position.BEFORE ) ).to.have.property( 'position' ).that.deep.equals( [ 1, 0, 0 ] );
-		expect( new Position( o, Position.BEFORE ) ).to.have.property( 'position' ).that.deep.equals( [ 1, 0, 1 ] );
-		expect( new Position( z, Position.BEFORE ) ).to.have.property( 'position' ).that.deep.equals( [ 1, 0, 2 ] );
-
-		expect( new Position( li2, Position.BEFORE ) ).to.have.property( 'position' ).that.deep.equals( [ 1, 1 ] );
-
-		expect( new Position( b, Position.BEFORE ) ).to.have.property( 'position' ).that.deep.equals( [ 1, 1, 0 ] );
-		expect( new Position( a, Position.BEFORE ) ).to.have.property( 'position' ).that.deep.equals( [ 1, 1, 1 ] );
-		expect( new Position( r, Position.BEFORE ) ).to.have.property( 'position' ).that.deep.equals( [ 1, 1, 2 ] );
+		expect( new Position( li1, 0 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 0 ] );
+		expect( new Position( li1, 1 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 1 ] );
+		expect( new Position( li1, 2 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 2 ] );
+		expect( new Position( li1, 3 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 3 ] );
 	} );
 
-	it( 'should create positions after elements', function() {
+	it( 'should have nodeBefore', function() {
 		var Position = modules[ 'document/position' ];
 
-		expect( new Position( root, Position.AFTER ) ).to.have.property( 'position' ).that.deep.equals( [] );
+		expect( new Position( root, 0 ) ).to.have.property( 'nodeBefore' ).that.is.null;
+		expect( new Position( root, 1 ) ).to.have.property( 'nodeBefore' ).that.equals( p );
+		expect( new Position( root, 2 ) ).to.have.property( 'nodeBefore' ).that.equals( ul );
 
-		expect( new Position( p, Position.AFTER ) ).to.have.property( 'position' ).that.deep.equals( [ 1 ] );
+		expect( new Position( p, 0 ) ).to.have.property( 'nodeBefore' ).that.is.null;
 
-		expect( new Position( ul, Position.AFTER ) ).to.have.property( 'position' ).that.deep.equals( [ 2 ] );
+		expect( new Position( ul, 0 ) ).to.have.property( 'nodeBefore' ).that.is.null;
+		expect( new Position( ul, 1 ) ).to.have.property( 'nodeBefore' ).that.equals( li1 );
+		expect( new Position( ul, 2 ) ).to.have.property( 'nodeBefore' ).that.equals( li2 );
 
-		expect( new Position( li1, Position.AFTER ) ).to.have.property( 'position' ).that.deep.equals( [ 1, 1 ] );
+		expect( new Position( li1, 0 ) ).to.have.property( 'nodeBefore' ).that.is.null;
+		expect( new Position( li1, 1 ) ).to.have.property( 'nodeBefore' ).that.equals( f );
+		expect( new Position( li1, 2 ) ).to.have.property( 'nodeBefore' ).that.equals( o );
+		expect( new Position( li1, 3 ) ).to.have.property( 'nodeBefore' ).that.equals( z );
+	} );
 
-		expect( new Position( f, Position.AFTER ) ).to.have.property( 'position' ).that.deep.equals( [ 1, 0, 1 ] );
-		expect( new Position( o, Position.AFTER ) ).to.have.property( 'position' ).that.deep.equals( [ 1, 0, 2 ] );
-		expect( new Position( z, Position.AFTER ) ).to.have.property( 'position' ).that.deep.equals( [ 1, 0, 3 ] );
+	it( 'should have nodeAfter', function() {
+		var Position = modules[ 'document/position' ];
 
-		expect( new Position( li2, Position.AFTER ) ).to.have.property( 'position' ).that.deep.equals( [ 1, 2 ] );
+		expect( new Position( root, 0 ) ).to.have.property( 'nodeAfter' ).that.equals( p );
+		expect( new Position( root, 1 ) ).to.have.property( 'nodeAfter' ).that.equals( ul );
+		expect( new Position( root, 2 ) ).to.have.property( 'nodeAfter' ).that.is.null;
 
-		expect( new Position( b, Position.AFTER ) ).to.have.property( 'position' ).that.deep.equals( [ 1, 1, 1 ] );
-		expect( new Position( a, Position.AFTER ) ).to.have.property( 'position' ).that.deep.equals( [ 1, 1, 2 ] );
-		expect( new Position( r, Position.AFTER ) ).to.have.property( 'position' ).that.deep.equals( [ 1, 1, 3 ] );
+		expect( new Position( p, 0 ) ).to.have.property( 'nodeAfter' ).that.is.null;
+
+		expect( new Position( ul, 0 ) ).to.have.property( 'nodeAfter' ).that.equals( li1 );
+		expect( new Position( ul, 1 ) ).to.have.property( 'nodeAfter' ).that.equals( li2 );
+		expect( new Position( ul, 2 ) ).to.have.property( 'nodeAfter' ).that.is.null;
+
+		expect( new Position( li1, 0 ) ).to.have.property( 'nodeAfter' ).that.equals( f );
+		expect( new Position( li1, 1 ) ).to.have.property( 'nodeAfter' ).that.equals( o );
+		expect( new Position( li1, 2 ) ).to.have.property( 'nodeAfter' ).that.equals( z );
+		expect( new Position( li1, 3 ) ).to.have.property( 'nodeAfter' ).that.is.null;
+	} );
+
+	it( 'should equals another position with the same offset and node', function() {
+		var Position = modules[ 'document/position' ];
+
+		var position = new Position( root, 0 );
+		var samePosition = new Position( root, 0 );
+
+		expect( position.equals( samePosition ) ).to.be.true;
+	} );
+
+	it( 'should not equals another position with the different offset', function() {
+		var Position = modules[ 'document/position' ];
+
+		var position = new Position( root, 0 );
+		var differentOffset = new Position( root, 1 );
+
+		expect( position.equals( differentOffset ) ).to.be.false;
+	} );
+
+	it( 'should not equals another position with the different node', function() {
+		var Position = modules[ 'document/position' ];
+
+		var position = new Position( root, 0 );
+		var differentNode = new Position( p, 0 );
+
+		expect( position.equals( differentNode ) ).to.be.false;
 	} );
 } );
