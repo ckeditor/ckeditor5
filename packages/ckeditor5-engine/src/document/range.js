@@ -5,7 +5,7 @@
 
 'use strict';
 
-CKEDITOR.define( function() {
+CKEDITOR.define( [ 'document/rangeiterator' ], function( RangeIterator ) {
 	/**
 	 * Range class.
 	 *
@@ -32,6 +32,14 @@ CKEDITOR.define( function() {
 			 * @type {document.Position}
 			 */
 			this.end = end;
+		}
+
+		equals( otherRange ) {
+			return this.start === otherRange.start && this.end === otherRange.end;
+		}
+
+		[ Symbol.iterator ]() {
+			return new RangeIterator( this );
 		}
 	}
 
