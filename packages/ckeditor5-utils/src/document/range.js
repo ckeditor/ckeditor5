@@ -35,7 +35,7 @@ CKEDITOR.define( [ 'document/rangeiterator' ], function( RangeIterator ) {
 		}
 
 		equals( otherRange ) {
-			return this.start === otherRange.start && this.end === otherRange.end;
+			return this.start.equals( otherRange.start ) && this.end.equals( otherRange.end );
 		}
 
 		[ Symbol.iterator ]() {

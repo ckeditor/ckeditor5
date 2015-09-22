@@ -39,7 +39,7 @@ CKEDITOR.define( [
 		next() {
 			var position = this.position;
 
-			if ( position.eqals( this.range.end ) ) {
+			if ( position.equals( this.range.end ) ) {
 				return { done: true };
 			}
 
@@ -50,7 +50,7 @@ CKEDITOR.define( [
 
 				return formatReturnValue( OPENING_TAG, nodeAfter );
 			} else if ( nodeAfter instanceof Character ) {
-				this.position = new Position( position.parent, this.offset + 1 );
+				this.position = new Position( position.parent, position.offset + 1 );
 
 				return formatReturnValue( CHARACTER, nodeAfter );
 			} else {
@@ -60,21 +60,21 @@ CKEDITOR.define( [
 			}
 		}
 
-		get previous() {
+		previous() {
 			var position = this.position;
 
-			if ( position.eqals( this.range.start ) ) {
+			if ( position.equals( this.range.start ) ) {
 				return { done: true };
 			}
 
-			var nodeBefore = this.nodeBefore;
+			var nodeBefore = position.nodeBefore;
 
 			if ( nodeBefore instanceof Element ) {
 				this.position = new Position( nodeBefore, nodeBefore.children.length );
 
 				return formatReturnValue( CLOSING_TAG, nodeBefore );
 			} else if ( nodeBefore instanceof Character ) {
-				this.position = new Position( position.parent, this.offset - 1 );
+				this.position = new Position( position.parent, position.offset - 1 );
 
 				return formatReturnValue( CHARACTER, nodeBefore );
 			} else {
