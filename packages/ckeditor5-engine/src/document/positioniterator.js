@@ -19,27 +19,35 @@ CKEDITOR.define( [
 	 *
 	 * @class document.Range
 	 */
-	class RangeIterator {
+	class PositionIterator {
 		/**
 		 * Create a range iterator.
 		 *
-		 * @param {document.range} range Range to define boundaries of the iterator.
+		 * @param {document.range} boundaries Range to define boundaries of the iterator.
 		 */
-		constructor( range, iteratorPosition ) {
+		constructor( boundaries, iteratorPosition ) {
 			/**
 			 * Start position.
 			 *
 			 * @type {document.Position}
 			 */
-			this.range = range;
-
-			this.position = iteratorPosition || range.start;
+			if ( boundaries instanceof Position ) {
+				this.position = boundaries;
+			} else {
+				this.boundaries =  boundaries;
+				this.position = iteratorPosition || boundaries.start;
+			}
 		}
 
 		next() {
 			var position = this.position;
 
-			if ( position.equals( this.range.end ) ) {
+			// We are at the end of the root.
+			if ( position.parent.parent === null && position.offset === position.parent.children.length ) {
+				return { done: true };
+			}
+
+			if ( this.boundaries && position.equals( this.boundaries.end ) ) {
 				return { done: true };
 			}
 
@@ -63,7 +71,12 @@ CKEDITOR.define( [
 		previous() {
 			var position = this.position;
 
-			if ( position.equals( this.range.start ) ) {
+			// We are at the begging of the root.
+			if ( position.parent.parent === null && position.offset === 0 ) {
+				return { done: true };
+			}
+
+			if ( this.boundaries && position.equals( this.boundaries.start ) ) {
 				return { done: true };
 			}
 
@@ -100,21 +113,21 @@ CKEDITOR.define( [
 	 *
 	 * @readonly
 	 */
-	RangeIterator.OPENING_TAG = OPENING_TAG;
+	PositionIterator.OPENING_TAG = OPENING_TAG;
 
 	/**
 	 * Flag for linear data closing tag.
 	 *
 	 * @readonly
 	 */
-	RangeIterator.CLOSING_TAG = CLOSING_TAG;
+	PositionIterator.CLOSING_TAG = CLOSING_TAG;
 
 	/**
 	 * Flag for linear data character.
 	 *
 	 * @readonly
 	 */
-	RangeIterator.CHARACTER = CHARACTER;
+	PositionIterator.CHARACTER = CHARACTER;
 
-	return RangeIterator;
+	return PositionIterator;
 } );

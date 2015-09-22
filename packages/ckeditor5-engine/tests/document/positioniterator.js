@@ -11,7 +11,7 @@ var modules = bender.amd.require(
 	'document/document',
 	'document/element',
 	'document/character',
-	'document/rangeiterator',
+	'document/positioniterator',
 	'document/position',
 	'document/range' );
 
@@ -28,10 +28,10 @@ describe( 'range iterator', function() {
 		var Element = modules[ 'document/element' ];
 		var Character = modules[ 'document/character' ];
 
-		var RangeIterator = modules[ 'document/rangeiterator' ];
-		OPENING_TAG = RangeIterator.OPENING_TAG;
-		CLOSING_TAG = RangeIterator.CLOSING_TAG;
-		CHARACTER = RangeIterator.CHARACTER;
+		var PositionIterator = modules[ 'document/positioniterator' ];
+		OPENING_TAG = PositionIterator.OPENING_TAG;
+		CLOSING_TAG = PositionIterator.CLOSING_TAG;
+		CHARACTER = PositionIterator.CHARACTER;
 
 		document = new Document();
 		root = document.root;
@@ -82,13 +82,10 @@ describe( 'range iterator', function() {
 	} );
 
 	it( 'should return next position', function() {
-		var RangeIterator = modules[ 'document/rangeiterator' ];
+		var PositionIterator = modules[ 'document/positioniterator' ];
 		var Position = modules[ 'document/position' ];
-		var Range = modules[ 'document/range' ];
 
-		var start = new Position( root, 0 );
-		var end = new Position( root, 2 );
-		var iterator = new RangeIterator( new Range( start, end ) );
+		var iterator = new PositionIterator( new Position( root, 0 ) );
 
 		for ( var i = 0, len = expectedItems.length; i < len; i++ ) {
 			expect( iterator.next() ).to.deep.equal( { done: false, value: expectedItems[ i ] } );
@@ -97,13 +94,10 @@ describe( 'range iterator', function() {
 	} );
 
 	it( 'should return previous position', function() {
-		var RangeIterator = modules[ 'document/rangeiterator' ];
+		var PositionIterator = modules[ 'document/positioniterator' ];
 		var Position = modules[ 'document/position' ];
-		var Range = modules[ 'document/range' ];
 
-		var start = new Position( root, 0 );
-		var end = new Position( root, 2 );
-		var iterator = new RangeIterator( new Range( start, end ), end );
+		var iterator = new PositionIterator( new Position( root, 2 ) );
 
 		for ( var i = expectedItems.length - 1; i >= 0; i-- ) {
 			expect( iterator.previous() ).to.deep.equal( { done: false, value: expectedItems[ i ] } );
