@@ -8,7 +8,6 @@
 CKEDITOR.define( function() {
 	/**
 	 * Position is always before of after a node.
-	 * See {@link #position} property for more information.
 	 *
 	 * @class document.Position
 	 */
@@ -20,7 +19,18 @@ CKEDITOR.define( function() {
 		 * @param {Number} offset Offset in that element.
 		 */
 		constructor( parent, offset ) {
+			/**
+			 * Parent element.
+			 *
+			 * @type {document.Element}
+			 */
 			this.parent = parent;
+
+			/**
+			 * Node offset in the parent element.
+			 *
+			 * @type {Number}
+			 */
 			this.offset = offset;
 		}
 
@@ -56,16 +66,32 @@ CKEDITOR.define( function() {
 			return path;
 		}
 
+		/**
+		 * Node directly before the position.
+		 *
+		 * @type {Node}
+		 */
 		get nodeBefore() {
 			return this.parent.children[ this.offset - 1 ] || null;
 		}
 
+		/**
+		 * Node directly after the position.
+		 *
+		 * @type {Node}
+		 */
 		get nodeAfter() {
 			return this.parent.children[ this.offset ] || null;
 		}
 
-		equals( otherPossition ) {
-			return this.offset === otherPossition.offset && this.parent === otherPossition.parent;
+		/**
+		 * Two positions equals if parent and offset equal.
+		 *
+		 * @param {document.Position} otherPosition Position to compare.
+		 * @returns {Boolean} true if positions equal.
+		 */
+		equals( otherPosition ) {
+			return this.offset === otherPosition.offset && this.parent === otherPosition.parent;
 		}
 	}
 
