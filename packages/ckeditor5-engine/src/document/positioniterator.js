@@ -15,9 +15,9 @@ CKEDITOR.define( [
 	var CHARACTER = 2;
 
 	/**
-	 * Range iterator class.
+	 * Position iterator class. It allows to iterate forward and backward over the tree document.
 	 *
-	 * @class document.Range
+	 * @class document.PositionIterator
 	 */
 	class PositionIterator {
 		/**
@@ -26,19 +26,39 @@ CKEDITOR.define( [
 		 * @param {document.range} boundaries Range to define boundaries of the iterator.
 		 */
 		constructor( boundaries, iteratorPosition ) {
-			/**
-			 * Start position.
-			 *
-			 * @type {document.Position}
-			 */
 			if ( boundaries instanceof Position ) {
 				this.position = boundaries;
 			} else {
 				this.boundaries =  boundaries;
 				this.position = iteratorPosition || boundaries.start;
 			}
+
+			/**
+			 * Iterator position.
+			 *
+			 * @property {document.Position} position
+			 */
+
+			/**
+			 * Iterator boundaries. When {@link #next} is called on end boundary or {@link #previous} on the
+			 * first then `{ done: true }` is returned.
+			 *
+			 * If boundaries are not defined they are set before first and after last child of the root node.
+			 *
+			 * @property {document.Range} boundaries
+			 */
 		}
 
+		/**
+		 * Move {@link #position} to the next position and returned skipped value.
+		 *
+		 * @returns {Object} Value between last and new {@link #position}.
+		 * @returns {Boolean} return.done True if iterator is done.
+		 * @returns {Object} return.value
+		 * @returns {Number} return.value.type Skipped value type, possible options: {@link PositionIterator#OPENING_TAG},
+		 * {@link PositionIterator#CLOSING_TAG} or {@link PositionIterator#CHARACTER}.
+		 * @returns {Node} return.value.node Skipped node.
+		 */
 		next() {
 			var position = this.position;
 
@@ -68,6 +88,16 @@ CKEDITOR.define( [
 			}
 		}
 
+		/**
+		 * Move {@link #position} to the previous position and returned skipped value.
+		 *
+		 * @returns {Object} Value between last and new {@link #position}.
+		 * @returns {Boolean} return.done True if iterator is done.
+		 * @returns {Object} return.value
+		 * @returns {Number} return.value.type Skipped value type, possible options: {@link PositionIterator#OPENING_TAG},
+		 * {@link PositionIterator#CLOSING_TAG} or {@link PositionIterator#CHARACTER}.
+		 * @returns {Node} return.value.node Skipped node.
+		 */
 		previous() {
 			var position = this.position;
 
@@ -109,21 +139,21 @@ CKEDITOR.define( [
 	}
 
 	/**
-	 * Flag for linear data opening tag.
+	 * Flag for opening tag.
 	 *
 	 * @readonly
 	 */
 	PositionIterator.OPENING_TAG = OPENING_TAG;
 
 	/**
-	 * Flag for linear data closing tag.
+	 * Flag for closing tag.
 	 *
 	 * @readonly
 	 */
 	PositionIterator.CLOSING_TAG = CLOSING_TAG;
 
 	/**
-	 * Flag for linear data character.
+	 * Flag for character.
 	 *
 	 * @readonly
 	 */

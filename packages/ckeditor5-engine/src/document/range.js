@@ -7,7 +7,7 @@
 
 CKEDITOR.define( [ 'document/positioniterator' ], function( PositionIterator ) {
 	/**
-	 * Range class.
+	 * Range class. Range is iterable.
 	 *
 	 * @class document.Range
 	 */
@@ -34,10 +34,21 @@ CKEDITOR.define( [ 'document/positioniterator' ], function( PositionIterator ) {
 			this.end = end;
 		}
 
+		/**
+		 * Two ranges equals if first and last positions equal.
+		 *
+		 * @param {document.Range} otherRange Range to compare.
+		 * @returns {Boolean} true if ranges equal.
+		 */
 		equals( otherRange ) {
 			return this.start.equals( otherRange.start ) && this.end.equals( otherRange.end );
 		}
 
+		/**
+		 * Range iterator.
+		 *
+		 * @async see document.PositionIterator
+		 */
 		[ Symbol.iterator ]() {
 			return new PositionIterator( this );
 		}

@@ -86,8 +86,9 @@ describe( 'range iterator', function() {
 		var Position = modules[ 'document/position' ];
 
 		var iterator = new PositionIterator( new Position( root, 0 ) );
+		var i, len;
 
-		for ( var i = 0, len = expectedItems.length; i < len; i++ ) {
+		for ( i = 0, len = expectedItems.length; i < len; i++ ) {
 			expect( iterator.next() ).to.deep.equal( { done: false, value: expectedItems[ i ] } );
 		}
 		expect( iterator.next() ).to.have.property( 'done' ).that.is.true;
@@ -100,6 +101,42 @@ describe( 'range iterator', function() {
 		var iterator = new PositionIterator( new Position( root, 2 ) );
 
 		for ( var i = expectedItems.length - 1; i >= 0; i-- ) {
+			expect( iterator.previous() ).to.deep.equal( { done: false, value: expectedItems[ i ] } );
+		}
+		expect( iterator.previous() ).to.have.property( 'done' ).that.is.true;
+	} );
+
+	it( 'should return next position in the boundaries', function() {
+		var PositionIterator = modules[ 'document/positioniterator' ];
+		var Position = modules[ 'document/position' ];
+		var Range = modules[ 'document/range' ];
+
+		var start = new Position( paragraph, 0 );
+		var end = new Position( img2, 0 );
+
+		var iterator = new PositionIterator( new Range( start, end ) );
+
+		var i, len;
+
+		for ( i = 3, len = expectedItems.length; i < 7; i++ ) {
+			expect( iterator.next() ).to.deep.equal( { done: false, value: expectedItems[ i ] } );
+		}
+		expect( iterator.next() ).to.have.property( 'done' ).that.is.true;
+	} );
+
+	it( 'should return previous position in the boundaries', function() {
+		var PositionIterator = modules[ 'document/positioniterator' ];
+		var Position = modules[ 'document/position' ];
+		var Range = modules[ 'document/range' ];
+
+		var start = new Position( paragraph, 0 );
+		var end = new Position( img2, 0 );
+
+		var iterator = new PositionIterator( new Range( start, end ), end );
+
+		var i, len;
+
+		for ( i = 6, len = expectedItems.length; i > 2; i-- ) {
 			expect( iterator.previous() ).to.deep.equal( { done: false, value: expectedItems[ i ] } );
 		}
 		expect( iterator.previous() ).to.have.property( 'done' ).that.is.true;
