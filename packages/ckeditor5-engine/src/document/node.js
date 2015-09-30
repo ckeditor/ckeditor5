@@ -96,6 +96,18 @@ CKEDITOR.define( function() {
 
 			return ( pos !== null && this.parent.children[ pos - 1 ] ) || null;
 		}
+
+		getPath() {
+			var path = [];
+			var node = this; // jscs:ignore safeContextKeyword
+
+			while ( node.parent ) {
+				path.unshift( node.positionInParent );
+				node = node.parent;
+			}
+
+			return path;
+		}
 	}
 
 	return Node;

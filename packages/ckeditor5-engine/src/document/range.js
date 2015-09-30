@@ -40,8 +40,8 @@ CKEDITOR.define( [ 'document/positioniterator' ], function( PositionIterator ) {
 		 * @param {document.Range} otherRange Range to compare.
 		 * @returns {Boolean} true if ranges equal.
 		 */
-		equals( otherRange ) {
-			return this.start.equals( otherRange.start ) && this.end.equals( otherRange.end );
+		isEqual( otherRange ) {
+			return this.start.isEqual( otherRange.start ) && this.end.isEqual( otherRange.end );
 		}
 
 		/**
