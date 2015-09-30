@@ -61,28 +61,29 @@ CKEDITOR.define( [
 		 */
 		next() {
 			var position = this.position;
+			var parent = position.parent;
 
 			// We are at the end of the root.
-			if ( position.parent.parent === null && position.offset === position.parent.children.length ) {
+			if ( parent.parent === null && position.offset === parent.children.length ) {
 				return { done: true };
 			}
 
-			if ( this.boundaries && position.equals( this.boundaries.end ) ) {
+			if ( this.boundaries && position.isEqual( this.boundaries.end ) ) {
 				return { done: true };
 			}
 
 			var nodeAfter = position.nodeAfter;
 
 			if ( nodeAfter instanceof Element ) {
-				this.position = new Position( nodeAfter, 0 );
+				this.position = Position.makePositionFromParentAndOffset( nodeAfter, 0, position.document );
 
 				return formatReturnValue( OPENING_TAG, nodeAfter );
 			} else if ( nodeAfter instanceof Character ) {
-				this.position = new Position( position.parent, position.offset + 1 );
+				this.position = Position.makePositionFromParentAndOffset( parent, position.offset + 1, position.document );
 
 				return formatReturnValue( CHARACTER, nodeAfter );
 			} else {
-				this.position = new Position( position.parent.parent, position.parent.positionInParent + 1 );
+				this.position = Position.makePositionFromParentAndOffset( parent.parent, parent.positionInParent + 1, position.document );
 
 				return formatReturnValue( CLOSING_TAG, this.position.nodeBefore );
 			}
@@ -100,28 +101,29 @@ CKEDITOR.define( [
 		 */
 		previous() {
 			var position = this.position;
+			var parent = position.parent;
 
 			// We are at the begging of the root.
-			if ( position.parent.parent === null && position.offset === 0 ) {
+			if ( parent.parent === null && position.offset === 0 ) {
 				return { done: true };
 			}
 
-			if ( this.boundaries && position.equals( this.boundaries.start ) ) {
+			if ( this.boundaries && position.isEqual( this.boundaries.start ) ) {
 				return { done: true };
 			}
 
 			var nodeBefore = position.nodeBefore;
 
 			if ( nodeBefore instanceof Element ) {
-				this.position = new Position( nodeBefore, nodeBefore.children.length );
+				this.position = Position.makePositionFromParentAndOffset( nodeBefore, nodeBefore.children.length, position.document );
 
 				return formatReturnValue( CLOSING_TAG, nodeBefore );
 			} else if ( nodeBefore instanceof Character ) {
-				this.position = new Position( position.parent, position.offset - 1 );
+				this.position = Position.makePositionFromParentAndOffset( parent, position.offset - 1, position.document );
 
 				return formatReturnValue( CHARACTER, nodeBefore );
 			} else {
-				this.position = new Position( position.parent.parent, position.parent.positionInParent );
+				this.position = Position.makePositionFromParentAndOffset( parent.parent, parent.positionInParent, position.document );
 
 				return formatReturnValue( OPENING_TAG, this.position.nodeAfter );
 			}

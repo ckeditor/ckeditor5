@@ -5,70 +5,123 @@
 
 'use strict';
 
-CKEDITOR.define( function() {
+CKEDITOR.define( [ 'utils' ], function( utils ) {
 	/**
 	 * Position is always before of after a node.
+	 * See {@link #path} property for more information.
 	 *
 	 * @class document.Position
 	 */
 	class Position {
 		/**
-		 * Create a position.
+		 * Creates a position.
 		 *
-		 * @param {document.element} parent Parents element.
-		 * @param {Number} offset Offset in that element.
+		 * @param {Array} path Position path. See {@link #path} property for more information.
+		 * @param {document.Document} document Document which position refers to.
 		 */
-		constructor( parent, offset ) {
+		constructor( path, document ) {
 			/**
-			 * Parent element.
+			 * Position of the node it the tree. For example:
 			 *
-			 * @type {document.Element}
+			 * root
+			 *  |- p         Before: [ 0 ]       After: [ 1 ]
+			 *  |- ul        Before: [ 1 ]       After: [ 2 ]
+			 *     |- li     Before: [ 1, 0 ]    After: [ 1, 1 ]
+			 *     |  |- f   Before: [ 1, 0, 0 ] After: [ 1, 0, 1 ]
+			 *     |  |- o   Before: [ 1, 0, 1 ] After: [ 1, 0, 2 ]
+			 *     |  |- o   Before: [ 1, 0, 2 ] After: [ 1, 0, 3 ]
+			 *     |- li     Before: [ 1, 1 ]    After: [ 1, 2 ]
+			 *        |- b   Before: [ 1, 1, 0 ] After: [ 1, 1, 1 ]
+			 *        |- a   Before: [ 1, 1, 1 ] After: [ 1, 1, 2 ]
+			 *        |- r   Before: [ 1, 1, 2 ] After: [ 1, 1, 3 ]
+			 *
+			 * @type {Array}
 			 */
-			this.parent = parent;
+			this.path = path;
 
 			/**
-			 * Node offset in the parent element.
+			 * Document which position refers to.
 			 *
-			 * @type {Number}
+			 * @type {document.Document}
 			 */
-			this.offset = offset;
+			this.document = document;
 		}
 
 		/**
-		 * Position of the node it the tree. For example:
+		 * Create position from the parent element and the offset in that element.
 		 *
-		 * root          Before: []          After: []
-		 *  |- p         Before: [ 0 ]       After: [ 1 ]
-		 *  |- ul        Before: [ 1 ]       After: [ 2 ]
-		 *     |- li     Before: [ 1, 0 ]    After: [ 1, 1 ]
-		 *     |  |- f   Before: [ 1, 0, 0 ] After: [ 1, 0, 1 ]
-		 *     |  |- o   Before: [ 1, 0, 1 ] After: [ 1, 0, 2 ]
-		 *     |  |- o   Before: [ 1, 0, 2 ] After: [ 1, 0, 3 ]
-		 *     |- li     Before: [ 1, 1 ]    After: [ 1, 2 ]
-		 *        |- b   Before: [ 1, 1, 0 ] After: [ 1, 1, 1 ]
-		 *        |- a   Before: [ 1, 1, 1 ] After: [ 1, 1, 2 ]
-		 *        |- r   Before: [ 1, 1, 2 ] After: [ 1, 1, 3 ]
-		 *
-		 * @type {Array}
+		 * @param {document.Element} parent Position parent element.
+		 * @param {Number} offset Position offset.
+		 * @param {document.Document} document Document which position refers to.
 		 */
-		get path() {
-			var path = [];
+		static makePositionFromParentAndOffset( parent, offset, document ) {
+			var path = parent.getPath();
 
-			var parent = this.parent;
+			path.push( offset );
 
-			while ( parent.parent ) {
-				path.unshift( parent.positionInParent );
-				parent = parent.parent;
+			return new Position( path, document );
+		}
+
+		/**
+		 * Set the position before given node.
+		 *
+		 * @param {document.node} node Node the position should be directly before.
+		 * @param {document.Document} document Document which position refers to.
+		 */
+		static makePositionBefore( node, document ) {
+			if ( !node.parent ) {
+				throw 'You can not make position before root.';
 			}
 
-			path.push( this.offset );
+			return Position.makePositionFromParentAndOffset( node.parent, node.positionInParent, document );
+		}
 
-			return path;
+		/**
+		 * Set the position after given node.
+		 *
+		 * @param {document.node} node Node the position should be directly after.
+		 * @param {document.Document} document Document which position refers to.
+		 */
+		static makePositionAfter( node, document ) {
+			if ( !node.parent ) {
+				throw 'You can not make position after root.';
+			}
+
+			return Position.makePositionFromParentAndOffset( node.parent, node.positionInParent + 1, document );
+		}
+
+		/**
+		 * Element which is a parent of the position.
+		 *
+		 * @readonly
+		 * @property {document.Element} parent
+		 */
+		get parent() {
+			var parent = this.document.root;
+
+			var i, len;
+
+			for ( i = 0, len = this.path.length - 1; i < len; i++ ) {
+				parent = parent.children[ this.path[ i ] ];
+			}
+
+			return parent;
+		}
+
+		/**
+		 * Position offset in the parent, which is the last element of the path.
+		 *
+		 * @readonly
+		 * @property {Number} offset
+		 */
+		get offset() {
+			return utils.last( this.path );
 		}
 
 		/**
 		 * Node directly before the position.
 		 *
+		 * @readonly
 		 * @type {Node}
 		 */
 		get nodeBefore() {
@@ -78,6 +131,7 @@ CKEDITOR.define( function() {
 		/**
 		 * Node directly after the position.
 		 *
+		 * @readonly
 		 * @type {Node}
 		 */
 		get nodeAfter() {
@@ -85,13 +139,13 @@ CKEDITOR.define( function() {
 		}
 
 		/**
-		 * Two positions equals if parent and offset equal.
+		 * Two positions equals if paths equal.
 		 *
 		 * @param {document.Position} otherPosition Position to compare.
 		 * @returns {Boolean} true if positions equal.
 		 */
-		equals( otherPosition ) {
-			return this.offset === otherPosition.offset && this.parent === otherPosition.parent;
+		isEqual( otherPosition ) {
+			return utils.isEqual( this.path, otherPosition.path );
 		}
 	}
 
