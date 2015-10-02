@@ -7,13 +7,11 @@ var isBuild = false;
 
 var config = {
 	plugins: [
-		// Uncomment to enable code coverage.
-		// 'benderjs-coverage',
-
-		'benderjs-mocha',
 		'benderjs-chai',
-		'benderjs-sinon',
+		'benderjs-coverage',
+		'benderjs-mocha',
 		'benderjs-promise',
+		'benderjs-sinon',
 		'dev/bender/plugins/ckeditor5'
 	],
 
