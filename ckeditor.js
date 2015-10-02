@@ -39,6 +39,23 @@
 		basePath: getBasePath(),
 
 		/**
+		 * Whether the app should work in the "debug mode" (aka "verbose mode").
+		 *
+		 * You can use the `CKEDITOR.isDebug` condition in order to wrap code that should be removed in the build version:
+		 *
+		 *		if ( CKEDITOR.isDebug ) {
+		 *			if ( doSomeSuperUnnecessaryDebugChecks() ) {
+		 *				throw new CKEditorError( 'sth-broke: Kaboom!' );
+		 *			}
+		 *		}
+		 *
+		 * See also {@link #isDev}.
+		 *
+		 * @property
+		 */
+		isDebug: true,
+
+		/**
 		 * Defines an AMD module.
 		 *
 		 * See https://github.com/ckeditor/ckeditor5-design/wiki/AMD for more details about our AMD API.

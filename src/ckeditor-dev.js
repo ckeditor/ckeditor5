@@ -14,7 +14,9 @@ define( 'ckeditor-dev', function() {
 		 *
 		 * This property is not defined in production (compiled, build code).
 		 *
-		 * @memberof CKEditor
+		 * See also {@link #isDebug}.
+		 *
+		 * @member CKEDITOR
 		 */
 		isDev: true,
 
