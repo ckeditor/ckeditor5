@@ -47,14 +47,4 @@ describe( 'isDebug', function() {
 
 		expect( CKEDITOR.isDebug ).to.be.a( 'boolean' );
 	} );
-
-	// Generally speaking these two properties are unrelated, but by default if we're in the dev mode,
-	// we're also debugging. The opposite isn't necessarily true - we may be debugging a build version.
-	it( 'is true if isDev is true', function() {
-		var CKEDITOR = modules.ckeditor;
-
-		if ( CKEDITOR.isDev ) {
-			expect( CKEDITOR.isDebug ).to.be.true;
-		}
-	} );
 } );
