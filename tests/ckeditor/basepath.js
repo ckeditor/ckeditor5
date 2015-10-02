@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals beforeEach, describe, it, expect, window, document */
+/* globals window, document */
 
 'use strict';
 

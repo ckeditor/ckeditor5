@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals describe, it, expect, CKEDITOR */
-
 'use strict';
 
 CKEDITOR.define( 'testModule', [ 'ckeditor' ], function( ckeditor ) {

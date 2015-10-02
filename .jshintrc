@@ -9,9 +9,5 @@
 	"unused": true,
 	"strict": true,
 
-	"globalstrict": true,
-
-	"globals": {
-		"bender": false
-	}
+	"globalstrict": true
 }
