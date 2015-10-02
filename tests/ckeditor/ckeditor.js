@@ -40,3 +40,11 @@ describe( 'getPluginPath()', function() {
 		expect( path ).to.equal( basePath + 'plugins/test/' );
 	} );
 } );
+
+describe( 'isDebug', function() {
+	it( 'is a boolean', function() {
+		var CKEDITOR = modules.ckeditor;
+
+		expect( CKEDITOR.isDebug ).to.be.a( 'boolean' );
+	} );
+} );
