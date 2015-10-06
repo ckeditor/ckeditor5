@@ -12,7 +12,7 @@
  * @extends Collection
  */
 
-CKEDITOR.define( [ 'collection', 'promise' ], function( Collection, Promise ) {
+CKEDITOR.define( [ 'collection', 'promise', 'ckeditorerror' ], function( Collection, Promise, CKEditorError ) {
 	class PluginCollection extends Collection {
 		/**
 		 * Creates an instance of the PluginCollection class, initializing it with a set of plugins.
@@ -77,8 +77,13 @@ CKEDITOR.define( [ 'collection', 'promise' ], function( Collection, Promise ) {
 						},
 						// Error callback.
 						function() {
-							var err = new Error( 'It was not possible to load the "' + plugin + '" plugin.' );
-							err.name = 'CKEditor Error';
+							/**
+							 * It was not possible to load the plugin.
+							 *
+							 * @error plugincollection-load
+							 * @param {String} plugin The name of the plugin that could not be loaded.
+							 */
+							var err = new CKEditorError( 'plugincollection-load: It was not possible to load the plugin.', { plugin: plugin } );
 							reject( err );
 						}
 					);

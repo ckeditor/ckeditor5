@@ -7,7 +7,7 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'plugincollection', 'plugin', 'editor' );
+var modules = bender.amd.require( 'plugincollection', 'plugin', 'editor', 'ckeditorerror' );
 var editor;
 var PluginA, PluginB;
 
@@ -169,6 +169,7 @@ describe( 'load', function() {
 
 	it( 'should throw an error for invalid plugins', function() {
 		var PluginCollection = modules.plugincollection;
+		var CKEditorError = modules.ckeditorerror;
 
 		var plugins = new PluginCollection( editor );
 
@@ -177,8 +178,8 @@ describe( 'load', function() {
 				throw new Error( 'Test error: this promise should not be resolved successfully' );
 			} )
 			.catch( function( err ) {
-				expect( err ).to.be.an.instanceof( Error );
-				expect( err.name ).to.equal( 'CKEditor Error' );
+				expect( err ).to.be.an.instanceof( CKEditorError );
+				expect( err.data ).to.have.property( 'plugin', 'BAD' );
 			} );
 	} );
 } );
