@@ -20,14 +20,14 @@
 CKEDITOR.define( function() {
 	class CKEditorError extends Error {
 		/**
-		 * Logs an error to the console.
+		 * Creates an instance of the class.
 		 *
 		 * Read more about error logging in the {@link core.log} module.
 		 *
 		 * @constructor
 		 * @param {String} message The error message in an `error-name: Error message.` format.
 		 * During the minification process the "Error message" part will be removed to limit the code size
-		 * and a link to this error documentation will be logged to the console.
+		 * and a link to this error documentation will be added to the `message`.
 		 * @param {Object} [data] Additional data describing the error.
 		 */
 		constructor( message, data ) {
