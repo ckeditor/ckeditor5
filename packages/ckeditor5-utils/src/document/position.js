@@ -17,9 +17,9 @@ CKEDITOR.define( [ 'utils' ], function( utils ) {
 		 * Creates a position.
 		 *
 		 * @param {Array} path Position path. See {@link #path} property for more information.
-		 * @param {document.Document} document Document which position refers to.
+		 * @param {document.Document} doc Document which position refers to.
 		 */
-		constructor( path, document ) {
+		constructor( path, doc ) {
 			/**
 			 * Position of the node it the tree. For example:
 			 *
@@ -44,7 +44,7 @@ CKEDITOR.define( [ 'utils' ], function( utils ) {
 			 *
 			 * @type {document.Document}
 			 */
-			this.document = document;
+			this.doc = doc;
 		}
 
 		/**
@@ -52,42 +52,42 @@ CKEDITOR.define( [ 'utils' ], function( utils ) {
 		 *
 		 * @param {document.Element} parent Position parent element.
 		 * @param {Number} offset Position offset.
-		 * @param {document.Document} document Document which position refers to.
+		 * @param {document.Document} doc Document which position refers to.
 		 */
-		static makePositionFromParentAndOffset( parent, offset, document ) {
+		static makePositionFromParentAndOffset( parent, offset, doc ) {
 			var path = parent.getPath();
 
 			path.push( offset );
 
-			return new Position( path, document );
+			return new Position( path, doc );
 		}
 
 		/**
 		 * Set the position before given node.
 		 *
 		 * @param {document.node} node Node the position should be directly before.
-		 * @param {document.Document} document Document which position refers to.
+		 * @param {document.Document} doc Document which position refers to.
 		 */
-		static makePositionBefore( node, document ) {
+		static makePositionBefore( node, doc ) {
 			if ( !node.parent ) {
 				throw 'You can not make position before root.';
 			}
 
-			return Position.makePositionFromParentAndOffset( node.parent, node.positionInParent, document );
+			return Position.makePositionFromParentAndOffset( node.parent, node.positionInParent, doc );
 		}
 
 		/**
 		 * Set the position after given node.
 		 *
 		 * @param {document.node} node Node the position should be directly after.
-		 * @param {document.Document} document Document which position refers to.
+		 * @param {document.Document} doc Document which position refers to.
 		 */
-		static makePositionAfter( node, document ) {
+		static makePositionAfter( node, doc ) {
 			if ( !node.parent ) {
 				throw 'You can not make position after root.';
 			}
 
-			return Position.makePositionFromParentAndOffset( node.parent, node.positionInParent + 1, document );
+			return Position.makePositionFromParentAndOffset( node.parent, node.positionInParent + 1, doc );
 		}
 
 		/**
@@ -97,7 +97,7 @@ CKEDITOR.define( [ 'utils' ], function( utils ) {
 		 * @property {document.Element} parent
 		 */
 		get parent() {
-			var parent = this.document.root;
+			var parent = this.doc.root;
 
 			var i, len;
 
