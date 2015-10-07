@@ -20,7 +20,7 @@
 CKEDITOR.define( function() {
 	class CKEditorError extends Error {
 		/**
-		 * Creates an instance of the class.
+		 * Creates an instance of the CKEditorError class.
 		 *
 		 * Read more about error logging in the {@link core.log} module.
 		 *
