@@ -19,6 +19,8 @@
 		"it": false,
 		"before": false,
 		"beforeEach": false,
+		"after": false,
+		"afterEach": false,
 		"expect": false,
 		"bender": false,
 		"sinon": false,
