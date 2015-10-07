@@ -7,9 +7,12 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'plugincollection', 'plugin', 'editor', 'ckeditorerror' );
+var modules = bender.amd.require( 'plugincollection', 'plugin', 'editor', 'log' );
 var editor;
 var PluginA, PluginB;
+
+var sandbox = sinon.sandbox.create();
+afterEach( sandbox.restore.bind( sandbox ) );
 
 before( function() {
 	var Editor = modules.editor;
@@ -169,7 +172,9 @@ describe( 'load', function() {
 
 	it( 'should throw an error for invalid plugins', function() {
 		var PluginCollection = modules.plugincollection;
-		var CKEditorError = modules.ckeditorerror;
+		var log = modules.log;
+
+		var logSpy = sandbox.stub( log, 'error' );
 
 		var plugins = new PluginCollection( editor );
 
@@ -178,8 +183,12 @@ describe( 'load', function() {
 				throw new Error( 'Test error: this promise should not be resolved successfully' );
 			} )
 			.catch( function( err ) {
-				expect( err ).to.be.an.instanceof( CKEditorError );
-				expect( err.data ).to.have.property( 'plugin', 'BAD' );
+				expect( err ).to.be.an.instanceof( Error );
+				// Make sure it's the Require.JS error, not the one thrown above.
+				expect( err ).to.have.property( 'requireType', 'scripterror' );
+
+				sinon.assert.calledOnce( logSpy );
+				expect( logSpy.args[ 0 ][ 0 ] ).to.match( /^plugincollection-load:/ );
 			} );
 	} );
 } );
