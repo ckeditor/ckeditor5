@@ -179,6 +179,7 @@ describe( 'load', function() {
 		var plugins = new PluginCollection( editor );
 
 		return plugins.load( 'A,BAD,B' )
+			// Throw here, so if by any chance plugins.load() was resolved correctly catch() will be stil executed.
 			.then( function() {
 				throw new Error( 'Test error: this promise should not be resolved successfully' );
 			} )
