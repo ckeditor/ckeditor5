@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* global document */
+
 'use strict';
 
 CKEDITOR.define( [ 'Collection', 'Model' ], function( Collection, Model ) {
@@ -27,7 +29,7 @@ CKEDITOR.define( [ 'Collection', 'Model' ], function( Collection, Model ) {
 			this.regions = new Collection();
 
 			this.regions.on( 'add', ( evt, region ) => this.el.appendChild( region.el ) );
-		};
+		}
 
 		/**
 		 * Element of this view.
@@ -39,8 +41,8 @@ CKEDITOR.define( [ 'Collection', 'Model' ], function( Collection, Model ) {
 				return this._el;
 			}
 
-			return this._el = this.render();
-		};
+			return ( this._el = this.render() );
+		}
 
 		/**
 		 * Binds a property of the model to a specific listener that
@@ -74,7 +76,7 @@ CKEDITOR.define( [ 'Collection', 'Model' ], function( Collection, Model ) {
 				// Set the initial state of the view.
 				executeCallback( el, model[ property ] );
 			};
-		};
+		}
 
 		/**
 		 * Renders {@link el} using {@link template}.
@@ -90,8 +92,9 @@ CKEDITOR.define( [ 'Collection', 'Model' ], function( Collection, Model ) {
 				return null;
 			}
 
-			var el = document.createElement( template.tag ),
-				attr, value;
+			var el = document.createElement( template.tag );
+			var attr;
+			var value;
 
 			// Set the text first.
 			if ( template.text ) {
@@ -128,7 +131,7 @@ CKEDITOR.define( [ 'Collection', 'Model' ], function( Collection, Model ) {
 			return el;
 		}
 
-		destroy() {};
+		destroy() {}
 	}
 
 	return View;

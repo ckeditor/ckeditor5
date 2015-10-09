@@ -33,9 +33,9 @@ CKEDITOR.define( [ 'Collection', 'Model' ], function( Collection, Model ) {
 			this.views = new Collection();
 
 			this.views.on( 'add', ( evt, view ) => this.el && this.el.appendChild( view.el ) );
-		};
+		}
 
-		destroy() {};
+		destroy() {}
 	}
 
 	return Region;
