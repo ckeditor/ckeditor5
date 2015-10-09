@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* global document, HTMLElement */
+
 'use strict';
 
 var modules = bender.amd.require( 'ckeditor', 'ui/view' );
@@ -38,8 +40,8 @@ describe( 'plain view', function() {
 
 describe( 'rich view', function() {
 	beforeEach( 'Create a test view instance', function() {
-		var View = modules[ 'ui/view' ],
-			Component = class extends View {
+		var View = modules[ 'ui/view' ];
+		var Component = class extends View {
 				constructor( model ) {
 					super( model );
 
@@ -70,12 +72,12 @@ describe( 'rich view', function() {
 										if ( value == 'foo' ) {
 											return value;
 										}
- 									} )
+									} )
 								}
 							}
 						]
-					}
-				};
+					};
+				}
 			};
 
 		view = new Component( {
@@ -110,5 +112,6 @@ describe( 'rich view', function() {
 function getOuterHtml( el ) {
 	var container = document.createElement( 'div' );
 	container.appendChild( el.cloneNode( 1 ) );
+
 	return container.innerHTML;
 }
