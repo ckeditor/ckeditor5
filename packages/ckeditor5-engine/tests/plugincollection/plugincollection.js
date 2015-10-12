@@ -7,9 +7,13 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'plugincollection', 'plugin', 'editor', 'ckeditorerror' );
+var modules = bender.amd.require( 'plugincollection', 'plugin', 'editor', 'log' );
 var editor;
 var PluginA, PluginB;
+class TestError extends Error {}
+
+var sandbox = sinon.sandbox.create();
+afterEach( sandbox.restore.bind( sandbox ) );
 
 before( function() {
 	var Editor = modules.editor;
@@ -45,6 +49,10 @@ CKEDITOR.define( 'plugin!E', [ 'plugin', 'plugin!F' ], function( Plugin ) {
 
 CKEDITOR.define( 'plugin!F', [ 'plugin', 'plugin!E' ], function( Plugin ) {
 	return class extends Plugin {};
+} );
+
+CKEDITOR.define( 'plugin!G', function() {
+	throw new TestError( 'Some error inside a plugin' );
 } );
 
 /////////////
@@ -167,19 +175,48 @@ describe( 'load', function() {
 			} );
 	} );
 
-	it( 'should throw an error for invalid plugins', function() {
+	it( 'should reject on invalid plugin names (forward require.js loading error)', function() {
 		var PluginCollection = modules.plugincollection;
-		var CKEditorError = modules.ckeditorerror;
+		var log = modules.log;
+
+		var logSpy = sandbox.stub( log, 'error' );
 
 		var plugins = new PluginCollection( editor );
 
 		return plugins.load( 'A,BAD,B' )
+			// Throw here, so if by any chance plugins.load() was resolved correctly catch() will be stil executed.
 			.then( function() {
 				throw new Error( 'Test error: this promise should not be resolved successfully' );
 			} )
 			.catch( function( err ) {
-				expect( err ).to.be.an.instanceof( CKEditorError );
-				expect( err.data ).to.have.property( 'plugin', 'BAD' );
+				expect( err ).to.be.an.instanceof( Error );
+				// Make sure it's the Require.JS error, not the one thrown above.
+				expect( err.message ).to.match( /^Script error for:/ );
+
+				sinon.assert.calledOnce( logSpy );
+				expect( logSpy.args[ 0 ][ 0 ] ).to.match( /^plugincollection-load:/ );
+			} );
+	} );
+
+	it( 'should reject on broken plugins (forward the error thrown in a plugin)', function() {
+		var PluginCollection = modules.plugincollection;
+		var log = modules.log;
+
+		var logSpy = sandbox.stub( log, 'error' );
+
+		var plugins = new PluginCollection( editor );
+
+		return plugins.load( 'A,G,B' )
+			// Throw here, so if by any chance plugins.load() was resolved correctly catch() will be stil executed.
+			.then( function() {
+				throw new Error( 'Test error: this promise should not be resolved successfully' );
+			} )
+			.catch( function( err ) {
+				expect( err ).to.be.an.instanceof( TestError );
+				expect( err ).to.have.property( 'message', 'Some error inside a plugin' );
+
+				sinon.assert.calledOnce( logSpy );
+				expect( logSpy.args[ 0 ][ 0 ] ).to.match( /^plugincollection-load:/ );
 			} );
 	} );
 } );
