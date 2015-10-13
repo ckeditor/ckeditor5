@@ -58,20 +58,27 @@ CKEDITOR.define( [ 'collection', 'promise', 'log' ], function( Collection, Promi
 					CKEDITOR.require( [ 'plugin!' + plugin ],
 						// Success callback.
 						function( LoadedPlugin ) {
-							var loadedPlugin = new LoadedPlugin( that._editor );
-							loadedPlugin.name = plugin;
-							loadedPlugin.path = CKEDITOR.getPluginPath( plugin );
-							loadedPlugin.deps = getPluginDeps( plugin );
+							var deps = getPluginDeps( plugin );
+							var isPluginDep = plugin.indexOf( '/' ) > 0;
+
+							if ( !isPluginDep ) {
+								var loadedPlugin = new LoadedPlugin( that._editor );
+								loadedPlugin.name = plugin;
+								loadedPlugin.path = CKEDITOR.getPluginPath( plugin );
+								loadedPlugin.deps = deps;
+							}
 
 							loading[ plugin ] = true;
 
 							// Resolve with a promise that resolves once all dependencies are loaded.
 							resolve(
-								Promise.all( loadedPlugin.deps.map( pluginPromise ) )
+								Promise.all( deps.map( pluginPromise ) )
 									.then( function() {
 										// Once dependencies are loaded, add the new instance of the loaded plugin to
 										// the collection. This guarantees that dependecies come first in the collection.
-										that.add( loadedPlugin );
+										if ( !isPluginDep ) {
+											that.add( loadedPlugin );
+										}
 									} )
 							);
 						},
