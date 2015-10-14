@@ -27,8 +27,6 @@ CKEDITOR.define( [ 'Collection', 'Model' ], function( Collection, Model ) {
 			 * Regions which belong to this view.
 			 */
 			this.regions = new Collection();
-
-			this.regions.on( 'add', ( evt, region ) => this.el.appendChild( region.el ) );
 		}
 
 		/**
@@ -53,20 +51,18 @@ CKEDITOR.define( [ 'Collection', 'Model' ], function( Collection, Model ) {
 		 * @param {Function} [callback] Callback function executed on property change in model.
 		 * @constructor
 		 */
-		bind( model, property, callback ) {
-			return function( el, attr ) {
-				// TODO: Use ES6 default arguments syntax.
-				var changeCallback = callback || setAttribute;
+		bindModel( property, callback ) {
+			var model = this.model;
 
-				function setAttribute( el, value ) {
-					el.setAttribute( attr, value );
-				}
+			return function( el, updater ) {
+				// TODO: Use ES6 default arguments syntax.
+				var changeCallback = callback || updater;
 
 				function executeCallback( el, value ) {
 					var result = changeCallback( el, value );
 
 					if ( typeof result != 'undefined' ) {
-						setAttribute( el, result );
+						updater( el, result );
 					}
 				}
 
@@ -96,9 +92,21 @@ CKEDITOR.define( [ 'Collection', 'Model' ], function( Collection, Model ) {
 			var attr;
 			var value;
 
+			var textUpdater = () => {
+				return ( el, value ) => el.innerHTML = value;
+			};
+
+			var attributeUpdater = ( attr ) => {
+				return ( el, value ) => el.setAttribute( attr, value );
+			};
+
 			// Set the text first.
 			if ( template.text ) {
-				el.innerHTML = template.text;
+				if ( typeof template.text == 'function' ) {
+					template.text( el, textUpdater() );
+				} else {
+					el.innerHTML = template.text;
+				}
 			}
 
 			// Set attributes.
@@ -107,7 +115,7 @@ CKEDITOR.define( [ 'Collection', 'Model' ], function( Collection, Model ) {
 
 				// Attribute bound directly to the model.
 				if ( typeof value == 'function' ) {
-					value( el, attr );
+					value( el, attributeUpdater( attr ) );
 				}
 
 				// Explicit attribute definition (string).

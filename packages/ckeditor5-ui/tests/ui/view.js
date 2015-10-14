@@ -49,15 +49,15 @@ describe( 'rich view', function() {
 						tag: 'p',
 						attributes: {
 							'class': 'a',
-							x: this.bind( this.model, 'plain' )
+							x: this.bindModel( 'plain' )
 						},
-						text: 'b',
+						text: this.bindModel( 'text' ),
 						children: [
 							{
 								tag: 'b',
 								text: 'c',
 								attributes: {
-									y: this.bind( this.model, 'augmented', function( el, value ) {
+									y: this.bindModel( 'augmented', function( el, value ) {
 										return ( value > 0 ? 'positive' : 'negative' );
 									} )
 								}
@@ -66,7 +66,7 @@ describe( 'rich view', function() {
 								tag: 'i',
 								text: 'd',
 								attributes: {
-									z: this.bind( this.model, 'custom', function( el, value ) {
+									z: this.bindModel( 'custom', function( el, value ) {
 										el.innerHTML = value;
 
 										if ( value == 'foo' ) {
@@ -83,7 +83,8 @@ describe( 'rich view', function() {
 		view = new Component( {
 			plain: 'z',
 			augmented: 7,
-			custom: 'moo'
+			custom: 'moo',
+			text: 'bar'
 		} );
 	} );
 
@@ -91,21 +92,24 @@ describe( 'rich view', function() {
 		expect( view.el ).to.be.instanceof( HTMLElement );
 		expect( view.el.parentNode ).to.be.null();
 
-		expect( getOuterHtml( view.el ) ).to.be.equal( '<p class="a" x="z">b<b y="positive">c</b><i>moo</i></p>' );
+		expect( getOuterHtml( view.el ) ).to.be.equal( '<p class="a" x="z">bar<b y="positive">c</b><i>moo</i></p>' );
 	} );
 
 	it( 'reacts to changes in model', function() {
 		view.model.plain = 'x';
-		expect( getOuterHtml( view.el ) ).to.be.equal( '<p class="a" x="x">b<b y="positive">c</b><i>moo</i></p>' );
+		expect( getOuterHtml( view.el ) ).to.be.equal( '<p class="a" x="x">bar<b y="positive">c</b><i>moo</i></p>' );
 
 		view.model.augmented = 2;
-		expect( getOuterHtml( view.el ) ).to.be.equal( '<p class="a" x="x">b<b y="positive">c</b><i>moo</i></p>' );
+		expect( getOuterHtml( view.el ) ).to.be.equal( '<p class="a" x="x">bar<b y="positive">c</b><i>moo</i></p>' );
 
 		view.model.augmented = -2;
-		expect( getOuterHtml( view.el ) ).to.be.equal( '<p class="a" x="x">b<b y="negative">c</b><i>moo</i></p>' );
+		expect( getOuterHtml( view.el ) ).to.be.equal( '<p class="a" x="x">bar<b y="negative">c</b><i>moo</i></p>' );
 
 		view.model.custom = 'foo';
-		expect( getOuterHtml( view.el ) ).to.be.equal( '<p class="a" x="x">b<b y="negative">c</b><i z="foo">foo</i></p>' );
+		expect( getOuterHtml( view.el ) ).to.be.equal( '<p class="a" x="x">bar<b y="negative">c</b><i z="foo">foo</i></p>' );
+
+		view.model.text = 'baz';
+		expect( getOuterHtml( view.el ) ).to.be.equal( '<p class="a" x="x">baz</p>' );
 	} );
 } );
 
