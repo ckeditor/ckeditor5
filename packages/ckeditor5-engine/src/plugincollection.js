@@ -12,7 +12,13 @@
  * @extends Collection
  */
 
-CKEDITOR.define( [ 'collection', 'promise', 'log' ], function( Collection, Promise, log ) {
+CKEDITOR.define( [
+	'collection',
+	'promise',
+	'plugin',
+	'ckeditorerror',
+	'log'
+], function( Collection, Promise, Plugin, CKEditorError, log ) {
 	class PluginCollection extends Collection {
 		/**
 		 * Creates an instance of the PluginCollection class, initializing it with a set of plugins.
@@ -63,6 +69,17 @@ CKEDITOR.define( [ 'collection', 'promise', 'log' ], function( Collection, Promi
 
 							if ( !isPluginDep ) {
 								var loadedPlugin = new LoadedPlugin( that._editor );
+
+								if ( !( loadedPlugin instanceof Plugin ) ) {
+									/**
+									 * The plugin is not an instance of Plugin.
+									 *
+									 * @error plugincollection-instance
+									 * @param {String} plugin The name of the plugin that is not an instance of Plugin.
+									 */
+									reject( new CKEditorError( 'plugincollection-instance: The plugin is not an instance of Plugin.', { plugin: plugin } ) );
+								}
+
 								loadedPlugin.name = plugin;
 								loadedPlugin.path = CKEDITOR.getPluginPath( plugin );
 								loadedPlugin.deps = deps;

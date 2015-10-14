@@ -75,6 +75,15 @@ CKEDITOR.define( 'c', function() {
 	return ( spies.c = sinon.spy() );
 } );
 
+CKEDITOR.define( 'plugin!I', [ 'plugin', 'plugin!J' ], function( Plugin ) {
+	return class extends Plugin {};
+} );
+
+// Note: This is NOT a plugin.
+CKEDITOR.define( 'plugin!J', function() {
+	return class {};
+} );
+
 /////////////
 
 describe( 'load', function() {
@@ -261,6 +270,19 @@ describe( 'load', function() {
 				expect( spies.c.called ).to.be.false;
 
 				expect( plugins.length ).to.be.equal( 1 );
+			} );
+	} );
+
+	it( 'should load instances of Plugin only', function() {
+		var PluginCollection = modules.plugincollection;
+		var plugins = new PluginCollection( editor );
+
+		return plugins.load( 'I' )
+			.then( () => {
+				throw new Error( 'Test error: this promise should not be resolved successfully' );
+			} ).catch( err => {
+				expect( err.name ).to.be.equal( 'CKEditorError' );
+				expect( err.message ).to.match( /^plugincollection-instance:/ );
 			} );
 	} );
 } );
