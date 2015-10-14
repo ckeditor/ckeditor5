@@ -1,0 +1,54 @@
+/**
+ * @license Copyright (c) 2003-2015, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+/* globals bender, sinon */
+
+'use strict';
+
+( function() {
+	bender.tools.core = {
+		/**
+		 * Defines CKEditor plugin which is a mock of an editor creator.
+		 *
+		 * If `proto` is not set or it does not define `create()` and `destroy()` methods,
+		 * then they will be set to Sinon spies. Therefore the shortest usage is:
+		 *
+		 *	  bender.tools.defineEditorCreatorMock( 'test1' );
+		 *
+		 * The mocked creator is available under:
+		 *
+		 *	  editor.plugins.get( 'creator-thename' );
+		 *
+		 * @param {String} creatorName Name of the creator.
+		 * @param {Object} [proto] Prototype of the creator. Properties from the proto param will
+		 * be copied to the prototype of the creator.
+		 */
+		defineEditorCreatorMock: function( creatorName, proto ) {
+			CKEDITOR.define( 'plugin!creator-' + creatorName, [ 'creator' ], function( Creator ) {
+				return mockCreator( Creator );
+			} );
+
+			function mockCreator( Creator ) {
+				class TestCreator extends Creator {}
+
+				if ( proto ) {
+					for ( var propName in proto ) {
+						TestCreator.prototype[ propName ] = proto[ propName ];
+					}
+				}
+
+				if ( !TestCreator.prototype.create ) {
+					TestCreator.prototype.create = sinon.spy().named( creatorName + '-create' );
+				}
+
+				if ( !TestCreator.prototype.destroy ) {
+					TestCreator.prototype.destroy = sinon.spy().named( creatorName + '-destroy' );
+				}
+
+				return TestCreator;
+			}
+		}
+	};
+} )();
