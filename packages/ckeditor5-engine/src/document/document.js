@@ -5,7 +5,7 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'document/element' ], function( Element ) {
+CKEDITOR.define( [ 'document/element', 'emittermixin', 'utils' ], function( Element, EmitterMixin, utils ) {
 	/**
 	 * Document model.
 	 *
@@ -23,16 +23,27 @@ CKEDITOR.define( [ 'document/element' ], function( Element ) {
 			 * @property {String} root
 			 */
 			this.root = new Element( null, 'root' );
+
+			this.version = 0;
 		}
 
 		/**
 		 * This is the only entry point for all document changes.
 		 *
-		 * @param {document.Element} operation Operation to be applied.
+		 * @param {document.Operation} operation Operation to be applied.
 		 */
-		applyOperation() {
+		applyOperation( operation ) {
+			if ( operation.baseVersion !== this.version ) {
+				throw 'Only operations with matching versions can be applied.';
+			}
+
+			operation._execute();
+			this.version++;
+			this.fire( 'operationApplied', operation );
 		}
 	}
+
+	utils.extend( Document.prototype, EmitterMixin );
 
 	return Document;
 } );

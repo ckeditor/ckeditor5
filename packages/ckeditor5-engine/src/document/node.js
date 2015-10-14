@@ -5,7 +5,7 @@
 
 'use strict';
 
-CKEDITOR.define( function() {
+CKEDITOR.define( [ 'document/attribute' ], function( Attribute ) {
 	/**
 	 * Abstract document tree node class.
 	 *
@@ -35,6 +35,30 @@ CKEDITOR.define( function() {
 			 * @property {Array} attr
 			 */
 			this.attrs = attrs || [];
+		}
+
+		hasAttr( attr ) {
+			return this.getAttr( attr ) !== null;
+		}
+
+		getAttr( attr ) {
+			var i, len;
+
+			if ( attr instanceof Attribute ) {
+				for ( i = 0, len = this.attrs.length; i < len; i++ ) {
+					if ( this.attrs[ i ].isEquals( attr ) ) {
+						return this.attrs[ i ];
+					}
+				}
+			} else {
+				for ( i = 0, len = this.attrs.length; i < len; i++ ) {
+					if ( this.attrs[ i ].key == attr ) {
+						return this.attrs[ i ];
+					}
+				}
+			}
+
+			return null;
 		}
 
 		/**
