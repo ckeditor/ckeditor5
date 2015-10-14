@@ -53,6 +53,31 @@ describe( 'InsertOperation', function() {
 		expect( doc.root.children[ 2 ].character ).to.be.equal( 'r' );
 	} );
 
+	it( 'should insert between existing nodes', function() {
+		var Document = modules[ 'document/document' ];
+		var InsertOperation = modules[ 'document/insertoperation' ];
+		var Position = modules[ 'document/position' ];
+		var Character = modules[ 'document/character' ];
+
+		var doc = new Document();
+
+		doc.root.children.push( new Character( doc.root, 'x' ) );
+		doc.root.children.push( new Character( doc.root, 'y' ) );
+
+		doc.applyOperation( new InsertOperation(
+			new Position( [ 1 ], doc ),
+			[ new Character( null, 'b' ), new Character( null, 'a' ), new Character( null, 'r' ) ],
+			doc.version ) );
+
+		expect( doc.version ).to.be.equal( 1 );
+		expect( doc.root.children.length ).to.be.equal( 5 );
+		expect( doc.root.children[ 0 ].character ).to.be.equal( 'x' );
+		expect( doc.root.children[ 1 ].character ).to.be.equal( 'b' );
+		expect( doc.root.children[ 2 ].character ).to.be.equal( 'a' );
+		expect( doc.root.children[ 3 ].character ).to.be.equal( 'r' );
+		expect( doc.root.children[ 4 ].character ).to.be.equal( 'y' );
+	} );
+
 	it( 'should insert text', function() {
 		var Document = modules[ 'document/document' ];
 		var InsertOperation = modules[ 'document/insertoperation' ];
