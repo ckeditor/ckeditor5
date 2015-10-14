@@ -75,12 +75,9 @@ CKEDITOR.define( [
 			var that = this;
 			var config = this.config;
 
-			// Create and cache a promise that resolves when all initialization procedures get resolved.
-			this._initPromise = this._initPromise || Promise.all( [
+			return Promise.all( [
 				loadPlugins().then( initPlugins )
 			] );
-
-			return this._initPromise;
 
 			function loadPlugins() {
 				return that.plugins.load( config.plugins );

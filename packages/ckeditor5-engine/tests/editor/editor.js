@@ -92,12 +92,6 @@ describe( 'init', function() {
 		return promise;
 	} );
 
-	it( 'should return the same promise for successive calls', function() {
-		var promise = editor.init();
-
-		expect( editor.init() ).to.equal( promise );
-	} );
-
 	it( 'should fill `plugins`', function() {
 		var Editor = modules.editor;
 		var Plugin = modules.plugin;
