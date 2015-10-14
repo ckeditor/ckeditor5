@@ -4,6 +4,7 @@
  */
 
 /* globals document */
+/* bender-include: ../_tools/tools.js */
 
 'use strict';
 
@@ -24,6 +25,9 @@ beforeEach( function() {
 
 before( function() {
 	// Define fake plugins to be used in tests.
+	bender.tools.core.defineEditorCreatorMock( 'test', {
+		init: sinon.spy().named( 'creator-test' )
+	} );
 
 	CKEDITOR.define( 'plugin!A', [ 'plugin' ], pluginDefinition( 'A' ) );
 
@@ -84,6 +88,11 @@ describe( 'config', function() {
 describe( 'init', function() {
 	it( 'should return a promise that resolves properly', function() {
 		var Promise = modules.promise;
+		var Editor = modules.editor;
+
+		editor = new Editor( element, {
+			plugins: 'creator-test'
+		} );
 
 		var promise = editor.init();
 
@@ -97,16 +106,17 @@ describe( 'init', function() {
 		var Plugin = modules.plugin;
 
 		editor = new Editor( element, {
-			plugins: 'A,B'
+			plugins: 'A,B,creator-test'
 		} );
 
 		expect( editor.plugins.length ).to.equal( 0 );
 
 		return editor.init().then( function() {
-			expect( editor.plugins.length ).to.equal( 2 );
+			expect( editor.plugins.length ).to.equal( 3 );
 
 			expect( editor.plugins.get( 'A' ) ).to.be.an.instanceof( Plugin );
 			expect( editor.plugins.get( 'B' ) ).to.be.an.instanceof( Plugin );
+			expect( editor.plugins.get( 'creator-test' ) ).to.be.an.instanceof( Plugin );
 		} );
 	} );
 
@@ -114,11 +124,12 @@ describe( 'init', function() {
 		var Editor = modules.editor;
 
 		editor = new Editor( element, {
-			plugins: 'A,D'
+			plugins: 'creator-test,A,D'
 		} );
 
 		return editor.init().then( function() {
 			sinon.assert.callOrder(
+				editor.plugins.get( 'creator-test' ).init,
 				editor.plugins.get( 'A' ).init,
 				editor.plugins.get( 'B' ).init,
 				editor.plugins.get( 'C' ).init,
@@ -131,14 +142,16 @@ describe( 'init', function() {
 		var Editor = modules.editor;
 
 		editor = new Editor( element, {
-			plugins: 'A,F'
+			plugins: 'creator-test,A,F'
 		} );
 
 		return editor.init().then( function() {
 			sinon.assert.callOrder(
+				editor.plugins.get( 'creator-test' ).init,
 				editor.plugins.get( 'A' ).init,
 				editor.plugins.get( 'async' ).init,
-				asyncSpy,	// This one is called with delay by the async init
+				// This one is called with delay by the async init
+				asyncSpy,
 				editor.plugins.get( 'F' ).init
 			);
 		} );
@@ -148,7 +161,7 @@ describe( 'init', function() {
 		var Editor = modules.editor;
 
 		editor = new Editor( element, {
-			plugins: 'E'
+			plugins: 'E,creator-test'
 		} );
 
 		return editor.init();
@@ -167,14 +180,14 @@ describe( 'destroy', function() {
 
 		editor.on( 'destroy', spy );
 
-		editor.destroy();
-
-		sinon.assert.called( spy );
+		return editor.destroy().then( function() {
+			sinon.assert.called( spy );
+		} );
 	} );
 
 	it( 'should delete the "element" property', function() {
-		editor.destroy();
-
-		expect( editor ).to.not.have.property( 'element' );
+		return editor.destroy().then( function() {
+			expect( editor ).to.not.have.property( 'element' );
+		} );
 	} );
 } );

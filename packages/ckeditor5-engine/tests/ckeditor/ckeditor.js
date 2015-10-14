@@ -4,12 +4,18 @@
  */
 
 /* globals document */
+/* bender-include: ../_tools/tools.js */
 
 'use strict';
 
 var modules = bender.amd.require( 'ckeditor', 'editor', 'promise', 'config' );
 
 var content = document.getElementById( 'content' );
+var editorConfig = { plugins: 'creator-test' };
+
+before( function() {
+	bender.tools.core.defineEditorCreatorMock( 'test' );
+} );
 
 beforeEach( function() {
 	var CKEDITOR = modules.ckeditor;
@@ -25,14 +31,14 @@ describe( 'create', function() {
 		var CKEDITOR = modules.ckeditor;
 		var Promise = modules.promise;
 
-		expect( CKEDITOR.create( content ) ).to.be.instanceof( Promise );
+		expect( CKEDITOR.create( content, editorConfig ) ).to.be.instanceof( Promise );
 	} );
 
 	it( 'should create a new editor instance', function() {
 		var CKEDITOR = modules.ckeditor;
 		var Editor = modules.editor;
 
-		return CKEDITOR.create( content ).then( function( editor ) {
+		return CKEDITOR.create( content, editorConfig ).then( function( editor ) {
 			expect( editor ).to.be.instanceof( Editor );
 			expect( editor.element ).to.equal( content );
 		} );
@@ -42,7 +48,7 @@ describe( 'create', function() {
 		var CKEDITOR = modules.ckeditor;
 		var Editor = modules.editor;
 
-		return CKEDITOR.create( '.editor' ).then( function( editor ) {
+		return CKEDITOR.create( '.editor', editorConfig ).then( function( editor ) {
 			expect( editor ).to.be.instanceof( Editor );
 			expect( editor.element ).to.equal( document.querySelector( '.editor' ) );
 		} );
@@ -51,7 +57,7 @@ describe( 'create', function() {
 	it( 'should set configurations on the new editor', function() {
 		var CKEDITOR = modules.ckeditor;
 
-		return CKEDITOR.create( content, { test: 1 } ).then( function( editor ) {
+		return CKEDITOR.create( content, { test: 1, plugins: 'creator-test' } ).then( function( editor ) {
 			expect( editor.config.test ).to.equal( 1 );
 		} );
 	} );
@@ -59,7 +65,7 @@ describe( 'create', function() {
 	it( 'should add the editor to the `instances` collection', function() {
 		var CKEDITOR = modules.ckeditor;
 
-		return CKEDITOR.create( content ).then( function( editor ) {
+		return CKEDITOR.create( content, editorConfig ).then( function( editor ) {
 			expect( CKEDITOR.instances ).to.have.length( 1 );
 			expect( CKEDITOR.instances.get( 0 ) ).to.equal( editor );
 		} );
@@ -70,11 +76,11 @@ describe( 'create', function() {
 		var editor1, editor2;
 
 		// Create the first editor.
-		return CKEDITOR.create( content ).then( function( editor ) {
+		return CKEDITOR.create( content, editorConfig ).then( function( editor ) {
 			editor1 = editor;
 
 			// Create the second editor.
-			return CKEDITOR.create( '.editor' ).then( function( editor ) {
+			return CKEDITOR.create( '.editor', editorConfig ).then( function( editor ) {
 				editor2 = editor;
 
 				// It should have 2 editors.

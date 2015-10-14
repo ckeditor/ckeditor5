@@ -166,6 +166,19 @@ CKEDITOR.define( [
 
 			return this._names[ name ];
 		}
+
+		/**
+		 * Executes the callback for each model in the collection.
+		 *
+		 * @param {Function} callback
+		 * @param {Model} callback.item
+		 * @param {String} callback.name
+		 */
+		forEach( callback ) {
+			for ( var name in this._names ) {
+				callback( this._names[ name ], name );
+			}
+		}
 	}
 
 	return PluginCollection;
