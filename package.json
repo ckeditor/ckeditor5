@@ -19,7 +19,7 @@
     "benderjs-coverage": "^0.2.1",
     "benderjs-mocha": "^0.3.0",
     "benderjs-promise": "^0.1.0",
-    "benderjs-sinon": "^0.2.3",
+    "benderjs-sinon": "^0.3.0",
     "del": "^2.0.2",
     "grunt": "^0",
     "grunt-jscs": "^2.0.0",
