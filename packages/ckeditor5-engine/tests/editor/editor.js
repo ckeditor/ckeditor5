@@ -11,6 +11,7 @@ var modules = bender.amd.require( 'editor', 'editorconfig', 'plugin', 'promise' 
 
 var editor;
 var element;
+var asyncSpy;
 
 beforeEach( function() {
 	var Editor = modules.editor;
@@ -21,36 +22,38 @@ beforeEach( function() {
 	editor = new Editor( element );
 } );
 
-// Define fake plugins to be used in tests.
+before( function() {
+	// Define fake plugins to be used in tests.
 
-CKEDITOR.define( 'plugin!A', [ 'plugin' ], pluginDefinition( 'A' ) );
+	CKEDITOR.define( 'plugin!A', [ 'plugin' ], pluginDefinition( 'A' ) );
 
-CKEDITOR.define( 'plugin!B', [ 'plugin' ], pluginDefinition( 'B' ) );
+	CKEDITOR.define( 'plugin!B', [ 'plugin' ], pluginDefinition( 'B' ) );
 
-CKEDITOR.define( 'plugin!C', [ 'plugin', 'plugin!B' ], pluginDefinition( 'C' ) );
+	CKEDITOR.define( 'plugin!C', [ 'plugin', 'plugin!B' ], pluginDefinition( 'C' ) );
 
-CKEDITOR.define( 'plugin!D', [ 'plugin', 'plugin!C' ], pluginDefinition( 'D' ) );
+	CKEDITOR.define( 'plugin!D', [ 'plugin', 'plugin!C' ], pluginDefinition( 'D' ) );
 
-CKEDITOR.define( 'plugin!E', [ 'plugin' ], pluginDefinition( 'E' ) );
+	CKEDITOR.define( 'plugin!E', [ 'plugin' ], pluginDefinition( 'E' ) );
 
-// Synchronous plugin that depends on an asynchronous one.
-CKEDITOR.define( 'plugin!F', [ 'plugin', 'plugin!async' ], pluginDefinition( 'F' ) );
+	// Synchronous plugin that depends on an asynchronous one.
+	CKEDITOR.define( 'plugin!F', [ 'plugin', 'plugin!async' ], pluginDefinition( 'F' ) );
 
-var asyncSpy = sinon.spy().named( 'async-call-spy' );
+	asyncSpy = sinon.spy().named( 'async-call-spy' );
 
-CKEDITOR.define( 'plugin!async', [ 'plugin', 'promise' ], function( Plugin, Promise ) {
-	class PluginAsync extends Plugin {}
+	CKEDITOR.define( 'plugin!async', [ 'plugin', 'promise' ], function( Plugin, Promise ) {
+		class PluginAsync extends Plugin {}
 
-	PluginAsync.prototype.init = sinon.spy( function() {
-		return new Promise( function( resolve ) {
-			setTimeout( function() {
-				asyncSpy();
-				resolve();
-			}, 0 );
+		PluginAsync.prototype.init = sinon.spy( function() {
+			return new Promise( function( resolve ) {
+				setTimeout( function() {
+					asyncSpy();
+					resolve();
+				}, 0 );
+			} );
 		} );
-	} );
 
-	return PluginAsync;
+		return PluginAsync;
+	} );
 } );
 
 function pluginDefinition( name ) {

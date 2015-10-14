@@ -11,9 +11,15 @@ var modules = bender.amd.require( 'plugincollection', 'plugin', 'editor', 'log' 
 var editor;
 var PluginA, PluginB;
 class TestError extends Error {}
+var sandbox;
 
-var sandbox = sinon.sandbox.create();
-afterEach( sandbox.restore.bind( sandbox ) );
+// TODO move to bender.tools.createSinonSandbox().
+before( function() {
+	sandbox = sinon.sandbox.create();
+} );
+afterEach( function() {
+	sandbox.restore();
+} );
 
 before( function() {
 	var Editor = modules.editor;
