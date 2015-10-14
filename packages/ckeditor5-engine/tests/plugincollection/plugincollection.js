@@ -61,6 +61,35 @@ CKEDITOR.define( 'plugin!G', function() {
 	throw new TestError( 'Some error inside a plugin' );
 } );
 
+CKEDITOR.define( 'plugin!H', [ 'plugin', 'plugin!H/a' ], function( Plugin ) {
+	return class extends Plugin {};
+} );
+
+var spies = {};
+// Note: This is NOT a plugin.
+CKEDITOR.define( 'plugin!H/a', [ 'plugin!H/a/b' ], function() {
+	return ( spies[ 'plugin!H/a' ] = sinon.spy() );
+} );
+
+// Note: This is NOT a plugin.
+CKEDITOR.define( 'plugin!H/a/b', [ 'c' ], function() {
+	return ( spies[ 'plugin!H/a/b' ] = sinon.spy() );
+} );
+
+// Note: This is NOT a plugin.
+CKEDITOR.define( 'c', function() {
+	return ( spies.c = sinon.spy() );
+} );
+
+CKEDITOR.define( 'plugin!I', [ 'plugin', 'plugin!J' ], function( Plugin ) {
+	return class extends Plugin {};
+} );
+
+// Note: This is NOT a plugin.
+CKEDITOR.define( 'plugin!J', function() {
+	return class {};
+} );
+
 /////////////
 
 describe( 'load', function() {
@@ -223,6 +252,43 @@ describe( 'load', function() {
 
 				sinon.assert.calledOnce( logSpy );
 				expect( logSpy.args[ 0 ][ 0 ] ).to.match( /^plugincollection-load:/ );
+			} );
+	} );
+
+	it( 'should load `deps` which are not plugins', function() {
+		var PluginCollection = modules.plugincollection;
+
+		var plugins = new PluginCollection( editor );
+		expect( spies ).to.be.empty;
+
+		return plugins.load( 'H' )
+			.then( function() {
+				expect( plugins.get( 'H' ).deps ).to.deep.equal( [ 'H/a' ] );
+
+				// Non–plugin dependencies should be loaded (spy exists)...
+				expect( spies ).to.have.keys( [
+					'plugin!H/a', 'plugin!H/a/b', 'c'
+				] );
+
+				// ...but not be executed (called == false)...
+				expect( spies[ 'plugin!H/a' ].called ).to.be.false;
+				expect( spies[ 'plugin!H/a/b' ].called ).to.be.false;
+				expect( spies.c.called ).to.be.false;
+
+				expect( plugins.length ).to.be.equal( 1 );
+			} );
+	} );
+
+	it( 'should load instances of Plugin only', function() {
+		var PluginCollection = modules.plugincollection;
+		var plugins = new PluginCollection( editor );
+
+		return plugins.load( 'I' )
+			.then( () => {
+				throw new Error( 'Test error: this promise should not be resolved successfully' );
+			} ).catch( err => {
+				expect( err.name ).to.be.equal( 'CKEditorError' );
+				expect( err.message ).to.match( /^plugincollection-instance:/ );
 			} );
 	} );
 } );

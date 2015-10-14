@@ -12,7 +12,13 @@
  * @extends Collection
  */
 
-CKEDITOR.define( [ 'collection', 'promise', 'log' ], function( Collection, Promise, log ) {
+CKEDITOR.define( [
+	'collection',
+	'promise',
+	'plugin',
+	'ckeditorerror',
+	'log'
+], function( Collection, Promise, Plugin, CKEditorError, log ) {
 	class PluginCollection extends Collection {
 		/**
 		 * Creates an instance of the PluginCollection class, initializing it with a set of plugins.
@@ -58,20 +64,38 @@ CKEDITOR.define( [ 'collection', 'promise', 'log' ], function( Collection, Promi
 					CKEDITOR.require( [ 'plugin!' + plugin ],
 						// Success callback.
 						function( LoadedPlugin ) {
-							var loadedPlugin = new LoadedPlugin( that._editor );
-							loadedPlugin.name = plugin;
-							loadedPlugin.path = CKEDITOR.getPluginPath( plugin );
-							loadedPlugin.deps = getPluginDeps( plugin );
+							var deps = getPluginDeps( plugin );
+							var isPluginDep = plugin.indexOf( '/' ) > 0;
+
+							if ( !isPluginDep ) {
+								var loadedPlugin = new LoadedPlugin( that._editor );
+
+								if ( !( loadedPlugin instanceof Plugin ) ) {
+									/**
+									 * The plugin is not an instance of Plugin.
+									 *
+									 * @error plugincollection-instance
+									 * @param {String} plugin The name of the plugin that is not an instance of Plugin.
+									 */
+									reject( new CKEditorError( 'plugincollection-instance: The plugin is not an instance of Plugin.', { plugin: plugin } ) );
+								}
+
+								loadedPlugin.name = plugin;
+								loadedPlugin.path = CKEDITOR.getPluginPath( plugin );
+								loadedPlugin.deps = deps;
+							}
 
 							loading[ plugin ] = true;
 
 							// Resolve with a promise that resolves once all dependencies are loaded.
 							resolve(
-								Promise.all( loadedPlugin.deps.map( pluginPromise ) )
+								Promise.all( deps.map( pluginPromise ) )
 									.then( function() {
 										// Once dependencies are loaded, add the new instance of the loaded plugin to
 										// the collection. This guarantees that dependecies come first in the collection.
-										that.add( loadedPlugin );
+										if ( !isPluginDep ) {
+											that.add( loadedPlugin );
+										}
 									} )
 							);
 						},
