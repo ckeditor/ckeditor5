@@ -24,16 +24,25 @@ CKEDITOR.define( [ 'document/operation' ], function( Operation ) {
 		}
 
 		_execute() {
-			var children = this.position.parent.children;
-			var nodes = this.uncompres( this.nodes );
+			var sourceElement = this.sourcePosition.parent;
+			var targetElement = this.targetPosition.parent;
+			var sourceOffset = this.sourcePosition.offset;
+			var targetOffset = this.targetPosition.offset;
+			var nodes = Operation.uncompress( this.nodes );
 
-			children.splice( this.position.offset, nodes.length );
+			sourceElement.children.splice( sourceOffset, nodes.length );
 
-			children.splice.apply( children, [ this.position.offset, 0 ].concat( nodes ) );
+			// If we move children in the same element and we remove elements on the position before the target we
+			// need to update a target offset.
+			if ( sourceElement === targetElement && sourceOffset < targetOffset ) {
+				targetOffset -= nodes.length;
+			}
+
+			targetElement.children.splice.apply( targetElement.children, [ targetOffset, 0 ].concat( nodes ) );
 		}
 
 		reverseOperation() {
-			return new MoveOperation( this.targetPosition, this.nodes, this.sourcePosition, this.baseVersion + 1 );
+			return new MoveOperation( this.targetPosition, this.sourcePosition, this.nodes, this.baseVersion + 1 );
 		}
 	}
 
