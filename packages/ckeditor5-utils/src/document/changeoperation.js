@@ -37,21 +37,13 @@ CKEDITOR.define( [ 'document/operation' ], function( Operation ) {
 			}
 
 			function remove() {
-				var attrs, i, len;
-
 				for ( var value of range ) {
 					// TODO: if debug
 					if ( !value.node.hasAttr( oldAttr ) ) {
 						throw 'The attribute which should be removed does not exists.';
 					}
 
-					attrs = value.node.attrs;
-
-					for ( i = 0, len = attrs.length; i < len; i++ ) {
-						if ( attrs[ i ].isEquals( oldAttr ) ) {
-							attrs.splice( i, 1 );
-						}
-					}
+					doRemove( value.node.attrs, oldAttr );
 				}
 			}
 
@@ -62,13 +54,11 @@ CKEDITOR.define( [ 'document/operation' ], function( Operation ) {
 						throw 'The attribute with given key already exists.';
 					}
 
-					value.node.attrs.push( newAttr );
+					doInsert( value.node.attrs, newAttr );
 				}
 			}
 
 			function change() {
-				var attrs, i, len;
-
 				for ( var value of range ) {
 					// TODO: if debug
 					if ( oldAttr.key != newAttr.key ) {
@@ -80,16 +70,26 @@ CKEDITOR.define( [ 'document/operation' ], function( Operation ) {
 						throw 'The attribute which should be changed does not exists.';
 					}
 
-					attrs = value.node.attrs;
+					doRemove( value.node.attrs, oldAttr );
 
-					for ( i = 0, len = attrs.length; i < len; i++ ) {
-						if ( attrs[ i ].isEquals( oldAttr ) ) {
-							attrs.splice( i, 1 );
-						}
-					}
-
-					attrs.push( newAttr );
+					doInsert( value.node.attrs, newAttr );
 				}
+			}
+
+			function doRemove( attrs, attrToRemove ) {
+				var i, len;
+
+				for ( i = 0, len = attrs.length; i < len; i++ ) {
+					if ( attrs[ i ].isEqual( attrToRemove ) ) {
+						attrs.splice( i, 1 );
+
+						return;
+					}
+				}
+			}
+
+			function doInsert( attrs, attrToInsert ) {
+				attrs.push( attrToInsert );
 			}
 		}
 

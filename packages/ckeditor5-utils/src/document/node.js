@@ -46,7 +46,7 @@ CKEDITOR.define( [ 'document/attribute' ], function( Attribute ) {
 
 			if ( attr instanceof Attribute ) {
 				for ( i = 0, len = this.attrs.length; i < len; i++ ) {
-					if ( this.attrs[ i ].isEquals( attr ) ) {
+					if ( this.attrs[ i ].isEqual( attr ) ) {
 						return this.attrs[ i ];
 					}
 				}
