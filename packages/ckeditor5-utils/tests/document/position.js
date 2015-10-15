@@ -75,7 +75,7 @@ describe( 'position', function() {
 		var position = new Position( [ 0 ], doc );
 
 		expect( position ).to.have.property( 'path' ).that.deep.equals( [ 0 ] );
-		expect( position ).to.have.property( 'document' ).that.equals( doc );
+		expect( position ).to.have.property( 'doc' ).that.equals( doc );
 	} );
 
 	it( 'should make positions form node and offset', function() {
