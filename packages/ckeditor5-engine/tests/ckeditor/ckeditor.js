@@ -13,6 +13,8 @@ var modules = bender.amd.require( 'ckeditor', 'editor', 'promise', 'config' );
 var content = document.getElementById( 'content' );
 var editorConfig = { plugins: 'creator-test' };
 
+bender.tools.createSinonSandbox();
+
 before( function() {
 	bender.tools.core.defineEditorCreatorMock( 'test' );
 } );
@@ -101,11 +103,16 @@ describe( 'create', function() {
 	it( 'should be rejected on element not found', function() {
 		var CKEDITOR = modules.ckeditor;
 
+		var addSpy = bender.sinon.spy( CKEDITOR.instances, 'add' );
+
 		return CKEDITOR.create( '.undefined' ).then( function() {
 			throw new Error( 'It should not enter this function' );
 		} ).catch( function( error ) {
 			expect( error ).to.be.instanceof( Error );
 			expect( error.message ).to.equal( 'Element not found' );
+			// We need to make sure that create()'s execution is stopped.
+			// Assertion based on a real mistake we made that reject() wasn't followed by a return.
+			sinon.assert.notCalled( addSpy );
 		} );
 	} );
 } );

@@ -49,7 +49,7 @@ CKEDITOR.define( [ 'editor', 'collection', 'promise', 'config' ], function( Edit
 					element = document.querySelector( element );
 
 					if ( !element ) {
-						reject( new Error( 'Element not found' ) );
+						return reject( new Error( 'Element not found' ) );
 					}
 				}
 
