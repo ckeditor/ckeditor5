@@ -51,8 +51,11 @@ CKEDITOR.define( [ 'collection', 'model', 'ui/template' ], function( Collection,
 				return this._el;
 			}
 
+			// Render the element using the template.
 			this._el = this.render();
-			this.attachListeners();
+
+			// Attach defined listeners.
+			this.listeners.map( l => l.call( this ) );
 
 			return this._el;
 		}
@@ -90,13 +93,6 @@ CKEDITOR.define( [ 'collection', 'model', 'ui/template' ], function( Collection,
 		}
 
 		/**
-		 * Attaches view listeners defined in {@link listeners}.
-		 */
-		attachListeners() {
-			this.listeners.map( l => l.call( this ) );
-		}
-
-		/**
 		 * Binds native DOM event listener to View event.
 		 *
 		 * @param {HTMLElement} el DOM element that fires the event.
@@ -108,7 +104,7 @@ CKEDITOR.define( [ 'collection', 'model', 'ui/template' ], function( Collection,
 		}
 
 		/**
-		 * Renders View's {@link el}.
+		 * Renders View's {@link el} using {@link Template} instance.
 		 *
 		 * @returns {HTMLElement}
 		 */
