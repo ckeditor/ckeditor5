@@ -5,6 +5,13 @@
 
 'use strict';
 
+/**
+ * Basic Region class.
+ *
+ * @class Region
+ * @extends Model
+ */
+
 CKEDITOR.define( [ 'Collection', 'Model' ], function( Collection, Model ) {
 	class Region extends Model {
 		/**

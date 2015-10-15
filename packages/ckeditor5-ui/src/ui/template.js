@@ -7,6 +7,12 @@
 
 'use strict';
 
+/**
+ * Basic Template class.
+ *
+ * @class Template
+ */
+
 CKEDITOR.define( function() {
 	class Template {
 		/**
