@@ -9,14 +9,17 @@
  * Represents a single editor instance.
  *
  * @class Editor
+ * @extends Model
  */
 
 CKEDITOR.define( [
 	'model',
 	'editorconfig',
 	'plugincollection',
-	'promise'
-], function( Model, EditorConfig, PluginCollection, Promise ) {
+	'promise',
+	'creator',
+	'ckeditorerror'
+], function( Model, EditorConfig, PluginCollection, Promise, Creator, CKEditorError ) {
 	class Editor extends Model {
 		/**
 		 * Creates a new instance of the Editor class.
@@ -56,6 +59,20 @@ CKEDITOR.define( [
 			 * @type {PluginCollection}
 			 */
 			this.plugins = new PluginCollection( this );
+
+			/**
+			 * The chosen creator.
+			 *
+			 * @property {Creator} _creator
+			 * @protected
+			 */
+
+			/**
+			 * The list of detected creators.
+			 *
+			 * @protected
+			 */
+			this._creators = {};
 		}
 
 		/**
@@ -64,7 +81,7 @@ CKEDITOR.define( [
 		 * The initialization consists of the following procedures:
 		 *
 		 *  * Load and initialize the configured plugins.
-		 *  * TODO: Add other procedures here.
+		 *  * Fires the editor creator.
 		 *
 		 * This method should be rarely used as `CKEDITOR.create` calls it one should never use the `Editor` constructor
 		 * directly.
@@ -75,12 +92,10 @@ CKEDITOR.define( [
 			var that = this;
 			var config = this.config;
 
-			// Create and cache a promise that resolves when all initialization procedures get resolved.
-			this._initPromise = this._initPromise || Promise.all( [
-				loadPlugins().then( initPlugins )
-			] );
-
-			return this._initPromise;
+			return loadPlugins()
+				.then( initPlugins )
+				.then( findCreators )
+				.then( fireCreator );
 
 			function loadPlugins() {
 				return that.plugins.load( config.plugins );
@@ -106,6 +121,48 @@ CKEDITOR.define( [
 					};
 				}
 			}
+
+			function findCreators() {
+				that.plugins.forEach( function( plugin, name ) {
+					if ( plugin instanceof Creator ) {
+						that._creators[ name ] = plugin;
+					}
+				} );
+			}
+
+			function fireCreator() {
+				// Take the name of the creator to use (config or any of the registered ones).
+				var creatorName = config.creator ? ( 'creator-' + config.creator ) : Object.keys( that._creators )[ 0 ];
+				var creator;
+
+				if ( creatorName ) {
+					// Take the registered class for the given creator name.
+					creator = that._creators[ creatorName ];
+				}
+
+				if ( !creator ) {
+					/**
+					 * The creator has not been found.
+					 *
+					 * * If `creatorName` is defined it means that `config.creator` was configured, but such
+					 * plugin does not exist or it does not implement a creator.
+					 * * If `creatorName` is undefined it means that `config.creator` was not configured and
+					 * that none of the loaded plugins implement a creator.
+					 *
+					 * @error editor-creator-404
+					 * @param {String} creatorName
+					 */
+					throw new CKEditorError(
+						'editor-creator-404: The creator has not been found.',
+						{ creatorName: creatorName }
+					);
+				}
+
+				that._creator = creator;
+
+				// Finally fire the creator. It may be asynchronous, returning a promise.
+				return creator.create();
+			}
 		}
 
 		/**
@@ -113,11 +170,18 @@ CKEDITOR.define( [
 		 * element will be recovered.
 		 *
 		 * @fires destroy
+		 * @returns {Promise} A promise that resolves once the editor instance is fully destroyed.
 		 */
 		destroy() {
+			var that = this;
+
 			this.fire( 'destroy' );
 
 			delete this.element;
+
+			return Promise.resolve().then( function() {
+				return that._creator && that._creator.destroy();
+			} );
 		}
 	}
 

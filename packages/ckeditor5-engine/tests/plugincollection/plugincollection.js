@@ -87,12 +87,36 @@ CKEDITOR.define( 'plugin!I', [ 'plugin', 'plugin!J' ], function( Plugin ) {
 
 // Note: This is NOT a plugin.
 CKEDITOR.define( 'plugin!J', function() {
-	return class {};
+	return function() {
+		return ( spies.jSpy = sinon.spy() );
+	};
 } );
 
 /////////////
 
 describe( 'load', function() {
+	it( 'should not fail when trying to load 0 plugins (empty string)', function() {
+		var PluginCollection = modules.plugincollection;
+
+		var plugins = new PluginCollection( editor );
+
+		return plugins.load( '' )
+			.then( function() {
+				expect( plugins.length ).to.equal( 0 );
+			} );
+	} );
+
+	it( 'should not fail when trying to load 0 plugins (undefined)', function() {
+		var PluginCollection = modules.plugincollection;
+
+		var plugins = new PluginCollection( editor );
+
+		return plugins.load()
+			.then( function() {
+				expect( plugins.length ).to.equal( 0 );
+			} );
+	} );
+
 	it( 'should add collection items for loaded plugins', function() {
 		var PluginCollection = modules.plugincollection;
 
@@ -289,6 +313,20 @@ describe( 'load', function() {
 			} ).catch( err => {
 				expect( err.name ).to.be.equal( 'CKEditorError' );
 				expect( err.message ).to.match( /^plugincollection-instance:/ );
+			} );
+	} );
+
+	it( 'should cancel loading module which looks like a plugin but is a normal module', function() {
+		var PluginCollection = modules.plugincollection;
+		var plugins = new PluginCollection( editor );
+
+		return plugins.load( 'J' )
+			.then( () => {
+				throw new Error( 'Test error: this promise should not be resolved successfully' );
+			} ).catch( () => {
+				// Path would be set if code execution wasn't stopped when we rejected the promise
+				// (based on a real mistake we've made).
+				expect( spies.jSpy.path ).to.be.undefined;
 			} );
 	} );
 } );

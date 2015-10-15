@@ -47,6 +47,7 @@ CKEDITOR.define( [
 			// The list of plugins which are being loaded (to avoid circular references issues).
 			var loading = {};
 
+			// It may happen that an empty list was passed – don't fail.
 			plugins = plugins ? plugins.split( ',' ) : [];
 
 			// Creates a promise for the loading of each plugin and returns a main promise that resolves when all are
@@ -77,7 +78,12 @@ CKEDITOR.define( [
 									 * @error plugincollection-instance
 									 * @param {String} plugin The name of the plugin that is not an instance of Plugin.
 									 */
-									reject( new CKEditorError( 'plugincollection-instance: The plugin is not an instance of Plugin.', { plugin: plugin } ) );
+									return reject(
+										new CKEditorError(
+											'plugincollection-instance: The plugin is not an instance of Plugin.',
+											{ plugin: plugin }
+										)
+									);
 								}
 
 								loadedPlugin.name = plugin;
@@ -165,6 +171,19 @@ CKEDITOR.define( [
 			}
 
 			return this._names[ name ];
+		}
+
+		/**
+		 * Executes the callback for each model in the collection.
+		 *
+		 * @param {Function} callback
+		 * @param {Model} callback.item
+		 * @param {String} callback.name
+		 */
+		forEach( callback ) {
+			for ( var name in this._names ) {
+				callback( this._names[ name ], name );
+			}
 		}
 	}
 
