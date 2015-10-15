@@ -36,6 +36,30 @@ before( function() {
 	CKEDITOR.define( 'plugin!test3', [ 'plugin' ], function( Plugin ) {
 		return class extends Plugin {};
 	} );
+
+	CKEDITOR.define( 'plugin!creator-async-create', [ 'creator', 'promise' ], function( Creator, Promise ) {
+		return class extends Creator {
+			create() {
+				return new Promise( ( resolve, reject ) => {
+					reject( new Error( 'Catch me - create.' ) );
+				} );
+			}
+
+			destroy() {}
+		};
+	} );
+
+	CKEDITOR.define( 'plugin!creator-async-destroy', [ 'creator', 'promise' ], function( Creator, Promise ) {
+		return class extends Creator {
+			create() {}
+
+			destroy() {
+				return new Promise( ( resolve, reject ) => {
+					reject( new Error( 'Catch me - destroy.' ) );
+				} );
+			}
+		};
+	} );
 } );
 
 afterEach( function() {
@@ -115,6 +139,20 @@ describe( 'init', function() {
 				expect( err.message ).to.match( /^editor-creator-404:/ );
 			} );
 	} );
+
+	it( 'should chain the promise from the creator (enables async creators)', function() {
+		return initEditor( {
+				plugins: 'creator-async-create'
+			} )
+			.then( function() {
+				throw new Error( 'This should not be executed.' );
+			} )
+			.catch( function( err ) {
+				// Unfortunately fake timers don't work with promises, so throwing in the creator's create()
+				// seems to be the only way to test that the promise chain isn't broken.
+				expect( err ).to.have.property( 'message', 'Catch me - create.' );
+			} );
+	} );
 } );
 
 describe( 'destroy', function() {
@@ -131,6 +169,23 @@ describe( 'destroy', function() {
 			} )
 			.then( function() {
 				sinon.assert.calledOnce( creator1.destroy );
+			} );
+	} );
+
+	it( 'should chain the promise from the creator (enables async creators)', function() {
+		return initEditor( {
+				plugins: 'creator-async-destroy'
+			} )
+			.then( function() {
+				return editor.destroy();
+			} )
+			.then( function() {
+				throw new Error( 'This should not be executed.' );
+			} )
+			.catch( function( err ) {
+				// Unfortunately fake timers don't work with promises, so throwing in the creator's destroy()
+				// seems to be the only way to test that the promise chain isn't broken.
+				expect( err ).to.have.property( 'message', 'Catch me - destroy.' );
 			} );
 	} );
 } );
