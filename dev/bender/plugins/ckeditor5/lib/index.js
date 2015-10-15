@@ -21,7 +21,6 @@ module.exports = {
 		var bender = that;
 
 		bender.plugins.addFiles( files );
-		bender.plugins.addInclude( files );
 
 		bender.on( 'test:created', function( test ) {
 			var name = test.displayName;
@@ -31,5 +30,17 @@ module.exports = {
 
 			test.displayName = name;
 		} );
+
+		// Add this plugins' scripts before the includes pagebuilder (which handles bender-include directives), so
+		// the main tools file is loaded before tools included in the core or in the plugins.
+		this.pagebuilders.add( 'ckeditor5', build, this.pagebuilders.getPriority( 'includes' ) - 1 );
+
+		function build( data ) {
+			files.forEach( function( file ) {
+				data.addJS( path.join( '/plugins/', file ).split( path.sep ).join( '/' ) );
+			} );
+
+			return data;
+		}
 	}
 };

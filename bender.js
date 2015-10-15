@@ -32,7 +32,8 @@ var config = {
 			applications: [ 'ckeditor' ],
 			paths: [
 				'tests/**',
-				'node_modules/ckeditor5-*/tests/**'
+				'node_modules/ckeditor5-*/tests/**',
+				'!**/_*/**'
 			]
 		}
 	},
