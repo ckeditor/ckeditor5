@@ -14,7 +14,7 @@
 	 * This is a main namespace for the test tools.
 	 *
 	 * * General tools go directly to `bender.tools.*`.
-	 * * Core tools (introduced by `ckeditor5-core`) go to `bender.tools.core.*.
+	 * * Core tools (introduced by `ckeditor5-core`) go to `bender.tools.core.*`.
 	 * * Plugin tools (introduced by plugins) go to `bender.tools.plugin.<plugin-name>.*`.
 	 *
 	 * Tools for specific plugins or the core should be kept in `tests/_tools/tools.js` file
