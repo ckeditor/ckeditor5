@@ -27,10 +27,17 @@ CKEDITOR.define( [ 'Collection', 'Model' ], function( Collection, Model ) {
 			 * Regions which belong to this view.
 			 */
 			this.regions = new Collection();
+
+			/**
+			 * The list of listeners attached in this view.
+			 *
+			 * @property {Array}
+			 */
+			this.listeners = [];
 		}
 
 		/**
-		 * Element of this view.
+		 * Element of this view. The element is rendered on first reference.
 		 *
 		 * @property el
 		 */
@@ -39,7 +46,11 @@ CKEDITOR.define( [ 'Collection', 'Model' ], function( Collection, Model ) {
 				return this._el;
 			}
 
-			return ( this._el = this.render() );
+			this._el = this.render();
+
+			this.attachListeners();
+
+			return this._el;
 		}
 
 		/**
@@ -72,6 +83,24 @@ CKEDITOR.define( [ 'Collection', 'Model' ], function( Collection, Model ) {
 				// Set the initial state of the view.
 				executeCallback( el, model[ property ] );
 			};
+		}
+
+		/**
+		 * Attaches view listeners defined in {@link listeners}.
+		 */
+		attachListeners() {
+			this.listeners.map( l => l.call( this ) );
+		}
+
+		/**
+		 * Binds native DOM event listener to View event.
+		 *
+		 * @param {HTMLElement} el DOM element that fires the event.
+		 * @param {String} domEvt The name of DOM event the listener listens to.
+		 * @param {String} fireEvent The name of the View event fired then DOM event fires.
+		 */
+		domListener( el, domEvt, fireEvt ) {
+			el.addEventListener( domEvt, this.fire.bind( this, fireEvt ) );
 		}
 
 		/**
