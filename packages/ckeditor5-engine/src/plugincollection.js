@@ -47,6 +47,7 @@ CKEDITOR.define( [
 			// The list of plugins which are being loaded (to avoid circular references issues).
 			var loading = {};
 
+			// It may happen that an empty list was passed – don't fail.
 			plugins = plugins ? plugins.split( ',' ) : [];
 
 			// Creates a promise for the loading of each plugin and returns a main promise that resolves when all are

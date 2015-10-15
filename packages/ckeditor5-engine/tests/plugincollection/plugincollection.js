@@ -93,6 +93,28 @@ CKEDITOR.define( 'plugin!J', function() {
 /////////////
 
 describe( 'load', function() {
+	it( 'should not fail when trying to load 0 plugins (empty string)', function() {
+		var PluginCollection = modules.plugincollection;
+
+		var plugins = new PluginCollection( editor );
+
+		return plugins.load( '' )
+			.then( function() {
+				expect( plugins.length ).to.equal( 0 );
+			} );
+	} );
+
+	it( 'should not fail when trying to load 0 plugins (undefined)', function() {
+		var PluginCollection = modules.plugincollection;
+
+		var plugins = new PluginCollection( editor );
+
+		return plugins.load()
+			.then( function() {
+				expect( plugins.length ).to.equal( 0 );
+			} );
+	} );
+
 	it( 'should add collection items for loaded plugins', function() {
 		var PluginCollection = modules.plugincollection;
 
