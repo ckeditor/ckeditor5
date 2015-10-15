@@ -11,15 +11,8 @@ var modules = bender.amd.require( 'plugincollection', 'plugin', 'editor', 'log' 
 var editor;
 var PluginA, PluginB;
 class TestError extends Error {}
-var sandbox;
 
-// TODO move to bender.tools.createSinonSandbox().
-before( function() {
-	sandbox = sinon.sandbox.create();
-} );
-afterEach( function() {
-	sandbox.restore();
-} );
+bender.tools.createSinonSandbox();
 
 before( function() {
 	var Editor = modules.editor;
@@ -238,7 +231,7 @@ describe( 'load', function() {
 		var PluginCollection = modules.plugincollection;
 		var log = modules.log;
 
-		var logSpy = sandbox.stub( log, 'error' );
+		var logSpy = bender.sinon.stub( log, 'error' );
 
 		var plugins = new PluginCollection( editor );
 
@@ -261,7 +254,7 @@ describe( 'load', function() {
 		var PluginCollection = modules.plugincollection;
 		var log = modules.log;
 
-		var logSpy = sandbox.stub( log, 'error' );
+		var logSpy = bender.sinon.stub( log, 'error' );
 
 		var plugins = new PluginCollection( editor );
 
