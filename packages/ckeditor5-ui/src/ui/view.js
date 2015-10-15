@@ -3,11 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global document */
-
 'use strict';
 
-CKEDITOR.define( [ 'Collection', 'Model' ], function( Collection, Model ) {
+CKEDITOR.define( [ 'collection', 'model', 'ui/template' ], function( Collection, Model, Template ) {
 	class View extends Model {
 		/**
 		 * Creates an instance of the {@link View} class.
@@ -47,7 +45,6 @@ CKEDITOR.define( [ 'Collection', 'Model' ], function( Collection, Model ) {
 			}
 
 			this._el = this.render();
-
 			this.attachListeners();
 
 			return this._el;
@@ -62,7 +59,7 @@ CKEDITOR.define( [ 'Collection', 'Model' ], function( Collection, Model ) {
 		 * @param {Function} [callback] Callback function executed on property change in model.
 		 * @constructor
 		 */
-		bindModel( property, callback ) {
+		bind( property, callback ) {
 			var model = this.model;
 
 			return function( el, updater ) {
@@ -104,68 +101,14 @@ CKEDITOR.define( [ 'Collection', 'Model' ], function( Collection, Model ) {
 		}
 
 		/**
-		 * Renders {@link el} using {@link template}.
+		 * Renders View's {@link el}.
 		 *
-		 * @param {Object} [def] Template definition to be rendered.
-		 * @returns HTMLElement {@link el} ready to be injected into DOM.
+		 * @returns {HTMLElement}
 		 */
-		render( template ) {
-			// TODO: Use ES6 default arguments syntax.
-			template = template || this.template;
+		render() {
+			this._template = new Template( this.template );
 
-			if ( !template ) {
-				return null;
-			}
-
-			var el = document.createElement( template.tag );
-			var attr;
-			var value;
-
-			var textUpdater = () => {
-				return ( el, value ) => el.innerHTML = value;
-			};
-
-			var attributeUpdater = ( attr ) => {
-				return ( el, value ) => el.setAttribute( attr, value );
-			};
-
-			// Set the text first.
-			if ( template.text ) {
-				if ( typeof template.text == 'function' ) {
-					template.text( el, textUpdater() );
-				} else {
-					el.innerHTML = template.text;
-				}
-			}
-
-			// Set attributes.
-			for ( attr in template.attributes ) {
-				value = template.attributes[ attr ];
-
-				// Attribute bound directly to the model.
-				if ( typeof value == 'function' ) {
-					value( el, attributeUpdater( attr ) );
-				}
-
-				// Explicit attribute definition (string).
-				else {
-					// Attribute can be an array, i.e. classes.
-					if ( Array.isArray( value ) ) {
-						value = value.join( ' ' );
-					}
-
-					el.setAttribute( attr, value );
-				}
-			}
-
-			// Invoke children recursively.
-			if ( template.children ) {
-				for ( let child of template.children ) {
-					el.appendChild( this.render( child ) );
-				}
-			}
-
-			return el;
+			return this._template.render();
 		}
 
 		destroy() {}
