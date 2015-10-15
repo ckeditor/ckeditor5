@@ -78,7 +78,12 @@ CKEDITOR.define( [
 									 * @error plugincollection-instance
 									 * @param {String} plugin The name of the plugin that is not an instance of Plugin.
 									 */
-									reject( new CKEditorError( 'plugincollection-instance: The plugin is not an instance of Plugin.', { plugin: plugin } ) );
+									return reject(
+										new CKEditorError(
+											'plugincollection-instance: The plugin is not an instance of Plugin.',
+											{ plugin: plugin }
+										)
+									);
 								}
 
 								loadedPlugin.name = plugin;
