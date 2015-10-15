@@ -5,6 +5,13 @@
 
 'use strict';
 
+/**
+ * Basic View class.
+ *
+ * @class View
+ * @extends Model
+ */
+
 CKEDITOR.define( [ 'collection', 'model', 'ui/template' ], function( Collection, Model, Template ) {
 	class View extends Model {
 		/**
