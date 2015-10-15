@@ -14,10 +14,7 @@ var content = document.getElementById( 'content' );
 var editorConfig = { plugins: 'creator-test' };
 
 bender.tools.createSinonSandbox();
-
-before( function() {
-	bender.tools.core.defineEditorCreatorMock( 'test' );
-} );
+bender.tools.core.defineEditorCreatorMock( 'test' );
 
 beforeEach( function() {
 	var CKEDITOR = modules.ckeditor;
