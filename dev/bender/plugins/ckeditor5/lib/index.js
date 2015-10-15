@@ -9,7 +9,8 @@
 
 var path = require( 'path' );
 var files = [
-	path.join( __dirname, '../static/extensions.js' )
+	path.join( __dirname, '../static/extensions.js' ),
+	path.join( __dirname, '../static/tools.js' )
 ];
 
 module.exports = {
