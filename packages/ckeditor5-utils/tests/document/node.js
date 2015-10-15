@@ -9,7 +9,8 @@
 
 var modules = bender.amd.require(
 	'document/element',
-	'document/character' );
+	'document/character',
+	'document/attribute' );
 
 describe( 'tree', function() {
 	var Element, Character;
@@ -93,5 +94,91 @@ describe( 'tree', function() {
 		expect( charA ).to.have.property( 'previousSibling' ).that.equals( charB );
 		expect( img ).to.have.property( 'previousSibling' ).that.equals( charA );
 		expect( charR ).to.have.property( 'previousSibling' ).that.equals( img );
+	} );
+} );
+
+describe( 'getAttr', function() {
+	it( 'should be possible to get attribute by key', function() {
+		var Element = modules[ 'document/element' ];
+		var Attribute = modules[ 'document/attribute' ];
+
+		var fooAttr = new Attribute( 'foo', true );
+		var element = new Element( null, 'foo', [ fooAttr ] );
+
+		expect( element.getAttr( 'foo' ).isEqual( fooAttr ) ).to.be.true;
+	} );
+
+	it( 'should return null if attribute was not found by key', function() {
+		var Element = modules[ 'document/element' ];
+		var Attribute = modules[ 'document/attribute' ];
+
+		var fooAttr = new Attribute( 'foo', true );
+		var element = new Element( null, 'foo', [ fooAttr ] );
+
+		expect( element.getAttr( 'bar' ) ).to.be.null;
+	} );
+
+	it( 'should be possible to get attribute by object', function() {
+		var Element = modules[ 'document/element' ];
+		var Attribute = modules[ 'document/attribute' ];
+
+		var fooAttr = new Attribute( 'foo', true );
+		var foo2Attr = new Attribute( 'foo', true );
+		var element = new Element( null, 'foo', [ fooAttr ] );
+
+		expect( element.getAttr( foo2Attr ).isEqual( fooAttr ) ).to.be.true;
+	} );
+
+	it( 'should return null if attribute was not found by object', function() {
+		var Element = modules[ 'document/element' ];
+		var Attribute = modules[ 'document/attribute' ];
+
+		var fooAttr = new Attribute( 'foo', true );
+		var element = new Element( null, 'foo' );
+
+		expect( element.getAttr( fooAttr ) ).to.be.null;
+	} );
+} );
+
+describe( 'hasAttr', function() {
+	it( 'should check attribute by key', function() {
+		var Element = modules[ 'document/element' ];
+		var Attribute = modules[ 'document/attribute' ];
+
+		var fooAttr = new Attribute( 'foo', true );
+		var element = new Element( null, 'foo', [ fooAttr ] );
+
+		expect( element.hasAttr( 'foo' ) ).to.be.true;
+	} );
+
+	it( 'should return false if attribute was not found by key', function() {
+		var Element = modules[ 'document/element' ];
+		var Attribute = modules[ 'document/attribute' ];
+
+		var fooAttr = new Attribute( 'foo', true );
+		var element = new Element( null, 'foo', [ fooAttr ] );
+
+		expect( element.hasAttr( 'bar' ) ).to.be.false;
+	} );
+
+	it( 'should check attribute by object', function() {
+		var Element = modules[ 'document/element' ];
+		var Attribute = modules[ 'document/attribute' ];
+
+		var fooAttr = new Attribute( 'foo', true );
+		var foo2Attr = new Attribute( 'foo', true );
+		var element = new Element( null, 'foo', [ fooAttr ] );
+
+		expect( element.hasAttr( foo2Attr ) ).to.be.true;
+	} );
+
+	it( 'should return false if attribute was not found by object', function() {
+		var Element = modules[ 'document/element' ];
+		var Attribute = modules[ 'document/attribute' ];
+
+		var fooAttr = new Attribute( 'foo', true );
+		var element = new Element( null, 'foo' );
+
+		expect( element.hasAttr( fooAttr ) ).to.be.false;
 	} );
 } );
