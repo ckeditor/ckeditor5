@@ -13,8 +13,5 @@
 
 	"globals": {
 		"CKEDITOR": false
-	},
-	"predef": [
-		"-Promise"
-	]
+	}
 }
