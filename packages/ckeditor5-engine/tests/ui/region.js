@@ -82,16 +82,29 @@ describe( 'Region', function() {
 		expect( childNodes.length ).to.be.equal( 0 );
 	} );
 
-	it( 'is destroyed properly', function() {
+	it( 'destroys properly', function() {
+		// Append the region's element to some container.
+		var container = document.createElement( 'div' );
+		container.appendChild( el );
+		expect( el.parentNode ).to.be.equal( container );
+
+		region.destroy();
+
+		// Make sure destruction of the region does affect passed element.
+		expect( el.parentNode ).to.be.equal( container );
+		expect( region.el ).to.be.null;
+	} );
+
+	it( 'destroys children views', function() {
 		var view = new TestViewA();
 		var spy = bender.sinon.spy( view, 'destroy' );
 
+		// Append the view to the region.
 		region.views.add( view );
 		expect( region.views ).to.have.length( 1 );
 
 		region.destroy();
 
-		expect( region.el ).to.be.null;
 		expect( region.views ).to.have.length( 0 );
 		expect( spy.calledOnce ).to.be.true;
 	} );
