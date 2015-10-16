@@ -3,17 +3,19 @@
  * For licensing, see LICENSE.md.
  */
 
+/* global document, HTMLElement */
 /* bender-tags: core, ui */
 
 'use strict';
 
-var modules = bender.amd.require( 'ckeditor', 'ui/view', 'ui/region', 'ckeditorerror' );
+var modules = bender.amd.require( 'ckeditor', 'ui/view', 'ui/region', 'ckeditorerror', 'model' );
 
 bender.tools.createSinonSandbox();
 
 describe( 'View', function() {
 	var view;
 	var View;
+	var TestView;
 
 	beforeEach( 'Create a test view instance', function() {
 		View = modules[ 'ui/view' ];
@@ -22,9 +24,20 @@ describe( 'View', function() {
 			a: 'foo',
 			b: 42
 		} );
+
+		class T extends View {
+			constructor() {
+				super();
+				this.template = { tag: 'a' };
+			}
+		}
+
+		TestView = T;
 	} );
 
 	it( 'accepts the model', function() {
+		expect( view.model ).to.be.an.instanceof( modules.model );
+
 		expect( view ).to.have.deep.property( 'model.a', 'foo' );
 		expect( view ).to.have.deep.property( 'model.b', 42 );
 	} );
@@ -38,7 +51,7 @@ describe( 'View', function() {
 	} );
 
 	it( 'has no default regions', function() {
-		expect( view.regions.length ).to.be.equal( 0 );
+		expect( view.regions ).to.have.length( 0 );
 	} );
 
 	it( 'provides binding to the model', function() {
@@ -57,24 +70,40 @@ describe( 'View', function() {
 		sinon.assert.calledWithExactly( spy, 'el', 'bar' );
 	} );
 
-	it( 'is destroyed properly', function() {
+	it( 'renders element from template', function() {
+		view = new TestView( { a: 1 } );
+
+		expect( view.el ).to.be.an.instanceof( HTMLElement );
+		expect( view.el.nodeName ).to.be.equal( 'A' );
+	} );
+
+	it( 'destroys properly', function() {
+		view = new TestView( { a: 1 } );
+
+		// Append the views's element to some container.
+		var container = document.createElement( 'div' );
+		container.appendChild( view.el );
+
+		expect( view.el.nodeName ).to.be.equal( 'A' );
+		expect( view.el ).to.be.an.instanceof( HTMLElement );
+		expect( view.el.parentNode ).to.be.equal( container );
+		expect( view.model ).to.be.an.instanceof( modules.model );
+
+		view.destroy();
+
+		expect( view.el ).to.be.an.instanceof( HTMLElement );
+		expect( view.el.parentNode ).to.be.null;
+		expect( view.model ).to.be.null;
+	} );
+
+	it( 'destroys child regions', function() {
 		var Region = modules[ 'ui/region' ];
 		var region = new Region();
 		var spy = bender.sinon.spy( region, 'destroy' );
 
-		class TestView extends View {
-			constructor() {
-				super();
-				this.template = { tag: 'a' };
-			}
-		}
-
-		view = new TestView();
-
 		view.regions.add( region );
 		view.destroy();
 
-		expect( view.el.parentNode ).to.be.null;
 		expect( view.regions ).to.have.length( 0 );
 		expect( spy.calledOnce ).to.be.true;
 	} );

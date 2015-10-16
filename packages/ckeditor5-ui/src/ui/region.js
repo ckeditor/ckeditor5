@@ -44,8 +44,9 @@ CKEDITOR.define( [ 'collection', 'model' ], function( Collection, Model ) {
 		}
 
 		destroy() {
-			// Drop the reference to HTMLElement but don't remove it from
-			// DOM as comes as a parameter and could be a part of existing View.
+			// Drop the reference to HTMLElement but don't remove it from DOM.
+			// Element comes as a parameter and it could be a part of the View.
+			// Then it's up to the View what to do with it when the View is destroyed.
 			this.el = null;
 
 			// Remove and destroy views.
