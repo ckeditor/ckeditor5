@@ -43,7 +43,15 @@ CKEDITOR.define( [ 'collection', 'model' ], function( Collection, Model ) {
 			this.views.on( 'remove', ( evt, view ) => view.el.remove() );
 		}
 
-		destroy() {}
+		destroy() {
+			// Drop the reference to HTMLElement.
+			this.el = null;
+
+			// Remove views.
+			for ( let i = this.views.length; i--; ) {
+				this.views.remove( i ).destroy();
+			}
+		}
 	}
 
 	return Region;

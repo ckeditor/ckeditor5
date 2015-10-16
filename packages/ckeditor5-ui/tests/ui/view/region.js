@@ -10,6 +10,8 @@
 
 var modules = bender.amd.require( 'ckeditor', 'ui/region', 'ui/view', 'collection' );
 
+bender.tools.createSinonSandbox();
+
 describe( 'Region', function() {
 	var region;
 	var el;
@@ -82,5 +84,28 @@ describe( 'Region', function() {
 
 		region.views.remove( tvb );
 		expect( childNodes.length ).to.be.equal( 0 );
+	} );
+
+	it( 'is destroyed properly', function() {
+		var View = modules[ 'ui/view' ];
+
+		class TestView extends View {
+			constructor() {
+				super();
+				this.template = { tag: 'a' };
+			}
+		}
+
+		var view = new TestView();
+		var spy = bender.sinon.spy( view, 'destroy' );
+
+		region.views.add( view );
+		expect( region.views ).to.have.length( 1 );
+
+		region.destroy();
+
+		expect( region.el ).to.be.null;
+		expect( region.views ).to.have.length( 0 );
+		expect( spy.calledOnce ).to.be.true;
 	} );
 } );
