@@ -126,7 +126,20 @@ CKEDITOR.define( [
 			return this._template.render();
 		}
 
-		destroy() {}
+		destroy() {
+			// Drop the reference to the model.
+			this.model = null;
+
+			// Remove View's element from DOM.
+			if ( this.template ) {
+				this.el.remove();
+			}
+
+			// Remove and destroy regions.
+			for ( let i = this.regions.length; i--; ) {
+				this.regions.remove( i ).destroy();
+			}
+		}
 	}
 
 	return View;

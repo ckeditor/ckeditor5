@@ -47,7 +47,7 @@ CKEDITOR.define( [ 'collection', 'model' ], function( Collection, Model ) {
 			// Drop the reference to HTMLElement.
 			this.el = null;
 
-			// Remove views.
+			// Remove and destroy views.
 			for ( let i = this.views.length; i--; ) {
 				this.views.remove( i ).destroy();
 			}
