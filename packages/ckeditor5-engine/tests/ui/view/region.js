@@ -49,4 +49,38 @@ describe( 'Region', function() {
 		region.views.add( new TestView() );
 		expect( region.el.childNodes.length ).to.be.equal( 2 );
 	} );
+
+	it( 'removes views from collection', function() {
+		var View = modules[ 'ui/view' ];
+
+		class TestViewA extends View {
+			constructor() {
+				super();
+				this.template = { tag: 'a' };
+			}
+		}
+
+		class TestViewB extends View {
+			constructor() {
+				super();
+				this.template = { tag: 'b' };
+			}
+		}
+
+		var tva = new TestViewA();
+		var tvb = new TestViewB();
+
+		region.views.add( tva );
+		region.views.add( tvb );
+
+		var childNodes = region.el.childNodes;
+
+		expect( [].map.call( childNodes, n => n.nodeName ).join( ',' ) ).to.be.equal( 'A,B' );
+
+		region.views.remove( tva );
+		expect( [].map.call( childNodes, n => n.nodeName ).join( ',' ) ).to.be.equal( 'B' );
+
+		region.views.remove( tvb );
+		expect( childNodes.length ).to.be.equal( 0 );
+	} );
 } );

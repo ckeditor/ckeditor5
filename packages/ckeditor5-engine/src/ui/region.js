@@ -40,6 +40,7 @@ CKEDITOR.define( [ 'collection', 'model' ], function( Collection, Model ) {
 			this.views = new Collection();
 
 			this.views.on( 'add', ( evt, view ) => this.el && this.el.appendChild( view.el ) );
+			this.views.on( 'remove', ( evt, view ) => view.el.remove() );
 		}
 
 		destroy() {}
