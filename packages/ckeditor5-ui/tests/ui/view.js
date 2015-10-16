@@ -7,13 +7,16 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'ckeditor', 'ui/view', 'ckeditorerror' );
+var modules = bender.amd.require( 'ckeditor', 'ui/view', 'ui/region', 'ckeditorerror' );
+
+bender.tools.createSinonSandbox();
 
 describe( 'View', function() {
 	var view;
+	var View;
 
 	beforeEach( 'Create a test view instance', function() {
-		var View = modules[ 'ui/view' ];
+		View = modules[ 'ui/view' ];
 
 		view = new View( {
 			a: 'foo',
@@ -52,5 +55,27 @@ describe( 'View', function() {
 		view.model.a = 'bar';
 		sinon.assert.calledOnce( spy );
 		sinon.assert.calledWithExactly( spy, 'el', 'bar' );
+	} );
+
+	it( 'is destroyed properly', function() {
+		var Region = modules[ 'ui/region' ];
+		var region = new Region();
+		var spy = bender.sinon.spy( region, 'destroy' );
+
+		class TestView extends View {
+			constructor() {
+				super();
+				this.template = { tag: 'a' };
+			}
+		}
+
+		view = new TestView();
+
+		view.regions.add( region );
+		view.destroy();
+
+		expect( view.el.parentNode ).to.be.null;
+		expect( view.regions ).to.have.length( 0 );
+		expect( spy.calledOnce ).to.be.true;
 	} );
 } );
