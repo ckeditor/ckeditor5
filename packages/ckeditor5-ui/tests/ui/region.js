@@ -16,8 +16,29 @@ describe( 'Region', function() {
 	var region;
 	var el;
 
+	var TestViewA;
+	var TestViewB;
+
 	beforeEach( 'Create a test region instance', function() {
 		var Region = modules[ 'ui/region' ];
+		var View = modules[ 'ui/view' ];
+
+		class A extends View {
+			constructor() {
+				super();
+				this.template = { tag: 'a' };
+			}
+		}
+
+		class B extends View {
+			constructor() {
+				super();
+				this.template = { tag: 'b' };
+			}
+		}
+
+		TestViewA = A;
+		TestViewB = B;
 
 		el = document.createElement( 'div' );
 		region = new Region( 'foo', el );
@@ -34,69 +55,35 @@ describe( 'Region', function() {
 	} );
 
 	it( 'adds views to collection', function() {
-		var View = modules[ 'ui/view' ];
-
-		class TestView extends View {
-			constructor() {
-				super();
-				this.template = { tag: 'b' };
-			}
-		}
-
 		expect( region.el.childNodes.length ).to.be.equal( 0 );
 
-		region.views.add( new TestView() );
+		region.views.add( new TestViewA() );
 		expect( region.el.childNodes.length ).to.be.equal( 1 );
 
-		region.views.add( new TestView() );
+		region.views.add( new TestViewA() );
 		expect( region.el.childNodes.length ).to.be.equal( 2 );
 	} );
 
 	it( 'removes views from collection', function() {
-		var View = modules[ 'ui/view' ];
+		var viewA = new TestViewA();
+		var viewB = new TestViewB();
 
-		class TestViewA extends View {
-			constructor() {
-				super();
-				this.template = { tag: 'a' };
-			}
-		}
-
-		class TestViewB extends View {
-			constructor() {
-				super();
-				this.template = { tag: 'b' };
-			}
-		}
-
-		var tva = new TestViewA();
-		var tvb = new TestViewB();
-
-		region.views.add( tva );
-		region.views.add( tvb );
+		region.views.add( viewA );
+		region.views.add( viewB );
 
 		var childNodes = region.el.childNodes;
 
 		expect( [].map.call( childNodes, n => n.nodeName ).join( ',' ) ).to.be.equal( 'A,B' );
 
-		region.views.remove( tva );
+		region.views.remove( viewA );
 		expect( [].map.call( childNodes, n => n.nodeName ).join( ',' ) ).to.be.equal( 'B' );
 
-		region.views.remove( tvb );
+		region.views.remove( viewB );
 		expect( childNodes.length ).to.be.equal( 0 );
 	} );
 
 	it( 'is destroyed properly', function() {
-		var View = modules[ 'ui/view' ];
-
-		class TestView extends View {
-			constructor() {
-				super();
-				this.template = { tag: 'a' };
-			}
-		}
-
-		var view = new TestView();
+		var view = new TestViewA();
 		var spy = bender.sinon.spy( view, 'destroy' );
 
 		region.views.add( view );
