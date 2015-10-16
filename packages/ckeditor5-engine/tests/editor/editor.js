@@ -8,7 +8,7 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'editor', 'editorconfig', 'plugin', 'promise' );
+var modules = bender.amd.require( 'editor', 'editorconfig', 'plugin' );
 
 var editor;
 var element;
@@ -44,7 +44,7 @@ before( function() {
 
 	asyncSpy = sinon.spy().named( 'async-call-spy' );
 
-	CKEDITOR.define( 'plugin!async', [ 'plugin', 'promise' ], function( Plugin, Promise ) {
+	CKEDITOR.define( 'plugin!async', [ 'plugin' ], function( Plugin ) {
 		class PluginAsync extends Plugin {}
 
 		PluginAsync.prototype.init = sinon.spy( function() {
@@ -87,7 +87,6 @@ describe( 'config', function() {
 
 describe( 'init', function() {
 	it( 'should return a promise that resolves properly', function() {
-		var Promise = modules.promise;
 		var Editor = modules.editor;
 
 		editor = new Editor( element, {

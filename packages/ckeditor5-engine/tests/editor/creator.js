@@ -8,7 +8,7 @@
 /* globals document */
 /* bender-include: ../_tools/tools.js */
 
-var modules = bender.amd.require( 'editor', 'plugin', 'promise', 'creator', 'ckeditorerror' );
+var modules = bender.amd.require( 'editor', 'plugin', 'creator', 'ckeditorerror' );
 var editor, element;
 
 function initEditor( config ) {
@@ -37,7 +37,7 @@ before( function() {
 		return class extends Plugin {};
 	} );
 
-	CKEDITOR.define( 'plugin!creator-async-create', [ 'creator', 'promise' ], function( Creator, Promise ) {
+	CKEDITOR.define( 'plugin!creator-async-create', [ 'creator' ], function( Creator ) {
 		return class extends Creator {
 			create() {
 				return new Promise( ( resolve, reject ) => {
@@ -49,7 +49,7 @@ before( function() {
 		};
 	} );
 
-	CKEDITOR.define( 'plugin!creator-async-destroy', [ 'creator', 'promise' ], function( Creator, Promise ) {
+	CKEDITOR.define( 'plugin!creator-async-destroy', [ 'creator' ], function( Creator ) {
 		return class extends Creator {
 			create() {}
 

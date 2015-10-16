@@ -8,7 +8,7 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'ckeditor', 'editor', 'promise', 'config' );
+var modules = bender.amd.require( 'ckeditor', 'editor', 'config' );
 
 var content = document.getElementById( 'content' );
 var editorConfig = { plugins: 'creator-test' };
@@ -28,7 +28,6 @@ beforeEach( function() {
 describe( 'create', function() {
 	it( 'should return a promise', function() {
 		var CKEDITOR = modules.ckeditor;
-		var Promise = modules.promise;
 
 		expect( CKEDITOR.create( content, editorConfig ) ).to.be.instanceof( Promise );
 	} );
