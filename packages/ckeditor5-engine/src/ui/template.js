@@ -34,58 +34,76 @@ CKEDITOR.define( function() {
 		 * @param {Object} [def] Template definition to be rendered.
 		 * @returns {HTMLElement}
 		 */
-		render( def ) {
-			// TODO: Use ES6 default arguments syntax.
-			def = def || this.def;
-
-			if ( !def ) {
-				return null;
-			}
-
-			var el = document.createElement( def.tag );
-
-			// Set the text first.
-			if ( def.text ) {
-				if ( typeof def.text == 'function' ) {
-					def.text( el, textUpdater() );
-				} else {
-					el.innerHTML = def.text;
-				}
-			}
-
-			// Set attributes.
-			for ( let attr in def.attributes ) {
-				let value = def.attributes[ attr ];
-
-				// Attribute bound directly to the model.
-				if ( typeof value == 'function' ) {
-					value( el, attributeUpdater( attr ) );
-				}
-
-				// Explicit attribute definition (string).
-				else {
-					// Attribute can be an array, i.e. classes.
-					if ( Array.isArray( value ) ) {
-						value = value.join( ' ' );
-					}
-
-					attributeUpdater( attr )( el, value );
-				}
-			}
-
-			// Invoke children recursively.
-			if ( def.children ) {
-				for ( let child of def.children ) {
-					el.appendChild( this.render( child ) );
-				}
-			}
-
-			return el;
+		render() {
+			return renderElement( this.def );
 		}
 	}
 
 	var textUpdater = () => ( el, value ) => el.innerHTML = value;
 	var attributeUpdater = ( attr ) => ( el, value ) => el.setAttribute( attr, value );
+
+	function renderElement( def ) {
+		if ( !def ) {
+			return null;
+		}
+
+		var el = document.createElement( def.tag );
+
+		// Set the text first.
+		renderElementText( def, el );
+
+		// Set attributes.
+		renderElementAttributes( def, el );
+
+		// Invoke children recursively.
+		renderElementChildren( def, el );
+
+		return el;
+	}
+
+	function renderElementText( def, el ) {
+		if ( def.text ) {
+			if ( typeof def.text == 'function' ) {
+				def.text( el, textUpdater() );
+			} else {
+				el.innerHTML = def.text;
+			}
+		}
+	}
+
+	function renderElementAttributes( def, el ) {
+		var value;
+		var attr;
+
+		for ( attr in def.attributes ) {
+			value = def.attributes[ attr ];
+
+			// Attribute bound directly to the model.
+			if ( typeof value == 'function' ) {
+				value( el, attributeUpdater( attr ) );
+			}
+
+			// Explicit attribute definition (string).
+			else {
+				// Attribute can be an array, i.e. classes.
+				if ( Array.isArray( value ) ) {
+					value = value.join( ' ' );
+				}
+
+				attributeUpdater( attr )( el, value );
+			}
+		}
+	}
+
+	function renderElementChildren( def, el ) {
+		var child;
+
+		if ( def.children ) {
+			for ( child of def.children ) {
+				el.appendChild( renderElement( child ) );
+			}
+		}
+	}
 
 	return Template;
 } );
