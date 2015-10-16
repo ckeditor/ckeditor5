@@ -12,7 +12,12 @@
  * @extends Model
  */
 
-CKEDITOR.define( [ 'collection', 'model', 'ui/template' ], function( Collection, Model, Template ) {
+CKEDITOR.define( [
+	'collection',
+	'model',
+	'ui/template',
+	'ckeditorerror'
+], function( Collection, Model, Template, CKEditorError ) {
 	class View extends Model {
 		/**
 		 * Creates an instance of the {@link View} class.
@@ -109,6 +114,13 @@ CKEDITOR.define( [ 'collection', 'model', 'ui/template' ], function( Collection,
 		 * @returns {HTMLElement}
 		 */
 		render() {
+			if ( !this.template ) {
+				throw new CKEditorError(
+					'ui-view-notemplate: This View implements no template to render.',
+					{ view: this }
+				);
+			}
+
 			this._template = new Template( this.template );
 
 			return this._template.render();

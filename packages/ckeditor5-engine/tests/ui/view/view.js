@@ -7,7 +7,7 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'ckeditor', 'ui/view' );
+var modules = bender.amd.require( 'ckeditor', 'ui/view', 'ckeditorerror' );
 
 describe( 'View', function() {
 	var view;
@@ -27,7 +27,7 @@ describe( 'View', function() {
 	} );
 
 	it( 'has no default element', function() {
-		expect( view.el ).to.be.null();
+		expect( () => view.el ).to.throw( modules.ckeditorerror );
 	} );
 
 	it( 'has no default template', function() {
