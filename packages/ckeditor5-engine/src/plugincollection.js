@@ -13,12 +13,12 @@
  */
 
 CKEDITOR.define( [
-	'collection',
+	'namedcollection',
 	'plugin',
 	'ckeditorerror',
 	'log'
-], function( Collection, Plugin, CKEditorError, log ) {
-	class PluginCollection extends Collection {
+], function( NamedCollection, Plugin, CKEditorError, log ) {
+	class PluginCollection extends NamedCollection {
 		/**
 		 * Creates an instance of the PluginCollection class, initializing it with a set of plugins.
 		 *
@@ -28,9 +28,6 @@ CKEDITOR.define( [
 			super();
 
 			this._editor = editor;
-
-			// The hash table used to store pointers to loaded plugins by name.
-			this._names = {};
 		}
 
 		/**
@@ -39,25 +36,31 @@ CKEDITOR.define( [
 		 * @param {String} plugins A comma separated list of plugin names to get loaded.
 		 * @returns {Promise} A promise which gets resolved once all plugins are loaded and available into the
 		 * collection.
+		 * @param {core/Plugin[]} returns.loadedPlugins The array of loaded plugins.
 		 */
 		load( plugins ) {
 			var that = this;
 
 			// The list of plugins which are being loaded (to avoid circular references issues).
 			var loading = {};
+			// Plugins added to the collection (for the purpose of returning an array of loaded plugins).
+			var loaded = [];
 
 			// It may happen that an empty list was passed – don't fail.
 			plugins = plugins ? plugins.split( ',' ) : [];
 
 			// Creates a promise for the loading of each plugin and returns a main promise that resolves when all are
 			// done.
-			return Promise.all( plugins.map( pluginPromise ) );
+			return Promise.all( plugins.map( pluginPromise ) )
+				.then( function() {
+					return loaded;
+				} );
 
 			// Returns a promise that will load the plugin and add it to the collection before resolving.
 			function pluginPromise( plugin ) {
 				return new Promise( function( resolve, reject ) {
 					// Do nothing if the plugin is already loaded (or if is being loaded right now).
-					if ( that._names[ plugin ] || loading[ plugin ] ) {
+					if ( that._models[ plugin ] || loading[ plugin ] ) {
 						return resolve();
 					}
 
@@ -100,6 +103,7 @@ CKEDITOR.define( [
 										// the collection. This guarantees that dependecies come first in the collection.
 										if ( !isPluginDep ) {
 											that.add( loadedPlugin );
+											loaded.push( loadedPlugin );
 										}
 									} )
 							);
@@ -138,41 +142,6 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * Adds a plugin to the collection.
-		 *
-		 * The `name` property must be set to the plugin object before passing it to this function. Adding plugins
-		 * with the same name has no effect and silently fails.
-		 *
-		 * @param {Plugin} plugin The plugin to be added.
-		 */
-		add( plugin ) {
-			// Do nothing if the plugin is already loaded.
-			if ( this._names[ plugin.name ] ) {
-				return;
-			}
-
-			// Save a pointer to the plugin by its name.
-			this._names[ plugin.name ] = plugin;
-
-			// Call the original implementation.
-			super.add.apply( this, arguments );
-		}
-
-		/**
-		 * Gets a plugin from the collection.
-		 *
-		 * @param {String} name The plugin name.
-		 * @returns {Plugin} The requested plugin, if available in the collection.
-		 */
-		get( name ) {
-			if ( typeof name != 'string' ) {
-				return super.get.apply( this, arguments );
-			}
-
-			return this._names[ name ];
-		}
-
-		/**
 		 * Executes the callback for each model in the collection.
 		 *
 		 * @param {Function} callback
@@ -180,8 +149,8 @@ CKEDITOR.define( [
 		 * @param {String} callback.name
 		 */
 		forEach( callback ) {
-			for ( var name in this._names ) {
-				callback( this._names[ name ], name );
+			for ( var name in this._models ) {
+				callback( this._models[ name ], name );
 			}
 		}
 	}

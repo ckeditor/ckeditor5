@@ -100,23 +100,23 @@ CKEDITOR.define( [
 				return that.plugins.load( config.plugins );
 			}
 
-			function initPlugins() {
+			function initPlugins( loadedPlugins ) {
 				// Start with a resolved promise.
 				var promise = Promise.resolve();
 
 				// Chain it with promises that resolve with the init() call of every plugin.
-				for ( var i = 0; i < that.plugins.length; i++ ) {
-					promise = promise.then( callInit( i ) );
+				for ( var i = 0; i < loadedPlugins.length; i++ ) {
+					promise = promise.then( callInit( loadedPlugins[ i ] ) );
 				}
 
 				// Return the promise chain.
 				return promise;
 
-				function callInit( index ) {
+				function callInit( plugin ) {
 					return function() {
 						// Returns init(). If it is a promise, the next then() interation will be called only when it
 						// will be resolved, enabling asynchronous init().
-						return that.plugins.get( index ).init();
+						return plugin.init();
 					};
 				}
 			}
