@@ -58,16 +58,10 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 		 * Gets one item from the collection.
 		 *
 		 * @param {Number} index The index to take the item from.
-		 * @returns {Model} The requested item.
+		 * @returns {Model} The requested item or `null` if such item does not exist.
 		 */
 		get( index ) {
-			var model = this._models[ index ];
-
-			if ( !model ) {
-				throw new Error( 'Index not found' );
-			}
-
-			return model;
+			return this._models[ index ] || null;
 		}
 
 		/**

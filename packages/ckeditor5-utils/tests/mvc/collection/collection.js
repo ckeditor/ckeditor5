@@ -36,13 +36,11 @@ describe( 'add', function() {
 } );
 
 describe( 'get', function() {
-	it( 'should throw an error on invalid index', function() {
+	it( 'should return null if index does not exist', function() {
 		var box = getCollection();
 		box.add( getItem() );
 
-		expect( function() {
-			box.get( 1 );
-		} ).to.throw( Error, 'Index not found' );
+		expect( box.get( 1 ) ).to.be.null;
 	} );
 } );
 
