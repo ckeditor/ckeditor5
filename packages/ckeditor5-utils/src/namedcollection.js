@@ -132,6 +132,44 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 		forEach( callback ) {
 			this._models.forEach( callback );
 		}
+
+		/**
+		 * Finds the first item in the collection for which the `callback` returns a true value.
+		 *
+		 * @param {Function} callback
+		 * @param {Model} callback.item
+		 * @param {String} callback.name
+		 * @params {Object} ctx Context in which the `callback` will be called.
+		 * @returns {Model} The item for which `callback` returned a true value.
+		 */
+		find( callback, ctx ) {
+			for ( var name in this._models ) {
+				if ( callback.call( ctx, this._models[ name ], name ) ) {
+					return this._models[ name ];
+				}
+			}
+		}
+
+		/**
+		 * Returns an object (`name => item`) with items for which the `callback` returned a true value.
+		 *
+		 * @param {Function} callback
+		 * @param {Model} callback.item
+		 * @param {String} callback.name
+		 * @params {Object} ctx Context in which the `callback` will be called.
+		 * @returns {Object} The object with matching items.
+		 */
+		filter( callback, ctx ) {
+			var ret = {};
+
+			for ( var name in this._models ) {
+				if ( callback.call( ctx, this._models[ name ], name ) ) {
+					ret[ name ] = this._models[ name ];
+				}
+			}
+
+			return ret;
+		}
 	}
 
 	utils.extend( NamedCollection.prototype, EmitterMixin );
