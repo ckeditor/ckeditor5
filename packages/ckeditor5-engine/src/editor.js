@@ -105,24 +105,16 @@ CKEDITOR.define( [
 				var promise = Promise.resolve();
 
 				// Chain it with promises that resolve with the init() call of every plugin.
-				for ( var i = 0; i < loadedPlugins.length; i++ ) {
-					promise = promise.then( callInit( loadedPlugins[ i ] ) );
+				for ( let i = 0; i < loadedPlugins.length; i++ ) {
+					promise = promise.then( () => loadedPlugins[ i ].init() );
 				}
 
 				// Return the promise chain.
 				return promise;
-
-				function callInit( plugin ) {
-					return function() {
-						// Returns init(). If it is a promise, the next then() interation will be called only when it
-						// will be resolved, enabling asynchronous init().
-						return plugin.init();
-					};
-				}
 			}
 
 			function findCreators() {
-				that.plugins.forEach( function( plugin, name ) {
+				that.plugins.forEach( ( plugin, name ) => {
 					if ( plugin instanceof Creator ) {
 						that._creators[ name ] = plugin;
 					}
@@ -178,7 +170,7 @@ CKEDITOR.define( [
 
 			delete this.element;
 
-			return Promise.resolve().then( function() {
+			return Promise.resolve().then( () => {
 				return that._creator && that._creator.destroy();
 			} );
 		}
