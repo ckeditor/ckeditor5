@@ -8,6 +8,8 @@
 /**
  * Collections are ordered sets of models.
  *
+ * See also {@link core/NamedCollection}.
+ *
  * @class Collection
  * @mixins EventEmitter
  */
