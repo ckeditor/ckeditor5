@@ -63,14 +63,10 @@ describe( 'add', function() {
 
 describe( 'get', function() {
 	it( 'should throw an error on invalid name', function() {
-		var CKEditorError = modules.ckeditorerror;
 		var box = getCollection();
-
 		box.add( getItem( 'foo' ) );
 
-		expect( function() {
-			box.get( 'bar' );
-		} ).to.throw( CKEditorError, /^namedcollection-get/ );
+		expect( box.get( 'bar' ) ).to.be.null;
 	} );
 } );
 

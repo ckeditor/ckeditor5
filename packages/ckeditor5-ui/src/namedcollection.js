@@ -77,22 +77,10 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 		 * Gets one item from the collection.
 		 *
 		 * @param {String} name The name of the item to take.
-		 * @returns {Model} The requested item.
+		 * @returns {Model} The requested item or `null` if such item does not exist.
 		 */
 		get( name ) {
-			var model = this._models.get( name );
-
-			if ( !model ) {
-				/**
-				 * Model not found.
-				 *
-				 * @error namedcollection-get
-				 * @param {String} name Name of the model.
-				 */
-				throw new CKEditorError( 'namedcollection-get: Model not found.', { name: name } );
-			}
-
-			return model;
+			return this._models.get( name ) || null;
 		}
 
 		/**
