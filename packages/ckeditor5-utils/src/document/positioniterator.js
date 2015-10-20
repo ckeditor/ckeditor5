@@ -75,15 +75,15 @@ CKEDITOR.define( [
 			var nodeAfter = position.nodeAfter;
 
 			if ( nodeAfter instanceof Element ) {
-				this.position = Position.makePositionFromParentAndOffset( nodeAfter, 0, position.doc );
+				this.position = Position.makePositionFromParentAndOffset( nodeAfter, 0, position.root );
 
 				return formatReturnValue( OPENING_TAG, nodeAfter );
 			} else if ( nodeAfter instanceof Character ) {
-				this.position = Position.makePositionFromParentAndOffset( parent, position.offset + 1, position.doc );
+				this.position = Position.makePositionFromParentAndOffset( parent, position.offset + 1, position.root );
 
 				return formatReturnValue( CHARACTER, nodeAfter );
 			} else {
-				this.position = Position.makePositionFromParentAndOffset( parent.parent, parent.positionInParent + 1, position.doc );
+				this.position = Position.makePositionFromParentAndOffset( parent.parent, parent.positionInParent + 1, position.root );
 
 				return formatReturnValue( CLOSING_TAG, this.position.nodeBefore );
 			}
@@ -115,15 +115,15 @@ CKEDITOR.define( [
 			var nodeBefore = position.nodeBefore;
 
 			if ( nodeBefore instanceof Element ) {
-				this.position = Position.makePositionFromParentAndOffset( nodeBefore, nodeBefore.children.length, position.doc );
+				this.position = Position.makePositionFromParentAndOffset( nodeBefore, nodeBefore.children.length, position.root );
 
 				return formatReturnValue( CLOSING_TAG, nodeBefore );
 			} else if ( nodeBefore instanceof Character ) {
-				this.position = Position.makePositionFromParentAndOffset( parent, position.offset - 1, position.doc );
+				this.position = Position.makePositionFromParentAndOffset( parent, position.offset - 1, position.root );
 
 				return formatReturnValue( CHARACTER, nodeBefore );
 			} else {
-				this.position = Position.makePositionFromParentAndOffset( parent.parent, parent.positionInParent, position.doc );
+				this.position = Position.makePositionFromParentAndOffset( parent.parent, parent.positionInParent, position.root );
 
 				return formatReturnValue( OPENING_TAG, this.position.nodeAfter );
 			}

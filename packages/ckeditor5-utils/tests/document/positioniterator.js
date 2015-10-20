@@ -16,7 +16,7 @@ var modules = bender.amd.require(
 	'document/range' );
 
 describe( 'range iterator', function() {
-	var document, expectedItems;
+	var doc, expectedItems;
 
 	var root, img1, paragraph, charB, charA, charR, img2, charX;
 
@@ -33,8 +33,8 @@ describe( 'range iterator', function() {
 		CLOSING_TAG = PositionIterator.CLOSING_TAG;
 		CHARACTER = PositionIterator.CHARACTER;
 
-		document = new Document();
-		root = document.root;
+		doc = new Document();
+		root = doc.root;
 
 		// root
 		//  |- img1
@@ -85,7 +85,7 @@ describe( 'range iterator', function() {
 		var PositionIterator = modules[ 'document/positioniterator' ];
 		var Position = modules[ 'document/position' ];
 
-		var iterator = new PositionIterator( new Position( [ 0 ], document ) ); // begging of root
+		var iterator = new PositionIterator( new Position( [ 0 ], doc.root ) ); // begging of root
 		var i, len;
 
 		for ( i = 0, len = expectedItems.length; i < len; i++ ) {
@@ -98,7 +98,7 @@ describe( 'range iterator', function() {
 		var PositionIterator = modules[ 'document/positioniterator' ];
 		var Position = modules[ 'document/position' ];
 
-		var iterator = new PositionIterator( new Position( [ 2 ], document ) ); // ending of root
+		var iterator = new PositionIterator( new Position( [ 2 ], doc.root ) ); // ending of root
 
 		for ( var i = expectedItems.length - 1; i >= 0; i-- ) {
 			expect( iterator.previous() ).to.deep.equal( { done: false, value: expectedItems[ i ] } );
@@ -111,8 +111,8 @@ describe( 'range iterator', function() {
 		var Position = modules[ 'document/position' ];
 		var Range = modules[ 'document/range' ];
 
-		var start = new Position( [ 1, 0 ], document ); // p, 0
-		var end = new Position( [ 1, 3, 0 ], document ); // img, 0
+		var start = new Position( [ 1, 0 ], doc.root ); // p, 0
+		var end = new Position( [ 1, 3, 0 ], doc.root ); // img, 0
 
 		var iterator = new PositionIterator( new Range( start, end ) );
 
@@ -129,8 +129,8 @@ describe( 'range iterator', function() {
 		var Position = modules[ 'document/position' ];
 		var Range = modules[ 'document/range' ];
 
-		var start = new Position( [ 1, 0 ], document ); // p, 0
-		var end = new Position( [ 1, 3, 0 ], document ); // img, 0
+		var start = new Position( [ 1, 0 ], doc.root ); // p, 0
+		var end = new Position( [ 1, 3, 0 ], doc.root ); // img, 0
 
 		var iterator = new PositionIterator( new Range( start, end ), end );
 
@@ -146,8 +146,8 @@ describe( 'range iterator', function() {
 		var Position = modules[ 'document/position' ];
 		var Range = modules[ 'document/range' ];
 
-		var start = new Position( [ 0 ], document ); // begging of root
-		var end = new Position( [ 2 ], document ); // ending of root
+		var start = new Position( [ 0 ], doc.root ); // begging of root
+		var end = new Position( [ 2 ], doc.root ); // ending of root
 		var range = new Range( start, end );
 
 		var i = 0;

@@ -32,8 +32,8 @@ describe( 'MoveOperation', function() {
 		p1.children.push( new Element( doc.p1, 'x' ) );
 
 		doc.applyOperation( new MoveOperation(
-			new Position( [ 0, 0 ], doc ),
-			new Position( [ 1, 0 ], doc ),
+			new Position( [ 0, 0 ], doc.root ),
+			new Position( [ 1, 0 ], doc.root ),
 			p1.children[ 0 ],
 			doc.version ) );
 
@@ -61,8 +61,8 @@ describe( 'MoveOperation', function() {
 		doc.root.children.push( new Character( doc.root, 'x' ) );
 
 		doc.applyOperation( new MoveOperation(
-			new Position( [ 2 ], doc ),
-			new Position( [ 1 ], doc ),
+			new Position( [ 2 ], doc.root ),
+			new Position( [ 1 ], doc.root ),
 			[ doc.root.children[ 2 ],  doc.root.children[ 3 ] ],
 			doc.version ) );
 
@@ -90,8 +90,8 @@ describe( 'MoveOperation', function() {
 		doc.root.children.push( new Character( doc.root, 'x' ) );
 
 		doc.applyOperation( new MoveOperation(
-			new Position( [ 1 ], doc ),
-			new Position( [ 4 ], doc ),
+			new Position( [ 1 ], doc.root ),
+			new Position( [ 4 ], doc.root ),
 			[ doc.root.children[ 1 ],  doc.root.children[ 2 ] ],
 			doc.version ) );
 
@@ -114,8 +114,8 @@ describe( 'MoveOperation', function() {
 
 		var nodes = [ new Character( doc.root, 'b' ), new Character( doc.root, 'a' ), new Character( doc.root, 'r' ) ];
 
-		var sourcePosition = new Position( [ 0 ], doc );
-		var targetPosition = new Position( [ 4 ], doc );
+		var sourcePosition = new Position( [ 0 ], doc.root );
+		var targetPosition = new Position( [ 4 ], doc.root );
 
 		var operation = new MoveOperation( sourcePosition, targetPosition, nodes, doc.version );
 
@@ -145,8 +145,8 @@ describe( 'MoveOperation', function() {
 		p1.children.push( new Element( doc.p1, 'x' ) );
 
 		var operation =  new MoveOperation(
-			new Position( [ 0, 0 ], doc ),
-			new Position( [ 1, 0 ], doc ),
+			new Position( [ 0, 0 ], doc.root ),
+			new Position( [ 1, 0 ], doc.root ),
 			p1.children[ 0 ],
 			doc.version );
 
