@@ -5,7 +5,7 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'document/attribute' ], function( Attribute ) {
+CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils ) {
 	/**
 	 * Abstract document tree node class.
 	 *
@@ -131,6 +131,15 @@ CKEDITOR.define( [ 'document/attribute' ], function( Attribute ) {
 			}
 
 			return path;
+		}
+
+		toJSON() {
+			var json = utils.clone( this );
+
+			// Due to circular references we need to remove parent reference.
+			json.parent = this.parent ? this.parent.name : null;
+
+			return json;
 		}
 	}
 

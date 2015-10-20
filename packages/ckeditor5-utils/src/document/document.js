@@ -5,7 +5,12 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'document/element', 'emittermixin', 'utils' ], function( Element, EmitterMixin, utils ) {
+CKEDITOR.define( [
+	'document/element',
+	'emittermixin',
+	'utils',
+	'ckeditorerror'
+], function( Element, EmitterMixin, utils, CKEditorError ) {
 	/**
 	 * Document model.
 	 *
@@ -34,7 +39,18 @@ CKEDITOR.define( [ 'document/element', 'emittermixin', 'utils' ], function( Elem
 		 */
 		applyOperation( operation ) {
 			if ( operation.baseVersion !== this.version ) {
-				throw 'Only operations with matching versions can be applied.';
+				/**
+				 * Only operations with matching versions can be applied.
+				 *
+				 * @error document-applyOperation-wrong-version
+				 * @param {document.Document} doc
+				 * @param {document.Operation} operation
+				 * @param {Number} baseVersion
+				 * @param {Number} documentVersion
+				 */
+				throw new CKEditorError(
+					'document-applyOperation-wrong-version: Only operations with matching versions can be applied.',
+					{ doc: this, operation: operation, baseVersion: operation.baseVersion, documentVersion: this.version } );
 			}
 
 			operation._execute();

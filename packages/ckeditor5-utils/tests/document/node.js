@@ -181,4 +181,29 @@ describe( 'hasAttr', function() {
 
 		expect( element.hasAttr( fooAttr ) ).to.be.false;
 	} );
+
+	it( 'should create proper JSON string using toJSON method', function() {
+		var Element = modules[ 'document/element' ];
+		var Character = modules[ 'document/character' ];
+
+		var foo = new Element( null, 'foo' );
+		var b = new Character( foo, 'b' );
+		foo.children.push( b );
+
+		var parsedFoo = JSON.parse( JSON.stringify( foo ) );
+		var parsedBar = JSON.parse( JSON.stringify( b ) );
+
+		expect( parsedFoo ).to.be.deep.equals( {
+			name: 'foo',
+			parent: null,
+			attrs: [],
+			children: [ parsedBar ]
+		} );
+
+		expect( parsedBar ).to.be.deep.equals( {
+			character: 'b',
+			parent: 'foo',
+			attrs: []
+		} );
+	} );
 } );

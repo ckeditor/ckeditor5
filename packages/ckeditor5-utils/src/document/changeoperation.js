@@ -5,7 +5,7 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'document/operation' ], function( Operation ) {
+CKEDITOR.define( [ 'document/operation', 'ckeditorerror' ], function( Operation, CKEditorError ) {
 	/**
 	 *
 	 *
@@ -28,46 +28,79 @@ CKEDITOR.define( [ 'document/operation' ], function( Operation ) {
 			var oldAttr = this.oldAttr;
 			var newAttr = this.newAttr;
 
-			if ( newAttr === null ) {
-				remove();
-			} else if ( oldAttr === null ) {
-				insert();
-			} else {
-				change();
-			}
+			var value;
 
-			function remove() {
-				for ( var value of range ) {
-					// TODO: if debug
+			// Remove.
+			if ( newAttr === null ) {
+				for ( value of range ) {
 					if ( !value.node.hasAttr( oldAttr ) ) {
-						throw 'The attribute which should be removed does not exists.';
+						/**
+						 * The attribute which should be removed does not exists.
+						 *
+						 * @error operation-change-no-attr-to-remove
+						 * @param {document.ChangeOperation} changeOperation
+						 * @param {document.Node} node
+						 * @param {document.Attribute} attr
+						 */
+						throw new CKEditorError(
+							'operation-change-no-attr-to-remove: The attribute which should be removed does not exists.',
+							{ changeOperation: this, node: value.node, attr: oldAttr } );
 					}
 
 					doRemove( value.node.attrs, oldAttr );
 				}
 			}
-
-			function insert() {
-				for ( var value of range ) {
-					// TODO: if debug
+			// Insert.
+			else if ( oldAttr === null ) {
+				for ( value of range ) {
 					if ( value.node.hasAttr( newAttr.key ) ) {
-						throw 'The attribute with given key already exists.';
+						/**
+						 * The attribute with given key already exists.
+						 *
+						 * @error operation-change-attr-exists
+						 * @param {document.ChangeOperation} changeOperation
+						 * @param {document.Node} node
+						 * @param {document.Attribute} attr
+						 */
+						throw new CKEditorError(
+							'operation-change-attr-exists: The attribute with given key already exists.',
+							{ changeOperation: this, node: value.node, attr: newAttr } );
 					}
 
 					doInsert( value.node.attrs, newAttr );
 				}
 			}
-
-			function change() {
-				for ( var value of range ) {
-					// TODO: if debug
+			// Change.
+			else {
+				for ( value of range ) {
 					if ( oldAttr.key != newAttr.key ) {
-						throw 'Old and new attributes should have the same keys.';
+						/**
+						 * Old and new attributes should have the same keys.
+						 *
+						 * @error operation-change-different-keys
+						 * @param {document.ChangeOperation} changeOperation
+						 * @param {document.Node} node
+						 * @param {document.Attribute} oldAttr
+						 * @param {document.Attribute} newAttr
+						 */
+						throw new CKEditorError(
+							'operation-change-different-keys: Old and new attributes should have the same keys.',
+							{ changeOperation: this, node: value.node, oldAttr: oldAttr, newAttr: newAttr } );
 					}
 
-					// TODO: if debug
 					if ( !value.node.hasAttr( oldAttr ) ) {
-						throw 'The attribute which should be changed does not exists.';
+						/**
+						 * The attribute which should be changed does not exists.
+						 *
+						 * @error operation-change-no-attr-to-change
+						 * @param {document.ChangeOperation} changeOperation
+						 * @param {document.Node} node
+						 * @param {document.Attribute} oldAttr
+						 * @param {document.Attribute} newAttr
+						 */
+						throw new CKEditorError(
+							'operation-change-no-attr-to-change: The attribute which should be changed does not exists.',
+							{ changeOperation: this, node: value.node, oldAttr: oldAttr, newAttr: newAttr } );
 					}
 
 					doRemove( value.node.attrs, oldAttr );

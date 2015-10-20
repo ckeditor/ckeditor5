@@ -5,7 +5,7 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'utils' ], function( utils ) {
+CKEDITOR.define( [ 'utils', 'ckeditorerror' ], function( utils, CKEditorError ) {
 	/**
 	 * Position is always before of after a node.
 	 * See {@link #path} property for more information.
@@ -70,7 +70,13 @@ CKEDITOR.define( [ 'utils' ], function( utils ) {
 		 */
 		static makePositionBefore( node, doc ) {
 			if ( !node.parent ) {
-				throw 'You can not make position before root.';
+				/**
+				 * You can not make position before root.
+				 *
+				 * @error position-before-root
+				 * @param {document.Node} root
+				 */
+				throw new CKEditorError( 'position-before-root: You can not make position before root.', { root: node } );
 			}
 
 			return Position.makePositionFromParentAndOffset( node.parent, node.positionInParent, doc );
@@ -84,7 +90,13 @@ CKEDITOR.define( [ 'utils' ], function( utils ) {
 		 */
 		static makePositionAfter( node, doc ) {
 			if ( !node.parent ) {
-				throw 'You can not make position after root.';
+				/**
+				 * You can not make position after root.
+				 *
+				 * @error position-after-root
+				 * @param {document.Node} root
+				 */
+				throw new CKEditorError( 'position-after-root: You can not make position after root.', { root: node } );
 			}
 
 			return Position.makePositionFromParentAndOffset( node.parent, node.positionInParent + 1, doc );
