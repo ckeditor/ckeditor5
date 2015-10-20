@@ -34,7 +34,7 @@ describe( 'ChangeOperation', function() {
 		doc.root.children.push( new Character( doc.root, 'r' ) );
 
 		doc.applyOperation( new ChangeOperation(
-			new Range( new Position( [ 0 ], doc ), new Position( [ 2 ], doc ) ),
+			new Range( new Position( [ 0 ], doc.root ), new Position( [ 2 ], doc.root ) ),
 			null,
 			newAttr,
 			doc.version ) );
@@ -64,8 +64,8 @@ describe( 'ChangeOperation', function() {
 
 		doc.applyOperation( new ChangeOperation(
 			[
-				new Range( new Position( [ 0 ], doc ), new Position( [ 1 ], doc ) ),
-				new Range( new Position( [ 2 ], doc ), new Position( [ 3 ], doc ) )
+				new Range( new Position( [ 0 ], doc.root ), new Position( [ 1 ], doc.root ) ),
+				new Range( new Position( [ 2 ], doc.root ), new Position( [ 3 ], doc.root ) )
 			],
 			null,
 			newAttr,
@@ -95,7 +95,7 @@ describe( 'ChangeOperation', function() {
 		doc.root.children.push( new Character( doc.root, 'x', [ fooAttr, barAttr ] ) );
 
 		doc.applyOperation( new ChangeOperation(
-			new Range( new Position( [ 0 ], doc ), new Position( [ 1 ], doc ) ),
+			new Range( new Position( [ 0 ], doc.root ), new Position( [ 1 ], doc.root ) ),
 			null,
 			newAttr,
 			doc.version ) );
@@ -127,8 +127,8 @@ describe( 'ChangeOperation', function() {
 
 		doc.applyOperation( new ChangeOperation(
 			[
-				new Range( new Position( [ 0 ], doc ), new Position( [ 1 ], doc ) ),
-				new Range( new Position( [ 2 ], doc ), new Position( [ 3 ], doc ) )
+				new Range( new Position( [ 0 ], doc.root ), new Position( [ 1 ], doc.root ) ),
+				new Range( new Position( [ 2 ], doc.root ), new Position( [ 3 ], doc.root ) )
 			],
 			oldAttr,
 			newAttr,
@@ -162,7 +162,7 @@ describe( 'ChangeOperation', function() {
 		doc.root.children.push( new Character( doc.root, 'r', [ oldAttr ] ) );
 
 		doc.applyOperation( new ChangeOperation(
-			new Range( new Position( [ 0 ], doc ), new Position( [ 2 ], doc ) ),
+			new Range( new Position( [ 0 ], doc.root ), new Position( [ 2 ], doc.root ) ),
 			oldAttr,
 			newAttr,
 			doc.version ) );
@@ -195,7 +195,7 @@ describe( 'ChangeOperation', function() {
 		doc.root.children.push( new Character( doc.root, 'x', [ fooAttr, x1Attr, barAttr ] ) );
 
 		doc.applyOperation( new ChangeOperation(
-			new Range( new Position( [ 0 ], doc ), new Position( [ 1 ], doc ) ),
+			new Range( new Position( [ 0 ], doc.root ), new Position( [ 1 ], doc.root ) ),
 			x1Attr,
 			x2Attr,
 			doc.version ) );
@@ -225,7 +225,7 @@ describe( 'ChangeOperation', function() {
 		doc.root.children.push( new Character( doc.root, 'x', [ fooAttr, xAttr, barAttr ] ) );
 
 		doc.applyOperation( new ChangeOperation(
-			new Range( new Position( [ 0 ], doc ), new Position( [ 1 ], doc ) ),
+			new Range( new Position( [ 0 ], doc.root ), new Position( [ 1 ], doc.root ) ),
 			xAttr,
 			null,
 			doc.version ) );
@@ -255,8 +255,8 @@ describe( 'ChangeOperation', function() {
 
 		doc.applyOperation( new ChangeOperation(
 			[
-				new Range( new Position( [ 0 ], doc ), new Position( [ 1 ], doc ) ),
-				new Range( new Position( [ 2 ], doc ), new Position( [ 3 ], doc ) )
+				new Range( new Position( [ 0 ], doc.root ), new Position( [ 1 ], doc.root ) ),
+				new Range( new Position( [ 2 ], doc.root ), new Position( [ 3 ], doc.root ) )
 			],
 			fooAttr,
 			null,
@@ -281,7 +281,7 @@ describe( 'ChangeOperation', function() {
 		var oldAttr = new Attribute( 'x', 'old' );
 		var newAttr = new Attribute( 'x', 'new' );
 
-		var ranges = [ new Range( new Position( [ 0 ], doc ), new Position( [ 3 ], doc ) ) ];
+		var ranges = [ new Range( new Position( [ 0 ], doc.root ), new Position( [ 3 ], doc.root ) ) ];
 
 		var oppertaion = new ChangeOperation( ranges, oldAttr, newAttr, doc.version );
 
@@ -311,7 +311,7 @@ describe( 'ChangeOperation', function() {
 		doc.root.children.push( new Character( doc.root, 'r' ) );
 
 		var oppertaion = new ChangeOperation(
-			new Range( new Position( [ 0 ], doc ), new Position( [ 3 ], doc ) ),
+			new Range( new Position( [ 0 ], doc.root ), new Position( [ 3 ], doc.root ) ),
 			null,
 			newAttr,
 			doc.version );
@@ -347,7 +347,7 @@ describe( 'ChangeOperation', function() {
 		doc.root.children.push( new Character( doc.root, 'r', [ oldAttr ] ) );
 
 		var oppertaion = new ChangeOperation(
-			new Range( new Position( [ 0 ], doc ), new Position( [ 3 ], doc ) ),
+			new Range( new Position( [ 0 ], doc.root ), new Position( [ 3 ], doc.root ) ),
 			oldAttr,
 			newAttr,
 			doc.version );
@@ -385,7 +385,7 @@ describe( 'ChangeOperation', function() {
 		doc.root.children.push( new Character( doc.root, 'r', [ fooAttr ] ) );
 
 		var oppertaion = new ChangeOperation(
-			new Range( new Position( [ 0 ], doc ), new Position( [ 3 ], doc ) ),
+			new Range( new Position( [ 0 ], doc.root ), new Position( [ 3 ], doc.root ) ),
 			fooAttr,
 			null,
 			doc.version );
@@ -423,7 +423,7 @@ describe( 'ChangeOperation', function() {
 
 		expect( function() {
 			doc.applyOperation( new ChangeOperation(
-				new Range( new Position( [ 0 ], doc ), new Position( [ 1 ], doc ) ),
+				new Range( new Position( [ 0 ], doc.root ), new Position( [ 1 ], doc.root ) ),
 				fooAttr,
 				null,
 				doc.version ) );
@@ -448,7 +448,7 @@ describe( 'ChangeOperation', function() {
 
 		expect( function() {
 			doc.applyOperation( new ChangeOperation(
-				new Range( new Position( [ 0 ], doc ), new Position( [ 1 ], doc ) ),
+				new Range( new Position( [ 0 ], doc.root ), new Position( [ 1 ], doc.root ) ),
 				null,
 				x2Attr,
 				doc.version ) );
@@ -473,7 +473,7 @@ describe( 'ChangeOperation', function() {
 
 		expect( function() {
 			doc.applyOperation( new ChangeOperation(
-				new Range( new Position( [ 0 ], doc ), new Position( [ 1 ], doc ) ),
+				new Range( new Position( [ 0 ], doc.root ), new Position( [ 1 ], doc.root ) ),
 				fooAttr,
 				barAttr,
 				doc.version ) );
@@ -498,7 +498,7 @@ describe( 'ChangeOperation', function() {
 
 		expect( function() {
 			doc.applyOperation( new ChangeOperation(
-				new Range( new Position( [ 0 ], doc ), new Position( [ 1 ], doc ) ),
+				new Range( new Position( [ 0 ], doc.root ), new Position( [ 1 ], doc.root ) ),
 				x1Attr,
 				x2Attr,
 				doc.version ) );

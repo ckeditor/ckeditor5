@@ -24,7 +24,7 @@ describe( 'InsertOperation', function() {
 		var doc = new Document();
 
 		doc.applyOperation( new InsertOperation(
-			new Position( [ 0 ], doc ),
+			new Position( [ 0 ], doc.root ),
 			new Character( null, 'x' ),
 			doc.version ) );
 
@@ -42,7 +42,7 @@ describe( 'InsertOperation', function() {
 		var doc = new Document();
 
 		doc.applyOperation( new InsertOperation(
-			new Position( [ 0 ], doc ),
+			new Position( [ 0 ], doc.root ),
 			[ new Character( null, 'b' ), new Character( null, 'a' ), new Character( null, 'r' ) ],
 			doc.version ) );
 
@@ -65,7 +65,7 @@ describe( 'InsertOperation', function() {
 		doc.root.children.push( new Character( doc.root, 'y' ) );
 
 		doc.applyOperation( new InsertOperation(
-			new Position( [ 1 ], doc ),
+			new Position( [ 1 ], doc.root ),
 			[ new Character( null, 'b' ), new Character( null, 'a' ), new Character( null, 'r' ) ],
 			doc.version ) );
 
@@ -87,7 +87,7 @@ describe( 'InsertOperation', function() {
 		var doc = new Document();
 
 		doc.applyOperation( new InsertOperation(
-			new Position( [ 0 ], doc ),
+			new Position( [ 0 ], doc.root ),
 			[ 'foo', new Character( null, 'x' ), 'bar' ],
 			doc.version ) );
 
@@ -112,7 +112,7 @@ describe( 'InsertOperation', function() {
 		var doc = new Document();
 
 		var nodes = [ new Character( null, 'b' ), new Character( null, 'a' ), new Character( null, 'r' ) ];
-		var position = new Position( [ 0 ], doc );
+		var position = new Position( [ 0 ], doc.root );
 
 		var operation = new InsertOperation( position, nodes, 0 );
 
@@ -133,7 +133,7 @@ describe( 'InsertOperation', function() {
 		var doc = new Document();
 
 		var operation = new InsertOperation(
-			new Position( [ 0 ], doc ),
+			new Position( [ 0 ], doc.root ),
 			new Character( null, 'x' ),
 			doc.version );
 
@@ -158,7 +158,7 @@ describe( 'InsertOperation', function() {
 		var doc = new Document();
 
 		var operation = new InsertOperation(
-			new Position( [ 0 ], doc ),
+			new Position( [ 0 ], doc.root ),
 			[ new Character( null, 'b' ), new Character( null, 'a' ), new Character( null, 'r' ) ],
 			doc.version );
 

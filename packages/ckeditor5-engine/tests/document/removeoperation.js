@@ -26,7 +26,7 @@ describe( 'RemoveOperation', function() {
 		doc.root.children.push( new Character( doc.root, 'x' ) );
 
 		doc.applyOperation( new RemoveOperation(
-			new Position( [ 0 ], doc ),
+			new Position( [ 0 ], doc.root ),
 			doc.root.children[ 0 ],
 			doc.version ) );
 
@@ -47,7 +47,7 @@ describe( 'RemoveOperation', function() {
 		doc.root.children.push( new Character( doc.root, 'r' ) );
 
 		doc.applyOperation( new RemoveOperation(
-			new Position( [ 0 ], doc ),
+			new Position( [ 0 ], doc.root ),
 			[ doc.root.children[ 0 ], doc.root.children[ 1 ], doc.root.children[ 2 ] ],
 			doc.version ) );
 
@@ -68,7 +68,7 @@ describe( 'RemoveOperation', function() {
 		doc.root.children.push( new Character( doc.root, 'r' ) );
 
 		doc.applyOperation( new RemoveOperation(
-			new Position( [ 1 ], doc ),
+			new Position( [ 1 ], doc.root ),
 			[ doc.root.children[ 1 ] ],
 			doc.version ) );
 
@@ -88,7 +88,7 @@ describe( 'RemoveOperation', function() {
 		var doc = new Document();
 
 		var nodes = [ new Character( null, 'b' ), new Character( null, 'a' ), new Character( null, 'r' ) ];
-		var position = new Position( [ 0 ], doc );
+		var position = new Position( [ 0 ], doc.root );
 
 		doc.root.children.push( nodes[ 0 ] );
 		doc.root.children.push( nodes[ 1 ] );
@@ -113,7 +113,7 @@ describe( 'RemoveOperation', function() {
 		var doc = new Document();
 
 		var nodes = [ new Character( null, 'b' ), new Character( null, 'a' ), new Character( null, 'r' ) ];
-		var position = new Position( [ 0 ], doc );
+		var position = new Position( [ 0 ], doc.root );
 
 		doc.root.children.push( nodes[ 0 ] );
 		doc.root.children.push( nodes[ 1 ] );
