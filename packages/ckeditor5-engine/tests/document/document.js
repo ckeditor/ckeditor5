@@ -7,7 +7,7 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'document/document', 'document/element' );
+var modules = bender.amd.require( 'document/document', 'document/element', 'ckeditorerror' );
 
 describe( 'constructor', function() {
 	it( 'should create Document with no data', function() {
@@ -43,6 +43,7 @@ describe( 'applyOperation', function() {
 
 	it( 'should throw an error on the operation base version and the document version is different', function() {
 		var Document = modules[ 'document/document' ];
+		var CKEditorError = modules.ckeditorerror;
 
 		var document = new Document();
 		var operationApplied = sinon.spy();
@@ -54,6 +55,6 @@ describe( 'applyOperation', function() {
 
 		expect( function() {
 			document.applyOperation( operation );
-		} ).to.throw();
+		} ).to.throw( CKEditorError, /document-applyOperation-wrong-version/ );
 	} );
 } );

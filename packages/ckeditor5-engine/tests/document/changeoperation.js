@@ -13,7 +13,8 @@ var modules = bender.amd.require(
 	'document/position',
 	'document/range',
 	'document/character',
-	'document/attribute' );
+	'document/attribute',
+	'ckeditorerror' );
 
 describe( 'ChangeOperation', function() {
 	it( 'should insert attribute to the set of nodes', function() {
@@ -312,6 +313,7 @@ describe( 'ChangeOperation', function() {
 		var Range = modules[ 'document/range' ];
 		var Character = modules[ 'document/character' ];
 		var Attribute = modules[ 'document/attribute' ];
+		var CKEditorError = modules.ckeditorerror;
 
 		var doc = new Document();
 
@@ -325,7 +327,7 @@ describe( 'ChangeOperation', function() {
 				fooAttr,
 				null,
 				doc.version ) );
-		} ).to.throw( 'The attribute which should be removed does not exists.' );
+		} ).to.throw( CKEditorError, /operation-change-no-attr-to-remove/ );
 	} );
 
 	it( 'should throw an error when one try to insert and the attribute already exists', function() {
@@ -335,6 +337,7 @@ describe( 'ChangeOperation', function() {
 		var Range = modules[ 'document/range' ];
 		var Character = modules[ 'document/character' ];
 		var Attribute = modules[ 'document/attribute' ];
+		var CKEditorError = modules.ckeditorerror;
 
 		var doc = new Document();
 
@@ -349,7 +352,7 @@ describe( 'ChangeOperation', function() {
 				null,
 				x2Attr,
 				doc.version ) );
-		} ).to.throw( 'The attribute with given key already exists.' );
+		} ).to.throw( CKEditorError, /operation-change-attr-exists/ );
 	} );
 
 	it( 'should throw an error when one try to change and the new and old attributes have different keys', function() {
@@ -359,6 +362,7 @@ describe( 'ChangeOperation', function() {
 		var Range = modules[ 'document/range' ];
 		var Character = modules[ 'document/character' ];
 		var Attribute = modules[ 'document/attribute' ];
+		var CKEditorError = modules.ckeditorerror;
 
 		var doc = new Document();
 
@@ -373,7 +377,7 @@ describe( 'ChangeOperation', function() {
 				fooAttr,
 				barAttr,
 				doc.version ) );
-		} ).to.throw( 'Old and new attributes should have the same keys.' );
+		} ).to.throw( CKEditorError, /operation-change-different-keys/ );
 	} );
 
 	it( 'should throw an error when one try to change and the old attribute does not exists', function() {
@@ -383,6 +387,7 @@ describe( 'ChangeOperation', function() {
 		var Range = modules[ 'document/range' ];
 		var Character = modules[ 'document/character' ];
 		var Attribute = modules[ 'document/attribute' ];
+		var CKEditorError = modules.ckeditorerror;
 
 		var doc = new Document();
 
@@ -397,6 +402,6 @@ describe( 'ChangeOperation', function() {
 				x1Attr,
 				x2Attr,
 				doc.version ) );
-		} ).to.throw( 'The attribute which should be changed does not exists.' );
+		} ).to.throw( CKEditorError, /operation-change-no-attr-to-change/ );
 	} );
 } );
