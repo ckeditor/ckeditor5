@@ -1,0 +1,29 @@
+{
+	"esnext": true,
+	"expr": true,
+
+	"immed": true,
+	"latedef": "nofunc",
+	"noarg": true,
+	"nonbsp": true,
+	"undef": true,
+	"unused": true,
+	"strict": true,
+
+	"globalstrict": true,
+
+	"globals": {
+		"CKEDITOR": false,
+		"bender": false,
+		"describe": false,
+		"it": false,
+		"before": false,
+		"beforeEach": false,
+		"after": false,
+		"afterEach": false,
+		"expect": false,
+		"bender": false,
+		"sinon": false,
+		"setTimeout": false
+	}
+}
