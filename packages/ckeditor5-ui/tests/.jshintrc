@@ -24,7 +24,6 @@
 		"afterEach": false,
 		"expect": false,
 		"bender": false,
-		"sinon": false,
-		"setTimeout": false
+		"sinon": false
 	}
 }
