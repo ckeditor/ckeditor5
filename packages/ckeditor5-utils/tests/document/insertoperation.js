@@ -12,7 +12,8 @@ var modules = bender.amd.require(
 	'document/insertoperation',
 	'document/removeoperation',
 	'document/position',
-	'document/character' );
+	'document/character',
+	'document/nodelist' );
 
 describe( 'InsertOperation', function() {
 	it( 'should insert node', function() {
@@ -30,7 +31,7 @@ describe( 'InsertOperation', function() {
 
 		expect( doc.version ).to.be.equal( 1 );
 		expect( doc.root.children.length ).to.be.equal( 1 );
-		expect( doc.root.children[ 0 ].character ).to.be.equal( 'x' );
+		expect( doc.root.children.get( 0 ).character ).to.be.equal( 'x' );
 	} );
 
 	it( 'should insert set of nodes', function() {
@@ -48,9 +49,9 @@ describe( 'InsertOperation', function() {
 
 		expect( doc.version ).to.be.equal( 1 );
 		expect( doc.root.children.length ).to.be.equal( 3 );
-		expect( doc.root.children[ 0 ].character ).to.be.equal( 'b' );
-		expect( doc.root.children[ 1 ].character ).to.be.equal( 'a' );
-		expect( doc.root.children[ 2 ].character ).to.be.equal( 'r' );
+		expect( doc.root.children.get( 0 ).character ).to.be.equal( 'b' );
+		expect( doc.root.children.get( 1 ).character ).to.be.equal( 'a' );
+		expect( doc.root.children.get( 2 ).character ).to.be.equal( 'r' );
 	} );
 
 	it( 'should insert between existing nodes', function() {
@@ -71,11 +72,11 @@ describe( 'InsertOperation', function() {
 
 		expect( doc.version ).to.be.equal( 1 );
 		expect( doc.root.children.length ).to.be.equal( 5 );
-		expect( doc.root.children[ 0 ].character ).to.be.equal( 'x' );
-		expect( doc.root.children[ 1 ].character ).to.be.equal( 'b' );
-		expect( doc.root.children[ 2 ].character ).to.be.equal( 'a' );
-		expect( doc.root.children[ 3 ].character ).to.be.equal( 'r' );
-		expect( doc.root.children[ 4 ].character ).to.be.equal( 'y' );
+		expect( doc.root.children.get( 0 ).character ).to.be.equal( 'x' );
+		expect( doc.root.children.get( 1 ).character ).to.be.equal( 'b' );
+		expect( doc.root.children.get( 2 ).character ).to.be.equal( 'a' );
+		expect( doc.root.children.get( 3 ).character ).to.be.equal( 'r' );
+		expect( doc.root.children.get( 4 ).character ).to.be.equal( 'y' );
 	} );
 
 	it( 'should insert text', function() {
@@ -93,13 +94,13 @@ describe( 'InsertOperation', function() {
 
 		expect( doc.version ).to.be.equal( 1 );
 		expect( doc.root.children.length ).to.be.equal( 7 );
-		expect( doc.root.children[ 0 ].character ).to.be.equal( 'f' );
-		expect( doc.root.children[ 1 ].character ).to.be.equal( 'o' );
-		expect( doc.root.children[ 2 ].character ).to.be.equal( 'o' );
-		expect( doc.root.children[ 3 ].character ).to.be.equal( 'x' );
-		expect( doc.root.children[ 4 ].character ).to.be.equal( 'b' );
-		expect( doc.root.children[ 5 ].character ).to.be.equal( 'a' );
-		expect( doc.root.children[ 6 ].character ).to.be.equal( 'r' );
+		expect( doc.root.children.get( 0 ).character ).to.be.equal( 'f' );
+		expect( doc.root.children.get( 1 ).character ).to.be.equal( 'o' );
+		expect( doc.root.children.get( 2 ).character ).to.be.equal( 'o' );
+		expect( doc.root.children.get( 3 ).character ).to.be.equal( 'x' );
+		expect( doc.root.children.get( 4 ).character ).to.be.equal( 'b' );
+		expect( doc.root.children.get( 5 ).character ).to.be.equal( 'a' );
+		expect( doc.root.children.get( 6 ).character ).to.be.equal( 'r' );
 	} );
 
 	it( 'should create a remove operation as a reverse', function() {
@@ -108,19 +109,20 @@ describe( 'InsertOperation', function() {
 		var RemoveOperation = modules[ 'document/removeoperation' ];
 		var Position = modules[ 'document/position' ];
 		var Character = modules[ 'document/character' ];
+		var NodeList = modules[ 'document/nodelist' ];
 
 		var doc = new Document();
 
-		var nodes = [ new Character( null, 'b' ), new Character( null, 'a' ), new Character( null, 'r' ) ];
+		var nodeList = new NodeList( [ new Character( null, 'b' ), new Character( null, 'a' ), new Character( null, 'r' ) ] );
 		var position = new Position( [ 0 ], doc.root );
 
-		var operation = new InsertOperation( position, nodes, 0 );
+		var operation = new InsertOperation( position, nodeList, 0 );
 
 		var reverse = operation.reverseOperation();
 
 		expect( reverse ).to.be.an.instanceof( RemoveOperation );
 		expect( reverse.baseVersion ).to.be.equals( 1 );
-		expect( reverse.nodes ).to.be.equals( nodes );
+		expect( reverse.nodeList ).to.be.equals( nodeList );
 		expect( reverse.position ).to.be.equals( position );
 	} );
 

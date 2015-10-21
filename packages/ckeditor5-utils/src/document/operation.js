@@ -5,7 +5,7 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'document/character', 'document/node', 'utils' ], function( Character, Node, utils ) {
+CKEDITOR.define( [], function() {
 	/**
 	 *
 	 *
@@ -17,29 +17,6 @@ CKEDITOR.define( [ 'document/character', 'document/node', 'utils' ], function( C
 		 */
 		constructor( baseVersion ) {
 			this.baseVersion = baseVersion;
-		}
-
-		static uncompress( nodes ) {
-			var uncompress = [];
-			var node;
-
-			if ( !utils.isArray( nodes ) ) {
-				nodes = [ nodes ];
-			}
-
-			for ( var i = 0, nodesLen = nodes.length; i < nodesLen; i++ ) {
-				node = nodes[ i ];
-
-				if ( node instanceof Node ) {
-					uncompress.push( node );
-				} else {
-					for ( var j = 0, nodeLen = node.length; j < nodeLen; j++ ) {
-						uncompress.push( new Character( null, node[ j ] ) );
-					}
-				}
-			}
-
-			return uncompress;
 		}
 	}
 

@@ -5,7 +5,7 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'document/node' ], function( Node ) {
+CKEDITOR.define( [ 'document/node', 'document/nodelist' ], function( Node, NodeList ) {
 	/**
 	 * Linear data element.
 	 *
@@ -21,7 +21,7 @@ CKEDITOR.define( [ 'document/node' ], function( Node ) {
 		 * @param {String} name Node name.
 		 * @param {Array} attrs Array of attributes.
 		 */
-		constructor( parent, name, attrs ) {
+		constructor( parent, name, attrs, children ) {
 			super( parent, attrs );
 
 			/**
@@ -37,7 +37,7 @@ CKEDITOR.define( [ 'document/node' ], function( Node ) {
 			 *
 			 * @property {Array} children
 			 */
-			this.children = [];
+			this.children = new NodeList( children );
 		}
 	}
 

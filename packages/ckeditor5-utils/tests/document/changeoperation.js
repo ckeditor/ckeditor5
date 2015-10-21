@@ -41,9 +41,9 @@ describe( 'ChangeOperation', function() {
 
 		expect( doc.version ).to.be.equal( 1 );
 		expect( doc.root.children.length ).to.be.equal( 3 );
-		expect( doc.root.children[ 0 ].hasAttr( newAttr ) ).to.be.true;
-		expect( doc.root.children[ 1 ].hasAttr( newAttr ) ).to.be.true;
-		expect( doc.root.children[ 2 ].attrs.length ).to.be.equal( 0 );
+		expect( doc.root.children.get( 0 ).hasAttr( newAttr ) ).to.be.true;
+		expect( doc.root.children.get( 1 ).hasAttr( newAttr ) ).to.be.true;
+		expect( doc.root.children.get( 2 ).attrs.length ).to.be.equal( 0 );
 	} );
 
 	it( 'should insert attribute to multiple ranges', function() {
@@ -73,9 +73,9 @@ describe( 'ChangeOperation', function() {
 
 		expect( doc.version ).to.be.equal( 1 );
 		expect( doc.root.children.length ).to.be.equal( 3 );
-		expect( doc.root.children[ 0 ].hasAttr( newAttr ) ).to.be.true;
-		expect( doc.root.children[ 1 ].attrs.length ).to.be.equal( 0 );
-		expect( doc.root.children[ 2 ].hasAttr( newAttr ) ).to.be.true;
+		expect( doc.root.children.get( 0 ).hasAttr( newAttr ) ).to.be.true;
+		expect( doc.root.children.get( 1 ).attrs.length ).to.be.equal( 0 );
+		expect( doc.root.children.get( 2 ).hasAttr( newAttr ) ).to.be.true;
 	} );
 
 	it( 'should add attribute to the existing attributes', function() {
@@ -102,10 +102,10 @@ describe( 'ChangeOperation', function() {
 
 		expect( doc.version ).to.be.equal( 1 );
 		expect( doc.root.children.length ).to.be.equal( 1 );
-		expect( doc.root.children[ 0 ].attrs.length ).to.be.equal( 3 );
-		expect( doc.root.children[ 0 ].hasAttr( newAttr ) ).to.be.true;
-		expect( doc.root.children[ 0 ].hasAttr( fooAttr ) ).to.be.true;
-		expect( doc.root.children[ 0 ].hasAttr( barAttr ) ).to.be.true;
+		expect( doc.root.children.get( 0 ).attrs.length ).to.be.equal( 3 );
+		expect( doc.root.children.get( 0 ).hasAttr( newAttr ) ).to.be.true;
+		expect( doc.root.children.get( 0 ).hasAttr( fooAttr ) ).to.be.true;
+		expect( doc.root.children.get( 0 ).hasAttr( barAttr ) ).to.be.true;
 	} );
 
 	it( 'should change attributes on multiple ranges', function() {
@@ -136,12 +136,12 @@ describe( 'ChangeOperation', function() {
 
 		expect( doc.version ).to.be.equal( 1 );
 		expect( doc.root.children.length ).to.be.equal( 3 );
-		expect( doc.root.children[ 0 ].attrs.length ).to.be.equal( 1 );
-		expect( doc.root.children[ 0 ].hasAttr( newAttr ) ).to.be.true;
-		expect( doc.root.children[ 1 ].attrs.length ).to.be.equal( 1 );
-		expect( doc.root.children[ 1 ].hasAttr( oldAttr ) ).to.be.true;
-		expect( doc.root.children[ 2 ].attrs.length ).to.be.equal( 1 );
-		expect( doc.root.children[ 2 ].hasAttr( newAttr ) ).to.be.true;
+		expect( doc.root.children.get( 0 ).attrs.length ).to.be.equal( 1 );
+		expect( doc.root.children.get( 0 ).hasAttr( newAttr ) ).to.be.true;
+		expect( doc.root.children.get( 1 ).attrs.length ).to.be.equal( 1 );
+		expect( doc.root.children.get( 1 ).hasAttr( oldAttr ) ).to.be.true;
+		expect( doc.root.children.get( 2 ).attrs.length ).to.be.equal( 1 );
+		expect( doc.root.children.get( 2 ).hasAttr( newAttr ) ).to.be.true;
 	} );
 
 	it( 'should change attribute to the set of nodes', function() {
@@ -169,12 +169,12 @@ describe( 'ChangeOperation', function() {
 
 		expect( doc.version ).to.be.equal( 1 );
 		expect( doc.root.children.length ).to.be.equal( 3 );
-		expect( doc.root.children[ 0 ].attrs.length ).to.be.equal( 1 );
-		expect( doc.root.children[ 0 ].hasAttr( newAttr ) ).to.be.true;
-		expect( doc.root.children[ 1 ].attrs.length ).to.be.equal( 1 );
-		expect( doc.root.children[ 1 ].hasAttr( newAttr ) ).to.be.true;
-		expect( doc.root.children[ 2 ].attrs.length ).to.be.equal( 1 );
-		expect( doc.root.children[ 2 ].hasAttr( oldAttr ) ).to.be.true;
+		expect( doc.root.children.get( 0 ).attrs.length ).to.be.equal( 1 );
+		expect( doc.root.children.get( 0 ).hasAttr( newAttr ) ).to.be.true;
+		expect( doc.root.children.get( 1 ).attrs.length ).to.be.equal( 1 );
+		expect( doc.root.children.get( 1 ).hasAttr( newAttr ) ).to.be.true;
+		expect( doc.root.children.get( 2 ).attrs.length ).to.be.equal( 1 );
+		expect( doc.root.children.get( 2 ).hasAttr( oldAttr ) ).to.be.true;
 	} );
 
 	it( 'should change attribute in the middle of existing attributes', function() {
@@ -202,10 +202,10 @@ describe( 'ChangeOperation', function() {
 
 		expect( doc.version ).to.be.equal( 1 );
 		expect( doc.root.children.length ).to.be.equal( 1 );
-		expect( doc.root.children[ 0 ].attrs.length ).to.be.equal( 3 );
-		expect( doc.root.children[ 0 ].hasAttr( fooAttr ) ).to.be.true;
-		expect( doc.root.children[ 0 ].hasAttr( x2Attr ) ).to.be.true;
-		expect( doc.root.children[ 0 ].hasAttr( barAttr ) ).to.be.true;
+		expect( doc.root.children.get( 0 ).attrs.length ).to.be.equal( 3 );
+		expect( doc.root.children.get( 0 ).hasAttr( fooAttr ) ).to.be.true;
+		expect( doc.root.children.get( 0 ).hasAttr( x2Attr ) ).to.be.true;
+		expect( doc.root.children.get( 0 ).hasAttr( barAttr ) ).to.be.true;
 	} );
 
 	it( 'should remove attribute', function() {
@@ -232,9 +232,9 @@ describe( 'ChangeOperation', function() {
 
 		expect( doc.version ).to.be.equal( 1 );
 		expect( doc.root.children.length ).to.be.equal( 1 );
-		expect( doc.root.children[ 0 ].attrs.length ).to.be.equal( 2 );
-		expect( doc.root.children[ 0 ].hasAttr( fooAttr ) ).to.be.true;
-		expect( doc.root.children[ 0 ].hasAttr( barAttr ) ).to.be.true;
+		expect( doc.root.children.get( 0 ).attrs.length ).to.be.equal( 2 );
+		expect( doc.root.children.get( 0 ).hasAttr( fooAttr ) ).to.be.true;
+		expect( doc.root.children.get( 0 ).hasAttr( barAttr ) ).to.be.true;
 	} );
 
 	it( 'should remove attributes on multiple ranges', function() {
@@ -264,9 +264,9 @@ describe( 'ChangeOperation', function() {
 
 		expect( doc.version ).to.be.equal( 1 );
 		expect( doc.root.children.length ).to.be.equal( 3 );
-		expect( doc.root.children[ 0 ].attrs.length ).to.be.equal( 0 );
-		expect( doc.root.children[ 1 ].hasAttr( fooAttr ) ).to.be.true;
-		expect( doc.root.children[ 2 ].attrs.length ).to.be.equal( 0 );
+		expect( doc.root.children.get( 0 ).attrs.length ).to.be.equal( 0 );
+		expect( doc.root.children.get( 1 ).hasAttr( fooAttr ) ).to.be.true;
+		expect( doc.root.children.get( 2 ).attrs.length ).to.be.equal( 0 );
 	} );
 
 	it( 'should create a change operation as a reverse', function() {
@@ -324,9 +324,9 @@ describe( 'ChangeOperation', function() {
 
 		expect( doc.version ).to.be.equal( 2 );
 		expect( doc.root.children.length ).to.be.equal( 3 );
-		expect( doc.root.children[ 0 ].attrs.length ).to.be.equal( 0 );
-		expect( doc.root.children[ 1 ].attrs.length ).to.be.equal( 0 );
-		expect( doc.root.children[ 2 ].attrs.length ).to.be.equal( 0 );
+		expect( doc.root.children.get( 0 ).attrs.length ).to.be.equal( 0 );
+		expect( doc.root.children.get( 1 ).attrs.length ).to.be.equal( 0 );
+		expect( doc.root.children.get( 2 ).attrs.length ).to.be.equal( 0 );
 	} );
 
 	it( 'should undo change attribute by applying reverse operation', function() {
@@ -360,12 +360,12 @@ describe( 'ChangeOperation', function() {
 
 		expect( doc.version ).to.be.equal( 2 );
 		expect( doc.root.children.length ).to.be.equal( 3 );
-		expect( doc.root.children[ 0 ].attrs.length ).to.be.equal( 1 );
-		expect( doc.root.children[ 0 ].hasAttr( oldAttr ) ).to.be.true;
-		expect( doc.root.children[ 1 ].attrs.length ).to.be.equal( 1 );
-		expect( doc.root.children[ 1 ].hasAttr( oldAttr ) ).to.be.true;
-		expect( doc.root.children[ 2 ].attrs.length ).to.be.equal( 1 );
-		expect( doc.root.children[ 2 ].hasAttr( oldAttr ) ).to.be.true;
+		expect( doc.root.children.get( 0 ).attrs.length ).to.be.equal( 1 );
+		expect( doc.root.children.get( 0 ).hasAttr( oldAttr ) ).to.be.true;
+		expect( doc.root.children.get( 1 ).attrs.length ).to.be.equal( 1 );
+		expect( doc.root.children.get( 1 ).hasAttr( oldAttr ) ).to.be.true;
+		expect( doc.root.children.get( 2 ).attrs.length ).to.be.equal( 1 );
+		expect( doc.root.children.get( 2 ).hasAttr( oldAttr ) ).to.be.true;
 	} );
 
 	it( 'should undo remove attribute by applying reverse operation', function() {
@@ -398,12 +398,12 @@ describe( 'ChangeOperation', function() {
 
 		expect( doc.version ).to.be.equal( 2 );
 		expect( doc.root.children.length ).to.be.equal( 3 );
-		expect( doc.root.children[ 0 ].attrs.length ).to.be.equal( 1 );
-		expect( doc.root.children[ 0 ].hasAttr( fooAttr ) ).to.be.true;
-		expect( doc.root.children[ 1 ].attrs.length ).to.be.equal( 1 );
-		expect( doc.root.children[ 1 ].hasAttr( fooAttr ) ).to.be.true;
-		expect( doc.root.children[ 2 ].attrs.length ).to.be.equal( 1 );
-		expect( doc.root.children[ 2 ].hasAttr( fooAttr ) ).to.be.true;
+		expect( doc.root.children.get( 0 ).attrs.length ).to.be.equal( 1 );
+		expect( doc.root.children.get( 0 ).hasAttr( fooAttr ) ).to.be.true;
+		expect( doc.root.children.get( 1 ).attrs.length ).to.be.equal( 1 );
+		expect( doc.root.children.get( 1 ).hasAttr( fooAttr ) ).to.be.true;
+		expect( doc.root.children.get( 2 ).attrs.length ).to.be.equal( 1 );
+		expect( doc.root.children.get( 2 ).hasAttr( fooAttr ) ).to.be.true;
 	} );
 
 	it( 'should throw an error when one try to remove and the attribute does not exists', function() {

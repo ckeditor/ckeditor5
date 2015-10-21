@@ -10,7 +10,8 @@
 var modules = bender.amd.require(
 	'document/element',
 	'document/character',
-	'document/attribute' );
+	'document/attribute',
+	'document/nodelist' );
 
 describe( 'tree', function() {
 	var Element, Character;
@@ -185,6 +186,7 @@ describe( 'hasAttr', function() {
 	it( 'should create proper JSON string using toJSON method', function() {
 		var Element = modules[ 'document/element' ];
 		var Character = modules[ 'document/character' ];
+		var NodeList = modules[ 'document/nodelist' ];
 
 		var foo = new Element( null, 'foo' );
 		var b = new Character( foo, 'b' );
@@ -193,11 +195,13 @@ describe( 'hasAttr', function() {
 		var parsedFoo = JSON.parse( JSON.stringify( foo ) );
 		var parsedBar = JSON.parse( JSON.stringify( b ) );
 
+		parsedFoo.children = new NodeList( parsedFoo.children );
+
 		expect( parsedFoo ).to.be.deep.equals( {
 			name: 'foo',
 			parent: null,
 			attrs: [],
-			children: [ parsedBar ]
+			children: new NodeList( parsedFoo.children )
 		} );
 
 		expect( parsedBar ).to.be.deep.equals( {

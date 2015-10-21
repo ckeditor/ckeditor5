@@ -114,7 +114,7 @@ CKEDITOR.define( [ 'utils', 'ckeditorerror' ], function( utils, CKEditorError ) 
 			var i, len;
 
 			for ( i = 0, len = this.path.length - 1; i < len; i++ ) {
-				parent = parent.children[ this.path[ i ] ];
+				parent = parent.children.get( this.path[ i ] );
 			}
 
 			return parent;
@@ -137,7 +137,7 @@ CKEDITOR.define( [ 'utils', 'ckeditorerror' ], function( utils, CKEditorError ) 
 		 * @type {Node}
 		 */
 		get nodeBefore() {
-			return this.parent.children[ this.offset - 1 ] || null;
+			return this.parent.children.get( this.offset - 1 ) || null;
 		}
 
 		/**
@@ -147,7 +147,7 @@ CKEDITOR.define( [ 'utils', 'ckeditorerror' ], function( utils, CKEditorError ) 
 		 * @type {Node}
 		 */
 		get nodeAfter() {
-			return this.parent.children[ this.offset ] || null;
+			return this.parent.children.get( this.offset ) || null;
 		}
 
 		/**

@@ -5,7 +5,7 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'document/operation', 'document/removeoperation' ], function( Operation ) {
+CKEDITOR.define( [ 'document/operation', 'document/nodelist', 'document/removeoperation' ], function( Operation, NodeList ) {
 	/**
 	 *
 	 *
@@ -15,23 +15,21 @@ CKEDITOR.define( [ 'document/operation', 'document/removeoperation' ], function(
 		/**
 		 *
 		 */
-		constructor( position, nodes, baseVersion ) {
+		constructor( position, nodeList, baseVersion ) {
 			super( baseVersion );
 
 			this.position = position;
-			this.nodes = nodes;
+			this.nodeList = new NodeList( nodeList );
 		}
 
 		_execute() {
-			var children = this.position.parent.children;
-
-			children.splice.apply( children, [ this.position.offset, 0 ].concat( Operation.uncompress( this.nodes ) ) );
+			this.position.parent.children.insert( this.position.offset, this.nodeList );
 		}
 
 		reverseOperation() {
 			var RemoveOperation = CKEDITOR.require( 'document/removeoperation' );
 
-			return new RemoveOperation( this.position, this.nodes, this.baseVersion + 1 );
+			return new RemoveOperation( this.position, this.nodeList, this.baseVersion + 1 );
 		}
 	}
 

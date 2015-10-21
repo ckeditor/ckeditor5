@@ -106,7 +106,7 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 		get nextSibling() {
 			var pos = this.positionInParent;
 
-			return ( pos !== null && this.parent.children[ pos + 1 ] ) || null;
+			return ( pos !== null && this.parent.children.get( pos + 1 ) ) || null;
 		}
 
 		/**
@@ -118,7 +118,7 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 		get previousSibling() {
 			var pos = this.positionInParent;
 
-			return ( pos !== null && this.parent.children[ pos - 1 ] ) || null;
+			return ( pos !== null && this.parent.children.get( pos - 1 ) ) || null;
 		}
 
 		getPath() {
