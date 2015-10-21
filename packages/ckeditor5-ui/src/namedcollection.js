@@ -28,7 +28,7 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 			 * @property _models
 			 * @private
 			 */
-			this._models = Object.create( null );
+			this._models = new Map();
 		}
 
 		/**
@@ -37,7 +37,7 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 		 * @property length
 		 */
 		get length() {
-			return Object.keys( this._models ).length;
+			return this._models.size;
 		}
 
 		/**
@@ -50,7 +50,7 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 		add( model ) {
 			var name = model.name;
 
-			if ( !name || ( name in this._models ) ) {
+			if ( !name || this._models.has( name ) ) {
 				/**
 				 * Model isn't named or such model already exists in this collection
 				 *
@@ -68,7 +68,7 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 				);
 			}
 
-			this._models[ name ] = model;
+			this._models.set( name, model );
 
 			this.fire( 'add', model );
 		}
@@ -80,7 +80,7 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 		 * @returns {Model} The requested item.
 		 */
 		get( name ) {
-			var model = this._models[ name ];
+			var model = this._models.get( name );
 
 			if ( !model ) {
 				/**
@@ -105,7 +105,7 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 		remove( modelOrName ) {
 			var nameGiven = typeof modelOrName == 'string';
 			var name = nameGiven ? modelOrName : modelOrName.name;
-			var model = this._models[ name ];
+			var model = this._models.get( name );
 
 			if ( nameGiven ? !model : ( model !== modelOrName ) ) {
 				/**
@@ -127,7 +127,7 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 				);
 			}
 
-			delete this._models[ name ];
+			this._models.delete( name );
 
 			this.fire( 'remove', model );
 
