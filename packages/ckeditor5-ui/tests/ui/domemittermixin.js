@@ -8,36 +8,36 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'utils', 'ui/domemittermixin', 'ui/view', 'emittermixin' );
-var emitter, view, node;
+var modules = bender.amd.require( 'utils', 'ui/domemittermixin', 'emittermixin' );
+var emitter, domEmitter, node;
 
 bender.tools.createSinonSandbox();
 
 var getEmitterInstance = () => modules.utils.extend( {}, modules.emittermixin );
-var getViewInstance = () => new modules[ 'ui/view' ]();
+var getDOMEmitterInstance = () => modules.utils.extend( {}, modules[ 'ui/domemittermixin' ] );
 var getDOMNodeInstance = () => document.createElement( 'div' );
 
-function updateEmitterMixinInstance() {
+function updateEmitterInstance() {
 	emitter = getEmitterInstance();
 }
 
-function updateViewInstance() {
-	view = getViewInstance();
+function updateDOMEmitterInstance() {
+	domEmitter = getDOMEmitterInstance();
 }
 
 function updateDOMNodeInstance() {
 	node = getDOMNodeInstance();
 }
 
-beforeEach( updateEmitterMixinInstance );
-beforeEach( updateViewInstance );
+beforeEach( updateEmitterInstance );
+beforeEach( updateDOMEmitterInstance );
 beforeEach( updateDOMNodeInstance );
 
 describe( 'listenTo', function() {
 	it( 'should listen to EmitterMixin events', function() {
 		var spy = bender.sinon.spy();
 
-		view.listenTo( emitter, 'test', spy );
+		domEmitter.listenTo( emitter, 'test', spy );
 		emitter.fire( 'test' );
 
 		sinon.assert.calledOnce( spy );
@@ -46,7 +46,7 @@ describe( 'listenTo', function() {
 	it( 'should listen to native DOM events', function() {
 		var spy = bender.sinon.spy();
 
-		view.listenTo( node, 'test', spy );
+		domEmitter.listenTo( node, 'test', spy );
 
 		var event = new Event( 'test' );
 		node.dispatchEvent( event );
@@ -60,13 +60,13 @@ describe( 'stopListening', function() {
 		var spy1 = bender.sinon.spy();
 		var spy2 = bender.sinon.spy();
 
-		view.listenTo( node, 'event1', spy1 );
-		view.listenTo( node, 'event2', spy2 );
+		domEmitter.listenTo( node, 'event1', spy1 );
+		domEmitter.listenTo( node, 'event2', spy2 );
 
 		node.dispatchEvent( new Event( 'event1' ) );
 		node.dispatchEvent( new Event( 'event2' ) );
 
-		view.stopListening( node, 'event1', spy1 );
+		domEmitter.stopListening( node, 'event1', spy1 );
 
 		node.dispatchEvent( new Event( 'event1' ) );
 		node.dispatchEvent( new Event( 'event2' ) );
@@ -80,9 +80,9 @@ describe( 'stopListening', function() {
 		var spy1b = bender.sinon.spy();
 		var spy2 = bender.sinon.spy();
 
-		view.listenTo( node, 'event1', spy1a );
-		view.listenTo( node, 'event1', spy1b );
-		view.listenTo( node, 'event2', spy2 );
+		domEmitter.listenTo( node, 'event1', spy1a );
+		domEmitter.listenTo( node, 'event1', spy1b );
+		domEmitter.listenTo( node, 'event2', spy2 );
 
 		node.dispatchEvent( new Event( 'event1' ) );
 		node.dispatchEvent( new Event( 'event2' ) );
@@ -91,7 +91,7 @@ describe( 'stopListening', function() {
 		sinon.assert.calledOnce( spy1b );
 		sinon.assert.calledOnce( spy2 );
 
-		view.stopListening( node, 'event1' );
+		domEmitter.stopListening( node, 'event1' );
 
 		node.dispatchEvent( new Event( 'event1' ) );
 		node.dispatchEvent( new Event( 'event2' ) );
@@ -105,13 +105,13 @@ describe( 'stopListening', function() {
 		var spy1 = bender.sinon.spy();
 		var spy2 = bender.sinon.spy();
 
-		view.listenTo( node, 'event1', spy1 );
-		view.listenTo( node, 'event2', spy2 );
+		domEmitter.listenTo( node, 'event1', spy1 );
+		domEmitter.listenTo( node, 'event2', spy2 );
 
 		node.dispatchEvent( new Event( 'event1' ) );
 		node.dispatchEvent( new Event( 'event2' ) );
 
-		view.stopListening( node );
+		domEmitter.stopListening( node );
 
 		node.dispatchEvent( new Event( 'event1' ) );
 		node.dispatchEvent( new Event( 'event2' ) );
@@ -127,15 +127,15 @@ describe( 'stopListening', function() {
 		var node1 = getDOMNodeInstance();
 		var node2 = getDOMNodeInstance();
 
-		view.listenTo( node1, 'event1', spy1 );
-		view.listenTo( node2, 'event2', spy2 );
+		domEmitter.listenTo( node1, 'event1', spy1 );
+		domEmitter.listenTo( node2, 'event2', spy2 );
 
-		expect( view ).to.have.property( '_listeningTo' );
+		expect( domEmitter ).to.have.property( '_listeningTo' );
 
 		node1.dispatchEvent( new Event( 'event1' ) );
 		node2.dispatchEvent( new Event( 'event2' ) );
 
-		view.stopListening();
+		domEmitter.stopListening();
 
 		node1.dispatchEvent( new Event( 'event1' ) );
 		node2.dispatchEvent( new Event( 'event2' ) );
@@ -143,7 +143,7 @@ describe( 'stopListening', function() {
 		sinon.assert.calledOnce( spy1 );
 		sinon.assert.calledOnce( spy2 );
 
-		expect( view ).to.not.have.property( '_listeningTo' );
+		expect( domEmitter ).to.not.have.property( '_listeningTo' );
 	} );
 
 	it( 'should not stop other nodes when a non-listened node is provided', function() {
@@ -152,9 +152,9 @@ describe( 'stopListening', function() {
 		var node1 = getDOMNodeInstance();
 		var node2 = getDOMNodeInstance();
 
-		view.listenTo( node1, 'test', spy );
+		domEmitter.listenTo( node1, 'test', spy );
 
-		view.stopListening( node2 );
+		domEmitter.stopListening( node2 );
 
 		node1.dispatchEvent( new Event( 'test' ) );
 
@@ -166,7 +166,7 @@ describe( 'stopListening', function() {
 
 		var node = getDOMNodeInstance();
 
-		view.listenTo( node, 'click', spy );
+		domEmitter.listenTo( node, 'click', spy );
 
 		var mouseEvent = new MouseEvent( 'click', {
 			screenX: 10,
@@ -183,9 +183,9 @@ describe( 'stopListening', function() {
 		var spy1a = bender.sinon.spy();
 		var spy1b = bender.sinon.spy();
 
-		view.listenTo( node, 'test', spy1a );
+		domEmitter.listenTo( node, 'test', spy1a );
 
-		var proxyEmitter = view._getProxyEmitter( node );
+		var proxyEmitter = domEmitter._getProxyEmitter( node );
 		var spy2 = bender.sinon.spy( proxyEmitter, 'fire' );
 
 		node.dispatchEvent( new Event( 'test' ) );
@@ -193,17 +193,17 @@ describe( 'stopListening', function() {
 		sinon.assert.calledOnce( spy1a );
 		sinon.assert.calledOnce( spy2 );
 
-		view.stopListening( node, 'test' );
+		domEmitter.stopListening( node, 'test' );
 		node.dispatchEvent( new Event( 'test' ) );
 
 		sinon.assert.calledOnce( spy1a );
 		sinon.assert.calledOnce( spy2 );
 
 		// Attach same event again.
-		view.listenTo( node, 'test', spy1b );
+		domEmitter.listenTo( node, 'test', spy1b );
 		node.dispatchEvent( new Event( 'test' ) );
 
-		expect( proxyEmitter ).to.be.equal( view._getProxyEmitter( node ) );
+		expect( proxyEmitter ).to.be.equal( domEmitter._getProxyEmitter( node ) );
 
 		sinon.assert.calledOnce( spy1a );
 		sinon.assert.calledOnce( spy1b );
@@ -215,10 +215,10 @@ describe( 'stopListening', function() {
 		var spy1b = bender.sinon.spy();
 		var spy1c = bender.sinon.spy();
 
-		view.listenTo( node, 'test', spy1a );
-		view.listenTo( node, 'test', spy1b );
+		domEmitter.listenTo( node, 'test', spy1a );
+		domEmitter.listenTo( node, 'test', spy1b );
 
-		var proxyEmitter = view._getProxyEmitter( node );
+		var proxyEmitter = domEmitter._getProxyEmitter( node );
 		var spy2 = bender.sinon.spy( proxyEmitter, 'fire' );
 
 		node.dispatchEvent( new Event( 'test' ) );
@@ -227,14 +227,14 @@ describe( 'stopListening', function() {
 		sinon.assert.calledOnce( spy1b );
 		sinon.assert.calledOnce( spy2 );
 
-		view.stopListening( node, 'test', spy1a );
+		domEmitter.stopListening( node, 'test', spy1a );
 		node.dispatchEvent( new Event( 'test' ) );
 
 		sinon.assert.calledOnce( spy1a );
 		sinon.assert.calledTwice( spy1b );
 		sinon.assert.calledTwice( spy2 );
 
-		view.stopListening( node, 'test', spy1b );
+		domEmitter.stopListening( node, 'test', spy1b );
 		node.dispatchEvent( new Event( 'test' ) );
 
 		sinon.assert.calledOnce( spy1a );
@@ -242,10 +242,10 @@ describe( 'stopListening', function() {
 		sinon.assert.calledTwice( spy2 );
 
 		// Attach same event again.
-		view.listenTo( node, 'test', spy1c );
+		domEmitter.listenTo( node, 'test', spy1c );
 		node.dispatchEvent( new Event( 'test' ) );
 
-		expect( proxyEmitter ).to.be.equal( view._getProxyEmitter( node ) );
+		expect( proxyEmitter ).to.be.equal( domEmitter._getProxyEmitter( node ) );
 
 		sinon.assert.calledOnce( spy1a );
 		sinon.assert.calledTwice( spy1b );
@@ -259,10 +259,10 @@ describe( 'stopListening', function() {
 		var spy1c = bender.sinon.spy();
 		var spy1d = bender.sinon.spy();
 
-		view.listenTo( node, 'test1', spy1a );
-		view.listenTo( node, 'test2', spy1b );
+		domEmitter.listenTo( node, 'test1', spy1a );
+		domEmitter.listenTo( node, 'test2', spy1b );
 
-		var proxyEmitter = view._getProxyEmitter( node );
+		var proxyEmitter = domEmitter._getProxyEmitter( node );
 		var spy2 = bender.sinon.spy( proxyEmitter, 'fire' );
 
 		node.dispatchEvent( new Event( 'test1' ) );
@@ -272,7 +272,7 @@ describe( 'stopListening', function() {
 		sinon.assert.calledOnce( spy1b );
 		sinon.assert.calledTwice( spy2 );
 
-		view.stopListening( node );
+		domEmitter.stopListening( node );
 
 		node.dispatchEvent( new Event( 'test1' ) );
 		node.dispatchEvent( new Event( 'test2' ) );
@@ -282,11 +282,11 @@ describe( 'stopListening', function() {
 		sinon.assert.calledTwice( spy2 );
 
 		// Attach same event again.
-		view.listenTo( node, 'test1', spy1c );
-		view.listenTo( node, 'test2', spy1d );
+		domEmitter.listenTo( node, 'test1', spy1c );
+		domEmitter.listenTo( node, 'test2', spy1d );
 
 		// Old proxy emitter died when stopped listening to the node.
-		var proxyEmitter2 = view._getProxyEmitter( node );
+		var proxyEmitter2 = domEmitter._getProxyEmitter( node );
 		var spy3 = bender.sinon.spy( proxyEmitter2, 'fire' );
 
 		node.dispatchEvent( new Event( 'test1' ) );
@@ -308,10 +308,10 @@ describe( 'stopListening', function() {
 		var spy1c = bender.sinon.spy();
 		var spy1d = bender.sinon.spy();
 
-		view.listenTo( node, 'test1', spy1a );
-		view.listenTo( node, 'test2', spy1b );
+		domEmitter.listenTo( node, 'test1', spy1a );
+		domEmitter.listenTo( node, 'test2', spy1b );
 
-		var proxyEmitter = view._getProxyEmitter( node );
+		var proxyEmitter = domEmitter._getProxyEmitter( node );
 		var spy2 = bender.sinon.spy( proxyEmitter, 'fire' );
 
 		node.dispatchEvent( new Event( 'test1' ) );
@@ -321,7 +321,7 @@ describe( 'stopListening', function() {
 		sinon.assert.calledOnce( spy1b );
 		sinon.assert.calledTwice( spy2 );
 
-		view.stopListening();
+		domEmitter.stopListening();
 
 		node.dispatchEvent( new Event( 'test1' ) );
 		node.dispatchEvent( new Event( 'test2' ) );
@@ -331,11 +331,11 @@ describe( 'stopListening', function() {
 		sinon.assert.calledTwice( spy2 );
 
 		// Attach same event again.
-		view.listenTo( node, 'test1', spy1c );
-		view.listenTo( node, 'test2', spy1d );
+		domEmitter.listenTo( node, 'test1', spy1c );
+		domEmitter.listenTo( node, 'test2', spy1d );
 
 		// Old proxy emitter died when stopped listening to the node.
-		var proxyEmitter2 = view._getProxyEmitter( node );
+		var proxyEmitter2 = domEmitter._getProxyEmitter( node );
 		var spy3 = bender.sinon.spy( proxyEmitter2, 'fire' );
 
 		node.dispatchEvent( new Event( 'test1' ) );
