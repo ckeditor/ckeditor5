@@ -1,4 +1,5 @@
 {
+	"browser": true,
 	"esnext": true,
 
 	"immed": true,
