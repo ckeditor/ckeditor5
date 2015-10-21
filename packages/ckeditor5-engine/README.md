@@ -14,6 +14,7 @@ Currently there are two presets available:
 
  * For projects using ECMAScript 5 &ndash; the [`master`](https://github.com/ckeditor/ckeditor-boilerplate/tree/master) branch,
  * For projects using ECMAScript 2015+ (ESNext) &ndash; the [`esnext`](https://github.com/ckeditor/ckeditor-boilerplate/tree/esnext) branch.
+ * For CKEditor 5 repositories &ndash; the [`ckeditor5`](https://github.com/ckeditor/ckeditor-boilerplate/tree/ckeditor5) branch.
 
 ## Documentation Resources
 
