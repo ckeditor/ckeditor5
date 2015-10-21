@@ -1,5 +1,5 @@
 {
-	"browser": true,
+	"node": true,
 	"esnext": true,
 
 	"immed": true,
@@ -8,11 +8,5 @@
 	"nonbsp": true,
 	"undef": true,
 	"unused": true,
-	"strict": true,
-
-	"globalstrict": true,
-
-	"globals": {
-		"CKEDITOR": false
-	}
+	"strict": true
 }
