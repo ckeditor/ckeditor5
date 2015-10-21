@@ -60,7 +60,7 @@ CKEDITOR.define( [
 			function pluginPromise( plugin ) {
 				return new Promise( function( resolve, reject ) {
 					// Do nothing if the plugin is already loaded (or if is being loaded right now).
-					if ( that._models[ plugin ] || loading[ plugin ] ) {
+					if ( that._models.get( plugin ) || loading[ plugin ] ) {
 						return resolve();
 					}
 
@@ -138,19 +138,6 @@ CKEDITOR.define( [
 					} );
 
 				return deps;
-			}
-		}
-
-		/**
-		 * Executes the callback for each model in the collection.
-		 *
-		 * @param {Function} callback
-		 * @param {Model} callback.item
-		 * @param {String} callback.name
-		 */
-		forEach( callback ) {
-			for ( var name in this._models ) {
-				callback( this._models[ name ], name );
 			}
 		}
 	}
