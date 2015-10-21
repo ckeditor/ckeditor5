@@ -133,6 +133,17 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 
 			return model;
 		}
+
+		/**
+		 * Executes the callback for each model in the collection.
+		 *
+		 * @param {Function} callback
+		 * @param {Model} callback.item
+		 * @param {String} callback.name
+		 */
+		forEach( callback ) {
+			this._models.forEach( callback );
+		}
 	}
 
 	utils.extend( NamedCollection.prototype, EmitterMixin );
