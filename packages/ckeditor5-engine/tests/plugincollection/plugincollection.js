@@ -117,8 +117,8 @@ describe( 'load', function() {
 			.then( function() {
 				expect( plugins.length ).to.equal( 2 );
 
-				expect( plugins.get( 0 ) ).to.be.an.instanceof( PluginA );
-				expect( plugins.get( 1 ) ).to.be.an.instanceof( PluginB );
+				expect( plugins.get( 'A' ) ).to.be.an.instanceof( PluginA );
+				expect( plugins.get( 'B' ) ).to.be.an.instanceof( PluginB );
 			} );
 	} );
 
@@ -126,15 +126,14 @@ describe( 'load', function() {
 		var PluginCollection = modules.plugincollection;
 
 		var plugins = new PluginCollection( editor );
+		var spy = sinon.spy( plugins, 'add' );
 
 		return plugins.load( 'A,C' )
-			.then( function() {
+			.then( function( loadedPlugins ) {
 				expect( plugins.length ).to.equal( 3 );
 
-				// The order must have dependencies first.
-				expect( plugins.get( 0 ).name ).to.equal( 'A' );
-				expect( plugins.get( 1 ).name ).to.equal( 'B' );
-				expect( plugins.get( 2 ).name ).to.equal( 'C' );
+				expect( getPluginNamesFromSpy( spy ) ).to.deep.equal( [ 'A', 'B', 'C' ], 'order by plugins.add()' );
+				expect( getPluginNames( loadedPlugins ) ).to.deep.equal( [ 'A', 'B', 'C' ], 'order by returned value' );
 			} );
 	} );
 
@@ -142,15 +141,14 @@ describe( 'load', function() {
 		var PluginCollection = modules.plugincollection;
 
 		var plugins = new PluginCollection( editor );
+		var spy = sinon.spy( plugins, 'add' );
 
 		return plugins.load( 'A,B,C' )
-			.then( function() {
+			.then( function( loadedPlugins ) {
 				expect( plugins.length ).to.equal( 3 );
 
-				// The order must have dependencies first.
-				expect( plugins.get( 0 ).name ).to.equal( 'A' );
-				expect( plugins.get( 1 ).name ).to.equal( 'B' );
-				expect( plugins.get( 2 ).name ).to.equal( 'C' );
+				expect( getPluginNamesFromSpy( spy ) ).to.deep.equal( [ 'A', 'B', 'C' ], 'order by plugins.add()' );
+				expect( getPluginNames( loadedPlugins ) ).to.deep.equal( [ 'A', 'B', 'C' ], 'order by returned value' );
 			} );
 	} );
 
@@ -158,16 +156,15 @@ describe( 'load', function() {
 		var PluginCollection = modules.plugincollection;
 
 		var plugins = new PluginCollection( editor );
+		var spy = sinon.spy( plugins, 'add' );
 
 		return plugins.load( 'D' )
-			.then( function() {
+			.then( function( loadedPlugins ) {
 				expect( plugins.length ).to.equal( 4 );
 
 				// The order must have dependencies first.
-				expect( plugins.get( 0 ).name ).to.equal( 'A' );
-				expect( plugins.get( 1 ).name ).to.equal( 'B' );
-				expect( plugins.get( 2 ).name ).to.equal( 'C' );
-				expect( plugins.get( 3 ).name ).to.equal( 'D' );
+				expect( getPluginNamesFromSpy( spy ) ).to.deep.equal( [ 'A', 'B', 'C', 'D' ], 'order by plugins.add()' );
+				expect( getPluginNames( loadedPlugins ) ).to.deep.equal( [ 'A', 'B', 'C', 'D' ], 'order by returned value' );
 			} );
 	} );
 
@@ -175,15 +172,15 @@ describe( 'load', function() {
 		var PluginCollection = modules.plugincollection;
 
 		var plugins = new PluginCollection( editor );
+		var spy = sinon.spy( plugins, 'add' );
 
 		return plugins.load( 'A,E' )
-			.then( function() {
+			.then( function( loadedPlugins ) {
 				expect( plugins.length ).to.equal( 3 );
 
 				// The order must have dependencies first.
-				expect( plugins.get( 0 ).name ).to.equal( 'A' );
-				expect( plugins.get( 1 ).name ).to.equal( 'F' );
-				expect( plugins.get( 2 ).name ).to.equal( 'E' );
+				expect( getPluginNamesFromSpy( spy ) ).to.deep.equal( [ 'A', 'F', 'E' ], 'order by plugins.add()' );
+				expect( getPluginNames( loadedPlugins ) ).to.deep.equal( [ 'A', 'F', 'E' ], 'order by returned value' );
 			} );
 	} );
 
@@ -194,8 +191,8 @@ describe( 'load', function() {
 
 		return plugins.load( 'A,B' )
 			.then( function() {
-				expect( plugins.get( 0 ).editor ).to.equal( editor );
-				expect( plugins.get( 1 ).editor ).to.equal( editor );
+				expect( plugins.get( 'A' ).editor ).to.equal( editor );
+				expect( plugins.get( 'B' ).editor ).to.equal( editor );
 			} );
 	} );
 
@@ -322,70 +319,14 @@ describe( 'load', function() {
 	} );
 } );
 
-describe( 'add', function() {
-	it( 'should add plugins to the collection', function() {
-		var PluginCollection = modules.plugincollection;
-
-		var plugins = new PluginCollection( editor );
-
-		var pluginA = new PluginA();
-		var pluginB = new PluginB();
-
-		// `add()` requires the `name` property to the defined.
-		pluginA.name = 'A';
-		pluginB.name = 'B';
-
-		plugins.add( pluginA );
-		plugins.add( pluginB );
-
-		expect( plugins.length ).to.equal( 2 );
-
-		expect( plugins.get( 0 ) ).to.be.an.instanceof( PluginA );
-		expect( plugins.get( 1 ) ).to.be.an.instanceof( PluginB );
+function getPluginNamesFromSpy( addSpy ) {
+	return addSpy.args.map( function( arg ) {
+		return arg[ 0 ].name;
 	} );
+}
 
-	it( 'should do nothing if the plugin is already loaded', function() {
-		var PluginCollection = modules.plugincollection;
-
-		var plugins = new PluginCollection( editor );
-
-		return plugins.load( 'A,B' )
-			.then( function() {
-				// Check length before `add()`.
-				expect( plugins.length ).to.equal( 2 );
-
-				var pluginA = new PluginA();
-				pluginA.name = 'A';
-
-				plugins.add( pluginA );
-
-				// Length should not change after `add()`.
-				expect( plugins.length ).to.equal( 2 );
-			} );
+function getPluginNames( plugins ) {
+	return plugins.map( function( arg ) {
+		return arg.name;
 	} );
-} );
-
-describe( 'get', function() {
-	it( 'should get a plugin by name', function() {
-		var PluginCollection = modules.plugincollection;
-
-		var plugins = new PluginCollection( editor );
-
-		return plugins.load( 'A,B' )
-			.then( function() {
-				expect( plugins.get( 'A' ) ).to.be.an.instanceof( PluginA );
-				expect( plugins.get( 'B' ) ).to.be.an.instanceof( PluginB );
-			} );
-	} );
-
-	it( 'should return undefined for non existing plugin', function() {
-		var PluginCollection = modules.plugincollection;
-
-		var plugins = new PluginCollection( editor );
-
-		return plugins.load( 'A,B' )
-			.then( function() {
-				expect( plugins.get( 'C' ) ).to.be.an( 'undefined' );
-			} );
-	} );
-} );
+}
