@@ -171,6 +171,24 @@ describe( 'remove', function() {
 	} );
 } );
 
+describe( 'forEach', function() {
+	it( 'should iterate over the models', function() {
+		var box = getCollection();
+		var item1 = getItem( 'foo' );
+		var item2 = getItem( 'bar' );
+
+		box.add( item1 );
+		box.add( item2 );
+
+		expect( box ).to.have.length( 2 );
+
+		var spy = sinon.spy();
+		box.forEach( spy );
+
+		sinon.assert.callOrder( spy.withArgs( item1, 'foo' ), spy.withArgs( item2, 'bar' ) );
+	} );
+} );
+
 function getCollection() {
 	var NamedCollection = modules.namedcollection;
 
