@@ -8,11 +8,13 @@
 /**
  * Collections are ordered sets of models.
  *
+ * See also {@link core/NamedCollection}.
+ *
  * @class Collection
  * @mixins EventEmitter
  */
 
-CKEDITOR.define( [ 'emittermixin', 'utils' ], function( EmitterMixin, utils ) {
+CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( EmitterMixin, CKEditorError, utils ) {
 	class Collection {
 		/**
 		 * Creates a new Collection instance.
@@ -80,14 +82,24 @@ CKEDITOR.define( [ 'emittermixin', 'utils' ], function( EmitterMixin, utils ) {
 				modelOrIndex = this._models.indexOf( modelOrIndex );
 
 				if ( modelOrIndex == -1 ) {
-					throw new Error( 'Model not found' );
+					/**
+					 * Model not found.
+					 *
+					 * @error collection-model-404
+					 */
+					throw new CKEditorError( 'collection-model-404: Model not found.' );
 				}
 			}
 
 			var removedModel = this._models.splice( modelOrIndex, 1 )[ 0 ];
 
 			if ( !removedModel ) {
-				throw new Error( 'Index not found' );
+				/**
+				 * Index not found.
+				 *
+				 * @error collection-index-404
+				 */
+				throw new CKEditorError( 'collection-index-404: Index not found.' );
 			}
 
 			this.fire( 'remove', removedModel );
