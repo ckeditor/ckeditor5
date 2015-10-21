@@ -5,7 +5,7 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'document/operation' ], function( Operation ) {
+CKEDITOR.define( [ 'document/operation', 'document/nodelist' ], function( Operation, NodeList ) {
 	/**
 	 *
 	 *
@@ -15,12 +15,12 @@ CKEDITOR.define( [ 'document/operation' ], function( Operation ) {
 		/**
 		 *
 		 */
-		constructor( sourcePosition, targetPosition, nodes, baseVersion ) {
+		constructor( sourcePosition, targetPosition, nodeList, baseVersion ) {
 			super( baseVersion );
 
 			this.sourcePosition = sourcePosition;
 			this.targetPosition = targetPosition;
-			this.nodes = nodes;
+			this.nodeList = new NodeList( nodeList );
 		}
 
 		_execute() {
@@ -28,21 +28,21 @@ CKEDITOR.define( [ 'document/operation' ], function( Operation ) {
 			var targetElement = this.targetPosition.parent;
 			var sourceOffset = this.sourcePosition.offset;
 			var targetOffset = this.targetPosition.offset;
-			var nodes = Operation.uncompress( this.nodes );
+			var nodeList = this.nodeList;
 
-			sourceElement.children.splice( sourceOffset, nodes.length );
+			sourceElement.children.remove( sourceOffset, nodeList.length );
 
 			// If we move children in the same element and we remove elements on the position before the target we
 			// need to update a target offset.
 			if ( sourceElement === targetElement && sourceOffset < targetOffset ) {
-				targetOffset -= nodes.length;
+				targetOffset -= nodeList.length;
 			}
 
-			targetElement.children.splice.apply( targetElement.children, [ targetOffset, 0 ].concat( nodes ) );
+			targetElement.children.insert( targetOffset, this.nodeList );
 		}
 
 		reverseOperation() {
-			return new MoveOperation( this.targetPosition, this.sourcePosition, this.nodes, this.baseVersion + 1 );
+			return new MoveOperation( this.targetPosition, this.sourcePosition, this.nodeList, this.baseVersion + 1 );
 		}
 	}
 

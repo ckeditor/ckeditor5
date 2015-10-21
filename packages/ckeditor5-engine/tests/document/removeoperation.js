@@ -12,7 +12,8 @@ var modules = bender.amd.require(
 	'document/insertoperation',
 	'document/removeoperation',
 	'document/position',
-	'document/character' );
+	'document/character',
+	'document/nodelist' );
 
 describe( 'RemoveOperation', function() {
 	it( 'should remove node', function() {
@@ -27,7 +28,7 @@ describe( 'RemoveOperation', function() {
 
 		doc.applyOperation( new RemoveOperation(
 			new Position( [ 0 ], doc.root ),
-			doc.root.children[ 0 ],
+			doc.root.children.get( 0 ),
 			doc.version ) );
 
 		expect( doc.version ).to.be.equal( 1 );
@@ -48,7 +49,7 @@ describe( 'RemoveOperation', function() {
 
 		doc.applyOperation( new RemoveOperation(
 			new Position( [ 0 ], doc.root ),
-			[ doc.root.children[ 0 ], doc.root.children[ 1 ], doc.root.children[ 2 ] ],
+			[ doc.root.children.get( 0 ), doc.root.children.get( 1 ), doc.root.children.get( 2 ) ],
 			doc.version ) );
 
 		expect( doc.version ).to.be.equal( 1 );
@@ -69,13 +70,13 @@ describe( 'RemoveOperation', function() {
 
 		doc.applyOperation( new RemoveOperation(
 			new Position( [ 1 ], doc.root ),
-			[ doc.root.children[ 1 ] ],
+			[ doc.root.children.get( 1 ) ],
 			doc.version ) );
 
 		expect( doc.version ).to.be.equal( 1 );
 		expect( doc.root.children.length ).to.be.equal( 2 );
-		expect( doc.root.children[ 0 ].character ).to.be.equal( 'b' );
-		expect( doc.root.children[ 1 ].character ).to.be.equal( 'r' );
+		expect( doc.root.children.get( 0 ).character ).to.be.equal( 'b' );
+		expect( doc.root.children.get( 1 ).character ).to.be.equal( 'r' );
 	} );
 
 	it( 'should create a insert operation as a reverse', function() {
@@ -84,23 +85,24 @@ describe( 'RemoveOperation', function() {
 		var RemoveOperation = modules[ 'document/removeoperation' ];
 		var Position = modules[ 'document/position' ];
 		var Character = modules[ 'document/character' ];
+		var NodeList = modules[ 'document/nodelist' ];
 
 		var doc = new Document();
 
-		var nodes = [ new Character( null, 'b' ), new Character( null, 'a' ), new Character( null, 'r' ) ];
+		var nodeList = new NodeList( [ new Character( null, 'b' ), new Character( null, 'a' ), new Character( null, 'r' ) ] );
 		var position = new Position( [ 0 ], doc.root );
 
-		doc.root.children.push( nodes[ 0 ] );
-		doc.root.children.push( nodes[ 1 ] );
-		doc.root.children.push( nodes[ 2 ] );
+		doc.root.children.push( nodeList.get( 0 ) );
+		doc.root.children.push( nodeList.get( 1 ) );
+		doc.root.children.push( nodeList.get( 2 ) );
 
-		var operation = new RemoveOperation( position, nodes, 0 );
+		var operation = new RemoveOperation( position, nodeList, 0 );
 
 		var reverse = operation.reverseOperation();
 
 		expect( reverse ).to.be.an.instanceof( InsertOperation );
 		expect( reverse.baseVersion ).to.be.equals( 1 );
-		expect( reverse.nodes ).to.be.equals( nodes );
+		expect( reverse.nodeList ).to.be.equals( nodeList );
 		expect( reverse.position ).to.be.equals( position );
 	} );
 
@@ -132,8 +134,8 @@ describe( 'RemoveOperation', function() {
 
 		expect( doc.version ).to.be.equal( 2 );
 		expect( doc.root.children.length ).to.be.equal( 3 );
-		expect( doc.root.children[ 0 ].character ).to.be.equal( 'b' );
-		expect( doc.root.children[ 1 ].character ).to.be.equal( 'a' );
-		expect( doc.root.children[ 2 ].character ).to.be.equal( 'r' );
+		expect( doc.root.children.get( 0 ).character ).to.be.equal( 'b' );
+		expect( doc.root.children.get( 1 ).character ).to.be.equal( 'a' );
+		expect( doc.root.children.get( 2 ).character ).to.be.equal( 'r' );
 	}  );
 } );
