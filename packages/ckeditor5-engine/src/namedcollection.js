@@ -127,10 +127,11 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 		 *
 		 * @param {Function} callback
 		 * @param {Model} callback.item
-		 * @param {String} callback.name
+		 * @param {String} callback.index
+		 * @params {Object} ctx Context in which the `callback` will be called.
 		 */
-		forEach( callback ) {
-			this._models.forEach( callback );
+		forEach( callback, ctx ) {
+			this._models.forEach( callback, ctx );
 		}
 
 		/**
@@ -140,12 +141,13 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 		 * @param {Model} callback.item
 		 * @param {String} callback.name
 		 * @params {Object} ctx Context in which the `callback` will be called.
-		 * @returns {Model} The item for which `callback` returned a true value.
+		 * @returns {Model} The first item for which `callback` returned a true value.
 		 */
 		find( callback, ctx ) {
-			for ( var name in this._models ) {
-				if ( callback.call( ctx, this._models[ name ], name ) ) {
-					return this._models[ name ];
+			// TODO: Use ES6 destructuring.
+			for ( let pair of this._models ) {
+				if ( callback.call( ctx, pair[ 1 ], pair[ 0 ] ) ) {
+					return pair[ 1 ];
 				}
 			}
 		}
@@ -162,9 +164,10 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 		filter( callback, ctx ) {
 			var ret = {};
 
-			for ( var name in this._models ) {
-				if ( callback.call( ctx, this._models[ name ], name ) ) {
-					ret[ name ] = this._models[ name ];
+			// TODO: Use ES6 destructuring.
+			for ( let pair of this._models ) {
+				if ( callback.call( ctx, pair[ 1 ], pair[ 0 ] ) ) {
+					ret[ pair[ 0 ] ] = pair[ 1 ];
 				}
 			}
 
