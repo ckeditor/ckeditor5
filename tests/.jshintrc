@@ -1,6 +1,6 @@
 {
+	"browser": true,
 	"esnext": true,
-	"expr": true,
 
 	"immed": true,
 	"latedef": "nofunc",
@@ -9,6 +9,7 @@
 	"undef": true,
 	"unused": true,
 	"strict": true,
+	"expr": true,
 
 	"globalstrict": true,
 
@@ -23,7 +24,6 @@
 		"afterEach": false,
 		"expect": false,
 		"bender": false,
-		"sinon": false,
-		"setTimeout": false
+		"sinon": false
 	}
 }
