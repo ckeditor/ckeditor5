@@ -94,21 +94,25 @@ describe( 'remove', function() {
 	} );
 
 	it( 'should throw an error on invalid index', function() {
+		var CKEditorError = modules.ckeditorerror;
+
 		var box = getCollection();
 		box.add( getItem() );
 
 		expect( function() {
 			box.remove( 1 );
-		} ).to.throw( Error, 'Index not found' );
+		} ).to.throw( CKEditorError, /^collection-index-404/ );
 	} );
 
 	it( 'should throw an error on invalid model', function() {
+		var CKEditorError = modules.ckeditorerror;
+
 		var box = getCollection();
 		box.add( getItem() );
 
 		expect( function() {
 			box.remove( getItem() );
-		} ).to.throw( Error, 'Model not found' );
+		} ).to.throw( CKEditorError, /^collection-model-404/ );
 	} );
 } );
 
