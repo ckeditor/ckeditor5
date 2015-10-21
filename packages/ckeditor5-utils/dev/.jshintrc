@@ -1,5 +1,6 @@
 {
 	"node": true,
+	"esnext": true,
 
 	"immed": true,
 	"latedef": "nofunc",
