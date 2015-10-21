@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* jshint node: true */
-
 'use strict';
 
 module.exports = Builder;

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global requirejs, define, require, window, document */
+/* global requirejs, define, require */
 
 'use strict';
 
