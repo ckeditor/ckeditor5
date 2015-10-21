@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document */
 /* bender-include: ../_tools/tools.js */
 
 'use strict';
