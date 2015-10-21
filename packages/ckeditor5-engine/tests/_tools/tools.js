@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals bender, sinon */
-
 'use strict';
 
 ( function() {

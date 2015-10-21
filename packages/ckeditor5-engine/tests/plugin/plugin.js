@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document */
-
 'use strict';
 
 var modules = bender.amd.require( 'plugin', 'editor' );

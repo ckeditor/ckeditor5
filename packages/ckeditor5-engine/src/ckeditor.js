@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document */
-
 'use strict';
 
 /**

@@ -5,7 +5,6 @@
 
 'use strict';
 
-/* globals document */
 /* bender-include: ../_tools/tools.js */
 
 var modules = bender.amd.require( 'editor', 'plugin', 'creator', 'ckeditorerror' );
