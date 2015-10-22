@@ -72,40 +72,40 @@ describe( 'position', function() {
 	it( 'should make positions form node and offset', function() {
 		var Position = modules[ 'document/position' ];
 
-		expect( Position.makePositionFromParentAndOffset( root, 0, doc.root ) ).to.have.property( 'path' ).that.deep.equals( [ 0 ] );
-		expect( Position.makePositionFromParentAndOffset( root, 1, doc.root ) ).to.have.property( 'path' ).that.deep.equals( [ 1 ] );
-		expect( Position.makePositionFromParentAndOffset( root, 2, doc.root ) ).to.have.property( 'path' ).that.deep.equals( [ 2 ] );
+		expect( Position.makePositionFromParentAndOffset( root, 0 ) ).to.have.property( 'path' ).that.deep.equals( [ 0 ] );
+		expect( Position.makePositionFromParentAndOffset( root, 1 ) ).to.have.property( 'path' ).that.deep.equals( [ 1 ] );
+		expect( Position.makePositionFromParentAndOffset( root, 2 ) ).to.have.property( 'path' ).that.deep.equals( [ 2 ] );
 
-		expect( Position.makePositionFromParentAndOffset( p, 0, doc.root ) ).to.have.property( 'path' ).that.deep.equals( [ 0, 0 ] );
+		expect( Position.makePositionFromParentAndOffset( p, 0 ) ).to.have.property( 'path' ).that.deep.equals( [ 0, 0 ] );
 
-		expect( Position.makePositionFromParentAndOffset( ul, 0, doc.root ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0 ] );
-		expect( Position.makePositionFromParentAndOffset( ul, 1, doc.root ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1 ] );
-		expect( Position.makePositionFromParentAndOffset( ul, 2, doc.root ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 2 ] );
+		expect( Position.makePositionFromParentAndOffset( ul, 0 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0 ] );
+		expect( Position.makePositionFromParentAndOffset( ul, 1 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1 ] );
+		expect( Position.makePositionFromParentAndOffset( ul, 2 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 2 ] );
 
-		expect( Position.makePositionFromParentAndOffset( li1, 0, doc.root ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 0 ] );
-		expect( Position.makePositionFromParentAndOffset( li1, 1, doc.root ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 1 ] );
-		expect( Position.makePositionFromParentAndOffset( li1, 2, doc.root ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 2 ] );
-		expect( Position.makePositionFromParentAndOffset( li1, 3, doc.root ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 3 ] );
+		expect( Position.makePositionFromParentAndOffset( li1, 0 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 0 ] );
+		expect( Position.makePositionFromParentAndOffset( li1, 1 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 1 ] );
+		expect( Position.makePositionFromParentAndOffset( li1, 2 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 2 ] );
+		expect( Position.makePositionFromParentAndOffset( li1, 3 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 3 ] );
 	} );
 
 	it( 'should make positions before elements', function() {
 		var Position = modules[ 'document/position' ];
 
-		expect( Position.makePositionBefore( p, doc.root ) ).to.have.property( 'path' ).that.deep.equals( [ 0 ] );
+		expect( Position.makePositionBefore( p ) ).to.have.property( 'path' ).that.deep.equals( [ 0 ] );
 
-		expect( Position.makePositionBefore( ul, doc.root ) ).to.have.property( 'path' ).that.deep.equals( [ 1 ] );
+		expect( Position.makePositionBefore( ul ) ).to.have.property( 'path' ).that.deep.equals( [ 1 ] );
 
-		expect( Position.makePositionBefore( li1, doc.root ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0 ] );
+		expect( Position.makePositionBefore( li1 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0 ] );
 
-		expect( Position.makePositionBefore( f, doc.root ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 0 ] );
-		expect( Position.makePositionBefore( o, doc.root ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 1 ] );
-		expect( Position.makePositionBefore( z, doc.root ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 2 ] );
+		expect( Position.makePositionBefore( f ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 0 ] );
+		expect( Position.makePositionBefore( o ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 1 ] );
+		expect( Position.makePositionBefore( z ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 2 ] );
 
-		expect( Position.makePositionBefore( li2, doc.root ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1 ] );
+		expect( Position.makePositionBefore( li2 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1 ] );
 
-		expect( Position.makePositionBefore( b, doc.root ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 0 ] );
-		expect( Position.makePositionBefore( a, doc.root ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 1 ] );
-		expect( Position.makePositionBefore( r, doc.root ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 2 ] );
+		expect( Position.makePositionBefore( b ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 0 ] );
+		expect( Position.makePositionBefore( a ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 1 ] );
+		expect( Position.makePositionBefore( r ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 2 ] );
 	} );
 
 	it( 'should throw error if one try to make positions before root', function() {
@@ -113,28 +113,28 @@ describe( 'position', function() {
 		var CKEditorError = modules.ckeditorerror;
 
 		expect( function() {
-			Position.makePositionBefore( root, doc.root );
+			Position.makePositionBefore( root );
 		} ).to.throw( CKEditorError, /position-before-root/ );
 	} );
 
 	it( 'should make positions after elements', function() {
 		var Position = modules[ 'document/position' ];
 
-		expect( Position.makePositionAfter( p, doc.root ) ).to.have.property( 'path' ).that.deep.equals( [ 1 ] );
+		expect( Position.makePositionAfter( p ) ).to.have.property( 'path' ).that.deep.equals( [ 1 ] );
 
-		expect( Position.makePositionAfter( ul, doc.root ) ).to.have.property( 'path' ).that.deep.equals( [ 2 ] );
+		expect( Position.makePositionAfter( ul ) ).to.have.property( 'path' ).that.deep.equals( [ 2 ] );
 
-		expect( Position.makePositionAfter( li1, doc.root ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1 ] );
+		expect( Position.makePositionAfter( li1 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1 ] );
 
-		expect( Position.makePositionAfter( f, doc.root ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 1 ] );
-		expect( Position.makePositionAfter( o, doc.root ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 2 ] );
-		expect( Position.makePositionAfter( z, doc.root ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 3 ] );
+		expect( Position.makePositionAfter( f ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 1 ] );
+		expect( Position.makePositionAfter( o ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 2 ] );
+		expect( Position.makePositionAfter( z ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 3 ] );
 
-		expect( Position.makePositionAfter( li2, doc.root ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 2 ] );
+		expect( Position.makePositionAfter( li2 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 2 ] );
 
-		expect( Position.makePositionAfter( b, doc.root ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 1 ] );
-		expect( Position.makePositionAfter( a, doc.root ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 2 ] );
-		expect( Position.makePositionAfter( r, doc.root ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 3 ] );
+		expect( Position.makePositionAfter( b ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 1 ] );
+		expect( Position.makePositionAfter( a ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 2 ] );
+		expect( Position.makePositionAfter( r ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 3 ] );
 	} );
 
 	it( 'should throw error if one try to make positions after root', function() {
@@ -142,7 +142,7 @@ describe( 'position', function() {
 		var CKEditorError = modules.ckeditorerror;
 
 		expect( function() {
-			Position.makePositionAfter( root, doc.root );
+			Position.makePositionAfter( root );
 		} ).to.throw( CKEditorError, /position-after-root/ );
 	} );
 

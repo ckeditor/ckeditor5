@@ -52,23 +52,21 @@ CKEDITOR.define( [ 'utils', 'ckeditorerror' ], function( utils, CKEditorError ) 
 		 *
 		 * @param {document.Element} parent Position parent element.
 		 * @param {Number} offset Position offset.
-		 * @param {document.Document} doc Document which position refers to.
 		 */
-		static makePositionFromParentAndOffset( parent, offset, root ) {
+		static makePositionFromParentAndOffset( parent, offset ) {
 			var path = parent.getPath();
 
 			path.push( offset );
 
-			return new Position( path, root );
+			return new Position( path, parent.root );
 		}
 
 		/**
 		 * Set the position before given node.
 		 *
 		 * @param {document.node} node Node the position should be directly before.
-		 * @param {document.Document} doc Document which position refers to.
 		 */
-		static makePositionBefore( node, root ) {
+		static makePositionBefore( node ) {
 			if ( !node.parent ) {
 				/**
 				 * You can not make position before root.
@@ -79,16 +77,15 @@ CKEDITOR.define( [ 'utils', 'ckeditorerror' ], function( utils, CKEditorError ) 
 				throw new CKEditorError( 'position-before-root: You can not make position before root.', { root: node } );
 			}
 
-			return Position.makePositionFromParentAndOffset( node.parent, node.positionInParent, root );
+			return Position.makePositionFromParentAndOffset( node.parent, node.positionInParent );
 		}
 
 		/**
 		 * Set the position after given node.
 		 *
 		 * @param {document.node} node Node the position should be directly after.
-		 * @param {document.Document} doc Document which position refers to.
 		 */
-		static makePositionAfter( node, root ) {
+		static makePositionAfter( node ) {
 			if ( !node.parent ) {
 				/**
 				 * You can not make position after root.
@@ -99,7 +96,7 @@ CKEDITOR.define( [ 'utils', 'ckeditorerror' ], function( utils, CKEditorError ) 
 				throw new CKEditorError( 'position-after-root: You can not make position after root.', { root: node } );
 			}
 
-			return Position.makePositionFromParentAndOffset( node.parent, node.positionInParent + 1, root );
+			return Position.makePositionFromParentAndOffset( node.parent, node.positionInParent + 1 );
 		}
 
 		/**

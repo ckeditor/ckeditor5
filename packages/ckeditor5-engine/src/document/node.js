@@ -98,6 +98,22 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 		}
 
 		/**
+		 * The top parent for the node. If node has no parent it is its own root.
+		 *
+		 * @readonly
+		 * @property {Number} depth
+		 */
+		get root() {
+			var root = this; // jscs:ignore safeContextKeyword
+
+			while ( root.parent ) {
+				root = root.parent;
+			}
+
+			return root;
+		}
+
+		/**
 		 * Nodes next sibling or null if it is the last child.
 		 *
 		 * @readonly
