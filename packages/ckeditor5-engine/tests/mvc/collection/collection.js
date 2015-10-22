@@ -7,6 +7,8 @@
 
 var modules = bender.amd.require( 'collection', 'model' );
 
+bender.tools.createSinonSandbox();
+
 describe( 'add', function() {
 	it( 'should change the length and enable get', function() {
 		var Model = modules.model;
@@ -36,13 +38,11 @@ describe( 'add', function() {
 } );
 
 describe( 'get', function() {
-	it( 'should throw an error on invalid index', function() {
+	it( 'should return null if index does not exist', function() {
 		var box = getCollection();
 		box.add( getItem() );
 
-		expect( function() {
-			box.get( 1 );
-		} ).to.throw( Error, 'Index not found' );
+		expect( box.get( 1 ) ).to.be.null;
 	} );
 } );
 
@@ -113,6 +113,60 @@ describe( 'remove', function() {
 		expect( function() {
 			box.remove( getItem() );
 		} ).to.throw( CKEditorError, /^collection-model-404/ );
+	} );
+} );
+
+describe( 'forEach', function() {
+	it( 'uses native forEach', function() {
+		var collection = getCollection();
+		collection.add( getItem() );
+
+		var spy = bender.sinon.spy( Array.prototype, 'forEach' );
+		var ctx = {};
+
+		collection.forEach( callback, ctx );
+
+		sinon.assert.calledWithExactly( spy, callback, ctx );
+
+		function callback() {}
+	} );
+} );
+
+describe( 'find', function() {
+	it( 'uses native find', function() {
+		var collection = getCollection();
+		var needl = getItem();
+
+		var spy = bender.sinon.stub( Array.prototype, 'find', function() {
+			return needl;
+		} );
+		var ctx = {};
+
+		var ret = collection.find( callback, ctx );
+
+		sinon.assert.calledWithExactly( spy, callback, ctx );
+		expect( ret ).to.equal( needl, 'ret value was forwarded' );
+
+		function callback() {}
+	} );
+} );
+
+describe( 'filter', function() {
+	it( 'uses native filter', function() {
+		var collection = getCollection();
+		var needl = getItem();
+
+		var spy = bender.sinon.stub( Array.prototype, 'filter', function() {
+			return needl;
+		} );
+		var ctx = {};
+
+		var ret = collection.filter( callback, ctx );
+
+		sinon.assert.calledWithExactly( spy, callback, ctx );
+		expect( ret ).to.equal( needl, 'ret value was forwarded' );
+
+		function callback() {}
 	} );
 } );
 
