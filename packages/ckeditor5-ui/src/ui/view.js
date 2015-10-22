@@ -83,7 +83,7 @@ CKEDITOR.define( [
 				// TODO: Use ES6 default arguments syntax.
 				callback = callback || domUpdater;
 
-				var listenerCallback = ( el, value ) => {
+				var listenerCallback = ( evt, value ) => {
 					var processedValue = callback( el, value );
 
 					if ( typeof processedValue != 'undefined' ) {
@@ -92,11 +92,11 @@ CKEDITOR.define( [
 				};
 
 				// Execute callback when the property changes.
-				model.on( 'change:' + property, ( evt, value ) => listenerCallback( el, value ) );
+				this.listenTo( model, 'change:' + property, listenerCallback );
 
 				// Set the initial state of the view.
-				listenerCallback( el, model[ property ] );
-			};
+				listenerCallback( null, model[ property ] );
+			}.bind( this );
 		}
 
 		/**
@@ -141,6 +141,9 @@ CKEDITOR.define( [
 			for ( let i = this.regions.length; i--; ) {
 				this.regions.remove( i ).destroy();
 			}
+
+			// Remove all listeners related to this view.
+			this.stopListening();
 		}
 	}
 
