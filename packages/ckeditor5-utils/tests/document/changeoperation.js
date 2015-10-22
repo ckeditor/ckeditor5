@@ -15,6 +15,7 @@ var modules = bender.amd.require(
 	'document/character',
 	'document/attribute',
 	'document/nodelist',
+	'document/text',
 	'ckeditorerror' );
 
 describe( 'ChangeOperation', function() {
@@ -108,7 +109,7 @@ describe( 'ChangeOperation', function() {
 		var ChangeOperation = modules[ 'document/changeoperation' ];
 		var Position = modules[ 'document/position' ];
 		var Range = modules[ 'document/range' ];
-		var Character = modules[ 'document/character' ];
+		var Text = modules[ 'document/text' ];
 		var Attribute = modules[ 'document/attribute' ];
 
 		var doc = new Document();
@@ -116,10 +117,7 @@ describe( 'ChangeOperation', function() {
 		var oldAttr = new Attribute( 'isNew', false );
 		var newAttr = new Attribute( 'isNew', true );
 
-		doc.root.insertChildren( 0, [
-			new Character( 'b', [ oldAttr ] ),
-			new Character( 'a', [ oldAttr ] ),
-			new Character( 'r', [ oldAttr ] ) ] );
+		doc.root.insertChildren( 0, new Text( 'bar', [ oldAttr ] ) );
 
 		doc.applyOperation( new ChangeOperation(
 			[
@@ -145,7 +143,7 @@ describe( 'ChangeOperation', function() {
 		var ChangeOperation = modules[ 'document/changeoperation' ];
 		var Position = modules[ 'document/position' ];
 		var Range = modules[ 'document/range' ];
-		var Character = modules[ 'document/character' ];
+		var Text = modules[ 'document/text' ];
 		var Attribute = modules[ 'document/attribute' ];
 
 		var doc = new Document();
@@ -153,10 +151,7 @@ describe( 'ChangeOperation', function() {
 		var oldAttr = new Attribute( 'isNew', false );
 		var newAttr = new Attribute( 'isNew', true );
 
-		doc.root.insertChildren( 0, [
-			new Character( 'b', [ oldAttr ] ),
-			new Character( 'a', [ oldAttr ] ),
-			new Character( 'r', [ oldAttr ] ) ] );
+		doc.root.insertChildren( 0, new Text( 'bar', [ oldAttr ] ) );
 
 		doc.applyOperation( new ChangeOperation(
 			new Range( new Position( [ 0 ], doc.root ), new Position( [ 2 ], doc.root ) ),
@@ -239,17 +234,14 @@ describe( 'ChangeOperation', function() {
 		var ChangeOperation = modules[ 'document/changeoperation' ];
 		var Position = modules[ 'document/position' ];
 		var Range = modules[ 'document/range' ];
-		var Character = modules[ 'document/character' ];
+		var Text = modules[ 'document/text' ];
 		var Attribute = modules[ 'document/attribute' ];
 
 		var doc = new Document();
 
 		var fooAttr = new Attribute( 'foo', true );
 
-		doc.root.insertChildren( 0, [
-			new Character( 'b', [ fooAttr ] ),
-			new Character( 'a', [ fooAttr ] ),
-			new Character( 'r', [ fooAttr ] ) ] );
+		doc.root.insertChildren( 0, new Text( 'bar', [ fooAttr ] ) );
 
 		doc.applyOperation( new ChangeOperation(
 			[
@@ -329,7 +321,7 @@ describe( 'ChangeOperation', function() {
 		var ChangeOperation = modules[ 'document/changeoperation' ];
 		var Position = modules[ 'document/position' ];
 		var Range = modules[ 'document/range' ];
-		var Character = modules[ 'document/character' ];
+		var Text = modules[ 'document/text' ];
 		var Attribute = modules[ 'document/attribute' ];
 
 		var doc = new Document();
@@ -337,10 +329,7 @@ describe( 'ChangeOperation', function() {
 		var oldAttr = new Attribute( 'isNew', false );
 		var newAttr = new Attribute( 'isNew', true );
 
-		doc.root.insertChildren( 0, [
-			new Character( 'b', [ oldAttr ] ),
-			new Character( 'a', [ oldAttr ] ),
-			new Character( 'r', [ oldAttr ] ) ] );
+		doc.root.insertChildren( 0, new Text( 'bar', [ oldAttr ] ) );
 
 		var oppertaion = new ChangeOperation(
 			new Range( new Position( [ 0 ], doc.root ), new Position( [ 3 ], doc.root ) ),
@@ -369,17 +358,14 @@ describe( 'ChangeOperation', function() {
 		var ChangeOperation = modules[ 'document/changeoperation' ];
 		var Position = modules[ 'document/position' ];
 		var Range = modules[ 'document/range' ];
-		var Character = modules[ 'document/character' ];
+		var Text = modules[ 'document/text' ];
 		var Attribute = modules[ 'document/attribute' ];
 
 		var doc = new Document();
 
 		var fooAttr = new Attribute( 'foo', false );
 
-		doc.root.insertChildren( 0, [
-			new Character( 'b', [ fooAttr ] ),
-			new Character( 'a', [ fooAttr ] ),
-			new Character( 'r', [ fooAttr ] ) ] );
+		doc.root.insertChildren( 0, new Text( 'bar', [ fooAttr ] ) );
 
 		var oppertaion = new ChangeOperation(
 			new Range( new Position( [ 0 ], doc.root ), new Position( [ 3 ], doc.root ) ),
