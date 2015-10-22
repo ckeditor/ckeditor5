@@ -5,7 +5,12 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'document/character', 'document/node', 'utils' ], function( Character, Node, utils ) {
+CKEDITOR.define( [
+	'document/character',
+	'document/text',
+	'document/node',
+	'utils'
+], function( Character, Text, Node, utils ) {
 	/**
 	 * @class document.NodeList
 	 */
@@ -15,6 +20,8 @@ CKEDITOR.define( [ 'document/character', 'document/node', 'utils' ], function( C
 				// We do not clone anything.
 				return nodes;
 			}
+
+			// debugger;
 
 			this._nodes = [];
 
@@ -30,6 +37,10 @@ CKEDITOR.define( [ 'document/character', 'document/node', 'utils' ], function( C
 
 					if ( node instanceof Node ) {
 						this._nodes.push( node );
+					} else if ( node instanceof Text ) {
+						for ( j = 0, nodeLen = node.text.length; j < nodeLen; j++ ) {
+							this._nodes.push( new Character( node.text[ j ], utils.clone( node.attrs ) ) );
+						}
 					} else {
 						for ( j = 0, nodeLen = node.length; j < nodeLen; j++ ) {
 							this._nodes.push( new Character( node[ j ] ) );

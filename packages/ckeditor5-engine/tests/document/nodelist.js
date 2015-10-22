@@ -9,7 +9,9 @@
 
 var modules = bender.amd.require(
 	'document/nodelist',
-	'document/character' );
+	'document/character',
+	'document/text',
+	'document/attribute' );
 
 describe( 'constructor', function() {
 	it( 'should change array of strings into a set of nodes', function() {
@@ -47,6 +49,27 @@ describe( 'constructor', function() {
 
 		expect( nodeList.length ).to.be.equal( 1 );
 		expect( nodeList.get( 0 ).character ).to.be.equal( 'x' );
+	} );
+
+	it( 'should change text with attribute into a set of nodes', function() {
+		var NodeList = modules[ 'document/nodelist' ];
+		var Text = modules[ 'document/text' ];
+		var Attribute = modules[ 'document/attribute' ];
+
+		var attrs = [ new Attribute( 'bold', true ) ];
+
+		var nodeList = new NodeList( new Text( 'foo', attrs ) );
+
+		expect( nodeList.length ).to.be.equal( 3 );
+		expect( nodeList.get( 0 ).character ).to.be.equal( 'f' );
+		expect( nodeList.get( 0 ).attrs ).to.be.deep.equal( attrs );
+		expect( nodeList.get( 0 ).attrs ).not.to.be.equal( attrs );
+		expect( nodeList.get( 1 ).character ).to.be.equal( 'o' );
+		expect( nodeList.get( 1 ).attrs ).to.be.deep.equal( attrs );
+		expect( nodeList.get( 1 ).attrs ).not.to.be.equal( attrs );
+		expect( nodeList.get( 2 ).character ).to.be.equal( 'o' );
+		expect( nodeList.get( 2 ).attrs ).to.be.deep.equal( attrs );
+		expect( nodeList.get( 2 ).attrs ).not.to.be.equal( attrs );
 	} );
 } );
 
