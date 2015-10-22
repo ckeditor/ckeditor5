@@ -62,6 +62,19 @@ describe( 'tree', function() {
 		expect( charR ).to.have.property( 'depth' ).that.equals( 2 );
 	} );
 
+	it( 'should have proper root', function() {
+		expect( root ).to.have.property( 'root' ).that.equals( root );
+
+		expect( one ).to.have.property( 'root' ).that.equals( root );
+		expect( two ).to.have.property( 'root' ).that.equals( root );
+		expect( three ).to.have.property( 'root' ).that.equals( root );
+
+		expect( charB ).to.have.property( 'root' ).that.equals( root );
+		expect( charA ).to.have.property( 'root' ).that.equals( root );
+		expect( img ).to.have.property( 'root' ).that.equals( root );
+		expect( charR ).to.have.property( 'root' ).that.equals( root );
+	} );
+
 	it( 'should have proper nextSibling', function() {
 		expect( root ).to.have.property( 'nextSibling' ).that.is.null;
 
