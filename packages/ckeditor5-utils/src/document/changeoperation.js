@@ -76,23 +76,22 @@ CKEDITOR.define( [ 'document/operation', 'ckeditorerror', 'utils' ], function( O
 			}
 			// Change.
 			else {
+				if ( oldAttr.key != newAttr.key ) {
+					/**
+					 * Old and new attributes should have the same keys.
+					 *
+					 * @error operation-change-different-keys
+					 * @param {document.ChangeOperation} changeOperation
+					 * @param {document.Attribute} oldAttr
+					 * @param {document.Attribute} newAttr
+					 */
+					throw new CKEditorError(
+						'operation-change-different-keys: Old and new attributes should have the same keys.',
+						{ changeOperation: this, oldAttr: oldAttr, newAttr: newAttr } );
+				}
+
 				for ( range of ranges ) {
 					for ( value of range ) {
-						if ( oldAttr.key != newAttr.key ) {
-							/**
-							 * Old and new attributes should have the same keys.
-							 *
-							 * @error operation-change-different-keys
-							 * @param {document.ChangeOperation} changeOperation
-							 * @param {document.Node} node
-							 * @param {document.Attribute} oldAttr
-							 * @param {document.Attribute} newAttr
-							 */
-							throw new CKEditorError(
-								'operation-change-different-keys: Old and new attributes should have the same keys.',
-								{ changeOperation: this, node: value.node, oldAttr: oldAttr, newAttr: newAttr } );
-						}
-
 						if ( !value.node.hasAttr( oldAttr ) ) {
 							/**
 							 * The attribute which should be changed does not exists.
