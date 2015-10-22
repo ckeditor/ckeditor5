@@ -26,7 +26,7 @@ describe( 'InsertOperation', function() {
 
 		doc.applyOperation( new InsertOperation(
 			new Position( [ 0 ], doc.root ),
-			new Character( null, 'x' ),
+			new Character( 'x' ),
 			doc.version ) );
 
 		expect( doc.version ).to.be.equal( 1 );
@@ -38,14 +38,10 @@ describe( 'InsertOperation', function() {
 		var Document = modules[ 'document/document' ];
 		var InsertOperation = modules[ 'document/insertoperation' ];
 		var Position = modules[ 'document/position' ];
-		var Character = modules[ 'document/character' ];
 
 		var doc = new Document();
 
-		doc.applyOperation( new InsertOperation(
-			new Position( [ 0 ], doc.root ),
-			[ new Character( null, 'b' ), new Character( null, 'a' ), new Character( null, 'r' ) ],
-			doc.version ) );
+		doc.applyOperation( new InsertOperation( new Position( [ 0 ], doc.root ), 'bar', doc.version ) );
 
 		expect( doc.version ).to.be.equal( 1 );
 		expect( doc.root.children.length ).to.be.equal( 3 );
@@ -58,17 +54,12 @@ describe( 'InsertOperation', function() {
 		var Document = modules[ 'document/document' ];
 		var InsertOperation = modules[ 'document/insertoperation' ];
 		var Position = modules[ 'document/position' ];
-		var Character = modules[ 'document/character' ];
 
 		var doc = new Document();
 
-		doc.root.children.push( new Character( doc.root, 'x' ) );
-		doc.root.children.push( new Character( doc.root, 'y' ) );
+		doc.root.insertChildren( 0, 'xy' );
 
-		doc.applyOperation( new InsertOperation(
-			new Position( [ 1 ], doc.root ),
-			[ new Character( null, 'b' ), new Character( null, 'a' ), new Character( null, 'r' ) ],
-			doc.version ) );
+		doc.applyOperation( new InsertOperation( new Position( [ 1 ], doc.root ), 'bar', doc.version ) );
 
 		expect( doc.version ).to.be.equal( 1 );
 		expect( doc.root.children.length ).to.be.equal( 5 );
@@ -89,7 +80,7 @@ describe( 'InsertOperation', function() {
 
 		doc.applyOperation( new InsertOperation(
 			new Position( [ 0 ], doc.root ),
-			[ 'foo', new Character( null, 'x' ), 'bar' ],
+			[ 'foo', new Character( 'x' ), 'bar' ],
 			doc.version ) );
 
 		expect( doc.version ).to.be.equal( 1 );
@@ -108,12 +99,11 @@ describe( 'InsertOperation', function() {
 		var InsertOperation = modules[ 'document/insertoperation' ];
 		var RemoveOperation = modules[ 'document/removeoperation' ];
 		var Position = modules[ 'document/position' ];
-		var Character = modules[ 'document/character' ];
 		var NodeList = modules[ 'document/nodelist' ];
 
 		var doc = new Document();
 
-		var nodeList = new NodeList( [ new Character( null, 'b' ), new Character( null, 'a' ), new Character( null, 'r' ) ] );
+		var nodeList = new NodeList( 'bar' );
 		var position = new Position( [ 0 ], doc.root );
 
 		var operation = new InsertOperation( position, nodeList, 0 );
@@ -136,7 +126,7 @@ describe( 'InsertOperation', function() {
 
 		var operation = new InsertOperation(
 			new Position( [ 0 ], doc.root ),
-			new Character( null, 'x' ),
+			new Character( 'x' ),
 			doc.version );
 
 		var reverse = operation.reverseOperation();
@@ -155,14 +145,10 @@ describe( 'InsertOperation', function() {
 		var Document = modules[ 'document/document' ];
 		var InsertOperation = modules[ 'document/insertoperation' ];
 		var Position = modules[ 'document/position' ];
-		var Character = modules[ 'document/character' ];
 
 		var doc = new Document();
 
-		var operation = new InsertOperation(
-			new Position( [ 0 ], doc.root ),
-			[ new Character( null, 'b' ), new Character( null, 'a' ), new Character( null, 'r' ) ],
-			doc.version );
+		var operation = new InsertOperation( new Position( [ 0 ], doc.root ), 'bar', doc.version );
 
 		var reverse = operation.reverseOperation();
 

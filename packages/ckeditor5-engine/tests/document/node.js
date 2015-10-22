@@ -24,25 +24,16 @@ describe( 'tree', function() {
 		Element = modules[ 'document/element' ];
 		Character = modules[ 'document/character' ];
 
-		root = new Element();
+		charB = new Character( 'b' );
+		charA = new Character( 'a' );
+		img = new Element( 'img' );
+		charR = new Character( 'r' );
 
-		one = new Element( root );
-		two = new Element( root );
-		three = new Element( root );
+		one = new Element( 'one' );
+		two = new Element( 'two', null, [ charB, charA, img, charR ] );
+		three = new Element( 'three' );
 
-		charB = new Character( two, 'b' );
-		charA = new Character( two, 'a' );
-		img = new Element( two, 'img' );
-		charR = new Character( two, 'r' );
-
-		two.children.push( charB );
-		two.children.push( charA );
-		two.children.push( img );
-		two.children.push( charR );
-
-		root.children.push( one );
-		root.children.push( two );
-		root.children.push( three );
+		root = new Element( null, null, [ one, two, three ] );
 	} );
 
 	it( 'should have proper positionInParent', function() {
@@ -104,7 +95,7 @@ describe( 'getAttr', function() {
 		var Attribute = modules[ 'document/attribute' ];
 
 		var fooAttr = new Attribute( 'foo', true );
-		var element = new Element( null, 'foo', [ fooAttr ] );
+		var element = new Element( 'foo', [ fooAttr ] );
 
 		expect( element.getAttr( 'foo' ).isEqual( fooAttr ) ).to.be.true;
 	} );
@@ -114,7 +105,7 @@ describe( 'getAttr', function() {
 		var Attribute = modules[ 'document/attribute' ];
 
 		var fooAttr = new Attribute( 'foo', true );
-		var element = new Element( null, 'foo', [ fooAttr ] );
+		var element = new Element( 'foo', [ fooAttr ] );
 
 		expect( element.getAttr( 'bar' ) ).to.be.null;
 	} );
@@ -125,7 +116,7 @@ describe( 'getAttr', function() {
 
 		var fooAttr = new Attribute( 'foo', true );
 		var foo2Attr = new Attribute( 'foo', true );
-		var element = new Element( null, 'foo', [ fooAttr ] );
+		var element = new Element( 'foo', [ fooAttr ] );
 
 		expect( element.getAttr( foo2Attr ).isEqual( fooAttr ) ).to.be.true;
 	} );
@@ -135,7 +126,7 @@ describe( 'getAttr', function() {
 		var Attribute = modules[ 'document/attribute' ];
 
 		var fooAttr = new Attribute( 'foo', true );
-		var element = new Element( null, 'foo' );
+		var element = new Element( 'foo' );
 
 		expect( element.getAttr( fooAttr ) ).to.be.null;
 	} );
@@ -147,7 +138,7 @@ describe( 'hasAttr', function() {
 		var Attribute = modules[ 'document/attribute' ];
 
 		var fooAttr = new Attribute( 'foo', true );
-		var element = new Element( null, 'foo', [ fooAttr ] );
+		var element = new Element( 'foo', [ fooAttr ] );
 
 		expect( element.hasAttr( 'foo' ) ).to.be.true;
 	} );
@@ -157,7 +148,7 @@ describe( 'hasAttr', function() {
 		var Attribute = modules[ 'document/attribute' ];
 
 		var fooAttr = new Attribute( 'foo', true );
-		var element = new Element( null, 'foo', [ fooAttr ] );
+		var element = new Element( 'foo', [ fooAttr ] );
 
 		expect( element.hasAttr( 'bar' ) ).to.be.false;
 	} );
@@ -168,7 +159,7 @@ describe( 'hasAttr', function() {
 
 		var fooAttr = new Attribute( 'foo', true );
 		var foo2Attr = new Attribute( 'foo', true );
-		var element = new Element( null, 'foo', [ fooAttr ] );
+		var element = new Element( 'foo', [ fooAttr ] );
 
 		expect( element.hasAttr( foo2Attr ) ).to.be.true;
 	} );
@@ -178,7 +169,7 @@ describe( 'hasAttr', function() {
 		var Attribute = modules[ 'document/attribute' ];
 
 		var fooAttr = new Attribute( 'foo', true );
-		var element = new Element( null, 'foo' );
+		var element = new Element( 'foo' );
 
 		expect( element.hasAttr( fooAttr ) ).to.be.false;
 	} );
@@ -188,9 +179,8 @@ describe( 'hasAttr', function() {
 		var Character = modules[ 'document/character' ];
 		var NodeList = modules[ 'document/nodelist' ];
 
-		var foo = new Element( null, 'foo' );
-		var b = new Character( foo, 'b' );
-		foo.children.push( b );
+		var b = new Character( 'b' );
+		var foo = new Element( 'foo', [], [ b ] );
 
 		var parsedFoo = JSON.parse( JSON.stringify( foo ) );
 		var parsedBar = JSON.parse( JSON.stringify( b ) );

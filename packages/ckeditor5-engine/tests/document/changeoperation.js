@@ -14,6 +14,7 @@ var modules = bender.amd.require(
 	'document/range',
 	'document/character',
 	'document/attribute',
+	'document/nodelist',
 	'ckeditorerror' );
 
 describe( 'ChangeOperation', function() {
@@ -22,16 +23,13 @@ describe( 'ChangeOperation', function() {
 		var ChangeOperation = modules[ 'document/changeoperation' ];
 		var Position = modules[ 'document/position' ];
 		var Range = modules[ 'document/range' ];
-		var Character = modules[ 'document/character' ];
 		var Attribute = modules[ 'document/attribute' ];
 
 		var doc = new Document();
 
 		var newAttr = new Attribute( 'isNew', true );
 
-		doc.root.children.push( new Character( doc.root, 'b' ) );
-		doc.root.children.push( new Character( doc.root, 'a' ) );
-		doc.root.children.push( new Character( doc.root, 'r' ) );
+		doc.root.insertChildren( 0, 'bar' );
 
 		doc.applyOperation( new ChangeOperation(
 			new Range( new Position( [ 0 ], doc.root ), new Position( [ 2 ], doc.root ) ),
@@ -51,16 +49,13 @@ describe( 'ChangeOperation', function() {
 		var ChangeOperation = modules[ 'document/changeoperation' ];
 		var Position = modules[ 'document/position' ];
 		var Range = modules[ 'document/range' ];
-		var Character = modules[ 'document/character' ];
 		var Attribute = modules[ 'document/attribute' ];
 
 		var doc = new Document();
 
 		var newAttr = new Attribute( 'isNew', true );
 
-		doc.root.children.push( new Character( doc.root, 'b' ) );
-		doc.root.children.push( new Character( doc.root, 'a' ) );
-		doc.root.children.push( new Character( doc.root, 'r' ) );
+		doc.root.insertChildren( 0, 'bar' );
 
 		doc.applyOperation( new ChangeOperation(
 			[
@@ -92,7 +87,7 @@ describe( 'ChangeOperation', function() {
 		var fooAttr = new Attribute( 'foo', true );
 		var barAttr = new Attribute( 'bar', true );
 
-		doc.root.children.push( new Character( doc.root, 'x', [ fooAttr, barAttr ] ) );
+		doc.root.insertChildren( 0, new Character( 'x', [ fooAttr, barAttr ] ) );
 
 		doc.applyOperation( new ChangeOperation(
 			new Range( new Position( [ 0 ], doc.root ), new Position( [ 1 ], doc.root ) ),
@@ -121,9 +116,10 @@ describe( 'ChangeOperation', function() {
 		var oldAttr = new Attribute( 'isNew', false );
 		var newAttr = new Attribute( 'isNew', true );
 
-		doc.root.children.push( new Character( doc.root, 'b', [ oldAttr ] ) );
-		doc.root.children.push( new Character( doc.root, 'a', [ oldAttr ] ) );
-		doc.root.children.push( new Character( doc.root, 'r', [ oldAttr ] ) );
+		doc.root.insertChildren( 0, [
+			new Character( 'b', [ oldAttr ] ),
+			new Character( 'a', [ oldAttr ] ),
+			new Character( 'r', [ oldAttr ] ) ] );
 
 		doc.applyOperation( new ChangeOperation(
 			[
@@ -157,9 +153,10 @@ describe( 'ChangeOperation', function() {
 		var oldAttr = new Attribute( 'isNew', false );
 		var newAttr = new Attribute( 'isNew', true );
 
-		doc.root.children.push( new Character( doc.root, 'b', [ oldAttr ] ) );
-		doc.root.children.push( new Character( doc.root, 'a', [ oldAttr ] ) );
-		doc.root.children.push( new Character( doc.root, 'r', [ oldAttr ] ) );
+		doc.root.insertChildren( 0, [
+			new Character( 'b', [ oldAttr ] ),
+			new Character( 'a', [ oldAttr ] ),
+			new Character( 'r', [ oldAttr ] ) ] );
 
 		doc.applyOperation( new ChangeOperation(
 			new Range( new Position( [ 0 ], doc.root ), new Position( [ 2 ], doc.root ) ),
@@ -192,7 +189,7 @@ describe( 'ChangeOperation', function() {
 		var x2Attr = new Attribute( 'x', 2 );
 		var barAttr = new Attribute( 'bar', true );
 
-		doc.root.children.push( new Character( doc.root, 'x', [ fooAttr, x1Attr, barAttr ] ) );
+		doc.root.insertChildren( 0, new Character( 'x', [ fooAttr, x1Attr, barAttr ] ) );
 
 		doc.applyOperation( new ChangeOperation(
 			new Range( new Position( [ 0 ], doc.root ), new Position( [ 1 ], doc.root ) ),
@@ -222,7 +219,7 @@ describe( 'ChangeOperation', function() {
 		var xAttr = new Attribute( 'x', true );
 		var barAttr = new Attribute( 'bar', true );
 
-		doc.root.children.push( new Character( doc.root, 'x', [ fooAttr, xAttr, barAttr ] ) );
+		doc.root.insertChildren( 0, new Character( 'x', [ fooAttr, xAttr, barAttr ] ) );
 
 		doc.applyOperation( new ChangeOperation(
 			new Range( new Position( [ 0 ], doc.root ), new Position( [ 1 ], doc.root ) ),
@@ -249,9 +246,10 @@ describe( 'ChangeOperation', function() {
 
 		var fooAttr = new Attribute( 'foo', true );
 
-		doc.root.children.push( new Character( doc.root, 'b', [ fooAttr ] ) );
-		doc.root.children.push( new Character( doc.root, 'a', [ fooAttr ] ) );
-		doc.root.children.push( new Character( doc.root, 'r', [ fooAttr ] ) );
+		doc.root.insertChildren( 0, [
+			new Character( 'b', [ fooAttr ] ),
+			new Character( 'a', [ fooAttr ] ),
+			new Character( 'r', [ fooAttr ] ) ] );
 
 		doc.applyOperation( new ChangeOperation(
 			[
@@ -299,16 +297,13 @@ describe( 'ChangeOperation', function() {
 		var ChangeOperation = modules[ 'document/changeoperation' ];
 		var Position = modules[ 'document/position' ];
 		var Range = modules[ 'document/range' ];
-		var Character = modules[ 'document/character' ];
 		var Attribute = modules[ 'document/attribute' ];
 
 		var doc = new Document();
 
 		var newAttr = new Attribute( 'isNew', true );
 
-		doc.root.children.push( new Character( doc.root, 'b' ) );
-		doc.root.children.push( new Character( doc.root, 'a' ) );
-		doc.root.children.push( new Character( doc.root, 'r' ) );
+		doc.root.insertChildren( 0, 'bar' );
 
 		var oppertaion = new ChangeOperation(
 			new Range( new Position( [ 0 ], doc.root ), new Position( [ 3 ], doc.root ) ),
@@ -342,9 +337,10 @@ describe( 'ChangeOperation', function() {
 		var oldAttr = new Attribute( 'isNew', false );
 		var newAttr = new Attribute( 'isNew', true );
 
-		doc.root.children.push( new Character( doc.root, 'b', [ oldAttr ] ) );
-		doc.root.children.push( new Character( doc.root, 'a', [ oldAttr ] ) );
-		doc.root.children.push( new Character( doc.root, 'r', [ oldAttr ] ) );
+		doc.root.insertChildren( 0, [
+			new Character( 'b', [ oldAttr ] ),
+			new Character( 'a', [ oldAttr ] ),
+			new Character( 'r', [ oldAttr ] ) ] );
 
 		var oppertaion = new ChangeOperation(
 			new Range( new Position( [ 0 ], doc.root ), new Position( [ 3 ], doc.root ) ),
@@ -380,9 +376,10 @@ describe( 'ChangeOperation', function() {
 
 		var fooAttr = new Attribute( 'foo', false );
 
-		doc.root.children.push( new Character( doc.root, 'b', [ fooAttr ] ) );
-		doc.root.children.push( new Character( doc.root, 'a', [ fooAttr ] ) );
-		doc.root.children.push( new Character( doc.root, 'r', [ fooAttr ] ) );
+		doc.root.insertChildren( 0, [
+			new Character( 'b', [ fooAttr ] ),
+			new Character( 'a', [ fooAttr ] ),
+			new Character( 'r', [ fooAttr ] ) ] );
 
 		var oppertaion = new ChangeOperation(
 			new Range( new Position( [ 0 ], doc.root ), new Position( [ 3 ], doc.root ) ),
@@ -411,7 +408,6 @@ describe( 'ChangeOperation', function() {
 		var ChangeOperation = modules[ 'document/changeoperation' ];
 		var Position = modules[ 'document/position' ];
 		var Range = modules[ 'document/range' ];
-		var Character = modules[ 'document/character' ];
 		var Attribute = modules[ 'document/attribute' ];
 		var CKEditorError = modules.ckeditorerror;
 
@@ -419,7 +415,7 @@ describe( 'ChangeOperation', function() {
 
 		var fooAttr = new Attribute( 'foo', true );
 
-		doc.root.children.push( new Character( doc.root, 'x' ) );
+		doc.root.insertChildren( 0, 'x' );
 
 		expect( function() {
 			doc.applyOperation( new ChangeOperation(
@@ -444,7 +440,7 @@ describe( 'ChangeOperation', function() {
 		var x1Attr = new Attribute( 'x', 1 );
 		var x2Attr = new Attribute( 'x', 2 );
 
-		doc.root.children.push( new Character( doc.root, 'x', [ x1Attr ] ) );
+		doc.root.insertChildren( 0, new Character( 'x', [ x1Attr ] ) );
 
 		expect( function() {
 			doc.applyOperation( new ChangeOperation(
@@ -460,7 +456,6 @@ describe( 'ChangeOperation', function() {
 		var ChangeOperation = modules[ 'document/changeoperation' ];
 		var Position = modules[ 'document/position' ];
 		var Range = modules[ 'document/range' ];
-		var Character = modules[ 'document/character' ];
 		var Attribute = modules[ 'document/attribute' ];
 		var CKEditorError = modules.ckeditorerror;
 
@@ -469,7 +464,7 @@ describe( 'ChangeOperation', function() {
 		var fooAttr = new Attribute( 'foo', true );
 		var barAttr = new Attribute( 'bar', true );
 
-		doc.root.children.push( new Character( doc.root, 'x' ) );
+		doc.root.insertChildren( 0, 'x' );
 
 		expect( function() {
 			doc.applyOperation( new ChangeOperation(
@@ -485,7 +480,6 @@ describe( 'ChangeOperation', function() {
 		var ChangeOperation = modules[ 'document/changeoperation' ];
 		var Position = modules[ 'document/position' ];
 		var Range = modules[ 'document/range' ];
-		var Character = modules[ 'document/character' ];
 		var Attribute = modules[ 'document/attribute' ];
 		var CKEditorError = modules.ckeditorerror;
 
@@ -494,7 +488,7 @@ describe( 'ChangeOperation', function() {
 		var x1Attr = new Attribute( 'x', 1 );
 		var x2Attr = new Attribute( 'x', 2 );
 
-		doc.root.children.push( new Character( doc.root, 'x' ) );
+		doc.root.insertChildren( 0, 'x' );
 
 		expect( function() {
 			doc.applyOperation( new ChangeOperation(

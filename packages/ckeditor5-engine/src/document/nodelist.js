@@ -32,7 +32,7 @@ CKEDITOR.define( [ 'document/character', 'document/node', 'utils' ], function( C
 						this._nodes.push( node );
 					} else {
 						for ( j = 0, nodeLen = node.length; j < nodeLen; j++ ) {
-							this._nodes.push( new Character( null, node[ j ] ) );
+							this._nodes.push( new Character( node[ j ] ) );
 						}
 					}
 				}
@@ -47,10 +47,6 @@ CKEDITOR.define( [ 'document/character', 'document/node', 'utils' ], function( C
 			this._nodes.splice.apply( this._nodes, [ index, 0 ].concat( nodeList._nodes ) );
 		}
 
-		push( nodes ) {
-			this.insert( this._nodes.length, new NodeList( nodes ) );
-		}
-
 		remove( index, number ) {
 			this._nodes.splice( index, number );
 		}
@@ -61,6 +57,10 @@ CKEDITOR.define( [ 'document/character', 'document/node', 'utils' ], function( C
 
 		get length() {
 			return this._nodes.length;
+		}
+
+		[ Symbol.iterator ]() {
+			return this._nodes[ Symbol.iterator ]();
 		}
 	}
 

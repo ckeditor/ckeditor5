@@ -12,10 +12,11 @@ var modules = bender.amd.require(
 	'document/character',
 	'document/position',
 	'document/document',
-	'ckeditorerror' );
+	'ckeditorerror',
+	'document/nodelist' );
 
 describe( 'position', function() {
-	var Element, Character, Document;
+	var Element, Character, Document, NodeList;
 
 	var doc, root, p, ul, li1, li2, f, o, z, b, a, r;
 
@@ -34,40 +35,29 @@ describe( 'position', function() {
 		Element = modules[ 'document/element' ];
 		Character = modules[ 'document/character' ];
 		Document = modules[ 'document/document' ];
+		NodeList = modules[ 'document/nodelist' ];
 
 		doc = new Document();
 
 		root = doc.root;
 
-		p = new Element( root, 'p' );
+		f = new Character( 'f' );
+		o = new Character( 'o' );
+		z = new Character( 'z' );
 
-		ul = new Element( root, 'ul' );
+		li1 = new Element( 'li', [], [ f, o, z ] );
 
-		li1 = new Element( ul, 'li' );
+		b = new Character( 'b' );
+		a = new Character( 'a' );
+		r = new Character( 'r' );
 
-		f = new Character( li1, 'f' );
-		o = new Character( li1, 'o' );
-		z = new Character( li1, 'z' );
+		li2 = new Element( 'li', [], [ b, a, r ] );
 
-		li2 = new Element( ul, 'li' );
+		ul = new Element( 'ul', [], [ li1, li2 ] );
 
-		b = new Character( li2, 'b' );
-		a = new Character( li2, 'a' );
-		r = new Character( li2, 'r' );
+		p = new Element( 'p' );
 
-		root.children.push( p );
-		root.children.push( ul );
-
-		ul.children.push( li1 );
-		ul.children.push( li2 );
-
-		li1.children.push( f );
-		li1.children.push( o );
-		li1.children.push( z );
-
-		li2.children.push( b );
-		li2.children.push( a );
-		li2.children.push( r );
+		root.insertChildren( 0, [ p, ul ] );
 	} );
 
 	it( 'should create a position with path and document', function() {
@@ -159,20 +149,20 @@ describe( 'position', function() {
 	it( 'should have parent', function() {
 		var Position = modules[ 'document/position' ];
 
-		// expect( new Position( [ 0 ], doc.root ) ).to.have.property( 'parent' ).that.equals( root );
-		// expect( new Position( [ 1 ], doc.root ) ).to.have.property( 'parent' ).that.equals( root );
-		// expect( new Position( [ 2 ], doc.root ) ).to.have.property( 'parent' ).that.equals( root );
+		expect( new Position( [ 0 ], doc.root ) ).to.have.property( 'parent' ).that.equals( root );
+		expect( new Position( [ 1 ], doc.root ) ).to.have.property( 'parent' ).that.equals( root );
+		expect( new Position( [ 2 ], doc.root ) ).to.have.property( 'parent' ).that.equals( root );
 
 		expect( new Position( [ 0, 0 ], doc.root ) ).to.have.property( 'parent' ).that.equals( p );
 
-		// expect( new Position( [ 1, 0 ], doc.root ) ).to.have.property( 'parent' ).that.equals( ul );
-		// expect( new Position( [ 1, 1 ], doc.root ) ).to.have.property( 'parent' ).that.equals( ul );
-		// expect( new Position( [ 1, 2 ], doc.root ) ).to.have.property( 'parent' ).that.equals( ul );
+		expect( new Position( [ 1, 0 ], doc.root ) ).to.have.property( 'parent' ).that.equals( ul );
+		expect( new Position( [ 1, 1 ], doc.root ) ).to.have.property( 'parent' ).that.equals( ul );
+		expect( new Position( [ 1, 2 ], doc.root ) ).to.have.property( 'parent' ).that.equals( ul );
 
-		// expect( new Position( [ 1, 0, 0 ], doc.root ) ).to.have.property( 'parent' ).that.equals( li1 );
-		// expect( new Position( [ 1, 0, 1 ], doc.root ) ).to.have.property( 'parent' ).that.equals( li1 );
-		// expect( new Position( [ 1, 0, 2 ], doc.root ) ).to.have.property( 'parent' ).that.equals( li1 );
-		// expect( new Position( [ 1, 0, 3 ], doc.root ) ).to.have.property( 'parent' ).that.equals( li1 );
+		expect( new Position( [ 1, 0, 0 ], doc.root ) ).to.have.property( 'parent' ).that.equals( li1 );
+		expect( new Position( [ 1, 0, 1 ], doc.root ) ).to.have.property( 'parent' ).that.equals( li1 );
+		expect( new Position( [ 1, 0, 2 ], doc.root ) ).to.have.property( 'parent' ).that.equals( li1 );
+		expect( new Position( [ 1, 0, 3 ], doc.root ) ).to.have.property( 'parent' ).that.equals( li1 );
 	} );
 
 	it( 'should have offset', function() {
