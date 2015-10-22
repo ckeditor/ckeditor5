@@ -5,7 +5,12 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'document/operation', 'document/nodelist' ], function( Operation, NodeList ) {
+CKEDITOR.define( [
+	'document/operation',
+	'document/nodelist',
+	'ckeditorerror',
+	'utils'
+], function( Operation, NodeList, CKEditorError, utils ) {
 	/**
 	 *
 	 *
@@ -29,6 +34,26 @@ CKEDITOR.define( [ 'document/operation', 'document/nodelist' ], function( Operat
 			var sourceOffset = this.sourcePosition.offset;
 			var targetOffset = this.targetPosition.offset;
 			var nodeList = this.nodeList;
+
+			if ( CKEDITOR.isDebug ) {
+				var i = 0;
+
+				for ( var node of this.nodeList ) {
+					if ( !utils.isEqual( sourceElement.children.get( sourceOffset + i ), node ) ) {
+						/**
+						 * The node which should be removed does not exists.
+						 *
+						 * @error operation-move-node-does-not-exists:
+						 * @param {document.MoveOperation} moveOperation
+						 * @param {document.Node} node
+						 */
+						throw new CKEditorError(
+							'operation-move-node-does-not-exists: The node which should be moved does not exists.',
+							{ moveOperation: this, node: this.node } );
+					}
+					i++;
+				}
+			}
 
 			sourceElement.children.remove( sourceOffset, nodeList.length );
 
