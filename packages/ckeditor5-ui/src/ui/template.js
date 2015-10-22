@@ -39,8 +39,11 @@ CKEDITOR.define( function() {
 		}
 	}
 
-	var textUpdater = () => ( el, value ) => el.innerHTML = value;
-	var attributeUpdater = ( attr ) => ( el, value ) => el.setAttribute( attr, value );
+	var getTextUpdater = () =>
+		( el, value ) => el.innerHTML = value;
+
+	var getAttributeUpdater = ( attr ) =>
+		( el, value ) => el.setAttribute( attr, value );
 
 	function renderElement( def ) {
 		if ( !def ) {
@@ -64,7 +67,7 @@ CKEDITOR.define( function() {
 	function renderElementText( def, el ) {
 		if ( def.text ) {
 			if ( typeof def.text == 'function' ) {
-				def.text( el, textUpdater() );
+				def.text( el, getTextUpdater() );
 			} else {
 				el.innerHTML = def.text;
 			}
@@ -80,7 +83,7 @@ CKEDITOR.define( function() {
 
 			// Attribute bound directly to the model.
 			if ( typeof value == 'function' ) {
-				value( el, attributeUpdater( attr ) );
+				value( el, getAttributeUpdater( attr ) );
 			}
 
 			// Explicit attribute definition (string).
@@ -90,7 +93,7 @@ CKEDITOR.define( function() {
 					value = value.join( ' ' );
 				}
 
-				attributeUpdater( attr )( el, value );
+				el.setAttribute( attr, value );
 			}
 		}
 	}
