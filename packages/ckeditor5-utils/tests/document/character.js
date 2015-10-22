@@ -21,9 +21,8 @@ describe( 'constructor', function() {
 		var Character = modules[ 'document/character' ];
 		var Node = modules[ 'document/node' ];
 
-		var parent = new Element( null, 'parent' );
-
-		var character = new Character( parent, 'f' );
+		var character = new Character( 'f' );
+		var parent = new Element( 'parent', [], character );
 
 		expect( character ).to.be.an.instanceof( Node );
 		expect( character ).to.have.property( 'character' ).that.equals( 'f' );
@@ -37,10 +36,11 @@ describe( 'constructor', function() {
 		var Node = modules[ 'document/node' ];
 		var Attribute = modules[ 'document/attribute' ];
 
-		var parent = new Element( null, 'parent' );
 		var attr = new Attribute( 'key', 'value' );
 
-		var character = new Character( parent, 'f', [ attr ] );
+		var character = new Character( 'f', [ attr ] );
+
+		var parent = new Element( 'parent', [], character );
 
 		expect( character ).to.be.an.instanceof( Node );
 		expect( character ).to.have.property( 'character' ).that.equals( 'f' );

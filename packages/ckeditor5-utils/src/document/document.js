@@ -27,7 +27,7 @@ CKEDITOR.define( [
 			 * @readonly
 			 * @property {String} root
 			 */
-			this.root = new Element( null, 'root' );
+			this.root = new Element( 'root' );
 
 			this.version = 0;
 		}

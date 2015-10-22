@@ -16,7 +16,7 @@ describe( 'constructor', function() {
 		var NodeList = modules[ 'document/nodelist' ];
 		var Character = modules[ 'document/character' ];
 
-		var nodeList = new NodeList( [ 'foo', new Character( null, 'x' ), 'bar' ] );
+		var nodeList = new NodeList( [ 'foo', new Character( 'x' ), 'bar' ] );
 
 		expect( nodeList.length ).to.be.equal( 7 );
 		expect( nodeList.get( 0 ).character ).to.be.equal( 'f' );
@@ -43,7 +43,7 @@ describe( 'constructor', function() {
 		var NodeList = modules[ 'document/nodelist' ];
 		var Character = modules[ 'document/character' ];
 
-		var nodeList = new NodeList( new Character( null, 'x' ) );
+		var nodeList = new NodeList( new Character( 'x' ) );
 
 		expect( nodeList.length ).to.be.equal( 1 );
 		expect( nodeList.get( 0 ).character ).to.be.equal( 'x' );
@@ -81,5 +81,22 @@ describe( 'remove', function() {
 		expect( nodeList.get( 0 ).character ).to.be.equal( 'f' );
 		expect( nodeList.get( 1 ).character ).to.be.equal( 'o' );
 		expect( nodeList.get( 2 ).character ).to.be.equal( 'r' );
+	} );
+} );
+
+describe( 'iterator', function() {
+	it( 'should iterate over all elements in the collection', function() {
+		var NodeList = modules[ 'document/nodelist' ];
+
+		var characters = 'foo';
+		var nodeList = new NodeList( characters );
+		var i = 0;
+
+		for ( var node of nodeList ) {
+			expect( node.character ).to.be.equal( characters[ i ] );
+			i++;
+		}
+
+		expect( i ).to.be.equal( 3 );
 	} );
 } );

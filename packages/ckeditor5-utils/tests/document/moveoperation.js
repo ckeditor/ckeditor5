@@ -24,13 +24,10 @@ describe( 'MoveOperation', function() {
 
 		var doc = new Document();
 
-		var p1 = new Element( doc.root, 'p1' );
-		var p2 = new Element( doc.root, 'p2' );
+		var p1 = new Element( 'p1', [], new Element( 'x' ) );
+		var p2 = new Element( 'p2' );
 
-		doc.root.children.push( p1 );
-		doc.root.children.push( p2 );
-
-		p1.children.push( new Element( doc.p1, 'x' ) );
+		doc.root.insertChildren( 0, [ p1, p2 ] );
 
 		doc.applyOperation( new MoveOperation(
 			new Position( [ 0, 0 ], doc.root ),
@@ -51,15 +48,10 @@ describe( 'MoveOperation', function() {
 		var Document = modules[ 'document/document' ];
 		var MoveOperation = modules[ 'document/moveoperation' ];
 		var Position = modules[ 'document/position' ];
-		var Character = modules[ 'document/character' ];
 
 		var doc = new Document();
 
-		doc.root.children.push( new Character( doc.root, 'x' ) );
-		doc.root.children.push( new Character( doc.root, 'b' ) );
-		doc.root.children.push( new Character( doc.root, 'a' ) );
-		doc.root.children.push( new Character( doc.root, 'r' ) );
-		doc.root.children.push( new Character( doc.root, 'x' ) );
+		doc.root.insertChildren( 0, 'xbarx' );
 
 		doc.applyOperation( new MoveOperation(
 			new Position( [ 2 ], doc.root ),
@@ -80,15 +72,10 @@ describe( 'MoveOperation', function() {
 		var Document = modules[ 'document/document' ];
 		var MoveOperation = modules[ 'document/moveoperation' ];
 		var Position = modules[ 'document/position' ];
-		var Character = modules[ 'document/character' ];
 
 		var doc = new Document();
 
-		doc.root.children.push( new Character( doc.root, 'x' ) );
-		doc.root.children.push( new Character( doc.root, 'b' ) );
-		doc.root.children.push( new Character( doc.root, 'a' ) );
-		doc.root.children.push( new Character( doc.root, 'r' ) );
-		doc.root.children.push( new Character( doc.root, 'x' ) );
+		doc.root.insertChildren( 0, 'xbarx' );
 
 		doc.applyOperation( new MoveOperation(
 			new Position( [ 1 ], doc.root ),
@@ -109,12 +96,11 @@ describe( 'MoveOperation', function() {
 		var Document = modules[ 'document/document' ];
 		var MoveOperation = modules[ 'document/moveoperation' ];
 		var Position = modules[ 'document/position' ];
-		var Character = modules[ 'document/character' ];
 		var NodeList = modules[ 'document/nodelist' ];
 
 		var doc = new Document();
 
-		var nodeList = new NodeList( [ new Character( doc.root, 'b' ), new Character( doc.root, 'a' ), new Character( doc.root, 'r' ) ] );
+		var nodeList = new NodeList( 'bar' );
 
 		var sourcePosition = new Position( [ 0 ], doc.root );
 		var targetPosition = new Position( [ 4 ], doc.root );
@@ -138,13 +124,10 @@ describe( 'MoveOperation', function() {
 
 		var doc = new Document();
 
-		var p1 = new Element( doc.root, 'p1' );
-		var p2 = new Element( doc.root, 'p2' );
+		var p1 = new Element( 'p1', [], new Element( 'x' ) );
+		var p2 = new Element( 'p2' );
 
-		doc.root.children.push( p1 );
-		doc.root.children.push( p2 );
-
-		p1.children.push( new Element( doc.p1, 'x' ) );
+		doc.root.insertChildren( 0, [ p1, p2 ] );
 
 		var operation =  new MoveOperation(
 			new Position( [ 0, 0 ], doc.root ),

@@ -20,11 +20,10 @@ describe( 'RemoveOperation', function() {
 		var Document = modules[ 'document/document' ];
 		var RemoveOperation = modules[ 'document/removeoperation' ];
 		var Position = modules[ 'document/position' ];
-		var Character = modules[ 'document/character' ];
 
 		var doc = new Document();
 
-		doc.root.children.push( new Character( doc.root, 'x' ) );
+		doc.root.insertChildren( 0, 'x' );
 
 		doc.applyOperation( new RemoveOperation(
 			new Position( [ 0 ], doc.root ),
@@ -39,13 +38,10 @@ describe( 'RemoveOperation', function() {
 		var Document = modules[ 'document/document' ];
 		var RemoveOperation = modules[ 'document/removeoperation' ];
 		var Position = modules[ 'document/position' ];
-		var Character = modules[ 'document/character' ];
 
 		var doc = new Document();
 
-		doc.root.children.push( new Character( doc.root, 'b' ) );
-		doc.root.children.push( new Character( doc.root, 'a' ) );
-		doc.root.children.push( new Character( doc.root, 'r' ) );
+		doc.root.insertChildren( 0, 'bar' );
 
 		doc.applyOperation( new RemoveOperation(
 			new Position( [ 0 ], doc.root ),
@@ -60,13 +56,10 @@ describe( 'RemoveOperation', function() {
 		var Document = modules[ 'document/document' ];
 		var RemoveOperation = modules[ 'document/removeoperation' ];
 		var Position = modules[ 'document/position' ];
-		var Character = modules[ 'document/character' ];
 
 		var doc = new Document();
 
-		doc.root.children.push( new Character( doc.root, 'b' ) );
-		doc.root.children.push( new Character( doc.root, 'a' ) );
-		doc.root.children.push( new Character( doc.root, 'r' ) );
+		doc.root.insertChildren( 0, 'bar' );
 
 		doc.applyOperation( new RemoveOperation(
 			new Position( [ 1 ], doc.root ),
@@ -84,17 +77,14 @@ describe( 'RemoveOperation', function() {
 		var InsertOperation = modules[ 'document/insertoperation' ];
 		var RemoveOperation = modules[ 'document/removeoperation' ];
 		var Position = modules[ 'document/position' ];
-		var Character = modules[ 'document/character' ];
 		var NodeList = modules[ 'document/nodelist' ];
 
 		var doc = new Document();
 
-		var nodeList = new NodeList( [ new Character( null, 'b' ), new Character( null, 'a' ), new Character( null, 'r' ) ] );
+		var nodeList = new NodeList( 'bar' );
 		var position = new Position( [ 0 ], doc.root );
 
-		doc.root.children.push( nodeList.get( 0 ) );
-		doc.root.children.push( nodeList.get( 1 ) );
-		doc.root.children.push( nodeList.get( 2 ) );
+		doc.root.insertChildren( 0, nodeList );
 
 		var operation = new RemoveOperation( position, nodeList, 0 );
 
@@ -110,18 +100,16 @@ describe( 'RemoveOperation', function() {
 		var Document = modules[ 'document/document' ];
 		var RemoveOperation = modules[ 'document/removeoperation' ];
 		var Position = modules[ 'document/position' ];
-		var Character = modules[ 'document/character' ];
+		var NodeList = modules[ 'document/nodelist' ];
 
 		var doc = new Document();
 
-		var nodes = [ new Character( null, 'b' ), new Character( null, 'a' ), new Character( null, 'r' ) ];
+		var nodeList = new NodeList( 'bar' );
 		var position = new Position( [ 0 ], doc.root );
 
-		doc.root.children.push( nodes[ 0 ] );
-		doc.root.children.push( nodes[ 1 ] );
-		doc.root.children.push( nodes[ 2 ] );
+		doc.root.insertChildren( 0, nodeList );
 
-		var operation = new RemoveOperation( position, nodes, 0 );
+		var operation = new RemoveOperation( position, nodeList, 0 );
 
 		var reverse = operation.reverseOperation();
 

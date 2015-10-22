@@ -18,7 +18,7 @@ var modules = bender.amd.require(
 describe( 'range iterator', function() {
 	var doc, expectedItems;
 
-	var root, img1, paragraph, charB, charA, charR, img2, charX;
+	var root, img1, paragraph, b, a, r, img2, x;
 
 	var OPENING_TAG, CLOSING_TAG, CHARACTER;
 
@@ -46,37 +46,28 @@ describe( 'range iterator', function() {
 		//     |- img2
 		//     |
 		//     |- X
-		img1 = new Element( root, 'img1' );
-		root.children.push( img1 );
 
-		paragraph = new Element( root, 'p' );
-		root.children.push( paragraph );
+		b = new Character( 'b' );
+		a = new Character( 'a' );
+		r = new Character( 'r' );
+		img2 = new Element( 'img2' );
+		x = new Character( 'x' );
 
-		charB = new Character( paragraph, 'B' );
-		paragraph.children.push( charB );
+		paragraph = new Element( 'p', [], [ b, a, r, img2, x ] );
+		img1 = new Element( 'img1' );
 
-		charA = new Character( paragraph, 'A' );
-		paragraph.children.push( charA );
-
-		charR = new Character( paragraph, 'R' );
-		paragraph.children.push( charR );
-
-		img2 = new Element( paragraph, 'img2' );
-		paragraph.children.push( img2 );
-
-		charX = new Character( paragraph, 'X' );
-		paragraph.children.push( charX );
+		root.insertChildren( 0, [ img1, paragraph ] );
 
 		expectedItems = [
 				{ type: OPENING_TAG, node: img1 },
 				{ type: CLOSING_TAG, node: img1 },
 				{ type: OPENING_TAG, node: paragraph },
-				{ type: CHARACTER, node: charB },
-				{ type: CHARACTER, node: charA },
-				{ type: CHARACTER, node: charR },
+				{ type: CHARACTER, node: b },
+				{ type: CHARACTER, node: a },
+				{ type: CHARACTER, node: r },
 				{ type: OPENING_TAG, node: img2 },
 				{ type: CLOSING_TAG, node: img2 },
-				{ type: CHARACTER, node: charX },
+				{ type: CHARACTER, node: x },
 				{ type: CLOSING_TAG, node: paragraph }
 			];
 	} );

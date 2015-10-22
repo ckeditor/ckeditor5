@@ -21,8 +21,8 @@ CKEDITOR.define( [ 'document/node', 'document/nodelist' ], function( Node, NodeL
 		 * @param {String} name Node name.
 		 * @param {Array} attrs Array of attributes.
 		 */
-		constructor( parent, name, attrs, children ) {
-			super( parent, attrs );
+		constructor( name, attrs, children ) {
+			super( attrs );
 
 			/**
 			 * Element name.
@@ -37,7 +37,19 @@ CKEDITOR.define( [ 'document/node', 'document/nodelist' ], function( Node, NodeL
 			 *
 			 * @property {Array} children
 			 */
-			this.children = new NodeList( children );
+			this.children = new NodeList();
+
+			if ( children ) {
+				this.insertChildren( 0, children );
+			}
+		}
+
+		insertChildren( index, nodes ) {
+			this.children.insert( index, new NodeList( nodes ) );
+
+			for ( var node of this.children ) {
+				node.parent = this;
+			}
 		}
 	}
 

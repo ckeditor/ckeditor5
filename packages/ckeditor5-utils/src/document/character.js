@@ -17,8 +17,8 @@ CKEDITOR.define( [ 'document/node' ], function( Node ) {
 		 *
 		 * @param {String} character Described character.
 		 */
-		constructor( parent, character, attrs ) {
-			super( parent, attrs );
+		constructor( character, attrs ) {
+			super( attrs );
 
 			/**
 			 * Described character.

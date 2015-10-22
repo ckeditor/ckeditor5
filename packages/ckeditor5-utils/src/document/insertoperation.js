@@ -23,7 +23,7 @@ CKEDITOR.define( [ 'document/operation', 'document/nodelist', 'document/removeop
 		}
 
 		_execute() {
-			this.position.parent.children.insert( this.position.offset, this.nodeList );
+			this.position.parent.insertChildren( this.position.offset, this.nodeList );
 		}
 
 		reverseOperation() {

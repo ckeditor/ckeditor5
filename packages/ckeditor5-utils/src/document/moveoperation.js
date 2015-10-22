@@ -38,7 +38,7 @@ CKEDITOR.define( [ 'document/operation', 'document/nodelist' ], function( Operat
 				targetOffset -= nodeList.length;
 			}
 
-			targetElement.children.insert( targetOffset, this.nodeList );
+			targetElement.insertChildren( targetOffset, this.nodeList );
 		}
 
 		reverseOperation() {

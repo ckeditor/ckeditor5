@@ -20,14 +20,14 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 		 * @param {document.Element|Null} parent Node parent.
 		 * @param {Array} attrs Array of attributes.
 		 */
-		constructor( parent, attrs ) {
+		constructor( attrs ) {
 			/**
 			 * Parent element.
 			 *
 			 * @readonly
 			 * @property {document.Element} parent
 			 */
-			this.parent = parent;
+			this.parent = null;
 
 			/**
 			 * Array of attributes.
