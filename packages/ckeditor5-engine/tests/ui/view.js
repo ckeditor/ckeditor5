@@ -166,9 +166,17 @@ describe( 'render', function() {
 	} );
 } );
 
-describe( 'destroys', function() {
-	it( 'destroys the view', function() {
-		view = new TestView( { a: 1 } );
+describe( 'destroy', function() {
+	it( 'detaches the model', function() {
+		expect( view.model ).to.be.an.instanceof( modules.model );
+
+		view.destroy();
+
+		expect( view.model ).to.be.null;
+	} );
+
+	it( 'detaches the element', function() {
+		view = new TestView();
 
 		// Append the views's element to some container.
 		var container = document.createElement( 'div' );
@@ -177,13 +185,11 @@ describe( 'destroys', function() {
 		expect( view.el.nodeName ).to.be.equal( 'A' );
 		expect( view.el ).to.be.an.instanceof( HTMLElement );
 		expect( view.el.parentNode ).to.be.equal( container );
-		expect( view.model ).to.be.an.instanceof( modules.model );
 
 		view.destroy();
 
 		expect( view.el ).to.be.an.instanceof( HTMLElement );
 		expect( view.el.parentNode ).to.be.null;
-		expect( view.model ).to.be.null;
 	} );
 
 	it( 'destroys child regions', function() {
@@ -196,6 +202,32 @@ describe( 'destroys', function() {
 
 		expect( view.regions ).to.have.length( 0 );
 		expect( spy.calledOnce ).to.be.true;
+	} );
+
+	it( 'detaches bound model listeners', function() {
+		class TestView extends View {
+			constructor( model ) {
+				super( model );
+
+				this.template = {
+					tag: 'p',
+					text: this.bind( 'foo' )
+				};
+			}
+		}
+
+		view = new TestView( { foo: 'bar' } );
+		var model = view.model;
+
+		expect( view.el.outerHTML ).to.be.equal( '<p>bar</p>' );
+
+		model.foo = 'baz';
+		expect( view.el.outerHTML ).to.be.equal( '<p>baz</p>' );
+
+		view.destroy();
+
+		model.foo = 'abc';
+		expect( view.el.outerHTML ).to.be.equal( '<p>baz</p>' );
 	} );
 } );
 
