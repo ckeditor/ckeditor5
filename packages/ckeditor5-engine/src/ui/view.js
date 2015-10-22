@@ -16,8 +16,10 @@ CKEDITOR.define( [
 	'collection',
 	'model',
 	'ui/template',
-	'ckeditorerror'
-], function( Collection, Model, Template, CKEditorError ) {
+	'ckeditorerror',
+	'ui/domemittermixin',
+	'utils'
+], function( Collection, Model, Template, CKEditorError, DOMEmitterMixin, utils ) {
 	class View extends Model {
 		/**
 		 * Creates an instance of the {@link View} class.
@@ -77,23 +79,23 @@ CKEDITOR.define( [
 		bind( property, callback ) {
 			var model = this.model;
 
-			return function( el, updater ) {
+			return function attachModelListener( el, domUpdater ) {
 				// TODO: Use ES6 default arguments syntax.
-				var changeCallback = callback || updater;
+				callback = callback || domUpdater;
 
-				function executeCallback( el, value ) {
-					var result = changeCallback( el, value );
+				var listenerCallback = ( el, value ) => {
+					var processedValue = callback( el, value );
 
-					if ( typeof result != 'undefined' ) {
-						updater( el, result );
+					if ( typeof processedValue != 'undefined' ) {
+						domUpdater( el, processedValue );
 					}
-				}
+				};
 
 				// Execute callback when the property changes.
-				model.on( 'change:' + property, ( evt, value ) => executeCallback( el, value ) );
+				model.on( 'change:' + property, ( evt, value ) => listenerCallback( el, value ) );
 
 				// Set the initial state of the view.
-				executeCallback( el, model[ property ] );
+				listenerCallback( el, model[ property ] );
 			};
 		}
 
@@ -141,6 +143,8 @@ CKEDITOR.define( [
 			}
 		}
 	}
+
+	utils.extend( View.prototype, DOMEmitterMixin );
 
 	return View;
 } );

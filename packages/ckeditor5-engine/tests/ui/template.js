@@ -4,21 +4,17 @@
  */
 
 /* bender-tags: core, ui */
-/* global document, HTMLElement */
+/* global HTMLElement */
 
 'use strict';
 
 var modules = bender.amd.require( 'ckeditor', 'ui/view', 'ui/template' );
+var Template;
 
-describe( 'Template', function() {
-	var View;
-	var Template;
+bender.tools.createSinonSandbox();
+beforeEach( createClassReferences );
 
-	beforeEach( 'Create a test view instance', function() {
-		View = modules[ 'ui/view' ];
-		Template = modules[ 'ui/template' ];
-	} );
-
+describe( 'constructor', function() {
 	it( 'accepts the definition', function() {
 		var def = {
 			tag: 'p'
@@ -26,8 +22,10 @@ describe( 'Template', function() {
 
 		expect( new Template( def ).def ).to.equal( def );
 	} );
+} );
 
-	it( 'renders the element', function() {
+describe( 'render', function() {
+	it( 'creates an element', function() {
 		var el = new Template( {
 			tag: 'p',
 			attributes: {
@@ -40,10 +38,10 @@ describe( 'Template', function() {
 		expect( el ).to.be.instanceof( HTMLElement );
 		expect( el.parentNode ).to.be.null();
 
-		expect( getOuterHtml( el ) ).to.be.equal( '<p class="a b" x="bar">foo</p>' );
+		expect( el.outerHTML ).to.be.equal( '<p class="a b" x="bar">foo</p>' );
 	} );
 
-	it( 'renders element\'s children', function() {
+	it( 'creates element\'s children', function() {
 		var el = new Template( {
 			tag: 'p',
 			attributes: {
@@ -67,103 +65,113 @@ describe( 'Template', function() {
 			]
 		} ).render();
 
-		expect( getOuterHtml( el ) ).to.be.equal( '<p a="A"><b>B</b><i>C<b>D</b></i></p>' );
+		expect( el.outerHTML ).to.be.equal( '<p a="A"><b>B</b><i>C<b>D</b></i></p>' );
 	} );
+} );
 
-	it( 'binds to the model', function() {
-		var view = new View( {
-			foo: 'bar'
-		} );
+describe( 'callback value', function() {
+	it( 'works for attributes', function() {
+		var spy1 = bender.sinon.spy();
+		var spy2 = bender.sinon.spy();
 
 		var el = new Template( {
 			tag: 'p',
 			attributes: {
-				'class': view.bind( 'foo' )
+				'class': spy1
 			},
-			text: view.bind( 'foo' )
+			children: [
+				{
+					tag: 'span',
+					attributes: {
+						id: spy2
+					}
+				}
+			]
 		} ).render();
 
-		expect( getOuterHtml( el ) ).to.be.equal( '<p class="bar">bar</p>' );
+		sinon.assert.calledWithExactly( spy1, el, sinon.match.func );
+		sinon.assert.calledWithExactly( spy2, el.firstChild, sinon.match.func );
 
-		view.model.foo = 'baz';
-		expect( getOuterHtml( el ) ).to.be.equal( '<p class="baz">baz</p>' );
+		spy1.firstCall.args[ 1 ]( el, 'foo' );
+		spy2.firstCall.args[ 1 ]( el.firstChild, 'bar' );
+
+		expect( el.outerHTML ).to.be.equal( '<p class="foo"><span id="bar"></span></p>' );
 	} );
 
-	it( 'binds to the model and processes the property', function() {
-		var view = new View( {
-			foo: 7
-		} );
-
-		var callback = ( el, value ) => ( value > 0 ? 'positive' : 'negative' );
+	it( 'works for "text" property', function() {
+		var spy1 = bender.sinon.spy();
+		var spy2 = bender.sinon.spy();
 
 		var el = new Template( {
 			tag: 'p',
-			attributes: {
-				'class': view.bind( 'foo', callback )
-			},
-			text: view.bind( 'foo', callback )
+			text: spy1,
+			children: [
+				{
+					tag: 'span',
+					text: spy2
+				}
+			]
 		} ).render();
 
-		expect( getOuterHtml( el ) ).to.be.equal( '<p class="positive">positive</p>' );
+		sinon.assert.calledWithExactly( spy1, el, sinon.match.func );
+		sinon.assert.calledWithExactly( spy2, el.firstChild, sinon.match.func );
 
-		view.model.foo = -7;
-		expect( getOuterHtml( el ) ).to.be.equal( '<p class="negative">negative</p>' );
+		spy2.firstCall.args[ 1 ]( el.firstChild, 'bar' );
+		expect( el.outerHTML ).to.be.equal( '<p><span>bar</span></p>' );
+
+		spy1.firstCall.args[ 1 ]( el, 'foo' );
+		expect( el.outerHTML ).to.be.equal( '<p>foo</p>' );
 	} );
+} );
 
-	it( 'binds to the model and executes custom action', function() {
-		var view = new View( {
-			foo: 'moo'
-		} );
-
-		var callback = ( el, value ) => {
-			el.innerHTML = value;
-
-			if ( value == 'changed' ) {
-				return value;
+describe( 'listeners', function() {
+	it( 'accept plain definitions', function() {
+		var el = new Template( {
+			tag: 'p',
+			listeners: {
+				x: 'a',
+				y: [ 'b', 'c' ],
 			}
-		};
-
-		var el = new Template( {
-			tag: 'p',
-			attributes: {
-				'class': view.bind( 'foo', callback )
-			},
-			text: 'bar'
 		} ).render();
 
-		expect( getOuterHtml( el ) ).to.be.equal( '<p>moo</p>' );
-
-		view.model.foo = 'changed';
-		expect( getOuterHtml( el ) ).to.be.equal( '<p class="changed">changed</p>' );
+		el.dispatchEvent( new Event( 'x' ) );
+		el.dispatchEvent( new Event( 'y' ) );
 	} );
 
-	it( 'binds to the model and updates element\'s text', function() {
-		var view = new View( {
-			foo: 'bar'
-		} );
-
+	it( 'accept definition with selectors', function() {
 		var el = new Template( {
 			tag: 'p',
 			children: [
 				{
-					tag: 'b',
-					text: 'baz'
+					tag: 'span',
+					'class': '.y'
+				},
+				{
+					tag: 'div',
+					children: [
+						{
+							tag: 'span',
+							'class': '.y'
+						}
+					],
 				}
 			],
-			text: view.bind( 'foo' )
+			listeners: {
+				'x@.y': 'a',
+				'y@div': 'b'
+			}
 		} ).render();
 
-		expect( getOuterHtml( el ) ).to.be.equal( '<p>bar<b>baz</b></p>' );
+		el.childNodes[ 0 ].dispatchEvent( new Event( 'x' ) );
+		el.childNodes[ 1 ].dispatchEvent( new Event( 'x' ) ); // false
+		el.childNodes[ 1 ].childNodes[ 0 ].dispatchEvent( new Event( 'x' ) );
 
-		// TODO: A solution to avoid nuking the children?
-		view.model.foo = 'qux';
-		expect( getOuterHtml( el ) ).to.be.equal( '<p>qux</p>' );
+		el.childNodes[ 0 ].dispatchEvent( new Event( 'y' ) ); // false
+		el.childNodes[ 1 ].dispatchEvent( new Event( 'y' ) );
+		el.childNodes[ 1 ].childNodes[ 0 ].dispatchEvent( new Event( 'y' ) ); // false
 	} );
 } );
 
-function getOuterHtml( el ) {
-	var container = document.createElement( 'div' );
-	container.appendChild( el.cloneNode( 1 ) );
-
-	return container.innerHTML;
+function createClassReferences() {
+	Template = modules[ 'ui/template' ];
 }
