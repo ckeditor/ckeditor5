@@ -124,54 +124,6 @@ describe( 'callback value', function() {
 	} );
 } );
 
-describe( 'listeners', function() {
-	it( 'accept plain definitions', function() {
-		var el = new Template( {
-			tag: 'p',
-			listeners: {
-				x: 'a',
-				y: [ 'b', 'c' ],
-			}
-		} ).render();
-
-		el.dispatchEvent( new Event( 'x' ) );
-		el.dispatchEvent( new Event( 'y' ) );
-	} );
-
-	it( 'accept definition with selectors', function() {
-		var el = new Template( {
-			tag: 'p',
-			children: [
-				{
-					tag: 'span',
-					'class': '.y'
-				},
-				{
-					tag: 'div',
-					children: [
-						{
-							tag: 'span',
-							'class': '.y'
-						}
-					],
-				}
-			],
-			listeners: {
-				'x@.y': 'a',
-				'y@div': 'b'
-			}
-		} ).render();
-
-		el.childNodes[ 0 ].dispatchEvent( new Event( 'x' ) );
-		el.childNodes[ 1 ].dispatchEvent( new Event( 'x' ) ); // false
-		el.childNodes[ 1 ].childNodes[ 0 ].dispatchEvent( new Event( 'x' ) );
-
-		el.childNodes[ 0 ].dispatchEvent( new Event( 'y' ) ); // false
-		el.childNodes[ 1 ].dispatchEvent( new Event( 'y' ) );
-		el.childNodes[ 1 ].childNodes[ 0 ].dispatchEvent( new Event( 'y' ) ); // false
-	} );
-} );
-
 function createClassReferences() {
 	Template = modules[ 'ui/template' ];
 }

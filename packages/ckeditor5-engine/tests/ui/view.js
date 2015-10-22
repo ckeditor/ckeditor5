@@ -55,21 +55,18 @@ describe( 'bind', function() {
 	} );
 
 	it( 'allows binding attribute to the model', function() {
-		class TestView extends View {
-			constructor( model ) {
-				super( model );
-
-				this.template = {
-					tag: 'p',
-					attributes: {
-						'class': this.bind( 'foo' )
-					},
-					text: 'abc'
-				};
-			}
-		}
+		setTestViewClass( function() {
+			return {
+				tag: 'p',
+				attributes: {
+					'class': this.bind( 'foo' )
+				},
+				text: 'abc'
+			};
+		} );
 
 		view = new TestView( { foo: 'bar' } );
+
 		expect( view.el.outerHTML ).to.be.equal( '<p class="bar">abc</p>' );
 
 		view.model.foo = 'baz';
@@ -77,22 +74,18 @@ describe( 'bind', function() {
 	} );
 
 	it( 'allows binding "text" to the model', function() {
-		class TestView extends View {
-			constructor( model ) {
-				super( model );
-
-				this.template = {
-					tag: 'p',
-					children: [
-						{
-							tag: 'b',
-							text: 'baz'
-						}
-					],
-					text: this.bind( 'foo' )
-				};
-			}
-		}
+		setTestViewClass( function() {
+			return {
+				tag: 'p',
+				children: [
+					{
+						tag: 'b',
+						text: 'baz'
+					}
+				],
+				text: this.bind( 'foo' )
+			};
+		} );
 
 		view = new TestView( { foo: 'bar' } );
 
@@ -104,22 +97,18 @@ describe( 'bind', function() {
 	} );
 
 	it( 'allows binding to the model with value processing', function() {
-		class TestView extends View {
-			constructor( model ) {
-				super( model );
+		var callback = ( el, value ) =>
+			( value > 0 ? 'positive' : 'negative' );
 
-				var callback = ( el, value ) =>
-					( value > 0 ? 'positive' : 'negative' );
-
-				this.template = {
-					tag: 'p',
-					attributes: {
-						'class': this.bind( 'foo', callback )
-					},
-					text: this.bind( 'foo', callback )
-				};
-			}
-		}
+		setTestViewClass( function() {
+			return {
+				tag: 'p',
+				attributes: {
+					'class': this.bind( 'foo', callback )
+				},
+				text: this.bind( 'foo', callback )
+			};
+		} );
 
 		view = new TestView( { foo: 3 } );
 		expect( view.el.outerHTML ).to.be.equal( '<p class="positive">positive</p>' );
@@ -129,31 +118,83 @@ describe( 'bind', function() {
 	} );
 
 	it( 'allows binding to the model with custom callback', function() {
-		class TestView extends View {
-			constructor( model ) {
-				super( model );
+		setTestViewClass( function() {
+			return {
+				tag: 'p',
+				attributes: {
+					'class': this.bind( 'foo', ( el, value ) => {
+						el.innerHTML = value;
 
-				this.template = {
-					tag: 'p',
-					attributes: {
-						'class': this.bind( 'foo', ( el, value ) => {
-							el.innerHTML = value;
-
-							if ( value == 'changed' ) {
-								return value;
-							}
-						} )
-					},
-					text: 'bar'
-				};
-			}
-		}
+						if ( value == 'changed' ) {
+							return value;
+						}
+					} )
+				},
+				text: 'bar'
+			};
+		} );
 
 		view = new TestView( { foo: 'moo' } );
 		expect( view.el.outerHTML ).to.be.equal( '<p>moo</p>' );
 
 		view.model.foo = 'changed';
 		expect( view.el.outerHTML ).to.be.equal( '<p class="changed">changed</p>' );
+	} );
+} );
+
+describe( 'listeners', function() {
+	it( 'accept plain definitions', function() {
+		setTestViewClass( function() {
+			return {
+				tag: 'p',
+				listeners: {
+					x: 'a',
+					y: [ 'b', 'c' ],
+				}
+			};
+		} );
+
+		view = new TestView();
+
+		view.el.dispatchEvent( new Event( 'x' ) );
+		view.el.dispatchEvent( new Event( 'y' ) );
+	} );
+
+	it( 'accept definition with selectors', function() {
+		setTestViewClass( function() {
+			return {
+				tag: 'p',
+				children: [
+					{
+						tag: 'span',
+						'class': '.y'
+					},
+					{
+						tag: 'div',
+						children: [
+							{
+								tag: 'span',
+								'class': '.y'
+							}
+						],
+					}
+				],
+				listeners: {
+					'x@.y': 'a',
+					'y@div': 'b'
+				}
+			};
+		} );
+
+		view = new TestView();
+
+		view.el.childNodes[ 0 ].dispatchEvent( new Event( 'x' ) );
+		view.el.childNodes[ 1 ].dispatchEvent( new Event( 'x' ) ); // false
+		view.el.childNodes[ 1 ].childNodes[ 0 ].dispatchEvent( new Event( 'x' ) );
+
+		view.el.childNodes[ 0 ].dispatchEvent( new Event( 'y' ) ); // false
+		view.el.childNodes[ 1 ].dispatchEvent( new Event( 'y' ) );
+		view.el.childNodes[ 1 ].childNodes[ 0 ].dispatchEvent( new Event( 'y' ) ); // false
 	} );
 } );
 
@@ -205,16 +246,12 @@ describe( 'destroy', function() {
 	} );
 
 	it( 'detaches bound model listeners', function() {
-		class TestView extends View {
-			constructor( model ) {
-				super( model );
-
-				this.template = {
-					tag: 'p',
-					text: this.bind( 'foo' )
-				};
-			}
-		}
+		setTestViewClass( function() {
+			return {
+				tag: 'p',
+				text: this.bind( 'foo' )
+			};
+		} );
 
 		view = new TestView( { foo: 'bar' } );
 		var model = view.model;
@@ -235,12 +272,16 @@ function createViewInstance() {
 	View = modules[ 'ui/view' ];
 	view = new View( { a: 'foo', b: 42 } );
 
-	class T extends View {
-		constructor() {
-			super();
-			this.template = { tag: 'a' };
-		}
-	}
+	setTestViewClass( () => {
+		return { tag: 'a' };
+	} );
+}
 
-	TestView = T;
+function setTestViewClass( template ) {
+	TestView = class V extends View {
+		constructor( model ) {
+			super( model );
+			this.template = template.call( this );
+		}
+	};
 }
