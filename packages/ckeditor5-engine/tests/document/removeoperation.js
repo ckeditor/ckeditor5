@@ -13,7 +13,8 @@ var modules = bender.amd.require(
 	'document/removeoperation',
 	'document/position',
 	'document/character',
-	'document/nodelist' );
+	'document/nodelist',
+	'ckeditorerror' );
 
 describe( 'RemoveOperation', function() {
 	it( 'should remove node', function() {
@@ -126,4 +127,24 @@ describe( 'RemoveOperation', function() {
 		expect( doc.root.children.get( 1 ).character ).to.be.equal( 'a' );
 		expect( doc.root.children.get( 2 ).character ).to.be.equal( 'r' );
 	}  );
+
+	if ( CKEDITOR.isDebug ) {
+		it( 'should throw error if nodes to remove are different then actual nodes', function() {
+			var Document = modules[ 'document/document' ];
+			var RemoveOperation = modules[ 'document/removeoperation' ];
+			var Position = modules[ 'document/position' ];
+			var CKEditorError = modules.ckeditorerror;
+
+			var doc = new Document();
+
+			doc.root.insertChildren( 0, 'foo' );
+
+			expect( function() {
+				doc.applyOperation( new RemoveOperation(
+					new Position( [ 0 ], doc.root ),
+					'bar',
+					doc.version ) );
+			} ).to.throw( CKEditorError, /operation-remove-node-does-not-exists/ );
+		} );
+	}
 } );

@@ -13,7 +13,8 @@ var modules = bender.amd.require(
 	'document/position',
 	'document/character',
 	'document/element',
-	'document/nodelist' );
+	'document/nodelist',
+	'ckeditorerror' );
 
 describe( 'MoveOperation', function() {
 	it( 'should move from one node to another', function() {
@@ -151,4 +152,25 @@ describe( 'MoveOperation', function() {
 		expect( p1.children.get( 0 ).name ).to.be.equal( 'x' );
 		expect( p2.children.length ).to.be.equal( 0 );
 	} );
+
+	if ( CKEDITOR.isDebug ) {
+		it( 'should throw error if nodes to move are different then actual nodes', function() {
+			var Document = modules[ 'document/document' ];
+			var MoveOperation = modules[ 'document/moveoperation' ];
+			var Position = modules[ 'document/position' ];
+			var CKEditorError = modules.ckeditorerror;
+
+			var doc = new Document();
+
+			doc.root.insertChildren( 0, 'xbarx' );
+
+			expect( function() {
+				doc.applyOperation( new MoveOperation(
+					new Position( [ 1 ], doc.root ),
+					new Position( [ 4 ], doc.root ),
+					'y',
+					doc.version ) );
+			} ).to.throw( CKEditorError, /operation-move-node-does-not-exists/ );
+		} );
+	}
 } );
