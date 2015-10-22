@@ -58,16 +58,10 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 		 * Gets one item from the collection.
 		 *
 		 * @param {Number} index The index to take the item from.
-		 * @returns {Model} The requested item.
+		 * @returns {Model} The requested item or `null` if such item does not exist.
 		 */
 		get( index ) {
-			var model = this._models[ index ];
-
-			if ( !model ) {
-				throw new Error( 'Index not found' );
-			}
-
-			return model;
+			return this._models[ index ] || null;
 		}
 
 		/**
@@ -105,6 +99,44 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 			this.fire( 'remove', removedModel );
 
 			return removedModel;
+		}
+
+		/**
+		 * Executes the callback for each model in the collection.
+		 *
+		 * @param {Function} callback
+		 * @param {Model} callback.item
+		 * @param {String} callback.index
+		 * @params {Object} ctx Context in which the `callback` will be called.
+		 */
+		forEach( callback, ctx ) {
+			this._models.forEach( callback, ctx );
+		}
+
+		/**
+		 * Finds the first item in the collection for which the `callback` returns a true value.
+		 *
+		 * @param {Function} callback
+		 * @param {Model} callback.item
+		 * @param {String} callback.name
+		 * @returns {Model} The item for which `callback` returned a true value.
+		 * @params {Object} ctx Context in which the `callback` will be called.
+		 */
+		find( callback, ctx ) {
+			return this._models.find( callback, ctx );
+		}
+
+		/**
+		 * Returns an array with items for which the `callback` returned a true value.
+		 *
+		 * @param {Function} callback
+		 * @param {Model} callback.item
+		 * @param {String} callback.name
+		 * @params {Object} ctx Context in which the `callback` will be called.
+		 * @returns {Model[]} The array with matching items.
+		 */
+		filter( callback, ctx ) {
+			return this._models.filter( callback, ctx );
 		}
 	}
 
