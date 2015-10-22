@@ -63,14 +63,10 @@ describe( 'add', function() {
 
 describe( 'get', function() {
 	it( 'should throw an error on invalid name', function() {
-		var CKEditorError = modules.ckeditorerror;
 		var box = getCollection();
-
 		box.add( getItem( 'foo' ) );
 
-		expect( function() {
-			box.get( 'bar' );
-		} ).to.throw( CKEditorError, /^namedcollection-get/ );
+		expect( box.get( 'bar' ) ).to.be.null;
 	} );
 } );
 
@@ -172,20 +168,73 @@ describe( 'remove', function() {
 } );
 
 describe( 'forEach', function() {
-	it( 'should iterate over the models', function() {
-		var box = getCollection();
-		var item1 = getItem( 'foo' );
-		var item2 = getItem( 'bar' );
+	it( 'executes callback for each item', function() {
+		var collection = getCollection();
+		collection.add( getItem( 'foo' ) );
+		collection.add( getItem( 'bar' ) );
 
-		box.add( item1 );
-		box.add( item2 );
+		var ctx = {};
+		var models = [];
+		var names = [];
 
-		expect( box ).to.have.length( 2 );
+		collection.forEach( callback, ctx );
+		expect( models.sort() ).deep.equals( [ 'bar', 'foo' ] );
+		expect( names.sort() ).deep.equals( [ 'bar', 'foo' ] );
 
-		var spy = sinon.spy();
-		box.forEach( spy );
+		function callback( model, name ) {
+			expect( this ).to.equal( ctx ); /* jshint ignore:line */
+			models.push( model.name );
+			names.push( name );
+		}
+	} );
+} );
 
-		sinon.assert.callOrder( spy.withArgs( item1, 'foo' ), spy.withArgs( item2, 'bar' ) );
+describe( 'find', function() {
+	it( 'finds the right item', function() {
+		var Model = modules.model;
+
+		var collection = getCollection();
+		var needl = getItem( 'foo' );
+		collection.add( getItem( 'bar' ) );
+		collection.add( needl );
+		collection.add( getItem( 'bom' ) );
+
+		var ctx = {};
+
+		var ret = collection.find( callback, ctx );
+		expect( ret ).to.equal( needl );
+
+		function callback( model, name ) {
+			expect( this ).to.equal( ctx ); /* jshint ignore:line */
+			expect( model ).is.an.instanceof( Model );
+			expect( name ).to.be.a( 'string' );
+
+			return model.name == 'foo';
+		}
+	} );
+} );
+
+describe( 'filter', function() {
+	it( 'finds the right items', function() {
+		var Model = modules.model;
+
+		var collection = getCollection();
+		collection.add( getItem( 'bar' ) );
+		collection.add( getItem( 'foo' ) );
+		collection.add( getItem( 'bom' ) );
+
+		var ctx = {};
+
+		var ret = collection.filter( callback, ctx );
+		expect( ret ).to.have.keys( [ 'bar', 'bom' ] );
+
+		function callback( model, name ) {
+			expect( this ).to.equal( ctx ); /* jshint ignore:line */
+			expect( model ).is.an.instanceof( Model );
+			expect( name ).to.be.a( 'string' );
+
+			return model.name[ 0 ] == 'b';
+		}
 	} );
 } );
 

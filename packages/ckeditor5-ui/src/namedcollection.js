@@ -77,22 +77,10 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 		 * Gets one item from the collection.
 		 *
 		 * @param {String} name The name of the item to take.
-		 * @returns {Model} The requested item.
+		 * @returns {Model} The requested item or `null` if such item does not exist.
 		 */
 		get( name ) {
-			var model = this._models.get( name );
-
-			if ( !model ) {
-				/**
-				 * Model not found.
-				 *
-				 * @error namedcollection-get
-				 * @param {String} name Name of the model.
-				 */
-				throw new CKEditorError( 'namedcollection-get: Model not found.', { name: name } );
-			}
-
-			return model;
+			return this._models.get( name ) || null;
 		}
 
 		/**
@@ -139,10 +127,51 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 		 *
 		 * @param {Function} callback
 		 * @param {Model} callback.item
-		 * @param {String} callback.name
+		 * @param {String} callback.index
+		 * @params {Object} ctx Context in which the `callback` will be called.
 		 */
-		forEach( callback ) {
-			this._models.forEach( callback );
+		forEach( callback, ctx ) {
+			this._models.forEach( callback, ctx );
+		}
+
+		/**
+		 * Finds the first item in the collection for which the `callback` returns a true value.
+		 *
+		 * @param {Function} callback
+		 * @param {Model} callback.item
+		 * @param {String} callback.name
+		 * @params {Object} ctx Context in which the `callback` will be called.
+		 * @returns {Model} The first item for which `callback` returned a true value.
+		 */
+		find( callback, ctx ) {
+			// TODO: Use ES6 destructuring.
+			for ( let pair of this._models ) {
+				if ( callback.call( ctx, pair[ 1 ], pair[ 0 ] ) ) {
+					return pair[ 1 ];
+				}
+			}
+		}
+
+		/**
+		 * Returns an object (`name => item`) with items for which the `callback` returned a true value.
+		 *
+		 * @param {Function} callback
+		 * @param {Model} callback.item
+		 * @param {String} callback.name
+		 * @params {Object} ctx Context in which the `callback` will be called.
+		 * @returns {Object} The object with matching items.
+		 */
+		filter( callback, ctx ) {
+			var ret = {};
+
+			// TODO: Use ES6 destructuring.
+			for ( let pair of this._models ) {
+				if ( callback.call( ctx, pair[ 1 ], pair[ 0 ] ) ) {
+					ret[ pair[ 0 ] ] = pair[ 1 ];
+				}
+			}
+
+			return ret;
 		}
 	}
 
