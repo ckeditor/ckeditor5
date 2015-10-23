@@ -17,9 +17,9 @@ CKEDITOR.define( [ 'document/node', 'document/nodelist' ], function( Node, NodeL
 		 *
 		 * This constructor should be used only internally by the document.
 		 *
-		 * @param {document.Element|Null} parent Node parent.
 		 * @param {String} name Node name.
-		 * @param {Array} attrs Array of attributes.
+		 * @param {Array} attrs Array of {@link document.Attribute attributes}.
+		 * @param {Array} children Array of {@link document.Node nodes}.
 		 */
 		constructor( name, attrs, children ) {
 			super( attrs );
@@ -33,9 +33,10 @@ CKEDITOR.define( [ 'document/node', 'document/nodelist' ], function( Node, NodeL
 			this.name = name;
 
 			/**
-			 * Array of children nodes.
+			 * List of children nodes.
 			 *
-			 * @property {Array} children
+			 * @readonly
+			 * @property {document.NodeList} children
 			 */
 			this.children = new NodeList();
 
@@ -44,6 +45,16 @@ CKEDITOR.define( [ 'document/node', 'document/nodelist' ], function( Node, NodeL
 			}
 		}
 
+		/**
+		 * Insert a list of nodes on the given index.
+		 *
+		 * Note that list of children can be modified only in elements not attached yet to the document.
+		 * All attached nodes should be modified using the {@link document.InsertOperation}.
+		 *
+		 * @param {Nuber} index Position where nodes should be inserted.
+		 * @param {document.Node|document.Text|document.NodeList|String|Array} nodes List of nodes to be inserted.
+		 * List of nodes can be any type accepted by the {@link document.NodeList} constructor.
+		 */
 		insertChildren( index, nodes ) {
 			this.children.insert( index, new NodeList( nodes ) );
 
