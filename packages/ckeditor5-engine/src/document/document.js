@@ -29,6 +29,14 @@ CKEDITOR.define( [
 			 */
 			this.root = new Element( 'root' );
 
+			/**
+			 * Document version. It starts from 0 and every operation increase the version. It is used to ensure that
+			 * operations is applied on the proper document version. If the {@link document.Operation#baseVersion} will
+			 * not match document version an {@link document-applyOperation-wrong-version} error is fired.
+			 *
+			 * @readonly
+			 * @property {Number} version
+			 */
 			this.version = 0;
 		}
 

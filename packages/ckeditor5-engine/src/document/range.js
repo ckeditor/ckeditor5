@@ -47,7 +47,7 @@ CKEDITOR.define( [ 'document/positioniterator' ], function( PositionIterator ) {
 		/**
 		 * Range iterator.
 		 *
-		 * @async see document.PositionIterator
+		 * @see document.PositionIterator
 		 */
 		[ Symbol.iterator ]() {
 			return new PositionIterator( this );

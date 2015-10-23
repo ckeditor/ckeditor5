@@ -17,7 +17,7 @@ CKEDITOR.define( [ 'utils', 'ckeditorerror' ], function( utils, CKEditorError ) 
 		 * Creates a position.
 		 *
 		 * @param {Array} path Position path. See {@link #path} property for more information.
-		 * @param {document.Document} doc Document which position refers to.
+		 * @param {document.Element} root Root element for the path. Note that this element can not have a parent.
 		 */
 		constructor( path, root ) {
 			/**
@@ -40,9 +40,9 @@ CKEDITOR.define( [ 'utils', 'ckeditorerror' ], function( utils, CKEditorError ) 
 			this.path = path;
 
 			/**
-			 * Document which position refers to.
+			 * Root element for the path. Note that this element can not have a parent.
 			 *
-			 * @type {document.Document}
+			 * @type {document.Element}
 			 */
 			this.root = root;
 		}

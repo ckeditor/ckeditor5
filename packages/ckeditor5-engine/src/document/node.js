@@ -17,30 +17,47 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 		 *
 		 * This is an abstract class, it should not be created directly.
 		 *
-		 * @param {document.Element|Null} parent Node parent.
+		 * Created node has no parent. Parent of the node is set when it is attached to the {@link document.Element}.
+		 *
 		 * @param {Array} attrs Array of attributes.
 		 */
 		constructor( attrs ) {
 			/**
-			 * Parent element.
+			 * Parent element. Null by default.
 			 *
-			 * @readonly
-			 * @property {document.Element} parent
+			 * @property {document.Element|Null} parent
 			 */
 			this.parent = null;
 
 			/**
 			 * Array of attributes.
 			 *
+			 * Attributes of nodes attached to the document can be changed only be the {@link document.ChangeOpeation}.
+			 *
 			 * @property {Array} attr
 			 */
 			this.attrs = attrs || [];
 		}
 
+		/**
+		 * Returns true if node contain attribute with the same key and value as given or the same key if the
+		 * given parameter is a string.
+		 *
+		 * @param {document.Attribute|String} attr Attribute or key to compare.
+		 * @returns {Boolean} True if node contains given attribute or attribute with given key.
+		 */
 		hasAttr( attr ) {
 			return this.getAttr( attr ) !== null;
 		}
 
+		/**
+		 * Returns attribute if node contain attribute with the same key and value as given or the same key if the
+		 * given parameter is a string.
+		 *
+		 * @param {document.Attribute|String|Null} attr Attribute or key to compare.
+		 * @returns {document.Attribute} Attribute if node contains given attribute or attribute with given key,
+		 * or null if attribute was not found.
+		 */
 		getAttr( attr ) {
 			var i, len;
 
@@ -137,6 +154,12 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 			return ( pos !== null && this.parent.children.get( pos - 1 ) ) || null;
 		}
 
+		/**
+		 * Get path to the node. For example if the node is the second child of the first child of the root then the path
+		 * will be [ 1, 2 ]. This path can be used as a parameter of in {@link document.Position}.
+		 *
+		 * @returns {Array} Path, array of numbers.
+		 */
 		getPath() {
 			var path = [];
 			var node = this; // jscs:ignore safeContextKeyword
@@ -149,6 +172,11 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 			return path;
 		}
 
+		/**
+		 * Custom toJSON method to solve child-parent circular dependencies.
+		 *
+		 * @returns {Object} Clone of this object with the parent property replaced with its name.
+		 */
 		toJSON() {
 			var json = utils.clone( this );
 
