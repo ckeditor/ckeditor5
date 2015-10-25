@@ -8,15 +8,23 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'ckeditor', 'ui/view', 'ui/region', 'ckeditorerror', 'model' );
+var modules = bender.amd.require( 'ckeditor', 'ui/view', 'ui/region', 'ckeditorerror', 'model', 'eventinfo' );
 var View, TestView;
 var view;
 
 bender.tools.createSinonSandbox();
-beforeEach( createViewInstance );
+
+beforeEach( updateModuleReference );
 
 describe( 'constructor', function() {
+	beforeEach( function() {
+		setTestViewClass();
+		setTestViewInstance();
+	} );
+
 	it( 'accepts the model', function() {
+		setTestViewInstance( { a: 'foo', b: 42 } );
+
 		expect( view.model ).to.be.an.instanceof( modules.model );
 
 		expect( view ).to.have.deep.property( 'model.a', 'foo' );
@@ -25,6 +33,11 @@ describe( 'constructor', function() {
 } );
 
 describe( 'instance', function() {
+	beforeEach( function() {
+		setTestViewClass();
+		setTestViewInstance();
+	} );
+
 	it( 'has no default element', function() {
 		expect( () => view.el ).to.throw( modules.ckeditorerror );
 	} );
@@ -39,7 +52,11 @@ describe( 'instance', function() {
 } );
 
 describe( 'bind', function() {
+	beforeEach( createViewInstanceWithTemplate );
+
 	it( 'returns a function that passes arguments', function() {
+		setTestViewInstance( { a: 'foo' } );
+
 		var spy = bender.sinon.spy();
 		var callback = view.bind( 'a', spy );
 
@@ -65,7 +82,7 @@ describe( 'bind', function() {
 			};
 		} );
 
-		view = new TestView( { foo: 'bar' } );
+		setTestViewInstance( { foo: 'bar' } );
 
 		expect( view.el.outerHTML ).to.be.equal( '<p class="bar">abc</p>' );
 
@@ -87,7 +104,7 @@ describe( 'bind', function() {
 			};
 		} );
 
-		view = new TestView( { foo: 'bar' } );
+		setTestViewInstance( { foo: 'bar' } );
 
 		expect( view.el.outerHTML ).to.be.equal( '<p>bar<b>baz</b></p>' );
 
@@ -110,7 +127,7 @@ describe( 'bind', function() {
 			};
 		} );
 
-		view = new TestView( { foo: 3 } );
+		setTestViewInstance( { foo: 3 } );
 		expect( view.el.outerHTML ).to.be.equal( '<p class="positive">positive</p>' );
 
 		view.model.foo = -7;
@@ -134,7 +151,7 @@ describe( 'bind', function() {
 			};
 		} );
 
-		view = new TestView( { foo: 'moo' } );
+		setTestViewInstance( { foo: 'moo' } );
 		expect( view.el.outerHTML ).to.be.equal( '<p>moo</p>' );
 
 		view.model.foo = 'changed';
@@ -142,65 +159,234 @@ describe( 'bind', function() {
 	} );
 } );
 
-describe( 'listeners', function() {
-	it( 'accept plain definitions', function() {
+describe( 'listener definition', function() {
+	it( 'accepts plain binding', function() {
+		var spy = bender.sinon.spy();
+
 		setTestViewClass( function() {
 			return {
 				tag: 'p',
 				listeners: {
 					x: 'a',
-					y: [ 'b', 'c' ],
 				}
 			};
 		} );
 
-		view = new TestView();
+		setTestViewInstance();
 
-		view.el.dispatchEvent( new Event( 'x' ) );
-		view.el.dispatchEvent( new Event( 'y' ) );
+		view.on( 'a', spy );
+
+		dispatchEvent( view.el, 'x' );
+		sinon.assert.calledWithExactly( spy,
+			sinon.match.has( 'name', 'a' ),
+			sinon.match.has( 'target', view.el )
+		);
 	} );
 
-	it( 'accept definition with selectors', function() {
+	it( 'accepts an array of event bindings', function() {
+		var spy1 = bender.sinon.spy();
+		var spy2 = bender.sinon.spy();
+
+		setTestViewClass( function() {
+			return {
+				tag: 'p',
+				listeners: {
+					x: [ 'a', 'b' ]
+				}
+			};
+		} );
+
+		setTestViewInstance();
+
+		view.on( 'a', spy1 );
+		view.on( 'b', spy2 );
+
+		dispatchEvent( view.el, 'x' );
+		sinon.assert.calledWithExactly( spy1,
+			sinon.match.has( 'name', 'a' ),
+			sinon.match.has( 'target', view.el )
+		);
+		sinon.assert.calledWithExactly( spy2,
+			sinon.match.has( 'name', 'b' ),
+			sinon.match.has( 'target', view.el )
+		);
+	} );
+
+	it( 'accepts DOM selectors', function() {
+		var spy1 = bender.sinon.spy();
+		var spy2 = bender.sinon.spy();
+		var spy3 = bender.sinon.spy();
+
 		setTestViewClass( function() {
 			return {
 				tag: 'p',
 				children: [
 					{
 						tag: 'span',
-						'class': '.y'
+						attributes: {
+							'class': 'y',
+						},
+						listeners: {
+							'test@p': 'c'
+						}
 					},
 					{
 						tag: 'div',
 						children: [
 							{
 								tag: 'span',
-								'class': '.y'
+								attributes: {
+									'class': 'y',
+								}
 							}
 						],
 					}
 				],
 				listeners: {
-					'x@.y': 'a',
-					'y@div': 'b'
+					'test@.y': 'a',
+					'test@div': 'b'
 				}
 			};
 		} );
 
-		view = new TestView();
+		setTestViewInstance();
 
-		view.el.childNodes[ 0 ].dispatchEvent( new Event( 'x' ) );
-		view.el.childNodes[ 1 ].dispatchEvent( new Event( 'x' ) ); // false
-		view.el.childNodes[ 1 ].childNodes[ 0 ].dispatchEvent( new Event( 'x' ) );
+		view.on( 'a', spy1 );
+		view.on( 'b', spy2 );
+		view.on( 'c', spy3 );
 
-		view.el.childNodes[ 0 ].dispatchEvent( new Event( 'y' ) ); // false
-		view.el.childNodes[ 1 ].dispatchEvent( new Event( 'y' ) );
-		view.el.childNodes[ 1 ].childNodes[ 0 ].dispatchEvent( new Event( 'y' ) ); // false
+		// Test "test@p".
+		dispatchEvent( view.el, 'test' );
+
+		sinon.assert.callCount( spy1, 0 );
+		sinon.assert.callCount( spy2, 0 );
+		sinon.assert.callCount( spy3, 0 );
+
+		// Test "test@.y".
+		dispatchEvent( view.el.firstChild, 'test' );
+
+		expect( spy1.firstCall.calledWithExactly(
+			sinon.match.has( 'name', 'a' ),
+			sinon.match.has( 'target', view.el.firstChild )
+		) ).to.be.true;
+
+		sinon.assert.callCount( spy2, 0 );
+		sinon.assert.callCount( spy3, 0 );
+
+		// Test "test@div".
+		dispatchEvent( view.el.lastChild, 'test' );
+
+		sinon.assert.callCount( spy1, 1 );
+
+		expect( spy2.firstCall.calledWithExactly(
+			sinon.match.has( 'name', 'b' ),
+			sinon.match.has( 'target', view.el.lastChild )
+		) ).to.be.true;
+
+		sinon.assert.callCount( spy3, 0 );
+
+		// Test "test@.y".
+		dispatchEvent( view.el.lastChild.firstChild, 'test' );
+
+		expect( spy1.secondCall.calledWithExactly(
+			sinon.match.has( 'name', 'a' ),
+			sinon.match.has( 'target', view.el.lastChild.firstChild )
+		) ).to.be.true;
+
+		sinon.assert.callCount( spy2, 1 );
+		sinon.assert.callCount( spy3, 0 );
+	} );
+
+	it( 'accepts function callbacks', function() {
+		var spy1 = bender.sinon.spy();
+		var spy2 = bender.sinon.spy();
+
+		setTestViewClass( function() {
+			return {
+				tag: 'p',
+				children: [
+					{
+						tag: 'span'
+					}
+				],
+				listeners: {
+					x: spy1,
+					'y@span': [ spy2, 'c' ],
+				}
+			};
+		} );
+
+		setTestViewInstance();
+
+		dispatchEvent( view.el, 'x' );
+		dispatchEvent( view.el.firstChild, 'y' );
+
+		sinon.assert.calledWithExactly( spy1,
+			sinon.match.has( 'target', view.el )
+		);
+
+		sinon.assert.calledWithExactly( spy2,
+			sinon.match.has( 'target', view.el.firstChild )
+		);
+	} );
+
+	it( 'supports event delegation', function() {
+		var spy = bender.sinon.spy();
+
+		setTestViewClass( function() {
+			return {
+				tag: 'p',
+				children: [
+					{
+						tag: 'span'
+					}
+				],
+				listeners: {
+					x: 'a',
+				}
+			};
+		} );
+
+		setTestViewInstance();
+
+		view.on( 'a', spy );
+
+		dispatchEvent( view.el.firstChild, 'x' );
+		sinon.assert.calledWithExactly( spy,
+			sinon.match.has( 'name', 'a' ),
+			sinon.match.has( 'target', view.el.firstChild )
+		);
+	} );
+
+	it( 'works for future elements', function() {
+		var spy = bender.sinon.spy();
+
+		setTestViewClass( function() {
+			return {
+				tag: 'p',
+				listeners: {
+					'test@div': 'a'
+				}
+			};
+		} );
+
+		setTestViewInstance();
+
+		view.on( 'a', spy );
+
+		var div = document.createElement( 'div' );
+		view.el.appendChild( div );
+
+		dispatchEvent( div, 'test' );
+		sinon.assert.calledWithExactly( spy, sinon.match.has( 'name', 'a' ), sinon.match.has( 'target', div ) );
 	} );
 } );
 
 describe( 'render', function() {
+	beforeEach( createViewInstanceWithTemplate );
+
 	it( 'creates an element from template', function() {
-		view = new TestView( { a: 1 } );
+		setTestViewInstance( { a: 1 } );
 
 		expect( view.el ).to.be.an.instanceof( HTMLElement );
 		expect( view.el.nodeName ).to.be.equal( 'A' );
@@ -208,6 +394,8 @@ describe( 'render', function() {
 } );
 
 describe( 'destroy', function() {
+	beforeEach( createViewInstanceWithTemplate );
+
 	it( 'detaches the model', function() {
 		expect( view.model ).to.be.an.instanceof( modules.model );
 
@@ -217,8 +405,6 @@ describe( 'destroy', function() {
 	} );
 
 	it( 'detaches the element', function() {
-		view = new TestView();
-
 		// Append the views's element to some container.
 		var container = document.createElement( 'div' );
 		container.appendChild( view.el );
@@ -253,7 +439,8 @@ describe( 'destroy', function() {
 			};
 		} );
 
-		view = new TestView( { foo: 'bar' } );
+		setTestViewInstance( { foo: 'bar' } );
+
 		var model = view.model;
 
 		expect( view.el.outerHTML ).to.be.equal( '<p>bar</p>' );
@@ -268,20 +455,41 @@ describe( 'destroy', function() {
 	} );
 } );
 
-function createViewInstance() {
+function updateModuleReference() {
 	View = modules[ 'ui/view' ];
-	view = new View( { a: 'foo', b: 42 } );
+}
 
-	setTestViewClass( () => {
-		return { tag: 'a' };
-	} );
+function createViewInstanceWithTemplate() {
+	setTestViewClass( () => { return { tag: 'a' }; } );
+	setTestViewInstance();
 }
 
 function setTestViewClass( template ) {
 	TestView = class V extends View {
 		constructor( model ) {
 			super( model );
-			this.template = template.call( this );
+
+			if ( template ) {
+				this.template = template.call( this );
+			}
 		}
 	};
+}
+
+function setTestViewInstance( model ) {
+	view = new TestView( model );
+
+	if ( view.template ) {
+		document.body.appendChild( view.el );
+	}
+}
+
+function dispatchEvent( el, domEvtName ) {
+	if ( !el.parentNode ) {
+		throw( 'To dispatch an event, element must be in DOM. Otherwise #target is null.' );
+	}
+
+	el.dispatchEvent( new Event( domEvtName, {
+		bubbles: true
+	} ) );
 }

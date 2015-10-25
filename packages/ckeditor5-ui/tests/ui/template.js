@@ -122,6 +122,71 @@ describe( 'callback value', function() {
 		spy1.firstCall.args[ 1 ]( el, 'foo' );
 		expect( el.outerHTML ).to.be.equal( '<p>foo</p>' );
 	} );
+
+	it( 'works for "listeners" property', function() {
+		var spy1 = bender.sinon.spy();
+		var spy2 = bender.sinon.spy();
+		var spy3 = bender.sinon.spy();
+		var spy4 = bender.sinon.spy();
+
+		var el = new Template( {
+			tag: 'p',
+			children: [
+				{
+					tag: 'span',
+					listeners: {
+						bar: spy2
+					}
+				}
+			],
+			listeners: {
+				foo: spy1,
+				baz: [ spy3, spy4 ]
+			}
+		} ).render();
+
+		sinon.assert.calledWithExactly( spy1, el, 'foo', null );
+		sinon.assert.calledWithExactly( spy2, el.firstChild, 'bar', null );
+		sinon.assert.calledWithExactly( spy3, el, 'baz', null );
+		sinon.assert.calledWithExactly( spy4, el, 'baz', null );
+	} );
+
+	it( 'works for "listeners" property with selectors', function() {
+		var spy1 = bender.sinon.spy();
+		var spy2 = bender.sinon.spy();
+		var spy3 = bender.sinon.spy();
+		var spy4 = bender.sinon.spy();
+
+		var el = new Template( {
+			tag: 'p',
+			children: [
+				{
+					tag: 'span',
+					attributes: {
+						'id': 'x'
+					}
+				},
+				{
+					tag: 'span',
+					attributes: {
+						'class': 'y'
+					},
+					listeners: {
+						'bar@p': spy2
+					}
+				},
+			],
+			listeners: {
+				'foo@span': spy1,
+				'baz@.y': [ spy3, spy4 ]
+			}
+		} ).render();
+
+		sinon.assert.calledWithExactly( spy1, el, 'foo', 'span' );
+		sinon.assert.calledWithExactly( spy2, el.lastChild, 'bar', 'p' );
+		sinon.assert.calledWithExactly( spy3, el, 'baz', '.y' );
+		sinon.assert.calledWithExactly( spy4, el, 'baz', '.y' );
+	} );
 } );
 
 function createClassReferences() {
