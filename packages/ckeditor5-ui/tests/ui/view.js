@@ -159,14 +159,14 @@ describe( 'bind', function() {
 	} );
 } );
 
-describe( 'listener definition', function() {
+describe( 'on', function() {
 	it( 'accepts plain binding', function() {
 		var spy = bender.sinon.spy();
 
 		setTestViewClass( function() {
 			return {
 				tag: 'p',
-				listeners: {
+				on: {
 					x: 'a',
 				}
 			};
@@ -190,7 +190,7 @@ describe( 'listener definition', function() {
 		setTestViewClass( function() {
 			return {
 				tag: 'p',
-				listeners: {
+				on: {
 					x: [ 'a', 'b' ]
 				}
 			};
@@ -226,7 +226,7 @@ describe( 'listener definition', function() {
 						attributes: {
 							'class': 'y',
 						},
-						listeners: {
+						on: {
 							'test@p': 'c'
 						}
 					},
@@ -242,7 +242,7 @@ describe( 'listener definition', function() {
 						],
 					}
 				],
-				listeners: {
+				on: {
 					'test@.y': 'a',
 					'test@div': 'b'
 				}
@@ -309,7 +309,7 @@ describe( 'listener definition', function() {
 						tag: 'span'
 					}
 				],
-				listeners: {
+				on: {
 					x: spy1,
 					'y@span': [ spy2, 'c' ],
 				}
@@ -341,7 +341,7 @@ describe( 'listener definition', function() {
 						tag: 'span'
 					}
 				],
-				listeners: {
+				on: {
 					x: 'a',
 				}
 			};
@@ -364,7 +364,7 @@ describe( 'listener definition', function() {
 		setTestViewClass( function() {
 			return {
 				tag: 'p',
-				listeners: {
+				on: {
 					'test@div': 'a'
 				}
 			};
@@ -460,7 +460,9 @@ function updateModuleReference() {
 }
 
 function createViewInstanceWithTemplate() {
-	setTestViewClass( () => { return { tag: 'a' }; } );
+	setTestViewClass( () => {
+		return { tag: 'a' };
+	} );
 	setTestViewInstance();
 }
 

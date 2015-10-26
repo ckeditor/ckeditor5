@@ -123,7 +123,7 @@ describe( 'callback value', function() {
 		expect( el.outerHTML ).to.be.equal( '<p>foo</p>' );
 	} );
 
-	it( 'works for "listeners" property', function() {
+	it( 'works for "on" property', function() {
 		var spy1 = bender.sinon.spy();
 		var spy2 = bender.sinon.spy();
 		var spy3 = bender.sinon.spy();
@@ -134,12 +134,12 @@ describe( 'callback value', function() {
 			children: [
 				{
 					tag: 'span',
-					listeners: {
+					on: {
 						bar: spy2
 					}
 				}
 			],
-			listeners: {
+			on: {
 				foo: spy1,
 				baz: [ spy3, spy4 ]
 			}
@@ -151,7 +151,7 @@ describe( 'callback value', function() {
 		sinon.assert.calledWithExactly( spy4, el, 'baz', null );
 	} );
 
-	it( 'works for "listeners" property with selectors', function() {
+	it( 'works for "on" property with selectors', function() {
 		var spy1 = bender.sinon.spy();
 		var spy2 = bender.sinon.spy();
 		var spy3 = bender.sinon.spy();
@@ -171,12 +171,12 @@ describe( 'callback value', function() {
 					attributes: {
 						'class': 'y'
 					},
-					listeners: {
+					on: {
 						'bar@p': spy2
 					}
 				},
 			],
-			listeners: {
+			on: {
 				'foo@span': spy1,
 				'baz@.y': [ spy3, spy4 ]
 			}

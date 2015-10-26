@@ -31,7 +31,7 @@ CKEDITOR.define( function() {
 			 *             {
 			 *                 tag: 'span',
 			 *                 attributes: { ... },
-			 *                 listeners: { ... }
+			 *                 on: { ... }
 			 *             },
 			 *             {
 			 *                 ...
@@ -44,7 +44,7 @@ CKEDITOR.define( function() {
 			 *             style: callback,
 			 *             ...
 			 *         },
-			 *         listeners: {
+			 *         on: {
 			 *             w: 'a'
 			 *             x: [ 'b', 'c', callback ],
 			 *             'y@selector': 'd',
@@ -91,8 +91,8 @@ CKEDITOR.define( function() {
 		// Invoke children recursively.
 		renderElementChildren( def, el );
 
-		// Prepare binding for listeners.
-		prepareElementListeners( def, el );
+		// Activate DOM binding for event listeners.
+		activateElementListeners( def, el );
 
 		return el;
 	}
@@ -141,9 +141,9 @@ CKEDITOR.define( function() {
 		}
 	}
 
-	function prepareElementListeners( def, el ) {
-		if ( def.listeners ) {
-			for ( var l in def.listeners ) {
+	function activateElementListeners( def, el ) {
+		if ( def.on ) {
+			for ( var l in def.on ) {
 				var domEvtDef = l.split( '@' );
 				var name, selector;
 
@@ -155,10 +155,10 @@ CKEDITOR.define( function() {
 					selector = null;
 				}
 
-				if ( Array.isArray( def.listeners[ l ] ) ) {
-					def.listeners[ l ].map( i => i( el, name, selector ) );
+				if ( Array.isArray( def.on[ l ] ) ) {
+					def.on[ l ].map( i => i( el, name, selector ) );
 				} else {
-					def.listeners[ l ]( el, name, selector );
+					def.on[ l ]( el, name, selector );
 				}
 			}
 		}
