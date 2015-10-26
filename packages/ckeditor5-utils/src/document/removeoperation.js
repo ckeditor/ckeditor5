@@ -29,14 +29,14 @@ CKEDITOR.define( [
 		}
 
 		_execute() {
-			var children = this.position.parent.children;
+			var parent = this.position.parent;
 			var offset = this.position.offset;
 
 			if ( CKEDITOR.isDebug ) {
 				var i = 0;
 
 				for ( var node of this.nodeList ) {
-					if ( !utils.isEqual( children.get( offset + i ), node ) ) {
+					if ( !utils.isEqual( parent.children.get( offset + i ), node ) ) {
 						/**
 						 * The node which should be removed does not exists.
 						 *
@@ -52,7 +52,7 @@ CKEDITOR.define( [
 				}
 			}
 
-			children.remove( offset, this.nodeList.length );
+			parent.removeChildren( offset, this.nodeList.length );
 		}
 
 		reverseOperation() {

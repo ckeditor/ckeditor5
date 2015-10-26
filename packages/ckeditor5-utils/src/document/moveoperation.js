@@ -55,7 +55,7 @@ CKEDITOR.define( [
 				}
 			}
 
-			sourceElement.children.remove( sourceOffset, nodeList.length );
+			sourceElement.removeChildren( sourceOffset, nodeList.length );
 
 			// If we move children in the same element and we remove elements on the position before the target we
 			// need to update a target offset.

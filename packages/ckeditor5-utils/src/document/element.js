@@ -46,7 +46,7 @@ CKEDITOR.define( [ 'document/node', 'document/nodelist' ], function( Node, NodeL
 		}
 
 		/**
-		 * Insert a list of nodes on the given index.
+		 * Insert a list of child nodes on the given index and set the parent of these node to this.
 		 *
 		 * Note that list of children can be modified only in elements not attached yet to the document.
 		 * All attached nodes should be modified using the {@link document.InsertOperation}.
@@ -61,6 +61,24 @@ CKEDITOR.define( [ 'document/node', 'document/nodelist' ], function( Node, NodeL
 			for ( var node of this.children ) {
 				node.parent = this;
 			}
+		}
+
+		/**
+		 * Removes number of child nodes starting at the given index and set the parent of these node to null.
+		 *
+		 * Note that list of children can be modified only in elements not attached yet to the document.
+		 * All attached nodes should be modified using the {@link document.RemoveOperation}.
+		 *
+		 * @param {Number} index Position of the first node to remove.
+		 * @param {Number} number Number of nodes to remove.
+		 */
+
+		removeChildren( index, number ) {
+			for ( var i = index; i < index + number; i++ ) {
+				this.children.get( i ).parent = null;
+			}
+
+			this.children.remove( index, number );
 		}
 	}
 
