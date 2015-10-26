@@ -19,7 +19,7 @@ CKEDITOR.define( [
 	 */
 	class RemoveOperation extends Operation {
 		/**
-		 *
+		 * @constructor
 		 */
 		constructor( position, nodes, baseVersion ) {
 			super( baseVersion );

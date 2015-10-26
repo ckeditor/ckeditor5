@@ -7,13 +7,11 @@
 
 CKEDITOR.define( [ 'document/operation', 'ckeditorerror', 'utils' ], function( Operation, CKEditorError, utils ) {
 	/**
-	 *
-	 *
 	 * @class document.Operation
 	 */
 	class ChangeOperation extends Operation {
 		/**
-		 *
+		 * @constructor
 		 */
 		constructor( ranges, oldAttr, newAttr, baseVersion ) {
 			super( baseVersion );

@@ -18,6 +18,7 @@ CKEDITOR.define( [ 'utils', 'ckeditorerror' ], function( utils, CKEditorError ) 
 		 *
 		 * @param {Array} path Position path. See {@link #path} property for more information.
 		 * @param {document.Element} root Root element for the path. Note that this element can not have a parent.
+		 * @constructor
 		 */
 		constructor( path, root ) {
 			/**

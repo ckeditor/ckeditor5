@@ -17,6 +17,7 @@ CKEDITOR.define( [ 'document/positioniterator' ], function( PositionIterator ) {
 		 *
 		 * @param {document.Position} start Start position.
 		 * @param {document.Position} end End position.
+		 * @constructor
 		 */
 		constructor( start, end ) {
 			/**

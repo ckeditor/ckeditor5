@@ -19,6 +19,8 @@ CKEDITOR.define( [
 	class Document {
 		/**
 		 * Create an empty document.
+		 *
+		 * @constructor
 		 */
 		constructor() {
 			/**

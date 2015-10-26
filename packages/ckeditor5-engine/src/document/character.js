@@ -16,6 +16,7 @@ CKEDITOR.define( [ 'document/node' ], function( Node ) {
 		 * Creates character linear item.
 		 *
 		 * @param {String} character Described character.
+		 * @constructor
 		 */
 		constructor( character, attrs ) {
 			super( attrs );

@@ -13,7 +13,7 @@ CKEDITOR.define( [ 'document/operation', 'document/nodelist', 'document/removeop
 	 */
 	class InsertOperation extends Operation {
 		/**
-		 *
+		 * @constructor
 		 */
 		constructor( position, nodeList, baseVersion ) {
 			super( baseVersion );
