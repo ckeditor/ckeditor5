@@ -19,7 +19,8 @@ CKEDITOR.define( [ 'document/node', 'document/nodelist' ], function( Node, NodeL
 		 *
 		 * @param {String} name Node name.
 		 * @param {Array} attrs Array of {@link document.Attribute attributes}.
-		 * @param {Array} children Array of {@link document.Node nodes}.
+		 * @param {document.Node|document.Text|document.NodeList|String|Array} nodes List of nodes to be inserted.
+		 * List of nodes can be any type accepted by the {@link document.NodeList} constructor.
 		 */
 		constructor( name, attrs, children ) {
 			super( attrs );
