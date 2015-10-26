@@ -18,7 +18,7 @@ CKEDITOR.define( [
 	 */
 	class MoveOperation extends Operation {
 		/**
-		 *
+		 * @constructor
 		 */
 		constructor( sourcePosition, targetPosition, nodeList, baseVersion ) {
 			super( baseVersion );

@@ -17,6 +17,7 @@ CKEDITOR.define( [ 'utils' ], function( utils ) {
 		 *
 		 * @param {String} key Attribute key
 		 * @param {Mixed} value Attribute value
+		 * @constructor
 		 */
 		constructor( key, value ) {
 			/**

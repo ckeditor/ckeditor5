@@ -25,6 +25,7 @@ CKEDITOR.define( [
 		 *
 		 * @param {document.Range} [boundaries] Range to define boundaries of the iterator.
 		 * @param {document.Position} [iteratorPosition] Starting position.
+		 * @constructor
 		 */
 		constructor( boundaries, iteratorPosition ) {
 			if ( boundaries instanceof Position ) {

@@ -20,6 +20,7 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 		 * Created node has no parent. Parent of the node is set when it is attached to the {@link document.Element}.
 		 *
 		 * @param {Array} attrs Array of attributes.
+		 * @constructor
 		 */
 		constructor( attrs ) {
 			/**

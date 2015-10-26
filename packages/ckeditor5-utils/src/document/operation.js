@@ -7,13 +7,11 @@
 
 CKEDITOR.define( [], function() {
 	/**
-	 *
-	 *
 	 * @class document.Operation
 	 */
 	class Operation {
 		/**
-		 *
+		 * @constructor
 		 */
 		constructor( baseVersion ) {
 			this.baseVersion = baseVersion;

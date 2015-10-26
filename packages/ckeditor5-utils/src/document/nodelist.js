@@ -51,6 +51,7 @@ CKEDITOR.define( [
 		 *		nodeListB.length // 3
 		 *
 		 * @param {document.Node|document.Text|document.NodeList|String|Array} nodes List of nodes.
+		 * @constructor
 		 */
 		constructor( nodes ) {
 			if ( nodes instanceof NodeList ) {
