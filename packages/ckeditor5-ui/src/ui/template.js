@@ -30,7 +30,7 @@ CKEDITOR.define( function() {
 			 *         children: [
 			 *             {
 			 *                 tag: 'span',
-			 *                 attributes: { ... },
+			 *                 attrs: { ... },
 			 *                 on: { ... }
 			 *             },
 			 *             {
@@ -38,9 +38,9 @@ CKEDITOR.define( function() {
 			 *             },
 			 *             ...
 			 *         ],
-			 *         attributes: {
-			 *             'class': 'a',
-			 *             id: 'b',
+			 *         attrs: {
+			 *             'class': [ 'a', 'b' ],
+			 *             id: 'c',
 			 *             style: callback,
 			 *             ...
 			 *         },
@@ -111,8 +111,8 @@ CKEDITOR.define( function() {
 		var value;
 		var attr;
 
-		for ( attr in def.attributes ) {
-			value = def.attributes[ attr ];
+		for ( attr in def.attrs ) {
+			value = def.attrs[ attr ];
 
 			// Attribute bound directly to the model.
 			if ( typeof value == 'function' ) {

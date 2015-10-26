@@ -75,7 +75,7 @@ describe( 'bind', function() {
 		setTestViewClass( function() {
 			return {
 				tag: 'p',
-				attributes: {
+				attrs: {
 					'class': this.bind( 'foo' )
 				},
 				text: 'abc'
@@ -120,7 +120,7 @@ describe( 'bind', function() {
 		setTestViewClass( function() {
 			return {
 				tag: 'p',
-				attributes: {
+				attrs: {
 					'class': this.bind( 'foo', callback )
 				},
 				text: this.bind( 'foo', callback )
@@ -138,7 +138,7 @@ describe( 'bind', function() {
 		setTestViewClass( function() {
 			return {
 				tag: 'p',
-				attributes: {
+				attrs: {
 					'class': this.bind( 'foo', ( el, value ) => {
 						el.innerHTML = value;
 
@@ -223,7 +223,7 @@ describe( 'on', function() {
 				children: [
 					{
 						tag: 'span',
-						attributes: {
+						attrs: {
 							'class': 'y',
 						},
 						on: {
@@ -235,7 +235,7 @@ describe( 'on', function() {
 						children: [
 							{
 								tag: 'span',
-								attributes: {
+								attrs: {
 									'class': 'y',
 								}
 							}

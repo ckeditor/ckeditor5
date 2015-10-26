@@ -28,7 +28,7 @@ describe( 'render', function() {
 	it( 'creates an element', function() {
 		var el = new Template( {
 			tag: 'p',
-			attributes: {
+			attrs: {
 				'class': [ 'a', 'b' ],
 				x: 'bar'
 			},
@@ -44,7 +44,7 @@ describe( 'render', function() {
 	it( 'creates element\'s children', function() {
 		var el = new Template( {
 			tag: 'p',
-			attributes: {
+			attrs: {
 				a: 'A'
 			},
 			children: [
@@ -76,13 +76,13 @@ describe( 'callback value', function() {
 
 		var el = new Template( {
 			tag: 'p',
-			attributes: {
+			attrs: {
 				'class': spy1
 			},
 			children: [
 				{
 					tag: 'span',
-					attributes: {
+					attrs: {
 						id: spy2
 					}
 				}
@@ -162,13 +162,13 @@ describe( 'callback value', function() {
 			children: [
 				{
 					tag: 'span',
-					attributes: {
+					attrs: {
 						'id': 'x'
 					}
 				},
 				{
 					tag: 'span',
-					attributes: {
+					attrs: {
 						'class': 'y'
 					},
 					on: {
