@@ -17,6 +17,7 @@ CKEDITOR.define( [], function() {
 		 * Creates text with attributes.
 		 *
 		 * @param {String} text Described character.
+		 * @param {Array} attrs Array of attributes.
 		 * @constructor
 		 */
 		constructor( text, attrs ) {
