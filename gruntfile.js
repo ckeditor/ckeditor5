@@ -26,7 +26,9 @@ module.exports = function( grunt ) {
 			options: {
 				excludeFiles: ignoreFiles
 			}
-		}
+		},
+
+		plugin: { create: { } }
 	} );
 
 	// Finally load the tasks.

@@ -25,6 +25,7 @@
     "grunt-jscs": "^2.0.0",
     "grunt-contrib-jshint": "^0",
     "grunt-githooks": "^0",
+    "inquirer": "^0.11.0",
     "ncp": "^2.0.0",
     "replace": "^0.3.0",
     "shelljs": "^0"
