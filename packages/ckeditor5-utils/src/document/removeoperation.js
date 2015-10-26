@@ -13,21 +13,48 @@ CKEDITOR.define( [
 	'document/insertoperation'
 ], function( Operation, NodeList, CKEditorError, utils ) {
 	/**
+	 * Operation to remove list of nodes.
 	 *
-	 *
-	 * @class document.Operation
+	 * @class document.RemoveOperation
 	 */
 	class RemoveOperation extends Operation {
 		/**
+		 * Creates a remove operation.
+		 *
+		 * Note that this constructor is used not only to create an operation on the current state of the document,
+		 * but also to create reverse operation or the result of the operational transformation. The operation also
+		 * needs to keep data needed to transform it (creates an insert operation as a reverse of the remove).
+		 * This is why this constructor contains list of nodes instead of length.
+		 *
+		 * @param {document.Position} position Position before the first node to remove.
+		 * @param {document.Node|document.Text|document.NodeList|String|Array} nodes List of nodes to be remove.
+		 * List of nodes can be any type accepted by the {@link document.NodeList} constructor.
+		 * @param {Number} baseVersion {@link document.Document#version} on which operation can be applied.
 		 * @constructor
 		 */
 		constructor( position, nodes, baseVersion ) {
 			super( baseVersion );
 
+			/**
+			 * Position of insertion.
+			 *
+			 * @type {document.Position}
+			 */
 			this.position = position;
+
+			/**
+			 * List of nodes to insert.
+			 *
+			 * @type {document.NodeList}
+			 */
 			this.nodeList = new NodeList( nodes );
 		}
 
+		/**
+		 * Execute operation.
+		 *
+		 * @protected
+		 */
 		_execute() {
 			var parent = this.position.parent;
 			var offset = this.position.offset;
@@ -55,6 +82,11 @@ CKEDITOR.define( [
 			parent.removeChildren( offset, this.nodeList.length );
 		}
 
+		/**
+		 * Creates an reverse insert operation.
+		 *
+		 * @returns {document.InsertOperation} Reverse operation.
+		 */
 		reverseOperation() {
 			var InsertOperation = CKEDITOR.require( 'document/insertoperation' );
 

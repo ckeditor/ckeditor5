@@ -7,20 +7,62 @@
 
 CKEDITOR.define( [ 'document/operation', 'ckeditorerror', 'utils' ], function( Operation, CKEditorError, utils ) {
 	/**
+	 * Operation to change nodes attribute. Using this class you can add, remove or change value of the attribute.
+	 *
 	 * @class document.Operation
 	 */
 	class ChangeOperation extends Operation {
 		/**
+		 * Creates a change operation.
+		 *
+		 * If only new attribute is set it will be inserted. Note that there must be no attributes with the same key as
+		 * a new attribute in all nodes in ranges.
+		 *
+		 * If only old attribute is set it will be removed. Note that this attribute must be present in all nodes in
+		 * ranges.
+		 *
+		 * If both new and old attributes are set the operation will change the attribute value. Node that both new and
+		 * old attributes have to have the same key and the old attribute must be present in all nodes in ranges.
+		 *
+		 * @param {Array|document.Range} ranges Range or array of ranges on which operation should be applied.
+		 * @param {document.Attribute|Null} oldAttr Old attribute to change. Null if operation inserts new attribute.
+		 * @param {document.Attribute|Null} newAttr New attribute. Null if operation removes attribute.
+		 * @param {Number} baseVersion {@link document.Document#version} on which operation can be applied.
 		 * @constructor
 		 */
 		constructor( ranges, oldAttr, newAttr, baseVersion ) {
 			super( baseVersion );
 
+			/**
+			 * Array of ranges on which operation should be applied.
+			 *
+			 * @readonly
+			 * @type {Array}
+			 */
 			this.ranges = utils.isArray( ranges ) ? ranges : [ ranges ];
+
+			/**
+			 * Old attribute to change. Null if operation inserts new attribute.
+			 *
+			 * @readonly
+			 * @type {document.Attribute|Null}
+			 */
 			this.oldAttr = oldAttr;
+
+			/**
+			 * New attribute. Null if operation removes attribute.
+			 *
+			 * @readonly
+			 * @type {document.Attribute|Null}
+			 */
 			this.newAttr = newAttr;
 		}
 
+		/**
+		 * Execute operation.
+		 *
+		 * @protected
+		 */
 		_execute() {
 			var ranges = this.ranges;
 			var oldAttr = this.oldAttr;
@@ -129,6 +171,11 @@ CKEDITOR.define( [ 'document/operation', 'ckeditorerror', 'utils' ], function( O
 			}
 		}
 
+		/**
+		 * Creates an reverse change operation.
+		 *
+		 * @returns {document.ChangeOperation} Reverse operation.
+		 */
 		reverseOperation() {
 			return new ChangeOperation( this.ranges, this.newAttr, this.oldAttr, this.baseVersion + 1 );
 		}
