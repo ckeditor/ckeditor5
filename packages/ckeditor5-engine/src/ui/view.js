@@ -39,13 +39,6 @@ CKEDITOR.define( [
 			 * Regions which belong to this view.
 			 */
 			this.regions = new Collection();
-
-			/**
-			 * The list of listeners attached in this view.
-			 *
-			 * @property {Array}
-			 */
-			this.listeners = [];
 		}
 
 		/**
@@ -139,7 +132,7 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * Iterates over all "listeners" properties in {@link template} and replaces
+		 * Iterates over all "on" properties in {@link template} and replaces
 		 * listener definitions with functions which, once executed in a context of
 		 * a DOM element, will attach native DOM listeners to elements.
 		 *
@@ -164,8 +157,8 @@ CKEDITOR.define( [
 				 * So instead of
 				 *
 				 *     children: [
-				 *         { tag: 'span', listeners: { click: 'foo' } }
-				 *         { tag: 'span', listeners: { click: 'foo' } }
+				 *         { tag: 'span', on: { click: 'foo' } }
+				 *         { tag: 'span', on: { click: 'foo' } }
 				 *     ]
 				 *
 				 * a single, more efficient listener can be attached that uses **event delegation**:
@@ -174,7 +167,7 @@ CKEDITOR.define( [
 				 *     	   { tag: 'span' }
 				 *     	   { tag: 'span' }
 				 *     ],
-				 *     listeners: {
+				 *     on: {
 				 *     	   'click@span': 'foo',
 				 *     }
 				 *
@@ -199,41 +192,42 @@ CKEDITOR.define( [
 			};
 
 			/**
-			 * Iterates over "listeners" property in {@link template} definition to recursively
+			 * Iterates over "on" property in {@link template} definition to recursively
 			 * replace each listener declaration with a function which, once executed in a context
 			 * of an element, attaches native DOM listener to the element.
 			 *
 			 * @param {Object} def Template definition.
 			 */
 			function prepareElementListeners( def ) {
-				if ( def.listeners ) {
-					let listeners = def.listeners;
-					let evtNameOrCallback;
+				let on = def.on;
 
-					for ( let domEvtName in listeners ) {
-						evtNameOrCallback = listeners[ domEvtName ];
+				if ( on ) {
+					let domEvtName, evtNameOrCallback;
+
+					for ( domEvtName in on ) {
+						evtNameOrCallback = on[ domEvtName ];
 
 						// Listeners allow definition with an array:
 						//
-						//    listeners: {
-						//        'DOMEvent@selector': [ 'event1', callback ],
-						//        'DOMEvent': [ callback, 'event2', 'event3' ]
+						//    on: {
+						//        'DOMEventName@selector': [ 'event1', callback ],
+						//        'DOMEventName': [ callback, 'event2', 'event3' ]
 						//        ...
 						//    }
 						if ( Array.isArray( evtNameOrCallback ) ) {
-							listeners[ domEvtName ] = listeners[ domEvtName ].map(
+							on[ domEvtName ] = on[ domEvtName ].map(
 								evtNameOrCallback => getDOMListenerAttacher( evtNameOrCallback )
 							);
 						}
 						// Listeners allow definition with a string containing event name:
 						//
-						//    listeners: {
-						//       'DOMEvent@selector': 'event1',
-						//       'DOMEvent': 'event2'
+						//    on: {
+						//       'DOMEventName@selector': 'event1',
+						//       'DOMEventName': 'event2'
 						//       ...
 						//    }
 						else {
-							listeners[ domEvtName ] = getDOMListenerAttacher( evtNameOrCallback );
+							on[ domEvtName ] = getDOMListenerAttacher( evtNameOrCallback );
 						}
 					}
 				}
