@@ -421,7 +421,7 @@ describe( 'destroy', function() {
 
 	it( 'destroys child regions', function() {
 		var Region = modules[ 'ui/region' ];
-		var region = new Region();
+		var region = new Region( 'test' );
 		var spy = bender.sinon.spy( region, 'destroy' );
 
 		view.regions.add( region );
