@@ -75,3 +75,24 @@ describe( 'insertChildren', function() {
 		expect( element.children.get( 4 ) ).to.have.property( 'character' ).that.equals( 'y' );
 	} );
 } );
+
+describe( 'removeChildren', function() {
+	it( 'should add children to the element', function() {
+		var Element = modules[ 'document/element' ];
+
+		var element = new Element( 'elem', [], [ 'foobar' ] );
+		var o = element.children.get( 2 );
+		var b = element.children.get( 3 );
+		var a = element.children.get( 4 );
+		element.removeChildren( 2, 3 );
+
+		expect( element ).to.have.property( 'children' ).with.length( 3 );
+		expect( element.children.get( 0 ) ).to.have.property( 'character' ).that.equals( 'f' );
+		expect( element.children.get( 1 ) ).to.have.property( 'character' ).that.equals( 'o' );
+		expect( element.children.get( 2 ) ).to.have.property( 'character' ).that.equals( 'r' );
+
+		expect( o ).to.have.property( 'parent' ).that.is.null;
+		expect( b ).to.have.property( 'parent' ).that.is.null;
+		expect( a ).to.have.property( 'parent' ).that.is.null;
+	} );
+} );

@@ -109,6 +109,9 @@ CKEDITOR.define( [
 		/**
 		 * Inserts nodes from the given node list into this node list at the given index.
 		 *
+		 * Note that this method will not change the parent of the nodes. Use {@link document.Element#insertChildren}
+		 * to insert nodes and set parent.
+		 *
 		 * @param {Number} index Position where nodes should be inserted.
 		 * @param {document.NodeList} nodeList List of nodes to insert.
 		 */
@@ -118,6 +121,9 @@ CKEDITOR.define( [
 
 		/**
 		 * Removes number of nodes starting at the given index.
+		 *
+		 * Note that this method will not change the parent of the nodes. Use {@link document.Element#removeChildren}
+		 * to insert nodes and set parent to be null.
 		 *
 		 * @param {Number} index Position of the first node to remove.
 		 * @param {Number} number Number of nodes to remove.
