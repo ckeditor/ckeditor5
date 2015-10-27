@@ -19,7 +19,7 @@ CKEDITOR.define( [ 'document/node', 'document/nodelist' ], function( Node, NodeL
 		 *
 		 * @param {String} name Node name.
 		 * @param {Iterable} attrs Iterable collection of {@link document.Attribute attributes}.
-		 * @param {document.Node|document.Text|document.NodeList|String|Array} nodes List of nodes to be inserted.
+		 * @param {document.Node|document.Text|document.NodeList|String|Iterable} nodes List of nodes to be inserted.
 		 * List of nodes can be any type accepted by the {@link document.NodeList} constructor.
 		 * @constructor
 		 */
@@ -54,7 +54,7 @@ CKEDITOR.define( [ 'document/node', 'document/nodelist' ], function( Node, NodeL
 		 * All attached nodes should be modified using the {@link document.InsertOperation}.
 		 *
 		 * @param {Nuber} index Position where nodes should be inserted.
-		 * @param {document.Node|document.Text|document.NodeList|String|Array} nodes List of nodes to be inserted.
+		 * @param {document.Node|document.Text|document.NodeList|String|Iterable} nodes List of nodes to be inserted.
 		 * List of nodes can be any type accepted by the {@link document.NodeList} constructor.
 		 */
 		insertChildren( index, nodes ) {

@@ -50,7 +50,7 @@ CKEDITOR.define( [
 		 *		nodeListA === nodeListB // true
 		 *		nodeListB.length // 3
 		 *
-		 * @param {document.Node|document.Text|document.NodeList|String|Array} nodes List of nodes.
+		 * @param {document.Node|document.Text|document.NodeList|String|Iterable} nodes List of nodes.
 		 * @constructor
 		 */
 		constructor( nodes ) {
@@ -68,7 +68,7 @@ CKEDITOR.define( [
 			this._nodes = [];
 
 			if ( nodes ) {
-				var node, i, nodeLen;
+				var node, character;
 
 				if ( !utils.isIterable( nodes ) ) {
 					nodes = [ nodes ];
@@ -81,14 +81,14 @@ CKEDITOR.define( [
 					}
 					// Text.
 					else if ( node instanceof Text ) {
-						for ( i = 0, nodeLen = node.text.length; i < nodeLen; i++ ) {
-							this._nodes.push( new Character( node.text[ i ], node.attrs ) );
+						for ( character of node.text ) {
+							this._nodes.push( new Character( character, node.attrs ) );
 						}
 					}
 					// String.
 					else {
-						for ( i = 0, nodeLen = node.length; i < nodeLen; i++ ) {
-							this._nodes.push( new Character( node[ i ] ) );
+						for ( character of node ) {
+							this._nodes.push( new Character( character ) );
 						}
 					}
 				}
