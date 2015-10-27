@@ -28,11 +28,11 @@ describe( 'RemoveOperation', function() {
 
 		doc.applyOperation( new RemoveOperation(
 			new Position( [ 0 ], doc.root ),
-			doc.root.children.get( 0 ),
+			doc.root.getChild( 0 ),
 			doc.version ) );
 
 		expect( doc.version ).to.be.equal( 1 );
-		expect( doc.root.children.length ).to.be.equal( 0 );
+		expect( doc.root.getChildCount() ).to.be.equal( 0 );
 	} );
 
 	it( 'should remove set of nodes', function() {
@@ -46,11 +46,11 @@ describe( 'RemoveOperation', function() {
 
 		doc.applyOperation( new RemoveOperation(
 			new Position( [ 0 ], doc.root ),
-			[ doc.root.children.get( 0 ), doc.root.children.get( 1 ), doc.root.children.get( 2 ) ],
+			[ doc.root.getChild( 0 ), doc.root.getChild( 1 ), doc.root.getChild( 2 ) ],
 			doc.version ) );
 
 		expect( doc.version ).to.be.equal( 1 );
-		expect( doc.root.children.length ).to.be.equal( 0 );
+		expect( doc.root.getChildCount() ).to.be.equal( 0 );
 	} );
 
 	it( 'should remove from between existing nodes', function() {
@@ -64,13 +64,13 @@ describe( 'RemoveOperation', function() {
 
 		doc.applyOperation( new RemoveOperation(
 			new Position( [ 1 ], doc.root ),
-			[ doc.root.children.get( 1 ) ],
+			[ doc.root.getChild( 1 ) ],
 			doc.version ) );
 
 		expect( doc.version ).to.be.equal( 1 );
-		expect( doc.root.children.length ).to.be.equal( 2 );
-		expect( doc.root.children.get( 0 ).character ).to.be.equal( 'b' );
-		expect( doc.root.children.get( 1 ).character ).to.be.equal( 'r' );
+		expect( doc.root.getChildCount() ).to.be.equal( 2 );
+		expect( doc.root.getChild( 0 ).character ).to.be.equal( 'b' );
+		expect( doc.root.getChild( 1 ).character ).to.be.equal( 'r' );
 	} );
 
 	it( 'should create a insert operation as a reverse', function() {
@@ -117,15 +117,15 @@ describe( 'RemoveOperation', function() {
 		doc.applyOperation( operation );
 
 		expect( doc.version ).to.be.equal( 1 );
-		expect( doc.root.children.length ).to.be.equal( 0 );
+		expect( doc.root.getChildCount() ).to.be.equal( 0 );
 
 		doc.applyOperation( reverse );
 
 		expect( doc.version ).to.be.equal( 2 );
-		expect( doc.root.children.length ).to.be.equal( 3 );
-		expect( doc.root.children.get( 0 ).character ).to.be.equal( 'b' );
-		expect( doc.root.children.get( 1 ).character ).to.be.equal( 'a' );
-		expect( doc.root.children.get( 2 ).character ).to.be.equal( 'r' );
+		expect( doc.root.getChildCount() ).to.be.equal( 3 );
+		expect( doc.root.getChild( 0 ).character ).to.be.equal( 'b' );
+		expect( doc.root.getChild( 1 ).character ).to.be.equal( 'a' );
+		expect( doc.root.getChild( 2 ).character ).to.be.equal( 'r' );
 	}  );
 
 	if ( CKEDITOR.isDebug ) {

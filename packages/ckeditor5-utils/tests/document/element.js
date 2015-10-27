@@ -52,10 +52,10 @@ describe( 'constructor', function() {
 		var element = new Element( 'elem', [], 'foo' );
 
 		expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
-		expect( element ).to.have.property( 'children' ).with.length( 3 );
-		expect( element.children.get( 0 ) ).to.have.property( 'character' ).that.equals( 'f' );
-		expect( element.children.get( 1 ) ).to.have.property( 'character' ).that.equals( 'o' );
-		expect( element.children.get( 2 ) ).to.have.property( 'character' ).that.equals( 'o' );
+		expect( element.getChildCount() ).to.be.equals( 3 );
+		expect( element.getChild( 0 ) ).to.have.property( 'character' ).that.equals( 'f' );
+		expect( element.getChild( 1 ) ).to.have.property( 'character' ).that.equals( 'o' );
+		expect( element.getChild( 2 ) ).to.have.property( 'character' ).that.equals( 'o' );
 	} );
 } );
 
@@ -67,12 +67,12 @@ describe( 'insertChildren', function() {
 		element.insertChildren( 1, 'foo' );
 
 		expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
-		expect( element ).to.have.property( 'children' ).with.length( 5 );
-		expect( element.children.get( 0 ) ).to.have.property( 'character' ).that.equals( 'x' );
-		expect( element.children.get( 1 ) ).to.have.property( 'character' ).that.equals( 'f' );
-		expect( element.children.get( 2 ) ).to.have.property( 'character' ).that.equals( 'o' );
-		expect( element.children.get( 3 ) ).to.have.property( 'character' ).that.equals( 'o' );
-		expect( element.children.get( 4 ) ).to.have.property( 'character' ).that.equals( 'y' );
+		expect( element.getChildCount() ).to.be.equals( 5 );
+		expect( element.getChild( 0 ) ).to.have.property( 'character' ).that.equals( 'x' );
+		expect( element.getChild( 1 ) ).to.have.property( 'character' ).that.equals( 'f' );
+		expect( element.getChild( 2 ) ).to.have.property( 'character' ).that.equals( 'o' );
+		expect( element.getChild( 3 ) ).to.have.property( 'character' ).that.equals( 'o' );
+		expect( element.getChild( 4 ) ).to.have.property( 'character' ).that.equals( 'y' );
 	} );
 } );
 
@@ -81,18 +81,43 @@ describe( 'removeChildren', function() {
 		var Element = modules[ 'document/element' ];
 
 		var element = new Element( 'elem', [], [ 'foobar' ] );
-		var o = element.children.get( 2 );
-		var b = element.children.get( 3 );
-		var a = element.children.get( 4 );
+		var o = element.getChild( 2 );
+		var b = element.getChild( 3 );
+		var a = element.getChild( 4 );
 		element.removeChildren( 2, 3 );
 
-		expect( element ).to.have.property( 'children' ).with.length( 3 );
-		expect( element.children.get( 0 ) ).to.have.property( 'character' ).that.equals( 'f' );
-		expect( element.children.get( 1 ) ).to.have.property( 'character' ).that.equals( 'o' );
-		expect( element.children.get( 2 ) ).to.have.property( 'character' ).that.equals( 'r' );
+		expect( element.getChildCount() ).to.be.equals( 3 );
+		expect( element.getChild( 0 ) ).to.have.property( 'character' ).that.equals( 'f' );
+		expect( element.getChild( 1 ) ).to.have.property( 'character' ).that.equals( 'o' );
+		expect( element.getChild( 2 ) ).to.have.property( 'character' ).that.equals( 'r' );
 
 		expect( o ).to.have.property( 'parent' ).that.is.null;
 		expect( b ).to.have.property( 'parent' ).that.is.null;
 		expect( a ).to.have.property( 'parent' ).that.is.null;
+	} );
+} );
+
+describe( 'getChildIndex', function() {
+	it( 'should return child index', function() {
+		var Element = modules[ 'document/element' ];
+
+		var element = new Element( 'elem', [], [ 'bar' ] );
+		var b = element.getChild( 0 );
+		var a = element.getChild( 1 );
+		var r = element.getChild( 2 );
+
+		expect( element.getChildIndex( b ) ).to.equals( 0 );
+		expect( element.getChildIndex( a ) ).to.equals( 1 );
+		expect( element.getChildIndex( r ) ).to.equals( 2 );
+	} );
+} );
+
+describe( 'getChildCount', function() {
+	it( 'should return number of children', function() {
+		var Element = modules[ 'document/element' ];
+
+		var element = new Element( 'elem', [], [ 'bar' ] );
+
+		expect( element.getChildCount() ).to.equals( 3 );
 	} );
 } );

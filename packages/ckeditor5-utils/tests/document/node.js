@@ -198,13 +198,13 @@ describe( 'hasAttr', function() {
 		var parsedFoo = JSON.parse( JSON.stringify( foo ) );
 		var parsedBar = JSON.parse( JSON.stringify( b ) );
 
-		parsedFoo.children = new NodeList( parsedFoo.children );
+		parsedFoo._children = new NodeList( parsedFoo._children );
 
 		expect( parsedFoo ).to.be.deep.equals( {
 			name: 'foo',
 			parent: null,
 			attrs: [],
-			children: new NodeList( parsedFoo.children )
+			_children: new NodeList( parsedFoo._children )
 		} );
 
 		expect( parsedBar ).to.be.deep.equals( {

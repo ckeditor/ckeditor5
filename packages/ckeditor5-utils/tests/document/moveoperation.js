@@ -33,16 +33,16 @@ describe( 'MoveOperation', function() {
 		doc.applyOperation( new MoveOperation(
 			new Position( [ 0, 0 ], doc.root ),
 			new Position( [ 1, 0 ], doc.root ),
-			p1.children.get( 0 ),
+			p1.getChild( 0 ),
 			doc.version ) );
 
 		expect( doc.version ).to.be.equal( 1 );
-		expect( doc.root.children.length ).to.be.equal( 2 );
-		expect( doc.root.children.get( 0 ).name ).to.be.equal( 'p1' );
-		expect( doc.root.children.get( 1 ).name ).to.be.equal( 'p2' );
-		expect( p1.children.length ).to.be.equal( 0 );
-		expect( p2.children.length ).to.be.equal( 1 );
-		expect( p2.children.get( 0 ).name ).to.be.equal( 'x' );
+		expect( doc.root.getChildCount() ).to.be.equal( 2 );
+		expect( doc.root.getChild( 0 ).name ).to.be.equal( 'p1' );
+		expect( doc.root.getChild( 1 ).name ).to.be.equal( 'p2' );
+		expect( p1.getChildCount() ).to.be.equal( 0 );
+		expect( p2.getChildCount() ).to.be.equal( 1 );
+		expect( p2.getChild( 0 ).name ).to.be.equal( 'x' );
 	} );
 
 	it( 'should move position of children in one node backward', function() {
@@ -57,16 +57,16 @@ describe( 'MoveOperation', function() {
 		doc.applyOperation( new MoveOperation(
 			new Position( [ 2 ], doc.root ),
 			new Position( [ 1 ], doc.root ),
-			[ doc.root.children.get( 2 ),  doc.root.children.get( 3 ) ],
+			[ doc.root.getChild( 2 ),  doc.root.getChild( 3 ) ],
 			doc.version ) );
 
 		expect( doc.version ).to.be.equal( 1 );
-		expect( doc.root.children.length ).to.be.equal( 5 );
-		expect( doc.root.children.get( 0 ).character ).to.be.equal( 'x' );
-		expect( doc.root.children.get( 1 ).character ).to.be.equal( 'a' );
-		expect( doc.root.children.get( 2 ).character ).to.be.equal( 'r' );
-		expect( doc.root.children.get( 3 ).character ).to.be.equal( 'b' );
-		expect( doc.root.children.get( 4 ).character ).to.be.equal( 'x' );
+		expect( doc.root.getChildCount() ).to.be.equal( 5 );
+		expect( doc.root.getChild( 0 ).character ).to.be.equal( 'x' );
+		expect( doc.root.getChild( 1 ).character ).to.be.equal( 'a' );
+		expect( doc.root.getChild( 2 ).character ).to.be.equal( 'r' );
+		expect( doc.root.getChild( 3 ).character ).to.be.equal( 'b' );
+		expect( doc.root.getChild( 4 ).character ).to.be.equal( 'x' );
 	} );
 
 	it( 'should move position of children in one node forward', function() {
@@ -81,16 +81,16 @@ describe( 'MoveOperation', function() {
 		doc.applyOperation( new MoveOperation(
 			new Position( [ 1 ], doc.root ),
 			new Position( [ 4 ], doc.root ),
-			[ doc.root.children.get( 1 ),  doc.root.children.get( 2 ) ],
+			[ doc.root.getChild( 1 ),  doc.root.getChild( 2 ) ],
 			doc.version ) );
 
 		expect( doc.version ).to.be.equal( 1 );
-		expect( doc.root.children.length ).to.be.equal( 5 );
-		expect( doc.root.children.get( 0 ).character ).to.be.equal( 'x' );
-		expect( doc.root.children.get( 1 ).character ).to.be.equal( 'r' );
-		expect( doc.root.children.get( 2 ).character ).to.be.equal( 'b' );
-		expect( doc.root.children.get( 3 ).character ).to.be.equal( 'a' );
-		expect( doc.root.children.get( 4 ).character ).to.be.equal( 'x' );
+		expect( doc.root.getChildCount() ).to.be.equal( 5 );
+		expect( doc.root.getChild( 0 ).character ).to.be.equal( 'x' );
+		expect( doc.root.getChild( 1 ).character ).to.be.equal( 'r' );
+		expect( doc.root.getChild( 2 ).character ).to.be.equal( 'b' );
+		expect( doc.root.getChild( 3 ).character ).to.be.equal( 'a' );
+		expect( doc.root.getChild( 4 ).character ).to.be.equal( 'x' );
 	} );
 
 	it( 'should create a move operation as a reverse', function() {
@@ -133,24 +133,24 @@ describe( 'MoveOperation', function() {
 		var operation =  new MoveOperation(
 			new Position( [ 0, 0 ], doc.root ),
 			new Position( [ 1, 0 ], doc.root ),
-			p1.children.get( 0 ),
+			p1.getChild( 0 ),
 			doc.version );
 
 		doc.applyOperation( operation );
 
 		expect( doc.version ).to.be.equal( 1 );
-		expect( doc.root.children.length ).to.be.equal( 2 );
-		expect( p1.children.length ).to.be.equal( 0 );
-		expect( p2.children.length ).to.be.equal( 1 );
-		expect( p2.children.get( 0 ).name ).to.be.equal( 'x' );
+		expect( doc.root.getChildCount() ).to.be.equal( 2 );
+		expect( p1.getChildCount() ).to.be.equal( 0 );
+		expect( p2.getChildCount() ).to.be.equal( 1 );
+		expect( p2.getChild( 0 ).name ).to.be.equal( 'x' );
 
 		doc.applyOperation( operation.reverseOperation() );
 
 		expect( doc.version ).to.be.equal( 2 );
-		expect( doc.root.children.length ).to.be.equal( 2 );
-		expect( p1.children.length ).to.be.equal( 1 );
-		expect( p1.children.get( 0 ).name ).to.be.equal( 'x' );
-		expect( p2.children.length ).to.be.equal( 0 );
+		expect( doc.root.getChildCount() ).to.be.equal( 2 );
+		expect( p1.getChildCount() ).to.be.equal( 1 );
+		expect( p1.getChild( 0 ).name ).to.be.equal( 'x' );
+		expect( p2.getChildCount() ).to.be.equal( 0 );
 	} );
 
 	if ( CKEDITOR.isDebug ) {
