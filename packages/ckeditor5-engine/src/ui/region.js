@@ -43,6 +43,9 @@ CKEDITOR.define( [ 'collection', 'model' ], function( Collection, Model ) {
 			this.views.on( 'remove', ( evt, view ) => view.el.remove() );
 		}
 
+		/**
+		 * Destroys the Region instance.
+		 */
 		destroy() {
 			// Drop the reference to HTMLElement but don't remove it from DOM.
 			// Element comes as a parameter and it could be a part of the View.
@@ -50,9 +53,7 @@ CKEDITOR.define( [ 'collection', 'model' ], function( Collection, Model ) {
 			this.el = null;
 
 			// Remove and destroy views.
-			for ( let i = this.views.length; i--; ) {
-				this.views.remove( i ).destroy();
-			}
+			this.views.forEach( v => this.views.remove( v ).destroy() );
 		}
 	}
 
