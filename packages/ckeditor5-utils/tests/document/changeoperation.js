@@ -278,10 +278,10 @@ describe( 'ChangeOperation', function() {
 		var reverse = oppertaion.reverseOperation();
 
 		expect( reverse ).to.be.an.instanceof( ChangeOperation );
-		expect( reverse.baseVersion ).to.be.equals( 1 );
-		expect( reverse.ranges ).to.be.equals( ranges );
-		expect( reverse.oldAttr ).to.be.equals( newAttr );
-		expect( reverse.newAttr ).to.be.equals( oldAttr );
+		expect( reverse.baseVersion ).to.equals( 1 );
+		expect( reverse.ranges ).to.equals( ranges );
+		expect( reverse.oldAttr ).to.equals( newAttr );
+		expect( reverse.newAttr ).to.equals( oldAttr );
 	} );
 
 	it( 'should undo insert attribute by applying reverse operation', function() {

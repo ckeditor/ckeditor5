@@ -111,10 +111,10 @@ describe( 'MoveOperation', function() {
 		var reverse = operation.reverseOperation();
 
 		expect( reverse ).to.be.an.instanceof( MoveOperation );
-		expect( reverse.baseVersion ).to.be.equals( 1 );
-		expect( reverse.nodeList ).to.be.equals( nodeList );
-		expect( reverse.sourcePosition ).to.be.equals( targetPosition );
-		expect( reverse.targetPosition ).to.be.equals( sourcePosition );
+		expect( reverse.baseVersion ).to.equals( 1 );
+		expect( reverse.nodeList ).to.equals( nodeList );
+		expect( reverse.sourcePosition ).to.equals( targetPosition );
+		expect( reverse.targetPosition ).to.equals( sourcePosition );
 	} );
 
 	it( 'should move node by applying reverse operation', function() {

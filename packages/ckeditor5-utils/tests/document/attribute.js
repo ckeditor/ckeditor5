@@ -42,7 +42,7 @@ describe( 'attribute', function() {
 		var attr1 = new Attribute( 'register', true );
 		var attr2 = new Attribute( 'register', true );
 
-		expect( attr1 ).to.be.equals( attr2 );
+		expect( attr1 ).to.equals( attr2 );
 		expect( attr1.isEqual( attr2 ) ).to.be.true;
 	} );
 
@@ -79,7 +79,7 @@ describe( 'attribute', function() {
 		var attr4 = new Attribute( 'register', true );
 
 		expect( attr1 ).to.not.be.equals( attr2 );
-		expect( attr2 ).to.be.equals( attr3 );
-		expect( attr3 ).to.be.equals( attr4 );
+		expect( attr2 ).to.equals( attr3 );
+		expect( attr3 ).to.equals( attr4 );
 	} );
 } );

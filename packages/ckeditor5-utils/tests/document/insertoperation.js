@@ -111,9 +111,9 @@ describe( 'InsertOperation', function() {
 		var reverse = operation.reverseOperation();
 
 		expect( reverse ).to.be.an.instanceof( RemoveOperation );
-		expect( reverse.baseVersion ).to.be.equals( 1 );
-		expect( reverse.nodeList ).to.be.equals( nodeList );
-		expect( reverse.position ).to.be.equals( position );
+		expect( reverse.baseVersion ).to.equals( 1 );
+		expect( reverse.nodeList ).to.equals( nodeList );
+		expect( reverse.position ).to.equals( position );
 	} );
 
 	it( 'should undo insert node by applying reverse operation', function() {
