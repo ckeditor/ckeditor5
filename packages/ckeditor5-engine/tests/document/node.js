@@ -102,6 +102,22 @@ describe( 'tree', function() {
 	} );
 } );
 
+describe( 'constructor', function() {
+	it( 'should copy attributes, not pass by reference', function() {
+		var Element = modules[ 'document/element' ];
+		var Attribute = modules[ 'document/attribute' ];
+
+		var attrs = [ new Attribute( 'attr', true ) ];
+		var foo = new Element( 'foo', attrs );
+		var bar = new Element( 'bar', attrs );
+
+		foo.removeAttr( 'attr' );
+
+		expect( foo.getAttrCount() ).to.equals( 0 );
+		expect( bar.getAttrCount() ).to.equals( 1 );
+	} );
+} );
+
 describe( 'getAttr', function() {
 	it( 'should be possible to get attribute by key', function() {
 		var Element = modules[ 'document/element' ];

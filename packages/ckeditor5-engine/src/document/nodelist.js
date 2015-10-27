@@ -84,7 +84,7 @@ CKEDITOR.define( [
 					// Text.
 					else if ( node instanceof Text ) {
 						for ( j = 0, nodeLen = node.text.length; j < nodeLen; j++ ) {
-							this._nodes.push( new Character( node.text[ j ], utils.clone( node.attrs ) ) );
+							this._nodes.push( new Character( node.text[ j ], node.attrs ) );
 						}
 					}
 					// String.
