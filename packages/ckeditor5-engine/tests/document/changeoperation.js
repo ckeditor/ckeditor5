@@ -42,7 +42,7 @@ describe( 'ChangeOperation', function() {
 		expect( doc.root.getChildCount() ).to.be.equal( 3 );
 		expect( doc.root.getChild( 0 ).hasAttr( newAttr ) ).to.be.true;
 		expect( doc.root.getChild( 1 ).hasAttr( newAttr ) ).to.be.true;
-		expect( doc.root.getChild( 2 ).getAttrCount() ).to.be.equal( 0 );
+		expect( doc.root.getChild( 2 )._getAttrCount() ).to.be.equal( 0 );
 	} );
 
 	it( 'should insert attribute to multiple ranges', function() {
@@ -70,7 +70,7 @@ describe( 'ChangeOperation', function() {
 		expect( doc.version ).to.be.equal( 1 );
 		expect( doc.root.getChildCount() ).to.be.equal( 3 );
 		expect( doc.root.getChild( 0 ).hasAttr( newAttr ) ).to.be.true;
-		expect( doc.root.getChild( 1 ).getAttrCount() ).to.be.equal( 0 );
+		expect( doc.root.getChild( 1 )._getAttrCount() ).to.be.equal( 0 );
 		expect( doc.root.getChild( 2 ).hasAttr( newAttr ) ).to.be.true;
 	} );
 
@@ -98,7 +98,7 @@ describe( 'ChangeOperation', function() {
 
 		expect( doc.version ).to.be.equal( 1 );
 		expect( doc.root.getChildCount() ).to.be.equal( 1 );
-		expect( doc.root.getChild( 0 ).getAttrCount() ).to.be.equal( 3 );
+		expect( doc.root.getChild( 0 )._getAttrCount() ).to.be.equal( 3 );
 		expect( doc.root.getChild( 0 ).hasAttr( newAttr ) ).to.be.true;
 		expect( doc.root.getChild( 0 ).hasAttr( fooAttr ) ).to.be.true;
 		expect( doc.root.getChild( 0 ).hasAttr( barAttr ) ).to.be.true;
@@ -130,11 +130,11 @@ describe( 'ChangeOperation', function() {
 
 		expect( doc.version ).to.be.equal( 1 );
 		expect( doc.root.getChildCount() ).to.be.equal( 3 );
-		expect( doc.root.getChild( 0 ).getAttrCount() ).to.be.equal( 1 );
+		expect( doc.root.getChild( 0 )._getAttrCount() ).to.be.equal( 1 );
 		expect( doc.root.getChild( 0 ).hasAttr( newAttr ) ).to.be.true;
-		expect( doc.root.getChild( 1 ).getAttrCount() ).to.be.equal( 1 );
+		expect( doc.root.getChild( 1 )._getAttrCount() ).to.be.equal( 1 );
 		expect( doc.root.getChild( 1 ).hasAttr( oldAttr ) ).to.be.true;
-		expect( doc.root.getChild( 2 ).getAttrCount() ).to.be.equal( 1 );
+		expect( doc.root.getChild( 2 )._getAttrCount() ).to.be.equal( 1 );
 		expect( doc.root.getChild( 2 ).hasAttr( newAttr ) ).to.be.true;
 	} );
 
@@ -161,11 +161,11 @@ describe( 'ChangeOperation', function() {
 
 		expect( doc.version ).to.be.equal( 1 );
 		expect( doc.root.getChildCount() ).to.be.equal( 3 );
-		expect( doc.root.getChild( 0 ).getAttrCount() ).to.be.equal( 1 );
+		expect( doc.root.getChild( 0 )._getAttrCount() ).to.be.equal( 1 );
 		expect( doc.root.getChild( 0 ).hasAttr( newAttr ) ).to.be.true;
-		expect( doc.root.getChild( 1 ).getAttrCount() ).to.be.equal( 1 );
+		expect( doc.root.getChild( 1 )._getAttrCount() ).to.be.equal( 1 );
 		expect( doc.root.getChild( 1 ).hasAttr( newAttr ) ).to.be.true;
-		expect( doc.root.getChild( 2 ).getAttrCount() ).to.be.equal( 1 );
+		expect( doc.root.getChild( 2 )._getAttrCount() ).to.be.equal( 1 );
 		expect( doc.root.getChild( 2 ).hasAttr( oldAttr ) ).to.be.true;
 	} );
 
@@ -194,7 +194,7 @@ describe( 'ChangeOperation', function() {
 
 		expect( doc.version ).to.be.equal( 1 );
 		expect( doc.root.getChildCount() ).to.be.equal( 1 );
-		expect( doc.root.getChild( 0 ).getAttrCount() ).to.be.equal( 3 );
+		expect( doc.root.getChild( 0 )._getAttrCount() ).to.be.equal( 3 );
 		expect( doc.root.getChild( 0 ).hasAttr( fooAttr ) ).to.be.true;
 		expect( doc.root.getChild( 0 ).hasAttr( x2Attr ) ).to.be.true;
 		expect( doc.root.getChild( 0 ).hasAttr( barAttr ) ).to.be.true;
@@ -224,7 +224,7 @@ describe( 'ChangeOperation', function() {
 
 		expect( doc.version ).to.be.equal( 1 );
 		expect( doc.root.getChildCount() ).to.be.equal( 1 );
-		expect( doc.root.getChild( 0 ).getAttrCount() ).to.be.equal( 2 );
+		expect( doc.root.getChild( 0 )._getAttrCount() ).to.be.equal( 2 );
 		expect( doc.root.getChild( 0 ).hasAttr( fooAttr ) ).to.be.true;
 		expect( doc.root.getChild( 0 ).hasAttr( barAttr ) ).to.be.true;
 	} );
@@ -254,9 +254,9 @@ describe( 'ChangeOperation', function() {
 
 		expect( doc.version ).to.be.equal( 1 );
 		expect( doc.root.getChildCount() ).to.be.equal( 3 );
-		expect( doc.root.getChild( 0 ).getAttrCount() ).to.be.equal( 0 );
+		expect( doc.root.getChild( 0 )._getAttrCount() ).to.be.equal( 0 );
 		expect( doc.root.getChild( 1 ).hasAttr( fooAttr ) ).to.be.true;
-		expect( doc.root.getChild( 2 ).getAttrCount() ).to.be.equal( 0 );
+		expect( doc.root.getChild( 2 )._getAttrCount() ).to.be.equal( 0 );
 	} );
 
 	it( 'should create a change operation as a reverse', function() {
@@ -311,9 +311,9 @@ describe( 'ChangeOperation', function() {
 
 		expect( doc.version ).to.be.equal( 2 );
 		expect( doc.root.getChildCount() ).to.be.equal( 3 );
-		expect( doc.root.getChild( 0 ).getAttrCount() ).to.be.equal( 0 );
-		expect( doc.root.getChild( 1 ).getAttrCount() ).to.be.equal( 0 );
-		expect( doc.root.getChild( 2 ).getAttrCount() ).to.be.equal( 0 );
+		expect( doc.root.getChild( 0 )._getAttrCount() ).to.be.equal( 0 );
+		expect( doc.root.getChild( 1 )._getAttrCount() ).to.be.equal( 0 );
+		expect( doc.root.getChild( 2 )._getAttrCount() ).to.be.equal( 0 );
 	} );
 
 	it( 'should undo change attribute by applying reverse operation', function() {
@@ -345,11 +345,11 @@ describe( 'ChangeOperation', function() {
 
 		expect( doc.version ).to.be.equal( 2 );
 		expect( doc.root.getChildCount() ).to.be.equal( 3 );
-		expect( doc.root.getChild( 0 ).getAttrCount() ).to.be.equal( 1 );
+		expect( doc.root.getChild( 0 )._getAttrCount() ).to.be.equal( 1 );
 		expect( doc.root.getChild( 0 ).hasAttr( oldAttr ) ).to.be.true;
-		expect( doc.root.getChild( 1 ).getAttrCount() ).to.be.equal( 1 );
+		expect( doc.root.getChild( 1 )._getAttrCount() ).to.be.equal( 1 );
 		expect( doc.root.getChild( 1 ).hasAttr( oldAttr ) ).to.be.true;
-		expect( doc.root.getChild( 2 ).getAttrCount() ).to.be.equal( 1 );
+		expect( doc.root.getChild( 2 )._getAttrCount() ).to.be.equal( 1 );
 		expect( doc.root.getChild( 2 ).hasAttr( oldAttr ) ).to.be.true;
 	} );
 
@@ -381,11 +381,11 @@ describe( 'ChangeOperation', function() {
 
 		expect( doc.version ).to.be.equal( 2 );
 		expect( doc.root.getChildCount() ).to.be.equal( 3 );
-		expect( doc.root.getChild( 0 ).getAttrCount() ).to.be.equal( 1 );
+		expect( doc.root.getChild( 0 )._getAttrCount() ).to.be.equal( 1 );
 		expect( doc.root.getChild( 0 ).hasAttr( fooAttr ) ).to.be.true;
-		expect( doc.root.getChild( 1 ).getAttrCount() ).to.be.equal( 1 );
+		expect( doc.root.getChild( 1 )._getAttrCount() ).to.be.equal( 1 );
 		expect( doc.root.getChild( 1 ).hasAttr( fooAttr ) ).to.be.true;
-		expect( doc.root.getChild( 2 ).getAttrCount() ).to.be.equal( 1 );
+		expect( doc.root.getChild( 2 )._getAttrCount() ).to.be.equal( 1 );
 		expect( doc.root.getChild( 2 ).hasAttr( fooAttr ) ).to.be.true;
 	} );
 

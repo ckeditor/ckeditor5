@@ -28,22 +28,22 @@ CKEDITOR.define( [
 		 * Constructor let you create a list of nodes in many ways. See examples:
 		 *
 		 *		var nodeList = new NodeList( [ new Element( p1 ), new Element( p1 ) ] );
-		 *		nodeList.length // 2
+		 *		nodeList.length; // 2
 		 *
 		 *		var nodeList = new NodeList( new Element( p ) );
-		 *		nodeList.length // 1
+		 *		nodeList.length; // 1
 		 *
 		 *		var nodeList = new NodeList( [ 'foo', new Element( p ), 'bar' ] );
-		 *		nodeList.length // 7
+		 *		nodeList.length; // 7
 		 *
 		 *		var nodeList = new NodeList( 'foo' );
-		 *		nodeList.length // 3
+		 *		nodeList.length; // 3
 		 *
-		 *		var nodeList = new NodeList( new Text( 'foo', [ attrA, attrB ] ) );
-		 *		nodeList.length // 3
-		 *		nodeList.get( 0 ).getAttrCount() // 2
-		 *		nodeList.get( 1 ).getAttrCount() // 2
-		 *		nodeList.get( 2 ).getAttrCount() // 2
+		 *		var nodeList = new NodeList( new Text( 'foo', [ new Attribute( 'bar', 'bom' ) ] ) );
+		 *		nodeList.length; // 3
+		 *		nodeList.get( 0 ).getAttr( 'bar' ); // 'bom'
+		 *		nodeList.get( 1 ).getAttr( 'bar' ); // 'bom'
+		 *		nodeList.get( 2 ).getAttr( 'bar' ); // 'bom'
 		 *
 		 *		var nodeListA = new NodeList( 'foo' );
 		 *		var nodeListB = new NodeList( nodeListA );

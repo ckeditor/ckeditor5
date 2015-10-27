@@ -113,8 +113,8 @@ describe( 'constructor', function() {
 
 		foo.removeAttr( 'attr' );
 
-		expect( foo.getAttrCount() ).to.equals( 0 );
-		expect( bar.getAttrCount() ).to.equals( 1 );
+		expect( foo._getAttrCount() ).to.equals( 0 );
+		expect( bar._getAttrCount() ).to.equals( 1 );
 	} );
 } );
 
@@ -149,7 +149,7 @@ describe( 'setAttr', function() {
 		var attr = new Attribute( 'foo', 'bar' );
 		element.setAttr( attr );
 
-		expect( element.getAttrCount() ).to.equals( 1 );
+		expect( element._getAttrCount() ).to.equals( 1 );
 		expect( element.getAttr( attr.key ) ).to.equals( attr.value );
 	} );
 
@@ -163,7 +163,7 @@ describe( 'setAttr', function() {
 
 		element.setAttr( newAttr );
 
-		expect( element.getAttrCount() ).to.equals( 1 );
+		expect( element._getAttrCount() ).to.equals( 1 );
 		expect( element.getAttr( newAttr.key ) ).to.equals( newAttr.value );
 	} );
 } );
@@ -179,7 +179,7 @@ describe( 'removeAttr', function() {
 		var element = new Element( 'elem', [ attrA, attrB, attrC ] );
 		element.removeAttr( attrB.key );
 
-		expect( element.getAttrCount() ).to.equals( 2 );
+		expect( element._getAttrCount() ).to.equals( 2 );
 		expect( element.getAttr( attrA.key ) ).to.equals( attrA.value );
 		expect( element.getAttr( attrC.key ) ).to.equals( attrC.value );
 		expect( element.getAttr( attrB.key ) ).to.be.null;
