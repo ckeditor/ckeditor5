@@ -124,6 +124,52 @@ describe( 'getAttr', function() {
 	} );
 } );
 
+describe( 'setAttr', function() {
+	it( 'should insert an attribute', function() {
+		var Element = modules[ 'document/element' ];
+		var Attribute = modules[ 'document/attribute' ];
+
+		var element = new Element( 'elem' );
+		var attr = new Attribute( 'foo', 'bar' );
+		element.setAttr( attr );
+
+		expect( element.getAttrCount() ).to.equals( 1 );
+		expect( element.getAttr( attr.key ) ).to.equals( attr.value );
+	} );
+
+	it( 'should overwrite attribute with the same key', function() {
+		var Element = modules[ 'document/element' ];
+		var Attribute = modules[ 'document/attribute' ];
+
+		var oldAttr = new Attribute( 'foo', 'bar' );
+		var newAttr = new Attribute( 'foo', 'bar' );
+		var element = new Element( 'elem', [ oldAttr ] );
+
+		element.setAttr( newAttr );
+
+		expect( element.getAttrCount() ).to.equals( 1 );
+		expect( element.getAttr( newAttr.key ) ).to.equals( newAttr.value );
+	} );
+} );
+
+describe( 'removeAttr', function() {
+	it( 'should remove an attribute', function() {
+		var Element = modules[ 'document/element' ];
+		var Attribute = modules[ 'document/attribute' ];
+
+		var attrA = new Attribute( 'a', 'A' );
+		var attrB = new Attribute( 'b', 'b' );
+		var attrC = new Attribute( 'c', 'C' );
+		var element = new Element( 'elem', [ attrA, attrB, attrC ] );
+		element.removeAttr( attrB.key );
+
+		expect( element.getAttrCount() ).to.equals( 2 );
+		expect( element.getAttr( attrA.key ) ).to.equals( attrA.value );
+		expect( element.getAttr( attrC.key ) ).to.equals( attrC.value );
+		expect( element.getAttr( attrB.key ) ).to.be.null;
+	} );
+} );
+
 describe( 'hasAttr', function() {
 	it( 'should check attribute by key', function() {
 		var Element = modules[ 'document/element' ];

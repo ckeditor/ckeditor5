@@ -91,6 +91,11 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 			return null;
 		}
 
+		/**
+		 * Removes attribute from the list of attribute.
+		 *
+		 * @param {String} key Attribute key.
+		 */
 		removeAttr( key ) {
 			var i, len;
 
@@ -103,10 +108,21 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 			}
 		}
 
+		/**
+		 * Get number of attributes.
+		 *
+		 * @protected
+		 * @returns {Number} Number of attributes.
+		 */
 		getAttrCount() {
 			return this._attrs.length;
 		}
 
+		/**
+		 * Insert a given attribute. If the attribute with the same key already exists it will be removed.
+		 *
+		 * @param {document.Attribute} attr Attribute to insert.
+		 */
 		setAttr( attr ) {
 			this.removeAttr( attr.key );
 
