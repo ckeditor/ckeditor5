@@ -12,49 +12,25 @@ var modules = bender.amd.require( 'ckeditor', 'ui/region', 'ui/view', 'collectio
 
 bender.tools.createSinonSandbox();
 
-describe( 'Region', function() {
-	var region;
-	var el;
+var TestViewA, TestViewB;
+var region, el;
 
-	var TestViewA;
-	var TestViewB;
+beforeEach( createRegionInstance );
 
-	beforeEach( 'Create a test region instance', function() {
-		var Region = modules[ 'ui/region' ];
-		var View = modules[ 'ui/view' ];
-
-		class A extends View {
-			constructor() {
-				super();
-				this.template = { tag: 'a' };
-			}
-		}
-
-		class B extends View {
-			constructor() {
-				super();
-				this.template = { tag: 'b' };
-			}
-		}
-
-		TestViewA = A;
-		TestViewB = B;
-
-		el = document.createElement( 'div' );
-		region = new Region( 'foo', el );
-	} );
-
-	it( 'accepts constructor paramaters', function() {
+describe( 'constructor', function() {
+	it( 'accepts name and element', function() {
 		expect( region ).to.have.property( 'name', 'foo' );
 		expect( region ).to.have.property( 'el', el );
 	} );
+} );
 
-	it( 'has views collection', function() {
+describe( 'views collection', function() {
+	it( 'is an instance of Collection', function() {
 		var Collection = modules.collection;
 		expect( region.views ).to.be.an.instanceof( Collection );
 	} );
 
-	it( 'adds views to collection', function() {
+	it( 'updates DOM when adding views', function() {
 		expect( region.el.childNodes.length ).to.be.equal( 0 );
 
 		region.views.add( new TestViewA() );
@@ -64,25 +40,28 @@ describe( 'Region', function() {
 		expect( region.el.childNodes.length ).to.be.equal( 2 );
 	} );
 
-	it( 'removes views from collection', function() {
+	it( 'updates DOM when removing views', function() {
 		var viewA = new TestViewA();
 		var viewB = new TestViewB();
 
 		region.views.add( viewA );
 		region.views.add( viewB );
 
-		var childNodes = region.el.childNodes;
-
-		expect( [].map.call( childNodes, n => n.nodeName ).join( ',' ) ).to.be.equal( 'A,B' );
+		expect( el.childNodes.length ).to.be.equal( 2 );
+		expect( el.firstChild.nodeName ).to.be.equal( 'A' );
+		expect( el.lastChild.nodeName ).to.be.equal( 'B' );
 
 		region.views.remove( viewA );
-		expect( [].map.call( childNodes, n => n.nodeName ).join( ',' ) ).to.be.equal( 'B' );
+		expect( el.childNodes.length ).to.be.equal( 1 );
+		expect( el.firstChild.nodeName ).to.be.equal( 'B' );
 
 		region.views.remove( viewB );
-		expect( childNodes.length ).to.be.equal( 0 );
+		expect( el.childNodes.length ).to.be.equal( 0 );
 	} );
+} );
 
-	it( 'destroys properly', function() {
+describe( 'destroy', function() {
+	it( 'destroys the region', function() {
 		// Append the region's element to some container.
 		var container = document.createElement( 'div' );
 		container.appendChild( el );
@@ -109,3 +88,28 @@ describe( 'Region', function() {
 		expect( spy.calledOnce ).to.be.true;
 	} );
 } );
+
+function createRegionInstance() {
+	var Region = modules[ 'ui/region' ];
+	var View = modules[ 'ui/view' ];
+
+	class A extends View {
+		constructor() {
+			super();
+			this.template = { tag: 'a' };
+		}
+	}
+
+	class B extends View {
+		constructor() {
+			super();
+			this.template = { tag: 'b' };
+		}
+	}
+
+	TestViewA = A;
+	TestViewB = B;
+
+	el = document.createElement( 'div' );
+	region = new Region( 'foo', el );
+}
