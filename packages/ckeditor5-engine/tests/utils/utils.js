@@ -73,6 +73,56 @@ describe( 'uid', function() {
 	} );
 } );
 
+describe( 'isIterable', function() {
+	it( 'should be true for string', function() {
+		var utils = modules.utils;
+
+		var string = 'foo';
+
+		expect( utils.isIterable( string ) ).to.be.true;
+	} );
+
+	it( 'should be true for arrays', function() {
+		var utils = modules.utils;
+
+		var array = [ 1, 2, 3 ];
+
+		expect( utils.isIterable( array ) ).to.be.true;
+	} );
+
+	it( 'should be true for iterable classes', function() {
+		var utils = modules.utils;
+
+		class IterableClass {
+			constructor() {
+				this.array = [ 1, 2, 3 ];
+			}
+
+			[ Symbol.iterator ]() {
+				return this.array[ Symbol.iterator ]();
+			}
+		}
+
+		var instance = new IterableClass();
+
+		expect( utils.isIterable( instance ) ).to.be.true;
+	} );
+
+	it( 'should be false for not iterable objects', function() {
+		var utils = modules.utils;
+
+		var notIterable = { foo: 'bar' };
+
+		expect( utils.isIterable( notIterable ) ).to.be.false;
+	} );
+
+	it( 'should be false for undefined', function() {
+		var utils = modules.utils;
+
+		expect( utils.isIterable() ).to.be.false;
+	} );
+} );
+
 describe( 'Lo-Dash extensions', function() {
 	// Ensures that the required Lo-Dash extensions are available in `utils`.
 	it( 'should be exposed in utils', function() {

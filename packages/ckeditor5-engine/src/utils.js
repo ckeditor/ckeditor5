@@ -43,7 +43,17 @@ CKEDITOR.define( [ 'utils-lodash', 'lib/lodash/lodash-ckeditor' ], function( lod
 			return function() {
 				return next++;
 			};
-		} )()
+		} )(),
+
+		/**
+		 * Checks if value implements iterator interface.
+		 *
+		 * @param {Mixed} value The value to check.
+		 * @returns {Boolean} True if value implements iterator interface.
+		 */
+		isIterable( value ) {
+			return !!( value && value[ Symbol.iterator ] );
+		}
 	};
 
 	// Extend "utils" with Lo-Dash methods.

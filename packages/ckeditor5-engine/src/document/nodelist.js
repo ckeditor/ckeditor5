@@ -68,29 +68,27 @@ CKEDITOR.define( [
 			this._nodes = [];
 
 			if ( nodes ) {
-				var node, i, j, nodeLen, nodesLen;
+				var node, i, nodeLen;
 
-				if ( !utils.isArray( nodes ) ) {
+				if ( !utils.isIterable( nodes ) ) {
 					nodes = [ nodes ];
 				}
 
-				for ( i = 0, nodesLen = nodes.length; i < nodesLen; i++ ) {
-					node = nodes[ i ];
-
+				for ( node of nodes ) {
 					// Node.
 					if ( node instanceof Node ) {
 						this._nodes.push( node );
 					}
 					// Text.
 					else if ( node instanceof Text ) {
-						for ( j = 0, nodeLen = node.text.length; j < nodeLen; j++ ) {
-							this._nodes.push( new Character( node.text[ j ], node.attrs ) );
+						for ( i = 0, nodeLen = node.text.length; i < nodeLen; i++ ) {
+							this._nodes.push( new Character( node.text[ i ], node.attrs ) );
 						}
 					}
 					// String.
 					else {
-						for ( j = 0, nodeLen = node.length; j < nodeLen; j++ ) {
-							this._nodes.push( new Character( node[ j ] ) );
+						for ( i = 0, nodeLen = node.length; i < nodeLen; i++ ) {
+							this._nodes.push( new Character( node[ i ] ) );
 						}
 					}
 				}
