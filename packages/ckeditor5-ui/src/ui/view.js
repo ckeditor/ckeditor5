@@ -47,33 +47,35 @@ CKEDITOR.define( [
 		 * @property el
 		 */
 		get el() {
-			if ( this._el ) {
-				return this._el;
-			}
-
-			// Render the element using the template.
-			this._el = this.render();
-
-			return this._el;
+			return this._el || this.render();
 		}
 
 		/**
-		 * Binds a property of the model to a specific listener that
-		 * updates the view when the property changes.
+		 * Binds a `property` of View's model so the DOM of the View is updated when the `property`
+		 * changes. It returns a function which, once called in the context of a DOM element,
+		 * attaches a listener to the model which, in turn, brings changes to DOM.
 		 *
-		 * @param {Model} model Model to which the property is bound to.
-		 * @param {String} property Property name in the model.
+		 * @param {String} property Property name in the model to be observed.
 		 * @param {Function} [callback] Callback function executed on property change in model.
-		 * @constructor
+		 * If not specified, a default DOM `domUpdater` supplied by the template is used.
 		 */
 		bind( property, callback ) {
-			var model = this.model;
-
-			return function attachModelListener( el, domUpdater ) {
+			/**
+			 * Attaches a listener to View's model, which updates DOM when the model's property
+			 * changes. DOM is either updated by the `domUpdater` function supplied by the template
+			 * (like attribute changer or `innerHTML` setter) or custom `callback` passed to {@link #bind}.
+			 *
+			 * This function is called by {@link Template#render}.
+			 *
+			 * @param {HTMLElement} el DOM element to be updated when `property` in model changes.
+			 * @param {Function} domUpdater A function provided by the template which updates corresponding
+			 * DOM.
+			 */
+			var attachModelListener = ( el, domUpdater ) => {
 				// TODO: Use ES6 default arguments syntax.
 				callback = callback || domUpdater;
 
-				var listenerCallback = ( evt, value ) => {
+				var onModelChange = ( evt, value ) => {
 					var processedValue = callback( el, value );
 
 					if ( typeof processedValue != 'undefined' ) {
@@ -82,17 +84,19 @@ CKEDITOR.define( [
 				};
 
 				// Execute callback when the property changes.
-				this.listenTo( model, 'change:' + property, listenerCallback );
+				this.listenTo( this.model, 'change:' + property, onModelChange );
 
 				// Set the initial state of the view.
-				listenerCallback( null, model[ property ] );
-			}.bind( this );
+				onModelChange( null, this.model[ property ] );
+			};
+
+			return attachModelListener;
 		}
 
 		/**
 		 * Renders View's {@link el} using {@link Template} instance.
 		 *
-		 * @returns {HTMLElement}
+		 * @returns {HTMLElement} A root element of the View ({@link el}).
 		 */
 		render() {
 			if ( !this.template ) {
@@ -103,11 +107,11 @@ CKEDITOR.define( [
 			}
 
 			// Prepare pre–defined listeners.
-			this._prepareTemplateListeners();
+			this.prepareListeners();
 
 			this._template = new Template( this.template );
 
-			return this._template.render();
+			return ( this._el = this._template.render() );
 		}
 
 		/**
@@ -136,7 +140,7 @@ CKEDITOR.define( [
 		 *
 		 * The execution is performed by {@link Template} class.
 		 */
-		_prepareTemplateListeners() {
+		prepareListeners() {
 			/**
 			 * For a given event name or callback, returns a function which,
 			 * once executed in a context of an element, attaches native DOM listener
@@ -213,9 +217,7 @@ CKEDITOR.define( [
 						//        ...
 						//    }
 						if ( Array.isArray( evtNameOrCallback ) ) {
-							on[ domEvtName ] = on[ domEvtName ].map(
-								evtNameOrCallback => getDOMListenerAttacher( evtNameOrCallback )
-							);
+							on[ domEvtName ] = on[ domEvtName ].map( getDOMListenerAttacher );
 						}
 						// Listeners allow definition with a string containing event name:
 						//
