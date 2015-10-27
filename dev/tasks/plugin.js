@@ -43,10 +43,12 @@ function createNewPlugin( done ) {
 
 // Links new plugin directory using npm link.
 function linkNPM( info ) {
+	// Don't use sudo on windows when executing npm link.
+	var isWin = process.platform == 'win32';
 	log( 'Linking plugin using npm link...' );
 
 	return new Promise( function( resolve ) {
-		tools.shExec( 'sudo npm link ' + info.repositoryLocation );
+		tools.shExec( ( !isWin ? 'sudo ' : '' ) + 'npm link ' + info.repositoryLocation );
 		resolve( info );
 	} );
 }
