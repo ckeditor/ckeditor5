@@ -25,7 +25,7 @@ describe( 'constructor', function() {
 		expect( element ).to.be.an.instanceof( Node );
 		expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
 		expect( element ).to.have.property( 'parent' ).that.equals( parent );
-		expect( element.getAttrCount() ).to.equals( 0 );
+		expect( element._getAttrCount() ).to.equals( 0 );
 	} );
 
 	it( 'should create element with attributes', function() {
@@ -42,7 +42,7 @@ describe( 'constructor', function() {
 		expect( element ).to.be.an.instanceof( Node );
 		expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
 		expect( element ).to.have.property( 'parent' ).that.equals( parent );
-		expect( element.getAttrCount() ).to.equals( 1 );
+		expect( element._getAttrCount() ).to.equals( 1 );
 		expect( element.getAttr( attr.key ) ).to.equals( attr.value );
 	} );
 

@@ -110,7 +110,7 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 		 * @protected
 		 * @returns {Number} Number of attributes.
 		 */
-		getAttrCount() {
+		_getAttrCount() {
 			var count = 0;
 
 			for ( var attr of this._attrs ) { // jshint ignore:line
