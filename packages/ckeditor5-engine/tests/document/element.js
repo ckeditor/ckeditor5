@@ -25,7 +25,7 @@ describe( 'constructor', function() {
 		expect( element ).to.be.an.instanceof( Node );
 		expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
 		expect( element ).to.have.property( 'parent' ).that.equals( parent );
-		expect( element ).to.have.property( 'attrs' ).that.is.an( 'array' ).and.is.empty;
+		expect( element.getAttrCount() ).to.equals( 0 );
 	} );
 
 	it( 'should create element with attributes', function() {
@@ -33,7 +33,7 @@ describe( 'constructor', function() {
 		var Node = modules[ 'document/node' ];
 		var Attribute = modules[ 'document/attribute' ];
 
-		var attr = new Attribute( 'key', 'value' );
+		var attr = new Attribute( 'foo', 'bar' );
 
 		var element = new Element( 'elem', [ attr ] );
 
@@ -42,8 +42,8 @@ describe( 'constructor', function() {
 		expect( element ).to.be.an.instanceof( Node );
 		expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
 		expect( element ).to.have.property( 'parent' ).that.equals( parent );
-		expect( element ).to.have.property( 'attrs' ).that.is.an( 'array' ).with.length( 1 );
-		expect( element.attrs[ 0 ] ).that.equals( attr );
+		expect( element.getAttrCount() ).to.equals( 1 );
+		expect( element.getAttr( attr.key ) ).to.equals( attr.value );
 	} );
 
 	it( 'should create element with children', function() {

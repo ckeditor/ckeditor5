@@ -88,7 +88,7 @@ CKEDITOR.define( [ 'document/operation', 'ckeditorerror', 'utils' ], function( O
 								{ changeOperation: this, node: value.node, attr: oldAttr } );
 						}
 
-						doRemove( value.node.attrs, oldAttr );
+						value.node.removeAttr( oldAttr.key );
 					}
 				}
 			}
@@ -110,7 +110,7 @@ CKEDITOR.define( [ 'document/operation', 'ckeditorerror', 'utils' ], function( O
 								{ changeOperation: this, node: value.node, attr: newAttr } );
 						}
 
-						doInsert( value.node.attrs, newAttr );
+						value.node.setAttr( newAttr );
 					}
 				}
 			}
@@ -147,27 +147,9 @@ CKEDITOR.define( [ 'document/operation', 'ckeditorerror', 'utils' ], function( O
 								{ changeOperation: this, node: value.node, oldAttr: oldAttr, newAttr: newAttr } );
 						}
 
-						doRemove( value.node.attrs, oldAttr );
-
-						doInsert( value.node.attrs, newAttr );
+						value.node.setAttr( newAttr );
 					}
 				}
-			}
-
-			function doRemove( attrs, attrToRemove ) {
-				var i, len;
-
-				for ( i = 0, len = attrs.length; i < len; i++ ) {
-					if ( attrs[ i ].isEqual( attrToRemove ) ) {
-						attrs.splice( i, 1 );
-
-						return;
-					}
-				}
-			}
-
-			function doInsert( attrs, attrToInsert ) {
-				attrs.push( attrToInsert );
 			}
 		}
 

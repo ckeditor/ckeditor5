@@ -110,7 +110,7 @@ describe( 'getAttr', function() {
 		var fooAttr = new Attribute( 'foo', true );
 		var element = new Element( 'foo', [ fooAttr ] );
 
-		expect( element.getAttr( 'foo' ).isEqual( fooAttr ) ).to.be.true;
+		expect( element.getAttr( 'foo' ) ).to.equals( fooAttr.value );
 	} );
 
 	it( 'should return null if attribute was not found by key', function() {
@@ -121,27 +121,6 @@ describe( 'getAttr', function() {
 		var element = new Element( 'foo', [ fooAttr ] );
 
 		expect( element.getAttr( 'bar' ) ).to.be.null;
-	} );
-
-	it( 'should be possible to get attribute by object', function() {
-		var Element = modules[ 'document/element' ];
-		var Attribute = modules[ 'document/attribute' ];
-
-		var fooAttr = new Attribute( 'foo', true );
-		var foo2Attr = new Attribute( 'foo', true );
-		var element = new Element( 'foo', [ fooAttr ] );
-
-		expect( element.getAttr( foo2Attr ).isEqual( fooAttr ) ).to.be.true;
-	} );
-
-	it( 'should return null if attribute was not found by object', function() {
-		var Element = modules[ 'document/element' ];
-		var Attribute = modules[ 'document/attribute' ];
-
-		var fooAttr = new Attribute( 'foo', true );
-		var element = new Element( 'foo' );
-
-		expect( element.getAttr( fooAttr ) ).to.be.null;
 	} );
 } );
 
@@ -203,14 +182,14 @@ describe( 'hasAttr', function() {
 		expect( parsedFoo ).to.be.deep.equals( {
 			name: 'foo',
 			parent: null,
-			attrs: [],
+			_attrs: [],
 			_children: new NodeList( parsedFoo._children )
 		} );
 
 		expect( parsedBar ).to.be.deep.equals( {
 			character: 'b',
 			parent: 'foo',
-			attrs: []
+			_attrs: []
 		} );
 	} );
 } );
