@@ -89,7 +89,7 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 			var pos;
 
 			// No parent or child doesn't exist in parent's children.
-			if ( !this.parent || ( pos = this.parent.children.indexOf( this ) ) == -1 ) {
+			if ( !this.parent || ( pos = this.parent.getChildIndex( this ) ) == -1 ) {
 				return null;
 			}
 
@@ -140,7 +140,7 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 		get nextSibling() {
 			var pos = this.positionInParent;
 
-			return ( pos !== null && this.parent.children.get( pos + 1 ) ) || null;
+			return ( pos !== null && this.parent.getChild( pos + 1 ) ) || null;
 		}
 
 		/**
@@ -152,7 +152,7 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 		get previousSibling() {
 			var pos = this.positionInParent;
 
-			return ( pos !== null && this.parent.children.get( pos - 1 ) ) || null;
+			return ( pos !== null && this.parent.getChild( pos - 1 ) ) || null;
 		}
 
 		/**

@@ -73,7 +73,7 @@ CKEDITOR.define( [
 				var i = 0;
 
 				for ( var node of this.nodeList ) {
-					if ( !utils.isEqual( sourceElement.children.get( sourceOffset + i ), node ) ) {
+					if ( !utils.isEqual( sourceElement.getChild( sourceOffset + i ), node ) ) {
 						/**
 						 * The node which should be removed does not exists.
 						 *

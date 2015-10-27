@@ -66,7 +66,7 @@ CKEDITOR.define( [
 			var parent = position.parent;
 
 			// We are at the end of the root.
-			if ( parent.parent === null && position.offset === parent.children.length ) {
+			if ( parent.parent === null && position.offset === parent.getChildCount() ) {
 				return { done: true };
 			}
 
@@ -117,7 +117,7 @@ CKEDITOR.define( [
 			var nodeBefore = position.nodeBefore;
 
 			if ( nodeBefore instanceof Element ) {
-				this.position = Position.makePositionFromParentAndOffset( nodeBefore, nodeBefore.children.length );
+				this.position = Position.makePositionFromParentAndOffset( nodeBefore, nodeBefore.getChildCount() );
 
 				return formatReturnValue( CLOSING_TAG, nodeBefore );
 			} else if ( nodeBefore instanceof Character ) {

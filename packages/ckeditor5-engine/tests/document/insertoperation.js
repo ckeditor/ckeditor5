@@ -30,8 +30,8 @@ describe( 'InsertOperation', function() {
 			doc.version ) );
 
 		expect( doc.version ).to.be.equal( 1 );
-		expect( doc.root.children.length ).to.be.equal( 1 );
-		expect( doc.root.children.get( 0 ).character ).to.be.equal( 'x' );
+		expect( doc.root.getChildCount() ).to.be.equal( 1 );
+		expect( doc.root.getChild( 0 ).character ).to.be.equal( 'x' );
 	} );
 
 	it( 'should insert set of nodes', function() {
@@ -44,10 +44,10 @@ describe( 'InsertOperation', function() {
 		doc.applyOperation( new InsertOperation( new Position( [ 0 ], doc.root ), 'bar', doc.version ) );
 
 		expect( doc.version ).to.be.equal( 1 );
-		expect( doc.root.children.length ).to.be.equal( 3 );
-		expect( doc.root.children.get( 0 ).character ).to.be.equal( 'b' );
-		expect( doc.root.children.get( 1 ).character ).to.be.equal( 'a' );
-		expect( doc.root.children.get( 2 ).character ).to.be.equal( 'r' );
+		expect( doc.root.getChildCount() ).to.be.equal( 3 );
+		expect( doc.root.getChild( 0 ).character ).to.be.equal( 'b' );
+		expect( doc.root.getChild( 1 ).character ).to.be.equal( 'a' );
+		expect( doc.root.getChild( 2 ).character ).to.be.equal( 'r' );
 	} );
 
 	it( 'should insert between existing nodes', function() {
@@ -62,12 +62,12 @@ describe( 'InsertOperation', function() {
 		doc.applyOperation( new InsertOperation( new Position( [ 1 ], doc.root ), 'bar', doc.version ) );
 
 		expect( doc.version ).to.be.equal( 1 );
-		expect( doc.root.children.length ).to.be.equal( 5 );
-		expect( doc.root.children.get( 0 ).character ).to.be.equal( 'x' );
-		expect( doc.root.children.get( 1 ).character ).to.be.equal( 'b' );
-		expect( doc.root.children.get( 2 ).character ).to.be.equal( 'a' );
-		expect( doc.root.children.get( 3 ).character ).to.be.equal( 'r' );
-		expect( doc.root.children.get( 4 ).character ).to.be.equal( 'y' );
+		expect( doc.root.getChildCount() ).to.be.equal( 5 );
+		expect( doc.root.getChild( 0 ).character ).to.be.equal( 'x' );
+		expect( doc.root.getChild( 1 ).character ).to.be.equal( 'b' );
+		expect( doc.root.getChild( 2 ).character ).to.be.equal( 'a' );
+		expect( doc.root.getChild( 3 ).character ).to.be.equal( 'r' );
+		expect( doc.root.getChild( 4 ).character ).to.be.equal( 'y' );
 	} );
 
 	it( 'should insert text', function() {
@@ -84,14 +84,14 @@ describe( 'InsertOperation', function() {
 			doc.version ) );
 
 		expect( doc.version ).to.be.equal( 1 );
-		expect( doc.root.children.length ).to.be.equal( 7 );
-		expect( doc.root.children.get( 0 ).character ).to.be.equal( 'f' );
-		expect( doc.root.children.get( 1 ).character ).to.be.equal( 'o' );
-		expect( doc.root.children.get( 2 ).character ).to.be.equal( 'o' );
-		expect( doc.root.children.get( 3 ).character ).to.be.equal( 'x' );
-		expect( doc.root.children.get( 4 ).character ).to.be.equal( 'b' );
-		expect( doc.root.children.get( 5 ).character ).to.be.equal( 'a' );
-		expect( doc.root.children.get( 6 ).character ).to.be.equal( 'r' );
+		expect( doc.root.getChildCount() ).to.be.equal( 7 );
+		expect( doc.root.getChild( 0 ).character ).to.be.equal( 'f' );
+		expect( doc.root.getChild( 1 ).character ).to.be.equal( 'o' );
+		expect( doc.root.getChild( 2 ).character ).to.be.equal( 'o' );
+		expect( doc.root.getChild( 3 ).character ).to.be.equal( 'x' );
+		expect( doc.root.getChild( 4 ).character ).to.be.equal( 'b' );
+		expect( doc.root.getChild( 5 ).character ).to.be.equal( 'a' );
+		expect( doc.root.getChild( 6 ).character ).to.be.equal( 'r' );
 	} );
 
 	it( 'should create a remove operation as a reverse', function() {
@@ -138,7 +138,7 @@ describe( 'InsertOperation', function() {
 		doc.applyOperation( reverse );
 
 		expect( doc.version ).to.be.equal( 2 );
-		expect( doc.root.children.length ).to.be.equal( 0 );
+		expect( doc.root.getChildCount() ).to.be.equal( 0 );
 	} );
 
 	it( 'should undo insert set of nodes by applying reverse operation', function() {
@@ -159,6 +159,6 @@ describe( 'InsertOperation', function() {
 		doc.applyOperation( reverse );
 
 		expect( doc.version ).to.be.equal( 2 );
-		expect( doc.root.children.length ).to.be.equal( 0 );
+		expect( doc.root.getChildCount() ).to.be.equal( 0 );
 	} );
 } );

@@ -37,10 +37,10 @@ CKEDITOR.define( [ 'document/node', 'document/nodelist' ], function( Node, NodeL
 			/**
 			 * List of children nodes.
 			 *
-			 * @readonly
-			 * @property {document.NodeList} children
+			 * @protected
+			 * @property {document.NodeList} _children
 			 */
-			this.children = new NodeList();
+			this._children = new NodeList();
 
 			if ( children ) {
 				this.insertChildren( 0, children );
@@ -58,9 +58,9 @@ CKEDITOR.define( [ 'document/node', 'document/nodelist' ], function( Node, NodeL
 		 * List of nodes can be any type accepted by the {@link document.NodeList} constructor.
 		 */
 		insertChildren( index, nodes ) {
-			this.children.insert( index, new NodeList( nodes ) );
+			this._children.insert( index, new NodeList( nodes ) );
 
-			for ( var node of this.children ) {
+			for ( var node of this._children ) {
 				node.parent = this;
 			}
 		}
@@ -77,10 +77,39 @@ CKEDITOR.define( [ 'document/node', 'document/nodelist' ], function( Node, NodeL
 
 		removeChildren( index, number ) {
 			for ( var i = index; i < index + number; i++ ) {
-				this.children.get( i ).parent = null;
+				this._children.get( i ).parent = null;
 			}
 
-			this.children.remove( index, number );
+			this._children.remove( index, number );
+		}
+
+		/**
+		 * Get child at given index.
+		 *
+		 * @param {Number} index Index of child.
+		 * @returns {document.Node} Child node.
+		 */
+		getChild( index ) {
+			return this._children.get( index );
+		}
+
+		/**
+		 * Get index of child node.
+		 *
+		 * @param {document.Node} node Child node.
+		 * @returns {Number} Index of child.
+		 */
+		getChildIndex( node ) {
+			return this._children.indexOf( node );
+		}
+
+		/**
+		 * Gets number of element's children.
+		 *
+		 * @returns {Number} Number of element's children.
+		 */
+		getChildCount() {
+			return this._children.length;
 		}
 	}
 
