@@ -26,7 +26,6 @@ describe( 'constructor', function() {
 		setTestViewInstance( { a: 'foo', b: 42 } );
 
 		expect( view.model ).to.be.an.instanceof( modules.model );
-
 		expect( view ).to.have.deep.property( 'model.a', 'foo' );
 		expect( view ).to.have.deep.property( 'model.b', 42 );
 	} );
@@ -441,6 +440,7 @@ describe( 'destroy', function() {
 
 		setTestViewInstance( { foo: 'bar' } );
 
+		// Keep the reference after the view is destroyed.
 		var model = view.model;
 
 		expect( view.el.outerHTML ).to.be.equal( '<p>bar</p>' );
@@ -460,9 +460,7 @@ function updateModuleReference() {
 }
 
 function createViewInstanceWithTemplate() {
-	setTestViewClass( () => {
-		return { tag: 'a' };
-	} );
+	setTestViewClass( () => ( { tag: 'a' } ) );
 	setTestViewInstance();
 }
 
