@@ -41,9 +41,9 @@ CKEDITOR.define( [
 		 *
 		 *		var nodeList = new NodeList( new Text( 'foo', [ attrA, attrB ] ) );
 		 *		nodeList.length // 3
-		 *		nodeList.get( 0 ).attrs.length // 2
-		 *		nodeList.get( 1 ).attrs.length // 2
-		 *		nodeList.get( 2 ).attrs.length // 2
+		 *		nodeList.get( 0 ).getAttrCount() // 2
+		 *		nodeList.get( 1 ).getAttrCount() // 2
+		 *		nodeList.get( 2 ).getAttrCount() // 2
 		 *
 		 *		var nodeListA = new NodeList( 'foo' );
 		 *		var nodeListB = new NodeList( nodeListA );

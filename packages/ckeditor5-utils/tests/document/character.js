@@ -27,7 +27,7 @@ describe( 'constructor', function() {
 		expect( character ).to.be.an.instanceof( Node );
 		expect( character ).to.have.property( 'character' ).that.equals( 'f' );
 		expect( character ).to.have.property( 'parent' ).that.equals( parent );
-		expect( character ).to.have.property( 'attrs' ).that.is.an( 'array' ).and.is.empty;
+		expect( character.getAttrCount() ).to.equals( 0 );
 	} );
 
 	it( 'should create character with attributes', function() {
@@ -36,7 +36,7 @@ describe( 'constructor', function() {
 		var Node = modules[ 'document/node' ];
 		var Attribute = modules[ 'document/attribute' ];
 
-		var attr = new Attribute( 'key', 'value' );
+		var attr = new Attribute( 'foo', 'bar' );
 
 		var character = new Character( 'f', [ attr ] );
 
@@ -45,7 +45,7 @@ describe( 'constructor', function() {
 		expect( character ).to.be.an.instanceof( Node );
 		expect( character ).to.have.property( 'character' ).that.equals( 'f' );
 		expect( character ).to.have.property( 'parent' ).that.equals( parent );
-		expect( character ).to.have.property( 'attrs' ).that.is.an( 'array' ).with.length( 1 );
-		expect( character.attrs[ 0 ] ).that.equals( attr );
+		expect( character.getAttrCount() ).to.be.equals( 1 );
+		expect( character.getAttr( attr.key ) ).to.equals( attr.value );
 	} );
 } );

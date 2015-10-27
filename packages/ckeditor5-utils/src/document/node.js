@@ -35,9 +35,10 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 			 *
 			 * Attributes of nodes attached to the document can be changed only be the {@link document.ChangeOpeation}.
 			 *
+			 * @private
 			 * @property {Array} attr
 			 */
-			this.attrs = attrs || [];
+			this._attrs = attrs || [];
 		}
 
 		/**
@@ -48,7 +49,26 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 		 * @returns {Boolean} True if node contains given attribute or attribute with given key.
 		 */
 		hasAttr( attr ) {
-			return this.getAttr( attr ) !== null;
+			var i, len;
+
+			// Attribute
+			if ( attr instanceof Attribute ) {
+				for ( i = 0, len = this._attrs.length; i < len; i++ ) {
+					if ( this._attrs[ i ].isEqual( attr ) ) {
+						return true;
+					}
+				}
+			}
+			// Key
+			else {
+				for ( i = 0, len = this._attrs.length; i < len; i++ ) {
+					if ( this._attrs[ i ].key == attr ) {
+						return true;
+					}
+				}
+			}
+
+			return false;
 		}
 
 		/**
@@ -59,24 +79,38 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 		 * @returns {document.Attribute} Attribute if node contains given attribute or attribute with given key,
 		 * or null if attribute was not found.
 		 */
-		getAttr( attr ) {
+		getAttr( key ) {
 			var i, len;
 
-			if ( attr instanceof Attribute ) {
-				for ( i = 0, len = this.attrs.length; i < len; i++ ) {
-					if ( this.attrs[ i ].isEqual( attr ) ) {
-						return this.attrs[ i ];
-					}
-				}
-			} else {
-				for ( i = 0, len = this.attrs.length; i < len; i++ ) {
-					if ( this.attrs[ i ].key == attr ) {
-						return this.attrs[ i ];
-					}
+			for ( i = 0, len = this._attrs.length; i < len; i++ ) {
+				if ( this._attrs[ i ].key == key ) {
+					return this._attrs[ i ].value;
 				}
 			}
 
 			return null;
+		}
+
+		removeAttr( key ) {
+			var i, len;
+
+			for ( i = 0, len = this._attrs.length; i < len; i++ ) {
+				if ( this._attrs[ i ].key == key ) {
+					this._attrs.splice( i, 1 );
+
+					return;
+				}
+			}
+		}
+
+		getAttrCount() {
+			return this._attrs.length;
+		}
+
+		setAttr( attr ) {
+			this.removeAttr( attr.key );
+
+			this._attrs.push( attr );
 		}
 
 		/**

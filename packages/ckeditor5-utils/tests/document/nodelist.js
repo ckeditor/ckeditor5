@@ -56,20 +56,17 @@ describe( 'constructor', function() {
 		var Text = modules[ 'document/text' ];
 		var Attribute = modules[ 'document/attribute' ];
 
-		var attrs = [ new Attribute( 'bold', true ) ];
+		var attr = new Attribute( 'bold', true );
 
-		var nodeList = new NodeList( new Text( 'foo', attrs ) );
+		var nodeList = new NodeList( new Text( 'foo', [ attr ] ) );
 
 		expect( nodeList.length ).to.be.equal( 3 );
 		expect( nodeList.get( 0 ).character ).to.be.equal( 'f' );
-		expect( nodeList.get( 0 ).attrs ).to.be.deep.equal( attrs );
-		expect( nodeList.get( 0 ).attrs ).not.to.be.equal( attrs );
+		expect( nodeList.get( 0 ).getAttr( attr.key ) ).to.be.equal( attr.value );
 		expect( nodeList.get( 1 ).character ).to.be.equal( 'o' );
-		expect( nodeList.get( 1 ).attrs ).to.be.deep.equal( attrs );
-		expect( nodeList.get( 1 ).attrs ).not.to.be.equal( attrs );
+		expect( nodeList.get( 1 ).getAttr( attr.key ) ).to.be.equal( attr.value );
 		expect( nodeList.get( 2 ).character ).to.be.equal( 'o' );
-		expect( nodeList.get( 2 ).attrs ).to.be.deep.equal( attrs );
-		expect( nodeList.get( 2 ).attrs ).not.to.be.equal( attrs );
+		expect( nodeList.get( 2 ).getAttr( attr.key ) ).to.be.equal( attr.value );
 	} );
 } );
 
