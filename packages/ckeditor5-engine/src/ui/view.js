@@ -10,6 +10,7 @@
  *
  * @class View
  * @extends Model
+ * @mixins DOMEmitterMixin
  */
 
 CKEDITOR.define( [
@@ -24,7 +25,7 @@ CKEDITOR.define( [
 		/**
 		 * Creates an instance of the {@link View} class.
 		 *
-		 * @param {Model} mode (View)Model of this View.
+		 * @param {Model} model (View)Model of this View.
 		 * @constructor
 		 */
 		constructor( model ) {
@@ -39,6 +40,14 @@ CKEDITOR.define( [
 			 * Regions which belong to this view.
 			 */
 			this.regions = new NamedCollection();
+
+			/**
+			 * @property {HTMLElement} _el
+			 */
+
+			/**
+			 * @property {Template} _template
+			 */
 		}
 
 		/**
@@ -71,26 +80,24 @@ CKEDITOR.define( [
 			 * @param {Function} domUpdater A function provided by the template which updates corresponding
 			 * DOM.
 			 */
-			var attachModelListener = ( el, domUpdater ) => {
+			return ( el, domUpdater ) => {
 				// TODO: Use ES6 default arguments syntax.
 				callback = callback || domUpdater;
-
-				var onModelChange = ( evt, value ) => {
-					var processedValue = callback( el, value );
-
-					if ( typeof processedValue != 'undefined' ) {
-						domUpdater( el, processedValue );
-					}
-				};
 
 				// Execute callback when the property changes.
 				this.listenTo( this.model, 'change:' + property, onModelChange );
 
 				// Set the initial state of the view.
 				onModelChange( null, this.model[ property ] );
-			};
 
-			return attachModelListener;
+				function onModelChange( evt, value ) {
+					var processedValue = callback( el, value );
+
+					if ( typeof processedValue != 'undefined' ) {
+						domUpdater( el, processedValue );
+					}
+				}
+			};
 		}
 
 		/**
@@ -100,6 +107,12 @@ CKEDITOR.define( [
 		 */
 		render() {
 			if ( !this.template ) {
+				/**
+				 * This View implements no template to render.
+				 *
+				 * @error ui-view-notemplate
+				 * @param {View} view
+				 */
 				throw new CKEditorError(
 					'ui-view-notemplate: This View implements no template to render.',
 					{ view: this }
@@ -141,6 +154,12 @@ CKEDITOR.define( [
 		 * The execution is performed by {@link Template} class.
 		 */
 		prepareListeners() {
+			var that = this;
+
+			if ( this.template ) {
+				prepareElementListeners( this.template );
+			}
+
 			/**
 			 * For a given event name or callback, returns a function which,
 			 * once executed in a context of an element, attaches native DOM listener
@@ -150,7 +169,7 @@ CKEDITOR.define( [
 			 * @param {String|Function} evtNameOrCallback Event name to be fired on View or callback to execute.
 			 * @returns {Function} A function to be executed in the context of an element.
 			 */
-			var getDOMListenerAttacher = ( evtNameOrCallback ) => {
+			function getDOMListenerAttacher( evtNameOrCallback ) {
 				/**
 				 * Attaches a native DOM listener to given element. The listener executes the
 				 * callback or fires View's event.
@@ -177,21 +196,19 @@ CKEDITOR.define( [
 				 * @param {String} domEventName The name of native DOM Event.
 				 * @param {String} [selector] If provided, the selector narrows the scope to relevant targets only.
 				 */
-				var attacher = ( el, domEvtName, selector ) => {
+				return ( el, domEvtName, selector ) => {
 					// Use View's listenTo, so the listener is detached, when the View dies.
-					this.listenTo( el, domEvtName, ( evt, domEvt ) => {
+					that.listenTo( el, domEvtName, ( evt, domEvt ) => {
 						if ( !selector || domEvt.target.matches( selector ) ) {
 							if ( typeof evtNameOrCallback == 'function' ) {
 								evtNameOrCallback( domEvt );
 							} else {
-								this.fire( evtNameOrCallback, domEvt );
+								that.fire( evtNameOrCallback, domEvt );
 							}
 						}
 					} );
 				};
-
-				return attacher;
-			};
+			}
 
 			/**
 			 * Iterates over "on" property in {@link template} definition to recursively
@@ -236,10 +253,6 @@ CKEDITOR.define( [
 				if ( def.children ) {
 					def.children.map( prepareElementListeners );
 				}
-			}
-
-			if ( this.template ) {
-				prepareElementListeners( this.template );
 			}
 		}
 	}
