@@ -38,7 +38,7 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 			 * @private
 			 * @property {Array} attr
 			 */
-			this._attrs = attrs || [];
+			this._attrs = new Set( attrs );
 		}
 
 		/**
@@ -48,21 +48,21 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 		 * @param {document.Attribute|String} attr Attribute or key to compare.
 		 * @returns {Boolean} True if node contains given attribute or attribute with given key.
 		 */
-		hasAttr( attr ) {
-			var i, len;
+		hasAttr( key ) {
+			var attr;
 
 			// Attribute
-			if ( attr instanceof Attribute ) {
-				for ( i = 0, len = this._attrs.length; i < len; i++ ) {
-					if ( this._attrs[ i ].isEqual( attr ) ) {
+			if ( key instanceof Attribute ) {
+				for ( attr of this._attrs ) {
+					if ( attr.isEqual( key ) ) {
 						return true;
 					}
 				}
 			}
 			// Key
 			else {
-				for ( i = 0, len = this._attrs.length; i < len; i++ ) {
-					if ( this._attrs[ i ].key == attr ) {
+				for ( attr of this._attrs ) {
+					if ( attr.key == key ) {
 						return true;
 					}
 				}
@@ -80,11 +80,9 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 		 * or null if attribute was not found.
 		 */
 		getAttr( key ) {
-			var i, len;
-
-			for ( i = 0, len = this._attrs.length; i < len; i++ ) {
-				if ( this._attrs[ i ].key == key ) {
-					return this._attrs[ i ].value;
+			for ( var attr of this._attrs ) {
+				if ( attr.key == key ) {
+					return attr.value;
 				}
 			}
 
@@ -97,11 +95,9 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 		 * @param {String} key Attribute key.
 		 */
 		removeAttr( key ) {
-			var i, len;
-
-			for ( i = 0, len = this._attrs.length; i < len; i++ ) {
-				if ( this._attrs[ i ].key == key ) {
-					this._attrs.splice( i, 1 );
+			for ( var attr of this._attrs ) {
+				if ( attr.key == key ) {
+					this._attrs.delete( attr );
 
 					return;
 				}
@@ -115,7 +111,13 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 		 * @returns {Number} Number of attributes.
 		 */
 		getAttrCount() {
-			return this._attrs.length;
+			var count = 0;
+
+			for ( var attr of this._attrs ) { // jshint ignore:line
+				count++;
+			}
+
+			return count;
 		}
 
 		/**
@@ -126,7 +128,7 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 		setAttr( attr ) {
 			this.removeAttr( attr.key );
 
-			this._attrs.push( attr );
+			this._attrs.add( attr );
 		}
 
 		/**
