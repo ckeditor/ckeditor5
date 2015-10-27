@@ -215,7 +215,6 @@ describe( 'hasAttr', function() {
 	it( 'should create proper JSON string using toJSON method', function() {
 		var Element = modules[ 'document/element' ];
 		var Character = modules[ 'document/character' ];
-		var NodeList = modules[ 'document/nodelist' ];
 
 		var b = new Character( 'b' );
 		var foo = new Element( 'foo', [], [ b ] );
@@ -223,19 +222,7 @@ describe( 'hasAttr', function() {
 		var parsedFoo = JSON.parse( JSON.stringify( foo ) );
 		var parsedBar = JSON.parse( JSON.stringify( b ) );
 
-		parsedFoo._children = new NodeList( parsedFoo._children );
-
-		expect( parsedFoo ).to.be.deep.equals( {
-			name: 'foo',
-			parent: null,
-			_attrs: [],
-			_children: new NodeList( parsedFoo._children )
-		} );
-
-		expect( parsedBar ).to.be.deep.equals( {
-			character: 'b',
-			parent: 'foo',
-			_attrs: []
-		} );
+		expect( parsedFoo.parent ).to.be.equals( null );
+		expect( parsedBar.parent ).to.be.equals( 'foo' );
 	} );
 } );
