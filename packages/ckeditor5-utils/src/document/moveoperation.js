@@ -27,7 +27,7 @@ CKEDITOR.define( [
 		 *
 		 * @param {document.Position} sourcePosition Source move position.
 		 * @param {document.Position} targetPosition Target move position.
-		 * @param {document.Node|document.Text|document.NodeList|String|Array} nodes List of nodes to be moved.
+		 * @param {document.Node|document.Text|document.NodeList|String|Iterable} nodes List of nodes to be moved.
 		 * List of nodes can be any type accepted by the {@link document.NodeList} constructor.
 		 * @param {Number} baseVersion {@link document.Document#version} on which operation can be applied.
 		 * @constructor

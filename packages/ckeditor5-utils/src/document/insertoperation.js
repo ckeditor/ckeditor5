@@ -16,7 +16,7 @@ CKEDITOR.define( [ 'document/operation', 'document/nodelist', 'document/removeop
 		 * Creates an insert operation.
 		 *
 		 * @param {document.Position} position Position of insertion.
-		 * @param {document.Node|document.Text|document.NodeList|String|Array} nodes List of nodes to be inserted.
+		 * @param {document.Node|document.Text|document.NodeList|String|Iterable} nodes List of nodes to be inserted.
 		 * List of nodes can be any type accepted by the {@link document.NodeList} constructor.
 		 * @param {Number} baseVersion {@link document.Document#version} on which operation can be applied.
 		 * @constructor

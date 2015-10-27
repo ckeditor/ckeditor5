@@ -27,7 +27,7 @@ CKEDITOR.define( [
 		 * This is why this constructor contains list of nodes instead of length.
 		 *
 		 * @param {document.Position} position Position before the first node to remove.
-		 * @param {document.Node|document.Text|document.NodeList|String|Array} nodes List of nodes to be remove.
+		 * @param {document.Node|document.Text|document.NodeList|String|Iterable} nodes List of nodes to be remove.
 		 * List of nodes can be any type accepted by the {@link document.NodeList} constructor.
 		 * @param {Number} baseVersion {@link document.Document#version} on which operation can be applied.
 		 * @constructor
