@@ -16,6 +16,7 @@ CKEDITOR.define( [ 'document/node' ], function( Node ) {
 		 * Creates character linear item.
 		 *
 		 * @param {String} character Described character.
+		 * @param {Iterable} attrs Iterable collection of {@link document.Attribute attributes}.
 		 * @constructor
 		 */
 		constructor( character, attrs ) {

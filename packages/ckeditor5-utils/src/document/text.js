@@ -16,8 +16,8 @@ CKEDITOR.define( [], function() {
 		/**
 		 * Creates text with attributes.
 		 *
-		 * @param {String} text Described character.
-		 * @param {Array} attrs Array of attributes.
+		 * @param {String} text Described text.
+		 * @param {Iterable} attrs Iterable collection of {@link document.Attribute attributes}.
 		 * @constructor
 		 */
 		constructor( text, attrs ) {
@@ -30,9 +30,9 @@ CKEDITOR.define( [], function() {
 			this.text = text;
 
 			/**
-			 * Array of attributes.
+			 * Iterable collection of {@link document.Attribute attributes}.
 			 *
-			 * @property {Array} attr
+			 * @property {Iterable} attr
 			 */
 			this.attrs = attrs;
 		}
