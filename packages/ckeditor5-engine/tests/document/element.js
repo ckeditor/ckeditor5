@@ -52,7 +52,7 @@ describe( 'constructor', function() {
 		var element = new Element( 'elem', [], 'foo' );
 
 		expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
-		expect( element.getChildCount() ).to.be.equals( 3 );
+		expect( element.getChildCount() ).to.equals( 3 );
 		expect( element.getChild( 0 ) ).to.have.property( 'character' ).that.equals( 'f' );
 		expect( element.getChild( 1 ) ).to.have.property( 'character' ).that.equals( 'o' );
 		expect( element.getChild( 2 ) ).to.have.property( 'character' ).that.equals( 'o' );
@@ -67,7 +67,7 @@ describe( 'insertChildren', function() {
 		element.insertChildren( 1, 'foo' );
 
 		expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
-		expect( element.getChildCount() ).to.be.equals( 5 );
+		expect( element.getChildCount() ).to.equals( 5 );
 		expect( element.getChild( 0 ) ).to.have.property( 'character' ).that.equals( 'x' );
 		expect( element.getChild( 1 ) ).to.have.property( 'character' ).that.equals( 'f' );
 		expect( element.getChild( 2 ) ).to.have.property( 'character' ).that.equals( 'o' );
@@ -86,7 +86,7 @@ describe( 'removeChildren', function() {
 		var a = element.getChild( 4 );
 		element.removeChildren( 2, 3 );
 
-		expect( element.getChildCount() ).to.be.equals( 3 );
+		expect( element.getChildCount() ).to.equals( 3 );
 		expect( element.getChild( 0 ) ).to.have.property( 'character' ).that.equals( 'f' );
 		expect( element.getChild( 1 ) ).to.have.property( 'character' ).that.equals( 'o' );
 		expect( element.getChild( 2 ) ).to.have.property( 'character' ).that.equals( 'r' );

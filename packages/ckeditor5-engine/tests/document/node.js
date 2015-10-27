@@ -238,7 +238,7 @@ describe( 'hasAttr', function() {
 		var parsedFoo = JSON.parse( JSON.stringify( foo ) );
 		var parsedBar = JSON.parse( JSON.stringify( b ) );
 
-		expect( parsedFoo.parent ).to.be.equals( null );
-		expect( parsedBar.parent ).to.be.equals( 'foo' );
+		expect( parsedFoo.parent ).to.equals( null );
+		expect( parsedBar.parent ).to.equals( 'foo' );
 	} );
 } );
