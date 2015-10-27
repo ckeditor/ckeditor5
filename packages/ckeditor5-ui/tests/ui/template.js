@@ -25,6 +25,10 @@ describe( 'constructor', function() {
 } );
 
 describe( 'render', function() {
+	it( 'returns null when no definition', function() {
+		expect( new Template().render() ).to.be.null;
+	} );
+
 	it( 'creates an element', function() {
 		var el = new Template( {
 			tag: 'p',
