@@ -5,8 +5,6 @@
 
 'use strict';
 
-/* global Node */
-
 /**
  * Mixin that injects the DOM events API into its host. It provides the API
  * compatible with {@link EmitterMixin}.
@@ -146,6 +144,12 @@ CKEDITOR.define( [ 'emittermixin', 'utils', 'log' ], function( EmitterMixin, uti
 
 	utils.extend( ProxyEmitter.prototype, EmitterMixin, {
 		/**
+		 * Collection of native DOM listeners.
+		 *
+		 * @property {Object} _domListeners
+		 */
+
+		/**
 		 * Registers a callback function to be executed when an event is fired.
 		 *
 		 * It attaches a native DOM listener to the DOM Node. When fired,
@@ -168,18 +172,7 @@ CKEDITOR.define( [ 'emittermixin', 'utils', 'log' ], function( EmitterMixin, uti
 				return;
 			}
 
-			// Create a native DOM listener callback. When the native DOM event
-			// is fired it will fire corresponding event on this ProxyEmitter.
-			// Note: A native DOM Event is passed as an argument.
-			var domListener = domEvt => this.fire( event, domEvt );
-
-			// Supply the DOM listener callback with a function that will help
-			// detach it from the DOM Node, when it is no longer necessary.
-			// See: {@link off}.
-			domListener.removeListener = () => {
-				this._domNode.removeEventListener( event, domListener );
-				delete this._domListeners[ event ];
-			};
+			var domListener = this._createDomListener( event );
 
 			// Attach the native DOM listener to DOM Node.
 			this._domNode.addEventListener( event, domListener );
@@ -213,8 +206,34 @@ CKEDITOR.define( [ 'emittermixin', 'utils', 'log' ], function( EmitterMixin, uti
 			if ( !( callbacks = this._events[ event ] ) || !callbacks.length ) {
 				this._domListeners[ event ].removeListener();
 			}
+		},
+
+		/**
+		 * Create a native DOM listener callback. When the native DOM event
+		 * is fired it will fire corresponding event on this ProxyEmitter.
+		 * Note: A native DOM Event is passed as an argument.
+		 *
+		 * @param {String} event
+		 * @returns {Function} The DOM listener callback.
+		 */
+		_createDomListener( event ) {
+			var domListener = domEvt => {
+				this.fire( event, domEvt );
+			};
+
+			// Supply the DOM listener callback with a function that will help
+			// detach it from the DOM Node, when it is no longer necessary.
+			// See: {@link off}.
+			domListener.removeListener = () => {
+				this._domNode.removeEventListener( event, domListener );
+				delete this._domListeners[ event ];
+			};
+
+			return domListener;
 		}
 	} );
+
+	return DOMEmitterMixin;
 
 	/**
 	 * Gets an unique DOM Node identifier. The identifier will be set if not defined.
@@ -222,7 +241,7 @@ CKEDITOR.define( [ 'emittermixin', 'utils', 'log' ], function( EmitterMixin, uti
 	 * @param {Node} node
 	 * @return {Number} UID for given DOM Node.
 	 */
-	var getNodeUID = node => node[ 'data-ck-expando' ] || ( node[ 'data-ck-expando' ] = utils.uid() );
-
-	return DOMEmitterMixin;
+	function getNodeUID( node ) {
+		return node[ 'data-ck-expando' ] || ( node[ 'data-ck-expando' ] = utils.uid() );
+	}
 } );
