@@ -48,6 +48,10 @@ CKEDITOR.define( [
 			/**
 			 * @property {Template} _template
 			 */
+
+			/**
+			 * @property {TemplateDefinition} template
+			 */
 		}
 
 		/**
@@ -154,105 +158,103 @@ CKEDITOR.define( [
 		 * The execution is performed by {@link Template} class.
 		 */
 		prepareListeners() {
-			var that = this;
-
 			if ( this.template ) {
-				prepareElementListeners( this.template );
+				this._prepareElementListeners( this.template );
 			}
+		}
 
+		/**
+		 * For a given event name or callback, returns a function which,
+		 * once executed in a context of an element, attaches native DOM listener
+		 * to the element. The listener executes given callback or fires View's event
+		 * of given name.
+		 *
+		 * @param {String|Function} evtNameOrCallback Event name to be fired on View or callback to execute.
+		 * @returns {Function} A function to be executed in the context of an element.
+		 */
+		_getDOMListenerAttacher( evtNameOrCallback ) {
 			/**
-			 * For a given event name or callback, returns a function which,
-			 * once executed in a context of an element, attaches native DOM listener
-			 * to the element. The listener executes given callback or fires View's event
-			 * of given name.
+			 * Attaches a native DOM listener to given element. The listener executes the
+			 * callback or fires View's event.
 			 *
-			 * @param {String|Function} evtNameOrCallback Event name to be fired on View or callback to execute.
-			 * @returns {Function} A function to be executed in the context of an element.
-			 */
-			function getDOMListenerAttacher( evtNameOrCallback ) {
-				/**
-				 * Attaches a native DOM listener to given element. The listener executes the
-				 * callback or fires View's event.
-				 *
-				 * Note: If the selector is supplied, it narrows the scope to relevant targets only.
-				 * So instead of
-				 *
-				 *     children: [
-				 *         { tag: 'span', on: { click: 'foo' } }
-				 *         { tag: 'span', on: { click: 'foo' } }
-				 *     ]
-				 *
-				 * a single, more efficient listener can be attached that uses **event delegation**:
-				 *
-				 *     children: [
-				 *     	   { tag: 'span' }
-				 *     	   { tag: 'span' }
-				 *     ],
-				 *     on: {
-				 *     	   'click@span': 'foo',
-				 *     }
-				 *
-				 * @param {HTMLElement} el Element, to which the native DOM Event listener is attached.
-				 * @param {String} domEventName The name of native DOM Event.
-				 * @param {String} [selector] If provided, the selector narrows the scope to relevant targets only.
-				 */
-				return ( el, domEvtName, selector ) => {
-					// Use View's listenTo, so the listener is detached, when the View dies.
-					that.listenTo( el, domEvtName, ( evt, domEvt ) => {
-						if ( !selector || domEvt.target.matches( selector ) ) {
-							if ( typeof evtNameOrCallback == 'function' ) {
-								evtNameOrCallback( domEvt );
-							} else {
-								that.fire( evtNameOrCallback, domEvt );
-							}
-						}
-					} );
-				};
-			}
-
-			/**
-			 * Iterates over "on" property in {@link template} definition to recursively
-			 * replace each listener declaration with a function which, once executed in a context
-			 * of an element, attaches native DOM listener to the element.
+			 * Note: If the selector is supplied, it narrows the scope to relevant targets only.
+			 * So instead of
 			 *
-			 * @param {Object} def Template definition.
+			 *     children: [
+			 *         { tag: 'span', on: { click: 'foo' } }
+			 *         { tag: 'span', on: { click: 'foo' } }
+			 *     ]
+			 *
+			 * a single, more efficient listener can be attached that uses **event delegation**:
+			 *
+			 *     children: [
+			 *     	   { tag: 'span' }
+			 *     	   { tag: 'span' }
+			 *     ],
+			 *     on: {
+			 *     	   'click@span': 'foo',
+			 *     }
+			 *
+			 * @param {HTMLElement} el Element, to which the native DOM Event listener is attached.
+			 * @param {String} domEventName The name of native DOM Event.
+			 * @param {String} [selector] If provided, the selector narrows the scope to relevant targets only.
 			 */
-			function prepareElementListeners( def ) {
-				let on = def.on;
-
-				if ( on ) {
-					let domEvtName, evtNameOrCallback;
-
-					for ( domEvtName in on ) {
-						evtNameOrCallback = on[ domEvtName ];
-
-						// Listeners allow definition with an array:
-						//
-						//    on: {
-						//        'DOMEventName@selector': [ 'event1', callback ],
-						//        'DOMEventName': [ callback, 'event2', 'event3' ]
-						//        ...
-						//    }
-						if ( Array.isArray( evtNameOrCallback ) ) {
-							on[ domEvtName ] = on[ domEvtName ].map( getDOMListenerAttacher );
-						}
-						// Listeners allow definition with a string containing event name:
-						//
-						//    on: {
-						//       'DOMEventName@selector': 'event1',
-						//       'DOMEventName': 'event2'
-						//       ...
-						//    }
-						else {
-							on[ domEvtName ] = getDOMListenerAttacher( evtNameOrCallback );
+			return ( el, domEvtName, selector ) => {
+				// Use View's listenTo, so the listener is detached, when the View dies.
+				this.listenTo( el, domEvtName, ( evt, domEvt ) => {
+					if ( !selector || domEvt.target.matches( selector ) ) {
+						if ( typeof evtNameOrCallback == 'function' ) {
+							evtNameOrCallback( domEvt );
+						} else {
+							this.fire( evtNameOrCallback, domEvt );
 						}
 					}
-				}
+				} );
+			};
+		}
 
-				// Repeat recursively for the children.
-				if ( def.children ) {
-					def.children.map( prepareElementListeners );
+		/**
+		 * Iterates over "on" property in {@link template} definition to recursively
+		 * replace each listener declaration with a function which, once executed in a context
+		 * of an element, attaches native DOM listener to the element.
+		 *
+		 * @param {TemplateDefinition} def Template definition.
+		 */
+		_prepareElementListeners( def ) {
+			let on = def.on;
+
+			if ( on ) {
+				let domEvtName, evtNameOrCallback;
+
+				for ( domEvtName in on ) {
+					evtNameOrCallback = on[ domEvtName ];
+
+					// Listeners allow definition with an array:
+					//
+					//    on: {
+					//        'DOMEventName@selector': [ 'event1', callback ],
+					//        'DOMEventName': [ callback, 'event2', 'event3' ]
+					//        ...
+					//    }
+					if ( Array.isArray( evtNameOrCallback ) ) {
+						on[ domEvtName ] = on[ domEvtName ].map( this._getDOMListenerAttacher, this );
+					}
+					// Listeners allow definition with a string containing event name:
+					//
+					//    on: {
+					//       'DOMEventName@selector': 'event1',
+					//       'DOMEventName': 'event2'
+					//       ...
+					//    }
+					else {
+						on[ domEvtName ] = this._getDOMListenerAttacher( evtNameOrCallback );
+					}
 				}
+			}
+
+			// Repeat recursively for the children.
+			if ( def.children ) {
+				def.children.map( this._prepareElementListeners, this );
 			}
 		}
 	}
