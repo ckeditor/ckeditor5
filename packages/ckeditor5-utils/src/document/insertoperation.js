@@ -56,6 +56,7 @@ CKEDITOR.define( [ 'document/operation', 'document/nodelist', 'document/removeop
 		 * @returns {document.RemoveOperation} Reverse operation.
 		 */
 		reverseOperation() {
+			// Because of circular dependencies we need to re-require remove operation here.
 			var RemoveOperation = CKEDITOR.require( 'document/removeoperation' );
 
 			return new RemoveOperation( this.position, this.nodeList, this.baseVersion + 1 );
