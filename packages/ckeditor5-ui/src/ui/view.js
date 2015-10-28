@@ -55,6 +55,14 @@ CKEDITOR.define( [
 		}
 
 		/**
+		 * @param
+		 * @returns
+		 */
+		init() {
+			// TODO: What if we used render() here?
+		}
+
+		/**
 		 * Element of this view. The element is rendered on first reference.
 		 *
 		 * @property el
@@ -258,6 +266,10 @@ CKEDITOR.define( [
 			if ( def.children ) {
 				def.children.map( this._prepareElementListeners, this );
 			}
+		}
+
+		append( view, regionName ) {
+			this.regions.get( regionName ).append( view );
 		}
 	}
 

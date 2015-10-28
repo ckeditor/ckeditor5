@@ -57,6 +57,10 @@ CKEDITOR.define( [ 'collection', 'model' ], ( Collection, Model ) => {
 				this.views.remove( view ).destroy();
 			}
 		}
+
+		append( view ) {
+			this.views.add( view );
+		}
 	}
 
 	return Region;
