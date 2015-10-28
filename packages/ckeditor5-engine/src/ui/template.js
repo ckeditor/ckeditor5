@@ -18,50 +18,21 @@ CKEDITOR.define( function() {
 		/**
 		 * Creates an instance of the {@link Template} class.
 		 *
-		 * @param {Model} mode (View)Model of this Template.
+		 * @param {TemplateDefinition} def The definition of the template.
 		 * @constructor
 		 */
 		constructor( def ) {
 			/**
-			 * Definition of this Template.
+			 * Definition of this template.
 			 *
-			 *     {
-			 *         tag: 'p',
-			 *         children: [
-			 *             {
-			 *                 tag: 'span',
-			 *                 attrs: { ... },
-			 *                 on: { ... }
-			 *             },
-			 *             {
-			 *                 ...
-			 *             },
-			 *             ...
-			 *         ],
-			 *         attrs: {
-			 *             'class': [ 'a', 'b' ],
-			 *             id: 'c',
-			 *             style: callback,
-			 *             ...
-			 *         },
-			 *         on: {
-			 *             w: 'a'
-			 *             x: [ 'b', 'c', callback ],
-			 *             'y@selector': 'd',
-			 *             'z@selector': [ 'e', 'f', callback ],
-			 *             ...
-			 *         },
-			 *         text: 'abc'
-			 *     }
-			 *
+			 * @property {TemplateDefinition}
 			 */
 			this.def = def;
 		}
 
 		/**
-		 * Renders HTMLElement using {@link def}.
+		 * Renders HTMLElement using {@link #def}.
 		 *
-		 * @param {Object} [def] Template definition to be rendered.
 		 * @returns {HTMLElement}
 		 */
 		render() {
@@ -69,11 +40,13 @@ CKEDITOR.define( function() {
 		}
 	}
 
-	var getTextUpdater = () =>
-		( el, value ) => el.innerHTML = value;
+	function getTextUpdater() {
+		return ( el, value ) => el.innerHTML = value;
+	}
 
-	var getAttributeUpdater = ( attr ) =>
-		( el, value ) => el.setAttribute( attr, value );
+	function getAttributeUpdater( attr ) {
+		return ( el, value ) => el.setAttribute( attr, value );
+	}
 
 	function renderElement( def ) {
 		if ( !def ) {
@@ -166,3 +139,39 @@ CKEDITOR.define( function() {
 
 	return Template;
 } );
+
+/**
+ * The virtual class representing an argument of the {@link Template} constructor.
+ *
+ *		{
+ *			tag: 'p',
+ *			children: [
+ *				{
+ *					tag: 'span',
+ *					attrs: { ... },
+ *					on: { ... }
+ *				},
+ *				{
+ *					...
+ *				},
+ *				...
+ *			],
+ *			attrs: {
+ *				'class': [ 'a', 'b' ],
+ *				id: 'c',
+ *				style: callback,
+ *				...
+ *			},
+ *			on: {
+ *				w: 'a'
+ *				x: [ 'b', 'c', callback ],
+ *				'y@selector': 'd',
+ *				'z@selector': [ 'e', 'f', callback ],
+ *				...
+ *			},
+ *			text: 'abc'
+ *		}
+ *
+ * @abstract
+ * @class TemplateDefinition
+ */
