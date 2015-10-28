@@ -24,9 +24,9 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 		 */
 		constructor( attrs ) {
 			/**
-			 * Parent element. Null by default.
+			 * Parent element. Null by default. Set by {@link document.Element#insertChildren}.
 			 *
-			 * @property {document.Element|Null} parent
+			 * @property {document.Element|null} parent
 			 */
 			this.parent = null;
 
@@ -75,7 +75,7 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 		 * Returns attribute if node contain attribute with the same key and value as given or the same key if the
 		 * given parameter is a string.
 		 *
-		 * @param {document.Attribute|String|Null} attr Attribute or key to compare.
+		 * @param {document.Attribute|String|null} attr Attribute or key to compare.
 		 * @returns {document.Attribute} Attribute if node contains given attribute or attribute with given key,
 		 * or null if attribute was not found.
 		 */
@@ -187,7 +187,7 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 		 * Nodes next sibling or null if it is the last child.
 		 *
 		 * @readonly
-		 * @property {document.Node|Null} nextSibling
+		 * @property {document.Node|null} nextSibling
 		 */
 		get nextSibling() {
 			var pos = this.positionInParent;
@@ -199,7 +199,7 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 		 * Nodes previous sibling or null if it is the last child.
 		 *
 		 * @readonly
-		 * @property {document.Node|Null} previousSibling
+		 * @property {document.Node|null} previousSibling
 		 */
 		get previousSibling() {
 			var pos = this.positionInParent;

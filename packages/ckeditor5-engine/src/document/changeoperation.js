@@ -25,8 +25,8 @@ CKEDITOR.define( [ 'document/operation', 'ckeditorerror', 'utils' ], function( O
 		 * old attributes have to have the same key and the old attribute must be present in all nodes in ranges.
 		 *
 		 * @param {Array|document.Range} ranges Range or array of ranges on which operation should be applied.
-		 * @param {document.Attribute|Null} oldAttr Old attribute to change. Null if operation inserts new attribute.
-		 * @param {document.Attribute|Null} newAttr New attribute. Null if operation removes attribute.
+		 * @param {document.Attribute|null} oldAttr Old attribute to change. Null if operation inserts new attribute.
+		 * @param {document.Attribute|null} newAttr New attribute. Null if operation removes attribute.
 		 * @param {Number} baseVersion {@link document.Document#version} on which operation can be applied.
 		 * @constructor
 		 */
@@ -45,7 +45,7 @@ CKEDITOR.define( [ 'document/operation', 'ckeditorerror', 'utils' ], function( O
 			 * Old attribute to change. Null if operation inserts new attribute.
 			 *
 			 * @readonly
-			 * @type {document.Attribute|Null}
+			 * @type {document.Attribute|null}
 			 */
 			this.oldAttr = oldAttr;
 
@@ -53,7 +53,7 @@ CKEDITOR.define( [ 'document/operation', 'ckeditorerror', 'utils' ], function( O
 			 * New attribute. Null if operation removes attribute.
 			 *
 			 * @readonly
-			 * @type {document.Attribute|Null}
+			 * @type {document.Attribute|null}
 			 */
 			this.newAttr = newAttr;
 		}

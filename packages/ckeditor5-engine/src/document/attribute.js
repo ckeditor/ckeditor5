@@ -43,7 +43,7 @@ CKEDITOR.define( [ 'utils' ], function( utils ) {
 			 * @private
 			 * @property {String} _hash
 			 */
-			this._hash = JSON.stringify( this.key ) + ': ' + JSON.stringify( this.value, sort );
+			this._hash = this.key + ': ' + JSON.stringify( this.value, sort );
 
 			// If attribute is registered the registered one should be returned.
 			if ( Attribute._register[ this._hash ] ) {

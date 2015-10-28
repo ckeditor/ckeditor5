@@ -88,6 +88,7 @@ CKEDITOR.define( [
 		 * @returns {document.InsertOperation} Reverse operation.
 		 */
 		reverseOperation() {
+			// Because of circular dependencies we need to re-require insert operation here.
 			var InsertOperation = CKEDITOR.require( 'document/insertoperation' );
 
 			return new InsertOperation( this.position, this.nodeList, this.baseVersion + 1 );
