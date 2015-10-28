@@ -77,15 +77,15 @@ CKEDITOR.define( [
 			var nodeAfter = position.nodeAfter;
 
 			if ( nodeAfter instanceof Element ) {
-				this.position = Position.makePositionFromParentAndOffset( nodeAfter, 0 );
+				this.position = Position.createFromParentAndOffset( nodeAfter, 0 );
 
 				return formatReturnValue( OPENING_TAG, nodeAfter );
 			} else if ( nodeAfter instanceof Character ) {
-				this.position = Position.makePositionFromParentAndOffset( parent, position.offset + 1 );
+				this.position = Position.createFromParentAndOffset( parent, position.offset + 1 );
 
 				return formatReturnValue( CHARACTER, nodeAfter );
 			} else {
-				this.position = Position.makePositionFromParentAndOffset( parent.parent, parent.positionInParent + 1 );
+				this.position = Position.createFromParentAndOffset( parent.parent, parent.positionInParent + 1 );
 
 				return formatReturnValue( CLOSING_TAG, this.position.nodeBefore );
 			}
@@ -117,15 +117,15 @@ CKEDITOR.define( [
 			var nodeBefore = position.nodeBefore;
 
 			if ( nodeBefore instanceof Element ) {
-				this.position = Position.makePositionFromParentAndOffset( nodeBefore, nodeBefore.getChildCount() );
+				this.position = Position.createFromParentAndOffset( nodeBefore, nodeBefore.getChildCount() );
 
 				return formatReturnValue( CLOSING_TAG, nodeBefore );
 			} else if ( nodeBefore instanceof Character ) {
-				this.position = Position.makePositionFromParentAndOffset( parent, position.offset - 1 );
+				this.position = Position.createFromParentAndOffset( parent, position.offset - 1 );
 
 				return formatReturnValue( CHARACTER, nodeBefore );
 			} else {
-				this.position = Position.makePositionFromParentAndOffset( parent.parent, parent.positionInParent );
+				this.position = Position.createFromParentAndOffset( parent.parent, parent.positionInParent );
 
 				return formatReturnValue( OPENING_TAG, this.position.nodeAfter );
 			}

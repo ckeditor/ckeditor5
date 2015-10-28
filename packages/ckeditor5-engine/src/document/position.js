@@ -54,7 +54,7 @@ CKEDITOR.define( [ 'utils', 'ckeditorerror' ], function( utils, CKEditorError ) 
 		 * @param {document.Element} parent Position parent element.
 		 * @param {Number} offset Position offset.
 		 */
-		static makePositionFromParentAndOffset( parent, offset ) {
+		static createFromParentAndOffset( parent, offset ) {
 			var path = parent.getPath();
 
 			path.push( offset );
@@ -67,7 +67,7 @@ CKEDITOR.define( [ 'utils', 'ckeditorerror' ], function( utils, CKEditorError ) 
 		 *
 		 * @param {document.node} node Node the position should be directly before.
 		 */
-		static makePositionBefore( node ) {
+		static createBefore( node ) {
 			if ( !node.parent ) {
 				/**
 				 * You can not make position before root.
@@ -78,7 +78,7 @@ CKEDITOR.define( [ 'utils', 'ckeditorerror' ], function( utils, CKEditorError ) 
 				throw new CKEditorError( 'position-before-root: You can not make position before root.', { root: node } );
 			}
 
-			return Position.makePositionFromParentAndOffset( node.parent, node.positionInParent );
+			return Position.createFromParentAndOffset( node.parent, node.positionInParent );
 		}
 
 		/**
@@ -86,7 +86,7 @@ CKEDITOR.define( [ 'utils', 'ckeditorerror' ], function( utils, CKEditorError ) 
 		 *
 		 * @param {document.node} node Node the position should be directly after.
 		 */
-		static makePositionAfter( node ) {
+		static createAfter( node ) {
 			if ( !node.parent ) {
 				/**
 				 * You can not make position after root.
@@ -97,7 +97,7 @@ CKEDITOR.define( [ 'utils', 'ckeditorerror' ], function( utils, CKEditorError ) 
 				throw new CKEditorError( 'position-after-root: You can not make position after root.', { root: node } );
 			}
 
-			return Position.makePositionFromParentAndOffset( node.parent, node.positionInParent + 1 );
+			return Position.createFromParentAndOffset( node.parent, node.positionInParent + 1 );
 		}
 
 		/**
