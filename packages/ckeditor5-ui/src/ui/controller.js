@@ -56,6 +56,8 @@ CKEDITOR.define( [ 'collection', 'model' ], function( Collection, Model ) {
 		 * @returns
 		 */
 		destroy() {
+			// Note: Because this.view.destroy() can by sync as well as async,
+			// it is wrapped in promise.
 			return Promise.resolve()
 				.then( () => {
 					return this.view.destroy();

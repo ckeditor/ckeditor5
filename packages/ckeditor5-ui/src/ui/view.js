@@ -268,6 +268,10 @@ CKEDITOR.define( [
 			}
 		}
 
+		/**
+		 * @param
+		 * @returns
+		 */
 		append( view, regionName ) {
 			this.regions.get( regionName ).append( view );
 		}
