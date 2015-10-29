@@ -56,6 +56,15 @@ CKEDITOR.define( [ 'collection', 'model' ], function( Collection, Model ) {
 		 * @returns
 		 */
 		destroy() {
+			return Promise.resolve()
+				.then( () => {
+					return this.view.destroy();
+				} )
+				.then(
+					Promise.all( this.controllers.filter( c => {
+						return c.destroy();
+					} ) )
+				);
 		}
 	}
 
