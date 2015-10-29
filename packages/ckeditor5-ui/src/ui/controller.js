@@ -13,9 +13,19 @@ CKEDITOR.define( [ 'collection', 'model' ], function( Collection, Model ) {
 		constructor( model, view ) {
 			super();
 
+			/**
+			 * Model of this controller.
+			 */
 			this.model = model;
+
+			/**
+			 * View of this controller.
+			 */
 			this.view = view;
 
+			/**
+			 * A collection of child controllers.
+			 */
 			this.controllers = new Collection();
 		}
 
