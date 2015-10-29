@@ -34,7 +34,7 @@ CKEDITOR.define( [
 			/**
 			 * Model of this view.
 			 */
-			this.model = new Model( model );
+			this.model = model;
 
 			/**
 			 * Regions which belong to this view.
