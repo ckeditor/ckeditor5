@@ -45,9 +45,7 @@ CKEDITOR.define( [ 'collection', 'model' ], function( Collection, Model ) {
 				.then( () => {
 					return controller.init();
 				} )
-				.then( () => {
-					this.view.append( controller.view, regionName );
-				} )
+				.then( this.view.append.bind( this.view, controller.view, regionName ) )
 				.then( () => {
 					return controller;
 				} );
