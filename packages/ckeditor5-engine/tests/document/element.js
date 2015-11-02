@@ -11,113 +11,113 @@
 
 var modules = bender.amd.require(
 	'document/node',
+	'document/nodelist',
 	'document/element',
 	'document/attribute' );
 
-describe( 'constructor', function() {
-	it( 'should create element without attributes', function() {
-		var Element = modules[ 'document/element' ];
-		var Node = modules[ 'document/node' ];
+describe( 'Element', function() {
+	var Element, Node, NodeList, Attribute;
 
-		var element = new Element( 'elem' );
-		var parent = new Element( 'parent', [], [ element ] );
-
-		expect( element ).to.be.an.instanceof( Node );
-		expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
-		expect( element ).to.have.property( 'parent' ).that.equals( parent );
-		expect( element._getAttrCount() ).to.equals( 0 );
+	before( function() {
+		Element = modules[ 'document/element' ];
+		Node = modules[ 'document/node' ];
+		NodeList = modules[ 'document/nodelist' ];
+		Attribute = modules[ 'document/attribute' ];
 	} );
 
-	it( 'should create element with attributes', function() {
-		var Element = modules[ 'document/element' ];
-		var Node = modules[ 'document/node' ];
-		var Attribute = modules[ 'document/attribute' ];
+	describe( 'constructor', function() {
+		it( 'should create element without attributes', function() {
+			var element = new Element( 'elem' );
+			var parent = new Element( 'parent', [], [ element ] );
 
-		var attr = new Attribute( 'foo', 'bar' );
+			expect( element ).to.be.an.instanceof( Node );
+			expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
+			expect( element ).to.have.property( 'parent' ).that.equals( parent );
+			expect( element._getAttrCount() ).to.equals( 0 );
+		} );
 
-		var element = new Element( 'elem', [ attr ] );
+		it( 'should create element with attributes', function() {
+			var attr = new Attribute( 'foo', 'bar' );
 
-		var parent = new Element( 'parent', [], [ element ] );
+			var element = new Element( 'elem', [ attr ] );
+			var parent = new Element( 'parent', [], [ element ] );
 
-		expect( element ).to.be.an.instanceof( Node );
-		expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
-		expect( element ).to.have.property( 'parent' ).that.equals( parent );
-		expect( element._getAttrCount() ).to.equals( 1 );
-		expect( element.getAttr( attr.key ) ).to.equals( attr.value );
+			expect( element ).to.be.an.instanceof( Node );
+			expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
+			expect( element ).to.have.property( 'parent' ).that.equals( parent );
+			expect( element._getAttrCount() ).to.equals( 1 );
+			expect( element.getAttr( attr.key ) ).to.equals( attr.value );
+		} );
+
+		it( 'should create element with children', function() {
+			var element = new Element( 'elem', [], 'foo' );
+
+			expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
+			expect( element.getChildCount() ).to.equals( 3 );
+			expect( element.getChild( 0 ) ).to.have.property( 'character' ).that.equals( 'f' );
+			expect( element.getChild( 1 ) ).to.have.property( 'character' ).that.equals( 'o' );
+			expect( element.getChild( 2 ) ).to.have.property( 'character' ).that.equals( 'o' );
+		} );
 	} );
 
-	it( 'should create element with children', function() {
-		var Element = modules[ 'document/element' ];
+	describe( 'insertChildren', function() {
+		it( 'should add children to the element', function() {
+			var element = new Element( 'elem', [], [ 'xy' ] );
+			element.insertChildren( 1, 'foo' );
 
-		var element = new Element( 'elem', [], 'foo' );
-
-		expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
-		expect( element.getChildCount() ).to.equals( 3 );
-		expect( element.getChild( 0 ) ).to.have.property( 'character' ).that.equals( 'f' );
-		expect( element.getChild( 1 ) ).to.have.property( 'character' ).that.equals( 'o' );
-		expect( element.getChild( 2 ) ).to.have.property( 'character' ).that.equals( 'o' );
+			expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
+			expect( element.getChildCount() ).to.equals( 5 );
+			expect( element.getChild( 0 ) ).to.have.property( 'character' ).that.equals( 'x' );
+			expect( element.getChild( 1 ) ).to.have.property( 'character' ).that.equals( 'f' );
+			expect( element.getChild( 2 ) ).to.have.property( 'character' ).that.equals( 'o' );
+			expect( element.getChild( 3 ) ).to.have.property( 'character' ).that.equals( 'o' );
+			expect( element.getChild( 4 ) ).to.have.property( 'character' ).that.equals( 'y' );
+		} );
 	} );
-} );
 
-describe( 'insertChildren', function() {
-	it( 'should add children to the element', function() {
-		var Element = modules[ 'document/element' ];
+	describe( 'removeChildren', function() {
+		it( 'should remove children from the element and return them as a NodeList', function() {
+			var element = new Element( 'elem', [], [ 'foobar' ] );
+			var o = element.getChild( 2 );
+			var b = element.getChild( 3 );
+			var a = element.getChild( 4 );
+			var removed = element.removeChildren( 2, 3 );
 
-		var element = new Element( 'elem', [], [ 'xy' ] );
-		element.insertChildren( 1, 'foo' );
+			expect( element.getChildCount() ).to.equals( 3 );
+			expect( element.getChild( 0 ) ).to.have.property( 'character' ).that.equals( 'f' );
+			expect( element.getChild( 1 ) ).to.have.property( 'character' ).that.equals( 'o' );
+			expect( element.getChild( 2 ) ).to.have.property( 'character' ).that.equals( 'r' );
 
-		expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
-		expect( element.getChildCount() ).to.equals( 5 );
-		expect( element.getChild( 0 ) ).to.have.property( 'character' ).that.equals( 'x' );
-		expect( element.getChild( 1 ) ).to.have.property( 'character' ).that.equals( 'f' );
-		expect( element.getChild( 2 ) ).to.have.property( 'character' ).that.equals( 'o' );
-		expect( element.getChild( 3 ) ).to.have.property( 'character' ).that.equals( 'o' );
-		expect( element.getChild( 4 ) ).to.have.property( 'character' ).that.equals( 'y' );
+			expect( o ).to.have.property( 'parent' ).that.is.null;
+			expect( b ).to.have.property( 'parent' ).that.is.null;
+			expect( a ).to.have.property( 'parent' ).that.is.null;
+
+			expect( removed ).to.be.instanceof( NodeList );
+			expect( removed.length ).to.equal( 3 );
+			expect( removed.get( 0 ) ).to.equal( o );
+			expect( removed.get( 1 ) ).to.equal( b );
+			expect( removed.get( 2 ) ).to.equal( a );
+		} );
 	} );
-} );
 
-describe( 'removeChildren', function() {
-	it( 'should add children to the element', function() {
-		var Element = modules[ 'document/element' ];
+	describe( 'getChildIndex', function() {
+		it( 'should return child index', function() {
+			var element = new Element( 'elem', [], [ 'bar' ] );
+			var b = element.getChild( 0 );
+			var a = element.getChild( 1 );
+			var r = element.getChild( 2 );
 
-		var element = new Element( 'elem', [], [ 'foobar' ] );
-		var o = element.getChild( 2 );
-		var b = element.getChild( 3 );
-		var a = element.getChild( 4 );
-		element.removeChildren( 2, 3 );
-
-		expect( element.getChildCount() ).to.equals( 3 );
-		expect( element.getChild( 0 ) ).to.have.property( 'character' ).that.equals( 'f' );
-		expect( element.getChild( 1 ) ).to.have.property( 'character' ).that.equals( 'o' );
-		expect( element.getChild( 2 ) ).to.have.property( 'character' ).that.equals( 'r' );
-
-		expect( o ).to.have.property( 'parent' ).that.is.null;
-		expect( b ).to.have.property( 'parent' ).that.is.null;
-		expect( a ).to.have.property( 'parent' ).that.is.null;
+			expect( element.getChildIndex( b ) ).to.equals( 0 );
+			expect( element.getChildIndex( a ) ).to.equals( 1 );
+			expect( element.getChildIndex( r ) ).to.equals( 2 );
+		} );
 	} );
-} );
 
-describe( 'getChildIndex', function() {
-	it( 'should return child index', function() {
-		var Element = modules[ 'document/element' ];
+	describe( 'getChildCount', function() {
+		it( 'should return number of children', function() {
+			var element = new Element( 'elem', [], [ 'bar' ] );
 
-		var element = new Element( 'elem', [], [ 'bar' ] );
-		var b = element.getChild( 0 );
-		var a = element.getChild( 1 );
-		var r = element.getChild( 2 );
-
-		expect( element.getChildIndex( b ) ).to.equals( 0 );
-		expect( element.getChildIndex( a ) ).to.equals( 1 );
-		expect( element.getChildIndex( r ) ).to.equals( 2 );
-	} );
-} );
-
-describe( 'getChildCount', function() {
-	it( 'should return number of children', function() {
-		var Element = modules[ 'document/element' ];
-
-		var element = new Element( 'elem', [], [ 'bar' ] );
-
-		expect( element.getChildCount() ).to.equals( 3 );
+			expect( element.getChildCount() ).to.equals( 3 );
+		} );
 	} );
 } );
