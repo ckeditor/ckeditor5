@@ -76,7 +76,7 @@ describe( 'range iterator', function() {
 		var PositionIterator = modules[ 'document/positioniterator' ];
 		var Position = modules[ 'document/position' ];
 
-		var iterator = new PositionIterator( new Position( [ 0 ], doc.root ) ); // begging of root
+		var iterator = new PositionIterator( new Position( [ 0 ], doc.root ) ); // beginning of root
 		var i, len;
 
 		for ( i = 0, len = expectedItems.length; i < len; i++ ) {

@@ -13,11 +13,9 @@ CKEDITOR.define( [
 ], function( Character, Text, Node, utils ) {
 	/**
 	 * List of nodes. It is used to represent multiple nodes with a given order, for example children of
-	 * elements {@link document.Element}.
+	 * {@link document.Element} object or nodes inserted using {@link document.InsertOperation}.
 	 *
-	 * This class let you modify list of nodes, for example nodes to insert and pass the reference for such list.
-	 *
-	 * Thanks to the constructor which accept various structure, this class let you easily create list of text node.
+	 * Thanks to the constructor, which accepts various arguments, this class lets you easily create desired list of nodes.
 	 *
 	 * It also may internally compress nodes.
 	 *
@@ -120,9 +118,10 @@ CKEDITOR.define( [
 		 *
 		 * @param {Number} index Position of the first node to remove.
 		 * @param {Number} number Number of nodes to remove.
+		 * @returns {document.NodeList} List of removed nodes.
 		 */
 		remove( index, number ) {
-			this._nodes.splice( index, number );
+			return new NodeList( this._nodes.splice( index, number ) );
 		}
 
 		/**

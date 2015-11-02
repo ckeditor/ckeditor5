@@ -7,7 +7,7 @@
 
 CKEDITOR.define( [ 'document/node' ], function( Node ) {
 	/**
-	 * Data structure for character stored in the linear data.
+	 * Data structure for character stored in the tree data model.
 	 *
 	 * @class Character
 	 */

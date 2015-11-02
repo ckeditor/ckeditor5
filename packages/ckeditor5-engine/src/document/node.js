@@ -51,7 +51,7 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 		hasAttr( key ) {
 			var attr;
 
-			// Attribute
+			// Attribute.
 			if ( key instanceof Attribute ) {
 				for ( attr of this._attrs ) {
 					if ( attr.isEqual( key ) ) {
@@ -59,7 +59,7 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 					}
 				}
 			}
-			// Key
+			// Key.
 			else {
 				for ( attr of this._attrs ) {
 					if ( attr.key == key ) {
@@ -149,7 +149,7 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 		}
 
 		/**
-		 * Dept of the node, which equals total number of its parents.
+		 * Depth of the node, which equals to total number of its parents.
 		 *
 		 * @readonly
 		 * @property {Number} depth

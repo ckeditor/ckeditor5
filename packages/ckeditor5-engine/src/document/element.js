@@ -7,20 +7,20 @@
 
 CKEDITOR.define( [ 'document/node', 'document/nodelist' ], function( Node, NodeList ) {
 	/**
-	 * Linear data element.
+	 * Tree data model element.
 	 *
 	 * @class document.Element
 	 */
 	class Element extends Node {
 		/**
-		 * Creates linear data element.
+		 * Creates tree data model element.
 		 *
 		 * This constructor should be used only internally by the document.
 		 *
 		 * @param {String} name Node name.
 		 * @param {Iterable} attrs Iterable collection of {@link document.Attribute attributes}.
-		 * @param {document.Node|document.Text|document.NodeList|String|Iterable} nodes List of nodes to be inserted.
-		 * List of nodes can be any type accepted by the {@link document.NodeList} constructor.
+		 * @param {document.Node|document.Text|document.NodeList|String|Iterable} children List of nodes to be inserted
+		 * into created element. List of nodes can be of any type accepted by the {@link document.NodeList} constructor.
 		 * @constructor
 		 */
 		constructor( name, attrs, children ) {
@@ -53,9 +53,9 @@ CKEDITOR.define( [ 'document/node', 'document/nodelist' ], function( Node, NodeL
 		 * Note that list of children can be modified only in elements not attached yet to the document.
 		 * All attached nodes should be modified using the {@link document.InsertOperation}.
 		 *
-		 * @param {Nuber} index Position where nodes should be inserted.
+		 * @param {Number} index Position where nodes should be inserted.
 		 * @param {document.Node|document.Text|document.NodeList|String|Iterable} nodes List of nodes to be inserted.
-		 * List of nodes can be any type accepted by the {@link document.NodeList} constructor.
+		 * List of nodes can be of any type accepted by the {@link document.NodeList} constructor.
 		 */
 		insertChildren( index, nodes ) {
 			this._children.insert( index, new NodeList( nodes ) );
@@ -73,6 +73,7 @@ CKEDITOR.define( [ 'document/node', 'document/nodelist' ], function( Node, NodeL
 		 *
 		 * @param {Number} index Position of the first node to remove.
 		 * @param {Number} number Number of nodes to remove.
+		 * @returns {document.NodeList} List of removed nodes.
 		 */
 
 		removeChildren( index, number ) {
@@ -80,11 +81,11 @@ CKEDITOR.define( [ 'document/node', 'document/nodelist' ], function( Node, NodeL
 				this._children.get( i ).parent = null;
 			}
 
-			this._children.remove( index, number );
+			return this._children.remove( index, number );
 		}
 
 		/**
-		 * Get child at given index.
+		 * Gets child at given index.
 		 *
 		 * @param {Number} index Index of child.
 		 * @returns {document.Node} Child node.
@@ -94,7 +95,7 @@ CKEDITOR.define( [ 'document/node', 'document/nodelist' ], function( Node, NodeL
 		}
 
 		/**
-		 * Get index of child node.
+		 * Gets index of child node.
 		 *
 		 * @param {document.Node} node Child node.
 		 * @returns {Number} Index of child.

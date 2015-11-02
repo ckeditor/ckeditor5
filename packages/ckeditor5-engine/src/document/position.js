@@ -7,7 +7,7 @@
 
 CKEDITOR.define( [ 'utils', 'ckeditorerror' ], function( utils, CKEditorError ) {
 	/**
-	 * Position is always before of after a node.
+	 * Position is always before or after a node.
 	 * See {@link #path} property for more information.
 	 *
 	 * @class document.Position
@@ -84,7 +84,7 @@ CKEDITOR.define( [ 'utils', 'ckeditorerror' ], function( utils, CKEditorError ) 
 		/**
 		 * Set the position after given node.
 		 *
-		 * @param {document.node} node Node the position should be directly after.
+		 * @param {document.Node} node Node the position should be directly after.
 		 */
 		static createAfter( node ) {
 			if ( !node.parent ) {
@@ -132,7 +132,7 @@ CKEDITOR.define( [ 'utils', 'ckeditorerror' ], function( utils, CKEditorError ) 
 		 * Node directly before the position.
 		 *
 		 * @readonly
-		 * @type {Node}
+		 * @type {document.Node}
 		 */
 		get nodeBefore() {
 			return this.parent.getChild( this.offset - 1 ) || null;
@@ -142,7 +142,7 @@ CKEDITOR.define( [ 'utils', 'ckeditorerror' ], function( utils, CKEditorError ) 
 		 * Node directly after the position.
 		 *
 		 * @readonly
-		 * @type {Node}
+		 * @type {document.Node}
 		 */
 		get nodeAfter() {
 			return this.parent.getChild( this.offset ) || null;
