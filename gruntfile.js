@@ -28,7 +28,7 @@ module.exports = function( grunt ) {
 			}
 		},
 
-		plugin: { create: { } }
+		plugin: { }
 	} );
 
 	// Finally load the tasks.
