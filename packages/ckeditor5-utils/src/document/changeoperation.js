@@ -111,7 +111,7 @@ CKEDITOR.define( [ 'document/operation', 'ckeditorerror' ], function( Operation,
 			// Insert or change.
 			if ( newAttr !== null ) {
 				for ( value of this.range ) {
-					if ( value.node.hasAttr( newAttr.key ) ) {
+					if ( oldAttr === null && value.node.hasAttr( newAttr.key ) ) {
 						/**
 						 * The attribute with given key already exists for given node.
 						 *
