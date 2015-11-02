@@ -98,7 +98,7 @@ CKEDITOR.define( [
 			}
 
 			var root = new RootElement( this );
-			this.roots.set( root, name );
+			this.roots.set( name, root );
 
 			return root;
 		}
@@ -110,6 +110,20 @@ CKEDITOR.define( [
 		 * @returns (document.RootElement} Root registered under given name.
 		 */
 		getRoot( name ) {
+			if ( !this.roots.has( name ) ) {
+				/**
+				 * Root with specified name does not exist.
+				 *
+				 * @error document-createRoot-root-not-exist
+				 * @param {document.Document} doc
+				 * @param {String} name
+				 */
+				throw new CKEditorError(
+					'document-createRoot-root-not-exist: Root with specified name does not exist.',
+					{ doc: this, name: name }
+				);
+			}
+
 			return this.roots.get( name );
 		}
 
