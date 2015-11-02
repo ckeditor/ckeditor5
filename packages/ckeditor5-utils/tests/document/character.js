@@ -15,37 +15,37 @@ var modules = bender.amd.require(
 	'document/element',
 	'document/attribute' );
 
-describe( 'constructor', function() {
-	it( 'should create character without attributes', function() {
-		var Element = modules[ 'document/element' ];
-		var Character = modules[ 'document/character' ];
-		var Node = modules[ 'document/node' ];
+describe( 'Character', function() {
+	var Element, Character, Node, Attribute;
 
-		var character = new Character( 'f' );
-		var parent = new Element( 'parent', [], character );
-
-		expect( character ).to.be.an.instanceof( Node );
-		expect( character ).to.have.property( 'character' ).that.equals( 'f' );
-		expect( character ).to.have.property( 'parent' ).that.equals( parent );
-		expect( character._getAttrCount() ).to.equals( 0 );
+	before( function() {
+		Element = modules[ 'document/element' ];
+		Character = modules[ 'document/character' ];
+		Node = modules[ 'document/node' ];
+		Attribute = modules[ 'document/attribute' ];
 	} );
 
-	it( 'should create character with attributes', function() {
-		var Element = modules[ 'document/element' ];
-		var Character = modules[ 'document/character' ];
-		var Node = modules[ 'document/node' ];
-		var Attribute = modules[ 'document/attribute' ];
+	describe( 'constructor', function() {
+		it( 'should create character without attributes', function() {
+			var character = new Character( 'f' );
+			var parent = new Element( 'parent', [], character );
 
-		var attr = new Attribute( 'foo', 'bar' );
+			expect( character ).to.be.an.instanceof( Node );
+			expect( character ).to.have.property( 'character' ).that.equals( 'f' );
+			expect( character ).to.have.property( 'parent' ).that.equals( parent );
+			expect( character._getAttrCount() ).to.equals( 0 );
+		} );
 
-		var character = new Character( 'f', [ attr ] );
+		it( 'should create character with attributes', function() {
+			var attr = new Attribute( 'foo', 'bar' );
+			var character = new Character( 'f', [ attr ] );
+			var parent = new Element( 'parent', [], character );
 
-		var parent = new Element( 'parent', [], character );
-
-		expect( character ).to.be.an.instanceof( Node );
-		expect( character ).to.have.property( 'character' ).that.equals( 'f' );
-		expect( character ).to.have.property( 'parent' ).that.equals( parent );
-		expect( character._getAttrCount() ).to.equals( 1 );
-		expect( character.getAttr( attr.key ) ).to.equals( attr.value );
+			expect( character ).to.be.an.instanceof( Node );
+			expect( character ).to.have.property( 'character' ).that.equals( 'f' );
+			expect( character ).to.have.property( 'parent' ).that.equals( parent );
+			expect( character._getAttrCount() ).to.equals( 1 );
+			expect( character.getAttr( attr.key ) ).to.equals( attr.value );
+		} );
 	} );
 } );
