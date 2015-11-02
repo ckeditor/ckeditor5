@@ -9,7 +9,7 @@ CKEDITOR.define( [
 	'document/operation',
 	'document/nodelist',
 	'ckeditorerror',
-	'utilis'
+	'utils'
 ], function( Operation, NodeList, CKEditorError, utils ) {
 	/**
 	 * Operation to move list of following nodes from the one position in the document to another.

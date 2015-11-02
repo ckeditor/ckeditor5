@@ -5,7 +5,7 @@
 
 'use strict';
 
-CKEDITOR.define( [], function() {
+CKEDITOR.define( [ 'document/element' ], function( Element ) {
 	/**
 	 * Class for nodes that are roots of trees in tree data model.
 	 *
