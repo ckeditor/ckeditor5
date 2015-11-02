@@ -10,8 +10,8 @@ CKEDITOR.define( [
 	'document/element',
 	'document/position'
 ], function( Character, Element, Position ) {
-	var OPENING_TAG = 0;
-	var CLOSING_TAG = 1;
+	var ELEMENT_ENTER = 0;
+	var ELEMENT_LEAVE = 1;
 	var CHARACTER = 2;
 
 	/**
@@ -57,8 +57,8 @@ CKEDITOR.define( [
 		 * @returns {Object} Value between last and new {@link #position}.
 		 * @returns {Boolean} return.done True if iterator is done.
 		 * @returns {Object} return.value
-		 * @returns {Number} return.value.type Skipped value type, possible options: {@link PositionIterator#OPENING_TAG},
-		 * {@link PositionIterator#CLOSING_TAG} or {@link PositionIterator#CHARACTER}.
+		 * @returns {Number} return.value.type Skipped value type, possible options: {@link PositionIterator#ELEMENT_ENTER},
+		 * {@link PositionIterator#ELEMENT_LEAVE} or {@link PositionIterator#CHARACTER}.
 		 * @returns {Node} return.value.node Skipped node.
 		 */
 		next() {
@@ -79,7 +79,7 @@ CKEDITOR.define( [
 			if ( nodeAfter instanceof Element ) {
 				this.position = Position.createFromParentAndOffset( nodeAfter, 0 );
 
-				return formatReturnValue( OPENING_TAG, nodeAfter );
+				return formatReturnValue( ELEMENT_ENTER, nodeAfter );
 			} else if ( nodeAfter instanceof Character ) {
 				this.position = Position.createFromParentAndOffset( parent, position.offset + 1 );
 
@@ -87,7 +87,7 @@ CKEDITOR.define( [
 			} else {
 				this.position = Position.createFromParentAndOffset( parent.parent, parent.positionInParent + 1 );
 
-				return formatReturnValue( CLOSING_TAG, this.position.nodeBefore );
+				return formatReturnValue( ELEMENT_LEAVE, this.position.nodeBefore );
 			}
 		}
 
@@ -97,15 +97,15 @@ CKEDITOR.define( [
 		 * @returns {Object} Value between last and new {@link #position}.
 		 * @returns {Boolean} return.done True if iterator is done.
 		 * @returns {Object} return.value
-		 * @returns {Number} return.value.type Skipped value type, possible options: {@link PositionIterator#OPENING_TAG},
-		 * {@link PositionIterator#CLOSING_TAG} or {@link PositionIterator#CHARACTER}.
+		 * @returns {Number} return.value.type Skipped value type, possible options: {@link PositionIterator#ELEMENT_ENTER},
+		 * {@link PositionIterator#ELEMENT_LEAVE} or {@link PositionIterator#CHARACTER}.
 		 * @returns {Node} return.value.node Skipped node.
 		 */
 		previous() {
 			var position = this.position;
 			var parent = position.parent;
 
-			// We are at the begging of the root.
+			// We are at the beginning of the root.
 			if ( parent.parent === null && position.offset === 0 ) {
 				return { done: true };
 			}
@@ -119,7 +119,7 @@ CKEDITOR.define( [
 			if ( nodeBefore instanceof Element ) {
 				this.position = Position.createFromParentAndOffset( nodeBefore, nodeBefore.getChildCount() );
 
-				return formatReturnValue( CLOSING_TAG, nodeBefore );
+				return formatReturnValue( ELEMENT_LEAVE, nodeBefore );
 			} else if ( nodeBefore instanceof Character ) {
 				this.position = Position.createFromParentAndOffset( parent, position.offset - 1 );
 
@@ -127,7 +127,7 @@ CKEDITOR.define( [
 			} else {
 				this.position = Position.createFromParentAndOffset( parent.parent, parent.positionInParent );
 
-				return formatReturnValue( OPENING_TAG, this.position.nodeAfter );
+				return formatReturnValue( ELEMENT_ENTER, this.position.nodeAfter );
 			}
 		}
 	}
@@ -143,18 +143,18 @@ CKEDITOR.define( [
 	}
 
 	/**
-	 * Flag for opening tag.
+	 * Flag for element entering.
 	 *
 	 * @readonly
 	 */
-	PositionIterator.OPENING_TAG = OPENING_TAG;
+	PositionIterator.ELEMENT_ENTER = ELEMENT_ENTER;
 
 	/**
-	 * Flag for closing tag.
+	 * Flag for element leaving.
 	 *
 	 * @readonly
 	 */
-	PositionIterator.CLOSING_TAG = CLOSING_TAG;
+	PositionIterator.ELEMENT_LEAVE = ELEMENT_LEAVE;
 
 	/**
 	 * Flag for character.

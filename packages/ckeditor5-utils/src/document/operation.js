@@ -21,11 +21,11 @@ CKEDITOR.define( [], function() {
 		constructor( baseVersion ) {
 			/**
 			 * {@link document.Document#version} on which operation can be applied. If you try to
-			 * {@link document.Document#applyOperation apply} operation with different base version then
+			 * {@link document.Document#applyOperation apply} operation with different base version than
 			 * {@link document.Document#version document version} the {@link document-applyOperation-wrong-version}
 			 * error is thrown.
 			 *
-			 * @type {Number}
+			 * @property {Number} baseVersion
 			 */
 			this.baseVersion = baseVersion;
 		}

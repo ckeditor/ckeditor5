@@ -9,30 +9,24 @@ CKEDITOR.define( [
 	'document/operation',
 	'document/nodelist',
 	'ckeditorerror',
-	'utils'
+	'utilis'
 ], function( Operation, NodeList, CKEditorError, utils ) {
 	/**
 	 * Operation to move list of following nodes from the one position in the document to another.
 	 *
-	 * @class document.Operation
+	 * @class document.MoveOperation
 	 */
 	class MoveOperation extends Operation {
 		/**
 		 * Creates a move operation.
 		 *
-		 * Note that this constructor is used not only to create an operation on the current state of the document,
-		 * but also to create reverse operation or the result of the operational transformation. The operation also
-		 * needs to keep data needed to transform it (creates an insert operation from the move & remove combination).
-		 * This is why this constructor contains list of nodes instead of length.
-		 *
-		 * @param {document.Position} sourcePosition Source move position.
-		 * @param {document.Position} targetPosition Target move position.
-		 * @param {document.Node|document.Text|document.NodeList|String|Iterable} nodes List of nodes to be moved.
-		 * List of nodes can be any type accepted by the {@link document.NodeList} constructor.
+		 * @param {document.Position} sourcePosition Position before the first element to move.
+		 * @param {document.Position} targetPosition Position where moved elements will be inserted.
+		 * @param {Number} howMany How many consecutive nodes to move, starting from sourcePosition.
 		 * @param {Number} baseVersion {@link document.Document#version} on which operation can be applied.
 		 * @constructor
 		 */
-		constructor( sourcePosition, targetPosition, nodes, baseVersion ) {
+		constructor( sourcePosition, targetPosition, howMany, baseVersion ) {
 			super( baseVersion );
 
 			/**
@@ -50,11 +44,11 @@ CKEDITOR.define( [
 			this.targetPosition = targetPosition;
 
 			/**
-			 * List of nodes to move.
+			 * How many nodes to move.
 			 *
-			 * @type {document.NodeList}
+			 * @type {Number}
 			 */
-			this.nodeList = new NodeList( nodes );
+			this.howMany = howMany;
 		}
 
 		/**
@@ -67,46 +61,84 @@ CKEDITOR.define( [
 			var targetElement = this.targetPosition.parent;
 			var sourceOffset = this.sourcePosition.offset;
 			var targetOffset = this.targetPosition.offset;
-			var nodeList = this.nodeList;
 
-			if ( CKEDITOR.isDebug ) {
-				var i = 0;
+			// Validate whether move operation has correct parameters.
+			// Validation is pretty complex but move operation is one of the core ways to manipulate the document state.
+			// We expect that many errors might be connected with one of scenarios described below.
+			if ( !sourceElement || !targetElement ) {
+				/**
+				 * Source position or target position is invalid.
+				 *
+				 * @error operation-move-position-invalid
+				 * @param {document.MoveOperation} moveOperation
+				 */
+				throw new CKEditorError(
+					'operation-move-source-position-invalid: Source position or target position is invalid.',
+					{ moveOperation: this }
+				);
+			} else if ( sourceOffset + this.howMany > sourceElement.getChildCount() ) {
+				/**
+				 * The nodes which should be moved do not exist.
+				 *
+				 * @error operation-move-nodes-do-not-exist
+				 * @param {document.MoveOperation} moveOperation
+				 */
+				throw new CKEditorError(
+					'operation-move-nodes-do-not-exist: The nodes which should be moved do not exist.',
+					{ moveOperation: this }
+				);
+			} else if ( sourceElement === targetElement && sourceOffset + this.howMany >= targetOffset ) {
+				/**
+				 * Trying to move a range of nodes into the middle of that range.
+				 *
+				 * @error operation-move-range-into-itself
+				 * @param {document.MoveOperation} moveOperation
+				 */
+				throw new CKEditorError(
+					'operation-move-range-into-itself: Trying to move a range of nodes to the inside of that range.',
+					{ moveOperation: this }
+				);
+			} else {
+				var sourcePath = this.sourcePosition.path.slice( 0, -1 );
+				var targetPath = this.targetPosition.path.slice( 0, -1 );
 
-				for ( var node of this.nodeList ) {
-					if ( !utils.isEqual( sourceElement.getChild( sourceOffset + i ), node ) ) {
+				if ( utils.compareArrays( sourcePath, targetPath ) == utils.compareArrays.PREFIX ) {
+					var i = sourcePath.length;
+
+					if ( this.targetPosition.path[ i ] >= sourceOffset && this.targetPosition.path[ i ] < sourceOffset + this.howMany ) {
 						/**
-						 * The node which should be removed does not exists.
+						 * Trying to move a range of nodes into one of nodes from that range.
 						 *
-						 * @error operation-move-node-does-not-exists:
+						 * @error operation-move-node-into-itself
 						 * @param {document.MoveOperation} moveOperation
-						 * @param {document.Node} node
 						 */
 						throw new CKEditorError(
-							'operation-move-node-does-not-exists: The node which should be moved does not exists.',
-							{ moveOperation: this, node: this.node } );
+							'operation-move-node-into-itself: Trying to move a range of nodes into one of nodes from that range.',
+							{ moveOperation: this }
+						);
 					}
-					i++;
 				}
 			}
-
-			sourceElement.removeChildren( sourceOffset, nodeList.length );
+			// End of validation.
 
 			// If we move children in the same element and we remove elements on the position before the target we
 			// need to update a target offset.
 			if ( sourceElement === targetElement && sourceOffset < targetOffset ) {
-				targetOffset -= nodeList.length;
+				targetOffset -= this.howMany;
 			}
 
-			targetElement.insertChildren( targetOffset, this.nodeList );
+			var removedNodes = sourceElement.removeChildren( sourceOffset, this.howMany );
+
+			targetElement.insertChildren( targetOffset, removedNodes );
 		}
 
 		/**
-		 * Creates an reverse move operation.
+		 * Creates a reverse operation.
 		 *
 		 * @returns {document.MoveOperation} Reverse operation.
 		 */
 		reverseOperation() {
-			return new MoveOperation( this.targetPosition, this.sourcePosition, this.nodeList, this.baseVersion + 1 );
+			return new MoveOperation( this.targetPosition, this.sourcePosition, this.howMany, this.baseVersion + 1 );
 		}
 	}
 

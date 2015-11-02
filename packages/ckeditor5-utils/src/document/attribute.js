@@ -9,14 +9,14 @@ CKEDITOR.define( [ 'utils' ], function( utils ) {
 	/**
 	 * Attributes can store any additional information for nodes in the data model.
 	 *
-	 * @class Attribute
+	 * @class document.Attribute
 	 */
 	class Attribute {
 		/**
 		 * Create a new attribute class. Once attribute is created it should not be modified.
 		 *
-		 * @param {String} key Attribute key
-		 * @param {Mixed} value Attribute value
+		 * @param {String} key Attribute key.
+		 * @param {Mixed} value Attribute value.
 		 * @constructor
 		 */
 		constructor( key, value ) {
@@ -50,7 +50,7 @@ CKEDITOR.define( [ 'utils' ], function( utils ) {
 				return Attribute._register[ this._hash ];
 			}
 
-			// We do no care about the order so collections with the same elements should return the same hash.
+			// We do not care about the order, so collections with the same elements should return the same hash.
 			function sort( key, value ) {
 				if ( !utils.isArray( value ) && utils.isObject( value ) ) {
 					var sorted = {};
@@ -68,14 +68,14 @@ CKEDITOR.define( [ 'utils' ], function( utils ) {
 		}
 
 		/**
-		 * Compare two attributes. Returns true is two attributes have the same key and value even if the order of value
+		 * Compare two attributes. Returns true if two attributes have the same key and value even if the order of value
 		 * elements is different.
 		 *
 		 *	var attr1 = new Attribute( 'foo', { a: 1, b: 2 } );
 		 *	var attr2 = new Attribute( 'foo', { b: 2, a: 1 } );
 		 *	attr1.isEqual( attr2 ); // true
 		 *
-		 * @param {document.Attribute} otherAttr other attribute
+		 * @param {document.Attribute} otherAttr Attribute to compare with.
 		 * @returns {Boolean} True if attributes equals.
 		 */
 		isEqual( otherAttr ) {
@@ -83,7 +83,7 @@ CKEDITOR.define( [ 'utils' ], function( utils ) {
 		}
 
 		/**
-		 * To save memory common used attributes may be registered. If an attribute is registered the constructor will
+		 * To save memory, commonly used attributes may be registered. If an attribute is registered the constructor will
 		 * always return the same instance of this attribute.
 		 *
 		 * Note that attributes are registered globally.
@@ -95,8 +95,8 @@ CKEDITOR.define( [ 'utils' ], function( utils ) {
 		 *	attr1 === attr3 // true
 		 *
 		 * @static
-		 * @param {String} key Attribute key
-		 * @param {Mixed} value Attribute value
+		 * @param {String} key Attribute key.
+		 * @param {Mixed} value Attribute value.
 		 * @returns {document.Attribute} Registered attribute.
 		 */
 		static register( key, value ) {
@@ -113,7 +113,7 @@ CKEDITOR.define( [ 'utils' ], function( utils ) {
 	}
 
 	/**
-	 * Attribute register where all registered attributes are stored.
+	 * Register of attributes in which all registered attributes are stored.
 	 *
 	 * @static
 	 * @private
