@@ -30,9 +30,8 @@ describe( 'ChangeOperation', function() {
 		Attribute = modules[ 'document/attribute' ];
 		NodeList = modules[ 'document/nodelist' ];
 		Text = modules[ 'document/text' ];
-		CKEditorError = modules[ 'ckeditorerror' ];
+		CKEditorError = modules.ckeditorerror;
 	} );
-
 
 	var doc, root;
 
