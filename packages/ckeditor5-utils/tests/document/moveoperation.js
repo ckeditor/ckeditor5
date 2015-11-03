@@ -220,4 +220,26 @@ describe( 'MoveOperation', function() {
 			}
 		).to.throw( CKEditorError, /operation-move-node-into-itself/ );
 	} );
+
+	it( 'should not throw an error if operation move a range into a sibling', function() {
+		var p = new Element( 'p' );
+		root.insertChildren( 0, [ 'ab', p, 'xy' ] );
+
+		var operation = new MoveOperation(
+			new Position( [ 1 ], root ),
+			new Position( [ 2, 0 ], root ),
+			1,
+			doc.version
+		);
+
+		expect(
+			function() {
+				doc.applyOperation( operation );
+			}
+		).not.to.throw();
+
+		expect( root.getChildCount() ).to.equal( 4 );
+		expect( p.getChildCount() ).to.equal( 1 );
+		expect( p.getChild( 0 ).character ).to.equal( 'b' );
+	} );
 } );
