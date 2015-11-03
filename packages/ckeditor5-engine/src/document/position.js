@@ -157,6 +157,17 @@ CKEDITOR.define( [ 'utils', 'ckeditorerror' ], function( utils, CKEditorError ) 
 		isEqual( otherPosition ) {
 			return utils.isEqual( this.path, otherPosition.path );
 		}
+
+		/**
+		 * Return the path to the parent, which is the {@link document.Position#path} without the last element.
+		 *
+		 * This method return the parent path even if the parent does not exists.
+		 *
+		 * @returns {Array} Path to the parent.
+		 */
+		getParentPath() {
+			return this.path.slice( 0, -1 );
+		}
 	}
 
 	return Position;
