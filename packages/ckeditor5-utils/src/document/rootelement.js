@@ -15,30 +15,19 @@ CKEDITOR.define( [ 'document/element' ], function( Element ) {
 		/**
 		 * Creates tree root node.
 		 *
-		 * @param {document.Document} document {@link document.Document} that is an owner of the root.
+		 * @param {document.Document} doc {@link document.Document} that is an owner of the root.
 		 * @constructor
 		 */
-		constructor( document ) {
+		constructor( doc ) {
 			super( 'root' );
 
 			/**
 			 * {@link document.Document} that is an owner of this root.
 			 *
 			 * @readonly
-			 * @protected
 			 * @property {document.Document}
 			 */
-			this._document = document;
-		}
-
-		/**
-		 * Document that is an owner of this root.
-		 *
-		 * @readonly
-		 * @property {Document} document
-		 */
-		get document() {
-			return this._document;
+			this.document = doc;
 		}
 	}
 
