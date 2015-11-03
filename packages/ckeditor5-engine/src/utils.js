@@ -97,13 +97,13 @@ CKEDITOR.define( [ 'utils-lodash', 'lib/lodash/lodash-ckeditor' ], function( lod
 	/**
 	 * Flag for "is same as" relation between arrays.
 	 *
-	 * @type {number}
+	 * @type {Number}
 	 */
 	utils.compareArrays.SAME = 0;
 	/**
 	 * Flag for "is a prefix of" relation between arrays.
 	 *
-	 * @type {number}
+	 * @type {Number}
 	 */
 	utils.compareArrays.PREFIX = 1;
 	/**
@@ -115,7 +115,7 @@ CKEDITOR.define( [ 'utils-lodash', 'lib/lodash/lodash-ckeditor' ], function( lod
 	/**
 	 * Flag for "is different than" relation between arrays.
 	 *
-	 * @type {number}
+	 * @type {Number}
 	 */
 	utils.compareArrays.DIFFERENT = 3;
 
