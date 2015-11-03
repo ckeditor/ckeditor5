@@ -99,8 +99,8 @@ CKEDITOR.define( [
 					{ moveOperation: this }
 				);
 			} else {
-				var sourcePath = this.sourcePosition.path.slice( 0, -1 );
-				var targetPath = this.targetPosition.path.slice( 0, -1 );
+				var sourcePath = this.sourcePosition.getParentPath();
+				var targetPath = this.targetPosition.getParentPath();
 
 				if ( utils.compareArrays( sourcePath, targetPath ) == utils.compareArrays.PREFIX ) {
 					var i = sourcePath.length;

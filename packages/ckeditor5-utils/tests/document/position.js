@@ -220,4 +220,10 @@ describe( 'position', function() {
 
 		expect( position.isEqual( differentNode ) ).to.be.false;
 	} );
+
+	it( 'should have proper parent path', function() {
+		var position = new Position( [ 1, 2, 3 ], root );
+
+		expect( position.getParentPath() ).to.deep.equal( [ 1, 2 ] );
+	} );
 } );
