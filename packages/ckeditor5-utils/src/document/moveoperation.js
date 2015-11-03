@@ -73,7 +73,7 @@ CKEDITOR.define( [
 				 * @param {document.MoveOperation} moveOperation
 				 */
 				throw new CKEditorError(
-					'operation-move-source-position-invalid: Source position or target position is invalid.',
+					'operation-move-position-invalid: Source position or target position is invalid.',
 					{ moveOperation: this }
 				);
 			} else if ( sourceOffset + this.howMany > sourceElement.getChildCount() ) {
@@ -87,7 +87,7 @@ CKEDITOR.define( [
 					'operation-move-nodes-do-not-exist: The nodes which should be moved do not exist.',
 					{ moveOperation: this }
 				);
-			} else if ( sourceElement === targetElement && sourceOffset + this.howMany >= targetOffset ) {
+			} else if ( sourceElement === targetElement && sourceOffset <= targetOffset && targetOffset < sourceOffset + this.howMany ) {
 				/**
 				 * Trying to move a range of nodes into the middle of that range.
 				 *

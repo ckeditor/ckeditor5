@@ -76,21 +76,21 @@ CKEDITOR.define( [ 'utils-lodash', 'lib/lodash/lodash-ckeditor' ], function( lod
 			for ( var i = 0; i < minLen; i++ ) {
 				if ( a[ i ] != b[ i ] ) {
 					// The arrays are different.
-					return this.DIFFERENT;
+					return utils.compareArrays.DIFFERENT;
 				}
 			}
 
 			// Both arrays were same at all points.
 			if ( a.length == b.length ) {
 				// If their length is also same, they are the same.
-				return this.SAME;
+				return utils.compareArrays.SAME;
 			} else if ( a.length < b.length ) {
 				// Compared array is shorter so it is a prefix of the other array.
-				return this.PREFIX;
+				return utils.compareArrays.PREFIX;
 			}
 
 			// In other case, the arrays are different.
-			return this.DIFFERENT;
+			return utils.compareArrays.DIFFERENT;
 		}
 	};
 
