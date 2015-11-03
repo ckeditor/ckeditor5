@@ -16,25 +16,25 @@ var modules = bender.amd.require(
 	'document/range' );
 
 describe( 'range iterator', function() {
-	var doc, expectedItems;
+	var Document, Element, Character, PositionIterator, Position, Range;
 
-	var root, img1, paragraph, b, a, r, img2, x;
-
-	var OPENING_TAG, CLOSING_TAG, CHARACTER;
+	var doc, expectedItems, root, img1, paragraph, b, a, r, img2, x;
+	var ELEMENT_ENTER, ELEMENT_LEAVE, CHARACTER;
 
 	before( function() {
-		var Document = modules[ 'document/document' ];
+		Document = modules[ 'document/document' ];
+		Element = modules[ 'document/element' ];
+		Character = modules[ 'document/character' ];
+		PositionIterator = modules[ 'document/positioniterator' ];
+		Position = modules[ 'document/position' ];
+		Range = modules[ 'document/range' ];
 
-		var Element = modules[ 'document/element' ];
-		var Character = modules[ 'document/character' ];
-
-		var PositionIterator = modules[ 'document/positioniterator' ];
-		OPENING_TAG = PositionIterator.OPENING_TAG;
-		CLOSING_TAG = PositionIterator.CLOSING_TAG;
+		ELEMENT_ENTER = PositionIterator.ELEMENT_ENTER;
+		ELEMENT_LEAVE = PositionIterator.ELEMENT_LEAVE;
 		CHARACTER = PositionIterator.CHARACTER;
 
 		doc = new Document();
-		root = doc.root;
+		root = doc.createRoot( 'root' );
 
 		// root
 		//  |- img1
@@ -59,24 +59,21 @@ describe( 'range iterator', function() {
 		root.insertChildren( 0, [ img1, paragraph ] );
 
 		expectedItems = [
-				{ type: OPENING_TAG, node: img1 },
-				{ type: CLOSING_TAG, node: img1 },
-				{ type: OPENING_TAG, node: paragraph },
+				{ type: ELEMENT_ENTER, node: img1 },
+				{ type: ELEMENT_LEAVE, node: img1 },
+				{ type: ELEMENT_ENTER, node: paragraph },
 				{ type: CHARACTER, node: b },
 				{ type: CHARACTER, node: a },
 				{ type: CHARACTER, node: r },
-				{ type: OPENING_TAG, node: img2 },
-				{ type: CLOSING_TAG, node: img2 },
+				{ type: ELEMENT_ENTER, node: img2 },
+				{ type: ELEMENT_LEAVE, node: img2 },
 				{ type: CHARACTER, node: x },
-				{ type: CLOSING_TAG, node: paragraph }
+				{ type: ELEMENT_LEAVE, node: paragraph }
 			];
 	} );
 
 	it( 'should return next position', function() {
-		var PositionIterator = modules[ 'document/positioniterator' ];
-		var Position = modules[ 'document/position' ];
-
-		var iterator = new PositionIterator( new Position( [ 0 ], doc.root ) ); // beginning of root
+		var iterator = new PositionIterator( new Position( [ 0 ], root ) ); // beginning of root
 		var i, len;
 
 		for ( i = 0, len = expectedItems.length; i < len; i++ ) {
@@ -86,10 +83,7 @@ describe( 'range iterator', function() {
 	} );
 
 	it( 'should return previous position', function() {
-		var PositionIterator = modules[ 'document/positioniterator' ];
-		var Position = modules[ 'document/position' ];
-
-		var iterator = new PositionIterator( new Position( [ 2 ], doc.root ) ); // ending of root
+		var iterator = new PositionIterator( new Position( [ 2 ], root ) ); // ending of root
 
 		for ( var i = expectedItems.length - 1; i >= 0; i-- ) {
 			expect( iterator.previous() ).to.deep.equal( { done: false, value: expectedItems[ i ] } );
@@ -98,12 +92,8 @@ describe( 'range iterator', function() {
 	} );
 
 	it( 'should return next position in the boundaries', function() {
-		var PositionIterator = modules[ 'document/positioniterator' ];
-		var Position = modules[ 'document/position' ];
-		var Range = modules[ 'document/range' ];
-
-		var start = new Position( [ 1, 0 ], doc.root ); // p, 0
-		var end = new Position( [ 1, 3, 0 ], doc.root ); // img, 0
+		var start = new Position( [ 1, 0 ], root ); // p, 0
+		var end = new Position( [ 1, 3, 0 ], root ); // img, 0
 
 		var iterator = new PositionIterator( new Range( start, end ) );
 
@@ -116,12 +106,8 @@ describe( 'range iterator', function() {
 	} );
 
 	it( 'should return previous position in the boundaries', function() {
-		var PositionIterator = modules[ 'document/positioniterator' ];
-		var Position = modules[ 'document/position' ];
-		var Range = modules[ 'document/range' ];
-
-		var start = new Position( [ 1, 0 ], doc.root ); // p, 0
-		var end = new Position( [ 1, 3, 0 ], doc.root ); // img, 0
+		var start = new Position( [ 1, 0 ], root ); // p, 0
+		var end = new Position( [ 1, 3, 0 ], root ); // img, 0
 
 		var iterator = new PositionIterator( new Range( start, end ), end );
 
@@ -134,11 +120,8 @@ describe( 'range iterator', function() {
 	} );
 
 	it( 'should return iterate over the range', function() {
-		var Position = modules[ 'document/position' ];
-		var Range = modules[ 'document/range' ];
-
-		var start = new Position( [ 0 ], doc.root ); // begging of root
-		var end = new Position( [ 2 ], doc.root ); // ending of root
+		var start = new Position( [ 0 ], root ); // begging of root
+		var end = new Position( [ 2 ], root ); // ending of root
 		var range = new Range( start, end );
 
 		var i = 0;
