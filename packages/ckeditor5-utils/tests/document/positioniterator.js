@@ -13,7 +13,8 @@ var modules = bender.amd.require(
 	'document/character',
 	'document/positioniterator',
 	'document/position',
-	'document/range' );
+	'document/range'
+);
 
 describe( 'range iterator', function() {
 	var Document, Element, Character, PositionIterator, Position, Range;
@@ -59,17 +60,17 @@ describe( 'range iterator', function() {
 		root.insertChildren( 0, [ img1, paragraph ] );
 
 		expectedItems = [
-				{ type: ELEMENT_ENTER, node: img1 },
-				{ type: ELEMENT_LEAVE, node: img1 },
-				{ type: ELEMENT_ENTER, node: paragraph },
-				{ type: CHARACTER, node: b },
-				{ type: CHARACTER, node: a },
-				{ type: CHARACTER, node: r },
-				{ type: ELEMENT_ENTER, node: img2 },
-				{ type: ELEMENT_LEAVE, node: img2 },
-				{ type: CHARACTER, node: x },
-				{ type: ELEMENT_LEAVE, node: paragraph }
-			];
+			{ type: ELEMENT_ENTER, node: img1 },
+			{ type: ELEMENT_LEAVE, node: img1 },
+			{ type: ELEMENT_ENTER, node: paragraph },
+			{ type: CHARACTER, node: b },
+			{ type: CHARACTER, node: a },
+			{ type: CHARACTER, node: r },
+			{ type: ELEMENT_ENTER, node: img2 },
+			{ type: ELEMENT_LEAVE, node: img2 },
+			{ type: CHARACTER, node: x },
+			{ type: ELEMENT_LEAVE, node: paragraph }
+		];
 	} );
 
 	it( 'should return next position', function() {

@@ -16,7 +16,8 @@ var modules = bender.amd.require(
 	'document/attribute',
 	'document/nodelist',
 	'document/text',
-	'ckeditorerror' );
+	'ckeditorerror'
+);
 
 describe( 'ChangeOperation', function() {
 	var Document, ChangeOperation, Position, Range, Character, Attribute, NodeList, Text, CKEditorError;
@@ -45,11 +46,14 @@ describe( 'ChangeOperation', function() {
 
 		root.insertChildren( 0, 'bar' );
 
-		doc.applyOperation( new ChangeOperation(
-			new Range( new Position( [ 0 ], root ), new Position( [ 2 ], root ) ),
-			null,
-			newAttr,
-			doc.version ) );
+		doc.applyOperation(
+			new ChangeOperation(
+				new Range( new Position( [ 0 ], root ), new Position( [ 2 ], root ) ),
+				null,
+				newAttr,
+				doc.version
+			)
+		);
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 3 );
@@ -65,11 +69,14 @@ describe( 'ChangeOperation', function() {
 
 		root.insertChildren( 0, new Character( 'x', [ fooAttr, barAttr ] ) );
 
-		doc.applyOperation( new ChangeOperation(
-			new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
-			null,
-			newAttr,
-			doc.version ) );
+		doc.applyOperation(
+			new ChangeOperation(
+				new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
+				null,
+				newAttr,
+				doc.version
+			)
+		);
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 1 );
@@ -85,11 +92,14 @@ describe( 'ChangeOperation', function() {
 
 		root.insertChildren( 0, new Text( 'bar', [ oldAttr ] ) );
 
-		doc.applyOperation( new ChangeOperation(
-			new Range( new Position( [ 0 ], root ), new Position( [ 2 ], root ) ),
-			oldAttr,
-			newAttr,
-			doc.version ) );
+		doc.applyOperation(
+			new ChangeOperation(
+				new Range( new Position( [ 0 ], root ), new Position( [ 2 ], root ) ),
+				oldAttr,
+				newAttr,
+				doc.version
+			)
+		);
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 3 );
@@ -109,11 +119,14 @@ describe( 'ChangeOperation', function() {
 
 		root.insertChildren( 0, new Character( 'x', [ fooAttr, x1Attr, barAttr ] ) );
 
-		doc.applyOperation( new ChangeOperation(
-			new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
-			x1Attr,
-			x2Attr,
-			doc.version ) );
+		doc.applyOperation(
+			new ChangeOperation(
+				new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
+				x1Attr,
+				x2Attr,
+				doc.version
+			)
+		);
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 1 );
@@ -130,11 +143,14 @@ describe( 'ChangeOperation', function() {
 
 		root.insertChildren( 0, new Character( 'x', [ fooAttr, xAttr, barAttr ] ) );
 
-		doc.applyOperation( new ChangeOperation(
-			new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
-			xAttr,
-			null,
-			doc.version ) );
+		doc.applyOperation(
+			new ChangeOperation(
+				new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
+				xAttr,
+				null,
+				doc.version
+			)
+		);
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 1 );
@@ -146,11 +162,8 @@ describe( 'ChangeOperation', function() {
 	it( 'should create a change operation as a reverse', function() {
 		var oldAttr = new Attribute( 'x', 'old' );
 		var newAttr = new Attribute( 'x', 'new' );
-
 		var range = new Range( new Position( [ 0 ], root ), new Position( [ 3 ], root ) );
-
 		var operation = new ChangeOperation( range, oldAttr, newAttr, doc.version );
-
 		var reverse = operation.reverseOperation();
 
 		expect( reverse ).to.be.an.instanceof( ChangeOperation );
@@ -169,7 +182,8 @@ describe( 'ChangeOperation', function() {
 			new Range( new Position( [ 0 ], root ), new Position( [ 3 ], root ) ),
 			null,
 			newAttr,
-			doc.version );
+			doc.version
+		);
 
 		var reverse = operation.reverseOperation();
 
@@ -193,7 +207,8 @@ describe( 'ChangeOperation', function() {
 			new Range( new Position( [ 0 ], root ), new Position( [ 3 ], root ) ),
 			oldAttr,
 			newAttr,
-			doc.version );
+			doc.version
+		);
 
 		var reverse = operation.reverseOperation();
 
@@ -220,7 +235,8 @@ describe( 'ChangeOperation', function() {
 			new Range( new Position( [ 0 ], root ), new Position( [ 3 ], root ) ),
 			fooAttr,
 			null,
-			doc.version );
+			doc.version
+		);
 
 		var reverse = operation.reverseOperation();
 
@@ -243,13 +259,18 @@ describe( 'ChangeOperation', function() {
 
 		root.insertChildren( 0, 'x' );
 
-		expect( function() {
-			doc.applyOperation( new ChangeOperation(
-				new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
-				fooAttr,
-				null,
-				doc.version ) );
-		} ).to.throw( CKEditorError, /operation-change-no-attr-to-remove/ );
+		expect(
+			function() {
+				doc.applyOperation(
+					new ChangeOperation(
+						new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
+						fooAttr,
+						null,
+						doc.version
+					)
+				);
+			}
+		).to.throw( CKEditorError, /operation-change-no-attr-to-remove/ );
 	} );
 
 	it( 'should throw an error when one try to insert and the attribute already exists', function() {
@@ -258,13 +279,18 @@ describe( 'ChangeOperation', function() {
 
 		root.insertChildren( 0, new Character( 'x', [ x1Attr ] ) );
 
-		expect( function() {
-			doc.applyOperation( new ChangeOperation(
-				new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
-				null,
-				x2Attr,
-				doc.version ) );
-		} ).to.throw( CKEditorError, /operation-change-attr-exists/ );
+		expect(
+			function() {
+				doc.applyOperation(
+					new ChangeOperation(
+						new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
+						null,
+						x2Attr,
+						doc.version
+					)
+				);
+			}
+		).to.throw( CKEditorError, /operation-change-attr-exists/ );
 	} );
 
 	it( 'should throw an error when one try to change and the new and old attributes have different keys', function() {
@@ -273,12 +299,17 @@ describe( 'ChangeOperation', function() {
 
 		root.insertChildren( 0, 'x' );
 
-		expect( function() {
-			doc.applyOperation( new ChangeOperation(
-				new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
-				fooAttr,
-				barAttr,
-				doc.version ) );
-		} ).to.throw( CKEditorError, /operation-change-different-keys/ );
+		expect(
+			function() {
+				doc.applyOperation(
+					new ChangeOperation(
+						new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
+						fooAttr,
+						barAttr,
+						doc.version
+					)
+				);
+			}
+		).to.throw( CKEditorError, /operation-change-different-keys/ );
 	} );
 } );

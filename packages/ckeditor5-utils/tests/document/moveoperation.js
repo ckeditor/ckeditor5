@@ -151,16 +151,18 @@ describe( 'MoveOperation', function() {
 	it( 'should throw an error if number of nodes to move exceeds the number of existing nodes in given element', function() {
 		root.insertChildren( 0, 'xbarx' );
 
-		expect( function() {
-			doc.applyOperation(
-				new MoveOperation(
-					new Position( [ 3 ], root ),
-					new Position( [ 1 ], root ),
-					3,
-					doc.version
-				)
-			);
-		} ).to.throw( CKEditorError, /operation-move-nodes-do-not-exist/ );
+		expect(
+			function() {
+				doc.applyOperation(
+					new MoveOperation(
+						new Position( [ 3 ], root ),
+						new Position( [ 1 ], root ),
+						3,
+						doc.version
+					)
+				);
+			}
+		).to.throw( CKEditorError, /operation-move-nodes-do-not-exist/ );
 	} );
 
 	it( 'should throw an error if target or source parent-element specified by position does not exist', function() {
@@ -177,9 +179,11 @@ describe( 'MoveOperation', function() {
 
 		root.removeChildren( 2, 1 );
 
-		expect( function() {
-			doc.applyOperation( operation );
-		} ).to.throw( CKEditorError, /operation-move-position-invalid/ );
+		expect(
+			function() {
+				doc.applyOperation( operation );
+			}
+		).to.throw( CKEditorError, /operation-move-position-invalid/ );
 	} );
 
 	it( 'should throw an error if operation tries to move a range between the beginning and the end of that range', function() {
@@ -192,9 +196,11 @@ describe( 'MoveOperation', function() {
 			doc.version
 		);
 
-		expect( function() {
-			doc.applyOperation( operation );
-		} ).to.throw( CKEditorError, /operation-move-range-into-itself/ );
+		expect(
+			function() {
+				doc.applyOperation( operation );
+			}
+		).to.throw( CKEditorError, /operation-move-range-into-itself/ );
 	} );
 
 	it( 'should throw an error if operation tries to move a range into a sub-tree of a node that is in that range', function() {
@@ -208,8 +214,10 @@ describe( 'MoveOperation', function() {
 			doc.version
 		);
 
-		expect( function() {
-			doc.applyOperation( operation );
-		} ).to.throw( CKEditorError, /operation-move-node-into-itself/ );
+		expect(
+			function() {
+				doc.applyOperation( operation );
+			}
+		).to.throw( CKEditorError, /operation-move-node-into-itself/ );
 	} );
 } );

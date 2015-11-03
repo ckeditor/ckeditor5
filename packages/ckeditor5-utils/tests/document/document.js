@@ -7,7 +7,11 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'document/document', 'document/rootelement', 'ckeditorerror' );
+var modules = bender.amd.require(
+	'document/document',
+	'document/rootelement',
+	'ckeditorerror'
+);
 
 describe( 'Document', function() {
 	var Document, RootElement, CKEditorError;
@@ -45,9 +49,11 @@ describe( 'Document', function() {
 		it( 'should throw an error when trying to create a second root with the same name', function() {
 			document.createRoot( 'root' );
 
-			expect( function() {
-				document.createRoot( 'root' );
-			} ).to.throw( CKEditorError, /document-createRoot-name-exists/ );
+			expect(
+				function() {
+					document.createRoot( 'root' );
+				}
+			).to.throw( CKEditorError, /document-createRoot-name-exists/ );
 		} );
 	} );
 
@@ -60,9 +66,11 @@ describe( 'Document', function() {
 		} );
 
 		it( 'should throw an error when trying to get non-existent root', function() {
-			expect( function() {
-				document.getRoot( 'root' );
-			} ).to.throw( CKEditorError, /document-createRoot-root-not-exist/ );
+			expect(
+				function() {
+					document.getRoot( 'root' );
+				}
+			).to.throw( CKEditorError, /document-createRoot-root-not-exist/ );
 		} );
 	} );
 
@@ -91,9 +99,11 @@ describe( 'Document', function() {
 
 			document.on( 'operationApplied', operationApplied );
 
-			expect( function() {
-				document.applyOperation( operation );
-			} ).to.throw( CKEditorError, /document-applyOperation-wrong-version/ );
+			expect(
+				function() {
+					document.applyOperation( operation );
+				}
+			).to.throw( CKEditorError, /document-applyOperation-wrong-version/ );
 		} );
 	} );
 } );
