@@ -41,7 +41,7 @@ describe( 'Attribute', function() {
 			var attr1 = new Attribute( 'register', true );
 			var attr2 = new Attribute( 'register', true );
 
-			expect( attr1 ).to.equals( attr2 );
+			expect( attr1 ).to.equal( attr2 );
 			expect( attr1.isEqual( attr2 ) ).to.be.true;
 		} );
 
@@ -74,8 +74,8 @@ describe( 'Attribute', function() {
 			var attr4 = new Attribute( 'register', true );
 
 			expect( attr1 ).to.not.be.equals( attr2 );
-			expect( attr2 ).to.equals( attr3 );
-			expect( attr3 ).to.equals( attr4 );
+			expect( attr2 ).to.equal( attr3 );
+			expect( attr3 ).to.equal( attr4 );
 		} );
 	} );
 } );

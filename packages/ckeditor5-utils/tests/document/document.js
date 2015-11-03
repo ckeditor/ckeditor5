@@ -27,9 +27,9 @@ describe( 'Document', function() {
 	describe( 'constructor', function() {
 		it( 'should create Document with no data', function() {
 			expect( document ).to.have.property( 'roots' ).that.is.instanceof( Map );
-			expect( document.roots.size ).to.be.equal( 1 );
+			expect( document.roots.size ).to.equal( 1 );
 			expect( document._graveyard ).to.be.instanceof( RootElement );
-			expect( document._graveyard.getChildCount() ).to.be.equal( 0 );
+			expect( document._graveyard.getChildCount() ).to.equal( 0 );
 		} );
 	} );
 
@@ -37,9 +37,9 @@ describe( 'Document', function() {
 		it( 'should create a new RootElement, add it to roots map and return it', function() {
 			var root = document.createRoot( 'root' );
 
-			expect( document.roots.size ).to.be.equal( 2 );
+			expect( document.roots.size ).to.equal( 2 );
 			expect( root ).to.be.instanceof( RootElement );
-			expect( root.getChildCount() ).to.be.equal( 0 );
+			expect( root.getChildCount() ).to.equal( 0 );
 		} );
 
 		it( 'should throw an error when trying to create a second root with the same name', function() {
@@ -56,7 +56,7 @@ describe( 'Document', function() {
 			var newRoot = document.createRoot( 'root' );
 			var getRoot = document.getRoot( 'root' );
 
-			expect( getRoot ).to.be.equal( newRoot );
+			expect( getRoot ).to.equal( newRoot );
 		} );
 
 		it( 'should throw an error when trying to get non-existent root', function() {
@@ -78,7 +78,7 @@ describe( 'Document', function() {
 
 			document.applyOperation( operation );
 
-			expect( document.version ).to.be.equal( 1 );
+			expect( document.version ).to.equal( 1 );
 			sinon.assert.calledOnce( operationApplied );
 			sinon.assert.calledOnce( operation._execute );
 		} );

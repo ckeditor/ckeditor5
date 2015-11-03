@@ -33,7 +33,7 @@ describe( 'Character', function() {
 			expect( character ).to.be.an.instanceof( Node );
 			expect( character ).to.have.property( 'character' ).that.equals( 'f' );
 			expect( character ).to.have.property( 'parent' ).that.equals( parent );
-			expect( character._getAttrCount() ).to.equals( 0 );
+			expect( character._getAttrCount() ).to.equal( 0 );
 		} );
 
 		it( 'should create character with attributes', function() {
@@ -44,8 +44,8 @@ describe( 'Character', function() {
 			expect( character ).to.be.an.instanceof( Node );
 			expect( character ).to.have.property( 'character' ).that.equals( 'f' );
 			expect( character ).to.have.property( 'parent' ).that.equals( parent );
-			expect( character._getAttrCount() ).to.equals( 1 );
-			expect( character.getAttr( attr.key ) ).to.equals( attr.value );
+			expect( character._getAttrCount() ).to.equal( 1 );
+			expect( character.getAttr( attr.key ) ).to.equal( attr.value );
 		} );
 	} );
 } );
