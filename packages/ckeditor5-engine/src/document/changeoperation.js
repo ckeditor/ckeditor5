@@ -99,9 +99,8 @@ CKEDITOR.define( [ 'document/operation', 'ckeditorerror' ], function( Operation,
 							{ changeOperation: this, node: value.node, attr: oldAttr } );
 					}
 
-					// It looks like this condition should be in the if "above" but in that case we won't check if
-					// the whole range has attribute oldAttr. If we want to be super-clean, we should check it even
-					// if we don't apply any changes.
+					// There is no use in removing attribute if we will overwrite it later.
+					// Still it is profitable to run throw the loop to check if all nodes in the range has old attribute.
 					if ( newAttr === null ) {
 						value.node.removeAttr( oldAttr.key );
 					}
