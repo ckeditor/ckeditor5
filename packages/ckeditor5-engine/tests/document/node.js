@@ -113,8 +113,8 @@ describe( 'constructor', function() {
 
 		foo.removeAttr( 'attr' );
 
-		expect( foo._getAttrCount() ).to.equals( 0 );
-		expect( bar._getAttrCount() ).to.equals( 1 );
+		expect( foo._getAttrCount() ).to.equal( 0 );
+		expect( bar._getAttrCount() ).to.equal( 1 );
 	} );
 } );
 
@@ -126,7 +126,7 @@ describe( 'getAttr', function() {
 		var fooAttr = new Attribute( 'foo', true );
 		var element = new Element( 'foo', [ fooAttr ] );
 
-		expect( element.getAttr( 'foo' ) ).to.equals( fooAttr.value );
+		expect( element.getAttr( 'foo' ) ).to.equal( fooAttr.value );
 	} );
 
 	it( 'should return null if attribute was not found by key', function() {
@@ -149,8 +149,8 @@ describe( 'setAttr', function() {
 		var attr = new Attribute( 'foo', 'bar' );
 		element.setAttr( attr );
 
-		expect( element._getAttrCount() ).to.equals( 1 );
-		expect( element.getAttr( attr.key ) ).to.equals( attr.value );
+		expect( element._getAttrCount() ).to.equal( 1 );
+		expect( element.getAttr( attr.key ) ).to.equal( attr.value );
 	} );
 
 	it( 'should overwrite attribute with the same key', function() {
@@ -163,8 +163,8 @@ describe( 'setAttr', function() {
 
 		element.setAttr( newAttr );
 
-		expect( element._getAttrCount() ).to.equals( 1 );
-		expect( element.getAttr( newAttr.key ) ).to.equals( newAttr.value );
+		expect( element._getAttrCount() ).to.equal( 1 );
+		expect( element.getAttr( newAttr.key ) ).to.equal( newAttr.value );
 	} );
 } );
 
@@ -179,9 +179,9 @@ describe( 'removeAttr', function() {
 		var element = new Element( 'elem', [ attrA, attrB, attrC ] );
 		element.removeAttr( attrB.key );
 
-		expect( element._getAttrCount() ).to.equals( 2 );
-		expect( element.getAttr( attrA.key ) ).to.equals( attrA.value );
-		expect( element.getAttr( attrC.key ) ).to.equals( attrC.value );
+		expect( element._getAttrCount() ).to.equal( 2 );
+		expect( element.getAttr( attrA.key ) ).to.equal( attrA.value );
+		expect( element.getAttr( attrC.key ) ).to.equal( attrC.value );
 		expect( element.getAttr( attrB.key ) ).to.be.null;
 	} );
 } );
@@ -238,7 +238,7 @@ describe( 'hasAttr', function() {
 		var parsedFoo = JSON.parse( JSON.stringify( foo ) );
 		var parsedBar = JSON.parse( JSON.stringify( b ) );
 
-		expect( parsedFoo.parent ).to.equals( null );
-		expect( parsedBar.parent ).to.equals( 'foo' );
+		expect( parsedFoo.parent ).to.equal( null );
+		expect( parsedBar.parent ).to.equal( 'foo' );
 	} );
 } );

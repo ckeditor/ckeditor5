@@ -39,19 +39,19 @@ describe( 'InsertOperation', function() {
 			new Character( 'x' ),
 			doc.version ) );
 
-		expect( doc.version ).to.be.equal( 1 );
-		expect( root.getChildCount() ).to.be.equal( 1 );
-		expect( root.getChild( 0 ).character ).to.be.equal( 'x' );
+		expect( doc.version ).to.equal( 1 );
+		expect( root.getChildCount() ).to.equal( 1 );
+		expect( root.getChild( 0 ).character ).to.equal( 'x' );
 	} );
 
 	it( 'should insert set of nodes', function() {
 		doc.applyOperation( new InsertOperation( new Position( [ 0 ], root ), 'bar', doc.version ) );
 
-		expect( doc.version ).to.be.equal( 1 );
-		expect( root.getChildCount() ).to.be.equal( 3 );
-		expect( root.getChild( 0 ).character ).to.be.equal( 'b' );
-		expect( root.getChild( 1 ).character ).to.be.equal( 'a' );
-		expect( root.getChild( 2 ).character ).to.be.equal( 'r' );
+		expect( doc.version ).to.equal( 1 );
+		expect( root.getChildCount() ).to.equal( 3 );
+		expect( root.getChild( 0 ).character ).to.equal( 'b' );
+		expect( root.getChild( 1 ).character ).to.equal( 'a' );
+		expect( root.getChild( 2 ).character ).to.equal( 'r' );
 	} );
 
 	it( 'should insert between existing nodes', function() {
@@ -59,13 +59,13 @@ describe( 'InsertOperation', function() {
 
 		doc.applyOperation( new InsertOperation( new Position( [ 1 ], root ), 'bar', doc.version ) );
 
-		expect( doc.version ).to.be.equal( 1 );
-		expect( root.getChildCount() ).to.be.equal( 5 );
-		expect( root.getChild( 0 ).character ).to.be.equal( 'x' );
-		expect( root.getChild( 1 ).character ).to.be.equal( 'b' );
-		expect( root.getChild( 2 ).character ).to.be.equal( 'a' );
-		expect( root.getChild( 3 ).character ).to.be.equal( 'r' );
-		expect( root.getChild( 4 ).character ).to.be.equal( 'y' );
+		expect( doc.version ).to.equal( 1 );
+		expect( root.getChildCount() ).to.equal( 5 );
+		expect( root.getChild( 0 ).character ).to.equal( 'x' );
+		expect( root.getChild( 1 ).character ).to.equal( 'b' );
+		expect( root.getChild( 2 ).character ).to.equal( 'a' );
+		expect( root.getChild( 3 ).character ).to.equal( 'r' );
+		expect( root.getChild( 4 ).character ).to.equal( 'y' );
 	} );
 
 	it( 'should insert text', function() {
@@ -74,15 +74,15 @@ describe( 'InsertOperation', function() {
 			[ 'foo', new Character( 'x' ), 'bar' ],
 			doc.version ) );
 
-		expect( doc.version ).to.be.equal( 1 );
-		expect( root.getChildCount() ).to.be.equal( 7 );
-		expect( root.getChild( 0 ).character ).to.be.equal( 'f' );
-		expect( root.getChild( 1 ).character ).to.be.equal( 'o' );
-		expect( root.getChild( 2 ).character ).to.be.equal( 'o' );
-		expect( root.getChild( 3 ).character ).to.be.equal( 'x' );
-		expect( root.getChild( 4 ).character ).to.be.equal( 'b' );
-		expect( root.getChild( 5 ).character ).to.be.equal( 'a' );
-		expect( root.getChild( 6 ).character ).to.be.equal( 'r' );
+		expect( doc.version ).to.equal( 1 );
+		expect( root.getChildCount() ).to.equal( 7 );
+		expect( root.getChild( 0 ).character ).to.equal( 'f' );
+		expect( root.getChild( 1 ).character ).to.equal( 'o' );
+		expect( root.getChild( 2 ).character ).to.equal( 'o' );
+		expect( root.getChild( 3 ).character ).to.equal( 'x' );
+		expect( root.getChild( 4 ).character ).to.equal( 'b' );
+		expect( root.getChild( 5 ).character ).to.equal( 'a' );
+		expect( root.getChild( 6 ).character ).to.equal( 'r' );
 	} );
 
 	it( 'should create a remove operation as a reverse', function() {
@@ -107,12 +107,12 @@ describe( 'InsertOperation', function() {
 
 		doc.applyOperation( operation );
 
-		expect( doc.version ).to.be.equal( 1 );
+		expect( doc.version ).to.equal( 1 );
 
 		doc.applyOperation( reverse );
 
-		expect( doc.version ).to.be.equal( 2 );
-		expect( root.getChildCount() ).to.be.equal( 0 );
+		expect( doc.version ).to.equal( 2 );
+		expect( root.getChildCount() ).to.equal( 0 );
 	} );
 
 	it( 'should undo insert set of nodes by applying reverse operation', function() {
@@ -122,11 +122,11 @@ describe( 'InsertOperation', function() {
 
 		doc.applyOperation( operation );
 
-		expect( doc.version ).to.be.equal( 1 );
+		expect( doc.version ).to.equal( 1 );
 
 		doc.applyOperation( reverse );
 
-		expect( doc.version ).to.be.equal( 2 );
-		expect( root.getChildCount() ).to.be.equal( 0 );
+		expect( doc.version ).to.equal( 2 );
+		expect( root.getChildCount() ).to.equal( 0 );
 	} );
 } );

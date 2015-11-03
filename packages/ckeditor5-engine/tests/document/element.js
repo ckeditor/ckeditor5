@@ -33,7 +33,7 @@ describe( 'Element', function() {
 			expect( element ).to.be.an.instanceof( Node );
 			expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
 			expect( element ).to.have.property( 'parent' ).that.equals( parent );
-			expect( element._getAttrCount() ).to.equals( 0 );
+			expect( element._getAttrCount() ).to.equal( 0 );
 		} );
 
 		it( 'should create element with attributes', function() {
@@ -45,15 +45,15 @@ describe( 'Element', function() {
 			expect( element ).to.be.an.instanceof( Node );
 			expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
 			expect( element ).to.have.property( 'parent' ).that.equals( parent );
-			expect( element._getAttrCount() ).to.equals( 1 );
-			expect( element.getAttr( attr.key ) ).to.equals( attr.value );
+			expect( element._getAttrCount() ).to.equal( 1 );
+			expect( element.getAttr( attr.key ) ).to.equal( attr.value );
 		} );
 
 		it( 'should create element with children', function() {
 			var element = new Element( 'elem', [], 'foo' );
 
 			expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
-			expect( element.getChildCount() ).to.equals( 3 );
+			expect( element.getChildCount() ).to.equal( 3 );
 			expect( element.getChild( 0 ) ).to.have.property( 'character' ).that.equals( 'f' );
 			expect( element.getChild( 1 ) ).to.have.property( 'character' ).that.equals( 'o' );
 			expect( element.getChild( 2 ) ).to.have.property( 'character' ).that.equals( 'o' );
@@ -66,7 +66,7 @@ describe( 'Element', function() {
 			element.insertChildren( 1, 'foo' );
 
 			expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
-			expect( element.getChildCount() ).to.equals( 5 );
+			expect( element.getChildCount() ).to.equal( 5 );
 			expect( element.getChild( 0 ) ).to.have.property( 'character' ).that.equals( 'x' );
 			expect( element.getChild( 1 ) ).to.have.property( 'character' ).that.equals( 'f' );
 			expect( element.getChild( 2 ) ).to.have.property( 'character' ).that.equals( 'o' );
@@ -83,7 +83,7 @@ describe( 'Element', function() {
 			var a = element.getChild( 4 );
 			var removed = element.removeChildren( 2, 3 );
 
-			expect( element.getChildCount() ).to.equals( 3 );
+			expect( element.getChildCount() ).to.equal( 3 );
 			expect( element.getChild( 0 ) ).to.have.property( 'character' ).that.equals( 'f' );
 			expect( element.getChild( 1 ) ).to.have.property( 'character' ).that.equals( 'o' );
 			expect( element.getChild( 2 ) ).to.have.property( 'character' ).that.equals( 'r' );
@@ -107,9 +107,9 @@ describe( 'Element', function() {
 			var a = element.getChild( 1 );
 			var r = element.getChild( 2 );
 
-			expect( element.getChildIndex( b ) ).to.equals( 0 );
-			expect( element.getChildIndex( a ) ).to.equals( 1 );
-			expect( element.getChildIndex( r ) ).to.equals( 2 );
+			expect( element.getChildIndex( b ) ).to.equal( 0 );
+			expect( element.getChildIndex( a ) ).to.equal( 1 );
+			expect( element.getChildIndex( r ) ).to.equal( 2 );
 		} );
 	} );
 
@@ -117,7 +117,7 @@ describe( 'Element', function() {
 		it( 'should return number of children', function() {
 			var element = new Element( 'elem', [], [ 'bar' ] );
 
-			expect( element.getChildCount() ).to.equals( 3 );
+			expect( element.getChildCount() ).to.equal( 3 );
 		} );
 	} );
 } );
