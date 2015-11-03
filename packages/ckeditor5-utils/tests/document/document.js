@@ -15,7 +15,7 @@ describe( 'Document', function() {
 	before( function() {
 		Document = modules[ 'document/document' ];
 		RootElement = modules[ 'document/rootelement' ];
-		CKEditorError = modules[ 'ckeditorerror' ];
+		CKEditorError = modules.ckeditorerror;
 	} );
 
 	var document;
