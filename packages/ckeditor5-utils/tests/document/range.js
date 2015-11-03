@@ -9,70 +9,61 @@
 
 var modules = bender.amd.require(
 	'document/range',
-	'document/position' );
+	'document/position'
+);
 
-describe( 'range', function() {
-	it( 'should create a range with given positions', function() {
-		var Position = modules[ 'document/position' ];
-		var Range = modules[ 'document/range' ];
+describe( 'Range', function() {
+	var Range, Position, start, end;
 
-		var start = new Position( [ 0 ] );
-		var end = new Position( [ 1 ] );
+	before( function() {
+		Position = modules[ 'document/position' ];
+		Range = modules[ 'document/range' ];
 
-		var range = new Range( start, end );
-
-		expect( range ).to.have.property( 'start' ).that.equal( start );
-		expect( range ).to.have.property( 'end' ).that.equal( end );
+		start = new Position( [ 0 ] );
+		end = new Position( [ 1 ] );
 	} );
 
-	it( 'should be equals same range', function() {
-		var Position = modules[ 'document/position' ];
-		var Range = modules[ 'document/range' ];
+	var range;
 
-		var start = new Position( [ 0 ] );
-		var end = new Position( [ 1 ] );
-
-		var range = new Range( start, end );
-
-		var sameStart = new Position( [ 0 ] );
-		var sameEnd = new Position( [ 1 ] );
-
-		var sameRange = new Range( sameStart, sameEnd );
-
-		expect( range.isEqual( sameRange ) ).to.be.true;
+	beforeEach( function() {
+		range = new Range( start, end );
 	} );
 
-	it( 'should not be equals if the start position is different', function() {
-		var Position = modules[ 'document/position' ];
-		var Range = modules[ 'document/range' ];
-
-		var start = new Position( [ 0 ] );
-		var end = new Position( [ 1 ] );
-
-		var range = new Range( start, end );
-
-		var sameStart = new Position( [ 1 ] );
-		var sameEnd = new Position( [ 1 ] );
-
-		var sameRange = new Range( sameStart, sameEnd );
-
-		expect( range.isEqual( sameRange ) ).to.not.be.true;
+	describe( 'constructor', function() {
+		it( 'should create a range with given positions', function() {
+			expect( range ).to.have.property( 'start' ).that.equal( start );
+			expect( range ).to.have.property( 'end' ).that.equal( end );
+		} );
 	} );
 
-	it( 'should not be equals if the end position is different', function() {
-		var Position = modules[ 'document/position' ];
-		var Range = modules[ 'document/range' ];
+	describe( 'isEqual', function() {
+		it( 'should return true if the ranges are the same', function() {
+			var sameStart = new Position( [ 0 ] );
+			var sameEnd = new Position( [ 1 ] );
 
-		var start = new Position( [ 0 ] );
-		var end = new Position( [ 1 ] );
+			var sameRange = new Range( sameStart, sameEnd );
 
-		var range = new Range( start, end );
+			expect( range.isEqual( sameRange ) ).to.be.true;
+		} );
 
-		var sameStart = new Position( [ 0 ] );
-		var sameEnd = new Position( [ 0 ] );
+		it( 'should return false if the start position is different', function() {
+			var range = new Range( start, end );
 
-		var sameRange = new Range( sameStart, sameEnd );
+			var diffStart = new Position( [ 1 ] );
+			var sameEnd = new Position( [ 1 ] );
 
-		expect( range.isEqual( sameRange ) ).to.not.be.true;
+			var diffRange = new Range( diffStart, sameEnd );
+
+			expect( range.isEqual( diffRange ) ).to.not.be.true;
+		} );
+
+		it( 'should return false if the end position is different', function() {
+			var sameStart = new Position( [ 0 ] );
+			var diffEnd = new Position( [ 0 ] );
+
+			var diffRange = new Range( sameStart, diffEnd );
+
+			expect( range.isEqual( diffRange ) ).to.not.be.true;
+		} );
 	} );
 } );
