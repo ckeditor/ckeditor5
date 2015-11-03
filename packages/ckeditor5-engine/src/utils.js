@@ -60,15 +60,15 @@ CKEDITOR.define( [ 'utils-lodash', 'lib/lodash/lodash-ckeditor' ], function( lod
 		 * or completely different.
 		 *
 		 *   compareArrays( [ 0, 2 ], [ 0, 2 ] ); // SAME
-		 *   compareArrays( [ 0, 2 ], [ 0 ] ); // PREFIX
-		 *   compareArrays( [ 0, 2 ], [ 0, 2, 1 ] ); // DIFFERENT
-		 *   compareArrays( [ 0, 2 ], [ 1, 3 ] ); // DIFFERENT
+		 *   compareArrays( [ 0, 2 ], [ 0, 2, 1 ] ); // PREFIX
+		 *   compareArrays( [ 0, 2 ], [ 0 ] ); // SUFFIX
+		 *   compareArrays( [ 0, 2 ], [ 1, 2 ] ); // DIFFERENT
 		 *
 		 * @param {Array} a Array that is compared.
 		 * @param {Array} b Array to compare with.
 		 * @returns {Number} How array `a` is related to array `b`. Represented by one of flags:
-		 * `a` is {@link utils.compareArrays#SAME same}, `a` is a {@link utils.compareArrays#PREFIX prefix}
-		 * or `a` is {@link utils.compareArrays#DIFFERENT different}.
+		 * `a` is {@link utils.compareArrays#SAME same}, `a` is a {@link utils.compareArrays#PREFIX prefix),
+		 * `a` is a {@link utils.compareArrays#SUFFIX suffix}, or `a` is {@link utils.compareArrays#DIFFERENT different}.
 		 */
 		compareArrays( a, b ) {
 			var minLen = Math.min( a.length, b.length );
@@ -87,10 +87,10 @@ CKEDITOR.define( [ 'utils-lodash', 'lib/lodash/lodash-ckeditor' ], function( lod
 			} else if ( a.length < b.length ) {
 				// Compared array is shorter so it is a prefix of the other array.
 				return utils.compareArrays.PREFIX;
+			} else {
+				// Compared array is longer so it is a suffix of the other array.
+				return utils.compareArrays.SUFFIX;
 			}
-
-			// In other case, the arrays are different.
-			return utils.compareArrays.DIFFERENT;
 		}
 	};
 
@@ -107,11 +107,17 @@ CKEDITOR.define( [ 'utils-lodash', 'lib/lodash/lodash-ckeditor' ], function( lod
 	 */
 	utils.compareArrays.PREFIX = 1;
 	/**
+	 * Flag for "is a suffix of" relation between arrays.
+	 *
+	 * @type {number}
+	 */
+	utils.compareArrays.SUFFIX = 2;
+	/**
 	 * Flag for "is different than" relation between arrays.
 	 *
 	 * @type {number}
 	 */
-	utils.compareArrays.DIFFERENT = 2;
+	utils.compareArrays.DIFFERENT = 3;
 
 	// Extend "utils" with Lo-Dash methods.
 	for ( var i = 0; i < lodashIncludes.length; i++ ) {
