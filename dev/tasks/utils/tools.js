@@ -3,6 +3,8 @@
 var dirtyFiles,
 	ignoreList;
 
+var repositoryRegExp = /^(ckeditor\/[^#]+)(?:#)?(.*)/;
+
 module.exports = {
 	/**
 	 * Check if a task (including its optional target) is in the queue of tasks to be executed by Grunt.
@@ -136,5 +138,78 @@ module.exports = {
 		}
 
 		return ret.output;
+	},
+
+	/**
+	 * Links repository located in source path to repository located in destination path. Uses npm link.
+	 *
+	 * @param {String} sourcePath
+	 * @param {String} destinationPath
+	 * @param {String} pluginName
+	 */
+	npmLink: function( sourcePath, destinationPath, pluginName ) {
+		// Don't use sudo on windows when executing npm link.
+		var isWin = process.platform == 'win32';
+		var linkCommands = [
+			'cd ' + sourcePath,
+			( !isWin ? 'sudo ' : '' ) + 'npm link',
+			'cd ' + destinationPath,
+			'npm link ' + pluginName
+		];
+
+		module.exports.shExec( linkCommands.join( ' && ' ) );
+	},
+
+	/**
+	 * Clones repository from provided GitHub URL. Only short GitHub urls are supported that starts with 'ckeditor/'.
+	 * https://docs.npmjs.com/files/package.json#github-urls
+	 *
+	 * @param {String} name Repository name.
+	 * @param {String} gitHubUrl GitHub url to repository.
+	 * @param {String} location Destination path.
+	 */
+	cloneRepository: function( name, gitHubUrl, location ) {
+		var match = gitHubUrl.match( repositoryRegExp );
+
+		if ( match && match[ 1 ] )  {
+			var cloneCommands = [
+				'cd ' + location,
+				'git clone git@github.com:' + match[ 1 ]
+			];
+
+			// If commit-ish suffix is included - run git checkout.
+			if ( match[ 2 ] ) {
+				cloneCommands.push( 'cd ' + name );
+				cloneCommands.push( 'git checkout ' + match[ 2 ] );
+			}
+
+			module.exports.shExec( cloneCommands.join( ' && ' ) );
+		}
+	},
+
+	/**
+	 * Returns dependencies that starts with ckeditor5-, and have valid, short GitHub url. Returns null if no
+	 * dependencies are found.
+	 *
+	 * @param {Object} dependencies Dependencies object loaded from package.json file.
+	 * @returns {Object|null}
+	 */
+	getCKEditorDependencies: function( dependencies ) {
+		var result = null;
+		var regexp = /^ckeditor5-/;
+
+		if ( dependencies ) {
+			Object.keys( dependencies ).forEach( function( key ) {
+				if ( regexp.test( key ) && repositoryRegExp.test( dependencies[ key ] ) ) {
+					if ( result === null ) {
+						result = {};
+					}
+
+					result[ key ] = dependencies[ key ];
+				}
+			} );
+		}
+
+		return result;
 	}
 };

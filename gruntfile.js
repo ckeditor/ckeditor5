@@ -26,7 +26,9 @@ module.exports = function( grunt ) {
 			options: {
 				excludeFiles: ignoreFiles
 			}
-		}
+		},
+
+		dev: {}
 	} );
 
 	// Finally load the tasks.
