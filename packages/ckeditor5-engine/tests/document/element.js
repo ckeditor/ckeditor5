@@ -13,7 +13,8 @@ var modules = bender.amd.require(
 	'document/node',
 	'document/nodelist',
 	'document/element',
-	'document/attribute' );
+	'document/attribute'
+);
 
 describe( 'Element', function() {
 	var Element, Node, NodeList, Attribute;

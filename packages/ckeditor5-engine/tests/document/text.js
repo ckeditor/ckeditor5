@@ -11,7 +11,8 @@
 
 var modules = bender.amd.require(
 	'document/text',
-	'document/attribute' );
+	'document/attribute'
+);
 
 describe( 'Text', function() {
 	describe( 'constructor', function() {
@@ -26,5 +27,5 @@ describe( 'Text', function() {
 			expect( text ).to.have.property( 'attrs' ).that.is.an( 'array' );
 			expect( text.attrs ).to.be.deep.equals( attrs );
 		} );
-	} )
+	} );
 } );

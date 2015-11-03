@@ -13,7 +13,8 @@ var modules = bender.amd.require(
 	'document/position',
 	'document/document',
 	'ckeditorerror',
-	'document/nodelist' );
+	'document/nodelist'
+);
 
 describe( 'position', function() {
 	var Element, Character, Document, NodeList, Position, CKEditorError;
@@ -105,9 +106,11 @@ describe( 'position', function() {
 	} );
 
 	it( 'should throw error if one try to make positions before root', function() {
-		expect( function() {
-			Position.createBefore( root );
-		} ).to.throw( CKEditorError, /position-before-root/ );
+		expect(
+			function() {
+				Position.createBefore( root );
+			}
+		).to.throw( CKEditorError, /position-before-root/ );
 	} );
 
 	it( 'should make positions after elements', function() {
@@ -129,9 +132,11 @@ describe( 'position', function() {
 	} );
 
 	it( 'should throw error if one try to make positions after root', function() {
-		expect( function() {
-			Position.createAfter( root );
-		} ).to.throw( CKEditorError, /position-after-root/ );
+		expect(
+			function() {
+				Position.createAfter( root );
+			}
+		).to.throw( CKEditorError, /position-after-root/ );
 	} );
 
 	it( 'should have parent', function() {

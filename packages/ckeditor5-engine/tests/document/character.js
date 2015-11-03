@@ -13,7 +13,8 @@ var modules = bender.amd.require(
 	'document/character',
 	'document/node',
 	'document/element',
-	'document/attribute' );
+	'document/attribute'
+);
 
 describe( 'Character', function() {
 	var Element, Character, Node, Attribute;
