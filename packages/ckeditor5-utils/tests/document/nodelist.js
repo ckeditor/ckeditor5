@@ -13,110 +13,102 @@ var modules = bender.amd.require(
 	'document/text',
 	'document/attribute' );
 
-describe( 'constructor', function() {
-	it( 'should change array of strings into a set of nodes', function() {
-		var NodeList = modules[ 'document/nodelist' ];
-		var Character = modules[ 'document/character' ];
+describe( 'NodeList', function() {
+	var NodeList, Character, Text, Attribute;
 
-		var nodeList = new NodeList( [ 'foo', new Character( 'x' ), 'bar' ] );
-
-		expect( nodeList.length ).to.equal( 7 );
-		expect( nodeList.get( 0 ).character ).to.equal( 'f' );
-		expect( nodeList.get( 1 ).character ).to.equal( 'o' );
-		expect( nodeList.get( 2 ).character ).to.equal( 'o' );
-		expect( nodeList.get( 3 ).character ).to.equal( 'x' );
-		expect( nodeList.get( 4 ).character ).to.equal( 'b' );
-		expect( nodeList.get( 5 ).character ).to.equal( 'a' );
-		expect( nodeList.get( 6 ).character ).to.equal( 'r' );
+	before( function() {
+		NodeList = modules[ 'document/nodelist' ];
+		Character = modules[ 'document/character' ];
+		Text = modules[ 'document/text' ];
+		Attribute = modules[ 'document/attribute' ];
 	} );
 
-	it( 'should change string into a set of nodes', function() {
-		var NodeList = modules[ 'document/nodelist' ];
+	describe( 'constructor', function() {
+		it( 'should change array of strings into a set of nodes', function() {
+			var nodeList = new NodeList( [ 'foo', new Character( 'x' ), 'bar' ] );
 
-		var nodeList = new NodeList( 'foo' );
+			expect( nodeList.length ).to.equal( 7 );
+			expect( nodeList.get( 0 ).character ).to.equal( 'f' );
+			expect( nodeList.get( 1 ).character ).to.equal( 'o' );
+			expect( nodeList.get( 2 ).character ).to.equal( 'o' );
+			expect( nodeList.get( 3 ).character ).to.equal( 'x' );
+			expect( nodeList.get( 4 ).character ).to.equal( 'b' );
+			expect( nodeList.get( 5 ).character ).to.equal( 'a' );
+			expect( nodeList.get( 6 ).character ).to.equal( 'r' );
+		} );
 
-		expect( nodeList.length ).to.equal( 3 );
-		expect( nodeList.get( 0 ).character ).to.equal( 'f' );
-		expect( nodeList.get( 1 ).character ).to.equal( 'o' );
-		expect( nodeList.get( 2 ).character ).to.equal( 'o' );
+		it( 'should change string into a set of nodes', function() {
+			var nodeList = new NodeList( 'foo' );
+
+			expect( nodeList.length ).to.equal( 3 );
+			expect( nodeList.get( 0 ).character ).to.equal( 'f' );
+			expect( nodeList.get( 1 ).character ).to.equal( 'o' );
+			expect( nodeList.get( 2 ).character ).to.equal( 'o' );
+		} );
+
+		it( 'should change node into a set of nodes', function() {
+			var nodeList = new NodeList( new Character( 'x' ) );
+
+			expect( nodeList.length ).to.equal( 1 );
+			expect( nodeList.get( 0 ).character ).to.equal( 'x' );
+		} );
+
+		it( 'should change text with attribute into a set of nodes', function() {
+			var attr = new Attribute( 'bold', true );
+			var nodeList = new NodeList( new Text( 'foo', [ attr ] ) );
+
+			expect( nodeList.length ).to.equal( 3 );
+			expect( nodeList.get( 0 ).character ).to.equal( 'f' );
+			expect( nodeList.get( 0 ).getAttr( attr.key ) ).to.equal( attr.value );
+			expect( nodeList.get( 1 ).character ).to.equal( 'o' );
+			expect( nodeList.get( 1 ).getAttr( attr.key ) ).to.equal( attr.value );
+			expect( nodeList.get( 2 ).character ).to.equal( 'o' );
+			expect( nodeList.get( 2 ).getAttr( attr.key ) ).to.equal( attr.value );
+		} );
 	} );
 
-	it( 'should change node into a set of nodes', function() {
-		var NodeList = modules[ 'document/nodelist' ];
-		var Character = modules[ 'document/character' ];
+	describe( 'insert', function() {
+		it( 'should insert one nodelist into another', function() {
+			var outerList = new NodeList( 'foo' );
+			var innerList = new NodeList( 'xxx' );
 
-		var nodeList = new NodeList( new Character( 'x' ) );
+			outerList.insert( 2, innerList );
 
-		expect( nodeList.length ).to.equal( 1 );
-		expect( nodeList.get( 0 ).character ).to.equal( 'x' );
+			expect( outerList.length ).to.equal( 6 );
+			expect( outerList.get( 0 ).character ).to.equal( 'f' );
+			expect( outerList.get( 1 ).character ).to.equal( 'o' );
+			expect( outerList.get( 2 ).character ).to.equal( 'x' );
+			expect( outerList.get( 3 ).character ).to.equal( 'x' );
+			expect( outerList.get( 4 ).character ).to.equal( 'x' );
+			expect( outerList.get( 5 ).character ).to.equal( 'o' );
+		} );
 	} );
 
-	it( 'should change text with attribute into a set of nodes', function() {
-		var NodeList = modules[ 'document/nodelist' ];
-		var Text = modules[ 'document/text' ];
-		var Attribute = modules[ 'document/attribute' ];
+	describe( 'remove', function() {
+		it( 'should remove part of the nodelist', function() {
+			var nodeList = new NodeList( 'foobar' );
 
-		var attr = new Attribute( 'bold', true );
+			nodeList.remove( 2, 3 );
 
-		var nodeList = new NodeList( new Text( 'foo', [ attr ] ) );
-
-		expect( nodeList.length ).to.equal( 3 );
-		expect( nodeList.get( 0 ).character ).to.equal( 'f' );
-		expect( nodeList.get( 0 ).getAttr( attr.key ) ).to.equal( attr.value );
-		expect( nodeList.get( 1 ).character ).to.equal( 'o' );
-		expect( nodeList.get( 1 ).getAttr( attr.key ) ).to.equal( attr.value );
-		expect( nodeList.get( 2 ).character ).to.equal( 'o' );
-		expect( nodeList.get( 2 ).getAttr( attr.key ) ).to.equal( attr.value );
+			expect( nodeList.length ).to.equal( 3 );
+			expect( nodeList.get( 0 ).character ).to.equal( 'f' );
+			expect( nodeList.get( 1 ).character ).to.equal( 'o' );
+			expect( nodeList.get( 2 ).character ).to.equal( 'r' );
+		} );
 	} );
-} );
 
-describe( 'insert', function() {
-	it( 'should insert one nodelist into another', function() {
-		var NodeList = modules[ 'document/nodelist' ];
+	describe( 'iterator', function() {
+		it( 'should iterate over all elements in the collection', function() {
+			var characters = 'foo';
+			var nodeList = new NodeList( characters );
+			var i = 0;
 
-		var outerList = new NodeList( 'foo' );
-		var innerList = new NodeList( 'xxx' );
+			for ( var node of nodeList ) {
+				expect( node.character ).to.equal( characters[ i ] );
+				i++;
+			}
 
-		outerList.insert( 2, innerList );
-
-		expect( outerList.length ).to.equal( 6 );
-		expect( outerList.get( 0 ).character ).to.equal( 'f' );
-		expect( outerList.get( 1 ).character ).to.equal( 'o' );
-		expect( outerList.get( 2 ).character ).to.equal( 'x' );
-		expect( outerList.get( 3 ).character ).to.equal( 'x' );
-		expect( outerList.get( 4 ).character ).to.equal( 'x' );
-		expect( outerList.get( 5 ).character ).to.equal( 'o' );
-	} );
-} );
-
-describe( 'remove', function() {
-	it( 'should remove part of the nodelist', function() {
-		var NodeList = modules[ 'document/nodelist' ];
-
-		var nodeList = new NodeList( 'foobar' );
-
-		nodeList.remove( 2, 3 );
-
-		expect( nodeList.length ).to.equal( 3 );
-		expect( nodeList.get( 0 ).character ).to.equal( 'f' );
-		expect( nodeList.get( 1 ).character ).to.equal( 'o' );
-		expect( nodeList.get( 2 ).character ).to.equal( 'r' );
-	} );
-} );
-
-describe( 'iterator', function() {
-	it( 'should iterate over all elements in the collection', function() {
-		var NodeList = modules[ 'document/nodelist' ];
-
-		var characters = 'foo';
-		var nodeList = new NodeList( characters );
-		var i = 0;
-
-		for ( var node of nodeList ) {
-			expect( node.character ).to.equal( characters[ i ] );
-			i++;
-		}
-
-		expect( i ).to.equal( 3 );
+			expect( i ).to.equal( 3 );
+		} );
 	} );
 } );
