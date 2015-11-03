@@ -131,13 +131,13 @@ describe( 'utils', function() {
 			expect( result ).to.equal( utils.compareArrays.PREFIX );
 		} );
 
-		it( 'should return SUFFIX flag, when n first elements of first array are same as all elements of the second array', function() {
+		it( 'should return EXTENSION flag, when n first elements of first array are same as all elements of the second array', function() {
 			var a = [ 'abc', 0, 3 ];
 			var b = [ 'abc', 0 ];
 
 			var result = utils.compareArrays( a, b );
 
-			expect( result ).to.equal( utils.compareArrays.SUFFIX );
+			expect( result ).to.equal( utils.compareArrays.EXTENSION );
 		} );
 
 		it( 'should return DIFFERENT flag, when arrays are not same', function() {
