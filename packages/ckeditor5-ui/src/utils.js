@@ -61,14 +61,14 @@ CKEDITOR.define( [ 'utils-lodash', 'lib/lodash/lodash-ckeditor' ], function( lod
 		 *
 		 *   compareArrays( [ 0, 2 ], [ 0, 2 ] ); // SAME
 		 *   compareArrays( [ 0, 2 ], [ 0, 2, 1 ] ); // PREFIX
-		 *   compareArrays( [ 0, 2 ], [ 0 ] ); // SUFFIX
+		 *   compareArrays( [ 0, 2 ], [ 0 ] ); // EXTENSION
 		 *   compareArrays( [ 0, 2 ], [ 1, 2 ] ); // DIFFERENT
 		 *
 		 * @param {Array} a Array that is compared.
 		 * @param {Array} b Array to compare with.
 		 * @returns {Number} How array `a` is related to array `b`. Represented by one of flags:
 		 * `a` is {@link utils.compareArrays#SAME same}, `a` is a {@link utils.compareArrays#PREFIX prefix),
-		 * `a` is a {@link utils.compareArrays#SUFFIX suffix}, or `a` is {@link utils.compareArrays#DIFFERENT different}.
+		 * `a` is a {@link utils.compareArrays#EXTENSION extension}, or `a` is {@link utils.compareArrays#DIFFERENT different}.
 		 */
 		compareArrays( a, b ) {
 			var minLen = Math.min( a.length, b.length );
@@ -89,7 +89,7 @@ CKEDITOR.define( [ 'utils-lodash', 'lib/lodash/lodash-ckeditor' ], function( lod
 				return utils.compareArrays.PREFIX;
 			} else {
 				// Compared array is longer so it is a suffix of the other array.
-				return utils.compareArrays.SUFFIX;
+				return utils.compareArrays.EXTENSION;
 			}
 		}
 	};
@@ -111,7 +111,7 @@ CKEDITOR.define( [ 'utils-lodash', 'lib/lodash/lodash-ckeditor' ], function( lod
 	 *
 	 * @type {number}
 	 */
-	utils.compareArrays.SUFFIX = 2;
+	utils.compareArrays.EXTENSION = 2;
 	/**
 	 * Flag for "is different than" relation between arrays.
 	 *
