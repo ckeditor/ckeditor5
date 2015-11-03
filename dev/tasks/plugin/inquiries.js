@@ -18,7 +18,7 @@ module.exports = {
 				},
 				default: data.pluginName ? data.pluginName : null
 			} ], function( answers ) {
-				data.pluginName = DEFAULT_PLUGIN_NAME_PREFIX + answers.pluginName
+				data.pluginName = DEFAULT_PLUGIN_NAME_PREFIX + answers.pluginName;
 				resolve( data );
 			} );
 		} );

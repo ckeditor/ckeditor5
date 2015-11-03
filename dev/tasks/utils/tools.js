@@ -136,5 +136,62 @@ module.exports = {
 		}
 
 		return ret.output;
+	},
+
+	/**
+	 * Links repository located in source path to repository located in destination path. Uses npm link.
+	 * @param {String} sourcePath
+	 * @param {String} destinationPath
+	 * @param {String} pluginName
+	 */
+	npmLink: function( sourcePath, destinationPath, pluginName ) {
+		// Don't use sudo on windows when executing npm link.
+		var isWin = process.platform == 'win32';
+		var linkCommands = [
+			'cd ' + sourcePath,
+			( !isWin ? 'sudo ' : '' ) + 'npm link',
+			'cd ' + destinationPath,
+			'npm link ' + pluginName
+		];
+
+		module.exports.shExec( linkCommands.join( ' && ' ) );
+	},
+
+	/**
+	 * Clones repository from provided GitHub URL.
+	 * @param {String} gitHubUrl GitHub url to repository.
+	 * @param {String} location Destination path.
+	 */
+	cloneRepository: function( gitHubUrl, location ) {
+		var cloneCommands = [
+			'cd ' + location,
+			'git clone git@github.com:' + gitHubUrl
+		];
+
+		module.exports.shExec( cloneCommands.join( ' && ' ) );
+	},
+
+	/**
+	 * Returns dependencies that starts with ckeditor5- or null if no dependencies are found.
+	 * @param {Object} dependencies Dependencies object loaded from package.json file.
+	 * @returns {Object|null}
+	 */
+	getCKEditorDependencies: function( dependencies ) {
+		var result = null;
+		var regexp = /^ckeditor5-/;
+
+		if ( dependencies ) {
+			Object.keys( dependencies ).forEach( function( key ) {
+				if ( regexp.test( key ) ) {
+					if ( result === null ) {
+						result = {};
+					}
+
+					result[ key ] = dependencies[ key ];
+				}
+			} );
+		}
+
+		return result;
 	}
 };
