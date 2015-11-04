@@ -7,14 +7,14 @@
 
 CKEDITOR.define( [], function() {
 	/**
-	 * Data structure for text with attributes. Note that Text is not a node, because it will never be part of document
-	 * tree, {@link document.Character is a node}.
+	 * Data structure for text with attributes. Note that the `Text` is not a {@link document.Node},
+	 * because it will never be part of the document tree. {@link document.Character is a node}.
 	 *
 	 * @class document.Text
 	 */
 	class Text {
 		/**
-		 * Creates text with attributes.
+		 * Creates a text with attributes.
 		 *
 		 * @param {String} text Described text.
 		 * @param {Iterable} attrs Iterable collection of {@link document.Attribute attributes}.
@@ -25,14 +25,14 @@ CKEDITOR.define( [], function() {
 			 * Text.
 			 *
 			 * @readonly
-			 * @property {String} text
+			 * @property {String}
 			 */
 			this.text = text;
 
 			/**
 			 * Iterable collection of {@link document.Attribute attributes}.
 			 *
-			 * @property {Iterable} attr
+			 * @property {Iterable}
 			 */
 			this.attrs = attrs;
 		}

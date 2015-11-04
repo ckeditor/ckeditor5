@@ -7,7 +7,7 @@
 
 CKEDITOR.define( [ 'utils', 'ckeditorerror' ], function( utils, CKEditorError ) {
 	/**
-	 * Position is always before or after a node.
+	 * Position in the tree. Position is always located before or after a node.
 	 * See {@link #path} property for more information.
 	 *
 	 * @class document.Position
@@ -36,7 +36,7 @@ CKEDITOR.define( [ 'utils', 'ckeditorerror' ], function( utils, CKEditorError ) 
 			 *        |- a   Before: [ 1, 1, 1 ] After: [ 1, 1, 2 ]
 			 *        |- r   Before: [ 1, 1, 2 ] After: [ 1, 1, 3 ]
 			 *
-			 * @type {Array}
+			 * @type {Number[]}
 			 */
 			this.path = path;
 
@@ -49,59 +49,7 @@ CKEDITOR.define( [ 'utils', 'ckeditorerror' ], function( utils, CKEditorError ) 
 		}
 
 		/**
-		 * Create position from the parent element and the offset in that element.
-		 *
-		 * @param {document.Element} parent Position parent element.
-		 * @param {Number} offset Position offset.
-		 */
-		static createFromParentAndOffset( parent, offset ) {
-			var path = parent.getPath();
-
-			path.push( offset );
-
-			return new Position( path, parent.root );
-		}
-
-		/**
-		 * Set the position before given node.
-		 *
-		 * @param {document.node} node Node the position should be directly before.
-		 */
-		static createBefore( node ) {
-			if ( !node.parent ) {
-				/**
-				 * You can not make position before root.
-				 *
-				 * @error position-before-root
-				 * @param {document.Node} root
-				 */
-				throw new CKEditorError( 'position-before-root: You can not make position before root.', { root: node } );
-			}
-
-			return Position.createFromParentAndOffset( node.parent, node.positionInParent );
-		}
-
-		/**
-		 * Set the position after given node.
-		 *
-		 * @param {document.Node} node Node the position should be directly after.
-		 */
-		static createAfter( node ) {
-			if ( !node.parent ) {
-				/**
-				 * You can not make position after root.
-				 *
-				 * @error position-after-root
-				 * @param {document.Node} root
-				 */
-				throw new CKEditorError( 'position-after-root: You can not make position after root.', { root: node } );
-			}
-
-			return Position.createFromParentAndOffset( node.parent, node.positionInParent + 1 );
-		}
-
-		/**
-		 * Element which is a parent of the position.
+		 * Parent element of the position. The position is located at {@link #offset} in this element.
 		 *
 		 * @readonly
 		 * @property {document.Element} parent
@@ -119,7 +67,7 @@ CKEDITOR.define( [ 'utils', 'ckeditorerror' ], function( utils, CKEditorError ) 
 		}
 
 		/**
-		 * Position offset in the parent, which is the last element of the path.
+		 * Offset at which the position is located in the {@link #parent}.
 		 *
 		 * @readonly
 		 * @property {Number} offset
@@ -142,31 +90,86 @@ CKEDITOR.define( [ 'utils', 'ckeditorerror' ], function( utils, CKEditorError ) 
 		 * Node directly after the position.
 		 *
 		 * @readonly
-		 * @type {document.Node}
+		 * @property {document.Node}
 		 */
 		get nodeAfter() {
 			return this.parent.getChild( this.offset ) || null;
 		}
 
 		/**
-		 * Two positions equals if paths equal.
+		 * Two positions equal if paths are equal.
 		 *
 		 * @param {document.Position} otherPosition Position to compare.
-		 * @returns {Boolean} true if positions equal.
+		 * @returns {Boolean} True if positions equal.
 		 */
 		isEqual( otherPosition ) {
 			return utils.isEqual( this.path, otherPosition.path );
 		}
 
 		/**
-		 * Return the path to the parent, which is the {@link document.Position#path} without the last element.
+		 * Returns the path to the parent, which is the {@link document.Position#path} without the last element.
 		 *
-		 * This method return the parent path even if the parent does not exists.
+		 * This method returns the parent path even if the parent does not exists.
 		 *
-		 * @returns {Array} Path to the parent.
+		 * @returns {Number[]} Path to the parent.
 		 */
 		getParentPath() {
 			return this.path.slice( 0, -1 );
+		}
+
+		/**
+		 * Creates a new position from the parent element and the offset in that element.
+		 *
+		 * @param {document.Element} parent Position parent element.
+		 * @param {Number} offset Position offset.
+		 * @returns {document.Position}
+		 */
+		static createFromParentAndOffset( parent, offset ) {
+			var path = parent.getPath();
+
+			path.push( offset );
+
+			return new Position( path, parent.root );
+		}
+
+		/**
+		 * Creates a new position before the given node.
+		 *
+		 * @param {document.node} node Node the position should be directly before.
+		 * @returns {document.Position}
+		 */
+		static createBefore( node ) {
+			if ( !node.parent ) {
+				/**
+				 * You can not make position before root.
+				 *
+				 * @error position-before-root
+				 * @param {document.Node} root
+				 */
+				throw new CKEditorError( 'position-before-root: You can not make position before root.', { root: node } );
+			}
+
+			return Position.createFromParentAndOffset( node.parent, node.positionInParent );
+		}
+
+		/**
+		 * Creates a new position after given node.
+		 *
+		 * @param {document.Node} node Node the position should be directly after.
+		 * @returns {document.Position}
+		 */
+		static createAfter( node ) {
+			if ( !node.parent ) {
+				/**
+				 * You can not make position after root.
+				 *
+				 * @error position-after-root
+				 * @param {document.Node} root
+				 */
+				throw new CKEditorError( 'position-after-root: You can not make position after root.', { root: node } );
+			}
+
+			return Position.createFromParentAndOffset( node.parent, node.positionInParent + 1 );
 		}
 	}
 

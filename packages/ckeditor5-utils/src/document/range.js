@@ -13,7 +13,7 @@ CKEDITOR.define( [ 'document/positioniterator' ], function( PositionIterator ) {
 	 */
 	class Range {
 		/**
-		 * Create an range.
+		 * Creates a range.
 		 *
 		 * @param {document.Position} start Start position.
 		 * @param {document.Position} end End position.
@@ -23,14 +23,14 @@ CKEDITOR.define( [ 'document/positioniterator' ], function( PositionIterator ) {
 			/**
 			 * Start position.
 			 *
-			 * @type {document.Position}
+			 * @property {document.Position}
 			 */
 			this.start = start;
 
 			/**
 			 * End position.
 			 *
-			 * @type {document.Position}
+			 * @property {document.Position}
 			 */
 			this.end = end;
 		}

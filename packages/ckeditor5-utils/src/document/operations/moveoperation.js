@@ -12,7 +12,7 @@ CKEDITOR.define( [
 	'utils'
 ], function( Operation, NodeList, CKEditorError, utils ) {
 	/**
-	 * Operation to move list of following nodes from the one position in the document to another.
+	 * Operation to move list of subsequent nodes from one position in the document to another.
 	 *
 	 * @class document.operations.MoveOperation
 	 */
@@ -22,7 +22,7 @@ CKEDITOR.define( [
 		 *
 		 * @param {document.Position} sourcePosition Position before the first element to move.
 		 * @param {document.Position} targetPosition Position where moved elements will be inserted.
-		 * @param {Number} howMany How many consecutive nodes to move, starting from sourcePosition.
+		 * @param {Number} howMany How many consecutive nodes to move, starting from `sourcePosition`.
 		 * @param {Number} baseVersion {@link document.Document#version} on which operation can be applied.
 		 * @constructor
 		 */
@@ -51,9 +51,6 @@ CKEDITOR.define( [
 			this.howMany = howMany;
 		}
 
-		/**
-		 * See {@link document.operations.Operation#_execute}.
-		 */
 		_execute() {
 			var sourceElement = this.sourcePosition.parent;
 			var targetElement = this.targetPosition.parent;
@@ -68,33 +65,33 @@ CKEDITOR.define( [
 				 * Source position or target position is invalid.
 				 *
 				 * @error operation-move-position-invalid
-				 * @param {document.operations.MoveOperation} moveOperation
+				 * @param {document.operations.MoveOperation} op
 				 */
 				throw new CKEditorError(
 					'operation-move-position-invalid: Source position or target position is invalid.',
-					{ moveOperation: this }
+					{ op: this }
 				);
 			} else if ( sourceOffset + this.howMany > sourceElement.getChildCount() ) {
 				/**
 				 * The nodes which should be moved do not exist.
 				 *
 				 * @error operation-move-nodes-do-not-exist
-				 * @param {document.operations.MoveOperation} moveOperation
+				 * @param {document.operations.MoveOperation} op
 				 */
 				throw new CKEditorError(
 					'operation-move-nodes-do-not-exist: The nodes which should be moved do not exist.',
-					{ moveOperation: this }
+					{ op: this }
 				);
 			} else if ( sourceElement === targetElement && sourceOffset <= targetOffset && targetOffset < sourceOffset + this.howMany ) {
 				/**
 				 * Trying to move a range of nodes into the middle of that range.
 				 *
 				 * @error operation-move-range-into-itself
-				 * @param {document.operations.MoveOperation} moveOperation
+				 * @param {document.operations.MoveOperation} op
 				 */
 				throw new CKEditorError(
 					'operation-move-range-into-itself: Trying to move a range of nodes to the inside of that range.',
-					{ moveOperation: this }
+					{ op: this }
 				);
 			} else {
 				var sourcePath = this.sourcePosition.getParentPath();
@@ -108,11 +105,11 @@ CKEDITOR.define( [
 						 * Trying to move a range of nodes into one of nodes from that range.
 						 *
 						 * @error operation-move-node-into-itself
-						 * @param {document.operations.MoveOperation} moveOperation
+						 * @param {document.operations.MoveOperation} op
 						 */
 						throw new CKEditorError(
 							'operation-move-node-into-itself: Trying to move a range of nodes into one of nodes from that range.',
-							{ moveOperation: this }
+							{ op: this }
 						);
 					}
 				}
@@ -130,9 +127,6 @@ CKEDITOR.define( [
 			targetElement.insertChildren( targetOffset, removedNodes );
 		}
 
-		/**
-		 * See {@link document.operations.Operation#getReversed}.
-		 */
 		getReversed() {
 			return new MoveOperation( this.targetPosition, this.sourcePosition, this.howMany, this.baseVersion + 1 );
 		}

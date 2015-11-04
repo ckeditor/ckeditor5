@@ -21,7 +21,7 @@ CKEDITOR.define( [
 	 */
 	class Document {
 		/**
-		 * Create an empty document.
+		 * Creates an empty document instance.
 		 *
 		 * @constructor
 		 */
@@ -34,15 +34,13 @@ CKEDITOR.define( [
 			 */
 			this.roots = new Map();
 
-			/**
-			 * Graveyard tree root. Document always have a graveyard root, which is storing removed nodes.
-			 */
+			// Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
 			this.createRoot( graveyardSymbol );
 
 			/**
-			 * Document version. It starts from 0 and every operation increase the version. It is used to ensure that
-			 * operations is applied on the proper document version. If the {@link document.operations.Operation#baseVersion} will
-			 * not match document version an {@link document-applyOperation-wrong-version} error is fired.
+			 * Document version. It starts from `0` and every operation increases the version number. It is used to ensure that
+			 * operations are applied on the proper document version. If the {@link document.operations.Operation#baseVersion} will
+			 * not match document version the {@link document-applyOperation-wrong-version} error is thrown.
 			 *
 			 * @readonly
 			 * @property {Number} version
@@ -128,7 +126,7 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * Graveyard tree root. Document always have a graveyard root, which is storing removed nodes.
+		 * Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
 		 *
 		 * @protected
 		 * @readonly
