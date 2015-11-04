@@ -39,6 +39,13 @@ CKEDITOR.define( [ 'collection', 'model' ], function( Collection, Model ) {
 			return Promise.resolve()
 				.then( () => {
 					return this.view.init();
+				} )
+				.then( () => {
+					let promises = [];
+
+					this.controllers.forEach( item => promises.push( item.init() ) );
+
+					return Promise.all( promises );
 				} );
 		}
 
@@ -52,13 +59,8 @@ CKEDITOR.define( [ 'collection', 'model' ], function( Collection, Model ) {
 			// Note: Because controller.init() can by sync as well as async,
 			// it is wrapped in promise.
 			return Promise.resolve()
-				.then( () => {
-					return controller.init();
-				} )
 				.then( this.view.append.bind( this.view, controller.view, regionName ) )
-				.then( () => {
-					return controller;
-				} );
+				.then( () => controller );
 		}
 
 		/**
