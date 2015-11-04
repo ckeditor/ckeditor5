@@ -9,9 +9,9 @@
 
 var modules = bender.amd.require(
 	'document/document',
-	'document/reinsertoperation',
-	'document/removeoperation',
-	'document/moveoperation',
+	'document/operations/reinsertoperation',
+	'document/operations/removeoperation',
+	'document/operations/moveoperation',
 	'document/position'
 );
 
@@ -20,9 +20,9 @@ describe( 'RemoveOperation', function() {
 
 	before( function() {
 		Document = modules[ 'document/document' ];
-		ReinsertOperation = modules[ 'document/reinsertoperation' ];
-		RemoveOperation = modules[ 'document/removeoperation' ];
-		MoveOperation = modules[ 'document/removeoperation' ];
+		ReinsertOperation = modules[ 'document/operations/reinsertoperation' ];
+		RemoveOperation = modules[ 'document/operations/removeoperation' ];
+		MoveOperation = modules[ 'document/operations/removeoperation' ];
 		Position = modules[ 'document/position' ];
 	} );
 

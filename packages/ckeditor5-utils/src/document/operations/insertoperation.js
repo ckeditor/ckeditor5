@@ -5,7 +5,11 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'document/operation', 'document/nodelist', 'document/removeoperation' ], function( Operation, NodeList ) {
+CKEDITOR.define( [
+	'document/operations/operation',
+	'document/nodelist',
+	'document/operations/removeoperation'
+], function( Operation, NodeList ) {
 	/**
 	 * Operation to insert list of nodes on the given position.
 	 *
@@ -53,7 +57,7 @@ CKEDITOR.define( [ 'document/operation', 'document/nodelist', 'document/removeop
 		 */
 		getReversed() {
 			// Because of circular dependencies we need to re-require remove operation here.
-			var RemoveOperation = CKEDITOR.require( 'document/removeoperation' );
+			var RemoveOperation = CKEDITOR.require( 'document/operations/removeoperation' );
 
 			return new RemoveOperation( this.position, this.nodeList.length, this.baseVersion + 1 );
 		}

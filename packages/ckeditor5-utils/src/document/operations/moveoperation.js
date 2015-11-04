@@ -6,7 +6,7 @@
 'use strict';
 
 CKEDITOR.define( [
-	'document/operation',
+	'document/operations/operation',
 	'document/nodelist',
 	'ckeditorerror',
 	'utils'
