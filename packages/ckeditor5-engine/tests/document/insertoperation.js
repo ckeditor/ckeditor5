@@ -112,7 +112,7 @@ describe( 'InsertOperation', function() {
 			0
 		);
 
-		var reverse = operation.reverseOperation();
+		var reverse = operation.getReversed();
 
 		expect( reverse ).to.be.an.instanceof( RemoveOperation );
 		expect( reverse.baseVersion ).to.equal( 1 );
@@ -127,7 +127,7 @@ describe( 'InsertOperation', function() {
 			doc.version
 		);
 
-		var reverse = operation.reverseOperation();
+		var reverse = operation.getReversed();
 
 		doc.applyOperation( operation );
 
@@ -146,7 +146,7 @@ describe( 'InsertOperation', function() {
 			doc.version
 		);
 
-		var reverse = operation.reverseOperation();
+		var reverse = operation.getReversed();
 
 		doc.applyOperation( operation );
 

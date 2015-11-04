@@ -59,9 +59,7 @@ CKEDITOR.define( [ 'document/operation', 'ckeditorerror' ], function( Operation,
 		}
 
 		/**
-		 * Execute operation.
-		 *
-		 * @protected
+		 * See {@link document.Operation#_execute}.
 		 */
 		_execute() {
 			var oldAttr = this.oldAttr;
@@ -130,11 +128,9 @@ CKEDITOR.define( [ 'document/operation', 'ckeditorerror' ], function( Operation,
 		}
 
 		/**
-		 * Creates an reverse change operation.
-		 *
-		 * @returns {document.ChangeOperation} Reverse operation.
+		 * See {@link document.Operation#getReversed}.
 		 */
-		reverseOperation() {
+		getReversed() {
 			return new ChangeOperation( this.range, this.newAttr, this.oldAttr, this.baseVersion + 1 );
 		}
 	}

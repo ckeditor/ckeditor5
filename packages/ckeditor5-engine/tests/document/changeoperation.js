@@ -164,7 +164,7 @@ describe( 'ChangeOperation', function() {
 		var newAttr = new Attribute( 'x', 'new' );
 		var range = new Range( new Position( [ 0 ], root ), new Position( [ 3 ], root ) );
 		var operation = new ChangeOperation( range, oldAttr, newAttr, doc.version );
-		var reverse = operation.reverseOperation();
+		var reverse = operation.getReversed();
 
 		expect( reverse ).to.be.an.instanceof( ChangeOperation );
 		expect( reverse.baseVersion ).to.equal( 1 );
@@ -185,7 +185,7 @@ describe( 'ChangeOperation', function() {
 			doc.version
 		);
 
-		var reverse = operation.reverseOperation();
+		var reverse = operation.getReversed();
 
 		doc.applyOperation( operation );
 		doc.applyOperation( reverse );
@@ -210,7 +210,7 @@ describe( 'ChangeOperation', function() {
 			doc.version
 		);
 
-		var reverse = operation.reverseOperation();
+		var reverse = operation.getReversed();
 
 		doc.applyOperation( operation );
 
@@ -238,7 +238,7 @@ describe( 'ChangeOperation', function() {
 			doc.version
 		);
 
-		var reverse = operation.reverseOperation();
+		var reverse = operation.getReversed();
 
 		doc.applyOperation( operation );
 

@@ -49,7 +49,7 @@ describe( 'ReinsertOperation', function() {
 	} );
 
 	it( 'should create a remove operation as a reverse', function() {
-		var reverse = operation.reverseOperation();
+		var reverse = operation.getReversed();
 
 		expect( reverse ).to.be.an.instanceof( RemoveOperation );
 		expect( reverse.baseVersion ).to.equal( 1 );
@@ -59,7 +59,7 @@ describe( 'ReinsertOperation', function() {
 	} );
 
 	it( 'should undo reinsert set of nodes by applying reverse operation', function() {
-		var reverse = operation.reverseOperation();
+		var reverse = operation.getReversed();
 
 		graveyard.insertChildren( 0, 'bar' );
 

@@ -52,9 +52,7 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * Execute operation.
-		 *
-		 * @protected
+		 * See {@link document.Operation#_execute}.
 		 */
 		_execute() {
 			var sourceElement = this.sourcePosition.parent;
@@ -133,11 +131,9 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * Creates a reverse operation.
-		 *
-		 * @returns {document.MoveOperation} Reverse operation.
+		 * See {@link document.Operation#getReversed}.
 		 */
-		reverseOperation() {
+		getReversed() {
 			return new MoveOperation( this.targetPosition, this.sourcePosition, this.howMany, this.baseVersion + 1 );
 		}
 	}
