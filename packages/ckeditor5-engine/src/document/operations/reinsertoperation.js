@@ -11,16 +11,18 @@ CKEDITOR.define( [
 ], function( MoveOperation ) {
 	/**
 	 * Operation to reinsert previously removed nodes back to the non-graveyard root.
-	 * This is basically MoveOperation but it returns RemoveOperation when reversed.
-	 * We achieve two goals: by having separate classes it's easier to distinguish whether move
+	 * This is basically {@link document.operations.MoveOperation} but it returns
+	 * {@link document.operations.RemoveOperation} when reversed.
+	 *
+	 * With this class, we achieve two goals: by having separate classes it's easier to distinguish whether move
 	 * operation is actually a remove/reinsert operation and fire proper events. Also it
 	 * will be easier to expand if we need to change operation's behavior if it is remove/reinsert.
 	 *
-	 * @class document.ReinsertOperation
+	 * @class document.operations.ReinsertOperation
 	 */
 	class ReinsertOperation extends MoveOperation {
 		/**
-		 * See {@link document.Operation#getReversed}.
+		 * See {@link document.operations.Operation#getReversed}.
 		 */
 		getReversed() {
 			// Because of circular dependencies we need to re-require reinsert operation here.
