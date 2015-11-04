@@ -109,7 +109,7 @@ describe( 'MoveOperation', function() {
 
 		var operation = new MoveOperation( sourcePosition, targetPosition, nodeList.length, doc.version );
 
-		var reverse = operation.reverseOperation();
+		var reverse = operation.getReversed();
 
 		expect( reverse ).to.be.an.instanceof( MoveOperation );
 		expect( reverse.baseVersion ).to.equal( 1 );
@@ -139,7 +139,7 @@ describe( 'MoveOperation', function() {
 		expect( p2.getChildCount() ).to.equal( 1 );
 		expect( p2.getChild( 0 ).name ).to.equal( 'x' );
 
-		doc.applyOperation( operation.reverseOperation() );
+		doc.applyOperation( operation.getReversed() );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.getChildCount() ).to.equal( 2 );

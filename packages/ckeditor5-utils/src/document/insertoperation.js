@@ -42,20 +42,16 @@ CKEDITOR.define( [ 'document/operation', 'document/nodelist', 'document/removeop
 		}
 
 		/**
-		 * Execute operation.
-		 *
-		 * @protected
+		 * See {@link document.Operation#_execute}.
 		 */
 		_execute() {
 			this.position.parent.insertChildren( this.position.offset, this.nodeList );
 		}
 
 		/**
-		 * Creates a reverse operation.
-		 *
-		 * @returns {document.RemoveOperation} Reverse operation.
+		 * See {@link document.Operation#getReversed}.
 		 */
-		reverseOperation() {
+		getReversed() {
 			// Because of circular dependencies we need to re-require remove operation here.
 			var RemoveOperation = CKEDITOR.require( 'document/removeoperation' );
 

@@ -36,11 +36,9 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * Creates a reverse operation.
-		 *
-		 * @returns {document.ReinsertOperation} Reverse operation.
+		 * See {@link document.Operation#getReversed}.
 		 */
-		reverseOperation() {
+		getReversed() {
 			// Because of circular dependencies we need to re-require reinsert operation here.
 			var ReinsertOperation = CKEDITOR.require( 'document/reinsertoperation' );
 

@@ -71,7 +71,7 @@ describe( 'RemoveOperation', function() {
 	it( 'should create a reinsert operation as a reverse', function() {
 		var position = new Position( [ 0 ], root );
 		var operation = new RemoveOperation( position, 2, 0 );
-		var reverse = operation.reverseOperation();
+		var reverse = operation.getReversed();
 
 		expect( reverse ).to.be.an.instanceof( ReinsertOperation );
 		expect( reverse.baseVersion ).to.equal( 1 );
@@ -83,7 +83,7 @@ describe( 'RemoveOperation', function() {
 	it( 'should undo remove set of nodes by applying reverse operation', function() {
 		var position = new Position( [ 0 ], root );
 		var operation = new RemoveOperation( position, 3, 0 );
-		var reverse = operation.reverseOperation();
+		var reverse = operation.getReversed();
 
 		root.insertChildren( 0, 'bar' );
 
