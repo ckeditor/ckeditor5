@@ -9,7 +9,7 @@ CKEDITOR.define( [ 'document/operations/operation', 'ckeditorerror' ], function(
 	/**
 	 * Operation to change nodes attribute. Using this class you can add, remove or change value of the attribute.
 	 *
-	 * @class document.ChangeOperation
+	 * @class document.operations.ChangeOperation
 	 */
 	class ChangeOperation extends Operation {
 		/**
@@ -59,7 +59,7 @@ CKEDITOR.define( [ 'document/operations/operation', 'ckeditorerror' ], function(
 		}
 
 		/**
-		 * See {@link document.Operation#_execute}.
+		 * See {@link document.operations.Operation#_execute}.
 		 */
 		_execute() {
 			var oldAttr = this.oldAttr;
@@ -71,7 +71,7 @@ CKEDITOR.define( [ 'document/operations/operation', 'ckeditorerror' ], function(
 				 * Old and new attributes should have the same keys.
 				 *
 				 * @error operation-change-different-keys
-				 * @param {document.ChangeOperation} changeOperation
+				 * @param {document.operations.ChangeOperation} changeOperation
 				 * @param {document.Attribute} oldAttr
 				 * @param {document.Attribute} newAttr
 				 */
@@ -88,7 +88,7 @@ CKEDITOR.define( [ 'document/operations/operation', 'ckeditorerror' ], function(
 						 * The attribute which should be removed does not exists for given node.
 						 *
 						 * @error operation-change-no-attr-to-remove
-						 * @param {document.ChangeOperation} changeOperation
+						 * @param {document.operations.ChangeOperation} changeOperation
 						 * @param {document.Node} node
 						 * @param {document.Attribute} attr
 						 */
@@ -113,7 +113,7 @@ CKEDITOR.define( [ 'document/operations/operation', 'ckeditorerror' ], function(
 						 * The attribute with given key already exists for given node.
 						 *
 						 * @error operation-change-attr-exists
-						 * @param {document.ChangeOperation} changeOperation
+						 * @param {document.operations.ChangeOperation} changeOperation
 						 * @param {document.Node} node
 						 * @param {document.Attribute} attr
 						 */
@@ -128,7 +128,7 @@ CKEDITOR.define( [ 'document/operations/operation', 'ckeditorerror' ], function(
 		}
 
 		/**
-		 * See {@link document.Operation#getReversed}.
+		 * See {@link document.operations.Operation#getReversed}.
 		 */
 		getReversed() {
 			return new ChangeOperation( this.range, this.newAttr, this.oldAttr, this.baseVersion + 1 );

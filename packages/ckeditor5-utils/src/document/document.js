@@ -41,7 +41,7 @@ CKEDITOR.define( [
 
 			/**
 			 * Document version. It starts from 0 and every operation increase the version. It is used to ensure that
-			 * operations is applied on the proper document version. If the {@link document.Operation#baseVersion} will
+			 * operations is applied on the proper document version. If the {@link document.operations.Operation#baseVersion} will
 			 * not match document version an {@link document-applyOperation-wrong-version} error is fired.
 			 *
 			 * @readonly
@@ -53,7 +53,7 @@ CKEDITOR.define( [
 		/**
 		 * This is the only entry point for all document changes.
 		 *
-		 * @param {document.Operation} operation Operation to be applied.
+		 * @param {document.operations.Operation} operation Operation to be applied.
 		 */
 		applyOperation( operation ) {
 			if ( operation.baseVersion !== this.version ) {
@@ -62,7 +62,7 @@ CKEDITOR.define( [
 				 *
 				 * @error document-applyOperation-wrong-version
 				 * @param {document.Document} doc
-				 * @param {document.Operation} operation
+				 * @param {document.operations.Operation} operation
 				 * @param {Number} baseVersion
 				 * @param {Number} documentVersion
 				 */

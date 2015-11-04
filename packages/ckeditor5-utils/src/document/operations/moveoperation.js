@@ -14,7 +14,7 @@ CKEDITOR.define( [
 	/**
 	 * Operation to move list of following nodes from the one position in the document to another.
 	 *
-	 * @class document.MoveOperation
+	 * @class document.operations.MoveOperation
 	 */
 	class MoveOperation extends Operation {
 		/**
@@ -52,7 +52,7 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * See {@link document.Operation#_execute}.
+		 * See {@link document.operations.Operation#_execute}.
 		 */
 		_execute() {
 			var sourceElement = this.sourcePosition.parent;
@@ -68,7 +68,7 @@ CKEDITOR.define( [
 				 * Source position or target position is invalid.
 				 *
 				 * @error operation-move-position-invalid
-				 * @param {document.MoveOperation} moveOperation
+				 * @param {document.operations.MoveOperation} moveOperation
 				 */
 				throw new CKEditorError(
 					'operation-move-position-invalid: Source position or target position is invalid.',
@@ -79,7 +79,7 @@ CKEDITOR.define( [
 				 * The nodes which should be moved do not exist.
 				 *
 				 * @error operation-move-nodes-do-not-exist
-				 * @param {document.MoveOperation} moveOperation
+				 * @param {document.operations.MoveOperation} moveOperation
 				 */
 				throw new CKEditorError(
 					'operation-move-nodes-do-not-exist: The nodes which should be moved do not exist.',
@@ -90,7 +90,7 @@ CKEDITOR.define( [
 				 * Trying to move a range of nodes into the middle of that range.
 				 *
 				 * @error operation-move-range-into-itself
-				 * @param {document.MoveOperation} moveOperation
+				 * @param {document.operations.MoveOperation} moveOperation
 				 */
 				throw new CKEditorError(
 					'operation-move-range-into-itself: Trying to move a range of nodes to the inside of that range.',
@@ -108,7 +108,7 @@ CKEDITOR.define( [
 						 * Trying to move a range of nodes into one of nodes from that range.
 						 *
 						 * @error operation-move-node-into-itself
-						 * @param {document.MoveOperation} moveOperation
+						 * @param {document.operations.MoveOperation} moveOperation
 						 */
 						throw new CKEditorError(
 							'operation-move-node-into-itself: Trying to move a range of nodes into one of nodes from that range.',
@@ -131,7 +131,7 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * See {@link document.Operation#getReversed}.
+		 * See {@link document.operations.Operation#getReversed}.
 		 */
 		getReversed() {
 			return new MoveOperation( this.targetPosition, this.sourcePosition, this.howMany, this.baseVersion + 1 );

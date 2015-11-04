@@ -13,7 +13,7 @@ CKEDITOR.define( [
 	/**
 	 * Operation to insert list of nodes on the given position.
 	 *
-	 * @class document.InsertOperation
+	 * @class document.operations.InsertOperation
 	 */
 	class InsertOperation extends Operation {
 		/**
@@ -46,14 +46,14 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * See {@link document.Operation#_execute}.
+		 * See {@link document.operations.Operation#_execute}.
 		 */
 		_execute() {
 			this.position.parent.insertChildren( this.position.offset, this.nodeList );
 		}
 
 		/**
-		 * See {@link document.Operation#getReversed}.
+		 * See {@link document.operations.Operation#getReversed}.
 		 */
 		getReversed() {
 			// Because of circular dependencies we need to re-require remove operation here.

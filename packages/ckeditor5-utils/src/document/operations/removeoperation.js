@@ -13,7 +13,7 @@ CKEDITOR.define( [
 	/**
 	 * Operation to remove a range of nodes.
 	 *
-	 * @class document.RemoveOperation
+	 * @class document.operations.RemoveOperation
 	 */
 	class RemoveOperation extends MoveOperation {
 		/**
@@ -36,7 +36,7 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * See {@link document.Operation#getReversed}.
+		 * See {@link document.operations.Operation#getReversed}.
 		 */
 		getReversed() {
 			// Because of circular dependencies we need to re-require reinsert operation here.

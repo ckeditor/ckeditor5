@@ -9,7 +9,7 @@ CKEDITOR.define( [], function() {
 	/**
 	 * Abstract base operation class.
 	 *
-	 * @class document.Operation
+	 * @class document.operations.Operation
 	 */
 	class Operation {
 		/**
@@ -51,7 +51,7 @@ CKEDITOR.define( [], function() {
 			 * This method has to be defined in deriving operation class.
 			 *
 			 * @method getReversed
-			 * @returns {document.Operation} Reversed operation.
+			 * @returns {document.operations.Operation} Reversed operation.
 			 */
 
 			/**
@@ -71,8 +71,8 @@ CKEDITOR.define( [], function() {
 			 * This method has to be defined in deriving operation class.
 			 *
 			 * @method getTransformedBy
-			 * @param {document.Operation} operation Operation by which this operation will be transformed.
-			 * @returns {document.Operation} A result of transformation of this operation by the given operation.
+			 * @param {document.operations.Operation} operation Operation by which this operation will be transformed.
+			 * @returns {document.operations.Operation} A result of transformation of this operation by the given operation.
 			 */
 		}
 	}
