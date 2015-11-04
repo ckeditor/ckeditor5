@@ -9,7 +9,7 @@
 
 var modules = bender.amd.require(
 	'document/document',
-	'document/changeoperation',
+	'document/operations/changeoperation',
 	'document/position',
 	'document/range',
 	'document/character',
@@ -24,7 +24,7 @@ describe( 'ChangeOperation', function() {
 
 	before( function() {
 		Document = modules[ 'document/document' ];
-		ChangeOperation = modules[ 'document/changeoperation' ];
+		ChangeOperation = modules[ 'document/operations/changeoperation' ];
 		Position = modules[ 'document/position' ];
 		Range = modules[ 'document/range' ];
 		Character = modules[ 'document/character' ];

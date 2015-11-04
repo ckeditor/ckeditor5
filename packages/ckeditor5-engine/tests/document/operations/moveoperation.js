@@ -9,7 +9,7 @@
 
 var modules = bender.amd.require(
 	'document/document',
-	'document/moveoperation',
+	'document/operations/moveoperation',
 	'document/position',
 	'document/element',
 	'document/nodelist',
@@ -21,7 +21,7 @@ describe( 'MoveOperation', function() {
 
 	before( function() {
 		Document = modules[ 'document/document' ];
-		MoveOperation = modules[ 'document/moveoperation' ];
+		MoveOperation = modules[ 'document/operations/moveoperation' ];
 		Position = modules[ 'document/position' ];
 		Element = modules[ 'document/element' ];
 		NodeList = modules[ 'document/nodelist' ];
