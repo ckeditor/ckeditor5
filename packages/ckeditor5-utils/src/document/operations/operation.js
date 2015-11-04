@@ -62,8 +62,8 @@ CKEDITOR.define( [], function() {
 			 * in parameters of returned operation.
 			 *
 			 * Whenever a {@link document.Document document} has different {@link document.Document#baseVersion}
-			 * than an operation you want to {@link #_execute execute}, you need to transform that operation by
-			 * all the operations that were executed on the {@link document.Document document} since it has
+			 * than an operation you want to {@link document.Document#applyOperation apply}, you need to transform that
+			 * operation by all the operations that were executed on the {@link document.Document document} since it has
 			 * {@link document.Document#baseVersion} same as the operation (transform in the same order as those
 			 * operations were executed). This way all modifications done to the tree model will be reflected
 			 * in the operation parameters and the operation will "work" on "up-to-date" version of the tree model.
