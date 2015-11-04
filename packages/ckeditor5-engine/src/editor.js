@@ -16,10 +16,11 @@ CKEDITOR.define( [
 	'model',
 	'editorconfig',
 	'plugincollection',
+	'collection',
 	'creator',
 	'ckeditorerror',
 	'utils'
-], ( Model, EditorConfig, PluginCollection, Creator, CKEditorError, utils ) => {
+], ( Model, EditorConfig, PluginCollection, Collection, Creator, CKEditorError, utils ) => {
 	class Editor extends Model {
 		/**
 		 * Creates a new instance of the Editor class.
@@ -61,6 +62,10 @@ CKEDITOR.define( [
 			 * @property {PluginCollection}
 			 */
 			this.plugins = new PluginCollection( this );
+
+			this.features = new Collection();
+
+			this.uiItems = new Collection();
 
 			/**
 			 * The chosen creator.
