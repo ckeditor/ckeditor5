@@ -13,7 +13,7 @@ CKEDITOR.define( [ 'document/node', 'document/nodelist' ], function( Node, NodeL
 	 */
 	class Element extends Node {
 		/**
-		 * Creates tree data model element.
+		 * Creates a tree data model element.
 		 *
 		 * This constructor should be used only internally by the document.
 		 *
@@ -48,14 +48,14 @@ CKEDITOR.define( [ 'document/node', 'document/nodelist' ], function( Node, NodeL
 		}
 
 		/**
-		 * Insert a list of child nodes on the given index and set the parent of these node to this.
+		 * Inserts a list of child nodes on the given index and sets the parent of these nodes to this element.
 		 *
-		 * Note that list of children can be modified only in elements not attached yet to the document.
+		 * Note that the list of children can be modified only in elements not yet attached to the document.
 		 * All attached nodes should be modified using the {@link document.operations.InsertOperation}.
 		 *
 		 * @param {Number} index Position where nodes should be inserted.
-		 * @param {document.Node|document.Text|document.NodeList|String|Iterable} nodes List of nodes to be inserted.
-		 * List of nodes can be of any type accepted by the {@link document.NodeList} constructor.
+		 * @param {document.Node|document.Text|document.NodeList|String|Iterable} nodes The list of nodes to be inserted.
+		 * The list of nodes can be of any type accepted by the {@link document.NodeList} constructor.
 		 */
 		insertChildren( index, nodes ) {
 			this._children.insert( index, new NodeList( nodes ) );
@@ -66,14 +66,14 @@ CKEDITOR.define( [ 'document/node', 'document/nodelist' ], function( Node, NodeL
 		}
 
 		/**
-		 * Removes number of child nodes starting at the given index and set the parent of these node to null.
+		 * Removes number of child nodes starting at the given index and set the parent of these nodes to `null`.
 		 *
-		 * Note that list of children can be modified only in elements not attached yet to the document.
+		 * Note that the list of children can be modified only in elements not yet attached to the document.
 		 * All attached nodes should be modified using the {@link document.operations.RemoveOperation}.
 		 *
 		 * @param {Number} index Position of the first node to remove.
 		 * @param {Number} number Number of nodes to remove.
-		 * @returns {document.NodeList} List of removed nodes.
+		 * @returns {document.NodeList} The list of removed nodes.
 		 */
 
 		removeChildren( index, number ) {
@@ -85,7 +85,7 @@ CKEDITOR.define( [ 'document/node', 'document/nodelist' ], function( Node, NodeL
 		}
 
 		/**
-		 * Gets child at given index.
+		 * Gets child at the given index.
 		 *
 		 * @param {Number} index Index of child.
 		 * @returns {document.Node} Child node.
@@ -95,19 +95,19 @@ CKEDITOR.define( [ 'document/node', 'document/nodelist' ], function( Node, NodeL
 		}
 
 		/**
-		 * Gets index of child node.
+		 * Gets index of the given child node.
 		 *
 		 * @param {document.Node} node Child node.
-		 * @returns {Number} Index of child.
+		 * @returns {Number} Index of the child node.
 		 */
 		getChildIndex( node ) {
 			return this._children.indexOf( node );
 		}
 
 		/**
-		 * Gets number of element's children.
+		 * Gets the number of element's children.
 		 *
-		 * @returns {Number} Number of element's children.
+		 * @returns {Number} The number of element's children.
 		 */
 		getChildCount() {
 			return this._children.length;

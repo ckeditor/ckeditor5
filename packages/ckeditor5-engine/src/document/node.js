@@ -9,15 +9,14 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 	/**
 	 * Abstract document tree node class.
 	 *
+	 * @abstract
 	 * @class document.Node
 	 */
 	class Node {
 		/**
-		 * Creates tree node.
+		 * Creates a tree node.
 		 *
-		 * This is an abstract class, it should not be created directly.
-		 *
-		 * Created node has no parent. Parent of the node is set when it is attached to the {@link document.Element}.
+		 * This is an abstract class, so this constructor should not be used directly.
 		 *
 		 * @param {Iterable} attrs Iterable collection of {@link document.Attribute attributes}.
 		 * @constructor
@@ -26,109 +25,20 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 			/**
 			 * Parent element. Null by default. Set by {@link document.Element#insertChildren}.
 			 *
+			 * @readonly
 			 * @property {document.Element|null} parent
 			 */
 			this.parent = null;
 
 			/**
-			 * Array of attributes.
+			 * Attributes set.
 			 *
-			 * Attributes of nodes attached to the document can be changed only be the {@link document.ChangeOpeation}.
+			 * Attributes of nodes attached to the document can be changed only be the {@link document.operations.ChangeOperation}.
 			 *
 			 * @private
 			 * @property {Set} _attrs
 			 */
 			this._attrs = new Set( attrs );
-		}
-
-		/**
-		 * Returns true if node contain attribute with the same key and value as given or the same key if the
-		 * given parameter is a string.
-		 *
-		 * @param {document.Attribute|String} attr Attribute or key to compare.
-		 * @returns {Boolean} True if node contains given attribute or attribute with given key.
-		 */
-		hasAttr( key ) {
-			var attr;
-
-			// Attribute.
-			if ( key instanceof Attribute ) {
-				for ( attr of this._attrs ) {
-					if ( attr.isEqual( key ) ) {
-						return true;
-					}
-				}
-			}
-			// Key.
-			else {
-				for ( attr of this._attrs ) {
-					if ( attr.key == key ) {
-						return true;
-					}
-				}
-			}
-
-			return false;
-		}
-
-		/**
-		 * Returns attribute if node contain attribute with the same key and value as given or the same key if the
-		 * given parameter is a string.
-		 *
-		 * @param {document.Attribute|String|null} attr Attribute or key to compare.
-		 * @returns {document.Attribute} Attribute if node contains given attribute or attribute with given key,
-		 * or null if attribute was not found.
-		 */
-		getAttr( key ) {
-			for ( var attr of this._attrs ) {
-				if ( attr.key == key ) {
-					return attr.value;
-				}
-			}
-
-			return null;
-		}
-
-		/**
-		 * Removes attribute from the list of attribute.
-		 *
-		 * @param {String} key Attribute key.
-		 */
-		removeAttr( key ) {
-			for ( var attr of this._attrs ) {
-				if ( attr.key == key ) {
-					this._attrs.delete( attr );
-
-					return;
-				}
-			}
-		}
-
-		/**
-		 * Get number of attributes.
-		 *
-		 * @protected
-		 * @returns {Number} Number of attributes.
-		 */
-		_getAttrCount() {
-			var count = 0;
-
-			for ( var attr of this._attrs ) { // jshint ignore:line
-				count++;
-			}
-
-			return count;
-		}
-
-		/**
-		 * Insert a given attribute. If the attribute with the same key already exists it will be removed.
-		 *
-		 * @param {document.Attribute} attr Attribute to insert.
-		 */
-		setAttr( attr ) {
-			this.removeAttr( attr.key );
-
-			this._attrs.add( attr );
 		}
 
 		/**
@@ -168,7 +78,7 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 		}
 
 		/**
-		 * The top parent for the node. If node has no parent it is its own root.
+		 * The top parent for the node. If node has no parent it is the root itself.
 		 *
 		 * @readonly
 		 * @property {Number} depth
@@ -184,7 +94,7 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 		}
 
 		/**
-		 * Nodes next sibling or null if it is the last child.
+		 * Nodes next sibling or `null` if it is the last child.
 		 *
 		 * @readonly
 		 * @property {document.Node|null} nextSibling
@@ -208,10 +118,82 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 		}
 
 		/**
-		 * Get path to the node. For example if the node is the second child of the first child of the root then the path
-		 * will be [ 1, 2 ]. This path can be used as a parameter of in {@link document.Position}.
+		 * Returns `true` if the node contains an attribute with the same key and value as given or the same key if the
+		 * given parameter is a string.
 		 *
-		 * @returns {Array} Path, array of numbers.
+		 * @param {document.Attribute|String} attr An attribute or a key to compare.
+		 * @returns {Boolean} True if node contains given attribute or an attribute with the given key.
+		 */
+		hasAttr( key ) {
+			var attr;
+
+			// Attribute.
+			if ( key instanceof Attribute ) {
+				for ( attr of this._attrs ) {
+					if ( attr.isEqual( key ) ) {
+						return true;
+					}
+				}
+			}
+			// Key.
+			else {
+				for ( attr of this._attrs ) {
+					if ( attr.key == key ) {
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
+		/**
+		 * Finds an attribute by a key.
+		 *
+		 * @param {String} attr The attribute key.
+		 * @returns {document.Attribute} The found attribute.
+		 */
+		getAttr( key ) {
+			for ( var attr of this._attrs ) {
+				if ( attr.key == key ) {
+					return attr.value;
+				}
+			}
+
+			return null;
+		}
+
+		/**
+		 * Removes attribute from the list of attributes.
+		 *
+		 * @param {String} key The attribute key.
+		 */
+		removeAttr( key ) {
+			for ( var attr of this._attrs ) {
+				if ( attr.key == key ) {
+					this._attrs.delete( attr );
+
+					return;
+				}
+			}
+		}
+
+		/**
+		 * Sets a given attribute. If the attribute with the same key already exists it will be removed.
+		 *
+		 * @param {document.Attribute} attr Attribute to set.
+		 */
+		setAttr( attr ) {
+			this.removeAttr( attr.key );
+
+			this._attrs.add( attr );
+		}
+
+		/**
+		 * Gets path to the node. For example if the node is the second child of the first child of the root then the path
+		 * will be `[ 1, 2 ]`. This path can be used as a parameter of {@link document.Position}.
+		 *
+		 * @returns {Number[]} The path.
 		 */
 		getPath() {
 			var path = [];
@@ -237,6 +219,22 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 			json.parent = this.parent ? this.parent.name : null;
 
 			return json;
+		}
+
+		/**
+		 * Gets the number of attributes.
+		 *
+		 * @protected
+		 * @returns {Number} Number of attributes.
+		 */
+		_getAttrCount() {
+			var count = 0;
+
+			for ( var attr of this._attrs ) { // jshint ignore:line
+				count++;
+			}
+
+			return count;
 		}
 	}
 

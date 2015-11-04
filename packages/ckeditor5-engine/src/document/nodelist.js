@@ -61,7 +61,7 @@ CKEDITOR.define( [
 			 * Internal array to store nodes.
 			 *
 			 * @private
-			 * @property {Array} _nodes
+			 * @property {Array}
 			 */
 			this._nodes = [];
 
@@ -127,9 +127,8 @@ CKEDITOR.define( [
 		/**
 		 * Search for the node in the node list.
 		 *
-		 * @param {document.Node} node Node to found.
-		 * @returns {Number} Number representing the position where the specified search value occurs for the first time,
-		 * or -1 if it never occurs.
+		 * @param {document.Node} node Node to find.
+		 * @returns {Number} Position of the node in the list.
 		 */
 		indexOf( node ) {
 			return this._nodes.indexOf( node );

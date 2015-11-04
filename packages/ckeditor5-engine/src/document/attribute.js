@@ -13,7 +13,7 @@ CKEDITOR.define( [ 'utils' ], function( utils ) {
 	 */
 	class Attribute {
 		/**
-		 * Create a new attribute class. Once attribute is created it should not be modified.
+		 * Creates a new instance of the `Attribute` class. Once attribute is created it is immutable.
 		 *
 		 * @param {String} key Attribute key.
 		 * @param {Mixed} value Attribute value.
@@ -37,7 +37,7 @@ CKEDITOR.define( [ 'utils' ], function( utils ) {
 			this.value = value;
 
 			/**
-			 * Attribute hash. Used to compare attribute. Two attributes with the same key and value will have the same hash.
+			 * Attribute hash. Used to compare attributes. Two attributes with the same key and value will have the same hash.
 			 *
 			 * @readonly
 			 * @private
@@ -45,7 +45,7 @@ CKEDITOR.define( [ 'utils' ], function( utils ) {
 			 */
 			this._hash = this.key + ': ' + JSON.stringify( this.value, sort );
 
-			// If attribute is registered the registered one should be returned.
+			// If attribute is already registered the registered one should be returned.
 			if ( Attribute._register[ this._hash ] ) {
 				return Attribute._register[ this._hash ];
 			}
@@ -68,15 +68,15 @@ CKEDITOR.define( [ 'utils' ], function( utils ) {
 		}
 
 		/**
-		 * Compare two attributes. Returns true if two attributes have the same key and value even if the order of value
-		 * elements is different.
+		 * Compares two attributes. Returns `true` if two attributes have the same key and value even if the order of keys
+		 * in the value object is different.
 		 *
-		 *	var attr1 = new Attribute( 'foo', { a: 1, b: 2 } );
-		 *	var attr2 = new Attribute( 'foo', { b: 2, a: 1 } );
-		 *	attr1.isEqual( attr2 ); // true
+		 *		var attr1 = new Attribute( 'foo', { a: 1, b: 2 } );
+		 *		var attr2 = new Attribute( 'foo', { b: 2, a: 1 } );
+		 *		attr1.isEqual( attr2 ); // true
 		 *
 		 * @param {document.Attribute} otherAttr Attribute to compare with.
-		 * @returns {Boolean} True if attributes equals.
+		 * @returns {Boolean} True if attributes are equal to each other.
 		 */
 		isEqual( otherAttr ) {
 			return this._hash === otherAttr._hash;
@@ -88,11 +88,11 @@ CKEDITOR.define( [ 'utils' ], function( utils ) {
 		 *
 		 * Note that attributes are registered globally.
 		 *
-		 *	var attr1 = Attribute.register( 'bold', true );
-		 *	var attr2 = Attribute.register( 'bold', true );
-		 *	var attr3 = new Attribute( 'bold', true );
-		 *	attr1 === attr2 // true
-		 *	attr1 === attr3 // true
+		 *		var attr1 = Attribute.register( 'bold', true );
+		 *		var attr2 = Attribute.register( 'bold', true );
+		 *		var attr3 = new Attribute( 'bold', true );
+		 *		attr1 === attr2 // true
+		 *		attr1 === attr3 // true
 		 *
 		 * @static
 		 * @param {String} key Attribute key.

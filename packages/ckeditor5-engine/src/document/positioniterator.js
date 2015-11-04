@@ -21,7 +21,7 @@ CKEDITOR.define( [
 	 */
 	class PositionIterator {
 		/**
-		 * Create a range iterator.
+		 * Creates a range iterator.
 		 *
 		 * @param {document.Range} [boundaries] Range to define boundaries of the iterator.
 		 * @param {document.Position} [iteratorPosition] Starting position.
@@ -42,8 +42,10 @@ CKEDITOR.define( [
 			 */
 
 			/**
-			 * Iterator boundaries. When {@link #next} is called on end boundary or {@link #previous} on the
-			 * first then `{ done: true }` is returned.
+			 * Iterator boundaries.
+			 *
+			 * When the {@link #next} method is called on the end boundary or the {@link #previous} method
+			 * on the start boundary, then `{ done: true }` is returned.
 			 *
 			 * If boundaries are not defined they are set before first and after last child of the root node.
 			 *
@@ -52,14 +54,14 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * Move {@link #position} to the next position and returned skipped value.
+		 * Moves the {@link #position} to the next position and returns the enctountered value.
 		 *
-		 * @returns {Object} Value between last and new {@link #position}.
+		 * @returns {Object} Value between the previous and the new {@link #position}.
 		 * @returns {Boolean} return.done True if iterator is done.
 		 * @returns {Object} return.value
-		 * @returns {Number} return.value.type Skipped value type, possible options: {@link PositionIterator#ELEMENT_ENTER},
+		 * @returns {Number} return.value.type Encountered value type, possible options: {@link PositionIterator#ELEMENT_ENTER},
 		 * {@link PositionIterator#ELEMENT_LEAVE} or {@link PositionIterator#CHARACTER}.
-		 * @returns {Node} return.value.node Skipped node.
+		 * @returns {document.Node} return.value.node Encountered node.
 		 */
 		next() {
 			var position = this.position;
@@ -92,14 +94,14 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * Move {@link #position} to the previous position and returned skipped value.
+		 * Moves the {@link #position} to the previous position and returns the encountered value.
 		 *
-		 * @returns {Object} Value between last and new {@link #position}.
+		 * @returns {Object} Value between the previous and the new {@link #position}.
 		 * @returns {Boolean} return.done True if iterator is done.
 		 * @returns {Object} return.value
-		 * @returns {Number} return.value.type Skipped value type, possible options: {@link PositionIterator#ELEMENT_ENTER},
+		 * @returns {Number} return.value.type Encountered value type, possible options: {@link PositionIterator#ELEMENT_ENTER},
 		 * {@link PositionIterator#ELEMENT_LEAVE} or {@link PositionIterator#CHARACTER}.
-		 * @returns {Node} return.value.node Skipped node.
+		 * @returns {document.Node} return.value.node Scanned node.
 		 */
 		previous() {
 			var position = this.position;
@@ -143,23 +145,29 @@ CKEDITOR.define( [
 	}
 
 	/**
-	 * Flag for element entering.
+	 * Flag for entering element.
 	 *
+	 * @static
 	 * @readonly
+	 * @property {Number}
 	 */
 	PositionIterator.ELEMENT_ENTER = ELEMENT_ENTER;
 
 	/**
-	 * Flag for element leaving.
+	 * Flag for leaving element.
 	 *
+	 * @static
 	 * @readonly
+	 * @property {Number}
 	 */
 	PositionIterator.ELEMENT_LEAVE = ELEMENT_LEAVE;
 
 	/**
 	 * Flag for character.
 	 *
+	 * @static
 	 * @readonly
+	 * @property {Number}
 	 */
 	PositionIterator.CHARACTER = CHARACTER;
 

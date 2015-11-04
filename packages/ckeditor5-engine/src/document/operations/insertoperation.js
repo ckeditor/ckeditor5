@@ -11,7 +11,7 @@ CKEDITOR.define( [
 	'document/operations/removeoperation'
 ], function( Operation, NodeList ) {
 	/**
-	 * Operation to insert list of nodes on the given position.
+	 * Operation to insert list of nodes on the given position in the tree data model.
 	 *
 	 * @class document.operations.InsertOperation
 	 */
@@ -20,7 +20,7 @@ CKEDITOR.define( [
 		 * Creates an insert operation.
 		 *
 		 * @param {document.Position} position Position of insertion.
-		 * @param {document.Node|document.Text|document.NodeList|String|Iterable} nodes List of nodes to be inserted.
+		 * @param {document.Node|document.Text|document.NodeList|String|Iterable} nodes The list of nodes to be inserted.
 		 * List of nodes can be any type accepted by the {@link document.NodeList} constructor.
 		 * @param {Number} baseVersion {@link document.Document#version} on which operation can be applied.
 		 * @constructor
@@ -45,16 +45,10 @@ CKEDITOR.define( [
 			this.nodeList = new NodeList( nodes );
 		}
 
-		/**
-		 * See {@link document.operations.Operation#_execute}.
-		 */
 		_execute() {
 			this.position.parent.insertChildren( this.position.offset, this.nodeList );
 		}
 
-		/**
-		 * See {@link document.operations.Operation#getReversed}.
-		 */
 		getReversed() {
 			// Because of circular dependencies we need to re-require remove operation here.
 			var RemoveOperation = CKEDITOR.require( 'document/operations/removeoperation' );
