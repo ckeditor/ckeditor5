@@ -51,7 +51,7 @@ CKEDITOR.define( [ 'document/node', 'document/nodelist' ], function( Node, NodeL
 		 * Inserts a list of child nodes on the given index and sets the parent of these nodes to this element.
 		 *
 		 * Note that the list of children can be modified only in elements not yet attached to the document.
-		 * All attached nodes should be modified using the {@link document.operations.InsertOperation}.
+		 * All attached nodes should be modified using the {@link document.operation.InsertOperation}.
 		 *
 		 * @param {Number} index Position where nodes should be inserted.
 		 * @param {document.Node|document.Text|document.NodeList|String|Iterable} nodes The list of nodes to be inserted.
@@ -69,7 +69,7 @@ CKEDITOR.define( [ 'document/node', 'document/nodelist' ], function( Node, NodeL
 		 * Removes number of child nodes starting at the given index and set the parent of these nodes to `null`.
 		 *
 		 * Note that the list of children can be modified only in elements not yet attached to the document.
-		 * All attached nodes should be modified using the {@link document.operations.RemoveOperation}.
+		 * All attached nodes should be modified using the {@link document.operation.RemoveOperation}.
 		 *
 		 * @param {Number} index Position of the first node to remove.
 		 * @param {Number} number Number of nodes to remove.

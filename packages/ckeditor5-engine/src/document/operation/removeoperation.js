@@ -6,14 +6,14 @@
 'use strict';
 
 CKEDITOR.define( [
-	'document/operations/moveoperation',
+	'document/operation/moveoperation',
 	'document/position',
-	'document/operations/reinsertoperation'
+	'document/operation/reinsertoperation'
 ], function( MoveOperation, Position ) {
 	/**
 	 * Operation to remove a range of nodes.
 	 *
-	 * @class document.operations.RemoveOperation
+	 * @class document.operation.RemoveOperation
 	 */
 	class RemoveOperation extends MoveOperation {
 		/**
@@ -35,7 +35,7 @@ CKEDITOR.define( [
 
 		getReversed() {
 			// Because of circular dependencies we need to re-require reinsert operation here.
-			var ReinsertOperation = CKEDITOR.require( 'document/operations/reinsertoperation' );
+			var ReinsertOperation = CKEDITOR.require( 'document/operation/reinsertoperation' );
 
 			return new ReinsertOperation( this.targetPosition, this.sourcePosition, this.howMany, this.baseVersion + 1 );
 		}

@@ -13,7 +13,7 @@ CKEDITOR.define( [
 ], function( Character, Text, Node, utils ) {
 	/**
 	 * List of nodes. It is used to represent multiple nodes with a given order, for example children of
-	 * {@link document.Element} object or nodes inserted using {@link document.operations.InsertOperation}.
+	 * {@link document.Element} object or nodes inserted using {@link document.operation.InsertOperation}.
 	 *
 	 * Thanks to the constructor, which accepts various arguments, this class lets you easily create desired list of nodes.
 	 *
