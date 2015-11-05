@@ -58,8 +58,12 @@ CKEDITOR.define( [ 'collection', 'model' ], ( Collection, Model ) => {
 			}
 		}
 
-		append( view ) {
+		add( view ) {
 			this.views.add( view );
+		}
+
+		remove( view ) {
+			this.views.remove( view );
 		}
 	}
 

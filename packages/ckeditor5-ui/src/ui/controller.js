@@ -5,7 +5,11 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'collection', 'model' ], function( Collection, Model ) {
+CKEDITOR.define( [
+	'collection',
+	'namedcollection',
+	'model'
+], function( Collection, NamedCollection, Model ) {
 	class Controller extends Model {
 		/**
 		 * @constructor
@@ -24,9 +28,9 @@ CKEDITOR.define( [ 'collection', 'model' ], function( Collection, Model ) {
 			this.view = view;
 
 			/**
-			 * A collection of child controllers.
+			 * Collections of child controller regions.
 			 */
-			this.controllers = new Collection();
+			this.regions = new NamedCollection();
 		}
 
 		/**
@@ -43,7 +47,9 @@ CKEDITOR.define( [ 'collection', 'model' ], function( Collection, Model ) {
 				.then( () => {
 					let promises = [];
 
-					this.controllers.forEach( item => promises.push( item.init() ) );
+					this.regions.forEach( region => {
+						region.forEach( controller => promises.push( controller.init() ) );
+					} );
 
 					return Promise.all( promises );
 				} );
@@ -53,14 +59,16 @@ CKEDITOR.define( [ 'collection', 'model' ], function( Collection, Model ) {
 		 * @param
 		 * @returns
 		 */
-		append( controller, regionName ) {
-			this.controllers.add( controller );
+		add( controller, regionName ) {
+			var region = this.regions.get( regionName );
 
-			// Note: Because controller.init() can by sync as well as async,
-			// it is wrapped in promise.
-			return Promise.resolve()
-				.then( this.view.append.bind( this.view, controller.view, regionName ) )
-				.then( () => controller );
+			if ( !region ) {
+				region = this._createRegion( regionName );
+			}
+
+			region.add( controller );
+
+			return Promise.resolve( controller );
 		}
 
 		/**
@@ -74,11 +82,32 @@ CKEDITOR.define( [ 'collection', 'model' ], function( Collection, Model ) {
 				.then( () => {
 					return this.view.destroy();
 				} )
-				.then(
-					Promise.all( this.controllers.filter( c => {
-						return c.destroy();
-					} ) )
-				);
+				.then( () => {
+					let promises = [];
+
+					this.regions.forEach( region => {
+						region.forEach( controller => promises.push( controller.destroy() ) );
+					} );
+
+					return Promise.all( promises );
+				} );
+		}
+
+		_createRegion( regionName ) {
+			var collection = new Collection();
+			collection.name = regionName;
+
+			collection.on( 'add', ( evt, controller ) => {
+				this.view.add( controller.view, regionName );
+			} );
+
+			collection.on( 'remove', ( evt, controller ) => {
+				this.view.remove( controller.view, regionName );
+			} );
+
+			this.regions.add( collection );
+
+			return collection;
 		}
 	}
 
