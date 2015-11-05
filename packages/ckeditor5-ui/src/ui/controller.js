@@ -94,20 +94,20 @@ CKEDITOR.define( [
 		}
 
 		_createRegion( regionName ) {
-			var collection = new Collection();
-			collection.name = regionName;
+			var controllers = new Collection();
+			controllers.name = regionName;
 
-			collection.on( 'add', ( evt, controller ) => {
+			controllers.on( 'add', ( evt, controller ) => {
 				this.view.add( controller.view, regionName );
 			} );
 
-			collection.on( 'remove', ( evt, controller ) => {
+			controllers.on( 'remove', ( evt, controller ) => {
 				this.view.remove( controller.view, regionName );
 			} );
 
-			this.regions.add( collection );
+			this.regions.add( controllers );
 
-			return collection;
+			return controllers;
 		}
 	}
 
