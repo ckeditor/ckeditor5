@@ -6,14 +6,14 @@
 'use strict';
 
 CKEDITOR.define( [
-	'document/operations/operation',
+	'document/operation/operation',
 	'document/nodelist',
-	'document/operations/removeoperation'
+	'document/operation/removeoperation'
 ], function( Operation, NodeList ) {
 	/**
 	 * Operation to insert list of nodes on the given position in the tree data model.
 	 *
-	 * @class document.operations.InsertOperation
+	 * @class document.operation.InsertOperation
 	 */
 	class InsertOperation extends Operation {
 		/**
@@ -51,7 +51,7 @@ CKEDITOR.define( [
 
 		getReversed() {
 			// Because of circular dependencies we need to re-require remove operation here.
-			var RemoveOperation = CKEDITOR.require( 'document/operations/removeoperation' );
+			var RemoveOperation = CKEDITOR.require( 'document/operation/removeoperation' );
 
 			return new RemoveOperation( this.position, this.nodeList.length, this.baseVersion + 1 );
 		}

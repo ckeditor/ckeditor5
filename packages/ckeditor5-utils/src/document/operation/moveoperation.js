@@ -6,7 +6,7 @@
 'use strict';
 
 CKEDITOR.define( [
-	'document/operations/operation',
+	'document/operation/operation',
 	'document/nodelist',
 	'ckeditorerror',
 	'utils'
@@ -14,7 +14,7 @@ CKEDITOR.define( [
 	/**
 	 * Operation to move list of subsequent nodes from one position in the document to another.
 	 *
-	 * @class document.operations.MoveOperation
+	 * @class document.operation.MoveOperation
 	 */
 	class MoveOperation extends Operation {
 		/**

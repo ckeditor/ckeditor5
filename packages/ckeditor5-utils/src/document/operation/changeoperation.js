@@ -5,11 +5,11 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'document/operations/operation', 'ckeditorerror' ], function( Operation, CKEditorError ) {
+CKEDITOR.define( [ 'document/operation/operation', 'ckeditorerror' ], function( Operation, CKEditorError ) {
 	/**
 	 * Operation to change nodes' attribute. Using this class you can add, remove or change value of the attribute.
 	 *
-	 * @class document.operations.ChangeOperation
+	 * @class document.operation.ChangeOperation
 	 */
 	class ChangeOperation extends Operation {
 		/**
