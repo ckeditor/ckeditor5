@@ -65,33 +65,27 @@ CKEDITOR.define( [
 				 * Source position or target position is invalid.
 				 *
 				 * @error operation-move-position-invalid
-				 * @param {document.operations.MoveOperation} op
 				 */
 				throw new CKEditorError(
-					'operation-move-position-invalid: Source position or target position is invalid.',
-					{ op: this }
+					'operation-move-position-invalid: Source position or target position is invalid.'
 				);
 			} else if ( sourceOffset + this.howMany > sourceElement.getChildCount() ) {
 				/**
 				 * The nodes which should be moved do not exist.
 				 *
 				 * @error operation-move-nodes-do-not-exist
-				 * @param {document.operations.MoveOperation} op
 				 */
 				throw new CKEditorError(
-					'operation-move-nodes-do-not-exist: The nodes which should be moved do not exist.',
-					{ op: this }
+					'operation-move-nodes-do-not-exist: The nodes which should be moved do not exist.'
 				);
 			} else if ( sourceElement === targetElement && sourceOffset <= targetOffset && targetOffset < sourceOffset + this.howMany ) {
 				/**
 				 * Trying to move a range of nodes into the middle of that range.
 				 *
 				 * @error operation-move-range-into-itself
-				 * @param {document.operations.MoveOperation} op
 				 */
 				throw new CKEditorError(
-					'operation-move-range-into-itself: Trying to move a range of nodes to the inside of that range.',
-					{ op: this }
+					'operation-move-range-into-itself: Trying to move a range of nodes to the inside of that range.'
 				);
 			} else {
 				var sourcePath = this.sourcePosition.getParentPath();
@@ -105,11 +99,9 @@ CKEDITOR.define( [
 						 * Trying to move a range of nodes into one of nodes from that range.
 						 *
 						 * @error operation-move-node-into-itself
-						 * @param {document.operations.MoveOperation} op
 						 */
 						throw new CKEditorError(
-							'operation-move-node-into-itself: Trying to move a range of nodes into one of nodes from that range.',
-							{ op: this }
+							'operation-move-node-into-itself: Trying to move a range of nodes into one of nodes from that range.'
 						);
 					}
 				}
