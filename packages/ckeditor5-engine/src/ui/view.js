@@ -272,8 +272,12 @@ CKEDITOR.define( [
 		 * @param
 		 * @returns
 		 */
-		append( view, regionName ) {
-			this.regions.get( regionName ).append( view );
+		add( view, regionName ) {
+			this.regions.get( regionName ).add( view );
+		}
+
+		remove( view, regionName ) {
+			this.regions.get( regionName ).remove( view );
 		}
 	}
 
