@@ -8,28 +8,28 @@
 var tools = require( './utils/tools' );
 var path = require( 'path' );
 var ckeditor5Path = process.cwd();
-var json = require( path.join( ckeditor5Path, 'package.json' ) );
-var dependencies = json.dependencies;
+var workspaceAbsolutePath;
 
 module.exports = function( grunt ) {
 	grunt.registerTask( 'dev', function( target ) {
-		var pluginPath;
+		var	options = {
+			workspaceRoot: '..'
+		};
+
+		// Get workspace root from configuration.
+		options = this.options( options );
+		workspaceAbsolutePath = path.join( ckeditor5Path, options.workspaceRoot );
 
 		switch ( target ) {
+
+			// grunt dev:init
 			case 'init':
-				var ckeDependencies = tools.getCKEditorDependencies( dependencies );
-				var location = path.join( ckeditor5Path, '..' );
+				tools.initDevWorkspace( workspaceAbsolutePath, ckeditor5Path, grunt.log.writeln );
+				break;
 
-				if ( ckeDependencies ) {
-					Object.keys( ckeDependencies ).forEach( function( name ) {
-						grunt.log.writeln( 'Clonning repository ' + ckeDependencies[ name ] + '...' );
-						tools.cloneRepository( name, ckeDependencies[ name ], location );
-
-						pluginPath = path.join( location, name );
-						grunt.log.writeln( 'Linking ' + pluginPath + ' into ' + ckeditor5Path + '...' );
-						tools.npmLink( pluginPath, ckeditor5Path, name );
-					} );
-				}
+			// grunt dev:status
+			case 'status':
+				tools.getWorkspaceStatus( workspaceAbsolutePath, grunt.log.writeln );
 				break;
 		}
 	} );
