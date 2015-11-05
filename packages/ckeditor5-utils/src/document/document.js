@@ -59,14 +59,11 @@ CKEDITOR.define( [
 				 * Only operations with matching versions can be applied.
 				 *
 				 * @error document-applyOperation-wrong-version
-				 * @param {document.Document} doc
-				 * @param {document.operations.Operation} operation
-				 * @param {Number} baseVersion
-				 * @param {Number} documentVersion
+				 * @param {document.operations.Operation} op
 				 */
 				throw new CKEditorError(
 					'document-applyOperation-wrong-version: Only operations with matching versions can be applied.',
-					{ doc: this, operation: operation, baseVersion: operation.baseVersion, documentVersion: this.version } );
+					{ op: operation } );
 			}
 
 			operation._execute();
@@ -91,7 +88,7 @@ CKEDITOR.define( [
 				 */
 				throw new CKEditorError(
 					'document-createRoot-name-exists: Root with specified name already exists.',
-					{ doc: this, name: name }
+					{ name: name }
 				);
 			}
 
@@ -113,12 +110,11 @@ CKEDITOR.define( [
 				 * Root with specified name does not exist.
 				 *
 				 * @error document-createRoot-root-not-exist
-				 * @param {document.Document} doc
 				 * @param {String} name
 				 */
 				throw new CKEditorError(
 					'document-createRoot-root-not-exist: Root with specified name does not exist.',
-					{ doc: this, name: name }
+					{ name: name }
 				);
 			}
 
