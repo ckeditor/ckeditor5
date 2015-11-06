@@ -149,7 +149,7 @@ CKEDITOR.define( [ 'utils', 'ckeditorerror' ], function( utils, CKEditorError ) 
 				throw new CKEditorError( 'position-before-root: You can not make position before root.', { root: node } );
 			}
 
-			return Position.createFromParentAndOffset( node.parent, node.positionInParent );
+			return Position.createFromParentAndOffset( node.parent, node.getIndex() );
 		}
 
 		/**
@@ -169,7 +169,7 @@ CKEDITOR.define( [ 'utils', 'ckeditorerror' ], function( utils, CKEditorError ) 
 				throw new CKEditorError( 'position-after-root: You can not make position after root.', { root: node } );
 			}
 
-			return Position.createFromParentAndOffset( node.parent, node.positionInParent + 1 );
+			return Position.createFromParentAndOffset( node.parent, node.getIndex() + 1 );
 		}
 	}
 

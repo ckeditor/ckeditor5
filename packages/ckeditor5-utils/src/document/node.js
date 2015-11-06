@@ -5,7 +5,7 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils ) {
+CKEDITOR.define( [ 'document/attribute', 'utils', 'ckeditorerror' ], function( Attribute, utils, CKEditorError ) {
 	/**
 	 * Abstract document tree node class.
 	 *
@@ -42,17 +42,30 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 		}
 
 		/**
-		 * Position of the node in the parent element.
+		 * Index of the node in the parent element or null if the node has no parent.
 		 *
-		 * @readonly
-		 * @property {Number} positionInParent
+		 * Throws error if the parent element does not contain this node.
+		 *
+		 * @returns {Number|Null} Index of the node in the parent element or null if the node has not parent.
 		 */
-		get positionInParent() {
+		getIndex() {
 			var pos;
 
-			// No parent or child doesn't exist in parent's children.
-			if ( !this.parent || ( pos = this.parent.getChildIndex( this ) ) == -1 ) {
+			if ( !this.parent ) {
 				return null;
+			}
+
+			// No parent or child doesn't exist in parent's children.
+			if ( ( pos = this.parent.getChildIndex( this ) ) == -1 ) {
+				/**
+				 * The nodes parent does not contain that node.
+				 *
+				 * @error node-not-found-in-parent
+				 * @param {document.Node} node
+				 */
+				throw new CKEditorError(
+					'node-not-found-in-parent: The nodes parent does not contain that node.',
+					{ node: this } );
 			}
 
 			return pos;
@@ -100,9 +113,9 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 		 * @property {document.Node|null} nextSibling
 		 */
 		get nextSibling() {
-			var pos = this.positionInParent;
+			var index = this.getIndex();
 
-			return ( pos !== null && this.parent.getChild( pos + 1 ) ) || null;
+			return ( index !== null && this.parent.getChild( index + 1 ) ) || null;
 		}
 
 		/**
@@ -112,9 +125,9 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 		 * @property {document.Node|null} previousSibling
 		 */
 		get previousSibling() {
-			var pos = this.positionInParent;
+			var index = this.getIndex();
 
-			return ( pos !== null && this.parent.getChild( pos - 1 ) ) || null;
+			return ( index !== null && this.parent.getChild( index - 1 ) ) || null;
 		}
 
 		/**
@@ -200,7 +213,7 @@ CKEDITOR.define( [ 'document/attribute', 'utils' ], function( Attribute, utils )
 			var node = this; // jscs:ignore safeContextKeyword
 
 			while ( node.parent ) {
-				path.unshift( node.positionInParent );
+				path.unshift( node.getIndex() );
 				node = node.parent;
 			}
 
