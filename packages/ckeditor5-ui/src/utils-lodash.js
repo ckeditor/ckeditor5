@@ -47,7 +47,31 @@
 		 * @member utils
 		 * @method isObject
 		 */
-		'isObject'
+		'isObject',
+
+		/**
+		 * See Lo-Dash: https://lodash.com/docs#isArray
+		 *
+		 * @member utils
+		 * @method isArray
+		 */
+		'isArray',
+
+		/**
+		 * See Lo-Dash: https://lodash.com/docs#last
+		 *
+		 * @member utils
+		 * @method last
+		 */
+		'last',
+
+		/**
+		 * See Lo-Dash: https://lodash.com/docs#isEqual
+		 *
+		 * @member utils
+		 * @method isEqual
+		 */
+		'isEqual'
 	];
 
 	// Make this compatible with CommonJS as well so it can be used in Node (e.g. "grunt lodash").
