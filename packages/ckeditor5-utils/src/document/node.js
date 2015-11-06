@@ -58,14 +58,12 @@ CKEDITOR.define( [ 'document/attribute', 'utils', 'ckeditorerror' ], function( A
 			// No parent or child doesn't exist in parent's children.
 			if ( ( pos = this.parent.getChildIndex( this ) ) == -1 ) {
 				/**
-				 * The nodes parent does not contain that node.
+				 * The nodes parent does not contain that node. It means that document tree is corrupted.
 				 *
 				 * @error node-not-found-in-parent
 				 * @param {document.Node} node
 				 */
-				throw new CKEditorError(
-					'node-not-found-in-parent: The nodes parent does not contain that node.',
-					{ node: this } );
+				throw new CKEditorError( 'node-not-found-in-parent: The node\'s parent does not contain that node.' );
 			}
 
 			return pos;
