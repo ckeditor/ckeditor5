@@ -97,8 +97,8 @@ CKEDITOR.define( [
 			var controllers = new Collection();
 			controllers.name = regionName;
 
-			controllers.on( 'add', ( evt, controller ) => {
-				this.view.add( controller.view, regionName );
+			controllers.on( 'add', ( evt, controller, index ) => {
+				this.view.add( controller.view, regionName, index );
 			} );
 
 			controllers.on( 'remove', ( evt, controller ) => {
