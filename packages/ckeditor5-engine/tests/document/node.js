@@ -11,11 +11,12 @@ var modules = bender.amd.require(
 	'document/element',
 	'document/character',
 	'document/attribute',
-	'document/nodelist'
+	'document/nodelist',
+	'ckeditorerror'
 );
 
 describe( 'Node', function() {
-	var Element, Character, Attribute, NodeList;
+	var Element, Character, Attribute, NodeList, CKEditorError;
 
 	var root;
 	var one, two, three;
@@ -26,6 +27,7 @@ describe( 'Node', function() {
 		Character = modules[ 'document/character' ];
 		Attribute = modules[ 'document/attribute' ];
 		NodeList = modules[ 'document/nodelist' ];
+		CKEditorError = modules.ckeditorerror;
 
 		charB = new Character( 'b' );
 		charA = new Character( 'a' );
@@ -40,19 +42,6 @@ describe( 'Node', function() {
 	} );
 
 	describe( 'should have a correct property', function() {
-		it( 'positionInParent', function() {
-			expect( root ).to.have.property( 'positionInParent' ).that.is.null;
-
-			expect( one ).to.have.property( 'positionInParent' ).that.equals( 0 );
-			expect( two ).to.have.property( 'positionInParent' ).that.equals( 1 );
-			expect( three ).to.have.property( 'positionInParent' ).that.equals( 2 );
-
-			expect( charB ).to.have.property( 'positionInParent' ).that.equals( 0 );
-			expect( charA ).to.have.property( 'positionInParent' ).that.equals( 1 );
-			expect( img ).to.have.property( 'positionInParent' ).that.equals( 2 );
-			expect( charR ).to.have.property( 'positionInParent' ).that.equals( 3 );
-		} );
-
 		it( 'depth', function() {
 			expect( root ).to.have.property( 'depth' ).that.equals( 0 );
 
@@ -214,6 +203,36 @@ describe( 'Node', function() {
 
 			expect( parsedFoo.parent ).to.equal( null );
 			expect( parsedBar.parent ).to.equal( 'foo' );
+		} );
+	} );
+
+	describe( 'getIndex', function() {
+		it( 'should return null if the parent is null', function() {
+			expect( root.getIndex() ).to.be.null;
+		} );
+
+		it( 'should return index in the parent', function() {
+			expect( one.getIndex() ).to.equal( 0 );
+			expect( two.getIndex() ).to.equal( 1 );
+			expect( three.getIndex() ).to.equal( 2 );
+
+			expect( charB.getIndex() ).to.equal( 0 );
+			expect( charA.getIndex() ).to.equal( 1 );
+			expect( img.getIndex() ).to.equal( 2 );
+			expect( charR.getIndex() ).to.equal( 3 );
+		} );
+
+		it( 'should throw an error if parent does not contains element', function() {
+			var f = new Character( 'f' );
+			var bar = new Element( 'bar', [], [] );
+
+			f.parent = bar;
+
+			expect(
+				function() {
+					f.getIndex();
+				}
+			).to.throw( CKEditorError, /node-not-found-in-parent/ );
 		} );
 	} );
 } );

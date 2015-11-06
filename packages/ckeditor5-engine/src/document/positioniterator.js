@@ -87,7 +87,7 @@ CKEDITOR.define( [
 
 				return formatReturnValue( CHARACTER, nodeAfter );
 			} else {
-				this.position = Position.createFromParentAndOffset( parent.parent, parent.positionInParent + 1 );
+				this.position = Position.createFromParentAndOffset( parent.parent, parent.getIndex() + 1 );
 
 				return formatReturnValue( ELEMENT_LEAVE, this.position.nodeBefore );
 			}
@@ -127,7 +127,7 @@ CKEDITOR.define( [
 
 				return formatReturnValue( CHARACTER, nodeBefore );
 			} else {
-				this.position = Position.createFromParentAndOffset( parent.parent, parent.positionInParent );
+				this.position = Position.createFromParentAndOffset( parent.parent, parent.getIndex() );
 
 				return formatReturnValue( ELEMENT_ENTER, this.position.nodeAfter );
 			}
