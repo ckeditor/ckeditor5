@@ -235,4 +235,19 @@ describe( 'Node', function() {
 			).to.throw( CKEditorError, /node-not-found-in-parent/ );
 		} );
 	} );
+
+	describe( 'getPath', function() {
+		it( 'should return proper path', function() {
+			expect( root.getPath() ).to.deep.equal( [] );
+
+			expect( one.getPath() ).to.deep.equal( [ 0 ] );
+			expect( two.getPath() ).to.deep.equal( [ 1 ] );
+			expect( three.getPath() ).to.deep.equal( [ 2 ] );
+
+			expect( charB.getPath() ).to.deep.equal( [ 1, 0 ] );
+			expect( charA.getPath() ).to.deep.equal( [ 1, 1 ] );
+			expect( img.getPath() ).to.deep.equal( [ 1, 2 ] );
+			expect( charR.getPath() ).to.deep.equal( [ 1, 3 ] );
+		} );
+	} );
 } );
