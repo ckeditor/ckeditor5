@@ -59,11 +59,11 @@ CKEDITOR.define( [
 				 * Only operations with matching versions can be applied.
 				 *
 				 * @error document-applyOperation-wrong-version
-				 * @param {document.operation.Operation} op
+				 * @param {document.operation.Operation} operation
 				 */
 				throw new CKEditorError(
 					'document-applyOperation-wrong-version: Only operations with matching versions can be applied.',
-					{ op: operation } );
+					{ operation: operation } );
 			}
 
 			operation._execute();
