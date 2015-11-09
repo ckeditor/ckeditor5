@@ -9,35 +9,26 @@ var modules = bender.amd.require( 'collection', 'ckeditorerror' );
 
 bender.tools.createSinonSandbox();
 
-function getCollection( items, idName ) {
+function getCollection( items, idProperty ) {
 	var Collection = modules.collection;
 
-	return new Collection( items, idName );
+	return new Collection( items, idProperty );
 }
 
-function getItem( id, idName ) {
+function getItem( id, idProperty ) {
 	return {
-		[ idName || 'id' ]: id
+		[ idProperty || 'id' ]: id
 	};
 }
 
 ///////////////////////////////////////
 
 describe( 'constructor', () => {
-	it( 'creates collection with items', () => {
-		var Collection = modules.collection;
-		var item1 = getItem( 'foo' );
-		var item2 = getItem( 'bar' );
-		var box = new Collection( [ item1, item2 ] );
-
-		expect( box ).to.have.length( 2 );
-	} );
-
-	it( 'allows to change the id name used by the collection', () => {
+	it( 'allows to change the id property used by the collection', () => {
 		var Collection = modules.collection;
 		var item1 = { id: 'foo', name: 'xx' };
 		var item2 = { id: 'foo', name: 'yy' };
-		var box = new Collection( null, 'name' );
+		var box = new Collection( { idProperty: 'name' } );
 
 		box.add( item1 );
 		box.add( item2 );
@@ -87,8 +78,8 @@ describe( 'add', () => {
 		expect( box.get( 'bar' ) ).to.equal( item2 );
 	} );
 
-	it( 'should enable get( id ) - custom id name', () => {
-		var box = getCollection( null, 'name' );
+	it( 'should enable get( id ) - custom id property', () => {
+		var box = getCollection( { idProperty: 'name' } );
 		var item1 = getItem( 'foo', 'name' );
 		var item2 = getItem( 'bar', 'name' );
 
@@ -109,8 +100,8 @@ describe( 'add', () => {
 		expect( box.get( item.id ) ).to.equal( item );
 	} );
 
-	it( 'should generate an id when not defined - custom id name', () => {
-		var box = getCollection( null, 'name' );
+	it( 'should generate an id when not defined - custom id property', () => {
+		var box = getCollection( { idProperty: 'name' } );
 		var item = {};
 
 		box.add( item );
@@ -228,8 +219,8 @@ describe( 'remove', () => {
 		expect( removedItem ).to.have.property( 'id', 'foo' );
 	} );
 
-	it( 'should remove the model by index - custom id name', () => {
-		var box = getCollection( null, 'name' );
+	it( 'should remove the model by index - custom id property', () => {
+		var box = getCollection( { idProperty: 'name' } );
 
 		box.add( getItem( 'foo', 'name' ) );
 
@@ -275,7 +266,7 @@ describe( 'remove', () => {
 		expect( removedItem ).to.equal( item );
 	} );
 
-	it( 'should remove the model by model - custom id name', () => {
+	it( 'should remove the model by model - custom id property', () => {
 		var box = getCollection( null, 'name' );
 		var item = getItem( 'foo', 'name' );
 

@@ -25,7 +25,7 @@ CKEDITOR.define( [
 		 * @constructor
 		 */
 		constructor( editor ) {
-			super( null, 'name' );
+			super( { idProperty: 'name' } );
 
 			this._editor = editor;
 		}
