@@ -41,6 +41,12 @@ describe( 'constructor', () => {
 } );
 
 describe( 'add', () => {
+	it( 'should be chainable', () => {
+		var box = getCollection();
+
+		expect( box.add( {} ) ).to.equal( box );
+	} );
+
 	it( 'should change the length', () => {
 		var box = getCollection();
 

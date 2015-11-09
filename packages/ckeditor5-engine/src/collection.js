@@ -77,6 +77,7 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 		 *
 		 * If the item does not have an id, then it will be automatically generated and set on the item.
 		 *
+		 * @chainable
 		 * @param {Object} item
 		 */
 		add( item ) {
@@ -112,6 +113,8 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 			this._itemMap.set( itemId, item );
 
 			this.fire( 'add', item );
+
+			return this;
 		}
 
 		/**
