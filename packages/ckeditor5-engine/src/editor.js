@@ -114,11 +114,11 @@ CKEDITOR.define( [
 			}
 
 			function findCreators() {
-				that.plugins.forEach( ( plugin, name ) => {
+				for ( let plugin of that.plugins ) {
 					if ( plugin instanceof Creator ) {
-						that._creators[ name ] = plugin;
+						that._creators[ plugin.name ] = plugin;
 					}
-				} );
+				}
 			}
 
 			function fireCreator() {
