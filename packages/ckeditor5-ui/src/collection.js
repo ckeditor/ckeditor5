@@ -26,9 +26,10 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 		 *
 		 * @constructor
 		 * @param {Iterale} [items] Items to be added to the collection.
-		 * @param {String} [idName='id'] The name of the property which is considered to identify an item.
+		 * @param {Object} options The options object.
+		 * @param {String} [options.idProperty='id'] The name of the property which is considered to identify an item.
 		 */
-		constructor( items, idName ) {
+		constructor( options ) {
 			/**
 			 * The internal list of items in the collection.
 			 *
@@ -59,13 +60,7 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 			 * @private
 			 * @property {String}
 			 */
-			this._idName = idName || 'id';
-
-			if ( items ) {
-				for ( let item of items ) {
-					this.add( item );
-				}
-			}
+			this._idProperty = options && options.idProperty || 'id';
 		}
 
 		/**
@@ -86,10 +81,10 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 		 */
 		add( item ) {
 			var itemId;
-			var idName = this._idName;
+			var idProperty = this._idProperty;
 
-			if ( ( idName in item ) ) {
-				itemId = item[ idName ];
+			if ( ( idProperty in item ) ) {
+				itemId = item[ idProperty ];
 
 				if ( typeof itemId != 'string' ) {
 					/**
@@ -110,7 +105,7 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 				}
 			} else {
 				itemId = this._getNextId();
-				item[ idName ] = itemId;
+				item[ idProperty ] = itemId;
 			}
 
 			this._items.push( item );
@@ -153,7 +148,7 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 		remove( subject ) {
 			var index, id, item;
 			var itemDoesNotExist = false;
-			var idName = this._idName;
+			var idProperty = this._idProperty;
 
 			if ( typeof subject == 'string' ) {
 				id = subject;
@@ -169,11 +164,11 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 				itemDoesNotExist = !item;
 
 				if ( item ) {
-					id = item[ idName ];
+					id = item[ idProperty ];
 				}
 			} else {
 				item = subject;
-				id = item[ idName ];
+				id = item[ idProperty ];
 				index = this._items.indexOf( item );
 				itemDoesNotExist = ( index == -1 || !this._itemMap.get( id ) );
 			}
