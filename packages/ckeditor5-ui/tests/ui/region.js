@@ -12,7 +12,7 @@ const modules = bender.amd.require( 'ckeditor', 'ui/region', 'ui/view', 'collect
 
 bender.tools.createSinonSandbox();
 
-var TestViewA, TestViewB;
+let TestViewA, TestViewB;
 var region, el;
 
 beforeEach( createRegionInstance );
@@ -26,7 +26,7 @@ describe( 'constructor', function() {
 
 describe( 'views collection', function() {
 	it( 'is an instance of Collection', function() {
-		var Collection = modules.collection;
+		const Collection = modules.collection;
 		expect( region.views ).to.be.an.instanceof( Collection );
 	} );
 
@@ -90,8 +90,8 @@ describe( 'destroy', function() {
 } );
 
 function createRegionInstance() {
-	var Region = modules[ 'ui/region' ];
-	var View = modules[ 'ui/view' ];
+	const Region = modules[ 'ui/region' ];
+	const View = modules[ 'ui/view' ];
 
 	class A extends View {
 		constructor() {
