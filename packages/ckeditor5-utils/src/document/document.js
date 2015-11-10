@@ -12,7 +12,7 @@ CKEDITOR.define( [
 	'utils',
 	'ckeditorerror'
 ], function( Element, RootElement, EmitterMixin, utils, CKEditorError ) {
-	var graveyardSymbol = Symbol( 'graveyard' );
+	const graveyardSymbol = Symbol( 'graveyard' );
 
 	/**
 	 * Document model.
@@ -92,7 +92,7 @@ CKEDITOR.define( [
 				);
 			}
 
-			var root = new RootElement( this );
+			const root = new RootElement( this );
 			this.roots.set( name, root );
 
 			return root;

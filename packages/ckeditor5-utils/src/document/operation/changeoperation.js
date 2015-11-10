@@ -59,9 +59,9 @@ CKEDITOR.define( [ 'document/operation/operation', 'ckeditorerror' ], function( 
 		}
 
 		_execute() {
-			var oldAttr = this.oldAttr;
-			var newAttr = this.newAttr;
-			var value;
+			const oldAttr = this.oldAttr;
+			const newAttr = this.newAttr;
+			let value;
 
 			if ( oldAttr !== null && newAttr !== null && oldAttr.key != newAttr.key ) {
 				/**

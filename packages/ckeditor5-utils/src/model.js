@@ -71,7 +71,7 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 				 * This error is thrown when trying to {@link Model#set set} an attribute with
 				 * a name of an already existing property. For example:
 				 *
-				 *		var model = new Model();
+				 *		let model = new Model();
 				 *		model.property = 1;
 				 *		model.set( 'property', 2 );		// throws
 				 *
@@ -92,7 +92,7 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 				},
 
 				set: function( value ) {
-					var oldValue = this._attributes[ name ];
+					const oldValue = this._attributes[ name ];
 
 					if ( oldValue !== value ) {
 						this._attributes[ name ] = value;

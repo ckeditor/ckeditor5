@@ -76,17 +76,17 @@ CKEDITOR.define( [ 'model', 'utils' ], function( Model, utils ) {
 
 			// The target for this configuration is, for now, this object.
 			//jscs:disable safeContextKeyword
-			var target = this;
+			let target = this;
 			//jscs:enable
 
 			// The configuration name should be split into parts if it has dots. E.g: `resize.width`.
-			var parts = name.toLowerCase().split( '.' );
+			const parts = name.toLowerCase().split( '.' );
 
 			// Take the name of the configuration out of the parts. E.g. `resize.width` -> `width`
 			name = parts.pop();
 
 			// Retrieves the final target for this configuration recursively.
-			for ( var i = 0; i < parts.length; i++ ) {
+			for ( let i = 0; i < parts.length; i++ ) {
 				// The target will always be an instance of Config.
 				if ( !( target[ parts[ i ] ] instanceof Config ) ) {
 					target.set( parts[ i ], new Config() );
@@ -132,17 +132,17 @@ CKEDITOR.define( [ 'model', 'utils' ], function( Model, utils ) {
 		get( name ) {
 			// The target for this configuration is, for now, this object.
 			//jscs:disable safeContextKeyword
-			var source = this;
+			let source = this;
 			//jscs:enable
 
 			// The configuration name should be split into parts if it has dots. E.g. `resize.width` -> [`resize`, `width`]
-			var parts = name.toLowerCase().split( '.' );
+			const parts = name.toLowerCase().split( '.' );
 
 			// Take the name of the configuration from the parts. E.g. `resize.width` -> `width`
 			name = parts.pop();
 
 			// Retrieves the source for this configuration recursively.
-			for ( var i = 0; i < parts.length; i++ ) {
+			for ( let i = 0; i < parts.length; i++ ) {
 				// The target will always be an instance of Config.
 				if ( !( source[ parts[ i ] ] instanceof Config ) ) {
 					source = null;

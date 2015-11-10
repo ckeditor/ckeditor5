@@ -40,7 +40,7 @@
  */
 
 CKEDITOR.define( function() {
-	var log = {
+	const log = {
 		/**
 		 * Logs an error to the console.
 		 *
