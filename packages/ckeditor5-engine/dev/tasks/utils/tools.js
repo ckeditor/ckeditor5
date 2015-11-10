@@ -1,6 +1,6 @@
 'use strict';
 
-var dirtyFiles,
+let dirtyFiles,
 	ignoreList;
 
 module.exports = {
@@ -11,15 +11,15 @@ module.exports = {
 	 * @param task {String} The task name. May optionally include the target (e.g. 'task:target').
 	 * @returns {Boolean} "true" if the task is in the queue.
 	 */
-	checkTaskInQueue: function( grunt, task ) {
-		var cliTasks = grunt.cli.tasks;
+	checkTaskInQueue( grunt, task ) {
+		const cliTasks = grunt.cli.tasks;
 
 		// Check if the task has been called directly.
-		var isDirectCall = ( cliTasks.indexOf( task ) > -1 );
+		const isDirectCall = ( cliTasks.indexOf( task ) > -1 );
 		// Check if this is a "default" call and that the task is inside "default".
-		var isDefaultTask = ( cliTasks.indexOf( 'default' ) > -1 ) || !cliTasks.length;
+		const isDefaultTask = ( cliTasks.indexOf( 'default' ) > -1 ) || !cliTasks.length;
 		// Hacking Grunt hard.
-		var isTaskInDefault = isDefaultTask && ( grunt.task._tasks.default.info.indexOf( '"' + task + '"' ) > -1 );
+		const isTaskInDefault = isDefaultTask && ( grunt.task._tasks.default.info.indexOf( '"' + task + '"' ) > -1 );
 
 		return isDirectCall || isTaskInDefault;
 	},
@@ -30,16 +30,16 @@ module.exports = {
 	 * @param grunt {Object} The Grunt object.
 	 * @param options {Object} A list of options for the method. See the jscs and jshint tasks for example.
 	 */
-	setupMultitaskConfig: function( grunt, options ) {
-		var task = options.task;
-		var taskConfig = {};
-		var config = taskConfig[ task ] = {
+	setupMultitaskConfig( grunt, options ) {
+		const task = options.task;
+		const taskConfig = {};
+		const config = taskConfig[ task ] = {
 			options: options.defaultOptions
 		};
 
 		// "all" is the default target to be used if others are not to be run.
-		var all = options.targets.all;
-		var isAll = true;
+		const all = options.targets.all;
+		let isAll = true;
 
 		delete options.targets.all;
 
@@ -56,8 +56,8 @@ module.exports = {
 
 		// Append .gitignore entries to the ignore list.
 		if ( options.addGitIgnore ) {
-			var ignoreProp = task + '.options.' + options.addGitIgnore;
-			var ignores = grunt.config.get( ignoreProp ) || [];
+			let ignoreProp = task + '.options.' + options.addGitIgnore;
+			let ignores = grunt.config.get( ignoreProp ) || [];
 
 			ignores = ignores.concat( this.getGitIgnore( grunt ) );
 			grunt.config.set( ignoreProp, ignores );
@@ -73,7 +73,7 @@ module.exports = {
 	 * @param grunt {Object} The Grunt object.
 	 * @returns {String[]} The list of ignores.
 	 */
-	getGitIgnore: function( grunt ) {
+	getGitIgnore( grunt ) {
 		if ( !ignoreList ) {
 			ignoreList = grunt.file.read( '.gitignore' );
 
@@ -96,7 +96,7 @@ module.exports = {
 	 *
 	 * @returns {String[]} A list of file paths.
 	 */
-	getGitDirtyFiles: function() {
+	getGitDirtyFiles() {
 		// Cache it, so it is executed only once when running multiple tasks.
 		if ( !dirtyFiles ) {
 			dirtyFiles = this
@@ -122,11 +122,11 @@ module.exports = {
 	 * @param command {String} The command to be executed.
 	 * @returns {String} The command output.
 	 */
-	shExec: function( command ) {
-		var sh = require( 'shelljs' );
+	shExec( command ) {
+		const sh = require( 'shelljs' );
 		sh.config.silent = true;
 
-		var ret = sh.exec( command );
+		const ret = sh.exec( command );
 
 		if ( ret.code ) {
 			throw new Error(
