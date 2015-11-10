@@ -17,8 +17,8 @@ const modules = bender.amd.require(
 describe( 'Text', function() {
 	describe( 'constructor', function() {
 		it( 'should create character without attributes', function() {
-			var Text = modules[ 'document/text' ];
-			var Attribute = modules[ 'document/attribute' ];
+			const Text = modules[ 'document/text' ];
+			const Attribute = modules[ 'document/attribute' ];
 
 			var attrs = [ new Attribute( 'bold', true ) ];
 			var text = new Text( 'bar', attrs );

@@ -16,7 +16,7 @@ const modules = bender.amd.require(
 );
 
 describe( 'Node', function() {
-	var Element, Character, Attribute, NodeList, CKEditorError;
+	let Element, Character, Attribute, NodeList, CKEditorError;
 
 	var root;
 	var one, two, three;

@@ -17,10 +17,10 @@ const modules = bender.amd.require(
 );
 
 describe( 'range iterator', function() {
-	var Document, Element, Character, PositionIterator, Position, Range;
+	let Document, Element, Character, PositionIterator, Position, Range;
+	let ELEMENT_ENTER, ELEMENT_LEAVE, CHARACTER;
 
 	var doc, expectedItems, root, img1, paragraph, b, a, r, img2, x;
-	var ELEMENT_ENTER, ELEMENT_LEAVE, CHARACTER;
 
 	before( function() {
 		Document = modules[ 'document/document' ];

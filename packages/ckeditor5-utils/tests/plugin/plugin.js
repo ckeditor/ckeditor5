@@ -9,14 +9,14 @@ const modules = bender.amd.require( 'plugin', 'editor' );
 var editor;
 
 before( function() {
-	var Editor = modules.editor;
+	const Editor = modules.editor;
 
 	editor = new Editor( document.body.appendChild( document.createElement( 'div' ) ) );
 } );
 
 describe( 'constructor', function() {
 	it( 'should set the `editor` property', function() {
-		var Plugin = modules.plugin;
+		const Plugin = modules.plugin;
 
 		var plugin = new Plugin( editor );
 

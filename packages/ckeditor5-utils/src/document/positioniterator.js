@@ -10,9 +10,9 @@ CKEDITOR.define( [
 	'document/element',
 	'document/position'
 ], function( Character, Element, Position ) {
-	var ELEMENT_ENTER = 0;
-	var ELEMENT_LEAVE = 1;
-	var CHARACTER = 2;
+	const ELEMENT_ENTER = 0;
+	const ELEMENT_LEAVE = 1;
+	const CHARACTER = 2;
 
 	/**
 	 * Position iterator class. It allows to iterate forward and backward over the tree document.

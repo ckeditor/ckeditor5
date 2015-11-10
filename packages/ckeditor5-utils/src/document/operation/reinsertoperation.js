@@ -23,7 +23,7 @@ CKEDITOR.define( [
 	class ReinsertOperation extends MoveOperation {
 		getReversed() {
 			// Because of circular dependencies we need to re-require reinsert operation here.
-			var RemoveOperation = CKEDITOR.require( 'document/operation/removeoperation' );
+			const RemoveOperation = CKEDITOR.require( 'document/operation/removeoperation' );
 
 			return new RemoveOperation( this.targetPosition, this.howMany, this.baseVersion + 1 );
 		}

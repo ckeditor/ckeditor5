@@ -15,7 +15,7 @@ const modules = bender.amd.require(
 );
 
 describe( 'NodeList', function() {
-	var NodeList, Character, Text, Attribute;
+	let NodeList, Character, Text, Attribute;
 
 	before( function() {
 		NodeList = modules[ 'document/nodelist' ];

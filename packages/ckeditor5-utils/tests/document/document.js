@@ -14,7 +14,7 @@ const modules = bender.amd.require(
 );
 
 describe( 'Document', function() {
-	var Document, RootElement, CKEditorError;
+	let Document, RootElement, CKEditorError;
 
 	before( function() {
 		Document = modules[ 'document/document' ];

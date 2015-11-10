@@ -16,7 +16,7 @@ function getItem( id, idProperty ) {
 }
 
 describe( 'Collection', () => {
-	var Collection, CKEditorError;
+	let Collection, CKEditorError;
 
 	before( () => {
 		Collection = modules.collection;

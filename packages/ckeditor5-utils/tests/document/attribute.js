@@ -10,7 +10,7 @@
 const modules = bender.amd.require( 'document/attribute' );
 
 describe( 'Attribute', function() {
-	var Attribute;
+	let Attribute;
 
 	before( function() {
 		Attribute = modules[ 'document/attribute' ];

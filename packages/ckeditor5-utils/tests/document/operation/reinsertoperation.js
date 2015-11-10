@@ -16,7 +16,7 @@ const modules = bender.amd.require(
 );
 
 describe( 'ReinsertOperation', function() {
-	var Document, ReinsertOperation, RemoveOperation, MoveOperation, Position;
+	let Document, ReinsertOperation, RemoveOperation, MoveOperation, Position;
 
 	before( function() {
 		Document = modules[ 'document/document' ];
