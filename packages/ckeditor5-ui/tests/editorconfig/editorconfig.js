@@ -9,7 +9,7 @@ const modules = bender.amd.require( 'editorconfig', 'ckeditor' );
 
 let config;
 
-beforeEach( function() {
+beforeEach( () => {
 	const EditorConfig = modules.editorconfig;
 
 	config = new EditorConfig( {
@@ -17,18 +17,18 @@ beforeEach( function() {
 	} );
 } );
 
-describe( 'constructor', function() {
-	it( 'should set configurations', function() {
+describe( 'constructor', () => {
+	it( 'should set configurations', () => {
 		expect( config ).to.have.property( 'test' ).to.equal( 1 );
 	} );
 } );
 
-describe( 'get', function() {
-	it( 'should retrieve a configuration', function() {
+describe( 'get', () => {
+	it( 'should retrieve a configuration', () => {
 		expect( config.get( 'test' ) ).to.equal( 1 );
 	} );
 
-	it( 'should fallback to CKEDITOR.config', function() {
+	it( 'should fallback to CKEDITOR.config', () => {
 		const CKEDITOR = modules.ckeditor;
 
 		CKEDITOR.config.set( {
@@ -38,7 +38,7 @@ describe( 'get', function() {
 		expect( config.get( 'globalConfig' ) ).to.equal( 2 );
 	} );
 
-	it( 'should return undefined for non existing configuration', function() {
+	it( 'should return undefined for non existing configuration', () => {
 		expect( config.get( 'invalid' ) ).to.be.undefined();
 	} );
 } );

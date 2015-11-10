@@ -7,8 +7,8 @@
 
 'use strict';
 
-let createFn3 = function() {};
-let destroyFn3 = function() {};
+let createFn3 = () => {};
+let destroyFn3 = () => {};
 
 bender.tools.core.defineEditorCreatorMock( 'test1' );
 bender.tools.core.defineEditorCreatorMock( 'test2', {
@@ -24,8 +24,8 @@ const modules = bender.amd.require( 'creator', 'plugin!creator-test1', 'plugin!c
 
 ///////////////////
 
-describe( 'bender.tools.core.defineEditorCreatorMock()', function() {
-	it( 'should register all creators', function() {
+describe( 'bender.tools.core.defineEditorCreatorMock()', () => {
+	it( 'should register all creators', () => {
 		const Creator = modules.creator;
 		const TestCreator1 = modules[ 'plugin!creator-test1' ];
 		const TestCreator2 = modules[ 'plugin!creator-test2' ];
@@ -36,14 +36,14 @@ describe( 'bender.tools.core.defineEditorCreatorMock()', function() {
 		expect( TestCreator3.prototype ).to.be.instanceof( Creator );
 	} );
 
-	it( 'should copy properties from the second argument', function() {
+	it( 'should copy properties from the second argument', () => {
 		const TestCreator = modules[ 'plugin!creator-test2' ];
 
 		expect( TestCreator.prototype ).to.have.property( 'foo', 1 );
 		expect( TestCreator.prototype ).to.have.property( 'bar', 2 );
 	} );
 
-	it( 'should create spies for create() and destroy() if not defined', function() {
+	it( 'should create spies for create() and destroy() if not defined', () => {
 		const TestCreator1 = modules[ 'plugin!creator-test1' ];
 		const TestCreator2 = modules[ 'plugin!creator-test2' ];
 		const TestCreator3 = modules[ 'plugin!creator-test3' ];

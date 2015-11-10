@@ -13,7 +13,7 @@
  * @class Template
  */
 
-CKEDITOR.define( function() {
+CKEDITOR.define( () => {
 	class Template {
 		/**
 		 * Creates an instance of the {@link Template} class.

@@ -13,7 +13,7 @@
 //
 // https://lodash.com/docs
 
-( function() {
+( () => {
 	// The list of Lo-Dash methods to include in "utils".
 	// It is mandatory to execute `grunt lodash` after changes to this list.
 	const lodashInclude = [
@@ -79,7 +79,7 @@
 	if ( typeof module == 'object' && module.exports ) {
 		module.exports = lodashInclude;
 	} else {
-		CKEDITOR.define( function() {
+		CKEDITOR.define( () => {
 			return lodashInclude;
 		} );
 	}
