@@ -50,8 +50,8 @@ CKEDITOR.define( [ 'emittermixin', 'utils', 'log' ], function( EmitterMixin, uti
 		 * Lower values are called first.
 		 */
 		listenTo() {
-			var args = Array.prototype.slice.call( arguments );
-			var emitter = args[ 0 ];
+			const args = Array.prototype.slice.call( arguments );
+			const emitter = args[ 0 ];
 
 			// Check if emitter is an instance of DOM Node. If so, replace the argument with
 			// corresponding ProxyEmitter (or create one if not existing).
@@ -79,12 +79,12 @@ CKEDITOR.define( [ 'emittermixin', 'utils', 'log' ], function( EmitterMixin, uti
 		 * `event`.
 		 */
 		stopListening() {
-			var args = Array.prototype.slice.call( arguments );
-			var emitter = args[ 0 ];
+			const args = Array.prototype.slice.call( arguments );
+			const emitter = args[ 0 ];
 
 			// Check if emitter is an instance of DOM Node. If so, replace the argument with corresponding ProxyEmitter.
 			if ( emitter instanceof Node ) {
-				var proxy = this._getProxyEmitter( emitter );
+				let proxy = this._getProxyEmitter( emitter );
 
 				if ( proxy ) {
 					args[ 0 ] = proxy;
@@ -107,10 +107,10 @@ CKEDITOR.define( [ 'emittermixin', 'utils', 'log' ], function( EmitterMixin, uti
 		 * @return {ProxyEmitter} ProxyEmitter instance or null.
 		 */
 		_getProxyEmitter( node ) {
-			var proxy, emitters, emitterInfo;
+			let proxy, emitters, emitterInfo;
 
 			// Get node UID. It allows finding Proxy Emitter for this DOM Node.
-			var uid = getNodeUID( node );
+			const uid = getNodeUID( node );
 
 			// Find existing Proxy Emitter for this DOM Node among emitters.
 			if ( ( emitters = this._listeningTo ) ) {
@@ -172,7 +172,7 @@ CKEDITOR.define( [ 'emittermixin', 'utils', 'log' ], function( EmitterMixin, uti
 				return;
 			}
 
-			var domListener = this._createDomListener( event );
+			const domListener = this._createDomListener( event );
 
 			// Attach the native DOM listener to DOM Node.
 			this._domNode.addEventListener( event, domListener );
@@ -198,7 +198,7 @@ CKEDITOR.define( [ 'emittermixin', 'utils', 'log' ], function( EmitterMixin, uti
 			// Execute parent class method first.
 			EmitterMixin.off.apply( this, arguments );
 
-			var callbacks;
+			let callbacks;
 
 			// Remove native DOM listeners which are orphans. If no callbacks
 			// are awaiting given event, detach native DOM listener from DOM Node.
@@ -217,7 +217,7 @@ CKEDITOR.define( [ 'emittermixin', 'utils', 'log' ], function( EmitterMixin, uti
 		 * @returns {Function} The DOM listener callback.
 		 */
 		_createDomListener( event ) {
-			var domListener = domEvt => {
+			const domListener = domEvt => {
 				this.fire( event, domEvt );
 			};
 

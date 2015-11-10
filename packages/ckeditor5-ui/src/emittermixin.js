@@ -25,7 +25,7 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 		 * Lower values are called first.
 		 */
 		on( event, callback, ctx, priority ) {
-			var callbacks = getCallbacks( this, event );
+			const callbacks = getCallbacks( this, event );
 
 			// Set the priority defaults.
 			if ( typeof priority != 'number' ) {
@@ -39,7 +39,7 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 			};
 
 			// Add the callback to the list in the right priority position.
-			for ( var i = callbacks.length - 1; i >= 0; i-- ) {
+			for ( let i = callbacks.length - 1; i >= 0; i-- ) {
 				if ( callbacks[ i ].priority <= priority ) {
 					callbacks.splice( i + 1, 0, callback );
 
@@ -62,7 +62,7 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 		 * Lower values are called first.
 		 */
 		once( event, callback, ctx, priority ) {
-			var onceCallback = function( event ) {
+			const onceCallback = function( event ) {
 				// Go off() at the first call.
 				event.off();
 
@@ -83,13 +83,13 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 		 * the same callback is used several times with different contexts.
 		 */
 		off( event, callback, ctx ) {
-			var callbacks = getCallbacksIfAny( this, event );
+			const callbacks = getCallbacksIfAny( this, event );
 
 			if ( !callbacks ) {
 				return;
 			}
 
-			for ( var i = 0; i < callbacks.length; i++ ) {
+			for ( let i = 0; i < callbacks.length; i++ ) {
 				if ( callbacks[ i ].callback == callback ) {
 					if ( !ctx || ctx == callbacks[ i ].ctx ) {
 						// Remove the callback from the list (fixing the next index).
@@ -111,7 +111,7 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 		 * Lower values are called first.
 		 */
 		listenTo( emitter, event, callback, ctx, priority ) {
-			var emitters, emitterId, emitterInfo, eventCallbacks;
+			let emitters, emitterId, emitterInfo, eventCallbacks;
 
 			// _listeningTo contains a list of emitters that this object is listening to.
 			// This list has the following format:
@@ -167,10 +167,10 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 		 * `event`.
 		 */
 		stopListening( emitter, event, callback ) {
-			var emitters = this._listeningTo;
-			var emitterId = emitter && emitter._emitterId;
-			var emitterInfo = emitters && emitterId && emitters[ emitterId ];
-			var eventCallbacks = emitterInfo && event && emitterInfo.callbacks[ event ];
+			let emitters = this._listeningTo;
+			let emitterId = emitter && emitter._emitterId;
+			let emitterInfo = emitters && emitterId && emitters[ emitterId ];
+			let eventCallbacks = emitterInfo && event && emitterInfo.callbacks[ event ];
 
 			// Stop if nothing has been listened.
 			if ( !emitters || ( emitter && !emitterInfo ) || ( event && !eventCallbacks ) ) {
@@ -214,19 +214,19 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 		 * @param {...*} [args] Additional arguments to be passed to the callbacks.
 		 */
 		fire( event, args ) {
-			var callbacks = getCallbacksIfAny( this, event );
+			const callbacks = getCallbacksIfAny( this, event );
 
 			if ( !callbacks ) {
 				return;
 			}
 
-			var eventInfo = new EventInfo( this, event );
+			let eventInfo = new EventInfo( this, event );
 
 			// Take the list of arguments to pass to the callbacks.
 			args = Array.prototype.slice.call( arguments, 1 );
 			args.unshift( eventInfo );
 
-			for ( var i = 0; i < callbacks.length; i++ ) {
+			for ( let i = 0; i < callbacks.length; i++ ) {
 				callbacks[ i ].callback.apply( callbacks[ i ].ctx, args );
 
 				// Remove the callback from future requests if off() has been called.
@@ -262,7 +262,7 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 
 	// Gets the list of callbacks for a given event.
 	function getCallbacks( source, eventName ) {
-		var events = getEvents( source );
+		const events = getEvents( source );
 
 		if ( !events[ eventName ] ) {
 			events[ eventName ] = [];
@@ -273,7 +273,7 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
 
 	// Get the list of callbacks for a given event only if there is any available.
 	function getCallbacksIfAny( source, event ) {
-		var callbacks;
+		let callbacks;
 
 		if ( !source._events || !( callbacks = source._events[ event ] ) || !callbacks.length ) {
 			return null;
