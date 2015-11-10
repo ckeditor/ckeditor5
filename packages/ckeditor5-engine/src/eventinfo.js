@@ -12,7 +12,7 @@
  * @class EventInfo
  */
 
-CKEDITOR.define( [ 'utils' ], function( utils ) {
+CKEDITOR.define( [ 'utils' ], ( utils ) => {
 	class EventInfo {
 		constructor( source, name ) {
 			/**

@@ -7,8 +7,8 @@
 
 const modules = bender.amd.require( 'ckeditorerror' );
 
-describe( 'CKEditorError', function() {
-	it( 'inherits from Error', function() {
+describe( 'CKEditorError', () => {
+	it( 'inherits from Error', () => {
 		const CKEditorError = modules.ckeditorerror;
 		let error = new CKEditorError( 'foo' );
 
@@ -16,14 +16,14 @@ describe( 'CKEditorError', function() {
 		expect( error ).to.be.an.instanceOf( CKEditorError );
 	} );
 
-	it( 'sets the name', function() {
+	it( 'sets the name', () => {
 		const CKEditorError = modules.ckeditorerror;
 		let error = new CKEditorError( 'foo' );
 
 		expect( error ).to.have.property( 'name', 'CKEditorError' );
 	} );
 
-	it( 'sets the message', function() {
+	it( 'sets the message', () => {
 		const CKEditorError = modules.ckeditorerror;
 		let error = new CKEditorError( 'foo' );
 
@@ -31,7 +31,7 @@ describe( 'CKEditorError', function() {
 		expect( error.data ).to.be.undefined;
 	} );
 
-	it( 'sets the message and data', function() {
+	it( 'sets the message and data', () => {
 		const CKEditorError = modules.ckeditorerror;
 		let data = { bar: 1 };
 		let error = new CKEditorError( 'foo', data );
@@ -40,7 +40,7 @@ describe( 'CKEditorError', function() {
 		expect( error ).to.have.property( 'data', data );
 	} );
 
-	it( 'appends stringified data to the message', function() {
+	it( 'appends stringified data to the message', () => {
 		class Foo {
 			constructor() {
 				this.x = 1;

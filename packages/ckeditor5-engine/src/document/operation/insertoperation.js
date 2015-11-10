@@ -9,7 +9,7 @@ CKEDITOR.define( [
 	'document/operation/operation',
 	'document/nodelist',
 	'document/operation/removeoperation'
-], function( Operation, NodeList ) {
+], ( Operation, NodeList ) => {
 	/**
 	 * Operation to insert list of nodes on the given position in the tree data model.
 	 *

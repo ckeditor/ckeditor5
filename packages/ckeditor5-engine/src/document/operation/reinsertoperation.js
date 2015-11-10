@@ -8,7 +8,7 @@
 CKEDITOR.define( [
 	'document/operation/moveoperation',
 	'document/operation/removeoperation'
-], function( MoveOperation ) {
+], ( MoveOperation ) => {
 	/**
 	 * Operation to reinsert previously removed nodes back to the non-graveyard root.
 	 * This is basically {@link document.operation.MoveOperation} but it returns

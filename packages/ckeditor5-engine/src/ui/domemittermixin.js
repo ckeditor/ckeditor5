@@ -36,7 +36,7 @@
  * @singleton
  */
 
-CKEDITOR.define( [ 'emittermixin', 'utils', 'log' ], function( EmitterMixin, utils, log ) {
+CKEDITOR.define( [ 'emittermixin', 'utils', 'log' ], ( EmitterMixin, utils, log ) => {
 	const DOMEmitterMixin = {
 		/**
 		 * Registers a callback function to be executed when an event is fired in a specific Emitter or DOM Node.

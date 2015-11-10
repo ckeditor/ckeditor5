@@ -18,7 +18,7 @@ CKEDITOR.define( [
 	'plugincollection',
 	'creator',
 	'ckeditorerror'
-], function( Model, EditorConfig, PluginCollection, Creator, CKEditorError ) {
+], ( Model, EditorConfig, PluginCollection, Creator, CKEditorError ) => {
 	class Editor extends Model {
 		/**
 		 * Creates a new instance of the Editor class.

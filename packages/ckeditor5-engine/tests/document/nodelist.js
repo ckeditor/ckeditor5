@@ -14,18 +14,18 @@ const modules = bender.amd.require(
 	'document/attribute'
 );
 
-describe( 'NodeList', function() {
+describe( 'NodeList', () => {
 	let NodeList, Character, Text, Attribute;
 
-	before( function() {
+	before( () => {
 		NodeList = modules[ 'document/nodelist' ];
 		Character = modules[ 'document/character' ];
 		Text = modules[ 'document/text' ];
 		Attribute = modules[ 'document/attribute' ];
 	} );
 
-	describe( 'constructor', function() {
-		it( 'should change array of strings into a set of nodes', function() {
+	describe( 'constructor', () => {
+		it( 'should change array of strings into a set of nodes', () => {
 			let nodeList = new NodeList( [ 'foo', new Character( 'x' ), 'bar' ] );
 
 			expect( nodeList.length ).to.equal( 7 );
@@ -38,7 +38,7 @@ describe( 'NodeList', function() {
 			expect( nodeList.get( 6 ).character ).to.equal( 'r' );
 		} );
 
-		it( 'should change string into a set of nodes', function() {
+		it( 'should change string into a set of nodes', () => {
 			let nodeList = new NodeList( 'foo' );
 
 			expect( nodeList.length ).to.equal( 3 );
@@ -47,14 +47,14 @@ describe( 'NodeList', function() {
 			expect( nodeList.get( 2 ).character ).to.equal( 'o' );
 		} );
 
-		it( 'should change node into a set of nodes', function() {
+		it( 'should change node into a set of nodes', () => {
 			let nodeList = new NodeList( new Character( 'x' ) );
 
 			expect( nodeList.length ).to.equal( 1 );
 			expect( nodeList.get( 0 ).character ).to.equal( 'x' );
 		} );
 
-		it( 'should change text with attribute into a set of nodes', function() {
+		it( 'should change text with attribute into a set of nodes', () => {
 			let attr = new Attribute( 'bold', true );
 			let nodeList = new NodeList( new Text( 'foo', [ attr ] ) );
 
@@ -68,8 +68,8 @@ describe( 'NodeList', function() {
 		} );
 	} );
 
-	describe( 'insert', function() {
-		it( 'should insert one nodelist into another', function() {
+	describe( 'insert', () => {
+		it( 'should insert one nodelist into another', () => {
 			let outerList = new NodeList( 'foo' );
 			let innerList = new NodeList( 'xxx' );
 
@@ -85,8 +85,8 @@ describe( 'NodeList', function() {
 		} );
 	} );
 
-	describe( 'remove', function() {
-		it( 'should remove part of the nodelist', function() {
+	describe( 'remove', () => {
+		it( 'should remove part of the nodelist', () => {
 			let nodeList = new NodeList( 'foobar' );
 
 			nodeList.remove( 2, 3 );
@@ -98,8 +98,8 @@ describe( 'NodeList', function() {
 		} );
 	} );
 
-	describe( 'iterator', function() {
-		it( 'should iterate over all elements in the collection', function() {
+	describe( 'iterator', () => {
+		it( 'should iterate over all elements in the collection', () => {
 			let characters = 'foo';
 			let nodeList = new NodeList( characters );
 			let i = 0;

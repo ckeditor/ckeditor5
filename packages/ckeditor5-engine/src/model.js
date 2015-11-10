@@ -12,7 +12,7 @@
  * @mixins EventEmitter
  */
 
-CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( EmitterMixin, CKEditorError, utils ) {
+CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], ( EmitterMixin, CKEditorError, utils ) => {
 	class Model {
 		/**
 		 * Creates a new Model instance.
@@ -57,7 +57,7 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 		set( name, value ) {
 			// If the first parameter is an Object, we gonna interact through its properties.
 			if ( utils.isObject( name ) ) {
-				Object.keys( name ).forEach( function( attr ) {
+				Object.keys( name ).forEach( ( attr ) => {
 					this.set( attr, name[ attr ] );
 				}, this );
 
@@ -87,11 +87,11 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 				enumerable: true,
 				configurable: true,
 
-				get: function() {
+				get: () => {
 					return this._attributes[ name ];
 				},
 
-				set: function( value ) {
+				set: ( value ) => {
 					const oldValue = this._attributes[ name ];
 
 					if ( oldValue !== value ) {

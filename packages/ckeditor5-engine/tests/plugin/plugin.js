@@ -8,14 +8,14 @@
 const modules = bender.amd.require( 'plugin', 'editor' );
 let editor;
 
-before( function() {
+before( () => {
 	const Editor = modules.editor;
 
 	editor = new Editor( document.body.appendChild( document.createElement( 'div' ) ) );
 } );
 
-describe( 'constructor', function() {
-	it( 'should set the `editor` property', function() {
+describe( 'constructor', () => {
+	it( 'should set the `editor` property', () => {
 		const Plugin = modules.plugin;
 
 		let plugin = new Plugin( editor );

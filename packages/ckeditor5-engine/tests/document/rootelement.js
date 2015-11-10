@@ -15,17 +15,17 @@ const modules = bender.amd.require(
 	'document/rootelement'
 );
 
-describe( 'Element', function() {
+describe( 'Element', () => {
 	let Document, Element, RootElement;
 
-	before( function() {
+	before( () => {
 		Document = modules[ 'document/document' ];
 		Element = modules[ 'document/element' ];
 		RootElement = modules[ 'document/rootelement' ];
 	} );
 
-	describe( 'constructor', function() {
-		it( 'should create root element without attributes', function() {
+	describe( 'constructor', () => {
+		it( 'should create root element without attributes', () => {
 			let doc = new Document();
 			let root = new RootElement( doc );
 

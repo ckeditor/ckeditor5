@@ -15,7 +15,7 @@
  * @extends Config
  */
 
-CKEDITOR.define( [ 'ckeditor', 'config' ], function( CKE, Config ) {
+CKEDITOR.define( [ 'ckeditor', 'config' ], ( CKE, Config ) => {
 	class EditorConfig extends Config {
 		/**
 		 * @inheritdoc Config#get

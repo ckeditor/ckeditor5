@@ -12,7 +12,7 @@
  * @singleton
  */
 
-CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
+CKEDITOR.define( [ 'eventinfo', 'utils' ], ( EventInfo, utils ) => {
 	const EmitterMixin = {
 		/**
 		 * Registers a callback function to be executed when an event is fired.

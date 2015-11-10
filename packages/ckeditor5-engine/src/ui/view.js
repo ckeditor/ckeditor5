@@ -20,7 +20,7 @@ CKEDITOR.define( [
 	'ckeditorerror',
 	'ui/domemittermixin',
 	'utils'
-], function( Collection, Model, Template, CKEditorError, DOMEmitterMixin, utils ) {
+], ( Collection, Model, Template, CKEditorError, DOMEmitterMixin, utils ) => {
 	class View extends Model {
 		/**
 		 * Creates an instance of the {@link View} class.

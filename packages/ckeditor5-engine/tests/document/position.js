@@ -16,7 +16,7 @@ const modules = bender.amd.require(
 	'document/nodelist'
 );
 
-describe( 'position', function() {
+describe( 'position', () => {
 	let Element, Character, Document, NodeList, Position, CKEditorError;
 
 	let doc, root, p, ul, li1, li2, f, o, z, b, a, r;
@@ -32,7 +32,7 @@ describe( 'position', function() {
 	//        |- b   Before: [ 1, 1, 0 ] After: [ 1, 1, 1 ]
 	//        |- a   Before: [ 1, 1, 1 ] After: [ 1, 1, 2 ]
 	//        |- r   Before: [ 1, 1, 2 ] After: [ 1, 1, 3 ]
-	before( function() {
+	before( () => {
 		Element = modules[ 'document/element' ];
 		Character = modules[ 'document/character' ];
 		Document = modules[ 'document/document' ];
@@ -63,14 +63,14 @@ describe( 'position', function() {
 		root.insertChildren( 0, [ p, ul ] );
 	} );
 
-	it( 'should create a position with path and document', function() {
+	it( 'should create a position with path and document', () => {
 		let position = new Position( [ 0 ], root );
 
 		expect( position ).to.have.property( 'path' ).that.deep.equals( [ 0 ] );
 		expect( position ).to.have.property( 'root' ).that.equals( root );
 	} );
 
-	it( 'should make positions form node and offset', function() {
+	it( 'should make positions form node and offset', () => {
 		expect( Position.createFromParentAndOffset( root, 0 ) ).to.have.property( 'path' ).that.deep.equals( [ 0 ] );
 		expect( Position.createFromParentAndOffset( root, 1 ) ).to.have.property( 'path' ).that.deep.equals( [ 1 ] );
 		expect( Position.createFromParentAndOffset( root, 2 ) ).to.have.property( 'path' ).that.deep.equals( [ 2 ] );
@@ -87,7 +87,7 @@ describe( 'position', function() {
 		expect( Position.createFromParentAndOffset( li1, 3 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 3 ] );
 	} );
 
-	it( 'should make positions before elements', function() {
+	it( 'should make positions before elements', () => {
 		expect( Position.createBefore( p ) ).to.have.property( 'path' ).that.deep.equals( [ 0 ] );
 
 		expect( Position.createBefore( ul ) ).to.have.property( 'path' ).that.deep.equals( [ 1 ] );
@@ -105,15 +105,15 @@ describe( 'position', function() {
 		expect( Position.createBefore( r ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 2 ] );
 	} );
 
-	it( 'should throw error if one try to make positions before root', function() {
+	it( 'should throw error if one try to make positions before root', () => {
 		expect(
-			function() {
+			() => {
 				Position.createBefore( root );
 			}
 		).to.throw( CKEditorError, /position-before-root/ );
 	} );
 
-	it( 'should make positions after elements', function() {
+	it( 'should make positions after elements', () => {
 		expect( Position.createAfter( p ) ).to.have.property( 'path' ).that.deep.equals( [ 1 ] );
 
 		expect( Position.createAfter( ul ) ).to.have.property( 'path' ).that.deep.equals( [ 2 ] );
@@ -131,15 +131,15 @@ describe( 'position', function() {
 		expect( Position.createAfter( r ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 3 ] );
 	} );
 
-	it( 'should throw error if one try to make positions after root', function() {
+	it( 'should throw error if one try to make positions after root', () => {
 		expect(
-			function() {
+			() => {
 				Position.createAfter( root );
 			}
 		).to.throw( CKEditorError, /position-after-root/ );
 	} );
 
-	it( 'should have parent', function() {
+	it( 'should have parent', () => {
 		expect( new Position( [ 0 ], root ) ).to.have.property( 'parent' ).that.equals( root );
 		expect( new Position( [ 1 ], root ) ).to.have.property( 'parent' ).that.equals( root );
 		expect( new Position( [ 2 ], root ) ).to.have.property( 'parent' ).that.equals( root );
@@ -156,7 +156,7 @@ describe( 'position', function() {
 		expect( new Position( [ 1, 0, 3 ], root ) ).to.have.property( 'parent' ).that.equals( li1 );
 	} );
 
-	it( 'should have offset', function() {
+	it( 'should have offset', () => {
 		expect( new Position( [ 0 ], root ) ).to.have.property( 'offset' ).that.equals( 0 );
 		expect( new Position( [ 1 ], root ) ).to.have.property( 'offset' ).that.equals( 1 );
 		expect( new Position( [ 2 ], root ) ).to.have.property( 'offset' ).that.equals( 2 );
@@ -173,7 +173,7 @@ describe( 'position', function() {
 		expect( new Position( [ 1, 0, 3 ], root ) ).to.have.property( 'offset' ).that.equals( 3 );
 	} );
 
-	it( 'should have nodeBefore', function() {
+	it( 'should have nodeBefore', () => {
 		expect( new Position( [ 0 ], root ) ).to.have.property( 'nodeBefore' ).that.is.null;
 		expect( new Position( [ 1 ], root ) ).to.have.property( 'nodeBefore' ).that.equals( p );
 		expect( new Position( [ 2 ], root ) ).to.have.property( 'nodeBefore' ).that.equals( ul );
@@ -190,7 +190,7 @@ describe( 'position', function() {
 		expect( new Position( [ 1, 0, 3 ], root ) ).to.have.property( 'nodeBefore' ).that.equals( z );
 	} );
 
-	it( 'should have nodeAfter', function() {
+	it( 'should have nodeAfter', () => {
 		expect( new Position( [ 0 ], root ) ).to.have.property( 'nodeAfter' ).that.equals( p );
 		expect( new Position( [ 1 ], root ) ).to.have.property( 'nodeAfter' ).that.equals( ul );
 		expect( new Position( [ 2 ], root ) ).to.have.property( 'nodeAfter' ).that.is.null;
@@ -207,21 +207,21 @@ describe( 'position', function() {
 		expect( new Position( [ 1, 0, 3 ], root ) ).to.have.property( 'nodeAfter' ).that.is.null;
 	} );
 
-	it( 'should equals another position with the same path', function() {
+	it( 'should equals another position with the same path', () => {
 		let position = new Position( [ 1, 1, 2 ], root );
 		let samePosition = new Position( [ 1, 1, 2 ], root );
 
 		expect( position.isEqual( samePosition ) ).to.be.true;
 	} );
 
-	it( 'should not equals another position with the different path', function() {
+	it( 'should not equals another position with the different path', () => {
 		let position = new Position( [ 1, 1, 1 ], root );
 		let differentNode = new Position( [ 1, 2, 2 ], root );
 
 		expect( position.isEqual( differentNode ) ).to.be.false;
 	} );
 
-	it( 'should have proper parent path', function() {
+	it( 'should have proper parent path', () => {
 		let position = new Position( [ 1, 2, 3 ], root );
 
 		expect( position.getParentPath() ).to.deep.equal( [ 1, 2 ] );

@@ -5,7 +5,7 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'document/positioniterator' ], function( PositionIterator ) {
+CKEDITOR.define( [ 'document/positioniterator' ], ( PositionIterator ) => {
 	/**
 	 * Range class. Range is iterable.
 	 *

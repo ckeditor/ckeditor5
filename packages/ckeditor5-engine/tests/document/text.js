@@ -14,9 +14,9 @@ const modules = bender.amd.require(
 	'document/attribute'
 );
 
-describe( 'Text', function() {
-	describe( 'constructor', function() {
-		it( 'should create character without attributes', function() {
+describe( 'Text', () => {
+	describe( 'constructor', () => {
+		it( 'should create character without attributes', () => {
 			const Text = modules[ 'document/text' ];
 			const Attribute = modules[ 'document/attribute' ];
 

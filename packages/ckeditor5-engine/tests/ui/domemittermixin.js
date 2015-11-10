@@ -33,8 +33,8 @@ beforeEach( updateEmitterInstance );
 beforeEach( updateDOMEmitterInstance );
 beforeEach( updateDOMNodeInstance );
 
-describe( 'listenTo', function() {
-	it( 'should listen to EmitterMixin events', function() {
+describe( 'listenTo', () => {
+	it( 'should listen to EmitterMixin events', () => {
 		let spy = bender.sinon.spy();
 
 		domEmitter.listenTo( emitter, 'test', spy );
@@ -43,7 +43,7 @@ describe( 'listenTo', function() {
 		sinon.assert.calledOnce( spy );
 	} );
 
-	it( 'should listen to native DOM events', function() {
+	it( 'should listen to native DOM events', () => {
 		let spy = bender.sinon.spy();
 
 		domEmitter.listenTo( node, 'test', spy );
@@ -55,8 +55,8 @@ describe( 'listenTo', function() {
 	} );
 } );
 
-describe( 'stopListening', function() {
-	it( 'should stop listening to a specific event callback', function() {
+describe( 'stopListening', () => {
+	it( 'should stop listening to a specific event callback', () => {
 		let spy1 = bender.sinon.spy();
 		let spy2 = bender.sinon.spy();
 
@@ -75,7 +75,7 @@ describe( 'stopListening', function() {
 		sinon.assert.calledTwice( spy2 );
 	} );
 
-	it( 'should stop listening to an specific event', function() {
+	it( 'should stop listening to an specific event', () => {
 		let spy1a = bender.sinon.spy();
 		let spy1b = bender.sinon.spy();
 		let spy2 = bender.sinon.spy();
@@ -101,7 +101,7 @@ describe( 'stopListening', function() {
 		sinon.assert.calledTwice( spy2 );
 	} );
 
-	it( 'should stop listening to all events from a specific node', function() {
+	it( 'should stop listening to all events from a specific node', () => {
 		let spy1 = bender.sinon.spy();
 		let spy2 = bender.sinon.spy();
 
@@ -120,7 +120,7 @@ describe( 'stopListening', function() {
 		sinon.assert.calledOnce( spy2 );
 	} );
 
-	it( 'should stop listening to everything', function() {
+	it( 'should stop listening to everything', () => {
 		let spy1 = bender.sinon.spy();
 		let spy2 = bender.sinon.spy();
 
@@ -146,7 +146,7 @@ describe( 'stopListening', function() {
 		expect( domEmitter ).to.not.have.property( '_listeningTo' );
 	} );
 
-	it( 'should not stop other nodes when a non-listened node is provided', function() {
+	it( 'should not stop other nodes when a non-listened node is provided', () => {
 		let spy = bender.sinon.spy();
 
 		let node1 = getDOMNodeInstance();
@@ -161,7 +161,7 @@ describe( 'stopListening', function() {
 		sinon.assert.called( spy );
 	} );
 
-	it( 'should pass DOM Event data to the listener', function() {
+	it( 'should pass DOM Event data to the listener', () => {
 		let spy = bender.sinon.spy();
 
 		let node = getDOMNodeInstance();
@@ -179,7 +179,7 @@ describe( 'stopListening', function() {
 		expect( spy.args[ 0 ][ 1 ] ).to.be.equal( mouseEvent );
 	} );
 
-	it( 'should detach native DOM event listener proxy, specific event', function() {
+	it( 'should detach native DOM event listener proxy, specific event', () => {
 		let spy1a = bender.sinon.spy();
 		let spy1b = bender.sinon.spy();
 
@@ -210,7 +210,7 @@ describe( 'stopListening', function() {
 		sinon.assert.calledTwice( spy2 );
 	} );
 
-	it( 'should detach native DOM event listener proxy, specific callback', function() {
+	it( 'should detach native DOM event listener proxy, specific callback', () => {
 		let spy1a = bender.sinon.spy();
 		let spy1b = bender.sinon.spy();
 		let spy1c = bender.sinon.spy();
@@ -253,7 +253,7 @@ describe( 'stopListening', function() {
 		sinon.assert.calledThrice( spy2 );
 	} );
 
-	it( 'should detach native DOM event listener proxy, specific emitter', function() {
+	it( 'should detach native DOM event listener proxy, specific emitter', () => {
 		let spy1a = bender.sinon.spy();
 		let spy1b = bender.sinon.spy();
 		let spy1c = bender.sinon.spy();
@@ -302,7 +302,7 @@ describe( 'stopListening', function() {
 		sinon.assert.calledTwice( spy3 );
 	} );
 
-	it( 'should detach native DOM event listener proxy, everything', function() {
+	it( 'should detach native DOM event listener proxy, everything', () => {
 		let spy1a = bender.sinon.spy();
 		let spy1b = bender.sinon.spy();
 		let spy1c = bender.sinon.spy();

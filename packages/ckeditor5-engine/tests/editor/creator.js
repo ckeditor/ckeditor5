@@ -23,7 +23,7 @@ function initEditor( config ) {
 
 bender.tools.createSinonSandbox();
 
-before( function() {
+before( () => {
 	bender.tools.core.defineEditorCreatorMock( 'test1' );
 
 	bender.tools.core.defineEditorCreatorMock( 'test-any1' );
@@ -32,11 +32,11 @@ before( function() {
 	bender.tools.core.defineEditorCreatorMock( 'test-config1' );
 	bender.tools.core.defineEditorCreatorMock( 'test-config2' );
 
-	CKEDITOR.define( 'plugin!test3', [ 'plugin' ], function( Plugin ) {
+	CKEDITOR.define( 'plugin!test3', [ 'plugin' ], ( Plugin ) => {
 		return class extends Plugin {};
 	} );
 
-	CKEDITOR.define( 'plugin!creator-async-create', [ 'creator' ], function( Creator ) {
+	CKEDITOR.define( 'plugin!creator-async-create', [ 'creator' ], ( Creator ) => {
 		return class extends Creator {
 			create() {
 				return new Promise( ( resolve, reject ) => {
@@ -48,7 +48,7 @@ before( function() {
 		};
 	} );
 
-	CKEDITOR.define( 'plugin!creator-async-destroy', [ 'creator' ], function( Creator ) {
+	CKEDITOR.define( 'plugin!creator-async-destroy', [ 'creator' ], ( Creator ) => {
 		return class extends Creator {
 			create() {}
 
@@ -61,20 +61,20 @@ before( function() {
 	} );
 } );
 
-afterEach( function() {
+afterEach( () => {
 	editor = null; // To make sure we're using the freshly inited editor.
 } );
 
 ///////////////////
 
-describe( 'init', function() {
-	it( 'should instantiate the creator and call create()', function() {
+describe( 'init', () => {
+	it( 'should instantiate the creator and call create()', () => {
 		const Creator = modules.creator;
 
 		return initEditor( {
 				plugins: 'creator-test1'
 			} )
-			.then( function() {
+			.then( () => {
 				let creator = editor.plugins.get( 'creator-test1' );
 
 				expect( creator ).to.be.instanceof( Creator );
@@ -84,11 +84,11 @@ describe( 'init', function() {
 			} );
 	} );
 
-	it( 'should instantiate any creator when more than one is available', function() {
+	it( 'should instantiate any creator when more than one is available', () => {
 		return initEditor( {
 				plugins: 'creator-test-any1,creator-test-any2'
 			} )
-			.then( function() {
+			.then( () => {
 				let creator1 = editor.plugins.get( 'creator-test-any1' );
 				let creator2 = editor.plugins.get( 'creator-test-any2' );
 
@@ -96,12 +96,12 @@ describe( 'init', function() {
 			} );
 	} );
 
-	it( 'should use the creator specified in config.creator', function() {
+	it( 'should use the creator specified in config.creator', () => {
 		return initEditor( {
 				creator: 'test-config2',
 				plugins: 'creator-test-config1,creator-test-config2',
 			} )
-			.then( function() {
+			.then( () => {
 				let creator1 = editor.plugins.get( 'creator-test-config1' );
 				let creator2 = editor.plugins.get( 'creator-test-config2' );
 
@@ -110,43 +110,43 @@ describe( 'init', function() {
 			} );
 	} );
 
-	it( 'should throw an error if the creator doesn\'t exist', function() {
+	it( 'should throw an error if the creator doesn\'t exist', () => {
 		const CKEditorError = modules.ckeditorerror;
 
 		return initEditor( {
 				creator: 'bad',
 				plugins: 'creator-test1'
 			} )
-			.then( function() {
+			.then( () => {
 				throw new Error( 'This should not be executed.' );
 			} )
-			.catch( function( err ) {
+			.catch( ( err ) => {
 				expect( err ).to.be.instanceof( CKEditorError );
 				expect( err.message ).to.match( /^editor-creator-404:/ );
 			} );
 	} );
 
-	it( 'should throw an error no creators are defined', function() {
+	it( 'should throw an error no creators are defined', () => {
 		const CKEditorError = modules.ckeditorerror;
 
 		return initEditor( {} )
-			.then( function() {
+			.then( () => {
 				throw new Error( 'This should not be executed.' );
 			} )
-			.catch( function( err ) {
+			.catch( ( err ) => {
 				expect( err ).to.be.instanceof( CKEditorError );
 				expect( err.message ).to.match( /^editor-creator-404:/ );
 			} );
 	} );
 
-	it( 'should chain the promise from the creator (enables async creators)', function() {
+	it( 'should chain the promise from the creator (enables async creators)', () => {
 		return initEditor( {
 				plugins: 'creator-async-create'
 			} )
-			.then( function() {
+			.then( () => {
 				throw new Error( 'This should not be executed.' );
 			} )
-			.catch( function( err ) {
+			.catch( ( err ) => {
 				// Unfortunately fake timers don't work with promises, so throwing in the creator's create()
 				// seems to be the only way to test that the promise chain isn't broken.
 				expect( err ).to.have.property( 'message', 'Catch me - create.' );
@@ -154,34 +154,34 @@ describe( 'init', function() {
 	} );
 } );
 
-describe( 'destroy', function() {
-	it( 'should call "destroy" on the creator', function() {
+describe( 'destroy', () => {
+	it( 'should call "destroy" on the creator', () => {
 		let creator1;
 
 		return initEditor( {
 				plugins: 'creator-test1'
 			} )
-			.then( function() {
+			.then( () => {
 				creator1 = editor.plugins.get( 'creator-test1' );
 
 				return editor.destroy();
 			} )
-			.then( function() {
+			.then( () => {
 				sinon.assert.calledOnce( creator1.destroy );
 			} );
 	} );
 
-	it( 'should chain the promise from the creator (enables async creators)', function() {
+	it( 'should chain the promise from the creator (enables async creators)', () => {
 		return initEditor( {
 				plugins: 'creator-async-destroy'
 			} )
-			.then( function() {
+			.then( () => {
 				return editor.destroy();
 			} )
-			.then( function() {
+			.then( () => {
 				throw new Error( 'This should not be executed.' );
 			} )
-			.catch( function( err ) {
+			.catch( ( err ) => {
 				// Unfortunately fake timers don't work with promises, so throwing in the creator's destroy()
 				// seems to be the only way to test that the promise chain isn't broken.
 				expect( err ).to.have.property( 'message', 'Catch me - destroy.' );

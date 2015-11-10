@@ -17,7 +17,7 @@ CKEDITOR.define( [
 	'plugin',
 	'ckeditorerror',
 	'log'
-], function( Collection, Plugin, CKEditorError, log ) {
+], ( Collection, Plugin, CKEditorError, log ) => {
 	class PluginCollection extends Collection {
 		/**
 		 * Creates an instance of the PluginCollection class, initializing it with a set of plugins.

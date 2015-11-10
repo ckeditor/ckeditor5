@@ -17,20 +17,20 @@ let region, el;
 
 beforeEach( createRegionInstance );
 
-describe( 'constructor', function() {
-	it( 'accepts name and element', function() {
+describe( 'constructor', () => {
+	it( 'accepts name and element', () => {
 		expect( region ).to.have.property( 'name', 'foo' );
 		expect( region ).to.have.property( 'el', el );
 	} );
 } );
 
-describe( 'views collection', function() {
-	it( 'is an instance of Collection', function() {
+describe( 'views collection', () => {
+	it( 'is an instance of Collection', () => {
 		const Collection = modules.collection;
 		expect( region.views ).to.be.an.instanceof( Collection );
 	} );
 
-	it( 'updates DOM when adding views', function() {
+	it( 'updates DOM when adding views', () => {
 		expect( region.el.childNodes.length ).to.be.equal( 0 );
 
 		region.views.add( new TestViewA() );
@@ -40,7 +40,7 @@ describe( 'views collection', function() {
 		expect( region.el.childNodes.length ).to.be.equal( 2 );
 	} );
 
-	it( 'updates DOM when removing views', function() {
+	it( 'updates DOM when removing views', () => {
 		let viewA = new TestViewA();
 		let viewB = new TestViewB();
 
@@ -60,8 +60,8 @@ describe( 'views collection', function() {
 	} );
 } );
 
-describe( 'destroy', function() {
-	it( 'destroys the region', function() {
+describe( 'destroy', () => {
+	it( 'destroys the region', () => {
 		// Append the region's element to some container.
 		let container = document.createElement( 'div' );
 		container.appendChild( el );
@@ -74,7 +74,7 @@ describe( 'destroy', function() {
 		expect( region.el ).to.be.null;
 	} );
 
-	it( 'destroys children views', function() {
+	it( 'destroys children views', () => {
 		let view = new TestViewA();
 		let spy = bender.sinon.spy( view, 'destroy' );
 

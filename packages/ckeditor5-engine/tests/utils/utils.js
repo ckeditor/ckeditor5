@@ -7,17 +7,17 @@
 
 const modules = bender.amd.require( 'utils', 'utils-lodash' );
 
-describe( 'utils', function() {
+describe( 'utils', () => {
 	let utils;
 
-	before( function() {
+	before( () => {
 		utils = modules.utils;
 	} );
 
-	describe( 'extend()', function() {
+	describe( 'extend()', () => {
 		// Properties of the subsequent objects should override properties of the preceding objects. This is critical for
 		// CKEditor so we keep this test to ensure that Lo-Dash (or whatever) implements it in the way we need it.
-		it( 'should extend by several params in the correct order', function() {
+		it( 'should extend by several params in the correct order', () => {
 			let target = {
 				a: 0,
 				b: 0
@@ -42,14 +42,14 @@ describe( 'utils', function() {
 		} );
 	} );
 
-	describe( 'spy', function() {
-		it( 'should not have `called` after creation', function() {
+	describe( 'spy', () => {
+		it( 'should not have `called` after creation', () => {
 			let spy = utils.spy();
 
 			expect( spy.called ).to.not.be.true();
 		} );
 
-		it( 'should register calls', function() {
+		it( 'should register calls', () => {
 			let fn1 = utils.spy();
 			let fn2 = utils.spy();
 
@@ -60,8 +60,8 @@ describe( 'utils', function() {
 		} );
 	} );
 
-	describe( 'uid', function() {
-		it( 'should return different ids', function() {
+	describe( 'uid', () => {
+		it( 'should return different ids', () => {
 			let id1 = utils.uid();
 			let id2 = utils.uid();
 			let id3 = utils.uid();
@@ -72,20 +72,20 @@ describe( 'utils', function() {
 		} );
 	} );
 
-	describe( 'isIterable', function() {
-		it( 'should be true for string', function() {
+	describe( 'isIterable', () => {
+		it( 'should be true for string', () => {
 			let string = 'foo';
 
 			expect( utils.isIterable( string ) ).to.be.true;
 		} );
 
-		it( 'should be true for arrays', function() {
+		it( 'should be true for arrays', () => {
 			let array = [ 1, 2, 3 ];
 
 			expect( utils.isIterable( array ) ).to.be.true;
 		} );
 
-		it( 'should be true for iterable classes', function() {
+		it( 'should be true for iterable classes', () => {
 			class IterableClass {
 				constructor() {
 					this.array = [ 1, 2, 3 ];
@@ -101,19 +101,19 @@ describe( 'utils', function() {
 			expect( utils.isIterable( instance ) ).to.be.true;
 		} );
 
-		it( 'should be false for not iterable objects', function() {
+		it( 'should be false for not iterable objects', () => {
 			let notIterable = { foo: 'bar' };
 
 			expect( utils.isIterable( notIterable ) ).to.be.false;
 		} );
 
-		it( 'should be false for undefined', function() {
+		it( 'should be false for undefined', () => {
 			expect( utils.isIterable() ).to.be.false;
 		} );
 	} );
 
-	describe( 'compareArrays', function() {
-		it( 'should return SAME flag, when arrays are same', function() {
+	describe( 'compareArrays', () => {
+		it( 'should return SAME flag, when arrays are same', () => {
 			let a = [ 'abc', 0, 3 ];
 			let b = [ 'abc', 0, 3 ];
 
@@ -122,7 +122,7 @@ describe( 'utils', function() {
 			expect( result ).to.equal( utils.compareArrays.SAME );
 		} );
 
-		it( 'should return PREFIX flag, when all n elements of first array are same as n first elements of the second array', function() {
+		it( 'should return PREFIX flag, when all n elements of first array are same as n first elements of the second array', () => {
 			let a = [ 'abc', 0 ];
 			let b = [ 'abc', 0, 3 ];
 
@@ -131,7 +131,7 @@ describe( 'utils', function() {
 			expect( result ).to.equal( utils.compareArrays.PREFIX );
 		} );
 
-		it( 'should return EXTENSION flag, when n first elements of first array are same as all elements of the second array', function() {
+		it( 'should return EXTENSION flag, when n first elements of first array are same as all elements of the second array', () => {
 			let a = [ 'abc', 0, 3 ];
 			let b = [ 'abc', 0 ];
 
@@ -140,7 +140,7 @@ describe( 'utils', function() {
 			expect( result ).to.equal( utils.compareArrays.EXTENSION );
 		} );
 
-		it( 'should return DIFFERENT flag, when arrays are not same', function() {
+		it( 'should return DIFFERENT flag, when arrays are not same', () => {
 			let a = [ 'abc', 0, 3 ];
 			let b = [ 'abc', 1, 3 ];
 
@@ -150,13 +150,13 @@ describe( 'utils', function() {
 		} );
 	} );
 
-	describe( 'Lo-Dash extensions', function() {
+	describe( 'Lo-Dash extensions', () => {
 		// Ensures that the required Lo-Dash extensions are available in `utils`.
-		it( 'should be exposed in utils', function() {
+		it( 'should be exposed in utils', () => {
 			let utils = modules.utils;
 			let extensions = modules[ 'utils-lodash' ];
 
-			extensions.forEach( function( extension ) {
+			extensions.forEach( ( extension ) => {
 				expect( utils ).to.have.property( extension ).to.not.be.undefined();
 			} );
 		} );

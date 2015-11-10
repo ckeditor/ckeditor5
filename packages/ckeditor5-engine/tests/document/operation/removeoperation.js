@@ -15,10 +15,10 @@ const modules = bender.amd.require(
 	'document/position'
 );
 
-describe( 'RemoveOperation', function() {
+describe( 'RemoveOperation', () => {
 	let Document, ReinsertOperation, RemoveOperation, MoveOperation, Position;
 
-	before( function() {
+	before( () => {
 		Document = modules[ 'document/document' ];
 		ReinsertOperation = modules[ 'document/operation/reinsertoperation' ];
 		RemoveOperation = modules[ 'document/operation/removeoperation' ];
@@ -28,13 +28,13 @@ describe( 'RemoveOperation', function() {
 
 	let doc, root, graveyard;
 
-	beforeEach( function() {
+	beforeEach( () => {
 		doc = new Document();
 		root = doc.createRoot( 'root' );
 		graveyard = doc._graveyard;
 	} );
 
-	it( 'should extend MoveOperation class', function() {
+	it( 'should extend MoveOperation class', () => {
 		let operation = new RemoveOperation(
 			new Position( [ 2 ], root ),
 			2,
@@ -44,7 +44,7 @@ describe( 'RemoveOperation', function() {
 		expect( operation ).to.be.instanceof( MoveOperation );
 	} );
 
-	it( 'should remove set of nodes and append them to graveyard root', function() {
+	it( 'should remove set of nodes and append them to graveyard root', () => {
 		root.insertChildren( 0, 'fozbar' );
 
 		let z = root.getChild( 2 );
@@ -68,7 +68,7 @@ describe( 'RemoveOperation', function() {
 		expect( graveyard.getChild( 1 ) ).to.equal( b );
 	} );
 
-	it( 'should create a reinsert operation as a reverse', function() {
+	it( 'should create a reinsert operation as a reverse', () => {
 		let position = new Position( [ 0 ], root );
 		let operation = new RemoveOperation( position, 2, 0 );
 		let reverse = operation.getReversed();
@@ -80,7 +80,7 @@ describe( 'RemoveOperation', function() {
 		expect( reverse.targetPosition ).to.equal( position );
 	} );
 
-	it( 'should undo remove set of nodes by applying reverse operation', function() {
+	it( 'should undo remove set of nodes by applying reverse operation', () => {
 		let position = new Position( [ 0 ], root );
 		let operation = new RemoveOperation( position, 3, 0 );
 		let reverse = operation.getReversed();

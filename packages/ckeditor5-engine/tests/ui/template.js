@@ -14,8 +14,8 @@ let Template;
 bender.tools.createSinonSandbox();
 beforeEach( createClassReferences );
 
-describe( 'constructor', function() {
-	it( 'accepts the definition', function() {
+describe( 'constructor', () => {
+	it( 'accepts the definition', () => {
 		let def = {
 			tag: 'p'
 		};
@@ -24,12 +24,12 @@ describe( 'constructor', function() {
 	} );
 } );
 
-describe( 'render', function() {
-	it( 'returns null when no definition', function() {
+describe( 'render', () => {
+	it( 'returns null when no definition', () => {
 		expect( new Template().render() ).to.be.null;
 	} );
 
-	it( 'creates an element', function() {
+	it( 'creates an element', () => {
 		let el = new Template( {
 			tag: 'p',
 			attrs: {
@@ -45,7 +45,7 @@ describe( 'render', function() {
 		expect( el.outerHTML ).to.be.equal( '<p class="a b" x="bar">foo</p>' );
 	} );
 
-	it( 'creates element\'s children', function() {
+	it( 'creates element\'s children', () => {
 		let el = new Template( {
 			tag: 'p',
 			attrs: {
@@ -73,8 +73,8 @@ describe( 'render', function() {
 	} );
 } );
 
-describe( 'callback value', function() {
-	it( 'works for attributes', function() {
+describe( 'callback value', () => {
+	it( 'works for attributes', () => {
 		let spy1 = bender.sinon.spy();
 		let spy2 = bender.sinon.spy();
 
@@ -102,7 +102,7 @@ describe( 'callback value', function() {
 		expect( el.outerHTML ).to.be.equal( '<p class="foo"><span id="bar"></span></p>' );
 	} );
 
-	it( 'works for "text" property', function() {
+	it( 'works for "text" property', () => {
 		let spy1 = bender.sinon.spy();
 		let spy2 = bender.sinon.spy();
 
@@ -127,7 +127,7 @@ describe( 'callback value', function() {
 		expect( el.outerHTML ).to.be.equal( '<p>foo</p>' );
 	} );
 
-	it( 'works for "on" property', function() {
+	it( 'works for "on" property', () => {
 		let spy1 = bender.sinon.spy();
 		let spy2 = bender.sinon.spy();
 		let spy3 = bender.sinon.spy();
@@ -155,7 +155,7 @@ describe( 'callback value', function() {
 		sinon.assert.calledWithExactly( spy4, el, 'baz', null );
 	} );
 
-	it( 'works for "on" property with selectors', function() {
+	it( 'works for "on" property with selectors', () => {
 		let spy1 = bender.sinon.spy();
 		let spy2 = bender.sinon.spy();
 		let spy3 = bender.sinon.spy();

@@ -16,18 +16,18 @@ const modules = bender.amd.require(
 	'document/attribute'
 );
 
-describe( 'Element', function() {
+describe( 'Element', () => {
 	let Element, Node, NodeList, Attribute;
 
-	before( function() {
+	before( () => {
 		Element = modules[ 'document/element' ];
 		Node = modules[ 'document/node' ];
 		NodeList = modules[ 'document/nodelist' ];
 		Attribute = modules[ 'document/attribute' ];
 	} );
 
-	describe( 'constructor', function() {
-		it( 'should create element without attributes', function() {
+	describe( 'constructor', () => {
+		it( 'should create element without attributes', () => {
 			let element = new Element( 'elem' );
 			let parent = new Element( 'parent', [], [ element ] );
 
@@ -37,7 +37,7 @@ describe( 'Element', function() {
 			expect( element._getAttrCount() ).to.equal( 0 );
 		} );
 
-		it( 'should create element with attributes', function() {
+		it( 'should create element with attributes', () => {
 			let attr = new Attribute( 'foo', 'bar' );
 
 			let element = new Element( 'elem', [ attr ] );
@@ -50,7 +50,7 @@ describe( 'Element', function() {
 			expect( element.getAttr( attr.key ) ).to.equal( attr.value );
 		} );
 
-		it( 'should create element with children', function() {
+		it( 'should create element with children', () => {
 			let element = new Element( 'elem', [], 'foo' );
 
 			expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
@@ -61,8 +61,8 @@ describe( 'Element', function() {
 		} );
 	} );
 
-	describe( 'insertChildren', function() {
-		it( 'should add children to the element', function() {
+	describe( 'insertChildren', () => {
+		it( 'should add children to the element', () => {
 			let element = new Element( 'elem', [], [ 'xy' ] );
 			element.insertChildren( 1, 'foo' );
 
@@ -76,8 +76,8 @@ describe( 'Element', function() {
 		} );
 	} );
 
-	describe( 'removeChildren', function() {
-		it( 'should remove children from the element and return them as a NodeList', function() {
+	describe( 'removeChildren', () => {
+		it( 'should remove children from the element and return them as a NodeList', () => {
 			let element = new Element( 'elem', [], [ 'foobar' ] );
 			let o = element.getChild( 2 );
 			let b = element.getChild( 3 );
@@ -101,8 +101,8 @@ describe( 'Element', function() {
 		} );
 	} );
 
-	describe( 'getChildIndex', function() {
-		it( 'should return child index', function() {
+	describe( 'getChildIndex', () => {
+		it( 'should return child index', () => {
 			let element = new Element( 'elem', [], [ 'bar' ] );
 			let b = element.getChild( 0 );
 			let a = element.getChild( 1 );
@@ -114,8 +114,8 @@ describe( 'Element', function() {
 		} );
 	} );
 
-	describe( 'getChildCount', function() {
-		it( 'should return number of children', function() {
+	describe( 'getChildCount', () => {
+		it( 'should return number of children', () => {
 			let element = new Element( 'elem', [], [ 'bar' ] );
 
 			expect( element.getChildCount() ).to.equal( 3 );
