@@ -40,11 +40,11 @@
 		 *		} );
 		 */
 		createSinonSandbox() {
-			before( function() {
+			before( () => {
 				bender.sinon = sinon.sandbox.create();
 			} );
 
-			afterEach( function() {
+			afterEach( () => {
 				bender.sinon.restore();
 			} );
 		}

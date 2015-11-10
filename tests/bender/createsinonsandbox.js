@@ -5,11 +5,11 @@
 
 'use strict';
 
-var obj = {
+const obj = {
 	method() {}
 };
-var spy;
-var origMethod = obj.method;
+const origMethod = obj.method;
+let spy;
 
 bender.tools.createSinonSandbox();
 

@@ -5,8 +5,8 @@
 
 'use strict';
 
-var path = require( 'path' );
-var files = [
+const path = require( 'path' );
+const files = [
 	path.join( __dirname, '../static/extensions.js' ),
 	path.join( __dirname, '../static/tools.js' )
 ];
@@ -14,13 +14,10 @@ var files = [
 module.exports = {
 	name: 'bender-ckeditor5',
 
-	attach: function() {
-		var that = this;
-		var bender = that;
+	attach() {
+		this.plugins.addFiles( files );
 
-		bender.plugins.addFiles( files );
-
-		bender.on( 'test:created', function( test ) {
+		this.on( 'test:created', function( test ) {
 			var name = test.displayName;
 
 			name = name.replace( /node_modules\/ckeditor5-core/, 'core: ' );

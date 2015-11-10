@@ -55,7 +55,7 @@ describe( 'This browser', function() {
 		it( 'should not keep script URLs absolute or relative - ' + url, function() {
 			removeScripts();
 
-			var script = addScript( url );
+			const script = addScript( url );
 
 			// Test if the src now contains '://'.
 			expect( script.src ).to.match( /:\/\// );
@@ -64,7 +64,7 @@ describe( 'This browser', function() {
 } );
 
 function addScript( url ) {
-	var script = document.createElement( 'script' );
+	const script = document.createElement( 'script' );
 
 	script.src = url;
 	document.head.appendChild( script );
@@ -73,8 +73,8 @@ function addScript( url ) {
 }
 
 function removeScripts() {
-	var scripts = [].slice.call( document.getElementsByTagName( 'script' ) );
-	var script;
+	const scripts = [].slice.call( document.getElementsByTagName( 'script' ) );
+	let script;
 
 	while ( ( script = scripts.shift() ) ) {
 		script.parentNode.removeChild( script );
