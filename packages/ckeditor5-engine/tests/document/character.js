@@ -17,7 +17,7 @@ const modules = bender.amd.require(
 );
 
 describe( 'Character', function() {
-	var Element, Character, Node, Attribute;
+	let Element, Character, Node, Attribute;
 
 	before( function() {
 		Element = modules[ 'document/element' ];

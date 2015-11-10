@@ -14,7 +14,7 @@ var element;
 var asyncSpy;
 
 beforeEach( function() {
-	var Editor = modules.editor;
+	const Editor = modules.editor;
 
 	element = document.createElement( 'div' );
 	document.body.appendChild( element );
@@ -78,7 +78,7 @@ describe( 'constructor', function() {
 
 describe( 'config', function() {
 	it( 'should be an instance of EditorConfig', function() {
-		var EditorConfig = modules.editorconfig;
+		const EditorConfig = modules.editorconfig;
 
 		expect( editor.config ).to.be.an.instanceof( EditorConfig );
 	} );
@@ -86,7 +86,7 @@ describe( 'config', function() {
 
 describe( 'init', function() {
 	it( 'should return a promise that resolves properly', function() {
-		var Editor = modules.editor;
+		const Editor = modules.editor;
 
 		editor = new Editor( element, {
 			plugins: 'creator-test'
@@ -100,8 +100,8 @@ describe( 'init', function() {
 	} );
 
 	it( 'should fill `plugins`', function() {
-		var Editor = modules.editor;
-		var Plugin = modules.plugin;
+		const Editor = modules.editor;
+		const Plugin = modules.plugin;
 
 		editor = new Editor( element, {
 			plugins: 'A,B,creator-test'
@@ -119,7 +119,7 @@ describe( 'init', function() {
 	} );
 
 	it( 'should initialize plugins in the right order', function() {
-		var Editor = modules.editor;
+		const Editor = modules.editor;
 
 		editor = new Editor( element, {
 			plugins: 'creator-test,A,D'
@@ -137,7 +137,7 @@ describe( 'init', function() {
 	} );
 
 	it( 'should initialize plugins in the right order, waiting for asynchronous ones', function() {
-		var Editor = modules.editor;
+		const Editor = modules.editor;
 
 		editor = new Editor( element, {
 			plugins: 'creator-test,A,F'
@@ -156,7 +156,7 @@ describe( 'init', function() {
 	} );
 
 	it( 'should not fail if loading a plugin that doesn\'t define init()', function() {
-		var Editor = modules.editor;
+		const Editor = modules.editor;
 
 		editor = new Editor( element, {
 			plugins: 'E,creator-test'

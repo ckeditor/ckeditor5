@@ -11,7 +11,7 @@ const modules = bender.amd.require( 'editor', 'plugin', 'creator', 'ckeditorerro
 var editor, element;
 
 function initEditor( config ) {
-	var Editor = modules.editor;
+	const Editor = modules.editor;
 
 	element = document.createElement( 'div' );
 	document.body.appendChild( element );
@@ -69,7 +69,7 @@ afterEach( function() {
 
 describe( 'init', function() {
 	it( 'should instantiate the creator and call create()', function() {
-		var Creator = modules.creator;
+		const Creator = modules.creator;
 
 		return initEditor( {
 				plugins: 'creator-test1'
@@ -111,7 +111,7 @@ describe( 'init', function() {
 	} );
 
 	it( 'should throw an error if the creator doesn\'t exist', function() {
-		var CKEditorError = modules.ckeditorerror;
+		const CKEditorError = modules.ckeditorerror;
 
 		return initEditor( {
 				creator: 'bad',
@@ -127,7 +127,7 @@ describe( 'init', function() {
 	} );
 
 	it( 'should throw an error no creators are defined', function() {
-		var CKEditorError = modules.ckeditorerror;
+		const CKEditorError = modules.ckeditorerror;
 
 		return initEditor( {} )
 			.then( function() {

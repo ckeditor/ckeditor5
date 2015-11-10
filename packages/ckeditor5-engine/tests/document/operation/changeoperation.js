@@ -20,7 +20,7 @@ const modules = bender.amd.require(
 );
 
 describe( 'ChangeOperation', function() {
-	var Document, ChangeOperation, Position, Range, Character, Attribute, NodeList, Text, CKEditorError;
+	let Document, ChangeOperation, Position, Range, Character, Attribute, NodeList, Text, CKEditorError;
 
 	before( function() {
 		Document = modules[ 'document/document' ];

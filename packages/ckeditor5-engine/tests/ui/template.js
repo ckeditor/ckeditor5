@@ -9,7 +9,7 @@
 'use strict';
 
 const modules = bender.amd.require( 'ckeditor', 'ui/view', 'ui/template' );
-var Template;
+let Template;
 
 bender.tools.createSinonSandbox();
 beforeEach( createClassReferences );

@@ -7,11 +7,11 @@
 
 const modules = bender.amd.require( 'model', 'eventinfo', 'ckeditorerror' );
 
-var Car, car;
+let Car, car;
 
 describe( 'Model', function() {
 	beforeEach( 'Create a test model instance', function() {
-		var Model = modules.model;
+		const Model = modules.model;
 
 		Car = class extends Model {};
 
@@ -81,7 +81,7 @@ describe( 'Model', function() {
 		} );
 
 		it( 'should fire the "change" event', function() {
-			var EventInfo = modules.eventinfo;
+			const EventInfo = modules.eventinfo;
 
 			var spy = sinon.spy();
 			var spyColor = sinon.spy();
@@ -136,7 +136,7 @@ describe( 'Model', function() {
 		} );
 
 		it( 'should throw when overriding already existing property', function() {
-			var CKEditorError = modules.ckeditorerror;
+			const CKEditorError = modules.ckeditorerror;
 
 			car.normalProperty = 1;
 
@@ -148,8 +148,8 @@ describe( 'Model', function() {
 		} );
 
 		it( 'should throw when overriding already existing property (in the prototype)', function() {
-			var CKEditorError = modules.ckeditorerror;
-			var Model = modules.model;
+			const CKEditorError = modules.ckeditorerror;
+			const Model = modules.model;
 
 			class Car extends Model {
 				method() {}
@@ -167,7 +167,7 @@ describe( 'Model', function() {
 
 	describe( 'extend', function() {
 		it( 'should create new Model based classes', function() {
-			var Model = modules.model;
+			const Model = modules.model;
 
 			class Truck extends Car {}
 

@@ -9,7 +9,7 @@
 'use strict';
 
 const modules = bender.amd.require( 'ckeditor', 'ui/view', 'ui/region', 'ckeditorerror', 'model', 'eventinfo' );
-var View, TestView;
+let View, TestView;
 var view;
 
 bender.tools.createSinonSandbox();
@@ -419,7 +419,7 @@ describe( 'destroy', function() {
 	} );
 
 	it( 'destroys child regions', function() {
-		var Region = modules[ 'ui/region' ];
+		const Region = modules[ 'ui/region' ];
 		var region = new Region( 'test' );
 		var spy = bender.sinon.spy( region, 'destroy' );
 
@@ -486,7 +486,7 @@ function setTestViewInstance( model ) {
 
 function dispatchEvent( el, domEvtName ) {
 	if ( !el.parentNode ) {
-		throw( 'To dispatch an event, element must be in DOM. Otherwise #target is null.' );
+		throw new Error( 'To dispatch an event, element must be in DOM. Otherwise #target is null.' );
 	}
 
 	el.dispatchEvent( new Event( domEvtName, {

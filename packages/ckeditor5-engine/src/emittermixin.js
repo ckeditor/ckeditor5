@@ -13,7 +13,7 @@
  */
 
 CKEDITOR.define( [ 'eventinfo', 'utils' ], function( EventInfo, utils ) {
-	var EmitterMixin = {
+	const EmitterMixin = {
 		/**
 		 * Registers a callback function to be executed when an event is fired.
 		 *

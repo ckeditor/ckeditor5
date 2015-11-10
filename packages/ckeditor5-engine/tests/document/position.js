@@ -17,7 +17,7 @@ const modules = bender.amd.require(
 );
 
 describe( 'position', function() {
-	var Element, Character, Document, NodeList, Position, CKEditorError;
+	let Element, Character, Document, NodeList, Position, CKEditorError;
 
 	var doc, root, p, ul, li1, li2, f, o, z, b, a, r;
 

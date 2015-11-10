@@ -10,7 +10,7 @@ const modules = bender.amd.require( 'editorconfig', 'ckeditor' );
 var config;
 
 beforeEach( function() {
-	var EditorConfig = modules.editorconfig;
+	const EditorConfig = modules.editorconfig;
 
 	config = new EditorConfig( {
 		test: 1
@@ -29,7 +29,7 @@ describe( 'get', function() {
 	} );
 
 	it( 'should fallback to CKEDITOR.config', function() {
-		var CKEDITOR = modules.ckeditor;
+		const CKEDITOR = modules.ckeditor;
 
 		CKEDITOR.config.set( {
 			globalConfig: 2

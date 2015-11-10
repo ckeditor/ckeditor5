@@ -26,10 +26,10 @@ const modules = bender.amd.require( 'creator', 'plugin!creator-test1', 'plugin!c
 
 describe( 'bender.tools.core.defineEditorCreatorMock()', function() {
 	it( 'should register all creators', function() {
-		var Creator = modules.creator;
-		var TestCreator1 = modules[ 'plugin!creator-test1' ];
-		var TestCreator2 = modules[ 'plugin!creator-test2' ];
-		var TestCreator3 = modules[ 'plugin!creator-test3' ];
+		const Creator = modules.creator;
+		const TestCreator1 = modules[ 'plugin!creator-test1' ];
+		const TestCreator2 = modules[ 'plugin!creator-test2' ];
+		const TestCreator3 = modules[ 'plugin!creator-test3' ];
 
 		expect( TestCreator1.prototype ).to.be.instanceof( Creator );
 		expect( TestCreator2.prototype ).to.be.instanceof( Creator );
@@ -37,16 +37,16 @@ describe( 'bender.tools.core.defineEditorCreatorMock()', function() {
 	} );
 
 	it( 'should copy properties from the second argument', function() {
-		var TestCreator = modules[ 'plugin!creator-test2' ];
+		const TestCreator = modules[ 'plugin!creator-test2' ];
 
 		expect( TestCreator.prototype ).to.have.property( 'foo', 1 );
 		expect( TestCreator.prototype ).to.have.property( 'bar', 2 );
 	} );
 
 	it( 'should create spies for create() and destroy() if not defined', function() {
-		var TestCreator1 = modules[ 'plugin!creator-test1' ];
-		var TestCreator2 = modules[ 'plugin!creator-test2' ];
-		var TestCreator3 = modules[ 'plugin!creator-test3' ];
+		const TestCreator1 = modules[ 'plugin!creator-test1' ];
+		const TestCreator2 = modules[ 'plugin!creator-test2' ];
+		const TestCreator3 = modules[ 'plugin!creator-test3' ];
 
 		expect( TestCreator1.prototype.create ).to.have.property( 'called', false, 'test1.create' );
 		expect( TestCreator1.prototype.destroy ).to.have.property( 'called', false, 'test1.destroy' );

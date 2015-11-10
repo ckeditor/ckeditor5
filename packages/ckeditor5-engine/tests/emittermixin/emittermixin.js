@@ -45,7 +45,7 @@ describe( 'fire', function() {
 	} );
 
 	it( 'should pass arguments to callbacks', function() {
-		var EventInfo = modules.eventinfo;
+		const EventInfo = modules.eventinfo;
 
 		var spy1 = sinon.spy();
 		var spy2 = sinon.spy();
@@ -212,7 +212,7 @@ describe( 'once', function() {
 	} );
 
 	it( 'should have proper arguments', function() {
-		var EventInfo = modules.eventinfo;
+		const EventInfo = modules.eventinfo;
 
 		var spy = sinon.spy();
 
@@ -419,7 +419,7 @@ function refreshListener() {
 }
 
 function getEmitterInstance() {
-	var EmitterMixin = modules.emittermixin;
+	const EmitterMixin = modules.emittermixin;
 	var utils = modules.utils;
 
 	return utils.extend( {}, EmitterMixin );

@@ -7,14 +7,14 @@
 
 const modules = bender.amd.require( 'plugincollection', 'plugin', 'editor', 'log' );
 var editor;
-var PluginA, PluginB;
+let PluginA, PluginB;
 class TestError extends Error {}
 
 bender.tools.createSinonSandbox();
 
 before( function() {
-	var Editor = modules.editor;
-	var Plugin = modules.plugin;
+	const Editor = modules.editor;
+	const Plugin = modules.plugin;
 
 	PluginA = class extends Plugin {};
 	PluginB = class extends Plugin {};
@@ -87,7 +87,7 @@ CKEDITOR.define( 'plugin!J', function() {
 
 describe( 'load', function() {
 	it( 'should not fail when trying to load 0 plugins (empty string)', function() {
-		var PluginCollection = modules.plugincollection;
+		const PluginCollection = modules.plugincollection;
 
 		var plugins = new PluginCollection( editor );
 
@@ -98,7 +98,7 @@ describe( 'load', function() {
 	} );
 
 	it( 'should not fail when trying to load 0 plugins (undefined)', function() {
-		var PluginCollection = modules.plugincollection;
+		const PluginCollection = modules.plugincollection;
 
 		var plugins = new PluginCollection( editor );
 
@@ -109,7 +109,7 @@ describe( 'load', function() {
 	} );
 
 	it( 'should add collection items for loaded plugins', function() {
-		var PluginCollection = modules.plugincollection;
+		const PluginCollection = modules.plugincollection;
 
 		var plugins = new PluginCollection( editor );
 
@@ -123,7 +123,7 @@ describe( 'load', function() {
 	} );
 
 	it( 'should load dependency plugins', function() {
-		var PluginCollection = modules.plugincollection;
+		const PluginCollection = modules.plugincollection;
 
 		var plugins = new PluginCollection( editor );
 		var spy = sinon.spy( plugins, 'add' );
@@ -138,7 +138,7 @@ describe( 'load', function() {
 	} );
 
 	it( 'should be ok when dependencies are loaded first', function() {
-		var PluginCollection = modules.plugincollection;
+		const PluginCollection = modules.plugincollection;
 
 		var plugins = new PluginCollection( editor );
 		var spy = sinon.spy( plugins, 'add' );
@@ -153,7 +153,7 @@ describe( 'load', function() {
 	} );
 
 	it( 'should load deep dependency plugins', function() {
-		var PluginCollection = modules.plugincollection;
+		const PluginCollection = modules.plugincollection;
 
 		var plugins = new PluginCollection( editor );
 		var spy = sinon.spy( plugins, 'add' );
@@ -169,7 +169,7 @@ describe( 'load', function() {
 	} );
 
 	it( 'should handle cross dependency plugins', function() {
-		var PluginCollection = modules.plugincollection;
+		const PluginCollection = modules.plugincollection;
 
 		var plugins = new PluginCollection( editor );
 		var spy = sinon.spy( plugins, 'add' );
@@ -185,7 +185,7 @@ describe( 'load', function() {
 	} );
 
 	it( 'should set the `editor` property on loaded plugins', function() {
-		var PluginCollection = modules.plugincollection;
+		const PluginCollection = modules.plugincollection;
 
 		var plugins = new PluginCollection( editor );
 
@@ -197,7 +197,7 @@ describe( 'load', function() {
 	} );
 
 	it( 'should set the `path` property on loaded plugins', function() {
-		var PluginCollection = modules.plugincollection;
+		const PluginCollection = modules.plugincollection;
 
 		var plugins = new PluginCollection( editor );
 
@@ -209,7 +209,7 @@ describe( 'load', function() {
 	} );
 
 	it( 'should set the `deps` property on loaded plugins', function() {
-		var PluginCollection = modules.plugincollection;
+		const PluginCollection = modules.plugincollection;
 
 		var plugins = new PluginCollection( editor );
 
@@ -223,7 +223,7 @@ describe( 'load', function() {
 	} );
 
 	it( 'should reject on invalid plugin names (forward require.js loading error)', function() {
-		var PluginCollection = modules.plugincollection;
+		const PluginCollection = modules.plugincollection;
 		var log = modules.log;
 
 		var logSpy = bender.sinon.stub( log, 'error' );
@@ -246,7 +246,7 @@ describe( 'load', function() {
 	} );
 
 	it( 'should reject on broken plugins (forward the error thrown in a plugin)', function() {
-		var PluginCollection = modules.plugincollection;
+		const PluginCollection = modules.plugincollection;
 		var log = modules.log;
 
 		var logSpy = bender.sinon.stub( log, 'error' );
@@ -268,7 +268,7 @@ describe( 'load', function() {
 	} );
 
 	it( 'should load `deps` which are not plugins', function() {
-		var PluginCollection = modules.plugincollection;
+		const PluginCollection = modules.plugincollection;
 
 		var plugins = new PluginCollection( editor );
 		expect( spies ).to.be.empty;
@@ -292,7 +292,7 @@ describe( 'load', function() {
 	} );
 
 	it( 'should load instances of Plugin only', function() {
-		var PluginCollection = modules.plugincollection;
+		const PluginCollection = modules.plugincollection;
 		var plugins = new PluginCollection( editor );
 
 		return plugins.load( 'I' )
@@ -305,7 +305,7 @@ describe( 'load', function() {
 	} );
 
 	it( 'should cancel loading module which looks like a plugin but is a normal module', function() {
-		var PluginCollection = modules.plugincollection;
+		const PluginCollection = modules.plugincollection;
 		var plugins = new PluginCollection( editor );
 
 		return plugins.load( 'J' )

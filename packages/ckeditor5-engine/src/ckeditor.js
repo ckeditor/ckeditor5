@@ -13,7 +13,7 @@
  */
 
 CKEDITOR.define( [ 'editor', 'collection', 'config' ], function( Editor, Collection, Config ) {
-	var CKEDITOR = {
+	const CKEDITOR = {
 		/**
 		 * A collection containing all editor instances created.
 		 *

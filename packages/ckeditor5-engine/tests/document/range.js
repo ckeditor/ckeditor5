@@ -13,7 +13,7 @@ const modules = bender.amd.require(
 );
 
 describe( 'Range', function() {
-	var Range, Position, start, end;
+	let Range, Position, start, end;
 
 	before( function() {
 		Position = modules[ 'document/position' ];

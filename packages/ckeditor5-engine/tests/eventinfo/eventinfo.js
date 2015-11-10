@@ -9,7 +9,7 @@ const modules = bender.amd.require( 'eventinfo' );
 
 describe( 'EventInfo', function() {
 	it( 'should be created properly', function() {
-		var EventInfo = modules.eventinfo;
+		const EventInfo = modules.eventinfo;
 
 		var event = new EventInfo( this, 'test' );
 
@@ -20,7 +20,7 @@ describe( 'EventInfo', function() {
 	} );
 
 	it( 'should have stop() and off() marked', function() {
-		var EventInfo = modules.eventinfo;
+		const EventInfo = modules.eventinfo;
 
 		var event = new EventInfo( this, 'test' );
 
@@ -32,7 +32,7 @@ describe( 'EventInfo', function() {
 	} );
 
 	it( 'should not mark "called" in future instances', function() {
-		var EventInfo = modules.eventinfo;
+		const EventInfo = modules.eventinfo;
 
 		var event = new EventInfo( this, 'test' );
 

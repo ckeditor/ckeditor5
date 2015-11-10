@@ -37,7 +37,7 @@
  */
 
 CKEDITOR.define( [ 'emittermixin', 'utils', 'log' ], function( EmitterMixin, utils, log ) {
-	var DOMEmitterMixin = {
+	const DOMEmitterMixin = {
 		/**
 		 * Registers a callback function to be executed when an event is fired in a specific Emitter or DOM Node.
 		 * It is backwards compatible with {@link EmitterMixin#listenTo}.
