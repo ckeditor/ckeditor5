@@ -1,8 +1,8 @@
 'use strict';
 
-var tools = require( './utils/tools' );
+const tools = require( './utils/tools' );
 
-module.exports = function( grunt ) {
+module.exports = ( grunt ) => {
 	tools.setupMultitaskConfig( grunt, {
 		task: 'jscs',
 		defaultOptions: {
@@ -10,11 +10,11 @@ module.exports = function( grunt ) {
 			},
 		addGitIgnore: 'excludeFiles',
 		targets: {
-			all: function() {
+			all() {
 				return [ '**/*.js' ];
 			},
 
-			git: function() {
+			git() {
 				return tools.getGitDirtyFiles().filter( function( file ) {
 					return ( /\.js$/ ).test( file );
 				} );
