@@ -26,8 +26,8 @@ bender.tools.createSinonSandbox();
 before( () => {
 	bender.tools.core.defineEditorCreatorMock( 'test1' );
 
-	bender.tools.core.defineEditorCreatorMock( 'test-any1' );
-	bender.tools.core.defineEditorCreatorMock( 'test-any2' );
+	bender.tools.core.defineEditorCreatorMock( 'test-throw-on-many1' );
+	bender.tools.core.defineEditorCreatorMock( 'test-throw-on-many2' );
 
 	bender.tools.core.defineEditorCreatorMock( 'test-config1' );
 	bender.tools.core.defineEditorCreatorMock( 'test-config2' );
@@ -84,15 +84,18 @@ describe( 'init', () => {
 			} );
 	} );
 
-	it( 'should instantiate any creator when more than one is available', () => {
+	it( 'should throw if more than one creator is available but config.creator is not defined', () => {
+		const CKEditorError = modules.ckeditorerror;
+
 		return initEditor( {
-				plugins: 'creator-test-any1,creator-test-any2'
+				plugins: 'creator-test-throw-on-many1,creator-test-throw-on-many2'
 			} )
 			.then( () => {
-				let creator1 = editor.plugins.get( 'creator-test-any1' );
-				let creator2 = editor.plugins.get( 'creator-test-any2' );
-
-				expect( creator1.create.called + creator2.create.called ).to.be.equal( 1, 'only one of the creators should be used' );
+				throw new Error( 'This should not be executed.' );
+			} )
+			.catch( ( err ) => {
+				expect( err ).to.be.instanceof( CKEditorError );
+				expect( err.message ).to.match( /^editor-undefined-creator:/ );
 			} );
 	} );
 
@@ -126,7 +129,7 @@ describe( 'init', () => {
 			} );
 	} );
 
-	it( 'should throw an error no creators are defined', () => {
+	it( 'should throw an error if no creators are defined', () => {
 		const CKEditorError = modules.ckeditorerror;
 
 		return initEditor( {} )

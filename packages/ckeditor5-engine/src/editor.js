@@ -17,8 +17,9 @@ CKEDITOR.define( [
 	'editorconfig',
 	'plugincollection',
 	'creator',
-	'ckeditorerror'
-], function( Model, EditorConfig, PluginCollection, Creator, CKEditorError ) {
+	'ckeditorerror',
+	'utils'
+], function( Model, EditorConfig, PluginCollection, Creator, CKEditorError, utils ) {
 	class Editor extends Model {
 		/**
 		 * Creates a new instance of the Editor class.
@@ -48,14 +49,16 @@ CKEDITOR.define( [
 			 * global configurations available in {@link CKEDITOR.config} if configurations are not found in the
 			 * instance itself.
 			 *
-			 * @type {Config}
+			 * @readonly
+			 * @property {Config}
 			 */
 			this.config = new EditorConfig( config );
 
 			/**
 			 * The plugins loaded and in use by this editor instance.
 			 *
-			 * @type {PluginCollection}
+			 * @readonly
+			 * @property {PluginCollection}
 			 */
 			this.plugins = new PluginCollection( this );
 
@@ -69,9 +72,10 @@ CKEDITOR.define( [
 			/**
 			 * The list of detected creators.
 			 *
+			 * @property {Map}
 			 * @protected
 			 */
-			this._creators = {};
+			this._creators = new Map();
 		}
 
 		/**
@@ -116,19 +120,31 @@ CKEDITOR.define( [
 			function findCreators() {
 				that.plugins.forEach( ( plugin, name ) => {
 					if ( plugin instanceof Creator ) {
-						that._creators[ name ] = plugin;
+						that._creators.set( name, plugin );
 					}
 				} );
 			}
 
 			function fireCreator() {
 				// Take the name of the creator to use (config or any of the registered ones).
-				var creatorName = config.creator ? ( 'creator-' + config.creator ) : Object.keys( that._creators )[ 0 ];
+				var creatorName = config.creator && ( 'creator-' + config.creator );
 				var creator;
 
 				if ( creatorName ) {
 					// Take the registered class for the given creator name.
-					creator = that._creators[ creatorName ];
+					creator = that._creators.get( creatorName );
+				} else if ( that._creators.size > 1 ) {
+					/**
+					 * The `config.creator` option was not defined.
+					 *
+					 * This error is thrown when more than one creator is available and the configuration does
+					 * not specify which one to use.
+					 *
+					 * @error editor-undefined-creator
+					 */
+					throw new CKEditorError( 'editor-undefined-creator: The config.creator option was not defined.' );
+				} else {
+					creator = utils.nth( 0, that._creators.values() );
 				}
 
 				if ( !creator ) {
