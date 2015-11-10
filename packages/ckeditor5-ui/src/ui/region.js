@@ -53,7 +53,9 @@ CKEDITOR.define( [ 'collection', 'model' ], function( Collection, Model ) {
 			this.el = null;
 
 			// Remove and destroy views.
-			this.views.forEach( v => this.views.remove( v ).destroy() );
+			for ( let view of this.views ) {
+				this.views.remove( view ).destroy();
+			}
 		}
 	}
 
