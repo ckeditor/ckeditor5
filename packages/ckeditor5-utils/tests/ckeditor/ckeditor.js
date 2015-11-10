@@ -7,7 +7,7 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'ckeditor', 'editor', 'config' );
+const modules = bender.amd.require( 'ckeditor', 'editor', 'config' );
 
 var content = document.getElementById( 'content' );
 var editorConfig = { plugins: 'creator-test' };

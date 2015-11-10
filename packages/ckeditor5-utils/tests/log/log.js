@@ -7,7 +7,7 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'log' );
+const modules = bender.amd.require( 'log' );
 var spy;
 
 beforeEach( function() {

@@ -5,7 +5,7 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'utils', 'utils-lodash' );
+const modules = bender.amd.require( 'utils', 'utils-lodash' );
 
 describe( 'utils', function() {
 	var utils;

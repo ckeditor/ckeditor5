@@ -7,7 +7,7 @@
 
 'use strict';
 
-var modules = bender.amd.require(
+const modules = bender.amd.require(
 	'document/nodelist',
 	'document/character',
 	'document/text',

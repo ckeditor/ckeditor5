@@ -20,7 +20,7 @@ bender.tools.core.defineEditorCreatorMock( 'test3', {
 	destroy: destroyFn3
 } );
 
-var modules = bender.amd.require( 'creator', 'plugin!creator-test1', 'plugin!creator-test2', 'plugin!creator-test3' );
+const modules = bender.amd.require( 'creator', 'plugin!creator-test1', 'plugin!creator-test2', 'plugin!creator-test3' );
 
 ///////////////////
 

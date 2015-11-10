@@ -5,7 +5,7 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'model', 'eventinfo', 'ckeditorerror' );
+const modules = bender.amd.require( 'model', 'eventinfo', 'ckeditorerror' );
 
 var Car, car;
 
