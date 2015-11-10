@@ -8,7 +8,7 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'ckeditor', 'ui/region', 'ui/view', 'collection' );
+const modules = bender.amd.require( 'ckeditor', 'ui/region', 'ui/view', 'collection' );
 
 bender.tools.createSinonSandbox();
 

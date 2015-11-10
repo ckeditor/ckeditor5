@@ -5,7 +5,7 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'config' );
+const modules = bender.amd.require( 'config' );
 
 var config;
 

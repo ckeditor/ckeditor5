@@ -8,7 +8,7 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'utils', 'ui/domemittermixin', 'emittermixin' );
+const modules = bender.amd.require( 'utils', 'ui/domemittermixin', 'emittermixin' );
 var emitter, domEmitter, node;
 
 bender.tools.createSinonSandbox();

@@ -7,7 +7,7 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'document/attribute' );
+const modules = bender.amd.require( 'document/attribute' );
 
 describe( 'Attribute', function() {
 	var Attribute;

@@ -5,7 +5,7 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'editorconfig', 'ckeditor' );
+const modules = bender.amd.require( 'editorconfig', 'ckeditor' );
 
 var config;
 

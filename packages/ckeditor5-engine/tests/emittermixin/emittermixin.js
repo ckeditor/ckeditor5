@@ -5,7 +5,7 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'emittermixin', 'eventinfo', 'utils' );
+const modules = bender.amd.require( 'emittermixin', 'eventinfo', 'utils' );
 
 var emitter, listener;
 

@@ -7,7 +7,7 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'editor', 'editorconfig', 'plugin' );
+const modules = bender.amd.require( 'editor', 'editorconfig', 'plugin' );
 
 var editor;
 var element;

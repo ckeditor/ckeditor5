@@ -5,7 +5,7 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'plugincollection', 'plugin', 'editor', 'log' );
+const modules = bender.amd.require( 'plugincollection', 'plugin', 'editor', 'log' );
 var editor;
 var PluginA, PluginB;
 class TestError extends Error {}

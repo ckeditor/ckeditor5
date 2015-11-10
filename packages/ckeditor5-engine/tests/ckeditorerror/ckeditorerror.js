@@ -5,7 +5,7 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'ckeditorerror' );
+const modules = bender.amd.require( 'ckeditorerror' );
 
 describe( 'CKEditorError', function() {
 	it( 'inherits from Error', function() {

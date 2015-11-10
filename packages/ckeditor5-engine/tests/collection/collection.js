@@ -5,7 +5,7 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'collection', 'ckeditorerror' );
+const modules = bender.amd.require( 'collection', 'ckeditorerror' );
 
 bender.tools.createSinonSandbox();
 

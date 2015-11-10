@@ -7,7 +7,7 @@
 
 /* bender-include: ../_tools/tools.js */
 
-var modules = bender.amd.require( 'editor', 'plugin', 'creator', 'ckeditorerror' );
+const modules = bender.amd.require( 'editor', 'plugin', 'creator', 'ckeditorerror' );
 var editor, element;
 
 function initEditor( config ) {
