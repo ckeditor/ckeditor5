@@ -6,93 +6,59 @@
 'use strict';
 /* global describe, it, beforeEach, afterEach */
 
-var chai = require( 'chai' );
-var sinon = require( 'sinon' );
-var expect = chai.expect;
-var tools = require( '../utils/tools' );
-var toRestore;
+const chai = require( 'chai' );
+const sinon = require( 'sinon' );
+const expect = chai.expect;
+const tools = require( '../utils/tools' );
+const path = require( 'path' );
+let toRestore;
 
-describe( 'utils', function() {
-	beforeEach( function() {
-		toRestore = [];
+describe( 'utils', () => {
+	beforeEach( () => toRestore = [] );
+
+	afterEach( () => {
+		toRestore.forEach( item => item.restore() );
 	} );
 
-	afterEach( function() {
-		toRestore.forEach( function( item ) {
-			item.restore();
-		} );
-	} );
+	describe( 'tools', () => {
+		describe( 'linkDirectories', () => {
+			it( 'should be defined', () => expect( tools.linkDirectories ).to.be.a( 'function' ) );
 
-	describe( 'tools', function() {
-		describe( 'cloneRepository', function() {
-			it( 'should be defined', function() {
-				expect( tools.cloneRepository ).to.be.a( 'function' );
+			it( 'should run link commands', () => {
+				const shExecStub = sinon.stub( tools, 'shExec' );
+				const isDirectoryStub = sinon.stub( tools, 'isDirectory' ).returns( false );
+				const source = '/source/dir';
+				const destination = '/destination/dir';
+				toRestore.push( shExecStub, isDirectoryStub );
+
+				tools.linkDirectories( source, destination );
+
+				expect( isDirectoryStub.calledOnce ).to.equal( true );
+				expect( shExecStub.calledOnce ).to.equal( true );
+				expect( shExecStub.firstCall.args[ 0 ] ).to.equal( `ln -s ${ source } ${ destination }` );
 			} );
 
-			it( 'should run clone repository commands', function( ) {
-				var shExecStub = sinon.stub( tools, 'shExec' );
-				var name = 'test';
-				var gitHubUrl = 'ckeditor/test';
-				var destination = '/destination/dir';
-				toRestore.push( shExecStub );
+			it( 'should remove destination directory before linking', () => {
+				const shExecStub = sinon.stub( tools, 'shExec' );
+				const isDirectoryStub = sinon.stub( tools, 'isDirectory' ).returns( true );
+				const source = '/source/dir';
+				const destination = '/destination/dir';
+				toRestore.push( shExecStub, isDirectoryStub );
 
-				tools.cloneRepository( name, gitHubUrl, destination );
-				expect( shExecStub.calledOnce ).to.equal( true );
-				expect( shExecStub.firstCall.args[ 0 ] ).to.equal( 'cd ' + destination + ' && git clone git@github.com:' + gitHubUrl );
-			} );
+				tools.linkDirectories( source, destination );
 
-			it( 'should checkout proper commit/branch if provided', function() {
-				var shExecStub = sinon.stub( tools, 'shExec' );
-				var name = 'test';
-				var url = 'ckeditor/test';
-				var branch = 'branch';
-				var gitHubUrl = url + '#' + branch;
-				var destination = '/destination/dir';
-				toRestore.push( shExecStub );
-
-				tools.cloneRepository( name, gitHubUrl, destination );
-				expect( shExecStub.calledOnce ).to.equal( true );
-				expect( shExecStub.firstCall.args[ 0 ] ).to.equal(
-					'cd ' + destination + ' && ' +
-					'git clone git@github.com:' + url + ' && ' +
-					'cd ' + name + ' && ' +
-					'git checkout ' + branch
-				);
+				expect( isDirectoryStub.calledOnce ).to.equal( true );
+				expect( shExecStub.calledTwice ).to.equal( true );
+				expect( shExecStub.firstCall.args[ 0 ] ).to.equal( `rm -rf ${ destination }` );
+				expect( shExecStub.secondCall.args[ 0 ] ).to.equal( `ln -s ${ source } ${ destination }` );
 			} );
 		} );
 
-		describe( 'npmLink', function() {
-			it( 'should be defined', function() {
-				expect( tools.cloneRepository ).to.be.a( 'function' );
-			} );
+		describe( 'getCKEditorDependencies', () => {
+			it( 'should be defined', () => expect( tools.getCKEditorDependencies ).to.be.a( 'function' ) );
 
-			it( 'should run npm link commands', function( ) {
-				var shExecStub = sinon.stub( tools, 'shExec' );
-				var source = '/source/dir';
-				var destination = '/destination/dir';
-				var pluginName = 'ckeditor5-plugin-name';
-				var isWin = process.platform == 'win32';
-				var linkCommands = [
-					'cd ' + source,
-					( !isWin ? 'sudo ' : '' ) + 'npm link',
-					'cd ' + destination,
-					'npm link ' + pluginName
-				];
-				toRestore.push( shExecStub );
-
-				tools.npmLink( source, destination, pluginName );
-				expect( shExecStub.calledOnce ).to.equal( true );
-				expect( shExecStub.firstCall.args[ 0 ] ).to.equal( linkCommands.join( ' && ' ) );
-			} );
-		} );
-
-		describe( 'getCKEditorDependencies', function() {
-			it( 'should be defined', function() {
-				expect( tools.getCKEditorDependencies ).to.be.a( 'function' );
-			} );
-
-			it( 'should return null if no CKEditor5 repository is found', function() {
-				var dependencies = {
+			it( 'should return null if no CKEditor5 repository is found', () => {
+				const dependencies = {
 					'plugin1': '',
 					'plugin2': '',
 					'plugin3': ''
@@ -100,15 +66,14 @@ describe( 'utils', function() {
 				expect( tools.getCKEditorDependencies( dependencies ) ).to.equal( null );
 			} );
 
-			it( 'should return only ckeditor5- dependencies', function() {
-				var dependencies = {
+			it( 'should return only ckeditor5- dependencies', () => {
+				const dependencies = {
 					'plugin1': '',
 					'ckeditor5-plugin-image': 'ckeditor/ckeditor5-plugin-image',
 					'plugin2': '',
 					'ckeditor5-core': 'ckeditor/ckeditor5-core'
 				};
-
-				var ckeditorDependencies = tools.getCKEditorDependencies( dependencies );
+				const ckeditorDependencies = tools.getCKEditorDependencies( dependencies );
 
 				expect( ckeditorDependencies ).to.be.an( 'object' );
 				expect( ckeditorDependencies.plugin1 ).to.be.a( 'undefined' );
@@ -118,85 +83,83 @@ describe( 'utils', function() {
 			} );
 		} );
 
-		describe( 'getCKE5Directories', function() {
-			it( 'should return only ckeditor5 directories', function() {
-				var workspacePath = '/workspace/path';
-				var getDirectoriesStub = sinon.stub( tools, 'getDirectories', function() {
-					return [ 'tools', 'ckeditor5', 'ckeditor5-core', '.bin', 'ckeditor5-plugin-image' ];
-				} );
+		describe( 'getDirectories', () => {
+			it( 'should be defined', () => expect( tools.getDirectories ).to.be.a( 'function' ) );
+
+			it( 'should get directories in specified path', () => {
+				const fs = require( 'fs' );
+				const directories = [ 'dir1', 'dir2', 'dir3' ];
+				const readdirSyncStub = sinon.stub( fs, 'readdirSync', () => directories );
+				const isDirectoryStub = sinon.stub( tools, 'isDirectory' ).returns( true );
+				const dirPath = 'path';
+				toRestore.push( readdirSyncStub, isDirectoryStub );
+
+				tools.getDirectories( dirPath );
+
+				expect( readdirSyncStub.calledOnce ).to.equal( true );
+				expect( isDirectoryStub.calledThrice ).to.equal( true );
+				expect( isDirectoryStub.firstCall.args[ 0 ] ).to.equal( path.join( dirPath, directories[ 0 ] ) );
+				expect( isDirectoryStub.secondCall.args[ 0 ] ).to.equal( path.join( dirPath, directories[ 1 ] ) );
+				expect( isDirectoryStub.thirdCall.args[ 0 ] ).to.equal( path.join( dirPath, directories[ 2 ] ) );
+			} );
+		} );
+
+		describe( 'isDirectory', () => {
+			it( 'should be defined', () => expect( tools.isDirectory ).to.be.a( 'function' ) );
+
+			it( 'should return true if path points to directory', () => {
+				const fs = require( 'fs' );
+				const statSyncStub = sinon.stub( fs, 'statSync', () => ( { isDirectory: () => true } ) );
+				const path = 'path';
+				toRestore.push( statSyncStub );
+
+				const result = tools.isDirectory( path );
+
+				expect( statSyncStub.calledOnce ).to.equal( true );
+				expect( statSyncStub.firstCall.args[ 0 ] ).to.equal( path );
+				expect( result ).to.equal( true );
+			} );
+
+			it( 'should return false if path does not point to directory', () => {
+				const fs = require( 'fs' );
+				const statSyncStub = sinon.stub( fs, 'statSync', () => ( { isDirectory: () => false } ) );
+				const path = 'path';
+				toRestore.push( statSyncStub );
+
+				const result = tools.isDirectory( path );
+
+				expect( statSyncStub.calledOnce ).to.equal( true );
+				expect( statSyncStub.firstCall.args[ 0 ] ).to.equal( path );
+				expect( result ).to.equal( false );
+			} );
+
+			it( 'should return false if statSync method throws', () => {
+				const fs = require( 'fs' );
+				const statSyncStub = sinon.stub( fs, 'statSync' ).throws();
+				const path = 'path';
+				toRestore.push( statSyncStub );
+
+				const result = tools.isDirectory( path );
+
+				expect( statSyncStub.calledOnce ).to.equal( true );
+				expect( statSyncStub.firstCall.args[ 0 ] ).to.equal( path );
+				expect( result ).to.equal( false );
+			} );
+		} );
+
+		describe( 'getCKE5Directories', () => {
+			it( 'should be defined', () => expect( tools.getCKE5Directories ).to.be.a( 'function' ) );
+
+			it( 'should return only ckeditor5 directories', () => {
+				const workspacePath = '/workspace/path';
+				const sourceDirectories = [ 'tools', 'ckeditor5', 'ckeditor5-core', '.bin', 'ckeditor5-plugin-image' ];
+				const getDirectoriesStub = sinon.stub( tools, 'getDirectories', () => sourceDirectories );
 				toRestore.push( getDirectoriesStub );
-				var directories = tools.getCKE5Directories( workspacePath );
+				const directories = tools.getCKE5Directories( workspacePath );
 
-				expect( directories.length ).equal( 3 );
-				expect( directories[ 0 ] ).equal( 'ckeditor5' );
-				expect( directories[ 1 ] ).equal( 'ckeditor5-core' );
-				expect( directories[ 2 ] ).equal( 'ckeditor5-plugin-image' );
-			} );
-		} );
-
-		describe( 'initDevWorkspace', function() {
-			it( 'should get ckeditor5- dependencies, clone repositories and link them', function() {
-				var path = require( 'path' );
-				var getDependenciesSpy = sinon.spy( tools, 'getCKEditorDependencies' );
-				var cloneRepositoryStub = sinon.stub( tools, 'cloneRepository' );
-				var npmLinkStub = sinon.stub( tools, 'npmLink' );
-				var ckeditor5Path = process.cwd();
-				var workspacePath = path.join( ckeditor5Path, '..' );
-				var dependencies, keys;
-				toRestore.push( getDependenciesSpy, cloneRepositoryStub, npmLinkStub );
-
-				tools.initDevWorkspace( workspacePath, ckeditor5Path, function() {} );
-				expect( getDependenciesSpy.calledOnce ).to.equal( true );
-				dependencies = getDependenciesSpy.firstCall.returnValue;
-
-				if ( dependencies ) {
-					keys = Object.keys( dependencies );
-
-					// All repositories were cloned.
-					expect( cloneRepositoryStub.callCount ).to.equal( keys.length );
-
-					// All repositories were linked.
-					expect( npmLinkStub.callCount ).to.equal( keys.length );
-
-					// Check clone and link parameters.
-					keys.forEach( function( key, i ) {
-						expect( cloneRepositoryStub.getCall( i ).args[0] ).equal( key );
-						expect( cloneRepositoryStub.getCall( i ).args[1] ).equal( dependencies[ key ] );
-						expect( cloneRepositoryStub.getCall( i ).args[2] ).equal( workspacePath );
-
-						expect( npmLinkStub.getCall( i ).args[0] ).equal( path.join( workspacePath, key ) );
-						expect( npmLinkStub.getCall( i ).args[1] ).equal( ckeditor5Path );
-						expect( npmLinkStub.getCall( i ).args[2] ).equal( key );
-					} );
-				}
-			} );
-		} );
-
-		describe( 'getWorkspaceStatus', function() {
-			it( 'should get all repositories status', function() {
-				var path = require( 'path' );
-				var workspacePath = '/workspace/path/';
-				var directories = [ 'ckeditor5', 'ckeditor5-core' ];
-				var log = sinon.spy();
-
-				// Stub methods for test purposes.
-				var getCKE5DirectoriesStub = sinon.stub( tools, 'getCKE5Directories', function() {
-					return directories;
-				} );
-				var getGitStatusStub = sinon.stub( tools, 'getGitStatus', function() {
-					return 'status';
-				} );
-				toRestore.push( getCKE5DirectoriesStub, getGitStatusStub );
-
-				tools.getWorkspaceStatus( workspacePath, log );
-				expect( getCKE5DirectoriesStub.calledOnce ).equal( true );
-				expect( log.callCount ).equal( directories.length );
-				expect( getGitStatusStub.callCount ).equal( directories.length );
-
-				// Check if status was called for proper directory.
-				for ( var i = 0; i < getGitStatusStub.callCount; i++ ) {
-					expect( getGitStatusStub.getCall( i ).args[0] ).equals( path.join( workspacePath, directories[ i ] ) );
-				}
+				expect( directories.length ).equal( 2 );
+				expect( directories[ 0 ] ).equal( 'ckeditor5-core' );
+				expect( directories[ 1 ] ).equal( 'ckeditor5-plugin-image' );
 			} );
 		} );
 	} );
