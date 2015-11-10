@@ -11,7 +11,7 @@ CKEDITOR.define( [
 	'emittermixin',
 	'utils',
 	'ckeditorerror'
-], function( Element, RootElement, EmitterMixin, utils, CKEditorError ) {
+], ( Element, RootElement, EmitterMixin, utils, CKEditorError ) => {
 	const graveyardSymbol = Symbol( 'graveyard' );
 
 	/**

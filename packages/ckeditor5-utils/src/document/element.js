@@ -5,7 +5,7 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'document/node', 'document/nodelist' ], function( Node, NodeList ) {
+CKEDITOR.define( [ 'document/node', 'document/nodelist' ], ( Node, NodeList ) => {
 	/**
 	 * Tree data model element.
 	 *

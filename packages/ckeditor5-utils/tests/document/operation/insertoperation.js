@@ -16,10 +16,10 @@ const modules = bender.amd.require(
 	'document/nodelist'
 );
 
-describe( 'InsertOperation', function() {
+describe( 'InsertOperation', () => {
 	let Document, InsertOperation, RemoveOperation, Position, Character;
 
-	before( function() {
+	before( () => {
 		Document = modules[ 'document/document' ];
 		InsertOperation = modules[ 'document/operation/insertoperation' ];
 		RemoveOperation = modules[ 'document/operation/removeoperation' ];
@@ -29,12 +29,12 @@ describe( 'InsertOperation', function() {
 
 	let doc, root;
 
-	beforeEach( function() {
+	beforeEach( () => {
 		doc = new Document();
 		root = doc.createRoot( 'root' );
 	} );
 
-	it( 'should insert node', function() {
+	it( 'should insert node', () => {
 		doc.applyOperation(
 			new InsertOperation(
 				new Position( [ 0 ], root ),
@@ -48,7 +48,7 @@ describe( 'InsertOperation', function() {
 		expect( root.getChild( 0 ).character ).to.equal( 'x' );
 	} );
 
-	it( 'should insert set of nodes', function() {
+	it( 'should insert set of nodes', () => {
 		doc.applyOperation(
 			new InsertOperation(
 				new Position( [ 0 ], root ),
@@ -64,7 +64,7 @@ describe( 'InsertOperation', function() {
 		expect( root.getChild( 2 ).character ).to.equal( 'r' );
 	} );
 
-	it( 'should insert between existing nodes', function() {
+	it( 'should insert between existing nodes', () => {
 		root.insertChildren( 0, 'xy' );
 
 		doc.applyOperation(
@@ -84,7 +84,7 @@ describe( 'InsertOperation', function() {
 		expect( root.getChild( 4 ).character ).to.equal( 'y' );
 	} );
 
-	it( 'should insert text', function() {
+	it( 'should insert text', () => {
 		doc.applyOperation(
 			new InsertOperation(
 				new Position( [ 0 ], root ),
@@ -104,7 +104,7 @@ describe( 'InsertOperation', function() {
 		expect( root.getChild( 6 ).character ).to.equal( 'r' );
 	} );
 
-	it( 'should create a remove operation as a reverse', function() {
+	it( 'should create a remove operation as a reverse', () => {
 		let position = new Position( [ 0 ], root );
 		let operation = new InsertOperation(
 			position,
@@ -120,7 +120,7 @@ describe( 'InsertOperation', function() {
 		expect( reverse.howMany ).to.equal( 7 );
 	} );
 
-	it( 'should undo insert node by applying reverse operation', function() {
+	it( 'should undo insert node by applying reverse operation', () => {
 		let operation = new InsertOperation(
 			new Position( [ 0 ], root ),
 			new Character( 'x' ),
@@ -139,7 +139,7 @@ describe( 'InsertOperation', function() {
 		expect( root.getChildCount() ).to.equal( 0 );
 	} );
 
-	it( 'should undo insert set of nodes by applying reverse operation', function() {
+	it( 'should undo insert set of nodes by applying reverse operation', () => {
 		let operation = new InsertOperation(
 			new Position( [ 0 ], root ),
 			'bar',

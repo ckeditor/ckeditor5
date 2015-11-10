@@ -16,18 +16,18 @@ const modules = bender.amd.require(
 	'document/attribute'
 );
 
-describe( 'Character', function() {
+describe( 'Character', () => {
 	let Element, Character, Node, Attribute;
 
-	before( function() {
+	before( () => {
 		Element = modules[ 'document/element' ];
 		Character = modules[ 'document/character' ];
 		Node = modules[ 'document/node' ];
 		Attribute = modules[ 'document/attribute' ];
 	} );
 
-	describe( 'constructor', function() {
-		it( 'should create character without attributes', function() {
+	describe( 'constructor', () => {
+		it( 'should create character without attributes', () => {
 			let character = new Character( 'f' );
 			let parent = new Element( 'parent', [], character );
 
@@ -37,7 +37,7 @@ describe( 'Character', function() {
 			expect( character._getAttrCount() ).to.equal( 0 );
 		} );
 
-		it( 'should create character with attributes', function() {
+		it( 'should create character with attributes', () => {
 			let attr = new Attribute( 'foo', 'bar' );
 			let character = new Character( 'f', [ attr ] );
 			let parent = new Element( 'parent', [], character );

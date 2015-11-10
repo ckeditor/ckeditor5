@@ -9,7 +9,7 @@ CKEDITOR.define( [
 	'document/operation/moveoperation',
 	'document/position',
 	'document/operation/reinsertoperation'
-], function( MoveOperation, Position ) {
+], ( MoveOperation, Position ) => {
 	/**
 	 * Operation to remove a range of nodes.
 	 *

@@ -12,10 +12,10 @@ const modules = bender.amd.require(
 	'document/position'
 );
 
-describe( 'Range', function() {
+describe( 'Range', () => {
 	let Range, Position, start, end;
 
-	before( function() {
+	before( () => {
 		Position = modules[ 'document/position' ];
 		Range = modules[ 'document/range' ];
 
@@ -25,19 +25,19 @@ describe( 'Range', function() {
 
 	let range;
 
-	beforeEach( function() {
+	beforeEach( () => {
 		range = new Range( start, end );
 	} );
 
-	describe( 'constructor', function() {
-		it( 'should create a range with given positions', function() {
+	describe( 'constructor', () => {
+		it( 'should create a range with given positions', () => {
 			expect( range ).to.have.property( 'start' ).that.equal( start );
 			expect( range ).to.have.property( 'end' ).that.equal( end );
 		} );
 	} );
 
-	describe( 'isEqual', function() {
-		it( 'should return true if the ranges are the same', function() {
+	describe( 'isEqual', () => {
+		it( 'should return true if the ranges are the same', () => {
 			let sameStart = new Position( [ 0 ] );
 			let sameEnd = new Position( [ 1 ] );
 
@@ -46,7 +46,7 @@ describe( 'Range', function() {
 			expect( range.isEqual( sameRange ) ).to.be.true;
 		} );
 
-		it( 'should return false if the start position is different', function() {
+		it( 'should return false if the start position is different', () => {
 			let range = new Range( start, end );
 
 			let diffStart = new Position( [ 1 ] );
@@ -57,7 +57,7 @@ describe( 'Range', function() {
 			expect( range.isEqual( diffRange ) ).to.not.be.true;
 		} );
 
-		it( 'should return false if the end position is different', function() {
+		it( 'should return false if the end position is different', () => {
 			let sameStart = new Position( [ 0 ] );
 			let diffEnd = new Position( [ 0 ] );
 

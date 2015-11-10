@@ -10,14 +10,14 @@
 const modules = bender.amd.require( 'log' );
 let spy;
 
-beforeEach( function() {
+beforeEach( () => {
 	if ( spy ) {
 		spy.restore();
 	}
 } );
 
-describe( 'warn()', function() {
-	it( 'logs the message to the console using console.warn()', function() {
+describe( 'warn()', () => {
+	it( 'logs the message to the console using console.warn()', () => {
 		let log = modules.log;
 		let spy = sinon.stub( console, 'warn' );
 		let data = { bar: 1 };
@@ -33,8 +33,8 @@ describe( 'warn()', function() {
 	} );
 } );
 
-describe( 'error()', function() {
-	it( 'logs the message to the console using console.error()', function() {
+describe( 'error()', () => {
+	it( 'logs the message to the console using console.error()', () => {
 		let log = modules.log;
 		let spy = sinon.stub( console, 'error' );
 		let data = { bar: 1 };

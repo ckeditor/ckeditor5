@@ -10,7 +10,7 @@ CKEDITOR.define( [
 	'document/text',
 	'document/node',
 	'utils'
-], function( Character, Text, Node, utils ) {
+], ( Character, Text, Node, utils ) => {
 	/**
 	 * List of nodes. It is used to represent multiple nodes with a given order, for example children of
 	 * {@link document.Element} object or nodes inserted using {@link document.operation.InsertOperation}.

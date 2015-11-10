@@ -5,7 +5,7 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'utils', 'ckeditorerror' ], function( utils, CKEditorError ) {
+CKEDITOR.define( [ 'utils', 'ckeditorerror' ], ( utils, CKEditorError ) => {
 	/**
 	 * Position in the tree. Position is always located before or after a node.
 	 * See {@link #path} property for more information.

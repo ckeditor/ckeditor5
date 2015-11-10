@@ -19,7 +19,7 @@
  * @mixins EventEmitter
  */
 
-CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( EmitterMixin, CKEditorError, utils ) {
+CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], ( EmitterMixin, CKEditorError, utils ) => {
 	class Collection {
 		/**
 		 * Creates a new Collection instance.

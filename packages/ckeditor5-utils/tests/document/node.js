@@ -15,14 +15,14 @@ const modules = bender.amd.require(
 	'ckeditorerror'
 );
 
-describe( 'Node', function() {
+describe( 'Node', () => {
 	let Element, Character, Attribute, NodeList, CKEditorError;
 
 	let root;
 	let one, two, three;
 	let charB, charA, charR, img;
 
-	before( function() {
+	before( () => {
 		Element = modules[ 'document/element' ];
 		Character = modules[ 'document/character' ];
 		Attribute = modules[ 'document/attribute' ];
@@ -41,8 +41,8 @@ describe( 'Node', function() {
 		root = new Element( null, null, [ one, two, three ] );
 	} );
 
-	describe( 'should have a correct property', function() {
-		it( 'depth', function() {
+	describe( 'should have a correct property', () => {
+		it( 'depth', () => {
 			expect( root ).to.have.property( 'depth' ).that.equals( 0 );
 
 			expect( one ).to.have.property( 'depth' ).that.equals( 1 );
@@ -55,7 +55,7 @@ describe( 'Node', function() {
 			expect( charR ).to.have.property( 'depth' ).that.equals( 2 );
 		} );
 
-		it( 'root', function() {
+		it( 'root', () => {
 			expect( root ).to.have.property( 'root' ).that.equals( root );
 
 			expect( one ).to.have.property( 'root' ).that.equals( root );
@@ -68,7 +68,7 @@ describe( 'Node', function() {
 			expect( charR ).to.have.property( 'root' ).that.equals( root );
 		} );
 
-		it( 'nextSibling', function() {
+		it( 'nextSibling', () => {
 			expect( root ).to.have.property( 'nextSibling' ).that.is.null;
 
 			expect( one ).to.have.property( 'nextSibling' ).that.equals( two );
@@ -81,7 +81,7 @@ describe( 'Node', function() {
 			expect( charR ).to.have.property( 'nextSibling' ).that.is.null;
 		} );
 
-		it( 'previousSibling', function() {
+		it( 'previousSibling', () => {
 			expect( root ).to.have.property( 'previousSibling' ).that.is.expect;
 
 			expect( one ).to.have.property( 'previousSibling' ).that.is.null;
@@ -95,8 +95,8 @@ describe( 'Node', function() {
 		} );
 	} );
 
-	describe( 'constructor', function() {
-		it( 'should copy attributes, not pass by reference', function() {
+	describe( 'constructor', () => {
+		it( 'should copy attributes, not pass by reference', () => {
 			let attrs = [ new Attribute( 'attr', true ) ];
 			let foo = new Element( 'foo', attrs );
 			let bar = new Element( 'bar', attrs );
@@ -108,25 +108,25 @@ describe( 'Node', function() {
 		} );
 	} );
 
-	describe( 'getAttr', function() {
+	describe( 'getAttr', () => {
 		let fooAttr, element;
 
-		beforeEach( function() {
+		beforeEach( () => {
 			fooAttr = new Attribute( 'foo', true );
 			element = new Element( 'foo', [ fooAttr ] );
 		} );
 
-		it( 'should be possible to get attribute by key', function() {
+		it( 'should be possible to get attribute by key', () => {
 			expect( element.getAttr( 'foo' ) ).to.equal( fooAttr.value );
 		} );
 
-		it( 'should return null if attribute was not found by key', function() {
+		it( 'should return null if attribute was not found by key', () => {
 			expect( element.getAttr( 'bar' ) ).to.be.null;
 		} );
 	} );
 
-	describe( 'setAttr', function() {
-		it( 'should insert an attribute', function() {
+	describe( 'setAttr', () => {
+		it( 'should insert an attribute', () => {
 			let element = new Element( 'elem' );
 			let attr = new Attribute( 'foo', 'bar' );
 
@@ -136,7 +136,7 @@ describe( 'Node', function() {
 			expect( element.getAttr( attr.key ) ).to.equal( attr.value );
 		} );
 
-		it( 'should overwrite attribute with the same key', function() {
+		it( 'should overwrite attribute with the same key', () => {
 			let oldAttr = new Attribute( 'foo', 'bar' );
 			let newAttr = new Attribute( 'foo', 'bar' );
 			let element = new Element( 'elem', [ oldAttr ] );
@@ -148,8 +148,8 @@ describe( 'Node', function() {
 		} );
 	} );
 
-	describe( 'removeAttr', function() {
-		it( 'should remove an attribute', function() {
+	describe( 'removeAttr', () => {
+		it( 'should remove an attribute', () => {
 			let attrA = new Attribute( 'a', 'A' );
 			let attrB = new Attribute( 'b', 'b' );
 			let attrC = new Attribute( 'c', 'C' );
@@ -164,22 +164,22 @@ describe( 'Node', function() {
 		} );
 	} );
 
-	describe( 'hasAttr', function() {
-		it( 'should check attribute by key', function() {
+	describe( 'hasAttr', () => {
+		it( 'should check attribute by key', () => {
 			let fooAttr = new Attribute( 'foo', true );
 			let element = new Element( 'foo', [ fooAttr ] );
 
 			expect( element.hasAttr( 'foo' ) ).to.be.true;
 		} );
 
-		it( 'should return false if attribute was not found by key', function() {
+		it( 'should return false if attribute was not found by key', () => {
 			let fooAttr = new Attribute( 'foo', true );
 			let element = new Element( 'foo', [ fooAttr ] );
 
 			expect( element.hasAttr( 'bar' ) ).to.be.false;
 		} );
 
-		it( 'should check attribute by object', function() {
+		it( 'should check attribute by object', () => {
 			let fooAttr = new Attribute( 'foo', true );
 			let foo2Attr = new Attribute( 'foo', true );
 			let element = new Element( 'foo', [ fooAttr ] );
@@ -187,14 +187,14 @@ describe( 'Node', function() {
 			expect( element.hasAttr( foo2Attr ) ).to.be.true;
 		} );
 
-		it( 'should return false if attribute was not found by object', function() {
+		it( 'should return false if attribute was not found by object', () => {
 			let fooAttr = new Attribute( 'foo', true );
 			let element = new Element( 'foo' );
 
 			expect( element.hasAttr( fooAttr ) ).to.be.false;
 		} );
 
-		it( 'should create proper JSON string using toJSON method', function() {
+		it( 'should create proper JSON string using toJSON method', () => {
 			let b = new Character( 'b' );
 			let foo = new Element( 'foo', [], [ b ] );
 
@@ -206,12 +206,12 @@ describe( 'Node', function() {
 		} );
 	} );
 
-	describe( 'getIndex', function() {
-		it( 'should return null if the parent is null', function() {
+	describe( 'getIndex', () => {
+		it( 'should return null if the parent is null', () => {
 			expect( root.getIndex() ).to.be.null;
 		} );
 
-		it( 'should return index in the parent', function() {
+		it( 'should return index in the parent', () => {
 			expect( one.getIndex() ).to.equal( 0 );
 			expect( two.getIndex() ).to.equal( 1 );
 			expect( three.getIndex() ).to.equal( 2 );
@@ -222,22 +222,22 @@ describe( 'Node', function() {
 			expect( charR.getIndex() ).to.equal( 3 );
 		} );
 
-		it( 'should throw an error if parent does not contains element', function() {
+		it( 'should throw an error if parent does not contains element', () => {
 			let f = new Character( 'f' );
 			let bar = new Element( 'bar', [], [] );
 
 			f.parent = bar;
 
 			expect(
-				function() {
+				() => {
 					f.getIndex();
 				}
 			).to.throw( CKEditorError, /node-not-found-in-parent/ );
 		} );
 	} );
 
-	describe( 'getPath', function() {
-		it( 'should return proper path', function() {
+	describe( 'getPath', () => {
+		it( 'should return proper path', () => {
 			expect( root.getPath() ).to.deep.equal( [] );
 
 			expect( one.getPath() ).to.deep.equal( [ 0 ] );

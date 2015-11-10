@@ -5,7 +5,7 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'utils' ], function( utils ) {
+CKEDITOR.define( [ 'utils' ], ( utils ) => {
 	/**
 	 * Attributes can store any additional information for nodes in the data model.
 	 *
@@ -56,7 +56,7 @@ CKEDITOR.define( [ 'utils' ], function( utils ) {
 					const sorted = {};
 
 					// Sort keys and fill up the sorted object.
-					Object.keys( value ).sort().forEach( function( key ) {
+					Object.keys( value ).sort().forEach( ( key ) => {
 						sorted[ key ] = value[ key ];
 					} );
 

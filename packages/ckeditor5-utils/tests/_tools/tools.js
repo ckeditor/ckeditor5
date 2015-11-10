@@ -5,7 +5,7 @@
 
 'use strict';
 
-( function() {
+( () => {
 	bender.tools.core = {
 		/**
 		 * Defines CKEditor plugin which is a mock of an editor creator.
@@ -23,8 +23,8 @@
 		 * @param {Object} [proto] Prototype of the creator. Properties from the proto param will
 		 * be copied to the prototype of the creator.
 		 */
-		defineEditorCreatorMock: function( creatorName, proto ) {
-			CKEDITOR.define( 'plugin!creator-' + creatorName, [ 'creator' ], function( Creator ) {
+		defineEditorCreatorMock: ( creatorName, proto ) => {
+			CKEDITOR.define( 'plugin!creator-' + creatorName, [ 'creator' ], ( Creator ) => {
 				return mockCreator( Creator );
 			} );
 

@@ -16,13 +16,13 @@ const modules = bender.amd.require(
 	'document/range'
 );
 
-describe( 'range iterator', function() {
+describe( 'range iterator', () => {
 	let Document, Element, Character, PositionIterator, Position, Range;
 	let ELEMENT_ENTER, ELEMENT_LEAVE, CHARACTER;
 
 	let doc, expectedItems, root, img1, paragraph, b, a, r, img2, x;
 
-	before( function() {
+	before( () => {
 		Document = modules[ 'document/document' ];
 		Element = modules[ 'document/element' ];
 		Character = modules[ 'document/character' ];
@@ -73,7 +73,7 @@ describe( 'range iterator', function() {
 		];
 	} );
 
-	it( 'should return next position', function() {
+	it( 'should return next position', () => {
 		let iterator = new PositionIterator( new Position( [ 0 ], root ) ); // beginning of root
 		let i, len;
 
@@ -83,7 +83,7 @@ describe( 'range iterator', function() {
 		expect( iterator.next() ).to.have.property( 'done' ).that.is.true;
 	} );
 
-	it( 'should return previous position', function() {
+	it( 'should return previous position', () => {
 		let iterator = new PositionIterator( new Position( [ 2 ], root ) ); // ending of root
 
 		for ( let i = expectedItems.length - 1; i >= 0; i-- ) {
@@ -92,7 +92,7 @@ describe( 'range iterator', function() {
 		expect( iterator.previous() ).to.have.property( 'done' ).that.is.true;
 	} );
 
-	it( 'should return next position in the boundaries', function() {
+	it( 'should return next position in the boundaries', () => {
 		let start = new Position( [ 1, 0 ], root ); // p, 0
 		let end = new Position( [ 1, 3, 0 ], root ); // img, 0
 
@@ -106,7 +106,7 @@ describe( 'range iterator', function() {
 		expect( iterator.next() ).to.have.property( 'done' ).that.is.true;
 	} );
 
-	it( 'should return previous position in the boundaries', function() {
+	it( 'should return previous position in the boundaries', () => {
 		let start = new Position( [ 1, 0 ], root ); // p, 0
 		let end = new Position( [ 1, 3, 0 ], root ); // img, 0
 
@@ -120,7 +120,7 @@ describe( 'range iterator', function() {
 		expect( iterator.previous() ).to.have.property( 'done' ).that.is.true;
 	} );
 
-	it( 'should return iterate over the range', function() {
+	it( 'should return iterate over the range', () => {
 		let start = new Position( [ 0 ], root ); // begging of root
 		let end = new Position( [ 2 ], root ); // ending of root
 		let range = new Range( start, end );

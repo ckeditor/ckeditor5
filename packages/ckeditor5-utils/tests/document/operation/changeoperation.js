@@ -19,10 +19,10 @@ const modules = bender.amd.require(
 	'ckeditorerror'
 );
 
-describe( 'ChangeOperation', function() {
+describe( 'ChangeOperation', () => {
 	let Document, ChangeOperation, Position, Range, Character, Attribute, NodeList, Text, CKEditorError;
 
-	before( function() {
+	before( () => {
 		Document = modules[ 'document/document' ];
 		ChangeOperation = modules[ 'document/operation/changeoperation' ];
 		Position = modules[ 'document/position' ];
@@ -36,12 +36,12 @@ describe( 'ChangeOperation', function() {
 
 	let doc, root;
 
-	beforeEach( function() {
+	beforeEach( () => {
 		doc = new Document();
 		root = doc.createRoot( 'root' );
 	} );
 
-	it( 'should insert attribute to the set of nodes', function() {
+	it( 'should insert attribute to the set of nodes', () => {
 		let newAttr = new Attribute( 'isNew', true );
 
 		root.insertChildren( 0, 'bar' );
@@ -62,7 +62,7 @@ describe( 'ChangeOperation', function() {
 		expect( root.getChild( 2 )._getAttrCount() ).to.equal( 0 );
 	} );
 
-	it( 'should add attribute to the existing attributes', function() {
+	it( 'should add attribute to the existing attributes', () => {
 		let newAttr = new Attribute( 'isNew', true );
 		let fooAttr = new Attribute( 'foo', true );
 		let barAttr = new Attribute( 'bar', true );
@@ -86,7 +86,7 @@ describe( 'ChangeOperation', function() {
 		expect( root.getChild( 0 ).hasAttr( barAttr ) ).to.be.true;
 	} );
 
-	it( 'should change attribute to the set of nodes', function() {
+	it( 'should change attribute to the set of nodes', () => {
 		let oldAttr = new Attribute( 'isNew', false );
 		let newAttr = new Attribute( 'isNew', true );
 
@@ -111,7 +111,7 @@ describe( 'ChangeOperation', function() {
 		expect( root.getChild( 2 ).hasAttr( oldAttr ) ).to.be.true;
 	} );
 
-	it( 'should change attribute in the middle of existing attributes', function() {
+	it( 'should change attribute in the middle of existing attributes', () => {
 		let fooAttr = new Attribute( 'foo', true );
 		let x1Attr = new Attribute( 'x', 1 );
 		let x2Attr = new Attribute( 'x', 2 );
@@ -136,7 +136,7 @@ describe( 'ChangeOperation', function() {
 		expect( root.getChild( 0 ).hasAttr( barAttr ) ).to.be.true;
 	} );
 
-	it( 'should remove attribute', function() {
+	it( 'should remove attribute', () => {
 		let fooAttr = new Attribute( 'foo', true );
 		let xAttr = new Attribute( 'x', true );
 		let barAttr = new Attribute( 'bar', true );
@@ -159,7 +159,7 @@ describe( 'ChangeOperation', function() {
 		expect( root.getChild( 0 ).hasAttr( barAttr ) ).to.be.true;
 	} );
 
-	it( 'should create a change operation as a reverse', function() {
+	it( 'should create a change operation as a reverse', () => {
 		let oldAttr = new Attribute( 'x', 'old' );
 		let newAttr = new Attribute( 'x', 'new' );
 		let range = new Range( new Position( [ 0 ], root ), new Position( [ 3 ], root ) );
@@ -173,7 +173,7 @@ describe( 'ChangeOperation', function() {
 		expect( reverse.newAttr ).to.equal( oldAttr );
 	} );
 
-	it( 'should undo adding attribute by applying reverse operation', function() {
+	it( 'should undo adding attribute by applying reverse operation', () => {
 		let newAttr = new Attribute( 'isNew', true );
 
 		root.insertChildren( 0, 'bar' );
@@ -197,7 +197,7 @@ describe( 'ChangeOperation', function() {
 		expect( root.getChild( 2 )._getAttrCount() ).to.equal( 0 );
 	} );
 
-	it( 'should undo changing attribute by applying reverse operation', function() {
+	it( 'should undo changing attribute by applying reverse operation', () => {
 		let oldAttr = new Attribute( 'isNew', false );
 		let newAttr = new Attribute( 'isNew', true );
 
@@ -226,7 +226,7 @@ describe( 'ChangeOperation', function() {
 		expect( root.getChild( 2 ).hasAttr( oldAttr ) ).to.be.true;
 	} );
 
-	it( 'should undo remove attribute by applying reverse operation', function() {
+	it( 'should undo remove attribute by applying reverse operation', () => {
 		let fooAttr = new Attribute( 'foo', false );
 
 		root.insertChildren( 0, new Text( 'bar', [ fooAttr ] ) );
@@ -254,13 +254,13 @@ describe( 'ChangeOperation', function() {
 		expect( root.getChild( 2 ).hasAttr( fooAttr ) ).to.be.true;
 	} );
 
-	it( 'should throw an error when one try to remove and the attribute does not exists', function() {
+	it( 'should throw an error when one try to remove and the attribute does not exists', () => {
 		let fooAttr = new Attribute( 'foo', true );
 
 		root.insertChildren( 0, 'x' );
 
 		expect(
-			function() {
+			() => {
 				doc.applyOperation(
 					new ChangeOperation(
 						new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
@@ -273,14 +273,14 @@ describe( 'ChangeOperation', function() {
 		).to.throw( CKEditorError, /operation-change-no-attr-to-remove/ );
 	} );
 
-	it( 'should throw an error when one try to insert and the attribute already exists', function() {
+	it( 'should throw an error when one try to insert and the attribute already exists', () => {
 		let x1Attr = new Attribute( 'x', 1 );
 		let x2Attr = new Attribute( 'x', 2 );
 
 		root.insertChildren( 0, new Character( 'x', [ x1Attr ] ) );
 
 		expect(
-			function() {
+			() => {
 				doc.applyOperation(
 					new ChangeOperation(
 						new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
@@ -293,14 +293,14 @@ describe( 'ChangeOperation', function() {
 		).to.throw( CKEditorError, /operation-change-attr-exists/ );
 	} );
 
-	it( 'should throw an error when one try to change and the new and old attributes have different keys', function() {
+	it( 'should throw an error when one try to change and the new and old attributes have different keys', () => {
 		let fooAttr = new Attribute( 'foo', true );
 		let barAttr = new Attribute( 'bar', true );
 
 		root.insertChildren( 0, 'x' );
 
 		expect(
-			function() {
+			() => {
 				doc.applyOperation(
 					new ChangeOperation(
 						new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),

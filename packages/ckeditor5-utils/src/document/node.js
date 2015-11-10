@@ -5,7 +5,7 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'document/attribute', 'utils', 'ckeditorerror' ], function( Attribute, utils, CKEditorError ) {
+CKEDITOR.define( [ 'document/attribute', 'utils', 'ckeditorerror' ], ( Attribute, utils, CKEditorError ) => {
 	/**
 	 * Abstract document tree node class.
 	 *

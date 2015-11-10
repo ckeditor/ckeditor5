@@ -15,10 +15,10 @@ const modules = bender.amd.require(
 	'document/position'
 );
 
-describe( 'ReinsertOperation', function() {
+describe( 'ReinsertOperation', () => {
 	let Document, ReinsertOperation, RemoveOperation, MoveOperation, Position;
 
-	before( function() {
+	before( () => {
 		Document = modules[ 'document/document' ];
 		ReinsertOperation = modules[ 'document/operation/reinsertoperation' ];
 		RemoveOperation = modules[ 'document/operation/removeoperation' ];
@@ -28,7 +28,7 @@ describe( 'ReinsertOperation', function() {
 
 	let doc, root, graveyard, operation, graveyardPosition, rootPosition;
 
-	beforeEach( function() {
+	beforeEach( () => {
 		doc = new Document();
 		root = doc.createRoot( 'root' );
 		graveyard = doc._graveyard;
@@ -44,11 +44,11 @@ describe( 'ReinsertOperation', function() {
 		);
 	} );
 
-	it( 'should extend MoveOperation class', function() {
+	it( 'should extend MoveOperation class', () => {
 		expect( operation ).to.be.instanceof( MoveOperation );
 	} );
 
-	it( 'should create a remove operation as a reverse', function() {
+	it( 'should create a remove operation as a reverse', () => {
 		let reverse = operation.getReversed();
 
 		expect( reverse ).to.be.an.instanceof( RemoveOperation );
@@ -58,7 +58,7 @@ describe( 'ReinsertOperation', function() {
 		expect( reverse.targetPosition.isEqual( graveyardPosition ) ).to.be.true;
 	} );
 
-	it( 'should undo reinsert set of nodes by applying reverse operation', function() {
+	it( 'should undo reinsert set of nodes by applying reverse operation', () => {
 		let reverse = operation.getReversed();
 
 		graveyard.insertChildren( 0, 'bar' );

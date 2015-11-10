@@ -12,7 +12,7 @@
  * @singleton
  */
 
-CKEDITOR.define( [ 'utils-lodash', 'lib/lodash/lodash-ckeditor' ], function( lodashIncludes, lodash ) {
+CKEDITOR.define( [ 'utils-lodash', 'lib/lodash/lodash-ckeditor' ], ( lodashIncludes, lodash ) => {
 	const utils = {
 		/**
 		 * Creates a spy function (ala Sinon.js) that can be used to inspect call to it.
@@ -35,10 +35,10 @@ CKEDITOR.define( [ 'utils-lodash', 'lib/lodash/lodash-ckeditor' ], function( lod
 		 *
 		 * @returns {Number} A number representing the id.
 		 */
-		uid: ( function() {
+		uid: ( () => {
 			let next = 1;
 
-			return function() {
+			return () => {
 				return next++;
 			};
 		} )(),

@@ -39,7 +39,7 @@
  * @singleton
  */
 
-CKEDITOR.define( function() {
+CKEDITOR.define( () => {
 	const log = {
 		/**
 		 * Logs an error to the console.

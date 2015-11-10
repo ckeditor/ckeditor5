@@ -9,7 +9,7 @@ CKEDITOR.define( [
 	'document/character',
 	'document/element',
 	'document/position'
-], function( Character, Element, Position ) {
+], ( Character, Element, Position ) => {
 	const ELEMENT_ENTER = 0;
 	const ELEMENT_LEAVE = 1;
 	const CHARACTER = 2;

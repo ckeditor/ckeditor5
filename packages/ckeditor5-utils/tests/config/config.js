@@ -9,7 +9,7 @@ const modules = bender.amd.require( 'config' );
 
 let config;
 
-beforeEach( function() {
+beforeEach( () => {
 	const Config = modules.config;
 
 	config = new Config( {
@@ -26,8 +26,8 @@ beforeEach( function() {
 	} );
 } );
 
-describe( 'constructor', function() {
-	it( 'should set configurations', function() {
+describe( 'constructor', () => {
+	it( 'should set configurations', () => {
 		expect( config ).to.have.property( 'creator' ).to.equal( 'inline' );
 		expect( config ).to.have.property( 'language' ).to.equal( 'pl' );
 		expect( config ).to.have.property( 'resize' ).to.have.property( 'minheight' ).to.equal( 300 );
@@ -37,7 +37,7 @@ describe( 'constructor', function() {
 		expect( config ).to.have.property( 'toolbar' ).to.equal( 'top' );
 	} );
 
-	it( 'should work with no parameters', function() {
+	it( 'should work with no parameters', () => {
 		const Config = modules.config;
 
 		// No error should be thrown.
@@ -45,15 +45,15 @@ describe( 'constructor', function() {
 	} );
 } );
 
-describe( 'set', function() {
-	it( 'should create Config instances for objects', function() {
+describe( 'set', () => {
+	it( 'should create Config instances for objects', () => {
 		const Config = modules.config;
 
 		expect( config.resize ).to.be.an.instanceof( Config );
 		expect( config.resize.icon ).to.be.an.instanceof( Config );
 	} );
 
-	it( 'should set configurations when passing objects', function() {
+	it( 'should set configurations when passing objects', () => {
 		config.set( {
 			option1: 1,
 			option2: {
@@ -69,13 +69,13 @@ describe( 'set', function() {
 			.to.have.property( 'suboption21' ).to.equal( 21 );
 	} );
 
-	it( 'should set configurations when passing name and value', function() {
+	it( 'should set configurations when passing name and value', () => {
 		config.set( 'something', 'anything' );
 
 		expect( config ).to.have.property( 'something' ).to.equal( 'anything' );
 	} );
 
-	it( 'should set configurations when passing name.with.deep and value', function() {
+	it( 'should set configurations when passing name.with.deep and value', () => {
 		config.set( 'color.red', 'f00' );
 		config.set( 'background.color.blue', '00f' );
 
@@ -89,7 +89,7 @@ describe( 'set', function() {
 			.to.have.property( 'blue' ).to.equal( '00f' );
 	} );
 
-	it( 'should override and expand deep configurations', function() {
+	it( 'should override and expand deep configurations', () => {
 		config.set( {
 			resize: {
 				minHeight: 400,		// Override
@@ -111,7 +111,7 @@ describe( 'set', function() {
 		expect( config.resize.icon ).to.have.property( 'url' ).to.equal( true );
 	} );
 
-	it( 'should replace a simple entry with a Config instance', function() {
+	it( 'should replace a simple entry with a Config instance', () => {
 		const Config = modules.config;
 
 		config.set( 'test', 1 );
@@ -123,7 +123,7 @@ describe( 'set', function() {
 		expect( config.test.prop ).to.equal( 1 );
 	} );
 
-	it( 'should replace a simple entry with a Config instance when passing an object', function() {
+	it( 'should replace a simple entry with a Config instance when passing an object', () => {
 		const Config = modules.config;
 
 		config.set( 'test', 1 );
@@ -137,7 +137,7 @@ describe( 'set', function() {
 		expect( config.test.prop ).to.equal( 1 );
 	} );
 
-	it( 'should replace a simple entry with a Config instance when passing a name.with.deep', function() {
+	it( 'should replace a simple entry with a Config instance when passing a name.with.deep', () => {
 		const Config = modules.config;
 
 		config.set( 'test.prop', 1 );
@@ -148,7 +148,7 @@ describe( 'set', function() {
 		expect( config.test.prop.value ).to.equal( 1 );
 	} );
 
-	it( 'should not create Config instances for non-pure objects', function() {
+	it( 'should not create Config instances for non-pure objects', () => {
 		function SomeClass() {}
 
 		config.set( 'date', new Date() );
@@ -160,7 +160,7 @@ describe( 'set', function() {
 		expect( config.instance ).to.be.an.instanceof( SomeClass );
 	} );
 
-	it( 'should set `null` for undefined value', function() {
+	it( 'should set `null` for undefined value', () => {
 		config.set( 'test' );
 
 		expect( config.test ).to.be.null();
@@ -168,17 +168,17 @@ describe( 'set', function() {
 	} );
 } );
 
-describe( 'get', function() {
-	it( 'should retrieve a configuration', function() {
+describe( 'get', () => {
+	it( 'should retrieve a configuration', () => {
 		expect( config.get( 'creator' ) ).to.equal( 'inline' );
 	} );
 
-	it( 'should retrieve a deep configuration', function() {
+	it( 'should retrieve a deep configuration', () => {
 		expect( config.get( 'resize.minheight' ) ).to.equal( 300 );
 		expect( config.get( 'resize.icon.path' ) ).to.equal( 'xyz' );
 	} );
 
-	it( 'should retrieve a subset of the configuration', function() {
+	it( 'should retrieve a subset of the configuration', () => {
 		let resizeConfig = config.get( 'resize' );
 
 		expect( resizeConfig ).to.have.property( 'minheight' ).to.equal( 300 );
@@ -190,24 +190,24 @@ describe( 'get', function() {
 		expect( iconConfig ).to.have.property( 'path' ).to.equal( 'xyz' );
 	} );
 
-	it( 'should retrieve values case-insensitively', function() {
+	it( 'should retrieve values case-insensitively', () => {
 		expect( config.get( 'Creator' ) ).to.equal( 'inline' );
 		expect( config.get( 'CREATOR' ) ).to.equal( 'inline' );
 		expect( config.get( 'resize.minHeight' ) ).to.equal( 300 );
 		expect( config.get( 'resize.MINHEIGHT' ) ).to.equal( 300 );
 	} );
 
-	it( 'should return undefined for non existing configuration', function() {
+	it( 'should return undefined for non existing configuration', () => {
 		expect( config.get( 'invalid' ) ).to.be.undefined();
 	} );
 
-	it( 'should return undefined for non existing deep configuration', function() {
+	it( 'should return undefined for non existing deep configuration', () => {
 		expect( config.get( 'resize.invalid.value' ) ).to.be.undefined();
 	} );
 } );
 
-describe( 'define', function() {
-	it( 'should create the definition property', function() {
+describe( 'define', () => {
+	it( 'should create the definition property', () => {
 		expect( config ).to.not.have.property( 'definition' );
 
 		config.define( 'test', 1 );
@@ -215,7 +215,7 @@ describe( 'define', function() {
 		expect( config ).to.have.property( 'definition' );
 	} );
 
-	it( 'should set configurations in the definition property', function() {
+	it( 'should set configurations in the definition property', () => {
 		config.define( 'test1', 1 );
 
 		// This is for Code Coverage to ensure that it works when `definition` is already defined.
@@ -225,7 +225,7 @@ describe( 'define', function() {
 		expect( config.definition ).to.have.property( 'test2' ).to.equal( 2 );
 	} );
 
-	it( 'should set configurations passed as object in the definition property', function() {
+	it( 'should set configurations passed as object in the definition property', () => {
 		config.define( {
 			test: 1
 		} );
@@ -233,14 +233,14 @@ describe( 'define', function() {
 		expect( config.definition ).to.have.property( 'test' ).to.equal( 1 );
 	} );
 
-	it( 'should not define main config properties but still be retrieved with get()', function() {
+	it( 'should not define main config properties but still be retrieved with get()', () => {
 		config.define( 'test', 1 );
 
 		expect( config ).to.not.have.property( 'test' );
 		expect( config.get( 'test' ) ).to.equal( 1 );
 	} );
 
-	it( 'should be overridden by set()', function() {
+	it( 'should be overridden by set()', () => {
 		config.define( 'test', 1 );
 		config.set( 'test', 2 );
 
