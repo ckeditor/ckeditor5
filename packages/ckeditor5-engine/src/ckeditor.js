@@ -39,7 +39,7 @@ CKEDITOR.define( [ 'editor', 'collection', 'config' ], function( Editor, Collect
 		 * @returns {Promise} A promise, which will be fulfilled with the created editor.
 		 */
 		create: function( element, config ) {
-			var that = this;
+			const that = this;
 
 			return new Promise( function( resolve, reject ) {
 				// If a query selector has been passed, transform it into a real element.
@@ -51,7 +51,7 @@ CKEDITOR.define( [ 'editor', 'collection', 'config' ], function( Editor, Collect
 					}
 				}
 
-				var editor = new Editor( element, config );
+				const editor = new Editor( element, config );
 
 				that.instances.add( editor );
 

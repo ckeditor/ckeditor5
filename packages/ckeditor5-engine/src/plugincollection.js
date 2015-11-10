@@ -40,9 +40,9 @@ CKEDITOR.define( [
 		 */
 		load( plugins ) {
 			// The list of plugins which are being loaded (to avoid circular references issues).
-			var loading = {};
+			const loading = {};
 			// Plugins added to the collection (for the purpose of returning an array of loaded plugins).
-			var loaded = [];
+			const loaded = [];
 
 			// It may happen that an empty list was passed – don't fail.
 			plugins = plugins ? plugins.split( ',' ) : [];
@@ -63,11 +63,12 @@ CKEDITOR.define( [
 					CKEDITOR.require( [ 'plugin!' + plugin ],
 						// Success callback.
 						( LoadedPlugin ) => {
-							var deps = getPluginDeps( plugin );
-							var isPluginDep = plugin.indexOf( '/' ) > 0;
+							const deps = getPluginDeps( plugin );
+							const isPluginDep = plugin.indexOf( '/' ) > 0;
+							let loadedPlugin;
 
 							if ( !isPluginDep ) {
-								var loadedPlugin = new LoadedPlugin( this._editor );
+								loadedPlugin = new LoadedPlugin( this._editor );
 
 								if ( !( loadedPlugin instanceof Plugin ) ) {
 									/**
@@ -121,7 +122,7 @@ CKEDITOR.define( [
 
 			function getPluginDeps( name ) {
 				// Get the list of AMD modules that the plugin depends on.
-				var deps = CKEDITOR._dependencies[ 'plugin!' + name ] || [];
+				let deps = CKEDITOR._dependencies[ 'plugin!' + name ] || [];
 
 				deps = deps
 					// Pick only dependencies that are other plugins.

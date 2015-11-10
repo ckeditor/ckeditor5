@@ -52,10 +52,10 @@ CKEDITOR.define( [
 		}
 
 		_execute() {
-			var sourceElement = this.sourcePosition.parent;
-			var targetElement = this.targetPosition.parent;
-			var sourceOffset = this.sourcePosition.offset;
-			var targetOffset = this.targetPosition.offset;
+			let sourceElement = this.sourcePosition.parent;
+			let targetElement = this.targetPosition.parent;
+			let sourceOffset = this.sourcePosition.offset;
+			let targetOffset = this.targetPosition.offset;
 
 			// Validate whether move operation has correct parameters.
 			// Validation is pretty complex but move operation is one of the core ways to manipulate the document state.
@@ -88,11 +88,11 @@ CKEDITOR.define( [
 					'operation-move-range-into-itself: Trying to move a range of nodes to the inside of that range.'
 				);
 			} else {
-				var sourcePath = this.sourcePosition.getParentPath();
-				var targetPath = this.targetPosition.getParentPath();
+				const sourcePath = this.sourcePosition.getParentPath();
+				const targetPath = this.targetPosition.getParentPath();
 
 				if ( utils.compareArrays( sourcePath, targetPath ) == utils.compareArrays.PREFIX ) {
-					var i = sourcePath.length;
+					let i = sourcePath.length;
 
 					if ( this.targetPosition.path[ i ] >= sourceOffset && this.targetPosition.path[ i ] < sourceOffset + this.howMany ) {
 						/**
@@ -114,7 +114,7 @@ CKEDITOR.define( [
 				targetOffset -= this.howMany;
 			}
 
-			var removedNodes = sourceElement.removeChildren( sourceOffset, this.howMany );
+			const removedNodes = sourceElement.removeChildren( sourceOffset, this.howMany );
 
 			targetElement.insertChildren( targetOffset, removedNodes );
 		}

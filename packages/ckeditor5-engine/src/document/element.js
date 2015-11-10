@@ -60,7 +60,7 @@ CKEDITOR.define( [ 'document/node', 'document/nodelist' ], function( Node, NodeL
 		insertChildren( index, nodes ) {
 			this._children.insert( index, new NodeList( nodes ) );
 
-			for ( var node of this._children ) {
+			for ( let node of this._children ) {
 				node.parent = this;
 			}
 		}
@@ -77,7 +77,7 @@ CKEDITOR.define( [ 'document/node', 'document/nodelist' ], function( Node, NodeL
 		 */
 
 		removeChildren( index, number ) {
-			for ( var i = index; i < index + number; i++ ) {
+			for ( let i = index; i < index + number; i++ ) {
 				this._children.get( i ).parent = null;
 			}
 

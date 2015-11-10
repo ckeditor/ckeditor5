@@ -95,7 +95,7 @@ CKEDITOR.define( [
 				onModelChange( null, this.model[ property ] );
 
 				function onModelChange( evt, value ) {
-					var processedValue = callback( el, value );
+					let processedValue = callback( el, value );
 
 					if ( typeof processedValue != 'undefined' ) {
 						domUpdater( el, processedValue );
