@@ -5,7 +5,7 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'model', 'eventinfo' );
+var modules = bender.amd.require( 'model', 'eventinfo', 'ckeditorerror' );
 
 var Car, car;
 
@@ -133,6 +133,35 @@ describe( 'Model', function() {
 
 			sinon.assert.notCalled( spy );
 			sinon.assert.notCalled( spyColor );
+		} );
+
+		it( 'should throw when overriding already existing property', function() {
+			var CKEditorError = modules.ckeditorerror;
+
+			car.normalProperty = 1;
+
+			expect( () => {
+				car.set( 'normalProperty', 2 );
+			} ).to.throw( CKEditorError, /^model-set-cannot-override/ );
+
+			expect( car ).to.have.property( 'normalProperty', 1 );
+		} );
+
+		it( 'should throw when overriding already existing property (in the prototype)', function() {
+			var CKEditorError = modules.ckeditorerror;
+			var Model = modules.model;
+
+			class Car extends Model {
+				method() {}
+			}
+
+			car = new Car();
+
+			expect( () => {
+				car.set( 'method', 2 );
+			} ).to.throw( CKEditorError, /^model-set-cannot-override/ );
+
+			expect( car.method ).to.be.a( 'function' );
 		} );
 	} );
 
