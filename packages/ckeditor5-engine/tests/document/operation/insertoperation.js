@@ -27,7 +27,7 @@ describe( 'InsertOperation', function() {
 		Character = modules[ 'document/character' ];
 	} );
 
-	var doc, root;
+	let doc, root;
 
 	beforeEach( function() {
 		doc = new Document();
@@ -105,14 +105,14 @@ describe( 'InsertOperation', function() {
 	} );
 
 	it( 'should create a remove operation as a reverse', function() {
-		var position = new Position( [ 0 ], root );
-		var operation = new InsertOperation(
+		let position = new Position( [ 0 ], root );
+		let operation = new InsertOperation(
 			position,
 			[ 'foo', new Character( 'x' ), 'bar' ],
 			0
 		);
 
-		var reverse = operation.getReversed();
+		let reverse = operation.getReversed();
 
 		expect( reverse ).to.be.an.instanceof( RemoveOperation );
 		expect( reverse.baseVersion ).to.equal( 1 );
@@ -121,13 +121,13 @@ describe( 'InsertOperation', function() {
 	} );
 
 	it( 'should undo insert node by applying reverse operation', function() {
-		var operation = new InsertOperation(
+		let operation = new InsertOperation(
 			new Position( [ 0 ], root ),
 			new Character( 'x' ),
 			doc.version
 		);
 
-		var reverse = operation.getReversed();
+		let reverse = operation.getReversed();
 
 		doc.applyOperation( operation );
 
@@ -140,13 +140,13 @@ describe( 'InsertOperation', function() {
 	} );
 
 	it( 'should undo insert set of nodes by applying reverse operation', function() {
-		var operation = new InsertOperation(
+		let operation = new InsertOperation(
 			new Position( [ 0 ], root ),
 			'bar',
 			doc.version
 		);
 
-		var reverse = operation.getReversed();
+		let reverse = operation.getReversed();
 
 		doc.applyOperation( operation );
 

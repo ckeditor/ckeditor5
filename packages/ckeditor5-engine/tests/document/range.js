@@ -23,7 +23,7 @@ describe( 'Range', function() {
 		end = new Position( [ 1 ] );
 	} );
 
-	var range;
+	let range;
 
 	beforeEach( function() {
 		range = new Range( start, end );
@@ -38,30 +38,30 @@ describe( 'Range', function() {
 
 	describe( 'isEqual', function() {
 		it( 'should return true if the ranges are the same', function() {
-			var sameStart = new Position( [ 0 ] );
-			var sameEnd = new Position( [ 1 ] );
+			let sameStart = new Position( [ 0 ] );
+			let sameEnd = new Position( [ 1 ] );
 
-			var sameRange = new Range( sameStart, sameEnd );
+			let sameRange = new Range( sameStart, sameEnd );
 
 			expect( range.isEqual( sameRange ) ).to.be.true;
 		} );
 
 		it( 'should return false if the start position is different', function() {
-			var range = new Range( start, end );
+			let range = new Range( start, end );
 
-			var diffStart = new Position( [ 1 ] );
-			var sameEnd = new Position( [ 1 ] );
+			let diffStart = new Position( [ 1 ] );
+			let sameEnd = new Position( [ 1 ] );
 
-			var diffRange = new Range( diffStart, sameEnd );
+			let diffRange = new Range( diffStart, sameEnd );
 
 			expect( range.isEqual( diffRange ) ).to.not.be.true;
 		} );
 
 		it( 'should return false if the end position is different', function() {
-			var sameStart = new Position( [ 0 ] );
-			var diffEnd = new Position( [ 0 ] );
+			let sameStart = new Position( [ 0 ] );
+			let diffEnd = new Position( [ 0 ] );
 
-			var diffRange = new Range( sameStart, diffEnd );
+			let diffRange = new Range( sameStart, diffEnd );
 
 			expect( range.isEqual( diffRange ) ).to.not.be.true;
 		} );

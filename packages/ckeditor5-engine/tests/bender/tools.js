@@ -7,8 +7,8 @@
 
 'use strict';
 
-var createFn3 = function() {};
-var destroyFn3 = function() {};
+let createFn3 = function() {};
+let destroyFn3 = function() {};
 
 bender.tools.core.defineEditorCreatorMock( 'test1' );
 bender.tools.core.defineEditorCreatorMock( 'test2', {

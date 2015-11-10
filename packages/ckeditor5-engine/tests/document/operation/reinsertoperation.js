@@ -26,7 +26,7 @@ describe( 'ReinsertOperation', function() {
 		Position = modules[ 'document/position' ];
 	} );
 
-	var doc, root, graveyard, operation, graveyardPosition, rootPosition;
+	let doc, root, graveyard, operation, graveyardPosition, rootPosition;
 
 	beforeEach( function() {
 		doc = new Document();
@@ -49,7 +49,7 @@ describe( 'ReinsertOperation', function() {
 	} );
 
 	it( 'should create a remove operation as a reverse', function() {
-		var reverse = operation.getReversed();
+		let reverse = operation.getReversed();
 
 		expect( reverse ).to.be.an.instanceof( RemoveOperation );
 		expect( reverse.baseVersion ).to.equal( 1 );
@@ -59,7 +59,7 @@ describe( 'ReinsertOperation', function() {
 	} );
 
 	it( 'should undo reinsert set of nodes by applying reverse operation', function() {
-		var reverse = operation.getReversed();
+		let reverse = operation.getReversed();
 
 		graveyard.insertChildren( 0, 'bar' );
 

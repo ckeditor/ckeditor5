@@ -32,7 +32,7 @@
 				class TestCreator extends Creator {}
 
 				if ( proto ) {
-					for ( var propName in proto ) {
+					for ( let propName in proto ) {
 						TestCreator.prototype[ propName ] = proto[ propName ];
 					}
 				}

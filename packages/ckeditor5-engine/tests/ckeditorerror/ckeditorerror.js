@@ -10,7 +10,7 @@ const modules = bender.amd.require( 'ckeditorerror' );
 describe( 'CKEditorError', function() {
 	it( 'inherits from Error', function() {
 		const CKEditorError = modules.ckeditorerror;
-		var error = new CKEditorError( 'foo' );
+		let error = new CKEditorError( 'foo' );
 
 		expect( error ).to.be.an.instanceOf( Error );
 		expect( error ).to.be.an.instanceOf( CKEditorError );
@@ -18,14 +18,14 @@ describe( 'CKEditorError', function() {
 
 	it( 'sets the name', function() {
 		const CKEditorError = modules.ckeditorerror;
-		var error = new CKEditorError( 'foo' );
+		let error = new CKEditorError( 'foo' );
 
 		expect( error ).to.have.property( 'name', 'CKEditorError' );
 	} );
 
 	it( 'sets the message', function() {
 		const CKEditorError = modules.ckeditorerror;
-		var error = new CKEditorError( 'foo' );
+		let error = new CKEditorError( 'foo' );
 
 		expect( error ).to.have.property( 'message', 'foo' );
 		expect( error.data ).to.be.undefined;
@@ -33,8 +33,8 @@ describe( 'CKEditorError', function() {
 
 	it( 'sets the message and data', function() {
 		const CKEditorError = modules.ckeditorerror;
-		var data = { bar: 1 };
-		var error = new CKEditorError( 'foo', data );
+		let data = { bar: 1 };
+		let error = new CKEditorError( 'foo', data );
 
 		expect( error ).to.have.property( 'message', 'foo {"bar":1}' );
 		expect( error ).to.have.property( 'data', data );
@@ -48,12 +48,12 @@ describe( 'CKEditorError', function() {
 		}
 
 		const CKEditorError = modules.ckeditorerror;
-		var data = {
+		let data = {
 			bar: 'a',
 			bom: new Foo(),
 			bim: document.body
 		};
-		var error = new CKEditorError( 'foo', data );
+		let error = new CKEditorError( 'foo', data );
 
 		expect( error ).to.have.property( 'message', 'foo {"bar":"a","bom":{"x":1},"bim":{}}' );
 		expect( error ).to.have.property( 'data', data );

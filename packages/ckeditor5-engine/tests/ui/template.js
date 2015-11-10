@@ -16,7 +16,7 @@ beforeEach( createClassReferences );
 
 describe( 'constructor', function() {
 	it( 'accepts the definition', function() {
-		var def = {
+		let def = {
 			tag: 'p'
 		};
 
@@ -30,7 +30,7 @@ describe( 'render', function() {
 	} );
 
 	it( 'creates an element', function() {
-		var el = new Template( {
+		let el = new Template( {
 			tag: 'p',
 			attrs: {
 				'class': [ 'a', 'b' ],
@@ -46,7 +46,7 @@ describe( 'render', function() {
 	} );
 
 	it( 'creates element\'s children', function() {
-		var el = new Template( {
+		let el = new Template( {
 			tag: 'p',
 			attrs: {
 				a: 'A'
@@ -75,10 +75,10 @@ describe( 'render', function() {
 
 describe( 'callback value', function() {
 	it( 'works for attributes', function() {
-		var spy1 = bender.sinon.spy();
-		var spy2 = bender.sinon.spy();
+		let spy1 = bender.sinon.spy();
+		let spy2 = bender.sinon.spy();
 
-		var el = new Template( {
+		let el = new Template( {
 			tag: 'p',
 			attrs: {
 				'class': spy1
@@ -103,10 +103,10 @@ describe( 'callback value', function() {
 	} );
 
 	it( 'works for "text" property', function() {
-		var spy1 = bender.sinon.spy();
-		var spy2 = bender.sinon.spy();
+		let spy1 = bender.sinon.spy();
+		let spy2 = bender.sinon.spy();
 
-		var el = new Template( {
+		let el = new Template( {
 			tag: 'p',
 			text: spy1,
 			children: [
@@ -128,12 +128,12 @@ describe( 'callback value', function() {
 	} );
 
 	it( 'works for "on" property', function() {
-		var spy1 = bender.sinon.spy();
-		var spy2 = bender.sinon.spy();
-		var spy3 = bender.sinon.spy();
-		var spy4 = bender.sinon.spy();
+		let spy1 = bender.sinon.spy();
+		let spy2 = bender.sinon.spy();
+		let spy3 = bender.sinon.spy();
+		let spy4 = bender.sinon.spy();
 
-		var el = new Template( {
+		let el = new Template( {
 			tag: 'p',
 			children: [
 				{
@@ -156,12 +156,12 @@ describe( 'callback value', function() {
 	} );
 
 	it( 'works for "on" property with selectors', function() {
-		var spy1 = bender.sinon.spy();
-		var spy2 = bender.sinon.spy();
-		var spy3 = bender.sinon.spy();
-		var spy4 = bender.sinon.spy();
+		let spy1 = bender.sinon.spy();
+		let spy2 = bender.sinon.spy();
+		let spy3 = bender.sinon.spy();
+		let spy4 = bender.sinon.spy();
 
-		var el = new Template( {
+		let el = new Template( {
 			tag: 'p',
 			children: [
 				{

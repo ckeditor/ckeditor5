@@ -18,9 +18,9 @@ const modules = bender.amd.require(
 describe( 'Node', function() {
 	let Element, Character, Attribute, NodeList, CKEditorError;
 
-	var root;
-	var one, two, three;
-	var charB, charA, charR, img;
+	let root;
+	let one, two, three;
+	let charB, charA, charR, img;
 
 	before( function() {
 		Element = modules[ 'document/element' ];
@@ -97,9 +97,9 @@ describe( 'Node', function() {
 
 	describe( 'constructor', function() {
 		it( 'should copy attributes, not pass by reference', function() {
-			var attrs = [ new Attribute( 'attr', true ) ];
-			var foo = new Element( 'foo', attrs );
-			var bar = new Element( 'bar', attrs );
+			let attrs = [ new Attribute( 'attr', true ) ];
+			let foo = new Element( 'foo', attrs );
+			let bar = new Element( 'bar', attrs );
 
 			foo.removeAttr( 'attr' );
 
@@ -109,7 +109,7 @@ describe( 'Node', function() {
 	} );
 
 	describe( 'getAttr', function() {
-		var fooAttr, element;
+		let fooAttr, element;
 
 		beforeEach( function() {
 			fooAttr = new Attribute( 'foo', true );
@@ -127,8 +127,8 @@ describe( 'Node', function() {
 
 	describe( 'setAttr', function() {
 		it( 'should insert an attribute', function() {
-			var element = new Element( 'elem' );
-			var attr = new Attribute( 'foo', 'bar' );
+			let element = new Element( 'elem' );
+			let attr = new Attribute( 'foo', 'bar' );
 
 			element.setAttr( attr );
 
@@ -137,9 +137,9 @@ describe( 'Node', function() {
 		} );
 
 		it( 'should overwrite attribute with the same key', function() {
-			var oldAttr = new Attribute( 'foo', 'bar' );
-			var newAttr = new Attribute( 'foo', 'bar' );
-			var element = new Element( 'elem', [ oldAttr ] );
+			let oldAttr = new Attribute( 'foo', 'bar' );
+			let newAttr = new Attribute( 'foo', 'bar' );
+			let element = new Element( 'elem', [ oldAttr ] );
 
 			element.setAttr( newAttr );
 
@@ -150,10 +150,10 @@ describe( 'Node', function() {
 
 	describe( 'removeAttr', function() {
 		it( 'should remove an attribute', function() {
-			var attrA = new Attribute( 'a', 'A' );
-			var attrB = new Attribute( 'b', 'b' );
-			var attrC = new Attribute( 'c', 'C' );
-			var element = new Element( 'elem', [ attrA, attrB, attrC ] );
+			let attrA = new Attribute( 'a', 'A' );
+			let attrB = new Attribute( 'b', 'b' );
+			let attrC = new Attribute( 'c', 'C' );
+			let element = new Element( 'elem', [ attrA, attrB, attrC ] );
 
 			element.removeAttr( attrB.key );
 
@@ -166,40 +166,40 @@ describe( 'Node', function() {
 
 	describe( 'hasAttr', function() {
 		it( 'should check attribute by key', function() {
-			var fooAttr = new Attribute( 'foo', true );
-			var element = new Element( 'foo', [ fooAttr ] );
+			let fooAttr = new Attribute( 'foo', true );
+			let element = new Element( 'foo', [ fooAttr ] );
 
 			expect( element.hasAttr( 'foo' ) ).to.be.true;
 		} );
 
 		it( 'should return false if attribute was not found by key', function() {
-			var fooAttr = new Attribute( 'foo', true );
-			var element = new Element( 'foo', [ fooAttr ] );
+			let fooAttr = new Attribute( 'foo', true );
+			let element = new Element( 'foo', [ fooAttr ] );
 
 			expect( element.hasAttr( 'bar' ) ).to.be.false;
 		} );
 
 		it( 'should check attribute by object', function() {
-			var fooAttr = new Attribute( 'foo', true );
-			var foo2Attr = new Attribute( 'foo', true );
-			var element = new Element( 'foo', [ fooAttr ] );
+			let fooAttr = new Attribute( 'foo', true );
+			let foo2Attr = new Attribute( 'foo', true );
+			let element = new Element( 'foo', [ fooAttr ] );
 
 			expect( element.hasAttr( foo2Attr ) ).to.be.true;
 		} );
 
 		it( 'should return false if attribute was not found by object', function() {
-			var fooAttr = new Attribute( 'foo', true );
-			var element = new Element( 'foo' );
+			let fooAttr = new Attribute( 'foo', true );
+			let element = new Element( 'foo' );
 
 			expect( element.hasAttr( fooAttr ) ).to.be.false;
 		} );
 
 		it( 'should create proper JSON string using toJSON method', function() {
-			var b = new Character( 'b' );
-			var foo = new Element( 'foo', [], [ b ] );
+			let b = new Character( 'b' );
+			let foo = new Element( 'foo', [], [ b ] );
 
-			var parsedFoo = JSON.parse( JSON.stringify( foo ) );
-			var parsedBar = JSON.parse( JSON.stringify( b ) );
+			let parsedFoo = JSON.parse( JSON.stringify( foo ) );
+			let parsedBar = JSON.parse( JSON.stringify( b ) );
 
 			expect( parsedFoo.parent ).to.equal( null );
 			expect( parsedBar.parent ).to.equal( 'foo' );
@@ -223,8 +223,8 @@ describe( 'Node', function() {
 		} );
 
 		it( 'should throw an error if parent does not contains element', function() {
-			var f = new Character( 'f' );
-			var bar = new Element( 'bar', [], [] );
+			let f = new Character( 'f' );
+			let bar = new Element( 'bar', [], [] );
 
 			f.parent = bar;
 

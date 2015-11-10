@@ -28,7 +28,7 @@ describe( 'MoveOperation', function() {
 		CKEditorError = modules.ckeditorerror;
 	} );
 
-	var doc, root;
+	let doc, root;
 
 	beforeEach( function() {
 		doc = new Document();
@@ -36,8 +36,8 @@ describe( 'MoveOperation', function() {
 	} );
 
 	it( 'should move from one node to another', function() {
-		var p1 = new Element( 'p1', [], new Element( 'x' ) );
-		var p2 = new Element( 'p2' );
+		let p1 = new Element( 'p1', [], new Element( 'x' ) );
+		let p2 = new Element( 'p2' );
 
 		root.insertChildren( 0, [ p1, p2 ] );
 
@@ -102,14 +102,14 @@ describe( 'MoveOperation', function() {
 	} );
 
 	it( 'should create a move operation as a reverse', function() {
-		var nodeList = new NodeList( 'bar' );
+		let nodeList = new NodeList( 'bar' );
 
-		var sourcePosition = new Position( [ 0 ], root );
-		var targetPosition = new Position( [ 4 ], root );
+		let sourcePosition = new Position( [ 0 ], root );
+		let targetPosition = new Position( [ 4 ], root );
 
-		var operation = new MoveOperation( sourcePosition, targetPosition, nodeList.length, doc.version );
+		let operation = new MoveOperation( sourcePosition, targetPosition, nodeList.length, doc.version );
 
-		var reverse = operation.getReversed();
+		let reverse = operation.getReversed();
 
 		expect( reverse ).to.be.an.instanceof( MoveOperation );
 		expect( reverse.baseVersion ).to.equal( 1 );
@@ -119,12 +119,12 @@ describe( 'MoveOperation', function() {
 	} );
 
 	it( 'should undo move node by applying reverse operation', function() {
-		var p1 = new Element( 'p1', [], new Element( 'x' ) );
-		var p2 = new Element( 'p2' );
+		let p1 = new Element( 'p1', [], new Element( 'x' ) );
+		let p2 = new Element( 'p2' );
 
 		root.insertChildren( 0, [ p1, p2 ] );
 
-		var operation = new MoveOperation(
+		let operation = new MoveOperation(
 			new Position( [ 0, 0 ], root ),
 			new Position( [ 1, 0 ], root ),
 			1,
@@ -166,11 +166,11 @@ describe( 'MoveOperation', function() {
 	} );
 
 	it( 'should throw an error if target or source parent-element specified by position does not exist', function() {
-		var p = new Element( 'p' );
+		let p = new Element( 'p' );
 		p.insertChildren( 0, 'foo' );
 		root.insertChildren( 0, [ 'ab', p ] );
 
-		var operation = new MoveOperation(
+		let operation = new MoveOperation(
 			new Position( [ 2, 0 ], root ),
 			new Position( [ 1 ], root ),
 			3,
@@ -189,7 +189,7 @@ describe( 'MoveOperation', function() {
 	it( 'should throw an error if operation tries to move a range between the beginning and the end of that range', function() {
 		root.insertChildren( 0, 'xbarx' );
 
-		var operation = new MoveOperation(
+		let operation = new MoveOperation(
 			new Position( [ 1 ], root ),
 			new Position( [ 2 ], root ),
 			3,
@@ -204,10 +204,10 @@ describe( 'MoveOperation', function() {
 	} );
 
 	it( 'should throw an error if operation tries to move a range into a sub-tree of a node that is in that range', function() {
-		var p = new Element( 'p', [], [ new Element( 'p' ) ] );
+		let p = new Element( 'p', [], [ new Element( 'p' ) ] );
 		root.insertChildren( 0, [ 'ab', p, 'xy' ] );
 
-		var operation = new MoveOperation(
+		let operation = new MoveOperation(
 			new Position( [ 1 ], root ),
 			new Position( [ 2, 0, 0 ], root ),
 			3,
@@ -222,10 +222,10 @@ describe( 'MoveOperation', function() {
 	} );
 
 	it( 'should not throw an error if operation move a range into a sibling', function() {
-		var p = new Element( 'p' );
+		let p = new Element( 'p' );
 		root.insertChildren( 0, [ 'ab', p, 'xy' ] );
 
-		var operation = new MoveOperation(
+		let operation = new MoveOperation(
 			new Position( [ 1 ], root ),
 			new Position( [ 2, 0 ], root ),
 			1,

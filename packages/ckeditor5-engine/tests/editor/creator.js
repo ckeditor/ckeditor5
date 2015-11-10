@@ -8,7 +8,7 @@
 /* bender-include: ../_tools/tools.js */
 
 const modules = bender.amd.require( 'editor', 'plugin', 'creator', 'ckeditorerror' );
-var editor, element;
+let editor, element;
 
 function initEditor( config ) {
 	const Editor = modules.editor;
@@ -75,7 +75,7 @@ describe( 'init', function() {
 				plugins: 'creator-test1'
 			} )
 			.then( function() {
-				var creator = editor.plugins.get( 'creator-test1' );
+				let creator = editor.plugins.get( 'creator-test1' );
 
 				expect( creator ).to.be.instanceof( Creator );
 
@@ -89,8 +89,8 @@ describe( 'init', function() {
 				plugins: 'creator-test-any1,creator-test-any2'
 			} )
 			.then( function() {
-				var creator1 = editor.plugins.get( 'creator-test-any1' );
-				var creator2 = editor.plugins.get( 'creator-test-any2' );
+				let creator1 = editor.plugins.get( 'creator-test-any1' );
+				let creator2 = editor.plugins.get( 'creator-test-any2' );
 
 				expect( creator1.create.called + creator2.create.called ).to.be.equal( 1, 'only one of the creators should be used' );
 			} );
@@ -102,8 +102,8 @@ describe( 'init', function() {
 				plugins: 'creator-test-config1,creator-test-config2',
 			} )
 			.then( function() {
-				var creator1 = editor.plugins.get( 'creator-test-config1' );
-				var creator2 = editor.plugins.get( 'creator-test-config2' );
+				let creator1 = editor.plugins.get( 'creator-test-config1' );
+				let creator2 = editor.plugins.get( 'creator-test-config2' );
 
 				sinon.assert.calledOnce( creator2.create );
 				sinon.assert.notCalled( creator1.create );
@@ -156,7 +156,7 @@ describe( 'init', function() {
 
 describe( 'destroy', function() {
 	it( 'should call "destroy" on the creator', function() {
-		var creator1;
+		let creator1;
 
 		return initEditor( {
 				plugins: 'creator-test1'

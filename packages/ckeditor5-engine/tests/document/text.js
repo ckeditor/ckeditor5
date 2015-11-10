@@ -20,8 +20,8 @@ describe( 'Text', function() {
 			const Text = modules[ 'document/text' ];
 			const Attribute = modules[ 'document/attribute' ];
 
-			var attrs = [ new Attribute( 'bold', true ) ];
-			var text = new Text( 'bar', attrs );
+			let attrs = [ new Attribute( 'bold', true ) ];
+			let text = new Text( 'bar', attrs );
 
 			expect( text ).to.have.property( 'text' ).that.equals( 'bar' );
 			expect( text ).to.have.property( 'attrs' ).that.is.an( 'array' );

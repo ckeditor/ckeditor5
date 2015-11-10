@@ -9,9 +9,9 @@
 
 const modules = bender.amd.require( 'editor', 'editorconfig', 'plugin' );
 
-var editor;
-var element;
-var asyncSpy;
+let editor;
+let element;
+let asyncSpy;
 
 beforeEach( function() {
 	const Editor = modules.editor;
@@ -92,7 +92,7 @@ describe( 'init', function() {
 			plugins: 'creator-test'
 		} );
 
-		var promise = editor.init();
+		let promise = editor.init();
 
 		expect( promise ).to.be.an.instanceof( Promise );
 
@@ -174,7 +174,7 @@ describe( 'plugins', function() {
 
 describe( 'destroy', function() {
 	it( 'should fire "destroy"', function() {
-		var spy = sinon.spy();
+		let spy = sinon.spy();
 
 		editor.on( 'destroy', spy );
 

@@ -28,8 +28,8 @@ describe( 'Character', function() {
 
 	describe( 'constructor', function() {
 		it( 'should create character without attributes', function() {
-			var character = new Character( 'f' );
-			var parent = new Element( 'parent', [], character );
+			let character = new Character( 'f' );
+			let parent = new Element( 'parent', [], character );
 
 			expect( character ).to.be.an.instanceof( Node );
 			expect( character ).to.have.property( 'character' ).that.equals( 'f' );
@@ -38,9 +38,9 @@ describe( 'Character', function() {
 		} );
 
 		it( 'should create character with attributes', function() {
-			var attr = new Attribute( 'foo', 'bar' );
-			var character = new Character( 'f', [ attr ] );
-			var parent = new Element( 'parent', [], character );
+			let attr = new Attribute( 'foo', 'bar' );
+			let character = new Character( 'f', [ attr ] );
+			let parent = new Element( 'parent', [], character );
 
 			expect( character ).to.be.an.instanceof( Node );
 			expect( character ).to.have.property( 'character' ).that.equals( 'f' );

@@ -26,7 +26,7 @@ describe( 'RemoveOperation', function() {
 		Position = modules[ 'document/position' ];
 	} );
 
-	var doc, root, graveyard;
+	let doc, root, graveyard;
 
 	beforeEach( function() {
 		doc = new Document();
@@ -35,7 +35,7 @@ describe( 'RemoveOperation', function() {
 	} );
 
 	it( 'should extend MoveOperation class', function() {
-		var operation = new RemoveOperation(
+		let operation = new RemoveOperation(
 			new Position( [ 2 ], root ),
 			2,
 			doc.version
@@ -47,9 +47,9 @@ describe( 'RemoveOperation', function() {
 	it( 'should remove set of nodes and append them to graveyard root', function() {
 		root.insertChildren( 0, 'fozbar' );
 
-		var z = root.getChild( 2 );
-		var b = root.getChild( 3 );
-		var a = root.getChild( 4 );
+		let z = root.getChild( 2 );
+		let b = root.getChild( 3 );
+		let a = root.getChild( 4 );
 
 		doc.applyOperation(
 			new RemoveOperation(
@@ -69,9 +69,9 @@ describe( 'RemoveOperation', function() {
 	} );
 
 	it( 'should create a reinsert operation as a reverse', function() {
-		var position = new Position( [ 0 ], root );
-		var operation = new RemoveOperation( position, 2, 0 );
-		var reverse = operation.getReversed();
+		let position = new Position( [ 0 ], root );
+		let operation = new RemoveOperation( position, 2, 0 );
+		let reverse = operation.getReversed();
 
 		expect( reverse ).to.be.an.instanceof( ReinsertOperation );
 		expect( reverse.baseVersion ).to.equal( 1 );
@@ -81,9 +81,9 @@ describe( 'RemoveOperation', function() {
 	} );
 
 	it( 'should undo remove set of nodes by applying reverse operation', function() {
-		var position = new Position( [ 0 ], root );
-		var operation = new RemoveOperation( position, 3, 0 );
-		var reverse = operation.getReversed();
+		let position = new Position( [ 0 ], root );
+		let operation = new RemoveOperation( position, 3, 0 );
+		let reverse = operation.getReversed();
 
 		root.insertChildren( 0, 'bar' );
 

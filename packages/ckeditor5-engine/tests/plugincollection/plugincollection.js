@@ -6,7 +6,7 @@
 'use strict';
 
 const modules = bender.amd.require( 'plugincollection', 'plugin', 'editor', 'log' );
-var editor;
+let editor;
 let PluginA, PluginB;
 class TestError extends Error {}
 
@@ -56,7 +56,7 @@ CKEDITOR.define( 'plugin!H', [ 'plugin', 'plugin!H/a' ], function( Plugin ) {
 	return class extends Plugin {};
 } );
 
-var spies = {};
+let spies = {};
 // Note: This is NOT a plugin.
 CKEDITOR.define( 'plugin!H/a', [ 'plugin!H/a/b' ], function() {
 	return ( spies[ 'plugin!H/a' ] = sinon.spy() );
@@ -89,7 +89,7 @@ describe( 'load', function() {
 	it( 'should not fail when trying to load 0 plugins (empty string)', function() {
 		const PluginCollection = modules.plugincollection;
 
-		var plugins = new PluginCollection( editor );
+		let plugins = new PluginCollection( editor );
 
 		return plugins.load( '' )
 			.then( function() {
@@ -100,7 +100,7 @@ describe( 'load', function() {
 	it( 'should not fail when trying to load 0 plugins (undefined)', function() {
 		const PluginCollection = modules.plugincollection;
 
-		var plugins = new PluginCollection( editor );
+		let plugins = new PluginCollection( editor );
 
 		return plugins.load()
 			.then( function() {
@@ -111,7 +111,7 @@ describe( 'load', function() {
 	it( 'should add collection items for loaded plugins', function() {
 		const PluginCollection = modules.plugincollection;
 
-		var plugins = new PluginCollection( editor );
+		let plugins = new PluginCollection( editor );
 
 		return plugins.load( 'A,B' )
 			.then( function() {
@@ -125,8 +125,8 @@ describe( 'load', function() {
 	it( 'should load dependency plugins', function() {
 		const PluginCollection = modules.plugincollection;
 
-		var plugins = new PluginCollection( editor );
-		var spy = sinon.spy( plugins, 'add' );
+		let plugins = new PluginCollection( editor );
+		let spy = sinon.spy( plugins, 'add' );
 
 		return plugins.load( 'A,C' )
 			.then( function( loadedPlugins ) {
@@ -140,8 +140,8 @@ describe( 'load', function() {
 	it( 'should be ok when dependencies are loaded first', function() {
 		const PluginCollection = modules.plugincollection;
 
-		var plugins = new PluginCollection( editor );
-		var spy = sinon.spy( plugins, 'add' );
+		let plugins = new PluginCollection( editor );
+		let spy = sinon.spy( plugins, 'add' );
 
 		return plugins.load( 'A,B,C' )
 			.then( function( loadedPlugins ) {
@@ -155,8 +155,8 @@ describe( 'load', function() {
 	it( 'should load deep dependency plugins', function() {
 		const PluginCollection = modules.plugincollection;
 
-		var plugins = new PluginCollection( editor );
-		var spy = sinon.spy( plugins, 'add' );
+		let plugins = new PluginCollection( editor );
+		let spy = sinon.spy( plugins, 'add' );
 
 		return plugins.load( 'D' )
 			.then( function( loadedPlugins ) {
@@ -171,8 +171,8 @@ describe( 'load', function() {
 	it( 'should handle cross dependency plugins', function() {
 		const PluginCollection = modules.plugincollection;
 
-		var plugins = new PluginCollection( editor );
-		var spy = sinon.spy( plugins, 'add' );
+		let plugins = new PluginCollection( editor );
+		let spy = sinon.spy( plugins, 'add' );
 
 		return plugins.load( 'A,E' )
 			.then( function( loadedPlugins ) {
@@ -187,7 +187,7 @@ describe( 'load', function() {
 	it( 'should set the `editor` property on loaded plugins', function() {
 		const PluginCollection = modules.plugincollection;
 
-		var plugins = new PluginCollection( editor );
+		let plugins = new PluginCollection( editor );
 
 		return plugins.load( 'A,B' )
 			.then( function() {
@@ -199,7 +199,7 @@ describe( 'load', function() {
 	it( 'should set the `path` property on loaded plugins', function() {
 		const PluginCollection = modules.plugincollection;
 
-		var plugins = new PluginCollection( editor );
+		let plugins = new PluginCollection( editor );
 
 		return plugins.load( 'A,B' )
 			.then( function() {
@@ -211,7 +211,7 @@ describe( 'load', function() {
 	it( 'should set the `deps` property on loaded plugins', function() {
 		const PluginCollection = modules.plugincollection;
 
-		var plugins = new PluginCollection( editor );
+		let plugins = new PluginCollection( editor );
 
 		return plugins.load( 'A,D' )
 			.then( function() {
@@ -224,11 +224,11 @@ describe( 'load', function() {
 
 	it( 'should reject on invalid plugin names (forward require.js loading error)', function() {
 		const PluginCollection = modules.plugincollection;
-		var log = modules.log;
+		let log = modules.log;
 
-		var logSpy = bender.sinon.stub( log, 'error' );
+		let logSpy = bender.sinon.stub( log, 'error' );
 
-		var plugins = new PluginCollection( editor );
+		let plugins = new PluginCollection( editor );
 
 		return plugins.load( 'A,BAD,B' )
 			// Throw here, so if by any chance plugins.load() was resolved correctly catch() will be stil executed.
@@ -247,11 +247,11 @@ describe( 'load', function() {
 
 	it( 'should reject on broken plugins (forward the error thrown in a plugin)', function() {
 		const PluginCollection = modules.plugincollection;
-		var log = modules.log;
+		let log = modules.log;
 
-		var logSpy = bender.sinon.stub( log, 'error' );
+		let logSpy = bender.sinon.stub( log, 'error' );
 
-		var plugins = new PluginCollection( editor );
+		let plugins = new PluginCollection( editor );
 
 		return plugins.load( 'A,G,B' )
 			// Throw here, so if by any chance plugins.load() was resolved correctly catch() will be stil executed.
@@ -270,7 +270,7 @@ describe( 'load', function() {
 	it( 'should load `deps` which are not plugins', function() {
 		const PluginCollection = modules.plugincollection;
 
-		var plugins = new PluginCollection( editor );
+		let plugins = new PluginCollection( editor );
 		expect( spies ).to.be.empty;
 
 		return plugins.load( 'H' )
@@ -293,7 +293,7 @@ describe( 'load', function() {
 
 	it( 'should load instances of Plugin only', function() {
 		const PluginCollection = modules.plugincollection;
-		var plugins = new PluginCollection( editor );
+		let plugins = new PluginCollection( editor );
 
 		return plugins.load( 'I' )
 			.then( () => {
@@ -306,7 +306,7 @@ describe( 'load', function() {
 
 	it( 'should cancel loading module which looks like a plugin but is a normal module', function() {
 		const PluginCollection = modules.plugincollection;
-		var plugins = new PluginCollection( editor );
+		let plugins = new PluginCollection( editor );
 
 		return plugins.load( 'J' )
 			.then( () => {

@@ -22,7 +22,7 @@ describe( 'Document', function() {
 		CKEditorError = modules.ckeditorerror;
 	} );
 
-	var document;
+	let document;
 
 	beforeEach( function() {
 		document = new Document();
@@ -39,7 +39,7 @@ describe( 'Document', function() {
 
 	describe( 'createRoot', function() {
 		it( 'should create a new RootElement, add it to roots map and return it', function() {
-			var root = document.createRoot( 'root' );
+			let root = document.createRoot( 'root' );
 
 			expect( document.roots.size ).to.equal( 2 );
 			expect( root ).to.be.instanceof( RootElement );
@@ -59,8 +59,8 @@ describe( 'Document', function() {
 
 	describe( 'getRoot', function() {
 		it( 'should return a RootElement previously created with given name', function() {
-			var newRoot = document.createRoot( 'root' );
-			var getRoot = document.getRoot( 'root' );
+			let newRoot = document.createRoot( 'root' );
+			let getRoot = document.getRoot( 'root' );
 
 			expect( getRoot ).to.equal( newRoot );
 		} );
@@ -76,8 +76,8 @@ describe( 'Document', function() {
 
 	describe( 'applyOperation', function() {
 		it( 'should increase document version, execute operation and fire operationApplied', function() {
-			var operationApplied = sinon.spy();
-			var operation = {
+			let operationApplied = sinon.spy();
+			let operation = {
 				baseVersion: 0,
 				_execute: sinon.spy()
 			};
@@ -92,8 +92,8 @@ describe( 'Document', function() {
 		} );
 
 		it( 'should throw an error on the operation base version and the document version is different', function() {
-			var operationApplied = sinon.spy();
-			var operation = {
+			let operationApplied = sinon.spy();
+			let operation = {
 				baseVersion: 1
 			};
 

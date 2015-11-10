@@ -19,7 +19,7 @@ const modules = bender.amd.require(
 describe( 'position', function() {
 	let Element, Character, Document, NodeList, Position, CKEditorError;
 
-	var doc, root, p, ul, li1, li2, f, o, z, b, a, r;
+	let doc, root, p, ul, li1, li2, f, o, z, b, a, r;
 
 	// root
 	//  |- p         Before: [ 0 ]       After: [ 1 ]
@@ -64,7 +64,7 @@ describe( 'position', function() {
 	} );
 
 	it( 'should create a position with path and document', function() {
-		var position = new Position( [ 0 ], root );
+		let position = new Position( [ 0 ], root );
 
 		expect( position ).to.have.property( 'path' ).that.deep.equals( [ 0 ] );
 		expect( position ).to.have.property( 'root' ).that.equals( root );
@@ -208,21 +208,21 @@ describe( 'position', function() {
 	} );
 
 	it( 'should equals another position with the same path', function() {
-		var position = new Position( [ 1, 1, 2 ], root );
-		var samePosition = new Position( [ 1, 1, 2 ], root );
+		let position = new Position( [ 1, 1, 2 ], root );
+		let samePosition = new Position( [ 1, 1, 2 ], root );
 
 		expect( position.isEqual( samePosition ) ).to.be.true;
 	} );
 
 	it( 'should not equals another position with the different path', function() {
-		var position = new Position( [ 1, 1, 1 ], root );
-		var differentNode = new Position( [ 1, 2, 2 ], root );
+		let position = new Position( [ 1, 1, 1 ], root );
+		let differentNode = new Position( [ 1, 2, 2 ], root );
 
 		expect( position.isEqual( differentNode ) ).to.be.false;
 	} );
 
 	it( 'should have proper parent path', function() {
-		var position = new Position( [ 1, 2, 3 ], root );
+		let position = new Position( [ 1, 2, 3 ], root );
 
 		expect( position.getParentPath() ).to.deep.equal( [ 1, 2 ] );
 	} );

@@ -34,7 +34,7 @@ describe( 'ChangeOperation', function() {
 		CKEditorError = modules.ckeditorerror;
 	} );
 
-	var doc, root;
+	let doc, root;
 
 	beforeEach( function() {
 		doc = new Document();
@@ -42,7 +42,7 @@ describe( 'ChangeOperation', function() {
 	} );
 
 	it( 'should insert attribute to the set of nodes', function() {
-		var newAttr = new Attribute( 'isNew', true );
+		let newAttr = new Attribute( 'isNew', true );
 
 		root.insertChildren( 0, 'bar' );
 
@@ -63,9 +63,9 @@ describe( 'ChangeOperation', function() {
 	} );
 
 	it( 'should add attribute to the existing attributes', function() {
-		var newAttr = new Attribute( 'isNew', true );
-		var fooAttr = new Attribute( 'foo', true );
-		var barAttr = new Attribute( 'bar', true );
+		let newAttr = new Attribute( 'isNew', true );
+		let fooAttr = new Attribute( 'foo', true );
+		let barAttr = new Attribute( 'bar', true );
 
 		root.insertChildren( 0, new Character( 'x', [ fooAttr, barAttr ] ) );
 
@@ -87,8 +87,8 @@ describe( 'ChangeOperation', function() {
 	} );
 
 	it( 'should change attribute to the set of nodes', function() {
-		var oldAttr = new Attribute( 'isNew', false );
-		var newAttr = new Attribute( 'isNew', true );
+		let oldAttr = new Attribute( 'isNew', false );
+		let newAttr = new Attribute( 'isNew', true );
 
 		root.insertChildren( 0, new Text( 'bar', [ oldAttr ] ) );
 
@@ -112,10 +112,10 @@ describe( 'ChangeOperation', function() {
 	} );
 
 	it( 'should change attribute in the middle of existing attributes', function() {
-		var fooAttr = new Attribute( 'foo', true );
-		var x1Attr = new Attribute( 'x', 1 );
-		var x2Attr = new Attribute( 'x', 2 );
-		var barAttr = new Attribute( 'bar', true );
+		let fooAttr = new Attribute( 'foo', true );
+		let x1Attr = new Attribute( 'x', 1 );
+		let x2Attr = new Attribute( 'x', 2 );
+		let barAttr = new Attribute( 'bar', true );
 
 		root.insertChildren( 0, new Character( 'x', [ fooAttr, x1Attr, barAttr ] ) );
 
@@ -137,9 +137,9 @@ describe( 'ChangeOperation', function() {
 	} );
 
 	it( 'should remove attribute', function() {
-		var fooAttr = new Attribute( 'foo', true );
-		var xAttr = new Attribute( 'x', true );
-		var barAttr = new Attribute( 'bar', true );
+		let fooAttr = new Attribute( 'foo', true );
+		let xAttr = new Attribute( 'x', true );
+		let barAttr = new Attribute( 'bar', true );
 
 		root.insertChildren( 0, new Character( 'x', [ fooAttr, xAttr, barAttr ] ) );
 
@@ -160,11 +160,11 @@ describe( 'ChangeOperation', function() {
 	} );
 
 	it( 'should create a change operation as a reverse', function() {
-		var oldAttr = new Attribute( 'x', 'old' );
-		var newAttr = new Attribute( 'x', 'new' );
-		var range = new Range( new Position( [ 0 ], root ), new Position( [ 3 ], root ) );
-		var operation = new ChangeOperation( range, oldAttr, newAttr, doc.version );
-		var reverse = operation.getReversed();
+		let oldAttr = new Attribute( 'x', 'old' );
+		let newAttr = new Attribute( 'x', 'new' );
+		let range = new Range( new Position( [ 0 ], root ), new Position( [ 3 ], root ) );
+		let operation = new ChangeOperation( range, oldAttr, newAttr, doc.version );
+		let reverse = operation.getReversed();
 
 		expect( reverse ).to.be.an.instanceof( ChangeOperation );
 		expect( reverse.baseVersion ).to.equal( 1 );
@@ -174,18 +174,18 @@ describe( 'ChangeOperation', function() {
 	} );
 
 	it( 'should undo adding attribute by applying reverse operation', function() {
-		var newAttr = new Attribute( 'isNew', true );
+		let newAttr = new Attribute( 'isNew', true );
 
 		root.insertChildren( 0, 'bar' );
 
-		var operation = new ChangeOperation(
+		let operation = new ChangeOperation(
 			new Range( new Position( [ 0 ], root ), new Position( [ 3 ], root ) ),
 			null,
 			newAttr,
 			doc.version
 		);
 
-		var reverse = operation.getReversed();
+		let reverse = operation.getReversed();
 
 		doc.applyOperation( operation );
 		doc.applyOperation( reverse );
@@ -198,19 +198,19 @@ describe( 'ChangeOperation', function() {
 	} );
 
 	it( 'should undo changing attribute by applying reverse operation', function() {
-		var oldAttr = new Attribute( 'isNew', false );
-		var newAttr = new Attribute( 'isNew', true );
+		let oldAttr = new Attribute( 'isNew', false );
+		let newAttr = new Attribute( 'isNew', true );
 
 		root.insertChildren( 0, new Text( 'bar', [ oldAttr ] ) );
 
-		var operation = new ChangeOperation(
+		let operation = new ChangeOperation(
 			new Range( new Position( [ 0 ], root ), new Position( [ 3 ], root ) ),
 			oldAttr,
 			newAttr,
 			doc.version
 		);
 
-		var reverse = operation.getReversed();
+		let reverse = operation.getReversed();
 
 		doc.applyOperation( operation );
 
@@ -227,18 +227,18 @@ describe( 'ChangeOperation', function() {
 	} );
 
 	it( 'should undo remove attribute by applying reverse operation', function() {
-		var fooAttr = new Attribute( 'foo', false );
+		let fooAttr = new Attribute( 'foo', false );
 
 		root.insertChildren( 0, new Text( 'bar', [ fooAttr ] ) );
 
-		var operation = new ChangeOperation(
+		let operation = new ChangeOperation(
 			new Range( new Position( [ 0 ], root ), new Position( [ 3 ], root ) ),
 			fooAttr,
 			null,
 			doc.version
 		);
 
-		var reverse = operation.getReversed();
+		let reverse = operation.getReversed();
 
 		doc.applyOperation( operation );
 
@@ -255,7 +255,7 @@ describe( 'ChangeOperation', function() {
 	} );
 
 	it( 'should throw an error when one try to remove and the attribute does not exists', function() {
-		var fooAttr = new Attribute( 'foo', true );
+		let fooAttr = new Attribute( 'foo', true );
 
 		root.insertChildren( 0, 'x' );
 
@@ -274,8 +274,8 @@ describe( 'ChangeOperation', function() {
 	} );
 
 	it( 'should throw an error when one try to insert and the attribute already exists', function() {
-		var x1Attr = new Attribute( 'x', 1 );
-		var x2Attr = new Attribute( 'x', 2 );
+		let x1Attr = new Attribute( 'x', 1 );
+		let x2Attr = new Attribute( 'x', 2 );
 
 		root.insertChildren( 0, new Character( 'x', [ x1Attr ] ) );
 
@@ -294,8 +294,8 @@ describe( 'ChangeOperation', function() {
 	} );
 
 	it( 'should throw an error when one try to change and the new and old attributes have different keys', function() {
-		var fooAttr = new Attribute( 'foo', true );
-		var barAttr = new Attribute( 'bar', true );
+		let fooAttr = new Attribute( 'foo', true );
+		let barAttr = new Attribute( 'bar', true );
 
 		root.insertChildren( 0, 'x' );
 

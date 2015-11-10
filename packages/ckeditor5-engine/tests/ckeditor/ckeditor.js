@@ -9,8 +9,8 @@
 
 const modules = bender.amd.require( 'ckeditor', 'editor', 'config' );
 
-var content = document.getElementById( 'content' );
-var editorConfig = { plugins: 'creator-test' };
+let content = document.getElementById( 'content' );
+let editorConfig = { plugins: 'creator-test' };
 
 bender.tools.createSinonSandbox();
 bender.tools.core.defineEditorCreatorMock( 'test' );
@@ -70,7 +70,7 @@ describe( 'create', function() {
 
 	it( 'should remove the editor from the `instances` collection on `destroy` event', function() {
 		const CKEDITOR = modules.ckeditor;
-		var editor1, editor2;
+		let editor1, editor2;
 
 		// Create the first editor.
 		return CKEDITOR.create( content, editorConfig ).then( function( editor ) {
@@ -98,7 +98,7 @@ describe( 'create', function() {
 	it( 'should be rejected on element not found', function() {
 		const CKEDITOR = modules.ckeditor;
 
-		var addSpy = bender.sinon.spy( CKEDITOR.instances, 'add' );
+		let addSpy = bender.sinon.spy( CKEDITOR.instances, 'add' );
 
 		return CKEDITOR.create( '.undefined' ).then( function() {
 			throw new Error( 'It should not enter this function' );

@@ -26,8 +26,8 @@ describe( 'Element', function() {
 
 	describe( 'constructor', function() {
 		it( 'should create root element without attributes', function() {
-			var doc = new Document();
-			var root = new RootElement( doc );
+			let doc = new Document();
+			let root = new RootElement( doc );
 
 			expect( root ).to.be.an.instanceof( Element );
 			expect( root ).to.have.property( 'document' ).that.equals( doc );

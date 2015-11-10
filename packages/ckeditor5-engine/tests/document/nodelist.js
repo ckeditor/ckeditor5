@@ -26,7 +26,7 @@ describe( 'NodeList', function() {
 
 	describe( 'constructor', function() {
 		it( 'should change array of strings into a set of nodes', function() {
-			var nodeList = new NodeList( [ 'foo', new Character( 'x' ), 'bar' ] );
+			let nodeList = new NodeList( [ 'foo', new Character( 'x' ), 'bar' ] );
 
 			expect( nodeList.length ).to.equal( 7 );
 			expect( nodeList.get( 0 ).character ).to.equal( 'f' );
@@ -39,7 +39,7 @@ describe( 'NodeList', function() {
 		} );
 
 		it( 'should change string into a set of nodes', function() {
-			var nodeList = new NodeList( 'foo' );
+			let nodeList = new NodeList( 'foo' );
 
 			expect( nodeList.length ).to.equal( 3 );
 			expect( nodeList.get( 0 ).character ).to.equal( 'f' );
@@ -48,15 +48,15 @@ describe( 'NodeList', function() {
 		} );
 
 		it( 'should change node into a set of nodes', function() {
-			var nodeList = new NodeList( new Character( 'x' ) );
+			let nodeList = new NodeList( new Character( 'x' ) );
 
 			expect( nodeList.length ).to.equal( 1 );
 			expect( nodeList.get( 0 ).character ).to.equal( 'x' );
 		} );
 
 		it( 'should change text with attribute into a set of nodes', function() {
-			var attr = new Attribute( 'bold', true );
-			var nodeList = new NodeList( new Text( 'foo', [ attr ] ) );
+			let attr = new Attribute( 'bold', true );
+			let nodeList = new NodeList( new Text( 'foo', [ attr ] ) );
 
 			expect( nodeList.length ).to.equal( 3 );
 			expect( nodeList.get( 0 ).character ).to.equal( 'f' );
@@ -70,8 +70,8 @@ describe( 'NodeList', function() {
 
 	describe( 'insert', function() {
 		it( 'should insert one nodelist into another', function() {
-			var outerList = new NodeList( 'foo' );
-			var innerList = new NodeList( 'xxx' );
+			let outerList = new NodeList( 'foo' );
+			let innerList = new NodeList( 'xxx' );
 
 			outerList.insert( 2, innerList );
 
@@ -87,7 +87,7 @@ describe( 'NodeList', function() {
 
 	describe( 'remove', function() {
 		it( 'should remove part of the nodelist', function() {
-			var nodeList = new NodeList( 'foobar' );
+			let nodeList = new NodeList( 'foobar' );
 
 			nodeList.remove( 2, 3 );
 
@@ -100,11 +100,11 @@ describe( 'NodeList', function() {
 
 	describe( 'iterator', function() {
 		it( 'should iterate over all elements in the collection', function() {
-			var characters = 'foo';
-			var nodeList = new NodeList( characters );
-			var i = 0;
+			let characters = 'foo';
+			let nodeList = new NodeList( characters );
+			let i = 0;
 
-			for ( var node of nodeList ) {
+			for ( let node of nodeList ) {
 				expect( node.character ).to.equal( characters[ i ] );
 				i++;
 			}
