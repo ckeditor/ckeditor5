@@ -11,7 +11,7 @@ describe( 'EventInfo', function() {
 	it( 'should be created properly', function() {
 		const EventInfo = modules.eventinfo;
 
-		var event = new EventInfo( this, 'test' );
+		let event = new EventInfo( this, 'test' );
 
 		expect( event.source ).to.equal( this );
 		expect( event.name ).to.equal( 'test' );
@@ -22,7 +22,7 @@ describe( 'EventInfo', function() {
 	it( 'should have stop() and off() marked', function() {
 		const EventInfo = modules.eventinfo;
 
-		var event = new EventInfo( this, 'test' );
+		let event = new EventInfo( this, 'test' );
 
 		event.stop();
 		event.off();
@@ -34,7 +34,7 @@ describe( 'EventInfo', function() {
 	it( 'should not mark "called" in future instances', function() {
 		const EventInfo = modules.eventinfo;
 
-		var event = new EventInfo( this, 'test' );
+		let event = new EventInfo( this, 'test' );
 
 		event.stop();
 		event.off();

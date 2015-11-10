@@ -10,7 +10,7 @@
 
 const modules = bender.amd.require( 'ckeditor', 'ui/view', 'ui/region', 'ckeditorerror', 'model', 'eventinfo' );
 let View, TestView;
-var view;
+let view;
 
 bender.tools.createSinonSandbox();
 
@@ -56,8 +56,8 @@ describe( 'bind', function() {
 	it( 'returns a function that passes arguments', function() {
 		setTestViewInstance( { a: 'foo' } );
 
-		var spy = bender.sinon.spy();
-		var callback = view.bind( 'a', spy );
+		let spy = bender.sinon.spy();
+		let callback = view.bind( 'a', spy );
 
 		expect( spy.called ).to.be.false;
 
@@ -113,7 +113,7 @@ describe( 'bind', function() {
 	} );
 
 	it( 'allows binding to the model with value processing', function() {
-		var callback = ( el, value ) =>
+		let callback = ( el, value ) =>
 			( value > 0 ? 'positive' : 'negative' );
 
 		setTestViewClass( function() {
@@ -160,7 +160,7 @@ describe( 'bind', function() {
 
 describe( 'on', function() {
 	it( 'accepts plain binding', function() {
-		var spy = bender.sinon.spy();
+		let spy = bender.sinon.spy();
 
 		setTestViewClass( function() {
 			return {
@@ -183,8 +183,8 @@ describe( 'on', function() {
 	} );
 
 	it( 'accepts an array of event bindings', function() {
-		var spy1 = bender.sinon.spy();
-		var spy2 = bender.sinon.spy();
+		let spy1 = bender.sinon.spy();
+		let spy2 = bender.sinon.spy();
 
 		setTestViewClass( function() {
 			return {
@@ -212,9 +212,9 @@ describe( 'on', function() {
 	} );
 
 	it( 'accepts DOM selectors', function() {
-		var spy1 = bender.sinon.spy();
-		var spy2 = bender.sinon.spy();
-		var spy3 = bender.sinon.spy();
+		let spy1 = bender.sinon.spy();
+		let spy2 = bender.sinon.spy();
+		let spy3 = bender.sinon.spy();
 
 		setTestViewClass( function() {
 			return {
@@ -297,8 +297,8 @@ describe( 'on', function() {
 	} );
 
 	it( 'accepts function callbacks', function() {
-		var spy1 = bender.sinon.spy();
-		var spy2 = bender.sinon.spy();
+		let spy1 = bender.sinon.spy();
+		let spy2 = bender.sinon.spy();
 
 		setTestViewClass( function() {
 			return {
@@ -330,7 +330,7 @@ describe( 'on', function() {
 	} );
 
 	it( 'supports event delegation', function() {
-		var spy = bender.sinon.spy();
+		let spy = bender.sinon.spy();
 
 		setTestViewClass( function() {
 			return {
@@ -358,7 +358,7 @@ describe( 'on', function() {
 	} );
 
 	it( 'works for future elements', function() {
-		var spy = bender.sinon.spy();
+		let spy = bender.sinon.spy();
 
 		setTestViewClass( function() {
 			return {
@@ -373,7 +373,7 @@ describe( 'on', function() {
 
 		view.on( 'a', spy );
 
-		var div = document.createElement( 'div' );
+		let div = document.createElement( 'div' );
 		view.el.appendChild( div );
 
 		dispatchEvent( div, 'test' );
@@ -405,7 +405,7 @@ describe( 'destroy', function() {
 
 	it( 'detaches the element', function() {
 		// Append the views's element to some container.
-		var container = document.createElement( 'div' );
+		let container = document.createElement( 'div' );
 		container.appendChild( view.el );
 
 		expect( view.el.nodeName ).to.be.equal( 'A' );
@@ -420,8 +420,8 @@ describe( 'destroy', function() {
 
 	it( 'destroys child regions', function() {
 		const Region = modules[ 'ui/region' ];
-		var region = new Region( 'test' );
-		var spy = bender.sinon.spy( region, 'destroy' );
+		let region = new Region( 'test' );
+		let spy = bender.sinon.spy( region, 'destroy' );
 
 		view.regions.add( region );
 		view.destroy();
@@ -441,7 +441,7 @@ describe( 'destroy', function() {
 		setTestViewInstance( { foo: 'bar' } );
 
 		// Keep the reference after the view is destroyed.
-		var model = view.model;
+		let model = view.model;
 
 		expect( view.el.outerHTML ).to.be.equal( '<p>bar</p>' );
 

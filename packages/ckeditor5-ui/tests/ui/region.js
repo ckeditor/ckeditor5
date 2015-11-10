@@ -13,7 +13,7 @@ const modules = bender.amd.require( 'ckeditor', 'ui/region', 'ui/view', 'collect
 bender.tools.createSinonSandbox();
 
 let TestViewA, TestViewB;
-var region, el;
+let region, el;
 
 beforeEach( createRegionInstance );
 
@@ -41,8 +41,8 @@ describe( 'views collection', function() {
 	} );
 
 	it( 'updates DOM when removing views', function() {
-		var viewA = new TestViewA();
-		var viewB = new TestViewB();
+		let viewA = new TestViewA();
+		let viewB = new TestViewB();
 
 		region.views.add( viewA );
 		region.views.add( viewB );
@@ -63,7 +63,7 @@ describe( 'views collection', function() {
 describe( 'destroy', function() {
 	it( 'destroys the region', function() {
 		// Append the region's element to some container.
-		var container = document.createElement( 'div' );
+		let container = document.createElement( 'div' );
 		container.appendChild( el );
 		expect( el.parentNode ).to.be.equal( container );
 
@@ -75,8 +75,8 @@ describe( 'destroy', function() {
 	} );
 
 	it( 'destroys children views', function() {
-		var view = new TestViewA();
-		var spy = bender.sinon.spy( view, 'destroy' );
+		let view = new TestViewA();
+		let spy = bender.sinon.spy( view, 'destroy' );
 
 		// Append the view to the region.
 		region.views.add( view );

@@ -7,7 +7,7 @@
 
 const modules = bender.amd.require( 'editorconfig', 'ckeditor' );
 
-var config;
+let config;
 
 beforeEach( function() {
 	const EditorConfig = modules.editorconfig;

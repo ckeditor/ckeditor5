@@ -8,7 +8,7 @@
 'use strict';
 
 const modules = bender.amd.require( 'log' );
-var spy;
+let spy;
 
 beforeEach( function() {
 	if ( spy ) {
@@ -18,9 +18,9 @@ beforeEach( function() {
 
 describe( 'warn()', function() {
 	it( 'logs the message to the console using console.warn()', function() {
-		var log = modules.log;
-		var spy = sinon.stub( console, 'warn' );
-		var data = { bar: 1 };
+		let log = modules.log;
+		let spy = sinon.stub( console, 'warn' );
+		let data = { bar: 1 };
 
 		log.warn( 'foo', data );
 
@@ -35,9 +35,9 @@ describe( 'warn()', function() {
 
 describe( 'error()', function() {
 	it( 'logs the message to the console using console.error()', function() {
-		var log = modules.log;
-		var spy = sinon.stub( console, 'error' );
-		var data = { bar: 1 };
+		let log = modules.log;
+		let spy = sinon.stub( console, 'error' );
+		let data = { bar: 1 };
 
 		log.error( 'foo', data );
 

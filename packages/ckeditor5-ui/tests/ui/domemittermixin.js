@@ -9,13 +9,13 @@
 'use strict';
 
 const modules = bender.amd.require( 'utils', 'ui/domemittermixin', 'emittermixin' );
-var emitter, domEmitter, node;
+let emitter, domEmitter, node;
 
 bender.tools.createSinonSandbox();
 
-var getEmitterInstance = () => modules.utils.extend( {}, modules.emittermixin );
-var getDOMEmitterInstance = () => modules.utils.extend( {}, modules[ 'ui/domemittermixin' ] );
-var getDOMNodeInstance = () => document.createElement( 'div' );
+let getEmitterInstance = () => modules.utils.extend( {}, modules.emittermixin );
+let getDOMEmitterInstance = () => modules.utils.extend( {}, modules[ 'ui/domemittermixin' ] );
+let getDOMNodeInstance = () => document.createElement( 'div' );
 
 function updateEmitterInstance() {
 	emitter = getEmitterInstance();
@@ -35,7 +35,7 @@ beforeEach( updateDOMNodeInstance );
 
 describe( 'listenTo', function() {
 	it( 'should listen to EmitterMixin events', function() {
-		var spy = bender.sinon.spy();
+		let spy = bender.sinon.spy();
 
 		domEmitter.listenTo( emitter, 'test', spy );
 		emitter.fire( 'test' );
@@ -44,11 +44,11 @@ describe( 'listenTo', function() {
 	} );
 
 	it( 'should listen to native DOM events', function() {
-		var spy = bender.sinon.spy();
+		let spy = bender.sinon.spy();
 
 		domEmitter.listenTo( node, 'test', spy );
 
-		var event = new Event( 'test' );
+		let event = new Event( 'test' );
 		node.dispatchEvent( event );
 
 		sinon.assert.calledOnce( spy );
@@ -57,8 +57,8 @@ describe( 'listenTo', function() {
 
 describe( 'stopListening', function() {
 	it( 'should stop listening to a specific event callback', function() {
-		var spy1 = bender.sinon.spy();
-		var spy2 = bender.sinon.spy();
+		let spy1 = bender.sinon.spy();
+		let spy2 = bender.sinon.spy();
 
 		domEmitter.listenTo( node, 'event1', spy1 );
 		domEmitter.listenTo( node, 'event2', spy2 );
@@ -76,9 +76,9 @@ describe( 'stopListening', function() {
 	} );
 
 	it( 'should stop listening to an specific event', function() {
-		var spy1a = bender.sinon.spy();
-		var spy1b = bender.sinon.spy();
-		var spy2 = bender.sinon.spy();
+		let spy1a = bender.sinon.spy();
+		let spy1b = bender.sinon.spy();
+		let spy2 = bender.sinon.spy();
 
 		domEmitter.listenTo( node, 'event1', spy1a );
 		domEmitter.listenTo( node, 'event1', spy1b );
@@ -102,8 +102,8 @@ describe( 'stopListening', function() {
 	} );
 
 	it( 'should stop listening to all events from a specific node', function() {
-		var spy1 = bender.sinon.spy();
-		var spy2 = bender.sinon.spy();
+		let spy1 = bender.sinon.spy();
+		let spy2 = bender.sinon.spy();
 
 		domEmitter.listenTo( node, 'event1', spy1 );
 		domEmitter.listenTo( node, 'event2', spy2 );
@@ -121,11 +121,11 @@ describe( 'stopListening', function() {
 	} );
 
 	it( 'should stop listening to everything', function() {
-		var spy1 = bender.sinon.spy();
-		var spy2 = bender.sinon.spy();
+		let spy1 = bender.sinon.spy();
+		let spy2 = bender.sinon.spy();
 
-		var node1 = getDOMNodeInstance();
-		var node2 = getDOMNodeInstance();
+		let node1 = getDOMNodeInstance();
+		let node2 = getDOMNodeInstance();
 
 		domEmitter.listenTo( node1, 'event1', spy1 );
 		domEmitter.listenTo( node2, 'event2', spy2 );
@@ -147,10 +147,10 @@ describe( 'stopListening', function() {
 	} );
 
 	it( 'should not stop other nodes when a non-listened node is provided', function() {
-		var spy = bender.sinon.spy();
+		let spy = bender.sinon.spy();
 
-		var node1 = getDOMNodeInstance();
-		var node2 = getDOMNodeInstance();
+		let node1 = getDOMNodeInstance();
+		let node2 = getDOMNodeInstance();
 
 		domEmitter.listenTo( node1, 'test', spy );
 
@@ -162,13 +162,13 @@ describe( 'stopListening', function() {
 	} );
 
 	it( 'should pass DOM Event data to the listener', function() {
-		var spy = bender.sinon.spy();
+		let spy = bender.sinon.spy();
 
-		var node = getDOMNodeInstance();
+		let node = getDOMNodeInstance();
 
 		domEmitter.listenTo( node, 'click', spy );
 
-		var mouseEvent = new MouseEvent( 'click', {
+		let mouseEvent = new MouseEvent( 'click', {
 			screenX: 10,
 			screenY: 20
 		} );
@@ -180,13 +180,13 @@ describe( 'stopListening', function() {
 	} );
 
 	it( 'should detach native DOM event listener proxy, specific event', function() {
-		var spy1a = bender.sinon.spy();
-		var spy1b = bender.sinon.spy();
+		let spy1a = bender.sinon.spy();
+		let spy1b = bender.sinon.spy();
 
 		domEmitter.listenTo( node, 'test', spy1a );
 
-		var proxyEmitter = domEmitter._getProxyEmitter( node );
-		var spy2 = bender.sinon.spy( proxyEmitter, 'fire' );
+		let proxyEmitter = domEmitter._getProxyEmitter( node );
+		let spy2 = bender.sinon.spy( proxyEmitter, 'fire' );
 
 		node.dispatchEvent( new Event( 'test' ) );
 
@@ -211,15 +211,15 @@ describe( 'stopListening', function() {
 	} );
 
 	it( 'should detach native DOM event listener proxy, specific callback', function() {
-		var spy1a = bender.sinon.spy();
-		var spy1b = bender.sinon.spy();
-		var spy1c = bender.sinon.spy();
+		let spy1a = bender.sinon.spy();
+		let spy1b = bender.sinon.spy();
+		let spy1c = bender.sinon.spy();
 
 		domEmitter.listenTo( node, 'test', spy1a );
 		domEmitter.listenTo( node, 'test', spy1b );
 
-		var proxyEmitter = domEmitter._getProxyEmitter( node );
-		var spy2 = bender.sinon.spy( proxyEmitter, 'fire' );
+		let proxyEmitter = domEmitter._getProxyEmitter( node );
+		let spy2 = bender.sinon.spy( proxyEmitter, 'fire' );
 
 		node.dispatchEvent( new Event( 'test' ) );
 
@@ -254,16 +254,16 @@ describe( 'stopListening', function() {
 	} );
 
 	it( 'should detach native DOM event listener proxy, specific emitter', function() {
-		var spy1a = bender.sinon.spy();
-		var spy1b = bender.sinon.spy();
-		var spy1c = bender.sinon.spy();
-		var spy1d = bender.sinon.spy();
+		let spy1a = bender.sinon.spy();
+		let spy1b = bender.sinon.spy();
+		let spy1c = bender.sinon.spy();
+		let spy1d = bender.sinon.spy();
 
 		domEmitter.listenTo( node, 'test1', spy1a );
 		domEmitter.listenTo( node, 'test2', spy1b );
 
-		var proxyEmitter = domEmitter._getProxyEmitter( node );
-		var spy2 = bender.sinon.spy( proxyEmitter, 'fire' );
+		let proxyEmitter = domEmitter._getProxyEmitter( node );
+		let spy2 = bender.sinon.spy( proxyEmitter, 'fire' );
 
 		node.dispatchEvent( new Event( 'test1' ) );
 		node.dispatchEvent( new Event( 'test2' ) );
@@ -286,8 +286,8 @@ describe( 'stopListening', function() {
 		domEmitter.listenTo( node, 'test2', spy1d );
 
 		// Old proxy emitter died when stopped listening to the node.
-		var proxyEmitter2 = domEmitter._getProxyEmitter( node );
-		var spy3 = bender.sinon.spy( proxyEmitter2, 'fire' );
+		let proxyEmitter2 = domEmitter._getProxyEmitter( node );
+		let spy3 = bender.sinon.spy( proxyEmitter2, 'fire' );
 
 		node.dispatchEvent( new Event( 'test1' ) );
 		node.dispatchEvent( new Event( 'test2' ) );
@@ -303,16 +303,16 @@ describe( 'stopListening', function() {
 	} );
 
 	it( 'should detach native DOM event listener proxy, everything', function() {
-		var spy1a = bender.sinon.spy();
-		var spy1b = bender.sinon.spy();
-		var spy1c = bender.sinon.spy();
-		var spy1d = bender.sinon.spy();
+		let spy1a = bender.sinon.spy();
+		let spy1b = bender.sinon.spy();
+		let spy1c = bender.sinon.spy();
+		let spy1d = bender.sinon.spy();
 
 		domEmitter.listenTo( node, 'test1', spy1a );
 		domEmitter.listenTo( node, 'test2', spy1b );
 
-		var proxyEmitter = domEmitter._getProxyEmitter( node );
-		var spy2 = bender.sinon.spy( proxyEmitter, 'fire' );
+		let proxyEmitter = domEmitter._getProxyEmitter( node );
+		let spy2 = bender.sinon.spy( proxyEmitter, 'fire' );
 
 		node.dispatchEvent( new Event( 'test1' ) );
 		node.dispatchEvent( new Event( 'test2' ) );
@@ -335,8 +335,8 @@ describe( 'stopListening', function() {
 		domEmitter.listenTo( node, 'test2', spy1d );
 
 		// Old proxy emitter died when stopped listening to the node.
-		var proxyEmitter2 = domEmitter._getProxyEmitter( node );
-		var spy3 = bender.sinon.spy( proxyEmitter2, 'fire' );
+		let proxyEmitter2 = domEmitter._getProxyEmitter( node );
+		let spy3 = bender.sinon.spy( proxyEmitter2, 'fire' );
 
 		node.dispatchEvent( new Event( 'test1' ) );
 		node.dispatchEvent( new Event( 'test2' ) );

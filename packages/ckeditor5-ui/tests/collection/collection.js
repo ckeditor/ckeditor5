@@ -23,7 +23,7 @@ describe( 'Collection', () => {
 		CKEditorError = modules.CKEditorError;
 	} );
 
-	var collection;
+	let collection;
 
 	beforeEach( () => {
 		collection = new Collection();
@@ -31,9 +31,9 @@ describe( 'Collection', () => {
 
 	describe( 'constructor', () => {
 		it( 'allows to change the id property used by the collection', () => {
-			var item1 = { id: 'foo', name: 'xx' };
-			var item2 = { id: 'foo', name: 'yy' };
-			var collection = new Collection( { idProperty: 'name' } );
+			let item1 = { id: 'foo', name: 'xx' };
+			let item2 = { id: 'foo', name: 'yy' };
+			let collection = new Collection( { idProperty: 'name' } );
 
 			collection.add( item1 );
 			collection.add( item2 );
@@ -61,8 +61,8 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should enable get( index )', () => {
-			var item1 = {};
-			var item2 = {};
+			let item1 = {};
+			let item2 = {};
 
 			collection.add( item1 );
 			expect( collection.get( 0 ) ).to.equal( item1 );
@@ -73,8 +73,8 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should enable get( id )', () => {
-			var item1 = getItem( 'foo' );
-			var item2 = getItem( 'bar' );
+			let item1 = getItem( 'foo' );
+			let item2 = getItem( 'bar' );
 
 			collection.add( item1 );
 			collection.add( item2 );
@@ -84,9 +84,9 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should enable get( id ) - custom id property', () => {
-			var collection = new Collection( { idProperty: 'name' } );
-			var item1 = getItem( 'foo', 'name' );
-			var item2 = getItem( 'bar', 'name' );
+			let collection = new Collection( { idProperty: 'name' } );
+			let item1 = getItem( 'foo', 'name' );
+			let item2 = getItem( 'bar', 'name' );
 
 			collection.add( item1 );
 			collection.add( item2 );
@@ -96,7 +96,7 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should generate an id when not defined', () => {
-			var item = {};
+			let item = {};
 
 			collection.add( item );
 
@@ -105,8 +105,8 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should generate an id when not defined - custom id property', () => {
-			var collection = new Collection( { idProperty: 'name' } );
-			var item = {};
+			let collection = new Collection( { idProperty: 'name' } );
+			let item = {};
 
 			collection.add( item );
 
@@ -115,7 +115,7 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should not change an existing id of an item', () => {
-			var item = getItem( 'foo' );
+			let item = getItem( 'foo' );
 
 			collection.add( item );
 
@@ -123,8 +123,8 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should throw when item with this id already exists', () => {
-			var item1 = getItem( 'foo' );
-			var item2 = getItem( 'foo' );
+			let item1 = getItem( 'foo' );
+			let item2 = getItem( 'foo' );
 
 			collection.add( item1 );
 
@@ -134,7 +134,7 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should throw when item\'s id is not a string', () => {
-			var item = { id: 1 };
+			let item = { id: 1 };
 
 			expect( () => {
 				collection.add( item );
@@ -149,7 +149,7 @@ describe( 'Collection', () => {
 				collection.add( getItem( '1' ) );
 				collection.add( getItem( '2' ) );
 
-				var item = {};
+				let item = {};
 
 				collection.add( item );
 
@@ -158,8 +158,8 @@ describe( 'Collection', () => {
 		);
 
 		it( 'should fire the "add" event', () => {
-			var spy = sinon.spy();
-			var item = {};
+			let spy = sinon.spy();
+			let item = {};
 
 			collection.on( 'add', spy );
 
@@ -171,7 +171,7 @@ describe( 'Collection', () => {
 
 	describe( 'get', () => {
 		it( 'should return an item', () => {
-			var item = getItem( 'foo' );
+			let item = getItem( 'foo' );
 			collection.add( item );
 
 			expect( collection.get( 'foo' ) ).to.equal( item );
@@ -198,7 +198,7 @@ describe( 'Collection', () => {
 
 			expect( collection ).to.have.length( 3 );
 
-			var removedItem = collection.remove( 1 );
+			let removedItem = collection.remove( 1 );
 
 			expect( collection ).to.have.length( 2 );
 			expect( collection.get( 'foo' ) ).to.be.null;
@@ -207,11 +207,11 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should remove the model by index - custom id property', () => {
-			var collection = new Collection( { idProperty: 'name' } );
+			let collection = new Collection( { idProperty: 'name' } );
 
 			collection.add( getItem( 'foo', 'name' ) );
 
-			var removedItem = collection.remove( 0 );
+			let removedItem = collection.remove( 0 );
 
 			expect( collection ).to.have.length( 0 );
 			expect( collection.get( 'foo' ) ).to.be.null;
@@ -225,7 +225,7 @@ describe( 'Collection', () => {
 
 			expect( collection ).to.have.length( 3 );
 
-			var removedItem = collection.remove( 'foo' );
+			let removedItem = collection.remove( 'foo' );
 
 			expect( collection ).to.have.length( 2 );
 			expect( collection.get( 'foo' ) ).to.be.null;
@@ -234,7 +234,7 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should remove the model by model', () => {
-			var item = getItem( 'foo' );
+			let item = getItem( 'foo' );
 
 			collection.add( getItem( 'bom' ) );
 			collection.add( item );
@@ -242,7 +242,7 @@ describe( 'Collection', () => {
 
 			expect( collection ).to.have.length( 3 );
 
-			var removedItem = collection.remove( item );
+			let removedItem = collection.remove( item );
 
 			expect( collection ).to.have.length( 2 );
 			expect( collection.get( 'foo' ) ).to.be.null;
@@ -251,12 +251,12 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should remove the model by model - custom id property', () => {
-			var collection = new Collection( null, 'name' );
-			var item = getItem( 'foo', 'name' );
+			let collection = new Collection( null, 'name' );
+			let item = getItem( 'foo', 'name' );
 
 			collection.add( item );
 
-			var removedItem = collection.remove( item );
+			let removedItem = collection.remove( item );
 
 			expect( collection ).to.have.length( 0 );
 			expect( collection.get( 'foo' ) ).to.be.null;
@@ -264,15 +264,15 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should fire the "remove" event', () => {
-			var item1 = getItem( 'foo' );
-			var item2 = getItem( 'bar' );
-			var item3 = getItem( 'bom' );
+			let item1 = getItem( 'foo' );
+			let item2 = getItem( 'bar' );
+			let item3 = getItem( 'bom' );
 
 			collection.add( item1 );
 			collection.add( item2 );
 			collection.add( item3 );
 
-			var spy = sinon.spy();
+			let spy = sinon.spy();
 
 			collection.on( 'remove', spy );
 
@@ -319,12 +319,12 @@ describe( 'Collection', () => {
 
 	describe( 'map', () => {
 		it( 'uses native map', () => {
-			var spy = bender.sinon.stub( Array.prototype, 'map', () => {
+			let spy = bender.sinon.stub( Array.prototype, 'map', () => {
 				return [ 'foo' ];
 			} );
-			var ctx = {};
+			let ctx = {};
 
-			var ret = collection.map( callback, ctx );
+			let ret = collection.map( callback, ctx );
 
 			sinon.assert.calledWithExactly( spy, callback, ctx );
 			expect( ret ).to.deep.equal( [ 'foo' ], 'ret value was forwarded' );
@@ -335,14 +335,14 @@ describe( 'Collection', () => {
 
 	describe( 'find', () => {
 		it( 'uses native find', () => {
-			var needl = getItem( 'foo' );
+			let needl = getItem( 'foo' );
 
-			var spy = bender.sinon.stub( Array.prototype, 'find', () => {
+			let spy = bender.sinon.stub( Array.prototype, 'find', () => {
 				return needl;
 			} );
-			var ctx = {};
+			let ctx = {};
 
-			var ret = collection.find( callback, ctx );
+			let ret = collection.find( callback, ctx );
 
 			sinon.assert.calledWithExactly( spy, callback, ctx );
 			expect( ret ).to.equal( needl, 'ret value was forwarded' );
@@ -353,14 +353,14 @@ describe( 'Collection', () => {
 
 	describe( 'filter', () => {
 		it( 'uses native filter', () => {
-			var needl = getItem( 'foo' );
+			let needl = getItem( 'foo' );
 
-			var spy = bender.sinon.stub( Array.prototype, 'filter', () => {
+			let spy = bender.sinon.stub( Array.prototype, 'filter', () => {
 				return [ needl ];
 			} );
-			var ctx = {};
+			let ctx = {};
 
-			var ret = collection.filter( callback, ctx );
+			let ret = collection.filter( callback, ctx );
 
 			sinon.assert.calledWithExactly( spy, callback, ctx );
 			expect( ret ).to.deep.equal( [ needl ], 'ret value was forwarded' );
@@ -371,10 +371,10 @@ describe( 'Collection', () => {
 
 	describe( 'iterator', () => {
 		it( 'covers the whole collection', () => {
-			var item1 = getItem( 'foo' );
-			var item2 = getItem( 'bar' );
-			var item3 = getItem( 'bom' );
-			var items = [];
+			let item1 = getItem( 'foo' );
+			let item2 = getItem( 'bar' );
+			let item3 = getItem( 'bom' );
+			let items = [];
 
 			collection.add( item1 );
 			collection.add( item2 );
