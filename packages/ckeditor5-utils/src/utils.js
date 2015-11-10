@@ -91,6 +91,24 @@ CKEDITOR.define( [ 'utils-lodash', 'lib/lodash/lodash-ckeditor' ], function( lod
 				// Compared array is longer so it is a suffix of the other array.
 				return utils.compareArrays.EXTENSION;
 			}
+		},
+
+		/**
+		 * Returns `nth` (starts from `0` of course) item of an `iterable`.
+		 *
+		 * @param {Number} index
+		 * @param {Iterable.<*>} iterable
+		 * @returns {*}
+		 */
+		nth( index, iterable ) {
+			for ( let item of iterable ) {
+				if ( index === 0 ) {
+					return item;
+				}
+				index -= 1;
+			}
+
+			return null;
 		}
 	};
 
