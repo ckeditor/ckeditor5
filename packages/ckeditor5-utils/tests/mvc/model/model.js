@@ -44,7 +44,7 @@ describe( 'Model', function() {
 	} );
 
 	it( 'should add properties on creation', function() {
-		var car = new Car( null, {
+		let car = new Car( null, {
 			prop: 1
 		} );
 
@@ -83,10 +83,10 @@ describe( 'Model', function() {
 		it( 'should fire the "change" event', function() {
 			const EventInfo = modules.eventinfo;
 
-			var spy = sinon.spy();
-			var spyColor = sinon.spy();
-			var spyYear = sinon.spy();
-			var spyWheels = sinon.spy();
+			let spy = sinon.spy();
+			let spyColor = sinon.spy();
+			let spyYear = sinon.spy();
+			let spyWheels = sinon.spy();
 
 			car.on( 'change', spy );
 			car.on( 'change:color', spyColor );
@@ -120,8 +120,8 @@ describe( 'Model', function() {
 		} );
 
 		it( 'should not fire the "change" event for the same attribute value', function() {
-			var spy = sinon.spy();
-			var spyColor = sinon.spy();
+			let spy = sinon.spy();
+			let spyColor = sinon.spy();
 
 			car.on( 'change', spy );
 			car.on( 'change:color', spyColor );
@@ -171,7 +171,7 @@ describe( 'Model', function() {
 
 			class Truck extends Car {}
 
-			var truck = new Truck();
+			let truck = new Truck();
 
 			expect( truck ).to.be.an.instanceof( Car );
 			expect( truck ).to.be.an.instanceof( Model );

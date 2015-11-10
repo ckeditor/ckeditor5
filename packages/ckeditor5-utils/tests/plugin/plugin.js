@@ -6,7 +6,7 @@
 'use strict';
 
 const modules = bender.amd.require( 'plugin', 'editor' );
-var editor;
+let editor;
 
 before( function() {
 	const Editor = modules.editor;
@@ -18,7 +18,7 @@ describe( 'constructor', function() {
 	it( 'should set the `editor` property', function() {
 		const Plugin = modules.plugin;
 
-		var plugin = new Plugin( editor );
+		let plugin = new Plugin( editor );
 
 		expect( plugin ).to.have.property( 'editor' ).to.equal( editor );
 	} );

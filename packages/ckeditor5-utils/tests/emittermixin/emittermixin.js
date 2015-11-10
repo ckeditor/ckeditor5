@@ -7,15 +7,15 @@
 
 const modules = bender.amd.require( 'emittermixin', 'eventinfo', 'utils' );
 
-var emitter, listener;
+let emitter, listener;
 
 beforeEach( refreshEmitter );
 
 describe( 'fire', function() {
 	it( 'should execute callbacks in the right order without priority', function() {
-		var spy1 = sinon.spy().named( 1 );
-		var spy2 = sinon.spy().named( 2 );
-		var spy3 = sinon.spy().named( 3 );
+		let spy1 = sinon.spy().named( 1 );
+		let spy2 = sinon.spy().named( 2 );
+		let spy3 = sinon.spy().named( 3 );
 
 		emitter.on( 'test', spy1 );
 		emitter.on( 'test', spy2 );
@@ -27,11 +27,11 @@ describe( 'fire', function() {
 	} );
 
 	it( 'should execute callbacks in the right order with priority defined', function() {
-		var spy1 = sinon.spy().named( 1 );
-		var spy2 = sinon.spy().named( 2 );
-		var spy3 = sinon.spy().named( 3 );
-		var spy4 = sinon.spy().named( 4 );
-		var spy5 = sinon.spy().named( 5 );
+		let spy1 = sinon.spy().named( 1 );
+		let spy2 = sinon.spy().named( 2 );
+		let spy3 = sinon.spy().named( 3 );
+		let spy4 = sinon.spy().named( 4 );
+		let spy5 = sinon.spy().named( 5 );
 
 		emitter.on( 'test', spy2, null, 9 );
 		emitter.on( 'test', spy3 );	// Defaults to 10.
@@ -47,8 +47,8 @@ describe( 'fire', function() {
 	it( 'should pass arguments to callbacks', function() {
 		const EventInfo = modules.eventinfo;
 
-		var spy1 = sinon.spy();
-		var spy2 = sinon.spy();
+		let spy1 = sinon.spy();
+		let spy2 = sinon.spy();
 
 		emitter.on( 'test', spy1 );
 		emitter.on( 'test', spy2 );
@@ -60,12 +60,12 @@ describe( 'fire', function() {
 	} );
 
 	it( 'should pass proper context to callbacks', function() {
-		var ctx1 = {};
-		var ctx2 = {};
+		let ctx1 = {};
+		let ctx2 = {};
 
-		var spy1 = sinon.spy();
-		var spy2 = sinon.spy();
-		var spy3 = sinon.spy();
+		let spy1 = sinon.spy();
+		let spy2 = sinon.spy();
+		let spy3 = sinon.spy();
 
 		emitter.on( 'test', spy1, ctx1 );
 		emitter.on( 'test', spy2, ctx2 );
@@ -79,8 +79,8 @@ describe( 'fire', function() {
 	} );
 
 	it( 'should fire the right event', function() {
-		var spy1 = sinon.spy();
-		var spy2 = sinon.spy();
+		let spy1 = sinon.spy();
+		let spy2 = sinon.spy();
 
 		emitter.on( '1', spy1 );
 		emitter.on( '2', spy2 );
@@ -92,7 +92,7 @@ describe( 'fire', function() {
 	} );
 
 	it( 'should execute callbacks many times', function() {
-		var spy = sinon.spy();
+		let spy = sinon.spy();
 
 		emitter.on( 'test', spy );
 
@@ -108,7 +108,7 @@ describe( 'fire', function() {
 	} );
 
 	it( 'should accept the same callback many times', function() {
-		var spy = sinon.spy();
+		let spy = sinon.spy();
 
 		emitter.on( 'test', spy );
 		emitter.on( 'test', spy );
@@ -122,9 +122,9 @@ describe( 'fire', function() {
 
 describe( 'on', function() {
 	it( 'should stop()', function() {
-		var spy1 = sinon.spy();
-		var spy2 = sinon.spy();
-		var spy3 = sinon.spy( function( event ) {
+		let spy1 = sinon.spy();
+		let spy2 = sinon.spy();
+		let spy3 = sinon.spy( function( event ) {
 			event.stop();
 		} );
 
@@ -142,11 +142,11 @@ describe( 'on', function() {
 	} );
 
 	it( 'should take a callback off()', function() {
-		var spy1 = sinon.spy();
-		var spy2 = sinon.spy( function( event ) {
+		let spy1 = sinon.spy();
+		let spy2 = sinon.spy( function( event ) {
 			event.off();
 		} );
-		var spy3 = sinon.spy();
+		let spy3 = sinon.spy();
 
 		emitter.on( 'test', spy1 );
 		emitter.on( 'test', spy2 );
@@ -161,11 +161,11 @@ describe( 'on', function() {
 	} );
 
 	it( 'should take the callback off() even after stop()', function() {
-		var spy1 = sinon.spy( function( event ) {
+		let spy1 = sinon.spy( function( event ) {
 			event.stop();
 			event.off();
 		} );
-		var spy2 = sinon.spy();
+		let spy2 = sinon.spy();
 
 		emitter.on( 'test', spy1 );
 		emitter.on( 'test', spy2 );
@@ -180,9 +180,9 @@ describe( 'on', function() {
 
 describe( 'once', function() {
 	it( 'should be called just once', function() {
-		var spy1 = sinon.spy();
-		var spy2 = sinon.spy();
-		var spy3 = sinon.spy();
+		let spy1 = sinon.spy();
+		let spy2 = sinon.spy();
+		let spy3 = sinon.spy();
 
 		emitter.on( 'test', spy1 );
 		emitter.once( 'test', spy2 );
@@ -197,10 +197,10 @@ describe( 'once', function() {
 	} );
 
 	it( 'should have proper scope', function() {
-		var ctx = {};
+		let ctx = {};
 
-		var spy1 = sinon.spy();
-		var spy2 = sinon.spy();
+		let spy1 = sinon.spy();
+		let spy2 = sinon.spy();
 
 		emitter.once( 'test', spy1, ctx );
 		emitter.once( 'test', spy2 );
@@ -214,7 +214,7 @@ describe( 'once', function() {
 	it( 'should have proper arguments', function() {
 		const EventInfo = modules.eventinfo;
 
-		var spy = sinon.spy();
+		let spy = sinon.spy();
 
 		emitter.once( 'test', spy );
 
@@ -226,9 +226,9 @@ describe( 'once', function() {
 
 describe( 'off', function() {
 	it( 'should get callbacks off()', function() {
-		var spy1 = sinon.spy();
-		var spy2 = sinon.spy();
-		var spy3 = sinon.spy();
+		let spy1 = sinon.spy();
+		let spy2 = sinon.spy();
+		let spy3 = sinon.spy();
 
 		emitter.on( 'test', spy1 );
 		emitter.on( 'test', spy2 );
@@ -251,8 +251,8 @@ describe( 'off', function() {
 	} );
 
 	it( 'should remove all entries for the same callback', function() {
-		var spy1 = sinon.spy().named( 1 );
-		var spy2 = sinon.spy().named( 2 );
+		let spy1 = sinon.spy().named( 1 );
+		let spy2 = sinon.spy().named( 2 );
 
 		emitter.on( 'test', spy1 );
 		emitter.on( 'test', spy2 );
@@ -270,10 +270,10 @@ describe( 'off', function() {
 	} );
 
 	it( 'should remove the callback for a specific context only', function() {
-		var spy = sinon.spy().named( 1 );
+		let spy = sinon.spy().named( 1 );
 
-		var ctx1 = { ctx: 1 };
-		var ctx2 = { ctx: 2 };
+		let ctx1 = { ctx: 1 };
+		let ctx2 = { ctx: 2 };
 
 		emitter.on( 'test', spy, ctx1 );
 		emitter.on( 'test', spy, ctx2 );
@@ -295,7 +295,7 @@ describe( 'listenTo', function() {
 	beforeEach( refreshListener );
 
 	it( 'should properly register callbacks', function() {
-		var spy = sinon.spy();
+		let spy = sinon.spy();
 
 		listener.listenTo( emitter, 'test', spy );
 
@@ -309,8 +309,8 @@ describe( 'stopListening', function() {
 	beforeEach( refreshListener );
 
 	it( 'should stop listening to a specific event callback', function() {
-		var spy1 = sinon.spy();
-		var spy2 = sinon.spy();
+		let spy1 = sinon.spy();
+		let spy2 = sinon.spy();
 
 		listener.listenTo( emitter, 'event1', spy1 );
 		listener.listenTo( emitter, 'event2', spy2 );
@@ -328,9 +328,9 @@ describe( 'stopListening', function() {
 	} );
 
 	it( 'should stop listening to an specific event', function() {
-		var spy1a = sinon.spy();
-		var spy1b = sinon.spy();
-		var spy2 = sinon.spy();
+		let spy1a = sinon.spy();
+		let spy1b = sinon.spy();
+		let spy2 = sinon.spy();
 
 		listener.listenTo( emitter, 'event1', spy1a );
 		listener.listenTo( emitter, 'event1', spy1b );
@@ -350,8 +350,8 @@ describe( 'stopListening', function() {
 	} );
 
 	it( 'should stop listening to all events from a specific emitter', function() {
-		var spy1 = sinon.spy();
-		var spy2 = sinon.spy();
+		let spy1 = sinon.spy();
+		let spy2 = sinon.spy();
 
 		listener.listenTo( emitter, 'event1', spy1 );
 		listener.listenTo( emitter, 'event2', spy2 );
@@ -369,11 +369,11 @@ describe( 'stopListening', function() {
 	} );
 
 	it( 'should stop listening to everything', function() {
-		var spy1 = sinon.spy();
-		var spy2 = sinon.spy();
+		let spy1 = sinon.spy();
+		let spy2 = sinon.spy();
 
-		var emitter1 = getEmitterInstance();
-		var emitter2 = getEmitterInstance();
+		let emitter1 = getEmitterInstance();
+		let emitter2 = getEmitterInstance();
 
 		listener.listenTo( emitter1, 'event1', spy1 );
 		listener.listenTo( emitter2, 'event2', spy2 );
@@ -395,10 +395,10 @@ describe( 'stopListening', function() {
 	} );
 
 	it( 'should not stop other emitters when a non-listened emitter is provided', function() {
-		var spy = sinon.spy();
+		let spy = sinon.spy();
 
-		var emitter1 = getEmitterInstance();
-		var emitter2 = getEmitterInstance();
+		let emitter1 = getEmitterInstance();
+		let emitter2 = getEmitterInstance();
 
 		listener.listenTo( emitter1, 'test', spy );
 
@@ -420,7 +420,7 @@ function refreshListener() {
 
 function getEmitterInstance() {
 	const EmitterMixin = modules.emittermixin;
-	var utils = modules.utils;
+	let utils = modules.utils;
 
 	return utils.extend( {}, EmitterMixin );
 }

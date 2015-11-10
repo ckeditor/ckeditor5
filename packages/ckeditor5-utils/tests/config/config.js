@@ -7,7 +7,7 @@
 
 const modules = bender.amd.require( 'config' );
 
-var config;
+let config;
 
 beforeEach( function() {
 	const Config = modules.config;
@@ -179,13 +179,13 @@ describe( 'get', function() {
 	} );
 
 	it( 'should retrieve a subset of the configuration', function() {
-		var resizeConfig = config.get( 'resize' );
+		let resizeConfig = config.get( 'resize' );
 
 		expect( resizeConfig ).to.have.property( 'minheight' ).to.equal( 300 );
 		expect( resizeConfig ).to.have.property( 'maxheight' ).to.equal( 800 );
 		expect( resizeConfig ).to.have.property( 'icon' ).to.have.property( 'path' ).to.equal( 'xyz' );
 
-		var iconConfig = resizeConfig.get( 'icon' );
+		let iconConfig = resizeConfig.get( 'icon' );
 
 		expect( iconConfig ).to.have.property( 'path' ).to.equal( 'xyz' );
 	} );

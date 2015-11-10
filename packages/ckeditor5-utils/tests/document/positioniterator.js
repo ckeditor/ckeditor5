@@ -20,7 +20,7 @@ describe( 'range iterator', function() {
 	let Document, Element, Character, PositionIterator, Position, Range;
 	let ELEMENT_ENTER, ELEMENT_LEAVE, CHARACTER;
 
-	var doc, expectedItems, root, img1, paragraph, b, a, r, img2, x;
+	let doc, expectedItems, root, img1, paragraph, b, a, r, img2, x;
 
 	before( function() {
 		Document = modules[ 'document/document' ];
@@ -74,8 +74,8 @@ describe( 'range iterator', function() {
 	} );
 
 	it( 'should return next position', function() {
-		var iterator = new PositionIterator( new Position( [ 0 ], root ) ); // beginning of root
-		var i, len;
+		let iterator = new PositionIterator( new Position( [ 0 ], root ) ); // beginning of root
+		let i, len;
 
 		for ( i = 0, len = expectedItems.length; i < len; i++ ) {
 			expect( iterator.next() ).to.deep.equal( { done: false, value: expectedItems[ i ] } );
@@ -84,21 +84,21 @@ describe( 'range iterator', function() {
 	} );
 
 	it( 'should return previous position', function() {
-		var iterator = new PositionIterator( new Position( [ 2 ], root ) ); // ending of root
+		let iterator = new PositionIterator( new Position( [ 2 ], root ) ); // ending of root
 
-		for ( var i = expectedItems.length - 1; i >= 0; i-- ) {
+		for ( let i = expectedItems.length - 1; i >= 0; i-- ) {
 			expect( iterator.previous() ).to.deep.equal( { done: false, value: expectedItems[ i ] } );
 		}
 		expect( iterator.previous() ).to.have.property( 'done' ).that.is.true;
 	} );
 
 	it( 'should return next position in the boundaries', function() {
-		var start = new Position( [ 1, 0 ], root ); // p, 0
-		var end = new Position( [ 1, 3, 0 ], root ); // img, 0
+		let start = new Position( [ 1, 0 ], root ); // p, 0
+		let end = new Position( [ 1, 3, 0 ], root ); // img, 0
 
-		var iterator = new PositionIterator( new Range( start, end ) );
+		let iterator = new PositionIterator( new Range( start, end ) );
 
-		var i, len;
+		let i, len;
 
 		for ( i = 3, len = expectedItems.length; i < 7; i++ ) {
 			expect( iterator.next() ).to.deep.equal( { done: false, value: expectedItems[ i ] } );
@@ -107,12 +107,12 @@ describe( 'range iterator', function() {
 	} );
 
 	it( 'should return previous position in the boundaries', function() {
-		var start = new Position( [ 1, 0 ], root ); // p, 0
-		var end = new Position( [ 1, 3, 0 ], root ); // img, 0
+		let start = new Position( [ 1, 0 ], root ); // p, 0
+		let end = new Position( [ 1, 3, 0 ], root ); // img, 0
 
-		var iterator = new PositionIterator( new Range( start, end ), end );
+		let iterator = new PositionIterator( new Range( start, end ), end );
 
-		var i, len;
+		let i, len;
 
 		for ( i = 6, len = expectedItems.length; i > 2; i-- ) {
 			expect( iterator.previous() ).to.deep.equal( { done: false, value: expectedItems[ i ] } );
@@ -121,12 +121,12 @@ describe( 'range iterator', function() {
 	} );
 
 	it( 'should return iterate over the range', function() {
-		var start = new Position( [ 0 ], root ); // begging of root
-		var end = new Position( [ 2 ], root ); // ending of root
-		var range = new Range( start, end );
+		let start = new Position( [ 0 ], root ); // begging of root
+		let end = new Position( [ 2 ], root ); // ending of root
+		let range = new Range( start, end );
 
-		var i = 0;
-		var value;
+		let i = 0;
+		let value;
 
 		for ( value of range ) {
 			expect( value ).to.deep.equal( expectedItems[ i ] );
