@@ -8,7 +8,7 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'ckeditor', 'ui/view', 'ui/region', 'ckeditorerror', 'model', 'eventinfo' );
+const modules = bender.amd.require( 'ckeditor', 'ui/view', 'ui/region', 'ckeditorerror', 'model', 'eventinfo' );
 var View, TestView;
 var view;
 

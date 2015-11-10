@@ -5,7 +5,7 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'eventinfo' );
+const modules = bender.amd.require( 'eventinfo' );
 
 describe( 'EventInfo', function() {
 	it( 'should be created properly', function() {
