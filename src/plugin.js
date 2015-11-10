@@ -14,7 +14,7 @@
 // core Plugin class with the necessary RequireJS plugin methods. This should have no harm on the use of the Plugin
 // class.
 
-define( 'plugin', [ 'plugin-core' ], function( CorePlugin ) {
+define( 'plugin', [ 'plugin-core' ], ( CorePlugin ) => {
 	// Called when a "plugin!" module is to be loaded.
 	// http://requirejs.org/docs/plugins.html#apiload
 	CorePlugin.load = function( name, require, onload ) {

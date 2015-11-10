@@ -7,8 +7,8 @@
 
 const modules = bender.amd.require( 'ckeditor', 'ckeditor-core' );
 
-describe( 'getPluginPath()', function() {
-	it( 'should return a proper path', function() {
+describe( 'getPluginPath()', () => {
+	it( 'should return a proper path', () => {
 		const CKEDITOR = modules.ckeditor;
 
 		const basePath = CKEDITOR.basePath;
@@ -21,7 +21,7 @@ describe( 'getPluginPath()', function() {
 		}
 	} );
 
-	it( '(the production version) should work even when in dev', function() {
+	it( '(the production version) should work even when in dev', () => {
 		const CKEDITOR = modules.ckeditor;
 		const core = modules[ 'ckeditor-core' ];
 
@@ -41,8 +41,8 @@ describe( 'getPluginPath()', function() {
 	} );
 } );
 
-describe( 'isDebug', function() {
-	it( 'is a boolean', function() {
+describe( 'isDebug', () => {
+	it( 'is a boolean', () => {
 		const CKEDITOR = modules.ckeditor;
 
 		expect( CKEDITOR.isDebug ).to.be.a( 'boolean' );

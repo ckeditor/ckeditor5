@@ -7,7 +7,7 @@
 
 const modules = bender.amd.require( 'ckeditor' );
 
-beforeEach( function() {
+beforeEach( () => {
 	// Ensure that no CKEDITOR_BASEPATH global is available.
 	delete window.CKEDITOR_BASEPATH;
 
@@ -15,7 +15,7 @@ beforeEach( function() {
 	removeScripts();
 } );
 
-describe( 'basePath', function() {
+describe( 'basePath', () => {
 	testGetBasePathFromTag( 'http://bar.com/ckeditor/ckeditor.js', 'http://bar.com/ckeditor/' );
 	testGetBasePathFromTag( '/ckeditor/ckeditor.js', /\/ckeditor\/$/ );
 	testGetBasePathFromTag( '/ckeditor/ckeditor.js?foo=1#bar', /\/ckeditor\/$/ );
@@ -23,7 +23,7 @@ describe( 'basePath', function() {
 	testGetBasePathFromTag( '/ckeditor/CKEDITOR.JS', /\/ckeditor\/$/ );
 	testGetBasePathFromTag( '../ckeditor/foo/ckeditor.JS', /\/ckeditor\/foo\/$/ );
 
-	it( 'should work with the CKEDITOR_BASEPATH global', function() {
+	it( 'should work with the CKEDITOR_BASEPATH global', () => {
 		const CKEDITOR = modules.ckeditor;
 
 		window.CKEDITOR_BASEPATH = 'http://foo.com/ckeditor/';
@@ -31,7 +31,7 @@ describe( 'basePath', function() {
 	} );
 
 	function testGetBasePathFromTag( url, expectedBasePath ) {
-		it( 'should work with script tags - ' + url, function() {
+		it( 'should work with script tags - ' + url, () => {
 			const CKEDITOR = modules.ckeditor;
 
 			addScript( url );
@@ -45,14 +45,14 @@ describe( 'basePath', function() {
 	}
 } );
 
-describe( 'This browser', function() {
+describe( 'This browser', () => {
 	testUrlIsFull( '/absolute/url/ckeditor.js' );
 	testUrlIsFull( '../relative/url/ckeditor.js' );
 
 	// Browsers should convert absolute and relative URLs to full URLs.
 	// If this test fails in any browser, _getBasePath() must be reviewed to deal with such case (v4 does it).
 	function testUrlIsFull( url ) {
-		it( 'should not keep script URLs absolute or relative - ' + url, function() {
+		it( 'should not keep script URLs absolute or relative - ' + url, () => {
 			removeScripts();
 
 			const script = addScript( url );

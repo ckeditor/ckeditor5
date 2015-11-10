@@ -8,7 +8,7 @@
 
 'use strict';
 
-( function() {
+( () => {
 	// Make Bender wait to start running tests.
 	const done = bender.defer();
 

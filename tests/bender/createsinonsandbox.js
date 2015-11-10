@@ -13,20 +13,20 @@ let spy;
 
 bender.tools.createSinonSandbox();
 
-describe( 'bender.tools.createSinonSandbox()', function() {
-	it( 'creates a sandbox', function() {
+describe( 'bender.tools.createSinonSandbox()', () => {
+	it( 'creates a sandbox', () => {
 		expect( bender.sinon ).to.be.an( 'object' );
 		expect( bender.sinon ).to.have.property( 'spy' );
 	} );
 
 	// This test is needed for the following one.
-	it( 'really works', function() {
+	it( 'really works', () => {
 		spy = bender.sinon.spy( obj, 'method' );
 
 		expect( obj ).to.have.property( 'method', spy );
 	} );
 
-	it( 'restores spies after each test', function() {
+	it( 'restores spies after each test', () => {
 		obj.method();
 
 		sinon.assert.notCalled( spy );

@@ -17,7 +17,7 @@ module.exports = {
 	attach() {
 		this.plugins.addFiles( files );
 
-		this.on( 'test:created', function( test ) {
+		this.on( 'test:created', ( test ) => {
 			var name = test.displayName;
 
 			name = name.replace( /node_modules\/ckeditor5-core/, 'core: ' );
@@ -31,7 +31,7 @@ module.exports = {
 		this.pagebuilders.add( 'ckeditor5', build, this.pagebuilders.getPriority( 'includes' ) - 1 );
 
 		function build( data ) {
-			files.forEach( function( file ) {
+			files.forEach( ( file ) => {
 				data.addJS( path.join( '/plugins/', file ).split( path.sep ).join( '/' ) );
 			} );
 
