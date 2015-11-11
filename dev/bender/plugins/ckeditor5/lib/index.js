@@ -18,7 +18,7 @@ module.exports = {
 		this.plugins.addFiles( files );
 
 		this.on( 'test:created', ( test ) => {
-			var name = test.displayName;
+			let name = test.displayName;
 
 			name = name.replace( /node_modules\/ckeditor5-core/, 'core: ' );
 			name = name.replace( /node_modules\/ckeditor5-plugin-([^\/]+)/, 'plugin!$1: ' );

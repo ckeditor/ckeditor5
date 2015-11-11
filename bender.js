@@ -3,9 +3,9 @@
 'use strict';
 
 // Set it to true to test with the build version.
-var isBuild = false;
+const isBuild = false;
 
-var config = {
+const config = {
 	plugins: [
 		'benderjs-chai',
 		'benderjs-coverage',
