@@ -63,8 +63,8 @@ describe( 'Transaction', () => {
 		} );
 
 		it( 'should register function which return an multiple deltas', () => {
-			Transaction.register( 'foo', ( doc, transaction ) => {
-				return [ new TestDelta( transaction ), new TestDelta( transaction ) ];
+			Transaction.register( 'foo', ( doc, t ) => {
+				return [ new TestDelta( t ), new TestDelta( t ) ];
 			} );
 
 			var transaction = new Transaction();
@@ -75,6 +75,21 @@ describe( 'Transaction', () => {
 			expect( transaction.deltas[ 0 ] ).to.be.instanceof( TestDelta );
 			expect( transaction.deltas[ 1 ] ).to.be.instanceof( TestDelta );
 			expect( executeCount ).to.equal( 2 );
+		} );
+
+		it( 'should pass arguments properly', () => {
+			var doc = 'doc';
+			var arg = 'arg';
+
+			var transaction = new Transaction( doc );
+
+			var stub = sinon.stub().returns( new TestDelta( transaction ) );
+
+			Transaction.register( 'foo', stub );
+
+			transaction.foo( arg );
+
+			sinon.assert.calledWith( stub, doc, transaction, arg );
 		} );
 	} );
 } );

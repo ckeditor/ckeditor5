@@ -8,22 +8,60 @@
 CKEDITOR.define( [
 	'document/deltas/delta',
 	'document/deltas/register',
-	'document/operations/changeoperation'
-], ( Delta, register, ChangeOperation ) => {
+	'document/operations/changeoperation',
+	'document/range',
+	'document/attribute'
+], ( Delta, register, ChangeOperation, Range, Attribute ) => {
 	/**
 	 * @class document.delta.ChangeDelta
 	 */
 	class ChangeDelta extends Delta {}
 
-	register( 'setAttr', ( doc, transaction, attr, range ) => {
+	register( 'setAttr', ( doc, transaction, key, value, range ) => {
 		var ops = [];
-		var startPosition = range.get
+		var lastSplitPosition = range.start;
 
-		for ( value of range ) {
-			value
+		var position;
+		var valueBefore;
+		var valueAfter;
+
+		var iterator = range[ Symbol.iterator ]();
+		var next = iterator.next();
+
+		while ( !next.done ) {
+			valueAfter = next.value.node.getAttr( key );
+
+			if ( position && valueBefore != valueAfter ) {
+				if ( valueBefore != value ) {
+					ops.push( new ChangeOperation(
+						new Range( lastSplitPosition, position ),
+						valueBefore ? new Attribute( key, valueBefore ) : null,
+						new Attribute( key, value ),
+						doc.version + ops.length
+					) );
+				}
+
+				lastSplitPosition = position;
+			}
+
+			position = iterator.position;
+			valueBefore = valueAfter;
+
+			next = iterator.next();
 		}
 
-		return new ChangeDelta( transaction, {} );
+		if ( position != lastSplitPosition && valueBefore != value ) {
+			ops.push( new ChangeOperation(
+				new Range( lastSplitPosition, position ),
+				valueBefore ? new Attribute( key, valueBefore ) : null,
+				new Attribute( key, value ),
+				doc.version + ops.length
+			) );
+		}
+
+
+
+		return new ChangeDelta( transaction, ops );
 	} );
 
 	register( 'removeAttr', ( doc, transaction, key, range ) => {

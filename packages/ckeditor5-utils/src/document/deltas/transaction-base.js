@@ -5,7 +5,7 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'utils' ], ( utils ) => {
+CKEDITOR.define( [ 'utils', 'document/deltas/delta' ], ( utils, Delta ) => {
 	/**
 	 * @class document.Transaction
 	 */
@@ -18,15 +18,19 @@ CKEDITOR.define( [ 'utils' ], ( utils ) => {
 			this.deltas = [];
 		}
 
+		[ Symbol.iterator ]() {
+			return this.deltas[ Symbol.iterator ]();
+		}
+
 		static register( name, creator ) {
 			if ( Transaction.prototype[ name ] ) {
 				throw 'error';
 			}
 
 			Transaction.prototype[ name ] = function() {
-				var deltas = creator( [ this.doc, this ].concat( arguments ) );
+				var deltas = creator.apply( this, [ this.doc, this ].concat( Array.from( arguments ) ) );
 
-				if ( !utils.isIterable( deltas ) ) {
+				if ( deltas instanceof Delta ) {
 					deltas = [ deltas ];
 				}
 
