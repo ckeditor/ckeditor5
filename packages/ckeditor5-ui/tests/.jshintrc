@@ -10,6 +10,7 @@
 	"unused": true,
 	"strict": true,
 	"expr": true,
+	"varstmt": true,
 
 	"globalstrict": true,
 

@@ -12,7 +12,7 @@
  * @extends Model
  */
 
-CKEDITOR.define( [ 'collection', 'model' ], function( Collection, Model ) {
+CKEDITOR.define( [ 'collection', 'model' ], ( Collection, Model ) => {
 	class Region extends Model {
 		/**
 		 * Creates an instance of the {@link Region} class.

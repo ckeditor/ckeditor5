@@ -1,13 +1,13 @@
-/* jshint node: true */
+/* jshint node: true, esnext: true, varstmt: true */
 
 'use strict';
 
-module.exports = function( grunt ) {
+module.exports = ( grunt ) => {
 	// First register the "default" task, so it can be analyzed by other tasks.
 	grunt.registerTask( 'default', [ 'jshint:git', 'jscs:git' ] );
 
 	// Files that will be ignored by the "jscs" and "jshint" tasks.
-	var ignoreFiles = [
+	const ignoreFiles = [
 		'src/lib/**',
 		// Automatically loaded from .gitignore. Add more if necessary.
 	];

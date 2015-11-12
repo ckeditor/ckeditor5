@@ -20,7 +20,7 @@ CKEDITOR.define( [
 	'ckeditorerror',
 	'ui/domemittermixin',
 	'utils'
-], function( Collection, Model, Template, CKEditorError, DOMEmitterMixin, utils ) {
+], ( Collection, Model, Template, CKEditorError, DOMEmitterMixin, utils ) => {
 	class View extends Model {
 		/**
 		 * Creates an instance of the {@link View} class.
@@ -95,7 +95,7 @@ CKEDITOR.define( [
 				onModelChange( null, this.model[ property ] );
 
 				function onModelChange( evt, value ) {
-					var processedValue = callback( el, value );
+					let processedValue = callback( el, value );
 
 					if ( typeof processedValue != 'undefined' ) {
 						domUpdater( el, processedValue );
