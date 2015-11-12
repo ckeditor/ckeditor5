@@ -18,6 +18,10 @@ CKEDITOR.define( [], function() {
 			this.operations = Array.from( operations );
 		}
 
+		[ Symbol.iterator ]() {
+			return this.operations[ Symbol.iterator ]();
+		}
+
 		_execute() {
 			for ( var operation of this.operations ) {
 				this.transaction.doc.applyOperation( operation );
