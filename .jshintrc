@@ -9,6 +9,11 @@
 	"undef": true,
 	"unused": true,
 	"strict": true,
+	"varstmt": true,
 
-	"globalstrict": true
+	"globalstrict": true,
+
+	"globals": {
+		"CKEDITOR": false
+	}
 }

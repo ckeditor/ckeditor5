@@ -3,16 +3,15 @@
  * For licensing, see LICENSE.md.
  */
 
-/* jshint node: true */
-
 'use strict';
 
-var Builder = require( './build/builder' );
+const Builder = require( './build/builder' );
 
 module.exports = function( grunt ) {
 	grunt.registerTask( 'build', 'Build a release out of the current development code.', function() {
-		var done = this.async();
-		var builder = new Builder();
+		const done = this.async();
+		const builder = new Builder();
+
 		builder.build( done );
 	} );
 };
