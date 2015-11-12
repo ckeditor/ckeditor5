@@ -5,7 +5,7 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'document/node' ], function( Node ) {
+CKEDITOR.define( [ 'document/node' ], ( Node ) => {
 	/**
 	 * Data structure for character stored in the tree data model.
 	 *

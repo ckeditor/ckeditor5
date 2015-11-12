@@ -5,13 +5,13 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'model', 'eventinfo', 'ckeditorerror' );
+const modules = bender.amd.require( 'model', 'eventinfo', 'ckeditorerror' );
 
-var Car, car;
+let Car, car;
 
-describe( 'Model', function() {
-	beforeEach( 'Create a test model instance', function() {
-		var Model = modules.model;
+describe( 'Model', () => {
+	beforeEach( 'Create a test model instance', () => {
+		const Model = modules.model;
 
 		Car = class extends Model {};
 
@@ -23,28 +23,28 @@ describe( 'Model', function() {
 
 	//////////
 
-	it( 'should set _attributes on creation', function() {
+	it( 'should set _attributes on creation', () => {
 		expect( car._attributes ).to.deep.equal( {
 			color: 'red',
 			year: 2015
 		} );
 	} );
 
-	it( 'should get correctly after set', function() {
+	it( 'should get correctly after set', () => {
 		car.color = 'blue';
 
 		expect( car.color ).to.equal( 'blue' );
 		expect( car._attributes.color ).to.equal( 'blue' );
 	} );
 
-	it( 'should get correctly after setting _attributes', function() {
+	it( 'should get correctly after setting _attributes', () => {
 		car._attributes.color = 'blue';
 
 		expect( car.color ).to.equal( 'blue' );
 	} );
 
-	it( 'should add properties on creation', function() {
-		var car = new Car( null, {
+	it( 'should add properties on creation', () => {
+		let car = new Car( null, {
 			prop: 1
 		} );
 
@@ -53,8 +53,8 @@ describe( 'Model', function() {
 
 	//////////
 
-	describe( 'set', function() {
-		it( 'should work when passing an object', function() {
+	describe( 'set', () => {
+		it( 'should work when passing an object', () => {
 			car.set( {
 				color: 'blue',	// Override
 				wheels: 4,
@@ -69,7 +69,7 @@ describe( 'Model', function() {
 			} );
 		} );
 
-		it( 'should work when passing a key/value pair', function() {
+		it( 'should work when passing a key/value pair', () => {
 			car.set( 'color', 'blue' );
 			car.set( 'wheels', 4 );
 
@@ -80,13 +80,13 @@ describe( 'Model', function() {
 			} );
 		} );
 
-		it( 'should fire the "change" event', function() {
-			var EventInfo = modules.eventinfo;
+		it( 'should fire the "change" event', () => {
+			const EventInfo = modules.eventinfo;
 
-			var spy = sinon.spy();
-			var spyColor = sinon.spy();
-			var spyYear = sinon.spy();
-			var spyWheels = sinon.spy();
+			let spy = sinon.spy();
+			let spyColor = sinon.spy();
+			let spyYear = sinon.spy();
+			let spyWheels = sinon.spy();
 
 			car.on( 'change', spy );
 			car.on( 'change:color', spyColor );
@@ -119,9 +119,9 @@ describe( 'Model', function() {
 			sinon.assert.calledWithExactly( spyWheels, sinon.match.instanceOf( EventInfo ), 4, sinon.match.typeOf( 'undefined' ) );
 		} );
 
-		it( 'should not fire the "change" event for the same attribute value', function() {
-			var spy = sinon.spy();
-			var spyColor = sinon.spy();
+		it( 'should not fire the "change" event for the same attribute value', () => {
+			let spy = sinon.spy();
+			let spyColor = sinon.spy();
 
 			car.on( 'change', spy );
 			car.on( 'change:color', spyColor );
@@ -135,8 +135,8 @@ describe( 'Model', function() {
 			sinon.assert.notCalled( spyColor );
 		} );
 
-		it( 'should throw when overriding already existing property', function() {
-			var CKEditorError = modules.ckeditorerror;
+		it( 'should throw when overriding already existing property', () => {
+			const CKEditorError = modules.ckeditorerror;
 
 			car.normalProperty = 1;
 
@@ -147,9 +147,9 @@ describe( 'Model', function() {
 			expect( car ).to.have.property( 'normalProperty', 1 );
 		} );
 
-		it( 'should throw when overriding already existing property (in the prototype)', function() {
-			var CKEditorError = modules.ckeditorerror;
-			var Model = modules.model;
+		it( 'should throw when overriding already existing property (in the prototype)', () => {
+			const CKEditorError = modules.ckeditorerror;
+			const Model = modules.model;
 
 			class Car extends Model {
 				method() {}
@@ -165,13 +165,13 @@ describe( 'Model', function() {
 		} );
 	} );
 
-	describe( 'extend', function() {
-		it( 'should create new Model based classes', function() {
-			var Model = modules.model;
+	describe( 'extend', () => {
+		it( 'should create new Model based classes', () => {
+			const Model = modules.model;
 
 			class Truck extends Car {}
 
-			var truck = new Truck();
+			let truck = new Truck();
 
 			expect( truck ).to.be.an.instanceof( Car );
 			expect( truck ).to.be.an.instanceof( Model );

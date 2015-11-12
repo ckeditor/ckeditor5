@@ -19,7 +19,7 @@
  * @mixins EventEmitter
  */
 
-CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( EmitterMixin, CKEditorError, utils ) {
+CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], ( EmitterMixin, CKEditorError, utils ) => {
 	class Collection {
 		/**
 		 * Creates a new Collection instance.
@@ -81,8 +81,8 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 		 * @param {Object} item
 		 */
 		add( item ) {
-			var itemId;
-			var idProperty = this._idProperty;
+			let itemId;
+			const idProperty = this._idProperty;
 
 			if ( ( idProperty in item ) ) {
 				itemId = item[ idProperty ];
@@ -124,7 +124,7 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 		 * @returns {Object} The requested item or `null` if such item does not exist.
 		 */
 		get( idOrIndex ) {
-			var item;
+			let item;
 
 			if ( typeof idOrIndex == 'string' ) {
 				item = this._itemMap.get( idOrIndex );
@@ -149,9 +149,9 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 		 * @returns {Object} The removed item.
 		 */
 		remove( subject ) {
-			var index, id, item;
-			var itemDoesNotExist = false;
-			var idProperty = this._idProperty;
+			let index, id, item;
+			let itemDoesNotExist = false;
+			const idProperty = this._idProperty;
 
 			if ( typeof subject == 'string' ) {
 				id = subject;
@@ -245,7 +245,7 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 		 * @returns {String} The next id.
 		 */
 		_getNextId() {
-			var id;
+			let id;
 
 			do {
 				id = String( this._nextId++ );

@@ -8,29 +8,29 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'ckeditor', 'ui/region', 'ui/view', 'collection' );
+const modules = bender.amd.require( 'ckeditor', 'ui/region', 'ui/view', 'collection' );
 
 bender.tools.createSinonSandbox();
 
-var TestViewA, TestViewB;
-var region, el;
+let TestViewA, TestViewB;
+let region, el;
 
 beforeEach( createRegionInstance );
 
-describe( 'constructor', function() {
-	it( 'accepts name and element', function() {
+describe( 'constructor', () => {
+	it( 'accepts name and element', () => {
 		expect( region ).to.have.property( 'name', 'foo' );
 		expect( region ).to.have.property( 'el', el );
 	} );
 } );
 
-describe( 'views collection', function() {
-	it( 'is an instance of Collection', function() {
-		var Collection = modules.collection;
+describe( 'views collection', () => {
+	it( 'is an instance of Collection', () => {
+		const Collection = modules.collection;
 		expect( region.views ).to.be.an.instanceof( Collection );
 	} );
 
-	it( 'updates DOM when adding views', function() {
+	it( 'updates DOM when adding views', () => {
 		expect( region.el.childNodes.length ).to.be.equal( 0 );
 
 		region.views.add( new TestViewA() );
@@ -40,9 +40,9 @@ describe( 'views collection', function() {
 		expect( region.el.childNodes.length ).to.be.equal( 2 );
 	} );
 
-	it( 'updates DOM when removing views', function() {
-		var viewA = new TestViewA();
-		var viewB = new TestViewB();
+	it( 'updates DOM when removing views', () => {
+		let viewA = new TestViewA();
+		let viewB = new TestViewB();
 
 		region.views.add( viewA );
 		region.views.add( viewB );
@@ -60,10 +60,10 @@ describe( 'views collection', function() {
 	} );
 } );
 
-describe( 'destroy', function() {
-	it( 'destroys the region', function() {
+describe( 'destroy', () => {
+	it( 'destroys the region', () => {
 		// Append the region's element to some container.
-		var container = document.createElement( 'div' );
+		let container = document.createElement( 'div' );
 		container.appendChild( el );
 		expect( el.parentNode ).to.be.equal( container );
 
@@ -74,9 +74,9 @@ describe( 'destroy', function() {
 		expect( region.el ).to.be.null;
 	} );
 
-	it( 'destroys children views', function() {
-		var view = new TestViewA();
-		var spy = bender.sinon.spy( view, 'destroy' );
+	it( 'destroys children views', () => {
+		let view = new TestViewA();
+		let spy = bender.sinon.spy( view, 'destroy' );
 
 		// Append the view to the region.
 		region.views.add( view );
@@ -90,8 +90,8 @@ describe( 'destroy', function() {
 } );
 
 function createRegionInstance() {
-	var Region = modules[ 'ui/region' ];
-	var View = modules[ 'ui/view' ];
+	const Region = modules[ 'ui/region' ];
+	const View = modules[ 'ui/view' ];
 
 	class A extends View {
 		constructor() {

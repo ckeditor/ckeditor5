@@ -12,7 +12,7 @@
  * @extends Model
  */
 
-CKEDITOR.define( [ 'model' ], function( Model ) {
+CKEDITOR.define( [ 'model' ], ( Model ) => {
 	class Plugin extends Model {
 		constructor( editor ) {
 			super();

@@ -5,7 +5,7 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'utils', 'ckeditorerror' ], function( utils, CKEditorError ) {
+CKEDITOR.define( [ 'utils', 'ckeditorerror' ], ( utils, CKEditorError ) => {
 	/**
 	 * Position in the tree. Position is always located before or after a node.
 	 * See {@link #path} property for more information.
@@ -55,9 +55,9 @@ CKEDITOR.define( [ 'utils', 'ckeditorerror' ], function( utils, CKEditorError ) 
 		 * @property {document.Element} parent
 		 */
 		get parent() {
-			var parent = this.root;
+			let parent = this.root;
 
-			var i, len;
+			let i, len;
 
 			for ( i = 0, len = this.path.length - 1; i < len; i++ ) {
 				parent = parent.getChild( this.path[ i ] );
@@ -125,7 +125,7 @@ CKEDITOR.define( [ 'utils', 'ckeditorerror' ], function( utils, CKEditorError ) 
 		 * @returns {document.Position}
 		 */
 		static createFromParentAndOffset( parent, offset ) {
-			var path = parent.getPath();
+			const path = parent.getPath();
 
 			path.push( offset );
 

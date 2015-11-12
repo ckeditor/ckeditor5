@@ -18,7 +18,7 @@ CKEDITOR.define( [
 	'plugincollection',
 	'creator',
 	'ckeditorerror'
-], function( Model, EditorConfig, PluginCollection, Creator, CKEditorError ) {
+], ( Model, EditorConfig, PluginCollection, Creator, CKEditorError ) => {
 	class Editor extends Model {
 		/**
 		 * Creates a new instance of the Editor class.
@@ -88,8 +88,8 @@ CKEDITOR.define( [
 		 * @returns {Promise} A promise which resolves once the initialization is completed.
 		 */
 		init() {
-			var that = this;
-			var config = this.config;
+			const that = this;
+			const config = this.config;
 
 			return loadPlugins()
 				.then( initPlugins )
@@ -102,7 +102,7 @@ CKEDITOR.define( [
 
 			function initPlugins( loadedPlugins ) {
 				// Start with a resolved promise.
-				var promise = Promise.resolve();
+				let promise = Promise.resolve();
 
 				// Chain it with promises that resolve with the init() call of every plugin.
 				for ( let i = 0; i < loadedPlugins.length; i++ ) {
@@ -123,8 +123,8 @@ CKEDITOR.define( [
 
 			function fireCreator() {
 				// Take the name of the creator to use (config or any of the registered ones).
-				var creatorName = config.creator ? ( 'creator-' + config.creator ) : Object.keys( that._creators )[ 0 ];
-				var creator;
+				const creatorName = config.creator ? ( 'creator-' + config.creator ) : Object.keys( that._creators )[ 0 ];
+				let creator;
 
 				if ( creatorName ) {
 					// Take the registered class for the given creator name.
@@ -164,7 +164,7 @@ CKEDITOR.define( [
 		 * @returns {Promise} A promise that resolves once the editor instance is fully destroyed.
 		 */
 		destroy() {
-			var that = this;
+			const that = this;
 
 			this.fire( 'destroy' );
 
