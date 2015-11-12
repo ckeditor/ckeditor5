@@ -9,25 +9,25 @@
 
 'use strict';
 
-var modules = bender.amd.require(
+const modules = bender.amd.require(
 	'document/document',
 	'document/element',
 	'document/rootelement'
 );
 
-describe( 'Element', function() {
-	var Document, Element, RootElement;
+describe( 'Element', () => {
+	let Document, Element, RootElement;
 
-	before( function() {
+	before( () => {
 		Document = modules[ 'document/document' ];
 		Element = modules[ 'document/element' ];
 		RootElement = modules[ 'document/rootelement' ];
 	} );
 
-	describe( 'constructor', function() {
-		it( 'should create root element without attributes', function() {
-			var doc = new Document();
-			var root = new RootElement( doc );
+	describe( 'constructor', () => {
+		it( 'should create root element without attributes', () => {
+			let doc = new Document();
+			let root = new RootElement( doc );
 
 			expect( root ).to.be.an.instanceof( Element );
 			expect( root ).to.have.property( 'document' ).that.equals( doc );

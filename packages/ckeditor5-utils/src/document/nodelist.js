@@ -10,7 +10,7 @@ CKEDITOR.define( [
 	'document/text',
 	'document/node',
 	'utils'
-], function( Character, Text, Node, utils ) {
+], ( Character, Text, Node, utils ) => {
 	/**
 	 * List of nodes. It is used to represent multiple nodes with a given order, for example children of
 	 * {@link document.Element} object or nodes inserted using {@link document.operation.InsertOperation}.
@@ -25,26 +25,26 @@ CKEDITOR.define( [
 		/**
 		 * Constructor let you create a list of nodes in many ways. See examples:
 		 *
-		 *		var nodeList = new NodeList( [ new Element( p1 ), new Element( p1 ) ] );
+		 *		let nodeList = new NodeList( [ new Element( p1 ), new Element( p1 ) ] );
 		 *		nodeList.length; // 2
 		 *
-		 *		var nodeList = new NodeList( new Element( p ) );
+		 *		let nodeList = new NodeList( new Element( p ) );
 		 *		nodeList.length; // 1
 		 *
-		 *		var nodeList = new NodeList( [ 'foo', new Element( p ), 'bar' ] );
+		 *		let nodeList = new NodeList( [ 'foo', new Element( p ), 'bar' ] );
 		 *		nodeList.length; // 7
 		 *
-		 *		var nodeList = new NodeList( 'foo' );
+		 *		let nodeList = new NodeList( 'foo' );
 		 *		nodeList.length; // 3
 		 *
-		 *		var nodeList = new NodeList( new Text( 'foo', [ new Attribute( 'bar', 'bom' ) ] ) );
+		 *		let nodeList = new NodeList( new Text( 'foo', [ new Attribute( 'bar', 'bom' ) ] ) );
 		 *		nodeList.length; // 3
 		 *		nodeList.get( 0 ).getAttr( 'bar' ); // 'bom'
 		 *		nodeList.get( 1 ).getAttr( 'bar' ); // 'bom'
 		 *		nodeList.get( 2 ).getAttr( 'bar' ); // 'bom'
 		 *
-		 *		var nodeListA = new NodeList( 'foo' );
-		 *		var nodeListB = new NodeList( nodeListA );
+		 *		let nodeListA = new NodeList( 'foo' );
+		 *		let nodeListB = new NodeList( nodeListA );
 		 *		nodeListA === nodeListB // true
 		 *		nodeListB.length // 3
 		 *
@@ -66,7 +66,7 @@ CKEDITOR.define( [
 			this._nodes = [];
 
 			if ( nodes ) {
-				var node, character;
+				let node, character;
 
 				if ( !utils.isIterable( nodes ) ) {
 					nodes = [ nodes ];

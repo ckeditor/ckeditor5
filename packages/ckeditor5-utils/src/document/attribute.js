@@ -5,7 +5,7 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'utils' ], function( utils ) {
+CKEDITOR.define( [ 'utils' ], ( utils ) => {
 	/**
 	 * Attributes can store any additional information for nodes in the data model.
 	 *
@@ -53,10 +53,10 @@ CKEDITOR.define( [ 'utils' ], function( utils ) {
 			// We do not care about the order, so collections with the same elements should return the same hash.
 			function sort( key, value ) {
 				if ( !utils.isArray( value ) && utils.isObject( value ) ) {
-					var sorted = {};
+					const sorted = {};
 
 					// Sort keys and fill up the sorted object.
-					Object.keys( value ).sort().forEach( function( key ) {
+					Object.keys( value ).sort().forEach( ( key ) => {
 						sorted[ key ] = value[ key ];
 					} );
 
@@ -71,8 +71,8 @@ CKEDITOR.define( [ 'utils' ], function( utils ) {
 		 * Compares two attributes. Returns `true` if two attributes have the same key and value even if the order of keys
 		 * in the value object is different.
 		 *
-		 *		var attr1 = new Attribute( 'foo', { a: 1, b: 2 } );
-		 *		var attr2 = new Attribute( 'foo', { b: 2, a: 1 } );
+		 *		let attr1 = new Attribute( 'foo', { a: 1, b: 2 } );
+		 *		let attr2 = new Attribute( 'foo', { b: 2, a: 1 } );
 		 *		attr1.isEqual( attr2 ); // true
 		 *
 		 * @param {document.Attribute} otherAttr Attribute to compare with.
@@ -88,9 +88,9 @@ CKEDITOR.define( [ 'utils' ], function( utils ) {
 		 *
 		 * Note that attributes are registered globally.
 		 *
-		 *		var attr1 = Attribute.register( 'bold', true );
-		 *		var attr2 = Attribute.register( 'bold', true );
-		 *		var attr3 = new Attribute( 'bold', true );
+		 *		let attr1 = Attribute.register( 'bold', true );
+		 *		let attr2 = Attribute.register( 'bold', true );
+		 *		let attr3 = new Attribute( 'bold', true );
 		 *		attr1 === attr2 // true
 		 *		attr1 === attr3 // true
 		 *
@@ -100,7 +100,7 @@ CKEDITOR.define( [ 'utils' ], function( utils ) {
 		 * @returns {document.Attribute} Registered attribute.
 		 */
 		static register( key, value ) {
-			var attr = new Attribute( key, value );
+			const attr = new Attribute( key, value );
 
 			if ( this._register[ attr._hash ] ) {
 				return this._register[ attr._hash ];

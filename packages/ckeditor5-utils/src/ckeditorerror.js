@@ -17,7 +17,7 @@
  * @extends Error
  */
 
-CKEDITOR.define( function() {
+CKEDITOR.define( () => {
 	class CKEditorError extends Error {
 		/**
 		 * Creates an instance of the CKEditorError class.

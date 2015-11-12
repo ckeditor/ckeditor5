@@ -9,7 +9,7 @@ CKEDITOR.define( [
 	'document/operation/moveoperation',
 	'document/position',
 	'document/operation/reinsertoperation'
-], function( MoveOperation, Position ) {
+], ( MoveOperation, Position ) => {
 	/**
 	 * Operation to remove a range of nodes.
 	 *
@@ -25,17 +25,17 @@ CKEDITOR.define( [
 		 * @constructor
 		 */
 		constructor( position, howMany, baseVersion ) {
-			var graveyard = position.root.document._graveyard;
+			const graveyard = position.root.document._graveyard;
 
 			// Position in a graveyard where nodes were moved.
-			var graveyardPosition = Position.createFromParentAndOffset( graveyard, 0 );
+			const graveyardPosition = Position.createFromParentAndOffset( graveyard, 0 );
 
 			super( position, graveyardPosition, howMany, baseVersion );
 		}
 
 		getReversed() {
 			// Because of circular dependencies we need to re-require reinsert operation here.
-			var ReinsertOperation = CKEDITOR.require( 'document/operation/reinsertoperation' );
+			const ReinsertOperation = CKEDITOR.require( 'document/operation/reinsertoperation' );
 
 			return new ReinsertOperation( this.targetPosition, this.sourcePosition, this.howMany, this.baseVersion + 1 );
 		}

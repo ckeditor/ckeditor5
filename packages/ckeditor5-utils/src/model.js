@@ -12,7 +12,7 @@
  * @mixins EventEmitter
  */
 
-CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( EmitterMixin, CKEditorError, utils ) {
+CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], ( EmitterMixin, CKEditorError, utils ) => {
 	class Model {
 		/**
 		 * Creates a new Model instance.
@@ -57,7 +57,7 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 		set( name, value ) {
 			// If the first parameter is an Object, we gonna interact through its properties.
 			if ( utils.isObject( name ) ) {
-				Object.keys( name ).forEach( function( attr ) {
+				Object.keys( name ).forEach( ( attr ) => {
 					this.set( attr, name[ attr ] );
 				}, this );
 
@@ -71,7 +71,7 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 				 * This error is thrown when trying to {@link Model#set set} an attribute with
 				 * a name of an already existing property. For example:
 				 *
-				 *		var model = new Model();
+				 *		let model = new Model();
 				 *		model.property = 1;
 				 *		model.set( 'property', 2 );		// throws
 				 *
@@ -87,12 +87,12 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], function( Emitter
 				enumerable: true,
 				configurable: true,
 
-				get: function() {
+				get: () => {
 					return this._attributes[ name ];
 				},
 
-				set: function( value ) {
-					var oldValue = this._attributes[ name ];
+				set: ( value ) => {
+					const oldValue = this._attributes[ name ];
 
 					if ( oldValue !== value ) {
 						this._attributes[ name ] = value;
