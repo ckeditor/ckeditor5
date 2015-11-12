@@ -3,6 +3,9 @@
 let dirtyFiles,
 	ignoreList;
 
+var repositoryRegExp = /^(ckeditor\/[^#]+)(?:#)?(.*)/;
+var directoryRegExp = /^ckeditor5/;
+
 module.exports = {
 	/**
 	 * Check if a task (including its optional target) is in the queue of tasks to be executed by Grunt.
@@ -136,5 +139,171 @@ module.exports = {
 		}
 
 		return ret.output;
+	},
+
+	/**
+	 * Links repository located in source path to repository located in destination path. Uses npm link.
+	 *
+	 * @param {String} sourcePath
+	 * @param {String} destinationPath
+	 * @param {String} pluginName
+	 */
+	npmLink: function( sourcePath, destinationPath, pluginName ) {
+		// Don't use sudo on windows when executing npm link.
+		var isWin = process.platform == 'win32';
+		var linkCommands = [
+			'cd ' + sourcePath,
+			( !isWin ? 'sudo ' : '' ) + 'npm link',
+			'cd ' + destinationPath,
+			'npm link ' + pluginName
+		];
+
+		module.exports.shExec( linkCommands.join( ' && ' ) );
+	},
+
+	/**
+	 * Clones repository from provided GitHub URL. Only short GitHub urls are supported that starts with 'ckeditor/'.
+	 * https://docs.npmjs.com/files/package.json#github-urls
+	 *
+	 * @param {String} name Repository name.
+	 * @param {String} gitHubUrl GitHub url to repository.
+	 * @param {String} location Destination path.
+	 */
+	cloneRepository: function( name, gitHubUrl, location ) {
+		var match = gitHubUrl.match( repositoryRegExp );
+
+		if ( match && match[ 1 ] )  {
+			var cloneCommands = [
+				'cd ' + location,
+				'git clone git@github.com:' + match[ 1 ]
+			];
+
+			// If commit-ish suffix is included - run git checkout.
+			if ( match[ 2 ] ) {
+				cloneCommands.push( 'cd ' + name );
+				cloneCommands.push( 'git checkout ' + match[ 2 ] );
+			}
+
+			module.exports.shExec( cloneCommands.join( ' && ' ) );
+		}
+	},
+
+	/**
+	 * Returns dependencies that starts with ckeditor5-, and have valid, short GitHub url. Returns null if no
+	 * dependencies are found.
+	 *
+	 * @param {Object} dependencies Dependencies object loaded from package.json file.
+	 * @returns {Object|null}
+	 */
+	getCKEditorDependencies: function( dependencies ) {
+		var result = null;
+		var regexp = /^ckeditor5-/;
+
+		if ( dependencies ) {
+			Object.keys( dependencies ).forEach( function( key ) {
+				if ( regexp.test( key ) && repositoryRegExp.test( dependencies[ key ] ) ) {
+					if ( result === null ) {
+						result = {};
+					}
+
+					result[ key ] = dependencies[ key ];
+				}
+			} );
+		}
+
+		return result;
+	},
+
+	/**
+	 * Returns array with all directories under specified path.
+	 *
+	 * @param {String} path
+	 * @returns {Array}
+	 */
+	getDirectories: function( path ) {
+		var fs = require( 'fs' );
+		var pth = require( 'path' );
+
+		return fs.readdirSync( path ).filter( function( item ) {
+			return fs.statSync( pth.join( path, item ) ).isDirectory();
+		} );
+	},
+
+	/**
+	 * Returns all directories under specified path that match 'ckeditor5' pattern.
+	 *
+	 * @param {String} path
+	 * @returns {Array}
+	 */
+	getCKE5Directories: function( path ) {
+		return module.exports.getDirectories( path ).filter( function( dir ) {
+			return directoryRegExp.test( dir );
+		} );
+	},
+
+	/**
+	 * Returns git status --porcelain -sb executed under specified path.
+	 *
+	 * @param {String} path Path where git status will be executed.
+	 * @returns {String|null}
+	 */
+	getGitStatus: function( path ) {
+		var exec = module.exports.shExec;
+
+		try {
+			return exec( 'cd ' + path + ' && git status --porcelain -sb' ).trim();
+		} catch ( e ) {	}
+
+		return null;
+	},
+
+	/**
+	 * Initializes development workspace. Takes CKEditor5 dependencies, clones them and npm links to the main CKEditor5
+	 * repository.
+	 *
+	 * @param {String} workspacePath Absolute path to the workspace where all repositories will be cloned.
+	 * @param {String} ckeditor5Path Absolute path to the CKEditor5 repository where all dependencies will be linked.
+	 * @param {Function} log Log function used to report progress.
+	 */
+	initDevWorkspace: function( workspacePath, ckeditor5Path, log ) {
+		var tools = module.exports;
+		var path = require( 'path' );
+		var packageJSON = require( path.join( ckeditor5Path, 'package.json' ) );
+		var pluginPath;
+
+		// Get only CKEditor dependencies.
+		var dependencies = tools.getCKEditorDependencies( packageJSON.dependencies );
+
+		if ( dependencies ) {
+			Object.keys( dependencies ).forEach( function( name ) {
+				log( 'Clonning repository ' + dependencies[ name ] + '...' );
+				tools.cloneRepository( name, dependencies[ name ], workspacePath );
+
+				pluginPath = path.join( workspacePath, name );
+				log( 'Linking ' + pluginPath + ' into ' + ckeditor5Path + '...' );
+				tools.npmLink( pluginPath, ckeditor5Path, name );
+			} );
+		}
+	},
+
+	/**
+	 * Returns git status from all CKEditor repositories from workspace.
+	 *
+	 * @param {String} workspacePath Absolute path to the workspace containing repositories.
+	 * @param {Function} log Log function used to output status information.
+	 */
+	getWorkspaceStatus: function( workspacePath, log ) {
+		var tools = module.exports;
+		var path = require( 'path' );
+		var directories = tools.getCKE5Directories( workspacePath );
+
+		directories.forEach( function( directory ) {
+			var location = path.join( workspacePath, directory );
+			var data = tools.getGitStatus( location );
+
+			if ( data ) {
+				log( '\x1b[1m' , '\x1b[36m', directory, '\x1b[0m\n', data );
+			}
+		} );
 	}
 };

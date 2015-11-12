@@ -26,6 +26,12 @@ module.exports = ( grunt ) => {
 			options: {
 				excludeFiles: ignoreFiles
 			}
+		},
+
+		dev: {
+			options: {
+				workspaceRoot: '..'
+			}
 		}
 	} );
 
