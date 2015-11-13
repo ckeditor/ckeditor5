@@ -9,7 +9,7 @@
 
 const modules = bender.amd.require(
 	'document/transaction',
-	'document/deltas/delta',
+	'document/delta/delta',
 	'ckeditorerror' );
 
 describe( 'Transaction', () => {
@@ -17,7 +17,7 @@ describe( 'Transaction', () => {
 
 	before( () => {
 		Transaction = modules[ 'document/transaction' ];
-		Delta = modules[ 'document/deltas/delta' ];
+		Delta = modules[ 'document/delta/delta' ];
 		CKEditorError = modules.ckeditorerror;
 	} );
 

@@ -6,8 +6,8 @@
 'use strict';
 
 CKEDITOR.define( [
-	'document/deltas/delta',
-	'document/deltas/register',
+	'document/delta/delta',
+	'document/delta/register',
 	'document/operation/changeoperation',
 	'document/range',
 	'document/attribute'
