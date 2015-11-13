@@ -58,3 +58,10 @@ describe( 'bender.tools.core.defineEditorCreatorMock()', () => {
 		expect( TestCreator3.prototype ).to.have.property( 'destroy', destroyFn3 );
 	} );
 } );
+
+describe( 'bender.tools.core.getIteratorCount()', () => {
+	it( 'should returns number of editable items ', () => {
+		const count = bender.tools.core.getIteratorCount( [ 1, 2, 3, 4, 5 ] );
+		expect( count ).to.equal( 5 );
+	} );
+} );
