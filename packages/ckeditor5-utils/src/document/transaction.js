@@ -6,7 +6,8 @@
 'use strict';
 
 CKEDITOR.define( [
-	'document/deltas/transaction-base'
+	'document/deltas/transaction-base',
+	'document/deltas/changedelta'
 ], function( Transaction ) {
 	return Transaction;
 } );
