@@ -9,14 +9,16 @@
 
 var modules = bender.amd.require(
 	'document/transaction',
-	'document/deltas/delta' );
+	'document/deltas/delta',
+	'ckeditorerror' );
 
 describe( 'Transaction', () => {
-	var Transaction, Delta;
+	var Transaction, Delta, CKEditorError;
 
 	before( () => {
 		Transaction = modules[ 'document/transaction' ];
 		Delta = modules[ 'document/deltas/delta' ];
+		CKEditorError = modules.ckeditorerror;
 	} );
 
 	it( 'should have registered basic methods', () => {
@@ -75,13 +77,21 @@ describe( 'Transaction', () => {
 
 			var transaction = new Transaction( doc );
 
-			var stub = sinon.stub().returns( new TestDelta( transaction ) );
+			var stub = sinon.stub();
 
 			Transaction.register( 'foo', stub );
 
 			transaction.foo( arg );
 
 			sinon.assert.calledWith( stub, doc, transaction, arg );
+		} );
+
+		it( 'should throw if one try to register the same transaction twice', () => {
+			Transaction.register( 'foo', () => {} );
+
+			expect( () => {
+				Transaction.register( 'foo', () => {} );
+			} ).to.throw( CKEditorError, /^transaction-register-taken/ );
 		} );
 	} );
 } );
