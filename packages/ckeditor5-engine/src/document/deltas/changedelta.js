@@ -24,16 +24,16 @@ CKEDITOR.define( [
 	} );
 
 	function change( doc, transaction, key, value, range ) {
-		var lastSplitPosition = range.start;
+		let lastSplitPosition = range.start;
 
-		var position;
-		var valueBefore;
-		var valueAfter;
+		let position;
+		let valueBefore;
+		let valueAfter;
 
-		var iterator = range[ Symbol.iterator ]();
-		var next = iterator.next();
+		const iterator = range[ Symbol.iterator ]();
+		let next = iterator.next();
 
-		var delta = new ChangeDelta();
+		const delta = new ChangeDelta();
 
 		while ( !next.done ) {
 			valueAfter = next.value.node.getAttr( key );
@@ -59,7 +59,7 @@ CKEDITOR.define( [
 		transaction.addDelta( delta );
 
 		function split() {
-			var operation = new ChangeOperation(
+			const operation = new ChangeOperation(
 					new Range( lastSplitPosition, position ),
 					valueBefore ? new Attribute( key, valueBefore ) : null,
 					value ? new Attribute( key, value ) : null,

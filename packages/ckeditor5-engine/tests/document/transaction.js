@@ -7,13 +7,13 @@
 
 'use strict';
 
-var modules = bender.amd.require(
+const modules = bender.amd.require(
 	'document/transaction',
 	'document/deltas/delta',
 	'ckeditorerror' );
 
 describe( 'Transaction', () => {
-	var Transaction, Delta, CKEditorError;
+	let Transaction, Delta, CKEditorError;
 
 	before( () => {
 		Transaction = modules[ 'document/transaction' ];
@@ -22,14 +22,14 @@ describe( 'Transaction', () => {
 	} );
 
 	it( 'should have registered basic methods', () => {
-		var transaction = new Transaction();
+		const transaction = new Transaction();
 
 		expect( transaction.setAttr ).to.be.a( 'function' );
 		expect( transaction.removeAttr ).to.be.a( 'function' );
 	} );
 
 	describe( 'Transaction.register', () => {
-		var TestDelta;
+		let TestDelta;
 
 		before( () => {
 			TestDelta = class extends Delta {
@@ -48,7 +48,7 @@ describe( 'Transaction', () => {
 				t.addDelta( new TestDelta() );
 			} );
 
-			var transaction = new Transaction();
+			const transaction = new Transaction();
 
 			transaction.foo();
 
@@ -62,7 +62,7 @@ describe( 'Transaction', () => {
 				t.addDelta( new TestDelta() );
 			} );
 
-			var transaction = new Transaction();
+			const transaction = new Transaction();
 
 			transaction.foo();
 
@@ -72,12 +72,12 @@ describe( 'Transaction', () => {
 		} );
 
 		it( 'should pass arguments properly', () => {
-			var doc = 'doc';
-			var arg = 'arg';
+			const doc = 'doc';
+			const arg = 'arg';
 
-			var transaction = new Transaction( doc );
+			const transaction = new Transaction( doc );
 
-			var stub = sinon.stub();
+			const stub = sinon.stub();
 
 			Transaction.register( 'foo', stub );
 

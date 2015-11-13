@@ -121,12 +121,4 @@ describe( 'Element', () => {
 			expect( element.getChildCount() ).to.equal( 3 );
 		} );
 	} );
-
-	describe( 'getChildrenIterator', function() {
-		it( 'should return iterator over children', function() {
-			getChildrenIterator
-
-			expect( element.getChildCount() ).to.equal( 3 );
-		} );
-	} );
 } );

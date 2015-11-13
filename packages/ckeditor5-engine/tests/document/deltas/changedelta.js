@@ -7,7 +7,7 @@
 
 'use strict';
 
-var modules = bender.amd.require(
+const modules = bender.amd.require(
 	'document/transaction',
 	'document/document',
 	'document/text',
@@ -16,9 +16,9 @@ var modules = bender.amd.require(
 	'document/position' );
 
 describe( 'Transaction', () => {
-	var Transaction, Document, Text, Attribute, Range, Position;
+	let Transaction, Document, Text, Attribute, Range, Position;
 
-	var doc, root, transaction;
+	let doc, root, transaction;
 
 	before( () => {
 		Transaction = modules[ 'document/transaction' ];
@@ -53,10 +53,10 @@ describe( 'Transaction', () => {
 	}
 
 	function getOperationsCount() {
-		var count = 0;
+		let count = 0;
 
-		for ( var delta of transaction ) {
-			for ( var operation of delta ) {
+		for ( let delta of transaction ) {
+			for ( let operation of delta ) {
 				count++;
 			}
 		}
@@ -65,11 +65,11 @@ describe( 'Transaction', () => {
 	}
 
 	function getChangesAttrsCount() {
-		var count = 0;
+		let count = 0;
 
-		for ( var delta of transaction ) {
-			for ( var operation of delta ) {
-				for ( var value of operation.range ) {
+		for ( let delta of transaction ) {
+			for ( let operation of delta ) {
+				for ( let value of operation.range ) {
 					count++;
 				}
 			}
@@ -80,7 +80,7 @@ describe( 'Transaction', () => {
 
 	function getCompressedAttrs() {
 		// default: 111---111222---111
-		var range = Range.createFromElement( root );
+		const range = Range.createFromElement( root );
 		return Array.from( range ).map( value => value.node.getAttr( 'a' ) || '-' ).join( '' );
 	}
 
