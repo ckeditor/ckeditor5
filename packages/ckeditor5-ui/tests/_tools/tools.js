@@ -47,6 +47,24 @@
 
 				return TestCreator;
 			}
+		},
+
+		/**
+		 * Returns the number of elements return by the iterator.
+		 *
+		 *	  bender.tools.core.getIteratorCount( [ 1, 2, 3, 4, 5 ] ); // 5;
+		 *
+		 * @param {Iterable.<*>} iterator Any iterator.
+		 * @returns {Number} Number of elements returned by that iterator.
+		 */
+		getIteratorCount: ( iterator ) => {
+			let count = 0;
+
+			for ( let _ of iterator ) { // jshint ignore:line
+				count++;
+			}
+
+			return count;
 		}
 	};
 } )();
