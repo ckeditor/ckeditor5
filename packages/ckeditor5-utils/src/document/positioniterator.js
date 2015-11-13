@@ -67,6 +67,8 @@ CKEDITOR.define( [
 			const position = this.position;
 			const parent = position.parent;
 
+			Element = CKEDITOR.require( 'document/element' );
+
 			// We are at the end of the root.
 			if ( parent.parent === null && position.offset === parent.getChildCount() ) {
 				return { done: true };

@@ -5,7 +5,7 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'document/positioniterator' ], ( PositionIterator ) => {
+CKEDITOR.define( [ 'document/positioniterator', 'document/position' ], ( PositionIterator, Position ) => {
 	/**
 	 * Range class. Range is iterable.
 	 *
@@ -33,6 +33,13 @@ CKEDITOR.define( [ 'document/positioniterator' ], ( PositionIterator ) => {
 			 * @property {document.Position}
 			 */
 			this.end = end;
+		}
+
+		static createFromElement( element ) {
+			return new Range(
+					Position.createFromParentAndOffset( element, 0 ),
+					Position.createFromParentAndOffset( element, element.getChildCount() )
+				);
 		}
 
 		/**
