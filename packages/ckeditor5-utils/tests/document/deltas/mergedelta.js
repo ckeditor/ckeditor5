@@ -5,7 +5,11 @@
 
 /* bender-tags: document, delta */
 
+/* bender-include: ../../_tools/tools.js */
+
 'use strict';
+
+const getIteratorCount = bender.tools.core.getIteratorCount;
 
 const modules = bender.amd.require(
 	'document/document',
@@ -44,7 +48,7 @@ describe( 'Transaction', () => {
 			expect( root.getChildCount() ).to.equal( 1 );
 			expect( root.getChild( 0 ).name ).to.equal( 'p' );
 			expect( root.getChild( 0 ).getChildCount() ).to.equal( 6 );
-			expect( root.getChild( 0 )._getAttrCount() ).to.equal( 1 );
+			expect( getIteratorCount( root.getChild( 0 ).getAttrIterator() ) ).to.equal( 1 );
 			expect( root.getChild( 0 ).getAttr( 'key1' ) ).to.equal( 'value1' );
 			expect( root.getChild( 0 ).getChild( 0 ).character ).to.equal( 'f' );
 			expect( root.getChild( 0 ).getChild( 1 ).character ).to.equal( 'o' );

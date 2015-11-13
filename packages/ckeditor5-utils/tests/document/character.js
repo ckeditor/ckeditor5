@@ -7,7 +7,11 @@
 
 /* bender-tags: document */
 
+/* bender-include: ../_tools/tools.js */
+
 'use strict';
+
+const getIteratorCount = bender.tools.core.getIteratorCount;
 
 const modules = bender.amd.require(
 	'document/character',
@@ -34,7 +38,7 @@ describe( 'Character', () => {
 			expect( character ).to.be.an.instanceof( Node );
 			expect( character ).to.have.property( 'character' ).that.equals( 'f' );
 			expect( character ).to.have.property( 'parent' ).that.equals( parent );
-			expect( character._getAttrCount() ).to.equal( 0 );
+			expect( getIteratorCount( character.getAttrIterator() ) ).to.equal( 0 );
 		} );
 
 		it( 'should create character with attributes', () => {
@@ -45,7 +49,7 @@ describe( 'Character', () => {
 			expect( character ).to.be.an.instanceof( Node );
 			expect( character ).to.have.property( 'character' ).that.equals( 'f' );
 			expect( character ).to.have.property( 'parent' ).that.equals( parent );
-			expect( character._getAttrCount() ).to.equal( 1 );
+			expect( getIteratorCount( character.getAttrIterator() ) ).to.equal( 1 );
 			expect( character.getAttr( attr.key ) ).to.equal( attr.value );
 		} );
 	} );

@@ -107,8 +107,8 @@ describe( 'Node', () => {
 
 			foo.removeAttr( 'attr' );
 
-			expect( foo._getAttrCount() ).to.equal( 0 );
-			expect( bar._getAttrCount() ).to.equal( 1 );
+			expect( getIteratorCount( foo.getAttrIterator() ) ).to.equal( 0 );
+			expect( getIteratorCount( bar.getAttrIterator() ) ).to.equal( 1 );
 		} );
 	} );
 
@@ -136,7 +136,7 @@ describe( 'Node', () => {
 
 			element.setAttr( attr );
 
-			expect( element._getAttrCount() ).to.equal( 1 );
+			expect( getIteratorCount( element.getAttrIterator() ) ).to.equal( 1 );
 			expect( element.getAttr( attr.key ) ).to.equal( attr.value );
 		} );
 
@@ -147,7 +147,7 @@ describe( 'Node', () => {
 
 			element.setAttr( newAttr );
 
-			expect( element._getAttrCount() ).to.equal( 1 );
+			expect( getIteratorCount( element.getAttrIterator() ) ).to.equal( 1 );
 			expect( element.getAttr( newAttr.key ) ).to.equal( newAttr.value );
 		} );
 	} );
@@ -161,7 +161,7 @@ describe( 'Node', () => {
 
 			element.removeAttr( attrB.key );
 
-			expect( element._getAttrCount() ).to.equal( 2 );
+			expect( getIteratorCount( element.getAttrIterator() ) ).to.equal( 2 );
 			expect( element.getAttr( attrA.key ) ).to.equal( attrA.value );
 			expect( element.getAttr( attrC.key ) ).to.equal( attrC.value );
 			expect( element.getAttr( attrB.key ) ).to.be.null;

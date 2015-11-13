@@ -241,22 +241,6 @@ CKEDITOR.define( [ 'document/attribute', 'utils', 'ckeditorerror' ], ( Attribute
 		getAttrIterator() {
 			return this._attrs[ Symbol.iterator ]();
 		}
-
-		/**
-		 * Gets the number of attributes.
-		 *
-		 * @protected
-		 * @returns {Number} Number of attributes.
-		 */
-		_getAttrCount() {
-			let count = 0;
-
-			for ( let attr of this._attrs ) { // jshint ignore:line
-				count++;
-			}
-
-			return count;
-		}
 	}
 
 	return Node;
