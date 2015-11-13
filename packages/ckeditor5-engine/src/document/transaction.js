@@ -7,6 +7,7 @@
 
 CKEDITOR.define( [
 	'document/delta/transaction-base',
+	'document/delta/insertdelta',
 	'document/delta/changedelta'
 ], ( Transaction ) => {
 	return Transaction;
