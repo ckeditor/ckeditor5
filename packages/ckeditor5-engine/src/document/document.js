@@ -8,10 +8,11 @@
 CKEDITOR.define( [
 	'document/element',
 	'document/rootelement',
+	'document/transaction',
 	'emittermixin',
 	'utils',
 	'ckeditorerror'
-], ( Element, RootElement, EmitterMixin, utils, CKEditorError ) => {
+], ( Element, RootElement, Tranaction, EmitterMixin, utils, CKEditorError ) => {
 	const graveyardSymbol = Symbol( 'graveyard' );
 
 	/**
@@ -130,6 +131,10 @@ CKEDITOR.define( [
 		 */
 		get _graveyard() {
 			return this.getRoot( graveyardSymbol );
+		}
+
+		makeTransaction() {
+			return new Tranaction( this );
 		}
 	}
 
