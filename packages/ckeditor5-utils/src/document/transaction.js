@@ -10,7 +10,8 @@ CKEDITOR.define( [
 	'document/delta/insertdelta',
 	'document/delta/removedelta',
 	'document/delta/changedelta',
-	'document/delta/splitdelta'
+	'document/delta/splitdelta',
+	'document/delta/mergedelta'
 ], ( Transaction ) => {
 	return Transaction;
 } );
