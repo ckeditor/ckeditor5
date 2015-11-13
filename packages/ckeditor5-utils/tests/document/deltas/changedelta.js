@@ -5,7 +5,11 @@
 
 /* bender-tags: document, delta */
 
+/* bender-include: ../../_tools/tools.js */
+
 'use strict';
+
+const getIteratorCount = bender.tools.core.getIteratorCount;
 
 const modules = bender.amd.require(
 	'document/transaction',
@@ -56,9 +60,7 @@ describe( 'Transaction', () => {
 		let count = 0;
 
 		for ( let delta of transaction ) {
-			for ( let operation of delta ) {
-				count++;
-			}
+			count += getIteratorCount( delta );
 		}
 
 		return count;
@@ -69,9 +71,7 @@ describe( 'Transaction', () => {
 
 		for ( let delta of transaction ) {
 			for ( let operation of delta ) {
-				for ( let value of operation.range ) {
-					count++;
-				}
+				count += getIteratorCount( operation.range );
 			}
 		}
 
@@ -81,6 +81,7 @@ describe( 'Transaction', () => {
 	function getCompressedAttrs() {
 		// default: 111---111222---111
 		const range = Range.createFromElement( root );
+
 		return Array.from( range ).map( value => value.node.getAttr( 'a' ) || '-' ).join( '' );
 	}
 
@@ -133,7 +134,6 @@ describe( 'Transaction', () => {
 			expect( getCompressedAttrs() ).to.equal( '111111111111111111' );
 		} );
 	} );
-
 
 	describe( 'removeAttr', () => {
 		it( 'should remove the attribute on the range', () => {
