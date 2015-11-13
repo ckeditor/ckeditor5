@@ -5,7 +5,11 @@
 
 /* bender-tags: document */
 
+/* bender-include: ../_tools/tools.js */
+
 'use strict';
+
+const getIteratorCount = bender.tools.core.getIteratorCount;
 
 const modules = bender.amd.require(
 	'document/element',
@@ -203,6 +207,25 @@ describe( 'Node', () => {
 
 			expect( parsedFoo.parent ).to.equal( null );
 			expect( parsedBar.parent ).to.equal( 'foo' );
+		} );
+	} );
+
+	describe( 'getAttrIterator', () => {
+		it( 'should allows to get attribute count', () => {
+			let element = new Element( 'foo', [
+				new Attribute( 1, true ),
+				new Attribute( 2, true ),
+				new Attribute( 3, true )
+			] );
+
+			expect( getIteratorCount( element.getAttrIterator() ) ).to.equal( 3 );
+		} );
+
+		it( 'should allows to copy attributes', () => {
+			let element = new Element( 'foo', [ new Attribute( 'x', true ) ] );
+			let copy = new Element( 'bar', element.getAttrIterator() );
+
+			expect( copy.getAttr( 'x' ) ).to.be.true;
 		} );
 	} );
 
