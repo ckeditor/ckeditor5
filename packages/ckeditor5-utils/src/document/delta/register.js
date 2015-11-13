@@ -6,7 +6,7 @@
 'use strict';
 
 CKEDITOR.define( [
-	'document/deltas/transaction-base'
+	'document/delta/transaction-base'
 ], ( Transaction ) => {
 	return Transaction.register;
 } );
