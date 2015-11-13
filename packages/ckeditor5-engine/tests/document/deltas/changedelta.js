@@ -153,7 +153,7 @@ describe( 'Transaction', () => {
 		it( 'should split the operations if parts of the part of the range have no attribute', () => {
 			transaction.removeAttr( 'a', getRange( 1, 7 ) );
 			expect( getOperationsCount() ).to.equal( 2 );
-			expect( getChangesAttrsCount() ).to.equal( 2 );
+			expect( getChangesAttrsCount() ).to.equal( 3 );
 			expect( getCompressedAttrs() ).to.equal( '1------11222---111' );
 		} );
 

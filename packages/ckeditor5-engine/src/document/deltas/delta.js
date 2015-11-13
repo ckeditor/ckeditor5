@@ -13,19 +13,20 @@ CKEDITOR.define( [], function() {
 		/**
 		 * @constructor
 		 */
-		constructor( transaction, operations ) {
-			this.transaction = transaction;
-			this.operations = Array.from( operations );
+		constructor() {
+			this.transaction = null;
+			this.operations = [];
+		}
+
+		addOperation( operation ) {
+			operation.delta = this;
+			this.operations.push( operation );
+
+			return operation;
 		}
 
 		[ Symbol.iterator ]() {
 			return this.operations[ Symbol.iterator ]();
-		}
-
-		_execute() {
-			for ( var operation of this.operations ) {
-				this.transaction.doc.applyOperation( operation );
-			}
 		}
 	}
 
