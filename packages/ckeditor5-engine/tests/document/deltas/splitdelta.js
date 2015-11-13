@@ -5,8 +5,6 @@
 
 /* bender-tags: document, delta */
 
-/* bender-include: ../../_tools/tools.js */
-
 'use strict';
 
 const modules = bender.amd.require(
