@@ -39,7 +39,9 @@ CKEDITOR.define( [
 			/**
 			 * Regions which belong to this view.
 			 */
-			this.regions = new Collection( null, 'name' );
+			this.regions = new Collection( {
+				idProperty: 'name'
+			} );
 
 			/**
 			 * @property {HTMLElement} _el

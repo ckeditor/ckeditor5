@@ -7,9 +7,8 @@
 
 CKEDITOR.define( [
 	'collection',
-	'namedcollection',
 	'model'
-], function( Collection, NamedCollection, Model ) {
+], function( Collection, Model ) {
 	class Controller extends Model {
 		/**
 		 * @constructor
@@ -30,7 +29,9 @@ CKEDITOR.define( [
 			/**
 			 * Collections of child controller regions.
 			 */
-			this.regions = new NamedCollection();
+			this.regions = new Collection( {
+				idProperty: 'name'
+			} );
 		}
 
 		/**
@@ -47,9 +48,9 @@ CKEDITOR.define( [
 				.then( () => {
 					let promises = [];
 
-					this.regions.forEach( region => {
-						region.forEach( controller => promises.push( controller.init() ) );
-					} );
+					for ( let region of this.regions ) {
+						promises.concat( region.map( c => c.init() ) );
+					}
 
 					return Promise.all( promises );
 				} );
@@ -60,7 +61,7 @@ CKEDITOR.define( [
 		 * @returns
 		 */
 		add( controller, regionName ) {
-			var region = this.regions.get( regionName );
+			let region = this.regions.get( regionName );
 
 			if ( !region ) {
 				region = this._createRegion( regionName );
@@ -94,7 +95,7 @@ CKEDITOR.define( [
 		}
 
 		_createRegion( regionName ) {
-			var controllers = new Collection();
+			let controllers = new Collection();
 			controllers.name = regionName;
 
 			controllers.on( 'add', ( evt, controller, index ) => {
