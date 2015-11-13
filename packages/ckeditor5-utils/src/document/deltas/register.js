@@ -7,6 +7,6 @@
 
 CKEDITOR.define( [
 	'document/deltas/transaction-base'
-], function( Transaction ) {
+], ( Transaction ) => {
 	return Transaction.register;
 } );

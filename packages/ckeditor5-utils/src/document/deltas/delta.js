@@ -5,7 +5,7 @@
 
 'use strict';
 
-CKEDITOR.define( [], function() {
+CKEDITOR.define( [], () => {
 	/**
 	 * @class document.delta.Delta
 	 */

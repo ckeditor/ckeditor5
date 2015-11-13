@@ -8,6 +8,6 @@
 CKEDITOR.define( [
 	'document/deltas/transaction-base',
 	'document/deltas/changedelta'
-], function( Transaction ) {
+], ( Transaction ) => {
 	return Transaction;
 } );
