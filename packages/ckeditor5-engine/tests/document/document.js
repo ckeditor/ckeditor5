@@ -10,15 +10,17 @@
 const modules = bender.amd.require(
 	'document/document',
 	'document/rootelement',
+	'document/transaction',
 	'ckeditorerror'
 );
 
 describe( 'Document', () => {
-	let Document, RootElement, CKEditorError;
+	let Document, RootElement, Transaction, CKEditorError;
 
 	before( () => {
 		Document = modules[ 'document/document' ];
 		RootElement = modules[ 'document/rootelement' ];
+		Transaction = modules[ 'document/transaction' ];
 		CKEditorError = modules.ckeditorerror;
 	} );
 
@@ -104,6 +106,15 @@ describe( 'Document', () => {
 					document.applyOperation( operation );
 				}
 			).to.throw( CKEditorError, /document-applyOperation-wrong-version/ );
+		} );
+	} );
+
+	describe( 'makeTransaction', () => {
+		it( 'should create a new transaction with the document property', () => {
+			const transaction = document.makeTransaction();
+
+			expect( transaction ).to.be.instanceof( Transaction );
+			expect( transaction ).to.have.property( 'doc' ).that.equals( document );
 		} );
 	} );
 } );
