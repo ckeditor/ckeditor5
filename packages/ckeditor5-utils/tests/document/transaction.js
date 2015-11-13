@@ -27,7 +27,6 @@ describe( 'Transaction', () => {
 	} );
 
 	describe( 'Transaction.register', () => {
-		var executeCount = 0;
 		var TestDelta;
 
 		before( () => {
@@ -35,22 +34,16 @@ describe( 'Transaction', () => {
 				constructor( transaction ) {
 					super( transaction, [] );
 				}
-
-				_execute() {
-					executeCount++;
-				}
 			};
 		} );
 
 		afterEach( () => {
 			delete Transaction.prototype.foo;
-
-			executeCount = 0;
 		} );
 
 		it( 'should register function which return an delta', () => {
 			Transaction.register( 'foo', ( doc, t ) => {
-				return new TestDelta( t );
+				t.addDelta( new TestDelta() );
 			} );
 
 			var transaction = new Transaction();
@@ -59,12 +52,12 @@ describe( 'Transaction', () => {
 
 			expect( transaction.deltas.length ).to.equal( 1 );
 			expect( transaction.deltas[ 0 ] ).to.be.instanceof( TestDelta );
-			expect( executeCount ).to.equal( 1 );
 		} );
 
 		it( 'should register function which return an multiple deltas', () => {
 			Transaction.register( 'foo', ( doc, t ) => {
-				return [ new TestDelta( t ), new TestDelta( t ) ];
+				t.addDelta( new TestDelta() );
+				t.addDelta( new TestDelta() );
 			} );
 
 			var transaction = new Transaction();
@@ -74,7 +67,6 @@ describe( 'Transaction', () => {
 			expect( transaction.deltas.length ).to.equal( 2 );
 			expect( transaction.deltas[ 0 ] ).to.be.instanceof( TestDelta );
 			expect( transaction.deltas[ 1 ] ).to.be.instanceof( TestDelta );
-			expect( executeCount ).to.equal( 2 );
 		} );
 
 		it( 'should pass arguments properly', () => {
