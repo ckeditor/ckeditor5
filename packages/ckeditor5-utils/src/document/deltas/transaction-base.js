@@ -5,7 +5,7 @@
 
 'use strict';
 
-CKEDITOR.define( [], () => {
+CKEDITOR.define( [ 'ckeditorerror' ], ( CKEditorError ) => {
 	/**
 	 * @class document.Transaction
 	 */
@@ -31,7 +31,15 @@ CKEDITOR.define( [], () => {
 
 		static register( name, creator ) {
 			if ( Transaction.prototype[ name ] ) {
-				throw 'error';
+				/**
+				 * This transaction method is already taken.
+				 *
+				 * @error transaction-register-taken
+				 * @param {String} name
+				 */
+				throw new CKEditorError(
+					'transaction-register-taken: This transaction method is already taken.',
+					{ name: name } );
 			}
 
 			Transaction.prototype[ name ] = function() {
