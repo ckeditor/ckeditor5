@@ -11,15 +11,12 @@ const tools = require( './tools' );
 const path = require( 'path' );
 
 /**
- * 1. Ask for new plugin name.
- * 2. Ask for initial version.
- * 3. Ask for GitHub URL.
- * 4. Initialize repository
- * 		4.1. Initialize GIT repository.
- * 		4.2. Fetch and merge boilerplate project.
- * 5. Update package.json file in new plugin's repository.
- * 6. Update package.json file in CKEditor5 repository.
- * 7. Link new plugin.
+ * 1. Ask for plugin name.
+ * 2. Ask for GitHub URL.
+ * 3. Clone repository from provided GitHub URL.
+ * 4. Checkout repository to provided branch (or master if no branch is provided).
+ * 5. Update package.json file in CKEditor5 repository.
+ * 6. Link new plugin.
  *
  * @param {String} ckeditor5Path Path to main CKEditor5 repository.
  * @param {Object} options grunt options.
@@ -32,7 +29,6 @@ module.exports = ( ckeditor5Path, options, writeln, writeError ) => {
 		const workspaceAbsolutePath = path.join( ckeditor5Path, options.workspaceRoot );
 		let pluginName;
 		let repositoryPath;
-		let pluginVersion;
 		let gitHubUrl;
 
 		inquiries.getPluginName()
@@ -40,28 +36,20 @@ module.exports = ( ckeditor5Path, options, writeln, writeError ) => {
 				pluginName = result;
 				repositoryPath = path.join( workspaceAbsolutePath, pluginName );
 
-				return inquiries.getPluginVersion();
-			} )
-			.then( result => {
-				pluginVersion = result;
-
 				return inquiries.getPluginGitHubUrl( pluginName );
 			} )
 			.then( result => {
-				try {
-					gitHubUrl = result;
+				gitHubUrl = result;
+				let urlInfo = git.parseRepositoryUrl( gitHubUrl );
 
-					writeln( `Initializing repository ${ repositoryPath }...` );
-					git.initializeRepository( repositoryPath );
+				try {
+					writeln( `Clonning ${ gitHubUrl }...` );
+					git.cloneRepository( urlInfo, workspaceAbsolutePath );
+
+					writeln( `Checking out ${ gitHubUrl } to ${ urlInfo.branch }...` );
+					git.checkout( repositoryPath, urlInfo.branch );
 
 					writeln( `Updating package.json files...` );
-					tools.updateJSONFile( path.join( repositoryPath, 'package.json' ), ( json ) => {
-						json.name = pluginName;
-						json.version = pluginVersion;
-
-						return json;
-					} );
-
 					tools.updateJSONFile( path.join( ckeditor5Path, 'package.json' ), ( json ) => {
 						if ( !json.dependencies ) {
 							json.dependencies = {};

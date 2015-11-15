@@ -7,8 +7,8 @@
 
 const initTask = require( './utils/dev-init' );
 const pluginCreateTask = require( './utils/dev-plugin-create' );
-
-var ckeditor5Path = process.cwd();
+const pluginInstallTask = require( './utils/dev-plugin-install' );
+const ckeditor5Path = process.cwd();
 
 module.exports = ( grunt ) => {
 	const packageJSON = grunt.config.data.pkg;
@@ -23,6 +23,12 @@ module.exports = ( grunt ) => {
 		const done = this.async();
 		const options = getOptions( this );
 		pluginCreateTask( ckeditor5Path, options, grunt.log.writeln, grunt.log.error ).then( done );
+	} );
+
+	grunt.registerTask( 'dev-plugin-install', function() {
+		const done = this.async();
+		const options = getOptions( this );
+		pluginInstallTask( ckeditor5Path, options, grunt.log.writeln, grunt.log.error ).then( done );
 	} );
 
 	function getOptions( context ) {
