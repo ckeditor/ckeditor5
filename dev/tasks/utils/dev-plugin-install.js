@@ -17,6 +17,8 @@ const path = require( 'path' );
  * 4. Checkout repository to provided branch (or master if no branch is provided).
  * 5. Update package.json file in CKEditor5 repository.
  * 6. Link new plugin.
+ * 7. Call `npm install` in plugin repository.
+ * 8. Install Git hooks in plugin repository.
  *
  * @param {String} ckeditor5Path Path to main CKEditor5 repository.
  * @param {Object} options grunt options.
@@ -61,6 +63,12 @@ module.exports = ( ckeditor5Path, options, writeln, writeError ) => {
 
 					writeln( `Linking ${ pluginName } to node_modules...` );
 					tools.linkDirectories( repositoryPath, path.join( ckeditor5Path, 'node_modules', pluginName ) );
+
+					writeln( `Running npm install in ${ pluginName }.` );
+					tools.npmInstall( repositoryPath );
+
+					writeln( `Installing GIT hooks in ${ pluginName }.` );
+					tools.installGitHooks( repositoryPath );
 				} catch ( error ) {
 					writeError( error );
 				}

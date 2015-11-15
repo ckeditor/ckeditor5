@@ -14,7 +14,15 @@ const path = require( 'path' );
  * 2. Check if any of the repositories are already present in the workspace.
  * 		2.1. If repository is present in the workspace, check it out to desired branch if one is provided.
  * 		2.2. If repository is not present in the workspace, clone it and checkout to desired branch if one is provided.
- * 3. Link new repository to node_modules. (do not use npm link, use standard linking instead)
+ * 3. Link each new repository to node_modules. (do not use npm link, use standard linking instead)
+ * 4. Run `npm install` in each repository.
+ * 5. Install Git hooks in each repository.
+ *
+ * @param {String} ckeditor5Path Path to main CKEditor5 repository.
+ * @param {Object} packageJSON Parsed package.json file from CKEditor5 repository.
+ * @param {Object} options grunt options.
+ * @param {Function} writeln Function for log output.
+ * @param {Function} writeError Function of error output
  */
 module.exports = ( ckeditor5Path, packageJSON, options, writeln, writeError ) => {
 	const workspaceAbsolutePath = path.join( ckeditor5Path, options.workspaceRoot );
@@ -44,14 +52,15 @@ module.exports = ( ckeditor5Path, packageJSON, options, writeln, writeError ) =>
 			try {
 				writeln( `Checking out ${ repositoryURL } to ${ urlInfo.branch }...` );
 				git.checkout( repositoryAbsolutePath, urlInfo.branch );
-			} catch ( error ) {
-				writeError( error );
-			}
 
-			// Link plugin.
-			try {
 				writeln( `Linking ${ repositoryURL }...` );
 				tools.linkDirectories( repositoryAbsolutePath, path.join( ckeditor5Path, 'node_modules' , dependency ) );
+
+				writeln( `Running npm install in ${ repositoryURL }.` );
+				tools.npmInstall( repositoryAbsolutePath );
+
+				writeln( `Installing GIT hooks in ${ repositoryURL }.` );
+				tools.installGitHooks( repositoryAbsolutePath );
 			} catch ( error ) {
 				writeError( error );
 			}

@@ -229,5 +229,13 @@ module.exports = {
 		json = updateFunction( json );
 
 		fs.writeFileSync( path, JSON.stringify( json, null, 2 ), 'utf-8' );
+	},
+
+	npmInstall( path ) {
+		this.shExec( `cd ${ path } && npm install` );
+	},
+
+	installGitHooks( path ) {
+		this.shExec( `cd ${ path } && grunt githooks` );
 	}
 };
