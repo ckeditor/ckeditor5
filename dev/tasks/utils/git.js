@@ -98,5 +98,20 @@ module.exports = {
 
 	getStatus( repositoryPath ) {
 		return tools.shExec( `cd ${ repositoryPath } && git status --porcelain -sb` ).trim();
+	},
+
+	updateBoilerplate( repositoryPath ) {
+		// Try to add boilerplate remote if one is not already added.
+		try {
+			tools.shExec( `cd ${ repositoryPath } && git remote add boilerplate ${ BOILERPLATE_REPOSITORY }` );
+		} catch ( error ) { }
+
+		const updateCommands = [
+			`cd ${ repositoryPath }`,
+			`git fetch boilerplate ${ BOILERPLATE_BRANCH }`,
+			`git merge boilerplate/${ BOILERPLATE_BRANCH }`
+		];
+
+		tools.shExec( updateCommands.join( ' && ' ) );
 	}
 };
