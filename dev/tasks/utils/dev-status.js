@@ -37,7 +37,7 @@ module.exports = ( ckeditor5Path, packageJSON, options, writeln, writeError ) =>
 			if ( directories.indexOf( dependency ) > -1 ) {
 				try {
 					status = git.getStatus( repositoryAbsolutePath );
-					writeln( `\x1b[1m\x1b[36m${ dependency }\x1b[0m\n${ status }` );
+					writeln( `\x1b[1m\x1b[36m${ dependency }\x1b[0m\n${ status.trim() }` );
 				} catch ( error ) {
 					writeError( error );
 				}
