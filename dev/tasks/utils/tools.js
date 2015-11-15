@@ -219,5 +219,15 @@ module.exports = {
 		return this.getDirectories( path ).filter( dir => {
 			return dependencyRegExp.test( dir );
 		} );
+	},
+
+	updateJSONFile( path, updateFunction ) {
+		const fs = require( 'fs' );
+
+		const contents = fs.readFileSync( path, 'utf-8' );
+		let json = JSON.parse( contents );
+		json = updateFunction( json );
+
+		fs.writeFileSync( path, JSON.stringify( json, null, 2 ), 'utf-8' );
 	}
 };

@@ -6,6 +6,8 @@
 'use strict';
 
 const tools = require( './tools' );
+const BOILERPLATE_REPOSITORY = 'git@github.com:ckeditor/ckeditor-boilerplate.git';
+const BOILERPLATE_BRANCH = 'ckeditor5';
 
 module.exports = {
 	/**
@@ -71,5 +73,17 @@ module.exports = {
 		];
 
 		tools.shExec( checkoutCommands.join( ' && ' ) );
+	},
+
+	initializeRepository( repositoryPath ) {
+		const initializeCommands = [
+			`git init ${ repositoryPath }`,
+			`cd ${ repositoryPath }`,
+			`git remote add boilerplate ${ BOILERPLATE_REPOSITORY }`,
+			`git fetch boilerplate ${ BOILERPLATE_BRANCH }`,
+			`git merge boilerplate/${ BOILERPLATE_BRANCH }`
+		];
+
+		tools.shExec( initializeCommands.join( ' && ' ) );
 	}
 };
