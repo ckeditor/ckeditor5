@@ -8,13 +8,13 @@
 const initTask = require( './utils/dev-init' );
 const pluginCreateTask = require( './utils/dev-plugin-create' );
 const pluginInstallTask = require( './utils/dev-plugin-install' );
+const pluginUpdateTask = require( './utils/dev-update' );
 const ckeditor5Path = process.cwd();
 
 module.exports = ( grunt ) => {
 	const packageJSON = grunt.config.data.pkg;
 
 	grunt.registerTask( 'dev-init', function() {
-		// Get workspace root relative path from configuration and convert it to absolute path.
 		const options = getOptions( this );
 		initTask( ckeditor5Path, packageJSON, options, grunt.log.writeln, grunt.log.error );
 	} );
@@ -29,6 +29,11 @@ module.exports = ( grunt ) => {
 		const done = this.async();
 		const options = getOptions( this );
 		pluginInstallTask( ckeditor5Path, options, grunt.log.writeln, grunt.log.error ).then( done );
+	} );
+
+	grunt.registerTask( 'dev-update', function() {
+		const options = getOptions( this );
+		pluginUpdateTask( ckeditor5Path, packageJSON, options, grunt.log.writeln, grunt.log.error );
 	} );
 
 	function getOptions( context ) {

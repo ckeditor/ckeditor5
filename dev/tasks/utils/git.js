@@ -75,6 +75,15 @@ module.exports = {
 		tools.shExec( checkoutCommands.join( ' && ' ) );
 	},
 
+	pull( repositoryLocation, branchName ) {
+		const checkoutCommands = [
+			`cd ${ repositoryLocation }`,
+			`git pull origin ${ branchName }`
+		];
+
+		tools.shExec( checkoutCommands.join( ' && ' ) );
+	},
+
 	initializeRepository( repositoryPath ) {
 		const initializeCommands = [
 			`git init ${ repositoryPath }`,
