@@ -1,7 +1,9 @@
 'use strict';
 
-var dirtyFiles,
+let dirtyFiles,
 	ignoreList;
+
+const dependencyRegExp = /^ckeditor5-/;
 
 module.exports = {
 	/**
@@ -11,7 +13,7 @@ module.exports = {
 	 * @param task {String} The task name. May optionally include the target (e.g. 'task:target').
 	 * @returns {Boolean} "true" if the task is in the queue.
 	 */
-	checkTaskInQueue: function( grunt, task ) {
+	checkTaskInQueue( grunt, task ) {
 		var cliTasks = grunt.cli.tasks;
 
 		// Check if the task has been called directly.
@@ -30,7 +32,7 @@ module.exports = {
 	 * @param grunt {Object} The Grunt object.
 	 * @param options {Object} A list of options for the method. See the jscs and jshint tasks for example.
 	 */
-	setupMultitaskConfig: function( grunt, options ) {
+	setupMultitaskConfig( grunt, options ) {
 		var task = options.task;
 		var taskConfig = {};
 		var config = taskConfig[ task ] = {
@@ -73,7 +75,7 @@ module.exports = {
 	 * @param grunt {Object} The Grunt object.
 	 * @returns {String[]} The list of ignores.
 	 */
-	getGitIgnore: function( grunt ) {
+	getGitIgnore( grunt ) {
 		if ( !ignoreList ) {
 			ignoreList = grunt.file.read( '.gitignore' );
 
@@ -96,7 +98,7 @@ module.exports = {
 	 *
 	 * @returns {String[]} A list of file paths.
 	 */
-	getGitDirtyFiles: function() {
+	getGitDirtyFiles() {
 		// Cache it, so it is executed only once when running multiple tasks.
 		if ( !dirtyFiles ) {
 			dirtyFiles = this
@@ -122,11 +124,11 @@ module.exports = {
 	 * @param command {String} The command to be executed.
 	 * @returns {String} The command output.
 	 */
-	shExec: function( command ) {
-		var sh = require( 'shelljs' );
+	shExec( command ) {
+		const sh = require( 'shelljs' );
 		sh.config.silent = true;
 
-		var ret = sh.exec( command );
+		const ret = sh.exec( command );
 
 		if ( ret.code ) {
 			throw new Error(
@@ -139,50 +141,32 @@ module.exports = {
 	},
 
 	/**
-	 * Links repository located in source path to repository located in destination path. Uses npm link.
-	 * @param {String} sourcePath
-	 * @param {String} destinationPath
-	 * @param {String} pluginName
+	 * Links directory located in source path to directory located in destination path using `ln -s` command.
+	 * @param {String} source
+	 * @param {String} destination
 	 */
-	npmLink: function( sourcePath, destinationPath, pluginName ) {
-		// Don't use sudo on windows when executing npm link.
-		var isWin = process.platform == 'win32';
-		var linkCommands = [
-			'cd ' + sourcePath,
-			( !isWin ? 'sudo ' : '' ) + 'npm link',
-			'cd ' + destinationPath,
-			'npm link ' + pluginName
-		];
+	linkDirectories( source, destination ) {
+		// Remove destination directory if exists.
+		if ( this.isDirectory( destination ) ) {
+			this.shExec( `rm -rf ${ destination }` );
+		}
 
-		module.exports.shExec( linkCommands.join( ' && ' ) );
+		this.shExec( `ln -s ${ source } ${ destination }` );
 	},
 
 	/**
-	 * Clones repository from provided GitHub URL.
-	 * @param {String} gitHubUrl GitHub url to repository.
-	 * @param {String} location Destination path.
-	 */
-	cloneRepository: function( gitHubUrl, location ) {
-		var cloneCommands = [
-			'cd ' + location,
-			'git clone git@github.com:' + gitHubUrl
-		];
-
-		module.exports.shExec( cloneCommands.join( ' && ' ) );
-	},
-
-	/**
-	 * Returns dependencies that starts with ckeditor5- or null if no dependencies are found.
+	 * Returns dependencies that starts with ckeditor5-, and have valid, short GitHub url. Returns null if no
+	 * dependencies are found.
+	 *
 	 * @param {Object} dependencies Dependencies object loaded from package.json file.
 	 * @returns {Object|null}
 	 */
-	getCKEditorDependencies: function( dependencies ) {
-		var result = null;
-		var regexp = /^ckeditor5-/;
+	getCKEditorDependencies( dependencies ) {
+		let result = null;
 
 		if ( dependencies ) {
 			Object.keys( dependencies ).forEach( function( key ) {
-				if ( regexp.test( key ) ) {
+				if ( dependencyRegExp.test( key ) ) {
 					if ( result === null ) {
 						result = {};
 					}
@@ -193,5 +177,65 @@ module.exports = {
 		}
 
 		return result;
+	},
+
+	/**
+	 * Returns array with all directories under specified path.
+	 *
+	 * @param {String} path
+	 * @returns {Array}
+	 */
+	getDirectories( path ) {
+		const fs = require( 'fs' );
+		const pth = require( 'path' );
+
+		return fs.readdirSync( path ).filter( item => {
+			return this.isDirectory( pth.join( path, item ) );
+		} );
+	},
+
+	/**
+	 * Returns true if path points to existing directory.
+	 * @param {String} path
+	 * @returns {Boolean}
+	 */
+	isDirectory( path ) {
+		var fs = require( 'fs' );
+
+		try {
+			return fs.statSync( path ).isDirectory();
+		} catch ( e ) {}
+
+		return false;
+	},
+
+	/**
+	 * Returns all directories under specified path that match 'ckeditor5' pattern.
+	 *
+	 * @param {String} path
+	 * @returns {Array}
+	 */
+	getCKE5Directories( path ) {
+		return this.getDirectories( path ).filter( dir => {
+			return dependencyRegExp.test( dir );
+		} );
+	},
+
+	updateJSONFile( path, updateFunction ) {
+		const fs = require( 'fs' );
+
+		const contents = fs.readFileSync( path, 'utf-8' );
+		let json = JSON.parse( contents );
+		json = updateFunction( json );
+
+		fs.writeFileSync( path, JSON.stringify( json, null, 2 ), 'utf-8' );
+	},
+
+	npmInstall( path ) {
+		this.shExec( `cd ${ path } && npm install` );
+	},
+
+	installGitHooks( path ) {
+		this.shExec( `cd ${ path } && grunt githooks` );
 	}
 };

@@ -1,36 +1,59 @@
+/**
+ * @license Copyright (c) 2003-2015, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
 'use strict';
 
-var tools = require( './utils/tools' );
-var path = require( 'path' );
-var ckeditor5Path = process.cwd();
-var json = require( path.join( ckeditor5Path, 'package.json' ) );
-var dependencies = json.dependencies;
+const initTask = require( './utils/dev-init' );
+const pluginCreateTask = require( './utils/dev-plugin-create' );
+const pluginInstallTask = require( './utils/dev-plugin-install' );
+const pluginUpdateTask = require( './utils/dev-update' );
+const pluginStatusTask = require( './utils/dev-status' );
+const boilerplateUpdateTask = require( './utils/dev-boilerplate-update' );
+const ckeditor5Path = process.cwd();
 
-module.exports = function( grunt ) {
-	grunt.registerTask( 'dev', function( target ) {
-		var pluginPath;
+module.exports = ( grunt ) => {
+	const packageJSON = grunt.config.data.pkg;
 
-		switch ( target ) {
-			case 'init':
-				var ckeDependencies = tools.getCKEditorDependencies( dependencies );
-				var regexp = /^ckeditor\//;
-				var location = path.join( ckeditor5Path, '..' );
-
-				if ( ckeDependencies ) {
-					Object.keys( ckeDependencies ).forEach( function( name ) {
-						// Check if CKEditor GitHub url.
-						if ( regexp.test( ckeDependencies[ name ] ) ) {
-							grunt.log.writeln( 'Clonning repository ' + ckeDependencies[ name ] + '...' );
-							tools.cloneRepository( ckeDependencies[ name ], location );
-
-							pluginPath = path.join( location, name );
-							grunt.log.writeln( 'Linking ' + pluginPath + ' into ' + ckeditor5Path + '...' );
-							tools.npmLink( pluginPath, ckeditor5Path, name );
-						}
-					} );
-				}
-				break;
-		}
+	grunt.registerTask( 'dev-init', function() {
+		const options = getOptions( this );
+		initTask( ckeditor5Path, packageJSON, options, grunt.log.writeln, grunt.log.error );
 	} );
+
+	grunt.registerTask( 'dev-plugin-create', function() {
+		const done = this.async();
+		const options = getOptions( this );
+		pluginCreateTask( ckeditor5Path, options, grunt.log.writeln, grunt.log.error ).then( done );
+	} );
+
+	grunt.registerTask( 'dev-plugin-install', function() {
+		const done = this.async();
+		const options = getOptions( this );
+		pluginInstallTask( ckeditor5Path, options, grunt.log.writeln, grunt.log.error ).then( done );
+	} );
+
+	grunt.registerTask( 'dev-update', function() {
+		const options = getOptions( this );
+		pluginUpdateTask( ckeditor5Path, packageJSON, options, grunt.log.writeln, grunt.log.error );
+	} );
+
+	grunt.registerTask( 'dev-status', function() {
+		const options = getOptions( this );
+		pluginStatusTask( ckeditor5Path, packageJSON, options, grunt.log.writeln, grunt.log.error );
+	} );
+
+	grunt.registerTask( 'dev-boilerplate-update', function() {
+		const options = getOptions( this );
+		boilerplateUpdateTask( ckeditor5Path, packageJSON, options, grunt.log.writeln, grunt.log.error );
+	} );
+
+	function getOptions( context ) {
+		const options = {
+			workspaceRoot: '..'
+		};
+
+		return context.options( options );
+	}
 };
 

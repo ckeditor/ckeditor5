@@ -28,9 +28,11 @@ module.exports = function( grunt ) {
 			}
 		},
 
-		plugin: { },
-
-		dev: {}
+		dev: {
+			options: {
+				workspaceRoot: '..'
+			}
+		}
 	} );
 
 	// Finally load the tasks.
