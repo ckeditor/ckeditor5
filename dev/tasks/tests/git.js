@@ -122,5 +122,78 @@ describe( 'utils', () => {
 				expect( shExecStub.firstCall.args[ 0 ] ).to.equal( checkoutCommands );
 			} );
 		} );
+
+		describe( 'pull', () => {
+			it( 'should be defined', () => expect( git.pull ).to.be.a( 'function' ) );
+			it( 'should call pull commands', () => {
+				const shExecStub = sinon.stub( tools, 'shExec' );
+				const repositoryLocation = 'path/to/repository';
+				const branchName = 'branch-to-pull';
+				const pullCommands = `cd ${ repositoryLocation } && git pull origin ${ branchName }`;
+				toRestore.push( shExecStub );
+
+				git.pull( repositoryLocation, branchName );
+
+				expect( shExecStub.calledOnce ).to.equal( true );
+				expect( shExecStub.firstCall.args[ 0 ] ).to.equal( pullCommands );
+			} );
+		} );
+
+		describe( 'initializeRepository', () => {
+			it( 'should be defined', () => expect( git.initializeRepository ).to.be.a( 'function' ) );
+			it( 'should call initialize commands', () => {
+				const shExecStub = sinon.stub( tools, 'shExec' );
+				const repositoryLocation = 'path/to/repository';
+				const initializeCommands = [
+					`git init ${ repositoryLocation }`,
+					`cd ${ repositoryLocation }`,
+					`git remote add boilerplate ${ git.BOILERPLATE_REPOSITORY }`,
+					`git fetch boilerplate ${ git.BOILERPLATE_BRANCH }`,
+					`git merge boilerplate/${ git.BOILERPLATE_BRANCH }`
+				];
+				toRestore.push( shExecStub );
+
+				git.initializeRepository( repositoryLocation );
+
+				expect( shExecStub.calledOnce ).to.equal( true );
+				expect( shExecStub.firstCall.args[ 0 ] ).to.equal( initializeCommands.join( ' && ' ) );
+			} );
+		} );
+
+		describe( 'getStatus', () => {
+			it( 'should be defined', () => expect( git.getStatus ).to.be.a( 'function' ) );
+			it( 'should call status command', () => {
+				const shExecStub = sinon.stub( tools, 'shExec' );
+				const repositoryLocation = 'path/to/repository';
+				const statusCommands = `cd ${ repositoryLocation } && git status --porcelain -sb`;
+				toRestore.push( shExecStub );
+
+				git.getStatus( repositoryLocation );
+
+				expect( shExecStub.calledOnce ).to.equal( true );
+				expect( shExecStub.firstCall.args[ 0 ] ).to.equal( statusCommands );
+			} );
+		} );
+
+		describe( 'updateBoilerplate', () => {
+			it( 'should be defined', () => expect( git.updateBoilerplate ).to.be.a( 'function' ) );
+			it( 'should call update boilerplate commands', () => {
+				const shExecStub = sinon.stub( tools, 'shExec' );
+				const repositoryLocation = 'path/to/repository';
+				const addRemoteCommands = `cd ${ repositoryLocation } && git remote add boilerplate ${ git.BOILERPLATE_REPOSITORY }`;
+				const updateCommands = [
+					`cd ${ repositoryLocation }`,
+					`git fetch boilerplate ${ git.BOILERPLATE_BRANCH }`,
+					`git merge boilerplate/${ git.BOILERPLATE_BRANCH }`
+				];
+				toRestore.push( shExecStub );
+
+				git.updateBoilerplate( repositoryLocation );
+
+				expect( shExecStub.calledTwice ).to.equal( true );
+				expect( shExecStub.firstCall.args[ 0 ] ).to.equal( addRemoteCommands );
+				expect( shExecStub.secondCall.args[ 0 ] ).to.equal( updateCommands.join( ' && ' ) );
+			} );
+		} );
 	} );
 } );
