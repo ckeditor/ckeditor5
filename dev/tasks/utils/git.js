@@ -94,5 +94,9 @@ module.exports = {
 		];
 
 		tools.shExec( initializeCommands.join( ' && ' ) );
+	},
+
+	getStatus( repositoryPath ) {
+		return tools.shExec( `cd ${ repositoryPath } && git status --porcelain -sb` ).trim();
 	}
 };

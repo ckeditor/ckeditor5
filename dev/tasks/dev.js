@@ -9,6 +9,7 @@ const initTask = require( './utils/dev-init' );
 const pluginCreateTask = require( './utils/dev-plugin-create' );
 const pluginInstallTask = require( './utils/dev-plugin-install' );
 const pluginUpdateTask = require( './utils/dev-update' );
+const pluginStatusTask = require( './utils/dev-status' );
 const ckeditor5Path = process.cwd();
 
 module.exports = ( grunt ) => {
@@ -34,6 +35,11 @@ module.exports = ( grunt ) => {
 	grunt.registerTask( 'dev-update', function() {
 		const options = getOptions( this );
 		pluginUpdateTask( ckeditor5Path, packageJSON, options, grunt.log.writeln, grunt.log.error );
+	} );
+
+	grunt.registerTask( 'dev-status', function() {
+		const options = getOptions( this );
+		pluginStatusTask( ckeditor5Path, packageJSON, options, grunt.log.writeln, grunt.log.error );
 	} );
 
 	function getOptions( context ) {
