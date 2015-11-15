@@ -42,7 +42,8 @@ describe( 'dev-tasks', () => {
 			expect( spies.parseRepositoryUrl.called ).to.equal( false );
 			expect( spies.cloneRepository.called ).to.equal( false );
 			expect( spies.checkout.called ).to.equal( false );
-			expect( spies.linkDirectories.called ).to.equal( false );
+			expect( spies.npmInstall.called ).to.equal( false );
+			expect( spies.installGitHooks.called ).to.equal( false );
 		} );
 
 		it( 'clones repositories if no directories are found', () => {
@@ -67,6 +68,8 @@ describe( 'dev-tasks', () => {
 			expect( spies.cloneRepository.secondCall.args[ 1 ] ).to.equal( workspacePath );
 			expect( spies.checkout.calledTwice ).to.equal( true );
 			expect( spies.linkDirectories.calledTwice ).to.equal( true );
+			expect( spies.npmInstall.calledTwice ).to.equal( true );
+			expect( spies.installGitHooks.calledTwice ).to.equal( true );
 		} );
 
 		it( 'only checks out repositories if directories are found', () => {
@@ -90,6 +93,8 @@ describe( 'dev-tasks', () => {
 			expect( spies.cloneRepository.called ).to.equal( false );
 			expect( spies.checkout.calledTwice ).to.equal( true );
 			expect( spies.linkDirectories.calledTwice ).to.equal( true );
+			expect( spies.npmInstall.calledTwice ).to.equal( true );
+			expect( spies.installGitHooks.calledTwice ).to.equal( true );
 		} );
 	} );
 
@@ -100,7 +105,9 @@ describe( 'dev-tasks', () => {
 			parseRepositoryUrl: sinon.spy( git, 'parseRepositoryUrl' ),
 			cloneRepository: sinon.stub( git, 'cloneRepository' ),
 			linkDirectories: sinon.stub( tools, 'linkDirectories' ),
-			checkout: sinon.stub( git, 'checkout' )
+			checkout: sinon.stub( git, 'checkout' ),
+			npmInstall: sinon.stub( tools, 'npmInstall' ),
+			installGitHooks: sinon.stub( tools, 'installGitHooks' )
 		};
 	}
 
