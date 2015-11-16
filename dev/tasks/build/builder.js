@@ -5,56 +5,54 @@
 
 'use strict';
 
-module.exports = Builder;
-
 /**
  * A CKEditor 5 release builder.
  *
  * @class Builder
  */
-function Builder( target ) {
-	/**
-	 * The target directory where to create the build.
-	 *
-	 * **Warning**: if existing, this directory will be deleted before processing.
-	 *
-	 * @property {String}
-	 */
-	this.target = target || 'build';
+class Builder {
+	constructor( target ) {
+		/**
+		 * The target directory where to create the build.
+		 *
+		 * **Warning**: if existing, this directory will be deleted before processing.
+		 *
+		 * @property {String}
+		 */
+		this.target = target || 'build';
 
-	/**
-	 * The temporary directory to use for build processing.
-	 *
-	 * **Warning**: if existing, this directory will be deleted before processing.
-	 *
-	 * @property {String}
-	 */
-	this.tmp = 'build-tmp';
+		/**
+		 * The temporary directory to use for build processing.
+		 *
+		 * **Warning**: if existing, this directory will be deleted before processing.
+		 *
+		 * @property {String}
+		 */
+		this.tmp = 'build-tmp';
 
-	/**
-	 * The list of tasks to be executed by the `build()` method. Each entry is an Array containing the name of the
-	 * method inside `tasks` to execute and the message to show to the end user when executing it.
-	 *
-	 * @property {Array}
-	 */
-	this.taskList = [
-		[ 'cleanUp', 'Cleaning the "' + this.target + '" directory...' ],
-		[ 'copyToTmp', 'Copying source files for manipulation...' ],
-		[ 'removeAmdNamespace', 'AMD cleanup...' ],
-		[ 'optimize', 'Creating the optimized code...' ],
-		[ 'cleanUpTmp', 'Removing the "' + this.tmp + '" directory...' ]
-	];
-}
+		/**
+		 * The list of tasks to be executed by the `build()` method. Each entry is an Array containing the name of the
+		 * method inside `tasks` to execute and the message to show to the end user when executing it.
+		 *
+		 * @property {Array}
+		 */
+		this.taskList = [
+			[ 'cleanUp', 'Cleaning the "' + this.target + '" directory...' ],
+			[ 'copyToTmp', 'Copying source files for manipulation...' ],
+			[ 'removeAmdNamespace', 'AMD cleanup...' ],
+			[ 'optimize', 'Creating the optimized code...' ],
+			[ 'cleanUpTmp', 'Removing the "' + this.tmp + '" directory...' ]
+		];
+	}
 
-Builder.prototype = {
 	/**
 	 * Builds a CKEditor release based on the current development code.
 	 *
 	 * @param {Function} [callback] Function to be called when build finishes. It receives `false` on error.
 	 */
-	build: function( callback ) {
-		var that = this;
-		var stepCounter = 0;
+	build( callback ) {
+		const that = this;
+		let stepCounter = 0;
 
 		// Before starting, run the initial checkups.
 		if ( !this.checkUp() ) {
@@ -69,22 +67,22 @@ Builder.prototype = {
 		runNext();
 
 		function runNext() {
-			var next = that.taskList.shift();
+			const next = that.taskList.shift();
 
 			if ( next ) {
 				stepCounter++;
 				console.log( stepCounter + '. ' + next[ 1 ] );
-				that.tasks[ next[ 0 ] ].call( that, runNext );
+				Builder.tasks[ next[ 0 ] ].call( that, runNext );
 			} else {
 				if ( callback ) {
 					callback();
 				}
 			}
 		}
-	},
+	}
 
-	checkUp: function() {
-		var fs = require( 'fs' );
+	checkUp() {
+		const fs = require( 'fs' );
 
 		// Stop if the tmp folder already exists.
 		if ( fs.existsSync( this.tmp ) ) {
@@ -94,143 +92,145 @@ Builder.prototype = {
 		}
 
 		return true;
+	}
+}
+
+/**
+ * Holds individual methods for each task executed by the builder.
+ *
+ * All methods here MUST be called in the builder context by using
+ * `builder.tasks.someMethod.call( builder, callback )`.
+ */
+Builder.tasks = {
+	/**
+	 * Deletes the `target` and `tmp` directories.
+	 *
+	 * @param {Function} callback Function to be called when the task is done.
+	 * @returns {Object} The callback returned value.
+	 */
+	cleanUp( callback ) {
+		const del = require( 'del' );
+		del.sync( this.target );
+		del.sync( this.tmp );
+
+		return callback();
 	},
 
 	/**
-	 * Holds individual methods for each task executed by the builder.
+	 * Copy the local source code of CKEditor and its dependencies to the `tmp` directory for processing.
 	 *
-	 * All methods here MUST be called in the builder context by using
-	 * `builder.tasks.someMethod.call( builder, callback )`.
+	 * @param {Function} callback Function to be called when the task is done.
+	 * @returns {Object} The callback returned value.
 	 */
-	tasks: {
-		/**
-		 * Deletes the `target` and `tmp` directories.
-		 *
-		 * @param {Function} callback Function to be called when the task is done.
-		 * @returns {Object} The callback returned value.
-		 */
-		cleanUp: function( callback ) {
-			var del = require( 'del' );
-			del.sync( this.target );
-			del.sync( this.tmp );
+	copyToTmp( callback ) {
+		const ncp = require( 'ncp' ).ncp;
+		const path = require( 'path' );
+		const fs = require( 'fs' );
+		const tmp = this.tmp;
 
-			return callback();
-		},
+		const deps = require( '../../../package.json' ).dependencies;
 
-		/**
-		 * Copy the local source code of CKEditor and its dependencies to the `tmp` directory for processing.
-		 *
-		 * @param {Function} callback Function to be called when the task is done.
-		 * @returns {Object} The callback returned value.
-		 */
-		copyToTmp: function( callback ) {
-			var ncp = require( 'ncp' ).ncp;
-			var path = require( 'path' );
-			var fs = require( 'fs' );
-			var tmp = this.tmp;
+		const toCopy = Object.keys( deps ).filter( function( name ) {
+			return name.indexOf( 'ckeditor5-' ) === 0;
+		} );
 
-			var deps = require( '../../../package.json' ).dependencies;
+		fs.mkdirSync( tmp );
 
-			var toCopy = Object.keys( deps ).filter( function( name ) {
-				return name.indexOf( 'ckeditor5-' ) === 0;
-			} );
+		function copy() {
+			const module = toCopy.shift();
 
-			fs.mkdirSync( tmp );
-
-			function copy() {
-				var module = toCopy.shift();
-
-				if ( !module ) {
-					return callback();
-				}
-
-				var dest = path.join( tmp + '/', module );
-
-				if ( !fs.existsSync( dest ) ) {
-					fs.mkdirSync( dest );
-				}
-
-				// Copy the "src" directory only.
-				ncp( path.join( 'node_modules', module, 'src' ), path.join( dest, 'src' ), {
-					dereference: true
-				}, function( err ) {
-					if ( err ) {
-						throw err;
-					}
-
-					copy();
-				} );
+			if ( !module ) {
+				return callback();
 			}
 
-			copy();
-		},
+			const dest = path.join( tmp + '/', module );
 
-		/**
-		 * Removes the `CKEDITOR` namespace from AMD calls in the `tmp` copy of the source code.
-		 *
-		 * @param {Function} callback Function to be called when the task is done.
-		 * @returns {Object} The callback returned value.
-		 */
-		removeAmdNamespace: function( callback ) {
-			var replace = require( 'replace' );
+			if ( !fs.existsSync( dest ) ) {
+				fs.mkdirSync( dest );
+			}
 
-			replace( {
-				regex: /^\s*CKEDITOR\.(define|require)/mg,
-				replacement: '$1',
-				paths: [ this.tmp ],
-				recursive: true,
-				silent: true
-			} );
-
-			callback();
-		},
-
-		/**
-		 * Creates the optimized release version of `ckeditor.js` in the `target` directory out of the `tmp` copy of the
-		 * source code.
-		 *
-		 * @param {Function} callback Function to be called when the task is done.
-		 * @returns {Object} The callback returned value.
-		 */
-		optimize: function( callback ) {
-			var requirejs = require( 'requirejs' );
-
-			var config = {
-				out: this.target + '/ckeditor.js',
-
-				baseUrl: this.tmp + '/ckeditor5-core/src/',
-				paths: {
-					'ckeditor': '../../../ckeditor',
-					'ckeditor-dev': '../../../src/ckeditor-dev',
-					'ckeditor-core': 'ckeditor'
-				},
-
-				include: [ 'ckeditor' ],
-				stubModules: [ 'ckeditor-dev' ],
-
-				//			optimize: 'none',
-				optimize: 'uglify2',
-				preserveLicenseComments: false,
-				wrap: {
-					startFile: [ 'src/build/start.frag', require.resolve( 'almond' ) ],
-					endFile: 'src/build/end.frag'
+			// Copy the "src" directory only.
+			ncp( path.join( 'node_modules', module, 'src' ), path.join( dest, 'src' ), {
+				dereference: true
+			}, function( err ) {
+				if ( err ) {
+					throw err;
 				}
-			};
 
-			requirejs.optimize( config, callback );
-		},
-
-		/**
-		 * Deletes `tmp` directory.
-		 *
-		 * @param {Function} callback Function to be called when the task is done.
-		 * @returns {Object} The callback returned value.
-		 */
-		cleanUpTmp: function( callback ) {
-			var del = require( 'del' );
-			del.sync( this.tmp );
-
-			return callback();
+				copy();
+			} );
 		}
+
+		copy();
+	},
+
+	/**
+	 * Removes the `CKEDITOR` namespace from AMD calls in the `tmp` copy of the source code.
+	 *
+	 * @param {Function} callback Function to be called when the task is done.
+	 * @returns {Object} The callback returned value.
+	 */
+	removeAmdNamespace( callback ) {
+		const replace = require( 'replace' );
+
+		replace( {
+			regex: /^\s*CKEDITOR\.(define|require)/mg,
+			replacement: '$1',
+			paths: [ this.tmp ],
+			recursive: true,
+			silent: true
+		} );
+
+		callback();
+	},
+
+	/**
+	 * Creates the optimized release version of `ckeditor.js` in the `target` directory out of the `tmp` copy of the
+	 * source code.
+	 *
+	 * @param {Function} callback Function to be called when the task is done.
+	 * @returns {Object} The callback returned value.
+	 */
+	optimize( callback ) {
+		const requirejs = require( 'requirejs' );
+
+		const config = {
+			out: this.target + '/ckeditor.js',
+
+			baseUrl: this.tmp + '/ckeditor5-core/src/',
+			paths: {
+				'ckeditor': '../../../ckeditor',
+				'ckeditor-dev': '../../../src/ckeditor-dev',
+				'ckeditor-core': 'ckeditor'
+			},
+
+			include: [ 'ckeditor' ],
+			stubModules: [ 'ckeditor-dev' ],
+
+			//			optimize: 'none',
+			optimize: 'uglify2',
+			preserveLicenseComments: false,
+			wrap: {
+				startFile: [ 'src/build/start.frag', require.resolve( 'almond' ) ],
+				endFile: 'src/build/end.frag'
+			}
+		};
+
+		requirejs.optimize( config, callback );
+	},
+
+	/**
+	 * Deletes `tmp` directory.
+	 *
+	 * @param {Function} callback Function to be called when the task is done.
+	 * @returns {Object} The callback returned value.
+	 */
+	cleanUpTmp( callback ) {
+		const del = require( 'del' );
+		del.sync( this.tmp );
+
+		return callback();
 	}
 };
+
+module.exports = Builder;

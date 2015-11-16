@@ -8,7 +8,7 @@
 
 'use strict';
 
-( function() {
+( () => {
 	/**
 	 * Test tools for CKEditor.
 	 *
@@ -35,16 +35,16 @@
 		 *		bender.tools.createSinonSandbox();
 		 *
 		 *		// Then inside tests you can use bender.sinon:
-		 *		it( 'does something', function() {
+		 *		it( 'does something', () => {
 		 *			bender.sinon.spy( obj, 'method' );
 		 *		} );
 		 */
 		createSinonSandbox() {
-			before( function() {
+			before( () => {
 				bender.sinon = sinon.sandbox.create();
 			} );
 
-			afterEach( function() {
+			afterEach( () => {
 				bender.sinon.restore();
 			} );
 		}

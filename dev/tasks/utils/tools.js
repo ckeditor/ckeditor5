@@ -14,14 +14,14 @@ module.exports = {
 	 * @returns {Boolean} "true" if the task is in the queue.
 	 */
 	checkTaskInQueue( grunt, task ) {
-		var cliTasks = grunt.cli.tasks;
+		const cliTasks = grunt.cli.tasks;
 
 		// Check if the task has been called directly.
-		var isDirectCall = ( cliTasks.indexOf( task ) > -1 );
+		const isDirectCall = ( cliTasks.indexOf( task ) > -1 );
 		// Check if this is a "default" call and that the task is inside "default".
-		var isDefaultTask = ( cliTasks.indexOf( 'default' ) > -1 ) || !cliTasks.length;
+		const isDefaultTask = ( cliTasks.indexOf( 'default' ) > -1 ) || !cliTasks.length;
 		// Hacking Grunt hard.
-		var isTaskInDefault = isDefaultTask && ( grunt.task._tasks.default.info.indexOf( '"' + task + '"' ) > -1 );
+		const isTaskInDefault = isDefaultTask && ( grunt.task._tasks.default.info.indexOf( '"' + task + '"' ) > -1 );
 
 		return isDirectCall || isTaskInDefault;
 	},
@@ -33,15 +33,15 @@ module.exports = {
 	 * @param options {Object} A list of options for the method. See the jscs and jshint tasks for example.
 	 */
 	setupMultitaskConfig( grunt, options ) {
-		var task = options.task;
-		var taskConfig = {};
-		var config = taskConfig[ task ] = {
+		const task = options.task;
+		const taskConfig = {};
+		const config = taskConfig[ task ] = {
 			options: options.defaultOptions
 		};
 
 		// "all" is the default target to be used if others are not to be run.
-		var all = options.targets.all;
-		var isAll = true;
+		const all = options.targets.all;
+		let isAll = true;
 
 		delete options.targets.all;
 
@@ -58,8 +58,8 @@ module.exports = {
 
 		// Append .gitignore entries to the ignore list.
 		if ( options.addGitIgnore ) {
-			var ignoreProp = task + '.options.' + options.addGitIgnore;
-			var ignores = grunt.config.get( ignoreProp ) || [];
+			let ignoreProp = task + '.options.' + options.addGitIgnore;
+			let ignores = grunt.config.get( ignoreProp ) || [];
 
 			ignores = ignores.concat( this.getGitIgnore( grunt ) );
 			grunt.config.set( ignoreProp, ignores );
@@ -200,7 +200,7 @@ module.exports = {
 	 * @returns {Boolean}
 	 */
 	isDirectory( path ) {
-		var fs = require( 'fs' );
+		const fs = require( 'fs' );
 
 		try {
 			return fs.statSync( path ).isDirectory();

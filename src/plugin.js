@@ -14,12 +14,12 @@
 // core Plugin class with the necessary RequireJS plugin methods. This should have no harm on the use of the Plugin
 // class.
 
-define( 'plugin', [ 'plugin-core' ], function( CorePlugin ) {
+define( 'plugin', [ 'plugin-core' ], ( CorePlugin ) => {
 	// Called when a "plugin!" module is to be loaded.
 	// http://requirejs.org/docs/plugins.html#apiload
 	CorePlugin.load = function( name, require, onload ) {
 		// We may have a path to plugin modules (e.g. test/somemodule). Here we break the path on slashes.
-		var path = name.split( '/' );
+		let path = name.split( '/' );
 
 		// Inject the /src/ part right after the plugin name (e.g test/src).
 		path.splice( 1, 0, 'src' );

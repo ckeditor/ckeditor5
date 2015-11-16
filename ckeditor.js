@@ -10,7 +10,7 @@
 // This file is shared by the dev and release versions of CKEditor. It bootstraps the API.
 
 ( function( root ) {
-	var CKEDITOR = root.CKEDITOR = {
+	const CKEDITOR = root.CKEDITOR = {
 		/**
 		 * Computes the value of the `basePath` property.
 		 *
@@ -63,7 +63,7 @@
 		 * @method
 		 * @member CKEDITOR
 		 */
-		define: function( name, deps ) {
+		define( name, deps ) {
 			// If this is a named module with dependencies, save this in the dependency list.
 			if ( Array.isArray( deps ) && name && !this._dependencies[ name ] ) {
 				this._dependencies[ name ] = deps;
@@ -102,7 +102,7 @@
 	} );
 
 	// Define a new "ckeditor" module, which overrides the core one with the above and the dev stuff.
-	define( 'ckeditor', [ 'ckeditor-core', 'ckeditor-dev', 'utils' ], function( core, dev, utils ) {
+	define( 'ckeditor', [ 'ckeditor-core', 'ckeditor-dev', 'utils' ], ( core, dev, utils ) => {
 		root.CKEDITOR = utils.extend( {}, core, root.CKEDITOR, ( dev || /* istanbul ignore next */ {} ) );
 
 		return root.CKEDITOR;
@@ -113,13 +113,13 @@
 			return window.CKEDITOR_BASEPATH;
 		}
 
-		var scripts = document.getElementsByTagName( 'script' );
-		var basePathSrcPattern = /(^|.*[\\\/])ckeditor\.js(?:\?.*|;.*)?$/i;
-		var path;
+		const scripts = document.getElementsByTagName( 'script' );
+		const basePathSrcPattern = /(^|.*[\\\/])ckeditor\.js(?:\?.*|;.*)?$/i;
+		let path;
 
 		// Find the first script that src matches ckeditor.js.
-		[].some.call( scripts, function( script ) {
-			var match = script.src.match( basePathSrcPattern );
+		[].some.call( scripts, ( script ) => {
+			const match = script.src.match( basePathSrcPattern );
 
 			if ( match ) {
 				path = match[ 1 ];
