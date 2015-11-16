@@ -221,6 +221,12 @@ module.exports = {
 		} );
 	},
 
+	/**
+	 * Updates JSON file under specified path.
+	 * @param {String} path Path to file on disk.
+	 * @param {Function} updateFunction Function that will be called with parsed JSON object. It should return
+	 * modified JSON object to save.
+	 */
 	updateJSONFile( path, updateFunction ) {
 		const fs = require( 'fs' );
 
@@ -231,10 +237,20 @@ module.exports = {
 		fs.writeFileSync( path, JSON.stringify( json, null, 2 ), 'utf-8' );
 	},
 
+	/**
+	 * Calls `npm install` command in specified path.
+	 *
+	 * @param {String} path
+	 */
 	npmInstall( path ) {
 		this.shExec( `cd ${ path } && npm install` );
 	},
 
+	/**
+	 * Installs Git hooks in specified repository.
+	 *
+	 * @param {String} path
+	 */
 	installGitHooks( path ) {
 		this.shExec( `cd ${ path } && grunt githooks` );
 	}

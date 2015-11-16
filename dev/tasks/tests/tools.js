@@ -162,5 +162,55 @@ describe( 'utils', () => {
 				expect( directories[ 1 ] ).equal( 'ckeditor5-plugin-image' );
 			} );
 		} );
+
+		describe( 'updateJSONFile', () => {
+			it( 'should be defined', () => expect( tools.updateJSONFile ).to.be.a( 'function' ) );
+			it( 'should read, update and save JSON file', () => {
+				const path = 'path/to/file.json';
+				const fs = require( 'fs' );
+				const readFileStub = sinon.stub( fs, 'readFileSync', () => '{}' );
+				const modifiedJSON = { modified: true };
+				const writeFileStub = sinon.stub( fs, 'writeFileSync' );
+				toRestore.push( readFileStub, writeFileStub );
+
+				tools.updateJSONFile( path, () => {
+					return modifiedJSON;
+				} );
+
+				expect( readFileStub.calledOnce ).to.equal( true );
+				expect( readFileStub.firstCall.args[ 0 ] ).to.equal( path );
+				expect( writeFileStub.calledOnce ).to.equal( true );
+				expect( writeFileStub.firstCall.args[ 0 ] ).to.equal( path );
+				expect( writeFileStub.firstCall.args[ 1 ] ).to.equal( JSON.stringify( modifiedJSON, null, 2 ) );
+			} );
+		} );
+
+		describe( 'npmInstall', () => {
+			it( 'should be defined', () => expect( tools.npmInstall ).to.be.a( 'function' ) );
+			it( 'should execute npm install command', () => {
+				const shExecStub = sinon.stub( tools, 'shExec' );
+				const path = '/path/to/repository';
+				toRestore.push( shExecStub );
+
+				tools.npmInstall( path );
+
+				expect( shExecStub.calledOnce ).to.equal( true );
+				expect( shExecStub.firstCall.args[ 0 ] ).to.equal( `cd ${ path } && npm install` );
+			} );
+		} );
+
+		describe( 'installGitHooks', () => {
+			it( 'should be defined', () => expect( tools.installGitHooks ).to.be.a( 'function' ) );
+			it( 'should execute grunt githooks command', () => {
+				const shExecStub = sinon.stub( tools, 'shExec' );
+				const path = '/path/to/repository';
+				toRestore.push( shExecStub );
+
+				tools.installGitHooks( path );
+
+				expect( shExecStub.calledOnce ).to.equal( true );
+				expect( shExecStub.firstCall.args[ 0 ] ).to.equal( `cd ${ path } && grunt githooks` );
+			} );
+		} );
 	} );
 } );
