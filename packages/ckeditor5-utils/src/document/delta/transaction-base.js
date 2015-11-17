@@ -35,9 +35,23 @@ CKEDITOR.define( [ 'ckeditorerror' ], ( CKEditorError ) => {
 		 * instead.
 		 *
 		 * @constructor
+		 * @param {document.Document} doc Document which this transaction changes.
 		 */
 		constructor( doc ) {
+			/**
+			 * Document which this transaction changes.
+			 *
+			 * @readonly
+			 * @type {document.Document}
+			 */
 			this.doc = doc;
+
+			/**
+			 * Array of deltas which compose transaction.
+			 *
+			 * @readonly
+			 * @type {document.delta.Delta[]}
+			 */
 			this.deltas = [];
 		}
 
