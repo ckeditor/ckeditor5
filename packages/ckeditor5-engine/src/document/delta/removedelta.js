@@ -11,6 +11,9 @@ CKEDITOR.define( [
 	'document/operation/removeoperation'
 ], ( Delta, register, RemoveOperation ) => {
 	/**
+	 * To provide specific OT behavior and better collisions solving, {@link document.Transaction#remove} method
+	 * use `RemoveDelta` class which inherit from `Delta` class and may overwrite some methods.
+	 *
 	 * @class document.delta.RemoveDelta
 	 */
 	class RemoveDelta extends Delta {}

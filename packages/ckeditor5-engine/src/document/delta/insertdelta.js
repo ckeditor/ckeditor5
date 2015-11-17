@@ -11,6 +11,9 @@ CKEDITOR.define( [
 	'document/operation/insertoperation'
 ], ( Delta, register, InsertOperation ) => {
 	/**
+	 * To provide specific OT behavior and better collisions solving, {@link document.Transaction#insert} method
+	 * use `InsertDelta` class which inherit from `Delta` class and may overwrite some methods.
+	 *
 	 * @class document.delta.InsertDelta
 	 */
 	class InsertDelta extends Delta {}

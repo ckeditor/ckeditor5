@@ -13,6 +13,10 @@ CKEDITOR.define( [
 	'document/attribute'
 ], ( Delta, register, ChangeOperation, Range, Attribute ) => {
 	/**
+	 * To provide specific OT behavior and better collisions solving, change methods ({@link document.Transaction#setAttr}
+	 * and {@link document.Transaction#removeAttr}) use `ChangeDelta` class which inherit from `Delta` class and may
+	 * overwrite some methods.
+	 *
 	 * @class document.delta.ChangeDelta
 	 */
 	class ChangeDelta extends Delta {}

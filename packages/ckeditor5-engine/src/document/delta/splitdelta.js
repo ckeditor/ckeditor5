@@ -15,6 +15,9 @@ CKEDITOR.define( [
 	'ckeditorerror'
 ], ( Delta, register, Position, Element, InsertOperation, MoveOperation, CKEditorError ) => {
 	/**
+	 * To provide specific OT behavior and better collisions solving, {@link document.Transaction#split} method
+	 * use `SplitDelta` class which inherit from `Delta` class and may overwrite some methods.
+	 *
 	 * @class document.delta.SplitDelta
 	 */
 	class SplitDelta extends Delta {}
