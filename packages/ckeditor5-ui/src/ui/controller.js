@@ -7,8 +7,9 @@
 
 CKEDITOR.define( [
 	'collection',
-	'model'
-], function( Collection, Model ) {
+	'model',
+	'ckeditorerror',
+], function( Collection, Model, CKEditorError ) {
 	class Controller extends Model {
 		/**
 		 * @constructor
@@ -27,6 +28,10 @@ CKEDITOR.define( [
 			this.view = view;
 
 			/**
+			 * @property {Boolean} ready
+			 */
+
+			/**
 			 * Collections of child controller regions.
 			 */
 			this.regions = new Collection( {
@@ -39,20 +44,39 @@ CKEDITOR.define( [
 		 * @returns
 		 */
 		init() {
-			// Note: Because this.view.init() can by sync as well as async,
-			// this method is not returning this.view.init() directly.
+			if ( this.ready ) {
+				/**
+				 * This Controller has already been initialized.
+				 *
+				 * @error ui-controller-init
+				 * @param {Controller} controller
+				 */
+				throw new CKEditorError(
+					'ui-controller-init: This Controller has already been initialized.',
+					{ view: this }
+				);
+			}
+
 			return Promise.resolve()
+				// Note: Because this.view.init() can be sync as well as async,
+				// this method is not returning this.view.init() directly.
 				.then( () => {
 					return this.view.init();
 				} )
 				.then( () => {
 					let promises = [];
+					let region, controller;
 
-					for ( let region of this.regions ) {
-						promises.concat( region.map( c => c.init() ) );
+					for ( region of this.regions ) {
+						for ( controller of region ) {
+							promises.push( controller.init() );
+						}
 					}
 
 					return Promise.all( promises );
+				} )
+				.then( () => {
+					this.ready = true;
 				} );
 		}
 
@@ -60,7 +84,7 @@ CKEDITOR.define( [
 		 * @param
 		 * @returns
 		 */
-		add( controller, regionName ) {
+		addChild( controller, regionName ) {
 			let region = this.regions.get( regionName );
 
 			if ( !region ) {
@@ -69,7 +93,33 @@ CKEDITOR.define( [
 
 			region.add( controller );
 
-			return Promise.resolve( controller );
+			// If this Controller has already been inited, then every single new
+			// child controller must be inited separately when added.
+			if ( this.ready ) {
+				return controller.init();
+			}
+			// If this Controller.init() hasn't been called yet, then the child
+			// controller will be initialized by init().
+			else {
+				return Promise.resolve();
+			}
+		}
+
+		_createRegion( regionName ) {
+			const region = new Collection();
+			region.name = regionName;
+
+			region.on( 'add', ( evt, controller, index ) => {
+				this.view.addChild( controller.view, regionName, index );
+			} );
+
+			region.on( 'remove', ( evt, controller ) => {
+				this.view.removeChild( controller.view, regionName );
+			} );
+
+			this.regions.add( region );
+
+			return region;
 		}
 
 		/**
@@ -77,38 +127,24 @@ CKEDITOR.define( [
 		 * @returns
 		 */
 		destroy() {
-			// Note: Because this.view.destroy() can by sync as well as async,
-			// it is wrapped in promise.
 			return Promise.resolve()
 				.then( () => {
-					return this.view.destroy();
-				} )
-				.then( () => {
 					let promises = [];
+					let region, controller;
 
-					this.regions.forEach( region => {
-						region.forEach( controller => promises.push( controller.destroy() ) );
-					} );
+					for ( region of this.regions ) {
+						for ( controller of this.regions.remove( region ) ) {
+							promises.push( region.remove( controller ).destroy() );
+						}
+					}
 
 					return Promise.all( promises );
+				} )
+				// Note: Because this.view.destroy() can be sync as well as async,
+				// it is wrapped in promise.
+				.then( () => {
+					return this.view.destroy();
 				} );
-		}
-
-		_createRegion( regionName ) {
-			let controllers = new Collection();
-			controllers.name = regionName;
-
-			controllers.on( 'add', ( evt, controller, index ) => {
-				this.view.add( controller.view, regionName, index );
-			} );
-
-			controllers.on( 'remove', ( evt, controller ) => {
-				this.view.remove( controller.view, regionName );
-			} );
-
-			this.regions.add( controllers );
-
-			return controllers;
 		}
 	}
 

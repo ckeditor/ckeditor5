@@ -16,11 +16,12 @@
 CKEDITOR.define( [
 	'collection',
 	'model',
+	'ui/region',
 	'ui/template',
 	'ckeditorerror',
 	'ui/domemittermixin',
 	'utils'
-], ( Collection, Model, Template, CKEditorError, DOMEmitterMixin, utils ) => {
+], ( Collection, Model, Region, Template, CKEditorError, DOMEmitterMixin, utils ) => {
 	class View extends Model {
 		/**
 		 * Creates an instance of the {@link View} class.
@@ -44,6 +45,10 @@ CKEDITOR.define( [
 			} );
 
 			/**
+			 * @property {Object} regionsDef
+			 */
+
+			/**
 			 * @property {HTMLElement} _el
 			 */
 
@@ -61,7 +66,60 @@ CKEDITOR.define( [
 		 * @returns
 		 */
 		init() {
-			// TODO: What if we used render() here?
+			this._initRegions();
+		}
+
+		/**
+		 * @param
+		 * @returns
+		 */
+		_initRegions() {
+			let regionName, region;
+
+			// Add regions that haven't been created yet (i.e. by addChild()).
+			// Those regions have no children Views at that point.
+			for ( regionName in this.regionsDef ) {
+				if ( !this.regions.get( regionName ) ) {
+					this._createRegion( regionName );
+				}
+			}
+
+			// Initialize regions. Feed them with an element of this View.
+			for ( region of this.regions ) {
+				region.init( this );
+			}
+		}
+
+		/**
+		 * @param
+		 * @returns
+		 */
+		addChild( childView, regionName, index ) {
+			// Create a Region instance on demand.
+			const region = this.regions.get( regionName ) || this._createRegion( regionName );
+
+			region.addChild( childView, index );
+		}
+
+		/**
+		 * @param
+		 * @returns
+		 */
+		removeChild( childView, regionName ) {
+			return this.regions.get( regionName ).removeChild( childView );
+		}
+
+		/**
+		 * @param
+		 * @returns
+		 */
+		_createRegion( regionName ) {
+			// Use region element definition from `View#regions`.
+			const region = new Region( regionName, this.regionsDef[ regionName ] );
+
+			this.regions.add( region );
+
+			return region;
 		}
 
 		/**
@@ -71,6 +129,10 @@ CKEDITOR.define( [
 		 */
 		get el() {
 			return this._el || this.render();
+		}
+
+		set el( el ) {
+			this._el = el;
 		}
 
 		/**
@@ -134,7 +196,7 @@ CKEDITOR.define( [
 			}
 
 			// Prepare pre–defined listeners.
-			this.prepareListeners();
+			this._prepareListeners();
 
 			this._template = new Template( this.template );
 
@@ -145,6 +207,9 @@ CKEDITOR.define( [
 		 * Destroys the View.
 		 */
 		destroy() {
+			const regions = this.regions;
+			let region;
+
 			// Drop the reference to the model.
 			this.model = null;
 
@@ -154,8 +219,8 @@ CKEDITOR.define( [
 			}
 
 			// Remove and destroy regions.
-			for ( let region of this.regions ) {
-				this.regions.remove( region ).destroy();
+			for ( region of regions ) {
+				regions.remove( region ).destroy();
 			}
 
 			// Remove all listeners related to this view.
@@ -169,7 +234,7 @@ CKEDITOR.define( [
 		 *
 		 * The execution is performed by {@link Template} class.
 		 */
-		prepareListeners() {
+		_prepareListeners() {
 			if ( this.template ) {
 				this._prepareElementListeners( this.template );
 			}
@@ -268,18 +333,6 @@ CKEDITOR.define( [
 			if ( def.children ) {
 				def.children.map( this._prepareElementListeners, this );
 			}
-		}
-
-		/**
-		 * @param
-		 * @returns
-		 */
-		add( view, regionName, index ) {
-			this.regions.get( regionName ).add( view, index );
-		}
-
-		remove( view, regionName ) {
-			this.regions.get( regionName ).remove( view );
 		}
 	}
 
