@@ -16,13 +16,21 @@ CKEDITOR.define( [
 	const graveyardSymbol = Symbol( 'graveyard' );
 
 	/**
-	 * Document model.
+	 * Document tree model describes all editable data in the editor. In may contains multiple {@link #roots root elements},
+	 * for example if the editor have multiple editable areas, each area will be represented by the separate root.
+	 *
+	 * All changes in the document are done by {@link document.operation.Operation operations}. To create operations in
+	 * the simple way use use the {@link document.Transaction transaction} API, for example:
+	 *
+	 *	  document.makeTransaction().insert( position, nodes ).split( otherPosition );
+	 *
+	 * @see #makeTransaction
 	 *
 	 * @class document.Document
 	 */
 	class Document {
 		/**
-		 * Creates an empty document instance.
+		 * Creates an empty document instance with no {@link #roots}.
 		 *
 		 * @constructor
 		 */
@@ -50,7 +58,9 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * This is the only entry point for all document changes.
+		 * This is the entry point for all document changes. All changes on the document are done using
+		 * {@link document.operation.Operation operations}. To create operations in the simple way use the
+		 * {@link document.Transaction} API available via {@link #makeTransaction} method.
 		 *
 		 * @param {document.operation.Operation} operation Operation to be applied.
 		 */
@@ -133,6 +143,11 @@ CKEDITOR.define( [
 			return this.getRoot( graveyardSymbol );
 		}
 
+		/**
+		 * Creates a {@link document.Transaction} instance which allows to change the document.
+		 *
+		 * @returns {document.Transaction} Transaction instance.
+		 */
 		makeTransaction() {
 			return new Tranaction( this );
 		}
