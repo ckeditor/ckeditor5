@@ -15,6 +15,9 @@ CKEDITOR.define( [
 	'ckeditorerror'
 ], ( Delta, register, Position, Element, RemoveOperation, MoveOperation, CKEditorError ) => {
 	/**
+	 * To provide specific OT behavior and better collisions solving, {@link document.Transaction#merge} method
+	 * use `MergeDelta` class which inherit from `Delta` class and may overwrite some methods.
+	 *
 	 * @class document.delta.MergeDelta
 	 */
 	class MergeDelta extends Delta {}
