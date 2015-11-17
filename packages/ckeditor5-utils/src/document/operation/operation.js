@@ -31,6 +31,14 @@ CKEDITOR.define( [], () => {
 			this.baseVersion = baseVersion;
 
 			/**
+			 * {@link Document.Delta Delta} which the operation is a part of. This property is set by the
+			 * {@link Document.Delta delta} when the operations is added to it by the
+			 * {@link Document.Delta#addOperation} method.
+			 *
+			 * @property {Document.Delta} delta
+			 */
+
+			/**
 			 * Executes the operation - modifications described by the operation attributes
 			 * will be applied to the tree model.
 			 *
