@@ -5,6 +5,10 @@
 
 'use strict';
 
+// All deltas need to be loaded so they can register themselves as transaction methods.
+//
+// To solve circular dependencies (deltas need to require transaction class), transaction class body is moved
+// to document/delta/transaction-base.
 CKEDITOR.define( [
 	'document/delta/transaction-base',
 	'document/delta/insertdelta',

@@ -5,6 +5,8 @@
 
 'use strict';
 
+// Register method exposed for deltas, which needs only this method, to make code simpler, more beautiful and, first of
+// all, to solve circular dependencies.
 CKEDITOR.define( [
 	'document/delta/transaction-base'
 ], ( Transaction ) => {
