@@ -3,8 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
 /* global describe, it, beforeEach, afterEach */
+
+'use strict';
 
 const chai = require( 'chai' );
 const sinon = require( 'sinon' );

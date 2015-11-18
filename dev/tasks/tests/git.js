@@ -3,8 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
 /* global describe, it, beforeEach, afterEach */
+
+'use strict';
 
 let toRestore;
 const git = require( '../utils/git' );
