@@ -27,6 +27,20 @@ describe( 'dev-tasks', () => {
 		beforeEach( () => createSpies() );
 		afterEach( () => restoreSpies() );
 
+		function createSpies() {
+			spies = {
+				getDependencies: sinon.spy( tools, 'getCKEditorDependencies' ),
+				getDirectories: sinon.stub( tools, 'getCKE5Directories', () => [] ),
+				parseRepositoryUrl: sinon.spy( git, 'parseRepositoryUrl' ),
+				cloneRepository: sinon.stub( git, 'cloneRepository' ),
+				linkDirectories: sinon.stub( tools, 'linkDirectories' ),
+				pull: sinon.stub( git, 'pull' ),
+				checkout: sinon.stub( git, 'checkout' ),
+				npmInstall: sinon.stub( tools, 'npmInstall' ),
+				installGitHooks: sinon.stub( tools, 'installGitHooks' )
+			};
+		}
+
 		function restoreSpies() {
 			for ( let spy in spies ) {
 				spies[ spy ].restore();
@@ -49,6 +63,7 @@ describe( 'dev-tasks', () => {
 			expect( spies.parseRepositoryUrl.called ).to.equal( false );
 			expect( spies.cloneRepository.called ).to.equal( false );
 			expect( spies.checkout.called ).to.equal( false );
+			expect( spies.pull.called ).to.equal( false );
 			expect( spies.npmInstall.called ).to.equal( false );
 			expect( spies.installGitHooks.called ).to.equal( false );
 		} );
@@ -74,6 +89,7 @@ describe( 'dev-tasks', () => {
 			expect( spies.cloneRepository.secondCall.args[ 0 ] ).to.equal( spies.parseRepositoryUrl.secondCall.returnValue );
 			expect( spies.cloneRepository.secondCall.args[ 1 ] ).to.equal( workspacePath );
 			expect( spies.checkout.calledTwice ).to.equal( true );
+			expect( spies.pull.calledTwice ).to.equal( true );
 			expect( spies.linkDirectories.calledTwice ).to.equal( true );
 			expect( spies.npmInstall.calledTwice ).to.equal( true );
 			expect( spies.installGitHooks.calledTwice ).to.equal( true );
@@ -99,22 +115,10 @@ describe( 'dev-tasks', () => {
 			expect( spies.parseRepositoryUrl.calledTwice ).to.equal( true );
 			expect( spies.cloneRepository.called ).to.equal( false );
 			expect( spies.checkout.calledTwice ).to.equal( true );
+			expect( spies.pull.calledTwice ).to.equal( true );
 			expect( spies.linkDirectories.calledTwice ).to.equal( true );
 			expect( spies.npmInstall.calledTwice ).to.equal( true );
 			expect( spies.installGitHooks.calledTwice ).to.equal( true );
 		} );
 	} );
-
-	function createSpies() {
-		spies = {
-			getDependencies: sinon.spy( tools, 'getCKEditorDependencies' ),
-			getDirectories: sinon.stub( tools, 'getCKE5Directories', () => [] ),
-			parseRepositoryUrl: sinon.spy( git, 'parseRepositoryUrl' ),
-			cloneRepository: sinon.stub( git, 'cloneRepository' ),
-			linkDirectories: sinon.stub( tools, 'linkDirectories' ),
-			checkout: sinon.stub( git, 'checkout' ),
-			npmInstall: sinon.stub( tools, 'npmInstall' ),
-			installGitHooks: sinon.stub( tools, 'installGitHooks' )
-		};
-	}
 } );

@@ -14,9 +14,10 @@ const path = require( 'path' );
  * 2. Check if any of the repositories are already present in the workspace.
  * 		2.1. If repository is present in the workspace, check it out to desired branch if one is provided.
  * 		2.2. If repository is not present in the workspace, clone it and checkout to desired branch if one is provided.
- * 3. Link each new repository to node_modules. (do not use npm link, use standard linking instead)
- * 4. Run `npm install` in each repository.
- * 5. Install Git hooks in each repository.
+ * 3. Pull changes from remote branch.
+ * 4. Link each new repository to node_modules. (do not use npm link, use standard linking instead)
+ * 5. Run `npm install` in each repository.
+ * 6. Install Git hooks in each repository.
  *
  * @param {String} ckeditor5Path Path to main CKEditor5 repository.
  * @param {Object} packageJSON Parsed package.json file from CKEditor5 repository.
@@ -39,19 +40,18 @@ module.exports = ( ckeditor5Path, packageJSON, options, writeln, writeError ) =>
 			const repositoryAbsolutePath = path.join( workspaceAbsolutePath, dependency );
 
 			// Check if repository's directory already exists.
-			if ( directories.indexOf( dependency ) === -1 ) {
-				try {
+			try {
+				if ( directories.indexOf( dependency ) === -1 ) {
 					writeln( `Clonning ${ repositoryURL }...` );
 					git.cloneRepository( urlInfo, workspaceAbsolutePath );
-				} catch ( error ) {
-					writeError( error );
 				}
-			}
 
-			// Check out proper branch.
-			try {
+				// Check out proper branch.
 				writeln( `Checking out ${ repositoryURL } to ${ urlInfo.branch }...` );
 				git.checkout( repositoryAbsolutePath, urlInfo.branch );
+
+				writeln( `Pulling changes to ${ repositoryURL } ${ urlInfo.branch }...` );
+				git.pull( repositoryAbsolutePath, urlInfo.branch );
 
 				writeln( `Linking ${ repositoryURL }...` );
 				tools.linkDirectories( repositoryAbsolutePath, path.join( ckeditor5Path, 'node_modules' , dependency ) );
@@ -59,7 +59,7 @@ module.exports = ( ckeditor5Path, packageJSON, options, writeln, writeError ) =>
 				writeln( `Running npm install in ${ repositoryURL }.` );
 				tools.npmInstall( repositoryAbsolutePath );
 
-				writeln( `Installing GIT hooks in ${ repositoryURL }.` );
+				writeln( `Installing Git hooks in ${ repositoryURL }.` );
 				tools.installGitHooks( repositoryAbsolutePath );
 			} catch ( error ) {
 				writeError( error );
