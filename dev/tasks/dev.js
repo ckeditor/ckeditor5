@@ -24,7 +24,7 @@ module.exports = ( grunt ) => {
 	grunt.registerTask( 'dev-plugin-create', function() {
 		const done = this.async();
 		const options = getOptions( this );
-		pluginCreateTask( ckeditor5Path, options, grunt.log.writeln, grunt.log.error )
+		pluginCreateTask( ckeditor5Path, options, grunt.log.writeln )
 			.then( done )
 			.catch( ( error )  => done( error ) );
 	} );
@@ -32,7 +32,7 @@ module.exports = ( grunt ) => {
 	grunt.registerTask( 'dev-plugin-install', function() {
 		const done = this.async();
 		const options = getOptions( this );
-		pluginInstallTask( ckeditor5Path, options, grunt.log.writeln, grunt.log.error )
+		pluginInstallTask( ckeditor5Path, options, grunt.log.writeln )
 			.then( done )
 			.catch( ( error )  => done( error ) );
 	} );

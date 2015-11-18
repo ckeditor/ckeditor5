@@ -23,56 +23,48 @@ const path = require( 'path' );
  * @param {String} ckeditor5Path Path to main CKEditor5 repository.
  * @param {Object} options grunt options.
  * @param {Function} writeln Function for log output.
- * @param {Function} writeError Function of error output
  * @returns {Promise} Returns promise fulfilled after task is done.
  */
-module.exports = ( ckeditor5Path, options, writeln, writeError ) => {
-	return new Promise( ( resolve, reject ) => {
-		const workspaceAbsolutePath = path.join( ckeditor5Path, options.workspaceRoot );
-		let pluginName;
-		let repositoryPath;
-		let gitHubUrl;
+module.exports = ( ckeditor5Path, options, writeln ) => {
+	const workspaceAbsolutePath = path.join( ckeditor5Path, options.workspaceRoot );
+	let pluginName;
+	let repositoryPath;
+	let gitHubUrl;
 
-		inquiries.getPluginName()
-			.then( result => {
-				pluginName = result;
-				repositoryPath = path.join( workspaceAbsolutePath, pluginName );
+	return inquiries.getPluginName()
+		.then( result => {
+			pluginName = result;
+			repositoryPath = path.join( workspaceAbsolutePath, pluginName );
 
-				return inquiries.getPluginGitHubUrl( pluginName );
-			} )
-			.then( result => {
-				gitHubUrl = result;
-				let urlInfo = git.parseRepositoryUrl( gitHubUrl );
+			return inquiries.getPluginGitHubUrl( pluginName );
+		} )
+		.then( result => {
+			gitHubUrl = result;
+			let urlInfo = git.parseRepositoryUrl( gitHubUrl );
 
-				try {
-					writeln( `Clonning ${ gitHubUrl }...` );
-					git.cloneRepository( urlInfo, workspaceAbsolutePath );
+			writeln( `Clonning ${ gitHubUrl }...` );
+			git.cloneRepository( urlInfo, workspaceAbsolutePath );
 
-					writeln( `Checking out ${ gitHubUrl } to ${ urlInfo.branch }...` );
-					git.checkout( repositoryPath, urlInfo.branch );
+			writeln( `Checking out ${ gitHubUrl } to ${ urlInfo.branch }...` );
+			git.checkout( repositoryPath, urlInfo.branch );
 
-					writeln( `Updating package.json files...` );
-					tools.updateJSONFile( path.join( ckeditor5Path, 'package.json' ), ( json ) => {
-						if ( !json.dependencies ) {
-							json.dependencies = {};
-						}
-						json.dependencies[ pluginName ] = gitHubUrl;
-
-						return json;
-					} );
-
-					writeln( `Linking ${ pluginName } to node_modules...` );
-					tools.linkDirectories( repositoryPath, path.join( ckeditor5Path, 'node_modules', pluginName ) );
-
-					writeln( `Running npm install in ${ pluginName }.` );
-					tools.npmInstall( repositoryPath );
-
-					writeln( `Installing GIT hooks in ${ pluginName }.` );
-					tools.installGitHooks( repositoryPath );
-				} catch ( error ) {
-					writeError( error );
+			writeln( `Updating package.json files...` );
+			tools.updateJSONFile( path.join( ckeditor5Path, 'package.json' ), ( json ) => {
+				if ( !json.dependencies ) {
+					json.dependencies = {};
 				}
-			} )
-			.catch( reject );
-	} );
+				json.dependencies[ pluginName ] = gitHubUrl;
+
+				return json;
+			} );
+
+			writeln( `Linking ${ pluginName } to node_modules...` );
+			tools.linkDirectories( repositoryPath, path.join( ckeditor5Path, 'node_modules', pluginName ) );
+
+			writeln( `Running npm install in ${ pluginName }.` );
+			tools.npmInstall( repositoryPath );
+
+			writeln( `Installing GIT hooks in ${ pluginName }.` );
+			tools.installGitHooks( repositoryPath );
+		} );
 };
