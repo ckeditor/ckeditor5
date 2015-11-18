@@ -9,9 +9,11 @@ CKEDITOR.define( [
 	'document/delta/delta',
 	'document/delta/register',
 	'document/operation/changeoperation',
+	'document/position',
 	'document/range',
-	'document/attribute'
-], ( Delta, register, ChangeOperation, Range, Attribute ) => {
+	'document/attribute',
+	'document/element'
+], ( Delta, register, ChangeOperation, Position, Range, Attribute, Element ) => {
 	/**
 	 * To provide specific OT behavior and better collisions solving, change methods ({@link document.Transaction#setAttr}
 	 * and {@link document.Transaction#removeAttr}) use `ChangeDelta` class which inherit from `Delta` class and may
@@ -22,14 +24,14 @@ CKEDITOR.define( [
 	class ChangeDelta extends Delta {}
 
 	/**
-	 * Sets the value of the attribute on the range.
+	 * Sets the value of the attribute of the node or on the range.
 	 *
 	 * @chainable
 	 * @memberOf document.Transaction
 	 * @method setAttr
 	 * @param {String} key Attribute key.
 	 * @param {Mixed} value Attribute new value.
-	 * @param {document.Range} range Range on which the attribute will be set.
+	 * @param {document.Node|document.Range} range Node or range on which the attribute will be set.
 	 */
 	register( 'setAttr', change );
 
@@ -40,15 +42,54 @@ CKEDITOR.define( [
 	 * @memberOf document.Transaction
 	 * @method removeAttr
 	 * @param {String} key Attribute key.
-	 * @param {document.Range} range Range on which the attribute will be set.
+	 * @param {document.Node|document.Range} nodeOrRange Node or range on which the attribute will be removed.
 	 */
-	register( 'removeAttr', ( doc, transaction, key, range ) => {
-		change( doc, transaction, key, null, range );
+	register( 'removeAttr', ( doc, transaction, key, nodeOrRange ) => {
+		change( doc, transaction, key, null, nodeOrRange );
 	} );
+
+	function change( doc, transaction, key, value, nodeOrRange ) {
+		const delta = new ChangeDelta();
+
+		if ( nodeOrRange instanceof Range ) {
+			changeRange( doc, delta, key, value, nodeOrRange );
+		} else {
+			changeNode( doc, delta, key, value, nodeOrRange );
+		}
+
+		transaction.addDelta( delta );
+	}
+
+	function changeNode( doc, delta, key, value, node ) {
+		const previousValue = node.getAttr( key );
+		let range;
+
+		if ( previousValue != value ) {
+			if ( node instanceof Element ) {
+				// If we change the attribute of the element, we do not want to change attributes of its children, so
+				// the end on the range can not be put after the closing tag, it should be inside that element with the
+				// offset 0, so the range will contains only the opening tag...
+				range = new Range( Position.createBefore( node ), Position.createFromParentAndOffset( node, 0 ) );
+			} else {
+				// ...but for characters we can not put the range inside it, so we end the range after that character.
+				range = new Range( Position.createBefore( node ), Position.createAfter( node ) );
+			}
+
+			const operation = new ChangeOperation(
+					range,
+					previousValue ? new Attribute( key, previousValue ) : null,
+					value ? new Attribute( key, value ) : null,
+					doc.version
+				);
+
+			doc.applyOperation( operation );
+			delta.addOperation( operation );
+		}
+	}
 
 	// Because change operation needs to have the same attribute value on the whole range, this function split the range
 	// into smaller parts.
-	function change( doc, transaction, key, value, range ) {
+	function changeRange( doc, delta, key, value, range ) {
 		// Position of the last split, the beginning of the new range.
 		let lastSplitPosition = range.start;
 
@@ -64,8 +105,6 @@ CKEDITOR.define( [
 		const iterator = range[ Symbol.iterator ]();
 		// Iterator state.
 		let next = iterator.next();
-
-		const delta = new ChangeDelta();
 
 		while ( !next.done ) {
 			valueAfter = next.value.node.getAttr( key );
@@ -92,8 +131,6 @@ CKEDITOR.define( [
 		if ( position != lastSplitPosition && valueBefore != value ) {
 			addOperation();
 		}
-
-		transaction.addDelta( delta );
 
 		function addOperation() {
 			const operation = new ChangeOperation(
