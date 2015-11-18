@@ -27,6 +27,12 @@ describe( 'dev-tasks', () => {
 		beforeEach( () => createSpies() );
 		afterEach( () => restoreSpies() );
 
+		function restoreSpies() {
+			for ( let spy in spies ) {
+				spies[ spy ].restore();
+			}
+		}
+
 		it( 'task should exists', () => expect( initTask ).to.be.a( 'function' ) );
 
 		it( 'performs no action when no ckeditor dependencies are found', () => {
@@ -110,11 +116,5 @@ describe( 'dev-tasks', () => {
 			npmInstall: sinon.stub( tools, 'npmInstall' ),
 			installGitHooks: sinon.stub( tools, 'installGitHooks' )
 		};
-	}
-
-	function restoreSpies() {
-		for ( let spy in spies ) {
-			spies[ spy ].restore();
-		}
 	}
 } );
