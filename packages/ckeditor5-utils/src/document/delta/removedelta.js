@@ -18,6 +18,15 @@ CKEDITOR.define( [
 	 */
 	class RemoveDelta extends Delta {}
 
+	/**
+	 * Remove nodes starting at the given position.
+	 *
+	 * @chainable
+	 * @memberOf document.Transaction
+	 * @method remove
+	 * @param {document.Position} position Position before the first node to remove.
+	 * @param {Number} howMany How many nodes to remove.
+	 */
 	register( 'remove', ( doc, transaction, position, howMany ) => {
 		if ( typeof howMany !== 'number' ) {
 			howMany = 1;
