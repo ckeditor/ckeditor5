@@ -12,6 +12,7 @@ const sinon = require( 'sinon' );
 const expect = chai.expect;
 const tools = require( '../utils/tools' );
 const path = require( 'path' );
+const fs = require( 'fs' );
 let toRestore;
 
 describe( 'utils', () => {
@@ -25,33 +26,35 @@ describe( 'utils', () => {
 		describe( 'linkDirectories', () => {
 			it( 'should be defined', () => expect( tools.linkDirectories ).to.be.a( 'function' ) );
 
-			it( 'should run link commands', () => {
-				const shExecStub = sinon.stub( tools, 'shExec' );
+			it( 'should link directories', () => {
 				const isDirectoryStub = sinon.stub( tools, 'isDirectory' ).returns( false );
+				const symlinkStub = sinon.stub( fs, 'symlinkSync' );
 				const source = '/source/dir';
 				const destination = '/destination/dir';
-				toRestore.push( shExecStub, isDirectoryStub );
+				toRestore.push( symlinkStub, isDirectoryStub );
 
 				tools.linkDirectories( source, destination );
 
 				expect( isDirectoryStub.calledOnce ).to.equal( true );
-				expect( shExecStub.calledOnce ).to.equal( true );
-				expect( shExecStub.firstCall.args[ 0 ] ).to.equal( `ln -s ${ source } ${ destination }` );
+				expect( symlinkStub.calledOnce ).to.equal( true );
+				expect( symlinkStub.firstCall.args[ 0 ] ).to.equal( source );
+				expect( symlinkStub.firstCall.args[ 1 ] ).to.equal( destination );
 			} );
 
 			it( 'should remove destination directory before linking', () => {
 				const shExecStub = sinon.stub( tools, 'shExec' );
 				const isDirectoryStub = sinon.stub( tools, 'isDirectory' ).returns( true );
+				const symlinkStub = sinon.stub( fs, 'symlinkSync' );
 				const source = '/source/dir';
 				const destination = '/destination/dir';
-				toRestore.push( shExecStub, isDirectoryStub );
+				toRestore.push( symlinkStub, shExecStub, isDirectoryStub );
 
 				tools.linkDirectories( source, destination );
 
 				expect( isDirectoryStub.calledOnce ).to.equal( true );
-				expect( shExecStub.calledTwice ).to.equal( true );
-				expect( shExecStub.firstCall.args[ 0 ] ).to.equal( `rm -rf ${ destination }` );
-				expect( shExecStub.secondCall.args[ 0 ] ).to.equal( `ln -s ${ source } ${ destination }` );
+				expect( shExecStub.calledOnce ).to.equal( true );
+				expect( symlinkStub.firstCall.args[ 0 ] ).to.equal( source );
+				expect( symlinkStub.firstCall.args[ 1 ] ).to.equal( destination );
 			} );
 		} );
 

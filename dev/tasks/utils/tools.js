@@ -141,17 +141,18 @@ module.exports = {
 	},
 
 	/**
-	 * Links directory located in source path to directory located in destination path using `ln -s` command.
+	 * Links directory located in source path to directory located in destination path.
 	 * @param {String} source
 	 * @param {String} destination
 	 */
 	linkDirectories( source, destination ) {
+		const fs = require( 'fs' );
 		// Remove destination directory if exists.
 		if ( this.isDirectory( destination ) ) {
 			this.shExec( `rm -rf ${ destination }` );
 		}
 
-		this.shExec( `ln -s ${ source } ${ destination }` );
+		fs.symlinkSync( source, destination, 'dir' );
 	},
 
 	/**
