@@ -52,12 +52,12 @@ module.exports = ( grunt ) => {
 		boilerplateUpdateTask( ckeditor5Path, packageJSON, options, grunt.log.writeln, grunt.log.error );
 	} );
 
-	function getOptions( context ) {
+	function getOptions( task ) {
 		const options = {
 			workspaceRoot: '..'
 		};
 
-		return context.options( options );
+		return task.options( options );
 	}
 };
 
