@@ -24,13 +24,17 @@ module.exports = ( grunt ) => {
 	grunt.registerTask( 'dev-plugin-create', function() {
 		const done = this.async();
 		const options = getOptions( this );
-		pluginCreateTask( ckeditor5Path, options, grunt.log.writeln, grunt.log.error ).then( done );
+		pluginCreateTask( ckeditor5Path, options, grunt.log.writeln, grunt.log.error )
+			.then( done )
+			.catch( ( error )  => done( error ) );
 	} );
 
 	grunt.registerTask( 'dev-plugin-install', function() {
 		const done = this.async();
 		const options = getOptions( this );
-		pluginInstallTask( ckeditor5Path, options, grunt.log.writeln, grunt.log.error ).then( done );
+		pluginInstallTask( ckeditor5Path, options, grunt.log.writeln, grunt.log.error )
+			.then( done )
+			.catch( ( error )  => done( error ) );
 	} );
 
 	grunt.registerTask( 'dev-update', function() {
