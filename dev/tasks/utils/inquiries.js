@@ -17,7 +17,7 @@ module.exports = {
 				name: 'pluginName',
 				message: 'Enter plugin name without ' + DEFAULT_PLUGIN_NAME_PREFIX + ' prefix:',
 				validate: ( input ) => {
-					var regexp = /^[a-zA-Z0-9-_]+$/;
+					const regexp = /^[\w-]+$/;
 
 					return regexp.test( input ) ? true : 'Please provide a valid plugin name.';
 				}
@@ -40,7 +40,7 @@ module.exports = {
 	},
 
 	getPluginGitHubUrl( pluginName ) {
-		var defaultGitHubUrl = DEFAULT_GITHUB_URL_PREFIX + pluginName;
+		const defaultGitHubUrl = DEFAULT_GITHUB_URL_PREFIX + pluginName;
 
 		return new Promise( ( resolve ) => {
 			inquirer.prompt( [ {
