@@ -22,6 +22,17 @@ CKEDITOR.define( [
 	 */
 	class SplitDelta extends Delta {}
 
+	/**
+	 * Split a node at the given position.
+	 *
+	 * This can not be a position inside a root element, method will throw `transaction-split-root` if you try to split
+	 * root element.
+	 *
+	 * @chainable
+	 * @memberOf document.Transaction
+	 * @method split
+	 * @param {document.Position} position Position of split.
+	 */
 	register( 'split', ( doc, transaction, position ) => {
 		const delta = new SplitDelta();
 		const splitElement = position.parent;

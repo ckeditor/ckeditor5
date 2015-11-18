@@ -22,6 +22,17 @@ CKEDITOR.define( [
 	 */
 	class MergeDelta extends Delta {}
 
+	/**
+	 * Merge two siblings at the given position.
+	 *
+	 * Node before and after the position have to be an element. Otherwise `transaction-merge-no-element-before` or
+	 * `transaction-merge-no-element-after` error will be thrown.
+	 *
+	 * @chainable
+	 * @memberOf document.Transaction
+	 * @method merge
+	 * @param {document.Position} position Position of merge.
+	 */
 	register( 'merge', ( doc, transaction, position ) => {
 		const delta = new MergeDelta();
 		const nodeBefore = position.nodeBefore;
