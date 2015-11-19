@@ -138,10 +138,12 @@ module.exports = {
 	 * @param {String} repositoryPath Absolute path to repository.
 	 */
 	updateBoilerplate( repositoryPath ) {
+		const regexp = /boilerplate(\n|$)/;
+
 		// Try to add boilerplate remote if one is not already added.
-		try {
+		if ( !regexp.test( tools.shExec( `cd ${ repositoryPath } && git remote` ) ) ) {
 			tools.shExec( `cd ${ repositoryPath } && git remote add boilerplate ${ this.BOILERPLATE_REPOSITORY }` );
-		} catch ( error ) { }
+		}
 
 		const updateCommands = [
 			`cd ${ repositoryPath }`,
