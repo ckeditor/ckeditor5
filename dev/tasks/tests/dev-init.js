@@ -19,10 +19,8 @@ describe( 'dev-tasks', () => {
 	describe( 'dev-init', () => {
 		const initTask = require( '../utils/dev-init' );
 		const mainRepositoryPath = '/path/to/repository';
-		const options = {
-			workspaceRoot: '..'
-		};
-		const workspacePath = path.join( mainRepositoryPath, options.workspaceRoot );
+		const workspaceRoot = '..';
+		const workspacePath = path.join( mainRepositoryPath, workspaceRoot );
 
 		beforeEach( () => createSpies() );
 		afterEach( () => restoreSpies() );
@@ -56,7 +54,7 @@ describe( 'dev-tasks', () => {
 				}
 			};
 
-			initTask( mainRepositoryPath, packageJSON, options, emptyFn, emptyFn );
+			initTask( mainRepositoryPath, packageJSON, workspaceRoot, emptyFn, emptyFn );
 			expect( spies.getDependencies.calledOnce ).to.equal( true );
 			expect( spies.getDependencies.firstCall.args[ 0 ] ).to.equal( packageJSON.dependencies );
 			expect( spies.getDirectories.called ).to.equal( false );
@@ -77,11 +75,11 @@ describe( 'dev-tasks', () => {
 				}
 			};
 
-			initTask( mainRepositoryPath, packageJSON, options, emptyFn, emptyFn );
+			initTask( mainRepositoryPath, packageJSON, workspaceRoot, emptyFn, emptyFn );
 			expect( spies.getDependencies.calledOnce ).to.equal( true );
 			expect( spies.getDependencies.firstCall.args[ 0 ] ).to.equal( packageJSON.dependencies );
 			expect( spies.getDirectories.calledOnce ).to.equal( true );
-			expect( spies.getDirectories.firstCall.args[ 0 ] ).to.equal( path.join( mainRepositoryPath, options.workspaceRoot ) );
+			expect( spies.getDirectories.firstCall.args[ 0 ] ).to.equal( path.join( mainRepositoryPath, workspaceRoot ) );
 			expect( spies.parseRepositoryUrl.calledTwice ).to.equal( true );
 			expect( spies.cloneRepository.calledTwice ).to.equal( true );
 			expect( spies.cloneRepository.firstCall.args[ 0 ] ).to.equal( spies.parseRepositoryUrl.firstCall.returnValue );
@@ -107,11 +105,11 @@ describe( 'dev-tasks', () => {
 			spies.getDirectories.restore();
 			spies.getDirectories = sinon.stub( tools, 'getCKE5Directories', () => [ 'ckeditor5-core', 'ckeditor5-plugin-devtest' ] );
 
-			initTask( mainRepositoryPath, packageJSON, options, emptyFn, emptyFn );
+			initTask( mainRepositoryPath, packageJSON, workspaceRoot, emptyFn, emptyFn );
 			expect( spies.getDependencies.calledOnce ).to.equal( true );
 			expect( spies.getDependencies.firstCall.args[ 0 ] ).to.equal( packageJSON.dependencies );
 			expect( spies.getDirectories.calledOnce ).to.equal( true );
-			expect( spies.getDirectories.firstCall.args[ 0 ] ).to.equal( path.join( mainRepositoryPath, options.workspaceRoot ) );
+			expect( spies.getDirectories.firstCall.args[ 0 ] ).to.equal( path.join( mainRepositoryPath, workspaceRoot ) );
 			expect( spies.parseRepositoryUrl.calledTwice ).to.equal( true );
 			expect( spies.cloneRepository.called ).to.equal( false );
 			expect( spies.checkout.calledTwice ).to.equal( true );

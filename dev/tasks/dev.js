@@ -15,49 +15,36 @@ const ckeditor5Path = process.cwd();
 
 module.exports = ( grunt ) => {
 	const packageJSON = grunt.config.data.pkg;
+	const workspaceRoot = grunt.config.data.workspaceRoot;
 
 	grunt.registerTask( 'dev-init', function() {
-		const options = getOptions( this );
-		initTask( ckeditor5Path, packageJSON, options, grunt.log.writeln, grunt.log.error );
+		initTask( ckeditor5Path, packageJSON, workspaceRoot, grunt.log.writeln, grunt.log.error );
 	} );
 
 	grunt.registerTask( 'dev-plugin-create', function() {
 		const done = this.async();
-		const options = getOptions( this );
-		pluginCreateTask( ckeditor5Path, options, grunt.log.writeln )
+		pluginCreateTask( ckeditor5Path, workspaceRoot, grunt.log.writeln )
 			.then( done )
 			.catch( ( error )  => done( error ) );
 	} );
 
 	grunt.registerTask( 'dev-plugin-install', function() {
 		const done = this.async();
-		const options = getOptions( this );
-		pluginInstallTask( ckeditor5Path, options, grunt.log.writeln )
+		pluginInstallTask( ckeditor5Path, workspaceRoot, grunt.log.writeln )
 			.then( done )
 			.catch( ( error )  => done( error ) );
 	} );
 
 	grunt.registerTask( 'dev-update', function() {
-		const options = getOptions( this );
-		pluginUpdateTask( ckeditor5Path, packageJSON, options, grunt.log.writeln, grunt.log.error );
+		pluginUpdateTask( ckeditor5Path, packageJSON, workspaceRoot, grunt.log.writeln, grunt.log.error );
 	} );
 
 	grunt.registerTask( 'dev-status', function() {
-		const options = getOptions( this );
-		pluginStatusTask( ckeditor5Path, packageJSON, options, grunt.log.writeln, grunt.log.error );
+		pluginStatusTask( ckeditor5Path, packageJSON, workspaceRoot, grunt.log.writeln, grunt.log.error );
 	} );
 
 	grunt.registerTask( 'dev-boilerplate-update', function() {
-		const options = getOptions( this );
-		boilerplateUpdateTask( ckeditor5Path, packageJSON, options, grunt.log.writeln, grunt.log.error );
+		boilerplateUpdateTask( ckeditor5Path, packageJSON, workspaceRoot, grunt.log.writeln, grunt.log.error );
 	} );
-
-	function getOptions( task ) {
-		const options = {
-			workspaceRoot: '..'
-		};
-
-		return task.options( options );
-	}
 };
 

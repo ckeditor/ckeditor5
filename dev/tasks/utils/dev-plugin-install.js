@@ -21,12 +21,12 @@ const path = require( 'path' );
  * 8. Install Git hooks in plugin repository.
  *
  * @param {String} ckeditor5Path Path to main CKEditor5 repository.
- * @param {Object} options grunt options.
+ * @param {String} workspaceRoot Relative path to workspace root.
  * @param {Function} writeln Function for log output.
  * @returns {Promise} Returns promise fulfilled after task is done.
  */
-module.exports = ( ckeditor5Path, options, writeln ) => {
-	const workspaceAbsolutePath = path.join( ckeditor5Path, options.workspaceRoot );
+module.exports = ( ckeditor5Path, workspaceRoot, writeln ) => {
+	const workspaceAbsolutePath = path.join( ckeditor5Path, workspaceRoot );
 	let pluginName;
 	let repositoryPath;
 	let gitHubUrl;

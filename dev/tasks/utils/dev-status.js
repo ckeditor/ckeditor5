@@ -16,12 +16,12 @@ const path = require( 'path' );
  *
  * @param {String} ckeditor5Path Path to main CKEditor5 repository.
  * @param {Object} packageJSON Parsed package.json file from CKEditor5 repository.
- * @param {Object} options grunt options.
+ * @param {String} workspaceRoot Relative path to workspace root.
  * @param {Function} writeln Function for log output.
  * @param {Function} writeError Function of error output
  */
-module.exports = ( ckeditor5Path, packageJSON, options, writeln, writeError ) => {
-	const workspaceAbsolutePath = path.join( ckeditor5Path, options.workspaceRoot );
+module.exports = ( ckeditor5Path, packageJSON, workspaceRoot, writeln, writeError ) => {
+	const workspaceAbsolutePath = path.join( ckeditor5Path, workspaceRoot );
 
 	// Get all CKEditor dependencies from package.json.
 	const dependencies = tools.getCKEditorDependencies( packageJSON.dependencies );

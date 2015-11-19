@@ -15,6 +15,7 @@ module.exports = ( grunt ) => {
 	// Basic configuration which will be overloaded by the tasks.
 	grunt.initConfig( {
 		pkg: grunt.file.readJSON( 'package.json' ),
+		workspaceRoot: '..',
 
 		jshint: {
 			options: {
@@ -25,12 +26,6 @@ module.exports = ( grunt ) => {
 		jscs: {
 			options: {
 				excludeFiles: ignoreFiles
-			}
-		},
-
-		dev: {
-			options: {
-				workspaceRoot: '..'
 			}
 		}
 	} );
