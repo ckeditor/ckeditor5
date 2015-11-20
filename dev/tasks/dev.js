@@ -10,6 +10,7 @@ const pluginCreateTask = require( './utils/dev-plugin-create' );
 const pluginInstallTask = require( './utils/dev-plugin-install' );
 const pluginUpdateTask = require( './utils/dev-update' );
 const pluginStatusTask = require( './utils/dev-status' );
+const relinkTask = require( './utils/dev-relink' );
 const boilerplateUpdateTask = require( './utils/dev-boilerplate-update' );
 const ckeditor5Path = process.cwd();
 
@@ -45,6 +46,10 @@ module.exports = ( grunt ) => {
 
 	grunt.registerTask( 'dev-boilerplate-update', function() {
 		boilerplateUpdateTask( ckeditor5Path, packageJSON, workspaceRoot, grunt.log.writeln, grunt.log.error );
+	} );
+
+	grunt.registerTask( 'dev-relink', function() {
+		relinkTask( ckeditor5Path, packageJSON, workspaceRoot, grunt.log.writeln, grunt.log.error );
 	} );
 };
 
