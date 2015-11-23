@@ -46,8 +46,8 @@ describe( 'Transaction', () => {
 	function getOperationsCount() {
 		let count = 0;
 
-		for ( let delta of transaction ) {
-			count += getIteratorCount( delta );
+		for ( let delta of transaction.deltas ) {
+			count += getIteratorCount( delta.operations );
 		}
 
 		return count;
@@ -136,8 +136,8 @@ describe( 'Transaction', () => {
 		function getChangesAttrsCount() {
 			let count = 0;
 
-			for ( let delta of transaction ) {
-				for ( let operation of delta ) {
+			for ( let delta of transaction.deltas ) {
+				for ( let operation of delta.operations ) {
 					count += getIteratorCount( operation.range );
 				}
 			}

@@ -52,13 +52,6 @@ CKEDITOR.define( [], () => {
 
 			return operation;
 		}
-
-		/**
-		 * Delta provides iterator interface which will iterate over operations in the delta.
-		 */
-		[ Symbol.iterator ]() {
-			return this.operations[ Symbol.iterator ]();
-		}
 	}
 
 	return Delta;
