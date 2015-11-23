@@ -15,13 +15,15 @@ const path = require( 'path' );
  * 2. Ask for initial version.
  * 3. Ask for GitHub URL.
  * 4. Initialize repository
- * 		4.1. Initialize GIT repository.
+ * 		4.1. Initialize Git repository.
  * 		4.2. Fetch and merge boilerplate project.
- * 5. Update package.json file in new plugin's repository.
- * 6. Update package.json file in CKEditor5 repository.
- * 7. Link new plugin.
- * 8. Call `npm install` in plugin repository.
- * 9. Install Git hooks in plugin repository.
+ * 5. Copy template files.
+ * 6. Update package.json file in new plugin's repository.
+ * 7. Update package.json file in CKEditor5 repository.
+ * 8. Create initial commit.
+ * 9. Link new plugin.
+ * 10. Call `npm install` in plugin repository.
+ * 11. Install Git hooks in plugin repository.
  *
  * @param {String} ckeditor5Path Path to main CKEditor5 repository.
  * @param {String} workspaceRoot Relative path to workspace root.
