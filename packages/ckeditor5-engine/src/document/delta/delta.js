@@ -10,9 +10,9 @@ CKEDITOR.define( [], () => {
 	 * Base class for all deltas.
 	 *
 	 * Delta is a single, from the user action point of view, change in the editable document, like insert, split or
-	 * rename element. Delta is composed of operations, which are unit changes need to be done to execute user action.
+	 * rename element. Delta is composed of operations, which are unit changes needed to be done to execute user action.
 	 *
-	 * Multiple deltas are grouped as a single {@link document.Transaction}.
+	 * Multiple deltas are grouped into a single {@link document.Transaction}.
 	 *
 	 * @class document.delta.Delta
 	 */

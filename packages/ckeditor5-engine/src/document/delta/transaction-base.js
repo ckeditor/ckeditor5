@@ -14,18 +14,18 @@ CKEDITOR.define( [ 'ckeditorerror' ], ( CKEditorError ) => {
 	 *
 	 * For example to create two separate undo steps you can call:
 	 *
-	 *	  doc.makeTransaction().insert( firstPosition, 'foo' );
-	 *	  doc.makeTransaction().insert( secondPosition, 'bar' );
+	 *		doc.makeTransaction().insert( firstPosition, 'foo' );
+	 *		doc.makeTransaction().insert( secondPosition, 'bar' );
 	 *
 	 * To create a single undo step:
 	 *
-	 *	  const transaction = doc.makeTransaction()
-	 *	  transaction.insert( firstPosition, 'foo' );
-	 *	  transaction.insert( secontPosition, 'bar' );
+	 *		const transaction = doc.makeTransaction()
+	 *		transaction.insert( firstPosition, 'foo' );
+	 *		transaction.insert( secontPosition, 'bar' );
 	 *
 	 * Note that all document modification methods (insert, remove, split, etc.) are chainable so you can shorten code to:
 	 *
-	 *	  doc.makeTransaction().insert( firstPosition, 'foo' ).insert( secontPosition, 'bar' );
+	 *		doc.makeTransaction().insert( firstPosition, 'foo' ).insert( secontPosition, 'bar' );
 	 *
 	 * @class document.Transaction
 	 */
@@ -60,7 +60,6 @@ CKEDITOR.define( [ 'ckeditorerror' ], ( CKEditorError ) => {
 		 * to add created deltas.
 		 *
 		 * @param {document.delta.Delta} delta Delta to add.
-		 *
 		 * @return {document.delta.Delta} Added delta.
 		 */
 		addDelta( delta ) {
@@ -79,16 +78,16 @@ CKEDITOR.define( [ 'ckeditorerror' ], ( CKEditorError ) => {
 
 		/**
 		 * Static method to register transaction methods. To make code scalable transaction do not have modification
-		 * methods build in. They can be registered using this method.
+		 * methods built in. They can be registered using this method.
 		 *
-		 * This method check if there is no naming collision and throw `transaction-register-taken` if the method name
+		 * This method checks if there is no naming collision and throw `transaction-register-taken` if the method name
 		 * is already taken.
 		 *
-		 * It also pass {@link document.Document} and {@link document.Transaction} do the creator class.
+		 * It also passes {@link document.Document} and {@link document.Transaction} do the creator class.
 		 *
-		 * Registered function returns `this` so they because chainable by default.
+		 * Registered function returns `this` so they can be chainable by default.
 		 *
-		 * Beside that no magic happens here, the methods is added to the Transaction prototype.
+		 * Beside that no magic happens here, the method is added to the `Transaction` class prototype.
 		 *
 		 * For example:
 		 *

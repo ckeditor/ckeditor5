@@ -16,7 +16,7 @@ CKEDITOR.define( [
 ], ( Delta, register, ChangeOperation, Position, Range, Attribute, Element ) => {
 	/**
 	 * To provide specific OT behavior and better collisions solving, change methods ({@link document.Transaction#setAttr}
-	 * and {@link document.Transaction#removeAttr}) use `ChangeDelta` class which inherit from `Delta` class and may
+	 * and {@link document.Transaction#removeAttr}) use `ChangeDelta` class which inherits from the `Delta` class and may
 	 * overwrite some methods.
 	 *
 	 * @class document.delta.ChangeDelta
@@ -27,11 +27,11 @@ CKEDITOR.define( [
 	 * Sets the value of the attribute of the node or on the range.
 	 *
 	 * @chainable
-	 * @memberOf document.Transaction
 	 * @method setAttr
+	 * @memberOf document.Transaction
 	 * @param {String} key Attribute key.
 	 * @param {Mixed} value Attribute new value.
-	 * @param {document.Node|document.Range} range Node or range on which the attribute will be set.
+	 * @param {document.Node|document.Range} nodeOrRange Node or range on which the attribute will be set.
 	 */
 	register( 'setAttr', change );
 
@@ -39,8 +39,8 @@ CKEDITOR.define( [
 	 * Removes an attribute from the range.
 	 *
 	 * @chainable
-	 * @memberOf document.Transaction
 	 * @method removeAttr
+	 * @memberOf document.Transaction
 	 * @param {String} key Attribute key.
 	 * @param {document.Node|document.Range} nodeOrRange Node or range on which the attribute will be removed.
 	 */
