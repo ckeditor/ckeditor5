@@ -109,9 +109,9 @@ describe( 'Document', () => {
 		} );
 	} );
 
-	describe( 'makeTransaction', () => {
+	describe( 'createTransaction', () => {
 		it( 'should create a new transaction with the document property', () => {
-			const transaction = document.makeTransaction();
+			const transaction = document.createTransaction();
 
 			expect( transaction ).to.be.instanceof( Transaction );
 			expect( transaction ).to.have.property( 'doc' ).that.equals( document );

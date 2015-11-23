@@ -40,7 +40,7 @@ describe( 'Transaction', () => {
 	beforeEach( () => {
 		doc = new Document();
 		root = doc.createRoot( 'root' );
-		transaction = doc.makeTransaction();
+		transaction = doc.createTransaction();
 	} );
 
 	function getOperationsCount() {

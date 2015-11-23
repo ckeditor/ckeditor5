@@ -22,9 +22,10 @@ CKEDITOR.define( [
 	 * All changes in the document are done by {@link document.operation.Operation operations}. To create operations in
 	 * the simple way use use the {@link document.Transaction transaction} API, for example:
 	 *
-	 *		document.makeTransaction().insert( position, nodes ).split( otherPosition );
+	 *		document.createTransaction().insert( position, nodes ).split( otherPosition );
 	 *
-	 * @see #makeTransaction
+	 * @see #createTransaction
+	 *
 	 * @class document.Document
 	 */
 	class Document {
@@ -59,7 +60,7 @@ CKEDITOR.define( [
 		/**
 		 * This is the entry point for all document changes. All changes on the document are done using
 		 * {@link document.operation.Operation operations}. To create operations in the simple way use the
-		 * {@link document.Transaction} API available via {@link #makeTransaction} method.
+		 * {@link document.Transaction} API available via {@link #createTransaction} method.
 		 *
 		 * @param {document.operation.Operation} operation Operation to be applied.
 		 */
@@ -147,7 +148,7 @@ CKEDITOR.define( [
 		 *
 		 * @returns {document.Transaction} Transaction instance.
 		 */
-		makeTransaction() {
+		createTransaction() {
 			return new Tranaction( this );
 		}
 	}
