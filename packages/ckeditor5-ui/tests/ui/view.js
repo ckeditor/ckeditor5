@@ -9,7 +9,7 @@
 'use strict';
 
 const modules = bender.amd.require( 'ckeditor', 'ui/view', 'ui/region', 'ckeditorerror', 'model', 'eventinfo' );
-let View, TestView;
+let View, TestView, Model;
 let view;
 
 bender.tools.createSinonSandbox();
@@ -50,14 +50,14 @@ describe( 'instance', () => {
 	} );
 } );
 
-describe( 'bind', () => {
+describe( 'bindToAttribute', () => {
 	beforeEach( createViewInstanceWithTemplate );
 
 	it( 'returns a function that passes arguments', () => {
 		setTestViewInstance( { a: 'foo' } );
 
 		let spy = bender.sinon.spy();
-		let callback = view.bind( 'a', spy );
+		let callback = view.bindToAttribute( 'a', spy );
 
 		expect( spy.called ).to.be.false;
 
@@ -75,7 +75,7 @@ describe( 'bind', () => {
 			return {
 				tag: 'p',
 				attrs: {
-					'class': this.bind( 'foo' )
+					'class': this.bindToAttribute( 'foo' )
 				},
 				text: 'abc'
 			};
@@ -99,7 +99,7 @@ describe( 'bind', () => {
 						text: 'baz'
 					}
 				],
-				text: this.bind( 'foo' )
+				text: this.bindToAttribute( 'foo' )
 			};
 		} );
 
@@ -120,9 +120,9 @@ describe( 'bind', () => {
 			return {
 				tag: 'p',
 				attrs: {
-					'class': this.bind( 'foo', callback )
+					'class': this.bindToAttribute( 'foo', callback )
 				},
-				text: this.bind( 'foo', callback )
+				text: this.bindToAttribute( 'foo', callback )
 			};
 		} );
 
@@ -138,7 +138,7 @@ describe( 'bind', () => {
 			return {
 				tag: 'p',
 				attrs: {
-					'class': this.bind( 'foo', ( el, value ) => {
+					'class': this.bindToAttribute( 'foo', ( el, value ) => {
 						el.innerHTML = value;
 
 						if ( value == 'changed' ) {
@@ -434,7 +434,7 @@ describe( 'destroy', () => {
 		setTestViewClass( function() {
 			return {
 				tag: 'p',
-				text: this.bind( 'foo' )
+				text: this.bindToAttribute( 'foo' )
 			};
 		} );
 
@@ -457,6 +457,7 @@ describe( 'destroy', () => {
 
 function updateModuleReference() {
 	View = modules[ 'ui/view' ];
+	Model = modules.model;
 }
 
 function createViewInstanceWithTemplate() {
@@ -477,7 +478,7 @@ function setTestViewClass( template ) {
 }
 
 function setTestViewInstance( model ) {
-	view = new TestView( model );
+	view = new TestView( new Model( model ) );
 
 	if ( view.template ) {
 		document.body.appendChild( view.el );
