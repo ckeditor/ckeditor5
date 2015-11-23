@@ -16,21 +16,21 @@ CKEDITOR.define( [
 ], ( Delta, register, Position, Element, RemoveOperation, MoveOperation, CKEditorError ) => {
 	/**
 	 * To provide specific OT behavior and better collisions solving, {@link document.Transaction#merge} method
-	 * use `MergeDelta` class which inherit from `Delta` class and may overwrite some methods.
+	 * uses the `MergeDelta` class which inherits from the `Delta` class and may overwrite some methods.
 	 *
 	 * @class document.delta.MergeDelta
 	 */
 	class MergeDelta extends Delta {}
 
 	/**
-	 * Merge two siblings at the given position.
+	 * Merges two siblings at the given position.
 	 *
 	 * Node before and after the position have to be an element. Otherwise `transaction-merge-no-element-before` or
 	 * `transaction-merge-no-element-after` error will be thrown.
 	 *
 	 * @chainable
-	 * @memberOf document.Transaction
 	 * @method merge
+	 * @memberOf document.Transaction
 	 * @param {document.Position} position Position of merge.
 	 */
 	register( 'merge', ( doc, transaction, position ) => {

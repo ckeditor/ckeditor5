@@ -15,22 +15,22 @@ CKEDITOR.define( [
 	'ckeditorerror'
 ], ( Delta, register, Position, Element, InsertOperation, MoveOperation, CKEditorError ) => {
 	/**
-	 * To provide specific OT behavior and better collisions solving, {@link document.Transaction#split} method
-	 * use `SplitDelta` class which inherit from `Delta` class and may overwrite some methods.
+	 * To provide specific OT behavior and better collisions solving, the {@link document.Transaction#split} method
+	 * uses `SplitDelta` class which inherits from the `Delta` class and may overwrite some methods.
 	 *
 	 * @class document.delta.SplitDelta
 	 */
 	class SplitDelta extends Delta {}
 
 	/**
-	 * Split a node at the given position.
+	 * Splits a node at the given position.
 	 *
-	 * This can not be a position inside a root element, method will throw `transaction-split-root` if you try to split
-	 * root element.
+	 * This cannot be a position inside the root element. The `transaction-split-root` error will be thrown if
+	 * you try to split the root element.
 	 *
 	 * @chainable
-	 * @memberOf document.Transaction
 	 * @method split
+	 * @memberOf document.Transaction
 	 * @param {document.Position} position Position of split.
 	 */
 	register( 'split', ( doc, transaction, position ) => {
@@ -39,16 +39,16 @@ CKEDITOR.define( [
 
 		if ( !splitElement.parent ) {
 			/**
-			 * Root element can not be splitted.
+			 * Root element can not be split.
 			 *
 			 * @error transaction-split-root
 			 */
-			throw new CKEditorError( 'transaction-split-root: Root element can not be splitted.' );
+			throw new CKEditorError( 'transaction-split-root: Root element can not be split.' );
 		}
 
 		const copy = new Element( splitElement.name, splitElement.getAttrIterator() );
-
 		const insert = new InsertOperation( Position.createAfter( splitElement ), copy, doc.version );
+
 		doc.applyOperation( insert );
 		delta.addOperation( insert );
 
@@ -56,7 +56,9 @@ CKEDITOR.define( [
 			position,
 			Position.createFromParentAndOffset( copy, 0 ),
 			splitElement.getChildCount() - position.offset,
-			doc.version );
+			doc.version
+		);
+
 		doc.applyOperation( move );
 		delta.addOperation( move );
 
