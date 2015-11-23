@@ -70,13 +70,6 @@ CKEDITOR.define( [ 'ckeditorerror' ], ( CKEditorError ) => {
 		}
 
 		/**
-		 * Transaction provides iterator interface which will iterate over deltas in the transaction.
-		 */
-		[ Symbol.iterator ]() {
-			return this.deltas[ Symbol.iterator ]();
-		}
-
-		/**
 		 * Static method to register transaction methods. To make code scalable transaction do not have modification
 		 * methods built in. They can be registered using this method.
 		 *

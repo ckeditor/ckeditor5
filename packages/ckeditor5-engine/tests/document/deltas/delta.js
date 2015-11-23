@@ -59,7 +59,7 @@ describe( 'Delta', () => {
 			delta.addOperation( {} );
 			delta.addOperation( {} );
 
-			const count = getIteratorCount( delta );
+			const count = getIteratorCount( delta.operations );
 
 			expect( count ).to.equal( 3 );
 		} );
