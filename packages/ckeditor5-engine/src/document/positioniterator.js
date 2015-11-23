@@ -67,6 +67,7 @@ CKEDITOR.define( [
 			const position = this.position;
 			const parent = position.parent;
 
+			// Ugh... added here because of circular deps in AMD ;<.
 			Element = CKEDITOR.require( 'document/element' );
 
 			// We are at the end of the root.
