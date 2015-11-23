@@ -136,23 +136,23 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * Binds a `property` of View's model so the DOM of the View is updated when the `property`
+		 * Binds an `attribute` of View's model so the DOM of the View is updated when the `attribute`
 		 * changes. It returns a function which, once called in the context of a DOM element,
 		 * attaches a listener to the model which, in turn, brings changes to DOM.
 		 *
-		 * @param {String} property Property name in the model to be observed.
-		 * @param {Function} [callback] Callback function executed on property change in model.
+		 * @param {String} attribute Attribute name in the model to be observed.
+		 * @param {Function} [callback] Callback function executed on attribute change in model.
 		 * If not specified, a default DOM `domUpdater` supplied by the template is used.
 		 */
-		bind( property, callback ) {
+		bindToAttribute( attribute, callback ) {
 			/**
-			 * Attaches a listener to View's model, which updates DOM when the model's property
+			 * Attaches a listener to View's model, which updates DOM when the model's attribute
 			 * changes. DOM is either updated by the `domUpdater` function supplied by the template
 			 * (like attribute changer or `innerHTML` setter) or custom `callback` passed to {@link #bind}.
 			 *
 			 * This function is called by {@link Template#render}.
 			 *
-			 * @param {HTMLElement} el DOM element to be updated when `property` in model changes.
+			 * @param {HTMLElement} el DOM element to be updated when `attribute` in model changes.
 			 * @param {Function} domUpdater A function provided by the template which updates corresponding
 			 * DOM.
 			 */
@@ -160,11 +160,11 @@ CKEDITOR.define( [
 				// TODO: Use ES6 default arguments syntax.
 				callback = callback || domUpdater;
 
-				// Execute callback when the property changes.
-				this.listenTo( this.model, 'change:' + property, onModelChange );
+				// Execute callback when the attribute changes.
+				this.listenTo( this.model, 'change:' + attribute, onModelChange );
 
 				// Set the initial state of the view.
-				onModelChange( null, this.model[ property ] );
+				onModelChange( null, this.model[ attribute ] );
 
 				function onModelChange( evt, value ) {
 					let processedValue = callback( el, value );
