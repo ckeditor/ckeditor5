@@ -28,7 +28,7 @@ describe( 'Transaction', () => {
 
 	it( 'should insert text', () => {
 		const position = new Position( [ 0 ], root );
-		doc.makeTransaction().insert( position, 'foo' );
+		doc.createTransaction().insert( position, 'foo' );
 
 		expect( root.getChildCount() ).to.equal( 3 );
 		expect( root.getChild( 0 ).character ).to.equal( 'f' );

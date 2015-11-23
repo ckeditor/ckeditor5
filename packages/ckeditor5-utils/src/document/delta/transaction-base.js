@@ -14,24 +14,24 @@ CKEDITOR.define( [ 'ckeditorerror' ], ( CKEditorError ) => {
 	 *
 	 * For example to create two separate undo steps you can call:
 	 *
-	 *		doc.makeTransaction().insert( firstPosition, 'foo' );
-	 *		doc.makeTransaction().insert( secondPosition, 'bar' );
+	 *		doc.createTransaction().insert( firstPosition, 'foo' );
+	 *		doc.createTransaction().insert( secondPosition, 'bar' );
 	 *
 	 * To create a single undo step:
 	 *
-	 *		const transaction = doc.makeTransaction()
+	 *		const transaction = doc.createTransaction()
 	 *		transaction.insert( firstPosition, 'foo' );
 	 *		transaction.insert( secontPosition, 'bar' );
 	 *
 	 * Note that all document modification methods (insert, remove, split, etc.) are chainable so you can shorten code to:
 	 *
-	 *		doc.makeTransaction().insert( firstPosition, 'foo' ).insert( secontPosition, 'bar' );
+	 *		doc.createTransaction().insert( firstPosition, 'foo' ).insert( secontPosition, 'bar' );
 	 *
 	 * @class document.Transaction
 	 */
 	class Transaction {
 		/**
-		 * Creates transaction instance. Not recommended to use directly, use {@link document.Document#makeTransaction}
+		 * Creates transaction instance. Not recommended to use directly, use {@link document.Document#createTransaction}
 		 * instead.
 		 *
 		 * @constructor

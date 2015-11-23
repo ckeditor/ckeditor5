@@ -30,7 +30,7 @@ describe( 'Transaction', () => {
 	describe( 'remove', () => {
 		it( 'should remove one element', () => {
 			const position = new Position( [ 1 ], root );
-			doc.makeTransaction().remove( position );
+			doc.createTransaction().remove( position );
 
 			expect( root.getChildCount() ).to.equal( 5 );
 			expect( root.getChild( 0 ).character ).to.equal( 'f' );
@@ -42,7 +42,7 @@ describe( 'Transaction', () => {
 
 		it( 'should remove 3 elements', () => {
 			const position = new Position( [ 1 ], root );
-			doc.makeTransaction().remove( position, 3 );
+			doc.createTransaction().remove( position, 3 );
 
 			expect( root.getChildCount() ).to.equal( 3 );
 			expect( root.getChild( 0 ).character ).to.equal( 'f' );

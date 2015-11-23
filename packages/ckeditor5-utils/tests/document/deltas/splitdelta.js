@@ -42,7 +42,7 @@ describe( 'Transaction', () => {
 
 	describe( 'split', () => {
 		it( 'should split foobar to foo and bar', () => {
-			doc.makeTransaction().split( new Position( [ 0, 3 ], root ) );
+			doc.createTransaction().split( new Position( [ 0, 3 ], root ) );
 
 			expect( root.getChildCount() ).to.equal( 2 );
 
@@ -64,7 +64,7 @@ describe( 'Transaction', () => {
 		} );
 
 		it( 'should create an empty paragraph if we split at the end', () => {
-			doc.makeTransaction().split( new Position( [ 0, 6 ], root ) );
+			doc.createTransaction().split( new Position( [ 0, 6 ], root ) );
 
 			expect( root.getChildCount() ).to.equal( 2 );
 
@@ -87,7 +87,7 @@ describe( 'Transaction', () => {
 
 		it( 'should throw if we try to split a root', () => {
 			expect( () => {
-				doc.makeTransaction().split( new Position( [ 0 ], root ) );
+				doc.createTransaction().split( new Position( [ 0 ], root ) );
 			} ).to.throw( CKEditorError, /^transaction-split-root/ );
 		} );
 	} );
