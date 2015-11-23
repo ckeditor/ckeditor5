@@ -216,5 +216,22 @@ describe( 'utils', () => {
 				expect( shExecStub.firstCall.args[ 0 ] ).to.equal( `cd ${ path } && grunt githooks` );
 			} );
 		} );
+
+		describe( 'copyTemplateFiles', () => {
+			it( 'should be defined', () => expect( tools.copyTemplateFiles ).to.be.a( 'function' ) );
+			it( 'should copy template files', () => {
+				const path = require( 'path' );
+				const TEMPLATE_PATH = './dev/tasks/templates';
+				const templatesPath = path.resolve( TEMPLATE_PATH );
+				const shExecStub = sinon.stub( tools, 'shExec' );
+				const repositoryPath = '/path/to/repository';
+				toRestore.push( shExecStub );
+
+				tools.copyTemplateFiles( repositoryPath );
+
+				expect( shExecStub.calledOnce ).to.equal( true );
+				expect( shExecStub.firstCall.args[ 0 ] ).to.equal( `cp ${ path.join( templatesPath, '*.md' ) } ${ repositoryPath }` );
+			} );
+		} );
 	} );
 } );

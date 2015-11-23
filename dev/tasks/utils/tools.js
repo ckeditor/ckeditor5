@@ -4,6 +4,7 @@ let dirtyFiles,
 	ignoreList;
 
 const dependencyRegExp = /^ckeditor5-/;
+const TEMPLATE_PATH = './dev/tasks/templates';
 
 module.exports = {
 	/**
@@ -254,5 +255,16 @@ module.exports = {
 	 */
 	installGitHooks( path ) {
 		this.shExec( `cd ${ path } && grunt githooks` );
+	},
+
+	/**
+	 * Copies template files to specified destination.
+	 *
+	 * @param {String} destination
+	 */
+	copyTemplateFiles( destination ) {
+		const path = require( 'path' );
+		const templatesPath = path.resolve( TEMPLATE_PATH );
+		this.shExec( `cp ${ path.join( templatesPath, '*.md' ) } ${ destination }` );
 	}
 };

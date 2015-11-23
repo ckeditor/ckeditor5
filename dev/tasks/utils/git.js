@@ -152,5 +152,20 @@ module.exports = {
 		];
 
 		tools.shExec( updateCommands.join( ' && ' ) );
+	},
+
+	/**
+	 * Creates initial commit on repository under specified path.
+	 *
+	 * @param {String} pluginName
+	 * @param {String} repositoryPath
+	 */
+	initialCommit( pluginName, repositoryPath ) {
+		const commitCommands = [
+			`cd ${ repositoryPath }`,
+			`git commit -am "Initial commit for ${ pluginName }."`
+		];
+
+		tools.shExec( commitCommands.join( ' && ' ) );
 	}
 };

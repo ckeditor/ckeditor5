@@ -53,6 +53,9 @@ module.exports = ( ckeditor5Path, workspaceRoot, writeln ) => {
 			writeln( `Initializing repository ${ repositoryPath }...` );
 			git.initializeRepository( repositoryPath );
 
+			writeln( `Copying template files to ${ repositoryPath }...` );
+			tools.copyTemplateFiles( repositoryPath );
+
 			writeln( `Updating package.json files...` );
 			tools.updateJSONFile( path.join( repositoryPath, 'package.json' ), ( json ) => {
 				json.name = pluginName;
@@ -70,13 +73,16 @@ module.exports = ( ckeditor5Path, workspaceRoot, writeln ) => {
 				return json;
 			} );
 
+			writeln( `Creating initial commit...` );
+			git.initialCommit( pluginName, repositoryPath );
+
 			writeln( `Linking ${ pluginName } to node_modules...` );
 			tools.linkDirectories( repositoryPath, path.join( ckeditor5Path, 'node_modules', pluginName ) );
 
 			writeln( `Running npm install in ${ pluginName }.` );
 			tools.npmInstall( repositoryPath );
 
-			writeln( `Installing GIT hooks in ${ pluginName }.` );
+			writeln( `Installing Git hooks in ${ pluginName }.` );
 			tools.installGitHooks( repositoryPath );
 		} );
 };

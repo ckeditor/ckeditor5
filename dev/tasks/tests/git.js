@@ -214,5 +214,24 @@ describe( 'utils', () => {
 				expect( shExecStub.thirdCall.args[ 0 ] ).to.equal( updateCommands.join( ' && ' )  );
 			} );
 		} );
+
+		describe( 'initialCommit', () => {
+			it( 'should be defined', () => expect( git.initialCommit ).to.be.a( 'function' ) );
+			it( 'should execute commit commands', () => {
+				const shExecStub = sinon.stub( tools, 'shExec' );
+				const pluginName = 'ckeditor5-plugin-name';
+				const repositoryPath = '/path/to/repo';
+				const commitCommands = [
+					`cd ${ repositoryPath }`,
+					`git commit -am "Initial commit for ${ pluginName }."`
+				];
+				toRestore.push( shExecStub );
+
+				git.initialCommit( pluginName, repositoryPath );
+
+				expect( shExecStub.calledOnce ).to.equal( true );
+				expect( shExecStub.firstCall.args[ 0 ] ).to.equal( commitCommands.join( ' && ' ) );
+			} );
+		} );
 	} );
 } );

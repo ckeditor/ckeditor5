@@ -45,7 +45,9 @@ describe( 'dev-tasks', () => {
 			initializeRepository: sinon.stub( git, 'initializeRepository' ),
 			updateJSONFile: sinon.stub( tools, 'updateJSONFile' ),
 			getStatus: sinon.stub( git, 'getStatus' ),
-			updateBoilerplate: sinon.stub( git, 'updateBoilerplate' )
+			updateBoilerplate: sinon.stub( git, 'updateBoilerplate' ),
+			copyTemplateFiles: sinon.stub( tools, 'copyTemplateFiles' ),
+			initialCommit: sinon.stub( git, 'initialCommit' )
 		};
 	}
 
@@ -146,9 +148,14 @@ describe( 'dev-tasks', () => {
 				expect( spies.getPluginGitHubUrl.calledOnce ).to.equal( true );
 				expect( spies.initializeRepository.calledOnce ).to.equal( true );
 				expect( spies.initializeRepository.firstCall.args[ 0 ] ).to.equal( repositoryPath );
+				expect( spies.copyTemplateFiles.calledOnce ).to.equal( true );
+				expect( spies.copyTemplateFiles.firstCall.args[ 0 ] ).to.equal( repositoryPath );
 				expect( spies.updateJSONFile.calledTwice ).to.equal( true );
 				expect( spies.updateJSONFile.firstCall.args[ 0 ] ).to.equal( path.join( repositoryPath, 'package.json' ) );
 				expect( spies.updateJSONFile.secondCall.args[ 0 ] ).to.equal( path.join( mainRepositoryPath, 'package.json' ) );
+				expect( spies.initialCommit.calledOnce ).to.equal( true );
+				expect( spies.initialCommit.firstCall.args[ 0 ] ).to.equal( pluginName );
+				expect( spies.initialCommit.firstCall.args[ 1 ] ).to.equal( repositoryPath );
 				expect( spies.linkDirectories.calledOnce ).to.equal( true );
 				expect( spies.linkDirectories.firstCall.args[ 0 ] ).to.equal( repositoryPath );
 				expect( spies.linkDirectories.firstCall.args[ 1 ] ).to.equal( path.join( mainRepositoryPath, 'node_modules', pluginName ) );
