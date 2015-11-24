@@ -55,18 +55,20 @@ CKEDITOR.define( [ 'utils-lodash', 'lib/lodash/lodash-ckeditor' ], ( lodashInclu
 
 		/**
 		 * Compares how given arrays relate to each other. One array can be: same as another array, prefix of another array
-		 * or completely different.
+		 * or completely different. If arrays are different, first index at which they differ is returned. Otherwise,
+		 * a flag specifying the relation is returned. Flags are negative numbers, so whenever a number >= 0 is returned
+		 * it means that arrays differ.
 		 *
 		 *   compareArrays( [ 0, 2 ], [ 0, 2 ] ); // SAME
 		 *   compareArrays( [ 0, 2 ], [ 0, 2, 1 ] ); // PREFIX
 		 *   compareArrays( [ 0, 2 ], [ 0 ] ); // EXTENSION
-		 *   compareArrays( [ 0, 2 ], [ 1, 2 ] ); // DIFFERENT
+		 *   compareArrays( [ 0, 2 ], [ 1, 2 ] ); // 0
 		 *
 		 * @param {Array} a Array that is compared.
 		 * @param {Array} b Array to compare with.
-		 * @returns {Number} How array `a` is related to array `b`. Represented by one of flags:
-		 * `a` is {@link utils.compareArrays#SAME same}, `a` is a {@link utils.compareArrays#PREFIX prefix),
-		 * `a` is a {@link utils.compareArrays#EXTENSION extension}, or `a` is {@link utils.compareArrays#DIFFERENT different}.
+		 * @returns {Number} An index at which arrays differ, or if they do not differ, how array `a` is related to array `b`.
+		 * This is represented by one of flags: `a` is {@link utils.compareArrays#SAME same}, `a` is
+		 * a {@link utils.compareArrays#PREFIX prefix) or `a` is an {@link utils.compareArrays#EXTENSION extension}.
 		 */
 		compareArrays( a, b ) {
 			const minLen = Math.min( a.length, b.length );
@@ -74,7 +76,7 @@ CKEDITOR.define( [ 'utils-lodash', 'lib/lodash/lodash-ckeditor' ], ( lodashInclu
 			for ( let i = 0; i < minLen; i++ ) {
 				if ( a[ i ] != b[ i ] ) {
 					// The arrays are different.
-					return utils.compareArrays.DIFFERENT;
+					return i;
 				}
 			}
 
@@ -86,7 +88,7 @@ CKEDITOR.define( [ 'utils-lodash', 'lib/lodash/lodash-ckeditor' ], ( lodashInclu
 				// Compared array is shorter so it is a prefix of the other array.
 				return utils.compareArrays.PREFIX;
 			} else {
-				// Compared array is longer so it is a suffix of the other array.
+				// Compared array is longer so it is an extension of the other array.
 				return utils.compareArrays.EXTENSION;
 			}
 		},
@@ -115,28 +117,21 @@ CKEDITOR.define( [ 'utils-lodash', 'lib/lodash/lodash-ckeditor' ], ( lodashInclu
 	 *
 	 * @type {Number}
 	 */
-	utils.compareArrays.SAME = 0;
+	utils.compareArrays.SAME = -1;
 
 	/**
 	 * Flag for "is a prefix of" relation between arrays.
 	 *
 	 * @type {Number}
 	 */
-	utils.compareArrays.PREFIX = 1;
+	utils.compareArrays.PREFIX = -2;
 
 	/**
 	 * Flag for "is a suffix of" relation between arrays.
 	 *
 	 * @type {number}
 	 */
-	utils.compareArrays.EXTENSION = 2;
-
-	/**
-	 * Flag for "is different than" relation between arrays.
-	 *
-	 * @type {Number}
-	 */
-	utils.compareArrays.DIFFERENT = 3;
+	utils.compareArrays.EXTENSION = -3;
 
 	// Extend "utils" with Lo-Dash methods.
 	for ( let i = 0; i < lodashIncludes.length; i++ ) {

@@ -140,13 +140,13 @@ describe( 'utils', () => {
 			expect( result ).to.equal( utils.compareArrays.EXTENSION );
 		} );
 
-		it( 'should return DIFFERENT flag, when arrays are not same', () => {
+		it( 'should return index on which arrays differ, when arrays are not the same', () => {
 			let a = [ 'abc', 0, 3 ];
 			let b = [ 'abc', 1, 3 ];
 
 			let result = utils.compareArrays( a, b );
 
-			expect( result ).to.equal( utils.compareArrays.DIFFERENT );
+			expect( result ).to.equal( 1 );
 		} );
 	} );
 
