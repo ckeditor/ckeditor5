@@ -222,7 +222,7 @@ describe( 'position', () => {
 		expect( new Position( [ 1, 0, 3 ], root ) ).to.have.property( 'nodeAfter' ).that.is.null;
 	} );
 
-	it( 'should equals another position with the same path', () => {
+	it( 'should equals another position with the same path and root', () => {
 		let position = new Position( [ 1, 1, 2 ], root );
 		let samePosition = new Position( [ 1, 1, 2 ], root );
 
@@ -231,9 +231,16 @@ describe( 'position', () => {
 
 	it( 'should not equals another position with the different path', () => {
 		let position = new Position( [ 1, 1, 1 ], root );
-		let differentNode = new Position( [ 1, 2, 2 ], root );
+		let differentPosition = new Position( [ 1, 2, 2 ], root );
 
-		expect( position.isEqual( differentNode ) ).to.be.false;
+		expect( position.isEqual( differentPosition ) ).to.be.false;
+	} );
+
+	it( 'should not equals another position with the different root', () => {
+		let position = new Position( [ 1, 1, 1 ], root );
+		let differentPosition = new Position( [ 1, 1, 1 ], otherRoot );
+
+		expect( position.isEqual( differentPosition ) ).to.be.false;
 	} );
 
 	it( 'should have correct parent path property', () => {
@@ -249,5 +256,28 @@ describe( 'position', () => {
 		expect( clone ).not.to.be.equal( position ); // clone is not pointing to the same object as position
 		expect( clone.isEqual( position ) ).to.be.true; // but they are equal in the position-sense
 		expect( clone.path ).not.to.be.equal( position.path ); // make sure the paths are not the same array
+	} );
+
+	describe( 'compareWith', () => {
+		it( 'should return Position.SAME if positions are same', () => {
+			const position = new Position( [ 1, 2, 3 ], root );
+			const compared = new Position( [ 1, 2, 3 ], root );
+
+			expect( position.compareWith( compared ) ).to.equal( Position.SAME );
+		} );
+
+		it( 'should return Position.BEFORE if the position is before compared one', () => {
+			const position = new Position( [ 1, 2, 3 ], root );
+			const compared = new Position( [ 1, 3 ], root );
+
+			expect( position.compareWith( compared ) ).to.equal( Position.BEFORE );
+		} );
+
+		it( 'should return Position.AFTER if the position is after compared one', () => {
+			const position = new Position( [ 1, 2, 3, 4 ], root );
+			const compared = new Position( [ 1, 2, 3 ], root );
+
+			expect( position.compareWith( compared ) ).to.equal( Position.AFTER );
+		} );
 	} );
 } );
