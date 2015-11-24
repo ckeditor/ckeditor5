@@ -9,10 +9,10 @@ CKEDITOR.define( [
 	'document/character',
 	'document/element',
 	'document/position'
-], function( Character, Element, Position ) {
-	var ELEMENT_ENTER = 0;
-	var ELEMENT_LEAVE = 1;
-	var CHARACTER = 2;
+], ( Character, Element, Position ) => {
+	const ELEMENT_ENTER = 0;
+	const ELEMENT_LEAVE = 1;
+	const CHARACTER = 2;
 
 	/**
 	 * Position iterator class. It allows to iterate forward and backward over the tree document.
@@ -64,8 +64,11 @@ CKEDITOR.define( [
 		 * @returns {document.Node} return.value.node Encountered node.
 		 */
 		next() {
-			var position = this.position;
-			var parent = position.parent;
+			const position = this.position;
+			const parent = position.parent;
+
+			// Ugh... added here because of circular deps in AMD ;<.
+			Element = CKEDITOR.require( 'document/element' );
 
 			// We are at the end of the root.
 			if ( parent.parent === null && position.offset === parent.getChildCount() ) {
@@ -76,7 +79,7 @@ CKEDITOR.define( [
 				return { done: true };
 			}
 
-			var nodeAfter = position.nodeAfter;
+			const nodeAfter = position.nodeAfter;
 
 			if ( nodeAfter instanceof Element ) {
 				this.position = Position.createFromParentAndOffset( nodeAfter, 0 );
@@ -104,8 +107,8 @@ CKEDITOR.define( [
 		 * @returns {document.Node} return.value.node Scanned node.
 		 */
 		previous() {
-			var position = this.position;
-			var parent = position.parent;
+			const position = this.position;
+			const parent = position.parent;
 
 			// We are at the beginning of the root.
 			if ( parent.parent === null && position.offset === 0 ) {
@@ -116,7 +119,7 @@ CKEDITOR.define( [
 				return { done: true };
 			}
 
-			var nodeBefore = position.nodeBefore;
+			const nodeBefore = position.nodeBefore;
 
 			if ( nodeBefore instanceof Element ) {
 				this.position = Position.createFromParentAndOffset( nodeBefore, nodeBefore.getChildCount() );

@@ -7,45 +7,49 @@
 
 /* bender-tags: document */
 
+/* bender-include: ../_tools/tools.js */
+
 'use strict';
 
-var modules = bender.amd.require(
+const getIteratorCount = bender.tools.core.getIteratorCount;
+
+const modules = bender.amd.require(
 	'document/character',
 	'document/node',
 	'document/element',
 	'document/attribute'
 );
 
-describe( 'Character', function() {
-	var Element, Character, Node, Attribute;
+describe( 'Character', () => {
+	let Element, Character, Node, Attribute;
 
-	before( function() {
+	before( () => {
 		Element = modules[ 'document/element' ];
 		Character = modules[ 'document/character' ];
 		Node = modules[ 'document/node' ];
 		Attribute = modules[ 'document/attribute' ];
 	} );
 
-	describe( 'constructor', function() {
-		it( 'should create character without attributes', function() {
-			var character = new Character( 'f' );
-			var parent = new Element( 'parent', [], character );
+	describe( 'constructor', () => {
+		it( 'should create character without attributes', () => {
+			let character = new Character( 'f' );
+			let parent = new Element( 'parent', [], character );
 
 			expect( character ).to.be.an.instanceof( Node );
 			expect( character ).to.have.property( 'character' ).that.equals( 'f' );
 			expect( character ).to.have.property( 'parent' ).that.equals( parent );
-			expect( character._getAttrCount() ).to.equal( 0 );
+			expect( getIteratorCount( character.getAttrs() ) ).to.equal( 0 );
 		} );
 
-		it( 'should create character with attributes', function() {
-			var attr = new Attribute( 'foo', 'bar' );
-			var character = new Character( 'f', [ attr ] );
-			var parent = new Element( 'parent', [], character );
+		it( 'should create character with attributes', () => {
+			let attr = new Attribute( 'foo', 'bar' );
+			let character = new Character( 'f', [ attr ] );
+			let parent = new Element( 'parent', [], character );
 
 			expect( character ).to.be.an.instanceof( Node );
 			expect( character ).to.have.property( 'character' ).that.equals( 'f' );
 			expect( character ).to.have.property( 'parent' ).that.equals( parent );
-			expect( character._getAttrCount() ).to.equal( 1 );
+			expect( getIteratorCount( character.getAttrs() ) ).to.equal( 1 );
 			expect( character.getAttr( attr.key ) ).to.equal( attr.value );
 		} );
 	} );

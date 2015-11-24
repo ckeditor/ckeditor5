@@ -5,13 +5,13 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'eventinfo' );
+const modules = bender.amd.require( 'eventinfo' );
 
-describe( 'EventInfo', function() {
-	it( 'should be created properly', function() {
-		var EventInfo = modules.eventinfo;
+describe( 'EventInfo', () => {
+	it( 'should be created properly', () => {
+		const EventInfo = modules.eventinfo;
 
-		var event = new EventInfo( this, 'test' );
+		let event = new EventInfo( this, 'test' );
 
 		expect( event.source ).to.equal( this );
 		expect( event.name ).to.equal( 'test' );
@@ -19,10 +19,10 @@ describe( 'EventInfo', function() {
 		expect( event.off.called ).to.not.be.true();
 	} );
 
-	it( 'should have stop() and off() marked', function() {
-		var EventInfo = modules.eventinfo;
+	it( 'should have stop() and off() marked', () => {
+		const EventInfo = modules.eventinfo;
 
-		var event = new EventInfo( this, 'test' );
+		let event = new EventInfo( this, 'test' );
 
 		event.stop();
 		event.off();
@@ -31,10 +31,10 @@ describe( 'EventInfo', function() {
 		expect( event.off.called ).to.be.true();
 	} );
 
-	it( 'should not mark "called" in future instances', function() {
-		var EventInfo = modules.eventinfo;
+	it( 'should not mark "called" in future instances', () => {
+		const EventInfo = modules.eventinfo;
 
-		var event = new EventInfo( this, 'test' );
+		let event = new EventInfo( this, 'test' );
 
 		event.stop();
 		event.off();

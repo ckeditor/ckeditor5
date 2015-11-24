@@ -12,7 +12,7 @@
  * @mixins EventEmitter
  */
 
-CKEDITOR.define( [ 'emittermixin', 'utils' ], function( EmitterMixin, utils ) {
+CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], ( EmitterMixin, CKEditorError, utils ) => {
 	class Model {
 		/**
 		 * Creates a new Model instance.
@@ -47,29 +47,52 @@ CKEDITOR.define( [ 'emittermixin', 'utils' ], function( EmitterMixin, utils ) {
 		 *
 		 * It accepts also a single object literal containing key/value pairs with attributes to be set.
 		 *
+		 * This method throws the {@link model-set-cannot-override} error if the model instance already
+		 * have a property with a given attribute name. This prevents from mistakenly overriding existing
+		 * properties and methods, but means that `foo.set( 'bar', 1 )` may be slightly slower than `foo.bar = 1`.
+		 *
 		 * @param {String} name The attributes name.
 		 * @param {*} value The attributes value.
 		 */
 		set( name, value ) {
 			// If the first parameter is an Object, we gonna interact through its properties.
 			if ( utils.isObject( name ) ) {
-				Object.keys( name ).forEach( function( attr ) {
+				Object.keys( name ).forEach( ( attr ) => {
 					this.set( attr, name[ attr ] );
 				}, this );
 
 				return;
 			}
 
+			if ( ( name in this ) && !( name in this._attributes ) ) {
+				/**
+				 * Cannot override an existing property.
+				 *
+				 * This error is thrown when trying to {@link Model#set set} an attribute with
+				 * a name of an already existing property. For example:
+				 *
+				 *		let model = new Model();
+				 *		model.property = 1;
+				 *		model.set( 'property', 2 );		// throws
+				 *
+				 *		model.set( 'attr', 1 );
+				 *		model.set( 'attr', 2 );			// ok, because this is an existing attribute.
+				 *
+				 * @error model-set-cannot-override
+				 */
+				throw new CKEditorError( 'model-set-cannot-override: Cannot override an existing property.' );
+			}
+
 			Object.defineProperty( this, name, {
 				enumerable: true,
 				configurable: true,
 
-				get: function() {
+				get: () => {
 					return this._attributes[ name ];
 				},
 
-				set: function( value ) {
-					var oldValue = this._attributes[ name ];
+				set: ( value ) => {
+					const oldValue = this._attributes[ name ];
 
 					if ( oldValue !== value ) {
 						this._attributes[ name ] = value;

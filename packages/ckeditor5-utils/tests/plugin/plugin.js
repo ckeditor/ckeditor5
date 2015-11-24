@@ -5,20 +5,20 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'plugin', 'editor' );
-var editor;
+const modules = bender.amd.require( 'plugin', 'editor' );
+let editor;
 
-before( function() {
-	var Editor = modules.editor;
+before( () => {
+	const Editor = modules.editor;
 
 	editor = new Editor( document.body.appendChild( document.createElement( 'div' ) ) );
 } );
 
-describe( 'constructor', function() {
-	it( 'should set the `editor` property', function() {
-		var Plugin = modules.plugin;
+describe( 'constructor', () => {
+	it( 'should set the `editor` property', () => {
+		const Plugin = modules.plugin;
 
-		var plugin = new Plugin( editor );
+		let plugin = new Plugin( editor );
 
 		expect( plugin ).to.have.property( 'editor' ).to.equal( editor );
 	} );

@@ -5,7 +5,7 @@
 
 'use strict';
 
-CKEDITOR.define( [], function() {
+CKEDITOR.define( [], () => {
 	/**
 	 * Data structure for text with attributes. Note that the `Text` is not a {@link document.Node},
 	 * because it will never be part of the document tree. {@link document.Character is a node}.
