@@ -46,7 +46,7 @@ CKEDITOR.define( [
 			throw new CKEditorError( 'transaction-split-root: Root element can not be split.' );
 		}
 
-		const copy = new Element( splitElement.name, splitElement.getAttrIterator() );
+		const copy = new Element( splitElement.name, splitElement.getAttrs() );
 		const insert = new InsertOperation( Position.createAfter( splitElement ), copy, this.doc.version );
 
 		this.doc.applyOperation( insert );

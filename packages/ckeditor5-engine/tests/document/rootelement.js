@@ -35,7 +35,7 @@ describe( 'Element', () => {
 
 			expect( root ).to.be.an.instanceof( Element );
 			expect( root ).to.have.property( 'document' ).that.equals( doc );
-			expect( getIteratorCount( root.getAttrIterator() ) ).to.equal( 0 );
+			expect( getIteratorCount( root.getAttrs() ) ).to.equal( 0 );
 			expect( root.getChildCount() ).to.equal( 0 );
 		} );
 	} );

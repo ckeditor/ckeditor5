@@ -107,8 +107,8 @@ describe( 'Node', () => {
 
 			foo.removeAttr( 'attr' );
 
-			expect( getIteratorCount( foo.getAttrIterator() ) ).to.equal( 0 );
-			expect( getIteratorCount( bar.getAttrIterator() ) ).to.equal( 1 );
+			expect( getIteratorCount( foo.getAttrs() ) ).to.equal( 0 );
+			expect( getIteratorCount( bar.getAttrs() ) ).to.equal( 1 );
 		} );
 	} );
 
@@ -136,7 +136,7 @@ describe( 'Node', () => {
 
 			element.setAttr( attr );
 
-			expect( getIteratorCount( element.getAttrIterator() ) ).to.equal( 1 );
+			expect( getIteratorCount( element.getAttrs() ) ).to.equal( 1 );
 			expect( element.getAttr( attr.key ) ).to.equal( attr.value );
 		} );
 
@@ -147,7 +147,7 @@ describe( 'Node', () => {
 
 			element.setAttr( newAttr );
 
-			expect( getIteratorCount( element.getAttrIterator() ) ).to.equal( 1 );
+			expect( getIteratorCount( element.getAttrs() ) ).to.equal( 1 );
 			expect( element.getAttr( newAttr.key ) ).to.equal( newAttr.value );
 		} );
 	} );
@@ -161,7 +161,7 @@ describe( 'Node', () => {
 
 			element.removeAttr( attrB.key );
 
-			expect( getIteratorCount( element.getAttrIterator() ) ).to.equal( 2 );
+			expect( getIteratorCount( element.getAttrs() ) ).to.equal( 2 );
 			expect( element.getAttr( attrA.key ) ).to.equal( attrA.value );
 			expect( element.getAttr( attrC.key ) ).to.equal( attrC.value );
 			expect( element.getAttr( attrB.key ) ).to.be.null;
@@ -210,7 +210,7 @@ describe( 'Node', () => {
 		} );
 	} );
 
-	describe( 'getAttrIterator', () => {
+	describe( 'getAttrs', () => {
 		it( 'should allows to get attribute count', () => {
 			let element = new Element( 'foo', [
 				new Attribute( 1, true ),
@@ -218,12 +218,12 @@ describe( 'Node', () => {
 				new Attribute( 3, true )
 			] );
 
-			expect( getIteratorCount( element.getAttrIterator() ) ).to.equal( 3 );
+			expect( getIteratorCount( element.getAttrs() ) ).to.equal( 3 );
 		} );
 
 		it( 'should allows to copy attributes', () => {
 			let element = new Element( 'foo', [ new Attribute( 'x', true ) ] );
-			let copy = new Element( 'bar', element.getAttrIterator() );
+			let copy = new Element( 'bar', element.getAttrs() );
 
 			expect( copy.getAttr( 'x' ) ).to.be.true;
 		} );
