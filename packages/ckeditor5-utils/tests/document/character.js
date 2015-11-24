@@ -38,7 +38,7 @@ describe( 'Character', () => {
 			expect( character ).to.be.an.instanceof( Node );
 			expect( character ).to.have.property( 'character' ).that.equals( 'f' );
 			expect( character ).to.have.property( 'parent' ).that.equals( parent );
-			expect( getIteratorCount( character.getAttrIterator() ) ).to.equal( 0 );
+			expect( getIteratorCount( character.getAttrs() ) ).to.equal( 0 );
 		} );
 
 		it( 'should create character with attributes', () => {
@@ -49,7 +49,7 @@ describe( 'Character', () => {
 			expect( character ).to.be.an.instanceof( Node );
 			expect( character ).to.have.property( 'character' ).that.equals( 'f' );
 			expect( character ).to.have.property( 'parent' ).that.equals( parent );
-			expect( getIteratorCount( character.getAttrIterator() ) ).to.equal( 1 );
+			expect( getIteratorCount( character.getAttrs() ) ).to.equal( 1 );
 			expect( character.getAttr( attr.key ) ).to.equal( attr.value );
 		} );
 	} );

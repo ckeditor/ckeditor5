@@ -234,11 +234,11 @@ CKEDITOR.define( [ 'document/attribute', 'utils', 'ckeditorerror' ], ( Attribute
 		/**
 		 * Returns attribute iterator. It can be use to create a new element with the same attributes:
 		 *
-		 *		const copy = new Element( element.name, element.getAttrIterator() );
+		 *		const copy = new Element( element.name, element.getAttrs() );
 		 *
 		 * @returns {Iterable.<document.Attribute>} Attribute iterator.
 		 */
-		getAttrIterator() {
+		getAttrs() {
 			return this._attrs[ Symbol.iterator ]();
 		}
 	}

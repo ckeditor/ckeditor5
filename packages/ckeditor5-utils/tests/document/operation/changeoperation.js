@@ -63,7 +63,7 @@ describe( 'ChangeOperation', () => {
 		expect( root.getChildCount() ).to.equal( 3 );
 		expect( root.getChild( 0 ).hasAttr( newAttr ) ).to.be.true;
 		expect( root.getChild( 1 ).hasAttr( newAttr ) ).to.be.true;
-		expect( getIteratorCount( root.getChild( 2 ).getAttrIterator() ) ).to.equal( 0 );
+		expect( getIteratorCount( root.getChild( 2 ).getAttrs() ) ).to.equal( 0 );
 	} );
 
 	it( 'should add attribute to the existing attributes', () => {
@@ -84,7 +84,7 @@ describe( 'ChangeOperation', () => {
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 1 );
-		expect( getIteratorCount( root.getChild( 0 ).getAttrIterator() ) ).to.equal( 3 );
+		expect( getIteratorCount( root.getChild( 0 ).getAttrs() ) ).to.equal( 3 );
 		expect( root.getChild( 0 ).hasAttr( newAttr ) ).to.be.true;
 		expect( root.getChild( 0 ).hasAttr( fooAttr ) ).to.be.true;
 		expect( root.getChild( 0 ).hasAttr( barAttr ) ).to.be.true;
@@ -107,11 +107,11 @@ describe( 'ChangeOperation', () => {
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 3 );
-		expect( getIteratorCount( root.getChild( 0 ).getAttrIterator() ) ).to.equal( 1 );
+		expect( getIteratorCount( root.getChild( 0 ).getAttrs() ) ).to.equal( 1 );
 		expect( root.getChild( 0 ).hasAttr( newAttr ) ).to.be.true;
-		expect( getIteratorCount( root.getChild( 1 ).getAttrIterator() ) ).to.equal( 1 );
+		expect( getIteratorCount( root.getChild( 1 ).getAttrs() ) ).to.equal( 1 );
 		expect( root.getChild( 1 ).hasAttr( newAttr ) ).to.be.true;
-		expect( getIteratorCount( root.getChild( 2 ).getAttrIterator() ) ).to.equal( 1 );
+		expect( getIteratorCount( root.getChild( 2 ).getAttrs() ) ).to.equal( 1 );
 		expect( root.getChild( 2 ).hasAttr( oldAttr ) ).to.be.true;
 	} );
 
@@ -134,7 +134,7 @@ describe( 'ChangeOperation', () => {
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 1 );
-		expect( getIteratorCount( root.getChild( 0 ).getAttrIterator() ) ).to.equal( 3 );
+		expect( getIteratorCount( root.getChild( 0 ).getAttrs() ) ).to.equal( 3 );
 		expect( root.getChild( 0 ).hasAttr( fooAttr ) ).to.be.true;
 		expect( root.getChild( 0 ).hasAttr( x2Attr ) ).to.be.true;
 		expect( root.getChild( 0 ).hasAttr( barAttr ) ).to.be.true;
@@ -158,7 +158,7 @@ describe( 'ChangeOperation', () => {
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 1 );
-		expect( getIteratorCount( root.getChild( 0 ).getAttrIterator() ) ).to.equal( 2 );
+		expect( getIteratorCount( root.getChild( 0 ).getAttrs() ) ).to.equal( 2 );
 		expect( root.getChild( 0 ).hasAttr( fooAttr ) ).to.be.true;
 		expect( root.getChild( 0 ).hasAttr( barAttr ) ).to.be.true;
 	} );
@@ -196,9 +196,9 @@ describe( 'ChangeOperation', () => {
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.getChildCount() ).to.equal( 3 );
-		expect( getIteratorCount( root.getChild( 0 ).getAttrIterator() ) ).to.equal( 0 );
-		expect( getIteratorCount( root.getChild( 1 ).getAttrIterator() ) ).to.equal( 0 );
-		expect( getIteratorCount( root.getChild( 2 ).getAttrIterator() ) ).to.equal( 0 );
+		expect( getIteratorCount( root.getChild( 0 ).getAttrs() ) ).to.equal( 0 );
+		expect( getIteratorCount( root.getChild( 1 ).getAttrs() ) ).to.equal( 0 );
+		expect( getIteratorCount( root.getChild( 2 ).getAttrs() ) ).to.equal( 0 );
 	} );
 
 	it( 'should undo changing attribute by applying reverse operation', () => {
@@ -222,11 +222,11 @@ describe( 'ChangeOperation', () => {
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.getChildCount() ).to.equal( 3 );
-		expect( getIteratorCount( root.getChild( 0 ).getAttrIterator() ) ).to.equal( 1 );
+		expect( getIteratorCount( root.getChild( 0 ).getAttrs() ) ).to.equal( 1 );
 		expect( root.getChild( 0 ).hasAttr( oldAttr ) ).to.be.true;
-		expect( getIteratorCount( root.getChild( 1 ).getAttrIterator() ) ).to.equal( 1 );
+		expect( getIteratorCount( root.getChild( 1 ).getAttrs() ) ).to.equal( 1 );
 		expect( root.getChild( 1 ).hasAttr( oldAttr ) ).to.be.true;
-		expect( getIteratorCount( root.getChild( 2 ).getAttrIterator() ) ).to.equal( 1 );
+		expect( getIteratorCount( root.getChild( 2 ).getAttrs() ) ).to.equal( 1 );
 		expect( root.getChild( 2 ).hasAttr( oldAttr ) ).to.be.true;
 	} );
 
@@ -250,11 +250,11 @@ describe( 'ChangeOperation', () => {
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.getChildCount() ).to.equal( 3 );
-		expect( getIteratorCount( root.getChild( 0 ).getAttrIterator() ) ).to.equal( 1 );
+		expect( getIteratorCount( root.getChild( 0 ).getAttrs() ) ).to.equal( 1 );
 		expect( root.getChild( 0 ).hasAttr( fooAttr ) ).to.be.true;
-		expect( getIteratorCount( root.getChild( 1 ).getAttrIterator() ) ).to.equal( 1 );
+		expect( getIteratorCount( root.getChild( 1 ).getAttrs() ) ).to.equal( 1 );
 		expect( root.getChild( 1 ).hasAttr( fooAttr ) ).to.be.true;
-		expect( getIteratorCount( root.getChild( 2 ).getAttrIterator() ) ).to.equal( 1 );
+		expect( getIteratorCount( root.getChild( 2 ).getAttrs() ) ).to.equal( 1 );
 		expect( root.getChild( 2 ).hasAttr( fooAttr ) ).to.be.true;
 	} );
 

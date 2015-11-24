@@ -48,7 +48,7 @@ describe( 'Transaction', () => {
 			expect( root.getChildCount() ).to.equal( 1 );
 			expect( root.getChild( 0 ).name ).to.equal( 'p' );
 			expect( root.getChild( 0 ).getChildCount() ).to.equal( 6 );
-			expect( getIteratorCount( root.getChild( 0 ).getAttrIterator() ) ).to.equal( 1 );
+			expect( getIteratorCount( root.getChild( 0 ).getAttrs() ) ).to.equal( 1 );
 			expect( root.getChild( 0 ).getAttr( 'key1' ) ).to.equal( 'value1' );
 			expect( root.getChild( 0 ).getChild( 0 ).character ).to.equal( 'f' );
 			expect( root.getChild( 0 ).getChild( 1 ).character ).to.equal( 'o' );
