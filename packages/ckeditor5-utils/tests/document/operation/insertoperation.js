@@ -215,7 +215,7 @@ describe( 'InsertOperation', () => {
 				type: InsertOperation,
 				position: position.clone(),
 				baseVersion: baseVersion + 1
-			}
+			};
 		} );
 
 		function expectOperation( op, params ) {

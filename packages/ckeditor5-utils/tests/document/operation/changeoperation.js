@@ -29,7 +29,8 @@ const modules = bender.amd.require(
 );
 
 describe( 'ChangeOperation', () => {
-	let Document, Node, ChangeOperation, InsertOperation, MoveOperation, NoOperation, Position, Range, Character, Attribute, NodeList, Text, CKEditorError;
+	let Document, Node, ChangeOperation, InsertOperation, MoveOperation, NoOperation, Position, Range,
+		Character, Attribute, NodeList, Text, CKEditorError;
 
 	before( () => {
 		Document = modules[ 'document/document' ];
@@ -881,7 +882,7 @@ describe( 'ChangeOperation', () => {
 					expectOperation( transOp[ 0 ], expected );
 				} );
 
-				it( 'should get split into two ranges and one of them have it\'s address merged if change range intersects on right-side with moved range', () => {
+				it( 'should get split into two ranges if change range intersects on right-side with moved range', () => {
 					let transformBy = new MoveOperation(
 						new Position( [ 0, 2, 2 ], root ),
 						new Position( [ 2, 4, 1 ], root ),
@@ -905,7 +906,7 @@ describe( 'ChangeOperation', () => {
 					expectOperation( transOp[ 1 ], expected );
 				} );
 
-				it( 'should get split into two ranges and one of them have it\'s address merged if change range intersects on left-side with moved range', () => {
+				it( 'should get split into two ranges if change range intersects on left-side with moved range', () => {
 					let transformBy = new MoveOperation(
 						new Position( [ 0, 2, 0 ], root ),
 						new Position( [ 2, 4, 1 ], root ),
@@ -930,7 +931,7 @@ describe( 'ChangeOperation', () => {
 					expectOperation( transOp[ 1 ], expected );
 				} );
 
-				it( 'should get split into two ranges and one of them have it\'s address merged if change range contains moved range', () => {
+				it( 'should get split into two ranges if change range contains moved range', () => {
 					let transformBy = new MoveOperation(
 						new Position( [ 0, 2, 2 ], root ),
 						new Position( [ 2, 4, 1 ], root ),
@@ -995,7 +996,7 @@ describe( 'ChangeOperation', () => {
 					expectOperation( transOp[ 1 ], expected );
 				} );
 
-				it( 'should get split into three ranges if moved range intersects change range and move-in destination is inside change range', () => {
+				it( 'should get split into three ranges if moved range intersects and move-in destination is inside change range', () => {
 					let transformBy = new MoveOperation(
 						new Position( [ 0, 2, 0 ], root ),
 						new Position( [ 0, 2, 3 ], root ),
@@ -1407,7 +1408,7 @@ describe( 'ChangeOperation', () => {
 					expectOperation( transOp[ 0 ], expected );
 				} );
 
-				it( 'should get split into two ranges and one of them have it\'s address merged if change range intersects on right-side with moved range', () => {
+				it( 'should get split into two ranges if change range intersects on right-side with moved range', () => {
 					let transformBy = new MoveOperation(
 						new Position( [ 2, 1 ], root ),
 						new Position( [ 4 ], root ),
@@ -1431,7 +1432,7 @@ describe( 'ChangeOperation', () => {
 					expectOperation( transOp[ 1 ], expected );
 				} );
 
-				it( 'should get split into two ranges and one of them have it\'s address merged if change range intersects on left-side with moved range', () => {
+				it( 'should get split into two ranges if change range intersects on left-side with moved range', () => {
 					let transformBy = new MoveOperation(
 						new Position( [ 1, 1 ], root ),
 						new Position( [ 0, 0 ], root ),
@@ -1455,7 +1456,7 @@ describe( 'ChangeOperation', () => {
 					expectOperation( transOp[ 1 ], expected );
 				} );
 
-				it( 'should get split into two ranges and one of them have it\'s address merged if change range contains moved range', () => {
+				it( 'should get split into two ranges if change range contains moved range', () => {
 					let transformBy = new MoveOperation(
 						new Position( [ 1, 4 ], root ),
 						new Position( [ 3, 2 ], root ),
@@ -1501,7 +1502,7 @@ describe( 'ChangeOperation', () => {
 					expectOperation( transOp[ 1 ], expected );
 				} );
 
-				it( 'should get split into three ranges if moved range intersects change range and move-in destination is inside change range', () => {
+				it( 'should get split into three ranges if moved range intersects and move-in destination is inside change range', () => {
 					let transformBy = new MoveOperation(
 						new Position( [ 1, 1 ], root ),
 						new Position( [ 2 ], root ),
