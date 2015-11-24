@@ -9,15 +9,23 @@
 
 const modules = bender.amd.require(
 	'document/range',
-	'document/position'
+	'document/position',
+	'document/element',
+	'document/character',
+	'document/document'
 );
 
 describe( 'Range', () => {
-	let Range, Position, start, end;
+	let Range, Position, Element, Character, Document;
+
+	let start, end;
 
 	before( () => {
 		Position = modules[ 'document/position' ];
 		Range = modules[ 'document/range' ];
+		Element = modules[ 'document/element' ];
+		Character = modules[ 'document/character' ];
+		Document = modules[ 'document/document' ];
 
 		start = new Position( [ 0 ] );
 		end = new Position( [ 1 ] );
@@ -64,6 +72,47 @@ describe( 'Range', () => {
 			let diffRange = new Range( sameStart, diffEnd );
 
 			expect( range.isEqual( diffRange ) ).to.not.be.true;
+		} );
+	} );
+
+	describe( 'static constructors', () => {
+		let doc, root, p, f, o, z;
+
+		// root
+		//  |- p
+		//     |- f
+		//     |- o
+		//     |- z
+		before( () => {
+			doc = new Document();
+
+			root = doc.createRoot( 'root' );
+
+			f = new Character( 'f' );
+			o = new Character( 'o' );
+			z = new Character( 'z' );
+
+			p = new Element( 'p', [], [ f, o, z ] );
+
+			root.insertChildren( 0, [ p ] );
+		} );
+
+		describe( 'createFromElement', () => {
+			it( 'should return range', () => {
+				const range = Range.createFromElement( p );
+
+				expect( range.start.path ).to.deep.equal( [ 0, 0 ] );
+				expect( range.end.path ).to.deep.equal( [ 0, 3 ] );
+			} );
+		} );
+
+		describe( 'createFromParentsAndOffsets', () => {
+			it( 'should return range', () => {
+				const range = Range.createFromParentsAndOffsets( root, 0, p, 2 );
+
+				expect( range.start.path ).to.deep.equal( [ 0 ] );
+				expect( range.end.path ).to.deep.equal( [ 0, 2 ] );
+			} );
 		} );
 	} );
 } );

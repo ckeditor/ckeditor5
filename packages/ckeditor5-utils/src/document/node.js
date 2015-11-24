@@ -232,19 +232,14 @@ CKEDITOR.define( [ 'document/attribute', 'utils', 'ckeditorerror' ], ( Attribute
 		}
 
 		/**
-		 * Gets the number of attributes.
+		 * Returns attribute iterator. It can be use to create a new element with the same attributes:
 		 *
-		 * @protected
-		 * @returns {Number} Number of attributes.
+		 *		const copy = new Element( element.name, element.getAttrs() );
+		 *
+		 * @returns {Iterable.<document.Attribute>} Attribute iterator.
 		 */
-		_getAttrCount() {
-			let count = 0;
-
-			for ( let attr of this._attrs ) { // jshint ignore:line
-				count++;
-			}
-
-			return count;
+		getAttrs() {
+			return this._attrs[ Symbol.iterator ]();
 		}
 	}
 
