@@ -49,5 +49,13 @@ describe( 'Transaction', () => {
 			expect( root.getChild( 1 ).character ).to.equal( 'a' );
 			expect( root.getChild( 2 ).character ).to.equal( 'r' );
 		} );
+
+		it( 'should be chainable', () => {
+			const position = new Position( [ 1 ], root );
+			const transaction = doc.createTransaction();
+
+			const chain = transaction.remove( position );
+			expect( chain ).to.equal( transaction );
+		} );
 	} );
 } );

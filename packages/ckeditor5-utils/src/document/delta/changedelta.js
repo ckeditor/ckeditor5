@@ -33,7 +33,11 @@ CKEDITOR.define( [
 	 * @param {Mixed} value Attribute new value.
 	 * @param {document.Node|document.Range} nodeOrRange Node or range on which the attribute will be set.
 	 */
-	register( 'setAttr', change );
+	register( 'setAttr', function( key, value, nodeOrRange ) {
+		change( this, key, value, nodeOrRange );
+
+		return this;
+	} );
 
 	/**
 	 * Removes an attribute from the range.
@@ -44,17 +48,19 @@ CKEDITOR.define( [
 	 * @param {String} key Attribute key.
 	 * @param {document.Node|document.Range} nodeOrRange Node or range on which the attribute will be removed.
 	 */
-	register( 'removeAttr', ( doc, transaction, key, nodeOrRange ) => {
-		change( doc, transaction, key, null, nodeOrRange );
+	register( 'removeAttr', function( key, nodeOrRange ) {
+		change( this, key, null, nodeOrRange );
+
+		return this;
 	} );
 
-	function change( doc, transaction, key, value, nodeOrRange ) {
+	function change( transaction, key, value, nodeOrRange ) {
 		const delta = new ChangeDelta();
 
 		if ( nodeOrRange instanceof Range ) {
-			changeRange( doc, delta, key, value, nodeOrRange );
+			changeRange( transaction.doc, delta, key, value, nodeOrRange );
 		} else {
-			changeNode( doc, delta, key, value, nodeOrRange );
+			changeNode( transaction.doc, delta, key, value, nodeOrRange );
 		}
 
 		transaction.addDelta( delta );

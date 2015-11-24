@@ -92,6 +92,11 @@ describe( 'Transaction', () => {
 				expect( getOperationsCount() ).to.equal( 0 );
 				expect( node.getAttr( 'a' ) ).to.equal( 1 );
 			} );
+
+			it( 'should be chainable', () => {
+				const chain = transaction.setAttr( 'b', 2, node );
+				expect( chain ).to.equal( transaction );
+			} );
 		} );
 
 		describe( 'removeAttr', () => {
@@ -110,6 +115,11 @@ describe( 'Transaction', () => {
 			it( 'should do nothing if the attribute is not set', () => {
 				transaction.removeAttr( 'b', node );
 				expect( getOperationsCount() ).to.equal( 0 );
+			} );
+
+			it( 'should be chainable', () => {
+				const chain = transaction.removeAttr( 'a', node );
+				expect( chain ).to.equal( transaction );
 			} );
 		} );
 	} );
@@ -200,6 +210,11 @@ describe( 'Transaction', () => {
 				expect( getChangesAttrsCount() ).to.equal( 9 );
 				expect( getCompressedAttrs() ).to.equal( '111111111111111111' );
 			} );
+
+			it( 'should be chainable', () => {
+				const chain = transaction.setAttr( 'a', 3, getRange( 3, 6 ) );
+				expect( chain ).to.equal( transaction );
+			} );
 		} );
 
 		describe( 'removeAttr', () => {
@@ -249,6 +264,11 @@ describe( 'Transaction', () => {
 				expect( getOperationsCount() ).to.equal( 2 );
 				expect( getChangesAttrsCount() ).to.equal( 6 );
 				expect( getCompressedAttrs() ).to.equal( '111------------111' );
+			} );
+
+			it( 'should be chainable', () => {
+				const chain = transaction.removeAttr( 'a', getRange( 0, 2 ) );
+				expect( chain ).to.equal( transaction );
 			} );
 		} );
 	} );

@@ -33,7 +33,7 @@ CKEDITOR.define( [
 	 * @memberOf document.Transaction
 	 * @param {document.Position} position Position of split.
 	 */
-	register( 'split', ( doc, transaction, position ) => {
+	register( 'split', function( position ) {
 		const delta = new SplitDelta();
 		const splitElement = position.parent;
 
@@ -47,22 +47,24 @@ CKEDITOR.define( [
 		}
 
 		const copy = new Element( splitElement.name, splitElement.getAttrIterator() );
-		const insert = new InsertOperation( Position.createAfter( splitElement ), copy, doc.version );
+		const insert = new InsertOperation( Position.createAfter( splitElement ), copy, this.doc.version );
 
-		doc.applyOperation( insert );
+		this.doc.applyOperation( insert );
 		delta.addOperation( insert );
 
 		const move = new MoveOperation(
 			position,
 			Position.createFromParentAndOffset( copy, 0 ),
 			splitElement.getChildCount() - position.offset,
-			doc.version
+			this.doc.version
 		);
 
-		doc.applyOperation( move );
+		this.doc.applyOperation( move );
 		delta.addOperation( move );
 
-		transaction.addDelta( delta );
+		this.addDelta( delta );
+
+		return this;
 	} );
 
 	return SplitDelta;

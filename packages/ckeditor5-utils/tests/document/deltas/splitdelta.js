@@ -90,5 +90,12 @@ describe( 'Transaction', () => {
 				doc.createTransaction().split( new Position( [ 0 ], root ) );
 			} ).to.throw( CKEditorError, /^transaction-split-root/ );
 		} );
+
+		it( 'should be chainable', () => {
+			const transaction = doc.createTransaction();
+
+			const chain = transaction.split( new Position( [ 0, 3 ], root ) );
+			expect( chain ).to.equal( transaction );
+		} );
 	} );
 } );

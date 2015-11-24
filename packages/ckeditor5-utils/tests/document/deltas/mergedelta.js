@@ -69,5 +69,12 @@ describe( 'Transaction', () => {
 				doc.createTransaction().merge( new Position( [ 0, 2 ], root ) );
 			} ).to.throw( CKEditorError, /^transaction-merge-no-element-before/ );
 		} );
+
+		it( 'should be chainable', () => {
+			const transaction = doc.createTransaction();
+
+			const chain = transaction.merge( new Position( [ 1 ], root ) );
+			expect( chain ).to.equal( transaction );
+		} );
 	} );
 } );

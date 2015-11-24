@@ -28,14 +28,16 @@ CKEDITOR.define( [
 	 * @param {document.Node|document.Text|document.NodeList|String|Iterable} nodes The list of nodes to be inserted.
 	 * List of nodes can be of any type accepted by the {@link document.NodeList} constructor.
 	 */
-	register( 'insert', ( doc, transaction, position, nodes ) => {
+	register( 'insert', function( position, nodes ) {
 		const delta = new InsertDelta();
 
-		const operation = new InsertOperation( position, nodes, doc.version );
-		doc.applyOperation( operation );
+		const operation = new InsertOperation( position, nodes, this.doc.version );
+		this.doc.applyOperation( operation );
 		delta.addOperation( operation );
 
-		transaction.addDelta( delta );
+		this.addDelta( delta );
+
+		return this;
 	} );
 
 	return InsertDelta;
