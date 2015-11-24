@@ -5,7 +5,7 @@
 
 'use strict';
 
-( function() {
+( () => {
 	bender.tools.core = {
 		/**
 		 * Defines CKEditor plugin which is a mock of an editor creator.
@@ -23,8 +23,8 @@
 		 * @param {Object} [proto] Prototype of the creator. Properties from the proto param will
 		 * be copied to the prototype of the creator.
 		 */
-		defineEditorCreatorMock: function( creatorName, proto ) {
-			CKEDITOR.define( 'plugin!creator-' + creatorName, [ 'creator' ], function( Creator ) {
+		defineEditorCreatorMock: ( creatorName, proto ) => {
+			CKEDITOR.define( 'plugin!creator-' + creatorName, [ 'creator' ], ( Creator ) => {
 				return mockCreator( Creator );
 			} );
 
@@ -32,7 +32,7 @@
 				class TestCreator extends Creator {}
 
 				if ( proto ) {
-					for ( var propName in proto ) {
+					for ( let propName in proto ) {
 						TestCreator.prototype[ propName ] = proto[ propName ];
 					}
 				}
@@ -47,6 +47,24 @@
 
 				return TestCreator;
 			}
+		},
+
+		/**
+		 * Returns the number of elements return by the iterator.
+		 *
+		 *	  bender.tools.core.getIteratorCount( [ 1, 2, 3, 4, 5 ] ); // 5;
+		 *
+		 * @param {Iterable.<*>} iterator Any iterator.
+		 * @returns {Number} Number of elements returned by that iterator.
+		 */
+		getIteratorCount: ( iterator ) => {
+			let count = 0;
+
+			for ( let _ of iterator ) { // jshint ignore:line
+				count++;
+			}
+
+			return count;
 		}
 	};
 } )();

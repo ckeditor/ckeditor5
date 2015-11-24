@@ -5,31 +5,31 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'editorconfig', 'ckeditor' );
+const modules = bender.amd.require( 'editorconfig', 'ckeditor' );
 
-var config;
+let config;
 
-beforeEach( function() {
-	var EditorConfig = modules.editorconfig;
+beforeEach( () => {
+	const EditorConfig = modules.editorconfig;
 
 	config = new EditorConfig( {
 		test: 1
 	} );
 } );
 
-describe( 'constructor', function() {
-	it( 'should set configurations', function() {
+describe( 'constructor', () => {
+	it( 'should set configurations', () => {
 		expect( config ).to.have.property( 'test' ).to.equal( 1 );
 	} );
 } );
 
-describe( 'get', function() {
-	it( 'should retrieve a configuration', function() {
+describe( 'get', () => {
+	it( 'should retrieve a configuration', () => {
 		expect( config.get( 'test' ) ).to.equal( 1 );
 	} );
 
-	it( 'should fallback to CKEDITOR.config', function() {
-		var CKEDITOR = modules.ckeditor;
+	it( 'should fallback to CKEDITOR.config', () => {
+		const CKEDITOR = modules.ckeditor;
 
 		CKEDITOR.config.set( {
 			globalConfig: 2
@@ -38,7 +38,7 @@ describe( 'get', function() {
 		expect( config.get( 'globalConfig' ) ).to.equal( 2 );
 	} );
 
-	it( 'should return undefined for non existing configuration', function() {
+	it( 'should return undefined for non existing configuration', () => {
 		expect( config.get( 'invalid' ) ).to.be.undefined();
 	} );
 } );

@@ -14,13 +14,13 @@
  */
 
 CKEDITOR.define( [
-	'namedcollection',
+	'collection',
 	'model',
 	'ui/template',
 	'ckeditorerror',
 	'ui/domemittermixin',
 	'utils'
-], function( NamedCollection, Model, Template, CKEditorError, DOMEmitterMixin, utils ) {
+], ( Collection, Model, Template, CKEditorError, DOMEmitterMixin, utils ) => {
 	class View extends Model {
 		/**
 		 * Creates an instance of the {@link View} class.
@@ -39,7 +39,7 @@ CKEDITOR.define( [
 			/**
 			 * Regions which belong to this view.
 			 */
-			this.regions = new NamedCollection();
+			this.regions = new Collection( null, 'name' );
 
 			/**
 			 * @property {HTMLElement} _el
@@ -95,7 +95,7 @@ CKEDITOR.define( [
 				onModelChange( null, this.model[ property ] );
 
 				function onModelChange( evt, value ) {
-					var processedValue = callback( el, value );
+					let processedValue = callback( el, value );
 
 					if ( typeof processedValue != 'undefined' ) {
 						domUpdater( el, processedValue );
@@ -144,7 +144,9 @@ CKEDITOR.define( [
 			}
 
 			// Remove and destroy regions.
-			this.regions.forEach( r => this.regions.remove( r ).destroy() );
+			for ( let region of this.regions ) {
+				this.regions.remove( region ).destroy();
+			}
 
 			// Remove all listeners related to this view.
 			this.stopListening();
