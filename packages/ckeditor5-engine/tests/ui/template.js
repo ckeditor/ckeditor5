@@ -8,15 +8,15 @@
 
 'use strict';
 
-var modules = bender.amd.require( 'ckeditor', 'ui/view', 'ui/template' );
-var Template;
+const modules = bender.amd.require( 'ckeditor', 'ui/view', 'ui/template' );
+let Template;
 
 bender.tools.createSinonSandbox();
 beforeEach( createClassReferences );
 
-describe( 'constructor', function() {
-	it( 'accepts the definition', function() {
-		var def = {
+describe( 'constructor', () => {
+	it( 'accepts the definition', () => {
+		let def = {
 			tag: 'p'
 		};
 
@@ -24,13 +24,13 @@ describe( 'constructor', function() {
 	} );
 } );
 
-describe( 'render', function() {
-	it( 'returns null when no definition', function() {
+describe( 'render', () => {
+	it( 'returns null when no definition', () => {
 		expect( new Template().render() ).to.be.null;
 	} );
 
-	it( 'creates an element', function() {
-		var el = new Template( {
+	it( 'creates an element', () => {
+		let el = new Template( {
 			tag: 'p',
 			attrs: {
 				'class': [ 'a', 'b' ],
@@ -45,8 +45,8 @@ describe( 'render', function() {
 		expect( el.outerHTML ).to.be.equal( '<p class="a b" x="bar">foo</p>' );
 	} );
 
-	it( 'creates element\'s children', function() {
-		var el = new Template( {
+	it( 'creates element\'s children', () => {
+		let el = new Template( {
 			tag: 'p',
 			attrs: {
 				a: 'A'
@@ -73,12 +73,12 @@ describe( 'render', function() {
 	} );
 } );
 
-describe( 'callback value', function() {
-	it( 'works for attributes', function() {
-		var spy1 = bender.sinon.spy();
-		var spy2 = bender.sinon.spy();
+describe( 'callback value', () => {
+	it( 'works for attributes', () => {
+		let spy1 = bender.sinon.spy();
+		let spy2 = bender.sinon.spy();
 
-		var el = new Template( {
+		let el = new Template( {
 			tag: 'p',
 			attrs: {
 				'class': spy1
@@ -102,11 +102,11 @@ describe( 'callback value', function() {
 		expect( el.outerHTML ).to.be.equal( '<p class="foo"><span id="bar"></span></p>' );
 	} );
 
-	it( 'works for "text" property', function() {
-		var spy1 = bender.sinon.spy();
-		var spy2 = bender.sinon.spy();
+	it( 'works for "text" property', () => {
+		let spy1 = bender.sinon.spy();
+		let spy2 = bender.sinon.spy();
 
-		var el = new Template( {
+		let el = new Template( {
 			tag: 'p',
 			text: spy1,
 			children: [
@@ -127,13 +127,13 @@ describe( 'callback value', function() {
 		expect( el.outerHTML ).to.be.equal( '<p>foo</p>' );
 	} );
 
-	it( 'works for "on" property', function() {
-		var spy1 = bender.sinon.spy();
-		var spy2 = bender.sinon.spy();
-		var spy3 = bender.sinon.spy();
-		var spy4 = bender.sinon.spy();
+	it( 'works for "on" property', () => {
+		let spy1 = bender.sinon.spy();
+		let spy2 = bender.sinon.spy();
+		let spy3 = bender.sinon.spy();
+		let spy4 = bender.sinon.spy();
 
-		var el = new Template( {
+		let el = new Template( {
 			tag: 'p',
 			children: [
 				{
@@ -155,13 +155,13 @@ describe( 'callback value', function() {
 		sinon.assert.calledWithExactly( spy4, el, 'baz', null );
 	} );
 
-	it( 'works for "on" property with selectors', function() {
-		var spy1 = bender.sinon.spy();
-		var spy2 = bender.sinon.spy();
-		var spy3 = bender.sinon.spy();
-		var spy4 = bender.sinon.spy();
+	it( 'works for "on" property with selectors', () => {
+		let spy1 = bender.sinon.spy();
+		let spy2 = bender.sinon.spy();
+		let spy3 = bender.sinon.spy();
+		let spy4 = bender.sinon.spy();
 
-		var el = new Template( {
+		let el = new Template( {
 			tag: 'p',
 			children: [
 				{

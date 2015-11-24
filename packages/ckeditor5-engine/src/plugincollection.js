@@ -13,19 +13,19 @@
  */
 
 CKEDITOR.define( [
-	'namedcollection',
+	'collection',
 	'plugin',
 	'ckeditorerror',
 	'log'
-], function( NamedCollection, Plugin, CKEditorError, log ) {
-	class PluginCollection extends NamedCollection {
+], ( Collection, Plugin, CKEditorError, log ) => {
+	class PluginCollection extends Collection {
 		/**
 		 * Creates an instance of the PluginCollection class, initializing it with a set of plugins.
 		 *
 		 * @constructor
 		 */
 		constructor( editor ) {
-			super();
+			super( { idProperty: 'name' } );
 
 			this._editor = editor;
 		}
@@ -39,39 +39,36 @@ CKEDITOR.define( [
 		 * @param {core/Plugin[]} returns.loadedPlugins The array of loaded plugins.
 		 */
 		load( plugins ) {
-			var that = this;
-
 			// The list of plugins which are being loaded (to avoid circular references issues).
-			var loading = {};
+			const loading = {};
 			// Plugins added to the collection (for the purpose of returning an array of loaded plugins).
-			var loaded = [];
+			const loaded = [];
 
 			// It may happen that an empty list was passed – don't fail.
 			plugins = plugins ? plugins.split( ',' ) : [];
 
 			// Creates a promise for the loading of each plugin and returns a main promise that resolves when all are
 			// done.
-			return Promise.all( plugins.map( pluginPromise ) )
-				.then( function() {
-					return loaded;
-				} );
+			return Promise.all( plugins.map( pluginPromise, this ) )
+				.then( () => loaded );
 
 			// Returns a promise that will load the plugin and add it to the collection before resolving.
 			function pluginPromise( plugin ) {
-				return new Promise( function( resolve, reject ) {
+				return new Promise( ( resolve, reject ) => {
 					// Do nothing if the plugin is already loaded (or if is being loaded right now).
-					if ( that._models.get( plugin ) || loading[ plugin ] ) {
+					if ( this.get( plugin ) || loading[ plugin ] ) {
 						return resolve();
 					}
 
 					CKEDITOR.require( [ 'plugin!' + plugin ],
 						// Success callback.
-						function( LoadedPlugin ) {
-							var deps = getPluginDeps( plugin );
-							var isPluginDep = plugin.indexOf( '/' ) > 0;
+						( LoadedPlugin ) => {
+							const deps = getPluginDeps( plugin );
+							const isPluginDep = plugin.indexOf( '/' ) > 0;
+							let loadedPlugin;
 
 							if ( !isPluginDep ) {
-								var loadedPlugin = new LoadedPlugin( that._editor );
+								loadedPlugin = new LoadedPlugin( this._editor );
 
 								if ( !( loadedPlugin instanceof Plugin ) ) {
 									/**
@@ -97,19 +94,19 @@ CKEDITOR.define( [
 
 							// Resolve with a promise that resolves once all dependencies are loaded.
 							resolve(
-								Promise.all( deps.map( pluginPromise ) )
-									.then( function() {
+								Promise.all( deps.map( pluginPromise, this ) )
+									.then( () => {
 										// Once dependencies are loaded, add the new instance of the loaded plugin to
 										// the collection. This guarantees that dependecies come first in the collection.
 										if ( !isPluginDep ) {
-											that.add( loadedPlugin );
+											this.add( loadedPlugin );
 											loaded.push( loadedPlugin );
 										}
 									} )
 							);
 						},
 						// Error callback.
-						function( err ) {
+						( err ) => {
 							/**
 							 * It was not possible to load the plugin.
 							 *
@@ -125,17 +122,13 @@ CKEDITOR.define( [
 
 			function getPluginDeps( name ) {
 				// Get the list of AMD modules that the plugin depends on.
-				var deps = CKEDITOR._dependencies[ 'plugin!' + name ] || [];
+				let deps = CKEDITOR._dependencies[ 'plugin!' + name ] || [];
 
 				deps = deps
 					// Pick only dependencies that are other plugins.
-					.filter( function( dep ) {
-						return dep.indexOf( 'plugin!' ) === 0;
-					} )
+					.filter( dep => dep.indexOf( 'plugin!' ) === 0 )
 					// Remove the 'plugin!' prefix.
-					.map( function( dep ) {
-						return dep.substr( 7 );
-					} );
+					.map( dep => dep.substr( 7 ) );
 
 				return deps;
 			}

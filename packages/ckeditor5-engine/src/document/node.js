@@ -5,7 +5,7 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'document/attribute', 'utils', 'ckeditorerror' ], function( Attribute, utils, CKEditorError ) {
+CKEDITOR.define( [ 'document/attribute', 'utils', 'ckeditorerror' ], ( Attribute, utils, CKEditorError ) => {
 	/**
 	 * Abstract document tree node class.
 	 *
@@ -49,7 +49,7 @@ CKEDITOR.define( [ 'document/attribute', 'utils', 'ckeditorerror' ], function( A
 		 * @returns {Number|Null} Index of the node in the parent element or null if the node has not parent.
 		 */
 		getIndex() {
-			var pos;
+			let pos;
 
 			if ( !this.parent ) {
 				return null;
@@ -75,8 +75,8 @@ CKEDITOR.define( [ 'document/attribute', 'utils', 'ckeditorerror' ], function( A
 		 * @property {Number} depth
 		 */
 		get depth() {
-			var depth = 0;
-			var parent = this.parent;
+			let depth = 0;
+			let parent = this.parent;
 
 			while ( parent ) {
 				depth++;
@@ -94,7 +94,7 @@ CKEDITOR.define( [ 'document/attribute', 'utils', 'ckeditorerror' ], function( A
 		 * @property {Number} depth
 		 */
 		get root() {
-			var root = this; // jscs:ignore safeContextKeyword
+			let root = this; // jscs:ignore safeContextKeyword
 
 			while ( root.parent ) {
 				root = root.parent;
@@ -110,7 +110,7 @@ CKEDITOR.define( [ 'document/attribute', 'utils', 'ckeditorerror' ], function( A
 		 * @property {document.Node|null} nextSibling
 		 */
 		get nextSibling() {
-			var index = this.getIndex();
+			const index = this.getIndex();
 
 			return ( index !== null && this.parent.getChild( index + 1 ) ) || null;
 		}
@@ -122,7 +122,7 @@ CKEDITOR.define( [ 'document/attribute', 'utils', 'ckeditorerror' ], function( A
 		 * @property {document.Node|null} previousSibling
 		 */
 		get previousSibling() {
-			var index = this.getIndex();
+			const index = this.getIndex();
 
 			return ( index !== null && this.parent.getChild( index - 1 ) ) || null;
 		}
@@ -135,7 +135,7 @@ CKEDITOR.define( [ 'document/attribute', 'utils', 'ckeditorerror' ], function( A
 		 * @returns {Boolean} True if node contains given attribute or an attribute with the given key.
 		 */
 		hasAttr( key ) {
-			var attr;
+			let attr;
 
 			// Attribute.
 			if ( key instanceof Attribute ) {
@@ -164,7 +164,7 @@ CKEDITOR.define( [ 'document/attribute', 'utils', 'ckeditorerror' ], function( A
 		 * @returns {document.Attribute} The found attribute.
 		 */
 		getAttr( key ) {
-			for ( var attr of this._attrs ) {
+			for ( let attr of this._attrs ) {
 				if ( attr.key == key ) {
 					return attr.value;
 				}
@@ -179,7 +179,7 @@ CKEDITOR.define( [ 'document/attribute', 'utils', 'ckeditorerror' ], function( A
 		 * @param {String} key The attribute key.
 		 */
 		removeAttr( key ) {
-			for ( var attr of this._attrs ) {
+			for ( let attr of this._attrs ) {
 				if ( attr.key == key ) {
 					this._attrs.delete( attr );
 
@@ -206,8 +206,8 @@ CKEDITOR.define( [ 'document/attribute', 'utils', 'ckeditorerror' ], function( A
 		 * @returns {Number[]} The path.
 		 */
 		getPath() {
-			var path = [];
-			var node = this; // jscs:ignore safeContextKeyword
+			const path = [];
+			let node = this; // jscs:ignore safeContextKeyword
 
 			while ( node.parent ) {
 				path.unshift( node.getIndex() );
@@ -223,7 +223,7 @@ CKEDITOR.define( [ 'document/attribute', 'utils', 'ckeditorerror' ], function( A
 		 * @returns {Object} Clone of this object with the parent property replaced with its name.
 		 */
 		toJSON() {
-			var json = utils.clone( this );
+			const json = utils.clone( this );
 
 			// Due to circular references we need to remove parent reference.
 			json.parent = this.parent ? this.parent.name : null;
@@ -232,19 +232,14 @@ CKEDITOR.define( [ 'document/attribute', 'utils', 'ckeditorerror' ], function( A
 		}
 
 		/**
-		 * Gets the number of attributes.
+		 * Returns attribute iterator. It can be use to create a new element with the same attributes:
 		 *
-		 * @protected
-		 * @returns {Number} Number of attributes.
+		 *		const copy = new Element( element.name, element.getAttrs() );
+		 *
+		 * @returns {Iterable.<document.Attribute>} Attribute iterator.
 		 */
-		_getAttrCount() {
-			var count = 0;
-
-			for ( var attr of this._attrs ) { // jshint ignore:line
-				count++;
-			}
-
-			return count;
+		getAttrs() {
+			return this._attrs[ Symbol.iterator ]();
 		}
 	}
 

@@ -15,14 +15,14 @@
  * @extends Config
  */
 
-CKEDITOR.define( [ 'ckeditor', 'config' ], function( CKE, Config ) {
+CKEDITOR.define( [ 'ckeditor', 'config' ], ( CKE, Config ) => {
 	class EditorConfig extends Config {
 		/**
 		 * @inheritdoc Config#get
 		 */
 		get() {
 			// Try to take it from this editor instance.
-			var value = super.get.apply( this, arguments );
+			let value = super.get.apply( this, arguments );
 
 			// If the configuration is not defined in the instance, try to take it from CKEDITOR.config.
 			if ( typeof value == 'undefined' ) {

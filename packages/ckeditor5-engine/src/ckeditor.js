@@ -12,8 +12,8 @@
  * @singleton
  */
 
-CKEDITOR.define( [ 'editor', 'collection', 'config' ], function( Editor, Collection, Config ) {
-	var CKEDITOR = {
+CKEDITOR.define( [ 'editor', 'collection', 'config' ], ( Editor, Collection, Config ) => {
+	const CKEDITOR = {
 		/**
 		 * A collection containing all editor instances created.
 		 *
@@ -30,7 +30,7 @@ CKEDITOR.define( [ 'editor', 'collection', 'config' ], function( Editor, Collect
 		 *
 		 *		CKEDITOR.create( '#content' );
 		 *
-		 *		CKEDITOR.create( '#content' ).then( function( editor ) {
+		 *		CKEDITOR.create( '#content' ).then( ( editor ) => {
 		 *			// Manipulate "editor" here.
 		 *		} );
 		 *
@@ -38,10 +38,8 @@ CKEDITOR.define( [ 'editor', 'collection', 'config' ], function( Editor, Collect
 		 * created instance.
 		 * @returns {Promise} A promise, which will be fulfilled with the created editor.
 		 */
-		create: function( element, config ) {
-			var that = this;
-
-			return new Promise( function( resolve, reject ) {
+		create( element, config ) {
+			return new Promise( ( resolve, reject ) => {
 				// If a query selector has been passed, transform it into a real element.
 				if ( typeof element == 'string' ) {
 					element = document.querySelector( element );
@@ -51,19 +49,19 @@ CKEDITOR.define( [ 'editor', 'collection', 'config' ], function( Editor, Collect
 					}
 				}
 
-				var editor = new Editor( element, config );
+				const editor = new Editor( element, config );
 
-				that.instances.add( editor );
+				this.instances.add( editor );
 
 				// Remove the editor from `instances` when destroyed.
-				editor.once( 'destroy', function() {
-					that.instances.remove( editor );
+				editor.once( 'destroy', () => {
+					this.instances.remove( editor );
 				} );
 
 				resolve(
 					// Initializes the editor, which returns a promise.
 					editor.init()
-						.then( function() {
+						.then( () => {
 							// After initialization, return the created editor.
 							return editor;
 						} )
@@ -85,7 +83,7 @@ CKEDITOR.define( [ 'editor', 'collection', 'config' ], function( Editor, Collect
 		 * @param {String} name The plugin name.
 		 * @returns {String} The full URL path of the plugin.
 		 */
-		getPluginPath: function( name ) {
+		getPluginPath( name ) {
 			return this.basePath + 'plugins/' + name + '/';
 		}
 	};

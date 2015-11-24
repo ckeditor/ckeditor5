@@ -5,9 +5,13 @@
 
 /* bender-tags: document */
 
+/* bender-include: ../../_tools/tools.js */
+
 'use strict';
 
-var modules = bender.amd.require(
+const getIteratorCount = bender.tools.core.getIteratorCount;
+
+const modules = bender.amd.require(
 	'document/document',
 	'document/operation/changeoperation',
 	'document/position',
@@ -19,10 +23,10 @@ var modules = bender.amd.require(
 	'ckeditorerror'
 );
 
-describe( 'ChangeOperation', function() {
-	var Document, ChangeOperation, Position, Range, Character, Attribute, NodeList, Text, CKEditorError;
+describe( 'ChangeOperation', () => {
+	let Document, ChangeOperation, Position, Range, Character, Attribute, NodeList, Text, CKEditorError;
 
-	before( function() {
+	before( () => {
 		Document = modules[ 'document/document' ];
 		ChangeOperation = modules[ 'document/operation/changeoperation' ];
 		Position = modules[ 'document/position' ];
@@ -34,15 +38,15 @@ describe( 'ChangeOperation', function() {
 		CKEditorError = modules.ckeditorerror;
 	} );
 
-	var doc, root;
+	let doc, root;
 
-	beforeEach( function() {
+	beforeEach( () => {
 		doc = new Document();
 		root = doc.createRoot( 'root' );
 	} );
 
-	it( 'should insert attribute to the set of nodes', function() {
-		var newAttr = new Attribute( 'isNew', true );
+	it( 'should insert attribute to the set of nodes', () => {
+		let newAttr = new Attribute( 'isNew', true );
 
 		root.insertChildren( 0, 'bar' );
 
@@ -59,13 +63,13 @@ describe( 'ChangeOperation', function() {
 		expect( root.getChildCount() ).to.equal( 3 );
 		expect( root.getChild( 0 ).hasAttr( newAttr ) ).to.be.true;
 		expect( root.getChild( 1 ).hasAttr( newAttr ) ).to.be.true;
-		expect( root.getChild( 2 )._getAttrCount() ).to.equal( 0 );
+		expect( getIteratorCount( root.getChild( 2 ).getAttrs() ) ).to.equal( 0 );
 	} );
 
-	it( 'should add attribute to the existing attributes', function() {
-		var newAttr = new Attribute( 'isNew', true );
-		var fooAttr = new Attribute( 'foo', true );
-		var barAttr = new Attribute( 'bar', true );
+	it( 'should add attribute to the existing attributes', () => {
+		let newAttr = new Attribute( 'isNew', true );
+		let fooAttr = new Attribute( 'foo', true );
+		let barAttr = new Attribute( 'bar', true );
 
 		root.insertChildren( 0, new Character( 'x', [ fooAttr, barAttr ] ) );
 
@@ -80,15 +84,15 @@ describe( 'ChangeOperation', function() {
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 1 );
-		expect( root.getChild( 0 )._getAttrCount() ).to.equal( 3 );
+		expect( getIteratorCount( root.getChild( 0 ).getAttrs() ) ).to.equal( 3 );
 		expect( root.getChild( 0 ).hasAttr( newAttr ) ).to.be.true;
 		expect( root.getChild( 0 ).hasAttr( fooAttr ) ).to.be.true;
 		expect( root.getChild( 0 ).hasAttr( barAttr ) ).to.be.true;
 	} );
 
-	it( 'should change attribute to the set of nodes', function() {
-		var oldAttr = new Attribute( 'isNew', false );
-		var newAttr = new Attribute( 'isNew', true );
+	it( 'should change attribute to the set of nodes', () => {
+		let oldAttr = new Attribute( 'isNew', false );
+		let newAttr = new Attribute( 'isNew', true );
 
 		root.insertChildren( 0, new Text( 'bar', [ oldAttr ] ) );
 
@@ -103,19 +107,19 @@ describe( 'ChangeOperation', function() {
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 3 );
-		expect( root.getChild( 0 )._getAttrCount() ).to.equal( 1 );
+		expect( getIteratorCount( root.getChild( 0 ).getAttrs() ) ).to.equal( 1 );
 		expect( root.getChild( 0 ).hasAttr( newAttr ) ).to.be.true;
-		expect( root.getChild( 1 )._getAttrCount() ).to.equal( 1 );
+		expect( getIteratorCount( root.getChild( 1 ).getAttrs() ) ).to.equal( 1 );
 		expect( root.getChild( 1 ).hasAttr( newAttr ) ).to.be.true;
-		expect( root.getChild( 2 )._getAttrCount() ).to.equal( 1 );
+		expect( getIteratorCount( root.getChild( 2 ).getAttrs() ) ).to.equal( 1 );
 		expect( root.getChild( 2 ).hasAttr( oldAttr ) ).to.be.true;
 	} );
 
-	it( 'should change attribute in the middle of existing attributes', function() {
-		var fooAttr = new Attribute( 'foo', true );
-		var x1Attr = new Attribute( 'x', 1 );
-		var x2Attr = new Attribute( 'x', 2 );
-		var barAttr = new Attribute( 'bar', true );
+	it( 'should change attribute in the middle of existing attributes', () => {
+		let fooAttr = new Attribute( 'foo', true );
+		let x1Attr = new Attribute( 'x', 1 );
+		let x2Attr = new Attribute( 'x', 2 );
+		let barAttr = new Attribute( 'bar', true );
 
 		root.insertChildren( 0, new Character( 'x', [ fooAttr, x1Attr, barAttr ] ) );
 
@@ -130,16 +134,16 @@ describe( 'ChangeOperation', function() {
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 1 );
-		expect( root.getChild( 0 )._getAttrCount() ).to.equal( 3 );
+		expect( getIteratorCount( root.getChild( 0 ).getAttrs() ) ).to.equal( 3 );
 		expect( root.getChild( 0 ).hasAttr( fooAttr ) ).to.be.true;
 		expect( root.getChild( 0 ).hasAttr( x2Attr ) ).to.be.true;
 		expect( root.getChild( 0 ).hasAttr( barAttr ) ).to.be.true;
 	} );
 
-	it( 'should remove attribute', function() {
-		var fooAttr = new Attribute( 'foo', true );
-		var xAttr = new Attribute( 'x', true );
-		var barAttr = new Attribute( 'bar', true );
+	it( 'should remove attribute', () => {
+		let fooAttr = new Attribute( 'foo', true );
+		let xAttr = new Attribute( 'x', true );
+		let barAttr = new Attribute( 'bar', true );
 
 		root.insertChildren( 0, new Character( 'x', [ fooAttr, xAttr, barAttr ] ) );
 
@@ -154,17 +158,17 @@ describe( 'ChangeOperation', function() {
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 1 );
-		expect( root.getChild( 0 )._getAttrCount() ).to.equal( 2 );
+		expect( getIteratorCount( root.getChild( 0 ).getAttrs() ) ).to.equal( 2 );
 		expect( root.getChild( 0 ).hasAttr( fooAttr ) ).to.be.true;
 		expect( root.getChild( 0 ).hasAttr( barAttr ) ).to.be.true;
 	} );
 
-	it( 'should create a change operation as a reverse', function() {
-		var oldAttr = new Attribute( 'x', 'old' );
-		var newAttr = new Attribute( 'x', 'new' );
-		var range = new Range( new Position( [ 0 ], root ), new Position( [ 3 ], root ) );
-		var operation = new ChangeOperation( range, oldAttr, newAttr, doc.version );
-		var reverse = operation.getReversed();
+	it( 'should create a change operation as a reverse', () => {
+		let oldAttr = new Attribute( 'x', 'old' );
+		let newAttr = new Attribute( 'x', 'new' );
+		let range = new Range( new Position( [ 0 ], root ), new Position( [ 3 ], root ) );
+		let operation = new ChangeOperation( range, oldAttr, newAttr, doc.version );
+		let reverse = operation.getReversed();
 
 		expect( reverse ).to.be.an.instanceof( ChangeOperation );
 		expect( reverse.baseVersion ).to.equal( 1 );
@@ -173,44 +177,44 @@ describe( 'ChangeOperation', function() {
 		expect( reverse.newAttr ).to.equal( oldAttr );
 	} );
 
-	it( 'should undo adding attribute by applying reverse operation', function() {
-		var newAttr = new Attribute( 'isNew', true );
+	it( 'should undo adding attribute by applying reverse operation', () => {
+		let newAttr = new Attribute( 'isNew', true );
 
 		root.insertChildren( 0, 'bar' );
 
-		var operation = new ChangeOperation(
+		let operation = new ChangeOperation(
 			new Range( new Position( [ 0 ], root ), new Position( [ 3 ], root ) ),
 			null,
 			newAttr,
 			doc.version
 		);
 
-		var reverse = operation.getReversed();
+		let reverse = operation.getReversed();
 
 		doc.applyOperation( operation );
 		doc.applyOperation( reverse );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.getChildCount() ).to.equal( 3 );
-		expect( root.getChild( 0 )._getAttrCount() ).to.equal( 0 );
-		expect( root.getChild( 1 )._getAttrCount() ).to.equal( 0 );
-		expect( root.getChild( 2 )._getAttrCount() ).to.equal( 0 );
+		expect( getIteratorCount( root.getChild( 0 ).getAttrs() ) ).to.equal( 0 );
+		expect( getIteratorCount( root.getChild( 1 ).getAttrs() ) ).to.equal( 0 );
+		expect( getIteratorCount( root.getChild( 2 ).getAttrs() ) ).to.equal( 0 );
 	} );
 
-	it( 'should undo changing attribute by applying reverse operation', function() {
-		var oldAttr = new Attribute( 'isNew', false );
-		var newAttr = new Attribute( 'isNew', true );
+	it( 'should undo changing attribute by applying reverse operation', () => {
+		let oldAttr = new Attribute( 'isNew', false );
+		let newAttr = new Attribute( 'isNew', true );
 
 		root.insertChildren( 0, new Text( 'bar', [ oldAttr ] ) );
 
-		var operation = new ChangeOperation(
+		let operation = new ChangeOperation(
 			new Range( new Position( [ 0 ], root ), new Position( [ 3 ], root ) ),
 			oldAttr,
 			newAttr,
 			doc.version
 		);
 
-		var reverse = operation.getReversed();
+		let reverse = operation.getReversed();
 
 		doc.applyOperation( operation );
 
@@ -218,27 +222,27 @@ describe( 'ChangeOperation', function() {
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.getChildCount() ).to.equal( 3 );
-		expect( root.getChild( 0 )._getAttrCount() ).to.equal( 1 );
+		expect( getIteratorCount( root.getChild( 0 ).getAttrs() ) ).to.equal( 1 );
 		expect( root.getChild( 0 ).hasAttr( oldAttr ) ).to.be.true;
-		expect( root.getChild( 1 )._getAttrCount() ).to.equal( 1 );
+		expect( getIteratorCount( root.getChild( 1 ).getAttrs() ) ).to.equal( 1 );
 		expect( root.getChild( 1 ).hasAttr( oldAttr ) ).to.be.true;
-		expect( root.getChild( 2 )._getAttrCount() ).to.equal( 1 );
+		expect( getIteratorCount( root.getChild( 2 ).getAttrs() ) ).to.equal( 1 );
 		expect( root.getChild( 2 ).hasAttr( oldAttr ) ).to.be.true;
 	} );
 
-	it( 'should undo remove attribute by applying reverse operation', function() {
-		var fooAttr = new Attribute( 'foo', false );
+	it( 'should undo remove attribute by applying reverse operation', () => {
+		let fooAttr = new Attribute( 'foo', false );
 
 		root.insertChildren( 0, new Text( 'bar', [ fooAttr ] ) );
 
-		var operation = new ChangeOperation(
+		let operation = new ChangeOperation(
 			new Range( new Position( [ 0 ], root ), new Position( [ 3 ], root ) ),
 			fooAttr,
 			null,
 			doc.version
 		);
 
-		var reverse = operation.getReversed();
+		let reverse = operation.getReversed();
 
 		doc.applyOperation( operation );
 
@@ -246,21 +250,21 @@ describe( 'ChangeOperation', function() {
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.getChildCount() ).to.equal( 3 );
-		expect( root.getChild( 0 )._getAttrCount() ).to.equal( 1 );
+		expect( getIteratorCount( root.getChild( 0 ).getAttrs() ) ).to.equal( 1 );
 		expect( root.getChild( 0 ).hasAttr( fooAttr ) ).to.be.true;
-		expect( root.getChild( 1 )._getAttrCount() ).to.equal( 1 );
+		expect( getIteratorCount( root.getChild( 1 ).getAttrs() ) ).to.equal( 1 );
 		expect( root.getChild( 1 ).hasAttr( fooAttr ) ).to.be.true;
-		expect( root.getChild( 2 )._getAttrCount() ).to.equal( 1 );
+		expect( getIteratorCount( root.getChild( 2 ).getAttrs() ) ).to.equal( 1 );
 		expect( root.getChild( 2 ).hasAttr( fooAttr ) ).to.be.true;
 	} );
 
-	it( 'should throw an error when one try to remove and the attribute does not exists', function() {
-		var fooAttr = new Attribute( 'foo', true );
+	it( 'should throw an error when one try to remove and the attribute does not exists', () => {
+		let fooAttr = new Attribute( 'foo', true );
 
 		root.insertChildren( 0, 'x' );
 
 		expect(
-			function() {
+			() => {
 				doc.applyOperation(
 					new ChangeOperation(
 						new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
@@ -273,14 +277,14 @@ describe( 'ChangeOperation', function() {
 		).to.throw( CKEditorError, /operation-change-no-attr-to-remove/ );
 	} );
 
-	it( 'should throw an error when one try to insert and the attribute already exists', function() {
-		var x1Attr = new Attribute( 'x', 1 );
-		var x2Attr = new Attribute( 'x', 2 );
+	it( 'should throw an error when one try to insert and the attribute already exists', () => {
+		let x1Attr = new Attribute( 'x', 1 );
+		let x2Attr = new Attribute( 'x', 2 );
 
 		root.insertChildren( 0, new Character( 'x', [ x1Attr ] ) );
 
 		expect(
-			function() {
+			() => {
 				doc.applyOperation(
 					new ChangeOperation(
 						new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
@@ -293,14 +297,14 @@ describe( 'ChangeOperation', function() {
 		).to.throw( CKEditorError, /operation-change-attr-exists/ );
 	} );
 
-	it( 'should throw an error when one try to change and the new and old attributes have different keys', function() {
-		var fooAttr = new Attribute( 'foo', true );
-		var barAttr = new Attribute( 'bar', true );
+	it( 'should throw an error when one try to change and the new and old attributes have different keys', () => {
+		let fooAttr = new Attribute( 'foo', true );
+		let barAttr = new Attribute( 'bar', true );
 
 		root.insertChildren( 0, 'x' );
 
 		expect(
-			function() {
+			() => {
 				doc.applyOperation(
 					new ChangeOperation(
 						new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),

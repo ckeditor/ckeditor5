@@ -13,7 +13,7 @@
  * @class Template
  */
 
-CKEDITOR.define( function() {
+CKEDITOR.define( () => {
 	class Template {
 		/**
 		 * Creates an instance of the {@link Template} class.
@@ -53,7 +53,7 @@ CKEDITOR.define( function() {
 			return null;
 		}
 
-		var el = document.createElement( def.tag );
+		const el = document.createElement( def.tag );
 
 		// Set the text first.
 		renderElementText( def, el );
@@ -81,8 +81,8 @@ CKEDITOR.define( function() {
 	}
 
 	function renderElementAttributes( def, el ) {
-		var value;
-		var attr;
+		let value;
+		let attr;
 
 		for ( attr in def.attrs ) {
 			value = def.attrs[ attr ];
@@ -105,7 +105,7 @@ CKEDITOR.define( function() {
 	}
 
 	function renderElementChildren( def, el ) {
-		var child;
+		let child;
 
 		if ( def.children ) {
 			for ( child of def.children ) {
@@ -116,9 +116,9 @@ CKEDITOR.define( function() {
 
 	function activateElementListeners( def, el ) {
 		if ( def.on ) {
-			for ( var l in def.on ) {
-				var domEvtDef = l.split( '@' );
-				var name, selector;
+			for ( let l in def.on ) {
+				let domEvtDef = l.split( '@' );
+				let name, selector;
 
 				if ( domEvtDef.length == 2 ) {
 					name = domEvtDef[ 0 ];

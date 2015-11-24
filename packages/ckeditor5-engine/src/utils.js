@@ -12,8 +12,8 @@
  * @singleton
  */
 
-CKEDITOR.define( [ 'utils-lodash', 'lib/lodash/lodash-ckeditor' ], function( lodashIncludes, lodash ) {
-	var utils = {
+CKEDITOR.define( [ 'utils-lodash', 'lib/lodash/lodash-ckeditor' ], ( lodashIncludes, lodash ) => {
+	const utils = {
 		/**
 		 * Creates a spy function (ala Sinon.js) that can be used to inspect call to it.
 		 *
@@ -24,11 +24,9 @@ CKEDITOR.define( [ 'utils-lodash', 'lib/lodash/lodash-ckeditor' ], function( lod
 		 * @returns {Function} The spy function.
 		 */
 		spy() {
-			var spy = function() {
+			return function spy() {
 				spy.called = true;
 			};
-
-			return spy;
 		},
 
 		/**
@@ -37,10 +35,10 @@ CKEDITOR.define( [ 'utils-lodash', 'lib/lodash/lodash-ckeditor' ], function( lod
 		 *
 		 * @returns {Number} A number representing the id.
 		 */
-		uid: ( function() {
-			var next = 1;
+		uid: ( () => {
+			let next = 1;
 
-			return function() {
+			return () => {
 				return next++;
 			};
 		} )(),
@@ -71,9 +69,9 @@ CKEDITOR.define( [ 'utils-lodash', 'lib/lodash/lodash-ckeditor' ], function( lod
 		 * `a` is a {@link utils.compareArrays#EXTENSION extension}, or `a` is {@link utils.compareArrays#DIFFERENT different}.
 		 */
 		compareArrays( a, b ) {
-			var minLen = Math.min( a.length, b.length );
+			const minLen = Math.min( a.length, b.length );
 
-			for ( var i = 0; i < minLen; i++ ) {
+			for ( let i = 0; i < minLen; i++ ) {
 				if ( a[ i ] != b[ i ] ) {
 					// The arrays are different.
 					return utils.compareArrays.DIFFERENT;
@@ -118,18 +116,21 @@ CKEDITOR.define( [ 'utils-lodash', 'lib/lodash/lodash-ckeditor' ], function( lod
 	 * @type {Number}
 	 */
 	utils.compareArrays.SAME = 0;
+
 	/**
 	 * Flag for "is a prefix of" relation between arrays.
 	 *
 	 * @type {Number}
 	 */
 	utils.compareArrays.PREFIX = 1;
+
 	/**
 	 * Flag for "is a suffix of" relation between arrays.
 	 *
 	 * @type {number}
 	 */
 	utils.compareArrays.EXTENSION = 2;
+
 	/**
 	 * Flag for "is different than" relation between arrays.
 	 *
@@ -138,7 +139,7 @@ CKEDITOR.define( [ 'utils-lodash', 'lib/lodash/lodash-ckeditor' ], function( lod
 	utils.compareArrays.DIFFERENT = 3;
 
 	// Extend "utils" with Lo-Dash methods.
-	for ( var i = 0; i < lodashIncludes.length; i++ ) {
+	for ( let i = 0; i < lodashIncludes.length; i++ ) {
 		utils[ lodashIncludes[ i ] ] = lodash[ lodashIncludes[ i ] ];
 	}
 

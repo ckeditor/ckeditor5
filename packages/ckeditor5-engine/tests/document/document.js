@@ -7,29 +7,31 @@
 
 'use strict';
 
-var modules = bender.amd.require(
+const modules = bender.amd.require(
 	'document/document',
 	'document/rootelement',
+	'document/transaction',
 	'ckeditorerror'
 );
 
-describe( 'Document', function() {
-	var Document, RootElement, CKEditorError;
+describe( 'Document', () => {
+	let Document, RootElement, Transaction, CKEditorError;
 
-	before( function() {
+	before( () => {
 		Document = modules[ 'document/document' ];
 		RootElement = modules[ 'document/rootelement' ];
+		Transaction = modules[ 'document/transaction' ];
 		CKEditorError = modules.ckeditorerror;
 	} );
 
-	var document;
+	let document;
 
-	beforeEach( function() {
+	beforeEach( () => {
 		document = new Document();
 	} );
 
-	describe( 'constructor', function() {
-		it( 'should create Document with no data', function() {
+	describe( 'constructor', () => {
+		it( 'should create Document with no data', () => {
 			expect( document ).to.have.property( 'roots' ).that.is.instanceof( Map );
 			expect( document.roots.size ).to.equal( 1 );
 			expect( document._graveyard ).to.be.instanceof( RootElement );
@@ -37,47 +39,47 @@ describe( 'Document', function() {
 		} );
 	} );
 
-	describe( 'createRoot', function() {
-		it( 'should create a new RootElement, add it to roots map and return it', function() {
-			var root = document.createRoot( 'root' );
+	describe( 'createRoot', () => {
+		it( 'should create a new RootElement, add it to roots map and return it', () => {
+			let root = document.createRoot( 'root' );
 
 			expect( document.roots.size ).to.equal( 2 );
 			expect( root ).to.be.instanceof( RootElement );
 			expect( root.getChildCount() ).to.equal( 0 );
 		} );
 
-		it( 'should throw an error when trying to create a second root with the same name', function() {
+		it( 'should throw an error when trying to create a second root with the same name', () => {
 			document.createRoot( 'root' );
 
 			expect(
-				function() {
+				() => {
 					document.createRoot( 'root' );
 				}
 			).to.throw( CKEditorError, /document-createRoot-name-exists/ );
 		} );
 	} );
 
-	describe( 'getRoot', function() {
-		it( 'should return a RootElement previously created with given name', function() {
-			var newRoot = document.createRoot( 'root' );
-			var getRoot = document.getRoot( 'root' );
+	describe( 'getRoot', () => {
+		it( 'should return a RootElement previously created with given name', () => {
+			let newRoot = document.createRoot( 'root' );
+			let getRoot = document.getRoot( 'root' );
 
 			expect( getRoot ).to.equal( newRoot );
 		} );
 
-		it( 'should throw an error when trying to get non-existent root', function() {
+		it( 'should throw an error when trying to get non-existent root', () => {
 			expect(
-				function() {
+				() => {
 					document.getRoot( 'root' );
 				}
 			).to.throw( CKEditorError, /document-createRoot-root-not-exist/ );
 		} );
 	} );
 
-	describe( 'applyOperation', function() {
-		it( 'should increase document version, execute operation and fire operationApplied', function() {
-			var operationApplied = sinon.spy();
-			var operation = {
+	describe( 'applyOperation', () => {
+		it( 'should increase document version, execute operation and fire operationApplied', () => {
+			let operationApplied = sinon.spy();
+			let operation = {
 				baseVersion: 0,
 				_execute: sinon.spy()
 			};
@@ -91,19 +93,28 @@ describe( 'Document', function() {
 			sinon.assert.calledOnce( operation._execute );
 		} );
 
-		it( 'should throw an error on the operation base version and the document version is different', function() {
-			var operationApplied = sinon.spy();
-			var operation = {
+		it( 'should throw an error on the operation base version and the document version is different', () => {
+			let operationApplied = sinon.spy();
+			let operation = {
 				baseVersion: 1
 			};
 
 			document.on( 'operationApplied', operationApplied );
 
 			expect(
-				function() {
+				() => {
 					document.applyOperation( operation );
 				}
 			).to.throw( CKEditorError, /document-applyOperation-wrong-version/ );
+		} );
+	} );
+
+	describe( 'createTransaction', () => {
+		it( 'should create a new transaction with the document property', () => {
+			const transaction = document.createTransaction();
+
+			expect( transaction ).to.be.instanceof( Transaction );
+			expect( transaction ).to.have.property( 'doc' ).that.equals( document );
 		} );
 	} );
 } );
