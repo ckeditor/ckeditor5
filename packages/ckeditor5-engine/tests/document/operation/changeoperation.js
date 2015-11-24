@@ -4,6 +4,7 @@
  */
 
 /* bender-tags: document */
+/* bender-include: ../../_tools/tools.js */
 /* global describe, before, beforeEach, it, expect */
 
 /* bender-include: ../../_tools/tools.js */
@@ -46,6 +47,8 @@ describe( 'ChangeOperation', () => {
 		NodeList = modules[ 'document/nodelist' ];
 		Text = modules[ 'document/text' ];
 		CKEditorError = modules.ckeditorerror;
+
+
 	} );
 
 	let doc, root;
@@ -392,6 +395,7 @@ describe( 'ChangeOperation', () => {
 
 	describe( 'getTransformedBy', () => {
 		let nodeA, nodeB, start, end, range, oldAttr, newAttr, op, baseVersion, expected;
+		let expectOperation;
 
 		beforeEach( () => {
 			nodeA = new Node();
@@ -408,28 +412,9 @@ describe( 'ChangeOperation', () => {
 				newAttr: newAttr,
 				baseVersion: baseVersion + 1
 			};
+
+			expectOperation = bender.tools.operations.expectOperation( Position, Range );
 		} );
-
-		function expectOperation( op, params ) {
-			for ( let i in params ) {
-				if ( params.hasOwnProperty( i ) ) {
-					if ( i == 'type' ) {
-						expect( op ).to.be.instanceof( params[ i ] );
-					}
-					else if ( params[ i ] instanceof Array ) {
-						expect( op[ i ].length ).to.equal( params[ i ].length );
-
-						for ( let j = 0; j < params[ i ].length; j++ ) {
-							expect( op[ i ][ j ] ).to.equal( params[ i ][ j ] );
-						}
-					} else if ( params[ i ] instanceof Position || params[ i ] instanceof Range ) {
-						expect( op[ i ].isEqual( params[ i ] ) ).to.be.true;
-					} else {
-						expect( op[ i ] ).to.equal( params[ i ] );
-					}
-				}
-			}
-		}
 
 		describe( 'single-level range', () => {
 			beforeEach( () => {
