@@ -88,8 +88,8 @@ CKEDITOR.define( [
 					'operation-move-range-into-itself: Trying to move a range of nodes to the inside of that range.'
 				);
 			} else {
-				const sourcePath = this.sourcePosition.getParentPath();
-				const targetPath = this.targetPosition.getParentPath();
+				const sourcePath = this.sourcePosition.parentPath;
+				const targetPath = this.targetPosition.parentPath;
 
 				if ( utils.compareArrays( sourcePath, targetPath ) == utils.compareArrays.PREFIX ) {
 					let i = sourcePath.length;
@@ -120,7 +120,7 @@ CKEDITOR.define( [
 		}
 
 		getReversed() {
-			return new MoveOperation( this.targetPosition, this.sourcePosition, this.howMany, this.baseVersion + 1 );
+			return new MoveOperation( this.targetPosition.clone(), this.sourcePosition.clone(), this.howMany, this.baseVersion + 1 );
 		}
 	}
 
