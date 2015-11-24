@@ -76,31 +76,28 @@ CKEDITOR.define( [ 'ckeditorerror' ], ( CKEditorError ) => {
 		 * This method checks if there is no naming collision and throw `transaction-register-taken` if the method name
 		 * is already taken.
 		 *
-		 * It also passes {@link document.Document} and {@link document.Transaction} do the creator class.
-		 *
-		 * Registered function returns `this` so they can be chainable by default.
-		 *
 		 * Beside that no magic happens here, the method is added to the `Transaction` class prototype.
 		 *
 		 * For example:
 		 *
-		 *		Transaction.register( 'insert', ( doc, transaction, position, nodes ) => {
+		 *		Transaction.register( 'insert', function( position, nodes ) {
 		 *			// You can use a class inherit from Delta if that class should handle OT in the special way.
 		 *			const delta = new Delta();
 		 *
 		 * 			// Create operations which should be components of this delta.
-		 *			const operation = new InsertOperation( position, nodes, doc.version );
+		 *			const operation = new InsertOperation( position, nodes, this.doc.version );
 		 *
 		 *			// Remember to apply every operation, no magic, you need to do it manually.
-		 *			doc.applyOperation( operation );
+		 *			this.doc.applyOperation( operation );
 		 *
 		 *			// Add operation to the delta.
 		 *			delta.addOperation( operation );
 		 *
 		 *			// Add delta to the transaction instance.
-		 *			transaction.addDelta( delta );
+		 *			this.addDelta( delta );
 		 *
-		 * 			// You do not need to return transaction, register method will take care to make the method chainable.
+		 * 			// Make this method chainable.
+		 * 			return this;
 		 *		} );
 		 *
 		 * @param {String} name Method name.
@@ -119,11 +116,7 @@ CKEDITOR.define( [ 'ckeditorerror' ], ( CKEditorError ) => {
 					{ name: name } );
 			}
 
-			Transaction.prototype[ name ] = function() {
-				creator.apply( this, [ this.doc, this ].concat( Array.from( arguments ) ) );
-
-				return this;
-			};
+			Transaction.prototype[ name ] = creator;
 		}
 	}
 

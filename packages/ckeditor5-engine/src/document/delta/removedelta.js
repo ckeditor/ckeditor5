@@ -27,18 +27,20 @@ CKEDITOR.define( [
 	 * @param {document.Position} position Position before the first node to remove.
 	 * @param {Number} howMany How many nodes to remove.
 	 */
-	register( 'remove', ( doc, transaction, position, howMany ) => {
+	register( 'remove', function( position, howMany ) {
 		if ( typeof howMany !== 'number' ) {
 			howMany = 1;
 		}
 
 		const delta = new RemoveDelta();
 
-		const operation = new RemoveOperation( position, howMany, doc.version );
-		doc.applyOperation( operation );
+		const operation = new RemoveOperation( position, howMany, this.doc.version );
+		this.doc.applyOperation( operation );
 		delta.addOperation( operation );
 
-		transaction.addDelta( delta );
+		this.addDelta( delta );
+
+		return this;
 	} );
 
 	return RemoveDelta;

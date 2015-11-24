@@ -44,8 +44,8 @@ describe( 'Transaction', () => {
 		} );
 
 		it( 'should register function which return an delta', () => {
-			Transaction.register( 'foo', ( doc, t ) => {
-				t.addDelta( new TestDelta() );
+			Transaction.register( 'foo', function() {
+				this.addDelta( new TestDelta() );
 			} );
 
 			const transaction = new Transaction();
@@ -57,9 +57,9 @@ describe( 'Transaction', () => {
 		} );
 
 		it( 'should register function which return an multiple deltas', () => {
-			Transaction.register( 'foo', ( doc, t ) => {
-				t.addDelta( new TestDelta() );
-				t.addDelta( new TestDelta() );
+			Transaction.register( 'foo', function() {
+				this.addDelta( new TestDelta() );
+				this.addDelta( new TestDelta() );
 			} );
 
 			const transaction = new Transaction();
@@ -69,21 +69,6 @@ describe( 'Transaction', () => {
 			expect( transaction.deltas.length ).to.equal( 2 );
 			expect( transaction.deltas[ 0 ] ).to.be.instanceof( TestDelta );
 			expect( transaction.deltas[ 1 ] ).to.be.instanceof( TestDelta );
-		} );
-
-		it( 'should pass arguments properly', () => {
-			const doc = 'doc';
-			const arg = 'arg';
-
-			const transaction = new Transaction( doc );
-
-			const stub = sinon.stub();
-
-			Transaction.register( 'foo', stub );
-
-			transaction.foo( arg );
-
-			sinon.assert.calledWith( stub, doc, transaction, arg );
 		} );
 
 		it( 'should throw if one try to register the same transaction twice', () => {
