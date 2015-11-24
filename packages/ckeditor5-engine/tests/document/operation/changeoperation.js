@@ -416,614 +416,6 @@ describe( 'ChangeOperation', () => {
 			expectOperation = bender.tools.operations.expectOperation( Position, Range );
 		} );
 
-		describe( 'single-level range', () => {
-			beforeEach( () => {
-				start = new Position( [ 0, 2, 1 ], root );
-				end = new Position( [ 0, 2, 4 ], root );
-
-				range = new Range( start, end );
-
-				op = new ChangeOperation( range, oldAttr, newAttr, baseVersion );
-
-				expected.range = new Range( start.clone(), end.clone() );
-			} );
-
-			describe( 'InsertOperation', () => {
-				it( 'should not change when positions are different', () => {
-					let transformBy = new InsertOperation(
-						new Position( [ 1, 3, 2 ], root ),
-						[ nodeA, nodeB ],
-						baseVersion
-					);
-
-					let transOp = op.getTransformedBy( transformBy );
-
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				it( 'should increment offset if addresses are same and offset is after applied operation', () => {
-					let transformBy = new InsertOperation(
-						new Position( [ 0, 2, 0 ], root ),
-						[ nodeA, nodeB ],
-						baseVersion
-					);
-
-					let transOp = op.getTransformedBy( transformBy );
-
-					expected.range.start.offset += 2;
-					expected.range.end.offset += 2;
-
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				it( 'should increment offset if positions are same', () => {
-					let transformBy = new InsertOperation(
-						new Position( [ 0, 2, 1 ], root ),
-						[ nodeA, nodeB ],
-						baseVersion
-					);
-
-					let transOp = op.getTransformedBy( transformBy );
-
-					expected.range.start.offset += 2;
-					expected.range.end.offset += 2;
-
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				it( 'should not increment offset if addresses are same and offset is before applied operation', () => {
-					let transformBy = new InsertOperation(
-						new Position( [ 0, 2, 6 ], root ),
-						[ nodeA, nodeB ],
-						baseVersion
-					);
-
-					let transOp = op.getTransformedBy( transformBy );
-
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				it( 'should update address at node(i) if applied operation\'s address was a prefix and its offset is before node(i)', () => {
-					let transformBy = new InsertOperation(
-						new Position( [ 0, 1 ], root ),
-						[ nodeA, nodeB ],
-						baseVersion
-					);
-
-					let transOp = op.getTransformedBy( transformBy );
-
-					expected.range.start.path[ 1 ] += 2;
-					expected.range.end.path[ 1 ] += 2;
-
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				it( 'should not update address at node(i) if applied operation\'s address was a prefix and its offset is after node(i)', () => {
-					let transformBy = new InsertOperation(
-						new Position( [ 0, 6 ], root ),
-						[ nodeA, nodeB ],
-						baseVersion
-					);
-
-					let transOp = op.getTransformedBy( transformBy );
-
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				it( 'should be split into two operations if insert was inside the range of incoming change operation', () => {
-					let transformBy = new InsertOperation(
-						new Position( [ 0, 2, 2 ], root ),
-						[ nodeA, nodeB ],
-						baseVersion
-					);
-
-					let transOp = op.getTransformedBy( transformBy );
-
-					expect( transOp ).to.be.instanceof( Array );
-					expect( transOp.length ).to.equal( 2 );
-
-					expected.range.start.offset = 4;
-					expected.range.end.offset = 6;
-
-					expectOperation( transOp[ 0 ], expected );
-
-					expected.range.start.offset = op.range.start.offset;
-					expected.range.end.offset = 2;
-					expected.baseVersion++;
-
-					expectOperation( transOp[ 1 ], expected );
-				} );
-			} );
-
-			describe( 'ChangeOperation', () => {
-				it( 'should remain the same if attributes are not conflicting', () => {
-					let transformBy = new ChangeOperation(
-						range.clone(),
-						new Attribute( 'abc', true ),
-						new Attribute( 'abc', false ),
-						baseVersion
-					);
-
-					let transOp = op.getTransformedBy( transformBy );
-
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				describe( 'when attributes are conflicting', () => {
-					describe( 'when incoming range and on-site range are the same', () => {
-						it( 'should remain the same if it is stronger', () => {
-							let transformBy = new ChangeOperation(
-								range.clone(),
-								oldAttr,
-								null,
-								baseVersion
-							);
-
-							let transOp = op.getTransformedBy( transformBy, true );
-
-							expectOperation( transOp[ 0 ], expected );
-						} );
-
-						it( 'should become do-nothing operation if it is weaker', () => {
-							let transformBy = new ChangeOperation(
-								range.clone(),
-								oldAttr,
-								null,
-								baseVersion
-							);
-
-							let transOp = op.getTransformedBy( transformBy );
-
-							expectOperation( transOp[ 0 ], {
-								type: NoOperation,
-								baseVersion: baseVersion + 1
-							} );
-						} );
-					} );
-
-					describe( 'when incoming range is contained by on-site range', () => {
-						it( 'should remain the same if it is stronger', () => {
-							let transformRange = range.clone();
-							transformRange.start.offset--;
-							transformRange.end.offset++;
-
-							let transformBy = new ChangeOperation(
-								transformRange,
-								oldAttr,
-								null,
-								baseVersion
-							);
-
-							let transOp = op.getTransformedBy( transformBy, true );
-
-							expectOperation( transOp[ 0 ], expected );
-						} );
-
-						it( 'should become do-nothing operation if it has lower site id', () => {
-							let transformRange = range.clone();
-							transformRange.start.offset--;
-							transformRange.end.offset++;
-
-							let transformBy = new ChangeOperation(
-								transformRange,
-								oldAttr,
-								null,
-								baseVersion
-							);
-
-							let transOp = op.getTransformedBy( transformBy );
-
-							expectOperation( transOp[ 0 ], {
-								type: NoOperation,
-								baseVersion: baseVersion + 1
-							} );
-						} );
-					} );
-
-					// [ incoming range   <   ]   on site range >
-					describe( 'when incoming range intersects on right-side with on-site range', () => {
-						it( 'should remain the same if it is stronger', () => {
-							let transformRange = range.clone();
-							transformRange.start.offset++;
-							transformRange.end.offset++;
-
-							let transformBy = new ChangeOperation(
-								transformRange,
-								oldAttr,
-								null,
-								baseVersion
-							);
-
-							let transOp = op.getTransformedBy( transformBy, true );
-
-							expectOperation( transOp[ 0 ], expected );
-						} );
-
-						it( 'should get shrunk if it is weaker', () => {
-							let transformRange = range.clone();
-							transformRange.start.offset++;
-							transformRange.end.offset++;
-
-							let transformBy = new ChangeOperation(
-								transformRange,
-								oldAttr,
-								null,
-								baseVersion
-							);
-
-							let transOp = op.getTransformedBy( transformBy );
-
-							expected.range.end.offset = 2;
-
-							expectOperation( transOp[ 0 ], expected );
-						} );
-					} );
-
-					// [ on site range   <   ]   incoming range >
-					describe( 'when incoming range intersects on left-side with on-site range', () => {
-						it( 'should remain the same if it is stronger', () => {
-							let transformRange = range.clone();
-							transformRange.start.offset--;
-							transformRange.end.offset--;
-
-							let transformBy = new ChangeOperation(
-								transformRange,
-								oldAttr,
-								null,
-								baseVersion
-							);
-
-							let transOp = op.getTransformedBy( transformBy, true );
-
-							expectOperation( transOp[ 0 ], expected );
-						} );
-
-						it( 'should get shrunk if it is weaker', () => {
-							let transformRange = range.clone();
-							transformRange.start.offset--;
-							transformRange.end.offset--;
-
-							let transformBy = new ChangeOperation(
-								transformRange,
-								oldAttr,
-								null,
-								baseVersion
-							);
-
-							let transOp = op.getTransformedBy( transformBy );
-
-							expected.range.start.offset = 3;
-
-							expectOperation( transOp[ 0 ], expected );
-						} );
-					} );
-
-					describe( 'when incoming range contains on-site range', () => {
-						it( 'should remain the same if it is stronger', () => {
-							let transformRange = range.clone();
-							transformRange.start.offset++;
-							transformRange.end.offset--;
-
-							let transformBy = new ChangeOperation(
-								transformRange,
-								oldAttr,
-								null,
-								baseVersion
-							);
-
-							let transOp = op.getTransformedBy( transformBy, true );
-
-							expectOperation( transOp[ 0 ], expected );
-						} );
-
-						it( 'should get split if it is weaker', () => {
-							let transformRange = range.clone();
-							transformRange.start.offset++;
-							transformRange.end.offset--;
-
-							let transformBy = new ChangeOperation(
-								transformRange,
-								oldAttr,
-								null,
-								baseVersion
-							);
-
-							let transOp = op.getTransformedBy( transformBy );
-
-							expect( transOp ).to.be.instanceof( Array );
-							expect( transOp.length ).to.equal( 2 );
-
-							expected.range.end.offset = 2;
-
-							expectOperation( transOp[ 0 ], expected );
-
-							expected.range.start.offset = 3;
-							expected.range.end.offset = 4;
-							expected.baseVersion++;
-
-							expectOperation( transOp[ 1 ], expected );
-						} );
-					} );
-				} );
-			} );
-
-			describe( 'MoveOperation', () => {
-				it( 'should not update address or offset if change target is in different path than move origin and destination', () => {
-					let transformBy = new MoveOperation(
-						new Position( [ 1, 2 ], root ),
-						new Position( [ 2, 4 ], root ),
-						2,
-						baseVersion
-					);
-
-					let transOp = op.getTransformedBy( transformBy );
-
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				it( 'should have it\'s address merged with destination address if change was inside moved node sub-tree', () => {
-					let transformBy = new MoveOperation(
-						new Position( [ 0, 1 ], root ),
-						new Position( [ 2, 4, 1 ], root ),
-						3,
-						baseVersion
-					);
-
-					let transOp = op.getTransformedBy( transformBy );
-
-					expected.range.start.path = [ 2, 4, 2, 1 ];
-					expected.range.end.path = [ 2, 4, 2, 4 ];
-
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				it( 'should decrement offset if address is same as move origin and change offset is after moved node offset', () => {
-					let transformBy = new MoveOperation(
-						new Position( [ 0, 2, 0 ], root ),
-						new Position( [ 2, 4, 1 ], root ),
-						1,
-						baseVersion
-					);
-
-					let transOp = op.getTransformedBy( transformBy );
-
-					expected.range.start.offset--;
-					expected.range.end.offset--;
-
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				it( 'should increment offset if address is same as move destination and change offset is after move-to offset', () => {
-					let transformBy = new MoveOperation(
-						new Position( [ 2, 4, 1 ], root ),
-						new Position( [ 0, 2, 0 ], root ),
-						2,
-						baseVersion
-					);
-
-					let transOp = op.getTransformedBy( transformBy );
-
-					expected.range.start.offset += 2;
-					expected.range.end.offset += 2;
-
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				it( 'should update address if moved node is before a node from change path', () => {
-					let transformBy = new MoveOperation(
-						new Position( [ 0, 0 ], root ),
-						new Position( [ 2, 4, 1 ], root ),
-						2,
-						baseVersion
-					);
-
-					let transOp = op.getTransformedBy( transformBy );
-
-					expected.range.start.path[ 1 ] -= 2;
-					expected.range.end.path[ 1 ] -= 2;
-
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				it( 'should not update address if moved node is after a node from change path', () => {
-					let transformBy = new MoveOperation(
-						new Position( [ 0, 4 ], root ),
-						new Position( [ 2, 4, 1 ], root ),
-						2,
-						baseVersion
-					);
-
-					let transOp = op.getTransformedBy( transformBy );
-
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				it( 'should update address if move-in destination is before a node from change path', () => {
-					let transformBy = new MoveOperation(
-						new Position( [ 2, 4, 1 ], root ),
-						new Position( [ 0, 0 ], root ),
-						2,
-						baseVersion
-					);
-
-					let transOp = op.getTransformedBy( transformBy );
-
-					expected.range.start.path[ 1 ] += 2;
-					expected.range.end.path[ 1 ] += 2;
-
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				it( 'should not update address if move-in destination is after a node from change path', () => {
-					let transformBy = new MoveOperation(
-						new Position( [ 2, 4, 1 ], root ),
-						new Position( [ 0, 4 ], root ),
-						2,
-						baseVersion
-					);
-
-					let transOp = op.getTransformedBy( transformBy );
-
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				it( 'should get split into two ranges if change range intersects on right-side with moved range', () => {
-					let transformBy = new MoveOperation(
-						new Position( [ 0, 2, 2 ], root ),
-						new Position( [ 2, 4, 1 ], root ),
-						4,
-						baseVersion
-					);
-
-					let transOp = op.getTransformedBy( transformBy );
-
-					expect( transOp ).to.be.instanceof( Array );
-					expect( transOp.length ).to.equal( 2 );
-
-					expected.range.end.offset -= 2;
-
-					expectOperation( transOp[ 0 ], expected );
-
-					expected.range.start.path = [ 2, 4, 1 ];
-					expected.range.end.path = [ 2, 4, 3 ];
-					expected.baseVersion++;
-
-					expectOperation( transOp[ 1 ], expected );
-				} );
-
-				it( 'should get split into two ranges if change range intersects on left-side with moved range', () => {
-					let transformBy = new MoveOperation(
-						new Position( [ 0, 2, 0 ], root ),
-						new Position( [ 2, 4, 1 ], root ),
-						2,
-						baseVersion
-					);
-
-					let transOp = op.getTransformedBy( transformBy );
-
-					expect( transOp ).to.be.instanceof( Array );
-					expect( transOp.length ).to.equal( 2 );
-
-					expected.range.start.offset -= 1;
-					expected.range.end.offset -= 2;
-
-					expectOperation( transOp[ 0 ], expected );
-
-					expected.range.start.path = [ 2, 4, 2 ];
-					expected.range.end.path = [ 2, 4, 3 ];
-					expected.baseVersion++;
-
-					expectOperation( transOp[ 1 ], expected );
-				} );
-
-				it( 'should get split into two ranges if change range contains moved range', () => {
-					let transformBy = new MoveOperation(
-						new Position( [ 0, 2, 2 ], root ),
-						new Position( [ 2, 4, 1 ], root ),
-						1,
-						baseVersion
-					);
-
-					let transOp = op.getTransformedBy( transformBy );
-
-					expect( transOp ).to.be.instanceof( Array );
-					expect( transOp.length ).to.equal( 2 );
-
-					expected.range.end.offset--;
-
-					expectOperation( transOp[ 0 ], expected );
-
-					expected.range.start.path = [ 2, 4, 1 ];
-					expected.range.end.path = [ 2, 4, 2 ];
-					expected.baseVersion++;
-
-					expectOperation( transOp[ 1 ], expected );
-				} );
-
-				it( 'should have it\'s address set to destination address and offset updated if change range is same as move range', () => {
-					let transformBy = new MoveOperation(
-						new Position( [ 0, 2, 1 ], root ),
-						new Position( [ 2, 4, 1 ], root ),
-						3,
-						baseVersion
-					);
-
-					let transOp = op.getTransformedBy( transformBy );
-
-					expected.range.start = new Position( [ 2, 4, 1 ], root );
-					expected.range.end = new Position( [ 2, 4, 4 ], root );
-
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				it( 'should get split into two ranges if move-in destination is inside change range', () => {
-					let transformBy = new MoveOperation(
-						new Position( [ 2, 4, 1 ], root ),
-						new Position( [ 0, 2, 2 ], root ),
-						2,
-						baseVersion
-					);
-
-					let transOp = op.getTransformedBy( transformBy );
-
-					expect( transOp ).to.be.instanceof( Array );
-					expect( transOp.length ).to.equal( 2 );
-
-					expected.range.start.offset = 4;
-					expected.range.end.offset = 6;
-
-					expectOperation( transOp[ 0 ], expected );
-
-					expected.range.start.offset = op.range.start.offset;
-					expected.range.end.offset = 2;
-					expected.baseVersion++;
-
-					expectOperation( transOp[ 1 ], expected );
-				} );
-
-				it( 'should get split into three ranges if moved range intersects and move-in destination is inside change range', () => {
-					let transformBy = new MoveOperation(
-						new Position( [ 0, 2, 0 ], root ),
-						new Position( [ 0, 2, 3 ], root ),
-						2,
-						baseVersion
-					);
-
-					let transOp = op.getTransformedBy( transformBy );
-
-					expect( transOp ).to.be.instanceof( Array );
-					expect( transOp.length ).to.equal( 3 );
-
-					expected.range.start.offset = 3;
-					expected.range.end.offset = 4;
-
-					expectOperation( transOp[ 0 ], expected );
-
-					expected.range.start.offset = 0;
-					expected.range.end.offset = 1;
-					expected.baseVersion++;
-
-					expectOperation( transOp[ 1 ], expected );
-
-					expected.range.start.offset = 2;
-					expected.range.end.offset = 3;
-					expected.baseVersion++;
-
-					expectOperation( transOp[ 2 ], expected );
-				} );
-			} );
-
-			describe( 'NoOperation', () => {
-				it( 'should not get updated', () => {
-					let transformBy = new NoOperation( baseVersion );
-
-					let transOp = op.getTransformedBy( transformBy );
-
-					expectOperation( transOp[ 0 ], expected );
-				} );
-			} );
-		} );
-
 		describe( 'multi-level range', () => {
 			beforeEach( () => {
 				start = new Position( [ 1, 2 ], root );
@@ -1141,6 +533,19 @@ describe( 'ChangeOperation', () => {
 			} );
 
 			describe( 'ChangeOperation', () => {
+				it( 'should remain the same if attributes are not conflicting', () => {
+					let transformBy = new ChangeOperation(
+						range.clone(),
+						new Attribute( 'abc', true ),
+						new Attribute( 'abc', false ),
+						baseVersion
+					);
+
+					let transOp = op.getTransformedBy( transformBy );
+
+					expectOperation( transOp[ 0 ], expected );
+				} );
+
 				describe( 'when attributes are conflicting', () => {
 					describe( 'when incoming range is contained by on-site range', () => {
 						it( 'should remain the same if it is stronger', () => {
@@ -1513,6 +918,258 @@ describe( 'ChangeOperation', () => {
 
 					expected.range.start.path = [ 3 ];
 					expected.range.end.path = [ 5 ];
+					expected.baseVersion++;
+
+					expectOperation( transOp[ 2 ], expected );
+				} );
+			} );
+
+			describe( 'NoOperation', () => {
+				it( 'should not get updated', () => {
+					let transformBy = new NoOperation( baseVersion );
+
+					let transOp = op.getTransformedBy( transformBy );
+
+					expectOperation( transOp[ 0 ], expected );
+				} );
+			} );
+		} );
+
+		// Some extra cases for a ChangeOperation that operates on single tree level range.
+		// This means that the change range start and end differs only on offset value.
+		describe( 'single-level range', () => {
+			beforeEach( () => {
+				start = new Position( [ 0, 2, 1 ], root );
+				end = new Position( [ 0, 2, 4 ], root );
+
+				range = new Range( start, end );
+
+				op = new ChangeOperation( range, oldAttr, newAttr, baseVersion );
+
+				expected.range = new Range( start.clone(), end.clone() );
+			} );
+
+			describe( 'InsertOperation', () => {
+				it( 'should increment offset if addresses are same and offset is after applied operation', () => {
+					let transformBy = new InsertOperation(
+						new Position( [ 0, 2, 0 ], root ),
+						[ nodeA, nodeB ],
+						baseVersion
+					);
+
+					let transOp = op.getTransformedBy( transformBy );
+
+					expected.range.start.offset += 2;
+					expected.range.end.offset += 2;
+
+					expectOperation( transOp[ 0 ], expected );
+				} );
+
+				it( 'should increment offset if positions are same', () => {
+					let transformBy = new InsertOperation(
+						new Position( [ 0, 2, 1 ], root ),
+						[ nodeA, nodeB ],
+						baseVersion
+					);
+
+					let transOp = op.getTransformedBy( transformBy );
+
+					expected.range.start.offset += 2;
+					expected.range.end.offset += 2;
+
+					expectOperation( transOp[ 0 ], expected );
+				} );
+			} );
+
+			describe( 'MoveOperation', () => {
+				it( 'should have it\'s address merged with destination address if change was inside moved node sub-tree', () => {
+					let transformBy = new MoveOperation(
+						new Position( [ 0, 1 ], root ),
+						new Position( [ 2, 4, 1 ], root ),
+						3,
+						baseVersion
+					);
+
+					let transOp = op.getTransformedBy( transformBy );
+
+					expected.range.start.path = [ 2, 4, 2, 1 ];
+					expected.range.end.path = [ 2, 4, 2, 4 ];
+
+					expectOperation( transOp[ 0 ], expected );
+				} );
+
+				it( 'should decrement offset if address is same as move origin and change offset is after moved node offset', () => {
+					let transformBy = new MoveOperation(
+						new Position( [ 0, 2, 0 ], root ),
+						new Position( [ 2, 4, 1 ], root ),
+						1,
+						baseVersion
+					);
+
+					let transOp = op.getTransformedBy( transformBy );
+
+					expected.range.start.offset--;
+					expected.range.end.offset--;
+
+					expectOperation( transOp[ 0 ], expected );
+				} );
+
+				it( 'should increment offset if address is same as move destination and change offset is after move-to offset', () => {
+					let transformBy = new MoveOperation(
+						new Position( [ 2, 4, 1 ], root ),
+						new Position( [ 0, 2, 0 ], root ),
+						2,
+						baseVersion
+					);
+
+					let transOp = op.getTransformedBy( transformBy );
+
+					expected.range.start.offset += 2;
+					expected.range.end.offset += 2;
+
+					expectOperation( transOp[ 0 ], expected );
+				} );
+
+				it( 'should get split into two ranges if change range intersects on right-side with moved range', () => {
+					let transformBy = new MoveOperation(
+						new Position( [ 0, 2, 2 ], root ),
+						new Position( [ 2, 4, 1 ], root ),
+						4,
+						baseVersion
+					);
+
+					let transOp = op.getTransformedBy( transformBy );
+
+					expect( transOp ).to.be.instanceof( Array );
+					expect( transOp.length ).to.equal( 2 );
+
+					expected.range.end.offset -= 2;
+
+					expectOperation( transOp[ 0 ], expected );
+
+					expected.range.start.path = [ 2, 4, 1 ];
+					expected.range.end.path = [ 2, 4, 3 ];
+					expected.baseVersion++;
+
+					expectOperation( transOp[ 1 ], expected );
+				} );
+
+				it( 'should get split into two ranges if change range intersects on left-side with moved range', () => {
+					let transformBy = new MoveOperation(
+						new Position( [ 0, 2, 0 ], root ),
+						new Position( [ 2, 4, 1 ], root ),
+						2,
+						baseVersion
+					);
+
+					let transOp = op.getTransformedBy( transformBy );
+
+					expect( transOp ).to.be.instanceof( Array );
+					expect( transOp.length ).to.equal( 2 );
+
+					expected.range.start.offset -= 1;
+					expected.range.end.offset -= 2;
+
+					expectOperation( transOp[ 0 ], expected );
+
+					expected.range.start.path = [ 2, 4, 2 ];
+					expected.range.end.path = [ 2, 4, 3 ];
+					expected.baseVersion++;
+
+					expectOperation( transOp[ 1 ], expected );
+				} );
+
+				it( 'should get split into two ranges if change range contains moved range', () => {
+					let transformBy = new MoveOperation(
+						new Position( [ 0, 2, 2 ], root ),
+						new Position( [ 2, 4, 1 ], root ),
+						1,
+						baseVersion
+					);
+
+					let transOp = op.getTransformedBy( transformBy );
+
+					expect( transOp ).to.be.instanceof( Array );
+					expect( transOp.length ).to.equal( 2 );
+
+					expected.range.end.offset--;
+
+					expectOperation( transOp[ 0 ], expected );
+
+					expected.range.start.path = [ 2, 4, 1 ];
+					expected.range.end.path = [ 2, 4, 2 ];
+					expected.baseVersion++;
+
+					expectOperation( transOp[ 1 ], expected );
+				} );
+
+				it( 'should have it\'s address set to destination address and offset updated if change range is same as move range', () => {
+					let transformBy = new MoveOperation(
+						new Position( [ 0, 2, 1 ], root ),
+						new Position( [ 2, 4, 1 ], root ),
+						3,
+						baseVersion
+					);
+
+					let transOp = op.getTransformedBy( transformBy );
+
+					expected.range.start = new Position( [ 2, 4, 1 ], root );
+					expected.range.end = new Position( [ 2, 4, 4 ], root );
+
+					expectOperation( transOp[ 0 ], expected );
+				} );
+
+				it( 'should get split into two ranges if move-in destination is inside change range', () => {
+					let transformBy = new MoveOperation(
+						new Position( [ 2, 4, 1 ], root ),
+						new Position( [ 0, 2, 2 ], root ),
+						2,
+						baseVersion
+					);
+
+					let transOp = op.getTransformedBy( transformBy );
+
+					expect( transOp ).to.be.instanceof( Array );
+					expect( transOp.length ).to.equal( 2 );
+
+					expected.range.start.offset = 4;
+					expected.range.end.offset = 6;
+
+					expectOperation( transOp[ 0 ], expected );
+
+					expected.range.start.offset = op.range.start.offset;
+					expected.range.end.offset = 2;
+					expected.baseVersion++;
+
+					expectOperation( transOp[ 1 ], expected );
+				} );
+
+				it( 'should get split into three ranges if moved range intersects and move-in destination is inside change range', () => {
+					let transformBy = new MoveOperation(
+						new Position( [ 0, 2, 0 ], root ),
+						new Position( [ 0, 2, 3 ], root ),
+						2,
+						baseVersion
+					);
+
+					let transOp = op.getTransformedBy( transformBy );
+
+					expect( transOp ).to.be.instanceof( Array );
+					expect( transOp.length ).to.equal( 3 );
+
+					expected.range.start.offset = 3;
+					expected.range.end.offset = 4;
+
+					expectOperation( transOp[ 0 ], expected );
+
+					expected.range.start.offset = 0;
+					expected.range.end.offset = 1;
+					expected.baseVersion++;
+
+					expectOperation( transOp[ 1 ], expected );
+
+					expected.range.start.offset = 2;
+					expected.range.end.offset = 3;
 					expected.baseVersion++;
 
 					expectOperation( transOp[ 2 ], expected );
