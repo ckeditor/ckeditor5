@@ -19,7 +19,7 @@ const modules = bender.amd.require(
 describe( 'position', () => {
 	let Element, Character, Document, NodeList, Position, CKEditorError;
 
-	let doc, root, p, ul, li1, li2, f, o, z, b, a, r;
+	let doc, root, otherRoot, p, ul, li1, li2, f, o, z, b, a, r;
 
 	// root
 	//  |- p         Before: [ 0 ]       After: [ 1 ]
@@ -43,6 +43,7 @@ describe( 'position', () => {
 		doc = new Document();
 
 		root = doc.createRoot( 'root' );
+		otherRoot = doc.createRoot( 'otherRoot' );
 
 		f = new Character( 'f' );
 		o = new Character( 'o' );
@@ -68,6 +69,16 @@ describe( 'position', () => {
 
 		expect( position ).to.have.property( 'path' ).that.deep.equals( [ 0 ] );
 		expect( position ).to.have.property( 'root' ).that.equals( root );
+	} );
+
+	it( 'should throw error if given root is not a RootElement instance', () => {
+		expect( () => {
+			new Position( [ 0 ] )
+		} ).to.throw( CKEditorError, /position-root-not-rootelement/ );
+
+		expect( () => {
+			new Position( [ 0 ], new Element( 'p' ) );
+		} ).to.throw( CKEditorError, /position-root-not-rootelement/ );
 	} );
 
 	it( 'should make positions form node and offset', () => {
@@ -106,11 +117,9 @@ describe( 'position', () => {
 	} );
 
 	it( 'should throw error if one try to make positions before root', () => {
-		expect(
-			() => {
-				Position.createBefore( root );
-			}
-		).to.throw( CKEditorError, /position-before-root/ );
+		expect( () => {
+			Position.createBefore( root );
+		} ).to.throw( CKEditorError, /position-before-root/ );
 	} );
 
 	it( 'should make positions after elements', () => {
@@ -132,11 +141,9 @@ describe( 'position', () => {
 	} );
 
 	it( 'should throw error if one try to make positions after root', () => {
-		expect(
-			() => {
-				Position.createAfter( root );
-			}
-		).to.throw( CKEditorError, /position-after-root/ );
+		expect( () => {
+			Position.createAfter( root );
+		} ).to.throw( CKEditorError, /position-after-root/ );
 	} );
 
 	it( 'should have parent', () => {
@@ -171,6 +178,14 @@ describe( 'position', () => {
 		expect( new Position( [ 1, 0, 1 ], root ) ).to.have.property( 'offset' ).that.equals( 1 );
 		expect( new Position( [ 1, 0, 2 ], root ) ).to.have.property( 'offset' ).that.equals( 2 );
 		expect( new Position( [ 1, 0, 3 ], root ) ).to.have.property( 'offset' ).that.equals( 3 );
+	} );
+
+	it( 'should be able to set offset', () => {
+		let position = new Position( [ 1, 0, 2 ], root );
+		position.offset = 4;
+
+		expect( position.offset ).to.equal( 4 );
+		expect( position.path ).to.deep.equal( [ 1, 0, 4 ] );
 	} );
 
 	it( 'should have nodeBefore', () => {
@@ -221,9 +236,18 @@ describe( 'position', () => {
 		expect( position.isEqual( differentNode ) ).to.be.false;
 	} );
 
-	it( 'should have proper parent path', () => {
+	it( 'should have correct parent path property', () => {
 		let position = new Position( [ 1, 2, 3 ], root );
 
-		expect( position.getParentPath() ).to.deep.equal( [ 1, 2 ] );
+		expect( position.parentPath ).to.deep.equal( [ 1, 2 ] );
+	} );
+
+	it( 'should return a new, equal position when cloned', () => {
+		const position = new Position( [ 1, 2, 3 ], root );
+		const clone = position.clone();
+
+		expect( clone ).not.to.be.equal( position ); // clone is not pointing to the same object as position
+		expect( clone.isEqual( position ) ).to.be.true; // but they are equal in the position-sense
+		expect( clone.path ).not.to.be.equal( position.path ); // make sure the paths are not the same array
 	} );
 } );
