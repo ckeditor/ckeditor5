@@ -234,6 +234,137 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 					}
 			}
 		}
+
+		/**
+		 * Returns a new position that is a combination of this position and given positions. The combined
+		 * position is this position transformed by moving a range starting at `from` to `to` position.
+		 * It is expected that `original` position is inside the moved range.
+		 *
+		 * In other words, this method in a smart way "cuts out" `from` path from this position and
+		 * injects `to` path in it's place, while doing necessary fixes in order to get a correct path.
+		 *
+		 * Example:
+		 * 	let original = new Position( [ 2, 3, 1 ], root );
+		 * 	let from = new Position( [ 2, 2 ], root );
+		 * 	let to = new Position( [ 1, 1, 3 ], otherRoot );
+		 * 	let combined = original.getCombined( from, to );
+		 * 	// combined.path is [ 1, 1, 4, 1 ], combined.root is otherRoot
+		 *
+		 * Explanation:
+		 * We have a position `[ 2, 3, 1 ]` and move some nodes from `[ 2, 2 ]` to `[ 1, 1, 3 ]`. The original position
+		 * was inside moved nodes and now should point to the new place. The moved nodes will be after
+		 * positions `[ 1, 1, 3 ]`, `[ 1, 1, 4 ]`, `[ 1, 1, 5 ]`. Since our position was in the second moved node,
+		 * the transformed position will be in a sub-tree of a node at `[ 1, 1, 4 ]`. Looking at original path, we
+		 * took care of `[ 2, 3 ]` part of it. Now we have to add the rest of the original path to the transformed path.
+		 * Finally, the transformed position will point to `[ 1, 1, 4, 1 ]`.
+		 *
+		 * @param {document.Position} from Beginning of the moved range.
+		 * @param {document.Position} to Position where the range is moved.
+		 * @returns {document.Position} Combined position.
+		 */
+		getCombined( from, to ) {
+			const i = from.parentPath.length;
+
+			// The first part of a path to combined position is a path to the place where nodes were moved.
+			let combined = to.clone();
+
+			// Then we have to update the rest of the path.
+
+			// Fix the offset because this position might be after `from` position and we have to reflect that.
+			combined.offset = combined.offset + this.path[ i ] - from.offset;
+
+			// Then, add the rest of the path.
+			// If this position is at the same level as `from` position nothing will get added.
+			combined.path = combined.path.concat( this.path.slice( i + 1 ) );
+
+			return combined;
+		}
+
+		/**
+		 * Returns this position after being updated by inserting `howMany` nodes at `insertPosition`.
+		 *
+		 * @param {document.Position} insertPosition Position where nodes are inserted.
+		 * @param {Number} howMany How many nodes are inserted.
+		 * @param {Boolean} insertBefore Flag indicating whether nodes are inserted before or after `insertPosition`.
+		 * This is important only when `insertPosition` and this position are same. If that is the case and the flag is
+		 * set to true, this position will get transformed. If the flag is set to false, it won't.
+		 * @returns {document.Position} Transformed position.
+		 */
+		getTransformedByInsertion( insertPosition, howMany, insertBefore ) {
+			let transformed = this.clone();
+
+			// This position can't be affected if insertion was in a different root.
+			if ( this.root != insertPosition.root ) {
+				return transformed;
+			}
+
+			if ( utils.compareArrays( insertPosition.parentPath, this.parentPath ) == utils.compareArrays.SAME ) {
+				// If nodes are inserted in the node that is pointed by this position...
+				if ( insertPosition.offset < this.offset || ( insertPosition.offset == this.offset && insertBefore ) ) {
+					// And are inserted before an offset of that position...
+					// "Push" this positions offset.
+					transformed.offset += howMany;
+				}
+			} else if ( utils.compareArrays( insertPosition.parentPath, this.parentPath ) == utils.compareArrays.PREFIX ) {
+				// If nodes are inserted in a node that is on a path to this position...
+				const i = insertPosition.parentPath.length;
+
+				if ( insertPosition.offset <= this.path[ i ] ) {
+					// And are inserted before next node of that path...
+					// "Push" the index on that path.
+					transformed.path[ i ] += howMany;
+				}
+			}
+
+			return transformed;
+		}
+
+		/**
+		 * Returns this position after being updated by removing `howMany` nodes starting from `deletePosition`.
+		 * It may happen that this position is in a removed node. If that is the case, `null` is returned instead.
+		 *
+		 * @param {document.Position} deletePosition Position before the first removed node.
+		 * @param {Number} howMany How many nodes are removed.
+		 * @returns {document.Position|null} Transformed position or null.
+		 */
+		getTransformedByDeletion( deletePosition, howMany ) {
+			let transformed = this.clone();
+
+			// This position can't be affected if deletion was in a different root.
+			if ( this.root != deletePosition.root ) {
+				return transformed;
+			}
+
+			if ( utils.compareArrays( deletePosition.parentPath, this.parentPath ) == utils.compareArrays.SAME ) {
+				// If nodes are removed from the node that is pointed by this position...
+				if ( deletePosition.offset < this.offset ) {
+					// And are removed from before an offset of that position...
+					// Decrement the offset accordingly.
+					if ( deletePosition.offset + howMany > this.offset ) {
+						transformed.offset = deletePosition.offset;
+					} else {
+						transformed.offset -= howMany;
+					}
+				}
+			} else if ( utils.compareArrays( deletePosition.parentPath, this.parentPath ) == utils.compareArrays.PREFIX ) {
+				// If nodes are removed from a node that is on a path to this position...
+				const i = deletePosition.parentPath.length;
+
+				if ( deletePosition.offset < this.path[ i ] ) {
+					// And are removed from before next node of that path...
+					if ( deletePosition.offset + howMany > this.path[ i ] ) {
+						// If the next node of that path is removed return null
+						// because the node containing this position got removed.
+						return null;
+					} else {
+						// Otherwise, decrement index on that path.
+						transformed.path[ i ] -= howMany;
+					}
+				}
+			}
+
+			return transformed;
+		}
 	}
 
 	/**
