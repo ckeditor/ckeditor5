@@ -7,7 +7,11 @@
 
 /* bender-tags: document */
 
+/* bender-include: ../_tools/tools.js */
+
 'use strict';
+
+const getIteratorCount = bender.tools.core.getIteratorCount;
 
 const modules = bender.amd.require(
 	'document/document',
@@ -31,7 +35,7 @@ describe( 'Element', () => {
 
 			expect( root ).to.be.an.instanceof( Element );
 			expect( root ).to.have.property( 'document' ).that.equals( doc );
-			expect( root._getAttrCount() ).to.equal( 0 );
+			expect( getIteratorCount( root.getAttrs() ) ).to.equal( 0 );
 			expect( root.getChildCount() ).to.equal( 0 );
 		} );
 	} );
