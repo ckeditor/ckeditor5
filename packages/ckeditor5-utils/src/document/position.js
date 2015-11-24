@@ -6,6 +6,11 @@
 'use strict';
 
 CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootElement, utils, CKEditorError ) => {
+	const SAME = 0,
+		AFTER = 1,
+		BEFORE = -1,
+		DIFFERENT = -2;
+
 	/**
 	 * Position in the tree. Position is always located before or after a node.
 	 * See {@link #path} property for more information.
@@ -114,13 +119,13 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 		}
 
 		/**
-		 * Two positions equal if paths are equal.
+		 * Two positions equal if paths are equal and roots are the same.
 		 *
 		 * @param {document.Position} otherPosition Position to compare.
 		 * @returns {Boolean} True if positions equal.
 		 */
 		isEqual( otherPosition ) {
-			return utils.isEqual( this.path, otherPosition.path );
+			return this.compareWith( otherPosition ) == SAME;
 		}
 
 		/**
@@ -198,7 +203,62 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 
 			return Position.createFromParentAndOffset( node.parent, node.getIndex() + 1 );
 		}
+
+		/**
+		 * Checks whether this position is before or after given position.
+		 *
+		 * @param {document.Position} otherPosition Position to compare with.
+		 * @returns {Number} A flag indicating whether this position is {@link #BEFORE} or
+		 * {@link #AFTER} or {@link #SAME} as given position. If positions are in different roots,
+		 * {@link #DIFFERENT} flag is returned.
+		 */
+		compareWith( otherPosition ) {
+			if ( this.root != otherPosition.root ) {
+				return DIFFERENT;
+			}
+
+			const result = utils.compareArrays( this.path, otherPosition.path );
+
+			switch ( result ) {
+				case utils.compareArrays.SAME:
+					return SAME;
+				case utils.compareArrays.PREFIX:
+					return BEFORE;
+				case utils.compareArrays.EXTENSION:
+					return AFTER;
+				default:
+					if ( this.path[ result ] < otherPosition.path[ result ] ) {
+						return BEFORE;
+					} else {
+						return AFTER;
+					}
+			}
+		}
 	}
+
+	/**
+	 * Flag for "are same" relation between Positions.
+	 * @type {Number}
+	 */
+	Position.SAME = SAME;
+
+	/**
+	 * Flag for "is before" relation between Positions.
+	 * @type {Number}
+	 */
+	Position.BEFORE = BEFORE;
+
+	/**
+	 * Flag for "is after" relation between Positions.
+	 * @type {Number}
+	 */
+	Position.AFTER = AFTER;
+
+	/**
+	 * Flag for "are in different roots" relation between Positions.
+	 * @type {Number}
+	 */
+	Position.DIFFERENT = DIFFERENT;
 
 	return Position;
 } );
