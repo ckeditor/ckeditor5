@@ -5,7 +5,7 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'utils', 'ckeditorerror' ], ( utils, CKEditorError ) => {
+CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootElement, utils, CKEditorError ) => {
 	/**
 	 * Position in the tree. Position is always located before or after a node.
 	 * See {@link #path} property for more information.
@@ -17,7 +17,7 @@ CKEDITOR.define( [ 'utils', 'ckeditorerror' ], ( utils, CKEditorError ) => {
 		 * Creates a position.
 		 *
 		 * @param {Array} path Position path. See {@link #path} property for more information.
-		 * @param {document.Element} root Root element for the path. Note that this element can not have a parent.
+		 * @param {document.RootElement} root Root element for the path. Note that this element can not have a parent.
 		 * @constructor
 		 */
 		constructor( path, root ) {
@@ -40,10 +40,20 @@ CKEDITOR.define( [ 'utils', 'ckeditorerror' ], ( utils, CKEditorError ) => {
 			 */
 			this.path = path;
 
+			if ( !( root instanceof RootElement ) ) {
+				/**
+				 * Position root has to be an instance of RootElement.
+				 *
+				 * @error position-root-not-rootelement
+				 * @param root
+				 */
+				throw new CKEditorError( 'position-root-not-rootelement: Position root has to be an instance of RootElement.', { root: root } );
+			}
+
 			/**
 			 * Root element for the path. Note that this element can not have a parent.
 			 *
-			 * @type {document.Element}
+			 * @type {document.RootElement}
 			 */
 			this.root = root;
 		}
@@ -74,6 +84,13 @@ CKEDITOR.define( [ 'utils', 'ckeditorerror' ], ( utils, CKEditorError ) => {
 		 */
 		get offset() {
 			return utils.last( this.path );
+		}
+
+		/**
+		 * Sets offset in the parent, which is the last element of the path.
+		 */
+		set offset( newOffset ) {
+			this.path[ this.path.length - 1 ] = newOffset;
 		}
 
 		/**
@@ -113,8 +130,18 @@ CKEDITOR.define( [ 'utils', 'ckeditorerror' ], ( utils, CKEditorError ) => {
 		 *
 		 * @returns {Number[]} Path to the parent.
 		 */
-		getParentPath() {
+		get parentPath() {
 			return this.path.slice( 0, -1 );
+		}
+
+		/**
+		 * Creates and returns a new instance of {@link document.Position}
+		 * that is equal to this {@link document.Position position}.
+		 *
+		 * @returns {document.Position} Cloned {@link document.Position position}.
+		 */
+		clone() {
+			return new Position( this.path.slice(), this.root );
 		}
 
 		/**
