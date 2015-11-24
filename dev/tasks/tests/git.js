@@ -223,7 +223,8 @@ describe( 'utils', () => {
 				const repositoryPath = '/path/to/repo';
 				const commitCommands = [
 					`cd ${ repositoryPath }`,
-					`git commit -am "Initial commit for ${ pluginName }."`
+					`git add .`,
+					`git commit -m "Initial commit for ${ pluginName }."`
 				];
 				toRestore.push( shExecStub );
 

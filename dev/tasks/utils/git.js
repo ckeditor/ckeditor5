@@ -163,7 +163,8 @@ module.exports = {
 	initialCommit( pluginName, repositoryPath ) {
 		const commitCommands = [
 			`cd ${ repositoryPath }`,
-			`git commit -am "Initial commit for ${ pluginName }."`
+			`git add .`,
+			`git commit -m "Initial commit for ${ pluginName }."`
 		];
 
 		tools.shExec( commitCommands.join( ' && ' ) );
