@@ -4,6 +4,7 @@
  */
 
 /* bender-tags: document */
+/* bender-include: ../../_tools/tools.js */
 /* global describe, before, beforeEach, it, expect */
 
 'use strict';
@@ -198,6 +199,7 @@ describe( 'InsertOperation', () => {
 
 	describe( 'getTransformedBy', () => {
 		let nodeA, nodeB, nodeC, nodeD, position, op, baseVersion, expected;
+		let expectOperation;
 
 		beforeEach( () => {
 			nodeA = new Node();
@@ -216,28 +218,9 @@ describe( 'InsertOperation', () => {
 				position: position.clone(),
 				baseVersion: baseVersion + 1
 			};
+
+			expectOperation = bender.tools.operations.expectOperation( Position, Range );
 		} );
-
-		function expectOperation( op, params ) {
-			for ( let i in params ) {
-				if ( params.hasOwnProperty( i ) ) {
-					if ( i == 'type' ) {
-						expect( op ).to.be.instanceof( params[ i ] );
-					}
-					else if ( params[ i ] instanceof Array ) {
-						expect( op[ i ].length ).to.equal( params[ i ].length );
-
-						for ( let j = 0; j < params[ i ].length; j++ ) {
-							expect( op[ i ][ j ] ).to.equal( params[ i ][ j ] );
-						}
-					} else if ( params[ i ] instanceof Position || params[ i ] instanceof Range ) {
-						expect( op[ i ].isEqual( params[ i ] ) ).to.be.true;
-					} else {
-						expect( op[ i ] ).to.equal( params[ i ] );
-					}
-				}
-			}
-		}
 
 		describe( 'InsertOperation', () => {
 			it( 'should not change when positions are different', () => {
