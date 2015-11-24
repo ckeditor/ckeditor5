@@ -146,8 +146,8 @@ CKEDITOR.define( [
 			}
 
 			// Check if they set different value or one of them removes the attribute.
-			return ( this.newAttr == null && otherOperation.newAttr != null ) ||
-				( this.newAttr != null && otherOperation.newAttr == null ) ||
+			return ( this.newAttr === null && otherOperation.newAttr !== null ) ||
+				( this.newAttr !== null && otherOperation.newAttr === null ) ||
 				( !this.newAttr.isEqual( otherOperation.newAttr ) );
 		}
 	}
@@ -224,7 +224,7 @@ CKEDITOR.define( [
 		}
 
 		// Common is a range of nodes that is affected by MoveOperation. So it got moved to other place.
-		if ( common != null ) {
+		if ( common !== null ) {
 			// We substitute original position by the combination of target position and original position.
 			// This reflects that those nodes were moved to another place by MoveOperation.
 			common.start = common.start.getCombined( move.sourcePosition, newTargetPosition );
@@ -264,7 +264,7 @@ CKEDITOR.define( [
 			// We get the range(s) which are only affected by this operation.
 			const ranges = this.range.getDifference( change.range );
 
-			if ( ranges.length == 0 ) {
+			if ( ranges.length === 0 ) {
 				// If there are no such ranges, this operation should not do anything (as it is less important).
 				return [ new NoOperation( this.baseVersion + 1 ) ];
 			} else {

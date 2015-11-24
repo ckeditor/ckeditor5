@@ -120,7 +120,7 @@ CKEDITOR.define( [
 		// MoveOperation removes nodes from their original position. We acknowledge this by proper transformation.
 		const newPosition = this.position.getTransformedByDeletion( move.sourcePosition, move.howMany );
 
-		if ( newPosition == null ) {
+		if ( newPosition === null ) {
 			// This operation's position was inside a node moved by MoveOperation. We substitute that position by
 			// the combination of move target position and insert position. This reflects changes done by MoveOperation.
 

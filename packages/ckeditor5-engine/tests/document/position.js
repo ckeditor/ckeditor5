@@ -73,7 +73,7 @@ describe( 'position', () => {
 
 	it( 'should throw error if given root is not a RootElement instance', () => {
 		expect( () => {
-			new Position( [ 0 ] )
+			new Position( [ 0 ] );
 		} ).to.throw( CKEditorError, /position-root-not-rootelement/ );
 
 		expect( () => {

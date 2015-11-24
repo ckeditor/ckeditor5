@@ -158,6 +158,8 @@ CKEDITOR.define( [
 	 * @private
 	 */
 	function getTransformedByInsertOperation( insert, isStrong ) {
+		/*jshint validthis:true */
+
 		// Get a target position from a state "after" nodes are inserted by InsertOperation.
 		const newTargetPosition = this.targetPosition.getTransformedByInsertion( insert.position, insert.nodeList.length, !isStrong );
 
@@ -172,7 +174,7 @@ CKEDITOR.define( [
 				newTargetPosition.clone(),
 				range.end.offset - range.start.offset,
 				this.baseVersion + i + 1
-			)
+			);
 		} );
 	}
 
@@ -187,6 +189,8 @@ CKEDITOR.define( [
 	 * @private
 	 */
 	function getTransformedByMoveOperation( move, isStrong ) {
+		/*jshint validthis:true */
+
 		// There is a special case when both move operations' target positions are inside nodes that are
 		// being moved by the other move operation. So in other words, we move ranges into inside of each other.
 		// This case can't be solved reasonably (on the other hand, it should not happen often).
@@ -241,7 +245,7 @@ CKEDITOR.define( [
 		if ( utils.compareArrays( move.sourcePosition.parentPath, this.sourcePosition.parentPath ) == utils.compareArrays.PREFIX || isStrong ) {
 			const common = thisRange.getCommon( moveRange );
 
-			if ( common != null ) {
+			if ( common !== null ) {
 				// We substitute original position by the combination of target position and original position.
 				// This reflects that those nodes were moved to another place by MoveOperation.
 				common.start = common.start.getCombined( move.sourcePosition, moveTargetPosition );
@@ -256,7 +260,7 @@ CKEDITOR.define( [
 		// First, transform target position by deletion of the other operation's range.
 		let newTargetPosition = this.targetPosition.getTransformedByDeletion( move.sourcePosition, move.howMany );
 
-		if ( newTargetPosition == null ) {
+		if ( newTargetPosition === null ) {
 			// This operation's target position was inside a node moved by the other MoveOperation.
 			// We substitute that position by the combination of the other move target position and this target position.
 			// This reflects changes done by the other MoveOperation.
@@ -271,7 +275,7 @@ CKEDITOR.define( [
 
 		// If we haven't got any ranges this far it means that both operations tried to move the same nodes and
 		// this operation is less important. We return NoOperation in this case.
-		if ( ranges.length == 0 ) {
+		if ( ranges.length === 0 ) {
 			return [ new NoOperation( this.baseVersion + 1 ) ];
 		}
 
@@ -292,9 +296,11 @@ CKEDITOR.define( [
 		} );
 	}
 
+	// Checks whether this MoveOperation targetPosition is inside a node from the source range of given MoveOperation.
 	function _targetsIntoMoveOperation( operation ) {
-		var testTarget = this.targetPosition.getTransformedByDeletion( operation.sourcePosition, operation.howMany );
-		return testTarget == null;
+		/*jshint validthis:true */
+
+		return this.targetPosition.getTransformedByDeletion( operation.sourcePosition, operation.howMany ) === null;
 	}
 
 	return MoveOperation;

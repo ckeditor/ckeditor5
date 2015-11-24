@@ -6,10 +6,10 @@
 'use strict';
 
 CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootElement, utils, CKEditorError ) => {
-	const SAME = 0,
-		AFTER = 1,
-		BEFORE = -1,
-		DIFFERENT = -2;
+	const SAME = 0;
+	const AFTER = 1;
+	const BEFORE = -1;
+	const DIFFERENT = -2;
 
 	/**
 	 * Position in the tree. Position is always located before or after a node.
@@ -222,10 +222,13 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 			switch ( result ) {
 				case utils.compareArrays.SAME:
 					return SAME;
+
 				case utils.compareArrays.PREFIX:
 					return BEFORE;
+
 				case utils.compareArrays.EXTENSION:
 					return AFTER;
+
 				default:
 					if ( this.path[ result ] < otherPosition.path[ result ] ) {
 						return BEFORE;
