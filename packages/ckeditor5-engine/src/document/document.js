@@ -12,7 +12,7 @@ CKEDITOR.define( [
 	'emittermixin',
 	'utils',
 	'ckeditorerror'
-], ( Element, RootElement, Tranaction, EmitterMixin, utils, CKEditorError ) => {
+], ( Element, RootElement, Transaction, EmitterMixin, utils, CKEditorError ) => {
 	const graveyardSymbol = Symbol( 'graveyard' );
 
 	/**
@@ -149,7 +149,7 @@ CKEDITOR.define( [
 		 * @returns {document.Transaction} Transaction instance.
 		 */
 		createTransaction() {
-			return new Tranaction( this );
+			return new Transaction( this );
 		}
 	}
 
