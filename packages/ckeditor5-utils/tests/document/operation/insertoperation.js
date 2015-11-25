@@ -223,7 +223,7 @@ describe( 'InsertOperation', () => {
 		} );
 
 		describe( 'InsertOperation', () => {
-			it( 'should not change when positions are different', () => {
+			it( 'target at different position: no position update', () => {
 				let transformBy = new InsertOperation(
 					new Position( [ 1, 3, 2 ], root ),
 					[ nodeC, nodeD ],
@@ -235,7 +235,7 @@ describe( 'InsertOperation', () => {
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
-			it( 'should increment offset if addresses are same and offset is after applied operation', () => {
+			it( 'target at offset before: increment offset', () => {
 				let transformBy = new InsertOperation(
 					new Position( [ 0, 2, 0 ], root ),
 					[ nodeC, nodeD ],
@@ -248,7 +248,7 @@ describe( 'InsertOperation', () => {
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
-			it( 'should increment offset if positions are same and operation to transform is weaker', () => {
+			it( 'target at same offset and is important: increment offset', () => {
 				let transformBy = new InsertOperation(
 					new Position( [ 0, 2, 1 ], root ),
 					[ nodeC, nodeD ],
@@ -261,7 +261,7 @@ describe( 'InsertOperation', () => {
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
-			it( 'should not increment offset if positions are same and operation to transform is stronger', () => {
+			it( 'target at same offset and is less important: no position update', () => {
 				let transformBy = new InsertOperation(
 					new Position( [ 0, 2, 1 ], root ),
 					[ nodeC, nodeD ],
@@ -273,7 +273,7 @@ describe( 'InsertOperation', () => {
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
-			it( 'should not increment offset if addresses are same and offset is before applied operation', () => {
+			it( 'target at offset after: no position update', () => {
 				let transformBy = new InsertOperation(
 					new Position( [ 0, 2, 2 ], root ),
 					[ nodeC, nodeD ],
@@ -285,7 +285,7 @@ describe( 'InsertOperation', () => {
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
-			it( 'should update address at node(i) if applied operation\'s address was a prefix and its offset is before node(i)', () => {
+			it( 'target before node from path: increment index on path', () => {
 				let transformBy = new InsertOperation(
 					new Position( [ 0, 1 ], root ),
 					[ nodeC, nodeD ],
@@ -298,7 +298,7 @@ describe( 'InsertOperation', () => {
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
-			it( 'should not update address at node(i) if applied operation\'s address was a prefix and its offset is after node(i)', () => {
+			it( 'target after node from path: no position update', () => {
 				let transformBy = new InsertOperation(
 					new Position( [ 0, 6 ], root ),
 					[ nodeC, nodeD ],
@@ -312,7 +312,7 @@ describe( 'InsertOperation', () => {
 		} );
 
 		describe( 'ChangeOperation', () => {
-			it( 'should not get updated', () => {
+			it( 'no position update', () => {
 				let rangeStart = position.clone();
 				let rangeEnd = position.clone();
 				rangeEnd.offset += 2;
@@ -331,7 +331,7 @@ describe( 'InsertOperation', () => {
 		} );
 
 		describe( 'MoveOperation', () => {
-			it( 'should not change if insert is in different path than move origin and destination', () => {
+			it( 'range and target are different than insert position: no position update', () => {
 				let transformBy = new MoveOperation(
 					new Position( [ 1, 3, 2 ], root ),
 					new Position( [ 2, 1 ], root ),
@@ -343,20 +343,7 @@ describe( 'InsertOperation', () => {
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
-			it( 'should have it\'s address merged with destination address if insert was inside moved node sub-tree', () => {
-				let transformBy = new MoveOperation(
-					new Position( [ 0, 1 ], root ),
-					new Position( [ 1, 1 ], root ),
-					2
-				);
-
-				let transOp = op.getTransformedBy( transformBy );
-				expected.position.path = [ 1, 2, 1 ];
-
-				expectOperation( transOp[ 0 ], expected );
-			} );
-
-			it( 'should decrement offset if address is same as move origin and insert offset is after moved node offset', () => {
+			it( 'range offset is before insert position offset: decrement offset', () => {
 				let transformBy = new MoveOperation(
 					new Position( [ 0, 2, 0 ], root ),
 					new Position( [ 1, 1 ], root ),
@@ -369,7 +356,7 @@ describe( 'InsertOperation', () => {
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
-			it( 'should not decrement offset if address is same as move origin and insert offset is after moved node offset', () => {
+			it( 'range offset is after insert position offset: no position update', () => {
 				let transformBy = new MoveOperation(
 					new Position( [ 0, 2, 4 ], root ),
 					new Position( [ 1, 1 ], root ),
@@ -381,7 +368,7 @@ describe( 'InsertOperation', () => {
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
-			it( 'should increment offset if address is same as move destination and insert offset is after move-to offset', () => {
+			it( 'target offset before insert position offset: increment offset', () => {
 				let transformBy = new MoveOperation(
 					new Position( [ 1, 1 ], root ),
 					new Position( [ 0, 2, 0 ], root ),
@@ -394,7 +381,7 @@ describe( 'InsertOperation', () => {
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
-			it( 'should not increment offset if address is same as move destination and insert offset is before move-to offset', () => {
+			it( 'target offset after insert position offset: no position update', () => {
 				let transformBy = new MoveOperation(
 					new Position( [ 1, 1 ], root ),
 					new Position( [ 0, 2, 4 ], root ),
@@ -406,7 +393,7 @@ describe( 'InsertOperation', () => {
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
-			it( 'should increment offset if position is same as move operation and insert operation is weaker', () => {
+			it( 'target offset same as insert position offset and is important: increment offset', () => {
 				let transformBy = new MoveOperation(
 					new Position( [ 1, 1 ], root ),
 					new Position( [ 0, 2, 1 ], root ),
@@ -419,7 +406,7 @@ describe( 'InsertOperation', () => {
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
-			it( 'should not increment offset if position is same as move operation and insert operation is stronger', () => {
+			it( 'target offset same as insert position offset and is less important: no position update', () => {
 				let transformBy = new MoveOperation(
 					new Position( [ 1, 1 ], root ),
 					new Position( [ 0, 2, 1 ], root ),
@@ -431,7 +418,7 @@ describe( 'InsertOperation', () => {
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
-			it( 'should update address if moved node is before a node from insert path', () => {
+			it( 'range is before node from insert position path: decrement index on path', () => {
 				let transformBy = new MoveOperation(
 					new Position( [ 0, 0 ], root ),
 					new Position( [ 1, 0 ], root ),
@@ -444,7 +431,7 @@ describe( 'InsertOperation', () => {
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
-			it( 'should not update address if moved node is after a node from insert path', () => {
+			it( 'range is after node from insert position path: no position update', () => {
 				let transformBy = new MoveOperation(
 					new Position( [ 0, 4 ], root ),
 					new Position( [ 1, 0 ], root ),
@@ -456,7 +443,7 @@ describe( 'InsertOperation', () => {
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
-			it( 'should update address if move-in destination is before a node from insert path', () => {
+			it( 'target before node from insert position path: increment index on path', () => {
 				let transformBy = new MoveOperation(
 					new Position( [ 1, 0 ], root ),
 					new Position( [ 0, 0 ], root ),
@@ -469,7 +456,7 @@ describe( 'InsertOperation', () => {
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
-			it( 'should not update address if move-in destination after a node from insert path', () => {
+			it( 'target after node from insert position path: no position update', () => {
 				let transformBy = new MoveOperation(
 					new Position( [ 1, 0 ], root ),
 					new Position( [ 0, 4 ], root ),
@@ -481,7 +468,20 @@ describe( 'InsertOperation', () => {
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
-			it( 'should decrement offset if address is same as move origin and insert offset is in the middle of moved range', () => {
+			it( 'range has node that contains insert position: update position', () => {
+				let transformBy = new MoveOperation(
+					new Position( [ 0, 1 ], root ),
+					new Position( [ 1, 1 ], root ),
+					2
+				);
+
+				let transOp = op.getTransformedBy( transformBy );
+				expected.position.path = [ 1, 2, 1 ];
+
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'range contains insert position (on same level): set position offset to range start', () => {
 				let transformBy = new MoveOperation(
 					new Position( [ 0, 2, 0 ], root ),
 					new Position( [ 1, 0 ], root ),
@@ -496,7 +496,7 @@ describe( 'InsertOperation', () => {
 		} );
 
 		describe( 'NoOperation', () => {
-			it( 'should not get updated', () => {
+			it( 'no operation update', () => {
 				let transformBy = new NoOperation( baseVersion );
 
 				let transOp = op.getTransformedBy( transformBy );
