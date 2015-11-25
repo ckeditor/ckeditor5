@@ -257,7 +257,7 @@ CKEDITOR.define( [
 	function getTransformedByChangeOperation( change, isStrong ) {
 		/*jshint validthis:true */
 
-		if ( this.conflictsAttributesWith( change ) && !isStrong ) {
+		if ( !isStrong && this.conflictsAttributesWith( change ) ) {
 			// If operations' attributes are in conflict and this operation is less important
 			// we have to check if operations' ranges intersect and manage them properly.
 
