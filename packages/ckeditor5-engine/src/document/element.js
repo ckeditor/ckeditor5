@@ -10,7 +10,7 @@ CKEDITOR.define( [
 	'document/nodelist',
 	'document/range',
 	'document/position'
-], ( Node, NodeList, Range, Position ) => {
+], ( Node, NodeList ) => {
 	/**
 	 * Tree data model element.
 	 *

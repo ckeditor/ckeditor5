@@ -150,6 +150,34 @@ describe( 'utils', () => {
 		} );
 	} );
 
+	describe( 'nth', () => {
+		it( 'should return 0th item', () => {
+			expect( utils.nth( 0, getIterator() ) ).to.equal( 11 );
+		} );
+
+		it( 'should return the last item', () => {
+			expect( utils.nth( 2, getIterator() ) ).to.equal( 33 );
+		} );
+
+		it( 'should return null if out of range (bottom)', () => {
+			expect( utils.nth( -1, getIterator() ) ).to.be.null;
+		} );
+
+		it( 'should return null if out of range (top)', () => {
+			expect( utils.nth( 3, getIterator() ) ).to.be.null;
+		} );
+
+		it( 'should return null if iterator is empty', () => {
+			expect( utils.nth( 0, [] ) ).to.be.null;
+		} );
+
+		function *getIterator() {
+			yield 11;
+			yield 22;
+			yield 33;
+		}
+	} );
+
 	describe( 'Lo-Dash extensions', () => {
 		// Ensures that the required Lo-Dash extensions are available in `utils`.
 		it( 'should be exposed in utils', () => {
