@@ -34,101 +34,232 @@ CKEDITOR.define( [
 
 			/**
 			 * Model of this view.
+			 *
+			 * @property {Model}
 			 */
-			this.model = model;
+			this.model = model || null;
 
 			/**
-			 * Regions which belong to this view.
+			 * Regions of this view. See {@link #register}.
+			 *
+			 * @property {Collection}
 			 */
 			this.regions = new Collection( {
 				idProperty: 'name'
 			} );
 
 			/**
-			 * @property {Object} regionsDef
+			 * Template of this view.
+			 *
+			 * @property {Object}
 			 */
+			this.template = null;
 
 			/**
-			 * @property {HTMLElement} _el
+			 * Region selectors of this view. See {@link #register}.
+			 *
+			 * @private
+			 * @property {Object}
 			 */
+			this._regionsSelectors = {};
 
 			/**
-			 * @property {Template} _template
+			 * Element of this view.
+			 *
+			 * @private
+			 * @property {HTMLElement}
 			 */
+			this._el = null;
 
 			/**
-			 * @property {TemplateDefinition} template
+			 * An instance of Template to generate {@link #_el}.
+			 *
+			 * @private
+			 * @property {Template}
 			 */
+			this._template = null;
 		}
 
 		/**
-		 * @param
-		 * @returns
+		 * Initializes the view.
 		 */
 		init() {
 			this._initRegions();
 		}
 
 		/**
-		 * @param
-		 * @returns
+		 * Initializes {@link #regions} of this view by passing a DOM element
+		 * generated from {@link #_regionsSelectors} into {@link Region#init}.
+		 *
+		 * @protected
 		 */
 		_initRegions() {
-			let regionName, region;
+			let region, regionEl, regionSelector;
 
-			// Add regions that haven't been created yet (i.e. by addChild()).
-			// Those regions have no children Views at that point.
-			for ( regionName in this.regionsDef ) {
-				if ( !this.regions.get( regionName ) ) {
-					this._createRegion( regionName );
+			for ( region of this.regions ) {
+				regionSelector = this._regionsSelectors[ region.name ];
+
+				if ( typeof regionSelector == 'string' ) {
+					regionEl = this.el.querySelector( regionSelector );
+				} else if ( typeof regionSelector == 'function' ) {
+					regionEl = regionSelector( this.el );
+				} else {
+					regionEl = null;
+				}
+
+				region.init( regionEl );
+			}
+		}
+
+		/**
+		 * Adds a child view to one of the {@link #regions} (see {@link #register}) in DOM
+		 * at given, optional index position.
+		 *
+		 * @param {String} regionName One of {@link #regions} the child should be added to.
+		 * @param {View} childView A child view.
+		 * @param {Number} [index] Index at which the child will be added to the region.
+		 */
+		addChild( regionName, childView, index ) {
+			if ( !regionName ) {
+				throw new CKEditorError( 'ui-view-addchild-badrname' );
+			}
+
+			const region = this.regions.get( regionName );
+
+			if ( !region ) {
+				throw new CKEditorError( 'ui-view-addchild-noreg' );
+			}
+
+			if ( !childView || !( childView instanceof View ) ) {
+				throw new CKEditorError( 'ui-view-addchild-badtype' );
+			}
+
+			region.views.add( childView, index );
+		}
+
+		/**
+		 * Removes a child view from one of the {@link #regions} (see {@link #register}) in DOM.
+		 *
+		 * @param {String} regionName One of {@link #regions} the view should be removed from.
+		 * @param {View} childVIew A child view.
+		 * @returns {View} A child view instance after removal.
+		 */
+		removeChild( regionName, childView ) {
+			if ( !childView || !( childView instanceof View ) ) {
+				throw new CKEditorError( 'ui-view-removechild-badtype' );
+			}
+
+			const region = this.regions.get( regionName );
+
+			if ( !region ) {
+				throw new CKEditorError( 'ui-view-removechild-noreg' );
+			}
+
+			region.views.remove( childView );
+
+			return childView;
+		}
+
+		/**
+		 * Returns a child view from one of the {@link #regions}
+		 * (see {@link #register}) at given `index`.
+		 *
+		 * @param {String} regionName One of {@link #regions} the child should be retrieved from.
+		 * @param {Number} [index] An index of desired view.
+		 * @returns {View} A view instance.
+		 */
+		getChild( regionName, index ) {
+			const region = this.regions.get( regionName );
+
+			if ( !region ) {
+				throw new CKEditorError( 'ui-view-getchild-noreg' );
+			}
+
+			return region.views.get( index );
+		}
+
+		/**
+		 * Registers a region in {@link #regions}.
+		 *
+		 *		let view = new View();
+		 *
+		 *		// region.name == "foo", region.el == view.el.firstChild
+		 *		view.register( 'foo', el => el.firstChild );
+		 *
+		 *		// region.name == "bar", region.el == view.el.querySelector( 'span' )
+		 *		view.register( new Region( 'bar' ), 'span' );
+		 *
+		 *		// region.name == "bar", region.el == view.el.querySelector( '#div#id' )
+		 *		view.register( 'bar', 'div#id', true );
+		 *
+		 *		// region.name == "baz", region.el == null
+		 *		view.register( 'baz', true );
+		 *
+		 * @param {String|Region} stringOrRegion The name or an instance of the Region
+		 * to be registered. If `String`, the region will be created on the fly.
+		 * @param {String|Function|true} regionSelector The selector to retrieve region's element
+		 * in DOM when the region instance is initialized (see {@link Region#init}, {@link #init}).
+		 * @param {Boolean} [override] When set `true` it will allow overriding of registered regions.
+		 */
+		register() {
+			let args = [].slice.call( arguments );
+			let region, regionName;
+
+			if ( typeof args[ 0 ] === 'string' ) {
+				regionName = args[ 0 ];
+				region = this.regions.get( regionName ) || new Region( regionName );
+			} else if ( args[ 0 ] instanceof Region ) {
+				regionName = args[ 0 ].name;
+				region = args[ 0 ];
+			} else {
+				throw new CKEditorError( 'ui-view-register-wrongtype' );
+			}
+
+			const regionSelector = args[ 1 ];
+
+			if ( !regionSelector || !isValidRegionSelector( regionSelector ) ) {
+				throw new CKEditorError( 'ui-view-register-badselector' );
+			}
+
+			const registered = this.regions.get( regionName );
+
+			if ( !registered ) {
+				this.regions.add( region );
+			} else {
+				if ( registered !== region ) {
+					if ( !args[ 2 ] ) {
+						throw new CKEditorError( 'ui-view-register-override' );
+					}
+
+					this.regions.remove( registered );
+					this.regions.add( region );
 				}
 			}
 
-			// Initialize regions. Feed them with an element of this View.
-			for ( region of this.regions ) {
-				region.init( this );
-			}
+			this._regionsSelectors[ regionName ] = regionSelector;
 		}
 
 		/**
-		 * @param
-		 * @returns
-		 */
-		addChild( childView, regionName, index ) {
-			// Create a Region instance on demand.
-			const region = this.regions.get( regionName ) || this._createRegion( regionName );
-
-			region.addChild( childView, index );
-		}
-
-		/**
-		 * @param
-		 * @returns
-		 */
-		removeChild( childView, regionName ) {
-			return this.regions.get( regionName ).removeChild( childView );
-		}
-
-		/**
-		 * @param
-		 * @returns
-		 */
-		_createRegion( regionName ) {
-			// Use region element definition from `View#regions`.
-			const region = new Region( regionName, this.regionsDef[ regionName ] );
-
-			this.regions.add( region );
-
-			return region;
-		}
-
-		/**
-		 * Element of this view. The element is rendered on first reference.
+		 * Element of this view. The element is rendered on first reference
+		 * using {@link #template} definition and {@link #_template} object.
 		 *
 		 * @property el
 		 */
 		get el() {
-			return this._el || this.render();
+			if ( this._el ) {
+				return this._el;
+			}
+
+			if ( !this.template ) {
+				throw new CKEditorError( 'ui-view-notemplate' );
+			}
+
+			// Prepare pre–defined listeners.
+			this._prepareElementListeners( this.template );
+
+			this._template = new Template( this.template );
+
+			return ( this._el = this._template.render() );
 		}
 
 		set el( el ) {
@@ -177,67 +308,29 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * Renders View's {@link el} using {@link Template} instance.
-		 *
-		 * @returns {HTMLElement} A root element of the View ({@link el}).
-		 */
-		render() {
-			if ( !this.template ) {
-				/**
-				 * This View implements no template to render.
-				 *
-				 * @error ui-view-notemplate
-				 * @param {View} view
-				 */
-				throw new CKEditorError(
-					'ui-view-notemplate: This View implements no template to render.',
-					{ view: this }
-				);
-			}
-
-			// Prepare pre–defined listeners.
-			this._prepareListeners();
-
-			this._template = new Template( this.template );
-
-			return ( this._el = this._template.render() );
-		}
-
-		/**
-		 * Destroys the View.
+		 * Destroys the view instance. The process includes:
+		 *  1. Removal of child views from {@link #regions}.
+		 *  2. Destruction of the {@link #regions}.
+		 *  3. Removal of {#link #_el} from DOM.
 		 */
 		destroy() {
-			const regions = this.regions;
-			let region;
+			let childView;
 
-			// Drop the reference to the model.
-			this.model = null;
+			this.stopListening();
 
-			// Remove View's element from DOM.
+			for ( let region of this.regions ) {
+				while ( ( childView = this.getChild( region.name, 0 ) ) ) {
+					this.removeChild( region.name, childView );
+				}
+
+				this.regions.remove( region ).destroy();
+			}
+
 			if ( this.template ) {
 				this.el.remove();
 			}
 
-			// Remove and destroy regions.
-			for ( region of regions ) {
-				regions.remove( region ).destroy();
-			}
-
-			// Remove all listeners related to this view.
-			this.stopListening();
-		}
-
-		/**
-		 * Iterates over all "on" properties in {@link template} and replaces
-		 * listener definitions with functions which, once executed in a context of
-		 * a DOM element, will attach native DOM listeners to elements.
-		 *
-		 * The execution is performed by {@link Template} class.
-		 */
-		_prepareListeners() {
-			if ( this.template ) {
-				this._prepareElementListeners( this.template );
-			}
+			this.model = this.regions = this.template = this._regionsSelectors = this._el = this._template = null;
 		}
 
 		/**
@@ -246,6 +339,7 @@ CKEDITOR.define( [
 		 * to the element. The listener executes given callback or fires View's event
 		 * of given name.
 		 *
+		 * @protected
 		 * @param {String|Function} evtNameOrCallback Event name to be fired on View or callback to execute.
 		 * @returns {Function} A function to be executed in the context of an element.
 		 */
@@ -295,6 +389,7 @@ CKEDITOR.define( [
 		 * replace each listener declaration with a function which, once executed in a context
 		 * of an element, attaches native DOM listener to the element.
 		 *
+		 * @protected
 		 * @param {TemplateDefinition} def Template definition.
 		 */
 		_prepareElementListeners( def ) {
@@ -337,6 +432,12 @@ CKEDITOR.define( [
 	}
 
 	utils.extend( View.prototype, DOMEmitterMixin );
+
+	const validSelectorTypes = new Set( [ 'string', 'boolean', 'function' ] );
+
+	function isValidRegionSelector( selector ) {
+		return validSelectorTypes.has( typeof selector ) && selector !== false;
+	}
 
 	return View;
 } );
