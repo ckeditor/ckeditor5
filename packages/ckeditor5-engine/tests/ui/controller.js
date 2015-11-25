@@ -26,6 +26,15 @@ describe( 'Controller', () => {
 	beforeEach( updateModuleReference );
 
 	describe( 'constructor', () => {
+		it( 'defines basic properties', () => {
+			const controller = new Controller();
+
+			expect( controller.model ).to.be.null;
+			expect( controller.ready ).to.be.false;
+			expect( controller.view ).to.be.null;
+			expect( controller._collections.length ).to.be.equal( 0 );
+		} );
+
 		it( 'should accept model and view', () => {
 			const model = new Model();
 			const view = new View();
@@ -33,12 +42,6 @@ describe( 'Controller', () => {
 
 			expect( controller.model ).to.be.equal( model );
 			expect( controller.view ).to.be.equal( view );
-		} );
-
-		it( 'should not initialize the controller', () => {
-			const controller = new Controller();
-
-			expect( controller.ready ).to.be.false;
 		} );
 	} );
 
@@ -434,7 +437,9 @@ describe( 'Controller', () => {
 				} )
 				.then( () => {
 					sinon.assert.calledOnce( spy );
+
 					expect( controller.model ).to.be.null;
+					expect( controller.ready ).to.be.null;
 					expect( controller.view ).to.be.null;
 					expect( controller._collections ).to.be.null;
 				} );
