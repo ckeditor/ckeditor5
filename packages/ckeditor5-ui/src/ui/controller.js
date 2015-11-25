@@ -12,6 +12,10 @@ CKEDITOR.define( [
 ], function( Collection, Model, CKEditorError ) {
 	class Controller extends Model {
 		/**
+		 * Creates an instance of the {@link Controller} class.
+		 *
+		 * @param {Model} [model] Model of this Controller.
+		 * @param {View} [view] View instance of this Controller.
 		 * @constructor
 		 */
 		constructor( model, view ) {
@@ -22,14 +26,7 @@ CKEDITOR.define( [
 			 *
 			 * @property {Model}
 			 */
-			this.model = model;
-
-			/**
-			 * View of this controller.
-			 *
-			 * @property {View}
-			 */
-			this.view = view;
+			this.model = model || null;
 
 			/**
 			 * Set `true` after {@link #init}.
@@ -37,6 +34,13 @@ CKEDITOR.define( [
 			 * @property {Boolean}
 			 */
 			this.ready = false;
+
+			/**
+			 * View of this controller.
+			 *
+			 * @property {View}
+			 */
+			this.view = view || null;
 
 			/**
 			 * Collections of child controllers.
@@ -51,9 +55,9 @@ CKEDITOR.define( [
 
 		/**
 		 * Initializes the controller instance. The process includes:
-		 *  * initialization of the child {@link #view}.
-		 *  * initialization of child controllers in {@link #_collections}.
-		 *  * setting {@link #ready} flag `true`.
+		 *  1. Initialization of the child {@link #view}.
+		 *  2. Initialization of child controllers in {@link #_collections}.
+		 *  3. Setting {@link #ready} flag `true`.
 		 *
 		 * @returns {Promise} A Promise resolved when the initialization process is finished.
 		 */
@@ -110,12 +114,12 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * Adds a child controller to one of the {@link #_collections}.
+		 * Adds a child controller to one of the {@link #_collections} (see {@link #register}).
 		 * If this controller instance is ready, the child view will be initialized when added.
 		 * If this controller and child controller have views, the child view will be added
 		 * to corresponding region in this controller's view.
 		 *
-		 * @param {String} collectionName One of {@link _collections} the child should be added to.
+		 * @param {String} collectionName One of {@link #_collections} the child should be added to.
 		 * @param {Controller} childController A child controller.
 		 * @param {Number} [index] Index at which the child will be added to the collection.
 		 * @returns {Promise} A Promise resolved when the child is added.
@@ -156,11 +160,11 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * Removes a child controller from one of the {@link #_collections}.
+		 * Removes a child controller from one of the {@link #_collections} (see {@link #register}).
 		 * If this controller and child controller have views, the child view will be removed
 		 * from corresponding region in this controller's view.
 		 *
-		 * @param {String} collectionName One of {@link _collections} the child should be removed from.
+		 * @param {String} collectionName One of {@link #_collections} the child should be removed from.
 		 * @param {Controller} childController A child controller.
 		 * @returns {Controller} A child controller instance after removal.
 		 */
@@ -189,9 +193,10 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * Returns a child controller from one of the {@link #_collections} at given `index`.
+		 * Returns a child controller from one of the {@link #_collections}
+		 * (see {@link #register}) at given `index`.
 		 *
-		 * @param {String} collectionName One of {@link _collections} the child should be retrieved from.
+		 * @param {String} collectionName One of {@link #_collections} the child should be retrieved from.
 		 * @param {Number} [index] An index of desired controller.
 		 * @returns {Controller} A child controller instance.
 		 */
@@ -241,8 +246,8 @@ CKEDITOR.define( [
 
 		/**
 		 * Destroys the controller instance. The process includes:
-		 *  * destruction of the child {@link #view}.
-		 *  * destruction of child controllers in {@link #_collections}.
+		 *  1. Destruction of the child {@link #view}.
+		 *  2. Destruction of child controllers in {@link #_collections}.
 		 *
 		 * @returns {Promise} A Promise resolved when the destruction process is finished.
 		 */
@@ -271,7 +276,7 @@ CKEDITOR.define( [
 			}
 
 			promises.push( Promise.resolve().then( () => {
-				this.model = this.view = this._collections = null;
+				this.model = this.ready = this.view = this._collections = null;
 			} ) );
 
 			return Promise.all( promises );
