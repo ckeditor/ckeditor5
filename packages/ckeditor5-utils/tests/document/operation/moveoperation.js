@@ -740,28 +740,28 @@ describe( 'MoveOperation', () => {
 			} );
 
 			it( 'target inside transforming move range: split into two operations', () => {
-					let transformBy = new MoveOperation(
-						new Position( [ 4, 1, 0 ], root ),
-						new Position( [ 2, 2, 5 ], root ),
-						2,
-						baseVersion
-					);
+				let transformBy = new MoveOperation(
+					new Position( [ 4, 1, 0 ], root ),
+					new Position( [ 2, 2, 5 ], root ),
+					2,
+					baseVersion
+				);
 
-					let transOp = op.getTransformedBy( transformBy );
+				let transOp = op.getTransformedBy( transformBy );
 
-					expect( transOp ).to.be.instanceof( Array );
-					expect( transOp.length ).to.equal( 2 );
+				expect( transOp ).to.be.instanceof( Array );
+				expect( transOp.length ).to.equal( 2 );
 
-					expected.howMany = 1;
-					expected.sourcePosition.offset = 7;
+				expected.howMany = 1;
+				expected.sourcePosition.offset = 7;
 
-					expectOperation( transOp[ 0 ], expected );
+				expectOperation( transOp[ 0 ], expected );
 
-					expected.sourcePosition.offset = 4;
-					expected.baseVersion++;
+				expected.sourcePosition.offset = 4;
+				expected.baseVersion++;
 
-					expectOperation( transOp[ 1 ], expected );
-				} );
+				expectOperation( transOp[ 1 ], expected );
+			} );
 
 			it( 'target inside a node from transforming range: no operation update', () => {
 				let transformBy = new MoveOperation(

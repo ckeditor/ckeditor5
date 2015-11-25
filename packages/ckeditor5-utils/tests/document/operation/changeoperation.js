@@ -47,8 +47,6 @@ describe( 'ChangeOperation', () => {
 		NodeList = modules[ 'document/nodelist' ];
 		Text = modules[ 'document/text' ];
 		CKEditorError = modules.ckeditorerror;
-
-
 	} );
 
 	let doc, root;
