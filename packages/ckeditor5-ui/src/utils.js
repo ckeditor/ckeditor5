@@ -63,6 +63,7 @@ CKEDITOR.define( [ 'utils-lodash', 'lib/lodash/lodash-ckeditor' ], ( lodashInclu
 		 *   compareArrays( [ 0, 2 ], [ 0, 2, 1 ] ); // PREFIX
 		 *   compareArrays( [ 0, 2 ], [ 0 ] ); // EXTENSION
 		 *   compareArrays( [ 0, 2 ], [ 1, 2 ] ); // 0
+		 *   compareArrays( [ 0, 2 ], [ 0, 1 ] ); // 1
 		 *
 		 * @param {Array} a Array that is compared.
 		 * @param {Array} b Array to compare with.
