@@ -19,132 +19,262 @@ CKEDITOR.define( [
 
 			/**
 			 * Model of this controller.
+			 *
+			 * @property {Model}
 			 */
 			this.model = model;
 
 			/**
 			 * View of this controller.
+			 *
+			 * @property {View}
 			 */
 			this.view = view;
 
 			/**
-			 * @property {Boolean} ready
+			 * Set `true` after {@link #init}.
+			 *
+			 * @property {Boolean}
 			 */
+			this.ready = false;
 
 			/**
-			 * Collections of child controller regions.
+			 * Collections of child controllers.
+			 *
+			 * @private
+			 * @property {Collection}
 			 */
-			this.regions = new Collection( {
+			this._collections = new Collection( {
 				idProperty: 'name'
 			} );
 		}
 
 		/**
-		 * @param
-		 * @returns
+		 * Initializes the controller instance. The process includes:
+		 *  * initialization of the child {@link #view}.
+		 *  * initialization of child controllers in {@link #_collections}.
+		 *  * setting {@link #ready} flag `true`.
+		 *
+		 * @returns {Promise} A Promise resolved when the initialization process is finished.
 		 */
 		init() {
 			if ( this.ready ) {
-				/**
-				 * This Controller has already been initialized.
-				 *
-				 * @error ui-controller-init
-				 * @param {Controller} controller
-				 */
-				throw new CKEditorError(
-					'ui-controller-init: This Controller has already been initialized.',
-					{ view: this }
-				);
+				throw new CKEditorError( 'ui-controller-init-reinit: This Controller already been initialized.' );
 			}
 
 			return Promise.resolve()
-				// Note: Because this.view.init() can be sync as well as async,
-				// this method is not returning this.view.init() directly.
-				.then( () => {
-					return this.view.init();
-				} )
-				.then( () => {
-					let promises = [];
-					let region, controller;
-
-					for ( region of this.regions ) {
-						for ( controller of region ) {
-							promises.push( controller.init() );
-						}
-					}
-
-					return Promise.all( promises );
-				} )
+				.then( this._initView.bind( this ) )
+				.then( this._initCollections.bind( this ) )
 				.then( () => {
 					this.ready = true;
 				} );
 		}
 
 		/**
-		 * @param
-		 * @returns
+		 * Initializes the {@link #view} of this controller instance.
+		 *
+		 * @protected
+		 * @returns {Promise} A Promise resolved when initialization process is finished.
 		 */
-		addChild( controller, regionName ) {
-			let region = this.regions.get( regionName );
+		_initView() {
+			let promise = Promise.resolve();
 
-			if ( !region ) {
-				region = this._createRegion( regionName );
+			if ( this.view ) {
+				promise = promise.then( this.view.init.bind( this.view ) );
 			}
 
-			region.add( controller );
-
-			// If this Controller has already been inited, then every single new
-			// child controller must be inited separately when added.
-			if ( this.ready ) {
-				return controller.init();
-			}
-			// If this Controller.init() hasn't been called yet, then the child
-			// controller will be initialized by init().
-			else {
-				return Promise.resolve();
-			}
-		}
-
-		_createRegion( regionName ) {
-			const region = new Collection();
-			region.name = regionName;
-
-			region.on( 'add', ( evt, controller, index ) => {
-				this.view.addChild( controller.view, regionName, index );
-			} );
-
-			region.on( 'remove', ( evt, controller ) => {
-				this.view.removeChild( controller.view, regionName );
-			} );
-
-			this.regions.add( region );
-
-			return region;
+			return promise;
 		}
 
 		/**
-		 * @param
-		 * @returns
+		 * Initializes the {@link #_collections} of this controller instance.
+		 *
+		 * @protected
+		 * @returns {Promise} A Promise resolved when initialization process is finished.
 		 */
-		destroy() {
-			return Promise.resolve()
-				.then( () => {
-					let promises = [];
-					let region, controller;
+		_initCollections() {
+			const promises = [];
+			let collection, childController;
 
-					for ( region of this.regions ) {
-						for ( controller of this.regions.remove( region ) ) {
-							promises.push( region.remove( controller ).destroy() );
-						}
+			for ( collection of this._collections ) {
+				for ( childController of collection ) {
+					if ( this.view, childController.view ) {
+						this.view.addChild( collection.name, childController.view );
 					}
 
-					return Promise.all( promises );
-				} )
-				// Note: Because this.view.destroy() can be sync as well as async,
-				// it is wrapped in promise.
-				.then( () => {
+					promises.push( childController.init() );
+				}
+			}
+
+			return Promise.all( promises );
+		}
+
+		/**
+		 * Adds a child controller to one of the {@link #_collections}.
+		 * If this controller instance is ready, the child view will be initialized when added.
+		 * If this controller and child controller have views, the child view will be added
+		 * to corresponding region in this controller's view.
+		 *
+		 * @param {String} collectionName One of {@link _collections} the child should be added to.
+		 * @param {Controller} childController A child controller.
+		 * @param {Number} [index] Index at which the child will be added to the collection.
+		 * @returns {Promise} A Promise resolved when the child is added.
+		 */
+		addChild( collectionName, childController, index ) {
+			if ( !collectionName ) {
+				throw new CKEditorError( 'ui-controller-addchild-badcname' );
+			}
+
+			const collection = this._collections.get( collectionName );
+
+			if ( !collection ) {
+				throw new CKEditorError( 'ui-controller-addchild-nocol' );
+			}
+
+			if ( !childController || !( childController instanceof Controller ) ) {
+				throw new CKEditorError( 'ui-controller-addchild-badtype' );
+			}
+
+			// ChildController.init() returns Promise.
+			let promise = Promise.resolve();
+
+			collection.add( childController, index );
+
+			if ( this.ready ) {
+				if ( childController.view ) {
+					this.view.addChild( collectionName, childController.view, index );
+				}
+
+				if ( !childController.ready ) {
+					promise = promise.then( () => {
+						return childController.init();
+					} );
+				}
+			}
+
+			return promise;
+		}
+
+		/**
+		 * Removes a child controller from one of the {@link #_collections}.
+		 * If this controller and child controller have views, the child view will be removed
+		 * from corresponding region in this controller's view.
+		 *
+		 * @param {String} collectionName One of {@link _collections} the child should be removed from.
+		 * @param {Controller} childController A child controller.
+		 * @returns {Controller} A child controller instance after removal.
+		 */
+		removeChild( collectionName, childController ) {
+			if ( !collectionName ) {
+				throw new CKEditorError( 'ui-controller-removechild-badcname' );
+			}
+
+			const collection = this._collections.get( collectionName );
+
+			if ( !collection ) {
+				throw new CKEditorError( 'ui-controller-removechild-nocol' );
+			}
+
+			if ( !childController || !( childController instanceof Controller ) ) {
+				throw new CKEditorError( 'ui-controller-removechild-badtype' );
+			}
+
+			collection.remove( childController );
+
+			if ( this.ready && childController.view ) {
+				this.view.removeChild( collectionName, childController.view );
+			}
+
+			return childController;
+		}
+
+		/**
+		 * Returns a child controller from one of the {@link #_collections} at given `index`.
+		 *
+		 * @param {String} collectionName One of {@link _collections} the child should be retrieved from.
+		 * @param {Number} [index] An index of desired controller.
+		 * @returns {Controller} A child controller instance.
+		 */
+		getChild( collectionName, index ) {
+			const collection = this._collections.get( collectionName );
+
+			if ( !collection ) {
+				throw new CKEditorError( 'ui-controller-getchild-nocol' );
+			}
+
+			return collection.get( index );
+		}
+
+		/**
+		 * Registers a collection in {@link #_collections}.
+		 *
+		 * @param {String} collectionName The name of the collection to be registered.
+		 * @param {Collection} collection Collection to be registered.
+		 * @param {Boolean} [override] When set `true` it will allow overriding of registered collections.
+		 */
+		register( collectionName, collection, override ) {
+			const registered = this._collections.get( collectionName );
+			const that = this;
+
+			if ( !( collection instanceof Collection ) ) {
+				throw new CKEditorError( 'ui-controller-register-badtype' );
+			}
+
+			if ( !registered ) {
+				add( collection );
+			} else {
+				if ( registered !== collection ) {
+					if ( !override ) {
+						throw new CKEditorError( 'ui-controller-register-noverride' );
+					}
+
+					that._collections.remove( registered );
+					add( collection );
+				}
+			}
+
+			function add() {
+				collection.name = collectionName;
+				that._collections.add( collection );
+			}
+		}
+
+		/**
+		 * Destroys the controller instance. The process includes:
+		 *  * destruction of the child {@link #view}.
+		 *  * destruction of child controllers in {@link #_collections}.
+		 *
+		 * @returns {Promise} A Promise resolved when the destruction process is finished.
+		 */
+		destroy() {
+			let promises = [];
+			let collection, childController;
+
+			for ( collection of this._collections ) {
+				for ( childController of collection ) {
+					if ( this.view && childController.view ) {
+						this.view.removeChild( collection.name, childController.view );
+					}
+
+					promises.push( childController.destroy() );
+
+					collection.remove( childController );
+				}
+
+				this._collections.remove( collection );
+			}
+
+			if ( this.view ) {
+				promises.push( Promise.resolve().then( () => {
 					return this.view.destroy();
-				} );
+				} ) );
+			}
+
+			promises.push( Promise.resolve().then( () => {
+				this.model = this.view = this._collections = null;
+			} ) );
+
+			return Promise.all( promises );
 		}
 	}
 
