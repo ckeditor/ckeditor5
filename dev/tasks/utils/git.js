@@ -36,7 +36,7 @@ module.exports = {
 	 * @returns {String} urlInfo.branch
 	 */
 	parseRepositoryUrl( url ) {
-		const regexp = /^(git@github\.com:|https?:\/\/github.com\/)?([^#]+)(?:#)?(.*)$/;
+		const regexp = /^(git@github\.com:|https?:\/\/github\.com\/)?([^#]+)(?:#)?(.*)$/;
 		const match = url.match( regexp );
 		let server;
 		let repository;
