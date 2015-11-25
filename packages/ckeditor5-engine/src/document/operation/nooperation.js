@@ -24,21 +24,12 @@ CKEDITOR.define( [
 			// Do nothing.
 		}
 
-		clone( baseVersion ) {
-			/* istanbul ignore else */
-			if ( !baseVersion ) {
-				baseVersion = this.baseVersion;
-			}
-
-			return new NoOperation( baseVersion );
+		clone() {
+			return new NoOperation( this.baseVersion );
 		}
 
 		getReversed() {
 			return new NoOperation( this.baseVersion + 1 );
-		}
-
-		getTransformedBy() {
-			return this.clone();
 		}
 	}
 

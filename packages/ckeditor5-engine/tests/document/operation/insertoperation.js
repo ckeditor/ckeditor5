@@ -4,7 +4,6 @@
  */
 
 /* bender-tags: document */
-/* bender-include: ../../_tools/tools.js */
 /* global describe, before, beforeEach, it, expect */
 
 'use strict';
@@ -15,19 +14,13 @@ const modules = bender.amd.require(
 	'document/nodelist',
 	'document/operation/insertoperation',
 	'document/operation/removeoperation',
-	'document/operation/changeoperation',
-	'document/operation/moveoperation',
-	'document/operation/nooperation',
 	'document/position',
-	'document/range',
 	'document/character',
-	'document/nodelist',
-	'document/attribute'
+	'document/nodelist'
 );
 
 describe( 'InsertOperation', () => {
-	let Document, Node, NodeList, InsertOperation, RemoveOperation, ChangeOperation,
-		MoveOperation, NoOperation, Position, Range, Character, Attribute;
+	let Document, Node, NodeList, InsertOperation, RemoveOperation, Position, Character;
 
 	before( () => {
 		Document = modules[ 'document/document' ];
@@ -35,13 +28,8 @@ describe( 'InsertOperation', () => {
 		NodeList = modules[ 'document/nodelist' ];
 		InsertOperation = modules[ 'document/operation/insertoperation' ];
 		RemoveOperation = modules[ 'document/operation/removeoperation' ];
-		ChangeOperation = modules[ 'document/operation/changeoperation' ];
-		MoveOperation = modules[ 'document/operation/moveoperation' ];
-		NoOperation = modules[ 'document/operation/nooperation' ];
 		Position = modules[ 'document/position' ];
-		Range = modules[ 'document/range' ];
 		Character = modules[ 'document/character' ];
-		Attribute = modules[ 'document/attribute' ];
 	} );
 
 	let doc, root;
@@ -195,314 +183,5 @@ describe( 'InsertOperation', () => {
 		expect( clone.nodeList.get( 1 ) ).to.equal( nodeB );
 		expect( clone.nodeList.length ).to.equal( 2 );
 		expect( clone.baseVersion ).to.equal( baseVersion );
-	} );
-
-	describe( 'getTransformedBy', () => {
-		let nodeA, nodeB, nodeC, nodeD, position, op, baseVersion, expected;
-		let expectOperation;
-
-		beforeEach( () => {
-			nodeA = new Node();
-			nodeB = new Node();
-			nodeC = new Node();
-			nodeD = new Node();
-
-			baseVersion = doc.version;
-
-			position = new Position( [ 0, 2, 1 ], root );
-
-			op = new InsertOperation( position, [ nodeA, nodeB ], baseVersion );
-
-			expected = {
-				type: InsertOperation,
-				position: position.clone(),
-				baseVersion: baseVersion + 1
-			};
-
-			expectOperation = bender.tools.operations.expectOperation( Position, Range );
-		} );
-
-		describe( 'InsertOperation', () => {
-			it( 'target at different position: no position update', () => {
-				let transformBy = new InsertOperation(
-					new Position( [ 1, 3, 2 ], root ),
-					[ nodeC, nodeD ],
-					baseVersion
-				);
-
-				let transOp = op.getTransformedBy( transformBy );
-
-				expectOperation( transOp[ 0 ], expected );
-			} );
-
-			it( 'target at offset before: increment offset', () => {
-				let transformBy = new InsertOperation(
-					new Position( [ 0, 2, 0 ], root ),
-					[ nodeC, nodeD ],
-					baseVersion
-				);
-
-				let transOp = op.getTransformedBy( transformBy );
-				expected.position.offset += 2;
-
-				expectOperation( transOp[ 0 ], expected );
-			} );
-
-			it( 'target at same offset and is important: increment offset', () => {
-				let transformBy = new InsertOperation(
-					new Position( [ 0, 2, 1 ], root ),
-					[ nodeC, nodeD ],
-					baseVersion
-				);
-
-				let transOp = op.getTransformedBy( transformBy );
-				expected.position.offset += 2;
-
-				expectOperation( transOp[ 0 ], expected );
-			} );
-
-			it( 'target at same offset and is less important: no position update', () => {
-				let transformBy = new InsertOperation(
-					new Position( [ 0, 2, 1 ], root ),
-					[ nodeC, nodeD ],
-					baseVersion
-				);
-
-				let transOp = op.getTransformedBy( transformBy, true );
-
-				expectOperation( transOp[ 0 ], expected );
-			} );
-
-			it( 'target at offset after: no position update', () => {
-				let transformBy = new InsertOperation(
-					new Position( [ 0, 2, 2 ], root ),
-					[ nodeC, nodeD ],
-					baseVersion
-				);
-
-				let transOp = op.getTransformedBy( transformBy );
-
-				expectOperation( transOp[ 0 ], expected );
-			} );
-
-			it( 'target before node from path: increment index on path', () => {
-				let transformBy = new InsertOperation(
-					new Position( [ 0, 1 ], root ),
-					[ nodeC, nodeD ],
-					baseVersion
-				);
-
-				let transOp = op.getTransformedBy( transformBy );
-				expected.position.path[ 1 ] += 2;
-
-				expectOperation( transOp[ 0 ], expected );
-			} );
-
-			it( 'target after node from path: no position update', () => {
-				let transformBy = new InsertOperation(
-					new Position( [ 0, 6 ], root ),
-					[ nodeC, nodeD ],
-					baseVersion
-				);
-
-				let transOp = op.getTransformedBy( transformBy );
-
-				expectOperation( transOp[ 0 ], expected );
-			} );
-		} );
-
-		describe( 'ChangeOperation', () => {
-			it( 'no position update', () => {
-				let rangeStart = position.clone();
-				let rangeEnd = position.clone();
-				rangeEnd.offset += 2;
-
-				let transformBy = new ChangeOperation(
-					new Range( rangeStart, rangeEnd ),
-					null,
-					new Attribute( 'foo', 'bar' ),
-					baseVersion
-				);
-
-				let transOp = op.getTransformedBy( transformBy );
-
-				expectOperation( transOp[ 0 ], expected );
-			} );
-		} );
-
-		describe( 'MoveOperation', () => {
-			it( 'range and target are different than insert position: no position update', () => {
-				let transformBy = new MoveOperation(
-					new Position( [ 1, 3, 2 ], root ),
-					new Position( [ 2, 1 ], root ),
-					2
-				);
-
-				let transOp = op.getTransformedBy( transformBy );
-
-				expectOperation( transOp[ 0 ], expected );
-			} );
-
-			it( 'range offset is before insert position offset: decrement offset', () => {
-				let transformBy = new MoveOperation(
-					new Position( [ 0, 2, 0 ], root ),
-					new Position( [ 1, 1 ], root ),
-					1
-				);
-
-				let transOp = op.getTransformedBy( transformBy );
-				expected.position.offset--;
-
-				expectOperation( transOp[ 0 ], expected );
-			} );
-
-			it( 'range offset is after insert position offset: no position update', () => {
-				let transformBy = new MoveOperation(
-					new Position( [ 0, 2, 4 ], root ),
-					new Position( [ 1, 1 ], root ),
-					1
-				);
-
-				let transOp = op.getTransformedBy( transformBy );
-
-				expectOperation( transOp[ 0 ], expected );
-			} );
-
-			it( 'target offset before insert position offset: increment offset', () => {
-				let transformBy = new MoveOperation(
-					new Position( [ 1, 1 ], root ),
-					new Position( [ 0, 2, 0 ], root ),
-					2
-				);
-
-				let transOp = op.getTransformedBy( transformBy );
-				expected.position.offset += 2;
-
-				expectOperation( transOp[ 0 ], expected );
-			} );
-
-			it( 'target offset after insert position offset: no position update', () => {
-				let transformBy = new MoveOperation(
-					new Position( [ 1, 1 ], root ),
-					new Position( [ 0, 2, 4 ], root ),
-					2
-				);
-
-				let transOp = op.getTransformedBy( transformBy );
-
-				expectOperation( transOp[ 0 ], expected );
-			} );
-
-			it( 'target offset same as insert position offset and is important: increment offset', () => {
-				let transformBy = new MoveOperation(
-					new Position( [ 1, 1 ], root ),
-					new Position( [ 0, 2, 1 ], root ),
-					2
-				);
-
-				let transOp = op.getTransformedBy( transformBy );
-				expected.position.offset += 2;
-
-				expectOperation( transOp[ 0 ], expected );
-			} );
-
-			it( 'target offset same as insert position offset and is less important: no position update', () => {
-				let transformBy = new MoveOperation(
-					new Position( [ 1, 1 ], root ),
-					new Position( [ 0, 2, 1 ], root ),
-					2
-				);
-
-				let transOp = op.getTransformedBy( transformBy, true );
-
-				expectOperation( transOp[ 0 ], expected );
-			} );
-
-			it( 'range is before node from insert position path: decrement index on path', () => {
-				let transformBy = new MoveOperation(
-					new Position( [ 0, 0 ], root ),
-					new Position( [ 1, 0 ], root ),
-					2
-				);
-
-				let transOp = op.getTransformedBy( transformBy );
-				expected.position.path[ 1 ] -= 2;
-
-				expectOperation( transOp[ 0 ], expected );
-			} );
-
-			it( 'range is after node from insert position path: no position update', () => {
-				let transformBy = new MoveOperation(
-					new Position( [ 0, 4 ], root ),
-					new Position( [ 1, 0 ], root ),
-					2
-				);
-
-				let transOp = op.getTransformedBy( transformBy );
-
-				expectOperation( transOp[ 0 ], expected );
-			} );
-
-			it( 'target before node from insert position path: increment index on path', () => {
-				let transformBy = new MoveOperation(
-					new Position( [ 1, 0 ], root ),
-					new Position( [ 0, 0 ], root ),
-					2
-				);
-
-				let transOp = op.getTransformedBy( transformBy );
-				expected.position.path[ 1 ] += 2;
-
-				expectOperation( transOp[ 0 ], expected );
-			} );
-
-			it( 'target after node from insert position path: no position update', () => {
-				let transformBy = new MoveOperation(
-					new Position( [ 1, 0 ], root ),
-					new Position( [ 0, 4 ], root ),
-					2
-				);
-
-				let transOp = op.getTransformedBy( transformBy );
-
-				expectOperation( transOp[ 0 ], expected );
-			} );
-
-			it( 'range has node that contains insert position: update position', () => {
-				let transformBy = new MoveOperation(
-					new Position( [ 0, 1 ], root ),
-					new Position( [ 1, 1 ], root ),
-					2
-				);
-
-				let transOp = op.getTransformedBy( transformBy );
-				expected.position.path = [ 1, 2, 1 ];
-
-				expectOperation( transOp[ 0 ], expected );
-			} );
-
-			it( 'range contains insert position (on same level): set position offset to range start', () => {
-				let transformBy = new MoveOperation(
-					new Position( [ 0, 2, 0 ], root ),
-					new Position( [ 1, 0 ], root ),
-					3
-				);
-
-				let transOp = op.getTransformedBy( transformBy );
-				expected.position.offset = 0;
-
-				expectOperation( transOp[ 0 ], expected );
-			} );
-		} );
-
-		describe( 'NoOperation', () => {
-			it( 'no operation update', () => {
-				let transformBy = new NoOperation( baseVersion );
-
-				let transOp = op.getTransformedBy( transformBy );
-
-				expectOperation( transOp[ 0 ], expected );
-			} );
-		} );
 	} );
 } );
