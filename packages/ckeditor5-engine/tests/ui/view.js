@@ -716,13 +716,14 @@ describe( 'View', () => {
 			const region = new Region( 'x' );
 			const spy = bender.sinon.spy( region, 'destroy' );
 			const regionsRef = view.regions;
+			const regionViewsRef = region.views;
 
 			view.register( region, true );
 			view.addChild( 'x', new View() );
 			view.destroy();
 
 			expect( regionsRef.length ).to.be.equal( 0 );
-			expect( region.views.length ).to.be.equal( 0 );
+			expect( regionViewsRef.length ).to.be.equal( 0 );
 			expect( spy.calledOnce ).to.be.true;
 		} );
 
@@ -755,7 +756,7 @@ describe( 'View', () => {
 
 			expect( () => {
 				view.destroy();
-			} ).to.not.throw( Error );
+			} ).to.not.throw();
 		} );
 	} );
 } );
