@@ -50,8 +50,9 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * @param
-		 * @returns
+		 * Initializes region instance with an element. Usually it comes from {@link View#init}.
+		 *
+		 * @param {HTMLElement} regiobEl Element of this region.
 		 */
 		init( regionEl ) {
 			this.el = regionEl;
@@ -68,7 +69,7 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * Destroys the Region instance.
+		 * Destroys region instance.
 		 */
 		destroy() {
 			if ( this.el ) {
