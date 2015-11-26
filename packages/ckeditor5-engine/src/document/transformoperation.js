@@ -366,8 +366,10 @@ CKEDITOR.define( [
 				// * on deeper tree level - it means that we move nodes that are inside moved nodes
 				// The operations are conflicting only if they try to move exactly same nodes, so only in the first case.
 				// So, we will handle common range if it is "deeper" or if transformed operation is more important.
-				if ( utils.compareArrays( b.sourcePosition.parentPath, a.sourcePosition.parentPath ) == utils.compareArrays.PREFIX || isStrong ) {
-					const common = rangeA.getCommon( rangeB );
+				let isDeeper = utils.compareArrays( b.sourcePosition.getParentPath(), a.sourcePosition.getParentPath() ) == utils.compareArrays.PREFIX;
+
+				if ( isDeeper || isStrong ) {
+					const common = rangeA.getIntersection( rangeB );
 
 					if ( common !== null ) {
 						// We substitute original position by the combination of target position and original position.

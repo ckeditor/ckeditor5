@@ -243,10 +243,10 @@ describe( 'position', () => {
 		expect( position.isEqual( differentPosition ) ).to.be.false;
 	} );
 
-	it( 'should have correct parent path property', () => {
+	it( 'should have proper parent path', () => {
 		let position = new Position( [ 1, 2, 3 ], root );
 
-		expect( position.parentPath ).to.deep.equal( [ 1, 2 ] );
+		expect( position.getParentPath() ).to.deep.equal( [ 1, 2 ] );
 	} );
 
 	it( 'should return a new, equal position when cloned', () => {

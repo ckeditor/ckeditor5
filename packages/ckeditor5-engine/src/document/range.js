@@ -115,8 +115,8 @@ CKEDITOR.define( [ 'document/position', 'document/positioniterator', 'utils' ], 
 		 */
 		getTransformedByInsertion( insertPosition, howMany, spreadOnlyOnSameLevel ) {
 			// Flag indicating whether this whole range and given insertPosition is on the same tree level.
-			const areOnSameLevel = utils.compareArrays( this.start.parentPath, this.end.parentPath ) == utils.compareArrays.SAME &&
-				utils.compareArrays( this.start.parentPath, insertPosition.parentPath ) == utils.compareArrays.SAME;
+			const areOnSameLevel = utils.compareArrays( this.start.getParentPath(), this.end.getParentPath() ) == utils.compareArrays.SAME &&
+				utils.compareArrays( this.start.getParentPath(), insertPosition.getParentPath() ) == utils.compareArrays.SAME;
 
 			if ( this.containsPosition( insertPosition ) && ( !spreadOnlyOnSameLevel || areOnSameLevel ) ) {
 				// Range has to be spread. The first part is from original start to the spread point.
