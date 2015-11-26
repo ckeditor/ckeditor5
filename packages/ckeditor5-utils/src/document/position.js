@@ -180,7 +180,7 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 		 *
 		 * @returns {Number[]} Path to the parent.
 		 */
-		get parentPath() {
+		getParentPath() {
 			return this.path.slice( 0, -1 );
 		}
 
@@ -311,7 +311,7 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 		 * @returns {document.Position} Combined position.
 		 */
 		getCombined( from, to ) {
-			const i = from.parentPath.length;
+			const i = from.path.length - 1;
 
 			// The first part of a path to combined position is a path to the place where nodes were moved.
 			let combined = to.clone();
@@ -346,16 +346,16 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 				return transformed;
 			}
 
-			if ( utils.compareArrays( insertPosition.parentPath, this.parentPath ) == utils.compareArrays.SAME ) {
+			if ( utils.compareArrays( insertPosition.getParentPath(), this.getParentPath() ) == utils.compareArrays.SAME ) {
 				// If nodes are inserted in the node that is pointed by this position...
 				if ( insertPosition.offset < this.offset || ( insertPosition.offset == this.offset && insertBefore ) ) {
 					// And are inserted before an offset of that position...
 					// "Push" this positions offset.
 					transformed.offset += howMany;
 				}
-			} else if ( utils.compareArrays( insertPosition.parentPath, this.parentPath ) == utils.compareArrays.PREFIX ) {
+			} else if ( utils.compareArrays( insertPosition.getParentPath(), this.getParentPath() ) == utils.compareArrays.PREFIX ) {
 				// If nodes are inserted in a node that is on a path to this position...
-				const i = insertPosition.parentPath.length;
+				const i = insertPosition.path.length - 1;
 
 				if ( insertPosition.offset <= this.path[ i ] ) {
 					// And are inserted before next node of that path...
@@ -383,7 +383,7 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 				return transformed;
 			}
 
-			if ( utils.compareArrays( deletePosition.parentPath, this.parentPath ) == utils.compareArrays.SAME ) {
+			if ( utils.compareArrays( deletePosition.getParentPath(), this.getParentPath() ) == utils.compareArrays.SAME ) {
 				// If nodes are removed from the node that is pointed by this position...
 				if ( deletePosition.offset < this.offset ) {
 					// And are removed from before an offset of that position...
@@ -394,9 +394,9 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 						transformed.offset -= howMany;
 					}
 				}
-			} else if ( utils.compareArrays( deletePosition.parentPath, this.parentPath ) == utils.compareArrays.PREFIX ) {
+			} else if ( utils.compareArrays( deletePosition.getParentPath(), this.getParentPath() ) == utils.compareArrays.PREFIX ) {
 				// If nodes are removed from a node that is on a path to this position...
-				const i = deletePosition.parentPath.length;
+				const i = deletePosition.path.length - 1;
 
 				if ( deletePosition.offset < this.path[ i ] ) {
 					// And are removed from before next node of that path...

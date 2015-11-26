@@ -87,11 +87,8 @@ CKEDITOR.define( [
 					'operation-move-range-into-itself: Trying to move a range of nodes to the inside of that range.'
 				);
 			} else {
-				const sourcePath = this.sourcePosition.parentPath;
-				const targetPath = this.targetPosition.parentPath;
-
-				if ( utils.compareArrays( sourcePath, targetPath ) == utils.compareArrays.PREFIX ) {
-					let i = sourcePath.length;
+				if ( utils.compareArrays( this.sourcePosition.getParentPath(), this.targetPosition.getParentPath() ) == utils.compareArrays.PREFIX ) {
+					let i = this.sourcePosition.path.length - 1;
 
 					if ( this.targetPosition.path[ i ] >= sourceOffset && this.targetPosition.path[ i ] < sourceOffset + this.howMany ) {
 						/**
