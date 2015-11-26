@@ -288,22 +288,25 @@ CKEDITOR.define( [
 			 * DOM.
 			 */
 			return ( el, domUpdater ) => {
-				// TODO: Use ES6 default arguments syntax.
-				callback = callback || domUpdater;
+				let onModelChange;
+
+				if ( callback ) {
+					onModelChange = ( evt, value ) => {
+						let processedValue = callback( el, value );
+
+						if ( typeof processedValue != 'undefined' ) {
+							domUpdater( el, processedValue );
+						}
+					};
+				} else {
+					onModelChange = ( evt, value ) => domUpdater( el, value );
+				}
 
 				// Execute callback when the attribute changes.
 				this.listenTo( this.model, 'change:' + attribute, onModelChange );
 
 				// Set the initial state of the view.
 				onModelChange( null, this.model[ attribute ] );
-
-				function onModelChange( evt, value ) {
-					let processedValue = callback( el, value );
-
-					if ( typeof processedValue != 'undefined' ) {
-						domUpdater( el, processedValue );
-					}
-				}
 			};
 		}
 
