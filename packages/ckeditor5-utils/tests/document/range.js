@@ -139,52 +139,6 @@ describe( 'Range', () => {
 		} );
 	} );
 
-	describe( 'intersectsWith', () => {
-		beforeEach( () => {
-			range = new Range( new Position( [ 3, 7 ], root ), new Position( [ 4, 2, 2 ], root ) );
-		} );
-
-		// [  --  range A  --  ]  <  --  range B --  >
-		it( 'should return false if ranges are next to each other', () => {
-			const otherRange = new Range( new Position( [ 1, 3 ], root ), new Position( [ 3, 6 ], root ) );
-
-			expect( range.intersectsWith( otherRange ) ).to.be.false;
-			expect( otherRange.intersectsWith( range ) ).to.be.false;
-		} );
-
-		// [  --  range A  --  ]<  --  range B --  >
-		it( 'should return false if ranges are touching', () => {
-			const otherRange = new Range( new Position( [ 1, 3 ], root ), new Position( [ 3, 7 ], root ) );
-
-			expect( range.intersectsWith( otherRange ) ).to.be.false;
-			expect( otherRange.intersectsWith( range ) ).to.be.false;
-		} );
-
-		// [  --  range A  <  --  ]  range B --  >
-		it( 'should return true if ranges partially intersects on one of sides', () => {
-			const otherRange = new Range( new Position( [ 1, 3 ], root ), new Position( [ 3, 7, 2 ], root ) );
-
-			expect( range.intersectsWith( otherRange ) ).to.be.true;
-			expect( otherRange.intersectsWith( range ) ).to.be.true;
-		} );
-
-		// [<  --  range A  range B  --  >]
-		it( 'should return true if ranges are same', () => {
-			const otherRange = new Range( new Position( [ 3, 7 ], root ), new Position( [ 4, 2, 2 ], root ) );
-
-			expect( range.intersectsWith( otherRange ) ).to.be.true;
-			expect( otherRange.intersectsWith( range ) ).to.be.true;
-		} );
-
-		// [  --  range A  --  <  --  range B  --  >  ]
-		it( 'should return true if one range contains or is contained by the other', () => {
-			const otherRange = new Range( new Position( [ 1 ], root ), new Position( [ 4, 3 ], root ) );
-
-			expect( range.intersectsWith( otherRange ) ).to.be.true;
-			expect( otherRange.intersectsWith( range ) ).to.be.true;
-		} );
-	} );
-
 	describe( 'containsPosition', () => {
 		beforeEach( () => {
 			range = new Range( new Position( [ 1 ], root ), new Position( [ 3 ], root ) );
@@ -308,7 +262,7 @@ describe( 'Range', () => {
 		} );
 	} );
 
-	describe( 'getCommon', () => {
+	describe( 'getIntersection', () => {
 		let range;
 
 		beforeEach( () => {
@@ -317,28 +271,28 @@ describe( 'Range', () => {
 
 		it( 'should return null if ranges do not intersect', () => {
 			const otherRange = new Range( new Position( [ 5, 4 ], root ), new Position( [ 7 ], root ) );
-			const common = range.getCommon( otherRange );
+			const common = range.getIntersection( otherRange );
 
 			expect( common ).to.be.null;
 		} );
 
 		it( 'should return a range equal to the common part of ranges - original range contains the other range', () => {
 			const otherRange = new Range( new Position( [ 4 ], root ), new Position( [ 5 ], root ) );
-			const common = range.getCommon( otherRange );
+			const common = range.getIntersection( otherRange );
 
 			expect( common.isEqual( otherRange ) ).to.be.true;
 		} );
 
 		it( 'should return a range equal to the common part of ranges - original range is contained by the other range', () => {
 			const otherRange = new Range( new Position( [ 3 ], root ), new Position( [ 6 ], root ) );
-			const common = range.getCommon( otherRange );
+			const common = range.getIntersection( otherRange );
 
 			expect( common.isEqual( range ) ).to.be.true;
 		} );
 
 		it( 'should return a range equal to the common part of ranges - original range intersects with the other range', () => {
 			const otherRange = new Range( new Position( [ 3 ], root ), new Position( [ 4, 7 ], root ) );
-			const common = range.getCommon( otherRange );
+			const common = range.getIntersection( otherRange );
 
 			expect( common.start.path ).to.deep.equal( [ 3, 2 ] );
 			expect( common.end.path ).to.deep.equal( [ 4, 7 ] );

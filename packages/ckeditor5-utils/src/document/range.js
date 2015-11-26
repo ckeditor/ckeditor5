@@ -72,24 +72,6 @@ CKEDITOR.define( [ 'document/position', 'document/positioniterator', 'utils' ], 
 		}
 
 		/**
-		 * Checks whether this {document.Range range} intersects with the given {document.Range range}.
-		 *
-		 * @param {document.Range} otherRange Range to check.
-		 * @returns {boolean} True if ranges intersect.
-		 */
-		intersectsWith( otherRange ) {
-			const isBefore = this.start.compareWith( otherRange.start ) == Position.BEFORE &&
-				this.end.compareWith( otherRange.start ) == Position.BEFORE;
-
-			const isAfter = this.start.compareWith( otherRange.end ) == Position.AFTER &&
-				this.end.compareWith( otherRange.end ) == Position.AFTER;
-
-			const touches = this.start.isEqual( otherRange.end ) || this.end.isEqual( otherRange.start );
-
-			return !isBefore && !isAfter && !touches;
-		}
-
-		/**
 		 * Creates and returns a new instance of {@link document.Range}
 		 * that is equal to this {@link document.Range range}.
 		 *
@@ -186,80 +168,79 @@ CKEDITOR.define( [ 'document/position', 'document/positioniterator', 'utils' ], 
 		 * @returns {Array.<document.Range>} The difference between ranges.
 		 */
 		getDifference( otherRange ) {
-			// If ranges do not intersect, return the original range.
-			if ( !otherRange.intersectsWith( this ) ) {
-				return [
-					this.clone()
-				];
-			}
-
-			// At this point we know that ranges intersect but given range does not contain this range.
 			const ranges = [];
 
-			if ( this.containsPosition( otherRange.start ) ) {
-				// Given range start is inside this range. This means that we have to
-				// add shrunken range - from the start to the middle of this range.
-				ranges.push(
-					new Range(
-						this.start.clone(),
-						otherRange.start.clone()
-					)
-				);
-			}
+			if ( this.start.isBefore( otherRange.end ) && this.end.isAfter( otherRange.start ) ) {
+				// Ranges intersect.
 
-			if ( this.containsPosition( otherRange.end ) ) {
-				// Given range end is inside this range. This means that we have to
-				// add shrunken range - from the middle of this range to the end.
-				ranges.push(
-					new Range(
-						otherRange.end.clone(),
-						this.end.clone()
-					)
-				);
+				if ( this.containsPosition( otherRange.start ) ) {
+					// Given range start is inside this range. This means that we have to
+					// add shrunken range - from the start to the middle of this range.
+					ranges.push(
+						new Range(
+							this.start.clone(),
+							otherRange.start.clone()
+						)
+					);
+				}
+
+				if ( this.containsPosition( otherRange.end ) ) {
+					// Given range end is inside this range. This means that we have to
+					// add shrunken range - from the middle of this range to the end.
+					ranges.push(
+						new Range(
+							otherRange.end.clone(),
+							this.end.clone()
+						)
+					);
+				}
+			} else {
+				// Ranges do not intersect, return the original range.
+				ranges.push( this.clone() );
 			}
 
 			return ranges;
 		}
 
 		/**
-		 * Returns a part of this {document.Range range} that is also a part of given {document.Range range}. If
-		 * ranges has no common part, returns null.
+		 * Returns an intersection of this {document.Range range} and given {document.Range range}. Intersection
+		 * is a common part of both of those ranges. If ranges has no common part, returns null.
 		 *
 		 * Examples:
 		 * 	let range = new Range( new Position( [ 2, 7 ], root ), new Position( [ 4, 0, 1 ], root ) );
 		 * 	let otherRange = new Range( new Position( [ 1 ], root ), new Position( [ 2 ], root ) );
-		 * 	let transformed = range.getCommon( otherRange ); // null - ranges have no common part
+		 * 	let transformed = range.getIntersection( otherRange ); // null - ranges have no common part
 		 *
 		 * 	otherRange = new Range( new Position( [ 3 ], root ), new Position( [ 5 ], root ) );
-		 * 	transformed = range.getCommon( otherRange ); // range from [ 3 ] to [ 4, 0, 1 ]
+		 * 	transformed = range.getIntersection( otherRange ); // range from [ 3 ] to [ 4, 0, 1 ]
 		 *
-		 * @param {document.Range} otherRange Range to compare with.
-		 * @returns {document.Range} Range that is common part of given ranges.
+		 * @param {document.Range} otherRange Range to check for intersection.
+		 * @returns {document.Range|null} A common part of given ranges or null if ranges have no common part.
 		 */
-		getCommon( otherRange ) {
-			// If ranges do not intersect, they do not have common part.
-			if ( !otherRange.intersectsWith( this ) ) {
-				return null;
+		getIntersection( otherRange ) {
+			if ( this.start.isBefore( otherRange.end ) && this.end.isAfter( otherRange.start ) ) {
+				// Ranges intersect, so a common range will be returned.
+				// At most, it will be same as this range.
+				let commonRangeStart = this.start;
+				let commonRangeEnd = this.end;
+
+				if ( this.containsPosition( otherRange.start ) ) {
+					// Given range start is inside this range. This means thaNt we have to
+					// shrink common range to the given range start.
+					commonRangeStart = otherRange.start;
+				}
+
+				if ( this.containsPosition( otherRange.end ) ) {
+					// Given range end is inside this range. This means that we have to
+					// shrink common range to the given range end.
+					commonRangeEnd = otherRange.end;
+				}
+
+				return new Range( commonRangeStart.clone(), commonRangeEnd.clone() );
 			}
 
-			// At this point we know that ranges intersect, so a common range will be returned.
-			// At most, it will be same as this range.
-			let commonRangeStart = this.start;
-			let commonRangeEnd = this.end;
-
-			if ( this.containsPosition( otherRange.start ) ) {
-				// Given range start is inside this range. This means that we have to
-				// shrink common range to the given range start.
-				commonRangeStart = otherRange.start;
-			}
-
-			if ( this.containsPosition( otherRange.end ) ) {
-				// Given range end is inside this range. This means that we have to
-				// shrink common range to the given range end.
-				commonRangeEnd = otherRange.end;
-			}
-
-			return new Range( commonRangeStart.clone(), commonRangeEnd.clone() );
+			// Ranges do not intersect, so they do not have common part.
+			return null;
 		}
 
 		/**
