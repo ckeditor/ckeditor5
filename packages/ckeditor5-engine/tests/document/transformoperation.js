@@ -11,7 +11,7 @@
 'use strict';
 
 const modules = bender.amd.require(
-	'document/document',
+	'document/rootelement',
 	'document/node',
 	'document/position',
 	'document/range',
@@ -24,11 +24,11 @@ const modules = bender.amd.require(
 );
 
 describe( 'transformOperation', () => {
-	let Document, Node, Position, Range, Attribute, InsertOperation, ChangeOperation, MoveOperation, NoOperation;
+	let RootElement, Node, Position, Range, Attribute, InsertOperation, ChangeOperation, MoveOperation, NoOperation;
 	let transformOperation;
 
 	before( () => {
-		Document = modules[ 'document/document' ];
+		RootElement = modules[ 'document/rootelement' ];
 		Node = modules[ 'document/node' ];
 		Position = modules[ 'document/position' ];
 		Range = modules[ 'document/range' ];
@@ -41,16 +41,15 @@ describe( 'transformOperation', () => {
 		transformOperation = modules[ 'document/transformoperation' ];
 	} );
 
-	let root, doc, op, nodeA, nodeB, expected, baseVersion;
+	let root, op, nodeA, nodeB, expected, baseVersion;
 
 	beforeEach( () => {
-		doc = new Document();
-		root = doc.createRoot( 'root' );
+		root = new RootElement( null );
 
 		nodeA = new Node();
 		nodeB = new Node();
 
-		baseVersion = doc.version;
+		baseVersion = 0;
 	} );
 
 	function expectOperation( op, params ) {
@@ -80,8 +79,6 @@ describe( 'transformOperation', () => {
 		beforeEach( () => {
 			nodeC = new Node();
 			nodeD = new Node();
-
-			baseVersion = doc.version;
 
 			position = new Position( [ 0, 2, 1 ], root );
 
