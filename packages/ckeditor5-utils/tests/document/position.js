@@ -222,27 +222,6 @@ describe( 'position', () => {
 		expect( new Position( [ 1, 0, 3 ], root ) ).to.have.property( 'nodeAfter' ).that.is.null;
 	} );
 
-	it( 'should equals another position with the same path and root', () => {
-		let position = new Position( [ 1, 1, 2 ], root );
-		let samePosition = new Position( [ 1, 1, 2 ], root );
-
-		expect( position.isEqual( samePosition ) ).to.be.true;
-	} );
-
-	it( 'should not equals another position with the different path', () => {
-		let position = new Position( [ 1, 1, 1 ], root );
-		let differentPosition = new Position( [ 1, 2, 2 ], root );
-
-		expect( position.isEqual( differentPosition ) ).to.be.false;
-	} );
-
-	it( 'should not equals another position with the different root', () => {
-		let position = new Position( [ 1, 1, 1 ], root );
-		let differentPosition = new Position( [ 1, 1, 1 ], otherRoot );
-
-		expect( position.isEqual( differentPosition ) ).to.be.false;
-	} );
-
 	it( 'should have proper parent path', () => {
 		let position = new Position( [ 1, 2, 3 ], root );
 
@@ -268,6 +247,75 @@ describe( 'position', () => {
 		expect( combined.path ).to.deep.equal( [ 2, 7, 4, 2 ] );
 	} );
 
+	describe( 'isBefore', () => {
+		it( 'should return true if given position has same root and is before this position', () => {
+			let position = new Position( [ 1, 1, 2 ], root );
+			let beforePosition = new Position( [ 1, 0 ], root );
+
+			expect( position.isAfter( beforePosition ) ).to.be.true;
+		} );
+
+		it( 'should return false if given position has same root and is not before this position', () => {
+			let position = new Position( [ 1, 1, 2 ], root );
+			let afterPosition = new Position( [ 1, 2 ], root );
+
+			expect( position.isAfter( afterPosition ) ).to.be.false;
+		} );
+
+		it( 'should return false if given position has different root', () => {
+			let position = new Position( [ 1, 1, 2 ], root );
+			let differentPosition = new Position( [ 1, 0 ], otherRoot );
+
+			expect( position.isAfter( differentPosition ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'isEqual', () => {
+		it( 'should return true if given position has same path and root', () => {
+			let position = new Position( [ 1, 1, 2 ], root );
+			let samePosition = new Position( [ 1, 1, 2 ], root );
+
+			expect( position.isEqual( samePosition ) ).to.be.true;
+		} );
+
+		it( 'should return false if given position has different path', () => {
+			let position = new Position( [ 1, 1, 1 ], root );
+			let differentPosition = new Position( [ 1, 2, 2 ], root );
+
+			expect( position.isEqual( differentPosition ) ).to.be.false;
+		} );
+
+		it( 'should return false if given position has different root', () => {
+			let position = new Position( [ 1, 1, 1 ], root );
+			let differentPosition = new Position( [ 1, 1, 1 ], otherRoot );
+
+			expect( position.isEqual( differentPosition ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'isAfter', () => {
+		it( 'should return true if given position has same root and is after this position', () => {
+			let position = new Position( [ 1, 1, 2 ], root );
+			let afterPosition = new Position( [ 1, 2 ], root );
+
+			expect( position.isBefore( afterPosition ) ).to.be.true;
+		} );
+
+		it( 'should return false if given position has same root and is not after this position', () => {
+			let position = new Position( [ 1, 1, 2 ], root );
+			let beforePosition = new Position( [ 1, 0 ], root );
+
+			expect( position.isBefore( beforePosition ) ).to.be.false;
+		} );
+
+		it( 'should return false if given position has different root', () => {
+			let position = new Position( [ 1, 1, 2 ], root );
+			let differentPosition = new Position( [ 1, 2 ], otherRoot );
+
+			expect( position.isBefore( differentPosition ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'compareWith', () => {
 		it( 'should return Position.SAME if positions are same', () => {
 			const position = new Position( [ 1, 2, 3 ], root );
@@ -288,6 +336,13 @@ describe( 'position', () => {
 			const compared = new Position( [ 1, 2, 3 ], root );
 
 			expect( position.compareWith( compared ) ).to.equal( Position.AFTER );
+		} );
+
+		it( 'should return Position.DIFFERENT if positions are in different roots', () => {
+			const position = new Position( [ 1, 2, 3 ], root );
+			const compared = new Position( [ 1, 2, 3 ], otherRoot );
+
+			expect( position.compareWith( compared ) ).to.equal( Position.DIFFERENT );
 		} );
 	} );
 
