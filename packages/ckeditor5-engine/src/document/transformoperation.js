@@ -29,6 +29,13 @@
  * All returned operations has to be applied (or further transformed) to get an effect that was intended in
  * pre-transformed operation.
  *
+ * Sometimes two operations are in conflict. This happens when they modify the same node in a different way, i.e.
+ * set different value for the same attribute or move the node into different positions. When this happens,
+ * we need to decide which operation is more important. We can't assume that operation `a` or operation `b` is always
+ * important. In Operational Transformations algorithms we often need to get a result of transforming
+ * `a` by `b` and also `b` by `a`. In both transformations the same operation has to be the important one. If we assume
+ * that first or second passed operation is always more important we won't be able to solve this case.
+ *
  * @function transformOperation
  * @param {document.operation.Operation} a Operation that will be transformed.
  * @param {document.operation.Operation} b Operation to transform by.
@@ -45,7 +52,6 @@ CKEDITOR.define( [
 	'document/range',
 	'utils'
 ], ( InsertOperation, ChangeOperation, MoveOperation, NoOperation, Range, utils ) => {
-
 	// When we don't want to update an operation, we create and return a clone of it.
 	// Returns the operation in "unified format" - wrapped in an Array.
 	function doNotUpdate( operation ) {
@@ -90,16 +96,8 @@ CKEDITOR.define( [
 
 	const ot = {
 		InsertOperation: {
-			/**
-			 * Returns an array containing the result of transforming
-			 * {document.operation.InsertOperation} by {document.operation.InsertOperation}.
-			 *
-			 * @param {document.operation.InsertOperation} a Operation that will be transformed.
-			 * @param {document.operation.InsertOperation} b Operation to transform by.
-			 * @param {Boolean} isStrong Flag indicating whether this operation should be treated as more important
-			 * when resolving conflicts.
-			 * @returns {Array.<document.operation.InsertOperation>} Result of the transformation.
-			 */
+			// Transforms InsertOperation `a` by InsertOperation `b`. Accepts a flag stating whether `a` is more important
+			// than `b` when it comes to resolving conflicts. Returns results as an array of operations.
 			InsertOperation( a, b, isStrong ) {
 				// Transformed operations are always new instances, not references to the original operations.
 				const transformed = a.clone();
@@ -112,16 +110,8 @@ CKEDITOR.define( [
 
 			ChangeOperation: doNotUpdate,
 
-			/**
-			 * Returns an array containing the result of transforming
-			 * {document.operation.InsertOperation} by {document.operation.MoveOperation}.
-			 *
-			 * @param {document.operation.InsertOperation} a Operation that will be transformed.
-			 * @param {document.operation.MoveOperation} b Operation to transform by.
-			 * @param {Boolean} isStrong Flag indicating whether this operation should be treated as more important
-			 * when resolving conflicts.
-			 * @returns {Array.<document.operation.InsertOperation>} Result of the transformation.
-			 */
+			// Transforms InsertOperation `a` by MoveOperation `b`. Accepts a flag stating whether `a` is more important
+			// than `b` when it comes to resolving conflicts. Returns results as an array of operations.
 			MoveOperation( a, b, isStrong ) {
 				const transformed = a.clone();
 
@@ -144,14 +134,7 @@ CKEDITOR.define( [
 			}
 		},
 		ChangeOperation: {
-			/**
-			 * Returns an array containing the result of transforming
-			 * {document.operation.ChangeOperation} by {document.operation.InsertOperation}.
-			 *
-			 * @param {document.operation.ChangeOperation} a Operation that will be transformed.
-			 * @param {document.operation.InsertOperation} b Operation to transform by.
-			 * @returns {Array.<document.operation.ChangeOperation>} Result of the transformation.
-			 */
+			// Transforms ChangeOperation `a` by InsertOperation `b`. Returns results as an array of operations.
 			InsertOperation( a, b ) {
 				// Transform this operation's range.
 				const ranges = a.range.getTransformedByInsertion( b.position, b.nodeList.length );
@@ -167,16 +150,8 @@ CKEDITOR.define( [
 				} );
 			},
 
-			/**
-			 * Returns an array containing the result of transforming
-			 * {document.operation.ChangeOperation} by {document.operation.ChangeOperation}.
-			 *
-			 * @param {document.operation.ChangeOperation} a Operation that will be transformed.
-			 * @param {document.operation.ChangeOperation} b Operation to transform by.
-			 * @param {Boolean} isStrong Flag indicating whether this operation should be treated as more important
-			 * when resolving conflicts.
-			 * @returns {Array.<document.operation.ChangeOperation>} Result of the transformation.
-			 */
+			// Transforms ChangeOperation `a` by ChangeOperation `b`. Accepts a flag stating whether `a` is more important
+			// than `b` when it comes to resolving conflicts. Returns results as an array of operations.
 			ChangeOperation( a, b, isStrong ) {
 				if ( !isStrong && haveConflictingAttributes( a, b ) ) {
 					// If operations' attributes are in conflict and this operation is less important
@@ -206,14 +181,7 @@ CKEDITOR.define( [
 				}
 			},
 
-			/**
-			 * Returns an array containing the result of transforming
-			 * {document.operation.ChangeOperation} by {document.operation.MoveOperation}.
-			 *
-			 * @param {document.operation.ChangeOperation} a Operation that will be transformed.
-			 * @param {document.operation.MoveOperation} b Operation to transform by.
-			 * @returns {Array.<document.operation.ChangeOperation>} Result of the transformation.
-			 */
+			// Transforms ChangeOperation `a` by MoveOperation `b`. Returns results as an array of operations.
 			MoveOperation( a, b ) {
 				// Convert MoveOperation properties into a range.
 				const rangeB = Range.createFromPositionAndOffset( b.sourcePosition, b.howMany );
@@ -273,16 +241,8 @@ CKEDITOR.define( [
 			}
 		},
 		MoveOperation: {
-			/**
-			 * Returns an array containing the result of transforming
-			 * {document.operation.MoveOperation} by {document.operation.InsertOperation}.
-			 *
-			 * @param {document.operation.MoveOperation} a Operation that will be transformed.
-			 * @param {document.operation.InsertOperation} b Operation to transform by.
-			 * @param {Boolean} isStrong Flag indicating whether this operation should be treated as more important
-			 * when resolving conflicts.
-			 * @returns {Array.<document.operation.MoveOperation>} Result of the transformation.
-			 */
+			// Transforms MoveOperation `a` by InsertOperation `b`. Accepts a flag stating whether `a` is more important
+			// than `b` when it comes to resolving conflicts. Returns results as an array of operations.
 			InsertOperation( a, b, isStrong ) {
 				// Get target position from the state "after" nodes are inserted by InsertOperation.
 				const newTargetPosition = a.targetPosition.getTransformedByInsertion( b.position, b.nodeList.length, !isStrong );
@@ -304,16 +264,8 @@ CKEDITOR.define( [
 
 			ChangeOperation: doNotUpdate,
 
-			/**
-			 * Returns an array containing the result of transforming
-			 * {document.operation.MoveOperation} by {document.operation.MoveOperation}.
-			 *
-			 * @param {document.operation.MoveOperation} a Operation that will be transformed.
-			 * @param {document.operation.MoveOperation} b Operation to transform by.
-			 * @param {Boolean} isStrong Flag indicating whether this operation should be treated as more important
-			 * when resolving conflicts.
-			 * @returns {Array.<document.operation.MoveOperation>} Result of the transformation.
-			 */
+			// Transforms MoveOperation `a` by MoveOperation `b`. Accepts a flag stating whether `a` is more important
+			// than `b` when it comes to resolving conflicts. Returns results as an array of operations.
 			MoveOperation( a, b, isStrong ) {
 				// There is a special case when both move operations' target positions are inside nodes that are
 				// being moved by the other move operation. So in other words, we move ranges into inside of each other.
@@ -433,7 +385,7 @@ CKEDITOR.define( [
 		} else if ( a instanceof ChangeOperation ) {
 			group = ot.ChangeOperation;
 		} else if ( a instanceof MoveOperation ) {
-			group = ot.MoveOperation
+			group = ot.MoveOperation;
 		} else {
 			algorithm = doNotUpdate;
 		}
@@ -444,7 +396,7 @@ CKEDITOR.define( [
 			} else if ( b instanceof ChangeOperation ) {
 				algorithm = group.ChangeOperation;
 			} else if ( b instanceof MoveOperation ) {
-				algorithm = group.MoveOperation
+				algorithm = group.MoveOperation;
 			} else {
 				algorithm = doNotUpdate;
 			}
