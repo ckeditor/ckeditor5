@@ -36,7 +36,7 @@ CKEDITOR.define( () => {
 		 * @returns {HTMLElement}
 		 */
 		render() {
-			return this._renderElement( this.def );
+			return this._renderElement( this.def, true );
 		}
 
 		/**
@@ -44,9 +44,10 @@ CKEDITOR.define( () => {
 		 *
 		 * @protected
 		 * @param {TemplateDefinition} def Definition of an element.
+		 * @param {Boolean} intoFragment If set, children are rendered into DocumentFragment.
 		 * @returns {HTMLElement} A rendered element.
 		 */
-		_renderElement( def ) {
+		_renderElement( def, intoFragment ) {
 			if ( !def ) {
 				return null;
 			}
@@ -60,7 +61,15 @@ CKEDITOR.define( () => {
 			this._renderElementAttributes( def, el );
 
 			// Invoke children recursively.
-			this._renderElementChildren( def, el );
+			if ( intoFragment ) {
+				const docFragment = document.createDocumentFragment();
+
+				this._renderElementChildren( def, docFragment );
+
+				el.appendChild( docFragment );
+			} else {
+				this._renderElementChildren( def, el );
+			}
 
 			// Activate DOM binding for event listeners.
 			this._activateElementListeners( def, el );
