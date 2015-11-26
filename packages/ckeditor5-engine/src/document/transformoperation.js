@@ -204,7 +204,7 @@ CKEDITOR.define( [
 				let ranges = [];
 
 				const differenceSet = a.range.getDifference( rangeB );
-				const common = a.range.getCommon( rangeB );
+				const common = a.range.getIntersection( rangeB );
 
 				// Difference is a part of changed range that is modified by ChangeOperation but are not affected
 				// by MoveOperation. This can be zero, one or two ranges (if moved range is inside changed range).
