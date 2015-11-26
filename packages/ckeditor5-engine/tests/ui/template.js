@@ -12,184 +12,186 @@ const modules = bender.amd.require( 'ckeditor', 'ui/view', 'ui/template' );
 let Template;
 
 bender.tools.createSinonSandbox();
-beforeEach( createClassReferences );
 
-describe( 'constructor', () => {
-	it( 'accepts the definition', () => {
-		let def = {
-			tag: 'p'
-		};
+describe( 'Template', () => {
+	beforeEach( createClassReferences );
 
-		expect( new Template( def ).def ).to.equal( def );
-	} );
-} );
+	describe( 'constructor', () => {
+		it( 'accepts the definition', () => {
+			let def = {
+				tag: 'p'
+			};
 
-describe( 'render', () => {
-	it( 'returns null when no definition', () => {
-		expect( new Template().render() ).to.be.null;
+			expect( new Template( def ).def ).to.equal( def );
+		} );
 	} );
 
-	it( 'creates an element', () => {
-		let el = new Template( {
-			tag: 'p',
-			attrs: {
-				'class': [ 'a', 'b' ],
-				x: 'bar'
-			},
-			text: 'foo'
-		} ).render();
+	describe( 'render', () => {
+		it( 'returns null when no definition', () => {
+			expect( new Template().render() ).to.be.null;
+		} );
 
-		expect( el ).to.be.instanceof( HTMLElement );
-		expect( el.parentNode ).to.be.null();
-
-		expect( el.outerHTML ).to.be.equal( '<p class="a b" x="bar">foo</p>' );
-	} );
-
-	it( 'creates element\'s children', () => {
-		let el = new Template( {
-			tag: 'p',
-			attrs: {
-				a: 'A'
-			},
-			children: [
-				{
-					tag: 'b',
-					text: 'B'
+		it( 'creates an element', () => {
+			let el = new Template( {
+				tag: 'p',
+				attrs: {
+					'class': [ 'a', 'b' ],
+					x: 'bar'
 				},
-				{
-					tag: 'i',
-					text: 'C',
+				text: 'foo'
+			} ).render();
+
+			expect( el ).to.be.instanceof( HTMLElement );
+			expect( el.parentNode ).to.be.null;
+			expect( el.outerHTML ).to.be.equal( '<p class="a b" x="bar">foo</p>' );
+		} );
+
+		it( 'creates element\'s children', () => {
+			let el = new Template( {
+				tag: 'p',
+				attrs: {
+					a: 'A'
+				},
+				children: [
+					{
+						tag: 'b',
+						text: 'B'
+					},
+					{
+						tag: 'i',
+						text: 'C',
+						children: [
+							{
+								tag: 'b',
+								text: 'D'
+							}
+						]
+					}
+				]
+			} ).render();
+
+			expect( el.outerHTML ).to.be.equal( '<p a="A"><b>B</b><i>C<b>D</b></i></p>' );
+		} );
+
+		describe( 'callback', () => {
+			it( 'works for attributes', () => {
+				let spy1 = bender.sinon.spy();
+				let spy2 = bender.sinon.spy();
+
+				let el = new Template( {
+					tag: 'p',
+					attrs: {
+						'class': spy1
+					},
 					children: [
 						{
-							tag: 'b',
-							text: 'D'
+							tag: 'span',
+							attrs: {
+								id: spy2
+							}
 						}
 					]
-				}
-			]
-		} ).render();
+				} ).render();
 
-		expect( el.outerHTML ).to.be.equal( '<p a="A"><b>B</b><i>C<b>D</b></i></p>' );
-	} );
-} );
+				sinon.assert.calledWithExactly( spy1, el, sinon.match.func );
+				sinon.assert.calledWithExactly( spy2, el.firstChild, sinon.match.func );
 
-describe( 'callback value', () => {
-	it( 'works for attributes', () => {
-		let spy1 = bender.sinon.spy();
-		let spy2 = bender.sinon.spy();
+				spy1.firstCall.args[ 1 ]( el, 'foo' );
+				spy2.firstCall.args[ 1 ]( el.firstChild, 'bar' );
 
-		let el = new Template( {
-			tag: 'p',
-			attrs: {
-				'class': spy1
-			},
-			children: [
-				{
-					tag: 'span',
-					attrs: {
-						id: spy2
-					}
-				}
-			]
-		} ).render();
+				expect( el.outerHTML ).to.be.equal( '<p class="foo"><span id="bar"></span></p>' );
+			} );
 
-		sinon.assert.calledWithExactly( spy1, el, sinon.match.func );
-		sinon.assert.calledWithExactly( spy2, el.firstChild, sinon.match.func );
+			it( 'works for "text" property', () => {
+				let spy1 = bender.sinon.spy();
+				let spy2 = bender.sinon.spy();
 
-		spy1.firstCall.args[ 1 ]( el, 'foo' );
-		spy2.firstCall.args[ 1 ]( el.firstChild, 'bar' );
+				let el = new Template( {
+					tag: 'p',
+					text: spy1,
+					children: [
+						{
+							tag: 'span',
+							text: spy2
+						}
+					]
+				} ).render();
 
-		expect( el.outerHTML ).to.be.equal( '<p class="foo"><span id="bar"></span></p>' );
-	} );
+				sinon.assert.calledWithExactly( spy1, el, sinon.match.func );
+				sinon.assert.calledWithExactly( spy2, el.firstChild, sinon.match.func );
 
-	it( 'works for "text" property', () => {
-		let spy1 = bender.sinon.spy();
-		let spy2 = bender.sinon.spy();
+				spy2.firstCall.args[ 1 ]( el.firstChild, 'bar' );
+				expect( el.outerHTML ).to.be.equal( '<p><span>bar</span></p>' );
 
-		let el = new Template( {
-			tag: 'p',
-			text: spy1,
-			children: [
-				{
-					tag: 'span',
-					text: spy2
-				}
-			]
-		} ).render();
+				spy1.firstCall.args[ 1 ]( el, 'foo' );
+				expect( el.outerHTML ).to.be.equal( '<p>foo</p>' );
+			} );
 
-		sinon.assert.calledWithExactly( spy1, el, sinon.match.func );
-		sinon.assert.calledWithExactly( spy2, el.firstChild, sinon.match.func );
+			it( 'works for "on" property', () => {
+				let spy1 = bender.sinon.spy();
+				let spy2 = bender.sinon.spy();
+				let spy3 = bender.sinon.spy();
+				let spy4 = bender.sinon.spy();
 
-		spy2.firstCall.args[ 1 ]( el.firstChild, 'bar' );
-		expect( el.outerHTML ).to.be.equal( '<p><span>bar</span></p>' );
-
-		spy1.firstCall.args[ 1 ]( el, 'foo' );
-		expect( el.outerHTML ).to.be.equal( '<p>foo</p>' );
-	} );
-
-	it( 'works for "on" property', () => {
-		let spy1 = bender.sinon.spy();
-		let spy2 = bender.sinon.spy();
-		let spy3 = bender.sinon.spy();
-		let spy4 = bender.sinon.spy();
-
-		let el = new Template( {
-			tag: 'p',
-			children: [
-				{
-					tag: 'span',
+				let el = new Template( {
+					tag: 'p',
+					children: [
+						{
+							tag: 'span',
+							on: {
+								bar: spy2
+							}
+						}
+					],
 					on: {
-						bar: spy2
+						foo: spy1,
+						baz: [ spy3, spy4 ]
 					}
-				}
-			],
-			on: {
-				foo: spy1,
-				baz: [ spy3, spy4 ]
-			}
-		} ).render();
+				} ).render();
 
-		sinon.assert.calledWithExactly( spy1, el, 'foo', null );
-		sinon.assert.calledWithExactly( spy2, el.firstChild, 'bar', null );
-		sinon.assert.calledWithExactly( spy3, el, 'baz', null );
-		sinon.assert.calledWithExactly( spy4, el, 'baz', null );
-	} );
+				sinon.assert.calledWithExactly( spy1, el, 'foo', null );
+				sinon.assert.calledWithExactly( spy2, el.firstChild, 'bar', null );
+				sinon.assert.calledWithExactly( spy3, el, 'baz', null );
+				sinon.assert.calledWithExactly( spy4, el, 'baz', null );
+			} );
 
-	it( 'works for "on" property with selectors', () => {
-		let spy1 = bender.sinon.spy();
-		let spy2 = bender.sinon.spy();
-		let spy3 = bender.sinon.spy();
-		let spy4 = bender.sinon.spy();
+			it( 'works for "on" property with selectors', () => {
+				let spy1 = bender.sinon.spy();
+				let spy2 = bender.sinon.spy();
+				let spy3 = bender.sinon.spy();
+				let spy4 = bender.sinon.spy();
 
-		let el = new Template( {
-			tag: 'p',
-			children: [
-				{
-					tag: 'span',
-					attrs: {
-						'id': 'x'
-					}
-				},
-				{
-					tag: 'span',
-					attrs: {
-						'class': 'y'
-					},
+				let el = new Template( {
+					tag: 'p',
+					children: [
+						{
+							tag: 'span',
+							attrs: {
+								'id': 'x'
+							}
+						},
+						{
+							tag: 'span',
+							attrs: {
+								'class': 'y'
+							},
+							on: {
+								'bar@p': spy2
+							}
+						},
+					],
 					on: {
-						'bar@p': spy2
+						'foo@span': spy1,
+						'baz@.y': [ spy3, spy4 ]
 					}
-				},
-			],
-			on: {
-				'foo@span': spy1,
-				'baz@.y': [ spy3, spy4 ]
-			}
-		} ).render();
+				} ).render();
 
-		sinon.assert.calledWithExactly( spy1, el, 'foo', 'span' );
-		sinon.assert.calledWithExactly( spy2, el.lastChild, 'bar', 'p' );
-		sinon.assert.calledWithExactly( spy3, el, 'baz', '.y' );
-		sinon.assert.calledWithExactly( spy4, el, 'baz', '.y' );
+				sinon.assert.calledWithExactly( spy1, el, 'foo', 'span' );
+				sinon.assert.calledWithExactly( spy2, el.lastChild, 'bar', 'p' );
+				sinon.assert.calledWithExactly( spy3, el, 'baz', '.y' );
+				sinon.assert.calledWithExactly( spy4, el, 'baz', '.y' );
+			} );
+		} );
 	} );
 } );
 
