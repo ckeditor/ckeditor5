@@ -10,7 +10,7 @@
 const chai = require( 'chai' );
 const sinon = require( 'sinon' );
 const expect = chai.expect;
-const tools = require( '../utils/tools' );
+const tools = require( '../tasks/utils/tools' );
 const path = require( 'path' );
 const fs = require( 'fs' );
 let toRestore;

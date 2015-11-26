@@ -10,9 +10,9 @@
 const chai = require( 'chai' );
 const sinon = require( 'sinon' );
 const expect = chai.expect;
-const tools = require( '../utils/tools' );
-const inquiries = require( '../utils/inquiries' );
-const git = require( '../utils/git' );
+const tools = require( '../tasks/utils/tools' );
+const inquiries = require( '../tasks/utils/inquiries' );
+const git = require( '../tasks/utils/git' );
 const path = require( 'path' );
 const emptyFn = () => { };
 let spies;
@@ -59,7 +59,7 @@ describe( 'dev-tasks', () => {
 	}
 
 	describe( 'dev-init', () => {
-		const initTask = require( '../utils/dev-init' );
+		const initTask = require( '../tasks/utils/dev-init' );
 
 		it( 'task should exist', () => expect( initTask ).to.be.a( 'function' ) );
 
@@ -137,7 +137,7 @@ describe( 'dev-tasks', () => {
 	} );
 
 	describe( 'dev-plugin-create', () => {
-		const pluginCreateTask = require( '../utils/dev-plugin-create' );
+		const pluginCreateTask = require( '../tasks/utils/dev-plugin-create' );
 		const repositoryPath = path.join( workspacePath, pluginName );
 
 		it( 'should exist', () => expect( pluginCreateTask ).to.be.a( 'function' ) );
@@ -169,7 +169,7 @@ describe( 'dev-tasks', () => {
 	} );
 
 	describe( 'dev-plugin-install', () => {
-		const pluginInstallTask = require( '../utils/dev-plugin-install' );
+		const pluginInstallTask = require( '../tasks/utils/dev-plugin-install' );
 
 		it( 'should exist', () => expect( pluginInstallTask ).to.be.a( 'function' ) );
 
@@ -200,7 +200,7 @@ describe( 'dev-tasks', () => {
 	} );
 
 	describe( 'dev-relink', () => {
-		const devRelinkTask = require( '../utils/dev-relink' );
+		const devRelinkTask = require( '../tasks/utils/dev-relink' );
 
 		it( 'should exist', () => expect( devRelinkTask ).to.be.a( 'function' ) );
 
@@ -230,7 +230,7 @@ describe( 'dev-tasks', () => {
 	} );
 
 	describe( 'dev-status', () => {
-		const devStatusTask = require( '../utils/dev-status' );
+		const devStatusTask = require( '../tasks/utils/dev-status' );
 
 		it( 'should exist', () => expect( devStatusTask ).to.be.a( 'function' ) );
 
@@ -258,7 +258,7 @@ describe( 'dev-tasks', () => {
 	} );
 
 	describe( 'dev-update', () => {
-		const devUpdateTask = require( '../utils/dev-update' );
+		const devUpdateTask = require( '../tasks/utils/dev-update' );
 
 		it( 'should exist', () => expect( devUpdateTask ).to.be.a( 'function' ) );
 
@@ -293,7 +293,7 @@ describe( 'dev-tasks', () => {
 	} );
 
 	describe( 'dev-boilerplate-update', () => {
-		const devBoilerplateTask = require( '../utils/dev-boilerplate-update' );
+		const devBoilerplateTask = require( '../tasks/utils/dev-boilerplate-update' );
 
 		it( 'should exist', () => expect( devBoilerplateTask ).to.be.a( 'function' ) );
 
