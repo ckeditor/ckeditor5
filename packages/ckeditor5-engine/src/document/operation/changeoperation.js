@@ -101,31 +101,6 @@ CKEDITOR.define( [
 		clone() {
 			return new ChangeOperation( this.range.clone(), this.oldAttr, this.newAttr, this.baseVersion );
 		}
-
-		/**
-		 * Checks whether this operation has conflicting attributes with given {@link document.operation.ChangeOperation}.
-		 * This happens when both operations changes an attribute with the same key and they either set different
-		 * values for this attribute or one of them removes it while the other one sets it.
-		 *
-		 * @param {document.operation.ChangeOperation} otherOperation Operation to check against.
-		 * @returns {boolean} True if operations have conflicting attributes.
-		 */
-		conflictsAttributesWith( otherOperation ) {
-			// Keeping in mind that newAttr or oldAttr might be null.
-			// We will retrieve the key from whichever parameter is set.
-			const thisKey = ( this.newAttr || this.oldAttr ).key;
-			const otherKey = ( otherOperation.newAttr || otherOperation.oldAttr ).key;
-
-			if ( thisKey != otherKey ) {
-				// Different keys - not conflicting.
-				return false;
-			}
-
-			// Check if they set different value or one of them removes the attribute.
-			return ( this.newAttr === null && otherOperation.newAttr !== null ) ||
-				( this.newAttr !== null && otherOperation.newAttr === null ) ||
-				( !this.newAttr.isEqual( otherOperation.newAttr ) );
-		}
 	}
 
 	return ChangeOperation;

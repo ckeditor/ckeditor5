@@ -67,6 +67,27 @@ CKEDITOR.define( [
 		return a.targetPosition.getTransformedByDeletion( b.sourcePosition, b.howMany ) === null;
 	}
 
+	// Takes two ChangeOperations and checks whether their attributes are in conflict.
+	// This happens when both operations changes an attribute with the same key and they either set different
+	// values for this attribute or one of them removes it while the other one sets it.
+	// Returns true if attributes are in conflict.
+	function haveConflictingAttributes( a, b ) {
+		// Keeping in mind that newAttr or oldAttr might be null.
+		// We will retrieve the key from whichever parameter is set.
+		const keyA = ( a.newAttr || a.oldAttr ).key;
+		const keyB = ( b.newAttr || b.oldAttr ).key;
+
+		if ( keyA != keyB ) {
+			// Different keys - not conflicting.
+			return false;
+		}
+
+		// Check if they set different value or one of them removes the attribute.
+		return ( a.newAttr === null && b.newAttr !== null ) ||
+			( a.newAttr !== null && b.newAttr === null ) ||
+			( !a.newAttr.isEqual( b.newAttr ) );
+	}
+
 	const ot = {
 		InsertOperation: {
 			/**
@@ -157,7 +178,7 @@ CKEDITOR.define( [
 			 * @returns {Array.<document.operation.ChangeOperation>} Result of the transformation.
 			 */
 			ChangeOperation( a, b, isStrong ) {
-				if ( !isStrong && a.conflictsAttributesWith( b ) ) {
+				if ( !isStrong && haveConflictingAttributes( a, b ) ) {
 					// If operations' attributes are in conflict and this operation is less important
 					// we have to check if operations' ranges intersect and manage them properly.
 
