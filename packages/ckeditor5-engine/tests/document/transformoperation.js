@@ -6,7 +6,6 @@
 /* jshint expr: true */
 
 /* bender-tags: document */
-/* bender-include: ../_tools/tools.js */
 /* global describe, before, beforeEach, it, expect */
 
 'use strict';
@@ -26,7 +25,7 @@ const modules = bender.amd.require(
 
 describe( 'transformOperation', () => {
 	let Document, Node, Position, Range, Attribute, InsertOperation, ChangeOperation, MoveOperation, NoOperation;
-	let transformOperation, expectOperation;
+	let transformOperation;
 
 	before( () => {
 		Document = modules[ 'document/document' ];
@@ -40,7 +39,6 @@ describe( 'transformOperation', () => {
 		NoOperation = modules[ 'document/operation/nooperation' ];
 
 		transformOperation = modules[ 'document/transformoperation' ];
-		expectOperation = bender.tools.operations.expectOperation( Position, Range );
 	} );
 
 	let root, doc, op, nodeA, nodeB, expected, baseVersion;
@@ -54,6 +52,27 @@ describe( 'transformOperation', () => {
 
 		baseVersion = doc.version;
 	} );
+
+	function expectOperation( op, params ) {
+		for ( let i in params ) {
+			if ( params.hasOwnProperty( i ) ) {
+				if ( i == 'type' ) {
+					expect( op ).to.be.instanceof( params[ i ] );
+				}
+				else if ( params[ i ] instanceof Array ) {
+					expect( op[ i ].length ).to.equal( params[ i ].length );
+
+					for ( let j = 0; j < params[ i ].length; j++ ) {
+						expect( op[ i ][ j ] ).to.equal( params[ i ][ j ] );
+					}
+				} else if ( params[ i ] instanceof Position || params[ i ] instanceof Range ) {
+					expect( op[ i ].isEqual( params[ i ] ) ).to.be.true;
+				} else {
+					expect( op[ i ] ).to.equal( params[ i ] );
+				}
+			}
+		}
+	}
 
 	describe( 'InsertOperation', () => {
 		let nodeC, nodeD, position;
