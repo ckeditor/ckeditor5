@@ -43,6 +43,6 @@
     "url": "https://github.com/ckeditor/ckeditor5.git"
   },
   "scripts": {
-    "test": "mocha dev/tasks/tests"
+    "tests": "mocha dev/tasks/tests"
   }
 }

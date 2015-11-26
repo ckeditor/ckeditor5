@@ -6,6 +6,7 @@
 /* global describe, it, beforeEach, afterEach */
 
 'use strict';
+
 const chai = require( 'chai' );
 const sinon = require( 'sinon' );
 const expect = chai.expect;
@@ -60,7 +61,7 @@ describe( 'dev-tasks', () => {
 	describe( 'dev-init', () => {
 		const initTask = require( '../utils/dev-init' );
 
-		it( 'task should exists', () => expect( initTask ).to.be.a( 'function' ) );
+		it( 'task should exist', () => expect( initTask ).to.be.a( 'function' ) );
 
 		it( 'performs no action when no ckeditor dependencies are found', () => {
 			const packageJSON = {
@@ -139,7 +140,7 @@ describe( 'dev-tasks', () => {
 		const pluginCreateTask = require( '../utils/dev-plugin-create' );
 		const repositoryPath = path.join( workspacePath, pluginName );
 
-		it( 'should exists', () => expect( pluginCreateTask ).to.be.a( 'function' ) );
+		it( 'should exist', () => expect( pluginCreateTask ).to.be.a( 'function' ) );
 
 		it( 'should create a plugin', () => {
 			return pluginCreateTask( mainRepositoryPath, workspaceRoot, emptyFn ).then( () => {
@@ -170,7 +171,7 @@ describe( 'dev-tasks', () => {
 	describe( 'dev-plugin-install', () => {
 		const pluginInstallTask = require( '../utils/dev-plugin-install' );
 
-		it( 'should exists', () => expect( pluginInstallTask ).to.be.a( 'function' ) );
+		it( 'should exist', () => expect( pluginInstallTask ).to.be.a( 'function' ) );
 
 		it( 'should install a plugin', () => {
 			return pluginInstallTask( mainRepositoryPath, workspaceRoot, emptyFn ).then( () => {
@@ -201,7 +202,7 @@ describe( 'dev-tasks', () => {
 	describe( 'dev-relink', () => {
 		const devRelinkTask = require( '../utils/dev-relink' );
 
-		it( 'should exists', () => expect( devRelinkTask ).to.be.a( 'function' ) );
+		it( 'should exist', () => expect( devRelinkTask ).to.be.a( 'function' ) );
 
 		it( 'should relink repositories', () => {
 			const packageJSON = {
@@ -231,7 +232,7 @@ describe( 'dev-tasks', () => {
 	describe( 'dev-status', () => {
 		const devStatusTask = require( '../utils/dev-status' );
 
-		it( 'should exists', () => expect( devStatusTask ).to.be.a( 'function' ) );
+		it( 'should exist', () => expect( devStatusTask ).to.be.a( 'function' ) );
 
 		it( 'should show repositories status', () => {
 			const packageJSON = {
@@ -259,7 +260,7 @@ describe( 'dev-tasks', () => {
 	describe( 'dev-update', () => {
 		const devUpdateTask = require( '../utils/dev-update' );
 
-		it( 'should exists', () => expect( devUpdateTask ).to.be.a( 'function' ) );
+		it( 'should exist', () => expect( devUpdateTask ).to.be.a( 'function' ) );
 
 		it( 'should show repositories status', () => {
 			const packageJSON = {
@@ -294,7 +295,7 @@ describe( 'dev-tasks', () => {
 	describe( 'dev-boilerplate-update', () => {
 		const devBoilerplateTask = require( '../utils/dev-boilerplate-update' );
 
-		it( 'should exists', () => expect( devBoilerplateTask ).to.be.a( 'function' ) );
+		it( 'should exist', () => expect( devBoilerplateTask ).to.be.a( 'function' ) );
 
 		it( 'should update boilerplate in repositories', () => {
 			const packageJSON = {

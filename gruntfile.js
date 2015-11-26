@@ -1,6 +1,7 @@
 /* jshint node: true, esnext: true, varstmt: true */
 
 'use strict';
+
 const tools = require( './dev/tasks/utils/tools' );
 
 module.exports = ( grunt ) => {
