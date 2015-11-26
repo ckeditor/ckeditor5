@@ -63,6 +63,11 @@ CKEDITOR.define( [
 		 */
 		init() {
 			if ( this.ready ) {
+				/**
+				 * This Controller already been initialized.
+				 *
+				 * @error ui-controller-init-reinit
+				 */
 				throw new CKEditorError( 'ui-controller-init-reinit: This Controller already been initialized.' );
 			}
 
@@ -126,16 +131,31 @@ CKEDITOR.define( [
 		 */
 		addChild( collectionName, childController, index ) {
 			if ( !collectionName ) {
+				/**
+				 * The name of the collection is required.
+				 *
+				 * @error ui-controller-addchild-badcname
+				 */
 				throw new CKEditorError( 'ui-controller-addchild-badcname' );
 			}
 
 			const collection = this._collections.get( collectionName );
 
 			if ( !collection ) {
+				/**
+				 * There is no collection of given name.
+				 *
+				 * @error ui-controller-addchild-nocol
+				 */
 				throw new CKEditorError( 'ui-controller-addchild-nocol' );
 			}
 
 			if ( !childController || !( childController instanceof Controller ) ) {
+				/**
+				 * Passed controller is of a wrong type.
+				 *
+				 * @error ui-controller-addchild-badtype
+				 */
 				throw new CKEditorError( 'ui-controller-addchild-badtype' );
 			}
 
@@ -170,16 +190,31 @@ CKEDITOR.define( [
 		 */
 		removeChild( collectionName, childController ) {
 			if ( !collectionName ) {
+				/**
+				 * Collection name is required.
+				 *
+				 * @error ui-controller-removechild-badcname
+				 */
 				throw new CKEditorError( 'ui-controller-removechild-badcname' );
 			}
 
 			const collection = this._collections.get( collectionName );
 
 			if ( !collection ) {
+				/**
+				 * There's no collection of given name.
+				 *
+				 * @error ui-controller-removechild-nocol
+				 */
 				throw new CKEditorError( 'ui-controller-removechild-nocol' );
 			}
 
 			if ( !childController || !( childController instanceof Controller ) ) {
+				/**
+				 * The controller is of a wrong type.
+				 *
+				 * @error ui-controller-removechild-badtype
+				 */
 				throw new CKEditorError( 'ui-controller-removechild-badtype' );
 			}
 
@@ -204,6 +239,11 @@ CKEDITOR.define( [
 			const collection = this._collections.get( collectionName );
 
 			if ( !collection ) {
+				/**
+				 * There's no collection of such name.
+				 *
+				 * @error ui-controller-getchild-nocol
+				 */
 				throw new CKEditorError( 'ui-controller-getchild-nocol' );
 			}
 
@@ -222,6 +262,11 @@ CKEDITOR.define( [
 			const that = this;
 
 			if ( !( collection instanceof Collection ) ) {
+				/**
+				 * The collection must be an instance of Collection.
+				 *
+				 * @error ui-controller-register-badtype
+				 */
 				throw new CKEditorError( 'ui-controller-register-badtype' );
 			}
 
@@ -230,6 +275,11 @@ CKEDITOR.define( [
 			} else {
 				if ( registered !== collection ) {
 					if ( !override ) {
+						/**
+						 * Overriding is possible only when `override` flag is set.
+						 *
+						 * @error ui-controller-register-noverride
+						 */
 						throw new CKEditorError( 'ui-controller-register-noverride' );
 					}
 

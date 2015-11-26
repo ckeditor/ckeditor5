@@ -121,16 +121,31 @@ CKEDITOR.define( [
 		 */
 		addChild( regionName, childView, index ) {
 			if ( !regionName ) {
+				/**
+				 * The name of the region is required.
+				 *
+				 * @error ui-view-addchild-badrname
+				 */
 				throw new CKEditorError( 'ui-view-addchild-badrname' );
 			}
 
 			const region = this.regions.get( regionName );
 
 			if ( !region ) {
+				/**
+				 * No such region of given name.
+				 *
+				 * @error ui-view-addchild-noreg
+				 */
 				throw new CKEditorError( 'ui-view-addchild-noreg' );
 			}
 
 			if ( !childView || !( childView instanceof View ) ) {
+				/**
+				 * Child view must be an instance of View.
+				 *
+				 * @error ui-view-addchild-badtype
+				 */
 				throw new CKEditorError( 'ui-view-addchild-badtype' );
 			}
 
@@ -146,12 +161,22 @@ CKEDITOR.define( [
 		 */
 		removeChild( regionName, childView ) {
 			if ( !childView || !( childView instanceof View ) ) {
+				/**
+				 * The view must be an instance of View.
+				 *
+				 * @error ui-view-removechild-badtype
+				 */
 				throw new CKEditorError( 'ui-view-removechild-badtype' );
 			}
 
 			const region = this.regions.get( regionName );
 
 			if ( !region ) {
+				/**
+				 * No such region of given name.
+				 *
+				 * @error ui-view-removechild-noreg
+				 */
 				throw new CKEditorError( 'ui-view-removechild-noreg' );
 			}
 
@@ -172,6 +197,11 @@ CKEDITOR.define( [
 			const region = this.regions.get( regionName );
 
 			if ( !region ) {
+				/**
+				 * No such region of given name.
+				 *
+				 * @error ui-view-getchild-noreg
+				 */
 				throw new CKEditorError( 'ui-view-getchild-noreg' );
 			}
 
@@ -212,12 +242,22 @@ CKEDITOR.define( [
 				regionName = args[ 0 ].name;
 				region = args[ 0 ];
 			} else {
+				/**
+				 * A name of the region or an instance of Region is required.
+				 *
+				 * @error ui-view-register-wrongtype
+				 */
 				throw new CKEditorError( 'ui-view-register-wrongtype' );
 			}
 
 			const regionSelector = args[ 1 ];
 
 			if ( !regionSelector || !isValidRegionSelector( regionSelector ) ) {
+				/**
+				 * The selector must be String, Function or `true`.
+				 *
+				 * @error ui-view-register-badselector
+				 */
 				throw new CKEditorError( 'ui-view-register-badselector' );
 			}
 
@@ -228,6 +268,11 @@ CKEDITOR.define( [
 			} else {
 				if ( registered !== region ) {
 					if ( !args[ 2 ] ) {
+						/**
+						 * Overriding is possible only when `override` flag is set.
+						 *
+						 * @error ui-view-register-override
+						 */
 						throw new CKEditorError( 'ui-view-register-override' );
 					}
 
@@ -251,6 +296,12 @@ CKEDITOR.define( [
 			}
 
 			if ( !this.template ) {
+				/**
+				 * Attempting to access an element of a view, which has no `template`
+				 * property.
+				 *
+				 * @error ui-view-notemplate
+				 */
 				throw new CKEditorError( 'ui-view-notemplate' );
 			}
 
@@ -438,6 +489,13 @@ CKEDITOR.define( [
 
 	const validSelectorTypes = new Set( [ 'string', 'boolean', 'function' ] );
 
+	/**
+	 * Check whether region selector is valid.
+	 *
+	 * @protected
+	 * @param {*} selector Selector to be checked.
+	 * @returns {Boolean}
+	 */
 	function isValidRegionSelector( selector ) {
 		return validSelectorTypes.has( typeof selector ) && selector !== false;
 	}
