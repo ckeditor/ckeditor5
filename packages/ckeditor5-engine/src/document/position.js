@@ -119,13 +119,58 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 		}
 
 		/**
-		 * Two positions equal if paths are equal and roots are the same.
+		 * Checks whether this position equals given position.
 		 *
-		 * @param {document.Position} otherPosition Position to compare.
-		 * @returns {Boolean} True if positions equal.
+		 * @param {document.Position} otherPosition Position to compare with.
+		 * @returns {Boolean} True if positions are same.
 		 */
 		isEqual( otherPosition ) {
 			return this.compareWith( otherPosition ) == SAME;
+		}
+
+		/**
+		 * Checks whether this position is before given position.
+		 * Attention: watch out when using negation of the value returned by this method, because the negation will also
+		 * be true if positions are in different roots and you might not expect this. You should probably use
+		 * `a.isAfter( b ) || a.isEqual( b )` or `!a.isBefore( p ) && a.root == b.root` in most scenarios. If your
+		 * condition uses multiple `isAfter` and `isBefore` checks, build them so they do not use negated values, i.e.:
+		 *
+		 *  if ( a.isBefore( b ) && c.isAfter( d ) ) {
+		 *    // do A.
+		 *  } else {
+		 *    // do B.
+		 *  }
+		 *
+		 * or, if you have only one if-branch:
+		 *
+		 *  if ( !( a.isBefore( b ) && c.isAfter( d ) ) {
+		 *    // do B.
+		 *  }
+		 *
+		 * rather than:
+		 *
+		 *  if ( !a.isBefore( b ) || && !c.isAfter( d ) ) {
+		 *    // do B.
+		 *  } else {
+		 *    // do A.
+		 *  }
+		 *
+		 * @param {document.Position} otherPosition Position to compare with.
+		 * @returns {Boolean} True if this position is before given position.
+		 */
+		isBefore( otherPosition ) {
+			return this.compareWith( otherPosition ) == BEFORE;
+		}
+
+		/**
+		 * Checks whether this position is after given position.
+		 * Attention: see {document.Position#isBefore}.
+		 *
+		 * @param {document.Position} otherPosition Position to compare with.
+		 * @returns {Boolean} True if this position is after given position.
+		 */
+		isAfter( otherPosition ) {
+			return this.compareWith( otherPosition ) == AFTER;
 		}
 
 		/**
