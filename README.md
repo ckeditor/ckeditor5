@@ -16,6 +16,8 @@ The [ckeditor5-design](https://github.com/ckeditor/ckeditor5-design) repository 
 
 The [ckeditor5](https://github.com/ckeditor/ckeditor5) repository instead centralizes the official code produced by the project. Code available here should be pretty much final. Its [issues](https://github.com/ckeditor/ckeditor5-design/issues) page is the place where to report issues regarding releases features and about the project as a whole.
 
+The [ckeditor5-core](https://github.com/ckeditor/ckeditor5-core) repository keeps the editor's core modules such as the basic infrastructure, the data model and the basic UI library. **Most of the development happens in this repository.**
+
 ## License
 
 Licensed under the GPL, LGPL and MPL licenses, at your choice. For full details about the license, please check the `LICENSE.md` file.
