@@ -112,12 +112,22 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], ( EmitterMixin, C
 			}
 
 			// TODO: Use ES6 default function argument.
-			this._items.splice(
-				index === undefined ? this._items.length : index, 0, item );
+			if ( index === undefined ) {
+				index = this._items.length;
+			} else if ( index > this._items.length || index < 0 ) {
+				/**
+				 * The index number has invalid value.
+				 *
+				 * @error collection-add-item-bad-index
+				 */
+				throw new CKEditorError( 'collection-add-item-invalid-index' );
+			}
+
+			this._items.splice( index, 0, item );
 
 			this._itemMap.set( itemId, item );
 
-			this.fire( 'add', item );
+			this.fire( 'add', item, index );
 
 			return this;
 		}
