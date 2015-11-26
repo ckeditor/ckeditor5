@@ -67,29 +67,4 @@
 			return count;
 		}
 	};
-
-	bender.tools.operations = {
-		expectOperation: ( Position, Range ) => {
-			return ( op, params ) => {
-				for ( let i in params ) {
-					if ( params.hasOwnProperty( i ) ) {
-						if ( i == 'type' ) {
-							expect( op ).to.be.instanceof( params[ i ] );
-						}
-						else if ( params[ i ] instanceof Array ) {
-							expect( op[ i ].length ).to.equal( params[ i ].length );
-
-							for ( let j = 0; j < params[ i ].length; j++ ) {
-								expect( op[ i ][ j ] ).to.equal( params[ i ][ j ] );
-							}
-						} else if ( params[ i ] instanceof Position || params[ i ] instanceof Range ) {
-							expect( op[ i ].isEqual( params[ i ] ) ).to.be.true;
-						} else {
-							expect( op[ i ] ).to.equal( params[ i ] );
-						}
-					}
-				}
-			};
-		}
-	};
 } )();
