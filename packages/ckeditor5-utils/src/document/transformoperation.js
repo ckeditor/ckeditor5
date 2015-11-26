@@ -386,7 +386,7 @@ CKEDITOR.define( [
 				// To keep them in the right order, we need to move them starting from the last one.
 				// [|ABC||DEF||GHI|] ==> [^], [|ABC||DEF|] ==> [^GHI], [|ABC|] ==> [^DEFGHI], [] ==> [ABCDEFGHI]
 				// To achieve this, we sort ranges by their starting position in descending order.
-				ranges.sort( ( a, b ) => b.start.compareWith( a.start ) );
+				ranges.sort( ( a, b ) => a.start.isBefore( b.start ) ? 1 : -1 );
 
 				// Map transformed range(s) to operations and return them.
 				return ranges.map( ( range ) => {

@@ -106,7 +106,7 @@ CKEDITOR.define( [ 'document/position', 'document/positioniterator', 'utils' ], 
 		 * @returns {boolean} True if given {document.Position position} is contained.
 		 */
 		containsPosition( position ) {
-			return position.compareWith( this.start ) == Position.AFTER && position.compareWith( this.end ) == Position.BEFORE;
+			return position.isAfter( this.start ) && position.isBefore( this.end );
 		}
 
 		/**
