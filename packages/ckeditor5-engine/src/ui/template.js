@@ -80,7 +80,7 @@ CKEDITOR.define( () => {
 				if ( typeof def.text == 'function' ) {
 					def.text( el, getTextUpdater() );
 				} else {
-					el.innerHTML = def.text;
+					el.textContent = def.text;
 				}
 			}
 		}
@@ -167,13 +167,13 @@ CKEDITOR.define( () => {
 
 	/**
 	 * Returns a function which, when called in the context of HTMLElement,
-	 * it updates `innerHTML` property of that element with given value.
+	 * it replaces element children with a text node of given value.
 	 *
 	 * @protected
 	 * @param {Function}
 	 */
 	function getTextUpdater() {
-		return ( el, value ) => el.innerHTML = value;
+		return ( el, value ) => el.textContent = value;
 	}
 
 	/**
