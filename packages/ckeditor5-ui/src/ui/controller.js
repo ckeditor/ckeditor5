@@ -150,13 +150,13 @@ CKEDITOR.define( [
 				throw new CKEditorError( 'ui-controller-addchild-nocol' );
 			}
 
-			if ( !childController || !( childController instanceof Controller ) ) {
+			if ( !childController ) {
 				/**
-				 * Passed controller is of a wrong type.
+				 * Passed no controller.
 				 *
-				 * @error ui-controller-addchild-badtype
+				 * @error ui-controller-addchild-no-controller
 				 */
-				throw new CKEditorError( 'ui-controller-addchild-badtype' );
+				throw new CKEditorError( 'ui-controller-addchild-no-controller' );
 			}
 
 			// ChildController.init() returns Promise.
@@ -209,13 +209,13 @@ CKEDITOR.define( [
 				throw new CKEditorError( 'ui-controller-removechild-nocol' );
 			}
 
-			if ( !childController || !( childController instanceof Controller ) ) {
+			if ( !childController ) {
 				/**
-				 * The controller is of a wrong type.
+				 * Passed no controller.
 				 *
-				 * @error ui-controller-removechild-badtype
+				 * @error ui-controller-removechild-no-controller
 				 */
-				throw new CKEditorError( 'ui-controller-removechild-badtype' );
+				throw new CKEditorError( 'ui-controller-removechild-no-controller' );
 			}
 
 			collection.remove( childController );
@@ -260,15 +260,6 @@ CKEDITOR.define( [
 		register( collectionName, collection, override ) {
 			const registered = this._collections.get( collectionName );
 			const that = this;
-
-			if ( !( collection instanceof Collection ) ) {
-				/**
-				 * The collection must be an instance of Collection.
-				 *
-				 * @error ui-controller-register-badtype
-				 */
-				throw new CKEditorError( 'ui-controller-register-badtype' );
-			}
 
 			if ( !registered ) {
 				add( collection );

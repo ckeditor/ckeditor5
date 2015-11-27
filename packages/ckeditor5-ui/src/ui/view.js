@@ -140,13 +140,13 @@ CKEDITOR.define( [
 				throw new CKEditorError( 'ui-view-addchild-noreg' );
 			}
 
-			if ( !childView || !( childView instanceof View ) ) {
+			if ( !childView ) {
 				/**
-				 * Child view must be an instance of View.
+				 * No child view passed.
 				 *
-				 * @error ui-view-addchild-badtype
+				 * @error ui-view-addchild-no-view
 				 */
-				throw new CKEditorError( 'ui-view-addchild-badtype' );
+				throw new CKEditorError( 'ui-view-addchild-no-view' );
 			}
 
 			region.views.add( childView, index );
@@ -160,13 +160,13 @@ CKEDITOR.define( [
 		 * @returns {View} A child view instance after removal.
 		 */
 		removeChild( regionName, childView ) {
-			if ( !childView || !( childView instanceof View ) ) {
+			if ( !regionName ) {
 				/**
-				 * The view must be an instance of View.
+				 * The name of the region is required.
 				 *
-				 * @error ui-view-removechild-badtype
+				 * @error ui-view-removechild-badrname
 				 */
-				throw new CKEditorError( 'ui-view-removechild-badtype' );
+				throw new CKEditorError( 'ui-view-removechild-badrname' );
 			}
 
 			const region = this.regions.get( regionName );
@@ -178,6 +178,15 @@ CKEDITOR.define( [
 				 * @error ui-view-removechild-noreg
 				 */
 				throw new CKEditorError( 'ui-view-removechild-noreg' );
+			}
+
+			if ( !childView ) {
+				/**
+				 * The view must be an instance of View.
+				 *
+				 * @error ui-view-removechild-no-view
+				 */
+				throw new CKEditorError( 'ui-view-removechild-no-view' );
 			}
 
 			region.views.remove( childView );
