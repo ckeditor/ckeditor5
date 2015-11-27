@@ -80,7 +80,7 @@ CKEDITOR.define( [
 			}
 
 			// Remove or change.
-			if ( oldAttr !== null && newAttr === null ) {
+			if ( oldAttr !== null ) {
 				for ( value of this.range ) {
 					if ( !value.node.hasAttr( oldAttr ) ) {
 						/**
