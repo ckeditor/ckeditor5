@@ -237,16 +237,6 @@ describe( 'position', () => {
 		expect( clone.path ).not.to.be.equal( position.path ); // make sure the paths are not the same array
 	} );
 
-	it( 'should return correct combination of this and given positions', () => {
-		const position = new Position( [ 1, 3, 4, 2 ], root );
-		const prefixPosition = new Position( [ 1, 1 ], root );
-		const targetPosition = new Position( [ 2, 5 ], root );
-
-		const combined = position.getCombined( prefixPosition, targetPosition );
-
-		expect( combined.path ).to.deep.equal( [ 2, 7, 4, 2 ] );
-	} );
-
 	describe( 'isBefore', () => {
 		it( 'should return true if given position has same root and is before this position', () => {
 			let position = new Position( [ 1, 1, 2 ], root );
@@ -423,44 +413,79 @@ describe( 'position', () => {
 
 		it( 'should decrement offset if deletion is in the same parent and closer offset', () => {
 			const position = new Position( [ 1, 2, 7 ], root );
-			const transformed = position.getTransformedByDeletion( new Position( [ 1, 2, 2 ], root ), 2, false );
+			const transformed = position.getTransformedByDeletion( new Position( [ 1, 2, 2 ], root ), 2 );
 
 			expect( transformed.offset ).to.equal( 5 );
 		} );
 
 		it( 'should set position offset to deletion offset if position is between removed nodes', () => {
 			const position = new Position( [ 1, 2, 4 ], root );
-			const transformed = position.getTransformedByDeletion( new Position( [ 1, 2, 3 ], root ), 5, false );
+			const transformed = position.getTransformedByDeletion( new Position( [ 1, 2, 3 ], root ), 5 );
 
 			expect( transformed.offset ).to.equal( 3 );
 		} );
 
 		it( 'should not decrement offset if deletion position is in different root', () => {
 			const position = new Position( [ 1, 2, 3 ], root );
-			const transformed = position.getTransformedByDeletion( new Position( [ 1, 2, 1 ], otherRoot ), 2, false );
+			const transformed = position.getTransformedByDeletion( new Position( [ 1, 2, 1 ], otherRoot ), 2 );
 
 			expect( transformed.offset ).to.equal( 3 );
 		} );
 
 		it( 'should not decrement offset if deletion is in the same parent and further offset', () => {
 			const position = new Position( [ 1, 2, 3 ], root );
-			const transformed = position.getTransformedByDeletion( new Position( [ 1, 2, 4 ], root ), 2, false );
+			const transformed = position.getTransformedByDeletion( new Position( [ 1, 2, 4 ], root ), 2 );
 
 			expect( transformed.offset ).to.equal( 3 );
 		} );
 
 		it( 'should update path if deletion position parent is a node from that path and offset is before next node on that path', () => {
 			const position = new Position( [ 1, 2, 3 ], root );
-			const transformed = position.getTransformedByDeletion( new Position( [ 1, 0 ], root ), 2, false );
+			const transformed = position.getTransformedByDeletion( new Position( [ 1, 0 ], root ), 2 );
 
 			expect( transformed.path ).to.deep.equal( [ 1, 0, 3 ] );
 		} );
 
 		it( 'should not update path if deletion position parent is a node from that path and offset is after next node on that path', () => {
 			const position = new Position( [ 1, 2, 3 ], root );
-			const transformed = position.getTransformedByDeletion( new Position( [ 1, 3 ], root ), 2, false );
+			const transformed = position.getTransformedByDeletion( new Position( [ 1, 3 ], root ), 2 );
 
 			expect( transformed.path ).to.deep.equal( [ 1, 2, 3 ] );
+		} );
+	} );
+
+	describe( 'getTransformedByMove', () => {
+		it( 'should increment offset if a range was moved to the same parent and closer offset', () => {
+			const position = new Position( [ 1, 2, 3 ], root );
+			const transformed = position.getTransformedByMove( new Position( [ 2 ], root ), new Position( [ 1, 2, 0 ], root ), 3, false );
+
+			expect( transformed.path ).to.deep.equal( [ 1, 2, 6 ] );
+		} );
+
+		it( 'should decrement offset if a range was moved from the same parent and closer offset', () => {
+			const position = new Position( [ 1, 2, 3 ], root );
+			const transformed = position.getTransformedByMove( new Position( [ 1, 2, 0 ], root ), new Position( [ 2 ], root ), 3, false );
+
+			expect( transformed.path ).to.deep.equal( [ 1, 2, 0 ] );
+		} );
+
+		it( 'should update path if a range contained this position', () => {
+			const position = new Position( [ 1, 2, 3 ], root );
+			const transformed = position.getTransformedByMove( new Position( [ 1, 1 ], root ), new Position( [ 2, 1 ], root ), 3, false );
+
+			expect( transformed.path ).to.deep.equal( [ 2, 2, 3 ] );
+		} );
+	} );
+
+	describe( '_getCombined', () => {
+		it( 'should return correct combination of this and given positions', () => {
+			const position = new Position( [ 1, 3, 4, 2 ], root );
+			const sourcePosition = new Position( [ 1, 1 ], root );
+			const targetPosition = new Position( [ 2, 5 ], root );
+
+			const combined = position._getCombined( sourcePosition, targetPosition );
+
+			expect( combined.path ).to.deep.equal( [ 2, 7, 4, 2 ] );
 		} );
 	} );
 } );

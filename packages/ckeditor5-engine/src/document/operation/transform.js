@@ -126,7 +126,7 @@ CKEDITOR.define( [
 				// Transformed operations are always new instances, not references to the original operations.
 				const transformed = a.clone();
 
-				// Transform operation position by the other operation position.
+				// Transform insert position by the other operation position.
 				transformed.position = transformed.position.getTransformedByInsertion( b.position, b.nodeList.length, !isStrong );
 
 				return [ transformed ];
@@ -139,20 +139,8 @@ CKEDITOR.define( [
 			MoveOperation( a, b, isStrong ) {
 				const transformed = a.clone();
 
-				// MoveOperation removes nodes from their original position. We acknowledge this by proper transformation.
-				const newPosition = a.position.getTransformedByDeletion( b.sourcePosition, b.howMany );
-
-				if ( newPosition === null ) {
-					// This operation's position was inside a node moved by MoveOperation. We substitute that position by
-					// the combination of move target position and insert position. This reflects changes done by MoveOperation.
-
-					transformed.position = transformed.position.getCombined( b.sourcePosition, b.targetPosition );
-				} else {
-					// Here we have the insert position after some nodes has been removed by MoveOperation.
-					// Next step is to reflect pasting nodes by MoveOperation, which might further affect the position.
-
-					transformed.position = newPosition.getTransformedByInsertion( b.targetPosition, b.howMany, !isStrong );
-				}
+				// Transform insert position by the other operation parameters.
+				transformed.position = a.position.getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, !isStrong );
 
 				return [ transformed ];
 			}
@@ -243,14 +231,17 @@ CKEDITOR.define( [
 					// MoveOperation pastes nodes into target position. We acknowledge this by proper transformation.
 					// Note that since we operate on transformed difference range, we should transform by
 					// previously transformed target position.
+					// Note that we do not use Position.getTransformedByMove on range boundaries because we need to
+					// transform by insertion a range as a whole, since newTargetPosition might be inside that range.
 					ranges = difference.getTransformedByInsertion( newTargetPosition, b.howMany, false );
 				}
 
 				if ( common !== null ) {
-					// We substitute original position by the combination of target position and original position.
-					// This reflects that those nodes were moved to another place by MoveOperation.
-					common.start = common.start.getCombined( b.sourcePosition, newTargetPosition );
-					common.end = common.end.getCombined( b.sourcePosition, newTargetPosition );
+					// Here we do not need to worry that newTargetPosition is inside moved range, because that
+					// would mean that the MoveOperation targets into itself, and that is incorrect operation.
+					// Instead, we calculate the new position of that part of original range.
+					common.start = common.start._getCombined( b.sourcePosition, newTargetPosition );
+					common.end = common.end._getCombined( b.sourcePosition, newTargetPosition );
 
 					ranges.push( common );
 				}
@@ -330,6 +321,8 @@ CKEDITOR.define( [
 					// MoveOperation pastes nodes into target position. We acknowledge this by proper transformation.
 					// Note that since we operate on transformed difference range, we should transform by
 					// previously transformed target position.
+					// Note that we do not use Position.getTransformedByMove on range boundaries because we need to
+					// transform by insertion a range as a whole, since newTargetPosition might be inside that range.
 					ranges = difference.getTransformedByInsertion( moveTargetPosition, b.howMany, true );
 				}
 
@@ -345,38 +338,24 @@ CKEDITOR.define( [
 					const common = rangeA.getIntersection( rangeB );
 
 					if ( common !== null ) {
-						// We substitute original position by the combination of target position and original position.
-						// This reflects that those nodes were moved to another place by MoveOperation.
-						common.start = common.start.getCombined( b.sourcePosition, moveTargetPosition );
-						common.end = common.end.getCombined( b.sourcePosition, moveTargetPosition );
+						// Here we do not need to worry that newTargetPosition is inside moved range, because that
+						// would mean that the MoveOperation targets into itself, and that is incorrect operation.
+						// Instead, we calculate the new position of that part of original range.
+						common.start = common.start._getCombined( b.sourcePosition, moveTargetPosition );
+						common.end = common.end._getCombined( b.sourcePosition, moveTargetPosition );
 
 						ranges.push( common );
 					}
 				}
 
-				// At this point we transformed this operation's source range. Now, we need to transform target position.
-
-				// First, transform target position by deletion of the other operation's range.
-				let newTargetPosition = a.targetPosition.getTransformedByDeletion( b.sourcePosition, b.howMany );
-
-				if ( newTargetPosition === null ) {
-					// Transformed operation target position was inside a node moved by the other MoveOperation.
-					// We substitute that position by the combination of the other move target position and
-					// transformed operation target position. This reflects changes done by the other MoveOperation.
-
-					newTargetPosition = a.targetPosition.getCombined( b.sourcePosition, moveTargetPosition );
-				} else {
-					// Here we have transformed operation target position after some nodes has been removed by MoveOperation.
-					// Next step is to reflect pasting nodes by MoveOperation, which might further affect the position.
-
-					newTargetPosition = newTargetPosition.getTransformedByInsertion( moveTargetPosition, b.howMany, true );
-				}
-
-				// If we haven't got any ranges this far it means that both operations tried to move the same nodes and
-				// transformed operation is less important. We return NoOperation in this case.
+				// At this point we transformed this operation's source ranges it means that nothing should be changed.
+				// But since we need to return an instance of Operation we return an array with NoOperation.
 				if ( ranges.length === 0 ) {
 					return [ new NoOperation( a.baseVersion ) ];
 				}
+
+				// Target position also could be affected by the other MoveOperation. We will transform it.
+				let newTargetPosition = a.targetPosition.getTransformedByMove( b.sourcePosition, moveTargetPosition, b.howMany, !isStrong );
 
 				// At this point we might have multiple ranges. All ranges will be moved to the same, newTargetPosition.
 				// To keep them in the right order, we need to move them starting from the last one.
