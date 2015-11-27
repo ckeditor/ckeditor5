@@ -284,18 +284,46 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 		}
 
 		/**
+		 * Returns this position after being updated by moving `howMany` attributes from `sourcePosition` to `targetPosition`.
+		 *
+		 * @param {document.Position} sourcePosition Position before the first element to move.
+		 * @param {document.Position} targetPosition Position where moved elements will be inserted.
+		 * @param {Number} howMany How many consecutive nodes to move, starting from `sourcePosition`.
+		 * @param {Boolean} insertBefore Flag indicating whether moved nodes are pasted before or after `insertPosition`.
+		 * This is important only when `targetPosition` and this position are same. If that is the case and the flag is
+		 * set to true, this position will get transformed by range insertion. If the flag is set to false, it won't.
+		 * @returns {document.Position} Transformed position.
+		 */
+		getTransformedByMove( sourcePosition, targetPosition, howMany, insertBefore ) {
+			// Moving a range removes nodes from their original position. We acknowledge this by proper transformation.
+			let transformed = this.getTransformedByDeletion( sourcePosition, howMany );
+
+			if ( transformed !== null ) {
+				// This position is not inside a removed node.
+				// Next step is to reflect pasting nodes, which might further affect the position.
+				transformed = transformed.getTransformedByInsertion( targetPosition, howMany, insertBefore );
+			} else {
+				// This position is inside a removed node. In this case, we are unable to simply transform it by range insertion.
+				// Instead, we calculate a combination of this position, move source position and target position.
+				transformed = this._getCombined( sourcePosition, targetPosition );
+			}
+
+			return transformed;
+		}
+
+		/**
 		 * Returns a new position that is a combination of this position and given positions. The combined
 		 * position is this position transformed by moving a range starting at `from` to `to` position.
-		 * It is expected that `original` position is inside the moved range.
+		 * It is expected that this position is inside the moved range.
 		 *
-		 * In other words, this method in a smart way "cuts out" `from` path from this position and
-		 * injects `to` path in it's place, while doing necessary fixes in order to get a correct path.
+		 * In other words, this method in a smart way "cuts out" `source` path from this position and
+		 * injects `target` path in it's place, while doing necessary fixes in order to get a correct path.
 		 *
 		 * Example:
 		 * 	let original = new Position( [ 2, 3, 1 ], root );
-		 * 	let from = new Position( [ 2, 2 ], root );
-		 * 	let to = new Position( [ 1, 1, 3 ], otherRoot );
-		 * 	let combined = original.getCombined( from, to );
+		 * 	let source = new Position( [ 2, 2 ], root );
+		 * 	let target = new Position( [ 1, 1, 3 ], otherRoot );
+		 * 	let combined = original.getCombined( source, target );
 		 * 	// combined.path is [ 1, 1, 4, 1 ], combined.root is otherRoot
 		 *
 		 * Explanation:
@@ -306,20 +334,21 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 		 * took care of `[ 2, 3 ]` part of it. Now we have to add the rest of the original path to the transformed path.
 		 * Finally, the transformed position will point to `[ 1, 1, 4, 1 ]`.
 		 *
-		 * @param {document.Position} from Beginning of the moved range.
-		 * @param {document.Position} to Position where the range is moved.
+		 * @protected
+		 * @param {document.Position} source Beginning of the moved range.
+		 * @param {document.Position} target Position where the range is moved.
 		 * @returns {document.Position} Combined position.
 		 */
-		getCombined( from, to ) {
-			const i = from.path.length - 1;
+		_getCombined( source, target ) {
+			const i = source.path.length - 1;
 
 			// The first part of a path to combined position is a path to the place where nodes were moved.
-			let combined = to.clone();
+			let combined = target.clone();
 
 			// Then we have to update the rest of the path.
 
 			// Fix the offset because this position might be after `from` position and we have to reflect that.
-			combined.offset = combined.offset + this.path[ i ] - from.offset;
+			combined.offset = combined.offset + this.path[ i ] - source.offset;
 
 			// Then, add the rest of the path.
 			// If this position is at the same level as `from` position nothing will get added.
