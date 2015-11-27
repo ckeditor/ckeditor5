@@ -16,16 +16,16 @@ const modules = bender.amd.require(
 	'document/position',
 	'document/range',
 	'document/attribute',
-	'document/transformoperation',
+	'document/operation/transform',
 	'document/operation/insertoperation',
 	'document/operation/changeoperation',
 	'document/operation/moveoperation',
 	'document/operation/nooperation'
 );
 
-describe( 'transformOperation', () => {
+describe( 'transform', () => {
 	let RootElement, Node, Position, Range, Attribute, InsertOperation, ChangeOperation, MoveOperation, NoOperation;
-	let transformOperation;
+	let transform;
 
 	before( () => {
 		RootElement = modules[ 'document/rootelement' ];
@@ -38,7 +38,7 @@ describe( 'transformOperation', () => {
 		MoveOperation = modules[ 'document/operation/moveoperation' ];
 		NoOperation = modules[ 'document/operation/nooperation' ];
 
-		transformOperation = modules[ 'document/transformoperation' ];
+		transform = modules[ 'document/operation/transform' ];
 	} );
 
 	let root, op, nodeA, nodeB, expected, baseVersion;
@@ -99,7 +99,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -112,7 +112,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 				expected.position.offset += 2;
 
 				expect( transOp.length ).to.equal( 1 );
@@ -126,7 +126,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 				expected.position.offset += 2;
 
 				expect( transOp.length ).to.equal( 1 );
@@ -140,7 +140,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( transformBy, true );
+				let transOp = transform( transformBy, true );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -153,7 +153,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -166,7 +166,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 				expected.position.path[ 1 ] += 2;
 
 				expect( transOp.length ).to.equal( 1 );
@@ -180,7 +180,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -200,7 +200,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -215,7 +215,7 @@ describe( 'transformOperation', () => {
 					2
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -228,7 +228,7 @@ describe( 'transformOperation', () => {
 					1
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 				expected.position.offset--;
 
 				expect( transOp.length ).to.equal( 1 );
@@ -242,7 +242,7 @@ describe( 'transformOperation', () => {
 					1
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -255,7 +255,7 @@ describe( 'transformOperation', () => {
 					2
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 				expected.position.offset += 2;
 
 				expect( transOp.length ).to.equal( 1 );
@@ -269,7 +269,7 @@ describe( 'transformOperation', () => {
 					2
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -282,7 +282,7 @@ describe( 'transformOperation', () => {
 					2
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 				expected.position.offset += 2;
 
 				expect( transOp.length ).to.equal( 1 );
@@ -296,7 +296,7 @@ describe( 'transformOperation', () => {
 					2
 				);
 
-				let transOp = transformOperation( op, transformBy, true );
+				let transOp = transform( op, transformBy, true );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -309,7 +309,7 @@ describe( 'transformOperation', () => {
 					2
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 				expected.position.path[ 1 ] -= 2;
 
 				expect( transOp.length ).to.equal( 1 );
@@ -323,7 +323,7 @@ describe( 'transformOperation', () => {
 					2
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -336,7 +336,7 @@ describe( 'transformOperation', () => {
 					2
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 				expected.position.path[ 1 ] += 2;
 
 				expect( transOp.length ).to.equal( 1 );
@@ -350,7 +350,7 @@ describe( 'transformOperation', () => {
 					2
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -363,7 +363,7 @@ describe( 'transformOperation', () => {
 					2
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 				expected.position.path = [ 1, 2, 1 ];
 
 				expect( transOp.length ).to.equal( 1 );
@@ -377,7 +377,7 @@ describe( 'transformOperation', () => {
 					3
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 				expected.position.offset = 0;
 
 				expect( transOp.length ).to.equal( 1 );
@@ -389,7 +389,7 @@ describe( 'transformOperation', () => {
 			it( 'no operation update', () => {
 				let transformBy = new NoOperation( baseVersion );
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -432,7 +432,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
@@ -445,7 +445,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expected.range.start.offset += 2;
 
@@ -460,7 +460,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expected.range.start.offset += 2;
 
@@ -475,7 +475,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
@@ -488,7 +488,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expected.range.start.path[ 0 ] += 2;
 					expected.range.end.path[ 0 ] += 2;
@@ -504,7 +504,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
@@ -517,7 +517,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expect( transOp.length ).to.equal( 2 );
 
@@ -542,7 +542,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
@@ -563,7 +563,7 @@ describe( 'transformOperation', () => {
 							baseVersion
 						);
 
-						let transOp = transformOperation( op, transformBy, true );
+						let transOp = transform( op, transformBy, true );
 
 						expect( transOp.length ).to.equal( 1 );
 						expectOperation( transOp[ 0 ], expected );
@@ -577,7 +577,7 @@ describe( 'transformOperation', () => {
 							baseVersion
 						);
 
-						let transOp = transformOperation( op, transformBy, true );
+						let transOp = transform( op, transformBy, true );
 
 						expected.oldAttr = anotherOldAttr;
 
@@ -594,7 +594,7 @@ describe( 'transformOperation', () => {
 							baseVersion
 						);
 
-						let transOp = transformOperation( op, transformBy, true );
+						let transOp = transform( op, transformBy, true );
 
 						expect( transOp.length ).to.equal( 2 );
 
@@ -619,7 +619,7 @@ describe( 'transformOperation', () => {
 							baseVersion
 						);
 
-						let transOp = transformOperation( op, transformBy, true );
+						let transOp = transform( op, transformBy, true );
 
 						expect( transOp.length ).to.equal( 2 );
 
@@ -643,7 +643,7 @@ describe( 'transformOperation', () => {
 							baseVersion
 						);
 
-						let transOp = transformOperation( op, transformBy, true );
+						let transOp = transform( op, transformBy, true );
 
 						expect( transOp.length ).to.equal( 3 );
 
@@ -675,7 +675,7 @@ describe( 'transformOperation', () => {
 							baseVersion
 						);
 
-						let transOp = transformOperation( op, transformBy );
+						let transOp = transform( op, transformBy );
 
 						expect( transOp.length ).to.equal( 1 );
 						expectOperation( transOp[ 0 ], expected );
@@ -689,7 +689,7 @@ describe( 'transformOperation', () => {
 							baseVersion
 						);
 
-						let transOp = transformOperation( op, transformBy );
+						let transOp = transform( op, transformBy );
 
 						expect( transOp.length ).to.equal( 1 );
 						expectOperation( transOp[ 0 ], {
@@ -707,7 +707,7 @@ describe( 'transformOperation', () => {
 							baseVersion
 						);
 
-						let transOp = transformOperation( op, transformBy );
+						let transOp = transform( op, transformBy );
 
 						expected.range.end.path = [ 1, 4, 2 ];
 
@@ -724,7 +724,7 @@ describe( 'transformOperation', () => {
 							baseVersion
 						);
 
-						let transOp = transformOperation( op, transformBy );
+						let transOp = transform( op, transformBy );
 
 						expected.range.start.path = [ 2, 1 ];
 
@@ -740,7 +740,7 @@ describe( 'transformOperation', () => {
 							baseVersion
 						);
 
-						let transOp = transformOperation( op, transformBy );
+						let transOp = transform( op, transformBy );
 
 						expect( transOp.length ).to.equal( 2 );
 
@@ -766,7 +766,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
@@ -780,7 +780,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expected.range.start.offset -= 2;
 
@@ -796,7 +796,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expected.range.start.offset += 2;
 
@@ -812,7 +812,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expected.range.start.path[ 0 ]--;
 					expected.range.end.path[ 0 ]--;
@@ -829,7 +829,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
@@ -843,7 +843,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expected.range.start.path[ 1 ] += 2;
 
@@ -859,7 +859,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
@@ -873,7 +873,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expect( transOp.length ).to.equal( 2 );
 
@@ -896,7 +896,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expect( transOp.length ).to.equal( 2 );
 
@@ -919,7 +919,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expected.range.start.path = [ 1, 4, 1, 2 ];
 					expected.range.end.path = [ 1, 4, 2, 2, 4 ];
@@ -936,7 +936,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expect( transOp.length ).to.equal( 2 );
 
@@ -957,7 +957,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expect( transOp.length ).to.equal( 2 );
 
@@ -980,7 +980,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expect( transOp.length ).to.equal( 3 );
 
@@ -1007,7 +1007,7 @@ describe( 'transformOperation', () => {
 				it( 'no operation update', () => {
 					let transformBy = new NoOperation( baseVersion );
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
@@ -1037,7 +1037,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expected.range.start.offset += 2;
 					expected.range.end.offset += 2;
@@ -1053,7 +1053,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expected.range.start.offset += 2;
 					expected.range.end.offset += 2;
@@ -1072,7 +1072,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expected.range.start.offset--;
 					expected.range.end.offset--;
@@ -1089,7 +1089,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expected.range.start.offset += 2;
 					expected.range.end.offset += 2;
@@ -1106,7 +1106,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expect( transOp.length ).to.equal( 2 );
 
@@ -1129,7 +1129,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expect( transOp.length ).to.equal( 2 );
 
@@ -1153,7 +1153,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expected.range.start.path = [ 2, 4, 2, 1 ];
 					expected.range.end.path = [ 2, 4, 2, 4 ];
@@ -1170,7 +1170,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expect( transOp.length ).to.equal( 2 );
 
@@ -1193,7 +1193,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expected.range.start.path = [ 2, 4, 1 ];
 					expected.range.end.path = [ 2, 4, 4 ];
@@ -1210,7 +1210,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expect( transOp.length ).to.equal( 2 );
 
@@ -1234,7 +1234,7 @@ describe( 'transformOperation', () => {
 						baseVersion
 					);
 
-					let transOp = transformOperation( op, transformBy );
+					let transOp = transform( op, transformBy );
 
 					expect( transOp.length ).to.equal( 3 );
 
@@ -1289,7 +1289,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1302,7 +1302,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1315,7 +1315,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expected.sourcePosition.offset += 2;
 
@@ -1330,7 +1330,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1343,7 +1343,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expected.sourcePosition.path[ 1 ] += 2;
 
@@ -1358,7 +1358,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1371,7 +1371,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expected.targetPosition.offset += 2;
 
@@ -1386,7 +1386,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1399,7 +1399,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expected.targetPosition.path[ 1 ] += 2;
 
@@ -1414,7 +1414,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1427,7 +1427,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expected.targetPosition.offset += 2;
 
@@ -1442,7 +1442,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy, true );
+				let transOp = transform( op, transformBy, true );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1455,7 +1455,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expected.targetPosition.path[ 1 ] += 2;
 
@@ -1470,7 +1470,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 2 );
 
@@ -1496,7 +1496,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1512,7 +1512,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1526,7 +1526,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expected.sourcePosition.offset += 2;
 
@@ -1542,7 +1542,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1556,7 +1556,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expected.sourcePosition.offset -= 2;
 
@@ -1572,7 +1572,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy, true );
+				let transOp = transform( op, transformBy, true );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1586,7 +1586,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expected.sourcePosition.path[ 1 ] += 2;
 
@@ -1602,7 +1602,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1616,7 +1616,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expected.sourcePosition.path[ 1 ] -= 2;
 
@@ -1632,7 +1632,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1646,7 +1646,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expected.targetPosition.offset += 2;
 
@@ -1662,7 +1662,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1676,7 +1676,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expected.targetPosition.offset -= 2;
 
@@ -1692,7 +1692,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1706,7 +1706,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expected.targetPosition.path[ 1 ] += 2;
 
@@ -1722,7 +1722,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1736,7 +1736,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expected.targetPosition.path[ 1 ] -= 2;
 
@@ -1752,7 +1752,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1766,7 +1766,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 2 );
 
@@ -1789,7 +1789,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1803,7 +1803,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expected.sourcePosition.path = [ 4, 3, 4 ];
 
@@ -1819,7 +1819,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expected.targetPosition.path = [ 0, 2, 3 ];
 
@@ -1835,7 +1835,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 				let reversed = transformBy.getReversed();
 
 				expected.sourcePosition = reversed.sourcePosition;
@@ -1854,7 +1854,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], {
@@ -1871,7 +1871,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy, true );
+				let transOp = transform( op, transformBy, true );
 
 				expected.sourcePosition.path = [ 4, 1, 0 ];
 
@@ -1887,7 +1887,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], {
@@ -1904,7 +1904,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy, true );
+				let transOp = transform( op, transformBy, true );
 
 				expected.sourcePosition.path = [ 4, 1, 1 ];
 
@@ -1920,7 +1920,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expected.sourcePosition.path = [ 2, 2, 3 ];
 				expected.howMany = 1;
@@ -1937,7 +1937,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy, true );
+				let transOp = transform( op, transformBy, true );
 
 				expect( transOp.length ).to.equal( 2 );
 
@@ -1965,7 +1965,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expected.howMany = 1;
 
@@ -1981,7 +1981,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy, true );
+				let transOp = transform( op, transformBy, true );
 
 				expect( transOp.length ).to.equal( 2 );
 
@@ -2009,7 +2009,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expected.howMany = 2;
 
@@ -2027,7 +2027,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy, true );
+				let transOp = transform( op, transformBy, true );
 
 				expect( transOp.length ).to.equal( 2 );
 
@@ -2055,7 +2055,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy, true );
+				let transOp = transform( op, transformBy, true );
 
 				expect( transOp.length ).to.equal( 3 );
 
@@ -2082,7 +2082,7 @@ describe( 'transformOperation', () => {
 			it( 'no operation update', () => {
 				let transformBy = new NoOperation( baseVersion );
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2108,7 +2108,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2127,7 +2127,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2143,7 +2143,7 @@ describe( 'transformOperation', () => {
 					baseVersion
 				);
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2154,7 +2154,7 @@ describe( 'transformOperation', () => {
 			it( 'no operation update', () => {
 				let transformBy = new NoOperation( baseVersion );
 
-				let transOp = transformOperation( op, transformBy );
+				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );

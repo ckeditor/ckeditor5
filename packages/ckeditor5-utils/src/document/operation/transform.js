@@ -36,7 +36,7 @@
  * `a` by `b` and also `b` by `a`. In both transformations the same operation has to be the important one. If we assume
  * that first or second passed operation is always more important we won't be able to solve this case.
  *
- * @function transformOperation
+ * @function document.operation.transform
  * @param {document.operation.Operation} a Operation that will be transformed.
  * @param {document.operation.Operation} b Operation to transform by.
  * @param {Boolean} isStrong Flag indicating whether this operation should be treated as more important
