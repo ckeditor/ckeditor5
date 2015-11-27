@@ -94,6 +94,30 @@ CKEDITOR.define( [
 			( !a.newAttr.isEqual( b.newAttr ) );
 	}
 
+	// Gets an array of Ranges and produces one Range out of it. The root of a new range will be same as
+	// the root of the first range in the array. If any of given ranges has different root than the first range,
+	// it will be discarded.
+	function joinRanges( ranges ) {
+		if ( ranges.length === 0 ) {
+			return null;
+		}
+
+		let start = ranges[ 0 ].start;
+		let end = ranges[ 0 ].end;
+		const root = ranges[ 0 ].root;
+
+		for ( let i = 1; i < ranges.length; i++ ) {
+			if ( ranges[ i ].root != root ) {
+				continue;
+			}
+
+			start = ranges[ i ].start.isBefore( start ) ? ranges[ i ].start : start;
+			end = ranges[ i ].end.isAfter( end ) ? ranges[ i ].end : end;
+		}
+
+		return new Range( start.clone(), end.clone(), root );
+	}
+
 	const ot = {
 		InsertOperation: {
 			// Transforms InsertOperation `a` by InsertOperation `b`. Accepts a flag stating whether `a` is more important
@@ -199,20 +223,16 @@ CKEDITOR.define( [
 				// This will aggregate transformed ranges.
 				let ranges = [];
 
-				const differenceSet = a.range.getDifference( rangeB );
-				const common = a.range.getIntersection( rangeB );
-
 				// Difference is a part of changed range that is modified by ChangeOperation but are not affected
 				// by MoveOperation. This can be zero, one or two ranges (if moved range is inside changed range).
-				if ( differenceSet.length > 0 ) {
-					const difference = differenceSet[ 0 ];
+				// If two ranges were returned it means that rangeB was inside rangeA. We will cover rangeB later.
+				// Right now we will make a simplification and join difference ranges and transform them as one.
+				const difference = joinRanges( a.range.getDifference( rangeB ) );
 
-					// If two ranges were returned it means that rangeB was inside rangeA. We will cover rangeB later.
-					// Right now we will make a simplification and join difference ranges and transform them as one.
-					if ( differenceSet.length == 2 ) {
-						difference.end = differenceSet[ 1 ].end.clone();
-					}
+				// Common is a range of nodes that is affected by MoveOperation. So it got moved to other place.
+				const common = a.range.getIntersection( rangeB );
 
+				if ( difference !== null ) {
 					// MoveOperation removes nodes from their original position. We acknowledge this by proper transformation.
 					// Take the start and the end of the range and transform them by deletion of moved nodes.
 					// Note that if rangeB was inside ChangeOperation range, only difference.end will be transformed.
@@ -226,7 +246,6 @@ CKEDITOR.define( [
 					ranges = difference.getTransformedByInsertion( newTargetPosition, b.howMany, false );
 				}
 
-				// Common is a range of nodes that is affected by MoveOperation. So it got moved to other place.
 				if ( common !== null ) {
 					// We substitute original position by the combination of target position and original position.
 					// This reflects that those nodes were moved to another place by MoveOperation.
@@ -293,19 +312,14 @@ CKEDITOR.define( [
 				const rangeA = Range.createFromPositionAndOffset( a.sourcePosition, a.howMany );
 				const rangeB = Range.createFromPositionAndOffset( b.sourcePosition, b.howMany );
 
-				const differenceSet = rangeA.getDifference( rangeB );
-
 				// MoveOperations ranges may intersect.
+
 				// First, we take care of that part of the range that is only modified by transformed operation.
-				if ( differenceSet.length > 0 ) {
-					const difference = differenceSet[ 0 ];
+				// If two ranges were returned it means that rangeB was inside rangeA. We will cover rangeB later.
+				// Right now we will make a simplification and join difference ranges and transform them as one.
+				const difference = joinRanges( rangeA.getDifference( rangeB ) );
 
-					// If two ranges were returned it means that rangeB was inside rangeA. We will cover rangeB later.
-					// Right now we will make a simplification and join difference ranges and transform them as one.
-					if ( differenceSet.length == 2 ) {
-						difference.end = differenceSet[ 1 ].end.clone();
-					}
-
+				if ( difference !== null ) {
 					// MoveOperation removes nodes from their original position. We acknowledge this by proper transformation.
 					// Take the start and the end of the range and transform them by deletion of moved nodes.
 					// Note that if rangeB was inside rangeA, only difference.end will be transformed.
