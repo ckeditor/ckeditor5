@@ -153,30 +153,37 @@ CKEDITOR.define( [
 			// Transforms ChangeOperation `a` by ChangeOperation `b`. Accepts a flag stating whether `a` is more important
 			// than `b` when it comes to resolving conflicts. Returns results as an array of operations.
 			ChangeOperation( a, b, isStrong ) {
-				if ( !isStrong && haveConflictingAttributes( a, b ) ) {
-					// If operations' attributes are in conflict and this operation is less important
-					// we have to check if operations' ranges intersect and manage them properly.
+				if ( haveConflictingAttributes( a, b ) ) {
+					// If operations attributes are in conflict, check if their ranges intersect and manage them properly.
+					let operations = [];
 
-					// We get the range(s) which are only affected by this operation.
-					const ranges = a.range.getDifference( b.range );
+					// First, we want to apply change to the part of a range that has not been changed by the other operation.
+					operations = operations.concat(
+						a.range.getDifference( b.range ).map( ( range ) => {
+							return new ChangeOperation( range, a.oldAttr, a.newAttr, a.baseVersion );
+						} )
+					);
 
-					if ( ranges.length === 0 ) {
-						// If there are no such ranges, this operation should not do anything (as it is less important).
-						return [ new NoOperation( a.baseVersion ) ];
-					} else {
-						// If there are such ranges, map them to operations and then return.
-						return ranges.map( ( range ) => {
-							return new ChangeOperation(
-								range,
-								a.oldAttr,
-								a.newAttr,
-								a.baseVersion
-							);
-						} );
+					if ( isStrong ) {
+						// If this operation is more important, we want also want to apply change to the part of the
+						// original range that has already been changed by the other operation. Since that range
+						// got changed we have to update oldAttr.
+						const common = a.range.getIntersection( b.range );
+
+						if ( common !== null ) {
+							operations.push( new ChangeOperation( common, b.oldAttr, a.newAttr, a.baseVersion ) );
+						}
 					}
+
+					// If no operations has been added nothing should get updated, but since we need to return
+					// an instance of Operation we add NoOperation to the array.
+					if ( operations.length === 0 ) {
+						operations.push( new NoOperation( a.baseVersion ) );
+					}
+
+					return operations;
 				} else {
-					// If operations don't conflict or this operation is more important
-					// simply, return an array containing just a clone of this operation.
+					// If operations don't conflict simply, return an array containing just a clone of this operation.
 					return [ a.clone() ];
 				}
 			},
