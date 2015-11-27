@@ -154,14 +154,10 @@ describe( 'View', () => {
 			} ).to.throw( CKEditorError, /ui-view-addchild-noreg/ );
 		} );
 
-		it( 'should throw when child view is of a wrong type', () => {
+		it( 'should throw when no child view passed', () => {
 			expect( () => {
 				view.addChild( 'x' );
-			} ).to.throw( CKEditorError, /ui-view-addchild-badtype/ );
-
-			expect( () => {
-				view.addChild( 'x', new Date() );
-			} ).to.throw( CKEditorError, /ui-view-addchild-badtype/ );
+			} ).to.throw( CKEditorError, /ui-view-addchild-no-view/ );
 		} );
 
 		it( 'should add a child to the region views', () => {
@@ -196,14 +192,16 @@ describe( 'View', () => {
 			setTestViewInstance();
 		} );
 
-		it( 'should throw when child view is of a wrong type', () => {
+		it( 'should throw when no region name', () => {
+			expect( () => {
+				view.removeChild();
+			} ).to.throw( CKEditorError, /ui-view-removechild-badrname/ );
+		} );
+
+		it( 'should throw when child view passed', () => {
 			expect( () => {
 				view.removeChild( 'x' );
-			} ).to.throw( CKEditorError, /ui-view-removechild-badtype/ );
-
-			expect( () => {
-				view.removeChild( 'x', new Date() );
-			} ).to.throw( CKEditorError, /ui-view-removechild-badtype/ );
+			} ).to.throw( CKEditorError, /ui-view-removechild-no-view/ );
 		} );
 
 		it( 'should throw when region does not exist', () => {

@@ -110,14 +110,6 @@ describe( 'Controller', () => {
 			expect( () => {
 				controller.register();
 			} ).to.throw;
-
-			expect( () => {
-				controller.register( 'x' );
-			} ).to.throw( CKEditorError, /ui-controller-register-badtype/ );
-
-			expect( () => {
-				controller.register( 'x', new Date() );
-			} ).to.throw( CKEditorError, /ui-controller-register-badtype/ );
 		} );
 
 		it( 'should throw when already registered but no override flag', () => {
@@ -183,18 +175,14 @@ describe( 'Controller', () => {
 			} ).to.throw( CKEditorError, /ui-controller-addchild-nocol/ );
 		} );
 
-		it( 'should throw when controller or wrong controller is passed', () => {
+		it( 'should throw when no controller is passed', () => {
 			const controller = new Controller();
 
 			controller.register( 'x', new Collection() );
 
 			expect( () => {
 				controller.addChild( 'x' );
-			} ).to.throw( CKEditorError, /ui-controller-addchild-badtype/ );
-
-			expect( () => {
-				controller.addChild( 'x', new Date() );
-			} ).to.throw( CKEditorError, /ui-controller-addchild-badtype/ );
+			} ).to.throw( CKEditorError, /ui-controller-addchild-no-controller/ );
 		} );
 
 		it( 'should add a child controller to given collection and return promise', () => {
@@ -356,11 +344,7 @@ describe( 'Controller', () => {
 
 			expect( () => {
 				controller.removeChild( 'x' );
-			} ).to.throw( CKEditorError, /ui-controller-removechild-badtype/ );
-
-			expect( () => {
-				controller.removeChild( 'x', new Date() );
-			} ).to.throw( CKEditorError, /ui-controller-removechild-badtype/ );
+			} ).to.throw( CKEditorError, /ui-controller-removechild-no-controller/ );
 		} );
 
 		it( 'should remove child controller and return it', () => {
