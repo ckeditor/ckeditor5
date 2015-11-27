@@ -119,7 +119,7 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * Adds a child controller to one of the {@link #collections} (see {@link #register}).
+		 * Adds a child controller to one of the {@link #collections}.
 		 * If this controller instance is ready, the child view will be initialized when added.
 		 * If this controller and child controller have views, the child view will be added
 		 * to corresponding region in this controller's view.
@@ -180,7 +180,7 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * Removes a child controller from one of the {@link #collections} (see {@link #register}).
+		 * Removes a child controller from one of the {@link #collections}.
 		 * If this controller and child controller have views, the child view will be removed
 		 * from corresponding region in this controller's view.
 		 *
@@ -228,8 +228,7 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * Returns a child controller from one of the {@link #collections}
-		 * (see {@link #register}) at given `index`.
+		 * Returns a child controller from one of the {@link #collections} at given `index`.
 		 *
 		 * @param {String} collectionName One of {@link #collections} the child should be retrieved from.
 		 * @param {Number} [index] An index of desired controller.
