@@ -10,6 +10,7 @@
 const modules = bender.amd.require( 'ckeditor',
 	'ui/view',
 	'ui/controller',
+	'ui/controllercollection',
 	'ui/region',
 	'ckeditorerror',
 	'model',
@@ -17,7 +18,7 @@ const modules = bender.amd.require( 'ckeditor',
 	'eventinfo'
 );
 
-let View, Controller, Model, CKEditorError, Collection;
+let View, Controller, Model, CKEditorError, Collection, ControllerCollection;
 let ParentView;
 
 bender.tools.createSinonSandbox();
@@ -32,7 +33,7 @@ describe( 'Controller', () => {
 			expect( controller.model ).to.be.null;
 			expect( controller.ready ).to.be.false;
 			expect( controller.view ).to.be.null;
-			expect( controller._collections.length ).to.be.equal( 0 );
+			expect( controller.collections.length ).to.be.equal( 0 );
 		} );
 
 		it( 'should accept model and view', () => {
@@ -81,7 +82,7 @@ describe( 'Controller', () => {
 
 		it( 'should initialize child controllers in own collections', () => {
 			const parentController = new Controller();
-			parentController.register( 'buttons', new Collection() );
+			parentController.collections.add( new ControllerCollection( 'buttons' ) );
 
 			const childController1 = new Controller();
 			const childController2 = new Controller();
@@ -101,64 +102,13 @@ describe( 'Controller', () => {
 		} );
 	} );
 
-	describe( 'register', () => {
-		it( 'should throw when bad type of argument', () => {
-			const controller = new Controller();
-
-			controller.register( 'x', new Collection() );
-
-			expect( () => {
-				controller.register();
-			} ).to.throw;
-		} );
-
-		it( 'should throw when already registered but no override flag', () => {
-			const controller = new Controller();
-
-			controller.register( 'x', new Collection() );
-
-			expect( () => {
-				controller.register( 'x', new Collection() );
-			} ).to.throw( CKEditorError, /ui-controller-register-noverride/ );
-		} );
-
-		it( 'should register a collection', () => {
-			const controller = new Controller();
-			const collection = new Collection();
-
-			controller.register( 'x', collection );
-
-			expect( controller._collections.get( 'x' ) ).to.be.equal( collection );
-		} );
-
-		it( 'should override existing collection with override flag', () => {
-			const controller = new Controller();
-			const newCollection = new Collection();
-
-			controller.register( 'x', new Collection() );
-			controller.register( 'x', newCollection, true );
-
-			expect( controller._collections.get( 'x' ) ).to.be.equal( newCollection );
-		} );
-
-		it( 'should override existing collection with the same collection', () => {
-			const controller = new Controller();
-			const newCollection = new Collection();
-
-			controller.register( 'x', newCollection );
-			controller.register( 'x', newCollection );
-
-			expect( controller._collections.get( 'x' ) ).to.be.equal( newCollection );
-		} );
-	} );
-
 	describe( 'addChild', () => {
 		beforeEach( defineParentViewClass );
 
 		it( 'should throw when no collection name', () => {
 			const controller = new Controller();
 
-			controller.register( 'x', new Collection() );
+			controller.collections.add( new ControllerCollection( 'x' ) );
 
 			expect( () => {
 				controller.addChild();
@@ -168,7 +118,7 @@ describe( 'Controller', () => {
 		it( 'should throw when collection of given name does not exist', () => {
 			const controller = new Controller();
 
-			controller.register( 'x', new Collection() );
+			controller.collections.add( new ControllerCollection( 'x' ) );
 
 			expect( () => {
 				controller.addChild( 'y', new Controller() );
@@ -178,7 +128,7 @@ describe( 'Controller', () => {
 		it( 'should throw when no controller is passed', () => {
 			const controller = new Controller();
 
-			controller.register( 'x', new Collection() );
+			controller.collections.add( new ControllerCollection( 'x' ) );
 
 			expect( () => {
 				controller.addChild( 'x' );
@@ -188,9 +138,9 @@ describe( 'Controller', () => {
 		it( 'should add a child controller to given collection and return promise', () => {
 			const parentController = new Controller();
 			const childController = new Controller();
-			const collection = new Collection();
+			const collection = new ControllerCollection( 'x' );
 
-			parentController.register( 'x', collection );
+			parentController.collections.add( collection );
 
 			const returned = parentController.addChild( 'x', childController );
 
@@ -202,9 +152,9 @@ describe( 'Controller', () => {
 			const parentController = new Controller();
 			const childController1 = new Controller();
 			const childController2 = new Controller();
-			const collection = new Collection();
+			const collection = new ControllerCollection( 'x' );
 
-			parentController.register( 'x', collection );
+			parentController.collections.add( collection );
 
 			parentController.addChild( 'x', childController1 );
 			parentController.addChild( 'x', childController2, 0 );
@@ -217,7 +167,7 @@ describe( 'Controller', () => {
 			const parentController = new Controller( null, new ParentView() );
 			const childController = new Controller();
 
-			parentController.register( 'x', new Collection() );
+			parentController.collections.add( new ControllerCollection( 'x' ) );
 
 			return parentController.init()
 				.then( () => {
@@ -235,7 +185,7 @@ describe( 'Controller', () => {
 
 			const spy1 = bender.sinon.spy( parentView, 'addChild' );
 
-			parentController.register( 'x', new Collection() );
+			parentController.collections.add( new ControllerCollection( 'x' ) );
 			parentController.addChild( 'x', childController );
 
 			sinon.assert.notCalled( spy1 );
@@ -260,7 +210,7 @@ describe( 'Controller', () => {
 			const childView2 = new View();
 			const childController2 = new Controller( null, childView2 );
 
-			parentController.register( 'x', new Collection() );
+			parentController.collections.add( new ControllerCollection( 'x' ) );
 
 			return parentController.init()
 				.then( () => {
@@ -279,7 +229,7 @@ describe( 'Controller', () => {
 			const childController = new Controller( null, new View() );
 			const spy = bender.sinon.spy( childController, 'init' );
 
-			parentController.register( 'x', new Collection() );
+			parentController.collections.add( new ControllerCollection( 'x' ) );
 			parentController.addChild( 'x', childController );
 			parentController.removeChild( 'x', childController );
 
@@ -299,7 +249,7 @@ describe( 'Controller', () => {
 			const childController = new Controller( null, new View() );
 			const spy = bender.sinon.spy( childController, 'init' );
 
-			parentController.register( 'x', new Collection() );
+			parentController.collections.add( new ControllerCollection( 'x' ) );
 
 			return parentController.init()
 				.then( () => {
@@ -320,7 +270,7 @@ describe( 'Controller', () => {
 		it( 'should throw when no collection name', () => {
 			const controller = new Controller();
 
-			controller.register( 'x', new Collection() );
+			controller.collections.add( new ControllerCollection( 'x' ) );
 
 			expect( () => {
 				controller.removeChild();
@@ -330,7 +280,7 @@ describe( 'Controller', () => {
 		it( 'should throw when collection of given name does not exist', () => {
 			const controller = new Controller();
 
-			controller.register( 'x', new Collection() );
+			controller.collections.add( new ControllerCollection( 'x' ) );
 
 			expect( () => {
 				controller.removeChild( 'y' );
@@ -340,7 +290,7 @@ describe( 'Controller', () => {
 		it( 'should throw when controller or wrong controller is passed', () => {
 			const controller = new Controller();
 
-			controller.register( 'x', new Collection() );
+			controller.collections.add( new ControllerCollection( 'x' ) );
 
 			expect( () => {
 				controller.removeChild( 'x' );
@@ -350,9 +300,9 @@ describe( 'Controller', () => {
 		it( 'should remove child controller and return it', () => {
 			const parentController = new Controller();
 			const childController = new Controller();
-			const collection = new Collection();
+			const collection = new ControllerCollection( 'x' );
 
-			parentController.register( 'x', collection );
+			parentController.collections.add( collection );
 
 			parentController.addChild( 'x', childController );
 			const returned = parentController.removeChild( 'x', childController );
@@ -368,7 +318,7 @@ describe( 'Controller', () => {
 
 			const spy = bender.sinon.spy( parentView, 'removeChild' );
 
-			parentController.register( 'x', new Collection() );
+			parentController.collections.add( new ControllerCollection( 'x' ) );
 			parentController.addChild( 'x', childController );
 
 			sinon.assert.notCalled( spy );
@@ -388,7 +338,7 @@ describe( 'Controller', () => {
 		it( 'should throw when collection of given name does not exist', () => {
 			const controller = new Controller();
 
-			controller.register( 'x', new Collection() );
+			controller.collections.add( new ControllerCollection( 'x' ) );
 
 			expect( () => {
 				controller.getChild( 'y', 0 );
@@ -398,9 +348,8 @@ describe( 'Controller', () => {
 		it( 'should get child controller by index', () => {
 			const parentController = new Controller();
 			const childController = new Controller();
-			const collection = new Collection();
 
-			parentController.register( 'x', collection );
+			parentController.collections.add( new ControllerCollection( 'x' ) );
 			parentController.addChild( 'x', childController );
 
 			expect( parentController.getChild( 'x', 0 ) ).to.be.equal( childController );
@@ -425,7 +374,7 @@ describe( 'Controller', () => {
 					expect( controller.model ).to.be.null;
 					expect( controller.ready ).to.be.null;
 					expect( controller.view ).to.be.null;
-					expect( controller._collections ).to.be.null;
+					expect( controller.collections ).to.be.null;
 				} );
 		} );
 
@@ -439,7 +388,7 @@ describe( 'Controller', () => {
 				.then( () => {
 					expect( controller.model ).to.be.null;
 					expect( controller.view ).to.be.null;
-					expect( controller._collections ).to.be.null;
+					expect( controller.collections ).to.be.null;
 				} );
 		} );
 
@@ -449,7 +398,7 @@ describe( 'Controller', () => {
 			const childController = new Controller( null, childView );
 			const spy = bender.sinon.spy( childView, 'destroy' );
 
-			parentController.register( 'x', new Collection() );
+			parentController.collections.add( new ControllerCollection( 'x' ) );
 			parentController.addChild( 'x', childController );
 
 			return parentController.init()
@@ -460,7 +409,7 @@ describe( 'Controller', () => {
 					sinon.assert.calledOnce( spy );
 					expect( childController.model ).to.be.null;
 					expect( childController.view ).to.be.null;
-					expect( childController._collections ).to.be.null;
+					expect( childController.collections ).to.be.null;
 				} );
 		} );
 
@@ -468,7 +417,7 @@ describe( 'Controller', () => {
 			const parentController = new Controller( null, new ParentView() );
 			const childController = new Controller( null, null );
 
-			parentController.register( 'x', new Collection() );
+			parentController.collections.add( new ControllerCollection( 'x' ) );
 			parentController.addChild( 'x', childController );
 
 			return parentController.init()
@@ -478,7 +427,7 @@ describe( 'Controller', () => {
 				.then( () => {
 					expect( childController.model ).to.be.null;
 					expect( childController.view ).to.be.null;
-					expect( childController._collections ).to.be.null;
+					expect( childController.collections ).to.be.null;
 				} );
 		} );
 	} );
@@ -489,6 +438,7 @@ function updateModuleReference() {
 	Controller = modules[ 'ui/controller' ];
 	Model = modules.model;
 	Collection = modules.collection;
+	ControllerCollection = modules[ 'ui/controllercollection' ];
 	CKEditorError = modules.ckeditorerror;
 }
 

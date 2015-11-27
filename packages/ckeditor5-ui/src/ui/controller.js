@@ -43,12 +43,12 @@ CKEDITOR.define( [
 			this.view = view || null;
 
 			/**
-			 * Collections of child controllers.
+			 * A collection of {@link ControllerCollection} instances containing
+			 * child controllers.
 			 *
-			 * @private
 			 * @property {Collection}
 			 */
-			this._collections = new Collection( {
+			this.collections = new Collection( {
 				idProperty: 'name'
 			} );
 		}
@@ -56,7 +56,7 @@ CKEDITOR.define( [
 		/**
 		 * Initializes the controller instance. The process includes:
 		 *  1. Initialization of the child {@link #view}.
-		 *  2. Initialization of child controllers in {@link #_collections}.
+		 *  2. Initialization of child controllers in {@link #collections}.
 		 *  3. Setting {@link #ready} flag `true`.
 		 *
 		 * @returns {Promise} A Promise resolved when the initialization process is finished.
@@ -96,7 +96,7 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * Initializes the {@link #_collections} of this controller instance.
+		 * Initializes the {@link #collections} of this controller instance.
 		 *
 		 * @protected
 		 * @returns {Promise} A Promise resolved when initialization process is finished.
@@ -105,7 +105,7 @@ CKEDITOR.define( [
 			const promises = [];
 			let collection, childController;
 
-			for ( collection of this._collections ) {
+			for ( collection of this.collections ) {
 				for ( childController of collection ) {
 					if ( this.view, childController.view ) {
 						this.view.addChild( collection.name, childController.view );
@@ -119,12 +119,12 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * Adds a child controller to one of the {@link #_collections} (see {@link #register}).
+		 * Adds a child controller to one of the {@link #collections} (see {@link #register}).
 		 * If this controller instance is ready, the child view will be initialized when added.
 		 * If this controller and child controller have views, the child view will be added
 		 * to corresponding region in this controller's view.
 		 *
-		 * @param {String} collectionName One of {@link #_collections} the child should be added to.
+		 * @param {String} collectionName One of {@link #collections} the child should be added to.
 		 * @param {Controller} childController A child controller.
 		 * @param {Number} [index] Index at which the child will be added to the collection.
 		 * @returns {Promise} A Promise resolved when the child is added.
@@ -139,7 +139,7 @@ CKEDITOR.define( [
 				throw new CKEditorError( 'ui-controller-addchild-badcname' );
 			}
 
-			const collection = this._collections.get( collectionName );
+			const collection = this.collections.get( collectionName );
 
 			if ( !collection ) {
 				/**
@@ -180,11 +180,11 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * Removes a child controller from one of the {@link #_collections} (see {@link #register}).
+		 * Removes a child controller from one of the {@link #collections} (see {@link #register}).
 		 * If this controller and child controller have views, the child view will be removed
 		 * from corresponding region in this controller's view.
 		 *
-		 * @param {String} collectionName One of {@link #_collections} the child should be removed from.
+		 * @param {String} collectionName One of {@link #collections} the child should be removed from.
 		 * @param {Controller} childController A child controller.
 		 * @returns {Controller} A child controller instance after removal.
 		 */
@@ -198,7 +198,7 @@ CKEDITOR.define( [
 				throw new CKEditorError( 'ui-controller-removechild-badcname' );
 			}
 
-			const collection = this._collections.get( collectionName );
+			const collection = this.collections.get( collectionName );
 
 			if ( !collection ) {
 				/**
@@ -228,15 +228,15 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * Returns a child controller from one of the {@link #_collections}
+		 * Returns a child controller from one of the {@link #collections}
 		 * (see {@link #register}) at given `index`.
 		 *
-		 * @param {String} collectionName One of {@link #_collections} the child should be retrieved from.
+		 * @param {String} collectionName One of {@link #collections} the child should be retrieved from.
 		 * @param {Number} [index] An index of desired controller.
 		 * @returns {Controller} A child controller instance.
 		 */
 		getChild( collectionName, index ) {
-			const collection = this._collections.get( collectionName );
+			const collection = this.collections.get( collectionName );
 
 			if ( !collection ) {
 				/**
@@ -251,44 +251,9 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * Registers a collection in {@link #_collections}.
-		 *
-		 * @param {String} collectionName The name of the collection to be registered.
-		 * @param {Collection} collection Collection to be registered.
-		 * @param {Boolean} [override] When set `true` it will allow overriding of registered collections.
-		 */
-		register( collectionName, collection, override ) {
-			const registered = this._collections.get( collectionName );
-			const that = this;
-
-			if ( !registered ) {
-				add( collection );
-			} else {
-				if ( registered !== collection ) {
-					if ( !override ) {
-						/**
-						 * Overriding is possible only when `override` flag is set.
-						 *
-						 * @error ui-controller-register-noverride
-						 */
-						throw new CKEditorError( 'ui-controller-register-noverride' );
-					}
-
-					that._collections.remove( registered );
-					add( collection );
-				}
-			}
-
-			function add() {
-				collection.name = collectionName;
-				that._collections.add( collection );
-			}
-		}
-
-		/**
 		 * Destroys the controller instance. The process includes:
 		 *  1. Destruction of the child {@link #view}.
-		 *  2. Destruction of child controllers in {@link #_collections}.
+		 *  2. Destruction of child controllers in {@link #collections}.
 		 *
 		 * @returns {Promise} A Promise resolved when the destruction process is finished.
 		 */
@@ -296,7 +261,7 @@ CKEDITOR.define( [
 			let promises = [];
 			let collection, childController;
 
-			for ( collection of this._collections ) {
+			for ( collection of this.collections ) {
 				for ( childController of collection ) {
 					if ( this.view && childController.view ) {
 						this.view.removeChild( collection.name, childController.view );
@@ -307,7 +272,7 @@ CKEDITOR.define( [
 					collection.remove( childController );
 				}
 
-				this._collections.remove( collection );
+				this.collections.remove( collection );
 			}
 
 			if ( this.view ) {
@@ -317,7 +282,7 @@ CKEDITOR.define( [
 			}
 
 			promises.push( Promise.resolve().then( () => {
-				this.model = this.ready = this.view = this._collections = null;
+				this.model = this.ready = this.view = this.collections = null;
 			} ) );
 
 			return Promise.all( promises );
