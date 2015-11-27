@@ -257,24 +257,57 @@ describe( 'ChangeOperation', () => {
 		expect( root.getChild( 2 ).hasAttr( fooAttr ) ).to.be.true;
 	} );
 
+	it( 'should throw an error when one try to remove and the attribute does not exists', () => {
+		let fooAttr = new Attribute( 'foo', true );
+
+		root.insertChildren( 0, 'x' );
+
+		expect( () => {
+			doc.applyOperation(
+				new ChangeOperation(
+					new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
+					fooAttr,
+					null,
+					doc.version
+				)
+			);
+		} ).to.throw( CKEditorError, /operation-change-no-attr-to-remove/ );
+	} );
+
+	it( 'should throw an error when one try to insert and the attribute already exists', () => {
+		let x1Attr = new Attribute( 'x', 1 );
+		let x2Attr = new Attribute( 'x', 2 );
+
+		root.insertChildren( 0, new Character( 'x', [ x1Attr ] ) );
+
+		expect( () => {
+			doc.applyOperation(
+				new ChangeOperation(
+					new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
+					null,
+					x2Attr,
+					doc.version
+				)
+			);
+		} ).to.throw( CKEditorError, /operation-change-attr-exists/ );
+	} );
+
 	it( 'should throw an error when one try to change and the new and old attributes have different keys', () => {
 		let fooAttr = new Attribute( 'foo', true );
 		let barAttr = new Attribute( 'bar', true );
 
 		root.insertChildren( 0, 'x' );
 
-		expect(
-			() => {
-				doc.applyOperation(
-					new ChangeOperation(
-						new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
-						fooAttr,
-						barAttr,
-						doc.version
-					)
-				);
-			}
-		).to.throw( CKEditorError, /operation-change-different-keys/ );
+		expect( () => {
+			doc.applyOperation(
+				new ChangeOperation(
+					new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
+					fooAttr,
+					barAttr,
+					doc.version
+				)
+			);
+		} ).to.throw( CKEditorError, /operation-change-different-keys/ );
 	} );
 
 	it( 'should create operation with the same parameters when cloned', () => {

@@ -101,6 +101,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -114,6 +115,7 @@ describe( 'transformOperation', () => {
 				let transOp = transformOperation( op, transformBy );
 				expected.position.offset += 2;
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -127,6 +129,7 @@ describe( 'transformOperation', () => {
 				let transOp = transformOperation( op, transformBy );
 				expected.position.offset += 2;
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -139,6 +142,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( transformBy, true );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -151,6 +155,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -164,6 +169,7 @@ describe( 'transformOperation', () => {
 				let transOp = transformOperation( op, transformBy );
 				expected.position.path[ 1 ] += 2;
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -176,6 +182,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 		} );
@@ -195,6 +202,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 		} );
@@ -209,6 +217,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -222,6 +231,7 @@ describe( 'transformOperation', () => {
 				let transOp = transformOperation( op, transformBy );
 				expected.position.offset--;
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -234,6 +244,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -247,6 +258,7 @@ describe( 'transformOperation', () => {
 				let transOp = transformOperation( op, transformBy );
 				expected.position.offset += 2;
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -259,6 +271,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -272,6 +285,7 @@ describe( 'transformOperation', () => {
 				let transOp = transformOperation( op, transformBy );
 				expected.position.offset += 2;
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -284,6 +298,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy, true );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -297,6 +312,7 @@ describe( 'transformOperation', () => {
 				let transOp = transformOperation( op, transformBy );
 				expected.position.path[ 1 ] -= 2;
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -309,6 +325,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -322,6 +339,7 @@ describe( 'transformOperation', () => {
 				let transOp = transformOperation( op, transformBy );
 				expected.position.path[ 1 ] += 2;
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -334,6 +352,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -347,6 +366,7 @@ describe( 'transformOperation', () => {
 				let transOp = transformOperation( op, transformBy );
 				expected.position.path = [ 1, 2, 1 ];
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -360,6 +380,7 @@ describe( 'transformOperation', () => {
 				let transOp = transformOperation( op, transformBy );
 				expected.position.offset = 0;
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 		} );
@@ -370,6 +391,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 		} );
@@ -412,6 +434,7 @@ describe( 'transformOperation', () => {
 
 					let transOp = transformOperation( op, transformBy );
 
+					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
 				} );
 
@@ -426,6 +449,7 @@ describe( 'transformOperation', () => {
 
 					expected.range.start.offset += 2;
 
+					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
 				} );
 
@@ -440,6 +464,7 @@ describe( 'transformOperation', () => {
 
 					expected.range.start.offset += 2;
 
+					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
 				} );
 
@@ -452,6 +477,7 @@ describe( 'transformOperation', () => {
 
 					let transOp = transformOperation( op, transformBy );
 
+					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
 				} );
 
@@ -467,6 +493,7 @@ describe( 'transformOperation', () => {
 					expected.range.start.path[ 0 ] += 2;
 					expected.range.end.path[ 0 ] += 2;
 
+					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
 				} );
 
@@ -479,6 +506,7 @@ describe( 'transformOperation', () => {
 
 					let transOp = transformOperation( op, transformBy );
 
+					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
 				} );
 
@@ -491,7 +519,6 @@ describe( 'transformOperation', () => {
 
 					let transOp = transformOperation( op, transformBy );
 
-					expect( transOp ).to.be.instanceof( Array );
 					expect( transOp.length ).to.equal( 2 );
 
 					expected.range.start.path = [ 1, 3, 3 ];
@@ -517,92 +544,216 @@ describe( 'transformOperation', () => {
 
 					let transOp = transformOperation( op, transformBy );
 
+					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
 				} );
 
-				it( 'is less important: no operation update', () => {
-					let transformBy = new ChangeOperation(
-						new Range( new Position( [ 1, 1, 4 ], root ), new Position( [ 3 ], root ) ),
-						oldAttr,
-						null,
-						baseVersion
-					);
+				describe( 'that is less important and', () => {
+					let anotherOldAttr;
 
-					let transOp = transformOperation( op, transformBy, true );
+					beforeEach( () => {
+						anotherOldAttr = new Attribute( oldAttr.key, 'another' );
+					} );
 
-					expectOperation( transOp[ 0 ], expected );
-				} );
+					it( 'range does not intersect original range: no operation update', () => {
+						let transformBy = new ChangeOperation(
+							new Range( new Position( [ 3, 0 ], root ), new Position( [ 4 ], root ) ),
+							anotherOldAttr,
+							null,
+							baseVersion
+						);
 
-				it( 'range contains original range: convert to NoOperation', () => {
-					let transformBy = new ChangeOperation(
-						new Range( new Position( [ 1, 1, 4 ], root ), new Position( [ 3 ], root ) ),
-						oldAttr,
-						null,
-						baseVersion
-					);
+						let transOp = transformOperation( op, transformBy, true );
 
-					let transOp = transformOperation( op, transformBy );
+						expect( transOp.length ).to.equal( 1 );
+						expectOperation( transOp[ 0 ], expected );
+					} );
 
-					expectOperation( transOp[ 0 ], {
-						type: NoOperation,
-						baseVersion: baseVersion + 1
+					it( 'range contains original range: update oldAttr', () => {
+						let transformBy = new ChangeOperation(
+							new Range( new Position( [ 1, 1, 4 ], root ), new Position( [ 3 ], root ) ),
+							anotherOldAttr,
+							null,
+							baseVersion
+						);
+
+						let transOp = transformOperation( op, transformBy, true );
+
+						expected.oldAttr = anotherOldAttr;
+
+						expect( transOp.length ).to.equal( 1 );
+						expectOperation( transOp[ 0 ], expected );
+					} );
+
+					// [ original range   <   ]   range transformed by >
+					it( 'range intersects on left: split into two operations, update oldAttr', () => {
+						let transformBy = new ChangeOperation(
+							new Range( new Position( [ 1, 4, 2 ], root ), new Position( [ 3 ], root ) ),
+							anotherOldAttr,
+							null,
+							baseVersion
+						);
+
+						let transOp = transformOperation( op, transformBy, true );
+
+						expect( transOp.length ).to.equal( 2 );
+
+						expected.range.end.path = [ 1, 4, 2 ];
+
+						expectOperation( transOp[ 0 ], expected );
+
+						expected.range.start.path = [ 1, 4, 2 ];
+						expected.range.end = op.range.end;
+						expected.oldAttr = anotherOldAttr;
+						expected.baseVersion++;
+
+						expectOperation( transOp[ 1 ], expected );
+					} );
+
+					// [  range transformed by  <   ]  original range  >
+					it( 'range intersects on right: split into two operations, update oldAttr', () => {
+						let transformBy = new ChangeOperation(
+							new Range( new Position( [ 1 ], root ), new Position( [ 2, 1 ], root ) ),
+							anotherOldAttr,
+							null,
+							baseVersion
+						);
+
+						let transOp = transformOperation( op, transformBy, true );
+
+						expect( transOp.length ).to.equal( 2 );
+
+						expected.range.start.path = [ 2, 1 ];
+
+						expectOperation( transOp[ 0 ], expected );
+
+						expected.range.start = op.range.start;
+						expected.range.end.path = [ 2, 1 ];
+						expected.oldAttr = anotherOldAttr;
+						expected.baseVersion++;
+
+						expectOperation( transOp[ 1 ], expected );
+					} );
+
+					it( 'range is inside original range: split into three operations, update oldAttr', () => {
+						let transformBy = new ChangeOperation(
+							new Range( new Position( [ 1, 4, 1 ], root ), new Position( [ 2, 1 ], root ) ),
+							anotherOldAttr,
+							null,
+							baseVersion
+						);
+
+						let transOp = transformOperation( op, transformBy, true );
+
+						expect( transOp.length ).to.equal( 3 );
+
+						expected.range.end.path = [ 1, 4, 1 ];
+
+						expectOperation( transOp[ 0 ], expected );
+
+						expected.range.start.path = [ 2, 1 ];
+						expected.range.end = op.range.end;
+						expected.baseVersion++;
+
+						expectOperation( transOp[ 1 ], expected );
+
+						expected.range.start.path = [ 1, 4, 1 ];
+						expected.range.end.path = [ 2, 1 ];
+						expected.oldAttr = anotherOldAttr;
+						expected.baseVersion++;
+
+						expectOperation( transOp[ 2 ], expected );
 					} );
 				} );
 
-				// [ original range   <   ]   range transformed by >
-				it( 'range intersects on left: shrink original range', () => {
-					let transformBy = new ChangeOperation(
-						new Range( new Position( [ 1, 4, 2 ], root ), new Position( [ 3 ], root ) ),
-						oldAttr,
-						null,
-						baseVersion
-					);
+				describe( 'that is more important and', () => {
+					it( 'range does not intersect original range: no operation update', () => {
+						let transformBy = new ChangeOperation(
+							new Range( new Position( [ 3, 0 ], root ), new Position( [ 4 ], root ) ),
+							oldAttr,
+							null,
+							baseVersion
+						);
 
-					let transOp = transformOperation( op, transformBy );
+						let transOp = transformOperation( op, transformBy );
 
-					expected.range.end = new Position( [ 1, 4, 2 ], root );
+						expect( transOp.length ).to.equal( 1 );
+						expectOperation( transOp[ 0 ], expected );
+					} );
 
-					expectOperation( transOp[ 0 ], expected );
-				} );
+					it( 'range contains original range: convert to NoOperation', () => {
+						let transformBy = new ChangeOperation(
+							new Range( new Position( [ 1, 1, 4 ], root ), new Position( [ 3 ], root ) ),
+							oldAttr,
+							null,
+							baseVersion
+						);
 
-				// [  range transformed by  <   ]  original range  >
-				it( 'range intersects on right: shrink original range', () => {
-					let transformBy = new ChangeOperation(
-						new Range( new Position( [ 1 ], root ), new Position( [ 2, 1 ], root ) ),
-						oldAttr,
-						null,
-						baseVersion
-					);
+						let transOp = transformOperation( op, transformBy );
 
-					let transOp = transformOperation( op, transformBy );
+						expect( transOp.length ).to.equal( 1 );
+						expectOperation( transOp[ 0 ], {
+							type: NoOperation,
+							baseVersion: baseVersion + 1
+						} );
+					} );
 
-					expected.range.start = new Position( [ 2, 1 ], root );
+					// [ original range   <   ]   range transformed by >
+					it( 'range intersects on left: shrink original range', () => {
+						let transformBy = new ChangeOperation(
+							new Range( new Position( [ 1, 4, 2 ], root ), new Position( [ 3 ], root ) ),
+							oldAttr,
+							null,
+							baseVersion
+						);
 
-					expectOperation( transOp[ 0 ], expected );
-				} );
+						let transOp = transformOperation( op, transformBy );
 
-				it( 'range is inside original range: split original range', () => {
-					let transformBy = new ChangeOperation(
-						new Range( new Position( [ 1, 4, 1 ], root ), new Position( [ 2, 1 ], root ) ),
-						oldAttr,
-						null,
-						baseVersion
-					);
+						expected.range.end.path = [ 1, 4, 2 ];
 
-					let transOp = transformOperation( op, transformBy );
+						expect( transOp.length ).to.equal( 1 );
+						expectOperation( transOp[ 0 ], expected );
+					} );
 
-					expect( transOp ).to.be.instanceof( Array );
-					expect( transOp.length ).to.equal( 2 );
+					// [  range transformed by  <   ]  original range  >
+					it( 'range intersects on right: shrink original range', () => {
+						let transformBy = new ChangeOperation(
+							new Range( new Position( [ 1 ], root ), new Position( [ 2, 1 ], root ) ),
+							oldAttr,
+							null,
+							baseVersion
+						);
 
-					expected.range.end.path = [ 1, 4, 1 ];
+						let transOp = transformOperation( op, transformBy );
 
-					expectOperation( transOp[ 0 ], expected );
+						expected.range.start.path = [ 2, 1 ];
 
-					expected.range.start.path = [ 2, 1 ];
-					expected.range.end = op.range.end;
-					expected.baseVersion++;
+						expect( transOp.length ).to.equal( 1 );
+						expectOperation( transOp[ 0 ], expected );
+					} );
 
-					expectOperation( transOp[ 1 ], expected );
+					it( 'range is inside original range: split into two operations', () => {
+						let transformBy = new ChangeOperation(
+							new Range( new Position( [ 1, 4, 1 ], root ), new Position( [ 2, 1 ], root ) ),
+							oldAttr,
+							null,
+							baseVersion
+						);
+
+						let transOp = transformOperation( op, transformBy );
+
+						expect( transOp.length ).to.equal( 2 );
+
+						expected.range.end.path = [ 1, 4, 1 ];
+
+						expectOperation( transOp[ 0 ], expected );
+
+						expected.range.start.path = [ 2, 1 ];
+						expected.range.end = op.range.end;
+						expected.baseVersion++;
+
+						expectOperation( transOp[ 1 ], expected );
+					} );
 				} );
 			} );
 
@@ -617,6 +768,7 @@ describe( 'transformOperation', () => {
 
 					let transOp = transformOperation( op, transformBy );
 
+					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
 				} );
 
@@ -632,6 +784,7 @@ describe( 'transformOperation', () => {
 
 					expected.range.start.offset -= 2;
 
+					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
 				} );
 
@@ -647,6 +800,7 @@ describe( 'transformOperation', () => {
 
 					expected.range.start.offset += 2;
 
+					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
 				} );
 
@@ -663,6 +817,7 @@ describe( 'transformOperation', () => {
 					expected.range.start.path[ 0 ]--;
 					expected.range.end.path[ 0 ]--;
 
+					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
 				} );
 
@@ -676,6 +831,7 @@ describe( 'transformOperation', () => {
 
 					let transOp = transformOperation( op, transformBy );
 
+					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
 				} );
 
@@ -691,6 +847,7 @@ describe( 'transformOperation', () => {
 
 					expected.range.start.path[ 1 ] += 2;
 
+					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
 				} );
 
@@ -704,6 +861,7 @@ describe( 'transformOperation', () => {
 
 					let transOp = transformOperation( op, transformBy );
 
+					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
 				} );
 
@@ -717,7 +875,6 @@ describe( 'transformOperation', () => {
 
 					let transOp = transformOperation( op, transformBy );
 
-					expect( transOp ).to.be.instanceof( Array );
 					expect( transOp.length ).to.equal( 2 );
 
 					expected.range.end.path = [ 2, 1 ];
@@ -741,7 +898,6 @@ describe( 'transformOperation', () => {
 
 					let transOp = transformOperation( op, transformBy );
 
-					expect( transOp ).to.be.instanceof( Array );
 					expect( transOp.length ).to.equal( 2 );
 
 					expected.range.start.path = [ 1, 1 ];
@@ -768,6 +924,7 @@ describe( 'transformOperation', () => {
 					expected.range.start.path = [ 1, 4, 1, 2 ];
 					expected.range.end.path = [ 1, 4, 2, 2, 4 ];
 
+					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
 				} );
 
@@ -781,7 +938,6 @@ describe( 'transformOperation', () => {
 
 					let transOp = transformOperation( op, transformBy );
 
-					expect( transOp ).to.be.instanceof( Array );
 					expect( transOp.length ).to.equal( 2 );
 
 					expectOperation( transOp[ 0 ], expected );
@@ -803,7 +959,6 @@ describe( 'transformOperation', () => {
 
 					let transOp = transformOperation( op, transformBy );
 
-					expect( transOp ).to.be.instanceof( Array );
 					expect( transOp.length ).to.equal( 2 );
 
 					expected.range.start.path = [ 1, 6 ];
@@ -827,7 +982,6 @@ describe( 'transformOperation', () => {
 
 					let transOp = transformOperation( op, transformBy );
 
-					expect( transOp ).to.be.instanceof( Array );
 					expect( transOp.length ).to.equal( 3 );
 
 					expected.range.start.path = [ 5 ];
@@ -855,6 +1009,7 @@ describe( 'transformOperation', () => {
 
 					let transOp = transformOperation( op, transformBy );
 
+					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
 				} );
 			} );
@@ -887,6 +1042,7 @@ describe( 'transformOperation', () => {
 					expected.range.start.offset += 2;
 					expected.range.end.offset += 2;
 
+					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
 				} );
 
@@ -902,6 +1058,7 @@ describe( 'transformOperation', () => {
 					expected.range.start.offset += 2;
 					expected.range.end.offset += 2;
 
+					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
 				} );
 			} );
@@ -920,6 +1077,7 @@ describe( 'transformOperation', () => {
 					expected.range.start.offset--;
 					expected.range.end.offset--;
 
+					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
 				} );
 
@@ -936,6 +1094,7 @@ describe( 'transformOperation', () => {
 					expected.range.start.offset += 2;
 					expected.range.end.offset += 2;
 
+					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
 				} );
 
@@ -949,7 +1108,6 @@ describe( 'transformOperation', () => {
 
 					let transOp = transformOperation( op, transformBy );
 
-					expect( transOp ).to.be.instanceof( Array );
 					expect( transOp.length ).to.equal( 2 );
 
 					expected.range.end.offset -= 2;
@@ -973,7 +1131,6 @@ describe( 'transformOperation', () => {
 
 					let transOp = transformOperation( op, transformBy );
 
-					expect( transOp ).to.be.instanceof( Array );
 					expect( transOp.length ).to.equal( 2 );
 
 					expected.range.start.offset -= 1;
@@ -1001,6 +1158,7 @@ describe( 'transformOperation', () => {
 					expected.range.start.path = [ 2, 4, 2, 1 ];
 					expected.range.end.path = [ 2, 4, 2, 4 ];
 
+					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
 				} );
 
@@ -1014,7 +1172,6 @@ describe( 'transformOperation', () => {
 
 					let transOp = transformOperation( op, transformBy );
 
-					expect( transOp ).to.be.instanceof( Array );
 					expect( transOp.length ).to.equal( 2 );
 
 					expected.range.end.offset--;
@@ -1038,9 +1195,10 @@ describe( 'transformOperation', () => {
 
 					let transOp = transformOperation( op, transformBy );
 
-					expected.range.start = new Position( [ 2, 4, 1 ], root );
-					expected.range.end = new Position( [ 2, 4, 4 ], root );
+					expected.range.start.path = [ 2, 4, 1 ];
+					expected.range.end.path = [ 2, 4, 4 ];
 
+					expect( transOp.length ).to.equal( 1 );
 					expectOperation( transOp[ 0 ], expected );
 				} );
 
@@ -1054,7 +1212,6 @@ describe( 'transformOperation', () => {
 
 					let transOp = transformOperation( op, transformBy );
 
-					expect( transOp ).to.be.instanceof( Array );
 					expect( transOp.length ).to.equal( 2 );
 
 					expected.range.start.offset = 4;
@@ -1079,7 +1236,6 @@ describe( 'transformOperation', () => {
 
 					let transOp = transformOperation( op, transformBy );
 
-					expect( transOp ).to.be.instanceof( Array );
 					expect( transOp.length ).to.equal( 3 );
 
 					expected.range.start.offset = 3;
@@ -1135,6 +1291,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1147,6 +1304,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1161,6 +1319,7 @@ describe( 'transformOperation', () => {
 
 				expected.sourcePosition.offset += 2;
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1173,6 +1332,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1187,6 +1347,7 @@ describe( 'transformOperation', () => {
 
 				expected.sourcePosition.path[ 1 ] += 2;
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1199,6 +1360,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1213,6 +1375,7 @@ describe( 'transformOperation', () => {
 
 				expected.targetPosition.offset += 2;
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1225,6 +1388,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1239,6 +1403,7 @@ describe( 'transformOperation', () => {
 
 				expected.targetPosition.path[ 1 ] += 2;
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1251,6 +1416,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1265,6 +1431,7 @@ describe( 'transformOperation', () => {
 
 				expected.targetPosition.offset += 2;
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1277,6 +1444,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy, true );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1291,6 +1459,7 @@ describe( 'transformOperation', () => {
 
 				expected.targetPosition.path[ 1 ] += 2;
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1303,7 +1472,6 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
-				expect( transOp ).to.be.instanceof( Array );
 				expect( transOp.length ).to.equal( 2 );
 
 				expected.sourcePosition.path = [ 2, 2, 7 ];
@@ -1330,6 +1498,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 		} );
@@ -1345,6 +1514,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1360,6 +1530,7 @@ describe( 'transformOperation', () => {
 
 				expected.sourcePosition.offset += 2;
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1373,6 +1544,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1388,6 +1560,7 @@ describe( 'transformOperation', () => {
 
 				expected.sourcePosition.offset -= 2;
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1401,6 +1574,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy, true );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1416,6 +1590,7 @@ describe( 'transformOperation', () => {
 
 				expected.sourcePosition.path[ 1 ] += 2;
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1429,6 +1604,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1444,6 +1620,7 @@ describe( 'transformOperation', () => {
 
 				expected.sourcePosition.path[ 1 ] -= 2;
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1457,6 +1634,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1472,6 +1650,7 @@ describe( 'transformOperation', () => {
 
 				expected.targetPosition.offset += 2;
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1485,6 +1664,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1500,6 +1680,7 @@ describe( 'transformOperation', () => {
 
 				expected.targetPosition.offset -= 2;
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1513,6 +1694,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1528,6 +1710,7 @@ describe( 'transformOperation', () => {
 
 				expected.targetPosition.path[ 1 ] += 2;
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1541,6 +1724,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1556,6 +1740,7 @@ describe( 'transformOperation', () => {
 
 				expected.targetPosition.path[ 1 ] -= 2;
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1569,6 +1754,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1582,7 +1768,6 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
-				expect( transOp ).to.be.instanceof( Array );
 				expect( transOp.length ).to.equal( 2 );
 
 				expected.howMany = 1;
@@ -1606,6 +1791,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1621,6 +1807,7 @@ describe( 'transformOperation', () => {
 
 				expected.sourcePosition.path = [ 4, 3, 4 ];
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1636,6 +1823,7 @@ describe( 'transformOperation', () => {
 
 				expected.targetPosition.path = [ 0, 2, 3 ];
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1654,6 +1842,7 @@ describe( 'transformOperation', () => {
 				expected.targetPosition = reversed.targetPosition;
 				expected.howMany = reversed.howMany;
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1667,6 +1856,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], {
 					type: NoOperation,
 					baseVersion: baseVersion + 1
@@ -1685,6 +1875,7 @@ describe( 'transformOperation', () => {
 
 				expected.sourcePosition.path = [ 4, 1, 0 ];
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1698,6 +1889,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], {
 					type: NoOperation,
 					baseVersion: baseVersion + 1
@@ -1716,6 +1908,7 @@ describe( 'transformOperation', () => {
 
 				expected.sourcePosition.path = [ 4, 1, 1 ];
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1732,6 +1925,7 @@ describe( 'transformOperation', () => {
 				expected.sourcePosition.path = [ 2, 2, 3 ];
 				expected.howMany = 1;
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1745,7 +1939,6 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy, true );
 
-				expect( transOp ).to.be.instanceof( Array );
 				expect( transOp.length ).to.equal( 2 );
 
 				expected.sourcePosition.path = [ 2, 2, 3 ];
@@ -1776,6 +1969,7 @@ describe( 'transformOperation', () => {
 
 				expected.howMany = 1;
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1789,7 +1983,6 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy, true );
 
-				expect( transOp ).to.be.instanceof( Array );
 				expect( transOp.length ).to.equal( 2 );
 
 				expectOperation( transOp[ 0 ], {
@@ -1820,6 +2013,7 @@ describe( 'transformOperation', () => {
 
 				expected.howMany = 2;
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -1835,7 +2029,6 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy, true );
 
-				expect( transOp ).to.be.instanceof( Array );
 				expect( transOp.length ).to.equal( 2 );
 
 				expectOperation( transOp[ 0 ], {
@@ -1864,7 +2057,6 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy, true );
 
-				expect( transOp ).to.be.instanceof( Array );
 				expect( transOp.length ).to.equal( 3 );
 
 				expected.sourcePosition.path = [ 2, 2, 9 ];
@@ -1892,6 +2084,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 		} );
@@ -1917,6 +2110,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 		} );
@@ -1935,6 +2129,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 		} );
@@ -1950,6 +2145,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 		} );
@@ -1960,6 +2156,7 @@ describe( 'transformOperation', () => {
 
 				let transOp = transformOperation( op, transformBy );
 
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 		} );
