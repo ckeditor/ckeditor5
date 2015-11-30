@@ -7,40 +7,39 @@
 
 /**
  * Transforms given {document.operation.Operation} by another {document.operation.Operation} and returns the result of
- * that transformation as an Array containing one or more {document.operation.Operation} elements.
+ * that transformation as an array containing one or more {document.operation.Operation} elements.
  *
- * Operations operate on specified positions, passed to them when they are created. Whenever {@link document.Document document}
- * changes, we have to reflect those modifications by updating, or "transforming", operations (which are not yet applied).
- * When operation is transformed, its parameters may change basing on the operation by which it is transformed.
- * If the transform-by operation applied any modifications to the Tree Model that affects positions or nodes
+ * Operations work on specified positions, passed to them when they are created. Whenever {@link document.Document document}
+ * changes, we have to reflect those modifications by updating or "transforming" operations which are not yet applied.
+ * When an operation is transformed, its parameters may change based on the operation by which it is transformed.
+ * If the transform-by operation applied any modifications to the Tree Data Model which affect positions or nodes
  * connected with transformed operation, those changes will be reflected in the parameters of the returned operation(s).
  *
  * Whenever the {@link document.Document document} has different {@link document.Document#baseVersion}
- * than an operation you want to {@link document.Document#applyOperation apply}, you need to transform that
- * operation by all the operations that were applied to the {@link document.Document document} since it has
- * {@link document.Document#baseVersion} same as the operation. Transform them in the same order as those
- * operations were applied. This way all modifications done to the Tree Model will be reflected
- * in the operation parameters and the operation will "operate" on "up-to-date" version of the Tree Model.
- * This is mostly the case with Operational Transformation but it might be needed in particular features.
+ * than the operation you want to {@link document.Document#applyOperation apply}, you need to transform that
+ * operation by all operations which were already applied to the {@link document.Document document} and have greater
+ * {@link document.Document#baseVersion} than the operation being applied. Transform them in the same order as those
+ * operations which were applied. This way all modifications done to the Tree Data Model will be reflected
+ * in the operation parameters and the operation will "operate" on "up-to-date" version of the Tree Data Model.
+ * This is mostly the case with Operational Transformations but it might be needed in particular features as well.
  *
- * In some cases, when given operation apply changes to the same nodes as this operation, there is a need
- * to create two operations as a result. It would be impossible to create just one operation that handles
- * modifications needed to be applied to the tree. This is why Array is returned instead of single object.
- * All returned operations has to be applied (or further transformed) to get an effect that was intended in
- * pre-transformed operation.
+ * In some cases, when given operation apply changes to the same nodes as this operation, two or more operations need
+ * to be created as one would not be able to reflect the combination of these operations.
+ * This is why an array is returned instead of a single object. All returned operations have to be applied
+ * (or further transformed) to get an effect which was intended in pre-transformed operation.
  *
  * Sometimes two operations are in conflict. This happens when they modify the same node in a different way, i.e.
  * set different value for the same attribute or move the node into different positions. When this happens,
  * we need to decide which operation is more important. We can't assume that operation `a` or operation `b` is always
- * important. In Operational Transformations algorithms we often need to get a result of transforming
+ * more important. In Operational Transformations algorithms we often need to get a result of transforming
  * `a` by `b` and also `b` by `a`. In both transformations the same operation has to be the important one. If we assume
- * that first or second passed operation is always more important we won't be able to solve this case.
+ * that first or the second passed operation is always more important we won't be able to solve this case.
  *
  * @function document.operation.transform
  * @param {document.operation.Operation} a Operation that will be transformed.
  * @param {document.operation.Operation} b Operation to transform by.
- * @param {Boolean} isStrong Flag indicating whether this operation should be treated as more important
- * when resolving conflicts.
+ * @param {Boolean} isStrong Flag indicating whether the operation which will be transformed (`a`) should be treated
+ * as more important when resolving conflicts.
  * @returns {Array.<document.operation.Operation>} Result of the transformation.
  */
 

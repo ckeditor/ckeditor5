@@ -9,13 +9,13 @@ CKEDITOR.define( [
 	'document/operation/operation'
 ], ( Operation ) => {
 	/**
-	 * Operation that is doing nothing ("empty operation", "do-nothing operation", "noop").
-	 * This is an operation, which {@link #_execute} method does not change tree model.
-	 * It still has defined some parameters for transformations purposes.
+	 * Operation which is doing nothing ("empty operation", "do-nothing operation", "noop").
+	 * This is an operation, which executed does not change the tree model.
+	 * It still has some parameters defined for transformation purposes.
 	 *
 	 * In most cases this operation is a result of transforming operations. When transformation returns
 	 * {@link document.operation.NoOperation} it means that changes done by the transformed operation
-	 * has already been applied.
+	 * have already been applied.
 	 *
 	 * @class document.operation.NoOperation
 	 */
