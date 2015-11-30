@@ -20,14 +20,19 @@
     "benderjs-mocha": "^0.3.0",
     "benderjs-promise": "^0.1.0",
     "benderjs-sinon": "^0.3.0",
+    "chai": "^1.10.0",
     "del": "^2.0.2",
     "grunt": "^0",
-    "grunt-jscs": "^2.0.0",
     "grunt-contrib-jshint": "^0",
     "grunt-githooks": "^0",
+    "grunt-jscs": "^2.0.0",
+    "grunt-text-replace": "^0.4.0",
+    "inquirer": "^0.11.0",
+    "mocha": "^2.2.5",
     "ncp": "^2.0.0",
     "replace": "^0.3.0",
-    "shelljs": "^0"
+    "shelljs": "^0",
+    "sinon": "^1.17.0"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "See LICENSE.md",
@@ -36,5 +41,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/ckeditor/ckeditor5.git"
+  },
+  "scripts": {
+    "tests": "mocha dev/tests"
   }
 }

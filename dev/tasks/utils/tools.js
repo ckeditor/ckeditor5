@@ -3,6 +3,9 @@
 let dirtyFiles,
 	ignoreList;
 
+const dependencyRegExp = /^ckeditor5-/;
+const TEMPLATE_PATH = './dev/tasks/templates';
+
 module.exports = {
 	/**
 	 * Check if a task (including its optional target) is in the queue of tasks to be executed by Grunt.
@@ -136,5 +139,132 @@ module.exports = {
 		}
 
 		return ret.output;
+	},
+
+	/**
+	 * Links directory located in source path to directory located in destination path.
+	 * @param {String} source
+	 * @param {String} destination
+	 */
+	linkDirectories( source, destination ) {
+		const fs = require( 'fs' );
+		// Remove destination directory if exists.
+		if ( this.isDirectory( destination ) ) {
+			this.shExec( `rm -rf ${ destination }` );
+		}
+
+		fs.symlinkSync( source, destination, 'dir' );
+	},
+
+	/**
+	 * Returns dependencies that starts with ckeditor5-, and have valid, short GitHub url. Returns null if no
+	 * dependencies are found.
+	 *
+	 * @param {Object} dependencies Dependencies object loaded from package.json file.
+	 * @returns {Object|null}
+	 */
+	getCKEditorDependencies( dependencies ) {
+		let result = null;
+
+		if ( dependencies ) {
+			Object.keys( dependencies ).forEach( function( key ) {
+				if ( dependencyRegExp.test( key ) ) {
+					if ( result === null ) {
+						result = {};
+					}
+
+					result[ key ] = dependencies[ key ];
+				}
+			} );
+		}
+
+		return result;
+	},
+
+	/**
+	 * Returns array with all directories under specified path.
+	 *
+	 * @param {String} path
+	 * @returns {Array}
+	 */
+	getDirectories( path ) {
+		const fs = require( 'fs' );
+		const pth = require( 'path' );
+
+		return fs.readdirSync( path ).filter( item => {
+			return this.isDirectory( pth.join( path, item ) );
+		} );
+	},
+
+	/**
+	 * Returns true if path points to existing directory.
+	 * @param {String} path
+	 * @returns {Boolean}
+	 */
+	isDirectory( path ) {
+		const fs = require( 'fs' );
+
+		try {
+			return fs.statSync( path ).isDirectory();
+		} catch ( e ) {}
+
+		return false;
+	},
+
+	/**
+	 * Returns all directories under specified path that match 'ckeditor5' pattern.
+	 *
+	 * @param {String} path
+	 * @returns {Array}
+	 */
+	getCKE5Directories( path ) {
+		return this.getDirectories( path ).filter( dir => {
+			return dependencyRegExp.test( dir );
+		} );
+	},
+
+	/**
+	 * Updates JSON file under specified path.
+	 * @param {String} path Path to file on disk.
+	 * @param {Function} updateFunction Function that will be called with parsed JSON object. It should return
+	 * modified JSON object to save.
+	 */
+	updateJSONFile( path, updateFunction ) {
+		const fs = require( 'fs' );
+
+		const contents = fs.readFileSync( path, 'utf-8' );
+		let json = JSON.parse( contents );
+		json = updateFunction( json );
+
+		fs.writeFileSync( path, JSON.stringify( json, null, 2 ), 'utf-8' );
+	},
+
+	/**
+	 * Calls `npm install` command in specified path.
+	 *
+	 * @param {String} path
+	 */
+	npmInstall( path ) {
+		this.shExec( `cd ${ path } && npm install` );
+	},
+
+	/**
+	 * Installs Git hooks in specified repository.
+	 *
+	 * @param {String} path
+	 */
+	installGitHooks( path ) {
+		this.shExec( `cd ${ path } && grunt githooks` );
+	},
+
+	/**
+	 * Copies template files to specified destination.
+	 *
+	 * @param {String} destination
+	 */
+	copyTemplateFiles( destination ) {
+		const path = require( 'path' );
+		const templatesPath = path.resolve( TEMPLATE_PATH );
+		this.shExec( `cp ${ path.join( templatesPath, '*.md' ) } ${ destination }` );
 	}
 };
