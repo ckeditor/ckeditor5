@@ -71,6 +71,16 @@ describe( 'position', () => {
 		expect( position ).to.have.property( 'root' ).that.equals( root );
 	} );
 
+	it( 'should throw error if given path is incorrect', () => {
+		expect( () => {
+			new Position( {}, root );
+		} ).to.throw( CKEditorError, /position-path-incorrect/ );
+
+		expect( () => {
+			new Position( [], root );
+		} ).to.throw( CKEditorError, /position-path-incorrect/ );
+	} );
+
 	it( 'should throw error if given root is not a RootElement instance', () => {
 		expect( () => {
 			new Position( [ 0 ] );
