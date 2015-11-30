@@ -105,36 +105,6 @@ describe( 'Controller', () => {
 	describe( 'addChild', () => {
 		beforeEach( defineParentViewClass );
 
-		it( 'should throw when no collection name', () => {
-			const controller = new Controller();
-
-			controller.collections.add( new ControllerCollection( 'x' ) );
-
-			expect( () => {
-				controller.addChild();
-			} ).to.throw( CKEditorError, /ui-controller-addchild-badcname/ );
-		} );
-
-		it( 'should throw when collection of given name does not exist', () => {
-			const controller = new Controller();
-
-			controller.collections.add( new ControllerCollection( 'x' ) );
-
-			expect( () => {
-				controller.addChild( 'y', new Controller() );
-			} ).to.throw( CKEditorError, /ui-controller-addchild-nocol/ );
-		} );
-
-		it( 'should throw when no controller is passed', () => {
-			const controller = new Controller();
-
-			controller.collections.add( new ControllerCollection( 'x' ) );
-
-			expect( () => {
-				controller.addChild( 'x' );
-			} ).to.throw( CKEditorError, /ui-controller-addchild-no-controller/ );
-		} );
-
 		it( 'should add a child controller to given collection and return promise', () => {
 			const parentController = new Controller();
 			const childController = new Controller();
@@ -267,36 +237,6 @@ describe( 'Controller', () => {
 	describe( 'removeChild', () => {
 		beforeEach( defineParentViewClass );
 
-		it( 'should throw when no collection name', () => {
-			const controller = new Controller();
-
-			controller.collections.add( new ControllerCollection( 'x' ) );
-
-			expect( () => {
-				controller.removeChild();
-			} ).to.throw( CKEditorError, /ui-controller-removechild-badcname/ );
-		} );
-
-		it( 'should throw when collection of given name does not exist', () => {
-			const controller = new Controller();
-
-			controller.collections.add( new ControllerCollection( 'x' ) );
-
-			expect( () => {
-				controller.removeChild( 'y' );
-			} ).to.throw( CKEditorError, /ui-controller-removechild-nocol/ );
-		} );
-
-		it( 'should throw when controller or wrong controller is passed', () => {
-			const controller = new Controller();
-
-			controller.collections.add( new ControllerCollection( 'x' ) );
-
-			expect( () => {
-				controller.removeChild( 'x' );
-			} ).to.throw( CKEditorError, /ui-controller-removechild-no-controller/ );
-		} );
-
 		it( 'should remove child controller and return it', () => {
 			const parentController = new Controller();
 			const childController = new Controller();
@@ -334,16 +274,6 @@ describe( 'Controller', () => {
 
 	describe( 'getChild', () => {
 		beforeEach( defineParentViewClass );
-
-		it( 'should throw when collection of given name does not exist', () => {
-			const controller = new Controller();
-
-			controller.collections.add( new ControllerCollection( 'x' ) );
-
-			expect( () => {
-				controller.getChild( 'y', 0 );
-			} ).to.throw( CKEditorError, /ui-controller-getchild-nocol/ );
-		} );
 
 		it( 'should get child controller by index', () => {
 			const parentController = new Controller();
