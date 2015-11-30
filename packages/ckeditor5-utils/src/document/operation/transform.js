@@ -100,22 +100,12 @@ CKEDITOR.define( [
 	function joinRanges( ranges ) {
 		if ( ranges.length === 0 ) {
 			return null;
+		} else if ( ranges.length == 1 ) {
+			return ranges[ 0 ];
+		} else {
+			ranges[ 0 ].end = ranges[ ranges.length - 1 ].end;
+			return ranges[ 0 ];
 		}
-
-		let start = ranges[ 0 ].start;
-		let end = ranges[ 0 ].end;
-		const root = ranges[ 0 ].root;
-
-		for ( let i = 1; i < ranges.length; i++ ) {
-			if ( ranges[ i ].root != root ) {
-				continue;
-			}
-
-			start = ranges[ i ].start.isBefore( start ) ? ranges[ i ].start : start;
-			end = ranges[ i ].end.isAfter( end ) ? ranges[ i ].end : end;
-		}
-
-		return new Range( start.clone(), end.clone(), root );
 	}
 
 	const ot = {
