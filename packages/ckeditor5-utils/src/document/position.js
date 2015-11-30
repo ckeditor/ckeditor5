@@ -21,11 +21,21 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 		/**
 		 * Creates a position.
 		 *
-		 * @param {Array} path Position path. See {@link #path} property for more information.
+		 * @param {Array.<Number>} path Position path. Must contain at least one item. See {@link #path} property for more information.
 		 * @param {document.RootElement} root Root element for the path. Note that this element can not have a parent.
 		 * @constructor
 		 */
 		constructor( path, root ) {
+			if ( !( path instanceof Array ) || path.length === 0 ) {
+				/**
+				 * Position path must be an Array with at least one item.
+				 *
+				 * @error position-path-incorrect
+				 * @param path
+				 */
+				throw new CKEditorError( 'position-path-incorrect: Position path must be an Array with at least one item.', { path: path } );
+			}
+
 			/**
 			 * Position of the node it the tree. For example:
 			 *
