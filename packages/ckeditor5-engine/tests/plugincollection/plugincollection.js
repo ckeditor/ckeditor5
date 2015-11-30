@@ -238,7 +238,7 @@ describe( 'load', () => {
 			.catch( ( err ) => {
 				expect( err ).to.be.an.instanceof( Error );
 				// Make sure it's the Require.JS error, not the one thrown above.
-				expect( err.message ).to.match( /^Script error for:/ );
+				expect( err.message ).to.match( /^Script error for/ );
 
 				sinon.assert.calledOnce( logSpy );
 				expect( logSpy.args[ 0 ][ 0 ] ).to.match( /^plugincollection-load:/ );
