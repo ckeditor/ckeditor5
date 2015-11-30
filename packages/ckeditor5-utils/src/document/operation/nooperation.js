@@ -20,16 +20,16 @@ CKEDITOR.define( [
 	 * @class document.operation.NoOperation
 	 */
 	class NoOperation extends Operation {
-		_execute() {
-			// Do nothing.
-		}
-
 		clone() {
 			return new NoOperation( this.baseVersion );
 		}
 
 		getReversed() {
 			return new NoOperation( this.baseVersion + 1 );
+		}
+
+		_execute() {
+			// Do nothing.
 		}
 	}
 

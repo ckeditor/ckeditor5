@@ -50,6 +50,14 @@ CKEDITOR.define( [
 			this.howMany = howMany;
 		}
 
+		clone() {
+			return new MoveOperation( this.sourcePosition.clone(), this.targetPosition.clone(), this.howMany, this.baseVersion );
+		}
+
+		getReversed() {
+			return new MoveOperation( this.targetPosition.clone(), this.sourcePosition.clone(), this.howMany, this.baseVersion + 1 );
+		}
+
 		_execute() {
 			let sourceElement = this.sourcePosition.parent;
 			let targetElement = this.targetPosition.parent;
@@ -113,14 +121,6 @@ CKEDITOR.define( [
 			const removedNodes = sourceElement.removeChildren( sourceOffset, this.howMany );
 
 			targetElement.insertChildren( targetOffset, removedNodes );
-		}
-
-		getReversed() {
-			return new MoveOperation( this.targetPosition.clone(), this.sourcePosition.clone(), this.howMany, this.baseVersion + 1 );
-		}
-
-		clone() {
-			return new MoveOperation( this.sourcePosition.clone(), this.targetPosition.clone(), this.howMany, this.baseVersion );
 		}
 	}
 

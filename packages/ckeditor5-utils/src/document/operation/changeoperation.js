@@ -61,6 +61,14 @@ CKEDITOR.define( [
 			this.newAttr = newAttr;
 		}
 
+		clone() {
+			return new ChangeOperation( this.range.clone(), this.oldAttr, this.newAttr, this.baseVersion );
+		}
+
+		getReversed() {
+			return new ChangeOperation( this.range, this.newAttr, this.oldAttr, this.baseVersion + 1 );
+		}
+
 		_execute() {
 			const oldAttr = this.oldAttr;
 			const newAttr = this.newAttr;
@@ -122,14 +130,6 @@ CKEDITOR.define( [
 					value.node.setAttr( newAttr );
 				}
 			}
-		}
-
-		getReversed() {
-			return new ChangeOperation( this.range, this.newAttr, this.oldAttr, this.baseVersion + 1 );
-		}
-
-		clone() {
-			return new ChangeOperation( this.range.clone(), this.oldAttr, this.newAttr, this.baseVersion );
 		}
 	}
 
