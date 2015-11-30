@@ -38,7 +38,7 @@
  * @function document.operation.transform
  * @param {document.operation.Operation} a Operation that will be transformed.
  * @param {document.operation.Operation} b Operation to transform by.
- * @param {Boolean} isStrong Flag indicating whether the operation which will be transformed (`a`) should be treated
+ * @param {Boolean} isAMoreImportantThanB Flag indicating whether the operation which will be transformed (`a`) should be treated
  * as more important when resolving conflicts.
  * @returns {Array.<document.operation.Operation>} Result of the transformation.
  */
