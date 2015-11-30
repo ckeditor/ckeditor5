@@ -109,6 +109,7 @@ CKEDITOR.define( [
 			return ranges[ 0 ];
 		} else {
 			ranges[ 0 ].end = ranges[ ranges.length - 1 ].end;
+
 			return ranges[ 0 ];
 		}
 	}
@@ -140,6 +141,7 @@ CKEDITOR.define( [
 				return [ transformed ];
 			}
 		},
+
 		ChangeOperation: {
 			// Transforms ChangeOperation `a` by InsertOperation `b`. Returns results as an array of operations.
 			InsertOperation( a, b ) {
@@ -252,6 +254,7 @@ CKEDITOR.define( [
 				} );
 			}
 		},
+
 		MoveOperation: {
 			// Transforms MoveOperation `a` by InsertOperation `b`. Accepts a flag stating whether `a` is more important
 			// than `b` when it comes to resolving conflicts. Returns results as an array of operations.
