@@ -51,68 +51,6 @@ CKEDITOR.define( [
 	'document/range',
 	'utils'
 ], ( InsertOperation, ChangeOperation, MoveOperation, NoOperation, Range, utils ) => {
-	// When we don't want to update an operation, we create and return a clone of it.
-	// Returns the operation in "unified format" - wrapped in an Array.
-	function doNotUpdate( operation ) {
-		return [ operation.clone() ];
-	}
-
-	// Takes an Array of operations and sets consecutive base versions for them, starting from given base version.
-	// Returns the passed array.
-	function updateBaseVersions( baseVersion, operations ) {
-		for ( let i = 0; i < operations.length; i++ ) {
-			operations[ i ].baseVersion = baseVersion + i + 1;
-		}
-
-		return operations;
-	}
-
-	// Checks whether MoveOperation targetPosition is inside a node from the moved range of the other MoveOperation.
-	function moveTargetIntoMovedRange( a, b ) {
-		return a.targetPosition.getTransformedByDeletion( b.sourcePosition, b.howMany ) === null;
-	}
-
-	// Takes two ChangeOperations and checks whether their attributes are in conflict.
-	// This happens when both operations changes an attribute with the same key and they either set different
-	// values for this attribute or one of them removes it while the other one sets it.
-	// Returns true if attributes are in conflict.
-	function haveConflictingAttributes( a, b ) {
-		// Keeping in mind that newAttr or oldAttr might be null.
-		// We will retrieve the key from whichever parameter is set.
-		const keyA = ( a.newAttr || a.oldAttr ).key;
-		const keyB = ( b.newAttr || b.oldAttr ).key;
-
-		if ( keyA != keyB ) {
-			// Different keys - not conflicting.
-			return false;
-		}
-
-		if ( a.newAttr === null && b.newAttr === null ) {
-			// Both remove the attribute - not conflicting.
-			return false;
-		}
-
-		// Check if they set different value or one of them removes the attribute.
-		return ( a.newAttr === null && b.newAttr !== null ) ||
-			( a.newAttr !== null && b.newAttr === null ) ||
-			( !a.newAttr.isEqual( b.newAttr ) );
-	}
-
-	// Gets an array of Ranges and produces one Range out of it. The root of a new range will be same as
-	// the root of the first range in the array. If any of given ranges has different root than the first range,
-	// it will be discarded.
-	function joinRanges( ranges ) {
-		if ( ranges.length === 0 ) {
-			return null;
-		} else if ( ranges.length == 1 ) {
-			return ranges[ 0 ];
-		} else {
-			ranges[ 0 ].end = ranges[ ranges.length - 1 ].end;
-
-			return ranges[ 0 ];
-		}
-	}
-
 	const ot = {
 		InsertOperation: {
 			// Transforms InsertOperation `a` by InsertOperation `b`. Accepts a flag stating whether `a` is more important
@@ -403,4 +341,66 @@ CKEDITOR.define( [
 
 		return updateBaseVersions( a.baseVersion, transformed );
 	};
+
+	// When we don't want to update an operation, we create and return a clone of it.
+	// Returns the operation in "unified format" - wrapped in an Array.
+	function doNotUpdate( operation ) {
+		return [ operation.clone() ];
+	}
+
+	// Takes an Array of operations and sets consecutive base versions for them, starting from given base version.
+	// Returns the passed array.
+	function updateBaseVersions( baseVersion, operations ) {
+		for ( let i = 0; i < operations.length; i++ ) {
+			operations[ i ].baseVersion = baseVersion + i + 1;
+		}
+
+		return operations;
+	}
+
+	// Checks whether MoveOperation targetPosition is inside a node from the moved range of the other MoveOperation.
+	function moveTargetIntoMovedRange( a, b ) {
+		return a.targetPosition.getTransformedByDeletion( b.sourcePosition, b.howMany ) === null;
+	}
+
+	// Takes two ChangeOperations and checks whether their attributes are in conflict.
+	// This happens when both operations changes an attribute with the same key and they either set different
+	// values for this attribute or one of them removes it while the other one sets it.
+	// Returns true if attributes are in conflict.
+	function haveConflictingAttributes( a, b ) {
+		// Keeping in mind that newAttr or oldAttr might be null.
+		// We will retrieve the key from whichever parameter is set.
+		const keyA = ( a.newAttr || a.oldAttr ).key;
+		const keyB = ( b.newAttr || b.oldAttr ).key;
+
+		if ( keyA != keyB ) {
+			// Different keys - not conflicting.
+			return false;
+		}
+
+		if ( a.newAttr === null && b.newAttr === null ) {
+			// Both remove the attribute - not conflicting.
+			return false;
+		}
+
+		// Check if they set different value or one of them removes the attribute.
+		return ( a.newAttr === null && b.newAttr !== null ) ||
+			( a.newAttr !== null && b.newAttr === null ) ||
+			( !a.newAttr.isEqual( b.newAttr ) );
+	}
+
+	// Gets an array of Ranges and produces one Range out of it. The root of a new range will be same as
+	// the root of the first range in the array. If any of given ranges has different root than the first range,
+	// it will be discarded.
+	function joinRanges( ranges ) {
+		if ( ranges.length === 0 ) {
+			return null;
+		} else if ( ranges.length == 1 ) {
+			return ranges[ 0 ];
+		} else {
+			ranges[ 0 ].end = ranges[ ranges.length - 1 ].end;
+
+			return ranges[ 0 ];
+		}
+	}
 } );

@@ -64,21 +64,23 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 		}
 
 		/**
-		 * Parent element of the position. The position is located at {@link #offset} in this element.
+		 * Node directly after the position.
 		 *
 		 * @readonly
-		 * @property {document.Element} parent
+		 * @property {document.Node}
 		 */
-		get parent() {
-			let parent = this.root;
+		get nodeAfter() {
+			return this.parent.getChild( this.offset ) || null;
+		}
 
-			let i, len;
-
-			for ( i = 0, len = this.path.length - 1; i < len; i++ ) {
-				parent = parent.getChild( this.path[ i ] );
-			}
-
-			return parent;
+		/**
+		 * Node directly before the position.
+		 *
+		 * @readonly
+		 * @type {document.Node}
+		 */
+		get nodeBefore() {
+			return this.parent.getChild( this.offset - 1 ) || null;
 		}
 
 		/**
@@ -99,33 +101,202 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 		}
 
 		/**
-		 * Node directly before the position.
+		 * Parent element of the position. The position is located at {@link #offset} in this element.
 		 *
 		 * @readonly
-		 * @type {document.Node}
+		 * @property {document.Element} parent
 		 */
-		get nodeBefore() {
-			return this.parent.getChild( this.offset - 1 ) || null;
+		get parent() {
+			let parent = this.root;
+
+			let i, len;
+
+			for ( i = 0, len = this.path.length - 1; i < len; i++ ) {
+				parent = parent.getChild( this.path[ i ] );
+			}
+
+			return parent;
 		}
 
 		/**
-		 * Node directly after the position.
+		 * Creates and returns a new instance of {@link document.Position}
+		 * which is equal to this {@link document.Position position}.
 		 *
-		 * @readonly
-		 * @property {document.Node}
+		 * @returns {document.Position} Cloned {@link document.Position position}.
 		 */
-		get nodeAfter() {
-			return this.parent.getChild( this.offset ) || null;
+		clone() {
+			return new Position( this.path.slice(), this.root );
 		}
 
 		/**
-		 * Checks whether this position equals given position.
+		 * Checks whether this position is before or after given position.
 		 *
 		 * @param {document.Position} otherPosition Position to compare with.
-		 * @returns {Boolean} True if positions are same.
+		 * @returns {Number} A flag indicating whether this position is {@link #BEFORE} or
+		 * {@link #AFTER} or {@link #SAME} as given position. If positions are in different roots,
+		 * {@link #DIFFERENT} flag is returned.
 		 */
-		isEqual( otherPosition ) {
-			return this.compareWith( otherPosition ) == SAME;
+		compareWith( otherPosition ) {
+			if ( this.root != otherPosition.root ) {
+				return DIFFERENT;
+			}
+
+			const result = utils.compareArrays( this.path, otherPosition.path );
+
+			switch ( result ) {
+				case utils.compareArrays.SAME:
+					return SAME;
+
+				case utils.compareArrays.PREFIX:
+					return BEFORE;
+
+				case utils.compareArrays.EXTENSION:
+					return AFTER;
+
+				default:
+					if ( this.path[ result ] < otherPosition.path[ result ] ) {
+						return BEFORE;
+					} else {
+						return AFTER;
+					}
+			}
+		}
+
+		/**
+		 * Returns the path to the parent, which is the {@link document.Position#path} without the last element.
+		 *
+		 * This method returns the parent path even if the parent does not exists.
+		 *
+		 * @returns {Number[]} Path to the parent.
+		 */
+		getParentPath() {
+			return this.path.slice( 0, -1 );
+		}
+
+		/**
+		 * Returns this position after being updated by removing `howMany` nodes starting from `deletePosition`.
+		 * It may happen that this position is in a removed node. If that is the case, `null` is returned instead.
+		 *
+		 * @param {document.Position} deletePosition Position before the first removed node.
+		 * @param {Number} howMany How many nodes are removed.
+		 * @returns {document.Position|null} Transformed position or `null`.
+		 */
+		getTransformedByDeletion( deletePosition, howMany ) {
+			let transformed = this.clone();
+
+			// This position can't be affected if deletion was in a different root.
+			if ( this.root != deletePosition.root ) {
+				return transformed;
+			}
+
+			if ( utils.compareArrays( deletePosition.getParentPath(), this.getParentPath() ) == utils.compareArrays.SAME ) {
+				// If nodes are removed from the node that is pointed by this position...
+				if ( deletePosition.offset < this.offset ) {
+					// And are removed from before an offset of that position...
+					// Decrement the offset accordingly.
+					if ( deletePosition.offset + howMany > this.offset ) {
+						transformed.offset = deletePosition.offset;
+					} else {
+						transformed.offset -= howMany;
+					}
+				}
+			} else if ( utils.compareArrays( deletePosition.getParentPath(), this.getParentPath() ) == utils.compareArrays.PREFIX ) {
+				// If nodes are removed from a node that is on a path to this position...
+				const i = deletePosition.path.length - 1;
+
+				if ( deletePosition.offset < this.path[ i ] ) {
+					// And are removed from before next node of that path...
+					if ( deletePosition.offset + howMany > this.path[ i ] ) {
+						// If the next node of that path is removed return null
+						// because the node containing this position got removed.
+						return null;
+					} else {
+						// Otherwise, decrement index on that path.
+						transformed.path[ i ] -= howMany;
+					}
+				}
+			}
+
+			return transformed;
+		}
+
+		/**
+		 * Returns this position after being updated by inserting `howMany` nodes at `insertPosition`.
+		 *
+		 * @param {document.Position} insertPosition Position where nodes are inserted.
+		 * @param {Number} howMany How many nodes are inserted.
+		 * @param {Boolean} insertBefore Flag indicating whether nodes are inserted before or after `insertPosition`.
+		 * This is important only when `insertPosition` and this position are same. If that is the case and the flag is
+		 * set to `true`, this position will get transformed. If the flag is set to `false`, it won't.
+		 * @returns {document.Position} Transformed position.
+		 */
+		getTransformedByInsertion( insertPosition, howMany, insertBefore ) {
+			let transformed = this.clone();
+
+			// This position can't be affected if insertion was in a different root.
+			if ( this.root != insertPosition.root ) {
+				return transformed;
+			}
+
+			if ( utils.compareArrays( insertPosition.getParentPath(), this.getParentPath() ) == utils.compareArrays.SAME ) {
+				// If nodes are inserted in the node that is pointed by this position...
+				if ( insertPosition.offset < this.offset || ( insertPosition.offset == this.offset && insertBefore ) ) {
+					// And are inserted before an offset of that position...
+					// "Push" this positions offset.
+					transformed.offset += howMany;
+				}
+			} else if ( utils.compareArrays( insertPosition.getParentPath(), this.getParentPath() ) == utils.compareArrays.PREFIX ) {
+				// If nodes are inserted in a node that is on a path to this position...
+				const i = insertPosition.path.length - 1;
+
+				if ( insertPosition.offset <= this.path[ i ] ) {
+					// And are inserted before next node of that path...
+					// "Push" the index on that path.
+					transformed.path[ i ] += howMany;
+				}
+			}
+
+			return transformed;
+		}
+
+		/**
+		 * Returns this position after being updated by moving `howMany` attributes from `sourcePosition` to `targetPosition`.
+		 *
+		 * @param {document.Position} sourcePosition Position before the first element to move.
+		 * @param {document.Position} targetPosition Position where moved elements will be inserted.
+		 * @param {Number} howMany How many consecutive nodes to move, starting from `sourcePosition`.
+		 * @param {Boolean} insertBefore Flag indicating whether moved nodes are pasted before or after `insertPosition`.
+		 * This is important only when `targetPosition` and this position are same. If that is the case and the flag is
+		 * set to `true`, this position will get transformed by range insertion. If the flag is set to `false`, it won't.
+		 * @returns {document.Position} Transformed position.
+		 */
+		getTransformedByMove( sourcePosition, targetPosition, howMany, insertBefore ) {
+			// Moving a range removes nodes from their original position. We acknowledge this by proper transformation.
+			let transformed = this.getTransformedByDeletion( sourcePosition, howMany );
+
+			if ( transformed !== null ) {
+				// This position is not inside a removed node.
+				// Next step is to reflect pasting nodes, which might further affect the position.
+				transformed = transformed.getTransformedByInsertion( targetPosition, howMany, insertBefore );
+			} else {
+				// This position is inside a removed node. In this case, we are unable to simply transform it by range insertion.
+				// Instead, we calculate a combination of this position, move source position and target position.
+				transformed = this._getCombined( sourcePosition, targetPosition );
+			}
+
+			return transformed;
+		}
+
+		/**
+		 * Checks whether this position is after given position.
+		 *
+		 * **Note:** see {document.Position#isBefore}.
+		 *
+		 * @param {document.Position} otherPosition Position to compare with.
+		 * @returns {Boolean} True if this position is after given position.
+		 */
+		isAfter( otherPosition ) {
+			return this.compareWith( otherPosition ) == AFTER;
 		}
 
 		/**
@@ -164,71 +335,13 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 		}
 
 		/**
-		 * Checks whether this position is after given position.
-		 *
-		 * **Note:** see {document.Position#isBefore}.
+		 * Checks whether this position equals given position.
 		 *
 		 * @param {document.Position} otherPosition Position to compare with.
-		 * @returns {Boolean} True if this position is after given position.
+		 * @returns {Boolean} True if positions are same.
 		 */
-		isAfter( otherPosition ) {
-			return this.compareWith( otherPosition ) == AFTER;
-		}
-
-		/**
-		 * Returns the path to the parent, which is the {@link document.Position#path} without the last element.
-		 *
-		 * This method returns the parent path even if the parent does not exists.
-		 *
-		 * @returns {Number[]} Path to the parent.
-		 */
-		getParentPath() {
-			return this.path.slice( 0, -1 );
-		}
-
-		/**
-		 * Creates and returns a new instance of {@link document.Position}
-		 * which is equal to this {@link document.Position position}.
-		 *
-		 * @returns {document.Position} Cloned {@link document.Position position}.
-		 */
-		clone() {
-			return new Position( this.path.slice(), this.root );
-		}
-
-		/**
-		 * Creates a new position from the parent element and the offset in that element.
-		 *
-		 * @param {document.Element} parent Position parent element.
-		 * @param {Number} offset Position offset.
-		 * @returns {document.Position}
-		 */
-		static createFromParentAndOffset( parent, offset ) {
-			const path = parent.getPath();
-
-			path.push( offset );
-
-			return new Position( path, parent.root );
-		}
-
-		/**
-		 * Creates a new position before the given node.
-		 *
-		 * @param {document.node} node Node the position should be directly before.
-		 * @returns {document.Position}
-		 */
-		static createBefore( node ) {
-			if ( !node.parent ) {
-				/**
-				 * You can not make position before root.
-				 *
-				 * @error position-before-root
-				 * @param {document.Node} root
-				 */
-				throw new CKEditorError( 'position-before-root: You can not make position before root.', { root: node } );
-			}
-
-			return Position.createFromParentAndOffset( node.parent, node.getIndex() );
+		isEqual( otherPosition ) {
+			return this.compareWith( otherPosition ) == SAME;
 		}
 
 		/**
@@ -252,65 +365,38 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 		}
 
 		/**
-		 * Checks whether this position is before or after given position.
+		 * Creates a new position before the given node.
 		 *
-		 * @param {document.Position} otherPosition Position to compare with.
-		 * @returns {Number} A flag indicating whether this position is {@link #BEFORE} or
-		 * {@link #AFTER} or {@link #SAME} as given position. If positions are in different roots,
-		 * {@link #DIFFERENT} flag is returned.
+		 * @param {document.node} node Node the position should be directly before.
+		 * @returns {document.Position}
 		 */
-		compareWith( otherPosition ) {
-			if ( this.root != otherPosition.root ) {
-				return DIFFERENT;
+		static createBefore( node ) {
+			if ( !node.parent ) {
+				/**
+				 * You can not make position before root.
+				 *
+				 * @error position-before-root
+				 * @param {document.Node} root
+				 */
+				throw new CKEditorError( 'position-before-root: You can not make position before root.', { root: node } );
 			}
 
-			const result = utils.compareArrays( this.path, otherPosition.path );
-
-			switch ( result ) {
-				case utils.compareArrays.SAME:
-					return SAME;
-
-				case utils.compareArrays.PREFIX:
-					return BEFORE;
-
-				case utils.compareArrays.EXTENSION:
-					return AFTER;
-
-				default:
-					if ( this.path[ result ] < otherPosition.path[ result ] ) {
-						return BEFORE;
-					} else {
-						return AFTER;
-					}
-			}
+			return Position.createFromParentAndOffset( node.parent, node.getIndex() );
 		}
 
 		/**
-		 * Returns this position after being updated by moving `howMany` attributes from `sourcePosition` to `targetPosition`.
+		 * Creates a new position from the parent element and the offset in that element.
 		 *
-		 * @param {document.Position} sourcePosition Position before the first element to move.
-		 * @param {document.Position} targetPosition Position where moved elements will be inserted.
-		 * @param {Number} howMany How many consecutive nodes to move, starting from `sourcePosition`.
-		 * @param {Boolean} insertBefore Flag indicating whether moved nodes are pasted before or after `insertPosition`.
-		 * This is important only when `targetPosition` and this position are same. If that is the case and the flag is
-		 * set to `true`, this position will get transformed by range insertion. If the flag is set to `false`, it won't.
-		 * @returns {document.Position} Transformed position.
+		 * @param {document.Element} parent Position parent element.
+		 * @param {Number} offset Position offset.
+		 * @returns {document.Position}
 		 */
-		getTransformedByMove( sourcePosition, targetPosition, howMany, insertBefore ) {
-			// Moving a range removes nodes from their original position. We acknowledge this by proper transformation.
-			let transformed = this.getTransformedByDeletion( sourcePosition, howMany );
+		static createFromParentAndOffset( parent, offset ) {
+			const path = parent.getPath();
 
-			if ( transformed !== null ) {
-				// This position is not inside a removed node.
-				// Next step is to reflect pasting nodes, which might further affect the position.
-				transformed = transformed.getTransformedByInsertion( targetPosition, howMany, insertBefore );
-			} else {
-				// This position is inside a removed node. In this case, we are unable to simply transform it by range insertion.
-				// Instead, we calculate a combination of this position, move source position and target position.
-				transformed = this._getCombined( sourcePosition, targetPosition );
-			}
+			path.push( offset );
 
-			return transformed;
+			return new Position( path, parent.root );
 		}
 
 		/**
@@ -360,107 +446,7 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 
 			return combined;
 		}
-
-		/**
-		 * Returns this position after being updated by inserting `howMany` nodes at `insertPosition`.
-		 *
-		 * @param {document.Position} insertPosition Position where nodes are inserted.
-		 * @param {Number} howMany How many nodes are inserted.
-		 * @param {Boolean} insertBefore Flag indicating whether nodes are inserted before or after `insertPosition`.
-		 * This is important only when `insertPosition` and this position are same. If that is the case and the flag is
-		 * set to `true`, this position will get transformed. If the flag is set to `false`, it won't.
-		 * @returns {document.Position} Transformed position.
-		 */
-		getTransformedByInsertion( insertPosition, howMany, insertBefore ) {
-			let transformed = this.clone();
-
-			// This position can't be affected if insertion was in a different root.
-			if ( this.root != insertPosition.root ) {
-				return transformed;
-			}
-
-			if ( utils.compareArrays( insertPosition.getParentPath(), this.getParentPath() ) == utils.compareArrays.SAME ) {
-				// If nodes are inserted in the node that is pointed by this position...
-				if ( insertPosition.offset < this.offset || ( insertPosition.offset == this.offset && insertBefore ) ) {
-					// And are inserted before an offset of that position...
-					// "Push" this positions offset.
-					transformed.offset += howMany;
-				}
-			} else if ( utils.compareArrays( insertPosition.getParentPath(), this.getParentPath() ) == utils.compareArrays.PREFIX ) {
-				// If nodes are inserted in a node that is on a path to this position...
-				const i = insertPosition.path.length - 1;
-
-				if ( insertPosition.offset <= this.path[ i ] ) {
-					// And are inserted before next node of that path...
-					// "Push" the index on that path.
-					transformed.path[ i ] += howMany;
-				}
-			}
-
-			return transformed;
-		}
-
-		/**
-		 * Returns this position after being updated by removing `howMany` nodes starting from `deletePosition`.
-		 * It may happen that this position is in a removed node. If that is the case, `null` is returned instead.
-		 *
-		 * @param {document.Position} deletePosition Position before the first removed node.
-		 * @param {Number} howMany How many nodes are removed.
-		 * @returns {document.Position|null} Transformed position or `null`.
-		 */
-		getTransformedByDeletion( deletePosition, howMany ) {
-			let transformed = this.clone();
-
-			// This position can't be affected if deletion was in a different root.
-			if ( this.root != deletePosition.root ) {
-				return transformed;
-			}
-
-			if ( utils.compareArrays( deletePosition.getParentPath(), this.getParentPath() ) == utils.compareArrays.SAME ) {
-				// If nodes are removed from the node that is pointed by this position...
-				if ( deletePosition.offset < this.offset ) {
-					// And are removed from before an offset of that position...
-					// Decrement the offset accordingly.
-					if ( deletePosition.offset + howMany > this.offset ) {
-						transformed.offset = deletePosition.offset;
-					} else {
-						transformed.offset -= howMany;
-					}
-				}
-			} else if ( utils.compareArrays( deletePosition.getParentPath(), this.getParentPath() ) == utils.compareArrays.PREFIX ) {
-				// If nodes are removed from a node that is on a path to this position...
-				const i = deletePosition.path.length - 1;
-
-				if ( deletePosition.offset < this.path[ i ] ) {
-					// And are removed from before next node of that path...
-					if ( deletePosition.offset + howMany > this.path[ i ] ) {
-						// If the next node of that path is removed return null
-						// because the node containing this position got removed.
-						return null;
-					} else {
-						// Otherwise, decrement index on that path.
-						transformed.path[ i ] -= howMany;
-					}
-				}
-			}
-
-			return transformed;
-		}
 	}
-
-	/**
-	 * Flag for "are same" relation between Positions.
-	 *
-	 * @type {Number}
-	 */
-	Position.SAME = SAME;
-
-	/**
-	 * Flag for "is before" relation between Positions.
-	 *
-	 * @type {Number}
-	 */
-	Position.BEFORE = BEFORE;
 
 	/**
 	 * Flag for "is after" relation between Positions.
@@ -470,11 +456,25 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 	Position.AFTER = AFTER;
 
 	/**
+	 * Flag for "is before" relation between Positions.
+	 *
+	 * @type {Number}
+	 */
+	Position.BEFORE = BEFORE;
+
+	/**
 	 * Flag for "are in different roots" relation between Positions.
 	 *
 	 * @type {Number}
 	 */
 	Position.DIFFERENT = DIFFERENT;
+
+	/**
+	 * Flag for "are same" relation between Positions.
+	 *
+	 * @type {Number}
+	 */
+	Position.SAME = SAME;
 
 	return Position;
 } );

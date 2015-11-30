@@ -39,11 +39,10 @@ CKEDITOR.define( [], () => {
 			 */
 
 			/**
-			 * Executes the operation - modifications described by the operation attributes
-			 * will be applied to the tree model.
+			 * Creates and returns an operation that has the same parameters as this operation.
 			 *
-			 * @method _execute
-			 * @protected
+			 * @method clone
+			 * @returns {document.operation.Operation} Clone of this operation.
 			 */
 
 			/**
@@ -53,17 +52,18 @@ CKEDITOR.define( [], () => {
 			 *
 			 * Keep in mind that tree model state may change since executing the original operation,
 			 * so reverse operation will be "outdated". In that case you will need to
-			 * {@link #getTransformedBy transform} it by all operations that were executed after the original operation.
+			 * {@link document.operation.transform} it by all operations that were executed after the original operation.
 			 *
 			 * @method getReversed
 			 * @returns {document.operation.Operation} Reversed operation.
 			 */
 
 			/**
-			 * Creates and returns an operation that has the same parameters as this operation.
+			 * Executes the operation - modifications described by the operation attributes
+			 * will be applied to the tree model.
 			 *
-			 * @method clone
-			 * @returns {document.operation.Operation} Clone of this operation.
+			 * @method _execute
+			 * @protected
 			 */
 		}
 	}

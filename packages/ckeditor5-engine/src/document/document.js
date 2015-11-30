@@ -58,6 +58,17 @@ CKEDITOR.define( [
 		}
 
 		/**
+		 * Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
+		 *
+		 * @protected
+		 * @readonly
+		 * @property {document.RootElement} _graveyard
+		 */
+		get _graveyard() {
+			return this.getRoot( graveyardSymbol );
+		}
+
+		/**
 		 * This is the entry point for all document changes. All changes on the document are done using
 		 * {@link document.operation.Operation operations}. To create operations in the simple way use the
 		 * {@link document.Transaction} API available via {@link #createTransaction} method.
@@ -110,6 +121,15 @@ CKEDITOR.define( [
 		}
 
 		/**
+		 * Creates a {@link document.Transaction} instance which allows to change the document.
+		 *
+		 * @returns {document.Transaction} Transaction instance.
+		 */
+		createTransaction() {
+			return new Transaction( this );
+		}
+
+		/**
 		 * Returns top-level root by it's name.
 		 *
 		 * @param {String|Symbol} name Name of the root to get.
@@ -130,26 +150,6 @@ CKEDITOR.define( [
 			}
 
 			return this.roots.get( name );
-		}
-
-		/**
-		 * Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
-		 *
-		 * @protected
-		 * @readonly
-		 * @property {document.RootElement} _graveyard
-		 */
-		get _graveyard() {
-			return this.getRoot( graveyardSymbol );
-		}
-
-		/**
-		 * Creates a {@link document.Transaction} instance which allows to change the document.
-		 *
-		 * @returns {document.Transaction} Transaction instance.
-		 */
-		createTransaction() {
-			return new Transaction( this );
 		}
 	}
 
