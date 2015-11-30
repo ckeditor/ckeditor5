@@ -88,6 +88,11 @@ CKEDITOR.define( [
 			return false;
 		}
 
+		if ( a.newAttr === null && b.newAttr === null ) {
+			// Both remove the attribute - not conflicting.
+			return false;
+		}
+
 		// Check if they set different value or one of them removes the attribute.
 		return ( a.newAttr === null && b.newAttr !== null ) ||
 			( a.newAttr !== null && b.newAttr === null ) ||

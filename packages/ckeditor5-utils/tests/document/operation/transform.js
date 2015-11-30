@@ -398,11 +398,14 @@ describe( 'transform', () => {
 	} );
 
 	describe( 'ChangeOperation', () => {
-		let start, end, range, oldAttr, newAttr;
+		let start, end, range, oldAttr, newAttr, anotherOldAttr, anotherNewAttr;
 
 		beforeEach( () => {
 			oldAttr = new Attribute( 'foo', 'abc' );
 			newAttr = new Attribute( 'foo', 'bar' );
+
+			anotherOldAttr = new Attribute( oldAttr.key, 'another' );
+			anotherNewAttr = new Attribute( oldAttr.key, 'anothernew' );
 
 			expected = {
 				type: ChangeOperation,
@@ -534,7 +537,7 @@ describe( 'transform', () => {
 			} );
 
 			describe( 'by ChangeOperation', () => {
-				it( 'attributes not conflicting: no operation update', () => {
+				it( 'attributes have different key: no operation update', () => {
 					let transformBy = new ChangeOperation(
 						range.clone(),
 						new Attribute( 'abc', true ),
@@ -548,13 +551,39 @@ describe( 'transform', () => {
 					expectOperation( transOp[ 0 ], expected );
 				} );
 
+				it( 'attributes set same value: no operation update', () => {
+					let transformBy = new ChangeOperation(
+						range.clone(),
+						oldAttr,
+						newAttr,
+						baseVersion
+					);
+
+					let transOp = transform( op, transformBy );
+
+					expect( transOp.length ).to.equal( 1 );
+					expectOperation( transOp[ 0 ], expected );
+				} );
+
+				it( 'both operations removes attribute: no operation update', () => {
+					op.newAttr = null;
+
+					let transformBy = new ChangeOperation(
+						new Range( new Position( [ 1, 1, 4 ], root ), new Position( [ 3 ], root ) ),
+						anotherOldAttr,
+						null,
+						baseVersion
+					);
+
+					let transOp = transform( op, transformBy, true );
+
+					expected.newAttr = null;
+
+					expect( transOp.length ).to.equal( 1 );
+					expectOperation( transOp[ 0 ], expected );
+				} );
+
 				describe( 'that is less important and', () => {
-					let anotherOldAttr;
-
-					beforeEach( () => {
-						anotherOldAttr = new Attribute( oldAttr.key, 'another' );
-					} );
-
 					it( 'range does not intersect original range: no operation update', () => {
 						let transformBy = new ChangeOperation(
 							new Range( new Position( [ 3, 0 ], root ), new Position( [ 4 ], root ) ),
@@ -587,16 +616,22 @@ describe( 'transform', () => {
 
 					// [ original range   <   ]   range transformed by >
 					it( 'range intersects on left: split into two operations, update oldAttr', () => {
+						// Get more test cases and better code coverage
+						op.newAttr = null;
+
 						let transformBy = new ChangeOperation(
 							new Range( new Position( [ 1, 4, 2 ], root ), new Position( [ 3 ], root ) ),
 							anotherOldAttr,
-							null,
+							// Get more test cases and better code coverage
+							anotherNewAttr,
 							baseVersion
 						);
 
 						let transOp = transform( op, transformBy, true );
 
 						expect( transOp.length ).to.equal( 2 );
+
+						expected.newAttr = null;
 
 						expected.range.end.path = [ 1, 4, 2 ];
 
@@ -1017,6 +1052,8 @@ describe( 'transform', () => {
 
 		// Some extra cases for a ChangeOperation that operates on single tree level range.
 		// This means that the change range start and end differs only on offset value.
+		// This test suite also have some modifications to the original operation
+		// to get more test cases covered and better code coverage.
 		describe( 'with single-level range', () => {
 			beforeEach( () => {
 				start = new Position( [ 0, 2, 1 ], root );
