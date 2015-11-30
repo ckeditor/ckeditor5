@@ -34,8 +34,8 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], ( EmitterMixin, C
 			 * Map containing bindings of this model to external models.
 			 * See {@link #bind}.
 			 *
-			 * @property {Map}
 			 * @private
+			 * @property {Map}
 			 */
 			this._boundTo = new Map();
 
@@ -43,8 +43,8 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], ( EmitterMixin, C
 			 * Object that stores which attributes of this model are bound.
 			 * See {@link #bind}.
 			 *
-			 * @property {Object}
 			 * @private
+			 * @property {Object}
 			 */
 			this._bound = {};
 
