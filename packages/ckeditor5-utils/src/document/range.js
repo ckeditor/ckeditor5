@@ -73,7 +73,7 @@ CKEDITOR.define( [ 'document/position', 'document/positioniterator', 'utils' ], 
 
 		/**
 		 * Creates and returns a new instance of {@link document.Range}
-		 * that is equal to this {@link document.Range range}.
+		 * which is equal to this {@link document.Range range}.
 		 *
 		 * @returns {document.Position} Cloned {@link document.Range range}.
 		 */
@@ -82,21 +82,22 @@ CKEDITOR.define( [ 'document/position', 'document/positioniterator', 'utils' ], 
 		}
 
 		/**
-		 * Checks whether this {document.Range range} contains given (document.Position position}.
+		 * Checks whether this {document.Range range} contains given {@link document.Position position}.
 		 *
-		 * @param {document.Position} position Position to check.
-		 * @returns {boolean} True if given {document.Position position} is contained.
+		 * @param {@link document.Position} position Position to check.
+		 * @returns {Boolean} True if given {@link document.Position position} is contained.
 		 */
 		containsPosition( position ) {
 			return position.isAfter( this.start ) && position.isBefore( this.end );
 		}
 
 		/**
-		 * Returns an array containing one or two {document.Range ranges} that are results of transforming this
-		 * {document.Range range} by inserting `howMany` nodes at `insertPosition`. Two {document.Range ranges} are
-		 * returned if the insertion was inside this {document.Range range}.
+		 * Returns an array containing one or two {document.Range ranges} that are a result of transforming this
+		 * {@link document.Range range} by inserting `howMany` nodes at `insertPosition`. Two {@link document.Range ranges} are
+		 * returned if the insertion was inside this {@link document.Range range}.
 		 *
 		 * Examples:
+		 *
 		 * 	let range = new Range( new Position( [ 2, 7 ], root ), new Position( [ 4, 0, 1 ], root ) );
 		 * 	let transformed = range.getTransformedByInsertion( new Position( [ 1 ], root ), 2 );
 		 * 	// transformed array has one range from [ 4, 7 ] to [ 6, 0, 1 ]
@@ -147,10 +148,11 @@ CKEDITOR.define( [ 'document/position', 'document/positioniterator', 'utils' ], 
 		}
 
 		/**
-		 * Gets a part of this {document.Range range} that is not a part of given {document.Range range}. Returned
-		 * array contains zero, one or two {document.Range ranges}.
+		 * Gets a part of this {@link document.Range range} which is not a part of given {@link document.Range range}. Returned
+		 * array contains zero, one or two {@link document.Range ranges}.
 		 *
 		 * Examples:
+		 *
 		 * 	let range = new Range( new Position( [ 2, 7 ], root ), new Position( [ 4, 0, 1 ], root ) );
 		 * 	let otherRange = new Range( new Position( [ 1 ], root ), new Position( [ 5 ], root ) );
 		 * 	let transformed = range.getDifference( otherRange );
@@ -203,10 +205,11 @@ CKEDITOR.define( [ 'document/position', 'document/positioniterator', 'utils' ], 
 		}
 
 		/**
-		 * Returns an intersection of this {document.Range range} and given {document.Range range}. Intersection
-		 * is a common part of both of those ranges. If ranges has no common part, returns null.
+		 * Returns an intersection of this {@link document.Range range} and given {@link document.Range range}. Intersection
+		 * is a common part of both of those ranges. If ranges has no common part, returns `null`.
 		 *
 		 * Examples:
+		 *
 		 * 	let range = new Range( new Position( [ 2, 7 ], root ), new Position( [ 4, 0, 1 ], root ) );
 		 * 	let otherRange = new Range( new Position( [ 1 ], root ), new Position( [ 2 ], root ) );
 		 * 	let transformed = range.getIntersection( otherRange ); // null - ranges have no common part

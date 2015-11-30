@@ -130,8 +130,9 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 
 		/**
 		 * Checks whether this position is before given position.
-		 * Attention: watch out when using negation of the value returned by this method, because the negation will also
-		 * be true if positions are in different roots and you might not expect this. You should probably use
+		 *
+		 * **Note:** watch out when using negation of the value returned by this method, because the negation will also
+		 * be `true` if positions are in different roots and you might not expect this. You should probably use
 		 * `a.isAfter( b ) || a.isEqual( b )` or `!a.isBefore( p ) && a.root == b.root` in most scenarios. If your
 		 * condition uses multiple `isAfter` and `isBefore` checks, build them so they do not use negated values, i.e.:
 		 *
@@ -164,7 +165,8 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 
 		/**
 		 * Checks whether this position is after given position.
-		 * Attention: see {document.Position#isBefore}.
+		 *
+		 * **Note:** see {document.Position#isBefore}.
 		 *
 		 * @param {document.Position} otherPosition Position to compare with.
 		 * @returns {Boolean} True if this position is after given position.
@@ -186,7 +188,7 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 
 		/**
 		 * Creates and returns a new instance of {@link document.Position}
-		 * that is equal to this {@link document.Position position}.
+		 * which is equal to this {@link document.Position position}.
 		 *
 		 * @returns {document.Position} Cloned {@link document.Position position}.
 		 */
@@ -291,7 +293,7 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 		 * @param {Number} howMany How many consecutive nodes to move, starting from `sourcePosition`.
 		 * @param {Boolean} insertBefore Flag indicating whether moved nodes are pasted before or after `insertPosition`.
 		 * This is important only when `targetPosition` and this position are same. If that is the case and the flag is
-		 * set to true, this position will get transformed by range insertion. If the flag is set to false, it won't.
+		 * set to `true`, this position will get transformed by range insertion. If the flag is set to `false`, it won't.
 		 * @returns {document.Position} Transformed position.
 		 */
 		getTransformedByMove( sourcePosition, targetPosition, howMany, insertBefore ) {
@@ -320,6 +322,7 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 		 * injects `target` path in it's place, while doing necessary fixes in order to get a correct path.
 		 *
 		 * Example:
+		 *
 		 * 	let original = new Position( [ 2, 3, 1 ], root );
 		 * 	let source = new Position( [ 2, 2 ], root );
 		 * 	let target = new Position( [ 1, 1, 3 ], otherRoot );
@@ -327,6 +330,7 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 		 * 	// combined.path is [ 1, 1, 4, 1 ], combined.root is otherRoot
 		 *
 		 * Explanation:
+		 *
 		 * We have a position `[ 2, 3, 1 ]` and move some nodes from `[ 2, 2 ]` to `[ 1, 1, 3 ]`. The original position
 		 * was inside moved nodes and now should point to the new place. The moved nodes will be after
 		 * positions `[ 1, 1, 3 ]`, `[ 1, 1, 4 ]`, `[ 1, 1, 5 ]`. Since our position was in the second moved node,
@@ -364,7 +368,7 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 		 * @param {Number} howMany How many nodes are inserted.
 		 * @param {Boolean} insertBefore Flag indicating whether nodes are inserted before or after `insertPosition`.
 		 * This is important only when `insertPosition` and this position are same. If that is the case and the flag is
-		 * set to true, this position will get transformed. If the flag is set to false, it won't.
+		 * set to `true`, this position will get transformed. If the flag is set to `false`, it won't.
 		 * @returns {document.Position} Transformed position.
 		 */
 		getTransformedByInsertion( insertPosition, howMany, insertBefore ) {
@@ -402,7 +406,7 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 		 *
 		 * @param {document.Position} deletePosition Position before the first removed node.
 		 * @param {Number} howMany How many nodes are removed.
-		 * @returns {document.Position|null} Transformed position or null.
+		 * @returns {document.Position|null} Transformed position or `null`.
 		 */
 		getTransformedByDeletion( deletePosition, howMany ) {
 			let transformed = this.clone();
@@ -446,24 +450,28 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 
 	/**
 	 * Flag for "are same" relation between Positions.
+	 *
 	 * @type {Number}
 	 */
 	Position.SAME = SAME;
 
 	/**
 	 * Flag for "is before" relation between Positions.
+	 *
 	 * @type {Number}
 	 */
 	Position.BEFORE = BEFORE;
 
 	/**
 	 * Flag for "is after" relation between Positions.
+	 *
 	 * @type {Number}
 	 */
 	Position.AFTER = AFTER;
 
 	/**
 	 * Flag for "are in different roots" relation between Positions.
+	 *
 	 * @type {Number}
 	 */
 	Position.DIFFERENT = DIFFERENT;
