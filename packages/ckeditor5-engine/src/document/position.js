@@ -8,8 +8,8 @@
 CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootElement, utils, CKEditorError ) => {
 	const SAME = 0;
 	const AFTER = 1;
-	const BEFORE = -1;
-	const DIFFERENT = -2;
+	const BEFORE = 2;
+	const DIFFERENT = 3;
 
 	/**
 	 * Position in the tree. Position is always located before or after a node.
