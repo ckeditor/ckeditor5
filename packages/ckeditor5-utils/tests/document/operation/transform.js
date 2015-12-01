@@ -1967,9 +1967,12 @@ describe( 'transform', () => {
 			} );
 
 			it( 'range intersects on left with transforming range and is less important: split into two operations', () => {
+				// Get more test cases and better code coverage
+				let otherRoot = new RootElement( null );
+
 				let transformBy = new MoveOperation(
 					new Position( [ 2, 2, 3 ], root ),
-					new Position( [ 4, 1, 0 ], root ),
+					new Position( [ 4, 1, 0 ], otherRoot ),
 					2,
 					baseVersion
 				);
@@ -1978,16 +1981,15 @@ describe( 'transform', () => {
 
 				expect( transOp.length ).to.equal( 2 );
 
-				expected.sourcePosition.path = [ 2, 2, 3 ];
-
 				expectOperation( transOp[ 0 ], {
 					type: MoveOperation,
-					sourcePosition: new Position( [ 4, 1, 1 ], root ),
+					sourcePosition: new Position( [ 4, 1, 1 ], otherRoot ),
 					targetPosition: expected.targetPosition,
 					howMany: 1,
 					baseVersion: expected.baseVersion
 				} );
 
+				expected.sourcePosition.path = [ 2, 2, 3 ];
 				expected.howMany = 1;
 				expected.baseVersion++;
 
