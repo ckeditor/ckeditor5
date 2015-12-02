@@ -51,6 +51,40 @@ CKEDITOR.define( [
 			this.collections = new Collection( {
 				idProperty: 'name'
 			} );
+
+			// Listen to {@link ControllerCollection#add} and {@link ControllerCollection#remove}
+			// of newly added Collection to synchronize this controller's view and children
+			// controllers' views in the future.
+			this.collections.on( 'add', ( evt, collection ) => {
+				// Set the {@link ControllerCollection#parent} to this controller.
+				// It allows the collection to determine the {@link #ready} state of this controller
+				// and accordingly initialize a child controller when added.
+				collection.parent = this;
+
+				this.listenTo( collection, 'add', ( evt, childController, index ) => {
+					// Child view is added to corresponding region in this controller's view
+					// when a new Controller joins the collection.
+					if ( this.ready && childController.view ) {
+						this.view.addChild( collection.name, childController.view, index );
+					}
+				} );
+
+				this.listenTo( collection, 'remove', ( evt, childController ) => {
+					// Child view is removed from corresponding region in this controller's view
+					// when a new Controller is removed from the the collection.
+					if ( this.ready && childController.view ) {
+						this.view.removeChild( collection.name, childController.view );
+					}
+				} );
+			} );
+
+			this.collections.on( 'remove', ( evt, collection ) => {
+				// Release the collection. Once removed from {@link #collections}, it can be
+				// moved to another controller.
+				collection.parent = null;
+
+				this.stopListening( collection );
+			} );
 		}
 
 		/**
@@ -81,74 +115,6 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * Adds a child controller to one of the {@link #collections}.
-		 * If this controller instance is ready, the child view will be initialized when added.
-		 * If this controller and child controller have views, the child view will be added
-		 * to corresponding region in this controller's view.
-		 *
-		 * @param {String} collectionName One of {@link #collections} the child should be added to.
-		 * @param {Controller} childController A child controller.
-		 * @param {Number} [index] Index at which the child will be added to the collection.
-		 * @returns {Promise} A Promise resolved when the child is added.
-		 */
-		addChild( collectionName, childController, index ) {
-			const collection = this.collections.get( collectionName );
-
-			// ChildController.init() returns Promise.
-			let promise = Promise.resolve();
-
-			collection.add( childController, index );
-
-			if ( this.ready ) {
-				if ( childController.view ) {
-					this.view.addChild( collectionName, childController.view, index );
-				}
-
-				if ( !childController.ready ) {
-					promise = promise.then( () => {
-						return childController.init();
-					} );
-				}
-			}
-
-			return promise;
-		}
-
-		/**
-		 * Removes a child controller from one of the {@link #collections}.
-		 * If this controller and child controller have views, the child view will be removed
-		 * from corresponding region in this controller's view.
-		 *
-		 * @param {String} collectionName One of {@link #collections} the child should be removed from.
-		 * @param {Controller} childController A child controller.
-		 * @returns {Controller} A child controller instance after removal.
-		 */
-		removeChild( collectionName, childController ) {
-			const collection = this.collections.get( collectionName );
-
-			collection.remove( childController );
-
-			if ( this.ready && childController.view ) {
-				this.view.removeChild( collectionName, childController.view );
-			}
-
-			return childController;
-		}
-
-		/**
-		 * Returns a child controller from one of the {@link #collections} at given `index`.
-		 *
-		 * @param {String} collectionName One of {@link #collections} the child should be retrieved from.
-		 * @param {Number} [index] An index of desired controller.
-		 * @returns {Controller} A child controller instance.
-		 */
-		getChild( collectionName, index ) {
-			const collection = this.collections.get( collectionName );
-
-			return collection.get( index );
-		}
-
-		/**
 		 * Destroys the controller instance. The process includes:
 		 *
 		 * 1. Destruction of the child {@link #view}.
@@ -162,12 +128,7 @@ CKEDITOR.define( [
 
 			for ( collection of this.collections ) {
 				for ( childController of collection ) {
-					if ( this.view && childController.view ) {
-						this.view.removeChild( collection.name, childController.view );
-					}
-
 					promises.push( childController.destroy() );
-
 					collection.remove( childController );
 				}
 
@@ -215,7 +176,7 @@ CKEDITOR.define( [
 
 			for ( collection of this.collections ) {
 				for ( childController of collection ) {
-					if ( this.view, childController.view ) {
+					if ( this.view && childController.view ) {
 						this.view.addChild( collection.name, childController.view );
 					}
 

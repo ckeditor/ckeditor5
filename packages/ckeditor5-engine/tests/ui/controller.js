@@ -19,7 +19,7 @@ const modules = bender.amd.require( 'ckeditor',
 );
 
 let View, Controller, Model, CKEditorError, Collection, ControllerCollection;
-let ParentView;
+let ParentController, ParentView;
 
 bender.tools.createSinonSandbox();
 
@@ -82,19 +82,20 @@ describe( 'Controller', () => {
 
 		it( 'should initialize child controllers in own collections', () => {
 			const parentController = new Controller();
-			parentController.collections.add( new ControllerCollection( 'buttons' ) );
+			const buttonCollection = new ControllerCollection( 'buttons' );
+			parentController.collections.add( buttonCollection );
 
 			const childController1 = new Controller();
 			const childController2 = new Controller();
 			const spy1 = bender.sinon.spy( childController1, 'init' );
 			const spy2 = bender.sinon.spy( childController2, 'init' );
 
-			parentController.addChild( 'buttons', childController1 );
-			parentController.addChild( 'buttons', childController2 );
+			buttonCollection.add( childController1 );
+			buttonCollection.add( childController2 );
 
 			return parentController.init().then( () => {
-				expect( parentController.getChild( 'buttons', 0 ) ).to.be.equal( childController1 );
-				expect( parentController.getChild( 'buttons', 1 ) ).to.be.equal( childController2 );
+				expect( buttonCollection.get( 0 ) ).to.be.equal( childController1 );
+				expect( buttonCollection.get( 1 ) ).to.be.equal( childController2 );
 
 				sinon.assert.calledOnce( spy1 );
 				sinon.assert.calledOnce( spy2 );
@@ -102,192 +103,97 @@ describe( 'Controller', () => {
 		} );
 	} );
 
-	describe( 'addChild', () => {
-		beforeEach( defineParentViewClass );
+	describe( 'collections', () => {
+		describe( 'add', () => {
+			beforeEach( defineParentViewClass );
+			beforeEach( defineParentControllerClass );
 
-		it( 'should add a child controller to given collection and return promise', () => {
-			const parentController = new Controller();
-			const childController = new Controller();
-			const collection = new ControllerCollection( 'x' );
+			it( 'should add a child controller which has no view', () => {
+				const parentController = new ParentController( null, new ParentView() );
+				const collection = parentController.collections.get( 'x' );
+				const childController = new Controller();
 
-			parentController.collections.add( collection );
-
-			const returned = parentController.addChild( 'x', childController );
-
-			expect( returned ).to.be.an.instanceof( Promise );
-			expect( collection.get( 0 ) ).to.be.equal( childController );
-		} );
-
-		it( 'should add a child controller at given position', () => {
-			const parentController = new Controller();
-			const childController1 = new Controller();
-			const childController2 = new Controller();
-			const collection = new ControllerCollection( 'x' );
-
-			parentController.collections.add( collection );
-
-			parentController.addChild( 'x', childController1 );
-			parentController.addChild( 'x', childController2, 0 );
-
-			expect( collection.get( 0 ) ).to.be.equal( childController2 );
-			expect( collection.get( 1 ) ).to.be.equal( childController1 );
-		} );
-
-		it( 'should add a child controller which has no view', () => {
-			const parentController = new Controller( null, new ParentView() );
-			const childController = new Controller();
-
-			parentController.collections.add( new ControllerCollection( 'x' ) );
-
-			return parentController.init()
-				.then( () => {
-					return parentController.addChild( 'x', childController );
-				} )
-				.then( () => {
-					expect( parentController.getChild( 'x', 0 ) ).to.be.equal( childController );
-				} );
-		} );
-
-		it( 'should append child controller\'s view to parent controller\'s view', () => {
-			const parentView = new ParentView();
-			const parentController = new Controller( null, parentView );
-			const childController = new Controller( null, new View() );
-
-			const spy1 = bender.sinon.spy( parentView, 'addChild' );
-
-			parentController.collections.add( new ControllerCollection( 'x' ) );
-			parentController.addChild( 'x', childController );
-
-			sinon.assert.notCalled( spy1 );
-
-			parentController.removeChild( 'x', childController );
-
-			return parentController.init()
-				.then( () => {
-					return parentController.addChild( 'x', childController );
-				} )
-				.then( () => {
-					sinon.assert.calledOnce( spy1 );
-					sinon.assert.calledWithExactly( spy1, 'x', childController.view, undefined );
-				} );
-		} );
-
-		it( 'should append child controller\'s view to parent controller\'s view at given index', () => {
-			const parentController = new Controller( null, new ParentView() );
-
-			const childView1 = new View();
-			const childController1 = new Controller( null, childView1 );
-			const childView2 = new View();
-			const childController2 = new Controller( null, childView2 );
-
-			parentController.collections.add( new ControllerCollection( 'x' ) );
-
-			return parentController.init()
-				.then( () => {
-					return parentController.addChild( 'x', childController1 ).then( () => {
-						return parentController.addChild( 'x', childController2, 0 );
+				return parentController.init()
+					.then( () => {
+						return collection.add( childController );
+					} )
+					.then( () => {
+						expect( collection.get( 0 ) ).to.be.equal( childController );
 					} );
-				} )
-				.then( () => {
-					expect( parentController.view.getChild( 'x', 0 ) ).to.be.equal( childView2 );
-					expect( parentController.view.getChild( 'x', 1 ) ).to.be.equal( childView1 );
-				} );
+			} );
+
+			it( 'should append child controller\'s view to parent controller\'s view', () => {
+				const parentView = new ParentView();
+				const parentController = new ParentController( null, parentView );
+				const collection = parentController.collections.get( 'x' );
+				const childController = new Controller( null, new View() );
+				const spy1 = bender.sinon.spy( parentView, 'addChild' );
+
+				collection.add( childController );
+
+				sinon.assert.notCalled( spy1 );
+
+				collection.remove( childController );
+
+				return parentController.init()
+					.then( () => {
+						return collection.add( childController );
+					} )
+					.then( () => {
+						sinon.assert.calledOnce( spy1 );
+						sinon.assert.calledWithExactly( spy1, 'x', childController.view, 0 );
+					} );
+			} );
+
+			it( 'should append child controller\'s view to parent controller\'s view at given index', () => {
+				const parentController = new ParentController( null, new ParentView() );
+				const collection = parentController.collections.get( 'x' );
+
+				const childView1 = new View();
+				const childController1 = new Controller( null, childView1 );
+				const childView2 = new View();
+				const childController2 = new Controller( null, childView2 );
+
+				return parentController.init()
+					.then( () => {
+						return collection.add( childController1 ).then( () => {
+							return collection.add( childController2, 0 );
+						} );
+					} )
+					.then( () => {
+						expect( parentController.view.getChild( 'x', 0 ) ).to.be.equal( childView2 );
+						expect( parentController.view.getChild( 'x', 1 ) ).to.be.equal( childView1 );
+					} );
+			} );
 		} );
 
-		it( 'should initialize child controller if parent is ready', () => {
-			const parentController = new Controller( null, new ParentView() );
-			const childController = new Controller( null, new View() );
-			const spy = bender.sinon.spy( childController, 'init' );
+		describe( 'remove', () => {
+			beforeEach( defineParentViewClass );
 
-			parentController.collections.add( new ControllerCollection( 'x' ) );
-			parentController.addChild( 'x', childController );
-			parentController.removeChild( 'x', childController );
+			it( 'should remove child controller\'s view from parent controller\'s view', () => {
+				const parentView = new ParentView();
+				const parentController = new ParentController( null, parentView );
+				const collection = parentController.collections.get( 'x' );
+				const childController = new Controller( null, new View() );
+				const spy = bender.sinon.spy( parentView, 'removeChild' );
 
-			sinon.assert.notCalled( spy );
+				collection.add( childController );
 
-			return parentController.init()
-				.then( () => {
-					return parentController.addChild( 'x', childController );
-				} )
-				.then( () => {
-					sinon.assert.calledOnce( spy );
-				} );
-		} );
+				sinon.assert.notCalled( spy );
 
-		it( 'should not initialize child controller twice', () => {
-			const parentController = new Controller( null, new ParentView() );
-			const childController = new Controller( null, new View() );
-			const spy = bender.sinon.spy( childController, 'init' );
-
-			parentController.collections.add( new ControllerCollection( 'x' ) );
-
-			return parentController.init()
-				.then( () => {
-					return childController.init();
-				} )
-				.then( () => {
-					return parentController.addChild( 'x', childController );
-				} )
-				.then( () => {
-					sinon.assert.calledOnce( spy );
-				} );
-		} );
-	} );
-
-	describe( 'removeChild', () => {
-		beforeEach( defineParentViewClass );
-
-		it( 'should remove child controller and return it', () => {
-			const parentController = new Controller();
-			const childController = new Controller();
-			const collection = new ControllerCollection( 'x' );
-
-			parentController.collections.add( collection );
-
-			parentController.addChild( 'x', childController );
-			const returned = parentController.removeChild( 'x', childController );
-
-			expect( returned ).to.be.equal( childController );
-			expect( collection.length ).to.be.equal( 0 );
-		} );
-
-		it( 'should remove child controller\'s view from parent controller\'s view', () => {
-			const parentView = new ParentView();
-			const parentController = new Controller( null, parentView );
-			const childController = new Controller( null, new View() );
-
-			const spy = bender.sinon.spy( parentView, 'removeChild' );
-
-			parentController.collections.add( new ControllerCollection( 'x' ) );
-			parentController.addChild( 'x', childController );
-
-			sinon.assert.notCalled( spy );
-
-			return parentController.init()
-				.then( () => {
-					parentController.removeChild( 'x', childController );
-					sinon.assert.calledOnce( spy );
-					sinon.assert.calledWithExactly( spy, 'x', childController.view );
-				} );
-		} );
-	} );
-
-	describe( 'getChild', () => {
-		beforeEach( defineParentViewClass );
-
-		it( 'should get child controller by index', () => {
-			const parentController = new Controller();
-			const childController = new Controller();
-
-			parentController.collections.add( new ControllerCollection( 'x' ) );
-			parentController.addChild( 'x', childController );
-
-			expect( parentController.getChild( 'x', 0 ) ).to.be.equal( childController );
+				return parentController.init()
+					.then( () => {
+						collection.remove( childController );
+						sinon.assert.calledOnce( spy );
+						sinon.assert.calledWithExactly( spy, 'x', childController.view );
+					} );
+			} );
 		} );
 	} );
 
 	describe( 'destroy', () => {
 		beforeEach( defineParentViewClass );
+		beforeEach( defineParentControllerClass );
 
 		it( 'should destroy the controller', () => {
 			const view = new View();
@@ -323,13 +229,13 @@ describe( 'Controller', () => {
 		} );
 
 		it( 'should destroy child controllers in collections with their views', () => {
-			const parentController = new Controller( null, new ParentView() );
+			const parentController = new ParentController( null, new ParentView() );
+			const collection = parentController.collections.get( 'x' );
 			const childView = new View();
 			const childController = new Controller( null, childView );
 			const spy = bender.sinon.spy( childView, 'destroy' );
 
-			parentController.collections.add( new ControllerCollection( 'x' ) );
-			parentController.addChild( 'x', childController );
+			collection.add( childController );
 
 			return parentController.init()
 				.then( () => {
@@ -344,11 +250,11 @@ describe( 'Controller', () => {
 		} );
 
 		it( 'should destroy child controllers in collections when they have no views', () => {
-			const parentController = new Controller( null, new ParentView() );
+			const parentController = new ParentController( null, new ParentView() );
+			const collection = parentController.collections.get( 'x' );
 			const childController = new Controller( null, null );
 
-			parentController.collections.add( new ControllerCollection( 'x' ) );
-			parentController.addChild( 'x', childController );
+			collection.add( childController );
 
 			return parentController.init()
 				.then( () => {
@@ -379,6 +285,16 @@ function defineParentViewClass() {
 
 			this.el = document.createElement( 'span' );
 			this.register( 'x', true );
+		}
+	};
+}
+
+function defineParentControllerClass() {
+	ParentController = class extends Controller {
+		constructor( ...args ) {
+			super( ...args );
+
+			this.collections.add( new ControllerCollection( 'x' ) );
 		}
 	};
 }
