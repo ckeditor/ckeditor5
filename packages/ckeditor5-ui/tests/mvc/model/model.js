@@ -681,15 +681,10 @@ describe( 'Model', () => {
 	}
 
 	function assertStructure( model, expectedBound, expectedModels, expectedBindings ) {
+		const boundModels = [ ...model._boundTo.keys() ];
+
 		// Check model._bound object.
 		expect( model._bound ).to.be.deep.equal( expectedBound );
-
-		// TODO: Should be boundModels = [ ...model._boundTo.boundModels() ]
-		const boundModels = [];
-
-		for ( let boundModel of model._boundTo.keys() ) {
-			boundModels.push( boundModel );
-		}
 
 		// Check model._boundTo models.
 		expect( boundModels ).to.have.members( expectedModels );
@@ -701,12 +696,13 @@ describe( 'Model', () => {
 
 		// Check model._boundTo model bindings.
 		expectedBindings.forEach( ( binding, index ) => {
-			expect( model._boundTo.get( expectedModels[ index ] ) )
-				.to.have.keys( Object.keys( binding ) );
+			const bindingKeys = Object.keys( binding );
 
-			Object.keys( binding ).forEach( b => {
-				expect( Array.from( model._boundTo.get( expectedModels[ index ] )[ b ] ) )
-					.to.have.members( binding[ b ] );
+			expect( model._boundTo.get( expectedModels[ index ] ) ).to.have.keys( bindingKeys );
+
+			bindingKeys.forEach( k => {
+				expect( Array.from( model._boundTo.get( expectedModels[ index ] )[ k ] ) )
+					.to.have.members( binding[ k ] );
 			} );
 		} );
 	}
