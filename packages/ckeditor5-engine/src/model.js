@@ -363,9 +363,7 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], ( EmitterMixin, C
 	 * @returns {Boolean}
 	 */
 	function hasAttributes( model, attrs ) {
-		return attrs.findIndex( a => {
-			return Object.keys( model._attributes ).indexOf( a ) === -1;
-		} ) == -1;
+		return attrs.every( a => a in model._attributes );
 	}
 
 	/**
@@ -376,7 +374,7 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], ( EmitterMixin, C
 	 * @returns {Boolean}
 	 */
 	function isStringArray( arr ) {
-		return arr.findIndex( a => typeof a !== 'string' ) == -1;
+		return arr.every( a => typeof a == 'string' );
 	}
 
 	/**
