@@ -1949,7 +1949,47 @@ describe( 'transform', () => {
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
-			it( 'range intersects on left with transforming range and is important: shrink range', () => {
+			it( 'range contains transforming range and target and is important: update range path and target', () => {
+				op.targetPosition.path = [ 2, 2, 7 ];
+
+				let transformBy = new MoveOperation(
+					new Position( [ 2, 2, 3 ], root ),
+					new Position( [ 4, 1, 0 ], root ),
+					5,
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+
+				expected.sourcePosition.path = [ 4, 1, 1 ];
+				expected.targetPosition.path = [ 4, 1, 4 ];
+
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'range contains transforming range and target and is less important: update range path and target', () => {
+				op.targetPosition.path = [ 2, 2, 7 ];
+
+				let transformBy = new MoveOperation(
+					new Position( [ 2, 2, 3 ], root ),
+					new Position( [ 4, 1, 0 ], root ),
+					5,
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy, true );
+
+				expect( transOp.length ).to.equal( 1 );
+
+				expected.sourcePosition.path = [ 4, 1, 1 ];
+				expected.targetPosition.path = [ 4, 1, 4 ];
+
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'range intersects on left side of transforming range and is important: shrink range', () => {
 				let transformBy = new MoveOperation(
 					new Position( [ 2, 2, 3 ], root ),
 					new Position( [ 4, 1, 0 ], root ),
@@ -1966,7 +2006,7 @@ describe( 'transform', () => {
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
-			it( 'range intersects on left with transforming range and is less important: split into two operations', () => {
+			it( 'range intersects on left side of transforming range and is less important: split into two operations', () => {
 				// Get more test cases and better code coverage
 				let otherRoot = new RootElement( null );
 
@@ -1981,13 +2021,74 @@ describe( 'transform', () => {
 
 				expect( transOp.length ).to.equal( 2 );
 
-				expectOperation( transOp[ 0 ], {
-					type: MoveOperation,
-					sourcePosition: new Position( [ 4, 1, 1 ], otherRoot ),
-					targetPosition: expected.targetPosition,
-					howMany: 1,
-					baseVersion: expected.baseVersion
-				} );
+				expected.sourcePosition.path = [ 2, 2, 3 ];
+				expected.howMany = 1;
+
+				expectOperation( transOp[ 0 ], expected );
+
+				expected.sourcePosition = new Position( [ 4, 1, 1 ], otherRoot );
+				expected.baseVersion++;
+
+				expectOperation( transOp[ 1 ], expected );
+			} );
+
+			it( 'range intersects on right side of transforming range and is important: shrink range', () => {
+				let transformBy = new MoveOperation(
+					new Position( [ 2, 2, 5 ], root ),
+					new Position( [ 4, 1, 0 ], root ),
+					2,
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expected.howMany = 1;
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'range intersects on right side of transforming range and is less important: split into two operations', () => {
+				let transformBy = new MoveOperation(
+					new Position( [ 2, 2, 5 ], root ),
+					new Position( [ 4, 1, 0 ], root ),
+					2,
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy, true );
+
+				expect( transOp.length ).to.equal( 2 );
+
+				expected.sourcePosition.path = [ 4, 1, 0 ];
+				expected.howMany = 1;
+
+				expectOperation( transOp[ 0 ], expected );
+
+				expected.sourcePosition.path = op.sourcePosition.path;
+				expected.baseVersion++;
+
+				expectOperation( transOp[ 1 ], expected );
+			} );
+
+			it( 'range intersects on left side, target inside transforming range and is important: split into two operations', () => {
+				op.howMany = 4;
+
+				let transformBy = new MoveOperation(
+					new Position( [ 2, 2, 3 ], root ),
+					new Position( [ 2, 2, 6 ], root ),
+					2,
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 2 );
+
+				expected.sourcePosition.path = [ 2, 2, 6 ];
+				expected.howMany = 2;
+
+				expectOperation( transOp[ 0 ], expected );
 
 				expected.sourcePosition.path = [ 2, 2, 3 ];
 				expected.howMany = 1;
@@ -1996,100 +2097,12 @@ describe( 'transform', () => {
 				expectOperation( transOp[ 1 ], expected );
 			} );
 
-			it( 'range intersects on right with transforming range and is important: shrink range', () => {
-				let transformBy = new MoveOperation(
-					new Position( [ 2, 2, 5 ], root ),
-					new Position( [ 4, 1, 0 ], root ),
-					2,
-					baseVersion
-				);
-
-				let transOp = transform( op, transformBy );
-
-				expected.howMany = 1;
-
-				expect( transOp.length ).to.equal( 1 );
-				expectOperation( transOp[ 0 ], expected );
-			} );
-
-			it( 'range intersects on right with transforming range and is less important: split into two operations', () => {
-				let transformBy = new MoveOperation(
-					new Position( [ 2, 2, 5 ], root ),
-					new Position( [ 4, 1, 0 ], root ),
-					2,
-					baseVersion
-				);
-
-				let transOp = transform( op, transformBy, true );
-
-				expect( transOp.length ).to.equal( 2 );
-
-				expectOperation( transOp[ 0 ], {
-					type: MoveOperation,
-					sourcePosition: new Position( [ 4, 1, 0 ], root ),
-					targetPosition: expected.targetPosition,
-					howMany: 1,
-					baseVersion: expected.baseVersion
-				} );
-
-				expected.howMany = 1;
-				expected.baseVersion++;
-
-				expectOperation( transOp[ 1 ], expected );
-			} );
-
-			it( 'range inside transforming range and is important: shrink range', () => {
+			it( 'range intersects on left side, target inside transforming range and is less important: split into three operations', () => {
 				op.howMany = 4;
 
 				let transformBy = new MoveOperation(
-					new Position( [ 2, 2, 5 ], root ),
-					new Position( [ 4, 1, 0 ], root ),
-					2,
-					baseVersion
-				);
-
-				let transOp = transform( op, transformBy );
-
-				expected.howMany = 2;
-
-				expect( transOp.length ).to.equal( 1 );
-				expectOperation( transOp[ 0 ], expected );
-			} );
-
-			it( 'range inside transforming range and is less important: split into two operations', () => {
-				op.howMany = 4;
-
-				let transformBy = new MoveOperation(
-					new Position( [ 2, 2, 5 ], root ),
-					new Position( [ 4, 1, 0 ], root ),
-					2,
-					baseVersion
-				);
-
-				let transOp = transform( op, transformBy, true );
-
-				expect( transOp.length ).to.equal( 2 );
-
-				expectOperation( transOp[ 0 ], {
-					type: MoveOperation,
-					sourcePosition: new Position( [ 4, 1, 0 ], root ),
-					targetPosition: expected.targetPosition,
-					howMany: 2,
-					baseVersion: expected.baseVersion
-				} );
-
-				expected.howMany = 2;
-				expected.baseVersion++;
-
-				expectOperation( transOp[ 1 ], expected );
-			} );
-
-			it( 'range and target inside transforming range and is less important: split into three operations', () => {
-				op.howMany = 6;
-
-				let transformBy = new MoveOperation(
-					new Position( [ 2, 2, 5 ], root ),
-					new Position( [ 2, 2, 9 ], root ),
+					new Position( [ 2, 2, 3 ], root ),
+					new Position( [ 2, 2, 6 ], root ),
 					2,
 					baseVersion
 				);
@@ -2098,7 +2111,65 @@ describe( 'transform', () => {
 
 				expect( transOp.length ).to.equal( 3 );
 
-				expected.sourcePosition.path = [ 2, 2, 9 ];
+				expected.sourcePosition.path = [ 2, 2, 6 ];
+				expected.howMany = 2;
+
+				expectOperation( transOp[ 0 ], expected );
+
+				expected.sourcePosition.path = [ 2, 2, 3 ];
+				expected.howMany = 1;
+				expected.baseVersion++;
+
+				expectOperation( transOp[ 1 ], expected );
+
+				expected.sourcePosition.path = [ 2, 2, 5 ];
+				expected.howMany = 1;
+				expected.baseVersion++;
+
+				expectOperation( transOp[ 2 ], expected );
+			} );
+
+			it( 'range intersects on right side, target inside transforming range and is important: split into two operations', () => {
+				op.howMany = 4;
+
+				let transformBy = new MoveOperation(
+					new Position( [ 2, 2, 7 ], root ),
+					new Position( [ 2, 2, 5 ], root ),
+					2,
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 2 );
+
+				expected.sourcePosition.path = [ 2, 2, 7 ];
+				expected.howMany = 2;
+
+				expectOperation( transOp[ 0 ], expected );
+
+				expected.sourcePosition.path = [ 2, 2, 4 ];
+				expected.howMany = 1;
+				expected.baseVersion++;
+
+				expectOperation( transOp[ 1 ], expected );
+			} );
+
+			it( 'range intersects on right side, target inside transforming range and is less important: split into three operations', () => {
+				op.howMany = 4;
+
+				let transformBy = new MoveOperation(
+					new Position( [ 2, 2, 7 ], root ),
+					new Position( [ 2, 2, 5 ], root ),
+					2,
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy, true );
+
+				expect( transOp.length ).to.equal( 3 );
+
+				expected.sourcePosition.path = [ 2, 2, 5 ];
 				expected.howMany = 1;
 
 				expectOperation( transOp[ 0 ], expected );
@@ -2110,10 +2181,105 @@ describe( 'transform', () => {
 				expectOperation( transOp[ 1 ], expected );
 
 				expected.sourcePosition.path = [ 2, 2, 4 ];
-				expected.howMany = 3;
+				expected.howMany = 1;
 				expected.baseVersion++;
 
 				expectOperation( transOp[ 2 ], expected );
+			} );
+
+			it( 'range inside transforming range and is important: split into two operations', () => {
+				op.howMany = 4;
+
+				let transformBy = new MoveOperation(
+					new Position( [ 2, 2, 5 ], root ),
+					new Position( [ 4, 1, 0 ], root ),
+					2,
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 2 );
+
+				expected.sourcePosition.path = [ 2, 2, 5 ];
+				expected.howMany = 1;
+
+				expectOperation( transOp[ 0 ], expected );
+
+				expected.sourcePosition.path = [ 2, 2, 4 ];
+				expected.baseVersion++;
+
+				expectOperation( transOp[ 1 ], expected );
+			} );
+
+			it( 'range inside transforming range and is less important: split into three operations', () => {
+				op.howMany = 4;
+
+				let transformBy = new MoveOperation(
+					new Position( [ 2, 2, 5 ], root ),
+					new Position( [ 4, 1, 0 ], root ),
+					2,
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy, true );
+
+				expect( transOp.length ).to.equal( 3 );
+
+				expected.sourcePosition.path = [ 2, 2, 5 ];
+				expected.howMany = 1;
+
+				expectOperation( transOp[ 0 ], expected );
+
+				expected.sourcePosition.path = [ 4, 1, 0 ];
+				expected.howMany = 2;
+				expected.baseVersion++;
+
+				expectOperation( transOp[ 1 ], expected );
+
+				expected.sourcePosition.path = [ 2, 2, 4 ];
+				expected.howMany = 1;
+				expected.baseVersion++;
+
+				expectOperation( transOp[ 2 ], expected );
+			} );
+
+			it( 'range and target inside transforming range and is important: no operation update', () => {
+				op.howMany = 6;
+
+				let transformBy = new MoveOperation(
+					new Position( [ 2, 2, 5 ], root ),
+					new Position( [ 2, 2, 9 ], root ),
+					2,
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+
+				expected.howMany = 6;
+
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'range and target inside transforming range and is less important: no operation update', () => {
+				op.howMany = 6;
+
+				let transformBy = new MoveOperation(
+					new Position( [ 2, 2, 5 ], root ),
+					new Position( [ 2, 2, 9 ], root ),
+					2,
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy, true );
+
+				expect( transOp.length ).to.equal( 1 );
+
+				expected.howMany = 6;
+
+				expectOperation( transOp[ 0 ], expected );
 			} );
 		} );
 

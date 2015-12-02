@@ -194,11 +194,11 @@ describe( 'Range', () => {
 
 			expect( transformed.length ).to.equal( 2 );
 
-			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 4, 1, 10 ] );
-			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 5, 4 ] );
+			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
+			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 4, 1, 6 ] );
 
-			expect( transformed[ 1 ].start.path ).to.deep.equal( [ 3, 2 ] );
-			expect( transformed[ 1 ].end.path ).to.deep.equal( [ 4, 1, 6 ] );
+			expect( transformed[ 1 ].start.path ).to.deep.equal( [ 4, 1, 10 ] );
+			expect( transformed[ 1 ].end.path ).to.deep.equal( [ 5, 4 ] );
 		} );
 
 		it( 'should not updated positions if insertion is after range', () => {
