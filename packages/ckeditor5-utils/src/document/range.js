@@ -55,13 +55,23 @@ CKEDITOR.define( [ 'document/position', 'document/positioniterator', 'utils' ], 
 		}
 
 		/**
-		 * Checks whether this {document.Range range} contains given {@link document.Position position}.
+		 * Checks whether this contains given {@link document.Position position}.
 		 *
-		 * @param {@link document.Position} position Position to check.
+		 * @param {document.Position} position Position to check.
 		 * @returns {Boolean} True if given {@link document.Position position} is contained.
 		 */
 		containsPosition( position ) {
 			return position.isAfter( this.start ) && position.isBefore( this.end );
+		}
+
+		/**
+		 * Checks whether this range contains given {@link document.Range range}.
+		 *
+		 * @param {document.Range} otherRange Range to check.
+		 * @returns {Boolean} True if given {@link document.Range range} boundaries are contained by this range.
+		 */
+		containsRange( otherRange ) {
+			return this.containsPosition( otherRange.start ) && this.containsPosition( otherRange.end );
 		}
 
 		/**
@@ -198,12 +208,12 @@ CKEDITOR.define( [ 'document/position', 'document/positioniterator', 'utils' ], 
 
 				return [
 					new Range(
-						insertPosition.getTransformedByInsertion( insertPosition, howMany, true ),
-						this.end.getTransformedByInsertion( insertPosition, howMany, true )
-					),
-					new Range(
 						this.start.clone(),
 						insertPosition.clone()
+					),
+					new Range(
+						insertPosition.getTransformedByInsertion( insertPosition, howMany, true ),
+						this.end.getTransformedByInsertion( insertPosition, howMany, true )
 					)
 				];
 			} else {
