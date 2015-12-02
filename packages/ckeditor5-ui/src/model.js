@@ -143,21 +143,16 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], ( EmitterMixin, C
 		bind() {
 			const bindAttrs = [].slice.call( arguments );
 
-			if ( !bindAttrs.length ) {
+			if ( !bindAttrs.length || !isStringArray( bindAttrs ) ) {
 				/**
-				 * No attributes supplied.
-				 *
-				 * @error model-bind-no-attrs
-				 */
-				throw new CKEditorError( 'model-bind-no-attrs: No attributes supplied.' );
-			} else if ( !isStringArray( bindAttrs ) ) {
-				/**
-				 * Attributes must be strings.
+				 * All attributes must be strings.
 				 *
 				 * @error model-bind-wrong-attrs
 				 */
-				throw new CKEditorError( 'model-bind-wrong-attrs: Attributes must be strings.' );
-			} else if ( ( new Set( bindAttrs ) ).size !== bindAttrs.length ) {
+				throw new CKEditorError( 'model-bind-wrong-attrs: All attributes must be strings.' );
+			}
+
+			if ( ( new Set( bindAttrs ) ).size !== bindAttrs.length ) {
 				/**
 				 * Attributes must be unique.
 				 *
@@ -213,20 +208,11 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], ( EmitterMixin, C
 			const toModel = arguments[ 0 ];
 			let toAttrs = [].slice.call( arguments, 1 );
 
-			if ( !toModel ) {
-				/**
-				 * No model supplied.
-				 *
-				 * @error model-bind-to-no-model
-				 */
-				throw new CKEditorError( 'model-bind-to-no-model: No model supplied.' );
-			}
-
-			if ( !( toModel instanceof Model ) ) {
+			if ( !toModel || !( toModel instanceof Model ) ) {
 				/**
 				 * An instance of Model is required.
 				 *
-				 * @error model-bind-to-wrong-model:
+				 * @error model-bind-to-wrong-model
 				 */
 				throw new CKEditorError( 'model-bind-to-wrong-model: An instance of Model is required.' );
 			}
@@ -252,23 +238,14 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], ( EmitterMixin, C
 			}
 
 			// Eliminate A.bind( 'x' ).to( B, 'y' ), when B.y == undefined.
-			if ( !hasAttributes( toModel, toAttrs ) ) {
-				/**
-				 * Model has no such attribute(s).
-				 *
-				 * @error model-bind-to-missing-model-attr
-				 */
-				throw new CKEditorError( 'model-bind-to-missing-model-attr: Model has no such attribute(s).' );
-			}
-
 			// Eliminate A.bind( 'x' ).to( B ), when B.x == undefined.
-			if ( !toAttrs.length && !hasAttributes( toModel, this._bindAttrs ) ) {
+			if ( !hasAttributes( toModel, toAttrs ) || ( !toAttrs.length && !hasAttributes( toModel, this._bindAttrs ) ) ) {
 				/**
 				 * Model has no such attribute(s).
 				 *
-				 * @error model-bind-to-missing-to-attr
+				 * @error model-bind-to-missing-attr
 				 */
-				throw new CKEditorError( 'model-bind-to-missing-to-attr: Model has no such attribute(s).' );
+				throw new CKEditorError( 'model-bind-to-missing-attr: Model has no such attribute(s).' );
 			}
 
 			// Eliminate A.bind( 'x', 'y' ).to( B ).to( C ) when no trailing .as().
@@ -306,14 +283,7 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], ( EmitterMixin, C
 		 * @param {Function} callback A callback to combine model's attributes.
 		 */
 		_bindAs( callback ) {
-			if ( !callback ) {
-				/**
-				 * No callback function supplied.
-				 *
-				 * @error model-bind-as-no-callback
-				 */
-				throw new CKEditorError( 'model-bind-as-no-callback: No callback function supplied.' );
-			} else if ( typeof callback !== 'function' ) {
+			if ( !callback || typeof callback !== 'function' ) {
 				/**
 				 * Callback must be a Function.
 				 *
