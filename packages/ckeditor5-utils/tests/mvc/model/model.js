@@ -201,15 +201,11 @@ describe( 'Model', () => {
 			expect( car.bind( 'nonexistent' ) ).to.contain.keys( 'to' );
 		} );
 
-		it( 'should throw when no attributes specified', () => {
-			const CKEditorError = modules.ckeditorerror;
-
+		it( 'should throw when attributes are not strings', () => {
 			expect( () => {
 				car.bind();
-			} ).to.throw( CKEditorError, /model-bind-no-attrs/ );
-		} );
+			} ).to.throw( CKEditorError, /model-bind-wrong-attrs/ );
 
-		it( 'should throw when attributes are not strings', () => {
 			expect( () => {
 				car.bind( new Date() );
 			} ).to.throw( CKEditorError, /model-bind-wrong-attrs/ );
@@ -250,15 +246,13 @@ describe( 'Model', () => {
 				expect( returned ).to.have.property( 'as' );
 			} );
 
-			it( 'should throw when no .to() model', () => {
-				expect( () => {
-					car.bind( 'color' ).to();
-				} ).to.throw( CKEditorError, /model-bind-to-no-model/ );
-			} );
-
 			it( 'should throw when .to() model is not Model', () => {
 				expect( () => {
-					car.bind( 'color' ).to( 'it\'s not a model' );
+					car.bind( 'color' ).to();
+				} ).to.throw( CKEditorError, /model-bind-to-wrong-model/ );
+
+				expect( () => {
+					car.bind( 'year' ).to( 'it\'s not a model' );
 				} ).to.throw( CKEditorError, /model-bind-to-wrong-model/ );
 			} );
 
@@ -294,20 +288,16 @@ describe( 'Model', () => {
 				} ).to.throw( CKEditorError, /model-bind-to-attrs-length/ );
 			} );
 
-			it( 'should throw when binding to an nonexistent attribute in the model', () => {
-				const vehicle = new Car();
-
-				expect( () => {
-					vehicle.bind( 'color' ).to( car, 'nonexistent in car' );
-				} ).to.throw( CKEditorError, /model-bind-to-missing-model-attr/ );
-			} );
-
 			it( 'should throw when no attribute specified and those from bind() don\'t exist in to() model', () => {
 				const vehicle = new Car();
 
 				expect( () => {
+					vehicle.bind( 'color' ).to( car, 'nonexistent in car' );
+				} ).to.throw( CKEditorError, /model-bind-to-missing-attr/ );
+
+				expect( () => {
 					vehicle.bind( 'nonexistent in car' ).to( car );
-				} ).to.throw( CKEditorError, /model-bind-to-missing-to-attr/ );
+				} ).to.throw( CKEditorError, /model-bind-to-missing-attr/ );
 			} );
 
 			it( 'should throw when to() more than once and multiple attributes', () => {
@@ -432,18 +422,13 @@ describe( 'Model', () => {
 					).to.be.undefined;
 				} );
 
-				it( 'should throw when no function specified', () => {
+				it( 'should throw when not a function passed', () => {
 					const car1 = new Car( { color: 'brown' } );
 					const car2 = new Car( { color: 'green' } );
 
 					expect( () => {
-						car.bind( 'color' ).to( car1, 'color' ).to( car2, 'color' ).as();
-					} ).to.throw( CKEditorError, /model-bind-as-no-callback/ );
-				} );
-
-				it( 'should throw when not a function passed', () => {
-					const car1 = new Car( { color: 'brown' } );
-					const car2 = new Car( { color: 'green' } );
+						car.bind( 'year' ).to( car1, 'color' ).to( car2, 'color' ).as();
+					} ).to.throw( CKEditorError, /model-bind-as-wrong-callback/ );
 
 					expect( () => {
 						car.bind( 'color' ).to( car1, 'color' ).to( car2, 'color' ).as( 'not-a-function' );
