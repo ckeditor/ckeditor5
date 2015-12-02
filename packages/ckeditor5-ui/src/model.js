@@ -428,7 +428,7 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], ( EmitterMixin, C
 	 * @param {*} value The value of the attribute.
 	 */
 	function updateModelAttr( model, attrName, value ) {
-		if ( model.attrName ) {
+		if ( model[ attrName ] ) {
 			model[ attrName ] = value;
 		} else {
 			model.set( attrName, value );
@@ -462,9 +462,7 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], ( EmitterMixin, C
 			//
 			// MODEL.bind( 'a' ).to( TOMODEL1 )[ .to( TOMODELn ) ].as( callback )
 			//  \-> Use model attribute name to collect boundTo attribute value (TOMODELn.a).
-			const values = chain._boundTo.map( boundTo => {
-				return boundTo.model[ boundTo.attrs.length ? boundTo.attrs[ 0 ] : chain.attrs[ 0 ] ];
-			} );
+			const values = chain._boundTo.map( boundTo => boundTo.model[ boundTo.attrs[ 0 ] ] );
 
 			// Pass collected attribute values to the callback function.
 			// Whatever is returned it becomes the value of the model's attribute.
