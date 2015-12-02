@@ -240,8 +240,7 @@ CKEDITOR.define( [
 		 * in DOM when the region instance is initialized (see {@link Region#init}, {@link #init}).
 		 * @param {Boolean} [override] When set `true` it will allow overriding of registered regions.
 		 */
-		register() {
-			let args = [].slice.call( arguments );
+		register( ...args ) {
 			let region, regionName;
 
 			if ( typeof args[ 0 ] === 'string' ) {
