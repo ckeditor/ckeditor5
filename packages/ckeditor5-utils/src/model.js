@@ -140,9 +140,7 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], ( EmitterMixin, C
 		 * @param {String...} bindAttrs Model attributes use that will be bound to another model(s).
 		 * @returns {BindChain}
 		 */
-		bind() {
-			const bindAttrs = [].slice.call( arguments );
-
+		bind( ...bindAttrs ) {
 			if ( !bindAttrs.length || !isStringArray( bindAttrs ) ) {
 				/**
 				 * All attributes must be strings.
@@ -204,10 +202,7 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], ( EmitterMixin, C
 		 * @param {String...} [toAttrs] Attributes of the model used for binding.
 		 * @returns {BindChain}
 		 */
-		_bindTo() {
-			const toModel = arguments[ 0 ];
-			let toAttrs = [].slice.call( arguments, 1 );
-
+		_bindTo( toModel, ...toAttrs ) {
 			if ( !toModel || !( toModel instanceof Model ) ) {
 				/**
 				 * An instance of Model is required.
@@ -306,10 +301,8 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], ( EmitterMixin, C
 		 * @param {String...} [bindAttrs] Model attributes to unbound. All the bindings will
 		 * be released if not attributes provided.
 		 */
-		unbind() {
-			if ( arguments.length ) {
-				const unbindAttrs = [].slice.call( arguments );
-
+		unbind( ...unbindAttrs ) {
+			if ( unbindAttrs.length ) {
 				if ( !isStringArray( unbindAttrs ) ) {
 					/**
 					 * Attributes must be strings.
