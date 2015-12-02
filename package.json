@@ -20,7 +20,7 @@
     "benderjs-mocha": "^0.3.0",
     "benderjs-promise": "^0.1.0",
     "benderjs-sinon": "^0.3.0",
-    "chai": "^1.10.0",
+    "chai": "^3.4.0",
     "del": "^2.0.2",
     "grunt": "^0",
     "grunt-contrib-jshint": "^0",
