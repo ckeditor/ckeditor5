@@ -266,5 +266,29 @@ module.exports = {
 		const path = require( 'path' );
 		const templatesPath = path.resolve( TEMPLATE_PATH );
 		this.shExec( `cp ${ path.join( templatesPath, '*.md' ) } ${ destination }` );
+	},
+
+	/**
+	 * Executes 'npm view' command for provided module name and returns Git url if one is found. Returns null if
+	 * module cannot be found.
+	 *
+	 * @param {String} name Name of the module.
+	 * @returns {*}
+     */
+	getGitUrlFromNpm( name ) {
+		try {
+			const info = JSON.parse( this.shExec( `npm view ${ name } repository --json` ) );
+
+			if ( info && info.type == 'git' ) {
+				return info.url;
+			}
+		} catch ( error ) {
+			// Throw error only when different than E404.
+			if ( error.message.indexOf( 'npm ERR! code E404' ) == -1 ) {
+				throw error;
+			}
+		}
+
+		return null;
 	}
 };

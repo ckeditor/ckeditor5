@@ -233,5 +233,48 @@ describe( 'utils', () => {
 				expect( shExecStub.firstCall.args[ 0 ] ).to.equal( `cp ${ path.join( templatesPath, '*.md' ) } ${ repositoryPath }` );
 			} );
 		} );
+
+		describe( 'getGitUrlFromNpm', () => {
+			const repository = {
+				type: 'git',
+				url: 'git@github.com:ckeditor/ckeditor5-core'
+			};
+			const moduleName = 'ckeditor5-core';
+
+			it( 'should be defined', () => expect( tools.getGitUrlFromNpm ).to.be.a( 'function' ) );
+			it( 'should call npm view command', () => {
+				const shExecStub = sinon.stub( tools, 'shExec', () => {
+					return JSON.stringify( repository );
+				} );
+				toRestore.push( shExecStub );
+				const url = tools.getGitUrlFromNpm( moduleName );
+
+				expect( shExecStub.calledOnce ).to.equal( true );
+				expect( shExecStub.firstCall.args[ 0 ] ).to.equal( `npm view ${ moduleName } repository --json` );
+				expect( url ).to.equal( repository.url );
+			} );
+
+			it( 'should return null if module is not found', () => {
+				const shExecStub = sinon.stub( tools, 'shExec' ).throws( new Error( 'npm ERR! code E404' ) );
+				toRestore.push( shExecStub );
+
+				const url = tools.getGitUrlFromNpm( moduleName );
+				expect( url ).to.equal( null );
+			} );
+
+			it( 'should throw on other errors', () => {
+				const error = new Error( 'Random error.' );
+				const shExecStub = sinon.stub( tools, 'shExec' ).throws( error );
+				const getUrlSpy = sinon.spy( tools, 'getGitUrlFromNpm' );
+				toRestore.push( shExecStub );
+				toRestore.push( getUrlSpy );
+
+				try {
+					tools.getGitUrlFromNpm( moduleName );
+				} catch ( e ) {}
+
+				expect( getUrlSpy.threw( error ) ).to.equal( true );
+			} );
+		} );
 	} );
 } );
