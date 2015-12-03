@@ -44,6 +44,17 @@ describe( 'ChangeOperation', () => {
 		root = doc.createRoot( 'root' );
 	} );
 
+	it( 'should have proper type', () => {
+		const opp = new ChangeOperation(
+			new Range( new Position( [ 0 ], root ), new Position( [ 2 ], root ) ),
+			null,
+			new Attribute( 'isNew', true ),
+			doc.version
+		);
+
+		expect( opp.type ).to.equal( 'attr' );
+	} );
+
 	it( 'should insert attribute to the set of nodes', () => {
 		let newAttr = new Attribute( 'isNew', true );
 
