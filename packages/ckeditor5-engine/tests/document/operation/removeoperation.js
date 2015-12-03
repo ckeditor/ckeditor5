@@ -34,6 +34,16 @@ describe( 'RemoveOperation', () => {
 		graveyard = doc._graveyard;
 	} );
 
+	it( 'should have proper type', () => {
+		const opp = new RemoveOperation(
+			new Position( [ 2 ], root ),
+			2,
+			doc.version
+		);
+
+		expect( opp.type ).to.equal( 'remove' );
+	} );
+
 	it( 'should extend MoveOperation class', () => {
 		let operation = new RemoveOperation(
 			new Position( [ 2 ], root ),
