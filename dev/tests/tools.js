@@ -23,6 +23,31 @@ describe( 'utils', () => {
 	} );
 
 	describe( 'tools', () => {
+		describe( 'shExec', () => {
+			it( 'should be defined', () => expect( tools.shExec ).to.be.a( 'function' ) );
+
+			it( 'should execute command', () => {
+				const sh = require( 'shelljs' );
+				const execStub = sinon.stub( sh, 'exec' ).returns( { code: 0 } );
+				toRestore.push( execStub );
+
+				tools.shExec( 'command' );
+
+				sinon.assert.calledOnce( execStub );
+			} );
+
+			it( 'should throw error on unsuccessful call', () => {
+				const sh = require( 'shelljs' );
+				const execStub = sinon.stub( sh, 'exec' ).returns( { code: 1 } );
+				toRestore.push( execStub );
+
+				expect( () => {
+					tools.shExec( 'command' );
+				} ).to.throw();
+				sinon.assert.calledOnce( execStub );
+			} );
+		} );
+
 		describe( 'linkDirectories', () => {
 			it( 'should be defined', () => expect( tools.linkDirectories ).to.be.a( 'function' ) );
 
@@ -68,6 +93,7 @@ describe( 'utils', () => {
 					'plugin3': ''
 				};
 				expect( tools.getCKEditorDependencies( dependencies ) ).to.equal( null );
+				expect( tools.getCKEditorDependencies() ).to.equal( null );
 			} );
 
 			it( 'should return only ckeditor5- dependencies', () => {
@@ -256,6 +282,14 @@ describe( 'utils', () => {
 
 			it( 'should return null if module is not found', () => {
 				const shExecStub = sinon.stub( tools, 'shExec' ).throws( new Error( 'npm ERR! code E404' ) );
+				toRestore.push( shExecStub );
+
+				const url = tools.getGitUrlFromNpm( moduleName );
+				expect( url ).to.equal( null );
+			} );
+
+			it( 'should return null if module has no repository information', () => {
+				const shExecStub = sinon.stub( tools, 'shExec' ).returns( JSON.stringify( {} ) );
 				toRestore.push( shExecStub );
 
 				const url = tools.getGitUrlFromNpm( moduleName );
