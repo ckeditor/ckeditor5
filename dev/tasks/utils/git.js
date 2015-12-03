@@ -38,7 +38,7 @@ module.exports = {
 	 * @returns {String} urlInfo.branch
 	 */
 	parseRepositoryUrl( url ) {
-		const regexp = /^((?:git@|http[s]?:\/\/)github\.com(?:\/|:))?(([\w-]+)\/([\w-]+(?:\.git)?))(?:#([\w-/]+))?$/;
+		const regexp = /^((?:git@|http[s]?:\/\/)github\.com(?:\/|:))?(([\w-]+)\/([\w-]+(?:\.git)?))(?:#([\w-\/]+))?$/;
 		const match = url.match( regexp );
 		let server;
 		let repository;
@@ -52,13 +52,9 @@ module.exports = {
 
 		server = match[ 1 ] || 'https://github.com/';
 		repository = match[ 2 ];
-		user = match[ 3 ] || '';
-		name = match[ 4 ] || '';
+		user = match[ 3 ];
+		name = match[ 4 ];
 		branch = match[ 5 ] || 'master';
-
-		if ( !repository || !user || !name ) {
-			return null;
-		}
 
 		name = /\.git$/.test( name ) ? name.slice( 0, -4 ) : name;
 

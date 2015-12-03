@@ -104,6 +104,14 @@ describe( 'utils', () => {
 				expect( urlInfo.name ).to.equal( 'ckeditor5-core' );
 				expect( urlInfo.branch ).to.equal( 'new-feature' );
 			} );
+
+			it( 'should return null if GitHub URL is not valid', () => {
+				let urlInfo = git.parseRepositoryUrl( 'https://ckeditor.com' );
+				expect( urlInfo ).to.equal( null );
+
+				urlInfo = git.parseRepositoryUrl( 'https://github.com/info.html' );
+				expect( urlInfo ).to.equal( null );
+			} );
 		} );
 
 		describe( 'cloneRepository', () => {
