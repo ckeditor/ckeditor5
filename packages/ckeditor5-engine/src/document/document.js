@@ -88,9 +88,12 @@ CKEDITOR.define( [
 					{ operation: operation } );
 			}
 
-			operation._execute();
+			let changes = operation._execute();
+
 			this.version++;
-			this.fire( 'operationApplied', operation );
+
+			changes.type = operation.type;
+			this.fire( 'change', changes );
 		}
 
 		/**

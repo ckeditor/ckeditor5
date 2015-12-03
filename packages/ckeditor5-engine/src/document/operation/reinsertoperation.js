@@ -27,6 +27,10 @@ CKEDITOR.define( [
 
 			return new RemoveOperation( this.targetPosition, this.howMany, this.baseVersion + 1 );
 		}
+
+		get type() {
+			return 'reinsert';
+		}
 	}
 
 	return ReinsertOperation;

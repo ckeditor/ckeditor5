@@ -8,8 +8,10 @@
 CKEDITOR.define( [
 	'document/operation/operation',
 	'document/nodelist',
+	'document/range',
+	'document/position',
 	'document/operation/removeoperation'
-], ( Operation, NodeList ) => {
+], ( Operation, NodeList, Range, Position ) => {
 	/**
 	 * Operation to insert list of nodes on the given position in the tree data model.
 	 *
@@ -45,8 +47,20 @@ CKEDITOR.define( [
 			this.nodeList = new NodeList( nodes );
 		}
 
+		get type() {
+			return 'insert';
+		}
+
 		clone() {
 			return new InsertOperation( this.position, this.nodeList, this.baseVersion );
+		}
+
+		_execute() {
+			this.position.parent.insertChildren( this.position.offset, this.nodeList );
+
+			return {
+				range: new Range( this.position, Position.createFromPositionAndShift( this.position, this.nodeList.length ) )
+			};
 		}
 
 		getReversed() {
