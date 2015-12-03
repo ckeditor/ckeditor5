@@ -49,13 +49,13 @@ describe( 'Document change event', () => {
 
 		changes = [];
 
-		doc.on( 'change', ( evt ) => {
-			changes = evt.changes;
+		doc.on( 'change', ( evt, data ) => {
+			changes.push( data );
 		} );
 	} );
 
 	it( 'should be fired when text is inserted', () => {
-		this.doc.applyOperation( new InsertOperation( new Position( [ 0 ], root ), 'foo', this.doc.version ) );
+		doc.applyOperation( new InsertOperation( new Position( [ 0 ], root ), 'foo', doc.version ) );
 
 		expect( changes ).to.have.length( 1 );
 		expect( changes[ 0 ].type ).to.equal( 'insert' );
@@ -64,7 +64,7 @@ describe( 'Document change event', () => {
 
 	it( 'should be fired when element is inserted', () => {
 		const element = new Element( 'p' );
-		this.doc.applyOperation( new InsertOperation( new Position( [ 0 ], root ), element, this.doc.version ) );
+		doc.applyOperation( new InsertOperation( new Position( [ 0 ], root ), element, doc.version ) );
 
 		expect( changes ).to.have.length( 1 );
 		expect( changes[ 0 ].type ).to.equal( 'insert' );
@@ -73,14 +73,14 @@ describe( 'Document change event', () => {
 
 	it( 'should be fired when nodes are inserted', () => {
 		const element = new Element( 'p' );
-		this.doc.applyOperation( new InsertOperation( new Position( [ 0 ], root ), [ element, 'foo' ], this.doc.version ) );
+		doc.applyOperation( new InsertOperation( new Position( [ 0 ], root ), [ element, 'foo' ], doc.version ) );
 
 		expect( changes ).to.have.length( 1 );
 		expect( changes[ 0 ].type ).to.equal( 'insert' );
 		expect( changes[ 0 ].range ).to.deep.equal( Range.createFromParentsAndOffsets( root, 0, root, 4 ) );
 	} );
 
-	it( 'should be fired when multiple nodes are moved', () => {
+	it( 'should be fired when nodes are moved', () => {
 		const p1 = new Element( 'p' );
 		p1.insertChildren( 0, [ new Element( 'p' ), 'foo' ] );
 
@@ -88,12 +88,12 @@ describe( 'Document change event', () => {
 
 		root.insertChildren( 0, [ p1, p2 ] );
 
-		this.doc.applyOperation(
+		doc.applyOperation(
 			new MoveOperation(
 				new Position( [ 0, 0 ], root ),
 				new Position( [ 1, 0 ], root ),
 				3,
-				this.doc.version
+				doc.version
 			)
 		);
 
@@ -106,11 +106,11 @@ describe( 'Document change event', () => {
 	it( 'should be fired when multiple nodes are removed and reinserted', () => {
 		root.insertChildren( 0, 'foo' );
 
-		const removeOperation = new RemoveOperation( new Position( [ 0 ], root ), 3, this.doc.version );
-		this.doc.applyOperation( removeOperation );
+		const removeOperation = new RemoveOperation( new Position( [ 0 ], root ), 3, doc.version );
+		doc.applyOperation( removeOperation );
 
 		const reinsertOperation = removeOperation.getReversed();
-		this.doc.applyOperation( reinsertOperation );
+		doc.applyOperation( reinsertOperation );
 
 		expect( changes ).to.have.length( 2 );
 
@@ -126,54 +126,58 @@ describe( 'Document change event', () => {
 	it( 'should be fired when attribute is inserted', () => {
 		root.insertChildren( 0, 'foo' );
 
-		this.doc.applyOperation(
+		doc.applyOperation(
 			new ChangeOperation(
 				Range.createFromParentsAndOffsets( root, 0, root, 3 ),
 				null,
 				new Attribute( 'key', 'new' ),
-				this.doc.version
+				doc.version
 			)
 		);
 
 		expect( changes ).to.have.length( 1 );
-		expect( changes[ 0 ].type ).to.equal( 'addAttr' );
+		expect( changes[ 0 ].type ).to.equal( 'attr' );
 		expect( changes[ 0 ].range ).to.deep.equal( Range.createFromParentsAndOffsets( root, 0, root, 3 ) );
+		expect( changes[ 0 ].oldAttr ).to.be.undefined;
 		expect( changes[ 0 ].newAttr ).to.deep.equal( new Attribute( 'key', 'new' ) );
 	} );
 
 	it( 'should be fired when attribute is removed', () => {
-		root.insertChildren( 0, new Element( 'p', [ new Attribute( 'key', 'old' ) ] ) );
+		const elem = new Element( 'p', [ new Attribute( 'key', 'old' ) ] );
+		root.insertChildren( 0, elem );
 
-		this.doc.applyOperation(
+		doc.applyOperation(
 			new ChangeOperation(
-				Range.createFromParentsAndOffsets( root, 0, root, 3 ),
+				Range.createFromParentsAndOffsets( root, 0, elem, 0 ),
 				new Attribute( 'key', 'old' ),
 				null,
-				this.doc.version
+				doc.version
 			)
 		);
 
 		expect( changes ).to.have.length( 1 );
-		expect( changes[ 0 ].type ).to.equal( 'removeAttr' );
-		expect( changes[ 0 ].range ).to.deep.equal( Range.createFromParentsAndOffsets( root, 0, root, 1 ) );
+		expect( changes[ 0 ].type ).to.equal( 'attr' );
+		expect( changes[ 0 ].range ).to.deep.equal( Range.createFromParentsAndOffsets( root, 0, elem, 0 ) );
 		expect( changes[ 0 ].oldAttr ).to.deep.equal( new Attribute( 'key', 'old' ) );
+		expect( changes[ 0 ].newAttr ).to.be.undefined;
 	}  );
 
 	it( 'should be fired when attribute changes', () => {
-		root.insertChildren( 0, new Element( 'p', [ new Attribute( 'key', 'old' ) ] ) );
+		const elem = new Element( 'p', [ new Attribute( 'key', 'old' ) ] );
+		root.insertChildren( 0, elem );
 
-		this.doc.applyOperation(
+		doc.applyOperation(
 			new ChangeOperation(
-				Range.createFromParentsAndOffsets( root, 0, root, 3 ),
+				Range.createFromParentsAndOffsets( root, 0, elem, 0 ),
 				new Attribute( 'key', 'old' ),
 				new Attribute( 'key', 'new' ),
-				this.doc.version
+				doc.version
 			)
 		);
 
 		expect( changes ).to.have.length( 1 );
-		expect( changes[ 0 ].type ).to.equal( 'changeAttr' );
-		expect( changes[ 0 ].range ).to.deep.equal( Range.createFromParentsAndOffsets( root, 0, root, 1 ) );
+		expect( changes[ 0 ].type ).to.equal( 'attr' );
+		expect( changes[ 0 ].range ).to.deep.equal( Range.createFromParentsAndOffsets( root, 0, elem, 0 ) );
 		expect( changes[ 0 ].oldAttr ).to.deep.equal( new Attribute( 'key', 'old' ) );
 		expect( changes[ 0 ].newAttr ).to.deep.equal( new Attribute( 'key', 'new' ) );
 	}  );

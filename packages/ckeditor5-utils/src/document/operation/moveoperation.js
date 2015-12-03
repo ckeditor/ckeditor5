@@ -7,9 +7,12 @@
 
 CKEDITOR.define( [
 	'document/operation/operation',
+	'document/nodelist',
+	'document/position',
+	'document/range',
 	'ckeditorerror',
 	'utils'
-], ( Operation, CKEditorError, utils ) => {
+], ( Operation, NodeList, Position, Range, CKEditorError, utils ) => {
 	/**
 	 * Operation to move list of subsequent nodes from one position in the document to another.
 	 *
@@ -48,6 +51,10 @@ CKEDITOR.define( [
 			 * @type {Number}
 			 */
 			this.howMany = howMany;
+		}
+
+		get type() {
+			return 'move';
 		}
 
 		clone() {
@@ -121,6 +128,11 @@ CKEDITOR.define( [
 			const removedNodes = sourceElement.removeChildren( sourceOffset, this.howMany );
 
 			targetElement.insertChildren( targetOffset, removedNodes );
+
+			return {
+				sourcePosition: this.sourcePosition,
+				range: new Range( this.targetPosition, Position.createFromPositionAndShift( this.targetPosition, this.howMany ) )
+			};
 		}
 	}
 

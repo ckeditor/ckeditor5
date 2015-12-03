@@ -61,6 +61,10 @@ CKEDITOR.define( [
 			this.newAttr = newAttr;
 		}
 
+		get type() {
+			return 'attr';
+		}
+
 		clone() {
 			return new ChangeOperation( this.range.clone(), this.oldAttr, this.newAttr, this.baseVersion );
 		}
@@ -130,6 +134,12 @@ CKEDITOR.define( [
 					value.node.setAttr( newAttr );
 				}
 			}
+
+			return {
+				range: this.range,
+				oldAttr: oldAttr ? oldAttr : undefined,
+				newAttr: newAttr ? newAttr : undefined
+			};
 		}
 	}
 

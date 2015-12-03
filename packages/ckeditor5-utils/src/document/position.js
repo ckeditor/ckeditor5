@@ -220,6 +220,13 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 			return transformed;
 		}
 
+		static createFromPositionAndShift( position, shift ) {
+			let newPosition = new Position( utils.clone( position.path ), position.root );
+			newPosition.offset = newPosition.offset + shift;
+
+			return newPosition;
+		}
+
 		/**
 		 * Returns this position after being updated by inserting `howMany` nodes at `insertPosition`.
 		 *
