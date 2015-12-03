@@ -81,7 +81,7 @@ describe( 'position', () => {
 		} ).to.throw( CKEditorError, /position-root-not-rootelement/ );
 	} );
 
-	it( 'should make positions form node and offset', () => {
+	it( 'should create positions form node and offset', () => {
 		expect( Position.createFromParentAndOffset( root, 0 ) ).to.have.property( 'path' ).that.deep.equals( [ 0 ] );
 		expect( Position.createFromParentAndOffset( root, 1 ) ).to.have.property( 'path' ).that.deep.equals( [ 1 ] );
 		expect( Position.createFromParentAndOffset( root, 2 ) ).to.have.property( 'path' ).that.deep.equals( [ 2 ] );
@@ -98,7 +98,14 @@ describe( 'position', () => {
 		expect( Position.createFromParentAndOffset( li1, 3 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 3 ] );
 	} );
 
-	it( 'should make positions before elements', () => {
+	it( 'should create position from another position and shift', () => {
+		const pos = Position.createFromParentAndOffset( ul, 1 );
+
+		expect( Position.createFromPositionAndShift( pos, -1 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0 ] );
+		expect( Position.createFromPositionAndShift( pos, 1 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 2 ] );
+	} );
+
+	it( 'should create positions before elements', () => {
 		expect( Position.createBefore( p ) ).to.have.property( 'path' ).that.deep.equals( [ 0 ] );
 
 		expect( Position.createBefore( ul ) ).to.have.property( 'path' ).that.deep.equals( [ 1 ] );
@@ -116,13 +123,13 @@ describe( 'position', () => {
 		expect( Position.createBefore( r ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 2 ] );
 	} );
 
-	it( 'should throw error if one try to make positions before root', () => {
+	it( 'should throw error if one try to create positions before root', () => {
 		expect( () => {
 			Position.createBefore( root );
 		} ).to.throw( CKEditorError, /position-before-root/ );
 	} );
 
-	it( 'should make positions after elements', () => {
+	it( 'should create positions after elements', () => {
 		expect( Position.createAfter( p ) ).to.have.property( 'path' ).that.deep.equals( [ 1 ] );
 
 		expect( Position.createAfter( ul ) ).to.have.property( 'path' ).that.deep.equals( [ 2 ] );
