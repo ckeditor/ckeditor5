@@ -65,7 +65,7 @@ describe( 'position', () => {
 	} );
 
 	it( 'should create a position with path and document', () => {
-		let position = new Position( [ 0 ], root );
+		let position = new Position( root, [ 0 ] );
 
 		expect( position ).to.have.property( 'path' ).that.deep.equals( [ 0 ] );
 		expect( position ).to.have.property( 'root' ).that.equals( root );
@@ -73,21 +73,21 @@ describe( 'position', () => {
 
 	it( 'should throw error if given path is incorrect', () => {
 		expect( () => {
-			new Position( {}, root );
+			new Position( root, {} );
 		} ).to.throw( CKEditorError, /position-path-incorrect/ );
 
 		expect( () => {
-			new Position( [], root );
+			new Position( root, [] );
 		} ).to.throw( CKEditorError, /position-path-incorrect/ );
 	} );
 
 	it( 'should throw error if given root is not a RootElement instance', () => {
 		expect( () => {
-			new Position( [ 0 ] );
+			new Position();
 		} ).to.throw( CKEditorError, /position-root-not-rootelement/ );
 
 		expect( () => {
-			new Position( [ 0 ], new Element( 'p' ) );
+			new Position( new Element( 'p' ), [ 0 ] );
 		} ).to.throw( CKEditorError, /position-root-not-rootelement/ );
 	} );
 
@@ -157,41 +157,41 @@ describe( 'position', () => {
 	} );
 
 	it( 'should have parent', () => {
-		expect( new Position( [ 0 ], root ) ).to.have.property( 'parent' ).that.equals( root );
-		expect( new Position( [ 1 ], root ) ).to.have.property( 'parent' ).that.equals( root );
-		expect( new Position( [ 2 ], root ) ).to.have.property( 'parent' ).that.equals( root );
+		expect( new Position( root, [ 0 ] ) ).to.have.property( 'parent' ).that.equals( root );
+		expect( new Position( root, [ 1 ] ) ).to.have.property( 'parent' ).that.equals( root );
+		expect( new Position( root, [ 2 ] ) ).to.have.property( 'parent' ).that.equals( root );
 
-		expect( new Position( [ 0, 0 ], root ) ).to.have.property( 'parent' ).that.equals( p );
+		expect( new Position( root, [ 0, 0 ] ) ).to.have.property( 'parent' ).that.equals( p );
 
-		expect( new Position( [ 1, 0 ], root ) ).to.have.property( 'parent' ).that.equals( ul );
-		expect( new Position( [ 1, 1 ], root ) ).to.have.property( 'parent' ).that.equals( ul );
-		expect( new Position( [ 1, 2 ], root ) ).to.have.property( 'parent' ).that.equals( ul );
+		expect( new Position( root, [ 1, 0 ] ) ).to.have.property( 'parent' ).that.equals( ul );
+		expect( new Position( root, [ 1, 1 ] ) ).to.have.property( 'parent' ).that.equals( ul );
+		expect( new Position( root, [ 1, 2 ] ) ).to.have.property( 'parent' ).that.equals( ul );
 
-		expect( new Position( [ 1, 0, 0 ], root ) ).to.have.property( 'parent' ).that.equals( li1 );
-		expect( new Position( [ 1, 0, 1 ], root ) ).to.have.property( 'parent' ).that.equals( li1 );
-		expect( new Position( [ 1, 0, 2 ], root ) ).to.have.property( 'parent' ).that.equals( li1 );
-		expect( new Position( [ 1, 0, 3 ], root ) ).to.have.property( 'parent' ).that.equals( li1 );
+		expect( new Position( root, [ 1, 0, 0 ] ) ).to.have.property( 'parent' ).that.equals( li1 );
+		expect( new Position( root, [ 1, 0, 1 ] ) ).to.have.property( 'parent' ).that.equals( li1 );
+		expect( new Position( root, [ 1, 0, 2 ] ) ).to.have.property( 'parent' ).that.equals( li1 );
+		expect( new Position( root, [ 1, 0, 3 ] ) ).to.have.property( 'parent' ).that.equals( li1 );
 	} );
 
 	it( 'should have offset', () => {
-		expect( new Position( [ 0 ], root ) ).to.have.property( 'offset' ).that.equals( 0 );
-		expect( new Position( [ 1 ], root ) ).to.have.property( 'offset' ).that.equals( 1 );
-		expect( new Position( [ 2 ], root ) ).to.have.property( 'offset' ).that.equals( 2 );
+		expect( new Position( root, [ 0 ] ) ).to.have.property( 'offset' ).that.equals( 0 );
+		expect( new Position( root, [ 1 ] ) ).to.have.property( 'offset' ).that.equals( 1 );
+		expect( new Position( root, [ 2 ] ) ).to.have.property( 'offset' ).that.equals( 2 );
 
-		expect( new Position( [ 0, 0 ], root ) ).to.have.property( 'offset' ).that.equals( 0 );
+		expect( new Position( root, [ 0, 0 ] ) ).to.have.property( 'offset' ).that.equals( 0 );
 
-		expect( new Position( [ 1, 0 ], root ) ).to.have.property( 'offset' ).that.equals( 0 );
-		expect( new Position( [ 1, 1 ], root ) ).to.have.property( 'offset' ).that.equals( 1 );
-		expect( new Position( [ 1, 2 ], root ) ).to.have.property( 'offset' ).that.equals( 2 );
+		expect( new Position( root, [ 1, 0 ] ) ).to.have.property( 'offset' ).that.equals( 0 );
+		expect( new Position( root, [ 1, 1 ] ) ).to.have.property( 'offset' ).that.equals( 1 );
+		expect( new Position( root, [ 1, 2 ] ) ).to.have.property( 'offset' ).that.equals( 2 );
 
-		expect( new Position( [ 1, 0, 0 ], root ) ).to.have.property( 'offset' ).that.equals( 0 );
-		expect( new Position( [ 1, 0, 1 ], root ) ).to.have.property( 'offset' ).that.equals( 1 );
-		expect( new Position( [ 1, 0, 2 ], root ) ).to.have.property( 'offset' ).that.equals( 2 );
-		expect( new Position( [ 1, 0, 3 ], root ) ).to.have.property( 'offset' ).that.equals( 3 );
+		expect( new Position( root, [ 1, 0, 0 ] ) ).to.have.property( 'offset' ).that.equals( 0 );
+		expect( new Position( root, [ 1, 0, 1 ] ) ).to.have.property( 'offset' ).that.equals( 1 );
+		expect( new Position( root, [ 1, 0, 2 ] ) ).to.have.property( 'offset' ).that.equals( 2 );
+		expect( new Position( root, [ 1, 0, 3 ] ) ).to.have.property( 'offset' ).that.equals( 3 );
 	} );
 
 	it( 'should be able to set offset', () => {
-		let position = new Position( [ 1, 0, 2 ], root );
+		let position = new Position( root, [ 1, 0, 2 ] );
 		position.offset = 4;
 
 		expect( position.offset ).to.equal( 4 );
@@ -199,47 +199,47 @@ describe( 'position', () => {
 	} );
 
 	it( 'should have nodeBefore', () => {
-		expect( new Position( [ 0 ], root ) ).to.have.property( 'nodeBefore' ).that.is.null;
-		expect( new Position( [ 1 ], root ) ).to.have.property( 'nodeBefore' ).that.equals( p );
-		expect( new Position( [ 2 ], root ) ).to.have.property( 'nodeBefore' ).that.equals( ul );
+		expect( new Position( root, [ 0 ] ) ).to.have.property( 'nodeBefore' ).that.is.null;
+		expect( new Position( root, [ 1 ] ) ).to.have.property( 'nodeBefore' ).that.equals( p );
+		expect( new Position( root, [ 2 ] ) ).to.have.property( 'nodeBefore' ).that.equals( ul );
 
-		expect( new Position( [ 0, 0 ], root ) ).to.have.property( 'nodeBefore' ).that.is.null;
+		expect( new Position( root, [ 0, 0 ] ) ).to.have.property( 'nodeBefore' ).that.is.null;
 
-		expect( new Position( [ 1, 0 ], root ) ).to.have.property( 'nodeBefore' ).that.is.null;
-		expect( new Position( [ 1, 1 ], root ) ).to.have.property( 'nodeBefore' ).that.equals( li1 );
-		expect( new Position( [ 1, 2 ], root ) ).to.have.property( 'nodeBefore' ).that.equals( li2 );
+		expect( new Position( root, [ 1, 0 ] ) ).to.have.property( 'nodeBefore' ).that.is.null;
+		expect( new Position( root, [ 1, 1 ] ) ).to.have.property( 'nodeBefore' ).that.equals( li1 );
+		expect( new Position( root, [ 1, 2 ] ) ).to.have.property( 'nodeBefore' ).that.equals( li2 );
 
-		expect( new Position( [ 1, 0, 0 ], root ) ).to.have.property( 'nodeBefore' ).that.is.null;
-		expect( new Position( [ 1, 0, 1 ], root ) ).to.have.property( 'nodeBefore' ).that.equals( f );
-		expect( new Position( [ 1, 0, 2 ], root ) ).to.have.property( 'nodeBefore' ).that.equals( o );
-		expect( new Position( [ 1, 0, 3 ], root ) ).to.have.property( 'nodeBefore' ).that.equals( z );
+		expect( new Position( root, [ 1, 0, 0 ] ) ).to.have.property( 'nodeBefore' ).that.is.null;
+		expect( new Position( root, [ 1, 0, 1 ] ) ).to.have.property( 'nodeBefore' ).that.equals( f );
+		expect( new Position( root, [ 1, 0, 2 ] ) ).to.have.property( 'nodeBefore' ).that.equals( o );
+		expect( new Position( root, [ 1, 0, 3 ] ) ).to.have.property( 'nodeBefore' ).that.equals( z );
 	} );
 
 	it( 'should have nodeAfter', () => {
-		expect( new Position( [ 0 ], root ) ).to.have.property( 'nodeAfter' ).that.equals( p );
-		expect( new Position( [ 1 ], root ) ).to.have.property( 'nodeAfter' ).that.equals( ul );
-		expect( new Position( [ 2 ], root ) ).to.have.property( 'nodeAfter' ).that.is.null;
+		expect( new Position( root, [ 0 ] ) ).to.have.property( 'nodeAfter' ).that.equals( p );
+		expect( new Position( root, [ 1 ] ) ).to.have.property( 'nodeAfter' ).that.equals( ul );
+		expect( new Position( root, [ 2 ] ) ).to.have.property( 'nodeAfter' ).that.is.null;
 
-		expect( new Position( [ 0, 0 ], root ) ).to.have.property( 'nodeAfter' ).that.is.null;
+		expect( new Position( root, [ 0, 0 ] ) ).to.have.property( 'nodeAfter' ).that.is.null;
 
-		expect( new Position( [ 1, 0 ], root ) ).to.have.property( 'nodeAfter' ).that.equals( li1 );
-		expect( new Position( [ 1, 1 ], root ) ).to.have.property( 'nodeAfter' ).that.equals( li2 );
-		expect( new Position( [ 1, 2 ], root ) ).to.have.property( 'nodeAfter' ).that.is.null;
+		expect( new Position( root, [ 1, 0 ] ) ).to.have.property( 'nodeAfter' ).that.equals( li1 );
+		expect( new Position( root, [ 1, 1 ] ) ).to.have.property( 'nodeAfter' ).that.equals( li2 );
+		expect( new Position( root, [ 1, 2 ] ) ).to.have.property( 'nodeAfter' ).that.is.null;
 
-		expect( new Position( [ 1, 0, 0 ], root ) ).to.have.property( 'nodeAfter' ).that.equals( f );
-		expect( new Position( [ 1, 0, 1 ], root ) ).to.have.property( 'nodeAfter' ).that.equals( o );
-		expect( new Position( [ 1, 0, 2 ], root ) ).to.have.property( 'nodeAfter' ).that.equals( z );
-		expect( new Position( [ 1, 0, 3 ], root ) ).to.have.property( 'nodeAfter' ).that.is.null;
+		expect( new Position( root, [ 1, 0, 0 ] ) ).to.have.property( 'nodeAfter' ).that.equals( f );
+		expect( new Position( root, [ 1, 0, 1 ] ) ).to.have.property( 'nodeAfter' ).that.equals( o );
+		expect( new Position( root, [ 1, 0, 2 ] ) ).to.have.property( 'nodeAfter' ).that.equals( z );
+		expect( new Position( root, [ 1, 0, 3 ] ) ).to.have.property( 'nodeAfter' ).that.is.null;
 	} );
 
 	it( 'should have proper parent path', () => {
-		let position = new Position( [ 1, 2, 3 ], root );
+		let position = new Position( root, [ 1, 2, 3 ] );
 
 		expect( position.getParentPath() ).to.deep.equal( [ 1, 2 ] );
 	} );
 
 	it( 'should return a new, equal position when cloned', () => {
-		const position = new Position( [ 1, 2, 3 ], root );
+		const position = new Position( root, [ 1, 2, 3 ] );
 		const clone = position.clone();
 
 		expect( clone ).not.to.be.equal( position ); // clone is not pointing to the same object as position
@@ -249,22 +249,22 @@ describe( 'position', () => {
 
 	describe( 'isBefore', () => {
 		it( 'should return true if given position has same root and is before this position', () => {
-			let position = new Position( [ 1, 1, 2 ], root );
-			let beforePosition = new Position( [ 1, 0 ], root );
+			let position = new Position( root, [ 1, 1, 2 ] );
+			let beforePosition = new Position( root, [ 1, 0 ] );
 
 			expect( position.isAfter( beforePosition ) ).to.be.true;
 		} );
 
 		it( 'should return false if given position has same root and is not before this position', () => {
-			let position = new Position( [ 1, 1, 2 ], root );
-			let afterPosition = new Position( [ 1, 2 ], root );
+			let position = new Position( root, [ 1, 1, 2 ] );
+			let afterPosition = new Position( root, [ 1, 2 ] );
 
 			expect( position.isAfter( afterPosition ) ).to.be.false;
 		} );
 
 		it( 'should return false if given position has different root', () => {
-			let position = new Position( [ 1, 1, 2 ], root );
-			let differentPosition = new Position( [ 1, 0 ], otherRoot );
+			let position = new Position( root, [ 1, 1, 2 ] );
+			let differentPosition = new Position( otherRoot, [ 1, 0 ] );
 
 			expect( position.isAfter( differentPosition ) ).to.be.false;
 		} );
@@ -272,22 +272,22 @@ describe( 'position', () => {
 
 	describe( 'isEqual', () => {
 		it( 'should return true if given position has same path and root', () => {
-			let position = new Position( [ 1, 1, 2 ], root );
-			let samePosition = new Position( [ 1, 1, 2 ], root );
+			let position = new Position( root, [ 1, 1, 2 ] );
+			let samePosition = new Position( root, [ 1, 1, 2 ] );
 
 			expect( position.isEqual( samePosition ) ).to.be.true;
 		} );
 
 		it( 'should return false if given position has different path', () => {
-			let position = new Position( [ 1, 1, 1 ], root );
-			let differentPosition = new Position( [ 1, 2, 2 ], root );
+			let position = new Position( root, [ 1, 1, 1 ] );
+			let differentPosition = new Position( root, [ 1, 2, 2 ] );
 
 			expect( position.isEqual( differentPosition ) ).to.be.false;
 		} );
 
 		it( 'should return false if given position has different root', () => {
-			let position = new Position( [ 1, 1, 1 ], root );
-			let differentPosition = new Position( [ 1, 1, 1 ], otherRoot );
+			let position = new Position( root, [ 1, 1, 1 ] );
+			let differentPosition = new Position( otherRoot, [ 1, 1, 1 ] );
 
 			expect( position.isEqual( differentPosition ) ).to.be.false;
 		} );
@@ -295,22 +295,22 @@ describe( 'position', () => {
 
 	describe( 'isAfter', () => {
 		it( 'should return true if given position has same root and is after this position', () => {
-			let position = new Position( [ 1, 1, 2 ], root );
-			let afterPosition = new Position( [ 1, 2 ], root );
+			let position = new Position( root, [ 1, 1, 2 ] );
+			let afterPosition = new Position( root, [ 1, 2 ] );
 
 			expect( position.isBefore( afterPosition ) ).to.be.true;
 		} );
 
 		it( 'should return false if given position has same root and is not after this position', () => {
-			let position = new Position( [ 1, 1, 2 ], root );
-			let beforePosition = new Position( [ 1, 0 ], root );
+			let position = new Position( root, [ 1, 1, 2 ] );
+			let beforePosition = new Position( root, [ 1, 0 ] );
 
 			expect( position.isBefore( beforePosition ) ).to.be.false;
 		} );
 
 		it( 'should return false if given position has different root', () => {
-			let position = new Position( [ 1, 1, 2 ], root );
-			let differentPosition = new Position( [ 1, 2 ], otherRoot );
+			let position = new Position( root, [ 1, 1, 2 ] );
+			let differentPosition = new Position( otherRoot, [ 1, 2 ] );
 
 			expect( position.isBefore( differentPosition ) ).to.be.false;
 		} );
@@ -318,29 +318,29 @@ describe( 'position', () => {
 
 	describe( 'compareWith', () => {
 		it( 'should return Position.SAME if positions are same', () => {
-			const position = new Position( [ 1, 2, 3 ], root );
-			const compared = new Position( [ 1, 2, 3 ], root );
+			const position = new Position( root, [ 1, 2, 3 ] );
+			const compared = new Position( root, [ 1, 2, 3 ] );
 
 			expect( position.compareWith( compared ) ).to.equal( Position.SAME );
 		} );
 
 		it( 'should return Position.BEFORE if the position is before compared one', () => {
-			const position = new Position( [ 1, 2, 3 ], root );
-			const compared = new Position( [ 1, 3 ], root );
+			const position = new Position( root, [ 1, 2, 3 ] );
+			const compared = new Position( root, [ 1, 3 ] );
 
 			expect( position.compareWith( compared ) ).to.equal( Position.BEFORE );
 		} );
 
 		it( 'should return Position.AFTER if the position is after compared one', () => {
-			const position = new Position( [ 1, 2, 3, 4 ], root );
-			const compared = new Position( [ 1, 2, 3 ], root );
+			const position = new Position( root, [ 1, 2, 3, 4 ] );
+			const compared = new Position( root, [ 1, 2, 3 ] );
 
 			expect( position.compareWith( compared ) ).to.equal( Position.AFTER );
 		} );
 
 		it( 'should return Position.DIFFERENT if positions are in different roots', () => {
-			const position = new Position( [ 1, 2, 3 ], root );
-			const compared = new Position( [ 1, 2, 3 ], otherRoot );
+			const position = new Position( root, [ 1, 2, 3 ] );
+			const compared = new Position( otherRoot, [ 1, 2, 3 ] );
 
 			expect( position.compareWith( compared ) ).to.equal( Position.DIFFERENT );
 		} );
@@ -348,58 +348,58 @@ describe( 'position', () => {
 
 	describe( 'getTransformedByInsertion', () => {
 		it( 'should return a new Position instance', () => {
-			const position = new Position( [ 0 ], root );
-			const transformed = position.getTransformedByInsertion( new Position( [ 2 ], root ), 4, false );
+			const position = new Position( root, [ 0 ] );
+			const transformed = position.getTransformedByInsertion( new Position( root, [ 2 ] ), 4, false );
 
 			expect( transformed ).not.to.equal( position );
 			expect( transformed ).to.be.instanceof( Position );
 		} );
 
 		it( 'should increment offset if insertion is in the same parent and closer offset', () => {
-			const position = new Position( [ 1, 2, 3 ], root );
-			const transformed = position.getTransformedByInsertion( new Position( [ 1, 2, 2 ], root ), 2, false );
+			const position = new Position( root, [ 1, 2, 3 ] );
+			const transformed = position.getTransformedByInsertion( new Position( root, [ 1, 2, 2 ] ), 2, false );
 
 			expect( transformed.offset ).to.equal( 5 );
 		} );
 
 		it( 'should not increment offset if insertion position is in different root', () => {
-			const position = new Position( [ 1, 2, 3 ], root );
-			const transformed = position.getTransformedByInsertion( new Position( [ 1, 2, 2 ], otherRoot ), 2, false );
+			const position = new Position( root, [ 1, 2, 3 ] );
+			const transformed = position.getTransformedByInsertion( new Position( otherRoot, [ 1, 2, 2 ] ), 2, false );
 
 			expect( transformed.offset ).to.equal( 3 );
 		} );
 
 		it( 'should not increment offset if insertion is in the same parent and the same offset', () => {
-			const position = new Position( [ 1, 2, 3 ], root );
-			const transformed = position.getTransformedByInsertion( new Position( [ 1, 2, 3 ], root ), 2, false );
+			const position = new Position( root, [ 1, 2, 3 ] );
+			const transformed = position.getTransformedByInsertion( new Position( root, [ 1, 2, 3 ] ), 2, false );
 
 			expect( transformed.offset ).to.equal( 3 );
 		} );
 
 		it( 'should increment offset if insertion is in the same parent and the same offset and it is inserted before', () => {
-			const position = new Position( [ 1, 2, 3 ], root );
-			const transformed = position.getTransformedByInsertion( new Position( [ 1, 2, 3 ], root ), 2, true );
+			const position = new Position( root, [ 1, 2, 3 ] );
+			const transformed = position.getTransformedByInsertion( new Position( root, [ 1, 2, 3 ] ), 2, true );
 
 			expect( transformed.offset ).to.equal( 5 );
 		} );
 
 		it( 'should not increment offset if insertion is in the same parent and further offset', () => {
-			const position = new Position( [ 1, 2, 3 ], root );
-			const transformed = position.getTransformedByInsertion( new Position( [ 1, 2, 4 ], root ), 2, false );
+			const position = new Position( root, [ 1, 2, 3 ] );
+			const transformed = position.getTransformedByInsertion( new Position( root, [ 1, 2, 4 ] ), 2, false );
 
 			expect( transformed.offset ).to.equal( 3 );
 		} );
 
 		it( 'should update path if insertion position parent is a node from that path and offset is before next node on that path', () => {
-			const position = new Position( [ 1, 2, 3 ], root );
-			const transformed = position.getTransformedByInsertion( new Position( [ 1, 2 ], root ), 2, false );
+			const position = new Position( root, [ 1, 2, 3 ] );
+			const transformed = position.getTransformedByInsertion( new Position( root, [ 1, 2 ] ), 2, false );
 
 			expect( transformed.path ).to.deep.equal( [ 1, 4, 3 ] );
 		} );
 
 		it( 'should not update path if insertion position parent is a node from that path and offset is after next node on that path', () => {
-			const position = new Position( [ 1, 2, 3 ], root );
-			const transformed = position.getTransformedByInsertion( new Position( [ 1, 3 ], root ), 2, false );
+			const position = new Position( root, [ 1, 2, 3 ] );
+			const transformed = position.getTransformedByInsertion( new Position( root, [ 1, 3 ] ), 2, false );
 
 			expect( transformed.path ).to.deep.equal( [ 1, 2, 3 ] );
 		} );
@@ -407,58 +407,58 @@ describe( 'position', () => {
 
 	describe( 'getTransformedByDeletion', () => {
 		it( 'should return a new Position instance', () => {
-			const position = new Position( [ 0 ], root );
-			const transformed = position.getTransformedByDeletion( new Position( [ 2 ], root ), 4 );
+			const position = new Position( root, [ 0 ] );
+			const transformed = position.getTransformedByDeletion( new Position( root, [ 2 ] ), 4 );
 
 			expect( transformed ).not.to.equal( position );
 			expect( transformed ).to.be.instanceof( Position );
 		} );
 
 		it( 'should return null if original position is inside one of removed nodes', () => {
-			const position = new Position( [ 1, 2 ], root );
-			const transformed = position.getTransformedByDeletion( new Position( [ 0 ], root ), 2 );
+			const position = new Position( root, [ 1, 2 ] );
+			const transformed = position.getTransformedByDeletion( new Position( root, [ 0 ] ), 2 );
 
 			expect( transformed ).to.be.null;
 		} );
 
 		it( 'should decrement offset if deletion is in the same parent and closer offset', () => {
-			const position = new Position( [ 1, 2, 7 ], root );
-			const transformed = position.getTransformedByDeletion( new Position( [ 1, 2, 2 ], root ), 2 );
+			const position = new Position( root, [ 1, 2, 7 ] );
+			const transformed = position.getTransformedByDeletion( new Position( root, [ 1, 2, 2 ] ), 2 );
 
 			expect( transformed.offset ).to.equal( 5 );
 		} );
 
 		it( 'should set position offset to deletion offset if position is between removed nodes', () => {
-			const position = new Position( [ 1, 2, 4 ], root );
-			const transformed = position.getTransformedByDeletion( new Position( [ 1, 2, 3 ], root ), 5 );
+			const position = new Position( root, [ 1, 2, 4 ] );
+			const transformed = position.getTransformedByDeletion( new Position( root, [ 1, 2, 3 ] ), 5 );
 
 			expect( transformed.offset ).to.equal( 3 );
 		} );
 
 		it( 'should not decrement offset if deletion position is in different root', () => {
-			const position = new Position( [ 1, 2, 3 ], root );
-			const transformed = position.getTransformedByDeletion( new Position( [ 1, 2, 1 ], otherRoot ), 2 );
+			const position = new Position( root, [ 1, 2, 3 ] );
+			const transformed = position.getTransformedByDeletion( new Position( otherRoot, [ 1, 2, 1 ] ), 2 );
 
 			expect( transformed.offset ).to.equal( 3 );
 		} );
 
 		it( 'should not decrement offset if deletion is in the same parent and further offset', () => {
-			const position = new Position( [ 1, 2, 3 ], root );
-			const transformed = position.getTransformedByDeletion( new Position( [ 1, 2, 4 ], root ), 2 );
+			const position = new Position( root, [ 1, 2, 3 ] );
+			const transformed = position.getTransformedByDeletion( new Position( root, [ 1, 2, 4 ] ), 2 );
 
 			expect( transformed.offset ).to.equal( 3 );
 		} );
 
 		it( 'should update path if deletion position parent is a node from that path and offset is before next node on that path', () => {
-			const position = new Position( [ 1, 2, 3 ], root );
-			const transformed = position.getTransformedByDeletion( new Position( [ 1, 0 ], root ), 2 );
+			const position = new Position( root, [ 1, 2, 3 ] );
+			const transformed = position.getTransformedByDeletion( new Position( root, [ 1, 0 ] ), 2 );
 
 			expect( transformed.path ).to.deep.equal( [ 1, 0, 3 ] );
 		} );
 
 		it( 'should not update path if deletion position parent is a node from that path and offset is after next node on that path', () => {
-			const position = new Position( [ 1, 2, 3 ], root );
-			const transformed = position.getTransformedByDeletion( new Position( [ 1, 3 ], root ), 2 );
+			const position = new Position( root, [ 1, 2, 3 ] );
+			const transformed = position.getTransformedByDeletion( new Position( root, [ 1, 3 ] ), 2 );
 
 			expect( transformed.path ).to.deep.equal( [ 1, 2, 3 ] );
 		} );
@@ -466,22 +466,22 @@ describe( 'position', () => {
 
 	describe( 'getTransformedByMove', () => {
 		it( 'should increment offset if a range was moved to the same parent and closer offset', () => {
-			const position = new Position( [ 1, 2, 3 ], root );
-			const transformed = position.getTransformedByMove( new Position( [ 2 ], root ), new Position( [ 1, 2, 0 ], root ), 3, false );
+			const position = new Position( root, [ 1, 2, 3 ] );
+			const transformed = position.getTransformedByMove( new Position( root, [ 2 ] ), new Position( root, [ 1, 2, 0 ] ), 3, false );
 
 			expect( transformed.path ).to.deep.equal( [ 1, 2, 6 ] );
 		} );
 
 		it( 'should decrement offset if a range was moved from the same parent and closer offset', () => {
-			const position = new Position( [ 1, 2, 3 ], root );
-			const transformed = position.getTransformedByMove( new Position( [ 1, 2, 0 ], root ), new Position( [ 2 ], root ), 3, false );
+			const position = new Position( root, [ 1, 2, 3 ] );
+			const transformed = position.getTransformedByMove( new Position( root, [ 1, 2, 0 ] ), new Position( root, [ 2 ] ), 3, false );
 
 			expect( transformed.path ).to.deep.equal( [ 1, 2, 0 ] );
 		} );
 
 		it( 'should update path if a range contained this position', () => {
-			const position = new Position( [ 1, 2, 3 ], root );
-			const transformed = position.getTransformedByMove( new Position( [ 1, 1 ], root ), new Position( [ 2, 1 ], root ), 3, false );
+			const position = new Position( root, [ 1, 2, 3 ] );
+			const transformed = position.getTransformedByMove( new Position( root, [ 1, 1 ] ), new Position( root, [ 2, 1 ] ), 3, false );
 
 			expect( transformed.path ).to.deep.equal( [ 2, 2, 3 ] );
 		} );
@@ -489,9 +489,9 @@ describe( 'position', () => {
 
 	describe( '_getCombined', () => {
 		it( 'should return correct combination of this and given positions', () => {
-			const position = new Position( [ 1, 3, 4, 2 ], root );
-			const sourcePosition = new Position( [ 1, 1 ], root );
-			const targetPosition = new Position( [ 2, 5 ], root );
+			const position = new Position( root, [ 1, 3, 4, 2 ] );
+			const sourcePosition = new Position( root, [ 1, 1 ] );
+			const targetPosition = new Position( root, [ 2, 5 ] );
 
 			const combined = position._getCombined( sourcePosition, targetPosition );
 

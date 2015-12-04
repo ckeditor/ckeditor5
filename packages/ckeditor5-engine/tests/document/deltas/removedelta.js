@@ -29,7 +29,7 @@ describe( 'Transaction', () => {
 
 	describe( 'remove', () => {
 		it( 'should remove one element', () => {
-			const position = new Position( [ 1 ], root );
+			const position = new Position( root, [ 1 ] );
 			doc.createTransaction().remove( position );
 
 			expect( root.getChildCount() ).to.equal( 5 );
@@ -41,7 +41,7 @@ describe( 'Transaction', () => {
 		} );
 
 		it( 'should remove 3 elements', () => {
-			const position = new Position( [ 1 ], root );
+			const position = new Position( root, [ 1 ] );
 			doc.createTransaction().remove( position, 3 );
 
 			expect( root.getChildCount() ).to.equal( 3 );
@@ -51,7 +51,7 @@ describe( 'Transaction', () => {
 		} );
 
 		it( 'should be chainable', () => {
-			const position = new Position( [ 1 ], root );
+			const position = new Position( root, [ 1 ] );
 			const transaction = doc.createTransaction();
 
 			const chain = transaction.remove( position );

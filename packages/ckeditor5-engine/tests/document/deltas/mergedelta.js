@@ -43,7 +43,7 @@ describe( 'Transaction', () => {
 
 	describe( 'merge', () => {
 		it( 'should merge foo and bar into foobar', () => {
-			doc.createTransaction().merge( new Position( [ 1 ], root ) );
+			doc.createTransaction().merge( new Position( root, [ 1 ] ) );
 
 			expect( root.getChildCount() ).to.equal( 1 );
 			expect( root.getChild( 0 ).name ).to.equal( 'p' );
@@ -60,20 +60,20 @@ describe( 'Transaction', () => {
 
 		it( 'should throw if there is no element after', () => {
 			expect( () => {
-				doc.createTransaction().merge( new Position( [ 2 ], root ) );
+				doc.createTransaction().merge( new Position( root, [ 2 ] ) );
 			} ).to.throw( CKEditorError, /^transaction-merge-no-element-after/ );
 		} );
 
 		it( 'should throw if there is no element before', () => {
 			expect( () => {
-				doc.createTransaction().merge( new Position( [ 0, 2 ], root ) );
+				doc.createTransaction().merge( new Position( root, [ 0, 2 ] ) );
 			} ).to.throw( CKEditorError, /^transaction-merge-no-element-before/ );
 		} );
 
 		it( 'should be chainable', () => {
 			const transaction = doc.createTransaction();
 
-			const chain = transaction.merge( new Position( [ 1 ], root ) );
+			const chain = transaction.merge( new Position( root, [ 1 ] ) );
 			expect( chain ).to.equal( transaction );
 		} );
 	} );

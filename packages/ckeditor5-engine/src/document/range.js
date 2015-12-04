@@ -80,16 +80,16 @@ CKEDITOR.define( [ 'document/position', 'document/positioniterator', 'utils' ], 
 		 *
 		 * Examples:
 		 *
-		 * 	let range = new Range( new Position( [ 2, 7 ], root ), new Position( [ 4, 0, 1 ], root ) );
-		 * 	let otherRange = new Range( new Position( [ 1 ], root ), new Position( [ 5 ], root ) );
+		 * 	let range = new Range( new Position( root, [ 2, 7 ] ), new Position( root, [ 4, 0, 1 ] ) );
+		 * 	let otherRange = new Range( new Position( root, [ 1 ] ), new Position( root, [ 5 ] ) );
 		 * 	let transformed = range.getDifference( otherRange );
 		 * 	// transformed array has no ranges because `otherRange` contains `range`
 		 *
-		 * 	otherRange = new Range( new Position( [ 1 ], root ), new Position( [ 3 ], root ) );
+		 * 	otherRange = new Range( new Position( root, [ 1 ] ), new Position( root, [ 3 ] ) );
 		 * 	transformed = range.getDifference( otherRange );
 		 * 	// transformed array has one range: from [ 3 ] to [ 4, 0, 1 ]
 		 *
-		 * 	otherRange = new Range( new Position( [ 3 ], root ), new Position( [ 4 ], root ) );
+		 * 	otherRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 4 ] ) );
 		 * 	transformed = range.getDifference( otherRange );
 		 * 	// transformed array has two ranges: from [ 2, 7 ] to [ 3 ] and from [ 4 ] to [ 4, 0, 1 ]
 		 *
@@ -137,11 +137,11 @@ CKEDITOR.define( [ 'document/position', 'document/positioniterator', 'utils' ], 
 		 *
 		 * Examples:
 		 *
-		 * 	let range = new Range( new Position( [ 2, 7 ], root ), new Position( [ 4, 0, 1 ], root ) );
-		 * 	let otherRange = new Range( new Position( [ 1 ], root ), new Position( [ 2 ], root ) );
+		 * 	let range = new Range( new Position( root, [ 2, 7 ] ), new Position( root, [ 4, 0, 1 ] ) );
+		 * 	let otherRange = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) );
 		 * 	let transformed = range.getIntersection( otherRange ); // null - ranges have no common part
 		 *
-		 * 	otherRange = new Range( new Position( [ 3 ], root ), new Position( [ 5 ], root ) );
+		 * 	otherRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 5 ] ) );
 		 * 	transformed = range.getIntersection( otherRange ); // range from [ 3 ] to [ 4, 0, 1 ]
 		 *
 		 * @param {document.Range} otherRange Range to check for intersection.
@@ -180,14 +180,14 @@ CKEDITOR.define( [ 'document/position', 'document/positioniterator', 'utils' ], 
 		 *
 		 * Examples:
 		 *
-		 * 	let range = new Range( new Position( [ 2, 7 ], root ), new Position( [ 4, 0, 1 ], root ) );
-		 * 	let transformed = range.getTransformedByInsertion( new Position( [ 1 ], root ), 2 );
+		 * 	let range = new Range( new Position( root, [ 2, 7 ] ), new Position( root, [ 4, 0, 1 ] ) );
+		 * 	let transformed = range.getTransformedByInsertion( new Position( root, [ 1 ] ), 2 );
 		 * 	// transformed array has one range from [ 4, 7 ] to [ 6, 0, 1 ]
 		 *
-		 * 	transformed = range.getTransformedByInsertion( new Position( [ 3, 2 ], root ), 4 );
+		 * 	transformed = range.getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 4 );
 		 * 	// transformed array has two ranges: from [ 2, 7 ] to [ 3, 2 ] and from [ 3, 6 ] to [ 4, 0, 1 ]
 		 *
-		 * 	transformed = range.getTransformedByInsertion( new Position( [ 3, 2 ], root ), 4, true );
+		 * 	transformed = range.getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 4, true );
 		 * 	// transformed array has one range which is equal to `range`. This is because of spreadOnlyOnSameLevel flag.
 		 *
 		 * @param {document.Position} insertPosition Position where nodes are inserted.
