@@ -132,7 +132,9 @@ describe( 'Batch', () => {
 				new Text( 'xxx', [ new Attribute( 'a', 1 ) ] ),
 				new Text( 'xxx', [ new Attribute( 'a', 2 ) ] ),
 				'xxx',
-				new Text( 'xxx', [ new Attribute( 'a', 1 ) ] )
+				new Text( 'xxx', [ new Attribute( 'a', 1 ) ] ),
+				new Element( 'e', [ new Attribute( 'a', 2 ) ], 'xxx' ),
+				'xxx'
 			] );
 		} );
 
@@ -148,7 +150,7 @@ describe( 'Batch', () => {
 
 			for ( let delta of batch.deltas ) {
 				for ( let operation of delta.operations ) {
-					count += getIteratorCount( operation.range );
+					count += getIteratorCount( operation.range.getNodes() );
 				}
 			}
 
@@ -156,10 +158,10 @@ describe( 'Batch', () => {
 		}
 
 		function getCompressedAttrs() {
-			// default: 111---111222---111
+			// default: 111---111222---1112------
 			const range = Range.createFromElement( root );
 
-			return Array.from( range ).map( value => value.node.getAttr( 'a' ) || '-' ).join( '' );
+			return Array.from( range.getNodes() ).map( node => node.getAttr( 'a' ) || '-' ).join( '' );
 		}
 
 		describe( 'setAttr', () => {
@@ -167,48 +169,60 @@ describe( 'Batch', () => {
 				batch.setAttr( 'a', 3, getRange( 3, 6 ) );
 				expect( getOperationsCount() ).to.equal( 1 );
 				expect( getChangesAttrsCount() ).to.equal( 3 );
-				expect( getCompressedAttrs() ).to.equal( '111333111222---111' );
+				expect( getCompressedAttrs() ).to.equal( '111333111222---1112------' );
 			} );
 
 			it( 'should split the operations if parts of the range have different attributes', () => {
 				batch.setAttr( 'a', 3, getRange( 4, 14 ) );
 				expect( getOperationsCount() ).to.equal( 4 );
 				expect( getChangesAttrsCount() ).to.equal( 10 );
-				expect( getCompressedAttrs() ).to.equal( '111-3333333333-111' );
+				expect( getCompressedAttrs() ).to.equal( '111-3333333333-1112------' );
 			} );
 
 			it( 'should split the operations if parts of the part of the range have the attribute', () => {
 				batch.setAttr( 'a', 2, getRange( 4, 14 ) );
 				expect( getOperationsCount() ).to.equal( 3 );
 				expect( getChangesAttrsCount() ).to.equal( 7 );
-				expect( getCompressedAttrs() ).to.equal( '111-2222222222-111' );
+				expect( getCompressedAttrs() ).to.equal( '111-2222222222-1112------' );
 			} );
 
 			it( 'should strip the range if the beginning have the attribute', () => {
 				batch.setAttr( 'a', 1, getRange( 1, 5 ) );
 				expect( getOperationsCount() ).to.equal( 1 );
 				expect( getChangesAttrsCount() ).to.equal( 2 );
-				expect( getCompressedAttrs() ).to.equal( '11111-111222---111' );
+				expect( getCompressedAttrs() ).to.equal( '11111-111222---1112------' );
 			} );
 
 			it( 'should strip the range if the ending have the attribute', () => {
 				batch.setAttr( 'a', 1, getRange( 13, 17 ) );
 				expect( getOperationsCount() ).to.equal( 1 );
 				expect( getChangesAttrsCount() ).to.equal( 2 );
-				expect( getCompressedAttrs() ).to.equal( '111---111222-11111' );
+				expect( getCompressedAttrs() ).to.equal( '111---111222-111112------' );
 			} );
 
 			it( 'should do nothing if the range has attribute', () => {
 				batch.setAttr( 'a', 1, getRange( 0, 3 ) );
 				expect( getOperationsCount() ).to.equal( 0 );
-				expect( getCompressedAttrs() ).to.equal( '111---111222---111' );
+				expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
+			} );
+
+			it( 'should not check range\'s start position node when creating operations', () => {
+				let range = new Range(
+					new Position( root, [ 18, 1 ] ),
+					new Position( root, [ 19 ] )
+				);
+
+				batch.setAttr( 'a', 1, range );
+				expect( getOperationsCount() ).to.equal( 1 );
+				expect( getChangesAttrsCount() ).to.equal( 2 );
+				expect( getCompressedAttrs() ).to.equal( '111---111222---1112-11---' );
 			} );
 
 			it( 'should create a proper operations for the mixed range', () => {
-				batch.setAttr( 'a', 1, getRange( 0, 18 ) );
-				expect( getOperationsCount() ).to.equal( 3 );
-				expect( getChangesAttrsCount() ).to.equal( 9 );
-				expect( getCompressedAttrs() ).to.equal( '111111111111111111' );
+				batch.setAttr( 'a', 1, getRange( 0, 20 ) );
+				expect( getOperationsCount() ).to.equal( 5 );
+				expect( getChangesAttrsCount() ).to.equal( 14 );
+				expect( getCompressedAttrs() ).to.equal( '11111111111111111111111--' );
 			} );
 
 			it( 'should be chainable', () => {
@@ -222,48 +236,60 @@ describe( 'Batch', () => {
 				batch.removeAttr( 'a', getRange( 0, 2 ) );
 				expect( getOperationsCount() ).to.equal( 1 );
 				expect( getChangesAttrsCount() ).to.equal( 2 );
-				expect( getCompressedAttrs() ).to.equal( '--1---111222---111' );
+				expect( getCompressedAttrs() ).to.equal( '--1---111222---1112------' );
 			} );
 
 			it( 'should split the operations if parts of the range have different attributes', () => {
 				batch.removeAttr( 'a', getRange( 7, 11 ) );
 				expect( getOperationsCount() ).to.equal( 2 );
 				expect( getChangesAttrsCount() ).to.equal( 4 );
-				expect( getCompressedAttrs() ).to.equal( '111---1----2---111' );
+				expect( getCompressedAttrs() ).to.equal( '111---1----2---1112------' );
 			} );
 
 			it( 'should split the operations if parts of the part of the range have no attribute', () => {
 				batch.removeAttr( 'a', getRange( 1, 7 ) );
 				expect( getOperationsCount() ).to.equal( 2 );
 				expect( getChangesAttrsCount() ).to.equal( 3 );
-				expect( getCompressedAttrs() ).to.equal( '1------11222---111' );
+				expect( getCompressedAttrs() ).to.equal( '1------11222---1112------' );
 			} );
 
 			it( 'should strip the range if the beginning have no attribute', () => {
 				batch.removeAttr( 'a', getRange( 4, 12 ) );
 				expect( getOperationsCount() ).to.equal( 2 );
 				expect( getChangesAttrsCount() ).to.equal( 6 );
-				expect( getCompressedAttrs() ).to.equal( '111------------111' );
+				expect( getCompressedAttrs() ).to.equal( '111------------1112------' );
 			} );
 
 			it( 'should strip the range if the ending have no attribute', () => {
 				batch.removeAttr( 'a', getRange( 7, 15 ) );
 				expect( getOperationsCount() ).to.equal( 2 );
 				expect( getChangesAttrsCount() ).to.equal( 5 );
-				expect( getCompressedAttrs() ).to.equal( '111---1--------111' );
+				expect( getCompressedAttrs() ).to.equal( '111---1--------1112------' );
 			} );
 
 			it( 'should do nothing if the range has no attribute', () => {
 				batch.removeAttr( 'a', getRange( 4, 5 ) );
 				expect( getOperationsCount() ).to.equal( 0 );
-				expect( getCompressedAttrs() ).to.equal( '111---111222---111' );
+				expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
+			} );
+
+			it( 'should not check range\'s start position node when creating operations', () => {
+				let range = new Range(
+					new Position( root, [ 18, 3 ] ),
+					new Position( root, [ 19 ] )
+				);
+
+				batch.removeAttr( 'a', range );
+				expect( getOperationsCount() ).to.equal( 0 );
+				expect( getChangesAttrsCount() ).to.equal( 0 );
+				expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
 			} );
 
 			it( 'should create a proper operations for the mixed range', () => {
 				batch.removeAttr( 'a', getRange( 3, 15 ) );
 				expect( getOperationsCount() ).to.equal( 2 );
 				expect( getChangesAttrsCount() ).to.equal( 6 );
-				expect( getCompressedAttrs() ).to.equal( '111------------111' );
+				expect( getCompressedAttrs() ).to.equal( '111------------1112------' );
 			} );
 
 			it( 'should be chainable', () => {

@@ -14,6 +14,7 @@ const getIteratorCount = bender.tools.core.getIteratorCount;
 
 const modules = bender.amd.require(
 	'document/document',
+	'document/element',
 	'document/operation/attributeoperation',
 	'document/position',
 	'document/range',
@@ -24,10 +25,11 @@ const modules = bender.amd.require(
 );
 
 describe( 'AttributeOperation', () => {
-	let Document, AttributeOperation, Position, Range, Character, Attribute, Text, CKEditorError;
+	let Document, Element, AttributeOperation, Position, Range, Character, Attribute, Text, CKEditorError;
 
 	before( () => {
 		Document = modules[ 'document/document' ];
+		Element = modules[ 'document/element' ];
 		AttributeOperation = modules[ 'document/operation/attributeoperation' ];
 		Position = modules[ 'document/position' ];
 		Range = modules[ 'document/range' ];
@@ -209,6 +211,46 @@ describe( 'AttributeOperation', () => {
 		expect( getIteratorCount( root.getChild( 0 ).getAttrs() ) ).to.equal( 0 );
 		expect( getIteratorCount( root.getChild( 1 ).getAttrs() ) ).to.equal( 0 );
 		expect( getIteratorCount( root.getChild( 2 ).getAttrs() ) ).to.equal( 0 );
+	} );
+
+	it( 'should not set attribute of element if change range starts in the middle of that element', () => {
+		let fooAttr = new Attribute( 'foo', true );
+
+		let eleA = new Element( 'a', [], 'abc' );
+		let eleB = new Element( 'b', [], 'xyz' );
+
+		root.insertChildren( 0, [ eleA, eleB ] );
+
+		doc.applyOperation(
+			new AttributeOperation(
+				new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 1, 2 ] ) ),
+				null,
+				fooAttr,
+				doc.version
+			)
+		);
+
+		expect( root.getChild( 0 ).hasAttr( fooAttr ) ).to.be.false;
+	} );
+
+	it( 'should not remove attribute of element if change range starts in the middle of that element', () => {
+		let fooAttr = new Attribute( 'foo', true );
+
+		let eleA = new Element( 'a', [ fooAttr ], 'abc' );
+		let eleB = new Element( 'b', [ fooAttr ], 'xyz' );
+
+		root.insertChildren( 0, [ eleA, eleB ] );
+
+		doc.applyOperation(
+			new AttributeOperation(
+				new Range( new Position( root, [ 0, 3 ] ), new Position( root, [ 1, 0 ] ) ),
+				fooAttr,
+				null,
+				doc.version
+			)
+		);
+
+		expect( root.getChild( 0 ).hasAttr( fooAttr ) ).to.be.true;
 	} );
 
 	it( 'should undo changing attribute by applying reverse operation', () => {

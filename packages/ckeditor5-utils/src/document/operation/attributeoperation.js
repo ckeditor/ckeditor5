@@ -76,7 +76,6 @@ CKEDITOR.define( [
 		_execute() {
 			const oldAttr = this.oldAttr;
 			const newAttr = this.newAttr;
-			let value;
 
 			if ( oldAttr !== null && newAttr !== null && oldAttr.key != newAttr.key ) {
 				/**
@@ -93,8 +92,8 @@ CKEDITOR.define( [
 
 			// Remove or change.
 			if ( oldAttr !== null ) {
-				for ( value of this.range ) {
-					if ( !value.node.hasAttr( oldAttr ) ) {
+				for ( let node of this.range.getNodes() ) {
+					if ( !node.hasAttr( oldAttr ) ) {
 						/**
 						 * The attribute which should be removed does not exists for the given node.
 						 *
@@ -104,21 +103,21 @@ CKEDITOR.define( [
 						 */
 						throw new CKEditorError(
 							'operation-attribute-no-attr-to-remove: The attribute which should be removed does not exists for given node.',
-							{ node: value.node, attr: oldAttr } );
+							{ node: node, attr: oldAttr } );
 					}
 
 					// There is no use in removing attribute if we will overwrite it later.
 					// Still it is profitable to run through the loop to check if all nodes in the range has old attribute.
 					if ( newAttr === null ) {
-						value.node.removeAttr( oldAttr.key );
+						node.removeAttr( oldAttr.key );
 					}
 				}
 			}
 
 			// Insert or change.
 			if ( newAttr !== null ) {
-				for ( value of this.range ) {
-					if ( oldAttr === null && value.node.hasAttr( newAttr.key ) ) {
+				for ( let node of this.range.getNodes() ) {
+					if ( oldAttr === null && node.hasAttr( newAttr.key ) ) {
 						/**
 						 * The attribute with given key already exists for the given node.
 						 *
@@ -128,10 +127,10 @@ CKEDITOR.define( [
 						 */
 						throw new CKEditorError(
 							'operation-attribute-attr-exists: The attribute with given key already exists.',
-							{ node: value.node, attr: newAttr } );
+							{ node: node, attr: newAttr } );
 					}
 
-					value.node.setAttr( newAttr );
+					node.setAttr( newAttr );
 				}
 			}
 
