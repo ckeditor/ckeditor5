@@ -174,6 +174,26 @@ CKEDITOR.define( [ 'document/position', 'document/positioniterator', 'utils' ], 
 		}
 
 		/**
+		 * Returns an iterator that iterates over all {@link document.Node nodes} that are in this range and returns them.
+		 * A node is in the range when it is after a {@link document.Position position} contained in this range.
+		 * In other words, this iterates over all {@link document.Character}s that are inside the range and
+		 * all the {@link document.Element}s we enter into when iterating over this range.
+		 *
+		 * Note, that this method will not return a parent node of start position. This is in contrary to {@link document.PositionIterator}
+		 * which will return that node with {@link document.PositionIterator#ELEMENT_LEAVE} type.
+		 *
+		 * @see {document.PositionIterator}
+		 * @returns {document.Node}
+		 */
+		*getNodes() {
+			for ( let value of this ) {
+				if ( value.type != PositionIterator.ELEMENT_LEAVE ) {
+					yield value.node;
+				}
+			}
+		}
+
+		/**
 		 * Returns an array containing one or two {document.Range ranges} that are a result of transforming this
 		 * {@link document.Range range} by inserting `howMany` nodes at `insertPosition`. Two {@link document.Range ranges} are
 		 * returned if the insertion was inside this {@link document.Range range}.
