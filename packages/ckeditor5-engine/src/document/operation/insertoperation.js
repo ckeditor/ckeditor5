@@ -45,8 +45,8 @@ CKEDITOR.define( [
 			this.nodeList = new NodeList( nodes );
 		}
 
-		_execute() {
-			this.position.parent.insertChildren( this.position.offset, this.nodeList );
+		clone() {
+			return new InsertOperation( this.position, this.nodeList, this.baseVersion );
 		}
 
 		getReversed() {
@@ -54,6 +54,10 @@ CKEDITOR.define( [
 			const RemoveOperation = CKEDITOR.require( 'document/operation/removeoperation' );
 
 			return new RemoveOperation( this.position, this.nodeList.length, this.baseVersion + 1 );
+		}
+
+		_execute() {
+			this.position.parent.insertChildren( this.position.offset, this.nodeList );
 		}
 	}
 

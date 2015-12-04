@@ -42,33 +42,6 @@ CKEDITOR.define( [ 'document/attribute', 'utils', 'ckeditorerror' ], ( Attribute
 		}
 
 		/**
-		 * Index of the node in the parent element or null if the node has no parent.
-		 *
-		 * Throws error if the parent element does not contain this node.
-		 *
-		 * @returns {Number|Null} Index of the node in the parent element or null if the node has not parent.
-		 */
-		getIndex() {
-			let pos;
-
-			if ( !this.parent ) {
-				return null;
-			}
-
-			// No parent or child doesn't exist in parent's children.
-			if ( ( pos = this.parent.getChildIndex( this ) ) == -1 ) {
-				/**
-				 * The node's parent does not contain this node. It means that the document tree is corrupted.
-				 *
-				 * @error node-not-found-in-parent
-				 */
-				throw new CKEditorError( 'node-not-found-in-parent: The node\'s parent does not contain this node.' );
-			}
-
-			return pos;
-		}
-
-		/**
 		 * Depth of the node, which equals to total number of its parents.
 		 *
 		 * @readonly
@@ -85,22 +58,6 @@ CKEDITOR.define( [ 'document/attribute', 'utils', 'ckeditorerror' ], ( Attribute
 			}
 
 			return depth;
-		}
-
-		/**
-		 * The top parent for the node. If node has no parent it is the root itself.
-		 *
-		 * @readonly
-		 * @property {Number} depth
-		 */
-		get root() {
-			let root = this; // jscs:ignore safeContextKeyword
-
-			while ( root.parent ) {
-				root = root.parent;
-			}
-
-			return root;
 		}
 
 		/**
@@ -128,10 +85,98 @@ CKEDITOR.define( [ 'document/attribute', 'utils', 'ckeditorerror' ], ( Attribute
 		}
 
 		/**
+		 * The top parent for the node. If node has no parent it is the root itself.
+		 *
+		 * @readonly
+		 * @property {Number} depth
+		 */
+		get root() {
+			let root = this; // jscs:ignore safeContextKeyword
+
+			while ( root.parent ) {
+				root = root.parent;
+			}
+
+			return root;
+		}
+
+		/**
+		 * Finds an attribute by a key.
+		 *
+		 * @param {String} attr The attribute key.
+		 * @returns {document.Attribute} The found attribute.
+		 */
+		getAttr( key ) {
+			for ( let attr of this._attrs ) {
+				if ( attr.key == key ) {
+					return attr.value;
+				}
+			}
+
+			return null;
+		}
+
+		/**
+		 * Returns attribute iterator. It can be use to create a new element with the same attributes:
+		 *
+		 *		const copy = new Element( element.name, element.getAttrs() );
+		 *
+		 * @returns {Iterable.<document.Attribute>} Attribute iterator.
+		 */
+		getAttrs() {
+			return this._attrs[ Symbol.iterator ]();
+		}
+
+		/**
+		 * Index of the node in the parent element or null if the node has no parent.
+		 *
+		 * Throws error if the parent element does not contain this node.
+		 *
+		 * @returns {Number|Null} Index of the node in the parent element or null if the node has not parent.
+		 */
+		getIndex() {
+			let pos;
+
+			if ( !this.parent ) {
+				return null;
+			}
+
+			// No parent or child doesn't exist in parent's children.
+			if ( ( pos = this.parent.getChildIndex( this ) ) == -1 ) {
+				/**
+				 * The node's parent does not contain this node. It means that the document tree is corrupted.
+				 *
+				 * @error node-not-found-in-parent
+				 */
+				throw new CKEditorError( 'node-not-found-in-parent: The node\'s parent does not contain this node.' );
+			}
+
+			return pos;
+		}
+
+		/**
+		 * Gets path to the node. For example if the node is the second child of the first child of the root then the path
+		 * will be `[ 1, 2 ]`. This path can be used as a parameter of {@link document.Position}.
+		 *
+		 * @returns {Number[]} The path.
+		 */
+		getPath() {
+			const path = [];
+			let node = this; // jscs:ignore safeContextKeyword
+
+			while ( node.parent ) {
+				path.unshift( node.getIndex() );
+				node = node.parent;
+			}
+
+			return path;
+		}
+
+		/**
 		 * Returns `true` if the node contains an attribute with the same key and value as given or the same key if the
 		 * given parameter is a string.
 		 *
-		 * @param {document.Attribute|String} attr An attribute or a key to compare.
+		 * @param {document.Attribute|String} key An attribute or a key to compare.
 		 * @returns {Boolean} True if node contains given attribute or an attribute with the given key.
 		 */
 		hasAttr( key ) {
@@ -155,22 +200,6 @@ CKEDITOR.define( [ 'document/attribute', 'utils', 'ckeditorerror' ], ( Attribute
 			}
 
 			return false;
-		}
-
-		/**
-		 * Finds an attribute by a key.
-		 *
-		 * @param {String} attr The attribute key.
-		 * @returns {document.Attribute} The found attribute.
-		 */
-		getAttr( key ) {
-			for ( let attr of this._attrs ) {
-				if ( attr.key == key ) {
-					return attr.value;
-				}
-			}
-
-			return null;
 		}
 
 		/**
@@ -200,24 +229,6 @@ CKEDITOR.define( [ 'document/attribute', 'utils', 'ckeditorerror' ], ( Attribute
 		}
 
 		/**
-		 * Gets path to the node. For example if the node is the second child of the first child of the root then the path
-		 * will be `[ 1, 2 ]`. This path can be used as a parameter of {@link document.Position}.
-		 *
-		 * @returns {Number[]} The path.
-		 */
-		getPath() {
-			const path = [];
-			let node = this; // jscs:ignore safeContextKeyword
-
-			while ( node.parent ) {
-				path.unshift( node.getIndex() );
-				node = node.parent;
-			}
-
-			return path;
-		}
-
-		/**
 		 * Custom toJSON method to solve child-parent circular dependencies.
 		 *
 		 * @returns {Object} Clone of this object with the parent property replaced with its name.
@@ -229,17 +240,6 @@ CKEDITOR.define( [ 'document/attribute', 'utils', 'ckeditorerror' ], ( Attribute
 			json.parent = this.parent ? this.parent.name : null;
 
 			return json;
-		}
-
-		/**
-		 * Returns attribute iterator. It can be use to create a new element with the same attributes:
-		 *
-		 *		const copy = new Element( element.name, element.getAttrs() );
-		 *
-		 * @returns {Iterable.<document.Attribute>} Attribute iterator.
-		 */
-		getAttrs() {
-			return this._attrs[ Symbol.iterator ]();
 		}
 	}
 

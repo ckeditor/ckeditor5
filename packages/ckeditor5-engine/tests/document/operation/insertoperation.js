@@ -4,11 +4,14 @@
  */
 
 /* bender-tags: document */
+/* global describe, before, beforeEach, it, expect */
 
 'use strict';
 
 const modules = bender.amd.require(
 	'document/document',
+	'document/node',
+	'document/nodelist',
 	'document/operation/insertoperation',
 	'document/operation/removeoperation',
 	'document/position',
@@ -17,10 +20,12 @@ const modules = bender.amd.require(
 );
 
 describe( 'InsertOperation', () => {
-	let Document, InsertOperation, RemoveOperation, Position, Character;
+	let Document, Node, NodeList, InsertOperation, RemoveOperation, Position, Character;
 
 	before( () => {
 		Document = modules[ 'document/document' ];
+		Node = modules[ 'document/node' ];
+		NodeList = modules[ 'document/nodelist' ];
 		InsertOperation = modules[ 'document/operation/insertoperation' ];
 		RemoveOperation = modules[ 'document/operation/removeoperation' ];
 		Position = modules[ 'document/position' ];
@@ -156,5 +161,27 @@ describe( 'InsertOperation', () => {
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.getChildCount() ).to.equal( 0 );
+	} );
+
+	it( 'should create operation with the same parameters when cloned', () => {
+		let position = new Position( [ 0 ], root );
+		let nodeA = new Node();
+		let nodeB = new Node();
+		let nodes = new NodeList( [ nodeA, nodeB ] );
+		let baseVersion = doc.version;
+
+		let op = new InsertOperation( position, nodes, baseVersion );
+
+		let clone = op.clone();
+
+		// New instance rather than a pointer to the old instance.
+		expect( clone ).not.to.be.equal( op );
+
+		expect( clone ).to.be.instanceof( InsertOperation );
+		expect( clone.position.isEqual( position ) ).to.be.true;
+		expect( clone.nodeList.get( 0 ) ).to.equal( nodeA );
+		expect( clone.nodeList.get( 1 ) ).to.equal( nodeB );
+		expect( clone.nodeList.length ).to.equal( 2 );
+		expect( clone.baseVersion ).to.equal( baseVersion );
 	} );
 } );

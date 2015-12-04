@@ -31,7 +31,7 @@ describe( 'Document', () => {
 	} );
 
 	describe( 'constructor', () => {
-		it( 'should create Document with no data', () => {
+		it( 'should create Document with no data and empty graveyard', () => {
 			expect( document ).to.have.property( 'roots' ).that.is.instanceof( Map );
 			expect( document.roots.size ).to.equal( 1 );
 			expect( document._graveyard ).to.be.instanceof( RootElement );

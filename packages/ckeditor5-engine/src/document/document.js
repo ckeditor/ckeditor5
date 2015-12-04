@@ -12,7 +12,7 @@ CKEDITOR.define( [
 	'emittermixin',
 	'utils',
 	'ckeditorerror'
-], ( Element, RootElement, Tranaction, EmitterMixin, utils, CKEditorError ) => {
+], ( Element, RootElement, Transaction, EmitterMixin, utils, CKEditorError ) => {
 	const graveyardSymbol = Symbol( 'graveyard' );
 
 	/**
@@ -55,6 +55,17 @@ CKEDITOR.define( [
 			 * @property {Number} version
 			 */
 			this.version = 0;
+		}
+
+		/**
+		 * Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
+		 *
+		 * @protected
+		 * @readonly
+		 * @property {document.RootElement} _graveyard
+		 */
+		get _graveyard() {
+			return this.getRoot( graveyardSymbol );
 		}
 
 		/**
@@ -110,6 +121,15 @@ CKEDITOR.define( [
 		}
 
 		/**
+		 * Creates a {@link document.Transaction} instance which allows to change the document.
+		 *
+		 * @returns {document.Transaction} Transaction instance.
+		 */
+		createTransaction() {
+			return new Transaction( this );
+		}
+
+		/**
 		 * Returns top-level root by it's name.
 		 *
 		 * @param {String|Symbol} name Name of the root to get.
@@ -130,26 +150,6 @@ CKEDITOR.define( [
 			}
 
 			return this.roots.get( name );
-		}
-
-		/**
-		 * Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
-		 *
-		 * @protected
-		 * @readonly
-		 * @property {document.RootElement} _graveyard
-		 */
-		get _graveyard() {
-			return this.getRoot( graveyardSymbol );
-		}
-
-		/**
-		 * Creates a {@link document.Transaction} instance which allows to change the document.
-		 *
-		 * @returns {document.Transaction} Transaction instance.
-		 */
-		createTransaction() {
-			return new Tranaction( this );
 		}
 	}
 
