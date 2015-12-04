@@ -7,9 +7,7 @@
 
 CKEDITOR.define( [
 	'document/node',
-	'document/nodelist',
-	'document/range',
-	'document/position'
+	'document/nodelist'
 ], ( Node, NodeList ) => {
 	/**
 	 * Tree data model element.
@@ -53,6 +51,35 @@ CKEDITOR.define( [
 		}
 
 		/**
+		 * Gets child at the given index.
+		 *
+		 * @param {Number} index Index of child.
+		 * @returns {document.Node} Child node.
+		 */
+		getChild( index ) {
+			return this._children.get( index );
+		}
+
+		/**
+		 * Gets the number of element's children.
+		 *
+		 * @returns {Number} The number of element's children.
+		 */
+		getChildCount() {
+			return this._children.length;
+		}
+
+		/**
+		 * Gets index of the given child node.
+		 *
+		 * @param {document.Node} node Child node.
+		 * @returns {Number} Index of the child node.
+		 */
+		getChildIndex( node ) {
+			return this._children.indexOf( node );
+		}
+
+		/**
 		 * Inserts a list of child nodes on the given index and sets the parent of these nodes to this element.
 		 *
 		 * Note that the list of children can be modified only in elements not yet attached to the document.
@@ -87,35 +114,6 @@ CKEDITOR.define( [
 			}
 
 			return this._children.remove( index, number );
-		}
-
-		/**
-		 * Gets child at the given index.
-		 *
-		 * @param {Number} index Index of child.
-		 * @returns {document.Node} Child node.
-		 */
-		getChild( index ) {
-			return this._children.get( index );
-		}
-
-		/**
-		 * Gets index of the given child node.
-		 *
-		 * @param {document.Node} node Child node.
-		 * @returns {Number} Index of the child node.
-		 */
-		getChildIndex( node ) {
-			return this._children.indexOf( node );
-		}
-
-		/**
-		 * Gets the number of element's children.
-		 *
-		 * @returns {Number} The number of element's children.
-		 */
-		getChildCount() {
-			return this._children.length;
 		}
 	}
 
