@@ -38,8 +38,8 @@ describe( 'MoveOperation', () => {
 
 	it( 'should have proper type', () => {
 		const opp = new MoveOperation(
-			new Position( [ 0, 0 ], root ),
-			new Position( [ 1, 0 ], root ),
+			new Position( root, [ 0, 0 ] ),
+			new Position( root, [ 1, 0 ] ),
 			1,
 			doc.version
 		);
@@ -55,8 +55,8 @@ describe( 'MoveOperation', () => {
 
 		doc.applyOperation(
 			new MoveOperation(
-				new Position( [ 0, 0 ], root ),
-				new Position( [ 1, 0 ], root ),
+				new Position( root, [ 0, 0 ] ),
+				new Position( root, [ 1, 0 ] ),
 				1,
 				doc.version
 			)
@@ -76,8 +76,8 @@ describe( 'MoveOperation', () => {
 
 		doc.applyOperation(
 			new MoveOperation(
-				new Position( [ 2 ], root ),
-				new Position( [ 1 ], root ),
+				new Position( root, [ 2 ] ),
+				new Position( root, [ 1 ] ),
 				2,
 				doc.version
 			)
@@ -97,8 +97,8 @@ describe( 'MoveOperation', () => {
 
 		doc.applyOperation(
 			new MoveOperation(
-				new Position( [ 1 ], root ),
-				new Position( [ 4 ], root ),
+				new Position( root, [ 1 ] ),
+				new Position( root, [ 4 ] ),
 				2,
 				doc.version
 			)
@@ -116,8 +116,8 @@ describe( 'MoveOperation', () => {
 	it( 'should create a move operation as a reverse', () => {
 		let nodeList = new NodeList( 'bar' );
 
-		let sourcePosition = new Position( [ 0 ], root );
-		let targetPosition = new Position( [ 4 ], root );
+		let sourcePosition = new Position( root, [ 0 ] );
+		let targetPosition = new Position( root, [ 4 ] );
 
 		let operation = new MoveOperation( sourcePosition, targetPosition, nodeList.length, doc.version );
 
@@ -137,8 +137,8 @@ describe( 'MoveOperation', () => {
 		root.insertChildren( 0, [ p1, p2 ] );
 
 		let operation = new MoveOperation(
-			new Position( [ 0, 0 ], root ),
-			new Position( [ 1, 0 ], root ),
+			new Position( root, [ 0, 0 ] ),
+			new Position( root, [ 1, 0 ] ),
 			1,
 			doc.version
 		);
@@ -164,8 +164,8 @@ describe( 'MoveOperation', () => {
 		root.insertChildren( 0, 'xbarx' );
 
 		let operation = new MoveOperation(
-			new Position( [ 3 ], root ),
-			new Position( [ 1 ], root ),
+			new Position( root, [ 3 ] ),
+			new Position( root, [ 1 ] ),
 			3,
 			doc.version
 		);
@@ -179,8 +179,8 @@ describe( 'MoveOperation', () => {
 		root.insertChildren( 0, [ 'ab', p ] );
 
 		let operation = new MoveOperation(
-			new Position( [ 2, 0 ], root ),
-			new Position( [ 1 ], root ),
+			new Position( root, [ 2, 0 ] ),
+			new Position( root, [ 1 ] ),
 			3,
 			doc.version
 		);
@@ -194,8 +194,8 @@ describe( 'MoveOperation', () => {
 		root.insertChildren( 0, 'xbarx' );
 
 		let operation = new MoveOperation(
-			new Position( [ 1 ], root ),
-			new Position( [ 2 ], root ),
+			new Position( root, [ 1 ] ),
+			new Position( root, [ 2 ] ),
 			3,
 			doc.version
 		);
@@ -208,8 +208,8 @@ describe( 'MoveOperation', () => {
 		root.insertChildren( 0, [ 'ab', p, 'xy' ] );
 
 		let operation = new MoveOperation(
-			new Position( [ 1 ], root ),
-			new Position( [ 2, 0, 0 ], root ),
+			new Position( root, [ 1 ] ),
+			new Position( root, [ 2, 0, 0 ] ),
 			3,
 			doc.version
 		);
@@ -222,8 +222,8 @@ describe( 'MoveOperation', () => {
 		root.insertChildren( 0, [ 'ab', p, 'xy' ] );
 
 		let operation = new MoveOperation(
-			new Position( [ 1 ], root ),
-			new Position( [ 2, 0 ], root ),
+			new Position( root, [ 1 ] ),
+			new Position( root, [ 2, 0 ] ),
 			1,
 			doc.version
 		);
@@ -240,8 +240,8 @@ describe( 'MoveOperation', () => {
 	} );
 
 	it( 'should create operation with the same parameters when cloned', () => {
-		let sourcePosition = new Position( [ 0 ], root );
-		let targetPosition = new Position( [ 1 ], root );
+		let sourcePosition = new Position( root, [ 0 ] );
+		let targetPosition = new Position( root, [ 1 ] );
 		let howMany = 4;
 		let baseVersion = doc.version;
 

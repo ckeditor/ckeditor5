@@ -46,7 +46,7 @@ describe( 'ChangeOperation', () => {
 
 	it( 'should have proper type', () => {
 		const opp = new ChangeOperation(
-			new Range( new Position( [ 0 ], root ), new Position( [ 2 ], root ) ),
+			new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
 			null,
 			new Attribute( 'isNew', true ),
 			doc.version
@@ -62,7 +62,7 @@ describe( 'ChangeOperation', () => {
 
 		doc.applyOperation(
 			new ChangeOperation(
-				new Range( new Position( [ 0 ], root ), new Position( [ 2 ], root ) ),
+				new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
 				null,
 				newAttr,
 				doc.version
@@ -85,7 +85,7 @@ describe( 'ChangeOperation', () => {
 
 		doc.applyOperation(
 			new ChangeOperation(
-				new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
+				new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
 				null,
 				newAttr,
 				doc.version
@@ -108,7 +108,7 @@ describe( 'ChangeOperation', () => {
 
 		doc.applyOperation(
 			new ChangeOperation(
-				new Range( new Position( [ 0 ], root ), new Position( [ 2 ], root ) ),
+				new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
 				oldAttr,
 				newAttr,
 				doc.version
@@ -135,7 +135,7 @@ describe( 'ChangeOperation', () => {
 
 		doc.applyOperation(
 			new ChangeOperation(
-				new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
+				new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
 				x1Attr,
 				x2Attr,
 				doc.version
@@ -159,7 +159,7 @@ describe( 'ChangeOperation', () => {
 
 		doc.applyOperation(
 			new ChangeOperation(
-				new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
+				new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
 				xAttr,
 				null,
 				doc.version
@@ -176,7 +176,7 @@ describe( 'ChangeOperation', () => {
 	it( 'should create a change operation as a reverse', () => {
 		let oldAttr = new Attribute( 'x', 'old' );
 		let newAttr = new Attribute( 'x', 'new' );
-		let range = new Range( new Position( [ 0 ], root ), new Position( [ 3 ], root ) );
+		let range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) );
 		let operation = new ChangeOperation( range, oldAttr, newAttr, doc.version );
 		let reverse = operation.getReversed();
 
@@ -193,7 +193,7 @@ describe( 'ChangeOperation', () => {
 		root.insertChildren( 0, 'bar' );
 
 		let operation = new ChangeOperation(
-			new Range( new Position( [ 0 ], root ), new Position( [ 3 ], root ) ),
+			new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) ),
 			null,
 			newAttr,
 			doc.version
@@ -218,7 +218,7 @@ describe( 'ChangeOperation', () => {
 		root.insertChildren( 0, new Text( 'bar', [ oldAttr ] ) );
 
 		let operation = new ChangeOperation(
-			new Range( new Position( [ 0 ], root ), new Position( [ 3 ], root ) ),
+			new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) ),
 			oldAttr,
 			newAttr,
 			doc.version
@@ -246,7 +246,7 @@ describe( 'ChangeOperation', () => {
 		root.insertChildren( 0, new Text( 'bar', [ fooAttr ] ) );
 
 		let operation = new ChangeOperation(
-			new Range( new Position( [ 0 ], root ), new Position( [ 3 ], root ) ),
+			new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) ),
 			fooAttr,
 			null,
 			doc.version
@@ -276,7 +276,7 @@ describe( 'ChangeOperation', () => {
 		expect( () => {
 			doc.applyOperation(
 				new ChangeOperation(
-					new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
+					new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
 					fooAttr,
 					null,
 					doc.version
@@ -294,7 +294,7 @@ describe( 'ChangeOperation', () => {
 		expect( () => {
 			doc.applyOperation(
 				new ChangeOperation(
-					new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
+					new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
 					null,
 					x2Attr,
 					doc.version
@@ -312,7 +312,7 @@ describe( 'ChangeOperation', () => {
 		expect( () => {
 			doc.applyOperation(
 				new ChangeOperation(
-					new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
+					new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
 					fooAttr,
 					barAttr,
 					doc.version
@@ -322,7 +322,7 @@ describe( 'ChangeOperation', () => {
 	} );
 
 	it( 'should create operation with the same parameters when cloned', () => {
-		let range = new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) );
+		let range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
 		let oldAttr = new Attribute( 'foo', 'old' );
 		let newAttr = new Attribute( 'foo', 'bar' );
 		let baseVersion = doc.version;

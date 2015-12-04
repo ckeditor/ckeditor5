@@ -42,7 +42,7 @@ describe( 'Transaction', () => {
 
 	describe( 'split', () => {
 		it( 'should split foobar to foo and bar', () => {
-			doc.createTransaction().split( new Position( [ 0, 3 ], root ) );
+			doc.createTransaction().split( new Position( root, [ 0, 3 ] ) );
 
 			expect( root.getChildCount() ).to.equal( 2 );
 
@@ -64,7 +64,7 @@ describe( 'Transaction', () => {
 		} );
 
 		it( 'should create an empty paragraph if we split at the end', () => {
-			doc.createTransaction().split( new Position( [ 0, 6 ], root ) );
+			doc.createTransaction().split( new Position( root, [ 0, 6 ] ) );
 
 			expect( root.getChildCount() ).to.equal( 2 );
 
@@ -87,14 +87,14 @@ describe( 'Transaction', () => {
 
 		it( 'should throw if we try to split a root', () => {
 			expect( () => {
-				doc.createTransaction().split( new Position( [ 0 ], root ) );
+				doc.createTransaction().split( new Position( root, [ 0 ] ) );
 			} ).to.throw( CKEditorError, /^transaction-split-root/ );
 		} );
 
 		it( 'should be chainable', () => {
 			const transaction = doc.createTransaction();
 
-			const chain = transaction.split( new Position( [ 0, 3 ], root ) );
+			const chain = transaction.split( new Position( root, [ 0, 3 ] ) );
 			expect( chain ).to.equal( transaction );
 		} );
 	} );

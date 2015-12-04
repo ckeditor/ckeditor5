@@ -74,7 +74,7 @@ describe( 'range iterator', () => {
 	} );
 
 	it( 'should return next position', () => {
-		let iterator = new PositionIterator( new Position( [ 0 ], root ) ); // beginning of root
+		let iterator = new PositionIterator( new Position( root, [ 0 ] ) ); // beginning of root
 		let i, len;
 
 		for ( i = 0, len = expectedItems.length; i < len; i++ ) {
@@ -84,7 +84,7 @@ describe( 'range iterator', () => {
 	} );
 
 	it( 'should return previous position', () => {
-		let iterator = new PositionIterator( new Position( [ 2 ], root ) ); // ending of root
+		let iterator = new PositionIterator( new Position( root, [ 2 ] ) ); // ending of root
 
 		for ( let i = expectedItems.length - 1; i >= 0; i-- ) {
 			expect( iterator.previous() ).to.deep.equal( { done: false, value: expectedItems[ i ] } );
@@ -93,8 +93,8 @@ describe( 'range iterator', () => {
 	} );
 
 	it( 'should return next position in the boundaries', () => {
-		let start = new Position( [ 1, 0 ], root ); // p, 0
-		let end = new Position( [ 1, 3, 0 ], root ); // img, 0
+		let start = new Position( root, [ 1, 0 ] ); // p, 0
+		let end = new Position( root, [ 1, 3, 0 ] ); // img, 0
 
 		let iterator = new PositionIterator( new Range( start, end ) );
 
@@ -107,8 +107,8 @@ describe( 'range iterator', () => {
 	} );
 
 	it( 'should return previous position in the boundaries', () => {
-		let start = new Position( [ 1, 0 ], root ); // p, 0
-		let end = new Position( [ 1, 3, 0 ], root ); // img, 0
+		let start = new Position( root, [ 1, 0 ] ); // p, 0
+		let end = new Position( root, [ 1, 3, 0 ] ); // img, 0
 
 		let iterator = new PositionIterator( new Range( start, end ), end );
 
@@ -121,8 +121,8 @@ describe( 'range iterator', () => {
 	} );
 
 	it( 'should return iterate over the range', () => {
-		let start = new Position( [ 0 ], root ); // begging of root
-		let end = new Position( [ 2 ], root ); // ending of root
+		let start = new Position( root, [ 0 ] ); // begging of root
+		let end = new Position( root, [ 2 ] ); // ending of root
 		let range = new Range( start, end );
 
 		let i = 0;

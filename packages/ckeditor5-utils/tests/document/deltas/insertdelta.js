@@ -27,7 +27,7 @@ describe( 'Transaction', () => {
 	} );
 
 	it( 'should insert text', () => {
-		const position = new Position( [ 0 ], root );
+		const position = new Position( root, [ 0 ] );
 		doc.createTransaction().insert( position, 'foo' );
 
 		expect( root.getChildCount() ).to.equal( 3 );
@@ -37,7 +37,7 @@ describe( 'Transaction', () => {
 	} );
 
 	it( 'should be chainable', () => {
-		const position = new Position( [ 0 ], root );
+		const position = new Position( root, [ 0 ] );
 		const transaction = doc.createTransaction();
 
 		const chain = transaction.insert( position, 'foo' );

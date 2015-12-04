@@ -33,8 +33,8 @@ describe( 'ReinsertOperation', () => {
 		root = doc.createRoot( 'root' );
 		graveyard = doc._graveyard;
 
-		graveyardPosition = new Position( [ 0 ], graveyard );
-		rootPosition = new Position( [ 0 ], root );
+		graveyardPosition = new Position( graveyard, [ 0 ] );
+		rootPosition = new Position( root, [ 0 ] );
 
 		operation = new ReinsertOperation(
 			graveyardPosition,

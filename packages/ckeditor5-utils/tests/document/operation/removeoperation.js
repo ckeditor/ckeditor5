@@ -36,7 +36,7 @@ describe( 'RemoveOperation', () => {
 
 	it( 'should have proper type', () => {
 		const opp = new RemoveOperation(
-			new Position( [ 2 ], root ),
+			new Position( root, [ 2 ] ),
 			2,
 			doc.version
 		);
@@ -46,7 +46,7 @@ describe( 'RemoveOperation', () => {
 
 	it( 'should extend MoveOperation class', () => {
 		let operation = new RemoveOperation(
-			new Position( [ 2 ], root ),
+			new Position( root, [ 2 ] ),
 			2,
 			doc.version
 		);
@@ -63,7 +63,7 @@ describe( 'RemoveOperation', () => {
 
 		doc.applyOperation(
 			new RemoveOperation(
-				new Position( [ 2 ], root ),
+				new Position( root, [ 2 ] ),
 				2,
 				doc.version
 			)
@@ -79,7 +79,7 @@ describe( 'RemoveOperation', () => {
 	} );
 
 	it( 'should create a reinsert operation as a reverse', () => {
-		let position = new Position( [ 0 ], root );
+		let position = new Position( root, [ 0 ] );
 		let operation = new RemoveOperation( position, 2, 0 );
 		let reverse = operation.getReversed();
 
@@ -91,7 +91,7 @@ describe( 'RemoveOperation', () => {
 	} );
 
 	it( 'should undo remove set of nodes by applying reverse operation', () => {
-		let position = new Position( [ 0 ], root );
+		let position = new Position( root, [ 0 ] );
 		let operation = new RemoveOperation( position, 3, 0 );
 		let reverse = operation.getReversed();
 

@@ -41,7 +41,7 @@ describe( 'InsertOperation', () => {
 
 	it( 'should have proper type', () => {
 		const opp = new InsertOperation(
-			new Position( [ 0 ], root ),
+			new Position( root, [ 0 ] ),
 			new Character( 'x' ),
 			doc.version
 		);
@@ -52,7 +52,7 @@ describe( 'InsertOperation', () => {
 	it( 'should insert node', () => {
 		doc.applyOperation(
 			new InsertOperation(
-				new Position( [ 0 ], root ),
+				new Position( root, [ 0 ] ),
 				new Character( 'x' ),
 				doc.version
 			)
@@ -66,7 +66,7 @@ describe( 'InsertOperation', () => {
 	it( 'should insert set of nodes', () => {
 		doc.applyOperation(
 			new InsertOperation(
-				new Position( [ 0 ], root ),
+				new Position( root, [ 0 ] ),
 				'bar',
 				doc.version
 			)
@@ -84,7 +84,7 @@ describe( 'InsertOperation', () => {
 
 		doc.applyOperation(
 			new InsertOperation(
-				new Position( [ 1 ], root ),
+				new Position( root, [ 1 ] ),
 				'bar',
 				doc.version
 			)
@@ -102,7 +102,7 @@ describe( 'InsertOperation', () => {
 	it( 'should insert text', () => {
 		doc.applyOperation(
 			new InsertOperation(
-				new Position( [ 0 ], root ),
+				new Position( root, [ 0 ] ),
 				[ 'foo', new Character( 'x' ), 'bar' ],
 				doc.version
 			)
@@ -120,7 +120,7 @@ describe( 'InsertOperation', () => {
 	} );
 
 	it( 'should create a remove operation as a reverse', () => {
-		let position = new Position( [ 0 ], root );
+		let position = new Position( root, [ 0 ] );
 		let operation = new InsertOperation(
 			position,
 			[ 'foo', new Character( 'x' ), 'bar' ],
@@ -137,7 +137,7 @@ describe( 'InsertOperation', () => {
 
 	it( 'should undo insert node by applying reverse operation', () => {
 		let operation = new InsertOperation(
-			new Position( [ 0 ], root ),
+			new Position( root, [ 0 ] ),
 			new Character( 'x' ),
 			doc.version
 		);
@@ -156,7 +156,7 @@ describe( 'InsertOperation', () => {
 
 	it( 'should undo insert set of nodes by applying reverse operation', () => {
 		let operation = new InsertOperation(
-			new Position( [ 0 ], root ),
+			new Position( root, [ 0 ] ),
 			'bar',
 			doc.version
 		);
@@ -174,7 +174,7 @@ describe( 'InsertOperation', () => {
 	} );
 
 	it( 'should create operation with the same parameters when cloned', () => {
-		let position = new Position( [ 0 ], root );
+		let position = new Position( root, [ 0 ] );
 		let nodeA = new Node();
 		let nodeB = new Node();
 		let nodes = new NodeList( [ nodeA, nodeB ] );

@@ -29,8 +29,8 @@ describe( 'Range', () => {
 		let doc = new Document();
 		root = doc.createRoot( 'root' );
 
-		start = new Position( [ 0 ], root );
-		end = new Position( [ 1 ], root );
+		start = new Position( root, [ 0 ] );
+		end = new Position( root, [ 1 ] );
 	} );
 
 	let range;
@@ -48,8 +48,8 @@ describe( 'Range', () => {
 
 	describe( 'isEqual', () => {
 		it( 'should return true if the ranges are the same', () => {
-			let sameStart = new Position( [ 0 ], root );
-			let sameEnd = new Position( [ 1 ], root );
+			let sameStart = new Position( root, [ 0 ] );
+			let sameEnd = new Position( root, [ 1 ] );
 
 			let sameRange = new Range( sameStart, sameEnd );
 
@@ -59,8 +59,8 @@ describe( 'Range', () => {
 		it( 'should return false if the start position is different', () => {
 			let range = new Range( start, end );
 
-			let diffStart = new Position( [ 1 ], root );
-			let sameEnd = new Position( [ 1 ], root );
+			let diffStart = new Position( root, [ 1 ] );
+			let sameEnd = new Position( root, [ 1 ] );
 
 			let diffRange = new Range( diffStart, sameEnd );
 
@@ -68,8 +68,8 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should return false if the end position is different', () => {
-			let sameStart = new Position( [ 0 ], root );
-			let diffEnd = new Position( [ 0 ], root );
+			let sameStart = new Position( root, [ 0 ] );
+			let diffEnd = new Position( root, [ 0 ] );
 
 			let diffRange = new Range( sameStart, diffEnd );
 
@@ -119,7 +119,7 @@ describe( 'Range', () => {
 
 		describe( 'createFromPositionAndOffset', () => {
 			it( 'should make range from start position and offset', () => {
-				const position = new Position( [ 1, 2, 3 ], root );
+				const position = new Position( root, [ 1, 2, 3 ] );
 				const range = Range.createFromPositionAndOffset( position, 4 );
 
 				expect( range ).to.be.instanceof( Range );
@@ -141,23 +141,23 @@ describe( 'Range', () => {
 
 	describe( 'containsPosition', () => {
 		beforeEach( () => {
-			range = new Range( new Position( [ 1 ], root ), new Position( [ 3 ], root ) );
+			range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 3 ] ) );
 		} );
 
 		it( 'should return false if position is before range', () => {
-			const position = new Position( [ 0, 4 ], root );
+			const position = new Position( root, [ 0, 4 ] );
 
 			expect( range.containsPosition( position ) ).to.be.false;
 		} );
 
 		it( 'should return false if position is after range', () => {
-			const position = new Position( [ 3, 0 ], root );
+			const position = new Position( root, [ 3, 0 ] );
 
 			expect( range.containsPosition( position ) ).to.be.false;
 		} );
 
 		it( 'should return true if position is inside range', () => {
-			const position = new Position( [ 2, 2 ], root );
+			const position = new Position( root, [ 2, 2 ] );
 
 			expect( range.containsPosition( position ) ).to.be.true;
 		} );
@@ -165,32 +165,32 @@ describe( 'Range', () => {
 
 	describe( 'getTransformedByInsertion', () => {
 		it( 'should return an array of Range objects', () => {
-			const range = new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) );
-			const transformed = range.getTransformedByInsertion( new Position( [ 2 ], root ), 2 );
+			const range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
+			const transformed = range.getTransformedByInsertion( new Position( root, [ 2 ] ), 2 );
 
 			expect( transformed ).to.be.instanceof( Array );
 			expect( transformed[ 0 ] ).to.be.instanceof( Range );
 		} );
 
 		it( 'should update it\'s positions offsets if insertion is before range and they are affected', () => {
-			const range = new Range( new Position( [ 3, 2 ], root ), new Position( [ 3, 4 ], root ) );
-			const transformed = range.getTransformedByInsertion( new Position( [ 3, 1 ], root ), 2 );
+			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 4 ] ) );
+			const transformed = range.getTransformedByInsertion( new Position( root, [ 3, 1 ] ), 2 );
 
 			expect( transformed[ 0 ].start.offset ).to.equal( 4 );
 			expect( transformed[ 0 ].end.offset ).to.equal( 6 );
 		} );
 
 		it( 'should update it\'s positions paths if insertion is before range and they are affected', () => {
-			const range = new Range( new Position( [ 3, 2 ], root ), new Position( [ 4, 4 ], root ) );
-			const transformed = range.getTransformedByInsertion( new Position( [ 0 ], root ), 2 );
+			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 4, 4 ] ) );
+			const transformed = range.getTransformedByInsertion( new Position( root, [ 0 ] ), 2 );
 
 			expect( transformed[ 0 ].start.path[ 0 ] ).to.equal( 5 );
 			expect( transformed[ 0 ].end.path[ 0 ] ).to.equal( 6 );
 		} );
 
 		it( 'should return array with two ranges and updated positions if insertion was in the middle of range', () => {
-			const range = new Range( new Position( [ 3, 2 ], root ), new Position( [ 5, 4 ], root ) );
-			const transformed = range.getTransformedByInsertion( new Position( [ 4, 1, 6 ], root ), 4 );
+			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 5, 4 ] ) );
+			const transformed = range.getTransformedByInsertion( new Position( root, [ 4, 1, 6 ] ), 4 );
 
 			expect( transformed.length ).to.equal( 2 );
 
@@ -202,8 +202,8 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should not updated positions if insertion is after range', () => {
-			const range = new Range( new Position( [ 3, 2 ], root ), new Position( [ 4, 4 ], root ) );
-			const transformed = range.getTransformedByInsertion( new Position( [ 4, 4 ], root ), 3 );
+			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 4, 4 ] ) );
+			const transformed = range.getTransformedByInsertion( new Position( root, [ 4, 4 ] ), 3 );
 
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 4, 4 ] );
@@ -214,11 +214,11 @@ describe( 'Range', () => {
 		let range;
 
 		beforeEach( () => {
-			range = new Range( new Position( [ 3, 2 ], root ), new Position( [ 5, 4 ], root ) );
+			range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 5, 4 ] ) );
 		} );
 
 		it( 'should return an array of Range objects', () => {
-			const otherRange = new Range( new Position( [ 6 ], root ), new Position( [ 7 ], root ) );
+			const otherRange = new Range( new Position( root, [ 6 ] ), new Position( root, [ 7 ] ) );
 			const diff = range.getDifference( otherRange );
 
 			expect( diff ).to.be.instanceof( Array );
@@ -226,7 +226,7 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should return original range if other range does not intersect with it', () => {
-			const otherRange = new Range( new Position( [ 6 ], root ), new Position( [ 7 ], root ) );
+			const otherRange = new Range( new Position( root, [ 6 ] ), new Position( root, [ 7 ] ) );
 			const diff = range.getDifference( otherRange );
 
 			expect( diff[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
@@ -234,7 +234,7 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should return shrunken range if other range intersects with it', () => {
-			const otherRange = new Range( new Position( [ 4, 1 ], root ), new Position( [ 7 ], root ) );
+			const otherRange = new Range( new Position( root, [ 4, 1 ] ), new Position( root, [ 7 ] ) );
 			const diff = range.getDifference( otherRange );
 
 			expect( diff[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
@@ -242,14 +242,14 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should return an empty array if other range contains or is same as the original range', () => {
-			const otherRange = new Range( new Position( [ 2 ], root ), new Position( [ 6 ], root ) );
+			const otherRange = new Range( new Position( root, [ 2 ] ), new Position( root, [ 6 ] ) );
 			const diff = range.getDifference( otherRange );
 
 			expect( diff.length ).to.equal( 0 );
 		} );
 
 		it( 'should two ranges if other range is contained by the original range', () => {
-			const otherRange = new Range( new Position( [ 3, 7 ], root ), new Position( [ 4, 1 ], root ) );
+			const otherRange = new Range( new Position( root, [ 3, 7 ] ), new Position( root, [ 4, 1 ] ) );
 			const diff = range.getDifference( otherRange );
 
 			expect( diff.length ).to.equal( 2 );
@@ -266,32 +266,32 @@ describe( 'Range', () => {
 		let range;
 
 		beforeEach( () => {
-			range = new Range( new Position( [ 3, 2 ], root ), new Position( [ 5, 4 ], root ) );
+			range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 5, 4 ] ) );
 		} );
 
 		it( 'should return null if ranges do not intersect', () => {
-			const otherRange = new Range( new Position( [ 5, 4 ], root ), new Position( [ 7 ], root ) );
+			const otherRange = new Range( new Position( root, [ 5, 4 ] ), new Position( root, [ 7 ] ) );
 			const common = range.getIntersection( otherRange );
 
 			expect( common ).to.be.null;
 		} );
 
 		it( 'should return a range equal to the common part of ranges - original range contains the other range', () => {
-			const otherRange = new Range( new Position( [ 4 ], root ), new Position( [ 5 ], root ) );
+			const otherRange = new Range( new Position( root, [ 4 ] ), new Position( root, [ 5 ] ) );
 			const common = range.getIntersection( otherRange );
 
 			expect( common.isEqual( otherRange ) ).to.be.true;
 		} );
 
 		it( 'should return a range equal to the common part of ranges - original range is contained by the other range', () => {
-			const otherRange = new Range( new Position( [ 3 ], root ), new Position( [ 6 ], root ) );
+			const otherRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 6 ] ) );
 			const common = range.getIntersection( otherRange );
 
 			expect( common.isEqual( range ) ).to.be.true;
 		} );
 
 		it( 'should return a range equal to the common part of ranges - original range intersects with the other range', () => {
-			const otherRange = new Range( new Position( [ 3 ], root ), new Position( [ 4, 7 ], root ) );
+			const otherRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 4, 7 ] ) );
 			const common = range.getIntersection( otherRange );
 
 			expect( common.start.path ).to.deep.equal( [ 3, 2 ] );

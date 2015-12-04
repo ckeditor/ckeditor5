@@ -21,11 +21,28 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 		/**
 		 * Creates a position.
 		 *
-		 * @param {Array.<Number>} path Position path. Must contain at least one item. See {@link #path} property for more information.
 		 * @param {document.RootElement} root Root element for the path. Note that this element can not have a parent.
+		 * @param {Array.<Number>} path Position path. Must contain at least one item. See {@link #path} property for more information.
 		 * @constructor
 		 */
-		constructor( path, root ) {
+		constructor( root, path ) {
+			if ( !( root instanceof RootElement ) ) {
+				/**
+				 * Position root has to be an instance of RootElement.
+				 *
+				 * @error position-root-not-rootelement
+				 * @param root
+				 */
+				throw new CKEditorError( 'position-root-not-rootelement: Position root has to be an instance of RootElement.', { root: root } );
+			}
+
+			/**
+			 * Root element for the path. Note that this element can not have a parent.
+			 *
+			 * @type {document.RootElement}
+			 */
+			this.root = root;
+
 			if ( !( path instanceof Array ) || path.length === 0 ) {
 				/**
 				 * Position path must be an Array with at least one item.
@@ -54,23 +71,6 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 			 * @type {Number[]}
 			 */
 			this.path = path;
-
-			if ( !( root instanceof RootElement ) ) {
-				/**
-				 * Position root has to be an instance of RootElement.
-				 *
-				 * @error position-root-not-rootelement
-				 * @param root
-				 */
-				throw new CKEditorError( 'position-root-not-rootelement: Position root has to be an instance of RootElement.', { root: root } );
-			}
-
-			/**
-			 * Root element for the path. Note that this element can not have a parent.
-			 *
-			 * @type {document.RootElement}
-			 */
-			this.root = root;
 		}
 
 		/**
@@ -135,7 +135,7 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 		 * @returns {document.Position} Cloned {@link document.Position position}.
 		 */
 		clone() {
-			return new Position( this.path.slice(), this.root );
+			return new Position( this.root, this.path.slice() );
 		}
 
 		/**
@@ -406,7 +406,7 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 
 			path.push( offset );
 
-			return new Position( path, parent.root );
+			return new Position( parent.root, path );
 		}
 
 		/**
@@ -419,9 +419,9 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 		 *
 		 * Example:
 		 *
-		 * 	let original = new Position( [ 2, 3, 1 ], root );
-		 * 	let source = new Position( [ 2, 2 ], root );
-		 * 	let target = new Position( [ 1, 1, 3 ], otherRoot );
+		 * 	let original = new Position( root, [ 2, 3, 1 ] );
+		 * 	let source = new Position( root, [ 2, 2 ] );
+		 * 	let target = new Position( otherRoot, [ 1, 1, 3 ] );
 		 * 	let combined = original.getCombined( source, target );
 		 * 	// combined.path is [ 1, 1, 4, 1 ], combined.root is otherRoot
 		 *
