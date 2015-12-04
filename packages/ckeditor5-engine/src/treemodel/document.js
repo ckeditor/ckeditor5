@@ -43,9 +43,6 @@ CKEDITOR.define( [
 			 */
 			this.roots = new Map();
 
-			// Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
-			this.createRoot( graveyardSymbol );
-
 			/**
 			 * Document version. It starts from `0` and every operation increases the version number. It is used to ensure that
 			 * operations are applied on the proper document version. If the {@link treeModel.operation.Operation#baseVersion} will
@@ -55,6 +52,9 @@ CKEDITOR.define( [
 			 * @property {Number} version
 			 */
 			this.version = 0;
+
+			// Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
+			this.createRoot( graveyardSymbol );
 
 			/**
 			 * Array of pending changes. See: {@link #enqueueChanges}.
