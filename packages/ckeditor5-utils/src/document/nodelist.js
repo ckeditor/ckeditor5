@@ -94,6 +94,23 @@ CKEDITOR.define( [
 		}
 
 		/**
+		 * Number of nodes in the node list.
+		 *
+		 * @readonly
+		 * @property {Number} length
+		 */
+		get length() {
+			return this._nodes.length;
+		}
+
+		/**
+		 * Node list iterator.
+		 */
+		[ Symbol.iterator ]() {
+			return this._nodes[ Symbol.iterator ]();
+		}
+
+		/**
 		 * Returns node at the given index.
 		 *
 		 * @param {Number} index Node index.
@@ -101,6 +118,16 @@ CKEDITOR.define( [
 		 */
 		get( index ) {
 			return this._nodes[ index ];
+		}
+
+		/**
+		 * Search for the node in the node list.
+		 *
+		 * @param {document.Node} node Node to find.
+		 * @returns {Number} Position of the node in the list.
+		 */
+		indexOf( node ) {
+			return this._nodes.indexOf( node );
 		}
 
 		/**
@@ -122,33 +149,6 @@ CKEDITOR.define( [
 		 */
 		remove( index, number ) {
 			return new NodeList( this._nodes.splice( index, number ) );
-		}
-
-		/**
-		 * Search for the node in the node list.
-		 *
-		 * @param {document.Node} node Node to find.
-		 * @returns {Number} Position of the node in the list.
-		 */
-		indexOf( node ) {
-			return this._nodes.indexOf( node );
-		}
-
-		/**
-		 * Number of nodes in the node list.
-		 *
-		 * @readonly
-		 * @property {Number} length
-		 */
-		get length() {
-			return this._nodes.length;
-		}
-
-		/**
-		 * Node list iterator.
-		 */
-		[ Symbol.iterator ]() {
-			return this._nodes[ Symbol.iterator ]();
 		}
 	}
 

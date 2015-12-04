@@ -7,10 +7,9 @@
 
 CKEDITOR.define( [
 	'document/operation/operation',
-	'document/nodelist',
 	'ckeditorerror',
 	'utils'
-], ( Operation, NodeList, CKEditorError, utils ) => {
+], ( Operation, CKEditorError, utils ) => {
 	/**
 	 * Operation to move list of subsequent nodes from one position in the document to another.
 	 *
@@ -51,6 +50,14 @@ CKEDITOR.define( [
 			this.howMany = howMany;
 		}
 
+		clone() {
+			return new MoveOperation( this.sourcePosition.clone(), this.targetPosition.clone(), this.howMany, this.baseVersion );
+		}
+
+		getReversed() {
+			return new MoveOperation( this.targetPosition.clone(), this.sourcePosition.clone(), this.howMany, this.baseVersion + 1 );
+		}
+
 		_execute() {
 			let sourceElement = this.sourcePosition.parent;
 			let targetElement = this.targetPosition.parent;
@@ -88,11 +95,8 @@ CKEDITOR.define( [
 					'operation-move-range-into-itself: Trying to move a range of nodes to the inside of that range.'
 				);
 			} else {
-				const sourcePath = this.sourcePosition.getParentPath();
-				const targetPath = this.targetPosition.getParentPath();
-
-				if ( utils.compareArrays( sourcePath, targetPath ) == utils.compareArrays.PREFIX ) {
-					let i = sourcePath.length;
+				if ( utils.compareArrays( this.sourcePosition.getParentPath(), this.targetPosition.getParentPath() ) == utils.compareArrays.PREFIX ) {
+					let i = this.sourcePosition.path.length - 1;
 
 					if ( this.targetPosition.path[ i ] >= sourceOffset && this.targetPosition.path[ i ] < sourceOffset + this.howMany ) {
 						/**
@@ -117,10 +121,6 @@ CKEDITOR.define( [
 			const removedNodes = sourceElement.removeChildren( sourceOffset, this.howMany );
 
 			targetElement.insertChildren( targetOffset, removedNodes );
-		}
-
-		getReversed() {
-			return new MoveOperation( this.targetPosition, this.sourcePosition, this.howMany, this.baseVersion + 1 );
 		}
 	}
 

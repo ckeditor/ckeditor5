@@ -5,7 +5,10 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'document/operation/operation', 'ckeditorerror' ], ( Operation, CKEditorError ) => {
+CKEDITOR.define( [
+	'document/operation/operation',
+	'ckeditorerror'
+], ( Operation, CKEditorError ) => {
 	/**
 	 * Operation to change nodes' attribute. Using this class you can add, remove or change value of the attribute.
 	 *
@@ -56,6 +59,14 @@ CKEDITOR.define( [ 'document/operation/operation', 'ckeditorerror' ], ( Operatio
 			 * @type {document.Attribute|null}
 			 */
 			this.newAttr = newAttr;
+		}
+
+		clone() {
+			return new ChangeOperation( this.range.clone(), this.oldAttr, this.newAttr, this.baseVersion );
+		}
+
+		getReversed() {
+			return new ChangeOperation( this.range, this.newAttr, this.oldAttr, this.baseVersion + 1 );
 		}
 
 		_execute() {
@@ -119,10 +130,6 @@ CKEDITOR.define( [ 'document/operation/operation', 'ckeditorerror' ], ( Operatio
 					value.node.setAttr( newAttr );
 				}
 			}
-		}
-
-		getReversed() {
-			return new ChangeOperation( this.range, this.newAttr, this.oldAttr, this.baseVersion + 1 );
 		}
 	}
 
