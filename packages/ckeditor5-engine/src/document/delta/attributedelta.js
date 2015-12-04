@@ -8,20 +8,20 @@
 CKEDITOR.define( [
 	'document/delta/delta',
 	'document/delta/register',
-	'document/operation/changeoperation',
+	'document/operation/attributeoperation',
 	'document/position',
 	'document/range',
 	'document/attribute',
 	'document/element'
-], ( Delta, register, ChangeOperation, Position, Range, Attribute, Element ) => {
+], ( Delta, register, AttributeOperation, Position, Range, Attribute, Element ) => {
 	/**
 	 * To provide specific OT behavior and better collisions solving, change methods ({@link document.Batch#setAttr}
-	 * and {@link document.Batch#removeAttr}) use `ChangeDelta` class which inherits from the `Delta` class and may
+	 * and {@link document.Batch#removeAttr}) use `AttributeDelta` class which inherits from the `Delta` class and may
 	 * overwrite some methods.
 	 *
-	 * @class document.delta.ChangeDelta
+	 * @class document.delta.AttributeDelta
 	 */
-	class ChangeDelta extends Delta {}
+	class AttributeDelta extends Delta {}
 
 	/**
 	 * Sets the value of the attribute of the node or on the range.
@@ -34,7 +34,7 @@ CKEDITOR.define( [
 	 * @param {document.Node|document.Range} nodeOrRange Node or range on which the attribute will be set.
 	 */
 	register( 'setAttr', function( key, value, nodeOrRange ) {
-		change( this, key, value, nodeOrRange );
+		attribute( this, key, value, nodeOrRange );
 
 		return this;
 	} );
@@ -49,13 +49,13 @@ CKEDITOR.define( [
 	 * @param {document.Node|document.Range} nodeOrRange Node or range on which the attribute will be removed.
 	 */
 	register( 'removeAttr', function( key, nodeOrRange ) {
-		change( this, key, null, nodeOrRange );
+		attribute( this, key, null, nodeOrRange );
 
 		return this;
 	} );
 
-	function change( batch, key, value, nodeOrRange ) {
-		const delta = new ChangeDelta();
+	function attribute( batch, key, value, nodeOrRange ) {
+		const delta = new AttributeDelta();
 
 		if ( nodeOrRange instanceof Range ) {
 			changeRange( batch.doc, delta, key, value, nodeOrRange );
@@ -81,7 +81,7 @@ CKEDITOR.define( [
 				range = new Range( Position.createBefore( node ), Position.createAfter( node ) );
 			}
 
-			const operation = new ChangeOperation(
+			const operation = new AttributeOperation(
 					range,
 					previousValue ? new Attribute( key, previousValue ) : null,
 					value ? new Attribute( key, value ) : null,
@@ -93,7 +93,7 @@ CKEDITOR.define( [
 		}
 	}
 
-	// Because change operation needs to have the same attribute value on the whole range, this function split the range
+	// Because attribute operation needs to have the same attribute value on the whole range, this function split the range
 	// into smaller parts.
 	function changeRange( doc, delta, key, value, range ) {
 		// Position of the last split, the beginning of the new range.
@@ -139,7 +139,7 @@ CKEDITOR.define( [
 		}
 
 		function addOperation() {
-			const operation = new ChangeOperation(
+			const operation = new AttributeOperation(
 					new Range( lastSplitPosition, position ),
 					valueBefore ? new Attribute( key, valueBefore ) : null,
 					value ? new Attribute( key, value ) : null,
@@ -151,5 +151,5 @@ CKEDITOR.define( [
 		}
 	}
 
-	return ChangeDelta;
+	return AttributeDelta;
 } );

@@ -13,7 +13,7 @@ CKEDITOR.define( [
 	'document/delta/batch-base',
 	'document/delta/insertdelta',
 	'document/delta/removedelta',
-	'document/delta/changedelta',
+	'document/delta/attributedelta',
 	'document/delta/splitdelta',
 	'document/delta/mergedelta'
 ], ( Batch ) => {

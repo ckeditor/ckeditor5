@@ -33,7 +33,7 @@ CKEDITOR.define( [ 'document/attribute', 'utils', 'ckeditorerror' ], ( Attribute
 			/**
 			 * Attributes set.
 			 *
-			 * Attributes of nodes attached to the document can be changed only be the {@link document.operation.ChangeOperation}.
+			 * Attributes of nodes attached to the document can be changed only be the {@link document.operation.AttributeOperation}.
 			 *
 			 * @private
 			 * @property {Set} _attrs
