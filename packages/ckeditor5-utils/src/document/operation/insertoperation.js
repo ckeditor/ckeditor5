@@ -55,14 +55,6 @@ CKEDITOR.define( [
 			return new InsertOperation( this.position, this.nodeList, this.baseVersion );
 		}
 
-		_execute() {
-			this.position.parent.insertChildren( this.position.offset, this.nodeList );
-
-			return {
-				range: new Range( this.position, Position.createFromPositionAndShift( this.position, this.nodeList.length ) )
-			};
-		}
-
 		getReversed() {
 			// Because of circular dependencies we need to re-require remove operation here.
 			const RemoveOperation = CKEDITOR.require( 'document/operation/removeoperation' );
@@ -72,6 +64,10 @@ CKEDITOR.define( [
 
 		_execute() {
 			this.position.parent.insertChildren( this.position.offset, this.nodeList );
+
+			return {
+				range: new Range( this.position, Position.createFromPositionAndShift( this.position, this.nodeList.length ) )
+			};
 		}
 	}
 
