@@ -11,9 +11,10 @@ CKEDITOR.define( [
 	'document/operation/attributeoperation',
 	'document/position',
 	'document/range',
+	'document/positioniterator',
 	'document/attribute',
 	'document/element'
-], ( Delta, register, AttributeOperation, Position, Range, Attribute, Element ) => {
+], ( Delta, register, AttributeOperation, Position, Range, PositionIterator, Attribute, Element ) => {
 	/**
 	 * To provide specific OT behavior and better collisions solving, change methods ({@link document.Batch#setAttr}
 	 * and {@link document.Batch#removeAttr}) use `AttributeDelta` class which inherits from the `Delta` class and may
@@ -113,21 +114,25 @@ CKEDITOR.define( [
 		let next = iterator.next();
 
 		while ( !next.done ) {
-			valueAfter = next.value.node.getAttr( key );
+			// We check values only when the range contains given element, that is when the iterator "enters" the element.
+			// To prevent double-checking or not needed checking, we filter-out iterator values for ELEMENT_LEAVE position.
+			if ( next.value.type != PositionIterator.ELEMENT_LEAVE ) {
+				valueAfter = next.value.node.getAttr( key );
 
-			// At the first run of the iterator the position in undefined. We also do not have a valueBefore, but
-			// because valueAfter may be null, valueBefore may be equal valueAfter ( undefined == null ).
-			if ( position && valueBefore != valueAfter ) {
-				// if valueBefore == value there is nothing to change, so we add operation only if these values are different.
-				if ( valueBefore != value ) {
-					addOperation();
+				// At the first run of the iterator the position in undefined. We also do not have a valueBefore, but
+				// because valueAfter may be null, valueBefore may be equal valueAfter ( undefined == null ).
+				if ( position && valueBefore != valueAfter ) {
+					// if valueBefore == value there is nothing to change, so we add operation only if these values are different.
+					if ( valueBefore != value ) {
+						addOperation();
+					}
+
+					lastSplitPosition = position;
 				}
 
-				lastSplitPosition = position;
+				position = iterator.position;
+				valueBefore = valueAfter;
 			}
-
-			position = iterator.position;
-			valueBefore = valueAfter;
 
 			next = iterator.next();
 		}
