@@ -10,17 +10,17 @@
 const modules = bender.amd.require(
 	'document/document',
 	'document/rootelement',
-	'document/transaction',
+	'document/batch',
 	'ckeditorerror'
 );
 
 describe( 'Document', () => {
-	let Document, RootElement, Transaction, CKEditorError;
+	let Document, RootElement, Batch, CKEditorError;
 
 	before( () => {
 		Document = modules[ 'document/document' ];
 		RootElement = modules[ 'document/rootelement' ];
-		Transaction = modules[ 'document/transaction' ];
+		Batch = modules[ 'document/batch' ];
 		CKEditorError = modules.ckeditorerror;
 	} );
 
@@ -112,12 +112,12 @@ describe( 'Document', () => {
 		} );
 	} );
 
-	describe( 'createTransaction', () => {
-		it( 'should create a new transaction with the document property', () => {
-			const transaction = document.createTransaction();
+	describe( 'batch', () => {
+		it( 'should create a new batch with the document property', () => {
+			const batch = document.batch();
 
-			expect( transaction ).to.be.instanceof( Transaction );
-			expect( transaction ).to.have.property( 'doc' ).that.equals( document );
+			expect( batch ).to.be.instanceof( Batch );
+			expect( batch ).to.have.property( 'doc' ).that.equals( document );
 		} );
 	} );
 } );

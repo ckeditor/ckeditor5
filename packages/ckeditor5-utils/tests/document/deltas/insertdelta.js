@@ -11,7 +11,7 @@ const modules = bender.amd.require(
 	'document/document',
 	'document/position' );
 
-describe( 'Transaction', () => {
+describe( 'Batch', () => {
 	let Document, Position;
 
 	let doc, root;
@@ -28,7 +28,7 @@ describe( 'Transaction', () => {
 
 	it( 'should insert text', () => {
 		const position = new Position( root, [ 0 ] );
-		doc.createTransaction().insert( position, 'foo' );
+		doc.batch().insert( position, 'foo' );
 
 		expect( root.getChildCount() ).to.equal( 3 );
 		expect( root.getChild( 0 ).character ).to.equal( 'f' );
@@ -38,9 +38,9 @@ describe( 'Transaction', () => {
 
 	it( 'should be chainable', () => {
 		const position = new Position( root, [ 0 ] );
-		const transaction = doc.createTransaction();
+		const batch = doc.batch();
 
-		const chain = transaction.insert( position, 'foo' );
-		expect( chain ).to.equal( transaction );
+		const chain = batch.insert( position, 'foo' );
+		expect( chain ).to.equal( batch );
 	} );
 } );

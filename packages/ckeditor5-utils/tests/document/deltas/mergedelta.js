@@ -18,7 +18,7 @@ const modules = bender.amd.require(
 	'document/attribute',
 	'ckeditorerror' );
 
-describe( 'Transaction', () => {
+describe( 'Batch', () => {
 	let Document, Position, Element, Attribute, CKEditorError;
 
 	let doc, root, p1, p2;
@@ -43,7 +43,7 @@ describe( 'Transaction', () => {
 
 	describe( 'merge', () => {
 		it( 'should merge foo and bar into foobar', () => {
-			doc.createTransaction().merge( new Position( root, [ 1 ] ) );
+			doc.batch().merge( new Position( root, [ 1 ] ) );
 
 			expect( root.getChildCount() ).to.equal( 1 );
 			expect( root.getChild( 0 ).name ).to.equal( 'p' );
@@ -60,21 +60,21 @@ describe( 'Transaction', () => {
 
 		it( 'should throw if there is no element after', () => {
 			expect( () => {
-				doc.createTransaction().merge( new Position( root, [ 2 ] ) );
-			} ).to.throw( CKEditorError, /^transaction-merge-no-element-after/ );
+				doc.batch().merge( new Position( root, [ 2 ] ) );
+			} ).to.throw( CKEditorError, /^batch-merge-no-element-after/ );
 		} );
 
 		it( 'should throw if there is no element before', () => {
 			expect( () => {
-				doc.createTransaction().merge( new Position( root, [ 0, 2 ] ) );
-			} ).to.throw( CKEditorError, /^transaction-merge-no-element-before/ );
+				doc.batch().merge( new Position( root, [ 0, 2 ] ) );
+			} ).to.throw( CKEditorError, /^batch-merge-no-element-before/ );
 		} );
 
 		it( 'should be chainable', () => {
-			const transaction = doc.createTransaction();
+			const batch = doc.batch();
 
-			const chain = transaction.merge( new Position( root, [ 1 ] ) );
-			expect( chain ).to.equal( transaction );
+			const chain = batch.merge( new Position( root, [ 1 ] ) );
+			expect( chain ).to.equal( batch );
 		} );
 	} );
 } );

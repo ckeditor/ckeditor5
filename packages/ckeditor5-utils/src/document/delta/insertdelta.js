@@ -11,7 +11,7 @@ CKEDITOR.define( [
 	'document/operation/insertoperation'
 ], ( Delta, register, InsertOperation ) => {
 	/**
-	 * To provide specific OT behavior and better collisions solving, the {@link document.Transaction#insert} method
+	 * To provide specific OT behavior and better collisions solving, the {@link document.Batch#insert} method
 	 * uses the `InsertDelta` class which inherits from the `Delta` class and may overwrite some methods.
 	 *
 	 * @class document.delta.InsertDelta
@@ -22,7 +22,7 @@ CKEDITOR.define( [
 	 * Inserts a node or nodes at the given position.
 	 *
 	 * @chainable
-	 * @memberOf document.Transaction
+	 * @memberOf document.Batch
 	 * @method insert
 	 * @param {document.Position} position Position of insertion.
 	 * @param {document.Node|document.Text|document.NodeList|String|Iterable} nodes The list of nodes to be inserted.

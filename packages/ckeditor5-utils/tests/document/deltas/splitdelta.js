@@ -18,7 +18,7 @@ const modules = bender.amd.require(
 	'document/attribute',
 	'ckeditorerror' );
 
-describe( 'Transaction', () => {
+describe( 'Batch', () => {
 	let Document, Position, Element, Attribute, CKEditorError;
 
 	let doc, root, p;
@@ -42,7 +42,7 @@ describe( 'Transaction', () => {
 
 	describe( 'split', () => {
 		it( 'should split foobar to foo and bar', () => {
-			doc.createTransaction().split( new Position( root, [ 0, 3 ] ) );
+			doc.batch().split( new Position( root, [ 0, 3 ] ) );
 
 			expect( root.getChildCount() ).to.equal( 2 );
 
@@ -64,7 +64,7 @@ describe( 'Transaction', () => {
 		} );
 
 		it( 'should create an empty paragraph if we split at the end', () => {
-			doc.createTransaction().split( new Position( root, [ 0, 6 ] ) );
+			doc.batch().split( new Position( root, [ 0, 6 ] ) );
 
 			expect( root.getChildCount() ).to.equal( 2 );
 
@@ -87,15 +87,15 @@ describe( 'Transaction', () => {
 
 		it( 'should throw if we try to split a root', () => {
 			expect( () => {
-				doc.createTransaction().split( new Position( root, [ 0 ] ) );
-			} ).to.throw( CKEditorError, /^transaction-split-root/ );
+				doc.batch().split( new Position( root, [ 0 ] ) );
+			} ).to.throw( CKEditorError, /^batch-split-root/ );
 		} );
 
 		it( 'should be chainable', () => {
-			const transaction = doc.createTransaction();
+			const batch = doc.batch();
 
-			const chain = transaction.split( new Position( root, [ 0, 3 ] ) );
-			expect( chain ).to.equal( transaction );
+			const chain = batch.split( new Position( root, [ 0, 3 ] ) );
+			expect( chain ).to.equal( batch );
 		} );
 	} );
 } );

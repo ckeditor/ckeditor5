@@ -15,7 +15,7 @@ CKEDITOR.define( [
 	'ckeditorerror'
 ], ( Delta, register, Position, Element, RemoveOperation, MoveOperation, CKEditorError ) => {
 	/**
-	 * To provide specific OT behavior and better collisions solving, {@link document.Transaction#merge} method
+	 * To provide specific OT behavior and better collisions solving, {@link document.Batch#merge} method
 	 * uses the `MergeDelta` class which inherits from the `Delta` class and may overwrite some methods.
 	 *
 	 * @class document.delta.MergeDelta
@@ -25,12 +25,12 @@ CKEDITOR.define( [
 	/**
 	 * Merges two siblings at the given position.
 	 *
-	 * Node before and after the position have to be an element. Otherwise `transaction-merge-no-element-before` or
-	 * `transaction-merge-no-element-after` error will be thrown.
+	 * Node before and after the position have to be an element. Otherwise `batch-merge-no-element-before` or
+	 * `batch-merge-no-element-after` error will be thrown.
 	 *
 	 * @chainable
 	 * @method merge
-	 * @memberOf document.Transaction
+	 * @memberOf document.Batch
 	 * @param {document.Position} position Position of merge.
 	 */
 	register( 'merge', function( position ) {
@@ -42,20 +42,20 @@ CKEDITOR.define( [
 			/**
 			 * Node before merge position must be an element.
 			 *
-			 * @error transaction-merge-no-element-before
+			 * @error batch-merge-no-element-before
 			 */
 			throw new CKEditorError(
-				'transaction-merge-no-element-before: Node before merge position must be an element.' );
+				'batch-merge-no-element-before: Node before merge position must be an element.' );
 		}
 
 		if ( !( nodeAfter instanceof Element ) ) {
 			/**
 			 * Node after merge position must be an element.
 			 *
-			 * @error transaction-merge-no-element-after
+			 * @error batch-merge-no-element-after
 			 */
 			throw new CKEditorError(
-				'transaction-merge-no-element-after: Node after merge position must be an element.' );
+				'batch-merge-no-element-after: Node after merge position must be an element.' );
 		}
 
 		const positionAfter = Position.createFromParentAndOffset( nodeAfter, 0 );

@@ -11,7 +11,7 @@ const modules = bender.amd.require(
 	'document/document',
 	'document/position' );
 
-describe( 'Transaction', () => {
+describe( 'Batch', () => {
 	let Document, Position;
 
 	let doc, root;
@@ -30,7 +30,7 @@ describe( 'Transaction', () => {
 	describe( 'remove', () => {
 		it( 'should remove one element', () => {
 			const position = new Position( root, [ 1 ] );
-			doc.createTransaction().remove( position );
+			doc.batch().remove( position );
 
 			expect( root.getChildCount() ).to.equal( 5 );
 			expect( root.getChild( 0 ).character ).to.equal( 'f' );
@@ -42,7 +42,7 @@ describe( 'Transaction', () => {
 
 		it( 'should remove 3 elements', () => {
 			const position = new Position( root, [ 1 ] );
-			doc.createTransaction().remove( position, 3 );
+			doc.batch().remove( position, 3 );
 
 			expect( root.getChildCount() ).to.equal( 3 );
 			expect( root.getChild( 0 ).character ).to.equal( 'f' );
@@ -52,10 +52,10 @@ describe( 'Transaction', () => {
 
 		it( 'should be chainable', () => {
 			const position = new Position( root, [ 1 ] );
-			const transaction = doc.createTransaction();
+			const batch = doc.batch();
 
-			const chain = transaction.remove( position );
-			expect( chain ).to.equal( transaction );
+			const chain = batch.remove( position );
+			expect( chain ).to.equal( batch );
 		} );
 	} );
 } );

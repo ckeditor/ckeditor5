@@ -12,7 +12,7 @@ CKEDITOR.define( [], () => {
 	 * Delta is a single, from the user action point of view, change in the editable document, like insert, split or
 	 * rename element. Delta is composed of operations, which are unit changes needed to be done to execute user action.
 	 *
-	 * Multiple deltas are grouped into a single {@link document.Transaction}.
+	 * Multiple deltas are grouped into a single {@link document.Batch}.
 	 *
 	 * @class document.delta.Delta
 	 */
@@ -24,13 +24,13 @@ CKEDITOR.define( [], () => {
 		 */
 		constructor() {
 			/**
-			 * {@link document.Transaction} which delta is a part of. This property is null by default and set by the
-			 * {@link Document.Transaction#addDelta} method.
+			 * {@link document.Batch} which delta is a part of. This property is null by default and set by the
+			 * {@link Document.Batch#addDelta} method.
 			 *
 			 * @readonly
-			 * @type {document.Transaction}
+			 * @type {document.Batch}
 			 */
-			this.transaction = null;
+			this.batch = null;
 
 			/**
 			 * Array of operations which compose delta.
