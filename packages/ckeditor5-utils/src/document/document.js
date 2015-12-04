@@ -92,8 +92,7 @@ CKEDITOR.define( [
 
 			this.version++;
 
-			changes.type = operation.type;
-			this.fire( 'change', changes );
+			this.fire( 'change', operation.type, changes );
 		}
 
 		/**
@@ -154,6 +153,32 @@ CKEDITOR.define( [
 
 			return this.roots.get( name );
 		}
+
+		/**
+		 * Fired when document changes by applying an operation.
+		 *
+		 * There are 5 types of change:
+		 *
+		 * * 'insert' when nodes are inserted,
+		 * * 'remove' when nodes are removed,
+		 * * 'reinsert' when remove is undone,
+		 * * 'move' when nodes are moved,
+		 * * 'attr' when attributes change.
+		 *
+		 * Change event is fired after the change is done.
+		 *
+		 * @event change
+		 * @param {String} type Change type, possible option: 'insert', 'remove', 'reinsert', 'move', 'attr'.
+		 * @param {Object} changeInfo Additional informations about the change.
+		 * @param {document.Range} changeInfo.range Range containing changed nodes. Note that for 'remove' the range will be in the
+		 * {@link #_graveyard graveyard root}.
+		 * @param {document.Range} [changeInfo.sourcePosition] Source position. For 'remove', 'reinsert' and 'move'. This property is
+		 * undefined for other node types. Note that for 'reinsert' the source position will be in the {@link #_graveyard graveyard root}.
+		 * @param {document.Attribute} [changeInfo.oldAttr] Only for 'attr' type. If the type is 'attr' and `oldAttr` is undefined it means
+		 * that new attribute was inserted. Otherwise it contains changed or removed attribute.
+		 * @param {document.Attribute} [changeInfo.newAttr] Only for 'attr' type. If the type is 'attr' and `newAttr` is undefined it means
+		 * that attribute was removed. Otherwise it contains changed or inserted attribute.
+		 */
 	}
 
 	utils.extend( Document.prototype, EmitterMixin );

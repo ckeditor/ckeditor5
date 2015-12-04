@@ -40,17 +40,19 @@ describe( 'Document change event', () => {
 		RemoveOperation = modules[ 'document/operation/removeoperation' ];
 	} );
 
-	let doc, root, graveyard, changes;
+	let doc, root, graveyard, types, changes;
 
 	beforeEach( () => {
 		doc = new Document();
 		root = doc.createRoot( 'root' );
 		graveyard = doc._graveyard;
 
+		types = [];
 		changes = [];
 
-		doc.on( 'change', ( evt, data ) => {
-			changes.push( data );
+		doc.on( 'change', ( evt, type, change ) => {
+			types.push( type );
+			changes.push( change );
 		} );
 	} );
 
@@ -58,7 +60,7 @@ describe( 'Document change event', () => {
 		doc.applyOperation( new InsertOperation( new Position( [ 0 ], root ), 'foo', doc.version ) );
 
 		expect( changes ).to.have.length( 1 );
-		expect( changes[ 0 ].type ).to.equal( 'insert' );
+		expect( types[ 0 ] ).to.equal( 'insert' );
 		expect( changes[ 0 ].range ).to.deep.equal( Range.createFromParentsAndOffsets( root, 0, root, 3 ) );
 	} );
 
@@ -67,7 +69,7 @@ describe( 'Document change event', () => {
 		doc.applyOperation( new InsertOperation( new Position( [ 0 ], root ), element, doc.version ) );
 
 		expect( changes ).to.have.length( 1 );
-		expect( changes[ 0 ].type ).to.equal( 'insert' );
+		expect( types[ 0 ] ).to.equal( 'insert' );
 		expect( changes[ 0 ].range ).to.deep.equal( Range.createFromParentsAndOffsets( root, 0, root, 1 ) );
 	} );
 
@@ -76,7 +78,7 @@ describe( 'Document change event', () => {
 		doc.applyOperation( new InsertOperation( new Position( [ 0 ], root ), [ element, 'foo' ], doc.version ) );
 
 		expect( changes ).to.have.length( 1 );
-		expect( changes[ 0 ].type ).to.equal( 'insert' );
+		expect( types[ 0 ] ).to.equal( 'insert' );
 		expect( changes[ 0 ].range ).to.deep.equal( Range.createFromParentsAndOffsets( root, 0, root, 4 ) );
 	} );
 
@@ -98,7 +100,7 @@ describe( 'Document change event', () => {
 		);
 
 		expect( changes ).to.have.length( 1 );
-		expect( changes[ 0 ].type ).to.equal( 'move' );
+		expect( types[ 0 ] ).to.equal( 'move' );
 		expect( changes[ 0 ].range ).to.deep.equal( Range.createFromParentsAndOffsets( p2, 0, p2, 3 ) );
 		expect( changes[ 0 ].sourcePosition ).to.deep.equal( Position.createFromParentAndOffset( p1, 0 ) );
 	} );
@@ -114,11 +116,11 @@ describe( 'Document change event', () => {
 
 		expect( changes ).to.have.length( 2 );
 
-		expect( changes[ 0 ].type ).to.equal( 'remove' );
+		expect( types[ 0 ] ).to.equal( 'remove' );
 		expect( changes[ 0 ].range ).to.deep.equal( Range.createFromParentsAndOffsets( graveyard, 0, graveyard, 3 ) );
 		expect( changes[ 0 ].sourcePosition ).to.deep.equal( Position.createFromParentAndOffset( root, 0 ) );
 
-		expect( changes[ 1 ].type ).to.equal( 'reinsert' );
+		expect( types[ 1 ] ).to.equal( 'reinsert' );
 		expect( changes[ 1 ].range ).to.deep.equal( Range.createFromParentsAndOffsets( root, 0, root, 3 ) );
 		expect( changes[ 1 ].sourcePosition ).to.deep.equal( Position.createFromParentAndOffset( graveyard, 0 ) );
 	} );
@@ -136,7 +138,7 @@ describe( 'Document change event', () => {
 		);
 
 		expect( changes ).to.have.length( 1 );
-		expect( changes[ 0 ].type ).to.equal( 'attr' );
+		expect( types[ 0 ] ).to.equal( 'attr' );
 		expect( changes[ 0 ].range ).to.deep.equal( Range.createFromParentsAndOffsets( root, 0, root, 3 ) );
 		expect( changes[ 0 ].oldAttr ).to.be.undefined;
 		expect( changes[ 0 ].newAttr ).to.deep.equal( new Attribute( 'key', 'new' ) );
@@ -156,7 +158,7 @@ describe( 'Document change event', () => {
 		);
 
 		expect( changes ).to.have.length( 1 );
-		expect( changes[ 0 ].type ).to.equal( 'attr' );
+		expect( types[ 0 ] ).to.equal( 'attr' );
 		expect( changes[ 0 ].range ).to.deep.equal( Range.createFromParentsAndOffsets( root, 0, elem, 0 ) );
 		expect( changes[ 0 ].oldAttr ).to.deep.equal( new Attribute( 'key', 'old' ) );
 		expect( changes[ 0 ].newAttr ).to.be.undefined;
@@ -176,7 +178,7 @@ describe( 'Document change event', () => {
 		);
 
 		expect( changes ).to.have.length( 1 );
-		expect( changes[ 0 ].type ).to.equal( 'attr' );
+		expect( types[ 0 ] ).to.equal( 'attr' );
 		expect( changes[ 0 ].range ).to.deep.equal( Range.createFromParentsAndOffsets( root, 0, elem, 0 ) );
 		expect( changes[ 0 ].oldAttr ).to.deep.equal( new Attribute( 'key', 'old' ) );
 		expect( changes[ 0 ].newAttr ).to.deep.equal( new Attribute( 'key', 'new' ) );
