@@ -9,7 +9,7 @@ CKEDITOR.define( [ 'document/node' ], ( Node ) => {
 	/**
 	 * Data structure for character stored in the tree data model.
 	 *
-	 * @class Character
+	 * @class document.Character
 	 */
 	class Character extends Node {
 		/**
