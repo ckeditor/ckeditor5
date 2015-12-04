@@ -207,8 +207,8 @@ CKEDITOR.define( [
 				return ranges.reverse().map( ( range ) => {
 					return new MoveOperation(
 						range.start,
-						newTargetPosition.clone(),
 						range.end.offset - range.start.offset,
+						newTargetPosition.clone(),
 						a.baseVersion
 					);
 				} );
@@ -246,8 +246,8 @@ CKEDITOR.define( [
 					return [
 						new MoveOperation(
 							a.sourcePosition._getCombined( b.sourcePosition, b.targetPosition ),
-							a.targetPosition._getCombined( b.sourcePosition, b.targetPosition ),
 							a.howMany,
+							a.targetPosition._getCombined( b.sourcePosition, b.targetPosition ),
 							a.baseVersion
 						)
 					];
@@ -318,8 +318,8 @@ CKEDITOR.define( [
 				return ranges.reverse().map( ( range ) => {
 					return new MoveOperation(
 						range.start,
-						newTargetPosition,
 						range.end.offset - range.start.offset,
+						newTargetPosition,
 						a.baseVersion
 					);
 				} );

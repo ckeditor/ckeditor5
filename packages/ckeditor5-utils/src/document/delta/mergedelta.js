@@ -61,7 +61,7 @@ CKEDITOR.define( [
 		const positionAfter = Position.createFromParentAndOffset( nodeAfter, 0 );
 		const positionBefore = Position.createFromParentAndOffset( nodeBefore, nodeBefore.getChildCount() );
 
-		const move = new MoveOperation( positionAfter, positionBefore, nodeAfter.getChildCount(), this.doc.version );
+		const move = new MoveOperation( positionAfter, nodeAfter.getChildCount(), positionBefore, this.doc.version );
 		this.doc.applyOperation( move );
 		delta.addOperation( move );
 

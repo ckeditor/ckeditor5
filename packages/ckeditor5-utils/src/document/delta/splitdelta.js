@@ -54,8 +54,8 @@ CKEDITOR.define( [
 
 		const move = new MoveOperation(
 			position,
-			Position.createFromParentAndOffset( copy, 0 ),
 			splitElement.getChildCount() - position.offset,
+			Position.createFromParentAndOffset( copy, 0 ),
 			this.doc.version
 		);
 

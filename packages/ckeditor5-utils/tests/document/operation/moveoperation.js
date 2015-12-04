@@ -56,8 +56,8 @@ describe( 'MoveOperation', () => {
 		doc.applyOperation(
 			new MoveOperation(
 				new Position( root, [ 0, 0 ] ),
-				new Position( root, [ 1, 0 ] ),
 				1,
+				new Position( root, [ 1, 0 ] ),
 				doc.version
 			)
 		);
@@ -77,8 +77,8 @@ describe( 'MoveOperation', () => {
 		doc.applyOperation(
 			new MoveOperation(
 				new Position( root, [ 2 ] ),
-				new Position( root, [ 1 ] ),
 				2,
+				new Position( root, [ 1 ] ),
 				doc.version
 			)
 		);
@@ -98,8 +98,8 @@ describe( 'MoveOperation', () => {
 		doc.applyOperation(
 			new MoveOperation(
 				new Position( root, [ 1 ] ),
-				new Position( root, [ 4 ] ),
 				2,
+				new Position( root, [ 4 ] ),
 				doc.version
 			)
 		);
@@ -119,7 +119,7 @@ describe( 'MoveOperation', () => {
 		let sourcePosition = new Position( root, [ 0 ] );
 		let targetPosition = new Position( root, [ 4 ] );
 
-		let operation = new MoveOperation( sourcePosition, targetPosition, nodeList.length, doc.version );
+		let operation = new MoveOperation( sourcePosition, nodeList.length, targetPosition, doc.version );
 
 		let reverse = operation.getReversed();
 
@@ -138,8 +138,8 @@ describe( 'MoveOperation', () => {
 
 		let operation = new MoveOperation(
 			new Position( root, [ 0, 0 ] ),
-			new Position( root, [ 1, 0 ] ),
 			1,
+			new Position( root, [ 1, 0 ] ),
 			doc.version
 		);
 
@@ -165,8 +165,8 @@ describe( 'MoveOperation', () => {
 
 		let operation = new MoveOperation(
 			new Position( root, [ 3 ] ),
-			new Position( root, [ 1 ] ),
 			3,
+			new Position( root, [ 1 ] ),
 			doc.version
 		);
 
@@ -180,8 +180,8 @@ describe( 'MoveOperation', () => {
 
 		let operation = new MoveOperation(
 			new Position( root, [ 2, 0 ] ),
-			new Position( root, [ 1 ] ),
 			3,
+			new Position( root, [ 1 ] ),
 			doc.version
 		);
 
@@ -195,8 +195,8 @@ describe( 'MoveOperation', () => {
 
 		let operation = new MoveOperation(
 			new Position( root, [ 1 ] ),
-			new Position( root, [ 2 ] ),
 			3,
+			new Position( root, [ 2 ] ),
 			doc.version
 		);
 
@@ -209,8 +209,8 @@ describe( 'MoveOperation', () => {
 
 		let operation = new MoveOperation(
 			new Position( root, [ 1 ] ),
-			new Position( root, [ 2, 0, 0 ] ),
 			3,
+			new Position( root, [ 2, 0, 0 ] ),
 			doc.version
 		);
 
@@ -223,8 +223,8 @@ describe( 'MoveOperation', () => {
 
 		let operation = new MoveOperation(
 			new Position( root, [ 1 ] ),
-			new Position( root, [ 2, 0 ] ),
 			1,
+			new Position( root, [ 2, 0 ] ),
 			doc.version
 		);
 
@@ -245,7 +245,7 @@ describe( 'MoveOperation', () => {
 		let howMany = 4;
 		let baseVersion = doc.version;
 
-		let op = new MoveOperation( sourcePosition, targetPosition, howMany, baseVersion );
+		let op = new MoveOperation( sourcePosition, howMany, targetPosition, baseVersion );
 
 		let clone = op.clone();
 

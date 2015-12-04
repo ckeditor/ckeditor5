@@ -38,8 +38,8 @@ describe( 'ReinsertOperation', () => {
 
 		operation = new ReinsertOperation(
 			graveyardPosition,
-			rootPosition,
 			2,
+			rootPosition,
 			doc.version
 		);
 	} );
