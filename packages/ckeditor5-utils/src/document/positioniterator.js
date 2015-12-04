@@ -148,6 +148,15 @@ CKEDITOR.define( [
 	}
 
 	/**
+	 * Flag for character.
+	 *
+	 * @static
+	 * @readonly
+	 * @property {Number}
+	 */
+	PositionIterator.CHARACTER = CHARACTER;
+
+	/**
 	 * Flag for entering element.
 	 *
 	 * @static
@@ -164,15 +173,6 @@ CKEDITOR.define( [
 	 * @property {Number}
 	 */
 	PositionIterator.ELEMENT_LEAVE = ELEMENT_LEAVE;
-
-	/**
-	 * Flag for character.
-	 *
-	 * @static
-	 * @readonly
-	 * @property {Number}
-	 */
-	PositionIterator.CHARACTER = CHARACTER;
 
 	return PositionIterator;
 } );

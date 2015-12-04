@@ -4,6 +4,7 @@
  */
 
 /* bender-tags: document */
+/* global describe, before, beforeEach, it, expect */
 
 /* bender-include: ../../_tools/tools.js */
 
@@ -18,13 +19,12 @@ const modules = bender.amd.require(
 	'document/range',
 	'document/character',
 	'document/attribute',
-	'document/nodelist',
 	'document/text',
 	'ckeditorerror'
 );
 
 describe( 'ChangeOperation', () => {
-	let Document, ChangeOperation, Position, Range, Character, Attribute, NodeList, Text, CKEditorError;
+	let Document, ChangeOperation, Position, Range, Character, Attribute, Text, CKEditorError;
 
 	before( () => {
 		Document = modules[ 'document/document' ];
@@ -33,7 +33,6 @@ describe( 'ChangeOperation', () => {
 		Range = modules[ 'document/range' ];
 		Character = modules[ 'document/character' ];
 		Attribute = modules[ 'document/attribute' ];
-		NodeList = modules[ 'document/nodelist' ];
 		Text = modules[ 'document/text' ];
 		CKEditorError = modules.ckeditorerror;
 	} );
@@ -263,18 +262,16 @@ describe( 'ChangeOperation', () => {
 
 		root.insertChildren( 0, 'x' );
 
-		expect(
-			() => {
-				doc.applyOperation(
-					new ChangeOperation(
-						new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
-						fooAttr,
-						null,
-						doc.version
-					)
-				);
-			}
-		).to.throw( CKEditorError, /operation-change-no-attr-to-remove/ );
+		expect( () => {
+			doc.applyOperation(
+				new ChangeOperation(
+					new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
+					fooAttr,
+					null,
+					doc.version
+				)
+			);
+		} ).to.throw( CKEditorError, /operation-change-no-attr-to-remove/ );
 	} );
 
 	it( 'should throw an error when one try to insert and the attribute already exists', () => {
@@ -283,18 +280,16 @@ describe( 'ChangeOperation', () => {
 
 		root.insertChildren( 0, new Character( 'x', [ x1Attr ] ) );
 
-		expect(
-			() => {
-				doc.applyOperation(
-					new ChangeOperation(
-						new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
-						null,
-						x2Attr,
-						doc.version
-					)
-				);
-			}
-		).to.throw( CKEditorError, /operation-change-attr-exists/ );
+		expect( () => {
+			doc.applyOperation(
+				new ChangeOperation(
+					new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
+					null,
+					x2Attr,
+					doc.version
+				)
+			);
+		} ).to.throw( CKEditorError, /operation-change-attr-exists/ );
 	} );
 
 	it( 'should throw an error when one try to change and the new and old attributes have different keys', () => {
@@ -303,17 +298,35 @@ describe( 'ChangeOperation', () => {
 
 		root.insertChildren( 0, 'x' );
 
-		expect(
-			() => {
-				doc.applyOperation(
-					new ChangeOperation(
-						new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
-						fooAttr,
-						barAttr,
-						doc.version
-					)
-				);
-			}
-		).to.throw( CKEditorError, /operation-change-different-keys/ );
+		expect( () => {
+			doc.applyOperation(
+				new ChangeOperation(
+					new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) ),
+					fooAttr,
+					barAttr,
+					doc.version
+				)
+			);
+		} ).to.throw( CKEditorError, /operation-change-different-keys/ );
+	} );
+
+	it( 'should create operation with the same parameters when cloned', () => {
+		let range = new Range( new Position( [ 0 ], root ), new Position( [ 1 ], root ) );
+		let oldAttr = new Attribute( 'foo', 'old' );
+		let newAttr = new Attribute( 'foo', 'bar' );
+		let baseVersion = doc.version;
+
+		let op = new ChangeOperation( range, oldAttr, newAttr, baseVersion );
+
+		let clone = op.clone();
+
+		// New instance rather than a pointer to the old instance.
+		expect( clone ).not.to.be.equal( op );
+
+		expect( clone ).to.be.instanceof( ChangeOperation );
+		expect( clone.range.isEqual( range ) ).to.be.true;
+		expect( clone.oldAttr.isEqual( oldAttr ) ).to.be.true;
+		expect( clone.newAttr.isEqual( newAttr ) ).to.be.true;
+		expect( clone.baseVersion ).to.equal( baseVersion );
 	} );
 } );
