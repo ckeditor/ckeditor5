@@ -10,7 +10,7 @@ CKEDITOR.define( [
 ], ( Operation ) => {
 	/**
 	 * Operation which is doing nothing ("empty operation", "do-nothing operation", "noop").
-	 * This is an operation, which executed does not change the tree model.
+	 * This is an operation, which when executed does not change the tree model.
 	 * It still has some parameters defined for transformation purposes.
 	 *
 	 * In most cases this operation is a result of transforming operations. When transformation returns
