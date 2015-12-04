@@ -18,13 +18,13 @@ const modules = bender.amd.require(
 	'document/attribute',
 	'document/operation/transform',
 	'document/operation/insertoperation',
-	'document/operation/changeoperation',
+	'document/operation/attributeoperation',
 	'document/operation/moveoperation',
 	'document/operation/nooperation'
 );
 
 describe( 'transform', () => {
-	let RootElement, Node, Position, Range, Attribute, InsertOperation, ChangeOperation, MoveOperation, NoOperation;
+	let RootElement, Node, Position, Range, Attribute, InsertOperation, AttributeOperation, MoveOperation, NoOperation;
 	let transform;
 
 	before( () => {
@@ -34,7 +34,7 @@ describe( 'transform', () => {
 		Range = modules[ 'document/range' ];
 		Attribute = modules[ 'document/attribute' ];
 		InsertOperation = modules[ 'document/operation/insertoperation' ];
-		ChangeOperation = modules[ 'document/operation/changeoperation' ];
+		AttributeOperation = modules[ 'document/operation/attributeoperation' ];
 		MoveOperation = modules[ 'document/operation/moveoperation' ];
 		NoOperation = modules[ 'document/operation/nooperation' ];
 
@@ -187,13 +187,13 @@ describe( 'transform', () => {
 			} );
 		} );
 
-		describe( 'by ChangeOperation', () => {
+		describe( 'by AttributeOperation', () => {
 			it( 'no position update', () => {
 				let rangeStart = position.clone();
 				let rangeEnd = position.clone();
 				rangeEnd.offset += 2;
 
-				let transformBy = new ChangeOperation(
+				let transformBy = new AttributeOperation(
 					new Range( rangeStart, rangeEnd ),
 					null,
 					new Attribute( 'foo', 'bar' ),
@@ -410,7 +410,7 @@ describe( 'transform', () => {
 		} );
 	} );
 
-	describe( 'ChangeOperation', () => {
+	describe( 'AttributeOperation', () => {
 		let start, end, range, oldAttr, newAttr, anotherOldAttr, anotherNewAttr;
 
 		beforeEach( () => {
@@ -421,7 +421,7 @@ describe( 'transform', () => {
 			anotherNewAttr = new Attribute( oldAttr.key, 'anothernew' );
 
 			expected = {
-				type: ChangeOperation,
+				type: AttributeOperation,
 				oldAttr: oldAttr,
 				newAttr: newAttr,
 				baseVersion: baseVersion + 1
@@ -435,7 +435,7 @@ describe( 'transform', () => {
 
 				range = new Range( start, end );
 
-				op = new ChangeOperation( range, oldAttr, newAttr, baseVersion );
+				op = new AttributeOperation( range, oldAttr, newAttr, baseVersion );
 
 				expected.range = new Range( start.clone(), end.clone() );
 			} );
@@ -549,9 +549,9 @@ describe( 'transform', () => {
 				} );
 			} );
 
-			describe( 'by ChangeOperation', () => {
+			describe( 'by AttributeOperation', () => {
 				it( 'attributes have different key: no operation update', () => {
-					let transformBy = new ChangeOperation(
+					let transformBy = new AttributeOperation(
 						range.clone(),
 						new Attribute( 'abc', true ),
 						new Attribute( 'abc', false ),
@@ -565,7 +565,7 @@ describe( 'transform', () => {
 				} );
 
 				it( 'attributes set same value: no operation update', () => {
-					let transformBy = new ChangeOperation(
+					let transformBy = new AttributeOperation(
 						range.clone(),
 						oldAttr,
 						newAttr,
@@ -581,7 +581,7 @@ describe( 'transform', () => {
 				it( 'both operations removes attribute: no operation update', () => {
 					op.newAttr = null;
 
-					let transformBy = new ChangeOperation(
+					let transformBy = new AttributeOperation(
 						new Range( new Position( root, [ 1, 1, 4 ] ), new Position( root, [ 3 ] ) ),
 						anotherOldAttr,
 						null,
@@ -598,7 +598,7 @@ describe( 'transform', () => {
 
 				describe( 'that is less important and', () => {
 					it( 'range does not intersect original range: no operation update', () => {
-						let transformBy = new ChangeOperation(
+						let transformBy = new AttributeOperation(
 							new Range( new Position( root, [ 3, 0 ] ), new Position( root, [ 4 ] ) ),
 							anotherOldAttr,
 							null,
@@ -612,7 +612,7 @@ describe( 'transform', () => {
 					} );
 
 					it( 'range contains original range: update oldAttr', () => {
-						let transformBy = new ChangeOperation(
+						let transformBy = new AttributeOperation(
 							new Range( new Position( root, [ 1, 1, 4 ] ), new Position( root, [ 3 ] ) ),
 							anotherOldAttr,
 							null,
@@ -632,7 +632,7 @@ describe( 'transform', () => {
 						// Get more test cases and better code coverage
 						op.newAttr = null;
 
-						let transformBy = new ChangeOperation(
+						let transformBy = new AttributeOperation(
 							new Range( new Position( root, [ 1, 4, 2 ] ), new Position( root, [ 3 ] ) ),
 							anotherOldAttr,
 							// Get more test cases and better code coverage
@@ -660,7 +660,7 @@ describe( 'transform', () => {
 
 					// [  range transformed by  <   ]  original range  >
 					it( 'range intersects on right: split into two operations, update oldAttr', () => {
-						let transformBy = new ChangeOperation(
+						let transformBy = new AttributeOperation(
 							new Range( new Position( root, [ 1 ] ), new Position( root, [ 2, 1 ] ) ),
 							anotherOldAttr,
 							null,
@@ -684,7 +684,7 @@ describe( 'transform', () => {
 					} );
 
 					it( 'range is inside original range: split into three operations, update oldAttr', () => {
-						let transformBy = new ChangeOperation(
+						let transformBy = new AttributeOperation(
 							new Range( new Position( root, [ 1, 4, 1 ] ), new Position( root, [ 2, 1 ] ) ),
 							anotherOldAttr,
 							null,
@@ -716,7 +716,7 @@ describe( 'transform', () => {
 
 				describe( 'that is more important and', () => {
 					it( 'range does not intersect original range: no operation update', () => {
-						let transformBy = new ChangeOperation(
+						let transformBy = new AttributeOperation(
 							new Range( new Position( root, [ 3, 0 ] ), new Position( root, [ 4 ] ) ),
 							oldAttr,
 							null,
@@ -730,7 +730,7 @@ describe( 'transform', () => {
 					} );
 
 					it( 'range contains original range: convert to NoOperation', () => {
-						let transformBy = new ChangeOperation(
+						let transformBy = new AttributeOperation(
 							new Range( new Position( root, [ 1, 1, 4 ] ), new Position( root, [ 3 ] ) ),
 							oldAttr,
 							null,
@@ -748,7 +748,7 @@ describe( 'transform', () => {
 
 					// [ original range   <   ]   range transformed by >
 					it( 'range intersects on left: shrink original range', () => {
-						let transformBy = new ChangeOperation(
+						let transformBy = new AttributeOperation(
 							new Range( new Position( root, [ 1, 4, 2 ] ), new Position( root, [ 3 ] ) ),
 							oldAttr,
 							null,
@@ -765,7 +765,7 @@ describe( 'transform', () => {
 
 					// [  range transformed by  <   ]  original range  >
 					it( 'range intersects on right: shrink original range', () => {
-						let transformBy = new ChangeOperation(
+						let transformBy = new AttributeOperation(
 							new Range( new Position( root, [ 1 ] ), new Position( root, [ 2, 1 ] ) ),
 							oldAttr,
 							null,
@@ -781,7 +781,7 @@ describe( 'transform', () => {
 					} );
 
 					it( 'range is inside original range: split into two operations', () => {
-						let transformBy = new ChangeOperation(
+						let transformBy = new AttributeOperation(
 							new Range( new Position( root, [ 1, 4, 1 ] ), new Position( root, [ 2, 1 ] ) ),
 							oldAttr,
 							null,
@@ -1063,7 +1063,7 @@ describe( 'transform', () => {
 			} );
 		} );
 
-		// Some extra cases for a ChangeOperation that operates on single tree level range.
+		// Some extra cases for a AttributeOperation that operates on single tree level range.
 		// This means that the change range start and end differs only on offset value.
 		// This test suite also have some modifications to the original operation
 		// to get more test cases covered and better code coverage.
@@ -1074,7 +1074,7 @@ describe( 'transform', () => {
 
 				range = new Range( start, end );
 
-				op = new ChangeOperation( range, oldAttr, newAttr, baseVersion );
+				op = new AttributeOperation( range, oldAttr, newAttr, baseVersion );
 
 				expected.range = new Range( start.clone(), end.clone() );
 			} );
@@ -1537,9 +1537,9 @@ describe( 'transform', () => {
 			} );
 		} );
 
-		describe( 'by ChangeOperation', () => {
+		describe( 'by AttributeOperation', () => {
 			it( 'no operation update', () => {
-				let transformBy = new ChangeOperation(
+				let transformBy = new AttributeOperation(
 					new Range( sourcePosition, rangeEnd ),
 					new Attribute( 'abc', true ),
 					new Attribute( 'abc', false ),
@@ -2333,9 +2333,9 @@ describe( 'transform', () => {
 			} );
 		} );
 
-		describe( 'by ChangeOperation', () => {
+		describe( 'by AttributeOperation', () => {
 			it( 'no operation update', () => {
-				let transformBy = new ChangeOperation(
+				let transformBy = new AttributeOperation(
 					new Range(
 						new Position( root, [ 0 ] ),
 						new Position( root, [ 1 ] )

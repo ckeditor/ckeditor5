@@ -12,11 +12,11 @@ CKEDITOR.define( [
 	/**
 	 * Operation to change nodes' attribute. Using this class you can add, remove or change value of the attribute.
 	 *
-	 * @class document.operation.ChangeOperation
+	 * @class document.operation.AttributeOperation
 	 */
-	class ChangeOperation extends Operation {
+	class AttributeOperation extends Operation {
 		/**
-		 * Creates a change operation.
+		 * Creates an operation that changes, removes or adds attributes.
 		 *
 		 * If only the new attribute is set, then it will be inserted. Note that in all nodes in ranges there must be
 		 * no attributes with the same key as the new attribute.
@@ -66,11 +66,11 @@ CKEDITOR.define( [
 		}
 
 		clone() {
-			return new ChangeOperation( this.range.clone(), this.oldAttr, this.newAttr, this.baseVersion );
+			return new AttributeOperation( this.range.clone(), this.oldAttr, this.newAttr, this.baseVersion );
 		}
 
 		getReversed() {
-			return new ChangeOperation( this.range, this.newAttr, this.oldAttr, this.baseVersion + 1 );
+			return new AttributeOperation( this.range, this.newAttr, this.oldAttr, this.baseVersion + 1 );
 		}
 
 		_execute() {
@@ -82,12 +82,12 @@ CKEDITOR.define( [
 				/**
 				 * Old and new attributes should have the same keys.
 				 *
-				 * @error operation-change-different-keys
+				 * @error operation-attribute-different-keys
 				 * @param {document.Attribute} oldAttr
 				 * @param {document.Attribute} newAttr
 				 */
 				throw new CKEditorError(
-					'operation-change-different-keys: Old and new attributes should have the same keys.',
+					'operation-attribute-different-keys: Old and new attributes should have the same keys.',
 					{ oldAttr: oldAttr, newAttr: newAttr } );
 			}
 
@@ -98,12 +98,12 @@ CKEDITOR.define( [
 						/**
 						 * The attribute which should be removed does not exists for the given node.
 						 *
-						 * @error operation-change-no-attr-to-remove
+						 * @error operation-attribute-no-attr-to-remove
 						 * @param {document.Node} node
 						 * @param {document.Attribute} attr
 						 */
 						throw new CKEditorError(
-							'operation-change-no-attr-to-remove: The attribute which should be removed does not exists for given node.',
+							'operation-attribute-no-attr-to-remove: The attribute which should be removed does not exists for given node.',
 							{ node: value.node, attr: oldAttr } );
 					}
 
@@ -122,12 +122,12 @@ CKEDITOR.define( [
 						/**
 						 * The attribute with given key already exists for the given node.
 						 *
-						 * @error operation-change-attr-exists
+						 * @error operation-attribute-attr-exists
 						 * @param {document.Node} node
 						 * @param {document.Attribute} attr
 						 */
 						throw new CKEditorError(
-							'operation-change-attr-exists: The attribute with given key already exists.',
+							'operation-attribute-attr-exists: The attribute with given key already exists.',
 							{ node: value.node, attr: newAttr } );
 					}
 
@@ -139,5 +139,5 @@ CKEDITOR.define( [
 		}
 	}
 
-	return ChangeOperation;
+	return AttributeOperation;
 } );

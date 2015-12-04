@@ -45,12 +45,12 @@
 
 CKEDITOR.define( [
 	'document/operation/insertoperation',
-	'document/operation/changeoperation',
+	'document/operation/attributeoperation',
 	'document/operation/moveoperation',
 	'document/operation/nooperation',
 	'document/range',
 	'utils'
-], ( InsertOperation, ChangeOperation, MoveOperation, NoOperation, Range, utils ) => {
+], ( InsertOperation, AttributeOperation, MoveOperation, NoOperation, Range, utils ) => {
 	const ot = {
 		InsertOperation: {
 			// Transforms InsertOperation `a` by InsertOperation `b`. Accepts a flag stating whether `a` is more important
@@ -65,7 +65,7 @@ CKEDITOR.define( [
 				return [ transformed ];
 			},
 
-			ChangeOperation: doNotUpdate,
+			AttributeOperation: doNotUpdate,
 
 			// Transforms InsertOperation `a` by MoveOperation `b`. Accepts a flag stating whether `a` is more important
 			// than `b` when it comes to resolving conflicts. Returns results as an array of operations.
@@ -79,15 +79,15 @@ CKEDITOR.define( [
 			}
 		},
 
-		ChangeOperation: {
-			// Transforms ChangeOperation `a` by InsertOperation `b`. Returns results as an array of operations.
+		AttributeOperation: {
+			// Transforms AttributeOperation `a` by InsertOperation `b`. Returns results as an array of operations.
 			InsertOperation( a, b ) {
 				// Transform this operation's range.
 				const ranges = a.range.getTransformedByInsertion( b.position, b.nodeList.length );
 
 				// Map transformed range(s) to operations and return them.
 				return ranges.reverse().map( ( range ) => {
-					return new ChangeOperation(
+					return new AttributeOperation(
 						range,
 						a.oldAttr,
 						a.newAttr,
@@ -96,9 +96,9 @@ CKEDITOR.define( [
 				} );
 			},
 
-			// Transforms ChangeOperation `a` by ChangeOperation `b`. Accepts a flag stating whether `a` is more important
+			// Transforms AttributeOperation `a` by AttributeOperation `b`. Accepts a flag stating whether `a` is more important
 			// than `b` when it comes to resolving conflicts. Returns results as an array of operations.
-			ChangeOperation( a, b, isStrong ) {
+			AttributeOperation( a, b, isStrong ) {
 				if ( haveConflictingAttributes( a, b ) ) {
 					// If operations attributes are in conflict, check if their ranges intersect and manage them properly.
 					let operations = [];
@@ -106,7 +106,7 @@ CKEDITOR.define( [
 					// First, we want to apply change to the part of a range that has not been changed by the other operation.
 					operations = operations.concat(
 						a.range.getDifference( b.range ).map( ( range ) => {
-							return new ChangeOperation( range, a.oldAttr, a.newAttr, a.baseVersion );
+							return new AttributeOperation( range, a.oldAttr, a.newAttr, a.baseVersion );
 						} )
 					);
 
@@ -117,7 +117,7 @@ CKEDITOR.define( [
 						const common = a.range.getIntersection( b.range );
 
 						if ( common !== null ) {
-							operations.push( new ChangeOperation( common, b.oldAttr, a.newAttr, a.baseVersion ) );
+							operations.push( new AttributeOperation( common, b.oldAttr, a.newAttr, a.baseVersion ) );
 						}
 					}
 
@@ -134,7 +134,7 @@ CKEDITOR.define( [
 				}
 			},
 
-			// Transforms ChangeOperation `a` by MoveOperation `b`. Returns results as an array of operations.
+			// Transforms AttributeOperation `a` by MoveOperation `b`. Returns results as an array of operations.
 			MoveOperation( a, b ) {
 				// Convert MoveOperation properties into a range.
 				const rangeB = Range.createFromPositionAndOffset( b.sourcePosition, b.howMany );
@@ -145,7 +145,7 @@ CKEDITOR.define( [
 				// This will aggregate transformed ranges.
 				let ranges = [];
 
-				// Difference is a part of changed range that is modified by ChangeOperation but are not affected
+				// Difference is a part of changed range that is modified by AttributeOperation but are not affected
 				// by MoveOperation. This can be zero, one or two ranges (if moved range is inside changed range).
 				// If two ranges were returned it means that rangeB was inside rangeA. We will cover rangeB later.
 				// Right now we will make a simplification and join difference ranges and transform them as one.
@@ -157,7 +157,7 @@ CKEDITOR.define( [
 				if ( difference !== null ) {
 					// MoveOperation removes nodes from their original position. We acknowledge this by proper transformation.
 					// Take the start and the end of the range and transform them by deletion of moved nodes.
-					// Note that if rangeB was inside ChangeOperation range, only difference.end will be transformed.
+					// Note that if rangeB was inside AttributeOperation range, only difference.end will be transformed.
 					// This nicely covers the joining simplification we did in the previous step.
 					difference.start = difference.start.getTransformedByDeletion( b.sourcePosition, b.howMany );
 					difference.end = difference.end.getTransformedByDeletion( b.sourcePosition, b.howMany );
@@ -182,7 +182,7 @@ CKEDITOR.define( [
 
 				// Map transformed range(s) to operations and return them.
 				return ranges.map( ( range ) => {
-					return new ChangeOperation(
+					return new AttributeOperation(
 						range,
 						a.oldAttr,
 						a.newAttr,
@@ -214,7 +214,7 @@ CKEDITOR.define( [
 				} );
 			},
 
-			ChangeOperation: doNotUpdate,
+			AttributeOperation: doNotUpdate,
 
 			// Transforms MoveOperation `a` by MoveOperation `b`. Accepts a flag stating whether `a` is more important
 			// than `b` when it comes to resolving conflicts. Returns results as an array of operations.
@@ -333,8 +333,8 @@ CKEDITOR.define( [
 
 		if ( a instanceof InsertOperation ) {
 			group = ot.InsertOperation;
-		} else if ( a instanceof ChangeOperation ) {
-			group = ot.ChangeOperation;
+		} else if ( a instanceof AttributeOperation ) {
+			group = ot.AttributeOperation;
 		} else if ( a instanceof MoveOperation ) {
 			group = ot.MoveOperation;
 		} else {
@@ -344,8 +344,8 @@ CKEDITOR.define( [
 		if ( group ) {
 			if ( b instanceof InsertOperation ) {
 				algorithm = group.InsertOperation;
-			} else if ( b instanceof ChangeOperation ) {
-				algorithm = group.ChangeOperation;
+			} else if ( b instanceof AttributeOperation ) {
+				algorithm = group.AttributeOperation;
 			} else if ( b instanceof MoveOperation ) {
 				algorithm = group.MoveOperation;
 			} else {
@@ -379,7 +379,7 @@ CKEDITOR.define( [
 		return a.targetPosition.getTransformedByDeletion( b.sourcePosition, b.howMany ) === null;
 	}
 
-	// Takes two ChangeOperations and checks whether their attributes are in conflict.
+	// Takes two AttributeOperations and checks whether their attributes are in conflict.
 	// This happens when both operations changes an attribute with the same key and they either set different
 	// values for this attribute or one of them removes it while the other one sets it.
 	// Returns true if attributes are in conflict.
