@@ -239,7 +239,7 @@ describe( 'MoveOperation', () => {
 		expect( p.getChild( 0 ).character ).to.equal( 'b' );
 	} );
 
-	it( 'should create operation with the same parameters when cloned', () => {
+	it( 'should create MoveOperation with the same parameters when cloned', () => {
 		let sourcePosition = new Position( root, [ 0 ] );
 		let targetPosition = new Position( root, [ 1 ] );
 		let howMany = 4;

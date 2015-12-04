@@ -52,6 +52,16 @@ describe( 'ReinsertOperation', () => {
 		expect( operation ).to.be.instanceof( MoveOperation );
 	} );
 
+	it( 'should create ReinsertOperation with same parameters when cloned', () => {
+		let clone = operation.clone();
+
+		expect( clone ).to.be.instanceof( ReinsertOperation );
+		expect( clone.sourcePosition.isEqual( operation.sourcePosition ) ).to.be.true;
+		expect( clone.targetPosition.isEqual( operation.targetPosition ) ).to.be.true;
+		expect( clone.howMany ).to.equal( operation.howMany );
+		expect( clone.baseVersion ).to.equal( operation.baseVersion );
+	} );
+
 	it( 'should create a remove operation as a reverse', () => {
 		let reverse = operation.getReversed();
 

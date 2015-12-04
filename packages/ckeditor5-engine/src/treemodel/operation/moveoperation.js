@@ -56,11 +56,11 @@ CKEDITOR.define( [
 		}
 
 		clone() {
-			return new MoveOperation( this.sourcePosition.clone(), this.howMany, this.targetPosition.clone(), this.baseVersion );
+			return new this.constructor( this.sourcePosition.clone(), this.howMany, this.targetPosition.clone(), this.baseVersion );
 		}
 
 		getReversed() {
-			return new MoveOperation( this.targetPosition.clone(), this.howMany, this.sourcePosition.clone(), this.baseVersion + 1 );
+			return new this.constructor( this.targetPosition.clone(), this.howMany, this.sourcePosition.clone(), this.baseVersion + 1 );
 		}
 
 		_execute() {

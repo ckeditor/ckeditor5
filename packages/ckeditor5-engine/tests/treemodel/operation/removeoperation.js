@@ -78,6 +78,18 @@ describe( 'RemoveOperation', () => {
 		expect( graveyard.getChild( 1 ) ).to.equal( b );
 	} );
 
+	it( 'should create RemoveOperation with same parameters when cloned', () => {
+		let pos = new Position( root, [ 2 ] );
+
+		let operation = new RemoveOperation( pos, 2, doc.version );
+		let clone = operation.clone();
+
+		expect( clone ).to.be.instanceof( RemoveOperation );
+		expect( clone.sourcePosition.isEqual( pos ) ).to.be.true;
+		expect( clone.howMany ).to.equal( operation.howMany );
+		expect( clone.baseVersion ).to.equal( operation.baseVersion );
+	} );
+
 	it( 'should create a reinsert operation as a reverse', () => {
 		let position = new Position( root, [ 0 ] );
 		let operation = new RemoveOperation( position, 2, 0 );
