@@ -198,6 +198,7 @@ module.exports = {
 
 	/**
 	 * Returns true if path points to existing directory.
+	 *
 	 * @param {String} path
 	 * @returns {Boolean}
 	 */
@@ -206,6 +207,22 @@ module.exports = {
 
 		try {
 			return fs.statSync( path ).isDirectory();
+		} catch ( e ) {}
+
+		return false;
+	},
+
+	/**
+	 * Returns true if path points to existing file.
+	 *
+	 * @param {String} path
+	 * @returns {Boolean}
+	 */
+	isFile( path ) {
+		const fs = require( 'fs' );
+
+		try {
+			return fs.statSync( path ).isFile();
 		} catch ( e ) {}
 
 		return false;
@@ -237,6 +254,26 @@ module.exports = {
 		json = updateFunction( json );
 
 		fs.writeFileSync( path, JSON.stringify( json, null, 2 ), 'utf-8' );
+	},
+
+	/**
+	 * Returns name of the NPM module located under provided path.
+	 *
+	 * @param {String} modulePath Path to NPM module.
+     */
+	readPackageName( modulePath ) {
+		const fs = require( 'fs' );
+		const path = require( 'path' );
+		const packageJSONPath = path.join( modulePath, 'package.json' );
+
+		if ( !this.isFile( packageJSONPath ) ) {
+			return null;
+		}
+
+		const contents = fs.readFileSync( packageJSONPath, 'utf-8' );
+		const json = JSON.parse( contents );
+
+		return json.name || null;
 	},
 
 	/**

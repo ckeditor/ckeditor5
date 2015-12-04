@@ -11,12 +11,12 @@ const path = require( 'path' );
 
 /**
  * This tasks install specified module in development mode. It can be executed by typing:
- * 		grunt dev-install --plugin <npm_name|git_hub_url>
+ * 		grunt dev-install --plugin <git_hub_url|npm_name|path_on_disk>
  *
- * It performs follwing steps:
- * 1. Get GitHub URL from NPM if module name is provided.
- * 2. Checks if repository is cloned already. If not - clones it.
- * 3. Checks out plugin repository to provided branch (`master` if no branch is specified).
+ * It performs following steps:
+ * 1. If GitHub URL is provided - clones the repository.
+ * 2. If NPM module name is provided - gets GitHub URL from NPM and clones the repository.
+ * 3. If path on disk is provided - it is used directly.
  * 4. Links plugin directory into `ckeditor5/node_modules/`.
  * 5. Adds dependency with local path to `ckeditor5/package.json`.
  * 6. Runs `npm install` in `ckeditor5/`.
@@ -27,12 +27,32 @@ const path = require( 'path' );
  * @param {Function} writeln Function used to report progress to the console.
  */
 module.exports = ( ckeditor5Path, workspaceRoot, name, writeln ) => {
-	let urlInfo = git.parseRepositoryUrl( name );
 	const workspaceAbsolutePath = path.join( ckeditor5Path, workspaceRoot );
 	let repositoryPath;
+	let urlInfo;
 
+	// First check if name is local path to repository.
+	repositoryPath = path.isAbsolute( name ) ? name : path.resolve( name );
+
+	if ( tools.isDirectory( repositoryPath ) ) {
+		const packageName = tools.readPackageName( repositoryPath );
+
+		if ( packageName ) {
+			writeln( `Plugin located at ${ repositoryPath }.` );
+			urlInfo = {
+				name: packageName
+			};
+		}
+	}
+
+	// Check if name is repository URL.
 	if ( !urlInfo ) {
-		writeln( `Not a GitHub URL. Trying to get GitHub URL from npm package...` );
+		urlInfo = git.parseRepositoryUrl( name );
+	}
+
+	// Check if name is NPM package.
+	if ( !urlInfo ) {
+		writeln( `Not a GitHub URL. Trying to get GitHub URL from NPM package...` );
 		const url = tools.getGitUrlFromNpm( name );
 
 		if ( url ) {
@@ -46,12 +66,15 @@ module.exports = ( ckeditor5Path, workspaceRoot, name, writeln ) => {
 		if ( tools.isDirectory( repositoryPath ) ) {
 			writeln( `Directory ${ repositoryPath } already exists.` );
 		} else {
-			writeln( `Cloning ${ urlInfo.name } into ${ repositoryPath }... ` );
+			writeln( `Cloning ${ urlInfo.name } into ${ repositoryPath }...` );
 			git.cloneRepository( urlInfo, workspaceAbsolutePath );
 		}
 
-		writeln( `Checking ${ urlInfo.name } to ${ urlInfo.branch }...` );
-		git.checkout( repositoryPath, urlInfo.branch );
+		// Checkout to specified branch if one is provided.
+		if ( urlInfo.branch ) {
+			writeln( `Checking ${ urlInfo.name } to ${ urlInfo.branch }...` );
+			git.checkout( repositoryPath, urlInfo.branch );
+		}
 
 		const linkPath = path.join( ckeditor5Path, 'node_modules', urlInfo.name );
 		writeln( `Linking ${ linkPath } to ${ repositoryPath }...` );
