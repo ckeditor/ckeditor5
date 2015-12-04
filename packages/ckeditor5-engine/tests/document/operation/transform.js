@@ -211,8 +211,9 @@ describe( 'transform', () => {
 			it( 'range and target are different than insert position: no position update', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 1, 3, 2 ] ),
+					2,
 					new Position( root, [ 2, 1 ] ),
-					2
+					baseVersion
 				);
 
 				let transOp = transform( op, transformBy );
@@ -224,8 +225,9 @@ describe( 'transform', () => {
 			it( 'range offset is before insert position offset: decrement offset', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 0, 2, 0 ] ),
+					1,
 					new Position( root, [ 1, 1 ] ),
-					1
+					baseVersion
 				);
 
 				let transOp = transform( op, transformBy );
@@ -238,8 +240,9 @@ describe( 'transform', () => {
 			it( 'range offset is after insert position offset: no position update', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 0, 2, 4 ] ),
+					1,
 					new Position( root, [ 1, 1 ] ),
-					1
+					baseVersion
 				);
 
 				let transOp = transform( op, transformBy );
@@ -251,8 +254,9 @@ describe( 'transform', () => {
 			it( 'target offset before insert position offset: increment offset', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 1, 1 ] ),
+					2,
 					new Position( root, [ 0, 2, 0 ] ),
-					2
+					baseVersion
 				);
 
 				let transOp = transform( op, transformBy );
@@ -265,8 +269,9 @@ describe( 'transform', () => {
 			it( 'target offset after insert position offset: no position update', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 1, 1 ] ),
+					2,
 					new Position( root, [ 0, 2, 4 ] ),
-					2
+					baseVersion
 				);
 
 				let transOp = transform( op, transformBy );
@@ -278,8 +283,9 @@ describe( 'transform', () => {
 			it( 'target offset same as insert position offset and is important: increment offset', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 1, 1 ] ),
+					2,
 					new Position( root, [ 0, 2, 1 ] ),
-					2
+					baseVersion
 				);
 
 				let transOp = transform( op, transformBy );
@@ -292,8 +298,9 @@ describe( 'transform', () => {
 			it( 'target offset same as insert position offset and is less important: no position update', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 1, 1 ] ),
+					2,
 					new Position( root, [ 0, 2, 1 ] ),
-					2
+					baseVersion
 				);
 
 				let transOp = transform( op, transformBy, true );
@@ -305,8 +312,9 @@ describe( 'transform', () => {
 			it( 'range is before node from insert position path: decrement index on path', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 0, 0 ] ),
+					2,
 					new Position( root, [ 1, 0 ] ),
-					2
+					baseVersion
 				);
 
 				let transOp = transform( op, transformBy );
@@ -319,8 +327,9 @@ describe( 'transform', () => {
 			it( 'range is after node from insert position path: no position update', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 0, 4 ] ),
+					2,
 					new Position( root, [ 1, 0 ] ),
-					2
+					baseVersion
 				);
 
 				let transOp = transform( op, transformBy );
@@ -332,8 +341,9 @@ describe( 'transform', () => {
 			it( 'target before node from insert position path: increment index on path', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 1, 0 ] ),
+					2,
 					new Position( root, [ 0, 0 ] ),
-					2
+					baseVersion
 				);
 
 				let transOp = transform( op, transformBy );
@@ -346,8 +356,9 @@ describe( 'transform', () => {
 			it( 'target after node from insert position path: no position update', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 1, 0 ] ),
+					2,
 					new Position( root, [ 0, 4 ] ),
-					2
+					baseVersion
 				);
 
 				let transOp = transform( op, transformBy );
@@ -359,8 +370,9 @@ describe( 'transform', () => {
 			it( 'range has node that contains insert position: update position', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 0, 1 ] ),
+					2,
 					new Position( root, [ 1, 1 ] ),
-					2
+					baseVersion
 				);
 
 				let transOp = transform( op, transformBy );
@@ -373,8 +385,9 @@ describe( 'transform', () => {
 			it( 'range contains insert position (on same level): set position offset to range start', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 0, 2, 0 ] ),
+					3,
 					new Position( root, [ 1, 0 ] ),
-					3
+					baseVersion
 				);
 
 				let transOp = transform( op, transformBy );
@@ -796,8 +809,8 @@ describe( 'transform', () => {
 				it( 'range and target are different than change range: no operation update', () => {
 					let transformBy = new MoveOperation(
 						new Position( root, [ 1, 1, 2 ] ),
-						new Position( root, [ 3, 4 ] ),
 						2,
+						new Position( root, [ 3, 4 ] ),
 						baseVersion
 					);
 
@@ -810,8 +823,8 @@ describe( 'transform', () => {
 				it( 'range offset is before change range start offset: decrement offset', () => {
 					let transformBy = new MoveOperation(
 						new Position( root, [ 1, 0 ] ),
-						new Position( root, [ 3, 4, 1 ] ),
 						2,
+						new Position( root, [ 3, 4, 1 ] ),
 						baseVersion
 					);
 
@@ -826,8 +839,8 @@ describe( 'transform', () => {
 				it( 'target offset is before change range start offset: increment offset', () => {
 					let transformBy = new MoveOperation(
 						new Position( root, [ 3, 4, 1 ] ),
-						new Position( root, [ 1, 0 ] ),
 						2,
+						new Position( root, [ 1, 0 ] ),
 						baseVersion
 					);
 
@@ -842,8 +855,8 @@ describe( 'transform', () => {
 				it( 'range is before node from path to change range: decrement index on path', () => {
 					let transformBy = new MoveOperation(
 						new Position( root, [ 0 ] ),
-						new Position( root, [ 2, 4, 1 ] ),
 						1,
+						new Position( root, [ 2, 4, 1 ] ),
 						baseVersion
 					);
 
@@ -859,8 +872,8 @@ describe( 'transform', () => {
 				it( 'range is after node from path to change range: no position change', () => {
 					let transformBy = new MoveOperation(
 						new Position( root, [ 3 ] ),
-						new Position( root, [ 0, 1 ] ),
 						2,
+						new Position( root, [ 0, 1 ] ),
 						baseVersion
 					);
 
@@ -873,8 +886,8 @@ describe( 'transform', () => {
 				it( 'target before node from path to change range: increment index on path', () => {
 					let transformBy = new MoveOperation(
 						new Position( root, [ 3, 4, 1 ] ),
-						new Position( root, [ 1, 0 ] ),
 						2,
+						new Position( root, [ 1, 0 ] ),
 						baseVersion
 					);
 
@@ -889,8 +902,8 @@ describe( 'transform', () => {
 				it( 'target after node from path to change range: no position change', () => {
 					let transformBy = new MoveOperation(
 						new Position( root, [ 3, 4, 1 ] ),
-						new Position( root, [ 3 ] ),
 						2,
+						new Position( root, [ 3 ] ),
 						baseVersion
 					);
 
@@ -903,8 +916,8 @@ describe( 'transform', () => {
 				it( 'range intersects on left with change range: split into two operations', () => {
 					let transformBy = new MoveOperation(
 						new Position( root, [ 2, 1 ] ),
-						new Position( root, [ 4 ] ),
 						3,
+						new Position( root, [ 4 ] ),
 						baseVersion
 					);
 
@@ -926,8 +939,8 @@ describe( 'transform', () => {
 				it( 'range intersects on right with change range: split into two operation', () => {
 					let transformBy = new MoveOperation(
 						new Position( root, [ 1, 1 ] ),
-						new Position( root, [ 0, 0 ] ),
 						3,
+						new Position( root, [ 0, 0 ] ),
 						baseVersion
 					);
 
@@ -949,8 +962,8 @@ describe( 'transform', () => {
 				it( 'range contains change range: update change range', () => {
 					let transformBy = new MoveOperation(
 						new Position( root, [ 1 ] ),
-						new Position( root, [ 3, 4, 1 ] ),
 						2,
+						new Position( root, [ 3, 4, 1 ] ),
 						baseVersion
 					);
 
@@ -966,8 +979,8 @@ describe( 'transform', () => {
 				it( 'range is inside change range: split into two operations', () => {
 					let transformBy = new MoveOperation(
 						new Position( root, [ 1, 4 ] ),
-						new Position( root, [ 3, 2 ] ),
 						2,
+						new Position( root, [ 3, 2 ] ),
 						baseVersion
 					);
 
@@ -987,8 +1000,8 @@ describe( 'transform', () => {
 				it( 'target inside change range: split into two operations', () => {
 					let transformBy = new MoveOperation(
 						new Position( root, [ 3, 4, 1 ] ),
-						new Position( root, [ 1, 4 ] ),
 						2,
+						new Position( root, [ 1, 4 ] ),
 						baseVersion
 					);
 
@@ -1010,8 +1023,8 @@ describe( 'transform', () => {
 				it( 'range intersects change range and target inside change range: split into three operations', () => {
 					let transformBy = new MoveOperation(
 						new Position( root, [ 1, 1 ] ),
-						new Position( root, [ 2 ] ),
 						3,
+						new Position( root, [ 2 ] ),
 						baseVersion
 					);
 
@@ -1104,8 +1117,8 @@ describe( 'transform', () => {
 				it( 'range offset is before change range start offset: decrement offset', () => {
 					let transformBy = new MoveOperation(
 						new Position( root, [ 0, 2, 0 ] ),
-						new Position( root, [ 2, 4, 1 ] ),
 						1,
+						new Position( root, [ 2, 4, 1 ] ),
 						baseVersion
 					);
 
@@ -1121,8 +1134,8 @@ describe( 'transform', () => {
 				it( 'target offset is before change range start offset: increment offset', () => {
 					let transformBy = new MoveOperation(
 						new Position( root, [ 2, 4, 1 ] ),
-						new Position( root, [ 0, 2, 0 ] ),
 						2,
+						new Position( root, [ 0, 2, 0 ] ),
 						baseVersion
 					);
 
@@ -1138,8 +1151,8 @@ describe( 'transform', () => {
 				it( 'range intersects on left with change range: split into two operations', () => {
 					let transformBy = new MoveOperation(
 						new Position( root, [ 0, 2, 2 ] ),
-						new Position( root, [ 2, 4, 1 ] ),
 						4,
+						new Position( root, [ 2, 4, 1 ] ),
 						baseVersion
 					);
 
@@ -1161,8 +1174,8 @@ describe( 'transform', () => {
 				it( 'range intersects on right with change range: split into two operation', () => {
 					let transformBy = new MoveOperation(
 						new Position( root, [ 0, 2, 0 ] ),
-						new Position( root, [ 2, 4, 1 ] ),
 						2,
+						new Position( root, [ 2, 4, 1 ] ),
 						baseVersion
 					);
 
@@ -1185,8 +1198,8 @@ describe( 'transform', () => {
 				it( 'range contains change range: update change range', () => {
 					let transformBy = new MoveOperation(
 						new Position( root, [ 0, 1 ] ),
-						new Position( root, [ 2, 4, 1 ] ),
 						3,
+						new Position( root, [ 2, 4, 1 ] ),
 						baseVersion
 					);
 
@@ -1202,8 +1215,8 @@ describe( 'transform', () => {
 				it( 'range is inside change range: split into two operations', () => {
 					let transformBy = new MoveOperation(
 						new Position( root, [ 0, 2, 2 ] ),
-						new Position( root, [ 2, 4, 1 ] ),
 						1,
+						new Position( root, [ 2, 4, 1 ] ),
 						baseVersion
 					);
 
@@ -1225,8 +1238,8 @@ describe( 'transform', () => {
 				it( 'range is same as change range: update change range', () => {
 					let transformBy = new MoveOperation(
 						new Position( root, [ 0, 2, 1 ] ),
-						new Position( root, [ 2, 4, 1 ] ),
 						3,
+						new Position( root, [ 2, 4, 1 ] ),
 						baseVersion
 					);
 
@@ -1242,8 +1255,8 @@ describe( 'transform', () => {
 				it( 'target inside change range: split into two operations', () => {
 					let transformBy = new MoveOperation(
 						new Position( root, [ 2, 4, 1 ] ),
-						new Position( root, [ 0, 2, 2 ] ),
 						2,
+						new Position( root, [ 0, 2, 2 ] ),
 						baseVersion
 					);
 
@@ -1266,8 +1279,8 @@ describe( 'transform', () => {
 				it( 'range intersects change range and target inside change range: split into three operations', () => {
 					let transformBy = new MoveOperation(
 						new Position( root, [ 0, 2, 0 ] ),
-						new Position( root, [ 0, 2, 3 ] ),
 						2,
+						new Position( root, [ 0, 2, 3 ] ),
 						baseVersion
 					);
 
@@ -1307,7 +1320,7 @@ describe( 'transform', () => {
 			rangeEnd = sourcePosition.clone();
 			rangeEnd.offset += howMany;
 
-			op = new MoveOperation( sourcePosition, targetPosition, howMany, baseVersion );
+			op = new MoveOperation( sourcePosition, howMany, targetPosition, baseVersion );
 
 			expected = {
 				type: MoveOperation,
@@ -1544,8 +1557,8 @@ describe( 'transform', () => {
 			it( 'range and target different than transforming range and target: no operation update', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 1, 2 ] ),
-					new Position( root, [ 4, 1, 0 ] ),
 					3,
+					new Position( root, [ 4, 1, 0 ] ),
 					baseVersion
 				);
 
@@ -1558,8 +1571,8 @@ describe( 'transform', () => {
 			it( 'target offset before transforming range start offset: increment range offset', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 4, 1, 0 ] ),
-					new Position( root, [ 2, 2, 0 ] ),
 					2,
+					new Position( root, [ 2, 2, 0 ] ),
 					baseVersion
 				);
 
@@ -1574,8 +1587,8 @@ describe( 'transform', () => {
 			it( 'target offset after transforming range start offset: no operation update', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 4, 1, 0 ] ),
-					new Position( root, [ 2, 2, 7 ] ),
 					2,
+					new Position( root, [ 2, 2, 7 ] ),
 					baseVersion
 				);
 
@@ -1588,8 +1601,8 @@ describe( 'transform', () => {
 			it( 'range start offset before transforming range start offset: decrement range offset', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 2, 2, 0 ] ),
-					new Position( root, [ 4, 1, 0 ] ),
 					2,
+					new Position( root, [ 4, 1, 0 ] ),
 					baseVersion
 				);
 
@@ -1604,8 +1617,8 @@ describe( 'transform', () => {
 			it( 'range start offset after transforming range start offset: no operation update', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 2, 2, 9 ] ),
-					new Position( root, [ 4, 1, 0 ] ),
 					2,
+					new Position( root, [ 4, 1, 0 ] ),
 					baseVersion
 				);
 
@@ -1618,8 +1631,8 @@ describe( 'transform', () => {
 			it( 'target before node from transforming range start path: increment index on range start path', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 4, 1, 0 ] ),
-					new Position( root, [ 2, 1 ] ),
 					2,
+					new Position( root, [ 2, 1 ] ),
 					baseVersion
 				);
 
@@ -1634,8 +1647,8 @@ describe( 'transform', () => {
 			it( 'target after node from transforming range start path: no operation update', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 4, 1, 0 ] ),
-					new Position( root, [ 2, 5 ] ),
 					2,
+					new Position( root, [ 2, 5 ] ),
 					baseVersion
 				);
 
@@ -1648,8 +1661,8 @@ describe( 'transform', () => {
 			it( 'range before node from transforming range start path: decrement index on range start path', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 2, 0 ] ),
-					new Position( root, [ 4, 1, 0 ] ),
 					2,
+					new Position( root, [ 4, 1, 0 ] ),
 					baseVersion
 				);
 
@@ -1664,8 +1677,8 @@ describe( 'transform', () => {
 			it( 'range after node from transforming range start path: no operation update', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 2, 3 ] ),
-					new Position( root, [ 4, 1, 0 ] ),
 					2,
+					new Position( root, [ 4, 1, 0 ] ),
 					baseVersion
 				);
 
@@ -1678,8 +1691,8 @@ describe( 'transform', () => {
 			it( 'target offset before transforming target offset: increment target offset', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 4, 1, 0 ] ),
-					new Position( root, [ 3, 3, 0 ] ),
 					2,
+					new Position( root, [ 3, 3, 0 ] ),
 					baseVersion
 				);
 
@@ -1694,8 +1707,8 @@ describe( 'transform', () => {
 			it( 'target offset after transforming target offset: no operation update', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 4, 1, 0 ] ),
-					new Position( root, [ 3, 3, 5 ] ),
 					2,
+					new Position( root, [ 3, 3, 5 ] ),
 					baseVersion
 				);
 
@@ -1708,8 +1721,8 @@ describe( 'transform', () => {
 			it( 'range offset before transforming target offset: decrement target offset', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 3, 3, 0 ] ),
-					new Position( root, [ 4, 1, 0 ] ),
 					2,
+					new Position( root, [ 4, 1, 0 ] ),
 					baseVersion
 				);
 
@@ -1724,8 +1737,8 @@ describe( 'transform', () => {
 			it( 'range offset after transforming target offset: no operation update', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 3, 3, 5 ] ),
-					new Position( root, [ 4, 1, 0 ] ),
 					2,
+					new Position( root, [ 4, 1, 0 ] ),
 					baseVersion
 				);
 
@@ -1738,8 +1751,8 @@ describe( 'transform', () => {
 			it( 'target before node from transforming target path: increment index on target path', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 4, 1, 0 ] ),
-					new Position( root, [ 3, 1 ] ),
 					2,
+					new Position( root, [ 3, 1 ] ),
 					baseVersion
 				);
 
@@ -1754,8 +1767,8 @@ describe( 'transform', () => {
 			it( 'target after node from transforming target path: no operation update', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 4, 1, 0 ] ),
-					new Position( root, [ 3, 5 ] ),
 					2,
+					new Position( root, [ 3, 5 ] ),
 					baseVersion
 				);
 
@@ -1768,8 +1781,8 @@ describe( 'transform', () => {
 			it( 'range before node from transforming target path: decrement index on target path', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 3, 0 ] ),
-					new Position( root, [ 4, 1, 0 ] ),
 					2,
+					new Position( root, [ 4, 1, 0 ] ),
 					baseVersion
 				);
 
@@ -1784,8 +1797,8 @@ describe( 'transform', () => {
 			it( 'range after node from transforming target path: no operation update', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 3, 5 ] ),
-					new Position( root, [ 4, 1, 0 ] ),
 					2,
+					new Position( root, [ 4, 1, 0 ] ),
 					baseVersion
 				);
 
@@ -1798,8 +1811,8 @@ describe( 'transform', () => {
 			it( 'target inside transforming move range: split into two operations', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 4, 1, 0 ] ),
-					new Position( root, [ 2, 2, 5 ] ),
 					2,
+					new Position( root, [ 2, 2, 5 ] ),
 					baseVersion
 				);
 
@@ -1821,8 +1834,8 @@ describe( 'transform', () => {
 			it( 'target inside a node from transforming range: no operation update', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 4, 1, 0 ] ),
-					new Position( root, [ 2, 2, 5, 1 ] ),
 					2,
+					new Position( root, [ 2, 2, 5, 1 ] ),
 					baseVersion
 				);
 
@@ -1835,8 +1848,8 @@ describe( 'transform', () => {
 			it( 'range has node that contains transforming range: update range path', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 2, 1 ] ),
-					new Position( root, [ 4, 2 ] ),
 					3,
+					new Position( root, [ 4, 2 ] ),
 					baseVersion
 				);
 
@@ -1851,8 +1864,8 @@ describe( 'transform', () => {
 			it( 'range has node that contains transforming target: update target path', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 3, 2 ] ),
-					new Position( root, [ 0, 1 ] ),
 					3,
+					new Position( root, [ 0, 1 ] ),
 					baseVersion
 				);
 
@@ -1867,8 +1880,8 @@ describe( 'transform', () => {
 			it( 'target inside a node from transforming range and vice versa: reverse transform-by operation', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 3, 2 ] ),
-					new Position( root, [ 2, 2, 5, 0 ] ),
 					3,
+					new Position( root, [ 2, 2, 5, 0 ] ),
 					baseVersion
 				);
 
@@ -1886,8 +1899,8 @@ describe( 'transform', () => {
 			it( 'range is same as transforming range and is important: convert to NoOperation', () => {
 				let transformBy = new MoveOperation(
 					op.sourcePosition.clone(),
-					new Position( root, [ 4, 1, 0 ] ),
 					op.howMany,
+					new Position( root, [ 4, 1, 0 ] ),
 					baseVersion
 				);
 
@@ -1903,8 +1916,8 @@ describe( 'transform', () => {
 			it( 'range is same as transforming range and is less important: update range path', () => {
 				let transformBy = new MoveOperation(
 					op.sourcePosition.clone(),
-					new Position( root, [ 4, 1, 0 ] ),
 					op.howMany,
+					new Position( root, [ 4, 1, 0 ] ),
 					baseVersion
 				);
 
@@ -1919,8 +1932,8 @@ describe( 'transform', () => {
 			it( 'range contains transforming range and is important: convert to NoOperation', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 2, 2, 3 ] ),
-					new Position( root, [ 4, 1, 0 ] ),
 					4,
+					new Position( root, [ 4, 1, 0 ] ),
 					baseVersion
 				);
 
@@ -1936,8 +1949,8 @@ describe( 'transform', () => {
 			it( 'range contains transforming range and is less important: update range path', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 2, 2, 3 ] ),
-					new Position( root, [ 4, 1, 0 ] ),
 					4,
+					new Position( root, [ 4, 1, 0 ] ),
 					baseVersion
 				);
 
@@ -1954,8 +1967,8 @@ describe( 'transform', () => {
 
 				let transformBy = new MoveOperation(
 					new Position( root, [ 2, 2, 3 ] ),
-					new Position( root, [ 4, 1, 0 ] ),
 					5,
+					new Position( root, [ 4, 1, 0 ] ),
 					baseVersion
 				);
 
@@ -1974,8 +1987,8 @@ describe( 'transform', () => {
 
 				let transformBy = new MoveOperation(
 					new Position( root, [ 2, 2, 3 ] ),
-					new Position( root, [ 4, 1, 0 ] ),
 					5,
+					new Position( root, [ 4, 1, 0 ] ),
 					baseVersion
 				);
 
@@ -1992,8 +2005,8 @@ describe( 'transform', () => {
 			it( 'range intersects on left side of transforming range and is important: shrink range', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 2, 2, 3 ] ),
-					new Position( root, [ 4, 1, 0 ] ),
 					2,
+					new Position( root, [ 4, 1, 0 ] ),
 					baseVersion
 				);
 
@@ -2012,8 +2025,8 @@ describe( 'transform', () => {
 
 				let transformBy = new MoveOperation(
 					new Position( root, [ 2, 2, 3 ] ),
-					new Position( otherRoot, [ 4, 1, 0 ] ),
 					2,
+					new Position( otherRoot, [ 4, 1, 0 ] ),
 					baseVersion
 				);
 
@@ -2035,8 +2048,8 @@ describe( 'transform', () => {
 			it( 'range intersects on right side of transforming range and is important: shrink range', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 2, 2, 5 ] ),
-					new Position( root, [ 4, 1, 0 ] ),
 					2,
+					new Position( root, [ 4, 1, 0 ] ),
 					baseVersion
 				);
 
@@ -2051,8 +2064,8 @@ describe( 'transform', () => {
 			it( 'range intersects on right side of transforming range and is less important: split into two operations', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 2, 2, 5 ] ),
-					new Position( root, [ 4, 1, 0 ] ),
 					2,
+					new Position( root, [ 4, 1, 0 ] ),
 					baseVersion
 				);
 
@@ -2076,8 +2089,8 @@ describe( 'transform', () => {
 
 				let transformBy = new MoveOperation(
 					new Position( root, [ 2, 2, 3 ] ),
-					new Position( root, [ 2, 2, 6 ] ),
 					2,
+					new Position( root, [ 2, 2, 6 ] ),
 					baseVersion
 				);
 
@@ -2102,8 +2115,8 @@ describe( 'transform', () => {
 
 				let transformBy = new MoveOperation(
 					new Position( root, [ 2, 2, 3 ] ),
-					new Position( root, [ 2, 2, 6 ] ),
 					2,
+					new Position( root, [ 2, 2, 6 ] ),
 					baseVersion
 				);
 
@@ -2134,8 +2147,8 @@ describe( 'transform', () => {
 
 				let transformBy = new MoveOperation(
 					new Position( root, [ 2, 2, 7 ] ),
-					new Position( root, [ 2, 2, 5 ] ),
 					2,
+					new Position( root, [ 2, 2, 5 ] ),
 					baseVersion
 				);
 
@@ -2160,8 +2173,8 @@ describe( 'transform', () => {
 
 				let transformBy = new MoveOperation(
 					new Position( root, [ 2, 2, 7 ] ),
-					new Position( root, [ 2, 2, 5 ] ),
 					2,
+					new Position( root, [ 2, 2, 5 ] ),
 					baseVersion
 				);
 
@@ -2192,8 +2205,8 @@ describe( 'transform', () => {
 
 				let transformBy = new MoveOperation(
 					new Position( root, [ 2, 2, 5 ] ),
-					new Position( root, [ 4, 1, 0 ] ),
 					2,
+					new Position( root, [ 4, 1, 0 ] ),
 					baseVersion
 				);
 
@@ -2217,8 +2230,8 @@ describe( 'transform', () => {
 
 				let transformBy = new MoveOperation(
 					new Position( root, [ 2, 2, 5 ] ),
-					new Position( root, [ 4, 1, 0 ] ),
 					2,
+					new Position( root, [ 4, 1, 0 ] ),
 					baseVersion
 				);
 
@@ -2249,8 +2262,8 @@ describe( 'transform', () => {
 
 				let transformBy = new MoveOperation(
 					new Position( root, [ 2, 2, 5 ] ),
-					new Position( root, [ 2, 2, 9 ] ),
 					2,
+					new Position( root, [ 2, 2, 9 ] ),
 					baseVersion
 				);
 
@@ -2268,8 +2281,8 @@ describe( 'transform', () => {
 
 				let transformBy = new MoveOperation(
 					new Position( root, [ 2, 2, 5 ] ),
-					new Position( root, [ 2, 2, 9 ] ),
 					2,
+					new Position( root, [ 2, 2, 9 ] ),
 					baseVersion
 				);
 
@@ -2343,8 +2356,8 @@ describe( 'transform', () => {
 			it( 'no operation update', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 0 ] ),
-					new Position( root, [ 1 ] ),
 					2,
+					new Position( root, [ 1 ] ),
 					baseVersion
 				);
 

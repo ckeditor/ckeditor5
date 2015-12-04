@@ -30,7 +30,7 @@ CKEDITOR.define( [
 			// Position in a graveyard where nodes were moved.
 			const graveyardPosition = Position.createFromParentAndOffset( graveyard, 0 );
 
-			super( position, graveyardPosition, howMany, baseVersion );
+			super( position, howMany, graveyardPosition, baseVersion );
 		}
 
 		get type() {
@@ -41,7 +41,7 @@ CKEDITOR.define( [
 			// Because of circular dependencies we need to re-require reinsert operation here.
 			const ReinsertOperation = CKEDITOR.require( 'document/operation/reinsertoperation' );
 
-			return new ReinsertOperation( this.targetPosition, this.sourcePosition, this.howMany, this.baseVersion + 1 );
+			return new ReinsertOperation( this.targetPosition, this.howMany, this.sourcePosition, this.baseVersion + 1 );
 		}
 	}
 

@@ -21,12 +21,12 @@ CKEDITOR.define( [
 		 * Creates a move operation.
 		 *
 		 * @param {document.Position} sourcePosition Position before the first element to move.
-		 * @param {document.Position} targetPosition Position where moved elements will be inserted.
 		 * @param {Number} howMany How many consecutive nodes to move, starting from `sourcePosition`.
+		 * @param {document.Position} targetPosition Position where moved elements will be inserted.
 		 * @param {Number} baseVersion {@link document.Document#version} on which operation can be applied.
 		 * @constructor
 		 */
-		constructor( sourcePosition, targetPosition, howMany, baseVersion ) {
+		constructor( sourcePosition, howMany, targetPosition, baseVersion ) {
 			super( baseVersion );
 
 			/**
@@ -37,18 +37,18 @@ CKEDITOR.define( [
 			this.sourcePosition = sourcePosition;
 
 			/**
-			 * Target move position.
-			 *
-			 * @type {document.Position}
-			 */
-			this.targetPosition = targetPosition;
-
-			/**
 			 * How many nodes to move.
 			 *
 			 * @type {Number}
 			 */
 			this.howMany = howMany;
+
+			/**
+			 * Target move position.
+			 *
+			 * @type {document.Position}
+			 */
+			this.targetPosition = targetPosition;
 		}
 
 		get type() {
@@ -56,11 +56,11 @@ CKEDITOR.define( [
 		}
 
 		clone() {
-			return new MoveOperation( this.sourcePosition.clone(), this.targetPosition.clone(), this.howMany, this.baseVersion );
+			return new MoveOperation( this.sourcePosition.clone(), this.howMany, this.targetPosition.clone(), this.baseVersion );
 		}
 
 		getReversed() {
-			return new MoveOperation( this.targetPosition.clone(), this.sourcePosition.clone(), this.howMany, this.baseVersion + 1 );
+			return new MoveOperation( this.targetPosition.clone(), this.howMany, this.sourcePosition.clone(), this.baseVersion + 1 );
 		}
 
 		_execute() {
