@@ -8,11 +8,11 @@
 CKEDITOR.define( [
 	'document/element',
 	'document/rootelement',
-	'document/transaction',
+	'document/batch',
 	'emittermixin',
 	'utils',
 	'ckeditorerror'
-], ( Element, RootElement, Transaction, EmitterMixin, utils, CKEditorError ) => {
+], ( Element, RootElement, Batch, EmitterMixin, utils, CKEditorError ) => {
 	const graveyardSymbol = Symbol( 'graveyard' );
 
 	/**
@@ -20,11 +20,11 @@ CKEDITOR.define( [
 	 * for example if the editor have multiple editable areas, each area will be represented by the separate root.
 	 *
 	 * All changes in the document are done by {@link document.operation.Operation operations}. To create operations in
-	 * the simple way use use the {@link document.Transaction transaction} API, for example:
+	 * the simple way use use the {@link document.Batch} API, for example:
 	 *
-	 *		document.createTransaction().insert( position, nodes ).split( otherPosition );
+	 *		document.batch().insert( position, nodes ).split( otherPosition );
 	 *
-	 * @see #createTransaction
+	 * @see #batch
 	 *
 	 * @class document.Document
 	 */
@@ -71,7 +71,7 @@ CKEDITOR.define( [
 		/**
 		 * This is the entry point for all document changes. All changes on the document are done using
 		 * {@link document.operation.Operation operations}. To create operations in the simple way use the
-		 * {@link document.Transaction} API available via {@link #createTransaction} method.
+		 * {@link document.Batch} API available via {@link #batch} method.
 		 *
 		 * @param {document.operation.Operation} operation Operation to be applied.
 		 */
@@ -93,6 +93,15 @@ CKEDITOR.define( [
 			this.version++;
 
 			this.fire( 'change', operation.type, changes );
+		}
+
+		/**
+		 * Creates a {@link document.Batch} instance which allows to change the document.
+		 *
+		 * @returns {document.Batch} Batch instance.
+		 */
+		batch() {
+			return new Batch( this );
 		}
 
 		/**
@@ -120,15 +129,6 @@ CKEDITOR.define( [
 			this.roots.set( name, root );
 
 			return root;
-		}
-
-		/**
-		 * Creates a {@link document.Transaction} instance which allows to change the document.
-		 *
-		 * @returns {document.Transaction} Transaction instance.
-		 */
-		createTransaction() {
-			return new Transaction( this );
 		}
 
 		/**

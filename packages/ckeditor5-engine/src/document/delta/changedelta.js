@@ -15,8 +15,8 @@ CKEDITOR.define( [
 	'document/element'
 ], ( Delta, register, ChangeOperation, Position, Range, Attribute, Element ) => {
 	/**
-	 * To provide specific OT behavior and better collisions solving, change methods ({@link document.Transaction#setAttr}
-	 * and {@link document.Transaction#removeAttr}) use `ChangeDelta` class which inherits from the `Delta` class and may
+	 * To provide specific OT behavior and better collisions solving, change methods ({@link document.Batch#setAttr}
+	 * and {@link document.Batch#removeAttr}) use `ChangeDelta` class which inherits from the `Delta` class and may
 	 * overwrite some methods.
 	 *
 	 * @class document.delta.ChangeDelta
@@ -28,9 +28,9 @@ CKEDITOR.define( [
 	 *
 	 * @chainable
 	 * @method setAttr
-	 * @memberOf document.Transaction
+	 * @memberOf document.Batch
 	 * @param {String} key Attribute key.
-	 * @param {Mixed} value Attribute new value.
+	 * @param {*} value Attribute new value.
 	 * @param {document.Node|document.Range} nodeOrRange Node or range on which the attribute will be set.
 	 */
 	register( 'setAttr', function( key, value, nodeOrRange ) {
@@ -44,7 +44,7 @@ CKEDITOR.define( [
 	 *
 	 * @chainable
 	 * @method removeAttr
-	 * @memberOf document.Transaction
+	 * @memberOf document.Batch
 	 * @param {String} key Attribute key.
 	 * @param {document.Node|document.Range} nodeOrRange Node or range on which the attribute will be removed.
 	 */
@@ -54,16 +54,16 @@ CKEDITOR.define( [
 		return this;
 	} );
 
-	function change( transaction, key, value, nodeOrRange ) {
+	function change( batch, key, value, nodeOrRange ) {
 		const delta = new ChangeDelta();
 
 		if ( nodeOrRange instanceof Range ) {
-			changeRange( transaction.doc, delta, key, value, nodeOrRange );
+			changeRange( batch.doc, delta, key, value, nodeOrRange );
 		} else {
-			changeNode( transaction.doc, delta, key, value, nodeOrRange );
+			changeNode( batch.doc, delta, key, value, nodeOrRange );
 		}
 
-		transaction.addDelta( delta );
+		batch.addDelta( delta );
 	}
 
 	function changeNode( doc, delta, key, value, node ) {

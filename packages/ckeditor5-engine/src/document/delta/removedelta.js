@@ -11,7 +11,7 @@ CKEDITOR.define( [
 	'document/operation/removeoperation'
 ], ( Delta, register, RemoveOperation ) => {
 	/**
-	 * To provide specific OT behavior and better collisions solving, {@link document.Transaction#remove} method
+	 * To provide specific OT behavior and better collisions solving, {@link document.Batch#remove} method
 	 * uses the `RemoveDelta` class which inherits from the `Delta` class and may overwrite some methods.
 	 *
 	 * @class document.delta.RemoveDelta
@@ -23,7 +23,7 @@ CKEDITOR.define( [
 	 *
 	 * @chainable
 	 * @method remove
-	 * @memberOf document.Transaction
+	 * @memberOf document.Batch
 	 * @param {document.Position} position Position before the first node to remove.
 	 * @param {Number} howMany How many nodes to remove.
 	 */

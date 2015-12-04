@@ -25,7 +25,7 @@ describe( 'Delta', () => {
 		it( 'should create an delta with empty properties', () => {
 			const delta = new Delta();
 
-			expect( delta ).to.have.property( 'transaction' ).that.is.null;
+			expect( delta ).to.have.property( 'batch' ).that.is.null;
 			expect( delta ).to.have.property( 'operations' ).that.a( 'array' ).and.have.length( 0 );
 		} );
 	} );

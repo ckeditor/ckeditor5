@@ -15,7 +15,7 @@ CKEDITOR.define( [
 	'ckeditorerror'
 ], ( Delta, register, Position, Element, InsertOperation, MoveOperation, CKEditorError ) => {
 	/**
-	 * To provide specific OT behavior and better collisions solving, the {@link document.Transaction#split} method
+	 * To provide specific OT behavior and better collisions solving, the {@link document.Batch#split} method
 	 * uses `SplitDelta` class which inherits from the `Delta` class and may overwrite some methods.
 	 *
 	 * @class document.delta.SplitDelta
@@ -25,12 +25,12 @@ CKEDITOR.define( [
 	/**
 	 * Splits a node at the given position.
 	 *
-	 * This cannot be a position inside the root element. The `transaction-split-root` error will be thrown if
+	 * This cannot be a position inside the root element. The `batch-split-root` error will be thrown if
 	 * you try to split the root element.
 	 *
 	 * @chainable
 	 * @method split
-	 * @memberOf document.Transaction
+	 * @memberOf document.Batch
 	 * @param {document.Position} position Position of split.
 	 */
 	register( 'split', function( position ) {
@@ -41,9 +41,9 @@ CKEDITOR.define( [
 			/**
 			 * Root element can not be split.
 			 *
-			 * @error transaction-split-root
+			 * @error batch-split-root
 			 */
-			throw new CKEditorError( 'transaction-split-root: Root element can not be split.' );
+			throw new CKEditorError( 'batch-split-root: Root element can not be split.' );
 		}
 
 		const copy = new Element( splitElement.name, splitElement.getAttrs() );
