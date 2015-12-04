@@ -17,7 +17,6 @@ const modules = bender.amd.require(
 
 describe( 'Range', () => {
 	let Range, Position, Element, Character, Document;
-	let start, end, root;
 
 	before( () => {
 		Position = modules[ 'document/position' ];
@@ -25,17 +24,17 @@ describe( 'Range', () => {
 		Element = modules[ 'document/element' ];
 		Character = modules[ 'document/character' ];
 		Document = modules[ 'document/document' ];
+	} );
 
+	let range, start, end, root;
+
+	beforeEach( () => {
 		let doc = new Document();
 		root = doc.createRoot( 'root' );
 
 		start = new Position( root, [ 0 ] );
 		end = new Position( root, [ 1 ] );
-	} );
 
-	let range;
-
-	beforeEach( () => {
 		range = new Range( start, end );
 	} );
 
@@ -78,7 +77,7 @@ describe( 'Range', () => {
 	} );
 
 	describe( 'static constructors', () => {
-		let doc, root, p, f, o, z;
+		let p, f, o, z;
 
 		// root
 		//  |- p
@@ -86,10 +85,6 @@ describe( 'Range', () => {
 		//     |- o
 		//     |- z
 		before( () => {
-			doc = new Document();
-
-			root = doc.createRoot( 'root' );
-
 			f = new Character( 'f' );
 			o = new Character( 'o' );
 			z = new Character( 'z' );
@@ -127,6 +122,35 @@ describe( 'Range', () => {
 				expect( range.end.root ).to.equal( range.start.root );
 				expect( range.end.path ).to.deep.equal( [ 1, 2, 7 ] );
 			} );
+		} );
+	} );
+
+	describe( 'getNodes', () => {
+		it( 'should iterate over all nodes which "starts" in the range', () => {
+			let nodes = [];
+
+			const a = new Character( 'a' );
+			const b = new Character( 'b' );
+			const x = new Character( 'x' );
+			const y = new Character( 'y' );
+
+			const e1 = new Element( 'e1' );
+			const e2 = new Element( 'e2' );
+
+			e1.insertChildren( 0, [ a, b ] );
+			e2.insertChildren( 0, [ x, y ] );
+			root.insertChildren( 0, [ e1, e2 ] );
+
+			let range = new Range(
+				new Position( root, [ 0, 1 ] ),
+				new Position( root, [ 1, 1 ] )
+			);
+
+			for ( let node of range.getNodes() ) {
+				nodes.push( node );
+			}
+
+			expect( nodes ).to.deep.equal( [ b, e2, x ] );
 		} );
 	} );
 
