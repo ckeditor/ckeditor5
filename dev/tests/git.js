@@ -95,6 +95,16 @@ describe( 'utils', () => {
 				expect( urlInfo.branch ).to.equal( 'master' );
 			} );
 
+			it( 'should parse full GitHub URL (git)', () => {
+				const urlInfo = git.parseRepositoryUrl( 'git://github.com/ckeditor/ckeditor5-core.git' );
+
+				expect( urlInfo.server ).to.equal( 'git://github.com/' );
+				expect( urlInfo.repository ).to.equal( 'ckeditor/ckeditor5-core.git' );
+				expect( urlInfo.user ).to.equal( 'ckeditor' );
+				expect( urlInfo.name ).to.equal( 'ckeditor5-core' );
+				expect( urlInfo.branch ).to.equal( 'master' );
+			} );
+
 			it( 'should parse full GitHub URL (git) with provided branch', () => {
 				const urlInfo = git.parseRepositoryUrl( 'git@github.com:ckeditor/ckeditor5-core.git#new-feature' );
 
