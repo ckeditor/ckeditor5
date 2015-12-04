@@ -220,8 +220,20 @@ CKEDITOR.define( [ 'document/rootelement', 'utils', 'ckeditorerror' ], ( RootEle
 			return transformed;
 		}
 
-		static createFromPositionAndShift( position, shift ) {
-			let newPosition = new Position( utils.clone( position.path ), position.root );
+		/**
+		 * Returns a new position on the same level as reference position, but with offset shifted left or right.
+		 *
+		 *		 const pos = new Position( [ 1, 2, 8 ], root );
+		 *
+		 *		 Position.createFromPositionAndShift( pos, -3 ) // [ 1, 2, 5 ]
+		 *		 Position.createFromPositionAndShift( pos, 5 )  // [ 1, 2, 13 ]
+		 *
+		 * @param {document.Position} referencePosition Reference position.
+		 * @param {Number} shift Offset shift.
+		 * @returns {document.Position}
+		 */
+		static createFromPositionAndShift( referencePosition, shift ) {
+			let newPosition = new Position( utils.clone( referencePosition.path ), referencePosition.root );
 			newPosition.offset = newPosition.offset + shift;
 
 			return newPosition;
