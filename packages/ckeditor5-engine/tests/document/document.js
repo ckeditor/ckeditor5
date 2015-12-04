@@ -78,11 +78,14 @@ describe( 'Document', () => {
 
 	describe( 'applyOperation', () => {
 		it( 'should increase document version and execute operation', () => {
-			let changeCallback = sinon.spy();
+			const changeCallback = sinon.spy();
+			const type = 't';
+			const data = { data: 'x' };
+
 			let operation = {
-				type: 't',
+				type: type,
 				baseVersion: 0,
-				_execute: sinon.stub().returns( { data: 'x' } )
+				_execute: sinon.stub().returns( data )
 			};
 
 			document.on( 'change', changeCallback );
@@ -92,7 +95,8 @@ describe( 'Document', () => {
 			sinon.assert.calledOnce( operation._execute );
 
 			sinon.assert.calledOnce( changeCallback );
-			expect( changeCallback.args[ 0 ][ 1 ] ).to.deep.equal( { data: 'x', type: 't' } );
+			expect( changeCallback.args[ 0 ][ 1 ] ).to.equals( type );
+			expect( changeCallback.args[ 0 ][ 2 ] ).to.equal( data );
 		} );
 
 		it( 'should throw an error on the operation base version and the document version is different', () => {
