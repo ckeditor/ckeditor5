@@ -20,7 +20,7 @@ module.exports = ( grunt ) => {
 	const workspaceRoot = grunt.config.data.workspaceRoot;
 
 	grunt.registerTask( 'dev-init', function() {
-		initTask( ckeditor5Path, packageJSON, workspaceRoot, grunt.log.writeln, grunt.log.error );
+		initTask( installTask, ckeditor5Path, packageJSON, workspaceRoot, grunt.log.writeln );
 	} );
 
 	grunt.registerTask( 'dev-plugin-create', function() {
