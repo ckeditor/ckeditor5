@@ -98,13 +98,6 @@ describe( 'position', () => {
 		expect( Position.createFromParentAndOffset( li1, 3 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 3 ] );
 	} );
 
-	it( 'should create position from another position and shift', () => {
-		const pos = Position.createFromParentAndOffset( ul, 1 );
-
-		expect( Position.createFromPositionAndShift( pos, -1 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0 ] );
-		expect( Position.createFromPositionAndShift( pos, 1 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 2 ] );
-	} );
-
 	it( 'should create positions before elements', () => {
 		expect( Position.createBefore( p ) ).to.have.property( 'path' ).that.deep.equals( [ 0 ] );
 
