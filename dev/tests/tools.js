@@ -177,6 +177,49 @@ describe( 'utils', () => {
 			} );
 		} );
 
+		describe( 'isFile', () => {
+			it( 'should be defined', () => expect( tools.isFile ).to.be.a( 'function' ) );
+
+			it( 'should return true if path points to file', () => {
+				const fs = require( 'fs' );
+				const statSyncStub = sinon.stub( fs, 'statSync', () => ( { isFile: () => true } ) );
+				const path = 'path';
+				toRestore.push( statSyncStub );
+
+				const result = tools.isFile( path );
+
+				expect( statSyncStub.calledOnce ).to.equal( true );
+				expect( statSyncStub.firstCall.args[ 0 ] ).to.equal( path );
+				expect( result ).to.equal( true );
+			} );
+
+			it( 'should return false if path does not point to directory', () => {
+				const fs = require( 'fs' );
+				const statSyncStub = sinon.stub( fs, 'statSync', () => ( { isFile: () => false } ) );
+				const path = 'path';
+				toRestore.push( statSyncStub );
+
+				const result = tools.isFile( path );
+
+				expect( statSyncStub.calledOnce ).to.equal( true );
+				expect( statSyncStub.firstCall.args[ 0 ] ).to.equal( path );
+				expect( result ).to.equal( false );
+			} );
+
+			it( 'should return false if statSync method throws', () => {
+				const fs = require( 'fs' );
+				const statSyncStub = sinon.stub( fs, 'statSync' ).throws();
+				const path = 'path';
+				toRestore.push( statSyncStub );
+
+				const result = tools.isFile( path );
+
+				expect( statSyncStub.calledOnce ).to.equal( true );
+				expect( statSyncStub.firstCall.args[ 0 ] ).to.equal( path );
+				expect( result ).to.equal( false );
+			} );
+		} );
+
 		describe( 'getCKE5Directories', () => {
 			it( 'should be defined', () => expect( tools.getCKE5Directories ).to.be.a( 'function' ) );
 
@@ -212,6 +255,41 @@ describe( 'utils', () => {
 				expect( writeFileStub.calledOnce ).to.equal( true );
 				expect( writeFileStub.firstCall.args[ 0 ] ).to.equal( path );
 				expect( writeFileStub.firstCall.args[ 1 ] ).to.equal( JSON.stringify( modifiedJSON, null, 2 ) );
+			} );
+		} );
+
+		describe( 'readPackageName', () => {
+			const modulePath = 'path/to/module';
+			it( 'should read package name from NPM module', () => {
+				const isFileStub = sinon.stub( tools, 'isFile' ).returns( true );
+				const fs = require( 'fs' );
+				const name = 'module-name';
+				const readFileStub = sinon.stub( fs, 'readFileSync' ).returns( JSON.stringify( { name: name } ) );
+				toRestore.push( isFileStub, readFileStub );
+
+				const result = tools.readPackageName( modulePath );
+
+				expect( result ).to.equal( name );
+			} );
+
+			it( 'should return null if no package.json is found', () => {
+				const isFileStub = sinon.stub( tools, 'isFile' ).returns( false );
+				toRestore.push( isFileStub );
+
+				const result = tools.readPackageName( modulePath );
+
+				expect( result ).to.equal( null );
+			} );
+
+			it( 'should return null if no name in package.json is provided', () => {
+				const isFileStub = sinon.stub( tools, 'isFile' ).returns( true );
+				const fs = require( 'fs' );
+				const readFileStub = sinon.stub( fs, 'readFileSync' ).returns( JSON.stringify( { } ) );
+				toRestore.push( isFileStub, readFileStub );
+
+				const result = tools.readPackageName( modulePath );
+
+				expect( result ).to.equal( null );
 			} );
 		} );
 
