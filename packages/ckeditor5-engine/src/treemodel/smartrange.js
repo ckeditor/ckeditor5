@@ -50,7 +50,7 @@ CKEDITOR.define( [ 'treemodel/range', 'emittermixin', 'utils' ], ( Range, Emitte
 			case 'move':
 			case 'remove':
 			case 'reinsert':
-				let differenceSet = this.getDifference( Range.createFromPositionAndOffset( position, howMany ) );
+				let differenceSet = this.getDifference( Range.createFromPositionAndShift( position, howMany ) );
 
 				if ( differenceSet.length > 0 ) {
 					let diff = differenceSet[ 0 ];

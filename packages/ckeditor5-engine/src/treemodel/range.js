@@ -276,7 +276,7 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 		 * @param {Number} offset How long the range should be.
 		 * @returns {treeModel.Range}
 		 */
-		static createFromPositionAndOffset( position, offset ) {
+		static createFromPositionAndShift( position, offset ) {
 			let endPosition = position.clone();
 			endPosition.offset += offset;
 

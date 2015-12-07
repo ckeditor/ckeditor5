@@ -129,7 +129,7 @@ CKEDITOR.define( [
 
 			return {
 				sourcePosition: this.sourcePosition,
-				range: Range.createFromPositionAndOffset( this.targetPosition, this.howMany )
+				range: Range.createFromPositionAndShift( this.targetPosition, this.howMany )
 			};
 		}
 	}

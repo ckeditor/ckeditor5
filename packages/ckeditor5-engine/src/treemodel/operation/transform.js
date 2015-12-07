@@ -137,7 +137,7 @@ CKEDITOR.define( [
 			// Transforms AttributeOperation `a` by MoveOperation `b`. Returns results as an array of operations.
 			MoveOperation( a, b ) {
 				// Convert MoveOperation properties into a range.
-				const rangeB = Range.createFromPositionAndOffset( b.sourcePosition, b.howMany );
+				const rangeB = Range.createFromPositionAndShift( b.sourcePosition, b.howMany );
 
 				// Get target position from the state "after" nodes specified by MoveOperation are "detached".
 				const newTargetPosition = b.targetPosition.getTransformedByDeletion( b.sourcePosition, b.howMany );
@@ -200,7 +200,7 @@ CKEDITOR.define( [
 				const newTargetPosition = a.targetPosition.getTransformedByInsertion( b.position, b.nodeList.length, !isStrong );
 
 				// Create range from MoveOperation properties and transform it by insertion as well.
-				const rangeB = Range.createFromPositionAndOffset( a.sourcePosition, a.howMany );
+				const rangeB = Range.createFromPositionAndShift( a.sourcePosition, a.howMany );
 				const ranges = rangeB.getTransformedByInsertion( b.position, b.nodeList.length, true );
 
 				// Map transformed range(s) to operations and return them.
@@ -229,8 +229,8 @@ CKEDITOR.define( [
 				}
 
 				// Create ranges from MoveOperations properties.
-				const rangeA = Range.createFromPositionAndOffset( a.sourcePosition, a.howMany );
-				const rangeB = Range.createFromPositionAndOffset( b.sourcePosition, b.howMany );
+				const rangeA = Range.createFromPositionAndShift( a.sourcePosition, a.howMany );
+				const rangeB = Range.createFromPositionAndShift( b.sourcePosition, b.howMany );
 
 				// Special case when transformed range contains both the other operation's whole range and target.
 				// In such case, operations are not really conflicting and we should leave transformed operation as it is.

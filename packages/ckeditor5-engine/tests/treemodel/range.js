@@ -112,10 +112,10 @@ describe( 'Range', () => {
 			} );
 		} );
 
-		describe( 'createFromPositionAndOffset', () => {
+		describe( 'createFromPositionAndShift', () => {
 			it( 'should make range from start position and offset', () => {
 				const position = new Position( root, [ 1, 2, 3 ] );
-				const range = Range.createFromPositionAndOffset( position, 4 );
+				const range = Range.createFromPositionAndShift( position, 4 );
 
 				expect( range ).to.be.instanceof( Range );
 				expect( range.start.isEqual( position ) ).to.be.true;

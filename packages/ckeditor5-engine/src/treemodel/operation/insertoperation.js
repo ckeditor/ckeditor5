@@ -65,7 +65,7 @@ CKEDITOR.define( [
 			this.position.parent.insertChildren( this.position.offset, this.nodeList );
 
 			return {
-				range: Range.createFromPositionAndOffset( this.position, this.nodeList.length )
+				range: Range.createFromPositionAndShift( this.position, this.nodeList.length )
 			};
 		}
 	}
