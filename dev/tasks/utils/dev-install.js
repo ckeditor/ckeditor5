@@ -29,6 +29,7 @@ const path = require( 'path' );
 module.exports = ( ckeditor5Path, workspaceRoot, name, writeln ) => {
 	const workspaceAbsolutePath = path.join( ckeditor5Path, workspaceRoot );
 	let repositoryPath;
+	let dependency;
 	let urlInfo;
 
 	// First check if name is local path to repository.
@@ -42,12 +43,15 @@ module.exports = ( ckeditor5Path, workspaceRoot, name, writeln ) => {
 			urlInfo = {
 				name: packageName
 			};
+
+			dependency = repositoryPath;
 		}
 	}
 
 	// Check if name is repository URL.
 	if ( !urlInfo ) {
 		urlInfo = git.parseRepositoryUrl( name );
+		dependency = name;
 	}
 
 	// Check if name is NPM package.
@@ -57,6 +61,7 @@ module.exports = ( ckeditor5Path, workspaceRoot, name, writeln ) => {
 
 		if ( url ) {
 			urlInfo = git.parseRepositoryUrl( url );
+			dependency  = url;
 		}
 	}
 
@@ -83,7 +88,7 @@ module.exports = ( ckeditor5Path, workspaceRoot, name, writeln ) => {
 		writeln( `Adding ${ urlInfo.name } dependency to CKEditor5 package.json... ` );
 		tools.updateJSONFile( path.join( ckeditor5Path, 'package.json' ), ( json ) => {
 			json.dependencies = json.dependencies || {};
-			json.dependencies[ urlInfo.name ] = repositoryPath;
+			json.dependencies[ urlInfo.name ] = dependency;
 
 			return json;
 		} );

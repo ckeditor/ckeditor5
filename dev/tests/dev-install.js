@@ -75,7 +75,7 @@ describe( 'dev-install', () => {
 		const updateFn = spies.updateJSON.firstCall.args[ 1 ];
 		const json = updateFn( {} );
 		expect( json.dependencies ).to.be.a( 'object' );
-		expect( json.dependencies[ urlInfo.name ] ).to.equal( repositoryPath );
+		expect( json.dependencies[ urlInfo.name ] ).to.equal( repositoryUrl );
 
 		sinon.assert.calledOnce( spies.npmInstall );
 		sinon.assert.calledWithExactly( spies.npmInstall, ckeditor5Path );
@@ -115,7 +115,7 @@ describe( 'dev-install', () => {
 		const updateFn = spies.updateJSON.firstCall.args[ 1 ];
 		const json = updateFn( {} );
 		expect( json.dependencies ).to.be.a( 'object' );
-		expect( json.dependencies[ urlInfo.name ] ).to.equal( repositoryPath );
+		expect( json.dependencies[ urlInfo.name ] ).to.equal( repositoryUrl );
 
 		sinon.assert.calledOnce( spies.npmInstall );
 		sinon.assert.calledWithExactly( spies.npmInstall, ckeditor5Path );
