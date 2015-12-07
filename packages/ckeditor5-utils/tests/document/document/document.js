@@ -77,29 +77,32 @@ describe( 'Document', () => {
 	} );
 
 	describe( 'applyOperation', () => {
-		it( 'should increase document version, execute operation and fire operationApplied', () => {
-			let operationApplied = sinon.spy();
+		it( 'should increase document version, execute operation and fire event with proper data', () => {
+			const changeCallback = sinon.spy();
+			const type = 't';
+			const data = { data: 'x' };
+
 			let operation = {
+				type: type,
 				baseVersion: 0,
-				_execute: sinon.spy()
+				_execute: sinon.stub().returns( data )
 			};
 
-			document.on( 'operationApplied', operationApplied );
-
+			document.on( 'change', changeCallback );
 			document.applyOperation( operation );
 
 			expect( document.version ).to.equal( 1 );
-			sinon.assert.calledOnce( operationApplied );
 			sinon.assert.calledOnce( operation._execute );
+
+			sinon.assert.calledOnce( changeCallback );
+			expect( changeCallback.args[ 0 ][ 1 ] ).to.equal( type );
+			expect( changeCallback.args[ 0 ][ 2 ] ).to.equal( data );
 		} );
 
 		it( 'should throw an error on the operation base version and the document version is different', () => {
-			let operationApplied = sinon.spy();
 			let operation = {
 				baseVersion: 1
 			};
-
-			document.on( 'operationApplied', operationApplied );
 
 			expect(
 				() => {

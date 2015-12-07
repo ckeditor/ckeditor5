@@ -36,6 +36,17 @@ describe( 'MoveOperation', () => {
 		root = doc.createRoot( 'root' );
 	} );
 
+	it( 'should have proper type', () => {
+		const opp = new MoveOperation(
+			new Position( [ 0, 0 ], root ),
+			new Position( [ 1, 0 ], root ),
+			1,
+			doc.version
+		);
+
+		expect( opp.type ).to.equal( 'move' );
+	} );
+
 	it( 'should move from one node to another', () => {
 		let p1 = new Element( 'p1', [], new Element( 'x' ) );
 		let p2 = new Element( 'p2' );

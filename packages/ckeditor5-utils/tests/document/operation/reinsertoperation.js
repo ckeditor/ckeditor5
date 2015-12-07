@@ -44,6 +44,10 @@ describe( 'ReinsertOperation', () => {
 		);
 	} );
 
+	it( 'should have proper type', () => {
+		expect( operation.type ).to.equal( 'reinsert' );
+	} );
+
 	it( 'should extend MoveOperation class', () => {
 		expect( operation ).to.be.instanceof( MoveOperation );
 	} );

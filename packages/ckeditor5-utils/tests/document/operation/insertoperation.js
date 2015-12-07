@@ -39,6 +39,16 @@ describe( 'InsertOperation', () => {
 		root = doc.createRoot( 'root' );
 	} );
 
+	it( 'should have proper type', () => {
+		const opp = new InsertOperation(
+			new Position( [ 0 ], root ),
+			new Character( 'x' ),
+			doc.version
+		);
+
+		expect( opp.type ).to.equal( 'insert' );
+	} );
+
 	it( 'should insert node', () => {
 		doc.applyOperation(
 			new InsertOperation(
