@@ -80,18 +80,18 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 		 *
 		 * Examples:
 		 *
-		 * 	let range = new Range( new Position( root, [ 2, 7 ] ), new Position( root, [ 4, 0, 1 ] ) );
-		 * 	let otherRange = new Range( new Position( root, [ 1 ] ), new Position( root, [ 5 ] ) );
-		 * 	let transformed = range.getDifference( otherRange );
-		 * 	// transformed array has no ranges because `otherRange` contains `range`
+		 *		let range = new Range( new Position( root, [ 2, 7 ] ), new Position( root, [ 4, 0, 1 ] ) );
+		 *		let otherRange = new Range( new Position( root, [ 1 ] ), new Position( root, [ 5 ] ) );
+		 *		let transformed = range.getDifference( otherRange );
+		 *		// transformed array has no ranges because `otherRange` contains `range`
 		 *
-		 * 	otherRange = new Range( new Position( root, [ 1 ] ), new Position( root, [ 3 ] ) );
-		 * 	transformed = range.getDifference( otherRange );
-		 * 	// transformed array has one range: from [ 3 ] to [ 4, 0, 1 ]
+		 *		otherRange = new Range( new Position( root, [ 1 ] ), new Position( root, [ 3 ] ) );
+		 *		transformed = range.getDifference( otherRange );
+		 *		// transformed array has one range: from [ 3 ] to [ 4, 0, 1 ]
 		 *
-		 * 	otherRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 4 ] ) );
-		 * 	transformed = range.getDifference( otherRange );
-		 * 	// transformed array has two ranges: from [ 2, 7 ] to [ 3 ] and from [ 4 ] to [ 4, 0, 1 ]
+		 *		otherRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 4 ] ) );
+		 *		transformed = range.getDifference( otherRange );
+		 *		// transformed array has two ranges: from [ 2, 7 ] to [ 3 ] and from [ 4 ] to [ 4, 0, 1 ]
 		 *
 		 * @param {treeModel.Range} otherRange Range to differentiate against.
 		 * @returns {Array.<treeModel.Range>} The difference between ranges.
@@ -137,12 +137,12 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 		 *
 		 * Examples:
 		 *
-		 * 	let range = new Range( new Position( root, [ 2, 7 ] ), new Position( root, [ 4, 0, 1 ] ) );
-		 * 	let otherRange = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) );
-		 * 	let transformed = range.getIntersection( otherRange ); // null - ranges have no common part
+		 *		let range = new Range( new Position( root, [ 2, 7 ] ), new Position( root, [ 4, 0, 1 ] ) );
+		 *		let otherRange = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) );
+		 *		let transformed = range.getIntersection( otherRange ); // null - ranges have no common part
 		 *
-		 * 	otherRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 5 ] ) );
-		 * 	transformed = range.getIntersection( otherRange ); // range from [ 3 ] to [ 4, 0, 1 ]
+		 *		otherRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 5 ] ) );
+		 *		transformed = range.getIntersection( otherRange ); // range from [ 3 ] to [ 4, 0, 1 ]
 		 *
 		 * @param {treeModel.Range} otherRange Range to check for intersection.
 		 * @returns {treeModel.Range|null} A common part of given ranges or null if ranges have no common part.
@@ -200,15 +200,15 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 		 *
 		 * Examples:
 		 *
-		 * 	let range = new Range( new Position( root, [ 2, 7 ] ), new Position( root, [ 4, 0, 1 ] ) );
-		 * 	let transformed = range.getTransformedByInsertion( new Position( root, [ 1 ] ), 2 );
-		 * 	// transformed array has one range from [ 4, 7 ] to [ 6, 0, 1 ]
+		 *		let range = new Range( new Position( root, [ 2, 7 ] ), new Position( root, [ 4, 0, 1 ] ) );
+		 *		let transformed = range.getTransformedByInsertion( new Position( root, [ 1 ] ), 2 );
+		 *		// transformed array has one range from [ 4, 7 ] to [ 6, 0, 1 ]
 		 *
-		 * 	transformed = range.getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 4 );
-		 * 	// transformed array has two ranges: from [ 2, 7 ] to [ 3, 2 ] and from [ 3, 6 ] to [ 4, 0, 1 ]
+		 *		transformed = range.getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 4 );
+		 *		// transformed array has two ranges: from [ 2, 7 ] to [ 3, 2 ] and from [ 3, 6 ] to [ 4, 0, 1 ]
 		 *
-		 * 	transformed = range.getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 4, true );
-		 * 	// transformed array has one range which is equal to `range`. This is because of spreadOnlyOnSameLevel flag.
+		 *		transformed = range.getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 4, true );
+		 *		// transformed array has one range which is equal to `range`. This is because of spreadOnlyOnSameLevel flag.
 		 *
 		 * @param {treeModel.Position} insertPosition Position where nodes are inserted.
 		 * @param {Number} howMany How many nodes are inserted.

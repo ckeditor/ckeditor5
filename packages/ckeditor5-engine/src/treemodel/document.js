@@ -22,7 +22,7 @@ CKEDITOR.define( [
 	 * All changes in the document are done by {@link treeModel.operation.Operation operations}. To create operations in
 	 * the simple way use use the {@link treeModel.Batch} API, for example:
 	 *
-	 *		treeModel.batch().insert( position, nodes ).split( otherPosition );
+	 *		doc.batch().insert( position, nodes ).split( otherPosition );
 	 *
 	 * @see #batch
 	 *
@@ -134,7 +134,7 @@ CKEDITOR.define( [
 		 * Returns top-level root by it's name.
 		 *
 		 * @param {String|Symbol} name Name of the root to get.
-		 * @returns (treeModel.RootElement} Root registered under given name.
+		 * @returns {treeModel.RootElement} Root registered under given name.
 		 */
 		getRoot( name ) {
 			if ( !this.roots.has( name ) ) {
