@@ -8,11 +8,10 @@
 CKEDITOR.define( [
 	'document/operation/operation',
 	'document/nodelist',
-	'document/position',
 	'document/range',
 	'ckeditorerror',
 	'utils'
-], ( Operation, NodeList, Position, Range, CKEditorError, utils ) => {
+], ( Operation, NodeList, Range, CKEditorError, utils ) => {
 	/**
 	 * Operation to move list of subsequent nodes from one position in the document to another.
 	 *
@@ -131,7 +130,7 @@ CKEDITOR.define( [
 
 			return {
 				sourcePosition: this.sourcePosition,
-				range: new Range( this.targetPosition, Position.createFromPositionAndShift( this.targetPosition, this.howMany ) )
+				range: Range.createFromPositionAndOffset( this.targetPosition, this.howMany )
 			};
 		}
 	}

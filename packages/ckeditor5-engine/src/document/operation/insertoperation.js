@@ -9,9 +9,8 @@ CKEDITOR.define( [
 	'document/operation/operation',
 	'document/nodelist',
 	'document/range',
-	'document/position',
 	'document/operation/removeoperation'
-], ( Operation, NodeList, Range, Position ) => {
+], ( Operation, NodeList, Range ) => {
 	/**
 	 * Operation to insert list of nodes on the given position in the tree data model.
 	 *
@@ -66,7 +65,7 @@ CKEDITOR.define( [
 			this.position.parent.insertChildren( this.position.offset, this.nodeList );
 
 			return {
-				range: new Range( this.position, Position.createFromPositionAndShift( this.position, this.nodeList.length ) )
+				range: Range.createFromPositionAndOffset( this.position, this.nodeList.length )
 			};
 		}
 	}
