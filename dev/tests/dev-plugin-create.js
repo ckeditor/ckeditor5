@@ -30,13 +30,7 @@ describe( 'dev-tasks', () => {
 
 	function createSpies() {
 		spies = {
-			getDependencies: sinon.spy( tools, 'getCKEditorDependencies' ),
-			getDirectories: sinon.stub( tools, 'getCKE5Directories', () => [] ),
-			parseRepositoryUrl: sinon.spy( git, 'parseRepositoryUrl' ),
-			cloneRepository: sinon.stub( git, 'cloneRepository' ),
 			linkDirectories: sinon.stub( tools, 'linkDirectories' ),
-			pull: sinon.stub( git, 'pull' ),
-			checkout: sinon.stub( git, 'checkout' ),
 			npmInstall: sinon.stub( tools, 'npmInstall' ),
 			installGitHooks: sinon.stub( tools, 'installGitHooks' ),
 			getPluginName: sinon.stub( inquiries, 'getPluginName' ).returns( new Promise( ( r ) => r( pluginName ) ) ),
@@ -44,8 +38,6 @@ describe( 'dev-tasks', () => {
 			getPluginGitHubUrl: sinon.stub( inquiries, 'getPluginGitHubUrl' ).returns( new Promise( ( r ) => r( gitHubUrl ) ) ),
 			initializeRepository: sinon.stub( git, 'initializeRepository' ),
 			updateJSONFile: sinon.stub( tools, 'updateJSONFile' ),
-			getStatus: sinon.stub( git, 'getStatus' ),
-			updateBoilerplate: sinon.stub( git, 'updateBoilerplate' ),
 			copyTemplateFiles: sinon.stub( tools, 'copyTemplateFiles' ),
 			initialCommit: sinon.stub( git, 'initialCommit' )
 		};
@@ -74,7 +66,15 @@ describe( 'dev-tasks', () => {
 				expect( spies.copyTemplateFiles.firstCall.args[ 0 ] ).to.equal( repositoryPath );
 				expect( spies.updateJSONFile.calledTwice ).to.equal( true );
 				expect( spies.updateJSONFile.firstCall.args[ 0 ] ).to.equal( path.join( repositoryPath, 'package.json' ) );
+				let updateFn = spies.updateJSONFile.firstCall.args[ 1 ];
+				let json = updateFn( {} );
+				expect( json.name ).to.equal( pluginName );
+				expect( json.version ).to.equal( pluginVersion );
 				expect( spies.updateJSONFile.secondCall.args[ 0 ] ).to.equal( path.join( mainRepositoryPath, 'package.json' ) );
+				updateFn = spies.updateJSONFile.secondCall.args[ 1 ];
+				json = updateFn( {} );
+				expect( json.dependencies ).to.be.an( 'object' );
+				expect( json.dependencies[ pluginName ] ).to.equal( gitHubUrl );
 				expect( spies.initialCommit.calledOnce ).to.equal( true );
 				expect( spies.initialCommit.firstCall.args[ 0 ] ).to.equal( pluginName );
 				expect( spies.initialCommit.firstCall.args[ 1 ] ).to.equal( repositoryPath );
@@ -86,36 +86,6 @@ describe( 'dev-tasks', () => {
 				expect( spies.installGitHooks.calledOnce ).to.equal( true );
 				expect( spies.installGitHooks.firstCall.args[ 0 ] ).to.equal( repositoryPath );
 			} );
-		} );
-	} );
-
-	describe( 'dev-relink', () => {
-		const devRelinkTask = require( '../tasks/utils/dev-relink' );
-
-		it( 'should exist', () => expect( devRelinkTask ).to.be.a( 'function' ) );
-
-		it( 'should relink repositories', () => {
-			const packageJSON = {
-				dependencies: {
-					'ckeditor5-core': 'ckeditor/ckeditor5-core',
-					'ckeditor5-plugin-devtest': 'ckeditor/ckeditor5-plugin-devtest',
-					'non-ckeditor-plugin': 'other/plugin'
-				}
-			};
-
-			spies.getDirectories.restore();
-			const dirs = [ 'ckeditor5-core', 'ckeditor5-plugin-devtest' ];
-			spies.getDirectories = sinon.stub( tools, 'getCKE5Directories', () => dirs );
-
-			devRelinkTask( mainRepositoryPath, packageJSON, workspaceRoot, emptyFn, emptyFn );
-
-			expect( spies.getDependencies.calledOnce ).to.equal( true );
-			expect( spies.getDependencies.firstCall.args[ 0 ] ).to.equal( packageJSON.dependencies );
-			expect( spies.linkDirectories.calledTwice ).to.equal( true );
-			expect( spies.linkDirectories.firstCall.args[ 0 ] ).to.equal( path.join( workspacePath, dirs[ 0 ] ) );
-			expect( spies.linkDirectories.firstCall.args[ 1 ] ).to.equal( path.join( mainRepositoryPath, 'node_modules', dirs[ 0 ] ) );
-			expect( spies.linkDirectories.secondCall.args[ 0 ] ).to.equal( path.join( workspacePath, dirs[ 1 ] ) );
-			expect( spies.linkDirectories.secondCall.args[ 1 ] ).to.equal( path.join( mainRepositoryPath, 'node_modules', dirs[ 1 ] ) );
 		} );
 	} );
 } );
