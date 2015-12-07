@@ -8,8 +8,8 @@
 CKEDITOR.define( [
 	'treemodel/operation/operation',
 	'treemodel/nodelist',
-	'treemodel/operation/removeoperation',
-	'treemodel/range'
+	'treemodel/range',
+	'treemodel/operation/removeoperation'
 ], ( Operation, NodeList, Range ) => {
 	/**
 	 * Operation to insert list of nodes on the given position in the tree data model.
