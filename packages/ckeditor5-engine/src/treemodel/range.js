@@ -272,15 +272,15 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 		}
 
 		/**
-		 * Creates a new range spreading from specified position to the same position moved by given offset.
+		 * Creates a new range spreading from specified position to the same position moved by given shift.
 		 *
 		 * @param {treeModel.Position} position Beginning of the range.
-		 * @param {Number} offset How long the range should be.
+		 * @param {Number} shift How long the range should be.
 		 * @returns {treeModel.Range}
 		 */
-		static createFromPositionAndShift( position, offset ) {
+		static createFromPositionAndShift( position, shift ) {
 			let endPosition = position.clone();
-			endPosition.offset += offset;
+			endPosition.offset += shift;
 
 			return new Range( position, endPosition );
 		}
