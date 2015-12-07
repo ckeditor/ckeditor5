@@ -77,7 +77,7 @@ describe( 'Document', () => {
 	} );
 
 	describe( 'applyOperation', () => {
-		it( 'should increase document version and execute operation', () => {
+		it( 'should increase document version, execute operation and fire event with proper data', () => {
 			const changeCallback = sinon.spy();
 			const type = 't';
 			const data = { data: 'x' };
@@ -95,7 +95,7 @@ describe( 'Document', () => {
 			sinon.assert.calledOnce( operation._execute );
 
 			sinon.assert.calledOnce( changeCallback );
-			expect( changeCallback.args[ 0 ][ 1 ] ).to.equals( type );
+			expect( changeCallback.args[ 0 ][ 1 ] ).to.equal( type );
 			expect( changeCallback.args[ 0 ][ 2 ] ).to.equal( data );
 		} );
 

@@ -70,8 +70,8 @@ CKEDITOR.define( [], () => {
 			 *
 			 * @protected
 			 * @method _execute
-			 * @returns {Object} Information about the change. It is always the range and additional informations depending on the
-			 * operation type.
+			 * @returns {Object} Object with additional information about the applied changes. Always has `range`
+			 * property containing changed nodes. May have additional properties depending on the operation type.
 			 */
 		}
 	}
