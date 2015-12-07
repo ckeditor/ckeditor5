@@ -165,19 +165,20 @@ CKEDITOR.define( [
 		 * * 'move' when nodes are moved,
 		 * * 'attr' when attributes change.
 		 *
-		 * Change event is fired after the change is done.
+		 * Change event is fired after the change is done. This means that any ranges or positions passed in
+		 * `changeInfo` are referencing nodes and paths in updated tree model.
 		 *
 		 * @event change
 		 * @param {String} type Change type, possible option: 'insert', 'remove', 'reinsert', 'move', 'attr'.
-		 * @param {Object} changeInfo Additional informations about the change.
+		 * @param {Object} changeInfo Additional information about the change.
 		 * @param {document.Range} changeInfo.range Range containing changed nodes. Note that for 'remove' the range will be in the
 		 * {@link #_graveyard graveyard root}.
-		 * @param {document.Range} [changeInfo.sourcePosition] Source position. For 'remove', 'reinsert' and 'move'. This property is
-		 * undefined for other node types. Note that for 'reinsert' the source position will be in the {@link #_graveyard graveyard root}.
-		 * @param {document.Attribute} [changeInfo.oldAttr] Only for 'attr' type. If the type is 'attr' and `oldAttr` is undefined it means
-		 * that new attribute was inserted. Otherwise it contains changed or removed attribute.
-		 * @param {document.Attribute} [changeInfo.newAttr] Only for 'attr' type. If the type is 'attr' and `newAttr` is undefined it means
-		 * that attribute was removed. Otherwise it contains changed or inserted attribute.
+		 * @param {document.Position} [changeInfo.sourcePosition] Change source position. Exists for 'remove', 'reinsert' and 'move'.
+		 * Note that for 'reinsert' the source position will be in the {@link #_graveyard graveyard root}.
+		 * @param {document.Attribute} [changeInfo.oldAttr] Only for 'attr' type. If the type is 'attr' and `oldAttr`
+		 * is `undefined` it means that new attribute was inserted. Otherwise it contains changed or removed attribute.
+		 * @param {document.Attribute} [changeInfo.newAttr] Only for 'attr' type. If the type is 'attr' and `newAttr`
+		 * is `undefined` it means that attribute was removed. Otherwise it contains changed or inserted attribute.
 		 */
 	}
 
