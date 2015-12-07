@@ -151,69 +151,6 @@ describe( 'dev-tasks', () => {
 		} );
 	} );
 
-	describe( 'dev-status', () => {
-		const devStatusTask = require( '../tasks/utils/dev-status' );
-
-		it( 'should exist', () => expect( devStatusTask ).to.be.a( 'function' ) );
-
-		it( 'should show repositories status', () => {
-			const packageJSON = {
-				dependencies: {
-					'ckeditor5-core': 'ckeditor/ckeditor5-core',
-					'ckeditor5-plugin-devtest': 'ckeditor/ckeditor5-plugin-devtest',
-					'non-ckeditor-plugin': 'other/plugin'
-				}
-			};
-
-			const dirs = [ 'ckeditor5-core', 'ckeditor5-plugin-devtest' ];
-			spies.getDirectories.restore();
-			spies.getDirectories = sinon.stub( tools, 'getCKE5Directories', () => dirs );
-
-			devStatusTask( mainRepositoryPath, packageJSON, workspaceRoot, emptyFn, emptyFn );
-
-			expect( spies.getDependencies.calledOnce ).to.equal( true );
-			expect( spies.getDependencies.firstCall.args[ 0 ] ).to.equal( packageJSON.dependencies );
-			expect( spies.getStatus.calledTwice ).to.equal( true );
-			expect( spies.getStatus.firstCall.args[ 0 ] ).to.equal( path.join( workspacePath, dirs[ 0 ] ) );
-			expect( spies.getStatus.secondCall.args[ 0 ] ).to.equal( path.join( workspacePath, dirs[ 1 ] ) );
-		} );
-	} );
-
-	describe( 'dev-update', () => {
-		const devUpdateTask = require( '../tasks/utils/dev-update' );
-
-		it( 'should exist', () => expect( devUpdateTask ).to.be.a( 'function' ) );
-
-		it( 'should show repositories status', () => {
-			const packageJSON = {
-				dependencies: {
-					'ckeditor5-core': 'ckeditor/ckeditor5-core',
-					'ckeditor5-plugin-devtest': 'ckeditor/ckeditor5-plugin-devtest',
-					'non-ckeditor-plugin': 'other/plugin'
-				}
-			};
-
-			const dirs = [ 'ckeditor5-core', 'ckeditor5-plugin-devtest' ];
-			spies.getDirectories.restore();
-			spies.getDirectories = sinon.stub( tools, 'getCKE5Directories', () => dirs );
-
-			devUpdateTask( mainRepositoryPath, packageJSON, workspaceRoot, emptyFn, emptyFn );
-
-			expect( spies.getDependencies.calledOnce ).to.equal( true );
-			expect( spies.getDependencies.firstCall.args[ 0 ] ).to.equal( packageJSON.dependencies );
-			expect( spies.parseRepositoryUrl.calledTwice ).to.equal( true );
-			expect( spies.pull.calledTwice ).to.equal( true );
-
-			let urlInfo = spies.parseRepositoryUrl.firstCall.returnValue;
-			expect( spies.pull.firstCall.args[ 0 ] ).to.equal( path.join( workspacePath, dirs[ 0 ] ) );
-			expect( spies.pull.firstCall.args[ 1 ] ).to.equal( urlInfo.branch );
-
-			urlInfo = spies.parseRepositoryUrl.secondCall.returnValue;
-			expect( spies.pull.secondCall.args[ 0 ] ).to.equal( path.join( workspacePath, dirs[ 1 ] ) );
-			expect( spies.pull.secondCall.args[ 1 ] ).to.equal( urlInfo.branch );
-		} );
-	} );
-
 	describe( 'dev-boilerplate-update', () => {
 		const devBoilerplateTask = require( '../tasks/utils/dev-boilerplate-update' );
 
