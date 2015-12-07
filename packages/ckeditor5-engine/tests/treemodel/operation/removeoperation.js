@@ -31,7 +31,7 @@ describe( 'RemoveOperation', () => {
 	beforeEach( () => {
 		doc = new Document();
 		root = doc.createRoot( 'root' );
-		graveyard = doc._graveyard;
+		graveyard = doc.graveyard;
 	} );
 
 	it( 'should have proper type', () => {

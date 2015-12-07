@@ -34,8 +34,8 @@ describe( 'Document', () => {
 		it( 'should create Document with no data and empty graveyard', () => {
 			expect( document ).to.have.property( 'roots' ).that.is.instanceof( Map );
 			expect( document.roots.size ).to.equal( 1 );
-			expect( document._graveyard ).to.be.instanceof( RootElement );
-			expect( document._graveyard.getChildCount() ).to.equal( 0 );
+			expect( document.graveyard ).to.be.instanceof( RootElement );
+			expect( document.graveyard.getChildCount() ).to.equal( 0 );
 		} );
 	} );
 

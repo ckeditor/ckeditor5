@@ -25,10 +25,8 @@ CKEDITOR.define( [
 		 * @constructor
 		 */
 		constructor( position, howMany, baseVersion ) {
-			const graveyard = position.root.document._graveyard;
-
 			// Position in a graveyard where nodes were moved.
-			const graveyardPosition = Position.createFromParentAndOffset( graveyard, 0 );
+			const graveyardPosition = Position.createFromParentAndOffset( position.root.document.graveyard, 0 );
 
 			super( position, howMany, graveyardPosition, baseVersion );
 		}

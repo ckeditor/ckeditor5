@@ -60,11 +60,10 @@ CKEDITOR.define( [
 		/**
 		 * Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
 		 *
-		 * @protected
 		 * @readonly
 		 * @property {treeModel.RootElement} graveyard
 		 */
-		get _graveyard() {
+		get graveyard() {
 			return this.getRoot( graveyardSymbol );
 		}
 
@@ -172,9 +171,9 @@ CKEDITOR.define( [
 		 * @param {String} type Change type, possible option: 'insert', 'remove', 'reinsert', 'move', 'attr'.
 		 * @param {Object} changeInfo Additional information about the change.
 		 * @param {treeModel.Range} changeInfo.range Range containing changed nodes. Note that for 'remove' the range will be in the
-		 * {@link #_graveyard graveyard root}.
-		 * Note that for 'reinsert' the source position will be in the {@link #_graveyard graveyard root}.
+		 * {@link #graveyard graveyard root}.
 		 * @param {treeModel.Position} [changeInfo.sourcePosition] Change source position. Exists for 'remove', 'reinsert' and 'move'.
+		 * Note that for 'reinsert' the source position will be in the {@link #graveyard graveyard root}.
 		 * @param {treeModel.Attribute} [changeInfo.oldAttr] Only for 'attr' type. If the type is 'attr' and `oldAttr`
 		 * is `undefined` it means that new attribute was inserted. Otherwise it contains changed or removed attribute.
 		 * @param {treeModel.Attribute} [changeInfo.newAttr] Only for 'attr' type. If the type is 'attr' and `newAttr`
