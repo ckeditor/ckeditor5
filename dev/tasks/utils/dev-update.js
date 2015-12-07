@@ -29,20 +29,24 @@ module.exports = ( ckeditor5Path, packageJSON, workspaceRoot, writeln, writeErro
 	if ( dependencies ) {
 		const directories = tools.getCKE5Directories( workspaceAbsolutePath );
 
-		for ( let dependency in dependencies ) {
-			const repositoryURL = dependencies[ dependency ];
-			const urlInfo = git.parseRepositoryUrl( repositoryURL );
-			const repositoryAbsolutePath = path.join( workspaceAbsolutePath, dependency );
+		if ( directories.length ) {
+			for ( let dependency in dependencies ) {
+				const repositoryURL = dependencies[ dependency ];
+				const urlInfo = git.parseRepositoryUrl( repositoryURL );
+				const repositoryAbsolutePath = path.join( workspaceAbsolutePath, dependency );
 
-			// Check if repository's directory already exists.
-			if ( directories.indexOf( dependency ) > -1 ) {
-				try {
-					writeln( `Updating ${ repositoryURL }...` );
-					git.pull( repositoryAbsolutePath, urlInfo.branch );
-				} catch ( error ) {
-					writeError( error );
+				// Check if repository's directory already exists.
+				if ( directories.indexOf( dependency ) > -1 ) {
+					try {
+						writeln( `Updating ${ repositoryURL }...` );
+						git.pull( repositoryAbsolutePath, urlInfo.branch );
+					} catch ( error ) {
+						writeError( error );
+					}
 				}
 			}
+		} else {
+			writeln( 'No CKEditor5 plugins in development mode.' );
 		}
 	} else {
 		writeln( 'No CKEditor5 dependencies found in package.json file.' );
