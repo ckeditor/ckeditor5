@@ -22,7 +22,6 @@ describe( 'dev-tasks', () => {
 	const workspaceRoot = '..';
 	const workspacePath = path.join( mainRepositoryPath, workspaceRoot );
 	const pluginName = 'plugin-name';
-	const repositoryPath = path.join( workspacePath, pluginName );
 	const pluginVersion = '0.0.1';
 	const gitHubUrl = 'ckeditor5/plugin-name';
 
@@ -79,37 +78,6 @@ describe( 'dev-tasks', () => {
 				expect( spies.initialCommit.calledOnce ).to.equal( true );
 				expect( spies.initialCommit.firstCall.args[ 0 ] ).to.equal( pluginName );
 				expect( spies.initialCommit.firstCall.args[ 1 ] ).to.equal( repositoryPath );
-				expect( spies.linkDirectories.calledOnce ).to.equal( true );
-				expect( spies.linkDirectories.firstCall.args[ 0 ] ).to.equal( repositoryPath );
-				expect( spies.linkDirectories.firstCall.args[ 1 ] ).to.equal( path.join( mainRepositoryPath, 'node_modules', pluginName ) );
-				expect( spies.npmInstall.calledOnce ).to.equal( true );
-				expect( spies.npmInstall.firstCall.args[ 0 ] ).to.equal( repositoryPath );
-				expect( spies.installGitHooks.calledOnce ).to.equal( true );
-				expect( spies.installGitHooks.firstCall.args[ 0 ] ).to.equal( repositoryPath );
-			} );
-		} );
-	} );
-
-	describe( 'dev-plugin-install', () => {
-		const pluginInstallTask = require( '../tasks/utils/dev-plugin-install' );
-
-		it( 'should exist', () => expect( pluginInstallTask ).to.be.a( 'function' ) );
-
-		it( 'should install a plugin', () => {
-			return pluginInstallTask( mainRepositoryPath, workspaceRoot, emptyFn ).then( () => {
-				expect( spies.getPluginName.calledOnce ).to.equal( true );
-				expect( spies.getPluginGitHubUrl.calledOnce ).to.equal( true );
-				expect( spies.parseRepositoryUrl.calledOnce ).to.equal( true );
-				const urlInfo = spies.parseRepositoryUrl.firstCall.returnValue;
-				expect( spies.parseRepositoryUrl.firstCall.args[ 0 ] ).to.equal( gitHubUrl );
-				expect( spies.cloneRepository.calledOnce ).to.equal( true );
-				expect( spies.cloneRepository.firstCall.args[ 0 ] ).to.equal( urlInfo );
-				expect( spies.cloneRepository.firstCall.args[ 1 ] ).to.equal( workspacePath );
-				expect( spies.checkout.calledOnce ).to.equal( true );
-				expect( spies.checkout.firstCall.args[ 0 ] ).to.equal( repositoryPath );
-				expect( spies.checkout.firstCall.args[ 1 ] ).to.equal( urlInfo.branch );
-				expect( spies.updateJSONFile.calledOnce ).to.equal( true );
-				expect( spies.updateJSONFile.firstCall.args[ 0 ] ).to.equal( path.join( mainRepositoryPath, 'package.json' ) );
 				expect( spies.linkDirectories.calledOnce ).to.equal( true );
 				expect( spies.linkDirectories.firstCall.args[ 0 ] ).to.equal( repositoryPath );
 				expect( spies.linkDirectories.firstCall.args[ 1 ] ).to.equal( path.join( mainRepositoryPath, 'node_modules', pluginName ) );

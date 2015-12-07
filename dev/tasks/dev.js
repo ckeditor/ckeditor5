@@ -7,7 +7,6 @@
 
 const initTask = require( './utils/dev-init' );
 const pluginCreateTask = require( './utils/dev-plugin-create' );
-const pluginInstallTask = require( './utils/dev-plugin-install' );
 const pluginUpdateTask = require( './utils/dev-update' );
 const pluginStatusTask = require( './utils/dev-status' );
 const installTask = require( './utils/dev-install' );
@@ -26,13 +25,6 @@ module.exports = ( grunt ) => {
 	grunt.registerTask( 'dev-plugin-create', function() {
 		const done = this.async();
 		pluginCreateTask( ckeditor5Path, workspaceRoot, grunt.log.writeln )
-			.then( done )
-			.catch( ( error )  => done( error ) );
-	} );
-
-	grunt.registerTask( 'dev-plugin-install', function() {
-		const done = this.async();
-		pluginInstallTask( ckeditor5Path, workspaceRoot, grunt.log.writeln )
 			.then( done )
 			.catch( ( error )  => done( error ) );
 	} );
