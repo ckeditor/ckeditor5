@@ -140,7 +140,7 @@ describe( 'Document change event', () => {
 		expect( changes ).to.have.length( 1 );
 		expect( types[ 0 ] ).to.equal( 'attr' );
 		expect( changes[ 0 ].range ).to.deep.equal( Range.createFromParentsAndOffsets( root, 0, root, 3 ) );
-		expect( changes[ 0 ].oldAttr ).to.be.undefined;
+		expect( changes[ 0 ].oldAttr ).to.be.null;
 		expect( changes[ 0 ].newAttr ).to.deep.equal( new Attribute( 'key', 'new' ) );
 	} );
 
@@ -161,7 +161,7 @@ describe( 'Document change event', () => {
 		expect( types[ 0 ] ).to.equal( 'attr' );
 		expect( changes[ 0 ].range ).to.deep.equal( Range.createFromParentsAndOffsets( root, 0, elem, 0 ) );
 		expect( changes[ 0 ].oldAttr ).to.deep.equal( new Attribute( 'key', 'old' ) );
-		expect( changes[ 0 ].newAttr ).to.be.undefined;
+		expect( changes[ 0 ].newAttr ).to.be.null;
 	}  );
 
 	it( 'should be fired when attribute changes', () => {

@@ -135,11 +135,7 @@ CKEDITOR.define( [
 				}
 			}
 
-			return {
-				range: this.range,
-				oldAttr: oldAttr ? oldAttr : undefined,
-				newAttr: newAttr ? newAttr : undefined
-			};
+			return { range: this.range, oldAttr: oldAttr, newAttr: newAttr };
 		}
 	}
 
