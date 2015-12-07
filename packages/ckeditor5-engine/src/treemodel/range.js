@@ -180,7 +180,9 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 		 * all the {@link treeModel.Element}s we enter into when iterating over this range.
 		 *
 		 * Note, that this method will not return a parent node of start position. This is in contrary to {@link treeModel.PositionIterator}
-		 * which will return that node with {@link treeModel.PositionIterator#ELEMENT_LEAVE} type.
+		 * which will return that node with {@link treeModel.PositionIterator#ELEMENT_LEAVE} type. This method, also, returns each
+		 * {@link treeModel.Element} once, while iterator return it twice: for {@link treeModel.PositionIterator#ELEMENT_ENTER} and
+		 * {@link treeModel.PositionIterator#ELEMENT_LEAVE}.
 		 *
 		 * @see {treeModel.PositionIterator}
 		 * @returns {treeModel.Node}
