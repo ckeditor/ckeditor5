@@ -118,32 +118,4 @@ describe( 'dev-tasks', () => {
 			expect( spies.linkDirectories.secondCall.args[ 1 ] ).to.equal( path.join( mainRepositoryPath, 'node_modules', dirs[ 1 ] ) );
 		} );
 	} );
-
-	describe( 'dev-boilerplate-update', () => {
-		const devBoilerplateTask = require( '../tasks/utils/dev-boilerplate-update' );
-
-		it( 'should exist', () => expect( devBoilerplateTask ).to.be.a( 'function' ) );
-
-		it( 'should update boilerplate in repositories', () => {
-			const packageJSON = {
-				dependencies: {
-					'ckeditor5-core': 'ckeditor/ckeditor5-core',
-					'ckeditor5-plugin-devtest': 'ckeditor/ckeditor5-plugin-devtest',
-					'non-ckeditor-plugin': 'other/plugin'
-				}
-			};
-
-			const dirs = [ 'ckeditor5-core', 'ckeditor5-plugin-devtest' ];
-			spies.getDirectories.restore();
-			spies.getDirectories = sinon.stub( tools, 'getCKE5Directories', () => dirs );
-
-			devBoilerplateTask( mainRepositoryPath, packageJSON, workspaceRoot, emptyFn, emptyFn );
-
-			expect( spies.getDependencies.calledOnce ).to.equal( true );
-			expect( spies.getDependencies.firstCall.args[ 0 ] ).to.equal( packageJSON.dependencies );
-			expect( spies.updateBoilerplate.calledTwice ).to.equal( true );
-			expect( spies.updateBoilerplate.firstCall.args[ 0 ] ).to.equal( path.join( workspacePath, dirs[ 0 ] ) );
-			expect( spies.updateBoilerplate.secondCall.args[ 0 ] ).to.equal( path.join( workspacePath, dirs[ 1 ] ) );
-		} );
-	} );
 } );
