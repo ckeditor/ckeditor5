@@ -91,7 +91,8 @@ CKEDITOR.define( [
 
 			this.version++;
 
-			this.fire( 'change', operation.type, changes );
+			const batch = operation.delta && operation.delta.batch;
+			this.fire( 'change', operation.type, changes, batch );
 		}
 
 		/**
@@ -178,6 +179,7 @@ CKEDITOR.define( [
 		 * is `undefined` it means that new attribute was inserted. Otherwise it contains changed or removed attribute.
 		 * @param {treeModel.Attribute} [changeInfo.newAttr] Only for 'attr' type. If the type is 'attr' and `newAttr`
 		 * is `undefined` it means that attribute was removed. Otherwise it contains changed or inserted attribute.
+		 * @param {treeModel.Batch} {@link treeModel.Batch} of changes which this change is a part of.
 		 */
 	}
 
