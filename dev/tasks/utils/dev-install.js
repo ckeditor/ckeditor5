@@ -96,6 +96,6 @@ module.exports = ( ckeditor5Path, workspaceRoot, name, writeln ) => {
 		writeln( 'Running "npm install" in CKEditor5 repository...' );
 		tools.npmInstall( ckeditor5Path );
 	} else {
-		throw new Error( 'Please provide valid GitHub URL or npm module name.' );
+		throw new Error( 'Please provide valid GitHub URL, NPM module name or path.' );
 	}
 };
