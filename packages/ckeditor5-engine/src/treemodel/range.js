@@ -277,7 +277,7 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 		 * @returns {treeModel.Range} Created range.
 		 */
 		static createFromElement( element ) {
-			return Range.createFromParentsAndOffsets( element, 0, element, element.getChildCount() );
+			return this.createFromParentsAndOffsets( element, 0, element, element.getChildCount() );
 		}
 
 		/**
@@ -291,7 +291,7 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 			let endPosition = position.clone();
 			endPosition.offset += shift;
 
-			return new Range( position, endPosition );
+			return new this( position, endPosition );
 		}
 
 		/**
@@ -304,7 +304,7 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 		 * @returns {treeModel.Range} Created range.
 		 */
 		static createFromParentsAndOffsets( startElement, startOffset, endElement, endOffset ) {
-			return new Range(
+			return new this(
 				Position.createFromParentAndOffset( startElement, startOffset ),
 				Position.createFromParentAndOffset( endElement, endOffset )
 			);
