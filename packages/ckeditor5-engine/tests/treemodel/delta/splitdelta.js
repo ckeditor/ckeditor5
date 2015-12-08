@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: document, delta */
+/* bender-tags: treemodel, delta */
 
 /* bender-include: ../../_tools/tools.js */
 

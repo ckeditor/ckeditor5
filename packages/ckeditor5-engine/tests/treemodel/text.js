@@ -5,7 +5,7 @@
 
 /* jshint expr: true */
 
-/* bender-tags: document */
+/* bender-tags: treemodel */
 
 'use strict';
 

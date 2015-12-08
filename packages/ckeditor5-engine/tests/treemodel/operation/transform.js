@@ -5,7 +5,7 @@
 
 /* jshint expr: true */
 
-/* bender-tags: document */
+/* bender-tags: treemodel, operation */
 /* global describe, before, beforeEach, it, expect */
 
 'use strict';

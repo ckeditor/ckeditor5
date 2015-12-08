@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: document */
+/* bender-tags: treemodel, operation */
 
 'use strict';
 
