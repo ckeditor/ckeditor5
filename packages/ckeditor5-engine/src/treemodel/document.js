@@ -55,53 +55,14 @@ CKEDITOR.define( [
 			 * @property {Number} version
 			 */
 			this.version = 0;
-		}
 
-		/**
-		 * Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
-		 *
-		 * @readonly
-		 * @property {treeModel.RootElement} graveyard
-		 */
-		get graveyard() {
-			return this.getRoot( graveyardSymbol );
-		}
-
-		/**
-		 * This is the entry point for all document changes. All changes on the document are done using
-		 * {@link treeModel.operation.Operation operations}. To create operations in the simple way use the
-		 * {@link treeModel.Batch} API available via {@link #batch} method.
-		 *
-		 * @param {treeModel.operation.Operation} operation Operation to be applied.
-		 */
-		applyOperation( operation ) {
-			if ( operation.baseVersion !== this.version ) {
-				/**
-				 * Only operations with matching versions can be applied.
-				 *
-				 * @error document-applyOperation-wrong-version
-				 * @param {treeModel.operation.Operation} operation
-				 */
-				throw new CKEditorError(
-					'document-applyOperation-wrong-version: Only operations with matching versions can be applied.',
-					{ operation: operation } );
-			}
-
-			let changes = operation._execute();
-
-			this.version++;
-
-			const batch = operation.delta && operation.delta.batch;
-			this.fire( 'change', operation.type, changes, batch );
-		}
-
-		/**
-		 * Creates a {@link treeModel.Batch} instance which allows to change the document.
-		 *
-		 * @returns {treeModel.Batch} Batch instance.
-		 */
-		batch() {
-			return new Batch( this );
+			/**
+			 * Array of pending changes. See: {@link #enqueueChanges}.
+			 *
+			 * @private
+			 * @type {Array.<Function>}
+			 */
+			this._pendingChanges = [];
 		}
 
 		/**
@@ -155,6 +116,79 @@ CKEDITOR.define( [
 		}
 
 		/**
+		 * Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
+		 *
+		 * @readonly
+		 * @property {treeModel.RootElement} graveyard
+		 */
+		get graveyard() {
+			return this.getRoot( graveyardSymbol );
+		}
+
+		/**
+		 * Creates a {@link treeModel.Batch} instance which allows to change the document.
+		 *
+		 * @returns {treeModel.Batch} Batch instance.
+		 */
+		batch() {
+			return new Batch( this );
+		}
+
+		/**
+		 * Enqueue document changes. All document changes should be done in the enqueued callback. If no other plugin is changing document
+		 * this callback will ba called immediately. Otherwise it will be called after all enqueued changes, so it will not interrupt other
+		 * plugins.
+		 *
+		 * When all enqueued changes are done {@link #changesDone} event is fired.
+		 *
+		 * @param callback
+		 */
+		enqueueChanges( callback ) {
+			let pendingChanges = this._pendingChanges;
+
+			pendingChanges.push( callback );
+
+			if ( pendingChanges.length == 1 ) {
+				while ( pendingChanges.length ) {
+					pendingChanges[ 0 ]();
+					pendingChanges.shift();
+				}
+
+				this.fire( 'changesDone' );
+			}
+		}
+
+		/**
+		 * This is the entry point for all document changes. All changes on the document are done using
+		 * {@link treeModel.operation.Operation operations}. To create operations in the simple way use the
+		 * {@link treeModel.Batch} API available via {@link #batch} method.
+		 *
+		 * This method calls {@link #change} event.
+		 *
+		 * @param {treeModel.operation.Operation} operation Operation to be applied.
+		 */
+		applyOperation( operation ) {
+			if ( operation.baseVersion !== this.version ) {
+				/**
+				 * Only operations with matching versions can be applied.
+				 *
+				 * @error document-applyOperation-wrong-version
+				 * @param {treeModel.operation.Operation} operation
+				 */
+				throw new CKEditorError(
+					'document-applyOperation-wrong-version: Only operations with matching versions can be applied.',
+					{ operation: operation } );
+			}
+
+			let changes = operation._execute();
+
+			this.version++;
+
+			const batch = operation.delta && operation.delta.batch;
+			this.fire( 'change', operation.type, changes, batch );
+		}
+
+		/**
 		 * Fired when document changes by applying an operation.
 		 *
 		 * There are 5 types of change:
@@ -180,6 +214,12 @@ CKEDITOR.define( [
 		 * @param {treeModel.Attribute} [changeInfo.newAttr] Only for 'attr' type. If the type is 'attr' and `newAttr`
 		 * is `undefined` it means that attribute was removed. Otherwise it contains changed or inserted attribute.
 		 * @param {treeModel.Batch} {@link treeModel.Batch} of changes which this change is a part of.
+		 */
+
+		/**
+		 * Fired when all document changes are done. See {@link #enqueueChanges}.
+		 *
+		 * @event changesDone
 		 */
 	}
 
