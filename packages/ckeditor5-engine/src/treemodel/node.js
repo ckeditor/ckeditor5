@@ -91,7 +91,7 @@ CKEDITOR.define( [ 'treemodel/attribute', 'utils', 'ckeditorerror' ], ( Attribut
 		 * @property {Number} depth
 		 */
 		get root() {
-			let root = this; // jscs:ignore safeContextKeyword
+			let root = this;
 
 			while ( root.parent ) {
 				root = root.parent;
@@ -162,7 +162,7 @@ CKEDITOR.define( [ 'treemodel/attribute', 'utils', 'ckeditorerror' ], ( Attribut
 		 */
 		getPath() {
 			const path = [];
-			let node = this; // jscs:ignore safeContextKeyword
+			let node = this;
 
 			while ( node.parent ) {
 				path.unshift( node.getIndex() );
