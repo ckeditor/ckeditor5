@@ -75,9 +75,7 @@ CKEDITOR.define( [ 'model', 'utils' ], ( Model, utils ) => {
 			}
 
 			// The target for this configuration is, for now, this object.
-			//jscs:disable safeContextKeyword
 			let target = this;
-			//jscs:enable
 
 			// The configuration name should be split into parts if it has dots. E.g: `resize.width`.
 			const parts = name.toLowerCase().split( '.' );
@@ -131,9 +129,7 @@ CKEDITOR.define( [ 'model', 'utils' ], ( Model, utils ) => {
 		 */
 		get( name ) {
 			// The target for this configuration is, for now, this object.
-			//jscs:disable safeContextKeyword
 			let source = this;
-			//jscs:enable
 
 			// The configuration name should be split into parts if it has dots. E.g. `resize.width` -> [`resize`, `width`]
 			const parts = name.toLowerCase().split( '.' );
