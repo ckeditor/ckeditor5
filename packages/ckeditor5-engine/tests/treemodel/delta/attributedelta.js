@@ -140,9 +140,9 @@ describe( 'Batch', () => {
 
 		function getRange( startIndex, endIndex ) {
 			return new Range(
-					Position.createFromParentAndOffset( root, startIndex ),
-					Position.createFromParentAndOffset( root, endIndex )
-				);
+				Position.createFromParentAndOffset( root, startIndex ),
+				Position.createFromParentAndOffset( root, endIndex )
+			);
 		}
 
 		function getChangesAttrsCount() {
@@ -218,6 +218,35 @@ describe( 'Batch', () => {
 				expect( getCompressedAttrs() ).to.equal( '111---111222---1112-11---' );
 			} );
 
+			it( 'should not change elements attribute if range contains closing tag', () => {
+				let range = new Range(
+					new Position( root, [ 18, 1 ] ),
+					new Position( root, [ 21 ] )
+				);
+
+				batch.setAttr( 'a', 1, range );
+				expect( getOperationsCount() ).to.equal( 1 );
+				expect( getChangesAttrsCount() ).to.equal( 4 );
+				expect( getCompressedAttrs() ).to.equal( '111---111222---1112-1111-' );
+			} );
+
+			it( 'should not create an operation if the range contains only closing tag', () => {
+				let range = new Range(
+					new Position( root, [ 18, 3 ] ),
+					new Position( root, [ 19 ] )
+				);
+
+				batch.setAttr( 'a', 3, range );
+				expect( getOperationsCount() ).to.equal( 0 );
+				expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
+			} );
+
+			it( 'should not create an operation if is collapsed', () => {
+				batch.setAttr( 'a', 1, getRange( 3, 3 ) );
+				expect( getOperationsCount() ).to.equal( 0 );
+				expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
+			} );
+
 			it( 'should create a proper operations for the mixed range', () => {
 				batch.setAttr( 'a', 1, getRange( 0, 20 ) );
 				expect( getOperationsCount() ).to.equal( 5 );
@@ -282,6 +311,19 @@ describe( 'Batch', () => {
 				batch.removeAttr( 'a', range );
 				expect( getOperationsCount() ).to.equal( 0 );
 				expect( getChangesAttrsCount() ).to.equal( 0 );
+				expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
+			} );
+
+			it( 'should not apply operation twice in the range contains opening and closing tags', () => {
+				batch.removeAttr( 'a', getRange( 18, 22 ) );
+				expect( getOperationsCount() ).to.equal( 1 );
+				expect( getChangesAttrsCount() ).to.equal( 1 );
+				expect( getCompressedAttrs() ).to.equal( '111---111222---111-------' );
+			} );
+
+			it( 'should not create an operation if range is collapsed', () => {
+				batch.removeAttr( 'a', getRange( 3, 3 ) );
+				expect( getOperationsCount() ).to.equal( 0 );
 				expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
 			} );
 
