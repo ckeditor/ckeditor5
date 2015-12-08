@@ -36,6 +36,15 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 		}
 
 		/**
+		 * Range root element. Equals to the root of start position (which should be same as root of end position).
+		 *
+		 * @property {treeModel.RootElement}
+		 */
+		get root() {
+			return this.start.root;
+		}
+
+		/**
 		 * Range iterator.
 		 *
 		 * @see treeModel.PositionIterator

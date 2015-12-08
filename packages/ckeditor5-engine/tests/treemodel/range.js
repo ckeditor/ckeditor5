@@ -45,6 +45,12 @@ describe( 'Range', () => {
 		} );
 	} );
 
+	describe( 'root', () => {
+		it( 'should be equal to start position root', () => {
+			expect( range.root ).to.equal( start.root );
+		} );
+	} );
+
 	describe( 'isEqual', () => {
 		it( 'should return true if the ranges are the same', () => {
 			let sameStart = new Position( root, [ 0 ] );
