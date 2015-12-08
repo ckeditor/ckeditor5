@@ -316,6 +316,63 @@ describe( 'position', () => {
 		} );
 	} );
 
+	describe( 'isTouching', () => {
+		it( 'should return true if positions are same', () => {
+			let position = new Position( root, [ 1, 1, 1 ] );
+			let result = position.isTouching( new Position( root, [ 1, 1, 1 ] ) );
+
+			expect( result ).to.be.true;
+		} );
+
+		it( 'should return true if given position is in next node and there are no whole nodes before it', () => {
+			let positionA = new Position( root, [ 1 ] );
+			let positionB = new Position( root, [ 1, 0, 0 ] );
+
+			expect( positionA.isTouching( positionB ) ).to.be.true;
+			expect( positionB.isTouching( positionA ) ).to.be.true;
+		} );
+
+		it( 'should return true if given position is in previous node and there are no whole nodes after it', () => {
+			let positionA = new Position( root, [ 2 ] );
+			let positionB = new Position( root, [ 1, 1, 3 ] );
+
+			expect( positionA.isTouching( positionB ) ).to.be.true;
+			expect( positionB.isTouching( positionA ) ).to.be.true;
+		} );
+
+		it( 'should return true if positions are in different sub-trees but there are no whole nodes between them', () => {
+			let positionA = new Position( root, [ 1, 0, 3 ] );
+			let positionB = new Position( root, [ 1, 1, 0 ] );
+
+			expect( positionA.isTouching( positionB ) ).to.be.true;
+			expect( positionB.isTouching( positionA ) ).to.be.true;
+		} );
+
+		it( 'should return false if there are whole nodes between positions', () => {
+			let positionA = new Position( root, [ 2 ] );
+			let positionB = new Position( root, [ 1, 0, 3 ] );
+
+			expect( positionA.isTouching( positionB ) ).to.be.false;
+			expect( positionB.isTouching( positionA ) ).to.be.false;
+		} );
+
+		it( 'should return false if there are whole nodes between positions', () => {
+			let positionA = new Position( root, [ 1, 0, 3 ] );
+			let positionB = new Position( root, [ 1, 1, 1 ] );
+
+			expect( positionA.isTouching( positionB ) ).to.be.false;
+			expect( positionB.isTouching( positionA ) ).to.be.false;
+		} );
+
+		it( 'should return false if positions are in different roots', () => {
+			let positionA = new Position( root, [ 1, 0, 3 ] );
+			let positionB = new Position( otherRoot, [ 1, 1, 0 ] );
+
+			expect( positionA.isTouching( positionB ) ).to.be.false;
+			expect( positionB.isTouching( positionA ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'compareWith', () => {
 		it( 'should return Position.SAME if positions are same', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );

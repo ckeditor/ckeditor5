@@ -355,6 +355,58 @@ CKEDITOR.define( [ 'treemodel/rootelement', 'utils', 'ckeditorerror' ], ( RootEl
 		}
 
 		/**
+		 * Checks whether this position is touching given position. Positions touch when there are no characters
+		 * or empty nodes in a range between them. Technically, those positions are not equal but in many cases
+		 * they are very similar or even indistinguishable when they touch.
+		 *
+		 * @param {treeModel.Position} otherPosition Position to compare with.
+		 * @returns {Boolean} True if positions touch.
+		 */
+		isTouching( otherPosition ) {
+			let left = null;
+			let right = null;
+			let compare = this.compareWith( otherPosition );
+
+			switch ( compare ) {
+				case SAME:
+					return true;
+
+				case BEFORE:
+					left = this;
+					right = otherPosition;
+					break;
+
+				case AFTER:
+					left = otherPosition;
+					right = this;
+					break;
+
+				default:
+					return false;
+			}
+
+			while ( left.path.length + right.path.length ) {
+				if ( left.isEqual( right ) ) {
+					return true;
+				}
+
+				if ( left.path.length > right.path.length ) {
+					if ( left.nodeAfter !== null ) {
+						return false;
+					}
+
+					left = Position.createAfter( left.parent );
+				} else {
+					if ( right.nodeBefore !== null ) {
+						return false;
+					}
+
+					right = Position.createBefore( right.parent );
+				}
+			}
+		}
+
+		/**
 		 * Creates a new position after given node.
 		 *
 		 * @param {treeModel.Node} node Node the position should be directly after.
@@ -371,7 +423,7 @@ CKEDITOR.define( [ 'treemodel/rootelement', 'utils', 'ckeditorerror' ], ( RootEl
 				throw new CKEditorError( 'position-after-root: You can not make position after root.', { root: node } );
 			}
 
-			return Position.createFromParentAndOffset( node.parent, node.getIndex() + 1 );
+			return this.createFromParentAndOffset( node.parent, node.getIndex() + 1 );
 		}
 
 		/**
@@ -391,7 +443,7 @@ CKEDITOR.define( [ 'treemodel/rootelement', 'utils', 'ckeditorerror' ], ( RootEl
 				throw new CKEditorError( 'position-before-root: You can not make position before root.', { root: node } );
 			}
 
-			return Position.createFromParentAndOffset( node.parent, node.getIndex() );
+			return this.createFromParentAndOffset( node.parent, node.getIndex() );
 		}
 
 		/**
@@ -406,7 +458,7 @@ CKEDITOR.define( [ 'treemodel/rootelement', 'utils', 'ckeditorerror' ], ( RootEl
 
 			path.push( offset );
 
-			return new Position( parent.root, path );
+			return new this( parent.root, path );
 		}
 
 		/**
