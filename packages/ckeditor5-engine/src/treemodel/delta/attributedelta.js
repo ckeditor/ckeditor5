@@ -139,7 +139,7 @@ CKEDITOR.define( [
 
 		// Because position in the loop is not the iterator position (see let position comment), the last position in
 		// the while loop will be last but one position in the range. We need to check the last position manually.
-		if ( position != lastSplitPosition && valueBefore != value ) {
+		if ( position instanceof Position && position != lastSplitPosition && valueBefore != value ) {
 			addOperation();
 		}
 
