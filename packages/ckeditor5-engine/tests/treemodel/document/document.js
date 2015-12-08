@@ -81,9 +81,11 @@ describe( 'Document', () => {
 			const changeCallback = sinon.spy();
 			const type = 't';
 			const data = { data: 'x' };
+			const batch = 'batch';
 
 			let operation = {
 				type: type,
+				delta: { batch: batch },
 				baseVersion: 0,
 				_execute: sinon.stub().returns( data )
 			};
@@ -97,6 +99,7 @@ describe( 'Document', () => {
 			sinon.assert.calledOnce( changeCallback );
 			expect( changeCallback.args[ 0 ][ 1 ] ).to.equal( type );
 			expect( changeCallback.args[ 0 ][ 2 ] ).to.equal( data );
+			expect( changeCallback.args[ 0 ][ 3 ] ).to.equal( batch );
 		} );
 
 		it( 'should throw an error on the operation base version and the document version is different', () => {
