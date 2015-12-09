@@ -60,59 +60,9 @@ CKEDITOR.define( [
 			 * Array of pending changes. See: {@link #enqueueChanges}.
 			 *
 			 * @private
-			 * @type {Array.<Function>}
+			 * @property {Array.<Function>}
 			 */
 			this._pendingChanges = [];
-		}
-
-		/**
-		 * Creates a new top-level root.
-		 *
-		 * @param {String|Symbol} name Unique root name.
-		 * @returns {treeModel.RootElement} Created root.
-		 */
-		createRoot( name ) {
-			if ( this.roots.has( name ) ) {
-				/**
-				 * Root with specified name already exists.
-				 *
-				 * @error document-createRoot-name-exists
-				 * @param {treeModel.Document} doc
-				 * @param {String} name
-				 */
-				throw new CKEditorError(
-					'document-createRoot-name-exists: Root with specified name already exists.',
-					{ name: name }
-				);
-			}
-
-			const root = new RootElement( this );
-			this.roots.set( name, root );
-
-			return root;
-		}
-
-		/**
-		 * Returns top-level root by it's name.
-		 *
-		 * @param {String|Symbol} name Name of the root to get.
-		 * @returns {treeModel.RootElement} Root registered under given name.
-		 */
-		getRoot( name ) {
-			if ( !this.roots.has( name ) ) {
-				/**
-				 * Root with specified name does not exist.
-				 *
-				 * @error document-createRoot-root-not-exist
-				 * @param {String} name
-				 */
-				throw new CKEditorError(
-					'document-createRoot-root-not-exist: Root with specified name does not exist.',
-					{ name: name }
-				);
-			}
-
-			return this.roots.get( name );
 		}
 
 		/**
@@ -123,39 +73,6 @@ CKEDITOR.define( [
 		 */
 		get graveyard() {
 			return this.getRoot( graveyardSymbol );
-		}
-
-		/**
-		 * Creates a {@link treeModel.Batch} instance which allows to change the document.
-		 *
-		 * @returns {treeModel.Batch} Batch instance.
-		 */
-		batch() {
-			return new Batch( this );
-		}
-
-		/**
-		 * Enqueue document changes. All document changes should be done in the enqueued callback. If no other plugin is changing document
-		 * this callback will ba called immediately. Otherwise it will be called after all enqueued changes, so it will not interrupt other
-		 * plugins.
-		 *
-		 * When all enqueued changes are done {@link #changesDone} event is fired.
-		 *
-		 * @param callback
-		 */
-		enqueueChanges( callback ) {
-			let pendingChanges = this._pendingChanges;
-
-			pendingChanges.push( callback );
-
-			if ( pendingChanges.length == 1 ) {
-				while ( pendingChanges.length ) {
-					pendingChanges[ 0 ]();
-					pendingChanges.shift();
-				}
-
-				this.fire( 'changesDone' );
-			}
 		}
 
 		/**
@@ -189,6 +106,90 @@ CKEDITOR.define( [
 		}
 
 		/**
+		 * Creates a {@link treeModel.Batch} instance which allows to change the document.
+		 *
+		 * @returns {treeModel.Batch} Batch instance.
+		 */
+		batch() {
+			return new Batch( this );
+		}
+
+		/**
+		 * Creates a new top-level root.
+		 *
+		 * @param {String|Symbol} name Unique root name.
+		 * @returns {treeModel.RootElement} Created root.
+		 */
+		createRoot( name ) {
+			if ( this.roots.has( name ) ) {
+				/**
+				 * Root with specified name already exists.
+				 *
+				 * @error document-createRoot-name-exists
+				 * @param {treeModel.Document} doc
+				 * @param {String} name
+				 */
+				throw new CKEditorError(
+					'document-createRoot-name-exists: Root with specified name already exists.',
+					{ name: name }
+				);
+			}
+
+			const root = new RootElement( this );
+			this.roots.set( name, root );
+
+			return root;
+		}
+
+		/**
+		 * Enqueue a callback with document changes. Any changes to be done on document (mostly using {@link #batch} should
+		 * be placed in the queued callback. If no other plugin is changing document at the moment, the callback will be
+		 * called immediately. Otherwise it will wait for all previously queued changes to finish happening. This way
+		 * queued callback will not interrupt other callbacks.
+		 *
+		 * When all queued changes are done {@link #changesDone} event is fired.
+		 *
+		 * @param {Function} callback Callback to enqueue.
+		 */
+		enqueueChanges( callback ) {
+			let pendingChanges = this._pendingChanges;
+
+			pendingChanges.push( callback );
+
+			if ( pendingChanges.length == 1 ) {
+				while ( pendingChanges.length ) {
+					pendingChanges[ 0 ]();
+					pendingChanges.shift();
+				}
+
+				this.fire( 'changesDone' );
+			}
+		}
+
+		/**
+		 * Returns top-level root by it's name.
+		 *
+		 * @param {String|Symbol} name Name of the root to get.
+		 * @returns {treeModel.RootElement} Root registered under given name.
+		 */
+		getRoot( name ) {
+			if ( !this.roots.has( name ) ) {
+				/**
+				 * Root with specified name does not exist.
+				 *
+				 * @error document-createRoot-root-not-exist
+				 * @param {String} name
+				 */
+				throw new CKEditorError(
+					'document-createRoot-root-not-exist: Root with specified name does not exist.',
+					{ name: name }
+				);
+			}
+
+			return this.roots.get( name );
+		}
+
+		/**
 		 * Fired when document changes by applying an operation.
 		 *
 		 * There are 5 types of change:
@@ -217,7 +218,7 @@ CKEDITOR.define( [
 		 */
 
 		/**
-		 * Fired when all document changes are done. See {@link #enqueueChanges}.
+		 * Fired when all queued document changes are done. See {@link #enqueueChanges}.
 		 *
 		 * @event changesDone
 		 */
