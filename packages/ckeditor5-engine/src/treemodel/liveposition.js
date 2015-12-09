@@ -61,7 +61,7 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * Unbinds all events previously binded by LivePosition. Use it whenever you don't need LivePosition instance
+		 * Unbinds all events previously bound by LivePosition. Use it whenever you don't need LivePosition instance
 		 * anymore (i.e. when leaving scope in which it was declared or before re-assigning variable that was
 		 * referring to it).
 		 */
@@ -75,7 +75,6 @@ CKEDITOR.define( [
 	 *
 	 * @private
 	 * @method bindWithDocument
-	 * @private
 	 */
 	function bindWithDocument() {
 		/*jshint validthis: true */
@@ -108,10 +107,12 @@ CKEDITOR.define( [
 			case 'reinsert':
 				let originalRange = Range.createFromPositionAndShift( position, howMany );
 
-				if ( originalRange.containsPosition( this ) ) {
-					// We can't use .getTransformedByMove() because it would not combine
-					// path if LivePosition is at the same tree-level as range.
-					// Here, we always want to combine.
+				let gotMoved = originalRange.containsPosition( this ) ||
+					( originalRange.start.isEqual( this ) && !this.stickToLeft ) ||
+					( originalRange.end.isEqual( this ) && this.stickToLeft );
+
+				// We can't use .getTransformedByMove() because we have a different if-condition.
+				if ( gotMoved ) {
 					transformed = this._getCombined( position, range.start );
 				} else {
 					transformed = this.getTransformedByMove( position, range.start, howMany, !this.stickToLeft );
