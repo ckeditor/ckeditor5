@@ -131,7 +131,7 @@ describe( 'InsertOperation', () => {
 
 		expect( reverse ).to.be.an.instanceof( RemoveOperation );
 		expect( reverse.baseVersion ).to.equal( 1 );
-		expect( reverse.sourcePosition ).to.equal( position );
+		expect( reverse.sourcePosition.isEqual( position ) ).to.be.true;
 		expect( reverse.howMany ).to.equal( 7 );
 	} );
 

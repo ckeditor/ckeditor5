@@ -98,8 +98,8 @@ describe( 'RemoveOperation', () => {
 		expect( reverse ).to.be.an.instanceof( ReinsertOperation );
 		expect( reverse.baseVersion ).to.equal( 1 );
 		expect( reverse.howMany ).to.equal( 2 );
-		expect( reverse.sourcePosition ).to.equal( operation.targetPosition );
-		expect( reverse.targetPosition ).to.equal( position );
+		expect( reverse.sourcePosition.isEqual( operation.targetPosition ) ).to.be.true;
+		expect( reverse.targetPosition.isEqual( position ) ).to.be.true;
 	} );
 
 	it( 'should undo remove set of nodes by applying reverse operation', () => {

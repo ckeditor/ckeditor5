@@ -46,21 +46,6 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * Creates and returns a new position which is equal to this LivePosition. Returned object may be
-		 * an instance of Position or LivePosition, depending on passed argument.
-		 *
-		 * @param {Boolean} [makeLivePosition] Flag representing whether new object should be "live". Defaults to false.
-		 * @returns {treeModel.Position|treeModel.LivePosition}
-		 */
-		clone( makeLivePosition ) {
-			if ( makeLivePosition ) {
-				return new LivePosition( this.root, this.path.slice() );
-			} else {
-				return super.clone();
-			}
-		}
-
-		/**
 		 * Unbinds all events previously bound by LivePosition. Use it whenever you don't need LivePosition instance
 		 * anymore (i.e. when leaving scope in which it was declared or before re-assigning variable that was
 		 * referring to it).
@@ -68,6 +53,39 @@ CKEDITOR.define( [
 		detach() {
 			this.stopListening();
 		}
+
+		/**
+		 * @static
+		 * @method createAfter
+		 * @see {@link treeModel.Position#createAfter}
+		 * @param {treeModel.Node} node
+		 * @returns {treeModel.LivePosition}
+		 */
+
+		/**
+		 * @static
+		 * @method createBefore
+		 * @see {@link treeModel.Position#createBefore}
+		 * @param {treeModel.Node} node
+		 * @returns {treeModel.LivePosition}
+		 */
+
+		/**
+		 * @static
+		 * @method createFromParentAndOffset
+		 * @see {@link treeModel.Position#createFromParentAndOffset}
+		 * @param {treeModel.Element} parent
+		 * @param {Number} offset
+		 * @returns {treeModel.LivePosition}
+		 */
+
+		/**
+		 * @static
+		 * @method createFromPosition
+		 * @see {@link treeModel.Position#createFromPosition}
+		 * @param {treeModel.Position} position
+		 * @returns {treeModel.LivePosition}
+		 */
 	}
 
 	/**

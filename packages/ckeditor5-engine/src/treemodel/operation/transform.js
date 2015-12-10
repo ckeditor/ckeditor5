@@ -48,9 +48,10 @@ CKEDITOR.define( [
 	'treemodel/operation/attributeoperation',
 	'treemodel/operation/moveoperation',
 	'treemodel/operation/nooperation',
+	'treemodel/position',
 	'treemodel/range',
 	'utils'
-], ( InsertOperation, AttributeOperation, MoveOperation, NoOperation, Range, utils ) => {
+], ( InsertOperation, AttributeOperation, MoveOperation, NoOperation, Position, Range, utils ) => {
 	const ot = {
 		InsertOperation: {
 			// Transforms InsertOperation `a` by InsertOperation `b`. Accepts a flag stating whether `a` is more important
@@ -208,7 +209,7 @@ CKEDITOR.define( [
 					return new MoveOperation(
 						range.start,
 						range.end.offset - range.start.offset,
-						newTargetPosition.clone(),
+						Position.createFromPosition( newTargetPosition ),
 						a.baseVersion
 					);
 				} );

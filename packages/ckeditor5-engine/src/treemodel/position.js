@@ -129,16 +129,6 @@ CKEDITOR.define( [ 'treemodel/rootelement', 'utils', 'ckeditorerror' ], ( RootEl
 		}
 
 		/**
-		 * Creates and returns a new instance of {@link treeModel.Position}
-		 * which is equal to this {@link treeModel.Position position}.
-		 *
-		 * @returns {treeModel.Position} Cloned {@link treeModel.Position position}.
-		 */
-		clone() {
-			return new Position( this.root, this.path.slice() );
-		}
-
-		/**
 		 * Checks whether this position is before or after given position.
 		 *
 		 * @param {treeModel.Position} otherPosition Position to compare with.
@@ -192,7 +182,7 @@ CKEDITOR.define( [ 'treemodel/rootelement', 'utils', 'ckeditorerror' ], ( RootEl
 		 * @returns {treeModel.Position|null} Transformed position or `null`.
 		 */
 		getTransformedByDeletion( deletePosition, howMany ) {
-			let transformed = this.clone();
+			let transformed = Position.createFromPosition( this );
 
 			// This position can't be affected if deletion was in a different root.
 			if ( this.root != deletePosition.root ) {
@@ -241,7 +231,7 @@ CKEDITOR.define( [ 'treemodel/rootelement', 'utils', 'ckeditorerror' ], ( RootEl
 		 * @returns {treeModel.Position} Transformed position.
 		 */
 		getTransformedByInsertion( insertPosition, howMany, insertBefore ) {
-			let transformed = this.clone();
+			let transformed = Position.createFromPosition( this );
 
 			// This position can't be affected if insertion was in a different root.
 			if ( this.root != insertPosition.root ) {
@@ -462,6 +452,16 @@ CKEDITOR.define( [ 'treemodel/rootelement', 'utils', 'ckeditorerror' ], ( RootEl
 		}
 
 		/**
+		 * Creates and returns a new instance of Position, which is equal to passed position.
+		 *
+		 * @param {treeModel.Position} position Position to be cloned.
+		 * @returns {treeModel.Position}
+		 */
+		static createFromPosition( position ) {
+			return new this( position.root, position.path.slice() );
+		}
+
+		/**
 		 * Returns a new position that is a combination of this position and given positions. The combined
 		 * position is this position transformed by moving a range starting at `from` to `to` position.
 		 * It is expected that this position is inside the moved range.
@@ -495,7 +495,7 @@ CKEDITOR.define( [ 'treemodel/rootelement', 'utils', 'ckeditorerror' ], ( RootEl
 			const i = source.path.length - 1;
 
 			// The first part of a path to combined position is a path to the place where nodes were moved.
-			let combined = target.clone();
+			let combined = Position.createFromPosition( target );
 
 			// Then we have to update the rest of the path.
 

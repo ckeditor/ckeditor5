@@ -150,6 +150,15 @@ describe( 'position', () => {
 		expect( Position.createAfter( r ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 3 ] );
 	} );
 
+	it( 'should create a copy of given position', () => {
+		let original = new Position( root, [ 1, 2, 3 ] );
+		let position = Position.createFromPosition( original );
+
+		expect( position ).to.be.instanceof( Position );
+		expect( position.isEqual( original ) ).to.be.true;
+		expect( position ).not.to.be.equal( original );
+	} );
+
 	it( 'should throw error if one try to make positions after root', () => {
 		expect( () => {
 			Position.createAfter( root );
@@ -236,15 +245,6 @@ describe( 'position', () => {
 		let position = new Position( root, [ 1, 2, 3 ] );
 
 		expect( position.getParentPath() ).to.deep.equal( [ 1, 2 ] );
-	} );
-
-	it( 'should return a new, equal position when cloned', () => {
-		const position = new Position( root, [ 1, 2, 3 ] );
-		const clone = position.clone();
-
-		expect( clone ).not.to.be.equal( position ); // clone is not pointing to the same object as position
-		expect( clone.isEqual( position ) ).to.be.true; // but they are equal in the position-sense
-		expect( clone.path ).not.to.be.equal( position.path ); // make sure the paths are not the same array
 	} );
 
 	describe( 'isBefore', () => {

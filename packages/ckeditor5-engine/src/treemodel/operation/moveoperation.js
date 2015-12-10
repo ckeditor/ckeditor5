@@ -7,10 +7,11 @@
 
 CKEDITOR.define( [
 	'treemodel/operation/operation',
+	'treemodel/position',
 	'treemodel/range',
 	'ckeditorerror',
 	'utils'
-], ( Operation, Range, CKEditorError, utils ) => {
+], ( Operation, Position, Range, CKEditorError, utils ) => {
 	/**
 	 * Operation to move list of subsequent nodes from one position in the document to another.
 	 *
@@ -34,7 +35,7 @@ CKEDITOR.define( [
 			 *
 			 * @type {treeModel.Position}
 			 */
-			this.sourcePosition = sourcePosition;
+			this.sourcePosition = Position.createFromPosition( sourcePosition );
 
 			/**
 			 * How many nodes to move.
@@ -48,7 +49,7 @@ CKEDITOR.define( [
 			 *
 			 * @type {treeModel.Position}
 			 */
-			this.targetPosition = targetPosition;
+			this.targetPosition = Position.createFromPosition( targetPosition );
 		}
 
 		get type() {
@@ -56,11 +57,11 @@ CKEDITOR.define( [
 		}
 
 		clone() {
-			return new this.constructor( this.sourcePosition.clone(), this.howMany, this.targetPosition.clone(), this.baseVersion );
+			return new this.constructor( this.sourcePosition, this.howMany, this.targetPosition, this.baseVersion );
 		}
 
 		getReversed() {
-			return new this.constructor( this.targetPosition.clone(), this.howMany, this.sourcePosition.clone(), this.baseVersion + 1 );
+			return new this.constructor( this.targetPosition, this.howMany, this.sourcePosition, this.baseVersion + 1 );
 		}
 
 		_execute() {

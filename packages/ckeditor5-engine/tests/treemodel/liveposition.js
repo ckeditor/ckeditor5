@@ -46,25 +46,6 @@ describe( 'LivePosition', () => {
 		expect( live ).to.be.instanceof( Position );
 	} );
 
-	it( 'should return instance of Position when cloned', () => {
-		let live = new LivePosition( root, [ 0 ] );
-		let clone = live.clone();
-
-		expect( clone ).to.be.instanceof( Position );
-
-		live.detach();
-	} );
-
-	it( 'should return instance of LivePosition when cloned with flag set to true', () => {
-		let live = new LivePosition( root, [ 0 ] );
-		let clone = live.clone( true );
-
-		expect( clone ).to.be.instanceof( LivePosition );
-
-		live.detach();
-		clone.detach();
-	} );
-
 	it( 'should listen to a change event of the document that owns this position root', () => {
 		sinon.spy( LivePosition.prototype, 'listenTo' );
 
@@ -85,6 +66,12 @@ describe( 'LivePosition', () => {
 		expect( live.stopListening.called ).to.be.true;
 
 		LivePosition.prototype.stopListening.restore();
+	} );
+
+	it( 'createFromPosition should return LivePosition', () => {
+		let position = LivePosition.createFromPosition( new Position( root, [ 0 ] ) );
+		expect( position ).to.be.instanceof( LivePosition );
+		position.detach();
 	} );
 
 	it( 'createFromParentAndOffset should return LivePosition', () => {

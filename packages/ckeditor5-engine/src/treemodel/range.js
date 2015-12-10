@@ -25,14 +25,14 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 			 *
 			 * @property {treeModel.Position}
 			 */
-			this.start = start.clone();
+			this.start = Position.createFromPosition( start );
 
 			/**
 			 * End position.
 			 *
 			 * @property {treeModel.Position}
 			 */
-			this.end = end.clone();
+			this.end = Position.createFromPosition( end );
 		}
 
 		/**
@@ -275,7 +275,7 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 		 * @returns {treeModel.Range}
 		 */
 		static createFromPositionAndShift( position, shift ) {
-			let endPosition = position.clone();
+			let endPosition = Position.createFromPosition( position );
 			endPosition.offset += shift;
 
 			return new this( position, endPosition );
