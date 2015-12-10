@@ -152,14 +152,12 @@ CKEDITOR.define( [
 		 * @param {Function} callback Callback to enqueue.
 		 */
 		enqueueChanges( callback ) {
-			let pendingChanges = this._pendingChanges;
+			this._pendingChanges.push( callback );
 
-			pendingChanges.push( callback );
-
-			if ( pendingChanges.length == 1 ) {
-				while ( pendingChanges.length ) {
-					pendingChanges[ 0 ]();
-					pendingChanges.shift();
+			if ( this._pendingChanges.length == 1 ) {
+				while ( this._pendingChanges.length ) {
+					this._pendingChanges[ 0 ]();
+					this._pendingChanges.shift();
 				}
 
 				this.fire( 'changesDone' );
