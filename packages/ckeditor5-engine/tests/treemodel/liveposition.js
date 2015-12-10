@@ -120,7 +120,7 @@ describe( 'LivePosition', () => {
 			it( 'is in the same parent and closer offset', () => {
 				let insertRange = new Range( new Position( root, [ 1, 4, 0 ] ), new Position( root, [ 1, 4, 3 ] ) );
 
-				doc.fire( 'change', 'insert', insertRange, null );
+				doc.fire( 'change', 'insert', { range: insertRange }, null );
 
 				expect( live.path ).to.deep.equal( [ 1, 4, 9 ] );
 			} );
@@ -128,7 +128,7 @@ describe( 'LivePosition', () => {
 			it( 'is at the same position and live position is sticking to right side', () => {
 				let insertRange = new Range( new Position( root, [ 1, 4, 6 ] ), new Position( root, [ 1, 4, 9 ] ) );
 
-				doc.fire( 'change', 'insert', insertRange, null );
+				doc.fire( 'change', 'insert', { range: insertRange }, null );
 
 				expect( live.path ).to.deep.equal( [ 1, 4, 9 ] );
 			} );
@@ -136,7 +136,7 @@ describe( 'LivePosition', () => {
 			it( 'is before a node from the live position path', () => {
 				let insertRange = new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 2 ] ) );
 
-				doc.fire( 'change', 'insert', insertRange, null );
+				doc.fire( 'change', 'insert', { range: insertRange }, null );
 
 				expect( live.path ).to.deep.equal( [ 1, 6, 6 ] );
 			} );
@@ -147,7 +147,11 @@ describe( 'LivePosition', () => {
 				let moveSource = new Position( root, [ 2 ] );
 				let moveRange = new Range( new Position( root, [ 1, 4, 0 ] ), new Position( root, [ 1, 4, 3 ] ) );
 
-				doc.fire( 'change', 'move', moveRange, moveSource, null );
+				let changes = {
+					range: moveRange,
+					sourcePosition: moveSource
+				};
+				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.path ).to.deep.equal( [ 1, 4, 9 ] );
 			} );
@@ -156,7 +160,11 @@ describe( 'LivePosition', () => {
 				let moveSource = new Position( root, [ 2 ] );
 				let moveRange = new Range( new Position( root, [ 1, 4, 6 ] ), new Position( root, [ 1, 4, 9 ] ) );
 
-				doc.fire( 'change', 'move', moveRange, moveSource, null );
+				let changes = {
+					range: moveRange,
+					sourcePosition: moveSource
+				};
+				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.path ).to.deep.equal( [ 1, 4, 9 ] );
 			} );
@@ -165,7 +173,11 @@ describe( 'LivePosition', () => {
 				let moveSource = new Position( root, [ 2 ] );
 				let moveRange = new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 2 ] ) );
 
-				doc.fire( 'change', 'move', moveRange, moveSource, null );
+				let changes = {
+					range: moveRange,
+					sourcePosition: moveSource
+				};
+				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.path ).to.deep.equal( [ 1, 6, 6 ] );
 			} );
@@ -174,7 +186,11 @@ describe( 'LivePosition', () => {
 				let moveSource = new Position( root, [ 1, 4, 0 ] );
 				let moveRange = new Range( new Position( root, [ 2, 0 ] ), new Position( root, [ 2, 4 ] ) );
 
-				doc.fire( 'change', 'move', moveRange, moveSource, null );
+				let changes = {
+					range: moveRange,
+					sourcePosition: moveSource
+				};
+				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.path ).to.deep.equal( [ 1, 4, 2 ] );
 			} );
@@ -183,7 +199,11 @@ describe( 'LivePosition', () => {
 				let moveSource = new Position( root, [ 1, 0 ] );
 				let moveRange = new Range( new Position( root, [ 2, 0 ] ), new Position( root, [ 2, 4 ] ) );
 
-				doc.fire( 'change', 'move', moveRange, moveSource, null );
+				let changes = {
+					range: moveRange,
+					sourcePosition: moveSource
+				};
+				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.path ).to.deep.equal( [ 1, 0, 6 ] );
 			} );
@@ -192,7 +212,11 @@ describe( 'LivePosition', () => {
 				let moveSource = new Position( root, [ 1, 4, 4 ] );
 				let moveRange = new Range( new Position( root, [ 2, 0 ] ), new Position( root, [ 2, 4 ] ) );
 
-				doc.fire( 'change', 'move', moveRange, moveSource, null );
+				let changes = {
+					range: moveRange,
+					sourcePosition: moveSource
+				};
+				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.path ).to.deep.equal( [ 2, 2 ] );
 			} );
@@ -201,7 +225,11 @@ describe( 'LivePosition', () => {
 				let moveSource = new Position( root, [ 1, 3 ] );
 				let moveRange = new Range( new Position( root, [ 2, 0 ] ), new Position( root, [ 2, 4 ] ) );
 
-				doc.fire( 'change', 'move', moveRange, moveSource, null );
+				let changes = {
+					range: moveRange,
+					sourcePosition: moveSource
+				};
+				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.path ).to.deep.equal( [ 2, 1, 6 ] );
 			} );
@@ -230,7 +258,7 @@ describe( 'LivePosition', () => {
 			it( 'is in the same parent and further offset', () => {
 				let insertRange = new Range( new Position( root, [ 1, 4, 7 ] ), new Position( root, [ 1, 4, 9 ] ) );
 
-				doc.fire( 'change', 'insert', insertRange, null );
+				doc.fire( 'change', 'insert', { range: insertRange }, null );
 
 				expect( live.path ).to.deep.equal( path );
 			} );
@@ -239,7 +267,7 @@ describe( 'LivePosition', () => {
 				let live = new LivePosition( root, path, true );
 				let insertRange = new Range( new Position( root, [ 1, 4, 6 ] ), new Position( root, [ 1, 4, 9 ] ) );
 
-				doc.fire( 'change', 'insert', insertRange, null );
+				doc.fire( 'change', 'insert', { range: insertRange }, null );
 
 				expect( live.path ).to.deep.equal( path );
 
@@ -249,7 +277,7 @@ describe( 'LivePosition', () => {
 			it( 'is after a node from the position path', () => {
 				let insertRange = new Range( new Position( root, [ 1, 5 ] ), new Position( root, [ 1, 7 ] ) );
 
-				doc.fire( 'change', 'insert', insertRange, null );
+				doc.fire( 'change', 'insert', { range: insertRange }, null );
 
 				expect( live.path ).to.deep.equal( path );
 			} );
@@ -257,7 +285,7 @@ describe( 'LivePosition', () => {
 			it( 'is in different root', () => {
 				let insertRange = new Range( new Position( otherRoot, [ 1, 4, 0 ] ), new Position( otherRoot, [ 1, 4, 4 ] ) );
 
-				doc.fire( 'change', 'insert', insertRange, null );
+				doc.fire( 'change', 'insert', { range: insertRange }, null );
 
 				expect( live.path ).to.deep.equal( path );
 			} );
@@ -268,7 +296,11 @@ describe( 'LivePosition', () => {
 				let moveSource = new Position( root, [ 2 ] );
 				let moveRange = new Range( new Position( root, [ 1, 4, 7 ] ), new Position( root, [ 1, 4, 9 ] ) );
 
-				doc.fire( 'change', 'move', moveRange, moveSource, null );
+				let changes = {
+					range: moveRange,
+					sourcePosition: moveSource
+				};
+				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.path ).to.deep.equal( path );
 			} );
@@ -278,7 +310,11 @@ describe( 'LivePosition', () => {
 				let moveSource = new Position( root, [ 2 ] );
 				let moveRange = new Range( new Position( root, [ 1, 4, 6 ] ), new Position( root, [ 1, 4, 9 ] ) );
 
-				doc.fire( 'change', 'move', moveRange, moveSource, null );
+				let changes = {
+					range: moveRange,
+					sourcePosition: moveSource
+				};
+				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.path ).to.deep.equal( path );
 
@@ -289,7 +325,11 @@ describe( 'LivePosition', () => {
 				let moveSource = new Position( root, [ 2 ] );
 				let moveRange = new Range( new Position( root, [ 1, 5 ] ), new Position( root, [ 1, 7 ] ) );
 
-				doc.fire( 'change', 'move', moveRange, moveSource, null );
+				let changes = {
+					range: moveRange,
+					sourcePosition: moveSource
+				};
+				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.path ).to.deep.equal( path );
 			} );
@@ -298,7 +338,11 @@ describe( 'LivePosition', () => {
 				let moveSource = new Position( root, [ 1, 4, 7 ] );
 				let moveRange = new Range( new Position( root, [ 2, 0 ] ), new Position( root, [ 2, 4 ] ) );
 
-				doc.fire( 'change', 'move', moveRange, moveSource, null );
+				let changes = {
+					range: moveRange,
+					sourcePosition: moveSource
+				};
+				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.path ).to.deep.equal( path );
 			} );
@@ -307,7 +351,11 @@ describe( 'LivePosition', () => {
 				let moveSource = new Position( root, [ 1, 5 ] );
 				let moveRange = new Range( new Position( root, [ 2, 0 ] ), new Position( root, [ 2, 4 ] ) );
 
-				doc.fire( 'change', 'move', moveRange, moveSource, null );
+				let changes = {
+					range: moveRange,
+					sourcePosition: moveSource
+				};
+				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.path ).to.deep.equal( path );
 			} );
@@ -316,7 +364,11 @@ describe( 'LivePosition', () => {
 				let moveSource = new Position( root, [ 2, 0 ] );
 				let moveRange = new Range( new Position( otherRoot, [ 1, 0 ] ), new Position( otherRoot, [ 1, 4 ] ) );
 
-				doc.fire( 'change', 'move', moveRange, moveSource, null );
+				let changes = {
+					range: moveRange,
+					sourcePosition: moveSource
+				};
+				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.path ).to.deep.equal( path );
 			} );
@@ -325,7 +377,11 @@ describe( 'LivePosition', () => {
 				let moveSource = new Position( otherRoot, [ 1, 0 ] );
 				let moveRange = new Range( new Position( root, [ 2, 0 ] ), new Position( root, [ 2, 4 ] ) );
 
-				doc.fire( 'change', 'move', moveRange, moveSource, null );
+				let changes = {
+					range: moveRange,
+					sourcePosition: moveSource
+				};
+				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.path ).to.deep.equal( path );
 			} );

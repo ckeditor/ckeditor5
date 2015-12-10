@@ -79,7 +79,14 @@ CKEDITOR.define( [
 	function bindWithDocument() {
 		/*jshint validthis: true */
 
-		this.listenTo( this.root.document, 'change', ( e, t, r, p ) => transform.call( this, t, r, p ), this );
+		this.listenTo(
+			this.root.document,
+			'change',
+			( event, type, changes ) => {
+				transform.call( this, type, changes.range, changes.sourcePosition );
+			},
+			this
+		);
 	}
 
 	/**
