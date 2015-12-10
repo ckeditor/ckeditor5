@@ -28,6 +28,9 @@ CKEDITOR.define( [
 		constructor( start, end ) {
 			super( start, end );
 
+			this.start = new LivePosition( this.start.root, this.start.path.slice(), false );
+			this.end = new LivePosition( this.end.root, this.end.path.slice(), true );
+
 			bindWithDocument.call( this );
 		}
 
@@ -40,7 +43,7 @@ CKEDITOR.define( [
 		 */
 		clone( makeLiveRange ) {
 			if ( makeLiveRange ) {
-				return new LiveRange( this.start.clone(), this.end.clone() );
+				return new LiveRange( this.start, this.end );
 			} else {
 				return super.clone();
 			}
@@ -66,14 +69,6 @@ CKEDITOR.define( [
 	 */
 	function bindWithDocument() {
 		/*jshint validthis: true */
-
-		if ( !( this.start instanceof LivePosition ) ) {
-			this.start = new LivePosition( this.start.root, this.start.path.slice(), false );
-		}
-
-		if ( !( this.end instanceof LivePosition ) ) {
-			this.end = new LivePosition( this.end.root, this.end.path.slice(), true );
-		}
 
 		this.listenTo(
 			this.root.document,

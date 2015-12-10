@@ -40,8 +40,8 @@ describe( 'Range', () => {
 
 	describe( 'constructor', () => {
 		it( 'should create a range with given positions', () => {
-			expect( range ).to.have.property( 'start' ).that.equal( start );
-			expect( range ).to.have.property( 'end' ).that.equal( end );
+			expect( range.start.isEqual( start ) ).to.be.true;
+			expect( range.end.isEqual( end ) ).to.be.true;
 		} );
 	} );
 

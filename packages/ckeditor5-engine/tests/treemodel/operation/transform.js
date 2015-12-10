@@ -86,7 +86,7 @@ describe( 'transform', () => {
 
 			expected = {
 				type: InsertOperation,
-				position: position.clone(),
+				position: position,
 				baseVersion: baseVersion + 1
 			};
 		} );
@@ -189,12 +189,8 @@ describe( 'transform', () => {
 
 		describe( 'by AttributeOperation', () => {
 			it( 'no position update', () => {
-				let rangeStart = position.clone();
-				let rangeEnd = position.clone();
-				rangeEnd.offset += 2;
-
 				let transformBy = new AttributeOperation(
-					new Range( rangeStart, rangeEnd ),
+					Range.createFromPositionAndShift( position, 2 ),
 					null,
 					new Attribute( 'foo', 'bar' ),
 					baseVersion
@@ -437,7 +433,7 @@ describe( 'transform', () => {
 
 				op = new AttributeOperation( range, oldAttr, newAttr, baseVersion );
 
-				expected.range = new Range( start.clone(), end.clone() );
+				expected.range = new Range( start, end );
 			} );
 
 			describe( 'by InsertOperation', () => {
@@ -1076,7 +1072,7 @@ describe( 'transform', () => {
 
 				op = new AttributeOperation( range, oldAttr, newAttr, baseVersion );
 
-				expected.range = new Range( start.clone(), end.clone() );
+				expected.range = new Range( start, end );
 			} );
 
 			describe( 'by InsertOperation', () => {

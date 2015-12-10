@@ -23,7 +23,7 @@ CKEDITOR.define( [
 		/**
 		 * Creates a smart position.
 		 *
-		 * @see treeModel.Position
+		 * @see {@link treeModel.Position}
 		 * @param root
 		 * @param path
 		 * @param {Boolean} [stickToLeft] Flag representing what side the smart position is "sticking to". LivePosition

@@ -25,14 +25,14 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 			 *
 			 * @property {treeModel.Position}
 			 */
-			this.start = start;
+			this.start = start.clone();
 
 			/**
 			 * End position.
 			 *
 			 * @property {treeModel.Position}
 			 */
-			this.end = end;
+			this.end = end.clone();
 		}
 
 		/**
@@ -60,7 +60,7 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 		 * @returns {treeModel.Position} Cloned {@link treeModel.Range range}.
 		 */
 		clone() {
-			return new Range( this.start.clone(), this.end.clone() );
+			return new Range( this.start, this.end );
 		}
 
 		/**
@@ -114,23 +114,13 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 				if ( this.containsPosition( otherRange.start ) ) {
 					// Given range start is inside this range. This means that we have to
 					// add shrunken range - from the start to the middle of this range.
-					ranges.push(
-						new Range(
-							this.start.clone(),
-							otherRange.start.clone()
-						)
-					);
+					ranges.push( new Range( this.start, otherRange.start ) );
 				}
 
 				if ( this.containsPosition( otherRange.end ) ) {
 					// Given range end is inside this range. This means that we have to
 					// add shrunken range - from the middle of this range to the end.
-					ranges.push(
-						new Range(
-							otherRange.end.clone(),
-							this.end.clone()
-						)
-					);
+					ranges.push( new Range( otherRange.end, this.end ) );
 				}
 			} else {
 				// Ranges do not intersect, return the original range.
@@ -175,7 +165,7 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 					commonRangeEnd = otherRange.end;
 				}
 
-				return new Range( commonRangeStart.clone(), commonRangeEnd.clone() );
+				return new Range( commonRangeStart, commonRangeEnd );
 			}
 
 			// Ranges do not intersect, so they do not have common part.
@@ -238,10 +228,7 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 				// insertion to reflect insertion changes.
 
 				return [
-					new Range(
-						this.start.clone(),
-						insertPosition.clone()
-					),
+					new Range( this.start, insertPosition ),
 					new Range(
 						insertPosition.getTransformedByInsertion( insertPosition, howMany, true ),
 						this.end.getTransformedByInsertion( insertPosition, howMany, true )
