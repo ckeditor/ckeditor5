@@ -36,6 +36,15 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 		}
 
 		/**
+		 * Returns whether the range is collapsed, that is it start and end positions are equal.
+		 *
+		 * @property {Boolean}
+		 */
+		get isCollapsed() {
+			return this.start.isEqual( this.end );
+		}
+
+		/**
 		 * Range root element. Equals to the root of start position (which should be same as root of end position).
 		 *
 		 * @property {treeModel.RootElement}

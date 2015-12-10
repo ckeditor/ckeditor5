@@ -51,6 +51,17 @@ describe( 'Range', () => {
 		} );
 	} );
 
+	describe( 'isCollapsed', () => {
+		it( 'should be true if range start and end positions are equal', () => {
+			let collapsedRange = new Range( start, start );
+			expect( collapsedRange.isCollapsed ).to.be.true;
+		} );
+
+		it( 'should be false if range start and end positions are not equal', () => {
+			expect( range.isCollapsed ).to.be.false;
+		} );
+	} );
+
 	describe( 'isEqual', () => {
 		it( 'should return true if the ranges are the same', () => {
 			let sameStart = new Position( root, [ 0 ] );
