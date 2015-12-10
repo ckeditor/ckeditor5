@@ -37,14 +37,14 @@ describe( 'MoveOperation', () => {
 	} );
 
 	it( 'should have proper type', () => {
-		const opp = new MoveOperation(
+		const op = new MoveOperation(
 			new Position( root, [ 0, 0 ] ),
-			new Position( root, [ 1, 0 ] ),
 			1,
+			new Position( root, [ 1, 0 ] ),
 			doc.version
 		);
 
-		expect( opp.type ).to.equal( 'move' );
+		expect( op.type ).to.equal( 'move' );
 	} );
 
 	it( 'should move from one node to another', () => {
@@ -113,7 +113,7 @@ describe( 'MoveOperation', () => {
 		expect( root.getChild( 4 ).character ).to.equal( 'x' );
 	} );
 
-	it( 'should create a move operation as a reverse', () => {
+	it( 'should create a MoveOperation as a reverse', () => {
 		let nodeList = new NodeList( 'bar' );
 
 		let sourcePosition = new Position( root, [ 0 ] );

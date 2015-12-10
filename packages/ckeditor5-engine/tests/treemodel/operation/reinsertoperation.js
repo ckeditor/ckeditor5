@@ -62,7 +62,7 @@ describe( 'ReinsertOperation', () => {
 		expect( clone.baseVersion ).to.equal( operation.baseVersion );
 	} );
 
-	it( 'should create a remove operation as a reverse', () => {
+	it( 'should create a RemoveOperation as a reverse', () => {
 		let reverse = operation.getReversed();
 
 		expect( reverse ).to.be.an.instanceof( RemoveOperation );

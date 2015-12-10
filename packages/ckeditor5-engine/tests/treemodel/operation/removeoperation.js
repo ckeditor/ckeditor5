@@ -35,13 +35,13 @@ describe( 'RemoveOperation', () => {
 	} );
 
 	it( 'should have proper type', () => {
-		const opp = new RemoveOperation(
+		const op = new RemoveOperation(
 			new Position( root, [ 2 ] ),
 			2,
 			doc.version
 		);
 
-		expect( opp.type ).to.equal( 'remove' );
+		expect( op.type ).to.equal( 'remove' );
 	} );
 
 	it( 'should extend MoveOperation class', () => {
@@ -90,7 +90,7 @@ describe( 'RemoveOperation', () => {
 		expect( clone.baseVersion ).to.equal( operation.baseVersion );
 	} );
 
-	it( 'should create a reinsert operation as a reverse', () => {
+	it( 'should create a ReinsertOperation as a reverse', () => {
 		let position = new Position( root, [ 0 ] );
 		let operation = new RemoveOperation( position, 2, 0 );
 		let reverse = operation.getReversed();
