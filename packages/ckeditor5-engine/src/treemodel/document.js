@@ -55,6 +55,14 @@ CKEDITOR.define( [
 			 * @property {Number} version
 			 */
 			this.version = 0;
+
+			/**
+			 * Array of pending changes. See: {@link #enqueueChanges}.
+			 *
+			 * @private
+			 * @property {Array.<Function>}
+			 */
+			this._pendingChanges = [];
 		}
 
 		/**
@@ -71,6 +79,8 @@ CKEDITOR.define( [
 		 * This is the entry point for all document changes. All changes on the document are done using
 		 * {@link treeModel.operation.Operation operations}. To create operations in the simple way use the
 		 * {@link treeModel.Batch} API available via {@link #batch} method.
+		 *
+		 * This method calls {@link #change} event.
 		 *
 		 * @param {treeModel.operation.Operation} operation Operation to be applied.
 		 */
@@ -132,6 +142,29 @@ CKEDITOR.define( [
 		}
 
 		/**
+		 * Enqueue a callback with document changes. Any changes to be done on document (mostly using {@link #batch} should
+		 * be placed in the queued callback. If no other plugin is changing document at the moment, the callback will be
+		 * called immediately. Otherwise it will wait for all previously queued changes to finish happening. This way
+		 * queued callback will not interrupt other callbacks.
+		 *
+		 * When all queued changes are done {@link #changesDone} event is fired.
+		 *
+		 * @param {Function} callback Callback to enqueue.
+		 */
+		enqueueChanges( callback ) {
+			this._pendingChanges.push( callback );
+
+			if ( this._pendingChanges.length == 1 ) {
+				while ( this._pendingChanges.length ) {
+					this._pendingChanges[ 0 ]();
+					this._pendingChanges.shift();
+				}
+
+				this.fire( 'changesDone' );
+			}
+		}
+
+		/**
 		 * Returns top-level root by it's name.
 		 *
 		 * @param {String|Symbol} name Name of the root to get.
@@ -180,6 +213,12 @@ CKEDITOR.define( [
 		 * @param {treeModel.Attribute} [changeInfo.newAttr] Only for 'attr' type. If the type is 'attr' and `newAttr`
 		 * is `undefined` it means that attribute was removed. Otherwise it contains changed or inserted attribute.
 		 * @param {treeModel.Batch} {@link treeModel.Batch} of changes which this change is a part of.
+		 */
+
+		/**
+		 * Fired when all queued document changes are done. See {@link #enqueueChanges}.
+		 *
+		 * @event changesDone
 		 */
 	}
 

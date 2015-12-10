@@ -24,36 +24,36 @@ describe( 'Document', () => {
 		CKEditorError = modules.ckeditorerror;
 	} );
 
-	let document;
+	let doc;
 
 	beforeEach( () => {
-		document = new Document();
+		doc = new Document();
 	} );
 
 	describe( 'constructor', () => {
 		it( 'should create Document with no data and empty graveyard', () => {
-			expect( document ).to.have.property( 'roots' ).that.is.instanceof( Map );
-			expect( document.roots.size ).to.equal( 1 );
-			expect( document.graveyard ).to.be.instanceof( RootElement );
-			expect( document.graveyard.getChildCount() ).to.equal( 0 );
+			expect( doc ).to.have.property( 'roots' ).that.is.instanceof( Map );
+			expect( doc.roots.size ).to.equal( 1 );
+			expect( doc.graveyard ).to.be.instanceof( RootElement );
+			expect( doc.graveyard.getChildCount() ).to.equal( 0 );
 		} );
 	} );
 
 	describe( 'createRoot', () => {
 		it( 'should create a new RootElement, add it to roots map and return it', () => {
-			let root = document.createRoot( 'root' );
+			let root = doc.createRoot( 'root' );
 
-			expect( document.roots.size ).to.equal( 2 );
+			expect( doc.roots.size ).to.equal( 2 );
 			expect( root ).to.be.instanceof( RootElement );
 			expect( root.getChildCount() ).to.equal( 0 );
 		} );
 
 		it( 'should throw an error when trying to create a second root with the same name', () => {
-			document.createRoot( 'root' );
+			doc.createRoot( 'root' );
 
 			expect(
 				() => {
-					document.createRoot( 'root' );
+					doc.createRoot( 'root' );
 				}
 			).to.throw( CKEditorError, /document-createRoot-name-exists/ );
 		} );
@@ -61,8 +61,8 @@ describe( 'Document', () => {
 
 	describe( 'getRoot', () => {
 		it( 'should return a RootElement previously created with given name', () => {
-			let newRoot = document.createRoot( 'root' );
-			let getRoot = document.getRoot( 'root' );
+			let newRoot = doc.createRoot( 'root' );
+			let getRoot = doc.getRoot( 'root' );
 
 			expect( getRoot ).to.equal( newRoot );
 		} );
@@ -70,7 +70,7 @@ describe( 'Document', () => {
 		it( 'should throw an error when trying to get non-existent root', () => {
 			expect(
 				() => {
-					document.getRoot( 'root' );
+					doc.getRoot( 'root' );
 				}
 			).to.throw( CKEditorError, /document-createRoot-root-not-exist/ );
 		} );
@@ -90,10 +90,10 @@ describe( 'Document', () => {
 				_execute: sinon.stub().returns( data )
 			};
 
-			document.on( 'change', changeCallback );
-			document.applyOperation( operation );
+			doc.on( 'change', changeCallback );
+			doc.applyOperation( operation );
 
-			expect( document.version ).to.equal( 1 );
+			expect( doc.version ).to.equal( 1 );
 			sinon.assert.calledOnce( operation._execute );
 
 			sinon.assert.calledOnce( changeCallback );
@@ -109,7 +109,7 @@ describe( 'Document', () => {
 
 			expect(
 				() => {
-					document.applyOperation( operation );
+					doc.applyOperation( operation );
 				}
 			).to.throw( CKEditorError, /document-applyOperation-wrong-version/ );
 		} );
@@ -117,10 +117,67 @@ describe( 'Document', () => {
 
 	describe( 'batch', () => {
 		it( 'should create a new batch with the document property', () => {
-			const batch = document.batch();
+			const batch = doc.batch();
 
 			expect( batch ).to.be.instanceof( Batch );
-			expect( batch ).to.have.property( 'doc' ).that.equals( document );
+			expect( batch ).to.have.property( 'doc' ).that.equals( doc );
+		} );
+	} );
+
+	describe( 'enqueue', () => {
+		it( 'should be executed immediately and fire changesDone event', () => {
+			let order = [];
+
+			doc.on( 'changesDone', () => order.push( 'done' ) );
+
+			doc.enqueueChanges( () => order.push( 'enqueue1' ) );
+
+			expect( order ).to.have.length( 2 );
+			expect( order[ 0 ] ).to.equal( 'enqueue1' );
+			expect( order[ 1 ] ).to.equal( 'done' );
+		} );
+
+		it( 'should fire done every time queue is empty', () => {
+			let order = [];
+
+			doc.on( 'changesDone', () => order.push( 'done' ) );
+
+			doc.enqueueChanges( () => order.push( 'enqueue1' ) );
+			doc.enqueueChanges( () => order.push( 'enqueue2' ) );
+
+			expect( order ).to.have.length( 4 );
+			expect( order[ 0 ] ).to.equal( 'enqueue1' );
+			expect( order[ 1 ] ).to.equal( 'done' );
+			expect( order[ 2 ] ).to.equal( 'enqueue2' );
+			expect( order[ 3 ] ).to.equal( 'done' );
+		} );
+
+		it( 'should put callbacks in the proper order', () => {
+			let order = [];
+
+			doc.on( 'changesDone', () => order.push( 'done' ) );
+
+			doc.enqueueChanges( () => {
+				order.push( 'enqueue1 start' );
+				doc.enqueueChanges( () => {
+					order.push( 'enqueue2 start' );
+					doc.enqueueChanges( () => order.push( 'enqueue4' ) );
+					order.push( 'enqueue2 end' );
+				} );
+
+				doc.enqueueChanges( () => order.push( 'enqueue3' ) );
+
+				order.push( 'enqueue1 end' );
+			} );
+
+			expect( order ).to.have.length( 7 );
+			expect( order[ 0 ] ).to.equal( 'enqueue1 start' );
+			expect( order[ 1 ] ).to.equal( 'enqueue1 end' );
+			expect( order[ 2 ] ).to.equal( 'enqueue2 start' );
+			expect( order[ 3 ] ).to.equal( 'enqueue2 end' );
+			expect( order[ 4 ] ).to.equal( 'enqueue3' );
+			expect( order[ 5 ] ).to.equal( 'enqueue4' );
+			expect( order[ 6 ] ).to.equal( 'done' );
 		} );
 	} );
 } );
