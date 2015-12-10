@@ -42,7 +42,7 @@ CKEDITOR.define( [
 			 * @readonly
 			 * @type {treeModel.Range}
 			 */
-			this.range = range;
+			this.range = range.clone();
 
 			/**
 			 * Old attribute to change. Set to `null` if operation inserts a new attribute.
@@ -66,7 +66,7 @@ CKEDITOR.define( [
 		}
 
 		clone() {
-			return new AttributeOperation( this.range.clone(), this.oldAttr, this.newAttr, this.baseVersion );
+			return new AttributeOperation( this.range, this.oldAttr, this.newAttr, this.baseVersion );
 		}
 
 		getReversed() {
