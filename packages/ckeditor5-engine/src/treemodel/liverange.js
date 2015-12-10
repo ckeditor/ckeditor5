@@ -35,21 +35,6 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * Creates and returns a new range which is equal to this LiveRange. Returned object may be
-		 * an instance of Range or LiveRange, depending on passed argument.
-		 *
-		 * @param {Boolean} [makeLiveRange] Flag representing whether new object should be "live". Defaults to false.
-		 * @returns {treeModel.Range|treeModel.LiveRange}
-		 */
-		clone( makeLiveRange ) {
-			if ( makeLiveRange ) {
-				return new LiveRange( this.start, this.end );
-			} else {
-				return super.clone();
-			}
-		}
-
-		/**
 		 * Unbinds all events previously bound by LiveRange. Use it whenever you don't need LiveRange instance
 		 * anymore (i.e. when leaving scope in which it was declared or before re-assigning variable that was
 		 * referring to it).
@@ -59,6 +44,42 @@ CKEDITOR.define( [
 			this.end.detach();
 			this.stopListening();
 		}
+
+		/**
+		 * @see {@link treeModel.Range#createFromElement}
+		 * @static
+		 * @method createFromElement
+		 * @param {treeModel.Element} element
+		 * @returns {treeModel.LiveRange}
+		 */
+
+		/**
+		 * @see {@link treeModel.Range#createFromPositionAndShift}
+		 * @static
+		 * @method createFromPositionAndShift
+		 * @param {treeModel.Position} position
+		 * @param {Number} shift
+		 * @returns {treeModel.LiveRange}
+		 */
+
+		/**
+		 * @see {@link treeModel.Range#createFromParentsAndOffsets}
+		 * @static
+		 * @method createFromParentsAndOffsets
+		 * @param {treeModel.Element} startElement
+		 * @param {Number} startOffset
+		 * @param {treeModel.Element} endElement
+		 * @param {Number} endOffset
+		 * @returns {treeModel.LiveRange}
+		 */
+
+		/**
+		 * @see {@link treeModel.Range#createFromRange}
+		 * @static
+		 * @method createFromRange
+		 * @param {treeModel.Range} range
+		 * @returns {treeModel.LiveRange}
+		 */
 	}
 
 	/**

@@ -129,6 +129,15 @@ describe( 'Range', () => {
 				expect( range.end.path ).to.deep.equal( [ 1, 2, 7 ] );
 			} );
 		} );
+
+		describe( 'createFromRange', () => {
+			it( 'should create a new instance of Range that is equal to passed range', () => {
+				const clone = Range.createFromRange( range );
+
+				expect( clone ).not.to.be.equal( range ); // clone is not pointing to the same object as position
+				expect( clone.isEqual( range ) ).to.be.true; // but they are equal in the position-sense
+			} );
+		} );
 	} );
 
 	describe( 'getNodes', () => {
@@ -157,15 +166,6 @@ describe( 'Range', () => {
 			}
 
 			expect( nodes ).to.deep.equal( [ b, e2, x ] );
-		} );
-	} );
-
-	describe( 'clone', () => {
-		it( 'should return a new, equal position', () => {
-			const clone = range.clone();
-
-			expect( clone ).not.to.be.equal( range ); // clone is not pointing to the same object as position
-			expect( clone.isEqual( range ) ).to.be.true; // but they are equal in the position-sense
 		} );
 	} );
 

@@ -548,7 +548,7 @@ describe( 'transform', () => {
 			describe( 'by AttributeOperation', () => {
 				it( 'attributes have different key: no operation update', () => {
 					let transformBy = new AttributeOperation(
-						range.clone(),
+						Range.createFromRange( range ),
 						new Attribute( 'abc', true ),
 						new Attribute( 'abc', false ),
 						baseVersion
@@ -562,7 +562,7 @@ describe( 'transform', () => {
 
 				it( 'attributes set same value: no operation update', () => {
 					let transformBy = new AttributeOperation(
-						range.clone(),
+						Range.createFromRange( range ),
 						oldAttr,
 						newAttr,
 						baseVersion

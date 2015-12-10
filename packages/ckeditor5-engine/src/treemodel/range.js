@@ -54,16 +54,6 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 		}
 
 		/**
-		 * Creates and returns a new instance of {@link treeModel.Range}
-		 * which is equal to this {@link treeModel.Range range}.
-		 *
-		 * @returns {treeModel.Position} Cloned {@link treeModel.Range range}.
-		 */
-		clone() {
-			return new Range( this.start, this.end );
-		}
-
-		/**
 		 * Checks whether this contains given {@link treeModel.Position position}.
 		 *
 		 * @param {treeModel.Position} position Position to check.
@@ -124,7 +114,7 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 				}
 			} else {
 				// Ranges do not intersect, return the original range.
-				ranges.push( this.clone() );
+				ranges.push( Range.createFromRange( this ) );
 			}
 
 			return ranges;
@@ -238,7 +228,7 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 				// If insertion is not inside the range, simply transform range boundaries (positions) by the insertion.
 				// Both, one or none of them might be affected by the insertion.
 
-				const range = this.clone();
+				const range = Range.createFromRange( this );
 
 				range.start = range.start.getTransformedByInsertion( insertPosition, howMany, true );
 				range.end = range.end.getTransformedByInsertion( insertPosition, howMany, false );
@@ -295,6 +285,16 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 				Position.createFromParentAndOffset( startElement, startOffset ),
 				Position.createFromParentAndOffset( endElement, endOffset )
 			);
+		}
+
+		/**
+		 * Creates and returns a new instance of Range which is equal to passed range.
+		 *
+		 * @param {treeModel.Range} range Range to clone.
+		 * @returns {treeModel.Range}
+		 */
+		static createFromRange( range ) {
+			return new this( range.start, range.end );
 		}
 	}
 

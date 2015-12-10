@@ -55,25 +55,6 @@ describe( 'LiveRange', () => {
 		expect( live ).to.be.instanceof( Range );
 	} );
 
-	it( 'should return instance of Range when cloned', () => {
-		let live = new LiveRange( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
-		let clone = live.clone();
-
-		expect( clone ).not.to.be.instanceof( LiveRange );
-
-		live.detach();
-	} );
-
-	it( 'should return instance of LiveRange when cloned with flag set to true', () => {
-		let live = new LiveRange( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
-		let clone = live.clone( true );
-
-		expect( clone ).to.be.instanceof( LiveRange );
-
-		live.detach();
-		clone.detach();
-	} );
-
 	it( 'should listen to a change event of the document that owns this range', () => {
 		sinon.spy( LiveRange.prototype, 'listenTo' );
 
@@ -114,7 +95,13 @@ describe( 'LiveRange', () => {
 		range.detach();
 	} );
 
-	// Examples may be weird when you compare them with the tree structure generated at the beginning of tests.
+	it( 'createFromRange should return LiveRange', () => {
+		let range = LiveRange.createFromRange( new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ) );
+		expect( range ).to.be.instanceof( LiveRange );
+		range.detach();
+	} );
+
+	// Examples may seem weird when you compare them with the tree structure generated at the beginning of tests.
 	// Since change event is fired _after_ operation is executed on tree model, you have to imagine that generated
 	// structure is representing what is _after_ operation is executed. So live LiveRange properties are describing
 	// virtual tree that is not existing anymore and event ranges are operating on the tree generated above.
@@ -369,7 +356,7 @@ describe( 'LiveRange', () => {
 
 		beforeEach( () => {
 			live = new LiveRange( new Position( root, [ 0, 1, 4 ] ), new Position( root, [ 0, 2, 2 ] ) );
-			clone = live.clone();
+			clone = Range.createFromRange( live );
 		} );
 
 		afterEach( () => {
