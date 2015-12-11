@@ -20,7 +20,7 @@ CKEDITOR.define( [
 	 */
 	class LiveRange extends Range {
 		/**
-		 * Creates a smart range.
+		 * Creates a live range.
 		 *
 		 * @see {treeModel.Range}
 		 * @constructor
