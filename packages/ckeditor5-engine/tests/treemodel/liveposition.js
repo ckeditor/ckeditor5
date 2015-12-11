@@ -251,7 +251,7 @@ describe( 'LivePosition', () => {
 			} );
 
 			it( 'is at the same position and live position is sticking to left side', () => {
-				let live = new LivePosition( root, path, true );
+				let live = new LivePosition( root, path, LivePosition.STICKS_TO_PREVIOUS );
 				let insertRange = new Range( new Position( root, [ 1, 4, 6 ] ), new Position( root, [ 1, 4, 9 ] ) );
 
 				doc.fire( 'change', 'insert', { range: insertRange }, null );
@@ -293,7 +293,7 @@ describe( 'LivePosition', () => {
 			} );
 
 			it( 'is at the same position and live position is sticking to left side', () => {
-				let live = new LivePosition( root, path, true );
+				let live = new LivePosition( root, path, LivePosition.STICKS_TO_PREVIOUS );
 				let moveSource = new Position( root, [ 2 ] );
 				let moveRange = new Range( new Position( root, [ 1, 4, 6 ] ), new Position( root, [ 1, 4, 9 ] ) );
 

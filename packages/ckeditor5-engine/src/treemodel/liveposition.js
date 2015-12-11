@@ -11,6 +11,9 @@ CKEDITOR.define( [
 	'emittermixin',
 	'utils'
 ], ( Position, Range, EmitterMixin, utils ) => {
+	const STICKS_TO_NEXT = 0;
+	const STICKS_TO_PREVIOUS = 1;
+
 	/**
 	 * LivePosition is a position in the Tree Model that updates itself as the tree changes. It may be used as a bookmark.
 	 * **Note:** Be very careful when dealing with LivePosition. Each LivePosition instance bind events that might
@@ -21,26 +24,27 @@ CKEDITOR.define( [
 
 	class LivePosition extends Position {
 		/**
-		 * Creates a smart position.
+		 * Creates a live position.
 		 *
 		 * @see {@link treeModel.Position}
 		 * @param root
 		 * @param path
-		 * @param {Boolean} [stickToLeft] Flag representing what side the smart position is "sticking to". LivePosition
-		 * might be sticking to it's left side or right side. Whenever some nodes are inserted at the same position
-		 * as LivePosition, "stickiness" is checked to decide how LivePosition should be moved. Similar applies
-		 * when a range of nodes is moved and one of it's boundary position is same as LivePosition. Defaults to false.
+		 * @param {Number} [stickiness] Flag representing how live position is "sticking" with their neighbour nodes.
+		 * Defaults to {@link #STICKS_TO_NEXT}. See {@link #stickiness}.
 		 * @constructor
 		 */
-		constructor( root, path, stickToLeft ) {
+		constructor( root, path, stickiness ) {
 			super( root, path );
 
 			/**
-			 * Decides whether this position is sticking to it's left side or right side.
+			 * Flag representing LivePosition stickiness. LivePosition might be sticking to previous node or next node.
+			 * Whenever some nodes are inserted at the same position as LivePosition, `stickiness` is checked to decide if
+			 * LivePosition should be moved. Similar applies when a range of nodes is moved and one of it's boundary
+			 * position is same as LivePosition. Accepted values are {@link #STICKS_TO_PREVIOUS} and {@link #STICKS_TO_NEXT}.
 			 *
-			 * @type {Boolean}
+			 * @type {Number}
 			 */
-			this.stickToLeft = !!stickToLeft;
+			this.stickiness = stickiness ? stickiness : STICKS_TO_NEXT;
 
 			bindWithDocument.call( this );
 		}
@@ -124,7 +128,8 @@ CKEDITOR.define( [
 
 		switch ( type ) {
 			case 'insert':
-				transformed = this.getTransformedByInsertion( range.start, howMany, !this.stickToLeft );
+				let insertBefore = this.stickiness == STICKS_TO_NEXT;
+				transformed = this.getTransformedByInsertion( range.start, howMany, insertBefore );
 				break;
 
 			case 'move':
@@ -133,14 +138,15 @@ CKEDITOR.define( [
 				let originalRange = Range.createFromPositionAndShift( position, howMany );
 
 				let gotMoved = originalRange.containsPosition( this ) ||
-					( originalRange.start.isEqual( this ) && !this.stickToLeft ) ||
-					( originalRange.end.isEqual( this ) && this.stickToLeft );
+					( originalRange.start.isEqual( this ) && this.stickiness == STICKS_TO_NEXT ) ||
+					( originalRange.end.isEqual( this ) && this.stickiness == STICKS_TO_PREVIOUS );
 
 				// We can't use .getTransformedByMove() because we have a different if-condition.
 				if ( gotMoved ) {
 					transformed = this._getCombined( position, range.start );
 				} else {
-					transformed = this.getTransformedByMove( position, range.start, howMany, !this.stickToLeft );
+					let insertBefore = this.stickiness == STICKS_TO_NEXT;
+					transformed = this.getTransformedByMove( position, range.start, howMany, insertBefore );
 				}
 				break;
 		}
@@ -148,6 +154,20 @@ CKEDITOR.define( [
 		this.path = transformed.path;
 		this.root = transformed.root;
 	}
+
+	/**
+	 * Flag representing that the position is sticking to the node before it or to the beginning of it's parent node.
+	 *
+	 * @type {Number}
+	 */
+	LivePosition.STICKS_TO_PREVIOUS = STICKS_TO_PREVIOUS;
+
+	/**
+	 * Flag representing that the position is sticking to the node after it or to the end of it's parent node.
+	 *
+	 * @type {number}
+	 */
+	LivePosition.STICKS_TO_NEXT = STICKS_TO_NEXT;
 
 	utils.extend( LivePosition.prototype, EmitterMixin );
 
