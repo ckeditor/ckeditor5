@@ -26,14 +26,15 @@ describe( 'Range', () => {
 		Document = modules[ 'treemodel/document' ];
 	} );
 
-	let range, start, end, root;
+	let range, start, end, root, otherRoot;
 
 	beforeEach( () => {
 		let doc = new Document();
 		root = doc.createRoot( 'root' );
+		otherRoot = doc.createRoot( 'otherRoot' );
 
-		start = new Position( root, [ 0 ] );
-		end = new Position( root, [ 1 ] );
+		start = new Position( root, [ 1 ] );
+		end = new Position( root, [ 2 ] );
 
 		range = new Range( start, end );
 	} );
@@ -64,8 +65,8 @@ describe( 'Range', () => {
 
 	describe( 'isEqual', () => {
 		it( 'should return true if the ranges are the same', () => {
-			let sameStart = new Position( root, [ 0 ] );
-			let sameEnd = new Position( root, [ 1 ] );
+			let sameStart = Position.createFromPosition( start );
+			let sameEnd = Position.createFromPosition( end );
 
 			let sameRange = new Range( sameStart, sameEnd );
 
@@ -75,12 +76,12 @@ describe( 'Range', () => {
 		it( 'should return false if the start position is different', () => {
 			let range = new Range( start, end );
 
-			let diffStart = new Position( root, [ 1 ] );
-			let sameEnd = new Position( root, [ 1 ] );
+			let diffStart = new Position( root, [ 0 ] );
+			let sameEnd = Position.createFromPosition( end );
 
 			let diffRange = new Range( diffStart, sameEnd );
 
-			expect( range.isEqual( diffRange ) ).to.not.be.true;
+			expect( range.isEqual( diffRange ) ).to.be.false;
 		} );
 
 		it( 'should return false if the end position is different', () => {
@@ -89,7 +90,53 @@ describe( 'Range', () => {
 
 			let diffRange = new Range( sameStart, diffEnd );
 
-			expect( range.isEqual( diffRange ) ).to.not.be.true;
+			expect( range.isEqual( diffRange ) ).to.be.false;
+		} );
+
+		it( 'should return false if ranges are in different roots', () => {
+			let otherRootStart = new Position( otherRoot, start.path.slice() );
+			let otherRootEnd = new Position( otherRoot, end.path.slice() );
+
+			let otherRootRange = new Range( otherRootStart, otherRootEnd );
+
+			expect( range.isEqual( otherRootRange ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'isIntersecting', () => {
+		it( 'should return true if given range is equal', () => {
+			let otherRange = Range.createFromRange( range );
+			expect( range.isIntersecting( otherRange ) ).to.be.true;
+		} );
+
+		it( 'should return true if given range contains this range', () => {
+			let otherRange = new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) );
+			expect( range.isIntersecting( otherRange ) ).to.be.true;
+		} );
+
+		it( 'should return true if given range ends in this range', () => {
+			let otherRange = new Range( new Position( root, [ 0 ] ), new Position( root, [ 1, 4 ] ) );
+			expect( range.isIntersecting( otherRange ) ).to.be.true;
+		} );
+
+		it( 'should return true if given range starts in this range', () => {
+			let otherRange = new Range( new Position( root, [ 1, 4 ] ), new Position( root, [ 3 ] ) );
+			expect( range.isIntersecting( otherRange ) ).to.be.true;
+		} );
+
+		it( 'should return false if given range is fully before this range', () => {
+			let otherRange = new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
+			expect( range.isIntersecting( otherRange ) ).to.be.false;
+		} );
+
+		it( 'should return false if given range is fully after this range', () => {
+			let otherRange = new Range( new Position( root, [ 2 ] ), new Position( root, [ 2, 0 ] ) );
+			expect( range.isIntersecting( otherRange ) ).to.be.false;
+		} );
+
+		it( 'should return false if ranges are in different roots', () => {
+			let otherRange = new Range( new Position( otherRoot, [ 0 ] ), new Position( otherRoot, [ 1, 4 ] ) );
+			expect( range.isIntersecting( otherRange ) ).to.be.false;
 		} );
 	} );
 

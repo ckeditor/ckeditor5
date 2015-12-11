@@ -107,7 +107,7 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 		getDifference( otherRange ) {
 			const ranges = [];
 
-			if ( this.start.isBefore( otherRange.end ) && this.end.isAfter( otherRange.start ) ) {
+			if ( this.isIntersecting( otherRange ) ) {
 				// Ranges intersect.
 
 				if ( this.containsPosition( otherRange.start ) ) {
@@ -146,7 +146,7 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 		 * @returns {treeModel.Range|null} A common part of given ranges or null if ranges have no common part.
 		 */
 		getIntersection( otherRange ) {
-			if ( this.start.isBefore( otherRange.end ) && this.end.isAfter( otherRange.start ) ) {
+			if ( this.isIntersecting( otherRange ) ) {
 				// Ranges intersect, so a common range will be returned.
 				// At most, it will be same as this range.
 				let commonRangeStart = this.start;
@@ -254,6 +254,16 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 		 */
 		isEqual( otherRange ) {
 			return this.start.isEqual( otherRange.start ) && this.end.isEqual( otherRange.end );
+		}
+
+		/**
+		 * Checks and returns whether this range intersects with given range.
+		 *
+		 * @param {treeModel.Range} otherRange Range to compare with.
+		 * @returns {Boolean} True if ranges intersect.
+		 */
+		isIntersecting( otherRange ) {
+			return this.start.isBefore( otherRange.end ) && this.end.isAfter( otherRange.start );
 		}
 
 		/**
