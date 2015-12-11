@@ -9,10 +9,11 @@ CKEDITOR.define( [
 	'treemodel/element',
 	'treemodel/rootelement',
 	'treemodel/batch',
+	'treemodel/selection',
 	'emittermixin',
 	'utils',
 	'ckeditorerror'
-], ( Element, RootElement, Batch, EmitterMixin, utils, CKEditorError ) => {
+], ( Element, RootElement, Batch, Selection, EmitterMixin, utils, CKEditorError ) => {
 	const graveyardSymbol = Symbol( 'graveyard' );
 
 	/**
@@ -63,6 +64,14 @@ CKEDITOR.define( [
 			 * @property {Array.<Function>}
 			 */
 			this._pendingChanges = [];
+
+			/**
+			 * Selection done on this document.
+			 *
+			 * @readonly
+			 * @property {treeModel.Selection}
+			 */
+			this._selection = new Selection();
 		}
 
 		/**
@@ -73,6 +82,16 @@ CKEDITOR.define( [
 		 */
 		get graveyard() {
 			return this.getRoot( graveyardSymbol );
+		}
+
+		/**
+		 * Returns current selection done on this document.
+		 *
+		 * @readonly
+		 * @property {treeModel.Selection}
+		 */
+		get selection() {
+			return this._selection;
 		}
 
 		/**

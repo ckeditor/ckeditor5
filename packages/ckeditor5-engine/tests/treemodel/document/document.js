@@ -31,11 +31,12 @@ describe( 'Document', () => {
 	} );
 
 	describe( 'constructor', () => {
-		it( 'should create Document with no data and empty graveyard', () => {
+		it( 'should create Document with no data, empty graveyard and empty selection', () => {
 			expect( doc ).to.have.property( 'roots' ).that.is.instanceof( Map );
 			expect( doc.roots.size ).to.equal( 1 );
 			expect( doc.graveyard ).to.be.instanceof( RootElement );
 			expect( doc.graveyard.getChildCount() ).to.equal( 0 );
+			expect( doc.selection.getRanges().length ).to.equal( 0 );
 		} );
 	} );
 
