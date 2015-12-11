@@ -5,7 +5,12 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'treemodel/liverange', 'emittermixin', 'utils' ], ( LiveRange, EmitterMixin, utils ) => {
+CKEDITOR.define( [
+	'treemodel/liverange',
+	'emittermixin',
+	'utils',
+	'ckeditorerror'
+], ( LiveRange, EmitterMixin, utils, CKEditorError ) => {
 	/**
 	 * Represents a selection that is made on nodes in {@link treeModel.Document}. Selection instance is
 	 * created by {@link treeModel.Document}. In most scenarios you should not need to create an instance of Selection.
@@ -151,6 +156,10 @@ CKEDITOR.define( [ 'treemodel/liverange', 'emittermixin', 'utils' ], ( LiveRange
 
 	/**
 	 * Unbinds all events bound by created {@link treeModel.LiveRange}s.
+	 *
+	 * @private
+	 * @method detachRanges
+	 * @memberOf {treeModel.Selection}
 	 */
 	function detachRanges() {
 		/*jshint validthis: true */
@@ -161,15 +170,33 @@ CKEDITOR.define( [ 'treemodel/liverange', 'emittermixin', 'utils' ], ( LiveRange
 	}
 
 	/**
-	 * Converts given range to {@link treeModel.LiveRange} and adds it to internal ranges array.
+	 * Converts given range to {@link treeModel.LiveRange} and adds it to internal ranges array. Throws an error
+	 * if given range is intersecting with any range that is already stored in this selection.
 	 *
+	 * @private
+	 * @method pushRange
+	 * @memberOf {treeModel.Selection}
 	 * @param {treeModel.Range} range Range to add.
 	 */
 	function pushRange( range ) {
 		/*jshint validthis: true */
+		for ( let i = 0; i < this._ranges.length ; i++ ) {
+			if ( range.isIntersecting( this._ranges[ i ] ) ) {
+				/**
+				 * Trying to add a range that intersects with another range from selection.
+				 *
+				 * @error selection-range-intersects
+				 * @param {treeModel.Range} addedRange Range that was added to the selection.
+				 * @param {treeModel.Range} intersectingRange Range from selection that intersects with `addedRange`.
+				 */
+				throw new CKEditorError(
+					'selection-range-intersects: Trying to add a range that intersects with another range from selection.',
+					{ addedRange: range, intersectingRange: this._ranges[ i ] }
+				);
+			}
+		}
 
-		let liveRange = new LiveRange( range.start.clone(), range.end.clone() );
-		this._ranges.push( liveRange );
+		this._ranges.push( LiveRange.createFromRange( range ) );
 	}
 
 	utils.extend( Selection.prototype, EmitterMixin );

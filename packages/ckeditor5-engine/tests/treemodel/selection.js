@@ -15,11 +15,12 @@ const modules = bender.amd.require(
 	'treemodel/liverange',
 	'treemodel/selection',
 	'treemodel/operation/insertoperation',
-	'treemodel/operation/moveoperation'
+	'treemodel/operation/moveoperation',
+	'ckeditorerror'
 );
 
 describe( 'Selection', () => {
-	let Document, Element, Range, Position, LiveRange, Selection, InsertOperation, MoveOperation;
+	let Document, Element, Range, Position, LiveRange, Selection, InsertOperation, MoveOperation, CKEditorError;
 
 	before( () => {
 		Document = modules[ 'treemodel/document' ];
@@ -30,6 +31,7 @@ describe( 'Selection', () => {
 		Selection = modules[ 'treemodel/selection' ];
 		InsertOperation = modules[ 'treemodel/operation/insertoperation' ];
 		MoveOperation = modules[ 'treemodel/operation/moveoperation' ];
+		CKEditorError = modules.ckeditorerror;
 	} );
 
 	let doc, root, selection, liveRange, range;
@@ -155,6 +157,19 @@ describe( 'Selection', () => {
 
 		ranges[ 0 ].detach.restore();
 		ranges[ 1 ].detach.restore();
+	} );
+
+	it( 'should throw an error if added range intersects with already stored range', () => {
+		selection.addRange( liveRange );
+
+		expect( () => {
+			selection.addRange(
+				new Range(
+					new Position( root, [ 0, 4 ] ),
+					new Position( root, [ 1, 2 ] )
+				)
+			);
+		} ).to.throw( CKEditorError, /selection-range-intersects/ );
 	} );
 
 	describe( 'removeAllRanges', () => {
