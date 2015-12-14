@@ -44,7 +44,7 @@
     "url": "https://github.com/ckeditor/ckeditor5.git"
   },
   "scripts": {
-    "tests": "mocha dev/tests",
+    "test": "mocha dev/tests",
     "coverage": "istanbul cover _mocha dev/tests/"
   }
 }

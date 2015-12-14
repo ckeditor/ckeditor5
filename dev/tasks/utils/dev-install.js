@@ -104,6 +104,9 @@ module.exports = ( ckeditor5Path, workspaceRoot, name, writeln ) => {
 
 			return json;
 		} );
+
+		writeln( `Installing Git hooks in ${ urlInfo.name }...` );
+		tools.installGitHooks( repositoryPath );
 	} else {
 		throw new Error( 'Please provide valid GitHub URL, NPM module name or path.' );
 	}
