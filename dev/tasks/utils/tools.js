@@ -286,6 +286,15 @@ module.exports = {
 	},
 
 	/**
+	 * Calls `npm uninstall <name>` command in specified path.
+	 *
+	 * @param {String} path
+	 */
+	npmUninstall( path, name ) {
+		this.shExec( `cd ${ path } && npm uninstall ${ name }` );
+	},
+
+	/**
 	 * Installs Git hooks in specified repository.
 	 *
 	 * @param {String} path

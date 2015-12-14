@@ -307,6 +307,21 @@ describe( 'utils', () => {
 			} );
 		} );
 
+		describe( 'npmUninstall', () => {
+			it( 'should be defined', () => expect( tools.npmUninstall ).to.be.a( 'function' ) );
+			it( 'should execute npm uninstall command', () => {
+				const shExecStub = sinon.stub( tools, 'shExec' );
+				const path = '/path/to/repository';
+				const moduleName = 'module-name';
+				toRestore.push( shExecStub );
+
+				tools.npmUninstall( path, moduleName );
+
+				expect( shExecStub.calledOnce ).to.equal( true );
+				expect( shExecStub.firstCall.args[ 0 ] ).to.equal( `cd ${ path } && npm uninstall ${ moduleName }` );
+			} );
+		} );
+
 		describe( 'installGitHooks', () => {
 			it( 'should be defined', () => expect( tools.installGitHooks ).to.be.a( 'function' ) );
 			it( 'should execute grunt githooks command', () => {
