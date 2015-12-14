@@ -5,10 +5,15 @@
 
 /* bender-tags: treemodel */
 
+/* bender-include: ../_tools/tools.js */
+
 'use strict';
+
+const getIteratorCount = bender.tools.core.getIteratorCount;
 
 const modules = bender.amd.require(
 	'treemodel/document',
+	'treemodel/attribute',
 	'treemodel/element',
 	'treemodel/range',
 	'treemodel/position',
@@ -20,10 +25,12 @@ const modules = bender.amd.require(
 );
 
 describe( 'Selection', () => {
-	let Document, Element, Range, Position, LiveRange, Selection, InsertOperation, MoveOperation, CKEditorError;
+	let Document, Attribute, Element, Range, Position, LiveRange, Selection, InsertOperation, MoveOperation, CKEditorError;
+	let attrFooBar;
 
 	before( () => {
 		Document = modules[ 'treemodel/document' ];
+		Attribute = modules[ 'treemodel/attribute' ];
 		Element = modules[ 'treemodel/element' ];
 		Range = modules[ 'treemodel/range' ];
 		Position = modules[ 'treemodel/position' ];
@@ -32,6 +39,8 @@ describe( 'Selection', () => {
 		InsertOperation = modules[ 'treemodel/operation/insertoperation' ];
 		MoveOperation = modules[ 'treemodel/operation/moveoperation' ];
 		CKEditorError = modules.ckeditorerror;
+
+		attrFooBar = new Attribute( 'foo', 'bar' );
 	} );
 
 	let doc, root, selection, liveRange, range;
@@ -415,6 +424,105 @@ describe( 'Selection', () => {
 				expect( range.end.path ).to.deep.equal( [ 2, 2 ] );
 				expect( spy.called ).to.be.false;
 			} );
+		} );
+	} );
+
+	// Testing integration with attributes list.
+	// Tests copied from AttributeList tests.
+	// Some cases were omitted.
+
+	describe( 'setAttr', () => {
+		it( 'should insert an attribute', () => {
+			selection.setAttr( attrFooBar );
+
+			expect( getIteratorCount( selection.getAttrs() ) ).to.equal( 1 );
+			expect( selection.getAttr( attrFooBar.key ) ).to.equal( attrFooBar.value );
+		} );
+	} );
+
+	describe( 'setAttrsTo', () => {
+		it( 'should remove all attributes and set passed ones', () => {
+			selection.setAttr( attrFooBar );
+
+			let attrs = [ new Attribute( 'abc', true ), new Attribute( 'xyz', false ) ];
+
+			selection.setAttrsTo( attrs );
+
+			expect( getIteratorCount( selection.getAttrs() ) ).to.equal( 2 );
+			expect( selection.getAttr( 'foo' ) ).to.be.null;
+			expect( selection.getAttr( 'abc' ) ).to.be.true;
+			expect( selection.getAttr( 'xyz' ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'getAttr', () => {
+		beforeEach( () => {
+			selection.setAttr( attrFooBar );
+		} );
+
+		it( 'should return attribute value if key of previously set attribute has been passed', () => {
+			expect( selection.getAttr( 'foo' ) ).to.equal( attrFooBar.value );
+		} );
+
+		it( 'should return null if attribute with given key has not been found', () => {
+			expect( selection.getAttr( 'bar' ) ).to.be.null;
+		} );
+	} );
+
+	describe( 'removeAttr', () => {
+		it( 'should remove an attribute', () => {
+			let attrA = new Attribute( 'a', 'A' );
+			let attrB = new Attribute( 'b', 'B' );
+			let attrC = new Attribute( 'c', 'C' );
+
+			selection.setAttr( attrA );
+			selection.setAttr( attrB );
+			selection.setAttr( attrC );
+
+			selection.removeAttr( attrB.key );
+
+			expect( getIteratorCount( selection.getAttrs() ) ).to.equal( 2 );
+			expect( selection.getAttr( attrA.key ) ).to.equal( attrA.value );
+			expect( selection.getAttr( attrC.key ) ).to.equal( attrC.value );
+			expect( selection.getAttr( attrB.key ) ).to.be.null;
+		} );
+	} );
+
+	describe( 'hasAttr', () => {
+		it( 'should check attribute by key', () => {
+			selection.setAttr( attrFooBar );
+			expect( selection.hasAttr( 'foo' ) ).to.be.true;
+		} );
+
+		it( 'should return false if attribute was not found by key', () => {
+			expect( selection.hasAttr( 'bar' ) ).to.be.false;
+		} );
+
+		it( 'should check attribute by object', () => {
+			selection.setAttr( attrFooBar );
+			expect( selection.hasAttr( attrFooBar ) ).to.be.true;
+		} );
+
+		it( 'should return false if attribute was not found by object', () => {
+			expect( selection.hasAttr( attrFooBar ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'getAttrs', () => {
+		it( 'should return all set attributes', () => {
+			let attrA = new Attribute( 'a', 'A' );
+			let attrB = new Attribute( 'b', 'B' );
+			let attrC = new Attribute( 'c', 'C' );
+
+			selection.setAttrsTo( [
+				attrA,
+				attrB,
+				attrC
+			] );
+
+			selection.removeAttr( attrB.key );
+
+			expect( [ attrA, attrC ] ).to.deep.equal( Array.from( selection.getAttrs() ) );
 		} );
 	} );
 } );

@@ -7,10 +7,11 @@
 
 CKEDITOR.define( [
 	'treemodel/liverange',
+	'treemodel/attributelist',
 	'emittermixin',
 	'utils',
 	'ckeditorerror'
-], ( LiveRange, EmitterMixin, utils, CKEditorError ) => {
+], ( LiveRange, AttributeList, EmitterMixin, utils, CKEditorError ) => {
 	/**
 	 * Represents a selection that is made on nodes in {@link treeModel.Document}. Selection instance is
 	 * created by {@link treeModel.Document}. In most scenarios you should not need to create an instance of Selection.
@@ -18,7 +19,20 @@ CKEDITOR.define( [
 	 * @class treeModel.Selection
 	 */
 	class Selection {
+		/**
+		 * Creates an empty selection.
+		 *
+		 * @constructor
+		 */
 		constructor() {
+			/**
+			 * List of attributes set on current selection.
+			 *
+			 * @private
+			 * @property {treeModel.AttributeList} _attrs
+			 */
+			this._attrs = new AttributeList();
+
 			/**
 			 * Stores all ranges that are selected.
 			 *
@@ -113,6 +127,20 @@ CKEDITOR.define( [
 		}
 
 		/**
+		 * @see {@link treeModel.AttributeList#getAttr}
+		 */
+		getAttr( key ) {
+			return this._attrs.getAttr( key );
+		}
+
+		/**
+		 * @see {@link treeModel.AttributeList#getAttrs}
+		 */
+		getAttrs() {
+			return this._attrs.getAttrs();
+		}
+
+		/**
 		 * Returns an array of ranges added to the selection. The method returns a copy of internal array, so
 		 * it will not change when ranges get added or removed from selection.
 		 *
@@ -123,6 +151,20 @@ CKEDITOR.define( [
 		}
 
 		/**
+		 * @see {@link treeModel.AttributeList#hasAttr}
+		 */
+		hasAttr( key ) {
+			return this._attrs.hasAttr( key );
+		}
+
+		/**
+		 * @see {@link treeModel.AttributeList#removeAttr}
+		 */
+		removeAttr( key ) {
+			this._attrs.removeAttr( key );
+		}
+
+		/**
 		 * Removes all ranges that were added to the selection. Fires update event.
 		 */
 		removeAllRanges() {
@@ -130,6 +172,20 @@ CKEDITOR.define( [
 			this._ranges = [];
 
 			this.fire( 'update' );
+		}
+
+		/**
+		 * @see {@link treeModel.AttributeList#setAttr}
+		 */
+		setAttr( attr ) {
+			this._attrs.setAttr( attr );
+		}
+
+		/**
+		 * @see {@link treeModel.AttributeList#setAttrsTo}
+		 */
+		setAttrsTo( attrs ) {
+			this._attrs.setAttrsTo( attrs );
 		}
 
 		/**
