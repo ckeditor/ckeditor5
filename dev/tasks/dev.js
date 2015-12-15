@@ -30,7 +30,7 @@ module.exports = ( grunt ) => {
 	} );
 
 	grunt.registerTask( 'dev-update', function() {
-		pluginUpdateTask( ckeditor5Path, packageJSON, workspaceRoot, grunt.log.writeln, grunt.log.error );
+		pluginUpdateTask( ckeditor5Path, packageJSON, workspaceRoot, grunt.log.writeln, grunt.option( 'npm-update' ) );
 	} );
 
 	grunt.registerTask( 'dev-status', function() {

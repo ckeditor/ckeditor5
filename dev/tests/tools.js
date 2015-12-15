@@ -307,6 +307,20 @@ describe( 'utils', () => {
 			} );
 		} );
 
+		describe( 'npmUpdate', () => {
+			it( 'should be defined', () => expect( tools.npmUpdate ).to.be.a( 'function' ) );
+			it( 'should execute npm update command', () => {
+				const shExecStub = sinon.stub( tools, 'shExec' );
+				const path = '/path/to/repository';
+				toRestore.push( shExecStub );
+
+				tools.npmUpdate( path );
+
+				expect( shExecStub.calledOnce ).to.equal( true );
+				expect( shExecStub.firstCall.args[ 0 ] ).to.equal( `cd ${ path } && npm update` );
+			} );
+		} );
+
 		describe( 'npmUninstall', () => {
 			it( 'should be defined', () => expect( tools.npmUninstall ).to.be.a( 'function' ) );
 			it( 'should execute npm uninstall command', () => {

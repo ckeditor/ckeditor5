@@ -21,13 +21,9 @@ describe( 'dev-install', () => {
 	const ckeditor5Path = '/path/to/ckeditor';
 	const workspacePath = '..';
 	const workspaceAbsolutePath = path.join( ckeditor5Path, workspacePath );
-
-	let toRestore;
 	const spies = {};
 
 	beforeEach( () => {
-		toRestore = [];
-
 		spies.parseUrl = sinon.spy( git, 'parseRepositoryUrl' );
 		spies.isDirectory = sinon.stub( tools, 'isDirectory' );
 		spies.cloneRepository = sinon.stub( git, 'cloneRepository' );
@@ -42,7 +38,6 @@ describe( 'dev-install', () => {
 	} );
 
 	afterEach( () => {
-		toRestore.forEach( item => item.restore() );
 		Object.keys( spies ).forEach( ( spy ) => spies[ spy ].restore() );
 	} );
 

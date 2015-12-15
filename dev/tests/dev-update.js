@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global describe, it */
+/* global describe, it, beforeEach, afterEach */
 
 'use strict';
 
@@ -12,18 +12,29 @@ const tools = require( '../tasks/utils/tools' );
 const git = require( '../tasks/utils/git' );
 const path = require( 'path' );
 
-describe( 'dev-init', () => {
+describe( 'dev-update', () => {
 	const updateTask = require( '../tasks/utils/dev-update' );
 	const ckeditor5Path = 'path/to/ckeditor5';
 	const workspaceRoot = '..';
 	const workspaceAbsolutePath = path.join( ckeditor5Path, workspaceRoot );
 	const emptyFn = () => {};
+	const spies = {};
+
+	beforeEach( () => {
+		spies.getDependencies = sinon.spy( tools, 'getCKEditorDependencies' );
+		spies.checkout = sinon.stub( git, 'checkout' );
+		spies.pull = sinon.stub( git, 'pull' );
+		spies.npmUpdate = sinon.stub( tools, 'npmUpdate' );
+	} );
+
+	afterEach( () => {
+		Object.keys( spies ).forEach( ( spy ) => spies[ spy ].restore() );
+	} );
 
 	it( 'should update dev repositories', () => {
 		const dirs = [ 'ckeditor5-core', 'ckeditor5-devtest' ];
-		const getDependenciesSpy = sinon.spy( tools, 'getCKEditorDependencies' );
-		const getDirectoriesStub = sinon.stub( tools, 'getCKE5Directories' ).returns( dirs );
-		const pullStub = sinon.stub( git, 'pull' );
+		spies.getDirectories = sinon.stub( tools, 'getCKE5Directories' ).returns( dirs );
+
 		const json = {
 			dependencies: {
 				'ckeditor5-core': 'ckeditor/ckeditor5-core',
@@ -32,40 +43,51 @@ describe( 'dev-init', () => {
 			}
 		};
 
-		updateTask( ckeditor5Path, json, workspaceRoot, emptyFn, emptyFn );
+		updateTask( ckeditor5Path, json, workspaceRoot, emptyFn, true );
 
-		getDependenciesSpy.restore();
-		getDirectoriesStub.restore();
-		pullStub.restore();
+		sinon.assert.calledTwice( spies.pull );
+		sinon.assert.calledWithExactly( spies.pull.firstCall, path.join( workspaceAbsolutePath, dirs[ 0 ] ), 'master' );
+		sinon.assert.calledWithExactly( spies.pull.secondCall, path.join( workspaceAbsolutePath, dirs[ 1 ] ), 'new-branch' );
 
-		sinon.assert.calledTwice( pullStub );
-		sinon.assert.calledWithExactly( pullStub.firstCall, path.join( workspaceAbsolutePath, dirs[ 0 ] ), 'master' );
-		sinon.assert.calledWithExactly( pullStub.secondCall, path.join( workspaceAbsolutePath, dirs[ 1 ] ), 'new-branch' );
+		sinon.assert.calledThrice( spies.npmUpdate );
+		sinon.assert.calledWithExactly( spies.npmUpdate.firstCall, path.join( workspaceAbsolutePath, dirs[ 0 ] ) );
+		sinon.assert.calledWithExactly( spies.npmUpdate.secondCall, path.join( workspaceAbsolutePath, dirs[ 1 ] ) );
+		sinon.assert.calledWithExactly( spies.npmUpdate.thirdCall, ckeditor5Path );
+	} );
+
+	it( 'should update dev repositories without running npm update', () => {
+		const dirs = [ 'ckeditor5-core' ];
+		spies.getDirectories = sinon.stub( tools, 'getCKE5Directories' ).returns( dirs );
+
+		const json = {
+			dependencies: {
+				'ckeditor5-core': 'ckeditor/ckeditor5-core',
+				'ckeditor5-devtest': 'ckeditor/ckeditor5-devtest#new-branch',
+				'other-plugin': '1.2.3'
+			}
+		};
+
+		updateTask( ckeditor5Path, json, workspaceRoot, emptyFn, false );
+		sinon.assert.calledWithExactly( spies.pull.firstCall, path.join( workspaceAbsolutePath, dirs[ 0 ] ), 'master' );
+		sinon.assert.notCalled( spies.npmUpdate );
 	} );
 
 	it( 'should not update when no dependencies are found', () => {
-		const getDependenciesSpy = sinon.spy( tools, 'getCKEditorDependencies' );
-		const getDirectoriesStub = sinon.stub( tools, 'getCKE5Directories' );
-		const pullStub = sinon.stub( git, 'pull' );
+		spies.getDirectories = sinon.stub( tools, 'getCKE5Directories' );
 		const json = {
 			dependencies: {
 				'other-plugin': '1.2.3'
 			}
 		};
 
-		updateTask( ckeditor5Path, json, workspaceRoot, emptyFn, emptyFn );
+		updateTask( ckeditor5Path, json, workspaceRoot, emptyFn, false );
 
-		getDependenciesSpy.restore();
-		getDirectoriesStub.restore();
-		pullStub.restore();
-
-		sinon.assert.notCalled( pullStub );
+		sinon.assert.notCalled( spies.pull );
+		sinon.assert.notCalled( spies.npmUpdate );
 	} );
 
 	it( 'should not update when no plugins in dev mode', () => {
-		const getDependenciesSpy = sinon.spy( tools, 'getCKEditorDependencies' );
-		const getDirectoriesStub = sinon.stub( tools, 'getCKE5Directories' ).returns( [] );
-		const pullStub = sinon.stub( git, 'pull' );
+		spies.getDirectories = sinon.stub( tools, 'getCKE5Directories' ).returns( [] );
 		const json = {
 			dependencies: {
 				'ckeditor5-devtest': 'ckeditor/ckeditor5-devtest#new-branch',
@@ -73,38 +95,9 @@ describe( 'dev-init', () => {
 			}
 		};
 
-		updateTask( ckeditor5Path, json, workspaceRoot, emptyFn, emptyFn );
+		updateTask( ckeditor5Path, json, workspaceRoot, emptyFn, false );
 
-		getDependenciesSpy.restore();
-		getDirectoriesStub.restore();
-		pullStub.restore();
-
-		sinon.assert.notCalled( pullStub );
-	} );
-
-	it( 'should write error message when pulling is unsuccessful', () => {
-		const dirs = [ 'ckeditor5-core' ];
-		const getDependenciesSpy = sinon.spy( tools, 'getCKEditorDependencies' );
-		const getDirectoriesStub = sinon.stub( tools, 'getCKE5Directories' ).returns( dirs );
-		const error = new Error( 'Error message.' );
-		const pullStub = sinon.stub( git, 'pull' ).throws( error );
-		const json = {
-			dependencies: {
-				'ckeditor5-core': 'ckeditor/ckeditor5-core',
-				'ckeditor5-devtest': 'ckeditor/ckeditor5-devtest#new-branch',
-				'other-plugin': '1.2.3'
-			}
-		};
-		const writeErrorSpy = sinon.spy();
-
-		updateTask( ckeditor5Path, json, workspaceRoot, emptyFn, writeErrorSpy );
-
-		getDependenciesSpy.restore();
-		getDirectoriesStub.restore();
-		pullStub.restore();
-
-		sinon.assert.calledOnce( pullStub );
-		sinon.assert.calledOnce( writeErrorSpy );
-		sinon.assert.calledWithExactly( writeErrorSpy, error );
+		sinon.assert.notCalled( spies.pull );
+		sinon.assert.notCalled( spies.npmUpdate );
 	} );
 } );

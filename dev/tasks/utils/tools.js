@@ -295,6 +295,15 @@ module.exports = {
 	},
 
 	/**
+	 * Calls `npm update` command in specified path.
+	 *
+	 * @param {String} path
+	 */
+	npmUpdate( path ) {
+		this.shExec( `cd ${ path } && npm update` );
+	},
+
+	/**
 	 * Installs Git hooks in specified repository.
 	 *
 	 * @param {String} path
