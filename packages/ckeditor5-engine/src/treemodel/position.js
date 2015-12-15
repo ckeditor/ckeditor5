@@ -174,6 +174,21 @@ CKEDITOR.define( [ 'treemodel/rootelement', 'utils', 'ckeditorerror' ], ( RootEl
 		}
 
 		/**
+		 * Returns a new instance of Position with offset incremented by `shift` value.
+		 *
+		 * @param {Number} shift How position offset should get changed. Accepts negative values.
+		 * @returns {treeModel.Position} Shifted position.
+		 */
+		getShiftedBy( shift ) {
+			let shifted = Position.createFromPosition( this );
+
+			let offset = shifted.offset + shift;
+			shifted.offset = offset < 0 ? 0 : offset;
+
+			return shifted;
+		}
+
+		/**
 		 * Returns this position after being updated by removing `howMany` nodes starting from `deletePosition`.
 		 * It may happen that this position is in a removed node. If that is the case, `null` is returned instead.
 		 *

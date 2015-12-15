@@ -362,10 +362,7 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 		 * @returns {treeModel.Range}
 		 */
 		static createFromPositionAndShift( position, shift ) {
-			let endPosition = Position.createFromPosition( position );
-			endPosition.offset += shift;
-
-			return new this( position, endPosition );
+			return new this( position, position.getShiftedBy( shift ) );
 		}
 
 		/**
