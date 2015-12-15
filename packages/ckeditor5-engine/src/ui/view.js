@@ -81,34 +81,43 @@ CKEDITOR.define( [
 		}
 
 		/**
+		 * Element of this view. The element is rendered on first reference
+		 * using {@link #template} definition and {@link #_template} object.
+		 *
+		 * @property el
+		 */
+		get el() {
+			if ( this._el ) {
+				return this._el;
+			}
+
+			if ( !this.template ) {
+				/**
+				 * Attempting to access an element of a view, which has no `template`
+				 * property.
+				 *
+				 * @error ui-view-notemplate
+				 */
+				throw new CKEditorError( 'ui-view-notemplate' );
+			}
+
+			// Prepare pre–defined listeners.
+			this._prepareElementListeners( this.template );
+
+			this._template = new Template( this.template );
+
+			return ( this._el = this._template.render() );
+		}
+
+		set el( el ) {
+			this._el = el;
+		}
+
+		/**
 		 * Initializes the view.
 		 */
 		init() {
 			this._initRegions();
-		}
-
-		/**
-		 * Initializes {@link #regions} of this view by passing a DOM element
-		 * generated from {@link #_regionsSelectors} into {@link Region#init}.
-		 *
-		 * @protected
-		 */
-		_initRegions() {
-			let region, regionEl, regionSelector;
-
-			for ( region of this.regions ) {
-				regionSelector = this._regionsSelectors[ region.name ];
-
-				if ( typeof regionSelector == 'string' ) {
-					regionEl = this.el.querySelector( regionSelector );
-				} else if ( typeof regionSelector == 'function' ) {
-					regionEl = regionSelector( this.el );
-				} else {
-					regionEl = null;
-				}
-
-				region.init( regionEl );
-			}
 		}
 
 		/**
@@ -293,39 +302,6 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * Element of this view. The element is rendered on first reference
-		 * using {@link #template} definition and {@link #_template} object.
-		 *
-		 * @property el
-		 */
-		get el() {
-			if ( this._el ) {
-				return this._el;
-			}
-
-			if ( !this.template ) {
-				/**
-				 * Attempting to access an element of a view, which has no `template`
-				 * property.
-				 *
-				 * @error ui-view-notemplate
-				 */
-				throw new CKEditorError( 'ui-view-notemplate' );
-			}
-
-			// Prepare pre–defined listeners.
-			this._prepareElementListeners( this.template );
-
-			this._template = new Template( this.template );
-
-			return ( this._el = this._template.render() );
-		}
-
-		set el( el ) {
-			this._el = el;
-		}
-
-		/**
 		 * Binds an `attribute` of View's model so the DOM of the View is updated when the `attribute`
 		 * changes. It returns a function which, once called in the context of a DOM element,
 		 * attaches a listener to the model which, in turn, brings changes to DOM.
@@ -393,6 +369,30 @@ CKEDITOR.define( [
 			}
 
 			this.model = this.regions = this.template = this._regionsSelectors = this._el = this._template = null;
+		}
+
+		/**
+		 * Initializes {@link #regions} of this view by passing a DOM element
+		 * generated from {@link #_regionsSelectors} into {@link Region#init}.
+		 *
+		 * @protected
+		 */
+		_initRegions() {
+			let region, regionEl, regionSelector;
+
+			for ( region of this.regions ) {
+				regionSelector = this._regionsSelectors[ region.name ];
+
+				if ( typeof regionSelector == 'string' ) {
+					regionEl = this.el.querySelector( regionSelector );
+				} else if ( typeof regionSelector == 'function' ) {
+					regionEl = regionSelector( this.el );
+				} else {
+					regionEl = null;
+				}
+
+				region.init( regionEl );
+			}
 		}
 
 		/**
