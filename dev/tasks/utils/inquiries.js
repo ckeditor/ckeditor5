@@ -6,7 +6,7 @@
 'use strict';
 
 const inquirer = require( 'inquirer' );
-const DEFAULT_PLUGIN_NAME_PREFIX = 'ckeditor5-plugin-';
+const DEFAULT_PLUGIN_NAME_PREFIX = 'ckeditor5-';
 const DEFAULT_PLUGIN_VERSION = '0.0.1';
 const DEFAULT_GITHUB_URL_PREFIX = 'ckeditor/';
 
