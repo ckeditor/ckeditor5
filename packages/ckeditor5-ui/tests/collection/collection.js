@@ -10,8 +10,10 @@ const modules = bender.amd.require( 'collection', 'ckeditorerror' );
 bender.tools.createSinonSandbox();
 
 function getItem( id, idProperty ) {
+	idProperty = idProperty || 'id';
+
 	return {
-		[ idProperty || 'id' ]: id
+		[ idProperty ]: id
 	};
 }
 
@@ -165,7 +167,61 @@ describe( 'Collection', () => {
 
 			collection.add( item );
 
-			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), item );
+			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), item, 0 );
+		} );
+
+		it( 'should support an optional index argument', () => {
+			let collection = new Collection();
+			let item1 = getItem( 'foo' );
+			let item2 = getItem( 'bar' );
+			let item3 = getItem( 'baz' );
+			let item4 = getItem( 'abc' );
+
+			collection.add( item1 );
+			collection.add( item2, 0 );
+			collection.add( item3, 1 );
+			collection.add( item4, 3 );
+
+			expect( collection.get( 0 ) ).to.equal( item2 );
+			expect( collection.get( 1 ) ).to.equal( item3 );
+			expect( collection.get( 2 ) ).to.equal( item1 );
+			expect( collection.get( 3 ) ).to.equal( item4 );
+		} );
+
+		it( 'should throw when index argument is invalid', () => {
+			let collection = new Collection();
+			let item1 = getItem( 'foo' );
+			let item2 = getItem( 'bar' );
+			let item3 = getItem( 'baz' );
+
+			collection.add( item1 );
+
+			expect( () => {
+				collection.add( item2, -1 );
+			} ).to.throw( /^collection-add-item-invalid-index/ );
+
+			expect( () => {
+				collection.add( item2, 2 );
+			} ).to.throw( /^collection-add-item-invalid-index/ );
+
+			collection.add( item2, 1 );
+			collection.add( item3, 0 );
+
+			expect( collection.length ).to.be.equal( 3 );
+		} );
+
+		it( 'should fire the "add" event with the index argument', () => {
+			let spy = sinon.spy();
+
+			collection.add( {} );
+			collection.add( {} );
+
+			collection.on( 'add', spy );
+
+			const item = {};
+			collection.add( item, 1 );
+
+			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), item, 1 );
 		} );
 	} );
 

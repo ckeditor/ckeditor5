@@ -195,6 +195,60 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], ( EmitterMixin, C
 		}
 
 		/**
+		 * Removes the binding created with {@link #bind}.
+		 *
+		 *		A.unbind( 'a' );
+		 *		A.unbind();
+		 *
+		 * @param {String...} [bindAttrs] Model attributes to unbound. All the bindings will
+		 * be released if not attributes provided.
+		 */
+		unbind( ...unbindAttrs ) {
+			if ( unbindAttrs.length ) {
+				if ( !isStringArray( unbindAttrs ) ) {
+					/**
+					 * Attributes must be strings.
+					 *
+					 * @error model-unbind-wrong-attrs
+					 */
+					throw new CKEditorError( 'model-unbind-wrong-attrs: Attributes must be strings.' );
+				}
+
+				unbindAttrs.forEach( attrName => {
+					for ( let to of this._boundTo ) {
+						// TODO, ES6 destructuring.
+						const boundModel = to[ 0 ];
+						const bindings = to[ 1 ];
+
+						for ( let boundAttrName in bindings ) {
+							if ( bindings[ boundAttrName ].has( attrName ) ) {
+								bindings[ boundAttrName ].delete( attrName );
+							}
+
+							if ( !bindings[ boundAttrName ].size ) {
+								delete bindings[ boundAttrName ];
+							}
+
+							if ( !Object.keys( bindings ).length ) {
+								this._boundTo.delete( boundModel );
+								this.stopListening( boundModel, 'change' );
+							}
+						}
+					}
+
+					delete this._bound[ attrName ];
+				} );
+			} else {
+				this._boundTo.forEach( ( bindings, boundModel ) => {
+					this.stopListening( boundModel, 'change' );
+					this._boundTo.delete( boundModel );
+				} );
+
+				this._bound = {};
+			}
+		}
+
+		/**
 		 * A chaining for {@link #bind} providing `.to()` interface.
 		 *
 		 * @protected
@@ -290,60 +344,6 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], ( EmitterMixin, C
 			this._callback = callback;
 
 			updateModelAttrs( this, this._bindAttrs[ 0 ] );
-		}
-
-		/**
-		 * Removes the binding created with {@link #bind}.
-		 *
-		 *		A.unbind( 'a' );
-		 *		A.unbind();
-		 *
-		 * @param {String...} [bindAttrs] Model attributes to unbound. All the bindings will
-		 * be released if not attributes provided.
-		 */
-		unbind( ...unbindAttrs ) {
-			if ( unbindAttrs.length ) {
-				if ( !isStringArray( unbindAttrs ) ) {
-					/**
-					 * Attributes must be strings.
-					 *
-					 * @error model-unbind-wrong-attrs
-					 */
-					throw new CKEditorError( 'model-unbind-wrong-attrs: Attributes must be strings.' );
-				}
-
-				unbindAttrs.forEach( attrName => {
-					for ( let to of this._boundTo ) {
-						// TODO, ES6 destructuring.
-						const boundModel = to[ 0 ];
-						const bindings = to[ 1 ];
-
-						for ( let boundAttrName in bindings ) {
-							if ( bindings[ boundAttrName ].has( attrName ) ) {
-								bindings[ boundAttrName ].delete( attrName );
-							}
-
-							if ( !bindings[ boundAttrName ].size ) {
-								delete bindings[ boundAttrName ];
-							}
-
-							if ( !Object.keys( bindings ).length ) {
-								this._boundTo.delete( boundModel );
-								this.stopListening( boundModel, 'change' );
-							}
-						}
-					}
-
-					delete this._bound[ attrName ];
-				} );
-			} else {
-				this._boundTo.forEach( ( bindings, boundModel ) => {
-					this.stopListening( boundModel, 'change' );
-					this._boundTo.delete( boundModel );
-				} );
-
-				this._bound = {};
-			}
 		}
 	}
 

@@ -79,8 +79,10 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], ( EmitterMixin, C
 		 *
 		 * @chainable
 		 * @param {Object} item
+		 * @param {Number} [index] The position of the item in the collection. The item
+		 * is pushed to the collection when `index` not specified.
 		 */
-		add( item ) {
+		add( item, index ) {
 			let itemId;
 			const idProperty = this._idProperty;
 
@@ -109,10 +111,23 @@ CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], ( EmitterMixin, C
 				item[ idProperty ] = itemId;
 			}
 
-			this._items.push( item );
+			// TODO: Use ES6 default function argument.
+			if ( index === undefined ) {
+				index = this._items.length;
+			} else if ( index > this._items.length || index < 0 ) {
+				/**
+				 * The index number has invalid value.
+				 *
+				 * @error collection-add-item-bad-index
+				 */
+				throw new CKEditorError( 'collection-add-item-invalid-index' );
+			}
+
+			this._items.splice( index, 0, item );
+
 			this._itemMap.set( itemId, item );
 
-			this.fire( 'add', item );
+			this.fire( 'add', item, index );
 
 			return this;
 		}

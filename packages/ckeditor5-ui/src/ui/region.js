@@ -12,7 +12,10 @@
  * @extends Model
  */
 
-CKEDITOR.define( [ 'collection', 'model' ], ( Collection, Model ) => {
+CKEDITOR.define( [
+	'collection',
+	'model'
+], ( Collection, Model ) => {
 	class Region extends Model {
 		/**
 		 * Creates an instance of the {@link Region} class.
@@ -21,41 +24,65 @@ CKEDITOR.define( [ 'collection', 'model' ], ( Collection, Model ) => {
 		 * @param {HTMLElement} [el] The element used for this region.
 		 * @constructor
 		 */
-		constructor( name, el ) {
+		constructor( name ) {
 			super();
 
 			/**
 			 * The name of the region.
+			 *
+			 * @property {String}
 			 */
 			this.name = name;
 
 			/**
-			 * The element of the region.
-			 */
-			this.el = el;
-
-			/**
 			 * Views which belong to the region.
+			 *
+			 * @property {Collection}
 			 */
 			this.views = new Collection();
 
-			this.views.on( 'add', ( evt, view ) => this.el && this.el.appendChild( view.el ) );
-			this.views.on( 'remove', ( evt, view ) => view.el.remove() );
+			/**
+			 * Element of this region (see {@link #init}).
+			 *
+			 * @property {HTMLElement}
+			 */
+			this.el = null;
 		}
 
 		/**
-		 * Destroys the Region instance.
+		 * Initializes region instance with an element. Usually it comes from {@link View#init}.
+		 *
+		 * @param {HTMLElement} regiobEl Element of this region.
+		 */
+		init( regionEl ) {
+			this.el = regionEl;
+
+			if ( regionEl ) {
+				this.views.on( 'add', ( evt, childView, index ) => {
+					regionEl.insertBefore( childView.el, regionEl.childNodes[ index + 1 ] );
+				} );
+
+				this.views.on( 'remove', ( evt, childView ) => {
+					childView.el.remove();
+				} );
+			}
+		}
+
+		/**
+		 * Destroys region instance.
 		 */
 		destroy() {
+			if ( this.el ) {
+				for ( let view of this.views ) {
+					view.el.remove();
+					this.views.remove( view );
+				}
+			}
+
 			// Drop the reference to HTMLElement but don't remove it from DOM.
 			// Element comes as a parameter and it could be a part of the View.
 			// Then it's up to the View what to do with it when the View is destroyed.
-			this.el = null;
-
-			// Remove and destroy views.
-			for ( let view of this.views ) {
-				this.views.remove( view ).destroy();
-			}
+			this.el = this.views = null;
 		}
 	}
 
