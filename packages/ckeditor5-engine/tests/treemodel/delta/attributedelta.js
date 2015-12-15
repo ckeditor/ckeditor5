@@ -150,7 +150,7 @@ describe( 'Batch', () => {
 
 			for ( let delta of batch.deltas ) {
 				for ( let operation of delta.operations ) {
-					count += getIteratorCount( operation.range.getNodes() );
+					count += getIteratorCount( operation.range.getAllNodes() );
 				}
 			}
 
@@ -161,7 +161,7 @@ describe( 'Batch', () => {
 			// default: 111---111222---1112------
 			const range = Range.createFromElement( root );
 
-			return Array.from( range.getNodes() ).map( node => node.getAttr( 'a' ) || '-' ).join( '' );
+			return Array.from( range.getAllNodes() ).map( node => node.getAttr( 'a' ) || '-' ).join( '' );
 		}
 
 		describe( 'setAttr', () => {

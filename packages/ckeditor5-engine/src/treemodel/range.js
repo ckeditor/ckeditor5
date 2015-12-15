@@ -46,6 +46,15 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 		}
 
 		/**
+		 * Returns whether this range is flat, that is if start position and end position are in the same parent.
+		 *
+		 * @returns {Boolean}
+		 */
+		get isFlat() {
+			return this.start.parent === this.end.parent;
+		}
+
+		/**
 		 * Range root element. Equals to the root of start position (which should be same as root of end position).
 		 *
 		 * @property {treeModel.RootElement}
@@ -173,23 +182,91 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 		}
 
 		/**
+		 * Computes and returns the smallest set of {@link #isFlat flat} ranges, that covers this range in whole.
+		 * **Note:** this method is not returning flat ranges that contain no nodes. It may also happen that not-collapsed
+		 * range will return an empty array of flat ranges.
+		 *
+		 * @returns {Array.<treeModel.Range>} Array of flat ranges.
+		 */
+		getMinimalFlatRanges() {
+			let ranges = [];
+
+			// We find on which tree-level start and end have the lowest common ancestor
+			let cmp = utils.compareArrays( this.start.path, this.end.path );
+			let diffAt = ( cmp < 0 ) ? Math.min( this.start.path.length, this.end.path.length ) : cmp;
+
+			let pos = Position.createFromPosition( this.start );
+
+			// go up
+			while ( pos.path.length > diffAt + 1 ) {
+				let howMany = pos.parent.getChildCount() - pos.offset;
+
+				if ( howMany !== 0 ) {
+					ranges.push( new Range( pos, pos.getShiftedBy( howMany ) ) );
+				}
+
+				pos.path = pos.path.slice( 0, -1 );
+				pos.offset++;
+			}
+
+			// go down
+			while ( pos.path.length <= this.end.path.length ) {
+				let offset = this.end.path[ pos.path.length - 1 ];
+				let howMany = offset - pos.offset;
+
+				if ( howMany !== 0 ) {
+					ranges.push( new Range( pos, pos.getShiftedBy( howMany ) ) );
+				}
+
+				pos.offset = offset;
+				pos.path.push( 0 );
+			}
+
+			return ranges;
+		}
+
+		/**
 		 * Returns an iterator that iterates over all {@link treeModel.Node nodes} that are in this range and returns them.
 		 * A node is in the range when it is after a {@link treeModel.Position position} contained in this range.
 		 * In other words, this iterates over all {@link treeModel.Character}s that are inside the range and
 		 * all the {@link treeModel.Element}s we enter into when iterating over this range.
 		 *
-		 * Note, that this method will not return a parent node of start position. This is in contrary to {@link treeModel.PositionIterator}
+		 * **Note:** this method will not return a parent node of start position. This is in contrary to {@link treeModel.PositionIterator}
 		 * which will return that node with {@link treeModel.PositionIterator#ELEMENT_LEAVE} type. This method, also, returns each
 		 * {@link treeModel.Element} once, while iterator return it twice: for {@link treeModel.PositionIterator#ELEMENT_ENTER} and
 		 * {@link treeModel.PositionIterator#ELEMENT_LEAVE}.
 		 *
+		 * **Note:** You might like to use `Array.from` to convert return value of this function into array.
+		 *
 		 * @see {treeModel.PositionIterator}
 		 * @returns {treeModel.Node}
 		 */
-		*getNodes() {
+		*getAllNodes() {
 			for ( let value of this ) {
 				if ( value.type != PositionIterator.ELEMENT_LEAVE ) {
 					yield value.node;
+				}
+			}
+		}
+
+		/**
+		 * Returns an iterator that iterates over all {@link treeModel.Node nodes} that are top-level nodes in this range
+		 * and returns them. A node is a top-level node when it is in the range but it's parent is not. In other words,
+		 * this function splits the range into separate sub-trees and iterates over their roots.
+		 * **Note:** You might like to use `Array.from` to convert return value of this function into array.
+		 *
+		 * @returns {treeModel.Node}
+		 */
+		*getTopLevelNodes() {
+			let flatRanges = this.getMinimalFlatRanges();
+
+			for ( let range of flatRanges ) {
+				let node = range.start.nodeAfter;
+				let offset = range.end.offset - range.start.offset;
+
+				for ( let i = 0; i < offset; i++ ) {
+					yield node;
+					node = node.nextSibling;
 				}
 			}
 		}
