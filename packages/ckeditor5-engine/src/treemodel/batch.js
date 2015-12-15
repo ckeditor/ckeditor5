@@ -18,7 +18,8 @@ CKEDITOR.define( [
 	'treemodel/delta/attributedelta',
 	'treemodel/delta/splitdelta',
 	'treemodel/delta/mergedelta',
-	'treemodel/delta/wrapdelta'
+	'treemodel/delta/wrapdelta',
+	'treemodel/delta/unwrapdelta'
 ], ( Batch ) => {
 	return Batch;
 } );
