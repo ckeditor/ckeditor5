@@ -12,6 +12,8 @@
 CKEDITOR.define( [
 	'treemodel/delta/batch-base',
 	'treemodel/delta/insertdelta',
+	'treemodel/delta/inserttextdelta',
+	'treemodel/delta/movedelta',
 	'treemodel/delta/removedelta',
 	'treemodel/delta/attributedelta',
 	'treemodel/delta/splitdelta',
