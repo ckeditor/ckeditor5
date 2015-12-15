@@ -21,9 +21,9 @@ CKEDITOR.define( [
 		/**
 		 * Creates a move operation.
 		 *
-		 * @param {treeModel.Position} sourcePosition Position before the first element to move.
+		 * @param {treeModel.Position} sourcePosition Position before the first node to move.
 		 * @param {Number} howMany How many consecutive nodes to move, starting from `sourcePosition`.
-		 * @param {treeModel.Position} targetPosition Position where moved elements will be inserted.
+		 * @param {treeModel.Position} targetPosition Position where moved nodes will be inserted.
 		 * @param {Number} baseVersion {@link treeModel.Document#version} on which operation can be applied.
 		 * @constructor
 		 */
