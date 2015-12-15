@@ -385,13 +385,14 @@ CKEDITOR.define( [ 'treemodel/rootelement', 'utils', 'ckeditorerror' ], ( RootEl
 						return false;
 					}
 
-					left = Position.createAfter( left.parent );
+					left.path = left.path.slice( 0, -1 );
+					left.offset++;
 				} else {
 					if ( right.nodeBefore !== null ) {
 						return false;
 					}
 
-					right = Position.createBefore( right.parent );
+					right.path = right.path.slice( 0, -1 );
 				}
 			}
 		}
