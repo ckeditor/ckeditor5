@@ -18,9 +18,10 @@ const path = require( 'path' );
  * @param {Object} packageJSON Parsed package.json file from CKEditor5 repository.
  * @param {String} workspaceRoot Relative path to workspace root.
  * @param {Function} writeln Function for log output.
- * @param {Function} writeError Function of error output
+ * @param {Boolean} runNpmUpdate When set to true `npm update` will be executed inside each plugin repository
+ * and inside CKEditor 5 repository.
  */
-module.exports = ( ckeditor5Path, packageJSON, workspaceRoot, writeln, writeError ) => {
+module.exports = ( ckeditor5Path, packageJSON, workspaceRoot, writeln, runNpmUpdate ) => {
 	const workspaceAbsolutePath = path.join( ckeditor5Path, workspaceRoot );
 
 	// Get all CKEditor dependencies from package.json.
@@ -29,20 +30,33 @@ module.exports = ( ckeditor5Path, packageJSON, workspaceRoot, writeln, writeErro
 	if ( dependencies ) {
 		const directories = tools.getCKE5Directories( workspaceAbsolutePath );
 
-		for ( let dependency in dependencies ) {
-			const repositoryURL = dependencies[ dependency ];
-			const urlInfo = git.parseRepositoryUrl( repositoryURL );
-			const repositoryAbsolutePath = path.join( workspaceAbsolutePath, dependency );
+		if ( directories.length ) {
+			for ( let dependency in dependencies ) {
+				const repositoryURL = dependencies[ dependency ];
+				const urlInfo = git.parseRepositoryUrl( repositoryURL );
+				const repositoryAbsolutePath = path.join( workspaceAbsolutePath, dependency );
 
-			// Check if repository's directory already exists.
-			if ( directories.indexOf( dependency ) > -1 ) {
-				try {
-					writeln( `Updating ${ repositoryURL }...` );
+				// Check if repository's directory already exists.
+				if ( directories.indexOf( urlInfo.name ) > -1 ) {
+					writeln( `Checking out ${ urlInfo.name } to ${ urlInfo.branch }...` );
+					git.checkout( repositoryAbsolutePath, urlInfo.branch );
+
+					writeln( `Pulling changes to ${ urlInfo.name }...` );
 					git.pull( repositoryAbsolutePath, urlInfo.branch );
-				} catch ( error ) {
-					writeError( error );
+
+					if ( runNpmUpdate ) {
+						writeln( `Running "npm update" in ${ urlInfo.name }...` );
+						tools.npmUpdate( repositoryAbsolutePath );
+					}
 				}
 			}
+
+			if ( runNpmUpdate ) {
+				writeln( `Running "npm update" in CKEditor5 repository...` );
+				tools.npmUpdate( ckeditor5Path );
+			}
+		} else {
+			writeln( 'No CKEditor5 plugins in development mode.' );
 		}
 	} else {
 		writeln( 'No CKEditor5 dependencies found in package.json file.' );

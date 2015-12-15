@@ -198,6 +198,7 @@ module.exports = {
 
 	/**
 	 * Returns true if path points to existing directory.
+	 *
 	 * @param {String} path
 	 * @returns {Boolean}
 	 */
@@ -206,6 +207,22 @@ module.exports = {
 
 		try {
 			return fs.statSync( path ).isDirectory();
+		} catch ( e ) {}
+
+		return false;
+	},
+
+	/**
+	 * Returns true if path points to existing file.
+	 *
+	 * @param {String} path
+	 * @returns {Boolean}
+	 */
+	isFile( path ) {
+		const fs = require( 'fs' );
+
+		try {
+			return fs.statSync( path ).isFile();
 		} catch ( e ) {}
 
 		return false;
@@ -240,12 +257,50 @@ module.exports = {
 	},
 
 	/**
+	 * Returns name of the NPM module located under provided path.
+	 *
+	 * @param {String} modulePath Path to NPM module.
+     */
+	readPackageName( modulePath ) {
+		const fs = require( 'fs' );
+		const path = require( 'path' );
+		const packageJSONPath = path.join( modulePath, 'package.json' );
+
+		if ( !this.isFile( packageJSONPath ) ) {
+			return null;
+		}
+
+		const contents = fs.readFileSync( packageJSONPath, 'utf-8' );
+		const json = JSON.parse( contents );
+
+		return json.name || null;
+	},
+
+	/**
 	 * Calls `npm install` command in specified path.
 	 *
 	 * @param {String} path
 	 */
 	npmInstall( path ) {
 		this.shExec( `cd ${ path } && npm install` );
+	},
+
+	/**
+	 * Calls `npm uninstall <name>` command in specified path.
+	 *
+	 * @param {String} path
+	 */
+	npmUninstall( path, name ) {
+		this.shExec( `cd ${ path } && npm uninstall ${ name }` );
+	},
+
+	/**
+	 * Calls `npm update` command in specified path.
+	 *
+	 * @param {String} path
+	 */
+	npmUpdate( path ) {
+		this.shExec( `cd ${ path } && npm update` );
 	},
 
 	/**
@@ -266,5 +321,29 @@ module.exports = {
 		const path = require( 'path' );
 		const templatesPath = path.resolve( TEMPLATE_PATH );
 		this.shExec( `cp ${ path.join( templatesPath, '*.md' ) } ${ destination }` );
+	},
+
+	/**
+	 * Executes 'npm view' command for provided module name and returns Git url if one is found. Returns null if
+	 * module cannot be found.
+	 *
+	 * @param {String} name Name of the module.
+	 * @returns {*}
+     */
+	getGitUrlFromNpm( name ) {
+		try {
+			const info = JSON.parse( this.shExec( `npm view ${ name } repository --json` ) );
+
+			if ( info && info.type == 'git' ) {
+				return info.url;
+			}
+		} catch ( error ) {
+			// Throw error only when different than E404.
+			if ( error.message.indexOf( 'npm ERR! code E404' ) == -1 ) {
+				throw error;
+			}
+		}
+
+		return null;
 	}
 };

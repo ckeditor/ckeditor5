@@ -28,6 +28,7 @@
     "grunt-jscs": "^2.0.0",
     "grunt-text-replace": "^0.4.0",
     "inquirer": "^0.11.0",
+    "istanbul": "^0.4.1",
     "mocha": "^2.2.5",
     "ncp": "^2.0.0",
     "replace": "^0.3.0",
@@ -43,6 +44,7 @@
     "url": "https://github.com/ckeditor/ckeditor5.git"
   },
   "scripts": {
-    "tests": "mocha dev/tests"
+    "test": "mocha dev/tests",
+    "coverage": "istanbul cover _mocha dev/tests/"
   }
 }

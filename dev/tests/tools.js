@@ -23,6 +23,31 @@ describe( 'utils', () => {
 	} );
 
 	describe( 'tools', () => {
+		describe( 'shExec', () => {
+			it( 'should be defined', () => expect( tools.shExec ).to.be.a( 'function' ) );
+
+			it( 'should execute command', () => {
+				const sh = require( 'shelljs' );
+				const execStub = sinon.stub( sh, 'exec' ).returns( { code: 0 } );
+				toRestore.push( execStub );
+
+				tools.shExec( 'command' );
+
+				sinon.assert.calledOnce( execStub );
+			} );
+
+			it( 'should throw error on unsuccessful call', () => {
+				const sh = require( 'shelljs' );
+				const execStub = sinon.stub( sh, 'exec' ).returns( { code: 1 } );
+				toRestore.push( execStub );
+
+				expect( () => {
+					tools.shExec( 'command' );
+				} ).to.throw();
+				sinon.assert.calledOnce( execStub );
+			} );
+		} );
+
 		describe( 'linkDirectories', () => {
 			it( 'should be defined', () => expect( tools.linkDirectories ).to.be.a( 'function' ) );
 
@@ -68,6 +93,7 @@ describe( 'utils', () => {
 					'plugin3': ''
 				};
 				expect( tools.getCKEditorDependencies( dependencies ) ).to.equal( null );
+				expect( tools.getCKEditorDependencies() ).to.equal( null );
 			} );
 
 			it( 'should return only ckeditor5- dependencies', () => {
@@ -151,6 +177,49 @@ describe( 'utils', () => {
 			} );
 		} );
 
+		describe( 'isFile', () => {
+			it( 'should be defined', () => expect( tools.isFile ).to.be.a( 'function' ) );
+
+			it( 'should return true if path points to file', () => {
+				const fs = require( 'fs' );
+				const statSyncStub = sinon.stub( fs, 'statSync', () => ( { isFile: () => true } ) );
+				const path = 'path';
+				toRestore.push( statSyncStub );
+
+				const result = tools.isFile( path );
+
+				expect( statSyncStub.calledOnce ).to.equal( true );
+				expect( statSyncStub.firstCall.args[ 0 ] ).to.equal( path );
+				expect( result ).to.equal( true );
+			} );
+
+			it( 'should return false if path does not point to directory', () => {
+				const fs = require( 'fs' );
+				const statSyncStub = sinon.stub( fs, 'statSync', () => ( { isFile: () => false } ) );
+				const path = 'path';
+				toRestore.push( statSyncStub );
+
+				const result = tools.isFile( path );
+
+				expect( statSyncStub.calledOnce ).to.equal( true );
+				expect( statSyncStub.firstCall.args[ 0 ] ).to.equal( path );
+				expect( result ).to.equal( false );
+			} );
+
+			it( 'should return false if statSync method throws', () => {
+				const fs = require( 'fs' );
+				const statSyncStub = sinon.stub( fs, 'statSync' ).throws();
+				const path = 'path';
+				toRestore.push( statSyncStub );
+
+				const result = tools.isFile( path );
+
+				expect( statSyncStub.calledOnce ).to.equal( true );
+				expect( statSyncStub.firstCall.args[ 0 ] ).to.equal( path );
+				expect( result ).to.equal( false );
+			} );
+		} );
+
 		describe( 'getCKE5Directories', () => {
 			it( 'should be defined', () => expect( tools.getCKE5Directories ).to.be.a( 'function' ) );
 
@@ -189,6 +258,41 @@ describe( 'utils', () => {
 			} );
 		} );
 
+		describe( 'readPackageName', () => {
+			const modulePath = 'path/to/module';
+			it( 'should read package name from NPM module', () => {
+				const isFileStub = sinon.stub( tools, 'isFile' ).returns( true );
+				const fs = require( 'fs' );
+				const name = 'module-name';
+				const readFileStub = sinon.stub( fs, 'readFileSync' ).returns( JSON.stringify( { name: name } ) );
+				toRestore.push( isFileStub, readFileStub );
+
+				const result = tools.readPackageName( modulePath );
+
+				expect( result ).to.equal( name );
+			} );
+
+			it( 'should return null if no package.json is found', () => {
+				const isFileStub = sinon.stub( tools, 'isFile' ).returns( false );
+				toRestore.push( isFileStub );
+
+				const result = tools.readPackageName( modulePath );
+
+				expect( result ).to.equal( null );
+			} );
+
+			it( 'should return null if no name in package.json is provided', () => {
+				const isFileStub = sinon.stub( tools, 'isFile' ).returns( true );
+				const fs = require( 'fs' );
+				const readFileStub = sinon.stub( fs, 'readFileSync' ).returns( JSON.stringify( { } ) );
+				toRestore.push( isFileStub, readFileStub );
+
+				const result = tools.readPackageName( modulePath );
+
+				expect( result ).to.equal( null );
+			} );
+		} );
+
 		describe( 'npmInstall', () => {
 			it( 'should be defined', () => expect( tools.npmInstall ).to.be.a( 'function' ) );
 			it( 'should execute npm install command', () => {
@@ -200,6 +304,35 @@ describe( 'utils', () => {
 
 				expect( shExecStub.calledOnce ).to.equal( true );
 				expect( shExecStub.firstCall.args[ 0 ] ).to.equal( `cd ${ path } && npm install` );
+			} );
+		} );
+
+		describe( 'npmUpdate', () => {
+			it( 'should be defined', () => expect( tools.npmUpdate ).to.be.a( 'function' ) );
+			it( 'should execute npm update command', () => {
+				const shExecStub = sinon.stub( tools, 'shExec' );
+				const path = '/path/to/repository';
+				toRestore.push( shExecStub );
+
+				tools.npmUpdate( path );
+
+				expect( shExecStub.calledOnce ).to.equal( true );
+				expect( shExecStub.firstCall.args[ 0 ] ).to.equal( `cd ${ path } && npm update` );
+			} );
+		} );
+
+		describe( 'npmUninstall', () => {
+			it( 'should be defined', () => expect( tools.npmUninstall ).to.be.a( 'function' ) );
+			it( 'should execute npm uninstall command', () => {
+				const shExecStub = sinon.stub( tools, 'shExec' );
+				const path = '/path/to/repository';
+				const moduleName = 'module-name';
+				toRestore.push( shExecStub );
+
+				tools.npmUninstall( path, moduleName );
+
+				expect( shExecStub.calledOnce ).to.equal( true );
+				expect( shExecStub.firstCall.args[ 0 ] ).to.equal( `cd ${ path } && npm uninstall ${ moduleName }` );
 			} );
 		} );
 
@@ -231,6 +364,57 @@ describe( 'utils', () => {
 
 				expect( shExecStub.calledOnce ).to.equal( true );
 				expect( shExecStub.firstCall.args[ 0 ] ).to.equal( `cp ${ path.join( templatesPath, '*.md' ) } ${ repositoryPath }` );
+			} );
+		} );
+
+		describe( 'getGitUrlFromNpm', () => {
+			const repository = {
+				type: 'git',
+				url: 'git@github.com:ckeditor/ckeditor5-core'
+			};
+			const moduleName = 'ckeditor5-core';
+
+			it( 'should be defined', () => expect( tools.getGitUrlFromNpm ).to.be.a( 'function' ) );
+			it( 'should call npm view command', () => {
+				const shExecStub = sinon.stub( tools, 'shExec', () => {
+					return JSON.stringify( repository );
+				} );
+				toRestore.push( shExecStub );
+				const url = tools.getGitUrlFromNpm( moduleName );
+
+				expect( shExecStub.calledOnce ).to.equal( true );
+				expect( shExecStub.firstCall.args[ 0 ] ).to.equal( `npm view ${ moduleName } repository --json` );
+				expect( url ).to.equal( repository.url );
+			} );
+
+			it( 'should return null if module is not found', () => {
+				const shExecStub = sinon.stub( tools, 'shExec' ).throws( new Error( 'npm ERR! code E404' ) );
+				toRestore.push( shExecStub );
+
+				const url = tools.getGitUrlFromNpm( moduleName );
+				expect( url ).to.equal( null );
+			} );
+
+			it( 'should return null if module has no repository information', () => {
+				const shExecStub = sinon.stub( tools, 'shExec' ).returns( JSON.stringify( {} ) );
+				toRestore.push( shExecStub );
+
+				const url = tools.getGitUrlFromNpm( moduleName );
+				expect( url ).to.equal( null );
+			} );
+
+			it( 'should throw on other errors', () => {
+				const error = new Error( 'Random error.' );
+				const shExecStub = sinon.stub( tools, 'shExec' ).throws( error );
+				const getUrlSpy = sinon.spy( tools, 'getGitUrlFromNpm' );
+				toRestore.push( shExecStub );
+				toRestore.push( getUrlSpy );
+
+				try {
+					tools.getGitUrlFromNpm( moduleName );
+				} catch ( e ) {}
+
+				expect( getUrlSpy.threw( error ) ).to.equal( true );
 			} );
 		} );
 	} );

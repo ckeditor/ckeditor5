@@ -29,64 +29,98 @@ describe( 'utils', () => {
 				const urlInfo = git.parseRepositoryUrl( 'ckeditor/ckeditor5-core' );
 
 				expect( urlInfo.server ).to.equal( 'https://github.com/' );
-				expect( urlInfo.branch ).to.equal( 'master' );
 				expect( urlInfo.repository ).to.equal( 'ckeditor/ckeditor5-core' );
+				expect( urlInfo.user ).to.equal( 'ckeditor' );
+				expect( urlInfo.name ).to.equal( 'ckeditor5-core' );
+				expect( urlInfo.branch ).to.equal( 'master' );
 			} );
 
 			it( 'should parse short GitHub URL with provided branch ', () => {
 				const urlInfo = git.parseRepositoryUrl( 'ckeditor/ckeditor5-core#experimental' );
 
 				expect( urlInfo.server ).to.equal( 'https://github.com/' );
-				expect( urlInfo.branch ).to.equal( 'experimental' );
 				expect( urlInfo.repository ).to.equal( 'ckeditor/ckeditor5-core' );
+				expect( urlInfo.user ).to.equal( 'ckeditor' );
+				expect( urlInfo.name ).to.equal( 'ckeditor5-core' );
+				expect( urlInfo.branch ).to.equal( 'experimental' );
 			} );
 
 			it( 'should parse full GitHub URL (http)', () => {
-				const urlInfo = git.parseRepositoryUrl( 'http://github.com/ckeditor/ckeditor5-core' );
+				const urlInfo = git.parseRepositoryUrl( 'http://github.com/ckeditor/ckeditor5-core.git' );
 
 				expect( urlInfo.server ).to.equal( 'http://github.com/' );
+				expect( urlInfo.repository ).to.equal( 'ckeditor/ckeditor5-core.git' );
+				expect( urlInfo.user ).to.equal( 'ckeditor' );
+				expect( urlInfo.name ).to.equal( 'ckeditor5-core' );
 				expect( urlInfo.branch ).to.equal( 'master' );
-				expect( urlInfo.repository ).to.equal( 'ckeditor/ckeditor5-core' );
 			} );
 
 			it( 'should parse full GitHub URL (http) with provided branch', () => {
-				const urlInfo = git.parseRepositoryUrl( 'http://github.com/ckeditor/ckeditor5-core#experimental' );
+				const urlInfo = git.parseRepositoryUrl( 'http://github.com/ckeditor/ckeditor5-core.git#experimental' );
 
 				expect( urlInfo.server ).to.equal( 'http://github.com/' );
+				expect( urlInfo.repository ).to.equal( 'ckeditor/ckeditor5-core.git' );
+				expect( urlInfo.user ).to.equal( 'ckeditor' );
+				expect( urlInfo.name ).to.equal( 'ckeditor5-core' );
 				expect( urlInfo.branch ).to.equal( 'experimental' );
-				expect( urlInfo.repository ).to.equal( 'ckeditor/ckeditor5-core' );
 			} );
 
 			it( 'should parse full GitHub URL (https)', () => {
-				const urlInfo = git.parseRepositoryUrl( 'https://github.com/ckeditor/ckeditor5-core' );
+				const urlInfo = git.parseRepositoryUrl( 'https://github.com/ckeditor/ckeditor5-core.git' );
 
 				expect( urlInfo.server ).to.equal( 'https://github.com/' );
+				expect( urlInfo.repository ).to.equal( 'ckeditor/ckeditor5-core.git' );
+				expect( urlInfo.user ).to.equal( 'ckeditor' );
+				expect( urlInfo.name ).to.equal( 'ckeditor5-core' );
 				expect( urlInfo.branch ).to.equal( 'master' );
-				expect( urlInfo.repository ).to.equal( 'ckeditor/ckeditor5-core' );
 			} );
 
 			it( 'should parse full GitHub URL (https) with provided branch', () => {
-				const urlInfo = git.parseRepositoryUrl( 'https://github.com/ckeditor/ckeditor5-core#t/122' );
+				const urlInfo = git.parseRepositoryUrl( 'https://github.com/ckeditor/ckeditor5-core.git#t/122' );
 
 				expect( urlInfo.server ).to.equal( 'https://github.com/' );
+				expect( urlInfo.repository ).to.equal( 'ckeditor/ckeditor5-core.git' );
+				expect( urlInfo.user ).to.equal( 'ckeditor' );
+				expect( urlInfo.name ).to.equal( 'ckeditor5-core' );
 				expect( urlInfo.branch ).to.equal( 't/122' );
-				expect( urlInfo.repository ).to.equal( 'ckeditor/ckeditor5-core' );
 			} );
 
 			it( 'should parse full GitHub URL (git)', () => {
-				const urlInfo = git.parseRepositoryUrl( 'git@github.com:ckeditor/ckeditor5-core' );
+				const urlInfo = git.parseRepositoryUrl( 'git@github.com:ckeditor/ckeditor5-core.git' );
 
 				expect( urlInfo.server ).to.equal( 'git@github.com:' );
+				expect( urlInfo.repository ).to.equal( 'ckeditor/ckeditor5-core.git' );
+				expect( urlInfo.user ).to.equal( 'ckeditor' );
+				expect( urlInfo.name ).to.equal( 'ckeditor5-core' );
 				expect( urlInfo.branch ).to.equal( 'master' );
-				expect( urlInfo.repository ).to.equal( 'ckeditor/ckeditor5-core' );
+			} );
+
+			it( 'should parse full GitHub URL (git)', () => {
+				const urlInfo = git.parseRepositoryUrl( 'git://github.com/ckeditor/ckeditor5-core.git' );
+
+				expect( urlInfo.server ).to.equal( 'git://github.com/' );
+				expect( urlInfo.repository ).to.equal( 'ckeditor/ckeditor5-core.git' );
+				expect( urlInfo.user ).to.equal( 'ckeditor' );
+				expect( urlInfo.name ).to.equal( 'ckeditor5-core' );
+				expect( urlInfo.branch ).to.equal( 'master' );
 			} );
 
 			it( 'should parse full GitHub URL (git) with provided branch', () => {
-				const urlInfo = git.parseRepositoryUrl( 'git@github.com:ckeditor/ckeditor5-core#new-feature' );
+				const urlInfo = git.parseRepositoryUrl( 'git@github.com:ckeditor/ckeditor5-core.git#new-feature' );
 
 				expect( urlInfo.server ).to.equal( 'git@github.com:' );
+				expect( urlInfo.repository ).to.equal( 'ckeditor/ckeditor5-core.git' );
+				expect( urlInfo.user ).to.equal( 'ckeditor' );
+				expect( urlInfo.name ).to.equal( 'ckeditor5-core' );
 				expect( urlInfo.branch ).to.equal( 'new-feature' );
-				expect( urlInfo.repository ).to.equal( 'ckeditor/ckeditor5-core' );
+			} );
+
+			it( 'should return null if GitHub URL is not valid', () => {
+				let urlInfo = git.parseRepositoryUrl( 'https://ckeditor.com' );
+				expect( urlInfo ).to.equal( null );
+
+				urlInfo = git.parseRepositoryUrl( 'https://github.com/info.html' );
+				expect( urlInfo ).to.equal( null );
 			} );
 		} );
 

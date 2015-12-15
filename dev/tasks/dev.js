@@ -7,9 +7,9 @@
 
 const initTask = require( './utils/dev-init' );
 const pluginCreateTask = require( './utils/dev-plugin-create' );
-const pluginInstallTask = require( './utils/dev-plugin-install' );
 const pluginUpdateTask = require( './utils/dev-update' );
 const pluginStatusTask = require( './utils/dev-status' );
+const installTask = require( './utils/dev-install' );
 const relinkTask = require( './utils/dev-relink' );
 const boilerplateUpdateTask = require( './utils/dev-boilerplate-update' );
 const ckeditor5Path = process.cwd();
@@ -19,7 +19,7 @@ module.exports = ( grunt ) => {
 	const workspaceRoot = grunt.config.data.workspaceRoot;
 
 	grunt.registerTask( 'dev-init', function() {
-		initTask( ckeditor5Path, packageJSON, workspaceRoot, grunt.log.writeln, grunt.log.error );
+		initTask( installTask, ckeditor5Path, packageJSON, workspaceRoot, grunt.log.writeln );
 	} );
 
 	grunt.registerTask( 'dev-plugin-create', function() {
@@ -29,15 +29,8 @@ module.exports = ( grunt ) => {
 			.catch( ( error )  => done( error ) );
 	} );
 
-	grunt.registerTask( 'dev-plugin-install', function() {
-		const done = this.async();
-		pluginInstallTask( ckeditor5Path, workspaceRoot, grunt.log.writeln )
-			.then( done )
-			.catch( ( error )  => done( error ) );
-	} );
-
 	grunt.registerTask( 'dev-update', function() {
-		pluginUpdateTask( ckeditor5Path, packageJSON, workspaceRoot, grunt.log.writeln, grunt.log.error );
+		pluginUpdateTask( ckeditor5Path, packageJSON, workspaceRoot, grunt.log.writeln, grunt.option( 'npm-update' ) );
 	} );
 
 	grunt.registerTask( 'dev-status', function() {
@@ -50,6 +43,10 @@ module.exports = ( grunt ) => {
 
 	grunt.registerTask( 'dev-relink', function() {
 		relinkTask( ckeditor5Path, packageJSON, workspaceRoot, grunt.log.writeln, grunt.log.error );
+	} );
+
+	grunt.registerTask( 'dev-install', function( ) {
+		installTask( ckeditor5Path, workspaceRoot, grunt.option( 'plugin' ), grunt.log.writeln );
 	} );
 };
 
