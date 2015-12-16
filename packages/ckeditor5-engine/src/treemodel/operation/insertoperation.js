@@ -8,9 +8,10 @@
 CKEDITOR.define( [
 	'treemodel/operation/operation',
 	'treemodel/nodelist',
+	'treemodel/position',
 	'treemodel/range',
 	'treemodel/operation/removeoperation'
-], ( Operation, NodeList, Range ) => {
+], ( Operation, NodeList, Position, Range ) => {
 	/**
 	 * Operation to insert list of nodes on the given position in the tree data model.
 	 *
@@ -35,7 +36,7 @@ CKEDITOR.define( [
 			 * @readonly
 			 * @type {treeModel.Position}
 			 */
-			this.position = position;
+			this.position = Position.createFromPosition( position );
 
 			/**
 			 * List of nodes to insert.

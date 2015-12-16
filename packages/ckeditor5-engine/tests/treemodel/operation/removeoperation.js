@@ -35,13 +35,13 @@ describe( 'RemoveOperation', () => {
 	} );
 
 	it( 'should have proper type', () => {
-		const opp = new RemoveOperation(
+		const op = new RemoveOperation(
 			new Position( root, [ 2 ] ),
 			2,
 			doc.version
 		);
 
-		expect( opp.type ).to.equal( 'remove' );
+		expect( op.type ).to.equal( 'remove' );
 	} );
 
 	it( 'should extend MoveOperation class', () => {
@@ -78,7 +78,19 @@ describe( 'RemoveOperation', () => {
 		expect( graveyard.getChild( 1 ) ).to.equal( b );
 	} );
 
-	it( 'should create a reinsert operation as a reverse', () => {
+	it( 'should create RemoveOperation with same parameters when cloned', () => {
+		let pos = new Position( root, [ 2 ] );
+
+		let operation = new RemoveOperation( pos, 2, doc.version );
+		let clone = operation.clone();
+
+		expect( clone ).to.be.instanceof( RemoveOperation );
+		expect( clone.sourcePosition.isEqual( pos ) ).to.be.true;
+		expect( clone.howMany ).to.equal( operation.howMany );
+		expect( clone.baseVersion ).to.equal( operation.baseVersion );
+	} );
+
+	it( 'should create a ReinsertOperation as a reverse', () => {
 		let position = new Position( root, [ 0 ] );
 		let operation = new RemoveOperation( position, 2, 0 );
 		let reverse = operation.getReversed();
@@ -86,8 +98,8 @@ describe( 'RemoveOperation', () => {
 		expect( reverse ).to.be.an.instanceof( ReinsertOperation );
 		expect( reverse.baseVersion ).to.equal( 1 );
 		expect( reverse.howMany ).to.equal( 2 );
-		expect( reverse.sourcePosition ).to.equal( operation.targetPosition );
-		expect( reverse.targetPosition ).to.equal( position );
+		expect( reverse.sourcePosition.isEqual( operation.targetPosition ) ).to.be.true;
+		expect( reverse.targetPosition.isEqual( position ) ).to.be.true;
 	} );
 
 	it( 'should undo remove set of nodes by applying reverse operation', () => {

@@ -150,6 +150,15 @@ describe( 'position', () => {
 		expect( Position.createAfter( r ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 3 ] );
 	} );
 
+	it( 'should create a copy of given position', () => {
+		let original = new Position( root, [ 1, 2, 3 ] );
+		let position = Position.createFromPosition( original );
+
+		expect( position ).to.be.instanceof( Position );
+		expect( position.isEqual( original ) ).to.be.true;
+		expect( position ).not.to.be.equal( original );
+	} );
+
 	it( 'should throw error if one try to make positions after root', () => {
 		expect( () => {
 			Position.createAfter( root );
@@ -238,15 +247,6 @@ describe( 'position', () => {
 		expect( position.getParentPath() ).to.deep.equal( [ 1, 2 ] );
 	} );
 
-	it( 'should return a new, equal position when cloned', () => {
-		const position = new Position( root, [ 1, 2, 3 ] );
-		const clone = position.clone();
-
-		expect( clone ).not.to.be.equal( position ); // clone is not pointing to the same object as position
-		expect( clone.isEqual( position ) ).to.be.true; // but they are equal in the position-sense
-		expect( clone.path ).not.to.be.equal( position.path ); // make sure the paths are not the same array
-	} );
-
 	describe( 'isBefore', () => {
 		it( 'should return true if given position has same root and is before this position', () => {
 			let position = new Position( root, [ 1, 1, 2 ] );
@@ -313,6 +313,63 @@ describe( 'position', () => {
 			let differentPosition = new Position( otherRoot, [ 1, 2 ] );
 
 			expect( position.isBefore( differentPosition ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'isTouching', () => {
+		it( 'should return true if positions are same', () => {
+			let position = new Position( root, [ 1, 1, 1 ] );
+			let result = position.isTouching( new Position( root, [ 1, 1, 1 ] ) );
+
+			expect( result ).to.be.true;
+		} );
+
+		it( 'should return true if given position is in next node and there are no whole nodes before it', () => {
+			let positionA = new Position( root, [ 1 ] );
+			let positionB = new Position( root, [ 1, 0, 0 ] );
+
+			expect( positionA.isTouching( positionB ) ).to.be.true;
+			expect( positionB.isTouching( positionA ) ).to.be.true;
+		} );
+
+		it( 'should return true if given position is in previous node and there are no whole nodes after it', () => {
+			let positionA = new Position( root, [ 2 ] );
+			let positionB = new Position( root, [ 1, 1, 3 ] );
+
+			expect( positionA.isTouching( positionB ) ).to.be.true;
+			expect( positionB.isTouching( positionA ) ).to.be.true;
+		} );
+
+		it( 'should return true if positions are in different sub-trees but there are no whole nodes between them', () => {
+			let positionA = new Position( root, [ 1, 0, 3 ] );
+			let positionB = new Position( root, [ 1, 1, 0 ] );
+
+			expect( positionA.isTouching( positionB ) ).to.be.true;
+			expect( positionB.isTouching( positionA ) ).to.be.true;
+		} );
+
+		it( 'should return false if there are whole nodes between positions', () => {
+			let positionA = new Position( root, [ 2 ] );
+			let positionB = new Position( root, [ 1, 0, 3 ] );
+
+			expect( positionA.isTouching( positionB ) ).to.be.false;
+			expect( positionB.isTouching( positionA ) ).to.be.false;
+		} );
+
+		it( 'should return false if there are whole nodes between positions', () => {
+			let positionA = new Position( root, [ 1, 0, 3 ] );
+			let positionB = new Position( root, [ 1, 1, 1 ] );
+
+			expect( positionA.isTouching( positionB ) ).to.be.false;
+			expect( positionB.isTouching( positionA ) ).to.be.false;
+		} );
+
+		it( 'should return false if positions are in different roots', () => {
+			let positionA = new Position( root, [ 1, 0, 3 ] );
+			let positionB = new Position( otherRoot, [ 1, 1, 0 ] );
+
+			expect( positionA.isTouching( positionB ) ).to.be.false;
+			expect( positionB.isTouching( positionA ) ).to.be.false;
 		} );
 	} );
 

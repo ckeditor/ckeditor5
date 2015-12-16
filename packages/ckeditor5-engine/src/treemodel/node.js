@@ -5,7 +5,11 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'treemodel/attribute', 'utils', 'ckeditorerror' ], ( Attribute, utils, CKEditorError ) => {
+CKEDITOR.define( [
+	'treemodel/attributelist',
+	'utils',
+	'ckeditorerror'
+], ( AttributeList, utils, CKEditorError ) => {
 	/**
 	 * Abstract document tree node class.
 	 *
@@ -31,14 +35,13 @@ CKEDITOR.define( [ 'treemodel/attribute', 'utils', 'ckeditorerror' ], ( Attribut
 			this.parent = null;
 
 			/**
-			 * Attributes set.
-			 *
+			 * List of attributes set on this node.
 			 * Attributes of nodes attached to the document can be changed only be the {@link treeModel.operation.AttributeOperation}.
 			 *
 			 * @private
-			 * @property {Set} _attrs
+			 * @property {treeModel.AttributeList} _attrs
 			 */
-			this._attrs = new Set( attrs );
+			this._attrs = new AttributeList( attrs );
 		}
 
 		/**
@@ -91,7 +94,7 @@ CKEDITOR.define( [ 'treemodel/attribute', 'utils', 'ckeditorerror' ], ( Attribut
 		 * @property {Number} depth
 		 */
 		get root() {
-			let root = this; // jscs:ignore safeContextKeyword
+			let root = this;
 
 			while ( root.parent ) {
 				root = root.parent;
@@ -101,30 +104,17 @@ CKEDITOR.define( [ 'treemodel/attribute', 'utils', 'ckeditorerror' ], ( Attribut
 		}
 
 		/**
-		 * Finds an attribute by a key.
-		 *
-		 * @param {String} attr The attribute key.
-		 * @returns {treeModel.Attribute} The found attribute.
+		 * @see {@link treeModel.AttributeList#getAttr}
 		 */
 		getAttr( key ) {
-			for ( let attr of this._attrs ) {
-				if ( attr.key == key ) {
-					return attr.value;
-				}
-			}
-
-			return null;
+			return this._attrs.getAttr( key );
 		}
 
 		/**
-		 * Returns attribute iterator. It can be use to create a new element with the same attributes:
-		 *
-		 *		const copy = new Element( element.name, element.getAttrs() );
-		 *
-		 * @returns {Iterable.<treeModel.Attribute>} Attribute iterator.
+		 * @see {@link treeModel.AttributeList#getAttrs}
 		 */
 		getAttrs() {
-			return this._attrs[ Symbol.iterator ]();
+			return this._attrs.getAttrs();
 		}
 
 		/**
@@ -162,7 +152,7 @@ CKEDITOR.define( [ 'treemodel/attribute', 'utils', 'ckeditorerror' ], ( Attribut
 		 */
 		getPath() {
 			const path = [];
-			let node = this; // jscs:ignore safeContextKeyword
+			let node = this;
 
 			while ( node.parent ) {
 				path.unshift( node.getIndex() );
@@ -173,59 +163,31 @@ CKEDITOR.define( [ 'treemodel/attribute', 'utils', 'ckeditorerror' ], ( Attribut
 		}
 
 		/**
-		 * Returns `true` if the node contains an attribute with the same key and value as given or the same key if the
-		 * given parameter is a string.
-		 *
-		 * @param {treeModel.Attribute|String} key An attribute or a key to compare.
-		 * @returns {Boolean} True if node contains given attribute or an attribute with the given key.
+		 * @see {@link treeModel.AttributeList#hasAttr}
 		 */
 		hasAttr( key ) {
-			let attr;
-
-			// Attribute.
-			if ( key instanceof Attribute ) {
-				for ( attr of this._attrs ) {
-					if ( attr.isEqual( key ) ) {
-						return true;
-					}
-				}
-			}
-			// Key.
-			else {
-				for ( attr of this._attrs ) {
-					if ( attr.key == key ) {
-						return true;
-					}
-				}
-			}
-
-			return false;
+			return this._attrs.hasAttr( key );
 		}
 
 		/**
-		 * Removes attribute from the list of attributes.
-		 *
-		 * @param {String} key The attribute key.
+		 * @see {@link treeModel.AttributeList#removeAttr}
 		 */
 		removeAttr( key ) {
-			for ( let attr of this._attrs ) {
-				if ( attr.key == key ) {
-					this._attrs.delete( attr );
-
-					return;
-				}
-			}
+			this._attrs.removeAttr( key );
 		}
 
 		/**
-		 * Sets a given attribute. If the attribute with the same key already exists it will be removed.
-		 *
-		 * @param {treeModel.Attribute} attr Attribute to set.
+		 * @see {@link treeModel.AttributeList#setAttr}
 		 */
 		setAttr( attr ) {
-			this.removeAttr( attr.key );
+			this._attrs.setAttr( attr );
+		}
 
-			this._attrs.add( attr );
+		/**
+		 * @see {@link treeModel.AttributeList#setAttrsTo}
+		 */
+		setAttrsTo( attrs ) {
+			this._attrs.setAttrsTo( attrs );
 		}
 
 		/**

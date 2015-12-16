@@ -41,6 +41,10 @@ CKEDITOR.define( [
 
 			return new ReinsertOperation( this.targetPosition, this.howMany, this.sourcePosition, this.baseVersion + 1 );
 		}
+
+		clone() {
+			return new RemoveOperation( this.sourcePosition, this.howMany, this.baseVersion );
+		}
 	}
 
 	return RemoveOperation;

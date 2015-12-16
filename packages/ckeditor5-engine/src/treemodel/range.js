@@ -13,7 +13,8 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 	 */
 	class Range {
 		/**
-		 * Creates a range.
+		 * Creates a range spanning from `start` position to `end` position.
+		 * **Note:** Constructor creates it's own {@link treeModel.Position} instances basing on passed values.
 		 *
 		 * @param {treeModel.Position} start Start position.
 		 * @param {treeModel.Position} end End position.
@@ -25,14 +26,32 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 			 *
 			 * @property {treeModel.Position}
 			 */
-			this.start = start;
+			this.start = Position.createFromPosition( start );
 
 			/**
 			 * End position.
 			 *
 			 * @property {treeModel.Position}
 			 */
-			this.end = end;
+			this.end = Position.createFromPosition( end );
+		}
+
+		/**
+		 * Returns whether the range is collapsed, that is it start and end positions are equal.
+		 *
+		 * @property {Boolean}
+		 */
+		get isCollapsed() {
+			return this.start.isEqual( this.end );
+		}
+
+		/**
+		 * Range root element. Equals to the root of start position (which should be same as root of end position).
+		 *
+		 * @property {treeModel.RootElement}
+		 */
+		get root() {
+			return this.start.root;
 		}
 
 		/**
@@ -42,16 +61,6 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 		 */
 		[ Symbol.iterator ]() {
 			return new PositionIterator( this );
-		}
-
-		/**
-		 * Creates and returns a new instance of {@link treeModel.Range}
-		 * which is equal to this {@link treeModel.Range range}.
-		 *
-		 * @returns {treeModel.Position} Cloned {@link treeModel.Range range}.
-		 */
-		clone() {
-			return new Range( this.start.clone(), this.end.clone() );
 		}
 
 		/**
@@ -99,33 +108,23 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 		getDifference( otherRange ) {
 			const ranges = [];
 
-			if ( this.start.isBefore( otherRange.end ) && this.end.isAfter( otherRange.start ) ) {
+			if ( this.isIntersecting( otherRange ) ) {
 				// Ranges intersect.
 
 				if ( this.containsPosition( otherRange.start ) ) {
 					// Given range start is inside this range. This means that we have to
 					// add shrunken range - from the start to the middle of this range.
-					ranges.push(
-						new Range(
-							this.start.clone(),
-							otherRange.start.clone()
-						)
-					);
+					ranges.push( new Range( this.start, otherRange.start ) );
 				}
 
 				if ( this.containsPosition( otherRange.end ) ) {
 					// Given range end is inside this range. This means that we have to
 					// add shrunken range - from the middle of this range to the end.
-					ranges.push(
-						new Range(
-							otherRange.end.clone(),
-							this.end.clone()
-						)
-					);
+					ranges.push( new Range( otherRange.end, this.end ) );
 				}
 			} else {
 				// Ranges do not intersect, return the original range.
-				ranges.push( this.clone() );
+				ranges.push( Range.createFromRange( this ) );
 			}
 
 			return ranges;
@@ -148,7 +147,7 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 		 * @returns {treeModel.Range|null} A common part of given ranges or null if ranges have no common part.
 		 */
 		getIntersection( otherRange ) {
-			if ( this.start.isBefore( otherRange.end ) && this.end.isAfter( otherRange.start ) ) {
+			if ( this.isIntersecting( otherRange ) ) {
 				// Ranges intersect, so a common range will be returned.
 				// At most, it will be same as this range.
 				let commonRangeStart = this.start;
@@ -166,7 +165,7 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 					commonRangeEnd = otherRange.end;
 				}
 
-				return new Range( commonRangeStart.clone(), commonRangeEnd.clone() );
+				return new Range( commonRangeStart, commonRangeEnd );
 			}
 
 			// Ranges do not intersect, so they do not have common part.
@@ -229,10 +228,7 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 				// insertion to reflect insertion changes.
 
 				return [
-					new Range(
-						this.start.clone(),
-						insertPosition.clone()
-					),
+					new Range( this.start, insertPosition ),
 					new Range(
 						insertPosition.getTransformedByInsertion( insertPosition, howMany, true ),
 						this.end.getTransformedByInsertion( insertPosition, howMany, true )
@@ -242,7 +238,7 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 				// If insertion is not inside the range, simply transform range boundaries (positions) by the insertion.
 				// Both, one or none of them might be affected by the insertion.
 
-				const range = this.clone();
+				const range = Range.createFromRange( this );
 
 				range.start = range.start.getTransformedByInsertion( insertPosition, howMany, true );
 				range.end = range.end.getTransformedByInsertion( insertPosition, howMany, false );
@@ -262,13 +258,23 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 		}
 
 		/**
+		 * Checks and returns whether this range intersects with given range.
+		 *
+		 * @param {treeModel.Range} otherRange Range to compare with.
+		 * @returns {Boolean} True if ranges intersect.
+		 */
+		isIntersecting( otherRange ) {
+			return this.start.isBefore( otherRange.end ) && this.end.isAfter( otherRange.start );
+		}
+
+		/**
 		 * Creates a range inside an element which starts before the first child and ends after the last child.
 		 *
 		 * @param {treeModel.Element} element Element which is a parent for the range.
 		 * @returns {treeModel.Range} Created range.
 		 */
 		static createFromElement( element ) {
-			return Range.createFromParentsAndOffsets( element, 0, element, element.getChildCount() );
+			return this.createFromParentsAndOffsets( element, 0, element, element.getChildCount() );
 		}
 
 		/**
@@ -279,10 +285,10 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 		 * @returns {treeModel.Range}
 		 */
 		static createFromPositionAndShift( position, shift ) {
-			let endPosition = position.clone();
+			let endPosition = Position.createFromPosition( position );
 			endPosition.offset += shift;
 
-			return new Range( position, endPosition );
+			return new this( position, endPosition );
 		}
 
 		/**
@@ -295,10 +301,20 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 		 * @returns {treeModel.Range} Created range.
 		 */
 		static createFromParentsAndOffsets( startElement, startOffset, endElement, endOffset ) {
-			return new Range(
+			return new this(
 				Position.createFromParentAndOffset( startElement, startOffset ),
 				Position.createFromParentAndOffset( endElement, endOffset )
 			);
+		}
+
+		/**
+		 * Creates and returns a new instance of Range which is equal to passed range.
+		 *
+		 * @param {treeModel.Range} range Range to clone.
+		 * @returns {treeModel.Range}
+		 */
+		static createFromRange( range ) {
+			return new this( range.start, range.end );
 		}
 	}
 

@@ -7,8 +7,9 @@
 
 CKEDITOR.define( [
 	'treemodel/operation/operation',
+	'treemodel/range',
 	'ckeditorerror'
-], ( Operation, CKEditorError ) => {
+], ( Operation, Range, CKEditorError ) => {
 	/**
 	 * Operation to change nodes' attribute. Using this class you can add, remove or change value of the attribute.
 	 *
@@ -42,7 +43,7 @@ CKEDITOR.define( [
 			 * @readonly
 			 * @type {treeModel.Range}
 			 */
-			this.range = range;
+			this.range = Range.createFromRange( range );
 
 			/**
 			 * Old attribute to change. Set to `null` if operation inserts a new attribute.
@@ -66,7 +67,7 @@ CKEDITOR.define( [
 		}
 
 		clone() {
-			return new AttributeOperation( this.range.clone(), this.oldAttr, this.newAttr, this.baseVersion );
+			return new AttributeOperation( this.range, this.oldAttr, this.newAttr, this.baseVersion );
 		}
 
 		getReversed() {

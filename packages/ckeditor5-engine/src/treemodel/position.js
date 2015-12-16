@@ -129,16 +129,6 @@ CKEDITOR.define( [ 'treemodel/rootelement', 'utils', 'ckeditorerror' ], ( RootEl
 		}
 
 		/**
-		 * Creates and returns a new instance of {@link treeModel.Position}
-		 * which is equal to this {@link treeModel.Position position}.
-		 *
-		 * @returns {treeModel.Position} Cloned {@link treeModel.Position position}.
-		 */
-		clone() {
-			return new Position( this.root, this.path.slice() );
-		}
-
-		/**
 		 * Checks whether this position is before or after given position.
 		 *
 		 * @param {treeModel.Position} otherPosition Position to compare with.
@@ -192,7 +182,7 @@ CKEDITOR.define( [ 'treemodel/rootelement', 'utils', 'ckeditorerror' ], ( RootEl
 		 * @returns {treeModel.Position|null} Transformed position or `null`.
 		 */
 		getTransformedByDeletion( deletePosition, howMany ) {
-			let transformed = this.clone();
+			let transformed = Position.createFromPosition( this );
 
 			// This position can't be affected if deletion was in a different root.
 			if ( this.root != deletePosition.root ) {
@@ -241,7 +231,7 @@ CKEDITOR.define( [ 'treemodel/rootelement', 'utils', 'ckeditorerror' ], ( RootEl
 		 * @returns {treeModel.Position} Transformed position.
 		 */
 		getTransformedByInsertion( insertPosition, howMany, insertBefore ) {
-			let transformed = this.clone();
+			let transformed = Position.createFromPosition( this );
 
 			// This position can't be affected if insertion was in a different root.
 			if ( this.root != insertPosition.root ) {
@@ -355,6 +345,58 @@ CKEDITOR.define( [ 'treemodel/rootelement', 'utils', 'ckeditorerror' ], ( RootEl
 		}
 
 		/**
+		 * Checks whether this position is touching given position. Positions touch when there are no characters
+		 * or empty nodes in a range between them. Technically, those positions are not equal but in many cases
+		 * they are very similar or even indistinguishable when they touch.
+		 *
+		 * @param {treeModel.Position} otherPosition Position to compare with.
+		 * @returns {Boolean} True if positions touch.
+		 */
+		isTouching( otherPosition ) {
+			let left = null;
+			let right = null;
+			let compare = this.compareWith( otherPosition );
+
+			switch ( compare ) {
+				case SAME:
+					return true;
+
+				case BEFORE:
+					left = this;
+					right = otherPosition;
+					break;
+
+				case AFTER:
+					left = otherPosition;
+					right = this;
+					break;
+
+				default:
+					return false;
+			}
+
+			while ( left.path.length + right.path.length ) {
+				if ( left.isEqual( right ) ) {
+					return true;
+				}
+
+				if ( left.path.length > right.path.length ) {
+					if ( left.nodeAfter !== null ) {
+						return false;
+					}
+
+					left = Position.createAfter( left.parent );
+				} else {
+					if ( right.nodeBefore !== null ) {
+						return false;
+					}
+
+					right = Position.createBefore( right.parent );
+				}
+			}
+		}
+
+		/**
 		 * Creates a new position after given node.
 		 *
 		 * @param {treeModel.Node} node Node the position should be directly after.
@@ -371,7 +413,7 @@ CKEDITOR.define( [ 'treemodel/rootelement', 'utils', 'ckeditorerror' ], ( RootEl
 				throw new CKEditorError( 'position-after-root: You can not make position after root.', { root: node } );
 			}
 
-			return Position.createFromParentAndOffset( node.parent, node.getIndex() + 1 );
+			return this.createFromParentAndOffset( node.parent, node.getIndex() + 1 );
 		}
 
 		/**
@@ -391,7 +433,7 @@ CKEDITOR.define( [ 'treemodel/rootelement', 'utils', 'ckeditorerror' ], ( RootEl
 				throw new CKEditorError( 'position-before-root: You can not make position before root.', { root: node } );
 			}
 
-			return Position.createFromParentAndOffset( node.parent, node.getIndex() );
+			return this.createFromParentAndOffset( node.parent, node.getIndex() );
 		}
 
 		/**
@@ -406,7 +448,17 @@ CKEDITOR.define( [ 'treemodel/rootelement', 'utils', 'ckeditorerror' ], ( RootEl
 
 			path.push( offset );
 
-			return new Position( parent.root, path );
+			return new this( parent.root, path );
+		}
+
+		/**
+		 * Creates and returns a new instance of Position, which is equal to passed position.
+		 *
+		 * @param {treeModel.Position} position Position to be cloned.
+		 * @returns {treeModel.Position}
+		 */
+		static createFromPosition( position ) {
+			return new this( position.root, position.path.slice() );
 		}
 
 		/**
@@ -443,7 +495,7 @@ CKEDITOR.define( [ 'treemodel/rootelement', 'utils', 'ckeditorerror' ], ( RootEl
 			const i = source.path.length - 1;
 
 			// The first part of a path to combined position is a path to the place where nodes were moved.
-			let combined = target.clone();
+			let combined = Position.createFromPosition( target );
 
 			// Then we have to update the rest of the path.
 
