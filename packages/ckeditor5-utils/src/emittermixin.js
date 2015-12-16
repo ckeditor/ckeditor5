@@ -13,14 +13,11 @@
  */
 
 CKEDITOR.define( [ 'eventinfo', 'utils' ], ( EventInfo, utils ) => {
-	const EmitterMixin = {
-		/**
-		 * Saves how many callbacks has been already added. Does not decrement when callback is removed.
-		 * Used internally as a unique id for a callback.
-		 * @private
-		 */
-		_counter: 0,
+	// Saves how many callbacks has been already added. Does not decrement when callback is removed.
+	// Used internally as a unique id for a callback.
+	let eventsCounter = 0;
 
+	const EmitterMixin = {
 		/**
 		 * Registers a callback function to be executed when an event is fired.
 		 *
@@ -44,7 +41,7 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], ( EventInfo, utils ) => {
 				ctx: ctx || this,
 				priority: priority,
 				// Save counter value as unique id.
-				counter: ++this._counter
+				counter: ++eventsCounter
 			};
 
 			// Add the callback to the list in the right priority position.
@@ -236,7 +233,7 @@ CKEDITOR.define( [ 'eventinfo', 'utils' ], ( EventInfo, utils ) => {
 			args.unshift( eventInfo );
 
 			// Save how many callbacks were added at the moment when the event has been fired.
-			const counter = this._counter;
+			const counter = eventsCounter;
 
 			for ( let i = 0; i < callbacks.length; i++ ) {
 				// Filter out callbacks that have been added after event has been fired.
