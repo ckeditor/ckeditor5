@@ -33,12 +33,9 @@ CKEDITOR.define( [
 	register( 'insertText', function( position, nodes ) {
 		const delta = new InsertTextDelta();
 
-		/* istanbul ignore else */
-		if ( !( nodes instanceof NodeList ) ) {
-			nodes = new NodeList( nodes );
-		}
+		nodes = new NodeList( nodes );
 
-		for ( let node of new NodeList( nodes ) ) {
+		for ( let node of nodes ) {
 			node.setAttrsTo( this.doc.selection.getAttrs() );
 		}
 
