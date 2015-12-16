@@ -13,6 +13,7 @@ CKEDITOR.define( [
 ], ( Range, LivePosition, EmitterMixin, utils ) => {
 	/**
 	 * LiveRange is a Range in the Tree Model that updates itself as the tree changes. It may be used as a bookmark.
+	 * **Note:** Constructor creates it's own {@link treeModel.LivePosition} instances basing on passed values.
 	 * **Note:** Be very careful when dealing with LiveRange. Each LiveRange instance bind events that might
 	 * have to be unbound. Use {@link #detach} whenever you don't need LiveRange anymore.
 	 *
@@ -102,8 +103,9 @@ CKEDITOR.define( [
 	}
 
 	/**
-	 * LiveRange is partially updated by "automatic" updates of LivePositions that are boundaries of LiveRange.
-	 * However there are cases when the boundaries have to be fixed because they end up in wrong places.
+	 * LiveRange boundaries are instances of {@link treeModel.LivePosition}, so it is updated thanks to them. This method
+	 * additionally fixes the results of updating live positions taking into account that those live positions
+	 * are boundaries of a range. An example case for fixing live positions is end boundary is moved before start boundary.
 	 *
 	 * @private
 	 * @method fixBoundaries

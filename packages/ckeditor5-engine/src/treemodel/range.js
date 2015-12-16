@@ -13,7 +13,8 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 	 */
 	class Range {
 		/**
-		 * Creates a range.
+		 * Creates a range spanning from `start` position to `end` position.
+		 * **Note:** Constructor creates it's own {@link treeModel.Position} instances basing on passed values.
 		 *
 		 * @param {treeModel.Position} start Start position.
 		 * @param {treeModel.Position} end End position.

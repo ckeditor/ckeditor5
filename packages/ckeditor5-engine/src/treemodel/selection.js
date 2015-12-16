@@ -120,10 +120,12 @@ CKEDITOR.define( [
 		}
 
 		/**
-		 * Unbinds all events previously bound by this selection, including events bound by created {@link treeModel.LiveRange}s.
+		 * Unbinds all events previously bound by this selection and objects created by this selection.
 		 */
 		detach() {
-			detachRanges.call( this );
+			for ( let i = 0; i < this._ranges.length; i++ ) {
+				this._ranges[ i ].detach();
+			}
 		}
 
 		/**
@@ -168,7 +170,7 @@ CKEDITOR.define( [
 		 * Removes all ranges that were added to the selection. Fires update event.
 		 */
 		removeAllRanges() {
-			detachRanges.call( this );
+			this.detach();
 			this._ranges = [];
 
 			this.fire( 'update' );
@@ -198,7 +200,7 @@ CKEDITOR.define( [
 		 * or backward - from end to start (`true`). Defaults to `false`.
 		 */
 		setRanges( newRanges, isLastBackward ) {
-			detachRanges.call( this );
+			this.detach();
 			this._ranges = [];
 
 			for ( let i = 0; i < newRanges.length; i++ ) {
@@ -207,21 +209,6 @@ CKEDITOR.define( [
 
 			this._lastRangeBackward = !!isLastBackward;
 			this.fire( 'update' );
-		}
-	}
-
-	/**
-	 * Unbinds all events bound by created {@link treeModel.LiveRange}s.
-	 *
-	 * @private
-	 * @method detachRanges
-	 * @memberOf {treeModel.Selection}
-	 */
-	function detachRanges() {
-		/*jshint validthis: true */
-
-		for ( let i = 0; i < this._ranges.length; i++ ) {
-			this._ranges[ i ].detach();
 		}
 	}
 
@@ -235,7 +222,7 @@ CKEDITOR.define( [
 	 * @param {treeModel.Range} range Range to add.
 	 */
 	function pushRange( range ) {
-		/*jshint validthis: true */
+		/* jshint validthis: true */
 		for ( let i = 0; i < this._ranges.length ; i++ ) {
 			if ( range.isIntersecting( this._ranges[ i ] ) ) {
 				/**

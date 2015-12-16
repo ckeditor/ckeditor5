@@ -71,7 +71,7 @@ CKEDITOR.define( [
 			 * @readonly
 			 * @property {treeModel.Selection}
 			 */
-			this._selection = new Selection();
+			this.selection = new Selection();
 		}
 
 		/**
@@ -82,16 +82,6 @@ CKEDITOR.define( [
 		 */
 		get graveyard() {
 			return this.getRoot( graveyardSymbol );
-		}
-
-		/**
-		 * Returns current selection done on this document.
-		 *
-		 * @readonly
-		 * @property {treeModel.Selection}
-		 */
-		get selection() {
-			return this._selection;
 		}
 
 		/**

@@ -24,9 +24,10 @@ CKEDITOR.define( [ 'treemodel/attribute' ], ( Attribute ) => {
 			 * Internal set containing the attributes stored by this list.
 			 *
 			 * @private
-			 * @property {Set.<treeModel.Attribute>}
+			 * @property {Set.<treeModel.Attribute>} _attrs
 			 */
-			this._attrs = new Set( attrs );
+
+			this.setAttrsTo( attrs );
 		}
 
 		/**

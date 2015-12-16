@@ -40,11 +40,24 @@ CKEDITOR.define( [
 			 * Flag representing LivePosition stickiness. LivePosition might be sticking to previous node or next node.
 			 * Whenever some nodes are inserted at the same position as LivePosition, `stickiness` is checked to decide if
 			 * LivePosition should be moved. Similar applies when a range of nodes is moved and one of it's boundary
-			 * position is same as LivePosition. Accepted values are {@link #STICKS_TO_PREVIOUS} and {@link #STICKS_TO_NEXT}.
+			 * position is same as LivePosition.
+			 *
+			 * Examples:
+			 * Insert:
+			 * Position is at | and we insert at the same position, marked as ^:
+			 * | sticks to previous node: `<p>f|^oo</p>` => `<p>f|baroo</p>`
+			 * | sticks to next node: `<p>f^|oo</p>` => `<p>fbar|oo</p>`
+			 *
+			 * Move:
+			 * Position is at | and range [ ] is moved to position ^:
+			 * | sticks to previous node: `<p>f|[oo]</p><p>b^ar</p>` => `<p>f|</p><p>booar</p>`
+			 * | sticks to next node: `<p>f|[oo]</p><p>b^ar</p>` => `<p>f</p><p>b|ooar</p>`
+			 *
+			 * Accepted values are {@link #STICKS_TO_PREVIOUS} and {@link #STICKS_TO_NEXT}.
 			 *
 			 * @type {Number}
 			 */
-			this.stickiness = stickiness ? stickiness : STICKS_TO_NEXT;
+			this.stickiness = stickiness || STICKS_TO_NEXT;
 
 			bindWithDocument.call( this );
 		}
