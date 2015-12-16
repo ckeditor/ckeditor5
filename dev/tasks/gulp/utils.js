@@ -6,15 +6,26 @@ const path = require( 'path' );
 const gulp = require( 'gulp' );
 const rename = require( 'gulp-rename' );
 const babel = require( 'gulp-babel' );
+const gulpWatch = require( 'gulp-watch' );
+const gulpPlumber = require( 'gulp-plumber' );
+const multipipe = require( 'multipipe' );
 const stream = require( 'stream' );
 
 const sep = path.sep;
 
 const utils = {
-	fork( sourceStream ) {
-		const fork = new stream.PassThrough( { objectMode: true } );
+	src( root, pattern, watch ) {
+		const srcDir = path.join( root, pattern );
+		let stream = gulp.src( srcDir );
 
-		return sourceStream.pipe( fork );
+		if ( watch ) {
+			stream = stream
+				// Let's use plumber only when watching. In other cases we should fail quickly and loudly.
+				.pipe( gulpPlumber() )
+				.pipe( gulpWatch( srcDir ) );
+		}
+
+		return stream;
 	},
 
 	dist( distDir, format ) {
@@ -30,11 +41,36 @@ const utils = {
 		};
 		const babelModuleTranspiler = babelModuleTranspilers[ format ];
 
+		if ( !babelModuleTranspiler ) {
+			throw new Error( `Incorrect format: ${ format }` );
+		}
+
 		return new stream.PassThrough( { objectMode: true } )
 			.pipe( utils.pickVersionedFile( format ) )
 			.pipe( babel( {
 				plugins: [ `transform-es2015-modules-${ babelModuleTranspiler }` ]
 			} ) );
+	},
+
+	addFormat( distDir ) {
+		return ( pipes, format ) => {
+			const conversionPipes = [];
+
+			if ( format != 'esnext' ) {
+				conversionPipes.push( utils.transpile( format ) );
+			}
+
+			conversionPipes.push(
+				utils.dist( distDir, format )
+					.on( 'data', ( file ) => {
+						console.log( `Finished writing ${ file.path }...` );
+					} )
+			);
+
+			pipes.push( multipipe.apply( null, conversionPipes ) );
+
+			return pipes;
+		};
 	},
 
 	pickVersionedFile( format ) {

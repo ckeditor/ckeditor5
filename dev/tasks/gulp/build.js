@@ -2,15 +2,34 @@
 
 'use strict';
 
+const KNOWN_OPTIONS = {
+	build: {
+		string: [
+			'formats'
+		],
+
+		boolean: [
+			'watch'
+		],
+
+		default: {
+			formats: 'amd',
+			watch: false
+		}
+	}
+};
+
 const path = require( 'path' );
 const gulp = require( 'gulp' );
 const del = require( 'del' );
 const merge = require( 'merge-stream' );
-// const runSequence = require( 'run-sequence' );
-const watch = require( 'gulp-watch' );
+const gulpMirror = require( 'gulp-mirror' );
+const minimist = require( 'minimist' );
 const utils = require( './utils' );
 
 const sep = path.sep;
+
+const options = minimist( process.argv.slice( 2 ), KNOWN_OPTIONS[ process.argv[ 2 ] ] );
 
 module.exports = ( config ) => {
 	const distDir = path.join( config.ROOT_DIR, config.DIST_DIR );
@@ -21,31 +40,23 @@ module.exports = ( config ) => {
 		},
 
 		src: {
-			all() {
-				return merge( tasks.src.main(), tasks.src.ckeditor5(), tasks.src.modules() );
+			all( watch ) {
+				return merge( tasks.src.main( watch ), tasks.src.ckeditor5( watch ), tasks.src.modules( watch ) );
 			},
 
-			main() {
-				const srcDir = path.join( config.ROOT_DIR, 'ckeditor.js' );
-
-				return gulp.src( srcDir )
-					.pipe( watch( srcDir ) );
+			main( watch ) {
+				return utils.src( config.ROOT_DIR, 'ckeditor.js', watch );
 			},
 
-			ckeditor5() {
-				const srcDir = path.join( config.ROOT_DIR, 'src/**/*.js' );
-
-				return gulp.src( srcDir )
-					.pipe( watch( srcDir ) )
+			ckeditor5( watch ) {
+				return utils.src( config.ROOT_DIR, 'src/**/*.js', watch )
 					.pipe( utils.wrapCKEditor5Module() );
 			},
 
-			modules() {
-				const srcDir = path.join( config.ROOT_DIR, 'node_modules/ckeditor5-*/src/**/*.js' );
+			modules( watch ) {
 				const modulePathPattern = new RegExp( `node_modules${ sep }(ckeditor5-[^${ sep }]+)${ sep }src` );
 
-				return gulp.src( srcDir )
-					.pipe( watch( srcDir ) )
+				return utils.src( config.ROOT_DIR, 'node_modules/ckeditor5-*/src/**/*.js', watch )
 					.pipe( utils.unpackModules( modulePathPattern ) );
 			}
 		}
@@ -53,40 +64,16 @@ module.exports = ( config ) => {
 
 	gulp.task( 'build:clean', tasks.clean );
 
-	// gulp.task( 'build:copy', ( callback ) => {
-	// 	runSequence(
-	// 		'build:clean',
-	// 		[ 'build:copy:main', 'build:copy:ckeditor5', 'build:copy:modules' ],
-	// 		callback
-	// 	);
-	// } );
-
-	// gulp.task( 'build:transpile', [ 'build:copy' ], tasks.transpile );
-
-	gulp.task( 'build:watch', () => {
-		const codeStream = tasks.src.all()
+	gulp.task( 'build', [ 'build:clean' ], () => {
+		const formats = options.formats.split( ',' );
+		const codeStream = tasks.src.all( options.watch )
 			.on( 'data', ( file ) => {
 				console.log( `Processing ${ file.path }...` );
 			} );
+		const formatPipes = formats.reduce( utils.addFormat( distDir ), [] );
 
-		const esNextStream = utils.fork( codeStream )
-			.pipe( utils.dist( distDir, 'esnext' ) );
-
-		const amdStream = utils.fork( codeStream )
-			.pipe( utils.transpile( 'amd' ) )
-			.pipe( utils.dist( distDir, 'amd' ) );
-
-		const cjsStream = utils.fork( codeStream )
-			.pipe( utils.transpile( 'cjs' ) )
-			.pipe( utils.dist( distDir, 'cjs' ) );
-
-		return merge( esNextStream, amdStream, cjsStream )
-			// Unfortunately it gets triggered 3x per each file (what makes sense), but with a single path (cjs).
-			// I guess that it will be better to listen on amd/cjs streams because while the watcher is on you either
-			// need one or the other.
-			.on( 'data', ( file ) => {
-				console.log( `Finished writing ${ file.path }...` );
-			} );
+		return codeStream
+			.pipe( gulpMirror.apply( null, formatPipes ) );
 	} );
 
 	return tasks;
