@@ -38,9 +38,9 @@ export default class NodeList {
 	 *
 	 *		let nodeList = new NodeList( new Text( 'foo', [ new Attribute( 'bar', 'bom' ) ] ) );
 	 *		nodeList.length; // 3
-	 *		nodeList.get( 0 ).getAttr( 'bar' ); // 'bom'
-	 *		nodeList.get( 1 ).getAttr( 'bar' ); // 'bom'
-	 *		nodeList.get( 2 ).getAttr( 'bar' ); // 'bom'
+	 *		nodeList.get( 0 ).attrs.get( 'bar' ); // 'bom'
+	 *		nodeList.get( 1 ).attrs.get( 'bar' ); // 'bom'
+	 *		nodeList.get( 2 ).attrs.get( 'bar' ); // 'bom'
 	 *
 	 *		let nodeListA = new NodeList( 'foo' );
 	 *		let nodeListB = new NodeList( nodeListA );

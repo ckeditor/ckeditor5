@@ -7,14 +7,11 @@
 
 'use strict';
 
-import coreTestUtils from '/tests/core/_utils/utils.js';
 import Document from '/ckeditor5/core/treemodel/document.js';
 import Position from '/ckeditor5/core/treemodel/position.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
 import Attribute from '/ckeditor5/core/treemodel/attribute.js';
 import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
-
-const getIteratorCount = coreTestUtils.getIteratorCount;
 
 describe( 'Batch', () => {
 	let doc, root, p;
@@ -36,16 +33,16 @@ describe( 'Batch', () => {
 
 			expect( root.getChild( 0 ).name ).to.equal( 'p' );
 			expect( root.getChild( 0 ).getChildCount() ).to.equal( 3 );
-			expect( getIteratorCount( root.getChild( 0 ).getAttrs() ) ).to.equal( 1 );
-			expect( root.getChild( 0 ).getAttr( 'key' ) ).to.equal( 'value' );
+			expect( root.getChild( 0 ).attrs.size ).to.equal( 1 );
+			expect( root.getChild( 0 ).attrs.getValue( 'key' ) ).to.equal( 'value' );
 			expect( root.getChild( 0 ).getChild( 0 ).character ).to.equal( 'f' );
 			expect( root.getChild( 0 ).getChild( 1 ).character ).to.equal( 'o' );
 			expect( root.getChild( 0 ).getChild( 2 ).character ).to.equal( 'o' );
 
 			expect( root.getChild( 1 ).name ).to.equal( 'p' );
 			expect( root.getChild( 1 ).getChildCount() ).to.equal( 3 );
-			expect( getIteratorCount( root.getChild( 1 ).getAttrs() ) ).to.equal( 1 );
-			expect( root.getChild( 1 ).getAttr( 'key' ) ).to.equal( 'value' );
+			expect( root.getChild( 1 ).attrs.size ).to.equal( 1 );
+			expect( root.getChild( 1 ).attrs.getValue( 'key' ) ).to.equal( 'value' );
 			expect( root.getChild( 1 ).getChild( 0 ).character ).to.equal( 'b' );
 			expect( root.getChild( 1 ).getChild( 1 ).character ).to.equal( 'a' );
 			expect( root.getChild( 1 ).getChild( 2 ).character ).to.equal( 'r' );
@@ -58,8 +55,8 @@ describe( 'Batch', () => {
 
 			expect( root.getChild( 0 ).name ).to.equal( 'p' );
 			expect( root.getChild( 0 ).getChildCount() ).to.equal( 6 );
-			expect( getIteratorCount( root.getChild( 0 ).getAttrs() ) ).to.equal( 1 );
-			expect( root.getChild( 0 ).getAttr( 'key' ) ).to.equal( 'value' );
+			expect( root.getChild( 0 ).attrs.size ).to.equal( 1 );
+			expect( root.getChild( 0 ).attrs.getValue( 'key' ) ).to.equal( 'value' );
 			expect( root.getChild( 0 ).getChild( 0 ).character ).to.equal( 'f' );
 			expect( root.getChild( 0 ).getChild( 1 ).character ).to.equal( 'o' );
 			expect( root.getChild( 0 ).getChild( 2 ).character ).to.equal( 'o' );
@@ -69,8 +66,8 @@ describe( 'Batch', () => {
 
 			expect( root.getChild( 1 ).name ).to.equal( 'p' );
 			expect( root.getChild( 1 ).getChildCount() ).to.equal( 0 );
-			expect( getIteratorCount( root.getChild( 1 ).getAttrs() ) ).to.equal( 1 );
-			expect( root.getChild( 1 ).getAttr( 'key' ) ).to.equal( 'value' );
+			expect( root.getChild( 1 ).attrs.size ).to.equal( 1 );
+			expect( root.getChild( 1 ).attrs.getValue( 'key' ) ).to.equal( 'value' );
 		} );
 
 		it( 'should throw if we try to split a root', () => {

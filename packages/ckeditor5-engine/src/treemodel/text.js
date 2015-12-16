@@ -33,6 +33,6 @@ export default class Text {
 		 *
 		 * @property {Iterable}
 		 */
-		this.attrs = attrs;
+		this.attrs = new AttributeList( attrs );
 	}
 }

@@ -27,10 +27,10 @@ export default class Selection {
 		/**
 		 * List of attributes set on current selection.
 		 *
-		 * @private
-		 * @property {treeModel.AttributeList} _attrs
+		 * @readonly
+		 * @property {treeModel.AttributeList} attrs
 		 */
-		this._attrs = new AttributeList();
+		this.attrs = new AttributeList();
 
 		/**
 		 * Stores all ranges that are selected.
@@ -119,26 +119,12 @@ export default class Selection {
 	}
 
 	/**
-	 * Unbinds all events previously bound by this selection and objects created by this selection.
+	 * Unbinds all events previously bound by this selection or objects created by this selection.
 	 */
 	detach() {
 		for ( let i = 0; i < this._ranges.length; i++ ) {
 			this._ranges[ i ].detach();
 		}
-	}
-
-	/**
-	 * @see {@link treeModel.AttributeList#getAttr}
-	 */
-	getAttr( key ) {
-		return this._attrs.getAttr( key );
-	}
-
-	/**
-	 * @see {@link treeModel.AttributeList#getAttrs}
-	 */
-	getAttrs() {
-		return this._attrs.getAttrs();
 	}
 
 	/**
@@ -152,20 +138,6 @@ export default class Selection {
 	}
 
 	/**
-	 * @see {@link treeModel.AttributeList#hasAttr}
-	 */
-	hasAttr( key ) {
-		return this._attrs.hasAttr( key );
-	}
-
-	/**
-	 * @see {@link treeModel.AttributeList#removeAttr}
-	 */
-	removeAttr( key ) {
-		this._attrs.removeAttr( key );
-	}
-
-	/**
 	 * Removes all ranges that were added to the selection. Fires update event.
 	 */
 	removeAllRanges() {
@@ -173,20 +145,6 @@ export default class Selection {
 		this._ranges = [];
 
 		this.fire( 'update' );
-	}
-
-	/**
-	 * @see {@link treeModel.AttributeList#setAttr}
-	 */
-	setAttr( attr ) {
-		this._attrs.setAttr( attr );
-	}
-
-	/**
-	 * @see {@link treeModel.AttributeList#setAttrsTo}
-	 */
-	setAttrsTo( attrs ) {
-		this._attrs.setAttrsTo( attrs );
 	}
 
 	/**

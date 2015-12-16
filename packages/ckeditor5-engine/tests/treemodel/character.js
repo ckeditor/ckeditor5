@@ -7,13 +7,10 @@
 
 'use strict';
 
-import coreTestUtils from '/tests/core/_utils/utils.js';
 import Character from '/ckeditor5/core/treemodel/character.js';
 import Node from '/ckeditor5/core/treemodel/node.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
 import Attribute from '/ckeditor5/core/treemodel/attribute.js';
-
-const getIteratorCount = coreTestUtils.getIteratorCount;
 
 describe( 'Character', () => {
 	describe( 'constructor', () => {
@@ -24,7 +21,7 @@ describe( 'Character', () => {
 			expect( character ).to.be.an.instanceof( Node );
 			expect( character ).to.have.property( 'character' ).that.equals( 'f' );
 			expect( character ).to.have.property( 'parent' ).that.equals( parent );
-			expect( getIteratorCount( character.getAttrs() ) ).to.equal( 0 );
+			expect( character.attrs.size ).to.equal( 0 );
 		} );
 
 		it( 'should create character with attributes', () => {
@@ -35,8 +32,8 @@ describe( 'Character', () => {
 			expect( character ).to.be.an.instanceof( Node );
 			expect( character ).to.have.property( 'character' ).that.equals( 'f' );
 			expect( character ).to.have.property( 'parent' ).that.equals( parent );
-			expect( getIteratorCount( character.getAttrs() ) ).to.equal( 1 );
-			expect( character.getAttr( attr.key ) ).to.equal( attr.value );
+			expect( character.attrs.size ).to.equal( 1 );
+			expect( character.attrs.get( attr.key ) ).to.equal( attr );
 		} );
 	} );
 } );

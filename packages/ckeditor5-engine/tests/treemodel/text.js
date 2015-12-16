@@ -9,6 +9,7 @@
 
 import Text from '/ckeditor5/core/treemodel/text.js';
 import Attribute from '/ckeditor5/core/treemodel/attribute.js';
+import AttributeList from '/ckeditor5/core/treemodel/attributelist.js';
 
 describe( 'Text', () => {
 	describe( 'constructor', () => {
@@ -17,8 +18,8 @@ describe( 'Text', () => {
 			let text = new Text( 'bar', attrs );
 
 			expect( text ).to.have.property( 'text' ).that.equals( 'bar' );
-			expect( text ).to.have.property( 'attrs' ).that.is.an( 'array' );
-			expect( text.attrs ).to.be.deep.equals( attrs );
+			expect( text ).to.have.property( 'attrs' ).that.is.instanceof( AttributeList );
+			expect( Array.from( text.attrs ) ).to.deep.equal( attrs );
 		} );
 	} );
 } );

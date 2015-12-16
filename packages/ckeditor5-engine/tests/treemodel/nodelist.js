@@ -49,11 +49,11 @@ describe( 'NodeList', () => {
 
 			expect( nodeList.length ).to.equal( 3 );
 			expect( nodeList.get( 0 ).character ).to.equal( 'f' );
-			expect( nodeList.get( 0 ).getAttr( attr.key ) ).to.equal( attr.value );
+			expect( nodeList.get( 0 ).attrs.getValue( attr.key ) ).to.equal( attr.value );
 			expect( nodeList.get( 1 ).character ).to.equal( 'o' );
-			expect( nodeList.get( 1 ).getAttr( attr.key ) ).to.equal( attr.value );
+			expect( nodeList.get( 1 ).attrs.getValue( attr.key ) ).to.equal( attr.value );
 			expect( nodeList.get( 2 ).character ).to.equal( 'o' );
-			expect( nodeList.get( 2 ).getAttr( attr.key ) ).to.equal( attr.value );
+			expect( nodeList.get( 2 ).attrs.getValue( attr.key ) ).to.equal( attr.value );
 		} );
 	} );
 

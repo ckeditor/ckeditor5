@@ -7,19 +7,17 @@
 
 'use strict';
 
-import coreTestUtils from '/tests/core/_utils/utils.js';
-import Attribute from '/ckeditor5/core/treemodel/attribute.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
-import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 import Character from '/ckeditor5/core/treemodel/character.js';
-
-const getIteratorCount = coreTestUtils.getIteratorCount;
+import Attribute from '/ckeditor5/core/treemodel/attribute.js';
+import AttributeList from '/ckeditor5/core/treemodel/attributelist.js';
+import NodeList from '/ckeditor5/core/treemodel/nodelist.js';
+import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
 describe( 'Node', () => {
 	let root;
 	let one, two, three;
-	let charB, charA, charR, img, attrEle;
-	let attrFooBar;
+	let charB, charA, charR, img;
 
 	before( () => {
 		charB = new Character( 'b' );
@@ -32,12 +30,6 @@ describe( 'Node', () => {
 		three = new Element( 'three' );
 
 		root = new Element( null, null, [ one, two, three ] );
-
-		attrFooBar = new Attribute( 'foo', 'bar' );
-	} );
-
-	beforeEach( () => {
-		attrEle = new Element( 'element' );
 	} );
 
 	describe( 'should have a correct property', () => {
@@ -95,15 +87,23 @@ describe( 'Node', () => {
 	} );
 
 	describe( 'constructor', () => {
-		it( 'should copy attributes list, not pass by reference', () => {
-			let attrs = [ new Attribute( 'attr', true ) ];
+		it( 'should create empty attribute list if no parameters were passed', () => {
+			let foo = new Element( 'foo' );
+
+			expect( foo.attrs ).to.be.instanceof( AttributeList );
+			expect( foo.attrs.size ).to.equal( 0 );
+		} );
+
+		it( 'should initialize attribute list with passed attributes', () => {
+			let attrs = [
+				new Attribute( 'foo', true ),
+				new Attribute( 'bar', false )
+			];
 			let foo = new Element( 'foo', attrs );
-			let bar = new Element( 'bar', attrs );
 
-			foo.removeAttr( 'attr' );
-
-			expect( getIteratorCount( foo.getAttrs() ) ).to.equal( 0 );
-			expect( getIteratorCount( bar.getAttrs() ) ).to.equal( 1 );
+			expect( foo.attrs.size ).to.equal( 2 );
+			expect( foo.attrs.getValue( 'foo' ) ).to.equal( true );
+			expect( foo.attrs.getValue( 'bar' ) ).to.equal( false );
 		} );
 	} );
 
@@ -160,105 +160,6 @@ describe( 'Node', () => {
 			expect( charA.getPath() ).to.deep.equal( [ 1, 1 ] );
 			expect( img.getPath() ).to.deep.equal( [ 1, 2 ] );
 			expect( charR.getPath() ).to.deep.equal( [ 1, 3 ] );
-		} );
-	} );
-
-	// Testing integration with attributes list.
-	// Tests copied from AttributeList tests.
-	// Some cases were omitted.
-
-	describe( 'setAttr', () => {
-		it( 'should insert an attribute', () => {
-			attrEle.setAttr( attrFooBar );
-
-			expect( getIteratorCount( attrEle.getAttrs() ) ).to.equal( 1 );
-			expect( attrEle.getAttr( attrFooBar.key ) ).to.equal( attrFooBar.value );
-		} );
-	} );
-
-	describe( 'setAttrsTo', () => {
-		it( 'should remove all attributes and set passed ones', () => {
-			attrEle.setAttr( attrFooBar );
-
-			let attrs = [ new Attribute( 'abc', true ), new Attribute( 'xyz', false ) ];
-
-			attrEle.setAttrsTo( attrs );
-
-			expect( getIteratorCount( attrEle.getAttrs() ) ).to.equal( 2 );
-			expect( attrEle.getAttr( 'foo' ) ).to.be.null;
-			expect( attrEle.getAttr( 'abc' ) ).to.be.true;
-			expect( attrEle.getAttr( 'xyz' ) ).to.be.false;
-		} );
-	} );
-
-	describe( 'getAttr', () => {
-		beforeEach( () => {
-			attrEle = new Element( 'e', [ attrFooBar ] );
-		} );
-
-		it( 'should return attribute value if key of previously set attribute has been passed', () => {
-			expect( attrEle.getAttr( 'foo' ) ).to.equal( attrFooBar.value );
-		} );
-
-		it( 'should return null if attribute with given key has not been found', () => {
-			expect( attrEle.getAttr( 'bar' ) ).to.be.null;
-		} );
-	} );
-
-	describe( 'removeAttr', () => {
-		it( 'should remove an attribute', () => {
-			let attrA = new Attribute( 'a', 'A' );
-			let attrB = new Attribute( 'b', 'B' );
-			let attrC = new Attribute( 'c', 'C' );
-
-			attrEle.setAttr( attrA );
-			attrEle.setAttr( attrB );
-			attrEle.setAttr( attrC );
-
-			attrEle.removeAttr( attrB.key );
-
-			expect( getIteratorCount( attrEle.getAttrs() ) ).to.equal( 2 );
-			expect( attrEle.getAttr( attrA.key ) ).to.equal( attrA.value );
-			expect( attrEle.getAttr( attrC.key ) ).to.equal( attrC.value );
-			expect( attrEle.getAttr( attrB.key ) ).to.be.null;
-		} );
-	} );
-
-	describe( 'hasAttr', () => {
-		it( 'should check attribute by key', () => {
-			attrEle.setAttr( attrFooBar );
-			expect( attrEle.hasAttr( 'foo' ) ).to.be.true;
-		} );
-
-		it( 'should return false if attribute was not found by key', () => {
-			expect( attrEle.hasAttr( 'bar' ) ).to.be.false;
-		} );
-
-		it( 'should check attribute by object', () => {
-			attrEle.setAttr( attrFooBar );
-			expect( attrEle.hasAttr( attrFooBar ) ).to.be.true;
-		} );
-
-		it( 'should return false if attribute was not found by object', () => {
-			expect( attrEle.hasAttr( attrFooBar ) ).to.be.false;
-		} );
-	} );
-
-	describe( 'getAttrs', () => {
-		it( 'should return all set attributes', () => {
-			let attrA = new Attribute( 'a', 'A' );
-			let attrB = new Attribute( 'b', 'B' );
-			let attrC = new Attribute( 'c', 'C' );
-
-			attrEle.setAttrsTo( [
-				attrA,
-				attrB,
-				attrC
-			] );
-
-			attrEle.removeAttr( attrB.key );
-
-			expect( [ attrA, attrC ] ).to.deep.equal( Array.from( attrEle.getAttrs() ) );
 		} );
 	} );
 } );

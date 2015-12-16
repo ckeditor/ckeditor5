@@ -87,13 +87,14 @@ export default class AttributeOperation extends Operation {
 			 */
 			throw new CKEditorError(
 				'operation-attribute-different-keys: Old and new attributes should have the same keys.',
-				{ oldAttr: oldAttr, newAttr: newAttr } );
+				{ oldAttr: oldAttr, newAttr: newAttr }
+			);
 		}
 
 		// Remove or change.
 		if ( oldAttr !== null ) {
 			for ( let node of this.range.getAllNodes() ) {
-				if ( !node.hasAttr( oldAttr ) ) {
+				if ( !node.attrs.has( oldAttr ) ) {
 					/**
 					 * The attribute which should be removed does not exists for the given node.
 					 *
@@ -103,13 +104,14 @@ export default class AttributeOperation extends Operation {
 					 */
 					throw new CKEditorError(
 						'operation-attribute-no-attr-to-remove: The attribute which should be removed does not exists for given node.',
-						{ node: node, attr: oldAttr } );
+						{ node: node, attr: oldAttr }
+					);
 				}
 
 				// There is no use in removing attribute if we will overwrite it later.
 				// Still it is profitable to run through the loop to check if all nodes in the range has old attribute.
 				if ( newAttr === null ) {
-					node.removeAttr( oldAttr.key );
+					node.attrs.delete( oldAttr.key );
 				}
 			}
 		}
@@ -117,7 +119,7 @@ export default class AttributeOperation extends Operation {
 		// Insert or change.
 		if ( newAttr !== null ) {
 			for ( let node of this.range.getAllNodes() ) {
-				if ( oldAttr === null && node.hasAttr( newAttr.key ) ) {
+				if ( oldAttr === null && node.attrs.has( newAttr.key ) ) {
 					/**
 					 * The attribute with given key already exists for the given node.
 					 *
@@ -127,10 +129,11 @@ export default class AttributeOperation extends Operation {
 					 */
 					throw new CKEditorError(
 						'operation-attribute-attr-exists: The attribute with given key already exists.',
-						{ node: node, attr: newAttr } );
+						{ node: node, attr: newAttr }
+					);
 				}
 
-				node.setAttr( newAttr );
+				node.attrs.set( newAttr );
 			}
 		}
 

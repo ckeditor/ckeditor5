@@ -35,12 +35,14 @@ export default class Node {
 
 		/**
 		 * List of attributes set on this node.
-		 * Attributes of nodes attached to the document can be changed only be the {@link treeModel.operation.AttributeOperation}.
+		 * **Note:** It is **important** that attributes of nodes already attached to the document must be changed
+		 * only by an {@link treeModel.operation.AttributeOperation}. Do not set attributes of such nodes
+		 * using {@link treeModel.AttributeList} API.
 		 *
-		 * @private
-		 * @property {treeModel.AttributeList} _attrs
+		 * @readonly
+		 * @property {treeModel.AttributeList} attrs
 		 */
-		this._attrs = new AttributeList( attrs );
+		this.attrs = new AttributeList( attrs );
 	}
 
 	/**
@@ -103,20 +105,6 @@ export default class Node {
 	}
 
 	/**
-	 * @see {@link treeModel.AttributeList#getAttr}
-	 */
-	getAttr( key ) {
-		return this._attrs.getAttr( key );
-	}
-
-	/**
-	 * @see {@link treeModel.AttributeList#getAttrs}
-	 */
-	getAttrs() {
-		return this._attrs.getAttrs();
-	}
-
-	/**
 	 * Index of the node in the parent element or null if the node has no parent.
 	 *
 	 * Throws error if the parent element does not contain this node.
@@ -159,34 +147,6 @@ export default class Node {
 		}
 
 		return path;
-	}
-
-	/**
-	 * @see {@link treeModel.AttributeList#hasAttr}
-	 */
-	hasAttr( key ) {
-		return this._attrs.hasAttr( key );
-	}
-
-	/**
-	 * @see {@link treeModel.AttributeList#removeAttr}
-	 */
-	removeAttr( key ) {
-		this._attrs.removeAttr( key );
-	}
-
-	/**
-	 * @see {@link treeModel.AttributeList#setAttr}
-	 */
-	setAttr( attr ) {
-		this._attrs.setAttr( attr );
-	}
-
-	/**
-	 * @see {@link treeModel.AttributeList#setAttrsTo}
-	 */
-	setAttrsTo( attrs ) {
-		this._attrs.setAttrsTo( attrs );
 	}
 
 	/**

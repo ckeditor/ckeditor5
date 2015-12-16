@@ -7,7 +7,6 @@
 
 'use strict';
 
-import coreTestUtils from '/tests/core/_utils/utils.js';
 import Document from '/ckeditor5/core/treemodel/document.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
 import AttributeOperation from '/ckeditor5/core/treemodel/operation/attributeoperation.js';
@@ -17,8 +16,6 @@ import Character from '/ckeditor5/core/treemodel/character.js';
 import Attribute from '/ckeditor5/core/treemodel/attribute.js';
 import Text from '/ckeditor5/core/treemodel/text.js';
 import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
-
-const getIteratorCount = coreTestUtils.getIteratorCount;
 
 describe( 'AttributeOperation', () => {
 	let doc, root;
@@ -55,9 +52,9 @@ describe( 'AttributeOperation', () => {
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 3 );
-		expect( root.getChild( 0 ).hasAttr( newAttr ) ).to.be.true;
-		expect( root.getChild( 1 ).hasAttr( newAttr ) ).to.be.true;
-		expect( getIteratorCount( root.getChild( 2 ).getAttrs() ) ).to.equal( 0 );
+		expect( root.getChild( 0 ).attrs.has( newAttr ) ).to.be.true;
+		expect( root.getChild( 1 ).attrs.has( newAttr ) ).to.be.true;
+		expect( root.getChild( 2 ).attrs.size ).to.equal( 0 );
 	} );
 
 	it( 'should add attribute to the existing attributes', () => {
@@ -78,10 +75,10 @@ describe( 'AttributeOperation', () => {
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 1 );
-		expect( getIteratorCount( root.getChild( 0 ).getAttrs() ) ).to.equal( 3 );
-		expect( root.getChild( 0 ).hasAttr( newAttr ) ).to.be.true;
-		expect( root.getChild( 0 ).hasAttr( fooAttr ) ).to.be.true;
-		expect( root.getChild( 0 ).hasAttr( barAttr ) ).to.be.true;
+		expect( root.getChild( 0 ).attrs.size ).to.equal( 3 );
+		expect( root.getChild( 0 ).attrs.has( newAttr ) ).to.be.true;
+		expect( root.getChild( 0 ).attrs.has( fooAttr ) ).to.be.true;
+		expect( root.getChild( 0 ).attrs.has( barAttr ) ).to.be.true;
 	} );
 
 	it( 'should change attribute to the set of nodes', () => {
@@ -101,12 +98,12 @@ describe( 'AttributeOperation', () => {
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 3 );
-		expect( getIteratorCount( root.getChild( 0 ).getAttrs() ) ).to.equal( 1 );
-		expect( root.getChild( 0 ).hasAttr( newAttr ) ).to.be.true;
-		expect( getIteratorCount( root.getChild( 1 ).getAttrs() ) ).to.equal( 1 );
-		expect( root.getChild( 1 ).hasAttr( newAttr ) ).to.be.true;
-		expect( getIteratorCount( root.getChild( 2 ).getAttrs() ) ).to.equal( 1 );
-		expect( root.getChild( 2 ).hasAttr( oldAttr ) ).to.be.true;
+		expect( root.getChild( 0 ).attrs.size ).to.equal( 1 );
+		expect( root.getChild( 0 ).attrs.has( newAttr ) ).to.be.true;
+		expect( root.getChild( 1 ).attrs.size ).to.equal( 1 );
+		expect( root.getChild( 1 ).attrs.has( newAttr ) ).to.be.true;
+		expect( root.getChild( 2 ).attrs.size ).to.equal( 1 );
+		expect( root.getChild( 2 ).attrs.has( oldAttr ) ).to.be.true;
 	} );
 
 	it( 'should change attribute in the middle of existing attributes', () => {
@@ -128,10 +125,10 @@ describe( 'AttributeOperation', () => {
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 1 );
-		expect( getIteratorCount( root.getChild( 0 ).getAttrs() ) ).to.equal( 3 );
-		expect( root.getChild( 0 ).hasAttr( fooAttr ) ).to.be.true;
-		expect( root.getChild( 0 ).hasAttr( x2Attr ) ).to.be.true;
-		expect( root.getChild( 0 ).hasAttr( barAttr ) ).to.be.true;
+		expect( root.getChild( 0 ).attrs.size ).to.equal( 3 );
+		expect( root.getChild( 0 ).attrs.has( fooAttr ) ).to.be.true;
+		expect( root.getChild( 0 ).attrs.has( x2Attr ) ).to.be.true;
+		expect( root.getChild( 0 ).attrs.has( barAttr ) ).to.be.true;
 	} );
 
 	it( 'should remove attribute', () => {
@@ -152,9 +149,9 @@ describe( 'AttributeOperation', () => {
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 1 );
-		expect( getIteratorCount( root.getChild( 0 ).getAttrs() ) ).to.equal( 2 );
-		expect( root.getChild( 0 ).hasAttr( fooAttr ) ).to.be.true;
-		expect( root.getChild( 0 ).hasAttr( barAttr ) ).to.be.true;
+		expect( root.getChild( 0 ).attrs.size ).to.equal( 2 );
+		expect( root.getChild( 0 ).attrs.has( fooAttr ) ).to.be.true;
+		expect( root.getChild( 0 ).attrs.has( barAttr ) ).to.be.true;
 	} );
 
 	it( 'should create an AttributeOperation as a reverse', () => {
@@ -190,9 +187,9 @@ describe( 'AttributeOperation', () => {
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.getChildCount() ).to.equal( 3 );
-		expect( getIteratorCount( root.getChild( 0 ).getAttrs() ) ).to.equal( 0 );
-		expect( getIteratorCount( root.getChild( 1 ).getAttrs() ) ).to.equal( 0 );
-		expect( getIteratorCount( root.getChild( 2 ).getAttrs() ) ).to.equal( 0 );
+		expect( root.getChild( 0 ).attrs.size ).to.equal( 0 );
+		expect( root.getChild( 1 ).attrs.size ).to.equal( 0 );
+		expect( root.getChild( 2 ).attrs.size ).to.equal( 0 );
 	} );
 
 	it( 'should not set attribute of element if change range starts in the middle of that element', () => {
@@ -212,7 +209,7 @@ describe( 'AttributeOperation', () => {
 			)
 		);
 
-		expect( root.getChild( 0 ).hasAttr( fooAttr ) ).to.be.false;
+		expect( root.getChild( 0 ).attrs.has( fooAttr ) ).to.be.false;
 	} );
 
 	it( 'should not remove attribute of element if change range starts in the middle of that element', () => {
@@ -232,7 +229,7 @@ describe( 'AttributeOperation', () => {
 			)
 		);
 
-		expect( root.getChild( 0 ).hasAttr( fooAttr ) ).to.be.true;
+		expect( root.getChild( 0 ).attrs.has( fooAttr ) ).to.be.true;
 	} );
 
 	it( 'should undo changing attribute by applying reverse operation', () => {
@@ -256,12 +253,12 @@ describe( 'AttributeOperation', () => {
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.getChildCount() ).to.equal( 3 );
-		expect( getIteratorCount( root.getChild( 0 ).getAttrs() ) ).to.equal( 1 );
-		expect( root.getChild( 0 ).hasAttr( oldAttr ) ).to.be.true;
-		expect( getIteratorCount( root.getChild( 1 ).getAttrs() ) ).to.equal( 1 );
-		expect( root.getChild( 1 ).hasAttr( oldAttr ) ).to.be.true;
-		expect( getIteratorCount( root.getChild( 2 ).getAttrs() ) ).to.equal( 1 );
-		expect( root.getChild( 2 ).hasAttr( oldAttr ) ).to.be.true;
+		expect( root.getChild( 0 ).attrs.size ).to.equal( 1 );
+		expect( root.getChild( 0 ).attrs.has( oldAttr ) ).to.be.true;
+		expect( root.getChild( 1 ).attrs.size ).to.equal( 1 );
+		expect( root.getChild( 1 ).attrs.has( oldAttr ) ).to.be.true;
+		expect( root.getChild( 2 ).attrs.size ).to.equal( 1 );
+		expect( root.getChild( 2 ).attrs.has( oldAttr ) ).to.be.true;
 	} );
 
 	it( 'should undo remove attribute by applying reverse operation', () => {
@@ -284,12 +281,12 @@ describe( 'AttributeOperation', () => {
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.getChildCount() ).to.equal( 3 );
-		expect( getIteratorCount( root.getChild( 0 ).getAttrs() ) ).to.equal( 1 );
-		expect( root.getChild( 0 ).hasAttr( fooAttr ) ).to.be.true;
-		expect( getIteratorCount( root.getChild( 1 ).getAttrs() ) ).to.equal( 1 );
-		expect( root.getChild( 1 ).hasAttr( fooAttr ) ).to.be.true;
-		expect( getIteratorCount( root.getChild( 2 ).getAttrs() ) ).to.equal( 1 );
-		expect( root.getChild( 2 ).hasAttr( fooAttr ) ).to.be.true;
+		expect( root.getChild( 0 ).attrs.size ).to.equal( 1 );
+		expect( root.getChild( 0 ).attrs.has( fooAttr ) ).to.be.true;
+		expect( root.getChild( 1 ).attrs.size ).to.equal( 1 );
+		expect( root.getChild( 1 ).attrs.has( fooAttr ) ).to.be.true;
+		expect( root.getChild( 2 ).attrs.size ).to.equal( 1 );
+		expect( root.getChild( 2 ).attrs.has( fooAttr ) ).to.be.true;
 	} );
 
 	it( 'should throw an error when one try to remove and the attribute does not exists', () => {

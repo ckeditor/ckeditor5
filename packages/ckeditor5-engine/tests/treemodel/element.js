@@ -7,13 +7,10 @@
 
 'use strict';
 
-import coreTestUtils from '/tests/core/_utils/utils.js';
 import Node from '/ckeditor5/core/treemodel/node.js';
 import NodeList from '/ckeditor5/core/treemodel/nodelist.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
 import Attribute from '/ckeditor5/core/treemodel/attribute.js';
-
-const getIteratorCount = coreTestUtils.getIteratorCount;
 
 describe( 'Element', () => {
 	describe( 'constructor', () => {
@@ -24,7 +21,7 @@ describe( 'Element', () => {
 			expect( element ).to.be.an.instanceof( Node );
 			expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
 			expect( element ).to.have.property( 'parent' ).that.equals( parent );
-			expect( getIteratorCount( element.getAttrs() ) ).to.equal( 0 );
+			expect( element.attrs.size ).to.equal( 0 );
 		} );
 
 		it( 'should create element with attributes', () => {
@@ -36,8 +33,8 @@ describe( 'Element', () => {
 			expect( element ).to.be.an.instanceof( Node );
 			expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
 			expect( element ).to.have.property( 'parent' ).that.equals( parent );
-			expect( getIteratorCount( element.getAttrs() ) ).to.equal( 1 );
-			expect( element.getAttr( attr.key ) ).to.equal( attr.value );
+			expect( element.attrs.size ).to.equal( 1 );
+			expect( element.attrs.getValue( attr.key ) ).to.equal( attr.value );
 		} );
 
 		it( 'should create element with children', () => {
