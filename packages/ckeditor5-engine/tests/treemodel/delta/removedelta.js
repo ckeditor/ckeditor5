@@ -17,7 +17,7 @@ const modules = bender.amd.require(
 describe( 'Batch', () => {
 	let Document, Position, Range, Element;
 
-	let doc, root, div, p, batch, chain;
+	let doc, root, div, p, batch, chain, range;
 
 	before( () => {
 		Document = modules[ 'treemodel/document' ];
@@ -33,9 +33,16 @@ describe( 'Batch', () => {
 		div = new Element( 'div', [], 'foobar' );
 		p = new Element( 'p', [], 'abcxyz' );
 
+		div.insertChildren( 4, [ new Element( 'p', [], 'gggg' ) ] );
+		div.insertChildren( 2, [ new Element( 'p', [], 'hhhh' ) ] );
+
 		root.insertChildren( 0, [ div, p ] );
 
 		batch = doc.batch();
+
+		// Range starts in ROOT > DIV > P > gg|gg.
+		// Range ends in ROOT > DIV > ...|ar.
+		range = new Range( new Position( root, [ 0, 2, 2 ] ), new Position( root, [ 0, 6 ] ) );
 	} );
 
 	function getNodesAndText( element ) {
@@ -55,43 +62,31 @@ describe( 'Batch', () => {
 		return txt;
 	}
 
-	describe( 'removeNode', () => {
-		beforeEach( () => {
-			chain = batch.removeNode( div );
-		} );
-
+	describe( 'remove', () => {
 		it( 'should remove specified node', () => {
+			batch.remove( div );
+
 			expect( root.getChildCount() ).to.equal( 1 );
 			expect( getNodesAndText( root.getChild( 0 ) ) ).to.equal( 'abcxyz' );
 		} );
 
-		it( 'should be chainable', () => {
-			expect( chain ).to.equal( batch );
-		} );
-	} );
-
-	describe( 'remove', () => {
-		beforeEach( () => {
-			div.insertChildren( 4, [ new Element( 'p', [], 'gggg' ) ] );
-			div.insertChildren( 2, [ new Element( 'p', [], 'hhhh' ) ] );
-
-			// Range starts in ROOT > DIV > P > gg|gg.
-			// Range ends in ROOT > DIV > ...|ar.
-			let range = new Range( new Position( root, [ 0, 2, 2 ] ), new Position( root, [ 0, 6 ] ) );
-			chain = batch.remove( range, new Position( root, [ 1, 3 ] ) );
-		} );
-
 		it( 'should move any range of nodes', () => {
+			batch.remove( range );
+
 			expect( getNodesAndText( root.getChild( 0 ) ) ).to.equal( 'foPhhPar' );
 			expect( getNodesAndText( root.getChild( 1 ) ) ).to.equal( 'abcxyz' );
 		} );
 
-		it( 'should create minimal number of operations', () => {
+		it( 'should create minimal number of operations when removing a range', () => {
+			batch.remove( range );
+
 			expect( batch.deltas.length ).to.equal( 1 );
 			expect( batch.deltas[ 0 ].operations.length ).to.equal( 2 );
 		} );
 
 		it( 'should be chainable', () => {
+			chain = batch.remove( range );
+
 			expect( chain ).to.equal( batch );
 		} );
 	} );

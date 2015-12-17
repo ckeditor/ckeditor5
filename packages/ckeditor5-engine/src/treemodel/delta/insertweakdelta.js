@@ -13,11 +13,11 @@ CKEDITOR.define( [
 ], ( Delta, register, InsertOperation, NodeList ) => {
 	/**
 	 * To provide specific OT behavior and better collisions solving, the {@link treeModel.Batch#insert} method
-	 * uses the `InsertTextDelta` class which inherits from the `Delta` class and may overwrite some methods.
+	 * uses the `InsertWeakDelta` class which inherits from the `Delta` class and may overwrite some methods.
 	 *
-	 * @class treeModel.delta.InsertTextDelta
+	 * @class treeModel.delta.InsertWeakDelta
 	 */
-	class InsertTextDelta extends Delta {}
+	class InsertWeakDelta extends Delta {}
 
 	/**
 	 * Inserts a node or nodes at the given position. The nodes will have same attributes as the current attributes of
@@ -30,8 +30,8 @@ CKEDITOR.define( [
 	 * @param {treeModel.Node|treeModel.Text|treeModel.NodeList|String|Iterable} nodes The list of nodes to be inserted.
 	 * List of nodes can be of any type accepted by the {@link treeModel.NodeList} constructor.
 	 */
-	register( 'insertText', function( position, nodes ) {
-		const delta = new InsertTextDelta();
+	register( 'insertWeak', function( position, nodes ) {
+		const delta = new InsertWeakDelta();
 
 		nodes = new NodeList( nodes );
 
@@ -48,5 +48,5 @@ CKEDITOR.define( [
 		return this;
 	} );
 
-	return InsertTextDelta;
+	return InsertWeakDelta;
 } );

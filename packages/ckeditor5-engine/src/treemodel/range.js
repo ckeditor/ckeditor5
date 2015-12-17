@@ -183,6 +183,31 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 
 		/**
 		 * Computes and returns the smallest set of {@link #isFlat flat} ranges, that covers this range in whole.
+		 * Assuming that tree model model structure is ("[" and "]" are range boundaries):
+		 *
+		 *		root															root
+		 *		 |- element DIV							DIV				P2				P3				DIV
+		 *		 |   |- element H					H		 P1			foo				bar			H		 P4
+		 *		 |   |   |- "fir[st"			 fir[st		lorem								se]cond		ipsum
+		 *		 |   |- element P1
+		 *		 |   |   |- "lorem"												 ||
+		 *		 |- element P2													 ||
+		 *		 |   |- "foo"													 VV
+		 *		 |- element P3
+		 *		 |   |- "bar"													root
+		 *		 |- element DIV							DIV				[P2				P3]				DIV
+		 *		 |   |- element H					H		[P1]		foo				bar			H		 P4
+		 *		 |   |   |- "se]cond"			 fir[st]	lorem								[se]cond		ipsum
+		 *		 |   |- element P4
+		 *		 |   |   |- "ipsum"
+		 *
+		 * Flat ranges for range `( [ 0, 0, 3 ], [ 3, 0, 2 ] )` would be:
+		 *
+		 *		( [ 0, 0, 3 ], [ 0, 0, 5 ] ) = "st"
+		 *		( [ 0, 1 ], [ 0, 2 ] ) = element P1
+		 *		( [ 1 ], [ 3 ] ) = element P2, element P3
+		 *		( [ 3, 0, 0 ], [ 3, 0, 2 ] ) = "se"
+		 *
 		 * **Note:** this method is not returning flat ranges that contain no nodes. It may also happen that not-collapsed
 		 * range will return an empty array of flat ranges.
 		 *
@@ -236,10 +261,8 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 		 * {@link treeModel.Element} once, while iterator return it twice: for {@link treeModel.PositionIterator#ELEMENT_ENTER} and
 		 * {@link treeModel.PositionIterator#ELEMENT_LEAVE}.
 		 *
-		 * **Note:** You might like to use `Array.from` to convert return value of this function into array.
-		 *
 		 * @see {treeModel.PositionIterator}
-		 * @returns {treeModel.Node}
+		 * @returns {Iterable.<treeModel.Node>}
 		 */
 		*getAllNodes() {
 			for ( let value of this ) {
@@ -253,9 +276,8 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 		 * Returns an iterator that iterates over all {@link treeModel.Node nodes} that are top-level nodes in this range
 		 * and returns them. A node is a top-level node when it is in the range but it's parent is not. In other words,
 		 * this function splits the range into separate sub-trees and iterates over their roots.
-		 * **Note:** You might like to use `Array.from` to convert return value of this function into array.
 		 *
-		 * @returns {treeModel.Node}
+		 * @returns {Iterable.<treeModel.Node>}
 		 */
 		*getTopLevelNodes() {
 			let flatRanges = this.getMinimalFlatRanges();

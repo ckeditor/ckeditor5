@@ -39,7 +39,7 @@ describe( 'Batch', () => {
 
 		doc.selection.setAttrsTo( attrs );
 
-		chain = batch.insertText( new Position( root, [ 2 ] ), 'xyz' );
+		chain = batch.insertWeak( new Position( root, [ 2 ] ), 'xyz' );
 	} );
 
 	describe( 'insert', () => {

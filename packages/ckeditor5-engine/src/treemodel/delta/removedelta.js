@@ -9,8 +9,9 @@ CKEDITOR.define( [
 	'treemodel/delta/delta',
 	'treemodel/delta/register',
 	'treemodel/operation/removeoperation',
-	'treemodel/position'
-], ( Delta, register, RemoveOperation, Position ) => {
+	'treemodel/position',
+	'treemodel/range'
+], ( Delta, register, RemoveOperation, Position, Range ) => {
 	/**
 	 * To provide specific OT behavior and better collisions solving, {@link treeModel.Batch#remove} method
 	 * uses the `RemoveDelta` class which inherits from the `Delta` class and may overwrite some methods.
@@ -26,40 +27,25 @@ CKEDITOR.define( [
 	}
 
 	/**
-	 * Removes given node. Use this only when you have to remove one node (may contain children). If you want to remove
-	 * multiple nodes, use {@link treeModel.Batch#removeFlat removeFlat} or {@link treeModel.Batch#remove remove} instead.
+	 * Removes given node or range of nodes.
 	 *
 	 * @chainable
-	 * @method removeNode
+	 * @method remove
 	 * @memberOf treeModel.Batch
-	 * @param {treeModel.Node} node Node to remove.
+	 * @param {treeModel.Node|treeModel.Range} nodeOrRange Node or range of nodes to remove.
 	 */
-	register( 'removeNode', function( node ) {
+	register( 'remove', function( nodeOrRange ) {
 		const delta = new RemoveDelta();
 
-		addRemoveOperation( this, delta, Position.createBefore( node ), 1 );
+		if ( nodeOrRange instanceof Range ) {
+			// The array is reversed, so the ranges are correct and do not have to be updated.
+			let ranges = nodeOrRange.getMinimalFlatRanges().reverse();
 
-		this.addDelta( delta );
-
-		return this;
-	} );
-
-	/**
-	 * Removes given range of nodes.
-	 *
-	 * @chainable
-	 * @method move
-	 * @memberOf treeModel.Batch
-	 * @param {treeModel.Range} range Range to remove.
-	 */
-	register( 'remove', function( range ) {
-		const delta = new RemoveDelta();
-
-		// The array is reversed, so the ranges are correct and do not have to be updated.
-		let ranges = range.getMinimalFlatRanges().reverse();
-
-		for ( let flat of ranges ) {
-			addRemoveOperation( this, delta, flat.start, flat.end.offset - flat.start.offset );
+			for ( let flat of ranges ) {
+				addRemoveOperation( this, delta, flat.start, flat.end.offset - flat.start.offset );
+			}
+		} else {
+			addRemoveOperation( this, delta, Position.createBefore( nodeOrRange ), 1 );
 		}
 
 		this.addDelta( delta );
