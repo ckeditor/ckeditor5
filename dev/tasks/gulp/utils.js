@@ -15,8 +15,16 @@ const stream = require( 'stream' );
 const sep = path.sep;
 
 const utils = {
-	src( root, pattern, watch ) {
-		const srcDir = path.join( root, pattern );
+	/**
+	 * Returns a stream of files matching the given glob pattern.
+	 *
+	 * @param {String} root The root directory.
+	 * @param {String} glob The glob pattern.
+	 * @param {Boolean} [watch] Whether to watch the files.
+	 * @returns {Stream}
+	 */
+	src( root, glob, watch ) {
+		const srcDir = path.join( root, glob );
 		let stream = gulp.src( srcDir );
 
 		if ( watch ) {
@@ -29,12 +37,25 @@ const utils = {
 		return stream;
 	},
 
+	/**
+	 * Saves the files piped into this stream to the `dist/` directory.
+	 *
+	 * @param {String} distDir The `dist/` directory path.
+	 * @param {String} format The format of the distribution (`esnext`, `amd`, or `cjs`).
+	 * @returns {Stream}
+	 */
 	dist( distDir, format ) {
 		const destDir = path.join( distDir, format );
 
 		return gulp.dest( destDir );
 	},
 
+	/**
+	 * Transpiles files piped into this stream to the given format (`amd` or `cjs`).
+	 *
+	 * @param {String} format
+	 * @returns {Stream}
+	 */
 	transpile( format ) {
 		const babelModuleTranspilers = {
 			amd: 'amd',
@@ -47,12 +68,21 @@ const utils = {
 		}
 
 		return new stream.PassThrough( { objectMode: true } )
-			.pipe( utils.pickVersionedFile( format ) )
+			// Not used so far, but we'll need it.
+			// .pipe( utils.pickVersionedFile( format ) )
 			.pipe( babel( {
 				plugins: [ `transform-es2015-modules-${ babelModuleTranspiler }` ]
 			} ) );
 	},
 
+	/**
+	 * Creates a function adding transpilation pipes to the `pipes` param.
+	 * Used to generate `formats.reduce()` callback where `formats` is an array
+	 * of formats that should be generated.
+	 *
+	 * @param {String} distDir The `dist/` directory path.
+	 * @returns {Function}
+	 */
 	addFormat( distDir ) {
 		return ( pipes, format ) => {
 			const conversionPipes = [];
@@ -74,6 +104,11 @@ const utils = {
 		};
 	},
 
+	// Not used so far, but will allow us to pick one of files suffixed with the format (`__esnext`, `__amd`, or `__cjs`).
+	// This will be needed when we'll want to have different piece of code for specific formats.
+	//
+	// For example: we'll have `loader__esnext.js`, `loader__amd.js` and `loader__cjs.js`. After applying this
+	// transformation when compiling code for a specific format the proper file will be renamed to `loader.js`.
 	pickVersionedFile( format ) {
 		return rename( ( path ) => {
 			const regexp = new RegExp( `__${ format }$` );
@@ -83,8 +118,9 @@ const utils = {
 	},
 
 	/**
-	 * Move files out of `node_modules/ckeditor5-xxx/src/*` directories to `ckeditor5-xxx/*`.
+	 * Moves files out of `node_modules/ckeditor5-xxx/src/*` directories to `ckeditor5-xxx/*`.
 	 *
+	 * @param {RegExp} modulePathPattern
 	 * @returns {Stream}
 	 */
 	unpackModules( modulePathPattern ) {
@@ -98,6 +134,11 @@ const utils = {
 		} );
 	},
 
+	/**
+	 * Adds `ckeditor5/` to a file path.
+	 *
+	 * @returns {Stream}
+	 */
 	wrapCKEditor5Module() {
 		return rename( ( filePath ) => {
 			filePath.dirname = path.join( filePath.dirname, 'ckeditor5' );
