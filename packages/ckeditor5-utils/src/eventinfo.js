@@ -12,36 +12,34 @@
  * @class EventInfo
  */
 
-CKEDITOR.define( [ 'utils' ], ( utils ) => {
-	class EventInfo {
-		constructor( source, name ) {
-			/**
-			 * The object that fired the event.
-			 */
-			this.source = source;
+import { spy } from './utils.js';
 
-			/**
-			 * The event name.
-			 */
-			this.name = name;
+export default class EventInfo {
+	constructor( source, name ) {
+		/**
+		 * The object that fired the event.
+		 */
+		this.source = source;
 
-			// The following methods are defined in the constructor because they must be re-created per instance.
+		/**
+		 * The event name.
+		 */
+		this.name = name;
 
-			/**
-			 * Stops the event emitter to call further callbacks for this event interaction.
-			 *
-			 * @method
-			 */
-			this.stop = utils.spy();
+		// The following methods are defined in the constructor because they must be re-created per instance.
 
-			/**
-			 * Removes the current callback from future interactions of this event.
-			 *
-			 * @method
-			 */
-			this.off = utils.spy();
-		}
+		/**
+		 * Stops the event emitter to call further callbacks for this event interaction.
+		 *
+		 * @method
+		 */
+		this.stop = spy();
+
+		/**
+		 * Removes the current callback from future interactions of this event.
+		 *
+		 * @method
+		 */
+		this.off = spy();
 	}
-
-	return EventInfo;
-} );
+}
