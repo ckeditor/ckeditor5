@@ -4,26 +4,31 @@
  */
 
 /* bender-tags: treemodel, delta */
+/* bender-include: ../../_tools/tools.js */
 
 'use strict';
+
+const getNodesAndText = bender.tools.treemodel.getNodesAndText;
 
 const modules = bender.amd.require(
 	'treemodel/document',
 	'treemodel/position',
 	'treemodel/range',
-	'treemodel/element'
+	'treemodel/element',
+	'ckeditorerror'
 );
 
 describe( 'Batch', () => {
-	let Document, Position, Range, Element;
+	let Document, Position, Range, Element, CKEditorError;
 
-	let doc, root, div, p, batch, chain, range;
+	let doc, root, div, p, batch, chain;
 
 	before( () => {
 		Document = modules[ 'treemodel/document' ];
 		Position = modules[ 'treemodel/position' ];
 		Range = modules[ 'treemodel/range' ];
 		Element = modules[ 'treemodel/element' ];
+		CKEditorError = modules.ckeditorerror;
 	} );
 
 	beforeEach( () => {
@@ -39,54 +44,35 @@ describe( 'Batch', () => {
 		root.insertChildren( 0, [ div, p ] );
 
 		batch = doc.batch();
-
-		// Range starts in ROOT > DIV > P > gg|gg.
-		// Range ends in ROOT > DIV > ...|ar.
-		range = new Range( new Position( root, [ 0, 2, 2 ] ), new Position( root, [ 0, 6 ] ) );
 	} );
-
-	function getNodesAndText( element ) {
-		let range = Range.createFromElement( element );
-		let txt = '';
-
-		for ( let step of range ) {
-			let node = step.node;
-
-			if ( node.character ) {
-				txt += node.character.toLowerCase();
-			} else if ( node.name ) {
-				txt += node.name.toUpperCase();
-			}
-		}
-
-		return txt;
-	}
 
 	describe( 'move', () => {
 		it( 'should move specified node', () => {
 			batch.move( div, new Position( root, [ 2 ] ) );
 
 			expect( root.getChildCount() ).to.equal( 2 );
-			expect( getNodesAndText( root.getChild( 0 ) ) ).to.equal( 'abcxyz' );
-			expect( getNodesAndText( root.getChild( 1 ) ) ).to.equal( 'foPhhhhPobPggggPar' );
+			expect( getNodesAndText( Range.createFromElement( root.getChild( 0 ) ) ) ).to.equal( 'abcxyz' );
+			expect( getNodesAndText( Range.createFromElement( root.getChild( 1 ) ) ) ).to.equal( 'foPhhhhPobPggggPar' );
 		} );
 
-		it( 'should move any range of nodes', () => {
+		it( 'should move flat range of nodes', () => {
+			let range = new Range( new Position( root, [ 0, 3 ] ), new Position( root, [ 0, 7 ] ) );
 			batch.move( range, new Position( root, [ 1, 3 ] ) );
 
-			expect( getNodesAndText( root.getChild( 0 ) ) ).to.equal( 'foPhhPar' );
-			expect( getNodesAndText( root.getChild( 1 ) ) ).to.equal( 'abchhobPggggPxyz' );
+			expect( getNodesAndText( Range.createFromElement( root.getChild( 0 ) ) ) ).to.equal( 'foPhhhhPr' );
+			expect( getNodesAndText( Range.createFromElement( root.getChild( 1 ) ) ) ).to.equal( 'abcobPggggPaxyz' );
 		} );
 
-		it( 'should create minimal number of operations when moving a range', () => {
-			batch.move( range, new Position( root, [ 1, 3 ] ) );
+		it( 'should throw if given range is not flat', () => {
+			let notFlatRange = new Range( new Position( root, [ 0, 2, 2 ] ), new Position( root, [ 0, 6 ] ) );
 
-			expect( batch.deltas.length ).to.equal( 1 );
-			expect( batch.deltas[ 0 ].operations.length ).to.equal( 2 );
+			expect( () => {
+				doc.batch().move( notFlatRange, new Position( root, [ 1, 3 ] ) );
+			} ).to.throw( CKEditorError, /^batch-move-range-not-flat/ );
 		} );
 
 		it( 'should be chainable', () => {
-			chain = batch.move( range, new Position( root, [ 1, 3 ] ) );
+			chain = batch.move( div, new Position( root, [ 1, 3 ] ) );
 
 			expect( chain ).to.equal( batch );
 		} );

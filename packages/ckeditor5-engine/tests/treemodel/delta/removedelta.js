@@ -4,8 +4,11 @@
  */
 
 /* bender-tags: treemodel, delta */
+/* bender-include: ../../_tools/tools.js */
 
 'use strict';
+
+const getNodesAndText = bender.tools.treemodel.getNodesAndText;
 
 const modules = bender.amd.require(
 	'treemodel/document',
@@ -45,36 +48,19 @@ describe( 'Batch', () => {
 		range = new Range( new Position( root, [ 0, 2, 2 ] ), new Position( root, [ 0, 6 ] ) );
 	} );
 
-	function getNodesAndText( element ) {
-		let range = Range.createFromElement( element );
-		let txt = '';
-
-		for ( let step of range ) {
-			let node = step.node;
-
-			if ( node.character ) {
-				txt += node.character.toLowerCase();
-			} else if ( node.name ) {
-				txt += node.name.toUpperCase();
-			}
-		}
-
-		return txt;
-	}
-
 	describe( 'remove', () => {
 		it( 'should remove specified node', () => {
 			batch.remove( div );
 
 			expect( root.getChildCount() ).to.equal( 1 );
-			expect( getNodesAndText( root.getChild( 0 ) ) ).to.equal( 'abcxyz' );
+			expect( getNodesAndText( Range.createFromElement( root.getChild( 0 ) ) ) ).to.equal( 'abcxyz' );
 		} );
 
 		it( 'should move any range of nodes', () => {
 			batch.remove( range );
 
-			expect( getNodesAndText( root.getChild( 0 ) ) ).to.equal( 'foPhhPar' );
-			expect( getNodesAndText( root.getChild( 1 ) ) ).to.equal( 'abcxyz' );
+			expect( getNodesAndText( Range.createFromElement( root.getChild( 0 ) ) ) ).to.equal( 'foPhhPar' );
+			expect( getNodesAndText( Range.createFromElement( root.getChild( 1 ) ) ) ).to.equal( 'abcxyz' );
 		} );
 
 		it( 'should create minimal number of operations when removing a range', () => {

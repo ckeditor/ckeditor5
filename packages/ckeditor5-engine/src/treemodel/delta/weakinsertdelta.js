@@ -13,35 +13,32 @@ CKEDITOR.define( [
 ], ( Delta, register, InsertOperation, NodeList ) => {
 	/**
 	 * To provide specific OT behavior and better collisions solving, the {@link treeModel.Batch#insert} method
-	 * uses the `InsertWeakDelta` class which inherits from the `Delta` class and may overwrite some methods.
+	 * uses the `WeakInsertDelta` class which inherits from the `Delta` class and may overwrite some methods.
 	 *
-	 * @class treeModel.delta.InsertWeakDelta
+	 * @class treeModel.delta.WeakInsertDelta
 	 */
-	class InsertWeakDelta extends Delta {}
+	class WeakInsertDelta extends Delta {}
 
 	/**
-	 * Inserts a node or nodes at the given position. {@link treeModel.Batch#insertWeak} is commonly used for actions
+	 * Inserts a node or nodes at the given position. {@link treeModel.Batch#weakInsert} is commonly used for actions
 	 * like typing or plain-text paste (without formatting). There are two differences between
-	 * {@link treeModel.Batch#insert} and {@link treeModel.Batch#insertWeak}:
-	 * * When using `insertWeak`, inserted nodes will have same attributes as the current attributes of
+	 * {@link treeModel.Batch#insert} and {@link treeModel.Batch#weakInsert}:
+	 * * When using `weakInsert`, inserted nodes will have same attributes as the current attributes of
 	 * {@link treeModel.Document#selection document selection}.
-	 * * During {@link treeModel.operation.transform operational transformation}, if nodes are inserted between moved nodes
-	 * they end up inserted at the position before moved range (so they do not move with the range). `insertWeak` changes
-	 * this behavior - inserted nodes "sticks" with range and end up in moved range.
-	 *
-	 *		       |----------|                move + insert              move + insertWeak
-	 *		<p>fo[o^ba]r</p><p>|</p>      <p>foxyzr</p><p>oba</p>       <p>for</p><p>oxyzba</p>
-	 *		     "xyz"
+	 * * The above has to be reflected during {@link treeModel.operation.transform operational transformation}. Normal
+	 * behavior is that inserting inside range changed by {@link treeModel.operation.AttributeOperation} splits the operation
+	 * into two operations, which "omit" the inserted nodes. The correct behavior for `WeakInsertDelta` is that
+	 * {@link treeModel.operation.AttributeOperation} does not "break" and also applies attributes for inserted nodes.
 	 *
 	 * @chainable
 	 * @memberOf treeModel.Batch
-	 * @method insertWeak
+	 * @method weakInsert
 	 * @param {treeModel.Position} position Position of insertion.
 	 * @param {treeModel.Node|treeModel.Text|treeModel.NodeList|String|Iterable} nodes The list of nodes to be inserted.
 	 * List of nodes can be of any type accepted by the {@link treeModel.NodeList} constructor.
 	 */
-	register( 'insertWeak', function( position, nodes ) {
-		const delta = new InsertWeakDelta();
+	register( 'weakInsert', function( position, nodes ) {
+		const delta = new WeakInsertDelta();
 
 		nodes = new NodeList( nodes );
 
@@ -58,5 +55,5 @@ CKEDITOR.define( [
 		return this;
 	} );
 
-	return InsertWeakDelta;
+	return WeakInsertDelta;
 } );

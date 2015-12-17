@@ -10,8 +10,9 @@ CKEDITOR.define( [
 	'treemodel/delta/register',
 	'treemodel/operation/moveoperation',
 	'treemodel/position',
-	'treemodel/range'
-], ( Delta, register, MoveOperation, Position, Range ) => {
+	'treemodel/range',
+	'ckeditorerror'
+], ( Delta, register, MoveOperation, Position, Range, CKEditorError ) => {
 	/**
 	 * To provide specific OT behavior and better collisions solving, {@link treeModel.Batch#move} method
 	 * uses the `MoveDelta` class which inherits from the `Delta` class and may overwrite some methods.
@@ -37,17 +38,18 @@ CKEDITOR.define( [
 	 */
 	register( 'move', function( nodeOrRange, targetPosition ) {
 		const delta = new MoveDelta();
-		let ranges;
 
 		if ( nodeOrRange instanceof Range ) {
-			// The array is reversed, so the furthest ranges get moved first.
-			// This will keep the order of nodes in ranges correct.
-			// It's like using .pop() + .unshift() when moving elements between arrays.
-			ranges = nodeOrRange.getMinimalFlatRanges().reverse();
-
-			for ( let flat of ranges ) {
-				addMoveOperation( this, delta, flat.start, flat.end.offset - flat.start.offset, targetPosition );
+			if ( !nodeOrRange.isFlat ) {
+				/**
+				 * Range to move is not flat.
+				 *
+				 * @error batch-move-range-not-flat
+				 */
+				throw new CKEditorError( 'batch-move-range-not-flat: Range to move is not flat.' );
 			}
+
+			addMoveOperation( this, delta, nodeOrRange.start, nodeOrRange.end.offset - nodeOrRange.start.offset, targetPosition );
 		} else {
 			addMoveOperation( this, delta, Position.createBefore( nodeOrRange ), 1, targetPosition );
 		}
