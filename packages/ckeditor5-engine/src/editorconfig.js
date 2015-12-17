@@ -15,30 +15,28 @@
  * @extends Config
  */
 
-CKEDITOR.define( [ 'ckeditor', 'config' ], ( CKE, Config ) => {
-	class EditorConfig extends Config {
-		/**
-		 * @inheritdoc Config#get
-		 */
-		get() {
-			// Try to take it from this editor instance.
-			let value = super.get.apply( this, arguments );
+import CKEDITOR from '../ckeditor.js';
+import Config from './config.js';
 
-			// If the configuration is not defined in the instance, try to take it from CKEDITOR.config.
-			if ( typeof value == 'undefined' ) {
-				// There is a circular dependency issue here: CKEDITOR -> Editor -> EditorConfig -> CKEDITOR.
-				// Therefore we need to require() it again here. That's why the parameter was named CKE.
-				//
-				// Note additionally that we still keep 'ckeditor' in the dependency list for correctness, to ensure
-				// that the module is loaded.
+export default class EditorConfig extends Config {
+	/**
+	 * @inheritdoc Config#get
+	 */
+	get() {
+		// Try to take it from this editor instance.
+		let value = super.get.apply( this, arguments );
 
-				CKE = CKE || CKEDITOR.require( 'ckeditor' );
-				value = super.get.apply( CKE.config, arguments );
-			}
+		// If the configuration is not defined in the instance, try to take it from CKEDITOR.config.
+		if ( typeof value == 'undefined' ) {
+			// There is a circular dependency issue here: CKEDITOR -> Editor -> EditorConfig -> CKEDITOR.
+			// Therefore we need to require() it again here. That's why the parameter was named CKE.
+			//
+			// Note additionally that we still keep 'ckeditor' in the dependency list for correctness, to ensure
+			// that the module is loaded.
 
-			return value;
+			value = super.get.apply( CKEDITOR.config, arguments );
 		}
-	}
 
-	return EditorConfig;
-} );
+		return value;
+	}
+}

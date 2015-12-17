@@ -4,7 +4,7 @@
  */
 
 /* global document, Event, MouseEvent */
-/* bender-tags: core, ui */
+/* bender-tags: ui */
 
 'use strict';
 

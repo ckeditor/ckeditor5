@@ -12,9 +12,7 @@
  * @extends Plugin
  */
 
-CKEDITOR.define( [ 'plugin' ], ( Plugin ) => {
-	class Creator extends Plugin {
-	}
+import Plugin from './plugin.js';
 
-	return Creator;
-} );
+export default class Creator extends Plugin {
+}

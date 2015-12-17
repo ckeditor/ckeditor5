@@ -12,16 +12,15 @@
  * @extends Model
  */
 
-CKEDITOR.define( [ 'model' ], ( Model ) => {
-	class Plugin extends Model {
-		constructor( editor ) {
-			super();
+import Model from './model.js';
 
-			this.editor = editor;
-		}
+export default class Plugin extends Model {
+	constructor( editor ) {
+		super();
 
-		init() {}
+		this.editor = editor;
 	}
 
-	return Plugin;
-} );
+	init() {}
+}
+

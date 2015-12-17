@@ -5,16 +5,22 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'model', 'eventinfo', 'ckeditorerror' );
+const modules = bender.amd.require( 'core/model', 'core/eventinfo', 'core/ckeditorerror' );
 
 let Car, car;
 
 bender.tools.createSinonSandbox();
 
 describe( 'Model', () => {
-	beforeEach( 'Create a test model instance', () => {
-		const Model = modules.model;
+	let Model, EventInfo, CKEditorError;
 
+	before( () => {
+		Model = modules[ 'core/model' ];
+		EventInfo = modules[ 'core/eventinfo' ];
+		CKEditorError = modules[ 'core/ckeditorerror' ];
+	} );
+
+	beforeEach( 'Create a test model instance', () => {
 		Car = class extends Model {};
 
 		car = new Car( {
@@ -83,8 +89,6 @@ describe( 'Model', () => {
 		} );
 
 		it( 'should fire the "change" event', () => {
-			const EventInfo = modules.eventinfo;
-
 			let spy = sinon.spy();
 			let spyColor = sinon.spy();
 			let spyYear = sinon.spy();
@@ -138,8 +142,6 @@ describe( 'Model', () => {
 		} );
 
 		it( 'should throw when overriding already existing property', () => {
-			const CKEditorError = modules.ckeditorerror;
-
 			car.normalProperty = 1;
 
 			expect( () => {
@@ -150,9 +152,6 @@ describe( 'Model', () => {
 		} );
 
 		it( 'should throw when overriding already existing property (in the prototype)', () => {
-			const CKEditorError = modules.ckeditorerror;
-			const Model = modules.model;
-
 			class Car extends Model {
 				method() {}
 			}
@@ -169,8 +168,6 @@ describe( 'Model', () => {
 
 	describe( 'extend', () => {
 		it( 'should create new Model based classes', () => {
-			const Model = modules.model;
-
 			class Truck extends Car {}
 
 			let truck = new Truck();
@@ -181,14 +178,6 @@ describe( 'Model', () => {
 	} );
 
 	describe( 'bind', () => {
-		let Model, EventInfo, CKEditorError;
-
-		beforeEach( () => {
-			Model = modules.model;
-			EventInfo = modules.eventinfo;
-			CKEditorError = modules.ckeditorerror;
-		} );
-
 		it( 'should chain for a single attribute', () => {
 			expect( car.bind( 'color' ) ).to.contain.keys( 'to' );
 		} );
@@ -536,14 +525,6 @@ describe( 'Model', () => {
 	} );
 
 	describe( 'unbind', () => {
-		let Model, EventInfo, CKEditorError;
-
-		beforeEach( () => {
-			Model = modules.model;
-			EventInfo = modules.eventinfo;
-			CKEditorError = modules.ckeditorerror;
-		} );
-
 		it( 'should throw when non-string attribute is passed', () => {
 			expect( () => {
 				car.unbind( new Date() );
