@@ -4,7 +4,7 @@
  */
 
 /* global document, HTMLElement */
-/* bender-tags: core, ui */
+/* bender-tags: ui */
 
 'use strict';
 

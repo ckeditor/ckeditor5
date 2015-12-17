@@ -19,261 +19,261 @@
  * @mixins EventEmitter
  */
 
-CKEDITOR.define( [ 'emittermixin', 'ckeditorerror', 'utils' ], ( EmitterMixin, CKEditorError, utils ) => {
-	class Collection {
+import EmitterMixin from './emittermixin.js';
+import CKEditorError from './ckeditorerror.js';
+import utilsObject from './lib/lodash/object.js';
+
+export default class Collection {
+	/**
+	 * Creates a new Collection instance.
+	 *
+	 * @constructor
+	 * @param {Iterale} [items] Items to be added to the collection.
+	 * @param {Object} options The options object.
+	 * @param {String} [options.idProperty='id'] The name of the property which is considered to identify an item.
+	 */
+	constructor( options ) {
 		/**
-		 * Creates a new Collection instance.
+		 * The internal list of items in the collection.
 		 *
-		 * @constructor
-		 * @param {Iterale} [items] Items to be added to the collection.
-		 * @param {Object} options The options object.
-		 * @param {String} [options.idProperty='id'] The name of the property which is considered to identify an item.
+		 * @private
+		 * @property {Object[]}
 		 */
-		constructor( options ) {
-			/**
-			 * The internal list of items in the collection.
-			 *
-			 * @private
-			 * @property {Object[]}
-			 */
-			this._items = [];
-
-			/**
-			 * The internal map of items in the collection.
-			 *
-			 * @private
-			 * @property {Map}
-			 */
-			this._itemMap = new Map();
-
-			/**
-			 * Next id which will be assigned to unidentified item while adding it to the collection.
-			 *
-			 * @private
-			 * @property
-			 */
-			this._nextId = 0;
-
-			/**
-			 * The name of the property which is considered to identify an item.
-			 *
-			 * @private
-			 * @property {String}
-			 */
-			this._idProperty = options && options.idProperty || 'id';
-		}
+		this._items = [];
 
 		/**
-		 * The number of items available in the collection.
+		 * The internal map of items in the collection.
 		 *
-		 * @property length
+		 * @private
+		 * @property {Map}
 		 */
-		get length() {
-			return this._items.length;
-		}
+		this._itemMap = new Map();
 
 		/**
-		 * Adds an item into the collection.
+		 * Next id which will be assigned to unidentified item while adding it to the collection.
 		 *
-		 * If the item does not have an id, then it will be automatically generated and set on the item.
-		 *
-		 * @chainable
-		 * @param {Object} item
-		 * @param {Number} [index] The position of the item in the collection. The item
-		 * is pushed to the collection when `index` not specified.
+		 * @private
+		 * @property
 		 */
-		add( item, index ) {
-			let itemId;
-			const idProperty = this._idProperty;
-
-			if ( ( idProperty in item ) ) {
-				itemId = item[ idProperty ];
-
-				if ( typeof itemId != 'string' ) {
-					/**
-					 * This item's id should be a string.
-					 *
-					 * @error collection-add-invalid-id
-					 */
-					throw new CKEditorError( 'collection-add-invalid-id' );
-				}
-
-				if ( this.get( itemId ) ) {
-					/**
-					 * This item already exists in the collection.
-					 *
-					 * @error collection-add-item-already-exists
-					 */
-					throw new CKEditorError( 'collection-add-item-already-exists' );
-				}
-			} else {
-				itemId = this._getNextId();
-				item[ idProperty ] = itemId;
-			}
-
-			// TODO: Use ES6 default function argument.
-			if ( index === undefined ) {
-				index = this._items.length;
-			} else if ( index > this._items.length || index < 0 ) {
-				/**
-				 * The index number has invalid value.
-				 *
-				 * @error collection-add-item-bad-index
-				 */
-				throw new CKEditorError( 'collection-add-item-invalid-index' );
-			}
-
-			this._items.splice( index, 0, item );
-
-			this._itemMap.set( itemId, item );
-
-			this.fire( 'add', item, index );
-
-			return this;
-		}
+		this._nextId = 0;
 
 		/**
-		 * Gets item by its id or index.
+		 * The name of the property which is considered to identify an item.
 		 *
-		 * @param {String|Number} idOrIndex The item id or index in the collection.
-		 * @returns {Object} The requested item or `null` if such item does not exist.
+		 * @private
+		 * @property {String}
 		 */
-		get( idOrIndex ) {
-			let item;
-
-			if ( typeof idOrIndex == 'string' ) {
-				item = this._itemMap.get( idOrIndex );
-			} else if ( typeof idOrIndex == 'number' ) {
-				item = this._items[ idOrIndex ];
-			} else {
-				/**
-				 * Index or id must be given.
-				 *
-				 * @error collection-get-invalid-arg
-				 */
-				throw new CKEditorError( 'collection-get-invalid-arg: Index or id must be given.' );
-			}
-
-			return item || null;
-		}
-
-		/**
-		 * Removes an item from the collection.
-		 *
-		 * @param {Object|Number|String} subject The item to remove, its id or index in the collection.
-		 * @returns {Object} The removed item.
-		 */
-		remove( subject ) {
-			let index, id, item;
-			let itemDoesNotExist = false;
-			const idProperty = this._idProperty;
-
-			if ( typeof subject == 'string' ) {
-				id = subject;
-				item = this._itemMap.get( id );
-				itemDoesNotExist = !item;
-
-				if ( item ) {
-					index = this._items.indexOf( item );
-				}
-			} else if ( typeof subject == 'number' ) {
-				index = subject;
-				item = this._items[ index ];
-				itemDoesNotExist = !item;
-
-				if ( item ) {
-					id = item[ idProperty ];
-				}
-			} else {
-				item = subject;
-				id = item[ idProperty ];
-				index = this._items.indexOf( item );
-				itemDoesNotExist = ( index == -1 || !this._itemMap.get( id ) );
-			}
-
-			if ( itemDoesNotExist ) {
-				/**
-				 * Item not found.
-				 *
-				 * @error collection-remove-404
-				 */
-				throw new CKEditorError( 'collection-remove-404: Item not found.' );
-			}
-
-			this._items.splice( index, 1 );
-			this._itemMap.delete( id );
-
-			this.fire( 'remove', item );
-
-			return item;
-		}
-
-		/**
-		 * Executes the callback for each item in the collection and composes an array or values returned by this callback.
-		 *
-		 * @param {Function} callback
-		 * @param {Item} callback.item
-		 * @param {Number} callback.index
-		 * @params {Object} ctx Context in which the `callback` will be called.
-		 * @returns {Array} The result of mapping.
-		 */
-		map( callback, ctx ) {
-			return this._items.map( callback, ctx );
-		}
-
-		/**
-		 * Finds the first item in the collection for which the `callback` returns a true value.
-		 *
-		 * @param {Function} callback
-		 * @param {Object} callback.item
-		 * @param {Number} callback.index
-		 * @returns {Object} The item for which `callback` returned a true value.
-		 * @params {Object} ctx Context in which the `callback` will be called.
-		 */
-		find( callback, ctx ) {
-			return this._items.find( callback, ctx );
-		}
-
-		/**
-		 * Returns an array with items for which the `callback` returned a true value.
-		 *
-		 * @param {Function} callback
-		 * @param {Object} callback.item
-		 * @param {Number} callback.index
-		 * @params {Object} ctx Context in which the `callback` will be called.
-		 * @returns {Object[]} The array with matching items.
-		 */
-		filter( callback, ctx ) {
-			return this._items.filter( callback, ctx );
-		}
-
-		/**
-		 * Collection iterator.
-		 */
-		[ Symbol.iterator ]() {
-			return this._items[ Symbol.iterator ]();
-		}
-
-		/**
-		 * Generates next (not yet used) id for unidentified item being add to the collection.
-		 *
-		 * @returns {String} The next id.
-		 */
-		_getNextId() {
-			let id;
-
-			do {
-				id = String( this._nextId++ );
-			} while ( this._itemMap.has( id ) );
-
-			return id;
-		}
+		this._idProperty = options && options.idProperty || 'id';
 	}
 
-	utils.extend( Collection.prototype, EmitterMixin );
+	/**
+	 * The number of items available in the collection.
+	 *
+	 * @property length
+	 */
+	get length() {
+		return this._items.length;
+	}
 
-	return Collection;
-} );
+	/**
+	 * Adds an item into the collection.
+	 *
+	 * If the item does not have an id, then it will be automatically generated and set on the item.
+	 *
+	 * @chainable
+	 * @param {Object} item
+	 * @param {Number} [index] The position of the item in the collection. The item
+	 * is pushed to the collection when `index` not specified.
+	 */
+	add( item, index ) {
+		let itemId;
+		const idProperty = this._idProperty;
+
+		if ( ( idProperty in item ) ) {
+			itemId = item[ idProperty ];
+
+			if ( typeof itemId != 'string' ) {
+				/**
+				 * This item's id should be a string.
+				 *
+				 * @error collection-add-invalid-id
+				 */
+				throw new CKEditorError( 'collection-add-invalid-id' );
+			}
+
+			if ( this.get( itemId ) ) {
+				/**
+				 * This item already exists in the collection.
+				 *
+				 * @error collection-add-item-already-exists
+				 */
+				throw new CKEditorError( 'collection-add-item-already-exists' );
+			}
+		} else {
+			itemId = this._getNextId();
+			item[ idProperty ] = itemId;
+		}
+
+		// TODO: Use ES6 default function argument.
+		if ( index === undefined ) {
+			index = this._items.length;
+		} else if ( index > this._items.length || index < 0 ) {
+			/**
+			 * The index number has invalid value.
+			 *
+			 * @error collection-add-item-bad-index
+			 */
+			throw new CKEditorError( 'collection-add-item-invalid-index' );
+		}
+
+		this._items.splice( index, 0, item );
+
+		this._itemMap.set( itemId, item );
+
+		this.fire( 'add', item, index );
+
+		return this;
+	}
+
+	/**
+	 * Gets item by its id or index.
+	 *
+	 * @param {String|Number} idOrIndex The item id or index in the collection.
+	 * @returns {Object} The requested item or `null` if such item does not exist.
+	 */
+	get( idOrIndex ) {
+		let item;
+
+		if ( typeof idOrIndex == 'string' ) {
+			item = this._itemMap.get( idOrIndex );
+		} else if ( typeof idOrIndex == 'number' ) {
+			item = this._items[ idOrIndex ];
+		} else {
+			/**
+			 * Index or id must be given.
+			 *
+			 * @error collection-get-invalid-arg
+			 */
+			throw new CKEditorError( 'collection-get-invalid-arg: Index or id must be given.' );
+		}
+
+		return item || null;
+	}
+
+	/**
+	 * Removes an item from the collection.
+	 *
+	 * @param {Object|Number|String} subject The item to remove, its id or index in the collection.
+	 * @returns {Object} The removed item.
+	 */
+	remove( subject ) {
+		let index, id, item;
+		let itemDoesNotExist = false;
+		const idProperty = this._idProperty;
+
+		if ( typeof subject == 'string' ) {
+			id = subject;
+			item = this._itemMap.get( id );
+			itemDoesNotExist = !item;
+
+			if ( item ) {
+				index = this._items.indexOf( item );
+			}
+		} else if ( typeof subject == 'number' ) {
+			index = subject;
+			item = this._items[ index ];
+			itemDoesNotExist = !item;
+
+			if ( item ) {
+				id = item[ idProperty ];
+			}
+		} else {
+			item = subject;
+			id = item[ idProperty ];
+			index = this._items.indexOf( item );
+			itemDoesNotExist = ( index == -1 || !this._itemMap.get( id ) );
+		}
+
+		if ( itemDoesNotExist ) {
+			/**
+			 * Item not found.
+			 *
+			 * @error collection-remove-404
+			 */
+			throw new CKEditorError( 'collection-remove-404: Item not found.' );
+		}
+
+		this._items.splice( index, 1 );
+		this._itemMap.delete( id );
+
+		this.fire( 'remove', item );
+
+		return item;
+	}
+
+	/**
+	 * Executes the callback for each item in the collection and composes an array or values returned by this callback.
+	 *
+	 * @param {Function} callback
+	 * @param {Item} callback.item
+	 * @param {Number} callback.index
+	 * @params {Object} ctx Context in which the `callback` will be called.
+	 * @returns {Array} The result of mapping.
+	 */
+	map( callback, ctx ) {
+		return this._items.map( callback, ctx );
+	}
+
+	/**
+	 * Finds the first item in the collection for which the `callback` returns a true value.
+	 *
+	 * @param {Function} callback
+	 * @param {Object} callback.item
+	 * @param {Number} callback.index
+	 * @returns {Object} The item for which `callback` returned a true value.
+	 * @params {Object} ctx Context in which the `callback` will be called.
+	 */
+	find( callback, ctx ) {
+		return this._items.find( callback, ctx );
+	}
+
+	/**
+	 * Returns an array with items for which the `callback` returned a true value.
+	 *
+	 * @param {Function} callback
+	 * @param {Object} callback.item
+	 * @param {Number} callback.index
+	 * @params {Object} ctx Context in which the `callback` will be called.
+	 * @returns {Object[]} The array with matching items.
+	 */
+	filter( callback, ctx ) {
+		return this._items.filter( callback, ctx );
+	}
+
+	/**
+	 * Collection iterator.
+	 */
+	[ Symbol.iterator ]() {
+		return this._items[ Symbol.iterator ]();
+	}
+
+	/**
+	 * Generates next (not yet used) id for unidentified item being add to the collection.
+	 *
+	 * @returns {String} The next id.
+	 */
+	_getNextId() {
+		let id;
+
+		do {
+			id = String( this._nextId++ );
+		} while ( this._itemMap.has( id ) );
+
+		return id;
+	}
+}
+
+utilsObject.extend( Collection.prototype, EmitterMixin );
 
 /**
  * Fired when an item is added to the collection.

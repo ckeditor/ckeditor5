@@ -39,36 +39,34 @@
  * @singleton
  */
 
-CKEDITOR.define( () => {
-	const log = {
-		/**
-		 * Logs an error to the console.
-		 *
-		 * Read more about error logging in the {@link core.log} module.
-		 *
-		 * @param {String} message The error message in an `error-name: Error message.` format.
-		 * During the minification process the "Error message" part will be removed to limit the code size
-		 * and a link to this error documentation will be logged to the console.
-		 * @param {Object} [data] Additional data describing the error.
-		 */
-		error( message, data ) {
-			console.error( message, data );
-		},
+const log = {
+	/**
+	 * Logs an error to the console.
+	 *
+	 * Read more about error logging in the {@link core.log} module.
+	 *
+	 * @param {String} message The error message in an `error-name: Error message.` format.
+	 * During the minification process the "Error message" part will be removed to limit the code size
+	 * and a link to this error documentation will be logged to the console.
+	 * @param {Object} [data] Additional data describing the error.
+	 */
+	error( message, data ) {
+		console.error( message, data );
+	},
 
-		/**
-		 * Logs a warning to the console.
-		 *
-		 * Read more about error logging in the {@link core.log} module.
-		 *
-		 * @param {String} message The warning message in a `warning-name: Warning message.` format.
-		 * During the minification process the "Warning message" part will be removed to limit the code size
-		 * and a link to this error documentation will be logged to the console.
-		 * @param {Object} [data] Additional data describing the warning.
-		 */
-		warn( message, data ) {
-			console.warn( message, data );
-		}
-	};
+	/**
+	 * Logs a warning to the console.
+	 *
+	 * Read more about error logging in the {@link core.log} module.
+	 *
+	 * @param {String} message The warning message in a `warning-name: Warning message.` format.
+	 * During the minification process the "Warning message" part will be removed to limit the code size
+	 * and a link to this error documentation will be logged to the console.
+	 * @param {Object} [data] Additional data describing the warning.
+	 */
+	warn( message, data ) {
+		console.warn( message, data );
+	}
+};
 
-	return log;
-} );
+export default log;
