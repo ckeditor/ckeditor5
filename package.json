@@ -35,6 +35,7 @@
     "gulp-plumber": "^1.0.1",
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^1.6.0",
+    "gulp-util": "^3.0.7",
     "gulp-watch": "^4.3.5",
     "inquirer": "^0.11.0",
     "istanbul": "^0.4.1",

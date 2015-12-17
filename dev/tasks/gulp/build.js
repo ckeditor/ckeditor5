@@ -24,6 +24,7 @@ const gulp = require( 'gulp' );
 const del = require( 'del' );
 const merge = require( 'merge-stream' );
 const gulpMirror = require( 'gulp-mirror' );
+const gutil = require( 'gulp-util' );
 const minimist = require( 'minimist' );
 const utils = require( './utils' );
 
@@ -68,7 +69,7 @@ module.exports = ( config ) => {
 		const formats = options.formats.split( ',' );
 		const codeStream = tasks.src.all( options.watch )
 			.on( 'data', ( file ) => {
-				console.log( `Processing ${ file.path }...` );
+				gutil.log( `Processing '${ gutil.colors.cyan( file.path ) }'...` );
 			} );
 		const formatPipes = formats.reduce( utils.addFormat( distDir ), [] );
 

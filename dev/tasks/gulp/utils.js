@@ -8,6 +8,7 @@ const rename = require( 'gulp-rename' );
 const babel = require( 'gulp-babel' );
 const gulpWatch = require( 'gulp-watch' );
 const gulpPlumber = require( 'gulp-plumber' );
+const gutil = require( 'gulp-util' );
 const multipipe = require( 'multipipe' );
 const stream = require( 'stream' );
 
@@ -63,7 +64,7 @@ const utils = {
 			conversionPipes.push(
 				utils.dist( distDir, format )
 					.on( 'data', ( file ) => {
-						console.log( `Finished writing ${ file.path }...` );
+						gutil.log( `Finished writing '${ gutil.colors.cyan( file.path ) }'` );
 					} )
 			);
 
