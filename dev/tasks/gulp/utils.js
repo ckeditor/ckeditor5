@@ -71,7 +71,12 @@ const utils = {
 			// Not used so far, but we'll need it.
 			// .pipe( utils.pickVersionedFile( format ) )
 			.pipe( babel( {
-				plugins: [ `transform-es2015-modules-${ babelModuleTranspiler }` ]
+				plugins: [ `transform-es2015-modules-${ babelModuleTranspiler }` ],
+				// Ensure that all paths ends with '.js' because Require.JS (unlike Common.JS/System.JS)
+				// will not add it to module names which look like paths.
+				resolveModuleSource: ( source ) => {
+					return utils.appendModuleExtension( source );
+				}
 			} ) );
 	},
 
@@ -124,12 +129,12 @@ const utils = {
 	 * @returns {Stream}
 	 */
 	unpackModules( modulePathPattern ) {
-		return rename( ( filePath ) => {
-			filePath.dirname = filePath.dirname.replace( modulePathPattern, `${ sep }$1${ sep }` );
+		return rename( ( file ) => {
+			file.dirname = file.dirname.replace( modulePathPattern, `${ sep }$1${ sep }` );
 
 			// Remove now empty src/ dirs.
-			if ( !filePath.extname && filePath.basename == 'src' ) {
-				filePath.basename = '';
+			if ( !file.extname && file.basename == 'src' ) {
+				file.basename = '';
 			}
 		} );
 	},
@@ -140,9 +145,23 @@ const utils = {
 	 * @returns {Stream}
 	 */
 	wrapCKEditor5Module() {
-		return rename( ( filePath ) => {
-			filePath.dirname = path.join( filePath.dirname, 'ckeditor5' );
+		return rename( ( file ) => {
+			file.dirname = path.join( file.dirname, 'ckeditor5' );
 		} );
+	},
+
+	/**
+	 * Appends file extension to file URLs. Tries to not touch named modules.
+	 *
+	 * @param {String} source
+	 * @returns {String}
+	 */
+	appendModuleExtension( source ) {
+		if ( /^https?:|\.[\/\\]/.test( source ) && !/\.js$/.test( source ) ) {
+			return source + '.js';
+		}
+
+		return source;
 	}
 };
 

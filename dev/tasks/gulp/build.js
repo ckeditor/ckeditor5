@@ -81,7 +81,9 @@ module.exports = ( config ) => {
 			 * @returns {Stream}
 			 */
 			modules( watch ) {
-				const modulePathPattern = new RegExp( `node_modules${ sep }(ckeditor5-[^${ sep }]+)${ sep }src` );
+				// For an odd reason file.dirname does not contain `node_modules/`. Maybe the base dir
+				// is automatically set to only the varying piece of the path.
+				const modulePathPattern = new RegExp( `(ckeditor5-[^${ sep }]+)${ sep }src` );
 
 				return utils.src( config.ROOT_DIR, 'node_modules/ckeditor5-*/src/**/*.js', watch )
 					.pipe( utils.unpackModules( modulePathPattern ) );

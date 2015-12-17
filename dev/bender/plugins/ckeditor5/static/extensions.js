@@ -4,16 +4,12 @@
  */
 
 /* jshint node: false, browser: true, globalstrict: true */
-/* globals bender, CKEDITOR */
+/* globals bender, require */
 
 'use strict';
 
 ( () => {
-	// Make Bender wait to start running tests.
-	const done = bender.defer();
-
-	// Wait for the "ckeditor" module to be ready to start testing.
-	CKEDITOR.require( [ 'ckeditor' ], done );
+	const basePath = bender.config.applications.ckeditor.basePath;
 
 	/**
 	 * AMD tools related to CKEditor.
@@ -29,19 +25,24 @@
 			const modules = {};
 			const done = bender.defer();
 
-			const names = [].slice.call( arguments );
+			const names = Array.from( arguments );
+			const modulePaths = names.map( ( name ) => {
+				// Add the prefix to shortened paths like `core/editor` (will be `ckeditor5-core/editor`).
+				// Don't add the prefix to the main file and files frok ckeditor5/ module.
+				if ( name != 'ckeditor' && !( /^ckeditor5\//.test( name ) ) ) {
+					name = 'ckeditor5-' + name;
+				}
 
-			// To avoid race conditions with required modules, require `ckeditor` first and then others. This guarantees
-			// that `ckeditor` will be loaded before any other module.
-			CKEDITOR.require( [ 'ckeditor' ], function() {
-				CKEDITOR.require( names, function() {
-					for ( let i = 0; i < names.length; i++ ) {
-						modules[ names[ i ] ] = arguments[ i ] ;
-					}
+				return basePath + name + '.js';
+			} );
 
-					// Finally give green light for tests to start.
-					done();
-				} );
+			require( modulePaths, function() {
+				for ( let i = 0; i < names.length; i++ ) {
+					modules[ names[ i ] ] = arguments[ i ].default;
+				}
+
+				// Finally give green light for tests to start.
+				done();
 			} );
 
 			return modules;

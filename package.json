@@ -45,7 +45,6 @@
     "multipipe": "^0.2.1",
     "ncp": "^2.0.0",
     "replace": "^0.3.0",
-    "run-sequence": "^1.1.5",
     "shelljs": "^0",
     "sinon": "^1.17.0"
   },
