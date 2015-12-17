@@ -29,10 +29,9 @@ CKEDITOR.define( [
 	 * they end up inserted at the position before moved range (so they do not move with the range). `insertWeak` changes
 	 * this behavior - inserted nodes "sticks" with range and end up in moved range.
 	 *
-	 *
-	 *				|----------|				move + insert				move + insertWeak
-	 *		<p>fo[o^ba]r</p><p>|</p>			<p>foxyzr</p><p>oba</p>		<p>for</p><p>oxyzba</p>
-	 *		  	 "xyz"
+	 *		       |----------|                move + insert              move + insertWeak
+	 *		<p>fo[o^ba]r</p><p>|</p>      <p>foxyzr</p><p>oba</p>       <p>for</p><p>oxyzba</p>
+	 *		     "xyz"
 	 *
 	 * @chainable
 	 * @memberOf treeModel.Batch

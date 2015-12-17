@@ -185,19 +185,19 @@ CKEDITOR.define( [ 'treemodel/position', 'treemodel/positioniterator', 'utils' ]
 		 * Computes and returns the smallest set of {@link #isFlat flat} ranges, that covers this range in whole.
 		 * Assuming that tree model model structure is ("[" and "]" are range boundaries):
 		 *
-		 *		root															root
-		 *		 |- element DIV							DIV				P2				P3				DIV
-		 *		 |   |- element H					H		 P1			foo				bar			H		 P4
-		 *		 |   |   |- "fir[st"			 fir[st		lorem								se]cond		ipsum
+		 *		root                                                            root
+		 *		 |- element DIV                         DIV             P2              P3             DIV
+		 *		 |   |- element H                   H        P1        f o o           b a r       H         P4
+		 *		 |   |   |- "fir[st"             fir[st     lorem                               se]cond     ipsum
 		 *		 |   |- element P1
-		 *		 |   |   |- "lorem"												 ||
-		 *		 |- element P2													 ||
-		 *		 |   |- "foo"													 VV
+		 *		 |   |   |- "lorem"                                              ||
+		 *		 |- element P2                                                   ||
+		 *		 |   |- "foo"                                                    VV
 		 *		 |- element P3
-		 *		 |   |- "bar"													root
-		 *		 |- element DIV							DIV				[P2				P3]				DIV
-		 *		 |   |- element H					H		[P1]		foo				bar			H		 P4
-		 *		 |   |   |- "se]cond"			 fir[st]	lorem								[se]cond		ipsum
+		 *		 |   |- "bar"                                                   root
+		 *		 |- element DIV                         DIV             [P2             P3]             DIV
+		 *		 |   |- element H                   H       [P1]       f o o           b a r        H         P4
+		 *		 |   |   |- "se]cond"            fir[st]    lorem                               [se]cond     ipsum
 		 *		 |   |- element P4
 		 *		 |   |   |- "ipsum"
 		 *
