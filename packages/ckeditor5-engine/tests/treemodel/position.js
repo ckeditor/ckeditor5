@@ -555,4 +555,29 @@ describe( 'position', () => {
 			expect( combined.path ).to.deep.equal( [ 2, 7, 4, 2 ] );
 		} );
 	} );
+
+	describe( 'getShiftedBy', () => {
+		it( 'should return a new instance of Position with offset changed by shift value', () => {
+			let position = new Position( root, [ 1, 2, 3 ] );
+			let shifted = position.getShiftedBy( 2 );
+
+			expect( shifted ).to.be.instanceof( Position );
+			expect( shifted ).to.not.equal( position );
+			expect( shifted.path ).to.deep.equal( [ 1, 2, 5 ] );
+		} );
+
+		it( 'should accept negative values', () => {
+			let position = new Position( root, [ 1, 2, 3 ] );
+			let shifted = position.getShiftedBy( -2 );
+
+			expect( shifted.path ).to.deep.equal( [ 1, 2, 1 ] );
+		} );
+
+		it( 'should not let setting offset lower than zero', () => {
+			let position = new Position( root, [ 1, 2, 3 ] );
+			let shifted = position.getShiftedBy( -7 );
+
+			expect( shifted.path ).to.deep.equal( [ 1, 2, 0 ] );
+		} );
+	} );
 } );

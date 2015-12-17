@@ -198,7 +198,7 @@ describe( 'Range', () => {
 		} );
 	} );
 
-	describe( 'getNodes', () => {
+	describe( 'getAllNodes', () => {
 		it( 'should iterate over all nodes which "starts" in the range', () => {
 			let nodes = [];
 
@@ -219,7 +219,7 @@ describe( 'Range', () => {
 				new Position( root, [ 1, 1 ] )
 			);
 
-			for ( let node of range.getNodes() ) {
+			for ( let node of range.getAllNodes() ) {
 				nodes.push( node );
 			}
 
@@ -386,4 +386,97 @@ describe( 'Range', () => {
 			expect( common.end.path ).to.deep.equal( [ 4, 7 ] );
 		} );
 	} );
+
+	describe( 'getMinimalFlatRanges', () => {
+		beforeEach( () => {
+			prepareRichRoot( root );
+		} );
+
+		it( 'should return empty array if range is collapsed', () => {
+			let range = new Range( new Position( root, [ 1, 3 ] ), new Position( root, [ 1, 3 ] ) );
+			let flat = range.getMinimalFlatRanges();
+
+			expect( flat.length ).to.equal( 0 );
+		} );
+
+		it( 'should return empty array if range does not contain any node', () => {
+			let range = new Range( new Position( root, [ 1, 3 ] ), new Position( root, [ 2, 0 ] ) );
+			let flat = range.getMinimalFlatRanges();
+
+			expect( flat.length ).to.equal( 0 );
+		} );
+
+		it( 'should return a minimal set of flat ranges that covers the range (start and end in different sub-trees)', () => {
+			let range = new Range( new Position( root, [ 0, 0, 3 ] ), new Position( root, [ 3, 0, 2 ] ) );
+			let flat = range.getMinimalFlatRanges();
+
+			expect( flat.length ).to.equal( 4 );
+			expect( flat[ 0 ].start.path ).to.deep.equal( [ 0, 0, 3 ] );
+			expect( flat[ 0 ].end.path ).to.deep.equal( [ 0, 0, 5 ] );
+			expect( flat[ 1 ].start.path ).to.deep.equal( [ 0, 1 ] );
+			expect( flat[ 1 ].end.path ).to.deep.equal( [ 0, 2 ] );
+			expect( flat[ 2 ].start.path ).to.deep.equal( [ 1 ] );
+			expect( flat[ 2 ].end.path ).to.deep.equal( [ 3 ] );
+			expect( flat[ 3 ].start.path ).to.deep.equal( [ 3, 0, 0 ] );
+			expect( flat[ 3 ].end.path ).to.deep.equal( [ 3, 0, 2 ] );
+		} );
+
+		it( 'should return a minimal set of flat ranges that covers the range (start.path is prefix of end.path)', () => {
+			let range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 0, 1, 4 ] ) );
+			let flat = range.getMinimalFlatRanges();
+
+			expect( flat.length ).to.equal( 2 );
+			expect( flat[ 0 ].start.path ).to.deep.equal( [ 0, 0 ] );
+			expect( flat[ 0 ].end.path ).to.deep.equal( [ 0, 1 ] );
+			expect( flat[ 1 ].start.path ).to.deep.equal( [ 0, 1, 0 ] );
+			expect( flat[ 1 ].end.path ).to.deep.equal( [ 0, 1, 4 ] );
+		} );
+	} );
+
+	describe( 'getTopLevelNodes', () => {
+		beforeEach( () => {
+			prepareRichRoot( root );
+		} );
+
+		it( 'should iterate over all top-level nodes of this range', () => {
+			let range = new Range( new Position( root, [ 0, 0, 3 ] ), new Position( root, [ 3, 0, 2 ] ) );
+			let nodes = Array.from( range.getTopLevelNodes() );
+			let nodeNames = nodes.map( ( node ) => {
+				return ( node instanceof Element ) ? 'E:' + node.name : 'C:' + node.character;
+			} );
+
+			expect( nodeNames ).to.deep.equal( [ 'C:s', 'C:t', 'E:p', 'E:p', 'E:p', 'C:s', 'C:e' ] );
+		} );
+	} );
+
+	describe( 'isFlat', () => {
+		beforeEach( () => {
+			prepareRichRoot( root );
+		} );
+
+		it( 'should be true if start and end position are in the same parent', () => {
+			let range = new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 2 ] ) );
+			expect( range.isFlat ).to.be.true;
+		} );
+
+		it( 'should be false if start and end position are in different parents', () => {
+			let range = new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 3, 0, 1 ] ) );
+			expect( range.isFlat ).to.be.false;
+		} );
+	} );
+
+	function prepareRichRoot() {
+		root.insertChildren( 0, [
+			new Element( 'div', [], [
+				new Element( 'h', [], 'first' ),
+				new Element( 'p', [], 'lorem ipsum' )
+			] ),
+			new Element( 'p', [], 'foo' ),
+			new Element( 'p', [], 'bar' ),
+			new Element( 'div', [], [
+				new Element( 'h', [], 'second' ),
+				new Element( 'p', [], 'lorem' )
+			] )
+		] );
+	}
 } );

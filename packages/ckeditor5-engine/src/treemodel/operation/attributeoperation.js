@@ -93,7 +93,7 @@ CKEDITOR.define( [
 
 			// Remove or change.
 			if ( oldAttr !== null ) {
-				for ( let node of this.range.getNodes() ) {
+				for ( let node of this.range.getAllNodes() ) {
 					if ( !node.hasAttr( oldAttr ) ) {
 						/**
 						 * The attribute which should be removed does not exists for the given node.
@@ -117,7 +117,7 @@ CKEDITOR.define( [
 
 			// Insert or change.
 			if ( newAttr !== null ) {
-				for ( let node of this.range.getNodes() ) {
+				for ( let node of this.range.getAllNodes() ) {
 					if ( oldAttr === null && node.hasAttr( newAttr.key ) ) {
 						/**
 						 * The attribute with given key already exists for the given node.
