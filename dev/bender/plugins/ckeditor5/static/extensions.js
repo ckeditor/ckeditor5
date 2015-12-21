@@ -9,13 +9,29 @@
 'use strict';
 
 ( () => {
-	const basePath = bender.config.applications.ckeditor.basePath;
-
 	/**
 	 * AMD tools related to CKEditor.
 	 */
 	bender.amd = {
 		getModulePath( name ) {
+			let appBasePath = bender.basePath;
+			let ckeditorBasePath = bender.config.applications.ckeditor.basePath;
+			let moduleBasePath;
+
+			// Ugh... make some paths cleanup, because we need to combine these fragments and we don't want to
+			// duplicate '/'. BTW. if you want to touch this make sure you haven't broken Bender jobs which
+			// have different bender.basePaths (no trailing '/', unnecessary 'tests/' fragment).
+			moduleBasePath =
+				appBasePath
+					.split( '/' )
+					.filter( nonEmpty )
+					// When running a job we need to drop the last parth of the base path, which is "tests".
+					.slice( 0, -1 )
+					.concat(
+						ckeditorBasePath.split( '/' ).filter( nonEmpty )
+					)
+					.join( '/' );
+
 			if ( name != 'ckeditor' ) {
 				// Resolve shortened feature names to `featureName/featureName`.
 				if ( name.indexOf( '/' ) < 0 ) {
@@ -29,7 +45,7 @@
 				}
 			}
 
-			return basePath + name + '.js';
+			return '/' + moduleBasePath + '/' + name + '.js';
 		},
 
 		define( name, deps, body ) {
@@ -76,4 +92,8 @@
 			return modules;
 		}
 	};
+
+	function nonEmpty( str ) {
+		return !!str.length;
+	}
 } )();
