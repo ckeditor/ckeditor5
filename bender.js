@@ -37,10 +37,8 @@ const config = {
 
 	coverage: {
 		paths: [
-			'ckeditor.js',
-			'src/**/*.js',
-			'node_modules/ckeditor5-*/src/**/*.js',
-			'!node_modules/ckeditor5-*/src/lib/**'
+			'dist/amd/**/*.js',
+			'!dist/amd/ckeditor5-*/lib/**'
 		]
 	}
 };
