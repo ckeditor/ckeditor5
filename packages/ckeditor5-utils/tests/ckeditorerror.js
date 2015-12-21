@@ -5,11 +5,16 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'ckeditorerror' );
+const modules = bender.amd.require( 'core/ckeditorerror' );
 
 describe( 'CKEditorError', () => {
+	let CKEditorError;
+
+	before( () => {
+		CKEditorError = modules[ 'core/ckeditorerror' ];
+	} );
+
 	it( 'inherits from Error', () => {
-		const CKEditorError = modules.ckeditorerror;
 		let error = new CKEditorError( 'foo' );
 
 		expect( error ).to.be.an.instanceOf( Error );
@@ -17,14 +22,12 @@ describe( 'CKEditorError', () => {
 	} );
 
 	it( 'sets the name', () => {
-		const CKEditorError = modules.ckeditorerror;
 		let error = new CKEditorError( 'foo' );
 
 		expect( error ).to.have.property( 'name', 'CKEditorError' );
 	} );
 
 	it( 'sets the message', () => {
-		const CKEditorError = modules.ckeditorerror;
 		let error = new CKEditorError( 'foo' );
 
 		expect( error ).to.have.property( 'message', 'foo' );
@@ -32,7 +35,6 @@ describe( 'CKEditorError', () => {
 	} );
 
 	it( 'sets the message and data', () => {
-		const CKEditorError = modules.ckeditorerror;
 		let data = { bar: 1 };
 		let error = new CKEditorError( 'foo', data );
 
@@ -47,7 +49,6 @@ describe( 'CKEditorError', () => {
 			}
 		}
 
-		const CKEditorError = modules.ckeditorerror;
 		let data = {
 			bar: 'a',
 			bom: new Foo(),

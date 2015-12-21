@@ -7,7 +7,7 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'ckeditor', 'editor', 'config' );
+const modules = bender.amd.require( 'ckeditor', 'core/editor', 'core/config' );
 
 let content = document.getElementById( 'content' );
 let editorConfig = { plugins: 'creator-test' };
@@ -25,16 +25,19 @@ beforeEach( () => {
 } );
 
 describe( 'create', () => {
-	it( 'should return a promise', () => {
-		const CKEDITOR = modules.ckeditor;
+	let CKEDITOR, Editor, Config;
 
+	before( () => {
+		CKEDITOR = modules.ckeditor;
+		Editor = modules[ 'core/editor' ];
+		Config = modules[ 'core/config' ];
+	} );
+
+	it( 'should return a promise', () => {
 		expect( CKEDITOR.create( content, editorConfig ) ).to.be.instanceof( Promise );
 	} );
 
 	it( 'should create a new editor instance', () => {
-		const CKEDITOR = modules.ckeditor;
-		const Editor = modules.editor;
-
 		return CKEDITOR.create( content, editorConfig ).then( ( editor ) => {
 			expect( editor ).to.be.instanceof( Editor );
 			expect( editor.element ).to.equal( content );
@@ -42,9 +45,6 @@ describe( 'create', () => {
 	} );
 
 	it( 'should create a new editor instance (using a selector)', () => {
-		const CKEDITOR = modules.ckeditor;
-		const Editor = modules.editor;
-
 		return CKEDITOR.create( '.editor', editorConfig ).then( ( editor ) => {
 			expect( editor ).to.be.instanceof( Editor );
 			expect( editor.element ).to.equal( document.querySelector( '.editor' ) );
@@ -52,16 +52,12 @@ describe( 'create', () => {
 	} );
 
 	it( 'should set configurations on the new editor', () => {
-		const CKEDITOR = modules.ckeditor;
-
 		return CKEDITOR.create( content, { test: 1, plugins: 'creator-test' } ).then( ( editor ) => {
 			expect( editor.config.test ).to.equal( 1 );
 		} );
 	} );
 
 	it( 'should add the editor to the `instances` collection', () => {
-		const CKEDITOR = modules.ckeditor;
-
 		return CKEDITOR.create( content, editorConfig ).then( ( editor ) => {
 			expect( CKEDITOR.instances ).to.have.length( 1 );
 			expect( CKEDITOR.instances.get( 0 ) ).to.equal( editor );
@@ -69,7 +65,6 @@ describe( 'create', () => {
 	} );
 
 	it( 'should remove the editor from the `instances` collection on `destroy` event', () => {
-		const CKEDITOR = modules.ckeditor;
 		let editor1, editor2;
 
 		// Create the first editor.
@@ -96,8 +91,6 @@ describe( 'create', () => {
 	} );
 
 	it( 'should be rejected on element not found', () => {
-		const CKEDITOR = modules.ckeditor;
-
 		let addSpy = bender.sinon.spy( CKEDITOR.instances, 'add' );
 
 		return CKEDITOR.create( '.undefined' ).then( () => {
@@ -115,7 +108,7 @@ describe( 'create', () => {
 describe( 'config', () => {
 	it( 'should be an instance of Config', () => {
 		const CKEDITOR = modules.ckeditor;
-		const Config = modules.config;
+		const Config = modules[ 'core/config' ];
 
 		expect( CKEDITOR.config ).to.be.an.instanceof( Config );
 	} );
