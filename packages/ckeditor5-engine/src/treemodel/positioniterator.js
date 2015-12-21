@@ -11,7 +11,6 @@ import Position from './position.js';
 import Text from './text.js';
 import Range from './range.js';
 
-
 const ELEMENT_ENTER = 0;
 const ELEMENT_LEAVE = 1;
 const CHARACTER = 2;
@@ -96,9 +95,6 @@ export default class PositionIterator {
 		const position = this.position;
 		const parent = position.parent;
 
-		// Ugh... added here because of circular deps in AMD ;<.
-		Element = CKEDITOR.require( 'treemodel/element' );
-
 		// We are at the end of the root.
 		if ( parent.parent === null && position.offset === parent.getChildCount() ) {
 			return { done: true };
@@ -171,9 +167,25 @@ export default class PositionIterator {
 
 			return formatReturnValue( ELEMENT_LEAVE, nodeBefore );
 		} else if ( nodeBefore instanceof Character ) {
-			this.position = Position.createFromParentAndOffset( parent, position.offset - 1 );
+			if ( this.mergeCharacters ) {
+				let text = '';
+				let node = this.position.nodeBefore;
 
-			return formatReturnValue( CHARACTER, nodeBefore );
+				while ( !this.position.isEqual( this.boundaries.start ) && node instanceof Character && node.attrs.isEqual( nodeBefore.attrs ) ) {
+					text = this.position.nodeBefore.character + text;
+					this.position.offset--;
+
+					node = this.position.nodeBefore;
+				}
+				// This is so this.position is always a new object after each iterator step.
+				this.position = Position.createFromPosition( position );
+
+				return formatReturnValue( TEXT, new Text( text, this.position.nodeAfter.attrs ) );
+			} else {
+				this.position = Position.createFromParentAndOffset( parent, position.offset - 1 );
+
+				return formatReturnValue( CHARACTER, nodeBefore );
+			}
 		} else {
 			this.position = Position.createFromParentAndOffset( parent.parent, parent.getIndex() );
 

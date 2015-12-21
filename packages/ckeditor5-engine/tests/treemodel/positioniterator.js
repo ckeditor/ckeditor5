@@ -141,7 +141,7 @@ describe( 'range iterator', () => {
 		expect( i ).to.equal( expectedItems.length );
 	} );
 
-	it( 'should merge characters when iterating over the range', () => {
+	it( 'should merge characters when iterating over the range using next', () => {
 		let start = new Position( root, [ 0 ] ); // beginning of root
 		let end = new Position( root, [ 2 ] ); // ending of root
 		let range = new Range( start, end );
@@ -157,5 +157,23 @@ describe( 'range iterator', () => {
 		}
 
 		expect( i ).to.equal( expectedItemsMerged.length );
+	} );
+
+	it( 'should merge characters when iterating over the range using previous', () => {
+		let start = new Position( root, [ 0 ] ); // beginning of root
+		let end = new Position( root, [ 2 ] ); // ending of root
+		let range = new Range( start, end );
+
+		let iterator = new PositionIterator( range, range.end, true );
+		let step = iterator.previous();
+		let i = expectedItemsMerged.length;
+
+		while ( !step.done ) {
+			i--;
+			expect( step.value ).to.deep.equal( expectedItemsMerged[ i ] );
+			step = iterator.previous();
+		}
+
+		expect( i ).to.equal( 0 );
 	} );
 } );
