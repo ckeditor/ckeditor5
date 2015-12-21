@@ -204,11 +204,14 @@ export default class Range {
 	 *		 |   |- element P4
 	 *		 |   |   |- "ipsum"
 	 *
-	 * Flat ranges for range `( [ 0, 0, 3 ], [ 3, 0, 2 ] )` would be:
+	 * As it can be seen, letters contained in the range are stloremfoobarse, spread across different parents.
+	 * We are looking for minimal set of {@link #isFlat flat} ranges that contains the same nodes.
+	 *
+	 * Minimal flat ranges for above range `( [ 0, 0, 3 ], [ 3, 0, 2 ] )` will be:
 	 *
 	 *		( [ 0, 0, 3 ], [ 0, 0, 5 ] ) = "st"
-	 *		( [ 0, 1 ], [ 0, 2 ] ) = element P1
-	 *		( [ 1 ], [ 3 ] ) = element P2, element P3
+	 *		( [ 0, 1 ], [ 0, 2 ] ) = element P1 ("lorem")
+	 *		( [ 1 ], [ 3 ] ) = element P2, element P3 ("foobar")
 	 *		( [ 3, 0, 0 ], [ 3, 0, 2 ] ) = "se"
 	 *
 	 * **Note:** this method is not returning flat ranges that contain no nodes. It may also happen that not-collapsed
@@ -265,14 +268,37 @@ export default class Range {
 	 * {@link treeModel.PositionIterator#ELEMENT_LEAVE}.
 	 *
 	 * @see {treeModel.PositionIterator}
-	 * @returns {Iterable.<treeModel.Node>}
+	 * @param {Boolean} [mergeCharacters] Whether {@link treeModel.Character} nodes with same attributes
+	 * should be passed one by one or as one {@link treeModel.Text} object.
+	 * @returns {Iterable.<treeModel.Node|treeModel.Text>}
 	 */
-	*getAllNodes() {
-		for ( let value of this ) {
-			if ( value.type != PositionIterator.ELEMENT_LEAVE ) {
-				yield value.node;
+	*getAllNodes( mergeCharacters ) {
+		let it = new PositionIterator( this, mergeCharacters );
+		let step;
+
+		do {
+			step = it.next();
+
+			if ( step.value && step.value.type != PositionIterator.ELEMENT_LEAVE ) {
+				yield step.value.node;
 			}
-		}
+		} while ( !step.done );
+	}
+
+	/**
+	 * Returns an iterator that iterates over all {@link treeModel.Position positions} that are boundaries or
+	 * contained in this range.
+	 *
+	 * @param {Boolean} [mergeCharacters] Whether {@link treeModel.Character} nodes with same attributes
+	 * should be passed one by one or as one {@link treeModel.Text} object.
+	 * @returns {Iterable.<treeModel.Position>}
+	 */
+	*getPositions( mergeCharacters ) {
+		let it = new PositionIterator( this, mergeCharacters );
+
+		do {
+			yield it.position;
+		} while ( !it.next().done );
 	}
 
 	/**
@@ -280,19 +306,38 @@ export default class Range {
 	 * and returns them. A node is a top-level node when it is in the range but it's parent is not. In other words,
 	 * this function splits the range into separate sub-trees and iterates over their roots.
 	 *
-	 * @returns {Iterable.<treeModel.Node>}
+	 * @param {Boolean} [mergeCharacters] Whether {@link treeModel.Character} nodes with same attributes
+	 * should be passed one by one or as one {@link treeModel.Text} object.
+	 * @returns {Iterable.<treeModel.Node|treeModel.Text>}
 	 */
-	*getTopLevelNodes() {
+	*getTopLevelNodes( mergeCharacters ) {
 		let flatRanges = this.getMinimalFlatRanges();
 
 		for ( let range of flatRanges ) {
-			let node = range.start.nodeAfter;
-			let offset = range.end.offset - range.start.offset;
+			// This loop could be much simpler as we could just iterate over siblings of node after the first
+			// position of each range. But then we would have to re-implement character merging strategy here.
+			let it = new PositionIterator( range, mergeCharacters );
+			let step;
 
-			for ( let i = 0; i < offset; i++ ) {
-				yield node;
-				node = node.nextSibling;
-			}
+			// We will only return nodes that are on same level as node after the range start. To do this,
+			// we keep "depth" counter.
+			let depth = 0;
+
+			do {
+				step = it.next();
+
+				if ( step.value ) {
+					if ( step.value.type == PositionIterator.ELEMENT_ENTER ) {
+						depth++;
+					} else if ( step.value.type == PositionIterator.ELEMENT_LEAVE ) {
+						depth--;
+					}
+
+					if ( depth === 0 ) {
+						yield step.value.node;
+					}
+				}
+			} while ( !step.done );
 		}
 	}
 
