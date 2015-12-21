@@ -10,7 +10,6 @@ const gulpWatch = require( 'gulp-watch' );
 const gulpPlumber = require( 'gulp-plumber' );
 const gutil = require( 'gulp-util' );
 const multipipe = require( 'multipipe' );
-const stream = require( 'stream' );
 
 const sep = path.sep;
 
@@ -67,17 +66,14 @@ const utils = {
 			throw new Error( `Incorrect format: ${ format }` );
 		}
 
-		return new stream.PassThrough( { objectMode: true } )
-			// Not used so far, but we'll need it.
-			// .pipe( utils.pickVersionedFile( format ) )
-			.pipe( babel( {
-				plugins: [ `transform-es2015-modules-${ babelModuleTranspiler }` ],
-				// Ensure that all paths ends with '.js' because Require.JS (unlike Common.JS/System.JS)
-				// will not add it to module names which look like paths.
-				resolveModuleSource: ( source ) => {
-					return utils.appendModuleExtension( source );
-				}
-			} ) );
+		return babel( {
+			plugins: [ `transform-es2015-modules-${ babelModuleTranspiler }` ],
+			// Ensure that all paths ends with '.js' because Require.JS (unlike Common.JS/System.JS)
+			// will not add it to module names which look like paths.
+			resolveModuleSource: ( source ) => {
+				return utils.appendModuleExtension( source );
+			}
+		} );
 	},
 
 	/**
@@ -91,6 +87,8 @@ const utils = {
 	addFormat( distDir ) {
 		return ( pipes, format ) => {
 			const conversionPipes = [];
+
+			conversionPipes.push( utils.pickVersionedFile( format ) );
 
 			if ( format != 'esnext' ) {
 				conversionPipes.push( utils.transpile( format ) );
@@ -109,11 +107,15 @@ const utils = {
 		};
 	},
 
-	// Not used so far, but will allow us to pick one of files suffixed with the format (`__esnext`, `__amd`, or `__cjs`).
-	// This will be needed when we'll want to have different piece of code for specific formats.
-	//
-	// For example: we'll have `loader__esnext.js`, `loader__amd.js` and `loader__cjs.js`. After applying this
-	// transformation when compiling code for a specific format the proper file will be renamed to `loader.js`.
+	/**
+	 * Allows us to pick one of files suffixed with the format (`__esnext`, `__amd`, or `__cjs`).
+	 *
+	 * For example: we have `load__esnext.js`, `load__amd.js` and `load__cjs.js`. After applying this
+	 * transformation when compiling code for a specific format the proper file will be renamed to `load.js`.
+	 *
+	 * @param {String} format
+	 * @returns {Stream}
+	 */
 	pickVersionedFile( format ) {
 		return rename( ( path ) => {
 			const regexp = new RegExp( `__${ format }$` );
