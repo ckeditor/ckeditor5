@@ -5,7 +5,7 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'collection', 'ckeditorerror' );
+const modules = bender.amd.require( 'core/collection', 'core/ckeditorerror' );
 
 bender.tools.createSinonSandbox();
 
@@ -21,8 +21,8 @@ describe( 'Collection', () => {
 	let Collection, CKEditorError;
 
 	before( () => {
-		Collection = modules.collection;
-		CKEditorError = modules.CKEditorError;
+		Collection = modules[ 'core/collection' ];
+		CKEditorError = modules[ 'core/ckeditorerror' ];
 	} );
 
 	let collection;

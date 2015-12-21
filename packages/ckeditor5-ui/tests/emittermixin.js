@@ -5,9 +5,15 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'emittermixin', 'eventinfo', 'utils' );
-
+const modules = bender.amd.require( 'core/emittermixin', 'core/eventinfo', 'core/lib/lodash/object' );
+let EmitterMixin, EventInfo, utilsObject;
 let emitter, listener;
+
+before( () => {
+	EmitterMixin = modules[ 'core/emittermixin' ];
+	EventInfo = modules[ 'core/eventinfo' ];
+	utilsObject = modules[ 'core/lib/lodash/object' ];
+} );
 
 beforeEach( refreshEmitter );
 
@@ -45,8 +51,6 @@ describe( 'fire', () => {
 	} );
 
 	it( 'should pass arguments to callbacks', () => {
-		const EventInfo = modules.eventinfo;
-
 		let spy1 = sinon.spy();
 		let spy2 = sinon.spy();
 
@@ -212,8 +216,6 @@ describe( 'once', () => {
 	} );
 
 	it( 'should have proper arguments', () => {
-		const EventInfo = modules.eventinfo;
-
 		let spy = sinon.spy();
 
 		emitter.once( 'test', spy );
@@ -419,8 +421,5 @@ function refreshListener() {
 }
 
 function getEmitterInstance() {
-	const EmitterMixin = modules.emittermixin;
-	let utils = modules.utils;
-
-	return utils.extend( {}, EmitterMixin );
+	return utilsObject.extend( {}, EmitterMixin );
 }

@@ -5,13 +5,15 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'config' );
+const modules = bender.amd.require( 'core/config' );
 
-let config;
+let Config, config;
+
+before( () => {
+	Config = modules[ 'core/config' ];
+} );
 
 beforeEach( () => {
-	const Config = modules.config;
-
 	config = new Config( {
 		creator: 'inline',
 		language: 'pl',
@@ -38,8 +40,6 @@ describe( 'constructor', () => {
 	} );
 
 	it( 'should work with no parameters', () => {
-		const Config = modules.config;
-
 		// No error should be thrown.
 		config = new Config();
 	} );
@@ -47,8 +47,6 @@ describe( 'constructor', () => {
 
 describe( 'set', () => {
 	it( 'should create Config instances for objects', () => {
-		const Config = modules.config;
-
 		expect( config.resize ).to.be.an.instanceof( Config );
 		expect( config.resize.icon ).to.be.an.instanceof( Config );
 	} );
@@ -112,8 +110,6 @@ describe( 'set', () => {
 	} );
 
 	it( 'should replace a simple entry with a Config instance', () => {
-		const Config = modules.config;
-
 		config.set( 'test', 1 );
 		config.set( 'test', {
 			prop: 1
@@ -124,8 +120,6 @@ describe( 'set', () => {
 	} );
 
 	it( 'should replace a simple entry with a Config instance when passing an object', () => {
-		const Config = modules.config;
-
 		config.set( 'test', 1 );
 		config.set( {
 			test: {
@@ -138,8 +132,6 @@ describe( 'set', () => {
 	} );
 
 	it( 'should replace a simple entry with a Config instance when passing a name.with.deep', () => {
-		const Config = modules.config;
-
 		config.set( 'test.prop', 1 );
 		config.set( 'test.prop.value', 1 );
 

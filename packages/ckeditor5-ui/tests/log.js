@@ -7,10 +7,13 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'log' );
+const modules = bender.amd.require( 'core/log' );
+let log;
 let spy;
 
 beforeEach( () => {
+	log = modules[ 'core/log' ];
+
 	if ( spy ) {
 		spy.restore();
 	}
@@ -18,7 +21,6 @@ beforeEach( () => {
 
 describe( 'warn()', () => {
 	it( 'logs the message to the console using console.warn()', () => {
-		let log = modules.log;
 		let spy = sinon.stub( console, 'warn' );
 		let data = { bar: 1 };
 
@@ -35,7 +37,6 @@ describe( 'warn()', () => {
 
 describe( 'error()', () => {
 	it( 'logs the message to the console using console.error()', () => {
-		let log = modules.log;
 		let spy = sinon.stub( console, 'error' );
 		let data = { bar: 1 };
 

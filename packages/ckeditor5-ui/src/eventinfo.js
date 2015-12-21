@@ -12,7 +12,7 @@
  * @class EventInfo
  */
 
-import { spy } from './utils.js';
+import utils from './utils.js';
 
 export default class EventInfo {
 	constructor( source, name ) {
@@ -33,13 +33,13 @@ export default class EventInfo {
 		 *
 		 * @method
 		 */
-		this.stop = spy();
+		this.stop = utils.spy();
 
 		/**
 		 * Removes the current callback from future interactions of this event.
 		 *
 		 * @method
 		 */
-		this.off = spy();
+		this.off = utils.spy();
 	}
 }
