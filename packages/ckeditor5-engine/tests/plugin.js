@@ -5,18 +5,18 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'plugin', 'editor' );
+const modules = bender.amd.require( 'core/plugin', 'core/editor' );
 let editor;
 
 before( () => {
-	const Editor = modules.editor;
+	const Editor = modules[ 'core/editor' ];
 
 	editor = new Editor( document.body.appendChild( document.createElement( 'div' ) ) );
 } );
 
 describe( 'constructor', () => {
 	it( 'should set the `editor` property', () => {
-		const Plugin = modules.plugin;
+		const Plugin = modules[ 'core/plugin' ];
 
 		let plugin = new Plugin( editor );
 

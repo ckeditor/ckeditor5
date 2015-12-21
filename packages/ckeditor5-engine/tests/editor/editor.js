@@ -7,15 +7,20 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'ckeditor5-core/editor', 'ckeditor5-core/editorconfig', 'ckeditor5-core/plugin' );
+const modules = bender.amd.require( 'core/editor', 'core/editorconfig', 'core/plugin' );
+let Editor, EditorConfig, Plugin;
 
 let editor;
 let element;
 let asyncSpy;
 
-beforeEach( () => {
-	const Editor = modules.editor;
+before( () => {
+	Editor = modules[ 'core/editor' ];
+	EditorConfig = modules[ 'core/editorconfig' ];
+	Plugin = modules[ 'core/plugin' ];
+} );
 
+beforeEach( () => {
 	element = document.createElement( 'div' );
 	document.body.appendChild( element );
 
@@ -28,22 +33,22 @@ before( () => {
 		init: sinon.spy().named( 'creator-test' )
 	} );
 
-	CKEDITOR.define( 'plugin!A', [ 'plugin' ], pluginDefinition( 'A' ) );
+	bender.amd.define( 'A', [ 'core/plugin' ], pluginDefinition( 'A' ) );
 
-	CKEDITOR.define( 'plugin!B', [ 'plugin' ], pluginDefinition( 'B' ) );
+	bender.amd.define( 'B', [ 'core/plugin' ], pluginDefinition( 'B' ) );
 
-	CKEDITOR.define( 'plugin!C', [ 'plugin', 'plugin!B' ], pluginDefinition( 'C' ) );
+	bender.amd.define( 'C', [ 'core/plugin', 'B' ], pluginDefinition( 'C' ) );
 
-	CKEDITOR.define( 'plugin!D', [ 'plugin', 'plugin!C' ], pluginDefinition( 'D' ) );
+	bender.amd.define( 'D', [ 'core/plugin', 'C' ], pluginDefinition( 'D' ) );
 
-	CKEDITOR.define( 'plugin!E', [ 'plugin' ], pluginDefinition( 'E' ) );
+	bender.amd.define( 'E', [ 'core/plugin' ], pluginDefinition( 'E' ) );
 
 	// Synchronous plugin that depends on an asynchronous one.
-	CKEDITOR.define( 'plugin!F', [ 'plugin', 'plugin!async' ], pluginDefinition( 'F' ) );
+	bender.amd.define( 'F', [ 'core/plugin', 'async' ], pluginDefinition( 'F' ) );
 
 	asyncSpy = sinon.spy().named( 'async-call-spy' );
 
-	CKEDITOR.define( 'plugin!async', [ 'plugin' ], ( Plugin ) => {
+	bender.amd.define( 'async', [ 'core/plugin' ], ( Plugin ) => {
 		class PluginAsync extends Plugin {}
 
 		PluginAsync.prototype.init = sinon.spy( () => {
@@ -78,16 +83,12 @@ describe( 'constructor', () => {
 
 describe( 'config', () => {
 	it( 'should be an instance of EditorConfig', () => {
-		const EditorConfig = modules.editorconfig;
-
 		expect( editor.config ).to.be.an.instanceof( EditorConfig );
 	} );
 } );
 
 describe( 'init', () => {
 	it( 'should return a promise that resolves properly', () => {
-		const Editor = modules.editor;
-
 		editor = new Editor( element, {
 			plugins: 'creator-test'
 		} );
@@ -100,9 +101,6 @@ describe( 'init', () => {
 	} );
 
 	it( 'should fill `plugins`', () => {
-		const Editor = modules.editor;
-		const Plugin = modules.plugin;
-
 		editor = new Editor( element, {
 			plugins: 'A,B,creator-test'
 		} );
@@ -119,8 +117,6 @@ describe( 'init', () => {
 	} );
 
 	it( 'should initialize plugins in the right order', () => {
-		const Editor = modules.editor;
-
 		editor = new Editor( element, {
 			plugins: 'creator-test,A,D'
 		} );
@@ -137,8 +133,6 @@ describe( 'init', () => {
 	} );
 
 	it( 'should initialize plugins in the right order, waiting for asynchronous ones', () => {
-		const Editor = modules.editor;
-
 		editor = new Editor( element, {
 			plugins: 'creator-test,A,F'
 		} );
@@ -148,7 +142,7 @@ describe( 'init', () => {
 				editor.plugins.get( 'creator-test' ).init,
 				editor.plugins.get( 'A' ).init,
 				editor.plugins.get( 'async' ).init,
-				// This one is called with delay by the async init
+				// This one is called with delay by the async init.
 				asyncSpy,
 				editor.plugins.get( 'F' ).init
 			);
@@ -156,8 +150,6 @@ describe( 'init', () => {
 	} );
 
 	it( 'should not fail if loading a plugin that doesn\'t define init()', () => {
-		const Editor = modules.editor;
-
 		editor = new Editor( element, {
 			plugins: 'E,creator-test'
 		} );

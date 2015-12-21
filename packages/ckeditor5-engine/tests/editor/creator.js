@@ -7,12 +7,11 @@
 
 /* bender-include: ../_tools/tools.js */
 
-const modules = bender.amd.require( 'editor', 'plugin', 'creator', 'ckeditorerror' );
+const modules = bender.amd.require( 'core/editor', 'core/plugin', 'core/creator', 'core/ckeditorerror' );
 let editor, element;
+let Editor, Plugin, Creator, CKEditorError;
 
 function initEditor( config ) {
-	const Editor = modules.editor;
-
 	element = document.createElement( 'div' );
 	document.body.appendChild( element );
 
@@ -24,19 +23,26 @@ function initEditor( config ) {
 bender.tools.createSinonSandbox();
 
 before( () => {
-	bender.tools.core.defineEditorCreatorMock( 'test1' );
+	Editor = modules[ 'core/editor' ];
+	Plugin = modules[ 'core/plugin' ];
+	Creator = modules[ 'core/creator' ];
+	CKEditorError = modules[ 'core/ckeditorerror' ];
 
-	bender.tools.core.defineEditorCreatorMock( 'test-throw-on-many1' );
-	bender.tools.core.defineEditorCreatorMock( 'test-throw-on-many2' );
+	const coreTools = bender.tools.core;
 
-	bender.tools.core.defineEditorCreatorMock( 'test-config1' );
-	bender.tools.core.defineEditorCreatorMock( 'test-config2' );
+	coreTools.defineEditorCreatorMock( 'test1' );
 
-	CKEDITOR.define( 'plugin!test3', [ 'plugin' ], ( Plugin ) => {
+	coreTools.defineEditorCreatorMock( 'test-throw-on-many1' );
+	coreTools.defineEditorCreatorMock( 'test-throw-on-many2' );
+
+	coreTools.defineEditorCreatorMock( 'test-config1' );
+	coreTools.defineEditorCreatorMock( 'test-config2' );
+
+	bender.amd.define( 'test3', [ 'core/plugin' ], ( Plugin ) => {
 		return class extends Plugin {};
 	} );
 
-	CKEDITOR.define( 'plugin!creator-async-create', [ 'creator' ], ( Creator ) => {
+	bender.amd.define( 'creator-async-create', [ 'core/creator' ], ( Creator ) => {
 		return class extends Creator {
 			create() {
 				return new Promise( ( resolve, reject ) => {
@@ -48,7 +54,7 @@ before( () => {
 		};
 	} );
 
-	CKEDITOR.define( 'plugin!creator-async-destroy', [ 'creator' ], ( Creator ) => {
+	bender.amd.define( 'creator-async-destroy', [ 'core/creator' ], ( Creator ) => {
 		return class extends Creator {
 			create() {}
 
@@ -69,8 +75,6 @@ afterEach( () => {
 
 describe( 'init', () => {
 	it( 'should instantiate the creator and call create()', () => {
-		const Creator = modules.creator;
-
 		return initEditor( {
 				plugins: 'creator-test1'
 			} )
@@ -85,8 +89,6 @@ describe( 'init', () => {
 	} );
 
 	it( 'should throw if more than one creator is available but config.creator is not defined', () => {
-		const CKEditorError = modules.ckeditorerror;
-
 		return initEditor( {
 				plugins: 'creator-test-throw-on-many1,creator-test-throw-on-many2'
 			} )
@@ -114,8 +116,6 @@ describe( 'init', () => {
 	} );
 
 	it( 'should throw an error if the creator doesn\'t exist', () => {
-		let CKEditorError = modules.ckeditorerror;
-
 		return initEditor( {
 				creator: 'bad',
 				plugins: 'creator-test1'
@@ -130,8 +130,6 @@ describe( 'init', () => {
 	} );
 
 	it( 'should throw an error if no creators are defined', () => {
-		const CKEditorError = modules.ckeditorerror;
-
 		return initEditor( {} )
 			.then( () => {
 				throw new Error( 'This should not be executed.' );

@@ -5,12 +5,12 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'editorconfig', 'ckeditor' );
+const modules = bender.amd.require( 'core/editorconfig', 'ckeditor' );
 
 let config;
 
 beforeEach( () => {
-	const EditorConfig = modules.editorconfig;
+	const EditorConfig = modules[ 'core/editorconfig' ];
 
 	config = new EditorConfig( {
 		test: 1

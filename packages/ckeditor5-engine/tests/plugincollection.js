@@ -5,7 +5,9 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'plugincollection', 'plugin', 'editor', 'log' );
+const modules = bender.amd.require( 'core/plugincollection', 'core/plugin', 'core/editor', 'core/log' );
+let PluginCollection, Plugin, Editor, log;
+
 let editor;
 let PluginA, PluginB;
 class TestError extends Error {}
@@ -13,8 +15,10 @@ class TestError extends Error {}
 bender.tools.createSinonSandbox();
 
 before( () => {
-	const Editor = modules.editor;
-	const Plugin = modules.plugin;
+	PluginCollection = modules[ 'core/plugincollection' ];
+	Editor = modules[ 'core/editor' ];
+	Plugin = modules[ 'core/plugin' ];
+	log = modules[ 'core/log' ];
 
 	PluginA = class extends Plugin {};
 	PluginB = class extends Plugin {};
@@ -24,60 +28,60 @@ before( () => {
 
 // Create fake plugins that will be used on tests.
 
-CKEDITOR.define( 'plugin!A', () => {
+bender.amd.define( 'A', () => {
 	return PluginA;
 } );
 
-CKEDITOR.define( 'plugin!B', () => {
+bender.amd.define( 'B', () => {
 	return PluginB;
 } );
 
-CKEDITOR.define( 'plugin!C', [ 'plugin', 'plugin!B' ], ( Plugin ) => {
+bender.amd.define( 'C', [ 'core/plugin', 'B' ], ( Plugin ) => {
 	return class extends Plugin {};
 } );
 
-CKEDITOR.define( 'plugin!D', [ 'plugin', 'plugin!A', 'plugin!C' ], ( Plugin ) => {
+bender.amd.define( 'D', [ 'core/plugin', 'A', 'C' ], ( Plugin ) => {
 	return class extends Plugin {};
 } );
 
-CKEDITOR.define( 'plugin!E', [ 'plugin', 'plugin!F' ], ( Plugin ) => {
+bender.amd.define( 'E', [ 'core/plugin', 'F' ], ( Plugin ) => {
 	return class extends Plugin {};
 } );
 
-CKEDITOR.define( 'plugin!F', [ 'plugin', 'plugin!E' ], ( Plugin ) => {
+bender.amd.define( 'F', [ 'core/plugin', 'E' ], ( Plugin ) => {
 	return class extends Plugin {};
 } );
 
-CKEDITOR.define( 'plugin!G', () => {
+bender.amd.define( 'G', () => {
 	throw new TestError( 'Some error inside a plugin' );
 } );
 
-CKEDITOR.define( 'plugin!H', [ 'plugin', 'plugin!H/a' ], ( Plugin ) => {
+bender.amd.define( 'H', [ 'core/plugin', 'H/a' ], ( Plugin ) => {
 	return class extends Plugin {};
 } );
 
 let spies = {};
 // Note: This is NOT a plugin.
-CKEDITOR.define( 'plugin!H/a', [ 'plugin!H/a/b' ], () => {
-	return ( spies[ 'plugin!H/a' ] = sinon.spy() );
+bender.amd.define( 'H/a', [ 'H/a/b' ], () => {
+	return ( spies[ 'H/a' ] = sinon.spy() );
 } );
 
 // Note: This is NOT a plugin.
-CKEDITOR.define( 'plugin!H/a/b', [ 'c' ], () => {
-	return ( spies[ 'plugin!H/a/b' ] = sinon.spy() );
+bender.amd.define( 'H/a/b', [ 'c' ], () => {
+	return ( spies[ 'H/a/b' ] = sinon.spy() );
 } );
 
 // Note: This is NOT a plugin.
-CKEDITOR.define( 'c', () => {
+bender.amd.define( 'c', () => {
 	return ( spies.c = sinon.spy() );
 } );
 
-CKEDITOR.define( 'plugin!I', [ 'plugin', 'plugin!J' ], ( Plugin ) => {
+bender.amd.define( 'I', [ 'core/plugin', 'J' ], ( Plugin ) => {
 	return class extends Plugin {};
 } );
 
 // Note: This is NOT a plugin.
-CKEDITOR.define( 'plugin!J', () => {
+bender.amd.define( 'J', () => {
 	return function() {
 		return ( spies.jSpy = sinon.spy() );
 	};
@@ -87,8 +91,6 @@ CKEDITOR.define( 'plugin!J', () => {
 
 describe( 'load', () => {
 	it( 'should not fail when trying to load 0 plugins (empty string)', () => {
-		const PluginCollection = modules.plugincollection;
-
 		let plugins = new PluginCollection( editor );
 
 		return plugins.load( '' )
@@ -98,8 +100,6 @@ describe( 'load', () => {
 	} );
 
 	it( 'should not fail when trying to load 0 plugins (undefined)', () => {
-		const PluginCollection = modules.plugincollection;
-
 		let plugins = new PluginCollection( editor );
 
 		return plugins.load()
@@ -109,8 +109,6 @@ describe( 'load', () => {
 	} );
 
 	it( 'should add collection items for loaded plugins', () => {
-		const PluginCollection = modules.plugincollection;
-
 		let plugins = new PluginCollection( editor );
 
 		return plugins.load( 'A,B' )
@@ -123,8 +121,6 @@ describe( 'load', () => {
 	} );
 
 	it( 'should load dependency plugins', () => {
-		const PluginCollection = modules.plugincollection;
-
 		let plugins = new PluginCollection( editor );
 		let spy = sinon.spy( plugins, 'add' );
 
@@ -138,8 +134,6 @@ describe( 'load', () => {
 	} );
 
 	it( 'should be ok when dependencies are loaded first', () => {
-		const PluginCollection = modules.plugincollection;
-
 		let plugins = new PluginCollection( editor );
 		let spy = sinon.spy( plugins, 'add' );
 
@@ -153,8 +147,6 @@ describe( 'load', () => {
 	} );
 
 	it( 'should load deep dependency plugins', () => {
-		const PluginCollection = modules.plugincollection;
-
 		let plugins = new PluginCollection( editor );
 		let spy = sinon.spy( plugins, 'add' );
 
@@ -169,8 +161,6 @@ describe( 'load', () => {
 	} );
 
 	it( 'should handle cross dependency plugins', () => {
-		const PluginCollection = modules.plugincollection;
-
 		let plugins = new PluginCollection( editor );
 		let spy = sinon.spy( plugins, 'add' );
 
@@ -185,8 +175,6 @@ describe( 'load', () => {
 	} );
 
 	it( 'should set the `editor` property on loaded plugins', () => {
-		const PluginCollection = modules.plugincollection;
-
 		let plugins = new PluginCollection( editor );
 
 		return plugins.load( 'A,B' )
@@ -196,21 +184,7 @@ describe( 'load', () => {
 			} );
 	} );
 
-	it( 'should set the `path` property on loaded plugins', () => {
-		const PluginCollection = modules.plugincollection;
-
-		let plugins = new PluginCollection( editor );
-
-		return plugins.load( 'A,B' )
-			.then( () => {
-				expect( plugins.get( 'A' ).path ).to.equal( CKEDITOR.getPluginPath( 'A' ) );
-				expect( plugins.get( 'B' ).path ).to.equal( CKEDITOR.getPluginPath( 'B' ) );
-			} );
-	} );
-
 	it( 'should set the `deps` property on loaded plugins', () => {
-		const PluginCollection = modules.plugincollection;
-
 		let plugins = new PluginCollection( editor );
 
 		return plugins.load( 'A,D' )
@@ -223,9 +197,6 @@ describe( 'load', () => {
 	} );
 
 	it( 'should reject on invalid plugin names (forward require.js loading error)', () => {
-		const PluginCollection = modules.plugincollection;
-		let log = modules.log;
-
 		let logSpy = bender.sinon.stub( log, 'error' );
 
 		let plugins = new PluginCollection( editor );
@@ -246,9 +217,6 @@ describe( 'load', () => {
 	} );
 
 	it( 'should reject on broken plugins (forward the error thrown in a plugin)', () => {
-		const PluginCollection = modules.plugincollection;
-		let log = modules.log;
-
 		let logSpy = bender.sinon.stub( log, 'error' );
 
 		let plugins = new PluginCollection( editor );
@@ -268,8 +236,6 @@ describe( 'load', () => {
 	} );
 
 	it( 'should load `deps` which are not plugins', () => {
-		const PluginCollection = modules.plugincollection;
-
 		let plugins = new PluginCollection( editor );
 		expect( spies ).to.be.empty;
 
@@ -279,12 +245,12 @@ describe( 'load', () => {
 
 				// Non–plugin dependencies should be loaded (spy exists)...
 				expect( spies ).to.have.keys( [
-					'plugin!H/a', 'plugin!H/a/b', 'c'
+					'H/a', 'H/a/b', 'c'
 				] );
 
 				// ...but not be executed (called == false)...
-				expect( spies[ 'plugin!H/a' ].called ).to.be.false;
-				expect( spies[ 'plugin!H/a/b' ].called ).to.be.false;
+				expect( spies[ 'H/a' ].called ).to.be.false;
+				expect( spies[ 'H/a/b' ].called ).to.be.false;
 				expect( spies.c.called ).to.be.false;
 
 				expect( plugins.length ).to.be.equal( 1 );
@@ -292,7 +258,6 @@ describe( 'load', () => {
 	} );
 
 	it( 'should load instances of Plugin only', () => {
-		const PluginCollection = modules.plugincollection;
 		let plugins = new PluginCollection( editor );
 
 		return plugins.load( 'I' )
@@ -305,7 +270,6 @@ describe( 'load', () => {
 	} );
 
 	it( 'should cancel loading module which looks like a plugin but is a normal module', () => {
-		const PluginCollection = modules.plugincollection;
 		let plugins = new PluginCollection( editor );
 
 		return plugins.load( 'J' )
@@ -314,7 +278,9 @@ describe( 'load', () => {
 			} ).catch( () => {
 				// Path would be set if code execution wasn't stopped when we rejected the promise
 				// (based on a real mistake we've made).
-				expect( spies.jSpy.path ).to.be.undefined;
+				// expect( spies.jSpy.path ).to.be.undefined;
+				//
+				// TODO now, the above does not make sense, because we removed the path.
 			} );
 	} );
 } );

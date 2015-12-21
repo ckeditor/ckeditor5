@@ -10,7 +10,7 @@ import EditorConfig from './editorconfig.js';
 import PluginCollection from './plugincollection.js';
 import Creator from './creator.js';
 import CKEditorError from './ckeditorerror.js';
-import { nth } from './utils.js';
+import utils from './utils.js';
 
 /**
  * Represents a single editor instance.
@@ -19,7 +19,7 @@ import { nth } from './utils.js';
  * @extends Model
  */
 
-export class Editor extends Model {
+export default class Editor extends Model {
 	/**
 	 * Creates a new instance of the Editor class.
 	 *
@@ -143,7 +143,7 @@ export class Editor extends Model {
 				 */
 				throw new CKEditorError( 'editor-undefined-creator: The config.creator option was not defined.' );
 			} else {
-				creator = nth( 0, that._creators.values() );
+				creator = utils.nth( 0, that._creators.values() );
 			}
 
 			if ( !creator ) {

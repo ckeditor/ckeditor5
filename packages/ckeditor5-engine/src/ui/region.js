@@ -5,6 +5,9 @@
 
 'use strict';
 
+import Collection from '../collection.js';
+import Model from '../model.js';
+
 /**
  * Basic Region class.
  *
@@ -12,79 +15,72 @@
  * @extends Model
  */
 
-CKEDITOR.define( [
-	'collection',
-	'model'
-], ( Collection, Model ) => {
-	class Region extends Model {
+export default class Region extends Model {
+	/**
+	 * Creates an instance of the {@link Region} class.
+	 *
+	 * @param {String} name The name of the Region.
+	 * @param {HTMLElement} [el] The element used for this region.
+	 * @constructor
+	 */
+	constructor( name ) {
+		super();
+
 		/**
-		 * Creates an instance of the {@link Region} class.
+		 * The name of the region.
 		 *
-		 * @param {String} name The name of the Region.
-		 * @param {HTMLElement} [el] The element used for this region.
-		 * @constructor
+		 * @property {String}
 		 */
-		constructor( name ) {
-			super();
-
-			/**
-			 * The name of the region.
-			 *
-			 * @property {String}
-			 */
-			this.name = name;
-
-			/**
-			 * Views which belong to the region.
-			 *
-			 * @property {Collection}
-			 */
-			this.views = new Collection();
-
-			/**
-			 * Element of this region (see {@link #init}).
-			 *
-			 * @property {HTMLElement}
-			 */
-			this.el = null;
-		}
+		this.name = name;
 
 		/**
-		 * Initializes region instance with an element. Usually it comes from {@link View#init}.
+		 * Views which belong to the region.
 		 *
-		 * @param {HTMLElement} regiobEl Element of this region.
+		 * @property {Collection}
 		 */
-		init( regionEl ) {
-			this.el = regionEl;
-
-			if ( regionEl ) {
-				this.views.on( 'add', ( evt, childView, index ) => {
-					regionEl.insertBefore( childView.el, regionEl.childNodes[ index + 1 ] );
-				} );
-
-				this.views.on( 'remove', ( evt, childView ) => {
-					childView.el.remove();
-				} );
-			}
-		}
+		this.views = new Collection();
 
 		/**
-		 * Destroys region instance.
+		 * Element of this region (see {@link #init}).
+		 *
+		 * @property {HTMLElement}
 		 */
-		destroy() {
-			if ( this.el ) {
-				for ( let view of this.views ) {
-					view.el.remove();
-					this.views.remove( view );
-				}
-			}
+		this.el = null;
+	}
 
-			// Drop the reference to HTMLElement but don't remove it from DOM.
-			// Element comes as a parameter and it could be a part of the View.
-			// Then it's up to the View what to do with it when the View is destroyed.
-			this.el = this.views = null;
+	/**
+	 * Initializes region instance with an element. Usually it comes from {@link View#init}.
+	 *
+	 * @param {HTMLElement} regiobEl Element of this region.
+	 */
+	init( regionEl ) {
+		this.el = regionEl;
+
+		if ( regionEl ) {
+			this.views.on( 'add', ( evt, childView, index ) => {
+				regionEl.insertBefore( childView.el, regionEl.childNodes[ index + 1 ] );
+			} );
+
+			this.views.on( 'remove', ( evt, childView ) => {
+				childView.el.remove();
+			} );
 		}
 	}
 
-	return Region;
-} );
+	/**
+	 * Destroys region instance.
+	 */
+	destroy() {
+		if ( this.el ) {
+			for ( let view of this.views ) {
+				view.el.remove();
+				this.views.remove( view );
+			}
+		}
+
+		// Drop the reference to HTMLElement but don't remove it from DOM.
+		// Element comes as a parameter and it could be a part of the View.
+		// Then it's up to the View what to do with it when the View is destroyed.
+		this.el = this.views = null;
+	}
+}

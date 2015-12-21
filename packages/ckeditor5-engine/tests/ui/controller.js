@@ -8,14 +8,14 @@
 'use strict';
 
 const modules = bender.amd.require( 'ckeditor',
-	'ui/view',
-	'ui/controller',
-	'ui/controllercollection',
-	'ui/region',
-	'ckeditorerror',
-	'model',
-	'collection',
-	'eventinfo'
+	'core/ui/view',
+	'core/ui/controller',
+	'core/ui/controllercollection',
+	'core/ui/region',
+	'core/ckeditorerror',
+	'core/model',
+	'core/collection',
+	'core/eventinfo'
 );
 
 let View, Controller, Model, CKEditorError, Collection, ControllerCollection;
@@ -270,12 +270,12 @@ describe( 'Controller', () => {
 } );
 
 function updateModuleReference() {
-	View = modules[ 'ui/view' ];
-	Controller = modules[ 'ui/controller' ];
-	Model = modules.model;
-	Collection = modules.collection;
-	ControllerCollection = modules[ 'ui/controllercollection' ];
-	CKEditorError = modules.ckeditorerror;
+	View = modules[ 'core/ui/view' ];
+	Controller = modules[ 'core/ui/controller' ];
+	Model = modules[ 'core/model' ];
+	Collection = modules[ 'core/collection '];
+	ControllerCollection = modules[ 'core/ui/controllercollection' ];
+	CKEditorError = modules[ 'core/ckeditorerror' ];
 }
 
 function defineParentViewClass() {

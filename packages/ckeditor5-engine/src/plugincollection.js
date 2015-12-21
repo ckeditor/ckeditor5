@@ -12,11 +12,11 @@
  * @extends Collection
  */
 
-import CKEDITOR from '../ckeditor.js';
 import Collection from './collection.js';
 import Plugin from './plugin.js';
 import CKEditorError from './ckeditorerror.js';
 import log from './log.js';
+import load from '../ckeditor5/load.js';
 
 export default class PluginCollection extends Collection {
 	/**
@@ -43,95 +43,75 @@ export default class PluginCollection extends Collection {
 		const loading = {};
 		// Plugins added to the collection (for the purpose of returning an array of loaded plugins).
 		const loaded = [];
+		const that = this;
 
 		// It may happen that an empty list was passed – don't fail.
 		plugins = plugins ? plugins.split( ',' ) : [];
 
 		// Creates a promise for the loading of each plugin and returns a main promise that resolves when all are
 		// done.
-		return Promise.all( plugins.map( pluginPromise, this ) )
+		return Promise.all( plugins.map( pluginPromise ) )
 			.then( () => loaded );
 
 		// Returns a promise that will load the plugin and add it to the collection before resolving.
 		function pluginPromise( plugin ) {
-			return new Promise( ( resolve, reject ) => {
-				// Do nothing if the plugin is already loaded (or if is being loaded right now).
-				if ( this.get( plugin ) || loading[ plugin ] ) {
-					return resolve();
-				}
+			// Do nothing if the plugin is already loaded (or if is being loaded right now).
+			if ( that.get( plugin ) || loading[ plugin ] ) {
+				return Promise.resolve();
+			}
 
-				// TODO
-				CKEDITOR.load( [ 'plugin!' + plugin ],
-					// Success callback.
-					( LoadedPlugin ) => {
-						const deps = getPluginDeps( plugin );
-						const isPluginDep = plugin.indexOf( '/' ) > 0;
-						let loadedPlugin;
+			return load( `../ckeditor5-${ plugin }/${ plugin }.js` )
+				.then( ( LoadedPluginModule ) => {
+					const LoadedPlugin = LoadedPluginModule.default;
+					const deps = LoadedPluginModule.requires || [];
 
-						if ( !isPluginDep ) {
-							loadedPlugin = new LoadedPlugin( this._editor );
+					const isPluginDep = plugin.indexOf( '/' ) > 0;
+					let loadedPlugin;
 
-							if ( !( loadedPlugin instanceof Plugin ) ) {
-								/**
-								 * The plugin is not an instance of Plugin.
-								 *
-								 * @error plugincollection-instance
-								 * @param {String} plugin The name of the plugin that is not an instance of Plugin.
-								 */
-								return reject(
-									new CKEditorError(
-										'plugincollection-instance: The plugin is not an instance of Plugin.',
-										{ plugin: plugin }
-									)
-								);
-							}
+					if ( !isPluginDep ) {
+						loadedPlugin = new LoadedPlugin( that._editor );
 
-							loadedPlugin.name = plugin;
-							loadedPlugin.path = CKEDITOR.getPluginPath( plugin );
-							loadedPlugin.deps = deps;
+						if ( !( loadedPlugin instanceof Plugin ) ) {
+							/**
+							 * The plugin is not an instance of Plugin.
+							 *
+							 * @error plugincollection-instance
+							 * @param {String} plugin The name of the plugin that is not an instance of Plugin.
+							 */
+							throw new CKEditorError(
+								'plugincollection-instance: The plugin is not an instance of Plugin.',
+								{ plugin: plugin }
+							);
 						}
 
-						loading[ plugin ] = true;
-
-						// Resolve with a promise that resolves once all dependencies are loaded.
-						resolve(
-							Promise.all( deps.map( pluginPromise, this ) )
-								.then( () => {
-									// Once dependencies are loaded, add the new instance of the loaded plugin to
-									// the collection. This guarantees that dependecies come first in the collection.
-									if ( !isPluginDep ) {
-										this.add( loadedPlugin );
-										loaded.push( loadedPlugin );
-									}
-								} )
-						);
-					},
-					// Error callback.
-					( err ) => {
-						/**
-						 * It was not possible to load the plugin.
-						 *
-						 * @error plugincollection-load
-						 * @param {String} plugin The name of the plugin that could not be loaded.
-						 */
-						log.error( 'plugincollection-load: It was not possible to load the plugin.', { plugin: plugin } );
-						reject( err );
+						loadedPlugin.name = plugin;
+						loadedPlugin.deps = deps;
 					}
-				);
-			} );
-		}
 
-		function getPluginDeps( name ) {
-			// Get the list of AMD modules that the plugin depends on.
-			let deps = []; name.slice(); // TODO: CKEDITOR._dependencies[ 'plugin!' + name ] || [];
+					loading[ plugin ] = true;
 
-			deps = deps
-				// Pick only dependencies that are other plugins.
-				.filter( dep => dep.indexOf( 'plugin!' ) === 0 )
-				// Remove the 'plugin!' prefix.
-				.map( dep => dep.substr( 7 ) );
+					// Resolve with a promise that resolves once all dependencies are loaded.
+					return Promise.all( deps.map( pluginPromise ) )
+						.then( () => {
+							// Once dependencies are loaded, add the new instance of the loaded plugin to
+							// the collection. This guarantees that dependecies come first in the collection.
+							if ( !isPluginDep ) {
+								that.add( loadedPlugin );
+								loaded.push( loadedPlugin );
+							}
+						} );
+				} )
+				.catch( ( err ) => {
+					/**
+					 * It was not possible to load the plugin.
+					 *
+					 * @error plugincollection-load
+					 * @param {String} plugin The name of the plugin that could not be loaded.
+					 */
+					log.error( 'plugincollection-load: It was not possible to load the plugin.', { plugin: plugin } );
 
-			return deps;
+					return err;
+				} );
 		}
 	}
 }

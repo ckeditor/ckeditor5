@@ -13,7 +13,7 @@
  */
 
 import EventInfo from './eventinfo.js';
-import { uid } from './utils.js';
+import utils from './utils.js';
 
 const EmitterMixin = {
 	/**
@@ -134,7 +134,7 @@ const EmitterMixin = {
 		}
 
 		if ( !( emitterId = emitter._emitterId ) ) {
-			emitterId = emitter._emitterId = uid();
+			emitterId = emitter._emitterId = utils.uid();
 		}
 
 		if ( !( emitterInfo = emitters[ emitterId ] ) ) {
