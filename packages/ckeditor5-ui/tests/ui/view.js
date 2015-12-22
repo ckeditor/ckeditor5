@@ -9,12 +9,10 @@
 'use strict';
 
 const modules = bender.amd.require(
-	'ckeditor',
-	'ui/view',
-	'ui/region',
-	'ckeditorerror',
-	'model',
-	'eventinfo'
+	'core/ui/view',
+	'core/ui/region',
+	'core/ckeditorerror',
+	'core/model'
 );
 
 let View, TestView, Model, Region, CKEditorError;
@@ -34,7 +32,7 @@ describe( 'View', () => {
 		it( 'accepts the model', () => {
 			setTestViewInstance( { a: 'foo', b: 42 } );
 
-			expect( view.model ).to.be.an.instanceof( modules.model );
+			expect( view.model ).to.be.an.instanceof( Model );
 			expect( view ).to.have.deep.property( 'model.a', 'foo' );
 			expect( view ).to.have.deep.property( 'model.b', 42 );
 		} );
@@ -760,10 +758,10 @@ describe( 'View', () => {
 } );
 
 function updateModuleReference() {
-	View = modules[ 'ui/view' ];
-	Region = modules[ 'ui/region' ];
-	Model = modules.model;
-	CKEditorError = modules.ckeditorerror;
+	View = modules[ 'core/ui/view' ];
+	Region = modules[ 'core/ui/region' ];
+	Model = modules[ 'core/model' ];
+	CKEditorError = modules[ 'core/ckeditorerror' ];
 }
 
 function createViewInstanceWithTemplate() {
