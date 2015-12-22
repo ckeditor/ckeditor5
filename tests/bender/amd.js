@@ -1,0 +1,111 @@
+/**
+ * @license Copyright (c) 2003-2015, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+'use strict';
+
+bender.tools.createSinonSandbox();
+
+describe( 'bender.amd', () => {
+	const getModulePath = bender.amd.getModulePath;
+
+	describe( 'getModulePath()', () => {
+		// Thanks to this we'll check whether all paths are relative to ckeditor.js path.
+		const basePath = getModulePath( 'ckeditor' ).replace( /\/ckeditor\.js$/, '/' );
+
+		it( 'generates path for the main file', () => {
+			const path = getModulePath( 'ckeditor' );
+
+			expect( path ).to.match( /\/ckeditor.js$/, 'ends with /ckeditor.js' );
+			expect( path ).to.match( /^\//, 'is absolute' );
+		} );
+
+		it( 'generates path for modules within ckeditor5 package', () => {
+			const path = getModulePath( 'ckeditor5/foo' );
+
+			expect( path ).to.equal( basePath + 'ckeditor5/foo.js' );
+		} );
+
+		it( 'generates path for modules within the core package', () => {
+			const path = getModulePath( 'core/ui/controller' );
+
+			expect( path ).to.equal( basePath + 'ckeditor5-core/ui/controller.js' );
+		} );
+
+		it( 'generates path for modules within some package', () => {
+			const path = getModulePath( 'some/ba' );
+
+			expect( path ).to.equal( basePath + 'ckeditor5-some/ba.js' );
+		} );
+
+		it( 'generates path from simplified feature name', () => {
+			const path = getModulePath( 'foo' );
+
+			expect( path ).to.equal( basePath + 'ckeditor5-foo/foo.js' );
+		} );
+	} );
+
+	describe( 'define()', () => {
+		it( 'defines a module by using global define()', () => {
+			const spy = bender.sinon.spy( window, 'define' );
+
+			bender.amd.define( 'test1', [ 'bar', 'ckeditor' ], () => {} );
+
+			expect( spy.calledOnce ).to.be.true;
+			expect( spy.args[ 0 ][ 0 ] ).to.equal( getModulePath( 'test1' ) );
+			expect( spy.args[ 0 ][ 1 ] ).to.deep.equal( [ 'bar', 'ckeditor' ].map( getModulePath ) );
+		} );
+
+		it( 'maps body args and returned value', () => {
+			const spy = bender.sinon.spy( window, 'define' );
+			const bodySpy = sinon.spy( () => 'ret' );
+
+			bender.amd.define( 'test2', [ 'bar', 'ckeditor' ], bodySpy );
+
+			const realBody = spy.args[ 0 ][ 2 ];
+
+			expect( realBody ).to.be.a( 'function' );
+
+			const ret = realBody( { default: 'arg' } );
+
+			expect( ret ).to.have.property( 'default', 'ret', 'it wraps the ret value with an ES6 module obj' );
+			expect( bodySpy.calledOnce ).to.be.true;
+			expect( bodySpy.args[ 0 ][ 0 ] ).to.equal( 'arg', 'it unwraps the args' );
+		} );
+
+		it( 'works with module name and body', () => {
+			const spy = bender.sinon.spy( window, 'define' );
+
+			bender.amd.define( 'test1', () => {} );
+
+			expect( spy.calledOnce ).to.be.true;
+			expect( spy.args[ 0 ][ 0 ] ).to.equal( getModulePath( 'test1' ) );
+			expect( spy.args[ 0 ][ 1 ] ).to.be.empty;
+			expect( spy.args[ 0 ][ 2 ] ).to.be.a( 'function' );
+		} );
+	} );
+
+	describe( 'require', () => {
+		it( 'blocks Bender and loads modules through global require()', () => {
+			let requireCb;
+			const deferCbSpy = sinon.spy();
+
+			bender.sinon.stub( bender, 'defer', () => deferCbSpy );
+			bender.sinon.stub( window, 'require', ( deps, cb ) => {
+				requireCb = cb;
+			} );
+
+			const modules = bender.amd.require( 'foo', 'bar' );
+
+			expect( deferCbSpy.called ).to.be.false;
+
+			requireCb( { default: 1 }, { default: 2 } );
+
+			expect( deferCbSpy.calledOnce ).to.be.true;
+
+			expect( modules ).to.have.property( 'foo', 1 );
+			expect( modules ).to.have.property( 'bar', 2 );
+		} );
+	} );
+} );

@@ -7,7 +7,7 @@
 
 const path = require( 'path' );
 const files = [
-	path.join( __dirname, '../static/extensions.js' ),
+	path.join( __dirname, '../static/amd.js' ),
 	path.join( __dirname, '../static/tools.js' )
 ];
 
