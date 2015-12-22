@@ -13,11 +13,27 @@
 	 * AMD tools related to CKEditor.
 	 */
 	bender.amd = {
+		/**
+		 * Generates an absolute path to an AMD version of a CKEditor module. The function takes care of
+		 * generating a base path for that file, taking into account whether a Bender job is being run
+		 * or a simple test.
+		 *
+		 * The name should be given in a simplified features naming convention. For instance:
+		 *
+		 * * `foo` will be transformed to `<app base path>/ckeditor5-foo/foo.js`,
+		 * * `ckeditor` to `<app base path>/ckeditor.js`,
+		 * * `core/editor` to `<app base path>/ckeditor5-core/editor.js` and
+		 * * `foo/bar/bom` to `<app base path>/ckeditor5-foo/bar/bom.js`.
+		 *
+		 * @param {String} name The name of the module.
+		 * @returns {String} The absolute path to the module.
+		 */
 		getModulePath( name ) {
 			let appBasePath = bender.basePath;
 			let ckeditorBasePath = bender.config.applications.ckeditor.basePath;
 			let moduleBasePath;
 
+			// Reported: https://github.com/benderjs/benderjs/issues/248
 			// Ugh... make some paths cleanup, because we need to combine these fragments and we don't want to
 			// duplicate '/'. BTW. if you want to touch this make sure you haven't broken Bender jobs which
 			// have different bender.basePaths (no trailing '/', unnecessary 'tests/' fragment).
@@ -48,6 +64,33 @@
 			return '/' + moduleBasePath + '/' + name + '.js';
 		},
 
+		/**
+		 * Shorthand for defining an AMD module.
+		 *
+		 * Note that the module and dependency names must be passed in the simplified features naming convention
+		 * (see {@link #getModulePath}).
+		 *
+		 * For simplicity the dependencies passed to the `body` will be unwrapped
+		 * from the ES6 module object (so only the default export will be available). Also the returned value
+		 * will be automatically handled as a default export.
+		 *
+		 * If you need to define a module which has access to other exports or can export more values,
+		 * use the global `define()` function:
+		 *
+		 *		define( bender.amd.getModulePath( name ), [ 'foo', ... ].map( bender.amd.getModulePath ), ( FooModule, ... ) {
+		 *			const FooClass = FooModule.default;
+		 *			const FooOtherProp = FooModule.otherProp;
+		 *
+		 *			return {
+		 *				default: MyClass,
+		 *				otherProp: 1
+		 *			};
+		 *		} );
+		 *
+		 * @param {String} name Name of the module.
+		 * @param {String[]} deps Dependencies of the module.
+		 * @param {Function} body Module body.
+		 */
 		define( name, deps, body ) {
 			if ( arguments.length == 2 ) {
 				body = deps;
@@ -85,9 +128,7 @@
 
 				// Finally give green light for tests to start.
 				done();
-			}/*, ( err ) => {
-				debugger;
-			}*/ );
+			} );
 
 			return modules;
 		}
