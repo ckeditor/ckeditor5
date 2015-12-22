@@ -5,20 +5,19 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'treeview/renderer' ], ( Renderer ) => {
+CKEDITOR.define( [ 'treeview/rootelement', 'treeview/renderer' ], ( RootElement, Renderer ) => {
 	class TreeView {
 		constructor( domElement ) {
 			/**
 			 * Root of the view
 			 */
-			this.view = domElement.clone();
+			this.viewRoot = new RootElement( this, domElement.name );
+			this.viewRoot.cloneDOMAttrs();
 
 			/**
 			 * Root of the DOM.
 			 */
-			this.dom = domElement;
-
-			this.elementsMapping = new WeakMap();
+			this.domRoot = domElement;
 
 			this.observers = new Set();
 
@@ -41,36 +40,6 @@ CKEDITOR.define( [ 'treeview/renderer' ], ( Renderer ) => {
 			for ( let observer of this.observers ) {
 				observer.attach();
 			}
-		}
-
-		insertBefore( parent, newNode, referenceNode ) {
-			parent.insertBefore( newNode, referenceNode );
-			this.render.markNode( element, Renderer.CHILDREN_NEED_UPDATE );
-		}
-
-		appendChild( parent, node ) {
-			parent.appendChild( node );
-			this.render.markNode( parent, Renderer.CHILDREN_NEED_UPDATE );
-		}
-
-		removeChild( parent, child ) {
-			parent.removeChild( child );
-			this.render.markNode( parent, Renderer.CHILDREN_NEED_UPDATE );
-		}
-
-		setAttr( element, key, value ) {
-			element.setAttribute( key, value );
-			this.render.markNode( element, Renderer.ATTRIBUTES_NEED_UPDATE );
-		}
-
-		removeAttr( element, key ) {
-			element.removeAttribute( key );
-			this.render.markNode( element, Renderer.ATTRIBUTES_NEED_UPDATE );
-		}
-
-		setText( textNode, text ) {
-			textNode.data = text;
-			this.render.markNode( textNode, Renderer.TEXT_NEEDS_UPDATE );
 		}
 	}
 

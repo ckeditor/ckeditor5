@@ -21,10 +21,21 @@ CKEDITOR.define( [ 'utils', 'treeview/Node' ], ( utils, Node ) => {
 
 			this._children = utils.clone( children );
 
-			this.updateChildren = false;
-			this.updateAttrs = false;
+			this.domElement = null;
+		}
 
-			this.DOMElement = null;
+		setDomElement( domElement ) {
+			this.domElement = domElement;
+
+			Element._domToViewMapping.set( domElement, this );
+		}
+
+		static getCorespondingElement( domElement ) {
+			return this._domToViewMapping.get( domElement );
+		}
+
+		getChildren() {
+			return this._children[ Symbol.iterator ]();
 		}
 
 		getChild( index ) {
@@ -40,6 +51,8 @@ CKEDITOR.define( [ 'utils', 'treeview/Node' ], ( utils, Node ) => {
 		}
 
 		insertChildren( index, nodes ) {
+			this.markToSync( Node.CHILDREN_NEED_UPDATE );
+
 			if ( !utils.isIterable( nodes ) ) {
 				nodes = [ nodes ];
 			}
@@ -49,36 +62,52 @@ CKEDITOR.define( [ 'utils', 'treeview/Node' ], ( utils, Node ) => {
 
 				this._children.splice( index, 0, node );
 			}
-
-			this.updateChildList = true;
 		}
 
 		removeChildren( index, number ) {
+			this.markToSync( Node.CHILDREN_NEED_UPDATE );
+
 			for ( let i = index; i < index + number; i++ ) {
 				this._children[ i ].parent = null;
 			}
 
-			this.updateChildList = true;
-
 			return new this._children.splice( index, number );
+		}
+
+		getAttrKeys() {
+			return this._attrs.keys();
 		}
 
 		getAttr( key ) {
 			return this._attrs.get( key );
 		}
 
-		setAttr( key, value ) {
-			this.updateAttrs = true;
-
-			this._attrs.set( key, value );
-		}
-
 		hasAttr( key ) {
 			return this._attrs.has( key );
 		}
 
+		setAttr( key, value ) {
+			this.markToSync( Node.ATTRIBUTES_NEED_UPDATE );
+
+			this._attrs.set( key, value );
+		}
+
+		cloneDOMAttrs( element ) {
+			this.markToSync( Node.ATTRIBUTES_NEED_UPDATE );
+
+			const attrKeys = element.attributes;
+
+			for ( let key of attrKeys ) {
+				this.setAttr( key, element.getAttribute( key ) );
+			}
+		}
+
 		removeAttr( key ) {
+			this.markToSync( Node.ATTRIBUTES_NEED_UPDATE );
+
 			return this._attrs.delete( key );
 		}
 	}
+
+	Element._domToViewMapping = new WeakMap();
 } );

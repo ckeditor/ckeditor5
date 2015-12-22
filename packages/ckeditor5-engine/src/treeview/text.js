@@ -8,7 +8,17 @@
 CKEDITOR.define( [], () => {
 	class Text extends Node {
 		constructor( text ) {
-			this.text = text;
+			this._text = text;
+		}
+
+		getText() {
+			return this._text;
+		}
+
+		setText( text ) {
+			this.parent.markToSync( Node.CHILDREN_NEED_UPDATE );
+
+			this._text = text;
 		}
 	}
 } );

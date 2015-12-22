@@ -23,7 +23,7 @@ CKEDITOR.define( [ 'treeview/observer/observer' ], ( Observer ) => {
 		 * @param {treeView.TreeView}
 		 */
 		init( treeView ) {
-			this.dom = treeView.dom;
+			this.domRoot = treeView.domRoot;
 
 			this._mutationObserver = new window.MutationObserver( this._onMutations.bind( this ) );
 		}
@@ -32,7 +32,7 @@ CKEDITOR.define( [ 'treeview/observer/observer' ], ( Observer ) => {
 		 * @method attach
 		 */
 		attach() {
-			this._mutationObserver.observe( this.dom, this.config );
+			this._mutationObserver.observe( this.domRoot, this.config );
 		}
 
 		/**

@@ -7,14 +7,14 @@
 
 // the following code is based on the "O(NP) Sequence Comparison Algorithm" by Sun Wu, Udi Manber, Gene Myers, Webb Miller
 
-CKEDITOR.define( [ 'utils' ], ( utils ) => {
-	// operation types
+CKEDITOR.define( [], () => {
+	// action types
 	var INSERT = 1,
 		DELETE = -1,
 		EQUAL = 0;
 
 	/**
-	 * Calculates the difference between two arrays producing an object containing a list of operations
+	 * Calculates the difference between two arrays producing an object containing a list of actions
 	 * necessary to transform one array into another.
 	 *
 	 *		diff( 'aba', 'acca' ); // [ EQUAL, INSERT, INSERT, DELETE, EQUAL ]
@@ -30,7 +30,7 @@ CKEDITOR.define( [ 'utils' ], ( utils ) => {
 				return a === b;
 			};
 
-		// Temporary operation type statics.
+		// Temporary action type statics.
 		var _INSERT, _DELETE;
 
 		// Swapped the arrays to use the shorter one as the first one.
@@ -40,7 +40,7 @@ CKEDITOR.define( [ 'utils' ], ( utils ) => {
 			a = b;
 			b = tmp;
 
-			// We swap the operation types as well.
+			// We swap the action types as well.
 			_INSERT = DELETE;
 			_DELETE = INSERT;
 		} else {
@@ -66,17 +66,17 @@ CKEDITOR.define( [ 'utils' ], ( utils ) => {
 			// The way we should go to get further.
 			var dir = y1 > y2 ? -1 : 1;
 
-			// Clone previous operations array (if any).
+			// Clone previous actions array (if any).
 			if ( es[ k + dir ] ) {
 				es[ k ] = es[ k + dir ].slice( 0 );
 			}
 
-			// Create operations array.
+			// Create actions array.
 			if ( !es[ k ] ) {
 				es[ k ] = [];
 			}
 
-			// Push the operation.
+			// Push the action.
 			es[ k ].push( y1 > y2 ? _INSERT : _DELETE );
 
 			// Set the beginning coordinates.
@@ -87,7 +87,7 @@ CKEDITOR.define( [ 'utils' ], ( utils ) => {
 			while ( x < m && y < n && cmp( a[ x ], b[ y ] ) ) {
 				x++;
 				y++;
-				// Push no change operation.
+				// Push no change action.
 				es[ k ].push( EQUAL );
 			}
 
@@ -116,15 +116,15 @@ CKEDITOR.define( [ 'utils' ], ( utils ) => {
 			p++;
 		} while ( fp[ delta ] !== n );
 
-		// Return the final list of edit operations.
-		// We remove the first item that represents the operation for the injected nulls.
+		// Return the final list of edit actions.
+		// We remove the first item that represents the action for the injected nulls.
 		return es[ delta ].slice( 1 );
 	}
 
-	// Expose operation types.
-	utils.INSERT = INSERT;
-	utils.DELETE = DELETE;
-	utils.EQUAL = EQUAL;
+	// Expose action types.
+	diff.INSERT = INSERT;
+	diff.DELETE = DELETE;
+	diff.EQUAL = EQUAL;
 
-	return utils;
+	return diff;
 } );

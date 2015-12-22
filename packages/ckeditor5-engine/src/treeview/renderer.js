@@ -5,53 +5,118 @@
 
 'use strict';
 
-CKEDITOR.define( [], () => {
+CKEDITOR.define( [ 'utils-diff', 'treeview/element', 'treeview/text' ], ( diff, ViewElement, ViewText ) => {
 	ATTRIBUTES_NEED_UPDATE = 0;
 	CHILDREN_NEED_UPDATE = 1;
-	TEXT_NEEDS_UPDATE = 2;
 
 	class Renderer {
 		constructor( treeView ) {
 			this.view = treeView.view;
 
-			this.dom = treeView.dom;
+			this.domRoot = treeView.domRoot;
+			this.domDocument = domRoot.ownerDocument;
 
-			this.markedTexts = new Set();
 			this.markedAttrs = new Set();
 			this.markedChildren = new Set();
 		}
 
-		markNode( node, type ) {
+		markToSync( node, type ) {
 			if ( type === ATTRIBUTES_NEED_UPDATE ) {
 				this.markedAttrs.push( node );
 			} else if ( type === CHILDREN_NEED_UPDATE ) {
 				this.markedChildren.push( element );
-			} else if ( type === TEXT_NEEDS_UPDATE ) {
-				this.markedTexts.push( element );
 			}
 		}
 
 		render() {
-			this._updateTexts();
-			this._updateAttrs();
-			this._updateChildren();
-		}
+			for ( let element of this.markedAttrs ) {
+				this.updateAttrs( element );
+			}
 
-		_updateTexts() {
+			for ( let element of this.markedChildren ) {
+				this.updateChildren( element );
+			}
 
-		}
+			function updateAttrs( viewElement ) {
+				const domElement = viewElement.domElement;
+				const domAttrKeys = domElement.attributes;
+				const viewAttrKeys = viewElement.getAttrKeys();
 
-		_updateAttrs() {
-		}
+				// Add or overwrite attributes.
+				for ( let key of viewAttrKeys ) {
+					element.setAttribute( key, viewElement.getAttr( key ) );
+				}
 
-		_updateChildren() {
-			//diff
+				// Remove from DOM attributes which do not exists in the view.
+				for ( let key of domAttrKeys ) {
+					if ( !viewElement.hasAttr( key ) ) {
+						element.removeAttribute( key );
+					}
+				}
+			}
+
+			function updateChildren( viewElement ) {
+				const domElement = viewElement.domElement;
+				const domChildren = domElement.childNodes;
+				const viewChildren = viewElement.getChildren();
+
+				const actions = diff( domChildren, viewChildren, compareNodes );
+
+				let i = 0;
+
+				for ( let action of actions ) {
+					if ( action === diff.EQUAL ) {
+						i++;
+					} else if ( action === diff.INSERT ) {
+						domElement.insertBefore( viewToDom( viewChildren[ i ] ), domChildren[ i ] || null  )
+						i++;
+					} else if ( action === diff.DELETE ) {
+						domElement.removeChild( domChildren[ i ] );
+					}
+				}
+			}
+
+			function compareNodes( domNode, viewNode ) {
+				// Elements.
+				if ( domNode instanceof HTMLElement && viewNode instanceof ViewElement ) {
+					return domNode === viewNode.DOMElement
+				}
+				// Texts.
+				else if ( domNode instanceof Text && viewNode instanceof ViewText ) {
+					return domNode.data === viewNode.getText();
+				}
+
+				// Not matching types.
+				return false;
+			}
+
+			function viewToDom( view ) {
+				if ( view.domElement ) {
+					return domElement;
+				}
+
+				if ( view instanceof ViewText ) {
+					return this.domDocument.createTextNode( view.getText() );
+				} else {
+					const domElement = this.domDocument.createElement( view.name );
+					view.setDomElement( domElement );
+
+					for ( let key of view.getAttrKeys() ) {
+						element.setAttribute( key, view.getAttr( key ) );
+					}
+
+					for ( let childView of view.getChildren() ) {
+						element.appendChild( viewToDom( childView ) );
+					}
+
+					return domElement;
+				}
+			}
 		}
 	}
 
 	Renderer.ATTRIBUTES_NEED_UPDATE = ATTRIBUTES_NEED_UPDATE;
 	Renderer.CHILDREN_NEED_UPDATE = CHILDREN_NEED_UPDATE;
-	Renderer.TEXT_NEEDS_UPDATE = TEXT_NEEDS_UPDATE;
 
 	utils.extend( Document.prototype, EmitterMixin );
 
