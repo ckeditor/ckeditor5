@@ -116,6 +116,25 @@ describe( 'utils', () => {
 		} );
 	} );
 
+	describe( 'objectToMap', () => {
+		it( 'should convert object to map', () => {
+			const map = utils.objectToMap( { 'foo': 1, 'bar': 2 } );
+
+			expect( getIteratorCount( map ) ).to.equal( 2 );
+			expect( map.get( 'foo' ) ).to.equal( 1 );
+			expect( map.get( 'bar' ) ).to.equal( 2 );
+		} );
+	} );
+
+	describe( 'mapToObject', () => {
+		it( 'should convert map to object', () => {
+			const map = new Map( [ [ 'foo', 1 ], [ 'bar', 2 ] ] );
+			const obj = utils.mapToObject( map );
+
+			expect( obj ).to.deep.equal( { 'foo': 1, 'bar': 2 } );
+		} );
+	} );
+
 	describe( 'nth', () => {
 		it( 'should return 0th item', () => {
 			expect( utils.nth( 0, getIterator() ) ).to.equal( 11 );
