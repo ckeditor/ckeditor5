@@ -91,6 +91,24 @@ const utils = {
 		}
 	},
 
+	objectToMap( obj ) {
+		const map = new Map();
+
+		for ( let key in obj ) {
+			map.set( key, obj[ key ] );
+		}
+
+		return map;
+	},
+
+	mapToObject( map ) {
+		const obj = {};
+
+		map.forEach( ( value, key ) => obj[ key ] = value );
+
+		return obj;
+	},
+
 	/**
 	 * Returns `nth` (starts from `0` of course) item of an `iterable`.
 	 *
