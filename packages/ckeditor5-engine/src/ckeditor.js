@@ -76,19 +76,7 @@ const CKEDITOR = {
 	 * Holds global configuration defaults, which will be used by editor instances when such configurations are not
 	 * available on them directly.
 	 */
-	config: new Config(),
-
-	/**
-	 * Gets the full URL path for the specified plugin.
-	 *
-	 * Note that the plugin is not checked to exist. It is a pure path computation.
-	 *
-	 * @param {String} name The plugin name.
-	 * @returns {String} The full URL path of the plugin.
-	 */
-	getPluginPath( name ) {
-		return this.basePath + 'plugins/' + name + '/';
-	}
+	config: new Config()
 };
 
 export default CKEDITOR;
