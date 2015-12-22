@@ -9,7 +9,6 @@
   ],
   "dependencies": {
     "ckeditor5-core": "ckeditor/ckeditor5-core",
-    "ckeditor5-plugin-devtest": "ckeditor/ckeditor5-plugin-devtest",
     "requirejs": "~2.1"
   },
   "devDependencies": {
