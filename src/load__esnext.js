@@ -8,6 +8,8 @@
 /* global System */
 
 export default function load( modulePath ) {
+	modulePath = '../' + modulePath;
+
 	return System
 		.import( modulePath )
 		.then( ( module ) => {

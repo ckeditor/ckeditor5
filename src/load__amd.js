@@ -9,8 +9,20 @@
 // Otherwise we would use the global one which resolves paths relatively to the base dir.
 import require from 'require';
 
-// NOTE: modulePath MUST BE RELATIVE to this module.
+/**
+ * Loads a module.
+ *
+ *		load( CKEDITOR.getModulePath( 'core/editor' ) )
+ *			.then( ( EditorModule ) => {
+ *				const Editor = EditorModule.default;
+ *			} );
+ *
+ * @param {String} modulePath Path to the module, relative to `ckeditor.js`'s parent directory (the root).
+ * @returns {Promise}
+ */
 export default function load( modulePath ) {
+	modulePath = '../' + modulePath;
+
 	return new Promise( ( resolve, reject ) => {
 		require(
 			[ modulePath ],

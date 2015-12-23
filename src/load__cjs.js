@@ -8,6 +8,8 @@
 /* global require */
 
 export default function load( modulePath ) {
+	modulePath = '../' + modulePath;
+
 	return new Promise( ( resolve ) => {
 		resolve( require( modulePath ) );
 	} );
