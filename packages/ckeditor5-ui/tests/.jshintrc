@@ -15,7 +15,6 @@
 	"globalstrict": true,
 
 	"globals": {
-		"CKEDITOR": false,
 		"bender": false,
 		"describe": false,
 		"it": false,
@@ -24,7 +23,6 @@
 		"after": false,
 		"afterEach": false,
 		"expect": false,
-		"bender": false,
 		"sinon": false
 	}
 }
