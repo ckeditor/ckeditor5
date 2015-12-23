@@ -18,12 +18,8 @@
 		 * generating a base path for that file, taking into account whether a Bender job is being run
 		 * or a simple test.
 		 *
-		 * The name should be given in a simplified features naming convention. For instance:
-		 *
-		 * * `foo` will be transformed to `<app base path>/ckeditor5-foo/foo.js`,
-		 * * `ckeditor` to `<app base path>/ckeditor.js`,
-		 * * `core/editor` to `<app base path>/ckeditor5-core/editor.js` and
-		 * * `foo/bar/bom` to `<app base path>/ckeditor5-foo/bar/bom.js`.
+		 * The name should be given in a simplified features naming convention. See {@link CKEDITOR#getModulePath}
+		 * for more details.
 		 *
 		 * @param {String} name The name of the module.
 		 * @returns {String} The absolute path to the module.
@@ -48,6 +44,9 @@
 					)
 					.join( '/' );
 
+			// NOTE: This code is duplicated in CKEDITOR.getModulePath() because we're not able to use here
+			// that function. It may be possible to resolve this once we start using ES6 modules and transpilation
+			// also for tests.
 			if ( name != 'ckeditor' ) {
 				// Resolve shortened feature names to `featureName/featureName`.
 				if ( name.indexOf( '/' ) < 0 ) {
