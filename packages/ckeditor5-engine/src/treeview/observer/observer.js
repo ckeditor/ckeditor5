@@ -20,4 +20,6 @@ CKEDITOR.define( [], () => {
 		 * @method detach
 		 */
 	}
+
+	return Observer;
 } );

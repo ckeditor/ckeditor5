@@ -21,4 +21,6 @@ CKEDITOR.define( [], () => {
 			this._text = text;
 		}
 	}
+
+	return Text;
 } );

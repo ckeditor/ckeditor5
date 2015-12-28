@@ -42,8 +42,8 @@ CKEDITOR.define( [ 'treeview/observer/observer' ], ( Observer ) => {
 			this._mutationObserver.disconnect();
 		}
 
-		_onMutations( mutations ) {
-
-		}
+		// _onMutations( mutations ) {}
 	}
+
+	return MutationObserver;
 } );

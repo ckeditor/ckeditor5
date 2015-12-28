@@ -57,7 +57,7 @@ CKEDITOR.define( [ 'utils', 'treeview/Node' ], ( utils, Node ) => {
 				nodes = [ nodes ];
 			}
 
-			for ( node of nodes ) {
+			for ( let node of nodes ) {
 				node.parent = this;
 
 				this._children.splice( index, 0, node );

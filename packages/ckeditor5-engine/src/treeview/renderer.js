@@ -5,16 +5,19 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'utils-diff', 'treeview/element', 'treeview/text' ], ( diff, ViewElement, ViewText ) => {
-	ATTRIBUTES_NEED_UPDATE = 0;
-	CHILDREN_NEED_UPDATE = 1;
+CKEDITOR.define( [
+	'utils-diff',
+	'treeview/element',
+	'treeview/text'
+], ( diff, ViewElement, ViewText ) => {
+	const ATTRIBUTES_NEED_UPDATE = 0;
+	const CHILDREN_NEED_UPDATE = 1;
 
 	class Renderer {
 		constructor( treeView ) {
 			this.view = treeView.view;
 
 			this.domRoot = treeView.domRoot;
-			this.domDocument = domRoot.ownerDocument;
 
 			this.markedAttrs = new Set();
 			this.markedChildren = new Set();
@@ -24,11 +27,13 @@ CKEDITOR.define( [ 'utils-diff', 'treeview/element', 'treeview/text' ], ( diff, 
 			if ( type === ATTRIBUTES_NEED_UPDATE ) {
 				this.markedAttrs.push( node );
 			} else if ( type === CHILDREN_NEED_UPDATE ) {
-				this.markedChildren.push( element );
+				this.markedChildren.push( node );
 			}
 		}
 
 		render() {
+			const domDocument = this.domRoot.ownerDocument;
+
 			for ( let element of this.markedAttrs ) {
 				updateAttrs( element );
 			}
@@ -44,13 +49,13 @@ CKEDITOR.define( [ 'utils-diff', 'treeview/element', 'treeview/text' ], ( diff, 
 
 				// Add or overwrite attributes.
 				for ( let key of viewAttrKeys ) {
-					element.setAttribute( key, viewElement.getAttr( key ) );
+					domElement.setAttribute( key, viewElement.getAttr( key ) );
 				}
 
 				// Remove from DOM attributes which do not exists in the view.
 				for ( let key of domAttrKeys ) {
 					if ( !viewElement.hasAttr( key ) ) {
-						element.removeAttribute( key );
+						domElement.removeAttribute( key );
 					}
 				}
 			}
@@ -68,7 +73,7 @@ CKEDITOR.define( [ 'utils-diff', 'treeview/element', 'treeview/text' ], ( diff, 
 					if ( action === diff.EQUAL ) {
 						i++;
 					} else if ( action === diff.INSERT ) {
-						domElement.insertBefore( viewToDom( viewChildren[ i ] ), domChildren[ i ] || null  )
+						domElement.insertBefore( viewToDom( viewChildren[ i ] ), domChildren[ i ] || null  );
 						i++;
 					} else if ( action === diff.DELETE ) {
 						domElement.removeChild( domChildren[ i ] );
@@ -79,7 +84,7 @@ CKEDITOR.define( [ 'utils-diff', 'treeview/element', 'treeview/text' ], ( diff, 
 			function compareNodes( domNode, viewNode ) {
 				// Elements.
 				if ( domNode instanceof HTMLElement && viewNode instanceof ViewElement ) {
-					return domNode === viewNode.DOMElement
+					return domNode === viewNode.DOMElement;
 				}
 				// Texts.
 				else if ( domNode instanceof Text && viewNode instanceof ViewText ) {
@@ -92,21 +97,21 @@ CKEDITOR.define( [ 'utils-diff', 'treeview/element', 'treeview/text' ], ( diff, 
 
 			function viewToDom( view ) {
 				if ( view.domElement ) {
-					return domElement;
+					return view.domElement;
 				}
 
 				if ( view instanceof ViewText ) {
-					return this.domDocument.createTextNode( view.getText() );
+					return domDocument.createTextNode( view.getText() );
 				} else {
-					const domElement = this.domDocument.createElement( view.name );
+					const domElement = domDocument.createElement( view.name );
 					view.setDomElement( domElement );
 
 					for ( let key of view.getAttrKeys() ) {
-						element.setAttribute( key, view.getAttr( key ) );
+						domElement.setAttribute( key, view.getAttr( key ) );
 					}
 
 					for ( let childView of view.getChildren() ) {
-						element.appendChild( viewToDom( childView ) );
+						domElement.appendChild( viewToDom( childView ) );
 					}
 
 					return domElement;
@@ -117,8 +122,6 @@ CKEDITOR.define( [ 'utils-diff', 'treeview/element', 'treeview/text' ], ( diff, 
 
 	Renderer.ATTRIBUTES_NEED_UPDATE = ATTRIBUTES_NEED_UPDATE;
 	Renderer.CHILDREN_NEED_UPDATE = CHILDREN_NEED_UPDATE;
-
-	utils.extend( Document.prototype, EmitterMixin );
 
 	return Renderer;
 } );

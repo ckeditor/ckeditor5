@@ -5,7 +5,7 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'treeview/Renderer' ], ( Renderer ) => {
+CKEDITOR.define( [ 'treeview/Renderer', 'ckeditorerror' ], ( Renderer, CKEditorError ) => {
 	class Node {
 		constructor() {
 			this.parent = null;

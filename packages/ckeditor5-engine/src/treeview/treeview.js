@@ -5,7 +5,12 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'treeview/rootelement', 'treeview/renderer' ], ( RootElement, Renderer ) => {
+CKEDITOR.define( [
+	'utils',
+	'emittermixin',
+	'treeview/rootelement',
+	'treeview/renderer'
+], ( utils, EmitterMixin, RootElement, Renderer ) => {
 	class TreeView {
 		constructor( domElement ) {
 			/**
@@ -44,4 +49,6 @@ CKEDITOR.define( [ 'treeview/rootelement', 'treeview/renderer' ], ( RootElement,
 	}
 
 	utils.extend( Document.prototype, EmitterMixin );
+
+	return TreeView;
 } );
