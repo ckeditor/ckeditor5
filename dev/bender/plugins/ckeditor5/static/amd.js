@@ -76,14 +76,30 @@
 		 * If you need to define a module which has access to other exports or can export more values,
 		 * use the global `define()` function:
 		 *
-		 *		define( bender.amd.getModulePath( name ), [ 'foo', ... ].map( bender.amd.getModulePath ), ( FooModule, ... ) {
+		 *		define( bender.amd.getModulePath( name ), [ 'exports', 'foo', ... ].map( bender.amd.getModulePath ), ( FooModule, ... ) {
 		 *			const FooClass = FooModule.default;
 		 *			const FooOtherProp = FooModule.otherProp;
 		 *
-		 *			return {
-		 *				default: MyClass,
-		 *				otherProp: 1
-		 *			};
+		 *			exports.default = MyClass;
+		 *			exports.otherProp = 1;
+		 *		} );
+		 *
+		 * **Note:** Since this method automatically unwraps modules from the ES6 module object when passing them
+		 * to the `body` function, circular dependencies will not work. If you need them, either use the raw `define()`
+		 * as shown above, or keep all the definitions outside modules and only access the variables from the scope:
+		 *
+		 *		PluginE = createPlugin( 'E' );
+		 *		PluginF = createPlugin( 'F' );
+		 *
+		 *		PluginF.requires = [ PluginE ];
+		 *		PluginE.requires = [ PluginF ];
+		 *
+		 *		bender.amd.define( 'E', [ 'core/plugin', 'F' ], () => {
+		 *			return PluginE;
+		 *		} );
+		 *
+		 *		bender.amd.define( 'F', [ 'core/plugin', 'E' ], () => {
+		 *			return PluginF;
 		 *		} );
 		 *
 		 * @param {String} name Name of the module.
@@ -98,12 +114,14 @@
 
 			const depsPaths = deps.map( bender.amd.getModulePath );
 
-			define( bender.amd.getModulePath( name ), depsPaths, function() {
-				const loadedDeps = Array.from( arguments ).map( ( module ) => module.default );
+			// Use the exports object instead of returning from modules in order to handle circular deps.
+			// http://requirejs.org/docs/api.html#circular
+			depsPaths.unshift( 'exports' );
 
-				return {
-					default: body.apply( this, loadedDeps )
-				};
+			define( bender.amd.getModulePath( name ), depsPaths, function( exports ) {
+				const loadedDeps = Array.from( arguments ).slice( 1 ).map( ( module ) => module.default );
+
+				exports.default = body.apply( this, loadedDeps );
 			} );
 		},
 

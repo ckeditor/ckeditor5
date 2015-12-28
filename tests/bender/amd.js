@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* global require */
+
 'use strict';
 
 bender.tools.createSinonSandbox();
@@ -49,12 +51,13 @@ describe( 'bender.amd', () => {
 	describe( 'define()', () => {
 		it( 'defines a module by using global define()', () => {
 			const spy = bender.sinon.spy( window, 'define' );
+			const expectedDeps = [ 'exports' ].concat( [ 'bar', 'ckeditor' ].map( getModulePath ) );
 
 			bender.amd.define( 'test1', [ 'bar', 'ckeditor' ], () => {} );
 
 			expect( spy.calledOnce ).to.be.true;
 			expect( spy.args[ 0 ][ 0 ] ).to.equal( getModulePath( 'test1' ) );
-			expect( spy.args[ 0 ][ 1 ] ).to.deep.equal( [ 'bar', 'ckeditor' ].map( getModulePath ) );
+			expect( spy.args[ 0 ][ 1 ] ).to.deep.equal( expectedDeps );
 		} );
 
 		it( 'maps body args and returned value', () => {
@@ -64,12 +67,13 @@ describe( 'bender.amd', () => {
 			bender.amd.define( 'test2', [ 'bar', 'ckeditor' ], bodySpy );
 
 			const realBody = spy.args[ 0 ][ 2 ];
+			const exportsObj = {};
 
 			expect( realBody ).to.be.a( 'function' );
 
-			const ret = realBody( { default: 'arg' } );
+			realBody( exportsObj, { default: 'arg' } );
 
-			expect( ret ).to.have.property( 'default', 'ret', 'it wraps the ret value with an ES6 module obj' );
+			expect( exportsObj ).to.have.property( 'default', 'ret', 'it wraps the ret value with an ES6 module obj' );
 			expect( bodySpy.calledOnce ).to.be.true;
 			expect( bodySpy.args[ 0 ][ 0 ] ).to.equal( 'arg', 'it unwraps the args' );
 		} );
@@ -81,8 +85,28 @@ describe( 'bender.amd', () => {
 
 			expect( spy.calledOnce ).to.be.true;
 			expect( spy.args[ 0 ][ 0 ] ).to.equal( getModulePath( 'test1' ) );
-			expect( spy.args[ 0 ][ 1 ] ).to.be.empty;
+			expect( spy.args[ 0 ][ 1 ] ).to.deep.equal( [ 'exports' ] );
 			expect( spy.args[ 0 ][ 2 ] ).to.be.a( 'function' );
+		} );
+
+		// Note: this test only checks whether Require.JS doesn't totally fail when creating a circular dependency.
+		// The value of dependencies are not available anyway inside the bender.amd.define() callbacks because
+		// we lose the late-binding by immediately mapping modules to their default exports.
+		it( 'works with circular dependencies', ( done ) => {
+			bender.amd.define( 'test-circular-a', [ 'test-circular-b' ], () => {
+				return 'a';
+			} );
+
+			bender.amd.define( 'test-circular-b', [ 'test-circular-a' ], () => {
+				return 'b';
+			} );
+
+			require( [ 'test-circular-a', 'test-circular-b' ].map( bender.amd.getModulePath ), ( a, b ) => {
+				expect( a ).to.have.property( 'default', 'a' );
+				expect( b ).to.have.property( 'default', 'b' );
+
+				done();
+			} );
 		} );
 	} );
 
