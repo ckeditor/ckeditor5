@@ -30,11 +30,11 @@ CKEDITOR.define( [ 'utils-diff', 'treeview/element', 'treeview/text' ], ( diff, 
 
 		render() {
 			for ( let element of this.markedAttrs ) {
-				this.updateAttrs( element );
+				updateAttrs( element );
 			}
 
 			for ( let element of this.markedChildren ) {
-				this.updateChildren( element );
+				updateChildren( element );
 			}
 
 			function updateAttrs( viewElement ) {
