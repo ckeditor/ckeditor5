@@ -5,11 +5,18 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'core/plugincollection', 'core/plugin', 'core/editor', 'core/log' );
-let PluginCollection, Plugin, Editor, log;
+const modules = bender.amd.require(
+	'core/editor',
+	'core/plugincollection',
+	'core/plugin',
+	'core/creator',
+	'core/ckeditorerror',
+	'core/log'
+);
+let PluginCollection, Plugin, Editor, Creator, CKEditorError, log;
 
 let editor;
-let PluginA, PluginB;
+let PluginA, PluginB, PluginC, PluginD, PluginE, PluginF;
 class TestError extends Error {}
 
 bender.tools.createSinonSandbox();
@@ -18,10 +25,21 @@ before( () => {
 	PluginCollection = modules[ 'core/plugincollection' ];
 	Editor = modules[ 'core/editor' ];
 	Plugin = modules[ 'core/plugin' ];
+	Creator = modules[ 'core/creator' ];
+	CKEditorError = modules[ 'core/ckeditorerror' ];
 	log = modules[ 'core/log' ];
 
-	PluginA = class extends Plugin {};
-	PluginB = class extends Plugin {};
+	PluginA = createPlugin( 'A' );
+	PluginB = createPlugin( 'B' );
+	PluginC = createPlugin( 'C' );
+	PluginD = createPlugin( 'D' );
+	PluginE = createPlugin( 'E' );
+	PluginF = createPlugin( 'F' );
+
+	PluginC.requires = [ PluginB ];
+	PluginD.requires = [ PluginA, PluginC ];
+	PluginF.requires = [ PluginE ];
+	PluginE.requires = [ PluginF ];
 
 	editor = new Editor( document.body.appendChild( document.createElement( 'div' ) ) );
 } );
@@ -36,55 +54,30 @@ bender.amd.define( 'B', () => {
 	return PluginB;
 } );
 
-bender.amd.define( 'C', [ 'core/plugin', 'B' ], ( Plugin ) => {
-	return class extends Plugin {};
+bender.amd.define( 'C', [ 'core/plugin', 'B' ], () => {
+	return PluginC;
 } );
 
-bender.amd.define( 'D', [ 'core/plugin', 'A', 'C' ], ( Plugin ) => {
-	return class extends Plugin {};
+bender.amd.define( 'D', [ 'core/plugin', 'A', 'C' ], () => {
+	return PluginD;
 } );
 
-bender.amd.define( 'E', [ 'core/plugin', 'F' ], ( Plugin ) => {
-	return class extends Plugin {};
+bender.amd.define( 'E', [ 'core/plugin', 'F' ], () => {
+	return PluginE;
 } );
 
-bender.amd.define( 'F', [ 'core/plugin', 'E' ], ( Plugin ) => {
-	return class extends Plugin {};
+bender.amd.define( 'F', [ 'core/plugin', 'E' ], () => {
+	return PluginF;
 } );
+
+// Erroneous cases.
 
 bender.amd.define( 'G', () => {
 	throw new TestError( 'Some error inside a plugin' );
 } );
 
-bender.amd.define( 'H', [ 'core/plugin', 'H/a' ], ( Plugin ) => {
-	return class extends Plugin {};
-} );
-
-let spies = {};
-// Note: This is NOT a plugin.
-bender.amd.define( 'H/a', [ 'H/a/b' ], () => {
-	return ( spies[ 'H/a' ] = sinon.spy() );
-} );
-
-// Note: This is NOT a plugin.
-bender.amd.define( 'H/a/b', [ 'c' ], () => {
-	return ( spies[ 'H/a/b' ] = sinon.spy() );
-} );
-
-// Note: This is NOT a plugin.
-bender.amd.define( 'c', () => {
-	return ( spies.c = sinon.spy() );
-} );
-
-bender.amd.define( 'I', [ 'core/plugin', 'J' ], ( Plugin ) => {
-	return class extends Plugin {};
-} );
-
-// Note: This is NOT a plugin.
-bender.amd.define( 'J', () => {
-	return function() {
-		return ( spies.jSpy = sinon.spy() );
-	};
+bender.amd.define( 'I', () => {
+	return class {};
 } );
 
 /////////////
@@ -95,7 +88,7 @@ describe( 'load', () => {
 
 		return plugins.load( '' )
 			.then( () => {
-				expect( plugins.length ).to.equal( 0 );
+				expect( getPlugins( plugins ) ).to.be.empty();
 			} );
 	} );
 
@@ -104,7 +97,7 @@ describe( 'load', () => {
 
 		return plugins.load()
 			.then( () => {
-				expect( plugins.length ).to.equal( 0 );
+				expect( getPlugins( plugins ) ).to.be.empty();
 			} );
 	} );
 
@@ -113,7 +106,10 @@ describe( 'load', () => {
 
 		return plugins.load( 'A,B' )
 			.then( () => {
-				expect( plugins.length ).to.equal( 2 );
+				expect( getPlugins( plugins ).length ).to.equal( 2 );
+
+				expect( plugins.get( PluginA ) ).to.be.an.instanceof( PluginA );
+				expect( plugins.get( PluginB ) ).to.be.an.instanceof( PluginB );
 
 				expect( plugins.get( 'A' ) ).to.be.an.instanceof( PluginA );
 				expect( plugins.get( 'B' ) ).to.be.an.instanceof( PluginB );
@@ -122,55 +118,63 @@ describe( 'load', () => {
 
 	it( 'should load dependency plugins', () => {
 		let plugins = new PluginCollection( editor );
-		let spy = sinon.spy( plugins, 'add' );
+		let spy = sinon.spy( plugins, 'set' );
 
 		return plugins.load( 'A,C' )
 			.then( ( loadedPlugins ) => {
-				expect( plugins.length ).to.equal( 3 );
+				expect( getPlugins( plugins ).length ).to.equal( 3 );
 
-				expect( getPluginNamesFromSpy( spy ) ).to.deep.equal( [ 'A', 'B', 'C' ], 'order by plugins.add()' );
-				expect( getPluginNames( loadedPlugins ) ).to.deep.equal( [ 'A', 'B', 'C' ], 'order by returned value' );
+				expect( getPluginNames( getPluginsFromSpy( spy ) ) )
+					.to.deep.equal( [ 'A', 'B', 'C' ], 'order by plugins.set()' );
+				expect( getPluginNames( loadedPlugins ) )
+					.to.deep.equal( [ 'A', 'B', 'C' ], 'order by returned value' );
 			} );
 	} );
 
 	it( 'should be ok when dependencies are loaded first', () => {
 		let plugins = new PluginCollection( editor );
-		let spy = sinon.spy( plugins, 'add' );
+		let spy = sinon.spy( plugins, 'set' );
 
 		return plugins.load( 'A,B,C' )
 			.then( ( loadedPlugins ) => {
-				expect( plugins.length ).to.equal( 3 );
+				expect( getPlugins( plugins ).length ).to.equal( 3 );
 
-				expect( getPluginNamesFromSpy( spy ) ).to.deep.equal( [ 'A', 'B', 'C' ], 'order by plugins.add()' );
-				expect( getPluginNames( loadedPlugins ) ).to.deep.equal( [ 'A', 'B', 'C' ], 'order by returned value' );
+				expect( getPluginNames( getPluginsFromSpy( spy ) ) )
+					.to.deep.equal( [ 'A', 'B', 'C' ], 'order by plugins.set()' );
+				expect( getPluginNames( loadedPlugins ) )
+					.to.deep.equal( [ 'A', 'B', 'C' ], 'order by returned value' );
 			} );
 	} );
 
 	it( 'should load deep dependency plugins', () => {
 		let plugins = new PluginCollection( editor );
-		let spy = sinon.spy( plugins, 'add' );
+		let spy = sinon.spy( plugins, 'set' );
 
 		return plugins.load( 'D' )
 			.then( ( loadedPlugins ) => {
-				expect( plugins.length ).to.equal( 4 );
+				expect( getPlugins( plugins ).length ).to.equal( 4 );
 
 				// The order must have dependencies first.
-				expect( getPluginNamesFromSpy( spy ) ).to.deep.equal( [ 'A', 'B', 'C', 'D' ], 'order by plugins.add()' );
-				expect( getPluginNames( loadedPlugins ) ).to.deep.equal( [ 'A', 'B', 'C', 'D' ], 'order by returned value' );
+				expect( getPluginNames( getPluginsFromSpy( spy ) ) )
+					.to.deep.equal( [ 'A', 'B', 'C', 'D' ], 'order by plugins.set()' );
+				expect( getPluginNames( loadedPlugins ) )
+					.to.deep.equal( [ 'A', 'B', 'C', 'D' ], 'order by returned value' );
 			} );
 	} );
 
 	it( 'should handle cross dependency plugins', () => {
 		let plugins = new PluginCollection( editor );
-		let spy = sinon.spy( plugins, 'add' );
+		let spy = sinon.spy( plugins, 'set' );
 
 		return plugins.load( 'A,E' )
 			.then( ( loadedPlugins ) => {
-				expect( plugins.length ).to.equal( 3 );
+				expect( getPlugins( plugins ).length ).to.equal( 3 );
 
 				// The order must have dependencies first.
-				expect( getPluginNamesFromSpy( spy ) ).to.deep.equal( [ 'A', 'F', 'E' ], 'order by plugins.add()' );
-				expect( getPluginNames( loadedPlugins ) ).to.deep.equal( [ 'A', 'F', 'E' ], 'order by returned value' );
+				expect( getPluginNames( getPluginsFromSpy( spy ) ) )
+					.to.deep.equal( [ 'A', 'F', 'E' ], 'order by plugins.set()' );
+				expect( getPluginNames( loadedPlugins ) )
+					.to.deep.equal( [ 'A', 'F', 'E' ], 'order by returned value' );
 			} );
 	} );
 
@@ -181,18 +185,6 @@ describe( 'load', () => {
 			.then( () => {
 				expect( plugins.get( 'A' ).editor ).to.equal( editor );
 				expect( plugins.get( 'B' ).editor ).to.equal( editor );
-			} );
-	} );
-
-	it( 'should set the `deps` property on loaded plugins', () => {
-		let plugins = new PluginCollection( editor );
-
-		return plugins.load( 'A,D' )
-			.then( () => {
-				expect( plugins.get( 'A' ).deps ).to.deep.equal( [] );
-				expect( plugins.get( 'B' ).deps ).to.deep.equal( [] );
-				expect( plugins.get( 'C' ).deps ).to.deep.equal( [ 'B' ] );
-				expect( plugins.get( 'D' ).deps ).to.deep.equal( [ 'A', 'C' ] );
 			} );
 	} );
 
@@ -235,64 +227,59 @@ describe( 'load', () => {
 			} );
 	} );
 
-	it( 'should load `deps` which are not plugins', () => {
-		let plugins = new PluginCollection( editor );
-		expect( spies ).to.be.empty;
+	it( 'should reject when loading a module which is not a plugin', () => {
+		let logSpy = bender.sinon.stub( log, 'error' );
 
-		return plugins.load( 'H' )
-			.then( () => {
-				expect( plugins.get( 'H' ).deps ).to.deep.equal( [ 'H/a' ] );
-
-				// Non–plugin dependencies should be loaded (spy exists)...
-				expect( spies ).to.have.keys( [
-					'H/a', 'H/a/b', 'c'
-				] );
-
-				// ...but not be executed (called == false)...
-				expect( spies[ 'H/a' ].called ).to.be.false;
-				expect( spies[ 'H/a/b' ].called ).to.be.false;
-				expect( spies.c.called ).to.be.false;
-
-				expect( plugins.length ).to.be.equal( 1 );
-			} );
-	} );
-
-	it( 'should load instances of Plugin only', () => {
 		let plugins = new PluginCollection( editor );
 
 		return plugins.load( 'I' )
+			// Throw here, so if by any chance plugins.load() was resolved correctly catch() will be stil executed.
 			.then( () => {
 				throw new Error( 'Test error: this promise should not be resolved successfully' );
-			} ).catch( err => {
-				expect( err.name ).to.be.equal( 'CKEditorError' );
-				expect( err.message ).to.match( /^plugincollection-instance:/ );
-			} );
-	} );
+			} )
+			.catch( ( err ) => {
+				expect( err ).to.be.an.instanceof( CKEditorError );
+				expect( err.message ).to.match( /^plugincollection-instance/ );
 
-	it( 'should cancel loading module which looks like a plugin but is a normal module', () => {
-		let plugins = new PluginCollection( editor );
-
-		return plugins.load( 'J' )
-			.then( () => {
-				throw new Error( 'Test error: this promise should not be resolved successfully' );
-			} ).catch( () => {
-				// Path would be set if code execution wasn't stopped when we rejected the promise
-				// (based on a real mistake we've made).
-				// expect( spies.jSpy.path ).to.be.undefined;
-				//
-				// TODO now, the above does not make sense, because we removed the path.
+				sinon.assert.calledOnce( logSpy );
+				expect( logSpy.args[ 0 ][ 0 ] ).to.match( /^plugincollection-load:/ );
 			} );
 	} );
 } );
 
-function getPluginNamesFromSpy( addSpy ) {
-	return addSpy.args.map( ( arg ) => {
-		return arg[ 0 ].name;
-	} );
+function createPlugin( name ) {
+	const P = class extends Plugin {
+		constructor( editor ) {
+			super( editor );
+			this._pluginName = name;
+		}
+	};
+
+	P._pluginName = name;
+
+	return P;
+}
+
+function getPlugins( pluginCollection ) {
+	const plugins = [];
+
+	for ( let entry of pluginCollection.entries() ) {
+		if ( typeof entry[ 0 ] == 'function' ) {
+			plugins.push( entry[ 1 ] );
+		}
+	}
+
+	return plugins;
+}
+
+function getPluginsFromSpy( addSpy ) {
+	return addSpy.args
+		.map( ( arg ) => arg[ 0 ] )
+		// Entries may be kept twice in the plugins map - once as a pluginName => plugin, once as pluginClass => plugin.
+		// Return only pluginClass => plugin entries as these will always represent all plugins.
+		.filter( ( plugin ) => typeof plugin == 'function' );
 }
 
 function getPluginNames( plugins ) {
-	return plugins.map( ( arg ) => {
-		return arg.name;
-	} );
+	return plugins.map( ( plugin ) => plugin._pluginName );
 }

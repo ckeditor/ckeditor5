@@ -9,10 +9,19 @@
  * Basic creator class.
  *
  * @class Creator
- * @extends Plugin
  */
 
-import Plugin from './plugin.js';
+export default class Creator {
+	constructor( editor ) {
+		/**
+		 * @readonly
+		 * @property {core/Editor}
+		 */
+		this.editor = editor;
+	}
 
-export default class Creator extends Plugin {
+	/**
+	 * @returns {null/Promise}
+	 */
+	init() {}
 }

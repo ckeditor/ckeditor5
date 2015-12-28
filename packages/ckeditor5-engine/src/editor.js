@@ -104,16 +104,9 @@ export default class Editor extends Model {
 		}
 
 		function initPlugins( loadedPlugins ) {
-			// Start with a resolved promise.
-			let promise = Promise.resolve();
-
-			// Chain it with promises that resolve with the init() call of every plugin.
-			for ( let i = 0; i < loadedPlugins.length; i++ ) {
-				promise = promise.then( () => loadedPlugins[ i ].init() );
-			}
-
-			// Return the promise chain.
-			return promise;
+			return loadedPlugins.reduce( ( promise, plugin ) => {
+				return promise.then( plugin.init.bind( plugin ) );
+			}, Promise.resolve() );
 		}
 
 		function findCreators() {
