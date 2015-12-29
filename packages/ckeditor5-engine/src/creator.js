@@ -8,20 +8,11 @@
 /**
  * Basic creator class.
  *
- * @class Creator
+ * @class core/Creator
+ * @extends core/Plugin
  */
 
-export default class Creator {
-	constructor( editor ) {
-		/**
-		 * @readonly
-		 * @property {core/Editor}
-		 */
-		this.editor = editor;
-	}
+import Plugin from './plugin.js';
 
-	/**
-	 * @returns {null/Promise}
-	 */
-	init() {}
+export default class Creator extends Plugin {
 }

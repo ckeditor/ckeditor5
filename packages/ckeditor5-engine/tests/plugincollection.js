@@ -16,7 +16,7 @@ const modules = bender.amd.require(
 let PluginCollection, Plugin, Editor, Creator, CKEditorError, log;
 
 let editor;
-let PluginA, PluginB, PluginC, PluginD, PluginE, PluginF;
+let PluginA, PluginB, PluginC, PluginD, PluginE, PluginF, PluginG;
 class TestError extends Error {}
 
 bender.tools.createSinonSandbox();
@@ -35,6 +35,7 @@ before( () => {
 	PluginD = createPlugin( 'D' );
 	PluginE = createPlugin( 'E' );
 	PluginF = createPlugin( 'F' );
+	PluginG = createPlugin( 'G', Creator );
 
 	PluginC.requires = [ PluginB ];
 	PluginD.requires = [ PluginA, PluginC ];
@@ -70,32 +71,27 @@ bender.amd.define( 'F', [ 'core/plugin', 'E' ], () => {
 	return PluginF;
 } );
 
+bender.amd.define( 'G', () => {
+	return PluginG;
+} );
+
 // Erroneous cases.
 
-bender.amd.define( 'G', () => {
+bender.amd.define( 'X', () => {
 	throw new TestError( 'Some error inside a plugin' );
 } );
 
-bender.amd.define( 'I', () => {
+bender.amd.define( 'Y', () => {
 	return class {};
 } );
 
 /////////////
 
 describe( 'load', () => {
-	it( 'should not fail when trying to load 0 plugins (empty string)', () => {
+	it( 'should not fail when trying to load 0 plugins (empty array)', () => {
 		let plugins = new PluginCollection( editor );
 
-		return plugins.load( '' )
-			.then( () => {
-				expect( getPlugins( plugins ) ).to.be.empty();
-			} );
-	} );
-
-	it( 'should not fail when trying to load 0 plugins (undefined)', () => {
-		let plugins = new PluginCollection( editor );
-
-		return plugins.load()
+		return plugins.load( [] )
 			.then( () => {
 				expect( getPlugins( plugins ) ).to.be.empty();
 			} );
@@ -104,7 +100,7 @@ describe( 'load', () => {
 	it( 'should add collection items for loaded plugins', () => {
 		let plugins = new PluginCollection( editor );
 
-		return plugins.load( 'A,B' )
+		return plugins.load( [ 'A', 'B' ] )
 			.then( () => {
 				expect( getPlugins( plugins ).length ).to.equal( 2 );
 
@@ -120,7 +116,7 @@ describe( 'load', () => {
 		let plugins = new PluginCollection( editor );
 		let spy = sinon.spy( plugins, 'set' );
 
-		return plugins.load( 'A,C' )
+		return plugins.load( [ 'A', 'C' ] )
 			.then( ( loadedPlugins ) => {
 				expect( getPlugins( plugins ).length ).to.equal( 3 );
 
@@ -135,7 +131,7 @@ describe( 'load', () => {
 		let plugins = new PluginCollection( editor );
 		let spy = sinon.spy( plugins, 'set' );
 
-		return plugins.load( 'A,B,C' )
+		return plugins.load( [ 'A', 'B', 'C' ] )
 			.then( ( loadedPlugins ) => {
 				expect( getPlugins( plugins ).length ).to.equal( 3 );
 
@@ -150,7 +146,7 @@ describe( 'load', () => {
 		let plugins = new PluginCollection( editor );
 		let spy = sinon.spy( plugins, 'set' );
 
-		return plugins.load( 'D' )
+		return plugins.load( [ 'D' ] )
 			.then( ( loadedPlugins ) => {
 				expect( getPlugins( plugins ).length ).to.equal( 4 );
 
@@ -166,7 +162,7 @@ describe( 'load', () => {
 		let plugins = new PluginCollection( editor );
 		let spy = sinon.spy( plugins, 'set' );
 
-		return plugins.load( 'A,E' )
+		return plugins.load( [ 'A', 'E' ] )
 			.then( ( loadedPlugins ) => {
 				expect( getPlugins( plugins ).length ).to.equal( 3 );
 
@@ -178,10 +174,19 @@ describe( 'load', () => {
 			} );
 	} );
 
+	it( 'should load grand child classes', () => {
+		let plugins = new PluginCollection( editor );
+
+		return plugins.load( [ 'G' ] )
+			.then( () => {
+				expect( getPlugins( plugins ).length ).to.equal( 1 );
+			} );
+	} );
+
 	it( 'should set the `editor` property on loaded plugins', () => {
 		let plugins = new PluginCollection( editor );
 
-		return plugins.load( 'A,B' )
+		return plugins.load( [ 'A', 'B' ] )
 			.then( () => {
 				expect( plugins.get( 'A' ).editor ).to.equal( editor );
 				expect( plugins.get( 'B' ).editor ).to.equal( editor );
@@ -193,7 +198,7 @@ describe( 'load', () => {
 
 		let plugins = new PluginCollection( editor );
 
-		return plugins.load( 'A,BAD,B' )
+		return plugins.load( [ 'A', 'BAD', 'B' ] )
 			// Throw here, so if by any chance plugins.load() was resolved correctly catch() will be stil executed.
 			.then( () => {
 				throw new Error( 'Test error: this promise should not be resolved successfully' );
@@ -213,7 +218,7 @@ describe( 'load', () => {
 
 		let plugins = new PluginCollection( editor );
 
-		return plugins.load( 'A,G,B' )
+		return plugins.load( [ 'A', 'X', 'B' ] )
 			// Throw here, so if by any chance plugins.load() was resolved correctly catch() will be stil executed.
 			.then( () => {
 				throw new Error( 'Test error: this promise should not be resolved successfully' );
@@ -232,7 +237,7 @@ describe( 'load', () => {
 
 		let plugins = new PluginCollection( editor );
 
-		return plugins.load( 'I' )
+		return plugins.load( [ 'Y' ] )
 			// Throw here, so if by any chance plugins.load() was resolved correctly catch() will be stil executed.
 			.then( () => {
 				throw new Error( 'Test error: this promise should not be resolved successfully' );
@@ -247,8 +252,8 @@ describe( 'load', () => {
 	} );
 } );
 
-function createPlugin( name ) {
-	const P = class extends Plugin {
+function createPlugin( name, baseClass ) {
+	const P = class extends ( baseClass || Plugin ) {
 		constructor( editor ) {
 			super( editor );
 			this._pluginName = name;

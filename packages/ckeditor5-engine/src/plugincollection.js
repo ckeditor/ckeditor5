@@ -38,7 +38,7 @@ export default class PluginCollection extends Map {
 	/**
 	 * Loads a set of plugins and add them to the collection.
 	 *
-	 * @param {String} plugins A comma separated list of plugin names to get loaded.
+	 * @param {String[]} plugins An array of plugins to load.
 	 * @returns {Promise} A promise which gets resolved once all plugins are loaded and available into the
 	 * collection.
 	 * @param {core/Plugin[]} returns.loadedPlugins The array of loaded plugins.
@@ -48,9 +48,6 @@ export default class PluginCollection extends Map {
 		const editor = this._editor;
 		const loading = new Set();
 		const loaded = [];
-
-		// It may happen that an empty list was passed – don't fail.
-		plugins = plugins ? plugins.split( ',' ) : [];
 
 		return Promise.all( plugins.map( loadPlugin ) )
 			.then( () => loaded );
@@ -112,13 +109,13 @@ export default class PluginCollection extends Map {
 		function assertIsPlugin( LoadedPlugin ) {
 			if ( !( LoadedPlugin.prototype instanceof Plugin ) ) {
 				/**
-				 * The plugin is not an instance of Plugin.
+				 * The loaded plugin module is not an instance of Plugin.
 				 *
 				 * @error plugincollection-instance
 				 * @param {LoadedPlugin} plugin The class which is meant to be loaded as a plugin.
 				 */
 				throw new CKEditorError(
-					'plugincollection-instance: The plugin is not an instance of Plugin.',
+					'plugincollection-instance: The loaded plugin module is not an instance of Plugin.',
 					{ plugin: LoadedPlugin }
 				);
 			}

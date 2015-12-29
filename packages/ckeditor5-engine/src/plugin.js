@@ -8,11 +8,21 @@
 /**
  * The base class for CKEditor plugin classes.
  *
- * @class Plugin
+ * @class core/Plugin
+ * @extends Model
  */
 
-export default class Plugin {
+import Model from './model.js';
+
+export default class Plugin extends Model {
+	/**
+	 * Creates a new Plugin instance.
+	 *
+	 * @param {core/Editor} editor
+	 */
 	constructor( editor ) {
+		super();
+
 		/**
 		 * @readonly
 		 * @property {core/Editor}
@@ -25,4 +35,3 @@ export default class Plugin {
 	 */
 	init() {}
 }
-
