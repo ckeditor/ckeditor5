@@ -71,6 +71,7 @@ CKEDITOR.define( [ 'treeview/Renderer', 'ckeditorerror' ], ( Renderer, CKEditorE
 
 	Node.ATTRIBUTES_NEED_UPDATE = Renderer.ATTRIBUTES_NEED_UPDATE;
 	Node.CHILDREN_NEED_UPDATE = Renderer.CHILDREN_NEED_UPDATE;
+	Node.TEXT_NEEDS_UPDATE = Renderer.TEXT_NEEDS_UPDATE;
 
 	return Node;
 } );

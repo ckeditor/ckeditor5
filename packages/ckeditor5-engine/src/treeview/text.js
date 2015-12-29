@@ -5,7 +5,7 @@
 
 'use strict';
 
-CKEDITOR.define( [], () => {
+CKEDITOR.define( [ 'treeview/Node', 'treeview/Element' ], ( Node, Element ) => {
 	class Text extends Node {
 		constructor( text ) {
 			this._text = text;
@@ -16,9 +16,47 @@ CKEDITOR.define( [], () => {
 		}
 
 		setText( text ) {
-			this.parent.markToSync( Node.CHILDREN_NEED_UPDATE );
+			this.markToSync( Node.TEXT_NEEDS_UPDATE );
 
 			this._text = text;
+		}
+
+		getDomText() {
+			const previousSibling = this.getPreviousSibling();
+
+			if ( previousSibling && previousSibling.domElement ) {
+				return previousSibling.domElement.nextSibling;
+			}
+
+			if ( !previousSibling && this.parent.domElement ) {
+				return this.parent.domElement.childNodes[ 0 ];
+			}
+
+			return null;
+		}
+
+		static getCorespondingText( domText ) {
+			const previousSibling = domText.previousSibling;
+
+			if ( previousSibling ) {
+				const viewElement = Element.getCorespondingElement( previousSibling );
+
+				if ( viewElement ) {
+					return viewElement.getNextSibling;
+				}
+			} else {
+				const viewElement = Element.getCorespondingElement( this.parent );
+
+				if ( viewElement ) {
+					return viewElement.getChild[ 0 ];
+				}
+			}
+
+			if ( !previousSibling && this.parent.domElement ) {
+				return this.parent.domElement.childNodes[ 0 ];
+			}
+
+			return null;
 		}
 	}
 

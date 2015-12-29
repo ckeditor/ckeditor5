@@ -12,6 +12,7 @@ CKEDITOR.define( [
 ], ( diff, ViewElement, ViewText ) => {
 	const ATTRIBUTES_NEED_UPDATE = 0;
 	const CHILDREN_NEED_UPDATE = 1;
+	const TEXT_NEEDS_UPDATE = 2;
 
 	class Renderer {
 		constructor( treeView ) {
@@ -21,6 +22,7 @@ CKEDITOR.define( [
 
 			this.markedAttrs = new Set();
 			this.markedChildren = new Set();
+			this.markedTexts = new Set();
 		}
 
 		markToSync( node, type ) {
@@ -28,11 +30,19 @@ CKEDITOR.define( [
 				this.markedAttrs.push( node );
 			} else if ( type === CHILDREN_NEED_UPDATE ) {
 				this.markedChildren.push( node );
+			} else if ( type === TEXT_NEEDS_UPDATE ) {
+				this.markedTexts.push( node );
 			}
 		}
 
 		render() {
 			const domDocument = this.domRoot.ownerDocument;
+
+			for ( let node of this.markedTexts ) {
+				if ( !this.markedChildren.has( node.parent ) && node.parent.domElement ) {
+					updateText( node );
+				}
+			}
 
 			for ( let element of this.markedAttrs ) {
 				updateAttrs( element );
@@ -40,6 +50,14 @@ CKEDITOR.define( [
 
 			for ( let element of this.markedChildren ) {
 				updateChildren( element );
+			}
+
+			function updateText( viewText ) {
+				const domText = viewText.getDomNode();
+
+				if ( domText.data != viewText.getText() ) {
+					domText.data = viewText.getText();
+				}
 			}
 
 			function updateAttrs( viewElement ) {
@@ -122,6 +140,7 @@ CKEDITOR.define( [
 
 	Renderer.ATTRIBUTES_NEED_UPDATE = ATTRIBUTES_NEED_UPDATE;
 	Renderer.CHILDREN_NEED_UPDATE = CHILDREN_NEED_UPDATE;
+	Renderer.TEXT_NEEDS_UPDATE = TEXT_NEEDS_UPDATE;
 
 	return Renderer;
 } );
