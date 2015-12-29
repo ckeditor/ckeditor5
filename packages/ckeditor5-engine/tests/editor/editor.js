@@ -10,87 +10,52 @@
 const modules = bender.amd.require( 'core/editor', 'core/editorconfig', 'core/plugin' );
 let Editor, EditorConfig, Plugin;
 
-let editor;
+const pluginClasses = {};
 let element;
-let asyncSpy;
 
 before( () => {
 	Editor = modules[ 'core/editor' ];
 	EditorConfig = modules[ 'core/editorconfig' ];
 	Plugin = modules[ 'core/plugin' ];
-} );
 
-beforeEach( () => {
-	element = document.createElement( 'div' );
-	document.body.appendChild( element );
-
-	editor = new Editor( element );
-} );
-
-before( () => {
 	// Define fake plugins to be used in tests.
 	bender.tools.core.defineEditorCreatorMock( 'test', {
 		init: sinon.spy().named( 'creator-test' )
 	} );
 
-	bender.amd.define( 'A', [ 'core/plugin' ], pluginDefinition( 'A' ) );
-
-	bender.amd.define( 'B', [ 'core/plugin' ], pluginDefinition( 'B' ) );
-
-	bender.amd.define( 'C', [ 'core/plugin', 'B' ], pluginDefinition( 'C' ) );
-
-	bender.amd.define( 'D', [ 'core/plugin', 'C' ], pluginDefinition( 'D' ) );
-
-	bender.amd.define( 'E', [ 'core/plugin' ], pluginDefinition( 'E' ) );
-
-	// Synchronous plugin that depends on an asynchronous one.
-	bender.amd.define( 'F', [ 'core/plugin', 'async' ], pluginDefinition( 'F' ) );
-
-	asyncSpy = sinon.spy().named( 'async-call-spy' );
-
-	bender.amd.define( 'async', [ 'core/plugin' ], ( Plugin ) => {
-		class PluginAsync extends Plugin {}
-
-		PluginAsync.prototype.init = sinon.spy( () => {
-			return new Promise( ( resolve ) => {
-				setTimeout( () => {
-					asyncSpy();
-					resolve();
-				}, 0 );
-			} );
-		} );
-
-		return PluginAsync;
-	} );
+	pluginDefinition( 'A' );
+	pluginDefinition( 'B' );
+	pluginDefinition( 'C', [ 'B' ] );
+	pluginDefinition( 'D', [ 'C' ] );
 } );
 
-function pluginDefinition( name ) {
-	return ( Plugin ) => {
-		class NewPlugin extends Plugin {}
-		NewPlugin.prototype.init = sinon.spy().named( name );
-
-		return NewPlugin;
-	};
-}
+beforeEach( () => {
+	element = document.createElement( 'div' );
+	document.body.appendChild( element );
+} );
 
 ///////////////////
 
 describe( 'constructor', () => {
 	it( 'should create a new editor instance', () => {
+		const editor = new Editor( element );
+
 		expect( editor ).to.have.property( 'element' ).to.equal( element );
 	} );
 } );
 
 describe( 'config', () => {
 	it( 'should be an instance of EditorConfig', () => {
+		const editor = new Editor( element );
+
 		expect( editor.config ).to.be.an.instanceof( EditorConfig );
 	} );
 } );
 
 describe( 'init', () => {
 	it( 'should return a promise that resolves properly', () => {
-		editor = new Editor( element, {
-			plugins: 'creator-test'
+		const editor = new Editor( element, {
+			creator: 'creator-test'
 		} );
 
 		let promise = editor.init();
@@ -100,15 +65,16 @@ describe( 'init', () => {
 		return promise;
 	} );
 
-	it( 'should fill `plugins`', () => {
-		editor = new Editor( element, {
-			plugins: 'A,B,creator-test'
+	it( 'should load features and creator', () => {
+		const editor = new Editor( element, {
+			features: [ 'A', 'B' ],
+			creator: 'creator-test'
 		} );
 
-		expect( editor.plugins.length ).to.equal( 0 );
+		expect( getPlugins( editor ) ).to.be.empty;
 
 		return editor.init().then( () => {
-			expect( editor.plugins.length ).to.equal( 3 );
+			expect( getPlugins( editor ).length ).to.equal( 3 );
 
 			expect( editor.plugins.get( 'A' ) ).to.be.an.instanceof( Plugin );
 			expect( editor.plugins.get( 'B' ) ).to.be.an.instanceof( Plugin );
@@ -116,56 +82,88 @@ describe( 'init', () => {
 		} );
 	} );
 
+	it( 'should load features passed as a string', () => {
+		const editor = new Editor( element, {
+			features: 'A,B',
+			creator: 'creator-test'
+		} );
+
+		expect( getPlugins( editor ) ).to.be.empty;
+
+		return editor.init().then( () => {
+			expect( getPlugins( editor ).length ).to.equal( 3 );
+
+			expect( editor.plugins.get( 'A' ) ).to.be.an.instanceof( Plugin );
+			expect( editor.plugins.get( 'B' ) ).to.be.an.instanceof( Plugin );
+		} );
+	} );
+
 	it( 'should initialize plugins in the right order', () => {
-		editor = new Editor( element, {
-			plugins: 'creator-test,A,D'
+		const editor = new Editor( element, {
+			features: [ 'A', 'D' ],
+			creator: 'creator-test'
 		} );
 
 		return editor.init().then( () => {
 			sinon.assert.callOrder(
 				editor.plugins.get( 'creator-test' ).init,
-				editor.plugins.get( 'A' ).init,
-				editor.plugins.get( 'B' ).init,
-				editor.plugins.get( 'C' ).init,
-				editor.plugins.get( 'D' ).init
+				editor.plugins.get( pluginClasses.A ).init,
+				editor.plugins.get( pluginClasses.B ).init,
+				editor.plugins.get( pluginClasses.C ).init,
+				editor.plugins.get( pluginClasses.D ).init
 			);
 		} );
 	} );
 
 	it( 'should initialize plugins in the right order, waiting for asynchronous ones', () => {
-		editor = new Editor( element, {
-			plugins: 'creator-test,A,F'
+		class PluginAsync extends Plugin {}
+		const asyncSpy = sinon.spy().named( 'async-call-spy' );
+
+		// Synchronous plugin that depends on an asynchronous one.
+		pluginDefinition( 'sync', [ 'async' ] );
+
+		bender.amd.define( 'async', () => {
+			PluginAsync.prototype.init = sinon.spy( () => {
+				return new Promise( ( resolve ) => {
+					setTimeout( () => {
+						asyncSpy();
+						resolve();
+					}, 0 );
+				} );
+			} );
+
+			return PluginAsync;
+		} );
+
+		const editor = new Editor( element, {
+			features: [ 'A', 'sync' ],
+			creator: 'creator-test'
 		} );
 
 		return editor.init().then( () => {
 			sinon.assert.callOrder(
 				editor.plugins.get( 'creator-test' ).init,
-				editor.plugins.get( 'A' ).init,
-				editor.plugins.get( 'async' ).init,
+				editor.plugins.get( pluginClasses.A ).init,
+				editor.plugins.get( PluginAsync ).init,
 				// This one is called with delay by the async init.
 				asyncSpy,
-				editor.plugins.get( 'F' ).init
+				editor.plugins.get( pluginClasses.sync ).init
 			);
 		} );
-	} );
-
-	it( 'should not fail if loading a plugin that doesn\'t define init()', () => {
-		editor = new Editor( element, {
-			plugins: 'E,creator-test'
-		} );
-
-		return editor.init();
 	} );
 } );
 
 describe( 'plugins', () => {
 	it( 'should be empty on new editor', () => {
-		expect( editor.plugins.length ).to.equal( 0 );
+		const editor = new Editor( element );
+
+		expect( getPlugins( editor ) ).to.be.empty;
 	} );
 } );
 
 describe( 'destroy', () => {
 	it( 'should fire "destroy"', () => {
+		const editor = new Editor( element );
 		let spy = sinon.spy();
 
 		editor.on( 'destroy', spy );
@@ -176,8 +174,43 @@ describe( 'destroy', () => {
 	} );
 
 	it( 'should delete the "element" property', () => {
+		const editor = new Editor( element );
+
 		return editor.destroy().then( () => {
 			expect( editor ).to.not.have.property( 'element' );
 		} );
 	} );
 } );
+
+/**
+ * @param {String} name Name of the plugin.
+ * @param {String[]} deps Dependencies of the plugin (only other plugins).
+ */
+function pluginDefinition( name, deps ) {
+	bender.amd.define( name, deps || [], function() {
+		class NewPlugin extends Plugin {}
+
+		NewPlugin.prototype.init = sinon.spy().named( name );
+		NewPlugin.requires = Array.from( arguments );
+
+		pluginClasses[ name ] = NewPlugin;
+
+		return NewPlugin;
+	} );
+}
+
+/**
+ * Returns an array of loaded plugins.
+ */
+function getPlugins( editor ) {
+	const plugins = [];
+
+	for ( let entry of editor.plugins ) {
+		// Keep only plugins kept under their classes.
+		if ( typeof entry[ 0 ] == 'function' ) {
+			plugins.push( entry[ 1 ] );
+		}
+	}
+
+	return plugins;
+}

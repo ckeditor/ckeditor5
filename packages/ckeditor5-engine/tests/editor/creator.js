@@ -76,7 +76,7 @@ afterEach( () => {
 describe( 'init', () => {
 	it( 'should instantiate the creator and call create()', () => {
 		return initEditor( {
-				plugins: 'creator-test1'
+				creator: 'creator-test1'
 			} )
 			.then( () => {
 				let creator = editor.plugins.get( 'creator-test1' );
@@ -88,10 +88,8 @@ describe( 'init', () => {
 			} );
 	} );
 
-	it( 'should throw if more than one creator is available but config.creator is not defined', () => {
-		return initEditor( {
-				plugins: 'creator-test-throw-on-many1,creator-test-throw-on-many2'
-			} )
+	it( 'should throw if creator is not defined', () => {
+		return initEditor( {} )
 			.then( () => {
 				throw new Error( 'This should not be executed.' );
 			} )
@@ -103,8 +101,8 @@ describe( 'init', () => {
 
 	it( 'should use the creator specified in config.creator', () => {
 		return initEditor( {
-				creator: 'test-config2',
-				plugins: 'creator-test-config1,creator-test-config2',
+				creator: 'creator-test-config2',
+				features: [ 'creator-test-config1', 'creator-test-config2' ],
 			} )
 			.then( () => {
 				let creator1 = editor.plugins.get( 'creator-test-config1' );
@@ -117,32 +115,21 @@ describe( 'init', () => {
 
 	it( 'should throw an error if the creator doesn\'t exist', () => {
 		return initEditor( {
-				creator: 'bad',
-				plugins: 'creator-test1'
+				creator: 'bad'
 			} )
 			.then( () => {
 				throw new Error( 'This should not be executed.' );
 			} )
 			.catch( ( err ) => {
-				expect( err ).to.be.instanceof( CKEditorError );
-				expect( err.message ).to.match( /^editor-creator-404:/ );
-			} );
-	} );
-
-	it( 'should throw an error if no creators are defined', () => {
-		return initEditor( {} )
-			.then( () => {
-				throw new Error( 'This should not be executed.' );
-			} )
-			.catch( ( err ) => {
-				expect( err ).to.be.instanceof( CKEditorError );
-				expect( err.message ).to.match( /^editor-creator-404:/ );
+				// It's the Require.JS error.
+				expect( err ).to.be.an.instanceof( Error );
+				expect( err.message ).to.match( /^Script error for/ );
 			} );
 	} );
 
 	it( 'should chain the promise from the creator (enables async creators)', () => {
 		return initEditor( {
-				plugins: 'creator-async-create'
+				creator: 'creator-async-create'
 			} )
 			.then( () => {
 				throw new Error( 'This should not be executed.' );
@@ -160,7 +147,7 @@ describe( 'destroy', () => {
 		let creator1;
 
 		return initEditor( {
-				plugins: 'creator-test1'
+				creator: 'creator-test1'
 			} )
 			.then( () => {
 				creator1 = editor.plugins.get( 'creator-test1' );
@@ -174,7 +161,7 @@ describe( 'destroy', () => {
 
 	it( 'should chain the promise from the creator (enables async creators)', () => {
 		return initEditor( {
-				plugins: 'creator-async-destroy'
+				creator: 'creator-async-destroy'
 			} )
 			.then( () => {
 				return editor.destroy();

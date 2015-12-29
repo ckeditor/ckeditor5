@@ -11,7 +11,7 @@
  * @class PluginCollection
  */
 
-import CKEDITOR from '../ckeditor.js';
+import pathUtils from '../ckeditor5/path.js';
 import Plugin from './plugin.js';
 import CKEditorError from './ckeditorerror.js';
 import log from './log.js';
@@ -98,7 +98,7 @@ export default class PluginCollection {
 		}
 
 		function loadPluginByName( pluginName ) {
-			return load( CKEDITOR.getModulePath( pluginName ) )
+			return load( pathUtils.getModulePath( pluginName ) )
 				.then( ( PluginModule ) => {
 					return loadPluginByClass( PluginModule.default, pluginName );
 				} );

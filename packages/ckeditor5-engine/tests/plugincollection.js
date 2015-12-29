@@ -269,6 +269,7 @@ function getPlugins( pluginCollection ) {
 	const plugins = [];
 
 	for ( let entry of pluginCollection ) {
+		// Keep only plugins kept under their classes.
 		if ( typeof entry[ 0 ] == 'function' ) {
 			plugins.push( entry[ 1 ] );
 		}

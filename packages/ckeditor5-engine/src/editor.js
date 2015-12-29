@@ -8,9 +8,8 @@
 import Model from './model.js';
 import EditorConfig from './editorconfig.js';
 import PluginCollection from './plugincollection.js';
-import Creator from './creator.js';
 import CKEditorError from './ckeditorerror.js';
-import utils from './utils.js';
+import langUtils from './lib/lodash/lang.js';
 
 /**
  * Represents a single editor instance.
@@ -67,14 +66,6 @@ export default class Editor extends Model {
 		 * @property {Creator} _creator
 		 * @protected
 		 */
-
-		/**
-		 * The list of detected creators.
-		 *
-		 * @property {Map}
-		 * @protected
-		 */
-		this._creators = new Map();
 	}
 
 	/**
@@ -82,25 +73,45 @@ export default class Editor extends Model {
 	 *
 	 * The initialization consists of the following procedures:
 	 *
-	 *  * Load and initialize the configured plugins.
-	 *  * Fires the editor creator.
+	 * * Loading and initializing the configured features and creator.
+	 * * Firing the editor creator.
 	 *
-	 * This method should be rarely used as `CKEDITOR.create` calls it one should never use the `Editor` constructor
-	 * directly.
+	 * This method should be rarely used as {@link CKEDITOR#create} calls it one should never use the `Editor`
+	 * constructor directly.
 	 *
 	 * @returns {Promise} A promise which resolves once the initialization is completed.
 	 */
 	init() {
 		const that = this;
 		const config = this.config;
+		let creatorName = config.creator;
+
+		if ( !creatorName ) {
+			/**
+			 * The `config.creator` option was not defined.
+			 *
+			 * @error editor-undefined-creator
+			 */
+			return Promise.reject(
+				new CKEditorError( 'editor-undefined-creator: The config.creator option was not defined.' )
+			);
+		}
 
 		return loadPlugins()
 			.then( initPlugins )
-			.then( findCreators )
 			.then( fireCreator );
 
 		function loadPlugins() {
-			return that.plugins.load( config.plugins );
+			let plugins = config.features || [];
+
+			// Handle features passed as a string.
+			if ( !langUtils.isArray( plugins ) ) {
+				plugins = plugins.split( ',' );
+			}
+
+			plugins.push( creatorName );
+
+			return that.plugins.load( plugins );
 		}
 
 		function initPlugins( loadedPlugins ) {
@@ -109,58 +120,13 @@ export default class Editor extends Model {
 			}, Promise.resolve() );
 		}
 
-		function findCreators() {
-			for ( let plugin of that.plugins ) {
-				if ( plugin instanceof Creator ) {
-					that._creators.set( plugin.name, plugin );
-				}
-			}
-		}
-
 		function fireCreator() {
-			// Take the name of the creator to use (config or any of the registered ones).
-			const creatorName = config.creator && ( 'creator-' + config.creator );
-			let creator;
-
-			if ( creatorName ) {
-				// Take the registered class for the given creator name.
-				creator = that._creators.get( creatorName );
-			} else if ( that._creators.size > 1 ) {
-				/**
-				 * The `config.creator` option was not defined.
-				 *
-				 * This error is thrown when more than one creator is available and the configuration does
-				 * not specify which one to use.
-				 *
-				 * @error editor-undefined-creator
-				 */
-				throw new CKEditorError( 'editor-undefined-creator: The config.creator option was not defined.' );
-			} else {
-				creator = utils.nth( 0, that._creators.values() );
-			}
-
-			if ( !creator ) {
-				/**
-				 * The creator has not been found.
-				 *
-				 * * If `creatorName` is defined it means that `config.creator` was configured, but such
-				 * plugin does not exist or it does not implement a creator.
-				 * * If `creatorName` is undefined it means that `config.creator` was not configured and
-				 * that none of the loaded plugins implement a creator.
-				 *
-				 * @error editor-creator-404
-				 * @param {String} creatorName
-				 */
-				throw new CKEditorError(
-					'editor-creator-404: The creator has not been found.',
-					{ creatorName: creatorName }
-				);
-			}
-
-			that._creator = creator;
+			// We can always get the creator by its name because config.creator (which is requried) is passed
+			// to PluginCollection.load().
+			that._creator = that.plugins.get( creatorName );
 
 			// Finally fire the creator. It may be asynchronous, returning a promise.
-			return creator.create();
+			return that._creator.create();
 		}
 	}
 
@@ -189,4 +155,12 @@ export default class Editor extends Model {
  * perform the clean-up in any plugin.
  *
  * @event destroy
+ */
+
+/**
+ * @cfg {String[]} features
+ */
+
+/**
+ * @cfg {String} creator
  */
