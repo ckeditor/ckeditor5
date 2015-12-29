@@ -11,10 +11,10 @@
 const getNodesAndText = bender.tools.treemodel.getNodesAndText;
 
 const modules = bender.amd.require(
-	'treemodel/document',
-	'treemodel/position',
-	'treemodel/range',
-	'treemodel/element'
+	'core/treemodel/document',
+	'core/treemodel/position',
+	'core/treemodel/range',
+	'core/treemodel/element'
 );
 
 describe( 'Batch', () => {
@@ -23,10 +23,10 @@ describe( 'Batch', () => {
 	let doc, root, div, p, batch, chain, range;
 
 	before( () => {
-		Document = modules[ 'treemodel/document' ];
-		Position = modules[ 'treemodel/position' ];
-		Range = modules[ 'treemodel/range' ];
-		Element = modules[ 'treemodel/element' ];
+		Document = modules[ 'core/treemodel/document' ];
+		Position = modules[ 'core/treemodel/position' ];
+		Range = modules[ 'core/treemodel/range' ];
+		Element = modules[ 'core/treemodel/element' ];
 	} );
 
 	beforeEach( () => {

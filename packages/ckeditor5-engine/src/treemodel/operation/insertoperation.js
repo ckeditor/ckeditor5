@@ -5,71 +5,64 @@
 
 'use strict';
 
-CKEDITOR.define( [
-	'treemodel/operation/operation',
-	'treemodel/nodelist',
-	'treemodel/position',
-	'treemodel/range',
-	'treemodel/operation/removeoperation'
-], ( Operation, NodeList, Position, Range ) => {
+import Operation from './operation.js';
+import NodeList from '../nodelist.js';
+import Position from '../position.js';
+import Range from '../range.js';
+import RemoveOperation from './removeoperation.js';
+
+/**
+ * Operation to insert list of nodes on the given position in the tree data model.
+ *
+ * @class treeModel.operation.InsertOperation
+ */
+export default class InsertOperation extends Operation {
 	/**
-	 * Operation to insert list of nodes on the given position in the tree data model.
+	 * Creates an insert operation.
 	 *
-	 * @class treeModel.operation.InsertOperation
+	 * @param {treeModel.Position} position Position of insertion.
+	 * @param {treeModel.Node|treeModel.Text|treeModel.NodeList|String|Iterable} nodes The list of nodes to be inserted.
+	 * List of nodes can be any type accepted by the {@link treeModel.NodeList} constructor.
+	 * @param {Number} baseVersion {@link treeModel.Document#version} on which operation can be applied.
+	 * @constructor
 	 */
-	class InsertOperation extends Operation {
+	constructor( position, nodes, baseVersion ) {
+		super( baseVersion );
+
 		/**
-		 * Creates an insert operation.
+		 * Position of insertion.
 		 *
-		 * @param {treeModel.Position} position Position of insertion.
-		 * @param {treeModel.Node|treeModel.Text|treeModel.NodeList|String|Iterable} nodes The list of nodes to be inserted.
-		 * List of nodes can be any type accepted by the {@link treeModel.NodeList} constructor.
-		 * @param {Number} baseVersion {@link treeModel.Document#version} on which operation can be applied.
-		 * @constructor
+		 * @readonly
+		 * @type {treeModel.Position}
 		 */
-		constructor( position, nodes, baseVersion ) {
-			super( baseVersion );
+		this.position = Position.createFromPosition( position );
 
-			/**
-			 * Position of insertion.
-			 *
-			 * @readonly
-			 * @type {treeModel.Position}
-			 */
-			this.position = Position.createFromPosition( position );
-
-			/**
-			 * List of nodes to insert.
-			 *
-			 * @readonly
-			 * @type {treeModel.NodeList}
-			 */
-			this.nodeList = new NodeList( nodes );
-		}
-
-		get type() {
-			return 'insert';
-		}
-
-		clone() {
-			return new InsertOperation( this.position, this.nodeList, this.baseVersion );
-		}
-
-		getReversed() {
-			// Because of circular dependencies we need to re-require remove operation here.
-			const RemoveOperation = CKEDITOR.require( 'treemodel/operation/removeoperation' );
-
-			return new RemoveOperation( this.position, this.nodeList.length, this.baseVersion + 1 );
-		}
-
-		_execute() {
-			this.position.parent.insertChildren( this.position.offset, this.nodeList );
-
-			return {
-				range: Range.createFromPositionAndShift( this.position, this.nodeList.length )
-			};
-		}
+		/**
+		 * List of nodes to insert.
+		 *
+		 * @readonly
+		 * @type {treeModel.NodeList}
+		 */
+		this.nodeList = new NodeList( nodes );
 	}
 
-	return InsertOperation;
-} );
+	get type() {
+		return 'insert';
+	}
+
+	clone() {
+		return new InsertOperation( this.position, this.nodeList, this.baseVersion );
+	}
+
+	getReversed() {
+		return new RemoveOperation( this.position, this.nodeList.length, this.baseVersion + 1 );
+	}
+
+	_execute() {
+		this.position.parent.insertChildren( this.position.offset, this.nodeList );
+
+		return {
+			range: Range.createFromPositionAndShift( this.position, this.nodeList.length )
+		};
+	}
+}

@@ -8,18 +8,18 @@
 'use strict';
 
 const modules = bender.amd.require(
-	'treemodel/batch',
-	'treemodel/delta/delta',
-	'ckeditorerror'
+	'core/treemodel/batch',
+	'core/treemodel/delta/delta',
+	'core/ckeditorerror'
 );
 
 describe( 'Batch', () => {
 	let Batch, Delta, CKEditorError;
 
 	before( () => {
-		Batch = modules[ 'treemodel/batch' ];
-		Delta = modules[ 'treemodel/delta/delta' ];
-		CKEditorError = modules.ckeditorerror;
+		Batch = modules[ 'core/treemodel/batch' ];
+		Delta = modules[ 'core/treemodel/delta/delta' ];
+		CKEditorError = modules[ 'core/ckeditorerror' ];
 	} );
 
 	it( 'should have registered basic methods', () => {

@@ -9,27 +9,27 @@
 'use strict';
 
 const modules = bender.amd.require(
-	'treemodel/document',
-	'treemodel/node',
-	'treemodel/nodelist',
-	'treemodel/operation/insertoperation',
-	'treemodel/operation/removeoperation',
-	'treemodel/position',
-	'treemodel/character',
-	'treemodel/nodelist'
+	'core/treemodel/document',
+	'core/treemodel/node',
+	'core/treemodel/nodelist',
+	'core/treemodel/operation/insertoperation',
+	'core/treemodel/operation/removeoperation',
+	'core/treemodel/position',
+	'core/treemodel/character',
+	'core/treemodel/nodelist'
 );
 
 describe( 'InsertOperation', () => {
 	let Document, Node, NodeList, InsertOperation, RemoveOperation, Position, Character;
 
 	before( () => {
-		Document = modules[ 'treemodel/document' ];
-		Node = modules[ 'treemodel/node' ];
-		NodeList = modules[ 'treemodel/nodelist' ];
-		InsertOperation = modules[ 'treemodel/operation/insertoperation' ];
-		RemoveOperation = modules[ 'treemodel/operation/removeoperation' ];
-		Position = modules[ 'treemodel/position' ];
-		Character = modules[ 'treemodel/character' ];
+		Document = modules[ 'core/treemodel/document' ];
+		Node = modules[ 'core/treemodel/node' ];
+		NodeList = modules[ 'core/treemodel/nodelist' ];
+		InsertOperation = modules[ 'core/treemodel/operation/insertoperation' ];
+		RemoveOperation = modules[ 'core/treemodel/operation/removeoperation' ];
+		Position = modules[ 'core/treemodel/position' ];
+		Character = modules[ 'core/treemodel/character' ];
 	} );
 
 	let doc, root;

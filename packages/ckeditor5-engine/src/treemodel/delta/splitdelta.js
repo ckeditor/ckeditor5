@@ -5,67 +5,63 @@
 
 'use strict';
 
-CKEDITOR.define( [
-	'treemodel/delta/delta',
-	'treemodel/delta/register',
-	'treemodel/position',
-	'treemodel/element',
-	'treemodel/operation/insertoperation',
-	'treemodel/operation/moveoperation',
-	'ckeditorerror'
-], ( Delta, register, Position, Element, InsertOperation, MoveOperation, CKEditorError ) => {
-	/**
-	 * To provide specific OT behavior and better collisions solving, the {@link treeModel.Batch#split} method
-	 * uses `SplitDelta` class which inherits from the `Delta` class and may overwrite some methods.
-	 *
-	 * @class treeModel.delta.SplitDelta
-	 */
-	class SplitDelta extends Delta {}
+import Delta from './delta.js';
+import register from './register.js';
+import Position from '../position.js';
+import Element from '../element.js';
+import InsertOperation from '../operation/insertoperation.js';
+import MoveOperation from '../operation/moveoperation.js';
+import CKEditorError from '../../ckeditorerror.js';
 
-	/**
-	 * Splits a node at the given position.
-	 *
-	 * This cannot be a position inside the root element. The `batch-split-root` error will be thrown if
-	 * you try to split the root element.
-	 *
-	 * @chainable
-	 * @method split
-	 * @memberOf treeModel.Batch
-	 * @param {treeModel.Position} position Position of split.
-	 */
-	register( 'split', function( position ) {
-		const delta = new SplitDelta();
-		const splitElement = position.parent;
+/**
+ * To provide specific OT behavior and better collisions solving, the {@link treeModel.Batch#split} method
+ * uses `SplitDelta` class which inherits from the `Delta` class and may overwrite some methods.
+ *
+ * @class treeModel.delta.SplitDelta
+ */
+export default class SplitDelta extends Delta {}
 
-		if ( !splitElement.parent ) {
-			/**
-			 * Root element can not be split.
-			 *
-			 * @error batch-split-root
-			 */
-			throw new CKEditorError( 'batch-split-root: Root element can not be split.' );
-		}
+/**
+ * Splits a node at the given position.
+ *
+ * This cannot be a position inside the root element. The `batch-split-root` error will be thrown if
+ * you try to split the root element.
+ *
+ * @chainable
+ * @method split
+ * @memberOf treeModel.Batch
+ * @param {treeModel.Position} position Position of split.
+ */
+register( 'split', function( position ) {
+	const delta = new SplitDelta();
+	const splitElement = position.parent;
 
-		const copy = new Element( splitElement.name, splitElement.getAttrs() );
-		const insert = new InsertOperation( Position.createAfter( splitElement ), copy, this.doc.version );
+	if ( !splitElement.parent ) {
+		/**
+		 * Root element can not be split.
+		 *
+		 * @error batch-split-root
+		 */
+		throw new CKEditorError( 'batch-split-root: Root element can not be split.' );
+	}
 
-		this.doc.applyOperation( insert );
-		delta.addOperation( insert );
+	const copy = new Element( splitElement.name, splitElement.getAttrs() );
+	const insert = new InsertOperation( Position.createAfter( splitElement ), copy, this.doc.version );
 
-		const move = new MoveOperation(
-			position,
-			splitElement.getChildCount() - position.offset,
-			Position.createFromParentAndOffset( copy, 0 ),
-			this.doc.version
-		);
+	this.doc.applyOperation( insert );
+	delta.addOperation( insert );
 
-		this.doc.applyOperation( move );
-		delta.addOperation( move );
+	const move = new MoveOperation(
+		position,
+		splitElement.getChildCount() - position.offset,
+		Position.createFromParentAndOffset( copy, 0 ),
+		this.doc.version
+	);
 
-		this.addDelta( delta );
+	this.doc.applyOperation( move );
+	delta.addOperation( move );
 
-		return this;
-	} );
+	this.addDelta( delta );
 
-	return SplitDelta;
+	return this;
 } );

@@ -5,32 +5,30 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'treemodel/node' ], ( Node ) => {
+import Node from './node.js';
+
+/**
+ * Data structure for character stored in the tree data model.
+ *
+ * @class treeModel.Character
+ */
+export default class Character extends Node {
 	/**
-	 * Data structure for character stored in the tree data model.
+	 * Creates character linear item.
 	 *
-	 * @class treeModel.Character
+	 * @param {String} character Described character.
+	 * @param {Iterable} attrs Iterable collection of {@link treeModel.Attribute attributes}.
+	 * @constructor
 	 */
-	class Character extends Node {
+	constructor( character, attrs ) {
+		super( attrs );
+
 		/**
-		 * Creates character linear item.
+		 * Described character.
 		 *
-		 * @param {String} character Described character.
-		 * @param {Iterable} attrs Iterable collection of {@link treeModel.Attribute attributes}.
-		 * @constructor
+		 * @readonly
+		 * @property {String} character
 		 */
-		constructor( character, attrs ) {
-			super( attrs );
-
-			/**
-			 * Described character.
-			 *
-			 * @readonly
-			 * @property {String} character
-			 */
-			this.character = character;
-		}
+		this.character = character;
 	}
-
-	return Character;
-} );
+}

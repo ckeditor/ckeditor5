@@ -7,8 +7,7 @@
 
 // Register method exposed for deltas, which needs only this method, to make code simpler, more beautiful and, first of
 // all, to solve circular dependencies.
-CKEDITOR.define( [
-	'treemodel/delta/batch-base'
-], ( Batch ) => {
-	return Batch.register;
-} );
+
+import Batch from './batch-base.js';
+
+export default Batch.register;

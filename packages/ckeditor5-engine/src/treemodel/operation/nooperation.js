@@ -5,33 +5,29 @@
 
 'use strict';
 
-CKEDITOR.define( [
-	'treemodel/operation/operation'
-], ( Operation ) => {
-	/**
-	 * Operation which is doing nothing ("empty operation", "do-nothing operation", "noop").
-	 * This is an operation, which when executed does not change the tree model.
-	 * It still has some parameters defined for transformation purposes.
-	 *
-	 * In most cases this operation is a result of transforming operations. When transformation returns
-	 * {@link treeModel.operation.NoOperation} it means that changes done by the transformed operation
-	 * have already been applied.
-	 *
-	 * @class treeModel.operation.NoOperation
-	 */
-	class NoOperation extends Operation {
-		clone() {
-			return new NoOperation( this.baseVersion );
-		}
+import Operation from './operation.js';
 
-		getReversed() {
-			return new NoOperation( this.baseVersion + 1 );
-		}
-
-		_execute() {
-			// Do nothing.
-		}
+/**
+ * Operation which is doing nothing ("empty operation", "do-nothing operation", "noop").
+ * This is an operation, which when executed does not change the tree model.
+ * It still has some parameters defined for transformation purposes.
+ *
+ * In most cases this operation is a result of transforming operations. When transformation returns
+ * {@link treeModel.operation.NoOperation} it means that changes done by the transformed operation
+ * have already been applied.
+ *
+ * @class treeModel.operation.NoOperation
+ */
+export default class NoOperation extends Operation {
+	clone() {
+		return new NoOperation( this.baseVersion );
 	}
 
-	return NoOperation;
-} );
+	getReversed() {
+		return new NoOperation( this.baseVersion + 1 );
+	}
+
+	_execute() {
+		// Do nothing.
+	}
+}

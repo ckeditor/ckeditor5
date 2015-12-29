@@ -5,38 +5,34 @@
 
 'use strict';
 
-CKEDITOR.define( [], () => {
+/**
+ * Data structure for text with attributes. Note that the `Text` is not a {@link treeModel.Node},
+ * because it will never be part of the document tree. {@link treeModel.Character is a node}.
+ *
+ * @class treeModel.Text
+ */
+export default class Text {
 	/**
-	 * Data structure for text with attributes. Note that the `Text` is not a {@link treeModel.Node},
-	 * because it will never be part of the document tree. {@link treeModel.Character is a node}.
+	 * Creates a text with attributes.
 	 *
-	 * @class treeModel.Text
+	 * @param {String} text Described text.
+	 * @param {Iterable} attrs Iterable collection of {@link treeModel.Attribute attributes}.
+	 * @constructor
 	 */
-	class Text {
+	constructor( text, attrs ) {
 		/**
-		 * Creates a text with attributes.
+		 * Text.
 		 *
-		 * @param {String} text Described text.
-		 * @param {Iterable} attrs Iterable collection of {@link treeModel.Attribute attributes}.
-		 * @constructor
+		 * @readonly
+		 * @property {String}
 		 */
-		constructor( text, attrs ) {
-			/**
-			 * Text.
-			 *
-			 * @readonly
-			 * @property {String}
-			 */
-			this.text = text;
+		this.text = text;
 
-			/**
-			 * Iterable collection of {@link treeModel.Attribute attributes}.
-			 *
-			 * @property {Iterable}
-			 */
-			this.attrs = attrs;
-		}
+		/**
+		 * Iterable collection of {@link treeModel.Attribute attributes}.
+		 *
+		 * @property {Iterable}
+		 */
+		this.attrs = attrs;
 	}
-
-	return Text;
-} );
+}

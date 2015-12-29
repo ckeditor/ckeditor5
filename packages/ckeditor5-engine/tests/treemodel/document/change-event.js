@@ -8,17 +8,17 @@
 'use strict';
 
 const modules = bender.amd.require(
-	'treemodel/document',
-	'treemodel/element',
-	'treemodel/rootelement',
-	'treemodel/attribute',
-	'treemodel/position',
-	'treemodel/range',
-	'treemodel/operation/attributeoperation',
-	'treemodel/operation/insertoperation',
-	'treemodel/operation/moveoperation',
-	'treemodel/operation/reinsertoperation',
-	'treemodel/operation/removeoperation'
+	'core/treemodel/document',
+	'core/treemodel/element',
+	'core/treemodel/rootelement',
+	'core/treemodel/attribute',
+	'core/treemodel/position',
+	'core/treemodel/range',
+	'core/treemodel/operation/attributeoperation',
+	'core/treemodel/operation/insertoperation',
+	'core/treemodel/operation/moveoperation',
+	'core/treemodel/operation/reinsertoperation',
+	'core/treemodel/operation/removeoperation'
 );
 
 describe( 'Document change event', () => {
@@ -26,18 +26,18 @@ describe( 'Document change event', () => {
 	let AttributeOperation, InsertOperation, MoveOperation, ReinsertOperation, RemoveOperation, Attribute;
 
 	before( () => {
-		Document = modules[ 'treemodel/document' ];
-		Element = modules[ 'treemodel/element' ];
-		RootElement = modules[ 'treemodel/rootelement' ];
-		Attribute = modules[ 'treemodel/attribute' ];
-		Position = modules[ 'treemodel/position' ];
-		Range = modules[ 'treemodel/range' ];
+		Document = modules[ 'core/treemodel/document' ];
+		Element = modules[ 'core/treemodel/element' ];
+		RootElement = modules[ 'core/treemodel/rootelement' ];
+		Attribute = modules[ 'core/treemodel/attribute' ];
+		Position = modules[ 'core/treemodel/position' ];
+		Range = modules[ 'core/treemodel/range' ];
 
-		InsertOperation = modules[ 'treemodel/operation/insertoperation' ];
-		AttributeOperation = modules[ 'treemodel/operation/attributeoperation' ];
-		MoveOperation = modules[ 'treemodel/operation/moveoperation' ];
-		ReinsertOperation = modules[ 'treemodel/operation/reinsertoperation' ];
-		RemoveOperation = modules[ 'treemodel/operation/removeoperation' ];
+		InsertOperation = modules[ 'core/treemodel/operation/insertoperation' ];
+		AttributeOperation = modules[ 'core/treemodel/operation/attributeoperation' ];
+		MoveOperation = modules[ 'core/treemodel/operation/moveoperation' ];
+		ReinsertOperation = modules[ 'core/treemodel/operation/reinsertoperation' ];
+		RemoveOperation = modules[ 'core/treemodel/operation/removeoperation' ];
 	} );
 
 	let doc, root, graveyard, types, changes;

@@ -12,16 +12,16 @@
 const getIteratorCount = bender.tools.core.getIteratorCount;
 
 const modules = bender.amd.require(
-	'treemodel/document',
-	'treemodel/attribute',
-	'treemodel/element',
-	'treemodel/range',
-	'treemodel/position',
-	'treemodel/liverange',
-	'treemodel/selection',
-	'treemodel/operation/insertoperation',
-	'treemodel/operation/moveoperation',
-	'ckeditorerror'
+	'core/treemodel/document',
+	'core/treemodel/attribute',
+	'core/treemodel/element',
+	'core/treemodel/range',
+	'core/treemodel/position',
+	'core/treemodel/liverange',
+	'core/treemodel/selection',
+	'core/treemodel/operation/insertoperation',
+	'core/treemodel/operation/moveoperation',
+	'core/ckeditorerror'
 );
 
 describe( 'Selection', () => {
@@ -29,16 +29,16 @@ describe( 'Selection', () => {
 	let attrFooBar;
 
 	before( () => {
-		Document = modules[ 'treemodel/document' ];
-		Attribute = modules[ 'treemodel/attribute' ];
-		Element = modules[ 'treemodel/element' ];
-		Range = modules[ 'treemodel/range' ];
-		Position = modules[ 'treemodel/position' ];
-		LiveRange = modules[ 'treemodel/liverange' ];
-		Selection = modules[ 'treemodel/selection' ];
-		InsertOperation = modules[ 'treemodel/operation/insertoperation' ];
-		MoveOperation = modules[ 'treemodel/operation/moveoperation' ];
-		CKEditorError = modules.ckeditorerror;
+		Document = modules[ 'core/treemodel/document' ];
+		Attribute = modules[ 'core/treemodel/attribute' ];
+		Element = modules[ 'core/treemodel/element' ];
+		Range = modules[ 'core/treemodel/range' ];
+		Position = modules[ 'core/treemodel/position' ];
+		LiveRange = modules[ 'core/treemodel/liverange' ];
+		Selection = modules[ 'core/treemodel/selection' ];
+		InsertOperation = modules[ 'core/treemodel/operation/insertoperation' ];
+		MoveOperation = modules[ 'core/treemodel/operation/moveoperation' ];
+		CKEditorError = modules[ 'core/ckeditorerror' ];
 
 		attrFooBar = new Attribute( 'foo', 'bar' );
 	} );

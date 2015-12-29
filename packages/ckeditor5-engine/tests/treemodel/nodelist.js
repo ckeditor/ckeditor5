@@ -8,20 +8,20 @@
 'use strict';
 
 const modules = bender.amd.require(
-	'treemodel/nodelist',
-	'treemodel/character',
-	'treemodel/text',
-	'treemodel/attribute'
+	'core/treemodel/nodelist',
+	'core/treemodel/character',
+	'core/treemodel/text',
+	'core/treemodel/attribute'
 );
 
 describe( 'NodeList', () => {
 	let NodeList, Character, Text, Attribute;
 
 	before( () => {
-		NodeList = modules[ 'treemodel/nodelist' ];
-		Character = modules[ 'treemodel/character' ];
-		Text = modules[ 'treemodel/text' ];
-		Attribute = modules[ 'treemodel/attribute' ];
+		NodeList = modules[ 'core/treemodel/nodelist' ];
+		Character = modules[ 'core/treemodel/character' ];
+		Text = modules[ 'core/treemodel/text' ];
+		Attribute = modules[ 'core/treemodel/attribute' ];
 	} );
 
 	describe( 'constructor', () => {
