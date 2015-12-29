@@ -10,7 +10,7 @@
 const modules = bender.amd.require( 'ckeditor', 'core/editor', 'core/config' );
 
 let content = document.getElementById( 'content' );
-let editorConfig = { plugins: 'creator-test' };
+let editorConfig = { creator: 'creator-test' };
 
 bender.tools.createSinonSandbox();
 bender.tools.core.defineEditorCreatorMock( 'test' );
@@ -52,7 +52,7 @@ describe( 'create', () => {
 	} );
 
 	it( 'should set configurations on the new editor', () => {
-		return CKEDITOR.create( content, { test: 1, plugins: 'creator-test' } ).then( ( editor ) => {
+		return CKEDITOR.create( content, { test: 1, creator: 'creator-test' } ).then( ( editor ) => {
 			expect( editor.config.test ).to.equal( 1 );
 		} );
 	} );
