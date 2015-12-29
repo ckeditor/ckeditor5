@@ -5,11 +5,11 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'ckeditor', 'ckeditor5/load' );
-let CKEDITOR, load;
+const modules = bender.amd.require( 'ckeditor5/path', 'ckeditor5/load' );
+let load, path;
 
 before( () => {
-	CKEDITOR = modules.ckeditor;
+	path = modules[ 'ckeditor5/path' ];
 	load = modules[ 'ckeditor5/load' ];
 } );
 
@@ -17,12 +17,12 @@ describe( 'load()', () => {
 	it( 'loads ckeditor.js', () => {
 		return load( 'ckeditor.js' )
 			.then( ( CKEDITORModule ) => {
-				expect( CKEDITORModule.default ).to.equal( CKEDITOR );
+				expect( CKEDITORModule.default ).to.have.property( 'create' );
 			} );
 	} );
 
 	it( 'loads core/editor', () => {
-		return load( CKEDITOR.getModulePath( 'core/editor' ) )
+		return load( path.getModulePath( 'core/editor' ) )
 			.then( ( EditorModule ) => {
 				expect( EditorModule.default ).to.be.a( 'function' );
 			} );

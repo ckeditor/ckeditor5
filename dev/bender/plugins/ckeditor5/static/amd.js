@@ -18,7 +18,7 @@
 		 * generating a base path for that file, taking into account whether a Bender job is being run
 		 * or a simple test.
 		 *
-		 * The name should be given in a simplified features naming convention. See {@link CKEDITOR#getModulePath}
+		 * The name should be given in a simplified features naming convention. See {@link ckeditor5/path#getModulePath}
 		 * for more details.
 		 *
 		 * @param {String} name The name of the module.
