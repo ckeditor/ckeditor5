@@ -86,7 +86,7 @@ describe( 'transform', () => {
 
 			expected = {
 				type: InsertOperation,
-				position: position.clone(),
+				position: Position.createFromPosition( position ),
 				baseVersion: baseVersion + 1
 			};
 		} );
@@ -189,12 +189,8 @@ describe( 'transform', () => {
 
 		describe( 'by AttributeOperation', () => {
 			it( 'no position update', () => {
-				let rangeStart = position.clone();
-				let rangeEnd = position.clone();
-				rangeEnd.offset += 2;
-
 				let transformBy = new AttributeOperation(
-					new Range( rangeStart, rangeEnd ),
+					Range.createFromPositionAndShift( position, 2 ),
 					null,
 					new Attribute( 'foo', 'bar' ),
 					baseVersion
@@ -437,7 +433,7 @@ describe( 'transform', () => {
 
 				op = new AttributeOperation( range, oldAttr, newAttr, baseVersion );
 
-				expected.range = new Range( start.clone(), end.clone() );
+				expected.range = new Range( start, end );
 			} );
 
 			describe( 'by InsertOperation', () => {
@@ -552,7 +548,7 @@ describe( 'transform', () => {
 			describe( 'by AttributeOperation', () => {
 				it( 'attributes have different key: no operation update', () => {
 					let transformBy = new AttributeOperation(
-						range.clone(),
+						Range.createFromRange( range ),
 						new Attribute( 'abc', true ),
 						new Attribute( 'abc', false ),
 						baseVersion
@@ -566,7 +562,7 @@ describe( 'transform', () => {
 
 				it( 'attributes set same value: no operation update', () => {
 					let transformBy = new AttributeOperation(
-						range.clone(),
+						Range.createFromRange( range ),
 						oldAttr,
 						newAttr,
 						baseVersion
@@ -1076,7 +1072,7 @@ describe( 'transform', () => {
 
 				op = new AttributeOperation( range, oldAttr, newAttr, baseVersion );
 
-				expected.range = new Range( start.clone(), end.clone() );
+				expected.range = new Range( start, end );
 			} );
 
 			describe( 'by InsertOperation', () => {
@@ -1317,15 +1313,15 @@ describe( 'transform', () => {
 			targetPosition = new Position( root, [ 3, 3, 3 ] );
 			howMany = 2;
 
-			rangeEnd = sourcePosition.clone();
+			rangeEnd = Position.createFromPosition( sourcePosition );
 			rangeEnd.offset += howMany;
 
 			op = new MoveOperation( sourcePosition, howMany, targetPosition, baseVersion );
 
 			expected = {
 				type: MoveOperation,
-				sourcePosition: sourcePosition.clone(),
-				targetPosition: targetPosition.clone(),
+				sourcePosition: Position.createFromPosition( sourcePosition ),
+				targetPosition: Position.createFromPosition( targetPosition ),
 				howMany: howMany,
 				baseVersion: baseVersion + 1
 			};
@@ -1898,7 +1894,7 @@ describe( 'transform', () => {
 
 			it( 'range is same as transforming range and is important: convert to NoOperation', () => {
 				let transformBy = new MoveOperation(
-					op.sourcePosition.clone(),
+					op.sourcePosition,
 					op.howMany,
 					new Position( root, [ 4, 1, 0 ] ),
 					baseVersion
@@ -1915,7 +1911,7 @@ describe( 'transform', () => {
 
 			it( 'range is same as transforming range and is less important: update range path', () => {
 				let transformBy = new MoveOperation(
-					op.sourcePosition.clone(),
+					op.sourcePosition,
 					op.howMany,
 					new Position( root, [ 4, 1, 0 ] ),
 					baseVersion

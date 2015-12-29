@@ -184,7 +184,7 @@ describe( 'AttributeOperation', () => {
 
 		expect( reverse ).to.be.an.instanceof( AttributeOperation );
 		expect( reverse.baseVersion ).to.equal( 1 );
-		expect( reverse.range ).to.equal( range );
+		expect( reverse.range.isEqual( range ) ).to.be.true;
 		expect( reverse.oldAttr ).to.equal( newAttr );
 		expect( reverse.newAttr ).to.equal( oldAttr );
 	} );

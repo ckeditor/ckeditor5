@@ -7,10 +7,11 @@
 
 CKEDITOR.define( [
 	'treemodel/operation/operation',
+	'treemodel/position',
 	'treemodel/range',
 	'ckeditorerror',
 	'utils'
-], ( Operation, Range, CKEditorError, utils ) => {
+], ( Operation, Position, Range, CKEditorError, utils ) => {
 	/**
 	 * Operation to move list of subsequent nodes from one position in the document to another.
 	 *
@@ -20,9 +21,9 @@ CKEDITOR.define( [
 		/**
 		 * Creates a move operation.
 		 *
-		 * @param {treeModel.Position} sourcePosition Position before the first element to move.
+		 * @param {treeModel.Position} sourcePosition Position before the first node to move.
 		 * @param {Number} howMany How many consecutive nodes to move, starting from `sourcePosition`.
-		 * @param {treeModel.Position} targetPosition Position where moved elements will be inserted.
+		 * @param {treeModel.Position} targetPosition Position where moved nodes will be inserted.
 		 * @param {Number} baseVersion {@link treeModel.Document#version} on which operation can be applied.
 		 * @constructor
 		 */
@@ -34,7 +35,7 @@ CKEDITOR.define( [
 			 *
 			 * @type {treeModel.Position}
 			 */
-			this.sourcePosition = sourcePosition;
+			this.sourcePosition = Position.createFromPosition( sourcePosition );
 
 			/**
 			 * How many nodes to move.
@@ -48,7 +49,7 @@ CKEDITOR.define( [
 			 *
 			 * @type {treeModel.Position}
 			 */
-			this.targetPosition = targetPosition;
+			this.targetPosition = Position.createFromPosition( targetPosition );
 		}
 
 		get type() {
@@ -56,11 +57,11 @@ CKEDITOR.define( [
 		}
 
 		clone() {
-			return new MoveOperation( this.sourcePosition.clone(), this.howMany, this.targetPosition.clone(), this.baseVersion );
+			return new this.constructor( this.sourcePosition, this.howMany, this.targetPosition, this.baseVersion );
 		}
 
 		getReversed() {
-			return new MoveOperation( this.targetPosition.clone(), this.howMany, this.sourcePosition.clone(), this.baseVersion + 1 );
+			return new this.constructor( this.targetPosition, this.howMany, this.sourcePosition, this.baseVersion + 1 );
 		}
 
 		_execute() {

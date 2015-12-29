@@ -58,6 +58,5 @@
 	"disallowNewlineBeforeBlockStatements": true,
 	"validateLineBreaks": "LF",
 	"validateQuoteMarks": "'",
-	"validateIndentation": "\t",
-	"safeContextKeyword": [ "that" ]
+	"validateIndentation": "\t"
 }

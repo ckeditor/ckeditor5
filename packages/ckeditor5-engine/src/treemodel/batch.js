@@ -12,10 +12,14 @@
 CKEDITOR.define( [
 	'treemodel/delta/batch-base',
 	'treemodel/delta/insertdelta',
+	'treemodel/delta/weakinsertdelta',
+	'treemodel/delta/movedelta',
 	'treemodel/delta/removedelta',
 	'treemodel/delta/attributedelta',
 	'treemodel/delta/splitdelta',
-	'treemodel/delta/mergedelta'
+	'treemodel/delta/mergedelta',
+	'treemodel/delta/wrapdelta',
+	'treemodel/delta/unwrapdelta'
 ], ( Batch ) => {
 	return Batch;
 } );

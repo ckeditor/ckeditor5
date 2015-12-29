@@ -9,38 +9,45 @@
 
 const modules = bender.amd.require(
 	'treemodel/document',
-	'treemodel/position' );
+	'treemodel/element',
+	'treemodel/position',
+	'treemodel/delta/insertdelta'
+);
 
 describe( 'Batch', () => {
-	let Document, Position;
-
-	let doc, root;
+	let Document, Element, Position, InsertDelta;
 
 	before( () => {
 		Document = modules[ 'treemodel/document' ];
+		Element = modules[ 'treemodel/element' ];
 		Position = modules[ 'treemodel/position' ];
+		InsertDelta = modules[ 'treemodel/delta/insertdelta' ];
 	} );
+
+	let doc, root, batch, p, ul, chain;
 
 	beforeEach( () => {
 		doc = new Document();
 		root = doc.createRoot( 'root' );
+		root.insertChildren( 0, 'abc' );
+
+		batch = doc.batch();
+
+		p = new Element( 'p' );
+		ul = new Element( 'ul' );
+
+		chain = batch.insert( new Position( root, [ 2 ] ), [ p, ul ] );
 	} );
 
-	it( 'should insert text', () => {
-		const position = new Position( root, [ 0 ] );
-		doc.batch().insert( position, 'foo' );
+	describe( 'insert', () => {
+		it( 'should insert given nodes at given position', () => {
+			expect( root.getChildCount() ).to.equal( 5 );
+			expect( root.getChild( 2 ) ).to.equal( p );
+			expect( root.getChild( 3 ) ).to.equal( ul );
+		} );
 
-		expect( root.getChildCount() ).to.equal( 3 );
-		expect( root.getChild( 0 ).character ).to.equal( 'f' );
-		expect( root.getChild( 1 ).character ).to.equal( 'o' );
-		expect( root.getChild( 2 ).character ).to.equal( 'o' );
-	} );
-
-	it( 'should be chainable', () => {
-		const position = new Position( root, [ 0 ] );
-		const batch = doc.batch();
-
-		const chain = batch.insert( position, 'foo' );
-		expect( chain ).to.equal( batch );
+		it( 'should be chainable', () => {
+			expect( chain ).to.equal( batch );
+		} );
 	} );
 } );

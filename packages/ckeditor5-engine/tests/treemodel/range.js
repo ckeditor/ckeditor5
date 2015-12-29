@@ -26,29 +26,47 @@ describe( 'Range', () => {
 		Document = modules[ 'treemodel/document' ];
 	} );
 
-	let range, start, end, root;
+	let range, start, end, root, otherRoot;
 
 	beforeEach( () => {
 		let doc = new Document();
 		root = doc.createRoot( 'root' );
+		otherRoot = doc.createRoot( 'otherRoot' );
 
-		start = new Position( root, [ 0 ] );
-		end = new Position( root, [ 1 ] );
+		start = new Position( root, [ 1 ] );
+		end = new Position( root, [ 2 ] );
 
 		range = new Range( start, end );
 	} );
 
 	describe( 'constructor', () => {
 		it( 'should create a range with given positions', () => {
-			expect( range ).to.have.property( 'start' ).that.equal( start );
-			expect( range ).to.have.property( 'end' ).that.equal( end );
+			expect( range.start.isEqual( start ) ).to.be.true;
+			expect( range.end.isEqual( end ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'root', () => {
+		it( 'should be equal to start position root', () => {
+			expect( range.root ).to.equal( start.root );
+		} );
+	} );
+
+	describe( 'isCollapsed', () => {
+		it( 'should be true if range start and end positions are equal', () => {
+			let collapsedRange = new Range( start, start );
+			expect( collapsedRange.isCollapsed ).to.be.true;
+		} );
+
+		it( 'should be false if range start and end positions are not equal', () => {
+			expect( range.isCollapsed ).to.be.false;
 		} );
 	} );
 
 	describe( 'isEqual', () => {
 		it( 'should return true if the ranges are the same', () => {
-			let sameStart = new Position( root, [ 0 ] );
-			let sameEnd = new Position( root, [ 1 ] );
+			let sameStart = Position.createFromPosition( start );
+			let sameEnd = Position.createFromPosition( end );
 
 			let sameRange = new Range( sameStart, sameEnd );
 
@@ -58,12 +76,12 @@ describe( 'Range', () => {
 		it( 'should return false if the start position is different', () => {
 			let range = new Range( start, end );
 
-			let diffStart = new Position( root, [ 1 ] );
-			let sameEnd = new Position( root, [ 1 ] );
+			let diffStart = new Position( root, [ 0 ] );
+			let sameEnd = Position.createFromPosition( end );
 
 			let diffRange = new Range( diffStart, sameEnd );
 
-			expect( range.isEqual( diffRange ) ).to.not.be.true;
+			expect( range.isEqual( diffRange ) ).to.be.false;
 		} );
 
 		it( 'should return false if the end position is different', () => {
@@ -72,7 +90,53 @@ describe( 'Range', () => {
 
 			let diffRange = new Range( sameStart, diffEnd );
 
-			expect( range.isEqual( diffRange ) ).to.not.be.true;
+			expect( range.isEqual( diffRange ) ).to.be.false;
+		} );
+
+		it( 'should return false if ranges are in different roots', () => {
+			let otherRootStart = new Position( otherRoot, start.path.slice() );
+			let otherRootEnd = new Position( otherRoot, end.path.slice() );
+
+			let otherRootRange = new Range( otherRootStart, otherRootEnd );
+
+			expect( range.isEqual( otherRootRange ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'isIntersecting', () => {
+		it( 'should return true if given range is equal', () => {
+			let otherRange = Range.createFromRange( range );
+			expect( range.isIntersecting( otherRange ) ).to.be.true;
+		} );
+
+		it( 'should return true if given range contains this range', () => {
+			let otherRange = new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) );
+			expect( range.isIntersecting( otherRange ) ).to.be.true;
+		} );
+
+		it( 'should return true if given range ends in this range', () => {
+			let otherRange = new Range( new Position( root, [ 0 ] ), new Position( root, [ 1, 4 ] ) );
+			expect( range.isIntersecting( otherRange ) ).to.be.true;
+		} );
+
+		it( 'should return true if given range starts in this range', () => {
+			let otherRange = new Range( new Position( root, [ 1, 4 ] ), new Position( root, [ 3 ] ) );
+			expect( range.isIntersecting( otherRange ) ).to.be.true;
+		} );
+
+		it( 'should return false if given range is fully before this range', () => {
+			let otherRange = new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
+			expect( range.isIntersecting( otherRange ) ).to.be.false;
+		} );
+
+		it( 'should return false if given range is fully after this range', () => {
+			let otherRange = new Range( new Position( root, [ 2 ] ), new Position( root, [ 2, 0 ] ) );
+			expect( range.isIntersecting( otherRange ) ).to.be.false;
+		} );
+
+		it( 'should return false if ranges are in different roots', () => {
+			let otherRange = new Range( new Position( otherRoot, [ 0 ] ), new Position( otherRoot, [ 1, 4 ] ) );
+			expect( range.isIntersecting( otherRange ) ).to.be.false;
 		} );
 	} );
 
@@ -123,9 +187,18 @@ describe( 'Range', () => {
 				expect( range.end.path ).to.deep.equal( [ 1, 2, 7 ] );
 			} );
 		} );
+
+		describe( 'createFromRange', () => {
+			it( 'should create a new instance of Range that is equal to passed range', () => {
+				const clone = Range.createFromRange( range );
+
+				expect( clone ).not.to.be.equal( range ); // clone is not pointing to the same object as position
+				expect( clone.isEqual( range ) ).to.be.true; // but they are equal in the position-sense
+			} );
+		} );
 	} );
 
-	describe( 'getNodes', () => {
+	describe( 'getAllNodes', () => {
 		it( 'should iterate over all nodes which "starts" in the range', () => {
 			let nodes = [];
 
@@ -146,20 +219,11 @@ describe( 'Range', () => {
 				new Position( root, [ 1, 1 ] )
 			);
 
-			for ( let node of range.getNodes() ) {
+			for ( let node of range.getAllNodes() ) {
 				nodes.push( node );
 			}
 
 			expect( nodes ).to.deep.equal( [ b, e2, x ] );
-		} );
-	} );
-
-	describe( 'clone', () => {
-		it( 'should return a new, equal position', () => {
-			const clone = range.clone();
-
-			expect( clone ).not.to.be.equal( range ); // clone is not pointing to the same object as position
-			expect( clone.isEqual( range ) ).to.be.true; // but they are equal in the position-sense
 		} );
 	} );
 
@@ -322,4 +386,97 @@ describe( 'Range', () => {
 			expect( common.end.path ).to.deep.equal( [ 4, 7 ] );
 		} );
 	} );
+
+	describe( 'getMinimalFlatRanges', () => {
+		beforeEach( () => {
+			prepareRichRoot( root );
+		} );
+
+		it( 'should return empty array if range is collapsed', () => {
+			let range = new Range( new Position( root, [ 1, 3 ] ), new Position( root, [ 1, 3 ] ) );
+			let flat = range.getMinimalFlatRanges();
+
+			expect( flat.length ).to.equal( 0 );
+		} );
+
+		it( 'should return empty array if range does not contain any node', () => {
+			let range = new Range( new Position( root, [ 1, 3 ] ), new Position( root, [ 2, 0 ] ) );
+			let flat = range.getMinimalFlatRanges();
+
+			expect( flat.length ).to.equal( 0 );
+		} );
+
+		it( 'should return a minimal set of flat ranges that covers the range (start and end in different sub-trees)', () => {
+			let range = new Range( new Position( root, [ 0, 0, 3 ] ), new Position( root, [ 3, 0, 2 ] ) );
+			let flat = range.getMinimalFlatRanges();
+
+			expect( flat.length ).to.equal( 4 );
+			expect( flat[ 0 ].start.path ).to.deep.equal( [ 0, 0, 3 ] );
+			expect( flat[ 0 ].end.path ).to.deep.equal( [ 0, 0, 5 ] );
+			expect( flat[ 1 ].start.path ).to.deep.equal( [ 0, 1 ] );
+			expect( flat[ 1 ].end.path ).to.deep.equal( [ 0, 2 ] );
+			expect( flat[ 2 ].start.path ).to.deep.equal( [ 1 ] );
+			expect( flat[ 2 ].end.path ).to.deep.equal( [ 3 ] );
+			expect( flat[ 3 ].start.path ).to.deep.equal( [ 3, 0, 0 ] );
+			expect( flat[ 3 ].end.path ).to.deep.equal( [ 3, 0, 2 ] );
+		} );
+
+		it( 'should return a minimal set of flat ranges that covers the range (start.path is prefix of end.path)', () => {
+			let range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 0, 1, 4 ] ) );
+			let flat = range.getMinimalFlatRanges();
+
+			expect( flat.length ).to.equal( 2 );
+			expect( flat[ 0 ].start.path ).to.deep.equal( [ 0, 0 ] );
+			expect( flat[ 0 ].end.path ).to.deep.equal( [ 0, 1 ] );
+			expect( flat[ 1 ].start.path ).to.deep.equal( [ 0, 1, 0 ] );
+			expect( flat[ 1 ].end.path ).to.deep.equal( [ 0, 1, 4 ] );
+		} );
+	} );
+
+	describe( 'getTopLevelNodes', () => {
+		beforeEach( () => {
+			prepareRichRoot( root );
+		} );
+
+		it( 'should iterate over all top-level nodes of this range', () => {
+			let range = new Range( new Position( root, [ 0, 0, 3 ] ), new Position( root, [ 3, 0, 2 ] ) );
+			let nodes = Array.from( range.getTopLevelNodes() );
+			let nodeNames = nodes.map( ( node ) => {
+				return ( node instanceof Element ) ? 'E:' + node.name : 'C:' + node.character;
+			} );
+
+			expect( nodeNames ).to.deep.equal( [ 'C:s', 'C:t', 'E:p', 'E:p', 'E:p', 'C:s', 'C:e' ] );
+		} );
+	} );
+
+	describe( 'isFlat', () => {
+		beforeEach( () => {
+			prepareRichRoot( root );
+		} );
+
+		it( 'should be true if start and end position are in the same parent', () => {
+			let range = new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 2 ] ) );
+			expect( range.isFlat ).to.be.true;
+		} );
+
+		it( 'should be false if start and end position are in different parents', () => {
+			let range = new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 3, 0, 1 ] ) );
+			expect( range.isFlat ).to.be.false;
+		} );
+	} );
+
+	function prepareRichRoot() {
+		root.insertChildren( 0, [
+			new Element( 'div', [], [
+				new Element( 'h', [], 'first' ),
+				new Element( 'p', [], 'lorem ipsum' )
+			] ),
+			new Element( 'p', [], 'foo' ),
+			new Element( 'p', [], 'bar' ),
+			new Element( 'div', [], [
+				new Element( 'h', [], 'second' ),
+				new Element( 'p', [], 'lorem' )
+			] )
+		] );
+	}
 } );

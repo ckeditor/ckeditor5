@@ -9,10 +9,11 @@ CKEDITOR.define( [
 	'treemodel/element',
 	'treemodel/rootelement',
 	'treemodel/batch',
+	'treemodel/selection',
 	'emittermixin',
 	'utils',
 	'ckeditorerror'
-], ( Element, RootElement, Batch, EmitterMixin, utils, CKEditorError ) => {
+], ( Element, RootElement, Batch, Selection, EmitterMixin, utils, CKEditorError ) => {
 	const graveyardSymbol = Symbol( 'graveyard' );
 
 	/**
@@ -43,9 +44,6 @@ CKEDITOR.define( [
 			 */
 			this.roots = new Map();
 
-			// Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
-			this.createRoot( graveyardSymbol );
-
 			/**
 			 * Document version. It starts from `0` and every operation increases the version number. It is used to ensure that
 			 * operations are applied on the proper document version. If the {@link treeModel.operation.Operation#baseVersion} will
@@ -56,6 +54,9 @@ CKEDITOR.define( [
 			 */
 			this.version = 0;
 
+			// Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
+			this.createRoot( graveyardSymbol );
+
 			/**
 			 * Array of pending changes. See: {@link #enqueueChanges}.
 			 *
@@ -63,6 +64,14 @@ CKEDITOR.define( [
 			 * @property {Array.<Function>}
 			 */
 			this._pendingChanges = [];
+
+			/**
+			 * Selection done on this document.
+			 *
+			 * @readonly
+			 * @property {treeModel.Selection}
+			 */
+			this.selection = new Selection();
 		}
 
 		/**

@@ -32,7 +32,7 @@ describe( 'NoOperation', () => {
 		expect( () => doc.applyOperation( noop ) ).to.not.throw( Error );
 	} );
 
-	it( 'should create a do-nothing operation as a reverse', () => {
+	it( 'should create a NoOperation as a reverse', () => {
 		const reverse = noop.getReversed();
 
 		expect( reverse ).to.be.an.instanceof( NoOperation );
