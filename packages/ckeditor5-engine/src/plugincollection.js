@@ -6,10 +6,9 @@
 'use strict';
 
 /**
- * Manages a list of CKEditor plugins, including loading, initialization and destruction.
+ * Manages a list of CKEditor plugins, including loading, resolving dependencies and initialization.
  *
  * @class PluginCollection
- * @extends Map
  */
 
 import CKEDITOR from '../ckeditor.js';
@@ -18,7 +17,7 @@ import CKEditorError from './ckeditorerror.js';
 import log from './log.js';
 import load from '../ckeditor5/load.js';
 
-export default class PluginCollection extends Map {
+export default class PluginCollection {
 	/**
 	 * Creates an instance of the PluginCollection class, initializing it with a set of plugins.
 	 *
@@ -26,13 +25,35 @@ export default class PluginCollection extends Map {
 	 * @param {core/Editor} editor
 	 */
 	constructor( editor ) {
-		super();
-
 		/**
 		 * @protected
 		 * @property {core/Editor}
 		 */
 		this._editor = editor;
+
+		/**
+		 * @protected
+		 * @property {Map}
+		 */
+		this._plugins = new Map();
+	}
+
+	/**
+	 * Collection iterator. Returns `[ key, plugin ]` pairs. Plugins which are
+	 * kept in the collection twice (under their name and class) will be returned twice.
+	 */
+	[ Symbol.iterator ]() {
+		return this._plugins[ Symbol.iterator ]();
+	}
+
+	/**
+	 * Gets the plugin instance by its name or class.
+	 *
+	 * @param {String/Function} key The name of the plugin or the class.
+	 * @returns {Plugin}
+	 */
+	get( key ) {
+		return this._plugins.get( key );
 	}
 
 	/**
@@ -94,12 +115,12 @@ export default class PluginCollection extends Map {
 				}
 
 				const plugin = new PluginClass( editor );
-				that.set( PluginClass, plugin );
+				that._add( PluginClass, plugin );
 				loaded.push( plugin );
 
 				// Expose the plugin also by its name if loaded through load() by name.
 				if ( pluginName ) {
-					that.set( pluginName, plugin );
+					that._add( pluginName, plugin );
 				}
 
 				resolve();
@@ -120,5 +141,16 @@ export default class PluginCollection extends Map {
 				);
 			}
 		}
+	}
+
+	/**
+	 * Adds the plugin to the collection. Exposed mainly for testing purposes.
+	 *
+	 * @protected
+	 * @param {String/Function} key The name or the plugin class.
+	 * @param {Plugin} plugin The instance of the plugin.
+	 */
+	_add( key, plugin ) {
+		this._plugins.set( key, plugin );
 	}
 }

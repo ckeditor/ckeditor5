@@ -114,14 +114,14 @@ describe( 'load', () => {
 
 	it( 'should load dependency plugins', () => {
 		let plugins = new PluginCollection( editor );
-		let spy = sinon.spy( plugins, 'set' );
+		let spy = sinon.spy( plugins, '_add' );
 
 		return plugins.load( [ 'A', 'C' ] )
 			.then( ( loadedPlugins ) => {
 				expect( getPlugins( plugins ).length ).to.equal( 3 );
 
 				expect( getPluginNames( getPluginsFromSpy( spy ) ) )
-					.to.deep.equal( [ 'A', 'B', 'C' ], 'order by plugins.set()' );
+					.to.deep.equal( [ 'A', 'B', 'C' ], 'order by plugins._add()' );
 				expect( getPluginNames( loadedPlugins ) )
 					.to.deep.equal( [ 'A', 'B', 'C' ], 'order by returned value' );
 			} );
@@ -129,14 +129,14 @@ describe( 'load', () => {
 
 	it( 'should be ok when dependencies are loaded first', () => {
 		let plugins = new PluginCollection( editor );
-		let spy = sinon.spy( plugins, 'set' );
+		let spy = sinon.spy( plugins, '_add' );
 
 		return plugins.load( [ 'A', 'B', 'C' ] )
 			.then( ( loadedPlugins ) => {
 				expect( getPlugins( plugins ).length ).to.equal( 3 );
 
 				expect( getPluginNames( getPluginsFromSpy( spy ) ) )
-					.to.deep.equal( [ 'A', 'B', 'C' ], 'order by plugins.set()' );
+					.to.deep.equal( [ 'A', 'B', 'C' ], 'order by plugins._add()' );
 				expect( getPluginNames( loadedPlugins ) )
 					.to.deep.equal( [ 'A', 'B', 'C' ], 'order by returned value' );
 			} );
@@ -144,7 +144,7 @@ describe( 'load', () => {
 
 	it( 'should load deep dependency plugins', () => {
 		let plugins = new PluginCollection( editor );
-		let spy = sinon.spy( plugins, 'set' );
+		let spy = sinon.spy( plugins, '_add' );
 
 		return plugins.load( [ 'D' ] )
 			.then( ( loadedPlugins ) => {
@@ -152,7 +152,7 @@ describe( 'load', () => {
 
 				// The order must have dependencies first.
 				expect( getPluginNames( getPluginsFromSpy( spy ) ) )
-					.to.deep.equal( [ 'A', 'B', 'C', 'D' ], 'order by plugins.set()' );
+					.to.deep.equal( [ 'A', 'B', 'C', 'D' ], 'order by plugins._add()' );
 				expect( getPluginNames( loadedPlugins ) )
 					.to.deep.equal( [ 'A', 'B', 'C', 'D' ], 'order by returned value' );
 			} );
@@ -160,7 +160,7 @@ describe( 'load', () => {
 
 	it( 'should handle cross dependency plugins', () => {
 		let plugins = new PluginCollection( editor );
-		let spy = sinon.spy( plugins, 'set' );
+		let spy = sinon.spy( plugins, '_add' );
 
 		return plugins.load( [ 'A', 'E' ] )
 			.then( ( loadedPlugins ) => {
@@ -168,7 +168,7 @@ describe( 'load', () => {
 
 				// The order must have dependencies first.
 				expect( getPluginNames( getPluginsFromSpy( spy ) ) )
-					.to.deep.equal( [ 'A', 'F', 'E' ], 'order by plugins.set()' );
+					.to.deep.equal( [ 'A', 'F', 'E' ], 'order by plugins._add()' );
 				expect( getPluginNames( loadedPlugins ) )
 					.to.deep.equal( [ 'A', 'F', 'E' ], 'order by returned value' );
 			} );
@@ -268,7 +268,7 @@ function createPlugin( name, baseClass ) {
 function getPlugins( pluginCollection ) {
 	const plugins = [];
 
-	for ( let entry of pluginCollection.entries() ) {
+	for ( let entry of pluginCollection ) {
 		if ( typeof entry[ 0 ] == 'function' ) {
 			plugins.push( entry[ 1 ] );
 		}
