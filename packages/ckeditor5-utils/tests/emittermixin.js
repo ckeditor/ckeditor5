@@ -122,6 +122,18 @@ describe( 'fire', () => {
 
 		sinon.assert.calledThrice( spy );
 	} );
+
+	it( 'should not fire callbacks for an event that were added while firing that event', () => {
+		let spy = sinon.spy();
+
+		emitter.on( 'test', () => {
+			emitter.on( 'test', spy );
+		} );
+
+		emitter.fire( 'test' );
+
+		sinon.assert.notCalled( spy );
+	} );
 } );
 
 describe( 'on', () => {
