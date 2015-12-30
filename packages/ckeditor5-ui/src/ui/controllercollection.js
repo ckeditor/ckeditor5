@@ -5,72 +5,68 @@
 
 'use strict';
 
+import Collection from '../collection.js';
+import CKEditorError from '../ckeditorerror.js';
+
 /**
  * Manages UI Controllers.
  *
  * @class ControllerCollection
  * @extends Collection
  */
-CKEDITOR.define( [
-	'collection',
-	'ckeditorerror'
-], ( Collection, CKEditorError ) => {
-	class ControllerCollection extends Collection {
-		/**
-		 * Creates an instance of the ControllerCollection class, initializing it with a name.
-		 *
-		 * @constructor
-		 */
-		constructor( name ) {
-			super();
+export default class ControllerCollection extends Collection {
+	/**
+	 * Creates an instance of the ControllerCollection class, initializing it with a name.
+	 *
+	 * @constructor
+	 */
+	constructor( name ) {
+		super();
 
-			if ( !name ) {
-				/**
-				 * ControllerCollection must be initialized with a name.
-				 *
-				 * @error ui-controllercollection-no-name
-				 */
-				throw new CKEditorError( 'ui-controllercollection-no-name: ControllerCollection must be initialized with a name.' );
-			}
-
+		if ( !name ) {
 			/**
-			 * Name of this collection.
+			 * ControllerCollection must be initialized with a name.
 			 *
-			 * @property {String}
+			 * @error ui-controllercollection-no-name
 			 */
-			this.name = name;
-
-			/**
-			 * Parent controller of this collection.
-			 *
-			 * @property {Controller}
-			 */
-			this.parent = null;
+			throw new CKEditorError( 'ui-controllercollection-no-name: ControllerCollection must be initialized with a name.' );
 		}
 
 		/**
-		 * Adds a child controller to the collection. If {@link #parent} {@link Controller}
-		 * instance is ready, the child view is initialized when added.
+		 * Name of this collection.
 		 *
-		 * @param {Controller} controller A child controller.
-		 * @param {Number} [index] Index at which the child will be added to the collection.
-		 * @returns {Promise} A Promise resolved when the child {@link Controller#init} is done.
+		 * @property {String}
 		 */
-		add( controller, index ) {
-			super.add( controller, index );
+		this.name = name;
 
-			// ChildController.init() returns Promise.
-			let promise = Promise.resolve();
-
-			if ( this.parent && this.parent.ready && !controller.ready ) {
-				promise = promise.then( () => {
-					return controller.init();
-				} );
-			}
-
-			return promise;
-		}
+		/**
+		 * Parent controller of this collection.
+		 *
+		 * @property {Controller}
+		 */
+		this.parent = null;
 	}
 
-	return ControllerCollection;
-} );
+	/**
+	 * Adds a child controller to the collection. If {@link #parent} {@link Controller}
+	 * instance is ready, the child view is initialized when added.
+	 *
+	 * @param {Controller} controller A child controller.
+	 * @param {Number} [index] Index at which the child will be added to the collection.
+	 * @returns {Promise} A Promise resolved when the child {@link Controller#init} is done.
+	 */
+	add( controller, index ) {
+		super.add( controller, index );
+
+		// ChildController.init() returns Promise.
+		let promise = Promise.resolve();
+
+		if ( this.parent && this.parent.ready && !controller.ready ) {
+			promise = promise.then( () => {
+				return controller.init();
+			} );
+		}
+
+		return promise;
+	}
+}

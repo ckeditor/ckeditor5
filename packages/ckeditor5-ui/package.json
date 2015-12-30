@@ -13,7 +13,7 @@
     "grunt-githooks": "^0",
     "shelljs": "^0",
     "lodash-cli": "^3",
-    "grunt-lodash": "^0.4.0"
+    "grunt-lodash": "^0.5.0"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "See LICENSE.md",

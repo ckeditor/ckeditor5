@@ -4,11 +4,11 @@
  */
 
 /* global document */
-/* bender-tags: core, ui */
+/* bender-tags: ui */
 
 'use strict';
 
-const modules = bender.amd.require( 'ckeditor', 'ui/region', 'ui/view', 'collection' );
+const modules = bender.amd.require( 'core/ui/region', 'core/ui/view' );
 
 bender.tools.createSinonSandbox();
 
@@ -107,8 +107,8 @@ describe( 'View', () => {
 } );
 
 function createRegionInstance() {
-	Region = modules[ 'ui/region' ];
-	View = modules[ 'ui/view' ];
+	Region = modules[ 'core/ui/region' ];
+	View = modules[ 'core/ui/view' ];
 
 	class A extends View {
 		constructor() {
