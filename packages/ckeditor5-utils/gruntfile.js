@@ -18,14 +18,23 @@ module.exports = ( grunt ) => {
 
 		lodash: {
 			build: {
-				dest: 'src/lib/lodash/lodash-ckeditor.js',
+				dest: 'src/lib/lodash',
 				options: {
 					modifier: 'modern',
-					exports: 'amd',
+					modularize: true,
+					exports: 'es',
 					flags: [
 						'development'
 					],
-					include: require( './src/utils-lodash' )
+					include: [
+						'clone',
+						'extend',
+						'isPlainObject',
+						'isObject',
+						'isArray',
+						'last',
+						'isEqual'
+					]
 				}
 			}
 		},

@@ -5,6 +5,8 @@
 
 'use strict';
 
+import utils from './utils.js';
+
 /**
  * The event object passed to event callbacks. It is used to provide information about the event as well as a tool to
  * manipulate it.
@@ -12,36 +14,32 @@
  * @class EventInfo
  */
 
-CKEDITOR.define( [ 'utils' ], ( utils ) => {
-	class EventInfo {
-		constructor( source, name ) {
-			/**
-			 * The object that fired the event.
-			 */
-			this.source = source;
+export default class EventInfo {
+	constructor( source, name ) {
+		/**
+		 * The object that fired the event.
+		 */
+		this.source = source;
 
-			/**
-			 * The event name.
-			 */
-			this.name = name;
+		/**
+		 * The event name.
+		 */
+		this.name = name;
 
-			// The following methods are defined in the constructor because they must be re-created per instance.
+		// The following methods are defined in the constructor because they must be re-created per instance.
 
-			/**
-			 * Stops the event emitter to call further callbacks for this event interaction.
-			 *
-			 * @method
-			 */
-			this.stop = utils.spy();
+		/**
+		 * Stops the event emitter to call further callbacks for this event interaction.
+		 *
+		 * @method
+		 */
+		this.stop = utils.spy();
 
-			/**
-			 * Removes the current callback from future interactions of this event.
-			 *
-			 * @method
-			 */
-			this.off = utils.spy();
-		}
+		/**
+		 * Removes the current callback from future interactions of this event.
+		 *
+		 * @method
+		 */
+		this.off = utils.spy();
 	}
-
-	return EventInfo;
-} );
+}
