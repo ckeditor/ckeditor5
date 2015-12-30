@@ -9,24 +9,24 @@
 'use strict';
 
 const modules = bender.amd.require(
-	'treemodel/document',
-	'treemodel/operation/moveoperation',
-	'treemodel/position',
-	'treemodel/element',
-	'treemodel/nodelist',
-	'ckeditorerror'
+	'core/treemodel/document',
+	'core/treemodel/operation/moveoperation',
+	'core/treemodel/position',
+	'core/treemodel/element',
+	'core/treemodel/nodelist',
+	'core/ckeditorerror'
 );
 
 describe( 'MoveOperation', () => {
 	let Document, MoveOperation, Position, Element, NodeList, CKEditorError;
 
 	before( () => {
-		Document = modules[ 'treemodel/document' ];
-		MoveOperation = modules[ 'treemodel/operation/moveoperation' ];
-		Position = modules[ 'treemodel/position' ];
-		Element = modules[ 'treemodel/element' ];
-		NodeList = modules[ 'treemodel/nodelist' ];
-		CKEditorError = modules.ckeditorerror;
+		Document = modules[ 'core/treemodel/document' ];
+		MoveOperation = modules[ 'core/treemodel/operation/moveoperation' ];
+		Position = modules[ 'core/treemodel/position' ];
+		Element = modules[ 'core/treemodel/element' ];
+		NodeList = modules[ 'core/treemodel/nodelist' ];
+		CKEditorError = modules[ 'core/ckeditorerror' ];
 	} );
 
 	let doc, root;

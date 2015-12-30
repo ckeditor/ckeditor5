@@ -12,11 +12,11 @@
 const getIteratorCount = bender.tools.core.getIteratorCount;
 
 const modules = bender.amd.require(
-	'treemodel/document',
-	'treemodel/position',
-	'treemodel/element',
-	'treemodel/attribute',
-	'ckeditorerror' );
+	'core/treemodel/document',
+	'core/treemodel/position',
+	'core/treemodel/element',
+	'core/treemodel/attribute',
+	'core/ckeditorerror' );
 
 describe( 'Batch', () => {
 	let Document, Position, Element, Attribute, CKEditorError;
@@ -24,11 +24,11 @@ describe( 'Batch', () => {
 	let doc, root, p1, p2;
 
 	before( () => {
-		Document = modules[ 'treemodel/document' ];
-		Position = modules[ 'treemodel/position' ];
-		Element = modules[ 'treemodel/element' ];
-		Attribute = modules[ 'treemodel/attribute' ];
-		CKEditorError = modules.ckeditorerror;
+		Document = modules[ 'core/treemodel/document' ];
+		Position = modules[ 'core/treemodel/position' ];
+		Element = modules[ 'core/treemodel/element' ];
+		Attribute = modules[ 'core/treemodel/attribute' ];
+		CKEditorError = modules[ 'core/ckeditorerror' ];
 	} );
 
 	beforeEach( () => {

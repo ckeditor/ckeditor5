@@ -5,74 +5,70 @@
 
 'use strict';
 
-CKEDITOR.define( [
-	'treemodel/delta/delta',
-	'treemodel/delta/register',
-	'treemodel/position',
-	'treemodel/element',
-	'treemodel/operation/removeoperation',
-	'treemodel/operation/moveoperation',
-	'ckeditorerror'
-], ( Delta, register, Position, Element, RemoveOperation, MoveOperation, CKEditorError ) => {
-	/**
-	 * To provide specific OT behavior and better collisions solving, {@link treeModel.Batch#merge} method
-	 * uses the `MergeDelta` class which inherits from the `Delta` class and may overwrite some methods.
-	 *
-	 * @class treeModel.delta.MergeDelta
-	 */
-	class MergeDelta extends Delta {}
+import Delta from './delta.js';
+import register from './register.js';
+import Position from '../position.js';
+import Element from '../element.js';
+import RemoveOperation from '../operation/removeoperation.js';
+import MoveOperation from '../operation/moveoperation.js';
+import CKEditorError from '../../ckeditorerror.js';
 
-	/**
-	 * Merges two siblings at the given position.
-	 *
-	 * Node before and after the position have to be an element. Otherwise `batch-merge-no-element-before` or
-	 * `batch-merge-no-element-after` error will be thrown.
-	 *
-	 * @chainable
-	 * @method merge
-	 * @memberOf treeModel.Batch
-	 * @param {treeModel.Position} position Position of merge.
-	 */
-	register( 'merge', function( position ) {
-		const delta = new MergeDelta();
-		const nodeBefore = position.nodeBefore;
-		const nodeAfter = position.nodeAfter;
+/**
+ * To provide specific OT behavior and better collisions solving, {@link treeModel.Batch#merge} method
+ * uses the `MergeDelta` class which inherits from the `Delta` class and may overwrite some methods.
+ *
+ * @class treeModel.delta.MergeDelta
+ */
+export default class MergeDelta extends Delta {}
 
-		if ( !( nodeBefore instanceof Element ) ) {
-			/**
-			 * Node before merge position must be an element.
-			 *
-			 * @error batch-merge-no-element-before
-			 */
-			throw new CKEditorError(
-				'batch-merge-no-element-before: Node before merge position must be an element.' );
-		}
+/**
+ * Merges two siblings at the given position.
+ *
+ * Node before and after the position have to be an element. Otherwise `batch-merge-no-element-before` or
+ * `batch-merge-no-element-after` error will be thrown.
+ *
+ * @chainable
+ * @method merge
+ * @memberOf treeModel.Batch
+ * @param {treeModel.Position} position Position of merge.
+ */
+register( 'merge', function( position ) {
+	const delta = new MergeDelta();
+	const nodeBefore = position.nodeBefore;
+	const nodeAfter = position.nodeAfter;
 
-		if ( !( nodeAfter instanceof Element ) ) {
-			/**
-			 * Node after merge position must be an element.
-			 *
-			 * @error batch-merge-no-element-after
-			 */
-			throw new CKEditorError(
-				'batch-merge-no-element-after: Node after merge position must be an element.' );
-		}
+	if ( !( nodeBefore instanceof Element ) ) {
+		/**
+		 * Node before merge position must be an element.
+		 *
+		 * @error batch-merge-no-element-before
+		 */
+		throw new CKEditorError(
+			'batch-merge-no-element-before: Node before merge position must be an element.' );
+	}
 
-		const positionAfter = Position.createFromParentAndOffset( nodeAfter, 0 );
-		const positionBefore = Position.createFromParentAndOffset( nodeBefore, nodeBefore.getChildCount() );
+	if ( !( nodeAfter instanceof Element ) ) {
+		/**
+		 * Node after merge position must be an element.
+		 *
+		 * @error batch-merge-no-element-after
+		 */
+		throw new CKEditorError(
+			'batch-merge-no-element-after: Node after merge position must be an element.' );
+	}
 
-		const move = new MoveOperation( positionAfter, nodeAfter.getChildCount(), positionBefore, this.doc.version );
-		this.doc.applyOperation( move );
-		delta.addOperation( move );
+	const positionAfter = Position.createFromParentAndOffset( nodeAfter, 0 );
+	const positionBefore = Position.createFromParentAndOffset( nodeBefore, nodeBefore.getChildCount() );
 
-		const remove = new RemoveOperation( position, 1, this.doc.version );
-		this.doc.applyOperation( remove );
-		delta.addOperation( remove );
+	const move = new MoveOperation( positionAfter, nodeAfter.getChildCount(), positionBefore, this.doc.version );
+	this.doc.applyOperation( move );
+	delta.addOperation( move );
 
-		this.addDelta( delta );
+	const remove = new RemoveOperation( position, 1, this.doc.version );
+	this.doc.applyOperation( remove );
+	delta.addOperation( remove );
 
-		return this;
-	} );
+	this.addDelta( delta );
 
-	return MergeDelta;
+	return this;
 } );

@@ -5,23 +5,33 @@
 
 'use strict';
 
+import Model from './model.js';
+
 /**
  * The base class for CKEditor plugin classes.
  *
- * @class Plugin
- * @extends Model
+ * @class core.Plugin
+ * @extends core.Model
  */
 
-CKEDITOR.define( [ 'model' ], ( Model ) => {
-	class Plugin extends Model {
-		constructor( editor ) {
-			super();
+export default class Plugin extends Model {
+	/**
+	 * Creates a new Plugin instance.
+	 *
+	 * @param {core.Editor} editor
+	 */
+	constructor( editor ) {
+		super();
 
-			this.editor = editor;
-		}
-
-		init() {}
+		/**
+		 * @readonly
+		 * @property {core.Editor}
+		 */
+		this.editor = editor;
 	}
 
-	return Plugin;
-} );
+	/**
+	 * @returns {null/Promise}
+	 */
+	init() {}
+}

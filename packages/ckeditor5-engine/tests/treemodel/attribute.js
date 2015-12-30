@@ -7,13 +7,13 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'treemodel/attribute' );
+const modules = bender.amd.require( 'core/treemodel/attribute' );
 
 describe( 'Attribute', () => {
 	let Attribute;
 
 	before( () => {
-		Attribute = modules[ 'treemodel/attribute' ];
+		Attribute = modules[ 'core/treemodel/attribute' ];
 	} );
 
 	beforeEach( () => {

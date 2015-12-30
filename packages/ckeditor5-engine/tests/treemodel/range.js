@@ -8,22 +8,22 @@
 'use strict';
 
 const modules = bender.amd.require(
-	'treemodel/range',
-	'treemodel/position',
-	'treemodel/element',
-	'treemodel/character',
-	'treemodel/document'
+	'core/treemodel/range',
+	'core/treemodel/position',
+	'core/treemodel/element',
+	'core/treemodel/character',
+	'core/treemodel/document'
 );
 
 describe( 'Range', () => {
 	let Range, Position, Element, Character, Document;
 
 	before( () => {
-		Position = modules[ 'treemodel/position' ];
-		Range = modules[ 'treemodel/range' ];
-		Element = modules[ 'treemodel/element' ];
-		Character = modules[ 'treemodel/character' ];
-		Document = modules[ 'treemodel/document' ];
+		Position = modules[ 'core/treemodel/position' ];
+		Range = modules[ 'core/treemodel/range' ];
+		Element = modules[ 'core/treemodel/element' ];
+		Character = modules[ 'core/treemodel/character' ];
+		Document = modules[ 'core/treemodel/document' ];
 	} );
 
 	let range, start, end, root, otherRoot;

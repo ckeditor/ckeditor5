@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: core, ui */
+/* bender-tags: ui */
 
 'use strict';
 
 const modules = bender.amd.require( 'ckeditor',
-	'ui/controllercollection',
-	'ui/controller',
-	'ui/view'
+	'core/ui/controllercollection',
+	'core/ui/controller',
+	'core/ui/view'
 );
 
 bender.tools.createSinonSandbox();
@@ -103,9 +103,9 @@ describe( 'ControllerCollection', () => {
 } );
 
 function updateModuleReference() {
-	View = modules[ 'ui/view' ];
-	Controller = modules[ 'ui/controller' ];
-	ControllerCollection = modules[ 'ui/controllercollection' ];
+	View = modules[ 'core/ui/view' ];
+	Controller = modules[ 'core/ui/controller' ];
+	ControllerCollection = modules[ 'core/ui/controllercollection' ];
 }
 
 function defineParentViewClass() {

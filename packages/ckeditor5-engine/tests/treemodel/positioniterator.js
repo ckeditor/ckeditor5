@@ -8,12 +8,12 @@
 'use strict';
 
 const modules = bender.amd.require(
-	'treemodel/document',
-	'treemodel/element',
-	'treemodel/character',
-	'treemodel/positioniterator',
-	'treemodel/position',
-	'treemodel/range'
+	'core/treemodel/document',
+	'core/treemodel/element',
+	'core/treemodel/character',
+	'core/treemodel/positioniterator',
+	'core/treemodel/position',
+	'core/treemodel/range'
 );
 
 describe( 'range iterator', () => {
@@ -23,12 +23,12 @@ describe( 'range iterator', () => {
 	let doc, expectedItems, root, img1, paragraph, b, a, r, img2, x;
 
 	before( () => {
-		Document = modules[ 'treemodel/document' ];
-		Element = modules[ 'treemodel/element' ];
-		Character = modules[ 'treemodel/character' ];
-		PositionIterator = modules[ 'treemodel/positioniterator' ];
-		Position = modules[ 'treemodel/position' ];
-		Range = modules[ 'treemodel/range' ];
+		Document = modules[ 'core/treemodel/document' ];
+		Element = modules[ 'core/treemodel/element' ];
+		Character = modules[ 'core/treemodel/character' ];
+		PositionIterator = modules[ 'core/treemodel/positioniterator' ];
+		Position = modules[ 'core/treemodel/position' ];
+		Range = modules[ 'core/treemodel/range' ];
 
 		ELEMENT_ENTER = PositionIterator.ELEMENT_ENTER;
 		ELEMENT_LEAVE = PositionIterator.ELEMENT_LEAVE;

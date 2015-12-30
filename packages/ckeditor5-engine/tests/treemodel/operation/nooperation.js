@@ -8,16 +8,16 @@
 'use strict';
 
 const modules = bender.amd.require(
-	'treemodel/document',
-	'treemodel/operation/nooperation'
+	'core/treemodel/document',
+	'core/treemodel/operation/nooperation'
 );
 
 describe( 'NoOperation', () => {
 	let Document, NoOperation;
 
 	before( function() {
-		Document = modules[ 'treemodel/document' ];
-		NoOperation = modules[ 'treemodel/operation/nooperation' ];
+		Document = modules[ 'core/treemodel/document' ];
+		NoOperation = modules[ 'core/treemodel/operation/nooperation' ];
 	} );
 
 	let noop, doc, root;

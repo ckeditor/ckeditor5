@@ -5,31 +5,29 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'treemodel/element' ], ( Element ) => {
+import Element from './element.js';
+
+/**
+ * Class for nodes that are roots of trees in tree data model.
+ *
+ * @class treeModel.RootElement
+ */
+export default class RootElement extends Element {
 	/**
-	 * Class for nodes that are roots of trees in tree data model.
+	 * Creates tree root node.
 	 *
-	 * @class treeModel.RootElement
+	 * @param {treeModel.Document} doc {@link treeModel.Document} that is an owner of the root.
+	 * @constructor
 	 */
-	class RootElement extends Element {
+	constructor( doc ) {
+		super( 'root' );
+
 		/**
-		 * Creates tree root node.
+		 * {@link treeModel.Document} that is an owner of this root.
 		 *
-		 * @param {treeModel.Document} doc {@link treeModel.Document} that is an owner of the root.
-		 * @constructor
+		 * @readonly
+		 * @property {treeModel.Document}
 		 */
-		constructor( doc ) {
-			super( 'root' );
-
-			/**
-			 * {@link treeModel.Document} that is an owner of this root.
-			 *
-			 * @readonly
-			 * @property {treeModel.Document}
-			 */
-			this.document = doc;
-		}
+		this.document = doc;
 	}
-
-	return RootElement;
-} );
+}

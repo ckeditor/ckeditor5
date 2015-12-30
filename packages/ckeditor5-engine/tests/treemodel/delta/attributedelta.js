@@ -12,14 +12,14 @@
 const getIteratorCount = bender.tools.core.getIteratorCount;
 
 const modules = bender.amd.require(
-	'treemodel/batch',
-	'treemodel/document',
-	'treemodel/text',
-	'treemodel/attribute',
-	'treemodel/range',
-	'treemodel/position',
-	'treemodel/element',
-	'treemodel/character' );
+	'core/treemodel/batch',
+	'core/treemodel/document',
+	'core/treemodel/text',
+	'core/treemodel/attribute',
+	'core/treemodel/range',
+	'core/treemodel/position',
+	'core/treemodel/element',
+	'core/treemodel/character' );
 
 describe( 'Batch', () => {
 	let Batch, Document, Text, Attribute, Range, Position, Element, Character;
@@ -27,14 +27,14 @@ describe( 'Batch', () => {
 	let doc, root, batch;
 
 	before( () => {
-		Batch = modules[ 'treemodel/batch' ];
-		Document = modules[ 'treemodel/document' ];
-		Text = modules[ 'treemodel/text' ];
-		Attribute = modules[ 'treemodel/attribute' ];
-		Range = modules[ 'treemodel/range' ];
-		Position = modules[ 'treemodel/position' ];
-		Element = modules[ 'treemodel/element' ];
-		Character = modules[ 'treemodel/character' ];
+		Batch = modules[ 'core/treemodel/batch' ];
+		Document = modules[ 'core/treemodel/document' ];
+		Text = modules[ 'core/treemodel/text' ];
+		Attribute = modules[ 'core/treemodel/attribute' ];
+		Range = modules[ 'core/treemodel/range' ];
+		Position = modules[ 'core/treemodel/position' ];
+		Element = modules[ 'core/treemodel/element' ];
+		Character = modules[ 'core/treemodel/character' ];
 	} );
 
 	beforeEach( () => {

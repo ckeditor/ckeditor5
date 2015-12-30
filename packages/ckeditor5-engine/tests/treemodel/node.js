@@ -4,7 +4,6 @@
  */
 
 /* bender-tags: treemodel */
-
 /* bender-include: ../_tools/tools.js */
 
 'use strict';
@@ -12,12 +11,12 @@
 const getIteratorCount = bender.tools.core.getIteratorCount;
 
 const modules = bender.amd.require(
-	'treemodel/element',
-	'treemodel/character',
-	'treemodel/attribute',
-	'treemodel/attributelist',
-	'treemodel/nodelist',
-	'ckeditorerror'
+	'core/treemodel/element',
+	'core/treemodel/character',
+	'core/treemodel/attribute',
+	'core/treemodel/attributelist',
+	'core/treemodel/nodelist',
+	'core/ckeditorerror'
 );
 
 describe( 'Node', () => {
@@ -29,12 +28,12 @@ describe( 'Node', () => {
 	let attrFooBar;
 
 	before( () => {
-		Element = modules[ 'treemodel/element' ];
-		Character = modules[ 'treemodel/character' ];
-		Attribute = modules[ 'treemodel/attribute' ];
-		AttributeList = modules[ 'treemodel/attributelist' ];
-		NodeList = modules[ 'treemodel/nodelist' ];
-		CKEditorError = modules.ckeditorerror;
+		Element = modules[ 'core/treemodel/element' ];
+		Character = modules[ 'core/treemodel/character' ];
+		Attribute = modules[ 'core/treemodel/attribute' ];
+		AttributeList = modules[ 'core/treemodel/attributelist' ];
+		NodeList = modules[ 'core/treemodel/nodelist' ];
+		CKEditorError = modules[ 'core/ckeditorerror' ];
 
 		charB = new Character( 'b' );
 		charA = new Character( 'a' );

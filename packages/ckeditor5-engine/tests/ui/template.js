@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: core, ui */
+/* bender-tags: ui */
 /* global HTMLElement */
 
 'use strict';
 
-const modules = bender.amd.require( 'ckeditor', 'ui/view', 'ui/template' );
+const modules = bender.amd.require( 'core/ui/template' );
 let Template;
 
 bender.tools.createSinonSandbox();
@@ -196,5 +196,5 @@ describe( 'Template', () => {
 } );
 
 function createClassReferences() {
-	Template = modules[ 'ui/template' ];
+	Template = modules[ 'core/ui/template' ];
 }

@@ -3,10 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* jshint expr: true */
-
 /* bender-tags: treemodel */
-
 /* bender-include: ../_tools/tools.js */
 
 'use strict';
@@ -14,20 +11,20 @@
 const getIteratorCount = bender.tools.core.getIteratorCount;
 
 const modules = bender.amd.require(
-	'treemodel/character',
-	'treemodel/node',
-	'treemodel/element',
-	'treemodel/attribute'
+	'core/treemodel/character',
+	'core/treemodel/node',
+	'core/treemodel/element',
+	'core/treemodel/attribute'
 );
 
 describe( 'Character', () => {
 	let Element, Character, Node, Attribute;
 
 	before( () => {
-		Element = modules[ 'treemodel/element' ];
-		Character = modules[ 'treemodel/character' ];
-		Node = modules[ 'treemodel/node' ];
-		Attribute = modules[ 'treemodel/attribute' ];
+		Element = modules[ 'core/treemodel/element' ];
+		Character = modules[ 'core/treemodel/character' ];
+		Node = modules[ 'core/treemodel/node' ];
+		Attribute = modules[ 'core/treemodel/attribute' ];
 	} );
 
 	describe( 'constructor', () => {

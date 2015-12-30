@@ -4,17 +4,17 @@
  */
 
 /* global document, Event, MouseEvent */
-/* bender-tags: core, ui */
+/* bender-tags: ui */
 
 'use strict';
 
-const modules = bender.amd.require( 'utils', 'ui/domemittermixin', 'emittermixin' );
+const modules = bender.amd.require( 'core/lib/lodash/object', 'core/ui/domemittermixin', 'core/emittermixin' );
 let emitter, domEmitter, node;
 
 bender.tools.createSinonSandbox();
 
-let getEmitterInstance = () => modules.utils.extend( {}, modules.emittermixin );
-let getDOMEmitterInstance = () => modules.utils.extend( {}, modules[ 'ui/domemittermixin' ] );
+let getEmitterInstance = () => modules[ 'core/lib/lodash/object' ].extend( {}, modules[ 'core/emittermixin' ] );
+let getDOMEmitterInstance = () => modules[ 'core/lib/lodash/object' ].extend( {}, modules[ 'core/ui/domemittermixin' ] );
 let getDOMNodeInstance = () => document.createElement( 'div' );
 
 function updateEmitterInstance() {

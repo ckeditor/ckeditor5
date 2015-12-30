@@ -4,7 +4,6 @@
  */
 
 /* bender-tags: treemodel */
-
 /* bender-include: ../_tools/tools.js */
 
 'use strict';
@@ -12,18 +11,16 @@
 const getIteratorCount = bender.tools.core.getIteratorCount;
 
 const modules = bender.amd.require(
-	'treemodel/attributelist',
-	'treemodel/attribute',
-	'utils'
+	'core/treemodel/attributelist',
+	'core/treemodel/attribute'
 );
 
 describe( 'AttributeList', () => {
-	let AttributeList, Attribute, utils;
+	let AttributeList, Attribute;
 
 	before( () => {
-		AttributeList = modules[ 'treemodel/attributelist' ];
-		Attribute = modules[ 'treemodel/attribute' ];
-		utils = modules.utils;
+		AttributeList = modules[ 'core/treemodel/attributelist' ];
+		Attribute = modules[ 'core/treemodel/attribute' ];
 	} );
 
 	let list, attrFooBar;

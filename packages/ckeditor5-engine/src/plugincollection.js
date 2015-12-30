@@ -5,135 +5,152 @@
 
 'use strict';
 
+import pathUtils from '../ckeditor5/path.js';
+import Plugin from './plugin.js';
+import CKEditorError from './ckeditorerror.js';
+import log from './log.js';
+import load from '../ckeditor5/load.js';
+
 /**
- * Manages a list of CKEditor plugins, including loading, initialization and destruction.
+ * Manages a list of CKEditor plugins, including loading, resolving dependencies and initialization.
  *
  * @class PluginCollection
- * @extends Collection
  */
 
-CKEDITOR.define( [
-	'collection',
-	'plugin',
-	'ckeditorerror',
-	'log'
-], ( Collection, Plugin, CKEditorError, log ) => {
-	class PluginCollection extends Collection {
+export default class PluginCollection {
+	/**
+	 * Creates an instance of the PluginCollection class, initializing it with a set of plugins.
+	 *
+	 * @constructor
+	 * @param {core.Editor} editor
+	 */
+	constructor( editor ) {
 		/**
-		 * Creates an instance of the PluginCollection class, initializing it with a set of plugins.
-		 *
-		 * @constructor
+		 * @protected
+		 * @property {core.Editor}
 		 */
-		constructor( editor ) {
-			super( { idProperty: 'name' } );
-
-			this._editor = editor;
-		}
+		this._editor = editor;
 
 		/**
-		 * Loads a set of plugins and add them to the collection.
-		 *
-		 * @param {String} plugins A comma separated list of plugin names to get loaded.
-		 * @returns {Promise} A promise which gets resolved once all plugins are loaded and available into the
-		 * collection.
-		 * @param {core/Plugin[]} returns.loadedPlugins The array of loaded plugins.
+		 * @protected
+		 * @property {Map}
 		 */
-		load( plugins ) {
-			// The list of plugins which are being loaded (to avoid circular references issues).
-			const loading = {};
-			// Plugins added to the collection (for the purpose of returning an array of loaded plugins).
-			const loaded = [];
+		this._plugins = new Map();
+	}
 
-			// It may happen that an empty list was passed – don't fail.
-			plugins = plugins ? plugins.split( ',' ) : [];
+	/**
+	 * Collection iterator. Returns `[ key, plugin ]` pairs. Plugins which are
+	 * kept in the collection twice (under their name and class) will be returned twice.
+	 */
+	[ Symbol.iterator ]() {
+		return this._plugins[ Symbol.iterator ]();
+	}
 
-			// Creates a promise for the loading of each plugin and returns a main promise that resolves when all are
-			// done.
-			return Promise.all( plugins.map( pluginPromise, this ) )
-				.then( () => loaded );
+	/**
+	 * Gets the plugin instance by its name or class.
+	 *
+	 * @param {String/Function} key The name of the plugin or the class.
+	 * @returns {Plugin}
+	 */
+	get( key ) {
+		return this._plugins.get( key );
+	}
 
-			// Returns a promise that will load the plugin and add it to the collection before resolving.
-			function pluginPromise( plugin ) {
-				return new Promise( ( resolve, reject ) => {
-					// Do nothing if the plugin is already loaded (or if is being loaded right now).
-					if ( this.get( plugin ) || loading[ plugin ] ) {
-						return resolve();
-					}
+	/**
+	 * Loads a set of plugins and add them to the collection.
+	 *
+	 * @param {String[]} plugins An array of plugins to load.
+	 * @returns {Promise} A promise which gets resolved once all plugins are loaded and available into the
+	 * collection.
+	 * @param {core.Plugin[]} returns.loadedPlugins The array of loaded plugins.
+	 */
+	load( plugins ) {
+		const that = this;
+		const editor = this._editor;
+		const loading = new Set();
+		const loaded = [];
 
-					CKEDITOR.require( [ 'plugin!' + plugin ],
-						// Success callback.
-						( LoadedPlugin ) => {
-							const deps = getPluginDeps( plugin );
-							const isPluginDep = plugin.indexOf( '/' ) > 0;
-							let loadedPlugin;
+		return Promise.all( plugins.map( loadPlugin ) )
+			.then( () => loaded );
 
-							if ( !isPluginDep ) {
-								loadedPlugin = new LoadedPlugin( this._editor );
-
-								if ( !( loadedPlugin instanceof Plugin ) ) {
-									/**
-									 * The plugin is not an instance of Plugin.
-									 *
-									 * @error plugincollection-instance
-									 * @param {String} plugin The name of the plugin that is not an instance of Plugin.
-									 */
-									return reject(
-										new CKEditorError(
-											'plugincollection-instance: The plugin is not an instance of Plugin.',
-											{ plugin: plugin }
-										)
-									);
-								}
-
-								loadedPlugin.name = plugin;
-								loadedPlugin.path = CKEDITOR.getPluginPath( plugin );
-								loadedPlugin.deps = deps;
-							}
-
-							loading[ plugin ] = true;
-
-							// Resolve with a promise that resolves once all dependencies are loaded.
-							resolve(
-								Promise.all( deps.map( pluginPromise, this ) )
-									.then( () => {
-										// Once dependencies are loaded, add the new instance of the loaded plugin to
-										// the collection. This guarantees that dependecies come first in the collection.
-										if ( !isPluginDep ) {
-											this.add( loadedPlugin );
-											loaded.push( loadedPlugin );
-										}
-									} )
-							);
-						},
-						// Error callback.
-						( err ) => {
-							/**
-							 * It was not possible to load the plugin.
-							 *
-							 * @error plugincollection-load
-							 * @param {String} plugin The name of the plugin that could not be loaded.
-							 */
-							log.error( 'plugincollection-load: It was not possible to load the plugin.', { plugin: plugin } );
-							reject( err );
-						}
-					);
-				} );
+		function loadPlugin( pluginClassOrName ) {
+			// The plugin is already loaded or being loaded - do nothing.
+			if ( that.get( pluginClassOrName ) || loading.has( pluginClassOrName ) ) {
+				return;
 			}
 
-			function getPluginDeps( name ) {
-				// Get the list of AMD modules that the plugin depends on.
-				let deps = CKEDITOR._dependencies[ 'plugin!' + name ] || [];
+			let promise = ( typeof pluginClassOrName == 'string' ) ?
+				loadPluginByName( pluginClassOrName ) :
+				loadPluginByClass( pluginClassOrName );
 
-				deps = deps
-					// Pick only dependencies that are other plugins.
-					.filter( dep => dep.indexOf( 'plugin!' ) === 0 )
-					// Remove the 'plugin!' prefix.
-					.map( dep => dep.substr( 7 ) );
+			return promise
+				.catch( ( err ) => {
+					/**
+					 * It was not possible to load the plugin.
+					 *
+					 * @error plugincollection-load
+					 * @param {String} plugin The name of the plugin that could not be loaded.
+					 */
+					log.error( 'plugincollection-load: It was not possible to load the plugin.', { plugin: pluginClassOrName } );
 
-				return deps;
+					throw err;
+				} );
+		}
+
+		function loadPluginByName( pluginName ) {
+			return load( pathUtils.getModulePath( pluginName ) )
+				.then( ( PluginModule ) => {
+					return loadPluginByClass( PluginModule.default, pluginName );
+				} );
+		}
+
+		function loadPluginByClass( PluginClass, pluginName ) {
+			return new Promise( ( resolve ) => {
+				loading.add( PluginClass );
+
+				assertIsPlugin( PluginClass );
+
+				if ( PluginClass.requires ) {
+					PluginClass.requires.forEach( loadPlugin );
+				}
+
+				const plugin = new PluginClass( editor );
+				that._add( PluginClass, plugin );
+				loaded.push( plugin );
+
+				// Expose the plugin also by its name if loaded through load() by name.
+				if ( pluginName ) {
+					that._add( pluginName, plugin );
+				}
+
+				resolve();
+			} );
+		}
+
+		function assertIsPlugin( LoadedPlugin ) {
+			if ( !( LoadedPlugin.prototype instanceof Plugin ) ) {
+				/**
+				 * The loaded plugin module is not an instance of Plugin.
+				 *
+				 * @error plugincollection-instance
+				 * @param {LoadedPlugin} plugin The class which is meant to be loaded as a plugin.
+				 */
+				throw new CKEditorError(
+					'plugincollection-instance: The loaded plugin module is not an instance of Plugin.',
+					{ plugin: LoadedPlugin }
+				);
 			}
 		}
 	}
 
-	return PluginCollection;
-} );
+	/**
+	 * Adds the plugin to the collection. Exposed mainly for testing purposes.
+	 *
+	 * @protected
+	 * @param {String/Function} key The name or the plugin class.
+	 * @param {Plugin} plugin The instance of the plugin.
+	 */
+	_add( key, plugin ) {
+		this._plugins.set( key, plugin );
+	}
+}

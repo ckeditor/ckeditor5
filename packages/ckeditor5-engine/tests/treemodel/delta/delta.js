@@ -12,13 +12,14 @@
 const getIteratorCount = bender.tools.core.getIteratorCount;
 
 const modules = bender.amd.require(
-	'treemodel/delta/delta' );
+	'core/treemodel/delta/delta'
+);
 
 describe( 'Delta', () => {
 	let Delta;
 
 	before( () => {
-		Delta = modules[ 'treemodel/delta/delta' ];
+		Delta = modules[ 'core/treemodel/delta/delta' ];
 	} );
 
 	describe( 'constructor', () => {

@@ -8,12 +8,12 @@
 'use strict';
 
 const modules = bender.amd.require(
-	'treemodel/document',
-	'treemodel/element',
-	'treemodel/position',
-	'treemodel/liverange',
-	'treemodel/range',
-	'emittermixin'
+	'core/treemodel/document',
+	'core/treemodel/element',
+	'core/treemodel/position',
+	'core/treemodel/liverange',
+	'core/treemodel/range',
+	'core/emittermixin'
 );
 
 describe( 'LiveRange', () => {
@@ -21,12 +21,12 @@ describe( 'LiveRange', () => {
 	let doc, root, ul, p;
 
 	before( () => {
-		Document = modules[ 'treemodel/document' ];
-		Element = modules[ 'treemodel/element' ];
-		Position = modules[ 'treemodel/position' ];
-		LiveRange = modules[ 'treemodel/liverange' ];
-		Range = modules[ 'treemodel/range' ];
-		EmitterMixin = modules.emittermixin;
+		Document = modules[ 'core/treemodel/document' ];
+		Element = modules[ 'core/treemodel/element' ];
+		Position = modules[ 'core/treemodel/position' ];
+		LiveRange = modules[ 'core/treemodel/liverange' ];
+		Range = modules[ 'core/treemodel/range' ];
+		EmitterMixin = modules[ 'core/emittermixin' ];
 
 		doc = new Document();
 		root = doc.createRoot( 'root' );

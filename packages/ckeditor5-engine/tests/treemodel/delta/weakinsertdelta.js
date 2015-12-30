@@ -8,18 +8,18 @@
 'use strict';
 
 const modules = bender.amd.require(
-	'treemodel/document',
-	'treemodel/attribute',
-	'treemodel/position'
+	'core/treemodel/document',
+	'core/treemodel/attribute',
+	'core/treemodel/position'
 );
 
 describe( 'Batch', () => {
 	let Document, Attribute, Position;
 
 	before( () => {
-		Document = modules[ 'treemodel/document' ];
-		Attribute = modules[ 'treemodel/attribute' ];
-		Position = modules[ 'treemodel/position' ];
+		Document = modules[ 'core/treemodel/document' ];
+		Attribute = modules[ 'core/treemodel/attribute' ];
+		Position = modules[ 'core/treemodel/position' ];
 	} );
 
 	let doc, root, batch, chain, attrs;

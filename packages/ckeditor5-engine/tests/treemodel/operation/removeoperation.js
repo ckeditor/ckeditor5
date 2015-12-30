@@ -8,22 +8,22 @@
 'use strict';
 
 const modules = bender.amd.require(
-	'treemodel/document',
-	'treemodel/operation/reinsertoperation',
-	'treemodel/operation/removeoperation',
-	'treemodel/operation/moveoperation',
-	'treemodel/position'
+	'core/treemodel/document',
+	'core/treemodel/operation/reinsertoperation',
+	'core/treemodel/operation/removeoperation',
+	'core/treemodel/operation/moveoperation',
+	'core/treemodel/position'
 );
 
 describe( 'RemoveOperation', () => {
 	let Document, ReinsertOperation, RemoveOperation, MoveOperation, Position;
 
 	before( () => {
-		Document = modules[ 'treemodel/document' ];
-		ReinsertOperation = modules[ 'treemodel/operation/reinsertoperation' ];
-		RemoveOperation = modules[ 'treemodel/operation/removeoperation' ];
-		MoveOperation = modules[ 'treemodel/operation/removeoperation' ];
-		Position = modules[ 'treemodel/position' ];
+		Document = modules[ 'core/treemodel/document' ];
+		ReinsertOperation = modules[ 'core/treemodel/operation/reinsertoperation' ];
+		RemoveOperation = modules[ 'core/treemodel/operation/removeoperation' ];
+		MoveOperation = modules[ 'core/treemodel/operation/removeoperation' ];
+		Position = modules[ 'core/treemodel/position' ];
 	} );
 
 	let doc, root, graveyard;

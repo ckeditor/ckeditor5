@@ -5,16 +5,14 @@
 
 'use strict';
 
+import Plugin from './plugin.js';
+
 /**
  * Basic creator class.
  *
- * @class Creator
- * @extends Plugin
+ * @class core.Creator
+ * @extends core.Plugin
  */
 
-CKEDITOR.define( [ 'plugin' ], ( Plugin ) => {
-	class Creator extends Plugin {
-	}
-
-	return Creator;
-} );
+export default class Creator extends Plugin {
+}

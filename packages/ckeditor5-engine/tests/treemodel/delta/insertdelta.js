@@ -8,20 +8,20 @@
 'use strict';
 
 const modules = bender.amd.require(
-	'treemodel/document',
-	'treemodel/element',
-	'treemodel/position',
-	'treemodel/delta/insertdelta'
+	'core/treemodel/document',
+	'core/treemodel/element',
+	'core/treemodel/position',
+	'core/treemodel/delta/insertdelta'
 );
 
 describe( 'Batch', () => {
 	let Document, Element, Position, InsertDelta;
 
 	before( () => {
-		Document = modules[ 'treemodel/document' ];
-		Element = modules[ 'treemodel/element' ];
-		Position = modules[ 'treemodel/position' ];
-		InsertDelta = modules[ 'treemodel/delta/insertdelta' ];
+		Document = modules[ 'core/treemodel/document' ];
+		Element = modules[ 'core/treemodel/element' ];
+		Position = modules[ 'core/treemodel/position' ];
+		InsertDelta = modules[ 'core/treemodel/delta/insertdelta' ];
 	} );
 
 	let doc, root, batch, p, ul, chain;

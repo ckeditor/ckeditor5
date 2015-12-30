@@ -5,116 +5,114 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'treemodel/attribute' ], ( Attribute ) => {
+import Attribute from './attribute.js';
+
+/**
+ * List of attributes. Used to manage a set of attributes added to and removed from an object containing
+ * AttributeList.
+ *
+ * @class treeModel.AttributeList
+ */
+export default class AttributeList {
 	/**
-	 * List of attributes. Used to manage a set of attributes added to and removed from an object containing
-	 * AttributeList.
+	 * Creates a list of attributes.
 	 *
-	 * @class treeModel.AttributeList
+	 * @param {Iterable.<treeModel.Attribute>} [attrs] Attributes to initialize this list with.
+	 * @constructor
 	 */
-	class AttributeList {
+	constructor( attrs ) {
 		/**
-		 * Creates a list of attributes.
+		 * Internal set containing the attributes stored by this list.
 		 *
-		 * @param {Iterable.<treeModel.Attribute>} [attrs] Attributes to initialize this list with.
-		 * @constructor
+		 * @private
+		 * @property {Set.<treeModel.Attribute>} _attrs
 		 */
-		constructor( attrs ) {
-			/**
-			 * Internal set containing the attributes stored by this list.
-			 *
-			 * @private
-			 * @property {Set.<treeModel.Attribute>} _attrs
-			 */
 
-			this.setAttrsTo( attrs );
+		this.setAttrsTo( attrs );
+	}
+
+	/**
+	 * Returns value of an attribute with given key or null if there are no attributes with given key.
+	 *
+	 * @param {String} key The attribute key.
+	 * @returns {*|null} Value of found attribute or null if attribute with given key has not been found.
+	 */
+	getAttr( key ) {
+		for ( let attr of this._attrs ) {
+			if ( attr.key == key ) {
+				return attr.value;
+			}
 		}
 
-		/**
-		 * Returns value of an attribute with given key or null if there are no attributes with given key.
-		 *
-		 * @param {String} key The attribute key.
-		 * @returns {*|null} Value of found attribute or null if attribute with given key has not been found.
-		 */
-		getAttr( key ) {
+		return null;
+	}
+
+	/**
+	 * Returns attribute iterator.
+	 *
+	 * @returns {Iterable.<treeModel.Attribute>} Attribute iterator.
+	 */
+	getAttrs() {
+		return this._attrs[ Symbol.iterator ]();
+	}
+
+	/**
+	 * Returns `true` if the object contains given {@link treeModel.Attribute attribute} or
+	 * an attribute with the same key if passed parameter was a string.
+	 *
+	 * @param {treeModel.Attribute|String} attrOrKey An attribute or a key to look for.
+	 * @returns {Boolean} True if object contains given attribute or an attribute with the given key.
+	 */
+	hasAttr( attrOrKey ) {
+		if ( attrOrKey instanceof Attribute ) {
 			for ( let attr of this._attrs ) {
-				if ( attr.key == key ) {
-					return attr.value;
+				if ( attr.isEqual( attrOrKey ) ) {
+					return true;
 				}
 			}
-
-			return null;
-		}
-
-		/**
-		 * Returns attribute iterator.
-		 *
-		 * @returns {Iterable.<treeModel.Attribute>} Attribute iterator.
-		 */
-		getAttrs() {
-			return this._attrs[ Symbol.iterator ]();
-		}
-
-		/**
-		 * Returns `true` if the object contains given {@link treeModel.Attribute attribute} or
-		 * an attribute with the same key if passed parameter was a string.
-		 *
-		 * @param {treeModel.Attribute|String} attrOrKey An attribute or a key to look for.
-		 * @returns {Boolean} True if object contains given attribute or an attribute with the given key.
-		 */
-		hasAttr( attrOrKey ) {
-			if ( attrOrKey instanceof Attribute ) {
-				for ( let attr of this._attrs ) {
-					if ( attr.isEqual( attrOrKey ) ) {
-						return true;
-					}
-				}
-			} else {
-				for ( let attr of this._attrs ) {
-					if ( attr.key == attrOrKey ) {
-						return true;
-					}
-				}
-			}
-
-			return false;
-		}
-
-		/**
-		 * Removes attribute from the list of attributes.
-		 *
-		 * @param {String} key The attribute key.
-		 */
-		removeAttr( key ) {
+		} else {
 			for ( let attr of this._attrs ) {
-				if ( attr.key == key ) {
-					this._attrs.delete( attr );
-
-					return;
+				if ( attr.key == attrOrKey ) {
+					return true;
 				}
 			}
 		}
 
-		/**
-		 * Sets a given attribute. If the attribute with the same key already exists it will be removed.
-		 *
-		 * @param {treeModel.Attribute} attr Attribute to set.
-		 */
-		setAttr( attr ) {
-			this.removeAttr( attr.key );
+		return false;
+	}
 
-			this._attrs.add( attr );
-		}
+	/**
+	 * Removes attribute from the list of attributes.
+	 *
+	 * @param {String} key The attribute key.
+	 */
+	removeAttr( key ) {
+		for ( let attr of this._attrs ) {
+			if ( attr.key == key ) {
+				this._attrs.delete( attr );
 
-		/**
-		 * Removes all attributes and sets passed attributes.
-		 *
-		 * @param {Iterable.<treeModel.Attribute>} attrs Array of attributes to set.
-		 */
-		setAttrsTo( attrs ) {
-			this._attrs = new Set( attrs );
+				return;
+			}
 		}
 	}
 
-	return AttributeList;
-} );
+	/**
+	 * Sets a given attribute. If the attribute with the same key already exists it will be removed.
+	 *
+	 * @param {treeModel.Attribute} attr Attribute to set.
+	 */
+	setAttr( attr ) {
+		this.removeAttr( attr.key );
+
+		this._attrs.add( attr );
+	}
+
+	/**
+	 * Removes all attributes and sets passed attributes.
+	 *
+	 * @param {Iterable.<treeModel.Attribute>} attrs Array of attributes to set.
+	 */
+	setAttrsTo( attrs ) {
+		this._attrs = new Set( attrs );
+	}
+}

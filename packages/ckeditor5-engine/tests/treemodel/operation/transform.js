@@ -11,16 +11,16 @@
 'use strict';
 
 const modules = bender.amd.require(
-	'treemodel/rootelement',
-	'treemodel/node',
-	'treemodel/position',
-	'treemodel/range',
-	'treemodel/attribute',
-	'treemodel/operation/transform',
-	'treemodel/operation/insertoperation',
-	'treemodel/operation/attributeoperation',
-	'treemodel/operation/moveoperation',
-	'treemodel/operation/nooperation'
+	'core/treemodel/rootelement',
+	'core/treemodel/node',
+	'core/treemodel/position',
+	'core/treemodel/range',
+	'core/treemodel/attribute',
+	'core/treemodel/operation/transform',
+	'core/treemodel/operation/insertoperation',
+	'core/treemodel/operation/attributeoperation',
+	'core/treemodel/operation/moveoperation',
+	'core/treemodel/operation/nooperation'
 );
 
 describe( 'transform', () => {
@@ -28,17 +28,17 @@ describe( 'transform', () => {
 	let transform;
 
 	before( () => {
-		RootElement = modules[ 'treemodel/rootelement' ];
-		Node = modules[ 'treemodel/node' ];
-		Position = modules[ 'treemodel/position' ];
-		Range = modules[ 'treemodel/range' ];
-		Attribute = modules[ 'treemodel/attribute' ];
-		InsertOperation = modules[ 'treemodel/operation/insertoperation' ];
-		AttributeOperation = modules[ 'treemodel/operation/attributeoperation' ];
-		MoveOperation = modules[ 'treemodel/operation/moveoperation' ];
-		NoOperation = modules[ 'treemodel/operation/nooperation' ];
+		RootElement = modules[ 'core/treemodel/rootelement' ];
+		Node = modules[ 'core/treemodel/node' ];
+		Position = modules[ 'core/treemodel/position' ];
+		Range = modules[ 'core/treemodel/range' ];
+		Attribute = modules[ 'core/treemodel/attribute' ];
+		InsertOperation = modules[ 'core/treemodel/operation/insertoperation' ];
+		AttributeOperation = modules[ 'core/treemodel/operation/attributeoperation' ];
+		MoveOperation = modules[ 'core/treemodel/operation/moveoperation' ];
+		NoOperation = modules[ 'core/treemodel/operation/nooperation' ];
 
-		transform = modules[ 'treemodel/operation/transform' ];
+		transform = modules[ 'core/treemodel/operation/transform' ];
 	} );
 
 	let root, op, nodeA, nodeB, expected, baseVersion;

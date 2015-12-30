@@ -8,12 +8,12 @@
 'use strict';
 
 const modules = bender.amd.require(
-	'treemodel/element',
-	'treemodel/character',
-	'treemodel/position',
-	'treemodel/document',
-	'ckeditorerror',
-	'treemodel/nodelist'
+	'core/treemodel/element',
+	'core/treemodel/character',
+	'core/treemodel/position',
+	'core/treemodel/document',
+	'core/ckeditorerror',
+	'core/treemodel/nodelist'
 );
 
 describe( 'position', () => {
@@ -33,12 +33,12 @@ describe( 'position', () => {
 	//        |- a   Before: [ 1, 1, 1 ] After: [ 1, 1, 2 ]
 	//        |- r   Before: [ 1, 1, 2 ] After: [ 1, 1, 3 ]
 	before( () => {
-		Element = modules[ 'treemodel/element' ];
-		Character = modules[ 'treemodel/character' ];
-		Document = modules[ 'treemodel/document' ];
-		NodeList = modules[ 'treemodel/nodelist' ];
-		Position = modules[ 'treemodel/position' ];
-		CKEditorError = modules.ckeditorerror;
+		Element = modules[ 'core/treemodel/element' ];
+		Character = modules[ 'core/treemodel/character' ];
+		Document = modules[ 'core/treemodel/document' ];
+		NodeList = modules[ 'core/treemodel/nodelist' ];
+		Position = modules[ 'core/treemodel/position' ];
+		CKEditorError = modules[ 'core/ckeditorerror' ];
 
 		doc = new Document();
 

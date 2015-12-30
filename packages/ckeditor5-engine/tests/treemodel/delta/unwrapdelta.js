@@ -10,11 +10,10 @@
 'use strict';
 
 const modules = bender.amd.require(
-	'treemodel/document',
-	'treemodel/position',
-	'treemodel/range',
-	'treemodel/element',
-	'ckeditorerror'
+	'core/treemodel/document',
+	'core/treemodel/position',
+	'core/treemodel/element',
+	'core/ckeditorerror'
 );
 
 describe( 'Batch', () => {
@@ -23,10 +22,10 @@ describe( 'Batch', () => {
 	let doc, root, p;
 
 	before( () => {
-		Document = modules[ 'treemodel/document' ];
-		Position = modules[ 'treemodel/position' ];
-		Element = modules[ 'treemodel/element' ];
-		CKEditorError = modules.ckeditorerror;
+		Document = modules[ 'core/treemodel/document' ];
+		Position = modules[ 'core/treemodel/position' ];
+		Element = modules[ 'core/treemodel/element' ];
+		CKEditorError = modules[ 'core/ckeditorerror' ];
 	} );
 
 	beforeEach( () => {

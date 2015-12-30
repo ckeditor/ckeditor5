@@ -13,30 +13,30 @@
 const getIteratorCount = bender.tools.core.getIteratorCount;
 
 const modules = bender.amd.require(
-	'treemodel/document',
-	'treemodel/element',
-	'treemodel/operation/attributeoperation',
-	'treemodel/position',
-	'treemodel/range',
-	'treemodel/character',
-	'treemodel/attribute',
-	'treemodel/text',
-	'ckeditorerror'
+	'core/treemodel/document',
+	'core/treemodel/element',
+	'core/treemodel/operation/attributeoperation',
+	'core/treemodel/position',
+	'core/treemodel/range',
+	'core/treemodel/character',
+	'core/treemodel/attribute',
+	'core/treemodel/text',
+	'core/ckeditorerror'
 );
 
 describe( 'AttributeOperation', () => {
 	let Document, Element, AttributeOperation, Position, Range, Character, Attribute, Text, CKEditorError;
 
 	before( () => {
-		Document = modules[ 'treemodel/document' ];
-		Element = modules[ 'treemodel/element' ];
-		AttributeOperation = modules[ 'treemodel/operation/attributeoperation' ];
-		Position = modules[ 'treemodel/position' ];
-		Range = modules[ 'treemodel/range' ];
-		Character = modules[ 'treemodel/character' ];
-		Attribute = modules[ 'treemodel/attribute' ];
-		Text = modules[ 'treemodel/text' ];
-		CKEditorError = modules.ckeditorerror;
+		Document = modules[ 'core/treemodel/document' ];
+		Element = modules[ 'core/treemodel/element' ];
+		AttributeOperation = modules[ 'core/treemodel/operation/attributeoperation' ];
+		Position = modules[ 'core/treemodel/position' ];
+		Range = modules[ 'core/treemodel/range' ];
+		Character = modules[ 'core/treemodel/character' ];
+		Attribute = modules[ 'core/treemodel/attribute' ];
+		Text = modules[ 'core/treemodel/text' ];
+		CKEditorError = modules[ 'core/ckeditorerror' ];
 	} );
 
 	let doc, root;
