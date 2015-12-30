@@ -5,14 +5,14 @@
 
 'use strict';
 
+import Plugin from './plugin.js';
+
 /**
  * Basic creator class.
  *
  * @class core.Creator
  * @extends core.Plugin
  */
-
-import Plugin from './plugin.js';
 
 export default class Creator extends Plugin {
 }

@@ -5,17 +5,17 @@
 
 'use strict';
 
-/**
- * Manages a list of CKEditor plugins, including loading, resolving dependencies and initialization.
- *
- * @class PluginCollection
- */
-
 import pathUtils from '../ckeditor5/path.js';
 import Plugin from './plugin.js';
 import CKEditorError from './ckeditorerror.js';
 import log from './log.js';
 import load from '../ckeditor5/load.js';
+
+/**
+ * Manages a list of CKEditor plugins, including loading, resolving dependencies and initialization.
+ *
+ * @class PluginCollection
+ */
 
 export default class PluginCollection {
 	/**

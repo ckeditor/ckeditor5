@@ -9,7 +9,7 @@ import RootElement from './rootelement.js';
 import Batch from './batch.js';
 import Selection from './selection.js';
 import EmitterMixin from '../emittermixin.js';
-import CKEditorError from '../ckeditorerror';
+import CKEditorError from '../ckeditorerror.js';
 import objectUtils from '../lib/lodash/object.js';
 
 const graveyardSymbol = Symbol( 'graveyard' );

@@ -10,19 +10,19 @@
 // To solve circular dependencies (deltas need to require Batch class), Batch class body is moved
 // to treemodel/delta/batch-base.
 
-import Batch from './delta/batch-base';
+import Batch from './delta/batch-base.js';
 
 /* jshint ignore:start */
 
-import d1 from './delta/insertdelta';
-import d2 from './delta/weakinsertdelta';
-import d3 from './delta/movedelta';
-import d4 from './delta/removedelta';
-import d5 from './delta/attributedelta';
-import d6 from './delta/splitdelta';
-import d7 from './delta/mergedelta';
-import d8 from './delta/wrapdelta';
-import d9 from './delta/unwrapdelta';
+import d1 from './delta/insertdelta.js';
+import d2 from './delta/weakinsertdelta.js';
+import d3 from './delta/movedelta.js';
+import d4 from './delta/removedelta.js';
+import d5 from './delta/attributedelta.js';
+import d6 from './delta/splitdelta.js';
+import d7 from './delta/mergedelta.js';
+import d8 from './delta/wrapdelta.js';
+import d9 from './delta/unwrapdelta.js';
 
 /* jshint ignore:end */
 

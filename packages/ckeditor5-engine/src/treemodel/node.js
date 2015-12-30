@@ -7,7 +7,7 @@
 
 import AttributeList from './attributelist.js';
 import langUtils from '../lib/lodash/lang.js';
-import CKEditorError from '../ckeditorerror';
+import CKEditorError from '../ckeditorerror.js';
 
 /**
  * Abstract document tree node class.

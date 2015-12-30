@@ -7,7 +7,7 @@
 
 import Delta from './delta.js';
 import register from './register.js';
-import InsertOperation from '../operation/insertoperation';
+import InsertOperation from '../operation/insertoperation.js';
 
 /**
  * To provide specific OT behavior and better collisions solving, the {@link treeModel.Batch#insert} method

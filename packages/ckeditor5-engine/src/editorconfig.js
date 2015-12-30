@@ -5,6 +5,9 @@
 
 'use strict';
 
+import CKEDITOR from '../ckeditor.js';
+import Config from './config.js';
+
 /**
  * Handles a configuration dictionary for an editor instance.
  *
@@ -14,9 +17,6 @@
  * @class EditorConfig
  * @extends Config
  */
-
-import CKEDITOR from '../ckeditor.js';
-import Config from './config.js';
 
 export default class EditorConfig extends Config {
 	/**

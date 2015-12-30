@@ -5,14 +5,14 @@
 
 'use strict';
 
+import Model from './model.js';
+
 /**
  * The base class for CKEditor plugin classes.
  *
  * @class core.Plugin
  * @extends core.Model
  */
-
-import Model from './model.js';
 
 export default class Plugin extends Model {
 	/**

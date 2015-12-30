@@ -5,6 +5,14 @@
 
 'use strict';
 
+import InsertOperation from './insertoperation.js';
+import AttributeOperation from './attributeoperation.js';
+import MoveOperation from './moveoperation.js';
+import NoOperation from './nooperation.js';
+import Position from '../position.js';
+import Range from '../range.js';
+import utils from '../../utils.js';
+
 /**
  * Transforms given {treeModel.operation.Operation} by another {treeModel.operation.Operation} and returns the result of
  * that transformation as an array containing one or more {treeModel.operation.Operation} elements.
@@ -42,14 +50,6 @@
  * as more important when resolving conflicts.
  * @returns {Array.<treeModel.operation.Operation>} Result of the transformation.
  */
-
-import InsertOperation from './insertoperation.js';
-import AttributeOperation from './attributeoperation.js';
-import MoveOperation from './moveoperation.js';
-import NoOperation from './nooperation.js';
-import Position from '../position.js';
-import Range from '../range.js';
-import utils from '../../utils.js';
 
 export default transform;
 
