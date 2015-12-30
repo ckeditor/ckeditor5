@@ -5,15 +5,15 @@
 
 'use strict';
 
+import Model from './model.js';
+import utilsLang from './lib/lodash/lang.js';
+
 /**
  * Handles a configuration dictionary.
  *
  * @class Config
  * @extends Model
  */
-
-import Model from './model.js';
-import utilsLang from './lib/lodash/lang.js';
 
 export default class Config extends Model {
 	/**
