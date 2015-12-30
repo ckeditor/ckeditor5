@@ -8,8 +8,8 @@
 /**
  * Basic creator class.
  *
- * @class core/Creator
- * @extends core/Plugin
+ * @class core.Creator
+ * @extends core.Plugin
  */
 
 import Plugin from './plugin.js';

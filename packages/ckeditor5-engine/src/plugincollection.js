@@ -22,12 +22,12 @@ export default class PluginCollection {
 	 * Creates an instance of the PluginCollection class, initializing it with a set of plugins.
 	 *
 	 * @constructor
-	 * @param {core/Editor} editor
+	 * @param {core.Editor} editor
 	 */
 	constructor( editor ) {
 		/**
 		 * @protected
-		 * @property {core/Editor}
+		 * @property {core.Editor}
 		 */
 		this._editor = editor;
 
@@ -62,7 +62,7 @@ export default class PluginCollection {
 	 * @param {String[]} plugins An array of plugins to load.
 	 * @returns {Promise} A promise which gets resolved once all plugins are loaded and available into the
 	 * collection.
-	 * @param {core/Plugin[]} returns.loadedPlugins The array of loaded plugins.
+	 * @param {core.Plugin[]} returns.loadedPlugins The array of loaded plugins.
 	 */
 	load( plugins ) {
 		const that = this;
