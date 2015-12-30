@@ -5,6 +5,10 @@
 
 'use strict';
 
+import EmitterMixin from './emittermixin.js';
+import CKEditorError from './ckeditorerror.js';
+import utilsObject from './lib/lodash/object.js';
+
 /**
  * Collections are ordered sets of objects. Items in the collection can be retrieved by their indexes
  * in the collection (like in an array) or by their ids.
@@ -18,10 +22,6 @@
  * @class Collection
  * @mixins EventEmitter
  */
-
-import EmitterMixin from './emittermixin.js';
-import CKEditorError from './ckeditorerror.js';
-import utilsObject from './lib/lodash/object.js';
 
 export default class Collection {
 	/**

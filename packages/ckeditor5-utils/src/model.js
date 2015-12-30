@@ -5,17 +5,17 @@
 
 'use strict';
 
+import EmitterMixin from './emittermixin.js';
+import CKEditorError from './ckeditorerror.js';
+import utilsObject from './lib/lodash/object.js';
+import utilsLang from './lib/lodash/lang.js';
+
 /**
  * The base MVC model class.
  *
  * @class Model
  * @mixins EventEmitter
  */
-
-import EmitterMixin from './emittermixin.js';
-import CKEditorError from './ckeditorerror.js';
-import utilsObject from './lib/lodash/object.js';
-import utilsLang from './lib/lodash/lang.js';
 
 export default class Model {
 	/**
