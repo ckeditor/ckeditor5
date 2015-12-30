@@ -9,7 +9,7 @@
   ],
   "dependencies": {
     "ckeditor5-core": "ckeditor/ckeditor5-core",
-    "requirejs": "~2.1"
+    "requirejs": "Reinmar/requirejs"
   },
   "devDependencies": {
     "almond": "^0.3.0",
