@@ -401,6 +401,21 @@ describe( 'Model', () => {
 				);
 			} );
 
+			it( 'should work when binding more that once', () => {
+				const vehicle = new Car();
+
+				vehicle.bind( 'color' ).to( car, 'color' );
+				vehicle.bind( 'year' ).to( car, 'year' );
+
+				assertBinding( vehicle,
+					{ 'color': car.color, year: car.year },
+					[
+						[ car, { color: 'blue', year: 1969 } ]
+					],
+					{ color: 'blue', year: 1969 }
+				);
+			} );
+
 			describe( 'as', () => {
 				it( 'should not chain', () => {
 					const car1 = new Car( { year: 1999 } );
@@ -432,7 +447,7 @@ describe( 'Model', () => {
 					vehicle.bind( 'type' )
 						.to( car1 )
 						.to( car2 )
-						.as( ( col1, col2 ) => col1 + col2 );
+						.as( ( ...args ) => args.join( '' ) );
 
 					expect( vehicle._attributes ).to.have.keys( [ 'type' ] );
 				} );
@@ -445,7 +460,7 @@ describe( 'Model', () => {
 					vehicle.bind( 'color' )
 						.to( car1 )
 						.to( car2 )
-						.as( ( col1, col2 ) => col1 + col2 );
+						.as( ( ...args ) => args.join( '' ) );
 
 					assertBinding( vehicle,
 						{ color: car1.color + car2.color, year: undefined },
@@ -465,7 +480,7 @@ describe( 'Model', () => {
 					vehicle.bind( 'color' )
 						.to( car1, 'color' )
 						.to( car2, 'color' )
-						.as( ( col1, col2 ) => col1 + col2 );
+						.as( ( ...args ) => args.join( '' ) );
 
 					assertBinding( vehicle,
 						{ color: car1.color + car2.color, year: undefined },
@@ -487,7 +502,7 @@ describe( 'Model', () => {
 						.to( car1 )
 						.to( car2 )
 						.to( car3 )
-						.as( ( col1, col2, col3 ) => col1 + col2 + col3 );
+						.as( ( ...args ) => args.join( '' ) );
 
 					assertBinding( vehicle,
 						{ color: car1.color + car2.color + car3.color, year: undefined },
@@ -509,7 +524,7 @@ describe( 'Model', () => {
 						.to( car1 )
 						.to( car2, 'lightness' )
 						.to( car3 )
-						.as( ( col1, lightness, col3 ) => col1 + lightness + col3 );
+						.as( ( ...args ) => args.join( '' ) );
 
 					assertBinding( vehicle,
 						{ color: car1.color + car2.lightness + car3.color, year: undefined },
@@ -518,6 +533,130 @@ describe( 'Model', () => {
 							[ car2, { color: 'green', year: 1950 } ]
 						],
 						{ color: 'blackbrightyellow', year: undefined }
+					);
+				} );
+
+				it( 'should work for a single attribute #5', () => {
+					const vehicle = new Car();
+					const car1 = new Car( { hue: 'reds' } );
+					const car2 = new Car( { lightness: 'bright' } );
+
+					vehicle.bind( 'color' )
+						.to( car1, 'hue' )
+						.to( car2, 'lightness' )
+						.as( ( ...args ) => args.join( '' ) );
+
+					assertBinding( vehicle,
+						{ color: car1.hue + car2.lightness, year: undefined },
+						[
+							[ car1, { hue: 'greens', year: 1930 } ],
+							[ car2, { lightness: 'dark', year: 1950 } ]
+						],
+						{ color: 'greensdark', year: undefined }
+					);
+				} );
+
+				it( 'should work when binding more that once #1', () => {
+					const vehicle = new Car();
+					const car1 = new Car( { hue: 'reds', produced: 1920 } );
+					const car2 = new Car( { lightness: 'bright', sold: 1921 } );
+
+					vehicle.bind( 'color' )
+						.to( car1, 'hue' )
+						.to( car2, 'lightness' )
+						.as( ( ...args ) => args.join( '' ) );
+
+					vehicle.bind( 'year' )
+						.to( car1, 'produced' )
+						.to( car2, 'sold' )
+						.as( ( ...args ) => args.join( '/' ) );
+
+					assertBinding( vehicle,
+						{ color: car1.hue + car2.lightness, year: car1.produced + '/' + car2.sold },
+						[
+							[ car1, { hue: 'greens', produced: 1930 } ],
+							[ car2, { lightness: 'dark', sold: 2000 } ]
+						],
+						{ color: 'greensdark', year: '1930/2000' }
+					);
+				} );
+
+				it( 'should work when binding more that once #2', () => {
+					const vehicle = new Car();
+					const car1 = new Car( { hue: 'reds', produced: 1920 } );
+					const car2 = new Car( { lightness: 'bright', sold: 1921 } );
+
+					vehicle.bind( 'color' )
+						.to( car1, 'hue' )
+						.to( car2, 'lightness' )
+						.as( ( ...args ) => args.join( '' ) );
+
+					vehicle.bind( 'year' )
+						.to( car1, 'produced' )
+						.to( car2, 'sold' )
+						.as( ( ...args ) => args.join( '/' ) );
+
+					vehicle.bind( 'mix' )
+						.to( car1, 'hue' )
+						.to( car2, 'sold' )
+						.as( ( ...args ) => args.join( '+' ) );
+
+					assertBinding( vehicle,
+						{
+							color: car1.hue + car2.lightness,
+							year: car1.produced + '/' + car2.sold,
+							mix: car1.hue + '+' + car2.sold
+						},
+						[
+							[ car1, { hue: 'greens', produced: 1930 } ],
+							[ car2, { lightness: 'dark', sold: 2000 } ]
+						],
+						{
+							color: 'greensdark',
+							year: '1930/2000',
+							mix: 'greens+2000'
+						}
+					);
+				} );
+
+				it( 'should work when binding more that once #3', () => {
+					const vehicle = new Car();
+					const car1 = new Car( { hue: 'reds', produced: 1920 } );
+					const car2 = new Car( { lightness: 'bright', sold: 1921 } );
+
+					vehicle.bind( 'color' )
+						.to( car1, 'hue' )
+						.to( car2, 'lightness' )
+						.as( ( ...args ) => args.join( '' ) );
+
+					vehicle.bind( 'custom1' ).to( car1, 'hue' );
+
+					vehicle.bind( 'year' )
+						.to( car1, 'produced' )
+						.to( car2, 'sold' )
+						.as( ( ...args ) => args.join( '/' ) );
+
+					vehicle.bind( 'custom2', 'custom3' ).to( car1, 'produced', 'hue' );
+
+					assertBinding( vehicle,
+						{
+							color: car1.hue + car2.lightness,
+							year: car1.produced + '/' + car2.sold,
+							custom1: car1.hue,
+							custom2: car1.produced,
+							custom3: car1.hue
+						},
+						[
+							[ car1, { hue: 'greens', produced: 1930 } ],
+							[ car2, { lightness: 'dark', sold: 2000 } ]
+						],
+						{
+							color: 'greensdark',
+							year: '1930/2000',
+							custom1: 'greens',
+							custom2: 1930,
+							custom3: 'greens'
+						}
 					);
 				} );
 			} );
@@ -592,7 +731,7 @@ describe( 'Model', () => {
 			model.bind( 'd', 'e' ).to( bound3, 'b3d', 'b3d' );
 
 			assertStructure( model,
-				{ a: true, b: true, c: true, d: true, e: true },
+				[ 'a', 'b', 'c', 'd', 'e' ],
 				[ bound1, bound2, bound3 ],
 				[
 					{ b1a: [ 'a' ] },
@@ -604,7 +743,7 @@ describe( 'Model', () => {
 			model.unbind( 'c', 'd' );
 
 			assertStructure( model,
-				{ a: true, b: true, e: true },
+				[ 'a', 'b', 'e' ],
 				[ bound1, bound2, bound3 ],
 				[
 					{ b1a: [ 'a' ] },
@@ -616,7 +755,7 @@ describe( 'Model', () => {
 			model.unbind( 'b' );
 
 			assertStructure( model,
-				{ a: true, e: true },
+				[ 'a', 'e' ],
 				[ bound1, bound3 ],
 				[
 					{ b1a: [ 'a' ] },
@@ -626,7 +765,7 @@ describe( 'Model', () => {
 
 			model.unbind();
 
-			assertStructure( model, {}, [], [] );
+			assertStructure( model, [], [], [] );
 		} );
 	} );
 
@@ -661,29 +800,34 @@ describe( 'Model', () => {
 		}
 	}
 
-	function assertStructure( model, expectedBound, expectedModels, expectedBindings ) {
-		const boundModels = [ ...model._boundTo.keys() ];
+	function assertStructure( model, expectedBoundAttributes, expectedBoundModels, expectedBindings ) {
+		const boundModels = [ ...model._boundModels.keys() ];
 
-		// Check model._bound object.
-		expect( model._bound ).to.be.deep.equal( expectedBound );
+		// Check model._boundAttributes object.
+		if ( expectedBoundAttributes.length ) {
+			expect( model._boundAttributes ).to.have.keys( expectedBoundAttributes );
+		} else {
+			expect( model._boundAttributes ).to.be.empty;
+		}
 
-		// Check model._boundTo models.
-		expect( boundModels ).to.have.members( expectedModels );
+		// Check model._boundModels models.
+		expect( boundModels ).to.have.members( expectedBoundModels );
 
 		// Check model._listeningTo models.
 		boundModels.map( boundModel => {
 			expect( model._listeningTo ).to.have.ownProperty( boundModel._emitterId );
 		} );
 
-		// Check model._boundTo model bindings.
+		// Check model._boundModels bindings.
 		expectedBindings.forEach( ( binding, index ) => {
 			const bindingKeys = Object.keys( binding );
 
-			expect( model._boundTo.get( expectedModels[ index ] ) ).to.have.keys( bindingKeys );
+			expect( model._boundModels.get( expectedBoundModels[ index ] ) ).to.have.keys( bindingKeys );
 
-			bindingKeys.forEach( k => {
-				expect( Array.from( model._boundTo.get( expectedModels[ index ] )[ k ] ) )
-					.to.have.members( binding[ k ] );
+			bindingKeys.forEach( key => {
+				const entries = [ ...model._boundModels.get( expectedBoundModels[ index ] )[ key ] ];
+
+				expect( entries.map( e => e.attr ) ).to.have.members( binding[ key ] );
 			} );
 		} );
 	}
