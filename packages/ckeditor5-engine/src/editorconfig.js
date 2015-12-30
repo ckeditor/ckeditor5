@@ -20,7 +20,7 @@ import Config from './config.js';
 
 export default class EditorConfig extends Config {
 	/**
-	 * @inheritdoc Config#get
+	 * @inheritdoc core.Config#get
 	 */
 	get() {
 		// Try to take it from this editor instance.
@@ -28,12 +28,6 @@ export default class EditorConfig extends Config {
 
 		// If the configuration is not defined in the instance, try to take it from CKEDITOR.config.
 		if ( typeof value == 'undefined' ) {
-			// There is a circular dependency issue here: CKEDITOR -> Editor -> EditorConfig -> CKEDITOR.
-			// Therefore we need to require() it again here. That's why the parameter was named CKE.
-			//
-			// Note additionally that we still keep 'ckeditor' in the dependency list for correctness, to ensure
-			// that the module is loaded.
-
 			value = super.get.apply( CKEDITOR.config, arguments );
 		}
 
