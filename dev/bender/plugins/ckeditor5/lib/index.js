@@ -7,7 +7,7 @@
 
 const path = require( 'path' );
 const files = [
-	path.join( __dirname, '../static/extensions.js' ),
+	path.join( __dirname, '../static/amd.js' ),
 	path.join( __dirname, '../static/tools.js' )
 ];
 
@@ -18,12 +18,17 @@ module.exports = {
 		this.plugins.addFiles( files );
 
 		this.on( 'test:created', ( test ) => {
+			const moduleRegExp = /node_modules\/ckeditor5-([^\/]+)/;
 			let name = test.displayName;
+			let module = name.match( moduleRegExp );
 
-			name = name.replace( /node_modules\/ckeditor5-core/, 'core: ' );
-			name = name.replace( /node_modules\/ckeditor5-plugin-([^\/]+)/, 'plugin!$1: ' );
-
-			test.displayName = name;
+			if ( module ) {
+				test.tags.unshift( 'module!' + module[ 1 ] );
+				test.displayName = name.replace( moduleRegExp, '$1: ' );
+			} else {
+				test.tags.unshift( 'module!ckeditor5' );
+				test.displayName = 'ckeditor5: ' + test.displayName;
+			}
 		} );
 
 		// Add this plugins' scripts before the includes pagebuilder (which handles bender-include directives), so

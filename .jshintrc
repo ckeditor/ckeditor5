@@ -11,9 +11,5 @@
 	"strict": true,
 	"varstmt": true,
 
-	"globalstrict": true,
-
-	"globals": {
-		"CKEDITOR": false
-	}
+	"globalstrict": true
 }

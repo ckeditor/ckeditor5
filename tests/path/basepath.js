@@ -5,7 +5,12 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'ckeditor' );
+const modules = bender.amd.require( 'ckeditor5/path' );
+let path;
+
+before( () => {
+	path = modules[ 'ckeditor5/path' ];
+} );
 
 beforeEach( () => {
 	// Ensure that no CKEDITOR_BASEPATH global is available.
@@ -24,22 +29,18 @@ describe( 'basePath', () => {
 	testGetBasePathFromTag( '../ckeditor/foo/ckeditor.JS', /\/ckeditor\/foo\/$/ );
 
 	it( 'should work with the CKEDITOR_BASEPATH global', () => {
-		const CKEDITOR = modules.ckeditor;
-
 		window.CKEDITOR_BASEPATH = 'http://foo.com/ckeditor/';
-		expect( CKEDITOR._getBasePath() ).to.equal( 'http://foo.com/ckeditor/' );
+		expect( path._getBasePath() ).to.equal( 'http://foo.com/ckeditor/' );
 	} );
 
 	function testGetBasePathFromTag( url, expectedBasePath ) {
 		it( 'should work with script tags - ' + url, () => {
-			const CKEDITOR = modules.ckeditor;
-
 			addScript( url );
 
 			if ( typeof expectedBasePath == 'string' ) {
-				expect( CKEDITOR._getBasePath() ).to.equal( expectedBasePath );
+				expect( path._getBasePath() ).to.equal( expectedBasePath );
 			} else {
-				expect( CKEDITOR._getBasePath() ).to.match( expectedBasePath );
+				expect( path._getBasePath() ).to.match( expectedBasePath );
 			}
 		} );
 	}

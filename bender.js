@@ -2,9 +2,6 @@
 
 'use strict';
 
-// Set it to true to test with the build version.
-const isBuild = false;
-
 const config = {
 	plugins: [
 		'benderjs-chai',
@@ -21,9 +18,9 @@ const config = {
 		'ckeditor': {
 			path: '.',
 			files: [
-				'node_modules/requirejs/require.js',
-				'ckeditor.js'
-			]
+				'node_modules/requirejs/require.js'
+			],
+			basePath: '/apps/ckeditor/dist/amd/'
 		}
 	},
 
@@ -40,22 +37,10 @@ const config = {
 
 	coverage: {
 		paths: [
-			'ckeditor.js',
-			'src/**/*.js',
-			'node_modules/ckeditor5-*/src/**/*.js',
-			'!node_modules/ckeditor5-*/src/lib/**'
+			'dist/amd/**/*.js',
+			'!dist/amd/ckeditor5-*/lib/**'
 		]
 	}
 };
-
-if ( isBuild ) {
-	// Change the 'ckeditor' application to point to the build.
-	config.applications.ckeditor = {
-		path: 'build',
-		files: [
-			'ckeditor.js'
-		]
-	};
-}
 
 module.exports = config;
