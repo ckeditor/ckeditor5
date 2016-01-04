@@ -50,7 +50,7 @@ module.exports = {
 			return null;
 		}
 
-		server = match[ 1 ] || 'https://github.com/';
+		server = match[ 1 ] || 'git@github.com:';
 		repository = match[ 2 ];
 		user = match[ 3 ];
 		name = match[ 4 ];

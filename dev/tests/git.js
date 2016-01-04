@@ -28,7 +28,7 @@ describe( 'utils', () => {
 			it( 'should parse short GitHub URL ', () => {
 				const urlInfo = git.parseRepositoryUrl( 'ckeditor/ckeditor5-core' );
 
-				expect( urlInfo.server ).to.equal( 'https://github.com/' );
+				expect( urlInfo.server ).to.equal( 'git@github.com:' );
 				expect( urlInfo.repository ).to.equal( 'ckeditor/ckeditor5-core' );
 				expect( urlInfo.user ).to.equal( 'ckeditor' );
 				expect( urlInfo.name ).to.equal( 'ckeditor5-core' );
@@ -38,7 +38,7 @@ describe( 'utils', () => {
 			it( 'should parse short GitHub URL with provided branch ', () => {
 				const urlInfo = git.parseRepositoryUrl( 'ckeditor/ckeditor5-core#experimental' );
 
-				expect( urlInfo.server ).to.equal( 'https://github.com/' );
+				expect( urlInfo.server ).to.equal( 'git@github.com:' );
 				expect( urlInfo.repository ).to.equal( 'ckeditor/ckeditor5-core' );
 				expect( urlInfo.user ).to.equal( 'ckeditor' );
 				expect( urlInfo.name ).to.equal( 'ckeditor5-core' );
