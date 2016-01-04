@@ -5,7 +5,13 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'treeview/observer/observer' ], ( Observer ) => {
+CKEDITOR.define( [
+	'utils-diff',
+	'treeview/observer/observer',
+	'treeview/element',
+	'treeview/text',
+	'treeview/position'
+], ( diff, Observer, ViewElement, ViewText, Position ) => {
 	class MutationObserver extends Observer {
 		constructor() {
 			super();
@@ -43,23 +49,92 @@ CKEDITOR.define( [ 'treeview/observer/observer' ], ( Observer ) => {
 		}
 
 		_onMutations( mutations ) {
+			// Use set for deduplication.
 			const mutatedTexts = new Set();
 			const mutatedElements = new Set();
 
 			for ( let mutation of mutations ) {
+				if ( mutation.type === 'childList' ) {
+					const element = ViewElement.getCorespondingElement( mutation.target );
+
+					if ( element ) {
+						mutatedElements.add( element );
+					}
+				}
+			}
+
+			for ( let mutation of mutations ) {
 				if ( mutation.type === 'characterData' ) {
-					mutatedTexts.add( mutation.target );
-				} else if ( mutation.type === 'childList' ) {
-					mutatedElements.add( mutation.target );
+					const text = Text.getCorespondingText( mutation.target );
+
+					if ( text && !mutatedElements.has( text.parent ) ) {
+						mutatedTexts.add( text );
+					}
 				}
 			}
 
 			for ( let text of mutatedTexts ) {
-				if ( !mutatedElements.has( text.parent ) ) {
+				text.markToSync( ViewText.TEXT_NEEDS_UPDATE );
+
+				this.fire( 'text', text ); // TODO: new text
+			}
+
+			for ( let viewElement of mutatedElements ) {
+				const domElement = viewElement.domElement;
+				const domChildren = domElement.childNodes;
+				const viewChildren = viewElement.getChildren();
+
+				viewElement.markToSync( ViewElement.CHILDREN_NEED_UPDATE );
+
+				const actions = diff( viewChildren, domChildren, compareNodes );
+
+				let domOffset = 0;
+				let viewOffset = 0;
+
+				for ( let action of actions ) {
+					if ( action === diff.EQUAL ) {
+						domOffset++;
+						viewOffset++;
+					} else if ( action === diff.INSERT ) {
+						this.fire( 'insert', new Position( viewElement, viewOffset ), domToView( domChildren[ domOffset ] ) );
+
+						domOffset++;
+					} else if ( action === diff.DELETE ) {
+						this.fire( 'delete', viewChildren[ viewOffset ] );
+
+						viewOffset++;
+					}
 				}
+
+				// TODO: fire order
+				// TODO: update positions?
+				// TODO: delete and insert -> move
+				// 	     delete text and insert text -> 'text' event
 			}
 
 			this.treeView.render();
+
+			function compareNodes( viewNode, domNode ) {
+				// Elements.
+				if ( domNode instanceof HTMLElement && viewNode instanceof ViewElement ) {
+					return domNode === viewNode.DOMElement;
+				}
+				// Texts.
+				else if ( domNode instanceof Text && viewNode instanceof ViewText ) {
+					return domNode.data === viewNode.getText();
+				}
+
+				// Not matching types.
+				return false;
+			}
+
+			function domToView( domElement ) {
+				let viewElement = ViewElement.getCorespondingElement( domElement );
+				if ( viewElement ) {
+					return viewElement;
+				}
+				// TODO
+			}
 		}
 	}
 
