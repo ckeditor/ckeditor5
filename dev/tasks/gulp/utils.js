@@ -6,34 +6,18 @@ const path = require( 'path' );
 const gulp = require( 'gulp' );
 const rename = require( 'gulp-rename' );
 const babel = require( 'gulp-babel' );
-const gulpWatch = require( 'gulp-watch' );
-const gulpPlumber = require( 'gulp-plumber' );
 const gutil = require( 'gulp-util' );
 const multipipe = require( 'multipipe' );
-
-const sep = path.sep;
+const PassThrough = require( 'stream' ).PassThrough;
 
 const utils = {
 	/**
-	 * Returns a stream of files matching the given glob pattern.
+	 * Creates a pass-through stream.
 	 *
-	 * @param {String} root The root directory.
-	 * @param {String} glob The glob pattern.
-	 * @param {Boolean} [watch] Whether to watch the files.
 	 * @returns {Stream}
 	 */
-	src( root, glob, watch ) {
-		const srcDir = path.join( root, glob );
-		let stream = gulp.src( srcDir );
-
-		if ( watch ) {
-			stream = stream
-				// Let's use plumber only when watching. In other cases we should fail quickly and loudly.
-				.pipe( gulpPlumber() )
-				.pipe( gulpWatch( srcDir ) );
-		}
-
-		return stream;
+	noop() {
+		return new PassThrough( { objectMode: true } );
 	},
 
 	/**
@@ -67,24 +51,37 @@ const utils = {
 		}
 
 		return babel( {
-			plugins: [ `transform-es2015-modules-${ babelModuleTranspiler }` ],
-			// Ensure that all paths ends with '.js' because Require.JS (unlike Common.JS/System.JS)
-			// will not add it to module names which look like paths.
-			resolveModuleSource: ( source ) => {
-				return utils.appendModuleExtension( source );
-			}
-		} );
+				plugins: [
+					// Note: When plugin is specified by its name, Babel loads it from a context of a
+					// currently transpiled file (in our case - e.g. from ckeditor5-core/src/foo.js).
+					// Obviously that fails, since we have all the plugins installed only in ckeditor5/
+					// and we want to have them only there to avoid installing them dozens of times.
+					//
+					// Anyway, I haven't found in the docs that you can also pass a plugin instance here,
+					// but it works... so let's hope it will.
+					require( `babel-plugin-transform-es2015-modules-${ babelModuleTranspiler }` )
+				],
+				// Ensure that all paths ends with '.js' because Require.JS (unlike Common.JS/System.JS)
+				// will not add it to module names which look like paths.
+				resolveModuleSource: ( source ) => {
+					return utils.appendModuleExtension( source );
+				}
+			} )
+			.on( 'error', function( err ) {
+				gutil.log( gutil.colors.red( `Error (Babel:${ format })` ) );
+				gutil.log( gutil.colors.red( err.message ) );
+				console.log( '\n' + err.codeFrame + '\n' );
+			} );
 	},
 
 	/**
-	 * Creates a function adding transpilation pipes to the `pipes` param.
-	 * Used to generate `formats.reduce()` callback where `formats` is an array
-	 * of formats that should be generated.
+	 * Creates a function generating convertion streams.
+	 * Used to generate `formats.reduce()` callback where `formats` is an array of formats that should be generated.
 	 *
 	 * @param {String} distDir The `dist/` directory path.
 	 * @returns {Function}
 	 */
-	addFormat( distDir ) {
+	getConversionStreamGenerator( distDir ) {
 		return ( pipes, format ) => {
 			const conversionPipes = [];
 
@@ -125,19 +122,28 @@ const utils = {
 	},
 
 	/**
-	 * Moves files out of `node_modules/ckeditor5-xxx/src/*` directories to `ckeditor5-xxx/*`.
+	 * Moves files out of `ckeditor5-xxx/src/*` directories to `ckeditor5-xxx/*`.
 	 *
-	 * @param {RegExp} modulePathPattern
 	 * @returns {Stream}
 	 */
-	unpackModules( modulePathPattern ) {
+	unpackModules() {
 		return rename( ( file ) => {
-			file.dirname = file.dirname.replace( modulePathPattern, `${ sep }$1${ sep }` );
+			const dir = file.dirname.split( path.sep );
 
-			// Remove now empty src/ dirs.
-			if ( !file.extname && file.basename == 'src' ) {
-				file.basename = '';
+			// Validate the input for the clear conscious.
+
+			if ( dir[ 0 ].indexOf( 'ckeditor5-' ) !== 0 ) {
+				throw new Error( 'Path should start with "ckeditor5-".' );
 			}
+
+			if ( dir[ 1 ] != 'src' ) {
+				throw new Error( 'Path should start with "ckeditor5-*/src".' );
+			}
+
+			// Remove 'src'.
+			dir.splice( 1, 1 );
+
+			file.dirname = path.join.apply( null, dir );
 		} );
 	},
 
