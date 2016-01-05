@@ -5,23 +5,21 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'treeview/element' ], ( Element ) => {
-	/**
-	 * Class for nodes that are roots of trees in tree data view.
-	 *
-	 * @class treeView.RootElement
-	 */
-	class RootElement extends Element {
-		constructor( TreeView, name ) {
-			super( name );
+import Element from './element.js';
 
-			this._treeView = TreeView;
-		}
+/**
+ * Class for nodes that are roots of trees in tree data view.
+ *
+ * @class treeView.RootElement
+ */
+export default class RootElement extends Element {
+	constructor( TreeView, name ) {
+		super( name );
 
-		getTreeView() {
-			return this._treeView;
-		}
+		this._treeView = TreeView;
 	}
 
-	return RootElement;
-} );
+	getTreeView() {
+		return this._treeView;
+	}
+}

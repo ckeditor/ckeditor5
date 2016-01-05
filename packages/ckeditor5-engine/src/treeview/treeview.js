@@ -5,50 +5,46 @@
 
 'use strict';
 
-CKEDITOR.define( [
-	'utils',
-	'emittermixin',
-	'treeview/rootelement',
-	'treeview/renderer'
-], ( utils, EmitterMixin, RootElement, Renderer ) => {
-	class TreeView {
-		constructor( domElement ) {
-			/**
-			 * Root of the view
-			 */
-			this.viewRoot = new RootElement( this, domElement.name );
-			this.viewRoot.cloneDOMAttrs();
+import utils from '../utils.js';
+import EmitterMixin from './emittermixin.js';
+import RootElement from './rootelement.js';
+import Renderer from './renderer.js';
 
-			/**
-			 * Root of the DOM.
-			 */
-			this.domRoot = domElement;
+export default class TreeView {
+	constructor( domElement ) {
+		/**
+		 * Root of the view
+		 */
+		this.viewRoot = new RootElement( this, domElement.name );
+		this.viewRoot.cloneDOMAttrs();
 
-			this.observers = new Set();
+		/**
+		 * Root of the DOM.
+		 */
+		this.domRoot = domElement;
 
-			this.renderer = new Renderer( this );
-		}
+		this.observers = new Set();
 
-		addObserver( observer ) {
-			this.observers.push( observer );
-			observer.init( this );
-			observer.attach();
-		}
-
-		render() {
-			for ( let observer of this.observers ) {
-				observer.detach();
-			}
-
-			this.renderer.render();
-
-			for ( let observer of this.observers ) {
-				observer.attach();
-			}
-		}
+		this.renderer = new Renderer( this );
 	}
 
-	utils.extend( Document.prototype, EmitterMixin );
+	addObserver( observer ) {
+		this.observers.push( observer );
+		observer.init( this );
+		observer.attach();
+	}
 
-	return TreeView;
-} );
+	render() {
+		for ( let observer of this.observers ) {
+			observer.detach();
+		}
+
+		this.renderer.render();
+
+		for ( let observer of this.observers ) {
+			observer.attach();
+		}
+	}
+}
+
+utils.extend( Document.prototype, EmitterMixin );

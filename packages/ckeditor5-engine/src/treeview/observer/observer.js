@@ -5,21 +5,17 @@
 
 'use strict';
 
-CKEDITOR.define( [], () => {
-	class Observer {
-		/**
-		 * @method init
-		 * @param {treeView.TreeView}
-		 */
+export default class Observer {
+	/**
+	 * @method init
+	 * @param {treeView.TreeView}
+	 */
 
-		/**
-		 * @method attach
-		 */
+	/**
+	 * @method attach
+	 */
 
-		/**
-		 * @method detach
-		 */
-	}
-
-	return Observer;
-} );
+	/**
+	 * @method detach
+	 */
+}
