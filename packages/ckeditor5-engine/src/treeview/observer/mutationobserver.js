@@ -11,7 +11,7 @@ CKEDITOR.define( [
 	'treeview/element',
 	'treeview/text',
 	'treeview/position'
-], ( diff, Observer, ViewElement, ViewText, Position ) => {
+], ( diff, Observer, ViewElement, ViewText ) => {
 	class MutationObserver extends Observer {
 		constructor() {
 			super();
@@ -48,12 +48,12 @@ CKEDITOR.define( [
 			this._mutationObserver.disconnect();
 		}
 
-		_onMutations( mutations ) {
+		_onMutations( domMutations ) {
 			// Use set for deduplication.
 			const mutatedTexts = new Set();
 			const mutatedElements = new Set();
 
-			for ( let mutation of mutations ) {
+			for ( let mutation of domMutations ) {
 				if ( mutation.type === 'childList' ) {
 					const element = ViewElement.getCorespondingElement( mutation.target );
 
@@ -63,77 +63,66 @@ CKEDITOR.define( [
 				}
 			}
 
-			for ( let mutation of mutations ) {
+			for ( let mutation of domMutations ) {
 				if ( mutation.type === 'characterData' ) {
 					const text = Text.getCorespondingText( mutation.target );
 
 					if ( text && !mutatedElements.has( text.parent ) ) {
-						mutatedTexts.add( text );
+						mutatedTexts.add( {
+							type: 'text',
+							oldText: text.getText(),
+							newText: mutation.target.data,
+							node: text
+						} );
 					}
 				}
 			}
 
-			for ( let text of mutatedTexts ) {
-				text.markToSync( ViewText.TEXT_NEEDS_UPDATE );
+			const viewMutations = [];
 
-				this.fire( 'text', text ); // TODO: new text
+			for ( let mutatedText of mutatedTexts ) {
+				mutatedText.node.markToSync( ViewText.TEXT_NEEDS_UPDATE );
+
+				viewMutations.push( mutatedText );
 			}
 
 			for ( let viewElement of mutatedElements ) {
 				const domElement = viewElement.domElement;
 				const domChildren = domElement.childNodes;
 				const viewChildren = viewElement.getChildren();
+				const newViewChildren = [];
+
+				for ( let domChild of domChildren ) {
+					newViewChildren.push( ViewElement.createFromDom( domChild ) );
+				}
 
 				viewElement.markToSync( ViewElement.CHILDREN_NEED_UPDATE );
 
-				const actions = diff( viewChildren, domChildren, compareNodes );
-
-				let domOffset = 0;
-				let viewOffset = 0;
-
-				for ( let action of actions ) {
-					if ( action === diff.EQUAL ) {
-						domOffset++;
-						viewOffset++;
-					} else if ( action === diff.INSERT ) {
-						this.fire( 'insert', new Position( viewElement, viewOffset ), domToView( domChildren[ domOffset ] ) );
-
-						domOffset++;
-					} else if ( action === diff.DELETE ) {
-						this.fire( 'delete', viewChildren[ viewOffset ] );
-
-						viewOffset++;
-					}
-				}
-
-				// TODO: fire order
-				// TODO: update positions?
-				// TODO: delete and insert -> move
-				// 	     delete text and insert text -> 'text' event
+				viewMutations.push( {
+					type: 'childNodes',
+					oldChildren: viewElement.getChildren(),
+					newChildren: newViewChildren,
+					diff: diff( viewChildren, newViewChildren, compareNodes ),
+					node: viewElement
+				} );
 			}
+
+			this.fire( 'mutations', viewMutations );
 
 			this.treeView.render();
 
-			function compareNodes( viewNode, domNode ) {
+			function compareNodes( oldNode, newNode ) {
 				// Elements.
-				if ( domNode instanceof HTMLElement && viewNode instanceof ViewElement ) {
-					return domNode === viewNode.DOMElement;
+				if ( oldNode instanceof ViewElement && newNode instanceof ViewElement ) {
+					return oldNode === newNode;
 				}
 				// Texts.
-				else if ( domNode instanceof Text && viewNode instanceof ViewText ) {
-					return domNode.data === viewNode.getText();
+				else if ( oldNode instanceof ViewText && newNode instanceof ViewText ) {
+					return oldNode.getText() === newNode.getText();
 				}
 
 				// Not matching types.
 				return false;
-			}
-
-			function domToView( domElement ) {
-				let viewElement = ViewElement.getCorespondingElement( domElement );
-				if ( viewElement ) {
-					return viewElement;
-				}
-				// TODO
 			}
 		}
 	}

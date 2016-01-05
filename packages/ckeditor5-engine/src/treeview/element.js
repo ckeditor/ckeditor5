@@ -5,7 +5,7 @@
 
 'use strict';
 
-CKEDITOR.define( [ 'utils', 'treeview/Node' ], ( utils, Node ) => {
+CKEDITOR.define( [ 'utils', 'treeview/node', 'treeview/text', ], ( utils, Node, ViewText ) => {
 	class Element extends Node {
 		constructor( name, attrs, children ) {
 			/**
@@ -30,6 +30,33 @@ CKEDITOR.define( [ 'utils', 'treeview/Node' ], ( utils, Node ) => {
 			Element._domToViewMapping.set( domElement, this );
 		}
 
+		// Note that created elements will not have coresponding DOM elements created it these did not exist before.
+		static createFromDom( domElement ) {
+			let viewElement = this.getCorespondingElement( domElement );
+
+			if ( viewElement ) {
+				return viewElement;
+			}
+
+			if ( domElement instanceof Text ) {
+				return new ViewText( domElement.data );
+			} else {
+				viewElement = new Element( domElement.name );
+				const attrs = domElement.attributes;
+
+				for ( let i = attrs.length - 1; i >= 0; i-- ) {
+					viewElement.setAttr( attrs[ i ].name, attrs[ i ].value );
+				}
+
+				for ( let childView of viewElement.getChildren() ) {
+					domElement.appendChild( this.createFromDom( childView ) );
+				}
+
+				return domElement;
+			}
+		}
+
+		// Coresponding elements exists only for rendered elementes.
 		static getCorespondingElement( domElement ) {
 			return this._domToViewMapping.get( domElement );
 		}
