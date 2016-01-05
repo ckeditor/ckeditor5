@@ -6,8 +6,6 @@ const path = require( 'path' );
 const gulp = require( 'gulp' );
 const rename = require( 'gulp-rename' );
 const babel = require( 'gulp-babel' );
-const gulpWatch = require( 'gulp-watch' );
-const gulpPlumber = require( 'gulp-plumber' );
 const gutil = require( 'gulp-util' );
 const multipipe = require( 'multipipe' );
 const PassThrough = require( 'stream' ).PassThrough;
@@ -20,21 +18,6 @@ const utils = {
 	 */
 	noop() {
 		return new PassThrough( { objectMode: true } );
-	},
-
-	/**
-	 * Transforms a stream of files into a watched stream of files.
-	 *
-	 * @param {String} glob The glob pattern to watch.
-	 * @param {Object} opts Gulp watcher opts.
-	 * @returns {Stream}
-	 */
-	watch( glob, opts ) {
-		return multipipe(
-			// Note: we're using plumber only when watching. In other cases we should fail quickly and loudly.
-			gulpPlumber(),
-			gulpWatch( glob, opts )
-		);
 	},
 
 	/**

@@ -25,6 +25,7 @@ const gulp = require( 'gulp' );
 const del = require( 'del' );
 const merge = require( 'merge-stream' );
 const gulpMirror = require( 'gulp-mirror' );
+const gulpWatch = require( 'gulp-watch' );
 const gutil = require( 'gulp-util' );
 const minimist = require( 'minimist' );
 const utils = require( './utils' );
@@ -63,7 +64,7 @@ module.exports = ( config ) => {
 				const glob = path.join( config.ROOT_DIR, 'ckeditor.js' );
 
 				return gulp.src( glob )
-					.pipe( watch ? utils.watch( glob ) : utils.noop() );
+					.pipe( watch ? gulpWatch( glob ) : utils.noop() );
 			},
 
 			/**
@@ -76,7 +77,7 @@ module.exports = ( config ) => {
 				const glob = path.join( config.ROOT_DIR, 'src', '**', '*.js' );
 
 				return gulp.src( glob )
-					.pipe( watch ? utils.watch( glob ) : utils.noop() )
+					.pipe( watch ? gulpWatch( glob ) : utils.noop() )
 					.pipe( utils.wrapCKEditor5Module() );
 			},
 
@@ -119,7 +120,7 @@ module.exports = ( config ) => {
 					const opts = { base: baseDir };
 
 					return gulp.src( glob, opts )
-						.pipe( watch ? utils.watch( glob, opts ) : utils.noop() );
+						.pipe( watch ? gulpWatch( glob, opts ) : utils.noop() );
 				} );
 
 				return merge.apply( null, streams )
