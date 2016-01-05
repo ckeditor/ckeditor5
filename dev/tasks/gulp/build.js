@@ -187,11 +187,12 @@ module.exports = ( config ) => {
 		}
 
 		// Handles error in the combined conversion stream.
-		// If we don't watch files, make sure that the error is forwarded to the output.
+		// If we don't watch files, make sure that the process terminates ASAP. We could forward the error
+		// to the output, but there may be some data in the pipeline and our error could be covered
+		// by dozen of other messages.
 		// If we watch files, then clean up the old streams and restart the combined conversion stream.
-		function onError( err ) {
+		function onError() {
 			if ( !options.watch ) {
-				// To stop the whole execution ASAP.
 				process.exit( 1 );
 
 				return;
