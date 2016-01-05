@@ -9,10 +9,6 @@ import diff from '../utils-diff.js';
 import ViewText from './text.js';
 import ViewElement from './element.js';
 
-const ATTRIBUTES_NEED_UPDATE = 0;
-const CHILDREN_NEED_UPDATE = 1;
-const TEXT_NEEDS_UPDATE = 2;
-
 export default class Renderer {
 	constructor( treeView ) {
 		this.view = treeView.view;
@@ -25,11 +21,11 @@ export default class Renderer {
 	}
 
 	markToSync( node, type ) {
-		if ( type === ATTRIBUTES_NEED_UPDATE ) {
+		if ( type === 'ATTRIBUTES_NEED_UPDATE' ) {
 			this.markedAttrs.push( node );
-		} else if ( type === CHILDREN_NEED_UPDATE ) {
+		} else if ( type === 'CHILDREN_NEED_UPDATE' ) {
 			this.markedChildren.push( node );
-		} else if ( type === TEXT_NEEDS_UPDATE ) {
+		} else if ( type === 'TEXT_NEEDS_UPDATE' ) {
 			this.markedTexts.push( node );
 		}
 	}
@@ -136,7 +132,3 @@ export default class Renderer {
 		}
 	}
 }
-
-Renderer.ATTRIBUTES_NEED_UPDATE = ATTRIBUTES_NEED_UPDATE;
-Renderer.CHILDREN_NEED_UPDATE = CHILDREN_NEED_UPDATE;
-Renderer.TEXT_NEEDS_UPDATE = TEXT_NEEDS_UPDATE;

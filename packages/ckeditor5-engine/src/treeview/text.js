@@ -18,7 +18,7 @@ export default class Text extends Node {
 	}
 
 	setText( text ) {
-		this.markToSync( Node.TEXT_NEEDS_UPDATE );
+		this.markToSync( 'TEXT_NEEDS_UPDATE' );
 
 		this._text = text;
 	}

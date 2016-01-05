@@ -5,7 +5,6 @@
 
 'use strict';
 
-import Renderer from './renderer.js';
 import CKEditorError from '../ckeditorerror.js';
 
 export default class Node {
@@ -70,7 +69,3 @@ export default class Node {
 		treeView.renderer.markToSync( this, type );
 	}
 }
-
-Node.ATTRIBUTES_NEED_UPDATE = Renderer.ATTRIBUTES_NEED_UPDATE;
-Node.CHILDREN_NEED_UPDATE = Renderer.CHILDREN_NEED_UPDATE;
-Node.TEXT_NEEDS_UPDATE = Renderer.TEXT_NEEDS_UPDATE;

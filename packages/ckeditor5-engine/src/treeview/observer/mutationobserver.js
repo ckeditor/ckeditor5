@@ -79,7 +79,7 @@ export default class MutationObserver extends Observer {
 		const viewMutations = [];
 
 		for ( let mutatedText of mutatedTexts ) {
-			mutatedText.node.markToSync( ViewText.TEXT_NEEDS_UPDATE );
+			mutatedText.node.markToSync( 'TEXT_NEEDS_UPDATE' );
 
 			viewMutations.push( mutatedText );
 		}
@@ -94,7 +94,7 @@ export default class MutationObserver extends Observer {
 				newViewChildren.push( ViewElement.createFromDom( domChild ) );
 			}
 
-			viewElement.markToSync( ViewElement.CHILDREN_NEED_UPDATE );
+			viewElement.markToSync( 'CHILDREN_NEED_UPDATE' );
 
 			viewMutations.push( {
 				type: 'childNodes',
