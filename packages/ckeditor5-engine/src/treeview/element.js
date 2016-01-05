@@ -8,21 +8,24 @@
 import ViewText from './text.js';
 import Node from './node.js';
 import utils from '../utils.js';
+import langUtils from '../lib/lodash/lang.js';
 
 export default class Element extends Node {
 	constructor( name, attrs, children ) {
+		super();
+
 		/**
 		 * @readolny
 		 */
 		this.name = name;
 
-		if ( utils.isPlainObject( attrs ) ) {
+		if ( langUtils.isPlainObject( attrs ) ) {
 			this._attrs = utils.objectToMap( attrs );
 		} else {
 			this._attrs = new Map( attrs );
 		}
 
-		this._children = utils.clone( children );
+		this._children = langUtils.clone( children );
 
 		this.domElement = null;
 	}

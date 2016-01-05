@@ -14,16 +14,16 @@
 const getIteratorCount = bender.tools.core.getIteratorCount;
 
 const modules = bender.amd.require(
-	'treeview/node',
-	'treeview/element'
+	'core/treeview/node',
+	'core/treeview/element'
 );
 
 describe( 'Element', () => {
 	let Element, Node;
 
 	before( () => {
-		Element = modules[ 'treemodel/element' ];
-		Node = modules[ 'treemodel/node' ];
+		Element = modules[ 'core/treeview/element' ];
+		Node = modules[ 'core/treeview/node' ];
 	} );
 
 	describe( 'constructor', () => {

@@ -12,30 +12,29 @@
 const getIteratorCount = bender.tools.core.getIteratorCount;
 
 const modules = bender.amd.require(
-	'treeview/element',
-	'treeview/attribute',
-	'treeview/nodelist',
-	'ckeditorerror'
+	'core/treeview/element',
+	'core/treeview/node',
+	'core/treeview/text',
+	'core/ckeditorerror'
 );
 
 describe( 'Node', () => {
-	let Element, Character, Attribute, NodeList, CKEditorError;
+	let Element, Text, Node, CKEditorError;
 
 	let root;
 	let one, two, three;
 	let charB, charA, charR, img;
 
 	before( () => {
-		Element = modules[ 'treemodel/element' ];
-		Character = modules[ 'treemodel/character' ];
-		Attribute = modules[ 'treemodel/attribute' ];
-		NodeList = modules[ 'treemodel/nodelist' ];
-		CKEditorError = modules.ckeditorerror;
+		Element = modules[ 'core/treeview/element' ];
+		Node = modules[ 'core/treeview/node' ];
+		Text = modules[ 'core/treeview/text' ];
+		CKEditorError = modules[ 'ckeditorerror ' ];
 
-		charB = new Character( 'b' );
-		charA = new Character( 'a' );
+		charB = new Text( 'b' );
+		charA = new Text( 'a' );
 		img = new Element( 'img' );
-		charR = new Character( 'r' );
+		charR = new Text( 'r' );
 
 		one = new Element( 'one' );
 		two = new Element( 'two', null, [ charB, charA, img, charR ] );
@@ -101,8 +100,8 @@ describe( 'Node', () => {
 	describe( 'constructor', () => {
 		it( 'should copy attributes, not pass by reference', () => {
 			let attrs = [ new Attribute( 'attr', true ) ];
-			let foo = new Element( 'foo', attrs );
-			let bar = new Element( 'bar', attrs );
+			let foo = new Element( 'foo', { 'class': 'bold' } );
+			let bar = new Element( 'bar', { 'class': 'bold' } );
 
 			foo.removeAttr( 'attr' );
 

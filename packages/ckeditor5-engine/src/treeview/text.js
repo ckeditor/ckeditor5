@@ -10,6 +10,8 @@ import Element from './element.js';
 
 export default class Text extends Node {
 	constructor( text ) {
+		super();
+
 		this._text = text;
 	}
 
