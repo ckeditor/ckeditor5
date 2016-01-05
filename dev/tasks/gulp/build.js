@@ -132,15 +132,91 @@ module.exports = ( config ) => {
 	gulp.task( 'build:clean', tasks.clean );
 
 	gulp.task( 'build', [ 'build:clean' ], () => {
+		//
+		// NOTE: Error handling in streams is hard.
+		//
+		// Most likely this code isn't optimal, but it's a result of 8h spent on search
+		// for a solution to the ruined pipeline whenever something throws.
+		//
+		// Most important fact is that when dest stream emits an error the src stream
+		// unpipes it. Problem is when you start using tools like multipipe or gulp-mirror,
+		// because you lose control over the graph of the streams and you cannot reconnect them
+		// with a full certainty that you connected them correctly, since you'd need to know these
+		// libs internals.
+		//
+		// BTW. No, gulp-plumber is not a solution here because it does not affect the other tools.
+		//
+		// Hence, I decided that it'll be best to restart the whole piece. However, I wanted to avoid restarting the
+		// watcher as it sounds like something heavy.
+		//
+		// The flow looks like follows:
+		//
+		// 1. codeStream
+		// 2. inputStream
+		// 3. conversionStream (may throw)
+		// 4. outputStream
+		//
+		// The input and output streams allowed me to easier debug and restart everything. Additionally, the output
+		// stream is returned to Gulp so it must be stable. I decided to restart also the inputStream because when conversionStream
+		// throws, then inputStream gets paused. Most likely it's possible to resume it, so we could pipe codeStream directly to
+		// conversionStream, but it was easier this way.
+		//
+		// PS. The assumption is that all errors thrown somewhere inside conversionStream are forwarded to conversionStream.
+		// Multipipe and gulp-mirror seem to work this way, so we get a single error emitter.
 		const formats = options.formats.split( ',' );
 		const codeStream = tasks.src.all( options.watch )
 			.on( 'data', ( file ) => {
 				gutil.log( `Processing '${ gutil.colors.cyan( file.path ) }'...` );
 			} );
-		const formatPipes = formats.reduce( utils.addFormat( distDir ), [] );
+		const converstionStreamGenerator = utils.getConversionStreamGenerator( distDir );
 
-		return codeStream
-			.pipe( gulpMirror.apply( null, formatPipes ) );
+		let inputStream;
+		let conversionStream;
+		let outputStream = utils.noop();
+
+		startStreams();
+
+		return outputStream;
+
+		// Creates a single stream combining multiple conversion streams.
+		function createConversionStream() {
+			const formatPipes = formats.reduce( converstionStreamGenerator, [] );
+
+			return gulpMirror.apply( null, formatPipes )
+				.on( 'error', onError );
+		}
+
+		// Handles error in the combined conversion stream.
+		// If we don't watch files, make sure that the error is forwarded to the output.
+		// If we watch files, then clean up the old streams and restart the combined conversion stream.
+		function onError( err ) {
+			if ( !options.watch ) {
+				// To stop the whole execution ASAP.
+				process.exit( 1 );
+
+				return;
+			}
+
+			unpipeStreams();
+
+			gutil.log( 'Restarting...' );
+			startStreams();
+		}
+
+		function startStreams() {
+			inputStream = utils.noop();
+			conversionStream = createConversionStream();
+
+			codeStream
+				.pipe( inputStream )
+				.pipe( conversionStream )
+				.pipe( outputStream );
+		}
+
+		function unpipeStreams() {
+			codeStream.unpipe( inputStream );
+			conversionStream.unpipe( outputStream );
+		}
 	} );
 
 	return tasks;

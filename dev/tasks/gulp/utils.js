@@ -51,33 +51,37 @@ const utils = {
 		}
 
 		return babel( {
-			plugins: [
-				// Note: When plugin is specified by its name, Babel loads it from a context of a
-				// currently transpiled file (in our case - e.g. from ckeditor5-core/src/foo.js).
-				// Obviously that fails, since we have all the plugins installed only in ckeditor5/
-				// and we want to have them only there to avoid installing them dozens of times.
-				//
-				// Anyway, I haven't found in the docs that you can also pass a plugin instance here,
-				// but it works... so let's hope it will.
-				require( `babel-plugin-transform-es2015-modules-${ babelModuleTranspiler }` )
-			],
-			// Ensure that all paths ends with '.js' because Require.JS (unlike Common.JS/System.JS)
-			// will not add it to module names which look like paths.
-			resolveModuleSource: ( source ) => {
-				return utils.appendModuleExtension( source );
-			}
-		} );
+				plugins: [
+					// Note: When plugin is specified by its name, Babel loads it from a context of a
+					// currently transpiled file (in our case - e.g. from ckeditor5-core/src/foo.js).
+					// Obviously that fails, since we have all the plugins installed only in ckeditor5/
+					// and we want to have them only there to avoid installing them dozens of times.
+					//
+					// Anyway, I haven't found in the docs that you can also pass a plugin instance here,
+					// but it works... so let's hope it will.
+					require( `babel-plugin-transform-es2015-modules-${ babelModuleTranspiler }` )
+				],
+				// Ensure that all paths ends with '.js' because Require.JS (unlike Common.JS/System.JS)
+				// will not add it to module names which look like paths.
+				resolveModuleSource: ( source ) => {
+					return utils.appendModuleExtension( source );
+				}
+			} )
+			.on( 'error', function( err ) {
+				gutil.log( gutil.colors.red( `Error (Babel:${ format })` ) );
+				gutil.log( gutil.colors.red( err.message ) );
+				console.log( '\n' + err.codeFrame + '\n' );
+			} );
 	},
 
 	/**
-	 * Creates a function adding transpilation pipes to the `pipes` param.
-	 * Used to generate `formats.reduce()` callback where `formats` is an array
-	 * of formats that should be generated.
+	 * Creates a function generating convertion streams.
+	 * Used to generate `formats.reduce()` callback where `formats` is an array of formats that should be generated.
 	 *
 	 * @param {String} distDir The `dist/` directory path.
 	 * @returns {Function}
 	 */
-	addFormat( distDir ) {
+	getConversionStreamGenerator( distDir ) {
 		return ( pipes, format ) => {
 			const conversionPipes = [];
 
