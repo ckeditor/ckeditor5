@@ -1,7 +1,28 @@
-<div contenteditable="true">
+<div contenteditable="true" id="editor">
 	<p>Foo</p>
 	<p>Bar</p>
 </div>
 <script>
+	'use strict';
 
+	bender.amd.manualRequire( [
+		'core/treeview/treeview',
+		'core/treeview/observer/mutationobserver',
+		'core/treeview/text'
+	], function( TreeView, MutationObserver, Text ) {
+		const treeView = new TreeView( document.getElementById( 'editor' ) );
+		const mutationObserver = new MutationObserver();
+
+		mutationObserver.on( 'mutations', ( evt, mutations ) => {
+			console.log( mutations );
+		} );
+		
+		treeView.addObserver( mutationObserver );
+
+		treeView.viewRoot.insertChildren( 0, new Text( 'bom' ) );
+
+		treeView.render();
+
+		console.log( treeView );
+	} );	
 </script>

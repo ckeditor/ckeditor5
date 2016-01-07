@@ -9,6 +9,8 @@ import diff from '../../utils-diff.js';
 import Observer from './observer.js';
 import ViewElement from '../element.js';
 import ViewText from '../text.js';
+import objectUtils from '../../lib/lodash/object.js';
+import EmitterMixin from '../../emittermixin.js';
 
 export default class MutationObserver extends Observer {
 	constructor() {
@@ -27,6 +29,7 @@ export default class MutationObserver extends Observer {
 	 * @param {treeView.TreeView}
 	 */
 	init( treeView ) {
+		this.treeView = treeView;
 		this.domRoot = treeView.domRoot;
 
 		this._mutationObserver = new window.MutationObserver( this._onMutations.bind( this ) );
@@ -63,7 +66,7 @@ export default class MutationObserver extends Observer {
 
 		for ( let mutation of domMutations ) {
 			if ( mutation.type === 'characterData' ) {
-				const text = Text.getCorespondingText( mutation.target );
+				const text = ViewText.getCorespondingText( mutation.target );
 
 				if ( text && !mutatedElements.has( text.parent ) ) {
 					mutatedTexts.add( {
@@ -124,3 +127,5 @@ export default class MutationObserver extends Observer {
 		}
 	}
 }
+
+objectUtils.extend( MutationObserver.prototype, EmitterMixin );

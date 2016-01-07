@@ -53,11 +53,6 @@ export default class Node {
 	}
 
 	markToSync( type ) {
-		// If the node has no DOM element it is not rendered yet, its children/attributes do not need to be marked to be sync.
-		if ( !this.DOMElement ) {
-			return;
-		}
-
 		const treeView = this.getTreeView();
 
 		// If element is not attached to the Tree view it is a child of the detached subtree and will be rendered anyway with this

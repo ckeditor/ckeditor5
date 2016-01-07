@@ -25,7 +25,7 @@ export default class Element extends Node {
 			this._attrs = new Map( attrs );
 		}
 
-		this._children = langUtils.clone( children );
+		this._children = langUtils.clone( children ) || [];
 
 		this.domElement = null;
 	}
@@ -128,10 +128,9 @@ export default class Element extends Node {
 	cloneDOMAttrs( element ) {
 		this.markToSync( 'ATTRIBUTES_NEED_UPDATE' );
 
-		const attrKeys = element.attributes;
-
-		for ( let key of attrKeys ) {
-			this.setAttr( key, element.getAttribute( key ) );
+		for ( let i = element.attributes.length - 1; i >= 0; i-- ) {
+			let attr = element.attributes[ i ];
+			this.setAttr( attr.name, attr.value );
 		}
 	}
 

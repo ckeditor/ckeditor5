@@ -21,12 +21,21 @@ export default class Renderer {
 	}
 
 	markToSync( node, type ) {
-		if ( type === 'ATTRIBUTES_NEED_UPDATE' ) {
-			this.markedAttrs.push( node );
-		} else if ( type === 'CHILDREN_NEED_UPDATE' ) {
-			this.markedChildren.push( node );
-		} else if ( type === 'TEXT_NEEDS_UPDATE' ) {
-			this.markedTexts.push( node );
+		if ( type === 'TEXT_NEEDS_UPDATE' ) {
+			if ( node.parent.domElement ) {
+				this.markedTexts.add( node );
+			}
+		} else {
+			// If the node has no DOM element it is not rendered yet, its children/attributes do not need to be marked to be sync.
+			if ( !node.domElement ) {
+				return;
+			}
+
+			if ( type === 'ATTRIBUTES_NEED_UPDATE' ) {
+				this.markedAttrs.add( node );
+			} else if ( type === 'CHILDREN_NEED_UPDATE' ) {
+				this.markedChildren.add( node );
+			}
 		}
 	}
 
@@ -76,10 +85,9 @@ export default class Renderer {
 		function updateChildren( viewElement ) {
 			const domElement = viewElement.domElement;
 			const domChildren = domElement.childNodes;
-			const viewChildren = viewElement.getChildren();
+			const viewChildren = Array.from( viewElement.getChildren() );
 
 			const actions = diff( domChildren, viewChildren, compareNodes );
-
 			let i = 0;
 
 			for ( let action of actions ) {

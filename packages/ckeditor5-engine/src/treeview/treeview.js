@@ -5,19 +5,13 @@
 
 'use strict';
 
-import utils from '../utils.js';
-import EmitterMixin from './emittermixin.js';
+import objectUtils from '../lib/lodash/object.js';
+import EmitterMixin from '../emittermixin.js';
 import RootElement from './rootelement.js';
 import Renderer from './renderer.js';
 
 export default class TreeView {
 	constructor( domElement ) {
-		/**
-		 * Root of the view
-		 */
-		this.viewRoot = new RootElement( this, domElement.name );
-		this.viewRoot.cloneDOMAttrs();
-
 		/**
 		 * Root of the DOM.
 		 */
@@ -26,10 +20,18 @@ export default class TreeView {
 		this.observers = new Set();
 
 		this.renderer = new Renderer( this );
+
+		/**
+		 * Root of the view
+		 */
+		this.viewRoot = new RootElement( this, domElement.name );
+		this.viewRoot.cloneDOMAttrs( domElement );
+		this.viewRoot.setDomElement( domElement );
+		this.viewRoot.markToSync( 'CHILDREN_NEED_UPDATE' );
 	}
 
 	addObserver( observer ) {
-		this.observers.push( observer );
+		this.observers.add( observer );
 		observer.init( this );
 		observer.attach();
 	}
@@ -47,4 +49,4 @@ export default class TreeView {
 	}
 }
 
-utils.extend( Document.prototype, EmitterMixin );
+objectUtils.extend( TreeView.prototype, EmitterMixin );

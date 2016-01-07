@@ -49,15 +49,11 @@ export default class Text extends Node {
 				return viewElement.getNextSibling;
 			}
 		} else {
-			const viewElement = Element.getCorespondingElement( this.parent );
+			const viewElement = Element.getCorespondingElement( domText.parentElement );
 
 			if ( viewElement ) {
-				return viewElement.getChild[ 0 ];
+				return viewElement.getChild( 0 );
 			}
-		}
-
-		if ( !previousSibling && this.parent.domElement ) {
-			return this.parent.domElement.childNodes[ 0 ];
 		}
 
 		return null;
