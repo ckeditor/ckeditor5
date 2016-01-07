@@ -9,6 +9,6 @@ const config = {
 	DIST_DIR: 'dist'
 };
 
-require( './dev/tasks/gulp/build' )( config );
+require( './dev/tasks/gulp/build/tasks' )( config );
 
 gulp.task( 'default', [ 'build' ] );
