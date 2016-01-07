@@ -171,7 +171,7 @@ module.exports = ( config ) => {
 				.on( 'data', ( file ) => {
 					gutil.log( `Processing '${ gutil.colors.cyan( file.path ) }'...` );
 				} );
-			const converstionStreamGenerator = utils.getConversionStreamGenerator( distDir );
+			const conversionStreamGenerator = utils.getConversionStreamGenerator( distDir );
 
 			let inputStream;
 			let conversionStream;
@@ -183,7 +183,7 @@ module.exports = ( config ) => {
 
 			// Creates a single stream combining multiple conversion streams.
 			function createConversionStream() {
-				const formatPipes = formats.reduce( converstionStreamGenerator, [] );
+				const formatPipes = formats.reduce( conversionStreamGenerator, [] );
 
 				return gulpMirror.apply( null, formatPipes )
 					.on( 'error', onError );
