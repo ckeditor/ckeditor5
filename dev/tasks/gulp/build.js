@@ -172,10 +172,10 @@ module.exports = ( config ) => {
 					gutil.log( `Processing '${ gutil.colors.cyan( file.path ) }'...` );
 				} );
 			const conversionStreamGenerator = utils.getConversionStreamGenerator( distDir );
+			const outputStream = utils.noop();
 
 			let inputStream;
 			let conversionStream;
-			let outputStream = utils.noop();
 
 			startStreams();
 
