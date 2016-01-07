@@ -51,7 +51,7 @@ module.exports = ( config ) => {
 			 * @returns {Stream}
 			 */
 			all( watch ) {
-				return merge( tasks.src.main( watch ), tasks.src.ckeditor5( watch ), tasks.src.modules( watch ) );
+				return merge( tasks.src.main( watch ), tasks.src.ckeditor5( watch ), tasks.src.packages( watch ) );
 			},
 
 			/**
@@ -78,7 +78,7 @@ module.exports = ( config ) => {
 
 				return gulp.src( glob )
 					.pipe( watch ? gulpWatch( glob ) : utils.noop() )
-					.pipe( utils.wrapCKEditor5Module() );
+					.pipe( utils.wrapCKEditor5Package() );
 			},
 
 			/**
@@ -87,7 +87,7 @@ module.exports = ( config ) => {
 			 * @param {Boolean} [watch] Whether to watch the files.
 			 * @returns {Stream}
 			 */
-			modules( watch ) {
+			packages( watch ) {
 				// Find all CKEditor5 package directories. Resolve symlinks so we watch real directories
 				// in order to workaround https://github.com/paulmillr/chokidar/issues/419.
 				const dirs = fs.readdirSync( path.join( config.ROOT_DIR, 'node_modules' ) )
@@ -124,7 +124,7 @@ module.exports = ( config ) => {
 				} );
 
 				return merge.apply( null, streams )
-					.pipe( utils.unpackModules() );
+					.pipe( utils.unpackPackages() );
 			}
 		},
 

@@ -126,7 +126,7 @@ const utils = {
 	 *
 	 * @returns {Stream}
 	 */
-	unpackModules() {
+	unpackPackages() {
 		return rename( ( file ) => {
 			const dir = file.dirname.split( path.sep );
 
@@ -152,7 +152,7 @@ const utils = {
 	 *
 	 * @returns {Stream}
 	 */
-	wrapCKEditor5Module() {
+	wrapCKEditor5Package() {
 		return rename( ( file ) => {
 			file.dirname = path.join( file.dirname, 'ckeditor5' );
 		} );
