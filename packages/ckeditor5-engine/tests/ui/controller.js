@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2015, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -273,7 +273,7 @@ function updateModuleReference() {
 	View = modules[ 'core/ui/view' ];
 	Controller = modules[ 'core/ui/controller' ];
 	Model = modules[ 'core/model' ];
-	Collection = modules[ 'core/collection '];
+	Collection = modules[ 'core/collection ' ];
 	ControllerCollection = modules[ 'core/ui/controllercollection' ];
 	CKEditorError = modules[ 'core/ckeditorerror' ];
 }
