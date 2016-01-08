@@ -5,7 +5,6 @@
 
 'use strict';
 
-import diff from '../../utils-diff.js';
 import Observer from './observer.js';
 import ViewElement from '../element.js';
 import ViewText from '../text.js';
@@ -93,17 +92,16 @@ export default class MutationObserver extends Observer {
 			const viewChildren = viewElement.getChildren();
 			const newViewChildren = [];
 
-			for ( let domChild of domChildren ) {
-				newViewChildren.push( ViewElement.createFromDom( domChild ) );
+			for ( let i = 0; i < domChildren.length; i++ ) {
+				newViewChildren.push( ViewElement.createFromDom( domChildren[ i ] ) );
 			}
 
 			viewElement.markToSync( 'CHILDREN_NEED_UPDATE' );
 
 			viewMutations.push( {
 				type: 'childNodes',
-				oldChildren: viewElement.getChildren(),
+				oldChildren: viewChildren,
 				newChildren: newViewChildren,
-				diff: diff( viewChildren, newViewChildren, compareNodes ),
 				node: viewElement
 			} );
 		}
@@ -111,20 +109,6 @@ export default class MutationObserver extends Observer {
 		this.fire( 'mutations', viewMutations );
 
 		this.treeView.render();
-
-		function compareNodes( oldNode, newNode ) {
-			// Elements.
-			if ( oldNode instanceof ViewElement && newNode instanceof ViewElement ) {
-				return oldNode === newNode;
-			}
-			// Texts.
-			else if ( oldNode instanceof ViewText && newNode instanceof ViewText ) {
-				return oldNode.getText() === newNode.getText();
-			}
-
-			// Not matching types.
-			return false;
-		}
 	}
 }
 
