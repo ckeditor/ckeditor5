@@ -16,6 +16,8 @@
 		mutationObserver.on( 'mutations', ( evt, mutations ) => {
 			console.log( mutations );
 		} );
+
+		mutationObserver.on( 'mutations', handleTyping );
 		
 		treeView.addObserver( mutationObserver );
 
@@ -24,5 +26,15 @@
 		treeView.render();
 
 		console.log( treeView );
-	} );	
+	} );
+
+	function handleTyping( evt, mutations ) {
+		const mutation = mutations[ 0 ];
+
+		if( mutations.length > 1 || mutation.type !== 'text' ) {
+			return;
+		}
+
+		mutation.node.setText( mutation.newText );
+	}
 </script>
