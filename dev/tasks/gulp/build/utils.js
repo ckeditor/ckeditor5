@@ -154,7 +154,7 @@ const utils = {
 	 */
 	wrapCKEditor5Package() {
 		return rename( ( file ) => {
-			file.dirname = path.join( file.dirname, 'ckeditor5' );
+			file.dirname = path.join( 'ckeditor5', file.dirname );
 		} );
 	},
 
