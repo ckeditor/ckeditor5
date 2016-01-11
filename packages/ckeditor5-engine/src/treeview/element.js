@@ -25,7 +25,11 @@ export default class Element extends Node {
 			this._attrs = new Map( attrs );
 		}
 
-		this._children = langUtils.clone( children ) || [];
+		this._children = [];
+
+		if ( children ) {
+			this.insertChildren( 0, children );
+		}
 
 		this.domElement = null;
 	}
@@ -94,6 +98,7 @@ export default class Element extends Node {
 			node.parent = this;
 
 			this._children.splice( index, 0, node );
+			index++;
 		}
 	}
 

@@ -109,7 +109,7 @@ export default class Renderer {
 		function compareNodes( domNode, viewNode ) {
 			// Elements.
 			if ( domNode instanceof HTMLElement && viewNode instanceof ViewElement ) {
-				return domNode === viewNode.DOMElement;
+				return domNode === viewNode.domElement;
 			}
 			// Texts.
 			else if ( domNode instanceof Text && viewNode instanceof ViewText ) {
