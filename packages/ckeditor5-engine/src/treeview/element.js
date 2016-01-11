@@ -31,18 +31,22 @@ export default class Element extends Node {
 			this.insertChildren( 0, children );
 		}
 
-		this.domElement = null;
+		this._domElement = null;
 	}
 
-	setDomElement( domElement ) {
-		this.domElement = domElement;
+	bindDomElement( domElement ) {
+		this._domElement = domElement;
 
 		Element._domToViewMapping.set( domElement, this );
 	}
 
+	getCorespondingDom() {
+		return this._domElement;
+	}
+
 	// Note that created elements will not have coresponding DOM elements created it these did not exist before.
 	static createFromDom( domElement ) {
-		let viewElement = this.getCorespondingElement( domElement );
+		let viewElement = this.getCorespondingView( domElement );
 
 		if ( viewElement ) {
 			return viewElement;
@@ -67,7 +71,7 @@ export default class Element extends Node {
 	}
 
 	// Coresponding elements exists only for rendered elementes.
-	static getCorespondingElement( domElement ) {
+	static getCorespondingView( domElement ) {
 		return this._domToViewMapping.get( domElement );
 	}
 
@@ -130,7 +134,7 @@ export default class Element extends Node {
 		this._attrs.set( key, value );
 	}
 
-	cloneDOMAttrs( element ) {
+	cloneDomAttrs( element ) {
 		this.markToSync( 'ATTRIBUTES_NEED_UPDATE' );
 
 		for ( let i = element.attributes.length - 1; i >= 0; i-- ) {

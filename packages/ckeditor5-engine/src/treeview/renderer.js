@@ -22,12 +22,12 @@ export default class Renderer {
 
 	markToSync( node, type ) {
 		if ( type === 'TEXT_NEEDS_UPDATE' ) {
-			if ( node.parent.domElement ) {
+			if ( node.parent.getCorespondingDom() ) {
 				this.markedTexts.add( node );
 			}
 		} else {
 			// If the node has no DOM element it is not rendered yet, its children/attributes do not need to be marked to be sync.
-			if ( !node.domElement ) {
+			if ( !node.getCorespondingDom() ) {
 				return;
 			}
 
@@ -43,7 +43,7 @@ export default class Renderer {
 		const domDocument = this.domRoot.ownerDocument;
 
 		for ( let node of this.markedTexts ) {
-			if ( !this.markedChildren.has( node.parent ) && node.parent.domElement ) {
+			if ( !this.markedChildren.has( node.parent ) && node.parent.getCorespondingDom() ) {
 				updateText( node );
 			}
 		}
@@ -61,7 +61,7 @@ export default class Renderer {
 		this.markedChildren.clear();
 
 		function updateText( viewText ) {
-			const domText = viewText.getDomText();
+			const domText = viewText.getCorespondingDom();
 
 			if ( domText.data != viewText.getText() ) {
 				domText.data = viewText.getText();
@@ -69,7 +69,7 @@ export default class Renderer {
 		}
 
 		function updateAttrs( viewElement ) {
-			const domElement = viewElement.domElement;
+			const domElement = viewElement.getCorespondingDom();
 			const domAttrKeys = domElement.attributes;
 			const viewAttrKeys = viewElement.getAttrKeys();
 
@@ -87,7 +87,7 @@ export default class Renderer {
 		}
 
 		function updateChildren( viewElement ) {
-			const domElement = viewElement.domElement;
+			const domElement = viewElement.getCorespondingDom();
 			const domChildren = domElement.childNodes;
 			const viewChildren = Array.from( viewElement.getChildren() );
 
@@ -109,7 +109,7 @@ export default class Renderer {
 		function compareNodes( domNode, viewNode ) {
 			// Elements.
 			if ( domNode instanceof HTMLElement && viewNode instanceof ViewElement ) {
-				return domNode === viewNode.domElement;
+				return domNode === viewNode.getCorespondingDom();
 			}
 			// Texts.
 			else if ( domNode instanceof Text && viewNode instanceof ViewText ) {
@@ -121,15 +121,15 @@ export default class Renderer {
 		}
 
 		function viewToDom( view ) {
-			if ( view.domElement ) {
-				return view.domElement;
+			if ( view.getCorespondingDom() ) {
+				return view.getCorespondingDom();
 			}
 
 			if ( view instanceof ViewText ) {
 				return domDocument.createTextNode( view.getText() );
 			} else {
 				const domElement = domDocument.createElement( view.name );
-				view.setDomElement( domElement );
+				view.bindDomElement( domElement );
 
 				for ( let key of view.getAttrKeys() ) {
 					domElement.setAttribute( key, view.getAttr( key ) );

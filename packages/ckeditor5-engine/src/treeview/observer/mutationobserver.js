@@ -55,7 +55,7 @@ export default class MutationObserver extends Observer {
 
 		for ( let mutation of domMutations ) {
 			if ( mutation.type === 'childList' ) {
-				const element = ViewElement.getCorespondingElement( mutation.target );
+				const element = ViewElement.getCorespondingView( mutation.target );
 
 				if ( element ) {
 					mutatedElements.add( element );
@@ -65,7 +65,7 @@ export default class MutationObserver extends Observer {
 
 		for ( let mutation of domMutations ) {
 			if ( mutation.type === 'characterData' ) {
-				const text = ViewText.getCorespondingText( mutation.target );
+				const text = ViewText.getCorespondingView( mutation.target );
 
 				if ( text && !mutatedElements.has( text.parent ) ) {
 					mutatedTexts.set( text, {
@@ -87,7 +87,7 @@ export default class MutationObserver extends Observer {
 		}
 
 		for ( let viewElement of mutatedElements ) {
-			const domElement = viewElement.domElement;
+			const domElement = viewElement.getCorespondingDom();
 			const domChildren = domElement.childNodes;
 			const viewChildren = viewElement.getChildren();
 			const newViewChildren = [];

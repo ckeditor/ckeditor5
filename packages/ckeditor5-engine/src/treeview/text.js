@@ -25,31 +25,31 @@ export default class Text extends Node {
 		this._text = text;
 	}
 
-	getDomText() {
+	getCorespondingDom() {
 		const previousSibling = this.getPreviousSibling();
 
-		if ( previousSibling && previousSibling.domElement ) {
-			return previousSibling.domElement.nextSibling;
+		if ( previousSibling && previousSibling.getCorespondingDom() ) {
+			return previousSibling.getCorespondingDom().nextSibling;
 		}
 
-		if ( !previousSibling && this.parent.domElement ) {
-			return this.parent.domElement.childNodes[ 0 ];
+		if ( !previousSibling && this.parent.getCorespondingDom() ) {
+			return this.parent.getCorespondingDom().childNodes[ 0 ];
 		}
 
 		return null;
 	}
 
-	static getCorespondingText( domText ) {
+	static getCorespondingView( domText ) {
 		const previousSibling = domText.previousSibling;
 
 		if ( previousSibling ) {
-			const viewElement = Element.getCorespondingElement( previousSibling );
+			const viewElement = Element.getCorespondingView( previousSibling );
 
 			if ( viewElement ) {
 				return viewElement.getNextSibling;
 			}
 		} else {
-			const viewElement = Element.getCorespondingElement( domText.parentElement );
+			const viewElement = Element.getCorespondingView( domText.parentElement );
 
 			if ( viewElement ) {
 				return viewElement.getChild( 0 );
