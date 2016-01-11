@@ -35,22 +35,83 @@ export default class Model {
 		this._attributes = {};
 
 		/**
-		 * Map containing bindings of this model to external models.
+		 * Map containing bindings to external models. It shares the binding objects
+		 * (`{ model: A, attr: 'a', to: ... }`) with {@link #_boundAttributes} and
+		 * it is used to observe external models to update own attributes accordingly.
 		 * See {@link #bind}.
+		 *
+		 *		A.bind( 'a', 'b', 'c' ).to( B, 'x', 'y', 'x' );
+		 *		console.log( A._boundModels );
+		 *
+		 *			Map( {
+		 *				B: {
+		 *					x: Set( [
+		 *						{ model: A, attr: 'a', to: [ [ B, 'x' ] ] },
+		 *						{ model: A, attr: 'c', to: [ [ B, 'x' ] ] }
+		 *					] ),
+		 *					y: Set( [
+		 *						{ model: A, attr: 'b', to: [ [ B, 'y' ] ] },
+		 *					] )
+		 *				}
+		 *			} )
+		 *
+		 *		A.bind( 'd' ).to( B, 'z' ).to( C, 'w' ).as( callback );
+		 *		console.log( A._boundModels );
+		 *
+		 *			Map( {
+		 *				B: {
+		 *					x: Set( [
+		 *						{ model: A, attr: 'a', to: [ [ B, 'x' ] ] },
+		 *						{ model: A, attr: 'c', to: [ [ B, 'x' ] ] }
+		 *					] ),
+		 *					y: Set( [
+		 *						{ model: A, attr: 'b', to: [ [ B, 'y' ] ] },
+		 *					] ),
+		 *					z: Set( [
+		 *						{ model: A, attr: 'd', to: [ [ B, 'z' ], [ C, 'w' ] ], callback: callback }
+		 *					] )
+		 *				},
+		 *				C: {
+		 *					w: Set( [
+		 *						{ model: A, attr: 'd', to: [ [ B, 'z' ], [ C, 'w' ] ], callback: callback }
+		 *					] )
+		 *				}
+		 *			} )
 		 *
 		 * @private
 		 * @property {Map}
 		 */
-		this._boundTo = new Map();
+		this._boundModels = new Map();
 
 		/**
-		 * Object that stores which attributes of this model are bound.
+		 * Object that stores which attributes of this model are bound and how. It shares
+		 * the binding objects (`{ model: A, attr: 'a', to: ... }`) with {@link #_boundModels}.
+		 * This data structure is a reverse of {@link #_boundModels} and it is helpful for {@link #unbind}.
 		 * See {@link #bind}.
+		 *
+		 *		A.bind( 'a', 'b', 'c' ).to( B, 'x', 'y', 'x' );
+		 *		console.log( A._boundAttributes );
+		 *
+		 *			{
+		 *				a: { model: A, attr: 'a', to: [ [ B, 'x' ] ] },
+		 *				b: { model: A, attr: 'b', to: [ [ B, 'y' ] ] },
+		 *				c: { model: A, attr: 'c', to: [ [ B, 'x' ] ] }
+		 *			}
+		 *
+		 *		A.bind( 'd' ).to( B, 'z' ).to( C, 'w' ).as( callback );
+		 *		console.log( A._boundAttributes );
+		 *
+		 *			{
+		 *				a: { model: A, attr: 'a', to: [ [ B, 'x' ] ] },
+		 *				b: { model: A, attr: 'b', to: [ [ B, 'y' ] ] },
+		 *				c: { model: A, attr: 'c', to: [ [ B, 'x' ] ] },
+		 *				d: { model: A, attr: 'd', to: [ [ B, 'z' ], [ C, 'w' ] ], callback: callback }
+		 *			}
 		 *
 		 * @private
 		 * @property {Object}
 		 */
-		this._bound = {};
+		this._boundAttributes = {};
 
 		// Extend this instance with the additional (out of state) properties.
 		if ( properties ) {
@@ -139,7 +200,7 @@ export default class Model {
 	 *		A.bind( 'a' ).to( B );
 	 *		A.bind( 'a' ).to( B, 'b' );
 	 *		A.bind( 'a', 'b' ).to( B, 'c', 'd' );
-	 *		A.bind( 'a' ).to( B, 'b' ).to( C, 'd' ).as( ( Bb, Cd ) => Bb + Cd );
+	 *		A.bind( 'a' ).to( B, 'b' ).to( C, 'd' ).as( ( b, d ) => b + d );
 	 *
 	 * @param {String...} bindAttrs Model attributes use that will be bound to another model(s).
 	 * @returns {BindChain}
@@ -164,7 +225,7 @@ export default class Model {
 		}
 
 		bindAttrs.forEach( attrName => {
-			if ( attrName in this._bound ) {
+			if ( attrName in this._boundAttributes ) {
 				/**
 				 * Cannot bind the same attribute more that once.
 				 *
@@ -172,29 +233,42 @@ export default class Model {
 				 */
 				throw new CKEditorError( 'model-bind-rebind: Cannot bind the same attribute more that once.' );
 			}
+		} );
 
-			this._bound[ attrName ] = true;
+		const bindings = {};
+
+		bindAttrs.forEach( a => {
+			this._boundAttributes[ a ] = bindings[ a ] = { model: this, attr: a, to: [] };
 		} );
 
 		/**
 		 * @typedef BindChain
 		 * @type Object
-		 * @property {Model} _bindModel The model which initializes the binding.
-		 * @property {Array} _bindAttrs Array of `_bindModel` attributes to be bound.
-		 * @property {Array} _boundTo Array of `to()` model–attributes (`{ model: toModel, attrs: ...toAttrs }`).
-		 * @property {Object} _current The arguments of the last `to( toModel, ...toAttrs )` call, also
-		 * the last item of `_boundTo`.
 		 * @property {Function} to See {@link #_bindTo}.
 		 * @property {Function} as See {@link #_bindAs} (available after `to()` called in chain).
+		 * @property {Model} _model The model which initializes the binding.
+		 * @property {Array} _bindAttrs Array of `_model` attributes to be bound.
+		 * @property {Array} _to Array of `to()` model–attributes (`{ model: toModel, attrs: ...toAttrs }`).
+		 * @property {Object} _bindings Stores bindings to be kept in {@link #_boundAttributes}/{@link #_boundModels}
+		 * initiated in this binding chain.
+		 * @property {Function} _lastToModel A helper, retrieves `model` from last of `_to`.
+		 * @property {Function} _lastToAttrs A helper, retrieves `attrs` from last of `_to`.
 		 */
 		return {
-			_bindModel: this,
+			to: this._bindTo,
+
+			_model: this,
 			_bindAttrs: bindAttrs,
-			_boundTo: [],
-			get _current() {
-				return this._boundTo[ this._boundTo.length - 1 ];
+			_to: [],
+			_bindings: bindings,
+
+			get _lastToModel() {
+				return this._to[ this._to.length - 1 ].model;
 			},
-			to: this._bindTo
+
+			get _lastToAttrs() {
+				return this._to[ this._to.length - 1 ].attrs;
+			}
 		};
 	}
 
@@ -219,36 +293,37 @@ export default class Model {
 			}
 
 			unbindAttrs.forEach( attrName => {
-				for ( let to of this._boundTo ) {
-					// TODO, ES6 destructuring.
-					const boundModel = to[ 0 ];
-					const bindings = to[ 1 ];
+				const binding = this._boundAttributes[ attrName ];
+				let toModel, toAttr, toAttrs, toAttrBindings;
 
-					for ( let boundAttrName in bindings ) {
-						if ( bindings[ boundAttrName ].has( attrName ) ) {
-							bindings[ boundAttrName ].delete( attrName );
-						}
+				binding.to.forEach( to => {
+					// TODO: Destructuring.
+					toModel = to[ 0 ];
+					toAttr = to[ 1 ];
+					toAttrs = this._boundModels.get( toModel );
+					toAttrBindings = toAttrs[ toAttr ];
 
-						if ( !bindings[ boundAttrName ].size ) {
-							delete bindings[ boundAttrName ];
-						}
+					toAttrBindings.delete( binding );
 
-						if ( !Object.keys( bindings ).length ) {
-							this._boundTo.delete( boundModel );
-							this.stopListening( boundModel, 'change' );
-						}
+					if ( !toAttrBindings.size ) {
+						delete toAttrs[ toAttr ];
 					}
-				}
 
-				delete this._bound[ attrName ];
+					if ( !Object.keys( toAttrs ).length ) {
+						this._boundModels.delete( toModel );
+						this.stopListening( toModel, 'change' );
+					}
+				} );
+
+				delete this._boundAttributes[ attrName ];
 			} );
 		} else {
-			this._boundTo.forEach( ( bindings, boundModel ) => {
+			this._boundModels.forEach( ( bindings, boundModel ) => {
 				this.stopListening( boundModel, 'change' );
-				this._boundTo.delete( boundModel );
 			} );
 
-			this._bound = {};
+			this._boundModels.clear();
+			this._boundAttributes = {};
 		}
 	}
 
@@ -281,7 +356,7 @@ export default class Model {
 
 		// Eliminate A.bind( 'x' ).to( B, 'y', 'z' )
 		// Eliminate A.bind( 'x', 'y' ).to( B, 'z' )
-		if ( toAttrs.length && toAttrs.length !== this._bindAttrs.length ) {
+		if ( toAttrs.length && toAttrs.length !== Object.keys( this._bindings ).length ) {
 			/**
 			 * The number of attributes must match.
 			 *
@@ -303,7 +378,7 @@ export default class Model {
 
 		// Eliminate A.bind( 'x', 'y' ).to( B ).to( C ) when no trailing .as().
 		// Eliminate A.bind( 'x', 'y' ).to( B, 'x', 'y' ).to( C, 'x', 'y' ).
-		if ( this._boundTo.length && ( toAttrs.length > 1 || this._bindAttrs.length > 1 ) ) {
+		if ( this._to.length && ( toAttrs.length > 1 || this._bindAttrs.length > 1 ) ) {
 			/**
 			 * Chaining only allowed for a single attribute.
 			 *
@@ -318,12 +393,12 @@ export default class Model {
 		}
 
 		// Extend current chain with the new binding information.
-		this._boundTo.push( { model: toModel, attrs: toAttrs } );
+		this._to.push( { model: toModel, attrs: toAttrs } );
 
-		setupBinding( this );
+		setupBindToBinding( this );
 
 		if ( !this.as ) {
-			this.as = this._bindModel._bindAs;
+			this.as = this._model._bindAs;
 		}
 
 		return this;
@@ -345,9 +420,9 @@ export default class Model {
 			throw new CKEditorError( 'model-bind-as-wrong-callback: Callback must be a Function.' );
 		}
 
-		this._callback = callback;
+		this._model._boundAttributes[ this._bindAttrs[ 0 ] ].callback = this._callback = callback;
 
-		updateModelAttrs( this, this._bindAttrs[ 0 ] );
+		updateModelAttrs( this._model, this._lastToModel, this._lastToAttrs[ 0 ] );
 	}
 }
 
@@ -375,133 +450,151 @@ function isStringArray( arr ) {
 }
 
 /**
- * Returns all bindings of the `chain._bindModel` to `chain._current.model`
- * set by {@link #updateModelBindingsToCurrent}.
- *
- *		// Given that A == _bindModel and B == _current.model
- *		A.bind( 'a', 'b', 'c' ).to( B, 'x', 'y', 'x' );
- *
- *		// The following object is returned
- *		{ x: [ 'a', 'c' ], y: [ 'b' ] }
- *
+ * Synchronizes `chain._model._boundAttributes` and `chain._model._boundModels`
+ * with `chain`.
  *
  * @private
- * @param {BindChain} chain The chain initialized by {@link Model#bind}.
- * @returns {Object}
+ * @param {BindChain} chain The binding initialized by {@link Model#bind}.
  */
-function getModelBindingsToCurrent( chain ) {
-	return chain._bindModel._boundTo.get( chain._current.model );
-}
+function updateBoundAttributesAndModels( chain ) {
+	const lastToModel = chain._lastToModel;
+	const lastToAttrs = chain._lastToAttrs;
 
-/**
- * Updates `chain._bindModel._boundTo` with a binding for `chain._current`.
- * The binding can be then retrieved by {@link #getModelBindingsToCurrent}.
- *
- * @private
- * @param {BindChain} chain The chain initialized by {@link Model#bind}.
- * @returns {Object}
- */
-function updateModelBindingsToCurrent( chain ) {
-	const currentBindings = getModelBindingsToCurrent( chain );
-	const bindings = currentBindings || {};
+	let lastBoundAttr, bindingsToLastModel, bindings, binding;
 
-	chain._current.attrs.forEach( ( attrName, index ) => {
-		( bindings[ attrName ] || ( bindings[ attrName ] = new Set() ) )
-			.add( chain._bindAttrs[ index ] );
-	} );
+	// Assuming the following binding being created
+	//
+	// 		A.bind( 'a', 'b', 'c' ).to( B, 'x', 'y' );
+	//
+	// the following bindings were initialized in `Model#bind` in `chain._bindings`:
+	//
+	// 		{
+	// 			a: { model: A, attr: 'a', to: [] },
+	// 			b: { model: A, attr: 'b', to: [] },
+	// 		}
+	//
+	// Iterate over all bindings in this chain and fill their `to` properties with
+	// the latest to( ... ) call arguments.
+	for ( let attrName in chain._bindings ) {
+		binding = chain._bindings[ attrName ];
 
-	if ( !currentBindings ) {
-		chain._bindModel._boundTo.set( chain._current.model, bindings );
+		// Update `to` property, so the bindings are:
+		//
+		// 		a: { model: A, attr: 'a', to: [ [ B, 'x' ] ] },
+		//
+		//	and
+		//
+		// 		b: { model: A, attr: 'b', to: [ [ B, 'y' ] ] },
+		//
+		// But since `chain._bindings` and `chain._model._boundAttributes` share
+		// the instances of the bindings, a model is also updated.
+		lastBoundAttr = lastToAttrs[ chain._bindAttrs.indexOf( attrName ) ];
+		binding.to.push( [ lastToModel, lastBoundAttr ] );
+
+		// Update the structure of `chain._model._boundModels` with updated
+		// binding, so:
+		//
+		// 		chain._model._boundModels == Map( {
+		// 			B: {
+		// 				x: Set( [
+		// 					{ model: A, attr: 'a', to: [ [ B, 'x' ] ] }
+		// 				] ),
+		// 				y: Set( [
+		// 					{ model: A, attr: 'b', to: [ [ B, 'y' ] ] },
+		// 				] )
+		//			}
+		// 		} )
+		//
+		bindingsToLastModel = chain._model._boundModels.get( lastToModel );
+		bindings = bindingsToLastModel || {};
+
+		if ( !bindings[ lastBoundAttr ] ) {
+			bindings[ lastBoundAttr ] = new Set();
+		}
+
+		// Pass the binding to a corresponding Set in `chain._model._boundModels`.
+		bindings[ lastBoundAttr ].add( binding );
+
+		if ( !bindingsToLastModel ) {
+			chain._model._boundModels.set( lastToModel, bindings );
+		}
 	}
 }
 
 /**
- * Updates the model attribute with given value. If an attribute does not exist,
- * it is created on the fly.
+ * Updates all bound attributes of `updateModel` with the `value` of `attrName`
+ * of `withModel` model.
  *
- * @private
- * @param {Model} model The model which attribute is updated.
- * @param {String} attrName The name of the attribute.
- * @param {*} value The value of the attribute.
- */
-function updateModelAttr( model, attrName, value ) {
-	if ( model[ attrName ] ) {
-		model[ attrName ] = value;
-	} else {
-		model.set( attrName, value );
-	}
-}
-
-/**
- * Updates all bound attributes of `chain._bindModel` with the `value` of
- * `attrName` of `chain._current` model.
- *
- *		// Given that A == _bindModel and B == _current.model
+ *		// Given that A == updateModel and B == withModel and B.x has just changed.
  *		A.bind( 'a', 'b', 'c' ).to( B, 'x', 'y', 'x' );
  *
  *		// The following is updated
  *		A.a = A.c = B.x;
- *		A.b = B.y;
  *
  * @private
- * @param {BindChain} chain The chain initialized by {@link Model#bind}.
- * @param {String} attrName One of the attributes of `chain._current`.
+ * @param {Model} updateModel The model to be updated.
+ * @param {Model} withModel The model to be be used as a source.
+ * @param {String} attrName One of the attributes of `withModel`.
  * @param {*} value The value of the attribute.
  */
-function updateModelAttrs( chain, attrName, value ) {
-	const boundAttrs = getModelBindingsToCurrent( chain )[ attrName ];
+function updateModelAttrs( updateModel, withModel, attrName, value ) {
+	const bindings = updateModel._boundModels.get( withModel )[ attrName ];
+	let attrValue;
 
-	if ( !boundAttrs ) {
-		return;
-	} else if ( chain._callback ) {
-		// MODEL.bind( 'a' ).to( TOMODEL1, 'b1' )[ .to( TOMODELn, 'bn' ) ].as( callback )
-		//  \-> Collect specific attribute value in the boundTo.model (TOMODELn.bn).
-		//
-		// MODEL.bind( 'a' ).to( TOMODEL1 )[ .to( TOMODELn ) ].as( callback )
-		//  \-> Use model attribute name to collect boundTo attribute value (TOMODELn.a).
-		const values = chain._boundTo.map( boundTo => boundTo.model[ boundTo.attrs[ 0 ] ] );
+	if ( bindings ) {
+		bindings.forEach( binding => {
+			attrValue = value;
 
-		// Pass collected attribute values to the callback function.
-		// Whatever is returned it becomes the value of the model's attribute.
-		updateModelAttr(
-			chain._bindModel,
-			chain._bindAttrs[ 0 ],
-			chain._callback.apply( chain._bindModel, values )
-		);
-	} else {
-		// MODEL.bind( 'a' ).to( TOMODEL1 )[ .to( TOMODELn ) ];
-		//  \-> If multiple .to() models but **no** .as( callback ), then the binding is invalid.
-		if ( !chain._callback && chain._boundTo.length > 1 ) {
-			value = undefined;
-		}
+			// A.bind( 'a' ).to( B, 'b' ).to( C, 'c' ).as( callback );
+			//  \-> Collect B.b and C.c and pass the values to callback to set A.a.
+			if ( binding.callback ) {
+				attrValue = binding.callback.apply(
+					binding.model,
+					binding.to.map( bound => {
+						return bound[ 0 ][ bound[ 1 ] ];
+					} )
+				);
+			}
 
-		for ( let boundAttrName of boundAttrs ) {
-			updateModelAttr( chain._bindModel, boundAttrName, value );
-		}
+			// A.bind( 'a' ).to( B )[ .to( N ) ];
+			//  \-> If multiple .to() models but **no** .as( callback ), then the binding is invalid.
+			else if ( binding.to.length > 1 ) {
+				attrValue = undefined;
+			}
+
+			// TODO: Needs update after https://github.com/ckeditor/ckeditor5-core/issues/132.
+			if ( binding.model.hasOwnProperty( binding.attr ) ) {
+				binding.model[ binding.attr ] = attrValue;
+			} else {
+				binding.model.set( binding.attr, attrValue );
+			}
+		} );
 	}
 }
 
 /**
- * Starts listening to changes in `chain._current.model` to update `chain._bindModel`
- * attributes. Also sets the initial state of `chain._bindModel` bound attributes.
+ * Starts listening to changes in `chain._lastToModel` to update `chain._model`
+ * attributes. Also sets the initial state of `chain._model` bound attributes.
  *
  * @private
  * @param {BindChain} chain The chain initialized by {@link Model#bind}.
  */
-function setupBinding( chain ) {
-	// If there's already a binding between the models (`chain._bindModel` listens to
-	// `chain._current.model`), there's no need to create another `change` event listener.
-	if ( !getModelBindingsToCurrent( chain ) ) {
-		chain._bindModel.listenTo( chain._current.model, 'change', ( evt, attrName, value ) => {
-			updateModelAttrs( chain, attrName, value );
+function setupBindToBinding( chain ) {
+	const lastToModel = chain._lastToModel;
+
+	// If there's already a chain between the models (`chain._model` listens to
+	// `chain._lastToModel`), there's no need to create another `change` event listener.
+	if ( !chain._model._boundModels.get( lastToModel ) ) {
+		chain._model.listenTo( lastToModel, 'change', ( evt, ...rest ) => {
+			updateModelAttrs( chain._model, lastToModel, ...rest );
 		} );
 	}
 
-	updateModelBindingsToCurrent( chain );
+	updateBoundAttributesAndModels( chain );
 
-	// Set initial model state.
-	chain._current.attrs.forEach( attrName => {
-		updateModelAttrs( chain, attrName, chain._current.model[ attrName ] );
+	// Synchronize initial state of `chain._model` with `chain._lastToModel`.
+	chain._lastToAttrs.forEach( attrName => {
+		updateModelAttrs( chain._model, lastToModel, attrName, lastToModel[ attrName ] );
 	} );
 }
 
