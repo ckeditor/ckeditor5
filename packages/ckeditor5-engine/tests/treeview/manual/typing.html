@@ -12,14 +12,22 @@
 		const mutationObserver = new MutationObserver();
 
 		mutationObserver.on( 'mutations', ( evt, mutations ) => console.log( mutations ) );
+		mutationObserver.on( 'mutations', handleTyping );
 		
 		treeView.addObserver( mutationObserver );
 
-		treeView.viewRoot.insertChildren( 0, [
-			new Element( 'p', [], [ new Text( 'foo' ) ] ),
-			new Element( 'p', [], [ new Text( 'bom' ) ] )
-			] );
+		treeView.viewRoot.insertChildren( 0, [ new Element( 'p', [], [ new Text( 'foo' ) ] ) ] );
 
 		treeView.render();
 	} );
+
+	function handleTyping( evt, mutations ) {
+		const mutation = mutations[ 0 ];
+
+		if( mutations.length > 1 || mutation.type !== 'text' ) {
+			return;
+		}
+
+		mutation.node.setText( mutation.newText );
+	}
 </script>

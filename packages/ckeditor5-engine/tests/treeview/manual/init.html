@@ -1,4 +1,7 @@
-<div contenteditable="true" id="editor"></div>
+<div contenteditable="true" id="editor">
+	<p>Old</p>
+	<p>Content</p>
+</div>
 <script>
 	'use strict';
 
@@ -9,17 +12,14 @@
 		'core/treeview/text'
 	], function( TreeView, MutationObserver, Element, Text ) {
 		const treeView = new TreeView( document.getElementById( 'editor' ) );
-		const mutationObserver = new MutationObserver();
-
-		mutationObserver.on( 'mutations', ( evt, mutations ) => console.log( mutations ) );
-		
-		treeView.addObserver( mutationObserver );
 
 		treeView.viewRoot.insertChildren( 0, [
-			new Element( 'p', [], [ new Text( 'foo' ) ] ),
-			new Element( 'p', [], [ new Text( 'bom' ) ] )
+			new Element( 'p', [], [ new Text( 'New' ) ] ),
+			new Element( 'p', [], [ new Text( 'Content' ) ] )
 			] );
 
 		treeView.render();
+
+		console.log( treeView );
 	} );
 </script>
