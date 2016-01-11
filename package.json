@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "almond": "^0.3.0",
+    "babel-core": "^6.4.0",
     "babel-plugin-transform-es2015-modules-amd": "^6.1.18",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.2.0",
     "benderjs": "^0.4.1",
@@ -40,6 +41,7 @@
     "merge-stream": "^1.0.0",
     "minimist": "^1.2.0",
     "mocha": "^2.2.5",
+    "mockery": "^1.4.0",
     "multipipe": "^0.2.1",
     "ncp": "^2.0.0",
     "replace": "^0.3.0",
