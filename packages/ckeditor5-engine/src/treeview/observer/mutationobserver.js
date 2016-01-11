@@ -49,8 +49,8 @@ export default class MutationObserver extends Observer {
 	}
 
 	_onMutations( domMutations ) {
-		// Use set for deduplication.
-		const mutatedTexts = new Set();
+		// Use　map and set for deduplication.
+		const mutatedTexts = new Map();
 		const mutatedElements = new Set();
 
 		for ( let mutation of domMutations ) {
@@ -68,7 +68,7 @@ export default class MutationObserver extends Observer {
 				const text = ViewText.getCorespondingText( mutation.target );
 
 				if ( text && !mutatedElements.has( text.parent ) ) {
-					mutatedTexts.add( {
+					mutatedTexts.set( text, {
 						type: 'text',
 						oldText: text.getText(),
 						newText: mutation.target.data,
@@ -80,7 +80,7 @@ export default class MutationObserver extends Observer {
 
 		const viewMutations = [];
 
-		for ( let mutatedText of mutatedTexts ) {
+		for ( let mutatedText of mutatedTexts.values() ) {
 			mutatedText.node.markToSync( 'TEXT_NEEDS_UPDATE' );
 
 			viewMutations.push( mutatedText );

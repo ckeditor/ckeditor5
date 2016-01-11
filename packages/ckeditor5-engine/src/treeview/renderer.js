@@ -56,8 +56,12 @@ export default class Renderer {
 			updateChildren( element );
 		}
 
+		this.markedTexts.clear();
+		this.markedAttrs.clear();
+		this.markedChildren.clear();
+
 		function updateText( viewText ) {
-			const domText = viewText.getDomNode();
+			const domText = viewText.getDomText();
 
 			if ( domText.data != viewText.getText() ) {
 				domText.data = viewText.getText();
