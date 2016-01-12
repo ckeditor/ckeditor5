@@ -168,6 +168,48 @@ describe( 'build-utils', () => {
 
 			rename.end();
 		} );
+
+		it( 'should throw error when wrong path provided 1', ( done ) => {
+			const rename = utils.unpackPackages();
+
+			rename.once( 'finish', () => {
+				done( new Error( 'Rename should throw an exception.' ) );
+			} );
+
+			try {
+				rename.write( new Vinyl( {
+					cwd: './',
+					path: 'plugin/src/file.js',
+					contents: new Buffer( '' )
+				} ) );
+			} catch ( e ) {
+				expect( e instanceof Error ).to.equal( true );
+				done();
+			}
+
+			rename.end();
+		} );
+
+		it( 'should throw error when wrong path provided 2', ( done ) => {
+			const rename = utils.unpackPackages();
+
+			rename.once( 'finish', () => {
+				done( new Error( 'Rename should throw an exception.' ) );
+			} );
+
+			try {
+				rename.write( new Vinyl( {
+					cwd: './',
+					path: 'ckeditor5-core/file.js',
+					contents: new Buffer( '' )
+				} ) );
+			} catch ( e ) {
+				expect( e instanceof Error ).to.equal( true );
+				done();
+			}
+
+			rename.end();
+		} );
 	} );
 
 	describe( 'wrapCKEditor5Package', () => {
