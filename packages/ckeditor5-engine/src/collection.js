@@ -8,6 +8,7 @@
 import EmitterMixin from './emittermixin.js';
 import CKEditorError from './ckeditorerror.js';
 import utilsObject from './lib/lodash/object.js';
+import utils from './utils.js';
 
 /**
  * Collections are ordered sets of objects. Items in the collection can be retrieved by their indexes
@@ -48,14 +49,6 @@ export default class Collection {
 		 * @property {Map}
 		 */
 		this._itemMap = new Map();
-
-		/**
-		 * Next id which will be assigned to unidentified item while adding it to the collection.
-		 *
-		 * @private
-		 * @property
-		 */
-		this._nextId = 0;
 
 		/**
 		 * The name of the property which is considered to identify an item.
@@ -266,7 +259,7 @@ export default class Collection {
 		let id;
 
 		do {
-			id = String( this._nextId++ );
+			id = String( utils.uid() );
 		} while ( this._itemMap.has( id ) );
 
 		return id;
