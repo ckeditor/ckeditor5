@@ -5,7 +5,7 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'core/collection', 'core/ckeditorerror' );
+const modules = bender.amd.require( 'core/collection', 'core/ckeditorerror', 'core/utils' );
 
 bender.tools.createSinonSandbox();
 
@@ -18,11 +18,12 @@ function getItem( id, idProperty ) {
 }
 
 describe( 'Collection', () => {
-	let Collection, CKEditorError;
+	let Collection, CKEditorError, utils;
 
 	before( () => {
 		Collection = modules[ 'core/collection' ];
 		CKEditorError = modules[ 'core/ckeditorerror' ];
+		utils = modules[ 'core/utils' ];
 	} );
 
 	let collection;
@@ -147,6 +148,12 @@ describe( 'Collection', () => {
 			'should not override item under an existing id in case of a collision ' +
 			'between existing items and one with an automatically generated id',
 			() => {
+				let nextUid = 0;
+
+				bender.sinon.stub( utils, 'uid', () => {
+					return nextUid++;
+				} );
+
 				collection.add( getItem( '0' ) );
 				collection.add( getItem( '1' ) );
 				collection.add( getItem( '2' ) );
@@ -155,7 +162,7 @@ describe( 'Collection', () => {
 
 				collection.add( item );
 
-				expect( collection.map( i => i.id ) ).to.not.have.property( item.id );
+				expect( item ).to.have.property( 'id', '3' );
 			}
 		);
 
