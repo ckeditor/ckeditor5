@@ -121,13 +121,13 @@ export default class Renderer {
 		}
 
 		function viewToDom( view ) {
-			if ( view.getCorespondingDom() ) {
-				return view.getCorespondingDom();
-			}
-
 			if ( view instanceof ViewText ) {
 				return domDocument.createTextNode( view.getText() );
 			} else {
+				if ( view.getCorespondingDom() ) {
+					return view.getCorespondingDom();
+				}
+
 				const domElement = domDocument.createElement( view.name );
 				view.bindDomElement( domElement );
 
