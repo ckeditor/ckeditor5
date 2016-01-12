@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2015, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -50,7 +50,7 @@ module.exports = {
 			return null;
 		}
 
-		server = match[ 1 ] || 'https://github.com/';
+		server = match[ 1 ] || 'git@github.com:';
 		repository = match[ 2 ];
 		user = match[ 3 ];
 		name = match[ 4 ];
