@@ -106,6 +106,10 @@ export default class Element extends Node {
 		}
 	}
 
+	appendChildren( nodes ) {
+		this.insertChildren( this.getChildCount(), nodes );
+	}
+
 	removeChildren( index, number ) {
 		this.markToSync( 'CHILDREN_NEED_UPDATE' );
 
