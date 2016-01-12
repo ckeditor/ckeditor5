@@ -53,16 +53,10 @@ describe( 'build-utils', () => {
 		it( 'should throw an exception when incorrect format is provided', () => {
 			const transpileSpy = sandbox.spy( utils, 'transpile' );
 			const format = 'incorrect-format';
-			let error;
 
-			try {
+			expect( () => {
 				transpileSpy( format );
-			} catch ( e ) {
-				error = e;
-			}
-
-			sinon.assert.threw( transpileSpy, error );
-			expect( error.message ).to.equal( `Incorrect format: ${ format }` );
+			} ).to.throw( Error, `Incorrect format: ${ format }` );
 		} );
 
 		it( 'should return babel transform stream', ( done ) => {
@@ -160,7 +154,7 @@ describe( 'build-utils', () => {
 				expect( data.path ).to.equal( 'ckeditor5-core/file.js' );
 			} );
 
-			rename.write(  new Vinyl( {
+			rename.write( new Vinyl( {
 				cwd: './',
 				path: 'ckeditor5-core/src/file.js',
 				contents: new Buffer( '' )
@@ -169,46 +163,28 @@ describe( 'build-utils', () => {
 			rename.end();
 		} );
 
-		it( 'should throw error when wrong path provided 1', ( done ) => {
+		it( 'should throw error when wrong path provided 1', () => {
 			const rename = utils.unpackPackages();
 
-			rename.once( 'finish', () => {
-				done( new Error( 'Rename should throw an exception.' ) );
-			} );
-
-			try {
+			expect( () => {
 				rename.write( new Vinyl( {
 					cwd: './',
 					path: 'plugin/src/file.js',
 					contents: new Buffer( '' )
 				} ) );
-			} catch ( e ) {
-				expect( e instanceof Error ).to.equal( true );
-				done();
-			}
-
-			rename.end();
+			} ).to.throw( Error );
 		} );
 
-		it( 'should throw error when wrong path provided 2', ( done ) => {
+		it( 'should throw error when wrong path provided 2', () => {
 			const rename = utils.unpackPackages();
 
-			rename.once( 'finish', () => {
-				done( new Error( 'Rename should throw an exception.' ) );
-			} );
-
-			try {
+			expect( () => {
 				rename.write( new Vinyl( {
 					cwd: './',
 					path: 'ckeditor5-core/file.js',
 					contents: new Buffer( '' )
 				} ) );
-			} catch ( e ) {
-				expect( e instanceof Error ).to.equal( true );
-				done();
-			}
-
-			rename.end();
+			} ).to.throw( Error );
 		} );
 	} );
 
