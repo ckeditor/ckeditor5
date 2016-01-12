@@ -155,7 +155,52 @@ describe( 'Collection', () => {
 
 				collection.add( item );
 
-				expect( item ).to.have.property( 'id', '3' );
+				expect( collection.map( i => i.id ) ).to.not.have.property( item.id );
+			}
+		);
+
+		it(
+			'should generate an id when not defined, which is globally unique ' +
+			'so it is possible to move items between collections and avoid id collisions',
+			() => {
+				const collectionA = new Collection();
+				const collectionB = new Collection();
+				const itemA = {};
+				const itemB = {};
+
+				collectionA.add( itemA );
+				collectionB.add( itemB );
+				collectionB.add( collectionA.remove( itemA ) );
+
+				expect( collectionA.length ).to.be.equal( 0 );
+				expect( collectionB.length ).to.be.equal( 2 );
+				expect( collectionB.get( 0 ) ).to.be.equal( itemB );
+				expect( collectionB.get( 1 ) ).to.be.equal( itemA );
+
+				expect( itemA.id ).to.not.equal( itemB.id );
+			}
+		);
+
+		it(
+			'should generate an id when not defined, which is globally unique ' +
+			'so it is possible to move items between collections and avoid id collisions ' +
+			'– custom id property',
+			() => {
+				const collectionA = new Collection( { idProperty: 'foo' } );
+				const collectionB = new Collection( { idProperty: 'foo' } );
+				const itemA = {};
+				const itemB = {};
+
+				collectionA.add( itemA );
+				collectionB.add( itemB );
+				collectionB.add( collectionA.remove( itemA ) );
+
+				expect( collectionA.length ).to.be.equal( 0 );
+				expect( collectionB.length ).to.be.equal( 2 );
+				expect( collectionB.get( 0 ) ).to.be.equal( itemB );
+				expect( collectionB.get( 1 ) ).to.be.equal( itemA );
+
+				expect( itemA.foo ).to.not.equal( itemB.foo );
 			}
 		);
 
