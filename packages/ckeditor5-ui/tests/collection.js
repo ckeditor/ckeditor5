@@ -5,7 +5,7 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'core/collection', 'core/ckeditorerror' );
+const modules = bender.amd.require( 'core/collection', 'core/ckeditorerror', 'core/utils' );
 
 bender.tools.createSinonSandbox();
 
@@ -18,11 +18,12 @@ function getItem( id, idProperty ) {
 }
 
 describe( 'Collection', () => {
-	let Collection, CKEditorError;
+	let Collection, CKEditorError, utils;
 
 	before( () => {
 		Collection = modules[ 'core/collection' ];
 		CKEditorError = modules[ 'core/ckeditorerror' ];
+		utils = modules[ 'core/utils' ];
 	} );
 
 	let collection;
@@ -147,6 +148,12 @@ describe( 'Collection', () => {
 			'should not override item under an existing id in case of a collision ' +
 			'between existing items and one with an automatically generated id',
 			() => {
+				let nextUid = 0;
+
+				bender.sinon.stub( utils, 'uid', () => {
+					return nextUid++;
+				} );
+
 				collection.add( getItem( '0' ) );
 				collection.add( getItem( '1' ) );
 				collection.add( getItem( '2' ) );
@@ -158,6 +165,64 @@ describe( 'Collection', () => {
 				expect( item ).to.have.property( 'id', '3' );
 			}
 		);
+
+		it(
+			'should generate an id when not defined, which is globally unique ' +
+			'so it is possible to move items between collections and avoid id collisions',
+			() => {
+				const collectionA = new Collection();
+				const collectionB = new Collection();
+				const itemA = {};
+				const itemB = {};
+
+				collectionA.add( itemA );
+				collectionB.add( itemB );
+				collectionB.add( collectionA.remove( itemA ) );
+
+				expect( collectionA.length ).to.equal( 0 );
+				expect( collectionB.length ).to.equal( 2 );
+				expect( collectionB.get( 0 ) ).to.equal( itemB );
+				expect( collectionB.get( 1 ) ).to.equal( itemA );
+
+				expect( itemA.id ).to.not.equal( itemB.id );
+			}
+		);
+
+		it(
+			'should generate an id when not defined, which is globally unique ' +
+			'so it is possible to move items between collections and avoid id collisions ' +
+			'– custom id property',
+			() => {
+				const collectionA = new Collection( { idProperty: 'foo' } );
+				const collectionB = new Collection( { idProperty: 'foo' } );
+				const itemA = {};
+				const itemB = {};
+
+				collectionA.add( itemA );
+				collectionB.add( itemB );
+				collectionB.add( collectionA.remove( itemA ) );
+
+				expect( collectionA.length ).to.equal( 0 );
+				expect( collectionB.length ).to.equal( 2 );
+				expect( collectionB.get( 0 ) ).to.equal( itemB );
+				expect( collectionB.get( 1 ) ).to.equal( itemA );
+
+				expect( itemA.foo ).to.not.equal( itemB.foo );
+			}
+		);
+
+		it( 'should allow an item which is already in some other collection', () => {
+			const collectionA = new Collection();
+			const collectionB = new Collection();
+			const item = {};
+
+			collectionA.add( item );
+			collectionB.add( item );
+
+			expect( collectionA.length ).to.equal( 1 );
+			expect( collectionB.length ).to.equal( 1 );
+			expect( collectionA.get( item.id ) ).to.equal( collectionB.get( 0 ) );
+		} );
 
 		it( 'should fire the "add" event', () => {
 			let spy = sinon.spy();
