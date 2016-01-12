@@ -31,6 +31,7 @@
     "grunt-text-replace": "^0.4.0",
     "gulp": "^3.9.0",
     "gulp-babel": "^6.1.0",
+    "gulp-filter": "^3.0.1",
     "gulp-mirror": "^0.4.0",
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^1.6.0",
@@ -46,7 +47,8 @@
     "ncp": "^2.0.0",
     "replace": "^0.3.0",
     "shelljs": "^0",
-    "sinon": "^1.17.0"
+    "sinon": "^1.17.0",
+    "through2": "^2.0.0"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "See LICENSE.md",

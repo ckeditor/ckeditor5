@@ -28,8 +28,7 @@ const config = {
 		all: {
 			applications: [ 'ckeditor' ],
 			paths: [
-				'tests/**',
-				'node_modules/ckeditor5-*/tests/**',
+				'dist/amd/tests/**',
 				'!**/_*/**'
 			]
 		}
@@ -37,8 +36,9 @@ const config = {
 
 	coverage: {
 		paths: [
-			'dist/amd/**/*.js',
-			'!dist/amd/ckeditor5-*/lib/**'
+			'dist/amd/ckeditor.js',
+			'dist/amd/ckeditor5/**/*.js',
+			'!dist/amd/ckeditor5/*/lib/**'
 		]
 	}
 };

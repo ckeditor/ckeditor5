@@ -74,7 +74,7 @@ module.exports = ( config ) => {
 			 * @returns {Stream}
 			 */
 			ckeditor5( watch ) {
-				const glob = path.join( config.ROOT_DIR, 'src', '**', '*.js' );
+				const glob = path.join( config.ROOT_DIR, '@(src|tests)', '**', '*.js' );
 
 				return gulp.src( glob )
 					.pipe( watch ? gulpWatch( glob ) : utils.noop() )
@@ -114,7 +114,7 @@ module.exports = ( config ) => {
 					.filter( ( filePath ) => filePath );
 
 				const streams = dirs.map( ( dirPath ) => {
-					const glob = path.join( dirPath, 'src', '**', '*.js' );
+					const glob = path.join( dirPath, '@(src|tests)', '**', '*.js' );
 					// Use parent as a base so we get paths starting with 'ckeditor5-*/src/*' in the stream.
 					const baseDir = path.parse( dirPath ).dir;
 					const opts = { base: baseDir };
