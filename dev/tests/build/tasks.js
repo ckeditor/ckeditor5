@@ -15,9 +15,11 @@ const babel = require( 'babel-core' );
 const chai = require( 'chai' );
 const expect = chai.expect;
 const gutil = require( 'gulp-util' );
+const gulp = require( 'gulp' );
+const path = require( 'path' );
 
 describe( 'build-tasks', () => {
-	let sandbox;
+	let sandbox, tasks;
 	const config = {
 		ROOT_DIR: '.',
 		DIST_DIR: 'dist'
@@ -30,6 +32,15 @@ describe( 'build-tasks', () => {
 		} );
 
 		sandbox = sinon.sandbox.create();
+
+		mockery.registerMock( 'minimist', () => {
+			return {
+				formats: 'amd',
+				watch: false
+			};
+		} );
+
+		tasks = require( '../../tasks/gulp/build/tasks' )( config );
 	} );
 
 	afterEach( () => {
@@ -37,18 +48,60 @@ describe( 'build-tasks', () => {
 		sandbox.restore();
 	} );
 
+	describe( 'packages', () => {
+		it( 'should return stream with correct packages as src', () => {
+			const fs = require( 'fs' );
+			const readDirStub = sandbox.stub( fs, 'readdirSync', () => [ 'ckeditor5-core', 'ckeditor5-toolbar' ] );
+			const statStub = sandbox.stub( fs, 'lstatSync', () => {
+				return {
+					isDirectory() {
+						return true;
+					},
+					isSymbolicLink() {
+						return false;
+					}
+				};
+			} );
+			const gulpSrcSpy = sandbox.spy( gulp, 'src' );
+			tasks.src.packages( false );
+
+			sinon.assert.calledOnce( readDirStub );
+			sinon.assert.calledTwice( gulpSrcSpy );
+			sinon.assert.calledTwice( statStub );
+
+			expect( gulpSrcSpy.firstCall.args[ 0 ] ).to.equal( path.join( 'node_modules', 'ckeditor5-core', 'src/**/*.js' ) );
+			expect( gulpSrcSpy.secondCall.args[ 0 ] ).to.equal( path.join( 'node_modules', 'ckeditor5-toolbar', 'src/**/*.js' ) );
+		} );
+
+		it( 'should skip files and resolve symbolic links', () => {
+			const fs = require( 'fs' );
+			const readDirStub = sandbox.stub( fs, 'readdirSync', () => [ 'ckeditor5-file.js' ] );
+			const statStub = sandbox.stub( fs, 'lstatSync', () => {
+				return {
+					isDirectory() {
+						return false;
+					},
+					isSymbolicLink() {
+						return true;
+					}
+				};
+			} );
+			const realPathStub = sandbox.stub( fs, 'realpathSync', () => '/real/path' );
+			const gulpSrcSpy = sandbox.spy( gulp, 'src' );
+			tasks.src.packages( false );
+
+			sinon.assert.calledOnce( readDirStub );
+			sinon.assert.calledOnce( realPathStub );
+			sinon.assert.notCalled( gulpSrcSpy );
+			sinon.assert.calledTwice( statStub );
+		} );
+	} );
+
 	describe( 'build', () => {
 		it( 'should return build stream', ( done ) => {
 			const code = 'export default {};';
 			sandbox.stub( gutil, 'log' );
-			mockery.registerMock( 'minimist', () => {
-				return {
-					formats: 'amd',
-					watch: false
-				};
-			} );
 
-			const tasks = require( '../../tasks/gulp/build/tasks' )( config );
 			const build = tasks.build;
 			const stream = require( 'stream' );
 			const files = [
