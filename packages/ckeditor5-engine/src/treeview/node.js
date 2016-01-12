@@ -12,26 +12,6 @@ export default class Node {
 		this.parent = null;
 	}
 
-	getTreeView() {
-		if ( !this.parent ) {
-			return null;
-		} else {
-			return this.parent.getTreeView();
-		}
-	}
-
-	getNextSibling() {
-		const index = this.getIndex();
-
-		return ( index !== null && this.parent.getChild( index + 1 ) ) || null;
-	}
-
-	getPreviousSibling() {
-		const index = this.getIndex();
-
-		return ( index !== null && this.parent.getChild( index - 1 ) ) || null;
-	}
-
 	getIndex() {
 		let pos;
 
@@ -50,6 +30,26 @@ export default class Node {
 		}
 
 		return pos;
+	}
+
+	getNextSibling() {
+		const index = this.getIndex();
+
+		return ( index !== null && this.parent.getChild( index + 1 ) ) || null;
+	}
+
+	getPreviousSibling() {
+		const index = this.getIndex();
+
+		return ( index !== null && this.parent.getChild( index - 1 ) ) || null;
+	}
+
+	getTreeView() {
+		if ( !this.parent ) {
+			return null;
+		} else {
+			return this.parent.getTreeView();
+		}
 	}
 
 	markToSync( type ) {

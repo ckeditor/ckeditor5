@@ -7,15 +7,15 @@
 
 export default class Observer {
 	/**
-	 * @method init
-	 * @param {treeView.TreeView}
-	 */
-
-	/**
 	 * @method attach
 	 */
 
 	/**
 	 * @method detach
+	 */
+
+	/**
+	 * @method init
+	 * @param {treeView.TreeView}
 	 */
 }

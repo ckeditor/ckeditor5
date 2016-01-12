@@ -24,17 +24,6 @@ export default class MutationObserver extends Observer {
 	}
 
 	/**
-	 * @method init
-	 * @param {treeView.TreeView}
-	 */
-	init( treeView ) {
-		this.treeView = treeView;
-		this.domRoot = treeView.domRoot;
-
-		this._mutationObserver = new window.MutationObserver( this._onMutations.bind( this ) );
-	}
-
-	/**
 	 * @method attach
 	 */
 	attach() {
@@ -46,6 +35,17 @@ export default class MutationObserver extends Observer {
 	 */
 	detach() {
 		this._mutationObserver.disconnect();
+	}
+
+	/**
+	 * @method init
+	 * @param {treeView.TreeView}
+	 */
+	init( treeView ) {
+		this.treeView = treeView;
+		this.domRoot = treeView.domRoot;
+
+		this._mutationObserver = new window.MutationObserver( this._onMutations.bind( this ) );
 	}
 
 	_onMutations( domMutations ) {

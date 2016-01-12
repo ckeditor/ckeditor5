@@ -15,16 +15,6 @@ export default class Text extends Node {
 		this._text = text;
 	}
 
-	getText() {
-		return this._text;
-	}
-
-	setText( text ) {
-		this.markToSync( 'TEXT_NEEDS_UPDATE' );
-
-		this._text = text;
-	}
-
 	getCorespondingDom() {
 		const previousSibling = this.getPreviousSibling();
 
@@ -37,6 +27,16 @@ export default class Text extends Node {
 		}
 
 		return null;
+	}
+
+	getText() {
+		return this._text;
+	}
+
+	setText( text ) {
+		this.markToSync( 'TEXT_NEEDS_UPDATE' );
+
+		this._text = text;
 	}
 
 	static getCorespondingView( domText ) {
