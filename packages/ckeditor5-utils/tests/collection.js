@@ -172,10 +172,10 @@ describe( 'Collection', () => {
 				collectionB.add( itemB );
 				collectionB.add( collectionA.remove( itemA ) );
 
-				expect( collectionA.length ).to.be.equal( 0 );
-				expect( collectionB.length ).to.be.equal( 2 );
-				expect( collectionB.get( 0 ) ).to.be.equal( itemB );
-				expect( collectionB.get( 1 ) ).to.be.equal( itemA );
+				expect( collectionA.length ).to.equal( 0 );
+				expect( collectionB.length ).to.equal( 2 );
+				expect( collectionB.get( 0 ) ).to.equal( itemB );
+				expect( collectionB.get( 1 ) ).to.equal( itemA );
 
 				expect( itemA.id ).to.not.equal( itemB.id );
 			}
@@ -195,14 +195,27 @@ describe( 'Collection', () => {
 				collectionB.add( itemB );
 				collectionB.add( collectionA.remove( itemA ) );
 
-				expect( collectionA.length ).to.be.equal( 0 );
-				expect( collectionB.length ).to.be.equal( 2 );
-				expect( collectionB.get( 0 ) ).to.be.equal( itemB );
-				expect( collectionB.get( 1 ) ).to.be.equal( itemA );
+				expect( collectionA.length ).to.equal( 0 );
+				expect( collectionB.length ).to.equal( 2 );
+				expect( collectionB.get( 0 ) ).to.equal( itemB );
+				expect( collectionB.get( 1 ) ).to.equal( itemA );
 
 				expect( itemA.foo ).to.not.equal( itemB.foo );
 			}
 		);
+
+		it( 'should allow an item which is already in some other collection', () => {
+			const collectionA = new Collection();
+			const collectionB = new Collection();
+			const item = {};
+
+			collectionA.add( item );
+			collectionB.add( item );
+
+			expect( collectionA.length ).to.equal( 1 );
+			expect( collectionB.length ).to.equal( 1 );
+			expect( collectionA.get( item.id ) ).to.equal( collectionB.get( 0 ) );
+		} );
 
 		it( 'should fire the "add" event', () => {
 			let spy = sinon.spy();
