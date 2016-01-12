@@ -111,7 +111,7 @@ export default class Collection {
 				throw new CKEditorError( 'collection-add-item-already-exists' );
 			}
 		} else {
-			itemId = String( utils.uid() );
+			itemId = this._getNextId();
 			item[ idProperty ] = itemId;
 		}
 
@@ -258,6 +258,20 @@ export default class Collection {
 		return this._items[ Symbol.iterator ]();
 	}
 
+	/**
+	 * Generates next (not yet used) id for unidentified item being add to the collection.
+	 *
+	 * @returns {String} The next id.
+	 */
+	_getNextId() {
+		let id;
+
+		do {
+			id = String( utils.uid() );
+		} while ( this._itemMap.has( id ) );
+
+		return id;
+	}
 }
 
 utilsObject.extend( Collection.prototype, EmitterMixin );
