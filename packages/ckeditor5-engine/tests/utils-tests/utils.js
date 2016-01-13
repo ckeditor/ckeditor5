@@ -3,55 +3,54 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-include: ../_tools/tools.js */
-
 'use strict';
+
+import amdTestUtils from '/tests/_utils/amd.js';
+import coreTestUtils from '/tests/core/_utils/utils.js';
+import Creator from '/ckeditor5/core/creator.js';
 
 let createFn3 = () => {};
 let destroyFn3 = () => {};
 
-bender.tools.core.defineEditorCreatorMock( 'test1' );
-bender.tools.core.defineEditorCreatorMock( 'test2', {
+coreTestUtils.defineEditorCreatorMock( 'test1' );
+coreTestUtils.defineEditorCreatorMock( 'test2', {
 	foo: 1,
 	bar: 2
 } );
-bender.tools.core.defineEditorCreatorMock( 'test3', {
+coreTestUtils.defineEditorCreatorMock( 'test3', {
 	create: createFn3,
 	destroy: destroyFn3
 } );
 
-const modules = bender.amd.require( 'core/creator', 'creator-test1', 'creator-test2', 'creator-test3' );
-let Creator;
+const modules = amdTestUtils.require( {
+	testCreator1: 'creator-test1/creator-test1',
+	testCreator2: 'creator-test2/creator-test2',
+	testCreator3: 'creator-test3/creator-test3'
+} );
 
 ///////////////////
 
+let TestCreator1, TestCreator2, TestCreator3;
+
 before( () => {
-	Creator = modules[ 'core/creator' ];
+	TestCreator1 = modules.testCreator1;
+	TestCreator2 = modules.testCreator2;
+	TestCreator3 = modules.testCreator3;
 } );
 
-describe( 'bender.tools.core.defineEditorCreatorMock()', () => {
+describe( 'coreTestUtils.defineEditorCreatorMock()', () => {
 	it( 'should register all creators', () => {
-		const TestCreator1 = modules[ 'creator-test1' ];
-		const TestCreator2 = modules[ 'creator-test2' ];
-		const TestCreator3 = modules[ 'creator-test3' ];
-
 		expect( TestCreator1.prototype ).to.be.instanceof( Creator );
 		expect( TestCreator2.prototype ).to.be.instanceof( Creator );
 		expect( TestCreator3.prototype ).to.be.instanceof( Creator );
 	} );
 
 	it( 'should copy properties from the second argument', () => {
-		const TestCreator = modules[ 'creator-test2' ];
-
-		expect( TestCreator.prototype ).to.have.property( 'foo', 1 );
-		expect( TestCreator.prototype ).to.have.property( 'bar', 2 );
+		expect( TestCreator2.prototype ).to.have.property( 'foo', 1 );
+		expect( TestCreator2.prototype ).to.have.property( 'bar', 2 );
 	} );
 
 	it( 'should create spies for create() and destroy() if not defined', () => {
-		const TestCreator1 = modules[ 'creator-test1' ];
-		const TestCreator2 = modules[ 'creator-test2' ];
-		const TestCreator3 = modules[ 'creator-test3' ];
-
 		expect( TestCreator1.prototype.create ).to.have.property( 'called', false, 'test1.create' );
 		expect( TestCreator1.prototype.destroy ).to.have.property( 'called', false, 'test1.destroy' );
 		expect( TestCreator2.prototype.create ).to.have.property( 'called', false, 'test2.create' );
@@ -63,9 +62,9 @@ describe( 'bender.tools.core.defineEditorCreatorMock()', () => {
 	} );
 } );
 
-describe( 'bender.tools.core.getIteratorCount()', () => {
+describe( 'coreTestUtils.getIteratorCount()', () => {
 	it( 'should returns number of editable items ', () => {
-		const count = bender.tools.core.getIteratorCount( [ 1, 2, 3, 4, 5 ] );
+		const count = coreTestUtils.getIteratorCount( [ 1, 2, 3, 4, 5 ] );
 		expect( count ).to.equal( 5 );
 	} );
 } );

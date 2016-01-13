@@ -3,21 +3,22 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-include: ../_tools/tools.js */
-
 'use strict';
 
-const modules = bender.amd.require( 'ckeditor', 'core/editor', 'core/config' );
+import testUtils from '/tests/_utils/utils.js';
+import coreTestUtils from '/tests/core/_utils/utils.js';
+
+import CKEDITOR from '/ckeditor.js';
+import Editor from '/ckeditor5/core/editor.js';
+import Config from '/ckeditor5/core/config.js';
 
 let content = document.getElementById( 'content' );
 let editorConfig = { creator: 'creator-test' };
 
-bender.tools.createSinonSandbox();
-bender.tools.core.defineEditorCreatorMock( 'test' );
+testUtils.createSinonSandbox();
+coreTestUtils.defineEditorCreatorMock( 'test' );
 
 beforeEach( () => {
-	const CKEDITOR = modules.ckeditor;
-
 	// Destroy all editor instances.
 	while ( CKEDITOR.instances.length ) {
 		CKEDITOR.instances.get( 0 ).destroy();
@@ -25,14 +26,6 @@ beforeEach( () => {
 } );
 
 describe( 'create', () => {
-	let CKEDITOR, Editor, Config;
-
-	before( () => {
-		CKEDITOR = modules.ckeditor;
-		Editor = modules[ 'core/editor' ];
-		Config = modules[ 'core/config' ];
-	} );
-
 	it( 'should return a promise', () => {
 		expect( CKEDITOR.create( content, editorConfig ) ).to.be.instanceof( Promise );
 	} );
@@ -91,7 +84,7 @@ describe( 'create', () => {
 	} );
 
 	it( 'should be rejected on element not found', () => {
-		let addSpy = bender.sinon.spy( CKEDITOR.instances, 'add' );
+		let addSpy = testUtils.sinon.spy( CKEDITOR.instances, 'add' );
 
 		return CKEDITOR.create( '.undefined' ).then( () => {
 			throw new Error( 'It should not enter this function' );
@@ -107,9 +100,6 @@ describe( 'create', () => {
 
 describe( 'config', () => {
 	it( 'should be an instance of Config', () => {
-		const CKEDITOR = modules.ckeditor;
-		const Config = modules[ 'core/config' ];
-
 		expect( CKEDITOR.config ).to.be.an.instanceof( Config );
 	} );
 } );

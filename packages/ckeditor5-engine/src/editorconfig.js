@@ -5,7 +5,7 @@
 
 'use strict';
 
-import CKEDITOR from '../ckeditor.js';
+import CKEDITOR from '../../ckeditor.js';
 import Config from './config.js';
 
 /**

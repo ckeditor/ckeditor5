@@ -5,30 +5,22 @@
 
 'use strict';
 
-const modules = bender.amd.require(
-	'core/editor',
-	'core/plugincollection',
-	'core/plugin',
-	'core/creator',
-	'core/ckeditorerror',
-	'core/log'
-);
-let PluginCollection, Plugin, Editor, Creator, CKEditorError, log;
+import amdUtils from '/tests/_utils/amd.js';
+import testUtils from '/tests/_utils/utils.js';
+import Editor from '/ckeditor5/core/editor.js';
+import PluginCollection from '/ckeditor5/core/plugincollection.js';
+import Plugin from '/ckeditor5/core/plugin.js';
+import Creator from '/ckeditor5/core/creator.js';
+import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
+import log from '/ckeditor5/core/log.js';
 
 let editor;
 let PluginA, PluginB, PluginC, PluginD, PluginE, PluginF, PluginG;
 class TestError extends Error {}
 
-bender.tools.createSinonSandbox();
+testUtils.createSinonSandbox();
 
 before( () => {
-	PluginCollection = modules[ 'core/plugincollection' ];
-	Editor = modules[ 'core/editor' ];
-	Plugin = modules[ 'core/plugin' ];
-	Creator = modules[ 'core/creator' ];
-	CKEditorError = modules[ 'core/ckeditorerror' ];
-	log = modules[ 'core/log' ];
-
 	PluginA = createPlugin( 'A' );
 	PluginB = createPlugin( 'B' );
 	PluginC = createPlugin( 'C' );
@@ -47,41 +39,41 @@ before( () => {
 
 // Create fake plugins that will be used on tests.
 
-bender.amd.define( 'A', () => {
+amdUtils.define( 'A', () => {
 	return PluginA;
 } );
 
-bender.amd.define( 'B', () => {
+amdUtils.define( 'B', () => {
 	return PluginB;
 } );
 
-bender.amd.define( 'C', [ 'core/plugin', 'B' ], () => {
+amdUtils.define( 'C', [ 'core/editor', 'B' ], () => {
 	return PluginC;
 } );
 
-bender.amd.define( 'D', [ 'core/plugin', 'A', 'C' ], () => {
+amdUtils.define( 'D', [ 'core/editor', 'A', 'C' ], () => {
 	return PluginD;
 } );
 
-bender.amd.define( 'E', [ 'core/plugin', 'F' ], () => {
+amdUtils.define( 'E', [ 'core/editor', 'F' ], () => {
 	return PluginE;
 } );
 
-bender.amd.define( 'F', [ 'core/plugin', 'E' ], () => {
+amdUtils.define( 'F', [ 'core/editor', 'E' ], () => {
 	return PluginF;
 } );
 
-bender.amd.define( 'G', () => {
+amdUtils.define( 'G', () => {
 	return PluginG;
 } );
 
 // Erroneous cases.
 
-bender.amd.define( 'X', () => {
+amdUtils.define( 'X', () => {
 	throw new TestError( 'Some error inside a plugin' );
 } );
 
-bender.amd.define( 'Y', () => {
+amdUtils.define( 'Y', () => {
 	return class {};
 } );
 
@@ -194,7 +186,7 @@ describe( 'load', () => {
 	} );
 
 	it( 'should reject on invalid plugin names (forward require.js loading error)', () => {
-		let logSpy = bender.sinon.stub( log, 'error' );
+		let logSpy = testUtils.sinon.stub( log, 'error' );
 
 		let plugins = new PluginCollection( editor );
 
@@ -214,7 +206,7 @@ describe( 'load', () => {
 	} );
 
 	it( 'should reject on broken plugins (forward the error thrown in a plugin)', () => {
-		let logSpy = bender.sinon.stub( log, 'error' );
+		let logSpy = testUtils.sinon.stub( log, 'error' );
 
 		let plugins = new PluginCollection( editor );
 
@@ -233,7 +225,7 @@ describe( 'load', () => {
 	} );
 
 	it( 'should reject when loading a module which is not a plugin', () => {
-		let logSpy = bender.sinon.stub( log, 'error' );
+		let logSpy = testUtils.sinon.stub( log, 'error' );
 
 		let plugins = new PluginCollection( editor );
 
@@ -252,8 +244,24 @@ describe( 'load', () => {
 	} );
 } );
 
+describe( 'getPluginPath()', () => {
+	it( 'generates path for modules within some package', () => {
+		const p = PluginCollection.getPluginPath( 'some/ba' );
+
+		expect( p ).to.equal( 'ckeditor5/some/ba.js' );
+	} );
+
+	it( 'generates path from simplified feature name', () => {
+		const p = PluginCollection.getPluginPath( 'foo' );
+
+		expect( p ).to.equal( 'ckeditor5/foo/foo.js' );
+	} );
+} );
+
 function createPlugin( name, baseClass ) {
-	const P = class extends ( baseClass || Plugin ) {
+	baseClass = baseClass || Plugin;
+
+	const P = class extends baseClass {
 		constructor( editor ) {
 			super( editor );
 			this._pluginName = name;
