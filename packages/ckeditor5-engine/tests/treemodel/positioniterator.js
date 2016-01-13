@@ -10,7 +10,6 @@
 import Document from '/ckeditor5/core/treemodel/document.js';
 import Attribute from '/ckeditor5/core/treemodel/attribute.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
-import Character from '/ckeditor5/core/treemodel/character.js';
 import Text from '/ckeditor5/core/treemodel/text.js';
 import PositionIterator from '/ckeditor5/core/treemodel/positioniterator.js';
 import Position from '/ckeditor5/core/treemodel/position.js';
@@ -24,7 +23,6 @@ describe( 'range iterator', () => {
 	before( () => {
 		ELEMENT_ENTER = PositionIterator.ELEMENT_ENTER;
 		ELEMENT_LEAVE = PositionIterator.ELEMENT_LEAVE;
-		CHARACTER = PositionIterator.CHARACTER;
 		TEXT = PositionIterator.TEXT;
 
 		doc = new Document();
@@ -43,11 +41,11 @@ describe( 'range iterator', () => {
 
 		let attrBoldTrue = new Attribute( 'bold', true );
 
-		b = new Character( 'b', [ attrBoldTrue ] );
-		a = new Character( 'a', [ attrBoldTrue ] );
-		r = new Character( 'r' );
+		b = new Text( 'b', [ attrBoldTrue ] );
+		a = new Text( 'a', [ attrBoldTrue ] );
+		r = new Text( 'r' );
 		img2 = new Element( 'img2' );
-		x = new Character( 'x' );
+		x = new Text( 'x' );
 
 		paragraph = new Element( 'p', [], [ b, a, r, img2, x ] );
 		img1 = new Element( 'img1' );
@@ -58,12 +56,12 @@ describe( 'range iterator', () => {
 			{ type: ELEMENT_ENTER, node: img1 },
 			{ type: ELEMENT_LEAVE, node: img1 },
 			{ type: ELEMENT_ENTER, node: paragraph },
-			{ type: CHARACTER, node: b },
-			{ type: CHARACTER, node: a },
-			{ type: CHARACTER, node: r },
+			{ type: TEXT, text: 'b', attrs: [ attrBoldTrue ] },
+			{ type: TEXT, text: 'a', attrs: [ attrBoldTrue ] },
+			{ type: TEXT, text: 'r', attrs: [] },
 			{ type: ELEMENT_ENTER, node: img2 },
 			{ type: ELEMENT_LEAVE, node: img2 },
-			{ type: CHARACTER, node: x },
+			{ type: TEXT, text: 'x', attrs: [] },
 			{ type: ELEMENT_LEAVE, node: paragraph }
 		];
 
@@ -71,21 +69,34 @@ describe( 'range iterator', () => {
 			{ type: ELEMENT_ENTER, node: img1 },
 			{ type: ELEMENT_LEAVE, node: img1 },
 			{ type: ELEMENT_ENTER, node: paragraph },
-			{ type: TEXT, node: new Text( 'ba', [ attrBoldTrue ] ) },
-			{ type: TEXT, node: new Text( 'r' ) },
+			{ type: TEXT, text: 'ba', attrs: [ attrBoldTrue ] },
+			{ type: TEXT, text: 'r', attrs: [] },
 			{ type: ELEMENT_ENTER, node: img2 },
 			{ type: ELEMENT_LEAVE, node: img2 },
-			{ type: TEXT, node: new Text( 'x' ) },
+			{ type: TEXT, text: 'x', attrs: [] },
 			{ type: ELEMENT_LEAVE, node: paragraph }
 		];
 	} );
+
+	function expectItem( item, expected ) {
+		expect( item.done ).to.be.false;
+
+		if ( item.value.type == TEXT ) {
+			let text = item.value.node.text;
+
+			expect( text ).to.equal( expected.text );
+			expect( Array.from( item.value.node.attrs ) ).to.deep.equal( expected.attrs );
+		} else {
+			expect( item.value ).to.deep.equal( expected );
+		}
+	}
 
 	it( 'should return next position', () => {
 		let iterator = new PositionIterator( new Position( root, [ 0 ] ) ); // beginning of root
 		let i, len;
 
 		for ( i = 0, len = expectedItems.length; i < len; i++ ) {
-			expect( iterator.next() ).to.deep.equal( { done: false, value: expectedItems[ i ] } );
+			expectItem( iterator.next(), expectedItems[ i ] );
 		}
 		expect( iterator.next() ).to.have.property( 'done' ).that.is.true;
 	} );
@@ -94,7 +105,7 @@ describe( 'range iterator', () => {
 		let iterator = new PositionIterator( new Position( root, [ 2 ] ) ); // ending of root
 
 		for ( let i = expectedItems.length - 1; i >= 0; i-- ) {
-			expect( iterator.previous() ).to.deep.equal( { done: false, value: expectedItems[ i ] } );
+			expectItem( iterator.previous(), expectedItems[ i ] );
 		}
 		expect( iterator.previous() ).to.have.property( 'done' ).that.is.true;
 	} );
@@ -108,7 +119,7 @@ describe( 'range iterator', () => {
 		let i, len;
 
 		for ( i = 3, len = expectedItems.length; i < 7; i++ ) {
-			expect( iterator.next() ).to.deep.equal( { done: false, value: expectedItems[ i ] } );
+			expectItem( iterator.next(), expectedItems[ i ] );
 		}
 		expect( iterator.next() ).to.have.property( 'done' ).that.is.true;
 	} );
@@ -122,58 +133,65 @@ describe( 'range iterator', () => {
 		let i, len;
 
 		for ( i = 6, len = expectedItems.length; i > 2; i-- ) {
-			expect( iterator.previous() ).to.deep.equal( { done: false, value: expectedItems[ i ] } );
+			expectItem( iterator.previous(), expectedItems[ i ] );
 		}
 		expect( iterator.previous() ).to.have.property( 'done' ).that.is.true;
 	} );
 
-	it( 'should return iterate over the range', () => {
-		let start = new Position( root, [ 0 ] ); // beginning of root
-		let end = new Position( root, [ 2 ] ); // ending of root
-		let range = new Range( start, end );
-
-		let i = 0;
-
-		for ( let value of range ) {
-			expect( value ).to.deep.equal( expectedItems[ i ] );
-			i++;
-		}
-		expect( i ).to.equal( expectedItems.length );
-	} );
-
 	it( 'should merge characters when iterating over the range using next', () => {
-		let start = new Position( root, [ 0 ] ); // beginning of root
-		let end = new Position( root, [ 2 ] ); // ending of root
+		let start = new Position( root, [ 1 ] );
+		let end = new Position( root, [ 1, 4 ] );
 		let range = new Range( start, end );
 
 		let iterator = new PositionIterator( range, range.start, true );
-		let step = iterator.next();
-		let i = 0;
+		let i;
 
-		while ( !step.done ) {
-			expect( step.value ).to.deep.equal( expectedItemsMerged[ i ] );
-			step = iterator.next();
-			i++;
+		for ( i = 2; i <= 6; i++ ) {
+			expectItem( iterator.next(), expectedItemsMerged[ i ] );
 		}
-
-		expect( i ).to.equal( expectedItemsMerged.length );
+		expect( iterator.next() ).to.have.property( 'done' ).that.is.true;
 	} );
 
 	it( 'should merge characters when iterating over the range using previous', () => {
-		let start = new Position( root, [ 0 ] ); // beginning of root
-		let end = new Position( root, [ 2 ] ); // ending of root
+		let start = new Position( root, [ 1 ] );
+		let end = new Position( root, [ 1, 4 ] );
 		let range = new Range( start, end );
 
 		let iterator = new PositionIterator( range, range.end, true );
-		let step = iterator.previous();
-		let i = expectedItemsMerged.length;
 
-		while ( !step.done ) {
-			i--;
-			expect( step.value ).to.deep.equal( expectedItemsMerged[ i ] );
-			step = iterator.previous();
+		for ( let i = 6; i >= 2; i-- ) {
+			expectItem( iterator.previous(), expectedItemsMerged[ i ] );
 		}
+		expect( iterator.previous() ).to.have.property( 'done' ).that.is.true;
+	} );
 
-		expect( i ).to.equal( 0 );
+	it( 'should respect boundaries when iterating using next and merging characters', () => {
+		let start = new Position( root, [ 1, 0 ] );
+		let end = new Position( root, [ 1, 1 ] );
+		let range = new Range( start, end );
+
+		let iterator = new PositionIterator( range, range.start, true );
+		let val = iterator.next();
+
+		expect( val.done ).to.be.false;
+		expect( val.value.node.text ).to.equal( 'b' );
+
+		val = iterator.next();
+		expect( val.done ).to.be.true;
+	} );
+
+	it( 'should respect boundaries when iterating using previous and merging characters', () => {
+		let start = new Position( root, [ 1, 1 ] );
+		let end = new Position( root, [ 1, 2 ] );
+		let range = new Range( start, end );
+
+		let iterator = new PositionIterator( range, range.end, true );
+		let val = iterator.previous();
+
+		expect( val.done ).to.be.false;
+		expect( val.value.node.text ).to.equal( 'a' );
+
+		val = iterator.previous();
+		expect( val.done ).to.be.true;
 	} );
 } );

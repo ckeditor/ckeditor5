@@ -89,11 +89,13 @@ export default class Element extends Node {
 	 * The list of nodes can be of any type accepted by the {@link treeModel.NodeList} constructor.
 	 */
 	insertChildren( index, nodes ) {
-		this._children.insert( index, new NodeList( nodes ) );
+		let nodeList = new NodeList( nodes );
 
-		for ( let node of this._children ) {
+		for ( let node of nodeList._nodes ) {
 			node.parent = this;
 		}
+
+		this._children.insert( index, nodeList );
 	}
 
 	/**
@@ -106,12 +108,13 @@ export default class Element extends Node {
 	 * @param {Number} number Number of nodes to remove.
 	 * @returns {treeModel.NodeList} The list of removed nodes.
 	 */
-
 	removeChildren( index, number ) {
-		for ( let i = index; i < index + number; i++ ) {
-			this._children.get( i ).parent = null;
+		let nodeList = this._children.remove( index, number );
+
+		for ( let node of nodeList._nodes ) {
+			node.parent = null;
 		}
 
-		return this._children.remove( index, number );
+		return nodeList;
 	}
 }

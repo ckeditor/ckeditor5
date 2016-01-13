@@ -90,14 +90,18 @@ describe( 'Element', () => {
 
 	describe( 'getChildIndex', () => {
 		it( 'should return child index', () => {
-			let element = new Element( 'elem', [], [ 'bar' ] );
-			let b = element.getChild( 0 );
-			let a = element.getChild( 1 );
-			let r = element.getChild( 2 );
+			let element = new Element( 'elem', [], [ new Element( 'p' ), 'bar', new Element( 'h' ) ] );
+			let p = element.getChild( 0 );
+			let b = element.getChild( 1 );
+			let a = element.getChild( 2 );
+			let r = element.getChild( 3 );
+			let h = element.getChild( 4 );
 
-			expect( element.getChildIndex( b ) ).to.equal( 0 );
-			expect( element.getChildIndex( a ) ).to.equal( 1 );
-			expect( element.getChildIndex( r ) ).to.equal( 2 );
+			expect( element.getChildIndex( p ) ).to.equal( 0 );
+			expect( element.getChildIndex( b ) ).to.equal( 1 );
+			expect( element.getChildIndex( a ) ).to.equal( 2 );
+			expect( element.getChildIndex( r ) ).to.equal( 3 );
+			expect( element.getChildIndex( h ) ).to.equal( 4 );
 		} );
 	} );
 

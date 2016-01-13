@@ -5,16 +5,14 @@
 
 'use strict';
 
-import Character from './character.js';
+import TextNode from './textnode.js';
 import Element from './element.js';
 import Position from './position.js';
-import Text from './text.js';
 import Range from './range.js';
 
 const ELEMENT_ENTER = 0;
 const ELEMENT_LEAVE = 1;
-const CHARACTER = 2;
-const TEXT = 3;
+const TEXT = 2;
 
 /**
  * Position iterator class. It allows to iterate forward and backward over the tree document.
@@ -28,14 +26,12 @@ export default class PositionIterator {
 	 *
 	 * @param {treeModel.Range} [boundaries] Range to define boundaries of the iterator.
 	 * @param {treeModel.Position} [iteratorPosition] Starting position.
-	 * @param {Boolean} [mergeCharacters] Whether {@link treeModel.Character} nodes with same attributes
+	 * @param {Boolean} [mergeCharacters] Flag indicating whether all consecutive characters with the same attributes
+	 * should be returned as one {@link treeModel.TextNode} (`true`) or one by one (`false`). Defaults to `false`.
 	 * should be passed one by one or as one {@link treeModel.Text} object.
 	 * @constructor
 	 */
 	constructor() {
-		const Range = CKEDITOR.require( 'treemodel/range' );
-		const Position = CKEDITOR.require( 'treemodel/position' );
-
 		const args = Array.from( arguments );
 
 		if ( args[ 0 ] instanceof Range ) {
@@ -72,10 +68,8 @@ export default class PositionIterator {
 		 */
 
 		/**
-		 * Flag indicating whether {@link treeModel.Character} nodes with same attributes should be passed one by one
-		 * or as one {@link treeModel.Text} object.
-		 *
-		 * In this mode, all consecutive characters that has the same attributes will be passed in one iterator step.
+		 * Flag indicating whether all consecutive characters with the same attributes should be
+		 * returned as one {@link treeModel.TextNode} (`true`) or one by one (`false`).
 		 *
 		 * @property {Boolean} mergeCharacters
 		 */
@@ -88,7 +82,7 @@ export default class PositionIterator {
 	 * @returns {Boolean} return.done True if iterator is done.
 	 * @returns {Object} return.value
 	 * @returns {Number} return.value.type Encountered value type, possible options: {@link PositionIterator#ELEMENT_ENTER},
-	 * {@link PositionIterator#ELEMENT_LEAVE}, {@link PositionIterator#CHARACTER} or {@link PositionIterator#TEXT}.
+	 * {@link PositionIterator#ELEMENT_LEAVE} or {@link PositionIterator#TEXT}.
 	 * @returns {treeModel.Node} return.value.node Encountered node.
 	 */
 	next() {
@@ -110,26 +104,19 @@ export default class PositionIterator {
 			this.position = Position.createFromParentAndOffset( nodeAfter, 0 );
 
 			return formatReturnValue( ELEMENT_ENTER, nodeAfter );
-		} else if ( nodeAfter instanceof Character ) {
-			if ( this.mergeCharacters ) {
-				let text = '';
-				let node = this.position.nodeAfter;
+		} else if ( nodeAfter instanceof TextNode ) {
+			let offset = this.mergeCharacters ? nodeAfter._textItem.text.length - nodeAfter._start : 1;
+			let nextPos = Position.createFromParentAndOffset( parent, position.offset + offset );
 
-				while ( !this.position.isEqual( this.boundaries.end ) && node instanceof Character && node.attrs.isEqual( nodeAfter.attrs ) ) {
-					text += this.position.nodeAfter.character;
-					this.position.offset++;
-
-					node = this.position.nodeAfter;
-				}
-				// This is so this.position is always a new object after each iterator step.
-				this.position = Position.createFromPosition( position );
-
-				return formatReturnValue( TEXT, new Text( text, this.position.nodeBefore.attrs ) );
-			} else {
-				this.position = Position.createFromParentAndOffset( parent, position.offset + 1 );
-
-				return formatReturnValue( CHARACTER, nodeAfter );
+			if ( this.boundaries && nextPos.isAfter( this.boundaries.end ) ) {
+				nextPos = Position.createFromPosition( this.boundaries.end );
 			}
+
+			let textNode = nodeAfter._textItem.getTextNode( nodeAfter._start, nextPos.offset - position.offset );
+
+			this.position = nextPos;
+
+			return formatReturnValue( TEXT, textNode );
 		} else {
 			this.position = Position.createFromParentAndOffset( parent.parent, parent.getIndex() + 1 );
 
@@ -144,7 +131,7 @@ export default class PositionIterator {
 	 * @returns {Boolean} return.done True if iterator is done.
 	 * @returns {Object} return.value
 	 * @returns {Number} return.value.type Encountered value type, possible options: {@link PositionIterator#ELEMENT_ENTER},
-	 * {@link PositionIterator#ELEMENT_LEAVE} or {@link PositionIterator#CHARACTER}.
+	 * {@link PositionIterator#ELEMENT_LEAVE} or {@link PositionIterator#TEXT}.
 	 * @returns {treeModel.Node} return.value.node Scanned node.
 	 */
 	previous() {
@@ -166,26 +153,20 @@ export default class PositionIterator {
 			this.position = Position.createFromParentAndOffset( nodeBefore, nodeBefore.getChildCount() );
 
 			return formatReturnValue( ELEMENT_LEAVE, nodeBefore );
-		} else if ( nodeBefore instanceof Character ) {
-			if ( this.mergeCharacters ) {
-				let text = '';
-				let node = this.position.nodeBefore;
+		} else if ( nodeBefore instanceof TextNode ) {
+			let offset = this.mergeCharacters ? nodeBefore._start + 1 : 1;
+			let nextPos = Position.createFromParentAndOffset( parent, position.offset - offset );
 
-				while ( !this.position.isEqual( this.boundaries.start ) && node instanceof Character && node.attrs.isEqual( nodeBefore.attrs ) ) {
-					text = this.position.nodeBefore.character + text;
-					this.position.offset--;
-
-					node = this.position.nodeBefore;
-				}
-				// This is so this.position is always a new object after each iterator step.
-				this.position = Position.createFromPosition( position );
-
-				return formatReturnValue( TEXT, new Text( text, this.position.nodeAfter.attrs ) );
-			} else {
-				this.position = Position.createFromParentAndOffset( parent, position.offset - 1 );
-
-				return formatReturnValue( CHARACTER, nodeBefore );
+			if ( this.boundaries && nextPos.isBefore( this.boundaries.start ) ) {
+				nextPos = Position.createFromPosition( this.boundaries.start );
 			}
+
+			let start = nodeBefore._start - position.offset + nextPos.offset + 1;
+			let textNode = nodeBefore._textItem.getTextNode( start, nodeBefore._start - start + 1 );
+
+			this.position = nextPos;
+
+			return formatReturnValue( TEXT, textNode );
 		} else {
 			this.position = Position.createFromParentAndOffset( parent.parent, parent.getIndex() );
 
@@ -203,15 +184,6 @@ function formatReturnValue( type, node ) {
 		}
 	};
 }
-
-/**
- * Flag for character.
- *
- * @static
- * @readonly
- * @property {Number}
- */
-PositionIterator.CHARACTER = CHARACTER;
 
 /**
  * Flag for entering element.
@@ -232,7 +204,7 @@ PositionIterator.ELEMENT_ENTER = ELEMENT_ENTER;
 PositionIterator.ELEMENT_LEAVE = ELEMENT_LEAVE;
 
 /**
- * Flag for merged characters / text.
+ * Flag for character or text.
  *
  * @static
  * @readonly

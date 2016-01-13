@@ -360,4 +360,23 @@ describe( 'AttributeOperation', () => {
 		expect( clone.newAttr.isEqual( newAttr ) ).to.be.true;
 		expect( clone.baseVersion ).to.equal( baseVersion );
 	} );
+
+	it( 'should merge characters in node list', () => {
+		let attrA = new Attribute( 'foo', 'a' );
+		let attrB = new Attribute( 'foo', 'b' );
+		root.insertChildren( 0, new Text( 'abc', [ attrA ] ) );
+		root.insertChildren( 3, new Text( 'xyz', [ attrB ] ) );
+
+		doc.applyOperation(
+			new AttributeOperation(
+				new Range( new Position( root, [ 1 ] ), new Position( root, [ 3 ] ) ),
+				attrA,
+				attrB,
+				doc.version
+			)
+		);
+
+		expect( root._children._nodes[ 0 ].text ).to.equal( 'a' );
+		expect( root._children._nodes[ 1 ].text ).to.equal( 'bcxyz' );
+	} );
 } );

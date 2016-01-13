@@ -14,7 +14,6 @@ import Attribute from '/ckeditor5/core/treemodel/attribute.js';
 import Range from '/ckeditor5/core/treemodel/range.js';
 import Position from '/ckeditor5/core/treemodel/position.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
-import Character from '/ckeditor5/core/treemodel/character.js';
 
 const getIteratorCount = coreTestUtils.getIteratorCount;
 
@@ -38,12 +37,15 @@ describe( 'Batch', () => {
 	}
 
 	describe( 'change attribute on node', () => {
-		let node, character;
+		let node, text, textNode;
 
 		beforeEach( () => {
 			node = new Element( 'p', [ new Attribute( 'a', 1 ) ] );
-			character = new Character( 'c', [ new Attribute( 'a', 1 ) ] );
-			root.insertChildren( 0, [ node, character ] );
+			text = new Text( 'c', [ new Attribute( 'a', 1 ) ] );
+
+			root.insertChildren( 0, [ node, text ] );
+
+			textNode = root.getChild( 1 );
 		} );
 
 		describe( 'setAttr', () => {
@@ -59,16 +61,16 @@ describe( 'Batch', () => {
 				expect( node.attrs.getValue( 'a' ) ).to.equal( 2 );
 			} );
 
-			it( 'should create the attribute on character', () => {
-				batch.setAttr( 'b', 2, character );
+			it( 'should create the attribute on text node', () => {
+				batch.setAttr( 'b', 2, textNode );
 				expect( getOperationsCount() ).to.equal( 1 );
-				expect( character.attrs.getValue( 'b' ) ).to.equal( 2 );
+				expect( root.getChild( 1 ).attrs.getValue( 'b' ) ).to.equal( 2 );
 			} );
 
-			it( 'should change the attribute of character', () => {
-				batch.setAttr( 'a', 2, character );
+			it( 'should change the attribute of text node', () => {
+				batch.setAttr( 'a', 2, textNode );
 				expect( getOperationsCount() ).to.equal( 1 );
-				expect( character.attrs.getValue( 'a' ) ).to.equal( 2 );
+				expect( root.getChild( 1 ).attrs.getValue( 'a' ) ).to.equal( 2 );
 			} );
 
 			it( 'should do nothing if the attribute value is the same', () => {
@@ -91,9 +93,9 @@ describe( 'Batch', () => {
 			} );
 
 			it( 'should remove the attribute from character', () => {
-				batch.removeAttr( 'a', character );
+				batch.removeAttr( 'a', textNode );
 				expect( getOperationsCount() ).to.equal( 1 );
-				expect( character.attrs.getValue( 'a' ) ).to.be.null;
+				expect( root.getChild( 1 ).attrs.getValue( 'a' ) ).to.be.null;
 			} );
 
 			it( 'should do nothing if the attribute is not set', () => {

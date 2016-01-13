@@ -8,6 +8,7 @@
 import Operation from './operation.js';
 import Range from '../range.js';
 import CKEditorError from '../../ckeditorerror.js';
+import TextNode from '../textnode.js';
 
 /**
  * Operation to change nodes' attribute. Using this class you can add, remove or change value of the attribute.
@@ -91,9 +92,17 @@ export default class AttributeOperation extends Operation {
 			);
 		}
 
+		// Split text nodes if needed, then get the nodes in the range and convert it to node list. It will be easier to operate.
+		this.range.start.parent._children._splitNodeAt( this.range.start.offset );
+		this.range.end.parent._children._splitNodeAt( this.range.end.offset );
+
 		// Remove or change.
 		if ( oldAttr !== null ) {
-			for ( let node of this.range.getAllNodes() ) {
+			for ( let node of this.range.getAllNodes( true ) ) {
+				if ( node instanceof TextNode ) {
+					node = node._textItem;
+				}
+
 				if ( !node.attrs.has( oldAttr ) ) {
 					/**
 					 * The attribute which should be removed does not exists for the given node.
@@ -108,8 +117,6 @@ export default class AttributeOperation extends Operation {
 					);
 				}
 
-				// There is no use in removing attribute if we will overwrite it later.
-				// Still it is profitable to run through the loop to check if all nodes in the range has old attribute.
 				if ( newAttr === null ) {
 					node.attrs.delete( oldAttr.key );
 				}
@@ -118,7 +125,11 @@ export default class AttributeOperation extends Operation {
 
 		// Insert or change.
 		if ( newAttr !== null ) {
-			for ( let node of this.range.getAllNodes() ) {
+			for ( let node of this.range.getAllNodes( true ) ) {
+				if ( node instanceof TextNode ) {
+					node = node._textItem;
+				}
+
 				if ( oldAttr === null && node.attrs.has( newAttr.key ) ) {
 					/**
 					 * The attribute with given key already exists for the given node.
@@ -136,6 +147,9 @@ export default class AttributeOperation extends Operation {
 				node.attrs.set( newAttr );
 			}
 		}
+
+		this.range.start.parent._children._mergeNodeAt( this.range.start.offset );
+		this.range.end.parent._children._mergeNodeAt( this.range.end.offset );
 
 		return { range: this.range, oldAttr: oldAttr, newAttr: newAttr };
 	}
