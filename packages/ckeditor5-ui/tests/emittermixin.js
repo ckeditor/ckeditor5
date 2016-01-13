@@ -5,15 +5,11 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'core/emittermixin', 'core/eventinfo', 'core/lib/lodash/object' );
-let EmitterMixin, EventInfo, utilsObject;
-let emitter, listener;
+import EmitterMixin from '/ckeditor5/core/emittermixin.js';
+import EventInfo from '/ckeditor5/core/eventinfo.js';
+import utilsObject from '/ckeditor5/core/lib/lodash/object.js';
 
-before( () => {
-	EmitterMixin = modules[ 'core/emittermixin' ];
-	EventInfo = modules[ 'core/eventinfo' ];
-	utilsObject = modules[ 'core/lib/lodash/object' ];
-} );
+let emitter, listener;
 
 beforeEach( refreshEmitter );
 
