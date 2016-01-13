@@ -433,7 +433,9 @@ export default class Position {
 			throw new CKEditorError( 'position-after-root: You can not make position after root.', { root: node } );
 		}
 
-		return this.createFromParentAndOffset( node.parent, node.getIndex() + 1 );
+		let length = node.text ? node.text.length : 1;
+
+		return this.createFromParentAndOffset( node.parent, node.getIndex() + length );
 	}
 
 	/**

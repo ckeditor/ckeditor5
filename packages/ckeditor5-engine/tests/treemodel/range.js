@@ -10,7 +10,6 @@
 import Range from '/ckeditor5/core/treemodel/range.js';
 import Position from '/ckeditor5/core/treemodel/position.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
-import Character from '/ckeditor5/core/treemodel/character.js';
 import Text from '/ckeditor5/core/treemodel/text.js';
 import Document from '/ckeditor5/core/treemodel/document.js';
 
@@ -138,9 +137,9 @@ describe( 'Range', () => {
 		//     |- o
 		//     |- z
 		before( () => {
-			f = new Character( 'f' );
-			o = new Character( 'o' );
-			z = new Character( 'z' );
+			f = new Text( 'f' );
+			o = new Text( 'o' );
+			z = new Text( 'z' );
 
 			p = new Element( 'p', [], [ f, o, z ] );
 
@@ -189,10 +188,10 @@ describe( 'Range', () => {
 
 	describe( 'getAllNodes', () => {
 		it( 'should iterate over all nodes which "starts" in the range', () => {
-			const a = new Character( 'a' );
-			const b = new Character( 'b' );
-			const x = new Character( 'x' );
-			const y = new Character( 'y' );
+			const a = new Text( 'a' );
+			const b = new Text( 'b' );
+			const x = new Text( 'x' );
+			const y = new Text( 'y' );
 
 			const e1 = new Element( 'e1' );
 			const e2 = new Element( 'e2' );
@@ -208,7 +207,10 @@ describe( 'Range', () => {
 
 			let nodes = Array.from( range.getAllNodes() );
 
-			expect( nodes ).to.deep.equal( [ b, e2, x ] );
+			expect( nodes.length ).to.equal( 3 );
+			expect( nodes[ 0 ].text ).to.equal( 'b' );
+			expect( nodes[ 1 ] ).to.equal( e2 );
+			expect( nodes[ 2 ].text ).to.equal( 'x' );
 		} );
 
 		it( 'should merge characters with same attributes', () => {
@@ -438,7 +440,7 @@ describe( 'Range', () => {
 			let nodes = Array.from( range.getTopLevelNodes() );
 			let nodeNames = mapNodesToNames( nodes );
 
-			expect( nodeNames ).to.deep.equal( [ 'C:s', 'C:t', 'E:p', 'E:p', 'E:p', 'C:s', 'C:e' ] );
+			expect( nodeNames ).to.deep.equal( [ 'T:s', 'T:t', 'E:p', 'E:p', 'E:p', 'T:s', 'T:e' ] );
 		} );
 
 		it( 'should merge characters with same attributes', () => {
@@ -508,8 +510,7 @@ describe( 'Range', () => {
 
 	function mapNodesToNames( nodes ) {
 		return nodes.map( ( node ) => {
-			return ( node instanceof Element ) ? 'E:' + node.name :
-				( node instanceof Text ) ? 'T:' + node.text : 'C:' + node.character;
+			return ( node instanceof Element ) ? 'E:' + node.name : 'T:' + node.text;
 		} );
 	}
 

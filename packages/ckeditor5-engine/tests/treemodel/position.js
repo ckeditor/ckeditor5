@@ -9,7 +9,6 @@
 
 import Document from '/ckeditor5/core/treemodel/document.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
-import Character from '/ckeditor5/core/treemodel/character.js';
 import Position from '/ckeditor5/core/treemodel/position.js';
 import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
@@ -33,17 +32,17 @@ describe( 'position', () => {
 		root = doc.createRoot( 'root' );
 		otherRoot = doc.createRoot( 'otherRoot' );
 
-		f = new Character( 'f' );
-		o = new Character( 'o' );
-		z = new Character( 'z' );
+		li1 = new Element( 'li', [], 'foz' );
 
-		li1 = new Element( 'li', [], [ f, o, z ] );
+		f = li1.getChild( 0 );
+		o = li1.getChild( 1 );
+		z = li1.getChild( 2 );
 
-		b = new Character( 'b' );
-		a = new Character( 'a' );
-		r = new Character( 'r' );
+		li2 = new Element( 'li', [], 'bar' );
 
-		li2 = new Element( 'li', [], [ b, a, r ] );
+		b = li2.getChild( 0 );
+		a = li2.getChild( 1 );
+		r = li2.getChild( 2 );
 
 		ul = new Element( 'ul', [], [ li1, li2 ] );
 

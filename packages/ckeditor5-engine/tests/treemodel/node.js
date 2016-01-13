@@ -8,7 +8,6 @@
 'use strict';
 
 import Element from '/ckeditor5/core/treemodel/element.js';
-import Character from '/ckeditor5/core/treemodel/character.js';
 import Attribute from '/ckeditor5/core/treemodel/attribute.js';
 import AttributeList from '/ckeditor5/core/treemodel/attributelist.js';
 import NodeList from '/ckeditor5/core/treemodel/nodelist.js';
@@ -23,10 +22,12 @@ describe( 'Node', () => {
 		charB = new Character( 'b' );
 		charA = new Character( 'a' );
 		img = new Element( 'img' );
-		charR = new Character( 'r' );
 
 		one = new Element( 'one' );
-		two = new Element( 'two', null, [ charB, charA, img, charR ] );
+		two = new Element( 'two', null, [ 'b', 'a', img, 'r' ] );
+		charB = two.getChild( 0 );
+		charA = two.getChild( 1 );
+		charR = two.getChild( 3 );
 		three = new Element( 'three' );
 
 		root = new Element( null, null, [ one, two, three ] );
@@ -108,14 +109,12 @@ describe( 'Node', () => {
 	} );
 
 	it( 'should create proper JSON string using toJSON method', () => {
-		let b = new Character( 'b' );
-		let foo = new Element( 'foo', [], [ b ] );
+		let foo = new Element( 'foo', [], [ 'b' ] );
 
 		let parsedFoo = JSON.parse( JSON.stringify( foo ) );
-		let parsedBar = JSON.parse( JSON.stringify( b ) );
 
 		expect( parsedFoo.parent ).to.equal( null );
-		expect( parsedBar.parent ).to.equal( 'foo' );
+		expect( parsedFoo._children._nodes[ 0 ].parent ).to.equal( 'foo' );
 	} );
 
 	describe( 'getIndex', () => {
@@ -135,14 +134,14 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should throw an error if parent does not contains element', () => {
-			let f = new Character( 'f' );
+			let e = new Element( 'e' );
 			let bar = new Element( 'bar', [], [] );
 
-			f.parent = bar;
+			e.parent = bar;
 
 			expect(
 				() => {
-					f.getIndex();
+					e.getIndex();
 				}
 			).to.throw( CKEditorError, /node-not-found-in-parent/ );
 		} );

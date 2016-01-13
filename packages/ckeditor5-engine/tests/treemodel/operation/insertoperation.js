@@ -13,7 +13,7 @@ import NodeList from '/ckeditor5/core/treemodel/nodelist.js';
 import InsertOperation from '/ckeditor5/core/treemodel/operation/insertoperation.js';
 import RemoveOperation from '/ckeditor5/core/treemodel/operation/removeoperation.js';
 import Position from '/ckeditor5/core/treemodel/position.js';
-import Character from '/ckeditor5/core/treemodel/character.js';
+import Text from '/ckeditor5/core/treemodel/text.js';
 
 describe( 'InsertOperation', () => {
 	let doc, root;
@@ -26,7 +26,7 @@ describe( 'InsertOperation', () => {
 	it( 'should have proper type', () => {
 		const op = new InsertOperation(
 			new Position( root, [ 0 ] ),
-			new Character( 'x' ),
+			new Text( 'x' ),
 			doc.version
 		);
 
@@ -37,14 +37,14 @@ describe( 'InsertOperation', () => {
 		doc.applyOperation(
 			new InsertOperation(
 				new Position( root, [ 0 ] ),
-				new Character( 'x' ),
+				new Text( 'x' ),
 				doc.version
 			)
 		);
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 1 );
-		expect( root.getChild( 0 ).character ).to.equal( 'x' );
+		expect( root.getChild( 0 ).text ).to.equal( 'x' );
 	} );
 
 	it( 'should insert set of nodes', () => {
@@ -58,9 +58,9 @@ describe( 'InsertOperation', () => {
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 3 );
-		expect( root.getChild( 0 ).character ).to.equal( 'b' );
-		expect( root.getChild( 1 ).character ).to.equal( 'a' );
-		expect( root.getChild( 2 ).character ).to.equal( 'r' );
+		expect( root.getChild( 0 ).text ).to.equal( 'b' );
+		expect( root.getChild( 1 ).text ).to.equal( 'a' );
+		expect( root.getChild( 2 ).text ).to.equal( 'r' );
 	} );
 
 	it( 'should insert between existing nodes', () => {
@@ -76,38 +76,38 @@ describe( 'InsertOperation', () => {
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 5 );
-		expect( root.getChild( 0 ).character ).to.equal( 'x' );
-		expect( root.getChild( 1 ).character ).to.equal( 'b' );
-		expect( root.getChild( 2 ).character ).to.equal( 'a' );
-		expect( root.getChild( 3 ).character ).to.equal( 'r' );
-		expect( root.getChild( 4 ).character ).to.equal( 'y' );
+		expect( root.getChild( 0 ).text ).to.equal( 'x' );
+		expect( root.getChild( 1 ).text ).to.equal( 'b' );
+		expect( root.getChild( 2 ).text ).to.equal( 'a' );
+		expect( root.getChild( 3 ).text ).to.equal( 'r' );
+		expect( root.getChild( 4 ).text ).to.equal( 'y' );
 	} );
 
 	it( 'should insert text', () => {
 		doc.applyOperation(
 			new InsertOperation(
 				new Position( root, [ 0 ] ),
-				[ 'foo', new Character( 'x' ), 'bar' ],
+				[ 'foo', new Text( 'x' ), 'bar' ],
 				doc.version
 			)
 		);
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 7 );
-		expect( root.getChild( 0 ).character ).to.equal( 'f' );
-		expect( root.getChild( 1 ).character ).to.equal( 'o' );
-		expect( root.getChild( 2 ).character ).to.equal( 'o' );
-		expect( root.getChild( 3 ).character ).to.equal( 'x' );
-		expect( root.getChild( 4 ).character ).to.equal( 'b' );
-		expect( root.getChild( 5 ).character ).to.equal( 'a' );
-		expect( root.getChild( 6 ).character ).to.equal( 'r' );
+		expect( root.getChild( 0 ).text ).to.equal( 'f' );
+		expect( root.getChild( 1 ).text ).to.equal( 'o' );
+		expect( root.getChild( 2 ).text ).to.equal( 'o' );
+		expect( root.getChild( 3 ).text ).to.equal( 'x' );
+		expect( root.getChild( 4 ).text ).to.equal( 'b' );
+		expect( root.getChild( 5 ).text ).to.equal( 'a' );
+		expect( root.getChild( 6 ).text ).to.equal( 'r' );
 	} );
 
 	it( 'should create a RemoveOperation as a reverse', () => {
 		let position = new Position( root, [ 0 ] );
 		let operation = new InsertOperation(
 			position,
-			[ 'foo', new Character( 'x' ), 'bar' ],
+			[ 'foo', new Text( 'x' ), 'bar' ],
 			0
 		);
 
@@ -122,7 +122,7 @@ describe( 'InsertOperation', () => {
 	it( 'should undo insert node by applying reverse operation', () => {
 		let operation = new InsertOperation(
 			new Position( root, [ 0 ] ),
-			new Character( 'x' ),
+			new Text( 'x' ),
 			doc.version
 		);
 

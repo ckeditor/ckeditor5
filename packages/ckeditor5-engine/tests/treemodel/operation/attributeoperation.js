@@ -12,7 +12,6 @@ import Element from '/ckeditor5/core/treemodel/element.js';
 import AttributeOperation from '/ckeditor5/core/treemodel/operation/attributeoperation.js';
 import Position from '/ckeditor5/core/treemodel/position.js';
 import Range from '/ckeditor5/core/treemodel/range.js';
-import Character from '/ckeditor5/core/treemodel/character.js';
 import Attribute from '/ckeditor5/core/treemodel/attribute.js';
 import Text from '/ckeditor5/core/treemodel/text.js';
 import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
@@ -62,7 +61,7 @@ describe( 'AttributeOperation', () => {
 		let fooAttr = new Attribute( 'foo', true );
 		let barAttr = new Attribute( 'bar', true );
 
-		root.insertChildren( 0, new Character( 'x', [ fooAttr, barAttr ] ) );
+		root.insertChildren( 0, new Text( 'x', [ fooAttr, barAttr ] ) );
 
 		doc.applyOperation(
 			new AttributeOperation(
@@ -112,7 +111,7 @@ describe( 'AttributeOperation', () => {
 		let x2Attr = new Attribute( 'x', 2 );
 		let barAttr = new Attribute( 'bar', true );
 
-		root.insertChildren( 0, new Character( 'x', [ fooAttr, x1Attr, barAttr ] ) );
+		root.insertChildren( 0, new Text( 'x', [ fooAttr, x1Attr, barAttr ] ) );
 
 		doc.applyOperation(
 			new AttributeOperation(
@@ -136,7 +135,7 @@ describe( 'AttributeOperation', () => {
 		let xAttr = new Attribute( 'x', true );
 		let barAttr = new Attribute( 'bar', true );
 
-		root.insertChildren( 0, new Character( 'x', [ fooAttr, xAttr, barAttr ] ) );
+		root.insertChildren( 0, new Text( 'x', [ fooAttr, xAttr, barAttr ] ) );
 
 		doc.applyOperation(
 			new AttributeOperation(
@@ -310,7 +309,7 @@ describe( 'AttributeOperation', () => {
 		let x1Attr = new Attribute( 'x', 1 );
 		let x2Attr = new Attribute( 'x', 2 );
 
-		root.insertChildren( 0, new Character( 'x', [ x1Attr ] ) );
+		root.insertChildren( 0, new Text( 'x', [ x1Attr ] ) );
 
 		expect( () => {
 			doc.applyOperation(
