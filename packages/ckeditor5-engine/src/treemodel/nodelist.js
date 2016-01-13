@@ -5,9 +5,8 @@
 
 'use strict';
 
-import Character from './character.js';
+import TextNode from './textnode.js';
 import Text from './text.js';
-import Node from './node.js';
 import utils from '../utils.js';
 
 /**
@@ -16,13 +15,14 @@ import utils from '../utils.js';
  *
  * Thanks to the constructor, which accepts various arguments, this class lets you easily create desired list of nodes.
  *
- * It also may internally compress nodes.
+ * Parameters passed to constructor are converted and internally kept as an array of {@link treeModel.Node}
+ * and {@link treeModel.Text} instances.
  *
  * @class treeModel.NodeList
  */
 export default class NodeList {
 	/**
-	 * Constructor let you create a list of nodes in many ways. See examples:
+	 * Constructor lets you create a list of nodes in many ways. See examples:
 	 *
 	 *		let nodeList = new NodeList( [ new Element( p1 ), new Element( p1 ) ] );
 	 *		nodeList.length; // 2
@@ -47,7 +47,7 @@ export default class NodeList {
 	 *		nodeListA === nodeListB // true
 	 *		nodeListB.length // 3
 	 *
-	 * @param {treeModel.Node|treeModel.Text|treeModel.NodeList|String|Iterable} nodes List of nodes.
+	 * @param {treeModel.Node|treeModel.Text|treeModel.TextNode|String|treeModel.NodeList|Iterable} nodes List of nodes.
 	 * @constructor
 	 */
 	constructor( nodes ) {
@@ -59,34 +59,59 @@ export default class NodeList {
 		/**
 		 * Internal array to store nodes.
 		 *
-		 * @private
+		 * @protected
 		 * @property {Array}
 		 */
 		this._nodes = [];
 
-		if ( nodes ) {
-			let node, character;
+		/**
+		 * Internal array where each index is mapped to correct node from `_nodes` array. This is introduced
+		 * to easily refer `_nodes` by index, since some of elements in `_nodes` may contain multiple characters,
+		 * which occupy multiple slots in `_indexMap`.
+		 *
+		 * @private
+		 * @property {Array}
+		 */
+		this._indexMap = [];
 
-			if ( !utils.isIterable( nodes ) ) {
+		if ( nodes ) {
+			if ( typeof nodes == 'string' || !utils.isIterable( nodes ) ) {
 				nodes = [ nodes ];
 			}
 
-			for ( node of nodes ) {
-				// Node.
-				if ( node instanceof Node ) {
+			for ( let node of nodes ) {
+				let indexInNodes = this._nodes.length;
+				let mergedWithPrev = false;
+				let length = 1;
+
+				if ( node instanceof TextNode ) {
+					node = new Text( node.text, node.attrs );
+				} else if ( typeof node == 'string' ) {
+					node = new Text( node, [] );
+				}
+
+				if ( node instanceof Text ) {
+					length = node.text.length;
+
+					let prev = this._nodes[ this._nodes.length - 1 ];
+
+					if ( prev instanceof Text && prev.attrs.isEqual( node.attrs ) ) {
+						// If previously added text has same attributes, merge this text with it.
+						prev.text += node.text;
+						mergedWithPrev = true;
+						indexInNodes--;
+					} else if ( node.text.length === 0 ) {
+						// If this is an empty text just omit it.
+						continue;
+					}
+				}
+
+				if ( !mergedWithPrev ) {
 					this._nodes.push( node );
 				}
-				// Text.
-				else if ( node instanceof Text ) {
-					for ( character of node.text ) {
-						this._nodes.push( new Character( character, node.attrs ) );
-					}
-				}
-				// String.
-				else {
-					for ( character of node ) {
-						this._nodes.push( new Character( character ) );
-					}
+
+				for ( let i = 0; i < length; i++ ) {
+					this._indexMap.push( indexInNodes );
 				}
 			}
 		}
@@ -99,14 +124,21 @@ export default class NodeList {
 	 * @property {Number} length
 	 */
 	get length() {
-		return this._nodes.length;
+		return this._indexMap.length;
 	}
 
 	/**
 	 * Node list iterator.
 	 */
 	[ Symbol.iterator ]() {
-		return this._nodes[ Symbol.iterator ]();
+		let i = 0;
+
+		return {
+			next: () => ( {
+				done: i == this.length,
+				value: this.get( i++ )
+			} )
+		};
 	}
 
 	/**
@@ -116,17 +148,32 @@ export default class NodeList {
 	 * @returns {treeModel.Node} Node at given index.
 	 */
 	get( index ) {
-		return this._nodes[ index ];
+		let realIndex = this._indexMap[ index ];
+		let node = this._nodes[ realIndex ];
+
+		if ( node instanceof Text ) {
+			return node.getTextNode( this._getCharIndex( index ), 1 );
+		} else {
+			return node;
+		}
 	}
 
 	/**
-	 * Search for the node in the node list.
+	 * Search for the element in the node list.
 	 *
 	 * @param {treeModel.Node} node Node to find.
-	 * @returns {Number} Position of the node in the list.
+	 * @returns {Number} Position of the element in the list or -1 if not found.
 	 */
 	indexOf( node ) {
-		return this._nodes.indexOf( node );
+		if ( node instanceof TextNode ) {
+			let baseIndex = this.indexOf( node._textItem );
+
+			return baseIndex == -1 ? -1 : baseIndex + node._start;
+		}
+
+		let realIndex = this._nodes.indexOf( node );
+
+		return this._indexMap.indexOf( realIndex );
 	}
 
 	/**
@@ -136,7 +183,36 @@ export default class NodeList {
 	 * @param {treeModel.NodeList} nodeList List of nodes to insert.
 	 */
 	insert( index, nodeList ) {
-		this._nodes.splice.apply( this._nodes, [ index, 0 ].concat( nodeList._nodes ) );
+		if ( this._nodes.length === 0 ) {
+			this._nodes = nodeList._nodes.slice();
+			this._indexMap = nodeList._indexMap.slice();
+
+			return;
+		}
+
+		// If we are inserting into a text, splitting may be needed.
+		this._splitNodeAt( index );
+
+		// If `index` is too high to be found in `_indexMap` it means that we insert at the end of node list.
+		let realIndex = index >= this._indexMap.length ? this._nodes.length : this._indexMap[ index ];
+
+		// Splice arrays from inserted nodeList into this nodeList.
+		this._indexMap.splice.apply( this._indexMap, [ index, 0 ].concat( nodeList._indexMap ) );
+		this._nodes.splice.apply( this._nodes, [ realIndex, 0 ].concat( nodeList._nodes ) );
+
+		// Fix indexes in index map.
+		// From the beginning of spliced-in array to the end of spliced-in array.
+		for ( let i = index; i < index + nodeList._indexMap.length; i++ ) {
+			this._indexMap[ i ] += realIndex;
+		}
+
+		// From the end of spliced-in array to the end of original array.
+		for ( let i = index + nodeList._indexMap.length; i < this._indexMap.length; i++ ) {
+			this._indexMap[ i ] += nodeList._nodes.length;
+		}
+
+		this._mergeNodeAt( index );
+		this._mergeNodeAt( index + nodeList.length );
 	}
 
 	/**
@@ -147,6 +223,117 @@ export default class NodeList {
 	 * @returns {treeModel.NodeList} List of removed nodes.
 	 */
 	remove( index, number ) {
-		return new NodeList( this._nodes.splice( index, number ) );
+		if ( this._nodes.length === 0 ) {
+			return new NodeList();
+		}
+
+		// Removed "range" may start in text node or end in text node. Some splitting may be needed.
+		this._splitNodeAt( index );
+		this._splitNodeAt( index + number );
+
+		// If given index is too high to be found in `_indexMap` it means that we remove to the end of node list.
+		let realIndexEnd = ( index + number ) >= this._indexMap.length ? this._nodes.length : this._indexMap[ index + number ];
+		let realIndexStart = this._indexMap[ index ];
+		let removed = this._nodes.splice( realIndexStart, realIndexEnd - realIndexStart );
+
+		this._indexMap.splice( index, number );
+
+		for ( let i = index; i < this._indexMap.length ; i++ ) {
+			this._indexMap[ i ] -= removed.length;
+		}
+
+		this._mergeNodeAt( index );
+
+		return new NodeList( removed );
+	}
+
+	/**
+	 * Checks whether given index is inside a text object and if so, splits that text node. This method should be used
+	 * to split text objects whenever there are some changes made on a part of text object (i.e. removing part of text,
+	 * inserting between text object, changing attributes of part of a text object).
+	 *
+	 * @param {Number} index Index in the node list at which node should be broken.
+	 * @protected
+	 */
+	_splitNodeAt( index ) {
+		if ( this._indexMap[ index ] != this._indexMap[ index - 1 ] || this._indexMap.length === 0 ) {
+			// Node before and node after splitting point are already different.
+			// Or the node list is empty.
+			// No splitting is needed.
+			return;
+		}
+
+		let realIndex = this._indexMap[ index ];
+		let node = this._nodes[ realIndex ];
+
+		// Get position in the text node where the text should be split.
+		let charIndex = this._getCharIndex( index );
+
+		// Get text part before and after split point.
+		let textBefore = node.text.substr( 0, charIndex );
+		let textAfter = node.text.substr( charIndex );
+
+		// "Remove" part after split point from current text node.
+		node.text = textBefore;
+
+		// Create a new text node with the "removed" part and splice it after original node.
+		let newText = new Text( textAfter, node.attrs );
+		newText.parent = node.parent;
+		this._nodes.splice.call( this._nodes, realIndex + 1, 0, newText );
+
+		// We added new element in the middle of _nodes what invalidated _indexMap. We have to fix it.
+		for ( let i = index; i < this._indexMap.length; i++ ) {
+			this._indexMap[ i ]++;
+		}
+	}
+
+	/**
+	 * Checks whether given index is between two text nodes that have same attributes and if so, merges them
+	 * together into one node. Used to compress characters into large text objects and use less memory. This method
+	 * should be used whenever there are some changed done to the node list to check whether it is possible to merge
+	 * text objects.
+	 *
+	 * @param {Number} index Index in the node list at which node should be merged.
+	 * @protected
+	 */
+	_mergeNodeAt( index ) {
+		if ( this._indexMap[ index ] == this._indexMap[ index - 1 ] || this._indexMap.length === 0 ) {
+			// Node before and node after splitting point are already same.
+			// Or the node list is empty.
+			// No splitting is needed.
+			return;
+		}
+
+		// Get the node before and after given index.
+		let realIndexBefore = this._indexMap[ index - 1 ];
+		let realIndexAfter = this._indexMap[ index ];
+
+		let nodeBefore = this._nodes[ realIndexBefore ];
+		let nodeAfter = this._nodes[ realIndexAfter ];
+
+		// Check if both of those nodes are text objects with same attributes.
+		if ( nodeBefore instanceof Text && nodeAfter instanceof Text && nodeBefore.attrs.isEqual( nodeAfter.attrs ) ) {
+			// Append text of text node after index to the before one.
+			nodeBefore.text += nodeAfter.text;
+
+			// Remove text node after index.
+			this._nodes.splice( realIndexAfter, 1 );
+
+			for ( let i = index; i < this._indexMap.length ; i++ ) {
+				this._indexMap[ i ]--;
+			}
+		}
+	}
+
+	/**
+	 * Helper function that takes an index in a node list that is inside a text node and returns the offset of that
+	 * index from the beginning of that text node. If index
+	 *
+	 * @param index
+	 * @returns {Number} Offset of given index from the beginning of the text node.
+	 * @private
+	 */
+	_getCharIndex( index ) {
+		return index - this._indexMap.indexOf( this._indexMap[ index ] );
 	}
 }
