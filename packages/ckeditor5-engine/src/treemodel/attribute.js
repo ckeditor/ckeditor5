@@ -46,11 +46,6 @@ export default class Attribute {
 		 */
 		this._hash = this.key + ': ' + JSON.stringify( this.value, sort );
 
-		// If attribute is already registered the registered one should be returned.
-		if ( Attribute._register[ this._hash ] ) {
-			return Attribute._register[ this._hash ];
-		}
-
 		// We do not care about the order, so collections with the same elements should return the same hash.
 		function sort( key, value ) {
 			if ( !langUtils.isArray( value ) && langUtils.isObject( value ) ) {
@@ -82,42 +77,4 @@ export default class Attribute {
 	isEqual( otherAttr ) {
 		return this._hash === otherAttr._hash;
 	}
-
-	/**
-	 * To save memory, commonly used attributes may be registered. If an attribute is registered the constructor will
-	 * always return the same instance of this attribute.
-	 *
-	 * Note that attributes are registered globally.
-	 *
-	 *		let attr1 = Attribute.register( 'bold', true );
-	 *		let attr2 = Attribute.register( 'bold', true );
-	 *		let attr3 = new Attribute( 'bold', true );
-	 *		attr1 === attr2 // true
-	 *		attr1 === attr3 // true
-	 *
-	 * @static
-	 * @param {String} key Attribute key.
-	 * @param {Mixed} value Attribute value.
-	 * @returns {treeModel.Attribute} Registered attribute.
-	 */
-	static register( key, value ) {
-		const attr = new Attribute( key, value );
-
-		if ( this._register[ attr._hash ] ) {
-			return this._register[ attr._hash ];
-		} else {
-			this._register[ attr._hash ] = attr;
-
-			return attr;
-		}
-	}
 }
-
-/**
- * Register of attributes in which all registered attributes are stored.
- *
- * @static
- * @private
- * @property {String} _hash
- */
-Attribute._register = {};
