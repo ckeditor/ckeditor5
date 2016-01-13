@@ -5,15 +5,9 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'core/lib/lodash/object' );
+import objectUtils from '/ckeditor5/core/lib/lodash/object.js';
 
 describe( 'utils', () => {
-	let objectUtils;
-
-	before( () => {
-		objectUtils = modules[ 'core/lib/lodash/object' ];
-	} );
-
 	describe( 'extend()', () => {
 		// Properties of the subsequent objects should override properties of the preceding objects. This is critical for
 		// CKEditor so we keep this test to ensure that Lo-Dash (or whatever) implements it in the way we need it.
