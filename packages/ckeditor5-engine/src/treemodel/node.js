@@ -118,10 +118,9 @@ export default class Node {
 			return null;
 		}
 
-		// No parent or child doesn't exist in parent's children.
 		if ( ( pos = this.parent.getChildIndex( this ) ) == -1 ) {
 			/**
-			 * The node's parent does not contain this node. It means that the document tree is corrupted.
+			 * The node's parent does not contain this node.
 			 *
 			 * @error node-not-found-in-parent
 			 */
