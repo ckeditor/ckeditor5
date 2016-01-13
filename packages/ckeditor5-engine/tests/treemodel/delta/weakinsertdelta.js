@@ -32,7 +32,7 @@ describe( 'Batch', () => {
 		chain = batch.weakInsert( new Position( root, [ 2 ] ), 'xyz' );
 	} );
 
-	describe( 'insert', () => {
+	describe( 'weakInsert', () => {
 		it( 'should insert given nodes at given position', () => {
 			expect( root.getChildCount() ).to.equal( 6 );
 			expect( root.getChild( 2 ).text ).to.equal( 'x' );

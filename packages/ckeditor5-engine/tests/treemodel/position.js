@@ -195,37 +195,37 @@ describe( 'position', () => {
 	} );
 
 	it( 'should have nodeBefore', () => {
-		expect( new Position( root, [ 0 ] ) ).to.have.property( 'nodeBefore' ).that.is.null;
-		expect( new Position( root, [ 1 ] ) ).to.have.property( 'nodeBefore' ).that.equals( p );
-		expect( new Position( root, [ 2 ] ) ).to.have.property( 'nodeBefore' ).that.equals( ul );
+		expect( new Position( root, [ 0 ] ).nodeBefore ).to.be.null;
+		expect( new Position( root, [ 1 ] ).nodeBefore ).to.equal( p );
+		expect( new Position( root, [ 2 ] ).nodeBefore ).to.equal( ul );
 
-		expect( new Position( root, [ 0, 0 ] ) ).to.have.property( 'nodeBefore' ).that.is.null;
+		expect( new Position( root, [ 0, 0 ] ).nodeBefore ).to.null;
 
-		expect( new Position( root, [ 1, 0 ] ) ).to.have.property( 'nodeBefore' ).that.is.null;
-		expect( new Position( root, [ 1, 1 ] ) ).to.have.property( 'nodeBefore' ).that.equals( li1 );
-		expect( new Position( root, [ 1, 2 ] ) ).to.have.property( 'nodeBefore' ).that.equals( li2 );
+		expect( new Position( root, [ 1, 0 ] ).nodeBefore ).to.be.null;
+		expect( new Position( root, [ 1, 1 ] ).nodeBefore ).to.equal( li1 );
+		expect( new Position( root, [ 1, 2 ] ).nodeBefore ).to.equal( li2 );
 
-		expect( new Position( root, [ 1, 0, 0 ] ) ).to.have.property( 'nodeBefore' ).that.is.null;
-		expect( new Position( root, [ 1, 0, 1 ] ) ).to.have.property( 'nodeBefore' ).that.equals( f );
-		expect( new Position( root, [ 1, 0, 2 ] ) ).to.have.property( 'nodeBefore' ).that.equals( o );
-		expect( new Position( root, [ 1, 0, 3 ] ) ).to.have.property( 'nodeBefore' ).that.equals( z );
+		expect( new Position( root, [ 1, 0, 0 ] ).nodeBefore ).to.be.null;
+		expect( new Position( root, [ 1, 0, 1 ] ).nodeBefore.text ).to.equal( 'f' );
+		expect( new Position( root, [ 1, 0, 2 ] ).nodeBefore.text ).to.equal( 'o' );
+		expect( new Position( root, [ 1, 0, 3 ] ).nodeBefore.text ).to.equal( 'z' );
 	} );
 
 	it( 'should have nodeAfter', () => {
-		expect( new Position( root, [ 0 ] ) ).to.have.property( 'nodeAfter' ).that.equals( p );
-		expect( new Position( root, [ 1 ] ) ).to.have.property( 'nodeAfter' ).that.equals( ul );
-		expect( new Position( root, [ 2 ] ) ).to.have.property( 'nodeAfter' ).that.is.null;
+		expect( new Position( root, [ 0 ] ).nodeAfter ).to.equal( p );
+		expect( new Position( root, [ 1 ] ).nodeAfter ).to.equal( ul );
+		expect( new Position( root, [ 2 ] ).nodeAfter ).to.be.null;
 
-		expect( new Position( root, [ 0, 0 ] ) ).to.have.property( 'nodeAfter' ).that.is.null;
+		expect( new Position( root, [ 0, 0 ] ).nodeAfter ).to.be.null;
 
-		expect( new Position( root, [ 1, 0 ] ) ).to.have.property( 'nodeAfter' ).that.equals( li1 );
-		expect( new Position( root, [ 1, 1 ] ) ).to.have.property( 'nodeAfter' ).that.equals( li2 );
-		expect( new Position( root, [ 1, 2 ] ) ).to.have.property( 'nodeAfter' ).that.is.null;
+		expect( new Position( root, [ 1, 0 ] ).nodeAfter ).to.equal( li1 );
+		expect( new Position( root, [ 1, 1 ] ).nodeAfter ).to.equal( li2 );
+		expect( new Position( root, [ 1, 2 ] ).nodeAfter ).to.be.null;
 
-		expect( new Position( root, [ 1, 0, 0 ] ) ).to.have.property( 'nodeAfter' ).that.equals( f );
-		expect( new Position( root, [ 1, 0, 1 ] ) ).to.have.property( 'nodeAfter' ).that.equals( o );
-		expect( new Position( root, [ 1, 0, 2 ] ) ).to.have.property( 'nodeAfter' ).that.equals( z );
-		expect( new Position( root, [ 1, 0, 3 ] ) ).to.have.property( 'nodeAfter' ).that.is.null;
+		expect( new Position( root, [ 1, 0, 0 ] ).nodeAfter.text ).to.equal( 'f' );
+		expect( new Position( root, [ 1, 0, 1 ] ).nodeAfter.text ).to.equal( 'o' );
+		expect( new Position( root, [ 1, 0, 2 ] ).nodeAfter.text ).to.equal( 'z' );
+		expect( new Position( root, [ 1, 0, 3 ] ).nodeAfter ).to.be.null;
 	} );
 
 	it( 'should have proper parent path', () => {

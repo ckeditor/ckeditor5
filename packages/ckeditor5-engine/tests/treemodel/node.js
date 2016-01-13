@@ -10,7 +10,6 @@
 import Element from '/ckeditor5/core/treemodel/element.js';
 import Attribute from '/ckeditor5/core/treemodel/attribute.js';
 import AttributeList from '/ckeditor5/core/treemodel/attributelist.js';
-import NodeList from '/ckeditor5/core/treemodel/nodelist.js';
 import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
 describe( 'Node', () => {
@@ -54,10 +53,7 @@ describe( 'Node', () => {
 			expect( two ).to.have.property( 'root' ).that.equals( root );
 			expect( three ).to.have.property( 'root' ).that.equals( root );
 
-			expect( charB ).to.have.property( 'root' ).that.equals( root );
-			expect( charA ).to.have.property( 'root' ).that.equals( root );
 			expect( img ).to.have.property( 'root' ).that.equals( root );
-			expect( charR ).to.have.property( 'root' ).that.equals( root );
 		} );
 
 		it( 'nextSibling', () => {
@@ -67,9 +63,9 @@ describe( 'Node', () => {
 			expect( two ).to.have.property( 'nextSibling' ).that.equals( three );
 			expect( three ).to.have.property( 'nextSibling' ).that.is.null;
 
-			expect( charB ).to.have.property( 'nextSibling' ).that.equals( charA );
-			expect( charA ).to.have.property( 'nextSibling' ).that.equals( img );
-			expect( img ).to.have.property( 'nextSibling' ).that.equals( charR );
+			expect( charB ).to.have.property( 'nextSibling' ).that.deep.equals( charA );
+			expect( charA ).to.have.property( 'nextSibling' ).that.deep.equals( img );
+			expect( img ).to.have.property( 'nextSibling' ).that.deep.equals( charR );
 			expect( charR ).to.have.property( 'nextSibling' ).that.is.null;
 		} );
 
@@ -81,9 +77,9 @@ describe( 'Node', () => {
 			expect( three ).to.have.property( 'previousSibling' ).that.equals( two );
 
 			expect( charB ).to.have.property( 'previousSibling' ).that.is.null;
-			expect( charA ).to.have.property( 'previousSibling' ).that.equals( charB );
-			expect( img ).to.have.property( 'previousSibling' ).that.equals( charA );
-			expect( charR ).to.have.property( 'previousSibling' ).that.equals( img );
+			expect( charA ).to.have.property( 'previousSibling' ).that.deep.equals( charB );
+			expect( img ).to.have.property( 'previousSibling' ).that.deep.equals( charA );
+			expect( charR ).to.have.property( 'previousSibling' ).that.deep.equals( img );
 		} );
 	} );
 
@@ -128,7 +124,6 @@ describe( 'Node', () => {
 			expect( three.getIndex() ).to.equal( 2 );
 
 			expect( charB.getIndex() ).to.equal( 0 );
-			expect( charA.getIndex() ).to.equal( 1 );
 			expect( img.getIndex() ).to.equal( 2 );
 			expect( charR.getIndex() ).to.equal( 3 );
 		} );
@@ -156,7 +151,6 @@ describe( 'Node', () => {
 			expect( three.getPath() ).to.deep.equal( [ 2 ] );
 
 			expect( charB.getPath() ).to.deep.equal( [ 1, 0 ] );
-			expect( charA.getPath() ).to.deep.equal( [ 1, 1 ] );
 			expect( img.getPath() ).to.deep.equal( [ 1, 2 ] );
 			expect( charR.getPath() ).to.deep.equal( [ 1, 3 ] );
 		} );

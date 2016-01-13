@@ -66,18 +66,12 @@ describe( 'Element', () => {
 	describe( 'removeChildren', () => {
 		it( 'should remove children from the element and return them as a NodeList', () => {
 			let element = new Element( 'elem', [], [ 'foobar' ] );
-			let o = element.getChild( 2 );
-			let b = element.getChild( 3 );
-			let a = element.getChild( 4 );
 			let removed = element.removeChildren( 2, 3 );
 
 			expect( element.getChildCount() ).to.equal( 3 );
 			expect( element.getChild( 0 ) ).to.have.property( 'text' ).that.equals( 'f' );
 			expect( element.getChild( 1 ) ).to.have.property( 'text' ).that.equals( 'o' );
 			expect( element.getChild( 2 ) ).to.have.property( 'text' ).that.equals( 'r' );
-			expect( o ).to.have.property( 'parent' ).that.is.null;
-			expect( b ).to.have.property( 'parent' ).that.is.null;
-			expect( a ).to.have.property( 'parent' ).that.is.null;
 
 			expect( removed ).to.be.instanceof( NodeList );
 			expect( removed.length ).to.equal( 3 );
