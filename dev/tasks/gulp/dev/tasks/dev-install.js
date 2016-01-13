@@ -5,8 +5,8 @@
 
 'use strict';
 
-const git = require( './git' );
-const tools = require( './tools' );
+const git = require( '../utils/git' );
+const tools = require( '../utils/tools' );
 const path = require( 'path' );
 
 /**

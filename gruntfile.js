@@ -2,7 +2,7 @@
 
 'use strict';
 
-const tools = require( './dev/tasks/utils/tools' );
+const tools = require( './dev/tasks/gulp/dev/utils/tools' );
 
 module.exports = ( grunt ) => {
 	// First register the "default" task, so it can be analyzed by other tasks.

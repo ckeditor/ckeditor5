@@ -4,13 +4,13 @@
 
 const gulp = require( 'gulp' );
 const minimist = require( 'minimist' );
-const statusTask = require( '../../utils/dev-status' );
-const initTask = require( '../../utils/dev-init' );
-const installTask = require( '../../utils/dev-install' );
-const pluginCreateTask = require( '../../utils/dev-plugin-create' );
-const updateTask = require( '../../utils/dev-update' );
-const boilerplateUpdateTask = require( '../../utils/dev-boilerplate-update' );
-const relinkTask = require( '../../utils/dev-relink' );
+const statusTask = require( './tasks/dev-status' );
+const initTask = require( './tasks/dev-init' );
+const installTask = require( './tasks/dev-install' );
+const pluginCreateTask = require( './tasks/dev-plugin-create' );
+const updateTask = require( './tasks/dev-update' );
+const boilerplateUpdateTask = require( './tasks/dev-boilerplate-update' );
+const relinkTask = require( './tasks/dev-relink' );
 
 module.exports = ( config ) => {
 	const ckeditor5Path = process.cwd();

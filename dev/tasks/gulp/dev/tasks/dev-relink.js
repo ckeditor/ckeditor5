@@ -5,14 +5,13 @@
 
 'use strict';
 
-const tools = require( './tools' );
-const git = require( './git' );
+const tools = require( '../utils/tools' );
 const path = require( 'path' );
 
 /**
  * 1. Get CKEditor5 dependencies from package.json file.
  * 2. Scan workspace for repositories that match dependencies from package.json file.
- * 3. Print GIT status using `git status --porcelain -sb` command.
+ * 3. Link repositories to node_modules in CKEditor5 repository.
  *
  * @param {String} ckeditor5Path Path to main CKEditor5 repository.
  * @param {Object} packageJSON Parsed package.json file from CKEditor5 repository.
@@ -32,13 +31,13 @@ module.exports = ( ckeditor5Path, packageJSON, workspaceRoot, writeln, writeErro
 		if ( directories.length ) {
 			for ( let dependency in dependencies ) {
 				const repositoryAbsolutePath = path.join( workspaceAbsolutePath, dependency );
-				let status;
+				const repositoryURL = dependencies[ dependency ];
 
-				// Check if repository's directory already exists.
+				// Check if repository's directory exists.
 				if ( directories.indexOf( dependency ) > -1 ) {
 					try {
-						status = git.getStatus( repositoryAbsolutePath );
-						writeln( `\x1b[1m\x1b[36m${ dependency }\x1b[0m\n${ status.trim() }` );
+						writeln( `Linking ${ repositoryURL }...` );
+						tools.linkDirectories( repositoryAbsolutePath, path.join( ckeditor5Path, 'node_modules', dependency ) );
 					} catch ( error ) {
 						writeError( error );
 					}

@@ -1,6 +1,6 @@
 'use strict';
 
-const tools = require( './utils/tools' );
+const tools = require( './gulp/dev/utils/tools' );
 
 module.exports = ( grunt ) => {
 	tools.setupMultitaskConfig( grunt, {

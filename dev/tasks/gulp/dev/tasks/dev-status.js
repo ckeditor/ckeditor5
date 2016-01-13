@@ -5,14 +5,14 @@
 
 'use strict';
 
-const tools = require( './tools' );
-const git = require( './git' );
+const tools = require( '../utils/tools' );
+const git = require( '../utils/git' );
 const path = require( 'path' );
 
 /**
  * 1. Get CKEditor5 dependencies from package.json file.
  * 2. Scan workspace for repositories that match dependencies from package.json file.
- * 3. Fetch and merge boilerplate remote.
+ * 3. Print GIT status using `git status --porcelain -sb` command.
  *
  * @param {String} ckeditor5Path Path to main CKEditor5 repository.
  * @param {Object} packageJSON Parsed package.json file from CKEditor5 repository.
@@ -32,12 +32,13 @@ module.exports = ( ckeditor5Path, packageJSON, workspaceRoot, writeln, writeErro
 		if ( directories.length ) {
 			for ( let dependency in dependencies ) {
 				const repositoryAbsolutePath = path.join( workspaceAbsolutePath, dependency );
+				let status;
 
 				// Check if repository's directory already exists.
 				if ( directories.indexOf( dependency ) > -1 ) {
 					try {
-						writeln( `Updating boilerplate in ${ dependency }...` );
-						git.updateBoilerplate( repositoryAbsolutePath );
+						status = git.getStatus( repositoryAbsolutePath );
+						writeln( `\x1b[1m\x1b[36m${ dependency }\x1b[0m\n${ status.trim() }` );
 					} catch ( error ) {
 						writeError( error );
 					}
