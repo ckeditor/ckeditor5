@@ -9,9 +9,9 @@
 
 const chai = require( 'chai' );
 const sinon = require( 'sinon' );
-const git = require( '../tasks/utils/git' );
-const tools = require( '../tasks/utils/tools' );
-const installTask = require( '../tasks/utils/dev-install' );
+const git = require( '../tasks/gulp/dev/utils/git' );
+const tools = require( '../tasks/gulp/dev/utils/tools' );
+const installTask = require( '../tasks/gulp/dev/tasks/dev-install' );
 const expect = chai.expect;
 const path = require( 'path' );
 

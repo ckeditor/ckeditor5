@@ -10,7 +10,7 @@
 const chai = require( 'chai' );
 const sinon = require( 'sinon' );
 const expect = chai.expect;
-const tools = require( '../tasks/utils/tools' );
+const tools = require( '../tasks/gulp/dev/utils/tools' );
 const path = require( 'path' );
 const fs = require( 'fs' );
 let toRestore;
@@ -354,7 +354,7 @@ describe( 'utils', () => {
 			it( 'should be defined', () => expect( tools.copyTemplateFiles ).to.be.a( 'function' ) );
 			it( 'should copy template files', () => {
 				const path = require( 'path' );
-				const TEMPLATE_PATH = './dev/tasks/templates';
+				const TEMPLATE_PATH = './dev/tasks/gulp/dev/templates';
 				const templatesPath = path.resolve( TEMPLATE_PATH );
 				const shExecStub = sinon.stub( tools, 'shExec' );
 				const repositoryPath = '/path/to/repository';

@@ -8,11 +8,11 @@
 'use strict';
 
 const sinon = require( 'sinon' );
-const tools = require( '../tasks/utils/tools' );
+const tools = require( '../tasks/gulp/dev/utils/tools' );
 const path = require( 'path' );
 
 describe( 'dev-relink', () => {
-	const task = require( '../tasks/utils/dev-relink' );
+	const task = require( '../tasks/gulp/dev/tasks/dev-relink' );
 	const ckeditor5Path = 'path/to/ckeditor5';
 	const modulesPath = path.join( ckeditor5Path, 'node_modules' );
 	const workspaceRoot = '..';

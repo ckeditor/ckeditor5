@@ -4,7 +4,7 @@ let dirtyFiles,
 	ignoreList;
 
 const dependencyRegExp = /^ckeditor5-/;
-const TEMPLATE_PATH = './dev/tasks/templates';
+const TEMPLATE_PATH = './dev/tasks/gulp/dev/templates';
 
 module.exports = {
 	/**

@@ -8,10 +8,10 @@
 'use strict';
 
 let toRestore;
-const git = require( '../tasks/utils/git' );
+const git = require( '../tasks/gulp/dev/utils/git' );
 const chai = require( 'chai' );
 const sinon = require( 'sinon' );
-const tools = require( '../tasks/utils/tools' );
+const tools = require( '../tasks/gulp/dev/utils/tools' );
 const expect = chai.expect;
 
 describe( 'utils', () => {

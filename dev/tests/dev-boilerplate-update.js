@@ -8,12 +8,12 @@
 'use strict';
 
 const sinon = require( 'sinon' );
-const tools = require( '../tasks/utils/tools' );
-const git = require( '../tasks/utils/git' );
+const tools = require( '../tasks/gulp/dev/utils/tools' );
+const git = require( '../tasks/gulp/dev/utils/git' );
 const path = require( 'path' );
 
 describe( 'dev-boilerplate-update', () => {
-	const task = require( '../tasks/utils/dev-boilerplate-update' );
+	const task = require( '../tasks/gulp/dev/tasks/dev-boilerplate-update' );
 	const ckeditor5Path = 'path/to/ckeditor5';
 	const workspaceRoot = '..';
 	const workspaceAbsolutePath = path.join( ckeditor5Path, workspaceRoot );
