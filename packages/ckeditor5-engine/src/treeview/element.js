@@ -119,7 +119,7 @@ export default class Element extends Node {
 			this._children[ i ].parent = null;
 		}
 
-		return new this._children.splice( index, number );
+		return this._children.splice( index, number );
 	}
 
 	// Note that created elements will not have coresponding DOM elements created it these did not exist before.
@@ -133,18 +133,20 @@ export default class Element extends Node {
 		if ( domElement instanceof Text ) {
 			return new ViewText( domElement.data );
 		} else {
-			viewElement = new Element( domElement.name );
+			viewElement = new Element( domElement.tagName.toLowerCase() );
 			const attrs = domElement.attributes;
 
 			for ( let i = attrs.length - 1; i >= 0; i-- ) {
 				viewElement.setAttr( attrs[ i ].name, attrs[ i ].value );
 			}
 
-			for ( let childView of viewElement.getChildren() ) {
-				domElement.appendChild( this.createFromDom( childView ) );
+			for ( let i = 0, len = domElement.childNodes.length; i < len; i++ ) {
+				let domChild = domElement.childNodes[ i ];
+
+				viewElement.appendChildren( this.createFromDom( domChild ) );
 			}
 
-			return domElement;
+			return viewElement;
 		}
 	}
 

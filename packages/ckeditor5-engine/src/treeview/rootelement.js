@@ -13,7 +13,7 @@ import Element from './element.js';
  * @class treeView.RootElement
  */
 export default class RootElement extends Element {
-	constructor( treeView, name ) {
+	constructor( name, treeView ) {
 		super( name );
 
 		this._treeView = treeView;

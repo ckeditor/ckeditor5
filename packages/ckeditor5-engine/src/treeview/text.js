@@ -46,7 +46,7 @@ export default class Text extends Node {
 			const viewElement = Element.getCorespondingView( previousSibling );
 
 			if ( viewElement ) {
-				return viewElement.getNextSibling;
+				return viewElement.getNextSibling();
 			}
 		} else {
 			const viewElement = Element.getCorespondingView( domText.parentElement );
