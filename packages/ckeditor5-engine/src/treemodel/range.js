@@ -259,8 +259,8 @@ export default class Range {
 	/**
 	 * Returns an iterator that iterates over all {@link treeModel.Node nodes} that are in this range and returns them.
 	 * A node is in the range when it is after a {@link treeModel.Position position} contained in this range.
-	 * In other words, this iterates over all {@link treeModel.Character}s that are inside the range and
-	 * all the {@link treeModel.Element}s we enter into when iterating over this range.
+	 * In other words, this iterates over all text characters that are inside the range and all the {@link treeModel.Element}s
+	 * we enter into when iterating over this range.
 	 *
 	 * **Note:** this method will not return a parent node of start position. This is in contrary to {@link treeModel.PositionIterator}
 	 * which will return that node with {@link treeModel.PositionIterator#ELEMENT_LEAVE} type. This method, also, returns each
@@ -268,8 +268,8 @@ export default class Range {
 	 * {@link treeModel.PositionIterator#ELEMENT_LEAVE}.
 	 *
 	 * @see {treeModel.PositionIterator}
-	 * @param {Boolean} [mergeCharacters] Whether {@link treeModel.Character} nodes with same attributes
-	 * should be passed one by one or as one {@link treeModel.Text} object.
+	 * @param {Boolean} [mergeCharacters] Flag indicating whether all consecutive characters with the same attributes
+	 * should be returned as one {@link treeModel.TextNode} (`true`) or one by one (`false`). Defaults to `false`.
 	 * @returns {Iterable.<treeModel.Node|treeModel.Text>}
 	 */
 	*getAllNodes( mergeCharacters ) {
@@ -289,8 +289,8 @@ export default class Range {
 	 * Returns an iterator that iterates over all {@link treeModel.Position positions} that are boundaries or
 	 * contained in this range.
 	 *
-	 * @param {Boolean} [mergeCharacters] Whether {@link treeModel.Character} nodes with same attributes
-	 * should be passed one by one or as one {@link treeModel.Text} object.
+	 * @param {Boolean} [mergeCharacters] Flag indicating whether all consecutive characters with the same attributes
+	 * should be returned as one {@link treeModel.TextNode} (`true`) or one by one (`false`). Defaults to `false`.
 	 * @returns {Iterable.<treeModel.Position>}
 	 */
 	*getPositions( mergeCharacters ) {
@@ -306,8 +306,8 @@ export default class Range {
 	 * and returns them. A node is a top-level node when it is in the range but it's parent is not. In other words,
 	 * this function splits the range into separate sub-trees and iterates over their roots.
 	 *
-	 * @param {Boolean} [mergeCharacters] Whether {@link treeModel.Character} nodes with same attributes
-	 * should be passed one by one or as one {@link treeModel.Text} object.
+	 * @param {Boolean} [mergeCharacters] Flag indicating whether all consecutive characters with the same attributes
+	 * should be returned as one {@link treeModel.TextNode} (`true`) or one by one (`false`). Defaults to `false`.
 	 * @returns {Iterable.<treeModel.Node|treeModel.Text>}
 	 */
 	*getTopLevelNodes( mergeCharacters ) {
