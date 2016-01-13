@@ -9,6 +9,7 @@
 
 import Document from '/ckeditor5/core/treemodel/document.js';
 import Attribute from '/ckeditor5/core/treemodel/attribute.js';
+import AttributeList from '/ckeditor5/core/treemodel/attributelist.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
 import Range from '/ckeditor5/core/treemodel/range.js';
 import Position from '/ckeditor5/core/treemodel/position.js';
