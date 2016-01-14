@@ -7,13 +7,13 @@
 
 'use strict';
 
-import coreTestUtils from '/tests/core/_utils/utils.js';
+import treeModelTestUtils from '/tests/core/treemodel/_utils/utils.js';
 import Document from '/ckeditor5/core/treemodel/document.js';
 import Position from '/ckeditor5/core/treemodel/position.js';
 import Range from '/ckeditor5/core/treemodel/range.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
 
-const getNodesAndText = coreTestUtils.treemodel.getNodesAndText;
+const getNodesAndText = treeModelTestUtils.getNodesAndText;
 
 describe( 'Batch', () => {
 	let doc, root, div, p, batch, chain, range;
