@@ -177,7 +177,9 @@ export default class Model {
 			set: ( value ) => {
 				const oldValue = this._attributes[ name ];
 
-				if ( oldValue !== value ) {
+				// Allow undefined as an initial value like A.set( 'x', undefined ) (#132).
+				// Note: When _attributes has no such own property, then its value is undefined.
+				if ( oldValue !== value || !this._attributes.hasOwnProperty( name ) ) {
 					this._attributes[ name ] = value;
 					this.fire( 'change', name, value, oldValue );
 					this.fire( 'change:' + name, value, oldValue );
