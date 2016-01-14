@@ -5,12 +5,8 @@
 
 'use strict';
 
-// the following code is based on the "O(NP) Sequence Comparison Algorithm" by Sun Wu, Udi Manber, Gene Myers, Webb Miller
-
-// action types
-var INSERT = 1,
-	DELETE = -1,
-	EQUAL = 0;
+// The following code is based on the "O(NP) Sequence Comparison Algorithm"
+// by Sun Wu, Udi Manber, Gene Myers, Webb Miller.
 
 /**
  * Calculates the difference between two arrays producing an object containing a list of actions
@@ -30,40 +26,40 @@ var INSERT = 1,
 		};
 
 	// Temporary action type statics.
-	var _INSERT, _DELETE;
+	let _INSERT, _DELETE;
 
 	// Swapped the arrays to use the shorter one as the first one.
 	if ( b.length < a.length ) {
-		var tmp = a;
+		let tmp = a;
 
 		a = b;
 		b = tmp;
 
 		// We swap the action types as well.
-		_INSERT = DELETE;
-		_DELETE = INSERT;
+		_INSERT = 'DELETE';
+		_DELETE = 'INSERT';
 	} else {
-		_INSERT = INSERT;
-		_DELETE = DELETE;
+		_INSERT = 'INSERT';
+		_DELETE = 'DELETE';
 	}
 
-	var m = a.length,
-		n = b.length,
-		delta = n - m;
+	const m = a.length;
+	const n = b.length;
+	const delta = n - m;
 
 	// Edit scripts, for each diagonal.
-	var es = {};
+	const es = {};
 	// Furthest points, the furthest y we can get on each diagonal.
-	var fp = {};
+	const fp = {};
 
 	function snake( k ) {
 		// We use -1 as an alternative below to handle initial values ( instead of filling the fp with -1 first ).
 		// Furthest points (y) on the diagonal below k.
-		var y1 = ( fp[ k - 1 ] !== undefined ? fp[ k - 1 ] : -1 ) + 1;
+		const y1 = ( fp[ k - 1 ] !== undefined ? fp[ k - 1 ] : -1 ) + 1;
 		// Furthest points (y) on the diagonal above k.
-		var y2 = fp[ k + 1 ] !== undefined ? fp[ k + 1 ] : -1;
+		const y2 = fp[ k + 1 ] !== undefined ? fp[ k + 1 ] : -1;
 		// The way we should go to get further.
-		var dir = y1 > y2 ? -1 : 1;
+		const dir = y1 > y2 ? -1 : 1;
 
 		// Clone previous actions array (if any).
 		if ( es[ k + dir ] ) {
@@ -79,22 +75,22 @@ var INSERT = 1,
 		es[ k ].push( y1 > y2 ? _INSERT : _DELETE );
 
 		// Set the beginning coordinates.
-		var y = Math.max( y1, y2 ),
-			x = y - k;
+		let y = Math.max( y1, y2 );
+		let x = y - k;
 
 		// Traverse the diagonal as long as the values match.
 		while ( x < m && y < n && cmp( a[ x ], b[ y ] ) ) {
 			x++;
 			y++;
 			// Push no change action.
-			es[ k ].push( EQUAL );
+			es[ k ].push( 'EQUAL' );
 		}
 
 		return y;
 	}
 
-	var p = 0,
-		k;
+	let p = 0;
+	let k;
 
 	// Traverse the graph until we reach the end of the longer string.
 	do {
@@ -119,8 +115,3 @@ var INSERT = 1,
 	// We remove the first item that represents the action for the injected nulls.
 	return es[ delta ].slice( 1 );
 }
-
-// Expose action types.
-diff.INSERT = INSERT;
-diff.DELETE = DELETE;
-diff.EQUAL = EQUAL;

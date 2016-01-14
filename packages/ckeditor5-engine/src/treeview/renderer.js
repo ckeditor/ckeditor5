@@ -8,6 +8,7 @@
 import diff from '../utils-diff.js';
 import ViewText from './text.js';
 import ViewElement from './element.js';
+import CKEditorError from '../ckeditorerror.js';
 
 export default class Renderer {
 	constructor() {
@@ -33,6 +34,12 @@ export default class Renderer {
 				this.markedChildren.add( node );
 			}
 		}
+		/**
+		 * Unknown type passed to Renderer.markToSync.
+		 *
+		 * @error renderer-unknown-type
+		 */
+		throw new CKEditorError( 'renderer-unknown-type: Unknown type passed to Renderer.markToSync.' );
 	}
 
 	render() {
@@ -90,12 +97,12 @@ export default class Renderer {
 			let i = 0;
 
 			for ( let action of actions ) {
-				if ( action === diff.EQUAL ) {
+				if ( action === 'EQUAL' ) {
 					i++;
-				} else if ( action === diff.INSERT ) {
+				} else if ( action === 'INSERT' ) {
 					domElement.insertBefore( viewToDom( viewChildren[ i ], domDocument ), domChildren[ i ] || null  );
 					i++;
-				} else if ( action === diff.DELETE ) {
+				} else if ( action === 'DELETE' ) {
 					domElement.removeChild( domChildren[ i ] );
 				}
 			}
