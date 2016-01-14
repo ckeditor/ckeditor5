@@ -1,0 +1,78 @@
+/**
+ * @license Copyright (c) 2003-2015, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+/* bender-tags: treeview */
+
+'use strict';
+
+const modules = bender.amd.require(
+	'core/treeview/treeview',
+	'core/treeview/observer/observer',
+	'core/treeview/renderer'
+);
+
+describe( 'TreeView', () => {
+	let TreeView, Observer, Renderer;
+
+	before( () => {
+		TreeView = modules[ 'core/treeview/treeview' ];
+		Observer = modules[ 'core/treeview/observer/observer' ];
+		Renderer = modules[ 'core/treeview/renderer' ];
+	} );
+
+	describe( 'constructor', () => {
+		it( 'should create TreeView with all properties', () => {
+			const domP = document.createElement( 'p' );
+			const domDiv = document.createElement( 'div' );
+			domDiv.setAttribute( 'id', 'editor' );
+			domDiv.appendChild( domP );
+
+			const treeView = new TreeView( domDiv );
+
+			expect( treeView ).to.have.property( 'domRoot' ).that.equals( domDiv );
+			expect( treeView ).to.have.property( 'observers' ).that.is.instanceOf( Set );
+			expect( treeView ).to.have.property( 'renderer' ).that.is.instanceOf( Renderer );
+			expect( treeView ).to.have.property( 'viewRoot' );
+
+			expect( treeView.viewRoot.getCorespondingDom() ).to.equal( domDiv );
+			expect( treeView.viewRoot.name ).to.equal( 'div' );
+			expect( treeView.viewRoot.getAttr( 'id' ) ).to.equal( 'editor' );
+			expect( treeView.renderer.markedChildren.has( treeView.viewRoot ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'observer', () => {
+		let observerMock, treeView;
+
+		beforeEach( () => {
+			observerMock = new Observer();
+			observerMock.attach = sinon.spy();
+			observerMock.detach = sinon.spy();
+			observerMock.init = sinon.spy();
+
+			treeView = new TreeView( document.createElement( 'div' ) );
+			treeView.renderer.render = sinon.spy();
+		} );
+
+		it( 'should be inited and attached on adding', () => {
+			treeView.addObserver( observerMock );
+
+			expect( treeView.observers.has( observerMock ) ).to.be.true;
+			sinon.assert.calledOnce( observerMock.init );
+			sinon.assert.calledWith( observerMock.init, treeView );
+			sinon.assert.calledOnce( observerMock.attach );
+		} );
+
+		it( 'should be detached and reattached on render', () => {
+			treeView.addObserver( observerMock );
+			treeView.render();
+
+			expect( treeView.observers.has( observerMock ) ).to.be.true;
+			sinon.assert.calledOnce( observerMock.detach );
+			sinon.assert.calledOnce( treeView.renderer.render );
+			sinon.assert.calledTwice( observerMock.attach );
+		} );
+	} );
+} );

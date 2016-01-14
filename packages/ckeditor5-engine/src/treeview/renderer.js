@@ -10,11 +10,7 @@ import ViewText from './text.js';
 import ViewElement from './element.js';
 
 export default class Renderer {
-	constructor( treeView ) {
-		this.view = treeView.view;
-
-		this.domRoot = treeView.domRoot;
-
+	constructor() {
 		this.markedAttrs = new Set();
 		this.markedChildren = new Set();
 		this.markedTexts = new Set();
@@ -40,8 +36,6 @@ export default class Renderer {
 	}
 
 	render() {
-		const domDocument = this.domRoot.ownerDocument;
-
 		for ( let node of this.markedTexts ) {
 			if ( !this.markedChildren.has( node.parent ) && node.parent.getCorespondingDom() ) {
 				updateText( node );
@@ -90,6 +84,7 @@ export default class Renderer {
 			const domElement = viewElement.getCorespondingDom();
 			const domChildren = domElement.childNodes;
 			const viewChildren = Array.from( viewElement.getChildren() );
+			const domDocument = domElement.ownerDocument;
 
 			const actions = diff( domChildren, viewChildren, compareNodes );
 			let i = 0;
@@ -98,7 +93,7 @@ export default class Renderer {
 				if ( action === diff.EQUAL ) {
 					i++;
 				} else if ( action === diff.INSERT ) {
-					domElement.insertBefore( viewToDom( viewChildren[ i ] ), domChildren[ i ] || null  );
+					domElement.insertBefore( viewToDom( viewChildren[ i ], domDocument ), domChildren[ i ] || null  );
 					i++;
 				} else if ( action === diff.DELETE ) {
 					domElement.removeChild( domChildren[ i ] );
@@ -120,7 +115,7 @@ export default class Renderer {
 			return false;
 		}
 
-		function viewToDom( view ) {
+		function viewToDom( view, domDocument ) {
 			if ( view instanceof ViewText ) {
 				return domDocument.createTextNode( view.getText() );
 			} else {

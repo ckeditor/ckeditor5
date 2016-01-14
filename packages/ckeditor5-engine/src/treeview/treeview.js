@@ -24,7 +24,7 @@ export default class TreeView {
 		/**
 		 * Root of the view
 		 */
-		this.viewRoot = new RootElement( domElement.name, this );
+		this.viewRoot = new RootElement( domElement.tagName.toLowerCase(), this );
 		this.viewRoot.cloneDomAttrs( domElement );
 		this.viewRoot.bindDomElement( domElement );
 		this.viewRoot.markToSync( 'CHILDREN_NEED_UPDATE' );
