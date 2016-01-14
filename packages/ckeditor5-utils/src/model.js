@@ -255,7 +255,6 @@ export default class Model {
 		 * @property {Model} _model The model which initializes the binding.
 		 * @property {Array} _bindAttrs Array of `_model` attributes to be bound.
 		 * @property {Array} _to Array of `to()` model–attributes (`{ model: toModel, attrs: ...toAttrs }`).
-		 * @property {Array} _callback A function which processes `_to` model attributes.
 		 * @property {Object} _bindings Stores bindings to be kept in {@link #_boundAttributes}/{@link #_boundModels}
 		 * initiated in this binding chain.
 		 */
@@ -332,9 +331,10 @@ export default class Model {
 	 */
 	_bindTo( ...args ) {
 		const parsedArgs = parseBindToArgs( ...args );
-		const numberOfBindings = Object.keys( this._bindings ).length;
+		const bindingsKeys = Object.keys( this._bindings );
+		const numberOfBindings = bindingsKeys.length;
 
-		// Elliminate A.bind( 'x' ).to( B, C )
+		// Eliminate A.bind( 'x' ).to( B, C )
 		if ( !parsedArgs.callback && parsedArgs.to.length > 1 ) {
 			/**
 			 * Binding multiple models only possible with callback.
@@ -344,7 +344,7 @@ export default class Model {
 			throw new CKEditorError( 'model-bind-to-no-callback: Binding multiple models only possible with callback.' ) ;
 		}
 
-		// Elliminate A.bind( 'x', 'y' ).to( B, callback )
+		// Eliminate A.bind( 'x', 'y' ).to( B, callback )
 		if ( numberOfBindings > 1 && parsedArgs.callback ) {
 			/**
 			 * Cannot bind multiple attributes and use a callback in one binding.
@@ -355,7 +355,7 @@ export default class Model {
 		}
 
 		parsedArgs.to.forEach( to => {
-			// Elliminate A.bind( 'x', 'y' ).to( B, 'a' )
+			// Eliminate A.bind( 'x', 'y' ).to( B, 'a' )
 			if ( to.attrs.length && to.attrs.length !== numberOfBindings ) {
 				/**
 				 * The number of attributes must match.
@@ -370,7 +370,7 @@ export default class Model {
 				to.attrs = this._bindAttrs;
 			}
 
-			// Elliminate A.bind( 'x', 'y' ).to( B, 'a', 'b' ) when B has no 'a'.
+			// Eliminate A.bind( 'x', 'y' ).to( B, 'a', 'b' ) when B has no 'a'.
 			if ( !hasAttributes( to.model, to.attrs ) ) {
 				/*
 				 * Model has no such attribute(s).
@@ -383,15 +383,20 @@ export default class Model {
 
 		this._to = parsedArgs.to;
 
+		// Fill {@link BindChain#_bindings} with callback.
 		if ( parsedArgs.callback ) {
-			for ( let attrName in this._bindings ) {
-				this._bindings[ attrName ].callback = parsedArgs.callback;
-			}
-
-			this._callback = parsedArgs.callback;
+			this._bindings[ bindingsKeys[ 0 ] ].callback = parsedArgs.callback;
 		}
 
-		setupBindToBindings( this );
+		attachBindToListeners( this._model, this._to );
+
+		// Update model._boundAttributes and model._boundModels.
+		updateBindToBound( this );
+
+		// Set initial values of bound attributes.
+		this._bindAttrs.forEach( attrName => {
+			updateBoundModelAttr( this._model, attrName );
+		} );
 	}
 }
 
@@ -439,7 +444,7 @@ function isStringArray( arr ) {
  * @returns {Object}
  */
 function parseBindToArgs( ...args ) {
-	// Elliminate A.bind( 'x' ).to()
+	// Eliminate A.bind( 'x' ).to()
 	if ( !args.length ) {
 		/**
 		 * Invalid argument syntax in `to()`.
@@ -449,24 +454,22 @@ function parseBindToArgs( ...args ) {
 		throw new CKEditorError( 'model-bind-to-parse-error: Invalid argument syntax in `to()`.' );
 	}
 
-	const parsed = {
-		to: []
-	};
+	const parsed = { to: [] };
+	let lastModel;
 
 	args.forEach( a => {
-		// Elliminate A.bind( 'x' ).to( B, 'a', callback, C )
+		// Callback has already been defined.
+		// Eliminate A.bind( 'x' ).to( B, 'a', callback, C )
 		if ( parsed.callback ) {
 			throw new CKEditorError( 'model-bind-to-parse-error: Invalid argument syntax in `to()`.' );
-		}
-
-		if ( a instanceof Model ) {
-			parsed.to.push( { model: a, attrs: [] } );
+		} else if ( a instanceof Model ) {
+			parsed.to.push( ( lastModel = { model: a, attrs: [] } ) );
 		} else if ( typeof a == 'string' ) {
-			parsed.to[ parsed.to.length - 1 ].attrs.push( a );
+			lastModel.attrs.push( a );
 		} else if ( typeof a == 'function' ) {
 			parsed.callback = a;
 		}
-		// Elliminate A.bind( 'x' ).to( B, new Date() )
+		// Eliminate A.bind( 'x' ).to( null, new Date(), etc. )
 		else {
 			throw new CKEditorError( 'model-bind-to-parse-error: Invalid argument syntax in `to()`.' );
 		}
@@ -539,27 +542,21 @@ function updateBoundModels( model, binding, toModel, toAttrName ) {
  * @private
  * @param {BindChain} chain The binding initialized by {@link Model#bind}.
  */
-function updateBoundAttributesAndModels( chain ) {
-	let binding, toModel, toAttr;
+function updateBindToBound( chain ) {
+	let binding, toAttr;
 
 	for ( let attrName in chain._bindings ) {
 		binding = chain._bindings[ attrName ];
 
-		if ( chain._callback ) {
-			// There could be only a single binding when callback is used.
-			// A.bind( 'x' ).to( B, 'y', C, 'z', callback )
-			chain._to.forEach( to => {
-				// TODO: ES6 destructuring.
-				binding.to.push( [ to.model, to.attrs[ 0 ] ] );
-				updateBoundModels( chain._model, binding, to.model, to.attrs[ 0 ] );
-			} );
-		} else {
-			toModel = chain._to[ 0 ].model;
-			toAttr = chain._to[ 0 ].attrs[ chain._bindAttrs.indexOf( attrName ) ];
+		// Note: For a binding without a callback, this will run only once
+		// like in A.bind( 'x', 'y' ).to( B, 'a', 'b' )
+		// TODO: ES6 destructuring.
+		chain._to.forEach( to => {
+			toAttr = to.attrs[ binding.callback ? 0 : chain._bindAttrs.indexOf( attrName ) ];
 
-			binding.to.push( [ toModel, toAttr ] );
-			updateBoundModels( chain._model, binding, toModel, toAttr );
-		}
+			binding.to.push( [ to.model, toAttr ] );
+			updateBoundModels( chain._model, binding, to.model, toAttr );
+		} );
 	}
 }
 
@@ -571,19 +568,20 @@ function updateBoundAttributesAndModels( chain ) {
  * @param {Model} model A model which attribute is to be updated.
  * @param {String} attrName An attribute to be updated.
  */
-function updateModelAttr( model, attrName ) {
+function updateBoundModelAttr( model, attrName ) {
 	const binding = model._boundAttributes[ attrName ];
+	let attrValue;
 
-	const attrValues = binding.to.map( bound => {
-		return bound[ 0 ][ bound[ 1 ] ];
-	} );
-
-	let attrValue = attrValues[ 0 ];
-
-	// A.bind( 'a' ).to( B, 'b' ).to( C, 'c' ).as( callback );
-	//  \-> Collect B.b and C.c and pass the attrValues to callback to set A.a.
+	// When a binding with callback is created like
+	//
+	// 		A.bind( 'a' ).to( B, 'b', C, 'c', callback );
+	//
+	// collect B.b and C.c, then pass them to callback to set A.a.
 	if ( binding.callback ) {
-		attrValue = binding.callback.apply( model, attrValues );
+		attrValue = binding.callback.apply( model, binding.to.map( to => to[ 0 ][ to[ 1 ] ] ) );
+	} else {
+		attrValue = binding.to[ 0 ];
+		attrValue = attrValue[ 0 ][ attrValue[ 1 ] ];
 	}
 
 	// TODO: Needs update after https://github.com/ckeditor/ckeditor5-core/issues/132.
@@ -602,33 +600,26 @@ function updateModelAttr( model, attrName ) {
  * @private
  * @param {BindChain} chain The chain initialized by {@link Model#bind}.
  */
-function setupBindToBindings( chain ) {
-	chain._to.forEach( to => {
-		const boundModels = chain._model._boundModels;
+function attachBindToListeners( model, toBindings ) {
+	toBindings.forEach( to => {
+		const boundModels = model._boundModels;
+		let bindings;
 
-		// If there's already a chain between the models (`chain._model` listens to
+		// If there's already a chain between the models (`model` listens to
 		// `to.model`), there's no need to create another `change` event listener.
 		if ( !boundModels.get( to.model ) ) {
-			chain._model.listenTo( to.model, 'change', ( evt, attrName ) => {
-				const bindings = boundModels.get( to.model )[ attrName ];
+			model.listenTo( to.model, 'change', ( evt, attrName ) => {
+				bindings = boundModels.get( to.model )[ attrName ];
 
 				// Note: to.model will fire for any attribute change, react
 				// to changes of attributes which are bound only.
 				if ( bindings ) {
 					bindings.forEach( binding => {
-						updateModelAttr( chain._model, binding.attr );
+						updateBoundModelAttr( model, binding.attr );
 					} );
 				}
 			} );
 		}
-	} );
-
-	// Update model._boundAttributes and model._boundModels.
-	updateBoundAttributesAndModels( chain );
-
-	// Set initial values of bound attributes.
-	chain._bindAttrs.forEach( attrName => {
-		updateModelAttr( chain._model, attrName );
 	} );
 }
 
