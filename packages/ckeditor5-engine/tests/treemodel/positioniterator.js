@@ -7,29 +7,19 @@
 
 'use strict';
 
-const modules = bender.amd.require(
-	'core/treemodel/document',
-	'core/treemodel/element',
-	'core/treemodel/character',
-	'core/treemodel/positioniterator',
-	'core/treemodel/position',
-	'core/treemodel/range'
-);
+import Document from '/ckeditor5/core/treemodel/document.js';
+import Element from '/ckeditor5/core/treemodel/element.js';
+import Character from '/ckeditor5/core/treemodel/character.js';
+import PositionIterator from '/ckeditor5/core/treemodel/positioniterator.js';
+import Position from '/ckeditor5/core/treemodel/position.js';
+import Range from '/ckeditor5/core/treemodel/range.js';
 
 describe( 'range iterator', () => {
-	let Document, Element, Character, PositionIterator, Position, Range;
 	let ELEMENT_ENTER, ELEMENT_LEAVE, CHARACTER;
 
 	let doc, expectedItems, root, img1, paragraph, b, a, r, img2, x;
 
 	before( () => {
-		Document = modules[ 'core/treemodel/document' ];
-		Element = modules[ 'core/treemodel/element' ];
-		Character = modules[ 'core/treemodel/character' ];
-		PositionIterator = modules[ 'core/treemodel/positioniterator' ];
-		Position = modules[ 'core/treemodel/position' ];
-		Range = modules[ 'core/treemodel/range' ];
-
 		ELEMENT_ENTER = PositionIterator.ELEMENT_ENTER;
 		ELEMENT_LEAVE = PositionIterator.ELEMENT_LEAVE;
 		CHARACTER = PositionIterator.CHARACTER;

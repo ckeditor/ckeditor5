@@ -7,25 +7,13 @@
 
 'use strict';
 
-const modules = bender.amd.require(
-	'core/treemodel/range',
-	'core/treemodel/position',
-	'core/treemodel/element',
-	'core/treemodel/character',
-	'core/treemodel/document'
-);
+import Range from '/ckeditor5/core/treemodel/range.js';
+import Position from '/ckeditor5/core/treemodel/position.js';
+import Element from '/ckeditor5/core/treemodel/element.js';
+import Character from '/ckeditor5/core/treemodel/character.js';
+import Document from '/ckeditor5/core/treemodel/document.js';
 
 describe( 'Range', () => {
-	let Range, Position, Element, Character, Document;
-
-	before( () => {
-		Position = modules[ 'core/treemodel/position' ];
-		Range = modules[ 'core/treemodel/range' ];
-		Element = modules[ 'core/treemodel/element' ];
-		Character = modules[ 'core/treemodel/character' ];
-		Document = modules[ 'core/treemodel/document' ];
-	} );
-
 	let range, start, end, root, otherRoot;
 
 	beforeEach( () => {

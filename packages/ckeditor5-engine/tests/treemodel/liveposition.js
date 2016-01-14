@@ -7,27 +7,16 @@
 
 'use strict';
 
-const modules = bender.amd.require(
-	'core/treemodel/document',
-	'core/treemodel/element',
-	'core/treemodel/position',
-	'core/treemodel/liveposition',
-	'core/treemodel/range',
-	'core/emittermixin'
-);
+import Document from '/ckeditor5/core/treemodel/document.js';
+import Element from '/ckeditor5/core/treemodel/element.js';
+import Position from '/ckeditor5/core/treemodel/position.js';
+import LivePosition from '/ckeditor5/core/treemodel/liveposition.js';
+import Range from '/ckeditor5/core/treemodel/range.js';
 
 describe( 'LivePosition', () => {
-	let Document, Element, Position, LivePosition, Range, EmitterMixin;
 	let doc, root, ul, p, li1, li2;
 
 	before( () => {
-		Document = modules[ 'core/treemodel/document' ];
-		Element = modules[ 'core/treemodel/element' ];
-		Position = modules[ 'core/treemodel/position' ];
-		LivePosition = modules[ 'core/treemodel/liveposition' ];
-		Range = modules[ 'core/treemodel/range' ];
-		EmitterMixin = modules[ 'core/emittermixin' ];
-
 		doc = new Document();
 		root = doc.createRoot( 'root' );
 

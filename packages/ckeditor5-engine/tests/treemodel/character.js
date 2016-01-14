@@ -4,29 +4,18 @@
  */
 
 /* bender-tags: treemodel */
-/* bender-include: ../_tools/tools.js */
 
 'use strict';
 
-const getIteratorCount = bender.tools.core.getIteratorCount;
+import coreTestUtils from '/tests/core/_utils/utils.js';
+import Character from '/ckeditor5/core/treemodel/character.js';
+import Node from '/ckeditor5/core/treemodel/node.js';
+import Element from '/ckeditor5/core/treemodel/element.js';
+import Attribute from '/ckeditor5/core/treemodel/attribute.js';
 
-const modules = bender.amd.require(
-	'core/treemodel/character',
-	'core/treemodel/node',
-	'core/treemodel/element',
-	'core/treemodel/attribute'
-);
+const getIteratorCount = coreTestUtils.getIteratorCount;
 
 describe( 'Character', () => {
-	let Element, Character, Node, Attribute;
-
-	before( () => {
-		Element = modules[ 'core/treemodel/element' ];
-		Character = modules[ 'core/treemodel/character' ];
-		Node = modules[ 'core/treemodel/node' ];
-		Attribute = modules[ 'core/treemodel/attribute' ];
-	} );
-
 	describe( 'constructor', () => {
 		it( 'should create character without attributes', () => {
 			let character = new Character( 'f' );
