@@ -29,7 +29,7 @@ const config = {
 			applications: [ 'ckeditor' ],
 			paths: [
 				'dist/amd/tests/**',
-				'!**/_*/**'
+				'!dist/amd/tests/**/_*/**'
 			]
 		}
 	},
@@ -38,6 +38,7 @@ const config = {
 		paths: [
 			'dist/amd/ckeditor.js',
 			'dist/amd/ckeditor5/**/*.js',
+			'dist/amd/tests/**/_*/*.js',
 			'!dist/amd/ckeditor5/*/lib/**'
 		]
 	}
