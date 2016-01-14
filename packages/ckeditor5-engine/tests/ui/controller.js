@@ -18,7 +18,7 @@ const modules = bender.amd.require( 'ckeditor',
 	'core/eventinfo'
 );
 
-let View, Controller, Model, CKEditorError, Collection, ControllerCollection;
+let View, Controller, Model, CKEditorError, Collection, ControllerCollection, EventInfo;
 let ParentController, ParentView;
 
 bender.tools.createSinonSandbox();
@@ -127,11 +127,13 @@ describe( 'Controller', () => {
 				const parentController = new ParentController( null, parentView );
 				const collection = parentController.collections.get( 'x' );
 				const childController = new Controller( null, new View() );
-				const spy1 = bender.sinon.spy( parentView, 'addChild' );
+				const spy = bender.sinon.spy();
+
+				parentView.regions.get( 'x' ).views.on( 'add', spy );
 
 				collection.add( childController );
 
-				sinon.assert.notCalled( spy1 );
+				sinon.assert.notCalled( spy );
 
 				collection.remove( childController );
 
@@ -140,8 +142,9 @@ describe( 'Controller', () => {
 						return collection.add( childController );
 					} )
 					.then( () => {
-						sinon.assert.calledOnce( spy1 );
-						sinon.assert.calledWithExactly( spy1, 'x', childController.view, 0 );
+						sinon.assert.calledOnce( spy );
+						sinon.assert.calledWithExactly( spy,
+							sinon.match.instanceOf( EventInfo ), childController.view, 0 );
 					} );
 			} );
 
@@ -161,8 +164,10 @@ describe( 'Controller', () => {
 						} );
 					} )
 					.then( () => {
-						expect( parentController.view.getChild( 'x', 0 ) ).to.be.equal( childView2 );
-						expect( parentController.view.getChild( 'x', 1 ) ).to.be.equal( childView1 );
+						const region = parentController.view.regions.get( 'x' );
+
+						expect( region.views.get( 0 ) ).to.be.equal( childView2 );
+						expect( region.views.get( 1 ) ).to.be.equal( childView1 );
 					} );
 			} );
 		} );
@@ -175,7 +180,9 @@ describe( 'Controller', () => {
 				const parentController = new ParentController( null, parentView );
 				const collection = parentController.collections.get( 'x' );
 				const childController = new Controller( null, new View() );
-				const spy = bender.sinon.spy( parentView, 'removeChild' );
+
+				const spy = bender.sinon.spy();
+				parentView.regions.get( 'x' ).views.on( 'remove', spy );
 
 				collection.add( childController );
 
@@ -185,7 +192,8 @@ describe( 'Controller', () => {
 					.then( () => {
 						collection.remove( childController );
 						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'x', childController.view );
+						sinon.assert.calledWithExactly( spy,
+							sinon.match.instanceOf( EventInfo ), childController.view );
 					} );
 			} );
 		} );
@@ -276,6 +284,7 @@ function updateModuleReference() {
 	Collection = modules[ 'core/collection ' ];
 	ControllerCollection = modules[ 'core/ui/controllercollection' ];
 	CKEditorError = modules[ 'core/ckeditorerror' ];
+	EventInfo = modules[ 'core/eventinfo' ];
 }
 
 function defineParentViewClass() {
