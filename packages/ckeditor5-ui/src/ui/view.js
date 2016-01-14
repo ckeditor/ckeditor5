@@ -120,112 +120,6 @@ export default class View extends Model {
 	}
 
 	/**
-	 * Adds a child view to one of the {@link #regions} (see {@link #register}) in DOM
-	 * at given, optional index position.
-	 *
-	 * @param {String} regionName One of {@link #regions} the child should be added to.
-	 * @param {View} childView A child view.
-	 * @param {Number} [index] Index at which the child will be added to the region.
-	 */
-	addChild( regionName, childView, index ) {
-		if ( !regionName ) {
-			/**
-			 * The name of the region is required.
-			 *
-			 * @error ui-view-addchild-badrname
-			 */
-			throw new CKEditorError( 'ui-view-addchild-badrname' );
-		}
-
-		const region = this.regions.get( regionName );
-
-		if ( !region ) {
-			/**
-			 * No such region of given name.
-			 *
-			 * @error ui-view-addchild-noreg
-			 */
-			throw new CKEditorError( 'ui-view-addchild-noreg' );
-		}
-
-		if ( !childView ) {
-			/**
-			 * No child view passed.
-			 *
-			 * @error ui-view-addchild-no-view
-			 */
-			throw new CKEditorError( 'ui-view-addchild-no-view' );
-		}
-
-		region.views.add( childView, index );
-	}
-
-	/**
-	 * Removes a child view from one of the {@link #regions} (see {@link #register}) in DOM.
-	 *
-	 * @param {String} regionName One of {@link #regions} the view should be removed from.
-	 * @param {View} childVIew A child view.
-	 * @returns {View} A child view instance after removal.
-	 */
-	removeChild( regionName, childView ) {
-		if ( !regionName ) {
-			/**
-			 * The name of the region is required.
-			 *
-			 * @error ui-view-removechild-badrname
-			 */
-			throw new CKEditorError( 'ui-view-removechild-badrname' );
-		}
-
-		const region = this.regions.get( regionName );
-
-		if ( !region ) {
-			/**
-			 * No such region of given name.
-			 *
-			 * @error ui-view-removechild-noreg
-			 */
-			throw new CKEditorError( 'ui-view-removechild-noreg' );
-		}
-
-		if ( !childView ) {
-			/**
-			 * The view must be an instance of View.
-			 *
-			 * @error ui-view-removechild-no-view
-			 */
-			throw new CKEditorError( 'ui-view-removechild-no-view' );
-		}
-
-		region.views.remove( childView );
-
-		return childView;
-	}
-
-	/**
-	 * Returns a child view from one of the {@link #regions}
-	 * (see {@link #register}) at given `index`.
-	 *
-	 * @param {String} regionName One of {@link #regions} the child should be retrieved from.
-	 * @param {Number} [index] An index of desired view.
-	 * @returns {View} A view instance.
-	 */
-	getChild( regionName, index ) {
-		const region = this.regions.get( regionName );
-
-		if ( !region ) {
-			/**
-			 * No such region of given name.
-			 *
-			 * @error ui-view-getchild-noreg
-			 */
-			throw new CKEditorError( 'ui-view-getchild-noreg' );
-		}
-
-		return region.views.get( index );
-	}
-
-	/**
 	 * Registers a region in {@link #regions}.
 	 *
 	 *		let view = new View();
@@ -356,8 +250,8 @@ export default class View extends Model {
 		this.stopListening();
 
 		for ( let region of this.regions ) {
-			while ( ( childView = this.getChild( region.name, 0 ) ) ) {
-				this.removeChild( region.name, childView );
+			while ( ( childView = region.views.get( 0 ) ) ) {
+				region.views.remove( childView );
 			}
 
 			this.regions.remove( region ).destroy();
