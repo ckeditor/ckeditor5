@@ -8,10 +8,10 @@
 'use strict';
 
 const sinon = require( 'sinon' );
-const tools = require( '../tasks/gulp/dev/utils/tools' );
+const tools = require( '../../tasks/dev/utils/tools' );
 
 describe( 'dev-init', () => {
-	const initTask = require( '../tasks/gulp/dev/tasks/dev-init' );
+	const initTask = require( '../../tasks/dev/tasks/dev-init' );
 	const ckeditor5Path = 'path/to/ckeditor5';
 	const workspaceRoot = '..';
 	const emptyFn = () => {};

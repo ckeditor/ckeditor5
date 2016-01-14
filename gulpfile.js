@@ -13,8 +13,8 @@ const config = {
 	IGNORED_FILES: [ 'lib/**' ]
 };
 
-require( './dev/tasks/gulp/build/tasks' )( config );
-require( './dev/tasks/gulp/dev/tasks' )( config );
-require( './dev/tasks/gulp/lint/tasks' )( config );
+require( './dev/tasks/build/tasks' )( config );
+require( './dev/tasks/dev/tasks' )( config );
+require( './dev/tasks/lint/tasks' )( config );
 
 gulp.task( 'default', [ 'build' ] );

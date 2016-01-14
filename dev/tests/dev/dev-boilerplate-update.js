@@ -8,22 +8,22 @@
 'use strict';
 
 const sinon = require( 'sinon' );
-const tools = require( '../tasks/gulp/dev/utils/tools' );
+const tools = require( '../../tasks/dev/utils/tools' );
+const git = require( '../../tasks/dev/utils/git' );
 const path = require( 'path' );
 
-describe( 'dev-relink', () => {
-	const task = require( '../tasks/gulp/dev/tasks/dev-relink' );
+describe( 'dev-boilerplate-update', () => {
+	const task = require( '../../tasks/dev/tasks/dev-boilerplate-update' );
 	const ckeditor5Path = 'path/to/ckeditor5';
-	const modulesPath = path.join( ckeditor5Path, 'node_modules' );
 	const workspaceRoot = '..';
 	const workspaceAbsolutePath = path.join( ckeditor5Path, workspaceRoot );
 	const emptyFn = () => {};
 
-	it( 'should link dev repositories', () => {
+	it( 'should update boilerplate in dev repositories', () => {
 		const dirs = [ 'ckeditor5-core', 'ckeditor5-devtest' ];
 		const getDependenciesSpy = sinon.spy( tools, 'getCKEditorDependencies' );
 		const getDirectoriesStub = sinon.stub( tools, 'getCKE5Directories' ).returns( dirs );
-		const linkStub = sinon.stub( tools, 'linkDirectories' );
+		const updateStub = sinon.stub( git, 'updateBoilerplate' );
 		const json = {
 			dependencies: {
 				'ckeditor5-core': 'ckeditor/ckeditor5-core',
@@ -36,17 +36,17 @@ describe( 'dev-relink', () => {
 
 		getDependenciesSpy.restore();
 		getDirectoriesStub.restore();
-		linkStub.restore();
+		updateStub.restore();
 
-		sinon.assert.calledTwice( linkStub );
-		sinon.assert.calledWithExactly( linkStub.firstCall, path.join( workspaceAbsolutePath, dirs[ 0 ] ), path.join( modulesPath, dirs[ 0 ] ) );
-		sinon.assert.calledWithExactly( linkStub.secondCall, path.join( workspaceAbsolutePath, dirs[ 1 ] ), path.join( modulesPath, dirs[ 1 ] ) );
+		sinon.assert.calledTwice( updateStub );
+		sinon.assert.calledWithExactly( updateStub.firstCall, path.join( workspaceAbsolutePath, dirs[ 0 ] ) );
+		sinon.assert.calledWithExactly( updateStub.secondCall, path.join( workspaceAbsolutePath, dirs[ 1 ] ) );
 	} );
 
-	it( 'should not link when no dependencies are found', () => {
+	it( 'should not update boilerplate when no dependencies are found', () => {
 		const getDependenciesSpy = sinon.spy( tools, 'getCKEditorDependencies' );
 		const getDirectoriesStub = sinon.stub( tools, 'getCKE5Directories' );
-		const linkStub = sinon.stub( tools, 'linkDirectories' );
+		const updateStub = sinon.stub( git, 'updateBoilerplate' );
 		const json = {
 			dependencies: {
 				'other-plugin': '1.2.3'
@@ -57,15 +57,15 @@ describe( 'dev-relink', () => {
 
 		getDependenciesSpy.restore();
 		getDirectoriesStub.restore();
-		linkStub.restore();
+		updateStub.restore();
 
-		sinon.assert.notCalled( linkStub );
+		sinon.assert.notCalled( updateStub );
 	} );
 
-	it( 'should not link when no plugins in dev mode', () => {
+	it( 'should not update boilerplate when no plugins in dev mode', () => {
 		const getDependenciesSpy = sinon.spy( tools, 'getCKEditorDependencies' );
 		const getDirectoriesStub = sinon.stub( tools, 'getCKE5Directories' ).returns( [] );
-		const linkStub = sinon.stub( tools, 'linkDirectories' );
+		const updateStub = sinon.stub( git, 'updateBoilerplate' );
 		const json = {
 			dependencies: {
 				'ckeditor5-devtest': 'ckeditor/ckeditor5-devtest#new-branch',
@@ -77,17 +77,17 @@ describe( 'dev-relink', () => {
 
 		getDependenciesSpy.restore();
 		getDirectoriesStub.restore();
-		linkStub.restore();
+		updateStub.restore();
 
-		sinon.assert.notCalled( linkStub );
+		sinon.assert.notCalled( updateStub );
 	} );
 
-	it( 'should write error message when linking is unsuccessful', () => {
+	it( 'should write error message when updating boilerplate is unsuccessful', () => {
 		const dirs = [ 'ckeditor5-core' ];
 		const getDependenciesSpy = sinon.spy( tools, 'getCKEditorDependencies' );
 		const getDirectoriesStub = sinon.stub( tools, 'getCKE5Directories' ).returns( dirs );
 		const error = new Error( 'Error message.' );
-		const linkStub = sinon.stub( tools, 'linkDirectories' ).throws( error );
+		const updateStub = sinon.stub( git, 'updateBoilerplate' ).throws( error );
 		const json = {
 			dependencies: {
 				'ckeditor5-core': 'ckeditor/ckeditor5-core',
@@ -101,9 +101,9 @@ describe( 'dev-relink', () => {
 
 		getDependenciesSpy.restore();
 		getDirectoriesStub.restore();
-		linkStub.restore();
+		updateStub.restore();
 
-		sinon.assert.calledOnce( linkStub );
+		sinon.assert.calledOnce( updateStub );
 		sinon.assert.calledOnce( writeErrorSpy );
 		sinon.assert.calledWithExactly( writeErrorSpy, error );
 	} );

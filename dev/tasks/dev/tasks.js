@@ -14,7 +14,7 @@ const relinkTask = require( './tasks/dev-relink' );
 
 module.exports = ( config ) => {
 	const ckeditor5Path = process.cwd();
-	const packageJSON = require( '../../../../package.json' );
+	const packageJSON = require( '../../../package.json' );
 
 	gulp.task( 'dev-init', () => {
 		initTask( installTask, ckeditor5Path, packageJSON, config.WORKSPACE_DIR, console.log );

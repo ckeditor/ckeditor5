@@ -10,9 +10,9 @@
 const chai = require( 'chai' );
 const sinon = require( 'sinon' );
 const expect = chai.expect;
-const tools = require( '../tasks/gulp/dev/utils/tools' );
-const inquiries = require( '../tasks/gulp/dev/utils/inquiries' );
-const git = require( '../tasks/gulp/dev/utils/git' );
+const tools = require( '../../tasks/dev/utils/tools' );
+const inquiries = require( '../../tasks/dev/utils/inquiries' );
+const git = require( '../../tasks/dev/utils/git' );
 const path = require( 'path' );
 const emptyFn = () => { };
 let spies;
@@ -50,7 +50,7 @@ describe( 'dev-tasks', () => {
 	}
 
 	describe( 'dev-plugin-create', () => {
-		const pluginCreateTask = require( '../tasks/gulp/dev/tasks/dev-plugin-create' );
+		const pluginCreateTask = require( '../../tasks/dev/tasks/dev-plugin-create' );
 		const repositoryPath = path.join( workspacePath, pluginName );
 
 		it( 'should exist', () => expect( pluginCreateTask ).to.be.a( 'function' ) );
