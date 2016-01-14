@@ -4,41 +4,23 @@
  */
 
 /* bender-tags: treemodel, operation */
-/* global describe, before, beforeEach, it, expect */
-
-/* bender-include: ../../_tools/tools.js */
 
 'use strict';
 
-const getIteratorCount = bender.tools.core.getIteratorCount;
+import coreTestUtils from '/tests/core/_utils/utils.js';
+import Document from '/ckeditor5/core/treemodel/document.js';
+import Element from '/ckeditor5/core/treemodel/element.js';
+import AttributeOperation from '/ckeditor5/core/treemodel/operation/attributeoperation.js';
+import Position from '/ckeditor5/core/treemodel/position.js';
+import Range from '/ckeditor5/core/treemodel/range.js';
+import Character from '/ckeditor5/core/treemodel/character.js';
+import Attribute from '/ckeditor5/core/treemodel/attribute.js';
+import Text from '/ckeditor5/core/treemodel/text.js';
+import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
-const modules = bender.amd.require(
-	'core/treemodel/document',
-	'core/treemodel/element',
-	'core/treemodel/operation/attributeoperation',
-	'core/treemodel/position',
-	'core/treemodel/range',
-	'core/treemodel/character',
-	'core/treemodel/attribute',
-	'core/treemodel/text',
-	'core/ckeditorerror'
-);
+const getIteratorCount = coreTestUtils.getIteratorCount;
 
 describe( 'AttributeOperation', () => {
-	let Document, Element, AttributeOperation, Position, Range, Character, Attribute, Text, CKEditorError;
-
-	before( () => {
-		Document = modules[ 'core/treemodel/document' ];
-		Element = modules[ 'core/treemodel/element' ];
-		AttributeOperation = modules[ 'core/treemodel/operation/attributeoperation' ];
-		Position = modules[ 'core/treemodel/position' ];
-		Range = modules[ 'core/treemodel/range' ];
-		Character = modules[ 'core/treemodel/character' ];
-		Attribute = modules[ 'core/treemodel/attribute' ];
-		Text = modules[ 'core/treemodel/text' ];
-		CKEditorError = modules[ 'core/ckeditorerror' ];
-	} );
-
 	let doc, root;
 
 	beforeEach( () => {

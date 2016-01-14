@@ -5,28 +5,14 @@
 
 /* bender-tags: treemodel, delta */
 
-/* bender-include: ../../_tools/tools.js */
-
 'use strict';
 
-const modules = bender.amd.require(
-	'core/treemodel/document',
-	'core/treemodel/position',
-	'core/treemodel/element',
-	'core/ckeditorerror'
-);
+import Document from '/ckeditor5/core/treemodel/document.js';
+import Element from '/ckeditor5/core/treemodel/element.js';
+import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
 describe( 'Batch', () => {
-	let Document, Position, Element, CKEditorError;
-
 	let doc, root, p;
-
-	before( () => {
-		Document = modules[ 'core/treemodel/document' ];
-		Position = modules[ 'core/treemodel/position' ];
-		Element = modules[ 'core/treemodel/element' ];
-		CKEditorError = modules[ 'core/ckeditorerror' ];
-	} );
 
 	beforeEach( () => {
 		doc = new Document();

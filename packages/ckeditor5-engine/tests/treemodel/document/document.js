@@ -7,23 +7,12 @@
 
 'use strict';
 
-const modules = bender.amd.require(
-	'core/treemodel/document',
-	'core/treemodel/rootelement',
-	'core/treemodel/batch',
-	'core/ckeditorerror'
-);
+import Document from '/ckeditor5/core/treemodel/document.js';
+import RootElement from '/ckeditor5/core/treemodel/rootelement.js';
+import Batch from '/ckeditor5/core/treemodel/batch.js';
+import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
 describe( 'Document', () => {
-	let Document, RootElement, Batch, CKEditorError;
-
-	before( () => {
-		Document = modules[ 'core/treemodel/document' ];
-		RootElement = modules[ 'core/treemodel/rootelement' ];
-		Batch = modules[ 'core/treemodel/batch' ];
-		CKEditorError = modules[ 'core/ckeditorerror' ];
-	} );
-
 	let doc;
 
 	beforeEach( () => {
