@@ -14,7 +14,7 @@ const through = require( 'through2' );
 
 const utils = {
 	/**
-	 * Code which can be appended to transpiled (into AMD) test files in order to
+	 * Code which can be appended to a transpiled (into AMD) test files in order to
 	 * load the 'tests' module and defer launching Bender until it's ready.
 	 *
 	 * Note: This code will not be transpiled so keep it in ES5.
@@ -29,12 +29,21 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 `,
 
 	/**
-	 * Creates a pass-through stream.
+	 * Creates a simple duplex stream.
 	 *
+	 * @param {Function} [callback] A callback which will be executed with each chunk.
 	 * @returns {Stream}
 	 */
-	noop() {
-		return new PassThrough( { objectMode: true } );
+	noop( callback ) {
+		if ( !callback ) {
+			return new PassThrough( { objectMode: true } );
+		}
+
+		return through( { objectMode: true }, ( file, encoding, throughCallback ) => {
+			callback( file );
+
+			throughCallback( null, file );
+		} );
 	},
 
 	/**
@@ -64,16 +73,18 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 			conversionPipes.push( utils.pickVersionedFile( format ) );
 
 			if ( format != 'esnext' ) {
-				const filterCode = gulpFilter( ( file ) => {
-					return utils.isNotTestFile( file ) && utils.isJSFile( file );
+				// Convert src files.
+				const filterSource = gulpFilter( ( file ) => {
+					return utils.isSourceFile( file ) && utils.isJSFile( file );
 				}, { restore: true } );
-				const transpileCode = utils.transpile( format, utils.getBabelOptionsForCode( format ) );
+				const transpileSource = utils.transpile( format, utils.getBabelOptionsForSource( format ) );
 				conversionPipes.push(
-					filterCode,
-					transpileCode,
-					filterCode.restore
+					filterSource,
+					transpileSource,
+					filterSource.restore
 				);
 
+				// Convert test files.
 				const filterTests = gulpFilter( ( file ) => {
 					return utils.isTestFile( file ) && utils.isJSFile( file );
 				}, { restore: true } );
@@ -87,10 +98,10 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 			}
 
 			conversionPipes.push(
-				utils.dist( distDir, format )
-					.on( 'data', ( file ) => {
-						gutil.log( `Finished writing '${ gutil.colors.cyan( file.path ) }'` );
-					} )
+				utils.dist( distDir, format ),
+				utils.noop( ( file ) => {
+					gutil.log( `Finished writing '${ gutil.colors.cyan( file.path ) }'` );
+				} )
 			);
 
 			pipes.push( multipipe.apply( null, conversionPipes ) );
@@ -114,7 +125,13 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 			} );
 	},
 
-	getBabelOptionsForCode( format ) {
+	/**
+	 * Returns an object with Babel options for the source code.
+	 *
+	 * @param {String} format
+	 * @returns {Object} options
+	 */
+	getBabelOptionsForSource( format ) {
 		return {
 			plugins: utils.getBabelPlugins( format ),
 			// Ensure that all paths ends with '.js' because Require.JS (unlike Common.JS/System.JS)
@@ -123,6 +140,12 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 		};
 	},
 
+	/**
+	 * Returns an object with Babel options for the test code.
+	 *
+	 * @param {String} format
+	 * @returns {Object} options
+	 */
 	getBabelOptionsForTests( format ) {
 		return {
 			plugins: utils.getBabelPlugins( format ),
@@ -132,6 +155,12 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 		};
 	},
 
+	/**
+	 * Returns an array of Babel plugins to use.
+	 *
+	 * @param {String} format
+	 * @returns {Array}
+	 */
 	getBabelPlugins( format ) {
 		const babelModuleTranspilers = {
 			amd: 'amd',
@@ -155,6 +184,11 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 		];
 	},
 
+	/**
+	 * Appends the {@link #benderLauncherCode} at the end of the file.
+	 *
+	 * @returns {Stream}
+	 */
 	appendBenderLauncher() {
 		return through( { objectMode: true }, ( file, encoding, callback ) => {
 			file.contents = new Buffer( file.contents.toString() + utils.benderLauncherCode );
@@ -180,16 +214,15 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 		} );
 	},
 
-	// TODO
-	// Update the names of the next two methods and their docs.
-
 	/**
-	 * Moves files out of `ckeditor5-xxx/src/*` directories to `ckeditor5-xxx/*`.
-	 * And `ckeditor5-xxx/tests/*` to `tests/ckeditor5-xxx/`.
+	 * Processes paths of files inside CKEditor5 packages.
+	 *
+	 * * `ckeditor5-xxx/src/foo/bar.js` -> `ckeditor5/xxx/foo/bar.js`
+	 * * `ckeditor5-xxx/tests/foo/bar.js` -> `tests/xxx/foo/bar.js`
 	 *
 	 * @returns {Stream}
 	 */
-	unpackPackages() {
+	renamePackageFiles() {
 		return rename( ( file ) => {
 			const dirFrags = file.dirname.split( path.sep );
 
@@ -207,10 +240,12 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 				// Remove 'src/'.
 				dirFrags.splice( 1, 1 );
 
+				// And prepend 'ckeditor5/'.
 				dirFrags.unshift( 'ckeditor5' );
 			} else if ( firstFrag == 'tests' ) {
 				// Remove 'tests/' from the package dir.
 				dirFrags.splice( 1, 1 );
+
 				// And prepend 'tests/'.
 				dirFrags.unshift( 'tests' );
 			} else {
@@ -222,11 +257,14 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 	},
 
 	/**
-	 * Adds `ckeditor5/` to a file path.
+	 * Processes paths of files inside the main CKEditor5 package.
+	 *
+	 * * `src/foo/bar.js` -> `ckeditor5/foo/bar.js`
+	 * * `tests/foo/bar.js` -> `tests/foo/bar.js`
 	 *
 	 * @returns {Stream}
 	 */
-	wrapCKEditor5Package() {
+	renameCKEditor5Files() {
 		return rename( ( file ) => {
 			const dirFrags = file.dirname.split( path.sep );
 			const firstFrag = dirFrags[ 0 ];
@@ -257,6 +295,12 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 		return source;
 	},
 
+	/**
+	 * Checks whether a file is a test file.
+	 *
+	 * @param {Vinyl} file
+	 * @returns {Boolean}
+	 */
 	isTestFile( file ) {
 		// TODO this should be based on bender configuration (config.tests.*.paths).
 		if ( !file.relative.startsWith( 'tests/' ) ) {
@@ -268,10 +312,22 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 		return !dirFrags.some( dirFrag => dirFrag.startsWith( '_' ) );
 	},
 
-	isNotTestFile( file ) {
+	/**
+	 * Checks whether a file is a source file.
+	 *
+	 * @param {Vinyl} file
+	 * @returns {Boolean}
+	 */
+	isSourceFile( file ) {
 		return !utils.isTestFile( file );
 	},
 
+	/**
+	 * Checks whether a file is a JS file.
+	 *
+	 * @param {Vinyl} file
+	 * @returns {Boolean}
+	 */
 	isJSFile( file ) {
 		return file.path.endsWith( '.js' );
 	}

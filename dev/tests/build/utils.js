@@ -15,6 +15,7 @@ const gutil = require( 'gulp-util' );
 const path = require( 'path' );
 const stream = require( 'stream' );
 const Vinyl = require( 'vinyl' );
+const through = require( 'through2' );
 
 describe( 'build-utils', () => {
 	const utils = require( '../../tasks/gulp/build/utils' );
@@ -34,6 +35,17 @@ describe( 'build-utils', () => {
 			const ret = utils.noop();
 			expect( ret instanceof PassThrough ).to.equal( true );
 		} );
+
+		it( 'should return a duplex stream when given a callback and call that callback', () => {
+			const spy = sinon.spy();
+			const ret = utils.noop( spy );
+
+			ret.write( 'foo' );
+
+			expect( spy.called ).to.equal( true );
+			expect( ret.writable ).to.equal( true );
+			expect( ret.readable ).to.equal( true );
+		} );
 	} );
 
 	describe( 'dist', () => {
@@ -50,37 +62,35 @@ describe( 'build-utils', () => {
 	} );
 
 	describe( 'transpile', () => {
-		it( 'should throw an exception when incorrect format is provided', () => {
-			const transpileSpy = sandbox.spy( utils, 'transpile' );
-			const format = 'incorrect-format';
-
-			expect( () => {
-				transpileSpy( format );
-			} ).to.throw( Error, `Incorrect format: ${ format }` );
-		} );
-
 		it( 'should return babel transform stream', ( done ) => {
-			const modulePath = '../files/utils/lib';
-			const babelStream = utils.transpile( 'amd' );
 			const Stream = stream.Stream;
+			const modulePath = '../files/utils/lib';
 			const appendModuleExtensionSpy = sandbox.spy( utils, 'appendModuleExtension' );
+
+			const babelStream = utils.transpile( 'amd', utils.getBabelOptionsForTests( 'amd' ) );
 
 			expect( babelStream instanceof Stream ).to.equal( true );
 			expect( babelStream.readable ).to.equal( true );
 			expect( babelStream.writable ).to.equal( true );
 
-			babelStream.on( 'finish', ( ) => {
+			babelStream.on( 'finish', () => {
 				sinon.assert.calledOnce( appendModuleExtensionSpy );
-				sinon.assert.calledWithExactly( appendModuleExtensionSpy, modulePath );
-				expect( appendModuleExtensionSpy.firstCall.returnValue ).to.equal( modulePath + '.js' );
+				expect( appendModuleExtensionSpy.args[ 0 ][ 0 ] ).to.equal( modulePath );
+
 				done();
 			} );
+
+			babelStream.pipe(
+				utils.noop( ( file ) => {
+					expect( file.contents.toString() ).to.match( /define\(\'tests\'/ );
+				} )
+			);
 
 			babelStream.write( new Vinyl( {
 				cwd: '/',
 				base: '/test/',
 				path: '/test/file.js',
-				contents: new Buffer( `import * as lib from '${ modulePath }'` )
+				contents: new Buffer( `import * as lib from '${ modulePath }';` )
 			} ) );
 
 			babelStream.end();
@@ -108,7 +118,88 @@ describe( 'build-utils', () => {
 		} );
 	} );
 
+	describe( 'getBabelOptionsForSource', () => {
+		it( 'should return plugins for amd format', () => {
+			const plugins = [ 'foo' ];
+			sandbox.stub( utils, 'getBabelPlugins', () => plugins );
+
+			const options = utils.getBabelOptionsForSource( 'format' );
+
+			expect( options ).to.have.property( 'plugins', plugins );
+			expect( options ).to.have.property( 'resolveModuleSource' );
+		} );
+	} );
+
+	describe( 'getBabelOptionsForTests', () => {
+		it( 'should return plugins for amd format', () => {
+			const plugins = [ 'foo' ];
+			sandbox.stub( utils, 'getBabelPlugins', () => plugins );
+
+			const options = utils.getBabelOptionsForTests( 'format' );
+
+			expect( options ).to.have.property( 'plugins', plugins );
+			expect( options ).to.have.property( 'resolveModuleSource' );
+			expect( options ).to.have.property( 'moduleIds', true );
+			expect( options ).to.have.property( 'moduleId', 'tests' );
+		} );
+	} );
+
+	describe( 'getBabelPlugins', () => {
+		it( 'should return plugins for amd format', () => {
+			expect( utils.getBabelPlugins( 'amd' ) ).to.be.an( 'array' );
+		} );
+
+		it( 'should throw an exception when incorrect format is provided', () => {
+			const format = 'incorrect-format';
+
+			expect( () => {
+				utils.getBabelPlugins( format );
+			} ).to.throw( Error, `Incorrect format: ${ format }` );
+		} );
+	} );
+
+	describe( 'getBabelPlugins', () => {
+		it( 'should return plugins for amd format', () => {
+			expect( utils.getBabelPlugins( 'amd' ) ).to.be.an( 'array' );
+		} );
+
+		it( 'should throw an exception when incorrect format is provided', () => {
+			const format = 'incorrect-format';
+
+			expect( () => {
+				utils.getBabelPlugins( format );
+			} ).to.throw( Error, `Incorrect format: ${ format }` );
+		} );
+	} );
+
 	describe( 'getConversionStreamGenerator', () => {
+		beforeEach( () => {
+			sandbox.stub( utils, 'getBabelOptionsForSource', () => 'src' );
+			sandbox.stub( utils, 'getBabelOptionsForTests', () => 'tests' );
+
+			// Stub to avoid writing to the fs.
+			sandbox.stub( utils, 'dist', () => utils.noop() );
+
+			// The transpile converted with append to file contents what was
+			// passed to it as an options object and that's a result of getBabelOptions*,
+			// which is stubbed above (will return 'src' or 'tests').
+			sandbox.stub( utils, 'transpile', ( format, options ) => {
+				return through( { objectMode: true }, ( file, encoding, callback ) => {
+					file.contents = new Buffer( file.contents.toString() + ';' + format + ';' + options );
+
+					callback( null, file );
+				} );
+			} );
+
+			sandbox.stub( utils, 'appendBenderLauncher', () => {
+				return through( { objectMode: true }, ( file, encoding, callback ) => {
+					file.contents = new Buffer( file.contents.toString() + ';launcher' );
+
+					callback( null, file );
+				} );
+			} );
+		} );
+
 		it( 'should return function that can be used for creating conversion streams', () => {
 			const distDir = 'dist/';
 			const formats = [ 'amd', 'cjs', 'esnext' ];
@@ -117,21 +208,72 @@ describe( 'build-utils', () => {
 
 			expect( streams.length ).to.equal( formats.length );
 		} );
+
+		describe( 'created conversion stream', () => {
+			it( 'should process source JS file', ( done ) => {
+				const distDir = 'dist/';
+				const formats = [ 'amd' ];
+				const fn = utils.getConversionStreamGenerator( distDir );
+				const streams = formats.reduce( fn, [] );
+
+				expect( streams ).to.have.length( 1 );
+
+				const stream = streams[ 0 ];
+
+				stream.pipe(
+					utils.noop( ( file ) => {
+						expect( file.contents.toString() ).to.equal( 'foo();amd;src' );
+						done();
+					} )
+				);
+
+				stream.write( new Vinyl( {
+					cwd: './',
+					path: 'ckeditor5/core/file.js',
+					contents: new Buffer( 'foo()' )
+				} ) );
+			} );
+		} );
+
+		describe( 'created conversion stream', () => {
+			it( 'should process test file', ( done ) => {
+				const distDir = 'dist/';
+				const formats = [ 'cjs' ];
+				const fn = utils.getConversionStreamGenerator( distDir );
+				const streams = formats.reduce( fn, [] );
+
+				expect( streams ).to.have.length( 1 );
+
+				const stream = streams[ 0 ];
+
+				stream.pipe(
+					utils.noop( ( file ) => {
+						expect( file.contents.toString() ).to.equal( 'foo();cjs;tests;launcher' );
+						done();
+					} )
+				);
+
+				stream.write( new Vinyl( {
+					cwd: './',
+					path: 'tests/core/file.js',
+					contents: new Buffer( 'foo()' )
+				} ) );
+			} );
+		} );
 	} );
 
 	describe( 'pickVersionedFile', () => {
 		it( 'should rename file for provided format', ( done ) => {
 			const rename = utils.pickVersionedFile( 'amd' );
 
-			rename.once( 'finish', () => {
-				done();
-			} );
+			rename.pipe(
+				utils.noop( ( data ) => {
+					expect( data.basename ).to.equal( 'load.js' );
+					done();
+				} )
+			);
 
-			rename.on( 'data', ( data ) => {
-				expect( data.basename ).to.equal( 'load.js' );
-			} );
-
-			rename.write(  new Vinyl( {
+			rename.write( new Vinyl( {
 				cwd: '/',
 				base: '/test/',
 				path: '/test/load__amd.js',
@@ -142,21 +284,39 @@ describe( 'build-utils', () => {
 		} );
 	} );
 
-	describe( 'unpackPackages', () => {
-		it( 'should move files to correct directories', ( done ) => {
-			const rename = utils.unpackPackages();
+	describe( 'renamePackageFiles', () => {
+		it( 'should move source files to correct directories', ( done ) => {
+			const rename = utils.renamePackageFiles();
 
-			rename.once( 'finish', () => {
-				done();
-			} );
-
-			rename.on( 'data', ( data ) => {
-				expect( data.path ).to.equal( 'ckeditor5-core/file.js' );
-			} );
+			rename.pipe(
+				utils.noop( ( data ) => {
+					expect( data.path ).to.equal( 'ckeditor5/core/foo/file.js' );
+					done();
+				} )
+			);
 
 			rename.write( new Vinyl( {
 				cwd: './',
-				path: 'ckeditor5-core/src/file.js',
+				path: 'ckeditor5-core/src/foo/file.js',
+				contents: new Buffer( '' )
+			} ) );
+
+			rename.end();
+		} );
+
+		it( 'should move test files to correct directories', ( done ) => {
+			const rename = utils.renamePackageFiles();
+
+			rename.pipe(
+				utils.noop( ( data ) => {
+					expect( data.path ).to.equal( 'tests/core/foo/file.js' );
+					done();
+				} )
+			);
+
+			rename.write( new Vinyl( {
+				cwd: './',
+				path: 'ckeditor5-core/tests/foo/file.js',
 				contents: new Buffer( '' )
 			} ) );
 
@@ -164,7 +324,7 @@ describe( 'build-utils', () => {
 		} );
 
 		it( 'should throw error when wrong path provided 1', () => {
-			const rename = utils.unpackPackages();
+			const rename = utils.renamePackageFiles();
 
 			expect( () => {
 				rename.write( new Vinyl( {
@@ -176,7 +336,7 @@ describe( 'build-utils', () => {
 		} );
 
 		it( 'should throw error when wrong path provided 2', () => {
-			const rename = utils.unpackPackages();
+			const rename = utils.renamePackageFiles();
 
 			expect( () => {
 				rename.write( new Vinyl( {
@@ -188,31 +348,59 @@ describe( 'build-utils', () => {
 		} );
 	} );
 
-	describe( 'wrapCKEditor5Package', () => {
-		it( 'should add `ckeditor5/` to a file path', ( done ) => {
-			const rename = utils.wrapCKEditor5Package();
-			const filePath = './test/file.js';
-			const path = require( 'path' );
+	describe( 'renameCKEditor5Files', () => {
+		it( 'should move source files to correct directories', ( done ) => {
+			const rename = utils.renameCKEditor5Files();
 
-			rename.once( 'finish', () => {
-				done();
-			} );
+			rename.pipe(
+				utils.noop( ( data ) => {
+					expect( data.path ).to.equal( 'ckeditor5/foo/file.js' );
+					done();
+				} )
+			);
 
-			rename.on( 'data', ( data ) => {
-				expect( data.path ).to.equal( path.join( 'ckeditor5', filePath ) );
-			} );
-
-			rename.write(  new Vinyl( {
+			rename.write( new Vinyl( {
 				cwd: './',
-				path: filePath,
+				path: 'src/foo/file.js',
 				contents: new Buffer( '' )
 			} ) );
 
 			rename.end();
 		} );
+
+		it( 'should move test files to correct directories', ( done ) => {
+			const rename = utils.renameCKEditor5Files();
+
+			rename.pipe(
+				utils.noop( ( data ) => {
+					expect( data.path ).to.equal( 'tests/foo/file.js' );
+					done();
+				} )
+			);
+
+			rename.write( new Vinyl( {
+				cwd: './',
+				path: 'tests/foo/file.js',
+				contents: new Buffer( '' )
+			} ) );
+
+			rename.end();
+		} );
+
+		it( 'should throw error when wrong path provided 1', () => {
+			const rename = utils.renameCKEditor5Files();
+
+			expect( () => {
+				rename.write( new Vinyl( {
+					cwd: './',
+					path: 'plugin/src/file.js',
+					contents: new Buffer( '' )
+				} ) );
+			} ).to.throw( Error );
+		} );
 	} );
 
-	describe( 'appendModuleExtension', (  ) => {
+	describe( 'appendModuleExtension', () => {
 		it( 'appends module extension when path provided', () => {
 			const filePath = './path/to/file';
 			const source = utils.appendModuleExtension( filePath );
@@ -233,5 +421,48 @@ describe( 'build-utils', () => {
 
 			expect( source ).to.equal( module );
 		} );
+	} );
+
+	describe( 'appendBenderLauncher', () => {
+		it( 'appends the launcher code to a file', ( done ) => {
+			const stream = utils.appendBenderLauncher();
+
+			stream.pipe(
+				utils.noop( ( data ) => {
+					expect( data.contents.toString() ).equal( 'foo();' + utils.benderLauncherCode );
+					done();
+				} )
+			);
+
+			stream.write( new Vinyl( {
+				cwd: './',
+				path: 'tests/file.js',
+				contents: new Buffer( 'foo();' )
+			} ) );
+
+			stream.end();
+		} );
+	} );
+
+	describe( 'isTestFile', () => {
+		function test( path, expected ) {
+			it( `returns ${ expected} for ${ path }`, () => {
+				const file = new Vinyl( {
+					cwd: './',
+					path: path,
+					contents: new Buffer( '' )
+				} );
+
+				expect( utils.isTestFile( file ) ).to.equal( expected );
+			} );
+		}
+
+		test( 'tests/file.js', true );
+		test( 'tests/foo/file.js', true );
+		test( 'tests/tests.js', true );
+
+		test( 'foo/file.js', false );
+		test( 'foo/tests/file.js', false );
+		test( 'tests/_foo/file.js', false );
 	} );
 } );

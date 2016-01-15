@@ -17,6 +17,7 @@ const expect = chai.expect;
 const gutil = require( 'gulp-util' );
 const gulp = require( 'gulp' );
 const path = require( 'path' );
+const through = require( 'through2' );
 
 describe( 'build-tasks', () => {
 	let sandbox, tasks;
@@ -69,8 +70,8 @@ describe( 'build-tasks', () => {
 			sinon.assert.calledTwice( gulpSrcSpy );
 			sinon.assert.calledTwice( statStub );
 
-			expect( gulpSrcSpy.firstCall.args[ 0 ] ).to.equal( path.join( 'node_modules', 'ckeditor5-core', 'src/**/*.js' ) );
-			expect( gulpSrcSpy.secondCall.args[ 0 ] ).to.equal( path.join( 'node_modules', 'ckeditor5-toolbar', 'src/**/*.js' ) );
+			expect( gulpSrcSpy.firstCall.args[ 0 ] ).to.equal( path.join( 'node_modules', 'ckeditor5-core', '@(src|tests)', '**', '*' ) );
+			expect( gulpSrcSpy.secondCall.args[ 0 ] ).to.equal( path.join( 'node_modules', 'ckeditor5-toolbar', '@(src|tests)', '**', '*' ) );
 		} );
 
 		it( 'should skip files and resolve symbolic links', () => {
@@ -112,6 +113,8 @@ describe( 'build-tasks', () => {
 				} )
 			];
 
+			let written = 0;
+
 			// Stub input stream.
 			sandbox.stub( tasks.src, 'all', () => {
 				const fakeInputStream = new stream.Readable( { objectMode: true } );
@@ -124,19 +127,23 @@ describe( 'build-tasks', () => {
 
 			// Stub output stream.
 			sandbox.stub( utils, 'dist', () => {
-				const fakeOutputStream = new stream.Writable( { objectMode: true } );
-				fakeOutputStream._write = ( file, encoding, done ) => {
+				return through( { objectMode: true }, ( file, encoding, cb ) => {
+					written++;
+
 					const result = babel.transform( code, { plugins: [ 'transform-es2015-modules-amd' ] } );
 					// Check if provided code was transformed by babel.
 					expect( file.contents.toString() ).to.equal( result.code );
-					done();
-				};
 
-				return fakeOutputStream;
+					cb( null, file );
+				} );
 			} );
 
 			const conversionStream = build();
-			conversionStream.on( 'finish', () => done() );
+
+			conversionStream.on( 'finish', () => {
+				expect( written ).to.equal( 1 );
+				done();
+			} );
 		} );
 	} );
 } );

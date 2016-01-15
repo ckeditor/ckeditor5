@@ -78,7 +78,7 @@ module.exports = ( config ) => {
 
 				return gulp.src( glob, { nodir: true } )
 					.pipe( watch ? gulpWatch( glob ) : utils.noop() )
-					.pipe( utils.wrapCKEditor5Package() );
+					.pipe( utils.renameCKEditor5Files() );
 			},
 
 			/**
@@ -124,7 +124,7 @@ module.exports = ( config ) => {
 				} );
 
 				return merge.apply( null, streams )
-					.pipe( utils.unpackPackages() );
+					.pipe( utils.renamePackageFiles() );
 			}
 		},
 
@@ -154,7 +154,7 @@ module.exports = ( config ) => {
 			//
 			// The flow looks like follows:
 			//
-			// 1. codeStream
+			// 1. codeStream (including logger)
 			// 2. inputStream
 			// 3. conversionStream (may throw)
 			// 4. outputStream
@@ -168,9 +168,11 @@ module.exports = ( config ) => {
 			// Multipipe and gulp-mirror seem to work this way, so we get a single error emitter.
 			const formats = options.formats.split( ',' );
 			const codeStream = tasks.src.all( options.watch )
-				.on( 'data', ( file ) => {
-					gutil.log( `Processing '${ gutil.colors.cyan( file.path ) }'...` );
-				} );
+				.pipe(
+					utils.noop( ( file ) => {
+						gutil.log( `Processing '${ gutil.colors.cyan( file.path ) }'...` );
+					} )
+				);
 			const conversionStreamGenerator = utils.getConversionStreamGenerator( distDir );
 			const outputStream = utils.noop();
 
