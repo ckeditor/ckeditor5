@@ -14,33 +14,69 @@ import Attribute from '/ckeditor5/core/treemodel/attribute.js';
 
 describe( 'NodeList', () => {
 	describe( 'constructor', () => {
-		it( 'should change array of characters into a set of nodes', () => {
-			let textFoo = new Text( 'foo' );
-			let nodeList = new NodeList( [ 'foo', new Text( 'x' ), 'bar', textFoo.getTextNode() ] );
+		it( 'should add elements to the node list', () => {
+			let p = new Element( 'p' );
+			let nodeList = new NodeList( p );
 
-			expect( nodeList.length ).to.equal( 10 );
-			expect( nodeList.get( 0 ).text ).to.equal( 'f' );
-			expect( nodeList.get( 1 ).text ).to.equal( 'o' );
-			expect( nodeList.get( 2 ).text ).to.equal( 'o' );
-			expect( nodeList.get( 3 ).text ).to.equal( 'x' );
-			expect( nodeList.get( 4 ).text ).to.equal( 'b' );
-			expect( nodeList.get( 5 ).text ).to.equal( 'a' );
-			expect( nodeList.get( 6 ).text ).to.equal( 'r' );
-			expect( nodeList.get( 7 ).text ).to.equal( 'f' );
-			expect( nodeList.get( 8 ).text ).to.equal( 'o' );
-			expect( nodeList.get( 9 ).text ).to.equal( 'o' );
+			expect( nodeList.length ).to.equal( 1 );
+			expect( nodeList.get( 0 ) ).to.equal( p );
+		} );
+
+		it( 'should change string into a set of nodes', () => {
+			let nodeList = new NodeList( 'foo' );
+
+			expect( nodeList.length ).to.equal( 3 );
+			expect( nodeList.get( 0 ).character ).to.equal( 'f' );
+			expect( nodeList.get( 1 ).character ).to.equal( 'o' );
+			expect( nodeList.get( 2 ).character ).to.equal( 'o' );
+		} );
+
+		it( 'should change node into a set of nodes', () => {
+			let nodeList = new NodeList( new Text( 'xy' ) );
+
+			expect( nodeList.length ).to.equal( 2 );
+			expect( nodeList.get( 0 ).character ).to.equal( 'x' );
+			expect( nodeList.get( 1 ).character ).to.equal( 'y' );
+		} );
+
+		it( 'should change text with attribute into a set of nodes', () => {
+			let attr = new Attribute( 'bold', true );
+			let nodeList = new NodeList( new Text( 'foo', [ attr ] ) );
+
+			expect( nodeList.length ).to.equal( 3 );
+			expect( nodeList.get( 0 ).character ).to.equal( 'f' );
+			expect( nodeList.get( 0 ).attrs.getValue( attr.key ) ).to.equal( attr.value );
+			expect( nodeList.get( 1 ).character ).to.equal( 'o' );
+			expect( nodeList.get( 1 ).attrs.getValue( attr.key ) ).to.equal( attr.value );
+			expect( nodeList.get( 2 ).character ).to.equal( 'o' );
+			expect( nodeList.get( 2 ).attrs.getValue( attr.key ) ).to.equal( attr.value );
+		} );
+
+		it( 'should change array of characters into a set of nodes', () => {
+			let char = new Element( 'p', [], 'y' ).getChild( 0 );
+			let nodeList = new NodeList( [ 'foo', new Text( 'x' ), char, 'bar' ] );
+
+			expect( nodeList.length ).to.equal( 8 );
+			expect( nodeList.get( 0 ).character ).to.equal( 'f' );
+			expect( nodeList.get( 1 ).character ).to.equal( 'o' );
+			expect( nodeList.get( 2 ).character ).to.equal( 'o' );
+			expect( nodeList.get( 3 ).character ).to.equal( 'x' );
+			expect( nodeList.get( 4 ).character ).to.equal( 'y' );
+			expect( nodeList.get( 5 ).character ).to.equal( 'b' );
+			expect( nodeList.get( 6 ).character ).to.equal( 'a' );
+			expect( nodeList.get( 7 ).character ).to.equal( 'r' );
 		} );
 
 		it( 'should omit empty strings / texts', () => {
 			let nodeList = new NodeList( [ 'fo', '', 'ob', new Text( '', [ new Attribute( 'foo', true ) ] ), 'ar' ] );
 
 			expect( nodeList.length ).to.equal( 6 );
-			expect( nodeList.get( 0 ).text ).to.equal( 'f' );
-			expect( nodeList.get( 1 ).text ).to.equal( 'o' );
-			expect( nodeList.get( 2 ).text ).to.equal( 'o' );
-			expect( nodeList.get( 3 ).text ).to.equal( 'b' );
-			expect( nodeList.get( 4 ).text ).to.equal( 'a' );
-			expect( nodeList.get( 5 ).text ).to.equal( 'r' );
+			expect( nodeList.get( 0 ).character ).to.equal( 'f' );
+			expect( nodeList.get( 1 ).character ).to.equal( 'o' );
+			expect( nodeList.get( 2 ).character ).to.equal( 'o' );
+			expect( nodeList.get( 3 ).character ).to.equal( 'b' );
+			expect( nodeList.get( 4 ).character ).to.equal( 'a' );
+			expect( nodeList.get( 5 ).character ).to.equal( 'r' );
 
 			expect( nodeList.get( 0 ).attrs.size ).to.equal( 0 );
 			expect( nodeList.get( 1 ).attrs.size ).to.equal( 0 );
@@ -50,48 +86,19 @@ describe( 'NodeList', () => {
 			expect( nodeList.get( 5 ).attrs.size ).to.equal( 0 );
 		} );
 
-		it( 'should change string into a set of nodes', () => {
-			let nodeList = new NodeList( 'foo' );
-
-			expect( nodeList.length ).to.equal( 3 );
-			expect( nodeList.get( 0 ).text ).to.equal( 'f' );
-			expect( nodeList.get( 1 ).text ).to.equal( 'o' );
-			expect( nodeList.get( 2 ).text ).to.equal( 'o' );
-		} );
-
-		it( 'should change node into a set of nodes', () => {
-			let nodeList = new NodeList( new Text( 'x' ) );
-
-			expect( nodeList.length ).to.equal( 1 );
-			expect( nodeList.get( 0 ).text ).to.equal( 'x' );
-		} );
-
-		it( 'should change text with attribute into a set of nodes', () => {
-			let attr = new Attribute( 'bold', true );
-			let nodeList = new NodeList( new Text( 'foo', [ attr ] ) );
-
-			expect( nodeList.length ).to.equal( 3 );
-			expect( nodeList.get( 0 ).text ).to.equal( 'f' );
-			expect( nodeList.get( 0 ).attrs.getValue( attr.key ) ).to.equal( attr.value );
-			expect( nodeList.get( 1 ).text ).to.equal( 'o' );
-			expect( nodeList.get( 1 ).attrs.getValue( attr.key ) ).to.equal( attr.value );
-			expect( nodeList.get( 2 ).text ).to.equal( 'o' );
-			expect( nodeList.get( 2 ).attrs.getValue( attr.key ) ).to.equal( attr.value );
-		} );
-
 		it( 'should merge strings and text objects if possible', () => {
 			let attr = new Attribute( 'foo', 'bar' );
 			let nodeList = new NodeList( [ 'fo', new Text( 'o' ), new Text( 'x', [ attr ] ), new Text( 'y', [ attr ] ), 'bar' ] );
 
 			expect( nodeList.length ).to.equal( 8 );
-			expect( nodeList.get( 0 ).text ).to.equal( 'f' );
-			expect( nodeList.get( 1 ).text ).to.equal( 'o' );
-			expect( nodeList.get( 2 ).text ).to.equal( 'o' );
-			expect( nodeList.get( 3 ).text ).to.equal( 'x' );
-			expect( nodeList.get( 4 ).text ).to.equal( 'y' );
-			expect( nodeList.get( 5 ).text ).to.equal( 'b' );
-			expect( nodeList.get( 6 ).text ).to.equal( 'a' );
-			expect( nodeList.get( 7 ).text ).to.equal( 'r' );
+			expect( nodeList.get( 0 ).character ).to.equal( 'f' );
+			expect( nodeList.get( 1 ).character ).to.equal( 'o' );
+			expect( nodeList.get( 2 ).character ).to.equal( 'o' );
+			expect( nodeList.get( 3 ).character ).to.equal( 'x' );
+			expect( nodeList.get( 4 ).character ).to.equal( 'y' );
+			expect( nodeList.get( 5 ).character ).to.equal( 'b' );
+			expect( nodeList.get( 6 ).character ).to.equal( 'a' );
+			expect( nodeList.get( 7 ).character ).to.equal( 'r' );
 
 			expect( nodeList._nodes.length ).to.equal( 3 );
 			expect( nodeList._nodes[ 0 ].text ).to.equal( 'foo' );
@@ -108,12 +115,12 @@ describe( 'NodeList', () => {
 			outerList.insert( 2, innerList );
 
 			expect( outerList.length ).to.equal( 6 );
-			expect( outerList.get( 0 ).text ).to.equal( 'f' );
-			expect( outerList.get( 1 ).text ).to.equal( 'o' );
-			expect( outerList.get( 2 ).text ).to.equal( 'x' );
-			expect( outerList.get( 3 ).text ).to.equal( 'x' );
-			expect( outerList.get( 4 ).text ).to.equal( 'x' );
-			expect( outerList.get( 5 ).text ).to.equal( 'o' );
+			expect( outerList.get( 0 ).character ).to.equal( 'f' );
+			expect( outerList.get( 1 ).character ).to.equal( 'o' );
+			expect( outerList.get( 2 ).character ).to.equal( 'x' );
+			expect( outerList.get( 3 ).character ).to.equal( 'x' );
+			expect( outerList.get( 4 ).character ).to.equal( 'x' );
+			expect( outerList.get( 5 ).character ).to.equal( 'o' );
 		} );
 
 		it( 'should merge inserted text objects if possible', () => {
@@ -136,15 +143,15 @@ describe( 'NodeList', () => {
 			let removed = nodeList.remove( 2, 3 );
 
 			expect( nodeList.length ).to.equal( 3 );
-			expect( nodeList.get( 0 ).text ).to.equal( 'f' );
-			expect( nodeList.get( 1 ).text ).to.equal( 'o' );
-			expect( nodeList.get( 2 ).text ).to.equal( 'r' );
+			expect( nodeList.get( 0 ).character ).to.equal( 'f' );
+			expect( nodeList.get( 1 ).character ).to.equal( 'o' );
+			expect( nodeList.get( 2 ).character ).to.equal( 'r' );
 
 			expect( removed ).to.be.instanceof( NodeList );
 			expect( removed.length ).to.equal( 3 );
-			expect( removed.get( 0 ).text ).to.equal( 'o' );
-			expect( removed.get( 1 ).text ).to.equal( 'b' );
-			expect( removed.get( 2 ).text ).to.equal( 'a' );
+			expect( removed.get( 0 ).character ).to.equal( 'o' );
+			expect( removed.get( 1 ).character ).to.equal( 'b' );
+			expect( removed.get( 2 ).character ).to.equal( 'a' );
 		} );
 
 		it( 'should merge text objects left in node list possible', () => {
@@ -179,9 +186,9 @@ describe( 'NodeList', () => {
 			expect( index ).to.equal( 3 );
 		} );
 
-		it( 'should return index of specified text node', () => {
-			let textNode = nodeList.get( 5 );
-			let index = nodeList.indexOf( textNode );
+		it( 'should return index of specified character', () => {
+			let char = nodeList.get( 5 );
+			let index = nodeList.indexOf( char );
 
 			expect( index ).to.equal( 5 );
 		} );
@@ -190,11 +197,11 @@ describe( 'NodeList', () => {
 			expect( nodeList.indexOf( new Element( 'p' ) ) ).to.equal( -1 );
 		} );
 
-		it( 'should return -1 if specified text node is not a part of a node list', () => {
-			let text = new Text( 'foobar' );
-			let textNode = text.getTextNode( 2, 2 );
+		it( 'should return -1 if specified character is not a part of a node list', () => {
+			let div = new Element( 'div', [], 'a' );
+			let char = div.getChild( 0 );
 
-			expect( nodeList.indexOf( textNode ) ).to.equal( -1 );
+			expect( nodeList.indexOf( char ) ).to.equal( -1 );
 		} );
 	} );
 
@@ -205,7 +212,7 @@ describe( 'NodeList', () => {
 			let i = 0;
 
 			for ( let node of nodeList ) {
-				expect( node.text ).to.equal( characters[ i ] );
+				expect( node.character ).to.equal( characters[ i ] );
 				i++;
 			}
 
@@ -258,13 +265,23 @@ describe( 'NodeList', () => {
 	} );
 
 	describe( '_getCharIndex', () => {
-		it( 'should return offset of given index from the beginning of the text node', () => {
+		it( 'should return offset of character at given index from the beginning of the NodeListText containing that character', () => {
 			let nodeList = new NodeList( [ new Text( 'ab', [ new Attribute( 'foo', true ) ] ), 'cd' ] );
 			let charIndexC = nodeList._getCharIndex( 2 );
 			let charIndexD = nodeList._getCharIndex( 3 );
 
 			expect( charIndexC ).to.equal( 0 );
 			expect( charIndexD ).to.equal( 1 );
+		} );
+	} );
+
+	// Additional test for code coverage.
+	describe( 'NodeListText', () => {
+		it( 'should create proper JSON string using toJSON method', () => {
+			let nodeList = new NodeList( 'foo' );
+			let parsed = JSON.parse( JSON.stringify( nodeList ) );
+
+			expect( parsed._nodes[ 0 ].parent ).to.equal( null );
 		} );
 	} );
 } );

@@ -5,9 +5,54 @@
 
 'use strict';
 
-import TextNode from './textnode.js';
+import CharacterProxy from './characterproxy.js';
 import Text from './text.js';
 import utils from '../utils.js';
+import langUtils from '../lib/lodash/lang.js';
+
+/**
+ * This is a private helper-class for {@link treeModel.NodeList} text compression utility.
+ *
+ * @private
+ * @class treeModel.NodeListText
+ */
+class NodeListText extends Text {
+	/**
+	 * @see {@link treeModel.Text#constructor}
+	 * @protected
+	 * @constructor
+	 */
+	constructor( text, attrs ) {
+		super( text, attrs );
+
+		this.parent = null;
+	}
+
+	/**
+	 * Gets a character at given index and creates a {@link treeModel.CharacterProxy} out of it.
+	 *
+	 * @param {Number} index Character index.
+	 * @returns {treeModel.CharacterProxy}
+	 */
+	getCharAt( index ) {
+		index = index && index >= 0 ? index : 0;
+
+		return new CharacterProxy( this, index );
+	}
+
+	/**
+	 * Custom toJSON method to solve child-parent circular dependencies.
+	 *
+	 * @returns {Object} Clone of this object with the parent property replaced with its name.
+	 */
+	toJSON() {
+		const json = langUtils.clone( this );
+
+		json.parent = json.parent ? this.parent.name : null;
+
+		return json;
+	}
+}
 
 /**
  * List of nodes. It is used to represent multiple nodes with a given order, for example children of
@@ -47,7 +92,7 @@ export default class NodeList {
 	 *		nodeListA === nodeListB // true
 	 *		nodeListB.length // 3
 	 *
-	 * @param {treeModel.Node|treeModel.Text|treeModel.TextNode|String|treeModel.NodeList|Iterable} nodes List of nodes.
+	 * @param {treeModel.Node|treeModel.Text|String|treeModel.NodeList|Iterable} nodes List of nodes.
 	 * @constructor
 	 */
 	constructor( nodes ) {
@@ -84,18 +129,20 @@ export default class NodeList {
 				let mergedWithPrev = false;
 				let length = 1;
 
-				if ( node instanceof TextNode ) {
-					node = new Text( node.text, node.attrs );
+				if ( node instanceof CharacterProxy ) {
+					node = new NodeListText( node.character, node.attrs );
+				} else if ( node instanceof Text ) {
+					node = new NodeListText( node.text, node.attrs );
 				} else if ( typeof node == 'string' ) {
-					node = new Text( node, [] );
+					node = new NodeListText( node, [] );
 				}
 
-				if ( node instanceof Text ) {
+				if ( node instanceof NodeListText ) {
 					length = node.text.length;
 
 					let prev = this._nodes[ this._nodes.length - 1 ];
 
-					if ( prev instanceof Text && prev.attrs.isEqual( node.attrs ) ) {
+					if ( prev instanceof NodeListText && prev.attrs.isEqual( node.attrs ) ) {
 						// If previously added text has same attributes, merge this text with it.
 						prev.text += node.text;
 						mergedWithPrev = true;
@@ -151,8 +198,8 @@ export default class NodeList {
 		let realIndex = this._indexMap[ index ];
 		let node = this._nodes[ realIndex ];
 
-		if ( node instanceof Text ) {
-			return node.getTextNode( this._getCharIndex( index ), 1 );
+		if ( node instanceof NodeListText ) {
+			return node.getCharAt( this._getCharIndex( index ) );
 		} else {
 			return node;
 		}
@@ -165,10 +212,10 @@ export default class NodeList {
 	 * @returns {Number} Position of the element in the list or -1 if not found.
 	 */
 	indexOf( node ) {
-		if ( node instanceof TextNode ) {
-			let baseIndex = this.indexOf( node._textItem );
+		if ( node instanceof CharacterProxy ) {
+			let baseIndex = this.indexOf( node._nodeListText );
 
-			return baseIndex == -1 ? -1 : baseIndex + node._start;
+			return baseIndex == -1 ? -1 : baseIndex + node._index;
 		}
 
 		let realIndex = this._nodes.indexOf( node );
@@ -227,7 +274,7 @@ export default class NodeList {
 			return new NodeList();
 		}
 
-		// Removed "range" may start in text node or end in text node. Some splitting may be needed.
+		// Removed "range" may start in NodeListText or end in NodeListText. Some splitting may be needed.
 		this._splitNodeAt( index );
 		this._splitNodeAt( index + number );
 
@@ -248,7 +295,7 @@ export default class NodeList {
 	}
 
 	/**
-	 * Checks whether given index is inside a text object and if so, splits that text node. This method should be used
+	 * Checks whether given index is inside a text and if so, splits that text node. This method should be used
 	 * to split text objects whenever there are some changes made on a part of text object (i.e. removing part of text,
 	 * inserting between text object, changing attributes of part of a text object).
 	 *
@@ -277,7 +324,7 @@ export default class NodeList {
 		node.text = textBefore;
 
 		// Create a new text node with the "removed" part and splice it after original node.
-		let newText = new Text( textAfter, node.attrs );
+		let newText = new NodeListText( textAfter, node.attrs );
 		newText.parent = node.parent;
 		this._nodes.splice.call( this._nodes, realIndex + 1, 0, newText );
 
