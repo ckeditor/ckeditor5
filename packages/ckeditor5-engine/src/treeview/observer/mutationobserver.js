@@ -6,9 +6,8 @@
 'use strict';
 
 import Observer from './observer.js';
-import converter from '../converter.js';
-import objectUtils from '../../lib/lodash/object.js';
 import EmitterMixin from '../../emittermixin.js';
+import objectUtils from '../../lib/lodash/object.js';
 
 export default class MutationObserver extends Observer {
 	constructor() {
@@ -42,6 +41,7 @@ export default class MutationObserver extends Observer {
 	 */
 	init( treeView ) {
 		this.treeView = treeView;
+		this.converter = treeView.converter;
 		this.domRoot = treeView.domRoot;
 
 		this._mutationObserver = new window.MutationObserver( this._onMutations.bind( this ) );
@@ -54,7 +54,7 @@ export default class MutationObserver extends Observer {
 
 		for ( let mutation of domMutations ) {
 			if ( mutation.type === 'childList' ) {
-				const element = converter.getCorespondingView( mutation.target );
+				const element = this.converter.getCorespondingView( mutation.target );
 
 				if ( element ) {
 					mutatedElements.add( element );
@@ -64,7 +64,7 @@ export default class MutationObserver extends Observer {
 
 		for ( let mutation of domMutations ) {
 			if ( mutation.type === 'characterData' ) {
-				const text = converter.getCorespondingView( mutation.target );
+				const text = this.converter.getCorespondingView( mutation.target );
 
 				if ( text && !mutatedElements.has( text.parent ) ) {
 					mutatedTexts.set( text, {
@@ -92,7 +92,7 @@ export default class MutationObserver extends Observer {
 			const newViewChildren = [];
 
 			for ( let i = 0; i < domChildren.length; i++ ) {
-				newViewChildren.push( converter.createFromDom( domChildren[ i ] ) );
+				newViewChildren.push( this.converter.createFromDom( domChildren[ i ] ) );
 			}
 
 			viewElement.markToSync( 'CHILDREN_NEED_UPDATE' );

@@ -6,11 +6,12 @@
 'use strict';
 
 import diff from '../utils-diff.js';
-import converter from './converter.js';
 import CKEditorError from '../ckeditorerror.js';
 
 export default class Renderer {
-	constructor() {
+	constructor( converter ) {
+		this.converter = converter;
+
 		this.markedAttrs = new Set();
 		this.markedChildren = new Set();
 		this.markedTexts = new Set();
@@ -18,12 +19,12 @@ export default class Renderer {
 
 	markToSync( node, type ) {
 		if ( type === 'TEXT_NEEDS_UPDATE' ) {
-			if ( converter.getCorespondingDom( node.parent ) ) {
+			if ( this.converter.getCorespondingDom( node.parent ) ) {
 				this.markedTexts.add( node );
 			}
 		} else {
 			// If the node has no DOM element it is not rendered yet, its children/attributes do not need to be marked to be sync.
-			if ( !converter.getCorespondingDom( node ) ) {
+			if ( !this.converter.getCorespondingDom( node ) ) {
 				return;
 			}
 
@@ -43,6 +44,8 @@ export default class Renderer {
 	}
 
 	render() {
+		const converter = this.converter;
+
 		for ( let node of this.markedTexts ) {
 			if ( !this.markedChildren.has( node.parent ) && converter.getCorespondingDom( node.parent ) ) {
 				updateText( node );
@@ -93,7 +96,7 @@ export default class Renderer {
 			const viewChildren = Array.from( viewElement.getChildren() );
 			const domDocument = domElement.ownerDocument;
 
-			const actions = diff( domChildren, viewChildren, converter.compareNodes );
+			const actions = diff( domChildren, viewChildren, ( domNode, viewNode ) => converter.compareNodes( domNode, viewNode ) );
 			let i = 0;
 
 			for ( let action of actions ) {

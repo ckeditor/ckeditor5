@@ -8,9 +8,9 @@
 import EmitterMixin from '../emittermixin.js';
 import RootElement from './rootelement.js';
 import Renderer from './renderer.js';
+import Converter from './converter.js';
 
 import objectUtils from '../lib/lodash/object.js';
-import converter from './converter.js';
 
 export default class TreeView {
 	constructor( domRoot ) {
@@ -21,14 +21,16 @@ export default class TreeView {
 
 		this.observers = new Set();
 
+		this.converter = new Converter();
+
 		/**
 		 * Root of the view
 		 */
 		this.viewRoot = new RootElement( domRoot.tagName.toLowerCase(), this );
-		converter.cloneDomAttrs( domRoot, this.viewRoot );
-		converter.bindElements( domRoot, this.viewRoot );
+		this.converter.cloneDomAttrs( domRoot, this.viewRoot );
+		this.converter.bindElements( domRoot, this.viewRoot );
 
-		this.renderer = new Renderer( this );
+		this.renderer = new Renderer( this.converter );
 		this.renderer.markToSync( this.viewRoot, 'CHILDREN_NEED_UPDATE' );
 	}
 

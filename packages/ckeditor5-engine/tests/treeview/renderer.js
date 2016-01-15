@@ -16,17 +16,18 @@ const modules = bender.amd.require(
 );
 
 describe( 'Renderer', () => {
-	let Renderer, ViewElement, ViewText, CKEditorError, converter;
-	let renderer;
+	let Renderer, ViewElement, ViewText, CKEditorError, Converter;
+	let converter, renderer;
 
 	before( () => {
 		Renderer = modules[ 'core/treeview/renderer' ];
 		ViewElement = modules[ 'core/treeview/element' ];
 		ViewText = modules[ 'core/treeview/text' ];
 		CKEditorError = modules[ 'core/ckeditorerror' ];
-		converter = modules[ 'core/treeview/converter' ];
+		Converter = modules[ 'core/treeview/converter' ];
 
-		renderer = new Renderer();
+		converter = new Converter();
+		renderer = new Renderer( converter );
 	} );
 
 	describe( 'markToSync', () => {

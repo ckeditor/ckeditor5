@@ -19,13 +19,16 @@ const modules = bender.amd.require(
 );
 
 describe( 'converter', () => {
-	let converter, ViewText, ViewElement, ViewNode;
+	let Converter, ViewText, ViewElement, ViewNode;
+	let converter;
 
 	before( () => {
 		ViewText = modules[ 'core/treeview/text' ];
 		ViewElement = modules[ 'core/treeview/element' ];
 		ViewNode = modules[ 'core/treeview/node' ];
-		converter = modules[ 'core/treeview/converter' ];
+		Converter = modules[ 'core/treeview/converter' ];
+
+		converter = new Converter();
 	} );
 
 	describe( 'bindElements', () => {
