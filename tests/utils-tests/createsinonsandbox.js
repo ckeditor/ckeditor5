@@ -5,23 +5,25 @@
 
 'use strict';
 
+import testUtils from '/tests/_utils/utils.js';
+
 const obj = {
 	method() {}
 };
 const origMethod = obj.method;
 let spy;
 
-bender.tools.createSinonSandbox();
+testUtils.createSinonSandbox();
 
-describe( 'bender.tools.createSinonSandbox()', () => {
+describe( 'testUtils.createSinonSandbox()', () => {
 	it( 'creates a sandbox', () => {
-		expect( bender.sinon ).to.be.an( 'object' );
-		expect( bender.sinon ).to.have.property( 'spy' );
+		expect( testUtils.sinon ).to.be.an( 'object' );
+		expect( testUtils.sinon ).to.have.property( 'spy' );
 	} );
 
 	// This test is needed for the following one.
 	it( 'really works', () => {
-		spy = bender.sinon.spy( obj, 'method' );
+		spy = testUtils.sinon.spy( obj, 'method' );
 
 		expect( obj ).to.have.property( 'method', spy );
 	} );

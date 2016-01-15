@@ -5,12 +5,7 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'ckeditor5/path' );
-let path;
-
-before( () => {
-	path = modules[ 'ckeditor5/path' ];
-} );
+import path from '/ckeditor5/path.js';
 
 beforeEach( () => {
 	// Ensure that no CKEDITOR_BASEPATH global is available.

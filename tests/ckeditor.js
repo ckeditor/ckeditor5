@@ -5,12 +5,7 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'ckeditor' );
-let CKEDITOR;
-
-before( () => {
-	CKEDITOR = modules.ckeditor;
-} );
+import CKEDITOR from '/ckeditor.js';
 
 describe( 'CKEDITOR', () => {
 	it( 'is an object', () => {

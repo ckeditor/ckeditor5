@@ -5,6 +5,6 @@
 
 'use strict';
 
-import CKEDITOR from './ckeditor5-core/ckeditor.js';
+import CKEDITOR from './ckeditor5/core/ckeditor.js';
 
 export default CKEDITOR;

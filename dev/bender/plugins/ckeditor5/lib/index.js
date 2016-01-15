@@ -7,8 +7,7 @@
 
 const path = require( 'path' );
 const files = [
-	path.join( __dirname, '../static/amd.js' ),
-	path.join( __dirname, '../static/tools.js' )
+	path.join( __dirname, '../static/extensions.js' )
 ];
 
 module.exports = {
@@ -18,8 +17,8 @@ module.exports = {
 		this.plugins.addFiles( files );
 
 		this.on( 'test:created', ( test ) => {
-			const moduleRegExp = /node_modules\/ckeditor5-([^\/]+)/;
-			let name = test.displayName;
+			const moduleRegExp = /^([^\/]+)\//;
+			let name = test.displayName.replace( /^dist\/amd\/tests\//, '' );
 			let module = name.match( moduleRegExp );
 
 			if ( module ) {
@@ -27,13 +26,11 @@ module.exports = {
 				test.displayName = name.replace( moduleRegExp, '$1: ' );
 			} else {
 				test.tags.unshift( 'module!ckeditor5' );
-				test.displayName = 'ckeditor5: ' + test.displayName;
+				test.displayName = 'ckeditor5: ' + name.replace( /^ckeditor5\//, '' );
 			}
 		} );
 
-		// Add this plugins' scripts before the includes pagebuilder (which handles bender-include directives), so
-		// the main tools file is loaded before tools included in the core or in the plugins.
-		this.pagebuilders.add( 'ckeditor5', build, this.pagebuilders.getPriority( 'includes' ) - 1 );
+		this.pagebuilders.add( 'ckeditor5', build );
 
 		function build( data ) {
 			files.forEach( ( file ) => {

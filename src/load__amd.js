@@ -12,7 +12,7 @@ import require from 'require';
 /**
  * Loads a module.
  *
- *		load( CKEDITOR.getModulePath( 'core/editor' ) )
+ *		load( 'ckeditor5/core/editor.js' )
  *			.then( ( EditorModule ) => {
  *				const Editor = EditorModule.default;
  *			} );
