@@ -5,11 +5,10 @@
 
 'use strict';
 
-import pathUtils from '../ckeditor5/path.js';
 import Plugin from './plugin.js';
 import CKEditorError from './ckeditorerror.js';
 import log from './log.js';
-import load from '../ckeditor5/load.js';
+import load from '../load.js';
 
 /**
  * Manages a list of CKEditor plugins, including loading, resolving dependencies and initialization.
@@ -98,7 +97,7 @@ export default class PluginCollection {
 		}
 
 		function loadPluginByName( pluginName ) {
-			return load( pathUtils.getModulePath( pluginName ) )
+			return load( PluginCollection.getPluginPath( pluginName ) )
 				.then( ( PluginModule ) => {
 					return loadPluginByClass( PluginModule.default, pluginName );
 				} );
@@ -141,6 +140,28 @@ export default class PluginCollection {
 				);
 			}
 		}
+	}
+
+	/**
+	 * Resolves a simplified plugin name to a real path. The returned
+	 * paths are relative to the main `ckeditor.js` file, but they do not start with `./`.
+	 *
+	 * For instance:
+	 *
+	 * * `foo` will be transformed to `ckeditor5/foo/foo.js`,
+	 * * `core/editor` to `ckeditor5/core/editor.js` and
+	 * * `foo/bar/bom` to `ckeditor5/foo/bar/bom.js`.
+	 *
+	 * @param {String} name
+	 * @returns {String} Path to the module.
+	 */
+	static getPluginPath( name ) {
+		// Resolve shortened feature names to `featureName/featureName`.
+		if ( name.indexOf( '/' ) < 0 ) {
+			name = name + '/' + name;
+		}
+
+		return 'ckeditor5/' + name + '.js';
 	}
 
 	/**

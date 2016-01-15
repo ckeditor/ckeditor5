@@ -5,13 +5,12 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'core/editorconfig', 'ckeditor' );
+import EditorConfig from '/ckeditor5/core/editorconfig.js';
+import CKEDITOR from '/ckeditor.js';
 
 let config;
 
 beforeEach( () => {
-	const EditorConfig = modules[ 'core/editorconfig' ];
-
 	config = new EditorConfig( {
 		test: 1
 	} );
@@ -29,8 +28,6 @@ describe( 'get', () => {
 	} );
 
 	it( 'should fallback to CKEDITOR.config', () => {
-		const CKEDITOR = modules.ckeditor;
-
 		CKEDITOR.config.set( {
 			globalConfig: 2
 		} );

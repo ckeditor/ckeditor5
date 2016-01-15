@@ -3,23 +3,20 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-include: ../_tools/tools.js */
-
 'use strict';
 
-const modules = bender.amd.require( 'core/editor', 'core/editorconfig', 'core/plugin' );
-let Editor, EditorConfig, Plugin;
+import amdUtils from '/tests/_utils/amd.js';
+import coreTestUtils from '/tests/core/_utils/utils.js';
+import Editor from '/ckeditor5/core/editor.js';
+import EditorConfig from '/ckeditor5/core/editorconfig.js';
+import Plugin from '/ckeditor5/core/plugin.js';
 
 const pluginClasses = {};
 let element;
 
 before( () => {
-	Editor = modules[ 'core/editor' ];
-	EditorConfig = modules[ 'core/editorconfig' ];
-	Plugin = modules[ 'core/plugin' ];
-
 	// Define fake plugins to be used in tests.
-	bender.tools.core.defineEditorCreatorMock( 'test', {
+	coreTestUtils.defineEditorCreatorMock( 'test', {
 		init: sinon.spy().named( 'creator-test' )
 	} );
 
@@ -122,7 +119,7 @@ describe( 'init', () => {
 		// Synchronous plugin that depends on an asynchronous one.
 		pluginDefinition( 'sync', [ 'async' ] );
 
-		bender.amd.define( 'async', () => {
+		amdUtils.define( 'async', () => {
 			PluginAsync.prototype.init = sinon.spy( () => {
 				return new Promise( ( resolve ) => {
 					setTimeout( () => {
@@ -187,7 +184,7 @@ describe( 'destroy', () => {
  * @param {String[]} deps Dependencies of the plugin (only other plugins).
  */
 function pluginDefinition( name, deps ) {
-	bender.amd.define( name, deps || [], function() {
+	amdUtils.define( name, deps || [], function() {
 		class NewPlugin extends Plugin {}
 
 		NewPlugin.prototype.init = sinon.spy().named( name );

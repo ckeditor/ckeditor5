@@ -7,25 +7,13 @@
 
 'use strict';
 
-const modules = bender.amd.require(
-	'core/treemodel/document',
-	'core/treemodel/operation/reinsertoperation',
-	'core/treemodel/operation/removeoperation',
-	'core/treemodel/operation/moveoperation',
-	'core/treemodel/position'
-);
+import Document from '/ckeditor5/core/treemodel/document.js';
+import ReinsertOperation from '/ckeditor5/core/treemodel/operation/reinsertoperation.js';
+import RemoveOperation from '/ckeditor5/core/treemodel/operation/removeoperation.js';
+import MoveOperation from '/ckeditor5/core/treemodel/operation/moveoperation.js';
+import Position from '/ckeditor5/core/treemodel/position.js';
 
 describe( 'RemoveOperation', () => {
-	let Document, ReinsertOperation, RemoveOperation, MoveOperation, Position;
-
-	before( () => {
-		Document = modules[ 'core/treemodel/document' ];
-		ReinsertOperation = modules[ 'core/treemodel/operation/reinsertoperation' ];
-		RemoveOperation = modules[ 'core/treemodel/operation/removeoperation' ];
-		MoveOperation = modules[ 'core/treemodel/operation/removeoperation' ];
-		Position = modules[ 'core/treemodel/position' ];
-	} );
-
 	let doc, root, graveyard;
 
 	beforeEach( () => {

@@ -4,27 +4,17 @@
  */
 
 /* bender-tags: treemodel */
-/* bender-include: ../_tools/tools.js */
 
 'use strict';
 
-const getIteratorCount = bender.tools.core.getIteratorCount;
+import coreTestUtils from '/tests/core/_utils/utils.js';
+import Document from '/ckeditor5/core/treemodel/document.js';
+import Element from '/ckeditor5/core/treemodel/element.js';
+import RootElement from '/ckeditor5/core/treemodel/rootelement.js';
 
-const modules = bender.amd.require(
-	'core/treemodel/document',
-	'core/treemodel/element',
-	'core/treemodel/rootelement'
-);
+const getIteratorCount = coreTestUtils.getIteratorCount;
 
 describe( 'Element', () => {
-	let Document, Element, RootElement;
-
-	before( () => {
-		Document = modules[ 'core/treemodel/document' ];
-		Element = modules[ 'core/treemodel/element' ];
-		RootElement = modules[ 'core/treemodel/rootelement' ];
-	} );
-
 	describe( 'constructor', () => {
 		it( 'should create root element without attributes', () => {
 			let doc = new Document();

@@ -7,21 +7,11 @@
 
 'use strict';
 
-const modules = bender.amd.require(
-	'core/treemodel/document',
-	'core/treemodel/attribute',
-	'core/treemodel/position'
-);
+import Document from '/ckeditor5/core/treemodel/document.js';
+import Attribute from '/ckeditor5/core/treemodel/attribute.js';
+import Position from '/ckeditor5/core/treemodel/position.js';
 
 describe( 'Batch', () => {
-	let Document, Attribute, Position;
-
-	before( () => {
-		Document = modules[ 'core/treemodel/document' ];
-		Attribute = modules[ 'core/treemodel/attribute' ];
-		Position = modules[ 'core/treemodel/position' ];
-	} );
-
 	let doc, root, batch, chain, attrs;
 
 	beforeEach( () => {

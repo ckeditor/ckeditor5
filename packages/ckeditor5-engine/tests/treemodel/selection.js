@@ -5,41 +5,26 @@
 
 /* bender-tags: treemodel */
 
-/* bender-include: ../_tools/tools.js */
-
 'use strict';
 
-const getIteratorCount = bender.tools.core.getIteratorCount;
+import coreTestUtils from '/tests/core/_utils/utils.js';
+import Document from '/ckeditor5/core/treemodel/document.js';
+import Attribute from '/ckeditor5/core/treemodel/attribute.js';
+import Element from '/ckeditor5/core/treemodel/element.js';
+import Range from '/ckeditor5/core/treemodel/range.js';
+import Position from '/ckeditor5/core/treemodel/position.js';
+import LiveRange from '/ckeditor5/core/treemodel/liverange.js';
+import Selection from '/ckeditor5/core/treemodel/selection.js';
+import InsertOperation from '/ckeditor5/core/treemodel/operation/insertoperation.js';
+import MoveOperation from '/ckeditor5/core/treemodel/operation/moveoperation.js';
+import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
-const modules = bender.amd.require(
-	'core/treemodel/document',
-	'core/treemodel/attribute',
-	'core/treemodel/element',
-	'core/treemodel/range',
-	'core/treemodel/position',
-	'core/treemodel/liverange',
-	'core/treemodel/selection',
-	'core/treemodel/operation/insertoperation',
-	'core/treemodel/operation/moveoperation',
-	'core/ckeditorerror'
-);
+const getIteratorCount = coreTestUtils.getIteratorCount;
 
 describe( 'Selection', () => {
-	let Document, Attribute, Element, Range, Position, LiveRange, Selection, InsertOperation, MoveOperation, CKEditorError;
 	let attrFooBar;
 
 	before( () => {
-		Document = modules[ 'core/treemodel/document' ];
-		Attribute = modules[ 'core/treemodel/attribute' ];
-		Element = modules[ 'core/treemodel/element' ];
-		Range = modules[ 'core/treemodel/range' ];
-		Position = modules[ 'core/treemodel/position' ];
-		LiveRange = modules[ 'core/treemodel/liverange' ];
-		Selection = modules[ 'core/treemodel/selection' ];
-		InsertOperation = modules[ 'core/treemodel/operation/insertoperation' ];
-		MoveOperation = modules[ 'core/treemodel/operation/moveoperation' ];
-		CKEditorError = modules[ 'core/ckeditorerror' ];
-
 		attrFooBar = new Attribute( 'foo', 'bar' );
 	} );
 

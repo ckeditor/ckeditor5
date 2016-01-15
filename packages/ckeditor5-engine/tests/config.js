@@ -5,13 +5,9 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'core/config' );
+import Config from '/ckeditor5/core/config.js';
 
-let Config, config;
-
-before( () => {
-	Config = modules[ 'core/config' ];
-} );
+let config;
 
 beforeEach( () => {
 	config = new Config( {

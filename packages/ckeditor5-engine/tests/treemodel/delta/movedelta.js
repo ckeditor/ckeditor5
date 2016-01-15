@@ -4,32 +4,20 @@
  */
 
 /* bender-tags: treemodel, delta */
-/* bender-include: ../../_tools/tools.js */
 
 'use strict';
 
-const getNodesAndText = bender.tools.treemodel.getNodesAndText;
+import treeModelTestUtils from '/tests/core/treemodel/_utils/utils.js';
+import Document from '/ckeditor5/core/treemodel/document.js';
+import Position from '/ckeditor5/core/treemodel/position.js';
+import Range from '/ckeditor5/core/treemodel/range.js';
+import Element from '/ckeditor5/core/treemodel/element.js';
+import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
-const modules = bender.amd.require(
-	'core/treemodel/document',
-	'core/treemodel/position',
-	'core/treemodel/range',
-	'core/treemodel/element',
-	'core/ckeditorerror'
-);
+const getNodesAndText = treeModelTestUtils.getNodesAndText;
 
 describe( 'Batch', () => {
-	let Document, Position, Range, Element, CKEditorError;
-
 	let doc, root, div, p, batch, chain;
-
-	before( () => {
-		Document = modules[ 'core/treemodel/document' ];
-		Position = modules[ 'core/treemodel/position' ];
-		Range = modules[ 'core/treemodel/range' ];
-		Element = modules[ 'core/treemodel/element' ];
-		CKEditorError = modules[ 'core/ckeditorerror' ];
-	} );
 
 	beforeEach( () => {
 		doc = new Document();

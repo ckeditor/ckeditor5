@@ -7,19 +7,10 @@
 
 'use strict';
 
-const modules = bender.amd.require(
-	'core/treemodel/document',
-	'core/treemodel/operation/nooperation'
-);
+import Document from '/ckeditor5/core/treemodel/document.js';
+import NoOperation from '/ckeditor5/core/treemodel/operation/nooperation.js';
 
 describe( 'NoOperation', () => {
-	let Document, NoOperation;
-
-	before( function() {
-		Document = modules[ 'core/treemodel/document' ];
-		NoOperation = modules[ 'core/treemodel/operation/nooperation' ];
-	} );
-
 	let noop, doc, root;
 
 	beforeEach( () => {

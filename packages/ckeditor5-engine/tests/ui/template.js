@@ -8,14 +8,12 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'core/ui/template' );
-let Template;
+import testUtils from '/tests/_utils/utils.js';
+import Template from '/ckeditor5/core/ui/template.js';
 
-bender.tools.createSinonSandbox();
+testUtils.createSinonSandbox();
 
 describe( 'Template', () => {
-	beforeEach( createClassReferences );
-
 	describe( 'constructor', () => {
 		it( 'accepts the definition', () => {
 			let def = {
@@ -75,8 +73,8 @@ describe( 'Template', () => {
 
 		describe( 'callback', () => {
 			it( 'works for attributes', () => {
-				let spy1 = bender.sinon.spy();
-				let spy2 = bender.sinon.spy();
+				let spy1 = testUtils.sinon.spy();
+				let spy2 = testUtils.sinon.spy();
 
 				let el = new Template( {
 					tag: 'p',
@@ -103,8 +101,8 @@ describe( 'Template', () => {
 			} );
 
 			it( 'works for "text" property', () => {
-				let spy1 = bender.sinon.spy();
-				let spy2 = bender.sinon.spy();
+				let spy1 = testUtils.sinon.spy();
+				let spy2 = testUtils.sinon.spy();
 
 				let el = new Template( {
 					tag: 'p',
@@ -128,10 +126,10 @@ describe( 'Template', () => {
 			} );
 
 			it( 'works for "on" property', () => {
-				let spy1 = bender.sinon.spy();
-				let spy2 = bender.sinon.spy();
-				let spy3 = bender.sinon.spy();
-				let spy4 = bender.sinon.spy();
+				let spy1 = testUtils.sinon.spy();
+				let spy2 = testUtils.sinon.spy();
+				let spy3 = testUtils.sinon.spy();
+				let spy4 = testUtils.sinon.spy();
 
 				let el = new Template( {
 					tag: 'p',
@@ -156,10 +154,10 @@ describe( 'Template', () => {
 			} );
 
 			it( 'works for "on" property with selectors', () => {
-				let spy1 = bender.sinon.spy();
-				let spy2 = bender.sinon.spy();
-				let spy3 = bender.sinon.spy();
-				let spy4 = bender.sinon.spy();
+				let spy1 = testUtils.sinon.spy();
+				let spy2 = testUtils.sinon.spy();
+				let spy3 = testUtils.sinon.spy();
+				let spy4 = testUtils.sinon.spy();
 
 				let el = new Template( {
 					tag: 'p',
@@ -194,7 +192,3 @@ describe( 'Template', () => {
 		} );
 	} );
 } );
-
-function createClassReferences() {
-	Template = modules[ 'core/ui/template' ];
-}

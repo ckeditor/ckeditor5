@@ -4,34 +4,18 @@
  */
 
 /* bender-tags: treemodel, operation */
-/* global describe, before, beforeEach, it, expect */
 
 'use strict';
 
-const modules = bender.amd.require(
-	'core/treemodel/document',
-	'core/treemodel/node',
-	'core/treemodel/nodelist',
-	'core/treemodel/operation/insertoperation',
-	'core/treemodel/operation/removeoperation',
-	'core/treemodel/position',
-	'core/treemodel/character',
-	'core/treemodel/nodelist'
-);
+import Document from '/ckeditor5/core/treemodel/document.js';
+import Node from '/ckeditor5/core/treemodel/node.js';
+import NodeList from '/ckeditor5/core/treemodel/nodelist.js';
+import InsertOperation from '/ckeditor5/core/treemodel/operation/insertoperation.js';
+import RemoveOperation from '/ckeditor5/core/treemodel/operation/removeoperation.js';
+import Position from '/ckeditor5/core/treemodel/position.js';
+import Character from '/ckeditor5/core/treemodel/character.js';
 
 describe( 'InsertOperation', () => {
-	let Document, Node, NodeList, InsertOperation, RemoveOperation, Position, Character;
-
-	before( () => {
-		Document = modules[ 'core/treemodel/document' ];
-		Node = modules[ 'core/treemodel/node' ];
-		NodeList = modules[ 'core/treemodel/nodelist' ];
-		InsertOperation = modules[ 'core/treemodel/operation/insertoperation' ];
-		RemoveOperation = modules[ 'core/treemodel/operation/removeoperation' ];
-		Position = modules[ 'core/treemodel/position' ];
-		Character = modules[ 'core/treemodel/character' ];
-	} );
-
 	let doc, root;
 
 	beforeEach( () => {

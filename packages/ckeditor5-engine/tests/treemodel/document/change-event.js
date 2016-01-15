@@ -7,39 +7,17 @@
 
 'use strict';
 
-const modules = bender.amd.require(
-	'core/treemodel/document',
-	'core/treemodel/element',
-	'core/treemodel/rootelement',
-	'core/treemodel/attribute',
-	'core/treemodel/position',
-	'core/treemodel/range',
-	'core/treemodel/operation/attributeoperation',
-	'core/treemodel/operation/insertoperation',
-	'core/treemodel/operation/moveoperation',
-	'core/treemodel/operation/reinsertoperation',
-	'core/treemodel/operation/removeoperation'
-);
+import Document from '/ckeditor5/core/treemodel/document.js';
+import Element from '/ckeditor5/core/treemodel/element.js';
+import Attribute from '/ckeditor5/core/treemodel/attribute.js';
+import Position from '/ckeditor5/core/treemodel/position.js';
+import Range from '/ckeditor5/core/treemodel/range.js';
+import AttributeOperation from '/ckeditor5/core/treemodel/operation/attributeoperation.js';
+import InsertOperation from '/ckeditor5/core/treemodel/operation/insertoperation.js';
+import MoveOperation from '/ckeditor5/core/treemodel/operation/moveoperation.js';
+import RemoveOperation from '/ckeditor5/core/treemodel/operation/removeoperation.js';
 
 describe( 'Document change event', () => {
-	let Document, RootElement, Element, Range, Position;
-	let AttributeOperation, InsertOperation, MoveOperation, ReinsertOperation, RemoveOperation, Attribute;
-
-	before( () => {
-		Document = modules[ 'core/treemodel/document' ];
-		Element = modules[ 'core/treemodel/element' ];
-		RootElement = modules[ 'core/treemodel/rootelement' ];
-		Attribute = modules[ 'core/treemodel/attribute' ];
-		Position = modules[ 'core/treemodel/position' ];
-		Range = modules[ 'core/treemodel/range' ];
-
-		InsertOperation = modules[ 'core/treemodel/operation/insertoperation' ];
-		AttributeOperation = modules[ 'core/treemodel/operation/attributeoperation' ];
-		MoveOperation = modules[ 'core/treemodel/operation/moveoperation' ];
-		ReinsertOperation = modules[ 'core/treemodel/operation/reinsertoperation' ];
-		RemoveOperation = modules[ 'core/treemodel/operation/removeoperation' ];
-	} );
-
 	let doc, root, graveyard, types, changes;
 
 	beforeEach( () => {

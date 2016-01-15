@@ -7,23 +7,12 @@
 
 'use strict';
 
-const modules = bender.amd.require(
-	'core/treemodel/nodelist',
-	'core/treemodel/character',
-	'core/treemodel/text',
-	'core/treemodel/attribute'
-);
+import NodeList from '/ckeditor5/core/treemodel/nodelist.js';
+import Character from '/ckeditor5/core/treemodel/character.js';
+import Text from '/ckeditor5/core/treemodel/text.js';
+import Attribute from '/ckeditor5/core/treemodel/attribute.js';
 
 describe( 'NodeList', () => {
-	let NodeList, Character, Text, Attribute;
-
-	before( () => {
-		NodeList = modules[ 'core/treemodel/nodelist' ];
-		Character = modules[ 'core/treemodel/character' ];
-		Text = modules[ 'core/treemodel/text' ];
-		Attribute = modules[ 'core/treemodel/attribute' ];
-	} );
-
 	describe( 'constructor', () => {
 		it( 'should change array of strings into a set of nodes', () => {
 			let nodeList = new NodeList( [ 'foo', new Character( 'x' ), 'bar' ] );
