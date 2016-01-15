@@ -42,9 +42,9 @@ describe( 'Element', () => {
 
 			expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
 			expect( element.getChildCount() ).to.equal( 3 );
-			expect( element.getChild( 0 ) ).to.have.property( 'text' ).that.equals( 'f' );
-			expect( element.getChild( 1 ) ).to.have.property( 'text' ).that.equals( 'o' );
-			expect( element.getChild( 2 ) ).to.have.property( 'text' ).that.equals( 'o' );
+			expect( element.getChild( 0 ) ).to.have.property( 'character' ).that.equals( 'f' );
+			expect( element.getChild( 1 ) ).to.have.property( 'character' ).that.equals( 'o' );
+			expect( element.getChild( 2 ) ).to.have.property( 'character' ).that.equals( 'o' );
 		} );
 	} );
 
@@ -55,11 +55,11 @@ describe( 'Element', () => {
 
 			expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
 			expect( element.getChildCount() ).to.equal( 5 );
-			expect( element.getChild( 0 ) ).to.have.property( 'text' ).that.equals( 'x' );
-			expect( element.getChild( 1 ) ).to.have.property( 'text' ).that.equals( 'f' );
-			expect( element.getChild( 2 ) ).to.have.property( 'text' ).that.equals( 'o' );
-			expect( element.getChild( 3 ) ).to.have.property( 'text' ).that.equals( 'o' );
-			expect( element.getChild( 4 ) ).to.have.property( 'text' ).that.equals( 'y' );
+			expect( element.getChild( 0 ) ).to.have.property( 'character' ).that.equals( 'x' );
+			expect( element.getChild( 1 ) ).to.have.property( 'character' ).that.equals( 'f' );
+			expect( element.getChild( 2 ) ).to.have.property( 'character' ).that.equals( 'o' );
+			expect( element.getChild( 3 ) ).to.have.property( 'character' ).that.equals( 'o' );
+			expect( element.getChild( 4 ) ).to.have.property( 'character' ).that.equals( 'y' );
 		} );
 	} );
 
@@ -69,16 +69,16 @@ describe( 'Element', () => {
 			let removed = element.removeChildren( 2, 3 );
 
 			expect( element.getChildCount() ).to.equal( 3 );
-			expect( element.getChild( 0 ) ).to.have.property( 'text' ).that.equals( 'f' );
-			expect( element.getChild( 1 ) ).to.have.property( 'text' ).that.equals( 'o' );
-			expect( element.getChild( 2 ) ).to.have.property( 'text' ).that.equals( 'r' );
+			expect( element.getChild( 0 ) ).to.have.property( 'character' ).that.equals( 'f' );
+			expect( element.getChild( 1 ) ).to.have.property( 'character' ).that.equals( 'o' );
+			expect( element.getChild( 2 ) ).to.have.property( 'character' ).that.equals( 'r' );
 
 			expect( removed ).to.be.instanceof( NodeList );
 			expect( removed.length ).to.equal( 3 );
 
-			expect( removed.get( 0 ).text ).to.equal( 'o' );
-			expect( removed.get( 1 ).text ).to.equal( 'b' );
-			expect( removed.get( 2 ).text ).to.equal( 'a' );
+			expect( removed.get( 0 ).character ).to.equal( 'o' );
+			expect( removed.get( 1 ).character ).to.equal( 'b' );
+			expect( removed.get( 2 ).character ).to.equal( 'a' );
 		} );
 	} );
 

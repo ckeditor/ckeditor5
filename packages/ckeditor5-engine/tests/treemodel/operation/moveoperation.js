@@ -71,11 +71,11 @@ describe( 'MoveOperation', () => {
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 5 );
-		expect( root.getChild( 0 ).text ).to.equal( 'x' );
-		expect( root.getChild( 1 ).text ).to.equal( 'a' );
-		expect( root.getChild( 2 ).text ).to.equal( 'r' );
-		expect( root.getChild( 3 ).text ).to.equal( 'b' );
-		expect( root.getChild( 4 ).text ).to.equal( 'x' );
+		expect( root.getChild( 0 ).character ).to.equal( 'x' );
+		expect( root.getChild( 1 ).character ).to.equal( 'a' );
+		expect( root.getChild( 2 ).character ).to.equal( 'r' );
+		expect( root.getChild( 3 ).character ).to.equal( 'b' );
+		expect( root.getChild( 4 ).character ).to.equal( 'x' );
 	} );
 
 	it( 'should move position of children in one node forward', () => {
@@ -92,11 +92,11 @@ describe( 'MoveOperation', () => {
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 5 );
-		expect( root.getChild( 0 ).text ).to.equal( 'x' );
-		expect( root.getChild( 1 ).text ).to.equal( 'r' );
-		expect( root.getChild( 2 ).text ).to.equal( 'b' );
-		expect( root.getChild( 3 ).text ).to.equal( 'a' );
-		expect( root.getChild( 4 ).text ).to.equal( 'x' );
+		expect( root.getChild( 0 ).character ).to.equal( 'x' );
+		expect( root.getChild( 1 ).character ).to.equal( 'r' );
+		expect( root.getChild( 2 ).character ).to.equal( 'b' );
+		expect( root.getChild( 3 ).character ).to.equal( 'a' );
+		expect( root.getChild( 4 ).character ).to.equal( 'x' );
 	} );
 
 	it( 'should create a MoveOperation as a reverse', () => {
@@ -222,7 +222,7 @@ describe( 'MoveOperation', () => {
 
 		expect( root.getChildCount() ).to.equal( 4 );
 		expect( p.getChildCount() ).to.equal( 1 );
-		expect( p.getChild( 0 ).text ).to.equal( 'b' );
+		expect( p.getChild( 0 ).character ).to.equal( 'b' );
 	} );
 
 	it( 'should create MoveOperation with the same parameters when cloned', () => {

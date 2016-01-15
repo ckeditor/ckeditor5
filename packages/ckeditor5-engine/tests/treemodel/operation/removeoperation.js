@@ -55,11 +55,11 @@ describe( 'RemoveOperation', () => {
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 4 );
-		expect( root.getChild( 2 ).text ).to.equal( 'a' );
+		expect( root.getChild( 2 ).character ).to.equal( 'a' );
 
 		expect( graveyard.getChildCount() ).to.equal( 2 );
-		expect( graveyard.getChild( 0 ).text ).to.equal( 'z' );
-		expect( graveyard.getChild( 1 ).text ).to.equal( 'b' );
+		expect( graveyard.getChild( 0 ).character ).to.equal( 'z' );
+		expect( graveyard.getChild( 1 ).character ).to.equal( 'b' );
 	} );
 
 	it( 'should create RemoveOperation with same parameters when cloned', () => {
@@ -102,8 +102,8 @@ describe( 'RemoveOperation', () => {
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.getChildCount() ).to.equal( 3 );
-		expect( root.getChild( 0 ).text ).to.equal( 'b' );
-		expect( root.getChild( 1 ).text ).to.equal( 'a' );
-		expect( root.getChild( 2 ).text ).to.equal( 'r' );
+		expect( root.getChild( 0 ).character ).to.equal( 'b' );
+		expect( root.getChild( 1 ).character ).to.equal( 'a' );
+		expect( root.getChild( 2 ).character ).to.equal( 'r' );
 	} );
 } );

@@ -76,8 +76,8 @@ describe( 'ReinsertOperation', () => {
 		expect( root.getChildCount() ).to.equal( 0 );
 		expect( graveyard.getChildCount() ).to.equal( 3 );
 
-		expect( graveyard.getChild( 0 ).text ).to.equal( 'b' );
-		expect( graveyard.getChild( 1 ).text ).to.equal( 'a' );
-		expect( graveyard.getChild( 2 ).text ).to.equal( 'r' );
+		expect( graveyard.getChild( 0 ).character ).to.equal( 'b' );
+		expect( graveyard.getChild( 1 ).character ).to.equal( 'a' );
+		expect( graveyard.getChild( 2 ).character ).to.equal( 'r' );
 	} );
 } );

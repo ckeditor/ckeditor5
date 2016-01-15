@@ -208,9 +208,9 @@ describe( 'Range', () => {
 			let nodes = Array.from( range.getAllNodes() );
 
 			expect( nodes.length ).to.equal( 3 );
-			expect( nodes[ 0 ].text ).to.equal( 'b' );
+			expect( nodes[ 0 ].character ).to.equal( 'b' );
 			expect( nodes[ 1 ] ).to.equal( e2 );
-			expect( nodes[ 2 ].text ).to.equal( 'x' );
+			expect( nodes[ 2 ].character ).to.equal( 'x' );
 		} );
 
 		it( 'should merge characters with same attributes', () => {
@@ -510,7 +510,7 @@ describe( 'Range', () => {
 
 	function mapNodesToNames( nodes ) {
 		return nodes.map( ( node ) => {
-			return ( node instanceof Element ) ? 'E:' + node.name : 'T:' + node.text;
+			return ( node instanceof Element ) ? 'E:' + node.name : 'T:' + ( node.text || node.character );
 		} );
 	}
 

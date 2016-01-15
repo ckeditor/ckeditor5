@@ -27,11 +27,11 @@ describe( 'Batch', () => {
 			doc.batch().unwrap( p );
 
 			expect( root.getChildCount() ).to.equal( 5 );
-			expect( root.getChild( 0 ).text ).to.equal( 'a' );
-			expect( root.getChild( 1 ).text ).to.equal( 'x' );
-			expect( root.getChild( 2 ).text ).to.equal( 'y' );
-			expect( root.getChild( 3 ).text ).to.equal( 'z' );
-			expect( root.getChild( 4 ).text ).to.equal( 'b' );
+			expect( root.getChild( 0 ).character ).to.equal( 'a' );
+			expect( root.getChild( 1 ).character ).to.equal( 'x' );
+			expect( root.getChild( 2 ).character ).to.equal( 'y' );
+			expect( root.getChild( 3 ).character ).to.equal( 'z' );
+			expect( root.getChild( 4 ).character ).to.equal( 'b' );
 		} );
 
 		it( 'should throw if element to unwrap has no parent', () => {

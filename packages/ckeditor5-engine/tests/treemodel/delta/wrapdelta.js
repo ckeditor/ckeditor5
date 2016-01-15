@@ -31,26 +31,26 @@ describe( 'Batch', () => {
 			doc.batch().wrap( range, p );
 
 			expect( root.getChildCount() ).to.equal( 5 );
-			expect( root.getChild( 0 ).text ).to.equal( 'f' );
-			expect( root.getChild( 1 ).text ).to.equal( 'o' );
+			expect( root.getChild( 0 ).character ).to.equal( 'f' );
+			expect( root.getChild( 1 ).character ).to.equal( 'o' );
 			expect( root.getChild( 2 ) ).to.equal( p );
-			expect( p.getChild( 0 ).text ).to.equal( 'o' );
-			expect( p.getChild( 1 ).text ).to.equal( 'b' );
-			expect( root.getChild( 3 ).text ).to.equal( 'a' );
-			expect( root.getChild( 4 ).text ).to.equal( 'r' );
+			expect( p.getChild( 0 ).character ).to.equal( 'o' );
+			expect( p.getChild( 1 ).character ).to.equal( 'b' );
+			expect( root.getChild( 3 ).character ).to.equal( 'a' );
+			expect( root.getChild( 4 ).character ).to.equal( 'r' );
 		} );
 
 		it( 'should wrap flat range with an element of given name', () => {
 			doc.batch().wrap( range, 'p' );
 
 			expect( root.getChildCount() ).to.equal( 5 );
-			expect( root.getChild( 0 ).text ).to.equal( 'f' );
-			expect( root.getChild( 1 ).text ).to.equal( 'o' );
+			expect( root.getChild( 0 ).character ).to.equal( 'f' );
+			expect( root.getChild( 1 ).character ).to.equal( 'o' );
 			expect( root.getChild( 2 ).name ).to.equal( 'p' );
-			expect( root.getChild( 2 ).getChild( 0 ).text ).to.equal( 'o' );
-			expect( root.getChild( 2 ).getChild( 1 ).text ).to.equal( 'b' );
-			expect( root.getChild( 3 ).text ).to.equal( 'a' );
-			expect( root.getChild( 4 ).text ).to.equal( 'r' );
+			expect( root.getChild( 2 ).getChild( 0 ).character ).to.equal( 'o' );
+			expect( root.getChild( 2 ).getChild( 1 ).character ).to.equal( 'b' );
+			expect( root.getChild( 3 ).character ).to.equal( 'a' );
+			expect( root.getChild( 4 ).character ).to.equal( 'r' );
 		} );
 
 		it( 'should throw if range to wrap is not flat', () => {

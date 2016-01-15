@@ -206,9 +206,9 @@ describe( 'position', () => {
 		expect( new Position( root, [ 1, 2 ] ).nodeBefore ).to.equal( li2 );
 
 		expect( new Position( root, [ 1, 0, 0 ] ).nodeBefore ).to.be.null;
-		expect( new Position( root, [ 1, 0, 1 ] ).nodeBefore.text ).to.equal( 'f' );
-		expect( new Position( root, [ 1, 0, 2 ] ).nodeBefore.text ).to.equal( 'o' );
-		expect( new Position( root, [ 1, 0, 3 ] ).nodeBefore.text ).to.equal( 'z' );
+		expect( new Position( root, [ 1, 0, 1 ] ).nodeBefore.character ).to.equal( 'f' );
+		expect( new Position( root, [ 1, 0, 2 ] ).nodeBefore.character ).to.equal( 'o' );
+		expect( new Position( root, [ 1, 0, 3 ] ).nodeBefore.character ).to.equal( 'z' );
 	} );
 
 	it( 'should have nodeAfter', () => {
@@ -222,9 +222,9 @@ describe( 'position', () => {
 		expect( new Position( root, [ 1, 1 ] ).nodeAfter ).to.equal( li2 );
 		expect( new Position( root, [ 1, 2 ] ).nodeAfter ).to.be.null;
 
-		expect( new Position( root, [ 1, 0, 0 ] ).nodeAfter.text ).to.equal( 'f' );
-		expect( new Position( root, [ 1, 0, 1 ] ).nodeAfter.text ).to.equal( 'o' );
-		expect( new Position( root, [ 1, 0, 2 ] ).nodeAfter.text ).to.equal( 'z' );
+		expect( new Position( root, [ 1, 0, 0 ] ).nodeAfter.character ).to.equal( 'f' );
+		expect( new Position( root, [ 1, 0, 1 ] ).nodeAfter.character ).to.equal( 'o' );
+		expect( new Position( root, [ 1, 0, 2 ] ).nodeAfter.character ).to.equal( 'z' );
 		expect( new Position( root, [ 1, 0, 3 ] ).nodeAfter ).to.be.null;
 	} );
 

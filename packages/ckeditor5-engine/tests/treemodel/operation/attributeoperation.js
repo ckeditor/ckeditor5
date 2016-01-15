@@ -364,6 +364,7 @@ describe( 'AttributeOperation', () => {
 	it( 'should merge characters in node list', () => {
 		let attrA = new Attribute( 'foo', 'a' );
 		let attrB = new Attribute( 'foo', 'b' );
+
 		root.insertChildren( 0, new Text( 'abc', [ attrA ] ) );
 		root.insertChildren( 3, new Text( 'xyz', [ attrB ] ) );
 

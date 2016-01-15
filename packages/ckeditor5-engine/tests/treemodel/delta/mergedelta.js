@@ -35,12 +35,12 @@ describe( 'Batch', () => {
 			expect( root.getChild( 0 ).getChildCount() ).to.equal( 6 );
 			expect( root.getChild( 0 ).attrs.size ).to.equal( 1 );
 			expect( root.getChild( 0 ).attrs.getValue( 'key1' ) ).to.equal( 'value1' );
-			expect( root.getChild( 0 ).getChild( 0 ).text ).to.equal( 'f' );
-			expect( root.getChild( 0 ).getChild( 1 ).text ).to.equal( 'o' );
-			expect( root.getChild( 0 ).getChild( 2 ).text ).to.equal( 'o' );
-			expect( root.getChild( 0 ).getChild( 3 ).text ).to.equal( 'b' );
-			expect( root.getChild( 0 ).getChild( 4 ).text ).to.equal( 'a' );
-			expect( root.getChild( 0 ).getChild( 5 ).text ).to.equal( 'r' );
+			expect( root.getChild( 0 ).getChild( 0 ).character ).to.equal( 'f' );
+			expect( root.getChild( 0 ).getChild( 1 ).character ).to.equal( 'o' );
+			expect( root.getChild( 0 ).getChild( 2 ).character ).to.equal( 'o' );
+			expect( root.getChild( 0 ).getChild( 3 ).character ).to.equal( 'b' );
+			expect( root.getChild( 0 ).getChild( 4 ).character ).to.equal( 'a' );
+			expect( root.getChild( 0 ).getChild( 5 ).character ).to.equal( 'r' );
 		} );
 
 		it( 'should throw if there is no element after', () => {

@@ -44,7 +44,7 @@ describe( 'InsertOperation', () => {
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 1 );
-		expect( root.getChild( 0 ).text ).to.equal( 'x' );
+		expect( root.getChild( 0 ).character ).to.equal( 'x' );
 	} );
 
 	it( 'should insert set of nodes', () => {
@@ -58,9 +58,9 @@ describe( 'InsertOperation', () => {
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 3 );
-		expect( root.getChild( 0 ).text ).to.equal( 'b' );
-		expect( root.getChild( 1 ).text ).to.equal( 'a' );
-		expect( root.getChild( 2 ).text ).to.equal( 'r' );
+		expect( root.getChild( 0 ).character ).to.equal( 'b' );
+		expect( root.getChild( 1 ).character ).to.equal( 'a' );
+		expect( root.getChild( 2 ).character ).to.equal( 'r' );
 	} );
 
 	it( 'should insert between existing nodes', () => {
@@ -76,11 +76,11 @@ describe( 'InsertOperation', () => {
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 5 );
-		expect( root.getChild( 0 ).text ).to.equal( 'x' );
-		expect( root.getChild( 1 ).text ).to.equal( 'b' );
-		expect( root.getChild( 2 ).text ).to.equal( 'a' );
-		expect( root.getChild( 3 ).text ).to.equal( 'r' );
-		expect( root.getChild( 4 ).text ).to.equal( 'y' );
+		expect( root.getChild( 0 ).character ).to.equal( 'x' );
+		expect( root.getChild( 1 ).character ).to.equal( 'b' );
+		expect( root.getChild( 2 ).character ).to.equal( 'a' );
+		expect( root.getChild( 3 ).character ).to.equal( 'r' );
+		expect( root.getChild( 4 ).character ).to.equal( 'y' );
 	} );
 
 	it( 'should insert text', () => {
@@ -94,13 +94,13 @@ describe( 'InsertOperation', () => {
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 7 );
-		expect( root.getChild( 0 ).text ).to.equal( 'f' );
-		expect( root.getChild( 1 ).text ).to.equal( 'o' );
-		expect( root.getChild( 2 ).text ).to.equal( 'o' );
-		expect( root.getChild( 3 ).text ).to.equal( 'x' );
-		expect( root.getChild( 4 ).text ).to.equal( 'b' );
-		expect( root.getChild( 5 ).text ).to.equal( 'a' );
-		expect( root.getChild( 6 ).text ).to.equal( 'r' );
+		expect( root.getChild( 0 ).character ).to.equal( 'f' );
+		expect( root.getChild( 1 ).character ).to.equal( 'o' );
+		expect( root.getChild( 2 ).character ).to.equal( 'o' );
+		expect( root.getChild( 3 ).character ).to.equal( 'x' );
+		expect( root.getChild( 4 ).character ).to.equal( 'b' );
+		expect( root.getChild( 5 ).character ).to.equal( 'a' );
+		expect( root.getChild( 6 ).character ).to.equal( 'r' );
 	} );
 
 	it( 'should create a RemoveOperation as a reverse', () => {

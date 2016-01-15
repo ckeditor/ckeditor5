@@ -37,7 +37,7 @@ describe( 'Batch', () => {
 	}
 
 	describe( 'change attribute on node', () => {
-		let node, text, textNode;
+		let node, text, char;
 
 		beforeEach( () => {
 			node = new Element( 'p', [ new Attribute( 'a', 1 ) ] );
@@ -45,7 +45,7 @@ describe( 'Batch', () => {
 
 			root.insertChildren( 0, [ node, text ] );
 
-			textNode = root.getChild( 1 );
+			char = root.getChild( 1 );
 		} );
 
 		describe( 'setAttr', () => {
@@ -62,13 +62,13 @@ describe( 'Batch', () => {
 			} );
 
 			it( 'should create the attribute on text node', () => {
-				batch.setAttr( 'b', 2, textNode );
+				batch.setAttr( 'b', 2, char );
 				expect( getOperationsCount() ).to.equal( 1 );
 				expect( root.getChild( 1 ).attrs.getValue( 'b' ) ).to.equal( 2 );
 			} );
 
 			it( 'should change the attribute of text node', () => {
-				batch.setAttr( 'a', 2, textNode );
+				batch.setAttr( 'a', 2, char );
 				expect( getOperationsCount() ).to.equal( 1 );
 				expect( root.getChild( 1 ).attrs.getValue( 'a' ) ).to.equal( 2 );
 			} );
@@ -93,7 +93,7 @@ describe( 'Batch', () => {
 			} );
 
 			it( 'should remove the attribute from character', () => {
-				batch.removeAttr( 'a', textNode );
+				batch.removeAttr( 'a', char );
 				expect( getOperationsCount() ).to.equal( 1 );
 				expect( root.getChild( 1 ).attrs.getValue( 'a' ) ).to.be.null;
 			} );

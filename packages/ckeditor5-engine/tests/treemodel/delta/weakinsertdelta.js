@@ -35,9 +35,9 @@ describe( 'Batch', () => {
 	describe( 'weakInsert', () => {
 		it( 'should insert given nodes at given position', () => {
 			expect( root.getChildCount() ).to.equal( 6 );
-			expect( root.getChild( 2 ).text ).to.equal( 'x' );
-			expect( root.getChild( 3 ).text ).to.equal( 'y' );
-			expect( root.getChild( 4 ).text ).to.equal( 'z' );
+			expect( root.getChild( 2 ).character ).to.equal( 'x' );
+			expect( root.getChild( 3 ).character ).to.equal( 'y' );
+			expect( root.getChild( 4 ).character ).to.equal( 'z' );
 		} );
 
 		it( 'should set inserted nodes attributes to same as current selection attributes', () => {
