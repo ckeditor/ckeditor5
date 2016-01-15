@@ -7,8 +7,8 @@
 
 import Operation from './operation.js';
 import Range from '../range.js';
+import TextFragment from '../textfragment.js';
 import CKEditorError from '../../ckeditorerror.js';
-import TextNode from '../textnode.js';
 
 /**
  * Operation to change nodes' attribute. Using this class you can add, remove or change value of the attribute.
@@ -99,8 +99,8 @@ export default class AttributeOperation extends Operation {
 		// Remove or change.
 		if ( oldAttr !== null ) {
 			for ( let node of this.range.getAllNodes( true ) ) {
-				if ( node instanceof TextNode ) {
-					node = node._textItem;
+				if ( node instanceof TextFragment ) {
+					node = node.first._nodeListText;
 				}
 
 				if ( !node.attrs.has( oldAttr ) ) {
@@ -126,8 +126,8 @@ export default class AttributeOperation extends Operation {
 		// Insert or change.
 		if ( newAttr !== null ) {
 			for ( let node of this.range.getAllNodes( true ) ) {
-				if ( node instanceof TextNode ) {
-					node = node._textItem;
+				if ( node instanceof TextFragment ) {
+					node = node.first._nodeListText;
 				}
 
 				if ( oldAttr === null && node.attrs.has( newAttr.key ) ) {

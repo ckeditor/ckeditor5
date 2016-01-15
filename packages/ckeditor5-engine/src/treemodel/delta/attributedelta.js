@@ -10,7 +10,7 @@ import register from './register.js';
 import AttributeOperation from '../operation/attributeoperation.js';
 import Position from '../position.js';
 import Range from '../range.js';
-import PositionIterator from '../positioniterator.js';
+import TreeWalker from '../treewalker.js';
 import Attribute from '../attribute.js';
 import Element from '../element.js';
 
@@ -115,8 +115,8 @@ function changeRange( doc, delta, key, value, range ) {
 	while ( !next.done ) {
 		// We check values only when the range contains given element, that is when the iterator "enters" the element.
 		// To prevent double-checking or not needed checking, we filter-out iterator values for ELEMENT_LEAVE position.
-		if ( next.value.type != PositionIterator.ELEMENT_LEAVE ) {
-			valueAfter = next.value.node.attrs.getValue( key );
+		if ( next.value.type != TreeWalker.ELEMENT_LEAVE ) {
+			valueAfter = next.value.item.attrs.getValue( key );
 
 			// At the first run of the iterator the position in undefined. We also do not have a valueBefore, but
 			// because valueAfter may be null, valueBefore may be equal valueAfter ( undefined == null ).
