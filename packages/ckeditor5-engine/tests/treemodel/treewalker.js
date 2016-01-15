@@ -11,9 +11,10 @@ import Document from '/ckeditor5/core/treemodel/document.js';
 import Attribute from '/ckeditor5/core/treemodel/attribute.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
 import Text from '/ckeditor5/core/treemodel/text.js';
-import PositionIterator from '/ckeditor5/core/treemodel/positioniterator.js';
+import TreeWalker from '/ckeditor5/core/treemodel/treewalker.js';
 import Position from '/ckeditor5/core/treemodel/position.js';
 import Range from '/ckeditor5/core/treemodel/range.js';
+import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
 describe( 'range iterator', () => {
 	let ELEMENT_ENTER, ELEMENT_LEAVE, CHARACTER, TEXT;
@@ -53,46 +54,46 @@ describe( 'range iterator', () => {
 		root.insertChildren( 0, [ img1, paragraph ] );
 
 		expectedItems = [
-			{ type: ELEMENT_ENTER, node: img1 },
-			{ type: ELEMENT_LEAVE, node: img1 },
-			{ type: ELEMENT_ENTER, node: paragraph },
-			{ type: TEXT, text: 'b', attrs: [ attrBoldTrue ] },
-			{ type: TEXT, text: 'a', attrs: [ attrBoldTrue ] },
-			{ type: TEXT, text: 'r', attrs: [] },
-			{ type: ELEMENT_ENTER, node: img2 },
-			{ type: ELEMENT_LEAVE, node: img2 },
-			{ type: TEXT, text: 'x', attrs: [] },
-			{ type: ELEMENT_LEAVE, node: paragraph }
+			{ type: ELEMENT_ENTER, item: img1 },
+			{ type: ELEMENT_LEAVE, item: img1 },
+			{ type: ELEMENT_ENTER, item: paragraph },
+			{ type: CHARACTER, text: 'b', attrs: [ attrBoldTrue ] },
+			{ type: CHARACTER, text: 'a', attrs: [ attrBoldTrue ] },
+			{ type: CHARACTER, text: 'r', attrs: [] },
+			{ type: ELEMENT_ENTER, item: img2 },
+			{ type: ELEMENT_LEAVE, item: img2 },
+			{ type: CHARACTER, text: 'x', attrs: [] },
+			{ type: ELEMENT_LEAVE, item: paragraph }
 		];
 
 		expectedItemsMerged = [
-			{ type: ELEMENT_ENTER, node: img1 },
-			{ type: ELEMENT_LEAVE, node: img1 },
-			{ type: ELEMENT_ENTER, node: paragraph },
+			{ type: ELEMENT_ENTER, item: img1 },
+			{ type: ELEMENT_LEAVE, item: img1 },
+			{ type: ELEMENT_ENTER, item: paragraph },
 			{ type: TEXT, text: 'ba', attrs: [ attrBoldTrue ] },
 			{ type: TEXT, text: 'r', attrs: [] },
-			{ type: ELEMENT_ENTER, node: img2 },
-			{ type: ELEMENT_LEAVE, node: img2 },
+			{ type: ELEMENT_ENTER, item: img2 },
+			{ type: ELEMENT_LEAVE, item: img2 },
 			{ type: TEXT, text: 'x', attrs: [] },
-			{ type: ELEMENT_LEAVE, node: paragraph }
+			{ type: ELEMENT_LEAVE, item: paragraph }
 		];
 	} );
 
 	function expectItem( item, expected ) {
 		expect( item.done ).to.be.false;
 
-		if ( item.value.type == TEXT ) {
-			let text = item.value.node.text;
+		if ( item.value.type == TEXT || item.value.type == CHARACTER ) {
+			let text = item.value.item.text || item.value.item.character;
 
 			expect( text ).to.equal( expected.text );
-			expect( Array.from( item.value.node.attrs ) ).to.deep.equal( expected.attrs );
+			expect( Array.from( item.value.item.attrs ) ).to.deep.equal( expected.attrs );
 		} else {
 			expect( item.value ).to.deep.equal( expected );
 		}
 	}
 
 	it( 'should return next position', () => {
-		let iterator = new PositionIterator( new Position( root, [ 0 ] ) ); // beginning of root
+		let iterator = new TreeWalker( { position: new Position( root, [ 0 ] ) } ); // beginning of root
 		let i, len;
 
 		for ( i = 0, len = expectedItems.length; i < len; i++ ) {
@@ -102,7 +103,7 @@ describe( 'range iterator', () => {
 	} );
 
 	it( 'should return previous position', () => {
-		let iterator = new PositionIterator( new Position( root, [ 2 ] ) ); // ending of root
+		let iterator = new TreeWalker( { position: new Position( root, [ 2 ] ) } ); // ending of root
 
 		for ( let i = expectedItems.length - 1; i >= 0; i-- ) {
 			expectItem( iterator.previous(), expectedItems[ i ] );
@@ -114,7 +115,7 @@ describe( 'range iterator', () => {
 		let start = new Position( root, [ 1, 0 ] ); // p, 0
 		let end = new Position( root, [ 1, 3, 0 ] ); // img, 0
 
-		let iterator = new PositionIterator( new Range( start, end ) );
+		let iterator = new TreeWalker( { boundaries: new Range( start, end ) } );
 
 		let i, len;
 
@@ -128,7 +129,7 @@ describe( 'range iterator', () => {
 		let start = new Position( root, [ 1, 0 ] ); // p, 0
 		let end = new Position( root, [ 1, 3, 0 ] ); // img, 0
 
-		let iterator = new PositionIterator( new Range( start, end ), end );
+		let iterator = new TreeWalker( { boundaries: new Range( start, end ), position: end } );
 
 		let i, len;
 
@@ -143,7 +144,7 @@ describe( 'range iterator', () => {
 		let end = new Position( root, [ 1, 4 ] );
 		let range = new Range( start, end );
 
-		let iterator = new PositionIterator( range, range.start, true );
+		let iterator = new TreeWalker( { boundaries: range, position: range.start, mergeCharacters: true } );
 		let i;
 
 		for ( i = 2; i <= 6; i++ ) {
@@ -157,7 +158,7 @@ describe( 'range iterator', () => {
 		let end = new Position( root, [ 1, 4 ] );
 		let range = new Range( start, end );
 
-		let iterator = new PositionIterator( range, range.end, true );
+		let iterator = new TreeWalker( { boundaries: range, position: range.end, mergeCharacters: true } );
 
 		for ( let i = 6; i >= 2; i-- ) {
 			expectItem( iterator.previous(), expectedItemsMerged[ i ] );
@@ -170,11 +171,11 @@ describe( 'range iterator', () => {
 		let end = new Position( root, [ 1, 1 ] );
 		let range = new Range( start, end );
 
-		let iterator = new PositionIterator( range, range.start, true );
+		let iterator = new TreeWalker( { boundaries: range, position: range.start, mergeCharacters: true } );
 		let val = iterator.next();
 
 		expect( val.done ).to.be.false;
-		expect( val.value.node.text ).to.equal( 'b' );
+		expect( val.value.item.text ).to.equal( 'b' );
 
 		val = iterator.next();
 		expect( val.done ).to.be.true;
@@ -185,13 +186,27 @@ describe( 'range iterator', () => {
 		let end = new Position( root, [ 1, 2 ] );
 		let range = new Range( start, end );
 
-		let iterator = new PositionIterator( range, range.end, true );
+		let iterator = new TreeWalker( { boundaries: range, position: range.end, mergeCharacters: true } );
 		let val = iterator.previous();
 
 		expect( val.done ).to.be.false;
-		expect( val.value.node.text ).to.equal( 'a' );
+		expect( val.value.item.text ).to.equal( 'a' );
 
 		val = iterator.previous();
 		expect( val.done ).to.be.true;
+	} );
+
+	it( 'should throw if neither boundaries nor starting position is set', () => {
+		expect( () => {
+			new TreeWalker();
+		} ).to.throw( CKEditorError, /^tree-walker-no-start-position/ );
+
+		expect( () => {
+			new TreeWalker( {} );
+		} ).to.throw( CKEditorError, /^tree-walker-no-start-position/ );
+
+		expect( () => {
+			new TreeWalker( { mergeCharacters: true } );
+		} ).to.throw( CKEditorError, /^tree-walker-no-start-position/ );
 	} );
 } );
