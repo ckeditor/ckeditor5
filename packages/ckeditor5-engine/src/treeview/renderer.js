@@ -97,13 +97,13 @@ export default class Renderer {
 			let i = 0;
 
 			for ( let action of actions ) {
-				if ( action === 'EQUAL' ) {
-					i++;
-				} else if ( action === 'INSERT' ) {
+				if ( action === 'INSERT' ) {
 					domElement.insertBefore( converter.viewToDom( viewChildren[ i ], domDocument ), domChildren[ i ] || null  );
 					i++;
 				} else if ( action === 'DELETE' ) {
 					domElement.removeChild( domChildren[ i ] );
+				} else { // 'EQUAL'
+					i++;
 				}
 			}
 		}

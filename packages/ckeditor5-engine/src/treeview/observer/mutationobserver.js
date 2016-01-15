@@ -6,8 +6,7 @@
 'use strict';
 
 import Observer from './observer.js';
-import ViewElement from '../element.js';
-import ViewText from '../text.js';
+import converter from '../converter.js';
 import objectUtils from '../../lib/lodash/object.js';
 import EmitterMixin from '../../emittermixin.js';
 
@@ -55,7 +54,7 @@ export default class MutationObserver extends Observer {
 
 		for ( let mutation of domMutations ) {
 			if ( mutation.type === 'childList' ) {
-				const element = ViewElement.getCorespondingView( mutation.target );
+				const element = converter.getCorespondingView( mutation.target );
 
 				if ( element ) {
 					mutatedElements.add( element );
@@ -65,7 +64,7 @@ export default class MutationObserver extends Observer {
 
 		for ( let mutation of domMutations ) {
 			if ( mutation.type === 'characterData' ) {
-				const text = ViewText.getCorespondingView( mutation.target );
+				const text = converter.getCorespondingView( mutation.target );
 
 				if ( text && !mutatedElements.has( text.parent ) ) {
 					mutatedTexts.set( text, {
@@ -93,7 +92,7 @@ export default class MutationObserver extends Observer {
 			const newViewChildren = [];
 
 			for ( let i = 0; i < domChildren.length; i++ ) {
-				newViewChildren.push( ViewElement.createFromDom( domChildren[ i ] ) );
+				newViewChildren.push( converter.createFromDom( domChildren[ i ] ) );
 			}
 
 			viewElement.markToSync( 'CHILDREN_NEED_UPDATE' );

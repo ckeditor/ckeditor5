@@ -12,55 +12,9 @@ const _domToViewMapping = new WeakMap();
 const _viewToDomMapping = new WeakMap();
 
 const converter = {
-	viewToDom: function( view, domDocument ) {
-		if ( view instanceof ViewText ) {
-			return domDocument.createTextNode( view.getText() );
-		} else {
-			if ( converter.getCorespondingDom( view ) ) {
-				return converter.getCorespondingDom( view );
-			}
-
-			const domElement = domDocument.createElement( view.name );
-			converter.bindElement( view, domElement );
-
-			for ( let key of view.getAttrKeys() ) {
-				domElement.setAttribute( key, view.getAttr( key ) );
-			}
-
-			for ( let childView of view.getChildren() ) {
-				domElement.appendChild( converter.viewToDom( childView ) );
-			}
-
-			return domElement;
-		}
-	},
-
-	// Note that created elements will not have coresponding DOM elements created it these did not exist before.
-	domToView: function( domElement ) {
-		let viewElement = converter.getCorespondingView( domElement );
-
-		if ( viewElement ) {
-			return viewElement;
-		}
-
-		if ( domElement instanceof Text ) {
-			return new ViewText( domElement.data );
-		} else {
-			viewElement = new Element( domElement.tagName.toLowerCase() );
-			const attrs = domElement.attributes;
-
-			for ( let i = attrs.length - 1; i >= 0; i-- ) {
-				viewElement.setAttr( attrs[ i ].name, attrs[ i ].value );
-			}
-
-			for ( let i = 0, len = domElement.childNodes.length; i < len; i++ ) {
-				let domChild = domElement.childNodes[ i ];
-
-				viewElement.appendChildren( converter.domToView( domChild ) );
-			}
-
-			return viewElement;
-		}
+	bindElements: function( domElement, viewElement ) {
+		_domToViewMapping.set( domElement, viewElement );
+		_viewToDomMapping.set( viewElement, domElement );
 	},
 
 	compareNodes: function( domNode, viewNode ) {
@@ -77,11 +31,71 @@ const converter = {
 		return false;
 	},
 
+	cloneDomAttrs: function( domElement, viewElement ) {
+		for ( let i = domElement.attributes.length - 1; i >= 0; i-- ) {
+			let attr = domElement.attributes[ i ];
+			viewElement.setAttr( attr.name, attr.value );
+		}
+	},
+
+	// viewToDom do bind elements
+	viewToDom: function( viewNode, domDocument ) {
+		if ( viewNode instanceof ViewText ) {
+			return domDocument.createTextNode( viewNode.getText() );
+		} else {
+			if ( converter.getCorespondingDom( viewNode ) ) {
+				return converter.getCorespondingDom( viewNode );
+			}
+
+			const domElement = domDocument.createElement( viewNode.name );
+			converter.bindElements( domElement, viewNode );
+
+			for ( let key of viewNode.getAttrKeys() ) {
+				domElement.setAttribute( key, viewNode.getAttr( key ) );
+			}
+
+			for ( let childView of viewNode.getChildren() ) {
+				domElement.appendChild( converter.viewToDom( childView, domDocument ) );
+			}
+
+			return domElement;
+		}
+	},
+
+	// Note that created elements will not have coresponding DOM elements created it these did not exist before.
+	// domToView do not bind elements
+	domToView: function( domElement ) {
+		let viewElement = converter.getCorespondingView( domElement );
+
+		if ( viewElement ) {
+			return viewElement;
+		}
+
+		if ( domElement instanceof Text ) {
+			return new ViewText( domElement.data );
+		} else {
+			viewElement = new ViewElement( domElement.tagName.toLowerCase() );
+			const attrs = domElement.attributes;
+
+			for ( let i = attrs.length - 1; i >= 0; i-- ) {
+				viewElement.setAttr( attrs[ i ].name, attrs[ i ].value );
+			}
+
+			for ( let i = 0, len = domElement.childNodes.length; i < len; i++ ) {
+				let domChild = domElement.childNodes[ i ];
+
+				viewElement.appendChildren( converter.domToView( domChild ) );
+			}
+
+			return viewElement;
+		}
+	},
+
 	getCorespondingView: function( domNode ) {
 		if ( domNode instanceof HTMLElement ) {
-			return domNode.getCorespondingViewElement( domNode );
+			return converter.getCorespondingViewElement( domNode );
 		} else {
-			return domNode.getCorespondingViewText( domNode );
+			return converter.getCorespondingViewText( domNode );
 		}
 	},
 
@@ -94,13 +108,13 @@ const converter = {
 		const previousSibling = domText.previousSibling;
 
 		if ( previousSibling ) {
-			const viewElement = Element.getCorespondingView( previousSibling );
+			const viewElement = converter.getCorespondingView( previousSibling );
 
 			if ( viewElement ) {
 				return viewElement.getNextSibling();
 			}
 		} else {
-			const viewElement = Element.getCorespondingView( domText.parentElement );
+			const viewElement = converter.getCorespondingView( domText.parentElement );
 
 			if ( viewElement ) {
 				return viewElement.getChild( 0 );
@@ -135,18 +149,6 @@ const converter = {
 
 		return null;
 	},
-
-	bindElement: function( viewElement, domElement ) {
-		_domToViewMapping.set( domElement, viewElement );
-		_viewToDomMapping.set( viewElement, domElement );
-	},
-
-	cloneDomAttrs: function( domElement, viewElement ) {
-		for ( let i = domElement.attributes.length - 1; i >= 0; i-- ) {
-			let attr = domElement.attributes[ i ];
-			viewElement.setAttr( attr.name, attr.value );
-		}
-	}
 };
 
 export default converter;

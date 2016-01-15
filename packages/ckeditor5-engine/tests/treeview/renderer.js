@@ -36,7 +36,7 @@ describe( 'Renderer', () => {
 			viewNode = new ViewElement( 'p' );
 
 			const domNode = document.createElement( 'p' );
-			converter.bindElement( viewNode, domNode );
+			converter.bindElements( domNode, viewNode );
 			viewNode.appendChildren( new ViewText( 'foo' ) );
 
 			renderer.markedTexts.clear();
@@ -108,7 +108,7 @@ describe( 'Renderer', () => {
 			viewNode = new ViewElement( 'p' );
 			domNode = document.createElement( 'p' );
 
-			converter.bindElement( viewNode, domNode );
+			converter.bindElements( domNode, viewNode );
 
 			renderer.markedTexts.clear();
 			renderer.markedAttrs.clear();
@@ -148,6 +148,25 @@ describe( 'Renderer', () => {
 
 			expect( domNode.childNodes.length ).to.equal( 1 );
 			expect( domNode.childNodes[ 0 ].data ).to.equal( 'foo' );
+
+			expect( renderer.markedChildren.size ).to.equal( 0 );
+		} );
+
+		it( 'should remove children', () => {
+			viewNode.appendChildren( new ViewText( 'foo' ) );
+
+			renderer.markToSync( viewNode, 'CHILDREN_NEED_UPDATE' );
+			renderer.render();
+
+			expect( domNode.childNodes.length ).to.equal( 1 );
+			expect( domNode.childNodes[ 0 ].data ).to.equal( 'foo' );
+
+			viewNode.removeChildren( 0, 1 );
+
+			renderer.markToSync( viewNode, 'CHILDREN_NEED_UPDATE' );
+			renderer.render();
+
+			expect( domNode.childNodes.length ).to.equal( 0 );
 
 			expect( renderer.markedChildren.size ).to.equal( 0 );
 		} );
@@ -229,7 +248,7 @@ describe( 'Renderer', () => {
 			const domImg = document.createElement( 'img' );
 			domNode.appendChild( domImg );
 
-			converter.bindElement( viewImg, domImg );
+			converter.bindElements( domImg, viewImg );
 
 			renderer.markToSync( viewNode, 'CHILDREN_NEED_UPDATE' );
 			renderer.render();
