@@ -15,14 +15,13 @@
 	"globalstrict": true,
 
 	"globals": {
-		"bender": false,
-		"describe": false,
-		"it": false,
-		"before": false,
-		"beforeEach": false,
 		"after": false,
 		"afterEach": false,
+		"before": false,
+		"beforeEach": false,
+		"describe": false,
 		"expect": false,
+		"it": false,
 		"sinon": false
 	}
 }
