@@ -9,6 +9,16 @@ import Position from './position.js';
 import Range from './range.js';
 
 /**
+ * TextFragment is an aggregator for multiple CharacterProxy instances that are placed next to each other in
+ * tree model, in the same parent, and all have same attributes set. Instances of this class are created and returned
+ * in various algorithms that "merge characters" (see {@link treeModel.TreeWalker}, {@link treeModel.Range}).
+ *
+ * Difference between {@link treeModel.TextFragment} and {@link treeModel.Text} is that the former is bound to tree model,
+ * while {@link treeModel.Text} is simply a string with attributes set.
+ *
+ * You should never create an instance of this class by your own. When passing parameters to constructors,
+ * use string literals or {@link treeModel.Text} instead.
+ *
  * @class treeModel.TextFragment
  */
 export default class TextFragment {
@@ -17,6 +27,7 @@ export default class TextFragment {
 	 *
 	 * @param {treeModel.Position} startPosition Position in the tree model where the {@link treeModel.TextFragment} starts.
 	 * @param {String} text Characters contained in {@link treeModel.TextFragment}.
+	 * @protected
 	 * @constructor
 	 */
 	constructor( startPosition, text ) {
