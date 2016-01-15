@@ -80,9 +80,9 @@ module.exports = ( config ) => {
 	 * @returns { Stream }
 	 */
 	function lint() {
-		const stream = jscs();
+		const stream = jshint();
 		stream
-			.pipe( jshint() )
+			.pipe( jscs() )
 			.pipe( jscs.reporter() )
 			.pipe( jshint.reporter( 'jshint-reporter-jscs' ) );
 

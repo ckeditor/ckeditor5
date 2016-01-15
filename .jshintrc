@@ -11,5 +11,5 @@
 	"strict": true,
 	"varstmt": true,
 
-	"globalstrict": true
+	"strict": "global"
 }
