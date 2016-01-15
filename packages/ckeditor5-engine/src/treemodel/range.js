@@ -6,7 +6,7 @@
 'use strict';
 
 import Position from './position.js';
-import PositionIterator from './positioniterator.js';
+import TreeWalker from './treewalker.js';
 import utils from '../utils.js';
 
 /**
@@ -69,10 +69,10 @@ export default class Range {
 	/**
 	 * Range iterator.
 	 *
-	 * @see treeModel.PositionIterator
+	 * @see treeModel.TreeWalker
 	 */
 	[ Symbol.iterator ]() {
-		return new PositionIterator( this );
+		return new TreeWalker( { boundaries: this } );
 	}
 
 	/**
@@ -262,25 +262,26 @@ export default class Range {
 	 * In other words, this iterates over all text characters that are inside the range and all the {@link treeModel.Element}s
 	 * we enter into when iterating over this range.
 	 *
-	 * **Note:** this method will not return a parent node of start position. This is in contrary to {@link treeModel.PositionIterator}
-	 * which will return that node with {@link treeModel.PositionIterator#ELEMENT_LEAVE} type. This method, also, returns each
-	 * {@link treeModel.Element} once, while iterator return it twice: for {@link treeModel.PositionIterator#ELEMENT_ENTER} and
-	 * {@link treeModel.PositionIterator#ELEMENT_LEAVE}.
+	 * **Note:** this method will not return a parent node of start position. This is in contrary to {@link treeModel.TreeWalker}
+	 * which will return that node with {@link treeModel.TreeWalker#ELEMENT_LEAVE} type. This method, also, returns each
+	 * {@link treeModel.Element} once, while iterator return it twice: for {@link treeModel.TreeWalker#ELEMENT_ENTER} and
+	 * {@link treeModel.TreeWalker#ELEMENT_LEAVE}.
 	 *
-	 * @see {treeModel.PositionIterator}
+	 * @see {treeModel.TreeWalker}
 	 * @param {Boolean} [mergeCharacters] Flag indicating whether all consecutive characters with the same attributes
-	 * should be returned as one {@link treeModel.TextNode} (`true`) or one by one (`false`). Defaults to `false`.
+	 * should be returned as one {@link treeModel.TextFragment} (`true`) or one by one as multiple {@link treeModel.CharacterProxy}
+	 * (`false`) objects. Defaults to `false`.
 	 * @returns {Iterable.<treeModel.Node|treeModel.Text>}
 	 */
 	*getAllNodes( mergeCharacters ) {
-		let it = new PositionIterator( this, mergeCharacters );
+		let it = new TreeWalker( { boundaries: this, mergeCharacters: mergeCharacters } );
 		let step;
 
 		do {
 			step = it.next();
 
-			if ( step.value && step.value.type != PositionIterator.ELEMENT_LEAVE ) {
-				yield step.value.node;
+			if ( step.value && step.value.type != TreeWalker.ELEMENT_LEAVE ) {
+				yield step.value.item;
 			}
 		} while ( !step.done );
 	}
@@ -290,11 +291,12 @@ export default class Range {
 	 * contained in this range.
 	 *
 	 * @param {Boolean} [mergeCharacters] Flag indicating whether all consecutive characters with the same attributes
-	 * should be returned as one {@link treeModel.TextNode} (`true`) or one by one (`false`). Defaults to `false`.
+	 * should be returned as one {@link treeModel.TextFragment} (`true`) or one by one as multiple {@link treeModel.CharacterProxy}
+	 * (`false`) objects. Defaults to `false`.
 	 * @returns {Iterable.<treeModel.Position>}
 	 */
 	*getPositions( mergeCharacters ) {
-		let it = new PositionIterator( this, mergeCharacters );
+		let it = new TreeWalker( { boundaries: this, mergeCharacters: mergeCharacters } );
 
 		do {
 			yield it.position;
@@ -307,7 +309,8 @@ export default class Range {
 	 * this function splits the range into separate sub-trees and iterates over their roots.
 	 *
 	 * @param {Boolean} [mergeCharacters] Flag indicating whether all consecutive characters with the same attributes
-	 * should be returned as one {@link treeModel.TextNode} (`true`) or one by one (`false`). Defaults to `false`.
+	 * should be returned as one {@link treeModel.TextFragment} (`true`) or one by one as multiple {@link treeModel.CharacterProxy}
+	 * (`false`) objects. Defaults to `false`.
 	 * @returns {Iterable.<treeModel.Node|treeModel.Text>}
 	 */
 	*getTopLevelNodes( mergeCharacters ) {
@@ -316,7 +319,7 @@ export default class Range {
 		for ( let range of flatRanges ) {
 			// This loop could be much simpler as we could just iterate over siblings of node after the first
 			// position of each range. But then we would have to re-implement character merging strategy here.
-			let it = new PositionIterator( range, mergeCharacters );
+			let it = new TreeWalker( { boundaries: range, mergeCharacters: mergeCharacters } );
 			let step;
 
 			// We will only return nodes that are on same level as node after the range start. To do this,
@@ -327,14 +330,14 @@ export default class Range {
 				step = it.next();
 
 				if ( step.value ) {
-					if ( step.value.type == PositionIterator.ELEMENT_ENTER ) {
+					if ( step.value.type == TreeWalker.ELEMENT_ENTER ) {
 						depth++;
-					} else if ( step.value.type == PositionIterator.ELEMENT_LEAVE ) {
+					} else if ( step.value.type == TreeWalker.ELEMENT_LEAVE ) {
 						depth--;
 					}
 
 					if ( depth === 0 ) {
-						yield step.value.node;
+						yield step.value.item;
 					}
 				}
 			} while ( !step.done );
