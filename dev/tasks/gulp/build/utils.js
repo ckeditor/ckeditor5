@@ -64,7 +64,9 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 			conversionPipes.push( utils.pickVersionedFile( format ) );
 
 			if ( format != 'esnext' ) {
-				const filterCode = gulpFilter( utils.isNotTestFile, { restore: true } );
+				const filterCode = gulpFilter( ( file ) => {
+					return utils.isNotTestFile( file ) && utils.isJSFile( file );
+				}, { restore: true } );
 				const transpileCode = utils.transpile( format, utils.getBabelOptionsForCode( format ) );
 				conversionPipes.push(
 					filterCode,
@@ -72,7 +74,9 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 					filterCode.restore
 				);
 
-				const filterTests = gulpFilter( utils.isTestFile, { restore: true } );
+				const filterTests = gulpFilter( ( file ) => {
+					return utils.isTestFile( file ) && utils.isJSFile( file );
+				}, { restore: true } );
 				const transpileTests = utils.transpile( format, utils.getBabelOptionsForTests( format ) );
 				conversionPipes.push(
 					filterTests,
@@ -266,6 +270,10 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 
 	isNotTestFile( file ) {
 		return !utils.isTestFile( file );
+	},
+
+	isJSFile( file ) {
+		return file.path.endsWith( '.js' );
 	}
 };
 
