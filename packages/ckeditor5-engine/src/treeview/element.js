@@ -5,7 +5,6 @@
 
 'use strict';
 
-import ViewText from './text.js';
 import Node from './node.js';
 import utils from '../utils.js';
 import langUtils from '../lib/lodash/lang.js';
@@ -38,21 +37,6 @@ export default class Element extends Node {
 		this.insertChildren( this.getChildCount(), nodes );
 	}
 
-	bindDomElement( domElement ) {
-		this._domElement = domElement;
-
-		Element._domToViewMapping.set( domElement, this );
-	}
-
-	cloneDomAttrs( element ) {
-		this.markToSync( 'ATTRIBUTES_NEED_UPDATE' );
-
-		for ( let i = element.attributes.length - 1; i >= 0; i-- ) {
-			let attr = element.attributes[ i ];
-			this.setAttr( attr.name, attr.value );
-		}
-	}
-
 	getChild( index ) {
 		return this._children[ index ];
 	}
@@ -67,10 +51,6 @@ export default class Element extends Node {
 
 	getChildren() {
 		return this._children[ Symbol.iterator ]();
-	}
-
-	getCorespondingDom() {
-		return this._domElement;
 	}
 
 	getAttrKeys() {
@@ -121,39 +101,4 @@ export default class Element extends Node {
 
 		return this._children.splice( index, number );
 	}
-
-	// Note that created elements will not have coresponding DOM elements created it these did not exist before.
-	static createFromDom( domElement ) {
-		let viewElement = this.getCorespondingView( domElement );
-
-		if ( viewElement ) {
-			return viewElement;
-		}
-
-		if ( domElement instanceof Text ) {
-			return new ViewText( domElement.data );
-		} else {
-			viewElement = new Element( domElement.tagName.toLowerCase() );
-			const attrs = domElement.attributes;
-
-			for ( let i = attrs.length - 1; i >= 0; i-- ) {
-				viewElement.setAttr( attrs[ i ].name, attrs[ i ].value );
-			}
-
-			for ( let i = 0, len = domElement.childNodes.length; i < len; i++ ) {
-				let domChild = domElement.childNodes[ i ];
-
-				viewElement.appendChildren( this.createFromDom( domChild ) );
-			}
-
-			return viewElement;
-		}
-	}
-
-	// Coresponding elements exists only for rendered elementes.
-	static getCorespondingView( domElement ) {
-		return this._domToViewMapping.get( domElement );
-	}
 }
-
-Element._domToViewMapping = new WeakMap();

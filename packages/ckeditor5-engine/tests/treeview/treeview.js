@@ -10,16 +10,18 @@
 const modules = bender.amd.require(
 	'core/treeview/treeview',
 	'core/treeview/observer/observer',
-	'core/treeview/renderer'
+	'core/treeview/renderer',
+	'core/treeview/converter'
 );
 
 describe( 'TreeView', () => {
-	let TreeView, Observer, Renderer;
+	let TreeView, Observer, Renderer, converter;
 
 	before( () => {
 		TreeView = modules[ 'core/treeview/treeview' ];
 		Observer = modules[ 'core/treeview/observer/observer' ];
 		Renderer = modules[ 'core/treeview/renderer' ];
+		converter = modules[ 'core/treeview/converter' ];
 	} );
 
 	describe( 'constructor', () => {
@@ -36,7 +38,7 @@ describe( 'TreeView', () => {
 			expect( treeView ).to.have.property( 'renderer' ).that.is.instanceOf( Renderer );
 			expect( treeView ).to.have.property( 'viewRoot' );
 
-			expect( treeView.viewRoot.getCorespondingDom() ).to.equal( domDiv );
+			expect( converter.getCorespondingDom( treeView.viewRoot ) ).to.equal( domDiv );
 			expect( treeView.viewRoot.name ).to.equal( 'div' );
 			expect( treeView.viewRoot.getAttr( 'id' ) ).to.equal( 'editor' );
 			expect( treeView.renderer.markedChildren.has( treeView.viewRoot ) ).to.be.true;

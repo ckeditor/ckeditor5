@@ -58,18 +58,6 @@ describe( 'Node.markToSync', () => {
 		} );
 	} );
 
-	describe( 'cloneDomAttrs', () => {
-		it( 'should mark attibutes to sync', () => {
-			const domImg = document.createElement( 'img' );
-			domImg.setAttribute( 'width', '10' );
-			domImg.setAttribute( 'height', '10' );
-
-			img.cloneDomAttrs( domImg );
-
-			sinon.assert.calledWith( markToSyncSpy, img, 'ATTRIBUTES_NEED_UPDATE' );
-		} );
-	} );
-
 	describe( 'insertChildren', () => {
 		it( 'should mark children to sync', () => {
 			root.insertChildren( 1, new ViewElement( 'img' ) );

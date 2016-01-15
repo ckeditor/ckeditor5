@@ -6,8 +6,7 @@
 'use strict';
 
 import diff from '../utils-diff.js';
-import ViewText from './text.js';
-import ViewElement from './element.js';
+import converter from './converter.js';
 import CKEditorError from '../ckeditorerror.js';
 
 export default class Renderer {
@@ -19,12 +18,12 @@ export default class Renderer {
 
 	markToSync( node, type ) {
 		if ( type === 'TEXT_NEEDS_UPDATE' ) {
-			if ( node.parent.getCorespondingDom() ) {
+			if ( converter.getCorespondingDom( node.parent ) ) {
 				this.markedTexts.add( node );
 			}
 		} else {
 			// If the node has no DOM element it is not rendered yet, its children/attributes do not need to be marked to be sync.
-			if ( !node.getCorespondingDom() ) {
+			if ( !converter.getCorespondingDom( node ) ) {
 				return;
 			}
 
@@ -32,19 +31,20 @@ export default class Renderer {
 				this.markedAttrs.add( node );
 			} else if ( type === 'CHILDREN_NEED_UPDATE' ) {
 				this.markedChildren.add( node );
+			} else {
+				/**
+				 * Unknown type passed to Renderer.markToSync.
+				 *
+				 * @error renderer-unknown-type
+				 */
+				throw new CKEditorError( 'renderer-unknown-type: Unknown type passed to Renderer.markToSync.' );
 			}
 		}
-		/**
-		 * Unknown type passed to Renderer.markToSync.
-		 *
-		 * @error renderer-unknown-type
-		 */
-		throw new CKEditorError( 'renderer-unknown-type: Unknown type passed to Renderer.markToSync.' );
 	}
 
 	render() {
 		for ( let node of this.markedTexts ) {
-			if ( !this.markedChildren.has( node.parent ) && node.parent.getCorespondingDom() ) {
+			if ( !this.markedChildren.has( node.parent ) && converter.getCorespondingDom( node.parent ) ) {
 				updateText( node );
 			}
 		}
@@ -62,7 +62,7 @@ export default class Renderer {
 		this.markedChildren.clear();
 
 		function updateText( viewText ) {
-			const domText = viewText.getCorespondingDom();
+			const domText = converter.getCorespondingDom( viewText );
 
 			if ( domText.data != viewText.getText() ) {
 				domText.data = viewText.getText();
@@ -70,8 +70,8 @@ export default class Renderer {
 		}
 
 		function updateAttrs( viewElement ) {
-			const domElement = viewElement.getCorespondingDom();
-			const domAttrKeys = domElement.attributes;
+			const domElement = converter.getCorespondingDom( viewElement );
+			const domAttrKeys = Array.from( domElement.attributes ).map( attr => attr.name );
 			const viewAttrKeys = viewElement.getAttrKeys();
 
 			// Add or overwrite attributes.
@@ -88,60 +88,23 @@ export default class Renderer {
 		}
 
 		function updateChildren( viewElement ) {
-			const domElement = viewElement.getCorespondingDom();
+			const domElement = converter.getCorespondingDom( viewElement );
 			const domChildren = domElement.childNodes;
 			const viewChildren = Array.from( viewElement.getChildren() );
 			const domDocument = domElement.ownerDocument;
 
-			const actions = diff( domChildren, viewChildren, compareNodes );
+			const actions = diff( domChildren, viewChildren, converter.compareNodes );
 			let i = 0;
 
 			for ( let action of actions ) {
 				if ( action === 'EQUAL' ) {
 					i++;
 				} else if ( action === 'INSERT' ) {
-					domElement.insertBefore( viewToDom( viewChildren[ i ], domDocument ), domChildren[ i ] || null  );
+					domElement.insertBefore( converter.viewToDom( viewChildren[ i ], domDocument ), domChildren[ i ] || null  );
 					i++;
 				} else if ( action === 'DELETE' ) {
 					domElement.removeChild( domChildren[ i ] );
 				}
-			}
-		}
-
-		function compareNodes( domNode, viewNode ) {
-			// Elements.
-			if ( domNode instanceof HTMLElement && viewNode instanceof ViewElement ) {
-				return domNode === viewNode.getCorespondingDom();
-			}
-			// Texts.
-			else if ( domNode instanceof Text && viewNode instanceof ViewText ) {
-				return domNode.data === viewNode.getText();
-			}
-
-			// Not matching types.
-			return false;
-		}
-
-		function viewToDom( view, domDocument ) {
-			if ( view instanceof ViewText ) {
-				return domDocument.createTextNode( view.getText() );
-			} else {
-				if ( view.getCorespondingDom() ) {
-					return view.getCorespondingDom();
-				}
-
-				const domElement = domDocument.createElement( view.name );
-				view.bindDomElement( domElement );
-
-				for ( let key of view.getAttrKeys() ) {
-					domElement.setAttribute( key, view.getAttr( key ) );
-				}
-
-				for ( let childView of view.getChildren() ) {
-					domElement.appendChild( viewToDom( childView ) );
-				}
-
-				return domElement;
 			}
 		}
 	}
