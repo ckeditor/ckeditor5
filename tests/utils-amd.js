@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global require */
+/* global require, bender */
 
 'use strict';
 
@@ -12,15 +12,20 @@ import amdTestUtils from '/tests/_utils/amd.js';
 
 testUtils.createSinonSandbox();
 
-describe( 'bender.amd', () => {
+describe( 'amdTestUtils', () => {
 	const getModulePath = amdTestUtils.getModulePath;
 
 	describe( 'getModulePath()', () => {
-		it( 'generates an absolute path', () => {
-			const path = getModulePath( 'ckeditor' );
+		it( 'generates a path from a plugin name', () => {
+			const path = getModulePath( 'foo' );
 
-			expect( path ).to.match( /\/ckeditor.js$/, 'ends with /ckeditor.js' );
-			expect( path ).to.match( /^\//, 'is absolute' );
+			expect( path ).to.equal( '/ckeditor5/foo/foo.js' );
+		} );
+
+		it( 'generates an absolute path from a simple path', () => {
+			const path = getModulePath( 'core/editor' );
+
+			expect( path ).to.equal( '/ckeditor5/core/editor.js' );
 		} );
 	} );
 
@@ -83,6 +88,29 @@ describe( 'bender.amd', () => {
 
 				done();
 			} );
+		} );
+	} );
+
+	describe( 'require', () => {
+		it( 'blocks Bender and loads modules through global require()', () => {
+			let requireCb;
+			const deferCbSpy = sinon.spy();
+
+			testUtils.sinon.stub( bender, 'defer', () => deferCbSpy );
+			testUtils.sinon.stub( window, 'require', ( deps, cb ) => {
+				requireCb = cb;
+			} );
+
+			const modules = amdTestUtils.require( { foo: 'foo/oof', bar: 'bar' } );
+
+			expect( deferCbSpy.called ).to.be.false;
+
+			requireCb( { default: 1 }, { default: 2 } );
+
+			expect( deferCbSpy.calledOnce ).to.be.true;
+
+			expect( modules ).to.have.property( 'foo', 1 );
+			expect( modules ).to.have.property( 'bar', 2 );
 		} );
 	} );
 } );

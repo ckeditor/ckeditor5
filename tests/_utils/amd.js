@@ -10,7 +10,18 @@
 /**
  * AMD tools related to CKEditor.
  */
-const amdUtils = {
+const utils = {
+	/**
+	 * Helper for generating a full module path from a simplified name (similar to simplified plugin naming convention).
+	 *
+	 * Transforms:
+	 *
+	 * * `foo` -> `/ckeditor5/foo/foo.js`
+	 * * `foo/bar` -> `/ckeditor5/foo/bar.js`
+	 *
+	 * @param {String} modulePath The simplified path.
+	 * @returns {String} The real path.
+	 */
 	getModulePath( modulePath ) {
 		if ( modulePath.indexOf( '/' ) < 0 ) {
 			modulePath = modulePath + '/' + modulePath;
@@ -22,6 +33,9 @@ const amdUtils = {
 	/**
 	 * Shorthand for defining an AMD module.
 	 *
+	 * This method uses {@link #getModulePath} to process module and dependency paths so you need to use
+	 * the simplified notation.
+	 *
 	 * For simplicity the dependencies passed to the `body` will be unwrapped
 	 * from the ES6 module object (so only the default export will be available). Also the returned value
 	 * will be automatically handled as a default export.
@@ -29,7 +43,7 @@ const amdUtils = {
 	 * If you need to define a module which has access to other exports or can export more values,
 	 * use the global `define()` function:
 	 *
-	 *		define( '/ckeditor5/my/module.js', [ 'exports', '/ckeditor5/foo/foo.js', ... ], ( FooModule, ... ) {
+	 *		define( 'my/module', [ 'exports', 'foo', ... ], ( FooModule, ... ) {
 	 *			const FooClass = FooModule.default;
 	 *			const FooOtherProp = FooModule.otherProp;
 	 *
@@ -47,15 +61,15 @@ const amdUtils = {
 	 *		PluginF.requires = [ PluginE ];
 	 *		PluginE.requires = [ PluginF ];
 	 *
-	 *		amdUtils.define( '/ckeditor5/E/E.js', [ '/ckeditor5/core/plugin.js', '/ckeditor5/F/F.js' ], () => {
+	 *		amdTestUtils.define( 'E', [ 'core/plugin', 'F' ], () => {
 	 *			return PluginE;
 	 *		} );
 	 *
-	 *		amdUtils.define( '/ckeditor5/F/F.js', [ '/ckeditor5/core/plugin.js', '/ckeditor5/E/E.js' ], () => {
+	 *		amdTestUtils.define( 'E', [ 'core/plugin', 'E' ], () => {
 	 *			return PluginF;
 	 *		} );
 	 *
-	 * @param {String} path Parh to the module.
+	 * @param {String} path Path to the module.
 	 * @param {String[]} deps Dependencies of the module.
 	 * @param {Function} body Module body.
 	 */
@@ -65,13 +79,13 @@ const amdUtils = {
 			deps = [];
 		}
 
-		deps = deps.map( amdUtils.getModulePath );
+		deps = deps.map( utils.getModulePath );
 
 		// Use the exports object instead of returning from modules in order to handle circular deps.
 		// http://requirejs.org/docs/api.html#circular
 		deps.unshift( 'exports' );
 
-		define( amdUtils.getModulePath( path ), deps, function( exports ) {
+		define( utils.getModulePath( path ), deps, function( exports ) {
 			const loadedDeps = Array.from( arguments ).slice( 1 ).map( ( module ) => module.default );
 
 			exports.default = body.apply( this, loadedDeps );
@@ -81,7 +95,15 @@ const amdUtils = {
 	/**
 	 * Gets an object which holds the CKEditor modules guaranteed to be loaded before tests start.
 	 *
-	 * @params {...String} module The name of the module to load.
+	 * This method uses {@link #getModulePath} to process module and dependency paths so you need to use
+	 * the simplified notation.
+	 *
+	 *		const modules = amdTestUtils.require( { editor: 'core/Editor' } );
+	 *
+	 *		// Later on, inside tests:
+	 *		const Editor = modules.editor;
+	 *
+	 * @params {Object} modules The object (`ref => modulePath`) with modules to be loaded.
 	 * @returns {Object} The object that will hold the loaded modules.
 	 */
 	require( modules ) {
@@ -92,7 +114,7 @@ const amdUtils = {
 
 		for ( let name in modules ) {
 			names.push( name );
-			paths.push( amdUtils.getModulePath( modules[ name ] ) );
+			paths.push( utils.getModulePath( modules[ name ] ) );
 		}
 
 		require( paths, function( ...loaded ) {
@@ -108,4 +130,4 @@ const amdUtils = {
 	}
 };
 
-export default amdUtils;
+export default utils;
