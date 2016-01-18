@@ -7,13 +7,11 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'core/log' );
-let log;
+import log from '/ckeditor5/core/log.js';
+
 let spy;
 
 beforeEach( () => {
-	log = modules[ 'core/log' ];
-
 	if ( spy ) {
 		spy.restore();
 	}
