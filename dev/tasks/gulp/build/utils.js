@@ -303,7 +303,7 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 	 */
 	isTestFile( file ) {
 		// TODO this should be based on bender configuration (config.tests.*.paths).
-		if ( !file.relative.startsWith( 'tests/' ) ) {
+		if ( !file.relative.startsWith( 'tests' + path.sep ) ) {
 			return false;
 		}
 
