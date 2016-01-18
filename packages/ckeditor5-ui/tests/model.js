@@ -159,6 +159,22 @@ describe( 'Model', () => {
 
 			expect( car.method ).to.be.a( 'function' );
 		} );
+
+		it( 'should allow setting attributes with undefined value', () => {
+			let spy = sinon.spy();
+
+			car.on( 'change', spy );
+			car.set( 'seats', undefined );
+
+			sinon.assert.calledOnce( spy );
+			expect( car ).to.contain.keys( 'seats' );
+			expect( car.seats ).to.be.undefined;
+
+			car.set( 'seats', 5 );
+
+			sinon.assert.calledTwice( spy );
+			expect( car ).to.have.property( 'seats', 5 );
+		} );
 	} );
 
 	describe( 'extend', () => {
