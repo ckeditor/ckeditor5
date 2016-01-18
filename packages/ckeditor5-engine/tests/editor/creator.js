@@ -61,6 +61,17 @@ before( () => {
 			}
 		};
 	} );
+
+	amdUtils.define( 'creator-destroy-order', [ 'core/creator' ], ( Creator ) => {
+		return class extends Creator {
+			create() {}
+
+			destroy() {
+				editor._elementInsideCreatorDestroy = this.editor.element;
+				editor._destroyOrder.push( 'creator' );
+			}
+		};
+	} );
 } );
 
 afterEach( () => {
@@ -169,6 +180,24 @@ describe( 'destroy', () => {
 				// Unfortunately fake timers don't work with promises, so throwing in the creator's destroy()
 				// seems to be the only way to test that the promise chain isn't broken.
 				expect( err ).to.have.property( 'message', 'Catch me - destroy.' );
+			} );
+	} );
+
+	it( 'should do things in the correct order', () => {
+		return initEditor( {
+				creator: 'creator-destroy-order'
+			} )
+			.then( () => {
+				editor._destroyOrder = [];
+				editor.on( 'destroy', () => {
+					editor._destroyOrder.push( 'event' );
+				} );
+
+				return editor.destroy();
+			} )
+			.then( () => {
+				expect( editor._elementInsideCreatorDestroy ).to.not.be.undefined;
+				expect( editor._destroyOrder ).to.deep.equal( [ 'event', 'creator' ] );
 			} );
 	} );
 } );

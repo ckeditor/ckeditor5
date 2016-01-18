@@ -141,11 +141,13 @@ export default class Editor {
 
 		this.fire( 'destroy' );
 
-		delete this.element;
-
-		return Promise.resolve().then( () => {
-			return that._creator && that._creator.destroy();
-		} );
+		return Promise.resolve()
+			.then( () => {
+				return that._creator && that._creator.destroy();
+			} )
+			.then( () => {
+				delete this.element;
+			} );
 	}
 }
 
