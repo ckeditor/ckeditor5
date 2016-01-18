@@ -124,136 +124,6 @@ describe( 'View', () => {
 		} );
 	} );
 
-	describe( 'addChild', () => {
-		beforeEach( () => {
-			setTestViewClass(
-				() => ( { tag: 'p', text: 'x' } ),
-				function() {
-					this.register( 'x', el => el );
-				}
-			);
-
-			setTestViewInstance();
-		} );
-
-		it( 'should throw when no region name', () => {
-			expect( () => {
-				view.addChild();
-			} ).to.throw( CKEditorError, /ui-view-addchild-badrname/ );
-		} );
-
-		it( 'should throw when region does not exist', () => {
-			expect( () => {
-				view.addChild( 'nonexistent' );
-			} ).to.throw( CKEditorError, /ui-view-addchild-noreg/ );
-		} );
-
-		it( 'should throw when no child view passed', () => {
-			expect( () => {
-				view.addChild( 'x' );
-			} ).to.throw( CKEditorError, /ui-view-addchild-no-view/ );
-		} );
-
-		it( 'should add a child to the region views', () => {
-			const childView = new View();
-
-			view.addChild( 'x', childView );
-
-			expect( view.getChild( 'x', 0 ) ).to.be.equal( childView );
-		} );
-
-		it( 'should add a child to the region views at the right index', () => {
-			const childView1 = new View();
-			const childView2 = new View();
-
-			view.addChild( 'x', childView1 );
-			view.addChild( 'x', childView2, 0 );
-
-			expect( view.getChild( 'x', 0 ) ).to.be.equal( childView2 );
-			expect( view.getChild( 'x', 1 ) ).to.be.equal( childView1 );
-		} );
-	} );
-
-	describe( 'removeChild', () => {
-		beforeEach( () => {
-			setTestViewClass(
-				() => ( { tag: 'p', text: 'x' } ),
-				function() {
-					this.register( 'x', el => el );
-				}
-			);
-
-			setTestViewInstance();
-		} );
-
-		it( 'should throw when no region name', () => {
-			expect( () => {
-				view.removeChild();
-			} ).to.throw( CKEditorError, /ui-view-removechild-badrname/ );
-		} );
-
-		it( 'should throw when child view passed', () => {
-			expect( () => {
-				view.removeChild( 'x' );
-			} ).to.throw( CKEditorError, /ui-view-removechild-no-view/ );
-		} );
-
-		it( 'should throw when region does not exist', () => {
-			expect( () => {
-				view.removeChild( 'nonexistent', new View() );
-			} ).to.throw( CKEditorError, /ui-view-removechild-noreg/ );
-		} );
-
-		it( 'should remove a child from the region views', () => {
-			const childView1 = new View();
-			const childView2 = new View();
-
-			view.addChild( 'x', childView1 );
-			view.addChild( 'x', childView2, 0 );
-
-			expect( view.getChild( 'x', 0 ) ).to.be.equal( childView2 );
-			expect( view.getChild( 'x', 1 ) ).to.be.equal( childView1 );
-
-			view.removeChild( 'x', childView2 );
-
-			expect( view.getChild( 'x', 0 ) ).to.be.equal( childView1 );
-
-			view.removeChild( 'x', childView1 );
-
-			expect( view.regions.get( 'x' ).views.length ).to.be.equal( 0 );
-		} );
-	} );
-
-	describe( 'getChild', () => {
-		beforeEach( () => {
-			setTestViewClass(
-				() => ( { tag: 'p', text: 'x' } ),
-				function() {
-					this.register( 'x', el => el );
-				}
-			);
-
-			setTestViewInstance();
-		} );
-
-		it( 'should throw when region does not exist', () => {
-			expect( () => {
-				view.getChild( 'nonexistent', 0 );
-			} ).to.throw( CKEditorError, /ui-view-getchild-noreg/ );
-		} );
-
-		it( 'should get a child from the region views', () => {
-			const childView1 = new View();
-			const childView2 = new View();
-
-			view.addChild( 'x', childView1 );
-			view.addChild( 'x', childView2, 0 );
-
-			expect( view.getChild( 'x', 0 ) ).to.be.equal( childView2 );
-			expect( view.getChild( 'x', 1 ) ).to.be.equal( childView1 );
-		} );
-	} );
-
 	describe( 'register', () => {
 		beforeEach( () => {
 			setTestViewClass();
@@ -711,7 +581,7 @@ describe( 'View', () => {
 			const regionViewsRef = region.views;
 
 			view.register( region, true );
-			view.addChild( 'x', new View() );
+			view.regions.get( 'x' ).views.add( new View() );
 			view.destroy();
 
 			expect( regionsRef.length ).to.be.equal( 0 );
