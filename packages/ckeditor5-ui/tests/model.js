@@ -5,21 +5,16 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'core/model', 'core/eventinfo', 'core/ckeditorerror' );
+import testUtils from '/tests/_utils/utils.js';
+import Model from '/ckeditor5/core/model.js';
+import EventInfo from '/ckeditor5/core/eventinfo.js';
+import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
 let Car, car;
 
-bender.tools.createSinonSandbox();
+testUtils.createSinonSandbox();
 
 describe( 'Model', () => {
-	let Model, EventInfo, CKEditorError;
-
-	before( () => {
-		Model = modules[ 'core/model' ];
-		EventInfo = modules[ 'core/eventinfo' ];
-		CKEditorError = modules[ 'core/ckeditorerror' ];
-	} );
-
 	beforeEach( 'Create a test model instance', () => {
 		Car = class extends Model {};
 
@@ -164,6 +159,22 @@ describe( 'Model', () => {
 
 			expect( car.method ).to.be.a( 'function' );
 		} );
+
+		it( 'should allow setting attributes with undefined value', () => {
+			let spy = sinon.spy();
+
+			car.on( 'change', spy );
+			car.set( 'seats', undefined );
+
+			sinon.assert.calledOnce( spy );
+			expect( car ).to.contain.keys( 'seats' );
+			expect( car.seats ).to.be.undefined;
+
+			car.set( 'seats', 5 );
+
+			sinon.assert.calledTwice( spy );
+			expect( car ).to.have.property( 'seats', 5 );
+		} );
 	} );
 
 	describe( 'extend', () => {
@@ -218,66 +229,121 @@ describe( 'Model', () => {
 		} );
 
 		describe( 'to', () => {
-			it( 'should chain', () => {
-				const returned = car.bind( 'color' ).to( new Model( { color: 'red' } ) );
-
-				expect( returned ).to.have.property( 'to' );
-				expect( returned ).to.have.property( 'as' );
+			it( 'should not chain', () => {
+				expect(
+					car.bind( 'color' ).to( new Model( { color: 'red' } ) )
+				).to.be.undefined;
 			} );
 
-			it( 'should chain multiple times', () => {
-				const returned = car.bind( 'color' )
-					.to( new Model( { color: 'red' } ) )
-					.to( new Model( { color: 'red' } ) )
-					.to( new Model( { color: 'red' } ) );
-
-				expect( returned ).to.have.property( 'to' );
-				expect( returned ).to.have.property( 'as' );
-			} );
-
-			it( 'should throw when .to() model is not Model', () => {
+			it( 'should throw when arguments are of invalid type', () => {
 				expect( () => {
+					car = new Car();
+
 					car.bind( 'color' ).to();
-				} ).to.throw( CKEditorError, /model-bind-to-wrong-model/ );
+				} ).to.throw( CKEditorError, /model-bind-to-parse-error/ );
 
 				expect( () => {
-					car.bind( 'year' ).to( 'it\'s not a model' );
-				} ).to.throw( CKEditorError, /model-bind-to-wrong-model/ );
-			} );
+					car = new Car();
 
-			it( 'should throw when attributes are not strings', () => {
-				expect( () => {
 					car.bind( 'color' ).to( new Model(), new Date() );
-				} ).to.throw( CKEditorError, /model-bind-to-wrong-attrs/ );
+				} ).to.throw( CKEditorError, /model-bind-to-parse-error/ );
 
 				expect( () => {
 					car = new Car( { color: 'red' } );
 
 					car.bind( 'color' ).to( new Model(), 'color', new Date() );
-				} ).to.throw( CKEditorError, /model-bind-to-wrong-attrs/ );
+				} ).to.throw( CKEditorError, /model-bind-to-parse-error/ );
+			} );
+
+			it( 'should throw when binding multiple attributes to multiple models', () => {
+				let vehicle = new Car();
+				const car1 = new Car( { color: 'red', year: 1943 } );
+				const car2 = new Car( { color: 'yellow', year: 1932 } );
+
+				expect( () => {
+					vehicle.bind( 'color', 'year' ).to( car1, 'color', car2, 'year' );
+				} ).to.throw( CKEditorError, /model-bind-to-no-callback/ );
+
+				expect( () => {
+					vehicle = new Car();
+
+					vehicle.bind( 'color', 'year' ).to( car1, car2 );
+				} ).to.throw( CKEditorError, /model-bind-to-no-callback/ );
+
+				expect( () => {
+					vehicle = new Car();
+
+					vehicle.bind( 'color', 'year' ).to( car1, car2, 'year' );
+				} ).to.throw( CKEditorError, /model-bind-to-no-callback/ );
+
+				expect( () => {
+					vehicle = new Car();
+
+					vehicle.bind( 'color', 'year' ).to( car1, 'color', car2 );
+				} ).to.throw( CKEditorError, /model-bind-to-no-callback/ );
+
+				expect( () => {
+					vehicle = new Car();
+
+					vehicle.bind( 'color', 'year', 'custom' ).to( car, car );
+				} ).to.throw( CKEditorError, /model-bind-to-no-callback/ );
+			} );
+
+			it( 'should throw when binding multiple attributes but passed a callback', () => {
+				let vehicle = new Car();
+
+				expect( () => {
+					vehicle.bind( 'color', 'year' ).to( car, () => {} );
+				} ).to.throw( CKEditorError, /model-bind-to-extra-callback/ );
+
+				expect( () => {
+					vehicle = new Car();
+
+					vehicle.bind( 'color', 'year' ).to( car, car, () => {} );
+				} ).to.throw( CKEditorError, /model-bind-to-extra-callback/ );
+			} );
+
+			it( 'should throw when binding a single attribute but multiple callbacks', () => {
+				let vehicle = new Car();
+
+				expect( () => {
+					vehicle.bind( 'color' ).to( car, () => {}, () => {} );
+				} ).to.throw( CKEditorError, /model-bind-to-parse-error/ );
+
+				expect( () => {
+					vehicle = new Car();
+
+					vehicle.bind( 'color' ).to( car, car, () => {}, () => {} );
+				} ).to.throw( CKEditorError, /model-bind-to-parse-error/ );
 			} );
 
 			it( 'should throw when a number of attributes does not match', () => {
+				let vehicle = new Car();
+
 				expect( () => {
-					const vehicle = new Car();
+					vehicle.bind( 'color' ).to( car, 'color', 'year' );
+				} ).to.throw( CKEditorError, /model-bind-to-attrs-length/ );
+
+				expect( () => {
+					vehicle = new Car();
 
 					vehicle.bind( 'color', 'year' ).to( car, 'color' );
 				} ).to.throw( CKEditorError, /model-bind-to-attrs-length/ );
 
 				expect( () => {
-					const vehicle = new Car();
+					vehicle = new Car();
 
-					vehicle.bind( 'color' ).to( car, 'color', 'year' );
+					vehicle.bind( 'color' ).to( car, 'color', 'year', () => {} );
 				} ).to.throw( CKEditorError, /model-bind-to-attrs-length/ );
 
 				expect( () => {
-					const vehicle = new Car();
+					vehicle = new Car();
 
-					vehicle.bind( 'color' ).to( car, 'color' ).to( car, 'color', 'year' );
+					vehicle.bind( 'color' ).to( car, 'color', car, 'color', 'year', () => {} );
 				} ).to.throw( CKEditorError, /model-bind-to-attrs-length/ );
 			} );
 
-			it( 'should throw when no attribute specified and those from bind() don\'t exist in to() model', () => {
+			it( 'should throw when attributes don\'t exist in to() model', () => {
 				const vehicle = new Car();
 
 				expect( () => {
@@ -287,23 +353,10 @@ describe( 'Model', () => {
 				expect( () => {
 					vehicle.bind( 'nonexistent in car' ).to( car );
 				} ).to.throw( CKEditorError, /model-bind-to-missing-attr/ );
-			} );
-
-			it( 'should throw when to() more than once and multiple attributes', () => {
-				const car1 = new Car( { color: 'red', year: 2000 } );
-				const car2 = new Car( { color: 'red', year: 2000 } );
 
 				expect( () => {
-					const vehicle = new Car();
-
-					vehicle.bind( 'color', 'year' ).to( car1 ).to( car2 );
-				} ).to.throw( CKEditorError, /model-bind-to-chain-multiple-attrs/ );
-
-				expect( () => {
-					const vehicle = new Car();
-
-					vehicle.bind( 'color', 'year' ).to( car1, 'color', 'year' ).to( car2, 'color', 'year' );
-				} ).to.throw( CKEditorError, /model-bind-to-chain-multiple-attrs/ );
+					vehicle.bind( 'year' ).to( car, 'color', car, 'nonexistent in car', () => {} );
+				} ).to.throw( CKEditorError, /model-bind-to-missing-attr/ );
 			} );
 
 			it( 'should set new model attributes', () => {
@@ -385,22 +438,6 @@ describe( 'Model', () => {
 				);
 			} );
 
-			it( 'should not throw when binding more than once but no as() afterwards', () => {
-				const vehicle = new Car();
-				const car1 = new Car( { color: 'red' } );
-				const car2 = new Car( { color: 'red' } );
-
-				vehicle.bind( 'color' ).to( car1 ).to( car2 );
-
-				assertBinding( vehicle,
-					{ color: undefined, year: undefined },
-					[
-						[ car, { color: 'blue', year: 1969 } ]
-					],
-					{ color: undefined, year: undefined }
-				);
-			} );
-
 			it( 'should work when binding more that once', () => {
 				const vehicle = new Car();
 
@@ -408,7 +445,7 @@ describe( 'Model', () => {
 				vehicle.bind( 'year' ).to( car, 'year' );
 
 				assertBinding( vehicle,
-					{ 'color': car.color, year: car.year },
+					{ color: car.color, year: car.year },
 					[
 						[ car, { color: 'blue', year: 1969 } ]
 					],
@@ -416,249 +453,267 @@ describe( 'Model', () => {
 				);
 			} );
 
-			describe( 'as', () => {
-				it( 'should not chain', () => {
-					const car1 = new Car( { year: 1999 } );
-					const car2 = new Car( { year: 2000 } );
+			it( 'should work with callback – set a new model attribute', () => {
+				const vehicle = new Car();
+				const car1 = new Car( { type: 'pickup' } );
+				const car2 = new Car( { type: 'truck' } );
 
-					expect(
-						car.bind( 'year' ).to( car1, 'year' ).to( car2, 'year' ).as( () => {} )
-					).to.be.undefined;
-				} );
+				vehicle.bind( 'type' )
+					.to( car1, car2, ( ...args ) => args.join( '' ) );
 
-				it( 'should throw when not a function passed', () => {
-					const car1 = new Car( { color: 'brown' } );
-					const car2 = new Car( { color: 'green' } );
+				expect( vehicle._attributes ).to.have.keys( [ 'type' ] );
+			} );
 
-					expect( () => {
-						car.bind( 'year' ).to( car1, 'color' ).to( car2, 'color' ).as();
-					} ).to.throw( CKEditorError, /model-bind-as-wrong-callback/ );
+			it( 'should work with callback #1', () => {
+				const vehicle = new Car();
+				const car1 = new Car( { color: 'black' } );
+				const car2 = new Car( { color: 'brown' } );
 
-					expect( () => {
-						car.bind( 'color' ).to( car1, 'color' ).to( car2, 'color' ).as( 'not-a-function' );
-					} ).to.throw( CKEditorError, /model-bind-as-wrong-callback/ );
-				} );
+				vehicle.bind( 'color' )
+					.to( car1, car2, ( ...args ) => args.join( '' ) );
 
-				it( 'should set new model attributes', () => {
-					const vehicle = new Car();
-					const car1 = new Car( { type: 'pickup' } );
-					const car2 = new Car( { type: 'truck' } );
+				assertBinding( vehicle,
+					{ color: car1.color + car2.color, year: undefined },
+					[
+						[ car1, { color: 'black', year: 1930 } ],
+						[ car2, { color: 'green', year: 1950 } ]
+					],
+					{ color: 'blackgreen', year: undefined }
+				);
+			} );
 
-					vehicle.bind( 'type' )
-						.to( car1 )
-						.to( car2 )
-						.as( ( ...args ) => args.join( '' ) );
+			it( 'should work with callback #2', () => {
+				const vehicle = new Car();
+				const car1 = new Car( { color: 'black' } );
+				const car2 = new Car( { color: 'brown' } );
 
-					expect( vehicle._attributes ).to.have.keys( [ 'type' ] );
-				} );
+				vehicle.bind( 'color' )
+					.to( car1, 'color', car2, 'color', ( ...args ) => args.join( '' ) );
 
-				it( 'should work for a single attribute #1', () => {
-					const vehicle = new Car();
-					const car1 = new Car( { color: 'black' } );
-					const car2 = new Car( { color: 'brown' } );
+				assertBinding( vehicle,
+					{ color: car1.color + car2.color, year: undefined },
+					[
+						[ car1, { color: 'black', year: 1930 } ],
+						[ car2, { color: 'green', year: 1950 } ]
+					],
+					{ color: 'blackgreen', year: undefined }
+				);
+			} );
 
-					vehicle.bind( 'color' )
-						.to( car1 )
-						.to( car2 )
-						.as( ( ...args ) => args.join( '' ) );
+			it( 'should work with callback #3', () => {
+				const vehicle = new Car();
+				const car1 = new Car( { color: 'black' } );
+				const car2 = new Car( { color: 'brown' } );
+				const car3 = new Car( { color: 'yellow' } );
 
-					assertBinding( vehicle,
-						{ color: car1.color + car2.color, year: undefined },
-						[
-							[ car1, { color: 'black', year: 1930 } ],
-							[ car2, { color: 'green', year: 1950 } ]
-						],
-						{ color: 'blackgreen', year: undefined }
-					);
-				} );
+				vehicle.bind( 'color' )
+					.to( car1, car2, car3, ( ...args ) => args.join( '' ) );
 
-				it( 'should work for a single attribute #2', () => {
-					const vehicle = new Car();
-					const car1 = new Car( { color: 'black' } );
-					const car2 = new Car( { color: 'brown' } );
+				assertBinding( vehicle,
+					{ color: car1.color + car2.color + car3.color, year: undefined },
+					[
+						[ car1, { color: 'black', year: 1930 } ],
+						[ car2, { color: 'green', year: 1950 } ]
+					],
+					{ color: 'blackgreenyellow', year: undefined }
+				);
+			} );
 
-					vehicle.bind( 'color' )
-						.to( car1, 'color' )
-						.to( car2, 'color' )
-						.as( ( ...args ) => args.join( '' ) );
+			it( 'should work with callback #4', () => {
+				const vehicle = new Car();
+				const car1 = new Car( { color: 'black' } );
+				const car2 = new Car( { lightness: 'bright' } );
+				const car3 = new Car( { color: 'yellow' } );
 
-					assertBinding( vehicle,
-						{ color: car1.color + car2.color, year: undefined },
-						[
-							[ car1, { color: 'black', year: 1930 } ],
-							[ car2, { color: 'green', year: 1950 } ]
-						],
-						{ color: 'blackgreen', year: undefined }
-					);
-				} );
+				vehicle.bind( 'color' )
+					.to( car1, car2, 'lightness', car3, ( ...args ) => args.join( '' ) );
 
-				it( 'should work for a single attribute #3', () => {
-					const vehicle = new Car();
-					const car1 = new Car( { color: 'black' } );
-					const car2 = new Car( { color: 'brown' } );
-					const car3 = new Car( { color: 'yellow' } );
+				assertBinding( vehicle,
+					{ color: car1.color + car2.lightness + car3.color, year: undefined },
+					[
+						[ car1, { color: 'black', year: 1930 } ],
+						[ car2, { color: 'green', year: 1950 } ]
+					],
+					{ color: 'blackbrightyellow', year: undefined }
+				);
+			} );
 
-					vehicle.bind( 'color' )
-						.to( car1 )
-						.to( car2 )
-						.to( car3 )
-						.as( ( ...args ) => args.join( '' ) );
+			it( 'should work with callback #5', () => {
+				const vehicle = new Car();
+				const car1 = new Car( { hue: 'reds' } );
+				const car2 = new Car( { lightness: 'bright' } );
 
-					assertBinding( vehicle,
-						{ color: car1.color + car2.color + car3.color, year: undefined },
-						[
-							[ car1, { color: 'black', year: 1930 } ],
-							[ car2, { color: 'green', year: 1950 } ]
-						],
-						{ color: 'blackgreenyellow', year: undefined }
-					);
-				} );
+				vehicle.bind( 'color' )
+					.to( car1, 'hue', car2, 'lightness', ( ...args ) => args.join( '' ) );
 
-				it( 'should work for a single attribute #4', () => {
-					const vehicle = new Car();
-					const car1 = new Car( { color: 'black' } );
-					const car2 = new Car( { lightness: 'bright' } );
-					const car3 = new Car( { color: 'yellow' } );
+				assertBinding( vehicle,
+					{ color: car1.hue + car2.lightness, year: undefined },
+					[
+						[ car1, { hue: 'greens', year: 1930 } ],
+						[ car2, { lightness: 'dark', year: 1950 } ]
+					],
+					{ color: 'greensdark', year: undefined }
+				);
+			} );
 
-					vehicle.bind( 'color' )
-						.to( car1 )
-						.to( car2, 'lightness' )
-						.to( car3 )
-						.as( ( ...args ) => args.join( '' ) );
+			it( 'should work with callback #6', () => {
+				const vehicle = new Car();
+				const car1 = new Car( { hue: 'reds' } );
 
-					assertBinding( vehicle,
-						{ color: car1.color + car2.lightness + car3.color, year: undefined },
-						[
-							[ car1, { color: 'black', year: 1930 } ],
-							[ car2, { color: 'green', year: 1950 } ]
-						],
-						{ color: 'blackbrightyellow', year: undefined }
-					);
-				} );
+				vehicle.bind( 'color' )
+					.to( car1, 'hue', ( h ) => h.toUpperCase() );
 
-				it( 'should work for a single attribute #5', () => {
-					const vehicle = new Car();
-					const car1 = new Car( { hue: 'reds' } );
-					const car2 = new Car( { lightness: 'bright' } );
+				assertBinding( vehicle,
+					{ color: car1.hue.toUpperCase(), year: undefined },
+					[
+						[ car1, { hue: 'greens', year: 1930 } ]
+					],
+					{ color: 'GREENS', year: undefined }
+				);
+			} );
 
-					vehicle.bind( 'color' )
-						.to( car1, 'hue' )
-						.to( car2, 'lightness' )
-						.as( ( ...args ) => args.join( '' ) );
+			it( 'should work with callback #7', () => {
+				const vehicle = new Car();
+				const car1 = new Car( { color: 'red', year: 1943 } );
+				const car2 = new Car( { color: 'yellow', year: 1932 } );
 
-					assertBinding( vehicle,
-						{ color: car1.hue + car2.lightness, year: undefined },
-						[
-							[ car1, { hue: 'greens', year: 1930 } ],
-							[ car2, { lightness: 'dark', year: 1950 } ]
-						],
-						{ color: 'greensdark', year: undefined }
-					);
-				} );
+				vehicle.bind( 'custom' )
+					.to( car1, 'color', car2, 'year', ( ...args ) => args.join( '/' ) );
 
-				it( 'should work when binding more that once #1', () => {
-					const vehicle = new Car();
-					const car1 = new Car( { hue: 'reds', produced: 1920 } );
-					const car2 = new Car( { lightness: 'bright', sold: 1921 } );
+				assertBinding( vehicle,
+					{ color: undefined, year: undefined, 'custom': car1.color + '/' + car2.year },
+					[
+						[ car1, { color: 'blue', year: 2100 } ],
+						[ car2, { color: 'violet', year: 1969 } ]
+					],
+					{ color: undefined, year: undefined, 'custom': 'blue/1969' }
+				);
+			} );
 
-					vehicle.bind( 'color' )
-						.to( car1, 'hue' )
-						.to( car2, 'lightness' )
-						.as( ( ...args ) => args.join( '' ) );
+			it( 'should work with callback #8', () => {
+				const vehicle = new Car();
+				const car1 = new Car( { color: 'red', year: 1943 } );
+				const car2 = new Car( { color: 'yellow', year: 1932 } );
+				const car3 = new Car( { hue: 'reds' } );
 
-					vehicle.bind( 'year' )
-						.to( car1, 'produced' )
-						.to( car2, 'sold' )
-						.as( ( ...args ) => args.join( '/' ) );
+				vehicle.bind( 'custom' )
+					.to( car1, 'color', car2, 'year', car3, 'hue', ( ...args ) => args.join( '/' ) );
 
-					assertBinding( vehicle,
-						{ color: car1.hue + car2.lightness, year: car1.produced + '/' + car2.sold },
-						[
-							[ car1, { hue: 'greens', produced: 1930 } ],
-							[ car2, { lightness: 'dark', sold: 2000 } ]
-						],
-						{ color: 'greensdark', year: '1930/2000' }
-					);
-				} );
+				assertBinding( vehicle,
+					{ color: undefined, year: undefined, hue: undefined, 'custom': car1.color + '/' + car2.year + '/' + car3.hue },
+					[
+						[ car1, { color: 'blue', year: 2100 } ],
+						[ car2, { color: 'violet', year: 1969 } ]
+					],
+					{ color: undefined, year: undefined, hue: undefined, 'custom': 'blue/1969/reds' }
+				);
+			} );
 
-				it( 'should work when binding more that once #2', () => {
-					const vehicle = new Car();
-					const car1 = new Car( { hue: 'reds', produced: 1920 } );
-					const car2 = new Car( { lightness: 'bright', sold: 1921 } );
+			it( 'should work with callback – binding more that once #1', () => {
+				const vehicle = new Car();
+				const car1 = new Car( { hue: 'reds', produced: 1920 } );
+				const car2 = new Car( { lightness: 'bright', sold: 1921 } );
 
-					vehicle.bind( 'color' )
-						.to( car1, 'hue' )
-						.to( car2, 'lightness' )
-						.as( ( ...args ) => args.join( '' ) );
+				vehicle.bind( 'color' )
+					.to( car1, 'hue', car2, 'lightness', ( ...args ) => args.join( '' ) );
 
-					vehicle.bind( 'year' )
-						.to( car1, 'produced' )
-						.to( car2, 'sold' )
-						.as( ( ...args ) => args.join( '/' ) );
+				vehicle.bind( 'year' )
+					.to( car1, 'produced', car2, 'sold', ( ...args ) => args.join( '/' ) );
 
-					vehicle.bind( 'mix' )
-						.to( car1, 'hue' )
-						.to( car2, 'sold' )
-						.as( ( ...args ) => args.join( '+' ) );
+				assertBinding( vehicle,
+					{ color: car1.hue + car2.lightness, year: car1.produced + '/' + car2.sold },
+					[
+						[ car1, { hue: 'greens', produced: 1930 } ],
+						[ car2, { lightness: 'dark', sold: 2000 } ]
+					],
+					{ color: 'greensdark', year: '1930/2000' }
+				);
+			} );
 
-					assertBinding( vehicle,
-						{
-							color: car1.hue + car2.lightness,
-							year: car1.produced + '/' + car2.sold,
-							mix: car1.hue + '+' + car2.sold
-						},
-						[
-							[ car1, { hue: 'greens', produced: 1930 } ],
-							[ car2, { lightness: 'dark', sold: 2000 } ]
-						],
-						{
-							color: 'greensdark',
-							year: '1930/2000',
-							mix: 'greens+2000'
-						}
-					);
-				} );
+			it( 'should work with callback – binding more that once #2', () => {
+				const vehicle = new Car();
+				const car1 = new Car( { hue: 'reds', produced: 1920 } );
+				const car2 = new Car( { lightness: 'bright', sold: 1921 } );
 
-				it( 'should work when binding more that once #3', () => {
-					const vehicle = new Car();
-					const car1 = new Car( { hue: 'reds', produced: 1920 } );
-					const car2 = new Car( { lightness: 'bright', sold: 1921 } );
+				vehicle.bind( 'color' )
+					.to( car1, 'hue', car2, 'lightness', ( ...args ) => args.join( '' ) );
 
-					vehicle.bind( 'color' )
-						.to( car1, 'hue' )
-						.to( car2, 'lightness' )
-						.as( ( ...args ) => args.join( '' ) );
+				vehicle.bind( 'year' )
+					.to( car1, 'produced', car2, 'sold', ( ...args ) => args.join( '/' ) );
 
-					vehicle.bind( 'custom1' ).to( car1, 'hue' );
+				vehicle.bind( 'mix' )
+					.to( car1, 'hue', car2, 'sold', ( ...args ) => args.join( '+' ) );
 
-					vehicle.bind( 'year' )
-						.to( car1, 'produced' )
-						.to( car2, 'sold' )
-						.as( ( ...args ) => args.join( '/' ) );
+				assertBinding( vehicle,
+					{
+						color: car1.hue + car2.lightness,
+						year: car1.produced + '/' + car2.sold,
+						mix: car1.hue + '+' + car2.sold
+					},
+					[
+						[ car1, { hue: 'greens', produced: 1930 } ],
+						[ car2, { lightness: 'dark', sold: 2000 } ]
+					],
+					{
+						color: 'greensdark',
+						year: '1930/2000',
+						mix: 'greens+2000'
+					}
+				);
+			} );
 
-					vehicle.bind( 'custom2', 'custom3' ).to( car1, 'produced', 'hue' );
+			it( 'should work with callback – binding more that once #3', () => {
+				const vehicle = new Car();
+				const car1 = new Car( { hue: 'reds', produced: 1920 } );
+				const car2 = new Car( { lightness: 'bright', sold: 1921 } );
 
-					assertBinding( vehicle,
-						{
-							color: car1.hue + car2.lightness,
-							year: car1.produced + '/' + car2.sold,
-							custom1: car1.hue,
-							custom2: car1.produced,
-							custom3: car1.hue
-						},
-						[
-							[ car1, { hue: 'greens', produced: 1930 } ],
-							[ car2, { lightness: 'dark', sold: 2000 } ]
-						],
-						{
-							color: 'greensdark',
-							year: '1930/2000',
-							custom1: 'greens',
-							custom2: 1930,
-							custom3: 'greens'
-						}
-					);
-				} );
+				vehicle.bind( 'color' )
+					.to( car1, 'hue', car2, 'lightness', ( ...args ) => args.join( '' ) );
+
+				vehicle.bind( 'custom1' ).to( car1, 'hue' );
+
+				vehicle.bind( 'year' )
+					.to( car1, 'produced', car2, 'sold', ( ...args ) => args.join( '/' ) );
+
+				vehicle.bind( 'custom2', 'custom3' ).to( car1, 'produced', 'hue' );
+
+				assertBinding( vehicle,
+					{
+						color: car1.hue + car2.lightness,
+						year: car1.produced + '/' + car2.sold,
+						custom1: car1.hue,
+						custom2: car1.produced,
+						custom3: car1.hue
+					},
+					[
+						[ car1, { hue: 'greens', produced: 1930 } ],
+						[ car2, { lightness: 'dark', sold: 2000 } ]
+					],
+					{
+						color: 'greensdark',
+						year: '1930/2000',
+						custom1: 'greens',
+						custom2: 1930,
+						custom3: 'greens'
+					}
+				);
+			} );
+
+			it( 'should fire a single change event per bound attribute', () => {
+				const vehicle = new Car();
+				const car = new Car( { color: 'red', year: 1943 } );
+				const spy = sinon.spy();
+
+				vehicle.on( 'change', spy );
+
+				vehicle.bind( 'color', 'year' ).to( car );
+
+				car.color = 'violet';
+				car.custom = 'foo';
+				car.year = 2001;
+
+				expect( spy.args.map( args => args[ 1 ] ) )
+					.to.have.members( [ 'color', 'year', 'color', 'year' ] );
 			} );
 		} );
 	} );
@@ -701,12 +756,12 @@ describe( 'Model', () => {
 			);
 		} );
 
-		it( 'should remove bindings of certain attributes, as()', () => {
+		it( 'should remove bindings of certain attributes, callback', () => {
 			const vehicle = new Car();
 			const car1 = new Car( { color: 'red' } );
 			const car2 = new Car( { color: 'blue' } );
 
-			vehicle.bind( 'color' ).to( car1 ).to( car2 ).as( ( c1, c2 ) => c1 + c2 );
+			vehicle.bind( 'color' ).to( car1, car2, ( c1, c2 ) => c1 + c2 );
 			vehicle.unbind( 'color' );
 
 			assertBinding( vehicle,

@@ -8,21 +8,17 @@
 
 'use strict';
 
-const modules = bender.amd.require(
-	'core/ui/view',
-	'core/ui/region',
-	'core/ckeditorerror',
-	'core/model'
-);
+import testUtils from '/tests/_utils/utils.js';
+import View from '/ckeditor5/core/ui/view.js';
+import Region from '/ckeditor5/core/ui/region.js';
+import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
+import Model from '/ckeditor5/core/model.js';
 
-let View, TestView, Model, Region, CKEditorError;
-let view;
+let TestView, view;
 
-bender.tools.createSinonSandbox();
+testUtils.createSinonSandbox();
 
 describe( 'View', () => {
-	beforeEach( updateModuleReference );
-
 	describe( 'constructor', () => {
 		beforeEach( () => {
 			setTestViewClass();
@@ -73,8 +69,8 @@ describe( 'View', () => {
 			view.register( region1, el => el );
 			view.register( region2, el => el );
 
-			const spy1 = bender.sinon.spy( region1, 'init' );
-			const spy2 = bender.sinon.spy( region2, 'init' );
+			const spy1 = testUtils.sinon.spy( region1, 'init' );
+			const spy2 = testUtils.sinon.spy( region2, 'init' );
 
 			view.init();
 
@@ -189,7 +185,7 @@ describe( 'View', () => {
 
 		it( 'should not override an existing region with the same region with override flag', () => {
 			const region = new Region( 'x' );
-			const spy = bender.sinon.spy( view.regions, 'remove' );
+			const spy = testUtils.sinon.spy( view.regions, 'remove' );
 
 			view.register( region, true );
 			view.register( region, true, true );
@@ -229,7 +225,7 @@ describe( 'View', () => {
 		it( 'returns a function that passes arguments', () => {
 			setTestViewInstance( { a: 'foo' } );
 
-			let spy = bender.sinon.spy();
+			let spy = testUtils.sinon.spy();
 			let callback = view.bindToAttribute( 'a', spy );
 
 			expect( spy.called ).to.be.false;
@@ -333,7 +329,7 @@ describe( 'View', () => {
 
 	describe( 'on', () => {
 		it( 'accepts plain binding', () => {
-			let spy = bender.sinon.spy();
+			let spy = testUtils.sinon.spy();
 
 			setTestViewClass( function() {
 				return {
@@ -356,8 +352,8 @@ describe( 'View', () => {
 		} );
 
 		it( 'accepts an array of event bindings', () => {
-			let spy1 = bender.sinon.spy();
-			let spy2 = bender.sinon.spy();
+			let spy1 = testUtils.sinon.spy();
+			let spy2 = testUtils.sinon.spy();
 
 			setTestViewClass( function() {
 				return {
@@ -385,9 +381,9 @@ describe( 'View', () => {
 		} );
 
 		it( 'accepts DOM selectors', () => {
-			let spy1 = bender.sinon.spy();
-			let spy2 = bender.sinon.spy();
-			let spy3 = bender.sinon.spy();
+			let spy1 = testUtils.sinon.spy();
+			let spy2 = testUtils.sinon.spy();
+			let spy3 = testUtils.sinon.spy();
 
 			setTestViewClass( function() {
 				return {
@@ -470,8 +466,8 @@ describe( 'View', () => {
 		} );
 
 		it( 'accepts function callbacks', () => {
-			let spy1 = bender.sinon.spy();
-			let spy2 = bender.sinon.spy();
+			let spy1 = testUtils.sinon.spy();
+			let spy2 = testUtils.sinon.spy();
 
 			setTestViewClass( function() {
 				return {
@@ -503,7 +499,7 @@ describe( 'View', () => {
 		} );
 
 		it( 'supports event delegation', () => {
-			let spy = bender.sinon.spy();
+			let spy = testUtils.sinon.spy();
 
 			setTestViewClass( function() {
 				return {
@@ -531,7 +527,7 @@ describe( 'View', () => {
 		} );
 
 		it( 'works for future elements', () => {
-			let spy = bender.sinon.spy();
+			let spy = testUtils.sinon.spy();
 
 			setTestViewClass( function() {
 				return {
@@ -580,7 +576,7 @@ describe( 'View', () => {
 
 		it( 'destroys child regions', () => {
 			const region = new Region( 'x' );
-			const spy = bender.sinon.spy( region, 'destroy' );
+			const spy = testUtils.sinon.spy( region, 'destroy' );
 			const regionsRef = view.regions;
 			const regionViewsRef = region.views;
 
@@ -626,13 +622,6 @@ describe( 'View', () => {
 		} );
 	} );
 } );
-
-function updateModuleReference() {
-	View = modules[ 'core/ui/view' ];
-	Region = modules[ 'core/ui/region' ];
-	Model = modules[ 'core/model' ];
-	CKEditorError = modules[ 'core/ckeditorerror' ];
-}
 
 function createViewInstanceWithTemplate() {
 	setTestViewClass( () => ( { tag: 'a' } ) );
