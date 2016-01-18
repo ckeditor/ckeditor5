@@ -167,13 +167,13 @@ describe( 'Model', () => {
 			car.set( 'seats', undefined );
 
 			sinon.assert.calledOnce( spy );
-			expect( car._attributes ).to.contain.keys( 'seats' );
+			expect( car ).to.contain.keys( 'seats' );
 			expect( car.seats ).to.be.undefined;
 
 			car.set( 'seats', 5 );
 
 			sinon.assert.calledTwice( spy );
-			expect( car._attributes ).to.have.property( 'seats', 5 );
+			expect( car ).to.have.property( 'seats', 5 );
 		} );
 	} );
 
