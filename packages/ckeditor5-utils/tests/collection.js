@@ -5,9 +5,12 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'core/collection', 'core/ckeditorerror', 'core/utils' );
+import testUtils from '/tests/_utils/utils.js';
+import Collection from '/ckeditor5/core/collection.js';
+import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
+import utils from '/ckeditor5/core/utils.js';
 
-bender.tools.createSinonSandbox();
+testUtils.createSinonSandbox();
 
 function getItem( id, idProperty ) {
 	idProperty = idProperty || 'id';
@@ -18,14 +21,6 @@ function getItem( id, idProperty ) {
 }
 
 describe( 'Collection', () => {
-	let Collection, CKEditorError, utils;
-
-	before( () => {
-		Collection = modules[ 'core/collection' ];
-		CKEditorError = modules[ 'core/ckeditorerror' ];
-		utils = modules[ 'core/utils' ];
-	} );
-
 	let collection;
 
 	beforeEach( () => {
@@ -150,7 +145,7 @@ describe( 'Collection', () => {
 			() => {
 				let nextUid = 0;
 
-				bender.sinon.stub( utils, 'uid', () => {
+				testUtils.sinon.stub( utils, 'uid', () => {
 					return nextUid++;
 				} );
 
@@ -440,7 +435,7 @@ describe( 'Collection', () => {
 
 	describe( 'map', () => {
 		it( 'uses native map', () => {
-			let spy = bender.sinon.stub( Array.prototype, 'map', () => {
+			let spy = testUtils.sinon.stub( Array.prototype, 'map', () => {
 				return [ 'foo' ];
 			} );
 			let ctx = {};
@@ -458,7 +453,7 @@ describe( 'Collection', () => {
 		it( 'uses native find', () => {
 			let needl = getItem( 'foo' );
 
-			let spy = bender.sinon.stub( Array.prototype, 'find', () => {
+			let spy = testUtils.sinon.stub( Array.prototype, 'find', () => {
 				return needl;
 			} );
 			let ctx = {};
@@ -476,7 +471,7 @@ describe( 'Collection', () => {
 		it( 'uses native filter', () => {
 			let needl = getItem( 'foo' );
 
-			let spy = bender.sinon.stub( Array.prototype, 'filter', () => {
+			let spy = testUtils.sinon.stub( Array.prototype, 'filter', () => {
 				return [ needl ];
 			} );
 			let ctx = {};

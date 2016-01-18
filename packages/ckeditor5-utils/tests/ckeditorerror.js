@@ -5,15 +5,9 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'core/ckeditorerror' );
+import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
 describe( 'CKEditorError', () => {
-	let CKEditorError;
-
-	before( () => {
-		CKEditorError = modules[ 'core/ckeditorerror' ];
-	} );
-
 	it( 'inherits from Error', () => {
 		let error = new CKEditorError( 'foo' );
 

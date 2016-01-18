@@ -5,21 +5,16 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'core/model', 'core/eventinfo', 'core/ckeditorerror' );
+import testUtils from '/tests/_utils/utils.js';
+import Model from '/ckeditor5/core/model.js';
+import EventInfo from '/ckeditor5/core/eventinfo.js';
+import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
 let Car, car;
 
-bender.tools.createSinonSandbox();
+testUtils.createSinonSandbox();
 
 describe( 'Model', () => {
-	let Model, EventInfo, CKEditorError;
-
-	before( () => {
-		Model = modules[ 'core/model' ];
-		EventInfo = modules[ 'core/eventinfo' ];
-		CKEditorError = modules[ 'core/ckeditorerror' ];
-	} );
-
 	beforeEach( 'Create a test model instance', () => {
 		Car = class extends Model {};
 
