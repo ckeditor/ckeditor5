@@ -191,7 +191,9 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 	 */
 	appendBenderLauncher() {
 		return through( { objectMode: true }, ( file, encoding, callback ) => {
-			file.contents = new Buffer( file.contents.toString() + utils.benderLauncherCode );
+			if ( !file.isNull() ) {
+				file.contents = new Buffer( file.contents.toString() + utils.benderLauncherCode );
+			}
 
 			callback( null, file );
 		} );
