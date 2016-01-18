@@ -686,7 +686,7 @@ describe( 'Model', () => {
 			it( 'should fire a single change event per bound attribute', () => {
 				const vehicle = new Car();
 				const car = new Car( { color: 'red', year: 1943 } );
-				const spy = bender.sinon.spy();
+				const spy = sinon.spy();
 
 				vehicle.on( 'change', spy );
 
