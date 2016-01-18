@@ -263,9 +263,9 @@ export default class Range {
 	 * we enter into when iterating over this range.
 	 *
 	 * **Note:** this method will not return a parent node of start position. This is in contrary to {@link treeModel.TreeWalker}
-	 * which will return that node with {@link treeModel.TreeWalker#ELEMENT_LEAVE} type. This method, also, returns each
-	 * {@link treeModel.Element} once, while iterator return it twice: for {@link treeModel.TreeWalker#ELEMENT_ENTER} and
-	 * {@link treeModel.TreeWalker#ELEMENT_LEAVE}.
+	 * which will return that node with {@link treeModel.TreeWalker#ELEMENT_END} type. This method, also, returns each
+	 * {@link treeModel.Element} once, while iterator return it twice: for {@link treeModel.TreeWalker#ELEMENT_START} and
+	 * {@link treeModel.TreeWalker#ELEMENT_END}.
 	 *
 	 * @see {treeModel.TreeWalker}
 	 * @param {Boolean} [mergeCharacters] Flag indicating whether all consecutive characters with the same attributes
@@ -280,7 +280,7 @@ export default class Range {
 		do {
 			step = it.next();
 
-			if ( step.value && step.value.type != TreeWalker.ELEMENT_LEAVE ) {
+			if ( step.value && step.value.type != TreeWalker.ELEMENT_END ) {
 				yield step.value.item;
 			}
 		} while ( !step.done );
@@ -330,9 +330,9 @@ export default class Range {
 				step = it.next();
 
 				if ( step.value ) {
-					if ( step.value.type == TreeWalker.ELEMENT_ENTER ) {
+					if ( step.value.type == TreeWalker.ELEMENT_START ) {
 						depth++;
-					} else if ( step.value.type == TreeWalker.ELEMENT_LEAVE ) {
+					} else if ( step.value.type == TreeWalker.ELEMENT_END ) {
 						depth--;
 					}
 

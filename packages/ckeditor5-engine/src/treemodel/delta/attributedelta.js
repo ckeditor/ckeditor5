@@ -114,8 +114,8 @@ function changeRange( doc, delta, key, value, range ) {
 
 	while ( !next.done ) {
 		// We check values only when the range contains given element, that is when the iterator "enters" the element.
-		// To prevent double-checking or not needed checking, we filter-out iterator values for ELEMENT_LEAVE position.
-		if ( next.value.type != TreeWalker.ELEMENT_LEAVE ) {
+		// To prevent double-checking or not needed checking, we filter-out iterator values for ELEMENT_END position.
+		if ( next.value.type != TreeWalker.ELEMENT_END ) {
 			valueAfter = next.value.item.attrs.getValue( key );
 
 			// At the first run of the iterator the position in undefined. We also do not have a valueBefore, but

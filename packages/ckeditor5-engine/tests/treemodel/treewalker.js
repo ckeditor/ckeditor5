@@ -17,14 +17,14 @@ import Range from '/ckeditor5/core/treemodel/range.js';
 import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
 describe( 'range iterator', () => {
-	let ELEMENT_ENTER, ELEMENT_LEAVE, CHARACTER, TEXT;
+	let ELEMENT_START, ELEMENT_END, CHARACTER, TEXT;
 
 	let doc, expectedItems, expectedItemsMerged, root, img1, paragraph, b, a, r, img2, x;
 
 	before( () => {
-		ELEMENT_ENTER = PositionIterator.ELEMENT_ENTER;
-		ELEMENT_LEAVE = PositionIterator.ELEMENT_LEAVE;
-		TEXT = PositionIterator.TEXT;
+		ELEMENT_START = TreeWalker.ELEMENT_START;
+		ELEMENT_END = TreeWalker.ELEMENT_END;
+		TEXT = TreeWalker.TEXT;
 
 		doc = new Document();
 		root = doc.createRoot( 'root' );
@@ -54,28 +54,28 @@ describe( 'range iterator', () => {
 		root.insertChildren( 0, [ img1, paragraph ] );
 
 		expectedItems = [
-			{ type: ELEMENT_ENTER, item: img1 },
-			{ type: ELEMENT_LEAVE, item: img1 },
-			{ type: ELEMENT_ENTER, item: paragraph },
+			{ type: ELEMENT_START, item: img1 },
+			{ type: ELEMENT_END, item: img1 },
+			{ type: ELEMENT_START, item: paragraph },
 			{ type: CHARACTER, text: 'b', attrs: [ attrBoldTrue ] },
 			{ type: CHARACTER, text: 'a', attrs: [ attrBoldTrue ] },
 			{ type: CHARACTER, text: 'r', attrs: [] },
-			{ type: ELEMENT_ENTER, item: img2 },
-			{ type: ELEMENT_LEAVE, item: img2 },
+			{ type: ELEMENT_START, item: img2 },
+			{ type: ELEMENT_END, item: img2 },
 			{ type: CHARACTER, text: 'x', attrs: [] },
-			{ type: ELEMENT_LEAVE, item: paragraph }
+			{ type: ELEMENT_END, item: paragraph }
 		];
 
 		expectedItemsMerged = [
-			{ type: ELEMENT_ENTER, item: img1 },
-			{ type: ELEMENT_LEAVE, item: img1 },
-			{ type: ELEMENT_ENTER, item: paragraph },
+			{ type: ELEMENT_START, item: img1 },
+			{ type: ELEMENT_END, item: img1 },
+			{ type: ELEMENT_START, item: paragraph },
 			{ type: TEXT, text: 'ba', attrs: [ attrBoldTrue ] },
 			{ type: TEXT, text: 'r', attrs: [] },
-			{ type: ELEMENT_ENTER, item: img2 },
-			{ type: ELEMENT_LEAVE, item: img2 },
+			{ type: ELEMENT_START, item: img2 },
+			{ type: ELEMENT_END, item: img2 },
 			{ type: TEXT, text: 'x', attrs: [] },
-			{ type: ELEMENT_LEAVE, item: paragraph }
+			{ type: ELEMENT_END, item: paragraph }
 		];
 	} );
 
