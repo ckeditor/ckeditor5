@@ -7,15 +7,9 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'core/treemodel/attribute' );
+import Attribute from '/ckeditor5/core/treemodel/attribute.js';
 
 describe( 'Attribute', () => {
-	let Attribute;
-
-	before( () => {
-		Attribute = modules[ 'core/treemodel/attribute' ];
-	} );
-
 	beforeEach( () => {
 		Attribute._register = {};
 	} );

@@ -4,37 +4,24 @@
  */
 
 /* bender-tags: treemodel */
-/* bender-include: ../_tools/tools.js */
 
 'use strict';
 
-const getIteratorCount = bender.tools.core.getIteratorCount;
+import coreTestUtils from '/tests/core/_utils/utils.js';
+import Attribute from '/ckeditor5/core/treemodel/attribute.js';
+import Element from '/ckeditor5/core/treemodel/element.js';
+import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
+import Character from '/ckeditor5/core/treemodel/character.js';
 
-const modules = bender.amd.require(
-	'core/treemodel/element',
-	'core/treemodel/character',
-	'core/treemodel/attribute',
-	'core/treemodel/attributelist',
-	'core/treemodel/nodelist',
-	'core/ckeditorerror'
-);
+const getIteratorCount = coreTestUtils.getIteratorCount;
 
 describe( 'Node', () => {
-	let Element, Character, Attribute, AttributeList, NodeList, CKEditorError;
-
 	let root;
 	let one, two, three;
 	let charB, charA, charR, img, attrEle;
 	let attrFooBar;
 
 	before( () => {
-		Element = modules[ 'core/treemodel/element' ];
-		Character = modules[ 'core/treemodel/character' ];
-		Attribute = modules[ 'core/treemodel/attribute' ];
-		AttributeList = modules[ 'core/treemodel/attributelist' ];
-		NodeList = modules[ 'core/treemodel/nodelist' ];
-		CKEditorError = modules[ 'core/ckeditorerror' ];
-
 		charB = new Character( 'b' );
 		charA = new Character( 'a' );
 		img = new Element( 'img' );

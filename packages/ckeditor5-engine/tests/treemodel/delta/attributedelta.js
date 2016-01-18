@@ -5,37 +5,21 @@
 
 /* bender-tags: treemodel, delta */
 
-/* bender-include: ../../_tools/tools.js */
-
 'use strict';
 
-const getIteratorCount = bender.tools.core.getIteratorCount;
+import coreTestUtils from '/tests/core/_utils/utils.js';
+import Document from '/ckeditor5/core/treemodel/document.js';
+import Text from '/ckeditor5/core/treemodel/text.js';
+import Attribute from '/ckeditor5/core/treemodel/attribute.js';
+import Range from '/ckeditor5/core/treemodel/range.js';
+import Position from '/ckeditor5/core/treemodel/position.js';
+import Element from '/ckeditor5/core/treemodel/element.js';
+import Character from '/ckeditor5/core/treemodel/character.js';
 
-const modules = bender.amd.require(
-	'core/treemodel/batch',
-	'core/treemodel/document',
-	'core/treemodel/text',
-	'core/treemodel/attribute',
-	'core/treemodel/range',
-	'core/treemodel/position',
-	'core/treemodel/element',
-	'core/treemodel/character' );
+const getIteratorCount = coreTestUtils.getIteratorCount;
 
 describe( 'Batch', () => {
-	let Batch, Document, Text, Attribute, Range, Position, Element, Character;
-
 	let doc, root, batch;
-
-	before( () => {
-		Batch = modules[ 'core/treemodel/batch' ];
-		Document = modules[ 'core/treemodel/document' ];
-		Text = modules[ 'core/treemodel/text' ];
-		Attribute = modules[ 'core/treemodel/attribute' ];
-		Range = modules[ 'core/treemodel/range' ];
-		Position = modules[ 'core/treemodel/position' ];
-		Element = modules[ 'core/treemodel/element' ];
-		Character = modules[ 'core/treemodel/character' ];
-	} );
 
 	beforeEach( () => {
 		doc = new Document();

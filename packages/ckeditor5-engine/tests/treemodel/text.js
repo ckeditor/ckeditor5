@@ -7,17 +7,12 @@
 
 'use strict';
 
-const modules = bender.amd.require(
-	'core/treemodel/text',
-	'core/treemodel/attribute'
-);
+import Text from '/ckeditor5/core/treemodel/text.js';
+import Attribute from '/ckeditor5/core/treemodel/attribute.js';
 
 describe( 'Text', () => {
 	describe( 'constructor', () => {
 		it( 'should create character without attributes', () => {
-			const Text = modules[ 'core/treemodel/text' ];
-			const Attribute = modules[ 'core/treemodel/attribute' ];
-
 			let attrs = [ new Attribute( 'bold', true ) ];
 			let text = new Text( 'bar', attrs );
 

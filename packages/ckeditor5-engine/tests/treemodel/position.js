@@ -7,18 +7,13 @@
 
 'use strict';
 
-const modules = bender.amd.require(
-	'core/treemodel/element',
-	'core/treemodel/character',
-	'core/treemodel/position',
-	'core/treemodel/document',
-	'core/ckeditorerror',
-	'core/treemodel/nodelist'
-);
+import Document from '/ckeditor5/core/treemodel/document.js';
+import Element from '/ckeditor5/core/treemodel/element.js';
+import Character from '/ckeditor5/core/treemodel/character.js';
+import Position from '/ckeditor5/core/treemodel/position.js';
+import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
 describe( 'position', () => {
-	let Element, Character, Document, NodeList, Position, CKEditorError;
-
 	let doc, root, otherRoot, p, ul, li1, li2, f, o, z, b, a, r;
 
 	// root
@@ -33,13 +28,6 @@ describe( 'position', () => {
 	//        |- a   Before: [ 1, 1, 1 ] After: [ 1, 1, 2 ]
 	//        |- r   Before: [ 1, 1, 2 ] After: [ 1, 1, 3 ]
 	before( () => {
-		Element = modules[ 'core/treemodel/element' ];
-		Character = modules[ 'core/treemodel/character' ];
-		Document = modules[ 'core/treemodel/document' ];
-		NodeList = modules[ 'core/treemodel/nodelist' ];
-		Position = modules[ 'core/treemodel/position' ];
-		CKEditorError = modules[ 'core/ckeditorerror' ];
-
 		doc = new Document();
 
 		root = doc.createRoot( 'root' );

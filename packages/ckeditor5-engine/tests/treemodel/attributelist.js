@@ -4,25 +4,16 @@
  */
 
 /* bender-tags: treemodel */
-/* bender-include: ../_tools/tools.js */
 
 'use strict';
 
-const getIteratorCount = bender.tools.core.getIteratorCount;
+import coreTestUtils from '/tests/core/_utils/utils.js';
+import AttributeList from '/ckeditor5/core/treemodel/attributelist.js';
+import Attribute from '/ckeditor5/core/treemodel/attribute.js';
 
-const modules = bender.amd.require(
-	'core/treemodel/attributelist',
-	'core/treemodel/attribute'
-);
+const getIteratorCount = coreTestUtils.getIteratorCount;
 
 describe( 'AttributeList', () => {
-	let AttributeList, Attribute;
-
-	before( () => {
-		AttributeList = modules[ 'core/treemodel/attributelist' ];
-		Attribute = modules[ 'core/treemodel/attribute' ];
-	} );
-
 	let list, attrFooBar;
 
 	beforeEach( () => {
