@@ -5,23 +5,14 @@
 
 /* bender-tags: treemodel, delta */
 
-/* bender-include: ../../_tools/tools.js */
-
 'use strict';
 
-const getIteratorCount = bender.tools.core.getIteratorCount;
+import coreTestUtils from '/tests/core/_utils/utils.js';
+import Delta from '/ckeditor5/core/treemodel/delta/delta.js';
 
-const modules = bender.amd.require(
-	'core/treemodel/delta/delta'
-);
+const getIteratorCount = coreTestUtils.getIteratorCount;
 
 describe( 'Delta', () => {
-	let Delta;
-
-	before( () => {
-		Delta = modules[ 'core/treemodel/delta/delta' ];
-	} );
-
 	describe( 'constructor', () => {
 		it( 'should create an delta with empty properties', () => {
 			const delta = new Delta();

@@ -7,25 +7,19 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'ckeditor',
-	'core/ui/view',
-	'core/ui/controller',
-	'core/ui/controllercollection',
-	'core/ui/region',
-	'core/ckeditorerror',
-	'core/model',
-	'core/collection',
-	'core/eventinfo'
-);
+import testUtils from '/tests/_utils/utils.js';
+import View from '/ckeditor5/core/ui/view.js';
+import Controller from '/ckeditor5/core/ui/controller.js';
+import ControllerCollection from '/ckeditor5/core/ui/controllercollection.js';
+import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
+import Model from '/ckeditor5/core/model.js';
+import EventInfo from '/ckeditor5/core/eventinfo.js';
 
-let View, Controller, Model, CKEditorError, Collection, ControllerCollection, EventInfo;
 let ParentController, ParentView;
 
-bender.tools.createSinonSandbox();
+testUtils.createSinonSandbox();
 
 describe( 'Controller', () => {
-	beforeEach( updateModuleReference );
-
 	describe( 'constructor', () => {
 		it( 'defines basic properties', () => {
 			const controller = new Controller();
@@ -73,7 +67,7 @@ describe( 'Controller', () => {
 		it( 'should initialize own view', () => {
 			const view = new View();
 			const controller = new Controller( null, view );
-			const spy = bender.sinon.spy( view, 'init' );
+			const spy = testUtils.sinon.spy( view, 'init' );
 
 			return controller.init().then( () => {
 				sinon.assert.calledOnce( spy );
@@ -87,8 +81,8 @@ describe( 'Controller', () => {
 
 			const childController1 = new Controller();
 			const childController2 = new Controller();
-			const spy1 = bender.sinon.spy( childController1, 'init' );
-			const spy2 = bender.sinon.spy( childController2, 'init' );
+			const spy1 = testUtils.sinon.spy( childController1, 'init' );
+			const spy2 = testUtils.sinon.spy( childController2, 'init' );
 
 			buttonCollection.add( childController1 );
 			buttonCollection.add( childController2 );
@@ -127,7 +121,7 @@ describe( 'Controller', () => {
 				const parentController = new ParentController( null, parentView );
 				const collection = parentController.collections.get( 'x' );
 				const childController = new Controller( null, new View() );
-				const spy = bender.sinon.spy();
+				const spy = testUtils.sinon.spy();
 
 				parentView.regions.get( 'x' ).views.on( 'add', spy );
 
@@ -180,8 +174,7 @@ describe( 'Controller', () => {
 				const parentController = new ParentController( null, parentView );
 				const collection = parentController.collections.get( 'x' );
 				const childController = new Controller( null, new View() );
-
-				const spy = bender.sinon.spy();
+				const spy = testUtils.sinon.spy();
 				parentView.regions.get( 'x' ).views.on( 'remove', spy );
 
 				collection.add( childController );
@@ -206,7 +199,7 @@ describe( 'Controller', () => {
 		it( 'should destroy the controller', () => {
 			const view = new View();
 			const controller = new Controller( null, view );
-			const spy = bender.sinon.spy( view, 'destroy' );
+			const spy = testUtils.sinon.spy( view, 'destroy' );
 
 			return controller.init()
 				.then( () => {
@@ -241,7 +234,7 @@ describe( 'Controller', () => {
 			const collection = parentController.collections.get( 'x' );
 			const childView = new View();
 			const childController = new Controller( null, childView );
-			const spy = bender.sinon.spy( childView, 'destroy' );
+			const spy = testUtils.sinon.spy( childView, 'destroy' );
 
 			collection.add( childController );
 
@@ -276,16 +269,6 @@ describe( 'Controller', () => {
 		} );
 	} );
 } );
-
-function updateModuleReference() {
-	View = modules[ 'core/ui/view' ];
-	Controller = modules[ 'core/ui/controller' ];
-	Model = modules[ 'core/model' ];
-	Collection = modules[ 'core/collection ' ];
-	ControllerCollection = modules[ 'core/ui/controllercollection' ];
-	CKEditorError = modules[ 'core/ckeditorerror' ];
-	EventInfo = modules[ 'core/eventinfo' ];
-}
 
 function defineParentViewClass() {
 	ParentView = class extends View {

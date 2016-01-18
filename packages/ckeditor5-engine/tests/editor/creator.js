@@ -5,11 +5,14 @@
 
 'use strict';
 
-/* bender-include: ../_tools/tools.js */
+import amdUtils from '/tests/_utils/amd.js';
+import testUtils from '/tests/_utils/utils.js';
+import coreTestUtils from '/tests/core/_utils/utils.js';
+import Editor from '/ckeditor5/core/editor.js';
+import Creator from '/ckeditor5/core/creator.js';
+import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
-const modules = bender.amd.require( 'core/editor', 'core/plugin', 'core/creator', 'core/ckeditorerror' );
 let editor, element;
-let Editor, Plugin, Creator, CKEditorError;
 
 function initEditor( config ) {
 	element = document.createElement( 'div' );
@@ -20,29 +23,22 @@ function initEditor( config ) {
 	return editor.init();
 }
 
-bender.tools.createSinonSandbox();
+testUtils.createSinonSandbox();
 
 before( () => {
-	Editor = modules[ 'core/editor' ];
-	Plugin = modules[ 'core/plugin' ];
-	Creator = modules[ 'core/creator' ];
-	CKEditorError = modules[ 'core/ckeditorerror' ];
+	coreTestUtils.defineEditorCreatorMock( 'test1' );
 
-	const coreTools = bender.tools.core;
+	coreTestUtils.defineEditorCreatorMock( 'test-throw-on-many1' );
+	coreTestUtils.defineEditorCreatorMock( 'test-throw-on-many2' );
 
-	coreTools.defineEditorCreatorMock( 'test1' );
+	coreTestUtils.defineEditorCreatorMock( 'test-config1' );
+	coreTestUtils.defineEditorCreatorMock( 'test-config2' );
 
-	coreTools.defineEditorCreatorMock( 'test-throw-on-many1' );
-	coreTools.defineEditorCreatorMock( 'test-throw-on-many2' );
-
-	coreTools.defineEditorCreatorMock( 'test-config1' );
-	coreTools.defineEditorCreatorMock( 'test-config2' );
-
-	bender.amd.define( 'test3', [ 'core/plugin' ], ( Plugin ) => {
+	amdUtils.define( 'test3', [ 'core/plugin' ], ( Plugin ) => {
 		return class extends Plugin {};
 	} );
 
-	bender.amd.define( 'creator-async-create', [ 'core/creator' ], ( Creator ) => {
+	amdUtils.define( 'creator-async-create', [ 'core/creator' ], ( Creator ) => {
 		return class extends Creator {
 			create() {
 				return new Promise( ( resolve, reject ) => {
@@ -54,7 +50,7 @@ before( () => {
 		};
 	} );
 
-	bender.amd.define( 'creator-async-destroy', [ 'core/creator' ], ( Creator ) => {
+	amdUtils.define( 'creator-async-destroy', [ 'core/creator' ], ( Creator ) => {
 		return class extends Creator {
 			create() {}
 
