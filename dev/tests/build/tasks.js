@@ -10,7 +10,7 @@
 const mockery = require( 'mockery' );
 const sinon = require( 'sinon' );
 const Vinyl = require( 'vinyl' );
-const utils = require( '../../tasks/gulp/build/utils' );
+const utils = require( '../../tasks/build/utils' );
 const babel = require( 'babel-core' );
 const chai = require( 'chai' );
 const expect = chai.expect;
@@ -41,7 +41,7 @@ describe( 'build-tasks', () => {
 			};
 		} );
 
-		tasks = require( '../../tasks/gulp/build/tasks' )( config );
+		tasks = require( '../../tasks/build/tasks' )( config );
 	} );
 
 	afterEach( () => {

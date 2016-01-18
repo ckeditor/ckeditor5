@@ -18,7 +18,7 @@ const Vinyl = require( 'vinyl' );
 const through = require( 'through2' );
 
 describe( 'build-utils', () => {
-	const utils = require( '../../tasks/gulp/build/utils' );
+	const utils = require( '../../tasks/build/utils' );
 	let sandbox;
 
 	beforeEach( () => {
