@@ -5,15 +5,9 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'core/eventinfo' );
+import EventInfo from '/ckeditor5/core/eventinfo.js';
 
 describe( 'EventInfo', () => {
-	let EventInfo;
-
-	before( () => {
-		EventInfo = modules[ 'core/eventinfo' ];
-	} );
-
 	it( 'should be created properly', () => {
 		let event = new EventInfo( this, 'test' );
 
