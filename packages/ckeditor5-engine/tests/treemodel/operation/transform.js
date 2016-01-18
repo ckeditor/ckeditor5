@@ -3,44 +3,22 @@
  * For licensing, see LICENSE.md.
  */
 
-/* jshint expr: true */
-
 /* bender-tags: treemodel, operation */
-/* global describe, before, beforeEach, it, expect */
 
 'use strict';
 
-const modules = bender.amd.require(
-	'core/treemodel/rootelement',
-	'core/treemodel/node',
-	'core/treemodel/position',
-	'core/treemodel/range',
-	'core/treemodel/attribute',
-	'core/treemodel/operation/transform',
-	'core/treemodel/operation/insertoperation',
-	'core/treemodel/operation/attributeoperation',
-	'core/treemodel/operation/moveoperation',
-	'core/treemodel/operation/nooperation'
-);
+import RootElement from '/ckeditor5/core/treemodel/rootelement.js';
+import Node from '/ckeditor5/core/treemodel/node.js';
+import Position from '/ckeditor5/core/treemodel/position.js';
+import Range from '/ckeditor5/core/treemodel/range.js';
+import Attribute from '/ckeditor5/core/treemodel/attribute.js';
+import transform from '/ckeditor5/core/treemodel/operation/transform.js';
+import InsertOperation from '/ckeditor5/core/treemodel/operation/insertoperation.js';
+import AttributeOperation from '/ckeditor5/core/treemodel/operation/attributeoperation.js';
+import MoveOperation from '/ckeditor5/core/treemodel/operation/moveoperation.js';
+import NoOperation from '/ckeditor5/core/treemodel/operation/nooperation.js';
 
 describe( 'transform', () => {
-	let RootElement, Node, Position, Range, Attribute, InsertOperation, AttributeOperation, MoveOperation, NoOperation;
-	let transform;
-
-	before( () => {
-		RootElement = modules[ 'core/treemodel/rootelement' ];
-		Node = modules[ 'core/treemodel/node' ];
-		Position = modules[ 'core/treemodel/position' ];
-		Range = modules[ 'core/treemodel/range' ];
-		Attribute = modules[ 'core/treemodel/attribute' ];
-		InsertOperation = modules[ 'core/treemodel/operation/insertoperation' ];
-		AttributeOperation = modules[ 'core/treemodel/operation/attributeoperation' ];
-		MoveOperation = modules[ 'core/treemodel/operation/moveoperation' ];
-		NoOperation = modules[ 'core/treemodel/operation/nooperation' ];
-
-		transform = modules[ 'core/treemodel/operation/transform' ];
-	} );
-
 	let root, op, nodeA, nodeB, expected, baseVersion;
 
 	beforeEach( () => {

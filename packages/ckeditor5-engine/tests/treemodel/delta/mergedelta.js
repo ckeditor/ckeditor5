@@ -5,31 +5,19 @@
 
 /* bender-tags: treemodel, delta */
 
-/* bender-include: ../../_tools/tools.js */
-
 'use strict';
 
-const getIteratorCount = bender.tools.core.getIteratorCount;
+import coreTestUtils from '/tests/core/_utils/utils.js';
+import Document from '/ckeditor5/core/treemodel/document.js';
+import Position from '/ckeditor5/core/treemodel/position.js';
+import Element from '/ckeditor5/core/treemodel/element.js';
+import Attribute from '/ckeditor5/core/treemodel/attribute.js';
+import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
-const modules = bender.amd.require(
-	'core/treemodel/document',
-	'core/treemodel/position',
-	'core/treemodel/element',
-	'core/treemodel/attribute',
-	'core/ckeditorerror' );
+const getIteratorCount = coreTestUtils.getIteratorCount;
 
 describe( 'Batch', () => {
-	let Document, Position, Element, Attribute, CKEditorError;
-
 	let doc, root, p1, p2;
-
-	before( () => {
-		Document = modules[ 'core/treemodel/document' ];
-		Position = modules[ 'core/treemodel/position' ];
-		Element = modules[ 'core/treemodel/element' ];
-		Attribute = modules[ 'core/treemodel/attribute' ];
-		CKEditorError = modules[ 'core/ckeditorerror' ];
-	} );
 
 	beforeEach( () => {
 		doc = new Document();

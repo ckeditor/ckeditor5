@@ -5,15 +5,9 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'core/utils' );
+import utils from '/ckeditor5/core/utils.js';
 
 describe( 'utils', () => {
-	let utils;
-
-	before( () => {
-		utils = modules[ 'core/utils' ];
-	} );
-
 	describe( 'spy', () => {
 		it( 'should not have `called` after creation', () => {
 			let spy = utils.spy();

@@ -5,19 +5,17 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'core/plugin', 'core/editor' );
+import Plugin from '/ckeditor5/core/plugin.js';
+import Editor from '/ckeditor5/core/editor.js';
+
 let editor;
 
 before( () => {
-	const Editor = modules[ 'core/editor' ];
-
 	editor = new Editor( document.body.appendChild( document.createElement( 'div' ) ) );
 } );
 
 describe( 'constructor', () => {
 	it( 'should set the `editor` property', () => {
-		const Plugin = modules[ 'core/plugin' ];
-
 		let plugin = new Plugin( editor );
 
 		expect( plugin ).to.have.property( 'editor' ).to.equal( editor );

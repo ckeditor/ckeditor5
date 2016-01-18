@@ -7,23 +7,11 @@
 
 'use strict';
 
-const modules = bender.amd.require(
-	'core/treemodel/document',
-	'core/treemodel/element',
-	'core/treemodel/position',
-	'core/treemodel/delta/insertdelta'
-);
+import Document from '/ckeditor5/core/treemodel/document.js';
+import Element from '/ckeditor5/core/treemodel/element.js';
+import Position from '/ckeditor5/core/treemodel/position.js';
 
 describe( 'Batch', () => {
-	let Document, Element, Position, InsertDelta;
-
-	before( () => {
-		Document = modules[ 'core/treemodel/document' ];
-		Element = modules[ 'core/treemodel/element' ];
-		Position = modules[ 'core/treemodel/position' ];
-		InsertDelta = modules[ 'core/treemodel/delta/insertdelta' ];
-	} );
-
 	let doc, root, batch, p, ul, chain;
 
 	beforeEach( () => {
