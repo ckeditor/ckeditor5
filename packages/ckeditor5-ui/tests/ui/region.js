@@ -8,11 +8,9 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'core/ui/region', 'core/ui/view' );
+import Region from '/ckeditor5/core/ui/region.js';
+import View from '/ckeditor5/core/ui/view.js';
 
-bender.tools.createSinonSandbox();
-
-let Region, View;
 let TestViewA, TestViewB;
 let region, el;
 
@@ -107,9 +105,6 @@ describe( 'View', () => {
 } );
 
 function createRegionInstance() {
-	Region = modules[ 'core/ui/region' ];
-	View = modules[ 'core/ui/view' ];
-
 	class A extends View {
 		constructor() {
 			super();
