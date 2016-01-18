@@ -7,27 +7,17 @@
 
 'use strict';
 
-const modules = bender.amd.require(
-	'core/treemodel/element',
-	'core/treemodel/text',
-	'core/treemodel/attribute',
-	'core/treemodel/textfragment',
-	'core/treemodel/position',
-	'core/treemodel/document'
-);
+import Element from '/ckeditor5/core/treemodel/element.js';
+import Text from '/ckeditor5/core/treemodel/text.js';
+import Attribute from '/ckeditor5/core/treemodel/attribute.js';
+import TextFragment from '/ckeditor5/core/treemodel/textfragment.js';
+import Position from '/ckeditor5/core/treemodel/position.js';
+import Document from '/ckeditor5/core/treemodel/document.js';
 
 describe( 'TextFragment', () => {
-	let Element, Text, Attribute, TextFragment, Position, Document;
 	let doc, text, element, textFragment, root;
 
 	before( () => {
-		Element = modules[ 'core/treemodel/element' ];
-		Text = modules[ 'core/treemodel/text' ];
-		Attribute = modules[ 'core/treemodel/attribute' ];
-		TextFragment = modules[ 'core/treemodel/textfragment' ];
-		Position = modules[ 'core/treemodel/position' ];
-		Document = modules[ 'core/treemodel/document' ];
-
 		text = new Text( 'foobar', [ new Attribute( 'abc', 'xyz' ) ] );
 		element = new Element( 'div', [], [ text ] );
 		doc = new Document();

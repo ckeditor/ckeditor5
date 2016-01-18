@@ -25,6 +25,7 @@ describe( 'range iterator', () => {
 		ELEMENT_START = TreeWalker.ELEMENT_START;
 		ELEMENT_END = TreeWalker.ELEMENT_END;
 		TEXT = TreeWalker.TEXT;
+		CHARACTER = TreeWalker.CHARACTER;
 
 		doc = new Document();
 		root = doc.createRoot( 'root' );

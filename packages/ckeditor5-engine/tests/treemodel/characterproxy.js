@@ -7,23 +7,15 @@
 
 'use strict';
 
-const modules = bender.amd.require(
-	'core/treemodel/node',
-	'core/treemodel/element',
-	'core/treemodel/text',
-	'core/treemodel/attribute'
-);
+import Node from '/ckeditor5/core/treemodel/node.js';
+import Element from '/ckeditor5/core/treemodel/element.js';
+import Text from '/ckeditor5/core/treemodel/text.js';
+import Attribute from '/ckeditor5/core/treemodel/attribute.js';
 
 describe( 'CharacterProxy', () => {
-	let Node, Element, Text, Attribute;
 	let text, element, char;
 
 	before( () => {
-		Node = modules[ 'core/treemodel/node' ];
-		Element = modules[ 'core/treemodel/element' ];
-		Text = modules[ 'core/treemodel/text' ];
-		Attribute = modules[ 'core/treemodel/attribute' ];
-
 		text = new Text( 'abc', [ new Attribute( 'foo', true ) ] );
 		element = new Element( 'div', [], [ new Element( 'p' ), text, new Element( 'p' ) ] );
 	} );

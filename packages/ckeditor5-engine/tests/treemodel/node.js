@@ -18,8 +18,6 @@ describe( 'Node', () => {
 	let charB, charA, charR, img;
 
 	before( () => {
-		charB = new Character( 'b' );
-		charA = new Character( 'a' );
 		img = new Element( 'img' );
 
 		one = new Element( 'one' );
