@@ -53,7 +53,7 @@ export default class TreeWalker {
 		 *
 		 * @property {treeModel.Range} boundaries
 		 */
-		this.boundaries = options.boundaries ? options.boundaries : null;
+		this.boundaries = options.boundaries || null;
 
 		/**
 		 * Start boundary cached for optimization purposes.
@@ -105,7 +105,7 @@ export default class TreeWalker {
 	 * @returns {Object} return.value
 	 * @returns {Number} return.value.type Encountered value type, possible options: {@link TreeWalker#ELEMENT_START},
 	 * {@link TreeWalker#ELEMENT_END}, {@link TreeWalker#CHARACTER} or {@link TreeWalker#TEXT}.
-	 * @returns {treeModel.Node} return.value.node Encountered node.
+	 * @returns {treeModel.Node} return.value.item Encountered node.
 	 */
 	next() {
 		const position = Position.createFromPosition( this.position );
