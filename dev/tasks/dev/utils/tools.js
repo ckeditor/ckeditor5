@@ -189,15 +189,6 @@ module.exports = {
 	},
 
 	/**
-	 * Installs Git hooks in specified repository.
-	 *
-	 * @param {String} path
-	 */
-	installGitHooks( path ) {
-		this.shExec( `cd ${ path } && grunt githooks` );
-	},
-
-	/**
 	 * Copies source files/directories into destination directory.
 	 * If directory path is provided in sources array - all files inside that directory will be copied.
 	 *

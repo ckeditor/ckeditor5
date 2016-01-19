@@ -22,7 +22,6 @@ const path = require( 'path' );
  * 5. If plugin exists in `ckeditor5/node_modules/` - runs `npm uninstall plugin_name`.
  * 6. Links plugin directory into `ckeditor5/node_modules/`.
  * 7. Adds dependency to `ckeditor5/package.json`.
- * 8. Installs Git hooks.
  *
  * @param {String} ckeditor5Path Absolute path to `ckeditor5` repository.
  * @param {String} workspaceRoot Relative path to workspace root directory.
@@ -105,9 +104,6 @@ module.exports = ( ckeditor5Path, workspaceRoot, name, writeln ) => {
 
 			return json;
 		} );
-
-		writeln( `Installing Git hooks in ${ urlInfo.name }...` );
-		tools.installGitHooks( repositoryPath );
 	} else {
 		throw new Error( 'Please provide valid GitHub URL, NPM module name or path.' );
 	}

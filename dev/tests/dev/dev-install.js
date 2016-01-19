@@ -34,7 +34,6 @@ describe( 'dev-install', () => {
 		spies.getGitUrlFromNpm = sinon.stub( tools, 'getGitUrlFromNpm' );
 		spies.readPackageName = sinon.stub( tools, 'readPackageName' );
 		spies.npmUninstall = sinon.stub( tools, 'npmUninstall' );
-		spies.installGitHooks = sinon.stub( tools, 'installGitHooks' );
 	} );
 
 	afterEach( () => {
@@ -80,9 +79,6 @@ describe( 'dev-install', () => {
 		const json = updateFn( {} );
 		expect( json.dependencies ).to.be.a( 'object' );
 		expect( json.dependencies[ urlInfo.name ] ).to.equal( repositoryUrl );
-
-		sinon.assert.calledOnce( spies.installGitHooks );
-		sinon.assert.calledWithExactly( spies.installGitHooks, repositoryPath );
 	} );
 
 	it( 'should use npm module name', () => {
@@ -123,9 +119,6 @@ describe( 'dev-install', () => {
 		const json = updateFn( {} );
 		expect( json.dependencies ).to.be.a( 'object' );
 		expect( json.dependencies[ urlInfo.name ] ).to.equal( repositoryUrl );
-
-		sinon.assert.calledOnce( spies.installGitHooks );
-		sinon.assert.calledWithExactly( spies.installGitHooks, repositoryPath );
 	} );
 
 	it( 'should use local relative path', () => {

@@ -319,19 +319,6 @@ describe( 'utils', () => {
 			} );
 		} );
 
-		describe( 'installGitHooks', () => {
-			it( 'should be defined', () => expect( tools.installGitHooks ).to.be.a( 'function' ) );
-			it( 'should execute grunt githooks command', () => {
-				const shExecStub = sandbox.stub( tools, 'shExec' );
-				const path = '/path/to/repository';
-
-				tools.installGitHooks( path );
-
-				expect( shExecStub.calledOnce ).to.equal( true );
-				expect( shExecStub.firstCall.args[ 0 ] ).to.equal( `cd ${ path } && grunt githooks` );
-			} );
-		} );
-
 		describe( 'copy', () => {
 			it( 'should be defined', () => expect( tools.copy ).to.be.a( 'function' ) );
 			it( 'should copy files', () => {
