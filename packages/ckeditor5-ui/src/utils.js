@@ -110,8 +110,8 @@ const utils = {
 	},
 
 	/**
-	 * Copies enumerable properties from the objects given as 2nd+ parameters to the
-	 * prototype of the base class.
+	 * Copies enumerable properties and symbols from the objects given as 2nd+ parameters to the
+	 * prototype of first object (a constructor).
 	 *
 	 *		class SpecificEditor extends utils.mix( Editor, SomeMixin1, SomeMixin2 ) {
 	 *			...
@@ -122,14 +122,13 @@ const utils = {
 	 */
 	mix( baseClass, ...mixins ) {
 		mixins.forEach( ( mixin ) => {
-			Object.keys( mixin ).forEach( ( key ) => {
-				Object.defineProperty( baseClass.prototype, key, {
-					enumerable: false,
-					configurable: true,
-					writable: true,
-					value: mixin[ key ]
+			Object.getOwnPropertyNames( mixin ).concat( Object.getOwnPropertySymbols( mixin ) )
+				.forEach( ( key ) => {
+					const sourceDescriptor = Object.getOwnPropertyDescriptor( mixin, key );
+					sourceDescriptor.enumerable = false;
+
+					Object.defineProperty( baseClass.prototype, key, sourceDescriptor );
 				} );
-			} );
 		} );
 	}
 };
