@@ -8,7 +8,7 @@
 import Position from './position.js';
 import Range from './range.js';
 import EmitterMixin from '../emittermixin.js';
-import objectUtils from '../lib/lodash/object.js';
+import utils from '../utils.js';
 
 /**
  * Enum representing how position is "sticking" with their neighbour nodes.
@@ -167,4 +167,4 @@ function transform( type, range, position ) {
 	this.root = transformed.root;
 }
 
-objectUtils.extend( LivePosition.prototype, EmitterMixin );
+utils.mix( LivePosition, EmitterMixin );
