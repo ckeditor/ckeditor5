@@ -35,9 +35,9 @@ export default class Text {
 		this.text = text || '';
 
 		/**
-		 * Iterable collection of {@link treeModel.Attribute attributes}.
+		 * {@link treeModel.Attribute AttributesList} bound with the text.
 		 *
-		 * @property {Iterable}
+		 * @property {treeModel.AttributeList}
 		 */
 		this.attrs = new AttributeList( attrs );
 	}
