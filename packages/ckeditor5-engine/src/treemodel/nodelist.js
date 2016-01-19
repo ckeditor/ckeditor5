@@ -26,7 +26,7 @@ import langUtils from '../lib/lodash/lang.js';
 /**
  * This is a private helper-class for {@link treeModel.NodeList} text compression utility.
  *
- * @private
+ * @protected
  * @class treeModel.NodeListText
  */
 class NodeListText extends Text {
