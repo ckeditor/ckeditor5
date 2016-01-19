@@ -7,7 +7,7 @@ const minimist = require( 'minimist' );
 const statusTask = require( './tasks/dev-status' );
 const initTask = require( './tasks/dev-init' );
 const installTask = require( './tasks/dev-install' );
-const pluginCreateTask = require( './tasks/dev-plugin-create' );
+const pluginCreateTask = require( './tasks/dev-package-create' );
 const updateTask = require( './tasks/dev-update' );
 const relinkTask = require( './tasks/dev-relink' );
 
@@ -19,7 +19,7 @@ module.exports = ( config ) => {
 		initTask( installTask, ckeditor5Path, packageJSON, config.WORKSPACE_DIR, console.log );
 	} );
 
-	gulp.task( 'dev-plugin-create', ( done ) => {
+	gulp.task( 'dev-package-create', ( done ) => {
 		pluginCreateTask( ckeditor5Path, config.WORKSPACE_DIR, console.log )
 			.then( done )
 			.catch( ( error )  => done( error ) );
@@ -46,16 +46,16 @@ module.exports = ( config ) => {
 
 	gulp.task( 'dev-install', () => {
 		const options = minimist( process.argv.slice( 2 ), {
-			string: [ 'plugin' ],
+			string: [ 'package' ],
 			default: {
 				plugin: ''
 			}
 		} );
 
-		if ( options.plugin ) {
-			installTask( ckeditor5Path, config.WORKSPACE_DIR, options.plugin, console.log );
+		if ( options.package ) {
+			installTask( ckeditor5Path, config.WORKSPACE_DIR, options.package, console.log );
 		} else {
-			throw new Error( 'Please provide a plugin to install: gulp dev-install --plugin <path|GitHub URL|name>' );
+			throw new Error( 'Please provide a package to install: gulp dev-install --plugin <path|GitHub URL|name>' );
 		}
 	} );
 };

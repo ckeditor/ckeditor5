@@ -15,16 +15,16 @@ const inquiries = require( '../../tasks/dev/utils/inquiries' );
 const git = require( '../../tasks/dev/utils/git' );
 const path = require( 'path' );
 
-describe( 'dev-plugin-create', () => {
+describe( 'dev-package-create', () => {
 	const emptyFn = () => { };
 	let spies;
 
 	const mainRepositoryPath = '/path/to/repository';
 	const workspaceRoot = '..';
 	const workspacePath = path.join( mainRepositoryPath, workspaceRoot );
-	const pluginName = 'plugin-name';
-	const pluginVersion = '0.0.1';
-	const gitHubUrl = 'ckeditor5/plugin-name';
+	const packageName = 'package-name';
+	const packageVersion = '0.0.1';
+	const gitHubUrl = 'ckeditor5/package-name';
 
 	beforeEach( () => createSpies() );
 	afterEach( () => restoreSpies() );
@@ -33,9 +33,9 @@ describe( 'dev-plugin-create', () => {
 		spies = {
 			linkDirectories: sinon.stub( tools, 'linkDirectories' ),
 			npmInstall: sinon.stub( tools, 'npmInstall' ),
-			getPluginName: sinon.stub( inquiries, 'getPluginName' ).returns( new Promise( ( r ) => r( pluginName ) ) ),
-			getPluginVersion: sinon.stub( inquiries, 'getPluginVersion' ).returns( new Promise( ( r ) => r( pluginVersion ) ) ),
-			getPluginGitHubUrl: sinon.stub( inquiries, 'getPluginGitHubUrl' ).returns( new Promise( ( r ) => r( gitHubUrl ) ) ),
+			getPackageName: sinon.stub( inquiries, 'getPackageName' ).returns( new Promise( ( r ) => r( packageName ) ) ),
+			getPackageVersion: sinon.stub( inquiries, 'getPackageVersion' ).returns( new Promise( ( r ) => r( packageVersion ) ) ),
+			getPackageGitHubUrl: sinon.stub( inquiries, 'getPackageGitHubUrl' ).returns( new Promise( ( r ) => r( gitHubUrl ) ) ),
 			initializeRepository: sinon.stub( git, 'initializeRepository' ),
 			updateJSONFile: sinon.stub( tools, 'updateJSONFile' ),
 			copy: sinon.stub( tools, 'copy' ),
@@ -49,16 +49,16 @@ describe( 'dev-plugin-create', () => {
 		}
 	}
 
-	const pluginCreateTask = require( '../../tasks/dev/tasks/dev-plugin-create' );
-	const repositoryPath = path.join( workspacePath, pluginName );
+	const packageCreateTask = require( '../../tasks/dev/tasks/dev-package-create' );
+	const repositoryPath = path.join( workspacePath, packageName );
 
-	it( 'should exist', () => expect( pluginCreateTask ).to.be.a( 'function' ) );
+	it( 'should exist', () => expect( packageCreateTask ).to.be.a( 'function' ) );
 
-	it( 'should create a plugin', () => {
-		return pluginCreateTask( mainRepositoryPath, workspaceRoot, emptyFn ).then( () => {
-			expect( spies.getPluginName.calledOnce ).to.equal( true );
-			expect( spies.getPluginVersion.calledOnce ).to.equal( true );
-			expect( spies.getPluginGitHubUrl.calledOnce ).to.equal( true );
+	it( 'should create a package', () => {
+		return packageCreateTask( mainRepositoryPath, workspaceRoot, emptyFn ).then( () => {
+			expect( spies.getPackageName.calledOnce ).to.equal( true );
+			expect( spies.getPackageVersion.calledOnce ).to.equal( true );
+			expect( spies.getPackageGitHubUrl.calledOnce ).to.equal( true );
 			expect( spies.initializeRepository.calledOnce ).to.equal( true );
 			expect( spies.initializeRepository.firstCall.args[ 0 ] ).to.equal( repositoryPath );
 			expect( spies.copy.called ).to.equal( true );
@@ -66,19 +66,19 @@ describe( 'dev-plugin-create', () => {
 			expect( spies.updateJSONFile.firstCall.args[ 0 ] ).to.equal( path.join( repositoryPath, 'package.json' ) );
 			let updateFn = spies.updateJSONFile.firstCall.args[ 1 ];
 			let json = updateFn( {} );
-			expect( json.name ).to.equal( pluginName );
-			expect( json.version ).to.equal( pluginVersion );
+			expect( json.name ).to.equal( packageName );
+			expect( json.version ).to.equal( packageVersion );
 			expect( spies.updateJSONFile.secondCall.args[ 0 ] ).to.equal( path.join( mainRepositoryPath, 'package.json' ) );
 			updateFn = spies.updateJSONFile.secondCall.args[ 1 ];
 			json = updateFn( {} );
 			expect( json.dependencies ).to.be.an( 'object' );
-			expect( json.dependencies[ pluginName ] ).to.equal( gitHubUrl );
+			expect( json.dependencies[ packageName ] ).to.equal( gitHubUrl );
 			expect( spies.initialCommit.calledOnce ).to.equal( true );
-			expect( spies.initialCommit.firstCall.args[ 0 ] ).to.equal( pluginName );
+			expect( spies.initialCommit.firstCall.args[ 0 ] ).to.equal( packageName );
 			expect( spies.initialCommit.firstCall.args[ 1 ] ).to.equal( repositoryPath );
 			expect( spies.linkDirectories.calledOnce ).to.equal( true );
 			expect( spies.linkDirectories.firstCall.args[ 0 ] ).to.equal( repositoryPath );
-			expect( spies.linkDirectories.firstCall.args[ 1 ] ).to.equal( path.join( mainRepositoryPath, 'node_modules', pluginName ) );
+			expect( spies.linkDirectories.firstCall.args[ 1 ] ).to.equal( path.join( mainRepositoryPath, 'node_modules', packageName ) );
 			expect( spies.npmInstall.calledOnce ).to.equal( true );
 			expect( spies.npmInstall.firstCall.args[ 0 ] ).to.equal( repositoryPath );
 		} );

@@ -11,16 +11,16 @@ const tools = require( '../utils/tools' );
 const path = require( 'path' );
 
 /**
- * 1. Ask for new plugin name.
+ * 1. Ask for new package name.
  * 2. Ask for initial version.
  * 3. Ask for GitHub URL.
  * 4. Initialize repository.
  * 5. Copy files to new repository.
- * 6. Update package.json file in new plugin's repository.
+ * 6. Update package.json file in new package's repository.
  * 7. Update package.json file in CKEditor5 repository.
  * 8. Create initial commit.
- * 9. Link new plugin.
- * 10. Call `npm install` in plugin repository.
+ * 9. Link new package.
+ * 10. Call `npm install` in package repository.
  *
  * @param {String} ckeditor5Path Path to main CKEditor5 repository.
  * @param {String} workspaceRoot Relative path to workspace root.
@@ -48,22 +48,22 @@ module.exports = ( ckeditor5Path, workspaceRoot, writeln ) => {
 		]
 	};
 
-	let pluginName;
+	let packageName;
 	let repositoryPath;
-	let pluginVersion;
+	let packageVersion;
 	let gitHubUrl;
 
-	return inquiries.getPluginName()
+	return inquiries.getPackageName()
 		.then( result => {
-			pluginName = result;
-			repositoryPath = path.join( workspaceAbsolutePath, pluginName );
+			packageName = result;
+			repositoryPath = path.join( workspaceAbsolutePath, packageName );
 
-			return inquiries.getPluginVersion();
+			return inquiries.getPackageVersion();
 		} )
 		.then( result => {
-			pluginVersion = result;
+			packageVersion = result;
 
-			return inquiries.getPluginGitHubUrl( pluginName );
+			return inquiries.getPackageGitHubUrl( packageName );
 		} )
 		.then( result => {
 			gitHubUrl = result;
@@ -79,8 +79,8 @@ module.exports = ( ckeditor5Path, workspaceRoot, writeln ) => {
 
 			writeln( `Updating package.json files...` );
 			tools.updateJSONFile( path.join( repositoryPath, 'package.json' ), ( json ) => {
-				json.name = pluginName;
-				json.version = pluginVersion;
+				json.name = packageName;
+				json.version = packageVersion;
 
 				return json;
 			} );
@@ -89,18 +89,18 @@ module.exports = ( ckeditor5Path, workspaceRoot, writeln ) => {
 				if ( !json.dependencies ) {
 					json.dependencies = {};
 				}
-				json.dependencies[ pluginName ] = gitHubUrl;
+				json.dependencies[ packageName ] = gitHubUrl;
 
 				return json;
 			} );
 
 			writeln( `Creating initial commit...` );
-			git.initialCommit( pluginName, repositoryPath );
+			git.initialCommit( packageName, repositoryPath );
 
-			writeln( `Linking ${ pluginName } to node_modules...` );
-			tools.linkDirectories( repositoryPath, path.join( ckeditor5Path, 'node_modules', pluginName ) );
+			writeln( `Linking ${ packageName } to node_modules...` );
+			tools.linkDirectories( repositoryPath, path.join( ckeditor5Path, 'node_modules', packageName ) );
 
-			writeln( `Running npm install in ${ pluginName }.` );
+			writeln( `Running npm install in ${ packageName }.` );
 			tools.npmInstall( repositoryPath );
 		} );
 };

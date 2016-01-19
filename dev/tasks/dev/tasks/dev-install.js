@@ -10,22 +10,22 @@ const tools = require( '../utils/tools' );
 const path = require( 'path' );
 
 /**
- * This tasks install specified module in development mode. It can be executed by typing:
- * 		grunt dev-install --plugin <git_hub_url|npm_name|path_on_disk>
+ * This tasks install specified package in development mode. It can be executed by typing:
+ * 		grunt dev-install --package <git_hub_url|npm_name|path_on_disk>
  *
  *
  * It performs following steps:
  * 1. If GitHub URL is provided - clones the repository.
  * 2. If NPM module name is provided - gets GitHub URL from NPM and clones the repository.
  * 3. If path on disk is provided - it is used directly.
- * 4. Runs `npm install` in plugin repository.
- * 5. If plugin exists in `ckeditor5/node_modules/` - runs `npm uninstall plugin_name`.
- * 6. Links plugin directory into `ckeditor5/node_modules/`.
+ * 4. Runs `npm install` in package repository.
+ * 5. If package exists in `ckeditor5/node_modules/` - runs `npm uninstall package_name`.
+ * 6. Links package directory into `ckeditor5/node_modules/`.
  * 7. Adds dependency to `ckeditor5/package.json`.
  *
  * @param {String} ckeditor5Path Absolute path to `ckeditor5` repository.
  * @param {String} workspaceRoot Relative path to workspace root directory.
- * @param {String} name Name of the NPM module or GitHub URL.
+ * @param {String} name Name of the NPM package or GitHub URL.
  * @param {Function} writeln Function used to report progress to the console.
  */
 module.exports = ( ckeditor5Path, workspaceRoot, name, writeln ) => {
