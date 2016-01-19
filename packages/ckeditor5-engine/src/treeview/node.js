@@ -6,6 +6,8 @@
 'use strict';
 
 import CKEditorError from '../ckeditorerror.js';
+import EmitterMixin from '../emittermixin.js';
+import objectUtils from '../lib/lodash/object.js';
 
 export default class Node {
 	constructor() {
@@ -52,15 +54,13 @@ export default class Node {
 		}
 	}
 
-	markToSync( type ) {
-		const treeView = this.getTreeView();
+	_fireChange( type, node ) {
+		this.fire( 'change', type, node );
 
-		// If element is not attached to the Tree view it is a child of the detached subtree and will be rendered anyway with this
-		// subtree.
-		if ( !treeView || !treeView.renderer ) {
-			return;
+		if ( this.parent ) {
+			this.parent._fireChange( type, node );
 		}
-
-		treeView.renderer.markToSync( this, type );
 	}
 }
+
+objectUtils.extend( Node.prototype, EmitterMixin );

@@ -31,7 +31,11 @@ export default class TreeView {
 		this.converter.bindElements( domRoot, this.viewRoot );
 
 		this.renderer = new Renderer( this.converter );
-		this.renderer.markToSync( this.viewRoot, 'CHILDREN_NEED_UPDATE' );
+		this.renderer.markToSync( 'CHILDREN', this.viewRoot );
+
+		this.viewRoot.on( 'change', ( evt, type, node ) => {
+			this.renderer.markToSync( type, node );
+		} );
 	}
 
 	addObserver( observer ) {

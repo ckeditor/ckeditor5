@@ -66,13 +66,13 @@ export default class Element extends Node {
 	}
 
 	setAttr( key, value ) {
-		this.markToSync( 'ATTRIBUTES_NEED_UPDATE' );
+		this._fireChange( 'ATTRIBUTES', this );
 
 		this._attrs.set( key, value );
 	}
 
 	insertChildren( index, nodes ) {
-		this.markToSync( 'CHILDREN_NEED_UPDATE' );
+		this._fireChange( 'CHILDREN', this );
 
 		if ( !utils.isIterable( nodes ) ) {
 			nodes = [ nodes ];
@@ -87,13 +87,13 @@ export default class Element extends Node {
 	}
 
 	removeAttr( key ) {
-		this.markToSync( 'ATTRIBUTES_NEED_UPDATE' );
+		this._fireChange( 'ATTRIBUTES', this );
 
 		return this._attrs.delete( key );
 	}
 
 	removeChildren( index, number ) {
-		this.markToSync( 'CHILDREN_NEED_UPDATE' );
+		this._fireChange( 'CHILDREN', this );
 
 		for ( let i = index; i < index + number; i++ ) {
 			this._children[ i ].parent = null;

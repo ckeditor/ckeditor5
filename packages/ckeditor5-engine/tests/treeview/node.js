@@ -104,4 +104,102 @@ describe( 'Node', () => {
 			expect( child.getTreeView() ).to.equal( tvMock );
 		} );
 	} );
+
+	describe( 'change event', () => {
+		let root, text, img;
+		let rootChangeSpy;
+
+		before( () => {
+			rootChangeSpy = sinon.spy();
+		} );
+
+		beforeEach( () => {
+			text = new Text( 'foo' );
+			img = new Element( 'img' );
+			img.setAttr( 'src', 'img.png' );
+
+			root = new RootElement( 'p', { renderer: { markToSync: rootChangeSpy } } );
+			root.appendChildren( [ text, img ] );
+
+			root.on( 'change', ( evt, type, node ) => {
+				rootChangeSpy( type, node );
+			} );
+
+			rootChangeSpy.reset();
+		} );
+
+		it( 'should be fired on the node', () => {
+			const imgChangeSpy = sinon.spy();
+
+			img.on( 'change', ( evt, type, node ) => {
+				imgChangeSpy( type, node );
+			} );
+
+			img.setAttr( 'width', 100 );
+
+			sinon.assert.calledOnce( imgChangeSpy );
+			sinon.assert.calledWith( imgChangeSpy, 'ATTRIBUTES', img );
+		} );
+
+		it( 'should be fired on the parent', () => {
+			img.setAttr( 'width', 100 );
+
+			sinon.assert.calledOnce( rootChangeSpy );
+			sinon.assert.calledWith( rootChangeSpy, 'ATTRIBUTES', img );
+		} );
+
+		describe( 'setAttr', () => {
+			it( 'should fire change event', () => {
+				img.setAttr( 'width', 100 );
+
+				sinon.assert.calledOnce( rootChangeSpy );
+				sinon.assert.calledWith( rootChangeSpy, 'ATTRIBUTES', img );
+			} );
+		} );
+
+		describe( 'removeAttr', () => {
+			it( 'should fire change event', () => {
+				img.removeAttr( 'src' );
+
+				sinon.assert.calledOnce( rootChangeSpy );
+				sinon.assert.calledWith( rootChangeSpy, 'ATTRIBUTES', img );
+			} );
+		} );
+
+		describe( 'insertChildren', () => {
+			it( 'should fire change event', () => {
+				root.insertChildren( 1, new Element( 'img' ) );
+
+				sinon.assert.calledOnce( rootChangeSpy );
+				sinon.assert.calledWith( rootChangeSpy, 'CHILDREN', root );
+			} );
+		} );
+
+		describe( 'appendChildren', () => {
+			it( 'should fire change event', () => {
+				root.appendChildren( new Element( 'img' ) );
+
+				sinon.assert.calledOnce( rootChangeSpy );
+				sinon.assert.calledWith( rootChangeSpy, 'CHILDREN', root );
+			} );
+		} );
+
+		describe( 'removeChildren', () => {
+			it( 'should fire change event', () => {
+				root.removeChildren( 1, 1 );
+
+				sinon.assert.calledOnce( rootChangeSpy );
+				sinon.assert.calledWith( rootChangeSpy, 'CHILDREN', root );
+			} );
+		} );
+
+		describe( 'removeChildren', () => {
+			it( 'should fire change event', () => {
+				text.setText( 'bar' );
+
+				sinon.assert.calledOnce( rootChangeSpy );
+				sinon.assert.calledWith( rootChangeSpy, 'TEXT', text );
+			} );
+		} );
+	} );
 } );

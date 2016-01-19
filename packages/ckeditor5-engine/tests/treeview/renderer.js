@@ -39,7 +39,7 @@ describe( 'Renderer', () => {
 		it( 'should mark attributes which need update', () => {
 			viewNode.setAttr( 'class', 'foo' );
 
-			renderer.markToSync( viewNode, 'ATTRIBUTES_NEED_UPDATE' );
+			renderer.markToSync( 'ATTRIBUTES', viewNode );
 
 			expect( renderer.markedAttrs.has( viewNode ) ).to.be.true;
 		} );
@@ -47,7 +47,7 @@ describe( 'Renderer', () => {
 		it( 'should mark children which need update', () => {
 			viewNode.appendChildren( new ViewText( 'foo' ) );
 
-			renderer.markToSync( viewNode, 'CHILDREN_NEED_UPDATE' );
+			renderer.markToSync( 'CHILDREN', viewNode );
 
 			expect( renderer.markedChildren.has( viewNode ) ).to.be.true;
 		} );
@@ -58,7 +58,7 @@ describe( 'Renderer', () => {
 
 			viewNode.appendChildren( new ViewText( 'foo' ) );
 
-			renderer.markToSync( viewNode, 'CHILDREN_NEED_UPDATE' );
+			renderer.markToSync( 'CHILDREN', viewNode );
 
 			expect( renderer.markedTexts.has( viewNode ) ).to.be.false;
 		} );
@@ -68,7 +68,7 @@ describe( 'Renderer', () => {
 			viewNode.appendChildren( viewText );
 			viewText.setText( 'bar' );
 
-			renderer.markToSync( viewText, 'TEXT_NEEDS_UPDATE' );
+			renderer.markToSync( 'TEXT', viewText );
 
 			expect( renderer.markedTexts.has( viewText ) ).to.be.true;
 		} );
@@ -81,14 +81,14 @@ describe( 'Renderer', () => {
 			viewNode.appendChildren( viewText );
 			viewText.setText( 'bar' );
 
-			renderer.markToSync( viewText, 'TEXT_NEEDS_UPDATE' );
+			renderer.markToSync( 'TEXT', viewText );
 
 			expect( renderer.markedTexts.has( viewText ) ).to.be.false;
 		} );
 
 		it( 'should throw if the type is unknown', () => {
 			expect( () => {
-				renderer.markToSync( viewNode, 'UNKNOWN' );
+				renderer.markToSync( 'UNKNOWN', viewNode );
 			} ).to.throw( CKEditorError, /^renderer-unknown-type/ );
 		} );
 	} );
@@ -110,7 +110,7 @@ describe( 'Renderer', () => {
 		it( 'should update attributes', () => {
 			viewNode.setAttr( 'class', 'foo' );
 
-			renderer.markToSync( viewNode, 'ATTRIBUTES_NEED_UPDATE' );
+			renderer.markToSync( 'ATTRIBUTES', viewNode );
 			renderer.render();
 
 			expect( domNode.getAttribute( 'class' ) ).to.equal( 'foo' );
@@ -123,7 +123,7 @@ describe( 'Renderer', () => {
 			domNode.setAttribute( 'id', 'bar' );
 			domNode.setAttribute( 'class', 'bar' );
 
-			renderer.markToSync( viewNode, 'ATTRIBUTES_NEED_UPDATE' );
+			renderer.markToSync( 'ATTRIBUTES', viewNode );
 			renderer.render();
 
 			expect( domNode.getAttribute( 'class' ) ).to.equal( 'foo' );
@@ -135,7 +135,7 @@ describe( 'Renderer', () => {
 		it( 'should add children', () => {
 			viewNode.appendChildren( new ViewText( 'foo' ) );
 
-			renderer.markToSync( viewNode, 'CHILDREN_NEED_UPDATE' );
+			renderer.markToSync( 'CHILDREN', viewNode );
 			renderer.render();
 
 			expect( domNode.childNodes.length ).to.equal( 1 );
@@ -147,7 +147,7 @@ describe( 'Renderer', () => {
 		it( 'should remove children', () => {
 			viewNode.appendChildren( new ViewText( 'foo' ) );
 
-			renderer.markToSync( viewNode, 'CHILDREN_NEED_UPDATE' );
+			renderer.markToSync( 'CHILDREN', viewNode );
 			renderer.render();
 
 			expect( domNode.childNodes.length ).to.equal( 1 );
@@ -155,7 +155,7 @@ describe( 'Renderer', () => {
 
 			viewNode.removeChildren( 0, 1 );
 
-			renderer.markToSync( viewNode, 'CHILDREN_NEED_UPDATE' );
+			renderer.markToSync( 'CHILDREN', viewNode );
 			renderer.render();
 
 			expect( domNode.childNodes.length ).to.equal( 0 );
@@ -167,7 +167,7 @@ describe( 'Renderer', () => {
 			const viewText = new ViewText( 'foo' );
 			viewNode.appendChildren( viewText );
 
-			renderer.markToSync( viewNode, 'CHILDREN_NEED_UPDATE' );
+			renderer.markToSync( 'CHILDREN', viewNode );
 			renderer.render();
 
 			expect( domNode.childNodes.length ).to.equal( 1 );
@@ -175,7 +175,7 @@ describe( 'Renderer', () => {
 
 			viewText.setText( 'bar' );
 
-			renderer.markToSync( viewText, 'TEXT_NEEDS_UPDATE' );
+			renderer.markToSync( 'TEXT', viewText );
 			renderer.render();
 
 			expect( domNode.childNodes.length ).to.equal( 1 );
@@ -189,8 +189,8 @@ describe( 'Renderer', () => {
 			const viewText = new ViewText( 'foo' );
 			viewNode.appendChildren( [ viewImg, viewText ] );
 
-			renderer.markToSync( viewNode, 'CHILDREN_NEED_UPDATE' );
-			renderer.markToSync( viewText, 'TEXT_NEEDS_UPDATE' );
+			renderer.markToSync( 'CHILDREN', viewNode );
+			renderer.markToSync( 'TEXT', viewText );
 			renderer.render();
 
 			expect( domNode.childNodes.length ).to.equal( 2 );
@@ -202,13 +202,13 @@ describe( 'Renderer', () => {
 			const viewText = new ViewText( 'foo' );
 			viewNode.appendChildren( viewText );
 
-			renderer.markToSync( viewNode, 'CHILDREN_NEED_UPDATE' );
+			renderer.markToSync( 'CHILDREN', viewNode );
 			renderer.render();
 
 			// This should not be changed during the render.
 			const domText = domNode.childNodes[ 0 ];
 
-			renderer.markToSync( viewText, 'TEXT_NEEDS_UPDATE' );
+			renderer.markToSync( 'TEXT', viewText );
 			renderer.render();
 
 			expect( domNode.childNodes.length ).to.equal( 1 );
@@ -219,13 +219,13 @@ describe( 'Renderer', () => {
 			const viewText = new ViewText( 'foo' );
 			viewNode.appendChildren( viewText );
 
-			renderer.markToSync( viewNode, 'CHILDREN_NEED_UPDATE' );
+			renderer.markToSync( 'CHILDREN', viewNode );
 			renderer.render();
 
 			// This should not be changed during the render.
 			const domText = domNode.childNodes[ 0 ];
 
-			renderer.markToSync( viewNode, 'CHILDREN_NEED_UPDATE' );
+			renderer.markToSync( 'CHILDREN', viewNode );
 			renderer.render();
 
 			expect( domNode.childNodes.length ).to.equal( 1 );
@@ -242,7 +242,7 @@ describe( 'Renderer', () => {
 
 			converter.bindElements( domImg, viewImg );
 
-			renderer.markToSync( viewNode, 'CHILDREN_NEED_UPDATE' );
+			renderer.markToSync( 'CHILDREN', viewNode );
 			renderer.render();
 
 			expect( domNode.childNodes.length ).to.equal( 1 );
@@ -253,14 +253,14 @@ describe( 'Renderer', () => {
 			const viewImg = new ViewElement( 'img' );
 			viewNode.appendChildren( viewImg );
 
-			renderer.markToSync( viewNode, 'CHILDREN_NEED_UPDATE' );
+			renderer.markToSync( 'CHILDREN', viewNode );
 			renderer.render();
 
 			const viewP = new ViewElement( 'p' );
 			viewNode.removeChildren( 0, 1 );
 			viewNode.appendChildren( viewP );
 
-			renderer.markToSync( viewNode, 'CHILDREN_NEED_UPDATE' );
+			renderer.markToSync( 'CHILDREN', viewNode );
 			renderer.render();
 
 			expect( domNode.childNodes.length ).to.equal( 1 );

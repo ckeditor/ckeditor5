@@ -17,8 +17,8 @@ export default class Renderer {
 		this.markedTexts = new Set();
 	}
 
-	markToSync( node, type ) {
-		if ( type === 'TEXT_NEEDS_UPDATE' ) {
+	markToSync( type, node ) {
+		if ( type === 'TEXT' ) {
 			if ( this.converter.getCorespondingDom( node.parent ) ) {
 				this.markedTexts.add( node );
 			}
@@ -28,9 +28,9 @@ export default class Renderer {
 				return;
 			}
 
-			if ( type === 'ATTRIBUTES_NEED_UPDATE' ) {
+			if ( type === 'ATTRIBUTES' ) {
 				this.markedAttrs.add( node );
-			} else if ( type === 'CHILDREN_NEED_UPDATE' ) {
+			} else if ( type === 'CHILDREN' ) {
 				this.markedChildren.add( node );
 			} else {
 				/**
