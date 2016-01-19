@@ -290,14 +290,14 @@ describe( 'build-utils', () => {
 
 			rename.pipe(
 				utils.noop( ( data ) => {
-					expect( data.path ).to.equal( 'ckeditor5/core/foo/file.js' );
+					expect( data.path ).to.equal( path.normalize( 'ckeditor5/core/foo/file.js' ) );
 					done();
 				} )
 			);
 
 			rename.write( new Vinyl( {
 				cwd: './',
-				path: 'ckeditor5-core/src/foo/file.js',
+				path: path.normalize( 'ckeditor5-core/src/foo/file.js' ),
 				contents: new Buffer( '' )
 			} ) );
 
@@ -309,14 +309,14 @@ describe( 'build-utils', () => {
 
 			rename.pipe(
 				utils.noop( ( data ) => {
-					expect( data.path ).to.equal( 'tests/core/foo/file.js' );
+					expect( data.path ).to.equal( path.normalize( 'tests/core/foo/file.js' ) );
 					done();
 				} )
 			);
 
 			rename.write( new Vinyl( {
 				cwd: './',
-				path: 'ckeditor5-core/tests/foo/file.js',
+				path: path.normalize( 'ckeditor5-core/tests/foo/file.js' ),
 				contents: new Buffer( '' )
 			} ) );
 
@@ -354,14 +354,14 @@ describe( 'build-utils', () => {
 
 			rename.pipe(
 				utils.noop( ( data ) => {
-					expect( data.path ).to.equal( 'ckeditor5/foo/file.js' );
+					expect( data.path ).to.equal( path.normalize( 'ckeditor5/foo/file.js' ) );
 					done();
 				} )
 			);
 
 			rename.write( new Vinyl( {
 				cwd: './',
-				path: 'src/foo/file.js',
+				path: path.normalize( 'src/foo/file.js' ),
 				contents: new Buffer( '' )
 			} ) );
 
@@ -373,14 +373,14 @@ describe( 'build-utils', () => {
 
 			rename.pipe(
 				utils.noop( ( data ) => {
-					expect( data.path ).to.equal( 'tests/foo/file.js' );
+					expect( data.path ).to.equal( path.normalize( 'tests/foo/file.js' ) );
 					done();
 				} )
 			);
 
 			rename.write( new Vinyl( {
 				cwd: './',
-				path: 'tests/foo/file.js',
+				path: path.normalize( 'tests/foo/file.js' ),
 				contents: new Buffer( '' )
 			} ) );
 
