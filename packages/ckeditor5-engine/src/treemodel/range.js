@@ -271,7 +271,7 @@ export default class Range {
 	 * @param {Boolean} [mergeCharacters] Flag indicating whether all consecutive characters with the same attributes
 	 * should be returned as one {@link treeModel.TextFragment} (`true`) or one by one as multiple {@link treeModel.CharacterProxy}
 	 * (`false`) objects. Defaults to `false`.
-	 * @returns {Iterable.<treeModel.Node|treeModel.Text>}
+	 * @returns {Iterable.<treeModel.Node|treeModel.TextFragment>}
 	 */
 	*getAllNodes( mergeCharacters ) {
 		let it = new TreeWalker( { boundaries: this, mergeCharacters: mergeCharacters } );
@@ -311,7 +311,7 @@ export default class Range {
 	 * @param {Boolean} [mergeCharacters] Flag indicating whether all consecutive characters with the same attributes
 	 * should be returned as one {@link treeModel.TextFragment} (`true`) or one by one as multiple {@link treeModel.CharacterProxy}
 	 * (`false`) objects. Defaults to `false`.
-	 * @returns {Iterable.<treeModel.Node|treeModel.Text>}
+	 * @returns {Iterable.<treeModel.Node|treeModel.TextFragment>}
 	 */
 	*getTopLevelNodes( mergeCharacters ) {
 		let flatRanges = this.getMinimalFlatRanges();
