@@ -4,7 +4,6 @@ let dirtyFiles,
 	ignoreList;
 
 const dependencyRegExp = /^ckeditor5-/;
-const TEMPLATE_PATH = './dev/tasks/gulp/dev/templates';
 
 module.exports = {
 	/**
@@ -313,14 +312,30 @@ module.exports = {
 	},
 
 	/**
-	 * Copies template files to specified destination.
+	 * Copies source files/directories into destination directory.
+	 * If directory path is provided in sources array - all files inside that directory will be copied.
 	 *
-	 * @param {String} destination
+	 * @param { Array } source Source files/directories.
+	 * @param { String} destination Path to destination directory.
 	 */
-	copyTemplateFiles( destination ) {
+	copy( sources, destination ) {
 		const path = require( 'path' );
-		const templatesPath = path.resolve( TEMPLATE_PATH );
-		this.shExec( `cp ${ path.join( templatesPath, '*.md' ) } ${ destination }` );
+		const fs = require( 'fs-extra' );
+		destination = path.resolve( destination );
+
+		fs.ensureDirSync( destination );
+
+		sources.forEach( source => {
+			source = path.resolve( source );
+
+			if ( this.isFile( source ) ) {
+				fs.copySync( source, path.join( destination, path.basename( source ) ) );
+			}
+
+			if ( this.isDirectory( source ) ) {
+				fs.copySync( source, destination );
+			}
+		} );
 	},
 
 	/**

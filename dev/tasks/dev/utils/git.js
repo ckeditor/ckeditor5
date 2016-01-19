@@ -118,15 +118,7 @@ module.exports = {
 	 * @param {String} repositoryPath Absolute path where repository should be created.
 	 */
 	initializeRepository( repositoryPath ) {
-		const initializeCommands = [
-			`git init ${ repositoryPath }`,
-			`cd ${ repositoryPath }`,
-			`git remote add boilerplate ${ this.BOILERPLATE_REPOSITORY }`,
-			`git fetch boilerplate ${ this.BOILERPLATE_BRANCH }`,
-			`git merge boilerplate/${ this.BOILERPLATE_BRANCH }`
-		];
-
-		tools.shExec( initializeCommands.join( ' && ' ) );
+		tools.shExec( `git init ${ repositoryPath }` );
 	},
 
 	/**
