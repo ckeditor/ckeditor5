@@ -100,6 +100,8 @@ export default class AttributeOperation extends Operation {
 		if ( oldAttr !== null ) {
 			for ( let node of this.range.getAllNodes( true ) ) {
 				if ( node instanceof TextFragment ) {
+					// Because instance of TextFragment is kind-of a proxy, not a real, original item,
+					// we have to assign `node` a real item that is added to the node list.
 					node = node.first._nodeListText;
 				}
 
@@ -127,6 +129,8 @@ export default class AttributeOperation extends Operation {
 		if ( newAttr !== null ) {
 			for ( let node of this.range.getAllNodes( true ) ) {
 				if ( node instanceof TextFragment ) {
+					// Because instance of TextFragment is kind-of a proxy, not a real, original item,
+					// we have to assign `node` a real item that is added to the node list.
 					node = node.first._nodeListText;
 				}
 
