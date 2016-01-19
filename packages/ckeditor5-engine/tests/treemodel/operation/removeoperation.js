@@ -45,10 +45,6 @@ describe( 'RemoveOperation', () => {
 	it( 'should remove set of nodes and append them to graveyard root', () => {
 		root.insertChildren( 0, 'fozbar' );
 
-		let z = root.getChild( 2 );
-		let b = root.getChild( 3 );
-		let a = root.getChild( 4 );
-
 		doc.applyOperation(
 			new RemoveOperation(
 				new Position( root, [ 2 ] ),
@@ -59,11 +55,11 @@ describe( 'RemoveOperation', () => {
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 4 );
-		expect( root.getChild( 2 ) ).to.equal( a );
+		expect( root.getChild( 2 ).character ).to.equal( 'a' );
 
 		expect( graveyard.getChildCount() ).to.equal( 2 );
-		expect( graveyard.getChild( 0 ) ).to.equal( z );
-		expect( graveyard.getChild( 1 ) ).to.equal( b );
+		expect( graveyard.getChild( 0 ).character ).to.equal( 'z' );
+		expect( graveyard.getChild( 1 ).character ).to.equal( 'b' );
 	} );
 
 	it( 'should create RemoveOperation with same parameters when cloned', () => {

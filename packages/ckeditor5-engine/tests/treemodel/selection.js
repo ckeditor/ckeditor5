@@ -7,9 +7,9 @@
 
 'use strict';
 
-import coreTestUtils from '/tests/core/_utils/utils.js';
 import Document from '/ckeditor5/core/treemodel/document.js';
 import Attribute from '/ckeditor5/core/treemodel/attribute.js';
+import AttributeList from '/ckeditor5/core/treemodel/attributelist.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
 import Range from '/ckeditor5/core/treemodel/range.js';
 import Position from '/ckeditor5/core/treemodel/position.js';
@@ -18,8 +18,6 @@ import Selection from '/ckeditor5/core/treemodel/selection.js';
 import InsertOperation from '/ckeditor5/core/treemodel/operation/insertoperation.js';
 import MoveOperation from '/ckeditor5/core/treemodel/operation/moveoperation.js';
 import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
-
-const getIteratorCount = coreTestUtils.getIteratorCount;
 
 describe( 'Selection', () => {
 	let attrFooBar;
@@ -44,12 +42,14 @@ describe( 'Selection', () => {
 		liveRange.detach();
 	} );
 
-	it( 'should not have any range, anchor or focus position when just created', () => {
+	it( 'should not have any range, attributes, anchor or focus position when just created', () => {
 		let ranges = selection.getRanges();
 
 		expect( ranges.length ).to.equal( 0 );
 		expect( selection.anchor ).to.be.null;
 		expect( selection.focus ).to.be.null;
+		expect( selection.attrs ).to.be.instanceof( AttributeList );
+		expect( selection.attrs.size ).to.equal( 0 );
 	} );
 
 	it( 'should be collapsed if it has no ranges or all ranges are collapsed', () => {
@@ -409,105 +409,6 @@ describe( 'Selection', () => {
 				expect( range.end.path ).to.deep.equal( [ 2, 2 ] );
 				expect( spy.called ).to.be.false;
 			} );
-		} );
-	} );
-
-	// Testing integration with attributes list.
-	// Tests copied from AttributeList tests.
-	// Some cases were omitted.
-
-	describe( 'setAttr', () => {
-		it( 'should insert an attribute', () => {
-			selection.setAttr( attrFooBar );
-
-			expect( getIteratorCount( selection.getAttrs() ) ).to.equal( 1 );
-			expect( selection.getAttr( attrFooBar.key ) ).to.equal( attrFooBar.value );
-		} );
-	} );
-
-	describe( 'setAttrsTo', () => {
-		it( 'should remove all attributes and set passed ones', () => {
-			selection.setAttr( attrFooBar );
-
-			let attrs = [ new Attribute( 'abc', true ), new Attribute( 'xyz', false ) ];
-
-			selection.setAttrsTo( attrs );
-
-			expect( getIteratorCount( selection.getAttrs() ) ).to.equal( 2 );
-			expect( selection.getAttr( 'foo' ) ).to.be.null;
-			expect( selection.getAttr( 'abc' ) ).to.be.true;
-			expect( selection.getAttr( 'xyz' ) ).to.be.false;
-		} );
-	} );
-
-	describe( 'getAttr', () => {
-		beforeEach( () => {
-			selection.setAttr( attrFooBar );
-		} );
-
-		it( 'should return attribute value if key of previously set attribute has been passed', () => {
-			expect( selection.getAttr( 'foo' ) ).to.equal( attrFooBar.value );
-		} );
-
-		it( 'should return null if attribute with given key has not been found', () => {
-			expect( selection.getAttr( 'bar' ) ).to.be.null;
-		} );
-	} );
-
-	describe( 'removeAttr', () => {
-		it( 'should remove an attribute', () => {
-			let attrA = new Attribute( 'a', 'A' );
-			let attrB = new Attribute( 'b', 'B' );
-			let attrC = new Attribute( 'c', 'C' );
-
-			selection.setAttr( attrA );
-			selection.setAttr( attrB );
-			selection.setAttr( attrC );
-
-			selection.removeAttr( attrB.key );
-
-			expect( getIteratorCount( selection.getAttrs() ) ).to.equal( 2 );
-			expect( selection.getAttr( attrA.key ) ).to.equal( attrA.value );
-			expect( selection.getAttr( attrC.key ) ).to.equal( attrC.value );
-			expect( selection.getAttr( attrB.key ) ).to.be.null;
-		} );
-	} );
-
-	describe( 'hasAttr', () => {
-		it( 'should check attribute by key', () => {
-			selection.setAttr( attrFooBar );
-			expect( selection.hasAttr( 'foo' ) ).to.be.true;
-		} );
-
-		it( 'should return false if attribute was not found by key', () => {
-			expect( selection.hasAttr( 'bar' ) ).to.be.false;
-		} );
-
-		it( 'should check attribute by object', () => {
-			selection.setAttr( attrFooBar );
-			expect( selection.hasAttr( attrFooBar ) ).to.be.true;
-		} );
-
-		it( 'should return false if attribute was not found by object', () => {
-			expect( selection.hasAttr( attrFooBar ) ).to.be.false;
-		} );
-	} );
-
-	describe( 'getAttrs', () => {
-		it( 'should return all set attributes', () => {
-			let attrA = new Attribute( 'a', 'A' );
-			let attrB = new Attribute( 'b', 'B' );
-			let attrC = new Attribute( 'c', 'C' );
-
-			selection.setAttrsTo( [
-				attrA,
-				attrB,
-				attrC
-			] );
-
-			selection.removeAttr( attrB.key );
-
-			expect( [ attrA, attrC ] ).to.deep.equal( Array.from( selection.getAttrs() ) );
 		} );
 	} );
 } );

@@ -7,13 +7,10 @@
 
 'use strict';
 
-import coreTestUtils from '/tests/core/_utils/utils.js';
 import Node from '/ckeditor5/core/treemodel/node.js';
 import NodeList from '/ckeditor5/core/treemodel/nodelist.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
 import Attribute from '/ckeditor5/core/treemodel/attribute.js';
-
-const getIteratorCount = coreTestUtils.getIteratorCount;
 
 describe( 'Element', () => {
 	describe( 'constructor', () => {
@@ -24,7 +21,7 @@ describe( 'Element', () => {
 			expect( element ).to.be.an.instanceof( Node );
 			expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
 			expect( element ).to.have.property( 'parent' ).that.equals( parent );
-			expect( getIteratorCount( element.getAttrs() ) ).to.equal( 0 );
+			expect( element.attrs.size ).to.equal( 0 );
 		} );
 
 		it( 'should create element with attributes', () => {
@@ -36,8 +33,8 @@ describe( 'Element', () => {
 			expect( element ).to.be.an.instanceof( Node );
 			expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
 			expect( element ).to.have.property( 'parent' ).that.equals( parent );
-			expect( getIteratorCount( element.getAttrs() ) ).to.equal( 1 );
-			expect( element.getAttr( attr.key ) ).to.equal( attr.value );
+			expect( element.attrs.size ).to.equal( 1 );
+			expect( element.attrs.getValue( attr.key ) ).to.equal( attr.value );
 		} );
 
 		it( 'should create element with children', () => {
@@ -69,9 +66,6 @@ describe( 'Element', () => {
 	describe( 'removeChildren', () => {
 		it( 'should remove children from the element and return them as a NodeList', () => {
 			let element = new Element( 'elem', [], [ 'foobar' ] );
-			let o = element.getChild( 2 );
-			let b = element.getChild( 3 );
-			let a = element.getChild( 4 );
 			let removed = element.removeChildren( 2, 3 );
 
 			expect( element.getChildCount() ).to.equal( 3 );
@@ -79,28 +73,29 @@ describe( 'Element', () => {
 			expect( element.getChild( 1 ) ).to.have.property( 'character' ).that.equals( 'o' );
 			expect( element.getChild( 2 ) ).to.have.property( 'character' ).that.equals( 'r' );
 
-			expect( o ).to.have.property( 'parent' ).that.is.null;
-			expect( b ).to.have.property( 'parent' ).that.is.null;
-			expect( a ).to.have.property( 'parent' ).that.is.null;
-
 			expect( removed ).to.be.instanceof( NodeList );
 			expect( removed.length ).to.equal( 3 );
-			expect( removed.get( 0 ) ).to.equal( o );
-			expect( removed.get( 1 ) ).to.equal( b );
-			expect( removed.get( 2 ) ).to.equal( a );
+
+			expect( removed.get( 0 ).character ).to.equal( 'o' );
+			expect( removed.get( 1 ).character ).to.equal( 'b' );
+			expect( removed.get( 2 ).character ).to.equal( 'a' );
 		} );
 	} );
 
 	describe( 'getChildIndex', () => {
 		it( 'should return child index', () => {
-			let element = new Element( 'elem', [], [ 'bar' ] );
-			let b = element.getChild( 0 );
-			let a = element.getChild( 1 );
-			let r = element.getChild( 2 );
+			let element = new Element( 'elem', [], [ new Element( 'p' ), 'bar', new Element( 'h' ) ] );
+			let p = element.getChild( 0 );
+			let b = element.getChild( 1 );
+			let a = element.getChild( 2 );
+			let r = element.getChild( 3 );
+			let h = element.getChild( 4 );
 
-			expect( element.getChildIndex( b ) ).to.equal( 0 );
-			expect( element.getChildIndex( a ) ).to.equal( 1 );
-			expect( element.getChildIndex( r ) ).to.equal( 2 );
+			expect( element.getChildIndex( p ) ).to.equal( 0 );
+			expect( element.getChildIndex( b ) ).to.equal( 1 );
+			expect( element.getChildIndex( a ) ).to.equal( 2 );
+			expect( element.getChildIndex( r ) ).to.equal( 3 );
+			expect( element.getChildIndex( h ) ).to.equal( 4 );
 		} );
 	} );
 

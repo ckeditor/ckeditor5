@@ -20,11 +20,12 @@ const utils = {
 		let txt = '';
 
 		for ( let step of range ) {
-			let node = step.node;
+			let node = step.item;
+			let nodeText = node.text || node.character;
 
-			if ( node.character ) {
-				txt += node.character.toLowerCase();
-			} else if ( node.name ) {
+			if ( nodeText ) {
+				txt += nodeText.toLowerCase();
+			} else {
 				txt += node.name.toUpperCase();
 			}
 		}

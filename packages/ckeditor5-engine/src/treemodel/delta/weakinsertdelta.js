@@ -33,7 +33,7 @@ export default class WeakInsertDelta extends Delta {}
  * @memberOf treeModel.Batch
  * @method weakInsert
  * @param {treeModel.Position} position Position of insertion.
- * @param {treeModel.Node|treeModel.Text|treeModel.NodeList|String|Iterable} nodes The list of nodes to be inserted.
+ * @param {treeModel.NodesSet} nodes The list of nodes to be inserted.
  * List of nodes can be of any type accepted by the {@link treeModel.NodeList} constructor.
  */
 register( 'weakInsert', function( position, nodes ) {
@@ -41,8 +41,8 @@ register( 'weakInsert', function( position, nodes ) {
 
 	nodes = new NodeList( nodes );
 
-	for ( let node of nodes ) {
-		node.setAttrsTo( this.doc.selection.getAttrs() );
+	for ( let node of nodes._nodes ) {
+		node.attrs.setTo( this.doc.selection.attrs );
 	}
 
 	const operation = new InsertOperation( position, nodes, this.doc.version );

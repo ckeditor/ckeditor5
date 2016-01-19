@@ -5,9 +5,15 @@
 
 'use strict';
 
+import AttributeList from './attributelist.js';
+
 /**
- * Data structure for text with attributes. Note that the `Text` is not a {@link treeModel.Node},
- * because it will never be part of the document tree. {@link treeModel.Character is a node}.
+ * Data structure for text with attributes. Note that `Text` is not a {@link treeModel.Node}. This class is used
+ * as an aggregator for multiple characters that have same attributes. Example usage:
+ *
+ *		let attrFoo = new Attribute( 'foo', true );
+ *		let attrBar = new Attribute( 'bar', true );
+ *		let myElem = new Element( 'li', [], new Text( 'text with attributes', [ attrFoo, attrBar ] ) );
  *
  * @class treeModel.Text
  */
@@ -26,13 +32,13 @@ export default class Text {
 		 * @readonly
 		 * @property {String}
 		 */
-		this.text = text;
+		this.text = text || '';
 
 		/**
-		 * Iterable collection of {@link treeModel.Attribute attributes}.
+		 * {@link treeModel.Attribute AttributesList} bound with the text.
 		 *
-		 * @property {Iterable}
+		 * @property {treeModel.AttributeList}
 		 */
-		this.attrs = attrs;
+		this.attrs = new AttributeList( attrs );
 	}
 }

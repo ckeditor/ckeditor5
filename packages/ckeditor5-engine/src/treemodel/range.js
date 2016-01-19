@@ -6,7 +6,7 @@
 'use strict';
 
 import Position from './position.js';
-import PositionIterator from './positioniterator.js';
+import TreeWalker from './treewalker.js';
 import utils from '../utils.js';
 
 /**
@@ -69,10 +69,10 @@ export default class Range {
 	/**
 	 * Range iterator.
 	 *
-	 * @see treeModel.PositionIterator
+	 * @see treeModel.TreeWalker
 	 */
 	[ Symbol.iterator ]() {
-		return new PositionIterator( this );
+		return new TreeWalker( { boundaries: this } );
 	}
 
 	/**
@@ -204,11 +204,14 @@ export default class Range {
 	 *		 |   |- element P4
 	 *		 |   |   |- "ipsum"
 	 *
-	 * Flat ranges for range `( [ 0, 0, 3 ], [ 3, 0, 2 ] )` would be:
+	 * As it can be seen, letters contained in the range are stloremfoobarse, spread across different parents.
+	 * We are looking for minimal set of {@link #isFlat flat} ranges that contains the same nodes.
+	 *
+	 * Minimal flat ranges for above range `( [ 0, 0, 3 ], [ 3, 0, 2 ] )` will be:
 	 *
 	 *		( [ 0, 0, 3 ], [ 0, 0, 5 ] ) = "st"
-	 *		( [ 0, 1 ], [ 0, 2 ] ) = element P1
-	 *		( [ 1 ], [ 3 ] ) = element P2, element P3
+	 *		( [ 0, 1 ], [ 0, 2 ] ) = element P1 ("lorem")
+	 *		( [ 1 ], [ 3 ] ) = element P2, element P3 ("foobar")
 	 *		( [ 3, 0, 0 ], [ 3, 0, 2 ] ) = "se"
 	 *
 	 * **Note:** this method is not returning flat ranges that contain no nodes. It may also happen that not-collapsed
@@ -256,23 +259,48 @@ export default class Range {
 	/**
 	 * Returns an iterator that iterates over all {@link treeModel.Node nodes} that are in this range and returns them.
 	 * A node is in the range when it is after a {@link treeModel.Position position} contained in this range.
-	 * In other words, this iterates over all {@link treeModel.Character}s that are inside the range and
-	 * all the {@link treeModel.Element}s we enter into when iterating over this range.
+	 * In other words, this iterates over all text characters that are inside the range and all the {@link treeModel.Element}s
+	 * we enter into when iterating over this range.
 	 *
-	 * **Note:** this method will not return a parent node of start position. This is in contrary to {@link treeModel.PositionIterator}
-	 * which will return that node with {@link treeModel.PositionIterator#ELEMENT_LEAVE} type. This method, also, returns each
-	 * {@link treeModel.Element} once, while iterator return it twice: for {@link treeModel.PositionIterator#ELEMENT_ENTER} and
-	 * {@link treeModel.PositionIterator#ELEMENT_LEAVE}.
+	 * **Note:** this method will not return a parent node of start position. This is in contrary to {@link treeModel.TreeWalker}
+	 * which will return that node with {@link treeModel.TreeWalker#ELEMENT_END} type. This method, also, returns each
+	 * {@link treeModel.Element} once, while iterator return it twice: for {@link treeModel.TreeWalker#ELEMENT_START} and
+	 * {@link treeModel.TreeWalker#ELEMENT_END}.
 	 *
-	 * @see {treeModel.PositionIterator}
-	 * @returns {Iterable.<treeModel.Node>}
+	 * @see {treeModel.TreeWalker}
+	 * @param {Boolean} [mergeCharacters] Flag indicating whether all consecutive characters with the same attributes
+	 * should be returned as one {@link treeModel.TextFragment} (`true`) or one by one as multiple {@link treeModel.CharacterProxy}
+	 * (`false`) objects. Defaults to `false`.
+	 * @returns {Iterable.<treeModel.Node|treeModel.TextFragment>}
 	 */
-	*getAllNodes() {
-		for ( let value of this ) {
-			if ( value.type != PositionIterator.ELEMENT_LEAVE ) {
-				yield value.node;
+	*getAllNodes( mergeCharacters ) {
+		let it = new TreeWalker( { boundaries: this, mergeCharacters: mergeCharacters } );
+		let step;
+
+		do {
+			step = it.next();
+
+			if ( step.value && step.value.type != TreeWalker.ELEMENT_END ) {
+				yield step.value.item;
 			}
-		}
+		} while ( !step.done );
+	}
+
+	/**
+	 * Returns an iterator that iterates over all {@link treeModel.Position positions} that are boundaries or
+	 * contained in this range.
+	 *
+	 * @param {Boolean} [mergeCharacters] Flag indicating whether all consecutive characters with the same attributes
+	 * should be returned as one {@link treeModel.TextFragment} (`true`) or one by one as multiple {@link treeModel.CharacterProxy}
+	 * (`false`) objects. Defaults to `false`.
+	 * @returns {Iterable.<treeModel.Position>}
+	 */
+	*getPositions( mergeCharacters ) {
+		let it = new TreeWalker( { boundaries: this, mergeCharacters: mergeCharacters } );
+
+		do {
+			yield it.position;
+		} while ( !it.next().done );
 	}
 
 	/**
@@ -280,19 +308,39 @@ export default class Range {
 	 * and returns them. A node is a top-level node when it is in the range but it's parent is not. In other words,
 	 * this function splits the range into separate sub-trees and iterates over their roots.
 	 *
-	 * @returns {Iterable.<treeModel.Node>}
+	 * @param {Boolean} [mergeCharacters] Flag indicating whether all consecutive characters with the same attributes
+	 * should be returned as one {@link treeModel.TextFragment} (`true`) or one by one as multiple {@link treeModel.CharacterProxy}
+	 * (`false`) objects. Defaults to `false`.
+	 * @returns {Iterable.<treeModel.Node|treeModel.TextFragment>}
 	 */
-	*getTopLevelNodes() {
+	*getTopLevelNodes( mergeCharacters ) {
 		let flatRanges = this.getMinimalFlatRanges();
 
 		for ( let range of flatRanges ) {
-			let node = range.start.nodeAfter;
-			let offset = range.end.offset - range.start.offset;
+			// This loop could be much simpler as we could just iterate over siblings of node after the first
+			// position of each range. But then we would have to re-implement character merging strategy here.
+			let it = new TreeWalker( { boundaries: range, mergeCharacters: mergeCharacters } );
+			let step;
 
-			for ( let i = 0; i < offset; i++ ) {
-				yield node;
-				node = node.nextSibling;
-			}
+			// We will only return nodes that are on same level as node after the range start. To do this,
+			// we keep "depth" counter.
+			let depth = 0;
+
+			do {
+				step = it.next();
+
+				if ( step.value ) {
+					if ( step.value.type == TreeWalker.ELEMENT_START ) {
+						depth++;
+					} else if ( step.value.type == TreeWalker.ELEMENT_END ) {
+						depth--;
+					}
+
+					if ( depth === 0 ) {
+						yield step.value.item;
+					}
+				}
+			} while ( !step.done );
 		}
 	}
 

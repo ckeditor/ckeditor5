@@ -7,6 +7,7 @@
 
 import Operation from './operation.js';
 import Range from '../range.js';
+import TextFragment from '../textfragment.js';
 import CKEditorError from '../../ckeditorerror.js';
 
 /**
@@ -87,13 +88,24 @@ export default class AttributeOperation extends Operation {
 			 */
 			throw new CKEditorError(
 				'operation-attribute-different-keys: Old and new attributes should have the same keys.',
-				{ oldAttr: oldAttr, newAttr: newAttr } );
+				{ oldAttr: oldAttr, newAttr: newAttr }
+			);
 		}
+
+		// Split text nodes if needed, then get the nodes in the range and convert it to node list. It will be easier to operate.
+		this.range.start.parent._children._splitNodeAt( this.range.start.offset );
+		this.range.end.parent._children._splitNodeAt( this.range.end.offset );
 
 		// Remove or change.
 		if ( oldAttr !== null ) {
-			for ( let node of this.range.getAllNodes() ) {
-				if ( !node.hasAttr( oldAttr ) ) {
+			for ( let node of this.range.getAllNodes( true ) ) {
+				if ( node instanceof TextFragment ) {
+					// Because instance of TextFragment is kind-of a proxy, not a real, original item,
+					// we have to assign `node` a real item that is added to the node list.
+					node = node.first._nodeListText;
+				}
+
+				if ( !node.attrs.has( oldAttr ) ) {
 					/**
 					 * The attribute which should be removed does not exists for the given node.
 					 *
@@ -103,21 +115,26 @@ export default class AttributeOperation extends Operation {
 					 */
 					throw new CKEditorError(
 						'operation-attribute-no-attr-to-remove: The attribute which should be removed does not exists for given node.',
-						{ node: node, attr: oldAttr } );
+						{ node: node, attr: oldAttr }
+					);
 				}
 
-				// There is no use in removing attribute if we will overwrite it later.
-				// Still it is profitable to run through the loop to check if all nodes in the range has old attribute.
 				if ( newAttr === null ) {
-					node.removeAttr( oldAttr.key );
+					node.attrs.delete( oldAttr.key );
 				}
 			}
 		}
 
 		// Insert or change.
 		if ( newAttr !== null ) {
-			for ( let node of this.range.getAllNodes() ) {
-				if ( oldAttr === null && node.hasAttr( newAttr.key ) ) {
+			for ( let node of this.range.getAllNodes( true ) ) {
+				if ( node instanceof TextFragment ) {
+					// Because instance of TextFragment is kind-of a proxy, not a real, original item,
+					// we have to assign `node` a real item that is added to the node list.
+					node = node.first._nodeListText;
+				}
+
+				if ( oldAttr === null && node.attrs.has( newAttr.key ) ) {
 					/**
 					 * The attribute with given key already exists for the given node.
 					 *
@@ -127,12 +144,16 @@ export default class AttributeOperation extends Operation {
 					 */
 					throw new CKEditorError(
 						'operation-attribute-attr-exists: The attribute with given key already exists.',
-						{ node: node, attr: newAttr } );
+						{ node: node, attr: newAttr }
+					);
 				}
 
-				node.setAttr( newAttr );
+				node.attrs.set( newAttr );
 			}
 		}
+
+		this.range.start.parent._children._mergeNodeAt( this.range.start.offset );
+		this.range.end.parent._children._mergeNodeAt( this.range.end.offset );
 
 		return { range: this.range, oldAttr: oldAttr, newAttr: newAttr };
 	}

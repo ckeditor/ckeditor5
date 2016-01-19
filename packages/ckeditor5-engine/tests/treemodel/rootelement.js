@@ -7,12 +7,9 @@
 
 'use strict';
 
-import coreTestUtils from '/tests/core/_utils/utils.js';
 import Document from '/ckeditor5/core/treemodel/document.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
 import RootElement from '/ckeditor5/core/treemodel/rootelement.js';
-
-const getIteratorCount = coreTestUtils.getIteratorCount;
 
 describe( 'Element', () => {
 	describe( 'constructor', () => {
@@ -22,7 +19,7 @@ describe( 'Element', () => {
 
 			expect( root ).to.be.an.instanceof( Element );
 			expect( root ).to.have.property( 'document' ).that.equals( doc );
-			expect( getIteratorCount( root.getAttrs() ) ).to.equal( 0 );
+			expect( root.attrs.size ).to.equal( 0 );
 			expect( root.getChildCount() ).to.equal( 0 );
 		} );
 	} );
