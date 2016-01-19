@@ -63,21 +63,10 @@ export default class CharacterProxy extends Node {
 		 * @property {String} character
 		 */
 		this.character = nodeListText.text.substr( index, 1 );
-	}
 
-	/**
-	 * @readonly
-	 * @property {treeModel.Element} parent
-	 * @see {@link treeModel.Node#parent}
-	 */
-	get parent() {
-		return this._nodeListText.parent;
-	}
-
-	/**
-	 * Does nothing as parent is readonly property in {@link treeModel.CharacterProxy}.
-	 */
-	set parent( parent ) {
-		/* jshint unused:false */
+		/**
+		 * @see {@link treeModel.Node#parent}
+		 */
+		this.parent = this._nodeListText.parent;
 	}
 }
