@@ -9,7 +9,6 @@ const initTask = require( './tasks/dev-init' );
 const installTask = require( './tasks/dev-install' );
 const pluginCreateTask = require( './tasks/dev-plugin-create' );
 const updateTask = require( './tasks/dev-update' );
-const boilerplateUpdateTask = require( './tasks/dev-boilerplate-update' );
 const relinkTask = require( './tasks/dev-relink' );
 
 module.exports = ( config ) => {
@@ -39,10 +38,6 @@ module.exports = ( config ) => {
 
 	gulp.task( 'dev-status', () => {
 		statusTask( ckeditor5Path, packageJSON, config.WORKSPACE_DIR, console.log, console.error );
-	} );
-
-	gulp.task( 'dev-boilerplate-update', () => {
-		boilerplateUpdateTask( ckeditor5Path, packageJSON, config.WORKSPACE_DIR, console.log, console.error );
 	} );
 
 	gulp.task( 'dev-relink', () => {

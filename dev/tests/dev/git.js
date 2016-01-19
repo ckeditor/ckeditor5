@@ -203,43 +203,6 @@ describe( 'utils', () => {
 			} );
 		} );
 
-		describe( 'updateBoilerplate', () => {
-			it( 'should be defined', () => expect( git.updateBoilerplate ).to.be.a( 'function' ) );
-			it( 'should fetch and merge boilerplate if remote already exists', () => {
-				const shExecStub = sandbox.stub( tools, 'shExec' );
-				const repositoryLocation = 'path/to/repository';
-				const updateCommands = [
-					`cd ${ repositoryLocation }`,
-					`git fetch boilerplate ${ git.BOILERPLATE_BRANCH }`,
-					`git merge boilerplate/${ git.BOILERPLATE_BRANCH }`
-				];
-				shExecStub.onCall( 0 ).returns( 'origin\nboilerplate' );
-
-				git.updateBoilerplate( repositoryLocation );
-
-				expect( shExecStub.calledTwice ).to.equal( true );
-				expect( shExecStub.secondCall.args[ 0 ] ).to.equal( updateCommands.join( ' && ' ) );
-			} );
-
-			it( 'should add boilerplate remote if one not exists', () => {
-				const shExecStub = sandbox.stub( tools, 'shExec' );
-				const repositoryLocation = 'path/to/repository';
-				const addRemoteCommands = `cd ${ repositoryLocation } && git remote add boilerplate ${ git.BOILERPLATE_REPOSITORY }`;
-				const updateCommands = [
-					`cd ${ repositoryLocation }`,
-					`git fetch boilerplate ${ git.BOILERPLATE_BRANCH }`,
-					`git merge boilerplate/${ git.BOILERPLATE_BRANCH }`
-				];
-				shExecStub.onCall( 0 ).returns( 'origin\nnew' );
-
-				git.updateBoilerplate( repositoryLocation );
-
-				expect( shExecStub.calledThrice ).to.equal( true );
-				expect( shExecStub.secondCall.args[ 0 ] ).to.equal( addRemoteCommands );
-				expect( shExecStub.thirdCall.args[ 0 ] ).to.equal( updateCommands.join( ' && ' )  );
-			} );
-		} );
-
 		describe( 'initialCommit', () => {
 			it( 'should be defined', () => expect( git.initialCommit ).to.be.a( 'function' ) );
 			it( 'should execute commit commands', () => {
