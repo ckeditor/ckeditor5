@@ -21,7 +21,7 @@ export default class InsertOperation extends Operation {
 	 * Creates an insert operation.
 	 *
 	 * @param {treeModel.Position} position Position of insertion.
-	 * @param {treeModel.Node|treeModel.Text|treeModel.NodeList|String|Iterable} nodes The list of nodes to be inserted.
+	 * @param {treeModel.NodesSet} nodes The list of nodes to be inserted.
 	 * List of nodes can be any type accepted by the {@link treeModel.NodeList} constructor.
 	 * @param {Number} baseVersion {@link treeModel.Document#version} on which operation can be applied.
 	 * @constructor

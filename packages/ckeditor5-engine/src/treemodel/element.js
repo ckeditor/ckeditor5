@@ -21,7 +21,7 @@ export default class Element extends Node {
 	 *
 	 * @param {String} name Node name.
 	 * @param {Iterable} attrs Iterable collection of {@link treeModel.Attribute attributes}.
-	 * @param {treeModel.Node|treeModel.Text|treeModel.CharacterProxy|treeModel.NodeList|String|Iterable} children List of nodes to be inserted
+	 * @param {treeModel.NodesSet} children List of nodes to be inserted
 	 * into created element. List of nodes can be of any type accepted by the {@link treeModel.NodeList} constructor.
 	 * @constructor
 	 */
@@ -85,7 +85,7 @@ export default class Element extends Node {
 	 * All attached nodes should be modified using the {@link treeModel.operation.InsertOperation}.
 	 *
 	 * @param {Number} index Position where nodes should be inserted.
-	 * @param {treeModel.Node|treeModel.Text|treeModel.NodeList|String|Iterable} nodes The list of nodes to be inserted.
+	 * @param {treeModel.NodesSet} nodes The list of nodes to be inserted.
 	 * The list of nodes can be of any type accepted by the {@link treeModel.NodeList} constructor.
 	 */
 	insertChildren( index, nodes ) {

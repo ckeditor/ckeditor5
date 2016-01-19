@@ -11,6 +11,19 @@ import utils from '../utils.js';
 import langUtils from '../lib/lodash/lang.js';
 
 /**
+ * Value that is convertible to an item kept in {@link treeModel.NodeList} or an iterable collection of such items.
+ * In other words, this is anything that {@link treeModel.NodeList#constructor} is able to take and convert to node:
+ * * {@link treeModel.Element} will be left as is
+ * * {@link treeModel.CharacterProxy} will be left as is
+ * * {@link treeModel.Text} and {String} will be converted to a set of {@link treeModel.CharacterProxy}
+ * * {@link treeModel.NodeList} will clone a node list (but not the nodes inside, so the new and passed list will
+ * point to the same nodes.
+ * * Iterable collection of above items will be iterated over and all items will be added to the node list.
+ *
+ * @typedef {treeModel.Element|treeModel.CharacterProxy|treeModel.Text|String|treeModel.NodeList|Iterable} treeModel.NodesSet
+ */
+
+/**
  * This is a private helper-class for {@link treeModel.NodeList} text compression utility.
  *
  * @private
@@ -92,7 +105,9 @@ export default class NodeList {
 	 *		nodeListA === nodeListB // true
 	 *		nodeListB.length // 3
 	 *
-	 * @param {treeModel.Node|treeModel.Text|String|treeModel.NodeList|Iterable} nodes List of nodes.
+	 * @see {@link treeModel.NodesSet} for more explanation.
+	 *
+	 * @param {treeModel.NodesSet} nodes List of nodes.
 	 * @constructor
 	 */
 	constructor( nodes ) {
