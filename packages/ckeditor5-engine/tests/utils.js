@@ -143,4 +143,54 @@ describe( 'utils', () => {
 			yield 33;
 		}
 	} );
+
+	describe( 'mix', () => {
+		const MixinA = {
+			a() {
+				return 'a';
+			}
+		};
+		const MixinB = {
+			b() {
+				return 'b';
+			}
+		};
+
+		it( 'mixes 2nd+ param\'s properties into the first class', () => {
+			class Foo {}
+			utils.mix( Foo, MixinA, MixinB );
+
+			expect( Foo ).to.not.have.property( 'a' );
+			expect( Foo ).to.not.have.property( 'b' );
+
+			const foo = new Foo();
+
+			expect( foo.a() ).to.equal( 'a' );
+			expect( foo.b() ).to.equal( 'b' );
+		} );
+
+		it( 'does not break the instanceof operator', () => {
+			class Foo {}
+			utils.mix( Foo, MixinA );
+
+			let foo = new Foo();
+
+			expect( foo ).to.be.instanceof( Foo );
+		} );
+
+		it( 'defines properties with the same descriptors as native classes', () => {
+			class Foo {
+				foo() {}
+			}
+
+			utils.mix( Foo, MixinA );
+
+			const actualDescriptor = Object.getOwnPropertyDescriptor( Foo.prototype, 'a' );
+			const expectedDescriptor = Object.getOwnPropertyDescriptor( Foo.prototype, 'foo' );
+
+			expect( actualDescriptor ).to.have.property( 'writable', expectedDescriptor.writable );
+			expect( actualDescriptor ).to.have.property( 'enumerable', expectedDescriptor.enumerable );
+			expect( actualDescriptor ).to.have.property( 'configurable', expectedDescriptor.configurable );
+		} );
+	} );
 } );
