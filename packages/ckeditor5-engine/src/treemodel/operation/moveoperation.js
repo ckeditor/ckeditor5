@@ -100,7 +100,7 @@ export default class MoveOperation extends Operation {
 				'operation-move-range-into-itself: Trying to move a range of nodes to the inside of that range.'
 			);
 		} else {
-			if ( utils.compareArrays( this.sourcePosition.getParentPath(), this.targetPosition.getParentPath() ) == utils.compareArrays.PREFIX ) {
+			if ( utils.compareArrays( this.sourcePosition.getParentPath(), this.targetPosition.getParentPath() ) == 'PREFIX' ) {
 				let i = this.sourcePosition.path.length - 1;
 
 				if ( this.targetPosition.path[ i ] >= sourceOffset && this.targetPosition.path[ i ] < sourceOffset + this.howMany ) {

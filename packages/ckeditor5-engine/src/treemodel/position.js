@@ -10,10 +10,12 @@ import CKEditorError from '../ckeditorerror.js';
 import arrayUtils from '../lib/lodash/array.js';
 import utils from '../utils.js';
 
-const SAME = 0;
-const AFTER = 1;
-const BEFORE = 2;
-const DIFFERENT = 3;
+/**
+ * A flag indicating whether this position is `'BEFORE'` or `'AFTER'` or `'SAME'` as given position.
+ * If positions are in different roots `'DIFFERENT'` flag is returned.
+ *
+ * @typedef {String} treeModel.PositionRelation
+ */
 
 /**
  * Position in the tree. Position is always located before or after a node.
@@ -136,32 +138,30 @@ export default class Position {
 	 * Checks whether this position is before or after given position.
 	 *
 	 * @param {treeModel.Position} otherPosition Position to compare with.
-	 * @returns {Number} A flag indicating whether this position is {@link #BEFORE} or
-	 * {@link #AFTER} or {@link #SAME} as given position. If positions are in different roots,
-	 * {@link #DIFFERENT} flag is returned.
+	 * @returns {treeModel.PositionRelation}
 	 */
 	compareWith( otherPosition ) {
 		if ( this.root != otherPosition.root ) {
-			return DIFFERENT;
+			return 'DIFFERENT';
 		}
 
 		const result = utils.compareArrays( this.path, otherPosition.path );
 
 		switch ( result ) {
-			case utils.compareArrays.SAME:
-				return SAME;
+			case 'SAME':
+				return 'SAME';
 
-			case utils.compareArrays.PREFIX:
-				return BEFORE;
+			case 'PREFIX':
+				return 'BEFORE';
 
-			case utils.compareArrays.EXTENSION:
-				return AFTER;
+			case 'EXTENSION':
+				return 'AFTER';
 
 			default:
 				if ( this.path[ result ] < otherPosition.path[ result ] ) {
-					return BEFORE;
+					return 'BEFORE';
 				} else {
-					return AFTER;
+					return 'AFTER';
 				}
 		}
 	}
@@ -208,7 +208,7 @@ export default class Position {
 			return transformed;
 		}
 
-		if ( utils.compareArrays( deletePosition.getParentPath(), this.getParentPath() ) == utils.compareArrays.SAME ) {
+		if ( utils.compareArrays( deletePosition.getParentPath(), this.getParentPath() ) == 'SAME' ) {
 			// If nodes are removed from the node that is pointed by this position...
 			if ( deletePosition.offset < this.offset ) {
 				// And are removed from before an offset of that position...
@@ -219,7 +219,7 @@ export default class Position {
 					transformed.offset -= howMany;
 				}
 			}
-		} else if ( utils.compareArrays( deletePosition.getParentPath(), this.getParentPath() ) == utils.compareArrays.PREFIX ) {
+		} else if ( utils.compareArrays( deletePosition.getParentPath(), this.getParentPath() ) == 'PREFIX' ) {
 			// If nodes are removed from a node that is on a path to this position...
 			const i = deletePosition.path.length - 1;
 
@@ -257,14 +257,14 @@ export default class Position {
 			return transformed;
 		}
 
-		if ( utils.compareArrays( insertPosition.getParentPath(), this.getParentPath() ) == utils.compareArrays.SAME ) {
+		if ( utils.compareArrays( insertPosition.getParentPath(), this.getParentPath() ) == 'SAME' ) {
 			// If nodes are inserted in the node that is pointed by this position...
 			if ( insertPosition.offset < this.offset || ( insertPosition.offset == this.offset && insertBefore ) ) {
 				// And are inserted before an offset of that position...
 				// "Push" this positions offset.
 				transformed.offset += howMany;
 			}
-		} else if ( utils.compareArrays( insertPosition.getParentPath(), this.getParentPath() ) == utils.compareArrays.PREFIX ) {
+		} else if ( utils.compareArrays( insertPosition.getParentPath(), this.getParentPath() ) == 'PREFIX' ) {
 			// If nodes are inserted in a node that is on a path to this position...
 			const i = insertPosition.path.length - 1;
 
@@ -315,7 +315,7 @@ export default class Position {
 	 * @returns {Boolean} True if this position is after given position.
 	 */
 	isAfter( otherPosition ) {
-		return this.compareWith( otherPosition ) == AFTER;
+		return this.compareWith( otherPosition ) == 'AFTER';
 	}
 
 	/**
@@ -350,7 +350,7 @@ export default class Position {
 	 * @returns {Boolean} True if this position is before given position.
 	 */
 	isBefore( otherPosition ) {
-		return this.compareWith( otherPosition ) == BEFORE;
+		return this.compareWith( otherPosition ) == 'BEFORE';
 	}
 
 	/**
@@ -360,7 +360,7 @@ export default class Position {
 	 * @returns {Boolean} True if positions are same.
 	 */
 	isEqual( otherPosition ) {
-		return this.compareWith( otherPosition ) == SAME;
+		return this.compareWith( otherPosition ) == 'SAME';
 	}
 
 	/**
@@ -377,15 +377,15 @@ export default class Position {
 		let compare = this.compareWith( otherPosition );
 
 		switch ( compare ) {
-			case SAME:
+			case 'SAME':
 				return true;
 
-			case BEFORE:
+			case 'BEFORE':
 				left = this;
 				right = otherPosition;
 				break;
 
-			case AFTER:
+			case 'AFTER':
 				left = otherPosition;
 				right = this;
 				break;
@@ -529,31 +529,3 @@ export default class Position {
 		return combined;
 	}
 }
-
-/**
- * Flag for "is after" relation between Positions.
- *
- * @type {Number}
- */
-Position.AFTER = AFTER;
-
-/**
- * Flag for "is before" relation between Positions.
- *
- * @type {Number}
- */
-Position.BEFORE = BEFORE;
-
-/**
- * Flag for "are in different roots" relation between Positions.
- *
- * @type {Number}
- */
-Position.DIFFERENT = DIFFERENT;
-
-/**
- * Flag for "are same" relation between Positions.
- *
- * @type {Number}
- */
-Position.SAME = SAME;

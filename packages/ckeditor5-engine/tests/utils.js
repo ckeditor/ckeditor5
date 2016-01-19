@@ -85,7 +85,7 @@ describe( 'utils', () => {
 
 			let result = utils.compareArrays( a, b );
 
-			expect( result ).to.equal( utils.compareArrays.SAME );
+			expect( result ).to.equal( 'SAME' );
 		} );
 
 		it( 'should return PREFIX flag, when all n elements of first array are same as n first elements of the second array', () => {
@@ -94,7 +94,7 @@ describe( 'utils', () => {
 
 			let result = utils.compareArrays( a, b );
 
-			expect( result ).to.equal( utils.compareArrays.PREFIX );
+			expect( result ).to.equal( 'PREFIX' );
 		} );
 
 		it( 'should return EXTENSION flag, when n first elements of first array are same as all elements of the second array', () => {
@@ -103,7 +103,7 @@ describe( 'utils', () => {
 
 			let result = utils.compareArrays( a, b );
 
-			expect( result ).to.equal( utils.compareArrays.EXTENSION );
+			expect( result ).to.equal( 'EXTENSION' );
 		} );
 
 		it( 'should return index on which arrays differ, when arrays are not the same', () => {

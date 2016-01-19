@@ -11,10 +11,22 @@ import Element from './element.js';
 import Position from './position.js';
 import CKEditorError from '../ckeditorerror.js';
 
-const ELEMENT_START = 0;
-const ELEMENT_END = 1;
-const TEXT = 2;
-const CHARACTER = 3;
+/**
+ * Type of the step made by {@link treeModel.TreeWalker}.
+ * Possible values: `'ELEMENT_START'` if walker is at the beginning of a node, `'ELEMENT_END'` if walker is at the end of node,
+ * `'CHARACTER'` if walker traversed over a character, or `'TEXT'` if walker traversed over multiple characters (available in
+ * character merging mode, see {@link treeModel.TreeWalker#constructor}).
+ *
+ * @typedef {String} treeModel.TreeWalkerItemType
+ */
+
+/**
+ * Object returned by {@link treeModel.TreeWalker} when traversing tree model.
+ *
+ * @typedef {Object} treeModel.TreeWalkerItem
+ * @property {treeModel.TreeWalkerItemType} type
+ * @property {treeModel.Node|treeModel.TextFragment} item Value between old and new position of {@link treeModel.TreeWalker}.
+ */
 
 /**
  * Position iterator class. It allows to iterate forward and backward over the tree document.
@@ -98,14 +110,11 @@ export default class TreeWalker {
 	}
 
 	/**
-	 * Moves the {@link #position} to the next position and returns the encountered value.
+	 * Makes a step forward in tree model. Moves the {@link #position} to the next position and returns the encountered value.
 	 *
-	 * @returns {Object} Value between the previous and the new {@link #position}.
+	 * @returns {Object} Object implementing iterator interface, returning information about taken step.
 	 * @returns {Boolean} return.done True if iterator is done.
-	 * @returns {Object} return.value
-	 * @returns {Number} return.value.type Encountered value type, possible options: {@link TreeWalker#ELEMENT_START},
-	 * {@link TreeWalker#ELEMENT_END}, {@link TreeWalker#CHARACTER} or {@link TreeWalker#TEXT}.
-	 * @returns {treeModel.Node} return.value.item Encountered node.
+	 * @returns {treeModel.TreeWalkerItem} return.value Information about taken step.
 	 */
 	next() {
 		const position = Position.createFromPosition( this.position );
@@ -130,7 +139,7 @@ export default class TreeWalker {
 
 			this._visitedParent = node;
 
-			return formatReturnValue( ELEMENT_START, node );
+			return formatReturnValue( 'ELEMENT_START', node );
 		} else if ( node instanceof CharacterProxy ) {
 			if ( this.mergeCharacters ) {
 				let charactersCount = node._nodeListText.text.length - node._index;
@@ -147,12 +156,12 @@ export default class TreeWalker {
 				position.offset = offset;
 				this.position = position;
 
-				return formatReturnValue( TEXT, textFragment );
+				return formatReturnValue( 'TEXT', textFragment );
 			} else {
 				position.offset++;
 				this.position = position;
 
-				return formatReturnValue( CHARACTER, node );
+				return formatReturnValue( 'CHARACTER', node );
 			}
 		} else {
 			position.path.pop();
@@ -161,19 +170,16 @@ export default class TreeWalker {
 
 			this._visitedParent = parent.parent;
 
-			return formatReturnValue( ELEMENT_END, parent );
+			return formatReturnValue( 'ELEMENT_END', parent );
 		}
 	}
 
 	/**
-	 * Moves the {@link #position} to the previous position and returns the encountered value.
+	 * Makes a step backward in tree model. Moves the {@link #position} to the previous position and returns the encountered value.
 	 *
-	 * @returns {Object} Value between the previous and the new {@link #position}.
+	 * @returns {Object} Object implementing iterator interface, returning information about taken step.
 	 * @returns {Boolean} return.done True if iterator is done.
-	 * @returns {Object} return.value
-	 * @returns {Number} return.value.type Encountered value type, possible options: {@link TreeWalker#ELEMENT_START},
-	 * {@link TreeWalker#ELEMENT_END}, {@link TreeWalker#CHARACTER} or {@link TreeWalker#TEXT}.
-	 * @returns {treeModel.Node} return.value.item Scanned node.
+	 * @returns {treeModel.TreeWalkerItem} return.value Information about taken step.
 	 */
 	previous() {
 		const position = Position.createFromPosition( this.position );
@@ -199,7 +205,7 @@ export default class TreeWalker {
 
 			this._visitedParent = node;
 
-			return formatReturnValue( ELEMENT_END, node );
+			return formatReturnValue( 'ELEMENT_END', node );
 		} else if ( node instanceof CharacterProxy ) {
 			if ( this.mergeCharacters ) {
 				let charactersCount = node._index + 1;
@@ -217,12 +223,12 @@ export default class TreeWalker {
 
 				let textFragment = new TextFragment( this.position, text );
 
-				return formatReturnValue( TEXT, textFragment );
+				return formatReturnValue( 'TEXT', textFragment );
 			} else {
 				position.offset--;
 				this.position = position;
 
-				return formatReturnValue( CHARACTER, node );
+				return formatReturnValue( 'CHARACTER', node );
 			}
 		} else {
 			position.path.pop();
@@ -230,7 +236,7 @@ export default class TreeWalker {
 
 			this._visitedParent = parent.parent;
 
-			return formatReturnValue( ELEMENT_START, parent );
+			return formatReturnValue( 'ELEMENT_START', parent );
 		}
 	}
 }
@@ -244,39 +250,3 @@ function formatReturnValue( type, item ) {
 		}
 	};
 }
-
-/**
- * Flag for encountering start of an element.
- *
- * @static
- * @readonly
- * @property {Number}
- */
-TreeWalker.ELEMENT_START = ELEMENT_START;
-
-/**
- * Flag for encountering end of an element.
- *
- * @static
- * @readonly
- * @property {Number}
- */
-TreeWalker.ELEMENT_END = ELEMENT_END;
-
-/**
- * Flag for text.
- *
- * @static
- * @readonly
- * @property {Number}
- */
-TreeWalker.TEXT = TEXT;
-
-/**
- * Flag for character.
- *
- * @static
- * @readonly
- * @property {Number}
- */
-TreeWalker.CHARACTER = CHARACTER;
