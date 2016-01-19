@@ -224,11 +224,12 @@ export default class Range {
 
 		// We find on which tree-level start and end have the lowest common ancestor
 		let cmp = utils.compareArrays( this.start.path, this.end.path );
-		let diffAt = ( cmp < 0 ) ? Math.min( this.start.path.length, this.end.path.length ) : cmp;
+		// If comparison returned string it means that arrays are same.
+		let diffAt = ( typeof cmp == 'string' ) ? Math.min( this.start.path.length, this.end.path.length ) : cmp;
 
 		let pos = Position.createFromPosition( this.start );
 
-		// go up
+		// Go up.
 		while ( pos.path.length > diffAt + 1 ) {
 			let howMany = pos.parent.getChildCount() - pos.offset;
 
@@ -240,7 +241,7 @@ export default class Range {
 			pos.offset++;
 		}
 
-		// go down
+		// Go down.
 		while ( pos.path.length <= this.end.path.length ) {
 			let offset = this.end.path[ pos.path.length - 1 ];
 			let howMany = offset - pos.offset;
@@ -263,9 +264,8 @@ export default class Range {
 	 * we enter into when iterating over this range.
 	 *
 	 * **Note:** this method will not return a parent node of start position. This is in contrary to {@link treeModel.TreeWalker}
-	 * which will return that node with {@link treeModel.TreeWalker#ELEMENT_END} type. This method, also, returns each
-	 * {@link treeModel.Element} once, while iterator return it twice: for {@link treeModel.TreeWalker#ELEMENT_START} and
-	 * {@link treeModel.TreeWalker#ELEMENT_END}.
+	 * which will return that node with `'ELEMENT_END'` type. This method also returns each {@link treeModel.Element} once,
+	 * while simply used {@link treeModel.TreeWalker} might return it twice: for `'ELEMENT_START'` and `'ELEMENT_END'`.
 	 *
 	 * @see {treeModel.TreeWalker}
 	 * @param {Boolean} [mergeCharacters] Flag indicating whether all consecutive characters with the same attributes
@@ -280,7 +280,7 @@ export default class Range {
 		do {
 			step = it.next();
 
-			if ( step.value && step.value.type != TreeWalker.ELEMENT_END ) {
+			if ( step.value && step.value.type != 'ELEMENT_END' ) {
 				yield step.value.item;
 			}
 		} while ( !step.done );
@@ -330,9 +330,9 @@ export default class Range {
 				step = it.next();
 
 				if ( step.value ) {
-					if ( step.value.type == TreeWalker.ELEMENT_START ) {
+					if ( step.value.type == 'ELEMENT_START' ) {
 						depth++;
-					} else if ( step.value.type == TreeWalker.ELEMENT_END ) {
+					} else if ( step.value.type == 'ELEMENT_END' ) {
 						depth--;
 					}
 
@@ -369,8 +369,8 @@ export default class Range {
 	 */
 	getTransformedByInsertion( insertPosition, howMany, spreadOnlyOnSameLevel ) {
 		// Flag indicating whether this whole range and given insertPosition is on the same tree level.
-		const areOnSameLevel = utils.compareArrays( this.start.getParentPath(), this.end.getParentPath() ) == utils.compareArrays.SAME &&
-			utils.compareArrays( this.start.getParentPath(), insertPosition.getParentPath() ) == utils.compareArrays.SAME;
+		const areOnSameLevel = utils.compareArrays( this.start.getParentPath(), this.end.getParentPath() ) == 'SAME' &&
+			utils.compareArrays( this.start.getParentPath(), insertPosition.getParentPath() ) == 'SAME';
 
 		if ( this.containsPosition( insertPosition ) && ( !spreadOnlyOnSameLevel || areOnSameLevel ) ) {
 			// Range has to be spread. The first part is from original start to the spread point.

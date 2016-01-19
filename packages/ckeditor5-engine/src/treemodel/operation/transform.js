@@ -287,7 +287,7 @@ const ot = {
 			// * on deeper tree level - it means that we move nodes that are inside moved nodes
 			// The operations are conflicting only if they try to move exactly same nodes, so only in the first case.
 			// So, we will handle common range if it is "deeper" or if transformed operation is more important.
-			let isDeeper = utils.compareArrays( b.sourcePosition.getParentPath(), a.sourcePosition.getParentPath() ) == utils.compareArrays.PREFIX;
+			let isDeeper = utils.compareArrays( b.sourcePosition.getParentPath(), a.sourcePosition.getParentPath() ) == 'PREFIX';
 
 			if ( common !== null && ( isDeeper || isStrong ) ) {
 				// Here we do not need to worry that newTargetPosition is inside moved range, because that

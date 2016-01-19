@@ -10,8 +10,11 @@ import Range from './range.js';
 import EmitterMixin from '../emittermixin.js';
 import objectUtils from '../lib/lodash/object.js';
 
-const STICKS_TO_NEXT = 0;
-const STICKS_TO_PREVIOUS = 1;
+/**
+ * Enum representing how position is "sticking" with their neighbour nodes.
+ * Possible values: `'STICKS_TO_NEXT'`, `'STICKS_TO_PREVIOUS'`.
+ * @typedef {String} treeModel.PositionStickiness
+ */
 
 /**
  * LivePosition is a position in the Tree Model that updates itself as the tree changes. It may be used as a bookmark.
@@ -28,8 +31,7 @@ export default class LivePosition extends Position {
 	 * @see {@link treeModel.Position}
 	 * @param root
 	 * @param path
-	 * @param {Number} [stickiness] Flag representing how live position is "sticking" with their neighbour nodes.
-	 * Defaults to {@link #STICKS_TO_NEXT}. See {@link #stickiness}.
+	 * @param {treeModel.PositionStickiness} [stickiness] Defaults to `'STICKS_TO_NEXT'`. See {@link #stickiness}.
 	 * @constructor
 	 */
 	constructor( root, path, stickiness ) {
@@ -52,11 +54,9 @@ export default class LivePosition extends Position {
 		 * | sticks to previous node: `<p>f|[oo]</p><p>b^ar</p>` => `<p>f|</p><p>booar</p>`
 		 * | sticks to next node: `<p>f|[oo]</p><p>b^ar</p>` => `<p>f</p><p>b|ooar</p>`
 		 *
-		 * Accepted values are {@link #STICKS_TO_PREVIOUS} and {@link #STICKS_TO_NEXT}.
-		 *
-		 * @type {Number}
+		 * @type {treeModel.PositionStickiness}
 		 */
-		this.stickiness = stickiness || STICKS_TO_NEXT;
+		this.stickiness = stickiness || 'STICKS_TO_NEXT';
 
 		bindWithDocument.call( this );
 	}
@@ -140,7 +140,7 @@ function transform( type, range, position ) {
 
 	switch ( type ) {
 		case 'insert':
-			let insertBefore = this.stickiness == STICKS_TO_NEXT;
+			let insertBefore = this.stickiness == 'STICKS_TO_NEXT';
 			transformed = this.getTransformedByInsertion( range.start, howMany, insertBefore );
 			break;
 
@@ -150,14 +150,14 @@ function transform( type, range, position ) {
 			let originalRange = Range.createFromPositionAndShift( position, howMany );
 
 			let gotMoved = originalRange.containsPosition( this ) ||
-				( originalRange.start.isEqual( this ) && this.stickiness == STICKS_TO_NEXT ) ||
-				( originalRange.end.isEqual( this ) && this.stickiness == STICKS_TO_PREVIOUS );
+				( originalRange.start.isEqual( this ) && this.stickiness == 'STICKS_TO_NEXT' ) ||
+				( originalRange.end.isEqual( this ) && this.stickiness == 'STICKS_TO_PREVIOUS' );
 
 			// We can't use .getTransformedByMove() because we have a different if-condition.
 			if ( gotMoved ) {
 				transformed = this._getCombined( position, range.start );
 			} else {
-				let insertBefore = this.stickiness == STICKS_TO_NEXT;
+				let insertBefore = this.stickiness == 'STICKS_TO_NEXT';
 				transformed = this.getTransformedByMove( position, range.start, howMany, insertBefore );
 			}
 			break;
@@ -166,19 +166,5 @@ function transform( type, range, position ) {
 	this.path = transformed.path;
 	this.root = transformed.root;
 }
-
-/**
- * Flag representing that the position is sticking to the node before it or to the beginning of it's parent node.
- *
- * @type {Number}
- */
-LivePosition.STICKS_TO_PREVIOUS = STICKS_TO_PREVIOUS;
-
-/**
- * Flag representing that the position is sticking to the node after it or to the end of it's parent node.
- *
- * @type {number}
- */
-LivePosition.STICKS_TO_NEXT = STICKS_TO_NEXT;
 
 objectUtils.extend( LivePosition.prototype, EmitterMixin );

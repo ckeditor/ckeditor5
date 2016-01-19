@@ -28,8 +28,8 @@ export default class LiveRange extends Range {
 	constructor( start, end ) {
 		super( start, end );
 
-		this.start = new LivePosition( this.start.root, this.start.path.slice(), LivePosition.STICKS_TO_NEXT );
-		this.end = new LivePosition( this.end.root, this.end.path.slice(), LivePosition.STICKS_TO_PREVIOUS );
+		this.start = new LivePosition( this.start.root, this.start.path.slice(), 'STICKS_TO_NEXT' );
+		this.end = new LivePosition( this.end.root, this.end.path.slice(), 'STICKS_TO_PREVIOUS' );
 
 		bindWithDocument.call( this );
 	}

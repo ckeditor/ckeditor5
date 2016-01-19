@@ -361,32 +361,32 @@ describe( 'position', () => {
 	} );
 
 	describe( 'compareWith', () => {
-		it( 'should return Position.SAME if positions are same', () => {
+		it( 'should return SAME if positions are same', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
 			const compared = new Position( root, [ 1, 2, 3 ] );
 
-			expect( position.compareWith( compared ) ).to.equal( Position.SAME );
+			expect( position.compareWith( compared ) ).to.equal( 'SAME' );
 		} );
 
-		it( 'should return Position.BEFORE if the position is before compared one', () => {
+		it( 'should return BEFORE if the position is before compared one', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
 			const compared = new Position( root, [ 1, 3 ] );
 
-			expect( position.compareWith( compared ) ).to.equal( Position.BEFORE );
+			expect( position.compareWith( compared ) ).to.equal( 'BEFORE' );
 		} );
 
-		it( 'should return Position.AFTER if the position is after compared one', () => {
+		it( 'should return AFTER if the position is after compared one', () => {
 			const position = new Position( root, [ 1, 2, 3, 4 ] );
 			const compared = new Position( root, [ 1, 2, 3 ] );
 
-			expect( position.compareWith( compared ) ).to.equal( Position.AFTER );
+			expect( position.compareWith( compared ) ).to.equal( 'AFTER' );
 		} );
 
-		it( 'should return Position.DIFFERENT if positions are in different roots', () => {
+		it( 'should return DIFFERENT if positions are in different roots', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
 			const compared = new Position( otherRoot, [ 1, 2, 3 ] );
 
-			expect( position.compareWith( compared ) ).to.equal( Position.DIFFERENT );
+			expect( position.compareWith( compared ) ).to.equal( 'DIFFERENT' );
 		} );
 	} );
 
