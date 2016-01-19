@@ -107,6 +107,30 @@ const utils = {
 		}
 
 		return null;
+	},
+
+	/**
+	 * Copies enumerable properties from the objects given as 2nd+ parameters to the
+	 * prototype of the base class.
+	 *
+	 *		class SpecificEditor extends utils.mix( Editor, SomeMixin1, SomeMixin2 ) {
+	 *			...
+	 *		}
+	 *
+	 * @param {Function} [baseClass] Class which prototype will be extended.
+	 * @param {Object} [...mixins] Objects from which to get properties.
+	 */
+	mix( baseClass, ...mixins ) {
+		mixins.forEach( ( mixin ) => {
+			Object.keys( mixin ).forEach( ( key ) => {
+				Object.defineProperty( baseClass.prototype, key, {
+					enumerable: false,
+					configurable: true,
+					writable: true,
+					value: mixin[ key ]
+				} );
+			} );
+		} );
 	}
 };
 
