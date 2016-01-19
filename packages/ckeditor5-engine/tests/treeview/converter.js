@@ -5,29 +5,19 @@
 
 /* bender-tags: treeview */
 
-/* bender-include: ../_tools/tools.js */
-
 'use strict';
 
-const getIteratorCount = bender.tools.core.getIteratorCount;
+import coreTestUtils from '/tests/core/_utils/utils.js';
+import ViewElement from '/ckeditor5/core/treeview/element.js';
+import ViewText from '/ckeditor5/core/treeview/text.js';
+import Converter from '/ckeditor5/core/treeview/converter.js';
 
-const modules = bender.amd.require(
-	'core/treeview/node',
-	'core/treeview/element',
-	'core/treeview/text',
-	'core/treeview/converter'
-);
+const getIteratorCount = coreTestUtils.getIteratorCount;
 
 describe( 'converter', () => {
-	let Converter, ViewText, ViewElement, ViewNode;
 	let converter;
 
 	before( () => {
-		ViewText = modules[ 'core/treeview/text' ];
-		ViewElement = modules[ 'core/treeview/element' ];
-		ViewNode = modules[ 'core/treeview/node' ];
-		Converter = modules[ 'core/treeview/converter' ];
-
 		converter = new Converter();
 	} );
 

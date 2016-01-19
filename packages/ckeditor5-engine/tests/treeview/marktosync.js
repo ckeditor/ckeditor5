@@ -5,27 +5,17 @@
 
 /* bender-tags: treeview */
 
-/* bender-include: ../_tools/tools.js */
-
 'use strict';
 
-const modules = bender.amd.require(
-	'core/treeview/element',
-	'core/treeview/rootelement',
-	'core/treeview/text'
-);
+import ViewText from '/ckeditor5/core/treeview/text.js';
+import ViewElement from '/ckeditor5/core/treeview/element.js';
+import RootElement from '/ckeditor5/core/treeview/rootelement.js';
 
 describe( 'Node.markToSync', () => {
-	let ViewElement, ViewText, RootElement;
-
 	let root, text, img;
 	let markToSyncSpy;
 
 	before( () => {
-		ViewElement = modules[ 'core/treeview/element' ];
-		ViewText = modules[ 'core/treeview/text' ];
-		RootElement = modules[ 'core/treeview/rootelement' ];
-
 		markToSyncSpy = sinon.spy();
 	} );
 

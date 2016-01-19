@@ -5,25 +5,15 @@
 
 /* bender-tags: treeview */
 
-/* bender-include: ../_tools/tools.js */
-
 'use strict';
 
-const getIteratorCount = bender.tools.core.getIteratorCount;
+import coreTestUtils from '/tests/core/_utils/utils.js';
+import Node from '/ckeditor5/core/treeview/node.js';
+import ViewElement from '/ckeditor5/core/treeview/element.js';
 
-const modules = bender.amd.require(
-	'core/treeview/node',
-	'core/treeview/element'
-);
+const getIteratorCount = coreTestUtils.getIteratorCount;
 
 describe( 'Element', () => {
-	let ViewElement, Node;
-
-	before( () => {
-		ViewElement = modules[ 'core/treeview/element' ];
-		Node = modules[ 'core/treeview/node' ];
-	} );
-
 	describe( 'constructor', () => {
 		it( 'should create element without attributes', () => {
 			const elem = new ViewElement( 'p' );

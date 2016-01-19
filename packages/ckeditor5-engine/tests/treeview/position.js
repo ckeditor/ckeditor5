@@ -7,17 +7,9 @@
 
 'use strict';
 
-const modules = bender.amd.require(
-	'core/treeview/position'
-);
+import Position from '/ckeditor5/core/treeview/position.js';
 
 describe( 'Position', () => {
-	let Position;
-
-	before( () => {
-		Position = modules[ 'core/treeview/position' ];
-	} );
-
 	describe( 'constructor', () => {
 		it( 'should create element without attributes', () => {
 			const parentMock = {};

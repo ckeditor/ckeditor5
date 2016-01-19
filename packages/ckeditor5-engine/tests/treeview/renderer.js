@@ -7,25 +7,16 @@
 
 'use strict';
 
-const modules = bender.amd.require(
-	'core/treeview/renderer',
-	'core/treeview/element',
-	'core/treeview/text',
-	'core/treeview/converter',
-	'core/ckeditorerror'
-);
+import Renderer from '/ckeditor5/core/treeview/renderer.js';
+import ViewElement from '/ckeditor5/core/treeview/element.js';
+import ViewText from '/ckeditor5/core/treeview/text.js';
+import Converter from '/ckeditor5/core/treeview/converter.js';
+import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
 describe( 'Renderer', () => {
-	let Renderer, ViewElement, ViewText, CKEditorError, Converter;
 	let converter, renderer;
 
 	before( () => {
-		Renderer = modules[ 'core/treeview/renderer' ];
-		ViewElement = modules[ 'core/treeview/element' ];
-		ViewText = modules[ 'core/treeview/text' ];
-		CKEditorError = modules[ 'core/ckeditorerror' ];
-		Converter = modules[ 'core/treeview/converter' ];
-
 		converter = new Converter();
 		renderer = new Renderer( converter );
 	} );

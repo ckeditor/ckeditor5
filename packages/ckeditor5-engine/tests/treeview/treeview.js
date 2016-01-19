@@ -7,23 +7,12 @@
 
 'use strict';
 
-const modules = bender.amd.require(
-	'core/treeview/treeview',
-	'core/treeview/observer/observer',
-	'core/treeview/renderer',
-	'core/treeview/converter'
-);
+import TreeView from '/ckeditor5/core/treeview/treeview.js';
+import Observer from '/ckeditor5/core/treeview/observer/observer.js';
+import Renderer from '/ckeditor5/core/treeview/renderer.js';
+import Converter from '/ckeditor5/core/treeview/converter.js';
 
 describe( 'TreeView', () => {
-	let TreeView, Observer, Renderer, Converter;
-
-	before( () => {
-		TreeView = modules[ 'core/treeview/treeview' ];
-		Observer = modules[ 'core/treeview/observer/observer' ];
-		Renderer = modules[ 'core/treeview/renderer' ];
-		Converter = modules[ 'core/treeview/converter' ];
-	} );
-
 	describe( 'constructor', () => {
 		it( 'should create TreeView with all properties', () => {
 			const domP = document.createElement( 'p' );

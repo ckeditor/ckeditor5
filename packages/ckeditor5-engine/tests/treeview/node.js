@@ -5,32 +5,19 @@
 
 /* bender-tags: treeview */
 
-/* bender-include: ../_tools/tools.js */
-
 'use strict';
 
-const modules = bender.amd.require(
-	'core/treeview/element',
-	'core/treeview/rootelement',
-	'core/treeview/node',
-	'core/treeview/text',
-	'core/ckeditorerror'
-);
+import Element from '/ckeditor5/core/treeview/element.js';
+import RootElement from '/ckeditor5/core/treeview/rootelement.js';
+import Text from '/ckeditor5/core/treeview/text.js';
+import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
 describe( 'Node', () => {
-	let Element, Text, Node, RootElement, CKEditorError;
-
 	let root;
 	let one, two, three;
 	let charB, charA, charR, img;
 
 	before( () => {
-		Element = modules[ 'core/treeview/element' ];
-		Node = modules[ 'core/treeview/node' ];
-		Text = modules[ 'core/treeview/text' ];
-		CKEditorError = modules[ 'ckeditorerror ' ];
-		RootElement = modules[ 'core/treeview/rootelement' ];
-
 		charB = new Text( 'b' );
 		charA = new Text( 'a' );
 		img = new Element( 'img' );

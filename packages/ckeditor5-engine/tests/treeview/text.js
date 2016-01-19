@@ -7,21 +7,10 @@
 
 'use strict';
 
-const modules = bender.amd.require(
-	'core/treeview/node',
-	'core/treeview/element',
-	'core/treeview/text'
-);
+import ViewNode from '/ckeditor5/core/treeview/node.js';
+import ViewText from '/ckeditor5/core/treeview/text.js';
 
 describe( 'Element', () => {
-	let ViewText, ViewElement, ViewNode;
-
-	before( () => {
-		ViewText = modules[ 'core/treeview/text' ];
-		ViewElement = modules[ 'core/treeview/element' ];
-		ViewNode = modules[ 'core/treeview/node' ];
-	} );
-
 	describe( 'constructor', () => {
 		it( 'should create element without attributes', () => {
 			const text = new ViewText( 'foo' );
