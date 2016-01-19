@@ -6,7 +6,7 @@
 'use strict';
 
 import Delta from './delta.js';
-import register from './register.js';
+import register from '../batch.js';
 import Position from '../position.js';
 import RemoveOperation from '../operation/removeoperation.js';
 import MoveOperation from '../operation/moveoperation.js';
