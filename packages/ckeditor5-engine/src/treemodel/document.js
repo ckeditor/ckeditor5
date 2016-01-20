@@ -10,7 +10,7 @@ import Batch from './batch.js';
 import Selection from './selection.js';
 import EmitterMixin from '../emittermixin.js';
 import CKEditorError from '../ckeditorerror.js';
-import objectUtils from '../lib/lodash/object.js';
+import utils from '../utils.js';
 
 const graveyardSymbol = Symbol( 'graveyard' );
 
@@ -229,4 +229,4 @@ export default class Document {
 	 */
 }
 
-objectUtils.extend( Document.prototype, EmitterMixin );
+utils.mix( Document, EmitterMixin );

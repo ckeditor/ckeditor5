@@ -7,7 +7,6 @@
 
 import EmitterMixin from './emittermixin.js';
 import CKEditorError from './ckeditorerror.js';
-import utilsObject from './lib/lodash/object.js';
 import utils from './utils.js';
 
 /**
@@ -266,7 +265,7 @@ export default class Collection {
 	}
 }
 
-utilsObject.extend( Collection.prototype, EmitterMixin );
+utils.mix( Collection, EmitterMixin );
 
 /**
  * Fired when an item is added to the collection.

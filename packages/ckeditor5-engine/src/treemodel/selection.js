@@ -9,7 +9,7 @@ import LiveRange from './liverange.js';
 import AttributeList from './attributelist.js';
 import EmitterMixin from '../emittermixin.js';
 import CKEditorError from '../ckeditorerror.js';
-import objectUtils from '../lib/lodash/object.js';
+import utils from '../utils.js';
 
 /**
  * Represents a selection that is made on nodes in {@link treeModel.Document}. Selection instance is
@@ -199,4 +199,4 @@ function pushRange( range ) {
 	this._ranges.push( LiveRange.createFromRange( range ) );
 }
 
-objectUtils.extend( Selection.prototype, EmitterMixin );
+utils.mix( Selection, EmitterMixin );
