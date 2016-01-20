@@ -442,6 +442,26 @@ describe( 'build-utils', () => {
 
 			stream.end();
 		} );
+
+		// #62
+		it( 'does nothing to a null file', ( done ) => {
+			const stream = utils.appendBenderLauncher();
+
+			stream.pipe(
+				utils.noop( ( data ) => {
+					expect( data.contents ).to.equal( null );
+					done();
+				} )
+			);
+
+			stream.write( new Vinyl( {
+				cwd: './',
+				path: 'tests/file.js',
+				contents: null
+			} ) );
+
+			stream.end();
+		} );
 	} );
 
 	describe( 'isTestFile', () => {
