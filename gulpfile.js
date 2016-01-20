@@ -18,3 +18,4 @@ require( './dev/tasks/dev/tasks' )( config );
 require( './dev/tasks/lint/tasks' )( config );
 
 gulp.task( 'default', [ 'build' ] );
+gulp.task( 'pre-commit', [ 'lint-staged' ] );

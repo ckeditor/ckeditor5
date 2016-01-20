@@ -29,7 +29,7 @@ module.exports = ( config ) => {
 		 *
 		 * @returns { Stream }
 		 */
-		preCommit() {
+		lintStaged() {
 			return guppy.stream( 'pre-commit' )
 				.pipe( gulpFilter( src ) )
 				.pipe( lint() )
@@ -52,7 +52,7 @@ module.exports = ( config ) => {
 	};
 
 	gulp.task( 'lint', tasks.lint );
-	gulp.task( 'pre-commit', tasks.preCommit );
+	gulp.task( 'lint-staged', tasks.lintStaged );
 
 	return tasks;
 

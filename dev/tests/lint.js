@@ -100,7 +100,7 @@ describe( 'lint', () => {
 		} );
 	} );
 
-	describe( 'pre-commit', () => {
+	describe( 'lintStaged', () => {
 		it( 'should throw error when linting fails', ( done ) => {
 			const tasks = require( '../tasks/lint/tasks' )( config );
 			const PassThrough = stream.PassThrough;
@@ -124,7 +124,7 @@ describe( 'lint', () => {
 				}
 			} );
 			sandbox.stub( jshint, 'reporter', () => new PassThrough( { objectMode: true } ) );
-			tasks.preCommit();
+			tasks.lintStaged();
 		} );
 	} );
 } );
