@@ -6,8 +6,8 @@
 /* bender-tags: treemodel, delta */
 
 'use strict';
-
 import Batch from '/ckeditor5/core/treemodel/batch.js';
+import { register } from '/ckeditor5/core/treemodel/batch-base.js';
 import Delta from '/ckeditor5/core/treemodel/delta/delta.js';
 import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
@@ -19,7 +19,7 @@ describe( 'Batch', () => {
 		expect( batch.removeAttr ).to.be.a( 'function' );
 	} );
 
-	describe( 'Batch.register', () => {
+	describe( 'register', () => {
 		let TestDelta;
 
 		before( () => {
@@ -35,7 +35,7 @@ describe( 'Batch', () => {
 		} );
 
 		it( 'should register function which return an delta', () => {
-			Batch.register( 'foo', function() {
+			register( 'foo', function() {
 				this.addDelta( new TestDelta() );
 			} );
 
@@ -48,7 +48,7 @@ describe( 'Batch', () => {
 		} );
 
 		it( 'should register function which return an multiple deltas', () => {
-			Batch.register( 'foo', function() {
+			register( 'foo', function() {
 				this.addDelta( new TestDelta() );
 				this.addDelta( new TestDelta() );
 			} );
@@ -63,10 +63,10 @@ describe( 'Batch', () => {
 		} );
 
 		it( 'should throw if one try to register the same batch twice', () => {
-			Batch.register( 'foo', () => {} );
+			register( 'foo', () => {} );
 
 			expect( () => {
-				Batch.register( 'foo', () => {} );
+				register( 'foo', () => {} );
 			} ).to.throw( CKEditorError, /^batch-register-taken/ );
 		} );
 	} );

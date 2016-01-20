@@ -29,7 +29,7 @@ const graveyardSymbol = Symbol( 'graveyard' );
  */
 export default class Document {
 	/**
-	 * Creates an empty document instance with no {@link #roots}.
+	 * Creates an empty document instance with no {@link #roots} (other than graveyard).
 	 *
 	 * @constructor
 	 */

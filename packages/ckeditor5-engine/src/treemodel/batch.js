@@ -5,120 +5,11 @@
 
 'use strict';
 
-import CKEditorError from '../ckeditorerror.js';
+// Batch is split into two files because of circular dependencies reasons.
 
-/**
- * The Batch class groups document changes (deltas). All deltas grouped in a single Batch can be
- * reverted together, so you can think about the Batch as a single undo step. If you want to extend one
- * undo step you can call another method on the same Batch object. If you want to create a separate undo step
- * you can create a new Batch.
- *
- * For example to create two separate undo steps you can call:
- *
- *		doc.batch().insert( firstPosition, 'foo' );
- *		doc.batch().insert( secondPosition, 'bar' );
- *
- * To create a single undo step:
- *
- *		const batch = doc.batch();
- *		batch.insert( firstPosition, 'foo' );
- *		batch.insert( secondPosition, 'bar' );
- *
- * Note that all document modification methods (insert, remove, split, etc.) are chainable so you can shorten code to:
- *
- *		doc.batch().insert( firstPosition, 'foo' ).insert( secondPosition, 'bar' );
- *
- * @class treeModel.Batch
- */
-export default class Batch {
-	/**
-	 * Creates Batch instance. Not recommended to use directly, use {@link treeModel.Document#batch} instead.
-	 *
-	 * @constructor
-	 * @param {treeModel.Document} doc Document which this Batch changes.
-	 */
-	constructor( doc ) {
-		/**
-		 * Document which this Batch changes.
-		 *
-		 * @readonly
-		 * @type {treeModel.Document}
-		 */
-		this.doc = doc;
-
-		/**
-		 * Array of deltas which compose Batch.
-		 *
-		 * @readonly
-		 * @type {Array.<treeModel.delta.Delta>}
-		 */
-		this.deltas = [];
-	}
-
-	/**
-	 * Adds delta to the Batch instance. All modification methods (insert, remove, split, etc.) use this method
-	 * to add created deltas.
-	 *
-	 * @param {treeModel.delta.Delta} delta Delta to add.
-	 * @return {treeModel.delta.Delta} Added delta.
-	 */
-	addDelta( delta ) {
-		delta.batch = this;
-		this.deltas.push( delta );
-
-		return delta;
-	}
-}
-
-/**
- * Function to register Batch methods. To make code scalable Batch do not have modification
- * methods built in. They can be registered using this method.
- *
- * This method checks if there is no naming collision and throws `batch-register-taken` if the method name
- * is already taken.
- *
- * Besides that no magic happens here, the method is added to the `Batch` class prototype.
- *
- * For example:
- *
- *		Batch.register( 'insert', function( position, nodes ) {
- *			// You can use a class inherit from Delta if that class should handle OT in the special way.
- *			const delta = new Delta();
- *
- *			// Create operations which should be components of this delta.
- *			const operation = new InsertOperation( position, nodes, this.doc.version );
- *
- *			// Remember to apply every operation, no magic, you need to do it manually.
- *			this.doc.applyOperation( operation );
- *
- *			// Add operation to the delta.
- *			delta.addOperation( operation );
- *
- *			// Add delta to the Batch instance.
- *			this.addDelta( delta );
- *
- *			// Make this method chainable.
- *			return this;
- *		} );
- *
- * @param {String} name Method name.
- * @param {Function} creator Method body.
- */
-export function register( name, creator ) {
-	if ( Batch.prototype[ name ] ) {
-		/**
-		 * This batch method name is already taken.
-		 *
-		 * @error batch-register-taken
-		 * @param {String} name
-		 */
-		throw new CKEditorError(
-			'batch-register-taken: This batch method name is already taken.',
-			{ name: name } );
-	}
-
-	Batch.prototype[ name ] = creator;
-}
+// Deltas require `register` method that require `Batch` class and is defined in batch-base.js.
+// We would like to group all deltas files in one place, so we would only have to include batch.js
+// which would already have all default deltas registered.
 
 // Import default suite of deltas so a feature have to include only Batch class file.
 import d1 from './delta/insertdelta.js';
@@ -131,3 +22,6 @@ import d7 from './delta/mergedelta.js';
 import d8 from './delta/wrapdelta.js';
 import d9 from './delta/unwrapdelta.js';
 /*jshint unused: false*/
+
+import Batch from './batch-base.js';
+export default Batch;
