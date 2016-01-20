@@ -49,7 +49,7 @@ describe( 'dev-package-create', () => {
 		}
 	}
 
-	const packageCreateTask = require( '../../tasks/dev/tasks/dev-package-create' );
+	const packageCreateTask = require( '../../tasks/dev/tasks/create-package' );
 	const repositoryPath = path.join( workspacePath, packageName );
 
 	it( 'should exist', () => expect( packageCreateTask ).to.be.a( 'function' ) );
