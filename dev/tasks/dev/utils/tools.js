@@ -138,7 +138,24 @@ module.exports = {
 		let json = JSON.parse( contents );
 		json = updateFunction( json );
 
-		fs.writeFileSync( path, JSON.stringify( json, null, 2 ), 'utf-8' );
+		fs.writeFileSync( path, JSON.stringify( json, null, 2 ) + '\n', 'utf-8' );
+	},
+
+	/**
+	 * Reinserts all object's properties in alphabetical order (character's Unicode value).
+	 * Used for JSON.stringify method which takes keys in insertion order.
+	 *
+	 * @param { Object } obj
+	 * @returns { Object } Same object with sorted keys.
+	 */
+	sortObject( obj ) {
+		Object.keys( obj ).sort().forEach( key => {
+			const val = obj[ key ];
+			delete obj[ key ];
+			obj[ key ] = val;
+		} );
+
+		return obj;
 	},
 
 	/**

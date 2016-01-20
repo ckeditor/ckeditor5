@@ -90,6 +90,7 @@ module.exports = ( ckeditor5Path, workspaceRoot, writeln ) => {
 					json.dependencies = {};
 				}
 				json.dependencies[ packageName ] = gitHubUrl;
+				json.dependencies = tools.sortObject( json.dependencies );
 
 				return json;
 			} );

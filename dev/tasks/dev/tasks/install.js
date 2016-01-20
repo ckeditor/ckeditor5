@@ -101,6 +101,7 @@ module.exports = ( ckeditor5Path, workspaceRoot, name, writeln ) => {
 		tools.updateJSONFile( path.join( ckeditor5Path, 'package.json' ), ( json ) => {
 			json.dependencies = json.dependencies || {};
 			json.dependencies[ urlInfo.name ] = dependency;
+			json.dependencies = tools.sortObject( json.dependencies );
 
 			return json;
 		} );

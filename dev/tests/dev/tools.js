@@ -243,7 +243,24 @@ describe( 'utils', () => {
 				expect( readFileStub.firstCall.args[ 0 ] ).to.equal( path );
 				expect( writeFileStub.calledOnce ).to.equal( true );
 				expect( writeFileStub.firstCall.args[ 0 ] ).to.equal( path );
-				expect( writeFileStub.firstCall.args[ 1 ] ).to.equal( JSON.stringify( modifiedJSON, null, 2 ) );
+				expect( writeFileStub.firstCall.args[ 1 ] ).to.equal( JSON.stringify( modifiedJSON, null, 2 ) + '\n' );
+			} );
+		} );
+
+		describe( 'sortObject', () => {
+			it( 'should be defined', () => expect( tools.sortObject ).to.be.a( 'function' ) );
+			it( 'should reinsert object properties in alphabetical order', () => {
+				let obj = {
+					c: '', d: '', a: '', z: ''
+				};
+
+				const sorted = {
+					a: '', c: '', d: '', z: ''
+				};
+
+				obj = tools.sortObject( obj );
+
+				expect( JSON.stringify( obj ) ).to.equal( JSON.stringify( sorted ) );
 			} );
 		} );
 
