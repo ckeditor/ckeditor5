@@ -113,9 +113,19 @@ const utils = {
 	 * Copies enumerable properties and symbols from the objects given as 2nd+ parameters to the
 	 * prototype of first object (a constructor).
 	 *
-	 *		class SpecificEditor extends utils.mix( Editor, SomeMixin1, SomeMixin2 ) {
+	 *		class Editor {
 	 *			...
 	 *		}
+	 *
+	 *		const SomeMixin = {
+	 *			a() {
+	 *				return 'a';
+	 *			}
+	 *		};
+	 *
+	 *		utils.mix( Editor, SomeMixin, ... );
+	 *
+	 *		new Editor().a(); -> 'a'
 	 *
 	 * @param {Function} [baseClass] Class which prototype will be extended.
 	 * @param {Object} [...mixins] Objects from which to get properties.
