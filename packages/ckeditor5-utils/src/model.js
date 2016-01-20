@@ -9,6 +9,7 @@ import EmitterMixin from './emittermixin.js';
 import CKEditorError from './ckeditorerror.js';
 import utilsObject from './lib/lodash/object.js';
 import utilsLang from './lib/lodash/lang.js';
+import utils from './utils.js';
 
 /**
  * The base MVC model class.
@@ -625,7 +626,7 @@ function attachBindToListeners( model, toBindings ) {
 	} );
 }
 
-utilsObject.extend( Model.prototype, EmitterMixin );
+utils.mix( Model, EmitterMixin );
 
 /**
  * Fired when an attribute changed value.
