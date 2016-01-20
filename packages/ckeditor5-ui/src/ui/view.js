@@ -6,7 +6,6 @@
 'use strict';
 
 import Collection from '../collection.js';
-import Model from '../model.js';
 import Region from './region.js';
 import Template from './template.js';
 import CKEditorError from '../ckeditorerror.js';
@@ -17,11 +16,10 @@ import utils from '../utils.js';
  * Basic View class.
  *
  * @class View
- * @extends Model
  * @mixins DOMEmitterMixin
  */
 
-export default class View extends Model {
+export default class View {
 	/**
 	 * Creates an instance of the {@link View} class.
 	 *
@@ -29,8 +27,6 @@ export default class View extends Model {
 	 * @constructor
 	 */
 	constructor( model ) {
-		super();
-
 		/**
 		 * Model of this view.
 		 *

@@ -6,17 +6,42 @@
 'use strict';
 
 import testUtils from '/tests/_utils/utils.js';
-import Model from '/ckeditor5/core/model.js';
+import ObservableMixin from '/ckeditor5/core/observablemixin.js';
+import EmitterMixin from '/ckeditor5/core/emittermixin.js';
 import EventInfo from '/ckeditor5/core/eventinfo.js';
 import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
-
-let Car, car;
+import utils from '/ckeditor5/core/utils.js';
 
 testUtils.createSinonSandbox();
 
-describe( 'Model', () => {
-	beforeEach( 'Create a test model instance', () => {
-		Car = class extends Model {};
+describe( 'ObservableMixin', () => {
+	it( 'exists', () => {
+		expect( ObservableMixin ).to.be.an( 'object' );
+	} );
+
+	it( 'mixes in EmitterMixin', () => {
+		expect( ObservableMixin ).to.have.property( 'on', EmitterMixin.on );
+	} );
+
+	it( 'implements set, bind, and unbind methods', () => {
+		expect( ObservableMixin ).to.contain.keys( 'set', 'bind', 'unbind' );
+	} );
+} );
+
+describe( 'Observable', () => {
+	class Observable {
+		constructor( attrs ) {
+			if ( attrs ) {
+				this.set( attrs );
+			}
+		}
+	}
+	utils.mix( Observable, ObservableMixin );
+
+	let Car, car;
+
+	beforeEach( () => {
+		Car = class extends Observable {};
 
 		car = new Car( {
 			color: 'red',
@@ -24,37 +49,16 @@ describe( 'Model', () => {
 		} );
 	} );
 
-	//////////
-
-	it( 'should set _attributes on creation', () => {
-		expect( car._attributes ).to.deep.equal( {
-			color: 'red',
-			year: 2015
-		} );
+	it( 'should set attributes on creation', () => {
+		expect( car ).to.have.property( 'color', 'red' );
+		expect( car ).to.have.property( 'year', 2015 );
 	} );
 
 	it( 'should get correctly after set', () => {
 		car.color = 'blue';
 
 		expect( car.color ).to.equal( 'blue' );
-		expect( car._attributes.color ).to.equal( 'blue' );
 	} );
-
-	it( 'should get correctly after setting _attributes', () => {
-		car._attributes.color = 'blue';
-
-		expect( car.color ).to.equal( 'blue' );
-	} );
-
-	it( 'should add properties on creation', () => {
-		let car = new Car( null, {
-			prop: 1
-		} );
-
-		expect( car ).to.have.property( 'prop' ).to.equal( 1 );
-	} );
-
-	//////////
 
 	describe( 'set', () => {
 		it( 'should work when passing an object', () => {
@@ -64,7 +68,7 @@ describe( 'Model', () => {
 				seats: 5
 			} );
 
-			expect( car._attributes ).to.deep.equal( {
+			expect( car ).to.deep.equal( {
 				color: 'blue',
 				year: 2015,
 				wheels: 4,
@@ -76,7 +80,7 @@ describe( 'Model', () => {
 			car.set( 'color', 'blue' );
 			car.set( 'wheels', 4 );
 
-			expect( car._attributes ).to.deep.equal( {
+			expect( car ).to.deep.equal( {
 				color: 'blue',
 				year: 2015,
 				wheels: 4
@@ -141,13 +145,13 @@ describe( 'Model', () => {
 
 			expect( () => {
 				car.set( 'normalProperty', 2 );
-			} ).to.throw( CKEditorError, /^model-set-cannot-override/ );
+			} ).to.throw( CKEditorError, /^observable-set-cannot-override/ );
 
 			expect( car ).to.have.property( 'normalProperty', 1 );
 		} );
 
 		it( 'should throw when overriding already existing property (in the prototype)', () => {
-			class Car extends Model {
+			class Car extends Observable {
 				method() {}
 			}
 
@@ -155,7 +159,7 @@ describe( 'Model', () => {
 
 			expect( () => {
 				car.set( 'method', 2 );
-			} ).to.throw( CKEditorError, /^model-set-cannot-override/ );
+			} ).to.throw( CKEditorError, /^observable-set-cannot-override/ );
 
 			expect( car.method ).to.be.a( 'function' );
 		} );
@@ -177,17 +181,6 @@ describe( 'Model', () => {
 		} );
 	} );
 
-	describe( 'extend', () => {
-		it( 'should create new Model based classes', () => {
-			class Truck extends Car {}
-
-			let truck = new Truck();
-
-			expect( truck ).to.be.an.instanceof( Car );
-			expect( truck ).to.be.an.instanceof( Model );
-		} );
-	} );
-
 	describe( 'bind', () => {
 		it( 'should chain for a single attribute', () => {
 			expect( car.bind( 'color' ) ).to.contain.keys( 'to' );
@@ -204,89 +197,77 @@ describe( 'Model', () => {
 		it( 'should throw when attributes are not strings', () => {
 			expect( () => {
 				car.bind();
-			} ).to.throw( CKEditorError, /model-bind-wrong-attrs/ );
+			} ).to.throw( CKEditorError, /observable-bind-wrong-attrs/ );
 
 			expect( () => {
 				car.bind( new Date() );
-			} ).to.throw( CKEditorError, /model-bind-wrong-attrs/ );
+			} ).to.throw( CKEditorError, /observable-bind-wrong-attrs/ );
 
 			expect( () => {
 				car.bind( 'color', new Date() );
-			} ).to.throw( CKEditorError, /model-bind-wrong-attrs/ );
+			} ).to.throw( CKEditorError, /observable-bind-wrong-attrs/ );
 		} );
 
 		it( 'should throw when the same attribute is used than once', () => {
 			expect( () => {
 				car.bind( 'color', 'color' );
-			} ).to.throw( CKEditorError, /model-bind-duplicate-attrs/ );
+			} ).to.throw( CKEditorError, /observable-bind-duplicate-attrs/ );
 		} );
 
 		it( 'should throw when binding the same attribute more than once', () => {
 			expect( () => {
 				car.bind( 'color' );
 				car.bind( 'color' );
-			} ).to.throw( CKEditorError, /model-bind-rebind/ );
+			} ).to.throw( CKEditorError, /observable-bind-rebind/ );
 		} );
 
 		describe( 'to', () => {
 			it( 'should not chain', () => {
 				expect(
-					car.bind( 'color' ).to( new Model( { color: 'red' } ) )
+					car.bind( 'color' ).to( new Observable( { color: 'red' } ) )
 				).to.be.undefined;
 			} );
 
-			it( 'should throw when arguments are of invalid type', () => {
+			it( 'should throw when arguments are of invalid type - empty', () => {
 				expect( () => {
 					car = new Car();
 
 					car.bind( 'color' ).to();
-				} ).to.throw( CKEditorError, /model-bind-to-parse-error/ );
-
-				expect( () => {
-					car = new Car();
-
-					car.bind( 'color' ).to( new Model(), new Date() );
-				} ).to.throw( CKEditorError, /model-bind-to-parse-error/ );
-
-				expect( () => {
-					car = new Car( { color: 'red' } );
-
-					car.bind( 'color' ).to( new Model(), 'color', new Date() );
-				} ).to.throw( CKEditorError, /model-bind-to-parse-error/ );
+				} ).to.throw( CKEditorError, /observable-bind-to-parse-error/ );
 			} );
 
-			it( 'should throw when binding multiple attributes to multiple models', () => {
+			it( 'should throw when binding multiple attributes to multiple observables', () => {
 				let vehicle = new Car();
 				const car1 = new Car( { color: 'red', year: 1943 } );
 				const car2 = new Car( { color: 'yellow', year: 1932 } );
 
 				expect( () => {
 					vehicle.bind( 'color', 'year' ).to( car1, 'color', car2, 'year' );
-				} ).to.throw( CKEditorError, /model-bind-to-no-callback/ );
+				} ).to.throw( CKEditorError, /observable-bind-to-no-callback/ );
 
 				expect( () => {
 					vehicle = new Car();
 
 					vehicle.bind( 'color', 'year' ).to( car1, car2 );
-				} ).to.throw( CKEditorError, /model-bind-to-no-callback/ );
+				} ).to.throw( CKEditorError, /observable-bind-to-no-callback/ );
 
 				expect( () => {
 					vehicle = new Car();
 
 					vehicle.bind( 'color', 'year' ).to( car1, car2, 'year' );
-				} ).to.throw( CKEditorError, /model-bind-to-no-callback/ );
+				} ).to.throw( CKEditorError, /observable-bind-to-no-callback/ );
 
 				expect( () => {
 					vehicle = new Car();
 
 					vehicle.bind( 'color', 'year' ).to( car1, 'color', car2 );
-				} ).to.throw( CKEditorError, /model-bind-to-no-callback/ );
+				} ).to.throw( CKEditorError, /observable-bind-to-no-callback/ );
 
 				expect( () => {
 					vehicle = new Car();
 
 					vehicle.bind( 'color', 'year', 'custom' ).to( car, car );
-				} ).to.throw( CKEditorError, /model-bind-to-no-callback/ );
+				} ).to.throw( CKEditorError, /observable-bind-to-no-callback/ );
 			} );
 
 			it( 'should throw when binding multiple attributes but passed a callback', () => {
@@ -294,13 +275,13 @@ describe( 'Model', () => {
 
 				expect( () => {
 					vehicle.bind( 'color', 'year' ).to( car, () => {} );
-				} ).to.throw( CKEditorError, /model-bind-to-extra-callback/ );
+				} ).to.throw( CKEditorError, /observable-bind-to-extra-callback/ );
 
 				expect( () => {
 					vehicle = new Car();
 
 					vehicle.bind( 'color', 'year' ).to( car, car, () => {} );
-				} ).to.throw( CKEditorError, /model-bind-to-extra-callback/ );
+				} ).to.throw( CKEditorError, /observable-bind-to-extra-callback/ );
 			} );
 
 			it( 'should throw when binding a single attribute but multiple callbacks', () => {
@@ -308,13 +289,13 @@ describe( 'Model', () => {
 
 				expect( () => {
 					vehicle.bind( 'color' ).to( car, () => {}, () => {} );
-				} ).to.throw( CKEditorError, /model-bind-to-parse-error/ );
+				} ).to.throw( CKEditorError, /observable-bind-to-parse-error/ );
 
 				expect( () => {
 					vehicle = new Car();
 
 					vehicle.bind( 'color' ).to( car, car, () => {}, () => {} );
-				} ).to.throw( CKEditorError, /model-bind-to-parse-error/ );
+				} ).to.throw( CKEditorError, /observable-bind-to-parse-error/ );
 			} );
 
 			it( 'should throw when a number of attributes does not match', () => {
@@ -322,50 +303,53 @@ describe( 'Model', () => {
 
 				expect( () => {
 					vehicle.bind( 'color' ).to( car, 'color', 'year' );
-				} ).to.throw( CKEditorError, /model-bind-to-attrs-length/ );
+				} ).to.throw( CKEditorError, /observable-bind-to-attrs-length/ );
 
 				expect( () => {
 					vehicle = new Car();
 
 					vehicle.bind( 'color', 'year' ).to( car, 'color' );
-				} ).to.throw( CKEditorError, /model-bind-to-attrs-length/ );
+				} ).to.throw( CKEditorError, /observable-bind-to-attrs-length/ );
 
 				expect( () => {
 					vehicle = new Car();
 
 					vehicle.bind( 'color' ).to( car, 'color', 'year', () => {} );
-				} ).to.throw( CKEditorError, /model-bind-to-attrs-length/ );
+				} ).to.throw( CKEditorError, /observable-bind-to-attrs-length/ );
 
 				expect( () => {
 					vehicle = new Car();
 
 					vehicle.bind( 'color' ).to( car, 'color', car, 'color', 'year', () => {} );
-				} ).to.throw( CKEditorError, /model-bind-to-attrs-length/ );
+				} ).to.throw( CKEditorError, /observable-bind-to-attrs-length/ );
 			} );
 
-			it( 'should throw when attributes don\'t exist in to() model', () => {
+			it( 'should throw when attributes don\'t exist in to() observable', () => {
 				const vehicle = new Car();
 
 				expect( () => {
 					vehicle.bind( 'color' ).to( car, 'nonexistent in car' );
-				} ).to.throw( CKEditorError, /model-bind-to-missing-attr/ );
+				} ).to.throw( CKEditorError, /observable-bind-to-missing-attr/ );
 
 				expect( () => {
 					vehicle.bind( 'nonexistent in car' ).to( car );
-				} ).to.throw( CKEditorError, /model-bind-to-missing-attr/ );
+				} ).to.throw( CKEditorError, /observable-bind-to-missing-attr/ );
 
 				expect( () => {
 					vehicle.bind( 'year' ).to( car, 'color', car, 'nonexistent in car', () => {} );
-				} ).to.throw( CKEditorError, /model-bind-to-missing-attr/ );
+				} ).to.throw( CKEditorError, /observable-bind-to-missing-attr/ );
 			} );
 
-			it( 'should set new model attributes', () => {
+			it( 'should set new observable attributes', () => {
 				const car = new Car( { color: 'green', year: 2001, type: 'pickup' } );
 				const vehicle = new Car( { 'not involved': true } );
 
 				vehicle.bind( 'color', 'year', 'type' ).to( car );
 
-				expect( vehicle._attributes ).to.have.keys( 'color', 'year', 'type', 'not involved' );
+				expect( vehicle ).to.have.property( 'color' );
+				expect( vehicle ).to.have.property( 'year' );
+				expect( vehicle ).to.have.property( 'type' );
+				expect( vehicle ).to.have.property( 'not involved' );
 			} );
 
 			it( 'should work when no attribute specified #1', () => {
@@ -410,7 +394,7 @@ describe( 'Model', () => {
 				);
 			} );
 
-			it( 'should work for attributes that don\'t exist in the model', () => {
+			it( 'should work for attributes that don\'t exist in the observable', () => {
 				const vehicle = new Car();
 
 				vehicle.bind( 'nonexistent in vehicle' ).to( car, 'color' );
@@ -453,7 +437,7 @@ describe( 'Model', () => {
 				);
 			} );
 
-			it( 'should work with callback – set a new model attribute', () => {
+			it( 'should work with callback – set a new observable attribute', () => {
 				const vehicle = new Car();
 				const car1 = new Car( { type: 'pickup' } );
 				const car2 = new Car( { type: 'truck' } );
@@ -461,7 +445,7 @@ describe( 'Model', () => {
 				vehicle.bind( 'type' )
 					.to( car1, car2, ( ...args ) => args.join( '' ) );
 
-				expect( vehicle._attributes ).to.have.keys( [ 'type' ] );
+				expect( vehicle ).to.have.property( 'type' );
 			} );
 
 			it( 'should work with callback #1', () => {
@@ -719,10 +703,16 @@ describe( 'Model', () => {
 	} );
 
 	describe( 'unbind', () => {
+		it( 'should not fail when unbinding a fresh observable', () => {
+			const observable = new Observable();
+
+			observable.unbind();
+		} );
+
 		it( 'should throw when non-string attribute is passed', () => {
 			expect( () => {
 				car.unbind( new Date() );
-			} ).to.throw( CKEditorError, /model-unbind-wrong-attrs/ );
+			} ).to.throw( CKEditorError, /observable-unbind-wrong-attrs/ );
 		} );
 
 		it( 'should remove all bindings', () => {
@@ -774,57 +764,25 @@ describe( 'Model', () => {
 			);
 		} );
 
-		it( 'should process the internal structure and listeners correctly', () => {
-			const model = new Model();
+		it( 'should be able to unbind two attributes from a single source observable attribute', () => {
+			const vehicle = new Car();
 
-			const bound1 = new Model( { b1a: 'foo' } );
-			const bound2 = new Model( { b2b: 42, 'b2c': 'bar' } );
-			const bound3 = new Model( { b3d: 'baz' } );
+			vehicle.bind( 'color' ).to( car, 'color' );
+			vehicle.bind( 'interiorColor' ).to( car, 'color' );
+			vehicle.unbind( 'color' );
+			vehicle.unbind( 'interiorColor' );
 
-			model.bind( 'a' ).to( bound1, 'b1a' );
-			model.bind( 'b', 'c' ).to( bound2, 'b2b', 'b2c' );
-			model.bind( 'd', 'e' ).to( bound3, 'b3d', 'b3d' );
-
-			assertStructure( model,
-				[ 'a', 'b', 'c', 'd', 'e' ],
-				[ bound1, bound2, bound3 ],
+			assertBinding( vehicle,
+				{ color: 'red', interiorColor: 'red' },
 				[
-					{ b1a: [ 'a' ] },
-					{ b2b: [ 'b' ], b2c: [ 'c' ] },
-					{ b3d: [ 'd', 'e' ] }
-				]
+					[ car, { color: 'blue' } ]
+				],
+				{ color: 'red', interiorColor: 'red' }
 			);
-
-			model.unbind( 'c', 'd' );
-
-			assertStructure( model,
-				[ 'a', 'b', 'e' ],
-				[ bound1, bound2, bound3 ],
-				[
-					{ b1a: [ 'a' ] },
-					{ b2b: [ 'b' ] },
-					{ b3d: [ 'e' ] }
-				]
-			);
-
-			model.unbind( 'b' );
-
-			assertStructure( model,
-				[ 'a', 'e' ],
-				[ bound1, bound3 ],
-				[
-					{ b1a: [ 'a' ] },
-					{ b3d: [ 'e' ] }
-				]
-			);
-
-			model.unbind();
-
-			assertStructure( model, [], [], [] );
 		} );
 	} );
 
-	// Syntax given that model `A` is bound to models [`B`, `C`, ...]:
+	// Syntax given that observable `A` is bound to observables [`B`, `C`, ...]:
 	//
 	//		assertBinding( A,
 	//			{ initial `A` attributes },
@@ -836,14 +794,14 @@ describe( 'Model', () => {
 	//			{ `A` attributes after [`B`, 'C', ...] changed }
 	//		);
 	//
-	function assertBinding( model, stateBefore, data, stateAfter ) {
+	function assertBinding( observable, stateBefore, data, stateAfter ) {
 		let key, pair;
 
 		for ( key in stateBefore ) {
-			expect( model[ key ] ).to.be.equal( stateBefore[ key ] );
+			expect( observable[ key ] ).to.be.equal( stateBefore[ key ] );
 		}
 
-		// Change attributes of bound models.
+		// Change attributes of bound observables.
 		for ( pair of data ) {
 			for ( key in pair[ 1 ] ) {
 				pair[ 0 ][ key ] = pair[ 1 ][ key ];
@@ -851,39 +809,7 @@ describe( 'Model', () => {
 		}
 
 		for ( key in stateAfter ) {
-			expect( model[ key ] ).to.be.equal( stateAfter[ key ] );
+			expect( observable[ key ] ).to.be.equal( stateAfter[ key ] );
 		}
-	}
-
-	function assertStructure( model, expectedBoundAttributes, expectedBoundModels, expectedBindings ) {
-		const boundModels = [ ...model._boundModels.keys() ];
-
-		// Check model._boundAttributes object.
-		if ( expectedBoundAttributes.length ) {
-			expect( model._boundAttributes ).to.have.keys( expectedBoundAttributes );
-		} else {
-			expect( model._boundAttributes ).to.be.empty;
-		}
-
-		// Check model._boundModels models.
-		expect( boundModels ).to.have.members( expectedBoundModels );
-
-		// Check model._listeningTo models.
-		boundModels.map( boundModel => {
-			expect( model._listeningTo ).to.have.ownProperty( boundModel._emitterId );
-		} );
-
-		// Check model._boundModels bindings.
-		expectedBindings.forEach( ( binding, index ) => {
-			const bindingKeys = Object.keys( binding );
-
-			expect( model._boundModels.get( expectedBoundModels[ index ] ) ).to.have.keys( bindingKeys );
-
-			bindingKeys.forEach( key => {
-				const entries = [ ...model._boundModels.get( expectedBoundModels[ index ] )[ key ] ];
-
-				expect( entries.map( e => e.attr ) ).to.have.members( binding[ key ] );
-			} );
-		} );
 	}
 } );
