@@ -107,6 +107,39 @@ const utils = {
 		}
 
 		return null;
+	},
+
+	/**
+	 * Copies enumerable properties and symbols from the objects given as 2nd+ parameters to the
+	 * prototype of first object (a constructor).
+	 *
+	 *		class Editor {
+	 *			...
+	 *		}
+	 *
+	 *		const SomeMixin = {
+	 *			a() {
+	 *				return 'a';
+	 *			}
+	 *		};
+	 *
+	 *		utils.mix( Editor, SomeMixin, ... );
+	 *
+	 *		new Editor().a(); -> 'a'
+	 *
+	 * @param {Function} [baseClass] Class which prototype will be extended.
+	 * @param {Object} [...mixins] Objects from which to get properties.
+	 */
+	mix( baseClass, ...mixins ) {
+		mixins.forEach( ( mixin ) => {
+			Object.getOwnPropertyNames( mixin ).concat( Object.getOwnPropertySymbols( mixin ) )
+				.forEach( ( key ) => {
+					const sourceDescriptor = Object.getOwnPropertyDescriptor( mixin, key );
+					sourceDescriptor.enumerable = false;
+
+					Object.defineProperty( baseClass.prototype, key, sourceDescriptor );
+				} );
+		} );
 	}
 };
 
