@@ -8,12 +8,9 @@
 	"nonbsp": true,
 	"undef": true,
 	"unused": true,
-	"strict": true,
 	"expr": true,
 	"varstmt": true,
-
-	"globalstrict": true,
-
+	"strict": "global",
 	"globals": {
 		"after": false,
 		"afterEach": false,
