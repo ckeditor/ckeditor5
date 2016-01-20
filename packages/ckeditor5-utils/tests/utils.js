@@ -156,7 +156,7 @@ describe( 'utils', () => {
 			}
 		};
 
-		it( 'mixes 2nd+ param\'s properties into the first class', () => {
+		it( 'mixes 2nd+ argument\'s properties into the first class', () => {
 			class Foo {}
 			utils.mix( Foo, MixinA, MixinB );
 
@@ -258,6 +258,36 @@ describe( 'utils', () => {
 			const foo = new Foo();
 
 			expect( foo[ symbolA ]() ).to.equal( 'a' );
+		} );
+
+		it( 'does not copy already existing properties', () => {
+			class Foo {
+				a() {
+					return 'foo';
+				}
+			}
+			utils.mix( Foo, MixinA, MixinB );
+
+			const foo = new Foo();
+
+			expect( foo.a() ).to.equal( 'foo' );
+			expect( foo.b() ).to.equal( 'b' );
+		} );
+
+		it( 'does not copy already existing properties - properties deep in the proto chain', () => {
+			class Foo {
+				a() {
+					return 'foo';
+				}
+			}
+			class Bar extends Foo {}
+
+			utils.mix( Bar, MixinA, MixinB );
+
+			const bar = new Bar();
+
+			expect( bar.a() ).to.equal( 'foo' );
+			expect( bar.b() ).to.equal( 'b' );
 		} );
 	} );
 } );
