@@ -15,8 +15,9 @@ let eventsCounter = 0;
 /**
  * Mixin that injects the events API into its host.
  *
- * @class EmitterMixin
  * @singleton
+ * @class core.EmitterMixin
+ * @implementes core.Emitter
  */
 
 const EmitterMixin = {
@@ -111,7 +112,7 @@ const EmitterMixin = {
 	/**
 	 * Registers a callback function to be executed when an event is fired in a specific (emitter) object.
 	 *
-	 * @param {Emitter} emitter The object that fires the event.
+	 * @param {core.Emitter} emitter The object that fires the event.
 	 * @param {String} event The name of the event.
 	 * @param {Function} callback The function to be called on event.
 	 * @param {Object} [ctx] The object that represents `this` in the callback. Defaults to `emitter`.
@@ -168,7 +169,7 @@ const EmitterMixin = {
 	 * * To stop listening to all events fired by a specific object.
 	 * * To stop listening to all events fired by all object.
 	 *
-	 * @param {Emitter} [emitter] The object to stop listening to. If omitted, stops it for all objects.
+	 * @param {core.Emitter} [emitter] The object to stop listening to. If omitted, stops it for all objects.
 	 * @param {String} [event] (Requires the `emitter`) The name of the event to stop listening to. If omitted, stops it
 	 * for all events from `emitter`.
 	 * @param {Function} [callback] (Requires the `event`) The function to be removed from the call list for the given
@@ -297,3 +298,9 @@ function getCallbacksIfAny( source, event ) {
 
 	return callbacks;
 }
+
+/**
+ * Interface representing classes which mix in {@link core.EmitterMixin}.
+ *
+ * @interface core.Emitter
+ */
