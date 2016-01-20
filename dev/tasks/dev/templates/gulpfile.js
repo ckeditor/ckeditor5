@@ -2,6 +2,8 @@
 
 'use strict';
 
+const gulp = require( 'gulp' );
+
 const config = {
 	ROOT_DIR: '.',
 	WORKSPACE_DIR: '..',
@@ -11,3 +13,4 @@ const config = {
 };
 
 require( './dev/tasks/lint/tasks' )( config );
+gulp.task( 'pre-commit', [ 'lint-staged' ] );
