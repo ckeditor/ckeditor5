@@ -5,15 +5,9 @@
 
 'use strict';
 
-const modules = bender.amd.require( 'core/utils-diff' );
+import diff from '/ckeditor5/core/utils-diff.js';
 
 describe( 'diff', () => {
-	let diff;
-
-	before( () => {
-		diff = modules[ 'core/utils-diff' ];
-	} );
-
 	it( 'should diff arrays', () => {
 		expect( diff( 'aba', 'acca' ) ).to.deep.equals( [ 'EQUAL', 'INSERT', 'INSERT', 'DELETE', 'EQUAL' ] );
 	} );
@@ -23,7 +17,7 @@ describe( 'diff', () => {
 	} );
 
 	it( 'should diff if arrays are same', () => {
-		expect( diff( 'abc', 'a	bc' ) ).to.deep.equals( [ 'EQUAL', 'EQUAL', 'EQUAL' ] );
+		expect( diff( 'abc', 'abc' ) ).to.deep.equals( [ 'EQUAL', 'EQUAL', 'EQUAL' ] );
 	} );
 
 	it( 'should diff if one array is empty', () => {

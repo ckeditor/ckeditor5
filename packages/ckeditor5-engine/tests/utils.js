@@ -6,6 +6,9 @@
 'use strict';
 
 import utils from '/ckeditor5/core/utils.js';
+import coreTestUtils from '/tests/core/_utils/utils.js';
+
+const getIteratorCount = coreTestUtils.getIteratorCount;
 
 describe( 'utils', () => {
 	describe( 'spy', () => {
