@@ -78,8 +78,8 @@ describe( 'converter', () => {
 			expect( viewP ).to.be.an.instanceof( ViewElement );
 			expect( viewP.name ).to.equal( 'p' );
 
-			expect( viewP.getAttr( 'class' ) ).to.equal( 'foo' );
-			expect( getIteratorCount( viewP.getAttrKeys() ) ).to.equal( 1 );
+			expect( viewP.getAttribute( 'class' ) ).to.equal( 'foo' );
+			expect( getIteratorCount( viewP.getAttributeKeys() ) ).to.equal( 1 );
 
 			expect( viewP.getChildCount() ).to.equal( 2 );
 			expect( viewP.getChild( 0 ).name ).to.equal( 'img' );
@@ -104,8 +104,8 @@ describe( 'converter', () => {
 			expect( viewP ).to.be.an.instanceof( ViewElement );
 			expect( viewP.name ).to.equal( 'p' );
 
-			expect( viewP.getAttr( 'class' ) ).to.equal( 'foo' );
-			expect( getIteratorCount( viewP.getAttrKeys() ) ).to.equal( 1 );
+			expect( viewP.getAttribute( 'class' ) ).to.equal( 'foo' );
+			expect( getIteratorCount( viewP.getAttributeKeys() ) ).to.equal( 1 );
 
 			expect( viewP.getChildCount() ).to.equal( 2 );
 			expect( viewP.getChild( 0 ).name ).to.equal( 'img' );
@@ -134,8 +134,8 @@ describe( 'converter', () => {
 			expect( viewP ).to.be.an.instanceof( ViewElement );
 			expect( viewP.name ).to.equal( 'p' );
 
-			expect( viewP.getAttr( 'class' ) ).to.equal( 'foo' );
-			expect( getIteratorCount( viewP.getAttrKeys() ) ).to.equal( 1 );
+			expect( viewP.getAttribute( 'class' ) ).to.equal( 'foo' );
+			expect( getIteratorCount( viewP.getAttributeKeys() ) ).to.equal( 1 );
 
 			expect( viewP.getChildCount() ).to.equal( 0 );
 			expect( converter.getCorespondingDom( viewP ) ).to.not.equal( domP );
@@ -148,7 +148,7 @@ describe( 'converter', () => {
 			const viewText = new ViewText( 'foo' );
 			const viewP = new ViewElement( 'p' );
 
-			viewP.setAttr( 'class', 'foo' );
+			viewP.setAttribute( 'class', 'foo' );
 
 			viewP.appendChildren( viewImg );
 			viewP.appendChildren( viewText );
@@ -178,7 +178,7 @@ describe( 'converter', () => {
 			const viewText = new ViewText( 'foo' );
 			const viewP = new ViewElement( 'p' );
 
-			viewP.setAttr( 'class', 'foo' );
+			viewP.setAttribute( 'class', 'foo' );
 
 			viewP.appendChildren( viewImg );
 			viewP.appendChildren( viewText );
@@ -204,7 +204,7 @@ describe( 'converter', () => {
 			const viewText = new ViewText( 'foo' );
 			const viewP = new ViewElement( 'p' );
 
-			viewP.setAttr( 'class', 'foo' );
+			viewP.setAttribute( 'class', 'foo' );
 
 			viewP.appendChildren( viewImg );
 			viewP.appendChildren( viewText );

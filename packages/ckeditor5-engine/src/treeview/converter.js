@@ -53,8 +53,8 @@ export default class Converter {
 				this.bindElements( domElement, viewNode );
 			}
 
-			for ( let key of viewNode.getAttrKeys() ) {
-				domElement.setAttribute( key, viewNode.getAttr( key ) );
+			for ( let key of viewNode.getAttributeKeys() ) {
+				domElement.setAttribute( key, viewNode.getAttribute( key ) );
 			}
 
 			if ( options.withChildren || options.withChildren === undefined ) {
@@ -91,7 +91,7 @@ export default class Converter {
 			const attrs = domElement.attributes;
 
 			for ( let i = attrs.length - 1; i >= 0; i-- ) {
-				viewElement.setAttr( attrs[ i ].name, attrs[ i ].value );
+				viewElement.setAttribute( attrs[ i ].name, attrs[ i ].value );
 			}
 
 			if ( options.withChildren || options.withChildren === undefined ) {

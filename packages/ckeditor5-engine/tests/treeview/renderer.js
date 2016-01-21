@@ -37,7 +37,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should mark attributes which need update', () => {
-			viewNode.setAttr( 'class', 'foo' );
+			viewNode.setAttribute( 'class', 'foo' );
 
 			renderer.markToSync( 'ATTRIBUTES', viewNode );
 
@@ -108,7 +108,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should update attributes', () => {
-			viewNode.setAttr( 'class', 'foo' );
+			viewNode.setAttribute( 'class', 'foo' );
 
 			renderer.markToSync( 'ATTRIBUTES', viewNode );
 			renderer.render();
@@ -119,7 +119,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should remove attributes', () => {
-			viewNode.setAttr( 'class', 'foo' );
+			viewNode.setAttribute( 'class', 'foo' );
 			domNode.setAttribute( 'id', 'bar' );
 			domNode.setAttribute( 'class', 'bar' );
 

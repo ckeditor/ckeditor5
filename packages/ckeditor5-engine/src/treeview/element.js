@@ -51,19 +51,19 @@ export default class Element extends Node {
 		return this._children[ Symbol.iterator ]();
 	}
 
-	getAttrKeys() {
+	getAttributeKeys() {
 		return this._attrs.keys();
 	}
 
-	getAttr( key ) {
+	getAttribute( key ) {
 		return this._attrs.get( key );
 	}
 
-	hasAttr( key ) {
+	hasAttribute( key ) {
 		return this._attrs.has( key );
 	}
 
-	setAttr( key, value ) {
+	setAttribute( key, value ) {
 		this._fireChange( 'ATTRIBUTES', this );
 
 		this._attrs.set( key, value );
@@ -84,7 +84,7 @@ export default class Element extends Node {
 		}
 	}
 
-	removeAttr( key ) {
+	removeAttribute( key ) {
 		this._fireChange( 'ATTRIBUTES', this );
 
 		return this._attrs.delete( key );

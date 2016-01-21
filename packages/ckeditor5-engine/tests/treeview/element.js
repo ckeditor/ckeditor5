@@ -21,15 +21,15 @@ describe( 'Element', () => {
 			expect( el ).to.be.an.instanceof( Node );
 			expect( el ).to.have.property( 'name' ).that.equals( 'p' );
 			expect( el ).to.have.property( 'parent' ).that.is.null;
-			expect( getIteratorCount( el.getAttrKeys() ) ).to.equal( 0 );
+			expect( getIteratorCount( el.getAttributeKeys() ) ).to.equal( 0 );
 		} );
 
 		it( 'should create element with attributes as plain object', () => {
 			const el = new ViewElement( 'p', { 'foo': 'bar' } );
 
 			expect( el ).to.have.property( 'name' ).that.equals( 'p' );
-			expect( getIteratorCount( el.getAttrKeys() ) ).to.equal( 1 );
-			expect( el.getAttr( 'foo' ) ).to.equal( 'bar' );
+			expect( getIteratorCount( el.getAttributeKeys() ) ).to.equal( 1 );
+			expect( el.getAttribute( 'foo' ) ).to.equal( 'bar' );
 		} );
 
 		it( 'should create element with attributes as map', () => {
@@ -39,8 +39,8 @@ describe( 'Element', () => {
 			const el = new ViewElement( 'p', attrs );
 
 			expect( el ).to.have.property( 'name' ).that.equals( 'p' );
-			expect( getIteratorCount( el.getAttrKeys() ) ).to.equal( 1 );
-			expect( el.getAttr( 'foo' ) ).to.equal( 'bar' );
+			expect( getIteratorCount( el.getAttributeKeys() ) ).to.equal( 1 );
+			expect( el.getAttribute( 'foo' ) ).to.equal( 'bar' );
 		} );
 
 		it( 'should create element with children', () => {
@@ -146,34 +146,34 @@ describe( 'Element', () => {
 			el = new ViewElement( 'p' );
 		} );
 
-		describe( 'getAttr', () => {
+		describe( 'getAttribute', () => {
 			it( 'should return attribute', () => {
-				el.setAttr( 'foo', 'bar' );
+				el.setAttribute( 'foo', 'bar' );
 
-				expect( el.getAttr( 'foo' ) ).to.equal( 'bar' );
-				expect( el.getAttr( 'bom' ) ).to.not.be.ok;
+				expect( el.getAttribute( 'foo' ) ).to.equal( 'bar' );
+				expect( el.getAttribute( 'bom' ) ).to.not.be.ok;
 			} );
 		} );
 
-		describe( 'hasAttr', () => {
+		describe( 'hasAttribute', () => {
 			it( 'should return true if element has attribute', () => {
-				el.setAttr( 'foo', 'bar' );
+				el.setAttribute( 'foo', 'bar' );
 
-				expect( el.hasAttr( 'foo' ) ).to.be.true;
-				expect( el.hasAttr( 'bom' ) ).to.be.false;
+				expect( el.hasAttribute( 'foo' ) ).to.be.true;
+				expect( el.hasAttribute( 'bom' ) ).to.be.false;
 			} );
 		} );
 
-		describe( 'getAttrKeys', () => {
+		describe( 'getAttributeKeys', () => {
 			it( 'should return keys', () => {
-				el.setAttr( 'foo', true );
-				el.setAttr( 'bar', true );
+				el.setAttribute( 'foo', true );
+				el.setAttribute( 'bar', true );
 
 				const expected = [ 'foo', 'bar' ];
 				let i = 0;
 
-				for ( let child of el.getAttrKeys() ) {
-					expect( child ).to.equal( expected[ i ] );
+				for ( let key of el.getAttributeKeys() ) {
+					expect( key ).to.equal( expected[ i ] );
 					i++;
 				}
 
@@ -181,17 +181,17 @@ describe( 'Element', () => {
 			} );
 		} );
 
-		describe( 'removeAttr', () => {
+		describe( 'removeAttribute', () => {
 			it( 'should remove attributes', () => {
-				el.setAttr( 'foo', true );
+				el.setAttribute( 'foo', true );
 
-				expect( el.hasAttr( 'foo' ) ).to.be.true;
+				expect( el.hasAttribute( 'foo' ) ).to.be.true;
 
-				el.removeAttr( 'foo' );
+				el.removeAttribute( 'foo' );
 
-				expect( el.hasAttr( 'foo' ) ).to.be.false;
+				expect( el.hasAttribute( 'foo' ) ).to.be.false;
 
-				expect( getIteratorCount( el.getAttrKeys() ) ).to.equal( 0 );
+				expect( getIteratorCount( el.getAttributeKeys() ) ).to.equal( 0 );
 			} );
 		} );
 	} );

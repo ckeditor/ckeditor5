@@ -75,16 +75,16 @@ export default class Renderer {
 		function updateAttrs( viewElement ) {
 			const domElement = converter.getCorespondingDom( viewElement );
 			const domAttrKeys = Array.from( domElement.attributes ).map( attr => attr.name );
-			const viewAttrKeys = viewElement.getAttrKeys();
+			const viewAttrKeys = viewElement.getAttributeKeys();
 
 			// Add or overwrite attributes.
 			for ( let key of viewAttrKeys ) {
-				domElement.setAttribute( key, viewElement.getAttr( key ) );
+				domElement.setAttribute( key, viewElement.getAttribute( key ) );
 			}
 
 			// Remove from DOM attributes which do not exists in the view.
 			for ( let key of domAttrKeys ) {
-				if ( !viewElement.hasAttr( key ) ) {
+				if ( !viewElement.hasAttribute( key ) ) {
 					domElement.removeAttribute( key );
 				}
 			}

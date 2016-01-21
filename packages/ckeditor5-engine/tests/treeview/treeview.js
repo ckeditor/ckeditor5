@@ -30,7 +30,7 @@ describe( 'TreeView', () => {
 
 			expect( treeView.converter.getCorespondingDom( treeView.viewRoot ) ).to.equal( domDiv );
 			expect( treeView.viewRoot.name ).to.equal( 'div' );
-			expect( treeView.viewRoot.getAttr( 'id' ) ).to.equal( 'editor' );
+			expect( treeView.viewRoot.getAttribute( 'id' ) ).to.equal( 'editor' );
 			expect( treeView.renderer.markedChildren.has( treeView.viewRoot ) ).to.be.true;
 		} );
 	} );
