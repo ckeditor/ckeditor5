@@ -125,7 +125,9 @@ const utils = {
 	 *
 	 *		utils.mix( Editor, SomeMixin, ... );
 	 *
-	 *		new Editor().a(); -> 'a'
+	 *		new Editor().a(); // -> 'a'
+	 *
+	 * Note: Properties which already exist in the base class will not be overriden.
 	 *
 	 * @param {Function} [baseClass] Class which prototype will be extended.
 	 * @param {Object} [...mixins] Objects from which to get properties.
@@ -134,6 +136,10 @@ const utils = {
 		mixins.forEach( ( mixin ) => {
 			Object.getOwnPropertyNames( mixin ).concat( Object.getOwnPropertySymbols( mixin ) )
 				.forEach( ( key ) => {
+					if ( key in baseClass.prototype ) {
+						return;
+					}
+
 					const sourceDescriptor = Object.getOwnPropertyDescriptor( mixin, key );
 					sourceDescriptor.enumerable = false;
 

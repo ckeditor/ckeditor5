@@ -5,17 +5,18 @@
 
 'use strict';
 
-import Model from './model.js';
+import ObservableMixin from './observablemixin.js';
 import utilsLang from './lib/lodash/lang.js';
+import utils from './utils.js';
 
 /**
  * Handles a configuration dictionary.
  *
- * @class Config
- * @extends Model
+ * @class core.Config
+ * @mixins core.ObservableMixin
  */
 
-export default class Config extends Model {
+export default class Config {
 	/**
 	 * Creates an instance of the {@link Config} class.
 	 *
@@ -23,8 +24,6 @@ export default class Config extends Model {
 	 * @constructor
 	 */
 	constructor( configurations ) {
-		super();
-
 		if ( configurations ) {
 			this.set( configurations );
 		}
@@ -71,7 +70,7 @@ export default class Config extends Model {
 		// Just pass the call to the original set() in case of an object. It'll deal with recursing through the
 		// object and calling set( name, value ) again for each property.
 		if ( utilsLang.isObject( name ) ) {
-			super.set.apply( this, arguments );
+			ObservableMixin.set.apply( this, arguments );
 
 			return;
 		}
@@ -114,7 +113,7 @@ export default class Config extends Model {
 		}
 
 		// Call the original set() on the target.
-		super.set.call( target, name, value );
+		ObservableMixin.set.call( target, name, value );
 	}
 
 	/**
@@ -190,3 +189,5 @@ export default class Config extends Model {
 		this.definition.set( name, value );
 	}
 }
+
+utils.mix( Config, ObservableMixin );

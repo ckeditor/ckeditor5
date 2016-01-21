@@ -6,10 +6,18 @@
 'use strict';
 
 import Collection from '../collection.js';
-import Model from '../model.js';
 import CKEditorError from '../ckeditorerror.js';
+import EmitterMixin from '../emittermixin.js';
+import utils from '../utils.js';
 
-export default class Controller extends Model {
+/**
+ * Basic Controller class.
+ *
+ * @class Controller
+ * @mixins EmitterMixin
+ */
+
+export default class Controller {
 	/**
 	 * Creates an instance of the {@link Controller} class.
 	 *
@@ -18,8 +26,6 @@ export default class Controller extends Model {
 	 * @constructor
 	 */
 	constructor( model, view ) {
-		super();
-
 		/**
 		 * Model of this controller.
 		 *
@@ -186,3 +192,5 @@ export default class Controller extends Model {
 		return Promise.all( promises );
 	}
 }
+
+utils.mix( Controller, EmitterMixin );

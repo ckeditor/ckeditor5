@@ -16,10 +16,14 @@ import log from '../log.js';
  *
  * @class DOMEmitterMixin
  * @mixins EmitterMixin
- * @param {Node} node DOM Node that fires events.
- * @returns {Object} ProxyEmitter instance bound to the DOM Node.
+ * @implements DOMEmitter
  */
+
 class ProxyEmitter {
+	/**
+	 * @param {Node} node DOM Node that fires events.
+	 * @returns {Object} ProxyEmitter instance bound to the DOM Node.
+	 */
 	constructor( node ) {
 		// Set emitter ID to match DOM Node "expando" property.
 		this._emitterId = getNodeUID( node );
@@ -33,6 +37,7 @@ objectUtils.extend( ProxyEmitter.prototype, EmitterMixin, {
 	/**
 	 * Collection of native DOM listeners.
 	 *
+	 * @private
 	 * @property {Object} _domListeners
 	 */
 
@@ -146,12 +151,13 @@ objectUtils.extend( ProxyEmitter.prototype, EmitterMixin, {
  *                 +-----------------------------------------+
  *                             fire( click, DOM Event )
  *
- * @class DOMEmitterMixin
- * @extends EmitterMixin
  * @singleton
+ * @class DOMEmitterMixin
+ * @mixins EmitterMixin
+ * @implements DOMEmitter
  */
 
-const DOMEmitterMixin = {
+const DOMEmitterMixin = objectUtils.extend( {}, EmitterMixin, {
 	/**
 	 * Registers a callback function to be executed when an event is fired in a specific Emitter or DOM Node.
 	 * It is backwards compatible with {@link EmitterMixin#listenTo}.
@@ -235,16 +241,21 @@ const DOMEmitterMixin = {
 
 		return proxy || null;
 	}
-};
+} );
 
 export default DOMEmitterMixin;
 
-/**
- * Gets an unique DOM Node identifier. The identifier will be set if not defined.
- *
- * @param {Node} node
- * @return {Number} UID for given DOM Node.
- */
+// Gets an unique DOM Node identifier. The identifier will be set if not defined.
+//
+// @private
+// @param {Node} node
+// @return {Number} UID for given DOM Node.
 function getNodeUID( node ) {
 	return node[ 'data-ck-expando' ] || ( node[ 'data-ck-expando' ] = utils.uid() );
 }
+
+/**
+ * Interface representing classes which mix in {@link core.ui.DOMEmitter}.
+ *
+ * @interface core.ui.DOMEmitter
+ */
