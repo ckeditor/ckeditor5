@@ -15,6 +15,48 @@ import Plugin from './plugin.js';
  */
 
 export default class Creator extends Plugin {
+	create() {
+		return this.editor.ui.init();
+	}
+
+	destroy() {
+		super.destroy();
+
+		if ( this._elementReplacement ) {
+			this.editor.element.style.display = '';
+			this._elementReplacement.remove();
+		}
+
+		const ui = this.editor.ui;
+		this.editor.ui = null;
+
+		return ui.destroy();
+	}
+
+	updateEditorElement() {
+		Creator.setDataInElement( this.editor.element, this.editor.getData() );
+	}
+
+	loadDataFromEditorElement() {
+		this.editor.setData( Creator.getDataFromElement( this.editor.element ) );
+	}
+
+	/**
+	 * @param {HTMLElement} [newElement]
+	 */
+	_replaceElement( newElement ) {
+		if ( !newElement ) {
+			newElement = this.editor.ui.chrome.view.element;
+		}
+
+		this._elementReplacement = newElement;
+
+		const editorEl = this.editor.element;
+
+		editorEl.style.display = 'none';
+		editorEl.parentNode.insertBefore( newElement, editorEl.nextSibling );
+	}
+
 	/**
 	 * Gets data from a given source element.
 	 *

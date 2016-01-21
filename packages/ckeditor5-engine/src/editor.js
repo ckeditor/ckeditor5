@@ -62,8 +62,8 @@ export default class Editor {
 		/**
 		 * The chosen creator.
 		 *
-		 * @property {Creator} _creator
 		 * @protected
+		 * @property {Creator} _creator
 		 */
 	}
 
@@ -140,6 +140,7 @@ export default class Editor {
 		const that = this;
 
 		this.fire( 'destroy' );
+		this.stopListening();
 
 		return Promise.resolve()
 			.then( () => {
@@ -148,6 +149,14 @@ export default class Editor {
 			.then( () => {
 				delete this.element;
 			} );
+	}
+
+	setData( data ) {
+		this.editable.setData( data );
+	}
+
+	getData() {
+		return this.editable.getData();
 	}
 }
 
