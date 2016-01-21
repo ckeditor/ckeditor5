@@ -22,6 +22,22 @@ export default class MutationObserver extends Observer {
 	}
 
 	/**
+	 * @method init
+	 * @param {treeView.TreeView}
+	 */
+	init( treeView ) {
+		this.treeView = treeView;
+
+		this.domRoot = treeView.domRoot;
+
+		this.converter = treeView.converter;
+
+		this.renderer = treeView.renderer;
+
+		this._mutationObserver = new window.MutationObserver( this._onMutations.bind( this ) );
+	}
+
+	/**
 	 * @method attach
 	 */
 	attach() {
@@ -35,18 +51,6 @@ export default class MutationObserver extends Observer {
 		this._mutationObserver.disconnect();
 	}
 
-	/**
-	 * @method init
-	 * @param {treeView.TreeView}
-	 */
-	init( treeView ) {
-		this.treeView = treeView;
-		this.converter = treeView.converter;
-		this.domRoot = treeView.domRoot;
-
-		this._mutationObserver = new window.MutationObserver( this._onMutations.bind( this ) );
-	}
-
 	_onMutations( domMutations ) {
 		// Use　map and set for deduplication.
 		const mutatedTexts = new Map();
@@ -54,7 +58,7 @@ export default class MutationObserver extends Observer {
 
 		for ( let mutation of domMutations ) {
 			if ( mutation.type === 'childList' ) {
-				const element = this.converter.getCorespondingView( mutation.target );
+				const element = this.converter.getCorespondingViewElement( mutation.target );
 
 				if ( element ) {
 					mutatedElements.add( element );
@@ -64,7 +68,7 @@ export default class MutationObserver extends Observer {
 
 		for ( let mutation of domMutations ) {
 			if ( mutation.type === 'characterData' ) {
-				const text = this.converter.getCorespondingView( mutation.target );
+				const text = this.converter.getCorespondingViewText( mutation.target );
 
 				if ( text && !mutatedElements.has( text.parent ) ) {
 					mutatedTexts.set( text, {
@@ -80,22 +84,22 @@ export default class MutationObserver extends Observer {
 		const viewMutations = [];
 
 		for ( let mutatedText of mutatedTexts.values() ) {
-			mutatedText.node.markToSync( 'TEXT_NEEDS_UPDATE' );
+			this.renderer.markToSync( 'TEXT', mutatedText.node );
 
 			viewMutations.push( mutatedText );
 		}
 
 		for ( let viewElement of mutatedElements ) {
-			const domElement = viewElement.getCorespondingDom();
+			const domElement = this.converter.getCorespondingDomElement( viewElement );
 			const domChildren = domElement.childNodes;
 			const viewChildren = viewElement.getChildren();
 			const newViewChildren = [];
 
 			for ( let i = 0; i < domChildren.length; i++ ) {
-				newViewChildren.push( this.converter.createFromDom( domChildren[ i ] ) );
+				newViewChildren.push( this.converter.domToView( domChildren[ i ] ) );
 			}
 
-			viewElement.markToSync( 'CHILDREN_NEED_UPDATE' );
+			this.renderer.markToSync( 'CHILDREN', viewElement );
 
 			viewMutations.push( {
 				type: 'childNodes',

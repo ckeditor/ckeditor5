@@ -123,13 +123,13 @@ export default class Converter {
 		const previousSibling = domText.previousSibling;
 
 		if ( previousSibling ) {
-			const viewElement = this.getCorespondingView( previousSibling );
+			const viewElement = this.getCorespondingViewElement( previousSibling );
 
 			if ( viewElement ) {
 				return viewElement.getNextSibling();
 			}
 		} else {
-			const viewElement = this.getCorespondingView( domText.parentElement );
+			const viewElement = this.getCorespondingViewElement( domText.parentElement );
 
 			if ( viewElement ) {
 				return viewElement.getChild( 0 );
