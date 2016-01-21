@@ -34,15 +34,12 @@ export default class Converter {
 		return false;
 	}
 
-	cloneDomAttrs( domElement, viewElement ) {
-		for ( let i = domElement.attributes.length - 1; i >= 0; i-- ) {
-			let attr = domElement.attributes[ i ];
-			viewElement.setAttr( attr.name, attr.value );
+	// bind: false, withChildren: true
+	viewToDom( viewNode, domDocument, options ) {
+		if ( !options ) {
+			options = {};
 		}
-	}
 
-	// viewToDom do bind elements
-	viewToDom( viewNode, domDocument ) {
 		if ( viewNode instanceof ViewText ) {
 			return domDocument.createTextNode( viewNode.getText() );
 		} else {
@@ -51,23 +48,31 @@ export default class Converter {
 			}
 
 			const domElement = domDocument.createElement( viewNode.name );
-			this.bindElements( domElement, viewNode );
+
+			if ( options.bind ) {
+				this.bindElements( domElement, viewNode );
+			}
 
 			for ( let key of viewNode.getAttrKeys() ) {
 				domElement.setAttribute( key, viewNode.getAttr( key ) );
 			}
 
-			for ( let childView of viewNode.getChildren() ) {
-				domElement.appendChild( this.viewToDom( childView, domDocument ) );
+			if ( options.withChildren || options.withChildren === undefined ) {
+				for ( let childView of viewNode.getChildren() ) {
+					domElement.appendChild( this.viewToDom( childView, domDocument, options ) );
+				}
 			}
 
 			return domElement;
 		}
 	}
 
-	// Note that created elements will not have coresponding DOM elements created it these did not exist before.
-	// domToView do not bind elements
-	domToView( domElement ) {
+	// bind: false, withChildren: true
+	domToView( domElement, options ) {
+		if ( !options ) {
+			options = {};
+		}
+
 		let viewElement = this.getCorespondingView( domElement );
 
 		if ( viewElement ) {
@@ -78,16 +83,23 @@ export default class Converter {
 			return new ViewText( domElement.data );
 		} else {
 			viewElement = new ViewElement( domElement.tagName.toLowerCase() );
+
+			if ( options.bind ) {
+				this.bindElements( domElement, viewElement );
+			}
+
 			const attrs = domElement.attributes;
 
 			for ( let i = attrs.length - 1; i >= 0; i-- ) {
 				viewElement.setAttr( attrs[ i ].name, attrs[ i ].value );
 			}
 
-			for ( let i = 0, len = domElement.childNodes.length; i < len; i++ ) {
-				let domChild = domElement.childNodes[ i ];
+			if ( options.withChildren || options.withChildren === undefined ) {
+				for ( let i = 0, len = domElement.childNodes.length; i < len; i++ ) {
+					let domChild = domElement.childNodes[ i ];
 
-				viewElement.appendChildren( this.domToView( domChild ) );
+					viewElement.appendChildren( this.domToView( domChild, options ) );
+				}
 			}
 
 			return viewElement;

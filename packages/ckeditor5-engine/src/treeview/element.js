@@ -29,8 +29,6 @@ export default class Element extends Node {
 		if ( children ) {
 			this.insertChildren( 0, children );
 		}
-
-		this._domElement = null;
 	}
 
 	appendChildren( nodes ) {

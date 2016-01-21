@@ -12,6 +12,8 @@ import objectUtils from '../lib/lodash/object.js';
 export default class Node {
 	constructor() {
 		this.parent = null;
+
+		this._treeView = null;
 	}
 
 	getIndex() {
@@ -47,11 +49,17 @@ export default class Node {
 	}
 
 	getTreeView() {
-		if ( !this.parent ) {
-			return null;
-		} else {
+		if ( this._treeView ) {
+			return this._treeView;
+		} else if ( this.parent ) {
 			return this.parent.getTreeView();
+		} else {
+			return null;
 		}
+	}
+
+	setTreeView( treeView ) {
+		this._treeView = treeView;
 	}
 
 	_fireChange( type, node ) {

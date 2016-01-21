@@ -58,22 +58,6 @@ describe( 'converter', () => {
 		} );
 	} );
 
-	describe( 'cloneDomAttrs', () => {
-		it( 'should clone DOM attributes', () => {
-			const domElement = document.createElement( 'p' );
-			domElement.setAttribute( 'foo', '1' );
-			domElement.setAttribute( 'bar', '2' );
-
-			const viewElement = new ViewElement( 'p' );
-
-			converter.cloneDomAttrs( domElement, viewElement );
-
-			expect( viewElement.getAttr( 'foo' ) ).to.equal( '1' );
-			expect( viewElement.getAttr( 'bar' ) ).to.equal( '2' );
-			expect( getIteratorCount( viewElement.getAttrKeys() ) ).to.equal( 2 );
-		} );
-	} );
-
 	describe( 'domToView', () => {
 		it( 'should create tree of view elements from DOM elements', () => {
 			const domImg = document.createElement( 'img' );
@@ -104,6 +88,58 @@ describe( 'converter', () => {
 			expect( converter.getCorespondingDom( viewP ) ).to.not.equal( domP );
 			expect( converter.getCorespondingDom( viewP.getChild( 0 ) ) ).to.equal( domImg );
 		} );
+
+		it( 'should create tree of view elements from DOM elements and bind elements', () => {
+			const domImg = document.createElement( 'img' );
+			const domText = document.createTextNode( 'foo' );
+			const domP = document.createElement( 'p' );
+
+			domP.setAttribute( 'class', 'foo' );
+
+			domP.appendChild( domImg );
+			domP.appendChild( domText );
+
+			const viewP = converter.domToView( domP, { bind: true } );
+
+			expect( viewP ).to.be.an.instanceof( ViewElement );
+			expect( viewP.name ).to.equal( 'p' );
+
+			expect( viewP.getAttr( 'class' ) ).to.equal( 'foo' );
+			expect( getIteratorCount( viewP.getAttrKeys() ) ).to.equal( 1 );
+
+			expect( viewP.getChildCount() ).to.equal( 2 );
+			expect( viewP.getChild( 0 ).name ).to.equal( 'img' );
+			expect( viewP.getChild( 1 ).getText() ).to.equal( 'foo' );
+
+			expect( converter.getCorespondingDom( viewP ) ).to.equal( domP );
+			expect( converter.getCorespondingDom( viewP.getChild( 0 ) ) ).to.equal( domP.childNodes[ 0 ] );
+		} );
+
+		it( 'should create tree of view elements from DOM element without children', () => {
+			const domImg = document.createElement( 'img' );
+			const domText = document.createTextNode( 'foo' );
+			const domP = document.createElement( 'p' );
+
+			domP.setAttribute( 'class', 'foo' );
+
+			domP.appendChild( domImg );
+			domP.appendChild( domText );
+
+			const viewImg = new ViewElement( 'img' );
+
+			converter.bindElements( domImg, viewImg );
+
+			const viewP = converter.domToView( domP, { withChildren: false } );
+
+			expect( viewP ).to.be.an.instanceof( ViewElement );
+			expect( viewP.name ).to.equal( 'p' );
+
+			expect( viewP.getAttr( 'class' ) ).to.equal( 'foo' );
+			expect( getIteratorCount( viewP.getAttrKeys() ) ).to.equal( 1 );
+
+			expect( viewP.getChildCount() ).to.equal( 0 );
+			expect( converter.getCorespondingDom( viewP ) ).to.not.equal( domP );
+		} );
 	} );
 
 	describe( 'viewToDom', () => {
@@ -133,8 +169,60 @@ describe( 'converter', () => {
 			expect( domP.childNodes[ 0 ].tagName.toLowerCase() ).to.equal( 'img' );
 			expect( domP.childNodes[ 1 ].data ).to.equal( 'foo' );
 
-			expect( converter.getCorespondingView( domP ) ).to.equal( viewP );
+			expect( converter.getCorespondingView( domP ) ).not.to.equal( viewP );
 			expect( converter.getCorespondingView( domP.childNodes[ 0 ] ) ).to.equal( viewImg );
+		} );
+
+		it( 'should create tree of DOM elements from view elements and bind elements', () => {
+			const viewImg = new ViewElement( 'img' );
+			const viewText = new ViewText( 'foo' );
+			const viewP = new ViewElement( 'p' );
+
+			viewP.setAttr( 'class', 'foo' );
+
+			viewP.appendChildren( viewImg );
+			viewP.appendChildren( viewText );
+
+			const domP = converter.viewToDom( viewP, document, { bind: true } );
+
+			expect( domP ).to.be.an.instanceof( HTMLElement );
+			expect( domP.tagName.toLowerCase() ).to.equal( 'p' );
+
+			expect( domP.getAttribute( 'class' ) ).to.equal( 'foo' );
+			expect( domP.attributes.length ).to.equal( 1 );
+
+			expect( domP.childNodes.length ).to.equal( 2 );
+			expect( domP.childNodes[ 0 ].tagName.toLowerCase() ).to.equal( 'img' );
+			expect( domP.childNodes[ 1 ].data ).to.equal( 'foo' );
+
+			expect( converter.getCorespondingView( domP ) ).to.equal( viewP );
+			expect( converter.getCorespondingView( domP.childNodes[ 0 ] ) ).to.equal( viewP.getChild( 0 ) );
+		} );
+
+		it( 'should create tree of DOM elements from view element without children', () => {
+			const viewImg = new ViewElement( 'img' );
+			const viewText = new ViewText( 'foo' );
+			const viewP = new ViewElement( 'p' );
+
+			viewP.setAttr( 'class', 'foo' );
+
+			viewP.appendChildren( viewImg );
+			viewP.appendChildren( viewText );
+
+			const domImg = document.createElement( 'img' );
+
+			converter.bindElements( domImg, viewImg );
+
+			const domP = converter.viewToDom( viewP, document, { withChildren: false } );
+
+			expect( domP ).to.be.an.instanceof( HTMLElement );
+			expect( domP.tagName.toLowerCase() ).to.equal( 'p' );
+
+			expect( domP.getAttribute( 'class' ) ).to.equal( 'foo' );
+			expect( domP.attributes.length ).to.equal( 1 );
+
+			expect( domP.childNodes.length ).to.equal( 0 );
+			expect( converter.getCorespondingView( domP ) ).not.to.equal( viewP );
 		} );
 	} );
 

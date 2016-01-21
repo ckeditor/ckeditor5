@@ -6,7 +6,6 @@
 'use strict';
 
 import EmitterMixin from '../emittermixin.js';
-import RootElement from './rootelement.js';
 import Renderer from './renderer.js';
 import Converter from './converter.js';
 
@@ -26,9 +25,8 @@ export default class TreeView {
 		/**
 		 * Root of the view
 		 */
-		this.viewRoot = new RootElement( domRoot.tagName.toLowerCase(), this );
-		this.converter.cloneDomAttrs( domRoot, this.viewRoot );
-		this.converter.bindElements( domRoot, this.viewRoot );
+		this.viewRoot = this.converter.domToView( domRoot , { bind: true, withChildren: false } );
+		this.viewRoot.setTreeView( this );
 
 		this.renderer = new Renderer( this.converter );
 		this.renderer.markToSync( 'CHILDREN', this.viewRoot );

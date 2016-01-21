@@ -8,7 +8,6 @@
 'use strict';
 
 import Element from '/ckeditor5/core/treeview/element.js';
-import RootElement from '/ckeditor5/core/treeview/rootelement.js';
 import Text from '/ckeditor5/core/treeview/text.js';
 import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
@@ -89,16 +88,27 @@ describe( 'Node', () => {
 	} );
 
 	describe( 'getTreeView', () => {
-		it( 'should return null if root is not a RootElement', () => {
+		it( 'should return null if any parent has not set treeview', () => {
 			expect( charA.getTreeView() ).to.be.null;
 		} );
 
-		it( 'should return TreeView attached to the RootElement', () => {
+		it( 'should return TreeView attached to the element', () => {
 			const tvMock = {};
-			const parent = new RootElement( 'div', tvMock );
+			const element = new Element( 'p' );
+
+			element.setTreeView( tvMock );
+
+			expect( element.getTreeView() ).to.equal( tvMock );
+		} );
+
+		it( 'should return TreeView attached to the parent element', () => {
+			const tvMock = {};
+			const parent = new Element( 'div' );
 			const child = new Element( 'p' );
 
 			child.parent = parent;
+
+			parent.setTreeView( tvMock );
 
 			expect( parent.getTreeView() ).to.equal( tvMock );
 			expect( child.getTreeView() ).to.equal( tvMock );
@@ -118,7 +128,7 @@ describe( 'Node', () => {
 			img = new Element( 'img' );
 			img.setAttr( 'src', 'img.png' );
 
-			root = new RootElement( 'p', { renderer: { markToSync: rootChangeSpy } } );
+			root = new Element( 'p', { renderer: { markToSync: rootChangeSpy } } );
 			root.appendChildren( [ text, img ] );
 
 			root.on( 'change', ( evt, type, node ) => {

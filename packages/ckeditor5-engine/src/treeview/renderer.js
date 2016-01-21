@@ -101,7 +101,8 @@ export default class Renderer {
 
 			for ( let action of actions ) {
 				if ( action === 'INSERT' ) {
-					domElement.insertBefore( converter.viewToDom( viewChildren[ i ], domDocument ), domChildren[ i ] || null  );
+					let domChildToInsert = converter.viewToDom( viewChildren[ i ], domDocument, { bind: true } );
+					domElement.insertBefore( domChildToInsert, domChildren[ i ] || null  );
 					i++;
 				} else if ( action === 'DELETE' ) {
 					domElement.removeChild( domChildren[ i ] );
