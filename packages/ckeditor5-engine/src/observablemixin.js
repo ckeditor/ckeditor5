@@ -26,8 +26,8 @@ const boundAttributesSymbol = Symbol( 'boundAttributes' );
 
 const ObservableMixin = {
 	/**
-	 * Creates and sets the value of a observable attribute of this object. This attribute will be part of the observable
-	 * state and will be observable.
+	 * Creates and sets the value of an observable attribute of this object. Such an attribute becomes a part
+	 * of the state and is be observable.
 	 *
 	 * It accepts also a single object literal containing key/value pairs with attributes to be set.
 	 *
@@ -39,7 +39,7 @@ const ObservableMixin = {
 	 * @param {*} value The attributes value.
 	 */
 	set( name, value ) {
-		// If the first parameter is an Object, we gonna interact through its properties.
+		// If the first parameter is an Object, iterate over its properties.
 		if ( utilsLang.isObject( name ) ) {
 			Object.keys( name ).forEach( ( attr ) => {
 				this.set( attr, name[ attr ] );
@@ -96,7 +96,8 @@ const ObservableMixin = {
 	},
 
 	/**
-	 * Binds observable attributes to another objects implementing {@link ObservableMixin} interface (like {@link core.ui.Model}).
+	 * Binds observable attributes to another objects implementing {@link ObservableMixin}
+	 * interface (like {@link core.ui.Model}).
 	 *
 	 * Once bound, the observable will immediately share the current state of attributes
 	 * of the observable it is bound to and react to the changes to these attributes
@@ -188,8 +189,8 @@ const ObservableMixin = {
 	 *		A.unbind( 'a' );
 	 *		A.unbind();
 	 *
-	 * @param {String...} [bindAttrs] Observable attributes to unbound. All the bindings will
-	 * be released if not attributes provided.
+	 * @param {String...} [bindAttrs] Observable attributes to be unbound. All the bindings will
+	 * be released if no attributes provided.
 	 */
 	unbind( ...unbindAttrs ) {
 		// Nothing to do here if not inited yet.
@@ -387,7 +388,8 @@ function bindTo( ...args ) {
 			throw new CKEditorError( 'observable-bind-to-attrs-length: The number of attributes must match.' );
 		}
 
-		// When no to.attrs specified, observing model attributes instead.
+		// When no to.attrs specified, observing source attributes instead i.e.
+		// A.bind( 'x', 'y' ).to( B ) -> Observe B.x and B.y
 		if ( !to.attrs.length ) {
 			to.attrs = this._bindAttrs;
 		}
