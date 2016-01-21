@@ -7,13 +7,15 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "grunt": "^0",
-    "grunt-jscs": "^2.0.0",
-    "grunt-contrib-jshint": "^0",
-    "grunt-githooks": "^0",
-    "shelljs": "^0",
-    "lodash-cli": "^3",
-    "grunt-lodash": "^0.5.0"
+    "git-guppy": "^1.0.1",
+    "gulp": "^3.9.0",
+    "gulp-filter": "^3.0.1",
+    "gulp-jscs": "^3.0.2",
+    "gulp-jshint": "^2.0.0",
+    "guppy-pre-commit": "^0.3.0",
+    "jshint": "^2.9.1",
+    "jshint-reporter-jscs": "^0.1.0",
+    "lodash-cli": "^3"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "See LICENSE.md",
