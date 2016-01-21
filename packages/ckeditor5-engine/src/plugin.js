@@ -5,24 +5,23 @@
 
 'use strict';
 
-import Model from './model.js';
+import ObservableMixin from './observablemixin.js';
+import utils from './utils.js';
 
 /**
  * The base class for CKEditor plugin classes.
  *
  * @class core.Plugin
- * @extends core.Model
+ * @mixins core.ObservableMixin
  */
 
-export default class Plugin extends Model {
+export default class Plugin {
 	/**
 	 * Creates a new Plugin instance.
 	 *
 	 * @param {core.Editor} editor
 	 */
 	constructor( editor ) {
-		super();
-
 		/**
 		 * @readonly
 		 * @property {core.Editor}
@@ -35,3 +34,5 @@ export default class Plugin extends Model {
 	 */
 	init() {}
 }
+
+utils.mix( Plugin, ObservableMixin );

@@ -5,20 +5,21 @@
 
 'use strict';
 
-import Model from './model.js';
+import ObservableMixin from './observablemixin.js';
 import EditorConfig from './editorconfig.js';
 import PluginCollection from './plugincollection.js';
 import CKEditorError from './ckeditorerror.js';
 import langUtils from './lib/lodash/lang.js';
+import utils from './utils.js';
 
 /**
  * Represents a single editor instance.
  *
- * @class Editor
- * @extends Model
+ * @class core.Editor
+ * @mixins core.ObservableMixin
  */
 
-export default class Editor extends Model {
+export default class Editor {
 	/**
 	 * Creates a new instance of the Editor class.
 	 *
@@ -29,8 +30,6 @@ export default class Editor extends Model {
 	 * @constructor
 	 */
 	constructor( element, config ) {
-		super();
-
 		/**
 		 * The original host page element upon which the editor is created. It is only supposed to be provided on
 		 * editor creation and is not subject to be modified.
@@ -149,6 +148,8 @@ export default class Editor extends Model {
 		} );
 	}
 }
+
+utils.mix( Editor, ObservableMixin );
 
 /**
  * Fired when this editor instance is destroyed. The editor at this point is not usable and this event should be used to

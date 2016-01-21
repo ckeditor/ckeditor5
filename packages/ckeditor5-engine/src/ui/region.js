@@ -6,7 +6,6 @@
 'use strict';
 
 import Collection from '../collection.js';
-import Model from '../model.js';
 
 /**
  * Basic Region class.
@@ -15,7 +14,7 @@ import Model from '../model.js';
  * @extends Model
  */
 
-export default class Region extends Model {
+export default class Region {
 	/**
 	 * Creates an instance of the {@link Region} class.
 	 *
@@ -24,8 +23,6 @@ export default class Region extends Model {
 	 * @constructor
 	 */
 	constructor( name ) {
-		super();
-
 		/**
 		 * The name of the region.
 		 *
