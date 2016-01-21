@@ -9,7 +9,7 @@ const config = {
 	WORKSPACE_DIR: '..',
 
 	// Files ignored by jshit and jscs tasks. Files from .gitignore will be added automatically during tasks execution.
-	IGNORED_FILES: [ 'lib/**' ]
+	IGNORED_FILES: [ 'src/lib/**' ]
 };
 
 require( './dev/tasks/lint/tasks' )( config );
