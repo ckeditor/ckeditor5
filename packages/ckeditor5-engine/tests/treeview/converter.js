@@ -310,6 +310,21 @@ describe( 'converter', () => {
 			expect( converter.getCorespondingViewText( domText ) ).to.be.null;
 		} );
 
+		it( 'should return null if sibling is not element', () => {
+			const domTextFoo = document.createTextNode( 'foo' );
+			const domTextBar = document.createTextNode( 'bar' );
+			const domP = document.createElement( 'p' );
+
+			domP.appendChild( domTextFoo );
+			domP.appendChild( domTextBar );
+
+			const viewP = converter.domToView( domP );
+
+			converter.bindElements( domP, viewP );
+
+			expect( converter.getCorespondingViewText( domTextBar ) ).to.be.null;
+		} );
+
 		it( 'should return null if parent is not binded', () => {
 			const domText = document.createTextNode( 'foo' );
 			const domP = document.createElement( 'p' );

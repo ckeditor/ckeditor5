@@ -123,6 +123,11 @@ export default class Converter {
 		const previousSibling = domText.previousSibling;
 
 		if ( previousSibling ) {
+			if ( !( previousSibling instanceof HTMLElement ) ) {
+				// The previous is text or comment.
+				return null;
+			}
+
 			const viewElement = this.getCorespondingViewElement( previousSibling );
 
 			if ( viewElement ) {
