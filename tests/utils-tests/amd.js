@@ -27,6 +27,12 @@ describe( 'amdTestUtils', () => {
 
 			expect( path ).to.equal( '/ckeditor5/core/editor.js' );
 		} );
+
+		it( 'does not process an absolute path', () => {
+			const path = getModulePath( '/foo/bar/bom.js' );
+
+			expect( path ).to.equal( '/foo/bar/bom.js' );
+		} );
 	} );
 
 	describe( 'define()', () => {

@@ -19,10 +19,17 @@ const utils = {
 	 * * `foo` -> `/ckeditor5/foo/foo.js`
 	 * * `foo/bar` -> `/ckeditor5/foo/bar.js`
 	 *
+	 * If the path is already absolute, then it will be returned without any changes.
+	 *
 	 * @param {String} modulePath The simplified path.
 	 * @returns {String} The real path.
 	 */
 	getModulePath( modulePath ) {
+		// Do nothing – path is already absolute.
+		if ( modulePath.startsWith( '/' ) ) {
+			return modulePath;
+		}
+
 		if ( modulePath.indexOf( '/' ) < 0 ) {
 			modulePath = modulePath + '/' + modulePath;
 		}
