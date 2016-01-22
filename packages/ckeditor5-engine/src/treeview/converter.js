@@ -11,6 +11,8 @@ import ViewElement from './element.js';
 // Converter is a class in the future it may take a configuration in the constructor (e.g. what should be inserted into empty elements).
 export default class Converter {
 	constructor() {
+		// Note that using WeakMap prevent memory leaks: when the coverter will be destroyed
+		// all referenced between View and DOM will be removed.
 		this._domToViewMapping = new WeakMap();
 		this._viewToDomMapping = new WeakMap();
 	}
