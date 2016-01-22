@@ -14,10 +14,10 @@
  *
  *		diff( 'aba', 'acca' ); // [ EQUAL, INSERT, INSERT, DELETE, EQUAL ]
  *
- * @param {Array} a Input array
- * @param {Array} b Output array
- * @param {Function} [cmp] Optional function used to compare array values, by default === is used
- * @return {Array}
+ * @param {Array} a Input array.
+ * @param {Array} b Output array.
+ * @param {Function} [cmp] Optional function used to compare array values, by default === is used.
+ * @return {Array} Array of actions.
  */
  export default function diff( a, b, cmp ) {
 	// Set the comparator function.
