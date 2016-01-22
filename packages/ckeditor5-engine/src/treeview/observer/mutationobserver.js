@@ -6,8 +6,6 @@
 'use strict';
 
 import Observer from './observer.js';
-import EmitterMixin from '../../emittermixin.js';
-import objectUtils from '../../lib/lodash/object.js';
 
 export default class MutationObserver extends Observer {
 	constructor() {
@@ -103,16 +101,14 @@ export default class MutationObserver extends Observer {
 
 			viewMutations.push( {
 				type: 'childNodes',
-				oldChildren: viewChildren,
+				oldChildren: Array.from( viewChildren ),
 				newChildren: newViewChildren,
 				node: viewElement
 			} );
 		}
 
-		this.fire( 'mutations', viewMutations );
+		this.treeView.fire( 'mutations', viewMutations );
 
 		this.treeView.render();
 	}
 }
-
-objectUtils.extend( MutationObserver.prototype, EmitterMixin );

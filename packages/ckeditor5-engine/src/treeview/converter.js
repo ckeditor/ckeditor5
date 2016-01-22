@@ -73,16 +73,14 @@ export default class Converter {
 			options = {};
 		}
 
-		let viewElement = this.getCorespondingView( domElement );
-
-		if ( viewElement ) {
-			return viewElement;
-		}
-
 		if ( domElement instanceof Text ) {
 			return new ViewText( domElement.data );
 		} else {
-			viewElement = new ViewElement( domElement.tagName.toLowerCase() );
+			if ( this.getCorespondingView( domElement ) ) {
+				return this.getCorespondingView( domElement );
+			}
+
+			const viewElement = new ViewElement( domElement.tagName.toLowerCase() );
 
 			if ( options.bind ) {
 				this.bindElements( domElement, viewElement );
