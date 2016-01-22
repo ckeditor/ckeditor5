@@ -91,6 +91,15 @@ const utils = {
 		}
 	},
 
+	/**
+	 * Transform object to map.
+	 *
+	 *		const map = utils.objectToMap( { 'foo': 1, 'bar': 2 } );
+	 *		map.get( 'foo' ); // 1
+	 *
+	 * @param {Object} obj Object to transform.
+	 * @returns {Map} Map created from object.
+	 */
 	objectToMap( obj ) {
 		const map = new Map();
 
@@ -101,6 +110,15 @@ const utils = {
 		return map;
 	},
 
+	/**
+	 * Transform map to object.
+	 *
+	 *		const map = new Map( [ [ 'foo', 1 ], [ 'bar', 2 ] ] );
+	 *		utils.mapToObject( map ); // { 'foo': 1, 'bar': 2 }
+	 *
+	 * @param {Map} map Map to transform.
+	 * @returns {Object} Object created from map.
+	 */
 	mapToObject( map ) {
 		const obj = {};
 
