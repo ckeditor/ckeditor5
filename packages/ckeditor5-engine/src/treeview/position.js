@@ -8,7 +8,7 @@
 /**
  * Position in the tree. Position is always located before or after a node.
  *
- * @class treeModel.Position
+ * @class treeView.Position
  */
  export default class Position {
 	/**
