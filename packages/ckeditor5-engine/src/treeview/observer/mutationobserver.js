@@ -8,22 +8,22 @@
 import Observer from './observer.js';
 
 /**
- * Mutation observer class observe changes in the DOM, fire {@link treeview.TreeView#mutations} event, mark view elements
- * as changed and call {@link treeview.render}. Because all mutated nodes are marked as "to be rendered" and the
- * {@link treeview.render} is called, all changes will be reverted, unless the mutation will be handled by the
- * {@link treeview.TreeView#mutations} event listener. It means user will see only handled changes, and the editor will
+ * Mutation observer class observe changes in the DOM, fire {@link treeView.TreeView#mutations} event, mark view elements
+ * as changed and call {@link treeView.render}. Because all mutated nodes are marked as "to be rendered" and the
+ * {@link treeView.render} is called, all changes will be reverted, unless the mutation will be handled by the
+ * {@link treeView.TreeView#mutations} event listener. It means user will see only handled changes, and the editor will
  * block all changes which are not handled.
  *
  * Mutation Observer also take care of reducing number of mutations which are fired. It removes duplicates and
  * mutations on elements which do not have corresponding view elements. Also
- * {@link treeview.TreeView.MutatatedText text mutation} is fired only if parent element do not change child list.
+ * {@link treeView.TreeView.MutatatedText text mutation} is fired only if parent element do not change child list.
  *
- * @class treeview.observer.MutationObserver
+ * @class treeView.observer.MutationObserver
  */
 export default class MutationObserver extends Observer {
 	/**
 	 * Mutation observer constructor. Note that most of the initialization is done in
-	 * {@link treeview.observer.MutationObserver#init} method.
+	 * {@link treeView.observer.MutationObserver#init} method.
 	 *
 	 * @constructor
 	 */
@@ -47,30 +47,30 @@ export default class MutationObserver extends Observer {
 	// Docs in the base class.
 	init( treeView ) {
 		/**
-		 * Referense to the {@link treeview.TreeView} object.
+		 * Referense to the {@link treeView.TreeView} object.
 		 *
-		 * @type {treeview.TreeView}
+		 * @type {treeView.TreeView}
 		 */
 		this.treeView = treeView;
 
 		/**
-		 * Reference to the {@link treeview.TreeView#domRoot}.
+		 * Reference to the {@link treeView.TreeView#domRoot}.
 		 *
 		 * @type {HTMLElement}
 		 */
 		this.domRoot = treeView.domRoot;
 
 		/**
-		 * Reference to the {@link treeview.TreeView#converter}.
+		 * Reference to the {@link treeView.TreeView#converter}.
 		 *
-		 * @type {treeview.Converter}
+		 * @type {treeView.Converter}
 		 */
 		this.converter = treeView.converter;
 
 		/**
-		 * Reference to the {@link treeview.TreeView#renderer}.
+		 * Reference to the {@link treeView.TreeView#renderer}.
 		 *
-		 * @type {treeview.Renderer}
+		 * @type {treeView.Renderer}
 		 */
 		this.renderer = treeView.renderer;
 
@@ -179,22 +179,22 @@ export default class MutationObserver extends Observer {
 	 * @event mutations
 	 * @memberOf treeView.TreeView
 	 *
-	 * @param {Array.<treeview.TreeView.MutatatedText|treeview.TreeView.MutatatedChildren>} viewMutations
+	 * @param {Array.<treeView.TreeView.MutatatedText|treeView.TreeView.MutatatedChildren>} viewMutations
 	 * Array of mutations.
-	 * For mutated texts it will be {@link treeview.TreeView.MutatatedText} and for mutated elements it will be
-	 * {@link treeview.TreeView.MutatatedElement}. You can recognize the type based on the `type` property.
+	 * For mutated texts it will be {@link treeView.TreeView.MutatatedText} and for mutated elements it will be
+	 * {@link treeView.TreeView.MutatatedElement}. You can recognize the type based on the `type` property.
 	 */
 
 	/**
 	 * Mutation item for text.
 	 *
-	 * @see treeview.TreeView#mutations
-	 * @see treeview.TreeView.MutatatedChildren
+	 * @see treeView.TreeView#mutations
+	 * @see treeView.TreeView.MutatatedChildren
 	 *
-	 * @typedef {Object} treeview.TreeView.MutatatedText
+	 * @typedef {Object} treeView.TreeView.MutatatedText
 	 *
 	 * @property {String} type For text mutations it is always 'text'.
-	 * @property {treeview.Text} node Mutated text node.
+	 * @property {treeView.Text} node Mutated text node.
 	 * @property {String} oldText Old text.
 	 * @property {String} newText New text.
 	 */
@@ -202,14 +202,14 @@ export default class MutationObserver extends Observer {
 	/**
 	 * Mutation item for child nodes.
 	 *
-	 * @see treeview.TreeView#mutations
-	 * @see treeview.TreeView.MutatatedText
+	 * @see treeView.TreeView#mutations
+	 * @see treeView.TreeView.MutatatedText
 	 *
-	 * @typedef {Object} treeview.TreeView.MutatatedChildren
+	 * @typedef {Object} treeView.TreeView.MutatatedChildren
 	 *
 	 * @property {String} type For child nodes mutations it is always 'children'.
-	 * @property {treeview.Element} node Parent of the mutated children.
-	 * @property {Array.<treeview.Node>} oldChildren Old child nodes.
-	 * @property {Array.<treeview.Node>} newChildren New child nodes.
+	 * @property {treeView.Element} node Parent of the mutated children.
+	 * @property {Array.<treeView.Node>} oldChildren Old child nodes.
+	 * @property {Array.<treeView.Node>} newChildren New child nodes.
 	 */
 }
