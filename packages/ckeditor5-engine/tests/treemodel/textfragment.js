@@ -11,22 +11,28 @@ import Element from '/ckeditor5/core/treemodel/element.js';
 import Text from '/ckeditor5/core/treemodel/text.js';
 import Attribute from '/ckeditor5/core/treemodel/attribute.js';
 import TextFragment from '/ckeditor5/core/treemodel/textfragment.js';
-import Position from '/ckeditor5/core/treemodel/position.js';
 import Document from '/ckeditor5/core/treemodel/document.js';
+import CharacterProxy from '/ckeditor5/core/treemodel/characterproxy.js';
 
 describe( 'TextFragment', () => {
-	let doc, text, element, textFragment, root;
+	let doc, attr, text, element, textFragment, root;
 
 	before( () => {
-		text = new Text( 'foobar', [ new Attribute( 'abc', 'xyz' ) ] );
-		element = new Element( 'div', [], [ text ] );
 		doc = new Document();
 		root = doc.createRoot( 'root' );
+		element = new Element( 'div' );
 		root.insertChildren( 0, element );
+		attr = new Attribute( 'foo', 'bar' );
 	} );
 
 	beforeEach( () => {
-		textFragment = new TextFragment( new Position( root, [ 0, 2 ] ), 'oba' );
+		text = new Text( 'foobar', [ attr ] );
+		element.insertChildren( 0, text );
+		textFragment = new TextFragment( element.getChild( 2 ), 3 );
+	} );
+
+	afterEach( () => {
+		element.removeChildren( 0, 1 );
 	} );
 
 	it( 'should have first property pointing to the first character node contained in TextFragment', () => {
@@ -43,17 +49,26 @@ describe( 'TextFragment', () => {
 		expect( char.character ).to.equal( 'a' );
 	} );
 
-	it( 'should have correct attributes property', () => {
-		expect( textFragment.attrs.size ).to.equal( 1 );
-		expect( textFragment.attrs.getValue( 'abc' ) ).to.equal( 'xyz' );
-	} );
-
 	it( 'should have text property', () => {
 		expect( textFragment ).to.have.property( 'text' ).that.equals( 'oba' );
 	} );
 
-	it( 'getRange should return range containing all characters from TextFragment', () => {
-		let range = textFragment.getRange();
+	describe( 'getCharAt', () => {
+		it( 'should return CharacterProxy element representing proper tree model character node', () => {
+			let char = textFragment.getCharAt( 1 );
+
+			expect( char ).to.be.instanceof( CharacterProxy );
+			expect( char.character ).to.equal( 'b' );
+			expect( char.getAttributeValue( 'foo' ) ).to.equal( 'bar' );
+			expect( char.parent ).to.equal( element );
+		} );
+
+		it( 'should return null for wrong index', () => {
+			expect( textFragment.getCharAt( -1 ) ).to.be.null;
+			expect( textFragment.getCharAt( 4 ) ).to.be.null;
+		} );
+	} );
+
 	describe( 'attributes interface', () => {
 		let attr2 = new Attribute( 'abc', 'xyz' );
 
