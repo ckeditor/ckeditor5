@@ -10,14 +10,22 @@
  * and fire events on the {@link treeView.TreeView} objects.
  *
  * @abstract
- * @class treeView.Observer
+ * @class treeView.observer.Observer
  */
 export default class Observer {
+	/**
+	 * Init the observer class, cache all needed {@link treeView.TreeView} properties, create objects.
+	 * This method do not {@link treeView.observer.Observer#attach attach} listeners to the DOM.
+	 *
+	 * @method init
+	 * @param {treeView.TreeView}
+	 */
+
 	/**
 	 * Attach observers and linsters to DOM elements. This method is called when then observer is added to the
 	 * {@link treeView.TreeView} and after {@link treeView.TreeView#render rendering} to reattach observers and linsters.
 	 *
-	 * @see treeView.Observer#detach
+	 * @see treeView.observer.Observer#detach
 	 *
 	 * @method attach
 	 */
@@ -27,16 +35,8 @@ export default class Observer {
 	 * {@link treeView.TreeView#render rendering} to prevent fireing events during rendering and when the editor is
 	 * destroyed.
 	 *
-	 * @see treeView.Observer#attach
+	 * @see treeView.observer.Observer#attach
 	 *
 	 * @method detach
-	 */
-
-	/**
-	 * Init the observer class, cache all needed {@link treeView.TreeView} properties, create objects.
-	 * This method do not {@link treeView.Observer#attach attach} listeners to the DOM.
-	 *
-	 * @method init
-	 * @param {treeView.TreeView}
 	 */
 }

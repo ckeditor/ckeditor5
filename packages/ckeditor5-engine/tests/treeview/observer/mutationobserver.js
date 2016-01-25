@@ -59,7 +59,7 @@ describe( 'MutationObserver', () => {
 
 		expectDomEditorNotToChange();
 		expect( lastMutations.length ).to.equals( 1 );
-		expect( lastMutations[ 0 ].type ).to.equals( 'childNodes' );
+		expect( lastMutations[ 0 ].type ).to.equals( 'children' );
 		expect( lastMutations[ 0 ].node ).to.equals( treeView.viewRoot.getChild( 0 ) );
 
 		expect( lastMutations[ 0 ].newChildren.length ).to.equals( 2 );
@@ -97,7 +97,7 @@ describe( 'MutationObserver', () => {
 
 		expectDomEditorNotToChange();
 		expect( lastMutations.length ).to.equals( 1 );
-		expect( lastMutations[ 0 ].type ).to.equals( 'childNodes' );
+		expect( lastMutations[ 0 ].type ).to.equals( 'children' );
 		expect( lastMutations[ 0 ].node ).to.equals( treeView.viewRoot );
 	} );
 
