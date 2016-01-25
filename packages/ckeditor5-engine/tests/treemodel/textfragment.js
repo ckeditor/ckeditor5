@@ -54,9 +54,84 @@ describe( 'TextFragment', () => {
 
 	it( 'getRange should return range containing all characters from TextFragment', () => {
 		let range = textFragment.getRange();
+	describe( 'attributes interface', () => {
+		let attr2 = new Attribute( 'abc', 'xyz' );
 
-		expect( range.root ).to.equal( root );
-		expect( range.start.path ).to.deep.equal( [ 0, 2 ] );
-		expect( range.end.path ).to.deep.equal( [ 0, 5 ] );
+		describe( 'hasAttribute', () => {
+			it( 'should return true if text fragment has given attribute', () => {
+				expect( textFragment.hasAttribute( attr ) ).to.be.true;
+			} );
+
+			it( 'should return false if text fragment does not have attribute', () => {
+				expect( textFragment.hasAttribute( attr2 ) ).to.be.false;
+			} );
+
+			it( 'should return true if text fragment has attribute with given key', () => {
+				expect( textFragment.hasAttribute( 'foo' ) ).to.be.true;
+			} );
+
+			it( 'should return false if text fragment does not have attribute with given key', () => {
+				expect( textFragment.hasAttribute( 'abc' ) ).to.be.false;
+			} );
+		} );
+
+		describe( 'getAttribute', () => {
+			it( 'should return attribute with given key if text fragment has given attribute', () => {
+				expect( textFragment.getAttribute( 'foo' ) ).to.equal( attr );
+			} );
+
+			it( 'should return null if text fragment does not have given attribute', () => {
+				expect( textFragment.getAttribute( 'bar' ) ).to.be.undefined;
+			} );
+		} );
+
+		describe( 'getAttributeValue', () => {
+			it( 'should return attribute value for given key if text fragment has given attribute', () => {
+				expect( textFragment.getAttributeValue( 'foo' ) ).to.equal( 'bar' );
+			} );
+
+			it( 'should return null if text fragment does not have given attribute', () => {
+				expect( textFragment.getAttributeValue( 'bar' ) ).to.be.null;
+			} );
+		} );
+
+		describe( 'getAttributes', () => {
+			it( 'should return an iterator that iterates over all attributes set on the text fragment', () => {
+				let it = textFragment.getAttributes();
+				let attrs = [];
+
+				let step = it.next();
+
+				while ( !step.done ) {
+					attrs.push( step.value );
+					step = it.next();
+				}
+
+				expect( attrs ).to.deep.equal( [ attr ] );
+			} );
+		} );
+
+		describe( 'setAttribute', () => {
+			it( 'should set given attribute on the text fragment', () => {
+				textFragment.setAttribute( new Attribute( 'abc', 'xyz' ) );
+
+				expect( textFragment.getAttributeValue( 'abc' ) ).to.equal( 'xyz' );
+			} );
+		} );
+
+		describe( 'removeAttribute', () => {
+			it( 'should remove attribute set on the text fragment and return true', () => {
+				let result = textFragment.removeAttribute( 'foo' );
+
+				expect( textFragment.getAttributeValue( 'foo' ) ).to.be.null;
+				expect( result ).to.be.true;
+			} );
+
+			it( 'should return false if text fragment does not have given attribute', () => {
+				let result = textFragment.removeAttribute( 'abc' );
+
+				expect( result ).to.be.false;
+			} );
+		} );
 	} );
 } );

@@ -21,7 +21,7 @@ describe( 'Element', () => {
 			expect( element ).to.be.an.instanceof( Node );
 			expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
 			expect( element ).to.have.property( 'parent' ).that.equals( parent );
-			expect( element.attrs.size ).to.equal( 0 );
+			expect( element._attrs.size ).to.equal( 0 );
 		} );
 
 		it( 'should create element with attributes', () => {
@@ -33,8 +33,8 @@ describe( 'Element', () => {
 			expect( element ).to.be.an.instanceof( Node );
 			expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
 			expect( element ).to.have.property( 'parent' ).that.equals( parent );
-			expect( element.attrs.size ).to.equal( 1 );
-			expect( element.attrs.getValue( attr.key ) ).to.equal( attr.value );
+			expect( element._attrs.size ).to.equal( 1 );
+			expect( element.getAttributeValue( attr.key ) ).to.equal( attr.value );
 		} );
 
 		it( 'should create element with children', () => {
@@ -104,6 +104,68 @@ describe( 'Element', () => {
 			let element = new Element( 'elem', [], [ 'bar' ] );
 
 			expect( element.getChildCount() ).to.equal( 3 );
+		} );
+	} );
+
+	describe( 'attributes interface', () => {
+		let node;
+		let attr = new Attribute( 'foo', 'bar' );
+
+		beforeEach( () => {
+			node = new Element();
+		} );
+
+		describe( 'setAttribute', () => {
+			it( 'should set given attribute on the element', () => {
+				node.setAttribute( attr );
+
+				expect( node.getAttributeValue( 'foo' ) ).to.equal( 'bar' );
+			} );
+
+			it( 'should be chainable', () => {
+				let chain = node.setAttribute( attr );
+
+				expect( chain ).to.equal( node );
+			} );
+		} );
+
+		describe( 'setAttributesTo', () => {
+			it( 'should remove all attributes set on element and set the given ones', () => {
+				let attr2 = new Attribute( 'abc', 'xyz' );
+				node.setAttribute( attr2 );
+				node.setAttributesTo( [ attr ] );
+
+				expect( node.getAttributeValue( 'foo' ) ).to.equal( 'bar' );
+				expect( node.getAttributeValue( 'abc' ) ).to.be.null;
+			} );
+		} );
+
+		describe( 'removeAttribute', () => {
+			it( 'should remove attribute set on the element and return true', () => {
+				node.setAttribute( attr );
+				let result = node.removeAttribute( 'foo' );
+
+				expect( node.getAttributeValue( 'foo' ) ).to.be.null;
+				expect( result ).to.be.true;
+			} );
+
+			it( 'should return false if element does not contain given attribute', () => {
+				let result = node.removeAttribute( 'foo' );
+
+				expect( result ).to.be.false;
+			} );
+		} );
+
+		describe( 'clearAttributes', () => {
+			it( 'should remove all attributes from the element', () => {
+				node.setAttribute( attr );
+				node.setAttribute( new Attribute( 'abc', 'xyz' ) );
+
+				node.clearAttributes();
+
+				expect( node.getAttributeValue( 'foo' ) ).to.be.null;
+				expect( node.getAttributeValue( 'abc' ) ).to.be.null;
+			} );
 		} );
 	} );
 } );

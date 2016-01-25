@@ -27,10 +27,10 @@ export default class Selection {
 		/**
 		 * List of attributes set on current selection.
 		 *
-		 * @readonly
-		 * @property {treeModel.AttributeList} attrs
+		 * @protected
+		 * @property {treeModel.AttributeList}
 		 */
-		this.attrs = new AttributeList();
+		this._attrs = new AttributeList();
 
 		/**
 		 * Stores all ranges that are selected.
@@ -166,6 +166,85 @@ export default class Selection {
 
 		this._lastRangeBackward = !!isLastBackward;
 		this.fire( 'update' );
+	}
+
+	/**
+	 * Checks if the selection has an attribute that is {@link treeModel.Attribute#isEqual equal} to given attribute or
+	 * attribute with given key if string was passed.
+	 *
+	 * @param {treeModel.Attribute|String} attrOrKey Attribute or key of attribute to check.
+	 * @returns {Boolean} `true` if given attribute or attribute with given key is set on selection, `false` otherwise.
+	 */
+	hasAttribute( attrOrKey ) {
+		return this._attrs.has( attrOrKey );
+	}
+
+	/**
+	 * Gets a selection's attribute by its key.
+	 *
+	 * @param {String} key Key of attribute to look for.
+	 * @returns {treeModel.Attribute|null} Attribute with given key or null if the attribute has not been set on selection.
+	 */
+	getAttribute( key ) {
+		return this._attrs.get( key );
+	}
+
+	/**
+	 * Gets a selection's attribute value by attribute key.
+	 *
+	 * @param {String} key Key of attribute to look for.
+	 * @returns {*} Value of attribute with given key or null if the attribute has not been set on selection.
+	 */
+	getAttributeValue( key ) {
+		return this._attrs.getValue( key );
+	}
+
+	/**
+	 * Returns iterator that iterates over this nodes attributes.
+	 *
+	 * @returns {Iterable.<treeModel.Attribute>}
+	 */
+	getAttributes() {
+		return this._attrs[ Symbol.iterator ]();
+	}
+
+	/**
+	 * Sets attribute on the selection. If attribute with the same key already is set, it overwrites its values.
+	 *
+	 * @chainable
+	 * @param {treeModel.Attribute} attr Attribute to set or overwrite with.
+	 * @returns {treeModel.Selection} This selection.
+	 */
+	setAttribute( attr ) {
+		this._attrs.set( attr );
+
+		return this;
+	}
+
+	/**
+	 * Removes all attributes from the selection and sets given attributes.
+	 *
+	 * @param {Iterable.<treeModel.Attribute>} attrs Iterable object containing {@link treeModel.Attribute attributes} to be set.
+	 */
+	setAttributesTo( attrs ) {
+		this._attrs.setTo( attrs );
+	}
+
+	/**
+	 * Removes an attribute with given key from the selection.
+	 *
+	 * @param {String} key Key of attribute to remove.
+	 * @returns {Boolean} `true` if the attribute was set on the element, `false` otherwise.
+	 */
+	removeAttribute( key ) {
+		return this._attrs.delete( key );
+	}
+
+	/**
+	 * Removes all attributes from the element.
+	 */
+	clearAttributes() {
+		this._attrs.clear();
 	}
 }
 

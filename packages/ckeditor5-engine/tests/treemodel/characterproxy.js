@@ -37,7 +37,7 @@ describe( 'CharacterProxy', () => {
 	} );
 
 	it( 'should have attributes list equal to passed to Text instance', () => {
-		expect( char.attrs.isEqual( text.attrs ) ).to.be.true;
+		expect( char._attrs.isEqual( text._attrs ) ).to.be.true;
 	} );
 
 	it( 'should return correct index in parent node', () => {

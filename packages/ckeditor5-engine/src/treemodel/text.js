@@ -37,8 +37,9 @@ export default class Text {
 		/**
 		 * {@link treeModel.Attribute AttributesList} bound with the text.
 		 *
+		 * @protected
 		 * @property {treeModel.AttributeList}
 		 */
-		this.attrs = new AttributeList( attrs );
+		this._attrs = new AttributeList( attrs );
 	}
 }

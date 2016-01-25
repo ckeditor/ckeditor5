@@ -65,7 +65,7 @@ function attribute( batch, key, value, nodeOrRange ) {
 }
 
 function changeNode( doc, delta, key, value, node ) {
-	const previousValue = node.attrs.getValue( key );
+	const previousValue = node.getAttributeValue( key );
 	let range;
 
 	if ( previousValue != value ) {
@@ -114,7 +114,7 @@ function changeRange( doc, delta, key, value, range ) {
 		// We check values only when the range contains given element, that is when the iterator "enters" the element.
 		// To prevent double-checking or not needed checking, we filter-out iterator values for ELEMENT_END position.
 		if ( next.value.type != 'ELEMENT_END' ) {
-			valueAfter = next.value.item.attrs.getValue( key );
+			valueAfter = next.value.item.getAttributeValue( key );
 
 			// At the first run of the iterator the position in undefined. We also do not have a valueBefore, but
 			// because valueAfter may be null, valueBefore may be equal valueAfter ( undefined == null ).

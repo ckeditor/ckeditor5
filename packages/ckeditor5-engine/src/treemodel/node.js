@@ -37,12 +37,12 @@ export default class Node {
 		 * List of attributes set on this node.
 		 * **Note:** It is **important** that attributes of nodes already attached to the document must be changed
 		 * only by an {@link treeModel.operation.AttributeOperation}. Do not set attributes of such nodes
-		 * using {@link treeModel.AttributeList} API.
+		 * using {@link treeModel.Node} methods.
 		 *
-		 * @readonly
+		 * @protected
 		 * @property {treeModel.AttributeList} attrs
 		 */
-		this.attrs = new AttributeList( attrs );
+		this._attrs = new AttributeList( attrs );
 	}
 
 	/**
@@ -160,5 +160,45 @@ export default class Node {
 		json.parent = this.parent ? this.parent.name : null;
 
 		return json;
+	}
+
+	/**
+	 * Checks if the node has an attribute that is {@link treeModel.Attribute#isEqual equal} to given attribute or
+	 * attribute with given key if string was passed.
+	 *
+	 * @param {treeModel.Attribute|String} attrOrKey Attribute or key of attribute to check.
+	 * @returns {Boolean} `true` if given attribute or attribute with given key is set on node, `false` otherwise.
+	 */
+	hasAttribute( attrOrKey ) {
+		return this._attrs.has( attrOrKey );
+	}
+
+	/**
+	 * Gets a node's attribute by its key.
+	 *
+	 * @param {String} key Key of attribute to look for.
+	 * @returns {treeModel.Attribute|null} Attribute with given key or null if the attribute has not been set on node.
+	 */
+	getAttribute( key ) {
+		return this._attrs.get( key );
+	}
+
+	/**
+	 * Gets a node's attribute value by attribute key.
+	 *
+	 * @param {String} key Key of attribute to look for.
+	 * @returns {*} Value of attribute with given key or null if the attribute has not been set on node.
+	 */
+	getAttributeValue( key ) {
+		return this._attrs.getValue( key );
+	}
+
+	/**
+	 * Returns iterator that iterates over this nodes attributes.
+	 *
+	 * @returns {Iterable.<treeModel.Attribute>}
+	 */
+	getAttributes() {
+		return this._attrs[ Symbol.iterator ]();
 	}
 }

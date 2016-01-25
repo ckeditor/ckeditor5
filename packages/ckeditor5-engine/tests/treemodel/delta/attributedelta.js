@@ -52,31 +52,31 @@ describe( 'Batch', () => {
 			it( 'should create the attribute on element', () => {
 				batch.setAttr( 'b', 2, node );
 				expect( getOperationsCount() ).to.equal( 1 );
-				expect( node.attrs.getValue( 'b' ) ).to.equal( 2 );
+				expect( node.getAttributeValue( 'b' ) ).to.equal( 2 );
 			} );
 
 			it( 'should change the attribute of element', () => {
 				batch.setAttr( 'a', 2, node );
 				expect( getOperationsCount() ).to.equal( 1 );
-				expect( node.attrs.getValue( 'a' ) ).to.equal( 2 );
+				expect( node.getAttributeValue( 'a' ) ).to.equal( 2 );
 			} );
 
 			it( 'should create the attribute on text node', () => {
 				batch.setAttr( 'b', 2, char );
 				expect( getOperationsCount() ).to.equal( 1 );
-				expect( root.getChild( 1 ).attrs.getValue( 'b' ) ).to.equal( 2 );
+				expect( root.getChild( 1 ).getAttributeValue( 'b' ) ).to.equal( 2 );
 			} );
 
 			it( 'should change the attribute of text node', () => {
 				batch.setAttr( 'a', 2, char );
 				expect( getOperationsCount() ).to.equal( 1 );
-				expect( root.getChild( 1 ).attrs.getValue( 'a' ) ).to.equal( 2 );
+				expect( root.getChild( 1 ).getAttributeValue( 'a' ) ).to.equal( 2 );
 			} );
 
 			it( 'should do nothing if the attribute value is the same', () => {
 				batch.setAttr( 'a', 1, node );
 				expect( getOperationsCount() ).to.equal( 0 );
-				expect( node.attrs.getValue( 'a' ) ).to.equal( 1 );
+				expect( node.getAttributeValue( 'a' ) ).to.equal( 1 );
 			} );
 
 			it( 'should be chainable', () => {
@@ -89,13 +89,13 @@ describe( 'Batch', () => {
 			it( 'should remove the attribute from element', () => {
 				batch.removeAttr( 'a', node );
 				expect( getOperationsCount() ).to.equal( 1 );
-				expect( node.attrs.getValue( 'a' ) ).to.be.null;
+				expect( node.getAttributeValue( 'a' ) ).to.be.null;
 			} );
 
 			it( 'should remove the attribute from character', () => {
 				batch.removeAttr( 'a', char );
 				expect( getOperationsCount() ).to.equal( 1 );
-				expect( root.getChild( 1 ).attrs.getValue( 'a' ) ).to.be.null;
+				expect( root.getChild( 1 ).getAttributeValue( 'a' ) ).to.be.null;
 			} );
 
 			it( 'should do nothing if the attribute is not set', () => {
@@ -147,7 +147,7 @@ describe( 'Batch', () => {
 			// default: 111---111222---1112------
 			const range = Range.createFromElement( root );
 
-			return Array.from( range.getAllNodes() ).map( node => node.attrs.getValue( 'a' ) || '-' ).join( '' );
+			return Array.from( range.getAllNodes() ).map( node => node.getAttributeValue( 'a' ) || '-' ).join( '' );
 		}
 
 		describe( 'setAttr', () => {

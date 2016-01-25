@@ -18,8 +18,8 @@ describe( 'Text', () => {
 			let text = new Text( 'bar', attrs );
 
 			expect( text ).to.have.property( 'text' ).that.equals( 'bar' );
-			expect( text ).to.have.property( 'attrs' ).that.is.instanceof( AttributeList );
-			expect( Array.from( text.attrs ) ).to.deep.equal( attrs );
+			expect( text ).to.have.property( '_attrs' ).that.is.instanceof( AttributeList );
+			expect( Array.from( text._attrs ) ).to.deep.equal( attrs );
 		} );
 
 		it( 'should create empty text object', () => {

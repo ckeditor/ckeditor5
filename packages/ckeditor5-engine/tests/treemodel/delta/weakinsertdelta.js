@@ -27,7 +27,7 @@ describe( 'Batch', () => {
 			new Attribute( 'foo', 'bar' )
 		];
 
-		doc.selection.attrs.setTo( attrs );
+		doc.selection.setAttributesTo( attrs );
 
 		chain = batch.weakInsert( new Position( root, [ 2 ] ), 'xyz' );
 	} );
@@ -41,9 +41,9 @@ describe( 'Batch', () => {
 		} );
 
 		it( 'should set inserted nodes attributes to same as current selection attributes', () => {
-			expect( Array.from( root.getChild( 2 ).attrs ) ).to.deep.equal( attrs );
-			expect( Array.from( root.getChild( 3 ).attrs ) ).to.deep.equal( attrs );
-			expect( Array.from( root.getChild( 4 ).attrs ) ).to.deep.equal( attrs );
+			expect( Array.from( root.getChild( 2 )._attrs ) ).to.deep.equal( attrs );
+			expect( Array.from( root.getChild( 3 )._attrs ) ).to.deep.equal( attrs );
+			expect( Array.from( root.getChild( 4 )._attrs ) ).to.deep.equal( attrs );
 		} );
 
 		it( 'should be chainable', () => {

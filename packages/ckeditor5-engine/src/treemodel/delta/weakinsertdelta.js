@@ -42,7 +42,7 @@ register( 'weakInsert', function( position, nodes ) {
 	nodes = new NodeList( nodes );
 
 	for ( let node of nodes._nodes ) {
-		node.attrs.setTo( this.doc.selection.attrs );
+		node._attrs.setTo( this.doc.selection._attrs );
 	}
 
 	const operation = new InsertOperation( position, nodes, this.doc.version );

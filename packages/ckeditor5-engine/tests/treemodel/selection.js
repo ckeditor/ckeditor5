@@ -48,8 +48,8 @@ describe( 'Selection', () => {
 		expect( ranges.length ).to.equal( 0 );
 		expect( selection.anchor ).to.be.null;
 		expect( selection.focus ).to.be.null;
-		expect( selection.attrs ).to.be.instanceof( AttributeList );
-		expect( selection.attrs.size ).to.equal( 0 );
+		expect( selection._attrs ).to.be.instanceof( AttributeList );
+		expect( selection._attrs.size ).to.equal( 0 );
 	} );
 
 	it( 'should be collapsed if it has no ranges or all ranges are collapsed', () => {
@@ -408,6 +408,115 @@ describe( 'Selection', () => {
 				expect( range.start.path ).to.deep.equal( [ 0, 2 ] );
 				expect( range.end.path ).to.deep.equal( [ 2, 2 ] );
 				expect( spy.called ).to.be.false;
+			} );
+		} );
+	} );
+
+	describe( 'attributes interface', () => {
+		let attr = new Attribute( 'foo', 'bar' );
+		let attr2 = new Attribute( 'foo', 'foo' );
+
+		describe( 'setAttribute', () => {
+			it( 'should set given attribute on the selection', () => {
+				selection.setAttribute( attr );
+
+				expect( selection.getAttribute( 'foo' ) ).to.equal( attr );
+			} );
+		} );
+
+		describe( 'hasAttribute', () => {
+			it( 'should return true if element contains given attribute', () => {
+				selection.setAttribute( attr );
+
+				expect( selection.hasAttribute( attr ) ).to.be.true;
+			} );
+
+			it( 'should return false if element does not contain given attribute', () => {
+				expect( selection.hasAttribute( attr2 ) ).to.be.false;
+			} );
+
+			it( 'should return true if element contains attribute with given key', () => {
+				selection.setAttribute( attr );
+
+				expect( selection.hasAttribute( 'foo' ) ).to.be.true;
+			} );
+
+			it( 'should return false if element does not contain attribute with given key', () => {
+				expect( selection.hasAttribute( 'bar' ) ).to.be.false;
+			} );
+		} );
+
+		describe( 'getAttribute', () => {
+			it( 'should return undefined if element does not contain given attribute', () => {
+				expect( selection.getAttribute( 'bar' ) ).to.be.undefined;
+			} );
+		} );
+
+		describe( 'getAttributeValue', () => {
+			it( 'should return attribute value for given key if element contains given attribute', () => {
+				selection.setAttribute( attr );
+
+				expect( selection.getAttributeValue( 'foo' ) ).to.equal( 'bar' );
+			} );
+
+			it( 'should return null if element does not contain given attribute', () => {
+				expect( selection.getAttributeValue( 'bar' ) ).to.be.null;
+			} );
+		} );
+
+		describe( 'getAttributes', () => {
+			it( 'should return an iterator that iterates over all attributes set on the text fragment', () => {
+				selection.setAttribute( attr );
+
+				let it = selection.getAttributes();
+				let attrs = [];
+
+				let step = it.next();
+
+				while ( !step.done ) {
+					attrs.push( step.value );
+					step = it.next();
+				}
+
+				expect( attrs ).to.deep.equal( [ attr ] );
+			} );
+		} );
+
+		describe( 'setAttributesTo', () => {
+			it( 'should remove all attributes set on element and set the given ones', () => {
+				selection.setAttribute( attr2 );
+				selection.setAttributesTo( [ attr ] );
+
+				expect( selection.getAttributeValue( 'foo' ) ).to.equal( 'bar' );
+				expect( selection.getAttributeValue( 'abc' ) ).to.be.null;
+			} );
+		} );
+
+		describe( 'removeAttribute', () => {
+			it( 'should remove attribute set on the text fragment and return true', () => {
+				selection.setAttribute( attr );
+				let result = selection.removeAttribute( 'foo' );
+
+				expect( selection.getAttributeValue( 'foo' ) ).to.be.null;
+				expect( result ).to.be.true;
+			} );
+
+			it( 'should return false if text fragment does not have given attribute', () => {
+				let result = selection.removeAttribute( 'abc' );
+
+				expect( result ).to.be.false;
+			} );
+		} );
+
+		describe( 'clearAttributes', () => {
+			it( 'should remove all attributes from the element', () => {
+				selection.setAttribute( attr );
+				selection.setAttribute( new Attribute( 'abc', 'xyz' ) );
+
+				selection.clearAttributes();
+
+				expect( selection.getAttributeValue( 'foo' ) ).to.be.null;
+				expect( selection.getAttributeValue( 'abc' ) ).to.be.null;
 			} );
 		} );
 	} );

@@ -96,9 +96,9 @@ export default class NodeList {
 	 *
 	 *		let nodeList = new NodeList( new Text( 'foo', [ new Attribute( 'bar', 'bom' ) ] ) );
 	 *		nodeList.length; // 3
-	 *		nodeList.get( 0 ).attrs.get( 'bar' ); // 'bom'
-	 *		nodeList.get( 1 ).attrs.get( 'bar' ); // 'bom'
-	 *		nodeList.get( 2 ).attrs.get( 'bar' ); // 'bom'
+	 *		nodeList.get( 0 ).getAttribute( 'bar' ); // 'bom'
+	 *		nodeList.get( 1 ).getAttribute( 'bar' ); // 'bom'
+	 *		nodeList.get( 2 ).getAttribute( 'bar' ); // 'bom'
 	 *
 	 *		let nodeListA = new NodeList( 'foo' );
 	 *		let nodeListB = new NodeList( nodeListA );
@@ -145,9 +145,9 @@ export default class NodeList {
 				let length = 1;
 
 				if ( node instanceof CharacterProxy ) {
-					node = new NodeListText( node.character, node.attrs );
+					node = new NodeListText( node.character, node._attrs );
 				} else if ( node instanceof Text ) {
-					node = new NodeListText( node.text, node.attrs );
+					node = new NodeListText( node.text, node._attrs );
 				} else if ( typeof node == 'string' ) {
 					node = new NodeListText( node, [] );
 				}
@@ -157,7 +157,7 @@ export default class NodeList {
 
 					let prev = this._nodes[ this._nodes.length - 1 ];
 
-					if ( prev instanceof NodeListText && prev.attrs.isEqual( node.attrs ) ) {
+					if ( prev instanceof NodeListText && prev._attrs.isEqual( node._attrs ) ) {
 						// If previously added text has same attributes, merge this text with it.
 						prev.text += node.text;
 						mergedWithPrev = true;
@@ -339,7 +339,7 @@ export default class NodeList {
 		node.text = textBefore;
 
 		// Create a new text node with the "removed" part and splice it after original node.
-		let newText = new NodeListText( textAfter, node.attrs );
+		let newText = new NodeListText( textAfter, node._attrs );
 		newText.parent = node.parent;
 		this._nodes.splice.call( this._nodes, realIndex + 1, 0, newText );
 
@@ -374,7 +374,7 @@ export default class NodeList {
 		let nodeAfter = this._nodes[ realIndexAfter ];
 
 		// Check if both of those nodes are text objects with same attributes.
-		if ( nodeBefore instanceof Text && nodeAfter instanceof Text && nodeBefore.attrs.isEqual( nodeAfter.attrs ) ) {
+		if ( nodeBefore instanceof NodeListText && nodeAfter instanceof NodeListText && nodeBefore._attrs.isEqual( nodeAfter._attrs ) ) {
 			// Append text of text node after index to the before one.
 			nodeBefore.text += nodeAfter.text;
 

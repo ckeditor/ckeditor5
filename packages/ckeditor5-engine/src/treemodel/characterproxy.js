@@ -35,7 +35,7 @@ export default class CharacterProxy extends Node {
 	 * @constructor
 	 */
 	constructor( nodeListText, index ) {
-		super( nodeListText.attrs );
+		super( nodeListText._attrs );
 
 		/**
 		 * Reference to a text object in a node list containing this character.

@@ -7,7 +7,6 @@
 
 import Operation from './operation.js';
 import Range from '../range.js';
-import TextFragment from '../textfragment.js';
 import CKEditorError from '../../ckeditorerror.js';
 
 /**
@@ -99,13 +98,7 @@ export default class AttributeOperation extends Operation {
 		// Remove or change.
 		if ( oldAttr !== null ) {
 			for ( let node of this.range.getAllNodes( true ) ) {
-				if ( node instanceof TextFragment ) {
-					// Because instance of TextFragment is kind-of a proxy, not a real, original item,
-					// we have to assign `node` a real item that is added to the node list.
-					node = node.first._nodeListText;
-				}
-
-				if ( !node.attrs.has( oldAttr ) ) {
+				if ( !node.hasAttribute( oldAttr ) ) {
 					/**
 					 * The attribute which should be removed does not exists for the given node.
 					 *
@@ -120,7 +113,7 @@ export default class AttributeOperation extends Operation {
 				}
 
 				if ( newAttr === null ) {
-					node.attrs.delete( oldAttr.key );
+					node.removeAttribute( oldAttr.key );
 				}
 			}
 		}
@@ -128,13 +121,7 @@ export default class AttributeOperation extends Operation {
 		// Insert or change.
 		if ( newAttr !== null ) {
 			for ( let node of this.range.getAllNodes( true ) ) {
-				if ( node instanceof TextFragment ) {
-					// Because instance of TextFragment is kind-of a proxy, not a real, original item,
-					// we have to assign `node` a real item that is added to the node list.
-					node = node.first._nodeListText;
-				}
-
-				if ( oldAttr === null && node.attrs.has( newAttr.key ) ) {
+				if ( oldAttr === null && node.hasAttribute( newAttr.key ) ) {
 					/**
 					 * The attribute with given key already exists for the given node.
 					 *
@@ -148,7 +135,7 @@ export default class AttributeOperation extends Operation {
 					);
 				}
 
-				node.attrs.set( newAttr );
+				node.setAttribute( newAttr );
 			}
 		}
 

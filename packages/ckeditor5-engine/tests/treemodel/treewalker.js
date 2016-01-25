@@ -78,9 +78,10 @@ describe( 'range iterator', () => {
 
 		if ( item.value.type == 'TEXT' || item.value.type == 'CHARACTER' ) {
 			let text = item.value.item.text || item.value.item.character;
+			let attrs = item.value.item._attrs || item.value.item.first._attrs;
 
 			expect( text ).to.equal( expected.text );
-			expect( Array.from( item.value.item.attrs ) ).to.deep.equal( expected.attrs );
+			expect( Array.from( attrs ) ).to.deep.equal( expected.attrs );
 		} else {
 			expect( item.value ).to.deep.equal( expected );
 		}

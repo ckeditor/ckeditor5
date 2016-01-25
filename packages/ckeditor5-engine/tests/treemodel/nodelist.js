@@ -45,11 +45,11 @@ describe( 'NodeList', () => {
 
 			expect( nodeList.length ).to.equal( 3 );
 			expect( nodeList.get( 0 ).character ).to.equal( 'f' );
-			expect( nodeList.get( 0 ).attrs.getValue( attr.key ) ).to.equal( attr.value );
+			expect( nodeList.get( 0 ).getAttributeValue( attr.key ) ).to.equal( attr.value );
 			expect( nodeList.get( 1 ).character ).to.equal( 'o' );
-			expect( nodeList.get( 1 ).attrs.getValue( attr.key ) ).to.equal( attr.value );
+			expect( nodeList.get( 1 ).getAttributeValue( attr.key ) ).to.equal( attr.value );
 			expect( nodeList.get( 2 ).character ).to.equal( 'o' );
-			expect( nodeList.get( 2 ).attrs.getValue( attr.key ) ).to.equal( attr.value );
+			expect( nodeList.get( 2 ).getAttributeValue( attr.key ) ).to.equal( attr.value );
 		} );
 
 		it( 'should change array of characters into a set of nodes', () => {
@@ -78,12 +78,12 @@ describe( 'NodeList', () => {
 			expect( nodeList.get( 4 ).character ).to.equal( 'a' );
 			expect( nodeList.get( 5 ).character ).to.equal( 'r' );
 
-			expect( nodeList.get( 0 ).attrs.size ).to.equal( 0 );
-			expect( nodeList.get( 1 ).attrs.size ).to.equal( 0 );
-			expect( nodeList.get( 2 ).attrs.size ).to.equal( 0 );
-			expect( nodeList.get( 3 ).attrs.size ).to.equal( 0 );
-			expect( nodeList.get( 4 ).attrs.size ).to.equal( 0 );
-			expect( nodeList.get( 5 ).attrs.size ).to.equal( 0 );
+			expect( nodeList.get( 0 )._attrs.size ).to.equal( 0 );
+			expect( nodeList.get( 1 )._attrs.size ).to.equal( 0 );
+			expect( nodeList.get( 2 )._attrs.size ).to.equal( 0 );
+			expect( nodeList.get( 3 )._attrs.size ).to.equal( 0 );
+			expect( nodeList.get( 4 )._attrs.size ).to.equal( 0 );
+			expect( nodeList.get( 5 )._attrs.size ).to.equal( 0 );
 		} );
 
 		it( 'should merge strings and text objects if possible', () => {
@@ -244,10 +244,10 @@ describe( 'NodeList', () => {
 		it( 'should merge two text object if they have same attributes', () => {
 			let attr = new Attribute( 'foo', true );
 			let nodeList = new NodeList( [ 'ab', new Text( 'cd', [ attr ] ) ] );
-			nodeList._nodes[ 1 ].attrs.delete( attr.key );
 
 			expect( nodeList._nodes.length ).to.equal( 2 );
 
+			nodeList._nodes[ 1 ]._attrs.delete( attr.key );
 			nodeList._mergeNodeAt( 2 );
 
 			expect( nodeList._nodes.length ).to.equal( 1 );
@@ -256,6 +256,7 @@ describe( 'NodeList', () => {
 
 		it( 'should do nothing if text objects has different attributes', () => {
 			let nodeList = new NodeList( [ new Text( 'ab', [ new Attribute( 'foo', true ) ] ), 'cd' ] );
+
 			nodeList._mergeNodeAt( 2 );
 
 			expect( nodeList._nodes.length ).to.equal( 2 );

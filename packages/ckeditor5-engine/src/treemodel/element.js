@@ -117,4 +117,43 @@ export default class Element extends Node {
 
 		return nodeList;
 	}
+
+	/**
+	 * Sets attribute on the element. If attribute with the same key already is set, it overwrites its values.
+	 *
+	 * @chainable
+	 * @param {treeModel.Attribute} attr Attribute to set or overwrite with.
+	 * @returns {treeModel.Element} This element.
+	 */
+	setAttribute( attr ) {
+		this._attrs.set( attr );
+
+		return this;
+	}
+
+	/**
+	 * Removes all attributes from the element and sets given attributes.
+	 *
+	 * @param {Iterable.<treeModel.Attribute>} attrs Iterable object containing {@link treeModel.Attribute attributes} to be set.
+	 */
+	setAttributesTo( attrs ) {
+		this._attrs.setTo( attrs );
+	}
+
+	/**
+	 * Removes an attribute with given key from the element.
+	 *
+	 * @param {String} key Key of attribute to remove.
+	 * @returns {Boolean} `true` if the attribute was set on the element, `false` otherwise.
+	 */
+	removeAttribute( key ) {
+		return this._attrs.delete( key );
+	}
+
+	/**
+	 * Removes all attributes from the element.
+	 */
+	clearAttributes() {
+		this._attrs.clear();
+	}
 }
