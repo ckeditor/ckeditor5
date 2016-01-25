@@ -56,3 +56,14 @@ export default class TreeView {
 }
 
 objectUtils.extend( TreeView.prototype, EmitterMixin );
+
+/**
+ * Enum representing type of the change.
+ * Possible values:
+ *
+ *	* `CHILDREN` - for child list changes,
+ *	* `ATTRIBUTES` - for element attributes changes,
+ *	* `TEXT` - for text nodes changes.
+ *
+ * @typedef {String} treeView.ChangeType
+ */

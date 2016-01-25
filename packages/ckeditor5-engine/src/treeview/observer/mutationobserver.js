@@ -171,45 +171,45 @@ export default class MutationObserver extends Observer {
 
 		this.treeView.render();
 	}
-
-	/**
-	 * Fired when mutation occurred. If tree view is not changed on this event, DOM will be reverter to the state before
-	 * mutation, so all changes which should be applied, should be handled on this event.
-	 *
-	 * @event mutations
-	 * @memberOf treeView.TreeView
-	 *
-	 * @param {Array.<treeView.TreeView.MutatatedText|treeView.TreeView.MutatatedChildren>} viewMutations
-	 * Array of mutations.
-	 * For mutated texts it will be {@link treeView.TreeView.MutatatedText} and for mutated elements it will be
-	 * {@link treeView.TreeView.MutatatedElement}. You can recognize the type based on the `type` property.
-	 */
-
-	/**
-	 * Mutation item for text.
-	 *
-	 * @see treeView.TreeView#mutations
-	 * @see treeView.TreeView.MutatatedChildren
-	 *
-	 * @typedef {Object} treeView.TreeView.MutatatedText
-	 *
-	 * @property {String} type For text mutations it is always 'text'.
-	 * @property {treeView.Text} node Mutated text node.
-	 * @property {String} oldText Old text.
-	 * @property {String} newText New text.
-	 */
-
-	/**
-	 * Mutation item for child nodes.
-	 *
-	 * @see treeView.TreeView#mutations
-	 * @see treeView.TreeView.MutatatedText
-	 *
-	 * @typedef {Object} treeView.TreeView.MutatatedChildren
-	 *
-	 * @property {String} type For child nodes mutations it is always 'children'.
-	 * @property {treeView.Element} node Parent of the mutated children.
-	 * @property {Array.<treeView.Node>} oldChildren Old child nodes.
-	 * @property {Array.<treeView.Node>} newChildren New child nodes.
-	 */
 }
+
+/**
+ * Fired when mutation occurred. If tree view is not changed on this event, DOM will be reverter to the state before
+ * mutation, so all changes which should be applied, should be handled on this event.
+ *
+ * @event mutations
+ * @memberOf treeView.TreeView
+ *
+ * @param {Array.<treeView.MutatatedText|treeView.MutatatedChildren>} viewMutations
+ * Array of mutations.
+ * For mutated texts it will be {@link treeView.MutatatedText} and for mutated elements it will be
+ * {@link treeView.MutatatedElement}. You can recognize the type based on the `type` property.
+ */
+
+/**
+ * Mutation item for text.
+ *
+ * @see treeView.TreeView#mutations
+ * @see treeView.MutatatedChildren
+ *
+ * @typedef {Object} treeView.MutatatedText
+ *
+ * @property {String} type For text mutations it is always 'text'.
+ * @property {treeView.Text} node Mutated text node.
+ * @property {String} oldText Old text.
+ * @property {String} newText New text.
+ */
+
+/**
+ * Mutation item for child nodes.
+ *
+ * @see treeView.TreeView#mutations
+ * @see treeView.MutatatedText
+ *
+ * @typedef {Object} treeView.MutatatedChildren
+ *
+ * @property {String} type For child nodes mutations it is always 'children'.
+ * @property {treeView.Element} node Parent of the mutated children.
+ * @property {Array.<treeView.Node>} oldChildren Old child nodes.
+ * @property {Array.<treeView.Node>} newChildren New child nodes.
+ */
