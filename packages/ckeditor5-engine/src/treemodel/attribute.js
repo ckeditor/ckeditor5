@@ -17,7 +17,7 @@ export default class Attribute {
 	 * Creates a new instance of the `Attribute` class. Once attribute is created it is immutable.
 	 *
 	 * @param {String} key Attribute key.
-	 * @param {Mixed} value Attribute value.
+	 * @param {*} value Attribute value.
 	 * @constructor
 	 */
 	constructor( key, value ) {
@@ -33,7 +33,7 @@ export default class Attribute {
 		 * Attribute value. Note that value may be any type, including objects.
 		 *
 		 * @readonly
-		 * @property {Mixed} value
+		 * @property {*} value
 		 */
 		this.value = value;
 
