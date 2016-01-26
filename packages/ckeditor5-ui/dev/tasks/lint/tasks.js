@@ -17,7 +17,7 @@ module.exports = ( config ) => {
 		/**
 		 * Returns stream containing jshint and jscs reporters.
 		 *
-		 * @returns { Stream }
+		 * @returns {Stream}
 		 */
 		lint() {
 			return gulp.src( src )
@@ -27,7 +27,7 @@ module.exports = ( config ) => {
 		/**
 		 * This method is executed on pre-commit hook, linting only files staged for current commit.
 		 *
-		 * @returns { Stream }
+		 * @returns {Stream}
 		 */
 		lintStaged() {
 			return guppy.stream( 'pre-commit' )
@@ -77,7 +77,8 @@ module.exports = ( config ) => {
 
 	/**
 	 * Returns stream with all linting plugins combined.
-	 * @returns { Stream }
+	 *
+	 * @returns {Stream}
 	 */
 	function lint() {
 		const stream = jshint();
