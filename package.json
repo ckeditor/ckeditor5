@@ -53,6 +53,10 @@
     "sinon": "^1.17.0",
     "through2": "^2.0.0"
   },
+  "engines": {
+    "node": ">=5.0.0",
+    "npm": ">=3.0.0"
+  },
   "author": "CKSource (http://cksource.com/)",
   "license": "See LICENSE.md",
   "homepage": "http://ckeditor.com",
