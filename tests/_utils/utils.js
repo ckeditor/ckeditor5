@@ -3,9 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* jshint node: false, browser: true */
-/* globals before, afterEach, sinon */
-
 'use strict';
 
 /**

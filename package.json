@@ -46,7 +46,7 @@
     "minimist": "^1.2.0",
     "mocha": "^2.2.5",
     "mockery": "^1.4.0",
-    "multipipe": "^0.2.1",
+    "multipipe": "^0.3.0",
     "ncp": "^2.0.0",
     "replace": "^0.3.0",
     "shelljs": "^0",

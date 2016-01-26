@@ -2,15 +2,17 @@
 	"browser": true,
 	"esnext": true,
 
+	"expr": true,
 	"immed": true,
 	"latedef": "nofunc",
+	"loopfunc": true,
 	"noarg": true,
 	"nonbsp": true,
+	"strict": "global",
 	"undef": true,
 	"unused": true,
-	"expr": true,
 	"varstmt": true,
-	"strict": "global",
+
 	"globals": {
 		"after": false,
 		"afterEach": false,

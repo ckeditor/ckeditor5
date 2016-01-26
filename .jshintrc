@@ -4,10 +4,11 @@
 
 	"immed": true,
 	"latedef": "nofunc",
+	"loopfunc": true,
 	"noarg": true,
 	"nonbsp": true,
 	"undef": true,
 	"unused": true,
-	"varstmt": true,
-	"strict": "global"
+	"strict": "global",
+	"varstmt": true
 }
