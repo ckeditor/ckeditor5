@@ -32,7 +32,7 @@ describe( 'Renderer', () => {
 			viewNode.appendChildren( new ViewText( 'foo' ) );
 
 			renderer.markedTexts.clear();
-			renderer.markedAttrs.clear();
+			renderer.markedAttributes.clear();
 			renderer.markedChildren.clear();
 		} );
 
@@ -41,7 +41,7 @@ describe( 'Renderer', () => {
 
 			renderer.markToSync( 'ATTRIBUTES', viewNode );
 
-			expect( renderer.markedAttrs.has( viewNode ) ).to.be.true;
+			expect( renderer.markedAttributes.has( viewNode ) ).to.be.true;
 		} );
 
 		it( 'should mark children which need update', () => {
@@ -103,7 +103,7 @@ describe( 'Renderer', () => {
 			converter.bindElements( domNode, viewNode );
 
 			renderer.markedTexts.clear();
-			renderer.markedAttrs.clear();
+			renderer.markedAttributes.clear();
 			renderer.markedChildren.clear();
 		} );
 
@@ -115,7 +115,7 @@ describe( 'Renderer', () => {
 
 			expect( domNode.getAttribute( 'class' ) ).to.equal( 'foo' );
 
-			expect( renderer.markedAttrs.size ).to.equal( 0 );
+			expect( renderer.markedAttributes.size ).to.equal( 0 );
 		} );
 
 		it( 'should remove attributes', () => {
@@ -129,7 +129,7 @@ describe( 'Renderer', () => {
 			expect( domNode.getAttribute( 'class' ) ).to.equal( 'foo' );
 			expect( domNode.getAttribute( 'id' ) ).to.be.not.ok;
 
-			expect( renderer.markedAttrs.size ).to.equal( 0 );
+			expect( renderer.markedAttributes.size ).to.equal( 0 );
 		} );
 
 		it( 'should add children', () => {
