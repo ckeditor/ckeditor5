@@ -15,7 +15,7 @@ import MutationObserver from '/ckeditor5/core/treeview/observer/mutationobserver
 const treeView = new TreeView( document.getElementById( 'editor' ) );
 const mutationObserver = new MutationObserver();
 
-mutationObserver.on( 'mutations', ( evt, mutations ) => console.log( mutations ) );
+treeView.on( 'mutations', ( evt, mutations ) => console.log( mutations ) );
 
 treeView.addObserver( mutationObserver );
 

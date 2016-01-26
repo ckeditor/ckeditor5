@@ -13,12 +13,11 @@ import Text from '/ckeditor5/core/treeview/text.js';
 import MutationObserver from '/ckeditor5/core/treeview/observer/mutationobserver.js';
 
 const treeView = new TreeView( document.getElementById( 'editor' ) );
-const mutationObserver = new MutationObserver();
 
-mutationObserver.on( 'mutations', ( evt, mutations ) => console.log( mutations ) );
-mutationObserver.on( 'mutations', handleTyping );
+treeView.on( 'mutations', ( evt, mutations ) => console.log( mutations ) );
+treeView.on( 'mutations', handleTyping );
 
-treeView.addObserver( mutationObserver );
+treeView.addObserver( new MutationObserver() );
 
 treeView.viewRoot.insertChildren( 0, [ new Element( 'p', [], [ new Text( 'foo' ) ] ) ] );
 
