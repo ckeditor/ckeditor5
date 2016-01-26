@@ -21,7 +21,7 @@ export default class Element extends Node {
 	 * Attributes can be passes in various formats:
 	 *
 	 *		new Element( 'div', { 'class': 'editor', 'contentEditable': 'true' } ); // object
-	 *		new Element( 'div', [ [ 'class': 'editor' ], [ 'contentEditable': 'true' ] ] ); // map-like iterator
+	 *		new Element( 'div', [ [ 'class', 'editor' ], [ 'contentEditable', 'true' ] ] ); // map-like iterator
 	 *		new Element( 'div', mapOfAttributes ); // map
 	 *
 	 * @param {String} name Node name.
