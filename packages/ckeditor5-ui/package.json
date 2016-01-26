@@ -17,6 +17,10 @@
     "jshint-reporter-jscs": "^0.1.0",
     "lodash-cli": "^3"
   },
+  "engines": {
+    "node": ">=5.0.0",
+    "npm": ">=3.0.0"
+  },
   "author": "CKSource (http://cksource.com/)",
   "license": "See LICENSE.md",
   "homepage": "https://github.com/ckeditor/ckeditor5-core",
