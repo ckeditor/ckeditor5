@@ -55,6 +55,15 @@ export default class TextFragment {
 	}
 
 	/**
+	 * A common parent of all character nodes contained in {@link treeModel.TextFragment}.
+	 *
+	 * @property {treeModel.Element} commonParent
+	 */
+	get commonParent() {
+		return this.first.parent;
+	}
+
+	/**
 	 * Gets a character at given index and creates a {@link treeModel.CharacterProxy} out of it.
 	 *
 	 * @param {Number} index Character index.

@@ -8,6 +8,7 @@
 import Operation from './operation.js';
 import Range from '../range.js';
 import CKEditorError from '../../ckeditorerror.js';
+import TextFragment from '../textfragment.js';
 
 /**
  * Operation to change nodes' attribute. Using this class you can add, remove or change value of the attribute.
@@ -91,56 +92,47 @@ export default class AttributeOperation extends Operation {
 			);
 		}
 
-		// Split text nodes if needed, then get the nodes in the range and convert it to node list. It will be easier to operate.
-		this.range.start.parent._children._splitNodeAt( this.range.start.offset );
-		this.range.end.parent._children._splitNodeAt( this.range.end.offset );
+		for ( let item of this.range.getAllNodes( true ) ) {
+			if ( oldAttr !== null && !item.hasAttribute( oldAttr ) ) {
+				/**
+				 * The attribute which should be removed does not exists for the given node.
+				 *
+				 * @error operation-attribute-no-attr-to-remove
+				 * @param {treeModel.Node} node
+				 * @param {treeModel.Attribute} attr
+				 */
+				throw new CKEditorError(
+					'operation-attribute-no-attr-to-remove: The attribute which should be removed does not exists for given node.',
+					{ node: item, attr: oldAttr }
+				);
+			}
 
-		// Remove or change.
-		if ( oldAttr !== null ) {
-			for ( let node of this.range.getAllNodes( true ) ) {
-				if ( !node.hasAttribute( oldAttr ) ) {
-					/**
-					 * The attribute which should be removed does not exists for the given node.
-					 *
-					 * @error operation-attribute-no-attr-to-remove
-					 * @param {treeModel.Node} node
-					 * @param {treeModel.Attribute} attr
-					 */
-					throw new CKEditorError(
-						'operation-attribute-no-attr-to-remove: The attribute which should be removed does not exists for given node.',
-						{ node: node, attr: oldAttr }
-					);
-				}
+			if ( oldAttr === null && newAttr !== null && item.hasAttribute( newAttr.key ) ) {
+				/**
+				 * The attribute with given key already exists for the given node.
+				 *
+				 * @error operation-attribute-attr-exists
+				 * @param {treeModel.Node} node
+				 * @param {treeModel.Attribute} attr
+				 */
+				throw new CKEditorError(
+					'operation-attribute-attr-exists: The attribute with given key already exists.',
+					{ node: item, attr: newAttr }
+				);
+			}
 
-				if ( newAttr === null ) {
-					node.removeAttribute( oldAttr.key );
+			if ( item instanceof TextFragment ) {
+				let key = newAttr ? newAttr.key : oldAttr.key;
+				item.commonParent._children.setAttribute( item.first.getIndex(), item.text.length, key, newAttr );
+			}
+			else {
+				if ( newAttr ) {
+					item.setAttribute( newAttr );
+				} else {
+					item.removeAttribute( oldAttr.key );
 				}
 			}
 		}
-
-		// Insert or change.
-		if ( newAttr !== null ) {
-			for ( let node of this.range.getAllNodes( true ) ) {
-				if ( oldAttr === null && node.hasAttribute( newAttr.key ) ) {
-					/**
-					 * The attribute with given key already exists for the given node.
-					 *
-					 * @error operation-attribute-attr-exists
-					 * @param {treeModel.Node} node
-					 * @param {treeModel.Attribute} attr
-					 */
-					throw new CKEditorError(
-						'operation-attribute-attr-exists: The attribute with given key already exists.',
-						{ node: node, attr: newAttr }
-					);
-				}
-
-				node.setAttribute( newAttr );
-			}
-		}
-
-		this.range.start.parent._children._mergeNodeAt( this.range.start.offset );
-		this.range.end.parent._children._mergeNodeAt( this.range.end.offset );
 
 		return { range: this.range, oldAttr: oldAttr, newAttr: newAttr };
 	}

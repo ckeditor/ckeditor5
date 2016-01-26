@@ -11,6 +11,7 @@ import NodeList from '/ckeditor5/core/treemodel/nodelist.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
 import Text from '/ckeditor5/core/treemodel/text.js';
 import Attribute from '/ckeditor5/core/treemodel/attribute.js';
+import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
 describe( 'NodeList', () => {
 	describe( 'constructor', () => {
@@ -217,6 +218,63 @@ describe( 'NodeList', () => {
 			}
 
 			expect( i ).to.equal( 3 );
+		} );
+	} );
+
+	describe( 'setAttribute', () => {
+		it( 'should change attribute for multiple items in node list but not for their children', () => {
+			let attr = new Attribute( 'a', true );
+			let p = new Element( 'p', [], 'x' );
+			let div = new Element( 'div' );
+
+			let nodeList = new NodeList( [ p, 'foo', div, 'bar' ] );
+
+			nodeList.setAttribute( 0, 6, attr.key, attr );
+
+			// Attribute set.
+			expect( p.hasAttribute( 'a' ) ).to.be.true;
+			expect( nodeList.get( 1 ).hasAttribute( 'a' ) ).to.be.true;
+			expect( nodeList.get( 2 ).hasAttribute( 'a' ) ).to.be.true;
+			expect( nodeList.get( 3 ).hasAttribute( 'a' ) ).to.be.true;
+			expect( div.hasAttribute( 'a' ) ).to.be.true;
+			expect( nodeList.get( 5 ).hasAttribute( 'a' ) ).to.be.true;
+			expect( nodeList.get( 6 ).hasAttribute( 'a' ) ).to.be.false;
+			expect( nodeList.get( 7 ).hasAttribute( 'a' ) ).to.be.false;
+
+			// Attribute not set for children.
+			expect( p.getChild( 0 ).hasAttribute( 'a' ) ).to.be.false;
+		} );
+
+		it( 'should remove attribute if no new attribute has been passed', () => {
+			let attr = new Attribute( 'a', true );
+			let p = new Element( 'p', [ attr ] );
+			let text = new Text( 'foobar', [ attr ] );
+			let nodeList = new NodeList( [ p, text ] );
+
+			nodeList.setAttribute( 0, 4, attr.key, null );
+
+			expect( p.hasAttribute( 'a' ) ).to.be.false;
+			expect( nodeList.get( 1 ).hasAttribute( 'a' ) ).to.be.false;
+			expect( nodeList.get( 2 ).hasAttribute( 'a' ) ).to.be.false;
+			expect( nodeList.get( 3 ).hasAttribute( 'a' ) ).to.be.false;
+			expect( nodeList.get( 4 ).hasAttribute( 'a' ) ).to.be.true;
+			expect( nodeList.get( 5 ).hasAttribute( 'a' ) ).to.be.true;
+
+			expect( nodeList._nodes.length ).to.equal( 3 );
+		} );
+
+		it( 'should throw if wrong index or number is passed', () => {
+			let attr = new Attribute( 'a', true );
+			let text = new Text( 'foo', [ attr ] );
+			let nodeList = new NodeList( text );
+
+			expect( () => {
+				nodeList.setAttribute( -1, 2, attr.key, null );
+			} ).to.throw( CKEditorError, /nodelist-setattribute-out-of-bounds/ );
+
+			expect( () => {
+				nodeList.setAttribute( 2, 2, attr.key, null );
+			} ).to.throw( CKEditorError, /nodelist-setattribute-out-of-bounds/ );
 		} );
 	} );
 

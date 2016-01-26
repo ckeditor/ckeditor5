@@ -9,6 +9,7 @@ import CharacterProxy from './characterproxy.js';
 import Text from './text.js';
 import utils from '../utils.js';
 import langUtils from '../lib/lodash/lang.js';
+import CKEditorError from '../ckeditorerror.js';
 
 /**
  * Value that is convertible to an item kept in {@link treeModel.NodeList} or an iterable collection of such items.
@@ -307,6 +308,57 @@ export default class NodeList {
 		this._mergeNodeAt( index );
 
 		return new NodeList( removed );
+	}
+
+	/**
+	 * Sets or removes given attribute on a range of nodes in the node list.
+	 *
+	 * @param {Number} index Position of the first node to change.
+	 * @param {Number} number Number of nodes to change.
+	 * @param {String} key Attribute key to change.
+	 * @param {treeModel.Attribute} [attribute] New attribute or null if attribute with given key should be removed.
+	 */
+	setAttribute( index, number, key, attribute ) {
+		if ( index < 0 || index + number > this.length ) {
+			/**
+			 * Trying to set attribute on non-existing node list items.
+			 *
+			 * @error nodelist-setattribute-out-of-bounds
+			 * @param root
+			 */
+			throw new CKEditorError( 'nodelist-setattribute-out-of-bounds: Trying to set attribute on non-existing node list items.' );
+		}
+
+		// "Range" of nodes to remove attributes may start in NodeListText or end in NodeListText. Some splitting may be needed.
+		this._splitNodeAt( index );
+		this._splitNodeAt( index + number );
+
+		let i = index;
+
+		while ( i < index + number ) {
+			let node = this._nodes[ this._indexMap[ i ] ];
+
+			if ( node instanceof NodeListText ) {
+				if ( attribute ) {
+					node._attrs.set( attribute );
+				} else {
+					node._attrs.delete( key );
+				}
+
+				this._mergeNodeAt( i );
+				i += node.text.length;
+			} else {
+				if ( attribute ) {
+					node.setAttribute( attribute );
+				} else {
+					node.removeAttribute( key );
+				}
+
+				i++;
+			}
+		}
+
+		this._mergeNodeAt( index + number );
 	}
 
 	/**
