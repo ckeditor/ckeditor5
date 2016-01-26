@@ -10,7 +10,7 @@ module.exports = function() {
 		lodash( done ) {
 			build( [
 				'modularize',
-				'modern',
+				// 'modern',
 				'exports=es',
 				'include=clone,extend,isPlainObject,isObject,isArray,last,isEqual',
 				'--development',

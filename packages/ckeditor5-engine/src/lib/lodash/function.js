@@ -1,5 +1,2 @@
-import restParam from './function/restParam';
-
-export default {
-  'restParam': restParam
-};
+export { default as rest } from './rest';
+export { default as default } from './function.default';

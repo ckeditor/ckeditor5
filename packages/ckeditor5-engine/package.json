@@ -15,7 +15,7 @@
     "guppy-pre-commit": "^0.3.0",
     "jshint": "^2.9.1",
     "jshint-reporter-jscs": "^0.1.0",
-    "lodash-cli": "^3"
+    "lodash-cli": "^4"
   },
   "engines": {
     "node": ">=5.0.0",
