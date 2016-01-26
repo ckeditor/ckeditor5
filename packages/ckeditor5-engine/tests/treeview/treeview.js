@@ -28,7 +28,7 @@ describe( 'TreeView', () => {
 			expect( treeView ).to.have.property( 'converter' ).that.is.instanceOf( Converter );
 			expect( treeView ).to.have.property( 'viewRoot' );
 
-			expect( treeView.converter.getCorespondingDom( treeView.viewRoot ) ).to.equal( domDiv );
+			expect( treeView.converter.getCorrespondingDom( treeView.viewRoot ) ).to.equal( domDiv );
 			expect( treeView.viewRoot.name ).to.equal( 'div' );
 			expect( treeView.viewRoot.getAttribute( 'id' ) ).to.equal( 'editor' );
 			expect( treeView.renderer.markedChildren.has( treeView.viewRoot ) ).to.be.true;

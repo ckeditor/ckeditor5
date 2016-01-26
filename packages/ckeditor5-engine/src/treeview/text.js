@@ -32,7 +32,7 @@ export default class Text extends Node {
 	}
 
 	/**
-	 * Get text data.
+	 * Gets text data.
 	 *
 	 * @returns {String} Text data.
 	 */

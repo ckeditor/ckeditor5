@@ -28,8 +28,8 @@ describe( 'converter', () => {
 
 			converter.bindElements( domElement, viewElement );
 
-			expect( converter.getCorespondingView( domElement ) ).to.equal( viewElement );
-			expect( converter.getCorespondingDom( viewElement ) ).to.equal( domElement );
+			expect( converter.getCorrespondingView( domElement ) ).to.equal( viewElement );
+			expect( converter.getCorrespondingDom( viewElement ) ).to.equal( domElement );
 		} );
 	} );
 
@@ -85,8 +85,8 @@ describe( 'converter', () => {
 			expect( viewP.getChild( 0 ).name ).to.equal( 'img' );
 			expect( viewP.getChild( 1 ).getText() ).to.equal( 'foo' );
 
-			expect( converter.getCorespondingDom( viewP ) ).to.not.equal( domP );
-			expect( converter.getCorespondingDom( viewP.getChild( 0 ) ) ).to.equal( domImg );
+			expect( converter.getCorrespondingDom( viewP ) ).to.not.equal( domP );
+			expect( converter.getCorrespondingDom( viewP.getChild( 0 ) ) ).to.equal( domImg );
 		} );
 
 		it( 'should create tree of view elements from DOM elements and bind elements', () => {
@@ -111,8 +111,8 @@ describe( 'converter', () => {
 			expect( viewP.getChild( 0 ).name ).to.equal( 'img' );
 			expect( viewP.getChild( 1 ).getText() ).to.equal( 'foo' );
 
-			expect( converter.getCorespondingDom( viewP ) ).to.equal( domP );
-			expect( converter.getCorespondingDom( viewP.getChild( 0 ) ) ).to.equal( domP.childNodes[ 0 ] );
+			expect( converter.getCorrespondingDom( viewP ) ).to.equal( domP );
+			expect( converter.getCorrespondingDom( viewP.getChild( 0 ) ) ).to.equal( domP.childNodes[ 0 ] );
 		} );
 
 		it( 'should create tree of view elements from DOM element without children', () => {
@@ -138,7 +138,7 @@ describe( 'converter', () => {
 			expect( getIteratorCount( viewP.getAttributeKeys() ) ).to.equal( 1 );
 
 			expect( viewP.getChildCount() ).to.equal( 0 );
-			expect( converter.getCorespondingDom( viewP ) ).to.not.equal( domP );
+			expect( converter.getCorrespondingDom( viewP ) ).to.not.equal( domP );
 		} );
 	} );
 
@@ -169,8 +169,8 @@ describe( 'converter', () => {
 			expect( domP.childNodes[ 0 ].tagName.toLowerCase() ).to.equal( 'img' );
 			expect( domP.childNodes[ 1 ].data ).to.equal( 'foo' );
 
-			expect( converter.getCorespondingView( domP ) ).not.to.equal( viewP );
-			expect( converter.getCorespondingView( domP.childNodes[ 0 ] ) ).to.equal( viewImg );
+			expect( converter.getCorrespondingView( domP ) ).not.to.equal( viewP );
+			expect( converter.getCorrespondingView( domP.childNodes[ 0 ] ) ).to.equal( viewImg );
 		} );
 
 		it( 'should create tree of DOM elements from view elements and bind elements', () => {
@@ -195,8 +195,8 @@ describe( 'converter', () => {
 			expect( domP.childNodes[ 0 ].tagName.toLowerCase() ).to.equal( 'img' );
 			expect( domP.childNodes[ 1 ].data ).to.equal( 'foo' );
 
-			expect( converter.getCorespondingView( domP ) ).to.equal( viewP );
-			expect( converter.getCorespondingView( domP.childNodes[ 0 ] ) ).to.equal( viewP.getChild( 0 ) );
+			expect( converter.getCorrespondingView( domP ) ).to.equal( viewP );
+			expect( converter.getCorrespondingView( domP.childNodes[ 0 ] ) ).to.equal( viewP.getChild( 0 ) );
 		} );
 
 		it( 'should create tree of DOM elements from view element without children', () => {
@@ -222,18 +222,18 @@ describe( 'converter', () => {
 			expect( domP.attributes.length ).to.equal( 1 );
 
 			expect( domP.childNodes.length ).to.equal( 0 );
-			expect( converter.getCorespondingView( domP ) ).not.to.equal( viewP );
+			expect( converter.getCorrespondingView( domP ) ).not.to.equal( viewP );
 		} );
 	} );
 
-	describe( 'getCorespondingView', () => {
+	describe( 'getCorrespondingView', () => {
 		it( 'should return coresponding view element if element is passed', () => {
 			const domElement = document.createElement( 'p' );
 			const viewElement = new ViewElement( 'p' );
 
 			converter.bindElements( domElement, viewElement );
 
-			expect( converter.getCorespondingView( domElement ) ).to.equal( viewElement );
+			expect( converter.getCorrespondingView( domElement ) ).to.equal( viewElement );
 		} );
 
 		it( 'should return coresponding view text if text is passed', () => {
@@ -247,22 +247,22 @@ describe( 'converter', () => {
 
 			converter.bindElements( domP, viewP );
 
-			expect( converter.getCorespondingView( domText ) ).to.equal( viewText );
+			expect( converter.getCorrespondingView( domText ) ).to.equal( viewText );
 		} );
 	} );
 
-	describe( 'getCorespondingViewElement', () => {
+	describe( 'getCorrespondingViewElement', () => {
 		it( 'should return coresponding view element', () => {
 			const domElement = document.createElement( 'p' );
 			const viewElement = new ViewElement( 'p' );
 
 			converter.bindElements( domElement, viewElement );
 
-			expect( converter.getCorespondingViewElement( domElement ) ).to.equal( viewElement );
+			expect( converter.getCorrespondingViewElement( domElement ) ).to.equal( viewElement );
 		} );
 	} );
 
-	describe( 'getCorespondingViewText', () => {
+	describe( 'getCorrespondingViewText', () => {
 		it( 'should return coresponding view text based on sibling', () => {
 			const domImg = document.createElement( 'img' );
 			const domText = document.createTextNode( 'foo' );
@@ -278,7 +278,7 @@ describe( 'converter', () => {
 			const viewP = converter.domToView( domP );
 			const viewText = viewP.getChild( 1 );
 
-			expect( converter.getCorespondingViewText( domText ) ).to.equal( viewText );
+			expect( converter.getCorrespondingViewText( domText ) ).to.equal( viewText );
 		} );
 
 		it( 'should return coresponding view text based on parent', () => {
@@ -292,7 +292,7 @@ describe( 'converter', () => {
 
 			converter.bindElements( domP, viewP );
 
-			expect( converter.getCorespondingViewText( domText ) ).to.equal( viewText );
+			expect( converter.getCorrespondingViewText( domText ) ).to.equal( viewText );
 		} );
 
 		it( 'should return null if sibling is not binded', () => {
@@ -307,7 +307,7 @@ describe( 'converter', () => {
 
 			converter.bindElements( domP, viewP );
 
-			expect( converter.getCorespondingViewText( domText ) ).to.be.null;
+			expect( converter.getCorrespondingViewText( domText ) ).to.be.null;
 		} );
 
 		it( 'should return null if sibling is not element', () => {
@@ -322,7 +322,7 @@ describe( 'converter', () => {
 
 			converter.bindElements( domP, viewP );
 
-			expect( converter.getCorespondingViewText( domTextBar ) ).to.be.null;
+			expect( converter.getCorrespondingViewText( domTextBar ) ).to.be.null;
 		} );
 
 		it( 'should return null if parent is not binded', () => {
@@ -331,18 +331,18 @@ describe( 'converter', () => {
 
 			domP.appendChild( domText );
 
-			expect( converter.getCorespondingViewText( domText ) ).to.be.null;
+			expect( converter.getCorrespondingViewText( domText ) ).to.be.null;
 		} );
 	} );
 
-	describe( 'getCorespondingDom', () => {
+	describe( 'getCorrespondingDom', () => {
 		it( 'should return coresponding DOM element if element was passed', () => {
 			const domElement = document.createElement( 'p' );
 			const viewElement = new ViewElement( 'p' );
 
 			converter.bindElements( domElement, viewElement );
 
-			expect( converter.getCorespondingDom( viewElement ) ).to.equal( domElement );
+			expect( converter.getCorrespondingDom( viewElement ) ).to.equal( domElement );
 		} );
 
 		it( 'should return coresponding DOM text if text was passed', () => {
@@ -356,22 +356,22 @@ describe( 'converter', () => {
 
 			converter.bindElements( domP, viewP );
 
-			expect( converter.getCorespondingDom( viewText ) ).to.equal( domText );
+			expect( converter.getCorrespondingDom( viewText ) ).to.equal( domText );
 		} );
 	} );
 
-	describe( 'getCorespondingDomElement', () => {
+	describe( 'getCorrespondingDomElement', () => {
 		it( 'should return coresponding DOM element', () => {
 			const domElement = document.createElement( 'p' );
 			const viewElement = new ViewElement( 'p' );
 
 			converter.bindElements( domElement, viewElement );
 
-			expect( converter.getCorespondingDomElement( viewElement ) ).to.equal( domElement );
+			expect( converter.getCorrespondingDomElement( viewElement ) ).to.equal( domElement );
 		} );
 	} );
 
-	describe( 'getCorespondingDomText', () => {
+	describe( 'getCorrespondingDomText', () => {
 		it( 'should return coresponding DOM text based on sibling', () => {
 			const domImg = document.createElement( 'img' );
 			const domText = document.createTextNode( 'foo' );
@@ -387,7 +387,7 @@ describe( 'converter', () => {
 			const viewP = converter.domToView( domP );
 			const viewText = viewP.getChild( 1 );
 
-			expect( converter.getCorespondingDomText( viewText ) ).to.equal( domText );
+			expect( converter.getCorrespondingDomText( viewText ) ).to.equal( domText );
 		} );
 
 		it( 'should return coresponding DOM text based on parent', () => {
@@ -401,7 +401,7 @@ describe( 'converter', () => {
 
 			converter.bindElements( domP, viewP );
 
-			expect( converter.getCorespondingDomText( viewText ) ).to.equal( domText );
+			expect( converter.getCorrespondingDomText( viewText ) ).to.equal( domText );
 		} );
 
 		it( 'should return null if sibling is not binded', () => {
@@ -417,7 +417,7 @@ describe( 'converter', () => {
 
 			converter.bindElements( domP, viewP );
 
-			expect( converter.getCorespondingDomText( viewText ) ).to.be.null;
+			expect( converter.getCorrespondingDomText( viewText ) ).to.be.null;
 		} );
 
 		it( 'should return null if parent is not binded', () => {
@@ -429,7 +429,7 @@ describe( 'converter', () => {
 			const viewP = converter.domToView( domP );
 			const viewText = viewP.getChild( 0 );
 
-			expect( converter.getCorespondingDomText( viewText ) ).to.be.null;
+			expect( converter.getCorrespondingDomText( viewText ) ).to.be.null;
 		} );
 	} );
 } );

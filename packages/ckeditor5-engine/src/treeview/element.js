@@ -107,7 +107,7 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Get child nodes iterator.
+	 * Gets child nodes iterator.
 	 *
 	 * @returns {Iterable.<treeView.Node>} Child nodes iterator.
 	 */
@@ -125,7 +125,7 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Get attribute by key.
+	 * Gets attribute by key.
 	 *
 	 * @param {String} key Attribute key.
 	 * @returns {String} Attribute value.

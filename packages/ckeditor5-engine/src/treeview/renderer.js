@@ -19,12 +19,12 @@ export default class Renderer {
 
 	markToSync( type, node ) {
 		if ( type === 'TEXT' ) {
-			if ( this.converter.getCorespondingDom( node.parent ) ) {
+			if ( this.converter.getCorrespondingDom( node.parent ) ) {
 				this.markedTexts.add( node );
 			}
 		} else {
 			// If the node has no DOM element it is not rendered yet, its children/attributes do not need to be marked to be sync.
-			if ( !this.converter.getCorespondingDom( node ) ) {
+			if ( !this.converter.getCorrespondingDom( node ) ) {
 				return;
 			}
 
@@ -47,7 +47,7 @@ export default class Renderer {
 		const converter = this.converter;
 
 		for ( let node of this.markedTexts ) {
-			if ( !this.markedChildren.has( node.parent ) && converter.getCorespondingDom( node.parent ) ) {
+			if ( !this.markedChildren.has( node.parent ) && converter.getCorrespondingDom( node.parent ) ) {
 				updateText( node );
 			}
 		}
@@ -65,7 +65,7 @@ export default class Renderer {
 		this.markedChildren.clear();
 
 		function updateText( viewText ) {
-			const domText = converter.getCorespondingDom( viewText );
+			const domText = converter.getCorrespondingDom( viewText );
 
 			if ( domText.data != viewText.getText() ) {
 				domText.data = viewText.getText();
@@ -73,7 +73,7 @@ export default class Renderer {
 		}
 
 		function updateAttrs( viewElement ) {
-			const domElement = converter.getCorespondingDom( viewElement );
+			const domElement = converter.getCorrespondingDom( viewElement );
 			const domAttrKeys = Array.from( domElement.attributes ).map( attr => attr.name );
 			const viewAttrKeys = viewElement.getAttributeKeys();
 
@@ -91,7 +91,7 @@ export default class Renderer {
 		}
 
 		function updateChildren( viewElement ) {
-			const domElement = converter.getCorespondingDom( viewElement );
+			const domElement = converter.getCorrespondingDom( viewElement );
 			const domChildren = domElement.childNodes;
 			const viewChildren = Array.from( viewElement.getChildren() );
 			const domDocument = domElement.ownerDocument;

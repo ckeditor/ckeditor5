@@ -91,7 +91,7 @@ export default class Node {
 	}
 
 	/**
-	 * Get {@link treeView.TreeView} reference. If the node has {@link treeView.TreeView}, assign by
+	 * Gets {@link treeView.TreeView} reference. If the node has {@link treeView.TreeView}, assign by
 	 * {@link treeView.Node#setTreeView} it will be returned. Otherwise {@link treeView.TreeView} of the parents node
 	 * will be returned. If node has no parent, `null` will be returned.
 	 *
