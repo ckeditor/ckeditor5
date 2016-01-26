@@ -1,23 +1,18 @@
-import clone from './lang/clone';
-import eq from './lang/eq';
-import isArguments from './lang/isArguments';
-import isArray from './lang/isArray';
-import isEqual from './lang/isEqual';
-import isFunction from './lang/isFunction';
-import isNative from './lang/isNative';
-import isObject from './lang/isObject';
-import isPlainObject from './lang/isPlainObject';
-import isTypedArray from './lang/isTypedArray';
-
-export default {
-  'clone': clone,
-  'eq': eq,
-  'isArguments': isArguments,
-  'isArray': isArray,
-  'isEqual': isEqual,
-  'isFunction': isFunction,
-  'isNative': isNative,
-  'isObject': isObject,
-  'isPlainObject': isPlainObject,
-  'isTypedArray': isTypedArray
-};
+export { default as clone } from './clone';
+export { default as eq } from './eq';
+export { default as isArguments } from './isArguments';
+export { default as isArray } from './isArray';
+export { default as isArrayLike } from './isArrayLike';
+export { default as isArrayLikeObject } from './isArrayLikeObject';
+export { default as isEqual } from './isEqual';
+export { default as isFunction } from './isFunction';
+export { default as isLength } from './isLength';
+export { default as isNative } from './isNative';
+export { default as isObject } from './isObject';
+export { default as isObjectLike } from './isObjectLike';
+export { default as isPlainObject } from './isPlainObject';
+export { default as isString } from './isString';
+export { default as isTypedArray } from './isTypedArray';
+export { default as toInteger } from './toInteger';
+export { default as toNumber } from './toNumber';
+export { default as default } from './lang.default';
