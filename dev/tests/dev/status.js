@@ -8,22 +8,22 @@
 'use strict';
 
 const sinon = require( 'sinon' );
-const tools = require( '../tasks/utils/tools' );
-const git = require( '../tasks/utils/git' );
+const tools = require( '../../tasks/dev/utils/tools' );
+const git = require( '../../tasks/dev/utils/git' );
 const path = require( 'path' );
 
-describe( 'dev-boilerplate-update', () => {
-	const task = require( '../tasks/utils/dev-boilerplate-update' );
+describe( 'dev-status', () => {
+	const statusTask = require( '../../tasks/dev/tasks/status' );
 	const ckeditor5Path = 'path/to/ckeditor5';
 	const workspaceRoot = '..';
 	const workspaceAbsolutePath = path.join( ckeditor5Path, workspaceRoot );
 	const emptyFn = () => {};
 
-	it( 'should update boilerplate in dev repositories', () => {
+	it( 'should show status of dev repositories', () => {
 		const dirs = [ 'ckeditor5-core', 'ckeditor5-devtest' ];
 		const getDependenciesSpy = sinon.spy( tools, 'getCKEditorDependencies' );
 		const getDirectoriesStub = sinon.stub( tools, 'getCKE5Directories' ).returns( dirs );
-		const updateStub = sinon.stub( git, 'updateBoilerplate' );
+		const statusStub = sinon.stub( git, 'getStatus' );
 		const json = {
 			dependencies: {
 				'ckeditor5-core': 'ckeditor/ckeditor5-core',
@@ -32,40 +32,40 @@ describe( 'dev-boilerplate-update', () => {
 			}
 		};
 
-		task( ckeditor5Path, json, workspaceRoot, emptyFn, emptyFn );
+		statusTask( ckeditor5Path, json, workspaceRoot, emptyFn, emptyFn );
 
 		getDependenciesSpy.restore();
 		getDirectoriesStub.restore();
-		updateStub.restore();
+		statusStub.restore();
 
-		sinon.assert.calledTwice( updateStub );
-		sinon.assert.calledWithExactly( updateStub.firstCall, path.join( workspaceAbsolutePath, dirs[ 0 ] ) );
-		sinon.assert.calledWithExactly( updateStub.secondCall, path.join( workspaceAbsolutePath, dirs[ 1 ] ) );
+		sinon.assert.calledTwice( statusStub );
+		sinon.assert.calledWithExactly( statusStub.firstCall, path.join( workspaceAbsolutePath, dirs[ 0 ] ) );
+		sinon.assert.calledWithExactly( statusStub.secondCall, path.join( workspaceAbsolutePath, dirs[ 1 ] ) );
 	} );
 
-	it( 'should not update boilerplate when no dependencies are found', () => {
+	it( 'should not get status when no dependencies are found', () => {
 		const getDependenciesSpy = sinon.spy( tools, 'getCKEditorDependencies' );
 		const getDirectoriesStub = sinon.stub( tools, 'getCKE5Directories' );
-		const updateStub = sinon.stub( git, 'updateBoilerplate' );
+		const statusStub = sinon.stub( git, 'getStatus' );
 		const json = {
 			dependencies: {
 				'other-plugin': '1.2.3'
 			}
 		};
 
-		task( ckeditor5Path, json, workspaceRoot, emptyFn, emptyFn );
+		statusTask( ckeditor5Path, json, workspaceRoot, emptyFn, emptyFn );
 
 		getDependenciesSpy.restore();
 		getDirectoriesStub.restore();
-		updateStub.restore();
+		statusStub.restore();
 
-		sinon.assert.notCalled( updateStub );
+		sinon.assert.notCalled( statusStub );
 	} );
 
-	it( 'should not update boilerplate when no plugins in dev mode', () => {
+	it( 'should not get status when no plugins in dev mode', () => {
 		const getDependenciesSpy = sinon.spy( tools, 'getCKEditorDependencies' );
 		const getDirectoriesStub = sinon.stub( tools, 'getCKE5Directories' ).returns( [] );
-		const updateStub = sinon.stub( git, 'updateBoilerplate' );
+		const statusStub = sinon.stub( git, 'getStatus' );
 		const json = {
 			dependencies: {
 				'ckeditor5-devtest': 'ckeditor/ckeditor5-devtest#new-branch',
@@ -73,21 +73,21 @@ describe( 'dev-boilerplate-update', () => {
 			}
 		};
 
-		task( ckeditor5Path, json, workspaceRoot, emptyFn, emptyFn );
+		statusTask( ckeditor5Path, json, workspaceRoot, emptyFn, emptyFn );
 
 		getDependenciesSpy.restore();
 		getDirectoriesStub.restore();
-		updateStub.restore();
+		statusStub.restore();
 
-		sinon.assert.notCalled( updateStub );
+		sinon.assert.notCalled( statusStub );
 	} );
 
-	it( 'should write error message when updating boilerplate is unsuccessful', () => {
+	it( 'should write error message when getStatus is unsuccessful', () => {
 		const dirs = [ 'ckeditor5-core' ];
 		const getDependenciesSpy = sinon.spy( tools, 'getCKEditorDependencies' );
 		const getDirectoriesStub = sinon.stub( tools, 'getCKE5Directories' ).returns( dirs );
 		const error = new Error( 'Error message.' );
-		const updateStub = sinon.stub( git, 'updateBoilerplate' ).throws( error );
+		const statusStub = sinon.stub( git, 'getStatus' ).throws( error );
 		const json = {
 			dependencies: {
 				'ckeditor5-core': 'ckeditor/ckeditor5-core',
@@ -97,13 +97,13 @@ describe( 'dev-boilerplate-update', () => {
 		};
 		const writeErrorSpy = sinon.spy();
 
-		task( ckeditor5Path, json, workspaceRoot, emptyFn, writeErrorSpy );
+		statusTask( ckeditor5Path, json, workspaceRoot, emptyFn, writeErrorSpy );
 
 		getDependenciesSpy.restore();
 		getDirectoriesStub.restore();
-		updateStub.restore();
+		statusStub.restore();
 
-		sinon.assert.calledOnce( updateStub );
+		sinon.assert.calledOnce( statusStub );
 		sinon.assert.calledOnce( writeErrorSpy );
 		sinon.assert.calledWithExactly( writeErrorSpy, error );
 	} );

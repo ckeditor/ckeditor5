@@ -1,2 +1,0 @@
-Software License Agreement
-==========================

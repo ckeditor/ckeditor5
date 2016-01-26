@@ -10,16 +10,18 @@
 const chai = require( 'chai' );
 const sinon = require( 'sinon' );
 const expect = chai.expect;
-const tools = require( '../tasks/utils/tools' );
+const tools = require( '../../tasks/dev/utils/tools' );
 const path = require( 'path' );
 const fs = require( 'fs' );
-let toRestore;
+let sandbox;
 
 describe( 'utils', () => {
-	beforeEach( () => toRestore = [] );
+	beforeEach( () => {
+		sandbox = sinon.sandbox.create();
+	} );
 
 	afterEach( () => {
-		toRestore.forEach( item => item.restore() );
+		sandbox.restore();
 	} );
 
 	describe( 'tools', () => {
@@ -28,8 +30,7 @@ describe( 'utils', () => {
 
 			it( 'should execute command', () => {
 				const sh = require( 'shelljs' );
-				const execStub = sinon.stub( sh, 'exec' ).returns( { code: 0 } );
-				toRestore.push( execStub );
+				const execStub = sandbox.stub( sh, 'exec' ).returns( { code: 0 } );
 
 				tools.shExec( 'command' );
 
@@ -38,8 +39,7 @@ describe( 'utils', () => {
 
 			it( 'should throw error on unsuccessful call', () => {
 				const sh = require( 'shelljs' );
-				const execStub = sinon.stub( sh, 'exec' ).returns( { code: 1 } );
-				toRestore.push( execStub );
+				const execStub = sandbox.stub( sh, 'exec' ).returns( { code: 1 } );
 
 				expect( () => {
 					tools.shExec( 'command' );
@@ -52,11 +52,10 @@ describe( 'utils', () => {
 			it( 'should be defined', () => expect( tools.linkDirectories ).to.be.a( 'function' ) );
 
 			it( 'should link directories', () => {
-				const isDirectoryStub = sinon.stub( tools, 'isDirectory' ).returns( false );
-				const symlinkStub = sinon.stub( fs, 'symlinkSync' );
+				const isDirectoryStub = sandbox.stub( tools, 'isDirectory' ).returns( false );
+				const symlinkStub = sandbox.stub( fs, 'symlinkSync' );
 				const source = '/source/dir';
 				const destination = '/destination/dir';
-				toRestore.push( symlinkStub, isDirectoryStub );
 
 				tools.linkDirectories( source, destination );
 
@@ -67,12 +66,11 @@ describe( 'utils', () => {
 			} );
 
 			it( 'should remove destination directory before linking', () => {
-				const shExecStub = sinon.stub( tools, 'shExec' );
-				const isDirectoryStub = sinon.stub( tools, 'isDirectory' ).returns( true );
-				const symlinkStub = sinon.stub( fs, 'symlinkSync' );
+				const shExecStub = sandbox.stub( tools, 'shExec' );
+				const isDirectoryStub = sandbox.stub( tools, 'isDirectory' ).returns( true );
+				const symlinkStub = sandbox.stub( fs, 'symlinkSync' );
 				const source = '/source/dir';
 				const destination = '/destination/dir';
-				toRestore.push( symlinkStub, shExecStub, isDirectoryStub );
 
 				tools.linkDirectories( source, destination );
 
@@ -119,10 +117,9 @@ describe( 'utils', () => {
 			it( 'should get directories in specified path', () => {
 				const fs = require( 'fs' );
 				const directories = [ 'dir1', 'dir2', 'dir3' ];
-				const readdirSyncStub = sinon.stub( fs, 'readdirSync', () => directories );
-				const isDirectoryStub = sinon.stub( tools, 'isDirectory' ).returns( true );
+				const readdirSyncStub = sandbox.stub( fs, 'readdirSync', () => directories );
+				const isDirectoryStub = sandbox.stub( tools, 'isDirectory' ).returns( true );
 				const dirPath = 'path';
-				toRestore.push( readdirSyncStub, isDirectoryStub );
 
 				tools.getDirectories( dirPath );
 
@@ -139,9 +136,8 @@ describe( 'utils', () => {
 
 			it( 'should return true if path points to directory', () => {
 				const fs = require( 'fs' );
-				const statSyncStub = sinon.stub( fs, 'statSync', () => ( { isDirectory: () => true } ) );
+				const statSyncStub = sandbox.stub( fs, 'statSync', () => ( { isDirectory: () => true } ) );
 				const path = 'path';
-				toRestore.push( statSyncStub );
 
 				const result = tools.isDirectory( path );
 
@@ -152,9 +148,8 @@ describe( 'utils', () => {
 
 			it( 'should return false if path does not point to directory', () => {
 				const fs = require( 'fs' );
-				const statSyncStub = sinon.stub( fs, 'statSync', () => ( { isDirectory: () => false } ) );
+				const statSyncStub = sandbox.stub( fs, 'statSync', () => ( { isDirectory: () => false } ) );
 				const path = 'path';
-				toRestore.push( statSyncStub );
 
 				const result = tools.isDirectory( path );
 
@@ -165,9 +160,8 @@ describe( 'utils', () => {
 
 			it( 'should return false if statSync method throws', () => {
 				const fs = require( 'fs' );
-				const statSyncStub = sinon.stub( fs, 'statSync' ).throws();
+				const statSyncStub = sandbox.stub( fs, 'statSync' ).throws();
 				const path = 'path';
-				toRestore.push( statSyncStub );
 
 				const result = tools.isDirectory( path );
 
@@ -182,9 +176,8 @@ describe( 'utils', () => {
 
 			it( 'should return true if path points to file', () => {
 				const fs = require( 'fs' );
-				const statSyncStub = sinon.stub( fs, 'statSync', () => ( { isFile: () => true } ) );
+				const statSyncStub = sandbox.stub( fs, 'statSync', () => ( { isFile: () => true } ) );
 				const path = 'path';
-				toRestore.push( statSyncStub );
 
 				const result = tools.isFile( path );
 
@@ -195,9 +188,8 @@ describe( 'utils', () => {
 
 			it( 'should return false if path does not point to directory', () => {
 				const fs = require( 'fs' );
-				const statSyncStub = sinon.stub( fs, 'statSync', () => ( { isFile: () => false } ) );
+				const statSyncStub = sandbox.stub( fs, 'statSync', () => ( { isFile: () => false } ) );
 				const path = 'path';
-				toRestore.push( statSyncStub );
 
 				const result = tools.isFile( path );
 
@@ -208,9 +200,8 @@ describe( 'utils', () => {
 
 			it( 'should return false if statSync method throws', () => {
 				const fs = require( 'fs' );
-				const statSyncStub = sinon.stub( fs, 'statSync' ).throws();
+				const statSyncStub = sandbox.stub( fs, 'statSync' ).throws();
 				const path = 'path';
-				toRestore.push( statSyncStub );
 
 				const result = tools.isFile( path );
 
@@ -226,8 +217,7 @@ describe( 'utils', () => {
 			it( 'should return only ckeditor5 directories', () => {
 				const workspacePath = '/workspace/path';
 				const sourceDirectories = [ 'tools', 'ckeditor5', 'ckeditor5-core', '.bin', 'ckeditor5-plugin-image' ];
-				const getDirectoriesStub = sinon.stub( tools, 'getDirectories', () => sourceDirectories );
-				toRestore.push( getDirectoriesStub );
+				sandbox.stub( tools, 'getDirectories', () => sourceDirectories );
 				const directories = tools.getCKE5Directories( workspacePath );
 
 				expect( directories.length ).equal( 2 );
@@ -241,10 +231,9 @@ describe( 'utils', () => {
 			it( 'should read, update and save JSON file', () => {
 				const path = 'path/to/file.json';
 				const fs = require( 'fs' );
-				const readFileStub = sinon.stub( fs, 'readFileSync', () => '{}' );
+				const readFileStub = sandbox.stub( fs, 'readFileSync', () => '{}' );
 				const modifiedJSON = { modified: true };
-				const writeFileStub = sinon.stub( fs, 'writeFileSync' );
-				toRestore.push( readFileStub, writeFileStub );
+				const writeFileStub = sandbox.stub( fs, 'writeFileSync' );
 
 				tools.updateJSONFile( path, () => {
 					return modifiedJSON;
@@ -254,18 +243,34 @@ describe( 'utils', () => {
 				expect( readFileStub.firstCall.args[ 0 ] ).to.equal( path );
 				expect( writeFileStub.calledOnce ).to.equal( true );
 				expect( writeFileStub.firstCall.args[ 0 ] ).to.equal( path );
-				expect( writeFileStub.firstCall.args[ 1 ] ).to.equal( JSON.stringify( modifiedJSON, null, 2 ) );
+				expect( writeFileStub.firstCall.args[ 1 ] ).to.equal( JSON.stringify( modifiedJSON, null, 2 ) + '\n' );
+			} );
+		} );
+
+		describe( 'sortObject', () => {
+			it( 'should be defined', () => expect( tools.sortObject ).to.be.a( 'function' ) );
+			it( 'should reinsert object properties in alphabetical order', () => {
+				let obj = {
+					c: '', d: '', a: '', z: ''
+				};
+
+				const sorted = {
+					a: '', c: '', d: '', z: ''
+				};
+
+				obj = tools.sortObject( obj );
+
+				expect( JSON.stringify( obj ) ).to.equal( JSON.stringify( sorted ) );
 			} );
 		} );
 
 		describe( 'readPackageName', () => {
 			const modulePath = 'path/to/module';
 			it( 'should read package name from NPM module', () => {
-				const isFileStub = sinon.stub( tools, 'isFile' ).returns( true );
+				sandbox.stub( tools, 'isFile' ).returns( true );
 				const fs = require( 'fs' );
 				const name = 'module-name';
-				const readFileStub = sinon.stub( fs, 'readFileSync' ).returns( JSON.stringify( { name: name } ) );
-				toRestore.push( isFileStub, readFileStub );
+				sandbox.stub( fs, 'readFileSync' ).returns( JSON.stringify( { name: name } ) );
 
 				const result = tools.readPackageName( modulePath );
 
@@ -273,8 +278,7 @@ describe( 'utils', () => {
 			} );
 
 			it( 'should return null if no package.json is found', () => {
-				const isFileStub = sinon.stub( tools, 'isFile' ).returns( false );
-				toRestore.push( isFileStub );
+				sandbox.stub( tools, 'isFile' ).returns( false );
 
 				const result = tools.readPackageName( modulePath );
 
@@ -282,10 +286,9 @@ describe( 'utils', () => {
 			} );
 
 			it( 'should return null if no name in package.json is provided', () => {
-				const isFileStub = sinon.stub( tools, 'isFile' ).returns( true );
+				sandbox.stub( tools, 'isFile' ).returns( true );
 				const fs = require( 'fs' );
-				const readFileStub = sinon.stub( fs, 'readFileSync' ).returns( JSON.stringify( { } ) );
-				toRestore.push( isFileStub, readFileStub );
+				sandbox.stub( fs, 'readFileSync' ).returns( JSON.stringify( { } ) );
 
 				const result = tools.readPackageName( modulePath );
 
@@ -296,9 +299,8 @@ describe( 'utils', () => {
 		describe( 'npmInstall', () => {
 			it( 'should be defined', () => expect( tools.npmInstall ).to.be.a( 'function' ) );
 			it( 'should execute npm install command', () => {
-				const shExecStub = sinon.stub( tools, 'shExec' );
+				const shExecStub = sandbox.stub( tools, 'shExec' );
 				const path = '/path/to/repository';
-				toRestore.push( shExecStub );
 
 				tools.npmInstall( path );
 
@@ -310,9 +312,8 @@ describe( 'utils', () => {
 		describe( 'npmUpdate', () => {
 			it( 'should be defined', () => expect( tools.npmUpdate ).to.be.a( 'function' ) );
 			it( 'should execute npm update command', () => {
-				const shExecStub = sinon.stub( tools, 'shExec' );
+				const shExecStub = sandbox.stub( tools, 'shExec' );
 				const path = '/path/to/repository';
-				toRestore.push( shExecStub );
 
 				tools.npmUpdate( path );
 
@@ -324,10 +325,9 @@ describe( 'utils', () => {
 		describe( 'npmUninstall', () => {
 			it( 'should be defined', () => expect( tools.npmUninstall ).to.be.a( 'function' ) );
 			it( 'should execute npm uninstall command', () => {
-				const shExecStub = sinon.stub( tools, 'shExec' );
+				const shExecStub = sandbox.stub( tools, 'shExec' );
 				const path = '/path/to/repository';
 				const moduleName = 'module-name';
-				toRestore.push( shExecStub );
 
 				tools.npmUninstall( path, moduleName );
 
@@ -336,34 +336,44 @@ describe( 'utils', () => {
 			} );
 		} );
 
-		describe( 'installGitHooks', () => {
-			it( 'should be defined', () => expect( tools.installGitHooks ).to.be.a( 'function' ) );
-			it( 'should execute grunt githooks command', () => {
-				const shExecStub = sinon.stub( tools, 'shExec' );
-				const path = '/path/to/repository';
-				toRestore.push( shExecStub );
-
-				tools.installGitHooks( path );
-
-				expect( shExecStub.calledOnce ).to.equal( true );
-				expect( shExecStub.firstCall.args[ 0 ] ).to.equal( `cd ${ path } && grunt githooks` );
-			} );
-		} );
-
-		describe( 'copyTemplateFiles', () => {
-			it( 'should be defined', () => expect( tools.copyTemplateFiles ).to.be.a( 'function' ) );
-			it( 'should copy template files', () => {
+		describe( 'copy', () => {
+			it( 'should be defined', () => expect( tools.copy ).to.be.a( 'function' ) );
+			it( 'should copy files', () => {
+				const fs = require( 'fs-extra' );
 				const path = require( 'path' );
-				const TEMPLATE_PATH = './dev/tasks/templates';
-				const templatesPath = path.resolve( TEMPLATE_PATH );
-				const shExecStub = sinon.stub( tools, 'shExec' );
-				const repositoryPath = '/path/to/repository';
-				toRestore.push( shExecStub );
+				let destination = 'destination';
+				let file = 'file.js';
+				sandbox.stub( fs, 'ensureDirSync' );
+				const copyStub = sandbox.stub( fs, 'copySync' );
+				sandbox.stub( tools, 'isFile', () => true );
+				sandbox.stub( tools, 'isDirectory', () => false );
 
-				tools.copyTemplateFiles( repositoryPath );
+				tools.copy( [ file ], destination );
 
-				expect( shExecStub.calledOnce ).to.equal( true );
-				expect( shExecStub.firstCall.args[ 0 ] ).to.equal( `cp ${ path.join( templatesPath, '*.md' ) } ${ repositoryPath }` );
+				file = path.resolve( file );
+				destination = path.join( path.resolve( destination ), path.basename( file ) );
+
+				sinon.assert.calledOnce( copyStub );
+				sinon.assert.calledWithExactly( copyStub.firstCall, file, destination );
+			} );
+
+			it( 'should copy directories', () => {
+				const fs = require( 'fs-extra' );
+				const path = require( 'path' );
+				let destination = 'destination';
+				let dir = 'source';
+				sandbox.stub( fs, 'ensureDirSync' );
+				const copyStub = sandbox.stub( fs, 'copySync' );
+				sandbox.stub( tools, 'isFile', () => false );
+				sandbox.stub( tools, 'isDirectory', () => true );
+
+				tools.copy( [ dir ], destination );
+
+				dir = path.resolve( dir );
+				destination = path.resolve( destination );
+
+				sinon.assert.calledOnce( copyStub );
+				sinon.assert.calledWithExactly( copyStub.firstCall, dir, destination );
 			} );
 		} );
 
@@ -376,10 +386,9 @@ describe( 'utils', () => {
 
 			it( 'should be defined', () => expect( tools.getGitUrlFromNpm ).to.be.a( 'function' ) );
 			it( 'should call npm view command', () => {
-				const shExecStub = sinon.stub( tools, 'shExec', () => {
+				const shExecStub = sandbox.stub( tools, 'shExec', () => {
 					return JSON.stringify( repository );
 				} );
-				toRestore.push( shExecStub );
 				const url = tools.getGitUrlFromNpm( moduleName );
 
 				expect( shExecStub.calledOnce ).to.equal( true );
@@ -388,27 +397,21 @@ describe( 'utils', () => {
 			} );
 
 			it( 'should return null if module is not found', () => {
-				const shExecStub = sinon.stub( tools, 'shExec' ).throws( new Error( 'npm ERR! code E404' ) );
-				toRestore.push( shExecStub );
-
+				sandbox.stub( tools, 'shExec' ).throws( new Error( 'npm ERR! code E404' ) );
 				const url = tools.getGitUrlFromNpm( moduleName );
 				expect( url ).to.equal( null );
 			} );
 
 			it( 'should return null if module has no repository information', () => {
-				const shExecStub = sinon.stub( tools, 'shExec' ).returns( JSON.stringify( {} ) );
-				toRestore.push( shExecStub );
-
+				sandbox.stub( tools, 'shExec' ).returns( JSON.stringify( {} ) );
 				const url = tools.getGitUrlFromNpm( moduleName );
 				expect( url ).to.equal( null );
 			} );
 
 			it( 'should throw on other errors', () => {
 				const error = new Error( 'Random error.' );
-				const shExecStub = sinon.stub( tools, 'shExec' ).throws( error );
-				const getUrlSpy = sinon.spy( tools, 'getGitUrlFromNpm' );
-				toRestore.push( shExecStub );
-				toRestore.push( getUrlSpy );
+				sandbox.stub( tools, 'shExec' ).throws( error );
+				const getUrlSpy = sandbox.spy( tools, 'getGitUrlFromNpm' );
 
 				try {
 					tools.getGitUrlFromNpm( moduleName );

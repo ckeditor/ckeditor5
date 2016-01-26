@@ -8,23 +8,6 @@
 const tools = require( './tools' );
 
 module.exports = {
-	/**
-	 * Holds boilerplate repository Git URL.
-	 *
-	 * @private
-	 * @readonly
-	 * @type {String}
-	 */
-	BOILERPLATE_REPOSITORY: 'git@github.com:ckeditor/ckeditor-boilerplate.git',
-
-	/**
-	 * Holds boilerplate branch used in CKEditor5 projects.
-	 *
-	 * @private
-	 * @readonly
-	 * @type {String}
-	 */
-	BOILERPLATE_BRANCH: 'ckeditor5',
 
 	/**
 	 * Parses GitHub URL. Extracts used server, repository and branch.
@@ -118,15 +101,7 @@ module.exports = {
 	 * @param {String} repositoryPath Absolute path where repository should be created.
 	 */
 	initializeRepository( repositoryPath ) {
-		const initializeCommands = [
-			`git init ${ repositoryPath }`,
-			`cd ${ repositoryPath }`,
-			`git remote add boilerplate ${ this.BOILERPLATE_REPOSITORY }`,
-			`git fetch boilerplate ${ this.BOILERPLATE_BRANCH }`,
-			`git merge boilerplate/${ this.BOILERPLATE_BRANCH }`
-		];
-
-		tools.shExec( initializeCommands.join( ' && ' ) );
+		tools.shExec( `git init ${ repositoryPath }` );
 	},
 
 	/**
@@ -137,27 +112,6 @@ module.exports = {
 	 */
 	getStatus( repositoryPath ) {
 		return tools.shExec( `cd ${ repositoryPath } && git status --porcelain -sb` );
-	},
-
-	/**
-	 * Updates boilerplate project in specified repository.
-	 * @param {String} repositoryPath Absolute path to repository.
-	 */
-	updateBoilerplate( repositoryPath ) {
-		const regexp = /boilerplate(\n|$)/;
-
-		// Try to add boilerplate remote if one is not already added.
-		if ( !regexp.test( tools.shExec( `cd ${ repositoryPath } && git remote` ) ) ) {
-			tools.shExec( `cd ${ repositoryPath } && git remote add boilerplate ${ this.BOILERPLATE_REPOSITORY }` );
-		}
-
-		const updateCommands = [
-			`cd ${ repositoryPath }`,
-			`git fetch boilerplate ${ this.BOILERPLATE_BRANCH }`,
-			`git merge boilerplate/${ this.BOILERPLATE_BRANCH }`
-		];
-
-		tools.shExec( updateCommands.join( ' && ' ) );
 	},
 
 	/**

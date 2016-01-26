@@ -8,10 +8,10 @@
 'use strict';
 
 const sinon = require( 'sinon' );
-const tools = require( '../tasks/utils/tools' );
+const tools = require( '../../tasks/dev/utils/tools' );
 
 describe( 'dev-init', () => {
-	const initTask = require( '../tasks/utils/dev-init' );
+	const initTask = require( '../../tasks/dev/tasks/init' );
 	const ckeditor5Path = 'path/to/ckeditor5';
 	const workspaceRoot = '..';
 	const emptyFn = () => {};
