@@ -135,6 +135,8 @@ export default class Node {
 	 * Fired when node changes. In case of {@link treeView.Text text nodes} in will be change of the text. In case of
 	 * {@link treeView.Element elements} in will be change of child nodes or attributes.
 	 *
+	 * Change event is bubbling, it is fired on the ancestors chain.
+	 *
 	 * @event change
 	 *
 	 * @param {treeView.ChangeType} Type of the change.
