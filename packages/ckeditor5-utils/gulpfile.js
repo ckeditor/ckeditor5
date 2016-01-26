@@ -1,4 +1,4 @@
-/* jshint node: true, esnext: true */
+/* jshint node: true */
 
 'use strict';
 
@@ -8,8 +8,10 @@ const config = {
 	ROOT_DIR: '.',
 	WORKSPACE_DIR: '..',
 
-	// Files ignored by jshit and jscs tasks. Files from .gitignore will be added automatically during tasks execution.
-	IGNORED_FILES: [ 'src/lib/**' ]
+	// Files ignored by jshint and jscs tasks. Files from .gitignore will be added automatically during tasks execution.
+	IGNORED_FILES: [
+		'src/lib/**'
+	]
 };
 
 require( './dev/tasks/lint/tasks' )( config );
