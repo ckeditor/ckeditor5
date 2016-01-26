@@ -17,8 +17,6 @@ export default class Element extends Node {
 	/**
 	 * Creates a tree data model element.
 	 *
-	 * This constructor should be used only internally by the document.
-	 *
 	 * @param {String} name Node name.
 	 * @param {Iterable} attrs Iterable collection of {@link treeModel.Attribute attributes}.
 	 * @param {treeModel.NodesSet} children List of nodes to be inserted
