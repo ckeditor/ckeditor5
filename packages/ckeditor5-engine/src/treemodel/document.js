@@ -215,7 +215,7 @@ export default class Document {
 	 * {@link #graveyard graveyard root}.
 	 * @param {treeModel.Position} [changeInfo.sourcePosition] Change source position. Exists for 'remove', 'reinsert' and 'move'.
 	 * Note that for 'reinsert' the source position will be in the {@link #graveyard graveyard root}.
-	 * @param {*} [changeInfo.key] Only for 'attr' type. Key of changed / inserted / removed attribute.
+	 * @param {String} [changeInfo.key] Only for 'attr' type. Key of changed / inserted / removed attribute.
 	 * @param {*} [changeInfo.oldValue] Only for 'attr' type. If the type is 'attr' and `oldValue`
 	 * is `undefined` it means that new attribute was inserted. Otherwise it contains changed or removed attribute value.
 	 * @param {*} [changeInfo.newValue] Only for 'attr' type. If the type is 'attr' and `newValue`
