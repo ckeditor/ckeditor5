@@ -6,6 +6,9 @@
 'use strict';
 
 import utils from '/ckeditor5/core/utils.js';
+import coreTestUtils from '/tests/core/_utils/utils.js';
+
+const getIteratorCount = coreTestUtils.getIteratorCount;
 
 describe( 'utils', () => {
 	describe( 'spy', () => {
@@ -113,6 +116,34 @@ describe( 'utils', () => {
 			let result = utils.compareArrays( a, b );
 
 			expect( result ).to.equal( 1 );
+		} );
+	} );
+
+	describe( 'toMap', () => {
+		it( 'should create map from object', () => {
+			const map = utils.toMap( { foo: 1, bar: 2 } );
+
+			expect( getIteratorCount( map ) ).to.equal( 2 );
+			expect( map.get( 'foo' ) ).to.equal( 1 );
+			expect( map.get( 'bar' ) ).to.equal( 2 );
+		} );
+
+		it( 'should create map from iterator', () => {
+			const map = utils.toMap( [ [ 'foo', 1 ], [ 'bar', 2 ] ] );
+
+			expect( getIteratorCount( map ) ).to.equal( 2 );
+			expect( map.get( 'foo' ) ).to.equal( 1 );
+			expect( map.get( 'bar' ) ).to.equal( 2 );
+		} );
+
+		it( 'should create map from another map', () => {
+			const data = new Map( [ [ 'foo', 1 ], [ 'bar', 2 ] ] );
+
+			const map = utils.toMap( data );
+
+			expect( getIteratorCount( map ) ).to.equal( 2 );
+			expect( map.get( 'foo' ) ).to.equal( 1 );
+			expect( map.get( 'bar' ) ).to.equal( 2 );
 		} );
 	} );
 
