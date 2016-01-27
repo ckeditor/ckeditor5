@@ -7,7 +7,6 @@
 
 import Node from './node.js';
 import NodeList from './nodelist.js';
-import langUtils from '../lib/lodash/lang.js';
 import utils from '../utils.js';
 
 /**
@@ -131,14 +130,10 @@ export default class Element extends Node {
 	/**
 	 * Removes all attributes from the element and sets given attributes.
 	 *
-	 * @param {Iterable.<*>} attrs Iterable object containing attributes to be set. See {@link treeModel.Node#getAttributes}.
+	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set. See {@link treeModel.Node#getAttributes}.
 	 */
 	setAttributesTo( attrs ) {
-		if ( langUtils.isPlainObject( attrs ) ) {
-			this._attrs = utils.objectToMap( attrs );
-		} else {
-			this._attrs = new Map( attrs );
-		}
+		this._attrs = utils.toMap( attrs );
 	}
 
 	/**

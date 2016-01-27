@@ -5,7 +5,6 @@
 
 'use strict';
 
-import langUtils from '../lib/lodash/lang.js';
 import utils from '../utils.js';
 
 /**
@@ -21,7 +20,7 @@ export default class Text {
 	 * Creates a text with attributes.
 	 *
 	 * @param {String} text Described text.
-	 * @param {Iterable} attrs Iterable collection of attributes.
+	 * @param {Iterable|Object} attrs Iterable collection of attributes.
 	 * @constructor
 	 */
 	constructor( text, attrs ) {
@@ -39,10 +38,6 @@ export default class Text {
 		 * @protected
 		 * @property {Map}
 		 */
-		if ( langUtils.isPlainObject( attrs ) ) {
-			this._attrs = utils.objectToMap( attrs );
-		} else {
-			this._attrs = new Map( attrs );
-		}
+		this._attrs = utils.toMap( attrs );
 	}
 }

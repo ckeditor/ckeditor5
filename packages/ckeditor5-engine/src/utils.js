@@ -5,6 +5,8 @@
 
 'use strict';
 
+import langUtils from './lib/lodash/lang.js';
+
 /**
  * An index at which arrays differ. If arrays are same at all indexes, it represents how arrays are related.
  * In this case, possible values are: 'SAME', 'PREFIX' or 'EXTENSION'.
@@ -92,7 +94,7 @@ const utils = {
 	},
 
 	/**
-	 * Transform object to map.
+	 * Transforms object to map.
 	 *
 	 *		const map = utils.objectToMap( { 'foo': 1, 'bar': 2 } );
 	 *		map.get( 'foo' ); // 1
@@ -108,6 +110,24 @@ const utils = {
 		}
 
 		return map;
+	},
+
+	/**
+	 * Transforms object or iterable to map. Iterable needs to be in the format acceptable by the `Map` constructor.
+	 *
+	 *		map = utils.toMap( { 'foo': 1, 'bar': 2 } );
+	 *		map = utils.toMap( [ [ 'foo', 1 ], [ 'bar', 2 ] ] );
+	 *		map = utils.toMap( anotherMap );
+	 *
+	 * @param {Object|Iterable} data Object or iterable to transform.
+	 * @returns {Map} Map created from data.
+	 */
+	toMap( data ) {
+		if ( langUtils.isPlainObject( data ) ) {
+			return utils.objectToMap( data );
+		} else {
+			return new Map( data );
+		}
 	},
 
 	/**

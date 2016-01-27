@@ -21,7 +21,7 @@ export default class Node {
 	 *
 	 * This is an abstract class, so this constructor should not be used directly.
 	 *
-	 * @param {Iterable} attrs Iterable collection of attributes.
+	 * @param {Iterable|Object} attrs Iterable collection of attributes.
 	 * @constructor
 	 */
 	constructor( attrs ) {
@@ -42,11 +42,7 @@ export default class Node {
 		 * @protected
 		 * @property {Map} _attrs
 		 */
-		if ( langUtils.isPlainObject( attrs ) ) {
-			this._attrs = utils.objectToMap( attrs );
-		} else {
-			this._attrs = new Map( attrs );
-		}
+		this._attrs = utils.toMap( attrs );
 	}
 
 	/**
