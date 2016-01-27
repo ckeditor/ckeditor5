@@ -6,9 +6,9 @@
 'use strict';
 
 import LiveRange from './liverange.js';
-import AttributeList from './attributelist.js';
 import EmitterMixin from '../emittermixin.js';
 import CKEditorError from '../ckeditorerror.js';
+import langUtils from '../lib/lodash/lang.js';
 import utils from '../utils.js';
 
 /**
@@ -28,9 +28,9 @@ export default class Selection {
 		 * List of attributes set on current selection.
 		 *
 		 * @protected
-		 * @property {treeModel.AttributeList}
+		 * @property {Map}
 		 */
-		this._attrs = new AttributeList();
+		this._attrs = new Map();
 
 		/**
 		 * Stores all ranges that are selected.
@@ -169,40 +169,29 @@ export default class Selection {
 	}
 
 	/**
-	 * Checks if the selection has an attribute that is {@link treeModel.Attribute#isEqual equal} to given attribute or
-	 * attribute with given key if string was passed.
+	 * Checks if the selection has an attribute for given key.
 	 *
-	 * @param {treeModel.Attribute|String} attrOrKey Attribute or key of attribute to check.
-	 * @returns {Boolean} `true` if given attribute or attribute with given key is set on selection, `false` otherwise.
+	 * @param {String} key Key of attribute to check.
+	 * @returns {Boolean} `true` if attribute with given key is set on selection, `false` otherwise.
 	 */
-	hasAttribute( attrOrKey ) {
-		return this._attrs.has( attrOrKey );
+	hasAttribute( key ) {
+		return this._attrs.has( key );
 	}
 
 	/**
-	 * Gets a selection's attribute by its key.
+	 * Gets an attribute value for given key or undefined it that attribute is not set on selection.
 	 *
 	 * @param {String} key Key of attribute to look for.
-	 * @returns {treeModel.Attribute|null} Attribute with given key or null if the attribute has not been set on selection.
+	 * @returns {*} Attribute value or null.
 	 */
 	getAttribute( key ) {
 		return this._attrs.get( key );
 	}
 
 	/**
-	 * Gets a selection's attribute value by attribute key.
+	 * Returns iterator that iterates over this selection attributes.
 	 *
-	 * @param {String} key Key of attribute to look for.
-	 * @returns {*} Value of attribute with given key or null if the attribute has not been set on selection.
-	 */
-	getAttributeValue( key ) {
-		return this._attrs.getValue( key );
-	}
-
-	/**
-	 * Returns iterator that iterates over this nodes attributes.
-	 *
-	 * @returns {Iterable.<treeModel.Attribute>}
+	 * @returns {Iterable.<*>}
 	 */
 	getAttributes() {
 		return this._attrs[ Symbol.iterator ]();
@@ -211,37 +200,38 @@ export default class Selection {
 	/**
 	 * Sets attribute on the selection. If attribute with the same key already is set, it overwrites its values.
 	 *
-	 * @chainable
-	 * @param {treeModel.Attribute} attr Attribute to set or overwrite with.
-	 * @returns {treeModel.Selection} This selection.
+	 * @param {String} key Key of attribute to set.
+	 * @param {*} value Attribute value.
 	 */
-	setAttribute( attr ) {
-		this._attrs.set( attr );
-
-		return this;
+	setAttribute( key, value ) {
+		this._attrs.set( key, value );
 	}
 
 	/**
 	 * Removes all attributes from the selection and sets given attributes.
 	 *
-	 * @param {Iterable.<treeModel.Attribute>} attrs Iterable object containing {@link treeModel.Attribute attributes} to be set.
+	 * @param {Iterable.<*>} attrs Iterable object containing attributes to be set.
 	 */
 	setAttributesTo( attrs ) {
-		this._attrs.setTo( attrs );
+		if ( langUtils.isPlainObject( attrs ) ) {
+			this._attrs = utils.objectToMap( attrs );
+		} else {
+			this._attrs = new Map( attrs );
+		}
 	}
 
 	/**
 	 * Removes an attribute with given key from the selection.
 	 *
 	 * @param {String} key Key of attribute to remove.
-	 * @returns {Boolean} `true` if the attribute was set on the element, `false` otherwise.
+	 * @returns {Boolean} `true` if the attribute was set on the selection, `false` otherwise.
 	 */
 	removeAttribute( key ) {
 		return this._attrs.delete( key );
 	}
 
 	/**
-	 * Removes all attributes from the element.
+	 * Removes all attributes from the selection.
 	 */
 	clearAttributes() {
 		this._attrs.clear();

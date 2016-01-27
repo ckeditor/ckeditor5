@@ -7,6 +7,8 @@
 
 import Node from './node.js';
 import NodeList from './nodelist.js';
+import langUtils from '../lib/lodash/lang.js';
+import utils from '../utils.js';
 
 /**
  * Tree data model element.
@@ -18,7 +20,7 @@ export default class Element extends Node {
 	 * Creates a tree data model element.
 	 *
 	 * @param {String} name Node name.
-	 * @param {Iterable} attrs Iterable collection of {@link treeModel.Attribute attributes}.
+	 * @param {Iterable} attrs Iterable collection of attributes.
 	 * @param {treeModel.NodesSet} children List of nodes to be inserted
 	 * into created element. List of nodes can be of any type accepted by the {@link treeModel.NodeList} constructor.
 	 * @constructor
@@ -119,23 +121,24 @@ export default class Element extends Node {
 	/**
 	 * Sets attribute on the element. If attribute with the same key already is set, it overwrites its values.
 	 *
-	 * @chainable
-	 * @param {treeModel.Attribute} attr Attribute to set or overwrite with.
-	 * @returns {treeModel.Element} This element.
+	 * @param {String} key Key of attribute to set.
+	 * @param {*} value Attribute value.
 	 */
-	setAttribute( attr ) {
-		this._attrs.set( attr );
-
-		return this;
+	setAttribute( key, value ) {
+		this._attrs.set( key, value );
 	}
 
 	/**
 	 * Removes all attributes from the element and sets given attributes.
 	 *
-	 * @param {Iterable.<treeModel.Attribute>} attrs Iterable object containing {@link treeModel.Attribute attributes} to be set.
+	 * @param {Iterable.<*>} attrs Iterable object containing attributes to be set. See {@link treeModel.Node#getAttributes}.
 	 */
 	setAttributesTo( attrs ) {
-		this._attrs.setTo( attrs );
+		if ( langUtils.isPlainObject( attrs ) ) {
+			this._attrs = utils.objectToMap( attrs );
+		} else {
+			this._attrs = new Map( attrs );
+		}
 	}
 
 	/**

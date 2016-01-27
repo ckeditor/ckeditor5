@@ -9,24 +9,22 @@
 
 import Element from '/ckeditor5/core/treemodel/element.js';
 import Text from '/ckeditor5/core/treemodel/text.js';
-import Attribute from '/ckeditor5/core/treemodel/attribute.js';
 import TextFragment from '/ckeditor5/core/treemodel/textfragment.js';
 import Document from '/ckeditor5/core/treemodel/document.js';
 import CharacterProxy from '/ckeditor5/core/treemodel/characterproxy.js';
 
 describe( 'TextFragment', () => {
-	let doc, attr, text, element, textFragment, root;
+	let doc, text, element, textFragment, root;
 
 	before( () => {
 		doc = new Document();
 		root = doc.createRoot( 'root' );
 		element = new Element( 'div' );
 		root.insertChildren( 0, element );
-		attr = new Attribute( 'foo', 'bar' );
 	} );
 
 	beforeEach( () => {
-		text = new Text( 'foobar', [ attr ] );
+		text = new Text( 'foobar', { foo: 'bar' } );
 		element.insertChildren( 0, text );
 		textFragment = new TextFragment( element.getChild( 2 ), 3 );
 	} );
@@ -59,7 +57,7 @@ describe( 'TextFragment', () => {
 
 			expect( char ).to.be.instanceof( CharacterProxy );
 			expect( char.character ).to.equal( 'b' );
-			expect( char.getAttributeValue( 'foo' ) ).to.equal( 'bar' );
+			expect( char.getAttribute( 'foo' ) ).to.equal( 'bar' );
 			expect( char.parent ).to.equal( element );
 		} );
 
@@ -70,17 +68,7 @@ describe( 'TextFragment', () => {
 	} );
 
 	describe( 'attributes interface', () => {
-		let attr2 = new Attribute( 'abc', 'xyz' );
-
 		describe( 'hasAttribute', () => {
-			it( 'should return true if text fragment has given attribute', () => {
-				expect( textFragment.hasAttribute( attr ) ).to.be.true;
-			} );
-
-			it( 'should return false if text fragment does not have attribute', () => {
-				expect( textFragment.hasAttribute( attr2 ) ).to.be.false;
-			} );
-
 			it( 'should return true if text fragment has attribute with given key', () => {
 				expect( textFragment.hasAttribute( 'foo' ) ).to.be.true;
 			} );
@@ -92,21 +80,11 @@ describe( 'TextFragment', () => {
 
 		describe( 'getAttribute', () => {
 			it( 'should return attribute with given key if text fragment has given attribute', () => {
-				expect( textFragment.getAttribute( 'foo' ) ).to.equal( attr );
+				expect( textFragment.getAttribute( 'foo' ) ).to.equal( 'bar' );
 			} );
 
 			it( 'should return null if text fragment does not have given attribute', () => {
 				expect( textFragment.getAttribute( 'bar' ) ).to.be.undefined;
-			} );
-		} );
-
-		describe( 'getAttributeValue', () => {
-			it( 'should return attribute value for given key if text fragment has given attribute', () => {
-				expect( textFragment.getAttributeValue( 'foo' ) ).to.equal( 'bar' );
-			} );
-
-			it( 'should return null if text fragment does not have given attribute', () => {
-				expect( textFragment.getAttributeValue( 'bar' ) ).to.be.null;
 			} );
 		} );
 
@@ -122,30 +100,7 @@ describe( 'TextFragment', () => {
 					step = it.next();
 				}
 
-				expect( attrs ).to.deep.equal( [ attr ] );
-			} );
-		} );
-
-		describe( 'setAttribute', () => {
-			it( 'should set given attribute on the text fragment', () => {
-				textFragment.setAttribute( new Attribute( 'abc', 'xyz' ) );
-
-				expect( textFragment.getAttributeValue( 'abc' ) ).to.equal( 'xyz' );
-			} );
-		} );
-
-		describe( 'removeAttribute', () => {
-			it( 'should remove attribute set on the text fragment and return true', () => {
-				let result = textFragment.removeAttribute( 'foo' );
-
-				expect( textFragment.getAttributeValue( 'foo' ) ).to.be.null;
-				expect( result ).to.be.true;
-			} );
-
-			it( 'should return false if text fragment does not have given attribute', () => {
-				let result = textFragment.removeAttribute( 'abc' );
-
-				expect( result ).to.be.false;
+				expect( attrs ).to.deep.equal( [ [ 'foo', 'bar' ] ] );
 			} );
 		} );
 	} );

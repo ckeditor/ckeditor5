@@ -8,8 +8,6 @@
 'use strict';
 
 import Element from '/ckeditor5/core/treemodel/element.js';
-import Attribute from '/ckeditor5/core/treemodel/attribute.js';
-import AttributeList from '/ckeditor5/core/treemodel/attributelist.js';
 import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
 describe( 'Node', () => {
@@ -85,20 +83,17 @@ describe( 'Node', () => {
 		it( 'should create empty attribute list if no parameters were passed', () => {
 			let foo = new Element( 'foo' );
 
-			expect( foo._attrs ).to.be.instanceof( AttributeList );
+			expect( foo._attrs ).to.be.instanceof( Map );
 			expect( foo._attrs.size ).to.equal( 0 );
 		} );
 
 		it( 'should initialize attribute list with passed attributes', () => {
-			let attrs = [
-				new Attribute( 'foo', true ),
-				new Attribute( 'bar', false )
-			];
+			let attrs = { foo: true, bar: false };
 			let foo = new Element( 'foo', attrs );
 
 			expect( foo._attrs.size ).to.equal( 2 );
-			expect( foo.getAttributeValue( 'foo' ) ).to.equal( true );
-			expect( foo.getAttributeValue( 'bar' ) ).to.equal( false );
+			expect( foo.getAttribute( 'foo' ) ).to.equal( true );
+			expect( foo.getAttribute( 'bar' ) ).to.equal( false );
 		} );
 	} );
 
@@ -155,19 +150,9 @@ describe( 'Node', () => {
 	} );
 
 	describe( 'attributes interface', () => {
-		let attr = new Attribute( 'foo', 'bar' );
-		let attr2 = new Attribute( 'foo', 'foo' );
-		let node = new Element( 'p', [ attr ] );
+		let node = new Element( 'p', { foo: 'bar' } );
 
 		describe( 'hasAttribute', () => {
-			it( 'should return true if element contains given attribute', () => {
-				expect( node.hasAttribute( attr ) ).to.be.true;
-			} );
-
-			it( 'should return false if element does not contain given attribute', () => {
-				expect( node.hasAttribute( attr2 ) ).to.be.false;
-			} );
-
 			it( 'should return true if element contains attribute with given key', () => {
 				expect( node.hasAttribute( 'foo' ) ).to.be.true;
 			} );
@@ -178,22 +163,12 @@ describe( 'Node', () => {
 		} );
 
 		describe( 'getAttribute', () => {
-			it( 'should return attribute with given key if element contains given attribute', () => {
-				expect( node.getAttribute( 'foo' ) ).to.equal( attr );
+			it( 'should return attribute value for given key if element contains given attribute', () => {
+				expect( node.getAttribute( 'foo' ) ).to.equal( 'bar' );
 			} );
 
 			it( 'should return undefined if element does not contain given attribute', () => {
 				expect( node.getAttribute( 'bar' ) ).to.be.undefined;
-			} );
-		} );
-
-		describe( 'getAttributeValue', () => {
-			it( 'should return attribute value for given key if element contains given attribute', () => {
-				expect( node.getAttributeValue( 'foo' ) ).to.equal( 'bar' );
-			} );
-
-			it( 'should return null if element does not contain given attribute', () => {
-				expect( node.getAttributeValue( 'bar' ) ).to.be.null;
 			} );
 		} );
 
@@ -209,7 +184,7 @@ describe( 'Node', () => {
 					step = it.next();
 				}
 
-				expect( attrs ).to.deep.equal( [ attr ] );
+				expect( attrs ).to.deep.equal( [ [ 'foo', 'bar' ] ] );
 			} );
 		} );
 	} );

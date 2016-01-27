@@ -10,7 +10,6 @@
 import Document from '/ckeditor5/core/treemodel/document.js';
 import Position from '/ckeditor5/core/treemodel/position.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
-import Attribute from '/ckeditor5/core/treemodel/attribute.js';
 import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
 describe( 'Batch', () => {
@@ -20,7 +19,7 @@ describe( 'Batch', () => {
 		doc = new Document();
 		root = doc.createRoot( 'root' );
 
-		p = new Element( 'p', [ new Attribute( 'key', 'value' ) ], 'foobar' );
+		p = new Element( 'p', { key: 'value' }, 'foobar' );
 
 		root.insertChildren( 0, p );
 	} );
@@ -34,7 +33,7 @@ describe( 'Batch', () => {
 			expect( root.getChild( 0 ).name ).to.equal( 'p' );
 			expect( root.getChild( 0 ).getChildCount() ).to.equal( 3 );
 			expect( root.getChild( 0 )._attrs.size ).to.equal( 1 );
-			expect( root.getChild( 0 ).getAttributeValue( 'key' ) ).to.equal( 'value' );
+			expect( root.getChild( 0 ).getAttribute( 'key' ) ).to.equal( 'value' );
 			expect( root.getChild( 0 ).getChild( 0 ).character ).to.equal( 'f' );
 			expect( root.getChild( 0 ).getChild( 1 ).character ).to.equal( 'o' );
 			expect( root.getChild( 0 ).getChild( 2 ).character ).to.equal( 'o' );
@@ -42,7 +41,7 @@ describe( 'Batch', () => {
 			expect( root.getChild( 1 ).name ).to.equal( 'p' );
 			expect( root.getChild( 1 ).getChildCount() ).to.equal( 3 );
 			expect( root.getChild( 1 )._attrs.size ).to.equal( 1 );
-			expect( root.getChild( 1 ).getAttributeValue( 'key' ) ).to.equal( 'value' );
+			expect( root.getChild( 1 ).getAttribute( 'key' ) ).to.equal( 'value' );
 			expect( root.getChild( 1 ).getChild( 0 ).character ).to.equal( 'b' );
 			expect( root.getChild( 1 ).getChild( 1 ).character ).to.equal( 'a' );
 			expect( root.getChild( 1 ).getChild( 2 ).character ).to.equal( 'r' );
@@ -56,7 +55,7 @@ describe( 'Batch', () => {
 			expect( root.getChild( 0 ).name ).to.equal( 'p' );
 			expect( root.getChild( 0 ).getChildCount() ).to.equal( 6 );
 			expect( root.getChild( 0 )._attrs.size ).to.equal( 1 );
-			expect( root.getChild( 0 ).getAttributeValue( 'key' ) ).to.equal( 'value' );
+			expect( root.getChild( 0 ).getAttribute( 'key' ) ).to.equal( 'value' );
 			expect( root.getChild( 0 ).getChild( 0 ).character ).to.equal( 'f' );
 			expect( root.getChild( 0 ).getChild( 1 ).character ).to.equal( 'o' );
 			expect( root.getChild( 0 ).getChild( 2 ).character ).to.equal( 'o' );
@@ -67,7 +66,7 @@ describe( 'Batch', () => {
 			expect( root.getChild( 1 ).name ).to.equal( 'p' );
 			expect( root.getChild( 1 ).getChildCount() ).to.equal( 0 );
 			expect( root.getChild( 1 )._attrs.size ).to.equal( 1 );
-			expect( root.getChild( 1 ).getAttributeValue( 'key' ) ).to.equal( 'value' );
+			expect( root.getChild( 1 ).getAttribute( 'key' ) ).to.equal( 'value' );
 		} );
 
 		it( 'should throw if we try to split a root', () => {

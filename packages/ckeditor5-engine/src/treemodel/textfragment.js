@@ -24,7 +24,7 @@ export default class TextFragment {
 	 * Creates a text fragment.
 	 *
 	 * @param {treeModel.CharacterProxy} firstCharacter First character node contained in {@link treeModel.TextFragment}.
-	 * @param {Number) length Whole text contained in {@link treeModel.TextFragment}.
+	 * @param {Number} length Whole text contained in {@link treeModel.TextFragment}.
 	 * @protected
 	 * @constructor
 	 */
@@ -78,83 +78,31 @@ export default class TextFragment {
 	}
 
 	/**
-	 * Checks if the text fragment has an attribute that is {@link treeModel.Attribute#isEqual equal} to given attribute or
-	 * attribute with given key if string was passed.
+	 * Checks if the text fragment has an attribute for given key.
 	 *
-	 * @param {treeModel.Attribute|String} attrOrKey Attribute or key of attribute to check.
-	 * @returns {Boolean} `true` if given attribute or attribute with given key is set on text fragment, `false` otherwise.
+	 * @param {String} key Key of attribute to check.
+	 * @returns {Boolean} `true` if attribute with given key is set on text fragment, `false` otherwise.
 	 */
-	hasAttribute( attrOrKey ) {
-		return this.first.hasAttribute( attrOrKey );
+	hasAttribute( key ) {
+		return this.first.hasAttribute( key );
 	}
 
 	/**
-	 * Gets a text fragment attribute by its key.
+	 * Gets an attribute value for given key or undefined it that attribute is not set on text fragment.
 	 *
 	 * @param {String} key Key of attribute to look for.
-	 * @returns {treeModel.Attribute|null} Attribute with given key or null if the attribute has not been set on the text fragment.
+	 * @returns {*} Attribute value or null.
 	 */
 	getAttribute( key ) {
 		return this.first.getAttribute( key );
 	}
 
 	/**
-	 * Gets a text fragment attribute value by attribute key.
+	 * Returns iterator that iterates over this text fragment attributes.
 	 *
-	 * @param {String} key Key of attribute to look for.
-	 * @returns {*} Value of attribute with given key or null if the attribute has not been set on the text fragment.
-	 */
-	getAttributeValue( key ) {
-		return this.first.getAttributeValue( key );
-	}
-
-	/**
-	 * Returns iterator that iterates over this text fragment's attributes.
-	 *
-	 * @returns {Iterable.<treeModel.Attribute>}
+	 * @returns {Iterable.<*>}
 	 */
 	getAttributes() {
 		return this.first.getAttributes();
-	}
-
-	/**
-	 * Sets attribute on the text fragment. If attribute with the same key already is set, it overwrites its values.
-	 *
-	 * To change attributes of nodes (also characters) that are attached to the tree model, you
-	 * should use {@link treeModel.AttributeDelta}. This method is used by tree model internal mechanisms.
-	 *
-	 * @protected
-	 * @param {treeModel.Attribute} attr Attribute to set or overwrite with.
-	 */
-	setAttribute( attr ) {
-		// Do note that this changes attributes on whole NodeListText, not only on character nodes specified by
-		// this TextFragment. Split NodeList at proper index before using this.
-		this.first._nodeListText._attrs.set( attr );
-
-		// Refreshing first and last character proxies because they would have wrong attributes.
-		this.first = this.getCharAt( 0 );
-		this.last = this.getCharAt( this.text.length - 1 );
-	}
-
-	/**
-	 * Removes an attribute with given key from the text fragment.
-	 *
-	 * To change attributes of nodes (also characters) that are attached to the tree model, you
-	 * should use {@link treeModel.AttributeDelta}. This method is used by tree model internal mechanisms.
-	 *
-	 * @protected
-	 * @param {String} key Key of attribute to remove.
-	 * @returns {Boolean} `true` if the attribute was set on the element, `false` otherwise.
-	 */
-	removeAttribute( key ) {
-		// Do note that this changes attributes on whole NodeListText, not only on character nodes specified by
-		// this TextFragment. Split NodeList at proper index before using this.
-		let result = this.first._nodeListText._attrs.delete( key );
-
-		// Refreshing first and last character proxies because they would have wrong attributes.
-		this.first = this.getCharAt( 0 );
-		this.last = this.getCharAt( this.text.length - 1 );
-
-		return result;
 	}
 }

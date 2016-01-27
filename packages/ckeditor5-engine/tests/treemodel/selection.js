@@ -8,8 +8,6 @@
 'use strict';
 
 import Document from '/ckeditor5/core/treemodel/document.js';
-import Attribute from '/ckeditor5/core/treemodel/attribute.js';
-import AttributeList from '/ckeditor5/core/treemodel/attributelist.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
 import Range from '/ckeditor5/core/treemodel/range.js';
 import Position from '/ckeditor5/core/treemodel/position.js';
@@ -23,7 +21,7 @@ describe( 'Selection', () => {
 	let attrFooBar;
 
 	before( () => {
-		attrFooBar = new Attribute( 'foo', 'bar' );
+		attrFooBar = { foo: 'bar' };
 	} );
 
 	let doc, root, selection, liveRange, range;
@@ -48,7 +46,7 @@ describe( 'Selection', () => {
 		expect( ranges.length ).to.equal( 0 );
 		expect( selection.anchor ).to.be.null;
 		expect( selection.focus ).to.be.null;
-		expect( selection._attrs ).to.be.instanceof( AttributeList );
+		expect( selection._attrs ).to.be.instanceof( Map );
 		expect( selection._attrs.size ).to.equal( 0 );
 	} );
 
@@ -413,60 +411,36 @@ describe( 'Selection', () => {
 	} );
 
 	describe( 'attributes interface', () => {
-		let attr = new Attribute( 'foo', 'bar' );
-		let attr2 = new Attribute( 'foo', 'foo' );
-
 		describe( 'setAttribute', () => {
 			it( 'should set given attribute on the selection', () => {
-				selection.setAttribute( attr );
+				selection.setAttribute( 'foo', 'bar' );
 
-				expect( selection.getAttribute( 'foo' ) ).to.equal( attr );
+				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
 			} );
 		} );
 
 		describe( 'hasAttribute', () => {
-			it( 'should return true if element contains given attribute', () => {
-				selection.setAttribute( attr );
-
-				expect( selection.hasAttribute( attr ) ).to.be.true;
-			} );
-
-			it( 'should return false if element does not contain given attribute', () => {
-				expect( selection.hasAttribute( attr2 ) ).to.be.false;
-			} );
-
 			it( 'should return true if element contains attribute with given key', () => {
-				selection.setAttribute( attr );
+				selection.setAttribute( 'foo', 'bar' );
 
 				expect( selection.hasAttribute( 'foo' ) ).to.be.true;
 			} );
 
 			it( 'should return false if element does not contain attribute with given key', () => {
-				expect( selection.hasAttribute( 'bar' ) ).to.be.false;
+				expect( selection.hasAttribute( 'abc' ) ).to.be.false;
 			} );
 		} );
 
 		describe( 'getAttribute', () => {
 			it( 'should return undefined if element does not contain given attribute', () => {
-				expect( selection.getAttribute( 'bar' ) ).to.be.undefined;
-			} );
-		} );
-
-		describe( 'getAttributeValue', () => {
-			it( 'should return attribute value for given key if element contains given attribute', () => {
-				selection.setAttribute( attr );
-
-				expect( selection.getAttributeValue( 'foo' ) ).to.equal( 'bar' );
-			} );
-
-			it( 'should return null if element does not contain given attribute', () => {
-				expect( selection.getAttributeValue( 'bar' ) ).to.be.null;
+				expect( selection.getAttribute( 'abc' ) ).to.be.undefined;
 			} );
 		} );
 
 		describe( 'getAttributes', () => {
 			it( 'should return an iterator that iterates over all attributes set on the text fragment', () => {
-				selection.setAttribute( attr );
+				selection.setAttribute( 'foo', 'bar' );
+				selection.setAttribute( 'abc', 'xyz' );
 
 				let it = selection.getAttributes();
 				let attrs = [];
@@ -478,26 +452,26 @@ describe( 'Selection', () => {
 					step = it.next();
 				}
 
-				expect( attrs ).to.deep.equal( [ attr ] );
+				expect( attrs ).to.deep.equal( [ [ 'foo', 'bar' ], [ 'abc', 'xyz' ] ] );
 			} );
 		} );
 
 		describe( 'setAttributesTo', () => {
 			it( 'should remove all attributes set on element and set the given ones', () => {
-				selection.setAttribute( attr2 );
-				selection.setAttributesTo( [ attr ] );
+				selection.setAttribute( 'abc', 'xyz' );
+				selection.setAttributesTo( { foo: 'bar' } );
 
-				expect( selection.getAttributeValue( 'foo' ) ).to.equal( 'bar' );
-				expect( selection.getAttributeValue( 'abc' ) ).to.be.null;
+				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
+				expect( selection.getAttribute( 'abc' ) ).to.be.undefined;
 			} );
 		} );
 
 		describe( 'removeAttribute', () => {
 			it( 'should remove attribute set on the text fragment and return true', () => {
-				selection.setAttribute( attr );
+				selection.setAttribute( 'foo', 'bar' );
 				let result = selection.removeAttribute( 'foo' );
 
-				expect( selection.getAttributeValue( 'foo' ) ).to.be.null;
+				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
 				expect( result ).to.be.true;
 			} );
 
@@ -510,13 +484,13 @@ describe( 'Selection', () => {
 
 		describe( 'clearAttributes', () => {
 			it( 'should remove all attributes from the element', () => {
-				selection.setAttribute( attr );
-				selection.setAttribute( new Attribute( 'abc', 'xyz' ) );
+				selection.setAttribute( 'foo', 'bar' );
+				selection.setAttribute( 'abc', 'xyz' );
 
 				selection.clearAttributes();
 
-				expect( selection.getAttributeValue( 'foo' ) ).to.be.null;
-				expect( selection.getAttributeValue( 'abc' ) ).to.be.null;
+				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
+				expect( selection.getAttribute( 'abc' ) ).to.be.undefined;
 			} );
 		} );
 	} );

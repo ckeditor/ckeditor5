@@ -8,7 +8,6 @@
 'use strict';
 
 import Document from '/ckeditor5/core/treemodel/document.js';
-import Attribute from '/ckeditor5/core/treemodel/attribute.js';
 import Position from '/ckeditor5/core/treemodel/position.js';
 
 describe( 'Batch', () => {
@@ -22,10 +21,7 @@ describe( 'Batch', () => {
 
 		batch = doc.batch();
 
-		attrs = [
-			new Attribute( 'bold', true ),
-			new Attribute( 'foo', 'bar' )
-		];
+		attrs = [ [ 'bold', true ], [ 'foo', 'bar' ] ];
 
 		doc.selection.setAttributesTo( attrs );
 

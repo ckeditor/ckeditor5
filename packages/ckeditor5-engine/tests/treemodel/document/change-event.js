@@ -9,7 +9,6 @@
 
 import Document from '/ckeditor5/core/treemodel/document.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
-import Attribute from '/ckeditor5/core/treemodel/attribute.js';
 import Position from '/ckeditor5/core/treemodel/position.js';
 import Range from '/ckeditor5/core/treemodel/range.js';
 import AttributeOperation from '/ckeditor5/core/treemodel/operation/attributeoperation.js';
@@ -109,8 +108,9 @@ describe( 'Document change event', () => {
 		doc.applyOperation(
 			new AttributeOperation(
 				Range.createFromParentsAndOffsets( root, 0, root, 3 ),
+				'key',
 				null,
-				new Attribute( 'key', 'new' ),
+				'new',
 				doc.version
 			)
 		);
@@ -118,18 +118,20 @@ describe( 'Document change event', () => {
 		expect( changes ).to.have.length( 1 );
 		expect( types[ 0 ] ).to.equal( 'attr' );
 		expect( changes[ 0 ].range ).to.deep.equal( Range.createFromParentsAndOffsets( root, 0, root, 3 ) );
-		expect( changes[ 0 ].oldAttr ).to.be.null;
-		expect( changes[ 0 ].newAttr ).to.deep.equal( new Attribute( 'key', 'new' ) );
+		expect( changes[ 0 ].key ).to.equal( 'key' );
+		expect( changes[ 0 ].oldValue ).to.be.null;
+		expect( changes[ 0 ].newValue ).to.equal( 'new' );
 	} );
 
 	it( 'should be fired when attribute is removed', () => {
-		const elem = new Element( 'p', [ new Attribute( 'key', 'old' ) ] );
+		const elem = new Element( 'p', { key: 'old' } );
 		root.insertChildren( 0, elem );
 
 		doc.applyOperation(
 			new AttributeOperation(
 				Range.createFromParentsAndOffsets( root, 0, elem, 0 ),
-				new Attribute( 'key', 'old' ),
+				'key',
+				'old',
 				null,
 				doc.version
 			)
@@ -138,19 +140,21 @@ describe( 'Document change event', () => {
 		expect( changes ).to.have.length( 1 );
 		expect( types[ 0 ] ).to.equal( 'attr' );
 		expect( changes[ 0 ].range ).to.deep.equal( Range.createFromParentsAndOffsets( root, 0, elem, 0 ) );
-		expect( changes[ 0 ].oldAttr ).to.deep.equal( new Attribute( 'key', 'old' ) );
-		expect( changes[ 0 ].newAttr ).to.be.null;
+		expect( changes[ 0 ].key ).to.equal( 'key' );
+		expect( changes[ 0 ].oldValue ).to.equal( 'old' );
+		expect( changes[ 0 ].newValue ).to.be.null;
 	}  );
 
 	it( 'should be fired when attribute changes', () => {
-		const elem = new Element( 'p', [ new Attribute( 'key', 'old' ) ] );
+		const elem = new Element( 'p', { key: 'old' } );
 		root.insertChildren( 0, elem );
 
 		doc.applyOperation(
 			new AttributeOperation(
 				Range.createFromParentsAndOffsets( root, 0, elem, 0 ),
-				new Attribute( 'key', 'old' ),
-				new Attribute( 'key', 'new' ),
+				'key',
+				'old',
+				'new',
 				doc.version
 			)
 		);
@@ -158,7 +162,8 @@ describe( 'Document change event', () => {
 		expect( changes ).to.have.length( 1 );
 		expect( types[ 0 ] ).to.equal( 'attr' );
 		expect( changes[ 0 ].range ).to.deep.equal( Range.createFromParentsAndOffsets( root, 0, elem, 0 ) );
-		expect( changes[ 0 ].oldAttr ).to.deep.equal( new Attribute( 'key', 'old' ) );
-		expect( changes[ 0 ].newAttr ).to.deep.equal( new Attribute( 'key', 'new' ) );
+		expect( changes[ 0 ].key ).to.equal( 'key' );
+		expect( changes[ 0 ].oldValue ).to.equal( 'old' );
+		expect( changes[ 0 ].newValue ).to.equal( 'new' );
 	}  );
 } );

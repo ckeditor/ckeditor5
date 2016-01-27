@@ -29,12 +29,13 @@ export default class AttributeOperation extends Operation {
 	 * old attributes have to have the same key and the old attribute must be present in all nodes in ranges.
 	 *
 	 * @param {treeModel.Range} range Range on which the operation should be applied.
-	 * @param {treeModel.Attribute|null} oldAttr Attribute to be removed. If `null`, then the operation just inserts a new attribute.
-	 * @param {treeModel.Attribute|null} newAttr Attribute to be added. If `null`, then the operation just removes the attribute.
+	 * @param {String} key Key of an attribute to change or remove.
+	 * @param {*} oldValue Old value of the attribute with given key or `null` if adding a new attribute.
+	 * @param {*} newValue New value to set for the attribute. If `null`, then the operation just removes the attribute.
 	 * @param {Number} baseVersion {@link treeModel.Document#version} on which the operation can be applied.
 	 * @constructor
 	 */
-	constructor( range, oldAttr, newAttr, baseVersion ) {
+	constructor( range, key, oldValue, newValue, baseVersion ) {
 		super( baseVersion );
 
 		/**
@@ -46,20 +47,28 @@ export default class AttributeOperation extends Operation {
 		this.range = Range.createFromRange( range );
 
 		/**
-		 * Old attribute to change. Set to `null` if operation inserts a new attribute.
+		 * Key of an attribute to change or remove.
 		 *
 		 * @readonly
-		 * @type {treeModel.Attribute|null}
+		 * @property {String} key
 		 */
-		this.oldAttr = oldAttr;
+		this.key = key;
 
 		/**
-		 * New attribute. Set to `null` if operation removes the attribute.
+		 * Old value of the attribute with given key or `null` if adding a new attribute.
 		 *
 		 * @readonly
-		 * @type {treeModel.Attribute|null}
+		 * @property {*} oldValue
 		 */
-		this.newAttr = newAttr;
+		this.oldValue = oldValue;
+
+		/**
+		 * New value to set for the attribute. If `null`, then the operation just removes the attribute.
+		 *
+		 * @readonly
+		 * @property {*} newValue
+		 */
+		this.newValue = newValue;
 	}
 
 	get type() {
@@ -67,73 +76,56 @@ export default class AttributeOperation extends Operation {
 	}
 
 	clone() {
-		return new AttributeOperation( this.range, this.oldAttr, this.newAttr, this.baseVersion );
+		return new AttributeOperation( this.range, this.key, this.oldValue, this.newValue, this.baseVersion );
 	}
 
 	getReversed() {
-		return new AttributeOperation( this.range, this.newAttr, this.oldAttr, this.baseVersion + 1 );
+		return new AttributeOperation( this.range, this.key, this.newValue, this.oldValue, this.baseVersion + 1 );
 	}
 
 	_execute() {
-		const oldAttr = this.oldAttr;
-		const newAttr = this.newAttr;
-
-		if ( oldAttr !== null && newAttr !== null && oldAttr.key != newAttr.key ) {
-			/**
-			 * Old and new attributes should have the same keys.
-			 *
-			 * @error operation-attribute-different-keys
-			 * @param {treeModel.Attribute} oldAttr
-			 * @param {treeModel.Attribute} newAttr
-			 */
-			throw new CKEditorError(
-				'operation-attribute-different-keys: Old and new attributes should have the same keys.',
-				{ oldAttr: oldAttr, newAttr: newAttr }
-			);
-		}
-
 		for ( let item of this.range.getAllNodes( true ) ) {
-			if ( oldAttr !== null && !item.hasAttribute( oldAttr ) ) {
+			if ( this.oldValue !== null && item.getAttribute( this.key ) !== this.oldValue ) {
 				/**
 				 * The attribute which should be removed does not exists for the given node.
 				 *
 				 * @error operation-attribute-no-attr-to-remove
 				 * @param {treeModel.Node} node
-				 * @param {treeModel.Attribute} attr
+				 * @param {String} key
+				 * @param {*} value
 				 */
 				throw new CKEditorError(
 					'operation-attribute-no-attr-to-remove: The attribute which should be removed does not exists for given node.',
-					{ node: item, attr: oldAttr }
+					{ node: item, key: this.key, value: this.oldValue }
 				);
 			}
 
-			if ( oldAttr === null && newAttr !== null && item.hasAttribute( newAttr.key ) ) {
+			if ( this.oldValue === null && this.newValue !== null && item.hasAttribute( this.key ) ) {
 				/**
 				 * The attribute with given key already exists for the given node.
 				 *
 				 * @error operation-attribute-attr-exists
 				 * @param {treeModel.Node} node
-				 * @param {treeModel.Attribute} attr
+				 * @param {String} key
 				 */
 				throw new CKEditorError(
 					'operation-attribute-attr-exists: The attribute with given key already exists.',
-					{ node: item, attr: newAttr }
+					{ node: item, key: this.key }
 				);
 			}
 
 			if ( item instanceof TextFragment ) {
-				let key = newAttr ? newAttr.key : oldAttr.key;
-				item.commonParent._children.setAttribute( item.first.getIndex(), item.text.length, key, newAttr );
+				item.commonParent._children.setAttribute( item.first.getIndex(), item.text.length, this.key, this.newValue );
 			}
 			else {
-				if ( newAttr ) {
-					item.setAttribute( newAttr );
+				if ( this.newValue !== null ) {
+					item.setAttribute( this.key, this.newValue );
 				} else {
-					item.removeAttribute( oldAttr.key );
+					item.removeAttribute( this.key );
 				}
 			}
 		}
 
-		return { range: this.range, oldAttr: oldAttr, newAttr: newAttr };
+		return { range: this.range, key: this.key, oldValue: this.oldValue, newValue: this.newValue };
 	}
 }

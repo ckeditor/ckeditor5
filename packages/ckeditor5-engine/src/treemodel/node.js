@@ -5,8 +5,8 @@
 
 'use strict';
 
-import AttributeList from './attributelist.js';
 import langUtils from '../lib/lodash/lang.js';
+import utils from '../utils.js';
 import CKEditorError from '../ckeditorerror.js';
 
 /**
@@ -21,7 +21,7 @@ export default class Node {
 	 *
 	 * This is an abstract class, so this constructor should not be used directly.
 	 *
-	 * @param {Iterable} attrs Iterable collection of {@link treeModel.Attribute attributes}.
+	 * @param {Iterable} attrs Iterable collection of attributes.
 	 * @constructor
 	 */
 	constructor( attrs ) {
@@ -40,9 +40,13 @@ export default class Node {
 		 * using {@link treeModel.Node} methods.
 		 *
 		 * @protected
-		 * @property {treeModel.AttributeList} attrs
+		 * @property {Map} _attrs
 		 */
-		this._attrs = new AttributeList( attrs );
+		if ( langUtils.isPlainObject( attrs ) ) {
+			this._attrs = utils.objectToMap( attrs );
+		} else {
+			this._attrs = new Map( attrs );
+		}
 	}
 
 	/**
@@ -163,40 +167,29 @@ export default class Node {
 	}
 
 	/**
-	 * Checks if the node has an attribute that is {@link treeModel.Attribute#isEqual equal} to given attribute or
-	 * attribute with given key if string was passed.
+	 * Checks if the node has an attribute for given key.
 	 *
-	 * @param {treeModel.Attribute|String} attrOrKey Attribute or key of attribute to check.
-	 * @returns {Boolean} `true` if given attribute or attribute with given key is set on node, `false` otherwise.
+	 * @param {String} key Key of attribute to check.
+	 * @returns {Boolean} `true` if attribute with given key is set on node, `false` otherwise.
 	 */
-	hasAttribute( attrOrKey ) {
-		return this._attrs.has( attrOrKey );
+	hasAttribute( key ) {
+		return this._attrs.has( key );
 	}
 
 	/**
-	 * Gets a node's attribute by its key.
+	 * Gets an attribute value for given key or undefined if that attribute is not set on node.
 	 *
 	 * @param {String} key Key of attribute to look for.
-	 * @returns {treeModel.Attribute|null} Attribute with given key or null if the attribute has not been set on node.
+	 * @returns {*} Attribute value or null.
 	 */
 	getAttribute( key ) {
 		return this._attrs.get( key );
 	}
 
 	/**
-	 * Gets a node's attribute value by attribute key.
+	 * Returns iterator that iterates over this node attributes.
 	 *
-	 * @param {String} key Key of attribute to look for.
-	 * @returns {*} Value of attribute with given key or null if the attribute has not been set on node.
-	 */
-	getAttributeValue( key ) {
-		return this._attrs.getValue( key );
-	}
-
-	/**
-	 * Returns iterator that iterates over this nodes attributes.
-	 *
-	 * @returns {Iterable.<treeModel.Attribute>}
+	 * @returns {Iterable.<*>}
 	 */
 	getAttributes() {
 		return this._attrs[ Symbol.iterator ]();

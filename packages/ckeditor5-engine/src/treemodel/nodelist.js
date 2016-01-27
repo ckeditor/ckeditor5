@@ -95,7 +95,7 @@ export default class NodeList {
 	 *		let nodeList = new NodeList( 'foo' );
 	 *		nodeList.length; // 3
 	 *
-	 *		let nodeList = new NodeList( new Text( 'foo', [ new Attribute( 'bar', 'bom' ) ] ) );
+	 *		let nodeList = new NodeList( new Text( 'foo', { bar: 'bom' } ) );
 	 *		nodeList.length; // 3
 	 *		nodeList.get( 0 ).getAttribute( 'bar' ); // 'bom'
 	 *		nodeList.get( 1 ).getAttribute( 'bar' ); // 'bom'
@@ -158,7 +158,7 @@ export default class NodeList {
 
 					let prev = this._nodes[ this._nodes.length - 1 ];
 
-					if ( prev instanceof NodeListText && prev._attrs.isEqual( node._attrs ) ) {
+					if ( prev instanceof NodeListText && utils.mapsEqual( prev._attrs, node._attrs ) ) {
 						// If previously added text has same attributes, merge this text with it.
 						prev.text += node.text;
 						mergedWithPrev = true;
@@ -316,9 +316,9 @@ export default class NodeList {
 	 * @param {Number} index Position of the first node to change.
 	 * @param {Number} number Number of nodes to change.
 	 * @param {String} key Attribute key to change.
-	 * @param {treeModel.Attribute} [attribute] New attribute or null if attribute with given key should be removed.
+	 * @param {*} [attribute] Attribute value or null if attribute with given key should be removed.
 	 */
-	setAttribute( index, number, key, attribute ) {
+	setAttribute( index, number, key, value ) {
 		if ( index < 0 || index + number > this.length ) {
 			/**
 			 * Trying to set attribute on non-existing node list items.
@@ -339,8 +339,8 @@ export default class NodeList {
 			let node = this._nodes[ this._indexMap[ i ] ];
 
 			if ( node instanceof NodeListText ) {
-				if ( attribute ) {
-					node._attrs.set( attribute );
+				if ( value !== null ) {
+					node._attrs.set( key, value );
 				} else {
 					node._attrs.delete( key );
 				}
@@ -348,8 +348,8 @@ export default class NodeList {
 				this._mergeNodeAt( i );
 				i += node.text.length;
 			} else {
-				if ( attribute ) {
-					node.setAttribute( attribute );
+				if ( value !== null ) {
+					node.setAttribute( key, value );
 				} else {
 					node.removeAttribute( key );
 				}
@@ -426,7 +426,7 @@ export default class NodeList {
 		let nodeAfter = this._nodes[ realIndexAfter ];
 
 		// Check if both of those nodes are text objects with same attributes.
-		if ( nodeBefore instanceof NodeListText && nodeAfter instanceof NodeListText && nodeBefore._attrs.isEqual( nodeAfter._attrs ) ) {
+		if ( nodeBefore instanceof NodeListText && nodeAfter instanceof NodeListText && utils.mapsEqual( nodeBefore._attrs, nodeAfter._attrs ) ) {
 			// Append text of text node after index to the before one.
 			nodeBefore.text += nodeAfter.text;
 
