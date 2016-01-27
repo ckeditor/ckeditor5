@@ -8,7 +8,6 @@
 'use strict';
 
 import Document from '/ckeditor5/core/treemodel/document.js';
-import Attribute from '/ckeditor5/core/treemodel/attribute.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
 import Text from '/ckeditor5/core/treemodel/text.js';
 import TreeWalker from '/ckeditor5/core/treemodel/treewalker.js';
@@ -34,10 +33,8 @@ describe( 'range iterator', () => {
 		//     |
 		//     |- X
 
-		let attrBoldTrue = new Attribute( 'bold', true );
-
-		b = new Text( 'b', [ attrBoldTrue ] );
-		a = new Text( 'a', [ attrBoldTrue ] );
+		b = new Text( 'b', { bold: true } );
+		a = new Text( 'a', { bold: true } );
 		r = new Text( 'r' );
 		img2 = new Element( 'img2' );
 		x = new Text( 'x' );
@@ -51,8 +48,8 @@ describe( 'range iterator', () => {
 			{ type: 'ELEMENT_START', item: img1 },
 			{ type: 'ELEMENT_END', item: img1 },
 			{ type: 'ELEMENT_START', item: paragraph },
-			{ type: 'CHARACTER', text: 'b', attrs: [ attrBoldTrue ] },
-			{ type: 'CHARACTER', text: 'a', attrs: [ attrBoldTrue ] },
+			{ type: 'CHARACTER', text: 'b', attrs: [ [ 'bold', true ] ] },
+			{ type: 'CHARACTER', text: 'a', attrs: [ [ 'bold', true ] ] },
 			{ type: 'CHARACTER', text: 'r', attrs: [] },
 			{ type: 'ELEMENT_START', item: img2 },
 			{ type: 'ELEMENT_END', item: img2 },
@@ -64,7 +61,7 @@ describe( 'range iterator', () => {
 			{ type: 'ELEMENT_START', item: img1 },
 			{ type: 'ELEMENT_END', item: img1 },
 			{ type: 'ELEMENT_START', item: paragraph },
-			{ type: 'TEXT', text: 'ba', attrs: [ attrBoldTrue ] },
+			{ type: 'TEXT', text: 'ba', attrs: [ [ 'bold', true ] ] },
 			{ type: 'TEXT', text: 'r', attrs: [] },
 			{ type: 'ELEMENT_START', item: img2 },
 			{ type: 'ELEMENT_END', item: img2 },
@@ -78,9 +75,10 @@ describe( 'range iterator', () => {
 
 		if ( item.value.type == 'TEXT' || item.value.type == 'CHARACTER' ) {
 			let text = item.value.item.text || item.value.item.character;
+			let attrs = item.value.item._attrs || item.value.item.first._attrs;
 
 			expect( text ).to.equal( expected.text );
-			expect( Array.from( item.value.item.attrs ) ).to.deep.equal( expected.attrs );
+			expect( Array.from( attrs ) ).to.deep.equal( expected.attrs );
 		} else {
 			expect( item.value ).to.deep.equal( expected );
 		}

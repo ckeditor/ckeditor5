@@ -7,6 +7,7 @@
 
 import Node from './node.js';
 import NodeList from './nodelist.js';
+import utils from '../utils.js';
 
 /**
  * Tree data model element.
@@ -17,10 +18,8 @@ export default class Element extends Node {
 	/**
 	 * Creates a tree data model element.
 	 *
-	 * This constructor should be used only internally by the document.
-	 *
 	 * @param {String} name Node name.
-	 * @param {Iterable} attrs Iterable collection of {@link treeModel.Attribute attributes}.
+	 * @param {Iterable} attrs Iterable collection of attributes.
 	 * @param {treeModel.NodesSet} children List of nodes to be inserted
 	 * into created element. List of nodes can be of any type accepted by the {@link treeModel.NodeList} constructor.
 	 * @constructor
@@ -116,5 +115,41 @@ export default class Element extends Node {
 		}
 
 		return nodeList;
+	}
+
+	/**
+	 * Sets attribute on the element. If attribute with the same key already is set, it overwrites its values.
+	 *
+	 * @param {String} key Key of attribute to set.
+	 * @param {*} value Attribute value.
+	 */
+	setAttribute( key, value ) {
+		this._attrs.set( key, value );
+	}
+
+	/**
+	 * Removes all attributes from the element and sets given attributes.
+	 *
+	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set. See {@link treeModel.Node#getAttributes}.
+	 */
+	setAttributesTo( attrs ) {
+		this._attrs = utils.toMap( attrs );
+	}
+
+	/**
+	 * Removes an attribute with given key from the element.
+	 *
+	 * @param {String} key Key of attribute to remove.
+	 * @returns {Boolean} `true` if the attribute was set on the element, `false` otherwise.
+	 */
+	removeAttribute( key ) {
+		return this._attrs.delete( key );
+	}
+
+	/**
+	 * Removes all attributes from the element.
+	 */
+	clearAttributes() {
+		this._attrs.clear();
 	}
 }

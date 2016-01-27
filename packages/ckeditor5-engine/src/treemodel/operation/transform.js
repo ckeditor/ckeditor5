@@ -11,6 +11,7 @@ import MoveOperation from './moveoperation.js';
 import NoOperation from './nooperation.js';
 import Position from '../position.js';
 import Range from '../range.js';
+import langUtils from '../../lib/lodash/lang.js';
 import utils from '../../utils.js';
 
 /**
@@ -89,37 +90,32 @@ const ot = {
 
 			// Map transformed range(s) to operations and return them.
 			return ranges.reverse().map( ( range ) => {
-				return new AttributeOperation(
-					range,
-					a.oldAttr,
-					a.newAttr,
-					a.baseVersion
-				);
+				return new AttributeOperation( range, a.key, a.oldValue, a.newValue, a.baseVersion );
 			} );
 		},
 
 		// Transforms AttributeOperation `a` by AttributeOperation `b`. Accepts a flag stating whether `a` is more important
 		// than `b` when it comes to resolving conflicts. Returns results as an array of operations.
 		AttributeOperation( a, b, isStrong ) {
-			if ( haveConflictingAttributes( a, b ) ) {
+			if ( a.key === b.key ) {
 				// If operations attributes are in conflict, check if their ranges intersect and manage them properly.
 				let operations = [];
 
 				// First, we want to apply change to the part of a range that has not been changed by the other operation.
 				operations = operations.concat(
 					a.range.getDifference( b.range ).map( ( range ) => {
-						return new AttributeOperation( range, a.oldAttr, a.newAttr, a.baseVersion );
+						return new AttributeOperation( range, a.key, a.oldValue, a.newValue, a.baseVersion );
 					} )
 				);
 
-				if ( isStrong ) {
+				if ( isStrong && !langUtils.isEqual( a.newValue, b.newValue ) ) {
 					// If this operation is more important, we want also want to apply change to the part of the
 					// original range that has already been changed by the other operation. Since that range
 					// got changed we have to update oldAttr.
 					const common = a.range.getIntersection( b.range );
 
 					if ( common !== null ) {
-						operations.push( new AttributeOperation( common, b.oldAttr, a.newAttr, a.baseVersion ) );
+						operations.push( new AttributeOperation( common, b.key, b.oldValue, a.newValue, a.baseVersion ) );
 					}
 				}
 
@@ -131,7 +127,7 @@ const ot = {
 
 				return operations;
 			} else {
-				// If operations don't conflict simply, return an array containing just a clone of this operation.
+				// If operations don't conflict, simply return an array containing just a clone of this operation.
 				return [ a.clone() ];
 			}
 		},
@@ -184,12 +180,7 @@ const ot = {
 
 			// Map transformed range(s) to operations and return them.
 			return ranges.map( ( range ) => {
-				return new AttributeOperation(
-					range,
-					a.oldAttr,
-					a.newAttr,
-					a.baseVersion
-				);
+				return new AttributeOperation( range, a.key, a.oldValue, a.newValue, a.baseVersion );
 			} );
 		}
 	},
@@ -379,32 +370,6 @@ function updateBaseVersions( baseVersion, operations ) {
 // Checks whether MoveOperation targetPosition is inside a node from the moved range of the other MoveOperation.
 function moveTargetIntoMovedRange( a, b ) {
 	return a.targetPosition.getTransformedByDeletion( b.sourcePosition, b.howMany ) === null;
-}
-
-// Takes two AttributeOperations and checks whether their attributes are in conflict.
-// This happens when both operations changes an attribute with the same key and they either set different
-// values for this attribute or one of them removes it while the other one sets it.
-// Returns true if attributes are in conflict.
-function haveConflictingAttributes( a, b ) {
-	// Keeping in mind that newAttr or oldAttr might be null.
-	// We will retrieve the key from whichever parameter is set.
-	const keyA = ( a.newAttr || a.oldAttr ).key;
-	const keyB = ( b.newAttr || b.oldAttr ).key;
-
-	if ( keyA != keyB ) {
-		// Different keys - not conflicting.
-		return false;
-	}
-
-	if ( a.newAttr === null && b.newAttr === null ) {
-		// Both remove the attribute - not conflicting.
-		return false;
-	}
-
-	// Check if they set different value or one of them removes the attribute.
-	return ( a.newAttr === null && b.newAttr !== null ) ||
-		( a.newAttr !== null && b.newAttr === null ) ||
-		( !a.newAttr.isEqual( b.newAttr ) );
 }
 
 // Gets an array of Ranges and produces one Range out of it. The root of a new range will be same as

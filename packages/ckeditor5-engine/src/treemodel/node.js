@@ -5,8 +5,8 @@
 
 'use strict';
 
-import AttributeList from './attributelist.js';
 import langUtils from '../lib/lodash/lang.js';
+import utils from '../utils.js';
 import CKEditorError from '../ckeditorerror.js';
 
 /**
@@ -21,7 +21,7 @@ export default class Node {
 	 *
 	 * This is an abstract class, so this constructor should not be used directly.
 	 *
-	 * @param {Iterable} attrs Iterable collection of {@link treeModel.Attribute attributes}.
+	 * @param {Iterable|Object} attrs Iterable collection of attributes.
 	 * @constructor
 	 */
 	constructor( attrs ) {
@@ -37,12 +37,12 @@ export default class Node {
 		 * List of attributes set on this node.
 		 * **Note:** It is **important** that attributes of nodes already attached to the document must be changed
 		 * only by an {@link treeModel.operation.AttributeOperation}. Do not set attributes of such nodes
-		 * using {@link treeModel.AttributeList} API.
+		 * using {@link treeModel.Node} methods.
 		 *
-		 * @readonly
-		 * @property {treeModel.AttributeList} attrs
+		 * @protected
+		 * @property {Map} _attrs
 		 */
-		this.attrs = new AttributeList( attrs );
+		this._attrs = utils.toMap( attrs );
 	}
 
 	/**
@@ -160,5 +160,34 @@ export default class Node {
 		json.parent = this.parent ? this.parent.name : null;
 
 		return json;
+	}
+
+	/**
+	 * Checks if the node has an attribute for given key.
+	 *
+	 * @param {String} key Key of attribute to check.
+	 * @returns {Boolean} `true` if attribute with given key is set on node, `false` otherwise.
+	 */
+	hasAttribute( key ) {
+		return this._attrs.has( key );
+	}
+
+	/**
+	 * Gets an attribute value for given key or undefined if that attribute is not set on node.
+	 *
+	 * @param {String} key Key of attribute to look for.
+	 * @returns {*} Attribute value or null.
+	 */
+	getAttribute( key ) {
+		return this._attrs.get( key );
+	}
+
+	/**
+	 * Returns iterator that iterates over this node attributes.
+	 *
+	 * @returns {Iterable.<*>}
+	 */
+	getAttributes() {
+		return this._attrs[ Symbol.iterator ]();
 	}
 }

@@ -9,7 +9,6 @@ import { register } from '../batch-base.js';
 import AttributeOperation from '../operation/attributeoperation.js';
 import Position from '../position.js';
 import Range from '../range.js';
-import Attribute from '../attribute.js';
 import Element from '../element.js';
 
 /**
@@ -65,7 +64,7 @@ function attribute( batch, key, value, nodeOrRange ) {
 }
 
 function changeNode( doc, delta, key, value, node ) {
-	const previousValue = node.attrs.getValue( key );
+	const previousValue = node.getAttribute( key );
 	let range;
 
 	if ( previousValue != value ) {
@@ -79,12 +78,7 @@ function changeNode( doc, delta, key, value, node ) {
 			range = new Range( Position.createBefore( node ), Position.createAfter( node ) );
 		}
 
-		const operation = new AttributeOperation(
-				range,
-				previousValue ? new Attribute( key, previousValue ) : null,
-				value ? new Attribute( key, value ) : null,
-				doc.version
-			);
+		const operation = new AttributeOperation( range, key, previousValue, value, doc.version );
 
 		doc.applyOperation( operation );
 		delta.addOperation( operation );
@@ -114,7 +108,7 @@ function changeRange( doc, delta, key, value, range ) {
 		// We check values only when the range contains given element, that is when the iterator "enters" the element.
 		// To prevent double-checking or not needed checking, we filter-out iterator values for ELEMENT_END position.
 		if ( next.value.type != 'ELEMENT_END' ) {
-			valueAfter = next.value.item.attrs.getValue( key );
+			valueAfter = next.value.item.getAttribute( key );
 
 			// At the first run of the iterator the position in undefined. We also do not have a valueBefore, but
 			// because valueAfter may be null, valueBefore may be equal valueAfter ( undefined == null ).
@@ -141,12 +135,8 @@ function changeRange( doc, delta, key, value, range ) {
 	}
 
 	function addOperation() {
-		const operation = new AttributeOperation(
-				new Range( lastSplitPosition, position ),
-				valueBefore ? new Attribute( key, valueBefore ) : null,
-				value ? new Attribute( key, value ) : null,
-				doc.version
-			);
+		let range = new Range( lastSplitPosition, position );
+		const operation = new AttributeOperation( range, key, valueBefore, value, doc.version );
 
 		doc.applyOperation( operation );
 		delta.addOperation( operation );

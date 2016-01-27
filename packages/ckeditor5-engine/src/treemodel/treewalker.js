@@ -150,8 +150,7 @@ export default class TreeWalker {
 					charactersCount = offset - position.offset;
 				}
 
-				let text = node._nodeListText.text.substr( node._index, charactersCount );
-				let textFragment = new TextFragment( position, text );
+				let textFragment = new TextFragment( node, charactersCount );
 
 				position.offset = offset;
 				this.position = position;
@@ -216,12 +215,10 @@ export default class TreeWalker {
 					charactersCount = position.offset - offset;
 				}
 
-				let text = node._nodeListText.text.substr( node._index + 1 - charactersCount, charactersCount );
+				let textFragment = new TextFragment( parent.getChild( offset ), charactersCount );
 
 				position.offset = offset;
 				this.position = position;
-
-				let textFragment = new TextFragment( this.position, text );
 
 				return formatReturnValue( 'TEXT', textFragment );
 			} else {

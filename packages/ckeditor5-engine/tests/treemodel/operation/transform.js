@@ -11,7 +11,6 @@ import RootElement from '/ckeditor5/core/treemodel/rootelement.js';
 import Node from '/ckeditor5/core/treemodel/node.js';
 import Position from '/ckeditor5/core/treemodel/position.js';
 import Range from '/ckeditor5/core/treemodel/range.js';
-import Attribute from '/ckeditor5/core/treemodel/attribute.js';
 import transform from '/ckeditor5/core/treemodel/operation/transform.js';
 import InsertOperation from '/ckeditor5/core/treemodel/operation/insertoperation.js';
 import AttributeOperation from '/ckeditor5/core/treemodel/operation/attributeoperation.js';
@@ -169,8 +168,9 @@ describe( 'transform', () => {
 			it( 'no position update', () => {
 				let transformBy = new AttributeOperation(
 					Range.createFromPositionAndShift( position, 2 ),
+					'foo',
 					null,
-					new Attribute( 'foo', 'bar' ),
+					'bar',
 					baseVersion
 				);
 
@@ -385,19 +385,14 @@ describe( 'transform', () => {
 	} );
 
 	describe( 'AttributeOperation', () => {
-		let start, end, range, oldAttr, newAttr, anotherOldAttr, anotherNewAttr;
+		let start, end, range;
 
 		beforeEach( () => {
-			oldAttr = new Attribute( 'foo', 'abc' );
-			newAttr = new Attribute( 'foo', 'bar' );
-
-			anotherOldAttr = new Attribute( oldAttr.key, 'another' );
-			anotherNewAttr = new Attribute( oldAttr.key, 'anothernew' );
-
 			expected = {
 				type: AttributeOperation,
-				oldAttr: oldAttr,
-				newAttr: newAttr,
+				key: 'foo',
+				oldValue: 'abc',
+				newValue: 'bar',
 				baseVersion: baseVersion + 1
 			};
 		} );
@@ -409,7 +404,7 @@ describe( 'transform', () => {
 
 				range = new Range( start, end );
 
-				op = new AttributeOperation( range, oldAttr, newAttr, baseVersion );
+				op = new AttributeOperation( range, 'foo', 'abc', 'bar', baseVersion );
 
 				expected.range = new Range( start, end );
 			} );
@@ -527,8 +522,9 @@ describe( 'transform', () => {
 				it( 'attributes have different key: no operation update', () => {
 					let transformBy = new AttributeOperation(
 						Range.createFromRange( range ),
-						new Attribute( 'abc', true ),
-						new Attribute( 'abc', false ),
+						'abc',
+						true,
+						false,
 						baseVersion
 					);
 
@@ -538,43 +534,52 @@ describe( 'transform', () => {
 					expectOperation( transOp[ 0 ], expected );
 				} );
 
-				it( 'attributes set same value: no operation update', () => {
+				it( 'same key and value: convert to NoOperation', () => {
 					let transformBy = new AttributeOperation(
 						Range.createFromRange( range ),
-						oldAttr,
-						newAttr,
+						'foo',
+						'abc',
+						'bar',
 						baseVersion
 					);
 
 					let transOp = transform( op, transformBy );
 
 					expect( transOp.length ).to.equal( 1 );
-					expectOperation( transOp[ 0 ], expected );
+					expectOperation( transOp[ 0 ], {
+						type: NoOperation,
+						baseVersion: baseVersion + 1
+					} );
 				} );
 
-				it( 'both operations removes attribute: no operation update', () => {
-					op.newAttr = null;
+				it( 'both operations removes same attribute: convert to NoOperation', () => {
+					op.newValue = null;
 
 					let transformBy = new AttributeOperation(
 						new Range( new Position( root, [ 1, 1, 4 ] ), new Position( root, [ 3 ] ) ),
-						anotherOldAttr,
+						'foo',
+						'another',
 						null,
 						baseVersion
 					);
 
 					let transOp = transform( op, transformBy, true );
 
-					expected.newAttr = null;
+					expected.newValue = null;
 
 					expect( transOp.length ).to.equal( 1 );
-					expectOperation( transOp[ 0 ], expected );
+					expectOperation( transOp[ 0 ], {
+						type: NoOperation,
+						baseVersion: baseVersion + 1
+					} );
 				} );
 
 				describe( 'that is less important and', () => {
 					it( 'range does not intersect original range: no operation update', () => {
 						let transformBy = new AttributeOperation(
 							new Range( new Position( root, [ 3, 0 ] ), new Position( root, [ 4 ] ) ),
-							anotherOldAttr,
+							'foo',
+							'another',
 							null,
 							baseVersion
 						);
@@ -585,32 +590,34 @@ describe( 'transform', () => {
 						expectOperation( transOp[ 0 ], expected );
 					} );
 
-					it( 'range contains original range: update oldAttr', () => {
+					it( 'range contains original range: update oldValue', () => {
 						let transformBy = new AttributeOperation(
 							new Range( new Position( root, [ 1, 1, 4 ] ), new Position( root, [ 3 ] ) ),
-							anotherOldAttr,
+							'foo',
+							'another',
 							null,
 							baseVersion
 						);
 
 						let transOp = transform( op, transformBy, true );
 
-						expected.oldAttr = anotherOldAttr;
+						expected.oldValue = 'another';
 
 						expect( transOp.length ).to.equal( 1 );
 						expectOperation( transOp[ 0 ], expected );
 					} );
 
 					// [ original range   <   ]   range transformed by >
-					it( 'range intersects on left: split into two operations, update oldAttr', () => {
+					it( 'range intersects on left: split into two operations, update oldValue', () => {
 						// Get more test cases and better code coverage
-						op.newAttr = null;
+						op.newValue = null;
 
 						let transformBy = new AttributeOperation(
 							new Range( new Position( root, [ 1, 4, 2 ] ), new Position( root, [ 3 ] ) ),
-							anotherOldAttr,
+							'foo',
+							'another',
 							// Get more test cases and better code coverage
-							anotherNewAttr,
+							'anothernew',
 							baseVersion
 						);
 
@@ -618,7 +625,7 @@ describe( 'transform', () => {
 
 						expect( transOp.length ).to.equal( 2 );
 
-						expected.newAttr = null;
+						expected.newValue = null;
 
 						expected.range.end.path = [ 1, 4, 2 ];
 
@@ -626,17 +633,18 @@ describe( 'transform', () => {
 
 						expected.range.start.path = [ 1, 4, 2 ];
 						expected.range.end = op.range.end;
-						expected.oldAttr = anotherOldAttr;
+						expected.oldValue = 'another';
 						expected.baseVersion++;
 
 						expectOperation( transOp[ 1 ], expected );
 					} );
 
 					// [  range transformed by  <   ]  original range  >
-					it( 'range intersects on right: split into two operations, update oldAttr', () => {
+					it( 'range intersects on right: split into two operations, update oldValue', () => {
 						let transformBy = new AttributeOperation(
 							new Range( new Position( root, [ 1 ] ), new Position( root, [ 2, 1 ] ) ),
-							anotherOldAttr,
+							'foo',
+							'another',
 							null,
 							baseVersion
 						);
@@ -651,16 +659,17 @@ describe( 'transform', () => {
 
 						expected.range.start = op.range.start;
 						expected.range.end.path = [ 2, 1 ];
-						expected.oldAttr = anotherOldAttr;
+						expected.oldValue = 'another';
 						expected.baseVersion++;
 
 						expectOperation( transOp[ 1 ], expected );
 					} );
 
-					it( 'range is inside original range: split into three operations, update oldAttr', () => {
+					it( 'range is inside original range: split into three operations, update oldValue', () => {
 						let transformBy = new AttributeOperation(
 							new Range( new Position( root, [ 1, 4, 1 ] ), new Position( root, [ 2, 1 ] ) ),
-							anotherOldAttr,
+							'foo',
+							'another',
 							null,
 							baseVersion
 						);
@@ -681,7 +690,7 @@ describe( 'transform', () => {
 
 						expected.range.start.path = [ 1, 4, 1 ];
 						expected.range.end.path = [ 2, 1 ];
-						expected.oldAttr = anotherOldAttr;
+						expected.oldValue = 'another';
 						expected.baseVersion++;
 
 						expectOperation( transOp[ 2 ], expected );
@@ -692,7 +701,8 @@ describe( 'transform', () => {
 					it( 'range does not intersect original range: no operation update', () => {
 						let transformBy = new AttributeOperation(
 							new Range( new Position( root, [ 3, 0 ] ), new Position( root, [ 4 ] ) ),
-							oldAttr,
+							'foo',
+							'abc',
 							null,
 							baseVersion
 						);
@@ -706,7 +716,8 @@ describe( 'transform', () => {
 					it( 'range contains original range: convert to NoOperation', () => {
 						let transformBy = new AttributeOperation(
 							new Range( new Position( root, [ 1, 1, 4 ] ), new Position( root, [ 3 ] ) ),
-							oldAttr,
+							'foo',
+							'abc',
 							null,
 							baseVersion
 						);
@@ -724,7 +735,8 @@ describe( 'transform', () => {
 					it( 'range intersects on left: shrink original range', () => {
 						let transformBy = new AttributeOperation(
 							new Range( new Position( root, [ 1, 4, 2 ] ), new Position( root, [ 3 ] ) ),
-							oldAttr,
+							'foo',
+							'abc',
 							null,
 							baseVersion
 						);
@@ -741,7 +753,8 @@ describe( 'transform', () => {
 					it( 'range intersects on right: shrink original range', () => {
 						let transformBy = new AttributeOperation(
 							new Range( new Position( root, [ 1 ] ), new Position( root, [ 2, 1 ] ) ),
-							oldAttr,
+							'foo',
+							'abc',
 							null,
 							baseVersion
 						);
@@ -757,7 +770,8 @@ describe( 'transform', () => {
 					it( 'range is inside original range: split into two operations', () => {
 						let transformBy = new AttributeOperation(
 							new Range( new Position( root, [ 1, 4, 1 ] ), new Position( root, [ 2, 1 ] ) ),
-							oldAttr,
+							'foo',
+							'abc',
 							null,
 							baseVersion
 						);
@@ -1048,7 +1062,7 @@ describe( 'transform', () => {
 
 				range = new Range( start, end );
 
-				op = new AttributeOperation( range, oldAttr, newAttr, baseVersion );
+				op = new AttributeOperation( range, 'foo', 'abc', 'bar', baseVersion );
 
 				expected.range = new Range( start, end );
 			} );
@@ -1515,8 +1529,9 @@ describe( 'transform', () => {
 			it( 'no operation update', () => {
 				let transformBy = new AttributeOperation(
 					new Range( sourcePosition, rangeEnd ),
-					new Attribute( 'abc', true ),
-					new Attribute( 'abc', false ),
+					'abc',
+					true,
+					false,
 					baseVersion
 				);
 
@@ -2314,8 +2329,9 @@ describe( 'transform', () => {
 						new Position( root, [ 0 ] ),
 						new Position( root, [ 1 ] )
 					),
-					new Attribute( 'foo', 'bar' ),
-					new Attribute( 'foo', 'xyz' ),
+					'foo',
+					'bar',
+					'xyz',
 					baseVersion
 				);
 

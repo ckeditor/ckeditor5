@@ -10,7 +10,6 @@
 import coreTestUtils from '/tests/core/_utils/utils.js';
 import Document from '/ckeditor5/core/treemodel/document.js';
 import Text from '/ckeditor5/core/treemodel/text.js';
-import Attribute from '/ckeditor5/core/treemodel/attribute.js';
 import Range from '/ckeditor5/core/treemodel/range.js';
 import Position from '/ckeditor5/core/treemodel/position.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
@@ -40,8 +39,8 @@ describe( 'Batch', () => {
 		let node, text, char;
 
 		beforeEach( () => {
-			node = new Element( 'p', [ new Attribute( 'a', 1 ) ] );
-			text = new Text( 'c', [ new Attribute( 'a', 1 ) ] );
+			node = new Element( 'p', { a: 1 } );
+			text = new Text( 'c', { a: 1 } );
 
 			root.insertChildren( 0, [ node, text ] );
 
@@ -52,31 +51,31 @@ describe( 'Batch', () => {
 			it( 'should create the attribute on element', () => {
 				batch.setAttr( 'b', 2, node );
 				expect( getOperationsCount() ).to.equal( 1 );
-				expect( node.attrs.getValue( 'b' ) ).to.equal( 2 );
+				expect( node.getAttribute( 'b' ) ).to.equal( 2 );
 			} );
 
 			it( 'should change the attribute of element', () => {
 				batch.setAttr( 'a', 2, node );
 				expect( getOperationsCount() ).to.equal( 1 );
-				expect( node.attrs.getValue( 'a' ) ).to.equal( 2 );
+				expect( node.getAttribute( 'a' ) ).to.equal( 2 );
 			} );
 
 			it( 'should create the attribute on text node', () => {
 				batch.setAttr( 'b', 2, char );
 				expect( getOperationsCount() ).to.equal( 1 );
-				expect( root.getChild( 1 ).attrs.getValue( 'b' ) ).to.equal( 2 );
+				expect( root.getChild( 1 ).getAttribute( 'b' ) ).to.equal( 2 );
 			} );
 
 			it( 'should change the attribute of text node', () => {
 				batch.setAttr( 'a', 2, char );
 				expect( getOperationsCount() ).to.equal( 1 );
-				expect( root.getChild( 1 ).attrs.getValue( 'a' ) ).to.equal( 2 );
+				expect( root.getChild( 1 ).getAttribute( 'a' ) ).to.equal( 2 );
 			} );
 
 			it( 'should do nothing if the attribute value is the same', () => {
 				batch.setAttr( 'a', 1, node );
 				expect( getOperationsCount() ).to.equal( 0 );
-				expect( node.attrs.getValue( 'a' ) ).to.equal( 1 );
+				expect( node.getAttribute( 'a' ) ).to.equal( 1 );
 			} );
 
 			it( 'should be chainable', () => {
@@ -89,13 +88,13 @@ describe( 'Batch', () => {
 			it( 'should remove the attribute from element', () => {
 				batch.removeAttr( 'a', node );
 				expect( getOperationsCount() ).to.equal( 1 );
-				expect( node.attrs.getValue( 'a' ) ).to.be.null;
+				expect( node.getAttribute( 'a' ) ).to.be.undefined;
 			} );
 
 			it( 'should remove the attribute from character', () => {
 				batch.removeAttr( 'a', char );
 				expect( getOperationsCount() ).to.equal( 1 );
-				expect( root.getChild( 1 ).attrs.getValue( 'a' ) ).to.be.null;
+				expect( root.getChild( 1 ).getAttribute( 'a' ) ).to.be.undefined;
 			} );
 
 			it( 'should do nothing if the attribute is not set', () => {
@@ -113,13 +112,13 @@ describe( 'Batch', () => {
 	describe( 'change attribute on range', () => {
 		beforeEach( () => {
 			root.insertChildren( 0, [
-				new Text( 'xxx', [ new Attribute( 'a', 1 ) ] ),
+				new Text( 'xxx', { a: 1 } ),
 				'xxx',
-				new Text( 'xxx', [ new Attribute( 'a', 1 ) ] ),
-				new Text( 'xxx', [ new Attribute( 'a', 2 ) ] ),
+				new Text( 'xxx', { a: 1 } ),
+				new Text( 'xxx', { a: 2 } ),
 				'xxx',
-				new Text( 'xxx', [ new Attribute( 'a', 1 ) ] ),
-				new Element( 'e', [ new Attribute( 'a', 2 ) ], 'xxx' ),
+				new Text( 'xxx', { a: 1 } ),
+				new Element( 'e', { a: 2 }, 'xxx' ),
 				'xxx'
 			] );
 		} );
@@ -147,7 +146,7 @@ describe( 'Batch', () => {
 			// default: 111---111222---1112------
 			const range = Range.createFromElement( root );
 
-			return Array.from( range.getAllNodes() ).map( node => node.attrs.getValue( 'a' ) || '-' ).join( '' );
+			return Array.from( range.getAllNodes() ).map( node => node.getAttribute( 'a' ) || '-' ).join( '' );
 		}
 
 		describe( 'setAttr', () => {

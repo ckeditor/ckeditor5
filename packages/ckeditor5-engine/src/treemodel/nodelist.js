@@ -9,6 +9,7 @@ import CharacterProxy from './characterproxy.js';
 import Text from './text.js';
 import utils from '../utils.js';
 import langUtils from '../lib/lodash/lang.js';
+import CKEditorError from '../ckeditorerror.js';
 
 /**
  * Value that is convertible to an item kept in {@link treeModel.NodeList} or an iterable collection of such items.
@@ -94,11 +95,11 @@ export default class NodeList {
 	 *		let nodeList = new NodeList( 'foo' );
 	 *		nodeList.length; // 3
 	 *
-	 *		let nodeList = new NodeList( new Text( 'foo', [ new Attribute( 'bar', 'bom' ) ] ) );
+	 *		let nodeList = new NodeList( new Text( 'foo', { bar: 'bom' } ) );
 	 *		nodeList.length; // 3
-	 *		nodeList.get( 0 ).attrs.get( 'bar' ); // 'bom'
-	 *		nodeList.get( 1 ).attrs.get( 'bar' ); // 'bom'
-	 *		nodeList.get( 2 ).attrs.get( 'bar' ); // 'bom'
+	 *		nodeList.get( 0 ).getAttribute( 'bar' ); // 'bom'
+	 *		nodeList.get( 1 ).getAttribute( 'bar' ); // 'bom'
+	 *		nodeList.get( 2 ).getAttribute( 'bar' ); // 'bom'
 	 *
 	 *		let nodeListA = new NodeList( 'foo' );
 	 *		let nodeListB = new NodeList( nodeListA );
@@ -145,9 +146,9 @@ export default class NodeList {
 				let length = 1;
 
 				if ( node instanceof CharacterProxy ) {
-					node = new NodeListText( node.character, node.attrs );
+					node = new NodeListText( node.character, node._attrs );
 				} else if ( node instanceof Text ) {
-					node = new NodeListText( node.text, node.attrs );
+					node = new NodeListText( node.text, node._attrs );
 				} else if ( typeof node == 'string' ) {
 					node = new NodeListText( node, [] );
 				}
@@ -157,7 +158,7 @@ export default class NodeList {
 
 					let prev = this._nodes[ this._nodes.length - 1 ];
 
-					if ( prev instanceof NodeListText && prev.attrs.isEqual( node.attrs ) ) {
+					if ( prev instanceof NodeListText && utils.mapsEqual( prev._attrs, node._attrs ) ) {
 						// If previously added text has same attributes, merge this text with it.
 						prev.text += node.text;
 						mergedWithPrev = true;
@@ -310,6 +311,57 @@ export default class NodeList {
 	}
 
 	/**
+	 * Sets or removes given attribute on a range of nodes in the node list.
+	 *
+	 * @param {Number} index Position of the first node to change.
+	 * @param {Number} number Number of nodes to change.
+	 * @param {String} key Attribute key to change.
+	 * @param {*} [attribute] Attribute value or null if attribute with given key should be removed.
+	 */
+	setAttribute( index, number, key, value ) {
+		if ( index < 0 || index + number > this.length ) {
+			/**
+			 * Trying to set attribute on non-existing node list items.
+			 *
+			 * @error nodelist-setattribute-out-of-bounds
+			 * @param root
+			 */
+			throw new CKEditorError( 'nodelist-setattribute-out-of-bounds: Trying to set attribute on non-existing node list items.' );
+		}
+
+		// "Range" of nodes to remove attributes may start in NodeListText or end in NodeListText. Some splitting may be needed.
+		this._splitNodeAt( index );
+		this._splitNodeAt( index + number );
+
+		let i = index;
+
+		while ( i < index + number ) {
+			let node = this._nodes[ this._indexMap[ i ] ];
+
+			if ( node instanceof NodeListText ) {
+				if ( value !== null ) {
+					node._attrs.set( key, value );
+				} else {
+					node._attrs.delete( key );
+				}
+
+				this._mergeNodeAt( i );
+				i += node.text.length;
+			} else {
+				if ( value !== null ) {
+					node.setAttribute( key, value );
+				} else {
+					node.removeAttribute( key );
+				}
+
+				i++;
+			}
+		}
+
+		this._mergeNodeAt( index + number );
+	}
+
+	/**
 	 * Checks whether given index is inside a text and if so, splits that text node. This method should be used
 	 * to split text objects whenever there are some changes made on a part of text object (i.e. removing part of text,
 	 * inserting between text object, changing attributes of part of a text object).
@@ -339,7 +391,7 @@ export default class NodeList {
 		node.text = textBefore;
 
 		// Create a new text node with the "removed" part and splice it after original node.
-		let newText = new NodeListText( textAfter, node.attrs );
+		let newText = new NodeListText( textAfter, node._attrs );
 		newText.parent = node.parent;
 		this._nodes.splice.call( this._nodes, realIndex + 1, 0, newText );
 
@@ -374,7 +426,7 @@ export default class NodeList {
 		let nodeAfter = this._nodes[ realIndexAfter ];
 
 		// Check if both of those nodes are text objects with same attributes.
-		if ( nodeBefore instanceof Text && nodeAfter instanceof Text && nodeBefore.attrs.isEqual( nodeAfter.attrs ) ) {
+		if ( nodeBefore instanceof NodeListText && nodeAfter instanceof NodeListText && utils.mapsEqual( nodeBefore._attrs, nodeAfter._attrs ) ) {
 			// Append text of text node after index to the before one.
 			nodeBefore.text += nodeAfter.text;
 

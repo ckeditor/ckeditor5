@@ -10,13 +10,13 @@
 import Node from '/ckeditor5/core/treemodel/node.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
 import Text from '/ckeditor5/core/treemodel/text.js';
-import Attribute from '/ckeditor5/core/treemodel/attribute.js';
+import utils from '/ckeditor5/core/utils.js';
 
 describe( 'CharacterProxy', () => {
 	let text, element, char;
 
 	before( () => {
-		text = new Text( 'abc', [ new Attribute( 'foo', true ) ] );
+		text = new Text( 'abc', { foo: true } );
 		element = new Element( 'div', [], [ new Element( 'p' ), text, new Element( 'p' ) ] );
 	} );
 
@@ -37,7 +37,7 @@ describe( 'CharacterProxy', () => {
 	} );
 
 	it( 'should have attributes list equal to passed to Text instance', () => {
-		expect( char.attrs.isEqual( text.attrs ) ).to.be.true;
+		expect( utils.mapsEqual( char._attrs, text._attrs ) ).to.be.true;
 	} );
 
 	it( 'should return correct index in parent node', () => {

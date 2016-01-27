@@ -10,7 +10,7 @@
 import NodeList from '/ckeditor5/core/treemodel/nodelist.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
 import Text from '/ckeditor5/core/treemodel/text.js';
-import Attribute from '/ckeditor5/core/treemodel/attribute.js';
+import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
 describe( 'NodeList', () => {
 	describe( 'constructor', () => {
@@ -40,16 +40,16 @@ describe( 'NodeList', () => {
 		} );
 
 		it( 'should change text with attribute into a set of nodes', () => {
-			let attr = new Attribute( 'bold', true );
+			let attr = { bold: true };
 			let nodeList = new NodeList( new Text( 'foo', [ attr ] ) );
 
 			expect( nodeList.length ).to.equal( 3 );
 			expect( nodeList.get( 0 ).character ).to.equal( 'f' );
-			expect( nodeList.get( 0 ).attrs.getValue( attr.key ) ).to.equal( attr.value );
+			expect( nodeList.get( 0 ).getAttribute( attr.key ) ).to.equal( attr.value );
 			expect( nodeList.get( 1 ).character ).to.equal( 'o' );
-			expect( nodeList.get( 1 ).attrs.getValue( attr.key ) ).to.equal( attr.value );
+			expect( nodeList.get( 1 ).getAttribute( attr.key ) ).to.equal( attr.value );
 			expect( nodeList.get( 2 ).character ).to.equal( 'o' );
-			expect( nodeList.get( 2 ).attrs.getValue( attr.key ) ).to.equal( attr.value );
+			expect( nodeList.get( 2 ).getAttribute( attr.key ) ).to.equal( attr.value );
 		} );
 
 		it( 'should change array of characters into a set of nodes', () => {
@@ -68,7 +68,7 @@ describe( 'NodeList', () => {
 		} );
 
 		it( 'should omit empty strings / texts', () => {
-			let nodeList = new NodeList( [ 'fo', '', 'ob', new Text( '', [ new Attribute( 'foo', true ) ] ), 'ar' ] );
+			let nodeList = new NodeList( [ 'fo', '', 'ob', new Text( '', { foo: true } ), 'ar' ] );
 
 			expect( nodeList.length ).to.equal( 6 );
 			expect( nodeList.get( 0 ).character ).to.equal( 'f' );
@@ -78,16 +78,16 @@ describe( 'NodeList', () => {
 			expect( nodeList.get( 4 ).character ).to.equal( 'a' );
 			expect( nodeList.get( 5 ).character ).to.equal( 'r' );
 
-			expect( nodeList.get( 0 ).attrs.size ).to.equal( 0 );
-			expect( nodeList.get( 1 ).attrs.size ).to.equal( 0 );
-			expect( nodeList.get( 2 ).attrs.size ).to.equal( 0 );
-			expect( nodeList.get( 3 ).attrs.size ).to.equal( 0 );
-			expect( nodeList.get( 4 ).attrs.size ).to.equal( 0 );
-			expect( nodeList.get( 5 ).attrs.size ).to.equal( 0 );
+			expect( nodeList.get( 0 )._attrs.size ).to.equal( 0 );
+			expect( nodeList.get( 1 )._attrs.size ).to.equal( 0 );
+			expect( nodeList.get( 2 )._attrs.size ).to.equal( 0 );
+			expect( nodeList.get( 3 )._attrs.size ).to.equal( 0 );
+			expect( nodeList.get( 4 )._attrs.size ).to.equal( 0 );
+			expect( nodeList.get( 5 )._attrs.size ).to.equal( 0 );
 		} );
 
 		it( 'should merge strings and text objects if possible', () => {
-			let attr = new Attribute( 'foo', 'bar' );
+			let attr = { foo: 'bar' };
 			let nodeList = new NodeList( [ 'fo', new Text( 'o' ), new Text( 'x', [ attr ] ), new Text( 'y', [ attr ] ), 'bar' ] );
 
 			expect( nodeList.length ).to.equal( 8 );
@@ -124,7 +124,7 @@ describe( 'NodeList', () => {
 		} );
 
 		it( 'should merge inserted text objects if possible', () => {
-			let attr = new Attribute( 'foo', 'bar' );
+			let attr = { foo: 'bar' };
 			let outerList = new NodeList( [ 'foo', new Text( 'bar', [ attr ] ) ] );
 			let innerList = new NodeList( [ 'x' , new Text( 'y', [ attr ] ) ] );
 
@@ -155,7 +155,7 @@ describe( 'NodeList', () => {
 		} );
 
 		it( 'should merge text objects left in node list possible', () => {
-			let attr = new Attribute( 'foo', 'bar' );
+			let attr = { foo: 'bar' };
 			let nodeList = new NodeList( [ 'foo', new Text( 'xxx', [ attr ] ), 'bar' ] );
 
 			nodeList.remove( 2, 5 );
@@ -220,6 +220,61 @@ describe( 'NodeList', () => {
 		} );
 	} );
 
+	describe( 'setAttribute', () => {
+		it( 'should change attribute for multiple items in node list but not for their children', () => {
+			let p = new Element( 'p', [], 'x' );
+			let div = new Element( 'div' );
+
+			let nodeList = new NodeList( [ p, 'foo', div, 'bar' ] );
+
+			nodeList.setAttribute( 0, 6, 'a', 'true' );
+
+			// Attribute set.
+			expect( p.hasAttribute( 'a' ) ).to.be.true;
+			expect( nodeList.get( 1 ).hasAttribute( 'a' ) ).to.be.true;
+			expect( nodeList.get( 2 ).hasAttribute( 'a' ) ).to.be.true;
+			expect( nodeList.get( 3 ).hasAttribute( 'a' ) ).to.be.true;
+			expect( div.hasAttribute( 'a' ) ).to.be.true;
+			expect( nodeList.get( 5 ).hasAttribute( 'a' ) ).to.be.true;
+			expect( nodeList.get( 6 ).hasAttribute( 'a' ) ).to.be.false;
+			expect( nodeList.get( 7 ).hasAttribute( 'a' ) ).to.be.false;
+
+			// Attribute not set for children.
+			expect( p.getChild( 0 ).hasAttribute( 'a' ) ).to.be.false;
+		} );
+
+		it( 'should remove attribute if no new attribute has been passed', () => {
+			let p = new Element( 'p', { a: true } );
+			let text = new Text( 'foobar', { a: true } );
+			let nodeList = new NodeList( [ p, text ] );
+
+			nodeList.setAttribute( 0, 4, 'a', null );
+
+			expect( p.hasAttribute( 'a' ) ).to.be.false;
+			expect( nodeList.get( 1 ).hasAttribute( 'a' ) ).to.be.false;
+			expect( nodeList.get( 2 ).hasAttribute( 'a' ) ).to.be.false;
+			expect( nodeList.get( 3 ).hasAttribute( 'a' ) ).to.be.false;
+			expect( nodeList.get( 4 ).hasAttribute( 'a' ) ).to.be.true;
+			expect( nodeList.get( 5 ).hasAttribute( 'a' ) ).to.be.true;
+
+			expect( nodeList._nodes.length ).to.equal( 3 );
+		} );
+
+		it( 'should throw if wrong index or number is passed', () => {
+			let attr = { a: true };
+			let text = new Text( 'foo', [ attr ] );
+			let nodeList = new NodeList( text );
+
+			expect( () => {
+				nodeList.setAttribute( -1, 2, attr.key, null );
+			} ).to.throw( CKEditorError, /nodelist-setattribute-out-of-bounds/ );
+
+			expect( () => {
+				nodeList.setAttribute( 2, 2, attr.key, null );
+			} ).to.throw( CKEditorError, /nodelist-setattribute-out-of-bounds/ );
+		} );
+	} );
+
 	describe( '_splitNodeAt', () => {
 		it( 'should split text object into two text objects', () => {
 			let nodeList = new NodeList( 'abcd' );
@@ -231,7 +286,7 @@ describe( 'NodeList', () => {
 		} );
 
 		it( 'should do nothing if node before and after index are different', () => {
-			let nodeList = new NodeList( [ new Text( 'ab', [ new Attribute( 'foo', true ) ] ), 'cd' ] );
+			let nodeList = new NodeList( [ new Text( 'ab', { foo: true } ), 'cd' ] );
 			nodeList._splitNodeAt( 2 );
 
 			expect( nodeList._nodes.length ).to.equal( 2 );
@@ -242,12 +297,12 @@ describe( 'NodeList', () => {
 
 	describe( '_mergeNodeAt', () => {
 		it( 'should merge two text object if they have same attributes', () => {
-			let attr = new Attribute( 'foo', true );
+			let attr = { foo: true };
 			let nodeList = new NodeList( [ 'ab', new Text( 'cd', [ attr ] ) ] );
-			nodeList._nodes[ 1 ].attrs.delete( attr.key );
 
 			expect( nodeList._nodes.length ).to.equal( 2 );
 
+			nodeList._nodes[ 1 ]._attrs.delete( attr.key );
 			nodeList._mergeNodeAt( 2 );
 
 			expect( nodeList._nodes.length ).to.equal( 1 );
@@ -255,7 +310,8 @@ describe( 'NodeList', () => {
 		} );
 
 		it( 'should do nothing if text objects has different attributes', () => {
-			let nodeList = new NodeList( [ new Text( 'ab', [ new Attribute( 'foo', true ) ] ), 'cd' ] );
+			let nodeList = new NodeList( [ new Text( 'ab', { foo: true } ), 'cd' ] );
+
 			nodeList._mergeNodeAt( 2 );
 
 			expect( nodeList._nodes.length ).to.equal( 2 );
@@ -266,7 +322,7 @@ describe( 'NodeList', () => {
 
 	describe( '_getCharIndex', () => {
 		it( 'should return offset of character at given index from the beginning of the NodeListText containing that character', () => {
-			let nodeList = new NodeList( [ new Text( 'ab', [ new Attribute( 'foo', true ) ] ), 'cd' ] );
+			let nodeList = new NodeList( [ new Text( 'ab', { foo: true } ), 'cd' ] );
 			let charIndexC = nodeList._getCharIndex( 2 );
 			let charIndexD = nodeList._getCharIndex( 3 );
 
