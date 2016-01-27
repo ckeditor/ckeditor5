@@ -116,6 +116,21 @@ describe( 'utils', () => {
 		} );
 	} );
 
+	describe( 'mapsEqual', () => {
+		it( 'should return true if maps have exactly same entries (order of adding does not matter)', () => {
+			let mapA = new Map();
+			let mapB = new Map();
+
+			mapA.set( 'foo', 'bar' );
+			mapA.set( 'abc', 'xyz' );
+
+			mapB.set( 'abc', 'xyz' );
+			mapB.set( 'foo', 'bar' );
+
+			expect( utils.mapsEqual( mapA, mapB ) ).to.be.true;
+		} );
+	} );
+
 	describe( 'nth', () => {
 		it( 'should return 0th item', () => {
 			expect( utils.nth( 0, getIterator() ) ).to.equal( 11 );

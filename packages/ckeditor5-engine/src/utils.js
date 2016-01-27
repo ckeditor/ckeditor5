@@ -92,6 +92,47 @@ const utils = {
 	},
 
 	/**
+	 * Transform object to map.
+	 *
+	 *		const map = utils.objectToMap( { 'foo': 1, 'bar': 2 } );
+	 *		map.get( 'foo' ); // 1
+	 *
+	 * @param {Object} obj Object to transform.
+	 * @returns {Map} Map created from object.
+	 */
+	objectToMap( obj ) {
+		const map = new Map();
+
+		for ( let key in obj ) {
+			map.set( key, obj[ key ] );
+		}
+
+		return map;
+	},
+
+	/**
+	 * Checks whether given {Map}s are equal, that is has same size and same key-value pairs.
+	 *
+	 * @returns {Boolean} `true` if given maps are equal, `false` otherwise.
+	 */
+	mapsEqual( mapA, mapB ) {
+		if ( mapA.size != mapB.size ) {
+			return false;
+		}
+
+		for ( let attr of mapA.entries() ) {
+			let valA = JSON.stringify( attr[ 1 ] );
+			let valB = JSON.stringify( mapB.get( attr[ 0 ] ) );
+
+			if ( valA !== valB ) {
+				return false;
+			}
+		}
+
+		return true;
+	},
+
+	/**
 	 * Returns `nth` (starts from `0` of course) item of an `iterable`.
 	 *
 	 * @param {Number} index
