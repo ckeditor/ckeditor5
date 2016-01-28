@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
- /* global console:false */
+/* global console:false */
 
 'use strict';
 
@@ -16,7 +16,7 @@ const treeView = new TreeView( document.getElementById( 'editor' ) );
 treeView.viewRoot.insertChildren( 0, [
 	new Element( 'p', [], [ new Text( 'New' ) ] ),
 	new Element( 'p', [], [ new Text( 'Content' ) ] )
-	] );
+] );
 
 treeView.render();
 

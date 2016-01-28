@@ -194,7 +194,7 @@ describe( 'Renderer', () => {
 			renderer.render();
 
 			expect( domNode.childNodes.length ).to.equal( 2 );
-			expect( domNode.childNodes[ 0 ].tagName.toLowerCase() ).to.equal( 'img' );
+			expect( domNode.childNodes[ 0 ].tagName ).to.equal( 'IMG' );
 			expect( domNode.childNodes[ 1 ].data ).to.equal( 'foo' );
 		} );
 
@@ -264,7 +264,7 @@ describe( 'Renderer', () => {
 			renderer.render();
 
 			expect( domNode.childNodes.length ).to.equal( 1 );
-			expect( domNode.childNodes[ 0 ].tagName.toLowerCase() ).to.equal( 'p' );
+			expect( domNode.childNodes[ 0 ].tagName ).to.equal( 'P' );
 		} );
 	} );
 } );

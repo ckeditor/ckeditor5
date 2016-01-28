@@ -73,7 +73,7 @@ describe( 'Node', () => {
 			expect( charR.getIndex() ).to.equal( 3 );
 		} );
 
-		it( 'should throw an error if parent does not contains element', () => {
+		it( 'should throw an error if parent does not contain element', () => {
 			let f = new Text( 'f' );
 			let bar = new Element( 'bar', [], [] );
 

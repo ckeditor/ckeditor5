@@ -32,6 +32,6 @@ describe( 'TreeView integration', () => {
 		treeView.render();
 
 		expect( domDiv.childNodes.length ).to.equal( 1 );
-		expect( domDiv.childNodes[ 0 ].tagName.toLowerCase() ).to.equal( 'p' );
+		expect( domDiv.childNodes[ 0 ].tagName ).to.equal( 'P' );
 	} );
 } );

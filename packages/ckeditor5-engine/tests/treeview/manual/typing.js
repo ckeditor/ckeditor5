@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
- /* global console:false */
+/* global console:false */
 
 'use strict';
 

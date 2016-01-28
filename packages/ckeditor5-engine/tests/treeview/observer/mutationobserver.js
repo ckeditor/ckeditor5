@@ -42,11 +42,11 @@ describe( 'MutationObserver', () => {
 		handleMutation();
 
 		expectDomEditorNotToChange();
-		expect( lastMutations.length ).to.equals( 1 );
-		expect( lastMutations[ 0 ].type ).to.equals( 'text' );
-		expect( lastMutations[ 0 ].node ).to.equals( treeView.viewRoot.getChild( 0 ).getChild( 0 ) );
-		expect( lastMutations[ 0 ].newText ).to.equals( 'foom' );
-		expect( lastMutations[ 0 ].oldText ).to.equals( 'foo' );
+		expect( lastMutations.length ).to.equal( 1 );
+		expect( lastMutations[ 0 ].type ).to.equal( 'text' );
+		expect( lastMutations[ 0 ].node ).to.equal( treeView.viewRoot.getChild( 0 ).getChild( 0 ) );
+		expect( lastMutations[ 0 ].newText ).to.equal( 'foom' );
+		expect( lastMutations[ 0 ].oldText ).to.equal( 'foo' );
 	} );
 
 	it( 'should handle bold', () => {
@@ -58,16 +58,16 @@ describe( 'MutationObserver', () => {
 		handleMutation();
 
 		expectDomEditorNotToChange();
-		expect( lastMutations.length ).to.equals( 1 );
-		expect( lastMutations[ 0 ].type ).to.equals( 'children' );
-		expect( lastMutations[ 0 ].node ).to.equals( treeView.viewRoot.getChild( 0 ) );
+		expect( lastMutations.length ).to.equal( 1 );
+		expect( lastMutations[ 0 ].type ).to.equal( 'children' );
+		expect( lastMutations[ 0 ].node ).to.equal( treeView.viewRoot.getChild( 0 ) );
 
-		expect( lastMutations[ 0 ].newChildren.length ).to.equals( 2 );
-		expect( lastMutations[ 0 ].newChildren[ 0 ].getText() ).to.equals( 'f' );
-		expect( lastMutations[ 0 ].newChildren[ 1 ].name ).to.equals( 'b' );
+		expect( lastMutations[ 0 ].newChildren.length ).to.equal( 2 );
+		expect( lastMutations[ 0 ].newChildren[ 0 ].getText() ).to.equal( 'f' );
+		expect( lastMutations[ 0 ].newChildren[ 1 ].name ).to.equal( 'b' );
 
-		expect( lastMutations[ 0 ].oldChildren.length ).to.equals( 1 );
-		expect( lastMutations[ 0 ].oldChildren[ 0 ].getText() ).to.equals( 'foo' );
+		expect( lastMutations[ 0 ].oldChildren.length ).to.equal( 1 );
+		expect( lastMutations[ 0 ].oldChildren[ 0 ].getText() ).to.equal( 'foo' );
 	} );
 
 	it( 'should deduplicate text changes', () => {
@@ -77,11 +77,11 @@ describe( 'MutationObserver', () => {
 		handleMutation();
 
 		expectDomEditorNotToChange();
-		expect( lastMutations.length ).to.equals( 1 );
-		expect( lastMutations[ 0 ].type ).to.equals( 'text' );
-		expect( lastMutations[ 0 ].node ).to.equals( treeView.viewRoot.getChild( 0 ).getChild( 0 ) );
-		expect( lastMutations[ 0 ].newText ).to.equals( 'fooxy' );
-		expect( lastMutations[ 0 ].oldText ).to.equals( 'foo' );
+		expect( lastMutations.length ).to.equal( 1 );
+		expect( lastMutations[ 0 ].type ).to.equal( 'text' );
+		expect( lastMutations[ 0 ].node ).to.equal( treeView.viewRoot.getChild( 0 ).getChild( 0 ) );
+		expect( lastMutations[ 0 ].newText ).to.equal( 'fooxy' );
+		expect( lastMutations[ 0 ].oldText ).to.equal( 'foo' );
 	} );
 
 	it( 'should ignore changes in elements not attached to tree view', () => {
@@ -96,9 +96,9 @@ describe( 'MutationObserver', () => {
 		handleMutation();
 
 		expectDomEditorNotToChange();
-		expect( lastMutations.length ).to.equals( 1 );
-		expect( lastMutations[ 0 ].type ).to.equals( 'children' );
-		expect( lastMutations[ 0 ].node ).to.equals( treeView.viewRoot );
+		expect( lastMutations.length ).to.equal( 1 );
+		expect( lastMutations[ 0 ].type ).to.equal( 'children' );
+		expect( lastMutations[ 0 ].node ).to.equal( treeView.viewRoot );
 	} );
 
 	function handleMutation() {
@@ -106,14 +106,14 @@ describe( 'MutationObserver', () => {
 	}
 
 	function expectDomEditorNotToChange() {
-		expect( domEditor.childNodes.length ).to.equals( 2 );
-		expect( domEditor.childNodes[ 0 ].tagName.toLowerCase() ).to.equals( 'p' );
-		expect( domEditor.childNodes[ 1 ].tagName.toLowerCase() ).to.equals( 'p' );
+		expect( domEditor.childNodes.length ).to.equal( 2 );
+		expect( domEditor.childNodes[ 0 ].tagName ).to.equal( 'P' );
+		expect( domEditor.childNodes[ 1 ].tagName ).to.equal( 'P' );
 
-		expect( domEditor.childNodes[ 0 ].childNodes.length ).to.equals( 1 );
-		expect( domEditor.childNodes[ 0 ].childNodes[ 0 ].data ).to.equals( 'foo' );
+		expect( domEditor.childNodes[ 0 ].childNodes.length ).to.equal( 1 );
+		expect( domEditor.childNodes[ 0 ].childNodes[ 0 ].data ).to.equal( 'foo' );
 
-		expect( domEditor.childNodes[ 1 ].childNodes.length ).to.equals( 1 );
-		expect( domEditor.childNodes[ 1 ].childNodes[ 0 ].data ).to.equals( 'bar' );
+		expect( domEditor.childNodes[ 1 ].childNodes.length ).to.equal( 1 );
+		expect( domEditor.childNodes[ 1 ].childNodes[ 0 ].data ).to.equal( 'bar' );
 	}
 } );

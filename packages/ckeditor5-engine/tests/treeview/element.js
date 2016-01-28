@@ -25,7 +25,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should create element with attributes as plain object', () => {
-			const el = new ViewElement( 'p', { 'foo': 'bar' } );
+			const el = new ViewElement( 'p', { foo: 'bar' } );
 
 			expect( el ).to.have.property( 'name' ).that.equals( 'p' );
 			expect( getIteratorCount( el.getAttributeKeys() ) ).to.equal( 1 );
@@ -44,7 +44,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should create element with children', () => {
-			const child = new ViewElement( 'p', { 'foo': 'bar' } );
+			const child = new ViewElement( 'p', { foo: 'bar' } );
 			const parent = new ViewElement( 'div', [], [ child ] );
 
 			expect( parent ).to.have.property( 'name' ).that.equals( 'div' );

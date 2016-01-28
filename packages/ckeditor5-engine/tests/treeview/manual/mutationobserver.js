@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
- /* global console:false */
+/* global console:false */
 
 'use strict';
 
@@ -22,6 +22,6 @@ treeView.addObserver( mutationObserver );
 treeView.viewRoot.insertChildren( 0, [
 	new Element( 'p', [], [ new Text( 'foo' ) ] ),
 	new Element( 'p', [], [ new Text( 'bom' ) ] )
-	] );
+] );
 
 treeView.render();
