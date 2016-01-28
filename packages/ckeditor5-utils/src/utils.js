@@ -5,6 +5,8 @@
 
 'use strict';
 
+import langUtils from './lib/lodash/lang.js';
+
 /**
  * An index at which arrays differ. If arrays are same at all indexes, it represents how arrays are related.
  * In this case, possible values are: 'SAME', 'PREFIX' or 'EXTENSION'.
@@ -92,7 +94,7 @@ const utils = {
 	},
 
 	/**
-	 * Transform object to map.
+	 * Transforms object to map.
 	 *
 	 *		const map = utils.objectToMap( { 'foo': 1, 'bar': 2 } );
 	 *		map.get( 'foo' ); // 1
@@ -111,20 +113,43 @@ const utils = {
 	},
 
 	/**
-	 * Transform map to object.
+	 * Transforms object or iterable to map. Iterable needs to be in the format acceptable by the `Map` constructor.
 	 *
-	 *		const map = new Map( [ [ 'foo', 1 ], [ 'bar', 2 ] ] );
-	 *		utils.mapToObject( map ); // { 'foo': 1, 'bar': 2 }
+	 *		map = utils.toMap( { 'foo': 1, 'bar': 2 } );
+	 *		map = utils.toMap( [ [ 'foo', 1 ], [ 'bar', 2 ] ] );
+	 *		map = utils.toMap( anotherMap );
 	 *
-	 * @param {Map} map Map to transform.
-	 * @returns {Object} Object created from map.
+	 * @param {Object|Iterable} data Object or iterable to transform.
+	 * @returns {Map} Map created from data.
 	 */
-	mapToObject( map ) {
-		const obj = {};
+	toMap( data ) {
+		if ( langUtils.isPlainObject( data ) ) {
+			return utils.objectToMap( data );
+		} else {
+			return new Map( data );
+		}
+	},
 
-		map.forEach( ( value, key ) => obj[ key ] = value );
+	/**
+	 * Checks whether given {Map}s are equal, that is has same size and same key-value pairs.
+	 *
+	 * @returns {Boolean} `true` if given maps are equal, `false` otherwise.
+	 */
+	mapsEqual( mapA, mapB ) {
+		if ( mapA.size != mapB.size ) {
+			return false;
+		}
 
-		return obj;
+		for ( let attr of mapA.entries() ) {
+			let valA = JSON.stringify( attr[ 1 ] );
+			let valB = JSON.stringify( mapB.get( attr[ 0 ] ) );
+
+			if ( valA !== valB ) {
+				return false;
+			}
+		}
+
+		return true;
 	},
 
 	/**

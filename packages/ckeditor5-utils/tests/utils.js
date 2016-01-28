@@ -119,9 +119,27 @@ describe( 'utils', () => {
 		} );
 	} );
 
-	describe( 'objectToMap', () => {
-		it( 'should convert object to map', () => {
-			const map = utils.objectToMap( { 'foo': 1, 'bar': 2 } );
+	describe( 'toMap', () => {
+		it( 'should create map from object', () => {
+			const map = utils.toMap( { foo: 1, bar: 2 } );
+
+			expect( getIteratorCount( map ) ).to.equal( 2 );
+			expect( map.get( 'foo' ) ).to.equal( 1 );
+			expect( map.get( 'bar' ) ).to.equal( 2 );
+		} );
+
+		it( 'should create map from iterator', () => {
+			const map = utils.toMap( [ [ 'foo', 1 ], [ 'bar', 2 ] ] );
+
+			expect( getIteratorCount( map ) ).to.equal( 2 );
+			expect( map.get( 'foo' ) ).to.equal( 1 );
+			expect( map.get( 'bar' ) ).to.equal( 2 );
+		} );
+
+		it( 'should create map from another map', () => {
+			const data = new Map( [ [ 'foo', 1 ], [ 'bar', 2 ] ] );
+
+			const map = utils.toMap( data );
 
 			expect( getIteratorCount( map ) ).to.equal( 2 );
 			expect( map.get( 'foo' ) ).to.equal( 1 );
@@ -129,12 +147,18 @@ describe( 'utils', () => {
 		} );
 	} );
 
-	describe( 'mapToObject', () => {
-		it( 'should convert map to object', () => {
-			const map = new Map( [ [ 'foo', 1 ], [ 'bar', 2 ] ] );
-			const obj = utils.mapToObject( map );
+	describe( 'mapsEqual', () => {
+		it( 'should return true if maps have exactly same entries (order of adding does not matter)', () => {
+			let mapA = new Map();
+			let mapB = new Map();
 
-			expect( obj ).to.deep.equal( { 'foo': 1, 'bar': 2 } );
+			mapA.set( 'foo', 'bar' );
+			mapA.set( 'abc', 'xyz' );
+
+			mapB.set( 'abc', 'xyz' );
+			mapB.set( 'foo', 'bar' );
+
+			expect( utils.mapsEqual( mapA, mapB ) ).to.be.true;
 		} );
 	} );
 
