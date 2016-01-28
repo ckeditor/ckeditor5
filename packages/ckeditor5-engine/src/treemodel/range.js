@@ -228,10 +228,11 @@ export default class Range {
 		let diffAt = ( typeof cmp == 'string' ) ? Math.min( this.start.path.length, this.end.path.length ) : cmp;
 
 		let pos = Position.createFromPosition( this.start );
+		let posParent = pos.parent;
 
 		// Go up.
 		while ( pos.path.length > diffAt + 1 ) {
-			let howMany = pos.parent.getChildCount() - pos.offset;
+			let howMany = posParent.getChildCount() - pos.offset;
 
 			if ( howMany !== 0 ) {
 				ranges.push( new Range( pos, pos.getShiftedBy( howMany ) ) );
@@ -239,6 +240,7 @@ export default class Range {
 
 			pos.path = pos.path.slice( 0, -1 );
 			pos.offset++;
+			posParent = posParent.parent;
 		}
 
 		// Go down.

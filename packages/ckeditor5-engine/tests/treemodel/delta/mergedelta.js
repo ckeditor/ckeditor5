@@ -10,7 +10,6 @@
 import Document from '/ckeditor5/core/treemodel/document.js';
 import Position from '/ckeditor5/core/treemodel/position.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
-import Attribute from '/ckeditor5/core/treemodel/attribute.js';
 import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
 describe( 'Batch', () => {
@@ -20,8 +19,8 @@ describe( 'Batch', () => {
 		doc = new Document();
 		root = doc.createRoot( 'root' );
 
-		p1 = new Element( 'p', [ new Attribute( 'key1', 'value1' ) ], 'foo' );
-		p2 = new Element( 'p', [ new Attribute( 'key2', 'value2' ) ], 'bar' );
+		p1 = new Element( 'p', { key1: 'value1' }, 'foo' );
+		p2 = new Element( 'p', { key2: 'value2' }, 'bar' );
 
 		root.insertChildren( 0, [ p1, p2 ] );
 	} );
@@ -33,8 +32,8 @@ describe( 'Batch', () => {
 			expect( root.getChildCount() ).to.equal( 1 );
 			expect( root.getChild( 0 ).name ).to.equal( 'p' );
 			expect( root.getChild( 0 ).getChildCount() ).to.equal( 6 );
-			expect( root.getChild( 0 ).attrs.size ).to.equal( 1 );
-			expect( root.getChild( 0 ).attrs.getValue( 'key1' ) ).to.equal( 'value1' );
+			expect( root.getChild( 0 )._attrs.size ).to.equal( 1 );
+			expect( root.getChild( 0 ).getAttribute( 'key1' ) ).to.equal( 'value1' );
 			expect( root.getChild( 0 ).getChild( 0 ).character ).to.equal( 'f' );
 			expect( root.getChild( 0 ).getChild( 1 ).character ).to.equal( 'o' );
 			expect( root.getChild( 0 ).getChild( 2 ).character ).to.equal( 'o' );

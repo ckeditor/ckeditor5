@@ -40,9 +40,9 @@ export default class TreeWalker {
 	 * @param {Object} options Object with configuration.
 	 * @param {treeModel.Range} [options.boundaries] Range to define boundaries of the iterator.
 	 * @param {treeModel.Position} [options.position] Starting position.
-	 * @param {Boolean} [options.mergeCharacters] Flag indicating whether all consecutive characters with the same attributes
+	 * @param {Boolean} [options.mergeCharacters=false] Flag indicating whether all consecutive characters with the same attributes
 	 * should be returned as one {@link treeModel.TextFragment} (`true`) or one by one as multiple {@link treeModel.CharacterProxy}
-	 * (`false`) objects. Defaults to `false`.
+	 * (`false`) objects.
 	 * @constructor
 	 */
 	constructor( options ) {
@@ -84,7 +84,8 @@ export default class TreeWalker {
 		this._boundaryEndParent = this.boundaries ? this.boundaries.end.parent : null;
 
 		/**
-		 * Iterator position.
+		 * Iterator position. This is alway static position, even if the initial position was a
+		 * {@link treeModel.LivePosition live position}.
 		 *
 		 * @property {treeModel.Position} position
 		 */
@@ -150,8 +151,7 @@ export default class TreeWalker {
 					charactersCount = offset - position.offset;
 				}
 
-				let text = node._nodeListText.text.substr( node._index, charactersCount );
-				let textFragment = new TextFragment( position, text );
+				let textFragment = new TextFragment( node, charactersCount );
 
 				position.offset = offset;
 				this.position = position;
@@ -216,12 +216,10 @@ export default class TreeWalker {
 					charactersCount = position.offset - offset;
 				}
 
-				let text = node._nodeListText.text.substr( node._index + 1 - charactersCount, charactersCount );
+				let textFragment = new TextFragment( parent.getChild( offset ), charactersCount );
 
 				position.offset = offset;
 				this.position = position;
-
-				let textFragment = new TextFragment( this.position, text );
 
 				return formatReturnValue( 'TEXT', textFragment );
 			} else {

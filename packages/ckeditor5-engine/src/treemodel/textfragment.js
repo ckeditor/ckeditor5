@@ -5,19 +5,17 @@
 
 'use strict';
 
-import Position from './position.js';
-import Range from './range.js';
+import CharacterProxy from './characterproxy.js';
 
 /**
  * TextFragment is an aggregator for multiple CharacterProxy instances that are placed next to each other in
  * tree model, in the same parent, and all have same attributes set. Instances of this class are created and returned
  * in various algorithms that "merge characters" (see {@link treeModel.TreeWalker}, {@link treeModel.Range}).
  *
- * Difference between {@link treeModel.TextFragment} and {@link treeModel.Text} is that the former is bound to tree model,
- * while {@link treeModel.Text} is simply a string with attributes set.
+ * Difference between {@link treeModel.TextFragment} and {@link treeModel.Text} is that the former is a set of
+ * nodes taken from tree model, while {@link treeModel.Text} is simply a string with attributes set.
  *
- * You should never create an instance of this class by your own. When passing parameters to constructors,
- * use string literals or {@link treeModel.Text} instead.
+ * You should never create an instance of this class by your own. Instead, use string literals or {@link treeModel.Text}.
  *
  * @class treeModel.TextFragment
  */
@@ -25,19 +23,19 @@ export default class TextFragment {
 	/**
 	 * Creates a text fragment.
 	 *
-	 * @param {treeModel.Position} startPosition Position in the tree model where the {@link treeModel.TextFragment} starts.
-	 * @param {String} text Characters contained in {@link treeModel.TextFragment}.
+	 * @param {treeModel.CharacterProxy} firstCharacter First character node contained in {@link treeModel.TextFragment}.
+	 * @param {Number} length Whole text contained in {@link treeModel.TextFragment}.
 	 * @protected
 	 * @constructor
 	 */
-	constructor( startPosition, text ) {
+	constructor( firstCharacter, length ) {
 		/**
-		 * First {@link treeModel.CharacterProxy character node} contained in {@link treeModel.TextFragment}.
+		 * First character node contained in {@link treeModel.TextFragment}.
 		 *
 		 * @readonly
 		 * @property {treeModel.CharacterProxy} first
 		 */
-		this.first = startPosition.nodeAfter;
+		this.first = firstCharacter;
 
 		/**
 		 * Characters contained in {@link treeModel.TextFragment}.
@@ -45,7 +43,7 @@ export default class TextFragment {
 		 * @readonly
 		 * @property {String} text
 		 */
-		this.text = text;
+		this.text = firstCharacter._nodeListText.text.substr( this.first._index, length );
 
 		/**
 		 * Last {@link treeModel.CharacterProxy character node} contained in {@link treeModel.TextFragment}.
@@ -54,14 +52,15 @@ export default class TextFragment {
 		 * @property {treeModel.CharacterProxy} last
 		 */
 		this.last = this.getCharAt( this.text.length - 1 );
+	}
 
-		/**
-		 * List of attributes common for all characters in this {@link treeModel.TextFragment}.
-		 *
-		 * @readonly
-		 * @property {@link treeModel.AttributeList} attrs
-		 */
-		this.attrs = this.first.attrs;
+	/**
+	 * A common parent of all character nodes contained in {@link treeModel.TextFragment}.
+	 *
+	 * @property {treeModel.Element} commonParent
+	 */
+	get commonParent() {
+		return this.first.parent;
 	}
 
 	/**
@@ -71,15 +70,39 @@ export default class TextFragment {
 	 * @returns {treeModel.CharacterProxy}
 	 */
 	getCharAt( index ) {
-		return this.first.parent.getChild( this.first._index + index );
+		if ( index < 0 || index >= this.text.length ) {
+			return null;
+		}
+
+		return new CharacterProxy( this.first._nodeListText, this.first._index + index );
 	}
 
 	/**
-	 * Creates and returns a range containing all characters from this {@link treeModel.TextFragment}.
+	 * Checks if the text fragment has an attribute for given key.
 	 *
-	 * @returns {Range}
+	 * @param {String} key Key of attribute to check.
+	 * @returns {Boolean} `true` if attribute with given key is set on text fragment, `false` otherwise.
 	 */
-	getRange() {
-		return new Range( Position.createBefore( this.first ), Position.createAfter( this.last ) );
+	hasAttribute( key ) {
+		return this.first.hasAttribute( key );
+	}
+
+	/**
+	 * Gets an attribute value for given key or undefined it that attribute is not set on text fragment.
+	 *
+	 * @param {String} key Key of attribute to look for.
+	 * @returns {*} Attribute value or null.
+	 */
+	getAttribute( key ) {
+		return this.first.getAttribute( key );
+	}
+
+	/**
+	 * Returns iterator that iterates over this text fragment attributes.
+	 *
+	 * @returns {Iterable.<*>}
+	 */
+	getAttributes() {
+		return this.first.getAttributes();
 	}
 }

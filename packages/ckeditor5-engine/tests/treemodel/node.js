@@ -8,8 +8,6 @@
 'use strict';
 
 import Element from '/ckeditor5/core/treemodel/element.js';
-import Attribute from '/ckeditor5/core/treemodel/attribute.js';
-import AttributeList from '/ckeditor5/core/treemodel/attributelist.js';
 import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
 describe( 'Node', () => {
@@ -85,20 +83,17 @@ describe( 'Node', () => {
 		it( 'should create empty attribute list if no parameters were passed', () => {
 			let foo = new Element( 'foo' );
 
-			expect( foo.attrs ).to.be.instanceof( AttributeList );
-			expect( foo.attrs.size ).to.equal( 0 );
+			expect( foo._attrs ).to.be.instanceof( Map );
+			expect( foo._attrs.size ).to.equal( 0 );
 		} );
 
 		it( 'should initialize attribute list with passed attributes', () => {
-			let attrs = [
-				new Attribute( 'foo', true ),
-				new Attribute( 'bar', false )
-			];
+			let attrs = { foo: true, bar: false };
 			let foo = new Element( 'foo', attrs );
 
-			expect( foo.attrs.size ).to.equal( 2 );
-			expect( foo.attrs.getValue( 'foo' ) ).to.equal( true );
-			expect( foo.attrs.getValue( 'bar' ) ).to.equal( false );
+			expect( foo._attrs.size ).to.equal( 2 );
+			expect( foo.getAttribute( 'foo' ) ).to.equal( true );
+			expect( foo.getAttribute( 'bar' ) ).to.equal( false );
 		} );
 	} );
 
@@ -151,6 +146,46 @@ describe( 'Node', () => {
 			expect( charB.getPath() ).to.deep.equal( [ 1, 0 ] );
 			expect( img.getPath() ).to.deep.equal( [ 1, 2 ] );
 			expect( charR.getPath() ).to.deep.equal( [ 1, 3 ] );
+		} );
+	} );
+
+	describe( 'attributes interface', () => {
+		let node = new Element( 'p', { foo: 'bar' } );
+
+		describe( 'hasAttribute', () => {
+			it( 'should return true if element contains attribute with given key', () => {
+				expect( node.hasAttribute( 'foo' ) ).to.be.true;
+			} );
+
+			it( 'should return false if element does not contain attribute with given key', () => {
+				expect( node.hasAttribute( 'bar' ) ).to.be.false;
+			} );
+		} );
+
+		describe( 'getAttribute', () => {
+			it( 'should return attribute value for given key if element contains given attribute', () => {
+				expect( node.getAttribute( 'foo' ) ).to.equal( 'bar' );
+			} );
+
+			it( 'should return undefined if element does not contain given attribute', () => {
+				expect( node.getAttribute( 'bar' ) ).to.be.undefined;
+			} );
+		} );
+
+		describe( 'getAttributes', () => {
+			it( 'should return an iterator that iterates over all attributes set on the element', () => {
+				let it = node.getAttributes();
+				let attrs = [];
+
+				let step = it.next();
+
+				while ( !step.done ) {
+					attrs.push( step.value );
+					step = it.next();
+				}
+
+				expect( attrs ).to.deep.equal( [ [ 'foo', 'bar' ] ] );
+			} );
 		} );
 	} );
 } );

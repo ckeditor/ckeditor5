@@ -10,7 +10,6 @@
 import Node from '/ckeditor5/core/treemodel/node.js';
 import NodeList from '/ckeditor5/core/treemodel/nodelist.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
-import Attribute from '/ckeditor5/core/treemodel/attribute.js';
 
 describe( 'Element', () => {
 	describe( 'constructor', () => {
@@ -21,11 +20,11 @@ describe( 'Element', () => {
 			expect( element ).to.be.an.instanceof( Node );
 			expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
 			expect( element ).to.have.property( 'parent' ).that.equals( parent );
-			expect( element.attrs.size ).to.equal( 0 );
+			expect( element._attrs.size ).to.equal( 0 );
 		} );
 
 		it( 'should create element with attributes', () => {
-			let attr = new Attribute( 'foo', 'bar' );
+			let attr = { foo: 'bar' };
 
 			let element = new Element( 'elem', [ attr ] );
 			let parent = new Element( 'parent', [], [ element ] );
@@ -33,8 +32,8 @@ describe( 'Element', () => {
 			expect( element ).to.be.an.instanceof( Node );
 			expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
 			expect( element ).to.have.property( 'parent' ).that.equals( parent );
-			expect( element.attrs.size ).to.equal( 1 );
-			expect( element.attrs.getValue( attr.key ) ).to.equal( attr.value );
+			expect( element._attrs.size ).to.equal( 1 );
+			expect( element.getAttribute( attr.key ) ).to.equal( attr.value );
 		} );
 
 		it( 'should create element with children', () => {
@@ -104,6 +103,60 @@ describe( 'Element', () => {
 			let element = new Element( 'elem', [], [ 'bar' ] );
 
 			expect( element.getChildCount() ).to.equal( 3 );
+		} );
+	} );
+
+	describe( 'attributes interface', () => {
+		let node;
+
+		beforeEach( () => {
+			node = new Element();
+		} );
+
+		describe( 'setAttribute', () => {
+			it( 'should set given attribute on the element', () => {
+				node.setAttribute( 'foo', 'bar' );
+
+				expect( node.getAttribute( 'foo' ) ).to.equal( 'bar' );
+			} );
+		} );
+
+		describe( 'setAttributesTo', () => {
+			it( 'should remove all attributes set on element and set the given ones', () => {
+				node.setAttribute( 'abc', 'xyz' );
+				node.setAttributesTo( { foo: 'bar' } );
+
+				expect( node.getAttribute( 'foo' ) ).to.equal( 'bar' );
+				expect( node.getAttribute( 'abc' ) ).to.be.undefined;
+			} );
+		} );
+
+		describe( 'removeAttribute', () => {
+			it( 'should remove attribute set on the element and return true', () => {
+				node.setAttribute( 'foo', 'bar' );
+				let result = node.removeAttribute( 'foo' );
+
+				expect( node.getAttribute( 'foo' ) ).to.be.undefined;
+				expect( result ).to.be.true;
+			} );
+
+			it( 'should return false if element does not contain given attribute', () => {
+				let result = node.removeAttribute( 'foo' );
+
+				expect( result ).to.be.false;
+			} );
+		} );
+
+		describe( 'clearAttributes', () => {
+			it( 'should remove all attributes from the element', () => {
+				node.setAttribute( 'foo', 'bar' );
+				node.setAttribute( 'abc', 'xyz' );
+
+				node.clearAttributes();
+
+				expect( node.getAttribute( 'foo' ) ).to.be.undefined;
+				expect( node.getAttribute( 'abc' ) ).to.be.undefined;
+			} );
 		} );
 	} );
 } );

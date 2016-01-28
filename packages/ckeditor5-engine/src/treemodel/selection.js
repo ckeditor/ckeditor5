@@ -6,7 +6,6 @@
 'use strict';
 
 import LiveRange from './liverange.js';
-import AttributeList from './attributelist.js';
 import EmitterMixin from '../emittermixin.js';
 import CKEditorError from '../ckeditorerror.js';
 import utils from '../utils.js';
@@ -27,10 +26,10 @@ export default class Selection {
 		/**
 		 * List of attributes set on current selection.
 		 *
-		 * @readonly
-		 * @property {treeModel.AttributeList} attrs
+		 * @protected
+		 * @property {Map}
 		 */
-		this.attrs = new AttributeList();
+		this._attrs = new Map();
 
 		/**
 		 * Stores all ranges that are selected.
@@ -166,6 +165,71 @@ export default class Selection {
 
 		this._lastRangeBackward = !!isLastBackward;
 		this.fire( 'update' );
+	}
+
+	/**
+	 * Checks if the selection has an attribute for given key.
+	 *
+	 * @param {String} key Key of attribute to check.
+	 * @returns {Boolean} `true` if attribute with given key is set on selection, `false` otherwise.
+	 */
+	hasAttribute( key ) {
+		return this._attrs.has( key );
+	}
+
+	/**
+	 * Gets an attribute value for given key or undefined it that attribute is not set on selection.
+	 *
+	 * @param {String} key Key of attribute to look for.
+	 * @returns {*} Attribute value or null.
+	 */
+	getAttribute( key ) {
+		return this._attrs.get( key );
+	}
+
+	/**
+	 * Returns iterator that iterates over this selection attributes.
+	 *
+	 * @returns {Iterable.<*>}
+	 */
+	getAttributes() {
+		return this._attrs[ Symbol.iterator ]();
+	}
+
+	/**
+	 * Sets attribute on the selection. If attribute with the same key already is set, it overwrites its values.
+	 *
+	 * @param {String} key Key of attribute to set.
+	 * @param {*} value Attribute value.
+	 */
+	setAttribute( key, value ) {
+		this._attrs.set( key, value );
+	}
+
+	/**
+	 * Removes all attributes from the selection and sets given attributes.
+	 *
+	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set.
+	 */
+	setAttributesTo( attrs ) {
+		this._attrs = utils.toMap( attrs );
+	}
+
+	/**
+	 * Removes an attribute with given key from the selection.
+	 *
+	 * @param {String} key Key of attribute to remove.
+	 * @returns {Boolean} `true` if the attribute was set on the selection, `false` otherwise.
+	 */
+	removeAttribute( key ) {
+		return this._attrs.delete( key );
+	}
+
+	/**
+	 * Removes all attributes from the selection.
+	 */
+	clearAttributes() {
+		this._attrs.clear();
 	}
 }
 

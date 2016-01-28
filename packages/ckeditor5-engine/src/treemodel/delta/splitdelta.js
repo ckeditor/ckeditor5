@@ -45,7 +45,7 @@ register( 'split', function( position ) {
 		throw new CKEditorError( 'batch-split-root: Root element can not be split.' );
 	}
 
-	const copy = new Element( splitElement.name, splitElement.attrs );
+	const copy = new Element( splitElement.name, splitElement._attrs );
 	const insert = new InsertOperation( Position.createAfter( splitElement ), copy, this.doc.version );
 
 	this.doc.applyOperation( insert );
