@@ -30,5 +30,5 @@ function handleTyping( evt, mutations ) {
 		return;
 	}
 
-	mutation.node.setText( mutation.newText );
+	mutation.node.data = mutation.newText;
 }
