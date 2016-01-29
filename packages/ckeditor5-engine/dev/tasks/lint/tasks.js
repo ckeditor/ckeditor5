@@ -30,7 +30,7 @@ module.exports = ( config ) => {
 		 * @returns {Stream}
 		 */
 		lintStaged() {
-			return guppy.stream( 'pre-commit' )
+			return guppy.stream( 'pre-commit', { base: './' } )
 				.pipe( gulpFilter( src ) )
 				.pipe( lint() )
 
