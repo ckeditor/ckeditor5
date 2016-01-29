@@ -9,23 +9,26 @@ import EmitterMixin from '../emittermixin.js';
 import Renderer from './renderer.js';
 import Converter from './converter.js';
 
-import objectUtils from '../lib/lodash/object.js';
+import utils from '../utils.js';
 
 /**
  * TreeView class combines the actual tree of view elements, tree of DOM elements, {@link treeView.Converter converter},
  * {@link treeView.Renderer renderer} and all {@link treeView.Observer observers}. It creates an abstract layer over the
- * content editable area. If you want to simple transform the tree of view elements to the DOM elements you can use
- * {@link treeView.Converter}.
+ * content editable area.
+ *
+ * If you want to only transform the tree of view elements to the DOM elements you can use the {@link treeView.Converter}.
  *
  * @mixins EmitterMixin
- *
  * @class treeView.TreeView
  */
 export default class TreeView {
 	/**
-	 * Creates a TreeView based on the HTMLElement. The constructor copy the element name and attributes to create the
-	 * root of the view, but does not copy children, what means the whole content of this root element will be removed
-	 * when you call {@link treeView.TreeView#render}.
+	 * Creates a TreeView based on the HTMLElement.
+	 *
+	 * The constructor copies the element name and attributes to create the
+	 * root of the view, but does not copy its children. This means that the while rendering, the whole content of this
+	 * root element will be removed when you call {@link treeView.TreeView#render} but the root name and attributes will
+	 * be preserved.
 	 *
 	 * @param {HTMLElement} domRoot DOM element in which the tree view should do change.
 	 * @constructor
@@ -34,14 +37,14 @@ export default class TreeView {
 		/**
 		 * Root of the DOM tree.
 		 *
-		 * @type {HTMLElement}
+		 * @property {HTMLElement}
 		 */
 		this.domRoot = domRoot;
 
 		/**
 		 * Set of {@link treeView.Observer observers}.
 		 *
-		 * @type {Set.<treeView.Observer>}
+		 * @property {Set.<treeView.Observer>}
 		 */
 		this.observers = new Set();
 
@@ -49,22 +52,22 @@ export default class TreeView {
 		 * Instance of the {@link treeView.Converter converter} use by {@link treeView.TreeView#renderer renderer} and
 		 * {@link treeView.TreeView#observers observers}.
 		 *
-		 * @type {treeView.Converter}
+		 * @property {treeView.Converter}
 		 */
 		this.converter = new Converter();
 
 		/**
 		 * Root of the view tree.
 		 *
-		 * @type {treeView.Element}
+		 * @property {treeView.Element}
 		 */
-		this.viewRoot = this.converter.domToView( domRoot , { bind: true, withChildren: false } );
+		this.viewRoot = this.converter.domToView( domRoot, { bind: true, withChildren: false } );
 		this.viewRoot.setTreeView( this );
 
 		/**
 		 * Instance of the {@link treeView.TreeView#renderer renderer}.
 		 *
-		 * @type {treeView.Renderer}
+		 * @property {treeView.Renderer}
 		 */
 		this.renderer = new Renderer( this.converter );
 		this.renderer.markToSync( 'CHILDREN', this.viewRoot );
@@ -76,8 +79,8 @@ export default class TreeView {
 	}
 
 	/**
-	 * Add an observer to the set of the observers. This method also {@link treeView.Observer#init initialize} and
-	 * {@link treeView.Observer#attach attach} the observer.
+	 * Adds an observer to the set of observers. This method also {@link treeView.Observer#init initializes} and
+	 * {@link treeView.Observer#attach attaches} the observer.
 	 *
 	 * @param {treeView.Observer} observer Observer to add.
 	 */
@@ -88,7 +91,8 @@ export default class TreeView {
 	}
 
 	/**
-	 * Detach all observers, render changes and reattach observers.
+	 * Renders all changes. In order to avoid triggering the observers (e.g. mutations) all observers all detached
+	 * before rendering and reattached after that.
 	 */
 	render() {
 		for ( let observer of this.observers ) {
@@ -103,15 +107,16 @@ export default class TreeView {
 	}
 }
 
-objectUtils.extend( TreeView.prototype, EmitterMixin );
+utils.mix( TreeView, EmitterMixin );
 
 /**
  * Enum representing type of the change.
+ *
  * Possible values:
  *
- *	* `CHILDREN` - for child list changes,
- *	* `ATTRIBUTES` - for element attributes changes,
- *	* `TEXT` - for text nodes changes.
+ * * `CHILDREN` - for child list changes,
+ * * `ATTRIBUTES` - for element attributes changes,
+ * * `TEXT` - for text nodes changes.
  *
  * @typedef {String} treeView.ChangeType
  */

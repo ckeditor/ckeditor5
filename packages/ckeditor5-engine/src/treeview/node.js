@@ -7,7 +7,7 @@
 
 import CKEditorError from '../ckeditorerror.js';
 import EmitterMixin from '../emittermixin.js';
-import objectUtils from '../lib/lodash/object.js';
+import utils from '../utils.js';
 
 /**
  * Abstract tree view node class.
@@ -42,11 +42,11 @@ export default class Node {
 	}
 
 	/**
-	 * Index of the node in the parent element or null if the node has no parent.
+	 * Returns index of the node in the parent element or null if the node has no parent.
 	 *
 	 * Throws error if the parent element does not contain this node.
 	 *
-	 * @returns {Number|Null} Index of the node in the parent element or null if the node has not parent.
+	 * @returns {Number|null} Index of the node in the parent element or null if the node has not parent.
 	 */
 	getIndex() {
 		let pos;
@@ -95,7 +95,7 @@ export default class Node {
 	 * {@link treeView.Node#setTreeView} it will be returned. Otherwise {@link treeView.TreeView} of the parents node
 	 * will be returned. If node has no parent, `null` will be returned.
 	 *
-	 * @returns {treeView.TreeView|Null} Tree view of the node, tree view of the parent or null.
+	 * @returns {treeView.TreeView|null} Tree view of the node, tree view of the parent or null.
 	 */
 	getTreeView() {
 		if ( this._treeView ) {
@@ -108,7 +108,7 @@ export default class Node {
 	}
 
 	/**
-	 * Set the {@link treeView.TreeView} of the node. Note that not all of nodes need to have {@link treeView.TreeView}
+	 * Sets the {@link treeView.TreeView} of the node. Note that not all of nodes need to have {@link treeView.TreeView}
 	 * assigned, see {@link treeView.Node#getTreeView}.
 	 *
 	 * @param {treeView.TreeView} treeView Tree view.
@@ -118,7 +118,7 @@ export default class Node {
 	}
 
 	/**
-	 * Fire {@link treeView.Node#change change event}.
+	 * Fires the {@link treeView.Node#change change event}.
 	 *
 	 * @param {treeView.ChangeType} type Type of the change.
 	 * @param {treeView.Node} node Changed node.
@@ -132,17 +132,17 @@ export default class Node {
 	}
 
 	/**
-	 * Fired when node changes. In case of {@link treeView.Text text nodes} in will be change of the text. In case of
-	 * {@link treeView.Element elements} in will be change of child nodes or attributes.
+	 * Fired when a node changes.
+	 *
+	 * * In case of {@link treeView.Text text nodes} it will be a change of the text data.
+	 * * In case of {@link treeView.Element elements} it will be a change of child nodes or attributes.
 	 *
 	 * Change event is bubbling, it is fired on the ancestors chain.
 	 *
 	 * @event change
-	 *
 	 * @param {treeView.ChangeType} Type of the change.
 	 * @param {treeView.Node} Changed node.
 	 */
 }
 
-objectUtils.extend( Node.prototype, EmitterMixin );
-
+utils.mix( Node, EmitterMixin );

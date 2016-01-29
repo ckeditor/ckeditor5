@@ -36,7 +36,7 @@ export default class Element extends Node {
 		 * Name of the element.
 		 *
 		 * @readonly
-		 * @type {String}
+		 * @property {String}
 		 */
 		this.name = name;
 
@@ -56,7 +56,7 @@ export default class Element extends Node {
 		 * Array of child nodes.
 		 *
 		 * @protected
-		 * @type {Array.<treeView.Node>}
+		 * @property {Array.<treeView.Node>}
 		 */
 		this._children = [];
 
@@ -69,7 +69,7 @@ export default class Element extends Node {
 	 * {@link treeView.Element#insert Insert} a child node or a list of child nodes at the end of this node and sets
 	 * the parent of these nodes to this element.
 	 *
-	 * Fire the {@link treeView.Node#change change event}.
+	 * Fires the {@link treeView.Node#change change event}.
 	 *
 	 * @param {treeView.Node|Iterable.<treeView.Node>} nodes Node or the list of nodes to be inserted.
 	 */
@@ -145,9 +145,9 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Add or overwrite attribute with a specified key and value.
+	 * Adds or overwrite attribute with a specified key and value.
 	 *
-	 * Fire the {@link treeView.Node#change change event}.
+	 * Fires the {@link treeView.Node#change change event}.
 	 *
 	 * @param {String} key Attribute key.
 	 * @param {String} value Attribute value.
@@ -162,7 +162,7 @@ export default class Element extends Node {
 	 * Inserts a child node or a list of child nodes on the given index and sets the parent of these nodes to
 	 * this element.
 	 *
-	 * Fire the {@link treeView.Node#change change event}.
+	 * Fires the {@link treeView.Node#change change event}.
 	 *
 	 * @param {Number} index Position where nodes should be inserted.
 	 * @param {treeView.Node|Iterable.<treeView.Node>} nodes Node or the list of nodes to be inserted.
@@ -185,7 +185,7 @@ export default class Element extends Node {
 	/**
 	 * Removes attribute from the element.
 	 *
-	 * Fire the {@link treeView.Node#change change event}.
+	 * Fires the {@link treeView.Node#change change event}.
 	 *
 	 * @param {String} key Attribute key.
 	 * @returns {Boolead} Returns true if an attribute existed and has been removed.
@@ -199,7 +199,7 @@ export default class Element extends Node {
 	/**
 	 * Removes number of child nodes starting at the given index and set the parent of these nodes to `null`.
 	 *
-	 * Fire the {@link treeView.Node#change change event}.
+	 * Fires the {@link treeView.Node#change change event}.
 	 *
 	 * @param {Number} index Number of the first node to remove.
 	 * @param {Number} number Number of nodes to remove.

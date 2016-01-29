@@ -29,7 +29,7 @@ export default class Renderer {
 		 * Converter instance.
 		 *
 		 * @readonly
-		 * @type {treeView.Converter}
+		 * @property {treeView.Converter}
 		 */
 		this.converter = converter;
 
@@ -37,7 +37,7 @@ export default class Renderer {
 		 * Set of nodes which attributes changed and may need to be rendered.
 		 *
 		 * @readonly
-		 * @type {Set.<treeView.Node>}
+		 * @property {Set.<treeView.Node>}
 		 */
 		this.markedAttributes = new Set();
 
@@ -45,7 +45,7 @@ export default class Renderer {
 		 * Set of elements which child lists changed and may need to be rendered.
 		 *
 		 * @readonly
-		 * @type {Set.<treeView.Node>}
+		 * @property {Set.<treeView.Node>}
 		 */
 		this.markedChildren = new Set();
 
@@ -53,7 +53,7 @@ export default class Renderer {
 		 * Set of text nodes which text data changed and may need to be rendered.
 		 *
 		 * @readonly
-		 * @type {Set.<treeView.Node>}
+		 * @property {Set.<treeView.Node>}
 		 */
 		this.markedTexts = new Set();
 	}

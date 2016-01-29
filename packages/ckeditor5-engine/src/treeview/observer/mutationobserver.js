@@ -8,7 +8,7 @@
 import Observer from './observer.js';
 
 /**
- * Mutation observer class observe changes in the DOM, fire {@link treeView.TreeView#mutations} event, mark view elements
+ * Mutation observer class observes changes in the DOM, fires {@link treeView.TreeView#mutations} event, mark view elements
  * as changed and call {@link treeView.render}. Because all mutated nodes are marked as "to be rendered" and the
  * {@link treeView.render} is called, all changes will be reverted, unless the mutation will be handled by the
  * {@link treeView.TreeView#mutations} event listener. It means user will see only handled changes, and the editor will
@@ -34,7 +34,7 @@ export default class MutationObserver extends Observer {
 		 * Native mutation observer config.
 		 *
 		 * @private
-		 * @type {Object}
+		 * @property {Object}
 		 */
 		this._config = {
 			childList: true,
@@ -47,30 +47,30 @@ export default class MutationObserver extends Observer {
 	// Docs in the base class.
 	init( treeView ) {
 		/**
-		 * Referense to the {@link treeView.TreeView} object.
+		 * Reference to the {@link treeView.TreeView} object.
 		 *
-		 * @type {treeView.TreeView}
+		 * @property {treeView.TreeView}
 		 */
 		this.treeView = treeView;
 
 		/**
 		 * Reference to the {@link treeView.TreeView#domRoot}.
 		 *
-		 * @type {HTMLElement}
+		 * @property {HTMLElement}
 		 */
 		this.domRoot = treeView.domRoot;
 
 		/**
 		 * Reference to the {@link treeView.TreeView#converter}.
 		 *
-		 * @type {treeView.Converter}
+		 * @property {treeView.Converter}
 		 */
 		this.converter = treeView.converter;
 
 		/**
 		 * Reference to the {@link treeView.TreeView#renderer}.
 		 *
-		 * @type {treeView.Renderer}
+		 * @property {treeView.Renderer}
 		 */
 		this.renderer = treeView.renderer;
 
@@ -78,7 +78,7 @@ export default class MutationObserver extends Observer {
 		 * Native mutation observer.
 		 *
 		 * @private
-		 * @type {window.MutationObserver}
+		 * @property {window.MutationObserver}
 		 */
 		this._mutationObserver = new window.MutationObserver( this._onMutations.bind( this ) );
 	}
@@ -94,7 +94,7 @@ export default class MutationObserver extends Observer {
 	}
 
 	/**
-	 * Handle mutations. Deduplicate, mark view elements to sync, fire event and call render.
+	 * Handles mutations. Deduplicates, mark view elements to sync, fire event and call render.
 	 *
 	 * @protected
 	 * @param {Array.<Object>} domMutations Array of native mutations.
