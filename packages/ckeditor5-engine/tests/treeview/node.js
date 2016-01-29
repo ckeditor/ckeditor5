@@ -205,7 +205,7 @@ describe( 'Node', () => {
 
 		describe( 'removeChildren', () => {
 			it( 'should fire change event', () => {
-				text.setText( 'bar' );
+				text.data = 'bar';
 
 				sinon.assert.calledOnce( rootChangeSpy );
 				sinon.assert.calledWith( rootChangeSpy, 'TEXT', text );

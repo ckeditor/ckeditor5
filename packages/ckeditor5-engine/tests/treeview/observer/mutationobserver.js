@@ -63,11 +63,11 @@ describe( 'MutationObserver', () => {
 		expect( lastMutations[ 0 ].node ).to.equal( treeView.viewRoot.getChild( 0 ) );
 
 		expect( lastMutations[ 0 ].newChildren.length ).to.equal( 2 );
-		expect( lastMutations[ 0 ].newChildren[ 0 ].getText() ).to.equal( 'f' );
+		expect( lastMutations[ 0 ].newChildren[ 0 ].data ).to.equal( 'f' );
 		expect( lastMutations[ 0 ].newChildren[ 1 ].name ).to.equal( 'b' );
 
 		expect( lastMutations[ 0 ].oldChildren.length ).to.equal( 1 );
-		expect( lastMutations[ 0 ].oldChildren[ 0 ].getText() ).to.equal( 'foo' );
+		expect( lastMutations[ 0 ].oldChildren[ 0 ].data ).to.equal( 'foo' );
 	} );
 
 	it( 'should deduplicate text changes', () => {

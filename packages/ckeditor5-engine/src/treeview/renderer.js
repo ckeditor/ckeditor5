@@ -139,8 +139,8 @@ export default class Renderer {
 		function updateText( viewText ) {
 			const domText = converter.getCorrespondingDom( viewText );
 
-			if ( domText.data != viewText.getText() ) {
-				domText.data = viewText.getText();
+			if ( domText.data != viewText.data ) {
+				domText.data = viewText.data;
 			}
 		}
 

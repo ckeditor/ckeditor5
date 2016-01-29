@@ -66,7 +66,7 @@ describe( 'Renderer', () => {
 		it( 'should mark text which need update', () => {
 			const viewText = new ViewText( 'foo' );
 			viewNode.appendChildren( viewText );
-			viewText.setText( 'bar' );
+			viewText.data = 'bar';
 
 			renderer.markToSync( 'TEXT', viewText );
 
@@ -79,7 +79,7 @@ describe( 'Renderer', () => {
 			viewNode = new ViewElement( 'p' );
 
 			viewNode.appendChildren( viewText );
-			viewText.setText( 'bar' );
+			viewText.data = 'bar';
 
 			renderer.markToSync( 'TEXT', viewText );
 
@@ -173,7 +173,7 @@ describe( 'Renderer', () => {
 			expect( domNode.childNodes.length ).to.equal( 1 );
 			expect( domNode.childNodes[ 0 ].data ).to.equal( 'foo' );
 
-			viewText.setText( 'bar' );
+			viewText.data = 'bar';
 
 			renderer.markToSync( 'TEXT', viewText );
 			renderer.render();

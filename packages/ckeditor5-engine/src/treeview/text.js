@@ -14,40 +14,37 @@ import Node from './node.js';
  */
 export default class Text extends Node {
 	/**
-	 * Creates a tree view text.
+	 * Creates a tree view text node.
 	 *
-	 * @param {String} text Text.
+	 * @param {String} data Text.
 	 * @constructor
 	 */
-	constructor( text ) {
+	constructor( data ) {
 		super();
 
 		/**
-		 * Text data.
+		 * The text content.
 		 *
-		 * @property {String}
 		 * @private
+		 * @property {String}
 		 */
-		this._text = text;
+		this._data = data;
 	}
 
 	/**
-	 * Gets text data.
+	 * The text content.
 	 *
-	 * @returns {String} Text data.
+	 * Setting the data fires the {@link treeView.Node#change change event}.
+	 *
+	 * @property {String} Text data.
 	 */
-	getText() {
-		return this._text;
+	get data() {
+		return this._data;
 	}
 
-	/**
-	 * Sets text data and fire {@link treeView.Node#change change event}.
-	 *
-	 * @param {String} text Text data.
-	 */
-	setText( text ) {
+	set data( data ) {
 		this._fireChange( 'TEXT', this );
 
-		this._text = text;
+		this._data = data;
 	}
 }

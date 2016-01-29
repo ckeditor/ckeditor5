@@ -77,7 +77,7 @@ export default class Converter {
 		}
 		// Texts.
 		else if ( domNode instanceof Text && viewNode instanceof ViewText ) {
-			return domNode.data === viewNode.getText();
+			return domNode.data === viewNode.data;
 		}
 
 		// Not matching types.
@@ -101,7 +101,7 @@ export default class Converter {
 		}
 
 		if ( viewNode instanceof ViewText ) {
-			return domDocument.createTextNode( viewNode.getText() );
+			return domDocument.createTextNode( viewNode.data );
 		} else {
 			if ( this.getCorrespondingDom( viewNode ) ) {
 				return this.getCorrespondingDom( viewNode );

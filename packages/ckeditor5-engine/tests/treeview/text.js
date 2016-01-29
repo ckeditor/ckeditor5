@@ -16,7 +16,7 @@ describe( 'Element', () => {
 			const text = new ViewText( 'foo' );
 
 			expect( text ).to.be.an.instanceof( ViewNode );
-			expect( text.getText() ).to.equal( 'foo' );
+			expect( text.data ).to.equal( 'foo' );
 			expect( text ).to.have.property( 'parent' ).that.is.null;
 		} );
 	} );
@@ -24,9 +24,9 @@ describe( 'Element', () => {
 	describe( 'setText', () => {
 		it( 'should change the text', () => {
 			const text = new ViewText( 'foo' );
-			text.setText( 'bar' );
+			text.data = 'bar';
 
-			expect( text.getText() ).to.equal( 'bar' );
+			expect( text.data ).to.equal( 'bar' );
 		} );
 	} );
 } );

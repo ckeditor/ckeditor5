@@ -83,7 +83,7 @@ describe( 'converter', () => {
 
 			expect( viewP.getChildCount() ).to.equal( 2 );
 			expect( viewP.getChild( 0 ).name ).to.equal( 'img' );
-			expect( viewP.getChild( 1 ).getText() ).to.equal( 'foo' );
+			expect( viewP.getChild( 1 ).data ).to.equal( 'foo' );
 
 			expect( converter.getCorrespondingDom( viewP ) ).to.not.equal( domP );
 			expect( converter.getCorrespondingDom( viewP.getChild( 0 ) ) ).to.equal( domImg );
@@ -109,7 +109,7 @@ describe( 'converter', () => {
 
 			expect( viewP.getChildCount() ).to.equal( 2 );
 			expect( viewP.getChild( 0 ).name ).to.equal( 'img' );
-			expect( viewP.getChild( 1 ).getText() ).to.equal( 'foo' );
+			expect( viewP.getChild( 1 ).data ).to.equal( 'foo' );
 
 			expect( converter.getCorrespondingDom( viewP ) ).to.equal( domP );
 			expect( converter.getCorrespondingDom( viewP.getChild( 0 ) ) ).to.equal( domP.childNodes[ 0 ] );

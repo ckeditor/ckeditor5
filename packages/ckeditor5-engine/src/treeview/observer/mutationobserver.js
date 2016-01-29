@@ -126,7 +126,7 @@ export default class MutationObserver extends Observer {
 					// we will have only one in the map.
 					mutatedTexts.set( text, {
 						type: 'text',
-						oldText: text.getText(),
+						oldText: text.data,
 						newText: mutation.target.data,
 						node: text
 					} );
