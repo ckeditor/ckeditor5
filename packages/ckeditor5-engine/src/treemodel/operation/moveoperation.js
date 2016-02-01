@@ -66,7 +66,10 @@ export default class MoveOperation extends Operation {
 	 * @returns {core.treeModel.operation.MoveOperation}
 	 */
 	getReversed() {
-		return new this.constructor( this.targetPosition, this.howMany, this.sourcePosition, this.baseVersion + 1 );
+		let newSourcePosition = this.targetPosition.getTransformedByDeletion( this.sourcePosition, this.howMany );
+		let newTargetPosition = this.sourcePosition.getTransformedByInsertion( this.targetPosition, this.howMany );
+
+		return new this.constructor( newSourcePosition, this.howMany, newTargetPosition, this.baseVersion + 1 );
 	}
 
 	_execute() {

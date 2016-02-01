@@ -11,7 +11,6 @@ import Document from '/ckeditor5/core/treemodel/document.js';
 import MoveOperation from '/ckeditor5/core/treemodel/operation/moveoperation.js';
 import Position from '/ckeditor5/core/treemodel/position.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
-import NodeList from '/ckeditor5/core/treemodel/nodelist.js';
 import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
 describe( 'MoveOperation', () => {
@@ -99,21 +98,24 @@ describe( 'MoveOperation', () => {
 		expect( root.getChild( 4 ).character ).to.equal( 'x' );
 	} );
 
-	it( 'should create a MoveOperation as a reverse', () => {
-		let nodeList = new NodeList( 'bar' );
-
+	it( 'should create a proper MoveOperation as a reverse', () => {
 		let sourcePosition = new Position( root, [ 0 ] );
 		let targetPosition = new Position( root, [ 4 ] );
 
-		let operation = new MoveOperation( sourcePosition, nodeList.length, targetPosition, doc.version );
-
+		let operation = new MoveOperation( sourcePosition, 3, targetPosition, doc.version );
 		let reverse = operation.getReversed();
 
 		expect( reverse ).to.be.an.instanceof( MoveOperation );
 		expect( reverse.baseVersion ).to.equal( 1 );
-		expect( reverse.howMany ).to.equal( nodeList.length );
-		expect( reverse.sourcePosition.isEqual( targetPosition ) ).to.be.true;
-		expect( reverse.targetPosition.isEqual( sourcePosition ) ).to.be.true;
+		expect( reverse.howMany ).to.equal( 3 );
+		expect( reverse.sourcePosition.path ).is.deep.equal( [ 1 ] );
+		expect( reverse.targetPosition.path ).is.deep.equal( [ 0 ] );
+
+		operation = new MoveOperation( targetPosition, 3, sourcePosition, doc.version );
+		reverse = operation.getReversed();
+
+		expect( reverse.sourcePosition.path ).is.deep.equal( [ 0 ] );
+		expect( reverse.targetPosition.path ).is.deep.equal( [ 7 ] );
 	} );
 
 	it( 'should undo move node by applying reverse operation', () => {
