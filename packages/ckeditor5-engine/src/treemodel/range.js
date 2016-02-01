@@ -337,7 +337,7 @@ export default class Range {
 	/**
 	 * Returns an array containing one or two {core.treeModel.Range ranges} that are a result of transforming this
 	 * {@link core.treeModel.Range range} by inserting `howMany` nodes at `insertPosition`. Two {@link core.treeModel.Range ranges} are
-	 * returned if the insertion was inside this {@link core.treeModel.Range range}.
+	 * returned if the insertion was inside this {@link core.treeModel.Range range} and `spread` is set to `true`.
 	 *
 	 * Examples:
 	 *
@@ -345,11 +345,14 @@ export default class Range {
 	 *		let transformed = range.getTransformedByInsertion( new Position( root, [ 1 ] ), 2 );
 	 *		// transformed array has one range from [ 4, 7 ] to [ 6, 0, 1 ]
 	 *
+	 *		transformed = range.getTransformedByInsertion( new Position( root, [ 4, 0, 0 ] ), 4 );
+	 *		// transformed array has one range from [ 2, 7 ] to [ 4, 0, 5 ]
+	 *
 	 *		transformed = range.getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 4 );
-	 *		// transformed array has two ranges: from [ 2, 7 ] to [ 3, 2 ] and from [ 3, 6 ] to [ 4, 0, 1 ]
+	 *		// transformed array has one range, which is equal to original range
 	 *
 	 *		transformed = range.getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 4, true );
-	 *		// transformed array has one range which is equal to `range`. This is because of spreadOnlyOnSameLevel flag.
+	 *		// transformed array has two ranges: from [ 2, 7 ] to [ 3, 2 ] and from [ 3, 6 ] to [ 4, 0, 1 ]
 	 *
 	 * @param {core.treeModel.Position} insertPosition Position where nodes are inserted.
 	 * @param {Number} howMany How many nodes are inserted.
@@ -357,12 +360,8 @@ export default class Range {
 	 * if insertion was inside a node from this {core.treeModel.Range range} but not in the range itself.
 	 * @returns {Array.<core.treeModel.Range>} Result of the transformation.
 	 */
-	getTransformedByInsertion( insertPosition, howMany, spreadOnlyOnSameLevel ) {
-		// Flag indicating whether this whole range and given insertPosition is on the same tree level.
-		const areOnSameLevel = utils.compareArrays( this.start.getParentPath(), this.end.getParentPath() ) == 'SAME' &&
-			utils.compareArrays( this.start.getParentPath(), insertPosition.getParentPath() ) == 'SAME';
-
-		if ( this.containsPosition( insertPosition ) && ( !spreadOnlyOnSameLevel || areOnSameLevel ) ) {
+	getTransformedByInsertion( insertPosition, howMany, spread ) {
+		if ( spread && this.containsPosition( insertPosition ) ) {
 			// Range has to be spread. The first part is from original start to the spread point.
 			// The other part is from spread point to the original end, but transformed by
 			// insertion to reflect insertion changes.
@@ -371,17 +370,18 @@ export default class Range {
 				new Range( this.start, insertPosition ),
 				new Range(
 					insertPosition.getTransformedByInsertion( insertPosition, howMany, true ),
-					this.end.getTransformedByInsertion( insertPosition, howMany, true )
+					this.end.getTransformedByInsertion( insertPosition, howMany, false )
 				)
 			];
 		} else {
-			// If insertion is not inside the range, simply transform range boundaries (positions) by the insertion.
-			// Both, one or none of them might be affected by the insertion.
-
 			const range = Range.createFromRange( this );
 
-			range.start = range.start.getTransformedByInsertion( insertPosition, howMany, true );
-			range.end = range.end.getTransformedByInsertion( insertPosition, howMany, false );
+			// We want "greedy" transformation if spread is set to false and "non-greedy" if it is set to true.
+			// To achieve "greedy" transformation we want range.start insertBefore be false, and range.end insertBefore true.
+			// Opposite is for "non-greedy" transformation.
+
+			range.start = range.start.getTransformedByInsertion( insertPosition, howMany, spread );
+			range.end = range.end.getTransformedByInsertion( insertPosition, howMany, !spread );
 
 			return [ range ];
 		}

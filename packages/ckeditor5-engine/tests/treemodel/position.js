@@ -472,11 +472,11 @@ describe( 'position', () => {
 			expect( transformed.offset ).to.equal( 5 );
 		} );
 
-		it( 'should set position offset to deletion offset if position is between removed nodes', () => {
+		it( 'should return null if original position is between removed nodes', () => {
 			const position = new Position( root, [ 1, 2, 4 ] );
 			const transformed = position.getTransformedByDeletion( new Position( root, [ 1, 2, 3 ] ), 5 );
 
-			expect( transformed.offset ).to.equal( 3 );
+			expect( transformed ).to.be.null;
 		} );
 
 		it( 'should not decrement offset if deletion position is in different root', () => {
@@ -517,10 +517,24 @@ describe( 'position', () => {
 		} );
 
 		it( 'should decrement offset if a range was moved from the same parent and closer offset', () => {
+			const position = new Position( root, [ 1, 2, 6 ] );
+			const transformed = position.getTransformedByMove( new Position( root, [ 1, 2, 0 ] ), new Position( root, [ 2 ] ), 3, false );
+
+			expect( transformed.path ).to.deep.equal( [ 1, 2, 3 ] );
+		} );
+
+		it( 'should decrement offset if position was at the end of a range and move was not sticky', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
 			const transformed = position.getTransformedByMove( new Position( root, [ 1, 2, 0 ] ), new Position( root, [ 2 ] ), 3, false );
 
 			expect( transformed.path ).to.deep.equal( [ 1, 2, 0 ] );
+		} );
+
+		it( 'should update path if position was at the end of a range and move was sticky', () => {
+			const position = new Position( root, [ 1, 2, 3 ] );
+			const transformed = position.getTransformedByMove( new Position( root, [ 1, 2, 0 ] ), new Position( root, [ 2 ] ), 3, false, true );
+
+			expect( transformed.path ).to.deep.equal( [ 5 ] );
 		} );
 
 		it( 'should update path if a range contained this position', () => {

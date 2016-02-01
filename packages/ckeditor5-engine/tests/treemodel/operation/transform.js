@@ -1363,7 +1363,7 @@ describe( 'transform', () => {
 
 			it( 'target at offset after range offset: no operation update', () => {
 				let transformBy = new InsertOperation(
-					new Position( root, [ 2, 2, 6 ] ),
+					new Position( root, [ 2, 2, 7 ] ),
 					[ nodeA, nodeB ],
 					baseVersion
 				);
@@ -1522,6 +1522,21 @@ describe( 'transform', () => {
 				expected.baseVersion++;
 
 				expectOperation( transOp[ 1 ], expected );
+			} );
+
+			it( 'target at offset same as range end boundary: expand range', () => {
+				let transformBy = new InsertOperation(
+					new Position( root, [ 2, 2, 6 ] ),
+					[ nodeA, nodeB ],
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expected.howMany = 4;
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
 			} );
 		} );
 
