@@ -101,14 +101,14 @@ export default class Renderer {
 	 * {@link core.treeView.Renderer#markedTexts} and updated all nodes which needs to be updated. Then it clear all three
 	 * sets.
 	 *
-	 * Renderer try not to bread IME, so it do as little as it is possible to update DOM.
+	 * Renderer try not to break IME, so it do as little as it is possible to update DOM.
 	 *
 	 * For attributes it adds new attributes to DOM elements, update attributes with different values and remove
 	 * attributes which does not exists in the view element.
 	 *
 	 * For text nodes it update the text string if it is different. Note that if parent element is marked as an element
-	 * which changed child list, text node update will not be done, because it may not be possible do find a
-	 * {@link core.treeView.Converter#getCorrespondingDomText corresponding DOM text}. The change will be handled in the
+	 * which changed child list, text node update will not be done, because it may not be possible to find a
+	 * {@link @treeView.Converter#getCorrespondingDomText corresponding DOM text}. The change will be handled in the
 	 * parent element.
 	 *
 	 * For nodes which changed child list it calculates a {@link diff} using {@link core.treeView.Converter#compareNodes}

@@ -19,7 +19,7 @@ export default class Element extends Node {
 	/**
 	 * Creates a tree view element.
 	 *
-	 * Attributes can be passes in various formats:
+	 * Attributes can be passed in various formats:
 	 *
 	 *		new Element( 'div', { 'class': 'editor', 'contentEditable': 'true' } ); // object
 	 *		new Element( 'div', [ [ 'class', 'editor' ], [ 'contentEditable', 'true' ] ] ); // map-like iterator

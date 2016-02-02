@@ -92,7 +92,7 @@ export default class Converter {
 	 * @param {document} domDocument Document which will be used to create DOM nodes.
 	 * @param {Object} [options] Conversion options.
 	 * @param {Boolean} [options.bind=false] Determines whether new elements will be bound.
-	 * @param {Boolean} [options.withChildren=true] If true node's children will be converter too.
+	 * @param {Boolean} [options.withChildren=true] If true node's children will be converted too.
 	 * @returns {Node} Converted node.
 	 */
 	viewToDom( viewNode, domDocument, options ) {
