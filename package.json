@@ -32,7 +32,7 @@
     "gulp-filter": "^3.0.1",
     "gulp-jscs": "^3.0.2",
     "gulp-jshint": "^2.0.0",
-    "gulp-mirror": "^0.4.0",
+    "gulp-mirror": "^1",
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-util": "^3.0.7",
