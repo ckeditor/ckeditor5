@@ -78,6 +78,19 @@ export default class Element extends Node {
 	}
 
 	/**
+	 * {@link treeModel.Element#insert Insert} a child node or a list of child nodes at the end of this node and sets
+	 * the parent of these nodes to this element.
+	 *
+	 * Note that the list of children can be modified only in elements not yet attached to the document.
+	 * All attached nodes should be modified using the {@link treeModel.operation.InsertOperation}.
+	 *
+	 * @param {treeModel.NodesSet} nodes The list of nodes to be inserted.
+	 */
+	appendChildren( nodes ) {
+		this.insertChildren( this.getChildCount(), nodes );
+	}
+
+	/**
 	 * Inserts a list of child nodes on the given index and sets the parent of these nodes to this element.
 	 *
 	 * Note that the list of children can be modified only in elements not yet attached to the document.
