@@ -9,7 +9,7 @@
 'use strict';
 
 import testUtils from '/tests/_utils/utils.js';
-import objectUtils from '/ckeditor5/core/lib/lodash/object.js';
+import extend from '/ckeditor5/core/lib/lodash/extend.js';
 import DOMEmitterMixin from '/ckeditor5/core/ui/domemittermixin.js';
 import EmitterMixin from '/ckeditor5/core/emittermixin.js';
 
@@ -17,8 +17,8 @@ let emitter, domEmitter, node;
 
 testUtils.createSinonSandbox();
 
-let getEmitterInstance = () => objectUtils.extend( {}, EmitterMixin );
-let getDOMEmitterInstance = () => objectUtils.extend( {}, DOMEmitterMixin );
+let getEmitterInstance = () => extend( {}, EmitterMixin );
+let getDOMEmitterInstance = () => extend( {}, DOMEmitterMixin );
 let getDOMNodeInstance = () => document.createElement( 'div' );
 
 function updateEmitterInstance() {

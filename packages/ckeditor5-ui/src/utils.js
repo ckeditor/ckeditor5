@@ -5,7 +5,7 @@
 
 'use strict';
 
-import langUtils from './lib/lodash/lang.js';
+import isPlainObject from './lib/lodash/isPlainObject.js';
 
 /**
  * An index at which arrays differ. If arrays are same at all indexes, it represents how arrays are related.
@@ -123,7 +123,7 @@ const utils = {
 	 * @returns {Map} Map created from data.
 	 */
 	toMap( data ) {
-		if ( langUtils.isPlainObject( data ) ) {
+		if ( isPlainObject( data ) ) {
 			return utils.objectToMap( data );
 		} else {
 			return new Map( data );

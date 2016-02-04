@@ -7,8 +7,8 @@
 
 import EmitterMixin from './emittermixin.js';
 import CKEditorError from './ckeditorerror.js';
-import utilsObject from './lib/lodash/object.js';
-import utilsLang from './lib/lodash/lang.js';
+import extend from './lib/lodash/extend.js';
+import isObject from './lib/lodash/isObject.js';
 
 const attributesSymbol = Symbol( 'attributes' );
 const boundObservablesSymbol = Symbol( 'boundObservables' );
@@ -40,7 +40,7 @@ const ObservableMixin = {
 	 */
 	set( name, value ) {
 		// If the first parameter is an Object, iterate over its properties.
-		if ( utilsLang.isObject( name ) ) {
+		if ( isObject( name ) ) {
 			Object.keys( name ).forEach( ( attr ) => {
 				this.set( attr, name[ attr ] );
 			}, this );
@@ -629,7 +629,7 @@ function attachBindToListeners( observable, toBindings ) {
 	} );
 }
 
-utilsObject.extend( ObservableMixin, EmitterMixin );
+extend( ObservableMixin, EmitterMixin );
 
 /**
  * Fired when an attribute changed value.
