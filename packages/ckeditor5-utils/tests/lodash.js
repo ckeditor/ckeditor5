@@ -5,7 +5,7 @@
 
 'use strict';
 
-import objectUtils from '/ckeditor5/core/lib/lodash/object.js';
+import extend from '/ckeditor5/core/lib/lodash/extend.js';
 
 describe( 'utils', () => {
 	describe( 'extend()', () => {
@@ -27,7 +27,7 @@ describe( 'utils', () => {
 				d: 2
 			};
 
-			objectUtils.extend( target, ext1, ext2 );
+			extend( target, ext1, ext2 );
 
 			expect( target ).to.have.property( 'a' ).to.equal( 0 );
 			expect( target ).to.have.property( 'b' ).to.equal( 1 );
