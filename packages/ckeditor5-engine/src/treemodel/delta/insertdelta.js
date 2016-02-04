@@ -24,7 +24,7 @@ export default class InsertDelta extends Delta {}
  * @memberOf treeModel.Batch
  * @method insert
  * @param {treeModel.Position} position Position of insertion.
- * @param {treeModel.NodesSet} nodes The list of nodes to be inserted.
+ * @param {treeModel.NodeSet} nodes The list of nodes to be inserted.
  * List of nodes can be of any type accepted by the {@link treeModel.NodeList} constructor.
  */
 register( 'insert', function( position, nodes ) {

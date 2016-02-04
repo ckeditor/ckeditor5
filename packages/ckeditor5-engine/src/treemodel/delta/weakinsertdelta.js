@@ -33,7 +33,7 @@ export default class WeakInsertDelta extends Delta {}
  * @memberOf treeModel.Batch
  * @method weakInsert
  * @param {treeModel.Position} position Position of insertion.
- * @param {treeModel.NodesSet} nodes The list of nodes to be inserted.
+ * @param {treeModel.NodeSet} nodes The list of nodes to be inserted.
  */
 register( 'weakInsert', function( position, nodes ) {
 	const delta = new WeakInsertDelta();
