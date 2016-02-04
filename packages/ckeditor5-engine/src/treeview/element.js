@@ -7,7 +7,7 @@
 
 import Node from './node.js';
 import utils from '../utils.js';
-import langUtils from '../lib/lodash/lang.js';
+import isPlainObject from '../lib/lodash/isPlainObject.js';
 
 /**
  * Tree view element.
@@ -46,7 +46,7 @@ export default class Element extends Node {
 		 * @protected
 		 * @property {Map} _attrs
 		 */
-		if ( langUtils.isPlainObject( attrs ) ) {
+		if ( isPlainObject( attrs ) ) {
 			this._attrs = utils.objectToMap( attrs );
 		} else {
 			this._attrs = new Map( attrs );
