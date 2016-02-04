@@ -20,7 +20,7 @@ export default class Element extends Node {
 	 *
 	 * @param {String} name Node name.
 	 * @param {Iterable} attrs Iterable collection of attributes.
-	 * @param {treeModel.NodesSet} children List of nodes to be inserted
+	 * @param {treeModel.NodeSet} children List of nodes to be inserted
 	 * into created element. List of nodes can be of any type accepted by the {@link treeModel.NodeList} constructor.
 	 * @constructor
 	 */
@@ -78,13 +78,26 @@ export default class Element extends Node {
 	}
 
 	/**
+	 * {@link treeModel.Element#insert Inserts} a child node or a list of child nodes at the end of this node and sets
+	 * the parent of these nodes to this element.
+	 *
+	 * Note that the list of children can be modified only in elements not yet attached to the document.
+	 * All attached nodes should be modified using the {@link treeModel.operation.InsertOperation}.
+	 *
+	 * @param {treeModel.NodeSet} nodes The list of nodes to be inserted.
+	 */
+	appendChildren( nodes ) {
+		this.insertChildren( this.getChildCount(), nodes );
+	}
+
+	/**
 	 * Inserts a list of child nodes on the given index and sets the parent of these nodes to this element.
 	 *
 	 * Note that the list of children can be modified only in elements not yet attached to the document.
 	 * All attached nodes should be modified using the {@link treeModel.operation.InsertOperation}.
 	 *
 	 * @param {Number} index Position where nodes should be inserted.
-	 * @param {treeModel.NodesSet} nodes The list of nodes to be inserted.
+	 * @param {treeModel.NodeSet} nodes The list of nodes to be inserted.
 	 * The list of nodes can be of any type accepted by the {@link treeModel.NodeList} constructor.
 	 */
 	insertChildren( index, nodes ) {
