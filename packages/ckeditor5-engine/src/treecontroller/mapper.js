@@ -12,6 +12,9 @@ import ViewText from '../treeview/text.js';
 /**
  * Maps elements and positions between {@link treeView TreeView} and {@link treeModel TreeModel}.
  *
+ * Mapper use binded elements to find corresponding elements and positions, so, to get proper results,
+ * all Tree Model elements should be {@link treeController.Mapper#bindElements binded}.
+ *
  * @class treeController.Mapper
  */
 export default class Mapper {
