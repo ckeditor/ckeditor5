@@ -8,7 +8,7 @@
 import CharacterProxy from './characterproxy.js';
 import Text from './text.js';
 import utils from '../utils.js';
-import langUtils from '../lib/lodash/lang.js';
+import clone from '../lib/lodash/clone.js';
 import CKEditorError from '../ckeditorerror.js';
 
 /**
@@ -60,7 +60,7 @@ class NodeListText extends Text {
 	 * @returns {Object} Clone of this object with the parent property replaced with its name.
 	 */
 	toJSON() {
-		const json = langUtils.clone( this );
+		const json = clone( this );
 
 		json.parent = json.parent ? this.parent.name : null;
 

@@ -11,7 +11,7 @@ import MoveOperation from './moveoperation.js';
 import NoOperation from './nooperation.js';
 import Position from '../position.js';
 import Range from '../range.js';
-import langUtils from '../../lib/lodash/lang.js';
+import isEqual from '../../lib/lodash/isEqual.js';
 import utils from '../../utils.js';
 
 /**
@@ -108,7 +108,7 @@ const ot = {
 					} )
 				);
 
-				if ( isStrong && !langUtils.isEqual( a.newValue, b.newValue ) ) {
+				if ( isStrong && !isEqual( a.newValue, b.newValue ) ) {
 					// If this operation is more important, we want also want to apply change to the part of the
 					// original range that has already been changed by the other operation. Since that range
 					// got changed we have to update oldAttr.

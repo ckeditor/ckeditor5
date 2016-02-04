@@ -5,7 +5,7 @@
 
 'use strict';
 
-import langUtils from '../lib/lodash/lang.js';
+import clone from '../lib/lodash/clone.js';
 import utils from '../utils.js';
 import CKEditorError from '../ckeditorerror.js';
 
@@ -154,7 +154,7 @@ export default class Node {
 	 * @returns {Object} Clone of this object with the parent property replaced with its name.
 	 */
 	toJSON() {
-		const json = langUtils.clone( this );
+		const json = clone( this );
 
 		// Due to circular references we need to remove parent reference.
 		json.parent = this.parent ? this.parent.name : null;
