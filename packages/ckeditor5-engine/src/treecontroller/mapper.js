@@ -92,6 +92,18 @@ export default class Mapper {
 	}
 
 	/**
+	 * Get corresponding view position.
+	 *
+	 * @param {treeModel.Position} modelPosition Model position.
+	 * @returns {treeView.Position} Corresponding view position.
+	 */
+	toViewPosition( modelPosition ) {
+		let viewContainer = this._modelToViewMapping.get( modelPosition.parent );
+
+		return this._findPositionIn( viewContainer, modelPosition.offset );
+	}
+
+	/**
 	 * Calculates model offset base on the view position and the block element.
 	 *
 	 * Example:
@@ -167,18 +179,6 @@ export default class Mapper {
 
 			return len;
 		}
-	}
-
-	/**
-	 * Get corresponding view position.
-	 *
-	 * @param {treeModel.Position} modelPosition Model position.
-	 * @returns {treeView.Position} Corresponding view position.
-	 */
-	toViewPosition( modelPosition ) {
-		let viewContainer = this._modelToViewMapping.get( modelPosition.parent );
-
-		return this._findPositionIn( viewContainer, modelPosition.offset );
 	}
 
 	/**
