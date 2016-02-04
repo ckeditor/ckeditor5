@@ -78,7 +78,7 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * {@link treeModel.Element#insert Insert} a child node or a list of child nodes at the end of this node and sets
+	 * {@link treeModel.Element#insert Inserts} a child node or a list of child nodes at the end of this node and sets
 	 * the parent of these nodes to this element.
 	 *
 	 * Note that the list of children can be modified only in elements not yet attached to the document.

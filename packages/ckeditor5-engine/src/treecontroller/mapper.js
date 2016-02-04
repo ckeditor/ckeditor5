@@ -16,7 +16,7 @@ import ViewText from '../treeview/text.js';
  */
 export default class Mapper {
 	/**
-	 * Creates instance of the mapper.
+	 * Creates an instance of the mapper.
 	 *
 	 * @constructor
 	 */
@@ -39,9 +39,9 @@ export default class Mapper {
 	}
 
 	/**
-	 * Marks model and view elements to be corresponding. Corresponding elements can be get using
-	 * {@link treeController.Mapper#toModelElement} and {@link treeController.Mapper#toViewElement}.
-	 * The information that elements are binded is also used to transform a position.
+	 * Marks model and view elements as corresponding. Corresponding elements can be retrieved by using
+	 * the {@link #toModelElement} and {@link #toViewElement} methods.
+	 * The information that elements are bound is also used to translate positions.
 	 *
 	 * @param {treeModel.Element} modelElement Model element.
 	 * @param {treeView.Element} viewElement View element.
@@ -52,27 +52,27 @@ export default class Mapper {
 	}
 
 	/**
-	 * Gets corresponding model element.
+	 * Gets the corresponding model element.
 	 *
 	 * @param {treeView.Element} viewElement View element.
-	 * @returns {treeModel.Element|null} Corresponding model element or null if not found.
+	 * @returns {treeModel.Element|null} Corresponding model element or `null` if not found.
 	 */
 	toModelElement( viewElement ) {
 		return this._viewToModelMapping.get( viewElement );
 	}
 
 	/**
-	 * Gets corresponding view element.
+	 * Gets the corresponding view element.
 	 *
 	 * @param {treeModel.Element} modelElement Model element.
-	 * @returns {treeView.Element|null} Corresponding view element or null if not found.
+	 * @returns {treeView.Element|null} Corresponding view element or `null` if not found.
 	 */
 	toViewElement( modelElement ) {
 		return this._modelToViewMapping.get( modelElement );
 	}
 
 	/**
-	 * Gets corresponding model position.
+	 * Gets the corresponding model position.
 	 *
 	 * @param {treeView.Position} viewPosition View position.
 	 * @returns {treeModel.Position} Corresponding model position.
@@ -92,7 +92,7 @@ export default class Mapper {
 	}
 
 	/**
-	 * Get corresponding view position.
+	 * Gets the corresponding view position.
 	 *
 	 * @param {treeModel.Position} modelPosition Model position.
 	 * @returns {treeView.Position} Corresponding view position.
@@ -104,17 +104,16 @@ export default class Mapper {
 	}
 
 	/**
-	 * Calculates model offset base on the view position and the block element.
+	 * Calculates model offset based on the view position and the block element.
 	 *
 	 * Example:
 	 *
-	 *		<p> foo <b> ba|r </b> </p> // _toModelOffset( b, 2, p ) -> 5
+	 *		<p>foo<b>ba|r</b></p> // _toModelOffset( b, 2, p ) -> 5
 	 *
 	 * Is a sum of:
 	 *
-	 *		<p> foo |<b> bar </b> </p> // _toModelOffset( p, 3, p ) -> 3
-	 *  	<p> foo <b> ba|r </b> </p> // _toModelOffset( b, 2, b ) -> 2
-	 *
+	 *		<p>foo|<b>bar</b></p> // _toModelOffset( p, 3, p ) -> 3
+	 *		<p>foo<b>ba|r</b></p> // _toModelOffset( b, 2, b ) -> 2
 	 *
 	 * @private
 	 * @param {treeView.Element} viewParent Position parent.
@@ -154,9 +153,8 @@ export default class Mapper {
 	 * Examples:
 	 *
 	 *		foo          -> 3 // Length of the text is the length of data.
-	 *		<b> foo </b> -> 3 // Length the element which has no corresponding model element is a length of its children.
-	 *		<p> foo </p> -> 1 // Length the element which has corresponding model element is always 1.
-	 *
+	 *		<b>foo</b>   -> 3 // Length the element which has no corresponding model element is a length of its children.
+	 *		<p>foo</p>   -> 1 // Length the element which has corresponding model element is always 1.
 	 *
 	 * @private
 	 * @param {treeView.Element} viewNode View node.
@@ -186,20 +184,20 @@ export default class Mapper {
 	 *
 	 * Example:
 	 *
-	 *		<p> fo <b> bar </b> bom </p> -> expected offset: 4
+	 *		<p>fo<b>bar</b>bom</p> -> expected offset: 4
 	 *
 	 *		_findPositionIn( p, 4 ):
-	 *		<p> | fo <b> bar </b> bom </p> -> expected offset: 4, actual offset: 0
-	 *		<p> fo | <b> bar </b> bom </p> -> expected offset: 4, actual offset: 2
-	 *		<p> fo <b> bar </b> | bom </p> -> expected offset: 4, actual offset: 5 -> we are too far
+	 *		<p>|fo<b>bar</b>bom</p> -> expected offset: 4, actual offset: 0
+	 *		<p>fo|<b>bar</b>bom</p> -> expected offset: 4, actual offset: 2
+	 *		<p>fo<b>bar</b>|bom</p> -> expected offset: 4, actual offset: 5 -> we are too far
 	 *
 	 *		_findPositionIn( b, 4 - ( 5 - 3 ) ):
-	 *		<p> fo <b> | bar </b> bom </p> -> expected offset: 2, actual offset: 0
-	 *		<p> fo <b> bar | </b> bom </p> -> expected offset: 2, actual offset: 3 -> we are too far
+	 *		<p>fo<b>|bar</b>bom</p> -> expected offset: 2, actual offset: 0
+	 *		<p>fo<b>bar|</b>bom</p> -> expected offset: 2, actual offset: 3 -> we are too far
 	 *
 	 *		_findPositionIn( bar, 2 - ( 3 - 3 ) ):
 	 *		We are in the text node so we can simple find the offset.
-	 *		<p> fo <b> ba|r </b> bom </p> -> expected offset: 2, actual offset: 2 -> position found
+	 *		<p>fo<b>ba|r</b>bom</p> -> expected offset: 2, actual offset: 2 -> position found
 	 *
 	 * @private
 	 * @param {treeView.Element} viewParent Tree view element in which we are looking for the position.
