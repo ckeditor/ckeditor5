@@ -4,23 +4,37 @@
 
 const gulp = require( 'gulp' );
 const build = require( 'lodash-cli' );
+const del = require( 'del' );
+
+const DEST_PATH = 'src/lib/lodash';
 
 module.exports = function() {
 	const tasks = {
-		lodash( done ) {
-			build( [
-				'modularize',
-				// 'modern',
-				'exports=es',
-				'include=clone,extend,isPlainObject,isObject,isArray,last,isEqual',
-				'--development',
-				'--output', 'src/lib/lodash'
-			], ( e ) => {
-				done( e instanceof Error ? e : null );
-			} );
+		lodash() {
+			return del( DEST_PATH )
+				.then( buildLodash );
 		}
 	};
+
 	gulp.task( 'lodash', tasks.lodash );
 
 	return tasks;
 };
+
+function buildLodash() {
+	return new Promise( ( resolve, reject ) => {
+		build( [
+			'modularize',
+			'exports=es',
+			'include=clone,extend,isPlainObject,isObject,isArray,last,isEqual',
+			'--development',
+			'--output', DEST_PATH
+		], ( err ) => {
+			if ( err instanceof Error ) {
+				reject( err );
+			} else {
+				resolve( null );
+			}
+		} );
+	} );
+}

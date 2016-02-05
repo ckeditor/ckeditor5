@@ -6,7 +6,8 @@
 'use strict';
 
 import ObservableMixin from './observablemixin.js';
-import utilsLang from './lib/lodash/lang.js';
+import isObject from './lib/lodash/isObject.js';
+import isPlainObject from './lib/lodash/isPlainObject.js';
 import utils from './utils.js';
 
 /**
@@ -69,7 +70,7 @@ export default class Config {
 	set( name, value ) {
 		// Just pass the call to the original set() in case of an object. It'll deal with recursing through the
 		// object and calling set( name, value ) again for each property.
-		if ( utilsLang.isObject( name ) ) {
+		if ( isObject( name ) ) {
 			ObservableMixin.set.apply( this, arguments );
 
 			return;
@@ -95,7 +96,7 @@ export default class Config {
 		}
 
 		// Values set as pure objects will be treated as Config subsets.
-		if ( utilsLang.isPlainObject( value ) ) {
+		if ( isPlainObject( value ) ) {
 			// If the target is an instance of Config (a deep config subset).
 			if ( target[ name ] instanceof Config ) {
 				// Amend the target with the value, instead of replacing it.
