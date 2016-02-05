@@ -7,7 +7,7 @@
 
 import EmitterMixin from '../emittermixin.js';
 import utils from '../utils.js';
-import objectUtils from '../lib/lodash/object.js';
+import extend from '../lib/lodash/extend.js';
 import log from '../log.js';
 
 /**
@@ -33,7 +33,7 @@ class ProxyEmitter {
 	}
 }
 
-objectUtils.extend( ProxyEmitter.prototype, EmitterMixin, {
+extend( ProxyEmitter.prototype, EmitterMixin, {
 	/**
 	 * Collection of native DOM listeners.
 	 *
@@ -157,7 +157,7 @@ objectUtils.extend( ProxyEmitter.prototype, EmitterMixin, {
  * @implements DOMEmitter
  */
 
-const DOMEmitterMixin = objectUtils.extend( {}, EmitterMixin, {
+const DOMEmitterMixin = extend( {}, EmitterMixin, {
 	/**
 	 * Registers a callback function to be executed when an event is fired in a specific Emitter or DOM Node.
 	 * It is backwards compatible with {@link EmitterMixin#listenTo}.

@@ -5,7 +5,7 @@
 
 'use strict';
 
-import utilsObject from '../lib/lodash/object.js';
+import extend from '../lib/lodash/extend.js';
 import utils from '../utils.js';
 import ObservableMixin from '../observablemixin.js';
 
@@ -27,7 +27,7 @@ export default class Model {
 	constructor( attributes, properties ) {
 		// Extend this instance with the additional (out of state) properties.
 		if ( properties ) {
-			utilsObject.extend( this, properties );
+			extend( this, properties );
 		}
 
 		// Initialize the attributes.
