@@ -8,8 +8,9 @@
 import Config from '../config.js';
 
 /**
- * Basic DataProcessor class. This class should be extended by actual DataProcessor implementations.
+ * Abstract base DataProcessor class. This class should be extended by actual DataProcessor implementations.
  *
+ * @abstract
  * @class dataProcessor.DataProcessor
  */
 export default class DataProcessor {
@@ -31,22 +32,18 @@ export default class DataProcessor {
 	}
 
 	/**
-	 * Converts DocumentFragment to output data supported by DataProcessor.
+	 * Converts DocumentFragment to data supported by DataProcessor.
 	 *
-	 * @param {DocumentFragment} fragment
-	 * @returns {*}
+	 * @method toData
+	 * @param {DocumentFragment} fragment Document fragment to be processed.
+	 * @returns {*} Data supported by DataProcessor implementation.
 	 */
-	toData( fragment ) {
-		/*jshint unused:false*/
-	}
 
 	/**
 	 * Converts data supported by DataProcessor to DocumentFragment.
 	 *
-	 * @param {*} data
-	 * @returns {DocumentFragment}
+	 * @method toDom
+	 * @param {*} data Data to be processed.
+	 * @returns {DocumentFragment} DocumentFragment
 	 */
-	toDom( data ) {
-		/*jshint unused:false*/
-	}
 }
