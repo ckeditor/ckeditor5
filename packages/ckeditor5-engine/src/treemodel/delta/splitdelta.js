@@ -20,7 +20,19 @@ import CKEditorError from '../../ckeditorerror.js';
  *
  * @memberOf core.treeModel.delta
  */
-export default class SplitDelta extends Delta {}
+export default class SplitDelta extends Delta {
+	get cloneOperation() {
+		return this.operations[ 0 ] || null;
+	}
+
+	get moveOperation() {
+		return this.operations[ 1 ] || null;
+	}
+
+	get position() {
+		return this.moveOperation ? this.moveOperation.sourcePosition : null;
+	}
+}
 
 /**
  * Splits a node at the given position.
@@ -34,6 +46,7 @@ export default class SplitDelta extends Delta {}
  */
 register( 'split', function( position ) {
 	const delta = new SplitDelta();
+
 	const splitElement = position.parent;
 
 	if ( !splitElement.parent ) {
@@ -46,10 +59,11 @@ register( 'split', function( position ) {
 	}
 
 	const copy = new Element( splitElement.name, splitElement._attrs );
+
 	const insert = new InsertOperation( Position.createAfter( splitElement ), copy, this.doc.version );
 
-	this.doc.applyOperation( insert );
 	delta.addOperation( insert );
+	this.doc.applyOperation( insert );
 
 	const move = new MoveOperation(
 		position,
@@ -58,8 +72,8 @@ register( 'split', function( position ) {
 		this.doc.version
 	);
 
-	this.doc.applyOperation( move );
 	delta.addOperation( move );
+	this.doc.applyOperation( move );
 
 	this.addDelta( delta );
 

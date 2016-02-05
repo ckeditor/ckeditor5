@@ -6,6 +6,7 @@
 'use strict';
 
 import Delta from './delta.js';
+import SplitDelta from './splitdelta.js';
 import { register } from '../batch-base.js';
 import Position from '../position.js';
 import Element from '../element.js';
@@ -20,7 +21,35 @@ import CKEditorError from '../../ckeditorerror.js';
  *
  * @memberOf core.treeModel.delta
  */
-export default class MergeDelta extends Delta {}
+export default class MergeDelta extends Delta {
+	get moveOperation() {
+		return this.operations[ 0 ] || null;
+	}
+
+	get removeOperation() {
+		return this.operations[ 1 ] || null;
+	}
+
+	get position() {
+		return this.removeOperation ? this.removeOperation.sourcePosition : null;
+	}
+
+	getReversed() {
+		if ( this.moveOperation ) {
+			let delta = new SplitDelta();
+
+			for ( let op of this.operations ) {
+				delta.addOperation( op.getReversed() );
+			}
+
+			delta.operations.reverse();
+
+			return delta;
+		}
+
+		return null;
+	}
+}
 
 /**
  * Merges two siblings at the given position.

@@ -49,4 +49,15 @@ export default class Delta {
 
 		return operation;
 	}
+
+	clone() {
+		let delta = new this.constructor();
+		delta.batch = this.batch;
+
+		for ( let op of this.operations ) {
+			delta.addOperation( op.clone() );
+		}
+
+		return delta;
+	}
 }
