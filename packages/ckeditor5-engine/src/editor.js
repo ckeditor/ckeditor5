@@ -9,7 +9,7 @@ import ObservableMixin from './observablemixin.js';
 import EditorConfig from './editorconfig.js';
 import PluginCollection from './plugincollection.js';
 import CKEditorError from './ckeditorerror.js';
-import langUtils from './lib/lodash/lang.js';
+import isArray from './lib/lodash/isArray.js';
 import utils from './utils.js';
 
 /**
@@ -104,7 +104,7 @@ export default class Editor {
 			let plugins = config.features || [];
 
 			// Handle features passed as a string.
-			if ( !langUtils.isArray( plugins ) ) {
+			if ( !isArray( plugins ) ) {
 				plugins = plugins.split( ',' );
 			}
 

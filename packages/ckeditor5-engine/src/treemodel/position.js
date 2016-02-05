@@ -7,7 +7,7 @@
 
 import RootElement from './rootelement.js';
 import CKEditorError from '../ckeditorerror.js';
-import arrayUtils from '../lib/lodash/array.js';
+import last from '../lib/lodash/last.js';
 import utils from '../utils.js';
 
 /**
@@ -106,7 +106,7 @@ export default class Position {
 	 * @property {Number} offset
 	 */
 	get offset() {
-		return arrayUtils.last( this.path );
+		return last( this.path );
 	}
 
 	/**

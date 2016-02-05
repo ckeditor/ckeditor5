@@ -8,7 +8,7 @@
 import CharacterProxy from './characterproxy.js';
 import Text from './text.js';
 import utils from '../utils.js';
-import langUtils from '../lib/lodash/lang.js';
+import clone from '../lib/lodash/clone.js';
 import CKEditorError from '../ckeditorerror.js';
 
 /**
@@ -21,7 +21,7 @@ import CKEditorError from '../ckeditorerror.js';
  * point to the same nodes.
  * * Iterable collection of above items will be iterated over and all items will be added to the node list.
  *
- * @typedef {treeModel.Element|treeModel.CharacterProxy|treeModel.Text|String|treeModel.NodeList|Iterable} treeModel.NodesSet
+ * @typedef {treeModel.Element|treeModel.CharacterProxy|treeModel.Text|String|treeModel.NodeList|Iterable} treeModel.NodeSet
  */
 
 /**
@@ -60,7 +60,7 @@ class NodeListText extends Text {
 	 * @returns {Object} Clone of this object with the parent property replaced with its name.
 	 */
 	toJSON() {
-		const json = langUtils.clone( this );
+		const json = clone( this );
 
 		json.parent = json.parent ? this.parent.name : null;
 
@@ -106,9 +106,9 @@ export default class NodeList {
 	 *		nodeListA === nodeListB // true
 	 *		nodeListB.length // 3
 	 *
-	 * @see {@link treeModel.NodesSet} for more explanation.
+	 * @see {@link treeModel.NodeSet} for more explanation.
 	 *
-	 * @param {treeModel.NodesSet} nodes List of nodes.
+	 * @param {treeModel.NodeSet} nodes List of nodes.
 	 * @constructor
 	 */
 	constructor( nodes ) {

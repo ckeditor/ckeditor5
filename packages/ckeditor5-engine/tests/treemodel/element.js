@@ -62,6 +62,21 @@ describe( 'Element', () => {
 		} );
 	} );
 
+	describe( 'appendChildren', () => {
+		it( 'should add children to the end of the element', () => {
+			let element = new Element( 'elem', [], [ 'xy' ] );
+			element.appendChildren( 'foo' );
+
+			expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
+			expect( element.getChildCount() ).to.equal( 5 );
+			expect( element.getChild( 0 ) ).to.have.property( 'character' ).that.equals( 'x' );
+			expect( element.getChild( 1 ) ).to.have.property( 'character' ).that.equals( 'y' );
+			expect( element.getChild( 2 ) ).to.have.property( 'character' ).that.equals( 'f' );
+			expect( element.getChild( 3 ) ).to.have.property( 'character' ).that.equals( 'o' );
+			expect( element.getChild( 4 ) ).to.have.property( 'character' ).that.equals( 'o' );
+		} );
+	} );
+
 	describe( 'removeChildren', () => {
 		it( 'should remove children from the element and return them as a NodeList', () => {
 			let element = new Element( 'elem', [], [ 'foobar' ] );
