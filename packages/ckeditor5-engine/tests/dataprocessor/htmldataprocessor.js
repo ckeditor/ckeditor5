@@ -6,6 +6,7 @@
 'use strict';
 
 import HtmlDataProcessor from '/ckeditor5/core/dataprocessor/htmldataprocessor.js';
+import xssTemplates from '_utils/xsstemplates.js';
 
 describe( 'HtmlDataProcessor', () => {
 	const dataProcessor = new HtmlDataProcessor();
@@ -51,71 +52,33 @@ describe( 'HtmlDataProcessor', () => {
 			expect( fragment.childNodes[ 2 ].textContent ).to.equal( ' text' );
 		} );
 
-		it( 'should parse element attributes', () => {
-			const fragment = dataProcessor.toDom( '<p class="paragraph" data-id="12"></p>' );
-			expect( fragment.childNodes.length ).to.equal( 1 );
-			const childNode = fragment.childNodes[ 0 ];
+		// Test against XSS attacks.
+		for ( const name in xssTemplates ) {
+			const input = xssTemplates[ name ].replace( /%xss%/g, 'testXss()' );
 
-			expect( childNode.attributes.length ).to.equal( 2 );
-			expect( childNode.getAttribute( 'class' ) ).to.equal( 'paragraph' );
-			expect( childNode.getAttribute( 'data-id' ) ).to.equal( '12' );
-		} );
+			it( 'should prevent XSS attacks: ' + name, ( done ) => {
+				window.testXss = sinon.spy();
+				dataProcessor.toDom( input );
+
+				setTimeout( () => {
+					sinon.assert.notCalled( window.testXss );
+					done();
+				}, 10 );
+			} );
+		}
 	} );
 
 	describe( 'toData', () => {
-		it( 'should return empty string when empty DocumentFragment is passed' , () => {
-			const data = dataProcessor.toData( document.createDocumentFragment() );
-			expect( data ).to.equal( '' );
-		} );
+		it( 'should use HtmlWriter', () => {
+			const spy = sinon.spy( dataProcessor._htmlWriter, 'getHtml' );
 
-		it( 'should create text from single text node', () => {
-			const text = 'foo bar';
-			const fragment = document.createDocumentFragment();
-			const textNode = document.createTextNode( text );
-			fragment.appendChild( textNode );
-
-			const data = dataProcessor.toData( fragment );
-			expect( data ).to.equal( text );
-		} );
-
-		it( 'should return correct HTML from fragment with paragraph', () => {
 			const fragment = document.createDocumentFragment();
 			const paragraph = document.createElement( 'p' );
-			paragraph.textContent = 'foo bar';
 			fragment.appendChild( paragraph );
+			dataProcessor.toData( fragment );
 
-			const data = dataProcessor.toData( fragment );
-			expect( data ).to.equal( '<p>foo bar</p>' );
-		} );
-
-		it( 'should return correct HTML from fragment with multiple child nodes', () => {
-			const fragment = document.createDocumentFragment();
-			const text = document.createTextNode( 'foo bar' );
-			const paragraph = document.createElement( 'p' );
-			const div = document.createElement( 'div' );
-
-			paragraph.textContent = 'foo';
-			div.textContent = 'bar';
-
-			fragment.appendChild( text );
-			fragment.appendChild( paragraph );
-			fragment.appendChild( div );
-
-			const data = dataProcessor.toData( fragment );
-
-			expect( data ).to.equal( 'foo bar<p>foo</p><div>bar</div>' );
-		} );
-
-		it( 'should return HTML with attributes', () => {
-			const fragment = document.createDocumentFragment();
-			const paragraph = document.createElement( 'p' );
-			paragraph.setAttribute( 'class', 'paragraph' );
-			paragraph.setAttribute( 'data-id', '12' );
-			fragment.appendChild( paragraph );
-
-			const data = dataProcessor.toData( fragment );
-
-			expect( data ).to.equal( '<p class="paragraph" data-id="12"></p>' );
+			spy.restore();
+			sinon.assert.calledWithExactly( spy, fragment );
 		} );
 	} );
 } );

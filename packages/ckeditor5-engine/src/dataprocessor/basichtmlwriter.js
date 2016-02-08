@@ -11,6 +11,7 @@
  * from DocumentFragment to HTML string.
  *
  * @class dataProcessor.BasicHtmlWriter
+ * @implements dataProcessor.HtmlWriter
  */
 export default class BasicHtmlWriter {
 	/**
@@ -20,7 +21,8 @@ export default class BasicHtmlWriter {
 	 * @returns {String}
 	 */
 	getHtml( fragment ) {
-		const container = document.createElement( 'div' );
+		const doc = document.implementation.createHTMLDocument( '' );
+		const container = doc.createElement( 'div' );
 		container.appendChild( fragment );
 
 		return container.innerHTML;

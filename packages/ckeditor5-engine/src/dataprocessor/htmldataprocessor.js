@@ -5,7 +5,6 @@
 
 'use strict';
 
-import DataProcessor from './dataprocessor.js';
 import BasicHtmlWriter from './basichtmlwriter.js';
 
 /**
@@ -13,19 +12,15 @@ import BasicHtmlWriter from './basichtmlwriter.js';
  * This data processor implementation uses HTML as input/output data.
  *
  * @class dataProcessor.HtmlDataProcessor
- * @extends dataProcessor.DataProcessor
+ * @implements dataProcessor.DataProcessor
  */
-export default class HtmlDataProcessor extends DataProcessor {
+export default class HtmlDataProcessor {
 	/**
 	 * Creates a new instance of the HtmlDataProcessor class.
 	 *
-	 *
-	 * @param {Object} config HtmlDataProcessor's configuration.
 	 * @constructor
 	 */
-	constructor( config ) {
-		super( config );
-
+	constructor() {
 		/**
 		 * DOMParser instance used to parse HTML string to HTMLDocument.
 		 *
@@ -66,7 +61,7 @@ export default class HtmlDataProcessor extends DataProcessor {
 		const nodes = document.body.childNodes;
 
 		while ( nodes.length > 0 ) {
-			fragment.appendChild( nodes [0] );
+			fragment.appendChild( nodes[ 0 ] );
 		}
 
 		return fragment;

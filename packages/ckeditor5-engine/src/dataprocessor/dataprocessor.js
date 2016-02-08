@@ -3,47 +3,26 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
-import Config from '../config.js';
+/**
+ * DataProcessor interface. This should be implemented by actual DataProcessors.
+ * Each data processor implements a certain format of the data. E.g. `MarkdownDataProcessor` will convert the data
+ * (Markdown string) to a DocumentFragment and back.
+ *
+ * @interface dataProcessor.DataProcessor
+ */
 
 /**
- * Abstract base DataProcessor class. This class should be extended by actual DataProcessor implementations.
+ * Converts a DocumentFragment to the data.
  *
- * @abstract
- * @class dataProcessor.DataProcessor
+ * @method toData
+ * @param {DocumentFragment} fragment DocumentFragment to be processed.
+ * @returns {*}
  */
-export default class DataProcessor {
-	/**
-	 * Creates a new instance of DataProcessor class.
-	 *
-	 *
-	 * @param {Object} config DataProcessor's configuration.
-	 * @constructor
-	 */
-	constructor( config ) {
-		/**
-		 * Holds configurations specific to this DataProcessor instance.
-		 *
-		 * @readonly
-		 * @property {Config}
-		 */
-		this.config = new Config( config );
-	}
 
-	/**
-	 * Converts DocumentFragment to data supported by DataProcessor.
-	 *
-	 * @method toData
-	 * @param {DocumentFragment} fragment Document fragment to be processed.
-	 * @returns {*} Data supported by DataProcessor implementation.
-	 */
-
-	/**
-	 * Converts data supported by DataProcessor to DocumentFragment.
-	 *
-	 * @method toDom
-	 * @param {*} data Data to be processed.
-	 * @returns {DocumentFragment} DocumentFragment
-	 */
-}
+/**
+ * Converts the data to a DocumentFragment.
+ *
+ * @method toDom
+ * @param {*} data Data to be processed.
+ * @returns {DocumentFragment}
+ */
