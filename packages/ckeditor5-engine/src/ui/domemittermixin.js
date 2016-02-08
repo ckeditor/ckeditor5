@@ -175,7 +175,7 @@ const DOMEmitterMixin = extend( {}, EmitterMixin, {
 
 		// Check if emitter is an instance of DOM Node. If so, replace the argument with
 		// corresponding ProxyEmitter (or create one if not existing).
-		if ( emitter instanceof Node ) {
+		if ( isDomNode( emitter ) ) {
 			args[ 0 ] = this._getProxyEmitter( emitter ) || new ProxyEmitter( emitter );
 		}
 
@@ -203,7 +203,7 @@ const DOMEmitterMixin = extend( {}, EmitterMixin, {
 		const emitter = args[ 0 ];
 
 		// Check if emitter is an instance of DOM Node. If so, replace the argument with corresponding ProxyEmitter.
-		if ( emitter instanceof Node ) {
+		if ( isDomNode( emitter ) ) {
 			let proxy = this._getProxyEmitter( emitter );
 
 			if ( proxy ) {
@@ -252,6 +252,15 @@ export default DOMEmitterMixin;
 // @return {Number} UID for given DOM Node.
 function getNodeUID( node ) {
 	return node[ 'data-ck-expando' ] || ( node[ 'data-ck-expando' ] = utils.uid() );
+}
+
+// Checks if given node is native DOM Node.
+//
+// @private
+// @param {Node} node
+// @return {Boolean} True when native DOM Node.
+function isDomNode( node ) {
+	return node && node.nodeType && node.nodeName;
 }
 
 /**

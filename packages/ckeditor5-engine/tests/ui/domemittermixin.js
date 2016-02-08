@@ -57,6 +57,20 @@ describe( 'listenTo', () => {
 
 		sinon.assert.calledOnce( spy );
 	} );
+
+	// #187
+	it( 'should work for DOM Nodes belonging to another window', () => {
+		const spy = testUtils.sinon.spy();
+		const iframe = document.createElement( 'iframe' );
+
+		document.body.appendChild( iframe );
+		const iframeNode = iframe.contentWindow.document.createElement( 'div' );
+
+		domEmitter.listenTo( iframeNode, 'test', spy );
+		iframeNode.dispatchEvent( new Event( 'test' ) );
+
+		sinon.assert.calledOnce( spy );
+	} );
 } );
 
 describe( 'stopListening', () => {
@@ -353,5 +367,22 @@ describe( 'stopListening', () => {
 		sinon.assert.calledOnce( spy1d );
 		sinon.assert.calledTwice( spy2 );
 		sinon.assert.calledTwice( spy3 );
+	} );
+
+	// #187
+	it( 'should work for DOM Nodes belonging to another window', () => {
+		const spy = testUtils.sinon.spy();
+		const iframe = document.createElement( 'iframe' );
+
+		document.body.appendChild( iframe );
+		const iframeNode = iframe.contentWindow.document.createElement( 'div' );
+
+		domEmitter.listenTo( iframeNode, 'test', spy );
+
+		iframeNode.dispatchEvent( new Event( 'test' ) );
+		domEmitter.stopListening( iframeNode );
+		iframeNode.dispatchEvent( new Event( 'test' ) );
+
+		sinon.assert.calledOnce( spy );
 	} );
 } );
