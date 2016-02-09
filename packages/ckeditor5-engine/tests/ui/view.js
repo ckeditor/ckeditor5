@@ -40,11 +40,11 @@ describe( 'View', () => {
 			expect( view.regions.length ).to.be.equal( 0 );
 			expect( view.template ).to.be.null;
 			expect( view._regionsSelectors ).to.be.empty;
-			expect( view._el ).to.be.null;
+			expect( view._element ).to.be.null;
 			expect( view._template ).to.be.null;
 
 			expect( () => {
-				view.el;
+				view.element;
 			} ).to.throw( CKEditorError, /ui-view-notemplate/ );
 		} );
 	} );
@@ -89,8 +89,8 @@ describe( 'View', () => {
 
 			view.init();
 
-			expect( region1.el ).to.be.equal( view.el.firstChild );
-			expect( region2.el ).to.be.equal( view.el.lastChild );
+			expect( region1.element ).to.be.equal( view.element.firstChild );
+			expect( region2.element ).to.be.equal( view.element.lastChild );
 		} );
 
 		it( 'initializes view regions with function selector', () => {
@@ -104,8 +104,8 @@ describe( 'View', () => {
 
 			view.init();
 
-			expect( region1.el ).to.be.equal( view.el.firstChild );
-			expect( region2.el ).to.be.equal( view.el.lastChild );
+			expect( region1.element ).to.be.equal( view.element.firstChild );
+			expect( region2.element ).to.be.equal( view.element.lastChild );
 		} );
 
 		it( 'initializes view regions with boolean selector', () => {
@@ -119,8 +119,8 @@ describe( 'View', () => {
 
 			view.init();
 
-			expect( region1.el ).to.be.null;
-			expect( region2.el ).to.be.null;
+			expect( region1.element ).to.be.null;
+			expect( region2.element ).to.be.null;
 		} );
 	} );
 
@@ -200,8 +200,8 @@ describe( 'View', () => {
 		it( 'invokes out of #template', () => {
 			setTestViewInstance( { a: 1 } );
 
-			expect( view.el ).to.be.an.instanceof( HTMLElement );
-			expect( view.el.nodeName ).to.be.equal( 'A' );
+			expect( view.element ).to.be.an.instanceof( HTMLElement );
+			expect( view.element.nodeName ).to.be.equal( 'A' );
 		} );
 
 		it( 'can be explicitly declared', () => {
@@ -209,13 +209,13 @@ describe( 'View', () => {
 				constructor() {
 					super();
 
-					this.el = document.createElement( 'span' );
+					this.element = document.createElement( 'span' );
 				}
 			}
 
 			view = new CustomView();
 
-			expect( view.el ).to.be.an.instanceof( HTMLElement );
+			expect( view.element ).to.be.an.instanceof( HTMLElement );
 		} );
 	} );
 
@@ -252,10 +252,10 @@ describe( 'View', () => {
 
 			setTestViewInstance( { foo: 'bar' } );
 
-			expect( view.el.outerHTML ).to.be.equal( '<p class="bar">abc</p>' );
+			expect( view.element.outerHTML ).to.be.equal( '<p class="bar">abc</p>' );
 
 			view.model.foo = 'baz';
-			expect( view.el.outerHTML ).to.be.equal( '<p class="baz">abc</p>' );
+			expect( view.element.outerHTML ).to.be.equal( '<p class="baz">abc</p>' );
 		} );
 
 		it( 'allows binding "text" to the model', () => {
@@ -274,11 +274,11 @@ describe( 'View', () => {
 
 			setTestViewInstance( { foo: 'bar' } );
 
-			expect( view.el.outerHTML ).to.be.equal( '<p>bar<b>baz</b></p>' );
+			expect( view.element.outerHTML ).to.be.equal( '<p>bar<b>baz</b></p>' );
 
 			// TODO: A solution to avoid nuking the children?
 			view.model.foo = 'qux';
-			expect( view.el.outerHTML ).to.be.equal( '<p>qux</p>' );
+			expect( view.element.outerHTML ).to.be.equal( '<p>qux</p>' );
 		} );
 
 		it( 'allows binding to the model with value processing', () => {
@@ -296,10 +296,10 @@ describe( 'View', () => {
 			} );
 
 			setTestViewInstance( { foo: 3 } );
-			expect( view.el.outerHTML ).to.be.equal( '<p class="positive">positive</p>' );
+			expect( view.element.outerHTML ).to.be.equal( '<p class="positive">positive</p>' );
 
 			view.model.foo = -7;
-			expect( view.el.outerHTML ).to.be.equal( '<p class="negative">negative</p>' );
+			expect( view.element.outerHTML ).to.be.equal( '<p class="negative">negative</p>' );
 		} );
 
 		it( 'allows binding to the model with custom callback', () => {
@@ -320,10 +320,10 @@ describe( 'View', () => {
 			} );
 
 			setTestViewInstance( { foo: 'moo' } );
-			expect( view.el.outerHTML ).to.be.equal( '<p>moo</p>' );
+			expect( view.element.outerHTML ).to.be.equal( '<p>moo</p>' );
 
 			view.model.foo = 'changed';
-			expect( view.el.outerHTML ).to.be.equal( '<p class="changed">changed</p>' );
+			expect( view.element.outerHTML ).to.be.equal( '<p class="changed">changed</p>' );
 		} );
 	} );
 
@@ -344,10 +344,10 @@ describe( 'View', () => {
 
 			view.on( 'a', spy );
 
-			dispatchEvent( view.el, 'x' );
+			dispatchEvent( view.element, 'x' );
 			sinon.assert.calledWithExactly( spy,
 				sinon.match.has( 'name', 'a' ),
-				sinon.match.has( 'target', view.el )
+				sinon.match.has( 'target', view.element )
 			);
 		} );
 
@@ -369,14 +369,14 @@ describe( 'View', () => {
 			view.on( 'a', spy1 );
 			view.on( 'b', spy2 );
 
-			dispatchEvent( view.el, 'x' );
+			dispatchEvent( view.element, 'x' );
 			sinon.assert.calledWithExactly( spy1,
 				sinon.match.has( 'name', 'a' ),
-				sinon.match.has( 'target', view.el )
+				sinon.match.has( 'target', view.element )
 			);
 			sinon.assert.calledWithExactly( spy2,
 				sinon.match.has( 'name', 'b' ),
-				sinon.match.has( 'target', view.el )
+				sinon.match.has( 'target', view.element )
 			);
 		} );
 
@@ -424,41 +424,41 @@ describe( 'View', () => {
 			view.on( 'c', spy3 );
 
 			// Test "test@p".
-			dispatchEvent( view.el, 'test' );
+			dispatchEvent( view.element, 'test' );
 
 			sinon.assert.callCount( spy1, 0 );
 			sinon.assert.callCount( spy2, 0 );
 			sinon.assert.callCount( spy3, 0 );
 
 			// Test "test@.y".
-			dispatchEvent( view.el.firstChild, 'test' );
+			dispatchEvent( view.element.firstChild, 'test' );
 
 			expect( spy1.firstCall.calledWithExactly(
 				sinon.match.has( 'name', 'a' ),
-				sinon.match.has( 'target', view.el.firstChild )
+				sinon.match.has( 'target', view.element.firstChild )
 			) ).to.be.true;
 
 			sinon.assert.callCount( spy2, 0 );
 			sinon.assert.callCount( spy3, 0 );
 
 			// Test "test@div".
-			dispatchEvent( view.el.lastChild, 'test' );
+			dispatchEvent( view.element.lastChild, 'test' );
 
 			sinon.assert.callCount( spy1, 1 );
 
 			expect( spy2.firstCall.calledWithExactly(
 				sinon.match.has( 'name', 'b' ),
-				sinon.match.has( 'target', view.el.lastChild )
+				sinon.match.has( 'target', view.element.lastChild )
 			) ).to.be.true;
 
 			sinon.assert.callCount( spy3, 0 );
 
 			// Test "test@.y".
-			dispatchEvent( view.el.lastChild.firstChild, 'test' );
+			dispatchEvent( view.element.lastChild.firstChild, 'test' );
 
 			expect( spy1.secondCall.calledWithExactly(
 				sinon.match.has( 'name', 'a' ),
-				sinon.match.has( 'target', view.el.lastChild.firstChild )
+				sinon.match.has( 'target', view.element.lastChild.firstChild )
 			) ).to.be.true;
 
 			sinon.assert.callCount( spy2, 1 );
@@ -486,15 +486,15 @@ describe( 'View', () => {
 
 			setTestViewInstance();
 
-			dispatchEvent( view.el, 'x' );
-			dispatchEvent( view.el.firstChild, 'y' );
+			dispatchEvent( view.element, 'x' );
+			dispatchEvent( view.element.firstChild, 'y' );
 
 			sinon.assert.calledWithExactly( spy1,
-				sinon.match.has( 'target', view.el )
+				sinon.match.has( 'target', view.element )
 			);
 
 			sinon.assert.calledWithExactly( spy2,
-				sinon.match.has( 'target', view.el.firstChild )
+				sinon.match.has( 'target', view.element.firstChild )
 			);
 		} );
 
@@ -519,10 +519,10 @@ describe( 'View', () => {
 
 			view.on( 'a', spy );
 
-			dispatchEvent( view.el.firstChild, 'x' );
+			dispatchEvent( view.element.firstChild, 'x' );
 			sinon.assert.calledWithExactly( spy,
 				sinon.match.has( 'name', 'a' ),
-				sinon.match.has( 'target', view.el.firstChild )
+				sinon.match.has( 'target', view.element.firstChild )
 			);
 		} );
 
@@ -543,7 +543,7 @@ describe( 'View', () => {
 			view.on( 'a', spy );
 
 			let div = document.createElement( 'div' );
-			view.el.appendChild( div );
+			view.element.appendChild( div );
 
 			dispatchEvent( div, 'test' );
 			sinon.assert.calledWithExactly( spy, sinon.match.has( 'name', 'a' ), sinon.match.has( 'target', div ) );
@@ -560,14 +560,14 @@ describe( 'View', () => {
 			expect( view.regions ).to.be.null;
 			expect( view.template ).to.be.null;
 			expect( view._regionsSelectors ).to.be.null;
-			expect( view._el ).to.be.null;
+			expect( view._element ).to.be.null;
 			expect( view._template ).to.be.null;
 		} );
 
 		it( 'detaches the element from DOM', () => {
-			const elRef = view.el;
+			const elRef = view.element;
 
-			document.createElement( 'div' ).appendChild( view.el );
+			document.createElement( 'div' ).appendChild( view.element );
 
 			view.destroy();
 
@@ -600,12 +600,12 @@ describe( 'View', () => {
 			setTestViewInstance( { foo: 'bar' } );
 
 			const modelRef = view.model;
-			const elRef = view.el;
+			const elRef = view.element;
 
-			expect( view.el.outerHTML ).to.be.equal( '<p>bar</p>' );
+			expect( view.element.outerHTML ).to.be.equal( '<p>bar</p>' );
 
 			modelRef.foo = 'baz';
-			expect( view.el.outerHTML ).to.be.equal( '<p>baz</p>' );
+			expect( view.element.outerHTML ).to.be.equal( '<p>baz</p>' );
 
 			view.destroy();
 
@@ -648,7 +648,7 @@ function setTestViewInstance( model ) {
 	view = new TestView( new Model( model ) );
 
 	if ( view.template ) {
-		document.body.appendChild( view.el );
+		document.body.appendChild( view.element );
 	}
 }
 

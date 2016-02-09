@@ -20,7 +20,7 @@ describe( 'View', () => {
 	describe( 'constructor', () => {
 		it( 'accepts name', () => {
 			expect( region.name ).to.be.equal( 'foo' );
-			expect( region.el ).to.be.null;
+			expect( region.element ).to.be.null;
 			expect( region.views.length ).to.be.equal( 0 );
 		} );
 	} );
@@ -29,7 +29,7 @@ describe( 'View', () => {
 		it( 'accepts region element', () => {
 			region.init( el );
 
-			expect( region.el ).to.be.equal( el );
+			expect( region.element ).to.be.equal( el );
 		} );
 	} );
 
@@ -37,13 +37,13 @@ describe( 'View', () => {
 		it( 'updates DOM when adding views', () => {
 			region.init( el );
 
-			expect( region.el.childNodes.length ).to.be.equal( 0 );
+			expect( region.element.childNodes.length ).to.be.equal( 0 );
 
 			region.views.add( new TestViewA() );
-			expect( region.el.childNodes.length ).to.be.equal( 1 );
+			expect( region.element.childNodes.length ).to.be.equal( 1 );
 
 			region.views.add( new TestViewA() );
-			expect( region.el.childNodes.length ).to.be.equal( 2 );
+			expect( region.element.childNodes.length ).to.be.equal( 2 );
 		} );
 
 		it( 'does not update DOM when no region element', () => {
@@ -82,7 +82,7 @@ describe( 'View', () => {
 			region.init( el );
 			region.views.add( new TestViewA() );
 
-			const elRef = region.el;
+			const elRef = region.element;
 			const viewsRef = region.views;
 
 			region.destroy();
@@ -91,7 +91,7 @@ describe( 'View', () => {
 			expect( region.name ).to.be.equal( 'foo' );
 			expect( region.views ).to.be.null;
 			expect( viewsRef.length ).to.be.equal( 0 );
-			expect( region.el ).to.be.null;
+			expect( region.element ).to.be.null;
 		} );
 
 		it( 'destroys an element–less region', () => {
