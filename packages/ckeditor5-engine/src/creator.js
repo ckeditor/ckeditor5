@@ -46,7 +46,7 @@ export default class Creator extends Plugin {
 	 */
 	_replaceElement( newElement ) {
 		if ( !newElement ) {
-			newElement = this.editor.ui.chrome.view.element;
+			newElement = this.editor.ui.view.element;
 		}
 
 		this._elementReplacement = newElement;

@@ -6,14 +6,11 @@
 'use strict';
 
 import Editable from '/ckeditor5/core/editable/editable.js';
-import FramedEditableView from './view.js';
 
 export default class FramedEditable extends Editable {
 	constructor( editor ) {
-		super( FramedEditableView );
+		super( editor );
 
 		this.viewModel.bind( 'width', 'height' ).to( editor.ui );
-
-		this.view = new FramedEditableView( this.viewModel );
 	}
 }

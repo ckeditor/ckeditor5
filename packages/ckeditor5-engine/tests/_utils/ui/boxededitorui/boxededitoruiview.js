@@ -7,7 +7,7 @@
 
 import View from '/ckeditor5/core/ui/view.js';
 
-export default class ChromeView extends View {
+export default class BoxedEditorUIView extends View {
 	constructor( model ) {
 		super( model );
 

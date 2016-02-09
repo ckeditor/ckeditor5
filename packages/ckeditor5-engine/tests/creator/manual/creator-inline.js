@@ -8,7 +8,7 @@
 'use strict';
 
 import CKEDITOR from '/ckeditor.js';
-import InlineCreator from '/tests/core/creator/manual/_utils/creator/inline.js';
+import InlineCreator from '/tests/core/creator/manual/_utils/creator/inlinecreator.js';
 
 let editor;
 

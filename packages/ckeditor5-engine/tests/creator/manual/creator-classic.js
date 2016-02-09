@@ -8,13 +8,17 @@
 'use strict';
 
 import CKEDITOR from '/ckeditor.js';
-import ClassicCreator from '/tests/core/creator/manual/_utils/creator/classic.js';
+import ClassicCreator from '/tests/core/creator/manual/_utils/creator/classiccreator.js';
 
 let editor;
 
 function initEditor() {
 	CKEDITOR.create( '#editor', {
-		creator: ClassicCreator
+		creator: ClassicCreator,
+		ui: {
+			width: 400,
+			height: 400
+		}
 	} )
 	.then( ( newEditor ) => {
 		console.log( 'Editor was initialized', newEditor );
