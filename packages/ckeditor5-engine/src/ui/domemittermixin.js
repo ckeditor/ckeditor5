@@ -254,13 +254,13 @@ function getNodeUID( node ) {
 	return node[ 'data-ck-expando' ] || ( node[ 'data-ck-expando' ] = utils.uid() );
 }
 
-// Checks if given node is native DOM Node.
+// Checks (naively) if given node is native DOM Node.
 //
 // @private
 // @param {Node} node
 // @return {Boolean} True when native DOM Node.
 function isDomNode( node ) {
-	return node && node.nodeType && node.nodeName;
+	return node && node.nodeType && ( typeof node.addEventListener == 'function' );
 }
 
 /**
