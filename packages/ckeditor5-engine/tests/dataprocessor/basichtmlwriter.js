@@ -10,7 +10,7 @@ import BasicHtmlWriter from '/ckeditor5/core/dataprocessor/basichtmlwriter.js';
 describe( 'BasicHtmlWriter', () => {
 	const basicHtmlWriter = new BasicHtmlWriter();
 
-	it( 'should return empty string when empty DocumentFragment is passed' , () => {
+	it( 'should return empty string when empty DocumentFragment is passed', () => {
 		const data = basicHtmlWriter.getHtml( document.createDocumentFragment() );
 		expect( data ).to.equal( '' );
 	} );

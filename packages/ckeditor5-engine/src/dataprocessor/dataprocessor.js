@@ -4,7 +4,7 @@
  */
 
 /**
- * DataProcessor interface. This should be implemented by actual DataProcessors.
+ * DataProcessor interface. It should be implemented by actual DataProcessors.
  * Each data processor implements a certain format of the data. E.g. `MarkdownDataProcessor` will convert the data
  * (Markdown string) to a DocumentFragment and back.
  *
@@ -12,7 +12,7 @@
  */
 
 /**
- * Converts a DocumentFragment to the data.
+ * Converts a DocumentFragment to data.
  *
  * @method toData
  * @param {DocumentFragment} fragment DocumentFragment to be processed.
@@ -20,7 +20,7 @@
  */
 
 /**
- * Converts the data to a DocumentFragment.
+ * Converts data to a DocumentFragment.
  *
  * @method toDom
  * @param {*} data Data to be processed.

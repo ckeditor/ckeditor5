@@ -6,9 +6,8 @@
 'use strict';
 
 /**
- * BasicHtmlWriter class.
- * Basic HTML writer, it uses native `innerHTML` property for basic conversion
- * from DocumentFragment to HTML string.
+ * Basic HTML writer, it uses the native `innerHTML` property for basic conversion
+ * from DocumentFragment to an HTML string.
  *
  * @class dataProcessor.BasicHtmlWriter
  * @implements dataProcessor.HtmlWriter
