@@ -34,10 +34,34 @@ export default class Template {
 	/**
 	 * Renders DOM Node using {@link #definition}.
 	 *
+	 * See: {@link #apply}.
+	 *
 	 * @returns {HTMLElement}
 	 */
 	render() {
-		return this._renderNode( this.definition, true );
+		return this._renderNode( this.definition, null, true );
+	}
+
+	/**
+	 * Applies template {@link #def} to existing DOM tree.
+	 *
+	 * **Note:** No new DOM nodes (elements, text nodes) will be created.
+	 *
+	 * See: {@link #render}, {@link View#applyTemplateToElement}.
+	 *
+	 * @param {Node} element Root element for template to apply.
+	 */
+	apply( node ) {
+		if ( !node ) {
+			/**
+			 * No DOM Node specified.
+			 *
+			 * @error ui-template-wrong-syntax
+			 */
+			throw new CKEditorError( 'ui-template-wrong-node' );
+		}
+
+		return this._renderNode( this.definition, node );
 	}
 
 	/**
@@ -45,10 +69,11 @@ export default class Template {
 	 *
 	 * @protected
 	 * @param {TemplateDefinition} def Definition of a Node.
+	 * @param {Node} applyNode If specified, template `def` will be applied to existing DOM Node.
 	 * @param {Boolean} intoFragment If set, children are rendered into DocumentFragment.
 	 * @returns {HTMLElement} A rendered Node.
 	 */
-	_renderNode( def, intoFragment ) {
+	_renderNode( def, applyNode, intoFragment ) {
 		const isText = def.text || typeof def == 'string';
 
 		// !XOR( def.tag, isText )
@@ -62,7 +87,7 @@ export default class Template {
 		}
 
 		return isText ?
-			this._renderText( def ) : this._renderElement( def, intoFragment );
+			this._renderText( def, applyNode ) : this._renderElement( def, applyNode, intoFragment );
 	}
 
 	/**
@@ -70,13 +95,13 @@ export default class Template {
 	 *
 	 * @protected
 	 * @param {TemplateDefinition} def Definition of an element.
+	 * @param {HTMLElement} applyElement If specified, template `def` will be applied to existing HTMLElement.
 	 * @param {Boolean} intoFragment If set, children are rendered into DocumentFragment.
 	 * @returns {HTMLElement} A rendered element.
 	 */
-	_renderElement( def, intoFragment ) {
-		const el = document.createElement( def.tag );
+	_renderElement( def, applyElement, intoFragment ) {
+		const el = applyElement || document.createElement( def.tag );
 
-		// Set attributes.
 		this._renderElementAttributes( def, el );
 
 		// Invoke children recursively.
@@ -87,11 +112,11 @@ export default class Template {
 
 			el.appendChild( docFragment );
 		} else {
-			this._renderElementChildren( def, el );
+			this._renderElementChildren( def, el, !!applyElement );
 		}
 
 		// Activate DOM bindings for event listeners.
-		this._activateElementListeners( def, el );
+		this._activateElementListenerAttachers( def, el );
 
 		return el;
 	}
@@ -101,28 +126,23 @@ export default class Template {
 	 *
 	 * @protected
 	 * @param {TemplateDefinition|String} def Definition of Text or its value.
+	 * @param {HTMLElement} applyText If specified, template `def` will be applied to existing Text Node.
 	 * @returns {Text} A rendered Text.
 	 */
-	_renderText( defOrText ) {
-		const el = document.createTextNode( '' );
+	_renderText( defOrText, applyText ) {
+		const text = applyText || document.createTextNode( '' );
 
-		// Case: { text: ... }
-		if ( defOrText.text ) {
-			// Case: { text: func }, like binding
-			if ( typeof defOrText.text == 'function' ) {
-				defOrText.text( el, getTextUpdater() );
-			}
-			// Case: { text: 'foo' }
-			else {
-				el.textContent = defOrText.text;
-			}
+		// Case: { text: func }, like binding
+		if ( typeof defOrText.text == 'function' ) {
+			defOrText.text( text, getTextUpdater() );
 		}
+		// Case: { text: 'foo' }
 		// Case: 'foo'
 		else {
-			el.textContent = defOrText;
+			text.textContent = defOrText.text || defOrText;
 		}
 
-		return el;
+		return text;
 	}
 
 	/**
@@ -162,11 +182,16 @@ export default class Template {
 	 * @protected
 	 * @param {TemplateDefinition} def Definition of an element.
 	 * @param {HTMLElement} el Element which is rendered.
+	 * @param {Boolean} isApply Traverse existing DOM structure only, don't modify DOM.
 	 */
-	_renderElementChildren( def, el ) {
+	_renderElementChildren( def, el, isApply ) {
 		if ( def.children ) {
-			def.children.map( childDef => {
-				el.appendChild( this._renderNode( childDef ) );
+			def.children.map( ( childDef, index ) => {
+				if ( isApply ) {
+					this._renderNode( childDef, el.childNodes[ index ] );
+				} else {
+					el.appendChild( this._renderNode( childDef ) );
+				}
 			} );
 		}
 	}
@@ -178,28 +203,27 @@ export default class Template {
 	 * @param {TemplateDefinition} def Definition of an element.
 	 * @param {HTMLElement} el Element which is rendered.
 	 */
-	_activateElementListeners( def, el ) {
-		if ( def.on ) {
-			let l, domEvtDef, name, selector;
-
-			for ( l in def.on ) {
-				domEvtDef = l.split( '@' );
-
-				if ( domEvtDef.length == 2 ) {
-					name = domEvtDef[ 0 ];
-					selector = domEvtDef[ 1 ];
-				} else {
-					name = l;
-					selector = null;
-				}
-
-				if ( Array.isArray( def.on[ l ] ) ) {
-					def.on[ l ].map( i => i( el, name, selector ) );
-				} else {
-					def.on[ l ]( el, name, selector );
-				}
-			}
+	_activateElementListenerAttachers( def, el ) {
+		if ( !def.on ) {
+			return;
 		}
+
+		const attachers = def.on._listenerAttachers;
+
+		Object.keys( attachers )
+			.map( name => [ name, ...name.split( '@' ) ] )
+			.forEach( split => {
+				// TODO: ES6 destructuring.
+				const key = split[ 0 ];
+				const evtName = split[ 1 ];
+				const evtSelector = split[ 2 ] || null;
+
+				if ( Array.isArray( attachers[ key ] ) ) {
+					attachers[ key ].forEach( i => i( el, evtName, evtSelector ) );
+				} else {
+					attachers[ key ]( el, evtName, evtSelector );
+				}
+			} );
 	}
 }
 
