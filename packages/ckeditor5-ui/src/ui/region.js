@@ -19,7 +19,6 @@ export default class Region {
 	 * Creates an instance of the {@link Region} class.
 	 *
 	 * @param {String} name The name of the Region.
-	 * @param {HTMLElement} [el] The element used for this region.
 	 * @constructor
 	 */
 	constructor( name ) {
@@ -42,24 +41,24 @@ export default class Region {
 		 *
 		 * @property {HTMLElement}
 		 */
-		this.el = null;
+		this.element = null;
 	}
 
 	/**
 	 * Initializes region instance with an element. Usually it comes from {@link View#init}.
 	 *
-	 * @param {HTMLElement} regiobEl Element of this region.
+	 * @param {HTMLElement} regionElement Element of this region.
 	 */
-	init( regionEl ) {
-		this.el = regionEl;
+	init( regionElement ) {
+		this.element = regionElement;
 
-		if ( regionEl ) {
+		if ( regionElement ) {
 			this.views.on( 'add', ( evt, childView, index ) => {
-				regionEl.insertBefore( childView.el, regionEl.childNodes[ index + 1 ] );
+				regionElement.insertBefore( childView.element, regionElement.childNodes[ index + 1 ] );
 			} );
 
 			this.views.on( 'remove', ( evt, childView ) => {
-				childView.el.remove();
+				childView.element.remove();
 			} );
 		}
 	}
@@ -68,9 +67,9 @@ export default class Region {
 	 * Destroys region instance.
 	 */
 	destroy() {
-		if ( this.el ) {
+		if ( this.element ) {
 			for ( let view of this.views ) {
-				view.el.remove();
+				view.element.remove();
 				this.views.remove( view );
 			}
 		}
@@ -78,6 +77,6 @@ export default class Region {
 		// Drop the reference to HTMLElement but don't remove it from DOM.
 		// Element comes as a parameter and it could be a part of the View.
 		// Then it's up to the View what to do with it when the View is destroyed.
-		this.el = this.views = null;
+		this.element = this.views = null;
 	}
 }

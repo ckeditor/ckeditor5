@@ -275,7 +275,7 @@ function defineParentViewClass() {
 		constructor() {
 			super();
 
-			this.el = document.createElement( 'span' );
+			this.element = document.createElement( 'span' );
 			this.register( 'x', true );
 		}
 	};
