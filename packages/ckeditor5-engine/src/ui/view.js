@@ -64,7 +64,7 @@ export default class View {
 		 * @private
 		 * @property {HTMLElement}
 		 */
-		this._el = null;
+		this._element = null;
 
 		/**
 		 * An instance of Template to generate {@link #_el}.
@@ -79,11 +79,11 @@ export default class View {
 	 * Element of this view. The element is rendered on first reference
 	 * using {@link #template} definition and {@link #_template} object.
 	 *
-	 * @property el
+	 * @property element
 	 */
-	get el() {
-		if ( this._el ) {
-			return this._el;
+	get element() {
+		if ( this._element ) {
+			return this._element;
 		}
 
 		if ( !this.template ) {
@@ -101,11 +101,11 @@ export default class View {
 
 		this._template = new Template( this.template );
 
-		return ( this._el = this._template.render() );
+		return ( this._element = this._template.render() );
 	}
 
-	set el( el ) {
-		this._el = el;
+	set element( el ) {
+		this._element = el;
 	}
 
 	/**
@@ -120,16 +120,16 @@ export default class View {
 	 *
 	 *		let view = new View();
 	 *
-	 *		// region.name == "foo", region.el == view.el.firstChild
+	 *		// region.name == "foo", region.element == view.element.firstChild
 	 *		view.register( 'foo', el => el.firstChild );
 	 *
-	 *		// region.name == "bar", region.el == view.el.querySelector( 'span' )
+	 *		// region.name == "bar", region.element == view.element.querySelector( 'span' )
 	 *		view.register( new Region( 'bar' ), 'span' );
 	 *
-	 *		// region.name == "bar", region.el == view.el.querySelector( '#div#id' )
+	 *		// region.name == "bar", region.element == view.element.querySelector( '#div#id' )
 	 *		view.register( 'bar', 'div#id', true );
 	 *
-	 *		// region.name == "baz", region.el == null
+	 *		// region.name == "baz", region.element == null
 	 *		view.register( 'baz', true );
 	 *
 	 * @param {String|Region} stringOrRegion The name or an instance of the Region
@@ -254,10 +254,10 @@ export default class View {
 		}
 
 		if ( this.template ) {
-			this.el.remove();
+			this.element.remove();
 		}
 
-		this.model = this.regions = this.template = this._regionsSelectors = this._el = this._template = null;
+		this.model = this.regions = this.template = this._regionsSelectors = this._element = this._template = null;
 	}
 
 	/**
@@ -273,9 +273,9 @@ export default class View {
 			regionSelector = this._regionsSelectors[ region.name ];
 
 			if ( typeof regionSelector == 'string' ) {
-				regionEl = this.el.querySelector( regionSelector );
+				regionEl = this.element.querySelector( regionSelector );
 			} else if ( typeof regionSelector == 'function' ) {
-				regionEl = regionSelector( this.el );
+				regionEl = regionSelector( this.element );
 			} else {
 				regionEl = null;
 			}
