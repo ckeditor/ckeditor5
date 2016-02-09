@@ -30,6 +30,23 @@ export default class Plugin {
 	}
 
 	/**
+	 * An array of plugins required by this plugin.
+	 *
+	 * To keep a plugin class definition tight it's recommended to define this property as a static getter:
+	 *
+	 *		import Image from './image.js';
+	 *
+	 *		export default class ImageCaption extends Feature {
+     *			static get requires() {
+     *				return [ Image ];
+     *			}
+	 *		}
+	 *
+	 * @static
+	 * @property {Function[]} requires
+	 */
+
+	/**
 	 * @returns {null/Promise}
 	 */
 	init() {}
