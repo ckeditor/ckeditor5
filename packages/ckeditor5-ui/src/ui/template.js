@@ -7,6 +7,8 @@
 
 'use strict';
 
+import CKEditorError from '../ckeditorerror.js';
+
 /**
  * Basic Template class.
  *
@@ -17,7 +19,7 @@ export default class Template {
 	/**
 	 * Creates an instance of the {@link Template} class.
 	 *
-	 * @param {TemplateDefinition} def The definition of the template.
+	 * @param {TemplateDefinition} definition The definition of the template.
 	 * @constructor
 	 */
 	constructor( def ) {
@@ -26,20 +28,45 @@ export default class Template {
 		 *
 		 * @property {TemplateDefinition}
 		 */
-		this.def = def;
+		this.definition = def;
 	}
 
 	/**
-	 * Renders HTMLElement using {@link #def}.
+	 * Renders DOM Node using {@link #definition}.
 	 *
 	 * @returns {HTMLElement}
 	 */
 	render() {
-		return this._renderElement( this.def, true );
+		return this._renderNode( this.definition, true );
 	}
 
 	/**
-	 * Renders an element from definition.
+	 * Renders a DOM Node from definition.
+	 *
+	 * @protected
+	 * @param {TemplateDefinition} def Definition of a Node.
+	 * @param {Boolean} intoFragment If set, children are rendered into DocumentFragment.
+	 * @returns {HTMLElement} A rendered Node.
+	 */
+	_renderNode( def, intoFragment ) {
+		const isText = def.text || typeof def == 'string';
+
+		// !XOR( def.tag, isText )
+		if ( def.tag ? isText : !isText ) {
+			/**
+			 * Node definition must have either "tag" or "text" property.
+			 *
+			 * @error ui-template-wrong-syntax
+			 */
+			throw new CKEditorError( 'ui-template-wrong-syntax' );
+		}
+
+		return isText ?
+			this._renderText( def ) : this._renderElement( def, intoFragment );
+	}
+
+	/**
+	 * Renders an HTMLElement from TemplateDefinition.
 	 *
 	 * @protected
 	 * @param {TemplateDefinition} def Definition of an element.
@@ -47,14 +74,7 @@ export default class Template {
 	 * @returns {HTMLElement} A rendered element.
 	 */
 	_renderElement( def, intoFragment ) {
-		if ( !def ) {
-			return null;
-		}
-
 		const el = document.createElement( def.tag );
-
-		// Set the text first.
-		this._renderElementText( def, el );
 
 		// Set attributes.
 		this._renderElementAttributes( def, el );
@@ -70,27 +90,39 @@ export default class Template {
 			this._renderElementChildren( def, el );
 		}
 
-		// Activate DOM binding for event listeners.
+		// Activate DOM bindings for event listeners.
 		this._activateElementListeners( def, el );
 
 		return el;
 	}
 
 	/**
-	 * Renders element text content from definition.
+	 * Renders a Text from TemplateDefinition or String.
 	 *
 	 * @protected
-	 * @param {TemplateDefinition} def Definition of an element.
-	 * @param {HTMLElement} el Element which is rendered.
+	 * @param {TemplateDefinition|String} def Definition of Text or its value.
+	 * @returns {Text} A rendered Text.
 	 */
-	_renderElementText( def, el ) {
-		if ( def.text ) {
-			if ( typeof def.text == 'function' ) {
-				def.text( el, getTextUpdater() );
-			} else {
-				el.textContent = def.text;
+	_renderText( defOrText ) {
+		const el = document.createTextNode( '' );
+
+		// Case: { text: ... }
+		if ( defOrText.text ) {
+			// Case: { text: func }, like binding
+			if ( typeof defOrText.text == 'function' ) {
+				defOrText.text( el, getTextUpdater() );
+			}
+			// Case: { text: 'foo' }
+			else {
+				el.textContent = defOrText.text;
 			}
 		}
+		// Case: 'foo'
+		else {
+			el.textContent = defOrText;
+		}
+
+		return el;
 	}
 
 	/**
@@ -103,8 +135,8 @@ export default class Template {
 	_renderElementAttributes( def, el ) {
 		let attr, value;
 
-		for ( attr in def.attrs ) {
-			value = def.attrs[ attr ];
+		for ( attr in def.attributes ) {
+			value = def.attributes[ attr ];
 
 			// Attribute bound directly to the model.
 			if ( typeof value == 'function' ) {
@@ -132,12 +164,10 @@ export default class Template {
 	 * @param {HTMLElement} el Element which is rendered.
 	 */
 	_renderElementChildren( def, el ) {
-		let child;
-
 		if ( def.children ) {
-			for ( child of def.children ) {
-				el.appendChild( this._renderElement( child ) );
-			}
+			def.children.map( childDef => {
+				el.appendChild( this._renderNode( childDef ) );
+			} );
 		}
 	}
 
@@ -204,15 +234,17 @@ function getAttributeUpdater( attr ) {
  *			children: [
  *				{
  *					tag: 'span',
- *					attrs: { ... },
- *					on: { ... }
- *				},
- *				{
+ *					attributes: { ... },
+ *					children: [ ... ],
  *					...
  *				},
+ *				{
+ *					text: 'abc'
+ *				},
+ *				'def',
  *				...
  *			],
- *			attrs: {
+ *			attributes: {
  *				'class': [ 'a', 'b' ],
  *				id: 'c',
  *				style: callback,
@@ -224,15 +256,14 @@ function getAttributeUpdater( attr ) {
  *				'event3@selector': 'd',
  *				'event4@selector': [ 'e', 'f', callback ],
  *				...
- *			},
- *			text: 'abc'
+ *			}
  *		}
  *
  * @typedef TemplateDefinition
  * @type Object
  * @property {String} tag
  * @property {Array} [children]
- * @property {Object} [attrs]
+ * @property {Object} [attributes]
  * @property {String} [text]
  * @property {Object} [on]
  */
