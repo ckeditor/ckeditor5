@@ -21,7 +21,7 @@ describe( 'Template', () => {
 				tag: 'p'
 			};
 
-			expect( new Template( def ).def ).to.equal( def );
+			expect( new Template( def ).definition ).to.equal( def );
 		} );
 	} );
 
@@ -46,7 +46,7 @@ describe( 'Template', () => {
 		it( 'creates a HTMLElement', () => {
 			let el = new Template( {
 				tag: 'p',
-				attrs: {
+				attributes: {
 					'class': [ 'a', 'b' ],
 					x: 'bar'
 				},
@@ -61,7 +61,7 @@ describe( 'Template', () => {
 		it( 'creates HTMLElement\'s children', () => {
 			let el = new Template( {
 				tag: 'p',
-				attrs: {
+				attributes: {
 					a: 'A'
 				},
 				children: [
@@ -121,13 +121,13 @@ describe( 'Template', () => {
 
 				let el = new Template( {
 					tag: 'p',
-					attrs: {
+					attributes: {
 						'class': spy1
 					},
 					children: [
 						{
 							tag: 'span',
-							attrs: {
+							attributes: {
 								id: spy2
 							}
 						}
@@ -213,13 +213,13 @@ describe( 'Template', () => {
 					children: [
 						{
 							tag: 'span',
-							attrs: {
+							attributes: {
 								'id': 'x'
 							}
 						},
 						{
 							tag: 'span',
-							attrs: {
+							attributes: {
 								'class': 'y'
 							},
 							on: {
