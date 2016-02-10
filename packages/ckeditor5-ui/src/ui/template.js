@@ -65,15 +65,8 @@ export default class Template {
 			throw new CKEditorError( 'ui-template-wrong-syntax' );
 		}
 
-		let el;
-
-		if ( isText ) {
-			el = this._renderText( def );
-		} else {
-			el = this._renderElement( def, intoFragment );
-		}
-
-		return el;
+		return isText ?
+			this._renderText( def ) : this._renderElement( def, intoFragment );
 	}
 
 	/**
