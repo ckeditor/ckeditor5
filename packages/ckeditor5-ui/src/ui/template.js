@@ -19,7 +19,7 @@ export default class Template {
 	/**
 	 * Creates an instance of the {@link Template} class.
 	 *
-	 * @param {TemplateDefinition} def The definition of the template.
+	 * @param {TemplateDefinition} definition The definition of the template.
 	 * @constructor
 	 */
 	constructor( def ) {
@@ -28,16 +28,16 @@ export default class Template {
 		 *
 		 * @property {TemplateDefinition}
 		 */
-		this.def = def;
+		this.definition = def;
 	}
 
 	/**
-	 * Renders DOM Node using {@link #def}.
+	 * Renders DOM Node using {@link #definition}.
 	 *
 	 * @returns {HTMLElement}
 	 */
 	render() {
-		return this._renderNode( this.def, true );
+		return this._renderNode( this.definition, true );
 	}
 
 	/**
@@ -146,8 +146,8 @@ export default class Template {
 	_renderElementAttributes( def, el ) {
 		let attr, value;
 
-		for ( attr in def.attrs ) {
-			value = def.attrs[ attr ];
+		for ( attr in def.attributes ) {
+			value = def.attributes[ attr ];
 
 			// Attribute bound directly to the model.
 			if ( typeof value == 'function' ) {
@@ -245,7 +245,7 @@ function getAttributeUpdater( attr ) {
  *			children: [
  *				{
  *					tag: 'span',
- *					attrs: { ... },
+ *					attributes: { ... },
  *					children: [ ... ],
  *					...
  *				},
@@ -255,7 +255,7 @@ function getAttributeUpdater( attr ) {
  *				'def',
  *				...
  *			],
- *			attrs: {
+ *			attributes: {
  *				'class': [ 'a', 'b' ],
  *				id: 'c',
  *				style: callback,
@@ -274,7 +274,7 @@ function getAttributeUpdater( attr ) {
  * @type Object
  * @property {String} tag
  * @property {Array} [children]
- * @property {Object} [attrs]
+ * @property {Object} [attributes]
  * @property {String} [text]
  * @property {Object} [on]
  */
