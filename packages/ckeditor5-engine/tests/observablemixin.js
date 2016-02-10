@@ -6,11 +6,14 @@
 'use strict';
 
 import testUtils from '/tests/_utils/utils.js';
+import coreTestUtils from '/tests/core/_utils/utils.js';
 import ObservableMixin from '/ckeditor5/core/observablemixin.js';
 import EmitterMixin from '/ckeditor5/core/emittermixin.js';
 import EventInfo from '/ckeditor5/core/eventinfo.js';
 import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 import utils from '/ckeditor5/core/utils.js';
+
+const assertBinding = coreTestUtils.assertBinding;
 
 testUtils.createSinonSandbox();
 
@@ -781,35 +784,4 @@ describe( 'Observable', () => {
 			);
 		} );
 	} );
-
-	// Syntax given that observable `A` is bound to observables [`B`, `C`, ...]:
-	//
-	//		assertBinding( A,
-	//			{ initial `A` attributes },
-	//			[
-	//				[ B, { new `B` attributes } ],
-	//				[ C, { new `C` attributes } ],
-	//				...
-	//			],
-	//			{ `A` attributes after [`B`, 'C', ...] changed }
-	//		);
-	//
-	function assertBinding( observable, stateBefore, data, stateAfter ) {
-		let key, pair;
-
-		for ( key in stateBefore ) {
-			expect( observable[ key ] ).to.be.equal( stateBefore[ key ] );
-		}
-
-		// Change attributes of bound observables.
-		for ( pair of data ) {
-			for ( key in pair[ 1 ] ) {
-				pair[ 0 ][ key ] = pair[ 1 ][ key ];
-			}
-		}
-
-		for ( key in stateAfter ) {
-			expect( observable[ key ] ).to.be.equal( stateAfter[ key ] );
-		}
-	}
 } );

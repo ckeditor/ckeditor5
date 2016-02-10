@@ -42,20 +42,15 @@ export default class Editable extends Controller {
 		this.set( 'isFocused', false );
 
 		/**
-		 * The parent editable of this editable.
-		 *
-		 * @readonly
-		 * @property {Editable} parent
-		 */
-		this.parent = null;
-
-		/**
 		 * @private {Model} _viewModel
 		 */
 	}
 
 	/**
 	 * The model for the editable view.
+	 *
+	 * @readonly
+	 * @property {core.ui.Model} viewModel
 	 */
 	get viewModel() {
 		if ( this._viewModel ) {
@@ -79,7 +74,7 @@ export default class Editable extends Controller {
 	 * @param {String} data HTML to be loaded.
 	 */
 	setData( data ) {
-		this.view.setData( data );
+		this.view.editableElement.innerHTML = data;
 	}
 
 	/**
@@ -88,7 +83,7 @@ export default class Editable extends Controller {
 	 * @returns {String} HTML string.
 	 */
 	getData() {
-		return this.view.getData();
+		return this.view.editableElement.innerHTML;
 	}
 }
 
