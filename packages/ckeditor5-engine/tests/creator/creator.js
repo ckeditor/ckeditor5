@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* bender-tags: creator */
+
 'use strict';
 
 import testUtils from '/tests/_utils/utils.js';

@@ -5,6 +5,8 @@
 
 'use strict';
 
+/* bender-tags: editor, creator */
+
 import amdUtils from '/tests/_utils/amd.js';
 import testUtils from '/tests/_utils/utils.js';
 import coreTestUtils from '/tests/core/_utils/utils.js';

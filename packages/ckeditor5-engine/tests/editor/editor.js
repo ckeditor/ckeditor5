@@ -5,6 +5,8 @@
 
 'use strict';
 
+/* bender-tags: editor */
+
 import amdUtils from '/tests/_utils/amd.js';
 import coreTestUtils from '/tests/core/_utils/utils.js';
 import Editor from '/ckeditor5/core/editor.js';

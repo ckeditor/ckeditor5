@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* bender-tags: editable */
+
 'use strict';
 
 import Editor from '/ckeditor5/core/editor.js';
