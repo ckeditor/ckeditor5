@@ -10,6 +10,7 @@
 
 import testUtils from '/tests/_utils/utils.js';
 import Template from '/ckeditor5/core/ui/template.js';
+import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
 testUtils.createSinonSandbox();
 
@@ -20,23 +21,32 @@ describe( 'Template', () => {
 				tag: 'p'
 			};
 
-			expect( new Template( def ).def ).to.equal( def );
+			expect( new Template( def ).definition ).to.equal( def );
 		} );
 	} );
 
 	describe( 'render', () => {
-		it( 'returns null when no definition', () => {
-			expect( new Template().render() ).to.be.null;
+		it( 'throws when wrong template definition', () => {
+			expect( () => {
+				new Template( {} ).render();
+			} ).to.throw( CKEditorError, /ui-template-wrong-syntax/ );
+
+			expect( () => {
+				new Template( {
+					tag: 'p',
+					text: 'foo'
+				} ).render();
+			} ).to.throw( CKEditorError, /ui-template-wrong-syntax/ );
 		} );
 
-		it( 'creates an element', () => {
+		it( 'creates a HTMLElement', () => {
 			let el = new Template( {
 				tag: 'p',
-				attrs: {
+				attributes: {
 					'class': [ 'a', 'b' ],
 					x: 'bar'
 				},
-				text: 'foo'
+				children: [ 'foo' ]
 			} ).render();
 
 			expect( el ).to.be.instanceof( HTMLElement );
@@ -44,24 +54,24 @@ describe( 'Template', () => {
 			expect( el.outerHTML ).to.be.equal( '<p class="a b" x="bar">foo</p>' );
 		} );
 
-		it( 'creates element\'s children', () => {
+		it( 'creates HTMLElement\'s children', () => {
 			let el = new Template( {
 				tag: 'p',
-				attrs: {
+				attributes: {
 					a: 'A'
 				},
 				children: [
 					{
 						tag: 'b',
-						text: 'B'
+						children: [ 'B' ]
 					},
 					{
 						tag: 'i',
-						text: 'C',
 						children: [
+							'C',
 							{
 								tag: 'b',
-								text: 'D'
+								children: [ 'D' ]
 							}
 						]
 					}
@@ -71,6 +81,35 @@ describe( 'Template', () => {
 			expect( el.outerHTML ).to.be.equal( '<p a="A"><b>B</b><i>C<b>D</b></i></p>' );
 		} );
 
+		it( 'creates a Text node', () => {
+			let node = new Template( { text: 'foo' } ).render();
+
+			expect( node.nodeType ).to.be.equal( 3 );
+			expect( node.textContent ).to.be.equal( 'foo' );
+		} );
+
+		it( 'creates a child Text Node (different syntaxes)', () => {
+			let el = new Template( {
+				tag: 'p',
+				children: [
+					'foo',
+					{ text: 'bar' }
+				]
+			} ).render();
+
+			expect( el.outerHTML ).to.be.equal( '<p>foobar</p>' );
+		} );
+
+		it( 'creates multiple child Text Nodes', () => {
+			let el = new Template( {
+				tag: 'p',
+				children: [ 'a', 'b', { text: 'c' }, 'd' ]
+			} ).render();
+
+			expect( el.childNodes ).to.have.length( 4 );
+			expect( el.outerHTML ).to.be.equal( '<p>abcd</p>' );
+		} );
+
 		describe( 'callback', () => {
 			it( 'works for attributes', () => {
 				let spy1 = testUtils.sinon.spy();
@@ -78,13 +117,13 @@ describe( 'Template', () => {
 
 				let el = new Template( {
 					tag: 'p',
-					attrs: {
+					attributes: {
 						'class': spy1
 					},
 					children: [
 						{
 							tag: 'span',
-							attrs: {
+							attributes: {
 								id: spy2
 							}
 						}
@@ -106,23 +145,29 @@ describe( 'Template', () => {
 
 				let el = new Template( {
 					tag: 'p',
-					text: spy1,
 					children: [
 						{
+							text: spy1
+						},
+						{
 							tag: 'span',
-							text: spy2
+							children: [
+								{
+									text: spy2
+								}
+							]
 						}
 					]
 				} ).render();
 
-				sinon.assert.calledWithExactly( spy1, el, sinon.match.func );
-				sinon.assert.calledWithExactly( spy2, el.firstChild, sinon.match.func );
+				sinon.assert.calledWithExactly( spy1, el.firstChild, sinon.match.func );
+				sinon.assert.calledWithExactly( spy2, el.lastChild.firstChild, sinon.match.func );
 
-				spy2.firstCall.args[ 1 ]( el.firstChild, 'bar' );
+				spy2.firstCall.args[ 1 ]( el.lastChild.firstChild, 'bar' );
 				expect( el.outerHTML ).to.be.equal( '<p><span>bar</span></p>' );
 
-				spy1.firstCall.args[ 1 ]( el, 'foo' );
-				expect( el.outerHTML ).to.be.equal( '<p>foo</p>' );
+				spy1.firstCall.args[ 1 ]( el.firstChild, 'foo' );
+				expect( el.outerHTML ).to.be.equal( '<p>foo<span>bar</span></p>' );
 			} );
 
 			it( 'works for "on" property', () => {
@@ -164,13 +209,13 @@ describe( 'Template', () => {
 					children: [
 						{
 							tag: 'span',
-							attrs: {
+							attributes: {
 								'id': 'x'
 							}
 						},
 						{
 							tag: 'span',
-							attrs: {
+							attributes: {
 								'class': 'y'
 							},
 							on: {
