@@ -246,7 +246,7 @@ describe( 'View', () => {
 					attrs: {
 						'class': this.bindToAttribute( 'foo' )
 					},
-					text: 'abc'
+					children: [ 'abc' ]
 				};
 			} );
 
@@ -264,11 +264,13 @@ describe( 'View', () => {
 					tag: 'p',
 					children: [
 						{
+							text: this.bindToAttribute( 'foo' )
+						},
+						{
 							tag: 'b',
-							text: 'baz'
+							children: [ 'baz' ]
 						}
-					],
-					text: this.bindToAttribute( 'foo' )
+					]
 				};
 			} );
 
@@ -276,9 +278,8 @@ describe( 'View', () => {
 
 			expect( view.element.outerHTML ).to.be.equal( '<p>bar<b>baz</b></p>' );
 
-			// TODO: A solution to avoid nuking the children?
 			view.model.foo = 'qux';
-			expect( view.element.outerHTML ).to.be.equal( '<p>qux</p>' );
+			expect( view.element.outerHTML ).to.be.equal( '<p>qux<b>baz</b></p>' );
 		} );
 
 		it( 'allows binding to the model with value processing', () => {
@@ -291,7 +292,9 @@ describe( 'View', () => {
 					attrs: {
 						'class': this.bindToAttribute( 'foo', callback )
 					},
-					text: this.bindToAttribute( 'foo', callback )
+					children: [
+						{ text: this.bindToAttribute( 'foo', callback ) }
+					]
 				};
 			} );
 
@@ -315,12 +318,14 @@ describe( 'View', () => {
 							}
 						} )
 					},
-					text: 'bar'
+					children: [ 'bar' ]
 				};
 			} );
 
 			setTestViewInstance( { foo: 'moo' } );
-			expect( view.element.outerHTML ).to.be.equal( '<p>moo</p>' );
+			// Note: First the attribute binding sets innerHTML to 'moo',
+			// then 'bar' TextNode child is added.
+			expect( view.element.outerHTML ).to.be.equal( '<p>moobar</p>' );
 
 			view.model.foo = 'changed';
 			expect( view.element.outerHTML ).to.be.equal( '<p class="changed">changed</p>' );
@@ -593,7 +598,9 @@ describe( 'View', () => {
 			setTestViewClass( function() {
 				return {
 					tag: 'p',
-					text: this.bindToAttribute( 'foo' )
+					children: [
+						{ text: this.bindToAttribute( 'foo' ) }
+					]
 				};
 			} );
 
