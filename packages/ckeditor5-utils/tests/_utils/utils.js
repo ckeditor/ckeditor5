@@ -101,6 +101,40 @@ const utils = {
 		} );
 
 		return observer;
+	},
+
+	/**
+	 * Checkes wether observable properties are properly bound to each other.
+	 *
+	 * Syntax given that observable `A` is bound to observables [`B`, `C`, ...]:
+	 *
+	 *		assertBinding( A,
+	 *			{ initial `A` attributes },
+	 *			[
+	 *				[ B, { new `B` attributes } ],
+	 *				[ C, { new `C` attributes } ],
+	 *				...
+	 *			],
+	 *			{ `A` attributes after [`B`, 'C', ...] changed }
+	 *		);
+	 */
+	assertBinding( observable, stateBefore, data, stateAfter ) {
+		let key, pair;
+
+		for ( key in stateBefore ) {
+			expect( observable[ key ] ).to.be.equal( stateBefore[ key ] );
+		}
+
+		// Change attributes of bound observables.
+		for ( pair of data ) {
+			for ( key in pair[ 1 ] ) {
+				pair[ 0 ][ key ] = pair[ 1 ][ key ];
+			}
+		}
+
+		for ( key in stateAfter ) {
+			expect( observable[ key ] ).to.be.equal( stateAfter[ key ] );
+		}
 	}
 };
 
