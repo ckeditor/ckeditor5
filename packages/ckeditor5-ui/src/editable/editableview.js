@@ -12,6 +12,7 @@ export default class EditableView extends View {
 	/**
 	 * The element which is the main editable element (usually the one with `contentEditable="true"`).
 	 *
+	 * @readonly
 	 * @property {HTMLElement} editableElement
 	 */
 
@@ -36,23 +37,5 @@ export default class EditableView extends View {
 		this.listenTo( this.model, 'change:isEditable', ( evt, value ) => {
 			editableElement.contentEditable = value;
 		} );
-	}
-
-	/**
-	 * Temporary implementation (waiting for integration with the data model).
-	 *
-	 * @param {String} data HTML to be loaded.
-	 */
-	setData( data ) {
-		this.editableElement.innerHTML = data;
-	}
-
-	/**
-	 * Temporary implementation (waiting for integration with the data model).
-	 *
-	 * @returns {String} HTML string.
-	 */
-	getData() {
-		return this.editableElement.innerHTML;
 	}
 }
