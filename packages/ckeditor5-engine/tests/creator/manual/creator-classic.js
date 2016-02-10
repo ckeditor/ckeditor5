@@ -9,8 +9,9 @@
 
 import CKEDITOR from '/ckeditor.js';
 import ClassicCreator from '/tests/core/creator/manual/_utils/creator/classiccreator.js';
+import testUtils from '/tests/core/_utils/utils.js';
 
-let editor;
+let editor, observer;
 
 function initEditor() {
 	CKEDITOR.create( '#editor', {
@@ -25,6 +26,9 @@ function initEditor() {
 		console.log( 'You can now play with it using global `editor` variable.' );
 
 		window.editor = editor = newEditor;
+
+		observer = testUtils.createObserver();
+		observer.observe( 'Editable', editor.editable );
 	} );
 }
 
@@ -33,6 +37,9 @@ function destroyEditor() {
 		.then( () => {
 			window.editor = null;
 			editor = null;
+
+			observer.stopListening();
+			observer = null;
 
 			console.log( 'Editor was destroyed' );
 		} );

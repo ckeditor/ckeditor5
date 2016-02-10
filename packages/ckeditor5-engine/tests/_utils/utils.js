@@ -5,7 +5,10 @@
 
 'use strict';
 
+/* global console:false */
+
 import amdUtils from '/tests/_utils/amd.js';
+import EmitterMixin from '/ckeditor5/core/emittermixin.js';
 
 const utils = {
 	/**
@@ -62,6 +65,42 @@ const utils = {
 		}
 
 		return count;
+	},
+
+	/**
+	 * Creates an instance inheriting from {@link core.EmitterMixin} with one additional method `observe()`.
+	 * It allows observing changes to attributes in objects being {@link core.Observable observable}.
+	 *
+	 * The `observe()` method accepts:
+	 *
+	 * * `{String} observableName` – Identifier for the observable object. E.g. `"Editable"` when
+	 * you observe one of editor's editables. This name will be displayed on the console.
+	 * * `{core.Observable observable} – The object to observe.
+	 *
+	 * Typical usage:
+	 *
+	 *		const observer = utils.createObserver();
+	 *		observer.observe( 'Editable', editor.editables.current );
+	 *
+	 *		// Stop listening (method from the EmitterMixin):
+	 *		observer.stopListening();
+	 *
+	 * @returns {Emitter} The observer.
+	 */
+	createObserver() {
+		const observer = Object.create( EmitterMixin, {
+			observe: {
+				value: function observe( observableName, observable ) {
+					observer.listenTo( observable, 'change', ( evt, propertyName, value, oldValue ) => {
+						console.log( `[Change in ${ observableName }] ${ propertyName } = '${ value }' (was '${ oldValue }')` );
+					} );
+
+					return observer;
+				}
+			}
+		} );
+
+		return observer;
 	}
 };
 
