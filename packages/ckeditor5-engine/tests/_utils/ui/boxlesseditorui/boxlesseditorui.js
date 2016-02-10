@@ -13,13 +13,22 @@ export default class BoxlessEditorUI extends EditorUI {
 		super( editor );
 
 		this.collections.add( new ControllerCollection( 'editable' ) );
+
+		/**
+		 * @private
+		 * @property {View} _view
+		 */
 	}
 
-	init() {
-		// We cannot register the region earlier because the view is set after classes instantiation.
-		// TODO We can change view property into a setter and create region immediately.
-		this.view.register( 'editable', true );
+	get view() {
+		return this._view;
+	}
 
-		return super.init();
+	set view( view ) {
+		if ( view ) {
+			this._view = view;
+
+			view.register( 'editable', true );
+		}
 	}
 }
