@@ -28,10 +28,6 @@ describe( 'Template', () => {
 	describe( 'render', () => {
 		it( 'throws when wrong template definition', () => {
 			expect( () => {
-				new Template().render();
-			} ).to.throw( CKEditorError, /ui-template-wrong-syntax/ );
-
-			expect( () => {
 				new Template( {} ).render();
 			} ).to.throw( CKEditorError, /ui-template-wrong-syntax/ );
 

@@ -49,7 +49,10 @@ export default class Template {
 	 * @returns {HTMLElement} A rendered Node.
 	 */
 	_renderNode( def, intoFragment ) {
-		if ( !def ) {
+		const isText = def.text || typeof def == 'string';
+
+		// !XOR( def.tag, isText )
+		if ( def.tag ? isText : !isText ) {
 			/**
 			 * Node definition must have either "tag" or "text" property.
 			 *
@@ -58,19 +61,12 @@ export default class Template {
 			throw new CKEditorError( 'ui-template-wrong-syntax' );
 		}
 
-		const isText = def.text || typeof def == 'string';
-
-		// !XOR( def.tag, isText )
-		if ( ( def.tag ? isText : !isText ) ) {
-			throw new CKEditorError( 'ui-template-wrong-syntax' );
-		}
-
 		return isText ?
 			this._renderText( def ) : this._renderElement( def, intoFragment );
 	}
 
 	/**
-	 * Renders a HTMLElement from TemplateDefinition.
+	 * Renders an HTMLElement from TemplateDefinition.
 	 *
 	 * @protected
 	 * @param {TemplateDefinition} def Definition of an element.
