@@ -15,16 +15,33 @@ import Plugin from './plugin.js';
  */
 
 export default class Creator extends Plugin {
+	/**
+	 * The element used to {@link #_replaceElement replace} the editor element.
+	 *
+	 * @private
+	 * @property {HTMLElement} _elementReplacemenet
+	 */
+
+	/**
+	 * The creator's trigger. This method is called by the editor to finalize
+	 * the editor creation.
+	 *
+	 * @returns {Promise}
+	 */
 	create() {
 		return this.editor.ui.init();
 	}
 
+	/**
+	 * Method called by the editor on its destruction. It should destroy what the creator created.
+	 *
+	 * @returns {Promise}
+	 */
 	destroy() {
 		super.destroy();
 
 		if ( this._elementReplacement ) {
-			this.editor.element.style.display = '';
-			this._elementReplacement.remove();
+			this._restoreElement();
 		}
 
 		const ui = this.editor.ui;
@@ -33,28 +50,18 @@ export default class Creator extends Plugin {
 		return ui.destroy();
 	}
 
+	/**
+	 * Updates the {@link core.Editor#element editor element}'s content with the data.
+	 */
 	updateEditorElement() {
 		Creator.setDataInElement( this.editor.element, this.editor.getData() );
 	}
 
+	/**
+	 * Loads the data from the {@link core.Editor#element editor element} to the editable.
+	 */
 	loadDataFromEditorElement() {
 		this.editor.setData( Creator.getDataFromElement( this.editor.element ) );
-	}
-
-	/**
-	 * @param {HTMLElement} [newElement]
-	 */
-	_replaceElement( newElement ) {
-		if ( !newElement ) {
-			newElement = this.editor.ui.view.element;
-		}
-
-		this._elementReplacement = newElement;
-
-		const editorEl = this.editor.element;
-
-		editorEl.style.display = 'none';
-		editorEl.parentNode.insertBefore( newElement, editorEl.nextSibling );
 	}
 
 	/**
@@ -83,5 +90,39 @@ export default class Creator extends Plugin {
 		}
 
 		el.innerHTML = data;
+	}
+
+	/**
+	 * Hides the {@link core.Editor#element editor element} and inserts the the given element
+	 * (usually, editor's UI main element) next to it.
+	 *
+	 * The effect of this method will be automatically reverted by {@link #destroy}.
+	 *
+	 * @protected
+	 * @param {HTMLElement} [newElement] The replacement element. If not passed, then the main editor's UI view element
+	 * will be used.
+	 */
+	_replaceElement( newElement ) {
+		if ( !newElement ) {
+			newElement = this.editor.ui.view.element;
+		}
+
+		this._elementReplacement = newElement;
+
+		const editorEl = this.editor.element;
+
+		editorEl.style.display = 'none';
+		editorEl.parentNode.insertBefore( newElement, editorEl.nextSibling );
+	}
+
+	/**
+	 * Restores what the {@link #_replaceElement} did.
+	 *
+	 * @protected
+	 */
+	_restoreElement() {
+		this.editor.element.style.display = '';
+		this._elementReplacement.remove();
+		this._elementReplacement = null;
 	}
 }
