@@ -29,7 +29,11 @@ export default class Creator extends Plugin {
 	 * @returns {Promise}
 	 */
 	create() {
-		return this.editor.ui.init();
+		if ( this.editor.ui ) {
+			return this.editor.ui.init();
+		} else {
+			return Promise.resolve();
+		}
 	}
 
 	/**

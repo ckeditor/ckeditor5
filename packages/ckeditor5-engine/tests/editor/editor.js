@@ -181,6 +181,31 @@ describe( 'destroy', () => {
 	} );
 } );
 
+describe( 'setData', () => {
+	it( 'should set data on the editable', () => {
+		const editor = new Editor( element );
+		editor.editable = {
+			setData: sinon.spy()
+		};
+
+		editor.setData( 'foo' );
+
+		expect( editor.editable.setData.calledOnce ).to.be.true;
+		expect( editor.editable.setData.args[ 0 ][ 0 ] ).to.equal( 'foo' );
+	} );
+
+	it( 'should get data from the editable', () => {
+		const editor = new Editor( element );
+		editor.editable = {
+			getData() {
+				return 'bar';
+			}
+		};
+
+		expect( editor.getData() ).to.equal( 'bar' );
+	} );
+} );
+
 /**
  * @param {String} name Name of the plugin.
  * @param {String[]} deps Dependencies of the plugin (only other plugins).

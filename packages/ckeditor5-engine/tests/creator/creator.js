@@ -38,6 +38,13 @@ describe( 'Creator', () => {
 			expect( ret ).to.equal( promise );
 			expect( editor.ui.init.called ).to.be.true;
 		} );
+
+		it( 'should not fail when there is no UI', () => {
+			expect( editor.ui ).to.not.exist;
+
+			return creator.create()
+				.then(); // Just checking whether a promise was returned.
+		} );
 	} );
 
 	describe( 'destroy', () => {
