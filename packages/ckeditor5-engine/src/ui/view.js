@@ -97,7 +97,7 @@ export default class View {
 		}
 
 		// Prepare pre–defined listeners.
-		this._prepareElementListeners( this.template );
+		this._createTemplateListenerAttachers( this.template );
 
 		this._template = new Template( this.template );
 
@@ -235,10 +235,43 @@ export default class View {
 	}
 
 	/**
+	 * Applies template to existing DOM element in the context of a View.
+	 *
+	 *		const element = document.createElement( 'div' );
+	 *		const view = new View( new Model( { divClass: 'my-div' } ) );
+	 *
+	 *		view.applyTemplateToElement( element, {
+	 *			attrs: {
+	 *				id: 'first-div',
+	 *				class: view.bindToAttribute( 'divClass' )
+	 *			},
+	 *			on: {
+	 *				click: 'elementClicked' // Will be fired by the View instance.
+	 *			}
+	 *			children: [
+	 *				'Div text.'
+	 *			]
+	 *		} );
+	 *
+	 *		element.outerHTML == "<div id="first-div" class="my-div">Div text.</div>"
+	 *
+	 * See: {@link Template#apply}.
+	 *
+	 * @param {DOMElement} element DOM Element to initialize.
+	 * @param {TemplateDefinition} def Template definition to be applied.
+	 */
+	applyTemplateToElement( element, def ) {
+		this._createTemplateListenerAttachers( def );
+
+		new Template( def ).apply( element );
+	}
+
+	/**
 	 * Destroys the view instance. The process includes:
-	 *  1. Removal of child views from {@link #regions}.
-	 *  2. Destruction of the {@link #regions}.
-	 *  3. Removal of {#link #_el} from DOM.
+	 *
+	 * 1. Removal of child views from {@link #regions}.
+	 * 2. Destruction of the {@link #regions}.
+	 * 3. Removal of {#link #_el} from DOM.
 	 */
 	destroy() {
 		let childView;
@@ -292,7 +325,7 @@ export default class View {
 	 *
 	 * @protected
 	 * @param {String|Function} evtNameOrCallback Event name to be fired on View or callback to execute.
-	 * @returns {Function} A function to be executed in the context of an element.
+	 * @returns {Function} A listener attacher function to be executed in the context of an element.
 	 */
 	_getDOMListenerAttacher( evtNameOrCallback ) {
 		/**
@@ -302,20 +335,20 @@ export default class View {
 		 * Note: If the selector is supplied, it narrows the scope to relevant targets only.
 		 * So instead of
 		 *
-		 *     children: [
-		 *         { tag: 'span', on: { click: 'foo' } }
-		 *         { tag: 'span', on: { click: 'foo' } }
-		 *     ]
+		 *		children: [
+		 *			{ tag: 'span', on: { click: 'foo' } }
+		 *			{ tag: 'span', on: { click: 'foo' } }
+		 *		]
 		 *
 		 * a single, more efficient listener can be attached that uses **event delegation**:
 		 *
-		 *     children: [
-		 *     	   { tag: 'span' }
-		 *     	   { tag: 'span' }
-		 *     ],
-		 *     on: {
-		 *     	   'click@span': 'foo',
-		 *     }
+		 *		children: [
+		 *			{ tag: 'span' }
+		 *			{ tag: 'span' }
+		 *		],
+		 *		on: {
+		 *			'click@span': 'foo',
+		 *		}
 		 *
 		 * @param {HTMLElement} el Element, to which the native DOM Event listener is attached.
 		 * @param {String} domEventName The name of native DOM Event.
@@ -336,18 +369,25 @@ export default class View {
 	}
 
 	/**
-	 * Iterates over "on" property in {@link template} definition to recursively
+	 * Iterates over "on" property in {@link TemplateDefinition} to recursively
 	 * replace each listener declaration with a function which, once executed in a context
-	 * of an element, attaches native DOM listener to the element.
+	 * of an element, attaches native DOM listener to that element.
 	 *
 	 * @protected
 	 * @param {TemplateDefinition} def Template definition.
 	 */
-	_prepareElementListeners( def ) {
-		let on = def.on;
+	_createTemplateListenerAttachers( def ) {
+		const on = def.on;
 
-		if ( on ) {
+		// Don't create attachers if they're already here or in the context of the same (this) View instance.
+		if ( on && ( !on._listenerAttachers || on._listenerView != this ) ) {
 			let domEvtName, evtNameOrCallback;
+
+			Object.defineProperty( on, '_listenerAttachers', {
+				enumerable: false,
+				writable: true,
+				value: {}
+			} );
 
 			for ( domEvtName in on ) {
 				evtNameOrCallback = on[ domEvtName ];
@@ -360,7 +400,7 @@ export default class View {
 				//        ...
 				//    }
 				if ( Array.isArray( evtNameOrCallback ) ) {
-					on[ domEvtName ] = on[ domEvtName ].map( this._getDOMListenerAttacher, this );
+					on._listenerAttachers[ domEvtName ] = on[ domEvtName ].map( this._getDOMListenerAttacher, this );
 				}
 				// Listeners allow definition with a string containing event name:
 				//
@@ -370,14 +410,22 @@ export default class View {
 				//       ...
 				//    }
 				else {
-					on[ domEvtName ] = this._getDOMListenerAttacher( evtNameOrCallback );
+					on._listenerAttachers[ domEvtName ] = this._getDOMListenerAttacher( evtNameOrCallback );
 				}
 			}
+
+			// Set this property to be known that these attachers has already been created
+			// in the context of this particular View instance.
+			Object.defineProperty( on, '_listenerView', {
+				enumerable: false,
+				writable: true,
+				value: this
+			} );
 		}
 
 		// Repeat recursively for the children.
 		if ( def.children ) {
-			def.children.map( this._prepareElementListeners, this );
+			def.children.forEach( this._createTemplateListenerAttachers, this );
 		}
 	}
 }
