@@ -225,8 +225,8 @@ describe( 'View', () => {
 		it( 'returns a function that passes arguments', () => {
 			setTestViewInstance( { a: 'foo' } );
 
-			let spy = testUtils.sinon.spy();
-			let callback = view.bindToAttribute( 'a', spy );
+			const spy = testUtils.sinon.spy();
+			const callback = view.bindToAttribute( 'a', spy );
 
 			expect( spy.called ).to.be.false;
 
@@ -283,7 +283,7 @@ describe( 'View', () => {
 		} );
 
 		it( 'allows binding to the model with value processing', () => {
-			let callback = ( el, value ) =>
+			const callback = ( el, value ) =>
 				( value > 0 ? 'positive' : 'negative' );
 
 			setTestViewClass( function() {
@@ -334,7 +334,7 @@ describe( 'View', () => {
 
 	describe( 'on', () => {
 		it( 'accepts plain binding', () => {
-			let spy = testUtils.sinon.spy();
+			const spy = testUtils.sinon.spy();
 
 			setTestViewClass( function() {
 				return {
@@ -357,8 +357,8 @@ describe( 'View', () => {
 		} );
 
 		it( 'accepts an array of event bindings', () => {
-			let spy1 = testUtils.sinon.spy();
-			let spy2 = testUtils.sinon.spy();
+			const spy1 = testUtils.sinon.spy();
+			const spy2 = testUtils.sinon.spy();
 
 			setTestViewClass( function() {
 				return {
@@ -386,9 +386,9 @@ describe( 'View', () => {
 		} );
 
 		it( 'accepts DOM selectors', () => {
-			let spy1 = testUtils.sinon.spy();
-			let spy2 = testUtils.sinon.spy();
-			let spy3 = testUtils.sinon.spy();
+			const spy1 = testUtils.sinon.spy();
+			const spy2 = testUtils.sinon.spy();
+			const spy3 = testUtils.sinon.spy();
 
 			setTestViewClass( function() {
 				return {
@@ -471,8 +471,8 @@ describe( 'View', () => {
 		} );
 
 		it( 'accepts function callbacks', () => {
-			let spy1 = testUtils.sinon.spy();
-			let spy2 = testUtils.sinon.spy();
+			const spy1 = testUtils.sinon.spy();
+			const spy2 = testUtils.sinon.spy();
 
 			setTestViewClass( function() {
 				return {
@@ -504,7 +504,7 @@ describe( 'View', () => {
 		} );
 
 		it( 'supports event delegation', () => {
-			let spy = testUtils.sinon.spy();
+			const spy = testUtils.sinon.spy();
 
 			setTestViewClass( function() {
 				return {
@@ -532,7 +532,7 @@ describe( 'View', () => {
 		} );
 
 		it( 'works for future elements', () => {
-			let spy = testUtils.sinon.spy();
+			const spy = testUtils.sinon.spy();
 
 			setTestViewClass( function() {
 				return {
@@ -547,7 +547,7 @@ describe( 'View', () => {
 
 			view.on( 'a', spy );
 
-			let div = document.createElement( 'div' );
+			const div = document.createElement( 'div' );
 			view.element.appendChild( div );
 
 			dispatchEvent( div, 'test' );
