@@ -24,18 +24,23 @@ export default class EditableView extends View {
 		}
 
 		this.editableElement = editableElement;
-		this.editableElement.contentEditable = this.model.isEditable;
 
-		this.listenTo( editableElement, 'focus', () => {
-			this.model.isFocused = true;
-		} );
+		this.applyTemplateToElement( editableElement, {
+			// This shouldn't be necessary here (#202).
+			tag: 'div',
 
-		this.listenTo( editableElement, 'blur', () => {
-			this.model.isFocused = false;
-		} );
+			on: {
+				focus: () => {
+					this.model.isFocused = true;
+				},
+				blur: () => {
+					this.model.isFocused = false;
+				}
+			},
 
-		this.listenTo( this.model, 'change:isEditable', ( evt, value ) => {
-			editableElement.contentEditable = value;
+			attributes: {
+				contentEditable: this.bindToAttribute( 'isEditable' )
+			}
 		} );
 	}
 }
