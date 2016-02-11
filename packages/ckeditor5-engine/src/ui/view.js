@@ -268,9 +268,10 @@ export default class View {
 
 	/**
 	 * Destroys the view instance. The process includes:
-	 *  1. Removal of child views from {@link #regions}.
-	 *  2. Destruction of the {@link #regions}.
-	 *  3. Removal of {#link #_el} from DOM.
+	 *
+	 * 1. Removal of child views from {@link #regions}.
+	 * 2. Destruction of the {@link #regions}.
+	 * 3. Removal of {#link #_el} from DOM.
 	 */
 	destroy() {
 		let childView;
@@ -334,20 +335,20 @@ export default class View {
 		 * Note: If the selector is supplied, it narrows the scope to relevant targets only.
 		 * So instead of
 		 *
-		 *     children: [
-		 *         { tag: 'span', on: { click: 'foo' } }
-		 *         { tag: 'span', on: { click: 'foo' } }
-		 *     ]
+		 *		children: [
+		 *			{ tag: 'span', on: { click: 'foo' } }
+		 *			{ tag: 'span', on: { click: 'foo' } }
+		 *		]
 		 *
 		 * a single, more efficient listener can be attached that uses **event delegation**:
 		 *
-		 *     children: [
-		 *         { tag: 'span' }
-		 *         { tag: 'span' }
-		 *     ],
-		 *     on: {
-		 *         'click@span': 'foo',
-		 *     }
+		 *		children: [
+		 *			{ tag: 'span' }
+		 *			{ tag: 'span' }
+		 *		],
+		 *		on: {
+		 *			'click@span': 'foo',
+		 *		}
 		 *
 		 * @param {HTMLElement} el Element, to which the native DOM Event listener is attached.
 		 * @param {String} domEventName The name of native DOM Event.
