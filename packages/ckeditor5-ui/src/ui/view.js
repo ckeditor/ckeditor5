@@ -424,7 +424,7 @@ export default class View {
 
 		// Repeat recursively for the children.
 		if ( def.children ) {
-			def.children.map( this._createTemplateListenerAttachers, this );
+			def.children.forEach( this._createTemplateListenerAttachers, this );
 		}
 	}
 }
