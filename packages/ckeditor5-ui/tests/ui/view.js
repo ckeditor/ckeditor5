@@ -225,8 +225,8 @@ describe( 'View', () => {
 		it( 'returns a function that passes arguments', () => {
 			setTestViewInstance( { a: 'foo' } );
 
-			let spy = testUtils.sinon.spy();
-			let callback = view.bindToAttribute( 'a', spy );
+			const spy = testUtils.sinon.spy();
+			const callback = view.bindToAttribute( 'a', spy );
 
 			expect( spy.called ).to.be.false;
 
@@ -283,7 +283,7 @@ describe( 'View', () => {
 		} );
 
 		it( 'allows binding to the model with value processing', () => {
-			let callback = ( el, value ) =>
+			const callback = ( el, value ) =>
 				( value > 0 ? 'positive' : 'negative' );
 
 			setTestViewClass( function() {
@@ -334,7 +334,7 @@ describe( 'View', () => {
 
 	describe( 'on', () => {
 		it( 'accepts plain binding', () => {
-			let spy = testUtils.sinon.spy();
+			const spy = testUtils.sinon.spy();
 
 			setTestViewClass( function() {
 				return {
@@ -357,8 +357,8 @@ describe( 'View', () => {
 		} );
 
 		it( 'accepts an array of event bindings', () => {
-			let spy1 = testUtils.sinon.spy();
-			let spy2 = testUtils.sinon.spy();
+			const spy1 = testUtils.sinon.spy();
+			const spy2 = testUtils.sinon.spy();
 
 			setTestViewClass( function() {
 				return {
@@ -386,9 +386,9 @@ describe( 'View', () => {
 		} );
 
 		it( 'accepts DOM selectors', () => {
-			let spy1 = testUtils.sinon.spy();
-			let spy2 = testUtils.sinon.spy();
-			let spy3 = testUtils.sinon.spy();
+			const spy1 = testUtils.sinon.spy();
+			const spy2 = testUtils.sinon.spy();
+			const spy3 = testUtils.sinon.spy();
 
 			setTestViewClass( function() {
 				return {
@@ -471,8 +471,8 @@ describe( 'View', () => {
 		} );
 
 		it( 'accepts function callbacks', () => {
-			let spy1 = testUtils.sinon.spy();
-			let spy2 = testUtils.sinon.spy();
+			const spy1 = testUtils.sinon.spy();
+			const spy2 = testUtils.sinon.spy();
 
 			setTestViewClass( function() {
 				return {
@@ -504,7 +504,7 @@ describe( 'View', () => {
 		} );
 
 		it( 'supports event delegation', () => {
-			let spy = testUtils.sinon.spy();
+			const spy = testUtils.sinon.spy();
 
 			setTestViewClass( function() {
 				return {
@@ -532,7 +532,7 @@ describe( 'View', () => {
 		} );
 
 		it( 'works for future elements', () => {
-			let spy = testUtils.sinon.spy();
+			const spy = testUtils.sinon.spy();
 
 			setTestViewClass( function() {
 				return {
@@ -547,7 +547,7 @@ describe( 'View', () => {
 
 			view.on( 'a', spy );
 
-			let div = document.createElement( 'div' );
+			const div = document.createElement( 'div' );
 			view.element.appendChild( div );
 
 			dispatchEvent( div, 'test' );
@@ -626,6 +626,195 @@ describe( 'View', () => {
 			expect( () => {
 				view.destroy();
 			} ).to.not.throw();
+		} );
+	} );
+
+	describe( 'applyTemplateToElement', () => {
+		beforeEach( () => {
+			setTestViewClass();
+			setTestViewInstance( { a: 'foo', b: 42 } );
+		} );
+
+		it( 'should initialize attribute bindings', () => {
+			const el = document.createElement( 'div' );
+
+			view.applyTemplateToElement( el, {
+				tag: 'div',
+				attributes: {
+					class: view.bindToAttribute( 'b' ),
+					id: 'foo',
+					checked: ''
+				}
+			} );
+
+			expect( el.outerHTML ).to.be.equal( '<div class="42" id="foo" checked=""></div>' );
+
+			view.model.b = 64;
+
+			expect( el.outerHTML ).to.be.equal( '<div class="64" id="foo" checked=""></div>' );
+		} );
+
+		it( 'should initialize DOM listeners', () => {
+			const el = document.createElement( 'div' );
+			const spy = testUtils.sinon.spy();
+
+			view.applyTemplateToElement( el, {
+				tag: 'div',
+				on: {
+					click: spy
+				}
+			} );
+
+			document.body.appendChild( el );
+
+			dispatchEvent( el, 'click' );
+
+			sinon.assert.calledOnce( spy );
+
+			view.stopListening( el, 'click' );
+			dispatchEvent( el, 'click' );
+
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should work for deep DOM structure', () => {
+			const el = document.createElement( 'div' );
+			const childA = document.createElement( 'a' );
+			const childB = document.createElement( 'b' );
+
+			childA.textContent = 'anchor';
+			childB.textContent = 'bold';
+
+			el.appendChild( childA );
+			el.appendChild( childB );
+
+			expect( el.outerHTML ).to.be.equal( '<div><a>anchor</a><b>bold</b></div>' );
+
+			const spy1 = testUtils.sinon.spy();
+			const spy2 = testUtils.sinon.spy();
+			const spy3 = testUtils.sinon.spy();
+
+			view.applyTemplateToElement( el, {
+				tag: 'div',
+				children: [
+					{
+						tag: 'a',
+						on: {
+							keyup: spy2
+						},
+						attributes: {
+							class: view.bindToAttribute( 'b', ( el, b ) => 'applied-A-' + b ),
+							id: 'applied-A'
+						},
+						children: [ 'Text applied to childA.' ]
+					},
+					{
+						tag: 'b',
+						on: {
+							keydown: spy3
+						},
+						attributes: {
+							class: view.bindToAttribute( 'b', ( el, b ) => 'applied-B-' + b ),
+							id: 'applied-B'
+						},
+						children: [ 'Text applied to childB.' ]
+					},
+					'Text which is not to be applied because it does NOT exist in original element.'
+				],
+				on: {
+					'mouseover@a': spy1
+				},
+				attributes: {
+					id: view.bindToAttribute( 'a', ( el, a ) => a.toUpperCase() ),
+					class: view.bindToAttribute( 'b', ( el, b ) => 'applied-parent-' + b )
+				}
+			} );
+
+			expect( el.outerHTML ).to.be.equal( '<div id="FOO" class="applied-parent-42">' +
+				'<a class="applied-A-42" id="applied-A">Text applied to childA.</a>' +
+				'<b class="applied-B-42" id="applied-B">Text applied to childB.</b>' +
+			'</div>' );
+
+			view.model.b = 16;
+
+			expect( el.outerHTML ).to.be.equal( '<div id="FOO" class="applied-parent-16">' +
+				'<a class="applied-A-16" id="applied-A">Text applied to childA.</a>' +
+				'<b class="applied-B-16" id="applied-B">Text applied to childB.</b>' +
+			'</div>' );
+
+			document.body.appendChild( el );
+
+			// Test "mouseover@a".
+			dispatchEvent( el, 'mouseover' );
+			dispatchEvent( childA, 'mouseover' );
+
+			// Test "keyup".
+			dispatchEvent( childA, 'keyup' );
+
+			// Test "keydown".
+			dispatchEvent( childB, 'keydown' );
+
+			sinon.assert.calledOnce( spy1 );
+			sinon.assert.calledOnce( spy2 );
+			sinon.assert.calledOnce( spy3 );
+		} );
+
+		it( 're–uses a template definition object without redundant re–definition of "on" listener attachers', () => {
+			const el1 = document.createElement( 'div' );
+			const el2 = document.createElement( 'div' );
+			const spy = testUtils.sinon.spy();
+			const def = {
+				tag: 'div',
+				on: {
+					click: spy
+				}
+			};
+
+			view.applyTemplateToElement( el1, def );
+			const attacherFn = def.on.click;
+			view.applyTemplateToElement( el2, def );
+
+			// Attacher function didn't change because it's still the same View instance.
+			expect( attacherFn ).to.be.equal( def.on.click );
+			expect( def.on._listenerView ).to.be.equal( view );
+
+			document.body.appendChild( el1 );
+			document.body.appendChild( el2 );
+
+			dispatchEvent( el1, 'click' );
+			sinon.assert.calledOnce( spy );
+
+			dispatchEvent( el2, 'click' );
+			sinon.assert.calledTwice( spy );
+		} );
+
+		it( 'shares a template definition between View instances', () => {
+			const el = document.createElement( 'div' );
+			const spy = testUtils.sinon.spy();
+			const view1 = new View();
+			const view2 = new View();
+			const def = {
+				tag: 'div',
+				on: {
+					click: spy
+				}
+			};
+
+			document.body.appendChild( el );
+
+			view1.applyTemplateToElement( el, def );
+			expect( def.on._listenerView ).to.be.equal( view1 );
+
+			dispatchEvent( el, 'click' );
+			sinon.assert.calledOnce( spy );
+
+			// Use another view1 to see if attachers are re–defined.
+			view2.applyTemplateToElement( el, def );
+			expect( def.on._listenerView ).to.be.equal( view2 );
+
+			dispatchEvent( el, 'click' );
+			// Spy was called for view1 (1st dispatch), then for view1 and view2 (2nd dispatch).
+			sinon.assert.calledThrice( spy );
 		} );
 	} );
 } );
