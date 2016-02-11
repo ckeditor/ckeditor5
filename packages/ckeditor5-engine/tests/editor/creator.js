@@ -28,13 +28,20 @@ function initEditor( config ) {
 testUtils.createSinonSandbox();
 
 before( () => {
-	coreTestUtils.defineEditorCreatorMock( 'test1' );
+	coreTestUtils.defineEditorCreatorMock( 'test1', {
+		create: sinon.spy(),
+		destroy: sinon.spy()
+	} );
 
 	coreTestUtils.defineEditorCreatorMock( 'test-throw-on-many1' );
 	coreTestUtils.defineEditorCreatorMock( 'test-throw-on-many2' );
 
-	coreTestUtils.defineEditorCreatorMock( 'test-config1' );
-	coreTestUtils.defineEditorCreatorMock( 'test-config2' );
+	coreTestUtils.defineEditorCreatorMock( 'test-config1', {
+		create: sinon.spy()
+	} );
+	coreTestUtils.defineEditorCreatorMock( 'test-config2', {
+		create: sinon.spy()
+	} );
 
 	amdUtils.define( 'test3', [ 'core/plugin' ], ( Plugin ) => {
 		return class extends Plugin {};

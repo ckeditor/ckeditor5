@@ -53,15 +53,7 @@ describe( 'coreTestUtils.defineEditorCreatorMock()', () => {
 	it( 'should copy properties from the second argument', () => {
 		expect( TestCreator2.prototype ).to.have.property( 'foo', 1 );
 		expect( TestCreator2.prototype ).to.have.property( 'bar', 2 );
-	} );
 
-	it( 'should create spies for create() and destroy() if not defined', () => {
-		expect( TestCreator1.prototype.create ).to.have.property( 'called', false, 'test1.create' );
-		expect( TestCreator1.prototype.destroy ).to.have.property( 'called', false, 'test1.destroy' );
-		expect( TestCreator2.prototype.create ).to.have.property( 'called', false, 'test2.create' );
-		expect( TestCreator2.prototype.destroy ).to.have.property( 'called', false, 'test2.destroy' );
-
-		// Not spies:
 		expect( TestCreator3.prototype ).to.have.property( 'create', createFn3 );
 		expect( TestCreator3.prototype ).to.have.property( 'destroy', destroyFn3 );
 	} );

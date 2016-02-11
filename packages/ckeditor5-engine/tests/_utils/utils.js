@@ -14,11 +14,6 @@ const utils = {
 	/**
 	 * Defines CKEditor plugin which is a mock of an editor creator.
 	 *
-	 * If `proto` is not set or it does not define `create()` and `destroy()` methods,
-	 * then they will be set to Sinon spies. Therefore the shortest usage is:
-	 *
-	 *		testUtils.defineEditorCreatorMock( 'test1' );
-	 *
 	 * The mocked creator is available under:
 	 *
 	 *		editor.plugins.get( 'creator-thename' );
@@ -35,14 +30,6 @@ const utils = {
 				for ( let propName in proto ) {
 					TestCreator.prototype[ propName ] = proto[ propName ];
 				}
-			}
-
-			if ( !TestCreator.prototype.create ) {
-				TestCreator.prototype.create = sinon.spy().named( creatorName + '-create' );
-			}
-
-			if ( !TestCreator.prototype.destroy ) {
-				TestCreator.prototype.destroy = sinon.spy().named( creatorName + '-destroy' );
 			}
 
 			return TestCreator;
