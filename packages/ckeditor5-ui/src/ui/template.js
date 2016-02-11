@@ -186,7 +186,7 @@ export default class Template {
 	 */
 	_renderElementChildren( def, el, isApply ) {
 		if ( def.children ) {
-			def.children.map( ( childDef, index ) => {
+			def.children.forEach( ( childDef, index ) => {
 				if ( isApply ) {
 					this._renderNode( childDef, el.childNodes[ index ] );
 				} else {
@@ -231,7 +231,7 @@ export default class Template {
  * Returns a function which, when called in the context of HTMLElement,
  * it replaces element children with a text node of given value.
  *
- * @protected
+ * @private
  * @param {Function}
  */
 function getTextUpdater() {
@@ -242,7 +242,7 @@ function getTextUpdater() {
  * Returns a function which, when called in the context of HTMLElement,
  * it updates element's attribute with given value.
  *
- * @protected
+ * @private
  * @param {String} attr A name of the attribute to be updated.
  * @param {Function}
  */
