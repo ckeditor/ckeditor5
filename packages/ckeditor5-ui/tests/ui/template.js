@@ -19,7 +19,7 @@ let el, text;
 describe( 'Template', () => {
 	describe( 'constructor', () => {
 		it( 'accepts the definition', () => {
-			let def = {
+			const def = {
 				tag: 'p'
 			};
 
@@ -42,7 +42,7 @@ describe( 'Template', () => {
 		} );
 
 		it( 'creates a HTMLElement with attributes', () => {
-			let el = new Template( {
+			const el = new Template( {
 				tag: 'p',
 				attributes: {
 					'class': [ 'a', 'b' ],
@@ -57,7 +57,7 @@ describe( 'Template', () => {
 		} );
 
 		it( 'creates HTMLElement\'s children', () => {
-			let el = new Template( {
+			const el = new Template( {
 				tag: 'p',
 				attributes: {
 					a: 'A'
@@ -84,14 +84,14 @@ describe( 'Template', () => {
 		} );
 
 		it( 'creates a Text node', () => {
-			let node = new Template( { text: 'foo' } ).render();
+			const node = new Template( { text: 'foo' } ).render();
 
 			expect( node.nodeType ).to.be.equal( 3 );
 			expect( node.textContent ).to.be.equal( 'foo' );
 		} );
 
 		it( 'creates a child Text Node (different syntaxes)', () => {
-			let el = new Template( {
+			const el = new Template( {
 				tag: 'p',
 				children: [
 					'foo',
@@ -103,7 +103,7 @@ describe( 'Template', () => {
 		} );
 
 		it( 'creates multiple child Text Nodes', () => {
-			let el = new Template( {
+			const el = new Template( {
 				tag: 'p',
 				children: [ 'a', 'b', { text: 'c' }, 'd' ]
 			} ).render();
@@ -113,11 +113,11 @@ describe( 'Template', () => {
 		} );
 
 		it( 'activates listener attachers – root', () => {
-			let spy1 = testUtils.sinon.spy();
-			let spy2 = testUtils.sinon.spy();
-			let spy3 = testUtils.sinon.spy();
+			const spy1 = testUtils.sinon.spy();
+			const spy2 = testUtils.sinon.spy();
+			const spy3 = testUtils.sinon.spy();
 
-			let el = new Template( {
+			const el = new Template( {
 				tag: 'p',
 				on: {
 					_listenerAttachers: {
@@ -133,8 +133,8 @@ describe( 'Template', () => {
 		} );
 
 		it( 'activates listener attachers – children', () => {
-			let spy = testUtils.sinon.spy();
-			let el = new Template( {
+			const spy = testUtils.sinon.spy();
+			const el = new Template( {
 				tag: 'p',
 				children: [
 					{
@@ -152,12 +152,12 @@ describe( 'Template', () => {
 		} );
 
 		it( 'activates listener attachers – DOM selectors', () => {
-			let spy1 = testUtils.sinon.spy();
-			let spy2 = testUtils.sinon.spy();
-			let spy3 = testUtils.sinon.spy();
-			let spy4 = testUtils.sinon.spy();
+			const spy1 = testUtils.sinon.spy();
+			const spy2 = testUtils.sinon.spy();
+			const spy3 = testUtils.sinon.spy();
+			const spy4 = testUtils.sinon.spy();
 
-			let el = new Template( {
+			const el = new Template( {
 				tag: 'p',
 				children: [
 					{
@@ -193,10 +193,10 @@ describe( 'Template', () => {
 		} );
 
 		it( 'activates model bindings – attributes', () => {
-			let spy1 = testUtils.sinon.spy();
-			let spy2 = testUtils.sinon.spy();
+			const spy1 = testUtils.sinon.spy();
+			const spy2 = testUtils.sinon.spy();
 
-			let el = new Template( {
+			const el = new Template( {
 				tag: 'p',
 				attributes: {
 					'class': spy1
@@ -221,10 +221,10 @@ describe( 'Template', () => {
 		} );
 
 		it( 'activates model bindings – Text Node', () => {
-			let spy1 = testUtils.sinon.spy();
-			let spy2 = testUtils.sinon.spy();
+			const spy1 = testUtils.sinon.spy();
+			const spy2 = testUtils.sinon.spy();
 
-			let el = new Template( {
+			const el = new Template( {
 				tag: 'p',
 				children: [
 					{
