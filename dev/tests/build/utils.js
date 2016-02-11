@@ -282,6 +282,48 @@ describe( 'build-utils', () => {
 
 			rename.end();
 		} );
+
+		it( 'should remove files in other formats', ( done ) => {
+			const rename = utils.pickVersionedFile( 'amd' );
+			const spy = sandbox.spy( ( data ) => {
+				expect( data.basename ).to.equal( 'load.js' );
+			} );
+
+			rename.pipe(
+				utils.noop( spy )
+			);
+
+			rename.on( 'end', () => {
+				sinon.assert.calledOnce( spy );
+				done();
+			} );
+
+			const amd = new Vinyl( {
+				cwd: '/',
+				base: '/test/',
+				path: '/test/load__amd.js',
+				contents: new Buffer( '' )
+			} );
+
+			const cjs = new Vinyl( {
+				cwd: '/',
+				base: '/test/',
+				path: '/test/load__cjs.js',
+				contents: new Buffer( '' )
+			} );
+
+			const esnext = new Vinyl( {
+				cwd: '/',
+				base: '/test/',
+				path: '/test/load__esnext.js',
+				contents: new Buffer( '' )
+			} );
+
+			rename.write( cjs );
+			rename.write( amd );
+			rename.write( esnext );
+			rename.end();
+		} );
 	} );
 
 	describe( 'renamePackageFiles', () => {
