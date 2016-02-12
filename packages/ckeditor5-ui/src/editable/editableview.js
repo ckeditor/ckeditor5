@@ -26,9 +26,6 @@ export default class EditableView extends View {
 		this.editableElement = editableElement;
 
 		this.applyTemplateToElement( editableElement, {
-			// This shouldn't be necessary here (#202).
-			tag: 'div',
-
 			on: {
 				focus: () => {
 					this.model.isFocused = true;
