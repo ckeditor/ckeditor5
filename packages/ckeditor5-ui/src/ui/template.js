@@ -75,11 +75,20 @@ export default class Template {
 	 */
 	_renderNode( def, applyNode, intoFragment ) {
 		const isText = def.text || typeof def == 'string';
+		let isInvalid;
 
-		// !XOR( def.tag, isText )
-		if ( def.tag ? isText : !isText ) {
+		if ( applyNode ) {
+			// When applying, a definition cannot have "tag" and "text" at the same time.
+			isInvalid = def.tag && isText;
+		} else {
+			// When rendering, a definition must have either "tag" or "text": XOR( def.tag, isText ).
+			isInvalid = def.tag ? isText : !isText;
+		}
+
+		if ( isInvalid ) {
 			/**
-			 * Node definition must have either "tag" or "text" property.
+			 * Node definition cannot have "tag" and "text" properties at the same time.
+			 * Node definition must have either "tag" or "text" when rendering new Node.
 			 *
 			 * @error ui-template-wrong-syntax
 			 */
