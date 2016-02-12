@@ -5,16 +5,14 @@
 
 'use strict';
 
+/* global console:false */
+
 import amdUtils from '/tests/_utils/amd.js';
+import EmitterMixin from '/ckeditor5/core/emittermixin.js';
 
 const utils = {
 	/**
 	 * Defines CKEditor plugin which is a mock of an editor creator.
-	 *
-	 * If `proto` is not set or it does not define `create()` and `destroy()` methods,
-	 * then they will be set to Sinon spies. Therefore the shortest usage is:
-	 *
-	 *		testUtils.defineEditorCreatorMock( 'test1' );
 	 *
 	 * The mocked creator is available under:
 	 *
@@ -32,14 +30,6 @@ const utils = {
 				for ( let propName in proto ) {
 					TestCreator.prototype[ propName ] = proto[ propName ];
 				}
-			}
-
-			if ( !TestCreator.prototype.create ) {
-				TestCreator.prototype.create = sinon.spy().named( creatorName + '-create' );
-			}
-
-			if ( !TestCreator.prototype.destroy ) {
-				TestCreator.prototype.destroy = sinon.spy().named( creatorName + '-destroy' );
 			}
 
 			return TestCreator;
@@ -62,6 +52,76 @@ const utils = {
 		}
 
 		return count;
+	},
+
+	/**
+	 * Creates an instance inheriting from {@link core.EmitterMixin} with one additional method `observe()`.
+	 * It allows observing changes to attributes in objects being {@link core.Observable observable}.
+	 *
+	 * The `observe()` method accepts:
+	 *
+	 * * `{String} observableName` – Identifier for the observable object. E.g. `"Editable"` when
+	 * you observe one of editor's editables. This name will be displayed on the console.
+	 * * `{core.Observable observable} – The object to observe.
+	 *
+	 * Typical usage:
+	 *
+	 *		const observer = utils.createObserver();
+	 *		observer.observe( 'Editable', editor.editables.current );
+	 *
+	 *		// Stop listening (method from the EmitterMixin):
+	 *		observer.stopListening();
+	 *
+	 * @returns {Emitter} The observer.
+	 */
+	createObserver() {
+		const observer = Object.create( EmitterMixin, {
+			observe: {
+				value: function observe( observableName, observable ) {
+					observer.listenTo( observable, 'change', ( evt, propertyName, value, oldValue ) => {
+						console.log( `[Change in ${ observableName }] ${ propertyName } = '${ value }' (was '${ oldValue }')` );
+					} );
+
+					return observer;
+				}
+			}
+		} );
+
+		return observer;
+	},
+
+	/**
+	 * Checkes wether observable properties are properly bound to each other.
+	 *
+	 * Syntax given that observable `A` is bound to observables [`B`, `C`, ...]:
+	 *
+	 *		assertBinding( A,
+	 *			{ initial `A` attributes },
+	 *			[
+	 *				[ B, { new `B` attributes } ],
+	 *				[ C, { new `C` attributes } ],
+	 *				...
+	 *			],
+	 *			{ `A` attributes after [`B`, 'C', ...] changed }
+	 *		);
+	 */
+	assertBinding( observable, stateBefore, data, stateAfter ) {
+		let key, pair;
+
+		for ( key in stateBefore ) {
+			expect( observable[ key ] ).to.be.equal( stateBefore[ key ] );
+		}
+
+		// Change attributes of bound observables.
+		for ( pair of data ) {
+			for ( key in pair[ 1 ] ) {
+				pair[ 0 ][ key ] = pair[ 1 ][ key ];
+			}
+		}
+
+		for ( key in stateAfter ) {
+			expect( observable[ key ] ).to.be.equal( stateAfter[ key ] );
+		}
 	}
 };
 
