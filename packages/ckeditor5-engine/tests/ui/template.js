@@ -260,10 +260,6 @@ describe( 'Template', () => {
 
 		it( 'throws when wrong template definition', () => {
 			expect( () => {
-				new Template( {} ).apply( el );
-			} ).to.throw( CKEditorError, /ui-template-wrong-syntax/ );
-
-			expect( () => {
 				new Template( {
 					tag: 'p',
 					text: 'foo'
@@ -277,6 +273,14 @@ describe( 'Template', () => {
 					tag: 'p'
 				} ).apply();
 			} ).to.throw( CKEditorError, /ui-template-wrong-node/ );
+		} );
+
+		it( 'accepts empty template definition', () => {
+			new Template( {} ).apply( el );
+			new Template( {} ).apply( text );
+
+			expect( el.outerHTML ).to.be.equal( '<div></div>' );
+			expect( text.textContent ).to.be.equal( '' );
 		} );
 
 		it( 'applies textContent to a Text Node', () => {
