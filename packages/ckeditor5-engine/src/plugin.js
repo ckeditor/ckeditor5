@@ -50,6 +50,13 @@ export default class Plugin {
 	 * @returns {null/Promise}
 	 */
 	init() {}
+
+	/**
+	 * Destroys the plugin.
+	 *
+	 * TODO waits to be implemented (#186).
+	 */
+	destroy() {}
 }
 
 utils.mix( Plugin, ObservableMixin );

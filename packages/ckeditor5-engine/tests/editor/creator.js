@@ -5,6 +5,8 @@
 
 'use strict';
 
+/* bender-tags: editor, creator */
+
 import amdUtils from '/tests/_utils/amd.js';
 import testUtils from '/tests/_utils/utils.js';
 import coreTestUtils from '/tests/core/_utils/utils.js';
@@ -26,13 +28,20 @@ function initEditor( config ) {
 testUtils.createSinonSandbox();
 
 before( () => {
-	coreTestUtils.defineEditorCreatorMock( 'test1' );
+	coreTestUtils.defineEditorCreatorMock( 'test1', {
+		create: sinon.spy(),
+		destroy: sinon.spy()
+	} );
 
 	coreTestUtils.defineEditorCreatorMock( 'test-throw-on-many1' );
 	coreTestUtils.defineEditorCreatorMock( 'test-throw-on-many2' );
 
-	coreTestUtils.defineEditorCreatorMock( 'test-config1' );
-	coreTestUtils.defineEditorCreatorMock( 'test-config2' );
+	coreTestUtils.defineEditorCreatorMock( 'test-config1', {
+		create: sinon.spy()
+	} );
+	coreTestUtils.defineEditorCreatorMock( 'test-config2', {
+		create: sinon.spy()
+	} );
 
 	amdUtils.define( 'test3', [ 'core/plugin' ], ( Plugin ) => {
 		return class extends Plugin {};
@@ -58,6 +67,17 @@ before( () => {
 				return new Promise( ( resolve, reject ) => {
 					reject( new Error( 'Catch me - destroy.' ) );
 				} );
+			}
+		};
+	} );
+
+	amdUtils.define( 'creator-destroy-order', [ 'core/creator' ], ( Creator ) => {
+		return class extends Creator {
+			create() {}
+
+			destroy() {
+				editor._elementInsideCreatorDestroy = this.editor.element;
+				editor._destroyOrder.push( 'creator' );
 			}
 		};
 	} );
@@ -169,6 +189,24 @@ describe( 'destroy', () => {
 				// Unfortunately fake timers don't work with promises, so throwing in the creator's destroy()
 				// seems to be the only way to test that the promise chain isn't broken.
 				expect( err ).to.have.property( 'message', 'Catch me - destroy.' );
+			} );
+	} );
+
+	it( 'should do things in the correct order', () => {
+		return initEditor( {
+				creator: 'creator-destroy-order'
+			} )
+			.then( () => {
+				editor._destroyOrder = [];
+				editor.on( 'destroy', () => {
+					editor._destroyOrder.push( 'event' );
+				} );
+
+				return editor.destroy();
+			} )
+			.then( () => {
+				expect( editor._elementInsideCreatorDestroy ).to.not.be.undefined;
+				expect( editor._destroyOrder ).to.deep.equal( [ 'event', 'creator' ] );
 			} );
 	} );
 } );

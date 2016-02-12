@@ -5,6 +5,8 @@
 
 'use strict';
 
+/* bender-tags: editor */
+
 import amdUtils from '/tests/_utils/amd.js';
 import coreTestUtils from '/tests/core/_utils/utils.js';
 import Editor from '/ckeditor5/core/editor.js';
@@ -176,6 +178,31 @@ describe( 'destroy', () => {
 		return editor.destroy().then( () => {
 			expect( editor ).to.not.have.property( 'element' );
 		} );
+	} );
+} );
+
+describe( 'setData', () => {
+	it( 'should set data on the editable', () => {
+		const editor = new Editor( element );
+		editor.editable = {
+			setData: sinon.spy()
+		};
+
+		editor.setData( 'foo' );
+
+		expect( editor.editable.setData.calledOnce ).to.be.true;
+		expect( editor.editable.setData.args[ 0 ][ 0 ] ).to.equal( 'foo' );
+	} );
+
+	it( 'should get data from the editable', () => {
+		const editor = new Editor( element );
+		editor.editable = {
+			getData() {
+				return 'bar';
+			}
+		};
+
+		expect( editor.getData() ).to.equal( 'bar' );
 	} );
 } );
 
