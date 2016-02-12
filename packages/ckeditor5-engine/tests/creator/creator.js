@@ -60,20 +60,35 @@ describe( 'Creator', () => {
 			expect( pluginSpy.called ).to.be.true;
 		} );
 
-		it( 'should destroy the UI', () => {
-			const uiSpy = sinon.stub().returns( new Promise( () => {} ) );
+		it( 'should destroy the UI (sync)', () => {
+			const uiSpy = sinon.spy();
 
 			editor.ui = {
 				destroy: uiSpy
 			};
 
-			creator.destroy();
-
-			expect( uiSpy.called ).to.be.true;
-			expect( editor.ui ).to.be.null;
+			return creator.destroy()
+				.then( () => {
+					expect( uiSpy.called ).to.be.true;
+					expect( editor.ui ).to.be.null;
+				} );
 		} );
 
-		it( 'should wait until UI is destroyed', () => {
+		it( 'should destroy the UI (async)', () => {
+			const uiSpy = sinon.stub().returns( Promise.resolve() );
+
+			editor.ui = {
+				destroy: uiSpy
+			};
+
+			return creator.destroy()
+				.then( () => {
+					expect( uiSpy.called ).to.be.true;
+					expect( editor.ui ).to.be.null;
+				} );
+		} );
+
+		it( 'should wait until UI is destroyed (async)', () => {
 			let resolved = false;
 			let resolve;
 			const uiSpy = sinon.stub().returns(

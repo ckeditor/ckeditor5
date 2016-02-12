@@ -49,9 +49,17 @@ export default class Creator extends Plugin {
 		}
 
 		const ui = this.editor.ui;
-		this.editor.ui = null;
+		let promise = Promise.resolve();
 
-		return ui.destroy();
+		if ( ui ) {
+			promise = promise
+				.then( ui.destroy.bind( ui ) )
+				.then( () => {
+					this.editor.ui = null;
+				} );
+		}
+
+		return promise;
 	}
 
 	/**
