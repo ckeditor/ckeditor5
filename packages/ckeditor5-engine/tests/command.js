@@ -38,11 +38,16 @@ describe( 'constructor', () => {
 
 	it( 'Command should have execute method', () => {
 		expect( command ).to.have.property( 'execute' );
-		expect( typeof command.execute ).to.equal( 'function' );
+
+		expect( () => {
+			command.execute();
+		} ).not.to.throw;
 	} );
 
 	it( 'should add listener to its checkEnabled event if checkSchema method is present', () => {
-		sinon.spy( command, 'checkSchema' );
+		expect( command.checkSchema ).to.be.undefined;
+
+		command.checkSchema = sinon.spy();
 		command.checkEnabled();
 
 		expect( command.checkSchema.called ).to.be.false;
