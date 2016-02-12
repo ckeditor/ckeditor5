@@ -50,22 +50,26 @@ describe( 'Selection', () => {
 		expect( selection._attrs.size ).to.equal( 0 );
 	} );
 
-	it( 'should be collapsed if it has no ranges or all ranges are collapsed', () => {
-		expect( selection.isCollapsed ).to.be.true;
+	describe( 'isCollapsed', () => {
+		it( 'should be null if there are no ranges in it', () => {
+			expect( selection.isCollapsed ).to.be.null;
+		} );
 
-		selection.addRange( new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) );
+		it( 'should be true if all ranges are collapsed', () => {
+			selection.addRange( new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) );
 
-		expect( selection.isCollapsed ).to.be.true;
-	} );
+			expect( selection.isCollapsed ).to.be.true;
+		} );
 
-	it( 'should not be collapsed when it has a range that is not collapsed', () => {
-		selection.addRange( liveRange );
+		it( 'should be false when it has a range that is not collapsed', () => {
+			selection.addRange( range );
 
-		expect( selection.isCollapsed ).to.be.false;
+			expect( selection.isCollapsed ).to.be.false;
 
-		selection.addRange( new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) );
+			selection.addRange( new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) );
 
-		expect( selection.isCollapsed ).to.be.false;
+			expect( selection.isCollapsed ).to.be.false;
+		} );
 	} );
 
 	it( 'should copy added ranges and store multiple ranges', () => {
@@ -191,7 +195,7 @@ describe( 'Selection', () => {
 			expect( selection.getRanges().length ).to.equal( 0 );
 			expect( selection.anchor ).to.be.null;
 			expect( selection.focus ).to.be.null;
-			expect( selection.isCollapsed ).to.be.true;
+			expect( selection.isCollapsed ).to.be.null;
 		} );
 
 		it( 'should fire exactly one update event', () => {
@@ -263,6 +267,55 @@ describe( 'Selection', () => {
 			selection.setRanges( newRanges );
 			expect( oldRanges[ 0 ].detach.called ).to.be.true;
 			expect( oldRanges[ 1 ].detach.called ).to.be.true;
+		} );
+	} );
+
+	describe( 'hasAnyRange', () => {
+		it( 'should return false if there are no ranges added to the selection', () => {
+			selection.removeAllRanges();
+			expect( selection.hasAnyRange ).to.be.false;
+		} );
+
+		it( 'should return true if there is at least on range in the selection', () => {
+			selection.addRange( new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) );
+			expect( selection.hasAnyRange ).to.be.true;
+		} );
+	} );
+
+	describe( 'getFirstRange', () => {
+		it( 'should return null if there are no ranges in selection', () => {
+			selection.removeAllRanges();
+			expect( selection.getFirstRange() ).to.be.null;
+		} );
+
+		it( 'should return a range which start position is before all other ranges\' start positions', () => {
+			// This will not be the first range despite being added as first
+			selection.addRange( new Range( new Position( root, [ 4 ] ), new Position( root, [ 5 ] ) ) );
+
+			selection.addRange( new Range( new Position( root, [ 1 ] ), new Position( root, [ 4 ] ) ) );
+
+			let range = selection.getFirstRange();
+
+			expect( range.start.path ).to.deep.equal( [ 1 ] );
+			expect( range.end.path ).to.deep.equal( [ 4 ] );
+		} );
+	} );
+
+	describe( 'getFirstPosition', () => {
+		it( 'should return null if there are no ranges in selection', () => {
+			selection.removeAllRanges();
+			expect( selection.getFirstPosition() ).to.be.null;
+		} );
+
+		it( 'should return a position that is in selection and is before any other position from the selection', () => {
+			// This will not be a range containing the first position despite being added as first
+			selection.addRange( new Range( new Position( root, [ 4 ] ), new Position( root, [ 5 ] ) ) );
+
+			selection.addRange( new Range( new Position( root, [ 1 ] ), new Position( root, [ 4 ] ) ) );
+
+			let position = selection.getFirstPosition();
+
+			expect( position.path ).to.deep.equal( [ 1 ] );
 		} );
 	} );
 

@@ -5,6 +5,8 @@
 
 'use strict';
 
+import Position from './position.js';
+import Range from './range.js';
 import LiveRange from './liverange.js';
 import EmitterMixin from '../emittermixin.js';
 import CKEditorError from '../ckeditorerror.js';
@@ -56,7 +58,7 @@ export default class Selection {
 	 * @type {core.treeModel.LivePosition|null}
 	 */
 	get anchor() {
-		if ( this._ranges.length > 0 ) {
+		if ( this.hasAnyRange ) {
 			let range = this._ranges[ this._ranges.length - 1 ];
 
 			return this._lastRangeBackward ? range.end : range.start;
@@ -73,7 +75,7 @@ export default class Selection {
 	 * @type {core.treeModel.LivePosition|null}
 	 */
 	get focus() {
-		if ( this._ranges.length > 0 ) {
+		if ( this.hasAnyRange ) {
 			let range = this._ranges[ this._ranges.length - 1 ];
 
 			return this._lastRangeBackward ? range.start : range.end;
@@ -82,12 +84,21 @@ export default class Selection {
 		return null;
 	}
 
+	get hasAnyRange() {
+		return this._ranges.length > 0;
+	}
+
 	/**
 	 * Returns whether the selection is collapsed. Selection is collapsed when all it's ranges are collapsed.
+	 * If selection has no ranges, returns null instead.
 	 *
 	 * @type {Boolean}
 	 */
 	get isCollapsed() {
+		if ( !this.hasAnyRange ) {
+			return null;
+		}
+
 		for ( let i = 0; i < this._ranges.length; i++ ) {
 			if ( !this._ranges[ i ].isCollapsed ) {
 				return false;
@@ -132,6 +143,26 @@ export default class Selection {
 	 */
 	getRanges() {
 		return this._ranges.slice();
+	}
+
+	getFirstRange() {
+		let first = null;
+
+		for ( let i = 0; i < this._ranges.length; i++ ) {
+			let range = this._ranges[ i ];
+
+			if ( !first || range.start.isBefore( first.start ) ) {
+				first = range;
+			}
+		}
+
+		return first && Range.createFromRange( first );
+	}
+
+	getFirstPosition() {
+		let firstRange = this.getFirstRange();
+
+		return firstRange && Position.createFromPosition( firstRange.start );
 	}
 
 	/**
