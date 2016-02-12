@@ -159,6 +159,8 @@ function transform( type, range, position ) {
 				transformed = this.getTransformedByMove( position, range.start, howMany, insertBefore );
 			}
 			break;
+		default:
+			return;
 	}
 
 	this.path = transformed.path;
