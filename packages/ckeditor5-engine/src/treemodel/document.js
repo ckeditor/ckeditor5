@@ -245,7 +245,7 @@ export default class Document {
 				if ( !attrs ) {
 					let node = nodeBefore;
 
-					while ( node !== null && !attrs ) {
+					while ( node && !attrs ) {
 						node = node.previousSibling;
 						attrs = getAttrsIfCharacter( node );
 					}
@@ -255,7 +255,7 @@ export default class Document {
 				if ( !attrs ) {
 					let node = nodeAfter;
 
-					while ( node !== null && !attrs ) {
+					while ( node && !attrs ) {
 						node = node.nextSibling;
 						attrs = getAttrsIfCharacter( node );
 					}
