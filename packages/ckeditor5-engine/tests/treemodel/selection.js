@@ -292,7 +292,11 @@ describe( 'Selection', () => {
 			// This will not be the first range despite being added as first
 			selection.addRange( new Range( new Position( root, [ 4 ] ), new Position( root, [ 5 ] ) ) );
 
+			// This should be the first range.
 			selection.addRange( new Range( new Position( root, [ 1 ] ), new Position( root, [ 4 ] ) ) );
+
+			// A random range that is not first.
+			selection.addRange( new Range( new Position( root, [ 6 ] ), new Position( root, [ 7 ] ) ) );
 
 			let range = selection.getFirstRange();
 
@@ -311,7 +315,11 @@ describe( 'Selection', () => {
 			// This will not be a range containing the first position despite being added as first
 			selection.addRange( new Range( new Position( root, [ 4 ] ), new Position( root, [ 5 ] ) ) );
 
+			// This should be the first range.
 			selection.addRange( new Range( new Position( root, [ 1 ] ), new Position( root, [ 4 ] ) ) );
+
+			// A random range that is not first.
+			selection.addRange( new Range( new Position( root, [ 6 ] ), new Position( root, [ 7 ] ) ) );
 
 			let position = selection.getFirstPosition();
 
