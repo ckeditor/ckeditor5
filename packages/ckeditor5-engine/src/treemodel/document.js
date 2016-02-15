@@ -16,6 +16,7 @@ import Selection from './selection.js';
 import EmitterMixin from '../emittermixin.js';
 import CKEditorError from '../ckeditorerror.js';
 import utils from '../utils.js';
+import CharacterProxy from './characterproxy.js';
 
 const graveyardSymbol = Symbol( 'graveyard' );
 
@@ -74,6 +75,14 @@ export default class Document {
 		 * @member {core.treeModel.Selection} core.treeModel.Document#selection
 		 */
 		this.selection = new Selection();
+
+		this.selection.on( 'update', () => {
+			this._setSelectionAttributes();
+		} );
+
+		this.on( 'changesDone', () => {
+			this._setSelectionAttributes();
+		} );
 	}
 
 	/**
@@ -196,6 +205,79 @@ export default class Document {
 		}
 
 		return this.roots.get( name );
+	}
+
+	_setSelectionAttributes() {
+		if ( !this.selection.hasAnyRange ) {
+			this.selection.clearAttributes();
+		} else {
+			let position = this.selection.getFirstPosition();
+			let positionParent = position.parent;
+			let attrs = null;
+
+			if ( this.selection.isCollapsed === false ) {
+				// 1. If selection is a range...
+				let range = this.selection.getFirstRange();
+
+				// ...look for a first character node in that range and take attributes from it.
+				for ( let item of range ) {
+					if ( item.type == 'CHARACTER' ) {
+						attrs = item.item.getAttributes();
+						break;
+					}
+				}
+			}
+
+			// 2. If the selection is a caret or the range does not contain a character node...
+			if ( !attrs && this.selection.isCollapsed === true ) {
+				let nodeBefore = positionParent.getChild( position.offset - 1 );
+				let nodeAfter = positionParent.getChild( position.offset );
+
+				// ...look at the node before caret and take attributes from it if it is a character node.
+				attrs = getAttrsIfCharacter( nodeBefore );
+
+				// 3. If not, look at the node after caret...
+				if ( !attrs ) {
+					attrs = getAttrsIfCharacter( nodeAfter );
+				}
+
+				// 4. If not, try to find the first character on the left, that is in the same node.
+				if ( !attrs ) {
+					let node = nodeBefore;
+
+					while ( node !== null && !attrs ) {
+						node = node.previousSibling;
+						attrs = getAttrsIfCharacter( node );
+					}
+				}
+
+				// 5. If not found, try to find the first character on the right, that is in the same node.
+				if ( !attrs ) {
+					let node = nodeAfter;
+
+					while ( node !== null && !attrs ) {
+						node = node.nextSibling;
+						attrs = getAttrsIfCharacter( node );
+					}
+				}
+
+				// 6. If not found, selection won't get any attributes.
+			}
+
+			if ( attrs ) {
+				this.selection.setAttributesTo( attrs );
+			} else {
+				this.selection.clearAttributes();
+			}
+		}
+
+		function getAttrsIfCharacter( node ) {
+			if ( node instanceof CharacterProxy ) {
+				return node.getAttributes();
+			}
+
+			return null;
+		}
 	}
 
 	/**
