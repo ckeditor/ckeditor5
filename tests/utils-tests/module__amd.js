@@ -8,12 +8,12 @@
 'use strict';
 
 import testUtils from '/tests/_utils/utils.js';
-import amdTestUtils from '/tests/_utils/amd.js';
+import moduleTestUtils from '/tests/_utils/module.js';
 
 testUtils.createSinonSandbox();
 
 describe( 'amdTestUtils', () => {
-	const getModulePath = amdTestUtils.getModulePath;
+	const getModulePath = moduleTestUtils.getModulePath;
 
 	describe( 'getModulePath()', () => {
 		it( 'generates a path from a plugin name', () => {
@@ -40,7 +40,7 @@ describe( 'amdTestUtils', () => {
 			const spy = testUtils.sinon.spy( window, 'define' );
 			const expectedDeps = [ 'exports' ].concat( [ 'bar', 'ckeditor' ].map( getModulePath ) );
 
-			amdTestUtils.define( 'test1', [ 'bar', 'ckeditor' ], () => {} );
+			moduleTestUtils.define( 'test1', [ 'bar', 'ckeditor' ], () => {} );
 
 			expect( spy.calledOnce ).to.be.true;
 			expect( spy.args[ 0 ][ 0 ] ).to.equal( getModulePath( 'test1' ) );
@@ -51,7 +51,7 @@ describe( 'amdTestUtils', () => {
 			const spy = testUtils.sinon.spy( window, 'define' );
 			const bodySpy = sinon.spy( () => 'ret' );
 
-			amdTestUtils.define( 'test2', [ 'bar', 'ckeditor' ], bodySpy );
+			moduleTestUtils.define( 'test2', [ 'bar', 'ckeditor' ], bodySpy );
 
 			const realBody = spy.args[ 0 ][ 2 ];
 			const exportsObj = {};
@@ -68,7 +68,7 @@ describe( 'amdTestUtils', () => {
 		it( 'works with module name and body', () => {
 			const spy = testUtils.sinon.spy( window, 'define' );
 
-			amdTestUtils.define( 'test1', () => {} );
+			moduleTestUtils.define( 'test1', () => {} );
 
 			expect( spy.calledOnce ).to.be.true;
 			expect( spy.args[ 0 ][ 0 ] ).to.equal( getModulePath( 'test1' ) );
@@ -80,15 +80,15 @@ describe( 'amdTestUtils', () => {
 		// The value of dependencies are not available anyway inside the amdTestUtils.define() callbacks because
 		// we lose the late-binding by immediately mapping modules to their default exports.
 		it( 'works with circular dependencies', ( done ) => {
-			amdTestUtils.define( 'test-circular-a', [ 'test-circular-b' ], () => {
+			moduleTestUtils.define( 'test-circular-a', [ 'test-circular-b' ], () => {
 				return 'a';
 			} );
 
-			amdTestUtils.define( 'test-circular-b', [ 'test-circular-a' ], () => {
+			moduleTestUtils.define( 'test-circular-b', [ 'test-circular-a' ], () => {
 				return 'b';
 			} );
 
-			require( [ 'test-circular-a', 'test-circular-b' ].map( amdTestUtils.getModulePath ), ( a, b ) => {
+			require( [ 'test-circular-a', 'test-circular-b' ].map( moduleTestUtils.getModulePath ), ( a, b ) => {
 				expect( a ).to.have.property( 'default', 'a' );
 				expect( b ).to.have.property( 'default', 'b' );
 
@@ -107,7 +107,7 @@ describe( 'amdTestUtils', () => {
 				requireCb = cb;
 			} );
 
-			const modules = amdTestUtils.require( { foo: 'foo/oof', bar: 'bar' } );
+			const modules = moduleTestUtils.require( { foo: 'foo/oof', bar: 'bar' } );
 
 			expect( deferCbSpy.called ).to.be.false;
 
