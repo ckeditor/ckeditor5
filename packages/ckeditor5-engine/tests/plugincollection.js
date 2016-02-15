@@ -5,7 +5,7 @@
 
 'use strict';
 
-import amdUtils from '/tests/_utils/amd.js';
+import moduleUtils from '/tests/_utils/module.js';
 import testUtils from '/tests/_utils/utils.js';
 import Editor from '/ckeditor5/core/editor.js';
 import PluginCollection from '/ckeditor5/core/plugincollection.js';
@@ -39,41 +39,41 @@ before( () => {
 
 // Create fake plugins that will be used on tests.
 
-amdUtils.define( 'A', () => {
+moduleUtils.define( 'A', () => {
 	return PluginA;
 } );
 
-amdUtils.define( 'B', () => {
+moduleUtils.define( 'B', () => {
 	return PluginB;
 } );
 
-amdUtils.define( 'C', [ 'core/editor', 'B' ], () => {
+moduleUtils.define( 'C', [ 'core/editor', 'B' ], () => {
 	return PluginC;
 } );
 
-amdUtils.define( 'D', [ 'core/editor', 'A', 'C' ], () => {
+moduleUtils.define( 'D', [ 'core/editor', 'A', 'C' ], () => {
 	return PluginD;
 } );
 
-amdUtils.define( 'E', [ 'core/editor', 'F' ], () => {
+moduleUtils.define( 'E', [ 'core/editor', 'F' ], () => {
 	return PluginE;
 } );
 
-amdUtils.define( 'F', [ 'core/editor', 'E' ], () => {
+moduleUtils.define( 'F', [ 'core/editor', 'E' ], () => {
 	return PluginF;
 } );
 
-amdUtils.define( 'G', () => {
+moduleUtils.define( 'G', () => {
 	return PluginG;
 } );
 
 // Erroneous cases.
 
-amdUtils.define( 'X', () => {
+moduleUtils.define( 'X', () => {
 	throw new TestError( 'Some error inside a plugin' );
 } );
 
-amdUtils.define( 'Y', () => {
+moduleUtils.define( 'Y', () => {
 	return class {};
 } );
 

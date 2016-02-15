@@ -7,7 +7,7 @@
 
 /* bender-tags: editor, creator */
 
-import amdUtils from '/tests/_utils/amd.js';
+import moduleUtils from '/tests/_utils/module.js';
 import testUtils from '/tests/_utils/utils.js';
 import coreTestUtils from '/tests/core/_utils/utils.js';
 import Editor from '/ckeditor5/core/editor.js';
@@ -43,11 +43,11 @@ before( () => {
 		create: sinon.spy()
 	} );
 
-	amdUtils.define( 'test3', [ 'core/plugin' ], ( Plugin ) => {
+	moduleUtils.define( 'test3', [ 'core/plugin' ], ( Plugin ) => {
 		return class extends Plugin {};
 	} );
 
-	amdUtils.define( 'creator-async-create', [ 'core/creator' ], ( Creator ) => {
+	moduleUtils.define( 'creator-async-create', [ 'core/creator' ], ( Creator ) => {
 		return class extends Creator {
 			create() {
 				return new Promise( ( resolve, reject ) => {
@@ -59,7 +59,7 @@ before( () => {
 		};
 	} );
 
-	amdUtils.define( 'creator-async-destroy', [ 'core/creator' ], ( Creator ) => {
+	moduleUtils.define( 'creator-async-destroy', [ 'core/creator' ], ( Creator ) => {
 		return class extends Creator {
 			create() {}
 
@@ -71,7 +71,7 @@ before( () => {
 		};
 	} );
 
-	amdUtils.define( 'creator-destroy-order', [ 'core/creator' ], ( Creator ) => {
+	moduleUtils.define( 'creator-destroy-order', [ 'core/creator' ], ( Creator ) => {
 		return class extends Creator {
 			create() {}
 
