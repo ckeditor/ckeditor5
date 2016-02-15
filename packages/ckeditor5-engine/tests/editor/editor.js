@@ -7,7 +7,7 @@
 
 /* bender-tags: editor */
 
-import amdUtils from '/tests/_utils/amd.js';
+import moduleUtils from '/tests/_utils/module.js';
 import coreTestUtils from '/tests/core/_utils/utils.js';
 import Editor from '/ckeditor5/core/editor.js';
 import EditorConfig from '/ckeditor5/core/editorconfig.js';
@@ -121,7 +121,7 @@ describe( 'init', () => {
 		// Synchronous plugin that depends on an asynchronous one.
 		pluginDefinition( 'sync', [ 'async' ] );
 
-		amdUtils.define( 'async', () => {
+		moduleUtils.define( 'async', () => {
 			PluginAsync.prototype.init = sinon.spy( () => {
 				return new Promise( ( resolve ) => {
 					setTimeout( () => {
@@ -211,7 +211,7 @@ describe( 'setData', () => {
  * @param {String[]} deps Dependencies of the plugin (only other plugins).
  */
 function pluginDefinition( name, deps ) {
-	amdUtils.define( name, deps || [], function() {
+	moduleUtils.define( name, deps || [], function() {
 		class NewPlugin extends Plugin {}
 
 		NewPlugin.prototype.init = sinon.spy().named( name );
