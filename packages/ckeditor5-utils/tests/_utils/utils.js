@@ -7,7 +7,7 @@
 
 /* global console:false */
 
-import amdUtils from '/tests/_utils/amd.js';
+import moduleUtils from '/tests/_utils/module.js';
 import EmitterMixin from '/ckeditor5/core/emittermixin.js';
 
 const utils = {
@@ -23,7 +23,7 @@ const utils = {
 	 * be copied to the prototype of the creator.
 	 */
 	defineEditorCreatorMock( creatorName, proto ) {
-		amdUtils.define( 'creator-' + creatorName, [ 'core/creator' ], ( Creator ) => {
+		moduleUtils.define( 'creator-' + creatorName, [ 'core/creator' ], ( Creator ) => {
 			class TestCreator extends Creator {}
 
 			if ( proto ) {

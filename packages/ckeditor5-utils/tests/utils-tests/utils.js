@@ -6,7 +6,7 @@
 'use strict';
 
 import testUtils from '/tests/_utils/utils.js';
-import amdTestUtils from '/tests/_utils/amd.js';
+import moduleTestUtils from '/tests/_utils/module.js';
 import coreTestUtils from '/tests/core/_utils/utils.js';
 import Model from '/ckeditor5/core/ui/model.js';
 import Creator from '/ckeditor5/core/creator.js';
@@ -27,7 +27,7 @@ coreTestUtils.defineEditorCreatorMock( 'test3', {
 	destroy: destroyFn3
 } );
 
-const modules = amdTestUtils.require( {
+const modules = moduleTestUtils.require( {
 	testCreator1: 'creator-test1/creator-test1',
 	testCreator2: 'creator-test2/creator-test2',
 	testCreator3: 'creator-test3/creator-test3'
