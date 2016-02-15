@@ -29,6 +29,11 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 `,
 
 	/**
+	 * Module formats supported by the builder.
+	 */
+	SUPPORTED_FORMATS: [ 'esnext', 'amd', 'cjs' ],
+
+	/**
 	 * Creates a simple duplex stream.
 	 *
 	 * @param {Function} [callback] A callback which will be executed with each chunk.
@@ -205,30 +210,21 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 	 *
 	 * For example: we have `load__esnext.js`, `load__amd.js` and `load__cjs.js`. After applying this
 	 * transformation when compiling code for a specific format the proper file will be renamed to `load.js`.
-	 * Files not matching a specific format will be removed.
+	 * Files not matching a specified format will be removed.
 	 *
 	 * @param {String} format
 	 * @returns {Stream}
 	 */
 	pickVersionedFile( format ) {
+		const rejectedFormats = utils.SUPPORTED_FORMATS
+			.filter( ( item ) => item !== format );
+		const pickRegexp = new RegExp( `__${ format }$` );
+		const rejectRegexp = new RegExp( `__(${ rejectedFormats.join( '|' ) }).js$` );
+
 		const pick = rename( ( path ) => {
-			const regexp = new RegExp( `__${ format }$` );
-
-			path.basename = path.basename.replace( regexp, '' );
+			path.basename = path.basename.replace( pickRegexp, '' );
 		} );
-
-		const remove = gulpFilter( ( file ) => {
-			return [ 'esnext', 'amd', 'cjs' ]
-				.filter( ( item ) => item !== format )
-				.reduce( ( prev, item ) => {
-					// If file was already matched, skip next checking.
-					if ( !prev ) {
-						return prev;
-					}
-
-					return !( new RegExp( `__${ item }\.js$` ).test( file.path ) );
-				}, true );
-		} );
+		const remove = gulpFilter( ( file ) => !rejectRegexp.test( file.path ) );
 
 		return multipipe( pick, remove );
 	},
