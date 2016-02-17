@@ -291,6 +291,50 @@ describe( 'Template', () => {
 			sinon.assert.calledWithExactly( spy1, el.firstChild, sinon.match.object );
 			sinon.assert.calledWithExactly( spy2, el.lastChild.firstChild, sinon.match.object );
 		} );
+
+		it( 'uses DOM updater – attributes', () => {
+			const spy = testUtils.sinon.spy();
+			const el = new Template( {
+				tag: 'p',
+				attributes: {
+					'class': {}
+				},
+				_modelBinders: {
+					attributes: {
+						class: spy
+					}
+				}
+			} ).render();
+
+			// Check whether DOM updater is correct.
+			spy.firstCall.args[ 1 ].set( 'x' );
+			expect( el.outerHTML ).to.be.equal( '<p class="x"></p>' );
+
+			spy.firstCall.args[ 1 ].remove();
+			expect( el.outerHTML ).to.be.equal( '<p></p>' );
+		} );
+
+		it( 'uses DOM updater – text', () => {
+			const spy = testUtils.sinon.spy();
+			const el = new Template( {
+				tag: 'p',
+				children: [
+					{
+						text: {},
+						_modelBinders: {
+							text: spy
+						}
+					}
+				],
+			} ).render();
+
+			// Check whether DOM updater is correct.
+			spy.firstCall.args[ 1 ].set( 'x' );
+			expect( el.outerHTML ).to.be.equal( '<p>x</p>' );
+
+			spy.firstCall.args[ 1 ].remove();
+			expect( el.outerHTML ).to.be.equal( '<p></p>' );
+		} );
 	} );
 
 	describe( 'apply', () => {
