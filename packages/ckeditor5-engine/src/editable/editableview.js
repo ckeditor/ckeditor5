@@ -17,6 +17,8 @@ export default class EditableView extends View {
 	 */
 
 	setEditableElement( editableElement ) {
+		const bind = this.attributeBinder;
+
 		if ( this.editableElement ) {
 			throw new CKEditorError(
 				'editableview-cannot-override-editableelement: The editableElement cannot be overriden.'
@@ -36,7 +38,7 @@ export default class EditableView extends View {
 			},
 
 			attributes: {
-				contentEditable: this.bindToAttribute( 'isEditable' )
+				contentEditable: bind.to( 'isEditable' )
 			}
 		} );
 	}

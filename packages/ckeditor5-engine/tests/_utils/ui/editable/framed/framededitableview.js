@@ -11,6 +11,8 @@ export default class FramedEditableView extends EditableView {
 	constructor( model ) {
 		super( model );
 
+		const bind = this.attributeBinder;
+
 		// Here's the tricky part - we must return the promise from init()
 		// because iframe loading may be asynchronous. However, we can't start
 		// listening to 'load' in init(), because at this point the element is already in the DOM
@@ -28,8 +30,8 @@ export default class FramedEditableView extends EditableView {
 				// It seems that we need to allow scripts in order to be able to listen to events.
 				// TODO: Research that. Perhaps the src must be set?
 				sandbox: 'allow-same-origin allow-scripts',
-				width: this.bindToAttribute( 'width' ),
-				height: this.bindToAttribute( 'height' )
+				width: bind.to( 'width' ),
+				height: bind.to( 'height' )
 			},
 			on: {
 				load: 'loaded'
