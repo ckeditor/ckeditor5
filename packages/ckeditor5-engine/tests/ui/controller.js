@@ -97,6 +97,80 @@ describe( 'Controller', () => {
 		} );
 	} );
 
+	describe( 'add', () => {
+		beforeEach( defineParentControllerClass );
+
+		it( 'should add a controller to specific collection', () => {
+			const parentController = new ParentController();
+			const child1 = new Controller();
+			const child2 = new Controller();
+			const collection = parentController.collections.get( 'x' );
+
+			parentController.add( 'x', child1 );
+			parentController.add( 'x', child2 );
+
+			expect( collection ).to.have.length( 2 );
+			expect( collection.get( 0 ) ).to.be.equal( child1 );
+			expect( collection.get( 1 ) ).to.be.equal( child2 );
+		} );
+
+		it( 'should add a controller at specific index', () => {
+			const parentController = new ParentController();
+			const child1 = new Controller();
+			const child2 = new Controller();
+			const collection = parentController.collections.get( 'x' );
+
+			parentController.add( 'x', child1 );
+			parentController.add( 'x', child2, 0 );
+
+			expect( collection ).to.have.length( 2 );
+			expect( collection.get( 0 ) ).to.be.equal( child2 );
+			expect( collection.get( 1 ) ).to.be.equal( child1 );
+		} );
+	} );
+
+	describe( 'remove', () => {
+		beforeEach( defineParentControllerClass );
+
+		it( 'should remove a controller from specific collection – by instance', () => {
+			const parentController = new ParentController();
+			const child1 = new Controller();
+			const child2 = new Controller();
+			const child3 = new Controller();
+			const collection = parentController.collections.get( 'x' );
+
+			parentController.add( 'x', child1 );
+			parentController.add( 'x', child2 );
+			parentController.add( 'x', child3 );
+
+			const removed = parentController.remove( 'x', child2 );
+
+			expect( collection ).to.have.length( 2 );
+			expect( collection.get( 0 ) ).to.be.equal( child1 );
+			expect( collection.get( 1 ) ).to.be.equal( child3 );
+			expect( removed ).to.be.equal( child2 );
+		} );
+
+		it( 'should remove a controller from specific collection – by index', () => {
+			const parentController = new ParentController();
+			const child1 = new Controller();
+			const child2 = new Controller();
+			const child3 = new Controller();
+			const collection = parentController.collections.get( 'x' );
+
+			parentController.add( 'x', child1 );
+			parentController.add( 'x', child2 );
+			parentController.add( 'x', child3 );
+
+			const removed = parentController.remove( 'x', 1 );
+
+			expect( collection ).to.have.length( 2 );
+			expect( collection.get( 0 ) ).to.be.equal( child1 );
+			expect( collection.get( 1 ) ).to.be.equal( child3 );
+			expect( removed ).to.be.equal( child2 );
+		} );
+	} );
+
 	describe( 'collections', () => {
 		describe( 'add', () => {
 			beforeEach( defineParentViewClass );

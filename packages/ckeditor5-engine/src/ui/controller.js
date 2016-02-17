@@ -154,6 +154,27 @@ export default class Controller {
 	}
 
 	/**
+	 * Adds a child {@link Controller} instance to {@link #collections} at given index.
+	 *
+	 * @param {String} collectionName Name of the Controller Collection.
+	 * @param {Controller} controller A controller instance to be added.
+	 * @param {Number} [index] An index in the collection.
+	 */
+	add( collectionName, controller, index ) {
+		this.collections.get( collectionName ).add( controller, index );
+	}
+
+	/**
+	 * Removes a child {@link Controller} instance from one of {@link #collections}.
+	 *
+	 * @param {String} collectionName Name of the Controller Collection.
+	 * @param {Controller|Number} toRemove A Controller instance or index to be removed.
+	 */
+	remove( collectionName, toRemove ) {
+		return this.collections.get( collectionName ).remove( toRemove );
+	}
+
+	/**
 	 * Initializes the {@link #view} of this controller instance.
 	 *
 	 * @protected
