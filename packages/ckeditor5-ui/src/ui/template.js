@@ -139,19 +139,27 @@ export default class Template {
 	 * @returns {Text} A rendered Text.
 	 */
 	_renderText( defOrText, applyText ) {
-		const text = applyText || document.createTextNode( '' );
+		const textNode = applyText || document.createTextNode( '' );
 
-		// Case: { text: func }, like binding
-		if ( typeof defOrText.text == 'function' ) {
-			defOrText.text( text, getTextUpdater() );
+		// Check if there's a binder available for this Text Node.
+		const binder = defOrText._modelBinders && defOrText._modelBinders.text;
+
+		// Activate binder if one. Cases:
+		//		{ text: bind.to( ... ) }
+		//		{ text: [ 'foo', bind.to( ... ), ... ] }
+		if ( binder ) {
+			binder( textNode, getTextNodeUpdater( textNode ) );
 		}
-		// Case: { text: 'foo' }
-		// Case: 'foo'
+
+		// Simply set text. Cases:
+		// 		{ text: [ 'all', 'are', 'static' ] }
+		// 		{ text: 'foo' }
+		// 		'foo'
 		else {
-			text.textContent = defOrText.text || defOrText;
+			textNode.textContent = defOrText.text || defOrText;
 		}
 
-		return text;
+		return textNode;
 	}
 
 	/**
@@ -162,24 +170,39 @@ export default class Template {
 	 * @param {HTMLElement} el Element which is rendered.
 	 */
 	_renderElementAttributes( def, el ) {
-		let attr, value;
+		const attributes = def.attributes;
+		const binders = def._modelBinders && def._modelBinders.attributes;
+		let binder, attrName, attrValue;
 
-		for ( attr in def.attributes ) {
-			value = def.attributes[ attr ];
+		if ( !attributes ) {
+			return;
+		}
 
-			// Attribute bound directly to the model.
-			if ( typeof value == 'function' ) {
-				value( el, getAttributeUpdater( attr ) );
+		for ( attrName in attributes ) {
+			// Check if there's a binder available for this attribute.
+			binder = binders && binders[ attrName ];
+
+			// Activate binder if one. Cases:
+			// 		{ class: [ 'bar', bind.to( ... ), 'baz' ] }
+			// 		{ class: bind.to( ... ) }
+			if ( binder ) {
+				binder( el, getElementAttributeUpdater( el, attrName ) );
 			}
 
-			// Explicit attribute definition (string).
+			// Otherwise simply set the attribute.
+			// 		{ class: [ 'all', 'are', 'static' ] }
+			// 		{ class: 'foo' }
 			else {
-				// Attribute can be an array, i.e. classes.
-				if ( Array.isArray( value ) ) {
-					value = value.join( ' ' );
+				attrValue = attributes[ attrName ];
+
+				// Attribute can be an array. Merge array elements:
+				if ( Array.isArray( attrValue ) ) {
+					attrValue = attrValue.reduce( function binderValueReducer( prev, cur ) {
+						return prev === '' ? `${cur}` : `${prev} ${cur}`;
+					} );
 				}
 
-				el.setAttribute( attr, value );
+				el.setAttribute( attrName, attrValue );
 			}
 		}
 	}
@@ -243,8 +266,16 @@ export default class Template {
  * @private
  * @param {Function}
  */
-function getTextUpdater() {
-	return ( el, value ) => el.textContent = value;
+function getTextNodeUpdater( node ) {
+	return {
+		set( value ) {
+			node.textContent = value;
+		},
+
+		remove() {
+			node.textContent = '';
+		}
+	};
 }
 
 /**
@@ -255,12 +286,21 @@ function getTextUpdater() {
  * @param {String} attr A name of the attribute to be updated.
  * @param {Function}
  */
-function getAttributeUpdater( attr ) {
-	return ( el, value ) => el.setAttribute( attr, value );
+function getElementAttributeUpdater( el, attrName ) {
+	return {
+		set( value ) {
+			el.setAttribute( attrName, value );
+		},
+
+		remove() {
+			el.removeAttribute( attrName );
+		}
+	};
 }
 
 /**
  * Definition of {@link Template}.
+ * See: {@link TemplateValueSchema}.
  *
  *		{
  *			tag: 'p',
@@ -272,22 +312,22 @@ function getAttributeUpdater( attr ) {
  *					...
  *				},
  *				{
- *					text: 'abc'
+ *					text: 'static–text'
  *				},
- *				'def',
+ *				'also-static–text',
  *				...
  *			],
  *			attributes: {
- *				'class': [ 'a', 'b' ],
- *				id: 'c',
+ *				'class': [ 'class-a', 'class-b' ],
+ *				id: 'element-id',
  *				style: callback,
  *				...
  *			},
  *			on: {
- *				event1: 'a'
- *				event2: [ 'b', 'c', callback ],
- *				'event3@selector': 'd',
- *				'event4@selector': [ 'e', 'f', callback ],
+ *				'click': 'clicked'
+ *				'mouseup': [ 'view-event-a', 'view-event-b', callback ],
+ *				'keyup@selector': 'view-event',
+ *				'focus@selector': [ 'view-event-a', 'view-event-b', callback ],
  *				...
  *			}
  *		}
@@ -299,4 +339,27 @@ function getAttributeUpdater( attr ) {
  * @property {Object} [attributes]
  * @property {String} [text]
  * @property {Object} [on]
+ * @property {Object} _modelBinders
+ */
+
+/**
+ * Describes a value of HTMLElement attribute or `textContent`.
+ * See: {@link TemplateDefinition}.
+ *
+ *		{
+ *			tag: 'p',
+ *			attributes: {
+ *				// Plain String schema.
+ *				class: 'class-foo'
+ *
+ *				// Object schema, a Model binding.
+ *				class: { model: m, attribute: 'foo', callback... }
+ *
+ *				// Array schema, combines the above.
+ *				class: [ 'foo', { model: m, attribute: 'bar' }, 'baz' ]
+ *			}
+ *		}
+ *
+ * @typedef TemplateValueSchema
+ * @type {Object|String|Array}
  */
