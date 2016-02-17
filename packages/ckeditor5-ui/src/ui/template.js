@@ -26,7 +26,7 @@ export default class Template {
 		/**
 		 * Definition of this template.
 		 *
-		 * @property {TemplateDefinition}
+		 * @type {TemplateDefinition}
 		 */
 		this.definition = def;
 	}

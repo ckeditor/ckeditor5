@@ -29,21 +29,21 @@ export default class Controller {
 		/**
 		 * Model of this controller.
 		 *
-		 * @property {Model}
+		 * @type {Model}
 		 */
 		this.model = model || null;
 
 		/**
 		 * Set `true` after {@link #init}.
 		 *
-		 * @property {Boolean}
+		 * @type {Boolean}
 		 */
 		this.ready = false;
 
 		/**
 		 * View of this controller.
 		 *
-		 * @property {View}
+		 * @type {View}
 		 */
 		this.view = view || null;
 
@@ -51,7 +51,7 @@ export default class Controller {
 		 * A collection of {@link ControllerCollection} instances containing
 		 * child controllers.
 		 *
-		 * @property {Collection}
+		 * @type {Collection}
 		 */
 		this.collections = new Collection( {
 			idProperty: 'name'

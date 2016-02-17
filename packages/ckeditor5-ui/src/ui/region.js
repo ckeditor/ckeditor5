@@ -25,21 +25,21 @@ export default class Region {
 		/**
 		 * The name of the region.
 		 *
-		 * @property {String}
+		 * @type {String}
 		 */
 		this.name = name;
 
 		/**
 		 * Views which belong to the region.
 		 *
-		 * @property {Collection}
+		 * @type {Collection}
 		 */
 		this.views = new Collection();
 
 		/**
 		 * Element of this region (see {@link #init}).
 		 *
-		 * @property {HTMLElement}
+		 * @type {HTMLElement}
 		 */
 		this.element = null;
 	}

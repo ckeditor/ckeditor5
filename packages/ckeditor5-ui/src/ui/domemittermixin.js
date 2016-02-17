@@ -38,7 +38,7 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	 * Collection of native DOM listeners.
 	 *
 	 * @private
-	 * @property {Object} _domListeners
+	 * @type {Object}
 	 */
 
 	/**

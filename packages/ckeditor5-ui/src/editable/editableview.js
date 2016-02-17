@@ -13,7 +13,7 @@ export default class EditableView extends View {
 	 * The element which is the main editable element (usually the one with `contentEditable="true"`).
 	 *
 	 * @readonly
-	 * @property {HTMLElement} editableElement
+	 * @type {HTMLElement}
 	 */
 
 	setEditableElement( editableElement ) {

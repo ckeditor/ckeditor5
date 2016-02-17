@@ -23,7 +23,7 @@ export default class EditorUI extends Controller {
 
 		/**
 		 * @readonly
-		 * @property {core.Editor}
+		 * @type {core.Editor}
 		 */
 		this.editor = editor;
 	}

@@ -35,14 +35,14 @@ export default class ControllerCollection extends Collection {
 		/**
 		 * Name of this collection.
 		 *
-		 * @property {String}
+		 * @type {String}
 		 */
 		this.name = name;
 
 		/**
 		 * Parent controller of this collection.
 		 *
-		 * @property {Controller}
+		 * @type {Controller}
 		 */
 		this.parent = null;
 	}

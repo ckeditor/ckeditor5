@@ -37,7 +37,7 @@ export default class Collection {
 		 * The internal list of items in the collection.
 		 *
 		 * @private
-		 * @property {Object[]}
+		 * @type {Object[]}
 		 */
 		this._items = [];
 
@@ -45,7 +45,7 @@ export default class Collection {
 		 * The internal map of items in the collection.
 		 *
 		 * @private
-		 * @property {Map}
+		 * @type {Map}
 		 */
 		this._itemMap = new Map();
 
@@ -53,7 +53,7 @@ export default class Collection {
 		 * The name of the property which is considered to identify an item.
 		 *
 		 * @private
-		 * @property {String}
+		 * @type {String}
 		 */
 		this._idProperty = options && options.idProperty || 'id';
 	}
