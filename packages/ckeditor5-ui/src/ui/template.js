@@ -260,11 +260,13 @@ export default class Template {
 }
 
 /**
- * Returns a function which, when called in the context of HTMLElement,
- * it replaces element children with a text node of given value.
+ * Returns an object consisting of `set` and `remove` functions, which
+ * can be used in the context of DOM Node to set or reset `textContent`.
+ * See {@link View#_getModelBinder}.
  *
  * @private
- * @param {Function}
+ * @param {Node} node DOM Node to be modified.
+ * @returns {Object}
  */
 function getTextNodeUpdater( node ) {
 	return {
@@ -279,12 +281,14 @@ function getTextNodeUpdater( node ) {
 }
 
 /**
- * Returns a function which, when called in the context of HTMLElement,
- * it updates element's attribute with given value.
+ * Returns an object consisting of `set` and `remove` functions, which
+ * can be used in the context of DOM Node to set or reset an attribute.
+ * See {@link View#_getModelBinder}.
  *
  * @private
- * @param {String} attr A name of the attribute to be updated.
- * @param {Function}
+ * @param {Node} node DOM Node to be modified.
+ * @param {String} attrName Name of the attribute to be modified.
+ * @returns {Object}
  */
 function getElementAttributeUpdater( el, attrName ) {
 	return {
