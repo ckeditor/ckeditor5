@@ -262,7 +262,7 @@ function initObservable( observable ) {
 	// The internal hash containing the observable's state.
 	//
 	// @private
-	// @property {Map} _attributes
+	// @type {Map}
 	Object.defineProperty( observable, attributesSymbol, {
 		value: new Map()
 	} );
@@ -311,7 +311,7 @@ function initObservable( observable ) {
 	//			} )
 	//
 	// @private
-	// @property {Map} _boundObservables
+	// @type {Map}
 	Object.defineProperty( observable, boundObservablesSymbol, {
 		value: new Map()
 	} );
@@ -341,7 +341,7 @@ function initObservable( observable ) {
 	//			} )
 	//
 	// @private
-	// @property {Map} _boundAttributes
+	// @type {Map}
 	Object.defineProperty( observable, boundAttributesSymbol, {
 		value: new Map()
 	} );
