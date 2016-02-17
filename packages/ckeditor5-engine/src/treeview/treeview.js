@@ -37,14 +37,14 @@ export default class TreeView {
 		/**
 		 * Root of the DOM tree.
 		 *
-		 * @property {HTMLElement}
+		 * @type {HTMLElement}
 		 */
 		this.domRoot = domRoot;
 
 		/**
 		 * Set of {@link treeView.Observer observers}.
 		 *
-		 * @property {Set.<treeView.Observer>}
+		 * @type {Set.<treeView.Observer>}
 		 */
 		this.observers = new Set();
 
@@ -52,14 +52,14 @@ export default class TreeView {
 		 * Instance of the {@link treeView.Converter converter} use by {@link treeView.TreeView#renderer renderer} and
 		 * {@link treeView.TreeView#observers observers}.
 		 *
-		 * @property {treeView.Converter}
+		 * @type {treeView.Converter}
 		 */
 		this.converter = new Converter();
 
 		/**
 		 * Root of the view tree.
 		 *
-		 * @property {treeView.Element}
+		 * @type {treeView.Element}
 		 */
 		this.viewRoot = this.converter.domToView( domRoot, { bind: true, withChildren: false } );
 		this.viewRoot.setTreeView( this );
@@ -67,7 +67,7 @@ export default class TreeView {
 		/**
 		 * Instance of the {@link treeView.TreeView#renderer renderer}.
 		 *
-		 * @property {treeView.Renderer}
+		 * @type {treeView.Renderer}
 		 */
 		this.renderer = new Renderer( this.converter );
 		this.renderer.markToSync( 'CHILDREN', this.viewRoot );

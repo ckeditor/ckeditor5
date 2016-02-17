@@ -31,7 +31,7 @@ export default class Element extends Node {
 		 * Element name.
 		 *
 		 * @readonly
-		 * @property {String} name
+		 * @type {String}
 		 */
 		this.name = name;
 
@@ -39,7 +39,7 @@ export default class Element extends Node {
 		 * List of children nodes.
 		 *
 		 * @protected
-		 * @property {treeModel.NodeList} _children
+		 * @type {treeModel.NodeList}
 		 */
 		this._children = new NodeList();
 

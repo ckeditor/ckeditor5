@@ -28,7 +28,7 @@ export default class Node {
 		 * Parent element. Null by default. Set by {@link treeView.Element#insertChildren}.
 		 *
 		 * @readonly
-		 * @property {treeView.Element|null} parent
+		 * @type {treeView.Element|null}
 		 */
 		this.parent = null;
 

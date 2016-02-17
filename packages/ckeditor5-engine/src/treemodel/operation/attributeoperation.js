@@ -50,7 +50,7 @@ export default class AttributeOperation extends Operation {
 		 * Key of an attribute to change or remove.
 		 *
 		 * @readonly
-		 * @property {String} key
+		 * @type {String}
 		 */
 		this.key = key;
 
@@ -58,7 +58,7 @@ export default class AttributeOperation extends Operation {
 		 * Old value of the attribute with given key or `null` if adding a new attribute.
 		 *
 		 * @readonly
-		 * @property {*} oldValue
+		 * @type {*}
 		 */
 		this.oldValue = oldValue;
 
@@ -66,7 +66,7 @@ export default class AttributeOperation extends Operation {
 		 * New value to set for the attribute. If `null`, then the operation just removes the attribute.
 		 *
 		 * @readonly
-		 * @property {*} newValue
+		 * @type {*}
 		 */
 		this.newValue = newValue;
 	}

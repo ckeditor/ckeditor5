@@ -83,7 +83,7 @@ export default class Position {
 	 * Node directly after the position.
 	 *
 	 * @readonly
-	 * @property {treeModel.Node}
+	 * @type {treeModel.Node}
 	 */
 	get nodeAfter() {
 		return this.parent.getChild( this.offset ) || null;
@@ -103,7 +103,7 @@ export default class Position {
 	 * Offset at which the position is located in the {@link #parent}.
 	 *
 	 * @readonly
-	 * @property {Number} offset
+	 * @type {Number}
 	 */
 	get offset() {
 		return last( this.path );
@@ -120,7 +120,7 @@ export default class Position {
 	 * Parent element of the position. The position is located at {@link #offset} in this element.
 	 *
 	 * @readonly
-	 * @property {treeModel.Element} parent
+	 * @type {treeModel.Element}
 	 */
 	get parent() {
 		let parent = this.root;

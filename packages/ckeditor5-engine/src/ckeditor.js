@@ -21,7 +21,7 @@ const CKEDITOR = {
 	 * A collection containing all editor instances created.
 	 *
 	 * @readonly
-	 * @property {Collection}
+	 * @type {Collection}
 	 */
 	instances: new Collection(),
 

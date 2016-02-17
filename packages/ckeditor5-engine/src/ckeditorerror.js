@@ -43,7 +43,7 @@ export default class CKEditorError extends Error {
 		/**
 		 * The additional error data passed to the constructor.
 		 *
-		 * @property {Object} data
+		 * @type {Object}
 		 */
 		this.data = data;
 	}

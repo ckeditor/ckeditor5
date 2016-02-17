@@ -22,14 +22,14 @@
 		/**
 		 * Position parent element.
 		 *
-		 * @property {treeView.Element}
+		 * @type {treeView.Element}
 		 */
 		this.parent = parent;
 
 		/**
 		 * Position offset.
 		 *
-		 * @property {Number}
+		 * @type {Number}
 		 */
 		this.offset = offset;
 	}

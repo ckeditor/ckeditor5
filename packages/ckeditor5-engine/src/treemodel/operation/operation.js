@@ -25,14 +25,14 @@ export default class Operation {
 		 * {@link treeModel.Document#version document version} the {@link document-applyOperation-wrong-version}
 		 * error is thrown.
 		 *
-		 * @property {Number}
+		 * @type {Number}
 		 */
 		this.baseVersion = baseVersion;
 
 		/**
 		 * Operation type.
 		 *
-		 * @property {String} type
+		 * @type {String}
 		 */
 
 		/**
@@ -40,7 +40,7 @@ export default class Operation {
 		 * {@link treeModel.Delta delta} when the operations is added to it by the
 		 * {@link treeModel.Delta#addOperation} method.
 		 *
-		 * @property {treeModel.Delta} delta
+		 * @type {treeModel.Delta}
 		 */
 
 		/**

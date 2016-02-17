@@ -29,7 +29,7 @@ export default class Editable extends Controller {
 		/**
 		 * Whether the editable is in read-write or read-only mode.
 		 *
-		 * @property {Boolean} isEditable
+		 * @type {Boolean}
 		 */
 		this.set( 'isEditable', true );
 
@@ -37,7 +37,7 @@ export default class Editable extends Controller {
 		 * Whether the editable is focused.
 		 *
 		 * @readonly
-		 * @property {Boolean} isFocused
+		 * @type {Boolean}
 		 */
 		this.set( 'isFocused', false );
 
@@ -50,7 +50,7 @@ export default class Editable extends Controller {
 	 * The model for the editable view.
 	 *
 	 * @readonly
-	 * @property {core.ui.Model} viewModel
+	 * @type {core.ui.Model}
 	 */
 	get viewModel() {
 		if ( this._viewModel ) {

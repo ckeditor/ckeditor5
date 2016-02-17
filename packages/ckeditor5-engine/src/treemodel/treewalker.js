@@ -63,7 +63,7 @@ export default class TreeWalker {
 		 *
 		 * If boundaries are not defined they are set before first and after last child of the root node.
 		 *
-		 * @property {treeModel.Range} boundaries
+		 * @type {treeModel.Range}
 		 */
 		this.boundaries = options.boundaries || null;
 
@@ -71,7 +71,7 @@ export default class TreeWalker {
 		 * Start boundary cached for optimization purposes.
 		 *
 		 * @private
-		 * @property {treeModel.Element} boundaryStartParent
+		 * @type {treeModel.Element}
 		 */
 		this._boundaryStartParent = this.boundaries ? this.boundaries.start.parent : null;
 
@@ -79,7 +79,7 @@ export default class TreeWalker {
 		 * End boundary cached for optimization purposes.
 		 *
 		 * @private
-		 * @property {treeModel.Element} boundaryEndParent
+		 * @type {treeModel.Element}
 		 */
 		this._boundaryEndParent = this.boundaries ? this.boundaries.end.parent : null;
 
@@ -87,7 +87,7 @@ export default class TreeWalker {
 		 * Iterator position. This is alway static position, even if the initial position was a
 		 * {@link treeModel.LivePosition live position}.
 		 *
-		 * @property {treeModel.Position} position
+		 * @type {treeModel.Position}
 		 */
 		this.position = options.position ?
 			Position.createFromPosition( options.position ) :
@@ -97,7 +97,7 @@ export default class TreeWalker {
 		 * Flag indicating whether all consecutive characters with the same attributes should be
 		 * returned as one {@link treeModel.CharacterProxy} (`true`) or one by one (`false`).
 		 *
-		 * @property {Boolean} mergeCharacters
+		 * @type {Boolean}
 		 */
 		this.mergeCharacters = !!options.mergeCharacters;
 
@@ -105,7 +105,7 @@ export default class TreeWalker {
 		 * Parent of the most recently visited node. Cached for optimization purposes.
 		 *
 		 * @private
-		 * @property {treeModel.Element} visitedParent
+		 * @type {treeModel.Element}
 		 */
 		this._visitedParent = this.position.parent;
 	}

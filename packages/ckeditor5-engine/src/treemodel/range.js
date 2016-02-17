@@ -27,14 +27,14 @@ export default class Range {
 		/**
 		 * Start position.
 		 *
-		 * @property {treeModel.Position}
+		 * @type {treeModel.Position}
 		 */
 		this.start = Position.createFromPosition( start );
 
 		/**
 		 * End position.
 		 *
-		 * @property {treeModel.Position}
+		 * @type {treeModel.Position}
 		 */
 		this.end = Position.createFromPosition( end );
 	}
@@ -42,7 +42,7 @@ export default class Range {
 	/**
 	 * Returns whether the range is collapsed, that is it start and end positions are equal.
 	 *
-	 * @property {Boolean}
+	 * @type {Boolean}
 	 */
 	get isCollapsed() {
 		return this.start.isEqual( this.end );
@@ -60,7 +60,7 @@ export default class Range {
 	/**
 	 * Range root element. Equals to the root of start position (which should be same as root of end position).
 	 *
-	 * @property {treeModel.RootElement}
+	 * @type {treeModel.RootElement}
 	 */
 	get root() {
 		return this.start.root;

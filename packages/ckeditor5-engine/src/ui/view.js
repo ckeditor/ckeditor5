@@ -34,14 +34,14 @@ export default class View {
 		/**
 		 * Model of this view.
 		 *
-		 * @property {Model}
+		 * @type {Model}
 		 */
 		this.model = model || null;
 
 		/**
 		 * Regions of this view. See {@link #register}.
 		 *
-		 * @property {Collection}
+		 * @type {Collection}
 		 */
 		this.regions = new Collection( {
 			idProperty: 'name'
@@ -50,7 +50,7 @@ export default class View {
 		/**
 		 * Template of this view.
 		 *
-		 * @property {Object}
+		 * @type {Object}
 		 */
 		this.template = null;
 
@@ -58,7 +58,7 @@ export default class View {
 		 * Region selectors of this view. See {@link #register}.
 		 *
 		 * @private
-		 * @property {Object}
+		 * @type {Object}
 		 */
 		this._regionsSelectors = {};
 
@@ -66,7 +66,7 @@ export default class View {
 		 * Element of this view.
 		 *
 		 * @private
-		 * @property {HTMLElement}
+		 * @type {HTMLElement}
 		 */
 		this._element = null;
 
@@ -74,7 +74,7 @@ export default class View {
 		 * An instance of Template to generate {@link #_el}.
 		 *
 		 * @private
-		 * @property {Template}
+		 * @type {Template}
 		 */
 		this._template = null;
 	}

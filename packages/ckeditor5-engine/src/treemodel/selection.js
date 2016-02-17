@@ -27,7 +27,7 @@ export default class Selection {
 		 * List of attributes set on current selection.
 		 *
 		 * @protected
-		 * @property {Map}
+		 * @type {Map}
 		 */
 		this._attrs = new Map();
 
@@ -35,7 +35,7 @@ export default class Selection {
 		 * Stores all ranges that are selected.
 		 *
 		 * @private
-		 * @property {Array.<LiveRange>}
+		 * @type {Array.<LiveRange>}
 		 */
 		this._ranges = [];
 
@@ -43,7 +43,7 @@ export default class Selection {
 		 * Specifies whether the last added range was added as a backward or forward range.
 		 *
 		 * @private
-		 * @property {Boolean}
+		 * @type {Boolean}
 		 */
 		this._lastRangeBackward = false;
 	}
@@ -55,7 +55,7 @@ export default class Selection {
 	 * Anchor is always a start or end of the most recent added range. It may be a bit unintuitive when
 	 * there are multiple ranges in selection.
 	 *
-	 * @property {treeModel.LivePosition|null}
+	 * @type {treeModel.LivePosition|null}
 	 */
 	get anchor() {
 		if ( this._ranges.length > 0 ) {
@@ -71,8 +71,8 @@ export default class Selection {
 	 * Selection focus. Focus is a position where the selection ends. When there are no ranges in selection,
 	 * focus is null.
 	 *
-	 * @see {#anchor}
-	 * @property {treeModel.LivePosition|null}
+	 * @link {#anchor}
+	 * @type {treeModel.LivePosition|null}
 	 */
 	get focus() {
 		if ( this._ranges.length > 0 ) {
@@ -87,7 +87,7 @@ export default class Selection {
 	/**
 	 * Returns whether the selection is collapsed. Selection is collapsed when all it's ranges are collapsed.
 	 *
-	 * @property {Boolean}
+	 * @type {Boolean}
 	 */
 	get isCollapsed() {
 		for ( let i = 0; i < this._ranges.length; i++ ) {

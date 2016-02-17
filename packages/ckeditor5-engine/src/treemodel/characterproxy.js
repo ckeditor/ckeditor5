@@ -42,7 +42,7 @@ export default class CharacterProxy extends Node {
 		 *
 		 * @protected
 		 * @readonly
-		 * @property {treeModel.NodeListText} nodeListText
+		 * @type {treeModel.NodeListText}
 		 */
 		this._nodeListText = nodeListText;
 
@@ -51,7 +51,7 @@ export default class CharacterProxy extends Node {
 		 *
 		 * @protected
 		 * @readonly
-		 * @property {Number} index
+		 * @type {Number}
 		 */
 		this._index = index;
 
@@ -60,7 +60,7 @@ export default class CharacterProxy extends Node {
 		 *
 		 * @protected
 		 * @readonly
-		 * @property {String} character
+		 * @type {String}
 		 */
 		this.character = nodeListText.text.substr( index, 1 );
 

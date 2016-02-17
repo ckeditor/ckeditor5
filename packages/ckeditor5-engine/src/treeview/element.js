@@ -36,7 +36,7 @@ export default class Element extends Node {
 		 * Name of the element.
 		 *
 		 * @readonly
-		 * @property {String}
+		 * @type {String}
 		 */
 		this.name = name;
 
@@ -44,7 +44,7 @@ export default class Element extends Node {
 		 * Map of attributes, where attributes names are keys and attributes values are values.
 		 *
 		 * @protected
-		 * @property {Map} _attrs
+		 * @type {Map}
 		 */
 		if ( isPlainObject( attrs ) ) {
 			this._attrs = utils.objectToMap( attrs );
@@ -56,7 +56,7 @@ export default class Element extends Node {
 		 * Array of child nodes.
 		 *
 		 * @protected
-		 * @property {Array.<treeView.Node>}
+		 * @type {Array.<treeView.Node>}
 		 */
 		this._children = [];
 

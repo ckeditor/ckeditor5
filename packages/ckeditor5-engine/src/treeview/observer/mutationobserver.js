@@ -34,7 +34,7 @@ export default class MutationObserver extends Observer {
 		 * Native mutation observer config.
 		 *
 		 * @private
-		 * @property {Object}
+		 * @type {Object}
 		 */
 		this._config = {
 			childList: true,
@@ -49,28 +49,28 @@ export default class MutationObserver extends Observer {
 		/**
 		 * Reference to the {@link treeView.TreeView} object.
 		 *
-		 * @property {treeView.TreeView}
+		 * @type {treeView.TreeView}
 		 */
 		this.treeView = treeView;
 
 		/**
 		 * Reference to the {@link treeView.TreeView#domRoot}.
 		 *
-		 * @property {HTMLElement}
+		 * @type {HTMLElement}
 		 */
 		this.domRoot = treeView.domRoot;
 
 		/**
 		 * Reference to the {@link treeView.TreeView#converter}.
 		 *
-		 * @property {treeView.Converter}
+		 * @type {treeView.Converter}
 		 */
 		this.converter = treeView.converter;
 
 		/**
 		 * Reference to the {@link treeView.TreeView#renderer}.
 		 *
-		 * @property {treeView.Renderer}
+		 * @type {treeView.Renderer}
 		 */
 		this.renderer = treeView.renderer;
 
@@ -78,7 +78,7 @@ export default class MutationObserver extends Observer {
 		 * Native mutation observer.
 		 *
 		 * @private
-		 * @property {window.MutationObserver}
+		 * @type {window.MutationObserver}
 		 */
 		this._mutationObserver = new window.MutationObserver( this._onMutations.bind( this ) );
 	}

@@ -121,7 +121,7 @@ export default class NodeList {
 		 * Internal array to store nodes.
 		 *
 		 * @protected
-		 * @property {Array}
+		 * @type {Array}
 		 */
 		this._nodes = [];
 
@@ -131,7 +131,7 @@ export default class NodeList {
 		 * which occupy multiple slots in `_indexMap`.
 		 *
 		 * @private
-		 * @property {Array}
+		 * @type {Array}
 		 */
 		this._indexMap = [];
 
@@ -184,7 +184,7 @@ export default class NodeList {
 	 * Number of nodes in the node list.
 	 *
 	 * @readonly
-	 * @property {Number} length
+	 * @type {Number}
 	 */
 	get length() {
 		return this._indexMap.length;

@@ -11,6 +11,7 @@ import Node from './node.js';
  * Tree view text node.
  *
  * @class treeView.Text
+ * @property {String} _data
  */
 export default class Text extends Node {
 	/**
@@ -26,7 +27,7 @@ export default class Text extends Node {
 		 * The text content.
 		 *
 		 * @private
-		 * @property {String}
+		 * @type {String}
 		 */
 		this._data = data;
 	}
@@ -35,8 +36,6 @@ export default class Text extends Node {
 	 * The text content.
 	 *
 	 * Setting the data fires the {@link treeView.Node#change change event}.
-	 *
-	 * @property {String} Text data.
 	 */
 	get data() {
 		return this._data;

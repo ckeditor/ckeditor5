@@ -29,7 +29,7 @@ export default class Node {
 		 * Parent element. Null by default. Set by {@link treeModel.Element#insertChildren}.
 		 *
 		 * @readonly
-		 * @property {treeModel.Element|null} parent
+		 * @type {treeModel.Element|null}
 		 */
 		this.parent = null;
 
@@ -40,7 +40,7 @@ export default class Node {
 		 * using {@link treeModel.Node} methods.
 		 *
 		 * @protected
-		 * @property {Map} _attrs
+		 * @type {Map}
 		 */
 		this._attrs = utils.toMap( attrs );
 	}
@@ -49,7 +49,7 @@ export default class Node {
 	 * Depth of the node, which equals to total number of its parents.
 	 *
 	 * @readonly
-	 * @property {Number} depth
+	 * @type {Number}
 	 */
 	get depth() {
 		let depth = 0;
@@ -68,7 +68,7 @@ export default class Node {
 	 * Nodes next sibling or `null` if it is the last child.
 	 *
 	 * @readonly
-	 * @property {treeModel.Node|null} nextSibling
+	 * @type {treeModel.Node|null}
 	 */
 	get nextSibling() {
 		const index = this.getIndex();
@@ -80,7 +80,7 @@ export default class Node {
 	 * Nodes previous sibling or null if it is the last child.
 	 *
 	 * @readonly
-	 * @property {treeModel.Node|null} previousSibling
+	 * @type {treeModel.Node|null}
 	 */
 	get previousSibling() {
 		const index = this.getIndex();
@@ -92,7 +92,7 @@ export default class Node {
 	 * The top parent for the node. If node has no parent it is the root itself.
 	 *
 	 * @readonly
-	 * @property {Number} depth
+	 * @type {Number}
 	 */
 	get root() {
 		let root = this;

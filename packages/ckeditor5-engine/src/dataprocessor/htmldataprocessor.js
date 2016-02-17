@@ -25,7 +25,7 @@ export default class HtmlDataProcessor {
 		 * DOMParser instance used to parse HTML string to HTMLDocument.
 		 *
 		 * @private
-		 * @property {DOMParser}
+		 * @type {DOMParser}
 		 */
 		this._domParser = new DOMParser();
 

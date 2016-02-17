@@ -33,7 +33,7 @@ export default class TextFragment {
 		 * First character node contained in {@link treeModel.TextFragment}.
 		 *
 		 * @readonly
-		 * @property {treeModel.CharacterProxy} first
+		 * @type {treeModel.CharacterProxy}
 		 */
 		this.first = firstCharacter;
 
@@ -41,7 +41,7 @@ export default class TextFragment {
 		 * Characters contained in {@link treeModel.TextFragment}.
 		 *
 		 * @readonly
-		 * @property {String} text
+		 * @type {String}
 		 */
 		this.text = firstCharacter._nodeListText.text.substr( this.first._index, length );
 
@@ -49,7 +49,7 @@ export default class TextFragment {
 		 * Last {@link treeModel.CharacterProxy character node} contained in {@link treeModel.TextFragment}.
 		 *
 		 * @readonly
-		 * @property {treeModel.CharacterProxy} last
+		 * @type {treeModel.CharacterProxy}
 		 */
 		this.last = this.getCharAt( this.text.length - 1 );
 	}
@@ -57,7 +57,7 @@ export default class TextFragment {
 	/**
 	 * A common parent of all character nodes contained in {@link treeModel.TextFragment}.
 	 *
-	 * @property {treeModel.Element} commonParent
+	 * @type {treeModel.Element}
 	 */
 	get commonParent() {
 		return this.first.parent;

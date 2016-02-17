@@ -19,7 +19,7 @@ export default class Creator extends Plugin {
 	 * The element used to {@link #_replaceElement replace} the editor element.
 	 *
 	 * @private
-	 * @property {HTMLElement} _elementReplacemenet
+	 * @type {HTMLElement}
 	 */
 
 	/**

@@ -26,13 +26,13 @@ export default class PluginCollection {
 	constructor( editor ) {
 		/**
 		 * @protected
-		 * @property {core.Editor}
+		 * @type {core.Editor}
 		 */
 		this._editor = editor;
 
 		/**
 		 * @protected
-		 * @property {Map}
+		 * @type {Map}
 		 */
 		this._plugins = new Map();
 	}

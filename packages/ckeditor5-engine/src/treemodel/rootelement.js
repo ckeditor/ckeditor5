@@ -26,7 +26,7 @@ export default class RootElement extends Element {
 		 * {@link treeModel.Document} that is an owner of this root.
 		 *
 		 * @readonly
-		 * @property {treeModel.Document}
+		 * @type {treeModel.Document}
 		 */
 		this.document = doc;
 	}

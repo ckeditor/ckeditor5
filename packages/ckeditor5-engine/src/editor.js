@@ -35,7 +35,7 @@ export default class Editor {
 		 * editor creation and is not subject to be modified.
 		 *
 		 * @readonly
-		 * @property {HTMLElement}
+		 * @type {HTMLElement}
 		 */
 		this.element = element;
 
@@ -47,7 +47,7 @@ export default class Editor {
 		 * instance itself.
 		 *
 		 * @readonly
-		 * @property {Config}
+		 * @type {Config}
 		 */
 		this.config = new EditorConfig( config );
 
@@ -55,7 +55,7 @@ export default class Editor {
 		 * The plugins loaded and in use by this editor instance.
 		 *
 		 * @readonly
-		 * @property {PluginCollection}
+		 * @type {PluginCollection}
 		 */
 		this.plugins = new PluginCollection( this );
 
@@ -63,7 +63,7 @@ export default class Editor {
 		 * The chosen creator.
 		 *
 		 * @protected
-		 * @property {Creator} _creator
+		 * @type {Creator}
 		 */
 	}
 

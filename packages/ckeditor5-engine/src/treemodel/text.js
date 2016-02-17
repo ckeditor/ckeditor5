@@ -28,7 +28,7 @@ export default class Text {
 		 * Text.
 		 *
 		 * @readonly
-		 * @property {String}
+		 * @type {String}
 		 */
 		this.text = text || '';
 
@@ -36,7 +36,7 @@ export default class Text {
 		 * List of attributes bound with the text.
 		 *
 		 * @protected
-		 * @property {Map}
+		 * @type {Map}
 		 */
 		this._attrs = utils.toMap( attrs );
 	}

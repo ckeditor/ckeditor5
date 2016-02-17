@@ -38,7 +38,7 @@ export default class Document {
 		 * List of roots that are owned and managed by this document.
 		 *
 		 * @readonly
-		 * @property {Map} roots
+		 * @type {Map}
 		 */
 		this.roots = new Map();
 
@@ -48,7 +48,7 @@ export default class Document {
 		 * not match document version the {@link document-applyOperation-wrong-version} error is thrown.
 		 *
 		 * @readonly
-		 * @property {Number} version
+		 * @type {Number}
 		 */
 		this.version = 0;
 
@@ -59,7 +59,7 @@ export default class Document {
 		 * Array of pending changes. See: {@link #enqueueChanges}.
 		 *
 		 * @private
-		 * @property {Array.<Function>}
+		 * @type {Array.<Function>}
 		 */
 		this._pendingChanges = [];
 
@@ -67,7 +67,7 @@ export default class Document {
 		 * Selection done on this document.
 		 *
 		 * @readonly
-		 * @property {treeModel.Selection}
+		 * @type {treeModel.Selection}
 		 */
 		this.selection = new Selection();
 	}
@@ -76,7 +76,7 @@ export default class Document {
 	 * Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
 	 *
 	 * @readonly
-	 * @property {treeModel.RootElement} graveyard
+	 * @type {treeModel.RootElement}
 	 */
 	get graveyard() {
 		return this.getRoot( graveyardSymbol );

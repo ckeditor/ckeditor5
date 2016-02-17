@@ -24,7 +24,7 @@ export default class Plugin {
 	constructor( editor ) {
 		/**
 		 * @readonly
-		 * @property {core.Editor}
+		 * @type {core.Editor}
 		 */
 		this.editor = editor;
 	}
@@ -43,7 +43,7 @@ export default class Plugin {
 	 *		}
 	 *
 	 * @static
-	 * @property {Function[]} requires
+	 * @type {Function[]}
 	 */
 
 	/**
