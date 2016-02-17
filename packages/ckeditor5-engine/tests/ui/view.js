@@ -219,116 +219,379 @@ describe( 'View', () => {
 		} );
 	} );
 
-	describe( 'bindToAttribute', () => {
-		beforeEach( createViewInstanceWithTemplate );
+	describe( 'attributeBinder', () => {
+		it( 'provides "to" and "if" interface', () => {
+			const bind = view.attributeBinder;
 
-		it( 'returns a function that passes arguments', () => {
-			setTestViewInstance( { a: 'foo' } );
-
-			const spy = testUtils.sinon.spy();
-			const callback = view.bindToAttribute( 'a', spy );
-
-			expect( spy.called ).to.be.false;
-
-			callback( 'el', 'updater' );
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, 'el', 'foo' );
-
-			view.model.a = 'bar';
-			sinon.assert.calledTwice( spy );
-			expect( spy.secondCall.calledWithExactly( 'el', 'bar' ) ).to.be.true;
+			expect( bind ).to.have.keys( 'to', 'if' );
+			expect( typeof bind.to ).to.be.equal( 'function' );
+			expect( typeof bind.if ).to.be.equal( 'function' );
 		} );
 
-		it( 'allows binding attribute to the model', () => {
-			setTestViewClass( function() {
-				return {
-					tag: 'p',
-					attributes: {
-						'class': this.bindToAttribute( 'foo' )
-					},
-					children: [ 'abc' ]
-				};
+		describe( 'to', () => {
+			it( 'returns an object which describes the binding', () => {
+				setTestViewInstance( { a: 1 } );
+
+				const spy = testUtils.sinon.spy();
+				const bind = view.attributeBinder;
+				const binding = bind.to( 'a', spy );
+
+				expect( spy.called ).to.be.false;
+				expect( binding ).to.have.keys( [ 'type', 'model', 'attribute', 'callback' ] );
+				expect( binding.model ).to.equal( view.model );
+				expect( binding.callback ).to.equal( spy );
+				expect( binding.attribute ).to.equal( 'a' );
 			} );
 
-			setTestViewInstance( { foo: 'bar' } );
+			it( 'allows binding attribute to the model – simple (HTMLElement attribute)', () => {
+				setTestViewClass( function() {
+					const bind = this.attributeBinder;
 
-			expect( view.element.outerHTML ).to.be.equal( '<p class="bar">abc</p>' );
-
-			view.model.foo = 'baz';
-			expect( view.element.outerHTML ).to.be.equal( '<p class="baz">abc</p>' );
-		} );
-
-		it( 'allows binding "text" to the model', () => {
-			setTestViewClass( function() {
-				return {
-					tag: 'p',
-					children: [
-						{
-							text: this.bindToAttribute( 'foo' )
+					return {
+						tag: 'p',
+						attributes: {
+							'class': bind.to( 'foo' )
 						},
-						{
-							tag: 'b',
-							children: [ 'baz' ]
-						}
-					]
-				};
+						children: [ 'abc' ]
+					};
+				} );
+
+				setTestViewInstance( { foo: 'bar' } );
+				expect( view.element.outerHTML ).to.be.equal( '<p class="bar">abc</p>' );
+
+				view.model.foo = 'baz';
+				expect( view.element.outerHTML ).to.be.equal( '<p class="baz">abc</p>' );
 			} );
 
-			setTestViewInstance( { foo: 'bar' } );
+			it( 'allows binding attribute to the model – simple (Text Node)', () => {
+				setTestViewClass( function() {
+					const bind = this.attributeBinder;
 
-			expect( view.element.outerHTML ).to.be.equal( '<p>bar<b>baz</b></p>' );
-
-			view.model.foo = 'qux';
-			expect( view.element.outerHTML ).to.be.equal( '<p>qux<b>baz</b></p>' );
-		} );
-
-		it( 'allows binding to the model with value processing', () => {
-			const callback = ( el, value ) =>
-				( value > 0 ? 'positive' : 'negative' );
-
-			setTestViewClass( function() {
-				return {
-					tag: 'p',
-					attributes: {
-						'class': this.bindToAttribute( 'foo', callback )
-					},
-					children: [
-						{ text: this.bindToAttribute( 'foo', callback ) }
-					]
-				};
-			} );
-
-			setTestViewInstance( { foo: 3 } );
-			expect( view.element.outerHTML ).to.be.equal( '<p class="positive">positive</p>' );
-
-			view.model.foo = -7;
-			expect( view.element.outerHTML ).to.be.equal( '<p class="negative">negative</p>' );
-		} );
-
-		it( 'allows binding to the model with custom callback', () => {
-			setTestViewClass( function() {
-				return {
-					tag: 'p',
-					attributes: {
-						'class': this.bindToAttribute( 'foo', ( el, value ) => {
-							el.innerHTML = value;
-
-							if ( value == 'changed' ) {
-								return value;
+					return {
+						tag: 'p',
+						children: [
+							{
+								text: bind.to( 'foo' )
 							}
-						} )
-					},
-					children: [ 'bar' ]
-				};
+						]
+					};
+				} );
+
+				setTestViewInstance( { foo: 'bar' } );
+				expect( view.element.outerHTML ).to.be.equal( '<p>bar</p>' );
+
+				view.model.foo = 'baz';
+				expect( view.element.outerHTML ).to.be.equal( '<p>baz</p>' );
 			} );
 
-			setTestViewInstance( { foo: 'moo' } );
-			// Note: First the attribute binding sets innerHTML to 'moo',
-			// then 'bar' TextNode child is added.
-			expect( view.element.outerHTML ).to.be.equal( '<p>moobar</p>' );
+			it( 'allows binding attribute to the model – value processing', () => {
+				setTestViewClass( function() {
+					const bind = this.attributeBinder;
 
-			view.model.foo = 'changed';
-			expect( view.element.outerHTML ).to.be.equal( '<p class="changed">changed</p>' );
+					const callback = ( node, value ) =>
+						( value > 0 ? 'positive' : 'negative' );
+
+					return {
+						tag: 'p',
+						attributes: {
+							'class': bind.to( 'foo', callback )
+						},
+						children: [
+							{
+								text: bind.to( 'foo', callback )
+							}
+						]
+					};
+				} );
+
+				setTestViewInstance( { foo: 3 } );
+				expect( view.element.outerHTML ).to.be.equal( '<p class="positive">positive</p>' );
+
+				view.model.foo = -7;
+				expect( view.element.outerHTML ).to.be.equal( '<p class="negative">negative</p>' );
+			} );
+
+			it( 'allows binding attribute to the model – custom callback', () => {
+				setTestViewClass( function() {
+					const bind = this.attributeBinder;
+
+					return {
+						tag: 'p',
+						attributes: {
+							'class': bind.to( 'foo', ( el, value ) => {
+								el.innerHTML = value;
+
+								if ( value == 'changed' ) {
+									return value;
+								}
+							} )
+						}
+					};
+				} );
+
+				setTestViewInstance( { foo: 'moo' } );
+				expect( view.element.outerHTML ).to.be.equal( '<p class="undefined">moo</p>' );
+
+				view.model.foo = 'changed';
+				expect( view.element.outerHTML ).to.be.equal( '<p class="changed">changed</p>' );
+			} );
+
+			it( 'allows binding attribute to the model – array of bindings (HTMLElement attribute)', () => {
+				setTestViewClass( function() {
+					const bind = this.attributeBinder;
+
+					return {
+						tag: 'p',
+						attributes: {
+							'class': [
+								'ck-class',
+								bind.to( 'foo' ),
+								bind.to( 'bar' ),
+								bind.to( 'foo', ( el, value ) => `foo-is-${value}` ),
+								'ck-end'
+							]
+						},
+						children: [ 'abc' ]
+					};
+				} );
+
+				setTestViewInstance( { foo: 'a', bar: 'b' } );
+				expect( view.element.outerHTML ).to.be.equal( '<p class="ck-class a b foo-is-a ck-end">abc</p>' );
+
+				view.model.foo = 'c';
+				view.model.bar = 'd';
+				expect( view.element.outerHTML ).to.be.equal( '<p class="ck-class c d foo-is-c ck-end">abc</p>' );
+			} );
+
+			it( 'allows binding attribute to the model – array of bindings (Text Node)', () => {
+				setTestViewClass( function() {
+					const bind = this.attributeBinder;
+
+					return {
+						tag: 'p',
+						attributes: {
+						},
+						children: [
+							{
+								text: [
+									'ck-class',
+									bind.to( 'foo' ),
+									bind.to( 'bar' ),
+									bind.to( 'foo', ( el, value ) => `foo-is-${value}` ),
+									'ck-end'
+								]
+							}
+						]
+					};
+				} );
+
+				setTestViewInstance( { foo: 'a', bar: 'b' } );
+				expect( view.element.outerHTML ).to.be.equal( '<p>ck-class a b foo-is-a ck-end</p>' );
+
+				view.model.foo = 'c';
+				view.model.bar = 'd';
+				expect( view.element.outerHTML ).to.be.equal( '<p>ck-class c d foo-is-c ck-end</p>' );
+			} );
+
+			it( 'allows binding attribute to the model – falsy values', () => {
+				setTestViewClass( function() {
+					const bind = this.attributeBinder;
+
+					return {
+						tag: 'p',
+						attributes: {
+							'class': bind.to( 'foo' )
+						},
+						children: [ 'abc' ]
+					};
+				} );
+
+				setTestViewInstance( { foo: 'bar' } );
+				expect( view.element.outerHTML ).to.be.equal( '<p class="bar">abc</p>' );
+
+				view.model.foo = false;
+				expect( view.element.outerHTML ).to.be.equal( '<p class="false">abc</p>' );
+
+				view.model.foo = null;
+				expect( view.element.outerHTML ).to.be.equal( '<p class="null">abc</p>' );
+
+				view.model.foo = undefined;
+				expect( view.element.outerHTML ).to.be.equal( '<p class="undefined">abc</p>' );
+
+				view.model.foo = 0;
+				expect( view.element.outerHTML ).to.be.equal( '<p class="0">abc</p>' );
+
+				view.model.foo = '';
+				expect( view.element.outerHTML ).to.be.equal( '<p>abc</p>' );
+			} );
+		} );
+
+		describe( 'if', () => {
+			it( 'returns an object which describes the binding', () => {
+				setTestViewInstance( { a: 1 } );
+
+				const spy = testUtils.sinon.spy();
+				const bind = view.attributeBinder;
+				const binding = bind.if( 'a', 'foo', spy );
+
+				expect( spy.called ).to.be.false;
+				expect( binding ).to.have.keys( [ 'type', 'model', 'attribute', 'callback', 'valueIfTrue' ] );
+				expect( binding.model ).to.equal( view.model );
+				expect( binding.callback ).to.equal( spy );
+				expect( binding.attribute ).to.equal( 'a' );
+				expect( binding.valueIfTrue ).to.equal( 'foo' );
+			} );
+
+			it( 'allows binding attribute to the model – presence of an attribute (HTMLElement attribute)', () => {
+				setTestViewClass( function() {
+					const bind = this.attributeBinder;
+
+					return {
+						tag: 'p',
+						attributes: {
+							'class': bind.if( 'foo' )
+						},
+						children: [ 'abc' ]
+					};
+				} );
+
+				setTestViewInstance( { foo: true } );
+				expect( view.element.outerHTML ).to.be.equal( '<p class="">abc</p>' );
+
+				view.model.foo = false;
+				expect( view.element.outerHTML ).to.be.equal( '<p>abc</p>' );
+
+				view.model.foo = 'bar';
+				expect( view.element.outerHTML ).to.be.equal( '<p class="">abc</p>' );
+			} );
+
+			// TODO: Is this alright? It makes sense but it's pretty useless. Text Node cannot be
+			// removed just like an attribute of some HTMLElement.
+			it( 'allows binding attribute to the model – presence of an attribute (Text Node)', () => {
+				setTestViewClass( function() {
+					const bind = this.attributeBinder;
+
+					return {
+						tag: 'p',
+						children: [
+							{
+								text: bind.if( 'foo' )
+							}
+						]
+					};
+				} );
+
+				setTestViewInstance( { foo: true } );
+				expect( view.element.outerHTML ).to.be.equal( '<p></p>' );
+
+				view.model.foo = false;
+				expect( view.element.outerHTML ).to.be.equal( '<p></p>' );
+
+				view.model.foo = 'bar';
+				expect( view.element.outerHTML ).to.be.equal( '<p></p>' );
+			} );
+
+			it( 'allows binding attribute to the model – value of an attribute (HTMLElement attribute)', () => {
+				setTestViewClass( function() {
+					const bind = this.attributeBinder;
+
+					return {
+						tag: 'p',
+						attributes: {
+							'class': bind.if( 'foo', 'bar' )
+						},
+						children: [ 'abc' ]
+					};
+				} );
+
+				setTestViewInstance( { foo: 'bar' } );
+				expect( view.element.outerHTML ).to.be.equal( '<p class="bar">abc</p>' );
+
+				view.model.foo = false;
+				expect( view.element.outerHTML ).to.be.equal( '<p>abc</p>' );
+
+				view.model.foo = 64;
+				expect( view.element.outerHTML ).to.be.equal( '<p class="bar">abc</p>' );
+			} );
+
+			it( 'allows binding attribute to the model – value of an attribute (Text Node)', () => {
+				setTestViewClass( function() {
+					const bind = this.attributeBinder;
+
+					return {
+						tag: 'p',
+						children: [
+							{
+								text: bind.if( 'foo', 'bar' )
+							}
+						]
+					};
+				} );
+
+				setTestViewInstance( { foo: 'bar' } );
+				expect( view.element.outerHTML ).to.be.equal( '<p>bar</p>' );
+
+				view.model.foo = false;
+				expect( view.element.outerHTML ).to.be.equal( '<p></p>' );
+
+				view.model.foo = 64;
+				expect( view.element.outerHTML ).to.be.equal( '<p>bar</p>' );
+			} );
+
+			it( 'allows binding attribute to the model – value of an attribute processed by a callback', () => {
+				setTestViewClass( function() {
+					const bind = this.attributeBinder;
+
+					return {
+						tag: 'p',
+						attributes: {
+							'class': bind.if( 'foo', 'there–is–no–foo', ( el, value ) => !value )
+						},
+						children: [ 'abc' ]
+					};
+				} );
+
+				setTestViewInstance( { foo: 'bar' } );
+				expect( view.element.outerHTML ).to.be.equal( '<p>abc</p>' );
+
+				view.model.foo = false;
+				expect( view.element.outerHTML ).to.be.equal( '<p class="there–is–no–foo">abc</p>' );
+
+				view.model.foo = 64;
+				expect( view.element.outerHTML ).to.be.equal( '<p>abc</p>' );
+			} );
+
+			it( 'allows binding attribute to the model – falsy values', () => {
+				setTestViewClass( function() {
+					const bind = this.attributeBinder;
+
+					return {
+						tag: 'p',
+						attributes: {
+							'class': bind.if( 'foo', 'foo-is-set' )
+						},
+						children: [ 'abc' ]
+					};
+				} );
+
+				setTestViewInstance( { foo: 'bar' } );
+				expect( view.element.outerHTML ).to.be.equal( '<p class="foo-is-set">abc</p>' );
+
+				view.model.foo = false;
+				expect( view.element.outerHTML ).to.be.equal( '<p>abc</p>' );
+
+				view.model.foo = null;
+				expect( view.element.outerHTML ).to.be.equal( '<p>abc</p>' );
+
+				view.model.foo = undefined;
+				expect( view.element.outerHTML ).to.be.equal( '<p>abc</p>' );
+
+				view.model.foo = '';
+				expect( view.element.outerHTML ).to.be.equal( '<p>abc</p>' );
+
+				view.model.foo = 0;
+				expect( view.element.outerHTML ).to.be.equal( '<p class="foo-is-set">abc</p>' );
+			} );
 		} );
 	} );
 
@@ -596,10 +859,12 @@ describe( 'View', () => {
 
 		it( 'detaches bound model listeners', () => {
 			setTestViewClass( function() {
+				const bind = this.attributeBinder;
+
 				return {
 					tag: 'p',
 					children: [
-						{ text: this.bindToAttribute( 'foo' ) }
+						{ text: bind.to( 'foo' ) }
 					]
 				};
 			} );
@@ -637,21 +902,22 @@ describe( 'View', () => {
 
 		it( 'should initialize attribute bindings', () => {
 			const el = document.createElement( 'div' );
+			const bind = view.attributeBinder;
 
 			view.applyTemplateToElement( el, {
 				tag: 'div',
 				attributes: {
-					class: view.bindToAttribute( 'b' ),
+					class: bind.to( 'b' ),
 					id: 'foo',
-					checked: ''
+					checked: 'checked'
 				}
 			} );
 
-			expect( el.outerHTML ).to.be.equal( '<div class="42" id="foo" checked=""></div>' );
+			expect( el.outerHTML ).to.be.equal( '<div class="42" id="foo" checked="checked"></div>' );
 
 			view.model.b = 64;
 
-			expect( el.outerHTML ).to.be.equal( '<div class="64" id="foo" checked=""></div>' );
+			expect( el.outerHTML ).to.be.equal( '<div class="64" id="foo" checked="checked"></div>' );
 		} );
 
 		it( 'should initialize DOM listeners', () => {
@@ -693,6 +959,7 @@ describe( 'View', () => {
 			const spy1 = testUtils.sinon.spy();
 			const spy2 = testUtils.sinon.spy();
 			const spy3 = testUtils.sinon.spy();
+			const bind = view.attributeBinder;
 
 			view.applyTemplateToElement( el, {
 				tag: 'div',
@@ -703,7 +970,7 @@ describe( 'View', () => {
 							keyup: spy2
 						},
 						attributes: {
-							class: view.bindToAttribute( 'b', ( el, b ) => 'applied-A-' + b ),
+							class: bind.to( 'b', ( el, b ) => 'applied-A-' + b ),
 							id: 'applied-A'
 						},
 						children: [ 'Text applied to childA.' ]
@@ -714,7 +981,7 @@ describe( 'View', () => {
 							keydown: spy3
 						},
 						attributes: {
-							class: view.bindToAttribute( 'b', ( el, b ) => 'applied-B-' + b ),
+							class: bind.to( 'b', ( el, b ) => 'applied-B-' + b ),
 							id: 'applied-B'
 						},
 						children: [ 'Text applied to childB.' ]
@@ -725,8 +992,8 @@ describe( 'View', () => {
 					'mouseover@a': spy1
 				},
 				attributes: {
-					id: view.bindToAttribute( 'a', ( el, a ) => a.toUpperCase() ),
-					class: view.bindToAttribute( 'b', ( el, b ) => 'applied-parent-' + b )
+					id: bind.to( 'a', ( el, a ) => a.toUpperCase() ),
+					class: bind.to( 'b', ( el, b ) => 'applied-parent-' + b )
 				}
 			} );
 
@@ -788,7 +1055,7 @@ describe( 'View', () => {
 			sinon.assert.calledTwice( spy );
 		} );
 
-		it( 'shares a template definition between View instances', () => {
+		it( 'shares a template definition between View instances – event listeners', () => {
 			const el = document.createElement( 'div' );
 			const spy = testUtils.sinon.spy();
 			const view1 = new View();
