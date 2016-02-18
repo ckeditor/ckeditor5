@@ -6,13 +6,13 @@
 /**
  * HTML writer interface.
  *
- * @interface dataProcessor.HtmlWriter
+ * @interface core.dataProcessor.HtmlWriter
  */
 
 /**
  * Returns HTML string created from DocumentFragment.
  *
- * @method getHtml
+ * @method core.dataProcessor.HtmlWriter#getHtml
  * @param {DocumentFragment} fragment
  * @returns {String}
  */

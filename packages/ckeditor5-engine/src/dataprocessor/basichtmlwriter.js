@@ -6,16 +6,18 @@
 'use strict';
 
 /**
+ * @classdesc
  * Basic HTML writer, it uses the native `innerHTML` property for basic conversion
  * from DocumentFragment to an HTML string.
  *
- * @class dataProcessor.BasicHtmlWriter
- * @implements dataProcessor.HtmlWriter
+ * @class core.dataProcessor.BasicHtmlWriter
+ * @implements core.dataProcessor.HtmlWriter
  */
 export default class BasicHtmlWriter {
 	/**
 	 * Returns HTML string created from DocumentFragment.
 	 *
+	 * @method core.dataProcessor.BasicHtmlWriter#getHtml
 	 * @param {DocumentFragment} fragment
 	 * @returns {String}
 	 */
