@@ -13,11 +13,27 @@ export default class BoxedEditorUIView extends View {
 
 		this.template = {
 			tag: 'div',
-			attrs: {
-				'class': [ 'ck-chrome' ]
-			}
+			attributes: {
+				class: 'ck-box'
+			},
+			children: [
+				{
+					tag: 'div',
+					attributes: {
+						class: 'ck-box-region ck-top'
+					}
+				},
+
+				{
+					tag: 'div',
+					attributes: {
+						class: 'ck-box-region ck-main'
+					}
+				}
+			]
 		};
 
-		this.register( 'main', el => el );
+		this.register( 'top', '.ck-top' );
+		this.register( 'main', '.ck-main' );
 	}
 }
