@@ -6,7 +6,7 @@
 'use strict';
 
 import Command from './command.js';
-import Position from './treemodel/position.js';
+import TreeWalker from './treemodel/treewalker.js';
 
 /**
  * An extension of basic {@link core.Command} class, which provides utilities typical of commands that sets an
@@ -27,50 +27,62 @@ export default class AttributeCommand extends Command {
 	}
 
 	checkSchema() {
-		let position = this.editor.document.selection.anchor;
+		const selection = this.editor.document.selection;
+		const schema = this.editor.document.schema;
 
-		if ( position ) {
-			return this.editor.document.schema.checkAtPosition( { attribute: this.attributeKey }, position );
+		if ( selection.isCollapsed ) {
+			return schema.checkAtPosition( { name: 'inline', attribute: this.attributeKey }, selection.getFirstPosition() );
+		} else if ( selection.hasAnyRange ) {
+			const ranges = selection.getRanges();
+
+			for ( let range of ranges ) {
+				const walker = new TreeWalker( { boundaries: range } );
+				let step = walker.next();
+
+				while ( !step.done ) {
+					const query = {
+						name: step.value.item.name || 'inline',
+						attribute: this.attributeKey
+					};
+
+					if ( schema.checkAtPosition( query, walker.position ) ) {
+						return true;
+					}
+
+					step = walker.next();
+				}
+			}
 		}
 
-		return true;
+		return false;
 	}
 
 	execute( param ) {
-		let document = this.editor.document;
-		let selection = document.selection;
-		let value = ( param === undefined ) ? !this.value : param;
+		if ( this.isEnabled ) {
+			let document = this.editor.document;
+			let selection = document.selection;
+			let value = ( param === undefined ) ? !this.value : param;
 
-		if ( selection.isCollapsed ) {
-			// If selection is collapsed we might face one of two scenarios:
-			// - selection is at the beginning of an element - we change that element's attribute, or
-			// - selection is not at the beginning of an element - we change only selection attribute.
-
-			let position = Position.createFromPosition( selection.anchor );
-
-			if ( position.parent.getChildCount() === 0 ) {
-				document.enqueueChanges( () => {
-					document.batch().setAttr( this.attributeKey, value || null, position.parent );
-				} );
-			} else {
+			if ( selection.isCollapsed ) {
+				// If selection is collapsed change only selection attribute.
 				if ( value ) {
 					selection.setAttribute( this.attributeKey, true );
 				} else {
 					selection.removeAttribute( this.attributeKey );
 				}
+			} else if ( selection.hasAnyRange ) {
+				// If selection is not collapsed and has ranges, we change attribute on those ranges.
+				document.enqueueChanges( () => {
+					let ranges = selection.getRanges();
+
+					// Keep it as one undo step.
+					let batch = document.batch();
+
+					for ( let range of ranges ) {
+						batch.setAttr( this.attributeKey, value || null, range );
+					}
+				} );
 			}
-		} else if ( selection.hasAnyRange ) {
-			// If selection is not collapsed and has ranges, we change attribute on those ranges.
-			document.enqueueChanges( () => {
-				let ranges = selection.getRanges();
-
-				// Keep it as one undo step.
-				let batch = document.batch();
-
-				for ( let range of ranges ) {
-					batch.setAttr( this.attributeKey, value || null, range );
-				}
-			} );
 		}
 	}
 }

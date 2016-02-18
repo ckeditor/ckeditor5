@@ -93,7 +93,7 @@ describe( 'execute', () => {
 		expect( root.getChild( 4 ).hasAttribute( attrKey ) ).to.be.false;
 	} );
 
-	it( 'should change selection attribute if selection is collapsed and is not at the beginning of node', () => {
+	it( 'should change selection attribute if selection is collapsed', () => {
 		modelDoc.selection.addRange( new Range( new Position( root, [ 1 ] ), new Position( root, [ 1 ] ) ) );
 
 		expect( command.value ).to.be.false;
@@ -102,6 +102,16 @@ describe( 'execute', () => {
 
 		expect( command.value ).to.be.true;
 		expect( modelDoc.selection.hasAttribute( 'bold' ) ).to.be.true;
+
+		command.execute();
+
+		expect( command.value ).to.be.false;
+		expect( modelDoc.selection.hasAttribute( 'bold' ) ).to.be.false;
+	} );
+
+	it( 'should not save that attribute was changed on selection when selection changes', () => {
+		modelDoc.selection.addRange( new Range( new Position( root, [ 1 ] ), new Position( root, [ 1 ] ) ) );
+		command.execute();
 
 		// It should not save that bold was executed at position ( root, [ 1 ] ).
 
@@ -114,25 +124,106 @@ describe( 'execute', () => {
 		expect( command.value ).to.be.false;
 	} );
 
-	it( 'should change selection parent element attribute if selection is collapsed and in empty node', () => {
-		root.insertChildren( 0, new Element( 'p' ) );
-		modelDoc.selection.addRange( new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 0 ] ) ) );
+	it( 'should not throw and do nothing if selection has no ranges', () => {
+		let spy = sinon.spy();
+		modelDoc.on( 'change', spy );
+
+		modelDoc.selection.removeAllRanges();
+		command.execute();
+
+		expect( spy.called ).to.be.false;
+		expect( Array.from( modelDoc.selection.getAttributes() ) ).to.deep.equal( [ ] );
+	} );
+
+	it( 'should do nothing if command is disabled', () => {
+		let spy = sinon.spy();
+		modelDoc.on( 'change', spy );
+
+		modelDoc.selection.addRange( new Range( new Position( root, [ 1 ] ), new Position( root, [ 1 ] ) ) );
+		command.checkEnabled();
 
 		expect( command.value ).to.be.false;
+		expect( command.isEnabled ).to.be.false;
 
 		command.execute();
 
-		expect( command.value ).to.be.true;
-		expect( root.getChild( 0 ).hasAttribute( 'bold' ) ).to.be.true;
+		expect( spy.called ).to.be.false;
+		expect( Array.from( modelDoc.selection.getAttributes() ) ).to.deep.equal( [ ] );
+	} );
+} );
 
-		// It should save that bold was set on selection's parent node.
+describe( 'checkSchema', () => {
+	beforeEach( () => {
+		modelDoc.schema.registerItem( 'p', 'block' );
+		modelDoc.schema.registerItem( 'div', 'block' );
+		modelDoc.schema.registerItem( 'img', 'inline' );
 
-		// Simulate clicking right arrow key by changing selection ranges.
-		modelDoc.selection.setRanges( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 2 ] ) ) ] );
+		// Bold text is allowed only in P.
+		modelDoc.schema.allow( { name: 'inline', attribute: 'bold', inside: 'p' } );
+		modelDoc.schema.allow( { name: 'p', attribute: 'bold', inside: 'root' } );
 
-		// Get back to previous selection.
-		modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 0 ] ) ) ] );
+		// Disallow bold on image.
+		modelDoc.schema.disallow( { name: 'img', attribute: 'bold', inside: 'root' } );
 
-		expect( command.value ).to.be.true;
+		root.insertChildren( 0, [
+			new Element( 'p', [], [
+				'foo',
+				new Element( 'img' ),
+				new Element( 'img' ),
+				'bar'
+			] ),
+			new Element( 'div' ),
+			new Element( 'p' )
+		] );
+	} );
+
+	describe( 'when selection is collapsed', () => {
+		it( 'should return true if characters with the attribute can be placed at caret position', () => {
+			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 1 ] ) ) ] );
+			expect( command.checkSchema() ).to.be.true;
+		} );
+
+		it( 'should return false if characters with the attribute cannot be placed at caret position', () => {
+			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 0 ] ) ) ] );
+			expect( command.checkSchema() ).to.be.false;
+
+			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 2 ] ) ) ] );
+			expect( command.checkSchema() ).to.be.false;
+		} );
+	} );
+
+	describe( 'when selection is not collapsed', () => {
+		it( 'should return true if there is at least one node in selection that can have the attribute', () => {
+			// Simple selection on a few characters.
+			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 3 ] ) ) ] );
+			expect( command.checkSchema() ).to.be.true;
+
+			// Selection spans over characters but also include nodes that can't have attribute.
+			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 6 ] ) ) ] );
+			expect( command.checkSchema() ).to.be.true;
+
+			// Selection on whole root content. Characters in P can have an attribute so it's valid.
+			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) ) ] );
+			expect( command.checkSchema() ).to.be.true;
+
+			// Selection on empty P. P can have the attribute.
+			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 3 ] ) ) ] );
+			expect( command.checkSchema() ).to.be.true;
+		} );
+
+		it( 'should return false if there are no nodes in selection that can have the attribute', () => {
+			// Selection on DIV which can't have bold text.
+			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) ) ] );
+			expect( command.checkSchema() ).to.be.false;
+
+			// Selection on two images which can't be bolded.
+			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 3 ] ), new Position( root, [ 0, 5 ] ) ) ] );
+			expect( command.checkSchema() ).to.be.false;
+		} );
+	} );
+
+	it( 'should return false if selection has no ranges', () => {
+		modelDoc.selection.removeAllRanges();
+		expect( command.checkSchema() ).to.be.false;
 	} );
 } );
