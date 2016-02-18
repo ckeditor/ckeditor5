@@ -1,0 +1,22 @@
+{
+	"opts": {
+		"template": "./node_modules/jaguarjs-jsdoc",
+		"encoding": "utf8",
+		"destination": "out/jsdoc",
+		"recurse": true,
+		"access": "all"
+	},
+	"plugins": [
+		"plugins/markdown"
+	],
+	"source": {
+		"include": [
+			"dist/esnext"
+		],
+		"exclude": [
+			"dist/esnext/test"
+		],
+		"includePattern": ".+\\.js(doc)?$",
+		"excludePattern": "(^|\\/|\\\\)_"
+	}
+}
