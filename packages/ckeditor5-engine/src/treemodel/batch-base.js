@@ -28,7 +28,7 @@ import CKEditorError from '../ckeditorerror.js';
  *
  *		doc.batch().insert( firstPosition, 'foo' ).insert( secondPosition, 'bar' );
  *
- * @class treeModel.Batch
+ * @class core.treeModel.Batch
  */
 export default class Batch {
 	/**

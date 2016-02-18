@@ -14,10 +14,11 @@ import MoveOperation from '../operation/moveoperation.js';
 import CKEditorError from '../../ckeditorerror.js';
 
 /**
- * To provide specific OT behavior and better collisions solving, the {@link treeModel.Batch#split} method
+ * @classdesc
+ * To provide specific OT behavior and better collisions solving, the {@link core.treeModel.Batch#split} method
  * uses `SplitDelta` class which inherits from the `Delta` class and may overwrite some methods.
  *
- * @class treeModel.delta.SplitDelta
+ * @class core.treeModel.delta.SplitDelta
  */
 export default class SplitDelta extends Delta {}
 
@@ -28,9 +29,8 @@ export default class SplitDelta extends Delta {}
  * you try to split the root element.
  *
  * @chainable
- * @method split
- * @memberOf treeModel.Batch
- * @param {treeModel.Position} position Position of split.
+ * @method core.treeModel.Batch#split
+ * @param {core.treeModel.Position} position Position of split.
  */
 register( 'split', function( position ) {
 	const delta = new SplitDelta();

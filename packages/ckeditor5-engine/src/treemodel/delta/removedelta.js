@@ -12,10 +12,11 @@ import Position from '../position.js';
 import Range from '../range.js';
 
 /**
- * To provide specific OT behavior and better collisions solving, {@link treeModel.Batch#remove} method
+ * @classdesc
+ * To provide specific OT behavior and better collisions solving, {@link core.treeModel.Batch#remove} method
  * uses the `RemoveDelta` class which inherits from the `Delta` class and may overwrite some methods.
  *
- * @class treeModel.delta.RemoveDelta
+ * @class core.treeModel.delta.RemoveDelta
  */
 export default class RemoveDelta extends Delta {}
 
@@ -29,9 +30,8 @@ function addRemoveOperation( batch, delta, position, howMany ) {
  * Removes given node or range of nodes.
  *
  * @chainable
- * @method remove
- * @memberOf treeModel.Batch
- * @param {treeModel.Node|treeModel.Range} nodeOrRange Node or range of nodes to remove.
+ * @method core.treeModel.Batch#remove
+ * @param {core.treeModel.Node|core.treeModel.Range} nodeOrRange Node or range of nodes to remove.
  */
 register( 'remove', function( nodeOrRange ) {
 	const delta = new RemoveDelta();

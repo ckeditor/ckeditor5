@@ -10,10 +10,11 @@ import { register } from '../batch-base.js';
 import InsertOperation from '../operation/insertoperation.js';
 
 /**
- * To provide specific OT behavior and better collisions solving, the {@link treeModel.Batch#insert} method
+ * @classdesc
+ * To provide specific OT behavior and better collisions solving, the {@link core.treeModel.Batch#insert Batch#insert} method
  * uses the `InsertDelta` class which inherits from the `Delta` class and may overwrite some methods.
  *
- * @class treeModel.delta.InsertDelta
+ * @class core.treeModel.delta.InsertDelta
  */
 export default class InsertDelta extends Delta {}
 
@@ -21,11 +22,10 @@ export default class InsertDelta extends Delta {}
  * Inserts a node or nodes at the given position.
  *
  * @chainable
- * @memberOf treeModel.Batch
- * @method insert
- * @param {treeModel.Position} position Position of insertion.
- * @param {treeModel.NodeSet} nodes The list of nodes to be inserted.
- * List of nodes can be of any type accepted by the {@link treeModel.NodeList} constructor.
+ * @method core.treeModel.Batch#insert
+ * @param {core.treeModel.Position} position Position of insertion.
+ * @param {core.treeModel.NodeSet} nodes The list of nodes to be inserted.
+ * List of nodes can be of any type accepted by the {@link core.treeModel.NodeList} constructor.
  */
 register( 'insert', function( position, nodes ) {
 	const delta = new InsertDelta();
