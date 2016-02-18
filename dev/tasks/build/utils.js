@@ -255,6 +255,11 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 				// Remove 'src/'.
 				dirFrags.splice( 1, 1 );
 
+				// Temporary implementation of the UI lib option. See #88.
+				if ( dirFrags[ 0 ] == 'ui-default' ) {
+					dirFrags[ 0 ] = 'ui';
+				}
+
 				// And prepend 'ckeditor5/'.
 				dirFrags.unshift( 'ckeditor5' );
 			} else if ( firstFrag == 'tests' ) {
