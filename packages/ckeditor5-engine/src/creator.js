@@ -16,8 +16,9 @@ import Plugin from './plugin.js';
 
 export default class Creator extends Plugin {
 	/**
-	 * The element used to {@link #_replaceElement replace} the editor element.
+	 * The element used to {@link core.Creator#_replaceElement _replaceElement} the editor element.
 	 *
+	 * @member core.Creator#_elementReplacement
 	 * @private
 	 * @type {HTMLElement}
 	 */
@@ -26,6 +27,7 @@ export default class Creator extends Plugin {
 	 * The creator's trigger. This method is called by the editor to finalize
 	 * the editor creation.
 	 *
+	 * @method core.Creator#create
 	 * @returns {Promise}
 	 */
 	create() {
@@ -39,6 +41,7 @@ export default class Creator extends Plugin {
 	/**
 	 * Method called by the editor on its destruction. It should destroy what the creator created.
 	 *
+	 * @method core.Creator#destroy
 	 * @returns {Promise}
 	 */
 	destroy() {
@@ -64,6 +67,8 @@ export default class Creator extends Plugin {
 
 	/**
 	 * Updates the {@link core.Editor#element editor element}'s content with the data.
+	 *
+	 * @method core.Creator#updateEditorElement
 	 */
 	updateEditorElement() {
 		Creator.setDataInElement( this.editor.element, this.editor.getData() );
@@ -71,6 +76,8 @@ export default class Creator extends Plugin {
 
 	/**
 	 * Loads the data from the {@link core.Editor#element editor element} to the editable.
+	 *
+	 * @method core.Creator#loadDataFromEditorElement
 	 */
 	loadDataFromEditorElement() {
 		this.editor.setData( Creator.getDataFromElement( this.editor.element ) );
@@ -79,6 +86,7 @@ export default class Creator extends Plugin {
 	/**
 	 * Gets data from a given source element.
 	 *
+	 * @method core.Creator.getDataFromElement
 	 * @param {HTMLElement} el The element from which the data will be retrieved.
 	 * @returns {String} The data string.
 	 */
@@ -93,6 +101,7 @@ export default class Creator extends Plugin {
 	/**
 	 * Sets data in a given element.
 	 *
+	 * @method core.Creator.setDataInElement
 	 * @param {HTMLElement} el The element in which the data will be set.
 	 * @param {String} data The data string.
 	 */
@@ -108,8 +117,9 @@ export default class Creator extends Plugin {
 	 * Hides the {@link core.Editor#element editor element} and inserts the the given element
 	 * (usually, editor's UI main element) next to it.
 	 *
-	 * The effect of this method will be automatically reverted by {@link #destroy}.
+	 * The effect of this method will be automatically reverted by {@link core.Creator#destroy destroy}.
 	 *
+	 * @method core.Creator#_replaceElement
 	 * @protected
 	 * @param {HTMLElement} [newElement] The replacement element. If not passed, then the main editor's UI view element
 	 * will be used.
@@ -128,8 +138,9 @@ export default class Creator extends Plugin {
 	}
 
 	/**
-	 * Restores what the {@link #_replaceElement} did.
+	 * Restores what the {@link core.Creator#_replaceElement _replaceElement} did.
 	 *
+	 * @method core.Creator#_restoreElement
 	 * @protected
 	 */
 	_restoreElement() {

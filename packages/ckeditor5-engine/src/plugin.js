@@ -47,7 +47,7 @@ export default class Plugin {
 	 */
 
 	/**
-	 * @returns {null/Promise}
+	 * @returns {null|Promise}
 	 */
 	init() {}
 
