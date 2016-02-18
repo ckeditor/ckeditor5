@@ -13,6 +13,8 @@ import Editor from '/ckeditor5/core/editor.js';
 import EditorConfig from '/ckeditor5/core/editorconfig.js';
 import Plugin from '/ckeditor5/core/plugin.js';
 import Locale from '/ckeditor5/core/locale.js';
+import Command from '/ckeditor5/core/command.js';
+import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
 const pluginClasses = {};
 let element;
@@ -194,6 +196,28 @@ describe( 'destroy', () => {
 		return editor.destroy().then( () => {
 			expect( editor ).to.not.have.property( 'element' );
 		} );
+	} );
+} );
+
+describe( 'execute', () => {
+	it( 'should execute specified command', () => {
+		const editor = new Editor( element );
+
+		let command = new Command( editor );
+		sinon.spy( command, 'execute' );
+
+		editor.commands.set( 'command_name', command );
+		editor.execute( 'command_name' );
+
+		expect( command.execute.calledOnce ).to.be.true;
+	} );
+
+	it( 'should throw an error if specified command has not been added', () => {
+		const editor = new Editor( element );
+
+		expect( () => {
+			editor.execute( 'command' );
+		} ).to.throw( CKEditorError, /editor-command-not-found/ );
 	} );
 } );
 

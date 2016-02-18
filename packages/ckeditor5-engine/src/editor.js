@@ -8,6 +8,8 @@
 import ObservableMixin from './observablemixin.js';
 import EditorConfig from './editorconfig.js';
 import PluginCollection from './plugincollection.js';
+import Document from './treemodel/document.js';
+import Mapper from './treecontroller/mapper.js';
 import CKEditorError from './ckeditorerror.js';
 import Locale from './locale.js';
 import isArray from './lib/lodash/isArray.js';
@@ -58,6 +60,12 @@ export default class Editor {
 		 * @member {core.PluginCollection} core.Editor#plugins
 		 */
 		this.plugins = new PluginCollection( this );
+
+		this.document = new Document();
+
+		this.commands = new Map();
+
+		this.treeMapper = new Mapper();
 
 		/**
 		 * @readonly
@@ -171,6 +179,21 @@ export default class Editor {
 
 	getData() {
 		return this.editable.getData();
+	}
+
+	execute( commandName ) {
+		let command = this.commands.get( commandName );
+
+		if ( !command ) {
+			/**
+			 * Specified command has not been added to the editor.
+			 *
+			 * @error editor-command-not-found
+			 */
+			throw new CKEditorError( 'editor-command-not-found: Specified command has not been added to the editor.' );
+		}
+
+		command.execute();
 	}
 }
 
