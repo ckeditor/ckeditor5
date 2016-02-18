@@ -181,7 +181,6 @@ export default class Config {
 			/**
 			 * TODO
 			 *
-			 * @property
 			 * @type {Config}
 			 */
 			this.definition = new Config();
