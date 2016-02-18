@@ -1,9 +1,9 @@
-{App Name} Changelog
-====================
+CKEditor 5 Core Framework Changelog
+========================================
 
-## App 1.2.3
+## CKEditor 5 Core Framework 0.0.2
 
-**Major|Minor|Patch Release** - Build Date: yyyy-mm-dd
+**Major|Minor|Patch Release** – Build Date: yyyy-mm-dd
 
 New Features:
 
@@ -15,14 +15,11 @@ Fixed Issues:
 * [#Issue Number](http://issue/url): Item 1.
 * Item 2
 
-
 Other Changes:
 
 * Item 1
 * Item 2
 
----
-
-## App 1.2.2
+## CKEditor 5 Core Framework 0.0.1
 
 ...
