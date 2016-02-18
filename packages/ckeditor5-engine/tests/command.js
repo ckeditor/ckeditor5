@@ -11,14 +11,14 @@ import Command from '/ckeditor5/core/command.js';
 let element, editor, command;
 
 class CommandWithSchema extends Command {
-	constructor( editor, schemaFails ) {
+	constructor( editor, schemaValid ) {
 		super( editor );
 
-		this.schemaFails = schemaFails;
+		this.schemaValid = schemaValid;
 	}
 
 	checkSchema() {
-		return this.schemaFails;
+		return this.schemaValid;
 	}
 }
 
@@ -52,7 +52,7 @@ describe( 'constructor', () => {
 
 		expect( command.checkSchema.called ).to.be.false;
 
-		let newCommand = new CommandWithSchema( editor, false );
+		let newCommand = new CommandWithSchema( editor, true );
 		sinon.spy( newCommand, 'checkSchema' );
 
 		newCommand.checkEnabled();
@@ -89,6 +89,14 @@ describe( 'checkEnabled', () => {
 		command.checkEnabled();
 
 		expect( command.isEnabled ).to.be.false;
+	} );
+
+	it( 'should set isEnabled to false if checkSchema returns false', () => {
+		let disabledCommand = new CommandWithSchema( editor, false );
+
+		disabledCommand.checkEnabled();
+
+		expect( disabledCommand.isEnabled ).to.be.false;
 	} );
 } );
 
