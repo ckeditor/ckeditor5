@@ -8,6 +8,7 @@
 import Controller from './ui/controller.js';
 import utils from './utils.js';
 import ObservableMixin from './observablemixin.js';
+import ComponentRepository from './ui/componentrepository.js';
 
 /**
  * Base class for the editor main view controllers.
@@ -26,6 +27,12 @@ export default class EditorUI extends Controller {
 		 * @member {core.Editor} core.EditorUI.editor
 		 */
 		this.editor = editor;
+
+		/**
+		 * @readonly
+		 * @type {core.ui.ComponentRepository}
+		 */
+		this.featureComponents = new ComponentRepository( editor );
 	}
 }
 
