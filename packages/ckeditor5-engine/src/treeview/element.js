@@ -12,7 +12,7 @@ import isPlainObject from '../lib/lodash/isPlainObject.js';
 /**
  * Tree view element.
  *
- * @class treeView.Element
+ * @class core.treeView.Element
  */
 export default class Element extends Node {
 	/**
@@ -25,8 +25,8 @@ export default class Element extends Node {
 	 *		new Element( 'div', mapOfAttributes ); // map
 	 *
 	 * @param {String} name Node name.
-	 * @param {Object|Interable} [attrs] Collection of attributes.
-	 * @param {treeView.Node|Iterable.<treeView.Node>} [children] List of nodes to be inserted into created element.
+	 * @param {Object|Iterable} [attrs] Collection of attributes.
+	 * @param {core.treeView.Node|Iterable.<core.treeView.Node>} [children] List of nodes to be inserted into created element.
 	 * @constructor
 	 */
 	constructor( name, attrs, children ) {

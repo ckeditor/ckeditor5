@@ -19,7 +19,7 @@ import utils from '../utils.js';
  * If you want to only transform the tree of view elements to the DOM elements you can use the {@link treeView.Converter}.
  *
  * @mixins EmitterMixin
- * @class treeView.TreeView
+ * @class core.treeView.TreeView
  */
 export default class TreeView {
 	/**
