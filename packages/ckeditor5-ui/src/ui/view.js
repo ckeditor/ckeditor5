@@ -19,7 +19,7 @@ const bindIfSymbol = Symbol( 'bind-if' );
 /**
  * Basic View class.
  *
- * @class View
+ * @class core.ui.View
  * @mixins DOMEmitterMixin
  */
 
