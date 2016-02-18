@@ -489,8 +489,7 @@ export default class View {
 					value = value.reduce( binderValueReducer, '' );
 				}
 
-				const isSet = isPlainBindIf ?
-					( typeof value == 'number' || !!value ) : value;
+				const isSet = isPlainBindIf ? !!value : value;
 
 				const valueToSet = isPlainBindIf ?
 					( valueSchema[ 0 ].valueIfTrue || '' ) : value;

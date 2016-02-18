@@ -590,7 +590,7 @@ describe( 'View', () => {
 				expect( view.element.outerHTML ).to.be.equal( '<p>abc</p>' );
 
 				view.model.foo = 0;
-				expect( view.element.outerHTML ).to.be.equal( '<p class="foo-is-set">abc</p>' );
+				expect( view.element.outerHTML ).to.be.equal( '<p>abc</p>' );
 			} );
 		} );
 	} );
