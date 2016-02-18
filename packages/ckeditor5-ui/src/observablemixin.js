@@ -189,7 +189,7 @@ const ObservableMixin = {
 	 *		A.unbind( 'a' );
 	 *		A.unbind();
 	 *
-	 * @param {String...} [bindAttrs] Observable attributes to be unbound. All the bindings will
+	 * @param {String} [bindAttrs] Observable attributes to be unbound. All the bindings will
 	 * be released if no attributes provided.
 	 */
 	unbind( ...unbindAttrs ) {
