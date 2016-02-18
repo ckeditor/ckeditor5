@@ -13,7 +13,7 @@ import utils from '../utils.js';
 /**
  * Basic Controller class.
  *
- * @class Controller
+ * @class core.ui.Controller
  * @mixins EmitterMixin
  */
 
