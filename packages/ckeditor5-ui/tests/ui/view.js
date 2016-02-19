@@ -287,9 +287,7 @@ describe( 'View', () => {
 			it( 'allows binding attribute to the model – value processing', () => {
 				setTestViewClass( function() {
 					const bind = this.attributeBinder;
-
-					const callback = ( node, value ) =>
-						( value > 0 ? 'positive' : 'negative' );
+					const callback = value => value > 0 ? 'positive' : 'negative';
 
 					return {
 						tag: 'p',
@@ -311,6 +309,33 @@ describe( 'View', () => {
 				expect( view.element.outerHTML ).to.be.equal( '<p class="negative">negative</p>' );
 			} );
 
+			it( 'allows binding attribute to the model – value processing (use Node)', () => {
+				setTestViewClass( function() {
+					const bind = this.attributeBinder;
+					const callback = ( value, node ) => {
+						return ( !!node.tagName && value > 0 ) ? 'HTMLElement positive' : '';
+					};
+
+					return {
+						tag: 'p',
+						attributes: {
+							'class': bind.to( 'foo', callback )
+						},
+						children: [
+							{
+								text: bind.to( 'foo', callback )
+							}
+						]
+					};
+				} );
+
+				setTestViewInstance( { foo: 3 } );
+				expect( view.element.outerHTML ).to.be.equal( '<p class="HTMLElement positive"></p>' );
+
+				view.model.foo = -7;
+				expect( view.element.outerHTML ).to.be.equal( '<p></p>' );
+			} );
+
 			it( 'allows binding attribute to the model – custom callback', () => {
 				setTestViewClass( function() {
 					const bind = this.attributeBinder;
@@ -318,7 +343,7 @@ describe( 'View', () => {
 					return {
 						tag: 'p',
 						attributes: {
-							'class': bind.to( 'foo', ( el, value ) => {
+							'class': bind.to( 'foo', ( value, el ) => {
 								el.innerHTML = value;
 
 								if ( value == 'changed' ) {
@@ -347,7 +372,7 @@ describe( 'View', () => {
 								'ck-class',
 								bind.to( 'foo' ),
 								bind.to( 'bar' ),
-								bind.to( 'foo', ( el, value ) => `foo-is-${value}` ),
+								bind.to( 'foo', value => `foo-is-${value}` ),
 								'ck-end'
 							]
 						},
@@ -377,7 +402,7 @@ describe( 'View', () => {
 									'ck-class',
 									bind.to( 'foo' ),
 									bind.to( 'bar' ),
-									bind.to( 'foo', ( el, value ) => `foo-is-${value}` ),
+									bind.to( 'foo', value => `foo-is-${value}` ),
 									'ck-end'
 								]
 							}
@@ -545,7 +570,7 @@ describe( 'View', () => {
 					return {
 						tag: 'p',
 						attributes: {
-							'class': bind.if( 'foo', 'there–is–no–foo', ( el, value ) => !value )
+							'class': bind.if( 'foo', 'there–is–no–foo', value => !value )
 						},
 						children: [ 'abc' ]
 					};
@@ -556,6 +581,29 @@ describe( 'View', () => {
 
 				view.model.foo = false;
 				expect( view.element.outerHTML ).to.be.equal( '<p class="there–is–no–foo">abc</p>' );
+
+				view.model.foo = 64;
+				expect( view.element.outerHTML ).to.be.equal( '<p>abc</p>' );
+			} );
+
+			it( 'allows binding attribute to the model – value of an attribute processed by a callback (use Node)', () => {
+				setTestViewClass( function() {
+					const bind = this.attributeBinder;
+
+					return {
+						tag: 'p',
+						attributes: {
+							'class': bind.if( 'foo', 'eqls-tag-name', ( value, el ) => el.tagName === value )
+						},
+						children: [ 'abc' ]
+					};
+				} );
+
+				setTestViewInstance( { foo: 'bar' } );
+				expect( view.element.outerHTML ).to.be.equal( '<p>abc</p>' );
+
+				view.model.foo = 'P';
+				expect( view.element.outerHTML ).to.be.equal( '<p class="eqls-tag-name">abc</p>' );
 
 				view.model.foo = 64;
 				expect( view.element.outerHTML ).to.be.equal( '<p>abc</p>' );
@@ -970,7 +1018,7 @@ describe( 'View', () => {
 							keyup: spy2
 						},
 						attributes: {
-							class: bind.to( 'b', ( el, b ) => 'applied-A-' + b ),
+							class: bind.to( 'b', b => 'applied-A-' + b ),
 							id: 'applied-A'
 						},
 						children: [ 'Text applied to childA.' ]
@@ -981,7 +1029,7 @@ describe( 'View', () => {
 							keydown: spy3
 						},
 						attributes: {
-							class: bind.to( 'b', ( el, b ) => 'applied-B-' + b ),
+							class: bind.to( 'b', b => 'applied-B-' + b ),
 							id: 'applied-B'
 						},
 						children: [ 'Text applied to childB.' ]
@@ -992,8 +1040,8 @@ describe( 'View', () => {
 					'mouseover@a': spy1
 				},
 				attributes: {
-					id: bind.to( 'a', ( el, a ) => a.toUpperCase() ),
-					class: bind.to( 'b', ( el, b ) => 'applied-parent-' + b )
+					id: bind.to( 'a', a => a.toUpperCase() ),
+					class: bind.to( 'b', b => 'applied-parent-' + b )
 				}
 			} );
 

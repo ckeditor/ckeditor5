@@ -142,7 +142,7 @@ export default class View {
 			 *			},
 			 *			children: [
 			 *				// <p>...</p> gets bound to this.model.b; always `toUpperCase()`.
-			 *				{ text: bind.to( 'b', ( node, value ) => value.toUpperCase() ) }
+			 *				{ text: bind.to( 'b', ( value, node ) => value.toUpperCase() ) }
 			 *			]
 			 *		}
 			 *
@@ -177,7 +177,7 @@ export default class View {
 			 *				{
 			 *					// <input>"b-is-not-set"</input> when this.model.b is undefined/null/false/''
 			 *					// <input></input> when this.model.b is not "falsy"
-			 *					text: bind.if( 'b', 'b-is-not-set', ( node, value ) => !value )
+			 *					text: bind.if( 'b', 'b-is-not-set', ( value, node ) => !value )
 			 *				}
 			 *			]
 			 *		}
@@ -442,10 +442,10 @@ export default class View {
 		 * items.
 		 *
 		 * @private
-		 * @param {HTMLElement} el
+		 * @param {Node} node
 		 * @return {Array}
 		 */
-		const getBoundValue = ( el ) => {
+		const getBoundValue = ( node ) => {
 			let model, modelValue;
 
 			return valueSchema.map( schemaItem => {
@@ -455,7 +455,7 @@ export default class View {
 					modelValue = model[ schemaItem.attribute ];
 
 					if ( schemaItem.callback ) {
-						modelValue = schemaItem.callback( el, modelValue );
+						modelValue = schemaItem.callback( modelValue, node );
 					}
 
 					return modelValue;
@@ -471,18 +471,18 @@ export default class View {
 		 *
 		 * This function is called by {@link Template#render} or {@link Template#apply}.
 		 *
-		 * @param {HTMLElement} el DOM element to be updated when {@link View#model} changes.
+		 * @param {Node} node DOM Node to be updated when {@link View#model} changes.
 		 * @param {Function} domUpdater A function provided by {@link Template} which updates corresponding
 		 * DOM attribute or `textContent`.
 		 */
-		return ( el, domUpdater ) => {
+		return ( node, domUpdater ) => {
 			// Check if valueSchema is a single bind.if, like:
 			//		{ class: bind.if( 'foo' ) }
 			const isPlainBindIf = valueSchema.length == 1 && valueSchema[ 0 ].type == bindIfSymbol;
 
 			// A function executed each time bound model attribute changes.
 			const onModelChange = () => {
-				let value = getBoundValue( el );
+				let value = getBoundValue( node );
 
 				if ( isPlainBindIf ) {
 					value = value[ 0 ];
