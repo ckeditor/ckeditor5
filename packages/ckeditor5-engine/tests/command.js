@@ -6,7 +6,7 @@
 'use strict';
 
 import Editor from '/ckeditor5/core/editor.js';
-import Command from '/ckeditor5/core/command.js';
+import Command from '/ckeditor5/core/command/command.js';
 
 let element, editor, command;
 

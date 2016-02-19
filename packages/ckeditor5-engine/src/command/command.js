@@ -5,13 +5,13 @@
 
 'use strict';
 
-import EmitterMixin from './emittermixin.js';
-import utils from './utils.js';
+import EmitterMixin from '../emittermixin.js';
+import utils from '../utils.js';
 
 /**
  * The base class for CKEditor commands.
  *
- * @class core.Command
+ * @class core.command.Command
  */
 
 export default class Command {

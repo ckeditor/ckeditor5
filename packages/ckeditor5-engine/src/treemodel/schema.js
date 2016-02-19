@@ -5,11 +5,95 @@
 
 'use strict';
 
-import clone from './lib/lodash/clone.js';
-import CKEditorError from './ckeditorerror.js';
+import clone from '../lib/lodash/clone.js';
+import CKEditorError from '../ckeditorerror.js';
+
+export class SchemaItem {
+	constructor( schema ) {
+		if ( !schema ) {
+			/**
+			 * Schema item must have schema instance.
+			 *
+			 * @error schema-item-no-schema
+			 */
+			throw new CKEditorError( 'schema-item-no-schema: Schema item must have schema instance.' );
+		}
+
+		this._schema = schema;
+		this._allowed = [];
+		this._disallowed = [];
+	}
+
+	addAllowed( path, attribute ) {
+		this._addPath( '_allowed', path, attribute );
+	}
+
+	addDisallowed( path, attribute ) {
+		this._addPath( '_disallowed', path, attribute );
+	}
+
+	_addPath( member, path, attribute ) {
+		if ( typeof path === 'string' ) {
+			path = path.split( ' ' );
+		}
+
+		path = path.slice();
+
+		this[ member ].push( { path, attribute } );
+	}
+
+	_getPaths( type, attribute ) {
+		let source = type === 'ALLOW' ? this._allowed : this._disallowed;
+		let paths = [];
+
+		for ( let item of source ) {
+			if ( item.attribute === attribute ) {
+				paths.push( item.path.slice() );
+			}
+		}
+
+		return paths;
+	}
+
+	_hasMatchingPath( type, checkPath, attribute ) {
+		const itemPaths = this._getPaths( type, attribute );
+
+		checkPath = checkPath.slice();
+
+		for ( let itemPath of itemPaths ) {
+			for ( let checkName of checkPath ) {
+				let baseChain = this._schema._baseChains[ checkName ];
+
+				if ( baseChain.indexOf( itemPath[ 0 ] ) > -1 ) {
+					itemPath.shift();
+				}
+			}
+
+			if ( itemPath.length === 0 ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Custom toJSON method to solve child-parent circular dependencies.
+	 *
+	 * @returns {Object} Clone of this object with the parent property replaced with its name.
+	 */
+	toJSON() {
+		const json = clone( this );
+
+		// Due to circular references we need to remove parent reference.
+		json._schema = '[treeModel.Schema]';
+
+		return json;
+	}
+}
 
 /**
- * @class core.Schema
+ * @class core.treeModel.Schema
  */
 export default class Schema {
 	constructor() {
@@ -122,89 +206,5 @@ export default class Schema {
 		}
 
 		return path;
-	}
-}
-
-export class SchemaItem {
-	constructor( schema ) {
-		if ( !schema ) {
-			/**
-			 * Schema item must have schema instance.
-			 *
-			 * @error schema-item-no-schema
-			 */
-			throw new CKEditorError( 'schema-item-no-schema: Schema item must have schema instance.' );
-		}
-
-		this._schema = schema;
-		this._allowed = [];
-		this._disallowed = [];
-	}
-
-	addAllowed( path, attribute ) {
-		this._addPath( '_allowed', path, attribute );
-	}
-
-	addDisallowed( path, attribute ) {
-		this._addPath( '_disallowed', path, attribute );
-	}
-
-	_addPath( member, path, attribute ) {
-		if ( typeof path === 'string' ) {
-			path = path.split( ' ' );
-		}
-
-		path = path.slice();
-
-		this[ member ].push( { path, attribute } );
-	}
-
-	_getPaths( type, attribute ) {
-		let source = type === 'ALLOW' ? this._allowed : this._disallowed;
-		let paths = [];
-
-		for ( let item of source ) {
-			if ( item.attribute === attribute ) {
-				paths.push( item.path.slice() );
-			}
-		}
-
-		return paths;
-	}
-
-	_hasMatchingPath( type, checkPath, attribute ) {
-		const itemPaths = this._getPaths( type, attribute );
-
-		checkPath = checkPath.slice();
-
-		for ( let itemPath of itemPaths ) {
-			for ( let checkName of checkPath ) {
-				let baseChain = this._schema._baseChains[ checkName ];
-
-				if ( baseChain.indexOf( itemPath[ 0 ] ) > -1 ) {
-					itemPath.shift();
-				}
-			}
-
-			if ( itemPath.length === 0 ) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Custom toJSON method to solve child-parent circular dependencies.
-	 *
-	 * @returns {Object} Clone of this object with the parent property replaced with its name.
-	 */
-	toJSON() {
-		const json = clone( this );
-
-		// Due to circular references we need to remove parent reference.
-		json._schema = '[treeModel.Schema]';
-
-		return json;
 	}
 }

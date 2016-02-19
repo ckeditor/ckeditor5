@@ -6,7 +6,7 @@
 'use strict';
 
 import Feature from '../feature.js';
-import AttributeCommand from '../attributecommand.js';
+import AttributeCommand from '../command/attributecommand.js';
 
 /**
  * Bold feature.

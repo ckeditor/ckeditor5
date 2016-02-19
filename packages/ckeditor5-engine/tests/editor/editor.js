@@ -13,7 +13,7 @@ import Editor from '/ckeditor5/core/editor.js';
 import EditorConfig from '/ckeditor5/core/editorconfig.js';
 import Plugin from '/ckeditor5/core/plugin.js';
 import Locale from '/ckeditor5/core/locale.js';
-import Command from '/ckeditor5/core/command.js';
+import Command from '/ckeditor5/core/command/command.js';
 import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
 const pluginClasses = {};

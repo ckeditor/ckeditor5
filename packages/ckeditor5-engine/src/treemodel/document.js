@@ -17,7 +17,7 @@ import EmitterMixin from '../emittermixin.js';
 import CKEditorError from '../ckeditorerror.js';
 import utils from '../utils.js';
 import CharacterProxy from './characterproxy.js';
-import Schema from '../schema.js';
+import Schema from './schema.js';
 
 const graveyardSymbol = Symbol( 'graveyard' );
 

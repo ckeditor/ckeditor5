@@ -6,14 +6,14 @@
 'use strict';
 
 import Command from './command.js';
-import TreeWalker from './treemodel/treewalker.js';
-import Range from './treemodel/range.js';
+import TreeWalker from '../treemodel/treewalker.js';
+import Range from '../treemodel/range.js';
 
 /**
- * An extension of basic {@link core.Command} class, which provides utilities typical of commands that sets an
+ * An extension of basic {@link core.command.Command} class, which provides utilities typical of commands that sets an
  * attribute on specific elements.
  *
- * @class core.AttributeCommand
+ * @class core.command.AttributeCommand
  */
 
 export default class AttributeCommand extends Command {

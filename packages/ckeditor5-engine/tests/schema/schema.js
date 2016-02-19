@@ -5,8 +5,8 @@
 
 'use strict';
 
-import Schema from '/ckeditor5/core/schema.js';
-import { SchemaItem as SchemaItem } from '/ckeditor5/core/schema.js';
+import Schema from '/ckeditor5/core/treemodel/schema.js';
+import { SchemaItem as SchemaItem } from '/ckeditor5/core/treemodel/schema.js';
 import Document from '/ckeditor5/core/treemodel/document.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
 import Position from '/ckeditor5/core/treemodel/position.js';
