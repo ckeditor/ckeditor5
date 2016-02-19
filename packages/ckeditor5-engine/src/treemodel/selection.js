@@ -138,6 +138,7 @@ export default class Selection {
 
 	/**
 	 * Removes all ranges that were added to the selection. Fires update event.
+	 *
 	 */
 	removeAllRanges() {
 		this.detach();
