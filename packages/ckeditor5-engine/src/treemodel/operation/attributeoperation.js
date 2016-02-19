@@ -74,7 +74,7 @@ export default class AttributeOperation extends Operation {
 	}
 
 	get type() {
-		return 'attr';
+		return 'attribute';
 	}
 
 	/**

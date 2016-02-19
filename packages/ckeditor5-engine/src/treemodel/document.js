@@ -203,22 +203,22 @@ export default class Document {
 	 * * 'remove' when nodes are removed,
 	 * * 'reinsert' when remove is undone,
 	 * * 'move' when nodes are moved,
-	 * * 'attr' when attributes change.
+	 * * 'attribute' when attributes change. TODO attribute
 	 *
 	 * Change event is fired after the change is done. This means that any ranges or positions passed in
 	 * `changeInfo` are referencing nodes and paths in updated tree model.
 	 *
 	 * @event change
-	 * @param {String} type Change type, possible option: 'insert', 'remove', 'reinsert', 'move', 'attr'.
+	 * @param {String} type Change type, possible option: 'insert', 'remove', 'reinsert', 'move', 'attribute'.
 	 * @param {Object} changeInfo Additional information about the change.
 	 * @param {treeModel.Range} changeInfo.range Range containing changed nodes. Note that for 'remove' the range will be in the
 	 * {@link #graveyard graveyard root}.
 	 * @param {treeModel.Position} [changeInfo.sourcePosition] Change source position. Exists for 'remove', 'reinsert' and 'move'.
 	 * Note that for 'reinsert' the source position will be in the {@link #graveyard graveyard root}.
-	 * @param {String} [changeInfo.key] Only for 'attr' type. Key of changed / inserted / removed attribute.
-	 * @param {*} [changeInfo.oldValue] Only for 'attr' type. If the type is 'attr' and `oldValue`
+	 * @param {String} [changeInfo.key] Only for 'attribute' type. Key of changed / inserted / removed attribute.
+	 * @param {*} [changeInfo.oldValue] Only for 'attribute' type. If the type is 'attribute' and `oldValue`
 	 * is `undefined` it means that new attribute was inserted. Otherwise it contains changed or removed attribute value.
-	 * @param {*} [changeInfo.newValue] Only for 'attr' type. If the type is 'attr' and `newValue`
+	 * @param {*} [changeInfo.newValue] Only for 'attribute' type. If the type is 'attribute' and `newValue`
 	 * is `undefined` it means that attribute was removed. Otherwise it contains changed or inserted attribute value.
 	 * @param {treeModel.Batch} {@link treeModel.Batch} of changes which this change is a part of.
 	 */
