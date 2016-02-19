@@ -9,51 +9,53 @@ import diff from '../utils-diff.js';
 import CKEditorError from '../ckeditorerror.js';
 
 /**
- * Renderer updates DOM tree, to make it a reflection of the view tree. Changed nodes need to be
- * {@link treeView.Renderer#markToSync marked} to be rendered. Then, on {@link treeView.Renderer#render}, renderer
- * ensure they need to be refreshed and creates DOM nodes from view nodes,
- * {@link treeView.Converter#bindElements bind} them and insert into DOM tree. Renderer use {@link treeView.Converter}
- * to transform and bind nodes.
+ * Creates a renderer instance.
  *
- * @class treeView.Renderer
+ * @param {core.treeView.Converter} converter Converter instance.
+ *
+ * @class core.treeView.Renderer
+ * @classdesc
+ * Renderer updates DOM tree, to make it a reflection of the view tree. Changed nodes need to be
+ * {@link core.treeView.Renderer#markToSync marked} to be rendered. Then, on {@link core.treeView.Renderer#render render}, renderer
+ * ensure they need to be refreshed and creates DOM nodes from view nodes,
+ * {@link core.treeView.Converter#bindElements bind} them and insert into DOM tree. Renderer use {@link core.treeView.Converter}
+ * to transform and bind nodes.
  */
 export default class Renderer {
-	/**
-	 * Creates a renderer instance.
-	 *
-	 * @param {treeView.Converter} converter Converter instance.
-	 * @constructor
-	 */
 	constructor( converter ) {
 		/**
 		 * Converter instance.
 		 *
+		 * @member core.treeView.Renderer#converter
 		 * @readonly
-		 * @type {treeView.Converter}
+		 * @type {core.treeView.Converter}
 		 */
 		this.converter = converter;
 
 		/**
 		 * Set of nodes which attributes changed and may need to be rendered.
 		 *
+		 * @member core.treeView.Renderer#markedAttributes
 		 * @readonly
-		 * @type {Set.<treeView.Node>}
+		 * @type {Set.<core.treeView.Node>}
 		 */
 		this.markedAttributes = new Set();
 
 		/**
 		 * Set of elements which child lists changed and may need to be rendered.
 		 *
+		 * @member core.treeView.Renderer#markedChildren
 		 * @readonly
-		 * @type {Set.<treeView.Node>}
+		 * @type {Set.<core.treeView.Node>}
 		 */
 		this.markedChildren = new Set();
 
 		/**
 		 * Set of text nodes which text data changed and may need to be rendered.
 		 *
+		 * @member core.treeView.Renderer#markedTexts
 		 * @readonly
-		 * @type {Set.<treeView.Node>}
+		 * @type {Set.<core.treeView.Node>}
 		 */
 		this.markedTexts = new Set();
 	}
@@ -63,12 +65,13 @@ export default class Renderer {
 	 *
 	 * Note that only view nodes which parents have corresponding DOM elements need to be marked to be synchronized.
 	 *
-	 * @see treeView.Renderer#markedAttributes
-	 * @see treeView.Renderer#markedChildren
-	 * @see treeView.Renderer#markedTexts
+	 * @see core.treeView.Renderer#markedAttributes
+	 * @see core.treeView.Renderer#markedChildren
+	 * @see core.treeView.Renderer#markedTexts
 	 *
-	 * @param {treeView.ChangeType} type Type of the change.
-	 * @param {treeView.Node} node Node to be marked.
+	 * @method core.treeView.Renderer#markToSync
+	 * @param {core.treeView.ChangeType} type Type of the change.
+	 * @param {core.treeView.Node} node Node to be marked.
 	 */
 	markToSync( type, node ) {
 		if ( type === 'TEXT' ) {
@@ -98,8 +101,8 @@ export default class Renderer {
 	}
 
 	/**
-	 * Render method check {@link treeView.Renderer#markedAttributes}, {@link treeView.Renderer#markedChildren} and
-	 * {@link treeView.Renderer#markedTexts} and updated all nodes which needs to be updated. Then it clear all three
+	 * Render method check {@link core.treeView.Renderer#markedAttributes}, {@link core.treeView.Renderer#markedChildren} and
+	 * {@link core.treeView.Renderer#markedTexts} and updated all nodes which needs to be updated. Then it clear all three
 	 * sets.
 	 *
 	 * Renderer try not to bread IME, so it do as little as it is possible to update DOM.
@@ -109,11 +112,13 @@ export default class Renderer {
 	 *
 	 * For text nodes it update the text string if it is different. Note that if parent element is marked as an element
 	 * which changed child list, text node update will not be done, because it may not be possible do find a
-	 * {@link @treeView.Converter#getCorrespondingDomText corresponding DOM text}. The change will be handled in the
+	 * {@link core.treeView.Converter#getCorrespondingDomText corresponding DOM text}. The change will be handled in the
 	 * parent element.
 	 *
-	 * For nodes which changed child list it calculates a {@link diff} using {@link @treeView.Converter#compareNodes}
+	 * For nodes which changed child list it calculates a {@link diff} using {@link core.treeView.Converter#compareNodes}
 	 * and add or removed nodes which changed.
+	 *
+	 * @method core.treeView.Renderer#render
 	 */
 	render() {
 		const converter = this.converter;
@@ -176,7 +181,7 @@ export default class Renderer {
 			for ( let action of actions ) {
 				if ( action === 'INSERT' ) {
 					let domChildToInsert = converter.viewToDom( viewChildren[ i ], domDocument, { bind: true } );
-					domElement.insertBefore( domChildToInsert, domChildren[ i ] || null  );
+					domElement.insertBefore( domChildToInsert, domChildren[ i ] || null );
 					i++;
 				} else if ( action === 'DELETE' ) {
 					domElement.removeChild( domChildren[ i ] );

@@ -10,19 +10,15 @@ import EmitterMixin from '../emittermixin.js';
 import utils from '../utils.js';
 
 /**
- * Abstract tree view node class.
+ * Creates a tree view node.
+ *
+ * This is an abstract class, so this constructor should not be used directly.
  *
  * @abstract
- * @class treeView.Node
+ * @class core.treeView.Node
+ * @classdesc Abstract tree view node class.
  */
 export default class Node {
-	/**
-	 * Creates a tree view node.
-	 *
-	 * This is an abstract class, so this constructor should not be used directly.
-	 *
-	 * @constructor
-	 */
 	constructor() {
 		/**
 		 * Parent element. Null by default. Set by {@link treeView.Element#insertChildren}.
@@ -46,6 +42,7 @@ export default class Node {
 	 *
 	 * Throws error if the parent element does not contain this node.
 	 *
+	 * @method core.treeView.Node#getIndex
 	 * @returns {Number|null} Index of the node in the parent element or null if the node has not parent.
 	 */
 	getIndex() {
@@ -71,6 +68,7 @@ export default class Node {
 	/**
 	 * Returns nodes next sibling or `null` if it is the last child.
 	 *
+	 * @method core.treeView.Node#getNextSibling
 	 * @returns {treeView.Node|null} Nodes next sibling or `null` if it is the last child.
 	 */
 	getNextSibling() {
@@ -82,6 +80,7 @@ export default class Node {
 	/**
 	 * Returns nodes previous sibling or `null` if it is the first child.
 	 *
+	 * @method core.treeView.Node#getPreviousSibling
 	 * @returns {treeView.Node|null} Nodes previous sibling or `null` if it is the first child.
 	 */
 	getPreviousSibling() {
@@ -95,6 +94,7 @@ export default class Node {
 	 * {@link treeView.Node#setTreeView} it will be returned. Otherwise {@link treeView.TreeView} of the parents node
 	 * will be returned. If node has no parent, `null` will be returned.
 	 *
+	 * @method core.treeView.Node#getTreeView
 	 * @returns {treeView.TreeView|null} Tree view of the node, tree view of the parent or null.
 	 */
 	getTreeView() {
@@ -111,6 +111,7 @@ export default class Node {
 	 * Sets the {@link treeView.TreeView} of the node. Note that not all of nodes need to have {@link treeView.TreeView}
 	 * assigned, see {@link treeView.Node#getTreeView}.
 	 *
+	 * @method core.treeView.Node#setTreeView
 	 * @param {treeView.TreeView} treeView Tree view.
 	 */
 	setTreeView( treeView ) {
@@ -118,10 +119,10 @@ export default class Node {
 	}
 
 	/**
-	 * Fires the {@link treeView.Node#change change event}.
-	 *
+	 * @method core.treeView.Node#_fireChange
 	 * @param {treeView.ChangeType} type Type of the change.
 	 * @param {treeView.Node} node Changed node.
+	 * @fires {@link core.treeView.Node#change change event}.
 	 */
 	_fireChange( type, node ) {
 		this.fire( 'change', type, node );
@@ -139,7 +140,7 @@ export default class Node {
 	 *
 	 * Change event is bubbling, it is fired on the ancestors chain.
 	 *
-	 * @event change
+	 * @event core.treeView.Node#change
 	 * @param {treeView.ChangeType} Type of the change.
 	 * @param {treeView.Node} Changed node.
 	 */

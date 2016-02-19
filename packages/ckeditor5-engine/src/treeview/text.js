@@ -8,35 +8,29 @@
 import Node from './node.js';
 
 /**
- * Tree view text node.
+ * Creates a tree view text node.
  *
- * @class treeView.Text
- * @property {String} _data
+ * @param {String} data Text.
+ *
+ * @class core.treeView.Text
+ * @classdesc Tree view text node.
  */
 export default class Text extends Node {
-	/**
-	 * Creates a tree view text node.
-	 *
-	 * @param {String} data Text.
-	 * @constructor
-	 */
 	constructor( data ) {
 		super();
 
 		/**
 		 * The text content.
 		 *
+		 * Setting the data fires the {@link core.treeView.Node#event:change change event}.
+		 *
 		 * @private
 		 * @type {String}
+		 * @member core.treeView.Text#_data
 		 */
 		this._data = data;
 	}
 
-	/**
-	 * The text content.
-	 *
-	 * Setting the data fires the {@link treeView.Node#change change event}.
-	 */
 	get data() {
 		return this._data;
 	}
