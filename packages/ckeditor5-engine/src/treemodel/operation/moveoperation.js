@@ -12,33 +12,34 @@ import CKEditorError from '../../ckeditorerror.js';
 import utils from '../../utils.js';
 
 /**
- * Operation to move list of subsequent nodes from one position in the document to another.
+ * Creates a move operation.
  *
- * @class treeModel.operation.MoveOperation
+ * @param {core.treeModel.Position} sourcePosition Position before the first node to move.
+ * @param {Number} howMany How many consecutive nodes to move, starting from `sourcePosition`.
+ * @param {core.treeModel.Position} targetPosition Position where moved nodes will be inserted.
+ * @param {Number} baseVersion {@link core.treeModel.Document#version} on which operation can be applied.
+ *
+ * @class core.treeModel.operation.MoveOperation
+ * @classdesc
+ * Operation to move list of subsequent nodes from one position in the document to another.
+ * @extends core.treeModel.operation.Operation
  */
 export default class MoveOperation extends Operation {
-	/**
-	 * Creates a move operation.
-	 *
-	 * @param {treeModel.Position} sourcePosition Position before the first node to move.
-	 * @param {Number} howMany How many consecutive nodes to move, starting from `sourcePosition`.
-	 * @param {treeModel.Position} targetPosition Position where moved nodes will be inserted.
-	 * @param {Number} baseVersion {@link treeModel.Document#version} on which operation can be applied.
-	 * @constructor
-	 */
 	constructor( sourcePosition, howMany, targetPosition, baseVersion ) {
 		super( baseVersion );
 
 		/**
 		 * Source move position.
 		 *
-		 * @type {treeModel.Position}
+		 * @member core.treeModel.operation.MoveOperation#sourcePosition
+		 * @type {core.treeModel.Position}
 		 */
 		this.sourcePosition = Position.createFromPosition( sourcePosition );
 
 		/**
 		 * How many nodes to move.
 		 *
+		 * @member core.treeModel.operation.MoveOperation#howMany
 		 * @type {Number}
 		 */
 		this.howMany = howMany;
@@ -46,7 +47,8 @@ export default class MoveOperation extends Operation {
 		/**
 		 * Target move position.
 		 *
-		 * @type {treeModel.Position}
+		 * @member core.treeModel.operation.MoveOperation#targetPosition
+		 * @type {core.treeModel.Position}
 		 */
 		this.targetPosition = Position.createFromPosition( targetPosition );
 	}
@@ -55,10 +57,18 @@ export default class MoveOperation extends Operation {
 		return 'move';
 	}
 
+	/**
+	 * @method core.treeModel.operation.MoveOperation#clone
+	 * @returns {core.treeModel.operation.MoveOperation}
+	 */
 	clone() {
 		return new this.constructor( this.sourcePosition, this.howMany, this.targetPosition, this.baseVersion );
 	}
 
+	/**
+	 * @method core.treeModel.operation.MoveOperation#getReversed
+	 * @returns {core.treeModel.operation.MoveOperation}
+	 */
 	getReversed() {
 		return new this.constructor( this.targetPosition, this.howMany, this.sourcePosition, this.baseVersion + 1 );
 	}

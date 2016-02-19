@@ -10,19 +10,17 @@ import Position from '../position.js';
 import ReinsertOperation from './reinsertoperation.js';
 
 /**
- * Operation to remove a range of nodes.
+ * Creates a remove operation.
  *
- * @class treeModel.operation.RemoveOperation
+ * @param {core.treeModel.Position} position Position before the first node to remove.
+ * @param {Number} howMany How many nodes to remove.
+ * @param {Number} baseVersion {@link core.treeModel.Document#version} on which operation can be applied.
+ *
+ * @class core.treeModel.operation.RemoveOperation
+ * @classdesc Operation to remove a range of nodes.
+ * @extends core.treeModel.operation.Operation
  */
 export default class RemoveOperation extends MoveOperation {
-	/**
-	 * Creates a remove operation.
-	 *
-	 * @param {treeModel.Position} position Position before the first node to remove.
-	 * @param {Number} howMany How many nodes to remove.
-	 * @param {Number} baseVersion {@link treeModel.Document#version} on which operation can be applied.
-	 * @constructor
-	 */
 	constructor( position, howMany, baseVersion ) {
 		// Position in a graveyard where nodes were moved.
 		const graveyardPosition = Position.createFromParentAndOffset( position.root.document.graveyard, 0 );
@@ -34,10 +32,18 @@ export default class RemoveOperation extends MoveOperation {
 		return 'remove';
 	}
 
+	/**
+	 * @method core.treeModel.operation.ReinsertOperation#getReversed
+	 * @returns {core.treeModel.operation.ReinsertOperation}
+	 */
 	getReversed() {
 		return new ReinsertOperation( this.targetPosition, this.howMany, this.sourcePosition, this.baseVersion + 1 );
 	}
 
+	/**
+	 * @method core.treeModel.operation.RemoveOperation#clone
+	 * @returns {core.treeModel.operation.RemoveOperation}
+	 */
 	clone() {
 		return new RemoveOperation( this.sourcePosition, this.howMany, this.baseVersion );
 	}

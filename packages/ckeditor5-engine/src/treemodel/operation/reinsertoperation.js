@@ -9,6 +9,8 @@ import MoveOperation from './moveoperation.js';
 import RemoveOperation from './removeoperation.js';
 
 /**
+ * @class core.treeModel.operation.ReinsertOperation
+ * @classdesc
  * Operation to reinsert previously removed nodes back to the non-graveyard root.
  * This is basically {@link treeModel.operation.MoveOperation} but it returns
  * {@link treeModel.operation.RemoveOperation} when reversed.
@@ -16,10 +18,13 @@ import RemoveOperation from './removeoperation.js';
  * With this class, we achieve two goals: by having separate classes it's easier to distinguish whether move
  * operation is actually a remove/reinsert operation and fire proper events. Also it
  * will be easier to expand if we need to change operation's behavior if it is remove/reinsert.
- *
- * @class treeModel.operation.ReinsertOperation
+ * @extends core.treeModel.operation.Operation
  */
 export default class ReinsertOperation extends MoveOperation {
+	/**
+	 * @method core.treeModel.operation.ReinsertOperation#getReversed
+	 * @returns {core.treeModel.operation.RemoveOperation}
+	 */
 	getReversed() {
 		return new RemoveOperation( this.targetPosition, this.howMany, this.baseVersion + 1 );
 	}
