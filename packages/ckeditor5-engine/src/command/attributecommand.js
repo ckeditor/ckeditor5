@@ -32,24 +32,26 @@ export default class AttributeCommand extends Command {
 		const schema = this.editor.document.schema;
 
 		if ( selection.isCollapsed ) {
-			return schema.checkAtPosition( { name: 'inline', attribute: this.attributeKey }, selection.getFirstPosition() );
-		} else if ( selection.hasAnyRange ) {
+			return schema.checkAtPosition( { name: 'text', attribute: this.attributeKey }, selection.getFirstPosition() );
+		} else {
 			const ranges = selection.getRanges();
 
 			for ( let range of ranges ) {
 				const walker = new TreeWalker( { boundaries: range, mergeCharacters: true } );
+				let last = walker.position;
 				let step = walker.next();
 
 				while ( !step.done ) {
 					const query = {
-						name: step.value.item.name || 'inline',
+						name: step.value.item.name || 'text',
 						attribute: this.attributeKey
 					};
 
-					if ( schema.checkAtPosition( query, walker.position ) ) {
+					if ( schema.checkAtPosition( query, last ) ) {
 						return true;
 					}
 
+					last = walker.position;
 					step = walker.next();
 				}
 			}
@@ -101,7 +103,7 @@ export default class AttributeCommand extends Command {
 
 			while ( !step.done ) {
 				const query = {
-					name: step.value.item.name || 'inline',
+					name: step.value.item.name || 'text',
 					attribute: this.attributeKey
 				};
 

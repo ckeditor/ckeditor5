@@ -103,6 +103,7 @@ export default class Schema {
 		this.registerItem( 'inline', null );
 		this.registerItem( 'block', null );
 		this.registerItem( 'root', null );
+		this.registerItem( 'text', 'inline' );
 
 		this.allow( { name: 'block', inside: 'root' } );
 		this.allow( { name: 'inline', inside: 'block' } );

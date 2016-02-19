@@ -27,9 +27,7 @@ export default class Command {
 		if ( this.checkSchema ) {
 			this.on( 'refreshState', ( evt ) => {
 				if ( !this.checkSchema() ) {
-					evt.stop();
-
-					return false;
+					return disableCallback( evt );
 				}
 			} );
 		}
