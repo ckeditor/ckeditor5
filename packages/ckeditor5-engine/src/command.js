@@ -22,10 +22,10 @@ export default class Command {
 		this.editor = editor;
 		this.isEnabled = true;
 
-		// If schema checking function is specified, add it to the `checkEnabled` listeners.
+		// If schema checking function is specified, add it to the `refreshState` listeners.
 		// Feature will be disabled if it does not apply to schema requirements.
 		if ( this.checkSchema ) {
-			this.on( 'checkEnabled', ( evt ) => {
+			this.on( 'refreshState', ( evt ) => {
 				if ( !this.checkSchema() ) {
 					evt.stop();
 
@@ -35,18 +35,18 @@ export default class Command {
 		}
 	}
 
-	checkEnabled() {
-		this.isEnabled = this.fire( 'checkEnabled' ) !== false;
+	refreshState() {
+		this.isEnabled = this.fire( 'refreshState' ) !== false;
 	}
 
 	_disable() {
-		this.on( 'checkEnabled', disableCallback );
-		this.checkEnabled();
+		this.on( 'refreshState', disableCallback );
+		this.refreshState();
 	}
 
 	_enable() {
-		this.off( 'checkEnabled', disableCallback );
-		this.checkEnabled();
+		this.off( 'refreshState', disableCallback );
+		this.refreshState();
 	}
 
 	execute() {

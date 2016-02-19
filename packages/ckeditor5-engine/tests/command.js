@@ -44,49 +44,49 @@ describe( 'constructor', () => {
 		} ).not.to.throw;
 	} );
 
-	it( 'should add listener to its checkEnabled event if checkSchema method is present', () => {
+	it( 'should add listener to its refreshState event if checkSchema method is present', () => {
 		expect( command.checkSchema ).to.be.undefined;
 
 		command.checkSchema = sinon.spy();
-		command.checkEnabled();
+		command.refreshState();
 
 		expect( command.checkSchema.called ).to.be.false;
 
 		let newCommand = new CommandWithSchema( editor, true );
 		sinon.spy( newCommand, 'checkSchema' );
 
-		newCommand.checkEnabled();
+		newCommand.refreshState();
 
 		expect( newCommand.checkSchema.calledOnce ).to.be.true;
 	} );
 } );
 
-describe( 'checkEnabled', () => {
-	it( 'should fire checkEnabled event', () => {
+describe( 'refreshState', () => {
+	it( 'should fire refreshState event', () => {
 		let spy = sinon.spy();
 
-		command.on( 'checkEnabled', spy );
-		command.checkEnabled();
+		command.on( 'refreshState', spy );
+		command.refreshState();
 
 		expect( spy.called ).to.be.true;
 	} );
 
 	it( 'should set isEnabled property to the value returned by last event callback', () => {
-		command.on( 'checkEnabled', () => {
+		command.on( 'refreshState', () => {
 			return true;
 		} );
 
-		command.on( 'checkEnabled', ( evt ) => {
+		command.on( 'refreshState', ( evt ) => {
 			evt.stop();
 
 			return false;
 		} );
 
-		command.on( 'checkEnabled', () => {
+		command.on( 'refreshState', () => {
 			return true;
 		} );
 
-		command.checkEnabled();
+		command.refreshState();
 
 		expect( command.isEnabled ).to.be.false;
 	} );
@@ -94,7 +94,7 @@ describe( 'checkEnabled', () => {
 	it( 'should set isEnabled to false if checkSchema returns false', () => {
 		let disabledCommand = new CommandWithSchema( editor, false );
 
-		disabledCommand.checkEnabled();
+		disabledCommand.refreshState();
 
 		expect( disabledCommand.isEnabled ).to.be.false;
 	} );
@@ -108,7 +108,7 @@ describe( 'disable', () => {
 	} );
 
 	it( 'should not make command disabled if there is a high-priority listener forcing command to be enabled', () => {
-		command.on( 'checkEnabled', ( evt ) => {
+		command.on( 'refreshState', ( evt ) => {
 			evt.stop();
 
 			return true;
@@ -131,13 +131,13 @@ describe( 'enable', () => {
 	it( 'should not make command enabled if there are other listeners disabling it', () => {
 		command._disable();
 
-		command.on( 'checkEnabled', ( evt ) => {
+		command.on( 'refreshState', ( evt ) => {
 			evt.stop();
 
 			return false;
 		} );
 
-		command.checkEnabled();
+		command.refreshState();
 		command._enable();
 
 		expect( command.isEnabled ).to.be.false;
