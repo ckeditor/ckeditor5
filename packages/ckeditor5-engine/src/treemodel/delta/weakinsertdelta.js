@@ -20,18 +20,18 @@ import NodeList from '../nodelist.js';
 export default class WeakInsertDelta extends Delta {}
 
 /**
- * Inserts a node or nodes at the given position. {@link core.treeModel.Batch#weakInsert} is commonly used for actions
+ * Inserts a node or nodes at the given position. {@link core.treeModel.Batch#weakInsert weakInsert} is commonly used for actions
  * like typing or plain-text paste (without formatting). There are two differences between
- * {@link core.treeModel.Batch#insert} and {@link core.treeModel.Batch#weakInsert}:
+ * {@link core.treeModel.Batch#insert insert} and {@link core.treeModel.Batch#weakInsert weakInsert}:
  * * When using `weakInsert`, inserted nodes will have same attributes as the current attributes of
  * {@link core.treeModel.Document#selection document selection}.
  * * The above has to be reflected during {@link core.treeModel.operation.transform operational transformation}. Normal
- * behavior is that inserting inside range changed by {@link core.treeModel.operation.AttributeOperation} splits the operation
- * into two operations, which "omit" the inserted nodes. The correct behavior for `WeakInsertDelta` is that
- * {@link core.treeModel.operation.AttributeOperation} does not "break" and also applies attributes for inserted nodes.
+ * behavior is that inserting inside range changed by {@link core.treeModel.operation.AttributeOperation AttributeOperation} splits
+ * the operation into two operations, which "omit" the inserted nodes. The correct behavior for `WeakInsertDelta` is that
+ * {@link core.treeModel.operation.AttributeOperation AttributeOperation} does not "break" and also applies attributes for inserted nodes.
  *
  * @chainable
- * @method core.treeModel.BatchweakInsert
+ * @method core.treeModel.Batch#weakInsert
  * @param {core.treeModel.Position} position Position of insertion.
  * @param {core.treeModel.NodeSet} nodes The list of nodes to be inserted.
  */

@@ -8,6 +8,12 @@
 import CKEditorError from '../ckeditorerror.js';
 
 /**
+ * Creates Batch instance. Not recommended to use directly, use {@link treeModel.Document#batch} instead.
+ *
+ * @param {treeModel.Document} doc Document which this Batch changes.
+ *
+ * @class core.treeModel.Batch
+ * @classdesc
  * The Batch class groups document changes (deltas). All deltas grouped in a single Batch can be
  * reverted together, so you can think about the Batch as a single undo step. If you want to extend one
  * undo step you can call another method on the same Batch object. If you want to create a separate undo step
@@ -28,15 +34,8 @@ import CKEditorError from '../ckeditorerror.js';
  *
  *		doc.batch().insert( firstPosition, 'foo' ).insert( secondPosition, 'bar' );
  *
- * @class core.treeModel.Batch
  */
 export default class Batch {
-	/**
-	 * Creates Batch instance. Not recommended to use directly, use {@link treeModel.Document#batch} instead.
-	 *
-	 * @constructor
-	 * @param {treeModel.Document} doc Document which this Batch changes.
-	 */
 	constructor( doc ) {
 		/**
 		 * Document which this Batch changes.
