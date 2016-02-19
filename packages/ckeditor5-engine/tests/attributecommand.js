@@ -25,6 +25,17 @@ beforeEach( () => {
 	root = modelDoc.createRoot( 'root' );
 
 	command = new AttributeCommand( editor, attrKey );
+
+	modelDoc.schema.registerItem( 'p', 'block' );
+	modelDoc.schema.registerItem( 'div', 'block' );
+	modelDoc.schema.registerItem( 'img', 'inline' );
+
+	// Bold text is allowed only in P.
+	modelDoc.schema.allow( { name: 'inline', attribute: 'bold', inside: 'p' } );
+	modelDoc.schema.allow( { name: 'p', attribute: 'bold', inside: 'root' } );
+
+	// Disallow bold on image.
+	modelDoc.schema.disallow( { name: 'img', attribute: 'bold', inside: 'root' } );
 } );
 
 describe( 'value', () => {
@@ -38,63 +49,66 @@ describe( 'value', () => {
 } );
 
 describe( 'execute', () => {
+	let p;
+
 	beforeEach( () => {
 		let attrs = {};
 		attrs[ attrKey ] = true;
 
-		root.insertChildren( 0, [ 'abc', new Text( 'foobar', attrs ), 'xyz' ] );
+		root.insertChildren( 0, new Element( 'p', [] , [ 'abc', new Text( 'foobar', attrs ), 'xyz' ] ) );
+		p = root.getChild( 0 );
 	} );
 
 	it( 'should add attribute on selected nodes if the command value was false', () => {
-		modelDoc.selection.addRange( new Range( new Position( root, [ 1 ] ), new Position( root, [ 5 ] ) ) );
+		modelDoc.selection.addRange( new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 5 ] ) ) );
 
 		expect( command.value ).to.be.false;
 
 		command.execute();
 
 		expect( command.value ).to.be.true;
-		expect( root.getChild( 1 ).hasAttribute( attrKey ) ).to.be.true;
-		expect( root.getChild( 2 ).hasAttribute( attrKey ) ).to.be.true;
+		expect( p.getChild( 1 ).hasAttribute( attrKey ) ).to.be.true;
+		expect( p.getChild( 2 ).hasAttribute( attrKey ) ).to.be.true;
 	} );
 
 	it( 'should remove attribute from selected nodes if the command value was true', () => {
-		modelDoc.selection.addRange( new Range( new Position( root, [ 3 ] ), new Position( root, [ 6 ] ) ) );
+		modelDoc.selection.addRange( new Range( new Position( root, [ 0, 3 ] ), new Position( root, [ 0, 6 ] ) ) );
 
 		expect( command.value ).to.be.true;
 
 		command.execute();
 
 		expect( command.value ).to.be.false;
-		expect( root.getChild( 3 ).hasAttribute( attrKey ) ).to.be.false;
-		expect( root.getChild( 4 ).hasAttribute( attrKey ) ).to.be.false;
-		expect( root.getChild( 5 ).hasAttribute( attrKey ) ).to.be.false;
+		expect( p.getChild( 3 ).hasAttribute( attrKey ) ).to.be.false;
+		expect( p.getChild( 4 ).hasAttribute( attrKey ) ).to.be.false;
+		expect( p.getChild( 5 ).hasAttribute( attrKey ) ).to.be.false;
 	} );
 
 	it( 'should add attribute on selected nodes if execute parameter was set to true', () => {
-		modelDoc.selection.addRange( new Range( new Position( root, [ 7 ] ), new Position( root, [ 10 ] ) ) );
+		modelDoc.selection.addRange( new Range( new Position( root, [ 0, 7 ] ), new Position( root, [ 0, 10 ] ) ) );
 
 		expect( command.value ).to.be.true;
 
 		command.execute( true );
 
 		expect( command.value ).to.be.true;
-		expect( root.getChild( 9 ).hasAttribute( attrKey ) ).to.be.true;
+		expect( p.getChild( 9 ).hasAttribute( attrKey ) ).to.be.true;
 	} );
 
 	it( 'should remove attribute on selected nodes if execute parameter was set to false', () => {
-		modelDoc.selection.addRange( new Range( new Position( root, [ 1 ] ), new Position( root, [ 5 ] ) ) );
+		modelDoc.selection.addRange( new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 5 ] ) ) );
 
 		expect( command.value ).to.be.false;
 
 		command.execute( false );
 
 		expect( command.value ).to.be.false;
-		expect( root.getChild( 3 ).hasAttribute( attrKey ) ).to.be.false;
-		expect( root.getChild( 4 ).hasAttribute( attrKey ) ).to.be.false;
+		expect( p.getChild( 3 ).hasAttribute( attrKey ) ).to.be.false;
+		expect( p.getChild( 4 ).hasAttribute( attrKey ) ).to.be.false;
 	} );
 
 	it( 'should change selection attribute if selection is collapsed', () => {
-		modelDoc.selection.addRange( new Range( new Position( root, [ 1 ] ), new Position( root, [ 1 ] ) ) );
+		modelDoc.selection.addRange( new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 1 ] ) ) );
 
 		expect( command.value ).to.be.false;
 
@@ -110,16 +124,16 @@ describe( 'execute', () => {
 	} );
 
 	it( 'should not save that attribute was changed on selection when selection changes', () => {
-		modelDoc.selection.addRange( new Range( new Position( root, [ 1 ] ), new Position( root, [ 1 ] ) ) );
+		modelDoc.selection.addRange( new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 1 ] ) ) );
 		command.execute();
 
-		// It should not save that bold was executed at position ( root, [ 1 ] ).
+		// It should not save that bold was executed at position ( root, [ 0, 1 ] ).
 
 		// Simulate clicking right arrow key by changing selection ranges.
-		modelDoc.selection.setRanges( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 2 ] ) ) ] );
+		modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 2 ] ) ) ] );
 
 		// Get back to previous selection.
-		modelDoc.selection.setRanges( [ new Range( new Position( root, [ 1 ] ), new Position( root, [ 1 ] ) ) ] );
+		modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 1 ] ) ) ] );
 
 		expect( command.value ).to.be.false;
 	} );
@@ -139,8 +153,8 @@ describe( 'execute', () => {
 		let spy = sinon.spy();
 		modelDoc.on( 'change', spy );
 
-		modelDoc.selection.addRange( new Range( new Position( root, [ 1 ] ), new Position( root, [ 1 ] ) ) );
-		command.checkEnabled();
+		modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) ] );
+		command.refreshState();
 
 		expect( command.value ).to.be.false;
 		expect( command.isEnabled ).to.be.false;
@@ -150,21 +164,26 @@ describe( 'execute', () => {
 		expect( spy.called ).to.be.false;
 		expect( Array.from( modelDoc.selection.getAttributes() ) ).to.deep.equal( [ ] );
 	} );
+
+	it( 'should not apply attribute change where it would invalid schema', () => {
+		p.insertChildren( 3, new Element( 'image' ) );
+		p.insertChildren( 12, new Element( 'image' ) );
+		modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 13 ] ) ) ] );
+
+		expect( command.isEnabled ).to.be.true;
+
+		command.execute();
+
+		let expectedHas = [ 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0 ];
+
+		for ( let i = 0; i < expectedHas.length; i++ ) {
+			expect( p.getChild( i ).hasAttribute( attrKey ) ).to.equal( !!expectedHas[ i ] );
+		}
+	} );
 } );
 
 describe( 'checkSchema', () => {
 	beforeEach( () => {
-		modelDoc.schema.registerItem( 'p', 'block' );
-		modelDoc.schema.registerItem( 'div', 'block' );
-		modelDoc.schema.registerItem( 'img', 'inline' );
-
-		// Bold text is allowed only in P.
-		modelDoc.schema.allow( { name: 'inline', attribute: 'bold', inside: 'p' } );
-		modelDoc.schema.allow( { name: 'p', attribute: 'bold', inside: 'root' } );
-
-		// Disallow bold on image.
-		modelDoc.schema.disallow( { name: 'img', attribute: 'bold', inside: 'root' } );
-
 		root.insertChildren( 0, [
 			new Element( 'p', [], [
 				'foo',
@@ -216,7 +235,7 @@ describe( 'checkSchema', () => {
 			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) ) ] );
 			expect( command.checkSchema() ).to.be.false;
 
-			// Selection on two images which can't be bolded.
+			// Selection on two images which can't be bold.
 			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 3 ] ), new Position( root, [ 0, 5 ] ) ) ] );
 			expect( command.checkSchema() ).to.be.false;
 		} );

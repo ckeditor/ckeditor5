@@ -7,6 +7,7 @@
 
 import Command from './command.js';
 import TreeWalker from './treemodel/treewalker.js';
+import Range from './treemodel/range.js';
 
 /**
  * An extension of basic {@link core.Command} class, which provides utilities typical of commands that sets an
@@ -36,7 +37,7 @@ export default class AttributeCommand extends Command {
 			const ranges = selection.getRanges();
 
 			for ( let range of ranges ) {
-				const walker = new TreeWalker( { boundaries: range } );
+				const walker = new TreeWalker( { boundaries: range, mergeCharacters: true } );
 				let step = walker.next();
 
 				while ( !step.done ) {
@@ -74,6 +75,7 @@ export default class AttributeCommand extends Command {
 				// If selection is not collapsed and has ranges, we change attribute on those ranges.
 				document.enqueueChanges( () => {
 					let ranges = selection.getRanges();
+					ranges = this._getSchemaValidRanges( ranges );
 
 					// Keep it as one undo step.
 					let batch = document.batch();
@@ -84,5 +86,42 @@ export default class AttributeCommand extends Command {
 				} );
 			}
 		}
+	}
+
+	_getSchemaValidRanges( ranges ) {
+		let validRanges = [];
+
+		for ( let range of ranges ) {
+			const walker = new TreeWalker( { boundaries: range, mergeCharacters: true } );
+			let step = walker.next();
+
+			let last = range.start;
+			let from = range.start;
+			let to = range.end;
+
+			while ( !step.done ) {
+				const query = {
+					name: step.value.item.name || 'inline',
+					attribute: this.attributeKey
+				};
+
+				if ( !this.editor.document.schema.checkAtPosition( query, last ) ) {
+					if ( !from.isEqual( last ) ) {
+						validRanges.push( new Range( from, last ) );
+					}
+
+					from = walker.position;
+				}
+
+				last = walker.position;
+				step = walker.next();
+			}
+
+			if ( from && !from.isEqual( to ) ) {
+				validRanges.push( new Range( from, to ) );
+			}
+		}
+
+		return validRanges;
 	}
 }
