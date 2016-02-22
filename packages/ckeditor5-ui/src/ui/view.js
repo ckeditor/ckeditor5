@@ -624,6 +624,7 @@ const validSelectorTypes = new Set( [ 'string', 'boolean', 'function' ] );
 /**
  * Check whether region selector is valid.
  *
+ * @ignore
  * @private
  * @param {*} selector Selector to be checked.
  * @returns {Boolean}
@@ -643,6 +644,7 @@ function isValidRegionSelector( selector ) {
  *
  * 		{ attributeName/text: [ 'bar', { model: ..., modelAttributeName: ... }, 'baz' ] }
  *
+ * @ignore
  * @private
  * @param {core.ui.TemplateValueSchema} valueSchema
  * @returns {Array}
@@ -655,6 +657,7 @@ function normalizeBinderValueSchema( valueSchema ) {
  * Checks whether given {@link core.ui.TemplateValueSchema} contains a
  * {@link core.ui.ViewModelBinding}.
  *
+ * @ignore
  * @private
  * @param {core.ui.TemplateValueSchema} valueSchema
  * @returns {Boolean}
@@ -673,6 +676,7 @@ function hasModelBinding( valueSchema ) {
  * A helper which concatenates the value avoiding unwanted
  * leading white spaces.
  *
+ * @ignore
  * @private
  * @param {String} prev
  * @param {String} cur

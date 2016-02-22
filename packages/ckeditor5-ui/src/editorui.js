@@ -12,7 +12,7 @@ import ObservableMixin from './observablemixin.js';
 /**
  * Base class for the editor main view controllers.
  *
- * @class core.EditorUI
+ * @memberOf core
  * @extends core.ui.Controller
  * @mixes core.ObservableMixin
  */
@@ -23,7 +23,7 @@ export default class EditorUI extends Controller {
 
 		/**
 		 * @readonly
-		 * @type {core.Editor}
+		 * @member {core.Editor} core.EditorUI.editor
 		 */
 		this.editor = editor;
 	}
