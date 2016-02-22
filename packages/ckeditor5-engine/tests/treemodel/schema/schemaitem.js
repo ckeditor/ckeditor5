@@ -7,7 +7,6 @@
 
 import Schema from '/ckeditor5/core/treemodel/schema.js';
 import { SchemaItem as SchemaItem } from '/ckeditor5/core/treemodel/schema.js';
-import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
 let schema, item;
 
@@ -30,12 +29,6 @@ describe( 'constructor', () => {
 
 		expect( item._disallowed ).to.deep.equal( [] );
 		expect( item._allowed ).to.deep.equal( [] );
-	} );
-
-	it( 'should throw if no schema was passed', () => {
-		expect( () => {
-			new SchemaItem();
-		} ).to.throw( CKEditorError, /schema-item-no-schema/ );
 	} );
 } );
 
@@ -165,5 +158,13 @@ describe( '_hasMatchingPath', () => {
 
 		expect( item._hasMatchingPath( 'DISALLOW', [ 'html', 'div', 'header' ] ) ).to.be.false;
 		expect( item._hasMatchingPath( 'DISALLOW', [ 'html', 'div', 'p', 'header', 'span' ], 'bold' ) ).to.be.true;
+	} );
+} );
+
+describe( 'toJSON', () => {
+	it( 'should create proper JSON string', () => {
+		let parsedItem = JSON.parse( JSON.stringify( item ) );
+
+		expect( parsedItem._schema ).to.equal( '[treeModel.Schema]' );
 	} );
 } );

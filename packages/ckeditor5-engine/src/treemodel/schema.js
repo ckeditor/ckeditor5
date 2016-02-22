@@ -10,15 +10,6 @@ import CKEditorError from '../ckeditorerror.js';
 
 export class SchemaItem {
 	constructor( schema ) {
-		if ( !schema ) {
-			/**
-			 * Schema item must have schema instance.
-			 *
-			 * @error schema-item-no-schema
-			 */
-			throw new CKEditorError( 'schema-item-no-schema: Schema item must have schema instance.' );
-		}
-
 		this._schema = schema;
 		this._allowed = [];
 		this._disallowed = [];
@@ -62,9 +53,9 @@ export class SchemaItem {
 
 		for ( let itemPath of itemPaths ) {
 			for ( let checkName of checkPath ) {
-				let baseChain = this._schema._baseChains[ checkName ];
+				let chain = this._schema._extensionChains.get( checkName );
 
-				if ( baseChain.indexOf( itemPath[ 0 ] ) > -1 ) {
+				if ( chain.indexOf( itemPath[ 0 ] ) > -1 ) {
 					itemPath.shift();
 				}
 			}
@@ -97,16 +88,15 @@ export class SchemaItem {
  */
 export default class Schema {
 	constructor() {
-		this._items = {};
-		this._baseChains = {};
+		this._items = new Map();
+		this._extensionChains = new Map();
 
-		this.registerItem( 'inline', null );
-		this.registerItem( 'block', null );
-		this.registerItem( 'root', null );
-		this.registerItem( 'text', 'inline' );
+		this.registerItem( '$inline', null );
+		this.registerItem( '$block', null );
 
-		this.allow( { name: 'block', inside: 'root' } );
-		this.allow( { name: 'inline', inside: 'block' } );
+		this.registerItem( '$text', '$inline' );
+
+		this.allow( { name: '$inline', inside: '$block' } );
 	}
 
 	allow( query ) {
@@ -127,14 +117,14 @@ export default class Schema {
 			throw new CKEditorError( 'schema-no-item: Item with specified name does not exist in schema.' );
 		}
 
-		return this._items[ itemName ];
+		return this._items.get( itemName );
 	}
 
 	hasItem( itemName ) {
-		return !!this._items[ itemName ];
+		return this._items.has( itemName );
 	}
 
-	registerItem( itemName, baseOn ) {
+	registerItem( itemName, isExtending ) {
 		if ( this.hasItem( itemName ) ) {
 			/**
 			 * Item with specified name already exists in schema.
@@ -144,7 +134,7 @@ export default class Schema {
 			throw new CKEditorError( 'schema-item-exists: Item with specified name already exists in schema.' );
 		}
 
-		if ( !!baseOn && !this.hasItem( baseOn ) ) {
+		if ( !!isExtending && !this.hasItem( isExtending ) ) {
 			/**
 			 * Item with specified name does not exist in schema.
 			 *
@@ -153,8 +143,10 @@ export default class Schema {
 			throw new CKEditorError( 'schema-no-item: Item with specified name does not exist in schema.' );
 		}
 
-		this._items[ itemName ] = new SchemaItem( this );
-		this._baseChains[ itemName ] = this.hasItem( baseOn ) ? this._baseChains[ baseOn ].concat( itemName ) : [ itemName ];
+		this._items.set( itemName, new SchemaItem( this ) );
+
+		const chain = this.hasItem( isExtending ) ? this._extensionChains.get( isExtending ).concat( itemName ) : [ itemName ];
+		this._extensionChains.set( itemName, chain );
 	}
 
 	checkAtPosition( query, position ) {
@@ -174,7 +166,7 @@ export default class Schema {
 
 		path = ( typeof path === 'string' ) ? path.split( ' ' ) : path;
 
-		const schemaItems = this._baseChains[ query.name ].map( ( name ) => {
+		const schemaItems = this._extensionChains.get( query.name ).map( ( name ) => {
 			return this._getItem( name );
 		} );
 

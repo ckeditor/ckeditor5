@@ -26,17 +26,12 @@ describe( 'constructor', () => {
 
 		expect( schema.registerItem.calledWithExactly( '$inline', null ) );
 		expect( schema.registerItem.calledWithExactly( '$block', null ) );
-		expect( schema.registerItem.calledWithExactly( '$root', null ) );
 
 		Schema.prototype.registerItem.restore();
 	} );
 
 	it( 'should allow inline in block', () => {
 		expect( schema.checkForPath( { name: '$inline' }, [ '$block' ] ) ).to.be.true;
-	} );
-
-	it( 'should allow block in root', () => {
-		expect( schema.checkForPath( { name: '$block' }, [ '$root' ] ) ).to.be.true;
 	} );
 } );
 
@@ -53,10 +48,10 @@ describe( 'registerItem', () => {
 		schema.registerItem( 'secondB', 'first' );
 		schema.registerItem( 'third', 'secondA' );
 
-		expect( schema._baseChains.first ).to.deep.equal( [ 'first' ] );
-		expect( schema._baseChains.secondA ).to.deep.equal( [ 'first', 'secondA' ] );
-		expect( schema._baseChains.secondB ).to.deep.equal( [ 'first', 'secondB' ] );
-		expect( schema._baseChains.third ).to.deep.equal( [ 'first', 'secondA', 'third' ] );
+		expect( schema._extensionChains.get( 'first' ) ).to.deep.equal( [ 'first' ] );
+		expect( schema._extensionChains.get( 'secondA' ) ).to.deep.equal( [ 'first', 'secondA' ] );
+		expect( schema._extensionChains.get( 'secondB' ) ).to.deep.equal( [ 'first', 'secondB' ] );
+		expect( schema._extensionChains.get( 'third' ) ).to.deep.equal( [ 'first', 'secondA', 'third' ] );
 	} );
 
 	it( 'should make registered item inherit allows from base item', () => {
@@ -139,7 +134,7 @@ describe( 'checkAtPosition', () => {
 
 	beforeEach( () => {
 		doc = new Document();
-		root = doc.createRoot( 'root' );
+		root = doc.createRoot( 'root', 'div' );
 
 		root.insertChildren( 0, [
 			new Element( 'div' ),
@@ -176,12 +171,12 @@ describe( 'checkAtPosition', () => {
 
 		// Header is allowed in DIV.
 		expect( schema.checkAtPosition( { name: 'header' }, new Position( root, [ 0, 0 ] ) ) ).to.be.true;
+
+		// Inline is allowed in block and root is DIV, which is block.
+		expect( schema.checkAtPosition( { name: '$inline' }, new Position( root, [ 0 ] ) ) ).to.be.true;
 	} );
 
 	it( 'should return false if given element is not allowed by schema at given position', () => {
-		// Inline is not allowed in root.
-		expect( schema.checkAtPosition( { name: '$inline' }, new Position( root, [ 0 ] ) ) ).to.be.false;
-
 		// P with attribute is not allowed anywhere.
 		expect( schema.checkAtPosition( { name: 'p', attribute: 'bold' }, new Position( root, [ 0 ] ) ) ).to.be.false;
 		expect( schema.checkAtPosition( { name: 'p', attribute: 'bold' }, new Position( root, [ 0, 0 ] ) ) ).to.be.false;
