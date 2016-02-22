@@ -14,7 +14,7 @@ import InsertOperation from '../operation/insertoperation.js';
  * To provide specific OT behavior and better collisions solving, the {@link core.treeModel.Batch#insert Batch#insert} method
  * uses the `InsertDelta` class which inherits from the `Delta` class and may overwrite some methods.
  *
- * @class core.treeModel.delta.InsertDelta
+ * @memberOf core.treeModel.delta
  */
 export default class InsertDelta extends Delta {}
 

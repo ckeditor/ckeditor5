@@ -12,11 +12,11 @@ import Range from '../range.js';
 import Element from '../element.js';
 
 /**
- * @classdesc To provide specific OT behavior and better collisions solving, change methods ({@link core.treeModel.Batch#setAttr}
+ * To provide specific OT behavior and better collisions solving, change methods ({@link core.treeModel.Batch#setAttr}
  * and {@link core.treeModel.Batch#removeAttr}) use `AttributeDelta` class which inherits from the `Delta` class and may
  * overwrite some methods.
  *
- * @class core.treeModel.delta.AttributeDelta
+ * @memberOf core.treeModel.delta
  * @extends core.treeModel.delta.Delta
  */
 export default class AttributeDelta extends Delta {}

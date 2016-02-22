@@ -6,9 +6,6 @@
 'use strict';
 
 /**
- * Creates a delta instance.
- *
- * @classdesc
  * Base class for all deltas.
  *
  * Delta is a single, from the user action point of view, change in the editable document, like insert, split or
@@ -16,16 +13,19 @@
  *
  * Multiple deltas are grouped into a single {@link core.treeModel.Batch}.
  *
- * @class core.treeModel.delta.Delta
+ * @memberOf core.treeModel.delta
  */
 export default class Delta {
+	/**
+	 * Creates a delta instance.
+	 */
 	constructor() {
 		/**
 		 * {@link core.treeModel.Batch} which delta is a part of. This property is null by default and set by the
 		 * {@link core.treeModel.Batch#addDelta} method.
 		 *
 		 * @readonly
-		 * @type {core.treeModel.Batch}
+		 * @member {core.treeModel.Batch} core.treeModel.delta.Delta#batch
 		 */
 		this.batch = null;
 
@@ -33,7 +33,7 @@ export default class Delta {
 		 * Array of operations which compose delta.
 		 *
 		 * @readonly
-		 * @type {core.treeModel.operation.Operation[]}
+		 * @member {core.treeModel.operation.Operation[]} core.treeModel.delta.Delta#operations
 		 */
 		this.operations = [];
 	}
@@ -41,7 +41,6 @@ export default class Delta {
 	/**
 	 * Add operation to the delta.
 	 *
-	 * @method core.treeModel.delta.Delta#addOperation
 	 * @param {core.treeModel.operation.Operation} operation Operation instance.
 	 */
 	addOperation( operation ) {

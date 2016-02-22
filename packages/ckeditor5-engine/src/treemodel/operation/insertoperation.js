@@ -12,37 +12,36 @@ import Range from '../range.js';
 import RemoveOperation from './removeoperation.js';
 
 /**
- * Creates an insert operation.
- *
- * @param {core.treeModel.Position} position Position of insertion.
- * @param {core.treeModel.NodeSet} nodes The list of nodes to be inserted.
- * List of nodes can be any type accepted by the {@link core.treeModel.NodeList} constructor.
- * @param {Number} baseVersion {@link core.treeModel.Document#version} on which operation can be applied.
- *
- * @class core.treeModel.operation.InsertOperation
- * @classdesc
  * Operation to insert list of nodes on the given position in the tree data model.
+ *
+ * @memberOf core.treeModel.operation
  * @extends core.treeModel.operation.Operation
  */
 export default class InsertOperation extends Operation {
+	/**
+	 * Creates an insert operation.
+	 *
+	 * @param {core.treeModel.Position} position Position of insertion.
+	 * @param {core.treeModel.NodeSet} nodes The list of nodes to be inserted.
+	 * List of nodes can be any type accepted by the {@link core.treeModel.NodeList} constructor.
+	 * @param {Number} baseVersion {@link core.treeModel.Document#version} on which operation can be applied.
+	 */
 	constructor( position, nodes, baseVersion ) {
 		super( baseVersion );
 
 		/**
 		 * Position of insertion.
 		 *
-		 * @member core.treeModel.operation.InsertOperation#position
 		 * @readonly
-		 * @type {core.treeModel.Position}
+		 * @member {core.treeModel.Position} core.treeModel.operation.InsertOperation#position
 		 */
 		this.position = Position.createFromPosition( position );
 
 		/**
 		 * List of nodes to insert.
 		 *
-		 * @member core.treeModel.operation.InsertOperation#nodeList
 		 * @readonly
-		 * @type {core.treeModel.NodeList}
+		 * @member {core.treeModel.NodeList} core.treeModel.operation.InsertOperation#nodeList
 		 */
 		this.nodeList = new NodeList( nodes );
 	}
@@ -52,7 +51,6 @@ export default class InsertOperation extends Operation {
 	}
 
 	/**
-	 * @method core.treeModel.operation.InsertOperation#clone
 	 * @returns {core.treeModel.operation.InsertOperation}
 	 */
 	clone() {
@@ -60,7 +58,6 @@ export default class InsertOperation extends Operation {
 	}
 
 	/**
-	 * @method core.treeModel.operation.InsertOperation#getReversed
 	 * @returns {core.treeModel.operation.RemoveOperation}
 	 */
 	getReversed() {

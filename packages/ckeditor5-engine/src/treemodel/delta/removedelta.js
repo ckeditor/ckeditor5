@@ -16,7 +16,7 @@ import Range from '../range.js';
  * To provide specific OT behavior and better collisions solving, {@link core.treeModel.Batch#remove} method
  * uses the `RemoveDelta` class which inherits from the `Delta` class and may overwrite some methods.
  *
- * @class core.treeModel.delta.RemoveDelta
+ * @memberOf core.treeModel.delta
  */
 export default class RemoveDelta extends Delta {}
 

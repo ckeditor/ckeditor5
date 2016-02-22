@@ -10,17 +10,20 @@ import Position from '../position.js';
 import ReinsertOperation from './reinsertoperation.js';
 
 /**
- * Creates a remove operation.
+ * Operation to remove a range of nodes.
  *
- * @param {core.treeModel.Position} position Position before the first node to remove.
- * @param {Number} howMany How many nodes to remove.
- * @param {Number} baseVersion {@link core.treeModel.Document#version} on which operation can be applied.
- *
- * @class core.treeModel.operation.RemoveOperation
- * @classdesc Operation to remove a range of nodes.
+ * @memberOf core.treeModel.operation
  * @extends core.treeModel.operation.Operation
  */
 export default class RemoveOperation extends MoveOperation {
+	/**
+	 *
+	 * Creates a remove operation.
+	 *
+	 * @param {core.treeModel.Position} position Position before the first node to remove.
+	 * @param {Number} howMany How many nodes to remove.
+	 * @param {Number} baseVersion {@link core.treeModel.Document#version} on which operation can be applied.
+	 */
 	constructor( position, howMany, baseVersion ) {
 		// Position in a graveyard where nodes were moved.
 		const graveyardPosition = Position.createFromParentAndOffset( position.root.document.graveyard, 0 );
@@ -33,7 +36,6 @@ export default class RemoveOperation extends MoveOperation {
 	}
 
 	/**
-	 * @method core.treeModel.operation.ReinsertOperation#getReversed
 	 * @returns {core.treeModel.operation.ReinsertOperation}
 	 */
 	getReversed() {
@@ -41,7 +43,6 @@ export default class RemoveOperation extends MoveOperation {
 	}
 
 	/**
-	 * @method core.treeModel.operation.RemoveOperation#clone
 	 * @returns {core.treeModel.operation.RemoveOperation}
 	 */
 	clone() {

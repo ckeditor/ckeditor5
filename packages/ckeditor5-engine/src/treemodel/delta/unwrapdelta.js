@@ -17,7 +17,7 @@ import CKEditorError from '../../ckeditorerror.js';
  * To provide specific OT behavior and better collisions solving, {@link core.treeModel.Batch#merge} method
  * uses the `UnwrapDelta` class which inherits from the `Delta` class and may overwrite some methods.
  *
- * @class core.treeModel.delta.UnwrapDelta
+ * @memberOf core.treeModel.delta
  */
 export default class UnwrapDelta extends Delta {}
 

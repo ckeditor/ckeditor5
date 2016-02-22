@@ -9,16 +9,19 @@ import View from '../ui/view.js';
 import CKEditorError from '../ckeditorerror.js';
 
 /**
- * @class core.editable.EditableView
+ * @memberOf core.editable
  * @extends core.ui.View
  */
 export default class EditableView extends View {
 	/**
 	 * The element which is the main editable element (usually the one with `contentEditable="true"`).
 	 *
-	 * @member core.editable.EditableView#editableElement
 	 * @readonly
-	 * @type {HTMLElement}
+	 * @member {HTMLElement} core.editable.EditableView#editableElement
+	 */
+
+	/**
+	 * @param {HTMLElement} editableElement
 	 */
 	setEditableElement( editableElement ) {
 		const bind = this.attributeBinder;

@@ -10,23 +10,23 @@ import ViewPosition from '../treeview/position.js';
 import ViewText from '../treeview/text.js';
 
 /**
- * Creates an instance of the mapper.
- *
- * @classdesc
  * Maps elements and positions between {@link core.treeView.TreeView TreeView} and {@link core.treeModel TreeModel}.
  *
  * Mapper use binded elements to find corresponding elements and positions, so, to get proper results,
  * all Tree Model elements should be {@link core.treeController.Mapper#bindElements binded}.
  *
- * @class core.treeController.Mapper
+ * @memberOf core.treeController
  */
 export default class Mapper {
+	/**
+	 * Creates an instance of the mapper.
+	 */
 	constructor() {
 		/**
 		 * Model element to View element mapping.
 		 *
 		 * @private
-		 * @type {WeakMap}
+		 * @member {WeakMap} core.treeController.Mapper#_modelToViewMapping
 		 */
 		this._modelToViewMapping = new WeakMap();
 
@@ -34,7 +34,7 @@ export default class Mapper {
 		 * View element to Model element mapping.
 		 *
 		 * @private
-		 * @type {WeakMap}
+		 * @member {WeakMap} core.treeController.Mapper#_viewToModelMapping
 		 */
 		this._viewToModelMapping = new WeakMap();
 	}
@@ -44,7 +44,6 @@ export default class Mapper {
 	 * the {@link core.treeController.Mapper#toModelElement toModelElement} and {@link core.treeController.Mapper#toViewElement toViewElement}
 	 * methods. The information that elements are bound is also used to translate positions.
 	 *
-	 * @method core.treeController.Mapper#bindElements
 	 * @param {core.treeModel.Element} modelElement Model element.
 	 * @param {core.treeView.Element} viewElement View element.
 	 */
@@ -56,7 +55,6 @@ export default class Mapper {
 	/**
 	 * Gets the corresponding model element.
 	 *
-	 * @method core.treeController.Mapper#toModelElement
 	 * @param {core.treeView.Element} viewElement View element.
 	 * @returns {core.treeModel.Element|null} Corresponding model element or `null` if not found.
 	 */
@@ -67,7 +65,6 @@ export default class Mapper {
 	/**
 	 * Gets the corresponding view element.
 	 *
-	 * @method core.treeController.Mapper#toViewElement
 	 * @param {core.treeModel.Element} modelElement Model element.
 	 * @returns {core.treeView.Element|null} Corresponding view element or `null` if not found.
 	 */
@@ -98,7 +95,6 @@ export default class Mapper {
 	/**
 	 * Gets the corresponding view position.
 	 *
-	 * @method core.treeController.Mapper#toViewPosition
 	 * @param {core.treeModel.Position} modelPosition Model position.
 	 * @returns {core.treeView.Position} Corresponding view position.
 	 */
@@ -120,7 +116,6 @@ export default class Mapper {
 	 *		<p>foo|<b>bar</b></p> // _toModelOffset( p, 3, p ) -> 3
 	 *		<p>foo<b>ba|r</b></p> // _toModelOffset( b, 2, b ) -> 2
 	 *
-	 * @method core.treeController.Mapper#_toModelOffset
 	 * @private
 	 * @param {core.treeView.Element} viewParent Position parent.
 	 * @param {Number} viewOffset Position offset.
@@ -162,7 +157,6 @@ export default class Mapper {
 	 *		<b>foo</b>   -> 3 // Length the element which has no corresponding model element is a length of its children.
 	 *		<p>foo</p>   -> 1 // Length the element which has corresponding model element is always 1.
 	 *
-	 * @method core.treeController.Mapper#_getModelLength
 	 * @private
 	 * @param {core.treeView.Element} viewNode View node.
 	 * @returns {Number} Length of the node in the tree model.
@@ -206,11 +200,10 @@ export default class Mapper {
 	 *		We are in the text node so we can simple find the offset.
 	 *		<p>fo<b>ba|r</b>bom</p> -> expected offset: 2, actual offset: 2 -> position found
 	 *
-	 * @method core.treeController.Mapper#_findPositionIn
 	 * @private
 	 * @param {core.treeView.Element} viewParent Tree view element in which we are looking for the position.
 	 * @param {Number} expectedOffset Expected offset.
-	 * @returns {core.treeVew.Position} Found position.
+	 * @returns {core.treeView.Position} Found position.
 	 */
 	_findPositionIn( viewParent, expectedOffset ) {
 		// Last scanned view node.

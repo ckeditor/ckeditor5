@@ -18,7 +18,7 @@ import CKEditorError from '../../ckeditorerror.js';
  * To provide specific OT behavior and better collisions solving, the {@link core.treeModel.Batch#split} method
  * uses `SplitDelta` class which inherits from the `Delta` class and may overwrite some methods.
  *
- * @class core.treeModel.delta.SplitDelta
+ * @memberOf core.treeModel.delta
  */
 export default class SplitDelta extends Delta {}
 

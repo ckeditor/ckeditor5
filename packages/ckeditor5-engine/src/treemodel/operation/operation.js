@@ -6,13 +6,16 @@
 'use strict';
 
 /**
- * Base operation constructor.
- * @param {Number} baseVersion {@link core.treeModel.Document#version} on which the operation can be applied.
+ * Abstract base operation class.
+ *
  * @abstract
- * @class core.treeModel.operation.Operation
- * @classdesc Abstract base operation class.
+ * @memberOf core.treeModel.operation
  */
 export default class Operation {
+	/**
+	 * Base operation constructor.
+	 * @param {Number} baseVersion {@link core.treeModel.Document#version} on which the operation can be applied.
+	 */
 	constructor( baseVersion ) {
 		/**
 		 * {@link core.treeModel.Document#version} on which operation can be applied. If you try to
@@ -20,16 +23,14 @@ export default class Operation {
 		 * {@link core.treeModel.Document#version document version} the {@link document-applyOperation-wrong-version}
 		 * error is thrown.
 		 *
-		 * @type {Number}
-		 * @member core.treeModel.operation.Operation#baseVersion
+		 * @member {Number} core.treeModel.operation.Operation#baseVersion
 		 */
 		this.baseVersion = baseVersion;
 
 		/**
 		 * Operation type.
 		 *
-		 * @type {String}
-		 * @member core.treeModel.operation.Operation#type
+		 * @member {String} core.treeModel.operation.Operation#type
 		 */
 
 		/**
@@ -37,8 +38,7 @@ export default class Operation {
 		 * {@link core.treeModel.Delta delta} when the operations is added to it by the
 		 * {@link core.treeModel.Delta#addOperation} method.
 		 *
-		 * @type {core.treeModel.Delta}
-		 * @member core.treeModel.operation.Operation#delta
+		 * @member {core.treeModel.Delta} core.treeModel.operation.Operation#delta
 		 */
 
 		/**

@@ -17,7 +17,7 @@ import CKEditorError from '../../ckeditorerror.js';
  * To provide specific OT behavior and better collisions solving, {@link core.treeModel.Batch#move} method
  * uses the `MoveDelta` class which inherits from the `Delta` class and may overwrite some methods.
  *
- * @class core.treeModel.delta.MoveDelta
+ * @memberOf core.treeModel.delta
  */
 export default class MoveDelta extends Delta {}
 

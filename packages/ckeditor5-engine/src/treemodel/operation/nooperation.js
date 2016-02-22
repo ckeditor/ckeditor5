@@ -8,8 +8,6 @@
 import Operation from './operation.js';
 
 /**
- * @class core.treeModel.operation.NoOperation
- * @classdesc
  * Operation which is doing nothing ("empty operation", "do-nothing operation", "noop").
  * This is an operation, which when executed does not change the tree model.
  * It still has some parameters defined for transformation purposes.
@@ -17,11 +15,12 @@ import Operation from './operation.js';
  * In most cases this operation is a result of transforming operations. When transformation returns
  * {@link core.treeModel.operation.NoOperation} it means that changes done by the transformed operation
  * have already been applied.
+ *
+ * @memberOf core.treeModel.operation
  * @extends core.treeModel.operation.Operation
  */
 export default class NoOperation extends Operation {
 	/**
-	 * @method core.treeModel.operation.NoOperation#clone
 	 * @returns {core.treeModel.operation.NoOperation}
 	 */
 	clone() {
@@ -29,7 +28,6 @@ export default class NoOperation extends Operation {
 	}
 
 	/**
-	 * @method core.treeModel.operation.NoOperation#getReversed
 	 * @returns {core.treeModel.operation.NoOperation}
 	 */
 	getReversed() {

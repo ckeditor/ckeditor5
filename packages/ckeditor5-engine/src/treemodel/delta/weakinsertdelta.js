@@ -15,7 +15,7 @@ import NodeList from '../nodelist.js';
  * To provide specific OT behavior and better collisions solving, the {@link core.treeModel.Batch#insert} method
  * uses the `WeakInsertDelta` class which inherits from the `Delta` class and may overwrite some methods.
  *
- * @class core.treeModel.delta.WeakInsertDelta
+ * @memberOf core.treeModel.delta
  */
 export default class WeakInsertDelta extends Delta {}
 
