@@ -33,8 +33,7 @@ export default class BoldFeature extends Feature {
 			true
 		);
 
-		this.editor.document.schema.allow( { name: 'inline', attribute: 'bold', inside: 'block' } );
-		this.editor.document.schema.allow( { name: 'block', attribute: 'bold', inside: 'root' } );
+		this.editor.document.schema.allow( { name: '$inline', attribute: 'bold', inside: '$block' } );
 	}
 
 	static get requires() {

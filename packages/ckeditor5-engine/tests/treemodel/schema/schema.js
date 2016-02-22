@@ -60,9 +60,9 @@ describe( 'registerItem', () => {
 	} );
 
 	it( 'should make registered item inherit allows from base item', () => {
-		schema.registerItem( 'div', '$block' );
+		schema.registerItem( 'image', '$inline' );
 
-		expect( schema.checkForPath( { name: 'div' }, [ '$root' ] ) ).to.be.true;
+		expect( schema.checkForPath( { name: 'image' }, [ '$block' ] ) ).to.be.true;
 	} );
 
 	it( 'should throw if item with given name has already been registered in schema', () => {
@@ -151,8 +151,7 @@ describe( 'checkAtPosition', () => {
 		schema.registerItem( 'header', '$block' );
 		schema.registerItem( 'p', '$block' );
 
-		schema.allow( { name: 'p', inside: 'div' } );
-		schema.allow( { name: 'header', inside: 'div' } );
+		schema.allow( { name: '$block', inside: 'div' } );
 		schema.allow( { name: '$inline', attribute: 'bold', inside: '$block' } );
 
 		schema.disallow( { name: '$inline', attribute: 'bold', inside: 'header' } );
@@ -188,7 +187,7 @@ describe( 'checkAtPosition', () => {
 		expect( schema.checkAtPosition( { name: 'p', attribute: 'bold' }, new Position( root, [ 0, 0 ] ) ) ).to.be.false;
 
 		// Bold text is not allowed in header
-		expect( schema.checkAtPosition( { name: '$inline', attribute: 'bold' }, new Position( root, [ 1, 0 ] ) ) ).to.be.false;
+		expect( schema.checkAtPosition( { name: '$text', attribute: 'bold' }, new Position( root, [ 1, 0 ] ) ) ).to.be.false;
 	} );
 
 	it( 'should return false if given element is not registered in schema', () => {
@@ -202,6 +201,6 @@ describe( 'checkForPath', () => {
 	} );
 
 	it( 'should handle path given as string', () => {
-		expect( schema.checkForPath( { name: '$inline' }, '$block $root' ) ).to.be.true;
+		expect( schema.checkForPath( { name: '$inline' }, '$block $block $block' ) ).to.be.true;
 	} );
 } );

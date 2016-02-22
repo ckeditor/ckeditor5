@@ -32,7 +32,7 @@ export default class AttributeCommand extends Command {
 		const schema = this.editor.document.schema;
 
 		if ( selection.isCollapsed ) {
-			return schema.checkAtPosition( { name: 'text', attribute: this.attributeKey }, selection.getFirstPosition() );
+			return schema.checkAtPosition( { name: '$text', attribute: this.attributeKey }, selection.getFirstPosition() );
 		} else {
 			const ranges = selection.getRanges();
 
@@ -43,7 +43,7 @@ export default class AttributeCommand extends Command {
 
 				while ( !step.done ) {
 					const query = {
-						name: step.value.item.name || 'text',
+						name: step.value.item.name || '$text',
 						attribute: this.attributeKey
 					};
 
@@ -103,7 +103,7 @@ export default class AttributeCommand extends Command {
 
 			while ( !step.done ) {
 				const query = {
-					name: step.value.item.name || 'text',
+					name: step.value.item.name || '$text',
 					attribute: this.attributeKey
 				};
 

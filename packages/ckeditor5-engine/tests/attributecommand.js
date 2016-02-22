@@ -26,16 +26,19 @@ beforeEach( () => {
 
 	command = new AttributeCommand( editor, attrKey );
 
-	modelDoc.schema.registerItem( 'p', 'block' );
-	modelDoc.schema.registerItem( 'div', 'block' );
-	modelDoc.schema.registerItem( 'img', 'inline' );
+	modelDoc.schema.registerItem( 'div', '$block' );
+	modelDoc.schema.registerItem( 'p', '$block' );
+	modelDoc.schema.registerItem( 'img', '$inline' );
+
+	// Allow block in "root" (DIV)
+	modelDoc.schema.allow( { name: '$block', inside: 'div' } );
 
 	// Bold text is allowed only in P.
-	modelDoc.schema.allow( { name: 'inline', attribute: 'bold', inside: 'p' } );
-	modelDoc.schema.allow( { name: 'p', attribute: 'bold', inside: 'root' } );
+	modelDoc.schema.allow( { name: '$text', attribute: 'bold', inside: 'p' } );
+	modelDoc.schema.allow( { name: 'p', attribute: 'bold', inside: 'div' } );
 
 	// Disallow bold on image.
-	modelDoc.schema.disallow( { name: 'img', attribute: 'bold', inside: 'root' } );
+	modelDoc.schema.disallow( { name: 'img', attribute: 'bold', inside: 'div' } );
 } );
 
 describe( 'value', () => {
