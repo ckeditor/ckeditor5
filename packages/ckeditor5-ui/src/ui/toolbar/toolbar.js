@@ -11,16 +11,11 @@ import ControllerCollection from '../controllercollection.js';
 /**
  * The basic toolbar controller class.
  *
- * @class core.ui.toolbar.Toolbar
+ * @memberOf core.ui.toolbar
  * @extends core.ui.Controller
  */
 
 export default class Toolbar extends Controller {
-	/**
-	 * Creates a new toolbar instance.
-	 *
-	 * @method constructor
-	 */
 	constructor( model, view ) {
 		super( model, view );
 

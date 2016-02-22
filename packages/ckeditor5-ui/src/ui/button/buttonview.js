@@ -10,17 +10,11 @@ import View from '../view.js';
 /**
  * The basic button view class.
  *
- * @class core.ui.button.ButtonView
+ * @memberOf core.ui.button
  * @extends core.ui.View
  */
 
 export default class ButtonView extends View {
-	/**
-	 * Creates a new button view instance.
-	 *
-	 * @method constructor
-	 * @param {Model} model
-	 */
 	constructor( model ) {
 		super( model );
 

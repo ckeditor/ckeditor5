@@ -10,7 +10,7 @@ import View from '../ui/view.js';
 /**
  * Base class for the editor main views.
  *
- * @class core.editorui.EditorUIView
+ * @memberOf core.editorUI
  * @extends core.ui.View
  */
 
@@ -24,8 +24,7 @@ export default class EditorUIView extends View {
 		 * The element holding elements of the 'body' region.
 		 *
 		 * @private
-		 * @type HTMLElement
-		 * @property _bodyRegionContainer
+		 * @member {HTMLElement} core.editorUI.EditorUIView#_bodyRegionContainer
 		 */
 	}
 
