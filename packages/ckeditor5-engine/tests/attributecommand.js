@@ -22,7 +22,7 @@ beforeEach( () => {
 
 	editor = new Editor( element );
 	modelDoc = editor.document;
-	root = modelDoc.createRoot( 'root' );
+	root = modelDoc.createRoot( 'root', 'div' );
 
 	command = new AttributeCommand( editor, attrKey );
 

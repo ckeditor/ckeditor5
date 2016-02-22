@@ -140,26 +140,27 @@ export default class Document {
 	/**
 	 * Creates a new top-level root.
 	 *
+	 * @param {String|Symbol} id Unique root id.
 	 * @param {String|Symbol} name Unique root name.
 	 * @returns {core.treeModel.RootElement} Created root.
 	 */
-	createRoot( name ) {
-		if ( this.roots.has( name ) ) {
+	createRoot( id, name ) {
+		if ( this.roots.has( id ) ) {
 			/**
-			 * Root with specified name already exists.
+			 * Root with specified id already exists.
 			 *
-			 * @error document-createRoot-name-exists
+			 * @error document-createRoot-id-exists
 			 * @param {core.treeModel.Document} doc
-			 * @param {String} name
+			 * @param {String} id
 			 */
 			throw new CKEditorError(
-				'document-createRoot-name-exists: Root with specified name already exists.',
-				{ name: name }
+				'document-createRoot-id-exists: Root with specified id already exists.',
+				{ id: id }
 			);
 		}
 
-		const root = new RootElement( this );
-		this.roots.set( name, root );
+		const root = new RootElement( this, name || id );
+		this.roots.set( id, root );
 
 		return root;
 	}
@@ -188,26 +189,26 @@ export default class Document {
 	}
 
 	/**
-	 * Returns top-level root by it's name.
+	 * Returns top-level root by it's id.
 	 *
-	 * @param {String|Symbol} name Name of the root to get.
-	 * @returns {core.treeModel.RootElement} Root registered under given name.
+	 * @param {String|Symbol} id Unique root id.
+	 * @returns {core.treeModel.RootElement} Root registered under given id.
 	 */
-	getRoot( name ) {
-		if ( !this.roots.has( name ) ) {
+	getRoot( id ) {
+		if ( !this.roots.has( id ) ) {
 			/**
-			 * Root with specified name does not exist.
+			 * Root with specified id does not exist.
 			 *
-			 * @error document-createRoot-root-not-exist
-			 * @param {String} name
+			 * @error document-getRoot-root-not-exist
+			 * @param {String} id
 			 */
 			throw new CKEditorError(
-				'document-createRoot-root-not-exist: Root with specified name does not exist.',
-				{ name: name }
+				'document-getRoot-root-not-exist: Root with specified id does not exist.',
+				{ id: id }
 			);
 		}
 
-		return this.roots.get( name );
+		return this.roots.get( id );
 	}
 
 	_updateSelectionAttributes() {

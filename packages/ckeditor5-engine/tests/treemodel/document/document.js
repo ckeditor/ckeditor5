@@ -35,26 +35,26 @@ describe( 'Document', () => {
 
 	describe( 'createRoot', () => {
 		it( 'should create a new RootElement, add it to roots map and return it', () => {
-			let root = doc.createRoot( 'root' );
+			let root = doc.createRoot( 'root', 'root' );
 
 			expect( doc.roots.size ).to.equal( 2 );
 			expect( root ).to.be.instanceof( RootElement );
 			expect( root.getChildCount() ).to.equal( 0 );
 		} );
 
-		it( 'should throw an error when trying to create a second root with the same name', () => {
-			doc.createRoot( 'root' );
+		it( 'should throw an error when trying to create a second root with the same id', () => {
+			doc.createRoot( 'root', 'root' );
 
 			expect(
 				() => {
-					doc.createRoot( 'root' );
+					doc.createRoot( 'root', 'root' );
 				}
-			).to.throw( CKEditorError, /document-createRoot-name-exists/ );
+			).to.throw( CKEditorError, /document-createRoot-id-exists/ );
 		} );
 	} );
 
 	describe( 'getRoot', () => {
-		it( 'should return a RootElement previously created with given name', () => {
+		it( 'should return a RootElement previously created with given id', () => {
 			let newRoot = doc.createRoot( 'root' );
 			let getRoot = doc.getRoot( 'root' );
 
@@ -66,7 +66,7 @@ describe( 'Document', () => {
 				() => {
 					doc.getRoot( 'root' );
 				}
-			).to.throw( CKEditorError, /document-createRoot-root-not-exist/ );
+			).to.throw( CKEditorError, /document-getRoot-root-not-exist/ );
 		} );
 	} );
 
@@ -175,7 +175,7 @@ describe( 'Document', () => {
 		} );
 	} );
 
-	describe( '_setSelectionAttributes', () => {
+	describe( '_updateSelectionAttributes', () => {
 		let root;
 		beforeEach( () => {
 			root = doc.createRoot( 'root' );
@@ -194,19 +194,19 @@ describe( 'Document', () => {
 		} );
 
 		it( 'should be fired whenever selection gets updated', () => {
-			sinon.spy( doc, '_setSelectionAttributes' );
+			sinon.spy( doc, '_updateSelectionAttributes' );
 
 			doc.selection.fire( 'update' );
 
-			expect( doc._setSelectionAttributes.called ).to.be.true;
+			expect( doc._updateSelectionAttributes.called ).to.be.true;
 		} );
 
 		it( 'should be fired whenever changes to Tree Model are applied', () => {
-			sinon.spy( doc, '_setSelectionAttributes' );
+			sinon.spy( doc, '_updateSelectionAttributes' );
 
 			doc.fire( 'changesDone' );
 
-			expect( doc._setSelectionAttributes.called ).to.be.true;
+			expect( doc._updateSelectionAttributes.called ).to.be.true;
 		} );
 
 		it( 'if selection is a range, should find first character in it and copy it\'s attributes', () => {
