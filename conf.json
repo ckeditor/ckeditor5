@@ -1,13 +1,13 @@
 {
 	"opts": {
-		"template": "./node_modules/jaguarjs-jsdoc",
 		"encoding": "utf8",
 		"destination": "out/jsdoc",
 		"recurse": true,
 		"access": "all"
 	},
 	"plugins": [
-		"plugins/markdown"
+		"plugins/markdown",
+		"dev/jsdoc/plugins/export-es6-class"
 	],
 	"source": {
 		"include": [

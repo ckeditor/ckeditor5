@@ -40,7 +40,6 @@
     "guppy-pre-commit": "^0.3.0",
     "inquirer": "^0.11.0",
     "istanbul": "^0.4.1",
-    "jaguarjs-jsdoc": "0.0.1",
     "jsdoc": "^3.4.0",
     "jshint": "^2.9.1",
     "jshint-reporter-jscs": "^0.1.0",
