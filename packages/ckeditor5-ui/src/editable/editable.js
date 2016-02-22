@@ -11,14 +11,16 @@ import utils from '../utils.js';
 import ObservableMixin from '../observablemixin.js';
 
 /**
- * Creates a new instance of the Editable class.
- *
- * @class core.editable.Editable
+ * @memberOf core.editable
  * @extends core.ui.Controller
  * @mixins core.ObservableMixin
- * @param editor
  */
 export default class Editable extends Controller {
+	/**
+	 * Creates a new instance of the Editable class.
+	 *
+	 * @param editor
+	 */
 	constructor( editor ) {
 		super();
 
@@ -27,17 +29,15 @@ export default class Editable extends Controller {
 		/**
 		 * Whether the editable is in read-write or read-only mode.
 		 *
-		 * @member core.editable.Editable#isEditable
-		 * @type {Boolean}
+		 * @member {Boolean} core.editable.Editable#isEditable
 		 */
 		this.set( 'isEditable', true );
 
 		/**
 		 * Whether the editable is focused.
 		 *
-		 * @member core.editable.Editable#isFocused
 		 * @readonly
-		 * @type {Boolean}
+		 * @member {Boolean} core.editable.Editable#isFocused
 		 */
 		this.set( 'isFocused', false );
 	}
@@ -47,7 +47,6 @@ export default class Editable extends Controller {
 	 *
 	 * @readonly
 	 * @type {core.ui.Model}
-	 * @member core.editable.Editable#_viewModel
 	 */
 	get viewModel() {
 		if ( this._viewModel ) {
@@ -68,7 +67,6 @@ export default class Editable extends Controller {
 	/**
 	 * Temporary implementation (waiting for integration with the data model).
 	 *
-	 * @method core.editable.Editable#setData
 	 * @param {String} data HTML to be loaded.
 	 */
 	setData( data ) {
@@ -78,7 +76,6 @@ export default class Editable extends Controller {
 	/**
 	 * Temporary implementation (waiting for integration with the data model).
 	 *
-	 * @method core.editable.Editable#getData
 	 * @returns {String} HTML string.
 	 */
 	getData() {
