@@ -6,7 +6,7 @@
 'use strict';
 
 import Editor from '/ckeditor5/core/editor.js';
-import EditorUI from '/ckeditor5/core/editorui.js';
+import EditorUI from '/ckeditor5/core/editorui/editorui.js';
 
 describe( 'EditorUI', () => {
 	let editor, editorUI;

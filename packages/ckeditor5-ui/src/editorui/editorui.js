@@ -5,15 +5,17 @@
 
 'use strict';
 
-import Controller from './ui/controller.js';
-import utils from './utils.js';
-import ObservableMixin from './observablemixin.js';
-import ComponentFactory from './ui/componentfactory.js';
+import Controller from '../ui/controller.js';
+import ControllerCollection from '../ui/controllercollection.js';
+import ComponentFactory from '../ui/componentfactory.js';
+import ObservableMixin from '../observablemixin.js';
+import utils from '../utils.js';
 
 /**
  * Base class for the editor main view controllers.
  *
  * @memberOf core
+ * @class core.editorui.EditorUI
  * @extends core.ui.Controller
  * @mixes core.ObservableMixin
  */
@@ -24,15 +26,17 @@ export default class EditorUI extends Controller {
 
 		/**
 		 * @readonly
-		 * @member {core.Editor} core.EditorUI.editor
+		 * @member {core.Editor} core.EditorUI#editor
 		 */
 		this.editor = editor;
 
 		/**
 		 * @readonly
-		 * @type {core.ui.ComponentFactory}
+		 * @member {core.ui.ComponentFactory} core.EditorUI#featureComponents
 		 */
 		this.featureComponents = new ComponentFactory( editor );
+
+		this.collections.add( new ControllerCollection( 'body' ) );
 	}
 }
 
