@@ -19,15 +19,13 @@ import utils from './utils.js';
  * By default an item in the collection is identified by its `id` property. The name of the identifier can be
  * configured through the constructor of the collection.
  *
- * @class Collection
+ * @memberOf core
  * @mixes EventEmitter
  */
-
 export default class Collection {
 	/**
 	 * Creates a new Collection instance.
 	 *
-	 * @constructor
 	 * @param {Iterable} [items] Items to be added to the collection.
 	 * @param {Object} options The options object.
 	 * @param {String} [options.idProperty='id'] The name of the property which is considered to identify an item.
@@ -76,6 +74,7 @@ export default class Collection {
 	 * @param {Object} item
 	 * @param {Number} [index] The position of the item in the collection. The item
 	 * is pushed to the collection when `index` not specified.
+	 * @fires {@link core.Collection.add add}
 	 */
 	add( item, index ) {
 		let itemId;
@@ -157,6 +156,7 @@ export default class Collection {
 	 *
 	 * @param {Object|Number|String} subject The item to remove, its id or index in the collection.
 	 * @returns {Object} The removed item.
+	 * @fires {@link core.Collection.remove remove}
 	 */
 	remove( subject ) {
 		let index, id, item;
@@ -270,13 +270,13 @@ utils.mix( Collection, EmitterMixin );
 /**
  * Fired when an item is added to the collection.
  *
- * @event add
+ * @event core.Collection.add
  * @param {Object} item The added item.
  */
 
 /**
  * Fired when an item is removed from the collection.
  *
- * @event remove
+ * @event core.Collection.remove
  * @param {Object} item The removed item.
  */

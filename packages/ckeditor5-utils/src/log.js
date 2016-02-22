@@ -35,10 +35,8 @@
  * log an error.
  * * Whenever it's really bad and it does not make sense to continue working, throw a {@link core.CKEditorError}.
  *
- * @class log
- * @singleton
+ * @namespace core.log
  */
-
 const log = {
 	/**
 	 * Logs an error to the console.
@@ -49,6 +47,7 @@ const log = {
 	 * During the minification process the "Error message" part will be removed to limit the code size
 	 * and a link to this error documentation will be logged to the console.
 	 * @param {Object} [data] Additional data describing the error.
+	 * @method core.log.error
 	 */
 	error( message, data ) {
 		console.error( message, data );
@@ -63,6 +62,7 @@ const log = {
 	 * During the minification process the "Warning message" part will be removed to limit the code size
 	 * and a link to this error documentation will be logged to the console.
 	 * @param {Object} [data] Additional data describing the warning.
+	 * @method core.log.warn
 	 */
 	warn( message, data ) {
 		console.warn( message, data );
