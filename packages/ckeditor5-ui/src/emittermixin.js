@@ -15,11 +15,9 @@ let eventsCounter = 0;
 /**
  * Mixin that injects the events API into its host.
  *
- * @singleton
- * @class core.EmitterMixin
- * @implementes core.Emitter
+ * @mixin core.EmitterMixin
+ * @implements core.Emitter
  */
-
 const EmitterMixin = {
 	/**
 	 * Registers a callback function to be executed when an event is fired.

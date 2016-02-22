@@ -14,7 +14,7 @@ import ObservableMixin from './observablemixin.js';
  *
  * @class core.EditorUI
  * @extends core.ui.Controller
- * @mixins core.ObservableMixin
+ * @mixes core.ObservableMixin
  */
 
 export default class EditorUI extends Controller {

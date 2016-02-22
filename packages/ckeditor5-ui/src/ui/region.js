@@ -10,36 +10,33 @@ import Collection from '../collection.js';
 /**
  * Basic Region class.
  *
- * @class Region
- * @extends Model
+ * @memberOf core.ui
  */
-
 export default class Region {
 	/**
 	 * Creates an instance of the {@link Region} class.
 	 *
 	 * @param {String} name The name of the Region.
-	 * @constructor
 	 */
 	constructor( name ) {
 		/**
 		 * The name of the region.
 		 *
-		 * @type {String}
+		 * @member {String} core.ui.Region#name
 		 */
 		this.name = name;
 
 		/**
 		 * Views which belong to the region.
 		 *
-		 * @type {Collection}
+		 * @member {Collection} core.ui.Region#views
 		 */
 		this.views = new Collection();
 
 		/**
 		 * Element of this region (see {@link #init}).
 		 *
-		 * @type {HTMLElement}
+		 * @member {HTMLElement} core.ui.Region#element
 		 */
 		this.element = null;
 	}

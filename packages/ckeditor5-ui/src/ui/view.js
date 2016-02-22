@@ -19,27 +19,25 @@ const bindIfSymbol = Symbol( 'bind-if' );
 /**
  * Basic View class.
  *
- * @class core.ui.View
- * @mixins DOMEmitterMixin
+ * @memberOf core.ui
+ * @mixes DOMEmitterMixin
  */
-
 export default class View {
 	/**
 	 * Creates an instance of the {@link View} class.
 	 *
-	 * @param {Model} model (View)Model of this View.
-	 * @constructor
+	 * @param {core.ui.Model} model (View)Model of this View.
 	 */
 	constructor( model ) {
 		/**
 		 * Model of this view.
 		 *
-		 * @type {Model}
+		 * @type {core.ui.Model}
 		 */
 		this.model = model || null;
 
 		/**
-		 * Regions of this view. See {@link #register}.
+		 * Regions of this view. See {@link core.ui.View#register}.
 		 *
 		 * @type {Collection}
 		 */
@@ -55,7 +53,7 @@ export default class View {
 		this.template = null;
 
 		/**
-		 * Region selectors of this view. See {@link #register}.
+		 * Region selectors of this view. See {@link core.ui.View#register}.
 		 *
 		 * @private
 		 * @type {Object}
@@ -71,7 +69,7 @@ export default class View {
 		this._element = null;
 
 		/**
-		 * An instance of Template to generate {@link #_el}.
+		 * An instance of Template to generate {@link core.ui.View#_el}.
 		 *
 		 * @private
 		 * @type {Template}
@@ -81,9 +79,7 @@ export default class View {
 
 	/**
 	 * Element of this view. The element is rendered on first reference
-	 * using {@link #template} definition and {@link #_template} object.
-	 *
-	 * @property element
+	 * using {@link core.ui.View#template} definition and {@link core.ui.View#_template} object.
 	 */
 	get element() {
 		if ( this._element ) {
@@ -121,7 +117,6 @@ export default class View {
 	 * is synchronized with {@link View#model}.
 	 *
 	 * @readonly
-	 * @property attributeBinder
 	 */
 	get attributeBinder() {
 		if ( this._attributeBinder ) {
@@ -149,7 +144,7 @@ export default class View {
 			 * @property {attributeBinder.to}
 			 * @param {String} attribute Name of {@link View#model} used in the binding.
 			 * @param {Function} [callback] Allows processing of the value. Accepts `Node` and `value` as arguments.
-			 * @return {ViewModelBinding}
+			 * @return {core.ui.ViewModelBinding}
 			 */
 			to( attribute, callback ) {
 				return {
@@ -186,7 +181,7 @@ export default class View {
 			 * @param {String} attribute Name of {@link View#model} used in the binding.
 			 * @param {String} [valueIfTrue] Value set when {@link View#model} attribute is not undefined/null/false/''.
 			 * @param {Function} [callback] Allows processing of the value. Accepts `Node` and `value` as arguments.
-			 * @return {ViewModelBinding}
+			 * @return {core.ui.ViewModelBinding}
 			 */
 			if( attribute, valueIfTrue, callback ) {
 				return {
@@ -210,7 +205,7 @@ export default class View {
 	}
 
 	/**
-	 * Registers a region in {@link #regions}.
+	 * Registers a region in {@link core.ui.View#regions}.
 	 *
 	 *		let view = new View();
 	 *
@@ -229,7 +224,7 @@ export default class View {
 	 * @param {String|Region} stringOrRegion The name or an instance of the Region
 	 * to be registered. If `String`, the region will be created on the fly.
 	 * @param {String|Function|true} regionSelector The selector to retrieve region's element
-	 * in DOM when the region instance is initialized (see {@link Region#init}, {@link #init}).
+	 * in DOM when the region instance is initialized (see {@link Region#init}, {@link core.ui.View#init}).
 	 * @param {Boolean} [override] When set `true` it will allow overriding of registered regions.
 	 */
 	register( ...args ) {
@@ -308,7 +303,7 @@ export default class View {
 	 * See: {@link Template#apply}.
 	 *
 	 * @param {DOMElement} element DOM Element to initialize.
-	 * @param {TemplateDefinition} def Template definition to be applied.
+	 * @param {core.ui.TemplateDefinition} def Template definition to be applied.
 	 */
 	applyTemplateToElement( element, def ) {
 		// Prepare pre–defined listeners.
@@ -323,8 +318,8 @@ export default class View {
 	/**
 	 * Destroys the view instance. The process includes:
 	 *
-	 * 1. Removal of child views from {@link #regions}.
-	 * 2. Destruction of the {@link #regions}.
+	 * 1. Removal of child views from {@link core.ui.View#regions}.
+	 * 2. Destruction of the {@link core.ui.View#regions}.
 	 * 3. Removal of {#link #_el} from DOM.
 	 */
 	destroy() {
@@ -348,8 +343,8 @@ export default class View {
 	}
 
 	/**
-	 * Initializes {@link #regions} of this view by passing a DOM element
-	 * generated from {@link #_regionsSelectors} into {@link Region#init}.
+	 * Initializes {@link core.ui.View#regions} of this view by passing a DOM element
+	 * generated from {@link core.ui.View#_regionsSelectors} into {@link Region#init}.
 	 *
 	 * @protected
 	 */
@@ -423,22 +418,22 @@ export default class View {
 	}
 
 	/**
-	 * For given {@link TemplateValueSchema} found by (@link _extendTemplateWithModelBinders} containing
-	 * {@link ViewModelBinding} it returns a function, which when called by {@link Template#render}
+	 * For given {@link core.ui.TemplateValueSchema} found by (@link _extendTemplateWithModelBinders} containing
+	 * {@link core.ui.ViewModelBinding} it returns a function, which when called by {@link Template#render}
 	 * or {@link Template#apply} activates the binding and sets its initial value.
 	 *
-	 * Note: {@link TemplateValueSchema} can be for HTMLElement attributes or Text Node `textContent`.
+	 * Note: {@link core.ui.TemplateValueSchema} can be for HTMLElement attributes or Text Node `textContent`.
 	 *
 	 * @protected
-	 * @param {TemplateValueSchema}
+	 * @param {core.ui.TemplateValueSchema}
 	 * @return {Function}
 	 */
 	_getModelBinder( valueSchema ) {
 		valueSchema = normalizeBinderValueSchema( valueSchema );
 
 		/**
-		 * Assembles the value using {@link TemplateValueSchema} and stores it in a form of
-		 * an Array. Each entry of an Array corresponds to one of {@link TemplateValueSchema}
+		 * Assembles the value using {@link core.ui.TemplateValueSchema} and stores it in a form of
+		 * an Array. Each entry of an Array corresponds to one of {@link core.ui.TemplateValueSchema}
 		 * items.
 		 *
 		 * @private
@@ -467,7 +462,7 @@ export default class View {
 
 		/**
 		 * Attaches a listener to {@link View#model}, which updates DOM with a value constructed from
-		 * {@link TemplateValueSchema} when {@link View#model} attribute value changes.
+		 * {@link core.ui.TemplateValueSchema} when {@link View#model} attribute value changes.
 		 *
 		 * This function is called by {@link Template#render} or {@link Template#apply}.
 		 *
@@ -515,12 +510,12 @@ export default class View {
 
 	/**
 	 * Iterates over "attributes" and "text" properties in {@link TemplateDefinition} and
-	 * locates existing {@link ViewModelBinding} created by {@link #attributeBinder}.
+	 * locates existing {@link core.ui.ViewModelBinding} created by {@link core.ui.View#attributeBinder}.
 	 * Then, for each such a binding, it creates corresponding entry in {@link Template#_modelBinders},
 	 * which can be then activated by {@link Template#render} or {@link Template#apply}.
 	 *
 	 * @protected
-	 * @param {TemplateDefinition}
+	 * @param {core.ui.TemplateDefinition} def
 	 */
 	_extendTemplateWithModelBinders( def ) {
 		const attributes = def.attributes;
@@ -566,7 +561,7 @@ export default class View {
 	 * of an element, attaches native DOM listener to that element.
 	 *
 	 * @protected
-	 * @param {TemplateDefinition} def Template definition.
+	 * @param {core.ui.TemplateDefinition} def Template definition.
 	 */
 	_extendTemplateWithListenerAttachers( def ) {
 		const on = def.on;
@@ -638,7 +633,7 @@ function isValidRegionSelector( selector ) {
 }
 
 /**
- * Normalizes given {@link TemplateValueSchema} it's always in an Array–like format:
+ * Normalizes given {@link core.ui.TemplateValueSchema} it's always in an Array–like format:
  *
  * 		{ attributeName/text: 'bar' } ->
  * 			{ attributeName/text: [ 'bar' ] }
@@ -649,7 +644,7 @@ function isValidRegionSelector( selector ) {
  * 		{ attributeName/text: [ 'bar', { model: ..., modelAttributeName: ... }, 'baz' ] }
  *
  * @private
- * @param {TemplateValueSchema} valueSchema
+ * @param {core.ui.TemplateValueSchema} valueSchema
  * @returns {Array}
  */
 function normalizeBinderValueSchema( valueSchema ) {
@@ -657,11 +652,11 @@ function normalizeBinderValueSchema( valueSchema ) {
 }
 
 /**
- * Checks whether given {@link TemplateValueSchema} contains a
- * {@link ViewModelBinding}.
+ * Checks whether given {@link core.ui.TemplateValueSchema} contains a
+ * {@link core.ui.ViewModelBinding}.
  *
  * @private
- * @param {TemplateValueSchema} valueSchema
+ * @param {core.ui.TemplateValueSchema} valueSchema
  * @returns {Boolean}
  */
 function hasModelBinding( valueSchema ) {
@@ -690,11 +685,11 @@ function binderValueReducer( prev, cur ) {
 /**
  * Describes Model binding created by {@link View#attributeBinder}.
  *
- * @typedef ViewModelBinding
+ * @typedef core.ui.ViewModelBinding
  * @type Object
  * @property {Symbol} type
- * @property {Model} model
+ * @property {core.ui.Model} model
  * @property {String} attribute
  * @property {String} [valueIfTrue]
- * @property {Funcion} [callback]
+ * @property {Function} [callback]
  */

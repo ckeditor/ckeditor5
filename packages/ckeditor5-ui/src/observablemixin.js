@@ -20,7 +20,7 @@ const boundAttributesSymbol = Symbol( 'boundAttributes' );
  *
  * @singleton
  * @class core.ObservableMixin
- * @mixins EmitterMixin
+ * @mixes core.EmitterMixin
  * @implements core.Observable
  */
 

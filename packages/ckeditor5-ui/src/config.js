@@ -14,7 +14,7 @@ import utils from './utils.js';
  * Handles a configuration dictionary.
  *
  * @class core.Config
- * @mixins core.ObservableMixin
+ * @mixes core.ObservableMixin
  */
 
 export default class Config {
