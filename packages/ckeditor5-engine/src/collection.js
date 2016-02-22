@@ -20,7 +20,7 @@ import utils from './utils.js';
  * configured through the constructor of the collection.
  *
  * @class Collection
- * @mixins EventEmitter
+ * @mixes EventEmitter
  */
 
 export default class Collection {

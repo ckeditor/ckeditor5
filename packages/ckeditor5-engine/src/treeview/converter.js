@@ -9,10 +9,6 @@ import ViewText from './text.js';
 import ViewElement from './element.js';
 
 /**
- * Creates converter.
- *
- * @class core.treeView.Converter
- * @classdesc
  * Converter is a set of tools to do transformations between DOM nodes and view nodes. It also handles
  * {@link core.treeView.Converter#bindElements binding} these nodes.
  *
@@ -21,8 +17,13 @@ import ViewElement from './element.js';
  *
  * Converter keeps DOM elements to View element bindings, so when the converter will be destroyed, the binding will be
  * lost. Two converters will keep separate binding maps, so one tree view can be bound with two DOM trees.
+ *
+ * @memberOf core.treeView
  */
 export default class Converter {
+	/**
+	 * Creates converter.
+	 */
 	constructor() {
 		// Using WeakMap prevent memory leaks: when the converter will be destroyed all referenced between View and DOM
 		// will be removed. Also because it is a *Weak*Map when both view and DOM elements will be removed referenced
@@ -35,18 +36,16 @@ export default class Converter {
 		/**
 		 * DOM to View mapping.
 		 *
-		 * @member core.treeView.Converter#_domToViewMapping
 		 * @private
-		 * @type {WeakMap}
+		 * @member {WeakMap} core.treeView.Converter#_domToViewMapping
 		 */
 		this._domToViewMapping = new WeakMap();
 
 		/**
 		 * View to DOM mapping.
 		 *
-		 * @member core.treeView.Converter#_viewToDomMapping
 		 * @private
-		 * @type {WeakMap}
+		 * @member {WeakMap} core.treeView.Converter#_viewToDomMapping
 		 */
 		this._viewToDomMapping = new WeakMap();
 	}
@@ -55,7 +54,6 @@ export default class Converter {
 	 * Binds DOM and View elements, so it will be possible to get corresponding elements using
 	 * {@link core.treeView.Converter#getCorrespondingViewElement} and {@link core.treeView.Converter#getCorespondingDOMElement}.
 	 *
-	 * @method core.treeView.Converter#bindElements
 	 * @param {HTMLElement} domElement DOM element to bind.
 	 * @param {core.treeView.Element} viewElement View element to bind.
 	 */
@@ -68,7 +66,6 @@ export default class Converter {
 	 * Compares DOM and View nodes. Elements are same when they are bound. Text nodes are same when they have the same
 	 * text data. Nodes need to have corresponding types. In all other cases nodes are different.
 	 *
-	 * @method core.treeView.Converter#compareNodes
 	 * @param {Node} domNode DOM node to compare.
 	 * @param {core.treeView.Node} viewNode View node to compare.
 	 * @returns {Boolean} True if nodes are same.
@@ -91,7 +88,6 @@ export default class Converter {
 	 * Converts view to DOM. For all text nodes and not bound elements new elements will be created. For bound
 	 * elements function will return corresponding elements.
 	 *
-	 * @method core.treeView.Converter#viewToDom
 	 * @param {core.treeView.Node} viewNode View node to transform.
 	 * @param {document} domDocument Document which will be used to create DOM nodes.
 	 * @param {Object} [options] Conversion options.
@@ -135,7 +131,6 @@ export default class Converter {
 	 * Converts DOM to view. For all text nodes and not bound elements new elements will be created. For bound
 	 * elements function will return corresponding elements.
 	 *
-	 * @method core.treeView.Converter#domToView
 	 * @param {Node} domNode DOM node to transform.
 	 * @param {Object} [options] Conversion options.
 	 * @param {Boolean} [options.bind=false] Determines whether new elements will be bound.
@@ -182,7 +177,6 @@ export default class Converter {
 	 * Gets corresponding view node. This function use {@link core.treeView.Converter#getCorrespondingViewElement} for elements and
 	 * {@link getCorrespondingViewText} for text nodes.
 	 *
-	 * @method core.treeView.Converter#getCorrespondingView
 	 * @param {Node} domNode DOM node.
 	 * @returns {core.treeView.Node|null} Corresponding node.
 	 */
@@ -198,7 +192,6 @@ export default class Converter {
 	 * Gets corresponding view element. Returns element if an view element was {@link core.treeView.Converter#bindElements bound} to the given
 	 * DOM element or null otherwise.
 	 *
-	 * @method core.treeView.Converter#getCorrespondingViewElement
 	 * @param {HTMLElement} domElement DOM element.
 	 * @returns {core.treeView.Element|null} Corresponding element or null if none element was bound.
 	 */
@@ -218,7 +211,6 @@ export default class Converter {
 	 *
 	 * Otherwise `null` is returned.
 	 *
-	 * @method core.treeView.Converter#getCorrespondingViewText
 	 * @param {Text} domText DOM text node.
 	 * @returns {core.treeView.Text|null} Corresponding view text node or null, if it was not possible to find a
 	 * corresponding node.
@@ -255,7 +247,6 @@ export default class Converter {
 	 * Gets corresponding DOM node. This function uses {@link core.treeView.Converter#getCorrespondingDomElement} for elements and
 	 * {@link core.treeView.Converter#getCorrespondingDomText} for text nodes.
 	 *
-	 * @method core.treeView.Converter#getCorrespondingDom
 	 * @param {core.treeView.Node} viewNode View node.
 	 * @returns {Node|null} Corresponding DOM node.
 	 */
@@ -271,7 +262,6 @@ export default class Converter {
 	 * Gets corresponding DOM element. Returns element if an DOM element was {@link core.treeView.Converter#bindElements bound} to the given
 	 * view element or null otherwise.
 	 *
-	 * @method core.treeView.Converter#getCorrespondingDomElement
 	 * @param {core.treeView.Element} viewElement View element.
 	 * @returns {HTMLElement|null} Corresponding element or null if none element was bound.
 	 */
@@ -291,7 +281,6 @@ export default class Converter {
 	 *
 	 * Otherwise null is returned.
 	 *
-	 * @method core.treeView.Converter#getCorrespondingDomText
 	 * @param {core.treeView.Text} viewText View text node.
 	 * @returns {Text|null} Corresponding DOM text node or null, if it was not possible to find a corresponding node.
 	 */

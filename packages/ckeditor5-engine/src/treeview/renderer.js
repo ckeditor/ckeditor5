@@ -9,53 +9,50 @@ import diff from '../utils-diff.js';
 import CKEditorError from '../ckeditorerror.js';
 
 /**
- * Creates a renderer instance.
- *
- * @param {core.treeView.Converter} converter Converter instance.
- *
- * @class core.treeView.Renderer
- * @classdesc
  * Renderer updates DOM tree, to make it a reflection of the view tree. Changed nodes need to be
  * {@link core.treeView.Renderer#markToSync marked} to be rendered. Then, on {@link core.treeView.Renderer#render render}, renderer
  * ensure they need to be refreshed and creates DOM nodes from view nodes,
  * {@link core.treeView.Converter#bindElements bind} them and insert into DOM tree. Renderer use {@link core.treeView.Converter}
  * to transform and bind nodes.
+ *
+ * @memberOf core.treeView
  */
 export default class Renderer {
+	/**
+	 * Creates a renderer instance.
+	 *
+	 * @param {core.treeView.Converter} converter Converter instance.
+	 */
 	constructor( converter ) {
 		/**
 		 * Converter instance.
 		 *
-		 * @member core.treeView.Renderer#converter
 		 * @readonly
-		 * @type {core.treeView.Converter}
+		 * @member {core.treeView.Converter} core.treeView.Renderer#converter
 		 */
 		this.converter = converter;
 
 		/**
 		 * Set of nodes which attributes changed and may need to be rendered.
 		 *
-		 * @member core.treeView.Renderer#markedAttributes
 		 * @readonly
-		 * @type {Set.<core.treeView.Node>}
+		 * @member {Set.<core.treeView.Node>} core.treeView.Renderer#markedAttributes
 		 */
 		this.markedAttributes = new Set();
 
 		/**
 		 * Set of elements which child lists changed and may need to be rendered.
 		 *
-		 * @member core.treeView.Renderer#markedChildren
 		 * @readonly
-		 * @type {Set.<core.treeView.Node>}
+		 * @member {Set.<core.treeView.Node>} core.treeView.Renderer#markedChildren
 		 */
 		this.markedChildren = new Set();
 
 		/**
 		 * Set of text nodes which text data changed and may need to be rendered.
 		 *
-		 * @member core.treeView.Renderer#markedTexts
 		 * @readonly
-		 * @type {Set.<core.treeView.Node>}
+		 * @member {Set.<core.treeView.Node>} core.treeView.Renderer#markedTexts
 		 */
 		this.markedTexts = new Set();
 	}
@@ -69,7 +66,6 @@ export default class Renderer {
 	 * @see core.treeView.Renderer#markedChildren
 	 * @see core.treeView.Renderer#markedTexts
 	 *
-	 * @method core.treeView.Renderer#markToSync
 	 * @param {core.treeView.ChangeType} type Type of the change.
 	 * @param {core.treeView.Node} node Node to be marked.
 	 */
@@ -117,8 +113,6 @@ export default class Renderer {
 	 *
 	 * For nodes which changed child list it calculates a {@link diff} using {@link core.treeView.Converter#compareNodes}
 	 * and add or removed nodes which changed.
-	 *
-	 * @method core.treeView.Renderer#render
 	 */
 	render() {
 		const converter = this.converter;

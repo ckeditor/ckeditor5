@@ -6,11 +6,10 @@
 'use strict';
 
 /**
- * @abstract
- * @class core.treeView.observer.Observer
- * @classdesc
  * Abstract base observer class. Observers are classes which observe changes on DOM elements, do the preliminary
  * processing and fire events on the {@link core.treeView.TreeView} objects.
+ * @abstract
+ * @memberOf core.treeView.observer
  */
 export default class Observer {
 	/**

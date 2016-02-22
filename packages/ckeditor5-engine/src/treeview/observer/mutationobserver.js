@@ -8,11 +8,6 @@
 import Observer from './observer.js';
 
 /**
- * Mutation observer constructor. Note that most of the initialization is done in
- * {@link core.treeView.observer.MutationObserver#init} method.
- *
- * @class core.treeView.observer.MutationObserver
- * @classdesc
  * Mutation observer class observes changes in the DOM, fires {@link core.treeView.TreeView#mutations} event, mark view elements
  * as changed and call {@link core.treeView.render}. Because all mutated nodes are marked as "to be rendered" and the
  * {@link core.treeView.render} is called, all changes will be reverted, unless the mutation will be handled by the
@@ -22,9 +17,15 @@ import Observer from './observer.js';
  * Mutation Observer also take care of reducing number of mutations which are fired. It removes duplicates and
  * mutations on elements which do not have corresponding view elements. Also
  * {@link core.treeView.TreeView.MutatatedText text mutation} is fired only if parent element do not change child list.
+ *
+ * @memberOf core.treeView.observer
  * @extends core.treeView.observer.Observer
  */
 export default class MutationObserver extends Observer {
+	/**
+	 * Mutation observer constructor. Note that most of the initialization is done in
+	 * {@link core.treeView.observer.MutationObserver#init} method.
+	 */
 	constructor() {
 		super();
 
@@ -32,7 +33,7 @@ export default class MutationObserver extends Observer {
 		 * Native mutation observer config.
 		 *
 		 * @private
-		 * @type {Object}
+		 * @member {Object} core.treeView.observer.MutationObserver#_config
 		 */
 		this._config = {
 			childList: true,
@@ -42,56 +43,57 @@ export default class MutationObserver extends Observer {
 		};
 	}
 
-	// Docs in the base class.
+	/**
+	 * @inheritDoc
+	 */
 	init( treeView ) {
 		/**
 		 * Reference to the {@link core.treeView.TreeView} object.
 		 *
-		 * @member core.treeView.observer.MutationObserver#treeView
-		 * @type {core.treeView.TreeView}
+		 * @member {core.treeView.TreeView} core.treeView.observer.MutationObserver#treeView
 		 */
 		this.treeView = treeView;
 
 		/**
 		 * Reference to the {@link core.treeView.TreeView#domRoot}.
 		 *
-		 * @member core.treeView.observer.MutationObserver#domRoot
-		 * @type {HTMLElement}
+		 * @member {HTMLElement} core.treeView.observer.MutationObserver#domRoot
 		 */
 		this.domRoot = treeView.domRoot;
 
 		/**
 		 * Reference to the {@link core.treeView.TreeView#converter}.
 		 *
-		 * @member core.treeView.observer.MutationObserver#converter
-		 * @type {core.treeView.Converter}
+		 * @member {core.treeView.Converter} core.treeView.observer.MutationObserver#converter
 		 */
 		this.converter = treeView.converter;
 
 		/**
 		 * Reference to the {@link core.treeView.TreeView#renderer}.
 		 *
-		 * @member core.treeView.observer.MutationObserver#renderer
-		 * @type {core.treeView.Renderer}
+		 * @member {core.treeView.Renderer} core.treeView.observer.MutationObserver#renderer
 		 */
 		this.renderer = treeView.renderer;
 
 		/**
 		 * Native mutation observer.
 		 *
-		 * @member core.treeView.observer.MutationObserver#_mutationObserver
 		 * @private
-		 * @type {window.MutationObserver}
+		 * @member {window.MutationObserver} core.treeView.observer.MutationObserver#_mutationObserver
 		 */
 		this._mutationObserver = new window.MutationObserver( this._onMutations.bind( this ) );
 	}
 
-	// Docs in the base class.
+	/**
+	 * @inheritDoc
+	 */
 	attach() {
 		this._mutationObserver.observe( this.domRoot, this._config );
 	}
 
-	// Docs in the base class.
+	/**
+	 * @inheritDoc
+	 */
 	detach() {
 		this._mutationObserver.disconnect();
 	}

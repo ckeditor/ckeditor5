@@ -12,7 +12,7 @@ import utils from './utils.js';
  * The base class for CKEditor plugin classes.
  *
  * @class core.Plugin
- * @mixins core.ObservableMixin
+ * @mixes core.ObservableMixin
  */
 
 export default class Plugin {

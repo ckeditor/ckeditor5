@@ -16,7 +16,7 @@ import utils from './utils.js';
  * Represents a single editor instance.
  *
  * @class core.Editor
- * @mixins core.ObservableMixin
+ * @mixes core.ObservableMixin
  */
 
 export default class Editor {

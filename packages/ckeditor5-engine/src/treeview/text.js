@@ -8,14 +8,17 @@
 import Node from './node.js';
 
 /**
- * Creates a tree view text node.
+ * Tree view text node.
  *
- * @param {String} data Text.
- *
- * @class core.treeView.Text
- * @classdesc Tree view text node.
+ * @memberOf core.treeView
+ * @extends core.treeView.Node
  */
 export default class Text extends Node {
+	/**
+	 * Creates a tree view text node.
+	 *
+	 * @param {String} data Text.
+	 */
 	constructor( data ) {
 		super();
 
@@ -25,8 +28,7 @@ export default class Text extends Node {
 		 * Setting the data fires the {@link core.treeView.Node#event:change change event}.
 		 *
 		 * @private
-		 * @type {String}
-		 * @member core.treeView.Text#_data
+		 * @member {String} core.treeView.Text#_data
 		 */
 		this._data = data;
 	}

@@ -10,29 +10,31 @@ import EmitterMixin from '../emittermixin.js';
 import utils from '../utils.js';
 
 /**
- * Creates a tree view node.
- *
- * This is an abstract class, so this constructor should not be used directly.
+ * Abstract tree view node class.
  *
  * @abstract
- * @class core.treeView.Node
- * @classdesc Abstract tree view node class.
+ * @memberOf core.treeView
  */
 export default class Node {
+	/**
+	 * Creates a tree view node.
+	 *
+	 * This is an abstract class, so this constructor should not be used directly.
+	 */
 	constructor() {
 		/**
-		 * Parent element. Null by default. Set by {@link treeView.Element#insertChildren}.
+		 * Parent element. Null by default. Set by {@link core.treeView.Element#insertChildren}.
 		 *
 		 * @readonly
-		 * @type {treeView.Element|null}
+		 * @member {treeView.Element|null} core.treeView.Node
 		 */
 		this.parent = null;
 
 		/**
-		 * {@link treeView.TreeView} reference.
+		 * {@link core.treeView.TreeView} reference.
 		 *
 		 * @protected
-		 * @type {treeView.TreeView}
+		 * @member {treeView.TreeView} core.treeView.Node
 		 */
 		this._treeView = null;
 	}
@@ -42,7 +44,6 @@ export default class Node {
 	 *
 	 * Throws error if the parent element does not contain this node.
 	 *
-	 * @method core.treeView.Node#getIndex
 	 * @returns {Number|null} Index of the node in the parent element or null if the node has not parent.
 	 */
 	getIndex() {
@@ -68,7 +69,6 @@ export default class Node {
 	/**
 	 * Returns nodes next sibling or `null` if it is the last child.
 	 *
-	 * @method core.treeView.Node#getNextSibling
 	 * @returns {treeView.Node|null} Nodes next sibling or `null` if it is the last child.
 	 */
 	getNextSibling() {
@@ -80,7 +80,6 @@ export default class Node {
 	/**
 	 * Returns nodes previous sibling or `null` if it is the first child.
 	 *
-	 * @method core.treeView.Node#getPreviousSibling
 	 * @returns {treeView.Node|null} Nodes previous sibling or `null` if it is the first child.
 	 */
 	getPreviousSibling() {
@@ -90,11 +89,10 @@ export default class Node {
 	}
 
 	/**
-	 * Gets {@link treeView.TreeView} reference. If the node has {@link treeView.TreeView}, assign by
-	 * {@link treeView.Node#setTreeView} it will be returned. Otherwise {@link treeView.TreeView} of the parents node
+	 * Gets {@link core.treeView.TreeView} reference. If the node has {@link core.treeView.TreeView}, assign by
+	 * {@link core.treeView.Node#setTreeView} it will be returned. Otherwise {@link core.treeView.TreeView} of the parents node
 	 * will be returned. If node has no parent, `null` will be returned.
 	 *
-	 * @method core.treeView.Node#getTreeView
 	 * @returns {treeView.TreeView|null} Tree view of the node, tree view of the parent or null.
 	 */
 	getTreeView() {
@@ -108,10 +106,9 @@ export default class Node {
 	}
 
 	/**
-	 * Sets the {@link treeView.TreeView} of the node. Note that not all of nodes need to have {@link treeView.TreeView}
-	 * assigned, see {@link treeView.Node#getTreeView}.
+	 * Sets the {@link core.treeView.TreeView} of the node. Note that not all of nodes need to have {@link core.treeView.TreeView}
+	 * assigned, see {@link core.treeView.Node#getTreeView}.
 	 *
-	 * @method core.treeView.Node#setTreeView
 	 * @param {treeView.TreeView} treeView Tree view.
 	 */
 	setTreeView( treeView ) {
@@ -119,7 +116,6 @@ export default class Node {
 	}
 
 	/**
-	 * @method core.treeView.Node#_fireChange
 	 * @param {treeView.ChangeType} type Type of the change.
 	 * @param {treeView.Node} node Changed node.
 	 * @fires {@link core.treeView.Node#change change event}.
@@ -135,8 +131,8 @@ export default class Node {
 	/**
 	 * Fired when a node changes.
 	 *
-	 * * In case of {@link treeView.Text text nodes} it will be a change of the text data.
-	 * * In case of {@link treeView.Element elements} it will be a change of child nodes or attributes.
+	 * * In case of {@link core.treeView.Text text nodes} it will be a change of the text data.
+	 * * In case of {@link core.treeView.Element elements} it will be a change of child nodes or attributes.
 	 *
 	 * Change event is bubbling, it is fired on the ancestors chain.
 	 *

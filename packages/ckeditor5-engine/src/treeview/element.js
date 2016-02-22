@@ -10,40 +10,41 @@ import utils from '../utils.js';
 import isPlainObject from '../lib/lodash/isPlainObject.js';
 
 /**
- * Creates a tree view element.
+ * Tree view element.
  *
- * Attributes can be passes in various formats:
- *
- *        new Element( 'div', { 'class': 'editor', 'contentEditable': 'true' } ); // object
- *        new Element( 'div', [ [ 'class', 'editor' ], [ 'contentEditable', 'true' ] ] ); // map-like iterator
- *        new Element( 'div', mapOfAttributes ); // map
- *
- * @param {String} name Node name.
- * @param {Object|Iterable} [attrs] Collection of attributes.
- * @param {core.treeView.Node|Iterable.<core.treeView.Node>} [children] List of nodes to be inserted into created element.
- *
- * @class core.treeView.Element
- * @classdesc Tree view element.
+ * @memberOf core.treeView
+ * @extends core.treeView.Node
  */
 export default class Element extends Node {
+	/**
+	 * Creates a tree view element.
+	 *
+	 * Attributes can be passes in various formats:
+	 *
+	 *        new Element( 'div', { 'class': 'editor', 'contentEditable': 'true' } ); // object
+	 *        new Element( 'div', [ [ 'class', 'editor' ], [ 'contentEditable', 'true' ] ] ); // map-like iterator
+	 *        new Element( 'div', mapOfAttributes ); // map
+	 *
+	 * @param {String} name Node name.
+	 * @param {Object|Iterable} [attrs] Collection of attributes.
+	 * @param {core.treeView.Node|Iterable.<core.treeView.Node>} [children] List of nodes to be inserted into created element.
+	 */
 	constructor( name, attrs, children ) {
 		super();
 
 		/**
 		 * Name of the element.
 		 *
-		 * @member core.treeView.Element#name
 		 * @readonly
-		 * @type {String}
+		 * @member {String} core.treeView.Element#name
 		 */
 		this.name = name;
 
 		/**
 		 * Map of attributes, where attributes names are keys and attributes values are values.
 		 *
-		 * @member core.treeView.Element#_attrs
 		 * @protected
-		 * @type {Map}
+		 * @member {Map} core.treeView.Element#_attrs
 		 */
 		if ( isPlainObject( attrs ) ) {
 			this._attrs = utils.objectToMap( attrs );
@@ -54,9 +55,8 @@ export default class Element extends Node {
 		/**
 		 * Array of child nodes.
 		 *
-		 * @member core.treeView.Element#_children
 		 * @protected
-		 * @type {Array.<core.treeView.Node>}
+		 * @member {Array.<core.treeView.Node>} core.treeView.Element#_children
 		 */
 		this._children = [];
 
@@ -69,7 +69,6 @@ export default class Element extends Node {
 	 * {@link core.treeView.Element#insert Insert} a child node or a list of child nodes at the end of this node and sets
 	 * the parent of these nodes to this element.
 	 *
-	 * @method core.treeView.Element#appendChildren
 	 * @param {core.treeView.Node|Iterable.<core.treeView.Node>} nodes Node or the list of nodes to be inserted.
 	 * @fires {@link core.treeView.Node#change change event}
 	 */
@@ -80,7 +79,6 @@ export default class Element extends Node {
 	/**
 	 * Gets child at the given index.
 	 *
-	 * @method core.treeView.Element#getChild
 	 * @param {Number} index Index of child.
 	 * @returns {treeView.Node} Child node.
 	 */
@@ -91,7 +89,6 @@ export default class Element extends Node {
 	/**
 	 * Gets the number of element's children.
 	 *
-	 * @method core.treeView.Element#getChildCount
 	 * @returns {Number} The number of element's children.
 	 */
 	getChildCount() {
@@ -101,7 +98,6 @@ export default class Element extends Node {
 	/**
 	 * Gets index of the given child node.
 	 *
-	 * @method core.treeView.Element#getChildIndex
 	 * @param {core.treeView.Node} node Child node.
 	 * @returns {Number} Index of the child node.
 	 */
@@ -112,7 +108,6 @@ export default class Element extends Node {
 	/**
 	 * Gets child nodes iterator.
 	 *
-	 * @method core.treeView.Element#getChildren
 	 * @returns {Iterable.<core.treeView.Node>} Child nodes iterator.
 	 */
 	getChildren() {
@@ -122,7 +117,6 @@ export default class Element extends Node {
 	/**
 	 * Returns an iterator that contains the keys for attributes.
 	 *
-	 * @method core.treeView.Element#getAttributeKeys
 	 * @returns {Iterator.<String>} Keys for attributes.
 	 */
 	getAttributeKeys() {
@@ -132,7 +126,6 @@ export default class Element extends Node {
 	/**
 	 * Gets attribute by key.
 	 *
-	 * @method core.treeView.Element#getAttribute
 	 * @param {String} key Attribute key.
 	 * @returns {String} Attribute value.
 	 */
@@ -143,7 +136,6 @@ export default class Element extends Node {
 	/**
 	 * Returns a boolean indicating whether an attribute with the specified key exists in the element.
 	 *
-	 * @method core.treeView.Element#hasAttribute
 	 * @param {String} key Attribute key.
 	 * @returns {Boolean} `true` if attribute with the specified key exists in the element, false otherwise.
 	 */
@@ -155,7 +147,6 @@ export default class Element extends Node {
 	 * Adds or overwrite attribute with a specified key and value.
 	 *
 	 *
-	 * @method core.treeView.Element#setAttribute
 	 * @param {String} key Attribute key.
 	 * @param {String} value Attribute value.
 	 * @fires {@link core.treeView.Node#change change event}
@@ -171,7 +162,6 @@ export default class Element extends Node {
 	 * this element.
 	 *
 	 *
-	 * @method core.treeView.Element#insertChildren
 	 * @param {Number} index Position where nodes should be inserted.
 	 * @param {core.treeView.Node|Iterable.<core.treeView.Node>} nodes Node or the list of nodes to be inserted.
 	 * @fires {@link core.treeView.Node#change change event}.
@@ -194,7 +184,6 @@ export default class Element extends Node {
 	/**
 	 * Removes attribute from the element.
 	 *
-	 * @method core.treeView.Element#removeAttribute
 	 * @param {String} key Attribute key.
 	 * @returns {Boolean} Returns true if an attribute existed and has been removed.
 	 * @fires {@link core.treeView.Node#change change event}
@@ -209,7 +198,6 @@ export default class Element extends Node {
 	 * Removes number of child nodes starting at the given index and set the parent of these nodes to `null`.
 	 *
 	 *
-	 * @method core.treeView.Element#removeChildren
 	 * @param {Number} index Number of the first node to remove.
 	 * @param {Number} number Number of nodes to remove.
 	 * @returns {Array.<core.treeView.Node>} The array of removed nodes.

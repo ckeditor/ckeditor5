@@ -5,16 +5,17 @@
 
 'use strict';
 
-/**
- * Creates a position.
+/**Position in the tree. Position is always located before or after a node.
  *
- * @param {core.treeView.Element} parent Position parent element.
- * @param {Number} offset Position offset.
- *
- * @class core.treeView.Position
- * @classdesc Position in the tree. Position is always located before or after a node.
+ * @memberOf core.treeView
  */
 export default class Position {
+	/**
+	 * Creates a position.
+	 *
+	 * @param {core.treeView.Element} parent Position parent element.
+	 * @param {Number} offset Position offset.
+	 */
 	constructor( parent, offset ) {
 		/**
 		 * Position parent element.

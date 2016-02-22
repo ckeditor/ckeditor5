@@ -13,37 +13,36 @@ import utils from '../utils.js';
 /**
  * Basic Controller class.
  *
- * @class core.ui.Controller
- * @mixins EmitterMixin
+ * @memberOf core.ui
+ * @mixes core.EmitterMixin
  */
 
 export default class Controller {
 	/**
-	 * Creates an instance of the {@link Controller} class.
+	 * Creates an instance of the {@link core.ui.Controller} class.
 	 *
-	 * @param {Model} [model] Model of this Controller.
-	 * @param {View} [view] View instance of this Controller.
-	 * @constructor
+	 * @param {core.ui.Model} [model] Model of this Controller.
+	 * @param {core.ui.View} [view] View instance of this Controller.
 	 */
 	constructor( model, view ) {
 		/**
 		 * Model of this controller.
 		 *
-		 * @type {Model}
+		 * @member {core.ui.Model} core.ui.Controller#model
 		 */
 		this.model = model || null;
 
 		/**
 		 * Set `true` after {@link #init}.
 		 *
-		 * @type {Boolean}
+		 * @member {Boolean} core.ui.Controller#ready
 		 */
 		this.ready = false;
 
 		/**
 		 * View of this controller.
 		 *
-		 * @type {View}
+		 * @member {core.ui.View} core.ui.Controller#view
 		 */
 		this.view = view || null;
 
@@ -51,7 +50,7 @@ export default class Controller {
 		 * A collection of {@link ControllerCollection} instances containing
 		 * child controllers.
 		 *
-		 * @type {Collection}
+		 * @member {core.Collection} core.ui.Controller#collections
 		 */
 		this.collections = new Collection( {
 			idProperty: 'name'
