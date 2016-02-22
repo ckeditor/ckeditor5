@@ -82,7 +82,7 @@ export default class TreeView {
 	 * {@link core.treeView.Observer#attach attaches} the observer.
 	 *
 	 * @method core.treeView.TreeView#addObserver
-	 * @param {treeView.Observer} observer Observer to add.
+	 * @param {core.treeView.Observer} observer Observer to add.
 	 */
 	addObserver( observer ) {
 		this.observers.add( observer );

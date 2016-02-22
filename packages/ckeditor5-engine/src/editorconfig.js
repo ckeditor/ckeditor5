@@ -11,16 +11,15 @@ import Config from './config.js';
 /**
  * Handles a configuration dictionary for an editor instance.
  *
- * The basic difference between {@link EditorConfig} and {@link Config} is that {@link EditorConfig#get} retrieves
+ * The basic difference between {@link core.EditorConfig} and {@link core.Config} is that {@link core.EditorConfig#get} retrieves
  * configurations from {@link CKEDITOR#config} if they are not found.
  *
- * @class EditorConfig
- * @extends Config
+ * @memberOf core
+ * @extends core.Config
  */
-
 export default class EditorConfig extends Config {
 	/**
-	 * @inheritdoc core.Config#get
+	 * @inheritDoc
 	 */
 	get() {
 		// Try to take it from this editor instance.

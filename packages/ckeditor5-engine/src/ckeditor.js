@@ -12,16 +12,14 @@ import Config from './config.js';
 /**
  * This is the API entry point. The entire CKEditor code runs under this object.
  *
- * @class CKEDITOR
- * @singleton
+ * @namespace CKEDITOR
  */
-
 const CKEDITOR = {
 	/**
 	 * A collection containing all editor instances created.
 	 *
 	 * @readonly
-	 * @type {Collection}
+	 * @member {core.Collection} CKEDITOR.instances
 	 */
 	instances: new Collection(),
 
@@ -37,6 +35,7 @@ const CKEDITOR = {
 	 *			// Manipulate "editor" here.
 	 *		} );
 	 *
+	 * @method CKEDITOR.create
 	 * @param {String|HTMLElement} element An element selector or a DOM element, which will be the source for the
 	 * created instance.
 	 * @returns {Promise} A promise, which will be fulfilled with the created editor.
@@ -75,6 +74,7 @@ const CKEDITOR = {
 	/**
 	 * Holds global configuration defaults, which will be used by editor instances when such configurations are not
 	 * available on them directly.
+	 * @member {core.Config} CKEDITOR.config
 	 */
 	config: new Config()
 };

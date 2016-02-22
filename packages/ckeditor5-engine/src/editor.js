@@ -15,10 +15,9 @@ import utils from './utils.js';
 /**
  * Represents a single editor instance.
  *
- * @class core.Editor
+ * @memberOf core
  * @mixes core.ObservableMixin
  */
-
 export default class Editor {
 	/**
 	 * Creates a new instance of the Editor class.
@@ -27,7 +26,6 @@ export default class Editor {
 	 * {@link CKEDITOR#create CKEDITOR.create() method}.
 	 *
 	 * @param {HTMLElement} element The DOM element that will be the source for the created editor.
-	 * @constructor
 	 */
 	constructor( element, config ) {
 		/**
@@ -133,7 +131,7 @@ export default class Editor {
 	 * Destroys the editor instance, releasing all resources used by it. If the editor replaced an element, the
 	 * element will be recovered.
 	 *
-	 * @fires destroy
+	 * @fires {@link core.Editor.destroy destroy}
 	 * @returns {Promise} A promise that resolves once the editor instance is fully destroyed.
 	 */
 	destroy() {
@@ -166,6 +164,7 @@ utils.mix( Editor, ObservableMixin );
  * Fired when this editor instance is destroyed. The editor at this point is not usable and this event should be used to
  * perform the clean-up in any plugin.
  *
+ * @memberOf core.Editor
  * @event destroy
  */
 

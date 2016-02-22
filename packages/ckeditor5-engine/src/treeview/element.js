@@ -80,7 +80,7 @@ export default class Element extends Node {
 	 * Gets child at the given index.
 	 *
 	 * @param {Number} index Index of child.
-	 * @returns {treeView.Node} Child node.
+	 * @returns {core.treeView.Node} Child node.
 	 */
 	getChild( index ) {
 		return this._children[ index ];

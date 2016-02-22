@@ -8,13 +8,6 @@
 import isPlainObject from './lib/lodash/isPlainObject.js';
 
 /**
- * An index at which arrays differ. If arrays are same at all indexes, it represents how arrays are related.
- * In this case, possible values are: 'SAME', 'PREFIX' or 'EXTENSION'.
- *
- * @typedef {String|Number} utils.ArrayRelation
- */
-
-/**
  * @namespace core.utils
  */
 const utils = {
@@ -25,7 +18,7 @@ const utils = {
 	 *
 	 *  * spy.called: property set to `true` if the function has been called at least once.
 	 *
-	 * @member core.utils.spy
+	 * @memberOf core.utils
 	 * @returns {Function} The spy function.
 	 */
 	spy() {
@@ -38,6 +31,8 @@ const utils = {
 	 * Returns a unique id. This id is a number (starting from 1) which will never get repeated on successive calls
 	 * to this method.
 	 *
+	 * @function
+	 * @memberOf core.utils
 	 * @returns {Number} A number representing the id.
 	 */
 	uid: ( () => {
@@ -51,6 +46,7 @@ const utils = {
 	/**
 	 * Checks if value implements iterator interface.
 	 *
+	 * @memberOf core.utils
 	 * @param {*} value The value to check.
 	 * @returns {Boolean} True if value implements iterator interface.
 	 */
@@ -70,6 +66,7 @@ const utils = {
 	 *   compareArrays( [ 0, 2 ], [ 1, 2 ] ); // 0
 	 *   compareArrays( [ 0, 2 ], [ 0, 1 ] ); // 1
 	 *
+	 * @memberOf core.utils
 	 * @param {Array} a Array that is compared.
 	 * @param {Array} b Array to compare with.
 	 * @returns {utils.ArrayRelation} How array `a` is related to `b`.
@@ -103,6 +100,7 @@ const utils = {
 	 *		const map = utils.objectToMap( { 'foo': 1, 'bar': 2 } );
 	 *		map.get( 'foo' ); // 1
 	 *
+	 * @memberOf core.utils
 	 * @param {Object} obj Object to transform.
 	 * @returns {Map} Map created from object.
 	 */
@@ -123,6 +121,7 @@ const utils = {
 	 *		map = utils.toMap( [ [ 'foo', 1 ], [ 'bar', 2 ] ] );
 	 *		map = utils.toMap( anotherMap );
 	 *
+	 * @memberOf core.utils
 	 * @param {Object|Iterable} data Object or iterable to transform.
 	 * @returns {Map} Map created from data.
 	 */
@@ -137,6 +136,7 @@ const utils = {
 	/**
 	 * Checks whether given {Map}s are equal, that is has same size and same key-value pairs.
 	 *
+	 * @memberOf core.utils
 	 * @returns {Boolean} `true` if given maps are equal, `false` otherwise.
 	 */
 	mapsEqual( mapA, mapB ) {
@@ -159,6 +159,7 @@ const utils = {
 	/**
 	 * Returns `nth` (starts from `0` of course) item of an `iterable`.
 	 *
+	 * @memberOf core.utils
 	 * @param {Number} index
 	 * @param {Iterable.<*>} iterable
 	 * @returns {*}
@@ -194,6 +195,7 @@ const utils = {
 	 *
 	 * Note: Properties which already exist in the base class will not be overriden.
 	 *
+	 * @memberOf core.utils
 	 * @param {Function} [baseClass] Class which prototype will be extended.
 	 * @param {Object} [...mixins] Objects from which to get properties.
 	 */
@@ -213,5 +215,13 @@ const utils = {
 		} );
 	}
 };
+
+/**
+ * An index at which arrays differ. If arrays are same at all indexes, it represents how arrays are related.
+ * In this case, possible values are: 'SAME', 'PREFIX' or 'EXTENSION'.
+ *
+ * @memberOf core.utils
+ * @typedef {String|Number} ArrayRelation
+ */
 
 export default utils;

@@ -18,12 +18,10 @@ const boundAttributesSymbol = Symbol( 'boundAttributes' );
  * Mixin that injects the "observable attributes" and data binding functionality.
  * Used mainly in the {@link core.ui.Model} class.
  *
- * @singleton
- * @class core.ObservableMixin
+ * @mixin core.ObservableMixin
  * @mixes core.EmitterMixin
  * @implements core.Observable
  */
-
 const ObservableMixin = {
 	/**
 	 * Creates and sets the value of an observable attribute of this object. Such an attribute becomes a part
@@ -35,6 +33,7 @@ const ObservableMixin = {
 	 * have a property with a given attribute name. This prevents from mistakenly overriding existing
 	 * properties and methods, but means that `foo.set( 'bar', 1 )` may be slightly slower than `foo.bar = 1`.
 	 *
+	 * @method core.ObservableMixin#set
 	 * @param {String} name The attributes name.
 	 * @param {*} value The attributes value.
 	 */
@@ -103,15 +102,16 @@ const ObservableMixin = {
 	 * of the observable it is bound to and react to the changes to these attributes
 	 * in the future.
 	 *
-	 * **Note**: To release the binding use {@link #unbind}.
+	 * **Note**: To release the binding use {@link core.ObservableMixin#unbind}.
 	 *
 	 *		A.bind( 'a' ).to( B );
 	 *		A.bind( 'a' ).to( B, 'b' );
 	 *		A.bind( 'a', 'b' ).to( B, 'c', 'd' );
 	 *		A.bind( 'a' ).to( B, 'b', C, 'd', ( b, d ) => b + d );
 	 *
+	 * @method core.ObservableMixin#bind
 	 * @param {String...} bindAttrs Observable attributes that will be bound to another observable(s).
-	 * @returns {BindChain}
+	 * @returns {core.BindChain}
 	 */
 	bind( ...bindAttrs ) {
 		if ( !bindAttrs.length || !isStringArray( bindAttrs ) ) {
@@ -150,7 +150,7 @@ const ObservableMixin = {
 		const bindings = new Map();
 
 		/**
-		 * @typedef Binding
+		 * @typedef core.Binding
 		 * @type Object
 		 * @property {Array} attr Attribute which is bound.
 		 * @property {Array} to Array of observable–attribute components of the binding (`{ observable: ..., attr: .. }`).
@@ -164,13 +164,14 @@ const ObservableMixin = {
 		} );
 
 		/**
-		 * @typedef BindChain
+		 * @typedef core.BindChain
 		 * @type Object
-		 * @property {Function} to See {@link #_bindTo}.
+		 * @property {Function} to See {@link core.ObservableMixin#_bindTo}.
 		 * @property {Observable} _observable The observable which initializes the binding.
 		 * @property {Array} _bindAttrs Array of `_observable` attributes to be bound.
 		 * @property {Array} _to Array of `to()` observable–attributes (`{ observable: toObservable, attrs: ...toAttrs }`).
-		 * @property {Map} _bindings Stores bindings to be kept in {@link #_boundAttributes}/{@link #_boundObservables}
+		 * @property {Map} _bindings Stores bindings to be kept in
+		 *  {@link core.ObservableMixin#_boundAttributes}/{@link core.ObservableMixin#_boundObservables}
 		 * initiated in this binding chain.
 		 */
 		return {
@@ -184,12 +185,13 @@ const ObservableMixin = {
 	},
 
 	/**
-	 * Removes the binding created with {@link #bind}.
+	 * Removes the binding created with {@link core.ObservableMixin#bind}.
 	 *
 	 *		A.unbind( 'a' );
 	 *		A.unbind();
 	 *
-	 * @param {String} [bindAttrs] Observable attributes to be unbound. All the bindings will
+	 * @method core.ObservableMixin#unbind
+	 * @param {String} [unbindAttrs] Observable attributes to be unbound. All the bindings will
 	 * be released if no attributes provided.
 	 */
 	unbind( ...unbindAttrs ) {
@@ -268,9 +270,9 @@ function initObservable( observable ) {
 	} );
 
 	// Map containing bindings to external observables. It shares the binding objects
-	// (`{ observable: A, attr: 'a', to: ... }`) with {@link #_boundAttributes} and
+	// (`{ observable: A, attr: 'a', to: ... }`) with {@link core.ObservableMixin#_boundAttributes} and
 	// it is used to observe external observables to update own attributes accordingly.
-	// See {@link #bind}.
+	// See {@link core.ObservableMixin#bind}.
 	//
 	//		A.bind( 'a', 'b', 'c' ).to( B, 'x', 'y', 'x' );
 	//		console.log( A._boundObservables );
@@ -317,9 +319,11 @@ function initObservable( observable ) {
 	} );
 
 	// Object that stores which attributes of this observable are bound and how. It shares
-	// the binding objects (`{ observable: A, attr: 'a', to: ... }`) with {@link #_boundObservables}.
-	// This data structure is a reverse of {@link #_boundObservables} and it is helpful for {@link #unbind}.
-	// See {@link #bind}.
+	// the binding objects (`{ observable: A, attr: 'a', to: ... }`) with {@link core.ObservableMixin#_boundObservables}.
+	// This data structure is a reverse of {@link core.ObservableMixin#_boundObservables} and it is helpful for
+	// {@link core.ObservableMixin#unbind}.
+	//
+	// See {@link core.ObservableMixin#bind}.
 	//
 	//		A.bind( 'a', 'b', 'c' ).to( B, 'x', 'y', 'x' );
 	//		console.log( A._boundAttributes );
@@ -347,7 +351,7 @@ function initObservable( observable ) {
 	} );
 }
 
-// A chaining for {@link #bind} providing `.to()` interface.
+// A chaining for {@link core.ObservableMixin#bind} providing `.to()` interface.
 //
 // @private
 // @param {...[Observable|String|Function]} args Arguments of the `.to( args )` binding.

@@ -263,6 +263,7 @@ export default class Template {
  * can be used in the context of DOM Node to set or reset `textContent`.
  * @see core.ui.View#_getModelBinder
  *
+ * @ignore
  * @private
  * @param {Node} node DOM Node to be modified.
  * @returns {Object}
@@ -284,6 +285,7 @@ function getTextNodeUpdater( node ) {
  * can be used in the context of DOM Node to set or reset an attribute.
  * @see core.ui.View#_getModelBinder
  *
+ * @ignore
  * @private
  * @param {Node} node DOM Node to be modified.
  * @param {String} attrName Name of the attribute to be modified.

@@ -13,26 +13,24 @@ import load from '../load.js';
 /**
  * Manages a list of CKEditor plugins, including loading, resolving dependencies and initialization.
  *
- * @class PluginCollection
+ * @memberOf core
  */
-
 export default class PluginCollection {
 	/**
 	 * Creates an instance of the PluginCollection class, initializing it with a set of plugins.
 	 *
-	 * @constructor
 	 * @param {core.Editor} editor
 	 */
 	constructor( editor ) {
 		/**
 		 * @protected
-		 * @type {core.Editor}
+		 * @member {core.Editor} core.PluginCollection#_editor
 		 */
 		this._editor = editor;
 
 		/**
 		 * @protected
-		 * @type {Map}
+		 * @member {Map} core.PluginCollection#_plugins
 		 */
 		this._plugins = new Map();
 	}
@@ -49,7 +47,7 @@ export default class PluginCollection {
 	 * Gets the plugin instance by its name or class.
 	 *
 	 * @param {String/Function} key The name of the plugin or the class.
-	 * @returns {Plugin}
+	 * @returns {core.Plugin}
 	 */
 	get( key ) {
 		return this._plugins.get( key );
@@ -169,7 +167,7 @@ export default class PluginCollection {
 	 *
 	 * @protected
 	 * @param {String/Function} key The name or the plugin class.
-	 * @param {Plugin} plugin The instance of the plugin.
+	 * @param {core.Plugin} plugin The instance of the plugin.
 	 */
 	_add( key, plugin ) {
 		this._plugins.set( key, plugin );

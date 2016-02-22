@@ -13,17 +13,15 @@
  *
  * Read more in the {@link core.log} module.
  *
- * @class CKEditorError
+ * @memberOf core
  * @extends Error
  */
-
 export default class CKEditorError extends Error {
 	/**
 	 * Creates an instance of the CKEditorError class.
 	 *
 	 * Read more about error logging in the {@link core.log} module.
 	 *
-	 * @constructor
 	 * @param {String} message The error message in an `error-name: Error message.` format.
 	 * During the minification process the "Error message" part will be removed to limit the code size
 	 * and a link to this error documentation will be added to the `message`.
@@ -38,12 +36,15 @@ export default class CKEditorError extends Error {
 
 		super( message );
 
+		/**
+		 * @member {String} core.CKEditorError#name
+		 */
 		this.name = 'CKEditorError';
 
 		/**
 		 * The additional error data passed to the constructor.
 		 *
-		 * @type {Object}
+		 * @member {Object} core.CKEditorError#data
 		 */
 		this.data = data;
 	}

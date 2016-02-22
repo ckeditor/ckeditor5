@@ -14,6 +14,7 @@
  *
  *		diff( 'aba', 'acca' ); // [ EQUAL, INSERT, INSERT, DELETE, EQUAL ]
  *
+ * @method core.diff
  * @param {Array} a Input array.
  * @param {Array} b Output array.
  * @param {Function} [cmp] Optional function used to compare array values, by default === is used.
