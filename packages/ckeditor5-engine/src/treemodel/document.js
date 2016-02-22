@@ -78,11 +78,11 @@ export default class Document {
 		this.selection = new Selection();
 
 		this.selection.on( 'update', () => {
-			this._setSelectionAttributes();
+			this._updateSelectionAttributes();
 		} );
 
 		this.on( 'changesDone', () => {
-			this._setSelectionAttributes();
+			this._updateSelectionAttributes();
 		} );
 
 		this.schema = new Schema();
@@ -210,7 +210,7 @@ export default class Document {
 		return this.roots.get( name );
 	}
 
-	_setSelectionAttributes() {
+	_updateSelectionAttributes() {
 		if ( !this.selection.hasAnyRange ) {
 			this.selection.clearAttributes();
 		} else {
