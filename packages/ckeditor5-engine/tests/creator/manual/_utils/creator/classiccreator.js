@@ -13,8 +13,7 @@ import FramedEditableView from '/tests/core/_utils/ui/editable/framed/framededit
 import Model from '/ckeditor5/core/ui/model.js';
 import Toolbar from '/ckeditor5/ui/toolbar/toolbar.js';
 import ToolbarView from '/ckeditor5/ui/toolbar/toolbarview.js';
-import Button from '/ckeditor5/ui/button/button.js';
-import ButtonView from '/ckeditor5/ui/button/buttonview.js';
+import imitateFeatures from '../imitatefeatures.js';
 
 export default class ClassicCreator extends Creator {
 	constructor( editor ) {
@@ -24,7 +23,7 @@ export default class ClassicCreator extends Creator {
 	}
 
 	create() {
-		this._imitateFeatures();
+		imitateFeatures( this.editor );
 
 		this._replaceElement();
 		this._setupEditable();
@@ -71,45 +70,5 @@ export default class ClassicCreator extends Creator {
 		editorUI.view = editorUIView;
 
 		return editorUI;
-	}
-
-	/**
-	 * Immitates that some features were loaded and did their job.
-	 */
-	_imitateFeatures() {
-		const editor = this.editor;
-
-		const boldModel = new Model( {
-			isEnabled: true,
-			isOn: false,
-			label: 'bold'
-		} );
-
-		boldModel.on( 'executed', () => {
-			/* global console */
-			console.log( 'bold executed' );
-
-			boldModel.isOn = !boldModel.isOn;
-		} );
-
-		editor.ui.featureComponents.add( 'bold', Button, ButtonView, boldModel );
-
-		const italicModel = new Model( {
-			isEnabled: true,
-			isOn: false,
-			label: 'italic'
-		} );
-
-		italicModel.on( 'executed', () => {
-			/* global console */
-			console.log( 'italic executed' );
-
-			italicModel.isOn = !italicModel.isOn;
-		} );
-
-		editor.ui.featureComponents.add( 'italic', Button, ButtonView, italicModel );
-
-		window.boldModel = boldModel;
-		window.italicModel = italicModel;
 	}
 }

@@ -1,25 +1,28 @@
-.ck-box {
-	background: rgb( 200, 200, 200 );
-	padding: 1px 0;
+.ck-body {
+	margin: 10px 0;
+	border: solid 3px red;
+}
+.ck-body::before {
+	content: '[[ ck-body region ]]';
 }
 
-.ck-box-region {
-	background: rgb( 240, 240, 240 );
-	padding: 5px;
-	margin: 1px;
-}
-.ck-box-region:first-child {
-	margin-top: 0;
-}
-.ck-box-region:last-child {
-	margin-bottom: 0;
+.ck-box {
+	margin: 10px 0;
 }
 
 .ck-main {
-	background: #FFF;
+	border: solid 1px rgb( 200, 200, 200 );
+	padding: 5px
 }
 
-.ck-top {
+.ck-toolbar {
+	border: solid 1px rgb( 200, 200, 200 );
+	background: rgb( 240, 240, 240 );
+	padding: 5px;
+}
+
+.ck-toolbar.ck-hidden {
+	opacity: 0.3;
 }
 
 .ck-button {

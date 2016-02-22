@@ -5,7 +5,7 @@
 
 'use strict';
 
-import EditorUI from '/ckeditor5/core/editorui.js';
+import EditorUI from '/ckeditor5/core/editorui/editorui.js';
 import ControllerCollection from '/ckeditor5/core/ui/controllercollection.js';
 
 export default class BoxedEditorUI extends EditorUI {

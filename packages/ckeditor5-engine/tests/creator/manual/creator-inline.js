@@ -15,7 +15,8 @@ let editor, observer;
 
 function initEditor() {
 	CKEDITOR.create( '#editor', {
-		creator: InlineCreator
+		creator: InlineCreator,
+		toolbar: [ 'bold', 'italic' ]
 	} )
 	.then( ( newEditor ) => {
 		console.log( 'Editor was initialized', newEditor );

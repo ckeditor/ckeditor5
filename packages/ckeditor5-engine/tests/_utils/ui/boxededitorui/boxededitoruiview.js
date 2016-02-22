@@ -5,17 +5,19 @@
 
 'use strict';
 
-import View from '/ckeditor5/core/ui/view.js';
+import EditorUIView from '/ckeditor5/core/editorui/editoruiview.js';
 
-export default class BoxedEditorUIView extends View {
+export default class BoxedEditorUIView extends EditorUIView {
 	constructor( model ) {
 		super( model );
 
 		this.template = {
 			tag: 'div',
+
 			attributes: {
 				class: 'ck-box'
 			},
+
 			children: [
 				{
 					tag: 'div',
