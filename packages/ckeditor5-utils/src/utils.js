@@ -14,6 +14,9 @@ import isPlainObject from './lib/lodash/isPlainObject.js';
  * @typedef {String|Number} utils.ArrayRelation
  */
 
+/**
+ * @namespace core.utils
+ */
 const utils = {
 	/**
 	 * Creates a spy function (ala Sinon.js) that can be used to inspect call to it.
@@ -22,6 +25,7 @@ const utils = {
 	 *
 	 *  * spy.called: property set to `true` if the function has been called at least once.
 	 *
+	 * @member core.utils.spy
 	 * @returns {Function} The spy function.
 	 */
 	spy() {
