@@ -14,12 +14,12 @@ let schema, item;
 beforeEach( () => {
 	schema = new Schema();
 
-	schema.registerItem( 'p', 'block' );
-	schema.registerItem( 'header', 'block' );
-	schema.registerItem( 'div', 'block' );
-	schema.registerItem( 'html', 'block' );
-	schema.registerItem( 'span', 'inline' );
-	schema.registerItem( 'image', 'inline' );
+	schema.registerItem( 'p', '$block' );
+	schema.registerItem( 'header', '$block' );
+	schema.registerItem( 'div', '$block' );
+	schema.registerItem( 'html', '$block' );
+	schema.registerItem( 'span', '$inline' );
+	schema.registerItem( 'image', '$inline' );
 
 	item = new SchemaItem( schema );
 } );
