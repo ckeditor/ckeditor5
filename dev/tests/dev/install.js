@@ -45,7 +45,7 @@ describe( 'dev-install', () => {
 		spies.isDirectory.onSecondCall().returns( false );
 		spies.isDirectory.onThirdCall().returns( true );
 
-		installTask( ckeditor5Path, workspacePath, repositoryUrl, () => {} );
+		installTask( ckeditor5Path, workspacePath, repositoryUrl );
 
 		sinon.assert.calledThrice( spies.isDirectory );
 		sinon.assert.calledOnce( spies.parseUrl );
@@ -86,7 +86,7 @@ describe( 'dev-install', () => {
 		spies.isDirectory.onSecondCall().returns( true );
 		spies.getGitUrlFromNpm.returns( repositoryUrl );
 
-		installTask( ckeditor5Path, workspacePath, moduleName, () => {} );
+		installTask( ckeditor5Path, workspacePath, moduleName );
 
 		sinon.assert.calledThrice( spies.isDirectory );
 		sinon.assert.calledTwice( spies.parseUrl );
@@ -126,7 +126,7 @@ describe( 'dev-install', () => {
 		spies.isDirectory.onSecondCall().returns( true );
 		spies.readPackageName.returns( moduleName );
 
-		installTask( ckeditor5Path, workspacePath, '../ckeditor5-core', () => {} );
+		installTask( ckeditor5Path, workspacePath, '../ckeditor5-core' );
 
 		sinon.assert.calledThrice( spies.isDirectory );
 		sinon.assert.calledOnce( spies.readPackageName );
@@ -137,7 +137,7 @@ describe( 'dev-install', () => {
 		spies.isDirectory.onSecondCall().returns( true );
 		spies.readPackageName.returns( moduleName );
 
-		installTask( ckeditor5Path, workspacePath, '/ckeditor5-core', () => {} );
+		installTask( ckeditor5Path, workspacePath, '/ckeditor5-core' );
 
 		sinon.assert.calledThrice( spies.isDirectory );
 		sinon.assert.calledOnce( spies.readPackageName );
@@ -148,7 +148,7 @@ describe( 'dev-install', () => {
 		spies.isDirectory.onSecondCall().returns( true );
 
 		expect( () => {
-			installTask( ckeditor5Path, workspacePath, moduleName, () => {} );
+			installTask( ckeditor5Path, workspacePath, moduleName );
 		} ).to.throw();
 
 		sinon.assert.calledOnce( spies.parseUrl );
@@ -162,7 +162,7 @@ describe( 'dev-install', () => {
 		spies.readPackageName.returns( null );
 
 		expect( () => {
-			installTask( ckeditor5Path, workspacePath, moduleName, () => {} );
+			installTask( ckeditor5Path, workspacePath, moduleName );
 		} ).to.throw();
 
 		sinon.assert.calledOnce( spies.parseUrl );

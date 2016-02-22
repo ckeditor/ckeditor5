@@ -46,6 +46,36 @@ describe( 'utils', () => {
 				} ).to.throw();
 				sinon.assert.calledOnce( execStub );
 			} );
+
+			it( 'should output using log functions', () => {
+				const sh = require( 'shelljs' );
+				const execStub = sandbox.stub( sh, 'exec' ).returns( { code: 0, stdout: 'out', stderr: 'err' } );
+				const log = require( '../../tasks/dev/utils/log' );
+				const outFn = sandbox.spy();
+				const errFn = sandbox.spy();
+				log.configure( outFn, errFn );
+
+				tools.shExec( 'command' );
+
+				sinon.assert.calledOnce( execStub );
+				sinon.assert.calledWithExactly( outFn, 'out' );
+				sinon.assert.calledWithExactly( errFn, 'err' );
+			} );
+
+			it( 'should not log when in silent mode', () => {
+				const sh = require( 'shelljs' );
+				const execStub = sandbox.stub( sh, 'exec' ).returns( { code: 0, stdout: 'out', stderr: 'err' } );
+				const log = require( '../../tasks/dev/utils/log' );
+				const outFn = sandbox.spy();
+				const errFn = sandbox.spy();
+				log.configure( outFn, errFn );
+
+				tools.shExec( 'command', false );
+
+				sinon.assert.calledOnce( execStub );
+				sinon.assert.notCalled( outFn );
+				sinon.assert.notCalled( errFn );
+			} );
 		} );
 
 		describe( 'linkDirectories', () => {

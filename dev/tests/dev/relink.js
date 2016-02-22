@@ -17,7 +17,6 @@ describe( 'dev-relink', () => {
 	const modulesPath = path.join( ckeditor5Path, 'node_modules' );
 	const workspaceRoot = '..';
 	const workspaceAbsolutePath = path.join( ckeditor5Path, workspaceRoot );
-	const emptyFn = () => {};
 
 	it( 'should link dev repositories', () => {
 		const dirs = [ 'ckeditor5-core', 'ckeditor5-devtest' ];
@@ -32,7 +31,7 @@ describe( 'dev-relink', () => {
 			}
 		};
 
-		task( ckeditor5Path, json, workspaceRoot, emptyFn, emptyFn );
+		task( ckeditor5Path, json, workspaceRoot );
 
 		getDependenciesSpy.restore();
 		getDirectoriesStub.restore();
@@ -53,7 +52,7 @@ describe( 'dev-relink', () => {
 			}
 		};
 
-		task( ckeditor5Path, json, workspaceRoot, emptyFn, emptyFn );
+		task( ckeditor5Path, json, workspaceRoot );
 
 		getDependenciesSpy.restore();
 		getDirectoriesStub.restore();
@@ -73,7 +72,7 @@ describe( 'dev-relink', () => {
 			}
 		};
 
-		task( ckeditor5Path, json, workspaceRoot, emptyFn, emptyFn );
+		task( ckeditor5Path, json, workspaceRoot );
 
 		getDependenciesSpy.restore();
 		getDirectoriesStub.restore();
@@ -96,8 +95,10 @@ describe( 'dev-relink', () => {
 			}
 		};
 		const writeErrorSpy = sinon.spy();
+		const log = require( '../../tasks/dev/utils/log' );
+		log.configure( () => {}, writeErrorSpy );
 
-		task( ckeditor5Path, json, workspaceRoot, emptyFn, writeErrorSpy );
+		task( ckeditor5Path, json, workspaceRoot );
 
 		getDependenciesSpy.restore();
 		getDirectoriesStub.restore();

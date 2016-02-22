@@ -14,7 +14,6 @@ describe( 'dev-init', () => {
 	const initTask = require( '../../tasks/dev/tasks/init' );
 	const ckeditor5Path = 'path/to/ckeditor5';
 	const workspaceRoot = '..';
-	const emptyFn = () => {};
 
 	it( 'should get all ckedtior5- dependencies and execute dev-install on them', () => {
 		const getDependenciesSpy = sinon.spy( tools, 'getCKEditorDependencies' );
@@ -28,15 +27,15 @@ describe( 'dev-init', () => {
 		};
 		const deps = JSON.dependencies;
 
-		initTask( installSpy, ckeditor5Path, JSON, workspaceRoot, emptyFn );
+		initTask( installSpy, ckeditor5Path, JSON, workspaceRoot );
 
 		getDependenciesSpy.restore();
 
 		sinon.assert.calledOnce( getDependenciesSpy );
 		sinon.assert.calledWithExactly( getDependenciesSpy, deps );
 		sinon.assert.calledTwice( installSpy );
-		sinon.assert.calledWithExactly( installSpy.firstCall, ckeditor5Path, workspaceRoot, deps[ 'ckeditor5-core' ], emptyFn );
-		sinon.assert.calledWithExactly( installSpy.secondCall, ckeditor5Path, workspaceRoot, deps[ 'ckeditor5-plugin-devtest' ], emptyFn );
+		sinon.assert.calledWithExactly( installSpy.firstCall, ckeditor5Path, workspaceRoot, deps[ 'ckeditor5-core' ] );
+		sinon.assert.calledWithExactly( installSpy.secondCall, ckeditor5Path, workspaceRoot, deps[ 'ckeditor5-plugin-devtest' ] );
 	} );
 
 	it( 'should not call dev-install if no ckedtior5- dependencies', () => {
@@ -46,7 +45,7 @@ describe( 'dev-init', () => {
 			dependencies: {}
 		};
 
-		initTask( installSpy, ckeditor5Path, JSON, workspaceRoot, emptyFn );
+		initTask( installSpy, ckeditor5Path, JSON, workspaceRoot );
 
 		getDependenciesSpy.restore();
 

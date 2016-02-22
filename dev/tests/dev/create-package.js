@@ -16,7 +16,6 @@ const git = require( '../../tasks/dev/utils/git' );
 const path = require( 'path' );
 
 describe( 'dev-package-create', () => {
-	const emptyFn = () => { };
 	let spies;
 
 	const mainRepositoryPath = '/path/to/repository';
@@ -55,7 +54,7 @@ describe( 'dev-package-create', () => {
 	it( 'should exist', () => expect( packageCreateTask ).to.be.a( 'function' ) );
 
 	it( 'should create a package', () => {
-		return packageCreateTask( mainRepositoryPath, workspaceRoot, emptyFn ).then( () => {
+		return packageCreateTask( mainRepositoryPath, workspaceRoot ).then( () => {
 			expect( spies.getPackageName.calledOnce ).to.equal( true );
 			expect( spies.getPackageVersion.calledOnce ).to.equal( true );
 			expect( spies.getPackageGitHubUrl.calledOnce ).to.equal( true );
