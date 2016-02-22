@@ -10,17 +10,11 @@ import View from '../view.js';
 /**
  * The basic toolbar view class.
  *
- * @class core.ui.toolbar.ToolbarView
+ * @memberOf core.ui.toolbar
  * @extends core.ui.View
  */
 
 export default class ToolbarView extends View {
-	/**
-	 * Creates a new toolbar view instance.
-	 *
-	 * @method constructor
-	 * @param {Model} model
-	 */
 	constructor( model ) {
 		super( model );
 

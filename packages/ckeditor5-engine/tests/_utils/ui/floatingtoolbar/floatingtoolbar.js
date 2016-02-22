@@ -7,13 +7,6 @@
 
 import Toolbar from '/ckeditor5/ui/toolbar/toolbar.js';
 
-/**
- * The editor toolbar controller class.
- *
- * @class ui-default.toolbar.Toolbar
- * @extends core.ui.toolbar.Toolbar
- */
-
 export default class FloatingToolbar extends Toolbar {
 	constructor( editor, model, view ) {
 		super( editor, model, view );

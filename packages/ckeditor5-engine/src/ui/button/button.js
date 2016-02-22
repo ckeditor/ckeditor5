@@ -10,16 +10,11 @@ import Controller from '../controller.js';
 /**
  * The basic button controller class.
  *
- * @class core.ui.button.Button
+ * @memberOf core.ui.button
  * @extends core.ui.Controller
  */
 
 export default class Button extends Controller {
-	/**
-	 * Creates a new button instance.
-	 *
-	 * @method constructor
-	 */
 	constructor( model, view ) {
 		super( model, view );
 

@@ -17,7 +17,7 @@ export default class FloatingToolbarView extends ToolbarView {
 			bind.to( 'isVisible', value => value ? 'ck-visible' : 'ck-hidden' )
 		);
 
-		// This has a high chance to break if someone defines "on" in the parent template.
+		// This has a high risk of breaking if someone defines "on" in the parent template.
 		// See https://github.com/ckeditor/ckeditor5-core/issues/219
 		this.template.on = {
 			// Added just for fun, but needed to keep the focus in the editable.
