@@ -12,27 +12,14 @@ import clone from '../lib/lodash/clone.js';
 import CKEditorError from '../ckeditorerror.js';
 
 /**
- * Value that is convertible to an item kept in {@link treeModel.NodeList} or an iterable collection of such items.
- * In other words, this is anything that {@link treeModel.NodeList#constructor} is able to take and convert to node:
- * * {@link treeModel.Element} will be left as is
- * * {@link treeModel.CharacterProxy} will be left as is
- * * {@link treeModel.Text} and {String} will be converted to a set of {@link treeModel.CharacterProxy}
- * * {@link treeModel.NodeList} will clone a node list (but not the nodes inside, so the new and passed list will
- * point to the same nodes.
- * * Iterable collection of above items will be iterated over and all items will be added to the node list.
- *
- * @typedef {treeModel.Element|treeModel.CharacterProxy|treeModel.Text|String|treeModel.NodeList|Iterable} treeModel.NodeSet
- */
-
-/**
- * This is a private helper-class for {@link treeModel.NodeList} text compression utility.
+ * This is a private helper-class for {@link core.treeModel.NodeList} text compression utility.
  *
  * @protected
- * @class treeModel.NodeListText
+ * @memberOf core.treeModel
  */
 class NodeListText extends Text {
 	/**
-	 * @see {@link treeModel.Text#constructor}
+	 * @see {@link core.treeModel.Text#constructor}
 	 * @protected
 	 * @constructor
 	 */
@@ -43,10 +30,10 @@ class NodeListText extends Text {
 	}
 
 	/**
-	 * Gets a character at given index and creates a {@link treeModel.CharacterProxy} out of it.
+	 * Gets a character at given index and creates a {@link core.treeModel.CharacterProxy} out of it.
 	 *
 	 * @param {Number} index Character index.
-	 * @returns {treeModel.CharacterProxy}
+	 * @returns {core.treeModel.CharacterProxy}
 	 */
 	getCharAt( index ) {
 		index = index && index >= 0 ? index : 0;
@@ -70,14 +57,14 @@ class NodeListText extends Text {
 
 /**
  * List of nodes. It is used to represent multiple nodes with a given order, for example children of
- * {@link treeModel.Element} object or nodes inserted using {@link treeModel.operation.InsertOperation}.
+ * {@link core.treeModel.Element} object or nodes inserted using {@link core.treeModel.operation.InsertOperation}.
  *
  * Thanks to the constructor, which accepts various arguments, this class lets you easily create desired list of nodes.
  *
- * Parameters passed to constructor are converted and internally kept as an array of {@link treeModel.Node}
- * and {@link treeModel.Text} instances.
+ * Parameters passed to constructor are converted and internally kept as an array of {@link core.treeModel.Node}
+ * and {@link core.treeModel.Text} instances.
  *
- * @class treeModel.NodeList
+ * @memberOf core.treeModel
  */
 export default class NodeList {
 	/**
@@ -106,9 +93,9 @@ export default class NodeList {
 	 *		nodeListA === nodeListB // true
 	 *		nodeListB.length // 3
 	 *
-	 * @see {@link treeModel.NodeSet} for more explanation.
+	 * @see {@link core.treeModel.NodeSet} for more explanation.
 	 *
-	 * @param {treeModel.NodeSet} nodes List of nodes.
+	 * @param {core.treeModel.NodeSet} nodes List of nodes.
 	 * @constructor
 	 */
 	constructor( nodes ) {
@@ -208,7 +195,7 @@ export default class NodeList {
 	 * Returns node at the given index.
 	 *
 	 * @param {Number} index Node index.
-	 * @returns {treeModel.Node} Node at given index.
+	 * @returns {core.treeModel.Node} Node at given index.
 	 */
 	get( index ) {
 		let realIndex = this._indexMap[ index ];
@@ -224,7 +211,7 @@ export default class NodeList {
 	/**
 	 * Search for the element in the node list.
 	 *
-	 * @param {treeModel.Node} node Node to find.
+	 * @param {core.treeModel.Node} node Node to find.
 	 * @returns {Number} Position of the element in the list or -1 if not found.
 	 */
 	indexOf( node ) {
@@ -243,7 +230,7 @@ export default class NodeList {
 	 * Inserts nodes from the given node list into this node list at the given index.
 	 *
 	 * @param {Number} index Position where nodes should be inserted.
-	 * @param {treeModel.NodeList} nodeList List of nodes to insert.
+	 * @param {core.treeModel.NodeList} nodeList List of nodes to insert.
 	 */
 	insert( index, nodeList ) {
 		if ( this._nodes.length === 0 ) {
@@ -283,7 +270,7 @@ export default class NodeList {
 	 *
 	 * @param {Number} index Position of the first node to remove.
 	 * @param {Number} number Number of nodes to remove.
-	 * @returns {treeModel.NodeList} List of removed nodes.
+	 * @returns {core.treeModel.NodeList} List of removed nodes.
 	 */
 	remove( index, number ) {
 		if ( this._nodes.length === 0 ) {
@@ -451,3 +438,16 @@ export default class NodeList {
 		return index - this._indexMap.indexOf( this._indexMap[ index ] );
 	}
 }
+
+/**
+ * Value that is convertible to an item kept in {@link core.treeModel.NodeList} or an iterable collection of such items.
+ * In other words, this is anything that {@link core.treeModel.NodeList#constructor} is able to take and convert to node:
+ * * {@link core.treeModel.Element} will be left as is
+ * * {@link core.treeModel.CharacterProxy} will be left as is
+ * * {@link core.treeModel.Text} and {String} will be converted to a set of {@link core.treeModel.CharacterProxy}
+ * * {@link core.treeModel.NodeList} will clone a node list (but not the nodes inside, so the new and passed list will
+ * point to the same nodes.
+ * * Iterable collection of above items will be iterated over and all items will be added to the node list.
+ *
+ * @typedef {treeModel.Element|treeModel.CharacterProxy|treeModel.Text|String|treeModel.NodeList|Iterable} core.treeModel.NodeSet
+ */

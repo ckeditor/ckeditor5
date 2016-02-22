@@ -15,7 +15,7 @@ import Operation from './operation.js';
  * It still has some parameters defined for transformation purposes.
  *
  * In most cases this operation is a result of transforming operations. When transformation returns
- * {@link treeModel.operation.NoOperation} it means that changes done by the transformed operation
+ * {@link core.treeModel.operation.NoOperation} it means that changes done by the transformed operation
  * have already been applied.
  * @extends core.treeModel.operation.Operation
  */

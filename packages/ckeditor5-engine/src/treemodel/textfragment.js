@@ -10,35 +10,35 @@ import CharacterProxy from './characterproxy.js';
 /**
  * TextFragment is an aggregator for multiple CharacterProxy instances that are placed next to each other in
  * tree model, in the same parent, and all have same attributes set. Instances of this class are created and returned
- * in various algorithms that "merge characters" (see {@link treeModel.TreeWalker}, {@link treeModel.Range}).
+ * in various algorithms that "merge characters" (see {@link core.treeModel.TreeWalker}, {@link core.treeModel.Range}).
  *
- * Difference between {@link treeModel.TextFragment} and {@link treeModel.Text} is that the former is a set of
- * nodes taken from tree model, while {@link treeModel.Text} is simply a string with attributes set.
+ * Difference between {@link core.treeModel.TextFragment} and {@link core.treeModel.Text} is that the former is a set of
+ * nodes taken from tree model, while {@link core.treeModel.Text} is simply a string with attributes set.
  *
- * You should never create an instance of this class by your own. Instead, use string literals or {@link treeModel.Text}.
+ * You should never create an instance of this class by your own. Instead, use string literals or {@link core.treeModel.Text}.
  *
- * @class treeModel.TextFragment
+ * @memberOf core.treeModel
  */
 export default class TextFragment {
 	/**
 	 * Creates a text fragment.
 	 *
-	 * @param {treeModel.CharacterProxy} firstCharacter First character node contained in {@link treeModel.TextFragment}.
-	 * @param {Number} length Whole text contained in {@link treeModel.TextFragment}.
+	 * @param {core.treeModel.CharacterProxy} firstCharacter First character node contained in {@link core.treeModel.TextFragment}.
+	 * @param {Number} length Whole text contained in {@link core.treeModel.TextFragment}.
 	 * @protected
 	 * @constructor
 	 */
 	constructor( firstCharacter, length ) {
 		/**
-		 * First character node contained in {@link treeModel.TextFragment}.
+		 * First character node contained in {@link core.treeModel.TextFragment}.
 		 *
 		 * @readonly
-		 * @type {treeModel.CharacterProxy}
+		 * @type {core.treeModel.CharacterProxy}
 		 */
 		this.first = firstCharacter;
 
 		/**
-		 * Characters contained in {@link treeModel.TextFragment}.
+		 * Characters contained in {@link core.treeModel.TextFragment}.
 		 *
 		 * @readonly
 		 * @type {String}
@@ -46,28 +46,28 @@ export default class TextFragment {
 		this.text = firstCharacter._nodeListText.text.substr( this.first._index, length );
 
 		/**
-		 * Last {@link treeModel.CharacterProxy character node} contained in {@link treeModel.TextFragment}.
+		 * Last {@link core.treeModel.CharacterProxy character node} contained in {@link core.treeModel.TextFragment}.
 		 *
 		 * @readonly
-		 * @type {treeModel.CharacterProxy}
+		 * @type {core.treeModel.CharacterProxy}
 		 */
 		this.last = this.getCharAt( this.text.length - 1 );
 	}
 
 	/**
-	 * A common parent of all character nodes contained in {@link treeModel.TextFragment}.
+	 * A common parent of all character nodes contained in {@link core.treeModel.TextFragment}.
 	 *
-	 * @type {treeModel.Element}
+	 * @type {core.treeModel.Element}
 	 */
 	get commonParent() {
 		return this.first.parent;
 	}
 
 	/**
-	 * Gets a character at given index and creates a {@link treeModel.CharacterProxy} out of it.
+	 * Gets a character at given index and creates a {@link core.treeModel.CharacterProxy} out of it.
 	 *
 	 * @param {Number} index Character index.
-	 * @returns {treeModel.CharacterProxy}
+	 * @returns {core.treeModel.CharacterProxy}
 	 */
 	getCharAt( index ) {
 		if ( index < 0 || index >= this.text.length ) {

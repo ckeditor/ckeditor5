@@ -18,21 +18,21 @@ import Node from './node.js';
  *
  * CharacterProxy is created on the fly basing on tree model. It is not an explicit node in a tree model but
  * rather represents it. Because of this, it is not advised to store or compare instances of CharacterProxy class.
- * If you want to keep live reference to a point in a text, you should use {@link treeModel.LivePosition}.
+ * If you want to keep live reference to a point in a text, you should use {@link core.treeModel.LivePosition}.
  *
  * You should never create an instance of this class by your own. When passing parameters to constructors,
- * use string literals or {@link treeModel.Text} instead.
+ * use string literals or {@link core.treeModel.Text} instead.
  *
- * @class treeModel.CharacterProxy
+ * @memberOf core.treeModel
+ * @extends core.treeModel.Node
  */
 export default class CharacterProxy extends Node {
 	/**
 	 * Creates character node proxy.
 	 *
-	 * @param {treeModel.NodeListText} nodeListText Reference to a text object in a node list containing this character.
+	 * @param {core.treeModel.NodeListText} nodeListText Reference to a text object in a node list containing this character.
 	 * @param {Number} index Index of the character in `nodeListText`.
 	 * @protected
-	 * @constructor
 	 */
 	constructor( nodeListText, index ) {
 		super( nodeListText._attrs );
@@ -42,7 +42,7 @@ export default class CharacterProxy extends Node {
 		 *
 		 * @protected
 		 * @readonly
-		 * @type {treeModel.NodeListText}
+		 * @member {core.treeModel.NodeListText} core.treeModel.CharacterProxy#_nodeListText
 		 */
 		this._nodeListText = nodeListText;
 
@@ -51,7 +51,7 @@ export default class CharacterProxy extends Node {
 		 *
 		 * @protected
 		 * @readonly
-		 * @type {Number}
+		 * @member {Number} core.treeModel.CharacterProxy#_index
 		 */
 		this._index = index;
 
@@ -60,12 +60,12 @@ export default class CharacterProxy extends Node {
 		 *
 		 * @protected
 		 * @readonly
-		 * @type {String}
+		 * @member {String} core.treeModel.CharacterProxy#character
 		 */
 		this.character = nodeListText.text.substr( index, 1 );
 
 		/**
-		 * @see {@link treeModel.Node#parent}
+		 * @inheritdoc
 		 */
 		this.parent = this._nodeListText.parent;
 	}

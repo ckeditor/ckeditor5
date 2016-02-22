@@ -11,28 +11,22 @@ import EmitterMixin from '../emittermixin.js';
 import utils from '../utils.js';
 
 /**
- * Enum representing how position is "sticking" with their neighbour nodes.
- * Possible values: `'STICKS_TO_NEXT'`, `'STICKS_TO_PREVIOUS'`.
- * @typedef {String} treeModel.PositionStickiness
- */
-
-/**
  * LivePosition is a position in the Tree Model that updates itself as the tree changes. It may be used as a bookmark.
  * **Note:** Be very careful when dealing with LivePosition. Each LivePosition instance bind events that might
- * have to be unbound. Use {@link #detach} whenever you don't need LivePosition anymore.
+ * have to be unbound. Use {@link core.treeModel.LivePosition#detach} whenever you don't need LivePosition anymore.
  *
- * @class treeModel.LivePosition
+ * @memberOf core.treeModel
+ * @extends core.treeModel.Position
  */
-
 export default class LivePosition extends Position {
 	/**
 	 * Creates a live position.
 	 *
-	 * @see {@link treeModel.Position}
-	 * @param root
-	 * @param path
-	 * @param {treeModel.PositionStickiness} [stickiness] Defaults to `'STICKS_TO_NEXT'`. See {@link #stickiness}.
-	 * @constructor
+	 * @see @link core.treeModel.Position
+	 * @param {core.treeModel.RootElement} root
+	 * @param {Array.<Number>} path
+	 * @param {core.treeModel.PositionStickiness} [stickiness] Defaults to `'STICKS_TO_NEXT'`. See
+	 *  {@link core.treeModel.LivePosition#stickiness}.
 	 */
 	constructor( root, path, stickiness ) {
 		super( root, path );
@@ -46,15 +40,15 @@ export default class LivePosition extends Position {
 		 * Examples:
 		 * Insert:
 		 * Position is at | and we insert at the same position, marked as ^:
-		 * | sticks to previous node: `<p>f|^oo</p>` => `<p>f|baroo</p>`
-		 * | sticks to next node: `<p>f^|oo</p>` => `<p>fbar|oo</p>`
+		 * - | sticks to previous node: `<p>f|^oo</p>` => `<p>f|baroo</p>`
+		 * - | sticks to next node: `<p>f^|oo</p>` => `<p>fbar|oo</p>`
 		 *
 		 * Move:
 		 * Position is at | and range [ ] is moved to position ^:
-		 * | sticks to previous node: `<p>f|[oo]</p><p>b^ar</p>` => `<p>f|</p><p>booar</p>`
-		 * | sticks to next node: `<p>f|[oo]</p><p>b^ar</p>` => `<p>f</p><p>b|ooar</p>`
+		 * - | sticks to previous node: `<p>f|[oo]</p><p>b^ar</p>` => `<p>f|</p><p>booar</p>`
+		 * - | sticks to next node: `<p>f|[oo]</p><p>b^ar</p>` => `<p>f</p><p>b|ooar</p>`
 		 *
-		 * @type {treeModel.PositionStickiness}
+		 * @member {treeModel.PositionStickiness} core.treeModel.LivePosition#stickiness
 		 */
 		this.stickiness = stickiness || 'STICKS_TO_NEXT';
 
@@ -65,6 +59,8 @@ export default class LivePosition extends Position {
 	 * Unbinds all events previously bound by LivePosition. Use it whenever you don't need LivePosition instance
 	 * anymore (i.e. when leaving scope in which it was declared or before re-assigning variable that was
 	 * referring to it).
+	 *
+	 * @method core.treeModel.LivePosition#detach
 	 */
 	detach() {
 		this.stopListening();
@@ -72,43 +68,44 @@ export default class LivePosition extends Position {
 
 	/**
 	 * @static
-	 * @method createAfter
-	 * @see {@link treeModel.Position#createAfter}
-	 * @param {treeModel.Node} node
-	 * @returns {treeModel.LivePosition}
+	 * @method core.treeModel.LivePosition.createAfter
+	 * @see {@link core.treeModel.Position#createAfter}
+	 * @param {core.treeModel.Node} node
+	 * @returns {core.treeModel.LivePosition}
 	 */
 
 	/**
 	 * @static
-	 * @method createBefore
-	 * @see {@link treeModel.Position#createBefore}
-	 * @param {treeModel.Node} node
-	 * @returns {treeModel.LivePosition}
+	 * @method core.treeModel.LivePosition.createBefore
+	 * @see {@link core.treeModel.Position#createBefore}
+	 * @param {core.treeModel.Node} node
+	 * @returns {core.treeModel.LivePosition}
 	 */
 
 	/**
 	 * @static
-	 * @method createFromParentAndOffset
-	 * @see {@link treeModel.Position#createFromParentAndOffset}
-	 * @param {treeModel.Element} parent
+	 * @method core.treeModel.LivePosition.createFromParentAndOffset
+	 * @see {@link core.treeModel.Position#createFromParentAndOffset}
+	 * @param {core.treeModel.Element} parent
 	 * @param {Number} offset
-	 * @returns {treeModel.LivePosition}
+	 * @returns {core.treeModel.LivePosition}
 	 */
 
 	/**
 	 * @static
-	 * @method createFromPosition
-	 * @see {@link treeModel.Position#createFromPosition}
-	 * @param {treeModel.Position} position
-	 * @returns {treeModel.LivePosition}
+	 * @method core.treeModel.LivePosition.createFromPosition
+	 * @see {@link core.treeModel.Position#createFromPosition}
+	 * @param {core.treeModel.Position} position
+	 * @returns {core.treeModel.LivePosition}
 	 */
 }
 
 /**
- * Binds this LivePosition to the {@link treeModel.Document} that owns this position {@link treeModel.RootElement root}.
+ * Binds this LivePosition to the {@link core.treeModel.Document} that owns this position {@link core.treeModel.RootElement root}.
  *
+ * @ignore
  * @private
- * @method bindWithDocument
+ * @method core.treeModel.LivePosition.bindWithDocument
  */
 function bindWithDocument() {
 	/*jshint validthis: true */
@@ -126,11 +123,12 @@ function bindWithDocument() {
 /**
  * Updates this position accordingly to the updates applied to the Tree Model. Bases on change events.
  *
+ * @ignore
  * @private
  * @method transform
  * @param {String} type Type of changes applied to the Tree Model.
- * @param {treeModel.Range} range Range containing the result of applied change.
- * @param {treeModel.Position} [position] Additional position parameter provided by some change events.
+ * @param {core.treeModel.Range} range Range containing the result of applied change.
+ * @param {core.treeModel.Position} [position] Additional position parameter provided by some change events.
  */
 function transform( type, range, position ) {
 	/*jshint validthis: true */
@@ -168,3 +166,11 @@ function transform( type, range, position ) {
 }
 
 utils.mix( LivePosition, EmitterMixin );
+
+/**
+ * Enum representing how position is "sticking" with their neighbour nodes.
+ * Possible values: `'STICKS_TO_NEXT'`, `'STICKS_TO_PREVIOUS'`.
+ *
+ * @typedef {String} core.treeModel.PositionStickiness
+ */
+

@@ -10,23 +10,23 @@ import Element from './element.js';
 /**
  * Class for nodes that are roots of trees in tree data model.
  *
- * @class treeModel.RootElement
+ * @memberOf core.treeModel
+ * @extends core.treeModel.Element
  */
 export default class RootElement extends Element {
 	/**
 	 * Creates tree root node.
 	 *
-	 * @param {treeModel.Document} doc {@link treeModel.Document} that is an owner of the root.
-	 * @constructor
+	 * @param {Document} doc {@link Document} that is an owner of the root.
 	 */
 	constructor( doc ) {
 		super( 'root' );
 
 		/**
-		 * {@link treeModel.Document} that is an owner of this root.
+		 * {@link core.treeModel.Document} that is an owner of this root.
 		 *
 		 * @readonly
-		 * @type {treeModel.Document}
+		 * @member {core.treeModel.Document} core.treeModel.RootElement#doc
 		 */
 		this.document = doc;
 	}
