@@ -13,8 +13,8 @@ import DOMEmitterMixin from './domemittermixin.js';
 import utils from '../utils.js';
 import isPlainObject from '../lib/lodash/isPlainObject.js';
 
-const bindToSymbol = Symbol( 'bind-to' );
-const bindIfSymbol = Symbol( 'bind-if' );
+const bindToSymbol = Symbol( 'bindTo' );
+const bindIfSymbol = Symbol( 'bindIf' );
 
 /**
  * Basic View class.
@@ -86,14 +86,9 @@ export default class View {
 			return this._element;
 		}
 
+		// No template means no element (a virtual view).
 		if ( !this.template ) {
-			/**
-			 * Attempting to access an element of a view, which has no `template`
-			 * property.
-			 *
-			 * @error ui-view-notemplate
-			 */
-			throw new CKEditorError( 'ui-view-notemplate' );
+			return null;
 		}
 
 		// Prepare pre–defined listeners.

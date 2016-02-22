@@ -42,10 +42,7 @@ describe( 'View', () => {
 			expect( view._regionsSelectors ).to.be.empty;
 			expect( view._element ).to.be.null;
 			expect( view._template ).to.be.null;
-
-			expect( () => {
-				view.element;
-			} ).to.throw( CKEditorError, /ui-view-notemplate/ );
+			expect( view.element ).to.be.null;
 		} );
 	} );
 
