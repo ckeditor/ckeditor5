@@ -61,7 +61,7 @@ const utils = {
 			observe: {
 				value: function observe( observableName, observable ) {
 					observer.listenTo( observable, 'change', ( evt, propertyName, value, oldValue ) => {
-						console.log( `[ Change in $ { observableName } ] $ { propertyName } = '${ value }' ( was '${ oldValue }' )` );
+						console.log( `[Change in ${ observableName }] ${ propertyName } = '${ value }' (was '${ oldValue }')` );
 					} );
 
 					return observer;
