@@ -12,7 +12,8 @@ import isPlainObject from '../lib/lodash/isPlainObject.js';
 /**
  * Tree view element.
  *
- * @class treeView.Element
+ * @memberOf core.treeView
+ * @extends core.treeView.Node
  */
 export default class Element extends Node {
 	/**
@@ -20,14 +21,13 @@ export default class Element extends Node {
 	 *
 	 * Attributes can be passes in various formats:
 	 *
-	 *		new Element( 'div', { 'class': 'editor', 'contentEditable': 'true' } ); // object
-	 *		new Element( 'div', [ [ 'class', 'editor' ], [ 'contentEditable', 'true' ] ] ); // map-like iterator
-	 *		new Element( 'div', mapOfAttributes ); // map
+	 *        new Element( 'div', { 'class': 'editor', 'contentEditable': 'true' } ); // object
+	 *        new Element( 'div', [ [ 'class', 'editor' ], [ 'contentEditable', 'true' ] ] ); // map-like iterator
+	 *        new Element( 'div', mapOfAttributes ); // map
 	 *
 	 * @param {String} name Node name.
-	 * @param {Object|Interable} [attrs] Collection of attributes.
-	 * @param {treeView.Node|Iterable.<treeView.Node>} [children] List of nodes to be inserted into created element.
-	 * @constructor
+	 * @param {Object|Iterable} [attrs] Collection of attributes.
+	 * @param {core.treeView.Node|Iterable.<core.treeView.Node>} [children] List of nodes to be inserted into created element.
 	 */
 	constructor( name, attrs, children ) {
 		super();
@@ -36,7 +36,7 @@ export default class Element extends Node {
 		 * Name of the element.
 		 *
 		 * @readonly
-		 * @property {String}
+		 * @member {String} core.treeView.Element#name
 		 */
 		this.name = name;
 
@@ -44,7 +44,7 @@ export default class Element extends Node {
 		 * Map of attributes, where attributes names are keys and attributes values are values.
 		 *
 		 * @protected
-		 * @property {Map} _attrs
+		 * @member {Map} core.treeView.Element#_attrs
 		 */
 		if ( isPlainObject( attrs ) ) {
 			this._attrs = utils.objectToMap( attrs );
@@ -56,7 +56,7 @@ export default class Element extends Node {
 		 * Array of child nodes.
 		 *
 		 * @protected
-		 * @property {Array.<treeView.Node>}
+		 * @member {Array.<core.treeView.Node>} core.treeView.Element#_children
 		 */
 		this._children = [];
 
@@ -66,12 +66,11 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * {@link treeView.Element#insert Insert} a child node or a list of child nodes at the end of this node and sets
+	 * {@link core.treeView.Element#insert Insert} a child node or a list of child nodes at the end of this node and sets
 	 * the parent of these nodes to this element.
 	 *
-	 * Fires the {@link treeView.Node#change change event}.
-	 *
-	 * @param {treeView.Node|Iterable.<treeView.Node>} nodes Node or the list of nodes to be inserted.
+	 * @param {core.treeView.Node|Iterable.<core.treeView.Node>} nodes Node or the list of nodes to be inserted.
+	 * @fires {@link core.treeView.Node#change change event}
 	 */
 	appendChildren( nodes ) {
 		this.insertChildren( this.getChildCount(), nodes );
@@ -81,7 +80,7 @@ export default class Element extends Node {
 	 * Gets child at the given index.
 	 *
 	 * @param {Number} index Index of child.
-	 * @returns {treeView.Node} Child node.
+	 * @returns {core.treeView.Node} Child node.
 	 */
 	getChild( index ) {
 		return this._children[ index ];
@@ -99,7 +98,7 @@ export default class Element extends Node {
 	/**
 	 * Gets index of the given child node.
 	 *
-	 * @param {treeView.Node} node Child node.
+	 * @param {core.treeView.Node} node Child node.
 	 * @returns {Number} Index of the child node.
 	 */
 	getChildIndex( node ) {
@@ -109,7 +108,7 @@ export default class Element extends Node {
 	/**
 	 * Gets child nodes iterator.
 	 *
-	 * @returns {Iterable.<treeView.Node>} Child nodes iterator.
+	 * @returns {Iterable.<core.treeView.Node>} Child nodes iterator.
 	 */
 	getChildren() {
 		return this._children[ Symbol.iterator ]();
@@ -147,10 +146,10 @@ export default class Element extends Node {
 	/**
 	 * Adds or overwrite attribute with a specified key and value.
 	 *
-	 * Fires the {@link treeView.Node#change change event}.
 	 *
 	 * @param {String} key Attribute key.
 	 * @param {String} value Attribute value.
+	 * @fires {@link core.treeView.Node#change change event}
 	 */
 	setAttribute( key, value ) {
 		this._fireChange( 'ATTRIBUTES', this );
@@ -162,10 +161,10 @@ export default class Element extends Node {
 	 * Inserts a child node or a list of child nodes on the given index and sets the parent of these nodes to
 	 * this element.
 	 *
-	 * Fires the {@link treeView.Node#change change event}.
 	 *
 	 * @param {Number} index Position where nodes should be inserted.
-	 * @param {treeView.Node|Iterable.<treeView.Node>} nodes Node or the list of nodes to be inserted.
+	 * @param {core.treeView.Node|Iterable.<core.treeView.Node>} nodes Node or the list of nodes to be inserted.
+	 * @fires {@link core.treeView.Node#change change event}.
 	 */
 	insertChildren( index, nodes ) {
 		this._fireChange( 'CHILDREN', this );
@@ -185,10 +184,9 @@ export default class Element extends Node {
 	/**
 	 * Removes attribute from the element.
 	 *
-	 * Fires the {@link treeView.Node#change change event}.
-	 *
 	 * @param {String} key Attribute key.
-	 * @returns {Boolead} Returns true if an attribute existed and has been removed.
+	 * @returns {Boolean} Returns true if an attribute existed and has been removed.
+	 * @fires {@link core.treeView.Node#change change event}
 	 */
 	removeAttribute( key ) {
 		this._fireChange( 'ATTRIBUTES', this );
@@ -199,11 +197,11 @@ export default class Element extends Node {
 	/**
 	 * Removes number of child nodes starting at the given index and set the parent of these nodes to `null`.
 	 *
-	 * Fires the {@link treeView.Node#change change event}.
 	 *
 	 * @param {Number} index Number of the first node to remove.
 	 * @param {Number} number Number of nodes to remove.
-	 * @returns {Array.<treeView.Node>} The array of removed nodes.
+	 * @returns {Array.<core.treeView.Node>} The array of removed nodes.
+	 * @fires {@link core.treeView.Node#change change event}
 	 */
 	removeChildren( index, number ) {
 		this._fireChange( 'CHILDREN', this );

@@ -14,10 +14,11 @@ import MoveOperation from '../operation/moveoperation.js';
 import CKEditorError from '../../ckeditorerror.js';
 
 /**
- * To provide specific OT behavior and better collisions solving, {@link treeModel.Batch#merge} method
+ * @classdesc
+ * To provide specific OT behavior and better collisions solving, {@link core.treeModel.Batch#merge} method
  * uses the `MergeDelta` class which inherits from the `Delta` class and may overwrite some methods.
  *
- * @class treeModel.delta.MergeDelta
+ * @memberOf core.treeModel.delta
  */
 export default class MergeDelta extends Delta {}
 
@@ -28,9 +29,8 @@ export default class MergeDelta extends Delta {}
  * `batch-merge-no-element-after` error will be thrown.
  *
  * @chainable
- * @method merge
- * @memberOf treeModel.Batch
- * @param {treeModel.Position} position Position of merge.
+ * @method core.treeModel.Batch#merge
+ * @param {core.treeModel.Position} position Position of merge.
  */
 register( 'merge', function( position ) {
 	const delta = new MergeDelta();

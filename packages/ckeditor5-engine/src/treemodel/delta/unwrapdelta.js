@@ -13,10 +13,11 @@ import MoveOperation from '../operation/moveoperation.js';
 import CKEditorError from '../../ckeditorerror.js';
 
 /**
- * To provide specific OT behavior and better collisions solving, {@link treeModel.Batch#merge} method
+ * @classdesc
+ * To provide specific OT behavior and better collisions solving, {@link core.treeModel.Batch#merge} method
  * uses the `UnwrapDelta` class which inherits from the `Delta` class and may overwrite some methods.
  *
- * @class treeModel.delta.UnwrapDelta
+ * @memberOf core.treeModel.delta
  */
 export default class UnwrapDelta extends Delta {}
 
@@ -25,9 +26,8 @@ export default class UnwrapDelta extends Delta {}
  * error if you try to unwrap an element that does not have a parent.
  *
  * @chainable
- * @method unwrap
- * @memberOf treeModel.Batch
- * @param {treeModel.Element} position Element to unwrap.
+ * @method core.treeModel.Batch#unwrap
+ * @param {core.treeModel.Element} position Element to unwrap.
  */
 register( 'unwrap', function( element ) {
 	if ( element.parent === null ) {

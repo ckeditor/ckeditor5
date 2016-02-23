@@ -14,11 +14,10 @@ import log from '../log.js';
  * Creates a ProxyEmitter instance. Such an instance is a bridge between a DOM Node firing events
  * and any Host listening to them. It is backwards compatible with {@link EmitterMixin#on}.
  *
- * @class DOMEmitterMixin
- * @mixins EmitterMixin
- * @implements DOMEmitter
+ * @memberOf core.ui
+ * @mixes core.EmitterMixin
+ * @implements core.ui.DOMEmitter
  */
-
 class ProxyEmitter {
 	/**
 	 * @param {Node} node DOM Node that fires events.
@@ -38,7 +37,7 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	 * Collection of native DOM listeners.
 	 *
 	 * @private
-	 * @property {Object} _domListeners
+	 * @member {Object} core.ui.ProxyEmitter#_domListeners
 	 */
 
 	/**
@@ -53,6 +52,8 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	 * event.
 	 * @param {Number} [priority=10] The priority of this callback in relation to other callbacks to that same event.
 	 * Lower values are called first.
+	 *
+	 * @method core.ui.ProxyEmitter#on
 	 */
 	on( event ) {
 		// Execute parent class method first.
@@ -85,6 +86,8 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	 * @param {Function} callback The function to stop being called.
 	 * @param {Object} [ctx] The context object to be removed, pared with the given callback. To handle cases where
 	 * the same callback is used several times with different contexts.
+	 *
+	 * @method core.ui.ProxyEmitter#off
 	 */
 	off( event ) {
 		// Execute parent class method first.
@@ -106,6 +109,8 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	 * Note: A native DOM Event is passed as an argument.
 	 *
 	 * @param {String} event
+	 *
+	 * @method core.ui.ProxyEmitter#_createDomListener
 	 * @returns {Function} The DOM listener callback.
 	 */
 	_createDomListener( event ) {
@@ -129,38 +134,36 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
  * Mixin that injects the DOM events API into its host. It provides the API
  * compatible with {@link EmitterMixin}.
  *
- *                               listenTo( click, ... )
- *                 +-----------------------------------------+
- *                 |              stopListening( ... )       |
- *  +----------------------------+                           |             addEventListener( click, ... )
- *  | Host                       |                           |   +---------------------------------------------+
- *  +----------------------------+                           |   |       removeEventListener( click, ... )     |
- *  | _listeningTo: {            |                +----------v-------------+                                   |
- *  |   UID: {                   |                | ProxyEmitter           |                                   |
- *  |     emitter: ProxyEmitter, |                +------------------------+                      +------------v----------+
- *  |     callbacks: {           |                | events: {              |                      | Node (HTMLElement)    |
- *  |       click: [ callbacks ] |                |   click: [ callbacks ] |                      +-----------------------+
- *  |     }                      |                | },                     |                      | data-cke-expando: UID |
- *  |   }                        |                | _domNode: Node,        |                      +-----------------------+
- *  | }                          |                | _domListeners: {},     |                                   |
- *  | +------------------------+ |                | _emitterId: UID        |                                   |
- *  | | DOMEmitterMixin        | |                +--------------^---------+                                   |
- *  | +------------------------+ |                           |   |                                             |
- *  +--------------^-------------+                           |   +---------------------------------------------+
- *                 |                                         |                  click (DOM Event)
- *                 +-----------------------------------------+
- *                             fire( click, DOM Event )
+ *                                  listenTo( click, ... )
+ *                    +-----------------------------------------+
+ *                    |              stopListening( ... )       |
+ *     +----------------------------+                           |             addEventListener( click, ... )
+ *     | Host                       |                           |   +---------------------------------------------+
+ *     +----------------------------+                           |   |       removeEventListener( click, ... )     |
+ *     | _listeningTo: {            |                +----------v-------------+                                   |
+ *     |   UID: {                   |                | ProxyEmitter           |                                   |
+ *     |     emitter: ProxyEmitter, |                +------------------------+                      +------------v----------+
+ *     |     callbacks: {           |                | events: {              |                      | Node (HTMLElement)    |
+ *     |       click: [ callbacks ] |                |   click: [ callbacks ] |                      +-----------------------+
+ *     |     }                      |                | },                     |                      | data-cke-expando: UID |
+ *     |   }                        |                | _domNode: Node,        |                      +-----------------------+
+ *     | }                          |                | _domListeners: {},     |                                   |
+ *     | +------------------------+ |                | _emitterId: UID        |                                   |
+ *     | | DOMEmitterMixin        | |                +--------------^---------+                                   |
+ *     | +------------------------+ |                           |   |                                             |
+ *     +--------------^-------------+                           |   +---------------------------------------------+
+ *                    |                                         |                  click (DOM Event)
+ *                    +-----------------------------------------+
+ *                                fire( click, DOM Event )
  *
- * @singleton
- * @class DOMEmitterMixin
- * @mixins EmitterMixin
- * @implements DOMEmitter
+ * @mixin core.ui.DOMEmitterMixin
+ * @mixes core.EmitterMixin
+ * @implements core.ui.DOMEmitter
  */
-
 const DOMEmitterMixin = extend( {}, EmitterMixin, {
 	/**
 	 * Registers a callback function to be executed when an event is fired in a specific Emitter or DOM Node.
-	 * It is backwards compatible with {@link EmitterMixin#listenTo}.
+	 * It is backwards compatible with {@link core.EmitterMixin#listenTo}.
 	 *
 	 * @param {Emitter|Node} emitter The object that fires the event.
 	 * @param {String} event The name of the event.
@@ -168,6 +171,8 @@ const DOMEmitterMixin = extend( {}, EmitterMixin, {
 	 * @param {Object} [ctx] The object that represents `this` in the callback. Defaults to `emitter`.
 	 * @param {Number} [priority=10] The priority of this callback in relation to other callbacks to that same event.
 	 * Lower values are called first.
+	 *
+	 * @method core.ui.DOMEmitterMixin#listenTo
 	 */
 	listenTo() {
 		const args = Array.prototype.slice.call( arguments );
@@ -197,6 +202,8 @@ const DOMEmitterMixin = extend( {}, EmitterMixin, {
 	 * for all events from `emitter`.
 	 * @param {Function} [callback] (Requires the `event`) The function to be removed from the call list for the given
 	 * `event`.
+	 *
+	 * @method core.ui.DOMEmitterMixin#stopListening
 	 */
 	stopListening() {
 		const args = Array.prototype.slice.call( arguments );
@@ -224,6 +231,7 @@ const DOMEmitterMixin = extend( {}, EmitterMixin, {
 	 * Retrieves ProxyEmitter instance for given DOM Node residing in this Host.
 	 *
 	 * @param {Node} node DOM Node of the ProxyEmitter.
+	 * @method core.ui.DOMEmitterMixin#_getProxyEmitter
 	 * @return {ProxyEmitter} ProxyEmitter instance or null.
 	 */
 	_getProxyEmitter( node ) {

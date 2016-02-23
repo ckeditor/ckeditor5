@@ -12,36 +12,19 @@ import Position from './position.js';
 import CKEditorError from '../ckeditorerror.js';
 
 /**
- * Type of the step made by {@link treeModel.TreeWalker}.
- * Possible values: `'ELEMENT_START'` if walker is at the beginning of a node, `'ELEMENT_END'` if walker is at the end of node,
- * `'CHARACTER'` if walker traversed over a character, or `'TEXT'` if walker traversed over multiple characters (available in
- * character merging mode, see {@link treeModel.TreeWalker#constructor}).
- *
- * @typedef {String} treeModel.TreeWalkerItemType
- */
-
-/**
- * Object returned by {@link treeModel.TreeWalker} when traversing tree model.
- *
- * @typedef {Object} treeModel.TreeWalkerItem
- * @property {treeModel.TreeWalkerItemType} type
- * @property {treeModel.Node|treeModel.TextFragment} item Value between old and new position of {@link treeModel.TreeWalker}.
- */
-
-/**
  * Position iterator class. It allows to iterate forward and backward over the tree document.
  *
- * @class treeModel.TreeWalker
+ * @memberOf core.treeModel
  */
 export default class TreeWalker {
 	/**
 	 * Creates a range iterator. All parameters are optional, but you have to specify either `boundaries` or `position`.
 	 *
 	 * @param {Object} options Object with configuration.
-	 * @param {treeModel.Range} [options.boundaries] Range to define boundaries of the iterator.
-	 * @param {treeModel.Position} [options.position] Starting position.
+	 * @param {core.treeModel.Range} [options.boundaries] Range to define boundaries of the iterator.
+	 * @param {core.treeModel.Position} [options.position] Starting position.
 	 * @param {Boolean} [options.mergeCharacters=false] Flag indicating whether all consecutive characters with the same attributes
-	 * should be returned as one {@link treeModel.TextFragment} (`true`) or one by one as multiple {@link treeModel.CharacterProxy}
+	 * should be returned as one {@link core.treeModel.TextFragment} (`true`) or one by one as multiple {@link core.treeModel.CharacterProxy}
 	 * (`false`) objects.
 	 * @constructor
 	 */
@@ -63,7 +46,7 @@ export default class TreeWalker {
 		 *
 		 * If boundaries are not defined they are set before first and after last child of the root node.
 		 *
-		 * @property {treeModel.Range} boundaries
+		 * @type {core.treeModel.Range}
 		 */
 		this.boundaries = options.boundaries || null;
 
@@ -71,7 +54,7 @@ export default class TreeWalker {
 		 * Start boundary cached for optimization purposes.
 		 *
 		 * @private
-		 * @property {treeModel.Element} boundaryStartParent
+		 * @type {core.treeModel.Element}
 		 */
 		this._boundaryStartParent = this.boundaries ? this.boundaries.start.parent : null;
 
@@ -79,15 +62,15 @@ export default class TreeWalker {
 		 * End boundary cached for optimization purposes.
 		 *
 		 * @private
-		 * @property {treeModel.Element} boundaryEndParent
+		 * @type {core.treeModel.Element}
 		 */
 		this._boundaryEndParent = this.boundaries ? this.boundaries.end.parent : null;
 
 		/**
 		 * Iterator position. This is alway static position, even if the initial position was a
-		 * {@link treeModel.LivePosition live position}.
+		 * {@link core.treeModel.LivePosition live position}.
 		 *
-		 * @property {treeModel.Position} position
+		 * @type {core.treeModel.Position}
 		 */
 		this.position = options.position ?
 			Position.createFromPosition( options.position ) :
@@ -95,9 +78,9 @@ export default class TreeWalker {
 
 		/**
 		 * Flag indicating whether all consecutive characters with the same attributes should be
-		 * returned as one {@link treeModel.CharacterProxy} (`true`) or one by one (`false`).
+		 * returned as one {@link core.treeModel.CharacterProxy} (`true`) or one by one (`false`).
 		 *
-		 * @property {Boolean} mergeCharacters
+		 * @type {Boolean}
 		 */
 		this.mergeCharacters = !!options.mergeCharacters;
 
@@ -105,7 +88,7 @@ export default class TreeWalker {
 		 * Parent of the most recently visited node. Cached for optimization purposes.
 		 *
 		 * @private
-		 * @property {treeModel.Element} visitedParent
+		 * @type {core.treeModel.Element}
 		 */
 		this._visitedParent = this.position.parent;
 	}
@@ -115,7 +98,7 @@ export default class TreeWalker {
 	 *
 	 * @returns {Object} Object implementing iterator interface, returning information about taken step.
 	 * @returns {Boolean} return.done True if iterator is done.
-	 * @returns {treeModel.TreeWalkerItem} return.value Information about taken step.
+	 * @returns {core.treeModel.TreeWalkerItem} return.value Information about taken step.
 	 */
 	next() {
 		const position = Position.createFromPosition( this.position );
@@ -179,7 +162,7 @@ export default class TreeWalker {
 	 *
 	 * @returns {Object} Object implementing iterator interface, returning information about taken step.
 	 * @returns {Boolean} return.done True if iterator is done.
-	 * @returns {treeModel.TreeWalkerItem} return.value Information about taken step.
+	 * @returns {core.treeModel.TreeWalkerItem} return.value Information about taken step.
 	 */
 	previous() {
 		const position = Position.createFromPosition( this.position );
@@ -248,3 +231,20 @@ function formatReturnValue( type, item ) {
 		}
 	};
 }
+
+/**
+ * Type of the step made by {@link core.treeModel.TreeWalker}.
+ * Possible values: `'ELEMENT_START'` if walker is at the beginning of a node, `'ELEMENT_END'` if walker is at the end of node,
+ * `'CHARACTER'` if walker traversed over a character, or `'TEXT'` if walker traversed over multiple characters (available in
+ * character merging mode, see {@link core.treeModel.TreeWalker#constructor}).
+ *
+ * @typedef {String} core.treeModel.TreeWalkerItemType
+ */
+
+/**
+ * Object returned by {@link core.treeModel.TreeWalker} when traversing tree model.
+ *
+ * @typedef {Object} core.treeModel.TreeWalkerItem
+ * @property {treeModel.TreeWalkerItemType} type
+ * @property {treeModel.Node|treeModel.TextFragment} item Value between old and new position of {@link core.treeModel.TreeWalker}.
+ */

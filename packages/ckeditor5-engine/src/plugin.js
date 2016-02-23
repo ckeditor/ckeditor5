@@ -11,10 +11,9 @@ import utils from './utils.js';
 /**
  * The base class for CKEditor plugin classes.
  *
- * @class core.Plugin
- * @mixins core.ObservableMixin
+ * @memberOf core
+ * @mixes core.ObservableMixin
  */
-
 export default class Plugin {
 	/**
 	 * Creates a new Plugin instance.
@@ -24,7 +23,7 @@ export default class Plugin {
 	constructor( editor ) {
 		/**
 		 * @readonly
-		 * @property {core.Editor}
+		 * @member {core.Editor} core.Plugin#editor
 		 */
 		this.editor = editor;
 	}
@@ -43,11 +42,11 @@ export default class Plugin {
 	 *		}
 	 *
 	 * @static
-	 * @property {Function[]} requires
+	 * @member {Function[]} core.Plugin.requires
 	 */
 
 	/**
-	 * @returns {null/Promise}
+	 * @returns {null|Promise}
 	 */
 	init() {}
 

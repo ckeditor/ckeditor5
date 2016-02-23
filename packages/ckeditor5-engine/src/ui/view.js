@@ -11,33 +11,35 @@ import Template from './template.js';
 import CKEditorError from '../ckeditorerror.js';
 import DOMEmitterMixin from './domemittermixin.js';
 import utils from '../utils.js';
+import isPlainObject from '../lib/lodash/isPlainObject.js';
+
+const bindToSymbol = Symbol( 'bind-to' );
+const bindIfSymbol = Symbol( 'bind-if' );
 
 /**
  * Basic View class.
  *
- * @class View
- * @mixins DOMEmitterMixin
+ * @memberOf core.ui
+ * @mixes DOMEmitterMixin
  */
-
 export default class View {
 	/**
 	 * Creates an instance of the {@link View} class.
 	 *
-	 * @param {Model} model (View)Model of this View.
-	 * @constructor
+	 * @param {core.ui.Model} model (View)Model of this View.
 	 */
 	constructor( model ) {
 		/**
 		 * Model of this view.
 		 *
-		 * @property {Model}
+		 * @type {core.ui.Model}
 		 */
 		this.model = model || null;
 
 		/**
-		 * Regions of this view. See {@link #register}.
+		 * Regions of this view. See {@link core.ui.View#register}.
 		 *
-		 * @property {Collection}
+		 * @type {Collection}
 		 */
 		this.regions = new Collection( {
 			idProperty: 'name'
@@ -46,15 +48,15 @@ export default class View {
 		/**
 		 * Template of this view.
 		 *
-		 * @property {Object}
+		 * @type {Object}
 		 */
 		this.template = null;
 
 		/**
-		 * Region selectors of this view. See {@link #register}.
+		 * Region selectors of this view. See {@link core.ui.View#register}.
 		 *
 		 * @private
-		 * @property {Object}
+		 * @type {Object}
 		 */
 		this._regionsSelectors = {};
 
@@ -62,24 +64,22 @@ export default class View {
 		 * Element of this view.
 		 *
 		 * @private
-		 * @property {HTMLElement}
+		 * @type {HTMLElement}
 		 */
 		this._element = null;
 
 		/**
-		 * An instance of Template to generate {@link #_el}.
+		 * An instance of Template to generate {@link core.ui.View#_el}.
 		 *
 		 * @private
-		 * @property {Template}
+		 * @type {Template}
 		 */
 		this._template = null;
 	}
 
 	/**
 	 * Element of this view. The element is rendered on first reference
-	 * using {@link #template} definition and {@link #_template} object.
-	 *
-	 * @property element
+	 * using {@link core.ui.View#template} definition and {@link core.ui.View#_template} object.
 	 */
 	get element() {
 		if ( this._element ) {
@@ -97,7 +97,10 @@ export default class View {
 		}
 
 		// Prepare pre–defined listeners.
-		this._createTemplateListenerAttachers( this.template );
+		this._extendTemplateWithListenerAttachers( this.template );
+
+		// Prepare pre–defined attribute bindings.
+		this._extendTemplateWithModelBinders( this.template );
 
 		this._template = new Template( this.template );
 
@@ -109,6 +112,92 @@ export default class View {
 	}
 
 	/**
+	 * And entry point to the interface which allows binding attributes of {@link View#model}
+	 * to the DOM items like HTMLElement attributes or Text Node `textContent`, so their state
+	 * is synchronized with {@link View#model}.
+	 *
+	 * @readonly
+	 */
+	get attributeBinder() {
+		if ( this._attributeBinder ) {
+			return this._attributeBinder;
+		}
+
+		const model = this.model;
+		const binder = {
+			/**
+			 * Binds {@link View#model} to HTMLElement attribute or Text Node `textContent`
+			 * so remains in sync with the Model when it changes.
+			 *
+			 *		this.template = {
+			 *			tag: 'p',
+			 *			attributes: {
+			 *				// class="..." attribute gets bound to this.model.a
+			 *				'class': bind.to( 'a' )
+			 *			},
+			 *			children: [
+			 *				// <p>...</p> gets bound to this.model.b; always `toUpperCase()`.
+			 *				{ text: bind.to( 'b', ( value, node ) => value.toUpperCase() ) }
+			 *			]
+			 *		}
+			 *
+			 * @property {attributeBinder.to}
+			 * @param {String} attribute Name of {@link View#model} used in the binding.
+			 * @param {Function} [callback] Allows processing of the value. Accepts `Node` and `value` as arguments.
+			 * @return {core.ui.ViewModelBinding}
+			 */
+			to( attribute, callback ) {
+				return {
+					type: bindToSymbol,
+					model: model,
+					attribute,
+					callback
+				};
+			},
+
+			/**
+			 * Binds {@link View#model} to HTMLElement attribute or Text Node `textContent`
+			 * so remains in sync with the Model when it changes. Unlike {@link View#attributeBinder.to},
+			 * it controls the presence of the attribute/`textContent` depending on the "falseness" of
+			 * {@link View#model} attribute.
+			 *
+			 *		this.template = {
+			 *			tag: 'input',
+			 *			attributes: {
+			 *				// <input checked> this.model.a is not undefined/null/false/''
+			 *				// <input> this.model.a is undefined/null/false
+			 *				checked: bind.if( 'a' )
+			 *			},
+			 *			children: [
+			 *				{
+			 *					// <input>"b-is-not-set"</input> when this.model.b is undefined/null/false/''
+			 *					// <input></input> when this.model.b is not "falsy"
+			 *					text: bind.if( 'b', 'b-is-not-set', ( value, node ) => !value )
+			 *				}
+			 *			]
+			 *		}
+			 *
+			 * @property {attributeBinder.if}
+			 * @param {String} attribute Name of {@link View#model} used in the binding.
+			 * @param {String} [valueIfTrue] Value set when {@link View#model} attribute is not undefined/null/false/''.
+			 * @param {Function} [callback] Allows processing of the value. Accepts `Node` and `value` as arguments.
+			 * @return {core.ui.ViewModelBinding}
+			 */
+			if( attribute, valueIfTrue, callback ) {
+				return {
+					type: bindIfSymbol,
+					model: model,
+					attribute,
+					valueIfTrue,
+					callback
+				};
+			}
+		};
+
+		return ( this._attributeBinder = binder );
+	}
+
+	/**
 	 * Initializes the view.
 	 */
 	init() {
@@ -116,7 +205,7 @@ export default class View {
 	}
 
 	/**
-	 * Registers a region in {@link #regions}.
+	 * Registers a region in {@link core.ui.View#regions}.
 	 *
 	 *		let view = new View();
 	 *
@@ -135,7 +224,7 @@ export default class View {
 	 * @param {String|Region} stringOrRegion The name or an instance of the Region
 	 * to be registered. If `String`, the region will be created on the fly.
 	 * @param {String|Function|true} regionSelector The selector to retrieve region's element
-	 * in DOM when the region instance is initialized (see {@link Region#init}, {@link #init}).
+	 * in DOM when the region instance is initialized (see {@link Region#init}, {@link core.ui.View#init}).
 	 * @param {Boolean} [override] When set `true` it will allow overriding of registered regions.
 	 */
 	register( ...args ) {
@@ -191,50 +280,6 @@ export default class View {
 	}
 
 	/**
-	 * Binds an `attribute` of View's model so the DOM of the View is updated when the `attribute`
-	 * changes. It returns a function which, once called in the context of a DOM element,
-	 * attaches a listener to the model which, in turn, brings changes to DOM.
-	 *
-	 * @param {String} attribute Attribute name in the model to be observed.
-	 * @param {Function} [callback] Callback function executed on attribute change in model.
-	 * If not specified, a default DOM `domUpdater` supplied by the template is used.
-	 */
-	bindToAttribute( attribute, callback ) {
-		/**
-		 * Attaches a listener to View's model, which updates DOM when the model's attribute
-		 * changes. DOM is either updated by the `domUpdater` function supplied by the template
-		 * (like attribute changer or `innerHTML` setter) or custom `callback` passed to {@link #bind}.
-		 *
-		 * This function is called by {@link Template#render}.
-		 *
-		 * @param {HTMLElement} el DOM element to be updated when `attribute` in model changes.
-		 * @param {Function} domUpdater A function provided by the template which updates corresponding
-		 * DOM.
-		 */
-		return ( el, domUpdater ) => {
-			let onModelChange;
-
-			if ( callback ) {
-				onModelChange = ( evt, value ) => {
-					let processedValue = callback( el, value );
-
-					if ( typeof processedValue != 'undefined' ) {
-						domUpdater( el, processedValue );
-					}
-				};
-			} else {
-				onModelChange = ( evt, value ) => domUpdater( el, value );
-			}
-
-			// Execute callback when the attribute changes.
-			this.listenTo( this.model, 'change:' + attribute, onModelChange );
-
-			// Set the initial state of the view.
-			onModelChange( null, this.model[ attribute ] );
-		};
-	}
-
-	/**
 	 * Applies template to existing DOM element in the context of a View.
 	 *
 	 *		const element = document.createElement( 'div' );
@@ -258,10 +303,14 @@ export default class View {
 	 * See: {@link Template#apply}.
 	 *
 	 * @param {DOMElement} element DOM Element to initialize.
-	 * @param {TemplateDefinition} def Template definition to be applied.
+	 * @param {core.ui.TemplateDefinition} def Template definition to be applied.
 	 */
 	applyTemplateToElement( element, def ) {
-		this._createTemplateListenerAttachers( def );
+		// Prepare pre–defined listeners.
+		this._extendTemplateWithListenerAttachers( def );
+
+		// Prepare pre–defined attribute bindings.
+		this._extendTemplateWithModelBinders( def );
 
 		new Template( def ).apply( element );
 	}
@@ -269,8 +318,8 @@ export default class View {
 	/**
 	 * Destroys the view instance. The process includes:
 	 *
-	 * 1. Removal of child views from {@link #regions}.
-	 * 2. Destruction of the {@link #regions}.
+	 * 1. Removal of child views from {@link core.ui.View#regions}.
+	 * 2. Destruction of the {@link core.ui.View#regions}.
 	 * 3. Removal of {#link #_el} from DOM.
 	 */
 	destroy() {
@@ -294,8 +343,8 @@ export default class View {
 	}
 
 	/**
-	 * Initializes {@link #regions} of this view by passing a DOM element
-	 * generated from {@link #_regionsSelectors} into {@link Region#init}.
+	 * Initializes {@link core.ui.View#regions} of this view by passing a DOM element
+	 * generated from {@link core.ui.View#_regionsSelectors} into {@link Region#init}.
 	 *
 	 * @protected
 	 */
@@ -369,14 +418,152 @@ export default class View {
 	}
 
 	/**
+	 * For given {@link core.ui.TemplateValueSchema} found by (@link _extendTemplateWithModelBinders} containing
+	 * {@link core.ui.ViewModelBinding} it returns a function, which when called by {@link Template#render}
+	 * or {@link Template#apply} activates the binding and sets its initial value.
+	 *
+	 * Note: {@link core.ui.TemplateValueSchema} can be for HTMLElement attributes or Text Node `textContent`.
+	 *
+	 * @protected
+	 * @param {core.ui.TemplateValueSchema}
+	 * @return {Function}
+	 */
+	_getModelBinder( valueSchema ) {
+		valueSchema = normalizeBinderValueSchema( valueSchema );
+
+		/**
+		 * Assembles the value using {@link core.ui.TemplateValueSchema} and stores it in a form of
+		 * an Array. Each entry of an Array corresponds to one of {@link core.ui.TemplateValueSchema}
+		 * items.
+		 *
+		 * @private
+		 * @param {Node} node
+		 * @return {Array}
+		 */
+		const getBoundValue = ( node ) => {
+			let model, modelValue;
+
+			return valueSchema.map( schemaItem => {
+				model = schemaItem.model;
+
+				if ( model ) {
+					modelValue = model[ schemaItem.attribute ];
+
+					if ( schemaItem.callback ) {
+						modelValue = schemaItem.callback( modelValue, node );
+					}
+
+					return modelValue;
+				} else {
+					return schemaItem;
+				}
+			} );
+		};
+
+		/**
+		 * Attaches a listener to {@link View#model}, which updates DOM with a value constructed from
+		 * {@link core.ui.TemplateValueSchema} when {@link View#model} attribute value changes.
+		 *
+		 * This function is called by {@link Template#render} or {@link Template#apply}.
+		 *
+		 * @param {Node} node DOM Node to be updated when {@link View#model} changes.
+		 * @param {Function} domUpdater A function provided by {@link Template} which updates corresponding
+		 * DOM attribute or `textContent`.
+		 */
+		return ( node, domUpdater ) => {
+			// Check if valueSchema is a single bind.if, like:
+			//		{ class: bind.if( 'foo' ) }
+			const isPlainBindIf = valueSchema.length == 1 && valueSchema[ 0 ].type == bindIfSymbol;
+
+			// A function executed each time bound model attribute changes.
+			const onModelChange = () => {
+				let value = getBoundValue( node );
+
+				if ( isPlainBindIf ) {
+					value = value[ 0 ];
+				} else {
+					value = value.reduce( binderValueReducer, '' );
+				}
+
+				const isSet = isPlainBindIf ? !!value : value;
+
+				const valueToSet = isPlainBindIf ?
+					( valueSchema[ 0 ].valueIfTrue || '' ) : value;
+
+				if ( isSet ) {
+					domUpdater.set( valueToSet );
+				} else {
+					domUpdater.remove();
+				}
+			};
+
+			valueSchema
+				.filter( schemaItem => schemaItem.model )
+				.forEach( schemaItem => {
+					this.listenTo( schemaItem.model, 'change:' + schemaItem.attribute, onModelChange );
+				} );
+
+			// Set initial values.
+			onModelChange();
+		};
+	}
+
+	/**
+	 * Iterates over "attributes" and "text" properties in {@link TemplateDefinition} and
+	 * locates existing {@link core.ui.ViewModelBinding} created by {@link core.ui.View#attributeBinder}.
+	 * Then, for each such a binding, it creates corresponding entry in {@link Template#_modelBinders},
+	 * which can be then activated by {@link Template#render} or {@link Template#apply}.
+	 *
+	 * @protected
+	 * @param {core.ui.TemplateDefinition} def
+	 */
+	_extendTemplateWithModelBinders( def ) {
+		const attributes = def.attributes;
+		const text = def.text;
+		let binders = def._modelBinders;
+		let attrName, attrValue;
+
+		if ( !binders && isPlainObject( def ) ) {
+			Object.defineProperty( def, '_modelBinders', {
+				enumerable: false,
+				writable: true,
+				value: {
+					attributes: {}
+				}
+			} );
+
+			binders = def._modelBinders;
+		}
+
+		if ( attributes ) {
+			for ( attrName in attributes ) {
+				attrValue = attributes[ attrName ];
+
+				if ( hasModelBinding( attrValue ) ) {
+					binders.attributes[ attrName ] = this._getModelBinder( attrValue );
+				}
+			}
+		}
+
+		if ( text && hasModelBinding( text ) ) {
+			binders.text = this._getModelBinder( text );
+		}
+
+		// Repeat recursively for the children.
+		if ( def.children ) {
+			def.children.forEach( this._extendTemplateWithModelBinders, this );
+		}
+	}
+
+	/**
 	 * Iterates over "on" property in {@link TemplateDefinition} to recursively
 	 * replace each listener declaration with a function which, once executed in a context
 	 * of an element, attaches native DOM listener to that element.
 	 *
 	 * @protected
-	 * @param {TemplateDefinition} def Template definition.
+	 * @param {core.ui.TemplateDefinition} def Template definition.
 	 */
-	_createTemplateListenerAttachers( def ) {
+	_extendTemplateWithListenerAttachers( def ) {
 		const on = def.on;
 
 		// Don't create attachers if they're already here or in the context of the same (this) View instance.
@@ -425,7 +612,7 @@ export default class View {
 
 		// Repeat recursively for the children.
 		if ( def.children ) {
-			def.children.forEach( this._createTemplateListenerAttachers, this );
+			def.children.forEach( this._extendTemplateWithListenerAttachers, this );
 		}
 	}
 }
@@ -437,6 +624,7 @@ const validSelectorTypes = new Set( [ 'string', 'boolean', 'function' ] );
 /**
  * Check whether region selector is valid.
  *
+ * @ignore
  * @private
  * @param {*} selector Selector to be checked.
  * @returns {Boolean}
@@ -444,3 +632,68 @@ const validSelectorTypes = new Set( [ 'string', 'boolean', 'function' ] );
 function isValidRegionSelector( selector ) {
 	return validSelectorTypes.has( typeof selector ) && selector !== false;
 }
+
+/**
+ * Normalizes given {@link core.ui.TemplateValueSchema} it's always in an Array–like format:
+ *
+ * 		{ attributeName/text: 'bar' } ->
+ * 			{ attributeName/text: [ 'bar' ] }
+ *
+ * 		{ attributeName/text: { model: ..., modelAttributeName: ..., callback: ... } } ->
+ * 			{ attributeName/text: [ { model: ..., modelAttributeName: ..., callback: ... } ] }
+ *
+ * 		{ attributeName/text: [ 'bar', { model: ..., modelAttributeName: ... }, 'baz' ] }
+ *
+ * @ignore
+ * @private
+ * @param {core.ui.TemplateValueSchema} valueSchema
+ * @returns {Array}
+ */
+function normalizeBinderValueSchema( valueSchema ) {
+	return Array.isArray( valueSchema ) ? valueSchema : [ valueSchema ];
+}
+
+/**
+ * Checks whether given {@link core.ui.TemplateValueSchema} contains a
+ * {@link core.ui.ViewModelBinding}.
+ *
+ * @ignore
+ * @private
+ * @param {core.ui.TemplateValueSchema} valueSchema
+ * @returns {Boolean}
+ */
+function hasModelBinding( valueSchema ) {
+	if ( Array.isArray( valueSchema ) ) {
+		return valueSchema.some( hasModelBinding );
+	} else if ( valueSchema.model ) {
+		return true;
+	}
+
+	return false;
+}
+
+/**
+ * A helper which concatenates the value avoiding unwanted
+ * leading white spaces.
+ *
+ * @ignore
+ * @private
+ * @param {String} prev
+ * @param {String} cur
+ * @returns {String}
+ */
+function binderValueReducer( prev, cur ) {
+	return prev === '' ? `${cur}` : `${prev} ${cur}`;
+}
+
+/**
+ * Describes Model binding created by {@link View#attributeBinder}.
+ *
+ * @typedef core.ui.ViewModelBinding
+ * @type Object
+ * @property {Symbol} type
+ * @property {core.ui.Model} model
+ * @property {String} attribute
+ * @property {String} [valueIfTrue]
+ * @property {Function} [callback]
+ */

@@ -14,22 +14,22 @@ import MoveOperation from '../operation/moveoperation.js';
 import CKEditorError from '../../ckeditorerror.js';
 
 /**
- * To provide specific OT behavior and better collisions solving, {@link treeModel.Batch#merge} method
+ * @classdesc
+ * To provide specific OT behavior and better collisions solving, {@link core.treeModel.Batch#merge} method
  * uses the `WrapDelta` class which inherits from the `Delta` class and may overwrite some methods.
  *
- * @class treeModel.delta.WrapDelta
+ * @memberOf core.treeModel.delta
  */
 export default class WrapDelta extends Delta {}
 
 /**
  * Wraps given range with given element or with a new element of specified name if string has been passed.
- * **Note:** given range should be a "flat range" (see {@link treeModel.Range#isFlat}). If not, error will be thrown.
+ * **Note:** given range should be a "flat range" (see {@link core.treeModel.Range#isFlat}). If not, error will be thrown.
  *
  * @chainable
- * @method wrap
- * @memberOf treeModel.Batch
- * @param {treeModel.Range} range Range to wrap.
- * @param {treeModel.Element|String} elementOrString Element or name of element to wrap the range with.
+ * @method core.treeModel.Batch#wrap
+ * @param {core.treeModel.Range} range Range to wrap.
+ * @param {core.treeModel.Element|String} elementOrString Element or name of element to wrap the range with.
  */
 register( 'wrap', function( range, elementOrString ) {
 	if ( !range.isFlat ) {

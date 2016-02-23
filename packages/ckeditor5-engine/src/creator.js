@@ -10,16 +10,15 @@ import Plugin from './plugin.js';
 /**
  * Basic creator class.
  *
- * @class core.Creator
+ * @memberOf core
  * @extends core.Plugin
  */
-
 export default class Creator extends Plugin {
 	/**
-	 * The element used to {@link #_replaceElement replace} the editor element.
+	 * The element used to {@link core.Creator#_replaceElement _replaceElement} the editor element.
 	 *
 	 * @private
-	 * @property {HTMLElement} _elementReplacemenet
+	 * @member {HTMLElement} core.Creator#_elementReplacement
 	 */
 
 	/**
@@ -64,6 +63,7 @@ export default class Creator extends Plugin {
 
 	/**
 	 * Updates the {@link core.Editor#element editor element}'s content with the data.
+	 *
 	 */
 	updateEditorElement() {
 		Creator.setDataInElement( this.editor.element, this.editor.getData() );
@@ -71,6 +71,7 @@ export default class Creator extends Plugin {
 
 	/**
 	 * Loads the data from the {@link core.Editor#element editor element} to the editable.
+	 *
 	 */
 	loadDataFromEditorElement() {
 		this.editor.setData( Creator.getDataFromElement( this.editor.element ) );
@@ -108,7 +109,7 @@ export default class Creator extends Plugin {
 	 * Hides the {@link core.Editor#element editor element} and inserts the the given element
 	 * (usually, editor's UI main element) next to it.
 	 *
-	 * The effect of this method will be automatically reverted by {@link #destroy}.
+	 * The effect of this method will be automatically reverted by {@link core.Creator#destroy destroy}.
 	 *
 	 * @protected
 	 * @param {HTMLElement} [newElement] The replacement element. If not passed, then the main editor's UI view element
@@ -128,7 +129,7 @@ export default class Creator extends Plugin {
 	}
 
 	/**
-	 * Restores what the {@link #_replaceElement} did.
+	 * Restores what the {@link core.Creator#_replaceElement _replaceElement} did.
 	 *
 	 * @protected
 	 */

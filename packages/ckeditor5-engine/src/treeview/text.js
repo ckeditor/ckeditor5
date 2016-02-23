@@ -10,14 +10,14 @@ import Node from './node.js';
 /**
  * Tree view text node.
  *
- * @class treeView.Text
+ * @memberOf core.treeView
+ * @extends core.treeView.Node
  */
 export default class Text extends Node {
 	/**
 	 * Creates a tree view text node.
 	 *
 	 * @param {String} data Text.
-	 * @constructor
 	 */
 	constructor( data ) {
 		super();
@@ -25,19 +25,14 @@ export default class Text extends Node {
 		/**
 		 * The text content.
 		 *
+		 * Setting the data fires the {@link core.treeView.Node#event:change change event}.
+		 *
 		 * @private
-		 * @property {String}
+		 * @member {String} core.treeView.Text#_data
 		 */
 		this._data = data;
 	}
 
-	/**
-	 * The text content.
-	 *
-	 * Setting the data fires the {@link treeView.Node#change change event}.
-	 *
-	 * @property {String} Text data.
-	 */
 	get data() {
 		return this._data;
 	}

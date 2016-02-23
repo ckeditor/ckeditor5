@@ -15,40 +15,39 @@ import utils from '../utils.js';
 const graveyardSymbol = Symbol( 'graveyard' );
 
 /**
- * Document tree model describes all editable data in the editor. It may contain multiple {@link #roots root elements},
- * for example if the editor have multiple editable areas, each area will be represented by the separate root.
+ * Document tree model describes all editable data in the editor. It may contain multiple
+ * {@link core.treeModel.Document#roots root elements}, for example if the editor have multiple editable areas, each area will be
+ * represented by the separate root.
  *
- * All changes in the document are done by {@link treeModel.operation.Operation operations}. To create operations in
- * the simple way use use the {@link treeModel.Batch} API, for example:
+ * All changes in the document are done by {@link core.treeModel.operation.Operation operations}. To create operations in
+ * the simple way use use the {@link core.treeModel.Batch} API, for example:
  *
  *		doc.batch().insert( position, nodes ).split( otherPosition );
  *
- * @see #batch
+ * @see core.treeModel.Document#batch
  *
- * @class treeModel.Document
+ * @memberOf core.treeModel
  */
 export default class Document {
 	/**
-	 * Creates an empty document instance with no {@link #roots} (other than graveyard).
-	 *
-	 * @constructor
+	 * Creates an empty document instance with no {@link core.treeModel.Document#roots} (other than graveyard).
 	 */
 	constructor() {
 		/**
 		 * List of roots that are owned and managed by this document.
 		 *
 		 * @readonly
-		 * @property {Map} roots
+		 * @member {Map} core.treeModel.Document#roots
 		 */
 		this.roots = new Map();
 
 		/**
 		 * Document version. It starts from `0` and every operation increases the version number. It is used to ensure that
-		 * operations are applied on the proper document version. If the {@link treeModel.operation.Operation#baseVersion} will
+		 * operations are applied on the proper document version. If the {@link core.treeModel.operation.Operation#baseVersion} will
 		 * not match document version the {@link document-applyOperation-wrong-version} error is thrown.
 		 *
 		 * @readonly
-		 * @property {Number} version
+		 * @member {Number} core.treeModel.Document#version
 		 */
 		this.version = 0;
 
@@ -56,10 +55,10 @@ export default class Document {
 		this.createRoot( graveyardSymbol );
 
 		/**
-		 * Array of pending changes. See: {@link #enqueueChanges}.
+		 * Array of pending changes. See: {@link core.treeModel.Document#enqueueChanges}.
 		 *
 		 * @private
-		 * @property {Array.<Function>}
+		 * @member {Array.<Function>} core.treeModel.Document#_pendingChanges
 		 */
 		this._pendingChanges = [];
 
@@ -67,7 +66,7 @@ export default class Document {
 		 * Selection done on this document.
 		 *
 		 * @readonly
-		 * @property {treeModel.Selection}
+		 * @member {core.treeModel.Selection} core.treeModel.Document#selection
 		 */
 		this.selection = new Selection();
 	}
@@ -76,7 +75,7 @@ export default class Document {
 	 * Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
 	 *
 	 * @readonly
-	 * @property {treeModel.RootElement} graveyard
+	 * @type {core.treeModel.RootElement}
 	 */
 	get graveyard() {
 		return this.getRoot( graveyardSymbol );
@@ -84,12 +83,12 @@ export default class Document {
 
 	/**
 	 * This is the entry point for all document changes. All changes on the document are done using
-	 * {@link treeModel.operation.Operation operations}. To create operations in the simple way use the
-	 * {@link treeModel.Batch} API available via {@link #batch} method.
+	 * {@link core.treeModel.operation.Operation operations}. To create operations in the simple way use the
+	 * {@link core.treeModel.Batch} API available via {@link core.treeModel.Document#batch} method.
 	 *
-	 * This method calls {@link #change} event.
+	 * This method calls {@link core.treeModel.Document#change} event.
 	 *
-	 * @param {treeModel.operation.Operation} operation Operation to be applied.
+	 * @param {core.treeModel.operation.Operation} operation Operation to be applied.
 	 */
 	applyOperation( operation ) {
 		if ( operation.baseVersion !== this.version ) {
@@ -97,7 +96,7 @@ export default class Document {
 			 * Only operations with matching versions can be applied.
 			 *
 			 * @error document-applyOperation-wrong-version
-			 * @param {treeModel.operation.Operation} operation
+			 * @param {core.treeModel.operation.Operation} operation
 			 */
 			throw new CKEditorError(
 				'document-applyOperation-wrong-version: Only operations with matching versions can be applied.',
@@ -113,9 +112,9 @@ export default class Document {
 	}
 
 	/**
-	 * Creates a {@link treeModel.Batch} instance which allows to change the document.
+	 * Creates a {@link core.treeModel.Batch} instance which allows to change the document.
 	 *
-	 * @returns {treeModel.Batch} Batch instance.
+	 * @returns {core.treeModel.Batch} Batch instance.
 	 */
 	batch() {
 		return new Batch( this );
@@ -125,7 +124,7 @@ export default class Document {
 	 * Creates a new top-level root.
 	 *
 	 * @param {String|Symbol} name Unique root name.
-	 * @returns {treeModel.RootElement} Created root.
+	 * @returns {core.treeModel.RootElement} Created root.
 	 */
 	createRoot( name ) {
 		if ( this.roots.has( name ) ) {
@@ -133,7 +132,7 @@ export default class Document {
 			 * Root with specified name already exists.
 			 *
 			 * @error document-createRoot-name-exists
-			 * @param {treeModel.Document} doc
+			 * @param {core.treeModel.Document} doc
 			 * @param {String} name
 			 */
 			throw new CKEditorError(
@@ -149,12 +148,12 @@ export default class Document {
 	}
 
 	/**
-	 * Enqueue a callback with document changes. Any changes to be done on document (mostly using {@link #batch} should
+	 * Enqueue a callback with document changes. Any changes to be done on document (mostly using {@link core.treeModel.Document#batch} should
 	 * be placed in the queued callback. If no other plugin is changing document at the moment, the callback will be
 	 * called immediately. Otherwise it will wait for all previously queued changes to finish happening. This way
 	 * queued callback will not interrupt other callbacks.
 	 *
-	 * When all queued changes are done {@link #changesDone} event is fired.
+	 * When all queued changes are done {@link core.treeModel.Document#changesDone} event is fired.
 	 *
 	 * @param {Function} callback Callback to enqueue.
 	 */
@@ -175,7 +174,7 @@ export default class Document {
 	 * Returns top-level root by it's name.
 	 *
 	 * @param {String|Symbol} name Name of the root to get.
-	 * @returns {treeModel.RootElement} Root registered under given name.
+	 * @returns {core.treeModel.RootElement} Root registered under given name.
 	 */
 	getRoot( name ) {
 		if ( !this.roots.has( name ) ) {
@@ -203,30 +202,30 @@ export default class Document {
 	 * * 'remove' when nodes are removed,
 	 * * 'reinsert' when remove is undone,
 	 * * 'move' when nodes are moved,
-	 * * 'attr' when attributes change.
+	 * * 'attribute' when attributes change. TODO attribute
 	 *
 	 * Change event is fired after the change is done. This means that any ranges or positions passed in
 	 * `changeInfo` are referencing nodes and paths in updated tree model.
 	 *
-	 * @event change
-	 * @param {String} type Change type, possible option: 'insert', 'remove', 'reinsert', 'move', 'attr'.
+	 * @event core.treeModel.Document.change
+	 * @param {String} type Change type, possible option: 'insert', 'remove', 'reinsert', 'move', 'attribute'.
 	 * @param {Object} changeInfo Additional information about the change.
-	 * @param {treeModel.Range} changeInfo.range Range containing changed nodes. Note that for 'remove' the range will be in the
-	 * {@link #graveyard graveyard root}.
-	 * @param {treeModel.Position} [changeInfo.sourcePosition] Change source position. Exists for 'remove', 'reinsert' and 'move'.
-	 * Note that for 'reinsert' the source position will be in the {@link #graveyard graveyard root}.
-	 * @param {String} [changeInfo.key] Only for 'attr' type. Key of changed / inserted / removed attribute.
-	 * @param {*} [changeInfo.oldValue] Only for 'attr' type. If the type is 'attr' and `oldValue`
+	 * @param {core.treeModel.Range} changeInfo.range Range containing changed nodes. Note that for 'remove' the range will be in the
+	 * {@link core.treeModel.Document#graveyard graveyard root}.
+	 * @param {core.treeModel.Position} [changeInfo.sourcePosition] Change source position. Exists for 'remove', 'reinsert' and 'move'.
+	 * Note that for 'reinsert' the source position will be in the {@link core.treeModel.Document#graveyard graveyard root}.
+	 * @param {String} [changeInfo.key] Only for 'attribute' type. Key of changed / inserted / removed attribute.
+	 * @param {*} [changeInfo.oldValue] Only for 'attribute' type. If the type is 'attribute' and `oldValue`
 	 * is `undefined` it means that new attribute was inserted. Otherwise it contains changed or removed attribute value.
-	 * @param {*} [changeInfo.newValue] Only for 'attr' type. If the type is 'attr' and `newValue`
+	 * @param {*} [changeInfo.newValue] Only for 'attribute' type. If the type is 'attribute' and `newValue`
 	 * is `undefined` it means that attribute was removed. Otherwise it contains changed or inserted attribute value.
-	 * @param {treeModel.Batch} {@link treeModel.Batch} of changes which this change is a part of.
+	 * @param {core.treeModel.Batch} batch A {@link core.treeModel.Batch batch} of changes which this change is a part of.
 	 */
 
 	/**
-	 * Fired when all queued document changes are done. See {@link #enqueueChanges}.
+	 * Fired when all queued document changes are done. See {@link core.treeModel.Document#enqueueChanges}.
 	 *
-	 * @event changesDone
+	 * @event core.treeModel.Document.changesDone
 	 */
 }
 

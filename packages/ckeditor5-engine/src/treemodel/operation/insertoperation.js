@@ -14,17 +14,17 @@ import RemoveOperation from './removeoperation.js';
 /**
  * Operation to insert list of nodes on the given position in the tree data model.
  *
- * @class treeModel.operation.InsertOperation
+ * @memberOf core.treeModel.operation
+ * @extends core.treeModel.operation.Operation
  */
 export default class InsertOperation extends Operation {
 	/**
 	 * Creates an insert operation.
 	 *
-	 * @param {treeModel.Position} position Position of insertion.
-	 * @param {treeModel.NodeSet} nodes The list of nodes to be inserted.
-	 * List of nodes can be any type accepted by the {@link treeModel.NodeList} constructor.
-	 * @param {Number} baseVersion {@link treeModel.Document#version} on which operation can be applied.
-	 * @constructor
+	 * @param {core.treeModel.Position} position Position of insertion.
+	 * @param {core.treeModel.NodeSet} nodes The list of nodes to be inserted.
+	 * List of nodes can be any type accepted by the {@link core.treeModel.NodeList} constructor.
+	 * @param {Number} baseVersion {@link core.treeModel.Document#version} on which operation can be applied.
 	 */
 	constructor( position, nodes, baseVersion ) {
 		super( baseVersion );
@@ -33,7 +33,7 @@ export default class InsertOperation extends Operation {
 		 * Position of insertion.
 		 *
 		 * @readonly
-		 * @type {treeModel.Position}
+		 * @member {core.treeModel.Position} core.treeModel.operation.InsertOperation#position
 		 */
 		this.position = Position.createFromPosition( position );
 
@@ -41,7 +41,7 @@ export default class InsertOperation extends Operation {
 		 * List of nodes to insert.
 		 *
 		 * @readonly
-		 * @type {treeModel.NodeList}
+		 * @member {core.treeModel.NodeList} core.treeModel.operation.InsertOperation#nodeList
 		 */
 		this.nodeList = new NodeList( nodes );
 	}
@@ -50,10 +50,16 @@ export default class InsertOperation extends Operation {
 		return 'insert';
 	}
 
+	/**
+	 * @returns {core.treeModel.operation.InsertOperation}
+	 */
 	clone() {
 		return new InsertOperation( this.position, this.nodeList, this.baseVersion );
 	}
 
+	/**
+	 * @returns {core.treeModel.operation.RemoveOperation}
+	 */
 	getReversed() {
 		return new RemoveOperation( this.position, this.nodeList.length, this.baseVersion + 1 );
 	}

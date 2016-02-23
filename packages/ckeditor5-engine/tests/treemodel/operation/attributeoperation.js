@@ -32,7 +32,7 @@ describe( 'AttributeOperation', () => {
 			doc.version
 		);
 
-		expect( op.type ).to.equal( 'attr' );
+		expect( op.type ).to.equal( 'attribute' );
 	} );
 
 	it( 'should insert attribute to the set of nodes', () => {

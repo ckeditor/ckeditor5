@@ -12,7 +12,7 @@ import utils from '../utils.js';
 /**
  * Tree data model element.
  *
- * @class treeModel.Element
+ * @memberOf core.treeModel
  */
 export default class Element extends Node {
 	/**
@@ -20,9 +20,8 @@ export default class Element extends Node {
 	 *
 	 * @param {String} name Node name.
 	 * @param {Iterable} attrs Iterable collection of attributes.
-	 * @param {treeModel.NodeSet} children List of nodes to be inserted
-	 * into created element. List of nodes can be of any type accepted by the {@link treeModel.NodeList} constructor.
-	 * @constructor
+	 * @param {core.treeModel.NodeSet} children List of nodes to be inserted
+	 * into created element. List of nodes can be of any type accepted by the {@link core.treeModel.NodeList} constructor.
 	 */
 	constructor( name, attrs, children ) {
 		super( attrs );
@@ -31,7 +30,7 @@ export default class Element extends Node {
 		 * Element name.
 		 *
 		 * @readonly
-		 * @property {String} name
+		 * @type {String}
 		 */
 		this.name = name;
 
@@ -39,7 +38,7 @@ export default class Element extends Node {
 		 * List of children nodes.
 		 *
 		 * @protected
-		 * @property {treeModel.NodeList} _children
+		 * @type {core.treeModel.NodeList}
 		 */
 		this._children = new NodeList();
 
@@ -51,8 +50,9 @@ export default class Element extends Node {
 	/**
 	 * Gets child at the given index.
 	 *
+	 * @method core.treeModel.Element#getChild
 	 * @param {Number} index Index of child.
-	 * @returns {treeModel.Node} Child node.
+	 * @returns {core.treeModel.Node} Child node.
 	 */
 	getChild( index ) {
 		return this._children.get( index );
@@ -61,6 +61,7 @@ export default class Element extends Node {
 	/**
 	 * Gets the number of element's children.
 	 *
+	 * @method core.treeModel.Element#getChildCount
 	 * @returns {Number} The number of element's children.
 	 */
 	getChildCount() {
@@ -70,7 +71,8 @@ export default class Element extends Node {
 	/**
 	 * Gets index of the given child node.
 	 *
-	 * @param {treeModel.Node} node Child node.
+	 * @method core.treeModel.Element#getChildIndex
+	 * @param {core.treeModel.Node} node Child node.
 	 * @returns {Number} Index of the child node.
 	 */
 	getChildIndex( node ) {
@@ -78,13 +80,14 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * {@link treeModel.Element#insert Inserts} a child node or a list of child nodes at the end of this node and sets
+	 * {@link core.treeModel.Element#insert Inserts} a child node or a list of child nodes at the end of this node and sets
 	 * the parent of these nodes to this element.
 	 *
 	 * Note that the list of children can be modified only in elements not yet attached to the document.
-	 * All attached nodes should be modified using the {@link treeModel.operation.InsertOperation}.
+	 * All attached nodes should be modified using the {@link core.treeModel.operation.InsertOperation}.
 	 *
-	 * @param {treeModel.NodeSet} nodes The list of nodes to be inserted.
+	 * @method core.treeModel.Element#appendChildren
+	 * @param {core.treeModel.NodeSet} nodes The list of nodes to be inserted.
 	 */
 	appendChildren( nodes ) {
 		this.insertChildren( this.getChildCount(), nodes );
@@ -94,11 +97,12 @@ export default class Element extends Node {
 	 * Inserts a list of child nodes on the given index and sets the parent of these nodes to this element.
 	 *
 	 * Note that the list of children can be modified only in elements not yet attached to the document.
-	 * All attached nodes should be modified using the {@link treeModel.operation.InsertOperation}.
+	 * All attached nodes should be modified using the {@link core.treeModel.operation.InsertOperation}.
 	 *
+	 * @method core.treeModel.Element#insertChildren
 	 * @param {Number} index Position where nodes should be inserted.
-	 * @param {treeModel.NodeSet} nodes The list of nodes to be inserted.
-	 * The list of nodes can be of any type accepted by the {@link treeModel.NodeList} constructor.
+	 * @param {core.treeModel.NodeSet} nodes The list of nodes to be inserted.
+	 * The list of nodes can be of any type accepted by the {@link core.treeModel.NodeList} constructor.
 	 */
 	insertChildren( index, nodes ) {
 		let nodeList = new NodeList( nodes );
@@ -114,11 +118,12 @@ export default class Element extends Node {
 	 * Removes number of child nodes starting at the given index and set the parent of these nodes to `null`.
 	 *
 	 * Note that the list of children can be modified only in elements not yet attached to the document.
-	 * All attached nodes should be modified using the {@link treeModel.operation.RemoveOperation}.
+	 * All attached nodes should be modified using the {@link core.treeModel.operation.RemoveOperation}.
 	 *
+	 * @method core.treeModel.Element#removeChildren
 	 * @param {Number} index Position of the first node to remove.
 	 * @param {Number} number Number of nodes to remove.
-	 * @returns {treeModel.NodeList} The list of removed nodes.
+	 * @returns {core.treeModel.NodeList} The list of removed nodes.
 	 */
 	removeChildren( index, number ) {
 		let nodeList = this._children.remove( index, number );
@@ -133,6 +138,7 @@ export default class Element extends Node {
 	/**
 	 * Sets attribute on the element. If attribute with the same key already is set, it overwrites its values.
 	 *
+	 * @method core.treeModel.Element#setAttribute
 	 * @param {String} key Key of attribute to set.
 	 * @param {*} value Attribute value.
 	 */
@@ -143,7 +149,8 @@ export default class Element extends Node {
 	/**
 	 * Removes all attributes from the element and sets given attributes.
 	 *
-	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set. See {@link treeModel.Node#getAttributes}.
+	 * @method core.treeModel.Element#setAttributesTo
+	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set. See {@link core.treeModel.Node#getAttributes}.
 	 */
 	setAttributesTo( attrs ) {
 		this._attrs = utils.toMap( attrs );
@@ -152,6 +159,7 @@ export default class Element extends Node {
 	/**
 	 * Removes an attribute with given key from the element.
 	 *
+	 * @method core.treeModel.Element#removeAttribute
 	 * @param {String} key Key of attribute to remove.
 	 * @returns {Boolean} `true` if the attribute was set on the element, `false` otherwise.
 	 */
@@ -161,6 +169,8 @@ export default class Element extends Node {
 
 	/**
 	 * Removes all attributes from the element.
+	 *
+	 * @method core.treeModel.Element#clearAttributes
 	 */
 	clearAttributes() {
 		this._attrs.clear();

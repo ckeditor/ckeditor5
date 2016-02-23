@@ -11,23 +11,21 @@
  * Delta is a single, from the user action point of view, change in the editable document, like insert, split or
  * rename element. Delta is composed of operations, which are unit changes needed to be done to execute user action.
  *
- * Multiple deltas are grouped into a single {@link treeModel.Batch}.
+ * Multiple deltas are grouped into a single {@link core.treeModel.Batch}.
  *
- * @class treeModel.delta.Delta
+ * @memberOf core.treeModel.delta
  */
 export default class Delta {
 	/**
 	 * Creates a delta instance.
-	 *
-	 * @constructor
 	 */
 	constructor() {
 		/**
-		 * {@link treeModel.Batch} which delta is a part of. This property is null by default and set by the
-		 * {@link treeModel.Batch#addDelta} method.
+		 * {@link core.treeModel.Batch} which delta is a part of. This property is null by default and set by the
+		 * {@link core.treeModel.Batch#addDelta} method.
 		 *
 		 * @readonly
-		 * @type {treeModel.Batch}
+		 * @member {core.treeModel.Batch} core.treeModel.delta.Delta#batch
 		 */
 		this.batch = null;
 
@@ -35,7 +33,7 @@ export default class Delta {
 		 * Array of operations which compose delta.
 		 *
 		 * @readonly
-		 * @type {treeModel.operation.Operation[]}
+		 * @member {core.treeModel.operation.Operation[]} core.treeModel.delta.Delta#operations
 		 */
 		this.operations = [];
 	}
@@ -43,7 +41,7 @@ export default class Delta {
 	/**
 	 * Add operation to the delta.
 	 *
-	 * @param {treeModel.operation.Operation} operation Operation instance.
+	 * @param {core.treeModel.operation.Operation} operation Operation instance.
 	 */
 	addOperation( operation ) {
 		operation.delta = this;

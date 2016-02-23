@@ -9,45 +9,43 @@
  * Abstract base operation class.
  *
  * @abstract
- * @class treeModel.operation.Operation
+ * @memberOf core.treeModel.operation
  */
 export default class Operation {
 	/**
 	 * Base operation constructor.
-	 *
-	 * @param {Number} baseVersion {@link treeModel.Document#version} on which the operation can be applied.
-	 * @constructor
+	 * @param {Number} baseVersion {@link core.treeModel.Document#version} on which the operation can be applied.
 	 */
 	constructor( baseVersion ) {
 		/**
-		 * {@link treeModel.Document#version} on which operation can be applied. If you try to
-		 * {@link treeModel.Document#applyOperation apply} operation with different base version than the
-		 * {@link treeModel.Document#version document version} the {@link document-applyOperation-wrong-version}
+		 * {@link core.treeModel.Document#version} on which operation can be applied. If you try to
+		 * {@link core.treeModel.Document#applyOperation apply} operation with different base version than the
+		 * {@link core.treeModel.Document#version document version} the {@link document-applyOperation-wrong-version}
 		 * error is thrown.
 		 *
-		 * @property {Number}
+		 * @member {Number} core.treeModel.operation.Operation#baseVersion
 		 */
 		this.baseVersion = baseVersion;
 
 		/**
 		 * Operation type.
 		 *
-		 * @property {String} type
+		 * @member {String} core.treeModel.operation.Operation#type
 		 */
 
 		/**
-		 * {@link treeModel.Delta Delta} which the operation is a part of. This property is set by the
-		 * {@link treeModel.Delta delta} when the operations is added to it by the
-		 * {@link treeModel.Delta#addOperation} method.
+		 * {@link core.treeModel.Delta Delta} which the operation is a part of. This property is set by the
+		 * {@link core.treeModel.Delta delta} when the operations is added to it by the
+		 * {@link core.treeModel.Delta#addOperation} method.
 		 *
-		 * @property {treeModel.Delta} delta
+		 * @member {core.treeModel.Delta} core.treeModel.operation.Operation#delta
 		 */
 
 		/**
 		 * Creates and returns an operation that has the same parameters as this operation.
 		 *
-		 * @method clone
-		 * @returns {treeModel.operation.Operation} Clone of this operation.
+		 * @method core.treeModel.operation.Operation#clone
+		 * @returns {core.treeModel.operation.Operation} Clone of this operation.
 		 */
 
 		/**
@@ -57,10 +55,10 @@ export default class Operation {
 		 *
 		 * Keep in mind that tree model state may change since executing the original operation,
 		 * so reverse operation will be "outdated". In that case you will need to
-		 * {@link treeModel.operation.transform} it by all operations that were executed after the original operation.
+		 * {@link core.treeModel.operation.transform} it by all operations that were executed after the original operation.
 		 *
-		 * @method getReversed
-		 * @returns {treeModel.operation.Operation} Reversed operation.
+		 * @method core.treeModel.operation.Operation#getReversed
+		 * @returns {core.treeModel.operation.Operation} Reversed operation.
 		 */
 
 		/**
@@ -68,7 +66,7 @@ export default class Operation {
 		 * will be applied to the tree model.
 		 *
 		 * @protected
-		 * @method _execute
+		 * @method core.treeModel.operation.Operation#_execute
 		 * @returns {Object} Object with additional information about the applied changes. Always has `range`
 		 * property containing changed nodes. May have additional properties depending on the operation type.
 		 */

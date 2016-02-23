@@ -14,17 +14,17 @@ import utils from '../../utils.js';
 /**
  * Operation to move list of subsequent nodes from one position in the document to another.
  *
- * @class treeModel.operation.MoveOperation
+ * @memberOf core.treeModel.operation
+ * @extends core.treeModel.operation.Operation
  */
 export default class MoveOperation extends Operation {
 	/**
 	 * Creates a move operation.
 	 *
-	 * @param {treeModel.Position} sourcePosition Position before the first node to move.
+	 * @param {core.treeModel.Position} sourcePosition Position before the first node to move.
 	 * @param {Number} howMany How many consecutive nodes to move, starting from `sourcePosition`.
-	 * @param {treeModel.Position} targetPosition Position where moved nodes will be inserted.
-	 * @param {Number} baseVersion {@link treeModel.Document#version} on which operation can be applied.
-	 * @constructor
+	 * @param {core.treeModel.Position} targetPosition Position where moved nodes will be inserted.
+	 * @param {Number} baseVersion {@link core.treeModel.Document#version} on which operation can be applied.
 	 */
 	constructor( sourcePosition, howMany, targetPosition, baseVersion ) {
 		super( baseVersion );
@@ -32,21 +32,21 @@ export default class MoveOperation extends Operation {
 		/**
 		 * Source move position.
 		 *
-		 * @type {treeModel.Position}
+		 * @member {core.treeModel.Position} core.treeModel.operation.MoveOperation#sourcePosition
 		 */
 		this.sourcePosition = Position.createFromPosition( sourcePosition );
 
 		/**
 		 * How many nodes to move.
 		 *
-		 * @type {Number}
+		 * @member {Number} core.treeModel.operation.MoveOperation#howMany
 		 */
 		this.howMany = howMany;
 
 		/**
 		 * Target move position.
 		 *
-		 * @type {treeModel.Position}
+		 * @member {core.treeModel.Position} core.treeModel.operation.MoveOperation#targetPosition
 		 */
 		this.targetPosition = Position.createFromPosition( targetPosition );
 	}
@@ -55,10 +55,16 @@ export default class MoveOperation extends Operation {
 		return 'move';
 	}
 
+	/**
+	 * @returns {core.treeModel.operation.MoveOperation}
+	 */
 	clone() {
 		return new this.constructor( this.sourcePosition, this.howMany, this.targetPosition, this.baseVersion );
 	}
 
+	/**
+	 * @returns {core.treeModel.operation.MoveOperation}
+	 */
 	getReversed() {
 		return new this.constructor( this.targetPosition, this.howMany, this.sourcePosition, this.baseVersion + 1 );
 	}

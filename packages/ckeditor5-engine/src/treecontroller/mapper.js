@@ -10,25 +10,23 @@ import ViewPosition from '../treeview/position.js';
 import ViewText from '../treeview/text.js';
 
 /**
- * Maps elements and positions between {@link treeView TreeView} and {@link treeModel TreeModel}.
+ * Maps elements and positions between {@link core.treeView.TreeView TreeView} and {@link core.treeModel TreeModel}.
  *
  * Mapper use binded elements to find corresponding elements and positions, so, to get proper results,
- * all Tree Model elements should be {@link treeController.Mapper#bindElements binded}.
+ * all Tree Model elements should be {@link core.treeController.Mapper#bindElements binded}.
  *
- * @class treeController.Mapper
+ * @memberOf core.treeController
  */
 export default class Mapper {
 	/**
 	 * Creates an instance of the mapper.
-	 *
-	 * @constructor
 	 */
 	constructor() {
 		/**
 		 * Model element to View element mapping.
 		 *
 		 * @private
-		 * @type {WeakMap}
+		 * @member {WeakMap} core.treeController.Mapper#_modelToViewMapping
 		 */
 		this._modelToViewMapping = new WeakMap();
 
@@ -36,18 +34,18 @@ export default class Mapper {
 		 * View element to Model element mapping.
 		 *
 		 * @private
-		 * @type {WeakMap}
+		 * @member {WeakMap} core.treeController.Mapper#_viewToModelMapping
 		 */
 		this._viewToModelMapping = new WeakMap();
 	}
 
 	/**
 	 * Marks model and view elements as corresponding. Corresponding elements can be retrieved by using
-	 * the {@link #toModelElement} and {@link #toViewElement} methods.
-	 * The information that elements are bound is also used to translate positions.
+	 * the {@link core.treeController.Mapper#toModelElement toModelElement} and {@link core.treeController.Mapper#toViewElement toViewElement}
+	 * methods. The information that elements are bound is also used to translate positions.
 	 *
-	 * @param {treeModel.Element} modelElement Model element.
-	 * @param {treeView.Element} viewElement View element.
+	 * @param {core.treeModel.Element} modelElement Model element.
+	 * @param {core.treeView.Element} viewElement View element.
 	 */
 	bindElements( modelElement, viewElement ) {
 		this._modelToViewMapping.set( modelElement, viewElement );
@@ -57,8 +55,8 @@ export default class Mapper {
 	/**
 	 * Gets the corresponding model element.
 	 *
-	 * @param {treeView.Element} viewElement View element.
-	 * @returns {treeModel.Element|null} Corresponding model element or `null` if not found.
+	 * @param {core.treeView.Element} viewElement View element.
+	 * @returns {core.treeModel.Element|null} Corresponding model element or `null` if not found.
 	 */
 	toModelElement( viewElement ) {
 		return this._viewToModelMapping.get( viewElement );
@@ -67,8 +65,8 @@ export default class Mapper {
 	/**
 	 * Gets the corresponding view element.
 	 *
-	 * @param {treeModel.Element} modelElement Model element.
-	 * @returns {treeView.Element|null} Corresponding view element or `null` if not found.
+	 * @param {core.treeModel.Element} modelElement Model element.
+	 * @returns {core.treeView.Element|null} Corresponding view element or `null` if not found.
 	 */
 	toViewElement( modelElement ) {
 		return this._modelToViewMapping.get( modelElement );
@@ -77,8 +75,8 @@ export default class Mapper {
 	/**
 	 * Gets the corresponding model position.
 	 *
-	 * @param {treeView.Position} viewPosition View position.
-	 * @returns {treeModel.Position} Corresponding model position.
+	 * @param {core.treeView.Position} viewPosition View position.
+	 * @returns {core.treeModel.Position} Corresponding model position.
 	 */
 	toModelPosition( viewPosition ) {
 		let viewBlock = viewPosition.parent;
@@ -97,8 +95,8 @@ export default class Mapper {
 	/**
 	 * Gets the corresponding view position.
 	 *
-	 * @param {treeModel.Position} modelPosition Model position.
-	 * @returns {treeView.Position} Corresponding view position.
+	 * @param {core.treeModel.Position} modelPosition Model position.
+	 * @returns {core.treeView.Position} Corresponding view position.
 	 */
 	toViewPosition( modelPosition ) {
 		let viewContainer = this._modelToViewMapping.get( modelPosition.parent );
@@ -119,9 +117,9 @@ export default class Mapper {
 	 *		<p>foo<b>ba|r</b></p> // _toModelOffset( b, 2, b ) -> 2
 	 *
 	 * @private
-	 * @param {treeView.Element} viewParent Position parent.
+	 * @param {core.treeView.Element} viewParent Position parent.
 	 * @param {Number} viewOffset Position offset.
-	 * @param {treeView.Element} viewBlock Block used as a base to calculate offset.
+	 * @param {core.treeView.Element} viewBlock Block used as a base to calculate offset.
 	 * @returns {Number} Offset in the model.
 	 */
 	_toModelOffset( viewParent, viewOffset, viewBlock ) {
@@ -160,7 +158,7 @@ export default class Mapper {
 	 *		<p>foo</p>   -> 1 // Length the element which has corresponding model element is always 1.
 	 *
 	 * @private
-	 * @param {treeView.Element} viewNode View node.
+	 * @param {core.treeView.Element} viewNode View node.
 	 * @returns {Number} Length of the node in the tree model.
 	 */
 	_getModelLength( viewNode ) {
@@ -203,9 +201,9 @@ export default class Mapper {
 	 *		<p>fo<b>ba|r</b>bom</p> -> expected offset: 2, actual offset: 2 -> position found
 	 *
 	 * @private
-	 * @param {treeView.Element} viewParent Tree view element in which we are looking for the position.
+	 * @param {core.treeView.Element} viewParent Tree view element in which we are looking for the position.
 	 * @param {Number} expectedOffset Expected offset.
-	 * @returns {treeVew.Position} Found position.
+	 * @returns {core.treeView.Position} Found position.
 	 */
 	_findPositionIn( viewParent, expectedOffset ) {
 		// Last scanned view node.

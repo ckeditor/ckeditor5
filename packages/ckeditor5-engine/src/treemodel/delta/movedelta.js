@@ -13,10 +13,11 @@ import Range from '../range.js';
 import CKEditorError from '../../ckeditorerror.js';
 
 /**
- * To provide specific OT behavior and better collisions solving, {@link treeModel.Batch#move} method
+ * @classdesc
+ * To provide specific OT behavior and better collisions solving, {@link core.treeModel.Batch#move} method
  * uses the `MoveDelta` class which inherits from the `Delta` class and may overwrite some methods.
  *
- * @class treeModel.delta.MoveDelta
+ * @memberOf core.treeModel.delta
  */
 export default class MoveDelta extends Delta {}
 
@@ -30,10 +31,9 @@ function addMoveOperation( batch, delta, sourcePosition, howMany, targetPosition
  * Moves given node or given range of nodes to target position.
  *
  * @chainable
- * @method move
- * @memberOf treeModel.Batch
- * @param {treeModel.Node|treeModel.Range} nodeOrRange Node or range of nodes to move.
- * @param {treeModel.Position} targetPosition Position where moved nodes will be inserted.
+ * @method core.treeModel.Batch#move
+ * @param {core.treeModel.Node|core.treeModel.Range} nodeOrRange Node or range of nodes to move.
+ * @param {core.treeModel.Position} targetPosition Position where moved nodes will be inserted.
  */
 register( 'move', function( nodeOrRange, targetPosition ) {
 	const delta = new MoveDelta();

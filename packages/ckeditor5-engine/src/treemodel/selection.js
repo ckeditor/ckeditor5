@@ -11,23 +11,21 @@ import CKEditorError from '../ckeditorerror.js';
 import utils from '../utils.js';
 
 /**
- * Represents a selection that is made on nodes in {@link treeModel.Document}. Selection instance is
- * created by {@link treeModel.Document}. In most scenarios you should not need to create an instance of Selection.
+ * Represents a selection that is made on nodes in {@link core.treeModel.Document}. Selection instance is
+ * created by {@link core.treeModel.Document}. In most scenarios you should not need to create an instance of Selection.
  *
- * @class treeModel.Selection
+ * @memberOf core.treeModel
  */
 export default class Selection {
 	/**
 	 * Creates an empty selection.
-	 *
-	 * @constructor
 	 */
 	constructor() {
 		/**
 		 * List of attributes set on current selection.
 		 *
 		 * @protected
-		 * @property {Map}
+		 * @member {Map} core.treeModel.Selection#_attrs
 		 */
 		this._attrs = new Map();
 
@@ -35,7 +33,7 @@ export default class Selection {
 		 * Stores all ranges that are selected.
 		 *
 		 * @private
-		 * @property {Array.<LiveRange>}
+		 * @member {Array.<core.treeModel.LiveRange>} core.treeModel.Selection#_ranges
 		 */
 		this._ranges = [];
 
@@ -43,7 +41,7 @@ export default class Selection {
 		 * Specifies whether the last added range was added as a backward or forward range.
 		 *
 		 * @private
-		 * @property {Boolean}
+		 * @member {Boolean} core.treeModel.Selection#_lastRangeBackward
 		 */
 		this._lastRangeBackward = false;
 	}
@@ -55,7 +53,7 @@ export default class Selection {
 	 * Anchor is always a start or end of the most recent added range. It may be a bit unintuitive when
 	 * there are multiple ranges in selection.
 	 *
-	 * @property {treeModel.LivePosition|null}
+	 * @type {core.treeModel.LivePosition|null}
 	 */
 	get anchor() {
 		if ( this._ranges.length > 0 ) {
@@ -71,8 +69,8 @@ export default class Selection {
 	 * Selection focus. Focus is a position where the selection ends. When there are no ranges in selection,
 	 * focus is null.
 	 *
-	 * @see {#anchor}
-	 * @property {treeModel.LivePosition|null}
+	 * @link {#anchor}
+	 * @type {core.treeModel.LivePosition|null}
 	 */
 	get focus() {
 		if ( this._ranges.length > 0 ) {
@@ -87,7 +85,7 @@ export default class Selection {
 	/**
 	 * Returns whether the selection is collapsed. Selection is collapsed when all it's ranges are collapsed.
 	 *
-	 * @property {Boolean}
+	 * @type {Boolean}
 	 */
 	get isCollapsed() {
 		for ( let i = 0; i < this._ranges.length; i++ ) {
@@ -100,13 +98,13 @@ export default class Selection {
 	}
 
 	/**
-	 * Adds a range to the selection. Added range is copied and converted to {@link treeModel.LiveRange}. This means
+	 * Adds a range to the selection. Added range is copied and converted to {@link core.treeModel.LiveRange}. This means
 	 * that passed range is not saved in the Selection instance and you can safely operate on it. Accepts a flag
-	 * describing in which way the selection is made - passed range might be selected from {@link treeModel.Range#start}
-	 * to {@link treeModel.Range#end} or from {@link treeModel.Range#start} to {@link treeModel.Range#end}. The flag
+	 * describing in which way the selection is made - passed range might be selected from {@link core.treeModel.Range#start}
+	 * to {@link core.treeModel.Range#end} or from {@link core.treeModel.Range#start} to {@link core.treeModel.Range#end}. The flag
 	 * is used to set {@link #anchor} and {@link #focus} properties.
 	 *
-	 * @param {treeModel.Range} range Range to add.
+	 * @param {core.treeModel.Range} range Range to add.
 	 * @param {Boolean} [isBackward] Flag describing if added range was selected forward - from start to end (`false`)
 	 * or backward - from end to start (`true`). Defaults to `false`.
 	 */
@@ -138,6 +136,7 @@ export default class Selection {
 
 	/**
 	 * Removes all ranges that were added to the selection. Fires update event.
+	 *
 	 */
 	removeAllRanges() {
 		this.detach();
@@ -151,7 +150,7 @@ export default class Selection {
 	 * is treated like the last added range and is used to set {@link #anchor} and {@link #focus}. Accepts a flag
 	 * describing in which way the selection is made (see {@link #addRange}).
 	 *
-	 * @param {Array.<treeModel.Range>} newRanges Array of ranges to set.
+	 * @param {Array.<core.treeModel.Range>} newRanges Array of ranges to set.
 	 * @param {Boolean} [isLastBackward] Flag describing if last added range was selected forward - from start to end (`false`)
 	 * or backward - from end to start (`true`). Defaults to `false`.
 	 */
@@ -234,13 +233,13 @@ export default class Selection {
 }
 
 /**
- * Converts given range to {@link treeModel.LiveRange} and adds it to internal ranges array. Throws an error
+ * Converts given range to {@link core.treeModel.LiveRange} and adds it to internal ranges array. Throws an error
  * if given range is intersecting with any range that is already stored in this selection.
  *
  * @private
  * @method pushRange
- * @memberOf {treeModel.Selection}
- * @param {treeModel.Range} range Range to add.
+ * @memberOf {core.treeModel.Selection}
+ * @param {core.treeModel.Range} range Range to add.
  */
 function pushRange( range ) {
 	/* jshint validthis: true */
@@ -250,8 +249,8 @@ function pushRange( range ) {
 			 * Trying to add a range that intersects with another range from selection.
 			 *
 			 * @error selection-range-intersects
-			 * @param {treeModel.Range} addedRange Range that was added to the selection.
-			 * @param {treeModel.Range} intersectingRange Range from selection that intersects with `addedRange`.
+			 * @param {core.treeModel.Range} addedRange Range that was added to the selection.
+			 * @param {core.treeModel.Range} intersectingRange Range from selection that intersects with `addedRange`.
 			 */
 			throw new CKEditorError(
 				'selection-range-intersects: Trying to add a range that intersects with another range from selection.',

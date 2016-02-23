@@ -11,15 +11,15 @@ import utils from '../utils.js';
 import ObservableMixin from '../observablemixin.js';
 
 /**
- * @class core.editable.Editable
+ * @memberOf core.editable
  * @extends core.ui.Controller
- * @mixins core.ObservableMixin
+ * @mixes core.ObservableMixin
  */
 export default class Editable extends Controller {
 	/**
 	 * Creates a new instance of the Editable class.
 	 *
-	 * @constructor
+	 * @param editor
 	 */
 	constructor( editor ) {
 		super();
@@ -29,7 +29,7 @@ export default class Editable extends Controller {
 		/**
 		 * Whether the editable is in read-write or read-only mode.
 		 *
-		 * @property {Boolean} isEditable
+		 * @member {Boolean} core.editable.Editable#isEditable
 		 */
 		this.set( 'isEditable', true );
 
@@ -37,20 +37,16 @@ export default class Editable extends Controller {
 		 * Whether the editable is focused.
 		 *
 		 * @readonly
-		 * @property {Boolean} isFocused
+		 * @member {Boolean} core.editable.Editable#isFocused
 		 */
 		this.set( 'isFocused', false );
-
-		/**
-		 * @private {Model} _viewModel
-		 */
 	}
 
 	/**
 	 * The model for the editable view.
 	 *
 	 * @readonly
-	 * @property {core.ui.Model} viewModel
+	 * @type {core.ui.Model}
 	 */
 	get viewModel() {
 		if ( this._viewModel ) {

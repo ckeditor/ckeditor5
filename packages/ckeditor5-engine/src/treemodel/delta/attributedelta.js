@@ -12,11 +12,12 @@ import Range from '../range.js';
 import Element from '../element.js';
 
 /**
- * To provide specific OT behavior and better collisions solving, change methods ({@link treeModel.Batch#setAttr}
- * and {@link treeModel.Batch#removeAttr}) use `AttributeDelta` class which inherits from the `Delta` class and may
+ * To provide specific OT behavior and better collisions solving, change methods ({@link core.treeModel.Batch#setAttr}
+ * and {@link core.treeModel.Batch#removeAttr}) use `AttributeDelta` class which inherits from the `Delta` class and may
  * overwrite some methods.
  *
- * @class treeModel.delta.AttributeDelta
+ * @memberOf core.treeModel.delta
+ * @extends core.treeModel.delta.Delta
  */
 export default class AttributeDelta extends Delta {}
 
@@ -24,11 +25,10 @@ export default class AttributeDelta extends Delta {}
  * Sets the value of the attribute of the node or on the range.
  *
  * @chainable
- * @method setAttr
- * @memberOf treeModel.Batch
+ * @method core.treeModel.Batch#setAttr
  * @param {String} key Attribute key.
  * @param {*} value Attribute new value.
- * @param {treeModel.Node|treeModel.Range} nodeOrRange Node or range on which the attribute will be set.
+ * @param {core.treeModel.Node|core.treeModel.Range} nodeOrRange Node or range on which the attribute will be set.
  */
 register( 'setAttr', function( key, value, nodeOrRange ) {
 	attribute( this, key, value, nodeOrRange );
@@ -40,10 +40,9 @@ register( 'setAttr', function( key, value, nodeOrRange ) {
  * Removes an attribute from the range.
  *
  * @chainable
- * @method removeAttr
- * @memberOf treeModel.Batch
+ * @method core.treeModel.Batch#removeAttr
  * @param {String} key Attribute key.
- * @param {treeModel.Node|treeModel.Range} nodeOrRange Node or range on which the attribute will be removed.
+ * @param {core.treeModel.Node|core.treeModel.Range} nodeOrRange Node or range on which the attribute will be removed.
  */
 register( 'removeAttr', function( key, nodeOrRange ) {
 	attribute( this, key, null, nodeOrRange );

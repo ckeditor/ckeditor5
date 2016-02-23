@@ -13,30 +13,28 @@ import utils from '../utils.js';
  * Abstract tree view node class.
  *
  * @abstract
- * @class treeView.Node
+ * @memberOf core.treeView
  */
 export default class Node {
 	/**
 	 * Creates a tree view node.
 	 *
 	 * This is an abstract class, so this constructor should not be used directly.
-	 *
-	 * @constructor
 	 */
 	constructor() {
 		/**
-		 * Parent element. Null by default. Set by {@link treeView.Element#insertChildren}.
+		 * Parent element. Null by default. Set by {@link core.treeView.Element#insertChildren}.
 		 *
 		 * @readonly
-		 * @property {treeView.Element|null} parent
+		 * @member {core.treeView.Element|null} core.treeView.Node#parent
 		 */
 		this.parent = null;
 
 		/**
-		 * {@link treeView.TreeView} reference.
+		 * {@link core.treeView.TreeView} reference.
 		 *
 		 * @protected
-		 * @type {treeView.TreeView}
+		 * @member {core.treeView.TreeView} core.treeView.Node#_treeView
 		 */
 		this._treeView = null;
 	}
@@ -71,7 +69,7 @@ export default class Node {
 	/**
 	 * Returns nodes next sibling or `null` if it is the last child.
 	 *
-	 * @returns {treeView.Node|null} Nodes next sibling or `null` if it is the last child.
+	 * @returns {core.treeView.Node|null} Nodes next sibling or `null` if it is the last child.
 	 */
 	getNextSibling() {
 		const index = this.getIndex();
@@ -82,7 +80,7 @@ export default class Node {
 	/**
 	 * Returns nodes previous sibling or `null` if it is the first child.
 	 *
-	 * @returns {treeView.Node|null} Nodes previous sibling or `null` if it is the first child.
+	 * @returns {core.treeView.Node|null} Nodes previous sibling or `null` if it is the first child.
 	 */
 	getPreviousSibling() {
 		const index = this.getIndex();
@@ -91,11 +89,11 @@ export default class Node {
 	}
 
 	/**
-	 * Gets {@link treeView.TreeView} reference. If the node has {@link treeView.TreeView}, assign by
-	 * {@link treeView.Node#setTreeView} it will be returned. Otherwise {@link treeView.TreeView} of the parents node
+	 * Gets {@link core.treeView.TreeView} reference. If the node has {@link core.treeView.TreeView}, assign by
+	 * {@link core.treeView.Node#setTreeView} it will be returned. Otherwise {@link core.treeView.TreeView} of the parents node
 	 * will be returned. If node has no parent, `null` will be returned.
 	 *
-	 * @returns {treeView.TreeView|null} Tree view of the node, tree view of the parent or null.
+	 * @returns {core.treeView.TreeView|null} Tree view of the node, tree view of the parent or null.
 	 */
 	getTreeView() {
 		if ( this._treeView ) {
@@ -108,20 +106,19 @@ export default class Node {
 	}
 
 	/**
-	 * Sets the {@link treeView.TreeView} of the node. Note that not all of nodes need to have {@link treeView.TreeView}
-	 * assigned, see {@link treeView.Node#getTreeView}.
+	 * Sets the {@link core.treeView.TreeView} of the node. Note that not all of nodes need to have {@link core.treeView.TreeView}
+	 * assigned, see {@link core.treeView.Node#getTreeView}.
 	 *
-	 * @param {treeView.TreeView} treeView Tree view.
+	 * @param {core.treeView.TreeView} treeView Tree view.
 	 */
 	setTreeView( treeView ) {
 		this._treeView = treeView;
 	}
 
 	/**
-	 * Fires the {@link treeView.Node#change change event}.
-	 *
-	 * @param {treeView.ChangeType} type Type of the change.
-	 * @param {treeView.Node} node Changed node.
+	 * @param {core.treeView.ChangeType} type Type of the change.
+	 * @param {core.treeView.Node} node Changed node.
+	 * @fires {@link core.treeView.Node#change change event}.
 	 */
 	_fireChange( type, node ) {
 		this.fire( 'change', type, node );
@@ -134,14 +131,14 @@ export default class Node {
 	/**
 	 * Fired when a node changes.
 	 *
-	 * * In case of {@link treeView.Text text nodes} it will be a change of the text data.
-	 * * In case of {@link treeView.Element elements} it will be a change of child nodes or attributes.
+	 * * In case of {@link core.treeView.Text text nodes} it will be a change of the text data.
+	 * * In case of {@link core.treeView.Element elements} it will be a change of child nodes or attributes.
 	 *
 	 * Change event is bubbling, it is fired on the ancestors chain.
 	 *
-	 * @event change
-	 * @param {treeView.ChangeType} Type of the change.
-	 * @param {treeView.Node} Changed node.
+	 * @event core.treeView.Node#change
+	 * @param {core.treeView.ChangeType} Type of the change.
+	 * @param {core.treeView.Node} Changed node.
 	 */
 }
 

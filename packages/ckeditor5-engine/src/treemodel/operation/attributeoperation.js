@@ -13,7 +13,8 @@ import TextFragment from '../textfragment.js';
 /**
  * Operation to change nodes' attribute. Using this class you can add, remove or change value of the attribute.
  *
- * @class treeModel.operation.AttributeOperation
+ * @memberOf core.treeModel.operation
+ * @extends core.treeModel.operation.Operation
  */
 export default class AttributeOperation extends Operation {
 	/**
@@ -28,12 +29,11 @@ export default class AttributeOperation extends Operation {
 	 * If both new and old attributes are set, then the operation will change the attribute value. Note that both new and
 	 * old attributes have to have the same key and the old attribute must be present in all nodes in ranges.
 	 *
-	 * @param {treeModel.Range} range Range on which the operation should be applied.
+	 * @param {core.treeModel.Range} range Range on which the operation should be applied.
 	 * @param {String} key Key of an attribute to change or remove.
 	 * @param {*} oldValue Old value of the attribute with given key or `null` if adding a new attribute.
 	 * @param {*} newValue New value to set for the attribute. If `null`, then the operation just removes the attribute.
-	 * @param {Number} baseVersion {@link treeModel.Document#version} on which the operation can be applied.
-	 * @constructor
+	 * @param {Number} baseVersion {@link core.treeModel.Document#version} on which the operation can be applied.
 	 */
 	constructor( range, key, oldValue, newValue, baseVersion ) {
 		super( baseVersion );
@@ -42,7 +42,7 @@ export default class AttributeOperation extends Operation {
 		 * Range on which operation should be applied.
 		 *
 		 * @readonly
-		 * @type {treeModel.Range}
+		 * @member {core.treeModel.Range} core.treeModel.operation.AttributeOperation#range
 		 */
 		this.range = Range.createFromRange( range );
 
@@ -50,7 +50,7 @@ export default class AttributeOperation extends Operation {
 		 * Key of an attribute to change or remove.
 		 *
 		 * @readonly
-		 * @property {String} key
+		 * @member {String} core.treeModel.operation.AttributeOperation#key
 		 */
 		this.key = key;
 
@@ -58,7 +58,7 @@ export default class AttributeOperation extends Operation {
 		 * Old value of the attribute with given key or `null` if adding a new attribute.
 		 *
 		 * @readonly
-		 * @property {*} oldValue
+		 * @member {*} core.treeModel.operation.AttributeOperation#oldValue
 		 */
 		this.oldValue = oldValue;
 
@@ -66,19 +66,25 @@ export default class AttributeOperation extends Operation {
 		 * New value to set for the attribute. If `null`, then the operation just removes the attribute.
 		 *
 		 * @readonly
-		 * @property {*} newValue
+		 * @member {*} core.treeModel.operation.AttributeOperation#newValue
 		 */
 		this.newValue = newValue;
 	}
 
 	get type() {
-		return 'attr';
+		return 'attribute';
 	}
 
+	/**
+	 * @returns {core.treeModel.operation.AttributeOperation}
+	 */
 	clone() {
 		return new AttributeOperation( this.range, this.key, this.oldValue, this.newValue, this.baseVersion );
 	}
 
+	/**
+	 * @returns {core.treeModel.operation.AttributeOperation}
+	 */
 	getReversed() {
 		return new AttributeOperation( this.range, this.key, this.newValue, this.oldValue, this.baseVersion + 1 );
 	}
@@ -90,7 +96,7 @@ export default class AttributeOperation extends Operation {
 				 * The attribute which should be removed does not exists for the given node.
 				 *
 				 * @error operation-attribute-no-attr-to-remove
-				 * @param {treeModel.Node} node
+				 * @param {core.treeModel.Node} node
 				 * @param {String} key
 				 * @param {*} value
 				 */
@@ -105,7 +111,7 @@ export default class AttributeOperation extends Operation {
 				 * The attribute with given key already exists for the given node.
 				 *
 				 * @error operation-attribute-attr-exists
-				 * @param {treeModel.Node} node
+				 * @param {core.treeModel.Node} node
 				 * @param {String} key
 				 */
 				throw new CKEditorError(

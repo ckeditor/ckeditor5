@@ -11,21 +11,19 @@ import BasicHtmlWriter from './basichtmlwriter.js';
  * HtmlDataProcessor class.
  * This data processor implementation uses HTML as input/output data.
  *
- * @class dataProcessor.HtmlDataProcessor
- * @implements dataProcessor.DataProcessor
+ * @memberOf core.dataProcessor
+ * @implements core.dataProcessor.DataProcessor
  */
 export default class HtmlDataProcessor {
 	/**
 	 * Creates a new instance of the HtmlDataProcessor class.
-	 *
-	 * @constructor
 	 */
 	constructor() {
 		/**
 		 * DOMParser instance used to parse HTML string to HTMLDocument.
 		 *
 		 * @private
-		 * @property {DOMParser}
+		 * @member {DOMParser} core.dataProcessor.HtmlDataProcessor#_domParser
 		 */
 		this._domParser = new DOMParser();
 
@@ -33,7 +31,7 @@ export default class HtmlDataProcessor {
 		 * BasicHtmlWriter instance used to convert DOM elements to HTML string.
 		 *
 		 * @private
-		 * @type {dataProcessor.BasicHtmlWriter}
+		 * @member {core.dataProcessor.BasicHtmlWriter} core.dataProcessor.HtmlDataProcessor#_htmlWriter
 		 */
 		this._htmlWriter = new BasicHtmlWriter();
 	}

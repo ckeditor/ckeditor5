@@ -7,36 +7,35 @@
 
 /**
  * Abstract base observer class. Observers are classes which observe changes on DOM elements, do the preliminary
- * processing and fire events on the {@link treeView.TreeView} objects.
- *
+ * processing and fire events on the {@link core.treeView.TreeView} objects.
  * @abstract
- * @class treeView.observer.Observer
+ * @memberOf core.treeView.observer
  */
 export default class Observer {
 	/**
-	 * Inits the observer class, caches all needed {@link treeView.TreeView} properties, create objects.
-	 * This method do not {@link treeView.observer.Observer#attach attach} listeners to the DOM.
+	 * Inits the observer class, caches all needed {@link core.treeView.TreeView} properties, create objects.
+	 * This method do not {@link core.treeView.observer.Observer#attach attach} listeners to the DOM.
 	 *
-	 * @method init
-	 * @param {treeView.TreeView}
+	 * @method core.treeView.observer.Observer#init
+	 * @param {core.treeView.TreeView}
 	 */
 
 	/**
 	 * Attaches observers and listeners to DOM elements. This method is called when then observer is added to the
-	 * {@link treeView.TreeView} and after {@link treeView.TreeView#render rendering} to reattach observers and listeners.
+	 * {@link core.treeView.TreeView} and after {@link core.treeView.TreeView#render rendering} to reattach observers and listeners.
 	 *
-	 * @see treeView.observer.Observer#detach
+	 * @see core.treeView.observer.Observer#detach
 	 *
-	 * @method attach
+	 * @method core.treeView.observer.Observer#attach
 	 */
 
 	/**
 	 * Detaches observers and listeners from the DOM elements. This method is called before
-	 * {@link treeView.TreeView#render rendering} to prevent firing events during rendering and when the editor is
+	 * {@link core.treeView.TreeView#render rendering} to prevent firing events during rendering and when the editor is
 	 * destroyed.
 	 *
-	 * @see treeView.observer.Observer#attach
+	 * @see core.treeView.observer.Observer#attach
 	 *
-	 * @method detach
+	 * @method core.treeView.observer.Observer#detach
 	 */
 }

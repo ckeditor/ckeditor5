@@ -12,16 +12,17 @@ import ReinsertOperation from './reinsertoperation.js';
 /**
  * Operation to remove a range of nodes.
  *
- * @class treeModel.operation.RemoveOperation
+ * @memberOf core.treeModel.operation
+ * @extends core.treeModel.operation.Operation
  */
 export default class RemoveOperation extends MoveOperation {
 	/**
+	 *
 	 * Creates a remove operation.
 	 *
-	 * @param {treeModel.Position} position Position before the first node to remove.
+	 * @param {core.treeModel.Position} position Position before the first node to remove.
 	 * @param {Number} howMany How many nodes to remove.
-	 * @param {Number} baseVersion {@link treeModel.Document#version} on which operation can be applied.
-	 * @constructor
+	 * @param {Number} baseVersion {@link core.treeModel.Document#version} on which operation can be applied.
 	 */
 	constructor( position, howMany, baseVersion ) {
 		// Position in a graveyard where nodes were moved.
@@ -34,10 +35,16 @@ export default class RemoveOperation extends MoveOperation {
 		return 'remove';
 	}
 
+	/**
+	 * @returns {core.treeModel.operation.ReinsertOperation}
+	 */
 	getReversed() {
 		return new ReinsertOperation( this.targetPosition, this.howMany, this.sourcePosition, this.baseVersion + 1 );
 	}
 
+	/**
+	 * @returns {core.treeModel.operation.RemoveOperation}
+	 */
 	clone() {
 		return new RemoveOperation( this.sourcePosition, this.howMany, this.baseVersion );
 	}
