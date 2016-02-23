@@ -156,7 +156,7 @@ export default class Controller {
 	 * Adds a child {@link Controller} instance to {@link #collections} at given index.
 	 *
 	 * @param {String} collectionName Name of the Controller Collection.
-	 * @param {Controller} controller A controller instance to be added.
+	 * @param {core.ui.Controller} controller A controller instance to be added.
 	 * @param {Number} [index] An index in the collection.
 	 */
 	add( collectionName, controller, index ) {
@@ -167,7 +167,7 @@ export default class Controller {
 	 * Removes a child {@link Controller} instance from one of {@link #collections}.
 	 *
 	 * @param {String} collectionName Name of the Controller Collection.
-	 * @param {Controller|Number} toRemove A Controller instance or index to be removed.
+	 * @param {core.ui.Controller|Number} toRemove A Controller instance or index to be removed.
 	 */
 	remove( collectionName, toRemove ) {
 		return this.collections.get( collectionName ).remove( toRemove );
