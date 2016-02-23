@@ -25,7 +25,7 @@
 		return this._priorities.get( node );
 	}
 
-	insertIntoContainer( position, node ) {
+	insertIntoContainer( position, nodes ) {
 		const container = getParentContainer( position );
 
 		const insertionPosition = this.breakAttributes( position, container );
@@ -65,15 +65,27 @@
 		const parentIsText = node instanceof Text;
 		const length = parentIsText ? node.data.length : node.getChildCount();
 
+		// <p>foo<b><u>bar|</u></b></p>
+		// <p>foo<b><u>bar</u>|</b></p>
+		// <p>foo<b><u>bar</u></b>|</p>
 		if ( offset == length ) {
 			const parentPosition = new Position( node.parent, node.getIndex() + 1 );
 
 			return this.breakAttributes( parentPosition, limit );
-		} else if ( offset == 0 ) {
+		} else
+		// <p>foo<b><u>|bar</u></b></p>
+		// <p>foo<b>|<u>bar</u></b></p>
+		// <p>foo|<b><u>bar</u></b></p>
+		if ( offset == 0 ) {
 			const parentPosition = new Position( node.parent, node.getIndex() );
 
 			return this.breakAttributes( parentPosition, limit );
-		} else {
+		}
+		// <p>foo<b><u>"b|ar"</u></b></p>
+		// <p>foo<b><u>"b"|"ar"</u></b></p>
+		// <p>foo<b><u>b</u>|</u>ar</u></b></p>
+		// <p>foo<b><u>b</u></b>|<b><u>ar</u></b></p>
+		else {
 			// Break.
 			const offsetAfter = node.getIndex() + 1;
 
@@ -139,10 +151,19 @@
 	removeFromContainer( range ) {
 	}
 
+	// <p><u><b>"|"</b></u></p>
+	// <p><u><b>|</b></u></p>
+	// <p><u>|</u></p>
+	// <p>|</p>
 	removeEmptyAttributes( position ) {
 	}
 
+	// f[o]o -> f<b>o</b>o
+	// <b>f</b>[o]<b>o</b> -> <b>f</b><b>o</b><b>o</b> -> <b>foo</b>
+	// <b>f</b>o[o<u>bo]m</u> -> <b>f</b>o<b>o</b><u><b>bo</b>m</u>
+	// Range have to] be inside single container.
 	wrap( range, element, priority ) {
+		// this._priorities.set( element, priority );
 	}
 
 	unwrap( range, element ) {
