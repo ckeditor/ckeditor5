@@ -12,29 +12,27 @@ import CKEditorError from '../ckeditorerror.js';
 /**
  * Basic Template class.
  *
- * @class Template
+ * @memberOf core.ui
  */
-
 export default class Template {
 	/**
 	 * Creates an instance of the {@link Template} class.
 	 *
-	 * @param {TemplateDefinition} definition The definition of the template.
-	 * @constructor
+	 * @param {core.ui.TemplateDefinition} def The definition of the template.
 	 */
 	constructor( def ) {
 		/**
 		 * Definition of this template.
 		 *
-		 * @property {TemplateDefinition}
+		 * @type {core.ui.TemplateDefinition}
 		 */
 		this.definition = def;
 	}
 
 	/**
-	 * Renders DOM Node using {@link #definition}.
+	 * Renders DOM Node using {@link core.ui.Template#definition}.
 	 *
-	 * See: {@link #apply}.
+	 * @see core.ui.Template#apply
 	 *
 	 * @returns {HTMLElement}
 	 */
@@ -43,11 +41,12 @@ export default class Template {
 	}
 
 	/**
-	 * Applies template {@link #def} to existing DOM tree.
+	 * Applies template {@link core.ui.Template#def} to existing DOM tree.
 	 *
 	 * **Note:** No new DOM nodes (elements, text nodes) will be created.
 	 *
-	 * See: {@link #render}, {@link View#applyTemplateToElement}.
+	 * @see core.ui.Template#render
+	 * @see View#applyTemplateToElement.
 	 *
 	 * @param {Node} element Root element for template to apply.
 	 */
@@ -68,7 +67,7 @@ export default class Template {
 	 * Renders a DOM Node from definition.
 	 *
 	 * @protected
-	 * @param {TemplateDefinition} def Definition of a Node.
+	 * @param {core.ui.TemplateDefinition} def Definition of a Node.
 	 * @param {Node} applyNode If specified, template `def` will be applied to existing DOM Node.
 	 * @param {Boolean} intoFragment If set, children are rendered into DocumentFragment.
 	 * @returns {HTMLElement} A rendered Node.
@@ -103,7 +102,7 @@ export default class Template {
 	 * Renders an HTMLElement from TemplateDefinition.
 	 *
 	 * @protected
-	 * @param {TemplateDefinition} def Definition of an element.
+	 * @param {core.ui.TemplateDefinition} def Definition of an element.
 	 * @param {HTMLElement} applyElement If specified, template `def` will be applied to existing HTMLElement.
 	 * @param {Boolean} intoFragment If set, children are rendered into DocumentFragment.
 	 * @returns {HTMLElement} A rendered element.
@@ -139,57 +138,80 @@ export default class Template {
 	 * @returns {Text} A rendered Text.
 	 */
 	_renderText( defOrText, applyText ) {
-		const text = applyText || document.createTextNode( '' );
+		const textNode = applyText || document.createTextNode( '' );
 
-		// Case: { text: func }, like binding
-		if ( typeof defOrText.text == 'function' ) {
-			defOrText.text( text, getTextUpdater() );
+		// Check if there's a binder available for this Text Node.
+		const binder = defOrText._modelBinders && defOrText._modelBinders.text;
+
+		// Activate binder if one. Cases:
+		//		{ text: bind.to( ... ) }
+		//		{ text: [ 'foo', bind.to( ... ), ... ] }
+		if ( binder ) {
+			binder( textNode, getTextNodeUpdater( textNode ) );
 		}
-		// Case: { text: 'foo' }
-		// Case: 'foo'
+
+		// Simply set text. Cases:
+		// 		{ text: [ 'all', 'are', 'static' ] }
+		// 		{ text: 'foo' }
+		// 		'foo'
 		else {
-			text.textContent = defOrText.text || defOrText;
+			textNode.textContent = defOrText.text || defOrText;
 		}
 
-		return text;
+		return textNode;
 	}
 
 	/**
 	 * Renders element attributes from definition.
 	 *
 	 * @protected
-	 * @param {TemplateDefinition} def Definition of an element.
+	 * @param {core.ui.TemplateDefinition} def Definition of an element.
 	 * @param {HTMLElement} el Element which is rendered.
 	 */
 	_renderElementAttributes( def, el ) {
-		let attr, value;
+		const attributes = def.attributes;
+		const binders = def._modelBinders && def._modelBinders.attributes;
+		let binder, attrName, attrValue;
 
-		for ( attr in def.attributes ) {
-			value = def.attributes[ attr ];
+		if ( !attributes ) {
+			return;
+		}
 
-			// Attribute bound directly to the model.
-			if ( typeof value == 'function' ) {
-				value( el, getAttributeUpdater( attr ) );
+		for ( attrName in attributes ) {
+			// Check if there's a binder available for this attribute.
+			binder = binders && binders[ attrName ];
+
+			// Activate binder if one. Cases:
+			// 		{ class: [ 'bar', bind.to( ... ), 'baz' ] }
+			// 		{ class: bind.to( ... ) }
+			if ( binder ) {
+				binder( el, getElementAttributeUpdater( el, attrName ) );
 			}
 
-			// Explicit attribute definition (string).
+			// Otherwise simply set the attribute.
+			// 		{ class: [ 'all', 'are', 'static' ] }
+			// 		{ class: 'foo' }
 			else {
-				// Attribute can be an array, i.e. classes.
-				if ( Array.isArray( value ) ) {
-					value = value.join( ' ' );
+				attrValue = attributes[ attrName ];
+
+				// Attribute can be an array. Merge array elements:
+				if ( Array.isArray( attrValue ) ) {
+					attrValue = attrValue.reduce( function binderValueReducer( prev, cur ) {
+						return prev === '' ? `${cur}` : `${prev} ${cur}`;
+					} );
 				}
 
-				el.setAttribute( attr, value );
+				el.setAttribute( attrName, attrValue );
 			}
 		}
 	}
 
 	/**
 	 * Recursively renders element children from definition by
-	 * calling {@link #_renderElement}.
+	 * calling {@link core.ui.Template#_renderElement}.
 	 *
 	 * @protected
-	 * @param {TemplateDefinition} def Definition of an element.
+	 * @param {core.ui.TemplateDefinition} def Definition of an element.
 	 * @param {HTMLElement} el Element which is rendered.
 	 * @param {Boolean} isApply Traverse existing DOM structure only, don't modify DOM.
 	 */
@@ -209,7 +231,7 @@ export default class Template {
 	 * Activates element `on` listeners passed in element definition.
 	 *
 	 * @protected
-	 * @param {TemplateDefinition} def Definition of an element.
+	 * @param {core.ui.TemplateDefinition} def Definition of an element.
 	 * @param {HTMLElement} el Element which is rendered.
 	 */
 	_activateElementListenerAttachers( def, el ) {
@@ -237,30 +259,53 @@ export default class Template {
 }
 
 /**
- * Returns a function which, when called in the context of HTMLElement,
- * it replaces element children with a text node of given value.
+ * Returns an object consisting of `set` and `remove` functions, which
+ * can be used in the context of DOM Node to set or reset `textContent`.
+ * @see core.ui.View#_getModelBinder
  *
+ * @ignore
  * @private
- * @param {Function}
+ * @param {Node} node DOM Node to be modified.
+ * @returns {Object}
  */
-function getTextUpdater() {
-	return ( el, value ) => el.textContent = value;
+function getTextNodeUpdater( node ) {
+	return {
+		set( value ) {
+			node.textContent = value;
+		},
+
+		remove() {
+			node.textContent = '';
+		}
+	};
 }
 
 /**
- * Returns a function which, when called in the context of HTMLElement,
- * it updates element's attribute with given value.
+ * Returns an object consisting of `set` and `remove` functions, which
+ * can be used in the context of DOM Node to set or reset an attribute.
+ * @see core.ui.View#_getModelBinder
  *
+ * @ignore
  * @private
- * @param {String} attr A name of the attribute to be updated.
- * @param {Function}
+ * @param {Node} node DOM Node to be modified.
+ * @param {String} attrName Name of the attribute to be modified.
+ * @returns {Object}
  */
-function getAttributeUpdater( attr ) {
-	return ( el, value ) => el.setAttribute( attr, value );
+function getElementAttributeUpdater( el, attrName ) {
+	return {
+		set( value ) {
+			el.setAttribute( attrName, value );
+		},
+
+		remove() {
+			el.removeAttribute( attrName );
+		}
+	};
 }
 
 /**
  * Definition of {@link Template}.
+ * See: {@link core.ui.TemplateValueSchema}.
  *
  *		{
  *			tag: 'p',
@@ -272,31 +317,54 @@ function getAttributeUpdater( attr ) {
  *					...
  *				},
  *				{
- *					text: 'abc'
+ *					text: 'static–text'
  *				},
- *				'def',
+ *				'also-static–text',
  *				...
  *			],
  *			attributes: {
- *				'class': [ 'a', 'b' ],
- *				id: 'c',
+ *				'class': [ 'class-a', 'class-b' ],
+ *				id: 'element-id',
  *				style: callback,
  *				...
  *			},
  *			on: {
- *				event1: 'a'
- *				event2: [ 'b', 'c', callback ],
- *				'event3@selector': 'd',
- *				'event4@selector': [ 'e', 'f', callback ],
+ *				'click': 'clicked'
+ *				'mouseup': [ 'view-event-a', 'view-event-b', callback ],
+ *				'keyup@selector': 'view-event',
+ *				'focus@selector': [ 'view-event-a', 'view-event-b', callback ],
  *				...
  *			}
  *		}
  *
- * @typedef TemplateDefinition
+ * @typedef core.ui.TemplateDefinition
  * @type Object
  * @property {String} tag
  * @property {Array} [children]
  * @property {Object} [attributes]
  * @property {String} [text]
  * @property {Object} [on]
+ * @property {Object} _modelBinders
+ */
+
+/**
+ * Describes a value of HTMLElement attribute or `textContent`.
+ * See: {@link core.ui.TemplateDefinition}.
+ *
+ *		{
+ *			tag: 'p',
+ *			attributes: {
+ *				// Plain String schema.
+ *				class: 'class-foo'
+ *
+ *				// Object schema, a Model binding.
+ *				class: { model: m, attribute: 'foo', callback... }
+ *
+ *				// Array schema, combines the above.
+ *				class: [ 'foo', { model: m, attribute: 'bar' }, 'baz' ]
+ *			}
+ *		}
+ *
+ * @typedef core.ui.TemplateValueSchema
+ * @type {Object|String|Array}
  */

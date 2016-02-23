@@ -12,17 +12,15 @@ import ObservableMixin from '../observablemixin.js';
 /**
  * The base MVC model class.
  *
- * @class core.ui.Model
- * @mixins core.ObservableMixin
+ * @memberOf core.ui
+ * @mixes core.ObservableMixin
  */
-
 export default class Model {
 	/**
 	 * Creates a new Model instance.
 	 *
 	 * @param {Object} [attributes] The model state attributes to be defined during the instance creation.
 	 * @param {Object} [properties] The (out of state) properties to be appended to the instance during creation.
-	 * @method constructor
 	 */
 	constructor( attributes, properties ) {
 		// Extend this instance with the additional (out of state) properties.

@@ -13,16 +13,14 @@ import utils from './utils.js';
 /**
  * Handles a configuration dictionary.
  *
- * @class core.Config
- * @mixins core.ObservableMixin
+ * @memberOf core
+ * @mixes core.ObservableMixin
  */
-
 export default class Config {
 	/**
 	 * Creates an instance of the {@link Config} class.
 	 *
 	 * @param {Object} [configurations] The initial configurations to be set.
-	 * @constructor
 	 */
 	constructor( configurations ) {
 		if ( configurations ) {
@@ -63,7 +61,7 @@ export default class Config {
 	 *     config.toolbar.collapsed; // true
 	 *     config.toolbar.color; // 'red'
 	 *
-	 * @param {String|Object} nameOrConfigurations The configuration name or an object from which take properties as
+	 * @param {String|Object} name The configuration name or an object from which take properties as
 	 * configuration entries. Configuration names are case-insensitive.
 	 * @param {*} [value=null] The configuration value. Used if a name is passed to nameOrConfigurations.
 	 */
@@ -171,7 +169,7 @@ export default class Config {
 	 * This method is supposed to be called by plugin developers to setup plugin's configurations. It would be
 	 * rarely used for other needs.
 	 *
-	 * @param {String|Object} nameOrConfigurations The configuration name or an object from which take properties as
+	 * @param {String|Object} name The configuration name or an object from which take properties as
 	 * configuration entries.
 	 * @param {*} [value] The configuration value. Used if a name is passed to nameOrConfigurations. If undefined,
 	 * the configuration is set to `null`.
@@ -181,7 +179,6 @@ export default class Config {
 			/**
 			 * TODO
 			 *
-			 * @property
 			 * @type {Config}
 			 */
 			this.definition = new Config();

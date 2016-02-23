@@ -41,7 +41,17 @@ describe( 'Template', () => {
 			} ).to.throw( CKEditorError, /ui-template-wrong-syntax/ );
 		} );
 
-		it( 'creates a HTMLElement with attributes', () => {
+		it( 'creates a HTMLElement', () => {
+			const el = new Template( {
+				tag: 'p',
+			} ).render();
+
+			expect( el ).to.be.instanceof( HTMLElement );
+			expect( el.parentNode ).to.be.null;
+			expect( el.outerHTML ).to.be.equal( '<p></p>' );
+		} );
+
+		it( 'renders HTMLElement attributes', () => {
 			const el = new Template( {
 				tag: 'p',
 				attributes: {
@@ -56,7 +66,33 @@ describe( 'Template', () => {
 			expect( el.outerHTML ).to.be.equal( '<p class="a b" x="bar">foo</p>' );
 		} );
 
-		it( 'creates HTMLElement\'s children', () => {
+		it( 'renders HTMLElement attributes – empty', () => {
+			const el = new Template( {
+				tag: 'p',
+				attributes: {
+					class: '',
+					x: [ '', '' ]
+				},
+				children: [ 'foo' ]
+			} ).render();
+
+			expect( el.outerHTML ).to.be.equal( '<p class="" x="">foo</p>' );
+		} );
+
+		it( 'renders HTMLElement attributes – falsy values', () => {
+			const el = new Template( {
+				tag: 'p',
+				attributes: {
+					class: false,
+					x: [ '', null ]
+				},
+				children: [ 'foo' ]
+			} ).render();
+
+			expect( el.outerHTML ).to.be.equal( '<p class="false" x="null">foo</p>' );
+		} );
+
+		it( 'creates HTMLElement children', () => {
 			const el = new Template( {
 				tag: 'p',
 				attributes: {
@@ -199,25 +235,30 @@ describe( 'Template', () => {
 			const el = new Template( {
 				tag: 'p',
 				attributes: {
-					'class': spy1
+					'class': {}
 				},
 				children: [
 					{
 						tag: 'span',
 						attributes: {
-							id: spy2
+							id: {}
+						},
+						_modelBinders: {
+							attributes: {
+								id: spy2
+							}
 						}
 					}
-				]
+				],
+				_modelBinders: {
+					attributes: {
+						class: spy1
+					}
+				}
 			} ).render();
 
-			sinon.assert.calledWithExactly( spy1, el, sinon.match.func );
-			sinon.assert.calledWithExactly( spy2, el.firstChild, sinon.match.func );
-
-			spy1.firstCall.args[ 1 ]( el, 'foo' );
-			spy2.firstCall.args[ 1 ]( el.firstChild, 'bar' );
-
-			expect( el.outerHTML ).to.be.equal( '<p class="foo"><span id="bar"></span></p>' );
+			sinon.assert.calledWithExactly( spy1, el, sinon.match.object );
+			sinon.assert.calledWithExactly( spy2, el.firstChild, sinon.match.object );
 		} );
 
 		it( 'activates model bindings – Text Node', () => {
@@ -228,27 +269,71 @@ describe( 'Template', () => {
 				tag: 'p',
 				children: [
 					{
-						text: spy1
+						text: {},
+						_modelBinders: {
+							text: spy1
+						}
 					},
 					{
 						tag: 'span',
 						children: [
 							{
-								text: spy2
+								text: {},
+								_modelBinders: {
+									text: spy2
+								}
 							}
 						]
 					}
 				]
 			} ).render();
 
-			sinon.assert.calledWithExactly( spy1, el.firstChild, sinon.match.func );
-			sinon.assert.calledWithExactly( spy2, el.lastChild.firstChild, sinon.match.func );
+			sinon.assert.calledWithExactly( spy1, el.firstChild, sinon.match.object );
+			sinon.assert.calledWithExactly( spy2, el.lastChild.firstChild, sinon.match.object );
+		} );
 
-			spy2.firstCall.args[ 1 ]( el.lastChild.firstChild, 'bar' );
-			expect( el.outerHTML ).to.be.equal( '<p><span>bar</span></p>' );
+		it( 'uses DOM updater – attributes', () => {
+			const spy = testUtils.sinon.spy();
+			const el = new Template( {
+				tag: 'p',
+				attributes: {
+					'class': {}
+				},
+				_modelBinders: {
+					attributes: {
+						class: spy
+					}
+				}
+			} ).render();
 
-			spy1.firstCall.args[ 1 ]( el.firstChild, 'foo' );
-			expect( el.outerHTML ).to.be.equal( '<p>foo<span>bar</span></p>' );
+			// Check whether DOM updater is correct.
+			spy.firstCall.args[ 1 ].set( 'x' );
+			expect( el.outerHTML ).to.be.equal( '<p class="x"></p>' );
+
+			spy.firstCall.args[ 1 ].remove();
+			expect( el.outerHTML ).to.be.equal( '<p></p>' );
+		} );
+
+		it( 'uses DOM updater – text', () => {
+			const spy = testUtils.sinon.spy();
+			const el = new Template( {
+				tag: 'p',
+				children: [
+					{
+						text: {},
+						_modelBinders: {
+							text: spy
+						}
+					}
+				],
+			} ).render();
+
+			// Check whether DOM updater is correct.
+			spy.firstCall.args[ 1 ].set( 'x' );
+			expect( el.outerHTML ).to.be.equal( '<p>x</p>' );
+
+			spy.firstCall.args[ 1 ].remove();
+			expect( el.outerHTML ).to.be.equal( '<p></p>' );
 		} );
 	} );
 
@@ -401,11 +486,16 @@ describe( 'Template', () => {
 			new Template( {
 				tag: 'div',
 				attributes: {
-					class: spy
+					class: {}
+				},
+				_modelBinders: {
+					attributes: {
+						class: spy
+					}
 				}
 			} ).apply( el );
 
-			sinon.assert.calledWithExactly( spy, el, sinon.match.func );
+			sinon.assert.calledWithExactly( spy, el, sinon.match.object );
 		} );
 
 		it( 'activates model bindings – children', () => {
@@ -418,13 +508,18 @@ describe( 'Template', () => {
 					{
 						tag: 'span',
 						attributes: {
-							class: spy
+							class: {}
+						},
+						_modelBinders: {
+							attributes: {
+								class: spy
+							}
 						}
 					}
 				]
 			} ).apply( el );
 
-			sinon.assert.calledWithExactly( spy, el.firstChild, sinon.match.func );
+			sinon.assert.calledWithExactly( spy, el.firstChild, sinon.match.object );
 		} );
 	} );
 } );

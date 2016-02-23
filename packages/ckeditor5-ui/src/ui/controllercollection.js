@@ -17,8 +17,6 @@ import CKEditorError from '../ckeditorerror.js';
 export default class ControllerCollection extends Collection {
 	/**
 	 * Creates an instance of the ControllerCollection class, initializing it with a name.
-	 *
-	 * @constructor
 	 */
 	constructor( name ) {
 		super();
@@ -35,14 +33,14 @@ export default class ControllerCollection extends Collection {
 		/**
 		 * Name of this collection.
 		 *
-		 * @property {String}
+		 * @type {String}
 		 */
 		this.name = name;
 
 		/**
 		 * Parent controller of this collection.
 		 *
-		 * @property {Controller}
+		 * @type {core.ui.Controller}
 		 */
 		this.parent = null;
 	}
@@ -51,7 +49,7 @@ export default class ControllerCollection extends Collection {
 	 * Adds a child controller to the collection. If {@link #parent} {@link Controller}
 	 * instance is ready, the child view is initialized when added.
 	 *
-	 * @param {Controller} controller A child controller.
+	 * @param {core.ui.Controller} controller A child controller.
 	 * @param {Number} [index] Index at which the child will be added to the collection.
 	 * @returns {Promise} A Promise resolved when the child {@link Controller#init} is done.
 	 */
