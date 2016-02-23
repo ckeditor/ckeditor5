@@ -69,7 +69,7 @@ export default class Element extends Node {
 		const childrenClone = [];
 
 		if ( deep ) {
-			for ( child of this.getChildren() ) {
+			for ( let child of this.getChildren() ) {
 				childrenClone.push( child.cloneNode( deep ) );
 			}
 		}
@@ -215,7 +215,7 @@ export default class Element extends Node {
 	removeChildren( index, number ) {
 		this._fireChange( 'CHILDREN', this );
 
-		if ( !number ) {
+		if ( typeof number === 'undefined' ) {
 			number = 1;
 		}
 
@@ -227,7 +227,7 @@ export default class Element extends Node {
 	}
 
 	same( otherNode ) {
-		if ( !otherNode instanceof Element ) {
+		if ( !( otherNode instanceof Element ) ) {
 			return false;
 		}
 
@@ -239,7 +239,7 @@ export default class Element extends Node {
 		const otherNodeAttrKeys = this.getAttributeKeys();
 		let count = 0;
 
-		for ( key of thisNodeAttrKeys ) {
+		for ( let key of thisNodeAttrKeys ) {
 			if ( this.getAttribute( key ) !== otherNode.getAttribute( key ) ) {
 				return false;
 			}

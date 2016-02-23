@@ -126,7 +126,7 @@ export default class Element extends Node {
 	 * @returns {core.treeModel.NodeList} The list of removed nodes.
 	 */
 	removeChildren( index, number ) {
-		if ( !number ) {
+		if ( typeof number === 'undefined' ) {
 			number = 1;
 		}
 
