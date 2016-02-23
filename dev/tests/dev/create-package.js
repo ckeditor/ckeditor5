@@ -15,7 +15,8 @@ const inquiries = require( '../../tasks/dev/utils/inquiries' );
 const git = require( '../../tasks/dev/utils/git' );
 const path = require( 'path' );
 
-describe( 'dev-package-create', () => {
+describe( 'dev-create-package', () => {
+	const emptyFn = () => { };
 	let spies;
 
 	const mainRepositoryPath = '/path/to/repository';
@@ -24,6 +25,7 @@ describe( 'dev-package-create', () => {
 	const packageName = 'package-name';
 	const packageVersion = '0.0.1';
 	const gitHubUrl = 'ckeditor5/package-name';
+	const packageDescription = 'Package description.';
 
 	beforeEach( () => createSpies() );
 	afterEach( () => restoreSpies() );
@@ -35,9 +37,10 @@ describe( 'dev-package-create', () => {
 			getPackageName: sinon.stub( inquiries, 'getPackageName' ).returns( new Promise( ( r ) => r( packageName ) ) ),
 			getPackageVersion: sinon.stub( inquiries, 'getPackageVersion' ).returns( new Promise( ( r ) => r( packageVersion ) ) ),
 			getPackageGitHubUrl: sinon.stub( inquiries, 'getPackageGitHubUrl' ).returns( new Promise( ( r ) => r( gitHubUrl ) ) ),
+			getPackageDescription: sinon.stub( inquiries, 'getPackageDescription' ).returns( new Promise( ( r ) => r( packageDescription ) ) ),
 			initializeRepository: sinon.stub( git, 'initializeRepository' ),
 			updateJSONFile: sinon.stub( tools, 'updateJSONFile' ),
-			copy: sinon.stub( tools, 'copy' ),
+			copy: sinon.stub( tools, 'copyTemplateFiles' ),
 			initialCommit: sinon.stub( git, 'initialCommit' )
 		};
 	}
@@ -58,6 +61,7 @@ describe( 'dev-package-create', () => {
 			expect( spies.getPackageName.calledOnce ).to.equal( true );
 			expect( spies.getPackageVersion.calledOnce ).to.equal( true );
 			expect( spies.getPackageGitHubUrl.calledOnce ).to.equal( true );
+			expect( spies.getPackageDescription.calledOnce ).to.equal( true );
 			expect( spies.initializeRepository.calledOnce ).to.equal( true );
 			expect( spies.initializeRepository.firstCall.args[ 0 ] ).to.equal( repositoryPath );
 			expect( spies.copy.called ).to.equal( true );

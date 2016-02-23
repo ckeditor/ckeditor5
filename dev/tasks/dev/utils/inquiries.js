@@ -51,5 +51,16 @@ module.exports = {
 				resolve( answers.gitHubUrl );
 			} );
 		} );
+	},
+
+	getPackageDescription( ) {
+		return new Promise( ( resolve ) => {
+			inquirer.prompt( [ {
+				name: 'description',
+				message: 'Package description:'
+			} ], ( answers ) => {
+				resolve( answers.description || '' );
+			} );
+		} );
 	}
 };
