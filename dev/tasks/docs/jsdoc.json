@@ -1,13 +1,13 @@
 {
 	"opts": {
 		"encoding": "utf8",
-		"destination": "out/jsdoc",
+		"destination": "dist/docs",
 		"recurse": true,
 		"access": "all"
 	},
 	"plugins": [
 		"node_modules/jsdoc/plugins/markdown",
-		"dev/tasks/jsdoc/plugins/comment-fixer"
+		"dev/tasks/docs/plugins/comment-fixer"
 	],
 	"source": {
 		"include": [

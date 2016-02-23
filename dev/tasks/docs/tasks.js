@@ -1,4 +1,7 @@
-/* jshint node: true, esnext: true */
+/**
+ * @license Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
 
 'use strict';
 
@@ -7,9 +10,9 @@ const jsdoc = require( 'gulp-jsdoc3' );
 
 module.exports = () => {
 	gulp.task( 'docs', [ 'build-esnext' ], function( cb ) {
-		let config = require( './jsdoc.json' );
+		const config = require( './jsdoc.json' );
 
-		// Add readme to output
+		// Add the readme to the output.
 		gulp.src( [ 'README.md' ], { read: false } )
 			.pipe( jsdoc( config, cb ) );
 	} );
