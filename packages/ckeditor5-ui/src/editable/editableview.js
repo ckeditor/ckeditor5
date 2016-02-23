@@ -21,6 +21,8 @@ export default class EditableView extends View {
 	 */
 
 	/**
+	 * Sets the {@link #editableElement} property and applies necessary bindings to it.
+	 *
 	 * @param {HTMLElement} editableElement
 	 */
 	setEditableElement( editableElement ) {

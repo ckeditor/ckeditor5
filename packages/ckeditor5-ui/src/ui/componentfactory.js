@@ -8,7 +8,7 @@
 import CKEditorError from '../ckeditorerror.js';
 
 /**
- * Class implementin a UI component factory.
+ * Class implementing the UI component factory.
  *
  * Factories of specific UI components can be registered under their unique names. Registered
  * components can be later instantiated by providing the name of the component. The model is shared between all
