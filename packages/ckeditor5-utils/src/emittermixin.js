@@ -15,11 +15,9 @@ let eventsCounter = 0;
 /**
  * Mixin that injects the events API into its host.
  *
- * @singleton
- * @class core.EmitterMixin
- * @implementes core.Emitter
+ * @mixin core.EmitterMixin
+ * @implements core.Emitter
  */
-
 const EmitterMixin = {
 	/**
 	 * Registers a callback function to be executed when an event is fired.
@@ -30,6 +28,7 @@ const EmitterMixin = {
 	 * event.
 	 * @param {Number} [priority=10] The priority of this callback in relation to other callbacks to that same event.
 	 * Lower values are called first.
+	 * @method core.EmitterMixin#on
 	 */
 	on( event, callback, ctx, priority ) {
 		const callbacks = getCallbacks( this, event );
@@ -69,6 +68,7 @@ const EmitterMixin = {
 	 * event.
 	 * @param {Number} [priority=10] The priority of this callback in relation to other callbacks to that same event.
 	 * Lower values are called first.
+	 * @method core.EmitterMixin#once
 	 */
 	once( event, callback, ctx, priority ) {
 		const onceCallback = function( event ) {
@@ -90,6 +90,7 @@ const EmitterMixin = {
 	 * @param {Function} callback The function to stop being called.
 	 * @param {Object} [ctx] The context object to be removed, pared with the given callback. To handle cases where
 	 * the same callback is used several times with different contexts.
+	 * @method core.EmitterMixin#off
 	 */
 	off( event, callback, ctx ) {
 		const callbacks = getCallbacksIfAny( this, event );
@@ -118,6 +119,7 @@ const EmitterMixin = {
 	 * @param {Object} [ctx] The object that represents `this` in the callback. Defaults to `emitter`.
 	 * @param {Number} [priority=10] The priority of this callback in relation to other callbacks to that same event.
 	 * Lower values are called first.
+	 * @method core.EmitterMixin#listenTo
 	 */
 	listenTo( emitter, event, callback, ctx, priority ) {
 		let emitters, emitterId, emitterInfo, eventCallbacks;
@@ -174,6 +176,7 @@ const EmitterMixin = {
 	 * for all events from `emitter`.
 	 * @param {Function} [callback] (Requires the `event`) The function to be removed from the call list for the given
 	 * `event`.
+	 * @method core.EmitterMixin#stopListening
 	 */
 	stopListening( emitter, event, callback ) {
 		let emitters = this._listeningTo;
@@ -221,6 +224,7 @@ const EmitterMixin = {
 	 *
 	 * @param {String} event The name of the event.
 	 * @param {...*} [args] Additional arguments to be passed to the callbacks.
+	 * @method core.EmitterMixin#fire
 	 */
 	fire( event, args ) {
 		const callbacks = getCallbacksIfAny( this, event );
