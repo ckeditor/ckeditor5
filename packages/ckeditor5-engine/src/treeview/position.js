@@ -33,4 +33,29 @@ export default class Position {
 		 */
 		this.offset = offset;
 	}
+
+	/**
+	 * Returns a new instance of Position with offset incremented by `shift` value.
+	 *
+	 * @param {Number} shift How position offset should get changed. Accepts negative values.
+	 * @returns {treeView.Position} Shifted position.
+	 */
+	getShiftedBy( shift ) {
+		let shifted = Position.createFromPosition( this );
+
+		let offset = shifted.offset + shift;
+		shifted.offset = offset < 0 ? 0 : offset;
+
+		return shifted;
+	}
+
+	/**
+	 * Creates and returns a new instance of Position, which is equal to passed position.
+	 *
+	 * @param {treeModel.Position} position Position to be cloned.
+	 * @returns {treeModel.Position}
+	 */
+	static createFromPosition( position ) {
+		return new this( position.parent, position.offset );
+	}
 }

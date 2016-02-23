@@ -37,24 +37,6 @@ const utils = {
 	},
 
 	/**
-	 * Returns the number of elements return by the iterator.
-	 *
-	 *		testUtils.getIteratorCount( [ 1, 2, 3, 4, 5 ] ); // 5;
-	 *
-	 * @param {Iterable.<*>} iterator Any iterator.
-	 * @returns {Number} Number of elements returned by that iterator.
-	 */
-	getIteratorCount( iterator ) {
-		let count = 0;
-
-		for ( let _ of iterator ) { // jshint ignore:line
-			count++;
-		}
-
-		return count;
-	},
-
-	/**
 	 * Creates an instance inheriting from {@link core.EmitterMixin} with one additional method `observe()`.
 	 * It allows observing changes to attributes in objects being {@link core.Observable observable}.
 	 *
@@ -79,7 +61,7 @@ const utils = {
 			observe: {
 				value: function observe( observableName, observable ) {
 					observer.listenTo( observable, 'change', ( evt, propertyName, value, oldValue ) => {
-						console.log( `[Change in ${ observableName }] ${ propertyName } = '${ value }' (was '${ oldValue }')` );
+						console.log( `[ Change in $ { observableName } ] $ { propertyName } = '${ value }' ( was '${ oldValue }' )` );
 					} );
 
 					return observer;

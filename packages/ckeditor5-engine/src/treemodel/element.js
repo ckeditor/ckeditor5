@@ -122,10 +122,14 @@ export default class Element extends Node {
 	 *
 	 * @method core.treeModel.Element#removeChildren
 	 * @param {Number} index Position of the first node to remove.
-	 * @param {Number} number Number of nodes to remove.
+	 * @param {Number} [number] Number of nodes to remove.
 	 * @returns {core.treeModel.NodeList} The list of removed nodes.
 	 */
 	removeChildren( index, number ) {
+		if ( !number ) {
+			number = 1;
+		}
+
 		let nodeList = this._children.remove( index, number );
 
 		for ( let node of nodeList._nodes ) {

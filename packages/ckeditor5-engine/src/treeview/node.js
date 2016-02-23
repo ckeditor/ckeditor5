@@ -115,6 +115,10 @@ export default class Node {
 		this._treeView = treeView;
 	}
 
+	remove() {
+		this.parent.removeChildren( this.getIndex() )
+	}
+
 	/**
 	 * @param {core.treeView.ChangeType} type Type of the change.
 	 * @param {core.treeView.Node} node Changed node.

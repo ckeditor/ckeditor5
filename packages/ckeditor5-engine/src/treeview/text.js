@@ -33,6 +33,15 @@ export default class Text extends Node {
 		this._data = data;
 	}
 
+	cloneNode() {
+		return new this( this.data );
+	}
+
+	/**
+	 * The text content.
+	 *
+	 * Setting the data fires the {@link treeView.Node#change change event}.
+	 */
 	get data() {
 		return this._data;
 	}
@@ -41,5 +50,13 @@ export default class Text extends Node {
 		this._fireChange( 'TEXT', this );
 
 		this._data = data;
+	}
+
+	same( otherNode ) {
+		if ( !otherNode instanceof Text ) {
+			return false;
+		}
+
+		return this.data === otherNode.data;
 	}
 }
