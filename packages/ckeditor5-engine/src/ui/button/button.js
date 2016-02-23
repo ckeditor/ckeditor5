@@ -18,6 +18,37 @@ export default class Button extends Controller {
 	constructor( model, view ) {
 		super( model, view );
 
-		view.on( 'clicked', () => model.fire( 'executed' ) );
+		view.on( 'click', () => model.fire( 'execute' ) );
 	}
 }
+
+/**
+ * The basic button model interface.
+ *
+ * @memberOf core.ui.button
+ * @interface ButtonModel
+ */
+
+/**
+ * The label of the button.
+ *
+ * @member {String} core.ui.button.ButtonModel#label
+ */
+
+/**
+ * Whether the button is "on" (e.g. some feature which this button represents is currently enabled).
+ *
+ * @member {Boolean} core.ui.button.ButtonModel#isOn
+ */
+
+/**
+ * Whether the button is enabled (can be clicked).
+ *
+ * @member {Boolean} core.ui.button.ButtonModel#isEnabled
+ */
+
+/**
+ * Fired when the button action should be executed.
+ *
+ * @event core.ui.button.ButtonModel#execute
+ */

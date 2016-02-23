@@ -46,10 +46,16 @@ export default class ButtonView extends View {
 					// We can't make the button disabled using the disabled attribute, because it won't be focusable.
 					// Though, shouldn't this condition be moved to the button controller?
 					if ( model.isEnabled ) {
-						this.fire( 'clicked' );
+						this.fire( 'click' );
 					}
 				}
 			}
 		};
 	}
 }
+
+/**
+ * Fired when the button is being clicked. It won't be fired when the button is disabled.
+ *
+ * @event core.ui.button.ButtonView#click
+ */

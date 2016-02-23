@@ -21,7 +21,7 @@ export default function imitateFeatures( editor ) {
 		label: 'bold'
 	} );
 
-	boldModel.on( 'executed', () => {
+	boldModel.on( 'execute', () => {
 		/* global console */
 		console.log( 'bold executed' );
 
@@ -36,7 +36,7 @@ export default function imitateFeatures( editor ) {
 		label: 'italic'
 	} );
 
-	italicModel.on( 'executed', () => {
+	italicModel.on( 'execute', () => {
 		/* global console */
 		console.log( 'italic executed' );
 

@@ -84,3 +84,22 @@ export default class Editable extends Controller {
 }
 
 utils.mix( Editable, ObservableMixin );
+
+/**
+ * The editable model interface.
+ *
+ * @memberOf core.editable
+ * @interface EditableModel
+ */
+
+/**
+ * Whether the editable has focus.
+ *
+ * @member {Boolean} core.editable.EditableModel#isFocused
+ */
+
+/**
+ * Whether the editable is not in read-only mode.
+ *
+ * @member {Boolean} core.editable.EditableModel#isEditable
+ */
