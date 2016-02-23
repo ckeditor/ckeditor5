@@ -13,7 +13,7 @@ import FramedEditableView from '/tests/core/_utils/ui/editable/framed/framededit
 import Model from '/ckeditor5/core/ui/model.js';
 import Toolbar from '/ckeditor5/ui/toolbar/toolbar.js';
 import ToolbarView from '/ckeditor5/ui/toolbar/toolbarview.js';
-import imitateFeatures from '../imitatefeatures.js';
+import { imitateFeatures, imitateDestroyFeatures } from '../imitatefeatures.js';
 
 export default class ClassicCreator extends Creator {
 	constructor( editor ) {
@@ -34,6 +34,8 @@ export default class ClassicCreator extends Creator {
 	}
 
 	destroy() {
+		imitateDestroyFeatures();
+
 		this.updateEditorElement();
 
 		return super.destroy();

@@ -13,7 +13,7 @@ import InlineEditableView from '/tests/core/_utils/ui/editable/inline/inlineedit
 import Model from '/ckeditor5/core/ui/model.js';
 import FloatingToolbar from '/tests/core/_utils/ui/floatingtoolbar/floatingtoolbar.js';
 import FloatingToolbarView from '/tests/core/_utils/ui/floatingtoolbar/floatingtoolbarview.js';
-import imitateFeatures from '../imitatefeatures.js';
+import { imitateFeatures, imitateDestroyFeatures } from '../imitatefeatures.js';
 
 export default class InlineCreator extends Creator {
 	constructor( editor ) {
@@ -33,6 +33,8 @@ export default class InlineCreator extends Creator {
 	}
 
 	destroy() {
+		imitateDestroyFeatures();
+
 		this.updateEditorElement();
 
 		return super.destroy();

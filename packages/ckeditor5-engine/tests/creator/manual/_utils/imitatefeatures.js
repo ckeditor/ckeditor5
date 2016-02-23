@@ -14,7 +14,7 @@ import ButtonView from '/ckeditor5/ui/button/buttonview.js';
  *
  * @param {core.Editor} editor
  */
-export default function imitateFeatures( editor ) {
+export function imitateFeatures( editor ) {
 	const boldModel = new Model( {
 		isEnabled: true,
 		isOn: false,
@@ -47,4 +47,9 @@ export default function imitateFeatures( editor ) {
 
 	window.boldModel = boldModel;
 	window.italicModel = italicModel;
+}
+
+export function imitateDestroyFeatures() {
+	delete window.boldModel;
+	delete window.italicModel;
 }
