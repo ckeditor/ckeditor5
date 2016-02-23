@@ -59,13 +59,6 @@ describe( 'coreTestUtils.defineEditorCreatorMock()', () => {
 	} );
 } );
 
-describe( 'coreTestUtils.getIteratorCount()', () => {
-	it( 'should returns number of editable items', () => {
-		const count = coreTestUtils.getIteratorCount( [ 1, 2, 3, 4, 5 ] );
-		expect( count ).to.equal( 5 );
-	} );
-} );
-
 describe( 'coreTestUtils.createObserver()', () => {
 	let observable, observable2, observer;
 

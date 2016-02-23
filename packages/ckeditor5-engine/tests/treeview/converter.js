@@ -7,12 +7,12 @@
 
 'use strict';
 
-import coreTestUtils from '/tests/core/_utils/utils.js';
+import utils from '/ckeditor5/core/utils.js';
 import ViewElement from '/ckeditor5/core/treeview/element.js';
 import ViewText from '/ckeditor5/core/treeview/text.js';
 import Converter from '/ckeditor5/core/treeview/converter.js';
 
-const getIteratorCount = coreTestUtils.getIteratorCount;
+const getIteratorCount = utils.count;
 
 describe( 'converter', () => {
 	let converter;

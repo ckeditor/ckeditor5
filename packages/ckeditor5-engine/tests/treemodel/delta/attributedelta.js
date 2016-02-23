@@ -7,7 +7,7 @@
 
 'use strict';
 
-import coreTestUtils from '/tests/core/_utils/utils.js';
+import utils from '/ckeditor5/core/utils.js';
 import Document from '/ckeditor5/core/treemodel/document.js';
 import Text from '/ckeditor5/core/treemodel/text.js';
 import Range from '/ckeditor5/core/treemodel/range.js';
@@ -17,7 +17,7 @@ import Element from '/ckeditor5/core/treemodel/element.js';
 import AttributeDelta from '/ckeditor5/core/treemodel/delta/attributedelta.js';
 import AttributeOperation from '/ckeditor5/core/treemodel/operation/attributeoperation.js';
 
-const getIteratorCount = coreTestUtils.getIteratorCount;
+const getIteratorCount = utils.count;
 
 let doc, root;
 
