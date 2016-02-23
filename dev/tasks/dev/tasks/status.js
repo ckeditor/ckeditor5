@@ -8,6 +8,7 @@
 const tools = require( '../utils/tools' );
 const git = require( '../utils/git' );
 const path = require( 'path' );
+const log = require( '../utils/log' );
 
 /**
  * 1. Get CKEditor5 dependencies from package.json file.
@@ -17,10 +18,8 @@ const path = require( 'path' );
  * @param {String} ckeditor5Path Path to main CKEditor5 repository.
  * @param {Object} packageJSON Parsed package.json file from CKEditor5 repository.
  * @param {String} workspaceRoot Relative path to workspace root.
- * @param {Function} writeln Function for log output.
- * @param {Function} writeError Function of error output
  */
-module.exports = ( ckeditor5Path, packageJSON, workspaceRoot, writeln, writeError ) => {
+module.exports = ( ckeditor5Path, packageJSON, workspaceRoot ) => {
 	const workspaceAbsolutePath = path.join( ckeditor5Path, workspaceRoot );
 
 	// Get all CKEditor dependencies from package.json.
@@ -38,16 +37,16 @@ module.exports = ( ckeditor5Path, packageJSON, workspaceRoot, writeln, writeErro
 				if ( directories.indexOf( dependency ) > -1 ) {
 					try {
 						status = git.getStatus( repositoryAbsolutePath );
-						writeln( `\x1b[1m\x1b[36m${ dependency }\x1b[0m\n${ status.trim() }` );
+						log.out( `\x1b[1m\x1b[36m${ dependency }\x1b[0m\n${ status.trim() }` );
 					} catch ( error ) {
-						writeError( error );
+						log.err( error );
 					}
 				}
 			}
 		} else {
-			writeln( 'No CKEditor5 plugins in development mode.' );
+			log.out( 'No CKEditor5 plugins in development mode.' );
 		}
 	} else {
-		writeln( 'No CKEditor5 dependencies found in package.json file.' );
+		log.out( 'No CKEditor5 dependencies found in package.json file.' );
 	}
 };

@@ -13,17 +13,21 @@ const installTask = require( './tasks/install' );
 const pluginCreateTask = require( './tasks/create-package' );
 const updateTask = require( './tasks/update' );
 const relinkTask = require( './tasks/relink' );
+const log = require( './utils/log' );
 
 module.exports = ( config ) => {
 	const ckeditor5Path = process.cwd();
 	const packageJSON = require( '../../../package.json' );
 
+	// Configure logging.
+	log.configure( console.log, console.error );
+
 	gulp.task( 'init', () => {
-		initTask( installTask, ckeditor5Path, packageJSON, config.WORKSPACE_DIR, console.log );
+		initTask( installTask, ckeditor5Path, packageJSON, config.WORKSPACE_DIR );
 	} );
 
 	gulp.task( 'create-package', ( done ) => {
-		pluginCreateTask( ckeditor5Path, config.WORKSPACE_DIR, console.log )
+		pluginCreateTask( ckeditor5Path, config.WORKSPACE_DIR )
 			.then( done )
 			.catch( ( error )  => done( error ) );
 	} );
@@ -36,15 +40,15 @@ module.exports = ( config ) => {
 			}
 		} );
 
-		updateTask( ckeditor5Path, packageJSON, config.WORKSPACE_DIR, console.log, options[ 'npm-update' ] );
+		updateTask( ckeditor5Path, packageJSON, config.WORKSPACE_DIR, options[ 'npm-update' ] );
 	} );
 
 	gulp.task( 'status', () => {
-		statusTask( ckeditor5Path, packageJSON, config.WORKSPACE_DIR, console.log, console.error );
+		statusTask( ckeditor5Path, packageJSON, config.WORKSPACE_DIR );
 	} );
 
 	gulp.task( 'relink', () => {
-		relinkTask( ckeditor5Path, packageJSON, config.WORKSPACE_DIR, console.log, console.error );
+		relinkTask( ckeditor5Path, packageJSON, config.WORKSPACE_DIR );
 	} );
 
 	gulp.task( 'install', () => {
@@ -56,7 +60,7 @@ module.exports = ( config ) => {
 		} );
 
 		if ( options.package ) {
-			installTask( ckeditor5Path, config.WORKSPACE_DIR, options.package, console.log );
+			installTask( ckeditor5Path, config.WORKSPACE_DIR, options.package );
 		} else {
 			throw new Error( 'Please provide a package to install: gulp dev-install --plugin <path|GitHub URL|name>' );
 		}

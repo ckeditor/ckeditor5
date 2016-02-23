@@ -17,7 +17,6 @@ describe( 'dev-update', () => {
 	const ckeditor5Path = 'path/to/ckeditor5';
 	const workspaceRoot = '..';
 	const workspaceAbsolutePath = path.join( ckeditor5Path, workspaceRoot );
-	const emptyFn = () => {};
 	const spies = {};
 
 	beforeEach( () => {
@@ -43,7 +42,7 @@ describe( 'dev-update', () => {
 			}
 		};
 
-		updateTask( ckeditor5Path, json, workspaceRoot, emptyFn, true );
+		updateTask( ckeditor5Path, json, workspaceRoot, true );
 
 		sinon.assert.calledTwice( spies.pull );
 		sinon.assert.calledWithExactly( spies.pull.firstCall, path.join( workspaceAbsolutePath, dirs[ 0 ] ), 'master' );
@@ -67,7 +66,7 @@ describe( 'dev-update', () => {
 			}
 		};
 
-		updateTask( ckeditor5Path, json, workspaceRoot, emptyFn, false );
+		updateTask( ckeditor5Path, json, workspaceRoot, false );
 		sinon.assert.calledWithExactly( spies.pull.firstCall, path.join( workspaceAbsolutePath, dirs[ 0 ] ), 'master' );
 		sinon.assert.notCalled( spies.npmUpdate );
 	} );
@@ -80,7 +79,7 @@ describe( 'dev-update', () => {
 			}
 		};
 
-		updateTask( ckeditor5Path, json, workspaceRoot, emptyFn, false );
+		updateTask( ckeditor5Path, json, workspaceRoot, false );
 
 		sinon.assert.notCalled( spies.pull );
 		sinon.assert.notCalled( spies.npmUpdate );
@@ -95,7 +94,7 @@ describe( 'dev-update', () => {
 			}
 		};
 
-		updateTask( ckeditor5Path, json, workspaceRoot, emptyFn, false );
+		updateTask( ckeditor5Path, json, workspaceRoot, false );
 
 		sinon.assert.notCalled( spies.pull );
 		sinon.assert.notCalled( spies.npmUpdate );

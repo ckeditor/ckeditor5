@@ -9,6 +9,7 @@ const inquiries = require( '../utils/inquiries' );
 const git = require( '../utils/git' );
 const tools = require( '../utils/tools' );
 const path = require( 'path' );
+const log = require( '../utils/log' );
 
 /**
  * 1. Ask for new package name.
@@ -24,10 +25,9 @@ const path = require( 'path' );
  *
  * @param {String} ckeditor5Path Path to main CKEditor5 repository.
  * @param {String} workspaceRoot Relative path to workspace root.
- * @param {Function} writeln Function for log output.
  * @returns {Promise} Returns promise fulfilled after task is done.
  */
-module.exports = ( ckeditor5Path, workspaceRoot, writeln ) => {
+module.exports = ( ckeditor5Path, workspaceRoot ) => {
 	const workspaceAbsolutePath = path.join( ckeditor5Path, workspaceRoot );
 	const fileStructure = {
 		'./': [
@@ -68,16 +68,16 @@ module.exports = ( ckeditor5Path, workspaceRoot, writeln ) => {
 		.then( result => {
 			gitHubUrl = result;
 
-			writeln( `Initializing repository ${ repositoryPath }...` );
+			log.out( `Initializing repository ${ repositoryPath }...` );
 			git.initializeRepository( repositoryPath );
 
-			writeln( `Copying files into ${ repositoryPath }...` );
+			log.out( `Copying files into ${ repositoryPath }...` );
 
 			for ( let destination in fileStructure ) {
 				tools.copy( fileStructure[ destination ], path.join( repositoryPath, destination ) );
 			}
 
-			writeln( `Updating package.json files...` );
+			log.out( `Updating package.json files...` );
 			tools.updateJSONFile( path.join( repositoryPath, 'package.json' ), ( json ) => {
 				json.name = packageName;
 				json.version = packageVersion;
@@ -95,13 +95,13 @@ module.exports = ( ckeditor5Path, workspaceRoot, writeln ) => {
 				return json;
 			} );
 
-			writeln( `Creating initial commit...` );
+			log.out( `Creating initial commit...` );
 			git.initialCommit( packageName, repositoryPath );
 
-			writeln( `Linking ${ packageName } to node_modules...` );
+			log.out( `Linking ${ packageName } to node_modules...` );
 			tools.linkDirectories( repositoryPath, path.join( ckeditor5Path, 'node_modules', packageName ) );
 
-			writeln( `Running npm install in ${ packageName }.` );
+			log.out( `Running npm install in ${ packageName }.` );
 			tools.npmInstall( repositoryPath );
 		} );
 };

@@ -6,29 +6,42 @@
 'use strict';
 
 const dependencyRegExp = /^ckeditor5-/;
+const log = require( '../utils/log' );
 
 module.exports = {
 
 	/**
 	 * Executes a shell command.
 	 *
-	 * @param command {String} The command to be executed.
+	 * @param {String} command The command to be executed.
+	 * @param {Boolean} [logOutput] When set to `false` command's output will not be logged. When set to `true`,
+	 * stdout and stderr will be logged. Defaults to `true`.
 	 * @returns {String} The command output.
 	 */
-	shExec( command ) {
+	shExec( command, logOutput ) {
 		const sh = require( 'shelljs' );
 		sh.config.silent = true;
+		logOutput = logOutput !== false;
 
 		const ret = sh.exec( command );
 
+		if ( logOutput ) {
+			if ( ret.stdout !== '' ) {
+				log.out( ret.stdout );
+			}
+
+			if ( ret.stderr !== '' ) {
+				log.err( ret.stderr );
+			}
+		}
+
 		if ( ret.code ) {
 			throw new Error(
-				'Error while executing `' + command + '`:\n\n' +
-				ret.output
+				`Error while executing ${ command }: ${ ret.stderr }`
 			);
 		}
 
-		return ret.output;
+		return ret.stdout;
 	},
 
 	/**
@@ -246,7 +259,7 @@ module.exports = {
      */
 	getGitUrlFromNpm( name ) {
 		try {
-			const info = JSON.parse( this.shExec( `npm view ${ name } repository --json` ) );
+			const info = JSON.parse( this.shExec( `npm view ${ name } repository --json`, false ) );
 
 			if ( info && info.type == 'git' ) {
 				return info.url;

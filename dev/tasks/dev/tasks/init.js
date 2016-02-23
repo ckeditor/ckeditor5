@@ -6,6 +6,7 @@
 'use strict';
 
 const tools = require( '../utils/tools' );
+const log = require( '../utils/log' );
 
 /**
  * 1. Get CKEditor5 dependencies from package.json file.
@@ -15,19 +16,18 @@ const tools = require( '../utils/tools' );
  * @param {String} ckeditor5Path Path to main CKEditor5 repository.
  * @param {Object} packageJSON Parsed package.json file from CKEditor5 repository.
  * @param {String} workspaceRoot Relative path to workspace root.
- * @param {Function} writeln Function for log output.
  */
-module.exports = ( installTask, ckeditor5Path, packageJSON, workspaceRoot, writeln ) => {
+module.exports = ( installTask, ckeditor5Path, packageJSON, workspaceRoot ) => {
 	// Get all CKEditor dependencies from package.json.
 	const dependencies = tools.getCKEditorDependencies( packageJSON.dependencies );
 
 	if ( dependencies ) {
 		for ( let dependency in dependencies ) {
 			const repositoryURL = dependencies[ dependency ];
-			writeln( `\x1b[1m\x1b[36m${ dependency }\x1b[0m` );
-			installTask( ckeditor5Path, workspaceRoot, repositoryURL, writeln );
+			log.out( `\x1b[1m\x1b[36m${ dependency }\x1b[0m` );
+			installTask( ckeditor5Path, workspaceRoot, repositoryURL );
 		}
 	} else {
-		writeln( 'No CKEditor5 dependencies (ckeditor5-) found in package.json file.' );
+		log.out( 'No CKEditor5 dependencies (ckeditor5-) found in package.json file.' );
 	}
 };

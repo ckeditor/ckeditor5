@@ -17,7 +17,6 @@ describe( 'dev-status', () => {
 	const ckeditor5Path = 'path/to/ckeditor5';
 	const workspaceRoot = '..';
 	const workspaceAbsolutePath = path.join( ckeditor5Path, workspaceRoot );
-	const emptyFn = () => {};
 
 	it( 'should show status of dev repositories', () => {
 		const dirs = [ 'ckeditor5-core', 'ckeditor5-devtest' ];
@@ -32,7 +31,7 @@ describe( 'dev-status', () => {
 			}
 		};
 
-		statusTask( ckeditor5Path, json, workspaceRoot, emptyFn, emptyFn );
+		statusTask( ckeditor5Path, json, workspaceRoot );
 
 		getDependenciesSpy.restore();
 		getDirectoriesStub.restore();
@@ -53,7 +52,7 @@ describe( 'dev-status', () => {
 			}
 		};
 
-		statusTask( ckeditor5Path, json, workspaceRoot, emptyFn, emptyFn );
+		statusTask( ckeditor5Path, json, workspaceRoot );
 
 		getDependenciesSpy.restore();
 		getDirectoriesStub.restore();
@@ -73,7 +72,7 @@ describe( 'dev-status', () => {
 			}
 		};
 
-		statusTask( ckeditor5Path, json, workspaceRoot, emptyFn, emptyFn );
+		statusTask( ckeditor5Path, json, workspaceRoot );
 
 		getDependenciesSpy.restore();
 		getDirectoriesStub.restore();
@@ -96,8 +95,10 @@ describe( 'dev-status', () => {
 			}
 		};
 		const writeErrorSpy = sinon.spy();
+		const log = require( '../../tasks/dev/utils/log' );
+		log.configure( () => {}, writeErrorSpy );
 
-		statusTask( ckeditor5Path, json, workspaceRoot, emptyFn, writeErrorSpy );
+		statusTask( ckeditor5Path, json, workspaceRoot );
 
 		getDependenciesSpy.restore();
 		getDirectoriesStub.restore();
