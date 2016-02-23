@@ -14,17 +14,18 @@ module.exports = {
 	 *
 	 * 		log.configure( logOut, logErr );
 	 *
-	 * 		const function logOut( message ) {
+	 * 		function logOut( message ) {
 	 * 			// Save output to file.
 	 * 			...
 	 * 		}
-	 * 		const function logErr( message) {
+	 *
+	 * 		function logErr( message) {
 	 * 			// Save error to file.
 	 * 			...
 	 * 		}
 	 *
-	 * @param {function} stdout Function to be used to log standard output.
-	 * @param {function} stderr Function to be used to log standard error.
+	 * @param {Function} stdout Function to be used to log standard output.
+	 * @param {Function} stderr Function to be used to log standard error.
 	 */
 	configure( stdout, stderr ) {
 		logOut = stdout;
@@ -32,7 +33,7 @@ module.exports = {
 	},
 
 	/**
-	 * Log output using function provided in {@link configure}.
+	 * Logs output using function provided in {@link configure}.
 	 *
 	 * @param {String} message Message to be logged.
 	 */
@@ -43,7 +44,7 @@ module.exports = {
 	},
 
 	/**
-	 * Log errors using function provided in {@link configure}.
+	 * Logs errors using function provided in {@link #configure}.
 	 *
 	 * @param {String} message Message to be logged.
 	 */
