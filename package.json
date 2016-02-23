@@ -31,6 +31,7 @@
     "gulp-babel": "^6.1.0",
     "gulp-filter": "^3.0.1",
     "gulp-jscs": "^3.0.2",
+    "gulp-jsdoc3": "^0.2.0",
     "gulp-jshint": "^2.0.0",
     "gulp-mirror": "^1",
     "gulp-rename": "^1.2.2",

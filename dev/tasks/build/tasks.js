@@ -132,9 +132,11 @@ module.exports = ( config ) => {
 		 * The main build task which is capable of copying, watching, processing and writing all files
 		 * to the `dist/` directory.
 		 *
+		 * @param {Object} buildOptions
+		 * @param {String} buildOptions.formats
 		 * @returns {Stream}
 		 */
-		build() {
+		build( buildOptions ) {
 			//
 			// NOTE: Error handling in streams is hard.
 			//
@@ -166,7 +168,7 @@ module.exports = ( config ) => {
 			//
 			// PS. The assumption is that all errors thrown somewhere inside conversionStream are forwarded to conversionStream.
 			// Multipipe and gulp-mirror seem to work this way, so we get a single error emitter.
-			const formats = options.formats.split( ',' );
+			const formats = ( buildOptions.formats || options.formats ).split( ',' );
 			const codeStream = tasks.src.all( options.watch )
 				.pipe(
 					utils.noop( ( file ) => {
@@ -229,6 +231,10 @@ module.exports = ( config ) => {
 	gulp.task( 'build:clean', tasks.clean );
 
 	gulp.task( 'build', [ 'build:clean' ], tasks.build );
+
+	gulp.task( 'build-esnext', () => {
+		return tasks.build( { formats: 'esnext' } );
+	} );
 
 	return tasks;
 };

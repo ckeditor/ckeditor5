@@ -6,15 +6,16 @@
 		"access": "all"
 	},
 	"plugins": [
-		"plugins/markdown",
-		"dev/jsdoc/plugins/export-es6-class"
+		"node_modules/jsdoc/plugins/markdown",
+		"dev/tasks/jsdoc/plugins/export-es6-class"
 	],
 	"source": {
 		"include": [
 			"dist/esnext"
 		],
 		"exclude": [
-			"dist/esnext/test"
+			"dist/esnext/test",
+			"dist/esnext/ckeditor5/core/lib"
 		],
 		"includePattern": ".+\\.js(doc)?$",
 		"excludePattern": "(^|\\/|\\\\)_"
