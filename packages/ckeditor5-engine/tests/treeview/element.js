@@ -53,6 +53,56 @@ describe( 'Element', () => {
 		} );
 	} );
 
+	describe( 'clone', () => {
+		it( 'should clone element', () => {
+			const el = new ViewElement( 'p', { attr1: 'foo', attr2: 'bar' } );
+			const clone = el.clone();
+
+			expect( clone ).to.not.equal( el );
+			expect( clone.name ).to.equal( el.name );
+			expect( clone.getAttribute( 'attr1' ) ).to.equal( 'foo' );
+			expect( clone.getAttribute( 'attr2' ) ).to.equal( 'bar' );
+		} );
+
+		it( 'should deeply clone element', () => {
+			const el = new ViewElement( 'p', { attr1: 'foo', attr2: 'bar' }, [
+				new ViewElement( 'b', { attr: 'baz' } ),
+				new ViewElement( 'span', { attr: 'qux' } )
+			] );
+			const count = el.getChildCount();
+			const clone = el.clone( true );
+
+			expect( clone ).to.not.equal( el );
+			expect( clone.name ).to.equal( el.name );
+			expect( clone.getAttribute( 'attr1' ) ).to.equal( 'foo' );
+			expect( clone.getAttribute( 'attr2' ) ).to.equal( 'bar' );
+			expect( clone.getChildCount() ).to.equal( count );
+
+			for ( let i = 0; i < count; i++ ) {
+				const child = el.getChild( i );
+				const clonedChild = clone.getChild( i );
+
+				expect( clonedChild ).to.not.equal( child );
+				expect( clonedChild.name ).to.equal( child.name );
+				expect( clonedChild.getAttribute( 'attr' ) ).to.equal( child.getAttribute( 'attr' ) );
+			}
+		} );
+
+		it( 'shouldn\'t clone any children when deep copy is not performed', () => {
+			const el = new ViewElement( 'p', { attr1: 'foo', attr2: 'bar' }, [
+				new ViewElement( 'b', { attr: 'baz' } ),
+				new ViewElement( 'span', { attr: 'qux' } )
+			] );
+			const clone = el.clone( false );
+
+			expect( clone ).to.not.equal( el );
+			expect( clone.name ).to.equal( el.name );
+			expect( clone.getAttribute( 'attr1' ) ).to.equal( 'foo' );
+			expect( clone.getAttribute( 'attr2' ) ).to.equal( 'bar' );
+			expect( clone.getChildCount() ).to.equal( 0 );
+		} );
+	} );
+
 	describe( 'children manipulation methods', () => {
 		let parent, el1, el2, el3, el4;
 

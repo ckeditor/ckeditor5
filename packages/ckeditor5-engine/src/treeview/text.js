@@ -33,8 +33,13 @@ export default class Text extends Node {
 		this._data = data;
 	}
 
-	cloneNode() {
-		return new this( this.data );
+	/**
+	 * Clones this node.
+	 *
+	 * @returns {Text} Text node that is a clone of this node.
+	 */
+	clone() {
+		return new Text( this.data );
 	}
 
 	/**
@@ -53,7 +58,7 @@ export default class Text extends Node {
 	}
 
 	same( otherNode ) {
-		if ( !otherNode instanceof Text ) {
+		if ( !( otherNode instanceof Text ) ) {
 			return false;
 		}
 

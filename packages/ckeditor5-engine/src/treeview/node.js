@@ -116,7 +116,7 @@ export default class Node {
 	}
 
 	remove() {
-		this.parent.removeChildren( this.getIndex() )
+		this.parent.removeChildren( this.getIndex() );
 	}
 
 	/**
@@ -131,6 +131,13 @@ export default class Node {
 			this.parent._fireChange( type, node );
 		}
 	}
+
+	/**
+	 * Clones this node.
+	 *
+	 * @method treeView.Node#clone
+	 * @returns {treeView.Node} Clone of this node.
+	 */
 
 	/**
 	 * Fired when a node changes.

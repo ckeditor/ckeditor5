@@ -65,16 +65,23 @@ export default class Element extends Node {
 		}
 	}
 
-	cloneNode( deep ) {
+	/**
+	 * Clones provided element.
+	 *
+	 * @param {Boolean} deep If set to `true` clones element and all its children recursively. When set to `false`,
+	 * element will be cloned without any children.
+	 * @returns {Element} Clone of this element.
+	 */
+	clone( deep ) {
 		const childrenClone = [];
 
 		if ( deep ) {
 			for ( let child of this.getChildren() ) {
-				childrenClone.push( child.cloneNode( deep ) );
+				childrenClone.push( child.clone( deep ) );
 			}
 		}
 
-		return new this( this.name, this._attrs, childrenClone );
+		return new Element( this.name, this._attrs, childrenClone );
 	}
 
 	/**
