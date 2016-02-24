@@ -115,6 +115,27 @@ describe( 'Node', () => {
 		} );
 	} );
 
+	describe( 'remove', () => {
+		it( 'should remove node from its parent', () => {
+			const char = new Text( 'a' );
+			const parent = new Element( 'p', null, [ char ] );
+			char.remove();
+
+			expect( parent.getChildIndex( char ) ).to.equal( -1 );
+		} );
+
+		it( 'uses parent.removeChildren method', () => {
+			const char = new Text( 'a' );
+			const parent = new Element( 'p', null, [ char ] );
+			const removeChildrenSpy = sinon.spy( parent, 'removeChildren' );
+			const index = char.getIndex();
+			char.remove();
+			removeChildrenSpy.restore();
+			sinon.assert.calledOnce( removeChildrenSpy );
+			sinon.assert.calledWithExactly( removeChildrenSpy, index );
+		} );
+	} );
+
 	describe( 'change event', () => {
 		let root, text, img;
 		let rootChangeSpy;

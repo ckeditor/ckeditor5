@@ -115,6 +115,9 @@ export default class Node {
 		this._treeView = treeView;
 	}
 
+	/**
+	 * Removes node from parent.
+	 */
 	remove() {
 		this.parent.removeChildren( this.getIndex() );
 	}

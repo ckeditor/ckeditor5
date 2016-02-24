@@ -115,7 +115,7 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Gets index of the given child node.
+	 * Gets index of the given child node. Returns `-1` if child node is not found.
 	 *
 	 * @param {core.treeView.Node} node Child node.
 	 * @returns {Number} Index of the child node.
