@@ -9,8 +9,8 @@ module.exports = {
 		 * @see http://usejsdoc.org/about-plugins.html#event-beforeparse
 		 * @param evt
 		 */
-		beforeParse: function( evt ) {
-			'use strict';
+		beforeParse( evt ) {
+			'use strict'; // WAT... JSDoc fails when you move it to the top of the file.
 
 			let className;
 			let foundClassName = /export default class ([A-Za-z]+)/.exec( evt.source );
