@@ -57,11 +57,18 @@ export default class Text extends Node {
 		this._data = data;
 	}
 
+	/**
+	 * Checks if this text node is the same as other text node.
+	 * Both nodes should have the same data to be considered as same.
+	 *
+	 * @param otherNode
+	 * @returns {boolean}
+	 */
 	same( otherNode ) {
 		if ( !( otherNode instanceof Text ) ) {
 			return false;
 		}
 
-		return this.data === otherNode.data;
+		return this === otherNode || this.data === otherNode.data;
 	}
 }

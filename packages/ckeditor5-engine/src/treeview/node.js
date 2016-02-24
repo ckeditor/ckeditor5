@@ -140,6 +140,13 @@ export default class Node {
 	 */
 
 	/**
+	 * Checks if provided node is the same as this node.
+	 *
+	 * @method treeView.Node#same
+	 * @returns {Boolean} True if nodes are the same.
+	 */
+
+	/**
 	 * Fired when a node changes.
 	 *
 	 * * In case of {@link core.treeView.Text text nodes} it will be a change of the text data.

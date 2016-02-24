@@ -233,21 +233,34 @@ export default class Element extends Node {
 		return this._children.splice( index, number );
 	}
 
-	same( otherNode ) {
-		if ( !( otherNode instanceof Element ) ) {
+	/**
+	 * Checks if this element is the same as other element.
+	 * Both elements should have the same name and attributes to be considered as same.
+	 *
+	 * @param {Element} otherElement
+	 * @returns {Boolean}
+	 */
+	same( otherElement ) {
+		if ( !( otherElement instanceof Element ) ) {
 			return false;
 		}
 
-		if ( this.name != otherNode.name ) {
+		// If exactly the same Element is provided - return true immediately.
+		if ( this === otherElement ) {
+			return true;
+		}
+
+		// Check name and attributes.
+		if ( this.name != otherElement.name ) {
 			return false;
 		}
 
 		const thisNodeAttrKeys = this.getAttributeKeys();
-		const otherNodeAttrKeys = this.getAttributeKeys();
+		const otherNodeAttrKeys = otherElement.getAttributeKeys();
 		let count = 0;
 
 		for ( let key of thisNodeAttrKeys ) {
-			if ( this.getAttribute( key ) !== otherNode.getAttribute( key ) ) {
+			if ( this.getAttribute( key ) !== otherElement.getAttribute( key ) ) {
 				return false;
 			}
 

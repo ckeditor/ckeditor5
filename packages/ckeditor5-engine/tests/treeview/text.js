@@ -31,6 +31,32 @@ describe( 'Element', () => {
 		} );
 	} );
 
+	describe( 'same', () => {
+		const text = new ViewText( 'foo' );
+
+		it( 'should return false when comparing to non-text', () => {
+			expect( text.same( null ) ).to.be.false;
+			expect( text.same( {} ) ).to.be.false;
+		} );
+
+		it( 'should return true when the same text node is provided', () => {
+			expect( text.same( text ) ).to.be.true;
+		} );
+
+		it( 'sould return true when data is the same', () => {
+			const other = new ViewText( 'foo' );
+
+			expect( text.same( other ) ).to.be.true;
+		} );
+
+		it( 'sould return false when data is not the same', () => {
+			const other = text.clone();
+			other.data = 'not-foo';
+
+			expect( text.same( other ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'setText', () => {
 		it( 'should change the text', () => {
 			const text = new ViewText( 'foo' );
