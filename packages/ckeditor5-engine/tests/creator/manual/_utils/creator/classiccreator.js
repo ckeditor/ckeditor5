@@ -53,7 +53,7 @@ export default class ClassicCreator extends Creator {
 
 		toolbar.addButtons( this.editor.config.toolbar );
 
-		this.editor.ui.collections.get( 'top' ).add( toolbar );
+		this.editor.ui.add( 'top', toolbar );
 	}
 
 	_createEditable() {

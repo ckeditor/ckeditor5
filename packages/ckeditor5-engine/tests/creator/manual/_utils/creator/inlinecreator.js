@@ -56,8 +56,8 @@ export default class InlineCreator extends Creator {
 		toolbar1.addButtons( this.editor.config.toolbar );
 		toolbar2.addButtons( this.editor.config.toolbar.reverse() );
 
-		this.editor.ui.collections.get( 'body' ).add( toolbar1 );
-		this.editor.ui.collections.get( 'body' ).add( toolbar2 );
+		this.editor.ui.add( 'body', toolbar1 );
+		this.editor.ui.add( 'body', toolbar2 );
 	}
 
 	_createEditable() {
