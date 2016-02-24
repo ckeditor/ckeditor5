@@ -8,8 +8,8 @@
     "WYSIWYG"
   ],
   "dependencies": {
-    "ckeditor5-core": "ckeditor/ckeditor5-core#t/209",
-    "ckeditor5-ui-default": "ckeditor/ckeditor5-ui-default#t/1",
+    "ckeditor5-core": "ckeditor/ckeditor5-core",
+    "ckeditor5-ui-default": "ckeditor/ckeditor5-ui-default",
     "requirejs": "Reinmar/requirejs"
   },
   "devDependencies": {
