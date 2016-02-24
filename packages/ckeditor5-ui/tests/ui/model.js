@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* bender-tags: ui */
+
 'use strict';
 
 import Model from '/ckeditor5/core/ui/model.js';
