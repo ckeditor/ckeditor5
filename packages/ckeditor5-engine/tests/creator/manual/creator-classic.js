@@ -19,7 +19,8 @@ function initEditor() {
 		ui: {
 			width: 400,
 			height: 400
-		}
+		},
+		toolbar: [ 'bold', 'italic' ]
 	} )
 	.then( ( newEditor ) => {
 		console.log( 'Editor was initialized', newEditor );

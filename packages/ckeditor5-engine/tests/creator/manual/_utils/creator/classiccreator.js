@@ -10,6 +10,10 @@ import BoxedEditorUI from '/tests/core/_utils/ui/boxededitorui/boxededitorui.js'
 import BoxedEditorUIView from '/tests/core/_utils/ui/boxededitorui/boxededitoruiview.js';
 import FramedEditable from '/tests/core/_utils/ui/editable/framed/framededitable.js';
 import FramedEditableView from '/tests/core/_utils/ui/editable/framed/framededitableview.js';
+import Model from '/ckeditor5/core/ui/model.js';
+import Toolbar from '/ckeditor5/ui/toolbar/toolbar.js';
+import ToolbarView from '/ckeditor5/ui/toolbar/toolbarview.js';
+import { imitateFeatures, imitateDestroyFeatures } from '../imitatefeatures.js';
 
 export default class ClassicCreator extends Creator {
 	constructor( editor ) {
@@ -19,14 +23,19 @@ export default class ClassicCreator extends Creator {
 	}
 
 	create() {
+		imitateFeatures( this.editor );
+
 		this._replaceElement();
 		this._setupEditable();
+		this._setupToolbar();
 
 		return super.create()
 			.then( () => this.loadDataFromEditorElement() );
 	}
 
 	destroy() {
+		imitateDestroyFeatures();
+
 		this.updateEditorElement();
 
 		return super.destroy();
@@ -37,6 +46,14 @@ export default class ClassicCreator extends Creator {
 
 		this.editor.editable = editable;
 		this.editor.ui.add( 'main', editable );
+	}
+
+	_setupToolbar() {
+		const toolbar = new Toolbar( this.editor, new Model(), new ToolbarView() );
+
+		toolbar.addButtons( this.editor.config.toolbar );
+
+		this.editor.ui.add( 'top', toolbar );
 	}
 
 	_createEditable() {
