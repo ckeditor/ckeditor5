@@ -5,7 +5,8 @@
 
 'use strict';
 
-/**Position in the tree. Position is always located before or after a node.
+/**
+ * Position in the tree. Position is always located before or after a node.
  *
  * @memberOf core.treeView
  */
@@ -50,10 +51,20 @@ export default class Position {
 	}
 
 	/**
+	 * Checks whether this position equals given position.
+	 *
+	 * @param {core.treeView.Position} otherPosition Position to compare with.
+	 * @returns {Boolean} True if positions are same.
+	 */
+	isEqual( otherPosition ) {
+		return this == otherPosition || ( this.parent == otherPosition.parent && this.offset == otherPosition.offset );
+	}
+
+	/**
 	 * Creates and returns a new instance of Position, which is equal to passed position.
 	 *
-	 * @param {treeModel.Position} position Position to be cloned.
-	 * @returns {treeModel.Position}
+	 * @param {core.treeView.Position} position Position to be cloned.
+	 * @returns {core.treeView.Position}
 	 */
 	static createFromPosition( position ) {
 		return new this( position.parent, position.offset );

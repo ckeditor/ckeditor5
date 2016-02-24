@@ -53,4 +53,31 @@ describe( 'Position', () => {
 			expect( position.parent ).to.equal( parentMock );
 		} );
 	} );
+
+	describe( 'isEqual', () => {
+		it( 'should return true for same object', () => {
+			const position = new Position( {}, 12 );
+			expect( position.isEqual( position ) ).to.be.true;
+		} );
+
+		it( 'should return true for positions with same parent and offset', () => {
+			const parentMock = {};
+			const position1 = new Position( parentMock, 12 );
+			const position2 = new Position( parentMock, 12 );
+			expect( position1.isEqual( position2 ) ).to.be.true;
+		} );
+
+		it( 'should return false for positions with different parents', () => {
+			const position1 = new Position( {}, 12 );
+			const position2 = new Position( {}, 12 );
+			expect( position1.isEqual( position2 ) ).to.be.false;
+		} );
+
+		it( 'should return false for positions with different positions', () => {
+			const parentMock = {};
+			const position1 = new Position( parentMock, 12 );
+			const position2 = new Position( parentMock, 2 );
+			expect( position1.isEqual( position2 ) ).to.be.false;
+		} );
+	} );
 } );
