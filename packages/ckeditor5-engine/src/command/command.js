@@ -18,21 +18,19 @@ import utils from '../utils.js';
  *
  * This is an abstract base class for all commands.
  *
- * @class core.command.Command
+ * @memberOf core.command
  */
-
 export default class Command {
 	/**
 	 * Creates a new Command instance.
 	 *
 	 * @param {core.Editor} editor Editor on which this command will be used.
-	 * @constructor
 	 */
 	constructor( editor ) {
 		/**
 		 * Editor on which this command will be used.
 		 *
-		 * @type {core.Editor}
+		 * @member {core.Editor} core.command.Command#editor
 		 */
 		this.editor = editor;
 
@@ -40,7 +38,7 @@ export default class Command {
 		 * Flag indicating whether a command is enabled or disabled.
 		 * A disabled command should do nothing upon it's execution.
 		 *
-		 * @type {Boolean}
+		 * @member {Boolean} core.command.Command#isEnabled
 		 */
 		this.isEnabled = true;
 
@@ -60,13 +58,15 @@ export default class Command {
 	 * obligatory). If it is defined, it will be added as a callback to `refreshState` event.
 	 *
 	 * @method checkSchema
-	 * @returns {Boolean} `true` if command should be enabled according to {@link treeModel.Document#schema}. `false` otherwise.
+	 * @returns {Boolean} `true` if command should be enabled according to {@link core.treeModel.Document#schema}. `false` otherwise.
 	 */
 
 	/**
 	 * Fires `refreshState` event and checks it's resolve value to decide whether command should be enabled or not.
 	 * Other parts of code might listen to `refreshState` event on this command and add their callbacks. This
 	 * way the responsibility of deciding whether a command should be enabled is shared.
+	 *
+	 * @fires {@link core.command.Command.refreshState refreshState}
 	 */
 	refreshState() {
 		this.isEnabled = this.fire( 'refreshState' ) !== false;
@@ -110,3 +110,11 @@ function disableCallback( evt ) {
 }
 
 utils.mix( Command, EmitterMixin );
+
+/**
+ * Fired whenever command has to have it's {@link core.command.Command#isEnabled} property refreshed. Every feature,
+ * command or other class which should be able to disable command (set `isEnabled` to `false`) should listen to this
+ * event.
+ *
+ * @event core.command.Command.refreshState
+ */

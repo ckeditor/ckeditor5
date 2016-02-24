@@ -17,9 +17,8 @@ import Plugin from './plugin.js';
  * * registering converters to editor (if the feature operates on Tree Model),
  * * setting and registering UI components (if the feature uses it).
  *
- * @class core.Feature
+ * @memberOf core
  */
-
 export default class Feature extends Plugin {
 	/**
 	 * Creates a new Plugin instance.

@@ -17,7 +17,7 @@ export default class RootElement extends Element {
 	/**
 	 * Creates tree root node.
 	 *
-	 * @param {Document} doc {@link Document} that is an owner of the root.
+	 * @param {core.treeModel.Document} doc {@link core.treeModel.Document} that is an owner of the root.
 	 * @param {String} name Node name.
 	 */
 	constructor( doc, name ) {

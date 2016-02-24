@@ -58,9 +58,6 @@ export default class Document {
 		 */
 		this.version = 0;
 
-		// Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
-		this.createRoot( graveyardSymbol );
-
 		/**
 		 * Array of pending changes. See: {@link core.treeModel.Document#enqueueChanges}.
 		 *
@@ -77,6 +74,14 @@ export default class Document {
 		 */
 		this.selection = new Selection();
 
+		/**
+		 * Schema for this document.
+		 *
+		 * @member {core.treeModel.Schema} core.treeModel.Document#schema
+		 */
+		this.schema = new Schema();
+
+		// Add events that will update selection attributes.
 		this.selection.on( 'update', () => {
 			this._updateSelectionAttributes();
 		} );
@@ -85,7 +90,8 @@ export default class Document {
 			this._updateSelectionAttributes();
 		} );
 
-		this.schema = new Schema();
+		// Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
+		this.createRoot( graveyardSymbol );
 	}
 
 	/**
@@ -166,13 +172,14 @@ export default class Document {
 	}
 
 	/**
-	 * Enqueue a callback with document changes. Any changes to be done on document (mostly using {@link core.treeModel.Document#batch} should
-	 * be placed in the queued callback. If no other plugin is changing document at the moment, the callback will be
+	 * Enqueue a callback with document changes. Any changes to be done on document (mostly using {@link core.treeModel.Document#batch}
+	 * should be placed in the queued callback. If no other plugin is changing document at the moment, the callback will be
 	 * called immediately. Otherwise it will wait for all previously queued changes to finish happening. This way
 	 * queued callback will not interrupt other callbacks.
 	 *
-	 * When all queued changes are done {@link core.treeModel.Document#changesDone} event is fired.
+	 * When all queued changes are done {@link core.treeModel.Document.changesDone} event is fired.
 	 *
+	 * @fires {@link core.treeModel.Document.changesDone}
 	 * @param {Function} callback Callback to enqueue.
 	 */
 	enqueueChanges( callback ) {
@@ -211,6 +218,12 @@ export default class Document {
 		return this.roots.get( id );
 	}
 
+	/**
+	 * Updates this document's {@link core.treeModel.Document#selection selection} attributes. Should be fired
+	 * whenever selection attributes might have changed (i.e. when selection ranges change or document is changed).
+	 *
+	 * @private
+	 */
 	_updateSelectionAttributes() {
 		if ( !this.selection.hasAnyRange ) {
 			this.selection.clearAttributes();
@@ -289,11 +302,11 @@ export default class Document {
 	 *
 	 * There are 5 types of change:
 	 *
-	 * * `'insert'` when nodes are inserted,
-	 * * `'remove'` when nodes are removed,
-	 * * `'reinsert'` when remove is undone,
-	 * * `'move'` when nodes are moved,
-	 * * `'attribute'` when attributes change. TODO attribute
+	 * * 'insert' when nodes are inserted,
+	 * * 'remove' when nodes are removed,
+	 * * 'reinsert' when remove is undone,
+	 * * 'move' when nodes are moved,
+	 * * 'attribute' when attributes change.
 	 *
 	 * Change event is fired after the change is done. This means that any ranges or positions passed in
 	 * `changeInfo` are referencing nodes and paths in updated tree model.
@@ -310,7 +323,7 @@ export default class Document {
 	 * is `undefined` it means that new attribute was inserted. Otherwise it contains changed or removed attribute value.
 	 * @param {*} [changeInfo.newValue] Only for `'attribute'` type. If the type is `'attribute'` and `newValue`
 	 * is `undefined` it means that attribute was removed. Otherwise it contains changed or inserted attribute value.
-	 * @param {core.treeModel.Batch} batch A {@link core.treeModel.Batch batch} of changes which this change is a part of.
+	 * @param {core.treeModel.Batch} batch A batch of changes which this change is a part of.
 	 */
 
 	/**

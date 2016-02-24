@@ -59,8 +59,6 @@ export default class LivePosition extends Position {
 	 * Unbinds all events previously bound by LivePosition. Use it whenever you don't need LivePosition instance
 	 * anymore (i.e. when leaving scope in which it was declared or before re-assigning variable that was
 	 * referring to it).
-	 *
-	 * @method core.treeModel.LivePosition#detach
 	 */
 	detach() {
 		this.stopListening();

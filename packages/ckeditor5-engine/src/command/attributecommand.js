@@ -11,19 +11,20 @@ import Range from '../treemodel/range.js';
 
 /**
  * An extension of basic {@link core.command.Command} class, which provides utilities for a command that sets a single
- * attribute on a text or element with value `true`. AttributeCommand uses {@link treeModel.Document#selection} to
- * decide which nodes (if any) should be changed, and applies or removes attributes from them. See {@link #execute} for more.
+ * attribute on a text or element with value `true`. AttributeCommand uses {@link core.treeModel.Document#selection} to
+ * decide which nodes (if any) should be changed, and applies or removes attributes from them.
+ * See {@link core.treeView.Converter#execute} for more.
  *
- * The command checks {@link treeModel.Document#schema} to decide if it should be enabled. See {@link #checkSchema} for more.
+ * The command checks {@link core.treeModel.Document#schema} to decide if it should be enabled.
+ * See {@link core.treeView.Converter#checkSchema} for more.
  *
- * @class core.command.AttributeCommand
+ * @memberOf core.command
  */
-
 export default class AttributeCommand extends Command {
 	/**
 	 * @see core.command.Command
-	 * @param editor {core.Editor}
-	 * @param attributeKey {String} Attribute that will be set by the command.
+	 * @param {core.Editor} editor
+	 * @param {String} attributeKey Attribute that will be set by the command.
 	 */
 	constructor( editor, attributeKey ) {
 		super( editor );
@@ -31,7 +32,7 @@ export default class AttributeCommand extends Command {
 		/**
 		 * Attribute that will be set by the command.
 		 *
-		 * @type {String}
+		 * @member {String} core.command.AttributeCommand#attributeKey
 		 */
 		this.attributeKey = attributeKey;
 	}
@@ -47,9 +48,9 @@ export default class AttributeCommand extends Command {
 	}
 
 	/**
-	 * Checks {@link treeModel.Document#schema} to decide if the command should be enabled:
-	 * * if selection is on range, command is enabled if any of nodes in that range can have bold,
-	 * * if selection is collapsed, command is enabled if text with bold is allowed in that node.
+	 * Checks {@link core.treeModel.Document#schema} to decide if the command should be enabled:
+	 * * if selection is on range, the command is enabled if any of nodes in that range can have bold,
+	 * * if selection is collapsed, the command is enabled if text with bold is allowed in that node.
 	 *
 	 * @see core.command.Command#checkSchema
 	 * @returns {Boolean}
@@ -60,7 +61,7 @@ export default class AttributeCommand extends Command {
 
 		if ( selection.isCollapsed ) {
 			// Check whether schema allows for a test with `attributeKey` in caret position.
-			return schema.checkAtPosition( { name: '$text', attribute: this.attributeKey }, selection.getFirstPosition() );
+			return schema.checkAtPosition( selection.getFirstPosition(), '$text', this.attributeKey );
 		} else {
 			const ranges = selection.getRanges();
 
@@ -72,13 +73,10 @@ export default class AttributeCommand extends Command {
 
 				// Walk the range.
 				while ( !step.done ) {
-					const query = {
-						// If returned item does not have name property, it is a treeModel.TextFragment.
-						name: step.value.item.name || '$text',
-						attribute: this.attributeKey
-					};
+					// If returned item does not have name property, it is a treeModel.TextFragment.
+					const name = step.value.item.name || '$text';
 
-					if ( schema.checkAtPosition( query, last ) ) {
+					if ( schema.checkAtPosition( last, name, this.attributeKey ) ) {
 						// If we found a node that is allowed to have the attribute, return true.
 						return true;
 					}
@@ -98,17 +96,17 @@ export default class AttributeCommand extends Command {
 	 *
 	 * If the command is active (`value == true`), it will remove attributes. Otherwise, it will set attributes.
 	 *
-	 * The execution result differs, depending on the {@link treeModel.Document#selection}:
+	 * The execution result differs, depending on the {@link core.treeModel.Document#selection}:
 	 * * if selection is on a range, the command applies the attribute on all nodes in that ranges
-	 * (if they are allowed to have this attribute by the{@link treeModel.Schema schema}),
-	 * * if selection is collapsed in non-empty node, the command applies attribute to the {@link treeModel.Document#selection}
+	 * (if they are allowed to have this attribute by the{@link core.treeModel.Schema schema}),
+	 * * if selection is collapsed in non-empty node, the command applies attribute to the {@link core.treeModel.Document#selection}
 	 * itself (note that typed characters copy attributes from selection),
 	 * * if selection is collapsed in empty node, the command applies attribute to the parent node of selection (note
 	 * that selection inherits all attributes from a node if it is in empty node).
 	 *
 	 * If the command is disabled (`isEnabled == false`) when it is executed, nothing will happen.
 	 *
-	 * @param [forceValue] {Boolean} If set it will force command behavior. If `true`, command will apply attribute,
+	 * @param {Boolean} [forceValue] If set it will force command behavior. If `true`, command will apply attribute,
 	 * otherwise command will remove attribute. If not set, command will look for it's current value to decide what it should do.
 	 */
 	execute( forceValue ) {
@@ -145,7 +143,7 @@ export default class AttributeCommand extends Command {
 	 * Walks through given array of ranges and removes parts of them that are not allowed by schema to have the
 	 * attribute set. This is done by breaking a range in two and omitting the not allowed part.
 	 *
-	 * @param ranges {Array.<treeModel.Range>} Ranges to be validated.
+	 * @param {Array.<core.treeModel.Range>} ranges Ranges to be validated.
 	 * @returns {Array} Ranges without invalid parts.
 	 * @private
 	 */
@@ -161,12 +159,9 @@ export default class AttributeCommand extends Command {
 			let to = range.end;
 
 			while ( !step.done ) {
-				const query = {
-					name: step.value.item.name || '$text',
-					attribute: this.attributeKey
-				};
+				const name = step.value.item.name || '$text';
 
-				if ( !this.editor.document.schema.checkAtPosition( query, last ) ) {
+				if ( !this.editor.document.schema.checkAtPosition( last, name, this.attributeKey ) ) {
 					if ( !from.isEqual( last ) ) {
 						validRanges.push( new Range( from, last ) );
 					}

@@ -12,7 +12,9 @@ import utils from '../utils.js';
 
 /**
  * LiveRange is a Range in the Tree Model that updates itself as the tree changes. It may be used as a bookmark.
+ *
  * **Note:** Constructor creates it's own {@link core.treeModel.LivePosition} instances basing on passed values.
+ *
  * **Note:** Be very careful when dealing with LiveRange. Each LiveRange instance bind events that might
  * have to be unbound. Use {@link core.treeModel.LiveRange#detach detach} whenever you don't need LiveRange anymore.
  *

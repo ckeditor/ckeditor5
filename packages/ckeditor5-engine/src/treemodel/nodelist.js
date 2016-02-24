@@ -109,7 +109,7 @@ export default class NodeList {
 		 * Internal array to store nodes.
 		 *
 		 * @protected
-		 * @type {Array}
+		 * @member {Array} core.treeModel.NodeList#_nodes
 		 */
 		this._nodes = [];
 
@@ -119,7 +119,7 @@ export default class NodeList {
 		 * which occupy multiple slots in `_indexMap`.
 		 *
 		 * @private
-		 * @type {Array}
+		 * @member {Array} core.treeModel.NodeList#_indexMap
 		 */
 		this._indexMap = [];
 

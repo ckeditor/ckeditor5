@@ -225,6 +225,7 @@ const EmitterMixin = {
 	 * @param {String} event The name of the event.
 	 * @param {...*} [args] Additional arguments to be passed to the callbacks.
 	 * @method core.EmitterMixin#fire
+	 * @returns {*} Value returned by the last callback processed in the event loop.
 	 */
 	fire( event, args ) {
 		const callbacks = getCallbacksIfAny( this, event );

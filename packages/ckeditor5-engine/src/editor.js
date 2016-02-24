@@ -44,7 +44,7 @@ export default class Editor {
 		/**
 		 * Holds all configurations specific to this editor instance.
 		 *
-		 * This instance of the {@link Config} class is customized so its {@link Config#get} method will retrieve
+		 * This instance of the {@link core.Config} class is customized so its {@link core.Config#get} method will retrieve
 		 * global configurations available in {@link CKEDITOR.config} if configurations are not found in the
 		 * instance itself.
 		 *
@@ -61,10 +61,26 @@ export default class Editor {
 		 */
 		this.plugins = new PluginCollection( this );
 
+		/**
+		 * Tree Model document managed by this editor.
+		 *
+		 * @member {core.treeModel.Document} core.Editor#document
+		 */
 		this.document = new Document();
 
+		/**
+		 * Commands registered to the editor.
+		 *
+		 * @member {Map} core.Editor#commands
+		 */
 		this.commands = new Map();
 
+		/**
+		 * Mapper that maps Tree Model into Tree View
+		 * TODO: this should probably be something else, or not here
+		 *
+		 * @member {Mapper} core.Editor#treeMapper
+		 */
 		this.treeMapper = new Mapper();
 
 		/**
@@ -181,7 +197,13 @@ export default class Editor {
 		return this.editable.getData();
 	}
 
-	execute( commandName ) {
+	/**
+	 * Executes specified command with given parameter.
+	 *
+	 * @param {String} commandName Name of command to execute.
+	 * @param {*} [commandParam] If set, command will be executed with this parameter.
+	 */
+	execute( commandName, commandParam ) {
 		let command = this.commands.get( commandName );
 
 		if ( !command ) {
@@ -193,7 +215,7 @@ export default class Editor {
 			throw new CKEditorError( 'editor-command-not-found: Specified command has not been added to the editor.' );
 		}
 
-		command.execute();
+		command.execute( commandParam );
 	}
 }
 
@@ -203,13 +225,6 @@ utils.mix( Editor, ObservableMixin );
  * Fired when this editor instance is destroyed. The editor at this point is not usable and this event should be used to
  * perform the clean-up in any plugin.
  *
- * @event core.Editor#destroy
- */
-
-/**
- * @cfg {String[]} features
- */
-
-/**
- * @cfg {String} creator
+ * @memberOf core.Editor
+ * @event destroy
  */

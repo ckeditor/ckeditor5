@@ -12,10 +12,7 @@ import AttributeCommand from '../command/attributecommand.js';
  * Bold feature.
  *
  * Bold features bring in possibility to mark some of the content (most commonly some text) as "important" ("bold").
- *
- * @class features.Bold
  */
-
 export default class BoldFeature extends Feature {
 	init() {
 		// Create instance of AttributeCommand which will handle bold attribute and add to commands registry.

@@ -50,11 +50,11 @@ export default class Selection {
 
 	/**
 	 * Selection anchor. Anchor may be described as a position where the selection starts.
-	 * Together with {@link #focus} they define the direction of selection, which is important
-	 * when expanding/shrinking selection. When there are no ranges in selection anchor is null.
-	 * Anchor is always a start or end of the most recent added range. It may be a bit unintuitive when
-	 * there are multiple ranges in selection.
+	 * Together with {@link core.treeModel.Selection#focus} they define the direction of selection, which is important
+	 * when expanding/shrinking selection. When there are no ranges in selection anchor is null. Anchor is always
+	 * the start or end of the most recent added range. It may be a bit unintuitive when there are multiple ranges in selection.
 	 *
+	 * @see core.treeModel.Selection#focus
 	 * @type {core.treeModel.LivePosition|null}
 	 */
 	get anchor() {
@@ -68,10 +68,9 @@ export default class Selection {
 	}
 
 	/**
-	 * Selection focus. Focus is a position where the selection ends. When there are no ranges in selection,
-	 * focus is null.
+	 * Selection focus. Focus is a position where the selection ends. When there are no ranges in selection, focus is null.
 	 *
-	 * @link {#anchor}
+	 * @see core.treeModel.Selection#anchor
 	 * @type {core.treeModel.LivePosition|null}
 	 */
 	get focus() {
@@ -84,6 +83,12 @@ export default class Selection {
 		return null;
 	}
 
+	/**
+	 * Flag indicating whether the selection has any range in it.
+	 *
+	 * @readonly
+	 * @type {Boolean}
+	 */
 	get hasAnyRange() {
 		return this._ranges.length > 0;
 	}
@@ -110,11 +115,14 @@ export default class Selection {
 
 	/**
 	 * Adds a range to the selection. Added range is copied and converted to {@link core.treeModel.LiveRange}. This means
-	 * that passed range is not saved in the Selection instance and you can safely operate on it. Accepts a flag
-	 * describing in which way the selection is made - passed range might be selected from {@link core.treeModel.Range#start}
-	 * to {@link core.treeModel.Range#end} or from {@link core.treeModel.Range#start} to {@link core.treeModel.Range#end}. The flag
-	 * is used to set {@link #anchor} and {@link #focus} properties.
+	 * that passed range is not saved in the Selection instance and you can safely operate on it.
 	 *
+	 * Accepts a flag describing in which way the selection is made - passed range might be selected from
+	 * {@link core.treeModel.Range#start} to {@link core.treeModel.Range#end} or from {@link core.treeModel.Range#start}
+	 * to {@link core.treeModel.Range#end}. The flag is used to set {@link core.treeModel.Selection#anchor} and
+	 * {@link core.treeModel.Selection#focus} properties.
+	 *
+	 * @fires {@link core.treeModel.Selection.update update}
 	 * @param {core.treeModel.Range} range Range to add.
 	 * @param {Boolean} [isBackward] Flag describing if added range was selected forward - from start to end (`false`)
 	 * or backward - from end to start (`true`). Defaults to `false`.
@@ -145,6 +153,15 @@ export default class Selection {
 		return this._ranges.slice();
 	}
 
+	/**
+	 * Returns the first range in the selection. First range is the one which {@link core.treeModel.Range#start start} position
+	 * {@link core.treeModel.Position#isBefore is before} start position of all other ranges (not to confuse with the first range
+	 * added to the selection).
+	 *
+	 * If there are no ranges in selection, retruns null instead.
+	 *
+	 * @returns {core.treeModel.Range|null}
+	 */
 	getFirstRange() {
 		let first = null;
 
@@ -159,6 +176,12 @@ export default class Selection {
 		return first && Range.createFromRange( first );
 	}
 
+	/**
+	 * Returns the first position in the selection. First position is the position that {@link core.treeModel.Position#isBefore is before}
+	 * any other position in the selection ranges.
+	 *
+	 * @returns {core.treeModel.Position|null}
+	 */
 	getFirstPosition() {
 		let firstRange = this.getFirstRange();
 
@@ -168,6 +191,7 @@ export default class Selection {
 	/**
 	 * Removes all ranges that were added to the selection. Fires update event.
 	 *
+	 * @fires {@link core.treeModel.Selection.update update}
 	 */
 	removeAllRanges() {
 		this.detach();
@@ -181,6 +205,7 @@ export default class Selection {
 	 * is treated like the last added range and is used to set {@link #anchor} and {@link #focus}. Accepts a flag
 	 * describing in which way the selection is made (see {@link #addRange}).
 	 *
+	 * @fires {@link core.treeModel.Selection.update update}
 	 * @param {Array.<core.treeModel.Range>} newRanges Array of ranges to set.
 	 * @param {Boolean} [isLastBackward] Flag describing if last added range was selected forward - from start to end (`false`)
 	 * or backward - from end to start (`true`). Defaults to `false`.
@@ -294,3 +319,10 @@ function pushRange( range ) {
 }
 
 utils.mix( Selection, EmitterMixin );
+
+/**
+ * Fired whenever selection ranges are changed through {@link core.treeModel.Selection Selection API}. Not fired when
+ * {@link core.treeModel.LiveRange live ranges} inserted in selection change because of Tree Model changes.
+ *
+ * @event core.treeModel.Selection.update
+ */

@@ -10,22 +10,23 @@ import utils from '../utils.js';
 import CKEditorError from '../ckeditorerror.js';
 
 /**
- * Creates a tree node.
+ * Tree model node. This is an abstract class for other classes representing different nodes in Tree Model.
  *
- * This is an abstract class, so this constructor should not be used directly.
- *
- * @param {Iterable|Object} attrs Iterable collection of attributes.
- *
- * @abstract
- * @class core.treeModel.Node
- * @classdesc Abstract document tree node class.
+ * @memberOf core.treeModel
  */
 export default class Node {
+	/**
+	 * Creates a tree node.
+	 *
+	 * This is an abstract class, so this constructor should not be used directly.
+	 *
+	 * @param {Iterable|Object} attrs Iterable collection of attributes.
+	 * @abstract
+	 */
 	constructor( attrs ) {
 		/**
 		 * Parent element. Null by default. Set by {@link core.treeModel.Element#insertChildren}.
 		 *
-		 * @member core.treeModel.Node#parent
 		 * @readonly
 		 * @member {core.treeModel.Element|null} core.treeModel.Node#parent
 		 */
@@ -108,7 +109,6 @@ export default class Node {
 	 *
 	 * Throws error if the parent element does not contain this node.
 	 *
-	 * @method core.treeModel.Node#getIndes
 	 * @returns {Number|Null} Index of the node in the parent element or null if the node has not parent.
 	 */
 	getIndex() {
@@ -134,7 +134,6 @@ export default class Node {
 	 * Gets path to the node. For example if the node is the second child of the first child of the root then the path
 	 * will be `[ 1, 2 ]`. This path can be used as a parameter of {@link core.treeModel.Position}.
 	 *
-	 * @method core.treeModel.Node#getPath
 	 * @returns {Number[]} The path.
 	 */
 	getPath() {
@@ -152,7 +151,6 @@ export default class Node {
 	/**
 	 * Custom toJSON method to solve child-parent circular dependencies.
 	 *
-	 * @method core.treeModel.Node#toJSON
 	 * @returns {Object} Clone of this object with the parent property replaced with its name.
 	 */
 	toJSON() {
@@ -167,7 +165,6 @@ export default class Node {
 	/**
 	 * Checks if the node has an attribute for given key.
 	 *
-	 * @method core.treeModel.Node#hasAttribute
 	 * @param {String} key Key of attribute to check.
 	 * @returns {Boolean} `true` if attribute with given key is set on node, `false` otherwise.
 	 */
@@ -178,7 +175,6 @@ export default class Node {
 	/**
 	 * Gets an attribute value for given key or undefined if that attribute is not set on node.
 	 *
-	 * @method core.treeModel.Node#getAttribute
 	 * @param {String} key Key of attribute to look for.
 	 * @returns {*} Attribute value or null.
 	 */
@@ -189,7 +185,6 @@ export default class Node {
 	/**
 	 * Returns iterator that iterates over this node attributes.
 	 *
-	 * @method core.treeModel.Node#getAttributes
 	 * @returns {Iterable.<*>}
 	 */
 	getAttributes() {

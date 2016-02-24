@@ -31,7 +31,7 @@ describe( 'constructor', () => {
 	} );
 
 	it( 'should allow inline in block', () => {
-		expect( schema.checkForPath( { name: '$inline' }, [ '$block' ] ) ).to.be.true;
+		expect( schema.checkQuery( { name: '$inline', inside: [ '$block' ] } ) ).to.be.true;
 	} );
 } );
 
@@ -57,7 +57,7 @@ describe( 'registerItem', () => {
 	it( 'should make registered item inherit allows from base item', () => {
 		schema.registerItem( 'image', '$inline' );
 
-		expect( schema.checkForPath( { name: 'image' }, [ '$block' ] ) ).to.be.true;
+		expect( schema.checkQuery( { name: 'image', inside: [ '$block' ] } ) ).to.be.true;
 	} );
 
 	it( 'should throw if item with given name has already been registered in schema', () => {
@@ -106,11 +106,11 @@ describe( 'allow', () => {
 		schema.registerItem( 'p', '$block' );
 		schema.registerItem( 'div', '$block' );
 
-		expect( schema.checkForPath( { name: 'p' }, [ 'div' ] ) ).to.be.false;
+		expect( schema.checkQuery( { name: 'p', inside: [ 'div' ] } ) ).to.be.false;
 
 		schema.allow( { name: 'p', inside: 'div' } );
 
-		expect( schema.checkForPath( { name: 'p' }, [ 'div' ] ) ).to.be.true;
+		expect( schema.checkQuery( { name: 'p', inside: [ 'div' ] } ) ).to.be.true;
 	} );
 } );
 
@@ -121,11 +121,11 @@ describe( 'disallow', () => {
 
 		schema.allow( { name: '$block', attribute: 'bold', inside: 'div' } );
 
-		expect( schema.checkForPath( { name: 'p', attribute: 'bold' }, [ 'div' ] ) ).to.be.true;
+		expect( schema.checkQuery( { name: 'p', attribute: 'bold', inside: [ 'div' ] } ) ).to.be.true;
 
 		schema.disallow( { name: 'p', attribute: 'bold', inside: 'div' } );
 
-		expect( schema.checkForPath( { name: 'p', attribute: 'bold' }, [ 'div' ] ) ).to.be.false;
+		expect( schema.checkQuery( { name: 'p', attribute: 'bold', inside: [ 'div' ] } ) ).to.be.false;
 	} );
 } );
 
@@ -154,48 +154,56 @@ describe( 'checkAtPosition', () => {
 
 	it( 'should return true if given element is allowed by schema at given position', () => {
 		// Block should be allowed in root.
-		expect( schema.checkAtPosition( { name: '$block' }, new Position( root, [ 0 ] ) ) ).to.be.true;
+		expect( schema.checkAtPosition( new Position( root, [ 0 ] ), '$block' ) ).to.be.true;
 
 		// P is block and block should be allowed in root.
-		expect( schema.checkAtPosition( { name: 'p' }, new Position( root, [ 0 ] ) ) ).to.be.true;
+		expect( schema.checkAtPosition( new Position( root, [ 0 ] ), 'p' ) ).to.be.true;
 
 		// P is allowed in DIV by the set rule.
-		expect( schema.checkAtPosition( { name: 'p' }, new Position( root, [ 0, 0 ] ) ) ).to.be.true;
+		expect( schema.checkAtPosition( new Position( root, [ 0, 0 ] ), 'p' ) ).to.be.true;
 
 		// Inline is allowed in any block and is allowed with attribute bold.
 		// We do not check if it is allowed in header, because it is disallowed by the set rule.
-		expect( schema.checkAtPosition( { name: '$inline' }, new Position( root, [ 0, 0 ] ) ) ).to.be.true;
-		expect( schema.checkAtPosition( { name: '$inline' }, new Position( root, [ 2, 0 ] ) ) ).to.be.true;
-		expect( schema.checkAtPosition( { name: '$inline', attribute: 'bold' }, new Position( root, [ 0, 0 ] ) ) ).to.be.true;
-		expect( schema.checkAtPosition( { name: '$inline', attribute: 'bold' }, new Position( root, [ 2, 0 ] ) ) ).to.be.true;
+		expect( schema.checkAtPosition( new Position( root, [ 0, 0 ] ), '$inline' ) ).to.be.true;
+		expect( schema.checkAtPosition( new Position( root, [ 2, 0 ] ), '$inline' ) ).to.be.true;
+		expect( schema.checkAtPosition( new Position( root, [ 0, 0 ] ), '$inline', 'bold' ) ).to.be.true;
+		expect( schema.checkAtPosition( new Position( root, [ 2, 0 ] ), '$inline', 'bold' ) ).to.be.true;
 
 		// Header is allowed in DIV.
-		expect( schema.checkAtPosition( { name: 'header' }, new Position( root, [ 0, 0 ] ) ) ).to.be.true;
+		expect( schema.checkAtPosition( new Position( root, [ 0, 0 ] ), 'header' ) ).to.be.true;
 
 		// Inline is allowed in block and root is DIV, which is block.
-		expect( schema.checkAtPosition( { name: '$inline' }, new Position( root, [ 0 ] ) ) ).to.be.true;
+		expect( schema.checkAtPosition( new Position( root, [ 0 ] ), '$inline' ) ).to.be.true;
 	} );
 
 	it( 'should return false if given element is not allowed by schema at given position', () => {
 		// P with attribute is not allowed anywhere.
-		expect( schema.checkAtPosition( { name: 'p', attribute: 'bold' }, new Position( root, [ 0 ] ) ) ).to.be.false;
-		expect( schema.checkAtPosition( { name: 'p', attribute: 'bold' }, new Position( root, [ 0, 0 ] ) ) ).to.be.false;
+		expect( schema.checkAtPosition( new Position( root, [ 0 ] ), 'p', 'bold' ) ).to.be.false;
+		expect( schema.checkAtPosition( new Position( root, [ 0, 0 ] ), 'p', 'bold' ) ).to.be.false;
 
 		// Bold text is not allowed in header
-		expect( schema.checkAtPosition( { name: '$text', attribute: 'bold' }, new Position( root, [ 1, 0 ] ) ) ).to.be.false;
+		expect( schema.checkAtPosition( new Position( root, [ 1, 0 ] ), '$text', 'bold' ) ).to.be.false;
 	} );
 
 	it( 'should return false if given element is not registered in schema', () => {
-		expect( schema.checkAtPosition( { name: 'new' }, new Position( root, [ 0 ] ) ) ).to.be.false;
+		expect( schema.checkAtPosition( new Position( root, [ 0 ] ), 'new' ) ).to.be.false;
 	} );
 } );
 
-describe( 'checkForPath', () => {
+describe( 'checkQuery', () => {
 	it( 'should return false if given element is not registered in schema', () => {
-		expect( schema.checkForPath( { name: 'new' }, 'div header' ) ).to.be.false;
+		expect( schema.checkQuery( { name: 'new', inside: [ 'div', 'header' ] } ) ).to.be.false;
 	} );
 
 	it( 'should handle path given as string', () => {
-		expect( schema.checkForPath( { name: '$inline' }, '$block $block $block' ) ).to.be.true;
+		expect( schema.checkQuery( { name: '$inline', inside: '$block $block $block' } ) ).to.be.true;
+	} );
+
+	it( 'should handle attributes', () => {
+		schema.registerItem( 'p', '$block' );
+		schema.allow( { name: 'p', inside: '$block' } );
+
+		expect( schema.checkQuery( { name: 'p', inside: '$block' } ) ).to.be.true;
+		expect( schema.checkQuery( { name: 'p', attribute: 'bold', inside: '$block' } ) ).to.be.false;
 	} );
 } );

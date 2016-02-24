@@ -30,7 +30,7 @@ export default class Element extends Node {
 		 * Element name.
 		 *
 		 * @readonly
-		 * @type {String}
+		 * @member {String} core.treeModel.Element#name
 		 */
 		this.name = name;
 
@@ -38,7 +38,7 @@ export default class Element extends Node {
 		 * List of children nodes.
 		 *
 		 * @protected
-		 * @type {core.treeModel.NodeList}
+		 * @member {core.treeModel.NodeList} core.treeModel.Element#_children
 		 */
 		this._children = new NodeList();
 
@@ -50,7 +50,6 @@ export default class Element extends Node {
 	/**
 	 * Gets child at the given index.
 	 *
-	 * @method core.treeModel.Element#getChild
 	 * @param {Number} index Index of child.
 	 * @returns {core.treeModel.Node} Child node.
 	 */
@@ -61,7 +60,6 @@ export default class Element extends Node {
 	/**
 	 * Gets the number of element's children.
 	 *
-	 * @method core.treeModel.Element#getChildCount
 	 * @returns {Number} The number of element's children.
 	 */
 	getChildCount() {
@@ -71,7 +69,6 @@ export default class Element extends Node {
 	/**
 	 * Gets index of the given child node.
 	 *
-	 * @method core.treeModel.Element#getChildIndex
 	 * @param {core.treeModel.Node} node Child node.
 	 * @returns {Number} Index of the child node.
 	 */
@@ -86,7 +83,6 @@ export default class Element extends Node {
 	 * Note that the list of children can be modified only in elements not yet attached to the document.
 	 * All attached nodes should be modified using the {@link core.treeModel.operation.InsertOperation}.
 	 *
-	 * @method core.treeModel.Element#appendChildren
 	 * @param {core.treeModel.NodeSet} nodes The list of nodes to be inserted.
 	 */
 	appendChildren( nodes ) {
@@ -99,7 +95,6 @@ export default class Element extends Node {
 	 * Note that the list of children can be modified only in elements not yet attached to the document.
 	 * All attached nodes should be modified using the {@link core.treeModel.operation.InsertOperation}.
 	 *
-	 * @method core.treeModel.Element#insertChildren
 	 * @param {Number} index Position where nodes should be inserted.
 	 * @param {core.treeModel.NodeSet} nodes The list of nodes to be inserted.
 	 * The list of nodes can be of any type accepted by the {@link core.treeModel.NodeList} constructor.
@@ -120,7 +115,6 @@ export default class Element extends Node {
 	 * Note that the list of children can be modified only in elements not yet attached to the document.
 	 * All attached nodes should be modified using the {@link core.treeModel.operation.RemoveOperation}.
 	 *
-	 * @method core.treeModel.Element#removeChildren
 	 * @param {Number} index Position of the first node to remove.
 	 * @param {Number} number Number of nodes to remove.
 	 * @returns {core.treeModel.NodeList} The list of removed nodes.
@@ -138,7 +132,6 @@ export default class Element extends Node {
 	/**
 	 * Sets attribute on the element. If attribute with the same key already is set, it overwrites its values.
 	 *
-	 * @method core.treeModel.Element#setAttribute
 	 * @param {String} key Key of attribute to set.
 	 * @param {*} value Attribute value.
 	 */
@@ -149,7 +142,6 @@ export default class Element extends Node {
 	/**
 	 * Removes all attributes from the element and sets given attributes.
 	 *
-	 * @method core.treeModel.Element#setAttributesTo
 	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set. See {@link core.treeModel.Node#getAttributes}.
 	 */
 	setAttributesTo( attrs ) {
@@ -159,7 +151,6 @@ export default class Element extends Node {
 	/**
 	 * Removes an attribute with given key from the element.
 	 *
-	 * @method core.treeModel.Element#removeAttribute
 	 * @param {String} key Key of attribute to remove.
 	 * @returns {Boolean} `true` if the attribute was set on the element, `false` otherwise.
 	 */
@@ -169,8 +160,6 @@ export default class Element extends Node {
 
 	/**
 	 * Removes all attributes from the element.
-	 *
-	 * @method core.treeModel.Element#clearAttributes
 	 */
 	clearAttributes() {
 		this._attrs.clear();
