@@ -21,6 +21,16 @@ describe( 'Element', () => {
 		} );
 	} );
 
+	describe( 'clone', () => {
+		it( 'should return new text with same data', () => {
+			const text = new ViewText( 'foo bar' );
+			const clone = text.clone();
+
+			expect( clone ).to.not.equal( text );
+			expect( clone.data ).to.equal( text.data );
+		} );
+	} );
+
 	describe( 'setText', () => {
 		it( 'should change the text', () => {
 			const text = new ViewText( 'foo' );
