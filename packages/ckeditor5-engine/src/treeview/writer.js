@@ -6,10 +6,14 @@
 'use strict';
 
 import Position from './position.js';
+import Element from './element.js';
+import Text from './text.js';
 import utils from '../utils.js';
 
 /**
- * @class treeView.Writer
+ * Tree model Writer class.
+ *
+ * @memberOf core.treeModel
  */
  export default class Writer {
 	constructor() {
@@ -26,27 +30,31 @@ import utils from '../utils.js';
 	/**
 	 * Returns true if provided node is a container node.
 	 *
-	 * @param {treeView.Node} node
+	 * @param {core.treeView.Element} node
 	 * @returns {Boolean}
      */
 	isContainer( node ) {
-		return !this._priorities.has( node );
+		const isElement = node instanceof Element;
+
+		return isElement && !this._priorities.has( node );
 	}
 
 	/**
 	 * Returns true if provided node is an attribute node.
 	 *
-	 * @param {treeView.Node} node
+	 * @param {core.treeView.Element} node
 	 * @returns {Boolean}
 	 */
 	isAttribute( node ) {
-		return this._priorities.has( node );
+		const isElement = node instanceof Element;
+
+		return isElement && this._priorities.has( node );
 	}
 
 	/**
 	 * Sets node priority.
 	 *
-	 * @param {treeView.Node} node
+	 * @param {core.treeView.Node} node
 	 * @param {Number} priority
      */
 	setPriority( node, priority ) {
@@ -56,7 +64,7 @@ import utils from '../utils.js';
 	/**
 	 * Returns node's priority, undefined if node's priority cannot be found.
 	 *
-	 * @param {treeView.Node} node
+	 * @param {core.treeView.Node} node
 	 * @returns {Number|undefined}
      */
 	getPriority( node ) {
@@ -77,13 +85,23 @@ import utils from '../utils.js';
 		this.mergeAttributes( insertionPosition );
 	}
 
-	// return position
+	/**
+	 * Breaks attributes at provided position. Returns new position.
+	 * Examples:
+	 *        <p>foo<b><u>bar|</u></b></p> -> <p>foo<b><u>bar</u></b>|</p>
+	 *        <p>foo<b><u>|bar</u></b></p> -> <p>foo|<b><u>bar</u></b></p>
+	 *        <p>foo<b><u>b|ar</u></b></p> -> <p>foo<b><u>b</u></b>|<b><u>ar</u></b></p>
+	 *
+	 * @param {core.treeView.Position} position
+	 * @returns {core.treeView.Position}
+	 */
 	breakAttributes( position ) {
-		let positionOffset = position.offset;
-		let positionParent = position.parent;
+		const positionOffset = position.offset;
+		const positionParent = position.parent;
 
+		// Position's parent is container, so no attributes to break.
 		if ( this.isContainer( positionParent ) ) {
-			return position;
+			return Position.createFromPosition( position );
 		}
 
 		const parentIsText = positionParent instanceof Text;
@@ -93,46 +111,61 @@ import utils from '../utils.js';
 		// <p>foo<b><u>bar</u>|</b></p>
 		// <p>foo<b><u>bar</u></b>|</p>
 		if ( positionOffset == length ) {
-			const parentPosition = new Position( positionParent.parent, positionParent.getIndex() + 1 );
+			const newPosition = new Position( positionParent.parent, positionParent.getIndex() + 1 );
 
-			return this.breakAttributes( parentPosition );
+			return this.breakAttributes( newPosition );
 		} else
 		// <p>foo<b><u>|bar</u></b></p>
 		// <p>foo<b>|<u>bar</u></b></p>
 		// <p>foo|<b><u>bar</u></b></p>
 		if ( positionOffset === 0 ) {
-			const parentPosition = new Position( positionParent.parent, positionParent.getIndex() );
+			const newPosition = new Position( positionParent.parent, positionParent.getIndex() );
 
-			return this.breakAttributes( parentPosition );
+			return this.breakAttributes( newPosition );
 		}
 		// <p>foo<b><u>"b|ar"</u></b></p>
 		// <p>foo<b><u>"b"|"ar"</u></b></p>
-		// <p>foo<b><u>b</u>|</u>ar</u></b></p>
+		// <p>foo<b><u>b</u>|<u>ar</u></b></p>
 		// <p>foo<b><u>b</u></b>|<b><u>ar</u></b></p>
 		else {
-			// Break.
 			const offsetAfter = positionParent.getIndex() + 1;
 
 			if ( parentIsText ) {
 				// Break text.
+				// Get part of the text that need to be moved.
 				const textToMove = positionParent.data.slice( positionOffset );
+
+				// Leave rest of the text in position's parent.
 				positionParent.data = positionParent.data.slice( 0, positionOffset );
+
+				// Insert new text node after position's parent text node.
 				positionParent.parent.insertChildren( offsetAfter, new Text( textToMove ) );
 
-				return new Position( positionParent.parent, offsetAfter );
+				// Create new position to work on.
+				const newPosition = new Position( positionParent.parent, offsetAfter );
+
+				return this.breakAttributes( newPosition );
 			} else {
 				// Break element.
-				const nodeClone = positionParent.cloneNode();
-				// Clone priority.
-				this._priorities.set( nodeClone, this._priorities.get( positionParent ) );
+				const nodeClone = positionParent.clone();
 
+				// Clone priority.
+				this.setPriority( nodeClone, this.getPriority( positionParent ) );
+
+				// Insert cloned node to position's parent node.
 				positionParent.parent.insertChildren( offsetAfter, nodeClone );
 
-				//const nodesToMove = sourceElement.removeChildren( sourceOffset, this.howMany );
+				// Get nodes to move.
+				const count = positionParent.getChildCount() - positionOffset;
+				const nodesToMove = positionParent.removeChildren( positionOffset, count );
 
-				//nodeClone.appendChildren( nodesToMove );
+				// Move nodes to cloned node.
+				nodeClone.appendChildren( nodesToMove );
 
-				return new Position( positionParent.parent, offsetAfter );
+				// Create new position to work on.
+				const newPosition = new Position( positionParent.parent, offsetAfter );
+
+				return this.breakAttributes( newPosition );
 			}
 		}
 	}
