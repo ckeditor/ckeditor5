@@ -118,7 +118,7 @@ describe( 'Writer', () => {
 		it( '<p><b>foo|bar</b></p>', () => {
 			const writer = new Writer();
 			const text = new Text( 'foobar' );
-			const b = new Element( 'b', {}, [ text ] );
+			const b = new Element( 'b', { attribute: 'value' }, [ text ] );
 			const p = new Element( 'p', {}, [ b ] );
 			const position = new Position( text, 3 );
 			writer.setPriority( b, 1 );
@@ -132,11 +132,13 @@ describe( 'Writer', () => {
 			const child1 = p.getChild( 0 );
 			const child2 = p.getChild( 1 );
 			expect( child1 ).to.be.instanceOf( Element );
-			expect( child1.name ).to.equal( 'b' );
+			expect( child1.same( b ) ).to.be.true;
+			expect( writer.getPriority( child1 ) ).to.equal( 1 );
 			expect( child1.getChildCount() ).to.equal( 1 );
 			expect( child1.getChild( 0 ).data ).to.equal( 'foo' );
 			expect( child2 ).to.be.instanceOf( Element );
-			expect( child2.name ).to.equal( 'b' );
+			expect( child2.same( b ) ).to.be.true;
+			expect( writer.getPriority( child2 ) ).to.equal( 1 );
 			expect( child2.getChildCount() ).to.equal( 1 );
 			expect( child2.getChild( 0 ).data ).to.equal( 'bar' );
 		} );
@@ -145,12 +147,12 @@ describe( 'Writer', () => {
 		it( '<p><b><u>|foobar</u></b></p>', () => {
 			const writer = new Writer();
 			const text = new Text( 'foobar' );
-			const u = new Element( 'u', {}, [ text ] );
-			const b = new Element( 'b', {}, [ u ] );
+			const u = new Element( 'u', { foo: 'bar' }, [ text ] );
+			const b = new Element( 'b', { baz: 'qux' }, [ u ] );
 			const p = new Element( 'p', {}, [ b ] );
 			const position = new Position( text, 0 );
-			writer.setPriority( u, 1 );
-			writer.setPriority( b, 1 );
+			writer.setPriority( u, 10 );
+			writer.setPriority( b, 5 );
 
 			const newPosition = writer.breakAttributes( position );
 			const parent = newPosition.parent;
@@ -160,9 +162,11 @@ describe( 'Writer', () => {
 			expect( p.getChildCount() ).to.equal( 1 );
 			const b1 = p.getChild( 0 );
 			expect( b1 ).to.equal( b );
+			expect( writer.getPriority( b1 ) ).to.equal( 5 );
 			expect( b1.getChildCount() ).to.equal( 1 );
 			const u1 = b.getChild( 0 );
 			expect( u1 ).to.equal( u );
+			expect( writer.getPriority( u1 ) ).to.equal( 10 );
 			expect( u1.getChildCount() ).to.equal( 1 );
 			const text1 = u1.getChild( 0 );
 			expect( text1 ).to.equal( text );
@@ -173,8 +177,8 @@ describe( 'Writer', () => {
 		it( '<p><b><u>foo|bar</u></b></p>', () => {
 			const writer = new Writer();
 			const text = new Text( 'foobar' );
-			const u = new Element( 'u', {}, [ text ] );
-			const b = new Element( 'b', {}, [ u ] );
+			const u = new Element( 'u', { foo: 'bar' }, [ text ] );
+			const b = new Element( 'b', { baz: 'qux' }, [ u ] );
 			const p = new Element( 'p', {}, [ b ] );
 			const position = new Position( text, 3 );
 			writer.setPriority( u, 1 );
@@ -186,32 +190,31 @@ describe( 'Writer', () => {
 			expect( parent ).to.equal( p );
 			expect( newPosition.offset ).to.equal( 1 );
 			expect( parent.getChildCount() ).to.equal( 2 );
-			const child1 = parent.getChild( 0 );
-			const child2 = parent.getChild( 1 );
-			expect( child1.name ).to.equal( 'b' );
-			expect( child1.name ).to.equal( 'b' );
-			expect( child1.getChildCount() ).to.equal( 1 );
-			expect( child2.getChildCount() ).to.equal( 1 );
+			const b1 = parent.getChild( 0 );
+			const b2 = parent.getChild( 1 );
+			expect( b1.same( b ) ).to.be.true;
+			expect( b2.same( b ) ).to.be.true;
+			expect( b1.getChildCount() ).to.equal( 1 );
+			expect( b2.getChildCount() ).to.equal( 1 );
 
-			const u1 = child1.getChild( 0 );
-			const u2 = child2.getChild( 0 );
+			const u1 = b1.getChild( 0 );
+			const u2 = b2.getChild( 0 );
 
-			expect( u1.name ).to.equal( 'u' );
-			expect( u2.name ).to.equal( 'u' );
+			expect( u1.same( u ) ).to.be.true;
+			expect( u2.same( u ) ).to.be.true;
 
 			expect( u1.getChildCount() ).to.equal( 1 );
 			expect( u2.getChildCount() ).to.equal( 1 );
-
 			expect( u1.getChild( 0 ).data ).to.equal( 'foo' );
 			expect( u2.getChild( 0 ).data ).to.equal( 'bar' );
 		} );
 
 		// <p><b><u>foobar|</u></b></p> -> <p><b><u>foobar</u></b>|</p>
-		it( '<p><b><u>|foobar</u></b></p>', () => {
+		it( '<p><b><u>foobar|</u></b></p>', () => {
 			const writer = new Writer();
 			const text = new Text( 'foobar' );
-			const u = new Element( 'u', {}, [ text ] );
-			const b = new Element( 'b', {}, [ u ] );
+			const u = new Element( 'u', { foo: 'bar' }, [ text ] );
+			const b = new Element( 'b', { baz: 'qux' }, [ u ] );
 			const p = new Element( 'p', {}, [ b ] );
 			const position = new Position( text, 6 );
 			writer.setPriority( u, 1 );
@@ -224,13 +227,169 @@ describe( 'Writer', () => {
 			expect( newPosition.offset ).to.equal( 1 );
 			expect( p.getChildCount() ).to.equal( 1 );
 			const b1 = p.getChild( 0 );
-			expect( b1 ).to.equal( b );
+			expect( b1.same( b ) ).to.be.true;
 			expect( b1.getChildCount() ).to.equal( 1 );
 			const u1 = b.getChild( 0 );
-			expect( u1 ).to.equal( u );
+			expect( u1.same( u ) ).to.be.true;
 			expect( u1.getChildCount() ).to.equal( 1 );
 			const text1 = u1.getChild( 0 );
+			expect( text1.same( text ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'mergeAttributes', () => {
+		// <p>{fo|obar}</p>
+		it( 'should not merge if inside text node', () => {
+			const writer = new Writer();
+			const text = new Text( 'foobar' );
+			const p = new Element( 'p', [], [ text ] );
+			const position = new Position( text, 2 );
+
+			const newPosition = writer.mergeAttributes( position );
+
+			expect( newPosition.isEqual( position ) ).to.be.true;
+			expect( p.getChildCount() ).to.equal( 1 );
+			const text1 = p.getChild( 0 );
 			expect( text1 ).to.equal( text );
+			expect( text1.data ).to.equal( 'foobar' );
+		} );
+
+		it( 'should return same position when inside empty container', () => {
+			// <p>|</p>
+			const writer = new Writer();
+			const p = new Element( 'p' );
+			const position = new Position( p, 0 );
+
+			const newPosition = writer.mergeAttributes( position );
+
+			expect( newPosition.isEqual( position ) ).to.be.true;
+		} );
+
+		it( 'should not merge when position is placed at the beginning of the container', () => {
+			// <p>|<b></b></p>
+			const writer = new Writer();
+			const b = new Element( 'b' );
+			const p = new Element( 'p', {}, [ b ] );
+			const position = new Position( p, 0 );
+			writer.setPriority( b, 1 );
+
+			const newPosition = writer.mergeAttributes( position );
+
+			expect( newPosition.isEqual( position ) );
+			expect( p.getChildCount() ).to.equal( 1 );
+			expect( p.getChild( 0 ) ).to.equal( b );
+		} );
+
+		it( 'should not merge when position is placed at the end of the container', () => {
+			// <p><b></b>|</p>
+			const writer = new Writer();
+			const b = new Element( 'b' );
+			const p = new Element( 'p', {}, [ b ] );
+			const position = new Position( p, 1 );
+			writer.setPriority( b, 1 );
+
+			const newPosition = writer.mergeAttributes( position );
+
+			expect( newPosition.isEqual( position ) );
+			expect( p.getChildCount() ).to.equal( 1 );
+			expect( p.getChild( 0 ) ).to.equal( b );
+		} );
+
+		it( 'should merge when placed between two text nodes', () => {
+			// <p>{foo}|{bar}</p>
+			// <p>{foo|bar}</p>
+			const writer = new Writer();
+			const text1 = new Text( 'foo' );
+			const text2 = new Text( 'bar' );
+			const p = new Element( 'p', {}, [ text1, text2 ] );
+			const position = new Position( p, 1 );
+
+			const newPosition = writer.mergeAttributes( position );
+
+			expect( newPosition.parent ).is.equal( text1 );
+			expect( newPosition.offset ).is.equal( 3 );
+			expect( text1.data ).to.equal( 'foobar' );
+			expect( p.getChildCount() ).to.equal( 1 );
+			expect( p.getChild( 0 ) ).to.equal( text1 );
+		} );
+
+		it( 'should merge when placed between similar attribute nodes', () => {
+			// <p><b foo="bar"></b>|<b foo="bar"></b></p>
+			// <p><b foo="bar">|</b></p>
+			const writer = new Writer();
+			const b1 = new Element( 'b', { foo: 'bar' } );
+			const b2 = new Element( 'b', { foo: 'bar' } );
+			const p = new Element( 'p', {}, [ b1, b2 ] );
+			const position = new Position( p, 1 );
+			writer.setPriority( b1, 1 );
+			writer.setPriority( b2, 1 );
+
+			const newPosition = writer.mergeAttributes( position );
+
+			expect( newPosition.parent ).to.equal( b1 );
+			expect( newPosition.offset ).to.equal( 0 );
+			expect( p.getChildCount() ).to.equal( 1 );
+			expect( p.getChild( 0 ) ).to.equal( b1 );
+		} );
+
+		it( 'should not merge when placed between non-similar attribute nodes', () => {
+			// <p><b foo="bar"></b>|<b foo="baz"></b></p>
+			// <p><b foo="bar"></b>|<b foo="baz"></b></p>
+			const writer = new Writer();
+			const b1 = new Element( 'b', { foo: 'bar' } );
+			const b2 = new Element( 'b', { foo: 'baz' } );
+			const p = new Element( 'p', {}, [ b1, b2 ] );
+			const position = new Position( p, 1 );
+			writer.setPriority( b1, 1 );
+			writer.setPriority( b2, 1 );
+
+			const newPosition = writer.mergeAttributes( position );
+
+			expect( newPosition.isEqual( position ) ).to.be.true;
+			expect( p.getChildCount() ).to.equal( 2 );
+			expect( p.getChild( 0 ) ).to.equal( b1 );
+			expect( p.getChild( 1 ) ).to.equal( b2 );
+		} );
+
+		it( 'should not merge when placed between similar attribute nodes with different priority', () => {
+			const writer = new Writer();
+			const b1 = new Element( 'b', { foo: 'bar' } );
+			const b2 = new Element( 'b', { foo: 'bar' } );
+			const p = new Element( 'p', {}, [ b1, b2 ] );
+			const position = new Position( p, 1 );
+			writer.setPriority( b1, 1 );
+			writer.setPriority( b2, 2 );
+
+			const newPosition = writer.mergeAttributes( position );
+
+			expect( newPosition.isEqual( position ) ).to.be.true;
+			expect( p.getChildCount() ).to.equal( 2 );
+			expect( p.getChild( 0 ) ).to.equal( b1 );
+			expect( p.getChild( 1 ) ).to.equal( b2 );
+		} );
+
+		it( 'should merge attribute nodes and their contents if possible', () => {
+			// <p><b foo="bar">{foo}</b>|<b foo="bar">{bar}</b></p>
+			// <p><b foo="bar">{foo}|{bar}</b></p>
+			// <p><b foo="bar">{foo|bar}</b></p>
+			const writer = new Writer();
+			const text1 = new Text( 'foo' );
+			const text2 = new Text( 'bar' );
+			const b1 = new Element( 'b', { foo: 'bar' }, [ text1 ] );
+			const b2 = new Element( 'b', { foo: 'bar' }, [ text2 ] );
+			const p = new Element( 'p', {}, [ b1, b2 ] );
+			const position = new Position( p, 1 );
+			writer.setPriority( b1, 1 );
+			writer.setPriority( b2, 1 );
+
+			const newPosition = writer.mergeAttributes( position );
+
+			expect( newPosition.parent ).to.equal( text1 );
+			expect( newPosition.offset ).to.equal( 3 );
+			expect( p.getChildCount() ).to.equal( 1 );
+			expect( p.getChild( 0 ) ).to.equal( b1 );
+			expect( b1.getChildCount() ).to.equal( 1 );
+			expect( b1.getChild( 0 ) ).to.equal( text1 );
 			expect( text1.data ).to.equal( 'foobar' );
 		} );
 	} );

@@ -170,36 +170,67 @@ import utils from '../utils.js';
 		}
 	}
 
-	// Should also merge text nodes
+	/**
+	 * Merges attribute nodes. It also merges text nodes if needed.
+	 * Two attribute nodes can be merged into one when they are similar and have the same priority.
+	 * Examples:
+	 *        <p>{foo}|{bar}</p> -> <p>{foo|bar}</p>
+	 *        <p><b></b>|<b></b> -> <p><b>|</b></b>
+	 *        <p><b foo="bar"></b>|<b foo="baz"></b> -> <p><b foo="bar"></b>|<b foo="baz"></b>
+	 *        <p><b></b><b></b> -> <p><b></b></b>
+	 *        <p><b>{foo}</b>|<b>{bar}</b></p> -> <p><b>{foo|bar}</b>
+	 *
+	 * @param {core.treeView.Position} position Merge position.
+	 * @returns {core.treeView.Position} Position after merge.
+	 */
 	mergeAttributes( position ) {
-		let offset = position.offset;
-		let parentNode = position.parent;
+		const positionOffset = position.offset;
+		const positionParent = position.parent;
 
-		if ( parentNode instanceof Text ) {
+		// When inside text node - nothing to merge.
+		if ( positionParent instanceof Text ) {
 			return position;
 		}
 
-		let nodeBefore = parentNode.getChild( offset - 1 );
-		let nodeAfter = parentNode.getChild( offset );
+		const nodeBefore = positionParent.getChild( positionOffset - 1 );
+		const nodeAfter = positionParent.getChild( positionOffset );
+
+		// Position should be placed between two nodes.
+		if ( !nodeBefore || !nodeAfter ) {
+			return position;
+		}
+
+		// When one or both nodes are containers - no attributes to merge.
+		if ( this.isContainer( nodeBefore ) || this.isContainer( nodeAfter ) ) {
+			return position;
+		}
 
 		if ( nodeBefore instanceof Text && nodeAfter instanceof Text ) {
+			// When selection is between two text nodes.
+			// Merge text data into first text node and remove second one.
 			const nodeBeforeLength = nodeBefore.data.length;
-
 			nodeBefore.data += nodeAfter.data;
-			parentNode.removeChildren( offset );
+			positionParent.removeChildren( positionOffset );
 
 			return new Position( nodeBefore, nodeBeforeLength );
 		} else if ( nodeBefore.same( nodeAfter ) ) {
+			// When selection is between same nodes.
 			const nodeBeforePriority = this._priorities.get( nodeBefore );
 			const nodeAfterPriority = this._priorities.get( nodeAfter );
 
+			// Do not merge same nodes with different priorities.
 			if ( nodeBeforePriority === undefined || nodeBeforePriority !== nodeAfterPriority ) {
-				return position;
+				return Position.createFromPosition( position );
 			}
 
+			// Move all children nodes from node placed after selection and remove that node.
+			const count = nodeBefore.getChildCount();
 			nodeBefore.appendChildren( nodeAfter.getChildren() );
-
 			nodeAfter.remove();
+
+			// New position is located inside the first node, before new nodes.
+			// Call this method recursively to merge again if needed.
+			return this.mergeAttributes( new Position( nodeBefore, count ) );
 		}
 
 		return position;
