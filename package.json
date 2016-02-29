@@ -9,6 +9,7 @@
   ],
   "dependencies": {
     "ckeditor5-core": "ckeditor/ckeditor5-core",
+    "ckeditor5-ui-default": "ckeditor/ckeditor5-ui-default",
     "requirejs": "Reinmar/requirejs"
   },
   "devDependencies": {
