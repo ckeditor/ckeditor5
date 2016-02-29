@@ -209,6 +209,7 @@ describe( 'Range', () => {
 
 			expect( values.length ).to.equal( 3 );
 			expect( values[ 0 ].item.character ).to.equal( 'b' );
+			expect( values[ 0 ].length ).to.equal( 1 );
 			expect( values[ 1 ].item ).to.equal( e2 );
 			expect( values[ 2 ].item.character ).to.equal( 'x' );
 		} );
@@ -217,8 +218,46 @@ describe( 'Range', () => {
 			prepareRichRoot( root );
 
 			let range = new Range( new Position( root, [ 0, 0, 3 ] ), new Position( root, [ 3, 0, 2 ] ) );
-			let nodes = Array.from( range.getItems( true ) );
+			let nodes = Array.from( range.getValues( true ) ).map( value => value.item );
 			let nodeNames = mapNodesToNames( nodes );
+
+			expect( nodeNames ).to.deep.equal( [ 'T:st', 'E:p', 'T:lorem ipsum', 'E:p', 'T:foo', 'E:p', 'T:bar', 'E:div', 'E:h', 'T:se' ] );
+		} );
+	} );
+
+	describe( 'getItems', () => {
+		it( 'should iterate over all items which "starts" in the range', () => {
+			const a = new Text( 'a' );
+			const b = new Text( 'b' );
+			const x = new Text( 'x' );
+			const y = new Text( 'y' );
+
+			const e1 = new Element( 'e1' );
+			const e2 = new Element( 'e2' );
+
+			e1.insertChildren( 0, [ a, b ] );
+			e2.insertChildren( 0, [ x, y ] );
+			root.insertChildren( 0, [ e1, e2 ] );
+
+			let range = new Range(
+				new Position( root, [ 0, 1 ] ),
+				new Position( root, [ 1, 1 ] )
+			);
+
+			let items = Array.from( range.getItems() );
+
+			expect( items.length ).to.equal( 3 );
+			expect( items[ 0 ].character ).to.equal( 'b' );
+			expect( items[ 1 ] ).to.equal( e2 );
+			expect( items[ 2 ].character ).to.equal( 'x' );
+		} );
+
+		it( 'should merge characters with same attributes', () => {
+			prepareRichRoot( root );
+
+			let range = new Range( new Position( root, [ 0, 0, 3 ] ), new Position( root, [ 3, 0, 2 ] ) );
+			let items = Array.from( range.getItems( true ) );
+			let nodeNames = mapNodesToNames( items );
 
 			expect( nodeNames ).to.deep.equal( [ 'T:st', 'E:p', 'T:lorem ipsum', 'E:p', 'T:foo', 'E:p', 'T:bar', 'E:div', 'E:h', 'T:se' ] );
 		} );
