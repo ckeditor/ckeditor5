@@ -73,40 +73,52 @@ describe( 'range iterator', () => {
 	function expectItem( item, expected ) {
 		expect( item.done ).to.be.false;
 
-		if ( item.value.type == 'TEXT' || item.value.type == 'CHARACTER' ) {
-			let text = item.value.item.text || item.value.item.character;
-			let attrs = item.value.item._attrs || item.value.item.first._attrs;
+		expectValue( item.value, expected );
+	}
 
-			expect( text ).to.equal( expected.text );
-			expect( Array.from( attrs ) ).to.deep.equal( expected.attrs );
-			expect( item.value.length ).to.equal( text.length );
-		} else {
-			expect( item.value.type ).to.equal( expected.type );
-			expect( item.value.item ).to.equal( expected.item );
+	function expectValue( value, expected ) {
+		expect( value.type ).to.equal( expected.type );
 
-			if ( item.value.type == 'ELEMENT_START' ) {
-				expect( item.value.length ).to.equal( 1 );
-			} else {
-				expect( item.value.length ).to.be.undefined;
-			}
+		if ( value.type == 'TEXT' ) {
+			expectText( value, expected );
+		} else if ( value.type == 'CHARACTER' ) {
+			expectCharacter( value, expected );
+		} else if ( value.type == 'ELEMENT_START' ) {
+			expectStart( value, expected );
+		} else if ( value.type == 'ELEMENT_END' ) {
+			expectEnd( value, expected );
 		}
+	}
 
-		if ( item.value.type == 'TEXT' ) {
-			expect( item.value.previousPosition ).to.deep.equal( Position.createBefore( item.value.item.first ) );
-		} else if ( item.value.type == 'ELEMENT_END' ) {
-			expect( item.value.previousPosition ).to.deep.equal(
-				Position.createFromParentAndOffset( item.value.item, item.value.item.getChildCount() ) );
-		} else {
-			expect( item.value.previousPosition ).to.deep.equal( Position.createBefore( item.value.item ) );
-		}
+	function expectText( value, expected ) {
+		expect( value.item.text ).to.equal( expected.text );
+		expect( Array.from( value.item.first._attrs ) ).to.deep.equal( expected.attrs );
+		expect( value.length ).to.equal( value.item.text.length );
+		expect( value.previousPosition ).to.deep.equal( Position.createBefore( value.item.first ) );
+		expect( value.nextPosition ).to.deep.equal( Position.createAfter( value.item.last ) );
+	}
 
-		if ( item.value.type == 'TEXT' ) {
-			expect( item.value.nextPosition ).to.deep.equal( Position.createAfter( item.value.item.last ) );
-		} else if ( item.value.type == 'ELEMENT_START' ) {
-			expect( item.value.nextPosition ).to.deep.equal( Position.createFromParentAndOffset( item.value.item, 0 ) );
-		} else {
-			expect( item.value.nextPosition ).to.deep.equal( Position.createAfter( item.value.item ) );
-		}
+	function expectCharacter( value, expected ) {
+		expect( value.item.character ).to.equal( expected.text );
+		expect( Array.from( value.item._attrs ) ).to.deep.equal( expected.attrs );
+		expect( value.length ).to.equal( value.item.character.length );
+		expect( value.previousPosition ).to.deep.equal( Position.createBefore( value.item ) );
+		expect( value.nextPosition ).to.deep.equal( Position.createAfter( value.item ) );
+	}
+
+	function expectStart( value, expected ) {
+		expect( value.item ).to.equal( expected.item );
+		expect( value.length ).to.equal( 1 );
+		expect( value.previousPosition ).to.deep.equal( Position.createBefore( value.item ) );
+		expect( value.nextPosition ).to.deep.equal( Position.createFromParentAndOffset( value.item, 0 ) );
+	}
+
+	function expectEnd( value, expected ) {
+		expect( value.item ).to.equal( expected.item );
+		expect( value.length ).to.be.undefined;
+		expect( value.previousPosition ).to.deep.equal(
+			Position.createFromParentAndOffset( value.item, value.item.getChildCount() ) );
+		expect( value.nextPosition ).to.deep.equal( Position.createAfter( value.item ) );
 	}
 
 	it( 'should return next position', () => {
@@ -154,6 +166,18 @@ describe( 'range iterator', () => {
 			expectItem( iterator.previous(), expectedItems[ i ] );
 		}
 		expect( iterator.previous() ).to.have.property( 'done' ).that.is.true;
+	} );
+
+	it( 'should provide iterator interface', () => {
+		let iterator = new TreeWalker( { position: new Position( root, [ 0 ] ) } );
+		let i = 0;
+
+		for ( let value of iterator ) {
+			expectValue( value, expectedItems[ i ] );
+			i++;
+		}
+
+		expect( i ).to.equal( 10 );
 	} );
 
 	it( 'should merge characters when iterating over the range using next', () => {
