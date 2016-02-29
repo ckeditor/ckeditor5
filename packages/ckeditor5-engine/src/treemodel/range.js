@@ -268,16 +268,13 @@ export default class Range {
 	 * @returns {Iterable.<core.treeModel.Node|treeModel.TextFragment>}
 	 */
 	*getValues( mergeCharacters ) {
-		let it = new TreeWalker( { boundaries: this, mergeCharacters: mergeCharacters } );
-		let step;
+		const treeWalker = new TreeWalker( { boundaries: this, mergeCharacters: mergeCharacters } );
 
-		do {
-			step = it.next();
-
-			if ( step.value && step.value.type != 'ELEMENT_END' ) {
-				yield step.value;
+		for ( let value of treeWalker ) {
+			if ( value.type != 'ELEMENT_END' ) {
+				yield value;
 			}
-		} while ( !step.done );
+		}
 	}
 
 	*getItems( mergeCharacters ) {
@@ -296,11 +293,13 @@ export default class Range {
 	 * @returns {Iterable.<core.treeModel.Position>}
 	 */
 	*getPositions( mergeCharacters ) {
-		let it = new TreeWalker( { boundaries: this, mergeCharacters: mergeCharacters } );
+		const treeWalker = new TreeWalker( { boundaries: this, mergeCharacters: mergeCharacters } );
 
-		do {
-			yield it.position;
-		} while ( !it.next().done );
+		yield treeWalker.position;
+
+		for ( let value of treeWalker ) {
+			yield value.nextPosition;
+		}
 	}
 
 	/**
