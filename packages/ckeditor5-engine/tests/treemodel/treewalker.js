@@ -79,8 +79,33 @@ describe( 'range iterator', () => {
 
 			expect( text ).to.equal( expected.text );
 			expect( Array.from( attrs ) ).to.deep.equal( expected.attrs );
+			expect( item.value.length ).to.equal( text.length );
 		} else {
-			expect( item.value ).to.deep.equal( expected );
+			expect( item.value.type ).to.equal( expected.type );
+			expect( item.value.item ).to.equal( expected.item );
+
+			if ( item.value.type == 'ELEMENT_START' ) {
+				expect( item.value.length ).to.equal( 1 );
+			} else {
+				expect( item.value.length ).to.be.undefined;
+			}
+		}
+
+		if ( item.value.type == 'TEXT' ) {
+			expect( item.value.previousPosition ).to.deep.equal( Position.createBefore( item.value.item.first ) );
+		} else if ( item.value.type == 'ELEMENT_END' ) {
+			expect( item.value.previousPosition ).to.deep.equal(
+				Position.createFromParentAndOffset( item.value.item, item.value.item.getChildCount() ) );
+		} else {
+			expect( item.value.previousPosition ).to.deep.equal( Position.createBefore( item.value.item ) );
+		}
+
+		if ( item.value.type == 'TEXT' ) {
+			expect( item.value.nextPosition ).to.deep.equal( Position.createAfter( item.value.item.last ) );
+		} else if ( item.value.type == 'ELEMENT_START' ) {
+			expect( item.value.nextPosition ).to.deep.equal( Position.createFromParentAndOffset( item.value.item, 0 ) );
+		} else {
+			expect( item.value.nextPosition ).to.deep.equal( Position.createAfter( item.value.item ) );
 		}
 	}
 

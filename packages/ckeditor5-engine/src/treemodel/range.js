@@ -68,15 +68,6 @@ export default class Range {
 	}
 
 	/**
-	 * Range iterator.
-	 *
-	 * @see core.treeModel.TreeWalker
-	 */
-	[ Symbol.iterator ]() {
-		return new TreeWalker( { boundaries: this } );
-	}
-
-	/**
 	 * Checks whether this contains given {@link core.treeModel.Position position}.
 	 *
 	 * @param {core.treeModel.Position} position Position to check.
@@ -276,7 +267,7 @@ export default class Range {
 	 * (`false`) objects. Defaults to `false`.
 	 * @returns {Iterable.<core.treeModel.Node|treeModel.TextFragment>}
 	 */
-	*getAllNodes( mergeCharacters ) {
+	*getValues( mergeCharacters ) {
 		let it = new TreeWalker( { boundaries: this, mergeCharacters: mergeCharacters } );
 		let step;
 
@@ -284,9 +275,15 @@ export default class Range {
 			step = it.next();
 
 			if ( step.value && step.value.type != 'ELEMENT_END' ) {
-				yield step.value.item;
+				yield step.value;
 			}
 		} while ( !step.done );
+	}
+
+	*getItems( mergeCharacters ) {
+		for ( let value of this.getValues( mergeCharacters ) ) {
+			yield value.item;
+		}
 	}
 
 	/**

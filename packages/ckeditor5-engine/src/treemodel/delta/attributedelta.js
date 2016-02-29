@@ -86,7 +86,7 @@ function changeNode( doc, delta, key, value, node ) {
 
 // Because attribute operation needs to have the same attribute value on the whole range, this function split the range
 // into smaller parts.
-function changeRange( doc, delta, key, value, range ) {
+function changeRange( doc, delta, attributeKey, attributeValue, range ) {
 	// Position of the last split, the beginning of the new range.
 	let lastSplitPosition = range.start;
 
@@ -94,48 +94,37 @@ function changeRange( doc, delta, key, value, range ) {
 	// position of the iterator but the previous one (we need to iterate one more time to get the value after).
 	let position;
 	// Value before the currently position.
-	let valueBefore;
+	let attributeValueBefore;
 	// Value after the currently position.
-	let valueAfter;
+	let attributeValueAfter;
 
-	// Because we need not only a node, but also a position, we can not use ( value of range ).
-	const iterator = range[ Symbol.iterator ]();
-	// Iterator state.
-	let next = iterator.next();
+	for ( let value of range.getValues( true ) ) {
+		attributeValueAfter = value.item.getAttribute( attributeKey );
 
-	while ( !next.done ) {
-		// We check values only when the range contains given element, that is when the iterator "enters" the element.
-		// To prevent double-checking or not needed checking, we filter-out iterator values for ELEMENT_END position.
-		if ( next.value.type != 'ELEMENT_END' ) {
-			valueAfter = next.value.item.getAttribute( key );
-
-			// At the first run of the iterator the position in undefined. We also do not have a valueBefore, but
-			// because valueAfter may be null, valueBefore may be equal valueAfter ( undefined == null ).
-			if ( position && valueBefore != valueAfter ) {
-				// if valueBefore == value there is nothing to change, so we add operation only if these values are different.
-				if ( valueBefore != value ) {
-					addOperation();
-				}
-
-				lastSplitPosition = position;
+		// At the first run of the iterator the position in undefined. We also do not have a attributeValueBefore, but
+		// because attributeValueAfter may be null, attributeValueBefore may be equal attributeValueAfter ( undefined == null ).
+		if ( position && attributeValueBefore != attributeValueAfter ) {
+			// if attributeValueBefore == attributeValue there is nothing to change, so we add operation only if these values are different.
+			if ( attributeValueBefore != attributeValue ) {
+				addOperation();
 			}
 
-			position = iterator.position;
-			valueBefore = valueAfter;
+			lastSplitPosition = position;
 		}
 
-		next = iterator.next();
+		position = value.nextPosition;
+		attributeValueBefore = attributeValueAfter;
 	}
 
 	// Because position in the loop is not the iterator position (see let position comment), the last position in
 	// the while loop will be last but one position in the range. We need to check the last position manually.
-	if ( position instanceof Position && position != lastSplitPosition && valueBefore != value ) {
+	if ( position instanceof Position && position != lastSplitPosition && attributeValueBefore != attributeValue ) {
 		addOperation();
 	}
 
 	function addOperation() {
 		let range = new Range( lastSplitPosition, position );
-		const operation = new AttributeOperation( range, key, valueBefore, value, doc.version );
+		const operation = new AttributeOperation( range, attributeKey, attributeValueBefore, attributeValue, doc.version );
 
 		doc.applyOperation( operation );
 		delta.addOperation( operation );

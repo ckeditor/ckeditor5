@@ -90,19 +90,19 @@ export default class AttributeOperation extends Operation {
 	}
 
 	_execute() {
-		for ( let item of this.range.getAllNodes( true ) ) {
+		for ( let item of this.range.getItems( true ) ) {
 			if ( this.oldValue !== null && item.getAttribute( this.key ) !== this.oldValue ) {
 				/**
 				 * The attribute which should be removed does not exists for the given node.
 				 *
 				 * @error operation-attribute-no-attr-to-remove
-				 * @param {core.treeModel.Node} node
+				 * @param {core.treeModel.Node|core.treeModel.TextFragment} item
 				 * @param {String} key
 				 * @param {*} value
 				 */
 				throw new CKEditorError(
 					'operation-attribute-no-attr-to-remove: The attribute which should be removed does not exists for given node.',
-					{ node: item, key: this.key, value: this.oldValue }
+					{ item: item, key: this.key, value: this.oldValue }
 				);
 			}
 

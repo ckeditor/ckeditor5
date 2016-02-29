@@ -186,7 +186,7 @@ describe( 'Range', () => {
 		} );
 	} );
 
-	describe( 'getAllNodes', () => {
+	describe( 'getValues', () => {
 		it( 'should iterate over all nodes which "starts" in the range', () => {
 			const a = new Text( 'a' );
 			const b = new Text( 'b' );
@@ -205,19 +205,19 @@ describe( 'Range', () => {
 				new Position( root, [ 1, 1 ] )
 			);
 
-			let nodes = Array.from( range.getAllNodes() );
+			let values = Array.from( range.getValues() );
 
-			expect( nodes.length ).to.equal( 3 );
-			expect( nodes[ 0 ].character ).to.equal( 'b' );
-			expect( nodes[ 1 ] ).to.equal( e2 );
-			expect( nodes[ 2 ].character ).to.equal( 'x' );
+			expect( values.length ).to.equal( 3 );
+			expect( values[ 0 ].item.character ).to.equal( 'b' );
+			expect( values[ 1 ].item ).to.equal( e2 );
+			expect( values[ 2 ].item.character ).to.equal( 'x' );
 		} );
 
 		it( 'should merge characters with same attributes', () => {
 			prepareRichRoot( root );
 
 			let range = new Range( new Position( root, [ 0, 0, 3 ] ), new Position( root, [ 3, 0, 2 ] ) );
-			let nodes = Array.from( range.getAllNodes( true ) );
+			let nodes = Array.from( range.getItems( true ) );
 			let nodeNames = mapNodesToNames( nodes );
 
 			expect( nodeNames ).to.deep.equal( [ 'T:st', 'E:p', 'T:lorem ipsum', 'E:p', 'T:foo', 'E:p', 'T:bar', 'E:div', 'E:h', 'T:se' ] );

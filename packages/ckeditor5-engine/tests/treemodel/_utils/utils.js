@@ -5,6 +5,8 @@
 
 'use strict';
 
+import TreeWalker from '/ckeditor5/core/treemodel/treewalker.js';
+
 const utils = {
 	/**
 	 * Returns tree structure as a simplified string. Elements are uppercase and characters are lowercase.
@@ -18,9 +20,10 @@ const utils = {
 	 */
 	getNodesAndText( range ) {
 		let txt = '';
+		const treeWalker = new TreeWalker( { boundaries: range } );
 
-		for ( let step of range ) {
-			let node = step.item;
+		for ( let value of treeWalker ) {
+			let node = value.item;
 			let nodeText = node.text || node.character;
 
 			if ( nodeText ) {
