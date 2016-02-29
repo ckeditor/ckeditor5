@@ -57,7 +57,7 @@ module.exports = {
 		return new Promise( ( resolve ) => {
 			inquirer.prompt( [ {
 				name: 'description',
-				message: 'Package description:'
+				message: 'Package description (one sentence):'
 			} ], ( answers ) => {
 				resolve( answers.description || '' );
 			} );
