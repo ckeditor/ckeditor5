@@ -16,7 +16,6 @@ const git = require( '../../tasks/dev/utils/git' );
 const path = require( 'path' );
 
 describe( 'dev-create-package', () => {
-	const emptyFn = () => { };
 	let spies;
 
 	const mainRepositoryPath = '/path/to/repository';
