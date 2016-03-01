@@ -304,7 +304,7 @@ export default class Position {
 	/**
 	 * Checks whether this position is after given position.
 	 *
-	 * **Note:** see {@link core.treeModel.Position#isBefore}.
+	 * @see core.treeModel.Position#isBefore
 	 *
 	 * @param {core.treeModel.Position} otherPosition Position to compare with.
 	 * @returns {Boolean} True if this position is after given position.
