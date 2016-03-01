@@ -90,7 +90,7 @@ export default class AttributeOperation extends Operation {
 	}
 
 	_execute() {
-		for ( let item of this.range.getItems( true ) ) {
+		for ( let item of this.range.getItems() ) {
 			if ( this.oldValue !== null && item.getAttribute( this.key ) !== this.oldValue ) {
 				/**
 				 * The attribute which should be removed does not exists for the given node.

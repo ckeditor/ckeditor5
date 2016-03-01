@@ -23,9 +23,9 @@ export default class TreeWalker {
 	 * @param {Object} options Object with configuration.
 	 * @param {core.treeModel.Range} [options.boundaries] Range to define boundaries of the iterator.
 	 * @param {core.treeModel.Position} [options.position] Starting position.
-	 * @param {Boolean} [options.mergeCharacters=false] Flag indicating whether all consecutive characters with the same attributes
-	 * should be returned as one {@link core.treeModel.TextFragment} (`true`) or one by one as multiple {@link core.treeModel.CharacterProxy}
-	 * (`false`) objects.
+	 * @param {Boolean} [options.singleCharacters=false] Flag indicating whether all consecutive characters with the same attributes
+	 * should be returned one by one as multiple {@link core.treeModel.CharacterProxy} (`true`) objects or as one
+	 * {@link core.treeModel.TextFragment} (`false`).
 	 * @constructor
 	 */
 	constructor( options ) {
@@ -82,7 +82,7 @@ export default class TreeWalker {
 		 *
 		 * @type {Boolean}
 		 */
-		this.mergeCharacters = !!options.mergeCharacters;
+		this.singleCharacters = !!options.singleCharacters;
 
 		/**
 		 * Parent of the most recently visited node. Cached for optimization purposes.
@@ -133,7 +133,12 @@ export default class TreeWalker {
 
 			return formatReturnValue( 'ELEMENT_START', node, previousPosition, position, 1 );
 		} else if ( node instanceof CharacterProxy ) {
-			if ( this.mergeCharacters ) {
+			if ( this.singleCharacters ) {
+				position.offset++;
+				this.position = position;
+
+				return formatReturnValue( 'CHARACTER', node, previousPosition, position, 1 );
+			} else {
 				let charactersCount = node._nodeListText.text.length - node._index;
 				let offset = position.offset + charactersCount;
 
@@ -148,11 +153,6 @@ export default class TreeWalker {
 				this.position = position;
 
 				return formatReturnValue( 'TEXT', textFragment, previousPosition, position, charactersCount );
-			} else {
-				position.offset++;
-				this.position = position;
-
-				return formatReturnValue( 'CHARACTER', node, previousPosition, position, 1 );
 			}
 		} else {
 			position.path.pop();
@@ -199,7 +199,12 @@ export default class TreeWalker {
 
 			return formatReturnValue( 'ELEMENT_END', node, position, previousPosition );
 		} else if ( node instanceof CharacterProxy ) {
-			if ( this.mergeCharacters ) {
+			if ( this.singleCharacters ) {
+				position.offset--;
+				this.position = position;
+
+				return formatReturnValue( 'CHARACTER', node, position, previousPosition, 1 );
+			} else {
 				let charactersCount = node._index + 1;
 				let offset = position.offset - charactersCount;
 
@@ -214,11 +219,6 @@ export default class TreeWalker {
 				this.position = position;
 
 				return formatReturnValue( 'TEXT', textFragment, position, previousPosition, charactersCount );
-			} else {
-				position.offset--;
-				this.position = position;
-
-				return formatReturnValue( 'CHARACTER', node, position, previousPosition, 1 );
 			}
 		} else {
 			position.path.pop();

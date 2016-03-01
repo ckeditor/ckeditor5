@@ -98,7 +98,7 @@ function changeRange( doc, delta, attributeKey, attributeValue, range ) {
 	// Value after the currently position.
 	let attributeValueAfter;
 
-	for ( let value of range.getValues( true ) ) {
+	for ( let value of range ) {
 		attributeValueAfter = value.item.getAttribute( attributeKey );
 
 		// At the first run of the iterator the position in undefined. We also do not have a attributeValueBefore, but
