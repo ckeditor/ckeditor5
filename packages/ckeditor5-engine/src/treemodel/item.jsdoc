@@ -1,0 +1,10 @@
+/**
+ * @license Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+/**
+ * Item is a {@link core.treeModel.Node Node} or {core.treeModel.TextFragment TextFragment}.
+ *
+ * @typedef {core.treeModel.Node|core.treeModel.TextFragment} core.treeModel.Item
+ */
