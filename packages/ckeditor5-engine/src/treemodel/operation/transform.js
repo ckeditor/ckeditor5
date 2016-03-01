@@ -8,6 +8,7 @@
 import InsertOperation from './insertoperation.js';
 import AttributeOperation from './attributeoperation.js';
 import MoveOperation from './moveoperation.js';
+import RemoveOperation from './removeoperation.js';
 import NoOperation from './nooperation.js';
 import Range from '../range.js';
 import isEqual from '../../lib/lodash/isEqual.js';
@@ -206,6 +207,14 @@ const ot = {
 		// Transforms MoveOperation `a` by MoveOperation `b`. Accepts a flag stating whether `a` is more important
 		// than `b` when it comes to resolving conflicts. Returns results as an array of operations.
 		MoveOperation( a, b, isStrong ) {
+			// If one of operations is actually a remove operation, we force remove operation to be the "stronger" one
+			// to provide more expected results.
+			if ( a instanceof RemoveOperation && !( b instanceof RemoveOperation ) ) {
+				isStrong = true;
+			} else if ( !( a instanceof RemoveOperation ) && b instanceof RemoveOperation ) {
+				isStrong = false;
+			}
+
 			// Special case when both move operations' target positions are inside nodes that are
 			// being moved by the other move operation. So in other words, we move ranges into inside of each other.
 			// This case can't be solved reasonably (on the other hand, it should not happen often).
