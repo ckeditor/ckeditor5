@@ -96,7 +96,7 @@ export default class AttributeOperation extends Operation {
 				 * The attribute which should be removed does not exists for the given node.
 				 *
 				 * @error operation-attribute-no-attr-to-remove
-				 * @param {core.treeModel.Node|core.treeModel.TextFragment} item
+				 * @param {core.treeModel.Item} item
 				 * @param {String} key
 				 * @param {*} value
 				 */
