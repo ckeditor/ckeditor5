@@ -93,6 +93,9 @@ export default class TreeWalker {
 		this._visitedParent = this.position.parent;
 	}
 
+	/**
+	 * Iterator interface.
+	 */
 	[ Symbol.iterator ]() {
 		return this;
 	}
@@ -102,7 +105,7 @@ export default class TreeWalker {
 	 *
 	 * @returns {Object} Object implementing iterator interface, returning information about taken step.
 	 * @returns {Boolean} return.done True if iterator is done.
-	 * @returns {core.treeModel.TreeWalkerItem} return.value Information about taken step.
+	 * @returns {core.treeModel.TreeWalkerValue} return.value Information about taken step.
 	 */
 	next() {
 		const previousPosition = this.position;
@@ -167,7 +170,7 @@ export default class TreeWalker {
 	 *
 	 * @returns {Object} Object implementing iterator interface, returning information about taken step.
 	 * @returns {Boolean} return.done True if iterator is done.
-	 * @returns {core.treeModel.TreeWalkerItem} return.value Information about taken step.
+	 * @returns {core.treeModel.TreeWalkerValue} return.value Information about taken step.
 	 */
 	previous() {
 		const previousPosition = this.position;
@@ -247,16 +250,23 @@ function formatReturnValue( type, item, previousPosition, nextPosition, length )
  * `'CHARACTER'` if walker traversed over a character, or `'TEXT'` if walker traversed over multiple characters (available in
  * character merging mode, see {@link core.treeModel.TreeWalker#constructor}).
  *
- * @typedef {String} core.treeModel.TreeWalkerItemType
+ * @typedef {String} core.treeModel.TreeWalkerValueType
  */
 
 /**
  * Object returned by {@link core.treeModel.TreeWalker} when traversing tree model.
  *
- * @typedef {Object} core.treeModel.TreeWalkerItem
- * @property {treeModel.TreeWalkerItemType} type
- * @property {treeModel.Node|treeModel.TextFragment} item Value between old and new position of {@link core.treeModel.TreeWalker}.
- * @property {treeModel.Position} positionBefore Position before item.
+ * @typedef {Object} core.treeModel.TreeWalkerValue
+ * @property {treeModel.TreeWalkerValueType} type
+ * @property {core.treeModel.Item} item Item between previous and next positions of {@link core.treeModel.TreeWalker}.
+ * @property {treeModel.Position} previousPosition Previous position of the iterator. For `'ELEMENT_END'` it is the last
+ * position inside the element. For all other types it is the position before the item. Note that it is more
+ * efficient to use this position then calculate the position before the node using
+ * {@link core.treeModel.Position.createBefore}. It is also more efficient to get the position after node by shifting
+ * `previousPosition` by `length`, using {@link core.treeModel.Position#getShiftedBy}, then calculate the position using
+ * {@link core.treeModel.Position.createAfter}.
+ * @property {treeModel.Position} nextPosition Next position of the iterator. For `'ELEMENT_START'` it is the first
+ * position inside the element. For all other types it is the position after the item.
  * @property {Number} [length] Length of the item. For `'ELEMENT_START'` and `'CHARACTER'` it is 1. For `'TEXT'` it is
  * the length of the text. For `'ELEMENT_END'` it is undefined.
  */
