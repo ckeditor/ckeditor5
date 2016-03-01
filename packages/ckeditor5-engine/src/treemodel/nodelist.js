@@ -442,12 +442,11 @@ export default class NodeList {
 /**
  * Value that is convertible to an item kept in {@link core.treeModel.NodeList} or an iterable collection of such items.
  * In other words, this is anything that {@link core.treeModel.NodeList#constructor} is able to take and convert to node:
- * * {@link core.treeModel.Element} will be left as is
- * * {@link core.treeModel.CharacterProxy} will be left as is
+ * * {@link core.treeModel.Node} will be left as is
  * * {@link core.treeModel.Text} and {String} will be converted to a set of {@link core.treeModel.CharacterProxy}
  * * {@link core.treeModel.NodeList} will clone a node list (but not the nodes inside, so the new and passed list will
  * point to the same nodes.
  * * Iterable collection of above items will be iterated over and all items will be added to the node list.
  *
- * @typedef {treeModel.Element|treeModel.CharacterProxy|treeModel.Text|String|treeModel.NodeList|Iterable} core.treeModel.NodeSet
+ * @typedef {core.treeModel.Node|core.treeModel.Text|String|core.treeModel.NodeList|Iterable} core.treeModel.NodeSet
  */

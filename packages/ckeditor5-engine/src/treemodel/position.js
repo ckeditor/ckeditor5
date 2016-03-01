@@ -301,7 +301,7 @@ export default class Position {
 	/**
 	 * Checks whether this position is after given position.
 	 *
-	 * **Note:** see {treeModel.Position#isBefore}.
+	 * **Note:** see {@link core.treeModel.Position#isBefore}.
 	 *
 	 * @param {core.treeModel.Position} otherPosition Position to compare with.
 	 * @returns {Boolean} True if this position is after given position.
@@ -411,7 +411,7 @@ export default class Position {
 	/**
 	 * Creates a new position after given node.
 	 *
-	 * @see core.treeModel.TreeWalkerValue
+	 * @see {@link core.treeModel.TreeWalkerValue}
 	 *
 	 * @param {core.treeModel.Node} node Node the position should be directly after.
 	 * @returns {core.treeModel.Position}
@@ -433,7 +433,7 @@ export default class Position {
 	/**
 	 * Creates a new position before the given node.
 	 *
-	 * @see core.treeModel.TreeWalkerValue
+	 * @see {@link core.treeModel.TreeWalkerValue}
 	 *
 	 * @param {core.treeModel.node} node Node the position should be directly before.
 	 * @returns {core.treeModel.Position}

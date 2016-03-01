@@ -15,7 +15,7 @@ const utils = {
 	 *		let element = new Element( 'div', [], [ 'abc', new Element( 'p', [], 'foo' ), 'xyz' ] );
 	 *		treemodelUtils.getNodesAndText( element ); // abcPfooPxyz
 	 *
-	 * @param {treeModel.Range} range Range to stringify.
+	 * @param {core.treeModel.Range} range Range to stringify.
 	 * @returns {String} String representing element inner structure.
 	 */
 	getNodesAndText( range ) {

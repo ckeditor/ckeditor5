@@ -253,7 +253,7 @@ export default class Range {
 
 	/**
 	 * Returns an iterator that iterates over all {@link core.treeModel.Item items} that are in this range and returns
-	 * them together together with additional information like length or {@link core.treeModel.Position positions},
+	 * them together with additional information like length or {@link core.treeModel.Position positions},
 	 * grouped as {@link core.treeModel.TreeWalkerValue}.
 	 *
 	 * A node is in the range when it is after a {@link core.treeModel.Position position} contained in this range.
@@ -265,11 +265,11 @@ export default class Range {
 	 * returns each {@link core.treeModel.Element} once, while simply used {@link core.treeModel.TreeWalker} might
 	 * return it twice: for `'ELEMENT_START'` and `'ELEMENT_END'`.
 	 *
-	 * **Node:*** because this method does not return {@link core.treeModel.TreeWalkerValue values} with the type of
+	 * **Note:** because this method does not return {@link core.treeModel.TreeWalkerValue values} with the type of
 	 * `'ELEMENT_END'`, you can use {@link core.treeModel.TreeWalkerValue.previousPosition} as a position before the
 	 * item.
 	 *
-	 * @see {treeModel.TreeWalker}
+	 * @see {core.treeModel.TreeWalker}
 	 * @param {Boolean} [mergeCharacters] Flag indicating whether all consecutive characters with the same attributes
 	 * should be returned as one {@link core.treeModel.TextFragment} (`true`) or one by one as multiple
 	 * {@link core.treeModel.CharacterProxy} (`false`) objects. Defaults to `false`.
@@ -360,7 +360,7 @@ export default class Range {
 	}
 
 	/**
-	 * Returns an array containing one or two {treeModel.Range ranges} that are a result of transforming this
+	 * Returns an array containing one or two {core.treeModel.Range ranges} that are a result of transforming this
 	 * {@link core.treeModel.Range range} by inserting `howMany` nodes at `insertPosition`. Two {@link core.treeModel.Range ranges} are
 	 * returned if the insertion was inside this {@link core.treeModel.Range range}.
 	 *
@@ -378,8 +378,8 @@ export default class Range {
 	 *
 	 * @param {core.treeModel.Position} insertPosition Position where nodes are inserted.
 	 * @param {Number} howMany How many nodes are inserted.
-	 * @param {Boolean} spreadOnlyOnSameLevel Flag indicating whether this {treeModel.Range range} should be spread
-	 * if insertion was inside a node from this {treeModel.Range range} but not in the range itself.
+	 * @param {Boolean} spreadOnlyOnSameLevel Flag indicating whether this {core.treeModel.Range range} should be spread
+	 * if insertion was inside a node from this {core.treeModel.Range range} but not in the range itself.
 	 * @returns {Array.<core.treeModel.Range>} Result of the transformation.
 	 */
 	getTransformedByInsertion( insertPosition, howMany, spreadOnlyOnSameLevel ) {

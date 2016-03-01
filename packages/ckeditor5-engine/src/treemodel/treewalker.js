@@ -257,15 +257,15 @@ function formatReturnValue( type, item, previousPosition, nextPosition, length )
  * Object returned by {@link core.treeModel.TreeWalker} when traversing tree model.
  *
  * @typedef {Object} core.treeModel.TreeWalkerValue
- * @property {treeModel.TreeWalkerValueType} type
- * @property {core.treeModel.Item} item Item between previous and next positions of {@link core.treeModel.TreeWalker}.
- * @property {treeModel.Position} previousPosition Previous position of the iterator. For `'ELEMENT_END'` it is the last
+ * @property {core.treeModel.TreeWalkerValueType} type
+ * @property {core.treeModel.Item} item Item between old and new positions of {@link core.treeModel.TreeWalker}.
+ * @property {core.treeModel.Position} previousPosition Previous position of the iterator. For `'ELEMENT_END'` it is the last
  * position inside the element. For all other types it is the position before the item. Note that it is more
  * efficient to use this position then calculate the position before the node using
  * {@link core.treeModel.Position.createBefore}. It is also more efficient to get the position after node by shifting
  * `previousPosition` by `length`, using {@link core.treeModel.Position#getShiftedBy}, then calculate the position using
  * {@link core.treeModel.Position.createAfter}.
- * @property {treeModel.Position} nextPosition Next position of the iterator. For `'ELEMENT_START'` it is the first
+ * @property {core.treeModel.Position} nextPosition Next position of the iterator. For `'ELEMENT_START'` it is the first
  * position inside the element. For all other types it is the position after the item.
  * @property {Number} [length] Length of the item. For `'ELEMENT_START'` and `'CHARACTER'` it is 1. For `'TEXT'` it is
  * the length of the text. For `'ELEMENT_END'` it is undefined.
