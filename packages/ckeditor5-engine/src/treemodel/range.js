@@ -252,20 +252,28 @@ export default class Range {
 	}
 
 	/**
-	 * Returns an iterator that iterates over all {@link core.treeModel.Node nodes} that are in this range and returns them.
-	 * A node is in the range when it is after a {@link core.treeModel.Position position} contained in this range.
-	 * In other words, this iterates over all text characters that are inside the range and all the {@link core.treeModel.Element}s
-	 * we enter into when iterating over this range.
+	 * Returns an iterator that iterates over all {@link core.treeModel.Item items} that are in this range and returns
+	 * them together together with additional information like length or {@link core.treeModel.Position positions},
+	 * grouped as {@link core.treeModel.TreeWalkerValue}.
 	 *
-	 * **Note:** this method will not return a parent node of start position. This is in contrary to {@link core.treeModel.TreeWalker}
-	 * which will return that node with `'ELEMENT_END'` type. This method also returns each {@link core.treeModel.Element} once,
-	 * while simply used {@link core.treeModel.TreeWalker} might return it twice: for `'ELEMENT_START'` and `'ELEMENT_END'`.
+	 * A node is in the range when it is after a {@link core.treeModel.Position position} contained in this range.
+	 * In other words, this iterates over all text characters that are inside the range and all the
+	 * {@link core.treeModel.Element}s we enter into when iterating over this range.
+	 *
+	 * **Note:** this method will not return a parent node of start position. This is in contrary to
+	 * {@link core.treeModel.TreeWalker} which will return that node with `'ELEMENT_END'` type. This method also
+	 * returns each {@link core.treeModel.Element} once, while simply used {@link core.treeModel.TreeWalker} might
+	 * return it twice: for `'ELEMENT_START'` and `'ELEMENT_END'`.
+	 *
+	 * **Node:*** because this method does not return {@link core.treeModel.TreeWalkerValue values} with the type of
+	 * `'ELEMENT_END'`, you can use {@link core.treeModel.TreeWalkerValue.previousPosition} as a position before the
+	 * item.
 	 *
 	 * @see {treeModel.TreeWalker}
 	 * @param {Boolean} [mergeCharacters] Flag indicating whether all consecutive characters with the same attributes
-	 * should be returned as one {@link core.treeModel.TextFragment} (`true`) or one by one as multiple {@link core.treeModel.CharacterProxy}
-	 * (`false`) objects. Defaults to `false`.
-	 * @returns {Iterable.<core.treeModel.Node|treeModel.TextFragment>}
+	 * should be returned as one {@link core.treeModel.TextFragment} (`true`) or one by one as multiple
+	 * {@link core.treeModel.CharacterProxy} (`false`) objects. Defaults to `false`.
+	 * @returns {Iterable.<core.treeModel.TreeWalkerValue>}
 	 */
 	*getValues( mergeCharacters ) {
 		const treeWalker = new TreeWalker( { boundaries: this, mergeCharacters: mergeCharacters } );
@@ -277,6 +285,14 @@ export default class Range {
 		}
 	}
 
+	/**
+	 * Use {@link core.treeModel.Range#getValues}, but return only {@link core.treeModel.Item items} from
+	 * {@link core.treeModel.TreeWalkerValue}.
+	 *
+	 * @see {core.treeModel.Range#getValues}
+	 * @param {Boolean} [mergeCharacters] See {@link core.treeModel.Range#getValues}.
+	 * @returns {Iterable.<core.treeModel.Item>}
+	 */
 	*getItems( mergeCharacters ) {
 		for ( let value of this.getValues( mergeCharacters ) ) {
 			yield value.item;
