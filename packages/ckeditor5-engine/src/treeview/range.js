@@ -40,6 +40,15 @@ export default class Range {
 	}
 
 	/**
+	 * Returns whether the range is collapsed, that is it start and end positions are equal.
+	 *
+	 * @type {Boolean}
+	 */
+	get isCollapsed() {
+		return this.start.isEqual( this.end );
+	}
+
+	/**
 	 * Two ranges equal if their start and end positions equal.
 	 *
 	 * @param {core.treeView.Range} otherRange Range to compare with.
@@ -47,5 +56,21 @@ export default class Range {
 	 */
 	isEqual( otherRange ) {
 		return this == otherRange || ( this.start.isEqual( otherRange.start ) && this.end.isEqual( otherRange.end ) );
+	}
+
+	/**
+	 * Creates a range from given parents and offsets.
+	 *
+	 * @param {core.treeView.Element} startElement Start position parent element.
+	 * @param {Number} startOffset Start position offset.
+	 * @param {core.treeView.Element} endElement End position parent element.
+	 * @param {Number} endOffset End position offset.
+	 * @returns {core.treeView.Range} Created range.
+	 */
+	static createFromParentsAndOffsets( startElement, startOffset, endElement, endOffset ) {
+		return new this(
+			new Position( startElement, startOffset ),
+			new Position( endElement, endOffset )
+		);
 	}
 }
