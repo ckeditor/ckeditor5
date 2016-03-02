@@ -442,15 +442,7 @@ describe( 'Selection', () => {
 				selection.setAttribute( 'foo', 'bar' );
 				selection.setAttribute( 'abc', 'xyz' );
 
-				let it = selection.getAttributes();
-				let attrs = [];
-
-				let step = it.next();
-
-				while ( !step.done ) {
-					attrs.push( step.value );
-					step = it.next();
-				}
+				let attrs = Array.from( selection.getAttributes() );
 
 				expect( attrs ).to.deep.equal( [ [ 'foo', 'bar' ], [ 'abc', 'xyz' ] ] );
 			} );

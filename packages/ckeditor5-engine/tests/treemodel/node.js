@@ -174,17 +174,7 @@ describe( 'Node', () => {
 
 		describe( 'getAttributes', () => {
 			it( 'should return an iterator that iterates over all attributes set on the element', () => {
-				let it = node.getAttributes();
-				let attrs = [];
-
-				let step = it.next();
-
-				while ( !step.done ) {
-					attrs.push( step.value );
-					step = it.next();
-				}
-
-				expect( attrs ).to.deep.equal( [ [ 'foo', 'bar' ] ] );
+				expect( Array.from( node.getAttributes() ) ).to.deep.equal( [ [ 'foo', 'bar' ] ] );
 			} );
 		} );
 	} );

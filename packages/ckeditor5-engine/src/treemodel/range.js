@@ -342,28 +342,23 @@ export default class Range {
 		for ( let range of flatRanges ) {
 			// This loop could be much simpler as we could just iterate over siblings of node after the first
 			// position of each range. But then we would have to re-implement character merging strategy here.
-			let it = new TreeWalker( { boundaries: range, singleCharacters: singleCharacters } );
-			let step;
+			let walker = new TreeWalker( { boundaries: range, singleCharacters: singleCharacters } );
 
 			// We will only return nodes that are on same level as node after the range start. To do this,
 			// we keep "depth" counter.
 			let depth = 0;
 
-			do {
-				step = it.next();
-
-				if ( step.value ) {
-					if ( step.value.type == 'ELEMENT_START' ) {
-						depth++;
-					} else if ( step.value.type == 'ELEMENT_END' ) {
-						depth--;
-					}
-
-					if ( depth === 0 ) {
-						yield step.value.item;
-					}
+			for ( let value of walker ) {
+				if ( value.type == 'ELEMENT_START' ) {
+					depth++;
+				} else if ( value.type == 'ELEMENT_END' ) {
+					depth--;
 				}
-			} while ( !step.done );
+
+				if ( depth === 0 ) {
+					yield value.item;
+				}
+			}
 		}
 	}
 
