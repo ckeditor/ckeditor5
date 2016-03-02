@@ -48,7 +48,7 @@ export default class LivePosition extends Position {
 		 * - | sticks to previous node: `<p>f|[oo]</p><p>b^ar</p>` => `<p>f|</p><p>booar</p>`
 		 * - | sticks to next node: `<p>f|[oo]</p><p>b^ar</p>` => `<p>f</p><p>b|ooar</p>`
 		 *
-		 * @member {treeModel.PositionStickiness} core.treeModel.LivePosition#stickiness
+		 * @member {core.treeModel.PositionStickiness} core.treeModel.LivePosition#stickiness
 		 */
 		this.stickiness = stickiness || 'STICKS_TO_NEXT';
 

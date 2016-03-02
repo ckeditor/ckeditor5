@@ -16,7 +16,7 @@ import Range from '/ckeditor5/core/treemodel/range.js';
 import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
 describe( 'range iterator', () => {
-	let doc, expectedItems, expectedItemsMerged, root, img1, paragraph, b, a, r, img2, x;
+	let doc, expectedItemsSingle, expectedItemsMerged, root, img1, paragraph, b, a, r, img2, x;
 
 	before( () => {
 		doc = new Document();
@@ -44,7 +44,7 @@ describe( 'range iterator', () => {
 
 		root.insertChildren( 0, [ img1, paragraph ] );
 
-		expectedItems = [
+		expectedItemsSingle = [
 			{ type: 'ELEMENT_START', item: img1 },
 			{ type: 'ELEMENT_END', item: img1 },
 			{ type: 'ELEMENT_START', item: paragraph },
@@ -73,119 +73,172 @@ describe( 'range iterator', () => {
 	function expectItem( item, expected ) {
 		expect( item.done ).to.be.false;
 
-		if ( item.value.type == 'TEXT' || item.value.type == 'CHARACTER' ) {
-			let text = item.value.item.text || item.value.item.character;
-			let attrs = item.value.item._attrs || item.value.item.first._attrs;
+		expectValue( item.value, expected );
+	}
 
-			expect( text ).to.equal( expected.text );
-			expect( Array.from( attrs ) ).to.deep.equal( expected.attrs );
-		} else {
-			expect( item.value ).to.deep.equal( expected );
+	function expectValue( value, expected ) {
+		expect( value.type ).to.equal( expected.type );
+
+		if ( value.type == 'TEXT' ) {
+			expectText( value, expected );
+		} else if ( value.type == 'CHARACTER' ) {
+			expectCharacter( value, expected );
+		} else if ( value.type == 'ELEMENT_START' ) {
+			expectStart( value, expected );
+		} else if ( value.type == 'ELEMENT_END' ) {
+			expectEnd( value, expected );
 		}
 	}
 
-	it( 'should return next position', () => {
-		let iterator = new TreeWalker( { position: new Position( root, [ 0 ] ) } ); // beginning of root
-		let i, len;
+	function expectText( value, expected ) {
+		expect( value.item.text ).to.equal( expected.text );
+		expect( Array.from( value.item.first._attrs ) ).to.deep.equal( expected.attrs );
+		expect( value.length ).to.equal( value.item.text.length );
+		expect( value.previousPosition ).to.deep.equal( Position.createBefore( value.item.first ) );
+		expect( value.nextPosition ).to.deep.equal( Position.createAfter( value.item.last ) );
+	}
 
-		for ( i = 0, len = expectedItems.length; i < len; i++ ) {
-			expectItem( iterator.next(), expectedItems[ i ] );
+	function expectCharacter( value, expected ) {
+		expect( value.item.character ).to.equal( expected.text );
+		expect( Array.from( value.item._attrs ) ).to.deep.equal( expected.attrs );
+		expect( value.length ).to.equal( value.item.character.length );
+		expect( value.previousPosition ).to.deep.equal( Position.createBefore( value.item ) );
+		expect( value.nextPosition ).to.deep.equal( Position.createAfter( value.item ) );
+	}
+
+	function expectStart( value, expected ) {
+		expect( value.item ).to.equal( expected.item );
+		expect( value.length ).to.equal( 1 );
+		expect( value.previousPosition ).to.deep.equal( Position.createBefore( value.item ) );
+		expect( value.nextPosition ).to.deep.equal( Position.createFromParentAndOffset( value.item, 0 ) );
+	}
+
+	function expectEnd( value, expected ) {
+		expect( value.item ).to.equal( expected.item );
+		expect( value.length ).to.be.undefined;
+		expect( value.previousPosition ).to.deep.equal(
+			Position.createFromParentAndOffset( value.item, value.item.getChildCount() ) );
+		expect( value.nextPosition ).to.deep.equal( Position.createAfter( value.item ) );
+	}
+
+	describe( 'merged characters', () => {
+		it( 'should iterate over the range using next', () => {
+			let start = new Position( root, [ 1 ] );
+			let end = new Position( root, [ 1, 4 ] );
+			let range = new Range( start, end );
+
+			let iterator = new TreeWalker( { boundaries: range, position: range.start } );
+			let i;
+
+			for ( i = 2; i <= 6; i++ ) {
+				expectItem( iterator.next(), expectedItemsMerged[ i ] );
+			}
+			expect( iterator.next() ).to.have.property( 'done' ).that.is.true;
+		} );
+
+		it( 'should iterate over the range using previous', () => {
+			let start = new Position( root, [ 1 ] );
+			let end = new Position( root, [ 1, 4 ] );
+			let range = new Range( start, end );
+
+			let iterator = new TreeWalker( { boundaries: range, position: range.end } );
+
+			for ( let i = 6; i >= 2; i-- ) {
+				expectItem( iterator.previous(), expectedItemsMerged[ i ] );
+			}
+			expect( iterator.previous() ).to.have.property( 'done' ).that.is.true;
+		} );
+
+		it( 'should respect boundaries when iterating using next', () => {
+			let start = new Position( root, [ 1, 0 ] );
+			let end = new Position( root, [ 1, 1 ] );
+			let range = new Range( start, end );
+
+			let iterator = new TreeWalker( { boundaries: range, position: range.start } );
+			let val = iterator.next();
+
+			expect( val.done ).to.be.false;
+			expect( val.value.item.text ).to.equal( 'b' );
+
+			val = iterator.next();
+			expect( val.done ).to.be.true;
+		} );
+
+		it( 'should respect boundaries when iterating using previous', () => {
+			let start = new Position( root, [ 1, 1 ] );
+			let end = new Position( root, [ 1, 2 ] );
+			let range = new Range( start, end );
+
+			let iterator = new TreeWalker( { boundaries: range, position: range.end } );
+			let val = iterator.previous();
+
+			expect( val.done ).to.be.false;
+			expect( val.value.item.text ).to.equal( 'a' );
+
+			val = iterator.previous();
+			expect( val.done ).to.be.true;
+		} );
+	} );
+
+	describe( 'single characters', () => {
+		it( 'should iterate over the range using next', () => {
+			let iterator = new TreeWalker( { position: new Position( root, [ 0 ] ), singleCharacters: true } ); // beginning of root
+			let i, len;
+
+			for ( i = 0, len = expectedItemsSingle.length; i < len; i++ ) {
+				expectItem( iterator.next(), expectedItemsSingle[ i ] );
+			}
+			expect( iterator.next() ).to.have.property( 'done' ).that.is.true;
+		} );
+
+		it( 'should iterate over the range using previous', () => {
+			let iterator = new TreeWalker( { position: new Position( root, [ 2 ] ), singleCharacters: true } ); // ending of root
+
+			for ( let i = expectedItemsSingle.length - 1; i >= 0; i-- ) {
+				expectItem( iterator.previous(), expectedItemsSingle[ i ] );
+			}
+			expect( iterator.previous() ).to.have.property( 'done' ).that.is.true;
+		} );
+
+		it( 'should respect boundaries when iterating using next', () => {
+			let start = new Position( root, [ 1, 0 ] ); // p, 0
+			let end = new Position( root, [ 1, 3, 0 ] ); // img, 0
+
+			let iterator = new TreeWalker( { boundaries: new Range( start, end ), singleCharacters: true } );
+
+			let i, len;
+
+			for ( i = 3, len = expectedItemsSingle.length; i < 7; i++ ) {
+				expectItem( iterator.next(), expectedItemsSingle[ i ] );
+			}
+			expect( iterator.next() ).to.have.property( 'done' ).that.is.true;
+		} );
+
+		it( 'should respect boundaries when iterating using previous', () => {
+			let start = new Position( root, [ 1, 0 ] ); // p, 0
+			let end = new Position( root, [ 1, 3, 0 ] ); // img, 0
+
+			let iterator = new TreeWalker( { boundaries: new Range( start, end ), position: end, singleCharacters: true } );
+
+			let i, len;
+
+			for ( i = 6, len = expectedItemsSingle.length; i > 2; i-- ) {
+				expectItem( iterator.previous(), expectedItemsSingle[ i ] );
+			}
+			expect( iterator.previous() ).to.have.property( 'done' ).that.is.true;
+		} );
+	} );
+
+	it( 'should provide iterator interface', () => {
+		let iterator = new TreeWalker( { position: new Position( root, [ 0 ] ) } );
+		let i = 0;
+
+		for ( let value of iterator ) {
+			expectValue( value, expectedItemsMerged[ i ] );
+			i++;
 		}
-		expect( iterator.next() ).to.have.property( 'done' ).that.is.true;
-	} );
 
-	it( 'should return previous position', () => {
-		let iterator = new TreeWalker( { position: new Position( root, [ 2 ] ) } ); // ending of root
-
-		for ( let i = expectedItems.length - 1; i >= 0; i-- ) {
-			expectItem( iterator.previous(), expectedItems[ i ] );
-		}
-		expect( iterator.previous() ).to.have.property( 'done' ).that.is.true;
-	} );
-
-	it( 'should return next position in the boundaries', () => {
-		let start = new Position( root, [ 1, 0 ] ); // p, 0
-		let end = new Position( root, [ 1, 3, 0 ] ); // img, 0
-
-		let iterator = new TreeWalker( { boundaries: new Range( start, end ) } );
-
-		let i, len;
-
-		for ( i = 3, len = expectedItems.length; i < 7; i++ ) {
-			expectItem( iterator.next(), expectedItems[ i ] );
-		}
-		expect( iterator.next() ).to.have.property( 'done' ).that.is.true;
-	} );
-
-	it( 'should return previous position in the boundaries', () => {
-		let start = new Position( root, [ 1, 0 ] ); // p, 0
-		let end = new Position( root, [ 1, 3, 0 ] ); // img, 0
-
-		let iterator = new TreeWalker( { boundaries: new Range( start, end ), position: end } );
-
-		let i, len;
-
-		for ( i = 6, len = expectedItems.length; i > 2; i-- ) {
-			expectItem( iterator.previous(), expectedItems[ i ] );
-		}
-		expect( iterator.previous() ).to.have.property( 'done' ).that.is.true;
-	} );
-
-	it( 'should merge characters when iterating over the range using next', () => {
-		let start = new Position( root, [ 1 ] );
-		let end = new Position( root, [ 1, 4 ] );
-		let range = new Range( start, end );
-
-		let iterator = new TreeWalker( { boundaries: range, position: range.start, mergeCharacters: true } );
-		let i;
-
-		for ( i = 2; i <= 6; i++ ) {
-			expectItem( iterator.next(), expectedItemsMerged[ i ] );
-		}
-		expect( iterator.next() ).to.have.property( 'done' ).that.is.true;
-	} );
-
-	it( 'should merge characters when iterating over the range using previous', () => {
-		let start = new Position( root, [ 1 ] );
-		let end = new Position( root, [ 1, 4 ] );
-		let range = new Range( start, end );
-
-		let iterator = new TreeWalker( { boundaries: range, position: range.end, mergeCharacters: true } );
-
-		for ( let i = 6; i >= 2; i-- ) {
-			expectItem( iterator.previous(), expectedItemsMerged[ i ] );
-		}
-		expect( iterator.previous() ).to.have.property( 'done' ).that.is.true;
-	} );
-
-	it( 'should respect boundaries when iterating using next and merging characters', () => {
-		let start = new Position( root, [ 1, 0 ] );
-		let end = new Position( root, [ 1, 1 ] );
-		let range = new Range( start, end );
-
-		let iterator = new TreeWalker( { boundaries: range, position: range.start, mergeCharacters: true } );
-		let val = iterator.next();
-
-		expect( val.done ).to.be.false;
-		expect( val.value.item.text ).to.equal( 'b' );
-
-		val = iterator.next();
-		expect( val.done ).to.be.true;
-	} );
-
-	it( 'should respect boundaries when iterating using previous and merging characters', () => {
-		let start = new Position( root, [ 1, 1 ] );
-		let end = new Position( root, [ 1, 2 ] );
-		let range = new Range( start, end );
-
-		let iterator = new TreeWalker( { boundaries: range, position: range.end, mergeCharacters: true } );
-		let val = iterator.previous();
-
-		expect( val.done ).to.be.false;
-		expect( val.value.item.text ).to.equal( 'a' );
-
-		val = iterator.previous();
-		expect( val.done ).to.be.true;
+		expect( i ).to.equal( 9 );
 	} );
 
 	it( 'should throw if neither boundaries nor starting position is set', () => {

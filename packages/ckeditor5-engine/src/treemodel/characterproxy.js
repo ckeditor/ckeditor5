@@ -13,8 +13,8 @@ import Node from './node.js';
  * the actual nodes in tree model.
  *
  * Keep in mind that CharacterProxy is static, meaning that it won't change when tree model changes. For example, if you
- * have a {treeModel.Element element} `myEl` containing text `foobar` and then assign `let b = myEl.getChild( 3 )` and
- * then remove all nodes from `myEl`, `b` will still have character `b`, parent `myEl` and offset `3`.
+ * have a {core.treeModel.Element element} `myEl` containing text `foobar` and then assign `let b = myEl.getChild( 3 )`
+ * and then remove all nodes from `myEl`, `b` will still have character `b`, parent `myEl` and offset `3`.
  *
  * CharacterProxy is created on the fly basing on tree model. It is not an explicit node in a tree model but
  * rather represents it. Because of this, it is not advised to store or compare instances of CharacterProxy class.

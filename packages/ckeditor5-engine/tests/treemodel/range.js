@@ -186,8 +186,32 @@ describe( 'Range', () => {
 		} );
 	} );
 
-	describe( 'getAllNodes', () => {
-		it( 'should iterate over all nodes which "starts" in the range', () => {
+	describe( 'iterator', () => {
+		it( 'should merge characters with same attributes', () => {
+			prepareRichRoot( root );
+
+			let range = new Range( new Position( root, [ 0, 0, 3 ] ), new Position( root, [ 3, 0, 2 ] ) );
+			let nodes = Array.from( range ).map( value => value.item );
+			let lengths = Array.from( range ).map( value => value.length );
+			let nodeNames = mapNodesToNames( nodes );
+
+			expect( nodeNames ).to.deep.equal( [ 'T:st', 'E:p', 'T:lorem ipsum', 'E:p', 'T:foo', 'E:p', 'T:bar', 'E:div', 'E:h', 'T:se' ] );
+			expect( lengths ).to.deep.equal( [ 2, 1, 11, 1, 3, 1, 3, 1, 1, 2 ] );
+		} );
+	} );
+
+	describe( 'getItems', () => {
+		it( 'should iterate over all items in the range', () => {
+			prepareRichRoot( root );
+
+			let range = new Range( new Position( root, [ 0, 0, 3 ] ), new Position( root, [ 3, 0, 2 ] ) );
+			let items = Array.from( range.getItems() );
+			let nodeNames = mapNodesToNames( items );
+
+			expect( nodeNames ).to.deep.equal( [ 'T:st', 'E:p', 'T:lorem ipsum', 'E:p', 'T:foo', 'E:p', 'T:bar', 'E:div', 'E:h', 'T:se' ] );
+		} );
+
+		it( 'should iterate over all items in the range as single characters', () => {
 			const a = new Text( 'a' );
 			const b = new Text( 'b' );
 			const x = new Text( 'x' );
@@ -205,22 +229,12 @@ describe( 'Range', () => {
 				new Position( root, [ 1, 1 ] )
 			);
 
-			let nodes = Array.from( range.getAllNodes() );
+			let items = Array.from( range.getItems( true ) );
 
-			expect( nodes.length ).to.equal( 3 );
-			expect( nodes[ 0 ].character ).to.equal( 'b' );
-			expect( nodes[ 1 ] ).to.equal( e2 );
-			expect( nodes[ 2 ].character ).to.equal( 'x' );
-		} );
-
-		it( 'should merge characters with same attributes', () => {
-			prepareRichRoot( root );
-
-			let range = new Range( new Position( root, [ 0, 0, 3 ] ), new Position( root, [ 3, 0, 2 ] ) );
-			let nodes = Array.from( range.getAllNodes( true ) );
-			let nodeNames = mapNodesToNames( nodes );
-
-			expect( nodeNames ).to.deep.equal( [ 'T:st', 'E:p', 'T:lorem ipsum', 'E:p', 'T:foo', 'E:p', 'T:bar', 'E:div', 'E:h', 'T:se' ] );
+			expect( items.length ).to.equal( 3 );
+			expect( items[ 0 ].character ).to.equal( 'b' );
+			expect( items[ 1 ] ).to.equal( e2 );
+			expect( items[ 2 ].character ).to.equal( 'x' );
 		} );
 	} );
 
@@ -440,15 +454,15 @@ describe( 'Range', () => {
 			let nodes = Array.from( range.getTopLevelNodes() );
 			let nodeNames = mapNodesToNames( nodes );
 
-			expect( nodeNames ).to.deep.equal( [ 'T:s', 'T:t', 'E:p', 'E:p', 'E:p', 'T:s', 'T:e' ] );
+			expect( nodeNames ).to.deep.equal( [ 'T:st', 'E:p', 'E:p', 'E:p', 'T:se' ] );
 		} );
 
-		it( 'should merge characters with same attributes', () => {
+		it( 'should return single characters iterating over all top-level nodes of this range', () => {
 			let range = new Range( new Position( root, [ 0, 0, 3 ] ), new Position( root, [ 3, 0, 2 ] ) );
 			let nodes = Array.from( range.getTopLevelNodes( true ) );
 			let nodeNames = mapNodesToNames( nodes );
 
-			expect( nodeNames ).to.deep.equal( [ 'T:st', 'E:p', 'E:p', 'E:p', 'T:se' ] );
+			expect( nodeNames ).to.deep.equal( [ 'T:s', 'T:t', 'E:p', 'E:p', 'E:p', 'T:s', 'T:e' ] );
 		} );
 	} );
 
@@ -460,8 +474,8 @@ describe( 'Range', () => {
 		it( 'should iterate over all positions in this range', () => {
 			let expectedPaths = [
 				[ 1, 2 ], [ 1, 3 ],
-				[ 2 ], [ 2, 0 ], [ 2, 1 ], [ 2, 2 ], [ 2, 3 ],
-				[ 3 ], [ 3, 0 ], [ 3, 0, 0 ], [ 3, 0, 1 ], [ 3, 0, 2 ]
+				[ 2 ], [ 2, 0 ], [ 2, 3 ],
+				[ 3 ], [ 3, 0 ], [ 3, 0, 0 ], [ 3, 0, 2 ]
 			];
 			let range = new Range( new Position( root, [ 1, 2 ] ), new Position( root, [ 3, 0, 2 ] ) );
 			let i = 0;
@@ -474,11 +488,11 @@ describe( 'Range', () => {
 			expect( i ).to.equal( expectedPaths.length );
 		} );
 
-		it( 'should merge characters with same attributes', () => {
+		it( 'should return single nodes iterating over all positions in this range', () => {
 			let expectedPaths = [
 				[ 1, 2 ], [ 1, 3 ],
-				[ 2 ], [ 2, 0 ], [ 2, 3 ],
-				[ 3 ], [ 3, 0 ], [ 3, 0, 0 ], [ 3, 0, 2 ]
+				[ 2 ], [ 2, 0 ], [ 2, 1 ], [ 2, 2 ], [ 2, 3 ],
+				[ 3 ], [ 3, 0 ], [ 3, 0, 0 ], [ 3, 0, 1 ], [ 3, 0, 2 ]
 			];
 			let range = new Range( new Position( root, [ 1, 2 ] ), new Position( root, [ 3, 0, 2 ] ) );
 			let i = 0;
