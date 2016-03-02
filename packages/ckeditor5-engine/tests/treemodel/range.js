@@ -451,7 +451,7 @@ describe( 'Range', () => {
 
 		it( 'should iterate over all top-level nodes of this range', () => {
 			let range = new Range( new Position( root, [ 0, 0, 3 ] ), new Position( root, [ 3, 0, 2 ] ) );
-			let nodes = Array.from( range.getTopLevelNodes(  ) );
+			let nodes = Array.from( range.getTopLevelNodes() );
 			let nodeNames = mapNodesToNames( nodes );
 
 			expect( nodeNames ).to.deep.equal( [ 'T:st', 'E:p', 'E:p', 'E:p', 'T:se' ] );

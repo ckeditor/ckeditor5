@@ -122,7 +122,7 @@ describe( 'range iterator', () => {
 	}
 
 	describe( 'merged characters', () => {
-		it( 'should iterating over the range using next', () => {
+		it( 'should iterate over the range using next', () => {
 			let start = new Position( root, [ 1 ] );
 			let end = new Position( root, [ 1, 4 ] );
 			let range = new Range( start, end );
@@ -136,7 +136,7 @@ describe( 'range iterator', () => {
 			expect( iterator.next() ).to.have.property( 'done' ).that.is.true;
 		} );
 
-		it( 'should iterating over the range using previous', () => {
+		it( 'should iterate over the range using previous', () => {
 			let start = new Position( root, [ 1 ] );
 			let end = new Position( root, [ 1, 4 ] );
 			let range = new Range( start, end );
@@ -181,7 +181,7 @@ describe( 'range iterator', () => {
 	} );
 
 	describe( 'single characters', () => {
-		it( 'should iterating over the range using next', () => {
+		it( 'should iterate over the range using next', () => {
 			let iterator = new TreeWalker( { position: new Position( root, [ 0 ] ), singleCharacters: true } ); // beginning of root
 			let i, len;
 
@@ -191,7 +191,7 @@ describe( 'range iterator', () => {
 			expect( iterator.next() ).to.have.property( 'done' ).that.is.true;
 		} );
 
-		it( 'should iterating over the range using previous', () => {
+		it( 'should iterate over the range using previous', () => {
 			let iterator = new TreeWalker( { position: new Position( root, [ 2 ] ), singleCharacters: true } ); // ending of root
 
 			for ( let i = expectedItemsSingle.length - 1; i >= 0; i-- ) {
