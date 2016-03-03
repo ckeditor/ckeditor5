@@ -492,7 +492,7 @@ function wrapChildren( writer, parent, startOffset, endOffset, attribute ) {
 
 	for ( let position of wrapPositions ) {
 		// Do not merge with elements outside selected children.
-		if ( position.offset == startOffset || position.offset == endOffset ) {
+		if ( position.offset == startOffset ) {
 			continue;
 		}
 

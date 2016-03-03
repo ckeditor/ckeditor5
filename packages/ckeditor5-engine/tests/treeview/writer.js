@@ -12,6 +12,7 @@ import Element from '/ckeditor5/core/treeview/element.js';
 import Text from '/ckeditor5/core/treeview/text.js';
 import Position from '/ckeditor5/core/treeview/position.js';
 import Range from '/ckeditor5/core/treeview/range.js';
+import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
 describe( 'Writer', () => {
 	/**
@@ -199,6 +200,31 @@ describe( 'Writer', () => {
 			writer._priorities.set( nodeMock, 12 );
 
 			expect( writer.getPriority( nodeMock ) ).to.equal( 12 );
+		} );
+	} );
+
+	describe( 'getParentContainer', () => {
+		it( 'should return parent container of the node', () => {
+			const writer = new Writer();
+			const text = new Text( 'foobar' );
+			const b = new Element( 'b', null, [ text ] );
+			const parent = new Element( 'p', null, [ b ] );
+
+			writer.setPriority( b, 1 );
+			const container = writer.getParentContainer( new Position( text, 0 ) );
+
+			expect( container ).to.equal( parent );
+		} );
+
+		it( 'should return null if no parent container', () => {
+			const writer = new Writer();
+			const text = new Text( 'foobar' );
+			const b = new Element( 'b', null, [ text ] );
+
+			writer.setPriority( b, 1 );
+			const container = writer.getParentContainer( new Position( text, 0 ) );
+
+			expect( container ).to.equal( null );
 		} );
 	} );
 
@@ -504,6 +530,35 @@ describe( 'Writer', () => {
 			test( writer, newPosition, created.node, description );
 		} );
 
+		it( 'should not merge if between containers', () => {
+			// <div><p>{foo}</p>|<p>{bar}</p></div>
+			const writer = new Writer();
+			const description = {
+				instanceOf: Element,
+				name: 'div',
+				position: 1,
+				children: [
+					{
+						instanceOf: Element,
+						name: 'p',
+						children: [
+							{ instanceOf: Text, data: 'foo' }
+						]
+					},
+					{
+						instanceOf: Element,
+						name: 'p',
+						children: [
+							{ instanceOf: Text, data: 'bar' }
+						]
+					}
+				]
+			};
+			const created = create( writer, description );
+			const newPosition = writer.mergeAttributes( created.position );
+			test( writer, newPosition, created.node, description );
+		} );
+
 		it( 'should return same position when inside empty container', () => {
 			// <p>|</p>
 			const writer = new Writer();
@@ -774,11 +829,23 @@ describe( 'Writer', () => {
 	} );
 
 	describe( 'wrap', () => {
-		// TODO: test - range not in same container
-		// TODO: test - range collapsed
 		// TODO: tests - different priorities
 		// TODO: tests - empty containers left
 		// TODO: merge with elements outside range at the ends
+
+		it( 'should do nothing on collapsed ranges', () => {
+			const writer = new Writer();
+			const description = {
+				instanceOf: Element,
+				name: 'p',
+				children: [
+					{ instanceOf: Text, data: 'foo', rangeStart: 1, rangeEnd: 1 }
+				]
+			};
+			const created = create( writer, description );
+			const newRange = writer.wrap( created.range, new Element( 'b' ), 1 );
+			test( writer, newRange, created.node, description );
+		} );
 
 		it( 'wraps single text node', () => {
 			// <p>[{foobar}]</p>
@@ -816,6 +883,21 @@ describe( 'Writer', () => {
 			} );
 		} );
 
+		it( 'should throw error when range placed in two containers', () => {
+			const writer = new Writer();
+			const container1 = new Element( 'p' );
+			const container2 = new Element( 'p' );
+			const range = new Range(
+				new Position( container1, 0 ),
+				new Position( container2, 1 )
+			);
+			const b = new Element( 'b' );
+
+			expect( () => {
+				writer.wrap( range, b, 1 );
+			} ).to.throw( CKEditorError, 'treeview-writer-unwrap-invalid-range' );
+		} );
+
 		it( 'wraps part of single text node', () => {
 			// <p>[{foo]bar}</p>
 			// wrap with <b>
@@ -848,6 +930,54 @@ describe( 'Writer', () => {
 						]
 					},
 					{ instanceOf: Text, data: 'bar' }
+				]
+			} );
+		} );
+
+		it( 'should not wrap inside nested containers', () => {
+			// <div>[{foobar}<p>{baz}</p>]</div>
+			// wrap with <b>
+			// <div>[<b>{foobar}</b><p>{baz}</p>]</div>
+			const writer = new Writer();
+			const created = create( writer, {
+				instanceOf: Element,
+				name: 'div',
+				rangeStart: 0,
+				rangeEnd: 2,
+				children: [
+					{ instanceOf: Text, data: 'foobar' },
+					{
+						instanceOf: Element,
+						name: 'p',
+						children: [
+							{ instanceOf: Text, data: 'baz' }
+						]
+					}
+				]
+			} );
+
+			const newRange = writer.wrap( created.range, new Element( 'b' ), 1 );
+			test( writer, newRange, created.node, {
+				instanceOf: Element,
+				name: 'div',
+				rangeStart: 0,
+				rangeEnd: 2,
+				children: [
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'foobar' }
+						]
+					},
+					{
+						instanceOf: Element,
+						name: 'p',
+						children: [
+							{ instanceOf: Text, data: 'baz' }
+						]
+					}
 				]
 			} );
 		} );
@@ -953,9 +1083,225 @@ describe( 'Writer', () => {
 				]
 			} );
 		} );
+
+		it( 'merges wrapped nodes #2', () => {
+			// <p><b>{foo}</b>[{bar]baz}</p>
+			// wrap with <b>
+			// <p><b>{foo[bar}</b>]{baz}</p>
+
+			const writer = new Writer();
+			const created = create( writer, {
+				instanceOf: Element,
+				name: 'p',
+				rangeStart: 1,
+				children: [
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'foo' }
+						]
+					},
+					{ instanceOf: Text, data: 'barbaz', rangeEnd: 3 }
+				]
+			} );
+
+			const newRange = writer.wrap( created.range, new Element( 'b' ), 1 );
+			test( writer, newRange, created.node, {
+				instanceOf: Element,
+				name: 'p',
+				rangeEnd: 1,
+				children: [
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'foobar', rangeStart: 3 }
+						]
+					},
+					{ instanceOf: Text, data: 'baz' }
+				]
+			} );
+		} );
+
+		it( 'merges wrapped nodes #3', () => {
+			// <p><b>{foobar}</b>[{baz}]</p>
+			// wrap with <b>
+			// <p><b>{foobar[baz}</b>]</p>
+
+			const writer = new Writer();
+			const created = create( writer, {
+				instanceOf: Element,
+				name: 'p',
+				rangeStart: 1,
+				rangeEnd: 2,
+				children: [
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'foobar' }
+						]
+					},
+					{ instanceOf: Text, data: 'baz', rangeEnd: 3 }
+				]
+			} );
+
+			const newRange = writer.wrap( created.range, new Element( 'b' ), 1 );
+			test( writer, newRange, created.node, {
+				instanceOf: Element,
+				name: 'p',
+				rangeEnd: 1,
+				children: [
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'foobarbaz', rangeStart: 6 }
+						]
+					}
+				]
+			} );
+		} );
+
+		it( 'merges wrapped nodes #4', () => {
+			// <p>[{foo}<i>{bar}</i>]{baz}</p>
+			// wrap with <b>
+			// <p>[<b>{foo}<i>{bar}</i></b>]{baz}</p>
+			const writer = new Writer();
+			const created = create( writer, {
+				instanceOf: Element,
+				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 2,
+				children: [
+					{ instanceOf: Text, data: 'foo' },
+					{
+						instanceOf: Element,
+						name: 'i',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'bar' }
+						]
+					},
+					{ instanceOf: Text, data: 'baz' }
+				]
+			} );
+
+			const newRange = writer.wrap( created.range, new Element( 'b' ), 1 );
+			test( writer, newRange, created.node, {
+				instanceOf: Element,
+				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 1,
+				children: [
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'foo' },
+							{
+								instanceOf: Element,
+								name: 'i',
+								priority: 1,
+								children: [
+									{ instanceOf: Text, data: 'bar' }
+								]
+							}
+						]
+					},
+					{ instanceOf: Text, data: 'baz' }
+				]
+			} );
+		} );
+
+		it( 'merges wrapped nodes #5', () => {
+			// <p>[{foo}<i>{bar}</i>{baz}]</p>
+			// wrap with <b>, that has higher priority than <i>
+			// <p>[<b>{foo}</b><i><b>{bar}</b></i><b>{baz}</b>]</p>
+			const writer = new Writer();
+			const created = create( writer, {
+				instanceOf: Element,
+				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 3,
+				children: [
+					{ instanceOf: Text, data: 'foo' },
+					{
+						instanceOf: Element,
+						name: 'i',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'bar' }
+						]
+					},
+					{ instanceOf: Text, data: 'baz' }
+				]
+			} );
+
+			const newRange = writer.wrap( created.range, new Element( 'b' ), 2 );
+			test( writer, newRange, created.node, {
+				instanceOf: Element,
+				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 3,
+				children: [
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 2,
+						children: [
+							{ instanceOf: Text, data: 'foo' }
+						]
+					},
+					{
+						instanceOf: Element,
+						name: 'i',
+						priority: 1,
+						children: [
+							{
+								instanceOf: Element,
+								name: 'b',
+								priority: 2,
+								children: [
+									{ instanceOf: Text, data: 'bar' }
+								]
+							}
+						]
+					},
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 2,
+						children: [
+							{ instanceOf: Text, data: 'baz' }
+						]
+					},
+				]
+			} );
+		} );
 	} );
 
 	describe( 'unwrap', () => {
+		it( 'should do nothing on collapsed ranges', () => {
+			const writer = new Writer();
+			const description = {
+				instanceOf: Element,
+				name: 'p',
+				children: [
+					{ instanceOf: Text, data: 'foo', rangeStart: 1, rangeEnd: 1 }
+				]
+			};
+			const created = create( writer, description );
+			const newRange = writer.unwrap( created.range, new Element( 'b' ), 1 );
+			test( writer, newRange, created.node, description );
+		} );
+
 		it( 'should do nothing on single text node', () => {
 			// <p>[{foobar}]</p>
 			const writer = new Writer();
@@ -975,6 +1321,21 @@ describe( 'Writer', () => {
 			const newRange = writer.unwrap( created.range, b );
 
 			test( writer, newRange, created.node, description );
+		} );
+
+		it( 'should throw error when range placed in two containers', () => {
+			const writer = new Writer();
+			const container1 = new Element( 'p' );
+			const container2 = new Element( 'p' );
+			const range = new Range(
+				new Position( container1, 0 ),
+				new Position( container2, 1 )
+			);
+			const b = new Element( 'b' );
+
+			expect( () => {
+				writer.unwrap( range, b, 1 );
+			} ).to.throw( CKEditorError, 'treeview-writer-unwrap-invalid-range' );
 		} );
 
 		it( 'should unwrap single node', () => {
