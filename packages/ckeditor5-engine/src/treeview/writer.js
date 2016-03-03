@@ -396,8 +396,12 @@ import CKEditorError from '../ckeditorerror.js';
 		const newRange = this.unwrapChildren( parentContainer, breakStart.offset, breakEnd.offset, attribute );
 
 		// Merge attributes at the both ends and return a new range.
-		const end = this.mergeAttributes( newRange.end );
 		const start = this.mergeAttributes( newRange.start );
+		// If start position was merged - move end position back.
+		if ( !start.isEqual( newRange.start ) ) {
+			newRange.end.offset--;
+		}
+		const end = this.mergeAttributes( newRange.end );
 
 		return new Range( start, end );
 	}
