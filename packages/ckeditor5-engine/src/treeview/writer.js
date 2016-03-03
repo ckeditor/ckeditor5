@@ -287,10 +287,10 @@ import CKEditorError from '../ckeditorerror.js';
 	 * {@link core.treeView.Range#start} position are not placed inside same parent container node.
 	 *
 	 * @param range
-	 * @param element
+	 * @param attribute
 	 * @param priority
 	 */
-	wrap( range, element, priority ) {
+	wrap( range, attribute, priority ) {
 		const rangeStart = range.start;
 		const rangeEnd = range.end;
 
@@ -299,9 +299,9 @@ import CKEditorError from '../ckeditorerror.js';
 			/**
 			 * Range is not placed inside same container.
 			 *
-			 * @error treeview-writer-wrap-invalid-range
+			 * @error treeview-writer-unwrap-invalid-range
 			 */
-			throw new CKEditorError( 'treeview-writer-wrap-invalid-range' );
+			throw new CKEditorError( 'treeview-writer-unwrap-invalid-range' );
 		}
 
 		// If range is collapsed - nothing to wrap.
@@ -310,52 +310,29 @@ import CKEditorError from '../ckeditorerror.js';
 		}
 
 		// Sets wrapper element priority.
-		this.setPriority( element, priority );
+		this.setPriority( attribute, priority );
 
 		// Break attributes at range start and end.
 		const breakStart = this.breakAttributes( rangeStart );
 		const breakEnd = this.breakAttributes( rangeEnd );
-		const parentBlock = breakStart.parent;
+		const parentContainer = breakStart.parent;
 
-		// Wrap range. Start collapsed.
-		let wrapRange = new Range( breakStart, breakStart );
+		// Unwrap children located between break points.
+		const unwrappedRange = unwrapChildren( this, parentContainer, breakStart.offset, breakEnd.offset, attribute );
 
-		// Iterate over all elements inside break points.
-		for ( let i = breakStart.offset; i < breakEnd.offset; i++ ) {
-			const child = parentBlock.getChild( i );
+		// Wrap all with attribute.
+		const newRange = wrapChildren( this, parentContainer, unwrappedRange.start.offset, unwrappedRange.end.offset, attribute );
 
-			if ( child instanceof Text ) {
-				wrapRange.end.offset++;
-			} else {
-				// Don't enter container nodes. Wrap them.
-				if ( this.isContainer( child ) ) {
-					// mark as true to wrap
-					wrapRange.end.offset++;
-				} else {
-					// if child is same as element - unwrap its contents
-					if ( child.same( element ) && priority == this.getPriority( child ) ) {
-						// unwrap
-					} else {
-						// scan elements children for the same atribute and check if cannot be changes to be at the top
-						// if yes - unwrap it
-						// if no mark this child as unable to wrap, go deeper and try to wrap.
-					}
-				}
-			}
+		// Merge attributes at the both ends and return a new range.
+		const start = this.mergeAttributes( newRange.start );
+
+		// If start position was merged - move end position back.
+		if ( !start.isEqual( newRange.start ) ) {
+			newRange.end.offset--;
 		}
+		const end = this.mergeAttributes( newRange.end );
 
-		// Get nodes to move.
-		const count = wrapRange.end.offset - wrapRange.start.offset;
-		const nodesToMove = parentBlock.removeChildren( wrapRange.start.offset, count );
-		//
-		//// TODO: What if element already have some children?
-		//element.insertChildren( 0, nodesToMove );
-		//
-		//// Insert wrapper with elements to parent container.
-		//parentBlock.insertChildren( breakStart.offset, element );
-		//
-		//// Return new range around wrapper.
-		//return new Range( breakStart, new Position( breakStart.parent , breakStart.offset + 1 ) );
+		return new Range( start, end );
 	}
 
 	/**
@@ -393,10 +370,11 @@ import CKEditorError from '../ckeditorerror.js';
 		const parentContainer = breakStart.parent;
 
 		// Unwrap children located between break points.
-		const newRange = this.unwrapChildren( parentContainer, breakStart.offset, breakEnd.offset, attribute );
+		const newRange = unwrapChildren( this, parentContainer, breakStart.offset, breakEnd.offset, attribute );
 
 		// Merge attributes at the both ends and return a new range.
 		const start = this.mergeAttributes( newRange.start );
+
 		// If start position was merged - move end position back.
 		if ( !start.isEqual( newRange.start ) ) {
 			newRange.end.offset--;
@@ -405,67 +383,129 @@ import CKEditorError from '../ckeditorerror.js';
 
 		return new Range( start, end );
 	}
+}
 
-	unwrapChildren( parent, startOffset, endOffset, attribute ) {
-		let i = startOffset;
-		const unwrapPositions = [];
+function unwrapChildren( writer, parent, startOffset, endOffset, attribute ) {
+	let i = startOffset;
+	const unwrapPositions = [];
 
-		// Iterate over each element between provided offsets inside parent.
-		while ( i < endOffset ) {
-			const child = parent.getChild( i );
+	// Iterate over each element between provided offsets inside parent.
+	while ( i < endOffset ) {
+		const child = parent.getChild( i );
 
-			// If attributes are the same and have same priority, then unwrap.
-			if (  child.same( attribute ) && this.getPriority( child ) == this.getPriority( attribute ) ) {
-				const unwrapped = child.getChildren();
-				const count = child.getChildCount();
+		// If attributes are the same and have same priority, then unwrap.
+		if (  child.same( attribute ) && writer.getPriority( child ) == writer.getPriority( attribute ) ) {
+			const unwrapped = child.getChildren();
+			const count = child.getChildCount();
 
-				// Replace wrapper element with its children
-				child.remove();
-				parent.insertChildren( i, unwrapped );
+			// Replace wrapper element with its children
+			child.remove();
+			parent.insertChildren( i, unwrapped );
 
-				// Save start and end position of moved items.
-				unwrapPositions.push(
-					new Position( parent, i ),
-					new Position( parent, i + count )
-				);
+			// Save start and end position of moved items.
+			unwrapPositions.push(
+				new Position( parent, i ),
+				new Position( parent, i + count )
+			);
 
-				// Skip elements that were unwrapped. Assuming that there won't be another element to unwrap in child
-				// elements.
-				i += count;
-				endOffset += count - 1;
-			} else {
-				// If nested attribute is found - start unwrapping there.
-				if ( this.isAttribute( child ) ) {
-					this.unwrapChildren( child, 0, child.getChildCount(), attribute );
-				}
-
-				i++;
+			// Skip elements that were unwrapped. Assuming that there won't be another element to unwrap in child
+			// elements.
+			i += count;
+			endOffset += count - 1;
+		} else {
+			// If other nested attribute is found start unwrapping there.
+			if ( writer.isAttribute( child ) ) {
+				unwrapChildren( writer, child, 0, child.getChildCount(), attribute );
 			}
+
+			i++;
 		}
-
-		// Merge at each unwrap.
-		let offsetChange = 0;
-
-		for ( let position of unwrapPositions ) {
-			position.offset -= offsetChange;
-
-			// Do not merge with elements outside selected children.
-			if ( position.offset == startOffset || position.offset == endOffset ) {
-				continue;
-			}
-
-			const newPosition = this.mergeAttributes( position );
-
-			// If nodes were merged - other merge offsets will change.
-			if ( !newPosition.isEqual( position ) ) {
-				offsetChange++;
-				endOffset--;
-			}
-		}
-
-		return Range.createFromParentsAndOffsets( parent, startOffset, parent, endOffset );
 	}
 
+	// Merge at each unwrap.
+	let offsetChange = 0;
+
+	for ( let position of unwrapPositions ) {
+		position.offset -= offsetChange;
+
+		// Do not merge with elements outside selected children.
+		if ( position.offset == startOffset || position.offset == endOffset ) {
+			continue;
+		}
+
+		const newPosition = writer.mergeAttributes( position );
+
+		// If nodes were merged - other merge offsets will change.
+		if ( !newPosition.isEqual( position ) ) {
+			offsetChange++;
+			endOffset--;
+		}
+	}
+
+	return Range.createFromParentsAndOffsets( parent, startOffset, parent, endOffset );
+}
+
+/**
+ * Wraps children in provided offsets with provided attribute.
+ * Assumes that same attributes were removed already.
+ *
+ * @param writer
+ * @param parent
+ * @param startOffset
+ * @param endOffset
+ * @param attribute
+ */
+function wrapChildren( writer, parent, startOffset, endOffset, attribute ) {
+	let i = startOffset;
+	const wrapPositions = [];
+
+	while ( i < endOffset ) {
+		const child = parent.getChild( i );
+		const isText = child instanceof Text;
+		const isAttribute = writer.isAttribute( child );
+		const priority = writer.getPriority( attribute );
+
+		// Wrap text or attributes with higher or equal priority.
+		if ( isText || ( isAttribute && priority <= writer.getPriority( child ) ) ) {
+			// Clone attribute.
+			const newAttribute = attribute.clone();
+			writer.setPriority( newAttribute, priority );
+
+			// Wrap current node with new attribute;
+			child.remove();
+			newAttribute.appendChildren( child );
+			parent.insertChildren( i, newAttribute );
+
+			wrapPositions.push(	new Position( parent, i ) );
+		} else {
+			// If other nested attribute is found start wrapping there.
+			if ( writer.isAttribute( child ) ) {
+				wrapChildren( writer, child, 0, child.getChildCount(), attribute );
+			}
+		}
+
+		i++;
+	}
+
+	// Merge at each wrap.
+	let offsetChange = 0;
+
+	for ( let position of wrapPositions ) {
+		// Do not merge with elements outside selected children.
+		if ( position.offset == startOffset || position.offset == endOffset ) {
+			continue;
+		}
+
+		const newPosition = writer.mergeAttributes( position );
+
+		// If nodes were merged - other merge offsets will change.
+		if ( !newPosition.isEqual( position ) ) {
+			offsetChange++;
+			endOffset--;
+		}
+	}
+
+	return Range.createFromParentsAndOffsets( parent, startOffset, parent, endOffset );
 }
 
 // 1. If wrapper element is container - wrap everything with that container.

@@ -52,40 +52,40 @@ describe( 'Writer', () => {
 		}
 
 		if ( description.name ) {
-			expect( node.name ).to.equal( description.name );
+			expect( description.name ).to.equal( node.name  );
 		}
 
 		if ( description.data ) {
-			expect( node.data ).to.equal( description.data );
+			expect( description.data ).to.equal( node.data );
 		}
 
 		if ( description.priority !== undefined ) {
-			expect( writer.getPriority( node ) ).to.equal( description.priority );
+			expect( description.priority ).to.equal( writer.getPriority( node )  );
 		}
 
 		if ( description.rangeStart !== undefined ) {
-			expect( location.start.parent ).to.equal( node );
-			expect( location.start.offset ).to.equal( description.rangeStart );
+			expect( node ).to.equal( location.start.parent );
+			expect( description.rangeStart ).to.equal( location.start.offset );
+		}
+
+		if ( description.rangeEnd !== undefined ) {
+			expect( node ).to.equal( location.end.parent );
+			expect( description.rangeEnd ).to.equal( location.end.offset );
 		}
 
 		if ( description.attributes ) {
 			Object.keys( description.attributes ).forEach( ( key ) => {
-				expect( node.getAttribute( key ) ).to.equal( description.attributes[ key ] );
+				expect( description.attributes[ key ] ).to.equal( node.getAttribute( key ) );
 			} );
 		}
 
-		if ( description.rangeEnd !== undefined ) {
-			expect( location.end.parent ).to.equal( node );
-			expect( location.end.offset ).to.equal( description.rangeEnd );
-		}
-
 		if ( description.position !== undefined ) {
-			expect( location.parent ).to.equal( node );
-			expect( location.offset ).to.equal( description.position );
+			expect( node ).to.equal( location.parent );
+			expect( description.position ).to.equal( location.offset );
 		}
 
 		if ( description.children ) {
-			expect( node.getChildCount() ).to.equal( description.children.length );
+			expect( description.children.length ).to.equal( node.getChildCount() );
 			description.children.forEach( ( desc, index ) => {
 				test( writer, location, node.getChild( index ), desc );
 			} );
@@ -724,138 +724,235 @@ describe( 'Writer', () => {
 	} );
 
 	describe( 'insert', () => {
-		it( 'should insert text', () => {
-			// <p>{foo|bar}</p> insert {baz}
-			// <p>{foo[baz]bar}</p>
+		//it( 'should insert text', () => {
+		//	// <p>{foo|bar}</p> insert {baz}
+		//	// <p>{foo[baz]bar}</p>
+		//	const writer = new Writer();
+		//	const created = create( writer, {
+		//		instanceOf: Element,
+		//		name: 'p',
+		//		children: [
+		//			{ instanceOf: Text, data: 'foobar', position: 3 }
+		//		]
+		//	} );
+		//
+		//	const newRange = writer.insert( created.position, new Text( 'baz' ) );
+		//	test( writer, newRange, created.node, {
+		//		instanceOf: Element,
+		//		name: 'p',
+		//		children: [
+		//			{ instanceOf: Text, data: 'foobazbar' }
+		//		]
+		//	} );
+		//} );
+		//
+		//it( 'should merge attributes', () => {
+		//	// <p><b>{foo|bar}</b></p> insert <b>{baz}</b>
+		//	// <p><b>{foobazbar}</b></p>
+		//	const writer = new Writer();
+		//	const text = new Text( 'foobar' );
+		//	const b1 = new Element( 'b', null, text );
+		//	const p = new Element( 'p', null, b1 );
+		//	const position = new Position( text, 3 );
+		//	const insertText = new Text( 'baz' );
+		//	const b2 = new Element( 'b', null, insertText );
+		//
+		//	writer.setPriority( b1, 1 );
+		//	writer.setPriority( b2, 1 );
+		//
+		//	writer.insert( position, b2 );
+		//
+		//	expect( p.getChildCount() ).to.equal( 1 );
+		//	const b3 = p.getChild( 0 );
+		//	expect( b3 ).to.be.instanceof( Element );
+		//	expect( b3.name ).to.equal( 'b' );
+		//	expect( b3.getChildCount() ).to.equal( 1 );
+		//	const newText = b3.getChild( 0 );
+		//	expect( newText ).to.be.instanceof( Text );
+		//	expect( newText.data ).to.equal( 'foobazbar' );
+		//} );
+	} );
+
+	describe( 'wrap', () => {
+		// TODO: test - range not in same container
+		// TODO: test - range collapsed
+		// TODO: tests - different priorities
+		// TODO: tests - empty containers left
+		// TODO: merge with elements outside range at the ends
+
+		it( 'wraps single text node', () => {
+			// <p>[{foobar}]</p>
+			// wrap <b>
+			// <p>[<b>{foobar}<b>]</p>
 			const writer = new Writer();
 			const created = create( writer, {
 				instanceOf: Element,
 				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 1,
 				children: [
-					{ instanceOf: Text, data: 'foobar', position: 3 }
+					{ instanceOf: Text, data: 'foobar' }
 				]
 			} );
 
-			const newRange = writer.insert( created.position, new Text( 'baz' ) );
+			const b = new Element( 'b' );
+			const newRange = writer.wrap( created.range, b, 1 );
+
 			test( writer, newRange, created.node, {
 				instanceOf: Element,
 				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 1,
 				children: [
-					{ instanceOf: Text, data: 'foobazbar' }
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'foobar' }
+						]
+					}
 				]
 			} );
 		} );
 
-		it( 'should merge attributes', () => {
-			// <p><b>{foo|bar}</b></p> insert <b>{baz}</b>
-			// <p><b>{foobazbar}</b></p>
+		it( 'wraps part of single text node', () => {
+			// <p>[{foo]bar}</p>
+			// wrap with <b>
+			// <p>[<b>{foo}</b>]{bar}</p>
 			const writer = new Writer();
-			const text = new Text( 'foobar' );
-			const b1 = new Element( 'b', null, text );
-			const p = new Element( 'p', null, b1 );
-			const position = new Position( text, 3 );
-			const insertText = new Text( 'baz' );
-			const b2 = new Element( 'b', null, insertText );
+			const created = create( writer, {
+				instanceOf: Element,
+				name: 'p',
+				rangeStart: 0,
+				children: [
+					{ instanceOf: Text, data: 'foobar', rangeEnd: 3 }
+				]
+			} );
 
-			writer.setPriority( b1, 1 );
-			writer.setPriority( b2, 1 );
+			const b = new Element( 'b' );
+			const newRange = writer.wrap( created.range, b, 2 );
 
-			writer.insert( position, b2 );
-
-			expect( p.getChildCount() ).to.equal( 1 );
-			const b3 = p.getChild( 0 );
-			expect( b3 ).to.be.instanceof( Element );
-			expect( b3.name ).to.equal( 'b' );
-			expect( b3.getChildCount() ).to.equal( 1 );
-			const newText = b3.getChild( 0 );
-			expect( newText ).to.be.instanceof( Text );
-			expect( newText.data ).to.equal( 'foobazbar' );
+			test( writer, newRange, created.node, {
+				instanceOf: Element,
+				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 1,
+				children: [
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 2,
+						children: [
+							{ instanceOf: Text, data: 'foo' }
+						]
+					},
+					{ instanceOf: Text, data: 'bar' }
+				]
+			} );
 		} );
-	} );
 
-	describe( 'wrap', () => {
-		//// <p>[{foobar}]</p>
-		//// wrap <b>
-		//// <p>[<b>{foobar}<b>]</p>
-		//it( 'wraps single text node', () => {
-		//	const writer = new Writer();
-		//	const text = new Text( 'foobar' );
-		//	const p = new Element( 'p', null, [ text ] );
-		//	const b = new Element( 'b' );
-		//	const range = new Range(
-		//		new Position( p, 0 ),
-		//		new Position( p, 1 )
-		//	);
-		//
-		//	const newRange = writer.wrap( range, b, 1 );
-		//
-		//	expect( p.getChildCount() ).to.equal( 1 );
-		//	expect( p.getChild( 0 ) ).to.equal( b );
-		//	expect( b.getChildCount() ).to.equal( 1 );
-		//	expect( b.getChild( 0 ) ).to.equal( text );
-		//	expect( text.data ).to.equal( 'foobar' );
-		//	expect( newRange.start.parent ).to.equal( p );
-		//	expect( newRange.start.offset ).to.equal( 0 );
-		//	expect( newRange.end.parent ).to.equal( p );
-		//	expect( newRange.end.offset ).to.equal( 1 );
-		//} );
+		it( 'wraps according to priorities', () => {
+			// <p>[<u>{foobar}</u>]</p>
+			// wrap with <b> that has higher priority than <u>
+			// <p>[<u><b>{foobar}</b></u>]</p>
+			const writer = new Writer();
+			const created = create( writer, {
+				instanceOf: Element,
+				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 1,
+				children: [
+					{
+						instanceOf: Element,
+						name: 'u',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'foobar' }
+						]
+					}
+				]
+			} );
 
-		//// <p>[{foo]bar}</p>
-		//// <p>[<b>{foo}</b>]{bar}</p>
-		//it( 'wraps part of single text node', () => {
-		//	const writer = new Writer();
-		//	const text = new Text( 'foobar' );
-		//	const p = new Element( 'p', null, [ text ] );
-		//	const b = new Element( 'b' );
-		//	const range = new Range(
-		//		new Position( p, 0 ),
-		//		new Position( text, 3 )
-		//	);
-		//
-		//	const newRange = writer.wrap( range, b, 1 );
-		//	expect( p.getChildCount() ).to.equal( 2 );
-		//	const child1 = p.getChild( 0 );
-		//	const child2 = p.getChild( 1 );
-		//
-		//	expect( child1 ).to.be.instanceof( Element );
-		//	expect( child1.same( b ) ).to.be.true;
-		//	expect( child1.getChildCount() ).to.equal( 1 );
-		//	const newText = child1.getChild( 0 );
-		//	expect( newText ).to.be.instanceof( Text );
-		//	expect( newText.data ).to.equal( 'foo' );
-		//	expect( child2 ).to.be.instanceof( Text );
-		//	expect( child2.data ).to.equal( 'bar' );
-		//
-		//	expect( newRange.start.parent ).to.equal( p );
-		//	expect( newRange.start.offset ).to.equal( 0 );
-		//	expect( newRange.end.parent ).to.equal( p );
-		//	expect( newRange.end.offset ).to.equal( 1 );
-		//} );
+			const b = new Element( 'b' );
+			const newRange = writer.wrap( created.range, b, 2 );
 
-		//it( 'tests', () => {
-		//	const writer = new Writer();
-		//	const text = new Text( 'foobar' );
-		//	const text2 = new Text( 'bazquix' );
-		//	const u = new Element( 'u', null, [ text2 ] );
-		//	const p = new Element( 'p', null, [ text, u ] );
-		//	const b = new Element( 'b' );
-		//	const range = new Range(
-		//		new Position( p, 0 ),
-		//		new Position( p, 2 )
-		//	);
-		//
-		//	const newRange = writer.wrap( range, b, 1 );
-		//
-		//	expect( p.getChildCount() ).to.equal( 1 );
-		//	//expect( p.getChild( 0 ) ).to.equal( b );
-		//	//expect( b.getChildCount() ).to.equal( 1 );
-		//	//expect( b.getChild( 0 ) ).to.equal( text );
-		//	//expect( text.data ).to.equal( 'foobar' );
-		//	//expect( newRange.start.parent ).to.equal( p );
-		//	//expect( newRange.start.offset ).to.equal( 0 );
-		//	//expect( newRange.end.parent ).to.equal( p );
-		//	//expect( newRange.end.offset ).to.equal( 1 );
-		//} );
+			test( writer, newRange, created.node, {
+				instanceOf: Element,
+				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 1,
+				children: [
+					{
+						instanceOf: Element,
+						name: 'u',
+						priority: 1,
+						children: [
+							{
+								instanceOf: Element,
+								name: 'b',
+								priority: 2,
+								children: [
+									{ instanceOf: Text, data: 'foobar' }
+								]
+							}
+						]
+					}
+				]
+			} );
+		} );
+
+		it( 'merges wrapped nodes #1', () => {
+			// <p>[<b>{foo}</b>{bar}<b>{baz}</b>]</p>
+			// wrap with <b>
+			// <p>[<b>{foobarbaz}</b>]</p>
+			const writer = new Writer();
+			const created = create( writer, {
+				instanceOf: Element,
+				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 3,
+				children: [
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'foo' }
+						]
+					},
+					{ instanceOf: Text, data: 'bar' },
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'baz' }
+						]
+					}
+				]
+			} );
+
+			const b = new Element( 'b' );
+			const newRange = writer.wrap( created.range, b, 1 );
+
+			test( writer, newRange, created.node, {
+				instanceOf: Element,
+				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 1,
+				children: [
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'foobarbaz' }
+						]
+					}
+				]
+			} );
+		} );
 	} );
 
 	describe( 'unwrap', () => {
