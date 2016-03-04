@@ -14,14 +14,22 @@ import Range from '/ckeditor5/core/treemodel/range.js';
 import Position from '/ckeditor5/core/treemodel/position.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
 
+import AttributeDelta from '/ckeditor5/core/treemodel/delta/attributedelta.js';
+import AttributeOperation from '/ckeditor5/core/treemodel/operation/attributeoperation.js';
+
 const getIteratorCount = coreTestUtils.getIteratorCount;
 
+let doc, root;
+
+beforeEach( () => {
+	doc = new Document();
+	root = doc.createRoot( 'root' );
+} );
+
 describe( 'Batch', () => {
-	let doc, root, batch;
+	let batch;
 
 	beforeEach( () => {
-		doc = new Document();
-		root = doc.createRoot( 'root' );
 		batch = doc.batch();
 	} );
 
@@ -325,6 +333,97 @@ describe( 'Batch', () => {
 				const chain = batch.removeAttr( 'a', getRange( 0, 2 ) );
 				expect( chain ).to.equal( batch );
 			} );
+		} );
+	} );
+} );
+
+describe( 'AttributeDelta', () => {
+	let delta;
+
+	beforeEach( () => {
+		delta = new AttributeDelta();
+	} );
+
+	describe( 'key', () => {
+		it( 'should be null if there are no operations in delta', () => {
+			expect( delta.key ).to.be.null;
+		} );
+
+		it( 'should be equal to attribute operations key that are in delta', () => {
+			let range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) );
+			delta.addOperation( new AttributeOperation( range, 'key', 'old', 'new', 0 ) );
+
+			expect( delta.key ).to.equal( 'key' );
+		} );
+	} );
+
+	describe( 'value', () => {
+		it( 'should be null if there are no operations in delta', () => {
+			expect( delta.value ).to.be.null;
+		} );
+
+		it( 'should be equal to the value set by the delta operations', () => {
+			let range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) );
+			delta.addOperation( new AttributeOperation( range, 'key', 'old', 'new', 0 ) );
+
+			expect( delta.value ).to.equal( 'new' );
+		} );
+	} );
+
+	describe( 'range', () => {
+		it( 'should be null if there are no operations in delta', () => {
+			expect( delta.range ).to.be.null;
+		} );
+
+		it( 'should be equal to the range on which delta operates', () => {
+			// Delta operates on range [ 1 ] to [ 6 ] but omits [ 4 ] - [ 5 ] for "a reason".
+			// Still the range should be from [ 1 ] to [ 6 ]. Delta may not apply anything on [ 4 ] - [ 5 ]
+			// because it already has proper attribute.
+			let rangeA = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) );
+			let rangeB = new Range( new Position( root, [ 2 ] ), new Position( root, [ 4 ] ) );
+			let rangeC = new Range( new Position( root, [ 5 ] ), new Position( root, [ 6 ] ) );
+
+			delta.addOperation( new AttributeOperation( rangeA, 'key', 'oldA', 'new', 0 ) );
+			delta.addOperation( new AttributeOperation( rangeB, 'key', 'oldB', 'new', 1 ) );
+			delta.addOperation( new AttributeOperation( rangeC, 'key', 'oldC', 'new', 2 ) );
+
+			expect( delta.range.start.path ).to.deep.equal( [ 1 ] );
+			expect( delta.range.end.path ).to.deep.equal( [ 6 ] );
+		} );
+	} );
+
+	describe( 'getReversed', () => {
+		it( 'should return empty AttributeDelta if there are no operations in delta', () => {
+			let reversed = delta.getReversed();
+
+			expect( reversed ).to.be.instanceof( AttributeDelta );
+			expect( reversed.operations.length ).to.equal( 0 );
+		} );
+
+		it( 'should return correct AttributeDelta', () => {
+			let rangeA = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) );
+			let rangeB = new Range( new Position( root, [ 2 ] ), new Position( root, [ 4 ] ) );
+
+			delta.addOperation( new AttributeOperation( rangeA, 'key', 'oldA', 'new', 0 ) );
+			delta.addOperation( new AttributeOperation( rangeB, 'key', 'oldB', 'new', 1 ) );
+
+			let reversed = delta.getReversed();
+
+			expect( reversed ).to.be.instanceof( AttributeDelta );
+			expect( reversed.operations.length ).to.equal( 2 );
+
+			// Remember about reversed operations order.
+			expect( reversed.operations[ 0 ] ).to.be.instanceof( AttributeOperation );
+			expect( reversed.operations[ 0 ].range.isEqual( rangeB ) ).to.be.true;
+			expect( reversed.operations[ 0 ].key ).to.equal( 'key' );
+			expect( reversed.operations[ 0 ].oldValue ).to.equal( 'new' );
+			expect( reversed.operations[ 0 ].newValue ).to.equal( 'oldB' );
+
+			expect( reversed.operations[ 1 ] ).to.be.instanceof( AttributeOperation );
+			expect( reversed.operations[ 1 ].range.isEqual( rangeA ) ).to.be.true;
+			expect( reversed.operations[ 1 ].key ).to.equal( 'key' );
+			expect( reversed.operations[ 1 ].oldValue ).to.equal( 'new' );
+			expect( reversed.operations[ 1 ].newValue ).to.equal( 'oldA' );
 		} );
 	} );
 } );

@@ -13,6 +13,13 @@ import Range from '/ckeditor5/core/treemodel/range.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
 import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
+import WrapDelta from '/ckeditor5/core/treemodel/delta/wrapdelta.js';
+import UnwrapDelta from '/ckeditor5/core/treemodel/delta/unwrapdelta.js';
+
+import InsertOperation from '/ckeditor5/core/treemodel/operation/insertoperation.js';
+import MoveOperation from '/ckeditor5/core/treemodel/operation/moveoperation.js';
+import RemoveOperation from '/ckeditor5/core/treemodel/operation/removeoperation.js';
+
 describe( 'Batch', () => {
 	let doc, root, range;
 
@@ -87,3 +94,62 @@ describe( 'Batch', () => {
 		} );
 	} );
 } );
+
+describe( 'WrapDelta', () => {
+	let wrapDelta, doc, root;
+
+	beforeEach( () => {
+		doc = new Document();
+		root = doc.createRoot( 'root' );
+		wrapDelta = new WrapDelta();
+	} );
+
+	describe( 'constructor', () => {
+		it( 'should create wrap delta with no operations added', () => {
+			expect( wrapDelta.operations.length ).to.equal( 0 );
+		} );
+	} );
+
+	describe( 'range', () => {
+		it( 'should be equal to null if there are no operations in delta', () => {
+			expect( wrapDelta.range ).to.be.null;
+		} );
+
+		it( 'should be equal to wrapped range', () => {
+			wrapDelta.operations.push( new InsertOperation( new Position( root, [ 1, 6 ] ), 1 ) );
+			wrapDelta.operations.push( new MoveOperation( new Position( root, [ 1, 1 ] ), 5, new Position( root, [ 1, 6, 0 ] ) ) );
+
+			expect( wrapDelta.range.start.isEqual( new Position( root, [ 1, 1 ] ) ) ).to.be.true;
+			expect( wrapDelta.range.end.isEqual( new Position( root, [ 1, 6 ] ) ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'getReversed', () => {
+		it( 'should return empty UnwrapDelta if there are no operations in delta', () => {
+			let reversed = wrapDelta.getReversed();
+
+			expect( reversed ).to.be.instanceof( UnwrapDelta );
+			expect( reversed.operations.length ).to.equal( 0 );
+		} );
+
+		it( 'should return correct UnwrapDelta', () => {
+			wrapDelta.operations.push( new InsertOperation( new Position( root, [ 1, 6 ] ), 1 ) );
+			wrapDelta.operations.push( new MoveOperation( new Position( root, [ 1, 1 ] ), 5, new Position( root, [ 1, 6, 0 ] ) ) );
+
+			let reversed = wrapDelta.getReversed();
+
+			expect( reversed ).to.be.instanceof( UnwrapDelta );
+			expect( reversed.operations.length ).to.equal( 2 );
+
+			expect( reversed.operations[ 0 ] ).to.be.instanceof( MoveOperation );
+			expect( reversed.operations[ 0 ].sourcePosition.path ).to.deep.equal( [ 1, 1, 0 ] );
+			expect( reversed.operations[ 0 ].howMany ).to.equal( 5 );
+			expect( reversed.operations[ 0 ].targetPosition.path ).to.deep.equal( [ 1, 1 ] );
+
+			expect( reversed.operations[ 1 ] ).to.be.instanceof( RemoveOperation );
+			expect( reversed.operations[ 1 ].sourcePosition.path ).to.deep.equal( [ 1, 6 ] );
+			expect( reversed.operations[ 1 ].howMany ).to.equal( 1 );
+		} );
+	} );
+} );
+

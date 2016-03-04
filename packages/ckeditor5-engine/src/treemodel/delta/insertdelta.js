@@ -6,6 +6,7 @@
 'use strict';
 
 import Delta from './delta.js';
+import RemoveDelta from './removedelta.js';
 import { register } from '../batch-base.js';
 import InsertOperation from '../operation/insertoperation.js';
 
@@ -17,12 +18,41 @@ import InsertOperation from '../operation/insertoperation.js';
  * @memberOf core.treeModel.delta
  */
 export default class InsertDelta extends Delta {
-	get insertOperation() {
+	/**
+	 * Insert operation that is saved in this delta or `null` if there are no operations in the delta.
+	 *
+	 * @protected
+	 * @type {core.treeModel.operation.InsertOperation|null}
+	 */
+	get _insertOperation() {
 		return this.operations[ 0 ] || null;
 	}
 
+	/**
+	 * @see core.treeModel.delta.Delta#_reverseDeltaClass
+	 * @private
+	 * @type {Object}
+	 */
+	get _reverseDeltaClass() {
+		return RemoveDelta;
+	}
+
+	/**
+	 * Position where the delta inserts nodes or `null` if there are no operations in the delta.
+	 *
+	 * @type {core.treeModel.Position|null}
+	 */
 	get position() {
-		return this.insertOperation ? this.insertOperation.position : null;
+		return this._insertOperation ? this._insertOperation.position : null;
+	}
+
+	/**
+	 * Node list containing all the nodes inserted by the delta or `null` if there are no operations in the delta.
+	 *
+	 * @type {core.treeModel.NodeList|null}
+	 */
+	get nodeList() {
+		return this._insertOperation ? this._insertOperation.nodeList : null;
 	}
 }
 

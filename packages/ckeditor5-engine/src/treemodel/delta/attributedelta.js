@@ -19,7 +19,58 @@ import Element from '../element.js';
  * @memberOf core.treeModel.delta
  * @extends core.treeModel.delta.Delta
  */
-export default class AttributeDelta extends Delta {}
+export default class AttributeDelta extends Delta {
+	/**
+	 * @see core.treeModel.delta.Delta#_reverseDeltaClass
+	 * @private
+	 * @type {Object}
+	 */
+	get _reverseDeltaClass() {
+		return AttributeDelta;
+	}
+
+	/**
+	 * The attribute key that is changed by the delta or `null` if the delta has no operations.
+	 *
+	 * @type {String|null}
+	 */
+	get key() {
+		return this.operations[ 0 ] ? this.operations[ 0 ].key : null;
+	}
+
+	/**
+	 * The attribute value that is set by the delta or `null` if the delta has no operations.
+	 *
+	 * @type {*|null}
+	 */
+	get value() {
+		return this.operations[ 0 ] ? this.operations[ 0 ].newValue : null;
+	}
+
+	/**
+	 * The range on which delta operates or `null` if the delta has no operations.
+	 *
+	 * @type {core.treeModel.Range|null}
+	 */
+	get range() {
+		// Check if it is cached.
+		if ( this._range ) {
+			return this._range;
+		}
+
+		// If it is not cached we will evaluate it and cache it.
+		let firstOperation = this.operations[ 0 ];
+		let lastOperation = this.operations[ this.operations.length - 1 ];
+
+		if ( firstOperation ) {
+			this._range = new Range( firstOperation.range.start, lastOperation.range.end );
+
+			return this._range;
+		}
+
+		return null;
+	}
+}
 
 /**
  * Sets the value of the attribute of the node or on the range.
