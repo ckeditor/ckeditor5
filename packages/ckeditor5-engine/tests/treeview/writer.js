@@ -1558,6 +1558,45 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should merge unwrapped nodes #1', () => {
+			// <p>{foo}[<b>{bar}</b>]{bom}</p> -> <p>{foo[bar]bom}</p>
+			const writer = new Writer();
+			const created = create( writer, {
+				instanceOf: Element,
+				name: 'p',
+				rangeStart: 1,
+				rangeEnd: 2,
+				children: [
+					{ instanceOf: Text, data: 'foo' },
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'bar' }
+						]
+					},
+					{ instanceOf: Text, data: 'bom' }
+				]
+			} );
+
+			const b =  new Element( 'b' );
+			writer.setPriority( b, 1 );
+			const newRange = writer.unwrap( created.range, b );
+			test( writer, newRange, created.node, {
+				instanceOf: Element,
+				name: 'p',
+				children: [
+					{
+						instanceOf: Text,
+						data: 'foobarbom',
+						rangeStart: 3,
+						rangeEnd: 6
+					}
+				]
+			} );
+		} );
+
+		it( 'should merge unwrapped nodes #2', () => {
 			// <p>{foo}<u>{bar}</u>[<b><u>{bazqux}</u></b>]</p> -> <p>{foo}<u>{bar[bazqux}</u>]</p>
 			const writer = new Writer();
 			const created = create( writer, {
@@ -1618,7 +1657,7 @@ describe( 'Writer', () => {
 			} );
 		} );
 
-		it( 'should merge unwrapped nodes #2', () => {
+		it( 'should merge unwrapped nodes #3', () => {
 			// <p>{foo}<u>{bar}</u>[<b><u>{baz]qux}</u></b></p> -> <p>{foo}<u>{bar[baz}</u>]<b><u>{qux}</u></b></p>
 			const writer = new Writer();
 			const created = create( writer, {
@@ -1693,7 +1732,7 @@ describe( 'Writer', () => {
 			} );
 		} );
 
-		it( 'should merge unwrapped nodes #3', () => {
+		it( 'should merge unwrapped nodes #4', () => {
 			// <p>{foo}<u>{bar}</u>[<b><u>{baz}</u></b>]<u>qux</u></p> -> <p>{foo}<u>{bar[baz]qux}</u></p>
 			const writer = new Writer();
 			const created = create( writer, {
@@ -1761,7 +1800,7 @@ describe( 'Writer', () => {
 			} );
 		} );
 
-		it( 'should merge unwrapped nodes #4', () => {
+		it( 'should merge unwrapped nodes #5', () => {
 			// <p>[<u><b>{foo}</b></u><u><b>{bar}</b></u><u><b>{baz}</b></u>]</p> -> <p>[<u>{foobarbaz}</u>]</p>
 			const writer = new Writer();
 			const created = create( writer, {
@@ -1833,6 +1872,99 @@ describe( 'Writer', () => {
 						priority: 1,
 						children: [
 							{ instanceOf: Text, data: 'foobarbaz' }
+						]
+					}
+				]
+			} );
+		} );
+
+		it( 'should unwrap mixed ranges #1', () => {
+			// <p>[<u><b>{foo}]</b></u></p> -> <p>[<u>{foo}</u>]</p
+			const writer = new Writer();
+			const created = create( writer, {
+				instanceOf: Element,
+				name: 'p',
+				rangeStart: 0,
+				children: [
+					{
+						instanceOf: Element,
+						name: 'u',
+						priority: 1,
+						children: [
+							{
+								instanceOf: Element,
+								name: 'b',
+								priority: 1,
+								rangeEnd: 1,
+								children: [
+									{ instanceOf: Text, data: 'foo' }
+								]
+							}
+						]
+					}
+				]
+			} );
+			const b = new Element( 'b' );
+			writer.setPriority( b, 1 );
+			const newRange = writer.unwrap( created.range, b );
+			test( writer, newRange, created.node, {
+				instanceOf: Element,
+				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 1,
+				children: [
+					{
+						instanceOf: Element,
+						name: 'u',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'foo' }
+						]
+					}
+				]
+			} );
+		} );
+
+		it( 'should unwrap mixed ranges #2', () => {
+			// <p>[<u><b>{foo]}</b></u></p> -> <p>[<u>{foo}</u>]</p
+			const writer = new Writer();
+			const created = create( writer, {
+				instanceOf: Element,
+				name: 'p',
+				rangeStart: 0,
+				children: [
+					{
+						instanceOf: Element,
+						name: 'u',
+						priority: 1,
+						children: [
+							{
+								instanceOf: Element,
+								name: 'b',
+								priority: 1,
+								children: [
+									{ instanceOf: Text, data: 'foo', rangeEnd: 3 }
+								]
+							}
+						]
+					}
+				]
+			} );
+			const b = new Element( 'b' );
+			writer.setPriority( b, 1 );
+			const newRange = writer.unwrap( created.range, b );
+			test( writer, newRange, created.node, {
+				instanceOf: Element,
+				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 1,
+				children: [
+					{
+						instanceOf: Element,
+						name: 'u',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'foo' }
 						]
 					}
 				]
