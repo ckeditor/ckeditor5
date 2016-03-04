@@ -5,23 +5,6 @@
 
 'use strict';
 
-const KNOWN_OPTIONS = {
-	build: {
-		string: [
-			'formats'
-		],
-
-		boolean: [
-			'watch'
-		],
-
-		default: {
-			formats: 'amd',
-			watch: false
-		}
-	}
-};
-
 const fs = require( 'fs' );
 const path = require( 'path' );
 const gulp = require( 'gulp' );
@@ -32,8 +15,6 @@ const gulpWatch = require( 'gulp-watch' );
 const gutil = require( 'gulp-util' );
 const minimist = require( 'minimist' );
 const utils = require( './utils' );
-
-const options = minimist( process.argv.slice( 2 ), KNOWN_OPTIONS[ process.argv[ 2 ] ] );
 
 module.exports = ( config ) => {
 	const distDir = path.join( config.ROOT_DIR, config.DIST_DIR );
@@ -135,11 +116,12 @@ module.exports = ( config ) => {
 		 * The main build task which is capable of copying, watching, processing and writing all files
 		 * to the `dist/` directory.
 		 *
-		 * @param {Object} buildOptions
-		 * @param {String} buildOptions.formats
+		 * @param {Object} options
+		 * @param {String} options.formats
+		 * @param {Boolean} [options.watch]
 		 * @returns {Stream}
 		 */
-		build( buildOptions ) {
+		build( options ) {
 			//
 			// NOTE: Error handling in streams is hard.
 			//
@@ -171,7 +153,7 @@ module.exports = ( config ) => {
 			//
 			// PS. The assumption is that all errors thrown somewhere inside conversionStream are forwarded to conversionStream.
 			// Multipipe and gulp-mirror seem to work this way, so we get a single error emitter.
-			const formats = ( buildOptions.formats || options.formats ).split( ',' );
+			const formats = options.formats.split( ',' );
 			const codeStream = tasks.src.all( options.watch )
 				.pipe(
 					utils.noop( ( file ) => {
@@ -233,9 +215,28 @@ module.exports = ( config ) => {
 
 	gulp.task( 'build:clean', tasks.clean );
 
-	gulp.task( 'build', [ 'build:clean' ], tasks.build );
+	gulp.task( 'build', [ 'build:clean' ], () => {
+		const knownOptions = {
+			string: [
+				'formats'
+			],
 
-	gulp.task( 'build-esnext', () => {
+			boolean: [
+				'watch'
+			],
+
+			default: {
+				formats: 'amd',
+				watch: false
+			}
+		};
+
+		const options = minimist( process.argv.slice( 2 ), knownOptions );
+
+		return tasks.build( options );
+	} );
+
+	gulp.task( 'build-esnext', [ 'build:clean' ], () => {
 		return tasks.build( { formats: 'esnext' } );
 	} );
 
