@@ -9,6 +9,27 @@
 
 import coreTestUtils from '/tests/core/_utils/utils.js';
 import Delta from '/ckeditor5/core/treemodel/delta/delta.js';
+import Operation from '/ckeditor5/core/treemodel/operation/operation.js';
+
+// Some test examples of operations.
+class FooOperation extends Operation {
+	constructor( string, baseVersion ) {
+		super( baseVersion );
+		this.string = string;
+	}
+
+	getReversed() {
+		/* jshint ignore:start */
+		return new BarOperation( this.string, this.baseVersion );
+		/* jshint ignore:end */
+	}
+}
+
+class BarOperation extends FooOperation {
+	getReversed() {
+		return new FooOperation( this.string, this.baseVersion );
+	}
+}
 
 const getIteratorCount = coreTestUtils.getIteratorCount;
 
@@ -54,6 +75,32 @@ describe( 'Delta', () => {
 			const count = getIteratorCount( delta.operations );
 
 			expect( count ).to.equal( 3 );
+		} );
+	} );
+
+	describe( 'getReversed', () => {
+		it( 'should return empty Delta if there are no operations in delta', () => {
+			const delta = new Delta();
+			let reversed = delta.getReversed();
+
+			expect( reversed ).to.be.instanceof( Delta );
+			expect( reversed.operations.length ).to.equal( 0 );
+		} );
+
+		it( 'should return Delta with all operations reversed and their order reversed', () => {
+			const delta = new Delta();
+			delta.addOperation( new FooOperation( 'a', 1 ) );
+			delta.addOperation( new BarOperation( 'b', 2 ) );
+
+			let reversed = delta.getReversed();
+
+			expect( reversed ).to.be.instanceof( Delta );
+			expect( reversed.operations.length ).to.equal( 2 );
+
+			expect( reversed.operations[ 0 ] ).to.be.instanceOf( FooOperation );
+			expect( reversed.operations[ 0 ].string ).to.equal( 'b' );
+			expect( reversed.operations[ 1 ] ).to.be.instanceOf( BarOperation );
+			expect( reversed.operations[ 1 ].string ).to.equal( 'a' );
 		} );
 	} );
 } );
