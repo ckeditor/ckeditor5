@@ -26,15 +26,15 @@ export default class Range {
 		/**
 		 * Start position.
 		 *
-		 * @private
-		 * @member {core.treeModel.Position}  core.treeModel.Range#start
+		 * @readonly
+		 * @member {core.treeModel.Position} core.treeModel.Range#start
 		 */
 		this.start = Position.createFromPosition( start );
 
 		/**
 		 * End position.
 		 *
-		 * @private
+		 * @readonly
 		 * @member {core.treeModel.Position} core.treeModel.Range#end
 		 */
 		this.end = Position.createFromPosition( end );

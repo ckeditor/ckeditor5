@@ -321,25 +321,25 @@ export default class Position {
 	 * `a.isAfter( b ) || a.isEqual( b )` or `!a.isBefore( p ) && a.root == b.root` in most scenarios. If your
 	 * condition uses multiple `isAfter` and `isBefore` checks, build them so they do not use negated values, i.e.:
 	 *
-	 *  if ( a.isBefore( b ) && c.isAfter( d ) ) {
-	 *    // do A.
-	 *  } else {
-	 *    // do B.
-	 *  }
+	 *		if ( a.isBefore( b ) && c.isAfter( d ) ) {
+	 *			// do A.
+	 *		} else {
+	 *			// do B.
+	 *		}
 	 *
 	 * or, if you have only one if-branch:
 	 *
-	 *  if ( !( a.isBefore( b ) && c.isAfter( d ) ) {
-	 *    // do B.
-	 *  }
+	 *		if ( !( a.isBefore( b ) && c.isAfter( d ) ) {
+	 *			// do B.
+	 *		}
 	 *
 	 * rather than:
 	 *
-	 *  if ( !a.isBefore( b ) || && !c.isAfter( d ) ) {
-	 *    // do B.
-	 *  } else {
-	 *    // do A.
-	 *  }
+	 *		if ( !a.isBefore( b ) || && !c.isAfter( d ) ) {
+	 *			// do B.
+	 *		} else {
+	 *			// do A.
+	 *		}
 	 *
 	 * @param {core.treeModel.Position} otherPosition Position to compare with.
 	 * @returns {Boolean} True if this position is before given position.
