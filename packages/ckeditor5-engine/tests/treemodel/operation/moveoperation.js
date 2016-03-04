@@ -32,6 +32,17 @@ describe( 'MoveOperation', () => {
 		expect( op.type ).to.equal( 'move' );
 	} );
 
+	it( 'should be sticky', () => {
+		const op = new MoveOperation(
+			new Position( root, [ 0, 0 ] ),
+			1,
+			new Position( root, [ 1, 0 ] ),
+			doc.version
+		);
+
+		expect( op.isSticky ).to.be.true;
+	} );
+
 	it( 'should move from one node to another', () => {
 		let p1 = new Element( 'p1', [], new Element( 'x' ) );
 		let p2 = new Element( 'p2' );

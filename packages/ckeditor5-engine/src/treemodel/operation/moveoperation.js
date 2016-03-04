@@ -51,8 +51,24 @@ export default class MoveOperation extends Operation {
 		this.targetPosition = Position.createFromPosition( targetPosition );
 	}
 
+	/**
+	 * @see core.treeModel.operation.Operation#type
+	 */
 	get type() {
 		return 'move';
+	}
+
+	/**
+	 * Defines whether `MoveOperation` is sticky. If `MoveOperation` is sticky, during
+	 * {@link core.treeModel.operation.transform operational transformation} if there will be an operation that
+	 * inserts some nodes at the position equal to the boundary of this `MoveOperation`, that operation will
+	 * get their insertion path updated to the position where this `MoveOperation` moves the range.
+	 *
+	 * @protected
+	 * @type {Boolean}
+	 */
+	get isSticky() {
+		return true;
 	}
 
 	/**

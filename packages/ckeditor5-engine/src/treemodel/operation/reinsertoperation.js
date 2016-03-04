@@ -28,7 +28,17 @@ export default class ReinsertOperation extends MoveOperation {
 		return new RemoveOperation( this.targetPosition, this.howMany, this.baseVersion + 1 );
 	}
 
+	/**
+	 * @see core.treeModel.operation.Operation#type
+	 */
 	get type() {
 		return 'reinsert';
+	}
+
+	/**
+	 * @see core.treeModel.operation.MoveOperation#isSticky
+	 */
+	get isSticky() {
+		return false;
 	}
 }
