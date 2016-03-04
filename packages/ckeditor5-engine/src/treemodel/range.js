@@ -354,13 +354,23 @@ export default class Range {
 	 *		transformed = range.getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 4, true );
 	 *		// transformed array has two ranges: from [ 2, 7 ] to [ 3, 2 ] and from [ 3, 6 ] to [ 4, 0, 1 ]
 	 *
+	 *		transformed = range.getTransformedByInsertion( new Position( root, [ 4, 0, 1 ] ), 4, false, false );
+	 *		// transformed array has one range which is equal to original range because insertion is after the range boundary
+	 *
+	 *		transformed = range.getTransformedByInsertion( new Position( root, [ 4, 0, 1 ] ), 4, false, true );
+	 *		// transformed array has one range: from [ 2, 7 ] to [ 4, 0, 5 ] because range was expanded
+	 *
 	 * @param {core.treeModel.Position} insertPosition Position where nodes are inserted.
 	 * @param {Number} howMany How many nodes are inserted.
-	 * @param {Boolean} spreadOnlyOnSameLevel Flag indicating whether this {core.treeModel.Range range} should be spread
-	 * if insertion was inside a node from this {core.treeModel.Range range} but not in the range itself.
+	 * @param {Boolean} [spread] Flag indicating whether this {core.treeModel.Range range} should be spread if insertion
+	 * was inside the range. Defaults to `false`.
+	 * @param {Boolean} [isSticky] Flag indicating whether insertion should expand a range if it is in a place of
+	 * range boundary. Defaults to `false`.
 	 * @returns {Array.<core.treeModel.Range>} Result of the transformation.
 	 */
-	getTransformedByInsertion( insertPosition, howMany, spread ) {
+	getTransformedByInsertion( insertPosition, howMany, spread, isSticky ) {
+		isSticky = !!isSticky;
+
 		if ( spread && this.containsPosition( insertPosition ) ) {
 			// Range has to be spread. The first part is from original start to the spread point.
 			// The other part is from spread point to the original end, but transformed by
@@ -376,12 +386,8 @@ export default class Range {
 		} else {
 			const range = Range.createFromRange( this );
 
-			// We want "greedy" transformation if spread is set to false and "non-greedy" if it is set to true.
-			// To achieve "greedy" transformation we want range.start insertBefore be false, and range.end insertBefore true.
-			// Opposite is for "non-greedy" transformation.
-
-			range.start = range.start.getTransformedByInsertion( insertPosition, howMany, spread );
-			range.end = range.end.getTransformedByInsertion( insertPosition, howMany, !spread );
+			range.start = range.start.getTransformedByInsertion( insertPosition, howMany, !isSticky );
+			range.end = range.end.getTransformedByInsertion( insertPosition, howMany, isSticky );
 
 			return [ range ];
 		}
