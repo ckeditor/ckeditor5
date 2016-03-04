@@ -138,7 +138,7 @@ describe( 'build-tasks', () => {
 				} );
 			} );
 
-			const conversionStream = build();
+			const conversionStream = build( { formats: 'amd' } );
 
 			conversionStream.on( 'finish', () => {
 				expect( written ).to.equal( 1 );
