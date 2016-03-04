@@ -5,7 +5,7 @@
 
 'use strict';
 
-import Delta from './delta.js';
+import MoveDelta from './movedelta.js';
 import { register } from '../batch-base.js';
 import RemoveOperation from '../operation/removeoperation.js';
 import Position from '../position.js';
@@ -18,7 +18,7 @@ import Range from '../range.js';
  *
  * @memberOf core.treeModel.delta
  */
-export default class RemoveDelta extends Delta {}
+export default class RemoveDelta extends MoveDelta {}
 
 function addRemoveOperation( batch, delta, position, howMany ) {
 	const operation = new RemoveOperation( position, howMany, batch.doc.version );
