@@ -1822,6 +1822,40 @@ describe( 'transform', () => {
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
+			it( 'target at start boundary of transforming move range: expand move range', () => {
+				let transformBy = new MoveOperation(
+					new Position( root, [ 4, 1, 0 ] ),
+					2,
+					new Position( root, [ 2, 2, 4 ] ),
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+
+				expected.howMany = 4;
+
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'target at end boundary of transforming move range: expand move range', () => {
+				let transformBy = new MoveOperation(
+					new Position( root, [ 4, 1, 0 ] ),
+					2,
+					new Position( root, [ 2, 2, 6 ] ),
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+
+				expected.howMany = 4;
+
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
 			it( 'target inside a node from transforming range: no operation update', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 4, 1, 0 ] ),
