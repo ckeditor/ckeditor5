@@ -51,7 +51,7 @@ describe( 'value', () => {
 	} );
 } );
 
-describe( 'execute', () => {
+describe( '_execute', () => {
 	let p;
 
 	beforeEach( () => {
@@ -67,7 +67,7 @@ describe( 'execute', () => {
 
 		expect( command.value ).to.be.false;
 
-		command.execute();
+		command._execute();
 
 		expect( command.value ).to.be.true;
 		expect( p.getChild( 1 ).hasAttribute( attrKey ) ).to.be.true;
@@ -79,7 +79,7 @@ describe( 'execute', () => {
 
 		expect( command.value ).to.be.true;
 
-		command.execute();
+		command._execute();
 
 		expect( command.value ).to.be.false;
 		expect( p.getChild( 3 ).hasAttribute( attrKey ) ).to.be.false;
@@ -92,7 +92,7 @@ describe( 'execute', () => {
 
 		expect( command.value ).to.be.true;
 
-		command.execute( true );
+		command._execute( true );
 
 		expect( command.value ).to.be.true;
 		expect( p.getChild( 9 ).hasAttribute( attrKey ) ).to.be.true;
@@ -103,7 +103,7 @@ describe( 'execute', () => {
 
 		expect( command.value ).to.be.false;
 
-		command.execute( false );
+		command._execute( false );
 
 		expect( command.value ).to.be.false;
 		expect( p.getChild( 3 ).hasAttribute( attrKey ) ).to.be.false;
@@ -115,12 +115,12 @@ describe( 'execute', () => {
 
 		expect( command.value ).to.be.false;
 
-		command.execute();
+		command._execute();
 
 		expect( command.value ).to.be.true;
 		expect( modelDoc.selection.hasAttribute( 'bold' ) ).to.be.true;
 
-		command.execute();
+		command._execute();
 
 		expect( command.value ).to.be.false;
 		expect( modelDoc.selection.hasAttribute( 'bold' ) ).to.be.false;
@@ -128,7 +128,7 @@ describe( 'execute', () => {
 
 	it( 'should not save that attribute was changed on selection when selection changes', () => {
 		modelDoc.selection.addRange( new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 1 ] ) ) );
-		command.execute();
+		command._execute();
 
 		// It should not save that bold was executed at position ( root, [ 0, 1 ] ).
 
@@ -146,23 +146,7 @@ describe( 'execute', () => {
 		modelDoc.on( 'change', spy );
 
 		modelDoc.selection.removeAllRanges();
-		command.execute();
-
-		expect( spy.called ).to.be.false;
-		expect( Array.from( modelDoc.selection.getAttributes() ) ).to.deep.equal( [ ] );
-	} );
-
-	it( 'should do nothing if command is disabled', () => {
-		let spy = sinon.spy();
-		modelDoc.on( 'change', spy );
-
-		modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) ] );
-		command.refreshState();
-
-		expect( command.value ).to.be.false;
-		expect( command.isEnabled ).to.be.false;
-
-		command.execute();
+		command._execute();
 
 		expect( spy.called ).to.be.false;
 		expect( Array.from( modelDoc.selection.getAttributes() ) ).to.deep.equal( [ ] );
@@ -175,7 +159,7 @@ describe( 'execute', () => {
 
 		expect( command.isEnabled ).to.be.true;
 
-		command.execute();
+		command._execute();
 
 		let expectedHas = [ 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0 ];
 
@@ -185,7 +169,7 @@ describe( 'execute', () => {
 	} );
 } );
 
-describe( 'checkSchema', () => {
+describe( 'checkEnabled', () => {
 	beforeEach( () => {
 		root.insertChildren( 0, [
 			new Element( 'p', [], [
@@ -202,15 +186,15 @@ describe( 'checkSchema', () => {
 	describe( 'when selection is collapsed', () => {
 		it( 'should return true if characters with the attribute can be placed at caret position', () => {
 			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 1 ] ) ) ] );
-			expect( command.checkSchema() ).to.be.true;
+			expect( command.checkEnabled() ).to.be.true;
 		} );
 
 		it( 'should return false if characters with the attribute cannot be placed at caret position', () => {
 			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 0 ] ) ) ] );
-			expect( command.checkSchema() ).to.be.false;
+			expect( command.checkEnabled() ).to.be.false;
 
 			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 2 ] ) ) ] );
-			expect( command.checkSchema() ).to.be.false;
+			expect( command.checkEnabled() ).to.be.false;
 		} );
 	} );
 
@@ -218,34 +202,34 @@ describe( 'checkSchema', () => {
 		it( 'should return true if there is at least one node in selection that can have the attribute', () => {
 			// Simple selection on a few characters.
 			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 3 ] ) ) ] );
-			expect( command.checkSchema() ).to.be.true;
+			expect( command.checkEnabled() ).to.be.true;
 
 			// Selection spans over characters but also include nodes that can't have attribute.
 			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 6 ] ) ) ] );
-			expect( command.checkSchema() ).to.be.true;
+			expect( command.checkEnabled() ).to.be.true;
 
 			// Selection on whole root content. Characters in P can have an attribute so it's valid.
 			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) ) ] );
-			expect( command.checkSchema() ).to.be.true;
+			expect( command.checkEnabled() ).to.be.true;
 
 			// Selection on empty P. P can have the attribute.
 			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 3 ] ) ) ] );
-			expect( command.checkSchema() ).to.be.true;
+			expect( command.checkEnabled() ).to.be.true;
 		} );
 
 		it( 'should return false if there are no nodes in selection that can have the attribute', () => {
 			// Selection on DIV which can't have bold text.
 			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) ) ] );
-			expect( command.checkSchema() ).to.be.false;
+			expect( command.checkEnabled() ).to.be.false;
 
 			// Selection on two images which can't be bold.
 			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 3 ] ), new Position( root, [ 0, 5 ] ) ) ] );
-			expect( command.checkSchema() ).to.be.false;
+			expect( command.checkEnabled() ).to.be.false;
 		} );
 	} );
 
 	it( 'should return false if selection has no ranges', () => {
 		modelDoc.selection.removeAllRanges();
-		expect( command.checkSchema() ).to.be.false;
+		expect( command.checkEnabled() ).to.be.false;
 	} );
 } );

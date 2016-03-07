@@ -215,7 +215,7 @@ export default class Editor {
 			throw new CKEditorError( 'editor-command-not-found: Specified command has not been added to the editor.' );
 		}
 
-		command.execute( commandParam );
+		command.doExecute( commandParam );
 	}
 }
 

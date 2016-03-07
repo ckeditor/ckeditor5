@@ -17,7 +17,7 @@ class CommandWithSchema extends Command {
 		this.schemaValid = schemaValid;
 	}
 
-	checkSchema() {
+	checkEnabled() {
 		return this.schemaValid;
 	}
 }
@@ -37,27 +37,25 @@ describe( 'constructor', () => {
 	} );
 
 	it( 'Command should have execute method', () => {
-		expect( command ).to.have.property( 'execute' );
-
 		expect( () => {
-			command.execute();
+			command._execute();
 		} ).not.to.throw;
 	} );
 
 	it( 'should add listener to its refreshState event if checkSchema method is present', () => {
-		expect( command.checkSchema ).to.be.undefined;
+		expect( command.checkEnabled ).to.be.undefined;
 
-		command.checkSchema = sinon.spy();
+		command.checkEnabled = sinon.spy();
 		command.refreshState();
 
-		expect( command.checkSchema.called ).to.be.false;
+		expect( command.checkEnabled.called ).to.be.false;
 
 		let newCommand = new CommandWithSchema( editor, true );
-		sinon.spy( newCommand, 'checkSchema' );
+		sinon.spy( newCommand, 'checkEnabled' );
 
 		newCommand.refreshState();
 
-		expect( newCommand.checkSchema.calledOnce ).to.be.true;
+		expect( newCommand.checkEnabled.calledOnce ).to.be.true;
 	} );
 } );
 
@@ -141,5 +139,25 @@ describe( 'enable', () => {
 		command._enable();
 
 		expect( command.isEnabled ).to.be.false;
+	} );
+} );
+
+describe( 'doExecute', () => {
+	it( 'should not execute command if it is disabled', () => {
+		command._disable();
+
+		sinon.spy( command, '_execute' );
+
+		command.doExecute();
+
+		expect( command._execute.called ).to.be.false;
+	} );
+
+	it( 'should execute command if it is enabled', () => {
+		sinon.spy( command, '_execute' );
+
+		command.doExecute();
+
+		expect( command._execute.called ).to.be.true;
 	} );
 } );

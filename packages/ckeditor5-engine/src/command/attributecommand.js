@@ -52,10 +52,10 @@ export default class AttributeCommand extends Command {
 	 * * if selection is on range, the command is enabled if any of nodes in that range can have bold,
 	 * * if selection is collapsed, the command is enabled if text with bold is allowed in that node.
 	 *
-	 * @see core.command.Command#checkSchema
+	 * @see core.command.Command#checkEnabled
 	 * @returns {Boolean}
 	 */
-	checkSchema() {
+	checkEnabled() {
 		const selection = this.editor.document.selection;
 		const schema = this.editor.document.schema;
 
@@ -106,36 +106,35 @@ export default class AttributeCommand extends Command {
 	 *
 	 * If the command is disabled (`isEnabled == false`) when it is executed, nothing will happen.
 	 *
+	 * @private
 	 * @param {Boolean} [forceValue] If set it will force command behavior. If `true`, command will apply attribute,
 	 * otherwise command will remove attribute. If not set, command will look for it's current value to decide what it should do.
 	 */
-	execute( forceValue ) {
-		if ( this.isEnabled ) {
-			let document = this.editor.document;
-			let selection = document.selection;
-			let value = ( forceValue === undefined ) ? !this.value : forceValue;
+	_execute( forceValue ) {
+		let document = this.editor.document;
+		let selection = document.selection;
+		let value = ( forceValue === undefined ) ? !this.value : forceValue;
 
-			if ( selection.isCollapsed ) {
-				// If selection is collapsed change only selection attribute.
-				if ( value ) {
-					selection.setAttribute( this.attributeKey, true );
-				} else {
-					selection.removeAttribute( this.attributeKey );
-				}
-			} else if ( selection.hasAnyRange ) {
-				// If selection is not collapsed and has ranges, we change attribute on those ranges.
-				document.enqueueChanges( () => {
-					let ranges = selection.getRanges();
-					ranges = this._getSchemaValidRanges( ranges );
-
-					// Keep it as one undo step.
-					let batch = document.batch();
-
-					for ( let range of ranges ) {
-						batch.setAttr( this.attributeKey, value || null, range );
-					}
-				} );
+		if ( selection.isCollapsed ) {
+			// If selection is collapsed change only selection attribute.
+			if ( value ) {
+				selection.setAttribute( this.attributeKey, true );
+			} else {
+				selection.removeAttribute( this.attributeKey );
 			}
+		} else if ( selection.hasAnyRange ) {
+			// If selection is not collapsed and has ranges, we change attribute on those ranges.
+			document.enqueueChanges( () => {
+				let ranges = selection.getRanges();
+				ranges = this._getSchemaValidRanges( ranges );
+
+				// Keep it as one undo step.
+				let batch = document.batch();
+
+				for ( let range of ranges ) {
+					batch.setAttr( this.attributeKey, value || null, range );
+				}
+			} );
 		}
 	}
 

@@ -238,7 +238,7 @@ export default class Document {
 
 				// ...look for a first character node in that range and take attributes from it.
 				for ( let item of range ) {
-					if ( item.type == 'CHARACTER' ) {
+					if ( item.type == 'TEXT' ) {
 						attrs = item.item.getAttributes();
 						break;
 					}
