@@ -11,7 +11,7 @@ import BoxedEditorUIView from '/tests/core/_utils/ui/boxededitorui/boxededitorui
 import FramedEditable from '/tests/core/_utils/ui/editable/framed/framededitable.js';
 import FramedEditableView from '/tests/core/_utils/ui/editable/framed/framededitableview.js';
 import Model from '/ckeditor5/core/ui/model.js';
-import Toolbar from '/ckeditor5/ui/toolbar/toolbar.js';
+import Toolbar from '/ckeditor5/core/ui/bindings/toolbar.js';
 import ToolbarView from '/ckeditor5/ui/toolbar/toolbarview.js';
 import { imitateFeatures, imitateDestroyFeatures } from '../imitatefeatures.js';
 
@@ -49,7 +49,7 @@ export default class ClassicCreator extends Creator {
 	}
 
 	_setupToolbar() {
-		const toolbar = new Toolbar( this.editor, new Model(), new ToolbarView() );
+		const toolbar = new Toolbar( new Model(), new ToolbarView(), this.editor );
 
 		toolbar.addButtons( this.editor.config.toolbar );
 

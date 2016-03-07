@@ -40,10 +40,10 @@ describe( 'ComponentFactory', () => {
 			class View {}
 
 			class Controller {
-				constructor( ed, model, view ) {
-					expect( ed ).to.equal( editor );
+				constructor( model, view, ed ) {
 					expect( model ).to.equal( model );
 					expect( view ).to.be.instanceof( View );
+					expect( ed ).to.equal( editor );
 				}
 			}
 

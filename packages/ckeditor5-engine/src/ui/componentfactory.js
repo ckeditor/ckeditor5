@@ -75,7 +75,7 @@ export default class ComponentFactory {
 
 		const model = component.model;
 		const view = new component.ViewClass( model );
-		const controller = new component.ControllerClass( this.editor, model, view );
+		const controller = new component.ControllerClass( model, view, this.editor );
 
 		return controller;
 	}

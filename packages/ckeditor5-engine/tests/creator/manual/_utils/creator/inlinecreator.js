@@ -50,8 +50,8 @@ export default class InlineCreator extends Creator {
 		const toolbar1Model = new Model();
 		const toolbar2Model = new Model();
 
-		const toolbar1 = new FloatingToolbar( this.editor, toolbar1Model, new FloatingToolbarView( toolbar1Model ) );
-		const toolbar2 = new FloatingToolbar( this.editor, toolbar2Model, new FloatingToolbarView( toolbar2Model ) );
+		const toolbar1 = new FloatingToolbar( toolbar1Model, new FloatingToolbarView( toolbar1Model ), this.editor );
+		const toolbar2 = new FloatingToolbar( toolbar2Model, new FloatingToolbarView( toolbar2Model ), this.editor );
 
 		toolbar1.addButtons( this.editor.config.toolbar );
 		toolbar2.addButtons( this.editor.config.toolbar.reverse() );
