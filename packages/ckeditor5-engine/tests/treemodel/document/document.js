@@ -11,10 +11,6 @@ import Document from '/ckeditor5/core/treemodel/document.js';
 import RootElement from '/ckeditor5/core/treemodel/rootelement.js';
 import Batch from '/ckeditor5/core/treemodel/batch.js';
 import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
-import Text from '/ckeditor5/core/treemodel/text.js';
-import Element from '/ckeditor5/core/treemodel/element.js';
-import Range from '/ckeditor5/core/treemodel/range.js';
-import Position from '/ckeditor5/core/treemodel/position.js';
 
 describe( 'Document', () => {
 	let doc;
@@ -175,74 +171,19 @@ describe( 'Document', () => {
 		} );
 	} );
 
-	describe( '_updateSelectionAttributes', () => {
-		let root;
-		beforeEach( () => {
-			root = doc.createRoot( 'root' );
-			root.insertChildren( 0, [
-				new Element( 'p', { p: true } ),
-				new Text( 'a', { a: true } ),
-				new Element( 'p', { p: true } ),
-				new Text( 'b', { b: true } ),
-				new Text( 'c', { c: true } ),
-				new Element( 'p', [], [
-					new Text( 'd', { d: true } )
-				] ),
-				new Element( 'p', { p: true } ),
-				new Text( 'e', { e: true } )
-			] );
-		} );
+	it( 'should update selection attributes whenever selection gets updated', () => {
+		sinon.spy( doc.selection, '_updateAttributes' );
 
-		it( 'should be fired whenever selection gets updated', () => {
-			sinon.spy( doc, '_updateSelectionAttributes' );
+		doc.selection.fire( 'update' );
 
-			doc.selection.fire( 'update' );
+		expect( doc.selection._updateAttributes.called ).to.be.true;
+	} );
 
-			expect( doc._updateSelectionAttributes.called ).to.be.true;
-		} );
+	it( 'should update selection attributes whenever changes to the document are applied', () => {
+		sinon.spy( doc.selection, '_updateAttributes' );
 
-		it( 'should be fired whenever changes to Tree Model are applied', () => {
-			sinon.spy( doc, '_updateSelectionAttributes' );
+		doc.fire( 'changesDone' );
 
-			doc.fire( 'changesDone' );
-
-			expect( doc._updateSelectionAttributes.called ).to.be.true;
-		} );
-
-		it( 'if selection is a range, should find first character in it and copy it\'s attributes', () => {
-			doc.selection.setRanges( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 5 ] ) ) ] );
-
-			expect( Array.from( doc.selection.getAttributes() ) ).to.deep.equal( [ [ 'b', true ] ] );
-
-			// Step into elements when looking for first character:
-			doc.selection.setRanges( [ new Range( new Position( root, [ 5 ] ), new Position( root, [ 7 ] ) ) ] );
-
-			expect( Array.from( doc.selection.getAttributes() ) ).to.deep.equal( [ [ 'd', true ] ] );
-		} );
-
-		it( 'if selection is collapsed it should seek a character to copy that character\'s attributes', () => {
-			// Take styles from character before selection.
-			doc.selection.setRanges( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 2 ] ) ) ] );
-			expect( Array.from( doc.selection.getAttributes() ) ).to.deep.equal( [ [ 'a', true ] ] );
-
-			// If there are none,
-			// Take styles from character after selection.
-			doc.selection.setRanges( [ new Range( new Position( root, [ 3 ] ), new Position( root, [ 3 ] ) ) ] );
-			expect( Array.from( doc.selection.getAttributes() ) ).to.deep.equal( [ [ 'b', true ] ] );
-
-			// If there are none,
-			// Look from the selection position to the beginning of node looking for character to take attributes from.
-			doc.selection.setRanges( [ new Range( new Position( root, [ 6 ] ), new Position( root, [ 6 ] ) ) ] );
-			expect( Array.from( doc.selection.getAttributes() ) ).to.deep.equal( [ [ 'c', true ] ] );
-
-			// If there are none,
-			// Look from the selection position to the end of node looking for character to take attributes from.
-			doc.selection.setRanges( [ new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) ] );
-			expect( Array.from( doc.selection.getAttributes() ) ).to.deep.equal( [ [ 'a', true ] ] );
-
-			// If there are no characters to copy attributes from, clear selection attributes.
-			doc.selection.setRanges( [ new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 0 ] ) ) ] );
-			expect( Array.from( doc.selection.getAttributes() ) ).to.deep.equal( [] );
-		} );
+		expect( doc.selection._updateAttributes.called ).to.be.true;
 	} );
 } );

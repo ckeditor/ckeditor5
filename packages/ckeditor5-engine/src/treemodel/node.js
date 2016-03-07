@@ -149,20 +149,6 @@ export default class Node {
 	}
 
 	/**
-	 * Custom toJSON method to solve child-parent circular dependencies.
-	 *
-	 * @returns {Object} Clone of this object with the parent property replaced with its name.
-	 */
-	toJSON() {
-		const json = clone( this );
-
-		// Due to circular references we need to remove parent reference.
-		json.parent = this.parent ? this.parent.name : null;
-
-		return json;
-	}
-
-	/**
 	 * Checks if the node has an attribute for given key.
 	 *
 	 * @param {String} key Key of attribute to check.
@@ -189,5 +175,19 @@ export default class Node {
 	 */
 	getAttributes() {
 		return this._attrs[ Symbol.iterator ]();
+	}
+
+	/**
+	 * Custom toJSON method to solve child-parent circular dependencies.
+	 *
+	 * @returns {Object} Clone of this object with the parent property replaced with its name.
+	 */
+	toJSON() {
+		const json = clone( this );
+
+		// Due to circular references we need to remove parent reference.
+		json.parent = this.parent ? this.parent.name : null;
+
+		return json;
 	}
 }

@@ -11,7 +11,6 @@ import Text from '/ckeditor5/core/treemodel/text.js';
 import Range from '/ckeditor5/core/treemodel/range.js';
 import Position from '/ckeditor5/core/treemodel/position.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
-import Selection from '/ckeditor5/core/treemodel/selection.js';
 
 let element, editor, command, modelDoc, root;
 
@@ -152,11 +151,7 @@ describe( '_execute', () => {
 		expect( command.value ).to.be.true;
 		expect( modelDoc.selection.hasAttribute( 'bold' ) ).to.be.true;
 
-		let selectionParent = root.getChild( 1 );
-
 		// Attribute should be stored.
-		expect( selectionParent.hasAttribute( Selection.getStoreAttributeKey( 'bold' ) ) ).to.be.true;
-
 		// Simulate clicking somewhere else in the editor.
 		modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 2 ] ) ) ] );
 
@@ -172,7 +167,6 @@ describe( '_execute', () => {
 
 		expect( command.value ).to.be.false;
 		expect( modelDoc.selection.hasAttribute( 'bold' ) ).to.be.false;
-		expect( selectionParent.hasAttribute( Selection.getStoreAttributeKey( 'bold' ) ) ).to.be.false;
 	} );
 
 	it( 'should not throw and do nothing if selection has no ranges', () => {

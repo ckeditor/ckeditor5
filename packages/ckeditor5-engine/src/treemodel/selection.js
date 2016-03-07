@@ -9,14 +9,15 @@ import Position from './position.js';
 import Range from './range.js';
 import LiveRange from './liverange.js';
 import EmitterMixin from '../emittermixin.js';
+import CharacterProxy from './characterproxy.js';
 import CKEditorError from '../ckeditorerror.js';
 import utils from '../utils.js';
 
-const storePrefix = 'selection_store:';
+const storePrefix = 'selection:';
 
 /**
  * Represents a selection that is made on nodes in {@link core.treeModel.Document}. Selection instance is
- * created by {@link core.treeModel.Document}. In most scenarios you should not need to create an instance of Selection.
+ * created by {@link core.treeModel.Document}. You should not need to create an instance of Selection.
  *
  * @memberOf core.treeModel
  */
@@ -24,7 +25,7 @@ export default class Selection {
 	/**
 	 * Creates an empty selection.
 	 */
-	constructor() {
+	constructor( document ) {
 		/**
 		 * List of attributes set on current selection.
 		 *
@@ -34,12 +35,12 @@ export default class Selection {
 		this._attrs = new Map();
 
 		/**
-		 * Stores all ranges that are selected.
+		 * Document which owns this selection.
 		 *
 		 * @private
-		 * @member {Array.<core.treeModel.LiveRange>} core.treeModel.Selection#_ranges
+		 * @member {core.treeModel.Document} core.treeModel.Selection#_document
 		 */
-		this._ranges = [];
+		this._document = document;
 
 		/**
 		 * Specifies whether the last added range was added as a backward or forward range.
@@ -48,6 +49,14 @@ export default class Selection {
 		 * @member {Boolean} core.treeModel.Selection#_lastRangeBackward
 		 */
 		this._lastRangeBackward = false;
+
+		/**
+		 * Stores all ranges that are selected.
+		 *
+		 * @private
+		 * @member {Array.<core.treeModel.LiveRange>} core.treeModel.Selection#_ranges
+		 */
+		this._ranges = [];
 	}
 
 	/**
@@ -229,6 +238,7 @@ export default class Selection {
 	 */
 	clearAttributes() {
 		this._attrs.clear();
+		this._setStoredAttributesTo( new Map() );
 	}
 
 	/**
@@ -264,10 +274,10 @@ export default class Selection {
 	 * Removes an attribute with given key from the selection.
 	 *
 	 * @param {String} key Key of attribute to remove.
-	 * @returns {Boolean} `true` if the attribute was set on the selection, `false` otherwise.
 	 */
 	removeAttribute( key ) {
-		return this._attrs.delete( key );
+		this._attrs.delete( key );
+		this._removeStoredAttribute( key );
 	}
 
 	/**
@@ -278,6 +288,7 @@ export default class Selection {
 	 */
 	setAttribute( key, value ) {
 		this._attrs.set( key, value );
+		this._storeAttribute( key, value );
 	}
 
 	/**
@@ -287,6 +298,7 @@ export default class Selection {
 	 */
 	setAttributesTo( attrs ) {
 		this._attrs = utils.toMap( attrs );
+		this._setStoredAttributesTo( this._attrs );
 	}
 
 	/**
@@ -317,24 +329,177 @@ export default class Selection {
 	}
 
 	/**
-	 * Iterates through given set of attributes looking for attributes stored for selection. Keeps all such attributes
-	 * and removes others. Then, converts attributes keys from store key to original key.
+	 * Iterates through all attributes stored in current selection's parent.
 	 *
-	 * @param {Iterable} attrs Iterable object containing attributes to be filtered. See {@link core.treeModel.Node#getAttributes}.
-	 * @returns {Map} Map containing filtered attributes with keys converted to their original state.
+	 * @returns {Iterable.<*>}
 	 */
-	static filterStoreAttributes( attrs ) {
-		const filtered = new Map();
+	*_getStoredAttributes() {
+		if ( this.hasAnyRange ) {
+			const selectionParent = this.getFirstPosition().parent;
 
-		for ( let attr of attrs ) {
-			if ( attr[ 0 ].indexOf( storePrefix ) === 0 ) {
-				const realKey = attr[ 0 ].substr( storePrefix.length );
+			if ( this.isCollapsed && selectionParent.getChildCount() === 0 ) {
+				for ( let attr of selectionParent.getAttributes() ) {
+					if ( attr[ 0 ].indexOf( storePrefix ) === 0 ) {
+						const realKey = attr[ 0 ].substr( storePrefix.length );
 
-				filtered.set( realKey, attr[ 1 ] );
+						yield [ realKey, attr[ 1 ] ];
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Removes attribute with given key from attributes stored in current selection's parent node.
+	 *
+	 * @private
+	 * @param {String} key Key of attribute to remove.
+	 */
+	_removeStoredAttribute( key ) {
+		if ( this.hasAnyRange ) {
+			const selectionParent = this.getFirstPosition().parent;
+
+			if ( this.isCollapsed && selectionParent.getChildCount() === 0 ) {
+				const storeKey = Selection._getStoreAttributeKey( key );
+
+				this._document.enqueueChanges( () => {
+					this._document.batch().removeAttr( storeKey, selectionParent );
+				} );
+			}
+		}
+	}
+
+	/**
+	 * Stores given attribute key and value in current selection's parent node if the selection is collapsed and
+	 * the parent node is empty.
+	 *
+	 * @private
+	 * @param {String} key Key of attribute to set.
+	 * @param {*} value Attribute value.
+	 */
+	_storeAttribute( key, value ) {
+		if ( this.hasAnyRange ) {
+			const selectionParent = this.getFirstPosition().parent;
+
+			if ( this.isCollapsed && selectionParent.getChildCount() === 0 ) {
+				const storeKey = Selection._getStoreAttributeKey( key );
+
+				this._document.enqueueChanges( () => {
+					this._document.batch().setAttr( storeKey, value, selectionParent );
+				} );
+			}
+		}
+	}
+
+	/**
+	 * Sets selection attributes stored in current selection's parent node to given set of attributes.
+	 *
+	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set.
+	 * @private
+	 */
+	_setStoredAttributesTo( attrs ) {
+		if ( this.hasAnyRange ) {
+			const selectionParent = this.getFirstPosition().parent;
+
+			if ( this.isCollapsed && selectionParent.getChildCount() === 0 ) {
+				this._document.enqueueChanges( () => {
+					const batch = this._document.batch();
+
+					for ( let attr of this._getStoredAttributes() ) {
+						const storeKey = Selection._getStoreAttributeKey( attr[ 0 ] );
+
+						batch.removeAttr( storeKey, selectionParent );
+					}
+
+					for ( let attr of attrs ) {
+						const storeKey = Selection._getStoreAttributeKey( attr[ 0 ] );
+
+						batch.setAttr( storeKey, attr[ 1 ], selectionParent );
+					}
+				} );
+			}
+		}
+	}
+
+	/**
+	 * Updates this selection attributes basing on it's position in the Tree Model.
+	 *
+	 * @private
+	 */
+	_updateAttributes() {
+		if ( !this.hasAnyRange ) {
+			this.clearAttributes();
+		} else {
+			const position = this.getFirstPosition();
+			const positionParent = position.parent;
+			let attrs = null;
+
+			if ( this.isCollapsed === false ) {
+				// 1. If selection is a range...
+				const range = this.getFirstRange();
+
+				// ...look for a first character node in that range and take attributes from it.
+				for ( let item of range ) {
+					if ( item.type == 'TEXT' ) {
+						attrs = item.item.getAttributes();
+						break;
+					}
+				}
+			}
+
+			// 2. If the selection is a caret or the range does not contain a character node...
+			if ( !attrs && this.isCollapsed === true ) {
+				const nodeBefore = positionParent.getChild( position.offset - 1 );
+				const nodeAfter = positionParent.getChild( position.offset );
+
+				// ...look at the node before caret and take attributes from it if it is a character node.
+				attrs = getAttrsIfCharacter( nodeBefore );
+
+				// 3. If not, look at the node after caret...
+				if ( !attrs ) {
+					attrs = getAttrsIfCharacter( nodeAfter );
+				}
+
+				// 4. If not, try to find the first character on the left, that is in the same node.
+				if ( !attrs ) {
+					let node = nodeBefore;
+
+					while ( node && !attrs ) {
+						node = node.previousSibling;
+						attrs = getAttrsIfCharacter( node );
+					}
+				}
+
+				// 5. If not found, try to find the first character on the right, that is in the same node.
+				if ( !attrs ) {
+					let node = nodeAfter;
+
+					while ( node && !attrs ) {
+						node = node.nextSibling;
+						attrs = getAttrsIfCharacter( node );
+					}
+				}
+
+				// 6. If not found, selection should retrieve attributes from parent.
+				if ( !attrs ) {
+					attrs = this._getStoredAttributes();
+				}
+			}
+
+			if ( attrs ) {
+				this._attrs = new Map( attrs );
+			} else {
+				this.clearAttributes();
 			}
 		}
 
-		return filtered;
+		function getAttrsIfCharacter( node ) {
+			if ( node instanceof CharacterProxy ) {
+				return node.getAttributes();
+			}
+
+			return null;
+		}
 	}
 
 	/**
@@ -343,7 +508,7 @@ export default class Selection {
 	 * @param {String} key Attribute key to convert.
 	 * @returns {String} Converted attribute key, applicable for selection store.
 	 */
-	static getStoreAttributeKey( key ) {
+	static _getStoreAttributeKey( key ) {
 		return storePrefix + key;
 	}
 }

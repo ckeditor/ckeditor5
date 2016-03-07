@@ -16,8 +16,8 @@ import Selection from './selection.js';
 import EmitterMixin from '../emittermixin.js';
 import CKEditorError from '../ckeditorerror.js';
 import utils from '../utils.js';
-import CharacterProxy from './characterproxy.js';
 import Schema from './schema.js';
+import clone from '../lib/lodash/clone.js';
 
 const graveyardSymbol = Symbol( 'graveyard' );
 
@@ -72,7 +72,7 @@ export default class Document {
 		 * @readonly
 		 * @member {core.treeModel.Selection} core.treeModel.Document#selection
 		 */
-		this.selection = new Selection();
+		this.selection = new Selection( this );
 
 		/**
 		 * Schema for this document.
@@ -83,11 +83,11 @@ export default class Document {
 
 		// Add events that will update selection attributes.
 		this.selection.on( 'update', () => {
-			this._updateSelectionAttributes();
+			this.selection._updateAttributes();
 		} );
 
 		this.on( 'changesDone', () => {
-			this._updateSelectionAttributes();
+			this.selection._updateAttributes();
 		} );
 
 		// Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
@@ -172,6 +172,14 @@ export default class Document {
 	}
 
 	/**
+	 * Removes all events listeners set by document instance.
+	 */
+	detach() {
+		this.selection.detach();
+		this.stopListening();
+	}
+
+	/**
 	 * Enqueue a callback with document changes. Any changes to be done on document (mostly using {@link core.treeModel.Document#batch}
 	 * should be placed in the queued callback. If no other plugin is changing document at the moment, the callback will be
 	 * called immediately. Otherwise it will wait for all previously queued changes to finish happening. This way
@@ -219,85 +227,17 @@ export default class Document {
 	}
 
 	/**
-	 * Updates this document's {@link core.treeModel.Document#selection selection} attributes. Should be fired
-	 * whenever selection attributes might have changed (i.e. when selection ranges change or document is changed).
+	 * Custom toJSON method to solve child-parent circular dependencies.
 	 *
-	 * @private
+	 * @returns {Object} Clone of this object with the document property changed to string.
 	 */
-	_updateSelectionAttributes() {
-		if ( !this.selection.hasAnyRange ) {
-			this.selection.clearAttributes();
-		} else {
-			const position = this.selection.getFirstPosition();
-			const positionParent = position.parent;
-			let attrs = null;
+	toJSON() {
+		const json = clone( this );
 
-			if ( this.selection.isCollapsed === false ) {
-				// 1. If selection is a range...
-				const range = this.selection.getFirstRange();
+		// Due to circular references we need to remove parent reference.
+		json.selection = '[core.treeModel.Selection]';
 
-				// ...look for a first character node in that range and take attributes from it.
-				for ( let item of range ) {
-					if ( item.type == 'TEXT' ) {
-						attrs = item.item.getAttributes();
-						break;
-					}
-				}
-			}
-
-			// 2. If the selection is a caret or the range does not contain a character node...
-			if ( !attrs && this.selection.isCollapsed === true ) {
-				const nodeBefore = positionParent.getChild( position.offset - 1 );
-				const nodeAfter = positionParent.getChild( position.offset );
-
-				// ...look at the node before caret and take attributes from it if it is a character node.
-				attrs = getAttrsIfCharacter( nodeBefore );
-
-				// 3. If not, look at the node after caret...
-				if ( !attrs ) {
-					attrs = getAttrsIfCharacter( nodeAfter );
-				}
-
-				// 4. If not, try to find the first character on the left, that is in the same node.
-				if ( !attrs ) {
-					let node = nodeBefore;
-
-					while ( node && !attrs ) {
-						node = node.previousSibling;
-						attrs = getAttrsIfCharacter( node );
-					}
-				}
-
-				// 5. If not found, try to find the first character on the right, that is in the same node.
-				if ( !attrs ) {
-					let node = nodeAfter;
-
-					while ( node && !attrs ) {
-						node = node.nextSibling;
-						attrs = getAttrsIfCharacter( node );
-					}
-				}
-
-				// 6. If not found, selection should retrieve attributes from parent.
-				if ( !attrs ) {
-					attrs = Selection.filterStoreAttributes( positionParent.getAttributes() );
-				}
-			}
-
-			if ( attrs ) {
-				this.selection.setAttributesTo( attrs );
-			} else {
-				this.selection.clearAttributes();
-			}
-		}
-
-		function getAttrsIfCharacter( node ) {
-			if ( node instanceof CharacterProxy ) {
-				return node.getAttributes();
-			}
-
-			return null;
-		}
+		return {};
 	}
 
 	/**
