@@ -11,6 +11,7 @@ import Text from '/ckeditor5/core/treemodel/text.js';
 import Range from '/ckeditor5/core/treemodel/range.js';
 import Position from '/ckeditor5/core/treemodel/position.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
+import Selection from '/ckeditor5/core/treemodel/selection.js';
 
 let element, editor, command, modelDoc, root;
 
@@ -58,7 +59,7 @@ describe( '_execute', () => {
 		let attrs = {};
 		attrs[ attrKey ] = true;
 
-		root.insertChildren( 0, new Element( 'p', [] , [ 'abc', new Text( 'foobar', attrs ), 'xyz' ] ) );
+		root.insertChildren( 0, [ new Element( 'p', [] , [ 'abc', new Text( 'foobar', attrs ), 'xyz' ] ), new Element( 'p' ) ] );
 		p = root.getChild( 0 );
 	} );
 
@@ -110,7 +111,7 @@ describe( '_execute', () => {
 		expect( p.getChild( 4 ).hasAttribute( attrKey ) ).to.be.false;
 	} );
 
-	it( 'should change selection attribute if selection is collapsed', () => {
+	it( 'should change selection attribute if selection is collapsed in non-empty parent', () => {
 		modelDoc.selection.addRange( new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 1 ] ) ) );
 
 		expect( command.value ).to.be.false;
@@ -126,7 +127,7 @@ describe( '_execute', () => {
 		expect( modelDoc.selection.hasAttribute( 'bold' ) ).to.be.false;
 	} );
 
-	it( 'should not save that attribute was changed on selection when selection changes', () => {
+	it( 'should not store attribute change on selection if selection is collapsed in non-empty parent', () => {
 		modelDoc.selection.addRange( new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 1 ] ) ) );
 		command._execute();
 
@@ -139,6 +140,39 @@ describe( '_execute', () => {
 		modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 1 ] ) ) ] );
 
 		expect( command.value ).to.be.false;
+	} );
+
+	it( 'should change selection attribute and store it if selection is collapsed in empty parent', () => {
+		modelDoc.selection.setRanges( [ new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 0 ] ) ) ] );
+
+		expect( command.value ).to.be.false;
+
+		command._execute();
+
+		expect( command.value ).to.be.true;
+		expect( modelDoc.selection.hasAttribute( 'bold' ) ).to.be.true;
+
+		let selectionParent = root.getChild( 1 );
+
+		// Attribute should be stored.
+		expect( selectionParent.hasAttribute( Selection.getStoreAttributeKey( 'bold' ) ) ).to.be.true;
+
+		// Simulate clicking somewhere else in the editor.
+		modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 2 ] ) ) ] );
+
+		expect( command.value ).to.be.false;
+
+		// Go back to where attribute was stored.
+		modelDoc.selection.setRanges( [ new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 0 ] ) ) ] );
+
+		// Attribute should be restored.
+		expect( command.value ).to.be.true;
+
+		command._execute();
+
+		expect( command.value ).to.be.false;
+		expect( modelDoc.selection.hasAttribute( 'bold' ) ).to.be.false;
+		expect( selectionParent.hasAttribute( Selection.getStoreAttributeKey( 'bold' ) ) ).to.be.false;
 	} );
 
 	it( 'should not throw and do nothing if selection has no ranges', () => {

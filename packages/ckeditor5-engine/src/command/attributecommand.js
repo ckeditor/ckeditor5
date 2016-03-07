@@ -8,6 +8,7 @@
 import Command from './command.js';
 import TreeWalker from '../treemodel/treewalker.js';
 import Range from '../treemodel/range.js';
+import Selection from '../treemodel/selection.js';
 
 /**
  * An extension of basic {@link core.command.Command} class, which provides utilities for a command that sets a single
@@ -116,11 +117,26 @@ export default class AttributeCommand extends Command {
 		let value = ( forceValue === undefined ) ? !this.value : forceValue;
 
 		if ( selection.isCollapsed ) {
-			// If selection is collapsed change only selection attribute.
-			if ( value ) {
-				selection.setAttribute( this.attributeKey, true );
+			let selectionParent = selection.getFirstPosition().parent;
+
+			if ( selectionParent.getChildCount() === 0 ) {
+				// If selection is collapsed and in empty node, operate on stored selection attributes.
+				let storeKey = Selection.getStoreAttributeKey( this.attributeKey );
+
+				document.enqueueChanges( () => {
+					if ( value ) {
+						document.batch().setAttr( storeKey, value, selectionParent );
+					} else {
+						document.batch().removeAttr( storeKey, selectionParent );
+					}
+				} );
 			} else {
-				selection.removeAttribute( this.attributeKey );
+				// If selection is collapsed but not in empty node, change only selection attribute. It won't be saved anywhere.
+				if ( value ) {
+					selection.setAttribute( this.attributeKey, true );
+				} else {
+					selection.removeAttribute( this.attributeKey );
+				}
 			}
 		} else if ( selection.hasAnyRange ) {
 			// If selection is not collapsed and has ranges, we change attribute on those ranges.
@@ -132,7 +148,11 @@ export default class AttributeCommand extends Command {
 				let batch = document.batch();
 
 				for ( let range of ranges ) {
-					batch.setAttr( this.attributeKey, value || null, range );
+					if ( value ) {
+						batch.setAttr( this.attributeKey, value, range );
+					} else {
+						batch.removeAttr( this.attributeKey, range );
+					}
 				}
 			} );
 		}

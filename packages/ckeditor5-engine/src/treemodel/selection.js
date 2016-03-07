@@ -12,6 +12,8 @@ import EmitterMixin from '../emittermixin.js';
 import CKEditorError from '../ckeditorerror.js';
 import utils from '../utils.js';
 
+const storePrefix = 'selection_store:';
+
 /**
  * Represents a selection that is made on nodes in {@link core.treeModel.Document}. Selection instance is
  * created by {@link core.treeModel.Document}. In most scenarios you should not need to create an instance of Selection.
@@ -285,6 +287,37 @@ export default class Selection {
 	 */
 	clearAttributes() {
 		this._attrs.clear();
+	}
+
+	/**
+	 * Generates and returns an attribute key for selection attributes store, basing on original attribute key.
+	 *
+	 * @param {String} key Attribute key to convert.
+	 * @returns {String} Converted attribute key, applicable for selection store.
+	 */
+	static getStoreAttributeKey( key ) {
+		return storePrefix + key;
+	}
+
+	/**
+	 * Iterates through given set of attributes looking for attributes stored for selection. Keeps all such attributes
+	 * and removes others. Then, converts attributes keys from store key to original key.
+	 *
+	 * @param {Iterable} attrs Iterable object containing attributes to be filtered. See {@link core.treeModel.Node#getAttributes}.
+	 * @returns {Map} Map containing filtered attributes with keys converted to their original state.
+	 */
+	static filterStoreAttributes( attrs ) {
+		const filtered = new Map();
+
+		for ( let attr of attrs ) {
+			if ( attr[ 0 ].indexOf( storePrefix ) === 0 ) {
+				const realKey = attr[ 0 ].substr( storePrefix.length );
+
+				filtered.set( realKey, attr[ 1 ] );
+			}
+		}
+
+		return filtered;
 	}
 }
 

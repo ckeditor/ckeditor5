@@ -278,7 +278,10 @@ export default class Document {
 					}
 				}
 
-				// 6. If not found, selection won't get any attributes.
+				// 6. If not found, selection should retrieve attributes from parent.
+				if ( !attrs ) {
+					attrs = Selection.filterStoreAttributes( positionParent.getAttributes() );
+				}
 			}
 
 			if ( attrs ) {
