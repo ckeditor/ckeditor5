@@ -88,11 +88,13 @@ export default class Element extends Node {
 	 * {@link core.treeView.Element#insert Insert} a child node or a list of child nodes at the end of this node and sets
 	 * the parent of these nodes to this element.
 	 *
-	 * @param {core.treeView.Node|Iterable.<core.treeView.Node>} nodes Node or the list of nodes to be inserted.
 	 * @fires core.treeView.Node#change
+	 * @param {core.treeView.Node|Iterable.<core.treeView.Node>} nodes Node or the list of nodes to be inserted.
+	 * @returns {Number} Number of appended nodes.
+
 	 */
 	appendChildren( nodes ) {
-		this.insertChildren( this.getChildCount(), nodes );
+		return this.insertChildren( this.getChildCount(), nodes );
 	}
 
 	/**
@@ -182,9 +184,11 @@ export default class Element extends Node {
 	 * @param {Number} index Position where nodes should be inserted.
 	 * @param {core.treeView.Node|Iterable.<core.treeView.Node>} nodes Node or the list of nodes to be inserted.
 	 * @fires core.treeView.Node#change
+	 * @returns {Number} Number of inserted nodes.
 	 */
 	insertChildren( index, nodes ) {
 		this._fireChange( 'CHILDREN', this );
+		let count = 0;
 
 		if ( !utils.isIterable( nodes ) ) {
 			nodes = [ nodes ];
@@ -195,7 +199,10 @@ export default class Element extends Node {
 
 			this._children.splice( index, 0, node );
 			index++;
+			count++;
 		}
+
+		return count;
 	}
 
 	/**

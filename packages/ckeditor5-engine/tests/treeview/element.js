@@ -153,24 +153,29 @@ describe( 'Element', () => {
 
 		describe( 'insertion', () => {
 			it( 'should insert children', () => {
-				parent.insertChildren( 0, [ el1, el3 ] );
-				parent.insertChildren( 1, el2 );
+				const count1 = parent.insertChildren( 0, [ el1, el3 ] );
+				const count2 = parent.insertChildren( 1, el2 );
 
 				expect( parent.getChildCount() ).to.equal( 3 );
 				expect( parent.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'el1' );
 				expect( parent.getChild( 1 ) ).to.have.property( 'name' ).that.equals( 'el2' );
 				expect( parent.getChild( 2 ) ).to.have.property( 'name' ).that.equals( 'el3' );
+				expect( count1 ).to.equal( 2 );
+				expect( count2 ).to.equal( 1 );
 			} );
 
 			it( 'should append children', () => {
-				parent.insertChildren( 0, el1 );
-				parent.appendChildren( el2 );
-				parent.appendChildren( el3 );
+				const count1 = parent.insertChildren( 0, el1 );
+				const count2 = parent.appendChildren( el2 );
+				const count3 = parent.appendChildren( el3 );
 
 				expect( parent.getChildCount() ).to.equal( 3 );
 				expect( parent.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'el1' );
 				expect( parent.getChild( 1 ) ).to.have.property( 'name' ).that.equals( 'el2' );
 				expect( parent.getChild( 2 ) ).to.have.property( 'name' ).that.equals( 'el3' );
+				expect( count1 ).to.equal( 1 );
+				expect( count2 ).to.equal( 1 );
+				expect( count3 ).to.equal( 1 );
 			} );
 		} );
 
