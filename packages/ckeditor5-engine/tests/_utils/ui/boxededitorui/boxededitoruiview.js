@@ -8,8 +8,8 @@
 import EditorUIView from '/ckeditor5/core/editorui/editoruiview.js';
 
 export default class BoxedEditorUIView extends EditorUIView {
-	constructor( model ) {
-		super( model );
+	constructor( model, locale ) {
+		super( model, locale );
 
 		this.template = {
 			tag: 'div',

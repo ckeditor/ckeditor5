@@ -27,19 +27,36 @@ export default class View {
 	 * Creates an instance of the {@link View} class.
 	 *
 	 * @param {core.ui.Model} model (View)Model of this View.
+	 * @param {core.Locale} [locale] The {@link core.Editor#locale editor's locale} instance.
 	 */
-	constructor( model ) {
+	constructor( model, locale ) {
 		/**
 		 * Model of this view.
 		 *
-		 * @type {core.ui.Model}
+		 * @member {core.ui.Model} core.ui.View#model
 		 */
-		this.model = model || null;
+		this.model = model;
+
+		/**
+		 * @readonly
+		 * @member {core.Locale} core.ui.View#locale
+		 */
+		this.locale = locale;
+
+		/**
+		 * Shorthand for {@link core.Locale#t}.
+		 *
+		 * Note: If locale instance hasn't been passed to the view this method may not be available.
+		 *
+		 * @see core.Locale#t
+		 * @method t
+		 */
+		this.t = locale && locale.t;
 
 		/**
 		 * Regions of this view. See {@link core.ui.View#register}.
 		 *
-		 * @type {Collection}
+		 * @member {core.Collection} core.ui.View#regions
 		 */
 		this.regions = new Collection( {
 			idProperty: 'name'
@@ -48,38 +65,37 @@ export default class View {
 		/**
 		 * Template of this view.
 		 *
-		 * @type {Object}
+		 * @member {Object} core.ui.View#template
 		 */
-		this.template = null;
 
 		/**
 		 * Region selectors of this view. See {@link core.ui.View#register}.
 		 *
 		 * @private
-		 * @type {Object}
+		 * @member {Object} core.ui.View#_regionSelectors
 		 */
-		this._regionsSelectors = {};
+		this._regionSelectors = {};
 
 		/**
 		 * Element of this view.
 		 *
 		 * @private
-		 * @type {HTMLElement}
+		 * @member {HTMLElement} core.ui.View.#_element
 		 */
-		this._element = null;
 
 		/**
 		 * An instance of Template to generate {@link core.ui.View#_el}.
 		 *
 		 * @private
-		 * @type {Template}
+		 * @member {Template} core.ui.View#_template
 		 */
-		this._template = null;
 	}
 
 	/**
 	 * Element of this view. The element is rendered on first reference
-	 * using {@link core.ui.View#template} definition and {@link core.ui.View#_template} object.
+	 * using {@link core.ui.View#template} definition.
+	 *
+	 * @type {HTMLElement}
 	 */
 	get element() {
 		if ( this._element ) {
@@ -112,6 +128,7 @@ export default class View {
 	 * is synchronized with {@link View#model}.
 	 *
 	 * @readonly
+	 * @type core.ui.ViewModelBinding
 	 */
 	get attributeBinder() {
 		if ( this._attributeBinder ) {
@@ -194,6 +211,9 @@ export default class View {
 
 	/**
 	 * Initializes the view.
+	 *
+	 * Note: {@link core.Controller} supports if a promise is returned by this method,
+	 * what means that view initialization may be asynchronous.
 	 */
 	init() {
 		this._initRegions();
@@ -271,7 +291,7 @@ export default class View {
 			}
 		}
 
-		this._regionsSelectors[ regionName ] = regionSelector;
+		this._regionSelectors[ regionName ] = regionSelector;
 	}
 
 	/**
@@ -334,12 +354,13 @@ export default class View {
 			this.element.remove();
 		}
 
-		this.model = this.regions = this.template = this._regionsSelectors = this._element = this._template = null;
+		this.model = this.regions = this.template = this.locale = this.t = null;
+		this._regionSelectors = this._element = this._template = null;
 	}
 
 	/**
 	 * Initializes {@link core.ui.View#regions} of this view by passing a DOM element
-	 * generated from {@link core.ui.View#_regionsSelectors} into {@link Region#init}.
+	 * generated from {@link core.ui.View#_regionSelectors} into {@link Region#init}.
 	 *
 	 * @protected
 	 */
@@ -347,7 +368,7 @@ export default class View {
 		let region, regionEl, regionSelector;
 
 		for ( region of this.regions ) {
-			regionSelector = this._regionsSelectors[ region.name ];
+			regionSelector = this._regionSelectors[ region.name ];
 
 			if ( typeof regionSelector == 'string' ) {
 				regionEl = this.element.querySelector( regionSelector );

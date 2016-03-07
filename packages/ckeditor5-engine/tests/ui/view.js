@@ -34,15 +34,23 @@ describe( 'View', () => {
 		} );
 
 		it( 'defines basic view properties', () => {
-			view = new View();
+			const model = new Model();
 
-			expect( view.model ).to.be.null;
-			expect( view.regions.length ).to.be.equal( 0 );
-			expect( view.template ).to.be.null;
-			expect( view._regionsSelectors ).to.be.empty;
-			expect( view._element ).to.be.null;
-			expect( view._template ).to.be.null;
-			expect( view.element ).to.be.null;
+			view = new View( model );
+
+			expect( view.model ).to.equal( model );
+			expect( view.t ).to.be.undefined;
+			expect( view.regions.length ).to.equal( 0 );
+		} );
+
+		it( 'defines the locale property and the t function', () => {
+			const model = new Model();
+			const locale = { t() {} };
+
+			view = new View( model, locale );
+
+			expect( view.locale ).to.equal( locale );
+			expect( view.t ).to.equal( locale.t );
 		} );
 	} );
 
@@ -86,8 +94,8 @@ describe( 'View', () => {
 
 			view.init();
 
-			expect( region1.element ).to.be.equal( view.element.firstChild );
-			expect( region2.element ).to.be.equal( view.element.lastChild );
+			expect( region1.element ).to.equal( view.element.firstChild );
+			expect( region2.element ).to.equal( view.element.lastChild );
 		} );
 
 		it( 'initializes view regions with function selector', () => {
@@ -101,8 +109,8 @@ describe( 'View', () => {
 
 			view.init();
 
-			expect( region1.element ).to.be.equal( view.element.firstChild );
-			expect( region2.element ).to.be.equal( view.element.lastChild );
+			expect( region1.element ).to.equal( view.element.firstChild );
+			expect( region2.element ).to.equal( view.element.lastChild );
 		} );
 
 		it( 'initializes view regions with boolean selector', () => {
@@ -169,6 +177,13 @@ describe( 'View', () => {
 		} );
 
 		it( 'should override an existing region with override flag', () => {
+			view.template = {
+				tag: 'div',
+				children: [
+					{ tag: 'span' }
+				]
+			};
+
 			const region1 = new Region( 'x' );
 			const region2 = new Region( 'x' );
 
@@ -176,8 +191,10 @@ describe( 'View', () => {
 			view.register( region2, true, true );
 			view.register( 'x', 'span', true );
 
-			expect( view.regions.get( 'x' ) ).to.be.equal( region2 );
-			expect( view._regionsSelectors.x ).to.be.equal( 'span' );
+			view.init();
+
+			expect( view.regions.get( 'x' ) ).to.equal( region2 );
+			expect( view.regions.get( 'x' ).element ).to.equal( view.element.firstChild );
 		} );
 
 		it( 'should not override an existing region with the same region with override flag', () => {
@@ -198,7 +215,7 @@ describe( 'View', () => {
 			setTestViewInstance( { a: 1 } );
 
 			expect( view.element ).to.be.an.instanceof( HTMLElement );
-			expect( view.element.nodeName ).to.be.equal( 'A' );
+			expect( view.element.nodeName ).to.equal( 'A' );
 		} );
 
 		it( 'can be explicitly declared', () => {
@@ -221,8 +238,8 @@ describe( 'View', () => {
 			const bind = view.attributeBinder;
 
 			expect( bind ).to.have.keys( 'to', 'if' );
-			expect( typeof bind.to ).to.be.equal( 'function' );
-			expect( typeof bind.if ).to.be.equal( 'function' );
+			expect( typeof bind.to ).to.equal( 'function' );
+			expect( typeof bind.if ).to.equal( 'function' );
 		} );
 
 		describe( 'to', () => {
@@ -254,10 +271,10 @@ describe( 'View', () => {
 				} );
 
 				setTestViewInstance( { foo: 'bar' } );
-				expect( view.element.outerHTML ).to.be.equal( '<p class="bar">abc</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p class="bar">abc</p>' );
 
 				view.model.foo = 'baz';
-				expect( view.element.outerHTML ).to.be.equal( '<p class="baz">abc</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p class="baz">abc</p>' );
 			} );
 
 			it( 'allows binding attribute to the model – simple (Text Node)', () => {
@@ -275,10 +292,10 @@ describe( 'View', () => {
 				} );
 
 				setTestViewInstance( { foo: 'bar' } );
-				expect( view.element.outerHTML ).to.be.equal( '<p>bar</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p>bar</p>' );
 
 				view.model.foo = 'baz';
-				expect( view.element.outerHTML ).to.be.equal( '<p>baz</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p>baz</p>' );
 			} );
 
 			it( 'allows binding attribute to the model – value processing', () => {
@@ -300,10 +317,10 @@ describe( 'View', () => {
 				} );
 
 				setTestViewInstance( { foo: 3 } );
-				expect( view.element.outerHTML ).to.be.equal( '<p class="positive">positive</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p class="positive">positive</p>' );
 
 				view.model.foo = -7;
-				expect( view.element.outerHTML ).to.be.equal( '<p class="negative">negative</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p class="negative">negative</p>' );
 			} );
 
 			it( 'allows binding attribute to the model – value processing (use Node)', () => {
@@ -327,10 +344,10 @@ describe( 'View', () => {
 				} );
 
 				setTestViewInstance( { foo: 3 } );
-				expect( view.element.outerHTML ).to.be.equal( '<p class="HTMLElement positive"></p>' );
+				expect( view.element.outerHTML ).to.equal( '<p class="HTMLElement positive"></p>' );
 
 				view.model.foo = -7;
-				expect( view.element.outerHTML ).to.be.equal( '<p></p>' );
+				expect( view.element.outerHTML ).to.equal( '<p></p>' );
 			} );
 
 			it( 'allows binding attribute to the model – custom callback', () => {
@@ -352,10 +369,10 @@ describe( 'View', () => {
 				} );
 
 				setTestViewInstance( { foo: 'moo' } );
-				expect( view.element.outerHTML ).to.be.equal( '<p class="undefined">moo</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p class="undefined">moo</p>' );
 
 				view.model.foo = 'changed';
-				expect( view.element.outerHTML ).to.be.equal( '<p class="changed">changed</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p class="changed">changed</p>' );
 			} );
 
 			it( 'allows binding attribute to the model – array of bindings (HTMLElement attribute)', () => {
@@ -378,11 +395,11 @@ describe( 'View', () => {
 				} );
 
 				setTestViewInstance( { foo: 'a', bar: 'b' } );
-				expect( view.element.outerHTML ).to.be.equal( '<p class="ck-class a b foo-is-a ck-end">abc</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p class="ck-class a b foo-is-a ck-end">abc</p>' );
 
 				view.model.foo = 'c';
 				view.model.bar = 'd';
-				expect( view.element.outerHTML ).to.be.equal( '<p class="ck-class c d foo-is-c ck-end">abc</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p class="ck-class c d foo-is-c ck-end">abc</p>' );
 			} );
 
 			it( 'allows binding attribute to the model – array of bindings (Text Node)', () => {
@@ -408,11 +425,11 @@ describe( 'View', () => {
 				} );
 
 				setTestViewInstance( { foo: 'a', bar: 'b' } );
-				expect( view.element.outerHTML ).to.be.equal( '<p>ck-class a b foo-is-a ck-end</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p>ck-class a b foo-is-a ck-end</p>' );
 
 				view.model.foo = 'c';
 				view.model.bar = 'd';
-				expect( view.element.outerHTML ).to.be.equal( '<p>ck-class c d foo-is-c ck-end</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p>ck-class c d foo-is-c ck-end</p>' );
 			} );
 
 			it( 'allows binding attribute to the model – falsy values', () => {
@@ -429,22 +446,22 @@ describe( 'View', () => {
 				} );
 
 				setTestViewInstance( { foo: 'bar' } );
-				expect( view.element.outerHTML ).to.be.equal( '<p class="bar">abc</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p class="bar">abc</p>' );
 
 				view.model.foo = false;
-				expect( view.element.outerHTML ).to.be.equal( '<p class="false">abc</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p class="false">abc</p>' );
 
 				view.model.foo = null;
-				expect( view.element.outerHTML ).to.be.equal( '<p class="null">abc</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p class="null">abc</p>' );
 
 				view.model.foo = undefined;
-				expect( view.element.outerHTML ).to.be.equal( '<p class="undefined">abc</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p class="undefined">abc</p>' );
 
 				view.model.foo = 0;
-				expect( view.element.outerHTML ).to.be.equal( '<p class="0">abc</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p class="0">abc</p>' );
 
 				view.model.foo = '';
-				expect( view.element.outerHTML ).to.be.equal( '<p>abc</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p>abc</p>' );
 			} );
 		} );
 
@@ -478,13 +495,13 @@ describe( 'View', () => {
 				} );
 
 				setTestViewInstance( { foo: true } );
-				expect( view.element.outerHTML ).to.be.equal( '<p class="">abc</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p class="">abc</p>' );
 
 				view.model.foo = false;
-				expect( view.element.outerHTML ).to.be.equal( '<p>abc</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p>abc</p>' );
 
 				view.model.foo = 'bar';
-				expect( view.element.outerHTML ).to.be.equal( '<p class="">abc</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p class="">abc</p>' );
 			} );
 
 			// TODO: Is this alright? It makes sense but it's pretty useless. Text Node cannot be
@@ -504,13 +521,13 @@ describe( 'View', () => {
 				} );
 
 				setTestViewInstance( { foo: true } );
-				expect( view.element.outerHTML ).to.be.equal( '<p></p>' );
+				expect( view.element.outerHTML ).to.equal( '<p></p>' );
 
 				view.model.foo = false;
-				expect( view.element.outerHTML ).to.be.equal( '<p></p>' );
+				expect( view.element.outerHTML ).to.equal( '<p></p>' );
 
 				view.model.foo = 'bar';
-				expect( view.element.outerHTML ).to.be.equal( '<p></p>' );
+				expect( view.element.outerHTML ).to.equal( '<p></p>' );
 			} );
 
 			it( 'allows binding attribute to the model – value of an attribute (HTMLElement attribute)', () => {
@@ -527,13 +544,13 @@ describe( 'View', () => {
 				} );
 
 				setTestViewInstance( { foo: 'bar' } );
-				expect( view.element.outerHTML ).to.be.equal( '<p class="bar">abc</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p class="bar">abc</p>' );
 
 				view.model.foo = false;
-				expect( view.element.outerHTML ).to.be.equal( '<p>abc</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p>abc</p>' );
 
 				view.model.foo = 64;
-				expect( view.element.outerHTML ).to.be.equal( '<p class="bar">abc</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p class="bar">abc</p>' );
 			} );
 
 			it( 'allows binding attribute to the model – value of an attribute (Text Node)', () => {
@@ -551,13 +568,13 @@ describe( 'View', () => {
 				} );
 
 				setTestViewInstance( { foo: 'bar' } );
-				expect( view.element.outerHTML ).to.be.equal( '<p>bar</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p>bar</p>' );
 
 				view.model.foo = false;
-				expect( view.element.outerHTML ).to.be.equal( '<p></p>' );
+				expect( view.element.outerHTML ).to.equal( '<p></p>' );
 
 				view.model.foo = 64;
-				expect( view.element.outerHTML ).to.be.equal( '<p>bar</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p>bar</p>' );
 			} );
 
 			it( 'allows binding attribute to the model – value of an attribute processed by a callback', () => {
@@ -574,13 +591,13 @@ describe( 'View', () => {
 				} );
 
 				setTestViewInstance( { foo: 'bar' } );
-				expect( view.element.outerHTML ).to.be.equal( '<p>abc</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p>abc</p>' );
 
 				view.model.foo = false;
-				expect( view.element.outerHTML ).to.be.equal( '<p class="there–is–no–foo">abc</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p class="there–is–no–foo">abc</p>' );
 
 				view.model.foo = 64;
-				expect( view.element.outerHTML ).to.be.equal( '<p>abc</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p>abc</p>' );
 			} );
 
 			it( 'allows binding attribute to the model – value of an attribute processed by a callback (use Node)', () => {
@@ -597,13 +614,13 @@ describe( 'View', () => {
 				} );
 
 				setTestViewInstance( { foo: 'bar' } );
-				expect( view.element.outerHTML ).to.be.equal( '<p>abc</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p>abc</p>' );
 
 				view.model.foo = 'P';
-				expect( view.element.outerHTML ).to.be.equal( '<p class="eqls-tag-name">abc</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p class="eqls-tag-name">abc</p>' );
 
 				view.model.foo = 64;
-				expect( view.element.outerHTML ).to.be.equal( '<p>abc</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p>abc</p>' );
 			} );
 
 			it( 'allows binding attribute to the model – falsy values', () => {
@@ -620,22 +637,22 @@ describe( 'View', () => {
 				} );
 
 				setTestViewInstance( { foo: 'bar' } );
-				expect( view.element.outerHTML ).to.be.equal( '<p class="foo-is-set">abc</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p class="foo-is-set">abc</p>' );
 
 				view.model.foo = false;
-				expect( view.element.outerHTML ).to.be.equal( '<p>abc</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p>abc</p>' );
 
 				view.model.foo = null;
-				expect( view.element.outerHTML ).to.be.equal( '<p>abc</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p>abc</p>' );
 
 				view.model.foo = undefined;
-				expect( view.element.outerHTML ).to.be.equal( '<p>abc</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p>abc</p>' );
 
 				view.model.foo = '';
-				expect( view.element.outerHTML ).to.be.equal( '<p>abc</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p>abc</p>' );
 
 				view.model.foo = 0;
-				expect( view.element.outerHTML ).to.be.equal( '<p>abc</p>' );
+				expect( view.element.outerHTML ).to.equal( '<p>abc</p>' );
 			} );
 		} );
 	} );
@@ -872,9 +889,8 @@ describe( 'View', () => {
 			expect( view.model ).to.be.null;
 			expect( view.regions ).to.be.null;
 			expect( view.template ).to.be.null;
-			expect( view._regionsSelectors ).to.be.null;
-			expect( view._element ).to.be.null;
-			expect( view._template ).to.be.null;
+			expect( view.locale ).to.be.null;
+			expect( view.t ).to.be.null;
 		} );
 
 		it( 'detaches the element from DOM', () => {
@@ -897,8 +913,8 @@ describe( 'View', () => {
 			view.regions.get( 'x' ).views.add( new View() );
 			view.destroy();
 
-			expect( regionsRef.length ).to.be.equal( 0 );
-			expect( regionViewsRef.length ).to.be.equal( 0 );
+			expect( regionsRef.length ).to.equal( 0 );
+			expect( regionViewsRef.length ).to.equal( 0 );
 			expect( spy.calledOnce ).to.be.true;
 		} );
 
@@ -919,15 +935,15 @@ describe( 'View', () => {
 			const modelRef = view.model;
 			const elRef = view.element;
 
-			expect( view.element.outerHTML ).to.be.equal( '<p>bar</p>' );
+			expect( view.element.outerHTML ).to.equal( '<p>bar</p>' );
 
 			modelRef.foo = 'baz';
-			expect( view.element.outerHTML ).to.be.equal( '<p>baz</p>' );
+			expect( view.element.outerHTML ).to.equal( '<p>baz</p>' );
 
 			view.destroy();
 
 			modelRef.foo = 'abc';
-			expect( elRef.outerHTML ).to.be.equal( '<p>baz</p>' );
+			expect( elRef.outerHTML ).to.equal( '<p>baz</p>' );
 		} );
 
 		it( 'destroy a template–less view', () => {
@@ -958,11 +974,11 @@ describe( 'View', () => {
 				}
 			} );
 
-			expect( el.outerHTML ).to.be.equal( '<div class="42" id="foo" checked="checked"></div>' );
+			expect( el.outerHTML ).to.equal( '<div class="42" id="foo" checked="checked"></div>' );
 
 			view.model.b = 64;
 
-			expect( el.outerHTML ).to.be.equal( '<div class="64" id="foo" checked="checked"></div>' );
+			expect( el.outerHTML ).to.equal( '<div class="64" id="foo" checked="checked"></div>' );
 		} );
 
 		it( 'should initialize DOM listeners', () => {
@@ -999,7 +1015,7 @@ describe( 'View', () => {
 			el.appendChild( childA );
 			el.appendChild( childB );
 
-			expect( el.outerHTML ).to.be.equal( '<div><a>anchor</a><b>bold</b></div>' );
+			expect( el.outerHTML ).to.equal( '<div><a>anchor</a><b>bold</b></div>' );
 
 			const spy1 = testUtils.sinon.spy();
 			const spy2 = testUtils.sinon.spy();
@@ -1042,14 +1058,14 @@ describe( 'View', () => {
 				}
 			} );
 
-			expect( el.outerHTML ).to.be.equal( '<div id="FOO" class="applied-parent-42">' +
+			expect( el.outerHTML ).to.equal( '<div id="FOO" class="applied-parent-42">' +
 				'<a class="applied-A-42" id="applied-A">Text applied to childA.</a>' +
 				'<b class="applied-B-42" id="applied-B">Text applied to childB.</b>' +
 			'</div>' );
 
 			view.model.b = 16;
 
-			expect( el.outerHTML ).to.be.equal( '<div id="FOO" class="applied-parent-16">' +
+			expect( el.outerHTML ).to.equal( '<div id="FOO" class="applied-parent-16">' +
 				'<a class="applied-A-16" id="applied-A">Text applied to childA.</a>' +
 				'<b class="applied-B-16" id="applied-B">Text applied to childB.</b>' +
 			'</div>' );
@@ -1087,8 +1103,8 @@ describe( 'View', () => {
 			view.applyTemplateToElement( el2, def );
 
 			// Attacher function didn't change because it's still the same View instance.
-			expect( attacherFn ).to.be.equal( def.on.click );
-			expect( def.on._listenerView ).to.be.equal( view );
+			expect( attacherFn ).to.equal( def.on.click );
+			expect( def.on._listenerView ).to.equal( view );
 
 			document.body.appendChild( el1 );
 			document.body.appendChild( el2 );
@@ -1115,14 +1131,14 @@ describe( 'View', () => {
 			document.body.appendChild( el );
 
 			view1.applyTemplateToElement( el, def );
-			expect( def.on._listenerView ).to.be.equal( view1 );
+			expect( def.on._listenerView ).to.equal( view1 );
 
 			dispatchEvent( el, 'click' );
 			sinon.assert.calledOnce( spy );
 
 			// Use another view1 to see if attachers are re–defined.
 			view2.applyTemplateToElement( el, def );
-			expect( def.on._listenerView ).to.be.equal( view2 );
+			expect( def.on._listenerView ).to.equal( view2 );
 
 			dispatchEvent( el, 'click' );
 			// Spy was called for view1 (1st dispatch), then for view1 and view2 (2nd dispatch).

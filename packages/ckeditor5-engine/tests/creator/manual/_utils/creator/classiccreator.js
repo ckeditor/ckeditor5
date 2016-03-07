@@ -49,7 +49,8 @@ export default class ClassicCreator extends Creator {
 	}
 
 	_setupToolbar() {
-		const toolbar = new Toolbar( new Model(), new ToolbarView(), this.editor );
+		const toolbarModel = new Model();
+		const toolbar = new Toolbar( toolbarModel, new ToolbarView( toolbarModel, this.editor.locale ), this.editor );
 
 		toolbar.addButtons( this.editor.config.toolbar );
 
@@ -58,7 +59,7 @@ export default class ClassicCreator extends Creator {
 
 	_createEditable() {
 		const editable = new FramedEditable( this.editor );
-		const editableView = new FramedEditableView( editable.viewModel );
+		const editableView = new FramedEditableView( editable.viewModel, this.editor.locale );
 
 		editable.view = editableView;
 
@@ -67,7 +68,7 @@ export default class ClassicCreator extends Creator {
 
 	_createEditorUI() {
 		const editorUI = new BoxedEditorUI( this.editor );
-		const editorUIView = new BoxedEditorUIView( editorUI.viewModel );
+		const editorUIView = new BoxedEditorUIView( editorUI.viewModel, this.editor.locale );
 
 		editorUI.view = editorUIView;
 

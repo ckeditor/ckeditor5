@@ -47,11 +47,13 @@ export default class InlineCreator extends Creator {
 	}
 
 	_setupToolbar() {
+		const locale = this.editor.locale;
+
 		const toolbar1Model = new Model();
 		const toolbar2Model = new Model();
 
-		const toolbar1 = new FloatingToolbar( toolbar1Model, new FloatingToolbarView( toolbar1Model ), this.editor );
-		const toolbar2 = new FloatingToolbar( toolbar2Model, new FloatingToolbarView( toolbar2Model ), this.editor );
+		const toolbar1 = new FloatingToolbar( toolbar1Model, new FloatingToolbarView( toolbar1Model, locale ), this.editor );
+		const toolbar2 = new FloatingToolbar( toolbar2Model, new FloatingToolbarView( toolbar2Model, locale ), this.editor );
 
 		toolbar1.addButtons( this.editor.config.toolbar );
 		toolbar2.addButtons( this.editor.config.toolbar.reverse() );
@@ -62,7 +64,7 @@ export default class InlineCreator extends Creator {
 
 	_createEditable() {
 		const editable = new InlineEditable( this.editor );
-		const editableView = new InlineEditableView( editable.viewModel, this.editor.element );
+		const editableView = new InlineEditableView( editable.viewModel, this.editor.locale, this.editor.element );
 
 		editable.view = editableView;
 
@@ -72,7 +74,7 @@ export default class InlineCreator extends Creator {
 	_createEditorUI() {
 		const editorUI = new BoxlessEditorUI( this.editor );
 
-		editorUI.view = new EditorUIView( editorUI.viewModel );
+		editorUI.view = new EditorUIView( editorUI.viewModel, this.editor.locale );
 
 		return editorUI;
 	}

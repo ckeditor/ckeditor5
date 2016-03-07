@@ -8,8 +8,8 @@
 import EditableView from '/ckeditor5/core/editable/editableview.js';
 
 export default class InlineEditableView extends EditableView {
-	constructor( model, editableElement ) {
-		super( model );
+	constructor( model, locale, editableElement ) {
+		super( model, locale );
 
 		this.element = editableElement;
 	}

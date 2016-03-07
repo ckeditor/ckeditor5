@@ -4,8 +4,8 @@
 2. Expected:
   * Inline editor should be created.
   * There should be **two** toolbars:
-    * one with "bold" and "italic" buttons,
-    * second with "italic" and "bold" buttons.
+    * one with "Bold" and "Italic" buttons,
+    * second with "Italic" and "Bold" buttons.
 3. Click "Destroy editor".
 4. Expected:
   * Editor should be destroyed (the element should not be editable).

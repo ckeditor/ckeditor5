@@ -8,8 +8,8 @@
 import ToolbarView from '/ckeditor5/ui/toolbar/toolbarview.js';
 
 export default class FloatingToolbarView extends ToolbarView {
-	constructor( model ) {
-		super( model );
+	constructor( model, locale ) {
+		super( model, locale );
 
 		const bind = this.attributeBinder;
 
