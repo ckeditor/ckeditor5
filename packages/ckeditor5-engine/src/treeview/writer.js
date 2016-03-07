@@ -9,7 +9,6 @@ import Position from './position.js';
 import Element from './element.js';
 import Text from './text.js';
 import Range from './range.js';
-import utils from '../utils.js';
 import CKEditorError from '../ckeditorerror.js';
 
 /**
@@ -179,13 +178,52 @@ import CKEditorError from '../ckeditorerror.js';
 	}
 
 	/**
+	 * Breaks attributes on {@link core.treeView.Range#start} and {@link core.treeView.Range#end}.
+	 * Returns new range after break.
+	 * Throws {@link core.CKEditorError} `treeview-writer-invalid-range` when {@link core.treeView.Range#end} and
+	 * {@link core.treeView.Range#start} position are not placed inside same parent container.
+	 *
+	 * @param {core.treeView.Range} range
+	 */
+	breakRange( range ) {
+		const rangeStart = range.start;
+		const rangeEnd = range.end;
+
+		// Range should be placed inside one container.
+		if ( this.getParentContainer( rangeStart ) !== this.getParentContainer( rangeEnd ) ) {
+			/**
+			 * Range is not placed inside same container.
+			 *
+			 * @error treeview-writer-unwrap-invalid-range
+			 */
+			throw new CKEditorError( 'treeview-writer-invalid-range' );
+		}
+
+		// Break at the collapsed position. Return new collapsed range.
+		if ( range.isCollapsed ) {
+			const position = this.breakAttributes( range.start );
+
+			return new Range( position, position );
+		}
+
+		const breakEnd = this.breakAttributes( rangeEnd );
+		const count = breakEnd.parent.getChildCount();
+		const breakStart = this.breakAttributes( rangeStart );
+
+		// Calculate new break end offset.
+		breakEnd.offset += breakEnd.parent.getChildCount() - count;
+
+		return new Range( breakStart, breakEnd );
+	}
+
+	/**
 	 * Merges attribute nodes. It also merges text nodes if needed.
 	 * Two attribute nodes can be merged into one when they are similar and have the same priority.
 	 * Examples:
 	 *        <p>{foo}|{bar}</p> -> <p>{foo|bar}</p>
 	 *        <p><b></b>|<b></b> -> <p><b>|</b></b>
 	 *        <p><b foo="bar"></b>|<b foo="baz"></b> -> <p><b foo="bar"></b>|<b foo="baz"></b>
-	 *        <p><b></b><b></b> -> <p><b></b></b>
+	 *        <p><b></b>|<b></b></p> -> <p><b>|</b></p>
 	 *        <p><b>{foo}</b>|<b>{bar}</b></p> -> <p><b>{foo|bar}</b>
 	 *
 	 * @param {core.treeView.Position} position Merge position.
@@ -250,34 +288,64 @@ import CKEditorError from '../ckeditorerror.js';
 	 *
 	 * @param {core.treeView.Position} position Insertion position.
 	 * @param {core.treeView.Node|Iterable.<core.treeView.Node>} nodes Node or nodes to insert.
+	 * @returns {core.treeView.Range} Range around inserted node.
 	 */
 	insert( position, nodes ) {
 		const container = this.getParentContainer( position );
 		const insertionPosition = this.breakAttributes( position );
 
-		container.insertChildren( insertionPosition.offset, nodes );
-
-		const length = utils.isIterable( nodes ) ? utils.count( nodes ) : 1;
+		const length = container.insertChildren( insertionPosition.offset, nodes );
 		const endPosition = insertionPosition.getShiftedBy( length );
 
-		this.mergeAttributes( endPosition );
-		this.mergeAttributes( insertionPosition );
+		const start = this.mergeAttributes( insertionPosition );
+
+		// If start position was merged - move end position.
+		if ( !start.isEqual( insertionPosition ) ) {
+			endPosition.offset--;
+		}
+		const end = this.mergeAttributes( endPosition );
+
+		return new Range( start, end );
 	}
 
-	//removeFromContainer( range ) {
-	//}
-    //
-	//// <p><u><b>"|"</b></u></p>
-	//// <p><u><b>|</b></u></p>
-	//// <p><u>|</u></p>
-	//// <p>|</p>
-	//removeEmptyAttributes( position ) {
-	//}
+	/**
+	 * Removes provided range from the container.
+	 * Throws {@link core.CKEditorError} `treeview-writer-invalid-range` when {@link core.treeView.Range#end} and
+	 * {@link core.treeView.Range#start} position are not placed inside same parent container node.
+	 *
+	 * @param {core.treeView.Range} range Range to remove from container.
+	 * @returns {core.treeView.Position} New position after removing range.
+	 */
+	remove( range ) {
+		// Range should be placed inside one container.
+		if ( this.getParentContainer( range.start ) !== this.getParentContainer( range.end ) ) {
+			/**
+			 * Range is not placed inside same container.
+			 *
+			 * @error treeview-writer-unwrap-invalid-range
+			 */
+			throw new CKEditorError( 'treeview-writer-invalid-range' );
+		}
 
-	//// f[o]o -> f<b>o</b>o
-	//// <b>f</b>[o]<b>o</b> -> <b>f</b><b>o</b><b>o</b> -> <b>foo</b>
-	//// <b>f</b>o[o<u>bo]m</u> -> <b>f</b>o<b>o</b><u><b>bo</b>m</u>
-	//// Range have to] be inside single container.
+		// If range is collapsed - nothing to wrap.
+		if ( range.isCollapsed ) {
+			return range;
+		}
+
+		// Break attributes at range start and end.
+		const breakRange = this.breakRange( range );
+		const breakStart = breakRange.start;
+		const breakEnd = breakRange.end;
+		const parentContainer = breakStart.parent;
+
+		const count = breakEnd.offset - breakStart.offset;
+
+		// Remove elements in range.
+		parentContainer.removeChildren( breakStart.offset, count );
+
+		// Merge after removing.
+		return this.mergeAttributes( breakStart );
+	}
 
 	/**
 	 * Wraps range with provided attribute element. Range's start and end positions should be placed inside same
@@ -291,11 +359,8 @@ import CKEditorError from '../ckeditorerror.js';
 	 * @param priority
 	 */
 	wrap( range, attribute, priority ) {
-		const rangeStart = range.start;
-		const rangeEnd = range.end;
-
 		// Range should be placed inside one container.
-		if ( this.getParentContainer( rangeStart ) !== this.getParentContainer( rangeEnd ) ) {
+		if ( this.getParentContainer( range.start ) !== this.getParentContainer( range.end ) ) {
 			/**
 			 * Range is not placed inside same container.
 			 *
@@ -313,8 +378,9 @@ import CKEditorError from '../ckeditorerror.js';
 		this.setPriority( attribute, priority );
 
 		// Break attributes at range start and end.
-		const breakStart = this.breakAttributes( rangeStart );
-		const breakEnd = this.breakAttributes( rangeEnd );
+		const breakRange = this.breakRange( range );
+		const breakStart = breakRange.start;
+		const breakEnd = breakRange.end;
 		const parentContainer = breakStart.parent;
 
 		// Unwrap children located between break points.
@@ -346,11 +412,8 @@ import CKEditorError from '../ckeditorerror.js';
 	 * @param element
 	 */
 	unwrap( range, attribute ) {
-		const rangeStart = range.start;
-		const rangeEnd = range.end;
-
 		// Range should be placed inside one container.
-		if ( this.getParentContainer( rangeStart ) !== this.getParentContainer( rangeEnd ) ) {
+		if ( this.getParentContainer( range.start ) !== this.getParentContainer( range.end ) ) {
 			/**
 			 * Range is not placed inside same container.
 			 *
@@ -365,8 +428,9 @@ import CKEditorError from '../ckeditorerror.js';
 		}
 
 		// Break attributes at range start and end.
-		const breakStart = this.breakAttributes( rangeStart );
-		const breakEnd = this.breakAttributes( rangeEnd );
+		const breakRange = this.breakRange( range );
+		const breakStart = breakRange.start;
+		const breakEnd = breakRange.end;
 		const parentContainer = breakStart.parent;
 
 		// Unwrap children located between break points.

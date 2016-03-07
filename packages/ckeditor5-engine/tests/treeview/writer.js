@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals beforeEach, describe, it */
 /* bender-tags: treeview */
 
 'use strict';
@@ -15,6 +16,12 @@ import Range from '/ckeditor5/core/treeview/range.js';
 import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
 describe( 'Writer', () => {
+	let writer;
+
+	beforeEach( () => {
+		writer = new Writer();
+	} );
+
 	/**
 	 * Helper function that is used to test output of writer methods by providing declarative description of the
 	 * expected output.
@@ -61,7 +68,7 @@ describe( 'Writer', () => {
 		}
 
 		if ( description.priority !== undefined ) {
-			expect( description.priority ).to.equal( writer.getPriority( node )  );
+			expect( description.priority ).to.equal( writer.getPriority( node ) );
 		}
 
 		if ( description.rangeStart !== undefined ) {
@@ -161,7 +168,6 @@ describe( 'Writer', () => {
 		it( 'should return true for container elements', () => {
 			const containerElement = new Element( 'p' );
 			const attributeElement = new Element( 'b' );
-			const writer = new Writer();
 
 			writer._priorities.set( attributeElement, 1 );
 
@@ -174,7 +180,6 @@ describe( 'Writer', () => {
 		it( 'should return true for container elements', () => {
 			const containerElement = new Element( 'p' );
 			const attributeElement = new Element( 'b' );
-			const writer = new Writer();
 
 			writer._priorities.set( attributeElement, 1 );
 
@@ -185,7 +190,6 @@ describe( 'Writer', () => {
 
 	describe( 'setPriority', () => {
 		it( 'sets node priority', () => {
-			const writer = new Writer();
 			const nodeMock = {};
 			writer.setPriority( nodeMock, 10 );
 
@@ -195,7 +199,6 @@ describe( 'Writer', () => {
 
 	describe( 'getPriority', () => {
 		it( 'gets node priority', () => {
-			const writer = new Writer();
 			const nodeMock = {};
 			writer._priorities.set( nodeMock, 12 );
 
@@ -205,7 +208,6 @@ describe( 'Writer', () => {
 
 	describe( 'getParentContainer', () => {
 		it( 'should return parent container of the node', () => {
-			const writer = new Writer();
 			const text = new Text( 'foobar' );
 			const b = new Element( 'b', null, [ text ] );
 			const parent = new Element( 'p', null, [ b ] );
@@ -217,7 +219,6 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should return null if no parent container', () => {
-			const writer = new Writer();
 			const text = new Text( 'foobar' );
 			const b = new Element( 'b', null, [ text ] );
 
@@ -231,7 +232,6 @@ describe( 'Writer', () => {
 	describe( 'breakAttributes', () => {
 		// <p>{|foobar}</p> -> <p>|{foobar}</p>
 		it( '<p>{|foobar}</p>', () => {
-			const writer = new Writer();
 			const created = create( writer, {
 				instanceOf: Element,
 				name: 'p',
@@ -254,7 +254,6 @@ describe( 'Writer', () => {
 
 		it( '<p>foo|bar</p>', () => {
 			// <p>{foo|bar}</p> -> <p>{foo}|{bar}</p>
-			const writer = new Writer();
 			const created = create( writer, {
 				instanceOf: Element,
 				name: 'p',
@@ -278,7 +277,6 @@ describe( 'Writer', () => {
 
 		it( '<p>{foobar|}</p>', () => {
 			// <p>{foobar|}</p> -> <p>{foobar}|</p>
-			const writer = new Writer();
 			const created = create( writer, {
 				instanceOf: Element,
 				name: 'p',
@@ -301,8 +299,6 @@ describe( 'Writer', () => {
 
 		it( '<p><b>{foo|bar}</b></p>', () => {
 			// <p><b>{foo|bar}</b></p> -> <p><b>{foo}</b>|<b>{bar}</b></p>
-			const writer = new Writer();
-
 			const created = create( writer, {
 				instanceOf: Element,
 				name: 'p',
@@ -347,7 +343,6 @@ describe( 'Writer', () => {
 
 		it( '<p><b><u>{|foobar}</u></b></p>', () => {
 			// <p><b><u>{|foobar}</u></b></p> -> <p>|<b><u>{foobar}</u></b></p>
-			const writer = new Writer();
 			const created = create( writer, {
 				instanceOf: Element,
 				name: 'p',
@@ -398,7 +393,6 @@ describe( 'Writer', () => {
 
 		// <p><b><u>{foo|ba}r</u></b></p> -> <p><b><u>{foo}</u></b>|<b></u>{bar}</u></b></p>
 		it( '<p><b><u>{foo|bar}</u></b></p>', () => {
-			const writer = new Writer();
 			const created = create( writer, {
 				instanceOf: Element,
 				name: 'p',
@@ -464,7 +458,6 @@ describe( 'Writer', () => {
 
 		it( '<p><b><u>{foobar|}</u></b></p>', () => {
 			// <p><b><u>{foobar|}</u></b></p> -> <p><b><u>{foobar}</u></b>|</p>
-			const writer = new Writer();
 			const created = create( writer, {
 				instanceOf: Element,
 				name: 'p',
@@ -517,7 +510,6 @@ describe( 'Writer', () => {
 	describe( 'mergeAttributes', () => {
 		it( 'should not merge if inside text node', () => {
 			// <p>{fo|obar}</p>
-			const writer = new Writer();
 			const description = {
 				instanceOf: Element,
 				name: 'p',
@@ -532,7 +524,6 @@ describe( 'Writer', () => {
 
 		it( 'should not merge if between containers', () => {
 			// <div><p>{foo}</p>|<p>{bar}</p></div>
-			const writer = new Writer();
 			const description = {
 				instanceOf: Element,
 				name: 'div',
@@ -561,7 +552,6 @@ describe( 'Writer', () => {
 
 		it( 'should return same position when inside empty container', () => {
 			// <p>|</p>
-			const writer = new Writer();
 			const description = { instanceOf: Element, name: 'p', position: 0 };
 			const created = create( writer, description );
 			const newPosition = writer.mergeAttributes( created.position );
@@ -570,7 +560,6 @@ describe( 'Writer', () => {
 
 		it( 'should not merge when position is placed at the beginning of the container', () => {
 			// <p>|<b></b></p>
-			const writer = new Writer();
 			const description = {
 				instanceOf: Element,
 				name: 'p',
@@ -590,7 +579,6 @@ describe( 'Writer', () => {
 
 		it( 'should not merge when position is placed at the end of the container', () => {
 			// <p><b></b>|</p>
-			const writer = new Writer();
 			const description = {
 				instanceOf: Element,
 				name: 'p',
@@ -610,7 +598,6 @@ describe( 'Writer', () => {
 
 		it( 'should merge when placed between two text nodes', () => {
 			// <p>{foo}|{bar}</p> -> <p>{foo|bar}</p>
-			const writer = new Writer();
 			const created = create( writer, {
 				instanceOf: Element,
 				name: 'p',
@@ -634,7 +621,6 @@ describe( 'Writer', () => {
 
 		it( 'should merge when placed between similar attribute nodes', () => {
 			// <p><b foo="bar"></b>|<b foo="bar"></b></p> -> <p><b foo="bar">|</b></p>
-			const writer = new Writer();
 			const created = create( writer, {
 				instanceOf: Element,
 				name: 'p',
@@ -675,7 +661,6 @@ describe( 'Writer', () => {
 		it( 'should not merge when placed between non-similar attribute nodes', () => {
 			// <p><b foo="bar"></b>|<b foo="baz"></b></p> ->
 			// <p><b foo="bar"></b>|<b foo="baz"></b></p>
-			const writer = new Writer();
 			const description = {
 				instanceOf: Element,
 				name: 'p',
@@ -702,7 +687,6 @@ describe( 'Writer', () => {
 
 		it( 'should not merge when placed between similar attribute nodes with different priority', () => {
 			// <p><b foo="bar"></b>|<b foo="bar"></b></p> -> <p><b foo="bar"></b>|<b foo="bar"></b></p>
-			const writer = new Writer();
 			const description =  {
 				instanceOf: Element,
 				name: 'p',
@@ -731,7 +715,6 @@ describe( 'Writer', () => {
 			// <p><b foo="bar">{foo}</b>|<b foo="bar">{bar}</b></p>
 			// <p><b foo="bar">{foo}|{bar}</b></p>
 			// <p><b foo="bar">{foo|bar}</b></p>
-			const writer = new Writer();
 			const created = create( writer, {
 				instanceOf: Element,
 				name: 'p',
@@ -779,53 +762,468 @@ describe( 'Writer', () => {
 	} );
 
 	describe( 'insert', () => {
-		//it( 'should insert text', () => {
-		//	// <p>{foo|bar}</p> insert {baz}
-		//	// <p>{foo[baz]bar}</p>
-		//	const writer = new Writer();
-		//	const created = create( writer, {
-		//		instanceOf: Element,
-		//		name: 'p',
-		//		children: [
-		//			{ instanceOf: Text, data: 'foobar', position: 3 }
-		//		]
-		//	} );
-		//
-		//	const newRange = writer.insert( created.position, new Text( 'baz' ) );
-		//	test( writer, newRange, created.node, {
-		//		instanceOf: Element,
-		//		name: 'p',
-		//		children: [
-		//			{ instanceOf: Text, data: 'foobazbar' }
-		//		]
-		//	} );
-		//} );
-		//
-		//it( 'should merge attributes', () => {
-		//	// <p><b>{foo|bar}</b></p> insert <b>{baz}</b>
-		//	// <p><b>{foobazbar}</b></p>
-		//	const writer = new Writer();
-		//	const text = new Text( 'foobar' );
-		//	const b1 = new Element( 'b', null, text );
-		//	const p = new Element( 'p', null, b1 );
-		//	const position = new Position( text, 3 );
-		//	const insertText = new Text( 'baz' );
-		//	const b2 = new Element( 'b', null, insertText );
-		//
-		//	writer.setPriority( b1, 1 );
-		//	writer.setPriority( b2, 1 );
-		//
-		//	writer.insert( position, b2 );
-		//
-		//	expect( p.getChildCount() ).to.equal( 1 );
-		//	const b3 = p.getChild( 0 );
-		//	expect( b3 ).to.be.instanceof( Element );
-		//	expect( b3.name ).to.equal( 'b' );
-		//	expect( b3.getChildCount() ).to.equal( 1 );
-		//	const newText = b3.getChild( 0 );
-		//	expect( newText ).to.be.instanceof( Text );
-		//	expect( newText.data ).to.equal( 'foobazbar' );
-		//} );
+		it( 'should insert text into another text node', () => {
+			// <p>{foo|bar}</p> insert {baz}
+			// <p>{foo[baz]bar}</p>
+			const created = create( writer, {
+				instanceOf: Element,
+				name: 'p',
+				children: [
+					{ instanceOf: Text, data: 'foobar', position: 3 }
+				]
+			} );
+
+			const newRange = writer.insert( created.position, new Text( 'baz' ) );
+			test( writer, newRange, created.node, {
+				instanceOf: Element,
+				name: 'p',
+				children: [
+					{ instanceOf: Text, data: 'foobazbar' }
+				]
+			} );
+		} );
+
+		it( 'should break attributes when inserting into text node', () => {
+			// <p>{foo|bar}</p> insert <b>{baz}</b>
+			// <p>{foo}[<b>baz</b>]{bar}</p>
+			const created = create( writer, {
+				instanceOf: Element,
+				name: 'p',
+				children: [
+					{ instanceOf: Text, data: 'foobar', position: 3 }
+				]
+			} );
+			const toInsert = create( writer, {
+				instanceOf: Element,
+				name: 'b',
+				priority: 1,
+				children: [
+					{ instanceOf: Text, data: 'baz' }
+				]
+			} );
+
+			const newRange = writer.insert( created.position, toInsert.node );
+			test( writer, newRange, created.node, {
+				instanceOf: Element,
+				name: 'p',
+				rangeStart: 1,
+				rangeEnd: 2,
+				children: [
+					{ instanceOf: Text, data: 'foo' },
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'baz' }
+						]
+					},
+					{ instanceOf: Text, data: 'bar' }
+				]
+			} );
+		} );
+
+		it( 'should merge same attribute nodes', () => {
+			// <p><b>{foo|bar}</b></p> insert <b>{baz}</b>
+			// <p><b>{foo[baz]bar}</b></p>
+			const created = create( writer, {
+				instanceOf: Element,
+				name: 'p',
+				children: [
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'foobar', position: 3 }
+						]
+					}
+				]
+			} );
+			const toInsert = create( writer, {
+				instanceOf: Element,
+				name: 'b',
+				priority: 1,
+				children: [
+					{ instanceOf: Text, data: 'baz' }
+				]
+			} );
+
+			const newRange = writer.insert( created.position, toInsert.node );
+			test( writer, newRange, created.node, {
+				instanceOf: Element,
+				name: 'p',
+				children: [
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'foobazbar', rangeStart: 3, rangeEnd: 6 }
+						]
+					}
+				]
+			} );
+		} );
+
+		it( 'should not merge different attributes', () => {
+			// <p><b>{foo|bar}</b></p> insert <b>{baz}</b> ( different priority )
+			// <p><b>{foo}</b>[<b>{baz}</b>]<b>{bar}</b></p>
+			const created = create( writer, {
+				instanceOf: Element,
+				name: 'p',
+				children: [
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'foobar', position: 3 }
+						]
+					}
+				]
+			} );
+			const toInsert = create( writer, {
+				instanceOf: Element,
+				name: 'b',
+				priority: 2,
+				children: [
+					{ instanceOf: Text, data: 'baz' }
+				]
+			} );
+
+			const newRange = writer.insert( created.position, toInsert.node );
+			test( writer, newRange, created.node, {
+				instanceOf: Element,
+				name: 'p',
+				rangeStart: 1,
+				rangeEnd: 2,
+				children: [
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'foo' }
+						]
+					},
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 2,
+						children: [
+							{ instanceOf: Text, data: 'baz' }
+						]
+					},
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'bar' }
+						]
+					}
+				]
+			} );
+		} );
+
+		it( 'should allow to insert multiple nodes', () => {
+			// <p>|</p> insert <b>{foo}</b>{bar}
+			// <p>[<b>{foo}</b>{bar}]</p>
+			const root = new Element( 'p' );
+			const toInsert = create( writer, {
+				instanceOf: Element,
+				name: 'fake',
+				children: [
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'foo' }
+						]
+					},
+					{ instanceOf: Text, data: 'bar' }
+				]
+			} ).node.getChildren();
+			const position = new Position( root, 0 );
+
+			const newRange = writer.insert( position, toInsert );
+			test( writer, newRange, root, {
+				instanceOf: Element,
+				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 2,
+				children: [
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'foo' }
+						]
+					},
+					{ instanceOf: Text, data: 'bar' }
+				]
+			} );
+		} );
+
+		it( 'should merge after inserting multiple nodes', () => {
+			// <p><b>{qux}</b>|{baz}</p> insert <b>{foo}</b>{bar}
+			// <p><b>{qux[foo}</b>{bar]baz}</p>
+			const created = create( writer, {
+				instanceOf: Element,
+				name: 'p',
+				position: 1,
+				children: [
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'qux' }
+						]
+					},
+					{ instanceOf: Text, data: 'baz' }
+				]
+			} );
+			const toInsert = create( writer, {
+				instanceOf: Element,
+				name: 'fake',
+				children: [
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'foo' }
+						]
+					},
+					{ instanceOf: Text, data: 'bar' }
+				]
+			} ).node.getChildren();
+
+			const newRange = writer.insert( created.position, toInsert );
+			test( writer, newRange, created.node, {
+				instanceOf: Element,
+				name: 'p',
+				children: [
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'quxfoo', rangeStart: 3 }
+						]
+					},
+					{ instanceOf: Text, data: 'barbaz', rangeEnd: 3 }
+				]
+			} );
+		} );
+	} );
+
+	describe( 'remove', () => {
+		it( 'should throw when range placed in two containers', () => {
+			const p1 = new Element( 'p' );
+			const p2 = new Element( 'p' );
+
+			expect( () => {
+				writer.remove( Range.createFromParentsAndOffsets( p1, 0, p2, 0 ) );
+			} ).to.throw( 'treeview-writer-invalid-range' );
+		} );
+
+		it( 'should return same range when range is collapsed', () => {
+			const p = new Element( 'p' );
+			const range = Range.createFromParentsAndOffsets( p, 0, p, 0 );
+			const newRange = writer.remove( range );
+
+			expect( newRange.isEqual( range ) ).to.be.true;
+		} );
+
+		it( 'should remove single text node', () => {
+			// <p>[{foobar}]</p> -> <p>|</p>
+			const created = create( writer, {
+				instanceOf: Element,
+				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 1,
+				children: [
+					{ instanceOf: Text, data: 'foobar' }
+				]
+			} );
+
+			const newPosition = writer.remove( created.range );
+			test( writer, newPosition, created.node, {
+				instanceOf: Element,
+				name: 'p',
+				position: 0,
+				children: []
+			} );
+		} );
+
+		it( 'should not leave empty text nodes', () => {
+			// <p>{[foobar]}</p> -> <p>|</p>
+			const created = create( writer, {
+				instanceOf: Element,
+				name: 'p',
+				children: [
+					{ instanceOf: Text, data: 'foobar', rangeStart: 0, rangeEnd: 6 }
+				]
+			} );
+
+			const newPosition = writer.remove( created.range );
+			test( writer, newPosition, created.node, {
+				instanceOf: Element,
+				name: 'p',
+				position: 0,
+				children: []
+			} );
+		} );
+
+		it( 'should remove part of the text node', () => {
+			// <p>{f[oob]ar}</p> -> <p>{f|ar}</p>
+			const created = create( writer, {
+				instanceOf: Element,
+				name: 'p',
+				children: [
+					{ instanceOf: Text, data: 'foobar', rangeStart: 1, rangeEnd: 4 }
+				]
+			} );
+
+			const newPosition = writer.remove( created.range );
+			test( writer, newPosition, created.node, {
+				instanceOf: Element,
+				name: 'p',
+				children: [
+					{ instanceOf: Text, data: 'far', position: 1 }
+				]
+			} );
+		} );
+
+		it( 'should remove parts of nodes', () => {
+			// <p>{f[oo}<b>{ba]r}</b></p> -> <p>{f}|<b>r</b></p>
+			const created = create( writer, {
+				instanceOf: Element,
+				name: 'p',
+				children: [
+					{ instanceOf: Text, data: 'foo', rangeStart: 1 },
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'bar', rangeEnd: 2 }
+						]
+					}
+				]
+			} );
+
+			const newPosition = writer.remove( created.range );
+			test( writer, newPosition, created.node, {
+				instanceOf: Element,
+				name: 'p',
+				position: 1,
+				children: [
+					{ instanceOf: Text, data: 'f' },
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'r' }
+						]
+					}
+				]
+			} );
+		} );
+
+		it( 'should merge arfer removing #1', () => {
+			// <p><b>foo</b>[{bar}]<b>bazqux</b></p> -> <p><b>foo|bazqux</b></p>
+			const created = create( writer, {
+				instanceOf: Element,
+				name: 'p',
+				rangeStart: 1,
+				rangeEnd: 2,
+				children: [
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'foo' }
+						]
+					},
+					{ instanceOf: Text, data: 'bar' },
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'bazqux' }
+						]
+					}
+				]
+			} );
+
+			const newPosition = writer.remove( created.range );
+			test( writer, newPosition, created.node, {
+				instanceOf: Element,
+				name: 'p',
+				children: [
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'foobazqux', position: 3 }
+						]
+					}
+				]
+			} );
+		} );
+
+		it( 'should merge arfer removing #2', () => {
+			// <p><b>fo[o</b>{bar}<b>ba]zqux</b></p> -> <p><b>fo|zqux</b></p>
+			const created = create( writer, {
+				instanceOf: Element,
+				name: 'p',
+				children: [
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'foo', rangeStart: 2 }
+						]
+					},
+					{ instanceOf: Text, data: 'bar' },
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'bazqux', rangeEnd: 2 }
+						]
+					}
+				]
+			} );
+
+			const newPosition = writer.remove( created.range );
+			test( writer, newPosition, created.node, {
+				instanceOf: Element,
+				name: 'p',
+				children: [
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 1,
+						children: [
+							{ instanceOf: Text, data: 'fozqux', position: 2 }
+						]
+					}
+				]
+			} );
+		} );
 	} );
 
 	describe( 'wrap', () => {
@@ -834,7 +1232,6 @@ describe( 'Writer', () => {
 		// TODO: merge with elements outside range at the ends
 
 		it( 'should do nothing on collapsed ranges', () => {
-			const writer = new Writer();
 			const description = {
 				instanceOf: Element,
 				name: 'p',
@@ -851,7 +1248,6 @@ describe( 'Writer', () => {
 			// <p>[{foobar}]</p>
 			// wrap <b>
 			// <p>[<b>{foobar}<b>]</p>
-			const writer = new Writer();
 			const created = create( writer, {
 				instanceOf: Element,
 				name: 'p',
@@ -884,7 +1280,6 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw error when range placed in two containers', () => {
-			const writer = new Writer();
 			const container1 = new Element( 'p' );
 			const container2 = new Element( 'p' );
 			const range = new Range(
@@ -898,11 +1293,10 @@ describe( 'Writer', () => {
 			} ).to.throw( CKEditorError, 'treeview-writer-unwrap-invalid-range' );
 		} );
 
-		it( 'wraps part of single text node', () => {
+		it( 'wraps part of a single text node #1', () => {
 			// <p>[{foo]bar}</p>
 			// wrap with <b>
 			// <p>[<b>{foo}</b>]{bar}</p>
-			const writer = new Writer();
 			const created = create( writer, {
 				instanceOf: Element,
 				name: 'p',
@@ -934,11 +1328,78 @@ describe( 'Writer', () => {
 			} );
 		} );
 
+		it( 'wraps part of a single text node #2', () => {
+			// <p>{[foo]bar}</p>
+			// wrap with <b>
+			// <p>[<b>{foo}</b>]{bar}</p>
+			const created = create( writer, {
+				instanceOf: Element,
+				name: 'p',
+				children: [
+					{ instanceOf: Text, data: 'foobar', rangeStart: 0, rangeEnd: 3 }
+				]
+			} );
+
+			const b = new Element( 'b' );
+			const newRange = writer.wrap( created.range, b, 2 );
+
+			test( writer, newRange, created.node, {
+				instanceOf: Element,
+				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 1,
+				children: [
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 2,
+						children: [
+							{ instanceOf: Text, data: 'foo' }
+						]
+					},
+					{ instanceOf: Text, data: 'bar' }
+				]
+			} );
+		} );
+
+		it( 'wraps part of a single text node #3', () => {
+			// <p>{foo[bar]}</p>
+			// wrap with <b>
+			// <p>{foo}[<b>{bar}</b>]</p>
+			const created = create( writer, {
+				instanceOf: Element,
+				name: 'p',
+				children: [
+					{ instanceOf: Text, data: 'foobar', rangeStart: 3, rangeEnd: 6 }
+				]
+			} );
+
+			const b = new Element( 'b' );
+			const newRange = writer.wrap( created.range, b, 2 );
+
+			test( writer, newRange, created.node, {
+				instanceOf: Element,
+				name: 'p',
+				rangeStart: 1,
+				rangeEnd: 2,
+				children: [
+					{ instanceOf: Text, data: 'foo' },
+					{
+						instanceOf: Element,
+						name: 'b',
+						priority: 2,
+						children: [
+							{ instanceOf: Text, data: 'bar' }
+						]
+					}
+				]
+			} );
+		} );
+
 		it( 'should not wrap inside nested containers', () => {
 			// <div>[{foobar}<p>{baz}</p>]</div>
 			// wrap with <b>
 			// <div>[<b>{foobar}</b><p>{baz}</p>]</div>
-			const writer = new Writer();
 			const created = create( writer, {
 				instanceOf: Element,
 				name: 'div',
@@ -986,7 +1447,6 @@ describe( 'Writer', () => {
 			// <p>[<u>{foobar}</u>]</p>
 			// wrap with <b> that has higher priority than <u>
 			// <p>[<u><b>{foobar}</b></u>]</p>
-			const writer = new Writer();
 			const created = create( writer, {
 				instanceOf: Element,
 				name: 'p',
@@ -1036,7 +1496,6 @@ describe( 'Writer', () => {
 			// <p>[<b>{foo}</b>{bar}<b>{baz}</b>]</p>
 			// wrap with <b>
 			// <p>[<b>{foobarbaz}</b>]</p>
-			const writer = new Writer();
 			const created = create( writer, {
 				instanceOf: Element,
 				name: 'p',
@@ -1088,8 +1547,6 @@ describe( 'Writer', () => {
 			// <p><b>{foo}</b>[{bar]baz}</p>
 			// wrap with <b>
 			// <p><b>{foo[bar}</b>]{baz}</p>
-
-			const writer = new Writer();
 			const created = create( writer, {
 				instanceOf: Element,
 				name: 'p',
@@ -1130,8 +1587,6 @@ describe( 'Writer', () => {
 			// <p><b>{foobar}</b>[{baz}]</p>
 			// wrap with <b>
 			// <p><b>{foobar[baz}</b>]</p>
-
-			const writer = new Writer();
 			const created = create( writer, {
 				instanceOf: Element,
 				name: 'p',
@@ -1172,7 +1627,6 @@ describe( 'Writer', () => {
 			// <p>[{foo}<i>{bar}</i>]{baz}</p>
 			// wrap with <b>
 			// <p>[<b>{foo}<i>{bar}</i></b>]{baz}</p>
-			const writer = new Writer();
 			const created = create( writer, {
 				instanceOf: Element,
 				name: 'p',
@@ -1224,7 +1678,6 @@ describe( 'Writer', () => {
 			// <p>[{foo}<i>{bar}</i>{baz}]</p>
 			// wrap with <b>, that has higher priority than <i>
 			// <p>[<b>{foo}</b><i><b>{bar}</b></i><b>{baz}</b>]</p>
-			const writer = new Writer();
 			const created = create( writer, {
 				instanceOf: Element,
 				name: 'p',
@@ -1281,7 +1734,7 @@ describe( 'Writer', () => {
 						children: [
 							{ instanceOf: Text, data: 'baz' }
 						]
-					},
+					}
 				]
 			} );
 		} );
@@ -1289,7 +1742,6 @@ describe( 'Writer', () => {
 
 	describe( 'unwrap', () => {
 		it( 'should do nothing on collapsed ranges', () => {
-			const writer = new Writer();
 			const description = {
 				instanceOf: Element,
 				name: 'p',
@@ -1304,7 +1756,6 @@ describe( 'Writer', () => {
 
 		it( 'should do nothing on single text node', () => {
 			// <p>[{foobar}]</p>
-			const writer = new Writer();
 			const description = {
 				instanceOf: Element,
 				name: 'p',
@@ -1324,7 +1775,6 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw error when range placed in two containers', () => {
-			const writer = new Writer();
 			const container1 = new Element( 'p' );
 			const container2 = new Element( 'p' );
 			const range = new Range(
@@ -1340,7 +1790,6 @@ describe( 'Writer', () => {
 
 		it( 'should unwrap single node', () => {
 			// <p>[<b>{foobar}</b>]<p> -> <p>[{foobar}]</p>
-			const writer = new Writer();
 			const created = create( writer, {
 				instanceOf: Element,
 				name: 'p',
@@ -1376,7 +1825,6 @@ describe( 'Writer', () => {
 		it( 'should not unwrap attributes with different priorities #1', () => {
 			// <p>[<b>{foobar}</b>]<p> -> <p>[<b>{foobar}</b>]</p>
 			// Unwrapped with <b> but using different priority.
-			const writer = new Writer();
 			const description =  {
 				instanceOf: Element,
 				name: 'p',
@@ -1405,7 +1853,6 @@ describe( 'Writer', () => {
 		it( 'should not unwrap attributes with different priorities #2', () => {
 			// <p>[<b>{foo}</b><b>{bar}</b><b>{baz}</b>]<p> -> <p>[{foo}<b>bar</b>{baz}]</p>
 			// <b> around `bar` has different priority than others.
-			const writer = new Writer();
 			const created = create( writer, {
 				instanceOf: Element,
 				name: 'p',
@@ -1465,7 +1912,6 @@ describe( 'Writer', () => {
 
 		it( 'should unwrap part of the node', () => {
 			// <p>[{baz}<b>{foo]bar}</b><p> -> <p>[{bazfoo}]<b>{bar}</b></p>
-			const writer = new Writer();
 			const created = create( writer, {
 				instanceOf: Element,
 				name: 'p',
@@ -1511,7 +1957,6 @@ describe( 'Writer', () => {
 
 		it( 'should unwrap nested attributes', () => {
 			// <p>[<u><b>{foobar}</b></u>]</p> -> <p>[<u>{foobar}</u>]</p>
-			const writer = new Writer();
 			const created = create( writer, {
 				instanceOf: Element,
 				name: 'p',
@@ -1559,7 +2004,6 @@ describe( 'Writer', () => {
 
 		it( 'should merge unwrapped nodes #1', () => {
 			// <p>{foo}[<b>{bar}</b>]{bom}</p> -> <p>{foo[bar]bom}</p>
-			const writer = new Writer();
 			const created = create( writer, {
 				instanceOf: Element,
 				name: 'p',
@@ -1598,7 +2042,6 @@ describe( 'Writer', () => {
 
 		it( 'should merge unwrapped nodes #2', () => {
 			// <p>{foo}<u>{bar}</u>[<b><u>{bazqux}</u></b>]</p> -> <p>{foo}<u>{bar[bazqux}</u>]</p>
-			const writer = new Writer();
 			const created = create( writer, {
 				instanceOf: Element,
 				name: 'p',
@@ -1659,7 +2102,6 @@ describe( 'Writer', () => {
 
 		it( 'should merge unwrapped nodes #3', () => {
 			// <p>{foo}<u>{bar}</u>[<b><u>{baz]qux}</u></b></p> -> <p>{foo}<u>{bar[baz}</u>]<b><u>{qux}</u></b></p>
-			const writer = new Writer();
 			const created = create( writer, {
 				instanceOf: Element,
 				name: 'p',
@@ -1734,7 +2176,6 @@ describe( 'Writer', () => {
 
 		it( 'should merge unwrapped nodes #4', () => {
 			// <p>{foo}<u>{bar}</u>[<b><u>{baz}</u></b>]<u>qux</u></p> -> <p>{foo}<u>{bar[baz]qux}</u></p>
-			const writer = new Writer();
 			const created = create( writer, {
 				instanceOf: Element,
 				name: 'p',
@@ -1801,8 +2242,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should merge unwrapped nodes #5', () => {
-			// <p>[<u><b>{foo}</b></u><u><b>{bar}</b></u><u><b>{baz}</b></u>]</p> -> <p>[<u>{foobarbaz}</u>]</p>
-			const writer = new Writer();
+			// <p>[<b><u>{foo}</u></b><b><u>{bar}</u></b><b><u>{baz}</u></b>]</p> -> <p>[<u>{foobarbaz}</u>]</p>
 			const created = create( writer, {
 				instanceOf: Element,
 				name: 'p',
@@ -1880,7 +2320,6 @@ describe( 'Writer', () => {
 
 		it( 'should unwrap mixed ranges #1', () => {
 			// <p>[<u><b>{foo}]</b></u></p> -> <p>[<u>{foo}</u>]</p
-			const writer = new Writer();
 			const created = create( writer, {
 				instanceOf: Element,
 				name: 'p',
@@ -1927,7 +2366,6 @@ describe( 'Writer', () => {
 
 		it( 'should unwrap mixed ranges #2', () => {
 			// <p>[<u><b>{foo]}</b></u></p> -> <p>[<u>{foo}</u>]</p
-			const writer = new Writer();
 			const created = create( writer, {
 				instanceOf: Element,
 				name: 'p',
