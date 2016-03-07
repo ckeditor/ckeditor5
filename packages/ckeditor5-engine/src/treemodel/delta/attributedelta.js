@@ -21,15 +21,6 @@ import Element from '../element.js';
  */
 export default class AttributeDelta extends Delta {
 	/**
-	 * @see core.treeModel.delta.Delta#_reverseDeltaClass
-	 * @private
-	 * @type {Object}
-	 */
-	get _reverseDeltaClass() {
-		return AttributeDelta;
-	}
-
-	/**
 	 * The attribute key that is changed by the delta or `null` if the delta has no operations.
 	 *
 	 * @type {String|null}
@@ -69,6 +60,15 @@ export default class AttributeDelta extends Delta {
 		}
 
 		return null;
+	}
+
+	/**
+	 * @see core.treeModel.delta.Delta#_reverseDeltaClass
+	 * @private
+	 * @type {Object}
+	 */
+	get _reverseDeltaClass() {
+		return AttributeDelta;
 	}
 }
 

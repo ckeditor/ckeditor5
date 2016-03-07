@@ -23,6 +23,15 @@ import MergeDelta from '../delta/mergedelta.js';
  */
 export default class SplitDelta extends Delta {
 	/**
+	 * Position of split or `null` if there are no operations in the delta.
+	 *
+	 * @type {core.treeModel.Position|null}
+	 */
+	get position() {
+		return this._moveOperation ? this._moveOperation.sourcePosition : null;
+	}
+
+	/**
 	 * Operation in the delta that adds a node to the tree model where split elements will be moved to or `null` if
 	 * there are no operations in the delta.
 	 *
@@ -55,15 +64,6 @@ export default class SplitDelta extends Delta {
 	 */
 	get _reverseDeltaClass() {
 		return MergeDelta;
-	}
-
-	/**
-	 * Position of split or `null` if there are no operations in the delta.
-	 *
-	 * @type {core.treeModel.Position|null}
-	 */
-	get position() {
-		return this._moveOperation ? this._moveOperation.sourcePosition : null;
 	}
 }
 

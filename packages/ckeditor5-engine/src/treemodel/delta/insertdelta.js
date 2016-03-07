@@ -19,6 +19,24 @@ import InsertOperation from '../operation/insertoperation.js';
  */
 export default class InsertDelta extends Delta {
 	/**
+	 * Position where the delta inserts nodes or `null` if there are no operations in the delta.
+	 *
+	 * @type {core.treeModel.Position|null}
+	 */
+	get position() {
+		return this._insertOperation ? this._insertOperation.position : null;
+	}
+
+	/**
+	 * Node list containing all the nodes inserted by the delta or `null` if there are no operations in the delta.
+	 *
+	 * @type {core.treeModel.NodeList|null}
+	 */
+	get nodeList() {
+		return this._insertOperation ? this._insertOperation.nodeList : null;
+	}
+
+	/**
 	 * Insert operation that is saved in this delta or `null` if there are no operations in the delta.
 	 *
 	 * @protected
@@ -35,24 +53,6 @@ export default class InsertDelta extends Delta {
 	 */
 	get _reverseDeltaClass() {
 		return RemoveDelta;
-	}
-
-	/**
-	 * Position where the delta inserts nodes or `null` if there are no operations in the delta.
-	 *
-	 * @type {core.treeModel.Position|null}
-	 */
-	get position() {
-		return this._insertOperation ? this._insertOperation.position : null;
-	}
-
-	/**
-	 * Node list containing all the nodes inserted by the delta or `null` if there are no operations in the delta.
-	 *
-	 * @type {core.treeModel.NodeList|null}
-	 */
-	get nodeList() {
-		return this._insertOperation ? this._insertOperation.nodeList : null;
 	}
 }
 

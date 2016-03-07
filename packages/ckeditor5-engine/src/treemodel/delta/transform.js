@@ -89,7 +89,7 @@ export default function transform( a, b, isAMoreImportantThanB ) {
 	let casesA = specialCases.get( a.constructor );
 
 	if ( !casesA ) {
-		let cases = specialCases.keys();
+		const cases = specialCases.keys();
 
 		for ( let caseClass of cases ) {
 			if ( a instanceof caseClass ) {
@@ -99,12 +99,11 @@ export default function transform( a, b, isAMoreImportantThanB ) {
 	}
 
 	if ( casesA ) {
-		let caseB = casesA.get( b.constructor );
-		transformAlgorithm = caseB || transformAlgorithm;
+		transformAlgorithm = casesA.get( b.constructor ) || transformAlgorithm;
 	}
 
-	let transformed = transformAlgorithm( a, b, isAMoreImportantThanB );
-	let baseVersion = arrayUtils.last( b.operations ).baseVersion;
+	const transformed = transformAlgorithm( a, b, isAMoreImportantThanB );
+	const baseVersion = arrayUtils.last( b.operations ).baseVersion;
 
 	return updateBaseVersion( baseVersion, transformed );
 }
@@ -143,14 +142,14 @@ export function defaultTransform( a, b, isAMoreImportantThanB ) {
 	for ( let opA of a.operations ) {
 		// We wrap the operation in the array. This is important, because operation transformation algorithm returns
 		// an array of operations so we need to make sure that our algorithm is ready to handle arrays.
-		let ops = [ opA ];
+		const ops = [ opA ];
 
 		// Now the real algorithm takes place.
 		for ( let opB of byOps ) {
 			// For each operation that we need transform by...
 			for ( let i = 0; i < ops.length; i++ ) {
 				// We take each operation to transform...
-				let op = ops[ i ];
+				const op = ops[ i ];
 
 				// And transform both of them by themselves.
 
@@ -171,7 +170,7 @@ export function defaultTransform( a, b, isAMoreImportantThanB ) {
 				Array.prototype.push.apply( newByOps, OT( opB, op, !isAMoreImportantThanB ) );
 
 				// Then, we transform operation from delta A by operation from delta B.
-				let results = OT( op, opB, isAMoreImportantThanB );
+				const results = OT( op, opB, isAMoreImportantThanB );
 
 				// We replace currently processed operation from `ops` array by the results of transformation.
 				// Note, that we process single operation but the OT result might be an array, so we might
@@ -232,7 +231,7 @@ export function addSpecialCase( A, B, resolver ) {
 addSpecialCase( AttributeDelta, WeakInsertDelta, ( a, b, isStrong ) => {
 	// If nodes are weak-inserted into attribute delta range, we need to apply changes from attribute delta on them.
 	// So first we do the normal transformation and if this special cases happens, we will add an extra delta.
-	let deltas = defaultTransform( a, b, isStrong );
+	const deltas = defaultTransform( a, b, isStrong );
 
 	if ( a.range.containsPosition( b.position ) ) {
 		deltas.push( _getComplementaryAttrDelta( b, a ) );
@@ -262,8 +261,8 @@ addSpecialCase( MoveDelta, MergeDelta, ( a, b, isStrong ) => {
 	// didn't happen) and then apply the original move operation. This is "mirrored" in MergeDelta x MoveDelta
 	// transformation below, where we simply do not apply MergeDelta.
 
-	let operateInSameParent = utils.compareArrays( a.sourcePosition.getParentPath(), b.position.getParentPath() ) === 'SAME';
-	let mergeInsideMoveRange = a.sourcePosition.offset <= b.position.offset && a.sourcePosition.offset + a.howMany > b.position.offset;
+	const operateInSameParent = utils.compareArrays( a.sourcePosition.getParentPath(), b.position.getParentPath() ) === 'SAME';
+	const mergeInsideMoveRange = a.sourcePosition.offset <= b.position.offset && a.sourcePosition.offset + a.howMany > b.position.offset;
 
 	if ( operateInSameParent && mergeInsideMoveRange ) {
 		return [
@@ -293,8 +292,8 @@ addSpecialCase( MergeDelta, MoveDelta, ( a, b, isStrong ) => {
 	// If merge is applied at the position between moved nodes we cancel the merge as it's results may be unexpected and
 	// very weird. Even if we do some "magic" we don't know what really are users' expectations.
 
-	let operateInSameParent = utils.compareArrays( a.position.getParentPath(), b.sourcePosition.getParentPath() ) === 'SAME';
-	let mergeInsideMoveRange = b.sourcePosition.offset <= a.position.offset && b.sourcePosition.offset + b.howMany > a.position.offset;
+	const operateInSameParent = utils.compareArrays( a.position.getParentPath(), b.sourcePosition.getParentPath() ) === 'SAME';
+	const mergeInsideMoveRange = b.sourcePosition.offset <= a.position.offset && b.sourcePosition.offset + b.howMany > a.position.offset;
 
 	if ( operateInSameParent && mergeInsideMoveRange ) {
 		// This is "no-op" delta, it has no type and no operations, it basically does nothing.
@@ -307,8 +306,8 @@ addSpecialCase( MergeDelta, MoveDelta, ( a, b, isStrong ) => {
 
 // Add special case for SplitDelta x SplitDelta transformation.
 addSpecialCase( SplitDelta, SplitDelta, ( a, b, isStrong ) => {
-	let pathA = a.position.getParentPath();
-	let pathB = b.position.getParentPath();
+	const pathA = a.position.getParentPath();
+	const pathB = b.position.getParentPath();
 
 	// The special case is for splits inside the same parent.
 	if ( utils.compareArrays( pathA, pathB ) == 'SAME' ) {
@@ -320,7 +319,7 @@ addSpecialCase( SplitDelta, SplitDelta, ( a, b, isStrong ) => {
 			// but since it was already split (at further offset) there are less child nodes in the split node.
 			// This means that we have to update `howMany` parameter of `MoveOperation` for that delta.
 
-			let delta = a.clone();
+			const delta = a.clone();
 			delta._moveOperation.howMany = b.position.offset - a.position.offset;
 
 			return [ delta ];
@@ -329,7 +328,7 @@ addSpecialCase( SplitDelta, SplitDelta, ( a, b, isStrong ) => {
 			// original split node but the node after it, which got created by the other split delta.
 			// To do so, we increment offsets so it looks like the split delta was created in the next node.
 
-			let delta = a.clone();
+			const delta = a.clone();
 
 			delta._cloneOperation.position.offset++;
 			delta._moveOperation.sourcePosition.path[ delta._moveOperation.sourcePosition.path.length - 2 ]++;
@@ -361,8 +360,8 @@ addSpecialCase( SplitDelta, WrapDelta, ( a, b, isStrong ) => {
 	// If split is applied at the position between wrapped nodes, we cancel the split as it's results may be unexpected and
 	// very weird. Even if we do some "magic" we don't know what really are users' expectations.
 
-	let operateInSameParent = utils.compareArrays( a.position.getParentPath(), b.range.start.getParentPath() ) === 'SAME';
-	let splitInsideWrapRange = b.range.start.offset < a.position.offset && b.range.end.offset >= a.position.offset;
+	const operateInSameParent = utils.compareArrays( a.position.getParentPath(), b.range.start.getParentPath() ) === 'SAME';
+	const splitInsideWrapRange = b.range.start.offset < a.position.offset && b.range.end.offset >= a.position.offset;
 
 	if ( operateInSameParent && splitInsideWrapRange ) {
 		// This is "no-op" delta, it has no type and no operations, it basically does nothing.
@@ -387,13 +386,26 @@ addSpecialCase( UnwrapDelta, SplitDelta, ( a, b, isStrong ) => {
 	return defaultTransform( a, b, isStrong );
 } );
 
+// Add special case for WeakInsertDelta x AttributeDelta transformation.
+addSpecialCase( WeakInsertDelta, AttributeDelta, ( a, b, isStrong ) => {
+	// If nodes are weak-inserted into attribute delta range, we need to apply changes from attribute delta on them.
+	// So first we do the normal transformation and if this special cases happens, we will add an extra delta.
+	const deltas = defaultTransform( a, b, isStrong );
+
+	if ( b.range.containsPosition( a.position ) ) {
+		deltas.push( _getComplementaryAttrDelta( a, b ) );
+	}
+
+	return deltas;
+} );
+
 // Add special case for WrapDelta x SplitDelta transformation.
 addSpecialCase( WrapDelta, SplitDelta, ( a, b, isStrong ) => {
 	// If incoming wrap delta tries to wrap range that contains split position, we have to cancel the split and apply
 	// the wrap. Since split was already applied, we have to revert it.
 
-	let operateInSameParent = utils.compareArrays( a.range.start.getParentPath(), b.position.getParentPath() ) === 'SAME';
-	let splitInsideWrapRange = a.range.start.offset < b.position.offset && a.range.end.offset >= b.position.offset;
+	const operateInSameParent = utils.compareArrays( a.range.start.getParentPath(), b.position.getParentPath() ) === 'SAME';
+	const splitInsideWrapRange = a.range.start.offset < b.position.offset && a.range.end.offset >= b.position.offset;
 
 	if ( operateInSameParent && splitInsideWrapRange ) {
 		return [
@@ -405,22 +417,9 @@ addSpecialCase( WrapDelta, SplitDelta, ( a, b, isStrong ) => {
 	return defaultTransform( a, b, isStrong );
 } );
 
-// Add special case for WeakInsertDelta x AttributeDelta transformation.
-addSpecialCase( WeakInsertDelta, AttributeDelta, ( a, b, isStrong ) => {
-	// If nodes are weak-inserted into attribute delta range, we need to apply changes from attribute delta on them.
-	// So first we do the normal transformation and if this special cases happens, we will add an extra delta.
-	let deltas = defaultTransform( a, b, isStrong );
-
-	if ( b.range.containsPosition( a.position ) ) {
-		deltas.push( _getComplementaryAttrDelta( a, b ) );
-	}
-
-	return deltas;
-} );
-
 // Creates an attribute delta that sets attribute from given `attributeDelta` on nodes from given `weakInsertDelta`.
 function _getComplementaryAttrDelta( weakInsertDelta, attributeDelta ) {
-	let complementaryAttrDelta = new AttributeDelta();
+	const complementaryAttrDelta = new AttributeDelta();
 
 	// At the beginning we store the attribute value from the first node on `weakInsertDelta` node list.
 	let val = weakInsertDelta.nodeList.get( 0 ).getAttribute( attributeDelta.key );
@@ -430,8 +429,8 @@ function _getComplementaryAttrDelta( weakInsertDelta, attributeDelta ) {
 	let lastIndex = 0;
 
 	for ( let i = 0; i < weakInsertDelta.nodeList.length; i++ ) {
-		let node = weakInsertDelta.nodeList.get( i );
-		let nodeAttrVal = node.getAttribute( attributeDelta.key );
+		const node = weakInsertDelta.nodeList.get( i );
+		const nodeAttrVal = node.getAttribute( attributeDelta.key );
 
 		// If previous node has different attribute value, we will create an operation to the point before current node.
 		// So all nodes with the same attributes up to this point will be included in one `AttributeOperation`.
@@ -439,10 +438,10 @@ function _getComplementaryAttrDelta( weakInsertDelta, attributeDelta ) {
 			// New operation is created only when it is needed. If given node already has proper value for this
 			// attribute we simply skip it without adding a new operation.
 			if ( val != attributeDelta.value ) {
-				let range = new Range( weakInsertDelta.position.getShiftedBy( lastIndex ), weakInsertDelta.position.getShiftedBy( i ) );
+				const range = new Range( weakInsertDelta.position.getShiftedBy( lastIndex ), weakInsertDelta.position.getShiftedBy( i ) );
 
 				// We don't care about base version because it will be updated after transformations anyway.
-				let attrOperation = new AttributeOperation( range, attributeDelta.key, val, attributeDelta.value, 0 );
+				const attrOperation = new AttributeOperation( range, attributeDelta.key, val, attributeDelta.value, 0 );
 				complementaryAttrDelta.addOperation( attrOperation );
 			}
 
@@ -453,7 +452,7 @@ function _getComplementaryAttrDelta( weakInsertDelta, attributeDelta ) {
 
 	// At the end we have to add additional `AttributeOperation` for the last part of node list. If all nodes on the
 	// node list had same attributes, this will be the only operation added to the delta.
-	let range = new Range(
+	const range = new Range(
 		weakInsertDelta.position.getShiftedBy( lastIndex ),
 		weakInsertDelta.position.getShiftedBy( weakInsertDelta.nodeList.length )
 	);
@@ -466,8 +465,8 @@ function _getComplementaryAttrDelta( weakInsertDelta, attributeDelta ) {
 // Checks priorities of passed constructors and decides which one is more important.
 // If both priorities are same, value passed in `isAMoreImportantThanB` parameter is used.
 function getPriority( A, B, isAMoreImportantThanB ) {
-	let aPriority = priorities.get( A );
-	let bPriority = priorities.get( B );
+	const aPriority = priorities.get( A );
+	const bPriority = priorities.get( B );
 
 	if ( aPriority > bPriority ) {
 		return true;

@@ -21,6 +21,37 @@ import CKEditorError from '../../ckeditorerror.js';
  */
 export default class MoveDelta extends Delta {
 	/**
+	 * How many nodes are moved by the delta or `null` if there are no operations in the delta.
+	 *
+	 * @type {Number|null}
+	 */
+	get howMany() {
+		return this._moveOperation ? this._moveOperation.howMany : null;
+	}
+
+	/**
+	 * {@link core.treeModel.delta.MoveDelta#_moveOperation Move operation}
+	 * {@link core.treeModel.operation.MoveOperation#sourcePosition source position} or `null` if there are
+	 * no operations in the delta.
+	 *
+	 * @type {core.treeModel.Position|null}
+	 */
+	get sourcePosition() {
+		return this._moveOperation ? this._moveOperation.sourcePosition : null;
+	}
+
+	/**
+	 * {@link core.treeModel.delta.MoveDelta#_moveOperation Move operation}
+	 * {@link core.treeModel.operation.MoveOperation#targetPosition target position} or `null` if there are
+	 * no operations in the delta.
+	 *
+	 * @type {core.treeModel.Position|null}
+	 */
+	get targetPosition() {
+		return this._moveOperation ? this._moveOperation.targetPosition : null;
+	}
+
+	/**
 	 * Move operation that is saved in this delta or `null` if there are no operations in the delta.
 	 *
 	 * @protected
@@ -37,37 +68,6 @@ export default class MoveDelta extends Delta {
 	 */
 	get _reverseDeltaClass() {
 		return MoveDelta;
-	}
-
-	/**
-	 * {@link core.treeModel.delta.MoveDelta#_moveOperation Move operation}
-	 * {@link core.treeModel.operation.MoveOperation#sourcePosition source position} or `null` if there are
-	 * no operations in the delta.
-	 *
-	 * @type {core.treeModel.Position|null}
-	 */
-	get sourcePosition() {
-		return this._moveOperation ? this._moveOperation.sourcePosition : null;
-	}
-
-	/**
-	 * How many nodes are moved by the delta or `null` if there are no operations in the delta.
-	 *
-	 * @type {Number|null}
-	 */
-	get howMany() {
-		return this._moveOperation ? this._moveOperation.howMany : null;
-	}
-
-	/**
-	 * {@link core.treeModel.delta.MoveDelta#_moveOperation Move operation}
-	 * {@link core.treeModel.operation.MoveOperation#targetPosition target position} or `null` if there are
-	 * no operations in the delta.
-	 *
-	 * @type {core.treeModel.Position|null}
-	 */
-	get targetPosition() {
-		return this._moveOperation ? this._moveOperation.targetPosition : null;
 	}
 }
 

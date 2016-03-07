@@ -22,6 +22,15 @@ import CKEditorError from '../../ckeditorerror.js';
  */
 export default class UnwrapDelta extends Delta {
 	/**
+	 * Position before unwrapped element or `null` if there are no operations in the delta.
+	 *
+	 * @type {core.treeModel.Position|null}
+	 */
+	get position() {
+		return this._moveOperation ? this._moveOperation.targetPosition : null;
+	}
+
+	/**
 	 * Operation in the delta that moves unwrapped nodes to their new parent or `null` if there are no operations in the delta.
 	 *
 	 * @protected
@@ -38,15 +47,6 @@ export default class UnwrapDelta extends Delta {
 	 */
 	get _reverseDeltaClass() {
 		return WrapDelta;
-	}
-
-	/**
-	 * Position before unwrapped element or `null` if there are no operations in the delta.
-	 *
-	 * @type {core.treeModel.Position|null}
-	 */
-	get position() {
-		return this._moveOperation ? this._moveOperation.targetPosition : null;
 	}
 }
 

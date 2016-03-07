@@ -23,6 +23,15 @@ import CKEditorError from '../../ckeditorerror.js';
  */
 export default class MergeDelta extends Delta {
 	/**
+	 * Position between to merged nodes or `null` if the delta has no operations.
+	 *
+	 * @type {core.treeModel.Position|null}
+	 */
+	get position() {
+		return this._removeOperation ? this._removeOperation.sourcePosition : null;
+	}
+
+	/**
 	 * Operation in this delta that removes the node after merge position (which will be empty at that point) or
 	 * `null` if the delta has no operations. Note, that after {@link core.treeModel.delta.transform transformation}
 	 * this might be an instance of {@link core.treeModel.operation.MoveOperation} instead of
@@ -42,15 +51,6 @@ export default class MergeDelta extends Delta {
 	 */
 	get _reverseDeltaClass() {
 		return SplitDelta;
-	}
-
-	/**
-	 * Position between to merged nodes or `null` if the delta has no operations.
-	 *
-	 * @type {core.treeModel.Position|null}
-	 */
-	get position() {
-		return this._removeOperation ? this._removeOperation.sourcePosition : null;
 	}
 }
 

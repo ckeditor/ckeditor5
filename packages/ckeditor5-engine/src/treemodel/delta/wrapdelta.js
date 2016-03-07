@@ -24,6 +24,17 @@ import CKEditorError from '../../ckeditorerror.js';
  */
 export default class WrapDelta extends Delta {
 	/**
+	 * Range to wrap or `null` if there are no operations in the delta.
+	 *
+	 * @type {core.treeModel.Range|null}
+	 */
+	get range() {
+		let moveOp = this._moveOperation;
+
+		return moveOp ? Range.createFromPositionAndShift( moveOp.sourcePosition, moveOp.howMany ) : null;
+	}
+
+	/**
 	 * Operation that moves wrapped nodes to their new parent or `null` if there are no operations in the delta.
 	 *
 	 * @protected
@@ -40,17 +51,6 @@ export default class WrapDelta extends Delta {
 	 */
 	get _reverseDeltaClass() {
 		return UnwrapDelta;
-	}
-
-	/**
-	 * Range to wrap or `null` if there are no operations in the delta.
-	 *
-	 * @type {core.treeModel.Range|null}
-	 */
-	get range() {
-		let moveOp = this._moveOperation;
-
-		return moveOp ? Range.createFromPositionAndShift( moveOp.sourcePosition, moveOp.howMany ) : null;
 	}
 }
 
