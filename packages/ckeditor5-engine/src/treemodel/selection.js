@@ -130,7 +130,7 @@ export default class Selection {
 	 * or backward - from end to start (`true`). Defaults to `false`.
 	 */
 	addRange( range, isBackward ) {
-		pushRange.call( this, range );
+		this._pushRange( range );
 		this._lastRangeBackward = !!isBackward;
 
 		this.fire( 'update' );
@@ -217,7 +217,7 @@ export default class Selection {
 		this._ranges = [];
 
 		for ( let i = 0; i < newRanges.length; i++ ) {
-			pushRange.call( this, newRanges[ i ] );
+			this._pushRange( newRanges[ i ] );
 		}
 
 		this._lastRangeBackward = !!isLastBackward;
@@ -225,13 +225,10 @@ export default class Selection {
 	}
 
 	/**
-	 * Checks if the selection has an attribute for given key.
-	 *
-	 * @param {String} key Key of attribute to check.
-	 * @returns {Boolean} `true` if attribute with given key is set on selection, `false` otherwise.
+	 * Removes all attributes from the selection.
 	 */
-	hasAttribute( key ) {
-		return this._attrs.has( key );
+	clearAttributes() {
+		this._attrs.clear();
 	}
 
 	/**
@@ -254,6 +251,26 @@ export default class Selection {
 	}
 
 	/**
+	 * Checks if the selection has an attribute for given key.
+	 *
+	 * @param {String} key Key of attribute to check.
+	 * @returns {Boolean} `true` if attribute with given key is set on selection, `false` otherwise.
+	 */
+	hasAttribute( key ) {
+		return this._attrs.has( key );
+	}
+
+	/**
+	 * Removes an attribute with given key from the selection.
+	 *
+	 * @param {String} key Key of attribute to remove.
+	 * @returns {Boolean} `true` if the attribute was set on the selection, `false` otherwise.
+	 */
+	removeAttribute( key ) {
+		return this._attrs.delete( key );
+	}
+
+	/**
 	 * Sets attribute on the selection. If attribute with the same key already is set, it overwrites its values.
 	 *
 	 * @param {String} key Key of attribute to set.
@@ -273,30 +290,30 @@ export default class Selection {
 	}
 
 	/**
-	 * Removes an attribute with given key from the selection.
+	 * Converts given range to {@link core.treeModel.LiveRange} and adds it to internal ranges array. Throws an error
+	 * if given range is intersecting with any range that is already stored in this selection.
 	 *
-	 * @param {String} key Key of attribute to remove.
-	 * @returns {Boolean} `true` if the attribute was set on the selection, `false` otherwise.
+	 * @private
+	 * @param {core.treeModel.Range} range Range to add.
 	 */
-	removeAttribute( key ) {
-		return this._attrs.delete( key );
-	}
+	_pushRange( range ) {
+		for ( let i = 0; i < this._ranges.length ; i++ ) {
+			if ( range.isIntersecting( this._ranges[ i ] ) ) {
+				/**
+				 * Trying to add a range that intersects with another range from selection.
+				 *
+				 * @error selection-range-intersects
+				 * @param {core.treeModel.Range} addedRange Range that was added to the selection.
+				 * @param {core.treeModel.Range} intersectingRange Range from selection that intersects with `addedRange`.
+				 */
+				throw new CKEditorError(
+					'selection-range-intersects: Trying to add a range that intersects with another range from selection.',
+					{ addedRange: range, intersectingRange: this._ranges[ i ] }
+				);
+			}
+		}
 
-	/**
-	 * Removes all attributes from the selection.
-	 */
-	clearAttributes() {
-		this._attrs.clear();
-	}
-
-	/**
-	 * Generates and returns an attribute key for selection attributes store, basing on original attribute key.
-	 *
-	 * @param {String} key Attribute key to convert.
-	 * @returns {String} Converted attribute key, applicable for selection store.
-	 */
-	static getStoreAttributeKey( key ) {
-		return storePrefix + key;
+		this._ranges.push( LiveRange.createFromRange( range ) );
 	}
 
 	/**
@@ -319,36 +336,16 @@ export default class Selection {
 
 		return filtered;
 	}
-}
 
-/**
- * Converts given range to {@link core.treeModel.LiveRange} and adds it to internal ranges array. Throws an error
- * if given range is intersecting with any range that is already stored in this selection.
- *
- * @private
- * @method pushRange
- * @memberOf {core.treeModel.Selection}
- * @param {core.treeModel.Range} range Range to add.
- */
-function pushRange( range ) {
-	/* jshint validthis: true */
-	for ( let i = 0; i < this._ranges.length ; i++ ) {
-		if ( range.isIntersecting( this._ranges[ i ] ) ) {
-			/**
-			 * Trying to add a range that intersects with another range from selection.
-			 *
-			 * @error selection-range-intersects
-			 * @param {core.treeModel.Range} addedRange Range that was added to the selection.
-			 * @param {core.treeModel.Range} intersectingRange Range from selection that intersects with `addedRange`.
-			 */
-			throw new CKEditorError(
-				'selection-range-intersects: Trying to add a range that intersects with another range from selection.',
-				{ addedRange: range, intersectingRange: this._ranges[ i ] }
-			);
-		}
+	/**
+	 * Generates and returns an attribute key for selection attributes store, basing on original attribute key.
+	 *
+	 * @param {String} key Attribute key to convert.
+	 * @returns {String} Converted attribute key, applicable for selection store.
+	 */
+	static getStoreAttributeKey( key ) {
+		return storePrefix + key;
 	}
-
-	this._ranges.push( LiveRange.createFromRange( range ) );
 }
 
 utils.mix( Selection, EmitterMixin );

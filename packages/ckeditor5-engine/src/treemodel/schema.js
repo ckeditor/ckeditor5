@@ -246,77 +246,6 @@ export default class Schema {
 	}
 
 	/**
-	 * Returns {@link core.treeModel.SchemaItem schema item} that was registered in the schema under given name.
-	 * If item has not been found, throws error.
-	 *
-	 * @param {String} itemName Name to look for in schema.
-	 * @returns {core.treeModel.SchemaItem} Schema item registered under given name.
-	 * @private
-	 */
-	_getItem( itemName ) {
-		if ( !this.hasItem( itemName ) ) {
-			/**
-			 * Item with specified name does not exist in schema.
-			 *
-			 * @error schema-no-item
-			 */
-			throw new CKEditorError( 'schema-no-item: Item with specified name does not exist in schema.' );
-		}
-
-		return this._items.get( itemName );
-	}
-
-	/**
-	 * Checks whether there is an item registered under given name in schema.
-	 *
-	 * @param itemName
-	 * @returns {boolean}
-	 */
-	hasItem( itemName ) {
-		return this._items.has( itemName );
-	}
-
-	/**
-	 * Registers given item name in schema.
-	 *
-	 *		// Register P element that should be treated like all block elements.
-	 *		schema.registerItem( 'p', '$block' );
-	 *
-	 * @param {String} itemName Name to register.
-	 * @param [isExtending] If set, new item will extend item with given name.
-	 */
-	registerItem( itemName, isExtending ) {
-		if ( this.hasItem( itemName ) ) {
-			/**
-			 * Item with specified name already exists in schema.
-			 *
-			 * @error schema-item-exists
-			 */
-			throw new CKEditorError( 'schema-item-exists: Item with specified name already exists in schema.' );
-		}
-
-		if ( !!isExtending && !this.hasItem( isExtending ) ) {
-			/**
-			 * Item with specified name does not exist in schema.
-			 *
-			 * @error schema-no-item
-			 */
-			throw new CKEditorError( 'schema-no-item: Item with specified name does not exist in schema.' );
-		}
-
-		// Create new SchemaItem and add it to the items store.
-		this._items.set( itemName, new SchemaItem( this ) );
-
-		// Create an extension chain.
-		// Extension chain has all item names that should be checked when that item is on path to check.
-		// This simply means, that if item is not extending anything, it should have only itself in it's extension chain.
-		// Since extending is not dynamic, we can simply get extension chain of extended item and expand it with registered name,
-		// if the registered item is extending something.
-		const chain = this.hasItem( isExtending ) ? this._extensionChains.get( isExtending ).concat( itemName ) : [ itemName ];
-		this._extensionChains.set( itemName, chain );
-	}
-
-	/**
 	 * Checks whether entity with given name (and optionally, with given attribute) is allowed at given position.
 	 *
 	 *		// Check whether bold text can be placed at caret position.
@@ -383,6 +312,77 @@ export default class Schema {
 
 		// There are no allow paths that matches query. The query is not valid with schema.
 		return false;
+	}
+
+	/**
+	 * Checks whether there is an item registered under given name in schema.
+	 *
+	 * @param itemName
+	 * @returns {boolean}
+	 */
+	hasItem( itemName ) {
+		return this._items.has( itemName );
+	}
+
+	/**
+	 * Registers given item name in schema.
+	 *
+	 *		// Register P element that should be treated like all block elements.
+	 *		schema.registerItem( 'p', '$block' );
+	 *
+	 * @param {String} itemName Name to register.
+	 * @param [isExtending] If set, new item will extend item with given name.
+	 */
+	registerItem( itemName, isExtending ) {
+		if ( this.hasItem( itemName ) ) {
+			/**
+			 * Item with specified name already exists in schema.
+			 *
+			 * @error schema-item-exists
+			 */
+			throw new CKEditorError( 'schema-item-exists: Item with specified name already exists in schema.' );
+		}
+
+		if ( !!isExtending && !this.hasItem( isExtending ) ) {
+			/**
+			 * Item with specified name does not exist in schema.
+			 *
+			 * @error schema-no-item
+			 */
+			throw new CKEditorError( 'schema-no-item: Item with specified name does not exist in schema.' );
+		}
+
+		// Create new SchemaItem and add it to the items store.
+		this._items.set( itemName, new SchemaItem( this ) );
+
+		// Create an extension chain.
+		// Extension chain has all item names that should be checked when that item is on path to check.
+		// This simply means, that if item is not extending anything, it should have only itself in it's extension chain.
+		// Since extending is not dynamic, we can simply get extension chain of extended item and expand it with registered name,
+		// if the registered item is extending something.
+		const chain = this.hasItem( isExtending ) ? this._extensionChains.get( isExtending ).concat( itemName ) : [ itemName ];
+		this._extensionChains.set( itemName, chain );
+	}
+
+	/**
+	 * Returns {@link core.treeModel.SchemaItem schema item} that was registered in the schema under given name.
+	 * If item has not been found, throws error.
+	 *
+	 * @param {String} itemName Name to look for in schema.
+	 * @returns {core.treeModel.SchemaItem} Schema item registered under given name.
+	 * @private
+	 */
+	_getItem( itemName ) {
+		if ( !this.hasItem( itemName ) ) {
+			/**
+			 * Item with specified name does not exist in schema.
+			 *
+			 * @error schema-no-item
+			 */
+			throw new CKEditorError( 'schema-no-item: Item with specified name does not exist in schema.' );
+		}
+
+		return this._items.get( itemName );
 	}
 
 	/**

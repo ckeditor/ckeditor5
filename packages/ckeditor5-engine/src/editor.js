@@ -9,7 +9,6 @@ import ObservableMixin from './observablemixin.js';
 import EditorConfig from './editorconfig.js';
 import PluginCollection from './plugincollection.js';
 import Document from './treemodel/document.js';
-import Mapper from './treecontroller/mapper.js';
 import CKEditorError from './ckeditorerror.js';
 import Locale from './locale.js';
 import isArray from './lib/lodash/isArray.js';
@@ -74,14 +73,6 @@ export default class Editor {
 		 * @member {Map} core.Editor#commands
 		 */
 		this.commands = new Map();
-
-		/**
-		 * Mapper that maps Tree Model into Tree View
-		 * TODO: this should probably be something else, or not here
-		 *
-		 * @member {Mapper} core.Editor#treeMapper
-		 */
-		this.treeMapper = new Mapper();
 
 		/**
 		 * @readonly

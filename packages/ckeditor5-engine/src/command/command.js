@@ -74,6 +74,18 @@ export default class Command {
 	}
 
 	/**
+	 * Executes the command if it is enabled.
+	 *
+	 * @protected
+	 * @param {*} param Parameter passed to {@link core.command.Command#execute execute} method of this command.
+	 */
+	doExecute( param ) {
+		if ( this.isEnabled ) {
+			this._execute( param );
+		}
+	}
+
+	/**
 	 * Disables the command. This should be used only by the command itself. Other parts of code should add
 	 * listeners to `refreshState` event.
 	 *
@@ -94,18 +106,6 @@ export default class Command {
 	_enable() {
 		this.off( 'refreshState', disableCallback );
 		this.refreshState();
-	}
-
-	/**
-	 * Executes the command if it is enabled.
-	 *
-	 * @protected
-	 * @param {*} param Parameter passed to {@link core.command.Command#execute execute} method of this command.
-	 */
-	doExecute( param ) {
-		if ( this.isEnabled ) {
-			this._execute( param );
-		}
 	}
 
 	/**
