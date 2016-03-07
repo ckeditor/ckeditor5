@@ -94,8 +94,8 @@ export class SchemaItem {
 	 * @private
 	 */
 	_getPaths( type, attribute ) {
-		let source = type === 'ALLOW' ? this._allowed : this._disallowed;
-		let paths = [];
+		const source = type === 'ALLOW' ? this._allowed : this._disallowed;
+		const paths = [];
 
 		for ( let item of source ) {
 			if ( item.attribute === attribute ) {
@@ -129,7 +129,7 @@ export class SchemaItem {
 				// Every item name is expanded to all names of items that item is extending.
 				// So, if on item path, there is an item that is extended by item from checked path, it will
 				// also be treated as matching.
-				let chain = this._schema._extensionChains.get( checkName );
+				const chain = this._schema._extensionChains.get( checkName );
 
 				// Since our paths have to match in given order, we always check against first item from item path.
 				// So, if item path is: B D E
@@ -393,7 +393,7 @@ export default class Schema {
 	 * @private
 	 */
 	static _makeItemsPathFromPosition( position ) {
-		let path = [];
+		const path = [];
 		let parent = position.parent;
 
 		while ( parent !== null ) {

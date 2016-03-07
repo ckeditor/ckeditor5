@@ -228,13 +228,13 @@ export default class Document {
 		if ( !this.selection.hasAnyRange ) {
 			this.selection.clearAttributes();
 		} else {
-			let position = this.selection.getFirstPosition();
-			let positionParent = position.parent;
+			const position = this.selection.getFirstPosition();
+			const positionParent = position.parent;
 			let attrs = null;
 
 			if ( this.selection.isCollapsed === false ) {
 				// 1. If selection is a range...
-				let range = this.selection.getFirstRange();
+				const range = this.selection.getFirstRange();
 
 				// ...look for a first character node in that range and take attributes from it.
 				for ( let item of range ) {
@@ -247,8 +247,8 @@ export default class Document {
 
 			// 2. If the selection is a caret or the range does not contain a character node...
 			if ( !attrs && this.selection.isCollapsed === true ) {
-				let nodeBefore = positionParent.getChild( position.offset - 1 );
-				let nodeAfter = positionParent.getChild( position.offset );
+				const nodeBefore = positionParent.getChild( position.offset - 1 );
+				const nodeAfter = positionParent.getChild( position.offset );
 
 				// ...look at the node before caret and take attributes from it if it is a character node.
 				attrs = getAttrsIfCharacter( nodeBefore );

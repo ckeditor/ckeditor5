@@ -112,16 +112,16 @@ export default class AttributeCommand extends Command {
 	 * otherwise command will remove attribute. If not set, command will look for it's current value to decide what it should do.
 	 */
 	_execute( forceValue ) {
-		let document = this.editor.document;
-		let selection = document.selection;
-		let value = ( forceValue === undefined ) ? !this.value : forceValue;
+		const document = this.editor.document;
+		const selection = document.selection;
+		const value = ( forceValue === undefined ) ? !this.value : forceValue;
 
 		if ( selection.isCollapsed ) {
 			let selectionParent = selection.getFirstPosition().parent;
 
 			if ( selectionParent.getChildCount() === 0 ) {
 				// If selection is collapsed and in empty node, operate on stored selection attributes.
-				let storeKey = Selection.getStoreAttributeKey( this.attributeKey );
+				const storeKey = Selection.getStoreAttributeKey( this.attributeKey );
 
 				document.enqueueChanges( () => {
 					if ( value ) {
@@ -141,11 +141,10 @@ export default class AttributeCommand extends Command {
 		} else if ( selection.hasAnyRange ) {
 			// If selection is not collapsed and has ranges, we change attribute on those ranges.
 			document.enqueueChanges( () => {
-				let ranges = selection.getRanges();
-				ranges = this._getSchemaValidRanges( ranges );
+				const ranges = this._getSchemaValidRanges( selection.getRanges() );
 
 				// Keep it as one undo step.
-				let batch = document.batch();
+				const batch = document.batch();
 
 				for ( let range of ranges ) {
 					if ( value ) {
@@ -167,7 +166,7 @@ export default class AttributeCommand extends Command {
 	 * @private
 	 */
 	_getSchemaValidRanges( ranges ) {
-		let validRanges = [];
+		const validRanges = [];
 
 		for ( let range of ranges ) {
 			const walker = new TreeWalker( { boundaries: range, mergeCharacters: true } );
