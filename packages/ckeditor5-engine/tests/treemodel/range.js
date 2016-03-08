@@ -12,6 +12,7 @@ import Position from '/ckeditor5/core/treemodel/position.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
 import Text from '/ckeditor5/core/treemodel/text.js';
 import Document from '/ckeditor5/core/treemodel/document.js';
+import TreeWalker from '/ckeditor5/core/treemodel/treewalker.js';
 
 describe( 'Range', () => {
 	let range, start, end, root, otherRoot;
@@ -195,8 +196,39 @@ describe( 'Range', () => {
 			let lengths = Array.from( range ).map( value => value.length );
 			let nodeNames = mapNodesToNames( nodes );
 
-			expect( nodeNames ).to.deep.equal( [ 'T:st', 'E:p', 'T:lorem ipsum', 'E:p', 'T:foo', 'E:p', 'T:bar', 'E:div', 'E:h', 'T:se' ] );
+			expect( nodeNames ).to.deep.equal(
+				[ 'T:st', 'E:p', 'T:lorem ipsum', 'E:p', 'T:foo', 'E:p', 'T:bar', 'E:div', 'E:h', 'T:se' ] );
 			expect( lengths ).to.deep.equal( [ 2, 1, 11, 1, 3, 1, 3, 1, 1, 2 ] );
+		} );
+	} );
+
+	describe( 'getWalker', () => {
+		it( 'should be possible to iterate using this method', () => {
+			prepareRichRoot( root );
+
+			const range = new Range( new Position( root, [ 0, 0, 3 ] ), new Position( root, [ 3, 0, 2 ] ) );
+			const items = [];
+			const walker = range.getWalker();
+
+			for ( let value of walker ) {
+				items.push( value.item );
+			}
+
+			expect( mapNodesToNames( items ) ).to.deep.equal(
+				[ 'T:st', 'E:h', 'E:p', 'T:lorem ipsum', 'E:p', 'E:div', 'E:p',
+				'T:foo', 'E:p', 'E:p', 'T:bar', 'E:p', 'E:div', 'E:h', 'T:se' ] );
+		} );
+
+		it( 'should return treewalker with given options', () => {
+			prepareRichRoot( root );
+
+			const range = new Range( new Position( root, [ 0, 0, 3 ] ), new Position( root, [ 3, 0, 2 ] ) );
+			const walker = range.getWalker( { singleCharacters: true } );
+
+			expect( walker ).to.be.instanceof( TreeWalker );
+			expect( walker ).to.have.property( 'singleCharacters' ).that.is.true;
+			expect( walker ).to.have.property( 'boundaries' ).that.equals( range );
+			expect( walker ).to.have.property( 'shallow' ).that.is.false;
 		} );
 	} );
 
@@ -208,7 +240,8 @@ describe( 'Range', () => {
 			let items = Array.from( range.getItems() );
 			let nodeNames = mapNodesToNames( items );
 
-			expect( nodeNames ).to.deep.equal( [ 'T:st', 'E:p', 'T:lorem ipsum', 'E:p', 'T:foo', 'E:p', 'T:bar', 'E:div', 'E:h', 'T:se' ] );
+			expect( nodeNames ).to.deep.equal(
+				[ 'T:st', 'E:p', 'T:lorem ipsum', 'E:p', 'T:foo', 'E:p', 'T:bar', 'E:div', 'E:h', 'T:se' ] );
 		} );
 
 		it( 'should iterate over all items in the range as single characters', () => {
@@ -229,12 +262,52 @@ describe( 'Range', () => {
 				new Position( root, [ 1, 1 ] )
 			);
 
-			let items = Array.from( range.getItems( true ) );
+			let items = Array.from( range.getItems( { singleCharacters: true } ) );
 
 			expect( items.length ).to.equal( 3 );
 			expect( items[ 0 ].character ).to.equal( 'b' );
 			expect( items[ 1 ] ).to.equal( e2 );
 			expect( items[ 2 ].character ).to.equal( 'x' );
+		} );
+	} );
+
+	describe( 'getPositions', () => {
+		beforeEach( () => {
+			prepareRichRoot( root );
+		} );
+
+		it( 'should iterate over all positions in this range', () => {
+			let expectedPaths = [
+				[ 1, 2 ], [ 1, 3 ],
+				[ 2 ], [ 2, 0 ], [ 2, 3 ],
+				[ 3 ], [ 3, 0 ], [ 3, 0, 0 ], [ 3, 0, 2 ]
+			];
+			let range = new Range( new Position( root, [ 1, 2 ] ), new Position( root, [ 3, 0, 2 ] ) );
+			let i = 0;
+
+			for ( let position of range.getPositions() ) {
+				expect( position.path ).to.deep.equal( expectedPaths[ i ] );
+				i++;
+			}
+
+			expect( i ).to.equal( expectedPaths.length );
+		} );
+
+		it( 'should return single nodes iterating over all positions in this range', () => {
+			let expectedPaths = [
+				[ 1, 2 ], [ 1, 3 ],
+				[ 2 ], [ 2, 0 ], [ 2, 1 ], [ 2, 2 ], [ 2, 3 ],
+				[ 3 ], [ 3, 0 ], [ 3, 0, 0 ], [ 3, 0, 1 ], [ 3, 0, 2 ]
+			];
+			let range = new Range( new Position( root, [ 1, 2 ] ), new Position( root, [ 3, 0, 2 ] ) );
+			let i = 0;
+
+			for ( let position of range.getPositions( { singleCharacters: true } ) ) {
+				expect( position.path ).to.deep.equal( expectedPaths[ i ] );
+				i++;
+			}
+
+			expect( i ).to.equal( expectedPaths.length );
 		} );
 	} );
 
@@ -441,68 +514,6 @@ describe( 'Range', () => {
 			expect( flat[ 0 ].end.path ).to.deep.equal( [ 0, 1 ] );
 			expect( flat[ 1 ].start.path ).to.deep.equal( [ 0, 1, 0 ] );
 			expect( flat[ 1 ].end.path ).to.deep.equal( [ 0, 1, 4 ] );
-		} );
-	} );
-
-	describe( 'getTopLevelNodes', () => {
-		beforeEach( () => {
-			prepareRichRoot( root );
-		} );
-
-		it( 'should iterate over all top-level nodes of this range', () => {
-			let range = new Range( new Position( root, [ 0, 0, 3 ] ), new Position( root, [ 3, 0, 2 ] ) );
-			let nodes = Array.from( range.getTopLevelNodes() );
-			let nodeNames = mapNodesToNames( nodes );
-
-			expect( nodeNames ).to.deep.equal( [ 'T:st', 'E:p', 'E:p', 'E:p', 'T:se' ] );
-		} );
-
-		it( 'should return single characters iterating over all top-level nodes of this range', () => {
-			let range = new Range( new Position( root, [ 0, 0, 3 ] ), new Position( root, [ 3, 0, 2 ] ) );
-			let nodes = Array.from( range.getTopLevelNodes( true ) );
-			let nodeNames = mapNodesToNames( nodes );
-
-			expect( nodeNames ).to.deep.equal( [ 'T:s', 'T:t', 'E:p', 'E:p', 'E:p', 'T:s', 'T:e' ] );
-		} );
-	} );
-
-	describe( 'getPositions', () => {
-		beforeEach( () => {
-			prepareRichRoot( root );
-		} );
-
-		it( 'should iterate over all positions in this range', () => {
-			let expectedPaths = [
-				[ 1, 2 ], [ 1, 3 ],
-				[ 2 ], [ 2, 0 ], [ 2, 3 ],
-				[ 3 ], [ 3, 0 ], [ 3, 0, 0 ], [ 3, 0, 2 ]
-			];
-			let range = new Range( new Position( root, [ 1, 2 ] ), new Position( root, [ 3, 0, 2 ] ) );
-			let i = 0;
-
-			for ( let position of range.getPositions() ) {
-				expect( position.path ).to.deep.equal( expectedPaths[ i ] );
-				i++;
-			}
-
-			expect( i ).to.equal( expectedPaths.length );
-		} );
-
-		it( 'should return single nodes iterating over all positions in this range', () => {
-			let expectedPaths = [
-				[ 1, 2 ], [ 1, 3 ],
-				[ 2 ], [ 2, 0 ], [ 2, 1 ], [ 2, 2 ], [ 2, 3 ],
-				[ 3 ], [ 3, 0 ], [ 3, 0, 0 ], [ 3, 0, 1 ], [ 3, 0, 2 ]
-			];
-			let range = new Range( new Position( root, [ 1, 2 ] ), new Position( root, [ 3, 0, 2 ] ) );
-			let i = 0;
-
-			for ( let position of range.getPositions( true ) ) {
-				expect( position.path ).to.deep.equal( expectedPaths[ i ] );
-				i++;
-			}
-
-			expect( i ).to.equal( expectedPaths.length );
 		} );
 	} );
 

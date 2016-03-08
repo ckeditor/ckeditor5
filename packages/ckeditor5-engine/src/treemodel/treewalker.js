@@ -18,18 +18,24 @@ import CKEditorError from '../ckeditorerror.js';
  */
 export default class TreeWalker {
 	/**
-	 * Creates a range iterator. All parameters are optional, but you have to specify either `boundaries` or `position`.
+	 * Creates a range iterator. All parameters are optional, but you have to specify either `boundaries` or `startPosition`.
 	 *
 	 * @param {Object} options Object with configuration.
 	 * @param {core.treeModel.Range} [options.boundaries] Range to define boundaries of the iterator.
-	 * @param {core.treeModel.Position} [options.position] Starting position.
+	 * @param {core.treeModel.Position} [options.startPosition] Starting position.
 	 * @param {Boolean} [options.singleCharacters=false] Flag indicating whether all consecutive characters with the same attributes
 	 * should be returned one by one as multiple {@link core.treeModel.CharacterProxy} (`true`) objects or as one
 	 * {@link core.treeModel.TextFragment} (`false`).
+	 * @param {Boolean} [options.shallow=false] Flag indicating whether iterator should enter elements or not. If the
+	 * iterator is shallow child nodes of any iterated node will not be returned along with `ELEMENT_END` tag.
+	 * @param {Boolean} [options.ignoreElementEnd=false] Flag indicating whether iterator should ignore `ELEMENT_END`
+	 * tags. If the option is true walker will not return a parent node of start position. If this option is `true`
+	 * each {@link core.treeModel.Element} will be returned once, while if the option is `false` they might be returned
+	 * twice: for `'ELEMENT_START'` and `'ELEMENT_END'`.
 	 * @constructor
 	 */
 	constructor( options ) {
-		if ( !options || ( !options.boundaries && !options.position ) ) {
+		if ( !options || ( !options.boundaries && !options.startPosition ) ) {
 			/**
 			 * Neither boundaries nor starting position have been defined.
 			 *
@@ -72,8 +78,8 @@ export default class TreeWalker {
 		 *
 		 * @type {core.treeModel.Position}
 		 */
-		this.position = options.position ?
-			Position.createFromPosition( options.position ) :
+		this.position = options.startPosition ?
+			Position.createFromPosition( options.startPosition ) :
 			Position.createFromPosition( options.boundaries.start );
 
 		/**
@@ -83,6 +89,24 @@ export default class TreeWalker {
 		 * @type {Boolean}
 		 */
 		this.singleCharacters = !!options.singleCharacters;
+
+		/**
+		 * Flag indicating whether iterator should enter elements or not. If the iterator is shallow child nodes of any
+		 * iterated node will not be returned along with `ELEMENT_END` tag.
+		 *
+		 * @type {Boolean}
+		 */
+		this.shallow = !!options.shallow;
+
+		/**
+		 * Flag indicating whether iterator should ignore `ELEMENT_END` tags. If the option is true walker will not
+		 * return a parent node of the start position. If this option is `true` each {@link core.treeModel.Element} will
+		 * be returned once, while if the option is `false` they might be returned twice:
+		 * for `'ELEMENT_START'` and `'ELEMENT_END'`.
+		 *
+		 * @type {Boolean}
+		 */
+		this.ignoreElementEnd = !!options.ignoreElementEnd;
 
 		/**
 		 * Parent of the most recently visited node. Cached for optimization purposes.
@@ -125,11 +149,14 @@ export default class TreeWalker {
 		const node = parent.getChild( position.offset );
 
 		if ( node instanceof Element ) {
-			// Manual operations on path internals for optimization purposes. Here and in the rest of the method.
-			position.path.push( 0 );
+			if ( !this.shallow ) {
+				// Manual operations on path internals for optimization purposes. Here and in the rest of the method.
+				position.path.push( 0 );
+				this._visitedParent = node;
+			} else {
+				position.offset++;
+			}
 			this.position = position;
-
-			this._visitedParent = node;
 
 			return formatReturnValue( 'ELEMENT_START', node, previousPosition, position, 1 );
 		} else if ( node instanceof CharacterProxy ) {
@@ -161,72 +188,11 @@ export default class TreeWalker {
 
 			this._visitedParent = parent.parent;
 
-			return formatReturnValue( 'ELEMENT_END', parent, previousPosition, position );
-		}
-	}
-
-	/**
-	 * Makes a step backward in tree model. Moves the {@link #position} to the previous position and returns the encountered value.
-	 *
-	 * @returns {Object} Object implementing iterator interface, returning information about taken step.
-	 * @returns {Boolean} return.done True if iterator is done.
-	 * @returns {core.treeModel.TreeWalkerValue} return.value Information about taken step.
-	 */
-	previous() {
-		const previousPosition = this.position;
-		const position = Position.createFromPosition( this.position );
-		const parent = this._visitedParent;
-
-		// We are at the end of the root.
-		if ( parent.parent === null && position.offset === 0 ) {
-			return { done: true };
-		}
-
-		// Parent can't be null so by comparing with boundaryParent we check if boundaryParent is set at all.
-		if ( parent == this._boundaryStartParent && position.offset == this.boundaries.start.offset ) {
-			return { done: true };
-		}
-
-		const node = parent.getChild( position.offset - 1 );
-
-		if ( node instanceof Element ) {
-			// Manual operations on path internals for optimization purposes. Here and in the rest of the method.
-			position.offset--;
-			position.path.push( node.getChildCount() );
-			this.position = position;
-
-			this._visitedParent = node;
-
-			return formatReturnValue( 'ELEMENT_END', node, position, previousPosition );
-		} else if ( node instanceof CharacterProxy ) {
-			if ( this.singleCharacters ) {
-				position.offset--;
-				this.position = position;
-
-				return formatReturnValue( 'CHARACTER', node, position, previousPosition, 1 );
+			if ( this.ignoreElementEnd ) {
+				return this.next();
 			} else {
-				let charactersCount = node._index + 1;
-				let offset = position.offset - charactersCount;
-
-				if ( this._boundaryStartParent == parent && this.boundaries.start.offset > offset ) {
-					offset = this.boundaries.start.offset;
-					charactersCount = position.offset - offset;
-				}
-
-				let textFragment = new TextFragment( parent.getChild( offset ), charactersCount );
-
-				position.offset = offset;
-				this.position = position;
-
-				return formatReturnValue( 'TEXT', textFragment, position, previousPosition, charactersCount );
+				return formatReturnValue( 'ELEMENT_END', parent, previousPosition, position );
 			}
-		} else {
-			position.path.pop();
-			this.position = position;
-
-			this._visitedParent = parent.parent;
-
-			return formatReturnValue( 'ELEMENT_START', parent, position, previousPosition, 1 );
 		}
 	}
 }

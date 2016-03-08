@@ -271,39 +271,46 @@ export default class Range {
 	 * @returns {Iterable.<core.treeModel.TreeWalkerValue>}
 	 */
 	*[ Symbol.iterator ]() {
-		const treeWalker = new TreeWalker( { boundaries: this } );
+		yield* new TreeWalker( { boundaries: this, ignoreElementEnd: true } );
+	}
 
-		for ( let value of treeWalker ) {
-			if ( value.type != 'ELEMENT_END' ) {
-				yield value;
-			}
-		}
+	/**
+	 * Creates a {@link core.treeModel.TreeWalker} instance with this range as a boundary.
+	 *
+	 * @param {Object} options Object with configuration options.
+	 * @param {core.treeModel.Position} [options.startPosition] @see core.treeModel.TreeWalker#startPosition
+	 * @param {Boolean} [options.singleCharacters=false] @see core.treeModel.TreeWalker#singleCharacters
+	 * @param {Boolean} [options.shallow=false] @see core.treeModel.TreeWalker#shallow
+	 * @param {Boolean} [options.ignoreElementEnd=false] @see core.treeModel.TreeWalker#ignoreElementEnd
+	 * @constructor
+	 */
+	getWalker( options = {} ) {
+		options.boundaries = this;
+
+		return new TreeWalker( options );
 	}
 
 	/**
 	 * Returns an iterator that iterates over all {@link core.treeModel.Item items} that are in this range and returns
 	 * them. It iterates over all {@link core.treeModel.CharacterProxy characters} or
 	 * {@link core.treeModel.TextFragment texts} that are inside the range and all the {@link core.treeModel.Element}s
-	 * we enter into when iterating over this range.
+	 * we enter into when iterating over this range. Note that it use {@link core.treeModel.TreeWalker} with the
+	 * {@link core.treeModel.TreeWalker#ignoreElementEnd ignoreElementEnd} option set to true.
 	 *
-	 * **Note:** this method will not return a parent node of start position. This is in contrary to
-	 * {@link core.treeModel.TreeWalker} which will return that node with `'ELEMENT_END'` type. This method also
-	 * returns each {@link core.treeModel.Element} once, while simply used {@link core.treeModel.TreeWalker} might
-	 * return it twice: for `'ELEMENT_START'` and `'ELEMENT_END'`.
-	 *
-	 * @see {@link core.treeModel.TreeWalker}
-	 * @param {Boolean} [singleCharacters] Flag indicating whether all consecutive characters with the same attributes
-	 * should be returned one by one as multiple {@link core.treeModel.CharacterProxy} (`true`) objects or as one
-	 * {@link core.treeModel.TextFragment} (`false`). Defaults to `false`.
+	 * @param {Object} options Object with configuration options.
+	 * @param {core.treeModel.Position} [options.startPosition] @see core.treeModel.TreeWalker#startPosition
+	 * @param {Boolean} [options.singleCharacters=false] @see core.treeModel.TreeWalker#singleCharacters
+	 * @param {Boolean} [options.shallow=false] @see core.treeModel.TreeWalker#shallow
 	 * @returns {Iterable.<core.treeModel.Item>}
 	 */
-	*getItems( singleCharacters ) {
-		const treeWalker = new TreeWalker( { boundaries: this, singleCharacters: singleCharacters } );
+	*getItems( options = {} ) {
+		options.boundaries = this;
+		options.ignoreElementEnd = true;
+
+		const treeWalker = new TreeWalker( options );
 
 		for ( let value of treeWalker ) {
-			if ( value.type != 'ELEMENT_END' ) {
-				yield value.item;
-			}
+			yield value.item;
 		}
 	}
 
@@ -311,54 +318,20 @@ export default class Range {
 	 * Returns an iterator that iterates over all {@link core.treeModel.Position positions} that are boundaries or
 	 * contained in this range.
 	 *
-	 * @param {Boolean} [singleCharacters] Flag indicating whether all consecutive characters with the same attributes
-	 * should be returned one by one as multiple {@link core.treeModel.CharacterProxy} (`true`) objects or as one
-	 * {@link core.treeModel.TextFragment} (`false`). Defaults to `false`.
+	 * @param {Object} options Object with configuration options.
+	 * @param {Boolean} [options.singleCharacters=false] @see core.treeModel.TreeWalker#singleCharacters
+	 * @param {Boolean} [options.shallow=false] @see core.treeModel.TreeWalker#shallow
 	 * @returns {Iterable.<core.treeModel.Position>}
 	 */
-	*getPositions( singleCharacters ) {
-		const treeWalker = new TreeWalker( { boundaries: this, singleCharacters: singleCharacters } );
+	*getPositions( options = {} ) {
+		options.boundaries = this;
+
+		const treeWalker = new TreeWalker( options );
 
 		yield treeWalker.position;
 
 		for ( let value of treeWalker ) {
 			yield value.nextPosition;
-		}
-	}
-
-	/**
-	 * Returns an iterator that iterates over all {@link core.treeModel.Node nodes} that are top-level nodes in this range
-	 * and returns them. A node is a top-level node when it is in the range but it's parent is not. In other words,
-	 * this function splits the range into separate sub-trees and iterates over their roots.
-	 *
-	 * @param {Boolean} [singleCharacters] Flag indicating whether all consecutive characters with the same attributes
-	 * should be returned one by one as multiple {@link core.treeModel.CharacterProxy} (`true`) objects or as one
-	 * {@link core.treeModel.TextFragment} (`false`). Defaults to `false`.
-	 * @returns {Iterable.<core.treeModel.Node|treeModel.TextFragment>}
-	 */
-	*getTopLevelNodes( singleCharacters ) {
-		let flatRanges = this.getMinimalFlatRanges();
-
-		for ( let range of flatRanges ) {
-			// This loop could be much simpler as we could just iterate over siblings of node after the first
-			// position of each range. But then we would have to re-implement character merging strategy here.
-			let walker = new TreeWalker( { boundaries: range, singleCharacters: singleCharacters } );
-
-			// We will only return nodes that are on same level as node after the range start. To do this,
-			// we keep "depth" counter.
-			let depth = 0;
-
-			for ( let value of walker ) {
-				if ( value.type == 'ELEMENT_START' ) {
-					depth++;
-				} else if ( value.type == 'ELEMENT_END' ) {
-					depth--;
-				}
-
-				if ( depth === 0 ) {
-					yield value.item;
-				}
-			}
 		}
 	}
 
