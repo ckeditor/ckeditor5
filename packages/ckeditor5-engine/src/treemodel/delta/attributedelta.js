@@ -70,6 +70,10 @@ export default class AttributeDelta extends Delta {
 	get _reverseDeltaClass() {
 		return AttributeDelta;
 	}
+
+	static get _priority() {
+		return 20;
+	}
 }
 
 /**

@@ -54,6 +54,10 @@ export default class InsertDelta extends Delta {
 	get _reverseDeltaClass() {
 		return RemoveDelta;
 	}
+
+	static get _priority() {
+		return 20;
+	}
 }
 
 /**

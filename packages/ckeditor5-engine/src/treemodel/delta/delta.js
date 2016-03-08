@@ -101,4 +101,16 @@ export default class Delta {
 
 		return delta;
 	}
+
+	/**
+	 * Delta priority. Used in {@link core.treeModel.delta.transform delta transformations}. Delta with the higher
+	 * priority will be treated as more important when resolving transformation conflicts. If deltas have same
+	 * priority, other factors will be used to determine which delta is more important.
+	 *
+	 * @private
+	 * @type {Number}
+	 */
+	static get _priority() {
+		return 0;
+	}
 }

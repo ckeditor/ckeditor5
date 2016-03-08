@@ -69,6 +69,10 @@ export default class MoveDelta extends Delta {
 	get _reverseDeltaClass() {
 		return MoveDelta;
 	}
+
+	static get _priority() {
+		return 20;
+	}
 }
 
 function addMoveOperation( batch, delta, sourcePosition, howMany, targetPosition ) {

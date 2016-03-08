@@ -65,6 +65,10 @@ export default class SplitDelta extends Delta {
 	get _reverseDeltaClass() {
 		return MergeDelta;
 	}
+
+	static get _priority() {
+		return 10;
+	}
 }
 
 /**

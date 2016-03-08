@@ -48,6 +48,10 @@ export default class UnwrapDelta extends Delta {
 	get _reverseDeltaClass() {
 		return WrapDelta;
 	}
+
+	static get _priority() {
+		return 10;
+	}
 }
 
 /**

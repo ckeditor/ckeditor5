@@ -16,7 +16,6 @@ import AttributeDelta from './attributedelta.js';
 import InsertDelta from './insertdelta.js';
 import MergeDelta from './mergedelta.js';
 import MoveDelta from './movedelta.js';
-import RemoveDelta from './removedelta.js';
 import SplitDelta from './splitdelta.js';
 import WeakInsertDelta from './weakinsertdelta.js';
 import WrapDelta from './wrapdelta.js';
@@ -28,29 +27,6 @@ import utils from '../../utils.js';
 /**
  * @namespace core.treeModel.delta.transform
  */
-
-/**
- * When it comes to delta transformations, delta has their priorities. Priorities mean which delta should be a
- * stronger one when conflicting situation arises. These depend only on delta type. The higher the priority, the stronger
- * the delta is. For example, then MoveDelta tries to move some nodes and SplitDelta tries to move the some of those
- * nodes to a new parent, MoveDelta should be treated as stronger and the result of MoveDelta should overwrite SplitDelta.
- * When deltas have same priorities, `isStrong` parameter is used to decide which one is stronger. This parameter should
- * be arbitrary set, i.e. depending on the source of the delta (i.e. during collaborative editing deltas coming from
- * server might be more important than deltas produced on client).
- *
- * @external core.treeModel.delta.transform
- * @member core.treeModel.delta.transform.priorities
- * @type {Map}
- */
-export const priorities = new Map();
-priorities.set( MergeDelta, 0 );
-priorities.set( UnwrapDelta, 1 );
-priorities.set( WrapDelta, 1 );
-priorities.set( SplitDelta, 1 );
-priorities.set( AttributeDelta, 2 );
-priorities.set( InsertDelta, 2 );
-priorities.set( MoveDelta, 2 );
-priorities.set( RemoveDelta, 3 );
 
 const specialCases = new Map();
 
@@ -465,12 +441,9 @@ function _getComplementaryAttrDelta( weakInsertDelta, attributeDelta ) {
 // Checks priorities of passed constructors and decides which one is more important.
 // If both priorities are same, value passed in `isAMoreImportantThanB` parameter is used.
 function getPriority( A, B, isAMoreImportantThanB ) {
-	const aPriority = priorities.get( A );
-	const bPriority = priorities.get( B );
-
-	if ( aPriority > bPriority ) {
+	if ( A._priority > B._priority ) {
 		return true;
-	} else if ( aPriority < bPriority ) {
+	} else if ( A._priority < B._priority ) {
 		return false;
 	} else {
 		return isAMoreImportantThanB;
