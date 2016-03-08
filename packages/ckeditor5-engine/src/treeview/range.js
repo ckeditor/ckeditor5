@@ -11,7 +11,6 @@ import Position from './position.js';
  * Tree view range.
  *
  * @memberOf core.treeView
- * @extends core.treeView.Range
  */
 export default class Range {
 	/**
@@ -25,16 +24,16 @@ export default class Range {
 		/**
 		 * Start position.
 		 *
-		 * @public
-		 * @member {core.treeView.Position}  core.treeModel.Range#start
+		 * @member core.treeView.Range#start
+		 * @type {core.treeView.Position}
 		 */
 		this.start = Position.createFromPosition( start );
 
 		/**
 		 * End position.
 		 *
-		 * @public
-		 * @member {core.treeView.Position} core.treeModel.Range#end
+		 * @member core.treeView.Range#end
+		 * @type {core.treeView.Position}
 		 */
 		this.end = Position.createFromPosition( end );
 	}
