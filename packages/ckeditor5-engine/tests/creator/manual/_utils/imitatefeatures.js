@@ -15,10 +15,12 @@ import ButtonView from '/ckeditor5/ui/button/buttonview.js';
  * @param {core.Editor} editor
  */
 export function imitateFeatures( editor ) {
+	const t = editor.t;
+
 	const boldModel = new Model( {
 		isEnabled: true,
 		isOn: false,
-		label: 'bold'
+		label: t( 'Bold' )
 	} );
 
 	boldModel.on( 'execute', () => {
@@ -33,7 +35,7 @@ export function imitateFeatures( editor ) {
 	const italicModel = new Model( {
 		isEnabled: true,
 		isOn: false,
-		label: 'italic'
+		label: t( 'Italic' )
 	} );
 
 	italicModel.on( 'execute', () => {

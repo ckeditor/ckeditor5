@@ -5,7 +5,7 @@
   * Framed editor should be created.
   * It should be rectangular (400x400).
   * Original element should disappear.
-  * There should be a toolbar with "bold" and "italic" buttons.
+  * There should be a toolbar with "Bold" and "Italic" buttons.
 3. Click "Destroy editor".
 4. Expected:
   * Editor should be destroyed.

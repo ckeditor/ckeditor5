@@ -12,6 +12,7 @@ import coreTestUtils from '/tests/core/_utils/utils.js';
 import Editor from '/ckeditor5/core/editor.js';
 import EditorConfig from '/ckeditor5/core/editorconfig.js';
 import Plugin from '/ckeditor5/core/plugin.js';
+import Locale from '/ckeditor5/core/locale.js';
 
 const pluginClasses = {};
 let element;
@@ -48,6 +49,21 @@ describe( 'config', () => {
 		const editor = new Editor( element );
 
 		expect( editor.config ).to.be.an.instanceof( EditorConfig );
+	} );
+} );
+
+describe( 'locale', () => {
+	it( 'is instantiated and t() is exposed', () => {
+		const editor = new Editor( element );
+
+		expect( editor.locale ).to.be.instanceof( Locale );
+		expect( editor.t ).to.equal( editor.locale.t );
+	} );
+
+	it( 'is configured with the config.lang', () => {
+		const editor = new Editor( element, { lang: 'pl' } );
+
+		expect( editor.locale.lang ).to.equal( 'pl' );
 	} );
 } );
 

@@ -9,6 +9,7 @@ import ObservableMixin from './observablemixin.js';
 import EditorConfig from './editorconfig.js';
 import PluginCollection from './plugincollection.js';
 import CKEditorError from './ckeditorerror.js';
+import Locale from './locale.js';
 import isArray from './lib/lodash/isArray.js';
 import utils from './utils.js';
 
@@ -33,7 +34,7 @@ export default class Editor {
 		 * editor creation and is not subject to be modified.
 		 *
 		 * @readonly
-		 * @type {HTMLElement}
+		 * @member {HTMLElement}
 		 */
 		this.element = element;
 
@@ -45,23 +46,37 @@ export default class Editor {
 		 * instance itself.
 		 *
 		 * @readonly
-		 * @type {Config}
+		 * @member {Config}
 		 */
-		this.config = new EditorConfig( config );
+		this.config = config = new EditorConfig( config );
 
 		/**
 		 * The plugins loaded and in use by this editor instance.
 		 *
 		 * @readonly
-		 * @type {PluginCollection}
+		 * @member {PluginCollection}
 		 */
 		this.plugins = new PluginCollection( this );
+
+		/**
+		 * @readonly
+		 * @member {core.Locale} core.Editor#locale
+		 */
+		this.locale = new Locale( config.lang );
+
+		/**
+		 * Shorthand for {@link core.Locale#t}.
+		 *
+		 * @see core.Locale#t
+		 * @method t
+		 */
+		this.t = this.locale.t;
 
 		/**
 		 * The chosen creator.
 		 *
 		 * @protected
-		 * @type {Creator}
+		 * @member {core.Creator} core.Editor#_creator
 		 */
 	}
 

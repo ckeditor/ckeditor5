@@ -8,8 +8,8 @@
 import EditableView from '/ckeditor5/core/editable/editableview.js';
 
 export default class FramedEditableView extends EditableView {
-	constructor( model ) {
-		super( model );
+	constructor( model, locale ) {
+		super( model, locale );
 
 		const bind = this.attributeBinder;
 
