@@ -46,7 +46,7 @@ export default class Template {
 	 * **Note:** No new DOM nodes (elements, text nodes) will be created.
 	 *
 	 * @see core.ui.Template#render
-	 * @see View#applyTemplateToElement.
+	 * @see core.ui.View#applyTemplateToElement.
 	 *
 	 * @param {Node} element Root element for template to apply.
 	 */
