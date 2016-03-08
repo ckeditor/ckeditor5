@@ -57,14 +57,6 @@ export default class TreeWalker {
 		this.boundaries = options.boundaries || null;
 
 		/**
-		 * Start boundary cached for optimization purposes.
-		 *
-		 * @private
-		 * @type {core.treeModel.Element}
-		 */
-		this._boundaryStartParent = this.boundaries ? this.boundaries.start.parent : null;
-
-		/**
 		 * End boundary cached for optimization purposes.
 		 *
 		 * @private
@@ -156,6 +148,7 @@ export default class TreeWalker {
 			} else {
 				position.offset++;
 			}
+
 			this.position = position;
 
 			return formatReturnValue( 'ELEMENT_START', node, previousPosition, position, 1 );
