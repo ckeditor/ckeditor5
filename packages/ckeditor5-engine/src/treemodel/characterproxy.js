@@ -30,12 +30,25 @@ export default class CharacterProxy extends Node {
 	/**
 	 * Creates character node proxy.
 	 *
+	 * @protected
 	 * @param {core.treeModel.NodeListText} nodeListText Reference to a text object in a node list containing this character.
 	 * @param {Number} index Index of the character in `nodeListText`.
-	 * @protected
 	 */
 	constructor( nodeListText, index ) {
 		super( nodeListText._attrs );
+
+		/**
+		 * Character represented by this proxy.
+		 *
+		 * @readonly
+		 * @member {String} core.treeModel.CharacterProxy#character
+		 */
+		this.character = nodeListText.text.substr( index, 1 );
+
+		/**
+		 * @inheritdoc
+		 */
+		this.parent = nodeListText.parent;
 
 		/**
 		 * Reference to a text object in a node list containing this character.
@@ -54,19 +67,5 @@ export default class CharacterProxy extends Node {
 		 * @member {Number} core.treeModel.CharacterProxy#_index
 		 */
 		this._index = index;
-
-		/**
-		 * Character represented by this proxy.
-		 *
-		 * @protected
-		 * @readonly
-		 * @member {String} core.treeModel.CharacterProxy#character
-		 */
-		this.character = nodeListText.text.substr( index, 1 );
-
-		/**
-		 * @inheritdoc
-		 */
-		this.parent = this._nodeListText.parent;
 	}
 }
