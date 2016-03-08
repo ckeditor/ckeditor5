@@ -17,6 +17,7 @@ import Delta from '/ckeditor5/core/treemodel/delta/delta.js';
 import MergeDelta from '/ckeditor5/core/treemodel/delta/mergedelta.js';
 
 import MoveOperation from '/ckeditor5/core/treemodel/operation/moveoperation.js';
+import RemoveOperation from '/ckeditor5/core/treemodel/operation/removeoperation.js';
 
 import treeModelTestUtils from '/tests/core/treemodel/_utils/utils.js';
 const getNodesAndText = treeModelTestUtils.getNodesAndText;
@@ -126,7 +127,7 @@ describe( 'transform', () => {
 			} );
 		} );
 
-		describe( 'by MoveDelta', () => {
+		describe( 'MoveDelta', () => {
 			it( 'node on the right side of merge was moved', () => {
 				let moveDelta = getMoveDelta( new Position( root, [ 3, 3, 3 ] ), 1, new Position( root, [ 3, 3, 0 ] ), baseVersion );
 				let transformed = transform( mergeDelta, moveDelta );
@@ -167,14 +168,9 @@ describe( 'transform', () => {
 							baseVersion: baseVersion
 						},
 						{
-							// This is `MoveOperation` instead of `RemoveOperation` because during OT,
-							// `RemoveOperation` may get converted to `MoveOperation`. Still, this expectation is
-							// correct because `RemoveOperation` is deriving from `MoveOperation`. So we can expect
-							// that something that was `RemoveOperation` is a `MoveOperation`.
-							type: MoveOperation,
+							type: RemoveOperation,
 							sourcePosition: new Position( root, [ 3, 3, 3 ] ),
 							howMany: 1,
-							targetPosition: new Position( gy, [ 0 ] ),
 							baseVersion: baseVersion + 1
 						}
 					]
@@ -188,6 +184,82 @@ describe( 'transform', () => {
 
 				// MoveDelta is applied. MergeDelta is discarded.
 				expect( nodesAndText ).to.equal( 'DIVXabcdabcfoobarxyzXXXXXDIV' );
+			} );
+		} );
+
+		describe( 'MergeDelta', () => {
+			it( 'merge two consecutive elements, transformed merge is after', () => {
+				let mergeDeltaB = getMergeDelta( new Position( root, [ 3, 3, 2 ] ), 0, 4, baseVersion );
+				let transformed = transform( mergeDelta, mergeDeltaB );
+
+				expect( transformed.length ).to.equal( 1 );
+
+				baseVersion = mergeDelta.operations.length;
+
+				expectDelta( transformed[ 0 ], {
+					type: MergeDelta,
+					operations: [
+						{
+							type: MoveOperation,
+							sourcePosition: new Position( root, [ 3, 3, 2, 0 ] ),
+							howMany: 12,
+							targetPosition: new Position( root, [ 3, 3, 1, 4 ] ),
+							baseVersion: baseVersion
+						},
+						{
+							type: RemoveOperation,
+							sourcePosition: new Position( root, [ 3, 3, 2 ] ),
+							howMany: 1
+						}
+					]
+				} );
+
+				// Test if deltas do what they should after applying transformed delta.
+				applyDelta( mergeDeltaB, doc );
+				applyDelta( transformed[ 0 ], doc );
+
+				let nodesAndText = getNodesAndText( Range.createFromPositionAndShift( new Position( root, [ 3, 3, 0 ] ), 2 ) );
+
+				// Both merge deltas are applied and merged nodes children are together in one node.
+				expect( nodesAndText ).to.equal( 'XXXabcdabcfoobarxyzX' );
+			} );
+
+			it( 'merge two consecutive elements, transformed merge is before', () => {
+				mergeDelta = getMergeDelta( new Position( root, [ 3, 3, 2 ] ), 0, 4, baseVersion );
+				let mergeDeltaB = getMergeDelta( new Position( root, [ 3, 3, 3 ] ), 4, 12, baseVersion );
+
+				let transformed = transform( mergeDelta, mergeDeltaB );
+
+				expect( transformed.length ).to.equal( 1 );
+
+				baseVersion = mergeDelta.operations.length;
+
+				expectDelta( transformed[ 0 ], {
+					type: MergeDelta,
+					operations: [
+						{
+							type: MoveOperation,
+							sourcePosition: new Position( root, [ 3, 3, 2, 0 ] ),
+							howMany: 16,
+							targetPosition: new Position( root, [ 3, 3, 1, 0 ] ),
+							baseVersion: baseVersion
+						},
+						{
+							type: RemoveOperation,
+							sourcePosition: new Position( root, [ 3, 3, 2 ] ),
+							howMany: 1
+						}
+					]
+				} );
+
+				// Test if deltas do what they should after applying transformed delta.
+				applyDelta( mergeDeltaB, doc );
+				applyDelta( transformed[ 0 ], doc );
+
+				let nodesAndText = getNodesAndText( Range.createFromPositionAndShift( new Position( root, [ 3, 3, 0 ] ), 2 ) );
+
+				// Both merge deltas are applied and merged nodes children are together in one node.
+				expect( nodesAndText ).to.equal( 'XXXabcdabcfoobarxyzX' );
 			} );
 		} );
 	} );
