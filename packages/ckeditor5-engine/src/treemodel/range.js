@@ -267,7 +267,7 @@ export default class Range {
 	 * `'ELEMENT_END'`, you can use {@link core.treeModel.TreeWalkerValue.previousPosition} as a position before the
 	 * item.
 	 *
-	 * @see {@link core.treeModel.TreeWalker}
+	 * @see core.treeModel.TreeWalker
 	 * @returns {Iterable.<core.treeModel.TreeWalkerValue>}
 	 */
 	*[ Symbol.iterator ]() {
@@ -277,12 +277,11 @@ export default class Range {
 	/**
 	 * Creates a {@link core.treeModel.TreeWalker} instance with this range as a boundary.
 	 *
-	 * @param {Object} options Object with configuration options.
-	 * @param {core.treeModel.Position} [options.startPosition] @see core.treeModel.TreeWalker#startPosition
-	 * @param {Boolean} [options.singleCharacters=false] @see core.treeModel.TreeWalker#singleCharacters
-	 * @param {Boolean} [options.shallow=false] @see core.treeModel.TreeWalker#shallow
-	 * @param {Boolean} [options.ignoreElementEnd=false] @see core.treeModel.TreeWalker#ignoreElementEnd
-	 * @constructor
+	 * @param {Object} options Object with configuration options. See {@link core.treeModel.TreeWalker}.
+	 * @param {core.treeModel.Position} [options.startPosition]
+	 * @param {Boolean} [options.singleCharacters=false]
+	 * @param {Boolean} [options.shallow=false]
+	 * @param {Boolean} [options.ignoreElementEnd=false]
 	 */
 	getWalker( options = {} ) {
 		options.boundaries = this;
@@ -297,10 +296,10 @@ export default class Range {
 	 * we enter into when iterating over this range. Note that it use {@link core.treeModel.TreeWalker} with the
 	 * {@link core.treeModel.TreeWalker#ignoreElementEnd ignoreElementEnd} option set to true.
 	 *
-	 * @param {Object} options Object with configuration options.
-	 * @param {core.treeModel.Position} [options.startPosition] @see core.treeModel.TreeWalker#startPosition
-	 * @param {Boolean} [options.singleCharacters=false] @see core.treeModel.TreeWalker#singleCharacters
-	 * @param {Boolean} [options.shallow=false] @see core.treeModel.TreeWalker#shallow
+	 * @param {Object} options Object with configuration options. See {@link core.treeModel.TreeWalker}.
+	 * @param {core.treeModel.Position} [options.startPosition]
+	 * @param {Boolean} [options.singleCharacters=false]
+	 * @param {Boolean} [options.shallow=false]
 	 * @returns {Iterable.<core.treeModel.Item>}
 	 */
 	*getItems( options = {} ) {
@@ -318,9 +317,9 @@ export default class Range {
 	 * Returns an iterator that iterates over all {@link core.treeModel.Position positions} that are boundaries or
 	 * contained in this range.
 	 *
-	 * @param {Object} options Object with configuration options.
-	 * @param {Boolean} [options.singleCharacters=false] @see core.treeModel.TreeWalker#singleCharacters
-	 * @param {Boolean} [options.shallow=false] @see core.treeModel.TreeWalker#shallow
+	 * @param {Object} options Object with configuration options. See {@link core.treeModel.TreeWalker}.
+	 * @param {Boolean} [options.singleCharacters=false]
+	 * @param {Boolean} [options.shallow=false]
 	 * @returns {Iterable.<core.treeModel.Position>}
 	 */
 	*getPositions( options = {} ) {

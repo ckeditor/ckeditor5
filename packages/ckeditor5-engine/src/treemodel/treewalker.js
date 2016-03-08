@@ -52,7 +52,7 @@ export default class TreeWalker {
 		 *
 		 * If boundaries are not defined they are set before first and after last child of the root node.
 		 *
-		 * @type {core.treeModel.Range}
+		 * @member {core.treeModel.Range} core.treeModel.TreeWalker#boundaries
 		 */
 		this.boundaries = options.boundaries || null;
 
@@ -68,15 +68,15 @@ export default class TreeWalker {
 		 * End boundary cached for optimization purposes.
 		 *
 		 * @private
-		 * @type {core.treeModel.Element}
+		 * @member {core.treeModel.Element} core.treeModel.TreeWalker#_boundaryEndParent
 		 */
 		this._boundaryEndParent = this.boundaries ? this.boundaries.end.parent : null;
 
 		/**
-		 * Iterator position. This is alway static position, even if the initial position was a
+		 * Iterator position. This is always static position, even if the initial position was a
 		 * {@link core.treeModel.LivePosition live position}.
 		 *
-		 * @type {core.treeModel.Position}
+		 * @member {core.treeModel.Position} core.treeModel.TreeWalker#position
 		 */
 		this.position = options.startPosition ?
 			Position.createFromPosition( options.startPosition ) :
@@ -86,7 +86,7 @@ export default class TreeWalker {
 		 * Flag indicating whether all consecutive characters with the same attributes should be
 		 * returned as one {@link core.treeModel.CharacterProxy} (`true`) or one by one (`false`).
 		 *
-		 * @type {Boolean}
+		 * @member {Boolean} core.treeModel.TreeWalker#singleCharacters
 		 */
 		this.singleCharacters = !!options.singleCharacters;
 
@@ -94,7 +94,7 @@ export default class TreeWalker {
 		 * Flag indicating whether iterator should enter elements or not. If the iterator is shallow child nodes of any
 		 * iterated node will not be returned along with `ELEMENT_END` tag.
 		 *
-		 * @type {Boolean}
+		 * @member {Boolean} core.treeModel.TreeWalker#shallow
 		 */
 		this.shallow = !!options.shallow;
 
@@ -104,7 +104,7 @@ export default class TreeWalker {
 		 * be returned once, while if the option is `false` they might be returned twice:
 		 * for `'ELEMENT_START'` and `'ELEMENT_END'`.
 		 *
-		 * @type {Boolean}
+		 * @member {Boolean} core.treeModel.TreeWalker#ignoreElementEnd
 		 */
 		this.ignoreElementEnd = !!options.ignoreElementEnd;
 
@@ -112,7 +112,7 @@ export default class TreeWalker {
 		 * Parent of the most recently visited node. Cached for optimization purposes.
 		 *
 		 * @private
-		 * @type {core.treeModel.Element}
+		 * @member {core.treeModel.Element} core.treeModel.TreeWalker#_visitedParent
 		 */
 		this._visitedParent = this.position.parent;
 	}
@@ -141,8 +141,8 @@ export default class TreeWalker {
 			return { done: true };
 		}
 
-		// Parent can't be null so by comparing with boundaryParent we check if boundaryParent is set at all.
-		if ( parent == this._boundaryEndParent && position.offset == this.boundaries.end.offset ) {
+		// We reached the walker boundary.
+		if ( parent === this._boundaryEndParent && position.offset == this.boundaries.end.offset ) {
 			return { done: true };
 		}
 
@@ -182,6 +182,7 @@ export default class TreeWalker {
 				return formatReturnValue( 'TEXT', textFragment, previousPosition, position, charactersCount );
 			}
 		} else {
+			// `node` is not set, we reached the end of current `parent`.
 			position.path.pop();
 			position.offset++;
 			this.position = position;
