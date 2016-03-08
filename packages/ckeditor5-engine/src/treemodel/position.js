@@ -188,6 +188,7 @@ export default class Position {
 	 * Returns this position after being updated by removing `howMany` nodes starting from `deletePosition`.
 	 * It may happen that this position is in a removed node. If that is the case, `null` is returned instead.
 	 *
+	 * @protected
 	 * @param {core.treeModel.Position} deletePosition Position before the first removed node.
 	 * @param {Number} howMany How many nodes are removed.
 	 * @returns {core.treeModel.Position|null} Transformed position or `null`.
@@ -204,10 +205,11 @@ export default class Position {
 			// If nodes are removed from the node that is pointed by this position...
 			if ( deletePosition.offset < this.offset ) {
 				// And are removed from before an offset of that position...
-				// Decrement the offset accordingly.
 				if ( deletePosition.offset + howMany > this.offset ) {
-					transformed.offset = deletePosition.offset;
+					// Position is in removed range, it's no longer in the tree.
+					return null;
 				} else {
+					// Decrement the offset accordingly.
 					transformed.offset -= howMany;
 				}
 			}
@@ -215,7 +217,7 @@ export default class Position {
 			// If nodes are removed from a node that is on a path to this position...
 			const i = deletePosition.path.length - 1;
 
-			if ( deletePosition.offset < this.path[ i ] ) {
+			if ( deletePosition.offset <= this.path[ i ] ) {
 				// And are removed from before next node of that path...
 				if ( deletePosition.offset + howMany > this.path[ i ] ) {
 					// If the next node of that path is removed return null
@@ -234,6 +236,7 @@ export default class Position {
 	/**
 	 * Returns this position after being updated by inserting `howMany` nodes at `insertPosition`.
 	 *
+	 * @protected
 	 * @param {core.treeModel.Position} insertPosition Position where nodes are inserted.
 	 * @param {Number} howMany How many nodes are inserted.
 	 * @param {Boolean} insertBefore Flag indicating whether nodes are inserted before or after `insertPosition`.
@@ -271,28 +274,31 @@ export default class Position {
 	}
 
 	/**
-	 * Returns this position after being updated by moving `howMany` attributes from `sourcePosition` to `targetPosition`.
+	 * Returns this position after being updated by moving `howMany` nodes from `sourcePosition` to `targetPosition`.
 	 *
+	 * @protected
 	 * @param {core.treeModel.Position} sourcePosition Position before the first element to move.
 	 * @param {core.treeModel.Position} targetPosition Position where moved elements will be inserted.
 	 * @param {Number} howMany How many consecutive nodes to move, starting from `sourcePosition`.
 	 * @param {Boolean} insertBefore Flag indicating whether moved nodes are pasted before or after `insertPosition`.
 	 * This is important only when `targetPosition` and this position are same. If that is the case and the flag is
 	 * set to `true`, this position will get transformed by range insertion. If the flag is set to `false`, it won't.
+	 * @param {Boolean} [sticky] Flag indicating whether this position "sticks" to range, that is if it should be moved
+	 * with the moved range if it is equal to one of range's boundaries.
 	 * @returns {core.treeModel.Position} Transformed position.
 	 */
-	getTransformedByMove( sourcePosition, targetPosition, howMany, insertBefore ) {
+	getTransformedByMove( sourcePosition, targetPosition, howMany, insertBefore, sticky ) {
 		// Moving a range removes nodes from their original position. We acknowledge this by proper transformation.
 		let transformed = this.getTransformedByDeletion( sourcePosition, howMany );
 
-		if ( transformed !== null ) {
-			// This position is not inside a removed node.
-			// Next step is to reflect pasting nodes, which might further affect the position.
-			transformed = transformed.getTransformedByInsertion( targetPosition, howMany, insertBefore );
-		} else {
-			// This position is inside a removed node. In this case, we are unable to simply transform it by range insertion.
-			// Instead, we calculate a combination of this position, move source position and target position.
+		if ( transformed === null || ( transformed.isEqual( sourcePosition ) && sticky ) ) {
+			// This position is inside moved range (or sticks to it).
+			// In this case, we calculate a combination of this position, move source position and target position.
 			transformed = this._getCombined( sourcePosition, targetPosition );
+		} else {
+			// This position is not inside a removed range.
+			// In next step, we simply reflect inserting `howMany` nodes, which might further affect the position.
+			transformed = transformed.getTransformedByInsertion( targetPosition, howMany, insertBefore );
 		}
 
 		return transformed;
@@ -301,7 +307,7 @@ export default class Position {
 	/**
 	 * Checks whether this position is after given position.
 	 *
-	 * **Note:** see {@link core.treeModel.Position#isBefore}.
+	 * @see core.treeModel.Position#isBefore
 	 *
 	 * @param {core.treeModel.Position} otherPosition Position to compare with.
 	 * @returns {Boolean} True if this position is after given position.
@@ -318,25 +324,25 @@ export default class Position {
 	 * `a.isAfter( b ) || a.isEqual( b )` or `!a.isBefore( p ) && a.root == b.root` in most scenarios. If your
 	 * condition uses multiple `isAfter` and `isBefore` checks, build them so they do not use negated values, i.e.:
 	 *
-	 *  if ( a.isBefore( b ) && c.isAfter( d ) ) {
-	 *    // do A.
-	 *  } else {
-	 *    // do B.
-	 *  }
+	 *		if ( a.isBefore( b ) && c.isAfter( d ) ) {
+	 *			// do A.
+	 *		} else {
+	 *			// do B.
+	 *		}
 	 *
 	 * or, if you have only one if-branch:
 	 *
-	 *  if ( !( a.isBefore( b ) && c.isAfter( d ) ) {
-	 *    // do B.
-	 *  }
+	 *		if ( !( a.isBefore( b ) && c.isAfter( d ) ) {
+	 *			// do B.
+	 *		}
 	 *
 	 * rather than:
 	 *
-	 *  if ( !a.isBefore( b ) || && !c.isAfter( d ) ) {
-	 *    // do B.
-	 *  } else {
-	 *    // do A.
-	 *  }
+	 *		if ( !a.isBefore( b ) || && !c.isAfter( d ) ) {
+	 *			// do B.
+	 *		} else {
+	 *			// do A.
+	 *		}
 	 *
 	 * @param {core.treeModel.Position} otherPosition Position to compare with.
 	 * @returns {Boolean} True if this position is before given position.

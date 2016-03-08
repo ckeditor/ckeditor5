@@ -14,6 +14,9 @@ import Range from '/ckeditor5/core/treemodel/range.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
 import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
+import MoveDelta from '/ckeditor5/core/treemodel/delta/movedelta.js';
+import MoveOperation from '/ckeditor5/core/treemodel/operation/moveoperation.js';
+
 const getNodesAndText = treeModelTestUtils.getNodesAndText;
 
 describe( 'Batch', () => {
@@ -63,6 +66,83 @@ describe( 'Batch', () => {
 			chain = batch.move( div, new Position( root, [ 1, 3 ] ) );
 
 			expect( chain ).to.equal( batch );
+		} );
+	} );
+} );
+
+describe( 'MoveDelta', () => {
+	let moveDelta, doc, root;
+
+	beforeEach( () => {
+		doc = new Document();
+		root = doc.createRoot( 'root' );
+		moveDelta = new MoveDelta();
+	} );
+
+	describe( 'constructor', () => {
+		it( 'should create move delta with no operations added', () => {
+			expect( moveDelta.operations.length ).to.equal( 0 );
+		} );
+	} );
+
+	describe( 'sourcePosition', () => {
+		it( 'should be null if there are no operations in delta', () => {
+			expect( moveDelta.sourcePosition ).to.be.null;
+		} );
+
+		it( 'should be equal to the position where node is inserted', () => {
+			moveDelta.operations.push( new MoveOperation( new Position( root, [ 1, 1 ] ), 2, new Position( root, [ 2, 2 ] ), 0 ) );
+
+			expect( moveDelta.sourcePosition.root ).to.equal( root );
+			expect( moveDelta.sourcePosition.path ).to.deep.equal( [ 1, 1 ] );
+		} );
+	} );
+
+	describe( 'howMany', () => {
+		it( 'should be null if there are no operations in delta', () => {
+			expect( moveDelta.howMany ).to.be.null;
+		} );
+
+		it( 'should be equal to the position where node is inserted', () => {
+			moveDelta.operations.push( new MoveOperation( new Position( root, [ 1, 1 ] ), 2, new Position( root, [ 2, 2 ] ), 0 ) );
+
+			expect( moveDelta.howMany ).to.equal( 2 );
+		} );
+	} );
+
+	describe( 'targetPosition', () => {
+		it( 'should be null if there are no operations in delta', () => {
+			expect( moveDelta.targetPosition ).to.be.null;
+		} );
+
+		it( 'should be equal to the move operation\'s target position', () => {
+			moveDelta.operations.push( new MoveOperation( new Position( root, [ 1, 1 ] ), 2, new Position( root, [ 2, 2 ] ), 0 ) );
+
+			expect( moveDelta.targetPosition.root ).to.equal( root );
+			expect( moveDelta.targetPosition.path ).to.deep.equal( [ 2, 2 ] );
+		} );
+	} );
+
+	describe( 'getReversed', () => {
+		it( 'should return empty MoveDelta if there are no operations in delta', () => {
+			let reversed = moveDelta.getReversed();
+
+			expect( reversed ).to.be.instanceof( MoveDelta );
+			expect( reversed.operations.length ).to.equal( 0 );
+		} );
+
+		it( 'should return correct MoveDelta', () => {
+			moveDelta.operations.push( new MoveOperation( new Position( root, [ 1, 1 ] ), 2, new Position( root, [ 2, 2 ] ), 0 ) );
+
+			let reversed = moveDelta.getReversed();
+
+			expect( reversed ).to.be.instanceof( MoveDelta );
+			expect( reversed.operations.length ).to.equal( 1 );
+
+			expect( reversed.operations[ 0 ] ).to.be.instanceof( MoveOperation );
+			expect( reversed.operations[ 0 ].sourcePosition.path ).to.deep.equal( [ 2, 2 ] );
+			expect( reversed.operations[ 0 ].howMany ).to.equal( 2 );
+			expect( reversed.operations[ 0 ].targetPosition.path ).to.deep.equal( [ 1, 1 ] );
 		} );
 	} );
 } );

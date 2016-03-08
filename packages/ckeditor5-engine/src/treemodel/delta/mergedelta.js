@@ -6,7 +6,8 @@
 'use strict';
 
 import Delta from './delta.js';
-import { register } from '../batch-base.js';
+import SplitDelta from './splitdelta.js';
+import { register } from '../batch.js';
 import Position from '../position.js';
 import Element from '../element.js';
 import RemoveOperation from '../operation/removeoperation.js';
@@ -20,7 +21,38 @@ import CKEditorError from '../../ckeditorerror.js';
  *
  * @memberOf core.treeModel.delta
  */
-export default class MergeDelta extends Delta {}
+export default class MergeDelta extends Delta {
+	/**
+	 * Position between to merged nodes or `null` if the delta has no operations.
+	 *
+	 * @type {core.treeModel.Position|null}
+	 */
+	get position() {
+		return this._removeOperation ? this._removeOperation.sourcePosition : null;
+	}
+
+	/**
+	 * Operation in this delta that removes the node after merge position (which will be empty at that point) or
+	 * `null` if the delta has no operations. Note, that after {@link core.treeModel.delta.transform transformation}
+	 * this might be an instance of {@link core.treeModel.operation.MoveOperation} instead of
+	 * {@link core.treeModel.operation.RemoveOperation}.
+	 *
+	 * @protected
+	 * @type {core.treeModel.operation.MoveOperation|null}
+	 */
+	get _removeOperation() {
+		return this.operations[ 1 ] || null;
+	}
+
+	/**
+	 * @see core.treeModel.delta.Delta#_reverseDeltaClass
+	 * @protected
+	 * @type {Object}
+	 */
+	get _reverseDeltaClass() {
+		return SplitDelta;
+	}
+}
 
 /**
  * Merges two siblings at the given position.

@@ -5,8 +5,8 @@
 
 'use strict';
 
-import Delta from './delta.js';
-import { register } from '../batch-base.js';
+import InsertDelta from './insertdelta.js';
+import { register } from '../batch.js';
 import InsertOperation from '../operation/insertoperation.js';
 import NodeList from '../nodelist.js';
 
@@ -17,7 +17,7 @@ import NodeList from '../nodelist.js';
  *
  * @memberOf core.treeModel.delta
  */
-export default class WeakInsertDelta extends Delta {}
+export default class WeakInsertDelta extends InsertDelta {}
 
 /**
  * Inserts a node or nodes at the given position. {@link core.treeModel.Batch#weakInsert weakInsert} is commonly used for actions
@@ -25,10 +25,10 @@ export default class WeakInsertDelta extends Delta {}
  * {@link core.treeModel.Batch#insert insert} and {@link core.treeModel.Batch#weakInsert weakInsert}:
  * * When using `weakInsert`, inserted nodes will have same attributes as the current attributes of
  * {@link core.treeModel.Document#selection document selection}.
- * * The above has to be reflected during {@link core.treeModel.operation.transform operational transformation}. Normal
- * behavior is that inserting inside range changed by {@link core.treeModel.operation.AttributeOperation AttributeOperation} splits
+ * * Normal behavior is that inserting inside range changed by {@link core.treeModel.operation.AttributeOperation AttributeOperation} splits
  * the operation into two operations, which "omit" the inserted nodes. The correct behavior for `WeakInsertDelta` is that
  * {@link core.treeModel.operation.AttributeOperation AttributeOperation} does not "break" and also applies attributes for inserted nodes.
+ * The above has to be reflected during {@link core.treeModel.operation.transform operational transformation}.
  *
  * @chainable
  * @method core.treeModel.Batch#weakInsert

@@ -32,6 +32,16 @@ describe( 'RemoveOperation', () => {
 		expect( op.type ).to.equal( 'remove' );
 	} );
 
+	it( 'should not be sticky', () => {
+		const op = new RemoveOperation(
+			new Position( root, [ 2 ] ),
+			2,
+			doc.version
+		);
+
+		expect( op.isSticky ).to.be.false;
+	} );
+
 	it( 'should extend MoveOperation class', () => {
 		let operation = new RemoveOperation(
 			new Position( root, [ 2 ] ),

@@ -22,7 +22,7 @@ export default class LivePosition extends Position {
 	/**
 	 * Creates a live position.
 	 *
-	 * @see @link core.treeModel.Position
+	 * @see core.treeModel.Position
 	 * @param {core.treeModel.RootElement} root
 	 * @param {Array.<Number>} path
 	 * @param {core.treeModel.PositionStickiness} [stickiness] Defaults to `'STICKS_TO_NEXT'`. See
@@ -69,7 +69,7 @@ export default class LivePosition extends Position {
 	/**
 	 * @static
 	 * @method core.treeModel.LivePosition.createAfter
-	 * @see {@link core.treeModel.Position#createAfter}
+	 * @see core.treeModel.Position.createAfter
 	 * @param {core.treeModel.Node} node
 	 * @returns {core.treeModel.LivePosition}
 	 */
@@ -77,7 +77,7 @@ export default class LivePosition extends Position {
 	/**
 	 * @static
 	 * @method core.treeModel.LivePosition.createBefore
-	 * @see {@link core.treeModel.Position#createBefore}
+	 * @see core.treeModel.Position.createBefore
 	 * @param {core.treeModel.Node} node
 	 * @returns {core.treeModel.LivePosition}
 	 */
@@ -85,7 +85,7 @@ export default class LivePosition extends Position {
 	/**
 	 * @static
 	 * @method core.treeModel.LivePosition.createFromParentAndOffset
-	 * @see {@link core.treeModel.Position#createFromParentAndOffset}
+	 * @see core.treeModel.Position.createFromParentAndOffset
 	 * @param {core.treeModel.Element} parent
 	 * @param {Number} offset
 	 * @returns {core.treeModel.LivePosition}
@@ -94,7 +94,7 @@ export default class LivePosition extends Position {
 	/**
 	 * @static
 	 * @method core.treeModel.LivePosition.createFromPosition
-	 * @see {@link core.treeModel.Position#createFromPosition}
+	 * @see core.treeModel.Position.createFromPosition
 	 * @param {core.treeModel.Position} position
 	 * @returns {core.treeModel.LivePosition}
 	 */

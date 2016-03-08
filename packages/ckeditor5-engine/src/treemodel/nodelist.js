@@ -20,7 +20,7 @@ import CKEditorError from '../ckeditorerror.js';
  */
 class NodeListText extends Text {
 	/**
-	 * @see {@link core.treeModel.Text#constructor}
+	 * @see core.treeModel.Text#constructor
 	 * @protected
 	 * @constructor
 	 */
@@ -94,7 +94,7 @@ export default class NodeList {
 	 *		nodeListA === nodeListB // true
 	 *		nodeListB.length // 3
 	 *
-	 * @see {@link core.treeModel.NodeSet} for more explanation.
+	 * @see core.treeModel.NodeSet
 	 *
 	 * @param {core.treeModel.NodeSet} nodes List of nodes.
 	 * @constructor

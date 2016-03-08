@@ -5,6 +5,11 @@
 
 'use strict';
 
+// Load all basic deltas and transformations, they register themselves, but they need to be imported somewhere.
+import deltas from './delta/basic-deltas.js';
+import transformations from './delta/basic-transformations.js';
+/*jshint unused: false*/
+
 import RootElement from './rootelement.js';
 import Batch from './batch.js';
 import Selection from './selection.js';

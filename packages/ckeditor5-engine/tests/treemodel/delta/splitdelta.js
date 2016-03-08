@@ -12,6 +12,13 @@ import Position from '/ckeditor5/core/treemodel/position.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
 import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
+import MergeDelta from '/ckeditor5/core/treemodel/delta/mergedelta.js';
+import SplitDelta from '/ckeditor5/core/treemodel/delta/splitdelta.js';
+
+import InsertOperation from '/ckeditor5/core/treemodel/operation/insertoperation.js';
+import MoveOperation from '/ckeditor5/core/treemodel/operation/moveoperation.js';
+import RemoveOperation from '/ckeditor5/core/treemodel/operation/removeoperation.js';
+
 describe( 'Batch', () => {
 	let doc, root, p;
 
@@ -83,3 +90,78 @@ describe( 'Batch', () => {
 		} );
 	} );
 } );
+
+describe( 'SplitDelta', () => {
+	let splitDelta, doc, root;
+
+	beforeEach( () => {
+		doc = new Document();
+		root = doc.createRoot( 'root' );
+		splitDelta = new SplitDelta();
+	} );
+
+	describe( 'constructor', () => {
+		it( 'should create split delta with no operations added', () => {
+			expect( splitDelta.operations.length ).to.equal( 0 );
+		} );
+	} );
+
+	describe( 'position', () => {
+		it( 'should be null if there are no operations in delta', () => {
+			expect( splitDelta.position ).to.be.null;
+		} );
+
+		it( 'should be equal to the position where node is split', () => {
+			splitDelta.operations.push( new InsertOperation( new Position( root, [ 1, 2 ] ), new Element( 'p' ), 0 ) );
+			splitDelta.operations.push( new MoveOperation( new Position( root, [ 1, 1, 4 ] ), 4, new Position( root, [ 1, 2, 0 ] ), 1 ) );
+
+			expect( splitDelta.position.root ).to.equal( root );
+			expect( splitDelta.position.path ).to.deep.equal( [ 1, 1, 4 ] );
+		} );
+	} );
+
+	describe( 'getReversed', () => {
+		it( 'should return empty MergeDelta if there are no operations in delta', () => {
+			let reversed = splitDelta.getReversed();
+
+			expect( reversed ).to.be.instanceof( MergeDelta );
+			expect( reversed.operations.length ).to.equal( 0 );
+		} );
+
+		it( 'should return correct SplitDelta', () => {
+			splitDelta.operations.push( new InsertOperation( new Position( root, [ 1, 2 ] ), new Element( 'p' ), 0 ) );
+			splitDelta.operations.push( new MoveOperation( new Position( root, [ 1, 1, 4 ] ), 4, new Position( root, [ 1, 2, 0 ] ), 1 ) );
+
+			let reversed = splitDelta.getReversed();
+
+			expect( reversed ).to.be.instanceof( MergeDelta );
+			expect( reversed.operations.length ).to.equal( 2 );
+
+			expect( reversed.operations[ 0 ] ).to.be.instanceof( MoveOperation );
+			expect( reversed.operations[ 0 ].sourcePosition.path ).to.deep.equal( [ 1, 2, 0 ] );
+			expect( reversed.operations[ 0 ].howMany ).to.equal( 4 );
+			expect( reversed.operations[ 0 ].targetPosition.path ).to.deep.equal( [ 1, 1, 4 ] );
+
+			expect( reversed.operations[ 1 ] ).to.be.instanceof( RemoveOperation );
+			expect( reversed.operations[ 1 ].sourcePosition.path ).to.deep.equal( [ 1, 2 ] );
+			expect( reversed.operations[ 1 ].howMany ).to.equal( 1 );
+		} );
+	} );
+
+	describe( '_cloneOperation', () => {
+		it( 'should return null if delta has no operations', () => {
+			expect( splitDelta._cloneOperation ).to.be.null;
+		} );
+
+		it( 'should return the first operation in the delta, which is InsertOperation or ReinsertOperation', () => {
+			let p = new Element( 'p' );
+			splitDelta.operations.push( new InsertOperation( new Position( root, [ 1, 2 ] ), p, 0 ) );
+			splitDelta.operations.push( new MoveOperation( new Position( root, [ 1, 1, 4 ] ), 4, new Position( root, [ 1, 2, 0 ] ), 1 ) );
+
+			expect( splitDelta._cloneOperation ).to.be.instanceof( InsertOperation );
+			expect( splitDelta._cloneOperation.nodeList.get( 0 ) ).to.equal( p );
+			expect( splitDelta._cloneOperation.position.path ).to.deep.equal( [ 1, 2 ] );
+		} );
+	} );
+} );
+

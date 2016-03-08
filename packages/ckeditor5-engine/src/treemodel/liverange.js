@@ -45,7 +45,7 @@ export default class LiveRange extends Range {
 	}
 
 	/**
-	 * @see {@link core.treeModel.Range#createFromElement}
+	 * @see core.treeModel.Range.createFromElement
 	 * @static
 	 * @method core.treeModel.LiveRange.createFromElement
 	 * @param {core.treeModel.Element} element
@@ -53,7 +53,7 @@ export default class LiveRange extends Range {
 	 */
 
 	/**
-	 * @see {@link core.treeModel.Range#createFromPositionAndShift}
+	 * @see core.treeModel.Range.createFromPositionAndShift
 	 * @static
 	 * @method core.treeModel.LiveRange.createFromPositionAndShift
 	 * @param {core.treeModel.Position} position
@@ -62,7 +62,7 @@ export default class LiveRange extends Range {
 	 */
 
 	/**
-	 * @see {@link core.treeModel.Range#createFromParentsAndOffsets}
+	 * @see core.treeModel.Range.createFromParentsAndOffsets
 	 * @static
 	 * @method core.treeModel.LiveRange.createFromParentsAndOffsets
 	 * @param {core.treeModel.Element} startElement
@@ -73,7 +73,7 @@ export default class LiveRange extends Range {
 	 */
 
 	/**
-	 * @see {@link core.treeModel.Range#createFromRange}
+	 * @see core.treeModel.Range.createFromRange
 	 * @static
 	 * @method core.treeModel.LiveRange.createFromRange
 	 * @param {core.treeModel.Range} range

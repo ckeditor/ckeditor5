@@ -360,9 +360,19 @@ describe( 'Range', () => {
 			expect( transformed[ 0 ].end.path[ 0 ] ).to.equal( 6 );
 		} );
 
-		it( 'should return array with two ranges and updated positions if insertion was in the middle of range', () => {
+		it( 'should expand range if insertion was in the middle of range', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 5, 4 ] ) );
-			const transformed = range.getTransformedByInsertion( new Position( root, [ 4, 1, 6 ] ), 4 );
+			const transformed = range.getTransformedByInsertion( new Position( root, [ 5, 0 ] ), 4 );
+
+			expect( transformed.length ).to.equal( 1 );
+
+			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
+			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 5, 8 ] );
+		} );
+
+		it( 'should return array with two ranges if insertion was in the middle of range and spread flag was set', () => {
+			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 5, 4 ] ) );
+			const transformed = range.getTransformedByInsertion( new Position( root, [ 4, 1, 6 ] ), 4, true );
 
 			expect( transformed.length ).to.equal( 2 );
 
@@ -373,9 +383,49 @@ describe( 'Range', () => {
 			expect( transformed[ 1 ].end.path ).to.deep.equal( [ 5, 4 ] );
 		} );
 
-		it( 'should not updated positions if insertion is after range', () => {
+		it( 'should not expand range if insertion is equal to start boundary of the range', () => {
+			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 8 ] ) );
+			const transformed = range.getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 3 );
+
+			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 5 ] );
+			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 3, 11 ] );
+		} );
+
+		it( 'should expand range if insertion is equal to start boundary of the range and sticky flag is set', () => {
+			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 8 ] ) );
+			const transformed = range.getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 3, false, true );
+
+			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
+			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 3, 11 ] );
+		} );
+
+		it( 'should not update positions if insertion is before range (but not equal to the start boundary)', () => {
+			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 8 ] ) );
+			const transformed = range.getTransformedByInsertion( new Position( root, [ 3, 1 ] ), 3 );
+
+			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 5 ] );
+			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 3, 11 ] );
+		} );
+
+		it( 'should not expand range if insertion is equal to end boundary of the range', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 4, 4 ] ) );
 			const transformed = range.getTransformedByInsertion( new Position( root, [ 4, 4 ] ), 3 );
+
+			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
+			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 4, 4 ] );
+		} );
+
+		it( 'should expand range if insertion is equal to end boundary of the range and sticky flag is set', () => {
+			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 4, 4 ] ) );
+			const transformed = range.getTransformedByInsertion( new Position( root, [ 4, 4 ] ), 3, false, true );
+
+			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
+			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 4, 7 ] );
+		} );
+
+		it( 'should not update positions if insertion is after range (but not equal to the end boundary)', () => {
+			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 4, 4 ] ) );
+			const transformed = range.getTransformedByInsertion( new Position( root, [ 4, 5 ] ), 3 );
 
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 4, 4 ] );

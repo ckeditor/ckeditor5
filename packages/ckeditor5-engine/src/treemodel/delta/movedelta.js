@@ -6,7 +6,7 @@
 'use strict';
 
 import Delta from './delta.js';
-import { register } from '../batch-base.js';
+import { register } from '../batch.js';
 import MoveOperation from '../operation/moveoperation.js';
 import Position from '../position.js';
 import Range from '../range.js';
@@ -19,7 +19,61 @@ import CKEditorError from '../../ckeditorerror.js';
  *
  * @memberOf core.treeModel.delta
  */
-export default class MoveDelta extends Delta {}
+export default class MoveDelta extends Delta {
+	/**
+	 * How many nodes are moved by the delta or `null` if there are no operations in the delta.
+	 *
+	 * @type {Number|null}
+	 */
+	get howMany() {
+		return this._moveOperation ? this._moveOperation.howMany : null;
+	}
+
+	/**
+	 * {@link core.treeModel.delta.MoveDelta#_moveOperation Move operation}
+	 * {@link core.treeModel.operation.MoveOperation#sourcePosition source position} or `null` if there are
+	 * no operations in the delta.
+	 *
+	 * @type {core.treeModel.Position|null}
+	 */
+	get sourcePosition() {
+		return this._moveOperation ? this._moveOperation.sourcePosition : null;
+	}
+
+	/**
+	 * {@link core.treeModel.delta.MoveDelta#_moveOperation Move operation}
+	 * {@link core.treeModel.operation.MoveOperation#targetPosition target position} or `null` if there are
+	 * no operations in the delta.
+	 *
+	 * @type {core.treeModel.Position|null}
+	 */
+	get targetPosition() {
+		return this._moveOperation ? this._moveOperation.targetPosition : null;
+	}
+
+	/**
+	 * Move operation that is saved in this delta or `null` if there are no operations in the delta.
+	 *
+	 * @protected
+	 * @type {core.treeModel.operation.MoveOperation|null}
+	 */
+	get _moveOperation() {
+		return this.operations[ 0 ] || null;
+	}
+
+	/**
+	 * @see core.treeModel.delta.Delta#_reverseDeltaClass
+	 * @private
+	 * @type {Object}
+	 */
+	get _reverseDeltaClass() {
+		return MoveDelta;
+	}
+
+	static get _priority() {
+		return 20;
+	}
+}
 
 function addMoveOperation( batch, delta, sourcePosition, howMany, targetPosition ) {
 	const operation = new MoveOperation( sourcePosition, howMany, targetPosition, batch.doc.version );

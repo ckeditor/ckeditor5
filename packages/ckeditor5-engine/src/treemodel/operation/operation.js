@@ -5,6 +5,8 @@
 
 'use strict';
 
+import clone from '../../lib/lodash/clone.js';
+
 /**
  * Abstract base operation class.
  *
@@ -70,5 +72,20 @@ export default class Operation {
 		 * @returns {Object} Object with additional information about the applied changes. Always has `range`
 		 * property containing changed nodes. May have additional properties depending on the operation type.
 		 */
+	}
+
+	/**
+	 * Custom toJSON method to solve child-parent circular dependencies.
+	 *
+	 * @method core.treeModel.operation.Operation#toJSON
+	 * @returns {Object} Clone of this object with the delta property replaced with string.
+	 */
+	toJSON() {
+		const json = clone( this );
+
+		// Due to circular references we need to remove parent reference.
+		json.delta = this.delta ? '[core.treeModel.Delta]' : null;
+
+		return json;
 	}
 }

@@ -36,6 +36,10 @@ describe( 'ReinsertOperation', () => {
 		expect( operation.type ).to.equal( 'reinsert' );
 	} );
 
+	it( 'should not be sticky', () => {
+		expect( operation.isSticky ).to.be.false;
+	} );
+
 	it( 'should extend MoveOperation class', () => {
 		expect( operation ).to.be.instanceof( MoveOperation );
 	} );
