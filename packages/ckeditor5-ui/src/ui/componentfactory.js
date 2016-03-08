@@ -74,7 +74,7 @@ export default class ComponentFactory {
 		const component = this._components.get( name );
 
 		const model = component.model;
-		const view = new component.ViewClass( model );
+		const view = new component.ViewClass( model, this.editor.locale );
 		const controller = new component.ControllerClass( model, view, this.editor );
 
 		return controller;

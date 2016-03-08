@@ -15,8 +15,8 @@ import View from '../ui/view.js';
  */
 
 export default class EditorUIView extends View {
-	constructor( model ) {
-		super( model );
+	constructor( model, locale ) {
+		super( model, locale );
 
 		this._createBodyRegion();
 
