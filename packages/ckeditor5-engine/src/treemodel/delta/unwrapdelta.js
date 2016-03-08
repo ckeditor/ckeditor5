@@ -7,7 +7,7 @@
 
 import Delta from './delta.js';
 import WrapDelta from './wrapdelta.js';
-import { register } from '../batch-base.js';
+import { register } from '../batch.js';
 import Position from '../position.js';
 import RemoveOperation from '../operation/removeoperation.js';
 import MoveOperation from '../operation/moveoperation.js';

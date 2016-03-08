@@ -5,77 +5,23 @@
 
 'use strict';
 
-import arrayUtils from '../../../lib/lodash/array.js';
-import { addTransformationCase, getTransformationCase, defaultTransform } from './transform-api.js';
+import { addTransformationCase, defaultTransform } from './transform.js';
 
-import Range from '../../range.js';
+import Range from '../range.js';
 
-import AttributeOperation from '../../operation/attributeoperation.js';
+import AttributeOperation from '../operation/attributeoperation.js';
 
-import Delta from '../delta.js';
-import AttributeDelta from '../attributedelta.js';
-import InsertDelta from '../insertdelta.js';
-import MergeDelta from '../mergedelta.js';
-import MoveDelta from '../movedelta.js';
-import SplitDelta from '../splitdelta.js';
-import WeakInsertDelta from '../weakinsertdelta.js';
-import WrapDelta from '../wrapdelta.js';
-import UnwrapDelta from '../unwrapdelta.js';
+import Delta from './delta.js';
+import AttributeDelta from './attributedelta.js';
+import InsertDelta from './insertdelta.js';
+import MergeDelta from './mergedelta.js';
+import MoveDelta from './movedelta.js';
+import SplitDelta from './splitdelta.js';
+import WeakInsertDelta from './weakinsertdelta.js';
+import WrapDelta from './wrapdelta.js';
+import UnwrapDelta from './unwrapdelta.js';
 
-import utils from '../../../utils.js';
-
-/**
- * @namespace core.treeModel.delta.transform
- */
-
-/**
- * Transforms given {@link core.treeModel.delta.Delta delta} by another {@link core.treeModel.delta.Delta delta} and
- * returns the result of that transformation as an array containing one or more {@link core.treeModel.delta.Delta delta}
- * instances.
- *
- * Delta transformations heavily base on {@link core.treeModel.operation.transform operational transformations}. Since
- * delta is a list of operations most situations can be handled thanks to operational transformation. Unfortunately,
- * deltas are more complicated than operations and have they semantic meaning, as they represent user's editing intentions.
- *
- * Sometimes, simple operational transformation on deltas' operations might result in some unexpected results. Those
- * results would be fine from OT point of view, but would not reflect user's intentions. Because of such conflicts
- * we need to handle transformations in special cases in a custom way.
- *
- * The function itself looks whether two given delta types have a special case function registered. If so, the deltas are
- * transformed using that function. If not, {@link core.treeModel.delta.defaultTransform default transformation algorithm}
- * is used.
- *
- * @see core.treeModel.operation.transform
- *
- * @external core.treeModel.delta.transform
- * @function core.treeModel.delta.transform.transform
- * @param {core.treeModel.delta.Delta} a Delta that will be transformed.
- * @param {core.treeModel.delta.Delta} b Delta to transform by.
- * @param {Boolean} isAMoreImportantThanB Flag indicating whether the delta which will be transformed (`a`) should be treated
- * as more important when resolving conflicts. Note that this flag is used only if provided deltas have same
- * {@link core.treeModel.delta.priorities priority}. If deltas have different priorities, their importance is resolved
- * automatically and overwrites this flag.
- * @returns {Array.<core.treeModel.delta.Delta>} Result of the transformation.
- */
-export default function transform( a, b, isAMoreImportantThanB ) {
-	const transformAlgorithm = getTransformationCase( a, b ) || defaultTransform;
-
-	const transformed = transformAlgorithm( a, b, isAMoreImportantThanB );
-	const baseVersion = arrayUtils.last( b.operations ).baseVersion;
-
-	return updateBaseVersion( baseVersion, transformed );
-}
-
-// Updates base versions of operations inside deltas (which are the results of delta transformation).
-function updateBaseVersion( baseVersion, deltas ) {
-	for ( let delta of deltas ) {
-		for ( let op of delta.operations ) {
-			op.baseVersion = ++baseVersion;
-		}
-	}
-
-	return deltas;
-}
+import utils from '../../utils.js';
 
 // Provide transformations for default deltas.
 

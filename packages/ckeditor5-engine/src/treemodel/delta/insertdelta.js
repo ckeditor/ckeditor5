@@ -7,7 +7,7 @@
 
 import Delta from './delta.js';
 import RemoveDelta from './removedelta.js';
-import { register } from '../batch-base.js';
+import { register } from '../batch.js';
 import InsertOperation from '../operation/insertoperation.js';
 
 /**

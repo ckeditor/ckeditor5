@@ -7,7 +7,7 @@
 
 import Delta from './delta.js';
 import UnwrapDelta from './unwrapdelta.js';
-import { register } from '../batch-base.js';
+import { register } from '../batch.js';
 import Position from '../position.js';
 import Range from '../range.js';
 import Element from '../element.js';

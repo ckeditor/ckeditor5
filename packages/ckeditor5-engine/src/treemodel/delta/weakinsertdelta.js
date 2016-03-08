@@ -6,7 +6,7 @@
 'use strict';
 
 import InsertDelta from './insertdelta.js';
-import { register } from '../batch-base.js';
+import { register } from '../batch.js';
 import InsertOperation from '../operation/insertoperation.js';
 import NodeList from '../nodelist.js';
 

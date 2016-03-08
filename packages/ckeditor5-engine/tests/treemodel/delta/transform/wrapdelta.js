@@ -7,7 +7,10 @@
 
 'use strict';
 
-import transform from '/ckeditor5/core/treemodel/delta/transform/transform.js';
+import transformations from '/ckeditor5/core/treemodel/delta/basic-transformations.js';
+/*jshint unused: false*/
+
+import transform from '/ckeditor5/core/treemodel/delta/transform.js';
 
 import Element from '/ckeditor5/core/treemodel/element.js';
 import Position from '/ckeditor5/core/treemodel/position.js';

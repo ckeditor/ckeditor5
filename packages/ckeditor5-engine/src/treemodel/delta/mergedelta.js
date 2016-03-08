@@ -7,7 +7,7 @@
 
 import Delta from './delta.js';
 import SplitDelta from './splitdelta.js';
-import { register } from '../batch-base.js';
+import { register } from '../batch.js';
 import Position from '../position.js';
 import Element from '../element.js';
 import RemoveOperation from '../operation/removeoperation.js';

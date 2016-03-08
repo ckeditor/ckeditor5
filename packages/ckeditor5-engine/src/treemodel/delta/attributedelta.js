@@ -4,8 +4,9 @@
  */
 
 'use strict';
+
 import Delta from './delta.js';
-import { register } from '../batch-base.js';
+import { register } from '../batch.js';
 import AttributeOperation from '../operation/attributeoperation.js';
 import Position from '../position.js';
 import Range from '../range.js';
