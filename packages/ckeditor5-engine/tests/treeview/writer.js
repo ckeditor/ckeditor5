@@ -55,6 +55,13 @@ describe( 'Writer', () => {
 	 * @param {Object} description Object describing expected element and its children.
 	 */
 	function test( writer, location, node, description ) {
+		// If no root node provided - iterate over node array.
+		if ( description instanceof Array && node instanceof Array ) {
+			node.forEach( ( n, i ) => {
+				test( writer, location, n, description[ i ] );
+			} );
+		}
+
 		if ( description.instanceOf ) {
 			expect( node ).to.be.instanceof( description.instanceOf );
 		}
@@ -762,6 +769,26 @@ describe( 'Writer', () => {
 	} );
 
 	describe( 'insert', () => {
+		it( 'should return collapsed range in insertion position when using empty array', () => {
+			// <p>{foo|bar}</p> -> <p>{foo[]bar}</p>
+			const created = create( writer, {
+				instanceOf: Element,
+				name: 'p',
+				children: [
+					{ instanceOf: Text, data: 'foobar', position: 3 }
+				]
+			} );
+
+			const newRange = writer.insert( created.position, [] );
+			test( writer, newRange, created.node, {
+				instanceOf: Element,
+				name: 'p',
+				children: [
+					{ instanceOf: Text, data: 'foobar', rangeStart: 3, rangeEnd: 3 }
+				]
+			} );
+		} );
+
 		it( 'should insert text into another text node', () => {
 			// <p>{foo|bar}</p> insert {baz}
 			// <p>{foo[baz]bar}</p>
@@ -1032,12 +1059,14 @@ describe( 'Writer', () => {
 			} ).to.throw( 'treeview-writer-invalid-range' );
 		} );
 
-		it( 'should return same range when range is collapsed', () => {
+		it( 'should return empty array when range is collapsed', () => {
 			const p = new Element( 'p' );
 			const range = Range.createFromParentsAndOffsets( p, 0, p, 0 );
-			const newRange = writer.remove( range );
+			const nodes = writer.remove( range );
 
-			expect( newRange.isEqual( range ) ).to.be.true;
+			expect( nodes ).to.be.array;
+			expect( nodes.length ).to.equal( 0 );
+			expect( range.isCollapsed ).to.be.true;
 		} );
 
 		it( 'should remove single text node', () => {
@@ -1052,13 +1081,18 @@ describe( 'Writer', () => {
 				]
 			} );
 
-			const newPosition = writer.remove( created.range );
-			test( writer, newPosition, created.node, {
+			const removed = writer.remove( created.range );
+			test( writer, created.range.start, created.node, {
 				instanceOf: Element,
 				name: 'p',
 				position: 0,
 				children: []
 			} );
+
+			// Test removed nodes.
+			test( writer, null, removed, [
+				{ instanceOf: Text, data: 'foobar' }
+			] );
 		} );
 
 		it( 'should not leave empty text nodes', () => {
@@ -1071,13 +1105,18 @@ describe( 'Writer', () => {
 				]
 			} );
 
-			const newPosition = writer.remove( created.range );
-			test( writer, newPosition, created.node, {
+			const removed = writer.remove( created.range );
+			test( writer, created.range.start, created.node, {
 				instanceOf: Element,
 				name: 'p',
 				position: 0,
 				children: []
 			} );
+
+			// Test removed nodes.
+			test( writer, null, removed, [
+				{ instanceOf: Text, data: 'foobar' }
+			] );
 		} );
 
 		it( 'should remove part of the text node', () => {
@@ -1090,14 +1129,19 @@ describe( 'Writer', () => {
 				]
 			} );
 
-			const newPosition = writer.remove( created.range );
-			test( writer, newPosition, created.node, {
+			const removed = writer.remove( created.range );
+			test( writer, created.range.start, created.node, {
 				instanceOf: Element,
 				name: 'p',
 				children: [
 					{ instanceOf: Text, data: 'far', position: 1 }
 				]
 			} );
+
+			// Test removed nodes.
+			test( writer, null, removed, [
+				{ instanceOf: Text, data: 'oob' }
+			] );
 		} );
 
 		it( 'should remove parts of nodes', () => {
@@ -1118,8 +1162,8 @@ describe( 'Writer', () => {
 				]
 			} );
 
-			const newPosition = writer.remove( created.range );
-			test( writer, newPosition, created.node, {
+			const removed = writer.remove( created.range );
+			test( writer, created.range.start, created.node, {
 				instanceOf: Element,
 				name: 'p',
 				position: 1,
@@ -1135,9 +1179,22 @@ describe( 'Writer', () => {
 					}
 				]
 			} );
+
+			// Test removed nodes.
+			test( writer, null, removed, [
+				{ instanceOf: Text, data: 'oo' },
+				{
+					instanceOf: Element,
+					priority: 1,
+					name: 'b',
+					children: [
+						{ instanceOf: Text, data: 'ba' }
+					]
+				}
+			] );
 		} );
 
-		it( 'should merge arfer removing #1', () => {
+		it( 'should merge after removing #1', () => {
 			// <p><b>foo</b>[{bar}]<b>bazqux</b></p> -> <p><b>foo|bazqux</b></p>
 			const created = create( writer, {
 				instanceOf: Element,
@@ -1165,8 +1222,8 @@ describe( 'Writer', () => {
 				]
 			} );
 
-			const newPosition = writer.remove( created.range );
-			test( writer, newPosition, created.node, {
+			const removed = writer.remove( created.range );
+			test( writer, created.range.start, created.node, {
 				instanceOf: Element,
 				name: 'p',
 				children: [
@@ -1180,9 +1237,14 @@ describe( 'Writer', () => {
 					}
 				]
 			} );
+
+			// Test removed nodes.
+			test( writer, null, removed, [
+				{ instanceOf: Text, data: 'bar' }
+			] );
 		} );
 
-		it( 'should merge arfer removing #2', () => {
+		it( 'should merge after removing #2', () => {
 			// <p><b>fo[o</b>{bar}<b>ba]zqux</b></p> -> <p><b>fo|zqux</b></p>
 			const created = create( writer, {
 				instanceOf: Element,
@@ -1208,8 +1270,8 @@ describe( 'Writer', () => {
 				]
 			} );
 
-			const newPosition = writer.remove( created.range );
-			test( writer, newPosition, created.node, {
+			const removed = writer.remove( created.range );
+			test( writer, created.range.start, created.node, {
 				instanceOf: Element,
 				name: 'p',
 				children: [
@@ -1223,14 +1285,64 @@ describe( 'Writer', () => {
 					}
 				]
 			} );
+
+			// Test removed nodes.
+			test( writer, null, removed, [
+				{
+					instanceOf: Element,
+					priority: 1,
+					name: 'b',
+					children: [
+						{ instanceOf: Text, data: 'o' }
+					]
+				},
+				{ instanceOf: Text, data: 'bar' },
+				{
+					instanceOf: Element,
+					priority: 1,
+					name: 'b',
+					children: [
+						{ instanceOf: Text, data: 'ba' }
+					]
+				}
+			] );
+		} );
+	} );
+
+	describe( 'move', () => {
+		it( 'should move nodes using remove and insert methods', () => {
+			// <p>[{foobar}]</p>
+			// Move to <div>|</div>
+			// <div>[{foobar}]</div>
+			const source = create( writer, {
+				instanceOf: Element,
+				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 1,
+				children: [
+					{ instanceOf: Text, data: 'foobar' }
+				]
+			} );
+			const target = create( writer, {
+				instanceOf: Element,
+				name: 'div',
+				position: 0
+			} );
+
+			const removeSpy = sinon.spy( writer, 'remove' );
+			const insertSpy = sinon.spy( writer, 'insert' );
+
+			const newRange = writer.move( source.range, target.position );
+
+			sinon.assert.calledOnce( removeSpy );
+			sinon.assert.calledWithExactly( removeSpy, source.range );
+			sinon.assert.calledOnce( insertSpy );
+			sinon.assert.calledWithExactly( insertSpy, target.position, removeSpy.firstCall.returnValue );
+			expect( newRange ).to.equal( insertSpy.firstCall.returnValue );
 		} );
 	} );
 
 	describe( 'wrap', () => {
-		// TODO: tests - different priorities
-		// TODO: tests - empty containers left
-		// TODO: merge with elements outside range at the ends
-
 		it( 'should do nothing on collapsed ranges', () => {
 			const description = {
 				instanceOf: Element,
