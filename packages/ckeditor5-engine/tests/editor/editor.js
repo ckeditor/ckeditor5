@@ -204,12 +204,12 @@ describe( 'execute', () => {
 		const editor = new Editor( element );
 
 		let command = new Command( editor );
-		sinon.spy( command, '_execute' );
+		sinon.spy( command, 'execute' );
 
 		editor.commands.set( 'command_name', command );
 		editor.execute( 'command_name' );
 
-		expect( command._execute.calledOnce ).to.be.true;
+		expect( command.execute.calledOnce ).to.be.true;
 	} );
 
 	it( 'should throw an error if specified command has not been added', () => {

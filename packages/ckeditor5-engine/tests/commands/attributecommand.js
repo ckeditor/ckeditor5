@@ -51,7 +51,7 @@ describe( 'value', () => {
 	} );
 } );
 
-describe( '_execute', () => {
+describe( '_doExecute', () => {
 	let p;
 
 	beforeEach( () => {
@@ -67,7 +67,7 @@ describe( '_execute', () => {
 
 		expect( command.value ).to.be.false;
 
-		command._execute();
+		command._doExecute();
 
 		expect( command.value ).to.be.true;
 		expect( p.getChild( 1 ).hasAttribute( attrKey ) ).to.be.true;
@@ -79,7 +79,7 @@ describe( '_execute', () => {
 
 		expect( command.value ).to.be.true;
 
-		command._execute();
+		command._doExecute();
 
 		expect( command.value ).to.be.false;
 		expect( p.getChild( 3 ).hasAttribute( attrKey ) ).to.be.false;
@@ -92,7 +92,7 @@ describe( '_execute', () => {
 
 		expect( command.value ).to.be.true;
 
-		command._execute( true );
+		command._doExecute( true );
 
 		expect( command.value ).to.be.true;
 		expect( p.getChild( 9 ).hasAttribute( attrKey ) ).to.be.true;
@@ -103,7 +103,7 @@ describe( '_execute', () => {
 
 		expect( command.value ).to.be.false;
 
-		command._execute( false );
+		command._doExecute( false );
 
 		expect( command.value ).to.be.false;
 		expect( p.getChild( 3 ).hasAttribute( attrKey ) ).to.be.false;
@@ -115,12 +115,12 @@ describe( '_execute', () => {
 
 		expect( command.value ).to.be.false;
 
-		command._execute();
+		command._doExecute();
 
 		expect( command.value ).to.be.true;
 		expect( modelDoc.selection.hasAttribute( 'bold' ) ).to.be.true;
 
-		command._execute();
+		command._doExecute();
 
 		expect( command.value ).to.be.false;
 		expect( modelDoc.selection.hasAttribute( 'bold' ) ).to.be.false;
@@ -128,7 +128,7 @@ describe( '_execute', () => {
 
 	it( 'should not store attribute change on selection if selection is collapsed in non-empty parent', () => {
 		modelDoc.selection.addRange( new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 1 ] ) ) );
-		command._execute();
+		command._doExecute();
 
 		// It should not save that bold was executed at position ( root, [ 0, 1 ] ).
 
@@ -146,7 +146,7 @@ describe( '_execute', () => {
 
 		expect( command.value ).to.be.false;
 
-		command._execute();
+		command._doExecute();
 
 		expect( command.value ).to.be.true;
 		expect( modelDoc.selection.hasAttribute( 'bold' ) ).to.be.true;
@@ -163,7 +163,7 @@ describe( '_execute', () => {
 		// Attribute should be restored.
 		expect( command.value ).to.be.true;
 
-		command._execute();
+		command._doExecute();
 
 		expect( command.value ).to.be.false;
 		expect( modelDoc.selection.hasAttribute( 'bold' ) ).to.be.false;
@@ -174,7 +174,7 @@ describe( '_execute', () => {
 		modelDoc.on( 'change', spy );
 
 		modelDoc.selection.removeAllRanges();
-		command._execute();
+		command._doExecute();
 
 		expect( spy.called ).to.be.false;
 		expect( Array.from( modelDoc.selection.getAttributes() ) ).to.deep.equal( [ ] );
@@ -187,7 +187,7 @@ describe( '_execute', () => {
 
 		expect( command.isEnabled ).to.be.true;
 
-		command._execute();
+		command._doExecute();
 
 		let expectedHas = [ 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0 ];
 

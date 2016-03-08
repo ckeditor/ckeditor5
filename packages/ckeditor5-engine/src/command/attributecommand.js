@@ -110,7 +110,7 @@ export default class AttributeCommand extends Command {
 	 * @param {Boolean} [forceValue] If set it will force command behavior. If `true`, command will apply attribute,
 	 * otherwise command will remove attribute. If not set, command will look for it's current value to decide what it should do.
 	 */
-	_execute( forceValue ) {
+	_doExecute( forceValue ) {
 		const document = this.editor.document;
 		const selection = document.selection;
 		const value = ( forceValue === undefined ) ? !this.value : forceValue;

@@ -79,9 +79,9 @@ export default class Command {
 	 * @protected
 	 * @param {*} param Parameter passed to {@link core.command.Command#execute execute} method of this command.
 	 */
-	doExecute( param ) {
+	execute( param ) {
 		if ( this.isEnabled ) {
-			this._execute( param );
+			this._doExecute( param );
 		}
 	}
 
@@ -114,7 +114,7 @@ export default class Command {
 	 *
 	 * @private
 	 */
-	_execute() {
+	_doExecute() {
 	}
 }
 

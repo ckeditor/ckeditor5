@@ -142,22 +142,22 @@ describe( 'enable', () => {
 	} );
 } );
 
-describe( 'doExecute', () => {
+describe( 'execute', () => {
 	it( 'should not execute command if it is disabled', () => {
 		command._disable();
 
-		sinon.spy( command, '_execute' );
+		sinon.spy( command, '_doExecute' );
 
-		command.doExecute();
+		command.execute();
 
-		expect( command._execute.called ).to.be.false;
+		expect( command._doExecute.called ).to.be.false;
 	} );
 
 	it( 'should execute command if it is enabled', () => {
-		sinon.spy( command, '_execute' );
+		sinon.spy( command, '_doExecute' );
 
-		command.doExecute();
+		command.execute();
 
-		expect( command._execute.called ).to.be.true;
+		expect( command._doExecute.called ).to.be.true;
 	} );
 } );
