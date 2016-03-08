@@ -40,7 +40,7 @@ export default class Locale {
 		 *		const t = this.t;
 		 *		t( 'Label' );
 		 *
-		 * @method t
+		 * @method core.Locale#t
 		 * @param {String} str The string to translate.
 		 * @param {String[]} values Values that should be used to interpolate the string.
 		 */

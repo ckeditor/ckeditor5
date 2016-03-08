@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals console */
+/* global console */
 
 'use strict';
 
@@ -15,19 +15,21 @@
  * code size of a minified CKEditor package. During minification process the messages will be shortened and
  * links to their documentation will be logged to the console.
  *
- * All errors and warning should be documented in the following way (note that block comment should be used instead of `//`):
+ * All errors and warning should be documented in the following way:
  *
- *		// Error thrown when a plugin cannot be loaded due to JavaScript errors, lack of plugins with a given name, etc.
- *		//
- *		// @error plugin-load
- *		// @param pluginName The name of the plugin that could not be loaded.
- *		// @param moduleName The name of the module which tried to load this plugin.
+ *		/**
+ *		 * Error thrown when a plugin cannot be loaded due to JavaScript errors, lack of plugins with a given name, etc.
+ *		 *
+ *		 * @error plugin-load
+ *		 * @param pluginName The name of the plugin that could not be loaded.
+ *		 * @param moduleName The name of the module which tried to load this plugin.
+ *		 * /
  *		log.error( 'plugin-load: It was not possible to load the "{$pluginName}" plugin in module "{$moduleName}', {
  *			pluginName: 'foo',
  *			moduleName: 'bar'
  *		} );
  *
- * ## Warning vs Error vs Throw
+ * ### Warning vs Error vs Throw
  *
  * * Whenever a potentially incorrect situation occurs, which does not directly lead to an incorrect behavior,
  * log a warning.
