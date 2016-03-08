@@ -74,7 +74,7 @@ export default class Collection {
 	 * @param {Object} item
 	 * @param {Number} [index] The position of the item in the collection. The item
 	 * is pushed to the collection when `index` not specified.
-	 * @fires {@link core.Collection.add add}
+	 * @fires core.Collection#add
 	 */
 	add( item, index ) {
 		let itemId;
@@ -156,7 +156,7 @@ export default class Collection {
 	 *
 	 * @param {Object|Number|String} subject The item to remove, its id or index in the collection.
 	 * @returns {Object} The removed item.
-	 * @fires {@link core.Collection.remove remove}
+	 * @fires core.Collection#remove
 	 */
 	remove( subject ) {
 		let index, id, item;
@@ -270,13 +270,13 @@ utils.mix( Collection, EmitterMixin );
 /**
  * Fired when an item is added to the collection.
  *
- * @event core.Collection.add
+ * @event core.Collection#add
  * @param {Object} item The added item.
  */
 
 /**
  * Fired when an item is removed from the collection.
  *
- * @event core.Collection.remove
+ * @event core.Collection#remove
  * @param {Object} item The removed item.
  */
