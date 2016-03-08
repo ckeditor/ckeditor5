@@ -198,26 +198,26 @@ export default class Document {
 	 *
 	 * There are 5 types of change:
 	 *
-	 * * 'insert' when nodes are inserted,
-	 * * 'remove' when nodes are removed,
-	 * * 'reinsert' when remove is undone,
-	 * * 'move' when nodes are moved,
-	 * * 'attribute' when attributes change. TODO attribute
+	 * * `'insert'` when nodes are inserted,
+	 * * `'remove'` when nodes are removed,
+	 * * `'reinsert'` when remove is undone,
+	 * * `'move'` when nodes are moved,
+	 * * `'attribute'` when attributes change. TODO attribute
 	 *
 	 * Change event is fired after the change is done. This means that any ranges or positions passed in
 	 * `changeInfo` are referencing nodes and paths in updated tree model.
 	 *
-	 * @event core.treeModel.Document.change
-	 * @param {String} type Change type, possible option: 'insert', 'remove', 'reinsert', 'move', 'attribute'.
+	 * @event core.treeModel.Document#change
+	 * @param {String} type Change type, possible option: `'insert'`, `'remove'`, `'reinsert'`, `'move'`, `'attribute'`.
 	 * @param {Object} changeInfo Additional information about the change.
-	 * @param {core.treeModel.Range} changeInfo.range Range containing changed nodes. Note that for 'remove' the range will be in the
+	 * @param {core.treeModel.Range} changeInfo.range Range containing changed nodes. Note that for `'remove'` the range will be in the
 	 * {@link core.treeModel.Document#graveyard graveyard root}.
-	 * @param {core.treeModel.Position} [changeInfo.sourcePosition] Change source position. Exists for 'remove', 'reinsert' and 'move'.
+	 * @param {core.treeModel.Position} [changeInfo.sourcePosition] Change source position. Exists for `'remove'`, `'reinsert'` and `'move'`.
 	 * Note that for 'reinsert' the source position will be in the {@link core.treeModel.Document#graveyard graveyard root}.
-	 * @param {String} [changeInfo.key] Only for 'attribute' type. Key of changed / inserted / removed attribute.
-	 * @param {*} [changeInfo.oldValue] Only for 'attribute' type. If the type is 'attribute' and `oldValue`
+	 * @param {String} [changeInfo.key] Only for `'attribute'` type. Key of changed / inserted / removed attribute.
+	 * @param {*} [changeInfo.oldValue] Only for `'attribute'` type. If the type is `'attribute'` and `oldValue`
 	 * is `undefined` it means that new attribute was inserted. Otherwise it contains changed or removed attribute value.
-	 * @param {*} [changeInfo.newValue] Only for 'attribute' type. If the type is 'attribute' and `newValue`
+	 * @param {*} [changeInfo.newValue] Only for `'attribute'` type. If the type is `'attribute'` and `newValue`
 	 * is `undefined` it means that attribute was removed. Otherwise it contains changed or inserted attribute value.
 	 * @param {core.treeModel.Batch} batch A {@link core.treeModel.Batch batch} of changes which this change is a part of.
 	 */
@@ -225,7 +225,7 @@ export default class Document {
 	/**
 	 * Fired when all queued document changes are done. See {@link core.treeModel.Document#enqueueChanges}.
 	 *
-	 * @event core.treeModel.Document.changesDone
+	 * @event core.treeModel.Document#changesDone
 	 */
 }
 

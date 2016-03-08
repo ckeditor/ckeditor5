@@ -16,6 +16,7 @@ import CKEditorError from '../ckeditorerror.js';
  *
  * @protected
  * @memberOf core.treeModel
+ * @extends core.treeModel.Text
  */
 class NodeListText extends Text {
 	/**
@@ -353,8 +354,8 @@ export default class NodeList {
 	 * to split text objects whenever there are some changes made on a part of text object (i.e. removing part of text,
 	 * inserting between text object, changing attributes of part of a text object).
 	 *
-	 * @param {Number} index Index in the node list at which node should be broken.
 	 * @protected
+	 * @param {Number} index Index in the node list at which node should be broken.
 	 */
 	_splitNodeAt( index ) {
 		if ( this._indexMap[ index ] != this._indexMap[ index - 1 ] || this._indexMap.length === 0 ) {

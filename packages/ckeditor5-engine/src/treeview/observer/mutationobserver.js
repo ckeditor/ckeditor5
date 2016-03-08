@@ -101,8 +101,8 @@ export default class MutationObserver extends Observer {
 	/**
 	 * Handles mutations. Deduplicates, mark view elements to sync, fire event and call render.
 	 *
-	 * @method core.treeView.observer.MutationObserver#_onMutations
 	 * @protected
+	 * @method core.treeView.observer.MutationObserver#_onMutations
 	 * @param {Array.<Object>} domMutations Array of native mutations.
 	 */
 	_onMutations( domMutations ) {
@@ -183,9 +183,7 @@ export default class MutationObserver extends Observer {
  * Fired when mutation occurred. If tree view is not changed on this event, DOM will be reverter to the state before
  * mutation, so all changes which should be applied, should be handled on this event.
  *
- * @event mutations
- * @memberOf core.treeView.TreeView
- *
+ * @event core.treeView.TreeView#mutations
  * @param {Array.<core.treeView.TreeView~MutatatedText|core.treeView.TreeView~MutatatedChildren>} viewMutations
  * Array of mutations.
  * For mutated texts it will be {@link core.treeView.TreeView~MutatatedText} and for mutated elements it will be

@@ -118,7 +118,7 @@ export default class Node {
 	/**
 	 * @param {core.treeView.ChangeType} type Type of the change.
 	 * @param {core.treeView.Node} node Changed node.
-	 * @fires {@link core.treeView.Node#change change event}.
+	 * @fires core.treeView.Node#change
 	 */
 	_fireChange( type, node ) {
 		this.fire( 'change', type, node );

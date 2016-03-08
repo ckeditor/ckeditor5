@@ -21,9 +21,9 @@ export default class Element extends Node {
 	 *
 	 * Attributes can be passes in various formats:
 	 *
-	 *        new Element( 'div', { 'class': 'editor', 'contentEditable': 'true' } ); // object
-	 *        new Element( 'div', [ [ 'class', 'editor' ], [ 'contentEditable', 'true' ] ] ); // map-like iterator
-	 *        new Element( 'div', mapOfAttributes ); // map
+	 *		new Element( 'div', { 'class': 'editor', 'contentEditable': 'true' } ); // object
+	 *		new Element( 'div', [ [ 'class', 'editor' ], [ 'contentEditable', 'true' ] ] ); // map-like iterator
+	 *		new Element( 'div', mapOfAttributes ); // map
 	 *
 	 * @param {String} name Node name.
 	 * @param {Object|Iterable} [attrs] Collection of attributes.
@@ -70,7 +70,7 @@ export default class Element extends Node {
 	 * the parent of these nodes to this element.
 	 *
 	 * @param {core.treeView.Node|Iterable.<core.treeView.Node>} nodes Node or the list of nodes to be inserted.
-	 * @fires {@link core.treeView.Node#change change event}
+	 * @fires core.treeView.Node#change
 	 */
 	appendChildren( nodes ) {
 		this.insertChildren( this.getChildCount(), nodes );
@@ -146,10 +146,9 @@ export default class Element extends Node {
 	/**
 	 * Adds or overwrite attribute with a specified key and value.
 	 *
-	 *
 	 * @param {String} key Attribute key.
 	 * @param {String} value Attribute value.
-	 * @fires {@link core.treeView.Node#change change event}
+	 * @fires core.treeView.Node#change
 	 */
 	setAttribute( key, value ) {
 		this._fireChange( 'ATTRIBUTES', this );
@@ -161,10 +160,9 @@ export default class Element extends Node {
 	 * Inserts a child node or a list of child nodes on the given index and sets the parent of these nodes to
 	 * this element.
 	 *
-	 *
 	 * @param {Number} index Position where nodes should be inserted.
 	 * @param {core.treeView.Node|Iterable.<core.treeView.Node>} nodes Node or the list of nodes to be inserted.
-	 * @fires {@link core.treeView.Node#change change event}.
+	 * @fires core.treeView.Node#change
 	 */
 	insertChildren( index, nodes ) {
 		this._fireChange( 'CHILDREN', this );
@@ -186,7 +184,7 @@ export default class Element extends Node {
 	 *
 	 * @param {String} key Attribute key.
 	 * @returns {Boolean} Returns true if an attribute existed and has been removed.
-	 * @fires {@link core.treeView.Node#change change event}
+	 * @fires core.treeView.Node#change
 	 */
 	removeAttribute( key ) {
 		this._fireChange( 'ATTRIBUTES', this );
@@ -197,11 +195,10 @@ export default class Element extends Node {
 	/**
 	 * Removes number of child nodes starting at the given index and set the parent of these nodes to `null`.
 	 *
-	 *
 	 * @param {Number} index Number of the first node to remove.
 	 * @param {Number} number Number of nodes to remove.
 	 * @returns {Array.<core.treeView.Node>} The array of removed nodes.
-	 * @fires {@link core.treeView.Node#change change event}
+	 * @fires core.treeView.Node#change
 	 */
 	removeChildren( index, number ) {
 		this._fireChange( 'CHILDREN', this );

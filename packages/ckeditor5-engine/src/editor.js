@@ -24,9 +24,10 @@ export default class Editor {
 	 * Creates a new instance of the Editor class.
 	 *
 	 * This constructor should be rarely used. When creating new editor instance use instead the
-	 * {@link CKEDITOR#create CKEDITOR.create() method}.
+	 * {@link CKEDITOR#create `CKEDITOR.create()` method}.
 	 *
 	 * @param {HTMLElement} element The DOM element that will be the source for the created editor.
+	 * @param {Object} config The editor config.
 	 */
 	constructor( element, config ) {
 		/**
@@ -34,7 +35,7 @@ export default class Editor {
 		 * editor creation and is not subject to be modified.
 		 *
 		 * @readonly
-		 * @member {HTMLElement}
+		 * @member {HTMLElement} core.Editor#element
 		 */
 		this.element = element;
 
@@ -46,7 +47,7 @@ export default class Editor {
 		 * instance itself.
 		 *
 		 * @readonly
-		 * @member {Config}
+		 * @member {core.Config} core.Editor#config
 		 */
 		this.config = config = new EditorConfig( config );
 
@@ -54,7 +55,7 @@ export default class Editor {
 		 * The plugins loaded and in use by this editor instance.
 		 *
 		 * @readonly
-		 * @member {PluginCollection}
+		 * @member {core.PluginCollection} core.Editor#plugins
 		 */
 		this.plugins = new PluginCollection( this );
 
@@ -68,7 +69,7 @@ export default class Editor {
 		 * Shorthand for {@link core.Locale#t}.
 		 *
 		 * @see core.Locale#t
-		 * @method t
+		 * @method core.Editor#t
 		 */
 		this.t = this.locale.t;
 
@@ -146,7 +147,7 @@ export default class Editor {
 	 * Destroys the editor instance, releasing all resources used by it. If the editor replaced an element, the
 	 * element will be recovered.
 	 *
-	 * @fires {@link core.Editor.destroy destroy}
+	 * @fires core.Editor#destroy
 	 * @returns {Promise} A promise that resolves once the editor instance is fully destroyed.
 	 */
 	destroy() {
@@ -179,8 +180,7 @@ utils.mix( Editor, ObservableMixin );
  * Fired when this editor instance is destroyed. The editor at this point is not usable and this event should be used to
  * perform the clean-up in any plugin.
  *
- * @memberOf core.Editor
- * @event destroy
+ * @event core.Editor#destroy
  */
 
 /**

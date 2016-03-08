@@ -11,8 +11,8 @@ import CKEditorError from '../ckeditorerror.js';
 /**
  * Manages UI Controllers.
  *
- * @class ControllerCollection
- * @extends Collection
+ * @memberOf core.ui
+ * @extends core.Collection
  */
 export default class ControllerCollection extends Collection {
 	/**
@@ -33,14 +33,14 @@ export default class ControllerCollection extends Collection {
 		/**
 		 * Name of this collection.
 		 *
-		 * @type {String}
+		 * @member {String} core.ui.ControllerCollection#name
 		 */
 		this.name = name;
 
 		/**
 		 * Parent controller of this collection.
 		 *
-		 * @type {core.ui.Controller}
+		 * @member {core.ui.Controller} core.ui.ControllerCollection#parent
 		 */
 		this.parent = null;
 	}

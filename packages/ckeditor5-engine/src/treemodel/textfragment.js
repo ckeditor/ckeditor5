@@ -23,9 +23,9 @@ export default class TextFragment {
 	/**
 	 * Creates a text fragment.
 	 *
+	 * @protected
 	 * @param {core.treeModel.CharacterProxy} firstCharacter First character node contained in {@link core.treeModel.TextFragment}.
 	 * @param {Number} length Whole text contained in {@link core.treeModel.TextFragment}.
-	 * @protected
 	 * @constructor
 	 */
 	constructor( firstCharacter, length ) {

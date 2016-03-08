@@ -49,7 +49,7 @@ export default class View {
 		 * Note: If locale instance hasn't been passed to the view this method may not be available.
 		 *
 		 * @see core.Locale#t
-		 * @method t
+		 * @method core.ui.View#t
 		 */
 		this.t = locale && locale.t;
 

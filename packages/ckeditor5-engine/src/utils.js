@@ -16,7 +16,7 @@ const utils = {
 	 *
 	 * The following are the present features:
 	 *
-	 *  * spy.called: property set to `true` if the function has been called at least once.
+	 * * spy.called: property set to `true` if the function has been called at least once.
 	 *
 	 * @memberOf core.utils
 	 * @returns {Function} The spy function.
@@ -60,11 +60,11 @@ const utils = {
 	 * a flag specifying the relation is returned. Flags are negative numbers, so whenever a number >= 0 is returned
 	 * it means that arrays differ.
 	 *
-	 *   compareArrays( [ 0, 2 ], [ 0, 2 ] ); // 'SAME'
-	 *   compareArrays( [ 0, 2 ], [ 0, 2, 1 ] ); // 'PREFIX'
-	 *   compareArrays( [ 0, 2 ], [ 0 ] ); // 'EXTENSION'
-	 *   compareArrays( [ 0, 2 ], [ 1, 2 ] ); // 0
-	 *   compareArrays( [ 0, 2 ], [ 0, 1 ] ); // 1
+	 *		compareArrays( [ 0, 2 ], [ 0, 2 ] );		// 'SAME'
+	 *		compareArrays( [ 0, 2 ], [ 0, 2, 1 ] );		// 'PREFIX'
+	 *		compareArrays( [ 0, 2 ], [ 0 ] );			// 'EXTENSION'
+	 *		compareArrays( [ 0, 2 ], [ 1, 2 ] );		// 0
+	 *		compareArrays( [ 0, 2 ], [ 0, 1 ] );		// 1
 	 *
 	 * @memberOf core.utils
 	 * @param {Array} a Array that is compared.
@@ -218,7 +218,7 @@ const utils = {
 
 /**
  * An index at which arrays differ. If arrays are same at all indexes, it represents how arrays are related.
- * In this case, possible values are: 'SAME', 'PREFIX' or 'EXTENSION'.
+ * In this case, possible values are: `'SAME'`, `'PREFIX'` or `'EXTENSION'`.
  *
  * @memberOf core.utils
  * @typedef {String|Number} ArrayRelation

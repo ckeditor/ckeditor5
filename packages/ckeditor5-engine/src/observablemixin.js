@@ -638,7 +638,7 @@ extend( ObservableMixin, EmitterMixin );
 /**
  * Fired when an attribute changed value.
  *
- * @event change
+ * @event core.ObservableMixin#change
  * @param {String} name The attribute name.
  * @param {*} value The new attribute value.
  * @param {*} oldValue The previous attribute value.
@@ -647,7 +647,7 @@ extend( ObservableMixin, EmitterMixin );
 /**
  * Fired when an specific attribute changed value.
  *
- * @event change:{attribute}
+ * @event core.ObservableMixin#change:{attribute}
  * @param {*} value The new attribute value.
  * @param {*} oldValue The previous attribute value.
  */
