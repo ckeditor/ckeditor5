@@ -7,12 +7,9 @@
 
 'use strict';
 
-import transform from '/ckeditor5/core/treemodel/delta/transform.js';
-
+import transform from '/ckeditor5/core/treemodel/delta/transform/transform.js';
 import Position from '/ckeditor5/core/treemodel/position.js';
-
 import MoveOperation from '/ckeditor5/core/treemodel/operation/moveoperation.js';
-
 import Delta from '/ckeditor5/core/treemodel/delta/delta.js';
 
 import {

@@ -5,30 +5,28 @@
 
 'use strict';
 
-import OT from '../operation/transform.js';
+import arrayUtils from '../../../lib/lodash/array.js';
+import { addTransformationCase, getTransformationCase, defaultTransform } from './transform-api.js';
 
-import Range from '../range.js';
+import Range from '../../range.js';
 
-import AttributeOperation from '../operation/attributeoperation.js';
+import AttributeOperation from '../../operation/attributeoperation.js';
 
-import Delta from './delta.js';
-import AttributeDelta from './attributedelta.js';
-import InsertDelta from './insertdelta.js';
-import MergeDelta from './mergedelta.js';
-import MoveDelta from './movedelta.js';
-import SplitDelta from './splitdelta.js';
-import WeakInsertDelta from './weakinsertdelta.js';
-import WrapDelta from './wrapdelta.js';
-import UnwrapDelta from './unwrapdelta.js';
+import Delta from '../delta.js';
+import AttributeDelta from '../attributedelta.js';
+import InsertDelta from '../insertdelta.js';
+import MergeDelta from '../mergedelta.js';
+import MoveDelta from '../movedelta.js';
+import SplitDelta from '../splitdelta.js';
+import WeakInsertDelta from '../weakinsertdelta.js';
+import WrapDelta from '../wrapdelta.js';
+import UnwrapDelta from '../unwrapdelta.js';
 
-import arrayUtils from '../../lib/lodash/array.js';
-import utils from '../../utils.js';
+import utils from '../../../utils.js';
 
 /**
  * @namespace core.treeModel.delta.transform
  */
-
-const specialCases = new Map();
 
 /**
  * Transforms given {@link core.treeModel.delta.Delta delta} by another {@link core.treeModel.delta.Delta delta} and
@@ -60,23 +58,7 @@ const specialCases = new Map();
  * @returns {Array.<core.treeModel.delta.Delta>} Result of the transformation.
  */
 export default function transform( a, b, isAMoreImportantThanB ) {
-	let transformAlgorithm = defaultTransform;
-
-	let casesA = specialCases.get( a.constructor );
-
-	if ( !casesA ) {
-		const cases = specialCases.keys();
-
-		for ( let caseClass of cases ) {
-			if ( a instanceof caseClass ) {
-				casesA = specialCases.get( caseClass );
-			}
-		}
-	}
-
-	if ( casesA ) {
-		transformAlgorithm = casesA.get( b.constructor ) || transformAlgorithm;
-	}
+	const transformAlgorithm = getTransformationCase( a, b ) || defaultTransform;
 
 	const transformed = transformAlgorithm( a, b, isAMoreImportantThanB );
 	const baseVersion = arrayUtils.last( b.operations ).baseVersion;
@@ -84,127 +66,21 @@ export default function transform( a, b, isAMoreImportantThanB ) {
 	return updateBaseVersion( baseVersion, transformed );
 }
 
-/**
- * The default delta transformation function. It is used for those deltas that are not in special case conflict.
- *
- * This algorithm is similar to popular `dOPT` algorithm used in operational transformation, as we are in fact
- * transforming two sets of operations by each other.
- *
- * @param {core.treeModel.delta.Delta} a Delta that will be transformed.
- * @param {core.treeModel.delta.Delta} b Delta to transform by.
- * @param {Boolean} isAMoreImportantThanB Flag indicating whether the delta which will be transformed (`a`) should be treated
- * as more important when resolving conflicts. Note that this flag is used only if provided deltas have same
- * {@link core.treeModel.delta.priorities priority}. If deltas have different priorities, their importance is resolved
- * automatically and overwrites this flag.
- * @returns {Array.<core.treeModel.delta.Delta>} Result of the transformation, that is an array with single delta instance.
- */
-export function defaultTransform( a, b, isAMoreImportantThanB ) {
-	// First, resolve the flag real value.
-	isAMoreImportantThanB = getPriority( a.constructor, b.constructor, isAMoreImportantThanB );
-
-	// Create a new delta instance. Make sure that the new delta is of same type as transformed delta.
-	// We will transform operations in that delta but it doesn't mean the delta's "meaning" which is connected to
-	// the delta's type. Since the delta's type is heavily used in transformations and probably other parts
-	// of system it is important to keep proper delta type through all transformation process.
-	const transformed = new a.constructor();
-
-	// Array containing operations that we will transform by. At the beginning these are just operations from
-	let byOps = b.operations;
-
-	// This array is storing operations from `byOps` which got transformed by operation from delta `a`.
-	let newByOps = [];
-
-	// We take each operation from original set of operations to transform.
-	for ( let opA of a.operations ) {
-		// We wrap the operation in the array. This is important, because operation transformation algorithm returns
-		// an array of operations so we need to make sure that our algorithm is ready to handle arrays.
-		const ops = [ opA ];
-
-		// Now the real algorithm takes place.
-		for ( let opB of byOps ) {
-			// For each operation that we need transform by...
-			for ( let i = 0; i < ops.length; i++ ) {
-				// We take each operation to transform...
-				const op = ops[ i ];
-
-				// And transform both of them by themselves.
-
-				// The result of transforming operation from delta B by operation from delta A is saved in
-				// `newByOps` array. We will use that array for transformations in next loops. We need delta B
-				// operations after transformed by delta A operations to get correct results of transformations
-				// of next operations from delta A.
-				//
-				// It's like this because 2nd operation from delta A assumes that 1st operation from delta A
-				// is "already applied". When we transform 2nd operation from delta A by operations from delta B
-				// we have to be sure that operations from delta B are in a state that acknowledges 1st operation
-				// from delta A.
-				//
-				// This can be easier understood when operations sets to transform are represented by diamond diagrams:
-				// http://www.codecommit.com/blog/java/understanding-and-applying-operational-transformation
-
-				// Using push.apply because OT function is returning an array with one or multiple results.
-				Array.prototype.push.apply( newByOps, OT( opB, op, !isAMoreImportantThanB ) );
-
-				// Then, we transform operation from delta A by operation from delta B.
-				const results = OT( op, opB, isAMoreImportantThanB );
-
-				// We replace currently processed operation from `ops` array by the results of transformation.
-				// Note, that we process single operation but the OT result might be an array, so we might
-				// splice-in more operations. We will process them further in next iterations. Right now we
-				// just save them in `ops` array and move `i` pointer by proper offset.
-				Array.prototype.splice.apply( ops, [ i, 1 ].concat( results ) );
-
-				i += results.length - 1;
-			}
-
-			// At this point a single operation from delta A got transformed by a single operation from delta B.
-			// The transformation result is in `ops` array and it may be one or more operations. This was just the first step.
-			// Operation from delta A has to be further transformed by the other operations from delta B.
-			// So in next iterator loop we will take another operation from delta B and use transformed delta A (`ops`)
-			// to transform it further.
+// Updates base versions of operations inside deltas (which are the results of delta transformation).
+function updateBaseVersion( baseVersion, deltas ) {
+	for ( let delta of deltas ) {
+		for ( let op of delta.operations ) {
+			op.baseVersion = ++baseVersion;
 		}
-
-		// We got through all delta B operations and have a final transformed state of an operation from delta A.
-
-		// As previously mentioned, we substitute operations from delta B by their transformed equivalents.
-		byOps = newByOps;
-		newByOps = [];
-
-		// We add transformed operation from delta A to newly created delta.
-		// Remember that transformed operation from delta A may consist of multiple operations.
-		for ( let op of ops ) {
-			transformed.addOperation( op );
-		}
-
-		// In next loop, we will take another operation from delta A and transform it through (transformed) operations
-		// from delta B...
 	}
 
-	return [ transformed ];
+	return deltas;
 }
 
-/**
- * Adds a special case callback for given delta classes.
- *
- * @param {Function} A Delta constructor which instance will get transformed.
- * @param {Function} B Delta constructor which instance will be transformed by.
- * @param {Function} resolver A callback that will handle custom special case transformation for instances of given delta classes.
- * @external core.treeModel.delta.transform
- * @function core.treeModel.delta.transform.addSpecialCase
- */
-export function addSpecialCase( A, B, resolver ) {
-	let casesA = specialCases.get( A );
-
-	if ( !casesA ) {
-		casesA = new Map();
-		specialCases.set( A, casesA );
-	}
-
-	casesA.set( B, resolver );
-}
+// Provide transformations for default deltas.
 
 // Add special case for AttributeDelta x WeakInsertDelta transformation.
-addSpecialCase( AttributeDelta, WeakInsertDelta, ( a, b, isStrong ) => {
+addTransformationCase( AttributeDelta, WeakInsertDelta, ( a, b, isStrong ) => {
 	// If nodes are weak-inserted into attribute delta range, we need to apply changes from attribute delta on them.
 	// So first we do the normal transformation and if this special cases happens, we will add an extra delta.
 	const deltas = defaultTransform( a, b, isStrong );
@@ -217,7 +93,7 @@ addSpecialCase( AttributeDelta, WeakInsertDelta, ( a, b, isStrong ) => {
 } );
 
 // Add special case for InsertDelta x MergeDelta transformation.
-addSpecialCase( InsertDelta, MergeDelta, ( a, b, isStrong ) => {
+addTransformationCase( InsertDelta, MergeDelta, ( a, b, isStrong ) => {
 	// If insert is applied at the same position where merge happened, we reverse the merge (we treat it like it
 	// didn't happen) and then apply the original insert operation. This is "mirrored" in MergeDelta x InsertDelta
 	// transformation below, where we simply do not apply MergeDelta.
@@ -232,7 +108,7 @@ addSpecialCase( InsertDelta, MergeDelta, ( a, b, isStrong ) => {
 } );
 
 // Add special case for MoveDelta x MergeDelta transformation.
-addSpecialCase( MoveDelta, MergeDelta, ( a, b, isStrong ) => {
+addTransformationCase( MoveDelta, MergeDelta, ( a, b, isStrong ) => {
 	// If move delta is supposed to move a node that has been merged, we reverse the merge (we treat it like it
 	// didn't happen) and then apply the original move operation. This is "mirrored" in MergeDelta x MoveDelta
 	// transformation below, where we simply do not apply MergeDelta.
@@ -251,7 +127,7 @@ addSpecialCase( MoveDelta, MergeDelta, ( a, b, isStrong ) => {
 } );
 
 // Add special case for MergeDelta x InsertDelta transformation.
-addSpecialCase( MergeDelta, InsertDelta, ( a, b, isStrong ) => {
+addTransformationCase( MergeDelta, InsertDelta, ( a, b, isStrong ) => {
 	// If merge is applied at the same position where we inserted a range of nodes we cancel the merge as it's results
 	// may be unexpected and very weird. Even if we do some "magic" we don't know what really are users' expectations.
 	if ( a.position.isEqual( b.position ) ) {
@@ -264,7 +140,7 @@ addSpecialCase( MergeDelta, InsertDelta, ( a, b, isStrong ) => {
 } );
 
 // Add special case for MergeDelta x MoveDelta transformation.
-addSpecialCase( MergeDelta, MoveDelta, ( a, b, isStrong ) => {
+addTransformationCase( MergeDelta, MoveDelta, ( a, b, isStrong ) => {
 	// If merge is applied at the position between moved nodes we cancel the merge as it's results may be unexpected and
 	// very weird. Even if we do some "magic" we don't know what really are users' expectations.
 
@@ -281,7 +157,7 @@ addSpecialCase( MergeDelta, MoveDelta, ( a, b, isStrong ) => {
 } );
 
 // Add special case for SplitDelta x SplitDelta transformation.
-addSpecialCase( SplitDelta, SplitDelta, ( a, b, isStrong ) => {
+addTransformationCase( SplitDelta, SplitDelta, ( a, b, isStrong ) => {
 	const pathA = a.position.getParentPath();
 	const pathB = b.position.getParentPath();
 
@@ -319,7 +195,7 @@ addSpecialCase( SplitDelta, SplitDelta, ( a, b, isStrong ) => {
 } );
 
 // Add special case for SplitDelta x UnwrapDelta transformation.
-addSpecialCase( SplitDelta, UnwrapDelta, ( a, b, isStrong ) => {
+addTransformationCase( SplitDelta, UnwrapDelta, ( a, b, isStrong ) => {
 	// If incoming split delta tries to split a node that just got unwrapped, there is actually nothing to split,
 	// so we discard that delta.
 	if ( utils.compareArrays( b.position.path, a.position.getParentPath() ) === 'SAME' ) {
@@ -332,7 +208,7 @@ addSpecialCase( SplitDelta, UnwrapDelta, ( a, b, isStrong ) => {
 } );
 
 // Add special case for SplitDelta x WrapDelta transformation.
-addSpecialCase( SplitDelta, WrapDelta, ( a, b, isStrong ) => {
+addTransformationCase( SplitDelta, WrapDelta, ( a, b, isStrong ) => {
 	// If split is applied at the position between wrapped nodes, we cancel the split as it's results may be unexpected and
 	// very weird. Even if we do some "magic" we don't know what really are users' expectations.
 
@@ -349,7 +225,7 @@ addSpecialCase( SplitDelta, WrapDelta, ( a, b, isStrong ) => {
 } );
 
 // Add special case for UnwrapDelta x SplitDelta transformation.
-addSpecialCase( UnwrapDelta, SplitDelta, ( a, b, isStrong ) => {
+addTransformationCase( UnwrapDelta, SplitDelta, ( a, b, isStrong ) => {
 	// If incoming unwrap delta tries to unwrap node that got split we should unwrap the original node and the split copy.
 	// This can be achieved either by reverting split and applying unwrap to singular node, or creating additional unwrap delta.
 	if ( utils.compareArrays( a.position.path, b.position.getParentPath() ) === 'SAME' ) {
@@ -363,7 +239,7 @@ addSpecialCase( UnwrapDelta, SplitDelta, ( a, b, isStrong ) => {
 } );
 
 // Add special case for WeakInsertDelta x AttributeDelta transformation.
-addSpecialCase( WeakInsertDelta, AttributeDelta, ( a, b, isStrong ) => {
+addTransformationCase( WeakInsertDelta, AttributeDelta, ( a, b, isStrong ) => {
 	// If nodes are weak-inserted into attribute delta range, we need to apply changes from attribute delta on them.
 	// So first we do the normal transformation and if this special cases happens, we will add an extra delta.
 	const deltas = defaultTransform( a, b, isStrong );
@@ -376,7 +252,7 @@ addSpecialCase( WeakInsertDelta, AttributeDelta, ( a, b, isStrong ) => {
 } );
 
 // Add special case for WrapDelta x SplitDelta transformation.
-addSpecialCase( WrapDelta, SplitDelta, ( a, b, isStrong ) => {
+addTransformationCase( WrapDelta, SplitDelta, ( a, b, isStrong ) => {
 	// If incoming wrap delta tries to wrap range that contains split position, we have to cancel the split and apply
 	// the wrap. Since split was already applied, we have to revert it.
 
@@ -393,6 +269,7 @@ addSpecialCase( WrapDelta, SplitDelta, ( a, b, isStrong ) => {
 	return defaultTransform( a, b, isStrong );
 } );
 
+// Helper function for `AttributeDelta` class transformations.
 // Creates an attribute delta that sets attribute from given `attributeDelta` on nodes from given `weakInsertDelta`.
 function _getComplementaryAttrDelta( weakInsertDelta, attributeDelta ) {
 	const complementaryAttrDelta = new AttributeDelta();
@@ -436,27 +313,4 @@ function _getComplementaryAttrDelta( weakInsertDelta, attributeDelta ) {
 	complementaryAttrDelta.addOperation( new AttributeOperation( range, attributeDelta.key, val, attributeDelta.value, 0 ) );
 
 	return complementaryAttrDelta;
-}
-
-// Checks priorities of passed constructors and decides which one is more important.
-// If both priorities are same, value passed in `isAMoreImportantThanB` parameter is used.
-function getPriority( A, B, isAMoreImportantThanB ) {
-	if ( A._priority > B._priority ) {
-		return true;
-	} else if ( A._priority < B._priority ) {
-		return false;
-	} else {
-		return isAMoreImportantThanB;
-	}
-}
-
-// Updates base versions of operations inside deltas (which are the results of delta transformation).
-function updateBaseVersion( baseVersion, deltas ) {
-	for ( let delta of deltas ) {
-		for ( let op of delta.operations ) {
-			op.baseVersion = ++baseVersion;
-		}
-	}
-
-	return deltas;
 }
