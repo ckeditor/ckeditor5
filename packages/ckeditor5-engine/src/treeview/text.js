@@ -36,7 +36,7 @@ export default class Text extends Node {
 	/**
 	 * Clones this node.
 	 *
-	 * @returns {Text} Text node that is a clone of this node.
+	 * @returns {core.treeView.Text} Text node that is a clone of this node.
 	 */
 	clone() {
 		return new Text( this.data );
@@ -61,8 +61,8 @@ export default class Text extends Node {
 	 * Checks if this text node is the same as other text node.
 	 * Both nodes should have the same data to be considered as same.
 	 *
-	 * @param otherNode
-	 * @returns {boolean}
+	 * @param {core.treeView.Text} otherNode Node to check if it is same as this node.
+	 * @returns {Boolean}
 	 */
 	same( otherNode ) {
 		if ( !( otherNode instanceof Text ) ) {

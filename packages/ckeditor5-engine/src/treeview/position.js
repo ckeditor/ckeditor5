@@ -39,7 +39,7 @@ export default class Position {
 	 * Returns a new instance of Position with offset incremented by `shift` value.
 	 *
 	 * @param {Number} shift How position offset should get changed. Accepts negative values.
-	 * @returns {treeView.Position} Shifted position.
+	 * @returns {core.treeView.Position} Shifted position.
 	 */
 	getShiftedBy( shift ) {
 		let shifted = Position.createFromPosition( this );
