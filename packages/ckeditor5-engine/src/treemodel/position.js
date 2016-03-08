@@ -188,6 +188,7 @@ export default class Position {
 	 * Returns this position after being updated by removing `howMany` nodes starting from `deletePosition`.
 	 * It may happen that this position is in a removed node. If that is the case, `null` is returned instead.
 	 *
+	 * @protected
 	 * @param {core.treeModel.Position} deletePosition Position before the first removed node.
 	 * @param {Number} howMany How many nodes are removed.
 	 * @returns {core.treeModel.Position|null} Transformed position or `null`.
@@ -235,6 +236,7 @@ export default class Position {
 	/**
 	 * Returns this position after being updated by inserting `howMany` nodes at `insertPosition`.
 	 *
+	 * @protected
 	 * @param {core.treeModel.Position} insertPosition Position where nodes are inserted.
 	 * @param {Number} howMany How many nodes are inserted.
 	 * @param {Boolean} insertBefore Flag indicating whether nodes are inserted before or after `insertPosition`.
@@ -274,6 +276,7 @@ export default class Position {
 	/**
 	 * Returns this position after being updated by moving `howMany` nodes from `sourcePosition` to `targetPosition`.
 	 *
+	 * @protected
 	 * @param {core.treeModel.Position} sourcePosition Position before the first element to move.
 	 * @param {core.treeModel.Position} targetPosition Position where moved elements will be inserted.
 	 * @param {Number} howMany How many consecutive nodes to move, starting from `sourcePosition`.

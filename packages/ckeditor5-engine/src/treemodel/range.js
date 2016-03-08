@@ -360,6 +360,7 @@ export default class Range {
 	 *		transformed = range.getTransformedByInsertion( new Position( root, [ 4, 0, 1 ] ), 4, false, true );
 	 *		// transformed array has one range: from [ 2, 7 ] to [ 4, 0, 5 ] because range was expanded
 	 *
+	 * @protected
 	 * @param {core.treeModel.Position} insertPosition Position where nodes are inserted.
 	 * @param {Number} howMany How many nodes are inserted.
 	 * @param {Boolean} [spread] Flag indicating whether this {core.treeModel.Range range} should be spread if insertion
