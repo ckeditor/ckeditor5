@@ -6,7 +6,7 @@ const gulp = require( 'gulp' );
 
 const config = {
 	ROOT_DIR: '.',
-	DIST_DIR: 'dist',
+	BUILD_DIR: 'build',
 	WORKSPACE_DIR: '..',
 
 	// Files ignored by jshint and jscs tasks. Files from .gitignore will be added automatically during tasks execution.

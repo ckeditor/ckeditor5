@@ -55,14 +55,14 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 	},
 
 	/**
-	 * Saves the files piped into this stream to the `dist/` directory.
+	 * Saves the files piped into this stream to the `build/` directory.
 	 *
-	 * @param {String} distDir The `dist/` directory path.
-	 * @param {String} format The format of the distribution (`esnext`, `amd`, or `cjs`).
+	 * @param {String} buildDir The `build/` directory path.
+	 * @param {String} format The format of the buildribution (`esnext`, `amd`, or `cjs`).
 	 * @returns {Stream}
 	 */
-	dist( distDir, format ) {
-		const destDir = path.join( distDir, format );
+	destBuild( buildDir, format ) {
+		const destDir = path.join( buildDir, format );
 
 		return gulp.dest( destDir );
 	},
@@ -71,10 +71,10 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 	 * Creates a function generating convertion streams.
 	 * Used to generate `formats.reduce()` callback where `formats` is an array of formats that should be generated.
 	 *
-	 * @param {String} distDir The `dist/` directory path.
+	 * @param {String} buildDir The `build/` directory path.
 	 * @returns {Function}
 	 */
-	getConversionStreamGenerator( distDir ) {
+	getConversionStreamGenerator( buildDir ) {
 		return ( pipes, format ) => {
 			const conversionPipes = [];
 
@@ -106,7 +106,7 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 			}
 
 			conversionPipes.push(
-				utils.dist( distDir, format ),
+				utils.destBuild( buildDir, format ),
 				utils.noop( ( file ) => {
 					gutil.log( `Finished writing '${ gutil.colors.cyan( file.path ) }'` );
 				} )

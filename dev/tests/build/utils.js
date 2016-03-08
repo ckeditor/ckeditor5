@@ -48,15 +48,15 @@ describe( 'build-utils', () => {
 		} );
 	} );
 
-	describe( 'dist', () => {
+	describe( 'destBuild', () => {
 		it( 'should return stream created with gulp.dest', () => {
-			const distDir = 'dist/';
+			const buildDir = 'build/';
 			const format = 'amd';
 			const destSpy = sandbox.spy( gulp, 'dest' );
-			const stream = utils.dist( distDir, format );
+			const stream = utils.destBuild( buildDir, format );
 
 			sinon.assert.calledOnce( destSpy );
-			sinon.assert.calledWithExactly( destSpy, path.join( distDir, format ) );
+			sinon.assert.calledWithExactly( destSpy, path.join( buildDir, format ) );
 			expect( stream ).to.equal( destSpy.firstCall.returnValue );
 		} );
 	} );
@@ -178,7 +178,7 @@ describe( 'build-utils', () => {
 			sandbox.stub( utils, 'getBabelOptionsForTests', () => 'tests' );
 
 			// Stub to avoid writing to the fs.
-			sandbox.stub( utils, 'dist', () => utils.noop() );
+			sandbox.stub( utils, 'destBuild', () => utils.noop() );
 
 			// The transpile converted with append to file contents what was
 			// passed to it as an options object and that's a result of getBabelOptions*,
@@ -201,9 +201,9 @@ describe( 'build-utils', () => {
 		} );
 
 		it( 'should return function that can be used for creating conversion streams', () => {
-			const distDir = 'dist/';
+			const buildDir = 'build/';
 			const formats = [ 'amd', 'cjs', 'esnext' ];
-			const fn = utils.getConversionStreamGenerator( distDir );
+			const fn = utils.getConversionStreamGenerator( buildDir );
 			const streams = formats.reduce( fn, [] );
 
 			expect( streams.length ).to.equal( formats.length );
@@ -211,9 +211,9 @@ describe( 'build-utils', () => {
 
 		describe( 'created conversion stream', () => {
 			it( 'should process source JS file', ( done ) => {
-				const distDir = 'dist/';
+				const buildDir = 'build/';
 				const formats = [ 'amd' ];
-				const fn = utils.getConversionStreamGenerator( distDir );
+				const fn = utils.getConversionStreamGenerator( buildDir );
 				const streams = formats.reduce( fn, [] );
 
 				expect( streams ).to.have.length( 1 );
@@ -237,9 +237,9 @@ describe( 'build-utils', () => {
 
 		describe( 'created conversion stream', () => {
 			it( 'should process test file', ( done ) => {
-				const distDir = 'dist/';
+				const buildDir = 'build/';
 				const formats = [ 'cjs' ];
-				const fn = utils.getConversionStreamGenerator( distDir );
+				const fn = utils.getConversionStreamGenerator( buildDir );
 				const streams = formats.reduce( fn, [] );
 
 				expect( streams ).to.have.length( 1 );

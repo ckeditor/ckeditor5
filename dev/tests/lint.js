@@ -23,7 +23,7 @@ describe( 'lint', () => {
 
 	const config = {
 		ROOT_DIR: '.',
-		DIST_DIR: 'dist',
+		BUILD_DIR: 'build',
 		IGNORED_FILES: [ 'lib/**' ]
 	};
 

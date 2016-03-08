@@ -18,7 +18,7 @@ module.exports = {
 
 		this.on( 'test:created', ( test ) => {
 			const moduleRegExp = /^([^\/]+)\//;
-			let name = test.displayName.replace( /^dist\/amd\/tests\//, '' );
+			let name = test.displayName.replace( /^build\/amd\/tests\//, '' );
 			let module = name.match( moduleRegExp );
 
 			if ( module ) {
