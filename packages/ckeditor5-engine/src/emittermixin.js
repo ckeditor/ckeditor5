@@ -225,7 +225,6 @@ const EmitterMixin = {
 	 * @param {String} event The name of the event.
 	 * @param {...*} [args] Additional arguments to be passed to the callbacks.
 	 * @method core.EmitterMixin#fire
-	 * @returns {*} Value returned by the last callback processed in the event loop.
 	 */
 	fire( event, args ) {
 		const callbacks = getCallbacksIfAny( this, event );
@@ -243,15 +242,13 @@ const EmitterMixin = {
 		// Save how many callbacks were added at the moment when the event has been fired.
 		const counter = eventsCounter;
 
-		let fireValue = null;
-
 		for ( let i = 0; i < callbacks.length; i++ ) {
 			// Filter out callbacks that have been added after event has been fired.
 			if ( callbacks[ i ].counter > counter ) {
 				continue;
 			}
 
-			fireValue = callbacks[ i ].callback.apply( callbacks[ i ].ctx, args );
+			callbacks[ i ].callback.apply( callbacks[ i ].ctx, args );
 
 			// Remove the callback from future requests if off() has been called.
 			if ( eventInfo.off.called ) {
@@ -268,8 +265,6 @@ const EmitterMixin = {
 				break;
 			}
 		}
-
-		return fireValue;
 	}
 };
 
