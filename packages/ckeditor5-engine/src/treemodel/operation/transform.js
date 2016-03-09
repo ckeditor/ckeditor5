@@ -7,6 +7,7 @@
 
 import InsertOperation from './insertoperation.js';
 import AttributeOperation from './attributeoperation.js';
+import RootAttributeOperation from './rootattributeoperation.js';
 import MoveOperation from './moveoperation.js';
 import RemoveOperation from './removeoperation.js';
 import NoOperation from './nooperation.js';
@@ -72,6 +73,8 @@ const ot = {
 
 		AttributeOperation: doNotUpdate,
 
+		RootAttributeOperation: doNotUpdate,
+
 		// Transforms InsertOperation `a` by MoveOperation `b`. Accepts a flag stating whether `a` is more important
 		// than `b` when it comes to resolving conflicts. Returns results as an array of operations.
 		MoveOperation( a, b, isStrong ) {
@@ -133,6 +136,8 @@ const ot = {
 			}
 		},
 
+		RootAttributeOperation: doNotUpdate,
+
 		// Transforms AttributeOperation `a` by MoveOperation `b`. Returns results as an array of operations.
 		MoveOperation( a, b ) {
 			// Convert MoveOperation properties into a range.
@@ -185,6 +190,26 @@ const ot = {
 		}
 	},
 
+	RootAttributeOperation: {
+		InsertOperation: doNotUpdate,
+
+		AttributeOperation: doNotUpdate,
+
+		// Transforms RootAttributeOperation `a` by RootAttributeOperation `b`. Accepts a flag stating whether `a` is more important
+		// than `b` when it comes to resolving conflicts. Returns results as an array of operations.
+		RootAttributeOperation( a, b, isStrong ) {
+			if ( a.root === b.root && a.key === b.key ) {
+				if ( ( a.newValue !== b.newValue && !isStrong ) || a.newValue === b.newValue ) {
+					return [ new NoOperation( a.baseVersion ) ];
+				}
+			}
+
+			return [ a.clone() ];
+		},
+
+		MoveOperation: doNotUpdate
+	},
+
 	MoveOperation: {
 		// Transforms MoveOperation `a` by InsertOperation `b`. Accepts a flag stating whether `a` is more important
 		// than `b` when it comes to resolving conflicts. Returns results as an array of operations.
@@ -204,6 +229,8 @@ const ot = {
 		},
 
 		AttributeOperation: doNotUpdate,
+
+		RootAttributeOperation: doNotUpdate,
 
 		// Transforms MoveOperation `a` by MoveOperation `b`. Accepts a flag stating whether `a` is more important
 		// than `b` when it comes to resolving conflicts. Returns results as an array of operations.
@@ -315,6 +342,8 @@ function transform( a, b, isStrong ) {
 		group = ot.InsertOperation;
 	} else if ( a instanceof AttributeOperation ) {
 		group = ot.AttributeOperation;
+	} else if ( a instanceof RootAttributeOperation ) {
+		group = ot.RootAttributeOperation;
 	} else if ( a instanceof MoveOperation ) {
 		group = ot.MoveOperation;
 	} else {
@@ -326,6 +355,8 @@ function transform( a, b, isStrong ) {
 			algorithm = group.InsertOperation;
 		} else if ( b instanceof AttributeOperation ) {
 			algorithm = group.AttributeOperation;
+		} else if ( b instanceof RootAttributeOperation ) {
+			algorithm = group.RootAttributeOperation;
 		} else if ( b instanceof MoveOperation ) {
 			algorithm = group.MoveOperation;
 		} else {

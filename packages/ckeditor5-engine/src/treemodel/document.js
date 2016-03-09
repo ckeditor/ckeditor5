@@ -269,7 +269,8 @@ export default class Document {
 	 * * 'remove' when nodes are removed,
 	 * * 'reinsert' when remove is undone,
 	 * * 'move' when nodes are moved,
-	 * * 'attribute' when attributes change.
+	 * * 'attribute' when attributes change,
+	 * * 'rootattribute' when attributes for root element change.
 	 *
 	 * Change event is fired after the change is done. This means that any ranges or positions passed in
 	 * `changeInfo` are referencing nodes and paths in updated tree model.
@@ -277,8 +278,10 @@ export default class Document {
 	 * @event core.treeModel.Document#change
 	 * @param {String} type Change type, possible option: `'insert'`, `'remove'`, `'reinsert'`, `'move'`, `'attribute'`.
 	 * @param {Object} changeInfo Additional information about the change.
-	 * @param {core.treeModel.Range} changeInfo.range Range containing changed nodes. Note that for `'remove'` the range will be in the
-	 * {@link core.treeModel.Document#graveyard graveyard root}.
+	 * @param {core.treeModel.Range} [changeInfo.range] Range containing changed nodes. Note that for `'remove'` the range will be in the
+	 * {@link core.treeModel.Document#graveyard graveyard root}. This is undefined for `'rootattribute'` type.
+	 * @param {core.treeModel.RootElement} [changeInfo.root] Root element which attributes got changed. This is defined
+	 * only for `'rootattribute'` type.
 	 * @param {core.treeModel.Position} [changeInfo.sourcePosition] Change source position. Exists for `'remove'`, `'reinsert'` and `'move'`.
 	 * Note that for 'reinsert' the source position will be in the {@link core.treeModel.Document#graveyard graveyard root}.
 	 * @param {String} [changeInfo.key] Only for `'attribute'` type. Key of changed / inserted / removed attribute.

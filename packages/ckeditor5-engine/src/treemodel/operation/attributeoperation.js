@@ -102,7 +102,7 @@ export default class AttributeOperation extends Operation {
 				 */
 				throw new CKEditorError(
 					'operation-attribute-no-attr-to-remove: The attribute which should be removed does not exists for given node.',
-					{ item: item, key: this.key, value: this.oldValue }
+					{ item: item, key: this.key }
 				);
 			}
 
