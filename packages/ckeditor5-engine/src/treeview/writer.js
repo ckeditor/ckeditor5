@@ -13,6 +13,7 @@ import CKEditorError from '../ckeditorerror.js';
 
 /**
  * Tree model Writer class.
+ * Writer defines a high-level API for TreeView manipulations.
  *
  * @memberOf core.treeView
  */
@@ -29,7 +30,9 @@ import CKEditorError from '../ckeditorerror.js';
 	}
 
 	/**
-	 * Returns true if provided node is a container node.
+	 * Returns `true` if provided node is a `container` node.
+	 * Node is considered as `container` when it is a {@link core.treeView.Element Element} instance and has no priority
+	 * defined.
 	 *
 	 * @param {core.treeView.Element} node Node to check.
 	 * @returns {Boolean} `True` if provided node is a container.
@@ -41,7 +44,9 @@ import CKEditorError from '../ckeditorerror.js';
 	}
 
 	/**
-	 * Returns `true` if provided node is an attribute node.
+	 * Returns `true` if provided node is an `attribute` node.
+	 * Node is considered as `attribute` when it is a {@link core.treeView.Element Element} instance and has priority
+	 * defined.
 	 *
 	 * @param {core.treeView.Element} node Node to check.
 	 * @returns {Boolean} `True` if provided node is an attribute.
@@ -53,7 +58,7 @@ import CKEditorError from '../ckeditorerror.js';
 	}
 
 	/**
-	 * Sets node priority.
+	 * Sets node priority. When priority is defined, node is considered as `attribute`
 	 *
 	 * @param {core.treeView.Node} node
 	 * @param {Number} priority
@@ -93,11 +98,14 @@ import CKEditorError from '../ckeditorerror.js';
 	}
 
 	/**
-	 * Breaks attribute nodes at provided position.
+	 * Breaks attribute nodes at provided position. It breaks `attribute` nodes inside `container` node.
 	 *
-	 *		<p>foo<b><u>bar|</u></b></p> -> <p>foo<b><u>bar</u></b>|</p>
-	 *		<p>foo<b><u>|bar</u></b></p> -> <p>foo|<b><u>bar</u></b></p>
-	 *		<p>foo<b><u>b|ar</u></b></p> -> <p>foo<b><u>b</u></b>|<b><u>ar</u></b></p>
+	 *		<p>{foo}<b><u>{bar}|</u></b></p> -> <p>{foo}<b><u>{bar}</u></b>|</p>
+	 *		<p>{foo}<b><u>|{bar}</u></b></p> -> <p>{foo}|<b><u>{bar}</u></b></p>
+	 *		<p>{foo}<b><u>{b|ar}</u></b></p> -> <p>{foo}<b><u>{b}</u></b>|<b><u>{ar}</u></b></p>
+	 *
+	 * @see {@link core.treeView.Writer#isContainer}
+	 * @see {@link core.treeView.Writer#isAttribute}
 	 *
 	 * @param {core.treeView.Position} position Position where to break attributes.
 	 * @returns {core.treeView.Position} New position after breaking the attributes.
@@ -178,14 +186,17 @@ import CKEditorError from '../ckeditorerror.js';
 	}
 
 	/**
-	 * Breaks attributes on {@link core.treeView.Range#start start} and {@link core.treeView.Range#end end} positions of
+	 * Uses {@link core.treeView.Writer#breakAttributes breakAttribute} method to break attributes on
+	 * {@link core.treeView.Range#start start} and {@link core.treeView.Range#end end} positions of
 	 * provided {@link core.treeView.Range Range}.
 	 *
 	 * Throws {@link core.CKEditorError CKEditorError} `treeview-writer-invalid-range-container` when
 	 * {@link core.treeView.Range#start start} and {@link core.treeView.Range#end end} positions are not placed inside
 	 * same parent container.
 	 *
+	 * @see {@link core.treeView.Writer#breakAttribute}
 	 * @param {core.treeView.Range} range Range which `start` and `end` positions will be used to break attributes.
+	 * @returns {core.treeView.Range} New range with located at break positions.
 	 */
 	breakRange( range ) {
 		const rangeStart = range.start;
@@ -220,14 +231,14 @@ import CKEditorError from '../ckeditorerror.js';
 
 	/**
 	 * Merges attribute nodes. It also merges text nodes if needed.
-	 * Two attribute nodes can be merged into one when they are similar and have the same priority.
+	 * Only {@link core.treeView.Element#same similar} `attribute` nodes, with same priority can be merged.
 	 *
 	 *		<p>{foo}|{bar}</p> -> <p>{foo|bar}</p>
-	 *		<p><b></b>|<b></b> -> <p><b>|</b></b>
-	 *		<p><b foo="bar"></b>|<b foo="baz"></b> -> <p><b foo="bar"></b>|<b foo="baz"></b>
-	 *		<p><b></b>|<b></b></p> -> <p><b>|</b></p>
-	 *		<p><b>{foo}</b>|<b>{bar}</b></p> -> <p><b>{foo|bar}</b>
+	 *		<p><b>{foo}</b>|<b>{bar}</b> -> <p><b>{foo|bar}</b></b>
+	 *		<p><b foo="bar">{a}</b>|<b foo="baz">{b}</b> -> <p><b foo="bar">{a}</b>|<b foo="baz">{b}</b>
 	 *
+	 * @see {@link core.treeView.Writer#isContainer}
+	 * @see {@link core.treeView.Writer#isAttribute}
 	 * @param {core.treeView.Position} position Merge position.
 	 * @returns {core.treeView.Position} Position after merge.
 	 */
@@ -480,7 +491,8 @@ import CKEditorError from '../ckeditorerror.js';
 	}
 }
 
-// Unwraps children contained in `parent` element between `startOffset` and `endOffset` from provided `attribute`.
+// Unwraps children from provided `attribute`. Only children contained in `parent` element between
+// `startOffset` and `endOffset` will be unwrapped.
 //
 // @private
 // @param {core.treeView.Writer} writer
@@ -548,8 +560,9 @@ function unwrapChildren( writer, parent, startOffset, endOffset, attribute ) {
 	return Range.createFromParentsAndOffsets( parent, startOffset, parent, endOffset );
 }
 
-// Wraps children contained in `parent` element between `startOffset` and `endOffset` with provided `attribute`.
-//
+// Wraps children with provided `attribute`. Only children contained in `parent` element between
+// `startOffset` and `endOffset` will be wrapped.
+
 // @private
 // @param {core.treeView.Writer} writer
 // @param {core.treeView.Element} parent
