@@ -5,8 +5,8 @@
 
 'use strict';
 
-import Collection from '../collection.js';
-import CKEditorError from '../ckeditorerror.js';
+import Collection from '../../utils/collection.js';
+import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
  * Manages UI Controllers.
