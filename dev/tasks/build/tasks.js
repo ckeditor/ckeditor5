@@ -17,14 +17,14 @@ const minimist = require( 'minimist' );
 const utils = require( './utils' );
 
 module.exports = ( config ) => {
-	const distDir = path.join( config.ROOT_DIR, config.DIST_DIR );
+	const buildDir = path.join( config.ROOT_DIR, config.BUILD_DIR );
 
 	const tasks = {
 		/**
-		 * Removes the dist directory.
+		 * Removes the build directory.
 		 */
 		clean() {
-			return del( distDir );
+			return del( buildDir );
 		},
 
 		src: {
@@ -114,7 +114,7 @@ module.exports = ( config ) => {
 
 		/**
 		 * The main build task which is capable of copying, watching, processing and writing all files
-		 * to the `dist/` directory.
+		 * to the `build/` directory.
 		 *
 		 * @param {Object} options
 		 * @param {String} options.formats
@@ -160,7 +160,7 @@ module.exports = ( config ) => {
 						gutil.log( `Processing '${ gutil.colors.cyan( file.path ) }'...` );
 					} )
 				);
-			const conversionStreamGenerator = utils.getConversionStreamGenerator( distDir );
+			const conversionStreamGenerator = utils.getConversionStreamGenerator( buildDir );
 			const outputStream = utils.noop();
 
 			let inputStream;

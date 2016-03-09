@@ -23,7 +23,7 @@ describe( 'build-tasks', () => {
 	let sandbox, tasks;
 	const config = {
 		ROOT_DIR: '.',
-		DIST_DIR: 'dist'
+		BUILD_DIR: 'build'
 	};
 
 	beforeEach( () => {
@@ -126,7 +126,7 @@ describe( 'build-tasks', () => {
 			} );
 
 			// Stub output stream.
-			sandbox.stub( utils, 'dist', () => {
+			sandbox.stub( utils, 'destBuild', () => {
 				return through( { objectMode: true }, ( file, encoding, cb ) => {
 					written++;
 

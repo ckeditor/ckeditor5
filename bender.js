@@ -15,12 +15,12 @@ const config = {
 	framework: 'mocha',
 
 	applications: {
-		'ckeditor': {
+		ckeditor: {
 			path: '.',
 			files: [
 				'node_modules/requirejs/require.js'
 			],
-			basePath: '/apps/ckeditor/dist/amd/'
+			basePath: '/apps/ckeditor/build/amd/'
 		}
 	},
 
@@ -28,18 +28,18 @@ const config = {
 		all: {
 			applications: [ 'ckeditor' ],
 			paths: [
-				'dist/amd/tests/**',
-				'!dist/amd/tests/**/_*/**'
+				'build/amd/tests/**',
+				'!build/amd/tests/**/_*/**'
 			]
 		}
 	},
 
 	coverage: {
 		paths: [
-			'dist/amd/ckeditor.js',
-			'dist/amd/ckeditor5/**/*.js',
-			'dist/amd/tests/**/_*/*.js',
-			'!dist/amd/ckeditor5/*/lib/**'
+			'build/amd/ckeditor.js',
+			'build/amd/ckeditor5/**/*.js',
+			'build/amd/tests/**/_*/*.js',
+			'!build/amd/ckeditor5/*/lib/**'
 		]
 	}
 };
