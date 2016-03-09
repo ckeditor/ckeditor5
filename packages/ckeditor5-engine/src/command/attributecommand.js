@@ -41,7 +41,7 @@ export default class AttributeCommand extends Command {
 	 * Flag indicating whether command is active. For collapsed selection it means that typed characters will have
 	 * the attribute set. For range selection it means that all nodes inside have the attribute applied.
 	 *
-	 * @returns {Boolean}
+	 * @type {Boolean}
 	 */
 	get value() {
 		return this.editor.document.selection.hasAttribute( this.attributeKey );

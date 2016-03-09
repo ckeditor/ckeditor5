@@ -58,7 +58,7 @@ export default class Collection {
 	/**
 	 * The number of items available in the collection.
 	 *
-	 * @property length
+	 * @type {Number}
 	 */
 	get length() {
 		return this._items.length;

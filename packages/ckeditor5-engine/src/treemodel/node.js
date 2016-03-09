@@ -49,7 +49,7 @@ export default class Node {
 	 * Depth of the node, which equals to total number of its parents.
 	 *
 	 * @readonly
-	 * @member {Number} core.treeModel.Node#depth
+	 * @type {Number}
 	 */
 	get depth() {
 		let depth = 0;
@@ -68,7 +68,7 @@ export default class Node {
 	 * Nodes next sibling or `null` if it is the last child.
 	 *
 	 * @readonly
-	 * @member {core.treeModel.Node|null} core.treeModel.Node#nextSibling
+	 * @type {core.treeModel.Node|null}
 	 */
 	get nextSibling() {
 		const index = this.getIndex();
@@ -80,7 +80,7 @@ export default class Node {
 	 * Nodes previous sibling or null if it is the last child.
 	 *
 	 * @readonly
-	 * @member {core.treeModel.Node|null} core.treeModel.Node#previousSibling
+	 * @type {core.treeModel.Node|null}
 	 */
 	get previousSibling() {
 		const index = this.getIndex();
@@ -92,7 +92,7 @@ export default class Node {
 	 * The top parent for the node. If node has no parent it is the root itself.
 	 *
 	 * @readonly
-	 * @member {Number} core.treeModel.Node#root
+	 * @type {Number}
 	 */
 	get root() {
 		let root = this;
