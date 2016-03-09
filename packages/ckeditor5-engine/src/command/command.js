@@ -45,10 +45,8 @@ export default class Command {
 		// If schema checking function is specified, add it to the `refreshState` listeners.
 		// Feature will be disabled if it does not apply to schema requirements.
 		if ( this.checkEnabled ) {
-			this.on( 'refreshState', ( evt ) => {
-				if ( !this.checkEnabled() ) {
-					return disableCallback( evt );
-				}
+			this.on( 'refreshState', ( evt, data ) => {
+				data.isEnabled = this.checkEnabled();
 			} );
 		}
 	}
@@ -70,7 +68,10 @@ export default class Command {
 	 * @fires {@link core.command.Command.refreshState refreshState}
 	 */
 	refreshState() {
-		this.isEnabled = this.fire( 'refreshState' ) !== false;
+		const data = { isEnabled: true };
+		this.fire( 'refreshState', data );
+
+		this.isEnabled = data.isEnabled;
 	}
 
 	/**
@@ -118,10 +119,8 @@ export default class Command {
 	}
 }
 
-function disableCallback( evt ) {
-	evt.stop();
-
-	return false;
+function disableCallback( evt, data ) {
+	data.isEnabled = false;
 }
 
 utils.mix( Command, EmitterMixin );

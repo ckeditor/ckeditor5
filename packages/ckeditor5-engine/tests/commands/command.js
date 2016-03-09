@@ -69,27 +69,15 @@ describe( 'refreshState', () => {
 		expect( spy.called ).to.be.true;
 	} );
 
-	it( 'should set isEnabled property to the value returned by last event callback', () => {
-		command.on( 'refreshState', () => {
-			return true;
+	it( 'should set isEnabled property to the value passed by object-reference', () => {
+		command.on( 'refreshState', ( evt, data ) => {
+			data.isEnabled = true;
 		} );
 
-		command.on( 'refreshState', ( evt ) => {
-			evt.stop();
-
-			return false;
-		} );
-
-		command.on( 'refreshState', () => {
-			return true;
-		} );
-
-		command.refreshState();
-
-		expect( command.isEnabled ).to.be.false;
+		expect( command.isEnabled ).to.be.true;
 	} );
 
-	it( 'should set isEnabled to false if checkSchema returns false', () => {
+	it( 'should set isEnabled to false if checkEnabled returns false', () => {
 		let disabledCommand = new CommandWithSchema( editor, false );
 
 		disabledCommand.refreshState();
@@ -129,10 +117,8 @@ describe( 'enable', () => {
 	it( 'should not make command enabled if there are other listeners disabling it', () => {
 		command._disable();
 
-		command.on( 'refreshState', ( evt ) => {
-			evt.stop();
-
-			return false;
+		command.on( 'refreshState', ( evt, data ) => {
+			data.isEnabled = false;
 		} );
 
 		command.refreshState();
