@@ -121,8 +121,8 @@ export default class AttributeCommand extends Command {
 			} else {
 				selection.removeAttribute( this.attributeKey );
 			}
-		} else if ( selection.hasAnyRange ) {
-			// If selection is not collapsed and has ranges, we change attribute on those ranges.
+		} else {
+			// If selection has non-collapsed ranges, we change attribute on nodes inside those ranges.
 			document.enqueueChanges( () => {
 				const ranges = this._getSchemaValidRanges( selection.getRanges() );
 

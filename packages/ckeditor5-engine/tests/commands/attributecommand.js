@@ -169,17 +169,6 @@ describe( '_doExecute', () => {
 		expect( modelDoc.selection.hasAttribute( 'bold' ) ).to.be.false;
 	} );
 
-	it( 'should not throw and do nothing if selection has no ranges', () => {
-		let spy = sinon.spy();
-		modelDoc.on( 'change', spy );
-
-		modelDoc.selection.removeAllRanges();
-		command._doExecute();
-
-		expect( spy.called ).to.be.false;
-		expect( Array.from( modelDoc.selection.getAttributes() ) ).to.deep.equal( [ ] );
-	} );
-
 	it( 'should not apply attribute change where it would invalid schema', () => {
 		p.insertChildren( 3, new Element( 'image' ) );
 		p.insertChildren( 12, new Element( 'image' ) );

@@ -16,8 +16,11 @@ import utils from '../utils.js';
 const storePrefix = 'selection:';
 
 /**
- * Represents a selection that is made on nodes in {@link core.treeModel.Document}. Selection instance is
- * created by {@link core.treeModel.Document}. You should not need to create an instance of Selection.
+ * Represents a selection that is made on nodes in {@link core.treeModel.Document}. `Selection` instance is
+ * created by {@link core.treeModel.Document}. You should not need to create an instance of `Selection`.
+ *
+ * Keep in mind that selection always contains at least one range. If no ranges has been added to selection or all ranges
+ * got removed from selection, the selection will be reset to contain {@link core.treeModel.Selection#_getDefaultRange the default range}.
  *
  * @memberOf core.treeModel
  */
@@ -60,61 +63,38 @@ export default class Selection {
 	}
 
 	/**
-	 * Selection anchor. Anchor may be described as a position where the selection starts.
-	 * Together with {@link core.treeModel.Selection#focus} they define the direction of selection, which is important
-	 * when expanding/shrinking selection. When there are no ranges in selection anchor is null. Anchor is always
-	 * the start or end of the most recent added range. It may be a bit unintuitive when there are multiple ranges in selection.
+	 * Selection anchor. Anchor may be described as a position where the selection starts. Together with
+	 * {@link core.treeModel.Selection#focus} they define the direction of selection, which is important
+	 * when expanding/shrinking selection. Anchor is always the start or end of the most recent added range.
+	 * It may be a bit unintuitive when there are multiple ranges in selection.
 	 *
 	 * @see core.treeModel.Selection#focus
-	 * @type {core.treeModel.LivePosition|null}
+	 * @type {core.treeModel.LivePosition}
 	 */
 	get anchor() {
-		if ( this.hasAnyRange ) {
-			let range = this._ranges[ this._ranges.length - 1 ];
+		let range = this._ranges.length ? this._ranges[ this._ranges.length - 1 ] : this._getDefaultRange();
 
-			return this._lastRangeBackward ? range.end : range.start;
-		}
-
-		return null;
+		return this._lastRangeBackward ? range.end : range.start;
 	}
 
 	/**
-	 * Selection focus. Focus is a position where the selection ends. When there are no ranges in selection, focus is null.
+	 * Selection focus. Focus is a position where the selection ends.
 	 *
 	 * @see core.treeModel.Selection#anchor
-	 * @type {core.treeModel.LivePosition|null}
+	 * @type {core.treeModel.LivePosition}
 	 */
 	get focus() {
-		if ( this.hasAnyRange ) {
-			let range = this._ranges[ this._ranges.length - 1 ];
+		let range = this._ranges.length ? this._ranges[ this._ranges.length - 1 ] : this._getDefaultRange();
 
-			return this._lastRangeBackward ? range.start : range.end;
-		}
-
-		return null;
-	}
-
-	/**
-	 * Flag indicating whether the selection has any range in it.
-	 *
-	 * @readonly
-	 * @type {Boolean}
-	 */
-	get hasAnyRange() {
-		return this._ranges.length > 0;
+		return this._lastRangeBackward ? range.start : range.end;
 	}
 
 	/**
 	 * Returns whether the selection is collapsed. Selection is collapsed when all it's ranges are collapsed.
-	 * If selection has no ranges, returns null instead.
 	 *
 	 * @type {Boolean}
 	 */
 	get isCollapsed() {
-		if ( !this.hasAnyRange ) {
-			return null;
-		}
-
 		for ( let i = 0; i < this._ranges.length; i++ ) {
 			if ( !this._ranges[ i ].isCollapsed ) {
 				return false;
@@ -161,7 +141,7 @@ export default class Selection {
 	 * @returns {Array.<LiveRange>}
 	 */
 	getRanges() {
-		return this._ranges.slice();
+		return this._ranges.length ? this._ranges.slice() : [ this._getDefaultRange() ];
 	}
 
 	/**
@@ -169,9 +149,7 @@ export default class Selection {
 	 * {@link core.treeModel.Position#isBefore is before} start position of all other ranges (not to confuse with the first range
 	 * added to the selection).
 	 *
-	 * If there are no ranges in selection, retruns null instead.
-	 *
-	 * @returns {core.treeModel.Range|null}
+	 * @returns {core.treeModel.Range}
 	 */
 	getFirstRange() {
 		let first = null;
@@ -184,19 +162,17 @@ export default class Selection {
 			}
 		}
 
-		return first && Range.createFromRange( first );
+		return first && Range.createFromRange( first ) || this._getDefaultRange();
 	}
 
 	/**
 	 * Returns the first position in the selection. First position is the position that {@link core.treeModel.Position#isBefore is before}
 	 * any other position in the selection ranges.
 	 *
-	 * @returns {core.treeModel.Position|null}
+	 * @returns {core.treeModel.Position}
 	 */
 	getFirstPosition() {
-		let firstRange = this.getFirstRange();
-
-		return firstRange && Position.createFromPosition( firstRange.start );
+		return Position.createFromPosition( this.getFirstRange().start );
 	}
 
 	/**
@@ -334,16 +310,14 @@ export default class Selection {
 	 * @returns {Iterable.<*>}
 	 */
 	*_getStoredAttributes() {
-		if ( this.hasAnyRange ) {
-			const selectionParent = this.getFirstPosition().parent;
+		const selectionParent = this.getFirstPosition().parent;
 
-			if ( this.isCollapsed && selectionParent.getChildCount() === 0 ) {
-				for ( let attr of selectionParent.getAttributes() ) {
-					if ( attr[ 0 ].indexOf( storePrefix ) === 0 ) {
-						const realKey = attr[ 0 ].substr( storePrefix.length );
+		if ( this.isCollapsed && selectionParent.getChildCount() === 0 ) {
+			for ( let attr of selectionParent.getAttributes() ) {
+				if ( attr[ 0 ].indexOf( storePrefix ) === 0 ) {
+					const realKey = attr[ 0 ].substr( storePrefix.length );
 
-						yield [ realKey, attr[ 1 ] ];
-					}
+					yield [ realKey, attr[ 1 ] ];
 				}
 			}
 		}
@@ -356,16 +330,14 @@ export default class Selection {
 	 * @param {String} key Key of attribute to remove.
 	 */
 	_removeStoredAttribute( key ) {
-		if ( this.hasAnyRange ) {
-			const selectionParent = this.getFirstPosition().parent;
+		const selectionParent = this.getFirstPosition().parent;
 
-			if ( this.isCollapsed && selectionParent.getChildCount() === 0 ) {
-				const storeKey = Selection._getStoreAttributeKey( key );
+		if ( this.isCollapsed && selectionParent.getChildCount() === 0 ) {
+			const storeKey = Selection._getStoreAttributeKey( key );
 
-				this._document.enqueueChanges( () => {
-					this._document.batch().removeAttr( storeKey, selectionParent );
-				} );
-			}
+			this._document.enqueueChanges( () => {
+				this._document.batch().removeAttr( storeKey, selectionParent );
+			} );
 		}
 	}
 
@@ -378,16 +350,14 @@ export default class Selection {
 	 * @param {*} value Attribute value.
 	 */
 	_storeAttribute( key, value ) {
-		if ( this.hasAnyRange ) {
-			const selectionParent = this.getFirstPosition().parent;
+		const selectionParent = this.getFirstPosition().parent;
 
-			if ( this.isCollapsed && selectionParent.getChildCount() === 0 ) {
-				const storeKey = Selection._getStoreAttributeKey( key );
+		if ( this.isCollapsed && selectionParent.getChildCount() === 0 ) {
+			const storeKey = Selection._getStoreAttributeKey( key );
 
-				this._document.enqueueChanges( () => {
-					this._document.batch().setAttr( storeKey, value, selectionParent );
-				} );
-			}
+			this._document.enqueueChanges( () => {
+				this._document.batch().setAttr( storeKey, value, selectionParent );
+			} );
 		}
 	}
 
@@ -398,26 +368,24 @@ export default class Selection {
 	 * @private
 	 */
 	_setStoredAttributesTo( attrs ) {
-		if ( this.hasAnyRange ) {
-			const selectionParent = this.getFirstPosition().parent;
+		const selectionParent = this.getFirstPosition().parent;
 
-			if ( this.isCollapsed && selectionParent.getChildCount() === 0 ) {
-				this._document.enqueueChanges( () => {
-					const batch = this._document.batch();
+		if ( this.isCollapsed && selectionParent.getChildCount() === 0 ) {
+			this._document.enqueueChanges( () => {
+				const batch = this._document.batch();
 
-					for ( let attr of this._getStoredAttributes() ) {
-						const storeKey = Selection._getStoreAttributeKey( attr[ 0 ] );
+				for ( let attr of this._getStoredAttributes() ) {
+					const storeKey = Selection._getStoreAttributeKey( attr[ 0 ] );
 
-						batch.removeAttr( storeKey, selectionParent );
-					}
+					batch.removeAttr( storeKey, selectionParent );
+				}
 
-					for ( let attr of attrs ) {
-						const storeKey = Selection._getStoreAttributeKey( attr[ 0 ] );
+				for ( let attr of attrs ) {
+					const storeKey = Selection._getStoreAttributeKey( attr[ 0 ] );
 
-						batch.setAttr( storeKey, attr[ 1 ], selectionParent );
-					}
-				} );
-			}
+					batch.setAttr( storeKey, attr[ 1 ], selectionParent );
+				}
+			} );
 		}
 	}
 
@@ -427,70 +395,67 @@ export default class Selection {
 	 * @private
 	 */
 	_updateAttributes() {
-		if ( !this.hasAnyRange ) {
-			this.clearAttributes();
+		const position = this.getFirstPosition();
+		const positionParent = position.parent;
+
+		let attrs = null;
+
+		if ( this.isCollapsed === false ) {
+			// 1. If selection is a range...
+			const range = this.getFirstRange();
+
+			// ...look for a first character node in that range and take attributes from it.
+			for ( let item of range ) {
+				if ( item.type == 'TEXT' ) {
+					attrs = item.item.getAttributes();
+					break;
+				}
+			}
+		}
+
+		// 2. If the selection is a caret or the range does not contain a character node...
+		if ( !attrs && this.isCollapsed === true ) {
+			const nodeBefore = positionParent.getChild( position.offset - 1 );
+			const nodeAfter = positionParent.getChild( position.offset );
+
+			// ...look at the node before caret and take attributes from it if it is a character node.
+			attrs = getAttrsIfCharacter( nodeBefore );
+
+			// 3. If not, look at the node after caret...
+			if ( !attrs ) {
+				attrs = getAttrsIfCharacter( nodeAfter );
+			}
+
+			// 4. If not, try to find the first character on the left, that is in the same node.
+			if ( !attrs ) {
+				let node = nodeBefore;
+
+				while ( node && !attrs ) {
+					node = node.previousSibling;
+					attrs = getAttrsIfCharacter( node );
+				}
+			}
+
+			// 5. If not found, try to find the first character on the right, that is in the same node.
+			if ( !attrs ) {
+				let node = nodeAfter;
+
+				while ( node && !attrs ) {
+					node = node.nextSibling;
+					attrs = getAttrsIfCharacter( node );
+				}
+			}
+
+			// 6. If not found, selection should retrieve attributes from parent.
+			if ( !attrs ) {
+				attrs = this._getStoredAttributes();
+			}
+		}
+
+		if ( attrs ) {
+			this._attrs = new Map( attrs );
 		} else {
-			const position = this.getFirstPosition();
-			const positionParent = position.parent;
-			let attrs = null;
-
-			if ( this.isCollapsed === false ) {
-				// 1. If selection is a range...
-				const range = this.getFirstRange();
-
-				// ...look for a first character node in that range and take attributes from it.
-				for ( let item of range ) {
-					if ( item.type == 'TEXT' ) {
-						attrs = item.item.getAttributes();
-						break;
-					}
-				}
-			}
-
-			// 2. If the selection is a caret or the range does not contain a character node...
-			if ( !attrs && this.isCollapsed === true ) {
-				const nodeBefore = positionParent.getChild( position.offset - 1 );
-				const nodeAfter = positionParent.getChild( position.offset );
-
-				// ...look at the node before caret and take attributes from it if it is a character node.
-				attrs = getAttrsIfCharacter( nodeBefore );
-
-				// 3. If not, look at the node after caret...
-				if ( !attrs ) {
-					attrs = getAttrsIfCharacter( nodeAfter );
-				}
-
-				// 4. If not, try to find the first character on the left, that is in the same node.
-				if ( !attrs ) {
-					let node = nodeBefore;
-
-					while ( node && !attrs ) {
-						node = node.previousSibling;
-						attrs = getAttrsIfCharacter( node );
-					}
-				}
-
-				// 5. If not found, try to find the first character on the right, that is in the same node.
-				if ( !attrs ) {
-					let node = nodeAfter;
-
-					while ( node && !attrs ) {
-						node = node.nextSibling;
-						attrs = getAttrsIfCharacter( node );
-					}
-				}
-
-				// 6. If not found, selection should retrieve attributes from parent.
-				if ( !attrs ) {
-					attrs = this._getStoredAttributes();
-				}
-			}
-
-			if ( attrs ) {
-				this._attrs = new Map( attrs );
-			} else {
-				this.clearAttributes();
-			}
+			this.clearAttributes();
 		}
 
 		function getAttrsIfCharacter( node ) {
@@ -500,6 +465,21 @@ export default class Selection {
 
 			return null;
 		}
+	}
+
+	/**
+	 * Returns a default range for this selection. The default range is a collapsed range that starts and ends
+	 * at the beginning of this selection's document {@link core.treeModel.Document#_getDefaultRoot default root}.
+	 * This "artificial" range is important for algorithms that base on selection, so they won't break or need
+	 * special logic if there are no real ranges in the selection.
+	 *
+	 * @private
+	 * @returns {core.treeModel.Range}
+	 */
+	_getDefaultRange() {
+		const defaultRoot = this._document._getDefaultRoot();
+
+		return new Range( new Position( defaultRoot, [ 0 ] ), new Position( defaultRoot, [ 0 ] ) );
 	}
 
 	/**

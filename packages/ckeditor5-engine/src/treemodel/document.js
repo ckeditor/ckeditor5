@@ -243,6 +243,24 @@ export default class Document {
 	}
 
 	/**
+	 * Returns default root for this document which is either the first root that was added to the the document using
+	 * {@link core.treeModel.Document#createRoot} or the {@link core.treeModel.Document#graveyard graveyard root} if
+	 * no other roots were created.
+	 *
+	 * @protected
+	 * @returns {core.treeModel.RootElement} The default root for this document.
+	 */
+	_getDefaultRoot() {
+		for ( let root of this._roots.values() ) {
+			if ( root !== this.graveyard ) {
+				return root;
+			}
+		}
+
+		return this.graveyard;
+	}
+
+	/**
 	 * Fired when document changes by applying an operation.
 	 *
 	 * There are 5 types of change:

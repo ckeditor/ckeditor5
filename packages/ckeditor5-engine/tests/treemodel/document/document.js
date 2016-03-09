@@ -20,12 +20,12 @@ describe( 'Document', () => {
 	} );
 
 	describe( 'constructor', () => {
-		it( 'should create Document with no data, empty graveyard and empty selection', () => {
+		it( 'should create Document with no data, empty graveyard and selection set to default range', () => {
 			expect( doc ).to.have.property( '_roots' ).that.is.instanceof( Map );
 			expect( doc._roots.size ).to.equal( 1 );
 			expect( doc.graveyard ).to.be.instanceof( RootElement );
 			expect( doc.graveyard.getChildCount() ).to.equal( 0 );
-			expect( doc.selection.getRanges().length ).to.equal( 0 );
+			expect( doc.selection.getRanges().length ).to.equal( 1 );
 		} );
 	} );
 
@@ -185,5 +185,19 @@ describe( 'Document', () => {
 		doc.fire( 'changesDone' );
 
 		expect( doc.selection._updateAttributes.called ).to.be.true;
+	} );
+
+	describe( '_getDefaultRoot', () => {
+		it( 'should return graveyard root if there are no other roots in the document', () => {
+			expect( doc._getDefaultRoot() ).to.equal( doc.graveyard );
+		} );
+
+		it( 'should return the first root added to the document', () => {
+			let rootA = doc.createRoot( 'rootA' );
+			doc.createRoot( 'rootB' );
+			doc.createRoot( 'rootC' );
+
+			expect( doc._getDefaultRoot() ).to.equal( rootA );
+		} );
 	} );
 } );

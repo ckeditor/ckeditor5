@@ -50,21 +50,17 @@ describe( 'Selection', () => {
 		liveRange.detach();
 	} );
 
-	it( 'should not have any range, attributes, anchor or focus position when just created', () => {
+	it( 'should be set to default range when just created', () => {
 		let ranges = selection.getRanges();
 
-		expect( ranges.length ).to.equal( 0 );
-		expect( selection.anchor ).to.be.null;
-		expect( selection.focus ).to.be.null;
+		expect( ranges.length ).to.equal( 1 );
+		expect( selection.anchor.isEqual( new Position( root, [ 0 ] ) ) ).to.be.true;
+		expect( selection.focus.isEqual( new Position( root, [ 0 ] ) ) ).to.be.true;
 		expect( selection._attrs ).to.be.instanceof( Map );
 		expect( selection._attrs.size ).to.equal( 0 );
 	} );
 
 	describe( 'isCollapsed', () => {
-		it( 'should be null if there are no ranges in it', () => {
-			expect( selection.isCollapsed ).to.be.null;
-		} );
-
 		it( 'should be true if all ranges are collapsed', () => {
 			selection.addRange( new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) );
 
@@ -201,11 +197,10 @@ describe( 'Selection', () => {
 			ranges[ 1 ].detach.restore();
 		} );
 
-		it( 'should remove all stored ranges', () => {
-			expect( selection.getRanges().length ).to.equal( 0 );
-			expect( selection.anchor ).to.be.null;
-			expect( selection.focus ).to.be.null;
-			expect( selection.isCollapsed ).to.be.null;
+		it( 'should remove all stored ranges (and reset to default range)', () => {
+			expect( selection.getRanges().length ).to.equal( 1 );
+			expect( selection.anchor.isEqual( new Position( root, [ 0 ] ) ) ).to.be.true;
+			expect( selection.focus.isEqual( new Position( root, [ 0 ] ) ) ).to.be.true;
 		} );
 
 		it( 'should fire exactly one update event', () => {
@@ -280,24 +275,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'hasAnyRange', () => {
-		it( 'should return false if there are no ranges added to the selection', () => {
-			selection.removeAllRanges();
-			expect( selection.hasAnyRange ).to.be.false;
-		} );
-
-		it( 'should return true if there is at least on range in the selection', () => {
-			selection.addRange( new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) );
-			expect( selection.hasAnyRange ).to.be.true;
-		} );
-	} );
-
 	describe( 'getFirstRange', () => {
-		it( 'should return null if there are no ranges in selection', () => {
-			selection.removeAllRanges();
-			expect( selection.getFirstRange() ).to.be.null;
-		} );
-
 		it( 'should return a range which start position is before all other ranges\' start positions', () => {
 			// This will not be the first range despite being added as first
 			selection.addRange( new Range( new Position( root, [ 4 ] ), new Position( root, [ 5 ] ) ) );
@@ -316,11 +294,6 @@ describe( 'Selection', () => {
 	} );
 
 	describe( 'getFirstPosition', () => {
-		it( 'should return null if there are no ranges in selection', () => {
-			selection.removeAllRanges();
-			expect( selection.getFirstPosition() ).to.be.null;
-		} );
-
 		it( 'should return a position that is in selection and is before any other position from the selection', () => {
 			// This will not be a range containing the first position despite being added as first
 			selection.addRange( new Range( new Position( root, [ 4 ] ), new Position( root, [ 5 ] ) ) );
