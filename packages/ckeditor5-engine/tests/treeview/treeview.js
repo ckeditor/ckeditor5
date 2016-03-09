@@ -10,7 +10,7 @@
 import TreeView from '/ckeditor5/core/treeview/treeview.js';
 import Observer from '/ckeditor5/core/treeview/observer/observer.js';
 import Renderer from '/ckeditor5/core/treeview/renderer.js';
-import Converter from '/ckeditor5/core/treeview/converter.js';
+import DomConverter from '/ckeditor5/core/treeview/domconverter.js';
 
 describe( 'TreeView', () => {
 	describe( 'constructor', () => {
@@ -25,10 +25,10 @@ describe( 'TreeView', () => {
 			expect( treeView ).to.have.property( 'domRoot' ).that.equals( domDiv );
 			expect( treeView ).to.have.property( 'observers' ).that.is.instanceOf( Set );
 			expect( treeView ).to.have.property( 'renderer' ).that.is.instanceOf( Renderer );
-			expect( treeView ).to.have.property( 'converter' ).that.is.instanceOf( Converter );
+			expect( treeView ).to.have.property( 'domConverter' ).that.is.instanceOf( DomConverter );
 			expect( treeView ).to.have.property( 'viewRoot' );
 
-			expect( treeView.converter.getCorrespondingDom( treeView.viewRoot ) ).to.equal( domDiv );
+			expect( treeView.domConverter.getCorrespondingDom( treeView.viewRoot ) ).to.equal( domDiv );
 			expect( treeView.viewRoot.name ).to.equal( 'div' );
 			expect( treeView.viewRoot.getAttribute( 'id' ) ).to.equal( 'editor' );
 			expect( treeView.renderer.markedChildren.has( treeView.viewRoot ) ).to.be.true;
