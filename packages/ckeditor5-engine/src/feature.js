@@ -19,18 +19,4 @@ import Plugin from './plugin.js';
  *
  * @memberOf core
  */
-export default class Feature extends Plugin {
-	/**
-	 * Creates a new Plugin instance.
-	 *
-	 * @param {core.Editor} editor
-	 */
-	constructor( editor ) {
-		super( editor );
-	}
-
-	/**
-	 * Initializes the feature. Should be overwritten by child classes.
-	 */
-	init() {}
-}
+export default class Feature extends Plugin {}
