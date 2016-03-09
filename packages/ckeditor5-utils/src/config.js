@@ -13,8 +13,8 @@ import utils from './utils.js';
 /**
  * Handles a configuration dictionary.
  *
- * @memberOf core
- * @mixes core.ObservableMixin
+ * @memberOf utils
+ * @mixes utils.ObservableMixin
  */
 export default class Config {
 	/**
@@ -37,29 +37,29 @@ export default class Config {
 	 * It also accepts setting a "deep configuration" by using dots in the name. For example, `'resize.width'` sets
 	 * the value for the `width` configuration in the `resize` subset.
 	 *
-	 *     config.set( 'width', 500 );
-	 *     config.set( 'toolbar.collapsed', true );
+	 *		config.set( 'width', 500 );
+	 *		config.set( 'toolbar.collapsed', true );
 	 *
-	 *     // Equivalent to:
-	 *     config.set( {
-	 *         width: 500
-	 *         toolbar: {
-	 *             collapsed: true
-	 *         }
-	 *     } );
+	 *		// Equivalent to:
+	 *		config.set( {
+	 *			width: 500
+	 *			toolbar: {
+	 *				collapsed: true
+	 *			}
+	 *		} );
 	 *
 	 * Passing an object as the value will amend the configuration, not replace it.
 	 *
-	 *     config.set( 'toolbar', {
-	 *         collapsed: true,
-	 *     } );
+	 *		config.set( 'toolbar', {
+	 *			collapsed: true,
+	 *		} );
 	 *
-	 *     config.set( 'toolbar', {
-	 *         color: 'red',
-	 *     } );
+	 *		config.set( 'toolbar', {
+	 *			color: 'red',
+	 *		} );
 	 *
-	 *     config.toolbar.collapsed; // true
-	 *     config.toolbar.color; // 'red'
+	 *		config.toolbar.collapsed; // true
+	 *		config.toolbar.color; // 'red'
 	 *
 	 * @param {String|Object} name The configuration name or an object from which take properties as
 	 * configuration entries. Configuration names are case-insensitive.
@@ -118,11 +118,11 @@ export default class Config {
 	/**
 	 * Gets the value for a configuration entry.
 	 *
-	 *     config.get( 'name' );
+	 *		config.get( 'name' );
 	 *
 	 * Deep configurations can be retrieved by separating each part with a dot.
 	 *
-	 *     config.get( 'toolbar.collapsed' );
+	 *		config.get( 'toolbar.collapsed' );
 	 *
 	 * @param {String} name The configuration name. Configuration names are case-insensitive.
 	 * @returns {*} The configuration value or `undefined` if the configuration entry was not found.

@@ -6,14 +6,14 @@
 'use strict';
 
 import testUtils from '/tests/_utils/utils.js';
-import coreTestUtils from '/tests/core/_utils/utils.js';
-import ObservableMixin from '/ckeditor5/core/observablemixin.js';
-import EmitterMixin from '/ckeditor5/core/emittermixin.js';
-import EventInfo from '/ckeditor5/core/eventinfo.js';
-import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
-import utils from '/ckeditor5/core/utils.js';
+import utilsTestUtils from '/tests/utils/_utils/utils.js';
+import ObservableMixin from '/ckeditor5/utils/observablemixin.js';
+import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
+import EventInfo from '/ckeditor5/utils/eventinfo.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
+import utils from '/ckeditor5/utils/utils.js';
 
-const assertBinding = coreTestUtils.assertBinding;
+const assertBinding = utilsTestUtils.assertBinding;
 
 testUtils.createSinonSandbox();
 

@@ -11,21 +11,21 @@ import utils from './utils.js';
  * The event object passed to event callbacks. It is used to provide information about the event as well as a tool to
  * manipulate it.
  *
- * @memberOf core
+ * @memberOf utils
  */
 export default class EventInfo {
 	constructor( source, name ) {
 		/**
 		 * The object that fired the event.
 		 *
-		 * @member core.EventInfo#source
+		 * @member utils.EventInfo#source
 		 */
 		this.source = source;
 
 		/**
 		 * The event name.
 		 *
-		 * @member core.EventInfo#name
+		 * @member utils.EventInfo#name
 		 */
 		this.name = name;
 
@@ -34,14 +34,14 @@ export default class EventInfo {
 		/**
 		 * Stops the event emitter to call further callbacks for this event interaction.
 		 *
-		 * @method core.EventInfo#stop
+		 * @method utils.EventInfo#stop
 		 */
 		this.stop = utils.spy();
 
 		/**
 		 * Removes the current callback from future interactions of this event.
 		 *
-		 * @method core.EventInfo#off
+		 * @method utils.EventInfo#off
 		 */
 		this.off = utils.spy();
 	}

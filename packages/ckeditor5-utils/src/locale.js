@@ -8,7 +8,7 @@
 /**
  * Represents the localization services.
  *
- * @memberOf core
+ * @memberOf utils
  */
 export default class Locale {
 	/**
@@ -21,13 +21,13 @@ export default class Locale {
 		 * The language code in [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format.
 		 *
 		 * @readonly
-		 * @member {String} core.Locale#lang
+		 * @member {String} utils.Locale#lang
 		 */
 		this.lang = lang || 'en';
 
 		/**
-		 * Translates the given string to the {@link #lang}. This method is also availble in {@link core.Editor#t} and
-		 * {@link core.ui.View#t}.
+		 * Translates the given string to the {@link #lang}. This method is also availble in {@link Editor#t} and
+		 * {@link ui.View#t}.
 		 *
 		 * The strings may contain placeholders (`%<index>`) for values which are passed as the second argument.
 		 * `<index>` is the index in the `values` array.
@@ -40,7 +40,7 @@ export default class Locale {
 		 *		const t = this.t;
 		 *		t( 'Label' );
 		 *
-		 * @method core.Locale#t
+		 * @method utils.Locale#t
 		 * @param {String} str The string to translate.
 		 * @param {String[]} values Values that should be used to interpolate the string.
 		 */

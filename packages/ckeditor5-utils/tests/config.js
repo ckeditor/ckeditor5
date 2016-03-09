@@ -5,7 +5,7 @@
 
 'use strict';
 
-import Config from '/ckeditor5/core/config.js';
+import Config from '/ckeditor5/utils/config.js';
 
 let config;
 

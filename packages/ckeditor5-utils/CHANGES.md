@@ -1,7 +1,7 @@
-CKEditor 5 Core Framework Changelog
+CKEditor 5 Utils Changelog
 ========================================
 
-## CKEditor 5 Core Framework 0.0.2
+## CKEditor 5 Utils 0.0.2
 
 **Major|Minor|Patch Release** – Build Date: yyyy-mm-dd
 
@@ -20,6 +20,6 @@ Other Changes:
 * Item 1
 * Item 2
 
-## CKEditor 5 Core Framework 0.0.1
+## CKEditor 5 Utils 0.0.1
 
 ...

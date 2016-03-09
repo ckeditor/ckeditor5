@@ -8,7 +8,7 @@
 /* global console:false */
 
 import moduleUtils from '/tests/_utils/module.js';
-import EmitterMixin from '/ckeditor5/core/emittermixin.js';
+import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
 
 const utils = {
 	/**
@@ -23,7 +23,7 @@ const utils = {
 	 * be copied to the prototype of the creator.
 	 */
 	defineEditorCreatorMock( creatorName, proto ) {
-		moduleUtils.define( 'creator-' + creatorName, [ 'core/creator' ], ( Creator ) => {
+		moduleUtils.define( 'creator-' + creatorName, [ 'creator' ], ( Creator ) => {
 			class TestCreator extends Creator {}
 
 			if ( proto ) {
@@ -55,14 +55,14 @@ const utils = {
 	},
 
 	/**
-	 * Creates an instance inheriting from {@link core.EmitterMixin} with one additional method `observe()`.
-	 * It allows observing changes to attributes in objects being {@link core.Observable observable}.
+	 * Creates an instance inheriting from {@link utils.EmitterMixin} with one additional method `observe()`.
+	 * It allows observing changes to attributes in objects being {@link utils.Observable observable}.
 	 *
 	 * The `observe()` method accepts:
 	 *
 	 * * `{String} observableName` – Identifier for the observable object. E.g. `"Editable"` when
 	 * you observe one of editor's editables. This name will be displayed on the console.
-	 * * `{core.Observable observable} – The object to observe.
+	 * * `{utils.Observable observable} – The object to observe.
 	 *
 	 * Typical usage:
 	 *

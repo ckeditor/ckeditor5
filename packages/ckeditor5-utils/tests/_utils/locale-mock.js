@@ -6,9 +6,9 @@
 'use strict';
 
 /**
- * A replacement for the {@link core.Locale} class.
+ * A replacement for the {@link utils.Locale} class.
  *
- * @memberOf tests.core._utils
+ * @memberOf tests.utils._utils
  */
 export default class Locale {
 	constructor() {
@@ -18,7 +18,7 @@ export default class Locale {
 	/**
 	 * Injects instance of this class to the editor.
 	 *
-	 * @param {core.Editor} editor
+	 * @param {Editor} editor
 	 */
 	static inject( editor ) {
 		editor.locale = new Locale();

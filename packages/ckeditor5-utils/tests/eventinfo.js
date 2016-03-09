@@ -5,7 +5,7 @@
 
 'use strict';
 
-import EventInfo from '/ckeditor5/core/eventinfo.js';
+import EventInfo from '/ckeditor5/utils/eventinfo.js';
 
 describe( 'EventInfo', () => {
 	it( 'should be created properly', () => {

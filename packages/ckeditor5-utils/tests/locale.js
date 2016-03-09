@@ -5,7 +5,7 @@
 
 'use strict';
 
-import Locale from '/ckeditor5/core/locale.js';
+import Locale from '/ckeditor5/utils/locale.js';
 
 describe( 'Locale', () => {
 	let locale;

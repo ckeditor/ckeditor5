@@ -7,22 +7,22 @@
 
 import testUtils from '/tests/_utils/utils.js';
 import moduleTestUtils from '/tests/_utils/module.js';
-import coreTestUtils from '/tests/core/_utils/utils.js';
-import Model from '/ckeditor5/core/ui/model.js';
-import Creator from '/ckeditor5/core/creator.js';
-import EmitterMixin from '/ckeditor5/core/emittermixin.js';
+import utilsTestUtils from '/tests/utils/_utils/utils.js';
+import Model from '/ckeditor5/utils/ui/model.js';
+import Creator from '/ckeditor5/utils/creator.js';
+import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
 
 let createFn3 = () => {};
 let destroyFn3 = () => {};
 
 testUtils.createSinonSandbox();
 
-coreTestUtils.defineEditorCreatorMock( 'test1' );
-coreTestUtils.defineEditorCreatorMock( 'test2', {
+utilsTestUtils.defineEditorCreatorMock( 'test1' );
+utilsTestUtils.defineEditorCreatorMock( 'test2', {
 	foo: 1,
 	bar: 2
 } );
-coreTestUtils.defineEditorCreatorMock( 'test3', {
+utilsTestUtils.defineEditorCreatorMock( 'test3', {
 	create: createFn3,
 	destroy: destroyFn3
 } );
@@ -43,7 +43,7 @@ before( () => {
 	TestCreator3 = modules.testCreator3;
 } );
 
-describe( 'coreTestUtils.defineEditorCreatorMock()', () => {
+describe( 'utilsTestUtils.defineEditorCreatorMock()', () => {
 	it( 'should register all creators', () => {
 		expect( TestCreator1.prototype ).to.be.instanceof( Creator );
 		expect( TestCreator2.prototype ).to.be.instanceof( Creator );
@@ -59,18 +59,18 @@ describe( 'coreTestUtils.defineEditorCreatorMock()', () => {
 	} );
 } );
 
-describe( 'coreTestUtils.getIteratorCount()', () => {
+describe( 'utilsTestUtils.getIteratorCount()', () => {
 	it( 'should returns number of editable items', () => {
-		const count = coreTestUtils.getIteratorCount( [ 1, 2, 3, 4, 5 ] );
+		const count = utilsTestUtils.getIteratorCount( [ 1, 2, 3, 4, 5 ] );
 		expect( count ).to.equal( 5 );
 	} );
 } );
 
-describe( 'coreTestUtils.createObserver()', () => {
+describe( 'utilsTestUtils.createObserver()', () => {
 	let observable, observable2, observer;
 
 	beforeEach( () => {
-		observer = coreTestUtils.createObserver();
+		observer = utilsTestUtils.createObserver();
 		observable = new Model( { foo: 0, bar: 0 } );
 		observable2 = new Model( { foo: 0, bar: 0 } );
 	} );

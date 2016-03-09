@@ -7,7 +7,7 @@
 
 'use strict';
 
-import log from '/ckeditor5/core/log.js';
+import log from '/ckeditor5/utils/log.js';
 
 let spy;
 

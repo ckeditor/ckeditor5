@@ -1,7 +1,7 @@
 {
-  "name": "ckeditor5-core",
+  "name": "ckeditor5-utils",
   "version": "0.0.1-0.dev",
-  "description": "CKEditor 5 Core Framework",
+  "description": "CKEditor 5 Utils",
   "keywords": [
     "CKEditor"
   ],
@@ -25,10 +25,10 @@
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "See LICENSE.md",
-  "homepage": "https://github.com/ckeditor/ckeditor5-core",
-  "bugs": "https://github.com/ckeditor/ckeditor5-core/issues",
+  "homepage": "https://github.com/ckeditor/ckeditor5-utils",
+  "bugs": "https://github.com/ckeditor/ckeditor5-utils/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ckeditor/ckeditor5-core.git"
+    "url": "https://github.com/ckeditor/ckeditor5-utils.git"
   }
 }

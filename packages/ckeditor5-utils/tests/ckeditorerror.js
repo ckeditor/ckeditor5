@@ -5,7 +5,7 @@
 
 'use strict';
 
-import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'CKEditorError', () => {
 	it( 'inherits from Error', () => {
