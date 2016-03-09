@@ -528,4 +528,158 @@ describe( 'build-utils', () => {
 		test( 'foo/tests/file.js', false );
 		test( 'tests/_foo/file.js', false );
 	} );
+
+	describe( 'getPackages', () => {
+		it( 'returns collected paths to ckeditor5-* packages', ( done ) => {
+			const fs = require( 'fs' );
+			const readDirStub = sandbox.stub( fs, 'readdirSync', () => {
+				return [
+					'ckeditor5-core',
+					'ckeditor5-theme-default'
+				];
+			} );
+			const statStub = sandbox.stub( fs, 'lstatSync', () => {
+				return {
+					isDirectory() {
+						return true;
+					},
+					isSymbolicLink() {
+						return false;
+					}
+				};
+			} );
+
+			expect( utils.getPackages( '.' ) ).to.have.members( [
+				'node_modules/ckeditor5-core',
+				'node_modules/ckeditor5-theme-default'
+			] );
+
+			sinon.assert.calledOnce( readDirStub );
+			sinon.assert.calledTwice( statStub );
+
+			done();
+		} );
+	} );
+
+	describe( 'filterThemeEntryPoints', () => {
+		it( 'returns a stream containing theme entry points', ( done ) => {
+			const stream = require( 'stream' );
+			const entryPoints = [];
+
+			function fakeInputStream() {
+				const files = [
+					new Vinyl( {
+						cwd: './',
+						path: 'foo/bar/_helper.scss',
+						contents: new Buffer( '' )
+					} ),
+					new Vinyl( {
+						cwd: './',
+						path: 'foo/bar/component.scss',
+						contents: new Buffer( '' )
+					} ),
+					new Vinyl( {
+						cwd: './',
+						path: 'foo/bar/theme.scss',
+						contents: new Buffer( '' )
+					} ),
+					new Vinyl( {
+						cwd: './',
+						path: 'foo/bar/_theme.scss',
+						contents: new Buffer( '' )
+					} )
+				];
+
+				const fake = new stream.Readable( { objectMode: true } );
+
+				fake._read = () => {
+					fake.push( files.pop() || null );
+				};
+
+				return fake;
+			}
+
+			fakeInputStream()
+				.pipe( utils.filterThemeEntryPoints() )
+				.pipe( through.obj( ( file, encoding, callback ) => {
+					entryPoints.push( file.path );
+
+					callback();
+				}, () => {
+					expect( entryPoints ).to.have.members( [ 'foo/bar/theme.scss' ] );
+
+					done();
+				} ) );
+		} );
+	} );
+
+	describe( 'compileThemes', () => {
+		it( 'returns a stream containing compiled CSS file', ( done ) => {
+			const stream = require( 'stream' );
+			let compiledThemePath;
+			let compiledThemeCss;
+
+			function fakeInputStream() {
+				const files = [
+					new Vinyl( {
+						cwd: './',
+						path: 'foo/bar/theme.scss',
+						contents: new Buffer( '' )
+					} ),
+					new Vinyl( {
+						cwd: './',
+						path: 'baz/qux/theme.scss',
+						contents: new Buffer( '' )
+					} ),
+				];
+
+				const fake = new stream.Readable( { objectMode: true } );
+
+				fake._read = () => {
+					fake.push( files.pop() || null );
+				};
+
+				return fake;
+			}
+
+			sandbox.stub( utils, 'getSassOptions', dataToRender => {
+				return {
+					data: dataToRender,
+					outputStyle: 'expanded',
+					importer: url => {
+						return { file: url, contents: `/*! ${ url } */` };
+					}
+				};
+			} );
+
+			fakeInputStream()
+				.pipe( utils.compileThemes( 'abc.css' ) )
+				.pipe( through.obj( ( file, encoding, callback ) => {
+					compiledThemePath = file.path;
+					compiledThemeCss = file.contents;
+
+					callback();
+				}, () => {
+					expect( compiledThemePath ).to.be.equal( 'abc.css' );
+					expect( compiledThemeCss.toString() ).to.be.equal(
+`/*! baz/qux/theme.scss */
+/*! foo/bar/theme.scss */
+` );
+
+					done();
+				} ) );
+		} );
+	} );
+
+	describe( 'getSassOptions', () => {
+		it( 'should return default options for SASS', () => {
+			const options = utils.getSassOptions( 'foo' );
+
+			expect( options ).to.have.property( 'data', 'foo' );
+			expect( options ).to.have.property( 'sourceMap', true );
+			expect( options ).to.have.property( 'sourceMapEmbed', true );
+			expect( options ).to.have.property( 'outputStyle', 'expanded' );
+			expect( options ).to.have.property( 'sourceComments', true );
+		} );
+	} );
 } );

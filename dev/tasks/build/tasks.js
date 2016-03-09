@@ -5,239 +5,336 @@
 
 'use strict';
 
-const fs = require( 'fs' );
 const path = require( 'path' );
 const gulp = require( 'gulp' );
-const del = require( 'del' );
 const merge = require( 'merge-stream' );
 const gulpMirror = require( 'gulp-mirror' );
 const gulpWatch = require( 'gulp-watch' );
+const gulpPlumber = require( 'gulp-plumber' );
 const gutil = require( 'gulp-util' );
-const minimist = require( 'minimist' );
 const utils = require( './utils' );
+const runSequence = require( 'run-sequence' );
 
 module.exports = ( config ) => {
 	const buildDir = path.join( config.ROOT_DIR, config.BUILD_DIR );
+	const themesGlob = path.join( 'theme', '**', '*.scss' );
+	const iconsGlob = path.join( 'theme', 'icons', '*.svg' );
 
 	const tasks = {
-		/**
-		 * Removes the build directory.
-		 */
-		clean() {
-			return del( buildDir );
+		clean: {
+			/**
+			 * Removes "themes" folder from "./build/{format}" directory.
+			 */
+			themes() {
+				return utils.clean( buildDir, path.join( `@(${ utils.parseArguments().formats.join( '|' ) })`, 'theme' ) );
+			},
+
+			/**
+			 * Removes all but "themes" folder from "./build/{format}" directory.
+			 */
+			js() {
+				return utils.clean( buildDir, path.join( `@(${ utils.parseArguments().formats.join( '|' ) })`, '!(theme)' ) );
+			},
+
+			/**
+			 * Removes the "./build" directory.
+			 */
+			all() {
+				return utils.clean( buildDir, path.join() );
+			}
 		},
 
 		src: {
-			/**
-			 * Returns a stream of all source files.
-			 *
-			 * @param {Boolean} [watch] Whether the files should be watched.
-			 * @returns {Stream}
-			 */
-			all( watch ) {
-				return merge( tasks.src.main( watch ), tasks.src.ckeditor5( watch ), tasks.src.packages( watch ) );
+			js: {
+				/**
+				 * Returns a stream of all source files.
+				 *
+				 * @param {Boolean} [watch] Whether the files should be watched.
+				 * @returns {Stream}
+				 */
+				all( watch ) {
+					return merge( tasks.src.js.main( watch ), tasks.src.js.ckeditor5( watch ), tasks.src.js.packages( watch ) );
+				},
+
+				/**
+				 * Returns a stream with just the main file (`ckeditor5/ckeditor.js`).
+				 *
+				 * @param {Boolean} [watch] Whether to watch the files.
+				 * @returns {Stream}
+				 */
+				main( watch ) {
+					const glob = path.join( config.ROOT_DIR, 'ckeditor.js' );
+
+					return gulp.src( glob )
+						.pipe( watch ? gulpWatch( glob ) : utils.noop() );
+				},
+
+				/**
+				 * Returns a stream of all source files from CKEditor 5.
+				 *
+				 * @param {Boolean} [watch] Whether to watch the files.
+				 * @returns {Stream}
+				 */
+				ckeditor5( watch ) {
+					const glob = path.join( config.ROOT_DIR, '@(src|tests)', '**', '*' );
+
+					return gulp.src( glob, { nodir: true } )
+						.pipe( watch ? gulpWatch( glob ) : utils.noop() )
+						.pipe( utils.renameCKEditor5Files() );
+				},
+
+				/**
+				 * Returns a stream of all source files from CKEditor 5 dependencies.
+				 *
+				 * @param {Boolean} [watch] Whether to watch the files.
+				 * @returns {Stream}
+				 */
+				packages( watch ) {
+					const dirs = utils.getPackages( config.ROOT_DIR );
+
+					const streams = dirs.map( ( dirPath ) => {
+						const glob = path.join( dirPath, '@(src|tests)', '**', '*' );
+						// Use parent as a base so we get paths starting with 'ckeditor5-*/src/*' in the stream.
+						const baseDir = path.parse( dirPath ).dir;
+						const opts = { base: baseDir, nodir: true };
+
+						return gulp.src( glob, opts )
+							.pipe( watch ? gulpWatch( glob, opts ) : utils.noop() );
+					} );
+
+					return merge.apply( null, streams )
+						.pipe( utils.renamePackageFiles() );
+				}
 			},
 
 			/**
-			 * Returns a stream with just the main file (`ckeditor5/ckeditor.js`).
+			 * Returns a stream of all theme (*.scss) files.
 			 *
-			 * @param {Boolean} [watch] Whether to watch the files.
 			 * @returns {Stream}
 			 */
-			main( watch ) {
-				const glob = path.join( config.ROOT_DIR, 'ckeditor.js' );
-
-				return gulp.src( glob )
-					.pipe( watch ? gulpWatch( glob ) : utils.noop() );
-			},
-
-			/**
-			 * Returns a stream of all source files from CKEditor 5.
-			 *
-			 * @param {Boolean} [watch] Whether to watch the files.
-			 * @returns {Stream}
-			 */
-			ckeditor5( watch ) {
-				const glob = path.join( config.ROOT_DIR, '@(src|tests)', '**', '*' );
-
-				return gulp.src( glob, { nodir: true } )
-					.pipe( watch ? gulpWatch( glob ) : utils.noop() )
-					.pipe( utils.renameCKEditor5Files() );
-			},
-
-			/**
-			 * Returns a stream of all source files from CKEditor 5 dependencies.
-			 *
-			 * @param {Boolean} [watch] Whether to watch the files.
-			 * @returns {Stream}
-			 */
-			packages( watch ) {
-				// Find all CKEditor5 package directories. Resolve symlinks so we watch real directories
-				// in order to workaround https://github.com/paulmillr/chokidar/issues/419.
-				const dirs = fs.readdirSync( path.join( config.ROOT_DIR, 'node_modules' ) )
-					// Look for ckeditor5-* directories.
-					.filter( ( fileName ) => fileName.indexOf( 'ckeditor5-' ) === 0 )
-					// Resolve symlinks and keep only directories.
-					.map( ( fileName ) => {
-						let filePath = path.join( config.ROOT_DIR, 'node_modules', fileName );
-						let stat = fs.lstatSync( filePath );
-
-						if ( stat.isSymbolicLink() ) {
-							filePath = fs.realpathSync( filePath );
-							stat = fs.lstatSync( filePath );
-						}
-
-						if ( stat.isDirectory() ) {
-							return filePath;
-						}
-
-						// Filter...
-						return false;
-					} )
-					// 					...those out.
-					.filter( ( filePath ) => filePath );
+			sass() {
+				const dirs = utils.getPackages( config.ROOT_DIR );
 
 				const streams = dirs.map( ( dirPath ) => {
-					const glob = path.join( dirPath, '@(src|tests)', '**', '*' );
-					// Use parent as a base so we get paths starting with 'ckeditor5-*/src/*' in the stream.
+					const glob = path.join( dirPath, themesGlob );
 					const baseDir = path.parse( dirPath ).dir;
 					const opts = { base: baseDir, nodir: true };
 
-					return gulp.src( glob, opts )
-						.pipe( watch ? gulpWatch( glob, opts ) : utils.noop() );
+					return gulp.src( glob, opts );
 				} );
 
-				return merge.apply( null, streams )
-					.pipe( utils.renamePackageFiles() );
+				return merge.apply( null, streams );
+			},
+
+			icons() {
+				const dirs = utils.getPackages( config.ROOT_DIR );
+
+				const streams = dirs.map( ( dirPath ) => {
+					const glob = path.join( dirPath, iconsGlob );
+					const baseDir = path.parse( dirPath ).dir;
+					const opts = { base: baseDir, nodir: true };
+
+					return gulp.src( glob, opts );
+				} );
+
+				return merge.apply( null, streams );
 			}
 		},
 
-		/**
-		 * The main build task which is capable of copying, watching, processing and writing all files
-		 * to the `build/` directory.
-		 *
-		 * @param {Object} options
-		 * @param {String} options.formats
-		 * @param {Boolean} [options.watch]
-		 * @returns {Stream}
-		 */
-		build( options ) {
-			//
-			// NOTE: Error handling in streams is hard.
-			//
-			// Most likely this code isn't optimal, but it's a result of 8h spent on search
-			// for a solution to the ruined pipeline whenever something throws.
-			//
-			// Most important fact is that when dest stream emits an error the src stream
-			// unpipes it. Problem is when you start using tools like multipipe or gulp-mirror,
-			// because you lose control over the graph of the streams and you cannot reconnect them
-			// with a full certainty that you connected them correctly, since you'd need to know these
-			// libs internals.
-			//
-			// BTW. No, gulp-plumber is not a solution here because it does not affect the other tools.
-			//
-			// Hence, I decided that it'll be best to restart the whole piece. However, I wanted to avoid restarting the
-			// watcher as it sounds like something heavy.
-			//
-			// The flow looks like follows:
-			//
-			// 1. codeStream (including logger)
-			// 2. inputStream
-			// 3. conversionStream (may throw)
-			// 4. outputStream
-			//
-			// The input and output streams allowed me to easier debug and restart everything. Additionally, the output
-			// stream is returned to Gulp so it must be stable. I decided to restart also the inputStream because when conversionStream
-			// throws, then inputStream gets paused. Most likely it's possible to resume it, so we could pipe codeStream directly to
-			// conversionStream, but it was easier this way.
-			//
-			// PS. The assumption is that all errors thrown somewhere inside conversionStream are forwarded to conversionStream.
-			// Multipipe and gulp-mirror seem to work this way, so we get a single error emitter.
-			const formats = options.formats.split( ',' );
-			const codeStream = tasks.src.all( options.watch )
-				.pipe(
-					utils.noop( ( file ) => {
-						gutil.log( `Processing '${ gutil.colors.cyan( file.path ) }'...` );
-					} )
-				);
-			const conversionStreamGenerator = utils.getConversionStreamGenerator( buildDir );
-			const outputStream = utils.noop();
+		build: {
+			/**
+			 * The build task which is capable of copying, watching, processing and writing all JavaScript files
+			 * to the `build/` directory.
+			 *
+			 * @param {Object} options
+			 * @param {String} options.formats
+			 * @param {Boolean} [options.watch]
+			 * @returns {Stream}
+			 */
+			js( options ) {
+				//
+				// NOTE: Error handling in streams is hard.
+				//
+				// Most likely this code isn't optimal, but it's a result of 8h spent on search
+				// for a solution to the ruined pipeline whenever something throws.
+				//
+				// Most important fact is that when dest stream emits an error the src stream
+				// unpipes it. Problem is when you start using tools like multipipe or gulp-mirror,
+				// because you lose control over the graph of the streams and you cannot reconnect them
+				// with a full certainty that you connected them correctly, since you'd need to know these
+				// libs internals.
+				//
+				// BTW. No, gulp-plumber is not a solution here because it does not affect the other tools.
+				//
+				// Hence, I decided that it'll be best to restart the whole piece. However, I wanted to avoid restarting the
+				// watcher as it sounds like something heavy.
+				//
+				// The flow looks like follows:
+				//
+				// 1. codeStream (including logger)
+				// 2. inputStream
+				// 3. conversionStream (may throw)
+				// 4. outputStream
+				//
+				// The input and output streams allowed me to easier debug and restart everything. Additionally, the output
+				// stream is returned to Gulp so it must be stable. I decided to restart also the inputStream because when conversionStream
+				// throws, then inputStream gets paused. Most likely it's possible to resume it, so we could pipe codeStream directly to
+				// conversionStream, but it was easier this way.
+				//
+				// PS. The assumption is that all errors thrown somewhere inside conversionStream are forwarded to conversionStream.
+				// Multipipe and gulp-mirror seem to work this way, so we get a single error emitter.
+				const codeStream = tasks.src.js.all( options.watch )
+					.pipe(
+						utils.noop( ( file ) => {
+							gutil.log( `Processing '${ gutil.colors.cyan( file.path ) }'...` );
+						} )
+					);
+				const conversionStreamGenerator = utils.getConversionStreamGenerator( buildDir );
+				const outputStream = utils.noop();
 
-			let inputStream;
-			let conversionStream;
+				let inputStream;
+				let conversionStream;
 
-			startStreams();
+				startStreams();
 
-			return outputStream;
+				return outputStream;
 
-			// Creates a single stream combining multiple conversion streams.
-			function createConversionStream() {
-				const formatPipes = formats.reduce( conversionStreamGenerator, [] );
+				// Creates a single stream combining multiple conversion streams.
+				function createConversionStream() {
+					const formatPipes = options.formats.reduce( conversionStreamGenerator, [] );
 
-				return gulpMirror.apply( null, formatPipes )
-					.on( 'error', onError );
-			}
-
-			// Handles error in the combined conversion stream.
-			// If we don't watch files, make sure that the process terminates ASAP. We could forward the error
-			// to the output, but there may be some data in the pipeline and our error could be covered
-			// by dozen of other messages.
-			// If we watch files, then clean up the old streams and restart the combined conversion stream.
-			function onError() {
-				if ( !options.watch ) {
-					process.exit( 1 );
-
-					return;
+					return gulpMirror.apply( null, formatPipes )
+						.on( 'error', onError );
 				}
 
-				unpipeStreams();
+				// Handles error in the combined conversion stream.
+				// If we don't watch files, make sure that the process terminates ASAP. We could forward the error
+				// to the output, but there may be some data in the pipeline and our error could be covered
+				// by dozen of other messages.
+				// If we watch files, then clean up the old streams and restart the combined conversion stream.
+				function onError() {
+					if ( !options.watch ) {
+						process.exit( 1 );
 
-				gutil.log( 'Restarting...' );
-				startStreams();
-			}
+						return;
+					}
 
-			function startStreams() {
-				inputStream = utils.noop();
-				conversionStream = createConversionStream();
+					unpipeStreams();
 
-				codeStream
-					.pipe( inputStream )
-					.pipe( conversionStream )
-					.pipe( outputStream );
-			}
+					gutil.log( 'Restarting...' );
+					startStreams();
+				}
 
-			function unpipeStreams() {
-				codeStream.unpipe( inputStream );
-				conversionStream.unpipe( outputStream );
+				function startStreams() {
+					inputStream = utils.noop();
+					conversionStream = createConversionStream();
+
+					codeStream
+						.pipe( inputStream )
+						.pipe( conversionStream )
+						.pipe( outputStream );
+				}
+
+				function unpipeStreams() {
+					codeStream.unpipe( inputStream );
+					conversionStream.unpipe( outputStream );
+				}
+			},
+
+			/**
+			 * The task capable of watching, processing and writing CSS files into
+			 * the `build/{format}/theme` directory.
+			 *
+			 * @param {Object} options
+			 * @param {String} options.formats
+			 * @param {Boolean} [options.watch]
+			 * @returns {Stream}
+			 */
+			sass( options ) {
+				if ( options.watch ) {
+					const glob = path.join( config.ROOT_DIR, 'node_modules', 'ckeditor5-*', themesGlob );
+
+					// Initial build.
+					build();
+
+					gutil.log( `Watching theme files in '${ gutil.colors.cyan( glob ) }' for changes...` );
+
+					return gulp.watch( glob, event => {
+						gutil.log( `Theme file '${ gutil.colors.cyan( event.path ) }' has been ${ event.type }...` );
+
+						// Re-build the entire theme if the file has been changed.
+						return build();
+					} );
+				} else {
+					return build();
+				}
+
+				function build() {
+					const dests = utils.getThemeDestsForFormats( buildDir, options.formats );
+
+					return tasks.src.sass()
+						.pipe( gulpPlumber() )
+						.pipe( utils.filterThemeEntryPoints() )
+						.pipe( utils.compileThemes( 'ckeditor.css' ) )
+						.pipe( gulpMirror( dests ) )
+						.pipe(
+							utils.noop( ( file ) => {
+								gutil.log( `Output file saved to '${ gutil.colors.cyan( file.path ) }'.` );
+							} )
+						)
+						.on( 'error', console.log );
+				}
+			},
+
+			/**
+			 * The task capable of converting SVG files into `build/{format}/theme/icons.js`
+			 * sprite.
+			 *
+			 * @param {Object} options
+			 * @param {String} options.formats
+			 * @returns {Stream}
+			 */
+			icons( options ) {
+				const dests = utils.getThemeDestsForFormats( buildDir, options.formats );
+
+				return tasks.src.icons()
+					.pipe( utils.compileIconSprite() )
+					.pipe( gulpMirror( dests ) )
+					.pipe(
+						utils.noop( ( file ) => {
+							gutil.log( `Output file saved to '${ gutil.colors.cyan( file.path ) }'.` );
+						} )
+					);
 			}
 		}
 	};
 
-	gulp.task( 'build:clean', tasks.clean );
-
-	gulp.task( 'build', [ 'build:clean' ], () => {
-		const knownOptions = {
-			string: [
-				'formats'
-			],
-
-			boolean: [
-				'watch'
-			],
-
-			default: {
-				formats: 'amd',
-				watch: false
-			}
-		};
-
-		const options = minimist( process.argv.slice( 2 ), knownOptions );
-
-		return tasks.build( options );
+	gulp.task( 'build', callback => {
+		runSequence( 'build:clean:all', 'build:themes', 'build:js', callback );
 	} );
 
-	gulp.task( 'build-esnext', [ 'build:clean' ], () => {
-		return tasks.build( { formats: 'esnext' } );
+	gulp.task( 'build:clean:all', tasks.clean.all );
+	gulp.task( 'build:clean:themes', tasks.clean.themes );
+	gulp.task( 'build:clean:js', tasks.clean.js );
+
+	gulp.task( 'build:themes', ( callback ) => {
+		runSequence( 'build:clean:themes', 'build:icons', 'build:sass', callback );
+	} );
+
+	gulp.task( 'build:sass', () => {
+		return tasks.build.sass( utils.parseArguments() );
+	} );
+
+	gulp.task( 'build:icons', () => {
+		return tasks.build.icons( utils.parseArguments() );
+	} );
+
+	gulp.task( 'build:js', [ 'build:clean:js' ], () => {
+		return tasks.build.js( utils.parseArguments() );
+	} );
+
+	gulp.task( 'build:js:esnext', [ 'build:clean:js' ], () => {
+		return tasks.build.js( { formats: [ 'esnext' ] } );
 	} );
 
 	return tasks;

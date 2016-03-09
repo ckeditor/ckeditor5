@@ -64,7 +64,7 @@ describe( 'build-tasks', () => {
 				};
 			} );
 			const gulpSrcSpy = sandbox.spy( gulp, 'src' );
-			tasks.src.packages( false );
+			tasks.src.js.packages( false );
 
 			sinon.assert.calledOnce( readDirStub );
 			sinon.assert.calledTwice( gulpSrcSpy );
@@ -89,7 +89,7 @@ describe( 'build-tasks', () => {
 			} );
 			const realPathStub = sandbox.stub( fs, 'realpathSync', () => '/real/path' );
 			const gulpSrcSpy = sandbox.spy( gulp, 'src' );
-			tasks.src.packages( false );
+			tasks.src.js.packages( false );
 
 			sinon.assert.calledOnce( readDirStub );
 			sinon.assert.calledOnce( realPathStub );
@@ -98,12 +98,12 @@ describe( 'build-tasks', () => {
 		} );
 	} );
 
-	describe( 'build', () => {
+	describe( 'build.js', () => {
 		it( 'should return build stream', ( done ) => {
 			const code = 'export default {};';
 			sandbox.stub( gutil, 'log' );
 
-			const build = tasks.build;
+			const build = tasks.build.js;
 			const stream = require( 'stream' );
 			const files = [
 				new Vinyl( {
@@ -116,7 +116,7 @@ describe( 'build-tasks', () => {
 			let written = 0;
 
 			// Stub input stream.
-			sandbox.stub( tasks.src, 'all', () => {
+			sandbox.stub( tasks.src.js, 'all', () => {
 				const fakeInputStream = new stream.Readable( { objectMode: true } );
 				fakeInputStream._read = () => {
 					fakeInputStream.push( files.pop() || null );
@@ -138,7 +138,7 @@ describe( 'build-tasks', () => {
 				} );
 			} );
 
-			const conversionStream = build( { formats: 'amd' } );
+			const conversionStream = build( { formats: [ 'amd' ] } );
 
 			conversionStream.on( 'finish', () => {
 				expect( written ).to.equal( 1 );
