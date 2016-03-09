@@ -58,13 +58,13 @@ export default class Text extends Node {
 	}
 
 	/**
-	 * Checks if this text node is the same as other text node.
-	 * Both nodes should have the same data to be considered as same.
+	 * Checks if this text node is similar to other text node.
+	 * Both nodes should have the same data to be considered as similar.
 	 *
 	 * @param {core.treeView.Text} otherNode Node to check if it is same as this node.
 	 * @returns {Boolean}
 	 */
-	same( otherNode ) {
+	isSimilar( otherNode ) {
 		if ( !( otherNode instanceof Text ) ) {
 			return false;
 		}

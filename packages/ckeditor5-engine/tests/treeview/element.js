@@ -103,28 +103,27 @@ describe( 'Element', () => {
 		} );
 	} );
 
-	describe( 'same', () => {
+	describe( 'isSimilar', () => {
 		const el = new ViewElement( 'p', { foo: 'bar' } );
-
 		it( 'should return false when comparing to non-element', () => {
-			expect( el.same( null ) ).to.be.false;
-			expect( el.same( {} ) ).to.be.false;
+			expect( el.isSimilar( null ) ).to.be.false;
+			expect( el.isSimilar( {} ) ).to.be.false;
 		} );
 
 		it( 'should return true when the same node is provided', () => {
-			expect( el.same( el ) ).to.be.true;
+			expect( el.isSimilar( el ) ).to.be.true;
 		} );
 
 		it( 'should return true for element with same attributes and name', () => {
 			const other = new ViewElement( 'p', { foo: 'bar' } );
-			expect( el.same( other ) ).to.be.true;
+			expect( el.isSimilar( other ) ).to.be.true;
 		} );
 
 		it( 'sould return false when name is not the same', () => {
 			const other = el.clone();
 			other.name = 'div';
 
-			expect( el.same( other ) ).to.be.false;
+			expect( el.isSimilar( other ) ).to.be.false;
 		} );
 
 		it( 'should return false when attributes are not the same', () => {
@@ -134,9 +133,9 @@ describe( 'Element', () => {
 			other1.setAttribute( 'baz', 'qux' );
 			other2.setAttribute( 'foo', 'not-bar' );
 			other3.removeAttribute( 'foo' );
-			expect( el.same( other1 ) ).to.be.false;
-			expect( el.same( other2 ) ).to.be.false;
-			expect( el.same( other3 ) ).to.be.false;
+			expect( el.isSimilar( other1 ) ).to.be.false;
+			expect( el.isSimilar( other2 ) ).to.be.false;
+			expect( el.isSimilar( other3 ) ).to.be.false;
 		} );
 	} );
 

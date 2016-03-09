@@ -231,7 +231,7 @@ import CKEditorError from '../ckeditorerror.js';
 
 	/**
 	 * Merges attribute nodes. It also merges text nodes if needed.
-	 * Only {@link core.treeView.Element#same similar} `attribute` nodes, with same priority can be merged.
+	 * Only {@link core.treeView.Element#isSimilar similar} `attribute` nodes, with same priority can be merged.
 	 *
 	 *		<p>{foo}|{bar}</p> -> <p>{foo|bar}</p>
 	 *		<p><b>{foo}</b>|<b>{bar}</b> -> <p><b>{foo|bar}</b></b>
@@ -272,7 +272,7 @@ import CKEditorError from '../ckeditorerror.js';
 			positionParent.removeChildren( positionOffset );
 
 			return new Position( nodeBefore, nodeBeforeLength );
-		} else if ( nodeBefore.same( nodeAfter ) ) {
+		} else if ( nodeBefore.isSimilar( nodeAfter ) ) {
 			// When selection is between same nodes.
 			const nodeBeforePriority = this._priorities.get( nodeBefore );
 			const nodeAfterPriority = this._priorities.get( nodeAfter );
@@ -508,8 +508,8 @@ function unwrapChildren( writer, parent, startOffset, endOffset, attribute ) {
 	while ( i < endOffset ) {
 		const child = parent.getChild( i );
 
-		// If attributes are the same and have same priority, then unwrap.
-		if (  child.same( attribute ) && writer.getPriority( child ) == writer.getPriority( attribute ) ) {
+		// If attributes are the similar and have same priority, then unwrap.
+		if (  child.isSimilar( attribute ) && writer.getPriority( child ) == writer.getPriority( attribute ) ) {
 			const unwrapped = child.getChildren();
 			const count = child.getChildCount();
 

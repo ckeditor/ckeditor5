@@ -241,13 +241,13 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Checks if this element is the same as other element.
-	 * Both elements should have the same name and attributes to be considered as same.
+	 * Checks if this element is similar to other element.
+	 * Both elements should have the same name and attributes to be considered as similar.
 	 *
 	 * @param {Element} otherElement
 	 * @returns {Boolean}
 	 */
-	same( otherElement ) {
+	isSimilar( otherElement ) {
 		if ( !( otherElement instanceof Element ) ) {
 			return false;
 		}
