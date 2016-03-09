@@ -41,14 +41,6 @@ export default class Document {
 	 */
 	constructor() {
 		/**
-		 * List of roots that are owned and managed by this document.
-		 *
-		 * @readonly
-		 * @member {Map} core.treeModel.Document#roots
-		 */
-		this.roots = new Map();
-
-		/**
 		 * Document version. It starts from `0` and every operation increases the version number. It is used to ensure that
 		 * operations are applied on the proper document version. If the {@link core.treeModel.operation.Operation#baseVersion} will
 		 * not match document version the {@link document-applyOperation-wrong-version} error is thrown.
@@ -57,14 +49,6 @@ export default class Document {
 		 * @member {Number} core.treeModel.Document#version
 		 */
 		this.version = 0;
-
-		/**
-		 * Array of pending changes. See: {@link core.treeModel.Document#enqueueChanges}.
-		 *
-		 * @private
-		 * @member {Array.<Function>} core.treeModel.Document#_pendingChanges
-		 */
-		this._pendingChanges = [];
 
 		/**
 		 * Selection done on this document.
@@ -80,6 +64,24 @@ export default class Document {
 		 * @member {core.treeModel.Schema} core.treeModel.Document#schema
 		 */
 		this.schema = new Schema();
+
+		/**
+		 * Array of pending changes. See: {@link core.treeModel.Document#enqueueChanges}.
+		 *
+		 * @private
+		 * @member {Array.<Function>} core.treeModel.Document#_pendingChanges
+		 */
+		this._pendingChanges = [];
+
+		/**
+		 * List of roots that are owned and managed by this document. Use {@link core.treeModel.document#createRoot} and
+		 * {@link core.treeModel.document#getRoot} to manipulate it.
+		 *
+		 * @readonly
+		 * @protected
+		 * @member {Map} core.treeModel.Document#roots
+		 */
+		this._roots = new Map();
 
 		// Add events that will update selection attributes.
 		this.selection.on( 'update', () => {
@@ -151,7 +153,7 @@ export default class Document {
 	 * @returns {core.treeModel.RootElement} Created root.
 	 */
 	createRoot( id, name ) {
-		if ( this.roots.has( id ) ) {
+		if ( this._roots.has( id ) ) {
 			/**
 			 * Root with specified id already exists.
 			 *
@@ -166,7 +168,7 @@ export default class Document {
 		}
 
 		const root = new RootElement( this, name || id );
-		this.roots.set( id, root );
+		this._roots.set( id, root );
 
 		return root;
 	}
@@ -210,7 +212,7 @@ export default class Document {
 	 * @returns {core.treeModel.RootElement} Root registered under given id.
 	 */
 	getRoot( id ) {
-		if ( !this.roots.has( id ) ) {
+		if ( !this._roots.has( id ) ) {
 			/**
 			 * Root with specified id does not exist.
 			 *
@@ -223,7 +225,7 @@ export default class Document {
 			);
 		}
 
-		return this.roots.get( id );
+		return this._roots.get( id );
 	}
 
 	/**

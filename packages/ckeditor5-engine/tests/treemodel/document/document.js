@@ -21,8 +21,8 @@ describe( 'Document', () => {
 
 	describe( 'constructor', () => {
 		it( 'should create Document with no data, empty graveyard and empty selection', () => {
-			expect( doc ).to.have.property( 'roots' ).that.is.instanceof( Map );
-			expect( doc.roots.size ).to.equal( 1 );
+			expect( doc ).to.have.property( '_roots' ).that.is.instanceof( Map );
+			expect( doc._roots.size ).to.equal( 1 );
 			expect( doc.graveyard ).to.be.instanceof( RootElement );
 			expect( doc.graveyard.getChildCount() ).to.equal( 0 );
 			expect( doc.selection.getRanges().length ).to.equal( 0 );
@@ -33,7 +33,7 @@ describe( 'Document', () => {
 		it( 'should create a new RootElement, add it to roots map and return it', () => {
 			let root = doc.createRoot( 'root', 'root' );
 
-			expect( doc.roots.size ).to.equal( 2 );
+			expect( doc._roots.size ).to.equal( 2 );
 			expect( root ).to.be.instanceof( RootElement );
 			expect( root.getChildCount() ).to.equal( 0 );
 		} );
