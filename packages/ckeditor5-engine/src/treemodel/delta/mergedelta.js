@@ -12,7 +12,7 @@ import Position from '../position.js';
 import Element from '../element.js';
 import RemoveOperation from '../operation/removeoperation.js';
 import MoveOperation from '../operation/moveoperation.js';
-import CKEditorError from '../../ckeditorerror.js';
+import CKEditorError from '../../../utils/ckeditorerror.js';
 
 /**
  * @classdesc

@@ -13,7 +13,7 @@ import AttributeOperation from '/ckeditor5/core/treemodel/operation/attributeope
 import Position from '/ckeditor5/core/treemodel/position.js';
 import Range from '/ckeditor5/core/treemodel/range.js';
 import Text from '/ckeditor5/core/treemodel/text.js';
-import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'AttributeOperation', () => {
 	let doc, root;

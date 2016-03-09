@@ -5,12 +5,12 @@
 
 'use strict';
 
-import Collection from '../collection.js';
+import Collection from '../../utils/collection.js';
 import Region from './region.js';
 import Template from './template.js';
-import CKEditorError from '../ckeditorerror.js';
+import CKEditorError from '../../utils/ckeditorerror.js';
 import DOMEmitterMixin from './domemittermixin.js';
-import utils from '../utils.js';
+import utils from '../../utils/utils.js';
 import isPlainObject from '../lib/lodash/isPlainObject.js';
 
 const bindToSymbol = Symbol( 'bindTo' );

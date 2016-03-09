@@ -9,7 +9,7 @@ import CharacterProxy from './characterproxy.js';
 import TextFragment from './textfragment.js';
 import Element from './element.js';
 import Position from './position.js';
-import CKEditorError from '../ckeditorerror.js';
+import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
  * Position iterator class. It allows to iterate forward and backward over the tree document.

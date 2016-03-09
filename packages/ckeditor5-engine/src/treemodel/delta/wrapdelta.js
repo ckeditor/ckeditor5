@@ -13,7 +13,7 @@ import Range from '../range.js';
 import Element from '../element.js';
 import InsertOperation from '../operation/insertoperation.js';
 import MoveOperation from '../operation/moveoperation.js';
-import CKEditorError from '../../ckeditorerror.js';
+import CKEditorError from '../../../utils/ckeditorerror.js';
 
 /**
  * @classdesc

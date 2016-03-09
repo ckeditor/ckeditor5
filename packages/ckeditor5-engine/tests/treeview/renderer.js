@@ -11,7 +11,7 @@ import Renderer from '/ckeditor5/core/treeview/renderer.js';
 import ViewElement from '/ckeditor5/core/treeview/element.js';
 import ViewText from '/ckeditor5/core/treeview/text.js';
 import Converter from '/ckeditor5/core/treeview/converter.js';
-import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'Renderer', () => {
 	let converter, renderer;

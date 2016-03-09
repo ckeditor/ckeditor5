@@ -11,7 +11,7 @@ import Position from '../position.js';
 import Element from '../element.js';
 import InsertOperation from '../operation/insertoperation.js';
 import MoveOperation from '../operation/moveoperation.js';
-import CKEditorError from '../../ckeditorerror.js';
+import CKEditorError from '../../../utils/ckeditorerror.js';
 import MergeDelta from '../delta/mergedelta.js';
 
 /**

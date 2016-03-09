@@ -6,7 +6,7 @@
 'use strict';
 
 import diff from '../utils-diff.js';
-import CKEditorError from '../ckeditorerror.js';
+import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
  * Renderer updates DOM tree, to make it a reflection of the view tree. Changed nodes need to be

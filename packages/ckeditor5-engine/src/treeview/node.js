@@ -5,9 +5,9 @@
 
 'use strict';
 
-import CKEditorError from '../ckeditorerror.js';
-import EmitterMixin from '../emittermixin.js';
-import utils from '../utils.js';
+import CKEditorError from '../../utils/ckeditorerror.js';
+import EmitterMixin from '../../utils/emittermixin.js';
+import utils from '../../utils/utils.js';
 
 /**
  * Abstract tree view node class.
