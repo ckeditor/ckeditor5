@@ -44,9 +44,9 @@ export default class Command {
 
 		// If schema checking function is specified, add it to the `refreshState` listeners.
 		// Feature will be disabled if it does not apply to schema requirements.
-		if ( this.checkEnabled ) {
+		if ( this._checkEnabled ) {
 			this.on( 'refreshState', ( evt, data ) => {
-				data.isEnabled = this.checkEnabled();
+				data.isEnabled = this._checkEnabled();
 			} );
 		}
 	}
@@ -56,7 +56,8 @@ export default class Command {
 	 * is allowed to be executed in given position. This method can be defined in child class (but is not obligatory).
 	 * If it is defined, it will be added as a callback to `refreshState` event.
 	 *
-	 * @method core.command.Command#checkEnabled
+	 * @private
+	 * @method core.command.Command#_checkEnabled
 	 * @returns {Boolean} `true` if command should be enabled according to {@link core.treeModel.Document#schema}. `false` otherwise.
 	 */
 

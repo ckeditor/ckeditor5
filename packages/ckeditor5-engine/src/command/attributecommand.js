@@ -52,10 +52,10 @@ export default class AttributeCommand extends Command {
 	 * * if selection is on range, the command is enabled if any of nodes in that range can have bold,
 	 * * if selection is collapsed, the command is enabled if text with bold is allowed in that node.
 	 *
-	 * @see core.command.Command#checkEnabled
+	 * @private
 	 * @returns {Boolean}
 	 */
-	checkEnabled() {
+	_checkEnabled() {
 		const selection = this.editor.document.selection;
 		const schema = this.editor.document.schema;
 

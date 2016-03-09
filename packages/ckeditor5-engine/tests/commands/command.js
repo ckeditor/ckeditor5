@@ -17,7 +17,7 @@ class CommandWithSchema extends Command {
 		this.schemaValid = schemaValid;
 	}
 
-	checkEnabled() {
+	_checkEnabled() {
 		return this.schemaValid;
 	}
 }
@@ -43,19 +43,19 @@ describe( 'constructor', () => {
 	} );
 
 	it( 'should add listener to its refreshState event if checkSchema method is present', () => {
-		expect( command.checkEnabled ).to.be.undefined;
+		expect( command._checkEnabled ).to.be.undefined;
 
-		command.checkEnabled = sinon.spy();
+		command._checkEnabled = sinon.spy();
 		command.refreshState();
 
-		expect( command.checkEnabled.called ).to.be.false;
+		expect( command._checkEnabled.called ).to.be.false;
 
 		let newCommand = new CommandWithSchema( editor, true );
-		sinon.spy( newCommand, 'checkEnabled' );
+		sinon.spy( newCommand, '_checkEnabled' );
 
 		newCommand.refreshState();
 
-		expect( newCommand.checkEnabled.calledOnce ).to.be.true;
+		expect( newCommand._checkEnabled.calledOnce ).to.be.true;
 	} );
 } );
 
@@ -77,7 +77,7 @@ describe( 'refreshState', () => {
 		expect( command.isEnabled ).to.be.true;
 	} );
 
-	it( 'should set isEnabled to false if checkEnabled returns false', () => {
+	it( 'should set isEnabled to false if _checkEnabled returns false', () => {
 		let disabledCommand = new CommandWithSchema( editor, false );
 
 		disabledCommand.refreshState();

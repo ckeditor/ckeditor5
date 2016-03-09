@@ -197,7 +197,7 @@ describe( '_doExecute', () => {
 	} );
 } );
 
-describe( 'checkEnabled', () => {
+describe( '_checkEnabled', () => {
 	beforeEach( () => {
 		root.insertChildren( 0, [
 			new Element( 'p', [], [
@@ -214,15 +214,15 @@ describe( 'checkEnabled', () => {
 	describe( 'when selection is collapsed', () => {
 		it( 'should return true if characters with the attribute can be placed at caret position', () => {
 			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 1 ] ) ) ] );
-			expect( command.checkEnabled() ).to.be.true;
+			expect( command._checkEnabled() ).to.be.true;
 		} );
 
 		it( 'should return false if characters with the attribute cannot be placed at caret position', () => {
 			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 0 ] ) ) ] );
-			expect( command.checkEnabled() ).to.be.false;
+			expect( command._checkEnabled() ).to.be.false;
 
 			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 2 ] ) ) ] );
-			expect( command.checkEnabled() ).to.be.false;
+			expect( command._checkEnabled() ).to.be.false;
 		} );
 	} );
 
@@ -230,34 +230,34 @@ describe( 'checkEnabled', () => {
 		it( 'should return true if there is at least one node in selection that can have the attribute', () => {
 			// Simple selection on a few characters.
 			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 3 ] ) ) ] );
-			expect( command.checkEnabled() ).to.be.true;
+			expect( command._checkEnabled() ).to.be.true;
 
 			// Selection spans over characters but also include nodes that can't have attribute.
 			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 6 ] ) ) ] );
-			expect( command.checkEnabled() ).to.be.true;
+			expect( command._checkEnabled() ).to.be.true;
 
 			// Selection on whole root content. Characters in P can have an attribute so it's valid.
 			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) ) ] );
-			expect( command.checkEnabled() ).to.be.true;
+			expect( command._checkEnabled() ).to.be.true;
 
 			// Selection on empty P. P can have the attribute.
 			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 3 ] ) ) ] );
-			expect( command.checkEnabled() ).to.be.true;
+			expect( command._checkEnabled() ).to.be.true;
 		} );
 
 		it( 'should return false if there are no nodes in selection that can have the attribute', () => {
 			// Selection on DIV which can't have bold text.
 			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) ) ] );
-			expect( command.checkEnabled() ).to.be.false;
+			expect( command._checkEnabled() ).to.be.false;
 
 			// Selection on two images which can't be bold.
 			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 3 ] ), new Position( root, [ 0, 5 ] ) ) ] );
-			expect( command.checkEnabled() ).to.be.false;
+			expect( command._checkEnabled() ).to.be.false;
 		} );
 	} );
 
 	it( 'should return false if selection has no ranges', () => {
 		modelDoc.selection.removeAllRanges();
-		expect( command.checkEnabled() ).to.be.false;
+		expect( command._checkEnabled() ).to.be.false;
 	} );
 } );
