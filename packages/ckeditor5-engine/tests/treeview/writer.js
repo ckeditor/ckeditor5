@@ -184,7 +184,7 @@ describe( 'Writer', () => {
 	} );
 
 	describe( 'isAttribute', () => {
-		it( 'should return true for container elements', () => {
+		it( 'should return true for attribute elements', () => {
 			const containerElement = new Element( 'p' );
 			const attributeElement = new Element( 'b' );
 
@@ -995,7 +995,7 @@ describe( 'Writer', () => {
 			} );
 		} );
 
-		it( 'should insert text into another text node', () => {
+		it( 'should insert text into another text node #1', () => {
 			// <p>{foo|bar}</p> insert {baz}
 			// <p>{foo[baz]bar}</p>
 			const created = create( writer, {
@@ -1011,7 +1011,51 @@ describe( 'Writer', () => {
 				instanceOf: Element,
 				name: 'p',
 				children: [
-					{ instanceOf: Text, data: 'foobazbar' }
+					{ instanceOf: Text, data: 'foobazbar', rangeStart: 3, rangeEnd: 6 }
+				]
+			} );
+		} );
+
+		it( 'should insert text into another text node #2', () => {
+			// <p>{foobar|}</p> insert {baz}
+			// <p>{foobar[baz}]</p>
+			const created = create( writer, {
+				instanceOf: Element,
+				name: 'p',
+				children: [
+					{ instanceOf: Text, data: 'foobar', position: 6 }
+				]
+			} );
+
+			const newRange = writer.insert( created.position, new Text( 'baz' ) );
+			test( writer, newRange, created.node, {
+				instanceOf: Element,
+				name: 'p',
+				rangeEnd: 1,
+				children: [
+					{ instanceOf: Text, data: 'foobarbaz', rangeStart: 6 }
+				]
+			} );
+		} );
+
+		it( 'should insert text into another text node #3', () => {
+			// <p>{|foobar}</p> insert {baz}
+			// <p>[{baz]foobar}</p>
+			const created = create( writer, {
+				instanceOf: Element,
+				name: 'p',
+				children: [
+					{ instanceOf: Text, data: 'foobar', position: 0 }
+				]
+			} );
+
+			const newRange = writer.insert( created.position, new Text( 'baz' ) );
+			test( writer, newRange, created.node, {
+				instanceOf: Element,
+				name: 'p',
+				rangeStart: 0,
+				children: [
+					{ instanceOf: Text, data: 'bazfoobar', rangeEnd: 3 }
 				]
 			} );
 		} );
@@ -1052,6 +1096,29 @@ describe( 'Writer', () => {
 						]
 					},
 					{ instanceOf: Text, data: 'bar' }
+				]
+			} );
+		} );
+
+		it( 'should merge text ndoes', () => {
+			// <p>|{foobar}</p> insert {baz}
+			// <p>[{baz]foobar}</p>
+			const created = create( writer, {
+				instanceOf: Element,
+				name: 'p',
+				position: 0,
+				children: [
+					{ instanceOf: Text, data: 'foobar' }
+				]
+			} );
+
+			const newRange = writer.insert( created.position, new Text( 'baz' ) );
+			test( writer, newRange, created.node, {
+				instanceOf: Element,
+				name: 'p',
+				rangeStart: 0,
+				children: [
+					{ instanceOf: Text, data: 'bazfoobar', rangeEnd: 3 }
 				]
 			} );
 		} );
