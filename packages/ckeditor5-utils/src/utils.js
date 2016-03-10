@@ -180,6 +180,7 @@ const utils = {
 	 *
 	 *		utils.count( [ 1, 2, 3, 4, 5 ] ); // 5;
 	 *
+	 * @memberOf utils.utils
 	 * @param {Iterable.<*>} iterator Any iterator.
 	 * @returns {Number} Number of items returned by that iterator.
 	 */
