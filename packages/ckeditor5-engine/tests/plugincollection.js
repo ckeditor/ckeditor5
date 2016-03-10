@@ -11,8 +11,8 @@ import Editor from '/ckeditor5/core/editor.js';
 import PluginCollection from '/ckeditor5/core/plugincollection.js';
 import Plugin from '/ckeditor5/core/plugin.js';
 import Creator from '/ckeditor5/core/creator.js';
-import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
-import log from '/ckeditor5/core/log.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
+import log from '/ckeditor5/utils/log.js';
 
 let editor;
 let PluginA, PluginB, PluginC, PluginD, PluginE, PluginF, PluginG;

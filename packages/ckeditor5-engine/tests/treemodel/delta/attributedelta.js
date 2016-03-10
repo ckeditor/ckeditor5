@@ -7,7 +7,7 @@
 
 'use strict';
 
-import utils from '/ckeditor5/core/utils.js';
+import utils from '/ckeditor5/utils/utils.js';
 import Document from '/ckeditor5/core/treemodel/document.js';
 import Text from '/ckeditor5/core/treemodel/text.js';
 import Range from '/ckeditor5/core/treemodel/range.js';

@@ -7,7 +7,7 @@
 
 import Node from './node.js';
 import NodeList from './nodelist.js';
-import utils from '../utils.js';
+import utils from '../../utils/utils.js';
 
 /**
  * Tree data model element.

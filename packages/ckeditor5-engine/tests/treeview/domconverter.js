@@ -7,18 +7,18 @@
 
 'use strict';
 
-import utils from '/ckeditor5/core/utils.js';
+import utils from '/ckeditor5/utils/utils.js';
 import ViewElement from '/ckeditor5/core/treeview/element.js';
 import ViewText from '/ckeditor5/core/treeview/text.js';
-import Converter from '/ckeditor5/core/treeview/converter.js';
+import DomConverter from '/ckeditor5/core/treeview/domconverter.js';
 
 const getIteratorCount = utils.count;
 
-describe( 'converter', () => {
+describe( 'DomConverter', () => {
 	let converter;
 
 	before( () => {
-		converter = new Converter();
+		converter = new DomConverter();
 	} );
 
 	describe( 'bindElements', () => {

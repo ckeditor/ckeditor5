@@ -5,19 +5,20 @@
 
 'use strict';
 
-import EmitterMixin from '../emittermixin.js';
+import EmitterMixin from '../../utils/emittermixin.js';
 import Renderer from './renderer.js';
-import Converter from './converter.js';
+import DomConverter from './domconverter.js';
 import Writer from './writer.js';
 
-import utils from '../utils.js';
+import utils from '../../utils/utils.js';
 
 /**
- * TreeView class combines the actual tree of view elements, tree of DOM elements, {@link core.treeView.Converter converter},
- * {@link core.treeView.Renderer renderer} and all {@link core.treeView.Observer observers}. It creates an abstract layer over the
- * content editable area.
+ * TreeView class combines the actual tree of view elements, tree of DOM elements,
+ * {@link core.treeView.DomConverter DOM Converter}, {@link core.treeView.Renderer renderer} and all
+ * {@link core.treeView.Observer observers}. It creates an abstract layer over the content editable area.
  *
- * If you want to only transform the tree of view elements to the DOM elements you can use the {@link core.treeView.Converter Converter}.
+ * If you want to only transform the tree of view elements to the DOM elements you can use the
+ * {@link core.treeView.DomConverter DomConverter}.
  *
  * @memberOf core.treeView
  * @mixes core.EmitterMixin
@@ -28,8 +29,8 @@ export default class TreeView {
 	 *
 	 * The constructor copies the element name and attributes to create the
 	 * root of the view, but does not copy its children. This means that the while rendering, the whole content of this
-	 * root element will be removed when you call {@link core.treeView.TreeView#render render} but the root name and attributes will
-	 * be preserved.
+	 * root element will be removed when you call {@link core.treeView.TreeView#render render} but the root name and
+	 * attributes will be preserved.
 	 *
 	 * @param {HTMLElement} domRoot DOM element in which the tree view should do change.
 	 */
@@ -56,19 +57,19 @@ export default class TreeView {
 		this.writer = new Writer();
 
 		/**
-		 * Instance of the {@link core.treeView.Converter converter} use by {@link core.treeView.TreeView#renderer renderer} and
-		 * {@link core.treeView.TreeView#observers observers}.
+		 * Instance of the {@link core.treeView.DomConverter domConverter} use by
+		 * {@link core.treeView.TreeView#renderer renderer} and {@link core.treeView.TreeView#observers observers}.
 		 *
-		 * @member {core.treeView.Converter} core.treeView.TreeView#converter
+		 * @member {core.treeView.DomConverter} core.treeView.TreeView#domConverter
 		 */
-		this.converter = new Converter();
+		this.domConverter = new DomConverter();
 
 		/**
 		 * Root of the view tree.
 		 *
 		 * @member {core.treeView.Element} core.treeView.TreeView#viewRoot
 		 */
-		this.viewRoot = this.converter.domToView( domRoot, { bind: true, withChildren: false } );
+		this.viewRoot = this.domConverter.domToView( domRoot, { bind: true, withChildren: false } );
 		this.viewRoot.setTreeView( this );
 
 		/**
@@ -76,7 +77,7 @@ export default class TreeView {
 		 *
 		 * @member {core.treeView.Renderer} core.treeView.TreeView#renderer
 		 */
-		this.renderer = new Renderer( this.converter );
+		this.renderer = new Renderer( this.domConverter );
 		this.renderer.markToSync( 'CHILDREN', this.viewRoot );
 
 		// Mark changed nodes in the renderer.

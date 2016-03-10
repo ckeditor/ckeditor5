@@ -62,11 +62,11 @@ export default class MutationObserver extends Observer {
 		this.domRoot = treeView.domRoot;
 
 		/**
-		 * Reference to the {@link core.treeView.TreeView#converter}.
+		 * Reference to the {@link core.treeView.TreeView#domConverter}.
 		 *
-		 * @member {core.treeView.Converter} core.treeView.observer.MutationObserver#converter
+		 * @member {core.treeView.DomConverter} core.treeView.observer.MutationObserver#domConverter
 		 */
-		this.converter = treeView.converter;
+		this.domConverter = treeView.domConverter;
 
 		/**
 		 * Reference to the {@link core.treeView.TreeView#renderer}.
@@ -114,7 +114,7 @@ export default class MutationObserver extends Observer {
 		// element with changed structure anyway.
 		for ( let mutation of domMutations ) {
 			if ( mutation.type === 'childList' ) {
-				const element = this.converter.getCorrespondingViewElement( mutation.target );
+				const element = this.domConverter.getCorrespondingViewElement( mutation.target );
 
 				if ( element ) {
 					mutatedElements.add( element );
@@ -125,7 +125,7 @@ export default class MutationObserver extends Observer {
 		// Handle `characterData` mutations later, when we have the full list of nodes which changed structure.
 		for ( let mutation of domMutations ) {
 			if ( mutation.type === 'characterData' ) {
-				const text = this.converter.getCorrespondingViewText( mutation.target );
+				const text = this.domConverter.getCorrespondingViewText( mutation.target );
 
 				if ( text && !mutatedElements.has( text.parent ) ) {
 					// Use text as a key, for deduplication. If there will be another mutation on the same text element
@@ -153,14 +153,14 @@ export default class MutationObserver extends Observer {
 		}
 
 		for ( let viewElement of mutatedElements ) {
-			const domElement = this.converter.getCorrespondingDomElement( viewElement );
+			const domElement = this.domConverter.getCorrespondingDomElement( viewElement );
 			const domChildren = domElement.childNodes;
 			const viewChildren = viewElement.getChildren();
 			const newViewChildren = [];
 
 			// We want to have a list of View elements, not DOM elements.
 			for ( let i = 0; i < domChildren.length; i++ ) {
-				newViewChildren.push( this.converter.domToView( domChildren[ i ] ) );
+				newViewChildren.push( this.domConverter.domToView( domChildren[ i ] ) );
 			}
 
 			this.renderer.markToSync( 'CHILDREN', viewElement );

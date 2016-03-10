@@ -9,7 +9,7 @@ import Position from './position.js';
 import Element from './element.js';
 import Text from './text.js';
 import Range from './range.js';
-import CKEditorError from '../ckeditorerror.js';
+import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
  * Tree View Writer class.

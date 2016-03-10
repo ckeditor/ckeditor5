@@ -11,7 +11,7 @@ import { register } from '../batch.js';
 import Position from '../position.js';
 import RemoveOperation from '../operation/removeoperation.js';
 import MoveOperation from '../operation/moveoperation.js';
-import CKEditorError from '../../ckeditorerror.js';
+import CKEditorError from '../../../utils/ckeditorerror.js';
 
 /**
  * @classdesc

@@ -13,9 +13,9 @@ import transformations from './delta/basic-transformations.js';
 import RootElement from './rootelement.js';
 import Batch from './batch.js';
 import Selection from './selection.js';
-import EmitterMixin from '../emittermixin.js';
-import CKEditorError from '../ckeditorerror.js';
-import utils from '../utils.js';
+import EmitterMixin from '../../utils/emittermixin.js';
+import CKEditorError from '../../utils/ckeditorerror.js';
+import utils from '../../utils/utils.js';
 
 const graveyardSymbol = Symbol( 'graveyard' );
 

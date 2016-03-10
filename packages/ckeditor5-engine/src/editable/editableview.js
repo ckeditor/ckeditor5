@@ -6,7 +6,7 @@
 'use strict';
 
 import View from '../ui/view.js';
-import CKEditorError from '../ckeditorerror.js';
+import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
  * @memberOf core.editable

@@ -12,7 +12,7 @@ import coreTestUtils from '/tests/core/_utils/utils.js';
 import Editor from '/ckeditor5/core/editor.js';
 import EditorConfig from '/ckeditor5/core/editorconfig.js';
 import Plugin from '/ckeditor5/core/plugin.js';
-import Locale from '/ckeditor5/core/locale.js';
+import Locale from '/ckeditor5/utils/locale.js';
 
 const pluginClasses = {};
 let element;

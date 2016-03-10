@@ -7,7 +7,7 @@
 
 'use strict';
 
-import utils from '/ckeditor5/core/utils.js';
+import utils from '/ckeditor5/utils/utils.js';
 import Delta from '/ckeditor5/core/treemodel/delta/delta.js';
 import Operation from '/ckeditor5/core/treemodel/operation/operation.js';
 

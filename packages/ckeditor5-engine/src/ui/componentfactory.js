@@ -5,7 +5,7 @@
 
 'use strict';
 
-import CKEditorError from '../ckeditorerror.js';
+import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
  * Class implementing the UI component factory.

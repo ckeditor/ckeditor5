@@ -21,7 +21,7 @@ import WeakInsertDelta from './weakinsertdelta.js';
 import WrapDelta from './wrapdelta.js';
 import UnwrapDelta from './unwrapdelta.js';
 
-import utils from '../../utils.js';
+import utils from '../../../utils/utils.js';
 
 // Provide transformations for default deltas.
 

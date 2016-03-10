@@ -7,13 +7,13 @@
 
 'use strict';
 
+/* jshint unused: false */
 import deltas from '/ckeditor5/core/treemodel/delta/basic-deltas.js';
-/*jshint unused: false*/
 
 import Batch from '/ckeditor5/core/treemodel/batch.js';
 import { register } from '/ckeditor5/core/treemodel/batch.js';
 import Delta from '/ckeditor5/core/treemodel/delta/delta.js';
-import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'Batch', () => {
 	it( 'should have registered basic methods', () => {

@@ -6,13 +6,13 @@
 'use strict';
 
 import diff from '../utils-diff.js';
-import CKEditorError from '../ckeditorerror.js';
+import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
  * Renderer updates DOM tree, to make it a reflection of the view tree. Changed nodes need to be
  * {@link core.treeView.Renderer#markToSync marked} to be rendered. Then, on {@link core.treeView.Renderer#render render}, renderer
  * ensure they need to be refreshed and creates DOM nodes from view nodes,
- * {@link core.treeView.Converter#bindElements bind} them and insert into DOM tree. Renderer use {@link core.treeView.Converter}
+ * {@link core.treeView.DomConverter#bindElements bind} them and insert into DOM tree. Renderer use {@link core.treeView.DomConverter}
  * to transform and bind nodes.
  *
  * @memberOf core.treeView
@@ -21,16 +21,16 @@ export default class Renderer {
 	/**
 	 * Creates a renderer instance.
 	 *
-	 * @param {core.treeView.Converter} converter Converter instance.
+	 * @param {core.treeView.DomConverter} domConverter Converter instance.
 	 */
-	constructor( converter ) {
+	constructor( domConverter ) {
 		/**
 		 * Converter instance.
 		 *
 		 * @readonly
-		 * @member {core.treeView.Converter} core.treeView.Renderer#converter
+		 * @member {core.treeView.DomConverter} core.treeView.Renderer#domConverter
 		 */
-		this.converter = converter;
+		this.domConverter = domConverter;
 
 		/**
 		 * Set of nodes which attributes changed and may need to be rendered.
@@ -71,13 +71,13 @@ export default class Renderer {
 	 */
 	markToSync( type, node ) {
 		if ( type === 'TEXT' ) {
-			if ( this.converter.getCorrespondingDom( node.parent ) ) {
+			if ( this.domConverter.getCorrespondingDom( node.parent ) ) {
 				this.markedTexts.add( node );
 			}
 		} else {
 			// If the node has no DOM element it is not rendered yet,
 			// its children/attributes do not need to be marked to be sync.
-			if ( !this.converter.getCorrespondingDom( node ) ) {
+			if ( !this.domConverter.getCorrespondingDom( node ) ) {
 				return;
 			}
 
@@ -108,17 +108,17 @@ export default class Renderer {
 	 *
 	 * For text nodes it update the text string if it is different. Note that if parent element is marked as an element
 	 * which changed child list, text node update will not be done, because it may not be possible do find a
-	 * {@link core.treeView.Converter#getCorrespondingDomText corresponding DOM text}. The change will be handled in the
+	 * {@link core.treeView.DomConverter#getCorrespondingDomText corresponding DOM text}. The change will be handled in the
 	 * parent element.
 	 *
-	 * For nodes which changed child list it calculates a {@link diff} using {@link core.treeView.Converter#compareNodes}
+	 * For nodes which changed child list it calculates a {@link diff} using {@link core.treeView.DomConverter#compareNodes}
 	 * and add or removed nodes which changed.
 	 */
 	render() {
-		const converter = this.converter;
+		const domConverter = this.domConverter;
 
 		for ( let node of this.markedTexts ) {
-			if ( !this.markedChildren.has( node.parent ) && converter.getCorrespondingDom( node.parent ) ) {
+			if ( !this.markedChildren.has( node.parent ) && domConverter.getCorrespondingDom( node.parent ) ) {
 				updateText( node );
 			}
 		}
@@ -136,7 +136,7 @@ export default class Renderer {
 		this.markedChildren.clear();
 
 		function updateText( viewText ) {
-			const domText = converter.getCorrespondingDom( viewText );
+			const domText = domConverter.getCorrespondingDom( viewText );
 
 			if ( domText.data != viewText.data ) {
 				domText.data = viewText.data;
@@ -144,7 +144,7 @@ export default class Renderer {
 		}
 
 		function updateAttrs( viewElement ) {
-			const domElement = converter.getCorrespondingDom( viewElement );
+			const domElement = domConverter.getCorrespondingDom( viewElement );
 			const domAttrKeys = Array.from( domElement.attributes ).map( attr => attr.name );
 			const viewAttrKeys = viewElement.getAttributeKeys();
 
@@ -162,19 +162,19 @@ export default class Renderer {
 		}
 
 		function updateChildren( viewElement ) {
-			const domElement = converter.getCorrespondingDom( viewElement );
+			const domElement = domConverter.getCorrespondingDom( viewElement );
 			const domChildren = domElement.childNodes;
 			const viewChildren = Array.from( viewElement.getChildren() );
 			const domDocument = domElement.ownerDocument;
 
 			const actions = diff( domChildren, viewChildren,
-				( domNode, viewNode ) => converter.compareNodes( domNode, viewNode ) );
+				( domNode, viewNode ) => domConverter.compareNodes( domNode, viewNode ) );
 
 			let i = 0;
 
 			for ( let action of actions ) {
 				if ( action === 'INSERT' ) {
-					let domChildToInsert = converter.viewToDom( viewChildren[ i ], domDocument, { bind: true } );
+					let domChildToInsert = domConverter.viewToDom( viewChildren[ i ], domDocument, { bind: true } );
 					domElement.insertBefore( domChildToInsert, domChildren[ i ] || null );
 					i++;
 				} else if ( action === 'DELETE' ) {

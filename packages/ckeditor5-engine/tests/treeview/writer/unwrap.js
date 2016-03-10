@@ -13,7 +13,7 @@ import Position from '/ckeditor5/core/treeview/position.js';
 import Range from '/ckeditor5/core/treeview/range.js';
 import Text from '/ckeditor5/core/treeview/text.js';
 import utils from '/tests/core/treeview/writer/_utils/utils.js';
-import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'Writer', () => {
 	const create = utils.create;

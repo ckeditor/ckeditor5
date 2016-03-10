@@ -7,7 +7,7 @@
 
 'use strict';
 
-import utils from '/ckeditor5/core/utils.js';
+import utils from '/ckeditor5/utils/utils.js';
 import Node from '/ckeditor5/core/treeview/node.js';
 import ViewElement from '/ckeditor5/core/treeview/element.js';
 

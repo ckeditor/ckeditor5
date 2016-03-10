@@ -10,7 +10,7 @@ import { register } from '../batch.js';
 import MoveOperation from '../operation/moveoperation.js';
 import Position from '../position.js';
 import Range from '../range.js';
-import CKEditorError from '../../ckeditorerror.js';
+import CKEditorError from '../../../utils/ckeditorerror.js';
 
 /**
  * @classdesc
