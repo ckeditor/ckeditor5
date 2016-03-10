@@ -7,7 +7,7 @@
 
 'use strict';
 
-import testUtils from '/tests/utils/_utils/utils.js';
+import utils from '/ckeditor5/utils/utils.js';
 import Delta from '/ckeditor5/core/treemodel/delta/delta.js';
 import Operation from '/ckeditor5/core/treemodel/operation/operation.js';
 
@@ -30,8 +30,6 @@ class BarOperation extends FooOperation {
 		return new FooOperation( this.string, this.baseVersion );
 	}
 }
-
-const getIteratorCount = testUtils.getIteratorCount;
 
 describe( 'Delta', () => {
 	describe( 'constructor', () => {
@@ -72,7 +70,7 @@ describe( 'Delta', () => {
 			delta.addOperation( {} );
 			delta.addOperation( {} );
 
-			const count = getIteratorCount( delta.operations );
+			const count = utils.count( delta.operations );
 
 			expect( count ).to.equal( 3 );
 		} );

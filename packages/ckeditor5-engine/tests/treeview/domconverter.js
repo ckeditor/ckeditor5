@@ -7,12 +7,10 @@
 
 'use strict';
 
-import testUtils from '/tests/utils/_utils/utils.js';
+import utils from '/ckeditor5/utils/utils.js';
 import ViewElement from '/ckeditor5/core/treeview/element.js';
 import ViewText from '/ckeditor5/core/treeview/text.js';
 import DomConverter from '/ckeditor5/core/treeview/domconverter.js';
-
-const getIteratorCount = testUtils.getIteratorCount;
 
 describe( 'DomConverter', () => {
 	let converter;
@@ -79,7 +77,7 @@ describe( 'DomConverter', () => {
 			expect( viewP.name ).to.equal( 'p' );
 
 			expect( viewP.getAttribute( 'class' ) ).to.equal( 'foo' );
-			expect( getIteratorCount( viewP.getAttributeKeys() ) ).to.equal( 1 );
+			expect( utils.count( viewP.getAttributeKeys() ) ).to.equal( 1 );
 
 			expect( viewP.getChildCount() ).to.equal( 2 );
 			expect( viewP.getChild( 0 ).name ).to.equal( 'img' );
@@ -105,7 +103,7 @@ describe( 'DomConverter', () => {
 			expect( viewP.name ).to.equal( 'p' );
 
 			expect( viewP.getAttribute( 'class' ) ).to.equal( 'foo' );
-			expect( getIteratorCount( viewP.getAttributeKeys() ) ).to.equal( 1 );
+			expect( utils.count( viewP.getAttributeKeys() ) ).to.equal( 1 );
 
 			expect( viewP.getChildCount() ).to.equal( 2 );
 			expect( viewP.getChild( 0 ).name ).to.equal( 'img' );
@@ -135,7 +133,7 @@ describe( 'DomConverter', () => {
 			expect( viewP.name ).to.equal( 'p' );
 
 			expect( viewP.getAttribute( 'class' ) ).to.equal( 'foo' );
-			expect( getIteratorCount( viewP.getAttributeKeys() ) ).to.equal( 1 );
+			expect( utils.count( viewP.getAttributeKeys() ) ).to.equal( 1 );
 
 			expect( viewP.getChildCount() ).to.equal( 0 );
 			expect( converter.getCorrespondingDom( viewP ) ).to.not.equal( domP );

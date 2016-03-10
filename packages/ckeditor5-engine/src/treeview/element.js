@@ -66,14 +66,35 @@ export default class Element extends Node {
 	}
 
 	/**
+	 * Clones provided element.
+	 *
+	 * @param {Boolean} deep If set to `true` clones element and all its children recursively. When set to `false`,
+	 * element will be cloned without any children.
+	 * @returns {Element} Clone of this element.
+	 */
+	clone( deep ) {
+		const childrenClone = [];
+
+		if ( deep ) {
+			for ( let child of this.getChildren() ) {
+				childrenClone.push( child.clone( deep ) );
+			}
+		}
+
+		return new Element( this.name, this._attrs, childrenClone );
+	}
+
+	/**
 	 * {@link core.treeView.Element#insert Insert} a child node or a list of child nodes at the end of this node and sets
 	 * the parent of these nodes to this element.
 	 *
-	 * @param {core.treeView.Node|Iterable.<core.treeView.Node>} nodes Node or the list of nodes to be inserted.
 	 * @fires core.treeView.Node#change
+	 * @param {core.treeView.Node|Iterable.<core.treeView.Node>} nodes Node or the list of nodes to be inserted.
+	 * @returns {Number} Number of appended nodes.
+
 	 */
 	appendChildren( nodes ) {
-		this.insertChildren( this.getChildCount(), nodes );
+		return this.insertChildren( this.getChildCount(), nodes );
 	}
 
 	/**
@@ -96,7 +117,7 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Gets index of the given child node.
+	 * Gets index of the given child node. Returns `-1` if child node is not found.
 	 *
 	 * @param {core.treeView.Node} node Child node.
 	 * @returns {Number} Index of the child node.
@@ -163,9 +184,11 @@ export default class Element extends Node {
 	 * @param {Number} index Position where nodes should be inserted.
 	 * @param {core.treeView.Node|Iterable.<core.treeView.Node>} nodes Node or the list of nodes to be inserted.
 	 * @fires core.treeView.Node#change
+	 * @returns {Number} Number of inserted nodes.
 	 */
 	insertChildren( index, nodes ) {
 		this._fireChange( 'CHILDREN', this );
+		let count = 0;
 
 		if ( !utils.isIterable( nodes ) ) {
 			nodes = [ nodes ];
@@ -176,7 +199,10 @@ export default class Element extends Node {
 
 			this._children.splice( index, 0, node );
 			index++;
+			count++;
 		}
+
+		return count;
 	}
 
 	/**
@@ -196,17 +222,63 @@ export default class Element extends Node {
 	 * Removes number of child nodes starting at the given index and set the parent of these nodes to `null`.
 	 *
 	 * @param {Number} index Number of the first node to remove.
-	 * @param {Number} number Number of nodes to remove.
+	 * @param {Number} [number] Number of nodes to remove.
 	 * @returns {Array.<core.treeView.Node>} The array of removed nodes.
 	 * @fires core.treeView.Node#change
 	 */
 	removeChildren( index, number ) {
 		this._fireChange( 'CHILDREN', this );
 
+		if ( typeof number === 'undefined' ) {
+			number = 1;
+		}
+
 		for ( let i = index; i < index + number; i++ ) {
 			this._children[ i ].parent = null;
 		}
 
 		return this._children.splice( index, number );
+	}
+
+	/**
+	 * Checks if this element is similar to other element.
+	 * Both elements should have the same name and attributes to be considered as similar. Two similar elements
+	 * can contain different set of children nodes.
+	 *
+	 * @param {Element} otherElement
+	 * @returns {Boolean}
+	 */
+	isSimilar( otherElement ) {
+		if ( !( otherElement instanceof Element ) ) {
+			return false;
+		}
+
+		// If exactly the same Element is provided - return true immediately.
+		if ( this === otherElement ) {
+			return true;
+		}
+
+		// Check name and attributes.
+		if ( this.name != otherElement.name ) {
+			return false;
+		}
+
+		const thisNodeAttrKeys = this.getAttributeKeys();
+		const otherNodeAttrKeys = otherElement.getAttributeKeys();
+		let count = 0;
+
+		for ( let key of thisNodeAttrKeys ) {
+			if ( this.getAttribute( key ) !== otherElement.getAttribute( key ) ) {
+				return false;
+			}
+
+			count++;
+		}
+
+		if ( count != utils.count( otherNodeAttrKeys ) ) {
+			return false;
+		}
+
+		return true;
 	}
 }

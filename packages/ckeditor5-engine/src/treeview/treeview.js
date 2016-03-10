@@ -8,6 +8,7 @@
 import EmitterMixin from '../../utils/emittermixin.js';
 import Renderer from './renderer.js';
 import DomConverter from './domconverter.js';
+import Writer from './writer.js';
 
 import utils from '../../utils/utils.js';
 
@@ -47,6 +48,13 @@ export default class TreeView {
 		 * @member {Set.<core.treeView.Observer>} core.treeView.TreeView#observers
 		 */
 		this.observers = new Set();
+
+		/**
+		 * Tree View writer.
+		 *
+		 * @member {core.treeView.Writer} core.treeView.TreeView#writer
+		 */
+		this.writer = new Writer();
 
 		/**
 		 * Instance of the {@link core.treeView.DomConverter domConverter} use by

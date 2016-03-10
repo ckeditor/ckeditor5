@@ -116,6 +116,13 @@ export default class Node {
 	}
 
 	/**
+	 * Removes node from parent.
+	 */
+	remove() {
+		this.parent.removeChildren( this.getIndex() );
+	}
+
+	/**
 	 * @param {core.treeView.ChangeType} type Type of the change.
 	 * @param {core.treeView.Node} node Changed node.
 	 * @fires core.treeView.Node#change
@@ -127,6 +134,20 @@ export default class Node {
 			this.parent._fireChange( type, node );
 		}
 	}
+
+	/**
+	 * Clones this node.
+	 *
+	 * @method treeView.Node#clone
+	 * @returns {treeView.Node} Clone of this node.
+	 */
+
+	/**
+	 * Checks if provided node is similar to this node.
+	 *
+	 * @method treeView.Node#isSimilar
+	 * @returns {Boolean} True if nodes are similar.
+	 */
 
 	/**
 	 * Fired when a node changes.
