@@ -56,13 +56,13 @@ const utils = {
 
 	/**
 	 * Creates an instance inheriting from {@link core.EmitterMixin} with one additional method `observe()`.
-	 * It allows observing changes to attributes in objects being {@link core.Observable observable}.
+	 * It allows observing changes to attributes in objects being {@link utils.Observale observable}.
 	 *
 	 * The `observe()` method accepts:
 	 *
 	 * * `{String} observableName` – Identifier for the observable object. E.g. `"Editable"` when
 	 * you observe one of editor's editables. This name will be displayed on the console.
-	 * * `{core.Observable observable} – The object to observe.
+	 * * `{utils.Observale observable} – The object to observe.
 	 *
 	 * Typical usage:
 	 *

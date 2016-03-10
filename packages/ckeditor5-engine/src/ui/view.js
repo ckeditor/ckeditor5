@@ -27,7 +27,7 @@ export default class View {
 	 * Creates an instance of the {@link View} class.
 	 *
 	 * @param {core.ui.Model} model (View)Model of this View.
-	 * @param {core.Locale} [locale] The {@link core.Editor#locale editor's locale} instance.
+	 * @param {utils.Locale} [locale] The {@link core.Editor#locale editor's locale} instance.
 	 */
 	constructor( model, locale ) {
 		/**
@@ -39,16 +39,16 @@ export default class View {
 
 		/**
 		 * @readonly
-		 * @member {core.Locale} core.ui.View#locale
+		 * @member {utils.Locale} core.ui.View#locale
 		 */
 		this.locale = locale;
 
 		/**
-		 * Shorthand for {@link core.Locale#t}.
+		 * Shorthand for {@link utils.Locale#t}.
 		 *
 		 * Note: If locale instance hasn't been passed to the view this method may not be available.
 		 *
-		 * @see core.Locale#t
+		 * @see utils.Locale#t
 		 * @method core.ui.View#t
 		 */
 		this.t = locale && locale.t;
@@ -56,7 +56,7 @@ export default class View {
 		/**
 		 * Regions of this view. See {@link core.ui.View#register}.
 		 *
-		 * @member {core.Collection} core.ui.View#regions
+		 * @member {utils.Collection} core.ui.View#regions
 		 */
 		this.regions = new Collection( {
 			idProperty: 'name'
@@ -87,7 +87,7 @@ export default class View {
 		 * An instance of Template to generate {@link core.ui.View#_el}.
 		 *
 		 * @private
-		 * @member {Template} core.ui.View#_template
+		 * @member {core.ui.Template} core.ui.View#_template
 		 */
 	}
 

@@ -13,7 +13,7 @@ import ObservableMixin from '../../utils/observablemixin.js';
 /**
  * @memberOf core.editable
  * @extends core.ui.Controller
- * @mixes core.ObservableMixin
+ * @mixes utils.ObservaleMixin
  */
 export default class Editable extends Controller {
 	/**

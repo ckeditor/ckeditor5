@@ -17,7 +17,7 @@ import utils from '../utils/utils.js';
  * Represents a single editor instance.
  *
  * @memberOf core
- * @mixes core.ObservableMixin
+ * @mixes utils.ObservaleMixin
  */
 export default class Editor {
 	/**
@@ -47,7 +47,7 @@ export default class Editor {
 		 * instance itself.
 		 *
 		 * @readonly
-		 * @member {core.Config} core.Editor#config
+		 * @member {utils.Config} core.Editor#config
 		 */
 		this.config = config = new EditorConfig( config );
 
@@ -61,14 +61,14 @@ export default class Editor {
 
 		/**
 		 * @readonly
-		 * @member {core.Locale} core.Editor#locale
+		 * @member {utils.Locale} core.Editor#locale
 		 */
 		this.locale = new Locale( config.lang );
 
 		/**
-		 * Shorthand for {@link core.Locale#t}.
+		 * Shorthand for {@link utils.Locale#t}.
 		 *
-		 * @see core.Locale#t
+		 * @see utils.Locale#t
 		 * @method core.Editor#t
 		 */
 		this.t = this.locale.t;

@@ -19,7 +19,7 @@ const CKEDITOR = {
 	 * A collection containing all editor instances created.
 	 *
 	 * @readonly
-	 * @member {core.Collection} CKEDITOR.instances
+	 * @member {utils.Collection} CKEDITOR.instances
 	 */
 	instances: new Collection(),
 
@@ -74,7 +74,7 @@ const CKEDITOR = {
 	/**
 	 * Holds global configuration defaults, which will be used by editor instances when such configurations are not
 	 * available on them directly.
-	 * @member {core.Config} CKEDITOR.config
+	 * @member {utils.Config} CKEDITOR.config
 	 */
 	config: new Config()
 };

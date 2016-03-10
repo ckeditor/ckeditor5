@@ -16,7 +16,7 @@ import utils from '../../utils/utils.js';
  *
  * @memberOf core.editorUI
  * @extends core.ui.Controller
- * @mixes core.ObservableMixin
+ * @mixes utils.ObservaleMixin
  */
 
 export default class EditorUI extends Controller {
