@@ -7,8 +7,8 @@
 
 import Controller from '../ui/controller.js';
 import Model from '../ui/model.js';
-import utils from '../utils.js';
-import ObservableMixin from '../observablemixin.js';
+import utils from '../../utils/utils.js';
+import ObservableMixin from '../../utils/observablemixin.js';
 
 /**
  * @memberOf core.editable
