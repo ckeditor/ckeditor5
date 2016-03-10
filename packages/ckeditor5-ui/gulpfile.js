@@ -15,6 +15,5 @@ const config = {
 };
 
 require( './dev/tasks/lint/tasks' )( config );
-require( './dev/tasks/lodash/tasks' )();
 
 gulp.task( 'pre-commit', [ 'lint-staged' ] );
