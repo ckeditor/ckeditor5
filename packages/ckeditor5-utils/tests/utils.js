@@ -6,9 +6,8 @@
 'use strict';
 
 import utils from '/ckeditor5/utils/utils.js';
-import utilsTestUtils from '/tests/utils/_utils/utils.js';
 
-const getIteratorCount = utilsTestUtils.getIteratorCount;
+const getIteratorCount = utils.count;
 
 describe( 'utils', () => {
 	describe( 'spy', () => {
@@ -188,6 +187,13 @@ describe( 'utils', () => {
 			yield 22;
 			yield 33;
 		}
+	} );
+
+	describe( 'count', () => {
+		it( 'should returns number of editable items', () => {
+			const count = utils.count( [ 1, 2, 3, 4, 5 ] );
+			expect( count ).to.equal( 5 );
+		} );
 	} );
 
 	describe( 'mix', () => {

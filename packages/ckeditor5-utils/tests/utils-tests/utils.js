@@ -12,13 +12,6 @@ import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
 
 testUtils.createSinonSandbox();
 
-describe( 'utilsTestUtils.getIteratorCount()', () => {
-	it( 'should returns number of editable items', () => {
-		const count = utilsTestUtils.getIteratorCount( [ 1, 2, 3, 4, 5 ] );
-		expect( count ).to.equal( 5 );
-	} );
-} );
-
 describe( 'utilsTestUtils.createObserver()', () => {
 	let observable, observable2, observer;
 
