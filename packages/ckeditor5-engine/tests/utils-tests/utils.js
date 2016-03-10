@@ -10,7 +10,7 @@ import moduleTestUtils from '/tests/_utils/module.js';
 import coreTestUtils from '/tests/core/_utils/utils.js';
 import Model from '/ckeditor5/core/ui/model.js';
 import Creator from '/ckeditor5/core/creator.js';
-import EmitterMixin from '/ckeditor5/core/emittermixin.js';
+import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
 
 let createFn3 = () => {};
 let destroyFn3 = () => {};

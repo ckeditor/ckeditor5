@@ -6,8 +6,8 @@
 'use strict';
 
 import Editor from './editor.js';
-import Collection from './collection.js';
-import Config from './config.js';
+import Collection from '../utils/collection.js';
+import Config from '../utils/config.js';
 
 /**
  * This is the API entry point. The entire CKEditor code runs under this object.

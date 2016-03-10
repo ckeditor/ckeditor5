@@ -8,7 +8,7 @@
 /* global console:false */
 
 import moduleUtils from '/tests/_utils/module.js';
-import EmitterMixin from '/ckeditor5/core/emittermixin.js';
+import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
 
 const utils = {
 	/**

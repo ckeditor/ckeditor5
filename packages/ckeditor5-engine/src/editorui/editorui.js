@@ -8,7 +8,7 @@
 import Controller from '../ui/controller.js';
 import ControllerCollection from '../ui/controllercollection.js';
 import ComponentFactory from '../ui/componentfactory.js';
-import ObservableMixin from '../observablemixin.js';
+import ObservableMixin from '../../utils/observablemixin.js';
 import utils from '../../utils/utils.js';
 
 /**

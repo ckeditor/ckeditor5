@@ -5,7 +5,7 @@
 
 'use strict';
 
-import Collection from '../collection.js';
+import Collection from '../../utils/collection.js';
 
 /**
  * Basic Region class.
