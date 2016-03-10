@@ -371,9 +371,7 @@ import CKEditorError from '../ckeditorerror.js';
 		}
 
 		// Break attributes at range start and end.
-		const breakRange = this.breakRange( range );
-		const breakStart = breakRange.start;
-		const breakEnd = breakRange.end;
+		const { start: breakStart, end: breakEnd } = this.breakRange( range );
 		const parentContainer = breakStart.parent;
 
 		const count = breakEnd.offset - breakStart.offset;
@@ -438,9 +436,7 @@ import CKEditorError from '../ckeditorerror.js';
 		this.setPriority( attribute, priority );
 
 		// Break attributes at range start and end.
-		const breakRange = this.breakRange( range );
-		const breakStart = breakRange.start;
-		const breakEnd = breakRange.end;
+		const { start: breakStart, end: breakEnd } = this.breakRange( range );
 		const parentContainer = breakStart.parent;
 
 		// Unwrap children located between break points.
@@ -488,9 +484,7 @@ import CKEditorError from '../ckeditorerror.js';
 		}
 
 		// Break attributes at range start and end.
-		const breakRange = this.breakRange( range );
-		const breakStart = breakRange.start;
-		const breakEnd = breakRange.end;
+		const { start: breakStart, end: breakEnd } = this.breakRange( range );
 		const parentContainer = breakStart.parent;
 
 		// Unwrap children located between break points.
