@@ -8,15 +8,15 @@
 import Controller from '../ui/controller.js';
 import ControllerCollection from '../ui/controllercollection.js';
 import ComponentFactory from '../ui/componentfactory.js';
-import ObservableMixin from '../observablemixin.js';
-import utils from '../utils.js';
+import ObservableMixin from '../../utils/observablemixin.js';
+import utils from '../../utils/utils.js';
 
 /**
  * Base class for the editor main view controllers.
  *
  * @memberOf core.editorUI
  * @extends core.ui.Controller
- * @mixes core.ObservableMixin
+ * @mixes utils.ObservaleMixin
  */
 
 export default class EditorUI extends Controller {

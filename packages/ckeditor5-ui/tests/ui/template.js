@@ -10,7 +10,7 @@
 
 import testUtils from '/tests/_utils/utils.js';
 import Template from '/ckeditor5/core/ui/template.js';
-import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 testUtils.createSinonSandbox();
 

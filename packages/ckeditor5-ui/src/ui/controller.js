@@ -5,10 +5,10 @@
 
 'use strict';
 
-import Collection from '../collection.js';
-import CKEditorError from '../ckeditorerror.js';
-import EmitterMixin from '../emittermixin.js';
-import utils from '../utils.js';
+import Collection from '../../utils/collection.js';
+import CKEditorError from '../../utils/ckeditorerror.js';
+import EmitterMixin from '../../utils/emittermixin.js';
+import utils from '../../utils/utils.js';
 
 /**
  * Basic Controller class.
@@ -50,7 +50,7 @@ export default class Controller {
 		 * A collection of {@link ControllerCollection} instances containing
 		 * child controllers.
 		 *
-		 * @member {core.Collection} core.ui.Controller#collections
+		 * @member {utils.Collection} core.ui.Controller#collections
 		 */
 		this.collections = new Collection( {
 			idProperty: 'name'
