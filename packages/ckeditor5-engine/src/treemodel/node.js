@@ -5,9 +5,9 @@
 
 'use strict';
 
-import clone from '../lib/lodash/clone.js';
-import utils from '../utils.js';
-import CKEditorError from '../ckeditorerror.js';
+import clone from '../../utils/lib/lodash/clone.js';
+import utils from '../../utils/utils.js';
+import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
  * Creates a tree node.

@@ -7,11 +7,11 @@
 
 'use strict';
 
-import coreTestUtils from '/tests/core/_utils/utils.js';
+import testUtils from '/tests/utils/_utils/utils.js';
 import Node from '/ckeditor5/core/treeview/node.js';
 import ViewElement from '/ckeditor5/core/treeview/element.js';
 
-const getIteratorCount = coreTestUtils.getIteratorCount;
+const getIteratorCount = testUtils.getIteratorCount;
 
 describe( 'Element', () => {
 	describe( 'constructor', () => {

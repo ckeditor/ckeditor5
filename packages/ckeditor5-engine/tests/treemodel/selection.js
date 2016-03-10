@@ -15,7 +15,7 @@ import LiveRange from '/ckeditor5/core/treemodel/liverange.js';
 import Selection from '/ckeditor5/core/treemodel/selection.js';
 import InsertOperation from '/ckeditor5/core/treemodel/operation/insertoperation.js';
 import MoveOperation from '/ckeditor5/core/treemodel/operation/moveoperation.js';
-import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'Selection', () => {
 	let attrFooBar;

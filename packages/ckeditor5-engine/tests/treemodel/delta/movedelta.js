@@ -12,7 +12,7 @@ import Document from '/ckeditor5/core/treemodel/document.js';
 import Position from '/ckeditor5/core/treemodel/position.js';
 import Range from '/ckeditor5/core/treemodel/range.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
-import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 import MoveDelta from '/ckeditor5/core/treemodel/delta/movedelta.js';
 import MoveOperation from '/ckeditor5/core/treemodel/operation/moveoperation.js';

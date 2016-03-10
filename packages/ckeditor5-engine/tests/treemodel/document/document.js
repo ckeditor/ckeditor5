@@ -10,7 +10,7 @@
 import Document from '/ckeditor5/core/treemodel/document.js';
 import RootElement from '/ckeditor5/core/treemodel/rootelement.js';
 import Batch from '/ckeditor5/core/treemodel/batch.js';
-import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'Document', () => {
 	let doc;

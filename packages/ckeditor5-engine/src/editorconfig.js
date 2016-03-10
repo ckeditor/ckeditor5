@@ -6,16 +6,16 @@
 'use strict';
 
 import CKEDITOR from '../../ckeditor.js';
-import Config from './config.js';
+import Config from '../utils/config.js';
 
 /**
  * Handles a configuration dictionary for an editor instance.
  *
- * The basic difference between {@link core.EditorConfig} and {@link core.Config} is that {@link core.EditorConfig#get} retrieves
+ * The basic difference between {@link core.EditorConfig} and {@link utils.Config} is that {@link core.EditorConfig#get} retrieves
  * configurations from {@link CKEDITOR#config} if they are not found.
  *
  * @memberOf core
- * @extends core.Config
+ * @extends utils.Config
  */
 export default class EditorConfig extends Config {
 	/**

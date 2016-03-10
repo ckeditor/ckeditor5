@@ -6,8 +6,8 @@
 'use strict';
 
 import Editor from './editor.js';
-import Collection from './collection.js';
-import Config from './config.js';
+import Collection from '../utils/collection.js';
+import Config from '../utils/config.js';
 
 /**
  * This is the API entry point. The entire CKEditor code runs under this object.
@@ -19,7 +19,7 @@ const CKEDITOR = {
 	 * A collection containing all editor instances created.
 	 *
 	 * @readonly
-	 * @member {core.Collection} CKEDITOR.instances
+	 * @member {utils.Collection} CKEDITOR.instances
 	 */
 	instances: new Collection(),
 
@@ -74,7 +74,7 @@ const CKEDITOR = {
 	/**
 	 * Holds global configuration defaults, which will be used by editor instances when such configurations are not
 	 * available on them directly.
-	 * @member {core.Config} CKEDITOR.config
+	 * @member {utils.Config} CKEDITOR.config
 	 */
 	config: new Config()
 };

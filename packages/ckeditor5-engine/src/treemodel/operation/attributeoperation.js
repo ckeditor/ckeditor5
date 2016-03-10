@@ -7,7 +7,7 @@
 
 import Operation from './operation.js';
 import Range from '../range.js';
-import CKEditorError from '../../ckeditorerror.js';
+import CKEditorError from '../../../utils/ckeditorerror.js';
 import TextFragment from '../textfragment.js';
 
 /**

@@ -6,9 +6,9 @@
 'use strict';
 
 import LiveRange from './liverange.js';
-import EmitterMixin from '../emittermixin.js';
-import CKEditorError from '../ckeditorerror.js';
-import utils from '../utils.js';
+import EmitterMixin from '../../utils/emittermixin.js';
+import CKEditorError from '../../utils/ckeditorerror.js';
+import utils from '../../utils/utils.js';
 
 /**
  * Represents a selection that is made on nodes in {@link core.treeModel.Document}. Selection instance is

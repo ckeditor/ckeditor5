@@ -10,7 +10,7 @@ import coreTestUtils from '/tests/core/_utils/utils.js';
 
 import CKEDITOR from '/ckeditor.js';
 import Editor from '/ckeditor5/core/editor.js';
-import Config from '/ckeditor5/core/config.js';
+import Config from '/ckeditor5/utils/config.js';
 
 let content = document.getElementById( 'content' );
 let editorConfig = { creator: 'creator-test' };

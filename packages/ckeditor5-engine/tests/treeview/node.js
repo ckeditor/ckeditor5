@@ -9,7 +9,7 @@
 
 import Element from '/ckeditor5/core/treeview/element.js';
 import Text from '/ckeditor5/core/treeview/text.js';
-import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'Node', () => {
 	let root;

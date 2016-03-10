@@ -6,8 +6,8 @@
 'use strict';
 
 import Plugin from './plugin.js';
-import CKEditorError from './ckeditorerror.js';
-import log from './log.js';
+import CKEditorError from '../utils/ckeditorerror.js';
+import log from '../utils/log.js';
 import load from '../load.js';
 
 /**

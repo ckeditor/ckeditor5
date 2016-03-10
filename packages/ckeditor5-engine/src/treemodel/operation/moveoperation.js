@@ -8,8 +8,8 @@
 import Operation from './operation.js';
 import Position from '../position.js';
 import Range from '../range.js';
-import CKEditorError from '../../ckeditorerror.js';
-import utils from '../../utils.js';
+import CKEditorError from '../../../utils/ckeditorerror.js';
+import utils from '../../../utils/utils.js';
 
 /**
  * Operation to move list of subsequent nodes from one position in the document to another.

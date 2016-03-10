@@ -10,7 +10,7 @@
 import NodeList from '/ckeditor5/core/treemodel/nodelist.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
 import Text from '/ckeditor5/core/treemodel/text.js';
-import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'NodeList', () => {
 	describe( 'constructor', () => {
