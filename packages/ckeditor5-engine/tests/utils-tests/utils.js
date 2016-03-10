@@ -8,9 +8,7 @@
 import testUtils from '/tests/_utils/utils.js';
 import moduleTestUtils from '/tests/_utils/module.js';
 import coreTestUtils from '/tests/core/_utils/utils.js';
-import Model from '/ckeditor5/core/ui/model.js';
 import Creator from '/ckeditor5/core/creator.js';
-import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
 
 let createFn3 = () => {};
 let destroyFn3 = () => {};
@@ -56,63 +54,5 @@ describe( 'coreTestUtils.defineEditorCreatorMock()', () => {
 
 		expect( TestCreator3.prototype ).to.have.property( 'create', createFn3 );
 		expect( TestCreator3.prototype ).to.have.property( 'destroy', destroyFn3 );
-	} );
-} );
-
-describe( 'coreTestUtils.getIteratorCount()', () => {
-	it( 'should returns number of editable items', () => {
-		const count = coreTestUtils.getIteratorCount( [ 1, 2, 3, 4, 5 ] );
-		expect( count ).to.equal( 5 );
-	} );
-} );
-
-describe( 'coreTestUtils.createObserver()', () => {
-	let observable, observable2, observer;
-
-	beforeEach( () => {
-		observer = coreTestUtils.createObserver();
-		observable = new Model( { foo: 0, bar: 0 } );
-		observable2 = new Model( { foo: 0, bar: 0 } );
-	} );
-
-	it( 'should create an observer', () => {
-		function Emitter() {}
-		Emitter.prototype = EmitterMixin;
-
-		expect( observer  ).to.be.instanceof( Emitter );
-		expect( observer.observe ).is.a( 'function' );
-		expect( observer.stopListening ).is.a( 'function' );
-	} );
-
-	describe( 'Observer', () => {
-		/* global console:false  */
-
-		it( 'logs changes in the observable', () => {
-			const spy = testUtils.sinon.stub( console, 'log' );
-
-			observer.observe( 'Some observable', observable );
-			observer.observe( 'Some observable 2', observable2 );
-
-			observable.foo = 1;
-			expect( spy.callCount ).to.equal( 1 );
-
-			observable.foo = 2;
-			observable2.bar = 3;
-			expect( spy.callCount ).to.equal( 3 );
-		} );
-
-		it( 'stops listening when asked to do so', () => {
-			const spy = testUtils.sinon.stub( console, 'log' );
-
-			observer.observe( 'Some observable', observable );
-
-			observable.foo = 1;
-			expect( spy.callCount ).to.equal( 1 );
-
-			observer.stopListening();
-
-			observable.foo = 2;
-			expect( spy.callCount ).to.equal( 1 );
-		} );
 	} );
 } );

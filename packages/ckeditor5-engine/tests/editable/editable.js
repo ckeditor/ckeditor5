@@ -10,7 +10,7 @@
 import Editor from '/ckeditor5/core/editor.js';
 import Editable from '/ckeditor5/core/editable/editable.js';
 import Model from '/ckeditor5/core/ui/model.js';
-import coreTestUtils from '/tests/core/_utils/utils.js';
+import testUtils from '/tests/utils/_utils/utils.js';
 
 describe( 'Editable', () => {
 	let editable, editor;
@@ -43,7 +43,7 @@ describe( 'Editable', () => {
 		} );
 
 		it( 'binds this.isFocused to editable', () => {
-			coreTestUtils.assertBinding(
+			testUtils.assertBinding(
 				editable,
 				{ isFocused: false },
 				[
@@ -54,7 +54,7 @@ describe( 'Editable', () => {
 		} );
 
 		it( 'binds editable.isEditable to itself', () => {
-			coreTestUtils.assertBinding(
+			testUtils.assertBinding(
 				editable.viewModel,
 				{ isEditable: true },
 				[

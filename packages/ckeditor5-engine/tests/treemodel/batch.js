@@ -7,8 +7,8 @@
 
 'use strict';
 
+/* jshint unused: false */
 import deltas from '/ckeditor5/core/treemodel/delta/basic-deltas.js';
-/*jshint unused: false*/
 
 import Batch from '/ckeditor5/core/treemodel/batch.js';
 import { register } from '/ckeditor5/core/treemodel/batch.js';
