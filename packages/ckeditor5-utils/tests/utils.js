@@ -7,7 +7,7 @@
 
 import utils from '/ckeditor5/utils/utils.js';
 
-const getIteratorCount = utils.count;
+const count = utils.count;
 
 describe( 'utils', () => {
 	describe( 'spy', () => {
@@ -122,7 +122,7 @@ describe( 'utils', () => {
 		it( 'should create map from object', () => {
 			const map = utils.toMap( { foo: 1, bar: 2 } );
 
-			expect( getIteratorCount( map ) ).to.equal( 2 );
+			expect( count( map ) ).to.equal( 2 );
 			expect( map.get( 'foo' ) ).to.equal( 1 );
 			expect( map.get( 'bar' ) ).to.equal( 2 );
 		} );
@@ -130,7 +130,7 @@ describe( 'utils', () => {
 		it( 'should create map from iterator', () => {
 			const map = utils.toMap( [ [ 'foo', 1 ], [ 'bar', 2 ] ] );
 
-			expect( getIteratorCount( map ) ).to.equal( 2 );
+			expect( count( map ) ).to.equal( 2 );
 			expect( map.get( 'foo' ) ).to.equal( 1 );
 			expect( map.get( 'bar' ) ).to.equal( 2 );
 		} );
@@ -140,7 +140,7 @@ describe( 'utils', () => {
 
 			const map = utils.toMap( data );
 
-			expect( getIteratorCount( map ) ).to.equal( 2 );
+			expect( count( map ) ).to.equal( 2 );
 			expect( map.get( 'foo' ) ).to.equal( 1 );
 			expect( map.get( 'bar' ) ).to.equal( 2 );
 		} );
