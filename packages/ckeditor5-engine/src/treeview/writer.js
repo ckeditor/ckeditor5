@@ -12,7 +12,7 @@ import Range from './range.js';
 import CKEditorError from '../ckeditorerror.js';
 
 /**
- * Tree model Writer class.
+ * Tree View Writer class.
  * Writer defines a high-level API for TreeView manipulations.
  *
  * @memberOf core.treeView
@@ -24,15 +24,27 @@ import CKEditorError from '../ckeditorerror.js';
 		 * Nodes with priorities are considered as attributes.
 		 *
 		 * @member {WeakMap} core.treeView.Writer#_priorities
-         * @protected
-         */
+		 * @protected
+		 */
 		this._priorities = new WeakMap();
 	}
 
 	/**
 	 * Returns `true` if provided node is a `container` node.
-	 * Node is considered as `container` when it is a {@link core.treeView.Element Element} instance and has no priority
-	 * defined.
+	 *
+	 * `Container` nodes are mostly elements like `<p>` or `<div>`. Break and merge operations are performed only in a
+	 * bounds of a container nodes. Containers will not be broken or merged by
+	 * {@link core.treeView.Writer#breakAttributes breakAttributes} and
+	 * {@link core.treeView.Writer#mergeAttributes mergeAttributes}.
+	 *
+	 * `Attribute` nodes are mostly elements like `<b>` or `<span>`. Attributes can be broken and merged. Merging requires
+	 * that attribute nodes are {@link core.treeView.Element#isSimilar similar} and have same priority. Setting different
+	 * priorities on similar nodes may prevent merging, eg. two `<abbr>` nodes next ot each other shouldn't be merged.
+	 * There might be a need to mark `<span>` element as a container node, for example in situation when it will be a
+	 * container of an inline widget:
+	 *
+	 * 		<span color="red">foobar</span>  // attribute
+	 * 		<span data-widget>foobar</span>  // container
 	 *
 	 * @param {core.treeView.Element} node Node to check.
 	 * @returns {Boolean} `True` if provided node is a container.
@@ -45,9 +57,10 @@ import CKEditorError from '../ckeditorerror.js';
 
 	/**
 	 * Returns `true` if provided node is an `attribute` node.
-	 * Node is considered as `attribute` when it is a {@link core.treeView.Element Element} instance and has priority
-	 * defined.
+	 * For more information about attribute and container nodes see {@link core.treeView.Writer#isContainer isContainer}
+	 * method description.
 	 *
+	 * @see core.treeView.Writer#isContainer
 	 * @param {core.treeView.Element} node Node to check.
 	 * @returns {Boolean} `True` if provided node is an attribute.
 	 */
@@ -58,8 +71,9 @@ import CKEditorError from '../ckeditorerror.js';
 	}
 
 	/**
-	 * Sets node priority. When priority is defined, node is considered as `attribute`
+	 * Sets node priority. When priority is defined, node is considered as `attribute`.
 	 *
+	 * @see core.treeView.Writer#isContainer
 	 * @param {core.treeView.Node} node
 	 * @param {Number} priority
      */
@@ -100,12 +114,14 @@ import CKEditorError from '../ckeditorerror.js';
 	/**
 	 * Breaks attribute nodes at provided position. It breaks `attribute` nodes inside `container` node.
 	 *
+	 * In following examples `<p>` is a container, `<b>` and `<u>` are attribute nodes:
+	 *
 	 *		<p>{foo}<b><u>{bar}|</u></b></p> -> <p>{foo}<b><u>{bar}</u></b>|</p>
 	 *		<p>{foo}<b><u>|{bar}</u></b></p> -> <p>{foo}|<b><u>{bar}</u></b></p>
 	 *		<p>{foo}<b><u>{b|ar}</u></b></p> -> <p>{foo}<b><u>{b}</u></b>|<b><u>{ar}</u></b></p>
 	 *
-	 * @see {@link core.treeView.Writer#isContainer}
-	 * @see {@link core.treeView.Writer#isAttribute}
+	 * @see core.treeView.Writer#isContainer
+	 * @see core.treeView.Writer#isAttribute
 	 *
 	 * @param {core.treeView.Position} position Position where to break attributes.
 	 * @returns {core.treeView.Position} New position after breaking the attributes.
@@ -194,7 +210,7 @@ import CKEditorError from '../ckeditorerror.js';
 	 * {@link core.treeView.Range#start start} and {@link core.treeView.Range#end end} positions are not placed inside
 	 * same parent container.
 	 *
-	 * @see {@link core.treeView.Writer#breakAttribute}
+	 * @see core.treeView.Writer#breakAttribute
 	 * @param {core.treeView.Range} range Range which `start` and `end` positions will be used to break attributes.
 	 * @returns {core.treeView.Range} New range with located at break positions.
 	 */
@@ -233,12 +249,14 @@ import CKEditorError from '../ckeditorerror.js';
 	 * Merges attribute nodes. It also merges text nodes if needed.
 	 * Only {@link core.treeView.Element#isSimilar similar} `attribute` nodes, with same priority can be merged.
 	 *
+	 * In following examples `<p>` is a container and `<b>` is an attribute node:
+	 *
 	 *		<p>{foo}|{bar}</p> -> <p>{foo|bar}</p>
 	 *		<p><b>{foo}</b>|<b>{bar}</b> -> <p><b>{foo|bar}</b></b>
 	 *		<p><b foo="bar">{a}</b>|<b foo="baz">{b}</b> -> <p><b foo="bar">{a}</b>|<b foo="baz">{b}</b>
 	 *
-	 * @see {@link core.treeView.Writer#isContainer}
-	 * @see {@link core.treeView.Writer#isAttribute}
+	 * @see core.treeView.Writer#isContainer
+	 * @see core.treeView.Writer#isAttribute
 	 * @param {core.treeView.Position} position Merge position.
 	 * @returns {core.treeView.Position} Position after merge.
 	 */

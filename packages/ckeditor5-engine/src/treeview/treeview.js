@@ -48,6 +48,11 @@ export default class TreeView {
 		 */
 		this.observers = new Set();
 
+		/**
+		 * Tree View writer.
+		 *
+		 * @member {core.treeView.Writer} core.treeView.TreeView#writer
+		 */
 		this.writer = new Writer();
 
 		/**

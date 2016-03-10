@@ -143,10 +143,10 @@ export default class Node {
 	 */
 
 	/**
-	 * Checks if provided node is the same as this node.
+	 * Checks if provided node is similar to this node.
 	 *
 	 * @method treeView.Node#isSimilar
-	 * @returns {Boolean} True if nodes are the same.
+	 * @returns {Boolean} True if nodes are similar.
 	 */
 
 	/**

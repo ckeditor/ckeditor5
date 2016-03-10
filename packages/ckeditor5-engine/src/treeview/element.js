@@ -242,7 +242,8 @@ export default class Element extends Node {
 
 	/**
 	 * Checks if this element is similar to other element.
-	 * Both elements should have the same name and attributes to be considered as similar.
+	 * Both elements should have the same name and attributes to be considered as similar. Two similar elements
+	 * can contain different set of children nodes.
 	 *
 	 * @param {Element} otherElement
 	 * @returns {Boolean}
