@@ -29,7 +29,7 @@ export default class Region {
 		/**
 		 * Views which belong to the region.
 		 *
-		 * @member {core.Collection} core.ui.Region#views
+		 * @member {utils.Collection} core.ui.Region#views
 		 */
 		this.views = new Collection();
 

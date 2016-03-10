@@ -50,7 +50,7 @@ export default class Controller {
 		 * A collection of {@link ControllerCollection} instances containing
 		 * child controllers.
 		 *
-		 * @member {core.Collection} core.ui.Controller#collections
+		 * @member {utils.Collection} core.ui.Controller#collections
 		 */
 		this.collections = new Collection( {
 			idProperty: 'name'

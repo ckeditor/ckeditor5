@@ -12,7 +12,7 @@ import CKEditorError from '../../utils/ckeditorerror.js';
  * Manages UI Controllers.
  *
  * @memberOf core.ui
- * @extends core.Collection
+ * @extends utils.Collection
  */
 export default class ControllerCollection extends Collection {
 	/**
