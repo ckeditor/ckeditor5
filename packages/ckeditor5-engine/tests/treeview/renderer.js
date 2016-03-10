@@ -10,15 +10,15 @@
 import Renderer from '/ckeditor5/core/treeview/renderer.js';
 import ViewElement from '/ckeditor5/core/treeview/element.js';
 import ViewText from '/ckeditor5/core/treeview/text.js';
-import Converter from '/ckeditor5/core/treeview/converter.js';
+import DomConverter from '/ckeditor5/core/treeview/domconverter.js';
 import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
 
 describe( 'Renderer', () => {
-	let converter, renderer;
+	let domConverter, renderer;
 
 	before( () => {
-		converter = new Converter();
-		renderer = new Renderer( converter );
+		domConverter = new DomConverter();
+		renderer = new Renderer( domConverter );
 	} );
 
 	describe( 'markToSync', () => {
@@ -28,7 +28,7 @@ describe( 'Renderer', () => {
 			viewNode = new ViewElement( 'p' );
 
 			const domNode = document.createElement( 'p' );
-			converter.bindElements( domNode, viewNode );
+			domConverter.bindElements( domNode, viewNode );
 			viewNode.appendChildren( new ViewText( 'foo' ) );
 
 			renderer.markedTexts.clear();
@@ -100,7 +100,7 @@ describe( 'Renderer', () => {
 			viewNode = new ViewElement( 'p' );
 			domNode = document.createElement( 'p' );
 
-			converter.bindElements( domNode, viewNode );
+			domConverter.bindElements( domNode, viewNode );
 
 			renderer.markedTexts.clear();
 			renderer.markedAttributes.clear();
@@ -240,7 +240,7 @@ describe( 'Renderer', () => {
 			const domImg = document.createElement( 'img' );
 			domNode.appendChild( domImg );
 
-			converter.bindElements( domImg, viewImg );
+			domConverter.bindElements( domImg, viewImg );
 
 			renderer.markToSync( 'CHILDREN', viewNode );
 			renderer.render();

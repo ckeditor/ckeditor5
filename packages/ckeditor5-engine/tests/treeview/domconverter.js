@@ -10,15 +10,15 @@
 import coreTestUtils from '/tests/core/_utils/utils.js';
 import ViewElement from '/ckeditor5/core/treeview/element.js';
 import ViewText from '/ckeditor5/core/treeview/text.js';
-import Converter from '/ckeditor5/core/treeview/converter.js';
+import DomConverter from '/ckeditor5/core/treeview/domconverter.js';
 
 const getIteratorCount = coreTestUtils.getIteratorCount;
 
-describe( 'converter', () => {
+describe( 'DomConverter', () => {
 	let converter;
 
 	before( () => {
-		converter = new Converter();
+		converter = new DomConverter();
 	} );
 
 	describe( 'bindElements', () => {
