@@ -17,8 +17,6 @@ import Element from '/ckeditor5/core/treemodel/element.js';
 import AttributeDelta from '/ckeditor5/core/treemodel/delta/attributedelta.js';
 import AttributeOperation from '/ckeditor5/core/treemodel/operation/attributeoperation.js';
 
-const getIteratorCount = utils.count;
-
 let doc, root;
 
 beforeEach( () => {
@@ -37,7 +35,7 @@ describe( 'Batch', () => {
 		let count = 0;
 
 		for ( let delta of batch.deltas ) {
-			count += getIteratorCount( delta.operations );
+			count += utils.count( delta.operations );
 		}
 
 		return count;
@@ -143,7 +141,7 @@ describe( 'Batch', () => {
 
 			for ( let delta of batch.deltas ) {
 				for ( let operation of delta.operations ) {
-					count += getIteratorCount( operation.range.getItems( { singleCharacters: true } ) );
+					count += utils.count( operation.range.getItems( { singleCharacters: true } ) );
 				}
 			}
 

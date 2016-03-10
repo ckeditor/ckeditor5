@@ -31,8 +31,6 @@ class BarOperation extends FooOperation {
 	}
 }
 
-const getIteratorCount = utils.count;
-
 describe( 'Delta', () => {
 	describe( 'constructor', () => {
 		it( 'should create an delta with empty properties', () => {
@@ -72,7 +70,7 @@ describe( 'Delta', () => {
 			delta.addOperation( {} );
 			delta.addOperation( {} );
 
-			const count = getIteratorCount( delta.operations );
+			const count = utils.count( delta.operations );
 
 			expect( count ).to.equal( 3 );
 		} );
