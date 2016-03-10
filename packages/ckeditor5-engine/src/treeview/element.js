@@ -6,8 +6,8 @@
 'use strict';
 
 import Node from './node.js';
-import utils from '../utils.js';
-import isPlainObject from '../lib/lodash/isPlainObject.js';
+import utils from '../../utils/utils.js';
+import isPlainObject from '../../utils/lib/lodash/isPlainObject.js';
 
 /**
  * Tree view element.

@@ -9,7 +9,7 @@ import Controller from '../ui/controller.js';
 import ControllerCollection from '../ui/controllercollection.js';
 import ComponentFactory from '../ui/componentfactory.js';
 import ObservableMixin from '../observablemixin.js';
-import utils from '../utils.js';
+import utils from '../../utils/utils.js';
 
 /**
  * Base class for the editor main view controllers.

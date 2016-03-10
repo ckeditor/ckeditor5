@@ -5,7 +5,7 @@
 
 'use strict';
 
-import utils from '../utils.js';
+import utils from '../../utils/utils.js';
 
 /**
  * Data structure for text with attributes. Note that `Text` is not a {@link core.treeModel.Node}. This class is used

@@ -5,11 +5,11 @@
 
 'use strict';
 
-import EmitterMixin from '../emittermixin.js';
+import EmitterMixin from '../../utils/emittermixin.js';
 import Renderer from './renderer.js';
 import Converter from './converter.js';
 
-import utils from '../utils.js';
+import utils from '../../utils/utils.js';
 
 /**
  * TreeView class combines the actual tree of view elements, tree of DOM elements, {@link core.treeView.Converter converter},

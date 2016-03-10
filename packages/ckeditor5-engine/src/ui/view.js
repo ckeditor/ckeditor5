@@ -9,9 +9,9 @@ import Collection from '../../utils/collection.js';
 import Region from './region.js';
 import Template from './template.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
-import DOMEmitterMixin from './domemittermixin.js';
+import DOMEmitterMixin from './../utils/domemittermixin.js';
 import utils from '../../utils/utils.js';
-import isPlainObject from '../lib/lodash/isPlainObject.js';
+import isPlainObject from '../../utils/lib/lodash/isPlainObject.js';
 
 const bindToSymbol = Symbol( 'bindTo' );
 const bindIfSymbol = Symbol( 'bindIf' );

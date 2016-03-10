@@ -5,10 +5,10 @@
 
 'use strict';
 
-import EmitterMixin from '../emittermixin.js';
-import utils from '../utils.js';
-import extend from '../lib/lodash/extend.js';
-import log from '../log.js';
+import EmitterMixin from '../../utils/emittermixin.js';
+import utils from '../../utils/utils.js';
+import extend from '../../utils/lib/lodash/extend.js';
+import log from '../../utils/log.js';
 
 /**
  * Creates a ProxyEmitter instance. Such an instance is a bridge between a DOM Node firing events

@@ -10,7 +10,7 @@
 import Node from '/ckeditor5/core/treemodel/node.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
 import Text from '/ckeditor5/core/treemodel/text.js';
-import utils from '/ckeditor5/core/utils.js';
+import utils from '/ckeditor5/utils/utils.js';
 
 describe( 'CharacterProxy', () => {
 	let text, element, char;
