@@ -11,24 +11,6 @@ import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
 
 const utils = {
 	/**
-	 * Returns the number of elements return by the iterator.
-	 *
-	 *		testUtils.getIteratorCount( [ 1, 2, 3, 4, 5 ] ); // 5;
-	 *
-	 * @param {Iterable.<*>} iterator Any iterator.
-	 * @returns {Number} Number of elements returned by that iterator.
-	 */
-	getIteratorCount( iterator ) {
-		let count = 0;
-
-		for ( let _ of iterator ) { // jshint ignore:line
-			count++;
-		}
-
-		return count;
-	},
-
-	/**
 	 * Creates an instance inheriting from {@link utils.EmitterMixin} with one additional method `observe()`.
 	 * It allows observing changes to attributes in objects being {@link utils.Observable observable}.
 	 *

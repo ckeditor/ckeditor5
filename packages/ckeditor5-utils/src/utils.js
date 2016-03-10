@@ -176,6 +176,25 @@ const utils = {
 	},
 
 	/**
+	 * Returns the number of items return by the iterator.
+	 *
+	 *		utils.count( [ 1, 2, 3, 4, 5 ] ); // 5;
+	 *
+	 * @memberOf utils.utils
+	 * @param {Iterable.<*>} iterator Any iterator.
+	 * @returns {Number} Number of items returned by that iterator.
+	 */
+	count( iterator ) {
+		let count = 0;
+
+		for ( let _ of iterator ) { // jshint ignore:line
+			count++;
+		}
+
+		return count;
+	},
+
+	/**
 	 * Copies enumerable properties and symbols from the objects given as 2nd+ parameters to the
 	 * prototype of first object (a constructor).
 	 *
