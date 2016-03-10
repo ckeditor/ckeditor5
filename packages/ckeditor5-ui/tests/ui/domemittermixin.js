@@ -9,9 +9,9 @@
 'use strict';
 
 import testUtils from '/tests/_utils/utils.js';
-import extend from '/ckeditor5/core/lib/lodash/extend.js';
+import extend from '/ckeditor5/utils/lib/lodash/extend.js';
 import DOMEmitterMixin from '/ckeditor5/core/ui/domemittermixin.js';
-import EmitterMixin from '/ckeditor5/core/emittermixin.js';
+import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
 
 let emitter, domEmitter, node;
 
