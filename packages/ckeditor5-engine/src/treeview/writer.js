@@ -96,14 +96,14 @@ import CKEditorError from '../ckeditorerror.js';
 	 * Position's parent node is checked as first, then next parents are checked.
 	 *
 	 * @param {core.treeView.Position} position Position used as a start point to locate parent container.
-	 * @returns {core.treeView.Element|null} Parent container element or `null` if container is not found.
+	 * @returns {core.treeView.Element|undefined} Parent container element or `undefined` if container is not found.
 	 */
 	getParentContainer( position ) {
 		let parent = position.parent;
 
 		while ( !this.isContainer( parent ) ) {
 			if ( !parent ) {
-				return null;
+				return undefined;
 			}
 			parent = parent.parent;
 		}

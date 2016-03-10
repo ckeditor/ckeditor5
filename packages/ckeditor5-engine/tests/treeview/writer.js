@@ -225,14 +225,14 @@ describe( 'Writer', () => {
 			expect( container ).to.equal( parent );
 		} );
 
-		it( 'should return null if no parent container', () => {
+		it( 'should return undefined if no parent container', () => {
 			const text = new Text( 'foobar' );
 			const b = new Element( 'b', null, [ text ] );
 
 			writer.setPriority( b, 1 );
 			const container = writer.getParentContainer( new Position( text, 0 ) );
 
-			expect( container ).to.equal( null );
+			expect( container ).to.be.undefined;
 		} );
 	} );
 
