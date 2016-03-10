@@ -6,58 +6,11 @@
 'use strict';
 
 import testUtils from '/tests/_utils/utils.js';
-import moduleTestUtils from '/tests/_utils/module.js';
 import utilsTestUtils from '/tests/utils/_utils/utils.js';
-import Model from '/ckeditor5/utils/ui/model.js';
-import Creator from '/ckeditor5/utils/creator.js';
+import ObesrvableMixin from '/ckeditor5/utils/observablemixin.js';
 import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
 
-let createFn3 = () => {};
-let destroyFn3 = () => {};
-
 testUtils.createSinonSandbox();
-
-utilsTestUtils.defineEditorCreatorMock( 'test1' );
-utilsTestUtils.defineEditorCreatorMock( 'test2', {
-	foo: 1,
-	bar: 2
-} );
-utilsTestUtils.defineEditorCreatorMock( 'test3', {
-	create: createFn3,
-	destroy: destroyFn3
-} );
-
-const modules = moduleTestUtils.require( {
-	testCreator1: 'creator-test1/creator-test1',
-	testCreator2: 'creator-test2/creator-test2',
-	testCreator3: 'creator-test3/creator-test3'
-} );
-
-///////////////////
-
-let TestCreator1, TestCreator2, TestCreator3;
-
-before( () => {
-	TestCreator1 = modules.testCreator1;
-	TestCreator2 = modules.testCreator2;
-	TestCreator3 = modules.testCreator3;
-} );
-
-describe( 'utilsTestUtils.defineEditorCreatorMock()', () => {
-	it( 'should register all creators', () => {
-		expect( TestCreator1.prototype ).to.be.instanceof( Creator );
-		expect( TestCreator2.prototype ).to.be.instanceof( Creator );
-		expect( TestCreator3.prototype ).to.be.instanceof( Creator );
-	} );
-
-	it( 'should copy properties from the second argument', () => {
-		expect( TestCreator2.prototype ).to.have.property( 'foo', 1 );
-		expect( TestCreator2.prototype ).to.have.property( 'bar', 2 );
-
-		expect( TestCreator3.prototype ).to.have.property( 'create', createFn3 );
-		expect( TestCreator3.prototype ).to.have.property( 'destroy', destroyFn3 );
-	} );
-} );
 
 describe( 'utilsTestUtils.getIteratorCount()', () => {
 	it( 'should returns number of editable items', () => {
@@ -71,8 +24,12 @@ describe( 'utilsTestUtils.createObserver()', () => {
 
 	beforeEach( () => {
 		observer = utilsTestUtils.createObserver();
-		observable = new Model( { foo: 0, bar: 0 } );
-		observable2 = new Model( { foo: 0, bar: 0 } );
+
+		observable = Object.create( ObesrvableMixin );
+		observable.set( { foo: 0, bar: 0 } );
+
+		observable2 = Object.create( ObesrvableMixin );
+		observable2.set( { foo: 0, bar: 0 } );
 	} );
 
 	it( 'should create an observer', () => {
