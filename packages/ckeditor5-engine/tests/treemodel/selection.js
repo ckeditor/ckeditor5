@@ -134,9 +134,9 @@ describe( 'Selection', () => {
 		expect( ranges[ 0 ] ).to.be.instanceof( LiveRange );
 	} );
 
-	it( 'should fire update event when adding a range', () => {
+	it( 'should fire change:range event when adding a range', () => {
 		let spy = sinon.spy();
-		selection.on( 'update', spy );
+		selection.on( 'change:range', spy );
 
 		selection.addRange( range );
 
@@ -182,7 +182,7 @@ describe( 'Selection', () => {
 			selection.addRange( range );
 
 			spy = sinon.spy();
-			selection.on( 'update', spy );
+			selection.on( 'change:range', spy );
 
 			ranges = selection.getRanges();
 
@@ -228,7 +228,7 @@ describe( 'Selection', () => {
 			selection.addRange( range );
 
 			spy = sinon.spy();
-			selection.on( 'update', spy );
+			selection.on( 'change:range', spy );
 
 			oldRanges = selection.getRanges();
 
@@ -321,7 +321,7 @@ describe( 'Selection', () => {
 			selection.addRange( new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 1, 4 ] ) ) );
 
 			spy = sinon.spy();
-			selection.on( 'update', spy );
+			selection.on( 'change:range', spy );
 		} );
 
 		describe( 'InsertOperation', () => {
@@ -487,6 +487,15 @@ describe( 'Selection', () => {
 
 				expect( emptyP.getAttribute( Selection._getStoreAttributeKey( 'foo' ) ) ).to.equal( 'bar' );
 			} );
+
+			it( 'should fire change:attribute event', () => {
+				let spy = sinon.spy();
+				selection.on( 'change:attribute', spy );
+
+				selection.setAttribute( 'foo', 'bar' );
+
+				expect( spy.called ).to.be.true;
+			} );
 		} );
 
 		describe( 'hasAttribute', () => {
@@ -544,6 +553,15 @@ describe( 'Selection', () => {
 				expect( emptyP.getAttribute( Selection._getStoreAttributeKey( 'foo' ) ) ).to.equal( 'bar' );
 				expect( emptyP.hasAttribute( Selection._getStoreAttributeKey( 'abc' ) ) ).to.be.false;
 			} );
+
+			it( 'should fire change:attribute event', () => {
+				let spy = sinon.spy();
+				selection.on( 'change:attribute', spy );
+
+				selection.setAttributesTo( { foo: 'bar' } );
+
+				expect( spy.called ).to.be.true;
+			} );
 		} );
 
 		describe( 'removeAttribute', () => {
@@ -565,6 +583,15 @@ describe( 'Selection', () => {
 				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
 
 				expect( emptyP.hasAttribute( Selection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
+			} );
+
+			it( 'should fire change:attribute event', () => {
+				let spy = sinon.spy();
+				selection.on( 'change:attribute', spy );
+
+				selection.removeAttribute( 'foo' );
+
+				expect( spy.called ).to.be.true;
 			} );
 		} );
 
@@ -595,6 +622,15 @@ describe( 'Selection', () => {
 
 				expect( emptyP.hasAttribute( Selection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
 				expect( emptyP.hasAttribute( Selection._getStoreAttributeKey( 'abc' ) ) ).to.be.false;
+			} );
+
+			it( 'should fire change:attribute event', () => {
+				let spy = sinon.spy();
+				selection.on( 'change:attribute', spy );
+
+				selection.clearAttributes();
+
+				expect( spy.called ).to.be.true;
 			} );
 		} );
 	} );
@@ -649,6 +685,15 @@ describe( 'Selection', () => {
 			// If there are no characters to copy attributes from, use stored attributes.
 			selection.setRanges( [ new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 0 ] ) ) ] );
 			expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [] );
+		} );
+
+		it( 'should fire change:attribute event', () => {
+			let spy = sinon.spy();
+			selection.on( 'change:attribute', spy );
+
+			selection.setRanges( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 5 ] ) ) ] );
+
+			expect( spy.called ).to.be.true;
 		} );
 	} );
 

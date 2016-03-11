@@ -113,7 +113,7 @@ export default class Selection {
 	 * to {@link core.treeModel.Range#end}. The flag is used to set {@link core.treeModel.Selection#anchor} and
 	 * {@link core.treeModel.Selection#focus} properties.
 	 *
-	 * @fires {@link core.treeModel.Selection.update update}
+	 * @fires {@link core.treeModel.Selection#change:range change:range}
 	 * @param {core.treeModel.Range} range Range to add.
 	 * @param {Boolean} [isBackward] Flag describing if added range was selected forward - from start to end (`false`)
 	 * or backward - from end to start (`true`). Defaults to `false`.
@@ -122,7 +122,7 @@ export default class Selection {
 		this._pushRange( range );
 		this._lastRangeBackward = !!isBackward;
 
-		this.fire( 'update' );
+		this.fire( 'change:range' );
 	}
 
 	/**
@@ -178,13 +178,13 @@ export default class Selection {
 	/**
 	 * Removes all ranges that were added to the selection. Fires update event.
 	 *
-	 * @fires {@link core.treeModel.Selection.update update}
+	 * @fires {@link core.treeModel.Selection#change:range change:range}
 	 */
 	removeAllRanges() {
 		this.destroy();
 		this._ranges = [];
 
-		this.fire( 'update' );
+		this.fire( 'change:range' );
 	}
 
 	/**
@@ -192,7 +192,7 @@ export default class Selection {
 	 * is treated like the last added range and is used to set {@link #anchor} and {@link #focus}. Accepts a flag
 	 * describing in which way the selection is made (see {@link #addRange}).
 	 *
-	 * @fires {@link core.treeModel.Selection.update update}
+	 * @fires {@link core.treeModel.Selection#change:range change:range}
 	 * @param {Array.<core.treeModel.Range>} newRanges Array of ranges to set.
 	 * @param {Boolean} [isLastBackward] Flag describing if last added range was selected forward - from start to end (`false`)
 	 * or backward - from end to start (`true`). Defaults to `false`.
@@ -206,15 +206,20 @@ export default class Selection {
 		}
 
 		this._lastRangeBackward = !!isLastBackward;
-		this.fire( 'update' );
+
+		this.fire( 'change:range' );
 	}
 
 	/**
 	 * Removes all attributes from the selection.
+	 *
+	 * @fires {@link core.treeModel.Selection#change:range change:range}
 	 */
 	clearAttributes() {
 		this._attrs.clear();
 		this._setStoredAttributesTo( new Map() );
+
+		this.fire( 'change:attribute' );
 	}
 
 	/**
@@ -249,32 +254,41 @@ export default class Selection {
 	/**
 	 * Removes an attribute with given key from the selection.
 	 *
+	 * @fires {@link core.treeModel.Selection#change:range change:range}
 	 * @param {String} key Key of attribute to remove.
 	 */
 	removeAttribute( key ) {
 		this._attrs.delete( key );
 		this._removeStoredAttribute( key );
+
+		this.fire( 'change:attribute' );
 	}
 
 	/**
 	 * Sets attribute on the selection. If attribute with the same key already is set, it overwrites its values.
 	 *
+	 * @fires {@link core.treeModel.Selection#change:range change:range}
 	 * @param {String} key Key of attribute to set.
 	 * @param {*} value Attribute value.
 	 */
 	setAttribute( key, value ) {
 		this._attrs.set( key, value );
 		this._storeAttribute( key, value );
+
+		this.fire( 'change:attribute' );
 	}
 
 	/**
 	 * Removes all attributes from the selection and sets given attributes.
 	 *
+	 * @fires {@link core.treeModel.Selection#change:range change:range}
 	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set.
 	 */
 	setAttributesTo( attrs ) {
 		this._attrs = utils.toMap( attrs );
 		this._setStoredAttributesTo( this._attrs );
+
+		this.fire( 'change:attribute' );
 	}
 
 	/**
@@ -465,6 +479,8 @@ export default class Selection {
 
 			return null;
 		}
+
+		this.fire( 'change:attribute' );
 	}
 
 	/**
@@ -499,5 +515,11 @@ utils.mix( Selection, EmitterMixin );
  * Fired whenever selection ranges are changed through {@link core.treeModel.Selection Selection API}. Not fired when
  * {@link core.treeModel.LiveRange live ranges} inserted in selection change because of Tree Model changes.
  *
- * @event core.treeModel.Selection.update
+ * @event core.treeModel.Selection#change:range
+ */
+
+/**
+ * Fired whenever selection attributes are changed.
+ *
+ * @event core.treeModel.Selection#change:attribute
  */
