@@ -30,7 +30,7 @@ describe( 'LivePosition', () => {
 
 	it( 'should be an instance of Position', () => {
 		let live = new LivePosition( root, [ 0 ] );
-		live.destroy();
+		live.detach();
 
 		expect( live ).to.be.instanceof( Position );
 	} );
@@ -39,18 +39,18 @@ describe( 'LivePosition', () => {
 		sinon.spy( LivePosition.prototype, 'listenTo' );
 
 		let live = new LivePosition( root, [ 0 ] );
-		live.destroy();
+		live.detach();
 
 		expect( live.listenTo.calledWith( doc, 'change' ) ).to.be.true;
 
 		LivePosition.prototype.listenTo.restore();
 	} );
 
-	it( 'should stop listening when destroyed', () => {
+	it( 'should stop listening when detached', () => {
 		sinon.spy( LivePosition.prototype, 'stopListening' );
 
 		let live = new LivePosition( root, [ 0 ] );
-		live.destroy();
+		live.detach();
 
 		expect( live.stopListening.called ).to.be.true;
 
@@ -60,25 +60,25 @@ describe( 'LivePosition', () => {
 	it( 'createFromPosition should return LivePosition', () => {
 		let position = LivePosition.createFromPosition( new Position( root, [ 0 ] ) );
 		expect( position ).to.be.instanceof( LivePosition );
-		position.destroy();
+		position.detach();
 	} );
 
 	it( 'createFromParentAndOffset should return LivePosition', () => {
 		let position = LivePosition.createFromParentAndOffset( ul, 0 );
 		expect( position ).to.be.instanceof( LivePosition );
-		position.destroy();
+		position.detach();
 	} );
 
 	it( 'createBefore should return LivePosition', () => {
 		let position = LivePosition.createBefore( ul );
 		expect( position ).to.be.instanceof( LivePosition );
-		position.destroy();
+		position.detach();
 	} );
 
 	it( 'createAfter should return LivePosition', () => {
 		let position = LivePosition.createAfter( ul );
 		expect( position ).to.be.instanceof( LivePosition );
-		position.destroy();
+		position.detach();
 	} );
 
 	describe( 'should get transformed if', () => {
@@ -89,7 +89,7 @@ describe( 'LivePosition', () => {
 		} );
 
 		afterEach( () => {
-			live.destroy();
+			live.detach();
 		} );
 
 		describe( 'insertion', () => {
@@ -227,7 +227,7 @@ describe( 'LivePosition', () => {
 		} );
 
 		afterEach( () => {
-			live.destroy();
+			live.detach();
 		} );
 
 		describe( 'insertion', () => {
@@ -247,7 +247,7 @@ describe( 'LivePosition', () => {
 
 				expect( live.path ).to.deep.equal( path );
 
-				live.destroy();
+				live.detach();
 			} );
 
 			it( 'is after a node from the position path', () => {
@@ -294,7 +294,7 @@ describe( 'LivePosition', () => {
 
 				expect( live.path ).to.deep.equal( path );
 
-				live.destroy();
+				live.detach();
 			} );
 
 			it( 'is at a position after a node from the live position path', () => {

@@ -132,7 +132,7 @@ export default class Selection {
 	 */
 	destroy() {
 		for ( let i = 0; i < this._ranges.length; i++ ) {
-			this._ranges[ i ].destroy();
+			this._ranges[ i ].detach();
 		}
 	}
 

@@ -39,7 +39,7 @@ describe( 'LiveRange', () => {
 
 	it( 'should be an instance of Range', () => {
 		let live = new LiveRange( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
-		live.destroy();
+		live.detach();
 
 		expect( live ).to.be.instanceof( Range );
 	} );
@@ -48,18 +48,18 @@ describe( 'LiveRange', () => {
 		sinon.spy( LiveRange.prototype, 'listenTo' );
 
 		let live = new LiveRange( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
-		live.destroy();
+		live.detach();
 
 		expect( live.listenTo.calledWith( doc, 'change' ) ).to.be.true;
 
 		LiveRange.prototype.listenTo.restore();
 	} );
 
-	it( 'should stop listening when destroyed', () => {
+	it( 'should stop listening when detached', () => {
 		sinon.spy( LiveRange.prototype, 'stopListening' );
 
 		let live = new LiveRange( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
-		live.destroy();
+		live.detach();
 
 		expect( live.stopListening.called ).to.be.true;
 
@@ -69,25 +69,25 @@ describe( 'LiveRange', () => {
 	it( 'createFromElement should return LiveRange', () => {
 		let range = LiveRange.createFromElement( p );
 		expect( range ).to.be.instanceof( LiveRange );
-		range.destroy();
+		range.detach();
 	} );
 
 	it( 'createFromParentsAndOffsets should return LiveRange', () => {
 		let range = LiveRange.createFromParentsAndOffsets( root, 0, p, 2 );
 		expect( range ).to.be.instanceof( LiveRange );
-		range.destroy();
+		range.detach();
 	} );
 
 	it( 'createFromPositionAndShift should return LiveRange', () => {
 		let range = LiveRange.createFromPositionAndShift( new Position( root, [ 0, 1 ] ), 4 );
 		expect( range ).to.be.instanceof( LiveRange );
-		range.destroy();
+		range.detach();
 	} );
 
 	it( 'createFromRange should return LiveRange', () => {
 		let range = LiveRange.createFromRange( new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ) );
 		expect( range ).to.be.instanceof( LiveRange );
-		range.destroy();
+		range.detach();
 	} );
 
 	// Examples may seem weird when you compare them with the tree structure generated at the beginning of tests.
@@ -102,7 +102,7 @@ describe( 'LiveRange', () => {
 		} );
 
 		afterEach( () => {
-			live.destroy();
+			live.detach();
 		} );
 
 		describe( 'insertion', () => {
@@ -349,7 +349,7 @@ describe( 'LiveRange', () => {
 		} );
 
 		afterEach( () => {
-			live.destroy();
+			live.detach();
 		} );
 
 		describe( 'insertion', () => {

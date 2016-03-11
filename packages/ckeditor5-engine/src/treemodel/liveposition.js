@@ -13,7 +13,7 @@ import utils from '../../utils/utils.js';
 /**
  * LivePosition is a position in the Tree Model that updates itself as the tree changes. It may be used as a bookmark.
  * **Note:** Be very careful when dealing with LivePosition. Each LivePosition instance bind events that might
- * have to be unbound. Use {@link core.treeModel.LivePosition#destroy} whenever you don't need LivePosition anymore.
+ * have to be unbound. Use {@link core.treeModel.LivePosition#detach} whenever you don't need LivePosition anymore.
  *
  * @memberOf core.treeModel
  * @extends core.treeModel.Position
@@ -60,7 +60,7 @@ export default class LivePosition extends Position {
 	 * anymore (i.e. when leaving scope in which it was declared or before re-assigning variable that was
 	 * referring to it).
 	 */
-	destroy() {
+	detach() {
 		this.stopListening();
 	}
 

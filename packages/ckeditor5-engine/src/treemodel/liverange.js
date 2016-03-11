@@ -16,7 +16,7 @@ import utils from '../../utils/utils.js';
  * **Note:** Constructor creates it's own {@link core.treeModel.LivePosition} instances basing on passed values.
  *
  * **Note:** Be very careful when dealing with LiveRange. Each LiveRange instance bind events that might
- * have to be unbound. Use {@link core.treeModel.LiveRange#destroy destroy} whenever you don't need LiveRange anymore.
+ * have to be unbound. Use {@link core.treeModel.LiveRange#detach detach} whenever you don't need LiveRange anymore.
  *
  * @memberOf core.treeModel
  */
@@ -40,9 +40,9 @@ export default class LiveRange extends Range {
 	 * anymore (i.e. when leaving scope in which it was declared or before re-assigning variable that was
 	 * referring to it).
 	 */
-	destroy() {
-		this.start.destroy();
-		this.end.destroy();
+	detach() {
+		this.start.detach();
+		this.end.detach();
 		this.stopListening();
 	}
 
