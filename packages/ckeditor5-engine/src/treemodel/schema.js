@@ -5,8 +5,8 @@
 
 'use strict';
 
-import clone from '../lib/lodash/clone.js';
-import CKEditorError from '../ckeditorerror.js';
+import clone from '../../utils/lib/lodash/clone.js';
+import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
  * SchemaItem is a singular registry item in {@link core.treeModel.Schema} that groups and holds allow/disallow rules for

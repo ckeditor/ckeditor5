@@ -5,9 +5,9 @@
 
 'use strict';
 
-import ObservableMixin from '../observablemixin.js';
-import EmitterMixin from '../emittermixin.js';
-import utils from '../utils.js';
+import ObservableMixin from '../../utils/observablemixin.js';
+import EmitterMixin from '../../utils/emittermixin.js';
+import utils from '../../utils/utils.js';
 
 /**
  * The base class for CKEditor commands.
@@ -19,8 +19,8 @@ import utils from '../utils.js';
  *
  * This is an abstract base class for all commands.
  *
- * @mixes core.ObservableMixin
- * @mixes core.EmitterMixin
+ * @mixes utils.ObservableMixin
+ * @mixes utils.EmitterMixin
  * @memberOf core.command
  */
 export default class Command {
