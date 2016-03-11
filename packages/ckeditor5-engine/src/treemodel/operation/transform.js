@@ -12,8 +12,8 @@ import MoveOperation from './moveoperation.js';
 import RemoveOperation from './removeoperation.js';
 import NoOperation from './nooperation.js';
 import Range from '../range.js';
-import isEqual from '../../lib/lodash/isEqual.js';
-import utils from '../../utils.js';
+import isEqual from '../../../utils/lib/lodash/isEqual.js';
+import utils from '../../../utils/utils.js';
 
 /**
  * Transforms given {@link core.treeModel.operation.Operation operation} by another {@link core.treeModel.operation.Operation operation} and

@@ -7,8 +7,8 @@
 
 import Position from './position.js';
 import Range from './range.js';
-import EmitterMixin from '../emittermixin.js';
-import utils from '../utils.js';
+import EmitterMixin from '../../utils/emittermixin.js';
+import utils from '../../utils/utils.js';
 
 /**
  * LivePosition is a position in the Tree Model that updates itself as the tree changes. It may be used as a bookmark.

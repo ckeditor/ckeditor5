@@ -6,18 +6,17 @@
 'use strict';
 
 // Load all basic deltas and transformations, they register themselves, but they need to be imported somewhere.
-import deltas from './delta/basic-deltas.js';
-import transformations from './delta/basic-transformations.js';
-/*jshint unused: false*/
+import deltas from './delta/basic-deltas.js'; // jshint ignore:line
+import transformations from './delta/basic-transformations.js'; // jshint ignore:line
 
 import RootElement from './rootelement.js';
 import Batch from './batch.js';
 import Selection from './selection.js';
-import EmitterMixin from '../emittermixin.js';
-import CKEditorError from '../ckeditorerror.js';
-import utils from '../utils.js';
+import EmitterMixin from '../../utils/emittermixin.js';
+import CKEditorError from '../../utils/ckeditorerror.js';
+import utils from '../../utils/utils.js';
 import Schema from './schema.js';
-import clone from '../lib/lodash/clone.js';
+import clone from '../../utils/lib/lodash/clone.js';
 
 const graveyardSymbol = Symbol( 'graveyard' );
 

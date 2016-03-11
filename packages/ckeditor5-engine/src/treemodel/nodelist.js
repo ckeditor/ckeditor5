@@ -7,9 +7,9 @@
 
 import CharacterProxy from './characterproxy.js';
 import Text from './text.js';
-import utils from '../utils.js';
-import clone from '../lib/lodash/clone.js';
-import CKEditorError from '../ckeditorerror.js';
+import utils from '../../utils/utils.js';
+import clone from '../../utils/lib/lodash/clone.js';
+import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
  * This is a private helper-class for {@link core.treeModel.NodeList} text compression utility.

@@ -7,7 +7,7 @@
 
 import Position from './position.js';
 import TreeWalker from './treewalker.js';
-import utils from '../utils.js';
+import utils from '../../utils/utils.js';
 
 /**
  * Range class. Range is iterable.

@@ -5,20 +5,20 @@
 
 'use strict';
 
-import ObservableMixin from './observablemixin.js';
+import ObservableMixin from '../utils/observablemixin.js';
 import EditorConfig from './editorconfig.js';
 import PluginCollection from './plugincollection.js';
 import Document from './treemodel/document.js';
-import CKEditorError from './ckeditorerror.js';
-import Locale from './locale.js';
-import isArray from './lib/lodash/isArray.js';
-import utils from './utils.js';
+import CKEditorError from '../utils/ckeditorerror.js';
+import Locale from '../utils/locale.js';
+import isArray from '../utils/lib/lodash/isArray.js';
+import utils from '../utils/utils.js';
 
 /**
  * Represents a single editor instance.
  *
  * @memberOf core
- * @mixes core.ObservableMixin
+ * @mixes utils.ObservaleMixin
  */
 export default class Editor {
 	/**
@@ -78,14 +78,14 @@ export default class Editor {
 
 		/**
 		 * @readonly
-		 * @member {core.Locale} core.Editor#locale
+		 * @member {utils.Locale} core.Editor#locale
 		 */
 		this.locale = new Locale( config.lang );
 
 		/**
-		 * Shorthand for {@link core.Locale#t}.
+		 * Shorthand for {@link utils.Locale#t}.
 		 *
-		 * @see core.Locale#t
+		 * @see utils.Locale#t
 		 * @method core.Editor#t
 		 */
 		this.t = this.locale.t;

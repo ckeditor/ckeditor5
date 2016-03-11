@@ -12,7 +12,7 @@ import testUtils from '/tests/_utils/utils.js';
 import coreTestUtils from '/tests/core/_utils/utils.js';
 import Editor from '/ckeditor5/core/editor.js';
 import Creator from '/ckeditor5/core/creator.js';
-import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 let editor, element;
 

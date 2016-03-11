@@ -8,10 +8,10 @@
 import Position from './position.js';
 import Range from './range.js';
 import LiveRange from './liverange.js';
-import EmitterMixin from '../emittermixin.js';
+import EmitterMixin from '../../utils/emittermixin.js';
 import CharacterProxy from './characterproxy.js';
-import CKEditorError from '../ckeditorerror.js';
-import utils from '../utils.js';
+import CKEditorError from '../../utils/ckeditorerror.js';
+import utils from '../../utils/utils.js';
 
 const storePrefix = 'selection:';
 

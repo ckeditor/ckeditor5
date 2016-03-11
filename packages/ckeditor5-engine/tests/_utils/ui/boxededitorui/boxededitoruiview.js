@@ -5,7 +5,7 @@
 
 'use strict';
 
-import EditorUIView from '/ckeditor5/core/editorui/editoruiview.js';
+import EditorUIView from '/ckeditor5/ui/editorui/editoruiview.js';
 
 export default class BoxedEditorUIView extends EditorUIView {
 	constructor( model, locale ) {

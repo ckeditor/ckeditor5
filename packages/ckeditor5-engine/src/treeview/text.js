@@ -33,6 +33,20 @@ export default class Text extends Node {
 		this._data = data;
 	}
 
+	/**
+	 * Clones this node.
+	 *
+	 * @returns {core.treeView.Text} Text node that is a clone of this node.
+	 */
+	clone() {
+		return new Text( this.data );
+	}
+
+	/**
+	 * The text content.
+	 *
+	 * Setting the data fires the {@link treeView.Node#change change event}.
+	 */
 	get data() {
 		return this._data;
 	}
@@ -41,5 +55,20 @@ export default class Text extends Node {
 		this._fireChange( 'TEXT', this );
 
 		this._data = data;
+	}
+
+	/**
+	 * Checks if this text node is similar to other text node.
+	 * Both nodes should have the same data to be considered as similar.
+	 *
+	 * @param {core.treeView.Text} otherNode Node to check if it is same as this node.
+	 * @returns {Boolean}
+	 */
+	isSimilar( otherNode ) {
+		if ( !( otherNode instanceof Text ) ) {
+			return false;
+		}
+
+		return this === otherNode || this.data === otherNode.data;
 	}
 }

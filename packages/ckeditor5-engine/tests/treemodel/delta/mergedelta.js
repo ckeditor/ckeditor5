@@ -10,7 +10,7 @@
 import Document from '/ckeditor5/core/treemodel/document.js';
 import Position from '/ckeditor5/core/treemodel/position.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
-import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 import MergeDelta from '/ckeditor5/core/treemodel/delta/mergedelta.js';
 import SplitDelta from '/ckeditor5/core/treemodel/delta/splitdelta.js';

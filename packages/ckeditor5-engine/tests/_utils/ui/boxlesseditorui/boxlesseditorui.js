@@ -5,8 +5,8 @@
 
 'use strict';
 
-import EditorUI from '/ckeditor5/core/editorui/editorui.js';
-import ControllerCollection from '/ckeditor5/core/ui/controllercollection.js';
+import EditorUI from '/ckeditor5/ui/editorui/editorui.js';
+import ControllerCollection from '/ckeditor5/ui/controllercollection.js';
 
 export default class BoxlessEditorUI extends EditorUI {
 	constructor( editor ) {
@@ -16,7 +16,7 @@ export default class BoxlessEditorUI extends EditorUI {
 
 		/**
 		 * @private
-		 * @type {core.ui.View}
+		 * @type {ui.View}
 		 * @property _view
 		 */
 	}

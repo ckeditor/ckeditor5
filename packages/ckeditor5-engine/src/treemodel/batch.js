@@ -5,7 +5,7 @@
 
 'use strict';
 
-import CKEditorError from '../ckeditorerror.js';
+import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
  * The Batch class groups document changes (deltas). All deltas grouped in a single Batch can be

@@ -5,7 +5,7 @@
 
 'use strict';
 
-import clone from '../../lib/lodash/clone.js';
+import clone from '../../../utils/lib/lodash/clone.js';
 
 /**
  * Abstract base operation class.

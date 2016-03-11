@@ -6,7 +6,7 @@
 'use strict';
 
 import operationTransform from '../operation/transform.js';
-import arrayUtils from '../../lib/lodash/array.js';
+import arrayUtils from '../../../utils/lib/lodash/array.js';
 
 const specialCases = new Map();
 

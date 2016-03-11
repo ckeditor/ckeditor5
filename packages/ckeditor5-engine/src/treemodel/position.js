@@ -6,9 +6,9 @@
 'use strict';
 
 import RootElement from './rootelement.js';
-import CKEditorError from '../ckeditorerror.js';
-import last from '../lib/lodash/last.js';
-import utils from '../utils.js';
+import CKEditorError from '../../utils/ckeditorerror.js';
+import last from '../../utils/lib/lodash/last.js';
+import utils from '../../utils/utils.js';
 
 /**
  * Position in the tree. Position is always located before or after a node.

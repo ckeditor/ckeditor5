@@ -7,11 +7,9 @@
 
 'use strict';
 
-import coreTestUtils from '/tests/core/_utils/utils.js';
+import utils from '/ckeditor5/utils/utils.js';
 import Node from '/ckeditor5/core/treeview/node.js';
 import ViewElement from '/ckeditor5/core/treeview/element.js';
-
-const getIteratorCount = coreTestUtils.getIteratorCount;
 
 describe( 'Element', () => {
 	describe( 'constructor', () => {
@@ -21,14 +19,14 @@ describe( 'Element', () => {
 			expect( el ).to.be.an.instanceof( Node );
 			expect( el ).to.have.property( 'name' ).that.equals( 'p' );
 			expect( el ).to.have.property( 'parent' ).that.is.null;
-			expect( getIteratorCount( el.getAttributeKeys() ) ).to.equal( 0 );
+			expect( utils.count( el.getAttributeKeys() ) ).to.equal( 0 );
 		} );
 
 		it( 'should create element with attributes as plain object', () => {
 			const el = new ViewElement( 'p', { foo: 'bar' } );
 
 			expect( el ).to.have.property( 'name' ).that.equals( 'p' );
-			expect( getIteratorCount( el.getAttributeKeys() ) ).to.equal( 1 );
+			expect( utils.count( el.getAttributeKeys() ) ).to.equal( 1 );
 			expect( el.getAttribute( 'foo' ) ).to.equal( 'bar' );
 		} );
 
@@ -39,7 +37,7 @@ describe( 'Element', () => {
 			const el = new ViewElement( 'p', attrs );
 
 			expect( el ).to.have.property( 'name' ).that.equals( 'p' );
-			expect( getIteratorCount( el.getAttributeKeys() ) ).to.equal( 1 );
+			expect( utils.count( el.getAttributeKeys() ) ).to.equal( 1 );
 			expect( el.getAttribute( 'foo' ) ).to.equal( 'bar' );
 		} );
 
@@ -50,6 +48,92 @@ describe( 'Element', () => {
 			expect( parent ).to.have.property( 'name' ).that.equals( 'div' );
 			expect( parent.getChildCount() ).to.equal( 1 );
 			expect( parent.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'p' );
+		} );
+	} );
+
+	describe( 'clone', () => {
+		it( 'should clone element', () => {
+			const el = new ViewElement( 'p', { attr1: 'foo', attr2: 'bar' } );
+			const clone = el.clone();
+
+			expect( clone ).to.not.equal( el );
+			expect( clone.name ).to.equal( el.name );
+			expect( clone.getAttribute( 'attr1' ) ).to.equal( 'foo' );
+			expect( clone.getAttribute( 'attr2' ) ).to.equal( 'bar' );
+		} );
+
+		it( 'should deeply clone element', () => {
+			const el = new ViewElement( 'p', { attr1: 'foo', attr2: 'bar' }, [
+				new ViewElement( 'b', { attr: 'baz' } ),
+				new ViewElement( 'span', { attr: 'qux' } )
+			] );
+			const count = el.getChildCount();
+			const clone = el.clone( true );
+
+			expect( clone ).to.not.equal( el );
+			expect( clone.name ).to.equal( el.name );
+			expect( clone.getAttribute( 'attr1' ) ).to.equal( 'foo' );
+			expect( clone.getAttribute( 'attr2' ) ).to.equal( 'bar' );
+			expect( clone.getChildCount() ).to.equal( count );
+
+			for ( let i = 0; i < count; i++ ) {
+				const child = el.getChild( i );
+				const clonedChild = clone.getChild( i );
+
+				expect( clonedChild ).to.not.equal( child );
+				expect( clonedChild.name ).to.equal( child.name );
+				expect( clonedChild.getAttribute( 'attr' ) ).to.equal( child.getAttribute( 'attr' ) );
+			}
+		} );
+
+		it( 'shouldn\'t clone any children when deep copy is not performed', () => {
+			const el = new ViewElement( 'p', { attr1: 'foo', attr2: 'bar' }, [
+				new ViewElement( 'b', { attr: 'baz' } ),
+				new ViewElement( 'span', { attr: 'qux' } )
+			] );
+			const clone = el.clone( false );
+
+			expect( clone ).to.not.equal( el );
+			expect( clone.name ).to.equal( el.name );
+			expect( clone.getAttribute( 'attr1' ) ).to.equal( 'foo' );
+			expect( clone.getAttribute( 'attr2' ) ).to.equal( 'bar' );
+			expect( clone.getChildCount() ).to.equal( 0 );
+		} );
+	} );
+
+	describe( 'isSimilar', () => {
+		const el = new ViewElement( 'p', { foo: 'bar' } );
+		it( 'should return false when comparing to non-element', () => {
+			expect( el.isSimilar( null ) ).to.be.false;
+			expect( el.isSimilar( {} ) ).to.be.false;
+		} );
+
+		it( 'should return true when the same node is provided', () => {
+			expect( el.isSimilar( el ) ).to.be.true;
+		} );
+
+		it( 'should return true for element with same attributes and name', () => {
+			const other = new ViewElement( 'p', { foo: 'bar' } );
+			expect( el.isSimilar( other ) ).to.be.true;
+		} );
+
+		it( 'sould return false when name is not the same', () => {
+			const other = el.clone();
+			other.name = 'div';
+
+			expect( el.isSimilar( other ) ).to.be.false;
+		} );
+
+		it( 'should return false when attributes are not the same', () => {
+			const other1 = el.clone();
+			const other2 = el.clone();
+			const other3 = el.clone();
+			other1.setAttribute( 'baz', 'qux' );
+			other2.setAttribute( 'foo', 'not-bar' );
+			other3.removeAttribute( 'foo' );
+			expect( el.isSimilar( other1 ) ).to.be.false;
+			expect( el.isSimilar( other2 ) ).to.be.false;
+			expect( el.isSimilar( other3 ) ).to.be.false;
 		} );
 	} );
 
@@ -66,24 +150,29 @@ describe( 'Element', () => {
 
 		describe( 'insertion', () => {
 			it( 'should insert children', () => {
-				parent.insertChildren( 0, [ el1, el3 ] );
-				parent.insertChildren( 1, el2 );
+				const count1 = parent.insertChildren( 0, [ el1, el3 ] );
+				const count2 = parent.insertChildren( 1, el2 );
 
 				expect( parent.getChildCount() ).to.equal( 3 );
 				expect( parent.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'el1' );
 				expect( parent.getChild( 1 ) ).to.have.property( 'name' ).that.equals( 'el2' );
 				expect( parent.getChild( 2 ) ).to.have.property( 'name' ).that.equals( 'el3' );
+				expect( count1 ).to.equal( 2 );
+				expect( count2 ).to.equal( 1 );
 			} );
 
 			it( 'should append children', () => {
-				parent.insertChildren( 0, el1 );
-				parent.appendChildren( el2 );
-				parent.appendChildren( el3 );
+				const count1 = parent.insertChildren( 0, el1 );
+				const count2 = parent.appendChildren( el2 );
+				const count3 = parent.appendChildren( el3 );
 
 				expect( parent.getChildCount() ).to.equal( 3 );
 				expect( parent.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'el1' );
 				expect( parent.getChild( 1 ) ).to.have.property( 'name' ).that.equals( 'el2' );
 				expect( parent.getChild( 2 ) ).to.have.property( 'name' ).that.equals( 'el3' );
+				expect( count1 ).to.equal( 1 );
+				expect( count2 ).to.equal( 1 );
+				expect( count3 ).to.equal( 1 );
 			} );
 		} );
 
@@ -191,7 +280,7 @@ describe( 'Element', () => {
 
 				expect( el.hasAttribute( 'foo' ) ).to.be.false;
 
-				expect( getIteratorCount( el.getAttributeKeys() ) ).to.equal( 0 );
+				expect( utils.count( el.getAttributeKeys() ) ).to.equal( 0 );
 			} );
 		} );
 	} );

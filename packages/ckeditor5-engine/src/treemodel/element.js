@@ -7,7 +7,7 @@
 
 import Node from './node.js';
 import NodeList from './nodelist.js';
-import utils from '../utils.js';
+import utils from '../../utils/utils.js';
 
 /**
  * Tree data model element.
@@ -116,10 +116,14 @@ export default class Element extends Node {
 	 * All attached nodes should be modified using the {@link core.treeModel.operation.RemoveOperation}.
 	 *
 	 * @param {Number} index Position of the first node to remove.
-	 * @param {Number} number Number of nodes to remove.
+	 * @param {Number} [number] Number of nodes to remove.
 	 * @returns {core.treeModel.NodeList} The list of removed nodes.
 	 */
 	removeChildren( index, number ) {
+		if ( typeof number === 'undefined' ) {
+			number = 1;
+		}
+
 		let nodeList = this._children.remove( index, number );
 
 		for ( let node of nodeList._nodes ) {

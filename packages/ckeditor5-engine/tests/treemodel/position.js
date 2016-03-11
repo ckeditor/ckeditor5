@@ -10,7 +10,7 @@
 import Document from '/ckeditor5/core/treemodel/document.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
 import Position from '/ckeditor5/core/treemodel/position.js';
-import CKEditorError from '/ckeditor5/core/ckeditorerror.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'position', () => {
 	let doc, root, otherRoot, p, ul, li1, li2, f, o, z, b, a, r;

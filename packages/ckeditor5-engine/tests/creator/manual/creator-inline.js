@@ -9,7 +9,7 @@
 
 import CKEDITOR from '/ckeditor.js';
 import InlineCreator from '/tests/core/creator/manual/_utils/creator/inlinecreator.js';
-import testUtils from '/tests/core/_utils/utils.js';
+import testUtils from '/tests/utils/_utils/utils.js';
 
 let editor, observer;
 
