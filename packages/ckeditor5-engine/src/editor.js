@@ -43,7 +43,7 @@ export default class Editor {
 		/**
 		 * Holds all configurations specific to this editor instance.
 		 *
-		 * This instance of the {@link core.Config} class is customized so its {@link core.Config#get} method will retrieve
+		 * This instance of the {@link utils.Config} class is customized so its {@link utils.Config#get} method will retrieve
 		 * global configurations available in {@link CKEDITOR.config} if configurations are not found in the
 		 * instance itself.
 		 *
