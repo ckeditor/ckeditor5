@@ -5,7 +5,7 @@
 
 'use strict';
 
-import Toolbar from '/ckeditor5/core/ui/bindings/toolbar.js';
+import Toolbar from '/ckeditor5/ui/bindings/toolbar.js';
 
 export default class FloatingToolbar extends Toolbar {
 	constructor( model, view, editor ) {

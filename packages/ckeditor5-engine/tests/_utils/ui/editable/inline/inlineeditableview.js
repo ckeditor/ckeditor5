@@ -5,7 +5,7 @@
 
 'use strict';
 
-import EditableView from '/ckeditor5/core/editable/editableview.js';
+import EditableView from '/ckeditor5/ui/editable/editableview.js';
 
 export default class InlineEditableView extends EditableView {
 	constructor( model, locale, editableElement ) {
