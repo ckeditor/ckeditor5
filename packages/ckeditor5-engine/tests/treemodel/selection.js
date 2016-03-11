@@ -46,8 +46,8 @@ describe( 'Selection', () => {
 	} );
 
 	afterEach( () => {
-		doc.detach();
-		liveRange.detach();
+		doc.destroy();
+		liveRange.destroy();
 	} );
 
 	it( 'should be set to default range when just created', () => {
@@ -143,22 +143,22 @@ describe( 'Selection', () => {
 		expect( spy.called ).to.be.true;
 	} );
 
-	it( 'should unbind all events when detached', () => {
+	it( 'should unbind all events when destroyed', () => {
 		selection.addRange( liveRange );
 		selection.addRange( range );
 
 		let ranges = selection.getRanges();
 
-		sinon.spy( ranges[ 0 ], 'detach' );
-		sinon.spy( ranges[ 1 ], 'detach' );
+		sinon.spy( ranges[ 0 ], 'destroy' );
+		sinon.spy( ranges[ 1 ], 'destroy' );
 
-		selection.detach();
+		selection.destroy();
 
-		expect( ranges[ 0 ].detach.called ).to.be.true;
-		expect( ranges[ 1 ].detach.called ).to.be.true;
+		expect( ranges[ 0 ].destroy.called ).to.be.true;
+		expect( ranges[ 1 ].destroy.called ).to.be.true;
 
-		ranges[ 0 ].detach.restore();
-		ranges[ 1 ].detach.restore();
+		ranges[ 0 ].destroy.restore();
+		ranges[ 1 ].destroy.restore();
 	} );
 
 	it( 'should throw an error if added range intersects with already stored range', () => {
@@ -186,15 +186,15 @@ describe( 'Selection', () => {
 
 			ranges = selection.getRanges();
 
-			sinon.spy( ranges[ 0 ], 'detach' );
-			sinon.spy( ranges[ 1 ], 'detach' );
+			sinon.spy( ranges[ 0 ], 'destroy' );
+			sinon.spy( ranges[ 1 ], 'destroy' );
 
 			selection.removeAllRanges();
 		} );
 
 		afterEach( () => {
-			ranges[ 0 ].detach.restore();
-			ranges[ 1 ].detach.restore();
+			ranges[ 0 ].destroy.restore();
+			ranges[ 1 ].destroy.restore();
 		} );
 
 		it( 'should remove all stored ranges (and reset to default range)', () => {
@@ -207,9 +207,9 @@ describe( 'Selection', () => {
 			expect( spy.calledOnce ).to.be.true;
 		} );
 
-		it( 'should detach removed ranges', () => {
-			expect( ranges[ 0 ].detach.called ).to.be.true;
-			expect( ranges[ 1 ].detach.called ).to.be.true;
+		it( 'should destroy removed ranges', () => {
+			expect( ranges[ 0 ].destroy.called ).to.be.true;
+			expect( ranges[ 1 ].destroy.called ).to.be.true;
 		} );
 	} );
 
@@ -232,13 +232,13 @@ describe( 'Selection', () => {
 
 			oldRanges = selection.getRanges();
 
-			sinon.spy( oldRanges[ 0 ], 'detach' );
-			sinon.spy( oldRanges[ 1 ], 'detach' );
+			sinon.spy( oldRanges[ 0 ], 'destroy' );
+			sinon.spy( oldRanges[ 1 ], 'destroy' );
 		} );
 
 		afterEach( () => {
-			oldRanges[ 0 ].detach.restore();
-			oldRanges[ 1 ].detach.restore();
+			oldRanges[ 0 ].destroy.restore();
+			oldRanges[ 1 ].destroy.restore();
 		} );
 
 		it( 'should remove all ranges and add given ranges', () => {
@@ -268,10 +268,10 @@ describe( 'Selection', () => {
 			expect( spy.calledOnce ).to.be.true;
 		} );
 
-		it( 'should detach removed LiveRanges', () => {
+		it( 'should destroy removed LiveRanges', () => {
 			selection.setRanges( newRanges );
-			expect( oldRanges[ 0 ].detach.called ).to.be.true;
-			expect( oldRanges[ 1 ].detach.called ).to.be.true;
+			expect( oldRanges[ 0 ].destroy.called ).to.be.true;
+			expect( oldRanges[ 1 ].destroy.called ).to.be.true;
 		} );
 	} );
 

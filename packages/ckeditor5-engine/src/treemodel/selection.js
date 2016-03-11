@@ -128,9 +128,9 @@ export default class Selection {
 	/**
 	 * Unbinds all events previously bound by this selection or objects created by this selection.
 	 */
-	detach() {
+	destroy() {
 		for ( let i = 0; i < this._ranges.length; i++ ) {
-			this._ranges[ i ].detach();
+			this._ranges[ i ].destroy();
 		}
 	}
 
@@ -181,7 +181,7 @@ export default class Selection {
 	 * @fires {@link core.treeModel.Selection.update update}
 	 */
 	removeAllRanges() {
-		this.detach();
+		this.destroy();
 		this._ranges = [];
 
 		this.fire( 'update' );
@@ -198,7 +198,7 @@ export default class Selection {
 	 * or backward - from end to start (`true`). Defaults to `false`.
 	 */
 	setRanges( newRanges, isLastBackward ) {
-		this.detach();
+		this.destroy();
 		this._ranges = [];
 
 		for ( let i = 0; i < newRanges.length; i++ ) {

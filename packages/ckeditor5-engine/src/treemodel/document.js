@@ -176,8 +176,8 @@ export default class Document {
 	/**
 	 * Removes all events listeners set by document instance.
 	 */
-	detach() {
-		this.selection.detach();
+	destroy() {
+		this.selection.destroy();
 		this.stopListening();
 	}
 
