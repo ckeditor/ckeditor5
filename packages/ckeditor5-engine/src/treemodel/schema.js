@@ -184,7 +184,7 @@ export class SchemaItem {
  * E.g. `p` can inherit from `$block`, so whenever given attribute is allowed on the `$block` it will automatically be
  * also allowed on the `p` element. By default, `$text` item already inherits from `$inline`.
  *
- * @memberOf core.TreeModel
+ * @memberOf core.treeModel
  */
 export default class Schema {
 	/**
