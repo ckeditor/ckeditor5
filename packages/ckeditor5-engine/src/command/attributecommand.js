@@ -35,16 +35,18 @@ export default class AttributeCommand extends Command {
 		 * @member {String} core.command.AttributeCommand#attributeKey
 		 */
 		this.attributeKey = attributeKey;
-	}
 
-	/**
-	 * Flag indicating whether command is active. For collapsed selection it means that typed characters will have
-	 * the attribute set. For range selection it means that all nodes inside have the attribute applied.
-	 *
-	 * @type {Boolean}
-	 */
-	get value() {
-		return this.editor.document.selection.hasAttribute( this.attributeKey );
+		/**
+		 * Flag indicating whether command is active. For collapsed selection it means that typed characters will have
+		 * the command's attribute set. For range selection it means that all nodes inside have the attribute applied.
+		 *
+		 * @member {Boolean} core.command.AttributeCommand#value
+		 */
+		this.set( 'value', false );
+
+		this.listenTo( this.editor.document.selection, 'change:attribute', () => {
+			this.value = this.editor.document.selection.hasAttribute( this.attributeKey );
+		} );
 	}
 
 	/**
