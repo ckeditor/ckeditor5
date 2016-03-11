@@ -25,26 +25,21 @@ import utils from '../../utils/utils.js';
  */
 export default class TreeView {
 	/**
-	 * Creates a TreeView based on the HTMLElement.
-	 *
-	 * The constructor copies the element name and attributes to create the
-	 * root of the view, but does not copy its children. This means that the while rendering, the whole content of this
-	 * root element will be removed when you call {@link core.treeView.TreeView#render render} but the root name and
-	 * attributes will be preserved.
-	 *
-	 * @param {HTMLElement} domRoot DOM element in which the tree view should do change.
+	 * Creates a TreeView class.
 	 */
-	constructor( domRoot ) {
+	constructor() {
 		/**
-		 * Root of the DOM tree.
+		 * Roots of the DOM tree. Map on the `HTMLElement`s with roots names as keys.
 		 *
-		 * @member {HTMLElement} core.treeView.TreeView#domRoot
+		 * @readonly
+		 * @member {Map} core.treeView.TreeView#domRoots
 		 */
-		this.domRoot = domRoot;
+		this.domRoots = new Map();
 
 		/**
 		 * Set of {@link core.treeView.Observer observers}.
 		 *
+		 * @readonly
 		 * @member {Set.<core.treeView.Observer>} core.treeView.TreeView#observers
 		 */
 		this.observers = new Set();
@@ -52,6 +47,7 @@ export default class TreeView {
 		/**
 		 * Tree View writer.
 		 *
+		 * @readonly
 		 * @member {core.treeView.Writer} core.treeView.TreeView#writer
 		 */
 		this.writer = new Writer();
@@ -60,35 +56,31 @@ export default class TreeView {
 		 * Instance of the {@link core.treeView.DomConverter domConverter} use by
 		 * {@link core.treeView.TreeView#renderer renderer} and {@link core.treeView.TreeView#observers observers}.
 		 *
+		 * @readonly
 		 * @member {core.treeView.DomConverter} core.treeView.TreeView#domConverter
 		 */
 		this.domConverter = new DomConverter();
 
 		/**
-		 * Root of the view tree.
+		 * Roots of the view tree. Map on the {core.treeView.Element view elements} with roots names as keys.
 		 *
-		 * @member {core.treeView.Element} core.treeView.TreeView#viewRoot
+		 * @readonly
+		 * @member {Map} core.treeView.TreeView#viewRoots
 		 */
-		this.viewRoot = this.domConverter.domToView( domRoot, { bind: true, withChildren: false } );
-		this.viewRoot.setTreeView( this );
+		this.viewRoots = new Map();
 
 		/**
 		 * Instance of the {@link core.treeView.TreeView#renderer renderer}.
 		 *
+		 * @readonly
 		 * @member {core.treeView.Renderer} core.treeView.TreeView#renderer
 		 */
 		this.renderer = new Renderer( this.domConverter );
-		this.renderer.markToSync( 'CHILDREN', this.viewRoot );
-
-		// Mark changed nodes in the renderer.
-		this.viewRoot.on( 'change', ( evt, type, node ) => {
-			this.renderer.markToSync( type, node );
-		} );
 	}
 
 	/**
 	 * Adds an observer to the set of observers. This method also {@link core.treeView.Observer#init initializes} and
-	 * {@link core.treeView.Observer#attach attaches} the observer.
+	 * {@link core.treeView.Observer#enable enable} the observer.
 	 *
 	 * @method core.treeView.TreeView#addObserver
 	 * @param {core.treeView.Observer} observer Observer to add.
@@ -96,7 +88,42 @@ export default class TreeView {
 	addObserver( observer ) {
 		this.observers.add( observer );
 		observer.init( this );
-		observer.attach();
+
+		for ( let [ name, domElement ] of this.domRoots ) {
+			observer.observe( domElement, name );
+		}
+
+		observer.enable();
+	}
+
+	/**
+	 * Creates a root based on the HTMLElement. It adds elements to {@link core.treeView.TreeView#domRoots} and
+	 * {@link core.treeView.TreeView#viewRoots}.
+	 *
+	 * The constructor copies the element name and attributes to create the
+	 * root of the view, but does not copy its children. This means that the while rendering, the whole content of this
+	 * root element will be removed when you call {@link core.treeView.TreeView#render render} but the root name and
+	 * attributes will be preserved.
+	 *
+	 * @param {HTMLElement} domRoot DOM element in which the tree view should do change.
+	 * @param {String} name Name of the root.
+	 */
+	createRoot( domRoot, name ) {
+		const viewRoot = this.domConverter.domToView( domRoot, { bind: true, withChildren: false } );
+		viewRoot.setTreeView( this );
+
+		// Mark changed nodes in the renderer.
+		viewRoot.on( 'change', ( evt, type, node ) => {
+			this.renderer.markToSync( type, node );
+		} );
+		this.renderer.markToSync( 'CHILDREN', viewRoot );
+
+		this.domRoots.set( name, domRoot );
+		this.viewRoots.set( name, viewRoot );
+
+		for ( let observer of this.observers ) {
+			observer.observe( domRoot, name );
+		}
 	}
 
 	/**
@@ -107,13 +134,13 @@ export default class TreeView {
 	 */
 	render() {
 		for ( let observer of this.observers ) {
-			observer.detach();
+			observer.disable();
 		}
 
 		this.renderer.render();
 
 		for ( let observer of this.observers ) {
-			observer.attach();
+			observer.enable();
 		}
 	}
 }

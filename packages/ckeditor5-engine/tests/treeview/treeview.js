@@ -10,28 +10,47 @@
 import TreeView from '/ckeditor5/core/treeview/treeview.js';
 import Observer from '/ckeditor5/core/treeview/observer/observer.js';
 import Renderer from '/ckeditor5/core/treeview/renderer.js';
+import Writer from '/ckeditor5/core/treeview/writer.js';
 import DomConverter from '/ckeditor5/core/treeview/domconverter.js';
+
+import utils from '/ckeditor5/utils/utils.js';
+const count = utils.count;
 
 describe( 'TreeView', () => {
 	describe( 'constructor', () => {
 		it( 'should create TreeView with all properties', () => {
+			const treeView = new TreeView();
+
+			expect( count( treeView.domRoots ) ).to.equal( 0 );
+			expect( count( treeView.viewRoots ) ).to.equal( 0 );
+			expect( count( treeView.observers ) ).to.equal( 0 );
+			expect( treeView ).to.have.property( 'renderer' ).that.is.instanceOf( Renderer );
+			expect( treeView ).to.have.property( 'writer' ).that.is.instanceOf( Writer );
+			expect( treeView ).to.have.property( 'domConverter' ).that.is.instanceOf( DomConverter );
+		} );
+	} );
+
+	describe( 'createRoot', () => {
+		it( 'should create root', () => {
 			const domP = document.createElement( 'p' );
 			const domDiv = document.createElement( 'div' );
 			domDiv.setAttribute( 'id', 'editor' );
 			domDiv.appendChild( domP );
 
-			const treeView = new TreeView( domDiv );
+			const treeView = new TreeView();
+			treeView.createRoot( domDiv, 'editor' );
 
-			expect( treeView ).to.have.property( 'domRoot' ).that.equals( domDiv );
-			expect( treeView ).to.have.property( 'observers' ).that.is.instanceOf( Set );
-			expect( treeView ).to.have.property( 'renderer' ).that.is.instanceOf( Renderer );
-			expect( treeView ).to.have.property( 'domConverter' ).that.is.instanceOf( DomConverter );
-			expect( treeView ).to.have.property( 'viewRoot' );
+			expect( count( treeView.domRoots ) ).to.equal( 1 );
+			expect( count( treeView.viewRoots ) ).to.equal( 1 );
 
-			expect( treeView.domConverter.getCorrespondingDom( treeView.viewRoot ) ).to.equal( domDiv );
-			expect( treeView.viewRoot.name ).to.equal( 'div' );
-			expect( treeView.viewRoot.getAttribute( 'id' ) ).to.equal( 'editor' );
-			expect( treeView.renderer.markedChildren.has( treeView.viewRoot ) ).to.be.true;
+			const domRoot = treeView.domRoots.get( 'editor' );
+			const viewRoot = treeView.viewRoots.get( 'editor' );
+
+			expect( domRoot ).to.equal( domDiv );
+			expect( treeView.domConverter.getCorrespondingDom( viewRoot ) ).to.equal( domDiv );
+			expect( viewRoot.name ).to.equal( 'div' );
+			expect( viewRoot.getAttribute( 'id' ) ).to.equal( 'editor' );
+			expect( treeView.renderer.markedChildren.has( viewRoot ) ).to.be.true;
 		} );
 	} );
 
@@ -40,31 +59,31 @@ describe( 'TreeView', () => {
 
 		beforeEach( () => {
 			observerMock = new Observer();
-			observerMock.attach = sinon.spy();
-			observerMock.detach = sinon.spy();
+			observerMock.enable = sinon.spy();
+			observerMock.disable = sinon.spy();
 			observerMock.init = sinon.spy();
 
 			treeView = new TreeView( document.createElement( 'div' ) );
 			treeView.renderer.render = sinon.spy();
 		} );
 
-		it( 'should be inited and attached on adding', () => {
+		it( 'should be inited and enableed on adding', () => {
 			treeView.addObserver( observerMock );
 
 			expect( treeView.observers.has( observerMock ) ).to.be.true;
 			sinon.assert.calledOnce( observerMock.init );
 			sinon.assert.calledWith( observerMock.init, treeView );
-			sinon.assert.calledOnce( observerMock.attach );
+			sinon.assert.calledOnce( observerMock.enable );
 		} );
 
-		it( 'should be detached and reattached on render', () => {
+		it( 'should be disableed and reenableed on render', () => {
 			treeView.addObserver( observerMock );
 			treeView.render();
 
 			expect( treeView.observers.has( observerMock ) ).to.be.true;
-			sinon.assert.calledOnce( observerMock.detach );
+			sinon.assert.calledOnce( observerMock.disable );
 			sinon.assert.calledOnce( treeView.renderer.render );
-			sinon.assert.calledTwice( observerMock.attach );
+			sinon.assert.calledTwice( observerMock.enable );
 		} );
 	} );
 } );

@@ -13,18 +13,22 @@ import Text from '/ckeditor5/core/treeview/text.js';
 import MutationObserver from '/ckeditor5/core/treeview/observer/mutationobserver.js';
 
 describe( 'MutationObserver', () => {
-	let domEditor, treeView, mutationObserver, lastMutations;
+	let domEditor, treeView, viewRoot, mutationObserver, lastMutations;
 
 	beforeEach( () => {
+		treeView = new TreeView();
 		domEditor = document.getElementById( 'editor' );
-		treeView = new TreeView( domEditor );
 		mutationObserver = new MutationObserver();
 		lastMutations = null;
+
+		treeView.createRoot( domEditor, 'editor' );
 
 		treeView.addObserver( mutationObserver );
 		treeView.on( 'mutations', ( evt, mutations ) => lastMutations = mutations );
 
-		treeView.viewRoot.insertChildren( 0, [
+		viewRoot = treeView.viewRoots.get( 'editor' );
+
+		viewRoot.insertChildren( 0, [
 			new Element( 'p', [], [ new Text( 'foo' ) ] ),
 			new Element( 'p', [], [ new Text( 'bar' ) ] )
 			] );
@@ -33,7 +37,7 @@ describe( 'MutationObserver', () => {
 	} );
 
 	afterEach( () => {
-		mutationObserver.detach();
+		mutationObserver.disable();
 	} );
 
 	it( 'should handle typing', () => {
@@ -44,7 +48,7 @@ describe( 'MutationObserver', () => {
 		expectDomEditorNotToChange();
 		expect( lastMutations.length ).to.equal( 1 );
 		expect( lastMutations[ 0 ].type ).to.equal( 'text' );
-		expect( lastMutations[ 0 ].node ).to.equal( treeView.viewRoot.getChild( 0 ).getChild( 0 ) );
+		expect( lastMutations[ 0 ].node ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ) );
 		expect( lastMutations[ 0 ].newText ).to.equal( 'foom' );
 		expect( lastMutations[ 0 ].oldText ).to.equal( 'foo' );
 	} );
@@ -60,7 +64,7 @@ describe( 'MutationObserver', () => {
 		expectDomEditorNotToChange();
 		expect( lastMutations.length ).to.equal( 1 );
 		expect( lastMutations[ 0 ].type ).to.equal( 'children' );
-		expect( lastMutations[ 0 ].node ).to.equal( treeView.viewRoot.getChild( 0 ) );
+		expect( lastMutations[ 0 ].node ).to.equal( viewRoot.getChild( 0 ) );
 
 		expect( lastMutations[ 0 ].newChildren.length ).to.equal( 2 );
 		expect( lastMutations[ 0 ].newChildren[ 0 ].data ).to.equal( 'f' );
@@ -79,7 +83,7 @@ describe( 'MutationObserver', () => {
 		expectDomEditorNotToChange();
 		expect( lastMutations.length ).to.equal( 1 );
 		expect( lastMutations[ 0 ].type ).to.equal( 'text' );
-		expect( lastMutations[ 0 ].node ).to.equal( treeView.viewRoot.getChild( 0 ).getChild( 0 ) );
+		expect( lastMutations[ 0 ].node ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ) );
 		expect( lastMutations[ 0 ].newText ).to.equal( 'fooxy' );
 		expect( lastMutations[ 0 ].oldText ).to.equal( 'foo' );
 	} );
@@ -98,7 +102,29 @@ describe( 'MutationObserver', () => {
 		expectDomEditorNotToChange();
 		expect( lastMutations.length ).to.equal( 1 );
 		expect( lastMutations[ 0 ].type ).to.equal( 'children' );
-		expect( lastMutations[ 0 ].node ).to.equal( treeView.viewRoot );
+		expect( lastMutations[ 0 ].node ).to.equal( viewRoot );
+	} );
+
+	it( 'should be able to observe multiple roots', () => {
+		const domEditor2 = document.getElementById( 'editor2' );
+
+		// Prepare editor2
+		treeView.createRoot( domEditor2, 'editor2' );
+
+		treeView.viewRoots.get( 'editor2' ).insertChildren( 0, [
+			new Element( 'p', [], [ new Text( 'foo' ) ] ),
+			new Element( 'p', [], [ new Text( 'bar' ) ] )
+			] );
+
+		// Render editor2 (first editor has been rendered in the beforeEach function)
+		treeView.render();
+
+		domEditor.childNodes[ 0 ].childNodes[ 0 ].data = 'foom';
+		domEditor2.childNodes[ 0 ].childNodes[ 0 ].data = 'foom';
+
+		handleMutation();
+
+		expect( lastMutations.length ).to.equal( 2 );
 	} );
 
 	function handleMutation() {

@@ -17,7 +17,8 @@ describe( 'TreeView integration', () => {
 		domDiv.setAttribute( 'id', 'editor' );
 		domDiv.appendChild( domP );
 
-		const treeView = new TreeView( domDiv );
+		const treeView = new TreeView();
+		treeView.createRoot( domDiv, 'editor' );
 		treeView.render();
 
 		expect( domDiv.childNodes.length ).to.equal( 0 );
@@ -27,8 +28,10 @@ describe( 'TreeView integration', () => {
 	it( 'should render changes in the TreeView', () => {
 		const domDiv = document.createElement( 'div' );
 
-		const treeView = new TreeView( domDiv );
-		treeView.viewRoot.appendChildren( new TreeElement( 'p' ) );
+		const treeView = new TreeView();
+		treeView.createRoot( domDiv, 'editor' );
+
+		treeView.viewRoots.get( 'editor' ).appendChildren( new TreeElement( 'p' ) );
 		treeView.render();
 
 		expect( domDiv.childNodes.length ).to.equal( 1 );
