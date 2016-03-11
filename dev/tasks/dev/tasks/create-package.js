@@ -55,6 +55,7 @@ module.exports = ( ckeditor5Path, workspaceRoot ) => {
 	};
 
 	let packageName;
+	let packageFullName;
 	let repositoryPath;
 	let packageVersion;
 	let gitHubUrl;
@@ -64,6 +65,11 @@ module.exports = ( ckeditor5Path, workspaceRoot ) => {
 		.then( result => {
 			packageName = result;
 			repositoryPath = path.join( workspaceAbsolutePath, packageName );
+
+			return inquiries.getApplicationName();
+		} )
+		.then( result => {
+			packageFullName = result;
 
 			return inquiries.getPackageVersion();
 		} )
@@ -87,7 +93,7 @@ module.exports = ( ckeditor5Path, workspaceRoot ) => {
 
 			for ( let destination in fileStructure ) {
 				tools.copyTemplateFiles( fileStructure[ destination ], path.join( repositoryPath, destination ), {
-					'{{AppName}}': packageName,
+					'{{AppName}}': packageFullName,
 					'{{GitHubRepositoryPath}}': gitHubUrl,
 					'{{ProjectDescription}}': packageDescription
 				} );

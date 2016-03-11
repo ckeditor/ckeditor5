@@ -22,6 +22,7 @@ describe( 'dev-create-package', () => {
 	const workspaceRoot = '..';
 	const workspacePath = path.join( mainRepositoryPath, workspaceRoot );
 	const packageName = 'package-name';
+	const applicationName = 'Full application name';
 	const packageVersion = '0.0.1';
 	const gitHubUrl = 'ckeditor5/package-name';
 	const packageDescription = 'Package description.';
@@ -34,6 +35,7 @@ describe( 'dev-create-package', () => {
 			linkDirectories: sinon.stub( tools, 'linkDirectories' ),
 			npmInstall: sinon.stub( tools, 'npmInstall' ),
 			getPackageName: sinon.stub( inquiries, 'getPackageName' ).returns( new Promise( ( r ) => r( packageName ) ) ),
+			getApplicationName: sinon.stub( inquiries, 'getApplicationName' ).returns( new Promise( ( r ) => r( applicationName ) ) ),
 			getPackageVersion: sinon.stub( inquiries, 'getPackageVersion' ).returns( new Promise( ( r ) => r( packageVersion ) ) ),
 			getPackageGitHubUrl: sinon.stub( inquiries, 'getPackageGitHubUrl' ).returns( new Promise( ( r ) => r( gitHubUrl ) ) ),
 			getPackageDescription: sinon.stub( inquiries, 'getPackageDescription' ).returns( new Promise( ( r ) => r( packageDescription ) ) ),
@@ -58,6 +60,7 @@ describe( 'dev-create-package', () => {
 	it( 'should create a package', () => {
 		return packageCreateTask( mainRepositoryPath, workspaceRoot ).then( () => {
 			expect( spies.getPackageName.calledOnce ).to.equal( true );
+			expect( spies.getApplicationName.calledOnce ).to.equal( true );
 			expect( spies.getPackageVersion.calledOnce ).to.equal( true );
 			expect( spies.getPackageGitHubUrl.calledOnce ).to.equal( true );
 			expect( spies.getPackageDescription.calledOnce ).to.equal( true );

@@ -27,6 +27,17 @@ module.exports = {
 		} );
 	},
 
+	getApplicationName() {
+		return new Promise( ( resolve ) => {
+			inquirer.prompt( [ {
+				name: 'applicationName',
+				message: 'Enter application full name:'
+			} ], ( answers ) => {
+				resolve( answers.applicationName );
+			} );
+		} );
+	},
+
 	getPackageVersion( ) {
 		return new Promise( ( resolve ) => {
 			inquirer.prompt( [ {
