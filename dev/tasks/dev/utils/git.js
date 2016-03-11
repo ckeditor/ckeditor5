@@ -66,7 +66,7 @@ module.exports = {
 	},
 
 	/**
-	 * Checks out branch on selected repository.
+	 * Fetches and checks out branch on selected repository.
 	 *
 	 * @param {String} repositoryLocation Absolute path to repository.
 	 * @param {String} branchName Name of the branch to checkout.
@@ -74,6 +74,7 @@ module.exports = {
 	checkout( repositoryLocation, branchName ) {
 		const checkoutCommands = [
 			`cd ${ repositoryLocation }`,
+			`git fetch origin ${ branchName }`,
 			`git checkout ${ branchName }`
 		];
 
