@@ -146,9 +146,9 @@ export default class AttributeCommand extends Command {
 	 * Walks through given array of ranges and removes parts of them that are not allowed by schema to have the
 	 * attribute set. This is done by breaking a range in two and omitting the not allowed part.
 	 *
-	 * @param {Array.<core.treeModel.Range>} ranges Ranges to be validated.
-	 * @returns {Array} Ranges without invalid parts.
 	 * @private
+	 * @param {Array.<core.treeModel.Range>} ranges Ranges to be validated.
+	 * @returns {Array.<core.treeModel.Range>} Ranges without invalid parts.
 	 */
 	_getSchemaValidRanges( ranges ) {
 		const validRanges = [];

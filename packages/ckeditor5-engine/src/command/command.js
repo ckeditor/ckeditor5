@@ -6,7 +6,6 @@
 'use strict';
 
 import ObservableMixin from '../../utils/observablemixin.js';
-import EmitterMixin from '../../utils/emittermixin.js';
 import utils from '../../utils/utils.js';
 
 /**
@@ -19,9 +18,8 @@ import utils from '../../utils/utils.js';
  *
  * This is an abstract base class for all commands.
  *
- * @mixes utils.ObservableMixin
- * @mixes utils.EmitterMixin
  * @memberOf core.command
+ * @mixes utils.ObservableMixin
  */
 export default class Command {
 	/**
@@ -127,12 +125,13 @@ function disableCallback( evt, data ) {
 }
 
 utils.mix( Command, ObservableMixin );
-utils.mix( Command, EmitterMixin );
 
 /**
- * Fired whenever command has to have it's {@link core.command.Command#isEnabled} property refreshed. Every feature,
- * command or other class which should be able to disable command (set `isEnabled` to `false`) should listen to this
+ * Fired whenever command has to have its {@link core.command.Command#isEnabled} property refreshed. Every feature,
+ * command or other class which needs to disable command (set `isEnabled` to `false`) should listen to this
  * event.
  *
  * @event core.command.Command#refreshState
+ * @param {Object} data
+ * @param {Boolean} [data.isEnabled=true]
  */
