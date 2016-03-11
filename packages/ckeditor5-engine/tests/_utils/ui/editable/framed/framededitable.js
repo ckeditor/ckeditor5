@@ -5,7 +5,7 @@
 
 'use strict';
 
-import Editable from '/ckeditor5/core/editable/editable.js';
+import Editable from '/ckeditor5/ui/editable/editable.js';
 
 export default class FramedEditable extends Editable {
 	constructor( editor ) {

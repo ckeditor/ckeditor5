@@ -6,11 +6,11 @@
 'use strict';
 
 import Creator from '/ckeditor5/core/creator.js';
-import EditorUIView from '/ckeditor5/core/editorui/editoruiview.js';
+import EditorUIView from '/ckeditor5/ui/editorui/editoruiview.js';
 import BoxlessEditorUI from '/tests/core/_utils/ui/boxlesseditorui/boxlesseditorui.js';
 import InlineEditable from '/tests/core/_utils/ui/editable/inline/inlineeditable.js';
 import InlineEditableView from '/tests/core/_utils/ui/editable/inline/inlineeditableview.js';
-import Model from '/ckeditor5/core/ui/model.js';
+import Model from '/ckeditor5/ui/model.js';
 import FloatingToolbar from '/tests/core/_utils/ui/floatingtoolbar/floatingtoolbar.js';
 import FloatingToolbarView from '/tests/core/_utils/ui/floatingtoolbar/floatingtoolbarview.js';
 import { imitateFeatures, imitateDestroyFeatures } from '../imitatefeatures.js';
