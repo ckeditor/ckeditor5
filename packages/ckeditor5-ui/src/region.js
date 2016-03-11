@@ -5,16 +5,16 @@
 
 'use strict';
 
-import Collection from '../../utils/collection.js';
+import Collection from '../utils/collection.js';
 
 /**
  * Basic Region class.
  *
- * @memberOf core.ui
+ * @memberOf ui
  */
 export default class Region {
 	/**
-	 * Creates an instance of the {@link Region} class.
+	 * Creates an instance of the {@link ui.Region} class.
 	 *
 	 * @param {String} name The name of the Region.
 	 */

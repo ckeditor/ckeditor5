@@ -5,19 +5,19 @@
 
 'use strict';
 
-import View from '../ui/view.js';
-import CKEditorError from '../../utils/ckeditorerror.js';
+import View from '../view.js';
+import CKEditorError from '../utils/ckeditorerror.js';
 
 /**
- * @memberOf core.editable
- * @extends core.ui.View
+ * @memberOf ui.editable
+ * @extends ui.View
  */
 export default class EditableView extends View {
 	/**
 	 * The element which is the main editable element (usually the one with `contentEditable="true"`).
 	 *
 	 * @readonly
-	 * @member {HTMLElement} core.editable.EditableView#editableElement
+	 * @member {HTMLElement} ui.editable.EditableView#editableElement
 	 */
 
 	/**

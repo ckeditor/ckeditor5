@@ -5,14 +5,14 @@
 
 'use strict';
 
-import extend from '../../utils/lib/lodash/extend.js';
-import utils from '../../utils/utils.js';
-import ObservableMixin from '../../utils/observablemixin.js';
+import extend from '../utils/lib/lodash/extend.js';
+import utils from '../utils/utils.js';
+import ObservableMixin from '../utils/observablemixin.js';
 
 /**
  * The base MVC model class.
  *
- * @memberOf core.ui
+ * @memberOf ui
  * @mixes utils.ObservaleMixin
  */
 export default class Model {

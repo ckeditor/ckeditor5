@@ -5,7 +5,7 @@
 
 'use strict';
 
-import CKEditorError from '../../utils/ckeditorerror.js';
+import CKEditorError from '../utils/ckeditorerror.js';
 
 /**
  * Class implementing the UI component factory.
@@ -16,7 +16,7 @@ import CKEditorError from '../../utils/ckeditorerror.js';
  *
  * The main use case for the component factory is the {@link core.editorUI.EditorUI#featureComponents} factory.
  *
- * @memberOf core.ui
+ * @memberOf ui
  */
 
 export default class ComponentFactory {
@@ -29,7 +29,7 @@ export default class ComponentFactory {
 	constructor( editor ) {
 		/**
 		 * @readonly
-		 * @member {core.Editor} core.ui.ComponentFactory#editor
+		 * @member {core.Editor} ui.ComponentFactory#editor
 		 */
 		this.editor = editor;
 
@@ -37,7 +37,7 @@ export default class ComponentFactory {
 		 * Registered component factories.
 		 *
 		 * @private
-		 * @member {Map} core.ui.ComponentFactory#_components
+		 * @member {Map} ui.ComponentFactory#_components
 		 */
 		this._components = new Map();
 	}
@@ -48,7 +48,7 @@ export default class ComponentFactory {
 	 * @param {String} name The name of the component.
 	 * @param {Function} ControllerClass The component controller constructor.
 	 * @param {Function} ViewClass The component view constructor.
-	 * @param {core.ui.Model} model The model of the component.
+	 * @param {ui.Model} model The model of the component.
 	 */
 	add( name, ControllerClass, ViewClass, model ) {
 		if ( this._components.get( name ) ) {
@@ -68,7 +68,7 @@ export default class ComponentFactory {
 	 * Creates a component instance.
 	 *
 	 * @param {String} name The name of the component.
-	 * @returns {core.ui.Controller} The instantiated component.
+	 * @returns {ui.Controller} The instantiated component.
 	 */
 	create( name ) {
 		const component = this._components.get( name );

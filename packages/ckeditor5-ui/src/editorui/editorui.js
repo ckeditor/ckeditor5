@@ -5,17 +5,17 @@
 
 'use strict';
 
-import Controller from '../ui/controller.js';
-import ControllerCollection from '../ui/controllercollection.js';
-import ComponentFactory from '../ui/componentfactory.js';
-import ObservableMixin from '../../utils/observablemixin.js';
-import utils from '../../utils/utils.js';
+import Controller from '../controller.js';
+import ControllerCollection from '../controllercollection.js';
+import ComponentFactory from '../componentfactory.js';
+import ObservableMixin from '../utils/observablemixin.js';
+import utils from '../utils/utils.js';
 
 /**
  * Base class for the editor main view controllers.
  *
- * @memberOf core.editorUI
- * @extends core.ui.Controller
+ * @memberOf ui.editorUI
+ * @extends ui.Controller
  * @mixes utils.ObservaleMixin
  */
 

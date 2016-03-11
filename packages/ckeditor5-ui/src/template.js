@@ -12,27 +12,28 @@ import CKEditorError from '../../utils/ckeditorerror.js';
 /**
  * Basic Template class.
  *
- * @memberOf core.ui
+ * @memberOf ui
  */
 export default class Template {
 	/**
-	 * Creates an instance of the {@link Template} class.
+	 * Creates an instance of the {@link ui.Template} class.
 	 *
-	 * @param {core.ui.TemplateDefinition} def The definition of the template.
+	 * @param {ui.TemplateDefinition} def The definition of the template.
 	 */
 	constructor( def ) {
 		/**
 		 * Definition of this template.
 		 *
-		 * @type {core.ui.TemplateDefinition}
+		 * @readonly
+		 * @member {ui.TemplateDefinition} ui.Template#definition
 		 */
 		this.definition = def;
 	}
 
 	/**
-	 * Renders DOM Node using {@link core.ui.Template#definition}.
+	 * Renders DOM Node using {@link ui.Template#definition}.
 	 *
-	 * @see core.ui.Template#apply
+	 * @see ui.Template#apply
 	 *
 	 * @returns {HTMLElement}
 	 */
@@ -41,12 +42,12 @@ export default class Template {
 	}
 
 	/**
-	 * Applies template {@link core.ui.Template#def} to existing DOM tree.
+	 * Applies template {@link ui.Template#def} to existing DOM tree.
 	 *
 	 * **Note:** No new DOM nodes (elements, text nodes) will be created.
 	 *
-	 * @see core.ui.Template#render
-	 * @see core.ui.View#applyTemplateToElement.
+	 * @see ui.Template#render
+	 * @see ui.View#applyTemplateToElement.
 	 *
 	 * @param {Node} element Root element for template to apply.
 	 */
@@ -67,7 +68,7 @@ export default class Template {
 	 * Renders a DOM Node from definition.
 	 *
 	 * @protected
-	 * @param {core.ui.TemplateDefinition} def Definition of a Node.
+	 * @param {ui.TemplateDefinition} def Definition of a Node.
 	 * @param {Node} applyNode If specified, template `def` will be applied to existing DOM Node.
 	 * @param {Boolean} intoFragment If set, children are rendered into DocumentFragment.
 	 * @returns {HTMLElement} A rendered Node.
@@ -102,7 +103,7 @@ export default class Template {
 	 * Renders an HTMLElement from TemplateDefinition.
 	 *
 	 * @protected
-	 * @param {core.ui.TemplateDefinition} def Definition of an element.
+	 * @param {ui.TemplateDefinition} def Definition of an element.
 	 * @param {HTMLElement} applyElement If specified, template `def` will be applied to existing HTMLElement.
 	 * @param {Boolean} intoFragment If set, children are rendered into DocumentFragment.
 	 * @returns {HTMLElement} A rendered element.
@@ -165,7 +166,7 @@ export default class Template {
 	 * Renders element attributes from definition.
 	 *
 	 * @protected
-	 * @param {core.ui.TemplateDefinition} def Definition of an element.
+	 * @param {ui.TemplateDefinition} def Definition of an element.
 	 * @param {HTMLElement} el Element which is rendered.
 	 */
 	_renderElementAttributes( def, el ) {
@@ -208,10 +209,10 @@ export default class Template {
 
 	/**
 	 * Recursively renders element children from definition by
-	 * calling {@link core.ui.Template#_renderElement}.
+	 * calling {@link ui.Template#_renderElement}.
 	 *
 	 * @protected
-	 * @param {core.ui.TemplateDefinition} def Definition of an element.
+	 * @param {ui.TemplateDefinition} def Definition of an element.
 	 * @param {HTMLElement} el Element which is rendered.
 	 * @param {Boolean} isApply Traverse existing DOM structure only, don't modify DOM.
 	 */
@@ -231,7 +232,7 @@ export default class Template {
 	 * Activates element `on` listeners passed in element definition.
 	 *
 	 * @protected
-	 * @param {core.ui.TemplateDefinition} def Definition of an element.
+	 * @param {ui.TemplateDefinition} def Definition of an element.
 	 * @param {HTMLElement} el Element which is rendered.
 	 */
 	_activateElementListenerAttachers( def, el ) {
@@ -258,16 +259,13 @@ export default class Template {
 	}
 }
 
-/**
- * Returns an object consisting of `set` and `remove` functions, which
- * can be used in the context of DOM Node to set or reset `textContent`.
- * @see core.ui.View#_getModelBinder
- *
- * @ignore
- * @private
- * @param {Node} node DOM Node to be modified.
- * @returns {Object}
- */
+// Returns an object consisting of `set` and `remove` functions, which
+// can be used in the context of DOM Node to set or reset `textContent`.
+// @see ui.View#_getModelBinder
+//
+// @private
+// @param {Node} node DOM Node to be modified.
+// @returns {Object}
 function getTextNodeUpdater( node ) {
 	return {
 		set( value ) {
@@ -280,17 +278,14 @@ function getTextNodeUpdater( node ) {
 	};
 }
 
-/**
- * Returns an object consisting of `set` and `remove` functions, which
- * can be used in the context of DOM Node to set or reset an attribute.
- * @see core.ui.View#_getModelBinder
- *
- * @ignore
- * @private
- * @param {Node} node DOM Node to be modified.
- * @param {String} attrName Name of the attribute to be modified.
- * @returns {Object}
- */
+// Returns an object consisting of `set` and `remove` functions, which
+// can be used in the context of DOM Node to set or reset an attribute.
+// @see ui.View#_getModelBinder
+//
+// @private
+// @param {Node} node DOM Node to be modified.
+// @param {String} attrName Name of the attribute to be modified.
+// @returns {Object}
 function getElementAttributeUpdater( el, attrName ) {
 	return {
 		set( value ) {
@@ -305,7 +300,7 @@ function getElementAttributeUpdater( el, attrName ) {
 
 /**
  * Definition of {@link Template}.
- * See: {@link core.ui.TemplateValueSchema}.
+ * See: {@link ui.TemplateValueSchema}.
  *
  *		{
  *			tag: 'p',
@@ -337,7 +332,7 @@ function getElementAttributeUpdater( el, attrName ) {
  *			}
  *		}
  *
- * @typedef core.ui.TemplateDefinition
+ * @typedef ui.TemplateDefinition
  * @type Object
  * @property {String} tag
  * @property {Array} [children]
@@ -349,7 +344,7 @@ function getElementAttributeUpdater( el, attrName ) {
 
 /**
  * Describes a value of HTMLElement attribute or `textContent`.
- * See: {@link core.ui.TemplateDefinition}.
+ * See: {@link ui.TemplateDefinition}.
  *
  *		{
  *			tag: 'p',
@@ -365,6 +360,6 @@ function getElementAttributeUpdater( el, attrName ) {
  *			}
  *		}
  *
- * @typedef core.ui.TemplateValueSchema
+ * @typedef ui.TemplateValueSchema
  * @type {Object|String|Array}
  */

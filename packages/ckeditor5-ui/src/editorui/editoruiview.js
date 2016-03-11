@@ -5,13 +5,13 @@
 
 'use strict';
 
-import View from '../ui/view.js';
+import View from '../view.js';
 
 /**
  * Base class for the editor main views.
  *
- * @memberOf core.editorUI
- * @extends core.ui.View
+ * @memberOf ui.editorUI
+ * @extends ui.View
  */
 
 export default class EditorUIView extends View {
@@ -24,7 +24,7 @@ export default class EditorUIView extends View {
 		 * The element holding elements of the 'body' region.
 		 *
 		 * @private
-		 * @member {HTMLElement} core.editorUI.EditorUIView#_bodyRegionContainer
+		 * @member {HTMLElement} ui.editorUI.EditorUIView#_bodyRegionContainer
 		 */
 	}
 

@@ -5,18 +5,18 @@
 
 'use strict';
 
-import EmitterMixin from '../../utils/emittermixin.js';
-import utils from '../../utils/utils.js';
-import extend from '../../utils/lib/lodash/extend.js';
-import log from '../../utils/log.js';
+import EmitterMixin from '../utils/emittermixin.js';
+import utils from '../utils/utils.js';
+import extend from '../utils/lib/lodash/extend.js';
+import log from '../utils/log.js';
 
 /**
  * Creates a ProxyEmitter instance. Such an instance is a bridge between a DOM Node firing events
- * and any Host listening to them. It is backwards compatible with {@link EmitterMixin#on}.
+ * and any Host listening to them. It is backwards compatible with {@link utils.EmitterMixin#on}.
  *
- * @memberOf core.ui
- * @mixes core.EmitterMixin
- * @implements core.ui.DOMEmitter
+ * @memberOf ui
+ * @mixes utils.EmitterMixin
+ * @implements ui.DOMEmitter
  */
 class ProxyEmitter {
 	/**
@@ -37,7 +37,7 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	 * Collection of native DOM listeners.
 	 *
 	 * @private
-	 * @member {Object} core.ui.ProxyEmitter#_domListeners
+	 * @member {Object} ui.ProxyEmitter#_domListeners
 	 */
 
 	/**
@@ -53,7 +53,7 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	 * @param {Number} [priority=10] The priority of this callback in relation to other callbacks to that same event.
 	 * Lower values are called first.
 	 *
-	 * @method core.ui.ProxyEmitter#on
+	 * @method ui.ProxyEmitter#on
 	 */
 	on( event ) {
 		// Execute parent class method first.
@@ -87,7 +87,7 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	 * @param {Object} [ctx] The context object to be removed, pared with the given callback. To handle cases where
 	 * the same callback is used several times with different contexts.
 	 *
-	 * @method core.ui.ProxyEmitter#off
+	 * @method ui.ProxyEmitter#off
 	 */
 	off( event ) {
 		// Execute parent class method first.
@@ -110,7 +110,7 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	 *
 	 * @param {String} event
 	 *
-	 * @method core.ui.ProxyEmitter#_createDomListener
+	 * @method ui.ProxyEmitter#_createDomListener
 	 * @returns {Function} The DOM listener callback.
 	 */
 	_createDomListener( event ) {
@@ -132,7 +132,7 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 
 /**
  * Mixin that injects the DOM events API into its host. It provides the API
- * compatible with {@link EmitterMixin}.
+ * compatible with {@link utils.EmitterMixin}.
  *
  *                                  listenTo( click, ... )
  *                    +-----------------------------------------+
@@ -156,23 +156,23 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
  *                    +-----------------------------------------+
  *                                fire( click, DOM Event )
  *
- * @mixin core.ui.DOMEmitterMixin
+ * @mixin ui.DOMEmitterMixin
  * @mixes core.EmitterMixin
- * @implements core.ui.DOMEmitter
+ * @implements ui.DOMEmitter
  */
 const DOMEmitterMixin = extend( {}, EmitterMixin, {
 	/**
 	 * Registers a callback function to be executed when an event is fired in a specific Emitter or DOM Node.
-	 * It is backwards compatible with {@link core.EmitterMixin#listenTo}.
+	 * It is backwards compatible with {@link utils.EmitterMixin#listenTo}.
 	 *
-	 * @param {Emitter|Node} emitter The object that fires the event.
+	 * @param {utils.Emitter|Node} emitter The object that fires the event.
 	 * @param {String} event The name of the event.
 	 * @param {Function} callback The function to be called on event.
 	 * @param {Object} [ctx] The object that represents `this` in the callback. Defaults to `emitter`.
 	 * @param {Number} [priority=10] The priority of this callback in relation to other callbacks to that same event.
 	 * Lower values are called first.
 	 *
-	 * @method core.ui.DOMEmitterMixin#listenTo
+	 * @method ui.DOMEmitterMixin#listenTo
 	 */
 	listenTo() {
 		const args = Array.prototype.slice.call( arguments );
@@ -190,20 +190,20 @@ const DOMEmitterMixin = extend( {}, EmitterMixin, {
 
 	/**
 	 * Stops listening for events. It can be used at different levels:
-	 * It is backwards compatible with {@link EmitterMixin#listenTo}.
+	 * It is backwards compatible with {@link utils.EmitterMixin#listenTo}.
 	 *
 	 * * To stop listening to a specific callback.
 	 * * To stop listening to a specific event.
 	 * * To stop listening to all events fired by a specific object.
 	 * * To stop listening to all events fired by all object.
 	 *
-	 * @param {Emitter|Node} [emitter] The object to stop listening to. If omitted, stops it for all objects.
+	 * @param {utils.Emitter|Node} [emitter] The object to stop listening to. If omitted, stops it for all objects.
 	 * @param {String} [event] (Requires the `emitter`) The name of the event to stop listening to. If omitted, stops it
 	 * for all events from `emitter`.
 	 * @param {Function} [callback] (Requires the `event`) The function to be removed from the call list for the given
 	 * `event`.
 	 *
-	 * @method core.ui.DOMEmitterMixin#stopListening
+	 * @method ui.DOMEmitterMixin#stopListening
 	 */
 	stopListening() {
 		const args = Array.prototype.slice.call( arguments );
@@ -231,7 +231,7 @@ const DOMEmitterMixin = extend( {}, EmitterMixin, {
 	 * Retrieves ProxyEmitter instance for given DOM Node residing in this Host.
 	 *
 	 * @param {Node} node DOM Node of the ProxyEmitter.
-	 * @method core.ui.DOMEmitterMixin#_getProxyEmitter
+	 * @method ui.DOMEmitterMixin#_getProxyEmitter
 	 * @return {ProxyEmitter} ProxyEmitter instance or null.
 	 */
 	_getProxyEmitter( node ) {
@@ -272,7 +272,7 @@ function isDomNode( node ) {
 }
 
 /**
- * Interface representing classes which mix in {@link core.ui.DOMEmitter}.
+ * Interface representing classes which mix in {@link ui.DOMEmitter}.
  *
- * @interface core.ui.DOMEmitter
+ * @interface ui.DOMEmitter
  */

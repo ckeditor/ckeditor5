@@ -5,13 +5,13 @@
 
 'use strict';
 
-import Collection from '../../utils/collection.js';
-import CKEditorError from '../../utils/ckeditorerror.js';
+import Collection from '../utils/collection.js';
+import CKEditorError from '../utils/ckeditorerror.js';
 
 /**
  * Manages UI Controllers.
  *
- * @memberOf core.ui
+ * @memberOf ui
  * @extends utils.Collection
  */
 export default class ControllerCollection extends Collection {
@@ -33,25 +33,25 @@ export default class ControllerCollection extends Collection {
 		/**
 		 * Name of this collection.
 		 *
-		 * @member {String} core.ui.ControllerCollection#name
+		 * @member {String} ui.ControllerCollection#name
 		 */
 		this.name = name;
 
 		/**
 		 * Parent controller of this collection.
 		 *
-		 * @member {core.ui.Controller} core.ui.ControllerCollection#parent
+		 * @member {ui.Controller} ui.ControllerCollection#parent
 		 */
 		this.parent = null;
 	}
 
 	/**
-	 * Adds a child controller to the collection. If {@link #parent} {@link Controller}
+	 * Adds a child controller to the collection. If {@link ui.ControllerCollection#parent} {@link ui.Controller}
 	 * instance is ready, the child view is initialized when added.
 	 *
-	 * @param {core.ui.Controller} controller A child controller.
+	 * @param {ui.Controller} controller A child controller.
 	 * @param {Number} [index] Index at which the child will be added to the collection.
-	 * @returns {Promise} A Promise resolved when the child {@link Controller#init} is done.
+	 * @returns {Promise} A Promise resolved when the child {@link ui.Controller#init} is done.
 	 */
 	add( controller, index ) {
 		super.add( controller, index );

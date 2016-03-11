@@ -5,44 +5,44 @@
 
 'use strict';
 
-import Collection from '../../utils/collection.js';
-import CKEditorError from '../../utils/ckeditorerror.js';
-import EmitterMixin from '../../utils/emittermixin.js';
-import utils from '../../utils/utils.js';
+import Collection from '../utils/collection.js';
+import CKEditorError from '../utils/ckeditorerror.js';
+import EmitterMixin from '../utils/emittermixin.js';
+import utils from '../utils/utils.js';
 
 /**
  * Basic Controller class.
  *
- * @memberOf core.ui
- * @mixes core.EmitterMixin
+ * @memberOf ui
+ * @mixes utils.EmitterMixin
  */
 
 export default class Controller {
 	/**
-	 * Creates an instance of the {@link core.ui.Controller} class.
+	 * Creates an instance of the {@link ui.Controller} class.
 	 *
-	 * @param {core.ui.Model} [model] Model of this Controller.
-	 * @param {core.ui.View} [view] View instance of this Controller.
+	 * @param {ui.Model} [model] Model of this Controller.
+	 * @param {ui.View} [view] View instance of this Controller.
 	 */
 	constructor( model, view ) {
 		/**
 		 * Model of this controller.
 		 *
-		 * @member {core.ui.Model} core.ui.Controller#model
+		 * @member {ui.Model} ui.Controller#model
 		 */
 		this.model = model || null;
 
 		/**
 		 * Set `true` after {@link #init}.
 		 *
-		 * @member {Boolean} core.ui.Controller#ready
+		 * @member {Boolean} ui.Controller#ready
 		 */
 		this.ready = false;
 
 		/**
 		 * View of this controller.
 		 *
-		 * @member {core.ui.View} core.ui.Controller#view
+		 * @member {ui.View} ui.Controller#view
 		 */
 		this.view = view || null;
 
@@ -50,7 +50,7 @@ export default class Controller {
 		 * A collection of {@link ControllerCollection} instances containing
 		 * child controllers.
 		 *
-		 * @member {utils.Collection} core.ui.Controller#collections
+		 * @member {utils.Collection} ui.Controller#collections
 		 */
 		this.collections = new Collection( {
 			idProperty: 'name'
@@ -156,7 +156,7 @@ export default class Controller {
 	 * Adds a child {@link Controller} instance to {@link #collections} at given index.
 	 *
 	 * @param {String} collectionName Name of the Controller Collection.
-	 * @param {core.ui.Controller} controller A controller instance to be added.
+	 * @param {ui.Controller} controller A controller instance to be added.
 	 * @param {Number} [index] An index in the collection.
 	 */
 	add( collectionName, controller, index ) {
@@ -164,10 +164,10 @@ export default class Controller {
 	}
 
 	/**
-	 * Removes a child {@link Controller} instance from one of {@link #collections}.
+	 * Removes a child {@link ui.Controller} instance from one of {@link ui.Controller#collections}.
 	 *
 	 * @param {String} collectionName Name of the Controller Collection.
-	 * @param {core.ui.Controller|Number} toRemove A Controller instance or index to be removed.
+	 * @param {ui.Controller|Number} toRemove A Controller instance or index to be removed.
 	 */
 	remove( collectionName, toRemove ) {
 		return this.collections.get( collectionName ).remove( toRemove );

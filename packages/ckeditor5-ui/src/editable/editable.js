@@ -5,14 +5,14 @@
 
 'use strict';
 
-import Controller from '../ui/controller.js';
-import Model from '../ui/model.js';
-import utils from '../../utils/utils.js';
-import ObservableMixin from '../../utils/observablemixin.js';
+import Controller from '../controller.js';
+import Model from '../model.js';
+import utils from '../utils/utils.js';
+import ObservableMixin from '../utils/observablemixin.js';
 
 /**
- * @memberOf core.editable
- * @extends core.ui.Controller
+ * @memberOf ui.editable
+ * @extends ui.Controller
  * @mixes utils.ObservaleMixin
  */
 export default class Editable extends Controller {
@@ -29,7 +29,7 @@ export default class Editable extends Controller {
 		/**
 		 * Whether the editable is in read-write or read-only mode.
 		 *
-		 * @member {Boolean} core.editable.Editable#isEditable
+		 * @member {Boolean} ui.editable.Editable#isEditable
 		 */
 		this.set( 'isEditable', true );
 
@@ -37,7 +37,7 @@ export default class Editable extends Controller {
 		 * Whether the editable is focused.
 		 *
 		 * @readonly
-		 * @member {Boolean} core.editable.Editable#isFocused
+		 * @member {Boolean} ui.editable.Editable#isFocused
 		 */
 		this.set( 'isFocused', false );
 	}
@@ -46,7 +46,7 @@ export default class Editable extends Controller {
 	 * The model for the editable view.
 	 *
 	 * @readonly
-	 * @type {core.ui.Model}
+	 * @type {ui.Model}
 	 */
 	get viewModel() {
 		if ( this._viewModel ) {
@@ -88,18 +88,18 @@ utils.mix( Editable, ObservableMixin );
 /**
  * The editable model interface.
  *
- * @memberOf core.editable
+ * @memberOf ui.editable
  * @interface EditableModel
  */
 
 /**
  * Whether the editable has focus.
  *
- * @member {Boolean} core.editable.EditableModel#isFocused
+ * @member {Boolean} ui.editable.EditableModel#isFocused
  */
 
 /**
  * Whether the editable is not in read-only mode.
  *
- * @member {Boolean} core.editable.EditableModel#isEditable
+ * @member {Boolean} ui.editable.EditableModel#isEditable
  */
