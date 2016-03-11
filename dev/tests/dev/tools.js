@@ -366,44 +366,35 @@ describe( 'utils', () => {
 			} );
 		} );
 
-		describe( 'copy', () => {
-			it( 'should be defined', () => expect( tools.copy ).to.be.a( 'function' ) );
-			it( 'should copy files', () => {
-				const fs = require( 'fs-extra' );
+		describe( 'copyTemplateFiles', () => {
+			it( 'should be defined', () => expect( tools.copyTemplateFiles ).to.be.a( 'function' ) );
+			it( 'should copy files and replace provided texts', () => {
 				const path = require( 'path' );
-				let destination = 'destination';
-				let file = 'file.js';
-				sandbox.stub( fs, 'ensureDirSync' );
-				const copyStub = sandbox.stub( fs, 'copySync' );
-				sandbox.stub( tools, 'isFile', () => true );
-				sandbox.stub( tools, 'isDirectory', () => false );
-
-				tools.copy( [ file ], destination );
-
-				file = path.resolve( file );
-				destination = path.join( path.resolve( destination ), path.basename( file ) );
-
-				sinon.assert.calledOnce( copyStub );
-				sinon.assert.calledWithExactly( copyStub.firstCall, file, destination );
-			} );
-
-			it( 'should copy directories', () => {
 				const fs = require( 'fs-extra' );
-				const path = require( 'path' );
-				let destination = 'destination';
-				let dir = 'source';
-				sandbox.stub( fs, 'ensureDirSync' );
-				const copyStub = sandbox.stub( fs, 'copySync' );
-				sandbox.stub( tools, 'isFile', () => false );
-				sandbox.stub( tools, 'isDirectory', () => true );
 
-				tools.copy( [ dir ], destination );
+				const readFileStub = sandbox.stub( fs, 'readFileSync' );
+				readFileStub.onFirstCall().returns( 'file data {{var1}}, {{var2}}' );
+				readFileStub.onSecondCall().returns( '{{var1}}, {{var2}}, {{var2}}{{var1}}' );
 
-				dir = path.resolve( dir );
-				destination = path.resolve( destination );
+				const writeFileStub = sandbox.stub( fs, 'writeFileSync' );
+				const ensureDirStub = sandbox.stub( fs, 'ensureDirSync' );
+				const sources = [ '/path/to/file1.md', '/path/to/file2.md' ];
+				const destination = '/destination/path';
 
-				sinon.assert.calledOnce( copyStub );
-				sinon.assert.calledWithExactly( copyStub.firstCall, dir, destination );
+				tools.copyTemplateFiles( sources, destination, {
+					'{{var1}}': 'foo',
+					'{{var2}}': 'bar'
+				} );
+
+				sinon.assert.calledWithExactly( ensureDirStub, destination );
+				sinon.assert.calledTwice( readFileStub );
+				sinon.assert.calledWithExactly( readFileStub.firstCall, sources[ 0 ], 'utf8' );
+				sinon.assert.calledWithExactly( readFileStub.secondCall, sources[ 1 ], 'utf8' );
+				sinon.assert.calledTwice( writeFileStub );
+				let savePath = path.join( destination, path.basename( sources[ 0 ] ) );
+				sinon.assert.calledWithExactly( writeFileStub.firstCall, savePath, 'file data foo, bar', 'utf8' );
+				savePath = path.join( destination, path.basename( sources[ 1 ] ) );
+				sinon.assert.calledWithExactly( writeFileStub.secondCall, savePath, 'foo, bar, barfoo', 'utf8' );
 			} );
 		} );
 

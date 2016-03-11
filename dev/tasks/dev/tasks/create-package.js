@@ -35,7 +35,13 @@ module.exports = ( ckeditor5Path, workspaceRoot ) => {
 			'.jshintrc',
 			'.jscsrc',
 			'.gitattributes',
-			'./dev/tasks/dev/templates'
+			'dev/tasks/dev/templates/.gitignore',
+			'dev/tasks/dev/templates/CHANGES.md',
+			'dev/tasks/dev/templates/CONTRIBUTING.md',
+			'dev/tasks/dev/templates/gulpfile.js',
+			'dev/tasks/dev/templates/LICENSE.md',
+			'dev/tasks/dev/templates/package.json',
+			'dev/tasks/dev/templates/README.md'
 		],
 		'tests/': [
 			'tests/.jshintrc'
@@ -43,20 +49,27 @@ module.exports = ( ckeditor5Path, workspaceRoot ) => {
 		'dev/': [
 			'dev/.jshintrc'
 		],
-		'dev/tasks/lint': [
-			'dev/tasks/lint'
+		'dev/tasks/lint/': [
+			'dev/tasks/lint/tasks.js'
 		]
 	};
 
 	let packageName;
+	let packageFullName;
 	let repositoryPath;
 	let packageVersion;
 	let gitHubUrl;
+	let packageDescription;
 
 	return inquiries.getPackageName()
 		.then( result => {
 			packageName = result;
 			repositoryPath = path.join( workspaceAbsolutePath, packageName );
+
+			return inquiries.getApplicationName();
+		} )
+		.then( result => {
+			packageFullName = result;
 
 			return inquiries.getPackageVersion();
 		} )
@@ -68,19 +81,29 @@ module.exports = ( ckeditor5Path, workspaceRoot ) => {
 		.then( result => {
 			gitHubUrl = result;
 
+			return inquiries.getPackageDescription();
+		} )
+		.then( result => {
+			packageDescription = result;
+
 			log.out( `Initializing repository ${ repositoryPath }...` );
 			git.initializeRepository( repositoryPath );
 
 			log.out( `Copying files into ${ repositoryPath }...` );
 
 			for ( let destination in fileStructure ) {
-				tools.copy( fileStructure[ destination ], path.join( repositoryPath, destination ) );
+				tools.copyTemplateFiles( fileStructure[ destination ], path.join( repositoryPath, destination ), {
+					'{{AppName}}': packageFullName,
+					'{{GitHubRepositoryPath}}': gitHubUrl,
+					'{{ProjectDescription}}': packageDescription
+				} );
 			}
 
 			log.out( `Updating package.json files...` );
 			tools.updateJSONFile( path.join( repositoryPath, 'package.json' ), ( json ) => {
 				json.name = packageName;
 				json.version = packageVersion;
+				json.description = packageDescription;
 
 				return json;
 			} );

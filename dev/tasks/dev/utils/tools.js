@@ -224,29 +224,36 @@ module.exports = {
 	},
 
 	/**
-	 * Copies source files/directories into destination directory.
-	 * If directory path is provided in sources array - all files inside that directory will be copied.
+	 * Copies source files into destination directory and replaces contents of the file using provided `replace` object.
 	 *
-	 * @param { Array } source Source files/directories.
-	 * @param { String} destination Path to destination directory.
+	 *		// Each occurrence of `{{appName}}` inside README.md and CHANGES.md will be changed to `ckeditor5`.
+	 * 		tools.copyTemplateFiles( [ 'README.md', 'CHANGES.md' ], '/new/path', { '{{AppName}}': 'ckeditor5' } );
+	 *
+	 * @param {Array} sources Source files.
+	 * @param {String} destination Path to destination directory.
+	 * @param {Object} [replace] Object with data to fill template. Method will take object's keys and replace their
+	 * occurrences with value stored under that key.
 	 */
-	copy( sources, destination ) {
+	copyTemplateFiles( sources, destination, replace ) {
 		const path = require( 'path' );
 		const fs = require( 'fs-extra' );
+		replace = replace || {};
 		destination = path.resolve( destination );
+		const regexps = [];
+
+		for ( let variableName in replace ) {
+			regexps.push( variableName );
+		}
+		const regexp = new RegExp( regexps.join( '|' ), 'g' );
+		const replaceFunction = ( matched ) => replace[ matched ];
 
 		fs.ensureDirSync( destination );
 
 		sources.forEach( source => {
 			source = path.resolve( source );
-
-			if ( this.isFile( source ) ) {
-				fs.copySync( source, path.join( destination, path.basename( source ) ) );
-			}
-
-			if ( this.isDirectory( source ) ) {
-				fs.copySync( source, destination );
-			}
+			let fileData = fs.readFileSync( source, 'utf8' );
+			fileData = fileData.replace( regexp, replaceFunction );
+			fs.writeFileSync( path.join( destination, path.basename( source ) ), fileData, 'utf8' );
 		} );
 	},
 

@@ -27,6 +27,17 @@ module.exports = {
 		} );
 	},
 
+	getApplicationName() {
+		return new Promise( ( resolve ) => {
+			inquirer.prompt( [ {
+				name: 'applicationName',
+				message: 'Enter application full name:'
+			} ], ( answers ) => {
+				resolve( answers.applicationName );
+			} );
+		} );
+	},
+
 	getPackageVersion( ) {
 		return new Promise( ( resolve ) => {
 			inquirer.prompt( [ {
@@ -49,6 +60,17 @@ module.exports = {
 				default: defaultGitHubUrl
 			} ], ( answers ) => {
 				resolve( answers.gitHubUrl );
+			} );
+		} );
+	},
+
+	getPackageDescription( ) {
+		return new Promise( ( resolve ) => {
+			inquirer.prompt( [ {
+				name: 'description',
+				message: 'Package description (one sentence):'
+			} ], ( answers ) => {
+				resolve( answers.description || '' );
 			} );
 		} );
 	}
