@@ -182,7 +182,7 @@ export default class Document {
 	}
 
 	/**
-	 * Enqueue a callback with document changes. Any changes to be done on document (mostly using {@link core.treeModel.Document#batch}
+	 * Enqueues document changes. Any changes to be done on document (mostly using {@link core.treeModel.Document#batch}
 	 * should be placed in the queued callback. If no other plugin is changing document at the moment, the callback will be
 	 * called immediately. Otherwise it will wait for all previously queued changes to finish happening. This way
 	 * queued callback will not interrupt other callbacks.
