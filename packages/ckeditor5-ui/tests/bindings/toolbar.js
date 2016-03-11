@@ -8,10 +8,10 @@
 'use strict';
 
 import Editor from '/ckeditor5/core/editor.js';
-import Model from '/ckeditor5/core/ui/model.js';
-import View from '/ckeditor5/core/ui/view.js';
-import Controller from '/ckeditor5/core/ui/controller.js';
-import Toolbar from '/ckeditor5/core/ui/bindings/toolbar.js';
+import Model from '/ckeditor5/ui/model.js';
+import View from '/ckeditor5/ui/view.js';
+import Controller from '/ckeditor5/ui/controller.js';
+import Toolbar from '/ckeditor5/ui/bindings/toolbar.js';
 
 describe( 'Toolbar', () => {
 	let toolbar, view, model, editor;

@@ -8,7 +8,7 @@
 'use strict';
 
 import Editor from '/ckeditor5/core/editor.js';
-import ComponentFactory from '/ckeditor5/core/ui/componentfactory.js';
+import ComponentFactory from '/ckeditor5/ui/componentfactory.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'ComponentFactory', () => {

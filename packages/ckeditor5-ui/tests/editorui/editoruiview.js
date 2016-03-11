@@ -5,8 +5,8 @@
 
 'use strict';
 
-import EditorUIView from '/ckeditor5/core/editorui/editoruiview.js';
-import Model from '/ckeditor5/core/ui/model.js';
+import EditorUIView from '/ckeditor5/ui/editorui/editoruiview.js';
+import Model from '/ckeditor5/ui/model.js';
 
 describe( 'EditorUIView', () => {
 	let editorUIView;

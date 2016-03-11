@@ -8,8 +8,8 @@
 import Controller from '../controller.js';
 import ControllerCollection from '../controllercollection.js';
 import ComponentFactory from '../componentfactory.js';
-import ObservableMixin from '../utils/observablemixin.js';
-import utils from '../utils/utils.js';
+import ObservableMixin from '../../utils/observablemixin.js';
+import utils from '../../utils/utils.js';
 
 /**
  * Base class for the editor main view controllers.

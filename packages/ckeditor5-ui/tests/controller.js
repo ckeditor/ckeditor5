@@ -8,11 +8,11 @@
 'use strict';
 
 import testUtils from '/tests/_utils/utils.js';
-import View from '/ckeditor5/core/ui/view.js';
-import Controller from '/ckeditor5/core/ui/controller.js';
-import ControllerCollection from '/ckeditor5/core/ui/controllercollection.js';
+import View from '/ckeditor5/ui/view.js';
+import Controller from '/ckeditor5/ui/controller.js';
+import ControllerCollection from '/ckeditor5/ui/controllercollection.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-import Model from '/ckeditor5/core/ui/model.js';
+import Model from '/ckeditor5/ui/model.js';
 import EventInfo from '/ckeditor5/utils/eventinfo.js';
 
 let ParentController, ParentView;

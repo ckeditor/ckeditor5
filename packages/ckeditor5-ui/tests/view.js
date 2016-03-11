@@ -9,10 +9,10 @@
 'use strict';
 
 import testUtils from '/tests/_utils/utils.js';
-import View from '/ckeditor5/core/ui/view.js';
-import Region from '/ckeditor5/core/ui/region.js';
+import View from '/ckeditor5/ui/view.js';
+import Region from '/ckeditor5/ui/region.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-import Model from '/ckeditor5/core/ui/model.js';
+import Model from '/ckeditor5/ui/model.js';
 
 let TestView, view;
 

@@ -8,8 +8,8 @@
 'use strict';
 
 import Editor from '/ckeditor5/core/editor.js';
-import Editable from '/ckeditor5/core/editable/editable.js';
-import Model from '/ckeditor5/core/ui/model.js';
+import Editable from '/ckeditor5/ui/editable/editable.js';
+import Model from '/ckeditor5/ui/model.js';
 import testUtils from '/tests/utils/_utils/utils.js';
 
 describe( 'Editable', () => {

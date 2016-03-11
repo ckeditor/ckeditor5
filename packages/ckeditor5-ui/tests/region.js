@@ -8,8 +8,8 @@
 
 'use strict';
 
-import Region from '/ckeditor5/core/ui/region.js';
-import View from '/ckeditor5/core/ui/view.js';
+import Region from '/ckeditor5/ui/region.js';
+import View from '/ckeditor5/ui/view.js';
 
 let TestViewA, TestViewB;
 let region, el;

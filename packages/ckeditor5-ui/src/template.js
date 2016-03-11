@@ -7,7 +7,7 @@
 
 'use strict';
 
-import CKEditorError from '../../utils/ckeditorerror.js';
+import CKEditorError from '../utils/ckeditorerror.js';
 
 /**
  * Basic Template class.

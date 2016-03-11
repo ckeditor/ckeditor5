@@ -7,7 +7,7 @@
 
 'use strict';
 
-import Model from '/ckeditor5/core/ui/model.js';
+import Model from '/ckeditor5/ui/model.js';
 
 let Car, car;
 

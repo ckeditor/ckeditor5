@@ -8,8 +8,8 @@
 'use strict';
 
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-import EditableView from '/ckeditor5/core/editable/editableview.js';
-import Model from '/ckeditor5/core/ui/model.js';
+import EditableView from '/ckeditor5/ui/editable/editableview.js';
+import Model from '/ckeditor5/ui/model.js';
 
 describe( 'EditableView', () => {
 	let model, view, editableElement;

@@ -9,7 +9,7 @@
 'use strict';
 
 import testUtils from '/tests/_utils/utils.js';
-import Template from '/ckeditor5/core/ui/template.js';
+import Template from '/ckeditor5/ui/template.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 testUtils.createSinonSandbox();
