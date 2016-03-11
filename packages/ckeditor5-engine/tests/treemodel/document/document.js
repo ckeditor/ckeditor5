@@ -20,37 +20,37 @@ describe( 'Document', () => {
 	} );
 
 	describe( 'constructor', () => {
-		it( 'should create Document with no data, empty graveyard and empty selection', () => {
-			expect( doc ).to.have.property( 'roots' ).that.is.instanceof( Map );
-			expect( doc.roots.size ).to.equal( 1 );
+		it( 'should create Document with no data, empty graveyard and selection set to default range', () => {
+			expect( doc ).to.have.property( '_roots' ).that.is.instanceof( Map );
+			expect( doc._roots.size ).to.equal( 1 );
 			expect( doc.graveyard ).to.be.instanceof( RootElement );
 			expect( doc.graveyard.getChildCount() ).to.equal( 0 );
-			expect( doc.selection.getRanges().length ).to.equal( 0 );
+			expect( doc.selection.getRanges().length ).to.equal( 1 );
 		} );
 	} );
 
 	describe( 'createRoot', () => {
 		it( 'should create a new RootElement, add it to roots map and return it', () => {
-			let root = doc.createRoot( 'root' );
+			let root = doc.createRoot( 'root', 'root' );
 
-			expect( doc.roots.size ).to.equal( 2 );
+			expect( doc._roots.size ).to.equal( 2 );
 			expect( root ).to.be.instanceof( RootElement );
 			expect( root.getChildCount() ).to.equal( 0 );
 		} );
 
-		it( 'should throw an error when trying to create a second root with the same name', () => {
-			doc.createRoot( 'root' );
+		it( 'should throw an error when trying to create a second root with the same id', () => {
+			doc.createRoot( 'root', 'root' );
 
 			expect(
 				() => {
-					doc.createRoot( 'root' );
+					doc.createRoot( 'root', 'root' );
 				}
-			).to.throw( CKEditorError, /document-createRoot-name-exists/ );
+			).to.throw( CKEditorError, /document-createRoot-id-exists/ );
 		} );
 	} );
 
 	describe( 'getRoot', () => {
-		it( 'should return a RootElement previously created with given name', () => {
+		it( 'should return a RootElement previously created with given id', () => {
 			let newRoot = doc.createRoot( 'root' );
 			let getRoot = doc.getRoot( 'root' );
 
@@ -62,7 +62,7 @@ describe( 'Document', () => {
 				() => {
 					doc.getRoot( 'root' );
 				}
-			).to.throw( CKEditorError, /document-createRoot-root-not-exist/ );
+			).to.throw( CKEditorError, /document-getRoot-root-not-exist/ );
 		} );
 	} );
 
@@ -168,6 +168,36 @@ describe( 'Document', () => {
 			expect( order[ 4 ] ).to.equal( 'enqueue3' );
 			expect( order[ 5 ] ).to.equal( 'enqueue4' );
 			expect( order[ 6 ] ).to.equal( 'done' );
+		} );
+	} );
+
+	it( 'should update selection attributes whenever selection gets updated', () => {
+		sinon.spy( doc.selection, '_updateAttributes' );
+
+		doc.selection.fire( 'change:range' );
+
+		expect( doc.selection._updateAttributes.called ).to.be.true;
+	} );
+
+	it( 'should update selection attributes whenever changes to the document are applied', () => {
+		sinon.spy( doc.selection, '_updateAttributes' );
+
+		doc.fire( 'changesDone' );
+
+		expect( doc.selection._updateAttributes.called ).to.be.true;
+	} );
+
+	describe( '_getDefaultRoot', () => {
+		it( 'should return graveyard root if there are no other roots in the document', () => {
+			expect( doc._getDefaultRoot() ).to.equal( doc.graveyard );
+		} );
+
+		it( 'should return the first root added to the document', () => {
+			let rootA = doc.createRoot( 'rootA' );
+			doc.createRoot( 'rootB' );
+			doc.createRoot( 'rootC' );
+
+			expect( doc._getDefaultRoot() ).to.equal( rootA );
 		} );
 	} );
 } );

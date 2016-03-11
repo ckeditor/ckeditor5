@@ -8,6 +8,7 @@
 import ObservableMixin from '../utils/observablemixin.js';
 import EditorConfig from './editorconfig.js';
 import PluginCollection from './plugincollection.js';
+import Document from './treemodel/document.js';
 import CKEditorError from '../utils/ckeditorerror.js';
 import Locale from '../utils/locale.js';
 import isArray from '../utils/lib/lodash/isArray.js';
@@ -42,7 +43,7 @@ export default class Editor {
 		/**
 		 * Holds all configurations specific to this editor instance.
 		 *
-		 * This instance of the {@link Config} class is customized so its {@link Config#get} method will retrieve
+		 * This instance of the {@link utils.Config} class is customized so its {@link utils.Config#get} method will retrieve
 		 * global configurations available in {@link CKEDITOR.config} if configurations are not found in the
 		 * instance itself.
 		 *
@@ -58,6 +59,22 @@ export default class Editor {
 		 * @member {core.PluginCollection} core.Editor#plugins
 		 */
 		this.plugins = new PluginCollection( this );
+
+		/**
+		 * Tree Model document managed by this editor.
+		 *
+		 * @readonly
+		 * @member {core.treeModel.Document} core.Editor#document
+		 */
+		this.document = new Document();
+
+		/**
+		 * Commands registered to the editor.
+		 *
+		 * @readonly
+		 * @member {Map} core.Editor#commands
+		 */
+		this.commands = new Map();
 
 		/**
 		 * @readonly
@@ -172,6 +189,27 @@ export default class Editor {
 	getData() {
 		return this.editable.getData();
 	}
+
+	/**
+	 * Executes specified command with given parameter.
+	 *
+	 * @param {String} commandName Name of command to execute.
+	 * @param {*} [commandParam] If set, command will be executed with this parameter.
+	 */
+	execute( commandName, commandParam ) {
+		let command = this.commands.get( commandName );
+
+		if ( !command ) {
+			/**
+			 * Specified command has not been added to the editor.
+			 *
+			 * @error editor-command-not-found
+			 */
+			throw new CKEditorError( 'editor-command-not-found: Specified command has not been added to the editor.' );
+		}
+
+		command._execute( commandParam );
+	}
 }
 
 utils.mix( Editor, ObservableMixin );
@@ -180,13 +218,6 @@ utils.mix( Editor, ObservableMixin );
  * Fired when this editor instance is destroyed. The editor at this point is not usable and this event should be used to
  * perform the clean-up in any plugin.
  *
- * @event core.Editor#destroy
- */
-
-/**
- * @cfg {String[]} features
- */
-
-/**
- * @cfg {String} creator
+ * @memberOf core.Editor
+ * @event destroy
  */

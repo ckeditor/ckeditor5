@@ -6,9 +6,8 @@
 'use strict';
 
 // Load all basic deltas and transformations, they register themselves, but they need to be imported somewhere.
-import deltas from './delta/basic-deltas.js';
-import transformations from './delta/basic-transformations.js';
-/*jshint unused: false*/
+import deltas from './delta/basic-deltas.js'; // jshint ignore:line
+import transformations from './delta/basic-transformations.js'; // jshint ignore:line
 
 import RootElement from './rootelement.js';
 import Batch from './batch.js';
@@ -16,6 +15,8 @@ import Selection from './selection.js';
 import EmitterMixin from '../../utils/emittermixin.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 import utils from '../../utils/utils.js';
+import Schema from './schema.js';
+import clone from '../../utils/lib/lodash/clone.js';
 
 const graveyardSymbol = Symbol( 'graveyard' );
 
@@ -39,14 +40,6 @@ export default class Document {
 	 */
 	constructor() {
 		/**
-		 * List of roots that are owned and managed by this document.
-		 *
-		 * @readonly
-		 * @member {Map} core.treeModel.Document#roots
-		 */
-		this.roots = new Map();
-
-		/**
 		 * Document version. It starts from `0` and every operation increases the version number. It is used to ensure that
 		 * operations are applied on the proper document version. If the {@link core.treeModel.operation.Operation#baseVersion} will
 		 * not match document version the {@link document-applyOperation-wrong-version} error is thrown.
@@ -56,8 +49,20 @@ export default class Document {
 		 */
 		this.version = 0;
 
-		// Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
-		this.createRoot( graveyardSymbol );
+		/**
+		 * Selection done on this document.
+		 *
+		 * @readonly
+		 * @member {core.treeModel.Selection} core.treeModel.Document#selection
+		 */
+		this.selection = new Selection( this );
+
+		/**
+		 * Schema for this document.
+		 *
+		 * @member {core.treeModel.Schema} core.treeModel.Document#schema
+		 */
+		this.schema = new Schema();
 
 		/**
 		 * Array of pending changes. See: {@link core.treeModel.Document#enqueueChanges}.
@@ -68,12 +73,26 @@ export default class Document {
 		this._pendingChanges = [];
 
 		/**
-		 * Selection done on this document.
+		 * List of roots that are owned and managed by this document. Use {@link core.treeModel.document#createRoot} and
+		 * {@link core.treeModel.document#getRoot} to manipulate it.
 		 *
 		 * @readonly
-		 * @member {core.treeModel.Selection} core.treeModel.Document#selection
+		 * @protected
+		 * @member {Map} core.treeModel.Document#roots
 		 */
-		this.selection = new Selection();
+		this._roots = new Map();
+
+		// Add events that will update selection attributes.
+		this.selection.on( 'change:range', () => {
+			this.selection._updateAttributes();
+		} );
+
+		this.on( 'changesDone', () => {
+			this.selection._updateAttributes();
+		} );
+
+		// Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
+		this.createRoot( graveyardSymbol );
 	}
 
 	/**
@@ -128,38 +147,48 @@ export default class Document {
 	/**
 	 * Creates a new top-level root.
 	 *
-	 * @param {String|Symbol} name Unique root name.
+	 * @param {String|Symbol} id Unique root id.
+	 * @param {String} name Element name.
 	 * @returns {core.treeModel.RootElement} Created root.
 	 */
-	createRoot( name ) {
-		if ( this.roots.has( name ) ) {
+	createRoot( id, name ) {
+		if ( this._roots.has( id ) ) {
 			/**
-			 * Root with specified name already exists.
+			 * Root with specified id already exists.
 			 *
-			 * @error document-createRoot-name-exists
+			 * @error document-createRoot-id-exists
 			 * @param {core.treeModel.Document} doc
-			 * @param {String} name
+			 * @param {String} id
 			 */
 			throw new CKEditorError(
-				'document-createRoot-name-exists: Root with specified name already exists.',
-				{ name: name }
+				'document-createRoot-id-exists: Root with specified id already exists.',
+				{ id: id }
 			);
 		}
 
-		const root = new RootElement( this );
-		this.roots.set( name, root );
+		const root = new RootElement( this, name );
+		this._roots.set( id, root );
 
 		return root;
 	}
 
 	/**
-	 * Enqueue a callback with document changes. Any changes to be done on document (mostly using {@link core.treeModel.Document#batch} should
-	 * be placed in the queued callback. If no other plugin is changing document at the moment, the callback will be
+	 * Removes all events listeners set by document instance.
+	 */
+	destroy() {
+		this.selection.destroy();
+		this.stopListening();
+	}
+
+	/**
+	 * Enqueues document changes. Any changes to be done on document (mostly using {@link core.treeModel.Document#batch}
+	 * should be placed in the queued callback. If no other plugin is changing document at the moment, the callback will be
 	 * called immediately. Otherwise it will wait for all previously queued changes to finish happening. This way
 	 * queued callback will not interrupt other callbacks.
 	 *
 	 * When all queued changes are done {@link core.treeModel.Document#changesDone} event is fired.
 	 *
+	 * @fires {@link core.treeModel.Document#changesDone}
 	 * @param {Function} callback Callback to enqueue.
 	 */
 	enqueueChanges( callback ) {
@@ -176,26 +205,58 @@ export default class Document {
 	}
 
 	/**
-	 * Returns top-level root by it's name.
+	 * Returns top-level root by it's id.
 	 *
-	 * @param {String|Symbol} name Name of the root to get.
-	 * @returns {core.treeModel.RootElement} Root registered under given name.
+	 * @param {String|Symbol} id Unique root id.
+	 * @returns {core.treeModel.RootElement} Root registered under given id.
 	 */
-	getRoot( name ) {
-		if ( !this.roots.has( name ) ) {
+	getRoot( id ) {
+		if ( !this._roots.has( id ) ) {
 			/**
-			 * Root with specified name does not exist.
+			 * Root with specified id does not exist.
 			 *
-			 * @error document-createRoot-root-not-exist
-			 * @param {String} name
+			 * @error document-getRoot-root-not-exist
+			 * @param {String} id
 			 */
 			throw new CKEditorError(
-				'document-createRoot-root-not-exist: Root with specified name does not exist.',
-				{ name: name }
+				'document-getRoot-root-not-exist: Root with specified id does not exist.',
+				{ id: id }
 			);
 		}
 
-		return this.roots.get( name );
+		return this._roots.get( id );
+	}
+
+	/**
+	 * Custom toJSON method to solve child-parent circular dependencies.
+	 *
+	 * @returns {Object} Clone of this object with the document property changed to string.
+	 */
+	toJSON() {
+		const json = clone( this );
+
+		// Due to circular references we need to remove parent reference.
+		json.selection = '[core.treeModel.Selection]';
+
+		return {};
+	}
+
+	/**
+	 * Returns default root for this document which is either the first root that was added to the the document using
+	 * {@link core.treeModel.Document#createRoot} or the {@link core.treeModel.Document#graveyard graveyard root} if
+	 * no other roots were created.
+	 *
+	 * @protected
+	 * @returns {core.treeModel.RootElement} The default root for this document.
+	 */
+	_getDefaultRoot() {
+		for ( let root of this._roots.values() ) {
+			if ( root !== this.graveyard ) {
+				return root;
+			}
+		}
+
+		return this.graveyard;
 	}
 
 	/**
@@ -203,11 +264,12 @@ export default class Document {
 	 *
 	 * There are 5 types of change:
 	 *
-	 * * `'insert'` when nodes are inserted,
-	 * * `'remove'` when nodes are removed,
-	 * * `'reinsert'` when remove is undone,
-	 * * `'move'` when nodes are moved,
-	 * * `'attribute'` when attributes change. TODO attribute
+	 * * 'insert' when nodes are inserted,
+	 * * 'remove' when nodes are removed,
+	 * * 'reinsert' when remove is undone,
+	 * * 'move' when nodes are moved,
+	 * * 'attribute' when attributes change,
+	 * * 'rootattribute' when attributes for root element change.
 	 *
 	 * Change event is fired after the change is done. This means that any ranges or positions passed in
 	 * `changeInfo` are referencing nodes and paths in updated tree model.
@@ -215,8 +277,10 @@ export default class Document {
 	 * @event core.treeModel.Document#change
 	 * @param {String} type Change type, possible option: `'insert'`, `'remove'`, `'reinsert'`, `'move'`, `'attribute'`.
 	 * @param {Object} changeInfo Additional information about the change.
-	 * @param {core.treeModel.Range} changeInfo.range Range containing changed nodes. Note that for `'remove'` the range will be in the
-	 * {@link core.treeModel.Document#graveyard graveyard root}.
+	 * @param {core.treeModel.Range} [changeInfo.range] Range containing changed nodes. Note that for `'remove'` the range will be in the
+	 * {@link core.treeModel.Document#graveyard graveyard root}. This is undefined for `'rootattribute'` type.
+	 * @param {core.treeModel.RootElement} [changeInfo.root] Root element which attributes got changed. This is defined
+	 * only for `'rootattribute'` type.
 	 * @param {core.treeModel.Position} [changeInfo.sourcePosition] Change source position. Exists for `'remove'`, `'reinsert'` and `'move'`.
 	 * Note that for 'reinsert' the source position will be in the {@link core.treeModel.Document#graveyard graveyard root}.
 	 * @param {String} [changeInfo.key] Only for `'attribute'` type. Key of changed / inserted / removed attribute.
@@ -224,7 +288,7 @@ export default class Document {
 	 * is `undefined` it means that new attribute was inserted. Otherwise it contains changed or removed attribute value.
 	 * @param {*} [changeInfo.newValue] Only for `'attribute'` type. If the type is `'attribute'` and `newValue`
 	 * is `undefined` it means that attribute was removed. Otherwise it contains changed or inserted attribute value.
-	 * @param {core.treeModel.Batch} batch A {@link core.treeModel.Batch batch} of changes which this change is a part of.
+	 * @param {core.treeModel.Batch} batch A batch of changes which this change is a part of.
 	 */
 
 	/**

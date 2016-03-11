@@ -14,6 +14,7 @@ import Range from '/ckeditor5/core/treemodel/range.js';
 import transform from '/ckeditor5/core/treemodel/operation/transform.js';
 import InsertOperation from '/ckeditor5/core/treemodel/operation/insertoperation.js';
 import AttributeOperation from '/ckeditor5/core/treemodel/operation/attributeoperation.js';
+import RootAttributeOperation from '/ckeditor5/core/treemodel/operation/rootattributeoperation.js';
 import MoveOperation from '/ckeditor5/core/treemodel/operation/moveoperation.js';
 import NoOperation from '/ckeditor5/core/treemodel/operation/nooperation.js';
 
@@ -168,6 +169,23 @@ describe( 'transform', () => {
 			it( 'no position update', () => {
 				let transformBy = new AttributeOperation(
 					Range.createFromPositionAndShift( position, 2 ),
+					'foo',
+					null,
+					'bar',
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+		} );
+
+		describe( 'by RootAttributeOperation', () => {
+			it( 'no position update', () => {
+				let transformBy = new RootAttributeOperation(
+					root,
 					'foo',
 					null,
 					'bar',
@@ -793,6 +811,23 @@ describe( 'transform', () => {
 				} );
 			} );
 
+			describe( 'by RootAttributeOperation', () => {
+				it( 'no operation update', () => {
+					let transformBy = new RootAttributeOperation(
+						root,
+						'foo',
+						null,
+						'bar',
+						baseVersion
+					);
+
+					let transOp = transform( op, transformBy );
+
+					expect( transOp.length ).to.equal( 1 );
+					expectOperation( transOp[ 0 ], expected );
+				} );
+			} );
+
 			describe( 'by MoveOperation', () => {
 				it( 'range and target are different than change range: no operation update', () => {
 					let transformBy = new MoveOperation(
@@ -1297,6 +1332,167 @@ describe( 'transform', () => {
 		} );
 	} );
 
+	describe( 'RootAttributeOperation', () => {
+		let diffRoot = new RootElement( null );
+
+		beforeEach( () => {
+			expected = {
+				type: RootAttributeOperation,
+				key: 'foo',
+				oldValue: 'abc',
+				newValue: 'bar',
+				baseVersion: baseVersion + 1
+			};
+
+			op = new RootAttributeOperation( root, 'foo', 'abc', 'bar', baseVersion );
+		} );
+
+		describe( 'by InsertOperation', () => {
+			it( 'no operation update', () => {
+				let transformBy = new InsertOperation(
+					new Position( root, [ 0 ] ),
+					'a',
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+		} );
+
+		describe( 'by AttributeOperation', () => {
+			it( 'no operation update', () => {
+				let transformBy = new AttributeOperation(
+					new Range(
+						new Position( root, [ 0 ] ),
+						new Position( root, [ 1 ] )
+					),
+					'foo',
+					'bar',
+					'xyz',
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+		} );
+
+		describe( 'by RootAttributeOperation', () => {
+			it( 'changes different root: no operation update', () => {
+				let transformBy = new RootAttributeOperation(
+					diffRoot,
+					'foo',
+					'abc',
+					'xyz',
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'changes different key: no operation update', () => {
+				let transformBy = new RootAttributeOperation(
+					root,
+					'abc',
+					'abc',
+					'xyz',
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'sets same value for same key: convert to NoOperation', () => {
+				let transformBy = new RootAttributeOperation(
+					root,
+					'foo',
+					'abc',
+					'bar',
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], {
+					type: NoOperation,
+					baseVersion: baseVersion + 1
+				} );
+			} );
+
+			it( 'sets different value for same key on same root and is important: no operation update', () => {
+				let transformBy = new RootAttributeOperation(
+					root,
+					'foo',
+					'abc',
+					'xyz',
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], {
+					type: NoOperation,
+					baseVersion: baseVersion + 1
+				} );
+			} );
+
+			it( 'sets different value for same key on same root and is less important: convert to NoOperation', () => {
+				let transformBy = new RootAttributeOperation(
+					root,
+					'foo',
+					'abc',
+					'xyz',
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy, true );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+		} );
+
+		describe( 'by MoveOperation', () => {
+			it( 'no operation update', () => {
+				let transformBy = new MoveOperation(
+					new Position( root, [ 0 ] ),
+					2,
+					new Position( root, [ 1 ] ),
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+		} );
+
+		describe( 'by NoOperation', () => {
+			it( 'no operation update', () => {
+				let transformBy = new NoOperation( baseVersion );
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+		} );
+	} );
+
 	describe( 'MoveOperation', () => {
 		let sourcePosition, targetPosition, rangeEnd, howMany;
 
@@ -1540,6 +1736,23 @@ describe( 'transform', () => {
 					'abc',
 					true,
 					false,
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+		} );
+
+		describe( 'by RootAttributeOperation', () => {
+			it( 'no operation update', () => {
+				let transformBy = new RootAttributeOperation(
+					root,
+					'foo',
+					null,
+					'bar',
 					baseVersion
 				);
 
@@ -2368,6 +2581,23 @@ describe( 'transform', () => {
 					'foo',
 					'bar',
 					'xyz',
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+		} );
+
+		describe( 'by RootAttributeOperation', () => {
+			it( 'no operation update', () => {
+				let transformBy = new RootAttributeOperation(
+					root,
+					'foo',
+					null,
+					'bar',
 					baseVersion
 				);
 

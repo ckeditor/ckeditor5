@@ -21,16 +21,14 @@ export default class Position {
 		/**
 		 * Position parent element.
 		 *
-		 * @member core.treeView.Position#parent
-		 * @type {core.treeView.Element}
+		 * @member {core.treeView.Element} core.treeView.Position#parent
 		 */
 		this.parent = parent;
 
 		/**
 		 * Position offset.
 		 *
-		 * @member core.treeView.Position#offset
-		 * @type {Number}
+		 * @member {Number} core.treeView.Position#offset
 		 */
 		this.offset = offset;
 	}

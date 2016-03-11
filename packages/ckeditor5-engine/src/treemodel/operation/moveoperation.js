@@ -51,9 +51,6 @@ export default class MoveOperation extends Operation {
 		this.targetPosition = Position.createFromPosition( targetPosition );
 	}
 
-	/**
-	 * @see core.treeModel.operation.Operation#type
-	 */
 	get type() {
 		return 'move';
 	}

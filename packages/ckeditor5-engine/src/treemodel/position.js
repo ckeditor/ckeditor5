@@ -37,7 +37,7 @@ export default class Position {
 		/**
 		 * Root element for the path. Note that this element can not have a parent.
 		 *
-		 * @type {core.treeModel.RootElement}
+		 * @member {core.treeModel.RootElement} core.treeModel.Position#root
 		 */
 		this.root = root;
 
@@ -66,7 +66,7 @@ export default class Position {
 		 *        |- a   Before: [ 1, 1, 1 ] After: [ 1, 1, 2 ]
 		 *        |- r   Before: [ 1, 1, 2 ] After: [ 1, 1, 3 ]
 		 *
-		 * @type {Number[]}
+		 * @member {Array.<Number>} core.treeModel.Position#path
 		 */
 		this.path = path;
 	}
@@ -103,6 +103,8 @@ export default class Position {
 
 	/**
 	 * Sets offset in the parent, which is the last element of the path.
+	 *
+	 * @param {Number} newOffset
 	 */
 	set offset( newOffset ) {
 		this.path[ this.path.length - 1 ] = newOffset;

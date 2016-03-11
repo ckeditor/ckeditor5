@@ -9,6 +9,7 @@
 
 import Document from '/ckeditor5/core/treemodel/document.js';
 import Element from '/ckeditor5/core/treemodel/element.js';
+import Text from '/ckeditor5/core/treemodel/text.js';
 import Range from '/ckeditor5/core/treemodel/range.js';
 import Position from '/ckeditor5/core/treemodel/position.js';
 import LiveRange from '/ckeditor5/core/treemodel/liverange.js';
@@ -29,43 +30,52 @@ describe( 'Selection', () => {
 	beforeEach( () => {
 		doc = new Document();
 		root = doc.createRoot( 'root' );
-		selection = new Selection();
+		root.insertChildren( 0, [
+			new Element( 'p' ),
+			new Element( 'p' ),
+			new Element( 'p', [], 'foobar' ),
+			new Element( 'p' ),
+			new Element( 'p' ),
+			new Element( 'p' ),
+			new Element( 'p', [], 'foobar' )
+		] );
+		selection = doc.selection;
 
 		liveRange = new LiveRange( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
 		range = new Range( new Position( root, [ 2 ] ), new Position( root, [ 2, 2 ] ) );
 	} );
 
 	afterEach( () => {
-		selection.detach();
+		doc.destroy();
 		liveRange.detach();
 	} );
 
-	it( 'should not have any range, attributes, anchor or focus position when just created', () => {
+	it( 'should be set to default range when just created', () => {
 		let ranges = selection.getRanges();
 
-		expect( ranges.length ).to.equal( 0 );
-		expect( selection.anchor ).to.be.null;
-		expect( selection.focus ).to.be.null;
+		expect( ranges.length ).to.equal( 1 );
+		expect( selection.anchor.isEqual( new Position( root, [ 0 ] ) ) ).to.be.true;
+		expect( selection.focus.isEqual( new Position( root, [ 0 ] ) ) ).to.be.true;
 		expect( selection._attrs ).to.be.instanceof( Map );
 		expect( selection._attrs.size ).to.equal( 0 );
 	} );
 
-	it( 'should be collapsed if it has no ranges or all ranges are collapsed', () => {
-		expect( selection.isCollapsed ).to.be.true;
+	describe( 'isCollapsed', () => {
+		it( 'should be true if all ranges are collapsed', () => {
+			selection.addRange( new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) );
 
-		selection.addRange( new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) );
+			expect( selection.isCollapsed ).to.be.true;
+		} );
 
-		expect( selection.isCollapsed ).to.be.true;
-	} );
+		it( 'should be false when it has a range that is not collapsed', () => {
+			selection.addRange( range );
 
-	it( 'should not be collapsed when it has a range that is not collapsed', () => {
-		selection.addRange( liveRange );
+			expect( selection.isCollapsed ).to.be.false;
 
-		expect( selection.isCollapsed ).to.be.false;
+			selection.addRange( new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) );
 
-		selection.addRange( new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) );
-
-		expect( selection.isCollapsed ).to.be.false;
+			expect( selection.isCollapsed ).to.be.false;
+		} );
 	} );
 
 	it( 'should copy added ranges and store multiple ranges', () => {
@@ -124,16 +134,16 @@ describe( 'Selection', () => {
 		expect( ranges[ 0 ] ).to.be.instanceof( LiveRange );
 	} );
 
-	it( 'should fire update event when adding a range', () => {
+	it( 'should fire change:range event when adding a range', () => {
 		let spy = sinon.spy();
-		selection.on( 'update', spy );
+		selection.on( 'change:range', spy );
 
 		selection.addRange( range );
 
 		expect( spy.called ).to.be.true;
 	} );
 
-	it( 'should unbind all events when detached', () => {
+	it( 'should unbind all events when destroyed', () => {
 		selection.addRange( liveRange );
 		selection.addRange( range );
 
@@ -142,7 +152,7 @@ describe( 'Selection', () => {
 		sinon.spy( ranges[ 0 ], 'detach' );
 		sinon.spy( ranges[ 1 ], 'detach' );
 
-		selection.detach();
+		selection.destroy();
 
 		expect( ranges[ 0 ].detach.called ).to.be.true;
 		expect( ranges[ 1 ].detach.called ).to.be.true;
@@ -172,7 +182,7 @@ describe( 'Selection', () => {
 			selection.addRange( range );
 
 			spy = sinon.spy();
-			selection.on( 'update', spy );
+			selection.on( 'change:range', spy );
 
 			ranges = selection.getRanges();
 
@@ -187,18 +197,17 @@ describe( 'Selection', () => {
 			ranges[ 1 ].detach.restore();
 		} );
 
-		it( 'should remove all stored ranges', () => {
-			expect( selection.getRanges().length ).to.equal( 0 );
-			expect( selection.anchor ).to.be.null;
-			expect( selection.focus ).to.be.null;
-			expect( selection.isCollapsed ).to.be.true;
+		it( 'should remove all stored ranges (and reset to default range)', () => {
+			expect( selection.getRanges().length ).to.equal( 1 );
+			expect( selection.anchor.isEqual( new Position( root, [ 0 ] ) ) ).to.be.true;
+			expect( selection.focus.isEqual( new Position( root, [ 0 ] ) ) ).to.be.true;
 		} );
 
 		it( 'should fire exactly one update event', () => {
 			expect( spy.calledOnce ).to.be.true;
 		} );
 
-		it( 'should detach removed ranges', () => {
+		it( 'should detach ranges', () => {
 			expect( ranges[ 0 ].detach.called ).to.be.true;
 			expect( ranges[ 1 ].detach.called ).to.be.true;
 		} );
@@ -219,7 +228,7 @@ describe( 'Selection', () => {
 			selection.addRange( range );
 
 			spy = sinon.spy();
-			selection.on( 'update', spy );
+			selection.on( 'change:range', spy );
 
 			oldRanges = selection.getRanges();
 
@@ -266,6 +275,41 @@ describe( 'Selection', () => {
 		} );
 	} );
 
+	describe( 'getFirstRange', () => {
+		it( 'should return a range which start position is before all other ranges\' start positions', () => {
+			// This will not be the first range despite being added as first
+			selection.addRange( new Range( new Position( root, [ 4 ] ), new Position( root, [ 5 ] ) ) );
+
+			// This should be the first range.
+			selection.addRange( new Range( new Position( root, [ 1 ] ), new Position( root, [ 4 ] ) ) );
+
+			// A random range that is not first.
+			selection.addRange( new Range( new Position( root, [ 6 ] ), new Position( root, [ 7 ] ) ) );
+
+			let range = selection.getFirstRange();
+
+			expect( range.start.path ).to.deep.equal( [ 1 ] );
+			expect( range.end.path ).to.deep.equal( [ 4 ] );
+		} );
+	} );
+
+	describe( 'getFirstPosition', () => {
+		it( 'should return a position that is in selection and is before any other position from the selection', () => {
+			// This will not be a range containing the first position despite being added as first
+			selection.addRange( new Range( new Position( root, [ 4 ] ), new Position( root, [ 5 ] ) ) );
+
+			// This should be the first range.
+			selection.addRange( new Range( new Position( root, [ 1 ] ), new Position( root, [ 4 ] ) ) );
+
+			// A random range that is not first.
+			selection.addRange( new Range( new Position( root, [ 6 ] ), new Position( root, [ 7 ] ) ) );
+
+			let position = selection.getFirstPosition();
+
+			expect( position.path ).to.deep.equal( [ 1 ] );
+		} );
+	} );
+
 	// Selection uses LiveRanges so here are only simple test to see if integration is
 	// working well, without getting into complicated corner cases.
 	describe( 'after applying an operation should get updated and not fire update event', () => {
@@ -277,7 +321,7 @@ describe( 'Selection', () => {
 			selection.addRange( new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 1, 4 ] ) ) );
 
 			spy = sinon.spy();
-			selection.on( 'update', spy );
+			selection.on( 'change:range', spy );
 		} );
 
 		describe( 'InsertOperation', () => {
@@ -411,16 +455,52 @@ describe( 'Selection', () => {
 	} );
 
 	describe( 'attributes interface', () => {
+		let fullP, emptyP, rangeInFullP, rangeInEmptyP;
+
+		beforeEach( () => {
+			root.insertChildren( 0, [
+				new Element( 'p', [], 'foobar' ),
+				new Element( 'p', [], [] )
+			] );
+
+			fullP = root.getChild( 0 );
+			emptyP = root.getChild( 1 );
+
+			rangeInFullP = new Range( new Position( root, [ 0, 4 ] ), new Position( root, [ 0, 4 ] ) );
+			rangeInEmptyP = new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 0 ] ) );
+		} );
+
 		describe( 'setAttribute', () => {
 			it( 'should set given attribute on the selection', () => {
+				selection.setRanges( [ rangeInFullP ] );
 				selection.setAttribute( 'foo', 'bar' );
 
 				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
+				expect( fullP.hasAttribute( Selection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
+			} );
+
+			it( 'should store attribute if the selection is in empty node', () => {
+				selection.setRanges( [ rangeInEmptyP ] );
+				selection.setAttribute( 'foo', 'bar' );
+
+				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
+
+				expect( emptyP.getAttribute( Selection._getStoreAttributeKey( 'foo' ) ) ).to.equal( 'bar' );
+			} );
+
+			it( 'should fire change:attribute event', () => {
+				let spy = sinon.spy();
+				selection.on( 'change:attribute', spy );
+
+				selection.setAttribute( 'foo', 'bar' );
+
+				expect( spy.called ).to.be.true;
 			} );
 		} );
 
 		describe( 'hasAttribute', () => {
 			it( 'should return true if element contains attribute with given key', () => {
+				selection.setRanges( [ rangeInFullP ] );
 				selection.setAttribute( 'foo', 'bar' );
 
 				expect( selection.hasAttribute( 'foo' ) ).to.be.true;
@@ -439,6 +519,7 @@ describe( 'Selection', () => {
 
 		describe( 'getAttributes', () => {
 			it( 'should return an iterator that iterates over all attributes set on the text fragment', () => {
+				selection.setRanges( [ rangeInFullP ] );
 				selection.setAttribute( 'foo', 'bar' );
 				selection.setAttribute( 'abc', 'xyz' );
 
@@ -450,32 +531,73 @@ describe( 'Selection', () => {
 
 		describe( 'setAttributesTo', () => {
 			it( 'should remove all attributes set on element and set the given ones', () => {
+				selection.setRanges( [ rangeInFullP ] );
 				selection.setAttribute( 'abc', 'xyz' );
 				selection.setAttributesTo( { foo: 'bar' } );
 
 				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
 				expect( selection.getAttribute( 'abc' ) ).to.be.undefined;
+
+				expect( fullP.hasAttribute( Selection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
+				expect( fullP.hasAttribute( Selection._getStoreAttributeKey( 'abc' ) ) ).to.be.false;
+			} );
+
+			it( 'should remove all stored attributes and store the given ones if the selection is in empty node', () => {
+				selection.setRanges( [ rangeInEmptyP ] );
+				selection.setAttribute( 'abc', 'xyz' );
+				selection.setAttributesTo( { foo: 'bar' } );
+
+				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
+				expect( selection.getAttribute( 'abc' ) ).to.be.undefined;
+
+				expect( emptyP.getAttribute( Selection._getStoreAttributeKey( 'foo' ) ) ).to.equal( 'bar' );
+				expect( emptyP.hasAttribute( Selection._getStoreAttributeKey( 'abc' ) ) ).to.be.false;
+			} );
+
+			it( 'should fire change:attribute event', () => {
+				let spy = sinon.spy();
+				selection.on( 'change:attribute', spy );
+
+				selection.setAttributesTo( { foo: 'bar' } );
+
+				expect( spy.called ).to.be.true;
 			} );
 		} );
 
 		describe( 'removeAttribute', () => {
-			it( 'should remove attribute set on the text fragment and return true', () => {
+			it( 'should remove attribute set on the text fragment', () => {
+				selection.setRanges( [ rangeInFullP ] );
 				selection.setAttribute( 'foo', 'bar' );
-				let result = selection.removeAttribute( 'foo' );
+				selection.removeAttribute( 'foo' );
 
 				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
-				expect( result ).to.be.true;
+
+				expect( fullP.hasAttribute( Selection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
 			} );
 
-			it( 'should return false if text fragment does not have given attribute', () => {
-				let result = selection.removeAttribute( 'abc' );
+			it( 'should remove stored attribute if the selection is in empty node', () => {
+				selection.setRanges( [ rangeInEmptyP ] );
+				selection.setAttribute( 'foo', 'bar' );
+				selection.removeAttribute( 'foo' );
 
-				expect( result ).to.be.false;
+				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
+
+				expect( emptyP.hasAttribute( Selection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
+			} );
+
+			it( 'should fire change:attribute event', () => {
+				let spy = sinon.spy();
+				selection.on( 'change:attribute', spy );
+
+				selection.removeAttribute( 'foo' );
+
+				expect( spy.called ).to.be.true;
 			} );
 		} );
 
 		describe( 'clearAttributes', () => {
 			it( 'should remove all attributes from the element', () => {
+				selection.setRanges( [ rangeInFullP ] );
 				selection.setAttribute( 'foo', 'bar' );
 				selection.setAttribute( 'abc', 'xyz' );
 
@@ -483,7 +605,103 @@ describe( 'Selection', () => {
 
 				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
 				expect( selection.getAttribute( 'abc' ) ).to.be.undefined;
+
+				expect( fullP.hasAttribute( Selection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
+				expect( fullP.hasAttribute( Selection._getStoreAttributeKey( 'abc' ) ) ).to.be.false;
 			} );
+
+			it( 'should remove all stored attributes if the selection is in empty node', () => {
+				selection.setRanges( [ rangeInEmptyP ] );
+				selection.setAttribute( 'foo', 'bar' );
+				selection.setAttribute( 'abc', 'xyz' );
+
+				selection.clearAttributes();
+
+				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
+				expect( selection.getAttribute( 'abc' ) ).to.be.undefined;
+
+				expect( emptyP.hasAttribute( Selection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
+				expect( emptyP.hasAttribute( Selection._getStoreAttributeKey( 'abc' ) ) ).to.be.false;
+			} );
+
+			it( 'should fire change:attribute event', () => {
+				let spy = sinon.spy();
+				selection.on( 'change:attribute', spy );
+
+				selection.clearAttributes();
+
+				expect( spy.called ).to.be.true;
+			} );
+		} );
+	} );
+
+	describe( '_updateAttributes', () => {
+		beforeEach( () => {
+			root.insertChildren( 0, [
+				new Element( 'p', { p: true } ),
+				new Text( 'a', { a: true } ),
+				new Element( 'p', { p: true } ),
+				new Text( 'b', { b: true } ),
+				new Text( 'c', { c: true } ),
+				new Element( 'p', [], [
+					new Text( 'd', { d: true } )
+				] ),
+				new Element( 'p', { p: true } ),
+				new Text( 'e', { e: true } )
+			] );
+		} );
+
+		it( 'if selection is a range, should find first character in it and copy it\'s attributes', () => {
+			selection.setRanges( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 5 ] ) ) ] );
+
+			expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'b', true ] ] );
+
+			// Step into elements when looking for first character:
+			selection.setRanges( [ new Range( new Position( root, [ 5 ] ), new Position( root, [ 7 ] ) ) ] );
+
+			expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'd', true ] ] );
+		} );
+
+		it( 'if selection is collapsed it should seek a character to copy that character\'s attributes', () => {
+			// Take styles from character before selection.
+			selection.setRanges( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 2 ] ) ) ] );
+			expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'a', true ] ] );
+
+			// If there are none,
+			// Take styles from character after selection.
+			selection.setRanges( [ new Range( new Position( root, [ 3 ] ), new Position( root, [ 3 ] ) ) ] );
+			expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'b', true ] ] );
+
+			// If there are none,
+			// Look from the selection position to the beginning of node looking for character to take attributes from.
+			selection.setRanges( [ new Range( new Position( root, [ 6 ] ), new Position( root, [ 6 ] ) ) ] );
+			expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'c', true ] ] );
+
+			// If there are none,
+			// Look from the selection position to the end of node looking for character to take attributes from.
+			selection.setRanges( [ new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) ] );
+			expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'a', true ] ] );
+
+			// If there are no characters to copy attributes from, use stored attributes.
+			selection.setRanges( [ new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 0 ] ) ) ] );
+			expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [] );
+		} );
+
+		it( 'should fire change:attribute event', () => {
+			let spy = sinon.spy();
+			selection.on( 'change:attribute', spy );
+
+			selection.setRanges( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 5 ] ) ) ] );
+
+			expect( spy.called ).to.be.true;
+		} );
+	} );
+
+	describe( '_getStoredAttributes', () => {
+		it( 'should return no values if there are no ranges in selection', () => {
+			let values = Array.from( selection._getStoredAttributes() );
+
+			expect( values ).to.deep.equal( [] );
 		} );
 	} );
 } );
