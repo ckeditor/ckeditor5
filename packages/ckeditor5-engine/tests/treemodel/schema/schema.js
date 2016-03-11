@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* bender-tags: treemodel */
+
 'use strict';
 
 import Schema from '/ckeditor5/core/treemodel/schema.js';
