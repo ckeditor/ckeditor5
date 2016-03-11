@@ -79,9 +79,9 @@ export class SchemaItem {
 	_addPath( member, path, attribute ) {
 		if ( typeof path === 'string' ) {
 			path = path.split( ' ' );
+		} else {
+			path = path.slice();
 		}
-
-		path = path.slice();
 
 		this[ member ].push( { path, attribute } );
 	}
@@ -118,8 +118,6 @@ export class SchemaItem {
 	 */
 	_hasMatchingPath( type, checkPath, attribute ) {
 		const itemPaths = this._getPaths( type, attribute );
-
-		checkPath = checkPath.slice();
 
 		// We check every path registered (possibly with given attribute) in the item.
 		for ( let itemPath of itemPaths ) {
