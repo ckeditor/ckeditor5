@@ -174,7 +174,7 @@ describe( 'Document', () => {
 	it( 'should update selection attributes whenever selection gets updated', () => {
 		sinon.spy( doc.selection, '_updateAttributes' );
 
-		doc.selection.fire( 'update' );
+		doc.selection.fire( 'change:range' );
 
 		expect( doc.selection._updateAttributes.called ).to.be.true;
 	} );
