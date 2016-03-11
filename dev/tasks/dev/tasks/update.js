@@ -9,6 +9,7 @@ const tools = require( '../utils/tools' );
 const git = require( '../utils/git' );
 const path = require( 'path' );
 const log = require( '../utils/log' );
+const installTask = require( './install' );
 
 /**
  * 1. Get CKEditor5 dependencies from package.json file.
@@ -48,6 +49,16 @@ module.exports = ( ckeditor5Path, packageJSON, workspaceRoot, runNpmUpdate ) => 
 						log.out( `Running "npm update" in ${ urlInfo.name }...` );
 						tools.npmUpdate( repositoryAbsolutePath );
 					}
+
+					try {
+						log.out( `Linking ${ repositoryURL }...` );
+						tools.linkDirectories( repositoryAbsolutePath, path.join( ckeditor5Path, 'node_modules', dependency ) );
+					} catch ( error ) {
+						log.err( error );
+					}
+				} else {
+					// Directory does not exits in workspace - install it.
+					installTask( ckeditor5Path, workspaceRoot, repositoryURL );
 				}
 			}
 

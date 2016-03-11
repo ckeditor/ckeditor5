@@ -215,12 +215,12 @@ module.exports = {
 	},
 
 	/**
-	 * Calls `npm update` command in specified path.
+	 * Calls `npm update --dev` command in specified path.
 	 *
 	 * @param {String} path
 	 */
 	npmUpdate( path ) {
-		this.shExec( `cd ${ path } && npm update` );
+		this.shExec( `cd ${ path } && npm update --dev` );
 	},
 
 	/**
