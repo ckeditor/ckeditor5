@@ -169,22 +169,22 @@ export class SchemaItem {
 }
 
 /**
- * Schema is a run-time created and modified description of which entity in Tree Model is allowed to be inside another
- * entity. It is checked to verify whether given action can be preformed on Tree Model or whether Tree Model
- * is in correct state.
+ * Schema is a definition of the structure of the document. It allows to define which tree model items (element, text, etc.)
+ * can be nested within which ones and which attributes can be applied to them. It's created during the run-time of the application,
+ * typically by features. Also, the features can query the schema to learn what structure is allowed and act accordingly.
  *
- * Schema consist of {@link core.treeModel.SchemaItem schema items}, each describing different entity. Entity can be
- * either a Tree Model element or an abstract group for similar elements. Entities are represented by names. Names
- * of special/abstract entities should be prefixed by `$` sign.
+ * For instance, if a feature wants to define that an attribute bold is allowed on the text it needs to register this rule like this:
  *
- * Each entity in Schema may have a set of allow/disallow rules. Every rule describes in which entities given entity
- * can or cannot be.
+ *		editor.document.schema.allow( '$text', 'bold' );
  *
- * Entities can extend other entities. This mechanism allows for grouping entities under abstract names. Whenever a rule
- * is applied to entity, it is also true for all other entities that extends that entity. For example, let's assume there is
- * entity named `$block` and entity `div` extends `$block`. If we add a rule, that entity `$text` with attribute `myAttr`
- * is allowed in `$block`, it will also be allowed in `div` (and all other entities extending `$block`). It would be
- * possible to disallow `$text` with `myAttr` in `div` by explicitly adding disallow rule for `$text` with `myAttr` in `$block`.
+ * Note: items prefixed with `$` are special group of items. By default, `Schema` defines three special items:
+ * * `$inline` represents all inline elements,
+ * * `$text` is a sub-group of `$inline` and represents text nodes,
+ * * `$block` represents block elements.
+ *
+ * When registering an item it's possible to tell that this item should inherit from some other existing item.
+ * E.g. `p` can inherit from `$block`, so whenever given attribute is allowed on the `$block` it will automatically be
+ * also allowed on the `p` element. By default, `$text` item already inherits from `$inline`.
  *
  * @memberOf core.TreeModel
  */
