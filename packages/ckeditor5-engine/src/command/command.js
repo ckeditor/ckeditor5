@@ -5,6 +5,7 @@
 
 'use strict';
 
+import ObservableMixin from '../observablemixin.js';
 import EmitterMixin from '../emittermixin.js';
 import utils from '../utils.js';
 
@@ -18,6 +19,8 @@ import utils from '../utils.js';
  *
  * This is an abstract base class for all commands.
  *
+ * @mixes core.ObservableMixin
+ * @mixes core.EmitterMixin
  * @memberOf core.command
  */
 export default class Command {
@@ -40,7 +43,7 @@ export default class Command {
 		 *
 		 * @member {Boolean} core.command.Command#isEnabled
 		 */
-		this.isEnabled = true;
+		this.set( 'isEnabled', true );
 
 		// If schema checking function is specified, add it to the `refreshState` listeners.
 		// Feature will be disabled if it does not apply to schema requirements.
@@ -124,6 +127,7 @@ function disableCallback( evt, data ) {
 	data.isEnabled = false;
 }
 
+utils.mix( Command, ObservableMixin );
 utils.mix( Command, EmitterMixin );
 
 /**
