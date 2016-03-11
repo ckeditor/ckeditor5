@@ -27,6 +27,8 @@ const storePrefix = 'selection:';
 export default class Selection {
 	/**
 	 * Creates an empty selection.
+	 *
+	 * @param {core.treeModel.Document} document Document which owns this selection.
 	 */
 	constructor( document ) {
 		/**
@@ -109,8 +111,8 @@ export default class Selection {
 	 * that passed range is not saved in the Selection instance and you can safely operate on it.
 	 *
 	 * Accepts a flag describing in which way the selection is made - passed range might be selected from
-	 * {@link core.treeModel.Range#start} to {@link core.treeModel.Range#end} or from {@link core.treeModel.Range#start}
-	 * to {@link core.treeModel.Range#end}. The flag is used to set {@link core.treeModel.Selection#anchor} and
+	 * {@link core.treeModel.Range#start} to {@link core.treeModel.Range#end} or from {@link core.treeModel.Range#end}
+	 * to {@link core.treeModel.Range#start}. The flag is used to set {@link core.treeModel.Selection#anchor} and
 	 * {@link core.treeModel.Selection#focus} properties.
 	 *
 	 * @fires {@link core.treeModel.Selection#change:range change:range}
@@ -162,7 +164,7 @@ export default class Selection {
 			}
 		}
 
-		return first && Range.createFromRange( first ) || this._getDefaultRange();
+		return first ? Range.createFromRange( first ) : this._getDefaultRange();
 	}
 
 	/**
@@ -404,9 +406,9 @@ export default class Selection {
 	}
 
 	/**
-	 * Updates this selection attributes basing on it's position in the Tree Model.
+	 * Updates this selection attributes based on it's position in the Tree Model.
 	 *
-	 * @private
+	 * @protected
 	 */
 	_updateAttributes() {
 		const position = this.getFirstPosition();

@@ -13,6 +13,7 @@ import CKEditorError from '../ckeditorerror.js';
  * one entity. This class is used internally in {@link core.treeModel.Schema} and should not be used outside it.
  *
  * @see core.treeModel.Schema
+ * @protected
  * @memberOf core.treeModel
  */
 export class SchemaItem {
@@ -25,24 +26,24 @@ export class SchemaItem {
 		/**
 		 * Schema instance that owns this item.
 		 *
-		 * @member {core.treeModel.Schema} core.treeModel.SchemaItem#_schema
 		 * @private
+		 * @member {core.treeModel.Schema} core.treeModel.SchemaItem#_schema
 		 */
 		this._schema = schema;
 
 		/**
 		 * Paths in which the entity, represented by this item, is allowed.
 		 *
-		 * @member {Array} core.treeModel.SchemaItem#_allowed
 		 * @private
+		 * @member {Array} core.treeModel.SchemaItem#_allowed
 		 */
 		this._allowed = [];
 
 		/**
 		 * Paths in which the entity, represented by this item, is disallowed.
 		 *
-		 * @member {Array} core.treeModel.SchemaItem#_disallowed
 		 * @private
+		 * @member {Array} core.treeModel.SchemaItem#_disallowed
 		 */
 		this._disallowed = [];
 	}
@@ -53,7 +54,7 @@ export class SchemaItem {
 	 * @param {Array.<String>|String} path Path in which entity is allowed. String with item names separated by spaces may be passed.
 	 * @param {String} [attribute] If set, this path will be used only for entities that have an attribute with this key.
 	 */
-	addAllowed( path, attribute ) {
+	allow( path, attribute ) {
 		this._addPath( '_allowed', path, attribute );
 	}
 
@@ -63,17 +64,17 @@ export class SchemaItem {
 	 * @param {Array.<String>|String} path Path in which entity is disallowed. String with item names separated by spaces may be passed.
 	 * @param {String} [attribute] If set, this path will be used only for entities that have an attribute with this key.
 	 */
-	addDisallowed( path, attribute ) {
+	disallow( path, attribute ) {
 		this._addPath( '_disallowed', path, attribute );
 	}
 
 	/**
 	 * Adds path to the SchemaItem instance.
 	 *
+	 * @private
 	 * @param {String} member Name of the array member into which the path will be added. Possible values are `_allowed` or `_disallowed`.
 	 * @param {Array.<String>|String} path Path to be added. String with item names separated by spaces may be passed.
 	 * @param {String} [attribute] If set, this path will be used only for entities that have an attribute with this key.
-	 * @private
 	 */
 	_addPath( member, path, attribute ) {
 		if ( typeof path === 'string' ) {
@@ -88,10 +89,10 @@ export class SchemaItem {
 	/**
 	 * Returns all paths of given type that were previously registered in the item.
 	 *
+	 * @private
 	 * @param {String} type Paths' type. Possible values are `ALLOW` or `DISALLOW`.
 	 * @param {String} [attribute] If set, only paths registered for given attribute will be returned.
 	 * @returns {Array} Paths registered in the item.
-	 * @private
 	 */
 	_getPaths( type, attribute ) {
 		const source = type === 'ALLOW' ? this._allowed : this._disallowed;
@@ -109,11 +110,11 @@ export class SchemaItem {
 	/**
 	 * Checks whether this item has any registered path of given type that matches provided path.
 	 *
+	 * @private
 	 * @param {String} type Paths' type. Possible values are `ALLOW` or `DISALLOW`.
 	 * @param {Array.<String>} checkPath Path to check.
 	 * @param {String} [attribute] If set, only paths registered for given attribute will be returned.
 	 * @returns {Boolean} `true` if item has any registered matching path, `false` otherwise.
-	 * @private
 	 */
 	_hasMatchingPath( type, checkPath, attribute ) {
 		const itemPaths = this._getPaths( type, attribute );
@@ -195,22 +196,22 @@ export default class Schema {
 		/**
 		 * Schema items registered in the schema.
 		 *
-		 * @member {Map} core.treeModel.Schema#_items
 		 * @private
+		 * @member {Map} core.treeModel.Schema#_items
 		 */
 		this._items = new Map();
 
 		/**
 		 * Description of what entities are a base for given entity.
 		 *
-		 * @member {Map} core.treeModel.Schema#_extensionChains
 		 * @private
+		 * @member {Map} core.treeModel.Schema#_extensionChains
 		 */
 		this._extensionChains = new Map();
 
 		// Register some default abstract entities.
-		this.registerItem( '$inline', null );
-		this.registerItem( '$block', null );
+		this.registerItem( '$inline' );
+		this.registerItem( '$block' );
 		this.registerItem( '$text', '$inline' );
 
 		// Allow inline elements inside block elements.
@@ -232,7 +233,7 @@ export default class Schema {
 	 * @param {core.treeModel.SchemaQuery} query Allowed query.
 	 */
 	allow( query ) {
-		this._getItem( query.name ).addAllowed( query.inside, query.attribute );
+		this._getItem( query.name ).allow( query.inside, query.attribute );
 	}
 
 	/**
@@ -242,7 +243,7 @@ export default class Schema {
 	 * @param {core.treeModel.SchemaQuery} query Disallowed query.
 	 */
 	disallow( query ) {
-		this._getItem( query.name ).addDisallowed( query.inside, query.attribute );
+		this._getItem( query.name ).disallow( query.inside, query.attribute );
 	}
 
 	/**
@@ -368,9 +369,9 @@ export default class Schema {
 	 * Returns {@link core.treeModel.SchemaItem schema item} that was registered in the schema under given name.
 	 * If item has not been found, throws error.
 	 *
+	 * @private
 	 * @param {String} itemName Name to look for in schema.
 	 * @returns {core.treeModel.SchemaItem} Schema item registered under given name.
-	 * @private
 	 */
 	_getItem( itemName ) {
 		if ( !this.hasItem( itemName ) ) {
@@ -388,9 +389,9 @@ export default class Schema {
 	/**
 	 * Gets position and traverses through it's parents to get their names and returns them.
 	 *
+	 * @private
 	 * @param {core.treeModel.Position} position Position to start building path from.
 	 * @returns {Array.<String>} Path containing elements names from top-most to the one containing given position.
-	 * @private
 	 */
 	static _makeItemsPathFromPosition( position ) {
 		const path = [];

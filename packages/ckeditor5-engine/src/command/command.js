@@ -59,7 +59,7 @@ export default class Command {
 	 * is allowed to be executed in given position. This method can be defined in child class (but is not obligatory).
 	 * If it is defined, it will be added as a callback to `refreshState` event.
 	 *
-	 * @private
+	 * @protected
 	 * @method core.command.Command#_checkEnabled
 	 * @returns {Boolean} `true` if command should be enabled according to {@link core.treeModel.Document#schema}. `false` otherwise.
 	 */
@@ -69,7 +69,7 @@ export default class Command {
 	 * Other parts of code might listen to `refreshState` event on this command and add their callbacks. This
 	 * way the responsibility of deciding whether a command should be enabled is shared.
 	 *
-	 * @fires {@link core.command.Command.refreshState refreshState}
+	 * @fires {@link core.command.Command#refreshState refreshState}
 	 */
 	refreshState() {
 		const data = { isEnabled: true };
@@ -84,7 +84,7 @@ export default class Command {
 	 * @protected
 	 * @param {*} param Parameter passed to {@link core.command.Command#execute execute} method of this command.
 	 */
-	execute( param ) {
+	_execute( param ) {
 		if ( this.isEnabled ) {
 			this._doExecute( param );
 		}
@@ -94,7 +94,7 @@ export default class Command {
 	 * Disables the command. This should be used only by the command itself. Other parts of code should add
 	 * listeners to `refreshState` event.
 	 *
-	 * @private
+	 * @protected
 	 */
 	_disable() {
 		this.on( 'refreshState', disableCallback );
@@ -106,7 +106,7 @@ export default class Command {
 	 * other listeners does not return false on `refreshState` event callbacks. Firing {@link core.command.Command#_enable}
 	 * does not guarantee that {@link core.command.Command#isEnabled} will be set to true, as it depends on other listeners.
 	 *
-	 * @private
+	 * @protected
 	 */
 	_enable() {
 		this.off( 'refreshState', disableCallback );
@@ -117,10 +117,9 @@ export default class Command {
 	 * Executes command.
 	 * This is an abstract method that should be overwritten in child classes.
 	 *
-	 * @private
+	 * @protected
 	 */
-	_doExecute() {
-	}
+	_doExecute() {}
 }
 
 function disableCallback( evt, data ) {
@@ -135,5 +134,5 @@ utils.mix( Command, EmitterMixin );
  * command or other class which should be able to disable command (set `isEnabled` to `false`) should listen to this
  * event.
  *
- * @event core.command.Command.refreshState
+ * @event core.command.Command#refreshState
  */

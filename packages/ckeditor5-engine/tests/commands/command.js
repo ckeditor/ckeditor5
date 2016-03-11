@@ -36,9 +36,9 @@ describe( 'constructor', () => {
 		expect( command.isEnabled ).to.be.true;
 	} );
 
-	it( 'Command should have execute method', () => {
+	it( 'Command should have _doExecute method', () => {
 		expect( () => {
-			command._execute();
+			command._doExecute();
 		} ).not.to.throw;
 	} );
 
@@ -128,13 +128,13 @@ describe( 'enable', () => {
 	} );
 } );
 
-describe( 'execute', () => {
+describe( '_execute', () => {
 	it( 'should not execute command if it is disabled', () => {
 		command._disable();
 
 		sinon.spy( command, '_doExecute' );
 
-		command.execute();
+		command._execute();
 
 		expect( command._doExecute.called ).to.be.false;
 	} );
@@ -142,7 +142,7 @@ describe( 'execute', () => {
 	it( 'should execute command if it is enabled', () => {
 		sinon.spy( command, '_doExecute' );
 
-		command.execute();
+		command._execute();
 
 		expect( command._doExecute.called ).to.be.true;
 	} );

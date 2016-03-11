@@ -149,7 +149,7 @@ export default class Document {
 	 * Creates a new top-level root.
 	 *
 	 * @param {String|Symbol} id Unique root id.
-	 * @param {String|Symbol} name Unique root name.
+	 * @param {String} name Element name.
 	 * @returns {core.treeModel.RootElement} Created root.
 	 */
 	createRoot( id, name ) {
@@ -167,7 +167,7 @@ export default class Document {
 			);
 		}
 
-		const root = new RootElement( this, name || id );
+		const root = new RootElement( this, name );
 		this._roots.set( id, root );
 
 		return root;
@@ -187,9 +187,9 @@ export default class Document {
 	 * called immediately. Otherwise it will wait for all previously queued changes to finish happening. This way
 	 * queued callback will not interrupt other callbacks.
 	 *
-	 * When all queued changes are done {@link core.treeModel.Document.changesDone} event is fired.
+	 * When all queued changes are done {@link core.treeModel.Document#changesDone} event is fired.
 	 *
-	 * @fires {@link core.treeModel.Document.changesDone}
+	 * @fires {@link core.treeModel.Document#changesDone}
 	 * @param {Function} callback Callback to enqueue.
 	 */
 	enqueueChanges( callback ) {

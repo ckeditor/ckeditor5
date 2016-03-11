@@ -34,13 +34,13 @@ describe( 'constructor', () => {
 	} );
 } );
 
-describe( 'addAllowed', () => {
+describe( 'allow', () => {
 	it( 'should add paths to the item as copies of passed array', () => {
 		let path1 = [ 'div', 'header' ];
 		let path2 = [ 'p' ];
 
-		item.addAllowed( path1 );
-		item.addAllowed( path2 );
+		item.allow( path1 );
+		item.allow( path2 );
 
 		let paths = item._getPaths( 'ALLOW' );
 
@@ -54,7 +54,7 @@ describe( 'addAllowed', () => {
 	} );
 
 	it( 'should accept paths as string with element names separated with space', () => {
-		item.addAllowed( 'div header' );
+		item.allow( 'div header' );
 
 		let paths = item._getPaths( 'ALLOW' );
 
@@ -62,9 +62,9 @@ describe( 'addAllowed', () => {
 	} );
 
 	it( 'should group paths by attribute', () => {
-		item.addAllowed( 'p', 'bold' );
-		item.addAllowed( 'div' );
-		item.addAllowed( 'header', 'bold' );
+		item.allow( 'p', 'bold' );
+		item.allow( 'div' );
+		item.allow( 'header', 'bold' );
 
 		let pathsWithNoAttribute = item._getPaths( 'ALLOW' );
 		let pathsWithBoldAttribute = item._getPaths( 'ALLOW', 'bold' );
@@ -78,13 +78,13 @@ describe( 'addAllowed', () => {
 	} );
 } );
 
-describe( 'addDisallowed', () => {
+describe( 'disallow', () => {
 	it( 'should add paths to the item as copies of passed array', () => {
 		let path1 = [ 'div', 'header' ];
 		let path2 = [ 'p' ];
 
-		item.addDisallowed( path1 );
-		item.addDisallowed( path2 );
+		item.disallow( path1 );
+		item.disallow( path2 );
 
 		let paths = item._getPaths( 'DISALLOW' );
 
@@ -98,7 +98,7 @@ describe( 'addDisallowed', () => {
 	} );
 
 	it( 'should accept paths as string with element names separated with space', () => {
-		item.addDisallowed( 'div header' );
+		item.disallow( 'div header' );
 
 		let paths = item._getPaths( 'DISALLOW' );
 
@@ -106,9 +106,9 @@ describe( 'addDisallowed', () => {
 	} );
 
 	it( 'should group paths by attribute', () => {
-		item.addDisallowed( 'p', 'bold' );
-		item.addDisallowed( 'div' );
-		item.addDisallowed( 'header', 'bold' );
+		item.disallow( 'p', 'bold' );
+		item.disallow( 'div' );
+		item.disallow( 'header', 'bold' );
 
 		let pathsWithNoAttribute = item._getPaths( 'DISALLOW' );
 		let pathsWithBoldAttribute = item._getPaths( 'DISALLOW', 'bold' );
@@ -124,8 +124,8 @@ describe( 'addDisallowed', () => {
 
 describe( '_hasMatchingPath', () => {
 	it( 'should return true if there is at least one allowed path that matches query path', () => {
-		item.addAllowed( 'div header' );
-		item.addAllowed( 'image' );
+		item.allow( 'div header' );
+		item.allow( 'image' );
 
 		expect( item._hasMatchingPath( 'ALLOW', [ 'div', 'header' ] ) ).to.be.true;
 		expect( item._hasMatchingPath( 'ALLOW', [ 'html', 'div', 'header' ] ) ).to.be.true;
@@ -134,7 +134,7 @@ describe( '_hasMatchingPath', () => {
 	} );
 
 	it( 'should return false if there are no allowed paths that match query path', () => {
-		item.addAllowed( 'div p' );
+		item.allow( 'div p' );
 
 		expect( item._hasMatchingPath( 'ALLOW', [ 'p' ] ) ).to.be.false;
 		expect( item._hasMatchingPath( 'ALLOW', [ 'div' ] ) ).to.be.false;
@@ -142,17 +142,17 @@ describe( '_hasMatchingPath', () => {
 	} );
 
 	it( 'should return true if there is at least one disallowed path that matches query path', () => {
-		item.addAllowed( 'div header' );
-		item.addDisallowed( 'p header' );
+		item.allow( 'div header' );
+		item.disallow( 'p header' );
 
 		expect( item._hasMatchingPath( 'DISALLOW', [ 'html', 'div', 'p', 'header', 'span' ] ) ).to.be.true;
 	} );
 
 	it( 'should use only paths that are registered for given attribute', () => {
-		item.addAllowed( 'div p' );
-		item.addAllowed( 'div', 'bold' );
-		item.addAllowed( 'header' );
-		item.addDisallowed( 'header', 'bold' );
+		item.allow( 'div p' );
+		item.allow( 'div', 'bold' );
+		item.allow( 'header' );
+		item.disallow( 'header', 'bold' );
 
 		expect( item._hasMatchingPath( 'ALLOW', [ 'html', 'div', 'p' ]  ) ).to.be.true;
 		expect( item._hasMatchingPath( 'ALLOW', [ 'html', 'div' ] ) ).to.be.false;

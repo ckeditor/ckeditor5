@@ -48,7 +48,7 @@ export default class Editor {
 		 * instance itself.
 		 *
 		 * @readonly
-		 * @member {core.Config} core.Editor#config
+		 * @member {utils.Config} core.Editor#config
 		 */
 		this.config = config = new EditorConfig( config );
 
@@ -63,6 +63,7 @@ export default class Editor {
 		/**
 		 * Tree Model document managed by this editor.
 		 *
+		 * @readonly
 		 * @member {core.treeModel.Document} core.Editor#document
 		 */
 		this.document = new Document();
@@ -70,6 +71,7 @@ export default class Editor {
 		/**
 		 * Commands registered to the editor.
 		 *
+		 * @readonly
 		 * @member {Map} core.Editor#commands
 		 */
 		this.commands = new Map();
@@ -206,7 +208,7 @@ export default class Editor {
 			throw new CKEditorError( 'editor-command-not-found: Specified command has not been added to the editor.' );
 		}
 
-		command.execute( commandParam );
+		command._execute( commandParam );
 	}
 }
 
