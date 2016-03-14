@@ -55,13 +55,6 @@ export default class MutationObserver extends Observer {
 		this.treeView = treeView;
 
 		/**
-		 * Reference to the {@link core.treeView.TreeView#domRoot}.
-		 *
-		 * @member {HTMLElement} core.treeView.observer.MutationObserver#domRoot
-		 */
-		this.domRoot = treeView.domRoot;
-
-		/**
 		 * Reference to the {@link core.treeView.TreeView#domConverter}.
 		 *
 		 * @member {core.treeView.DomConverter} core.treeView.observer.MutationObserver#domConverter
@@ -82,19 +75,38 @@ export default class MutationObserver extends Observer {
 		 * @member {window.MutationObserver} core.treeView.observer.MutationObserver#_mutationObserver
 		 */
 		this._mutationObserver = new window.MutationObserver( this._onMutations.bind( this ) );
+
+		this.domElements = [];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	attach() {
-		this._mutationObserver.observe( this.domRoot, this._config );
+	observe( domElement ) {
+		this.domElements.push( domElement );
+
+		if ( this.isEnabled ) {
+			this._mutationObserver.observe( domElement, this._config );
+		}
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	detach() {
+	enable() {
+		this.isEnabled = true;
+
+		for ( let domElement of this.domElements ) {
+			this._mutationObserver.observe( domElement, this._config );
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	disable() {
+		this.isEnabled = false;
+
 		this._mutationObserver.disconnect();
 	}
 

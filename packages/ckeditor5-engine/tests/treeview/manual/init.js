@@ -11,9 +11,10 @@ import TreeView from '/ckeditor5/core/treeview/treeview.js';
 import Element from '/ckeditor5/core/treeview/element.js';
 import Text from '/ckeditor5/core/treeview/text.js';
 
-const treeView = new TreeView( document.getElementById( 'editor' ) );
+const treeView = new TreeView();
+treeView.createRoot( document.getElementById( 'editor' ), 'editor' );
 
-treeView.viewRoot.insertChildren( 0, [
+treeView.viewRoots.get( 'editor' ).appendChildren( [
 	new Element( 'p', [], [ new Text( 'New' ) ] ),
 	new Element( 'p', [], [ new Text( 'Content' ) ] )
 ] );
