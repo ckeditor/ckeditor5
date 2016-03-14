@@ -40,7 +40,7 @@ module.exports = ( config ) => {
 			}
 		} );
 
-		updateTask( ckeditor5Path, packageJSON, config.WORKSPACE_DIR, options[ 'npm-update' ] );
+		updateTask( installTask, ckeditor5Path, packageJSON, config.WORKSPACE_DIR, options[ 'npm-update' ] );
 	} );
 
 	gulp.task( 'status', () => {

@@ -33,7 +33,6 @@ describe( 'dev-install', () => {
 		spies.checkout = sinon.stub( git, 'checkout' );
 		spies.getGitUrlFromNpm = sinon.stub( tools, 'getGitUrlFromNpm' );
 		spies.readPackageName = sinon.stub( tools, 'readPackageName' );
-		spies.npmUninstall = sinon.stub( tools, 'npmUninstall' );
 	} );
 
 	afterEach( () => {
@@ -47,7 +46,7 @@ describe( 'dev-install', () => {
 
 		installTask( ckeditor5Path, workspacePath, repositoryUrl );
 
-		sinon.assert.calledThrice( spies.isDirectory );
+		sinon.assert.calledTwice( spies.isDirectory );
 		sinon.assert.calledOnce( spies.parseUrl );
 		sinon.assert.calledWithExactly( spies.parseUrl, repositoryUrl );
 
@@ -64,9 +63,6 @@ describe( 'dev-install', () => {
 		sinon.assert.calledWithExactly( spies.npmInstall, repositoryPath );
 
 		const linkPath = path.join( ckeditor5Path, 'node_modules', urlInfo.name );
-
-		sinon.assert.calledOnce( spies.npmUninstall );
-		sinon.assert.calledWithExactly( spies.npmUninstall, ckeditor5Path, urlInfo.name );
 
 		sinon.assert.calledOnce( spies.linkDirectories );
 		sinon.assert.calledWithExactly( spies.linkDirectories, repositoryPath, linkPath );
@@ -88,7 +84,7 @@ describe( 'dev-install', () => {
 
 		installTask( ckeditor5Path, workspacePath, moduleName );
 
-		sinon.assert.calledThrice( spies.isDirectory );
+		sinon.assert.calledTwice( spies.isDirectory );
 		sinon.assert.calledTwice( spies.parseUrl );
 		sinon.assert.calledWithExactly( spies.parseUrl.firstCall, moduleName );
 		expect( spies.parseUrl.firstCall.returnValue ).to.equal( null );
@@ -128,7 +124,7 @@ describe( 'dev-install', () => {
 
 		installTask( ckeditor5Path, workspacePath, '../ckeditor5-core' );
 
-		sinon.assert.calledThrice( spies.isDirectory );
+		sinon.assert.calledTwice( spies.isDirectory );
 		sinon.assert.calledOnce( spies.readPackageName );
 	} );
 
@@ -139,7 +135,7 @@ describe( 'dev-install', () => {
 
 		installTask( ckeditor5Path, workspacePath, '/ckeditor5-core' );
 
-		sinon.assert.calledThrice( spies.isDirectory );
+		sinon.assert.calledTwice( spies.isDirectory );
 		sinon.assert.calledOnce( spies.readPackageName );
 	} );
 
