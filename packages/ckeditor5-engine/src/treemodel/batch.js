@@ -40,18 +40,16 @@ export default class Batch {
 		/**
 		 * Document which this Batch changes.
 		 *
-		 * @member core.treeModel.Batch#doc
+		 * @member {core.treeModel.Document} core.treeModel.Batch#doc
 		 * @readonly
-		 * @type {core.treeModel.Document}
 		 */
 		this.doc = doc;
 
 		/**
 		 * Array of deltas which compose Batch.
 		 *
-		 * @member core.treeModel.Batch#deltas
+		 * @member {Array.<core.treeModel.delta.Delta>} core.treeModel.Batch#deltas
 		 * @readonly
-		 * @type {Array.<core.treeModel.delta.Delta>}
 		 */
 		this.deltas = [];
 	}

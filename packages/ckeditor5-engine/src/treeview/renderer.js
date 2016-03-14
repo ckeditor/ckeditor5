@@ -101,7 +101,7 @@ export default class Renderer {
 	 * {@link core.treeView.Renderer#markedTexts} and updated all nodes which needs to be updated. Then it clear all three
 	 * sets.
 	 *
-	 * Renderer try not to bread IME, so it do as little as it is possible to update DOM.
+	 * Renderer try not to break IME, so it do as little as it is possible to update DOM.
 	 *
 	 * For attributes it adds new attributes to DOM elements, update attributes with different values and remove
 	 * attributes which does not exists in the view element.

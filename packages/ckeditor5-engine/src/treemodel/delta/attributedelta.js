@@ -8,8 +8,10 @@
 import Delta from './delta.js';
 import { register } from '../batch.js';
 import AttributeOperation from '../operation/attributeoperation.js';
+import RootAttributeOperation from '../operation/rootattributeoperation.js';
 import Position from '../position.js';
 import Range from '../range.js';
+import RootElement from '../rootelement.js';
 import Element from '../element.js';
 
 /**
@@ -78,6 +80,16 @@ export default class AttributeDelta extends Delta {
 }
 
 /**
+ * To provide specific OT behavior and better collisions solving, change methods ({@link core.treeModel.Batch#setAttr}
+ * and {@link core.treeModel.Batch#removeAttr}) use `RootAttributeDelta` class which inherits from the `Delta` class and may
+ * overwrite some methods.
+ *
+ * @memberOf core.treeModel.delta
+ * @extends core.treeModel.delta.Delta
+ */
+export class RootAttributeDelta extends Delta {}
+
+/**
  * Sets the value of the attribute of the node or on the range.
  *
  * @chainable
@@ -107,42 +119,54 @@ register( 'removeAttr', function( key, nodeOrRange ) {
 } );
 
 function attribute( batch, key, value, nodeOrRange ) {
-	const delta = new AttributeDelta();
+	let delta;
 
 	if ( nodeOrRange instanceof Range ) {
-		changeRange( batch.doc, delta, key, value, nodeOrRange );
+		delta = changeRange( batch.doc, key, value, nodeOrRange );
 	} else {
-		changeNode( batch.doc, delta, key, value, nodeOrRange );
+		delta = changeNode( batch.doc, key, value, nodeOrRange );
 	}
 
 	batch.addDelta( delta );
 }
 
-function changeNode( doc, delta, key, value, node ) {
+function changeNode( doc, key, value, node ) {
 	const previousValue = node.getAttribute( key );
-	let range;
+	let range, operation;
+
+	const delta = node instanceof RootElement ? new RootAttributeDelta() : new AttributeDelta();
 
 	if ( previousValue != value ) {
-		if ( node instanceof Element ) {
-			// If we change the attribute of the element, we do not want to change attributes of its children, so
-			// the end on the range can not be put after the closing tag, it should be inside that element with the
-			// offset 0, so the range will contains only the opening tag...
-			range = new Range( Position.createBefore( node ), Position.createFromParentAndOffset( node, 0 ) );
+		if ( node instanceof RootElement ) {
+			// If we change attributes of root element, we have to use `RootAttributeOperation`.
+			operation = new RootAttributeOperation( node, key, previousValue, value, doc.version );
 		} else {
-			// ...but for characters we can not put the range inside it, so we end the range after that character.
-			range = new Range( Position.createBefore( node ), Position.createAfter( node ) );
-		}
+			if ( node instanceof Element ) {
+				// If we change the attribute of the element, we do not want to change attributes of its children, so
+				// the end on the range can not be put after the closing tag, it should be inside that element with the
+				// offset 0, so the range will contains only the opening tag...
+				range = new Range( Position.createBefore( node ), Position.createFromParentAndOffset( node, 0 ) );
+			} else {
+				// ...but for characters we can not put the range inside it, so we end the range after that character.
+				range = new Range( Position.createBefore( node ), Position.createAfter( node ) );
+			}
 
-		const operation = new AttributeOperation( range, key, previousValue, value, doc.version );
+			operation = new AttributeOperation( range, key, previousValue, value, doc.version );
+		}
 
 		doc.applyOperation( operation );
 		delta.addOperation( operation );
 	}
+
+	// It is expected that this method returns a delta.
+	return delta;
 }
 
 // Because attribute operation needs to have the same attribute value on the whole range, this function split the range
 // into smaller parts.
-function changeRange( doc, delta, attributeKey, attributeValue, range ) {
+function changeRange( doc, attributeKey, attributeValue, range ) {
+	const delta = new AttributeDelta();
+
 	// Position of the last split, the beginning of the new range.
 	let lastSplitPosition = range.start;
 
@@ -185,4 +209,6 @@ function changeRange( doc, delta, attributeKey, attributeValue, range ) {
 		doc.applyOperation( operation );
 		delta.addOperation( operation );
 	}
+
+	return delta;
 }

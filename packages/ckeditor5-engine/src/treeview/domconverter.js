@@ -13,7 +13,7 @@ import ViewElement from './element.js';
  * {@link core.treeView.DomConverter#bindElements binding} these nodes.
  *
  * DomConverter does not check which nodes should be rendered (use {@link core.treeView.Renderer}), does not keep a
- * state of a tree nor keeps synchronization between tree view and DOM tree (use {@link @core.treeView.TreeView}).
+ * state of a tree nor keeps synchronization between tree view and DOM tree (use {@link core.treeView.TreeView}).
  *
  * DomConverter keeps DOM elements to View element bindings, so when the converter will be destroyed, the binding will
  * be lost. Two converters will keep separate binding maps, so one tree view can be bound with two DOM trees.

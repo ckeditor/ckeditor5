@@ -52,7 +52,7 @@ export default class Range {
 	/**
 	 * Returns whether this range is flat, that is if start position and end position are in the same parent.
 	 *
-	 * @returns {Boolean}
+	 * @type {Boolean}
 	 */
 	get isFlat() {
 		return this.start.parent === this.end.parent;

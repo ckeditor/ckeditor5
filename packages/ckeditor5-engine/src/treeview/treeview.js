@@ -82,7 +82,6 @@ export default class TreeView {
 	 * Adds an observer to the set of observers. This method also {@link core.treeView.Observer#init initializes} and
 	 * {@link core.treeView.Observer#enable enable} the observer.
 	 *
-	 * @method core.treeView.TreeView#addObserver
 	 * @param {core.treeView.Observer} observer Observer to add.
 	 */
 	addObserver( observer ) {
@@ -129,8 +128,6 @@ export default class TreeView {
 	/**
 	 * Renders all changes. In order to avoid triggering the observers (e.g. mutations) all observers all detached
 	 * before rendering and reattached after that.
-	 *
-	 * @method core.treeView.TreeView#render
 	 */
 	render() {
 		for ( let observer of this.observers ) {

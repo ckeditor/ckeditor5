@@ -31,16 +31,10 @@ export default class RemoveOperation extends MoveOperation {
 		super( position, howMany, graveyardPosition, baseVersion );
 	}
 
-	/**
-	 * @see core.treeModel.operation.Operation#type
-	 */
 	get type() {
 		return 'remove';
 	}
 
-	/**
-	 * @see core.treeModel.operation.MoveOperation#isSticky
-	 */
 	get isSticky() {
 		return false;
 	}
