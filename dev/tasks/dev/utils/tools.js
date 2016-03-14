@@ -52,7 +52,9 @@ module.exports = {
 	linkDirectories( source, destination ) {
 		const fs = require( 'fs' );
 		// Remove destination directory if exists.
-		if ( this.isDirectory( destination ) ) {
+		if ( this.isSymlink( destination ) ) {
+			this.removeSymlink( destination );
+		} else if ( this.isDirectory( destination ) ) {
 			this.shExec( `rm -rf ${ destination }` );
 		}
 
@@ -126,6 +128,21 @@ module.exports = {
 
 		try {
 			return fs.statSync( path ).isFile();
+		} catch ( e ) {}
+
+		return false;
+	},
+
+	/**
+	 * Returns true if path points to symbolic link.
+	 *
+	 * @param {String} path
+	 */
+	isSymlink( path ) {
+		const fs = require( 'fs' );
+
+		try {
+			return fs.lstatSync( path ).isSymbolicLink();
 		} catch ( e ) {}
 
 		return false;
@@ -209,6 +226,7 @@ module.exports = {
 	 * Calls `npm uninstall <name>` command in specified path.
 	 *
 	 * @param {String} path
+	 * @param {String} name
 	 */
 	npmUninstall( path, name ) {
 		this.shExec( `cd ${ path } && npm uninstall ${ name }` );
@@ -279,5 +297,32 @@ module.exports = {
 		}
 
 		return null;
+	},
+
+	/**
+	 * Returns list of symbolic links to directories with names starting with `ckeditor5-` prefix.
+	 *
+	 * @param {String} path Path to directory,
+	 * @returns {Array} Array with directories names.
+	 */
+	getCKE5Symlinks( path ) {
+		const fs = require( 'fs' );
+		const pth = require( 'path' );
+
+		return fs.readdirSync( path ).filter( item => {
+			const fullPath = pth.join( path, item );
+
+			return dependencyRegExp.test( item ) && this.isSymlink( fullPath );
+		} );
+	},
+
+	/**
+	 * Unlinks symbolic link under specified path.
+	 *
+	 * @param {String} path
+	 */
+	removeSymlink( path ) {
+		const fs = require( 'fs' );
+		fs.unlinkSync( path );
 	}
 };
