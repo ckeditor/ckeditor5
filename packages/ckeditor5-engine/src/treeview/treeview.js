@@ -13,19 +13,20 @@ import Writer from './writer.js';
 import utils from '../../utils/utils.js';
 
 /**
- * TreeView class combines the actual tree of view elements, tree of DOM elements,
+ * TreeView class creates an abstract layer over the content editable area.
+ * It combines the actual tree of view elements, tree of DOM elements,
  * {@link core.treeView.DomConverter DOM Converter}, {@link core.treeView.Renderer renderer} and all
- * {@link core.treeView.Observer observers}. It creates an abstract layer over the content editable area.
+ * {@link core.treeView.Observer observers}.
  *
  * If you want to only transform the tree of view elements to the DOM elements you can use the
  * {@link core.treeView.DomConverter DomConverter}.
  *
  * @memberOf core.treeView
- * @mixes core.EmitterMixin
+ * @mixes utils.EmitterMixin
  */
 export default class TreeView {
 	/**
-	 * Creates a TreeView class.
+	 * Creates a TreeView instance.
 	 */
 	constructor() {
 		/**
@@ -62,7 +63,7 @@ export default class TreeView {
 		this.domConverter = new DomConverter();
 
 		/**
-		 * Roots of the view tree. Map on the {core.treeView.Element view elements} with roots names as keys.
+		 * Roots of the view tree. Map of the {core.treeView.Element view elements} with roots names as keys.
 		 *
 		 * @readonly
 		 * @member {Map} core.treeView.TreeView#viewRoots
@@ -80,9 +81,9 @@ export default class TreeView {
 
 	/**
 	 * Adds an observer to the set of observers. This method also {@link core.treeView.Observer#init initializes} and
-	 * {@link core.treeView.Observer#enable enable} the observer.
+	 * {@link core.treeView.Observer#enable enables} the observer.
 	 *
-	 * @param {core.treeView.Observer} observer Observer to add.
+	 * @param {core.treeView.Observer} observer The observer to add.
 	 */
 	addObserver( observer ) {
 		this.observers.add( observer );
@@ -96,13 +97,13 @@ export default class TreeView {
 	}
 
 	/**
-	 * Creates a root based on the HTMLElement. It adds elements to {@link core.treeView.TreeView#domRoots} and
+	 * Creates a root for the HTMLElement. It adds elements to {@link core.treeView.TreeView#domRoots} and
 	 * {@link core.treeView.TreeView#viewRoots}.
 	 *
 	 * The constructor copies the element name and attributes to create the
-	 * root of the view, but does not copy its children. This means that the while rendering, the whole content of this
-	 * root element will be removed when you call {@link core.treeView.TreeView#render render} but the root name and
-	 * attributes will be preserved.
+	 * root of the view, but does not copy its children. This means that while
+	 * {@link core.treeView.TreeView#render rendering}, the whole content of this
+	 * root element will be removed but the root name and attributes will be preserved.
 	 *
 	 * @param {HTMLElement} domRoot DOM element in which the tree view should do change.
 	 * @param {String} name Name of the root.

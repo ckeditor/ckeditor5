@@ -14,6 +14,7 @@ import Writer from '/ckeditor5/core/treeview/writer.js';
 import DomConverter from '/ckeditor5/core/treeview/domconverter.js';
 
 import utils from '/ckeditor5/utils/utils.js';
+
 const count = utils.count;
 
 describe( 'TreeView', () => {
@@ -67,7 +68,7 @@ describe( 'TreeView', () => {
 			treeView.renderer.render = sinon.spy();
 		} );
 
-		it( 'should be inited and enableed on adding', () => {
+		it( 'should be inited and enabled on adding', () => {
 			treeView.addObserver( observerMock );
 
 			expect( treeView.observers.has( observerMock ) ).to.be.true;
@@ -76,7 +77,7 @@ describe( 'TreeView', () => {
 			sinon.assert.calledOnce( observerMock.enable );
 		} );
 
-		it( 'should be disableed and reenableed on render', () => {
+		it( 'should be disabled and re-enabled on render', () => {
 			treeView.addObserver( observerMock );
 			treeView.render();
 

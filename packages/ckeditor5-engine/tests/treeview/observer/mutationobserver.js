@@ -31,7 +31,7 @@ describe( 'MutationObserver', () => {
 		viewRoot.insertChildren( 0, [
 			new Element( 'p', [], [ new Text( 'foo' ) ] ),
 			new Element( 'p', [], [ new Text( 'bar' ) ] )
-			] );
+		] );
 
 		treeView.render();
 	} );
@@ -114,7 +114,7 @@ describe( 'MutationObserver', () => {
 		treeView.viewRoots.get( 'editor2' ).insertChildren( 0, [
 			new Element( 'p', [], [ new Text( 'foo' ) ] ),
 			new Element( 'p', [], [ new Text( 'bar' ) ] )
-			] );
+		] );
 
 		// Render editor2 (first editor has been rendered in the beforeEach function)
 		treeView.render();
