@@ -5,14 +5,14 @@
 
 'use strict';
 
-import ObservableMixin from '../utils/observablemixin.js';
+import ObservableMixin from './utils/observablemixin.js';
 import EditorConfig from './editorconfig.js';
 import PluginCollection from './plugincollection.js';
-import Document from './treemodel/document.js';
-import CKEditorError from '../utils/ckeditorerror.js';
-import Locale from '../utils/locale.js';
-import isArray from '../utils/lib/lodash/isArray.js';
-import utils from '../utils/utils.js';
+import Document from './core/treemodel/document.js';
+import CKEditorError from './utils/ckeditorerror.js';
+import Locale from './utils/locale.js';
+import isArray from './utils/lib/lodash/isArray.js';
+import utils from './utils/utils.js';
 
 /**
  * Represents a single editor instance.

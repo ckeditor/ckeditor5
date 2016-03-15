@@ -7,10 +7,10 @@
 
 'use strict';
 
-import testUtils from '/tests/_utils/utils.js';
-import Creator from '/ckeditor5/core/creator.js';
-import Editor from '/ckeditor5/core/editor.js';
-import Plugin from '/ckeditor5/core/plugin.js';
+import testUtils from '/tests/ckeditor5/_utils/utils.js';
+import Creator from '/ckeditor5/creator.js';
+import Editor from '/ckeditor5/editor.js';
+import Plugin from '/ckeditor5/plugin.js';
 
 testUtils.createSinonSandbox();
 

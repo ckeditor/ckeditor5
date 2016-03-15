@@ -5,8 +5,8 @@
 
 'use strict';
 
-import Plugin from '/ckeditor5/core/plugin.js';
-import Editor from '/ckeditor5/core/editor.js';
+import Plugin from '/ckeditor5/plugin.js';
+import Editor from '/ckeditor5/editor.js';
 
 let editor;
 

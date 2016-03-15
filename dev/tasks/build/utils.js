@@ -336,7 +336,9 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 
 		const dirFrags = file.relative.split( path.sep );
 
-		return !dirFrags.some( dirFrag => dirFrag.startsWith( '_' ) );
+		return !dirFrags.some( dirFrag => {
+			return dirFrag.startsWith( '_' ) && dirFrag != '_utils-tests';
+		} );
 	},
 
 	/**

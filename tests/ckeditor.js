@@ -5,18 +5,17 @@
 
 'use strict';
 
-import testUtils from '/tests/_utils/utils.js';
-import coreTestUtils from '/tests/core/_utils/utils.js';
+import testUtils from '/tests/ckeditor5/_utils/utils.js';
 
 import CKEDITOR from '/ckeditor.js';
-import Editor from '/ckeditor5/core/editor.js';
+import Editor from '/ckeditor5/editor.js';
 import Config from '/ckeditor5/utils/config.js';
 
 let content = document.getElementById( 'content' );
 let editorConfig = { creator: 'creator-test' };
 
 testUtils.createSinonSandbox();
-coreTestUtils.defineEditorCreatorMock( 'test' );
+testUtils.defineEditorCreatorMock( 'test' );
 
 beforeEach( () => {
 	// Destroy all editor instances.

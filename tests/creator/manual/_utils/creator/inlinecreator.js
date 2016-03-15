@@ -5,14 +5,14 @@
 
 'use strict';
 
-import Creator from '/ckeditor5/core/creator.js';
+import Creator from '/ckeditor5/creator.js';
 import EditorUIView from '/ckeditor5/ui/editorui/editoruiview.js';
-import BoxlessEditorUI from '/tests/core/_utils/ui/boxlesseditorui/boxlesseditorui.js';
-import InlineEditable from '/tests/core/_utils/ui/editable/inline/inlineeditable.js';
-import InlineEditableView from '/tests/core/_utils/ui/editable/inline/inlineeditableview.js';
+import BoxlessEditorUI from '/tests/ckeditor5/_utils/ui/boxlesseditorui/boxlesseditorui.js';
+import InlineEditable from '/tests/ckeditor5/_utils/ui/editable/inline/inlineeditable.js';
+import InlineEditableView from '/tests/ckeditor5/_utils/ui/editable/inline/inlineeditableview.js';
 import Model from '/ckeditor5/ui/model.js';
-import FloatingToolbar from '/tests/core/_utils/ui/floatingtoolbar/floatingtoolbar.js';
-import FloatingToolbarView from '/tests/core/_utils/ui/floatingtoolbar/floatingtoolbarview.js';
+import FloatingToolbar from '/tests/ckeditor5/_utils/ui/floatingtoolbar/floatingtoolbar.js';
+import FloatingToolbarView from '/tests/ckeditor5/_utils/ui/floatingtoolbar/floatingtoolbarview.js';
 import { imitateFeatures, imitateDestroyFeatures } from '../imitatefeatures.js';
 
 export default class InlineCreator extends Creator {

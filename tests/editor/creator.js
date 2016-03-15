@@ -7,11 +7,10 @@
 
 /* bender-tags: editor, creator */
 
-import moduleUtils from '/tests/_utils/module.js';
-import testUtils from '/tests/_utils/utils.js';
-import coreTestUtils from '/tests/core/_utils/utils.js';
-import Editor from '/ckeditor5/core/editor.js';
-import Creator from '/ckeditor5/core/creator.js';
+import moduleUtils from '/tests/ckeditor5/_utils/module.js';
+import testUtils from '/tests/ckeditor5/_utils/utils.js';
+import Editor from '/ckeditor5/editor.js';
+import Creator from '/ckeditor5/creator.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 let editor, element;
@@ -28,26 +27,23 @@ function initEditor( config ) {
 testUtils.createSinonSandbox();
 
 before( () => {
-	coreTestUtils.defineEditorCreatorMock( 'test1', {
+	testUtils.defineEditorCreatorMock( 'test1', {
 		create: sinon.spy(),
 		destroy: sinon.spy()
 	} );
 
-	coreTestUtils.defineEditorCreatorMock( 'test-throw-on-many1' );
-	coreTestUtils.defineEditorCreatorMock( 'test-throw-on-many2' );
-
-	coreTestUtils.defineEditorCreatorMock( 'test-config1', {
+	testUtils.defineEditorCreatorMock( 'test-config1', {
 		create: sinon.spy()
 	} );
-	coreTestUtils.defineEditorCreatorMock( 'test-config2', {
+	testUtils.defineEditorCreatorMock( 'test-config2', {
 		create: sinon.spy()
 	} );
 
-	moduleUtils.define( 'test3', [ 'core/plugin' ], ( Plugin ) => {
+	moduleUtils.define( 'test3/test3', [ 'plugin' ], ( Plugin ) => {
 		return class extends Plugin {};
 	} );
 
-	moduleUtils.define( 'creator-async-create', [ 'core/creator' ], ( Creator ) => {
+	moduleUtils.define( 'test/creator-async-create', [ 'creator' ], ( Creator ) => {
 		return class extends Creator {
 			create() {
 				return new Promise( ( resolve, reject ) => {
@@ -59,7 +55,7 @@ before( () => {
 		};
 	} );
 
-	moduleUtils.define( 'creator-async-destroy', [ 'core/creator' ], ( Creator ) => {
+	moduleUtils.define( 'test/creator-async-destroy', [ 'creator' ], ( Creator ) => {
 		return class extends Creator {
 			create() {}
 
@@ -71,7 +67,7 @@ before( () => {
 		};
 	} );
 
-	moduleUtils.define( 'creator-destroy-order', [ 'core/creator' ], ( Creator ) => {
+	moduleUtils.define( 'test/creator-destroy-order', [ 'creator' ], ( Creator ) => {
 		return class extends Creator {
 			create() {}
 
@@ -145,7 +141,7 @@ describe( 'init', () => {
 
 	it( 'should chain the promise from the creator (enables async creators)', () => {
 		return initEditor( {
-				creator: 'creator-async-create'
+				creator: 'test/creator-async-create'
 			} )
 			.then( () => {
 				throw new Error( 'This should not be executed.' );
@@ -177,7 +173,7 @@ describe( 'destroy', () => {
 
 	it( 'should chain the promise from the creator (enables async creators)', () => {
 		return initEditor( {
-				creator: 'creator-async-destroy'
+				creator: 'test/creator-async-destroy'
 			} )
 			.then( () => {
 				return editor.destroy();
@@ -194,7 +190,7 @@ describe( 'destroy', () => {
 
 	it( 'should do things in the correct order', () => {
 		return initEditor( {
-				creator: 'creator-destroy-order'
+				creator: 'test/creator-destroy-order'
 			} )
 			.then( () => {
 				editor._destroyOrder = [];

@@ -415,7 +415,7 @@ describe( 'build-utils', () => {
 
 			rename.pipe(
 				utils.noop( ( data ) => {
-					expect( data.path ).to.equal( path.normalize( 'tests/foo/file.js' ) );
+					expect( data.path ).to.equal( path.normalize( 'tests/ckeditor5/foo/file.js' ) );
 					done();
 				} )
 			);
@@ -522,6 +522,7 @@ describe( 'build-utils', () => {
 		test( 'tests/file.js', true );
 		test( 'tests/foo/file.js', true );
 		test( 'tests/tests.js', true );
+		test( 'tests/_utils-tests/foo.js', true );
 
 		test( 'foo/file.js', false );
 		test( 'foo/tests/file.js', false );

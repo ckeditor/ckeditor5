@@ -5,12 +5,12 @@
 
 'use strict';
 
-import moduleUtils from '/tests/_utils/module.js';
-import testUtils from '/tests/_utils/utils.js';
-import Editor from '/ckeditor5/core/editor.js';
-import PluginCollection from '/ckeditor5/core/plugincollection.js';
-import Plugin from '/ckeditor5/core/plugin.js';
-import Creator from '/ckeditor5/core/creator.js';
+import moduleUtils from '/tests/ckeditor5/_utils/module.js';
+import testUtils from '/tests/ckeditor5/_utils/utils.js';
+import Editor from '/ckeditor5/editor.js';
+import PluginCollection from '/ckeditor5/plugincollection.js';
+import Plugin from '/ckeditor5/plugin.js';
+import Creator from '/ckeditor5/creator.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import log from '/ckeditor5/utils/log.js';
 
@@ -39,41 +39,41 @@ before( () => {
 
 // Create fake plugins that will be used on tests.
 
-moduleUtils.define( 'A', () => {
+moduleUtils.define( 'A/A', () => {
 	return PluginA;
 } );
 
-moduleUtils.define( 'B', () => {
+moduleUtils.define( 'B/B', () => {
 	return PluginB;
 } );
 
-moduleUtils.define( 'C', [ 'core/editor', 'B' ], () => {
+moduleUtils.define( 'C/C', [ 'editor', 'B/B' ], () => {
 	return PluginC;
 } );
 
-moduleUtils.define( 'D', [ 'core/editor', 'A', 'C' ], () => {
+moduleUtils.define( 'D/D', [ 'editor', 'A/A', 'C/C' ], () => {
 	return PluginD;
 } );
 
-moduleUtils.define( 'E', [ 'core/editor', 'F' ], () => {
+moduleUtils.define( 'E/E', [ 'editor', 'F/F' ], () => {
 	return PluginE;
 } );
 
-moduleUtils.define( 'F', [ 'core/editor', 'E' ], () => {
+moduleUtils.define( 'F/F', [ 'editor', 'E/E' ], () => {
 	return PluginF;
 } );
 
-moduleUtils.define( 'G', () => {
+moduleUtils.define( 'G/G', () => {
 	return PluginG;
 } );
 
 // Erroneous cases.
 
-moduleUtils.define( 'X', () => {
+moduleUtils.define( 'X/X', () => {
 	throw new TestError( 'Some error inside a plugin' );
 } );
 
-moduleUtils.define( 'Y', () => {
+moduleUtils.define( 'Y/Y', () => {
 	return class {};
 } );
 

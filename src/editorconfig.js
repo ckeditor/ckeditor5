@@ -5,8 +5,8 @@
 
 'use strict';
 
-import CKEDITOR from '../../ckeditor.js';
-import Config from '../utils/config.js';
+import CKEDITOR from '../ckeditor.js';
+import Config from './utils/config.js';
 
 /**
  * Handles a configuration dictionary for an editor instance.

@@ -7,12 +7,12 @@
 
 /* bender-tags: editor */
 
-import moduleUtils from '/tests/_utils/module.js';
-import coreTestUtils from '/tests/core/_utils/utils.js';
-import Editor from '/ckeditor5/core/editor.js';
-import EditorConfig from '/ckeditor5/core/editorconfig.js';
-import Plugin from '/ckeditor5/core/plugin.js';
-import Command from '/ckeditor5/core/command/command.js';
+import moduleUtils from '/tests/ckeditor5/_utils/module.js';
+import testUtils from '/tests/ckeditor5/_utils/utils.js';
+import Editor from '/ckeditor5/editor.js';
+import EditorConfig from '/ckeditor5/editorconfig.js';
+import Plugin from '/ckeditor5/plugin.js';
+import Command from '/ckeditor5/command/command.js';
 import Locale from '/ckeditor5/utils/locale.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
@@ -21,14 +21,14 @@ let element;
 
 before( () => {
 	// Define fake plugins to be used in tests.
-	coreTestUtils.defineEditorCreatorMock( 'test', {
+	testUtils.defineEditorCreatorMock( 'test', {
 		init: sinon.spy().named( 'creator-test' )
 	} );
 
-	pluginDefinition( 'A' );
-	pluginDefinition( 'B' );
-	pluginDefinition( 'C', [ 'B' ] );
-	pluginDefinition( 'D', [ 'C' ] );
+	pluginDefinition( 'A/A' );
+	pluginDefinition( 'B/B' );
+	pluginDefinition( 'C/C', [ 'B/B' ] );
+	pluginDefinition( 'D/D', [ 'C/C' ] );
 } );
 
 beforeEach( () => {
@@ -124,10 +124,10 @@ describe( 'init', () => {
 		return editor.init().then( () => {
 			sinon.assert.callOrder(
 				editor.plugins.get( 'creator-test' ).init,
-				editor.plugins.get( pluginClasses.A ).init,
-				editor.plugins.get( pluginClasses.B ).init,
-				editor.plugins.get( pluginClasses.C ).init,
-				editor.plugins.get( pluginClasses.D ).init
+				editor.plugins.get( pluginClasses[ 'A/A' ] ).init,
+				editor.plugins.get( pluginClasses[ 'B/B' ] ).init,
+				editor.plugins.get( pluginClasses[ 'C/C' ] ).init,
+				editor.plugins.get( pluginClasses[ 'D/D' ] ).init
 			);
 		} );
 	} );
@@ -137,9 +137,9 @@ describe( 'init', () => {
 		const asyncSpy = sinon.spy().named( 'async-call-spy' );
 
 		// Synchronous plugin that depends on an asynchronous one.
-		pluginDefinition( 'sync', [ 'async' ] );
+		pluginDefinition( 'sync/sync', [ 'async/async' ] );
 
-		moduleUtils.define( 'async', () => {
+		moduleUtils.define( 'async/async', () => {
 			PluginAsync.prototype.init = sinon.spy( () => {
 				return new Promise( ( resolve ) => {
 					setTimeout( () => {
@@ -160,11 +160,11 @@ describe( 'init', () => {
 		return editor.init().then( () => {
 			sinon.assert.callOrder(
 				editor.plugins.get( 'creator-test' ).init,
-				editor.plugins.get( pluginClasses.A ).init,
+				editor.plugins.get( pluginClasses[ 'A/A' ] ).init,
 				editor.plugins.get( PluginAsync ).init,
 				// This one is called with delay by the async init.
 				asyncSpy,
-				editor.plugins.get( pluginClasses.sync ).init
+				editor.plugins.get( pluginClasses[ 'sync/sync' ] ).init
 			);
 		} );
 	} );

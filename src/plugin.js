@@ -5,8 +5,8 @@
 
 'use strict';
 
-import ObservableMixin from '../utils/observablemixin.js';
-import utils from '../utils/utils.js';
+import ObservableMixin from './utils/observablemixin.js';
+import utils from './utils/utils.js';
 
 /**
  * The base class for CKEditor plugin classes.

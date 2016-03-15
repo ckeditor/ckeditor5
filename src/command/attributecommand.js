@@ -6,8 +6,8 @@
 'use strict';
 
 import Command from './command.js';
-import TreeWalker from '../treemodel/treewalker.js';
-import Range from '../treemodel/range.js';
+import TreeWalker from '../core/treemodel/treewalker.js';
+import Range from '../core/treemodel/range.js';
 
 /**
  * An extension of basic {@link core.command.Command} class, which provides utilities for a command that sets a single

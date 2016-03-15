@@ -6,9 +6,9 @@
 'use strict';
 
 import Plugin from './plugin.js';
-import CKEditorError from '../utils/ckeditorerror.js';
-import log from '../utils/log.js';
-import load from '../load.js';
+import CKEditorError from './utils/ckeditorerror.js';
+import log from './utils/log.js';
+import load from './load.js';
 
 /**
  * Manages a list of CKEditor plugins, including loading, resolving dependencies and initialization.
