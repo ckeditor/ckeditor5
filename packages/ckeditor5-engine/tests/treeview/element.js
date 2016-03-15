@@ -225,6 +225,21 @@ describe( 'Element', () => {
 				expect( el3.parent ).to.be.null;
 				expect( el4.parent ).equal( parent );
 			} );
+
+			it( 'should remove one child when second parameter is not specified', () => {
+				parent.appendChildren( el1 );
+				parent.appendChildren( el2 );
+				parent.appendChildren( el3 );
+
+				const removed = parent.removeChildren( 1 );
+
+				expect( parent.getChildCount() ).to.equal( 2 );
+				expect( parent.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'el1' );
+				expect( parent.getChild( 1 ) ).to.have.property( 'name' ).that.equals( 'el3' );
+
+				expect( removed.length ).to.equal( 1 );
+				expect( removed[ 0 ] ).to.have.property( 'name' ).that.equals( 'el2' );
+			} );
 		} );
 	} );
 

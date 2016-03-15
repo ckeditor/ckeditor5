@@ -116,15 +116,11 @@ export default class Element extends Node {
 	 * All attached nodes should be modified using the {@link core.treeModel.operation.RemoveOperation}.
 	 *
 	 * @param {Number} index Position of the first node to remove.
-	 * @param {Number} [number] Number of nodes to remove.
+	 * @param {Number} [howMany=1] Number of nodes to remove.
 	 * @returns {core.treeModel.NodeList} The list of removed nodes.
 	 */
-	removeChildren( index, number ) {
-		if ( typeof number === 'undefined' ) {
-			number = 1;
-		}
-
-		let nodeList = this._children.remove( index, number );
+	removeChildren( index, howMany = 1 ) {
+		let nodeList = this._children.remove( index, howMany );
 
 		for ( let node of nodeList._nodes ) {
 			node.parent = null;

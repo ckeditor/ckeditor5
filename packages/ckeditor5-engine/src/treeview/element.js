@@ -222,22 +222,18 @@ export default class Element extends Node {
 	 * Removes number of child nodes starting at the given index and set the parent of these nodes to `null`.
 	 *
 	 * @param {Number} index Number of the first node to remove.
-	 * @param {Number} [number] Number of nodes to remove.
+	 * @param {Number} [howMany=1] Number of nodes to remove.
 	 * @returns {Array.<core.treeView.Node>} The array of removed nodes.
 	 * @fires core.treeView.Node#change
 	 */
-	removeChildren( index, number ) {
+	removeChildren( index, howMany = 1 ) {
 		this._fireChange( 'CHILDREN', this );
 
-		if ( typeof number === 'undefined' ) {
-			number = 1;
-		}
-
-		for ( let i = index; i < index + number; i++ ) {
+		for ( let i = index; i < index + howMany; i++ ) {
 			this._children[ i ].parent = null;
 		}
 
-		return this._children.splice( index, number );
+		return this._children.splice( index, howMany );
 	}
 
 	/**
