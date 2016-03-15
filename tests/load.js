@@ -15,8 +15,8 @@ describe( 'load()', () => {
 			} );
 	} );
 
-	it( 'loads ckeditor5/core/editor', () => {
-		return load( 'ckeditor5/core/editor.js' )
+	it( 'loads ckeditor5/editor', () => {
+		return load( 'ckeditor5/editor.js' )
 			.then( ( EditorModule ) => {
 				expect( EditorModule.default ).to.be.a( 'function' );
 			} );

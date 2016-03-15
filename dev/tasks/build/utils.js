@@ -283,7 +283,7 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 	 * Processes paths of files inside the main CKEditor5 package.
 	 *
 	 * * `src/foo/bar.js` -> `ckeditor5/foo/bar.js`
-	 * * `tests/foo/bar.js` -> `tests/foo/bar.js`
+	 * * `tests/foo/bar.js` -> `tests/ckeditor5/foo/bar.js`
 	 *
 	 * @returns {Stream}
 	 */
@@ -296,7 +296,11 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 				// Replace 'src/' with 'ckeditor5/'.
 				// src/path.js -> ckeditor5/path.js
 				dirFrags.splice( 0, 1, 'ckeditor5' );
-			} else if ( firstFrag != 'tests' ) {
+			} else if ( firstFrag == 'tests' ) {
+				// Insert 'ckeditor5/' after 'tests/'.
+				// tests/foo.js -> tests/ckeditor5/foo.js
+				dirFrags.splice( 1, 0, 'ckeditor5' );
+			} else {
 				throw new Error( 'Path should start with "src" or "tests".' );
 			}
 
@@ -332,7 +336,9 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 
 		const dirFrags = file.relative.split( path.sep );
 
-		return !dirFrags.some( dirFrag => dirFrag.startsWith( '_' ) );
+		return !dirFrags.some( dirFrag => {
+			return dirFrag.startsWith( '_' ) && dirFrag != '_utils-tests';
+		} );
 	},
 
 	/**

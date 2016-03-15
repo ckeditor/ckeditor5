@@ -5,7 +5,7 @@
 
 'use strict';
 
-import testUtils from '/tests/_utils/utils.js';
+import testUtils from '/tests/ckeditor5/_utils/utils.js';
 
 const obj = {
 	method() {}
