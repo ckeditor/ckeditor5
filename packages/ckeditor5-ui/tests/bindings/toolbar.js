@@ -7,7 +7,7 @@
 
 'use strict';
 
-import Editor from '/ckeditor5/core/editor.js';
+import Editor from '/ckeditor5/editor.js';
 import Model from '/ckeditor5/ui/model.js';
 import View from '/ckeditor5/ui/view.js';
 import Controller from '/ckeditor5/ui/controller.js';

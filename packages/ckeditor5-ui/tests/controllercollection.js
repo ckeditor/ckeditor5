@@ -7,7 +7,7 @@
 
 'use strict';
 
-import testUtils from '/tests/_utils/utils.js';
+import testUtils from '/tests/ckeditor5/_utils/utils.js';
 import ControllerCollection from '/ckeditor5/ui/controllercollection.js';
 import Controller from '/ckeditor5/ui/controller.js';
 import View from '/ckeditor5/ui/view.js';

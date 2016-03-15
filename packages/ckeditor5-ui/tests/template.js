@@ -8,7 +8,7 @@
 
 'use strict';
 
-import testUtils from '/tests/_utils/utils.js';
+import testUtils from '/tests/ckeditor5/_utils/utils.js';
 import Template from '/ckeditor5/ui/template.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
