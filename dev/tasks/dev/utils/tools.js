@@ -5,8 +5,9 @@
 
 'use strict';
 
+const gutil = require( 'gulp-util' );
+
 const dependencyRegExp = /^ckeditor5-/;
-const log = require( '../utils/log' );
 
 module.exports = {
 
@@ -20,25 +21,25 @@ module.exports = {
 	 */
 	shExec( command, logOutput ) {
 		const sh = require( 'shelljs' );
+
 		sh.config.silent = true;
 		logOutput = logOutput !== false;
 
 		const ret = sh.exec( command );
+		const logColor = ret.code ? gutil.colors.red : gutil.colors.grey;
 
 		if ( logOutput ) {
-			if ( ret.stdout !== '' ) {
-				log.out( ret.stdout );
+			if ( ret.stdout ) {
+				console.log( '\n' + logColor( ret.stdout.trim() ) + '\n' );
 			}
 
-			if ( ret.stderr !== '' ) {
-				log.err( ret.stderr );
+			if ( ret.stderr ) {
+				console.log( '\n' + gutil.colors.grey( ret.stderr.trim() ) + '\n' );
 			}
 		}
 
 		if ( ret.code ) {
-			throw new Error(
-				`Error while executing ${ command }: ${ ret.stderr }`
-			);
+			throw new Error( `Error while executing ${ command }: ${ ret.stderr }` );
 		}
 
 		return ret.stdout;

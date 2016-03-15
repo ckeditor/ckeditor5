@@ -50,16 +50,13 @@ describe( 'utils', () => {
 			it( 'should output using log functions', () => {
 				const sh = require( 'shelljs' );
 				const execStub = sandbox.stub( sh, 'exec' ).returns( { code: 0, stdout: 'out', stderr: 'err' } );
-				const log = require( '../../tasks/dev/utils/log' );
-				const outFn = sandbox.spy();
-				const errFn = sandbox.spy();
-				log.configure( outFn, errFn );
+
+				sandbox.stub( console, 'log' );
 
 				tools.shExec( 'command' );
 
 				sinon.assert.calledOnce( execStub );
-				sinon.assert.calledWithExactly( outFn, 'out' );
-				sinon.assert.calledWithExactly( errFn, 'err' );
+				sinon.assert.calledTwice( console.log );
 			} );
 
 			it( 'should not log when in silent mode', () => {
