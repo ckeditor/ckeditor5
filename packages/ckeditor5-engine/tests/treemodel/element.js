@@ -94,6 +94,20 @@ describe( 'Element', () => {
 			expect( removed.get( 1 ).character ).to.equal( 'b' );
 			expect( removed.get( 2 ).character ).to.equal( 'a' );
 		} );
+
+		it( 'should remove one child when second parameter is not specified', () => {
+			let element = new Element( 'elem', [], [ 'foo' ] );
+			let removed = element.removeChildren( 2 );
+
+			expect( element.getChildCount() ).to.equal( 2 );
+			expect( element.getChild( 0 ) ).to.have.property( 'character' ).that.equals( 'f' );
+			expect( element.getChild( 1 ) ).to.have.property( 'character' ).that.equals( 'o' );
+
+			expect( removed ).to.be.instanceof( NodeList );
+			expect( removed.length ).to.equal( 1 );
+
+			expect( removed.get( 0 ).character ).to.equal( 'o' );
+		} );
 	} );
 
 	describe( 'getChildIndex', () => {
