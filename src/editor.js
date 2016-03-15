@@ -17,7 +17,7 @@ import utils from './utils/utils.js';
 /**
  * Represents a single editor instance.
  *
- * @memberOf core
+ * @memberOf ckeditor5
  * @mixes utils.ObservaleMixin
  */
 export default class Editor {
@@ -36,7 +36,7 @@ export default class Editor {
 		 * editor creation and is not subject to be modified.
 		 *
 		 * @readonly
-		 * @member {HTMLElement} core.Editor#element
+		 * @member {HTMLElement} ckeditor5.Editor#element
 		 */
 		this.element = element;
 
@@ -48,7 +48,7 @@ export default class Editor {
 		 * instance itself.
 		 *
 		 * @readonly
-		 * @member {utils.Config} core.Editor#config
+		 * @member {utils.Config} ckeditor5.Editor#config
 		 */
 		this.config = config = new EditorConfig( config );
 
@@ -56,7 +56,7 @@ export default class Editor {
 		 * The plugins loaded and in use by this editor instance.
 		 *
 		 * @readonly
-		 * @member {core.PluginCollection} core.Editor#plugins
+		 * @member {ckeditor5.PluginCollection} ckeditor5.Editor#plugins
 		 */
 		this.plugins = new PluginCollection( this );
 
@@ -64,7 +64,7 @@ export default class Editor {
 		 * Tree Model document managed by this editor.
 		 *
 		 * @readonly
-		 * @member {core.treeModel.Document} core.Editor#document
+		 * @member {core.treeModel.Document} ckeditor5.Editor#document
 		 */
 		this.document = new Document();
 
@@ -72,13 +72,13 @@ export default class Editor {
 		 * Commands registered to the editor.
 		 *
 		 * @readonly
-		 * @member {Map} core.Editor#commands
+		 * @member {Map} ckeditor5.Editor#commands
 		 */
 		this.commands = new Map();
 
 		/**
 		 * @readonly
-		 * @member {utils.Locale} core.Editor#locale
+		 * @member {utils.Locale} ckeditor5.Editor#locale
 		 */
 		this.locale = new Locale( config.lang );
 
@@ -86,7 +86,7 @@ export default class Editor {
 		 * Shorthand for {@link utils.Locale#t}.
 		 *
 		 * @see utils.Locale#t
-		 * @method core.Editor#t
+		 * @method ckeditor5.Editor#t
 		 */
 		this.t = this.locale.t;
 
@@ -94,7 +94,7 @@ export default class Editor {
 		 * The chosen creator.
 		 *
 		 * @protected
-		 * @member {core.Creator} core.Editor#_creator
+		 * @member {ckeditor5.Creator} ckeditor5.Editor#_creator
 		 */
 	}
 
@@ -164,7 +164,7 @@ export default class Editor {
 	 * Destroys the editor instance, releasing all resources used by it. If the editor replaced an element, the
 	 * element will be recovered.
 	 *
-	 * @fires core.Editor#destroy
+	 * @fires ckeditor5.Editor#destroy
 	 * @returns {Promise} A promise that resolves once the editor instance is fully destroyed.
 	 */
 	destroy() {
@@ -218,6 +218,5 @@ utils.mix( Editor, ObservableMixin );
  * Fired when this editor instance is destroyed. The editor at this point is not usable and this event should be used to
  * perform the clean-up in any plugin.
  *
- * @memberOf core.Editor
- * @event destroy
+ * @event ckeditor5.Editor#destroy
  */

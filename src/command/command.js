@@ -13,25 +13,25 @@ import utils from '../utils/utils.js';
  *
  * Commands are main way to manipulate editor contents and state. They are mostly used by UI elements (or by other
  * commands) to make changes in Tree Model. Commands are available in every part of code that has access to
- * {@link core.Editor} instance, since they are registered in it and executed through {@link core.Editor#execute}.
- * Commands instances are available through {@link core.Editor#commands}.
+ * {@link ckeditor5.Editor} instance, since they are registered in it and executed through {@link ckeditor5.Editor#execute}.
+ * Commands instances are available through {@link ckeditor5.Editor#commands}.
  *
  * This is an abstract base class for all commands.
  *
- * @memberOf core.command
+ * @memberOf ckeditor5.command
  * @mixes utils.ObservableMixin
  */
 export default class Command {
 	/**
 	 * Creates a new Command instance.
 	 *
-	 * @param {core.Editor} editor Editor on which this command will be used.
+	 * @param {ckeditor5.Editor} editor Editor on which this command will be used.
 	 */
 	constructor( editor ) {
 		/**
 		 * Editor on which this command will be used.
 		 *
-		 * @member {core.Editor} core.command.Command#editor
+		 * @member {ckeditor5.Editor} ckeditor5.command.Command#editor
 		 */
 		this.editor = editor;
 
@@ -39,7 +39,7 @@ export default class Command {
 		 * Flag indicating whether a command is enabled or disabled.
 		 * A disabled command should do nothing upon it's execution.
 		 *
-		 * @member {Boolean} core.command.Command#isEnabled
+		 * @member {Boolean} ckeditor5.command.Command#isEnabled
 		 */
 		this.set( 'isEnabled', true );
 
@@ -58,7 +58,7 @@ export default class Command {
 	 * If it is defined, it will be added as a callback to `refreshState` event.
 	 *
 	 * @protected
-	 * @method core.command.Command#_checkEnabled
+	 * @method ckeditor5.command.Command#_checkEnabled
 	 * @returns {Boolean} `true` if command should be enabled according to {@link core.treeModel.Document#schema}. `false` otherwise.
 	 */
 
@@ -67,7 +67,7 @@ export default class Command {
 	 * Other parts of code might listen to `refreshState` event on this command and add their callbacks. This
 	 * way the responsibility of deciding whether a command should be enabled is shared.
 	 *
-	 * @fires {@link core.command.Command#refreshState refreshState}
+	 * @fires {@link ckeditor5.command.Command#refreshState refreshState}
 	 */
 	refreshState() {
 		const data = { isEnabled: true };
@@ -80,7 +80,7 @@ export default class Command {
 	 * Executes the command if it is enabled.
 	 *
 	 * @protected
-	 * @param {*} param Parameter passed to {@link core.command.Command#execute execute} method of this command.
+	 * @param {*} param Parameter passed to {@link ckeditor5.command.Command#execute execute} method of this command.
 	 */
 	_execute( param ) {
 		if ( this.isEnabled ) {
@@ -101,8 +101,8 @@ export default class Command {
 
 	/**
 	 * Enables the command (internally). This should be used only by the command itself. Command will be enabled if
-	 * other listeners does not return false on `refreshState` event callbacks. Firing {@link core.command.Command#_enable}
-	 * does not guarantee that {@link core.command.Command#isEnabled} will be set to true, as it depends on other listeners.
+	 * other listeners does not return false on `refreshState` event callbacks. Firing {@link ckeditor5.command.Command#_enable}
+	 * does not guarantee that {@link ckeditor5.command.Command#isEnabled} will be set to true, as it depends on other listeners.
 	 *
 	 * @protected
 	 */
@@ -127,11 +127,11 @@ function disableCallback( evt, data ) {
 utils.mix( Command, ObservableMixin );
 
 /**
- * Fired whenever command has to have its {@link core.command.Command#isEnabled} property refreshed. Every feature,
+ * Fired whenever command has to have its {@link ckeditor5.command.Command#isEnabled} property refreshed. Every feature,
  * command or other class which needs to disable command (set `isEnabled` to `false`) should listen to this
  * event.
  *
- * @event core.command.Command#refreshState
+ * @event ckeditor5.command.Command#refreshState
  * @param {Object} data
  * @param {Boolean} [data.isEnabled=true]
  */

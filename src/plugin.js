@@ -11,19 +11,19 @@ import utils from './utils/utils.js';
 /**
  * The base class for CKEditor plugin classes.
  *
- * @memberOf core
+ * @memberOf ckeditor5
  * @mixes utils.ObservaleMixin
  */
 export default class Plugin {
 	/**
 	 * Creates a new Plugin instance.
 	 *
-	 * @param {core.Editor} editor
+	 * @param {ckeditor5.Editor} editor
 	 */
 	constructor( editor ) {
 		/**
 		 * @readonly
-		 * @member {core.Editor} core.Plugin#editor
+		 * @member {ckeditor5.Editor} ckeditor5.Plugin#editor
 		 */
 		this.editor = editor;
 	}
@@ -42,7 +42,7 @@ export default class Plugin {
 	 *		}
 	 *
 	 * @static
-	 * @member {Function[]} core.Plugin.requires
+	 * @member {Function[]} ckeditor5.Plugin.requires
 	 */
 
 	/**

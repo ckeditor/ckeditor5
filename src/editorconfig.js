@@ -11,10 +11,10 @@ import Config from './utils/config.js';
 /**
  * Handles a configuration dictionary for an editor instance.
  *
- * The basic difference between {@link core.EditorConfig} and {@link utils.Config} is that {@link core.EditorConfig#get} retrieves
+ * The basic difference between {@link ckeditor5.EditorConfig} and {@link utils.Config} is that {@link ckeditor5.EditorConfig#get} retrieves
  * configurations from {@link CKEDITOR#config} if they are not found.
  *
- * @memberOf core
+ * @memberOf ckeditor5
  * @extends utils.Config
  */
 export default class EditorConfig extends Config {

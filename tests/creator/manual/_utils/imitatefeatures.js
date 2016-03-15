@@ -12,7 +12,7 @@ import ButtonView from '/ckeditor5/ui/button/buttonview.js';
 /**
  * Immitates that some features were loaded and did their job.
  *
- * @param {core.Editor} editor
+ * @param {ckeditor5.Editor} editor
  */
 export function imitateFeatures( editor ) {
 	const t = editor.t;

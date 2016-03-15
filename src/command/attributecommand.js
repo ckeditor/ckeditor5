@@ -10,7 +10,7 @@ import TreeWalker from '../core/treemodel/treewalker.js';
 import Range from '../core/treemodel/range.js';
 
 /**
- * An extension of basic {@link core.command.Command} class, which provides utilities for a command that sets a single
+ * An extension of basic {@link ckeditor5.command.Command} class, which provides utilities for a command that sets a single
  * attribute on a text or element with value `true`. AttributeCommand uses {@link core.treeModel.Document#selection} to
  * decide which nodes (if any) should be changed, and applies or removes attributes from them.
  * See {@link core.treeView.Converter#execute} for more.
@@ -18,12 +18,12 @@ import Range from '../core/treemodel/range.js';
  * The command checks {@link core.treeModel.Document#schema} to decide if it should be enabled.
  * See {@link core.treeView.Converter#checkSchema} for more.
  *
- * @memberOf core.command
+ * @memberOf ckeditor5.command
  */
 export default class AttributeCommand extends Command {
 	/**
-	 * @see core.command.Command
-	 * @param {core.Editor} editor
+	 * @see ckeditor5.command.Command
+	 * @param {ckeditor5.Editor} editor
 	 * @param {String} attributeKey Attribute that will be set by the command.
 	 */
 	constructor( editor, attributeKey ) {
@@ -32,7 +32,7 @@ export default class AttributeCommand extends Command {
 		/**
 		 * Attribute that will be set by the command.
 		 *
-		 * @member {String} core.command.AttributeCommand#attributeKey
+		 * @member {String} ckeditor5.command.AttributeCommand#attributeKey
 		 */
 		this.attributeKey = attributeKey;
 
@@ -40,7 +40,7 @@ export default class AttributeCommand extends Command {
 		 * Flag indicating whether command is active. For collapsed selection it means that typed characters will have
 		 * the command's attribute set. For range selection it means that all nodes inside have the attribute applied.
 		 *
-		 * @member {Boolean} core.command.AttributeCommand#value
+		 * @member {Boolean} ckeditor5.command.AttributeCommand#value
 		 */
 		this.set( 'value', false );
 

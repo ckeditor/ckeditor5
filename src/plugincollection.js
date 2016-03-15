@@ -13,24 +13,24 @@ import load from './load.js';
 /**
  * Manages a list of CKEditor plugins, including loading, resolving dependencies and initialization.
  *
- * @memberOf core
+ * @memberOf ckeditor5
  */
 export default class PluginCollection {
 	/**
 	 * Creates an instance of the PluginCollection class, initializing it with a set of plugins.
 	 *
-	 * @param {core.Editor} editor
+	 * @param {ckeditor5.Editor} editor
 	 */
 	constructor( editor ) {
 		/**
 		 * @protected
-		 * @member {core.Editor} core.PluginCollection#_editor
+		 * @member {ckeditor5.Editor} ckeditor5.PluginCollection#_editor
 		 */
 		this._editor = editor;
 
 		/**
 		 * @protected
-		 * @member {Map} core.PluginCollection#_plugins
+		 * @member {Map} ckeditor5.PluginCollection#_plugins
 		 */
 		this._plugins = new Map();
 	}
@@ -47,7 +47,7 @@ export default class PluginCollection {
 	 * Gets the plugin instance by its name or class.
 	 *
 	 * @param {String/Function} key The name of the plugin or the class.
-	 * @returns {core.Plugin}
+	 * @returns {ckeditor5.Plugin}
 	 */
 	get( key ) {
 		return this._plugins.get( key );
@@ -59,7 +59,7 @@ export default class PluginCollection {
 	 * @param {String[]} plugins An array of plugins to load.
 	 * @returns {Promise} A promise which gets resolved once all plugins are loaded and available into the
 	 * collection.
-	 * @param {core.Plugin[]} returns.loadedPlugins The array of loaded plugins.
+	 * @param {ckeditor5.Plugin[]} returns.loadedPlugins The array of loaded plugins.
 	 */
 	load( plugins ) {
 		const that = this;
@@ -147,7 +147,7 @@ export default class PluginCollection {
 	 * For instance:
 	 *
 	 * * `foo` will be transformed to `ckeditor5/foo/foo.js`,
-	 * * `core/editor` to `ckeditor5/core/editor.js` and
+	 * * `ui/controller` to `ckeditor5/ui/controller.js` and
 	 * * `foo/bar/bom` to `ckeditor5/foo/bar/bom.js`.
 	 *
 	 * @param {String} name
@@ -167,7 +167,7 @@ export default class PluginCollection {
 	 *
 	 * @protected
 	 * @param {String/Function} key The name or the plugin class.
-	 * @param {core.Plugin} plugin The instance of the plugin.
+	 * @param {ckeditor5.Plugin} plugin The instance of the plugin.
 	 */
 	_add( key, plugin ) {
 		this._plugins.set( key, plugin );

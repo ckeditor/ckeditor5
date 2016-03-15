@@ -10,15 +10,15 @@ import Plugin from './plugin.js';
 /**
  * Basic creator class.
  *
- * @memberOf core
- * @extends core.Plugin
+ * @memberOf ckeditor5
+ * @extends ckeditor5.Plugin
  */
 export default class Creator extends Plugin {
 	/**
-	 * The element used to {@link core.Creator#_replaceElement _replaceElement} the editor element.
+	 * The element used to {@link ckeditor5.Creator#_replaceElement _replaceElement} the editor element.
 	 *
 	 * @private
-	 * @member {HTMLElement} core.Creator#_elementReplacement
+	 * @member {HTMLElement} ckeditor5.Creator#_elementReplacement
 	 */
 
 	/**
@@ -62,7 +62,7 @@ export default class Creator extends Plugin {
 	}
 
 	/**
-	 * Updates the {@link core.Editor#element editor element}'s content with the data.
+	 * Updates the {@link ckeditor5.Editor#element editor element}'s content with the data.
 	 *
 	 */
 	updateEditorElement() {
@@ -70,7 +70,7 @@ export default class Creator extends Plugin {
 	}
 
 	/**
-	 * Loads the data from the {@link core.Editor#element editor element} to the editable.
+	 * Loads the data from the {@link ckeditor5.Editor#element editor element} to the editable.
 	 *
 	 */
 	loadDataFromEditorElement() {
@@ -106,10 +106,10 @@ export default class Creator extends Plugin {
 	}
 
 	/**
-	 * Hides the {@link core.Editor#element editor element} and inserts the the given element
+	 * Hides the {@link ckeditor5.Editor#element editor element} and inserts the the given element
 	 * (usually, editor's UI main element) next to it.
 	 *
-	 * The effect of this method will be automatically reverted by {@link core.Creator#destroy destroy}.
+	 * The effect of this method will be automatically reverted by {@link ckeditor5.Creator#destroy destroy}.
 	 *
 	 * @protected
 	 * @param {HTMLElement} [newElement] The replacement element. If not passed, then the main editor's UI view element
@@ -129,7 +129,7 @@ export default class Creator extends Plugin {
 	}
 
 	/**
-	 * Restores what the {@link core.Creator#_replaceElement _replaceElement} did.
+	 * Restores what the {@link ckeditor5.Creator#_replaceElement _replaceElement} did.
 	 *
 	 * @protected
 	 */

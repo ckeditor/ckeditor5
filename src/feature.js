@@ -12,11 +12,11 @@ import Plugin from './plugin.js';
  * utilities, services and components.
  *
  * The main responsibilities for Feature are:
- * * setting required dependencies (see {@link core.Plugin#requires},
+ * * setting required dependencies (see {@link ckeditor5.Plugin#requires},
  * * configuring, instantiating and registering commands to editor,
  * * registering converters to editor (if the feature operates on Tree Model),
  * * setting and registering UI components (if the feature uses it).
  *
- * @memberOf core
+ * @memberOf ckeditor5
  */
 export default class Feature extends Plugin {}
