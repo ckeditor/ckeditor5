@@ -14,13 +14,17 @@ const pluginCreateTask = require( './tasks/create-package' );
 const updateTask = require( './tasks/update' );
 const relinkTask = require( './tasks/relink' );
 const log = require( './utils/log' );
+const gutil = require( 'gulp-util' );
 
 module.exports = ( config ) => {
 	const ckeditor5Path = process.cwd();
 	const packageJSON = require( '../../../package.json' );
 
 	// Configure logging.
-	log.configure( console.log, console.error );
+	log.configure(
+		( msg ) => gutil.log( msg ),
+		( msg ) => gutil.log( gutil.colors.red( msg ) )
+	);
 
 	gulp.task( 'init', () => {
 		initTask( installTask, ckeditor5Path, packageJSON, config.WORKSPACE_DIR );
@@ -40,7 +44,7 @@ module.exports = ( config ) => {
 			}
 		} );
 
-		updateTask( ckeditor5Path, packageJSON, config.WORKSPACE_DIR, options[ 'npm-update' ] );
+		updateTask( installTask, ckeditor5Path, packageJSON, config.WORKSPACE_DIR, options[ 'npm-update' ] );
 	} );
 
 	gulp.task( 'status', () => {

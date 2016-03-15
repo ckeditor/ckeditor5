@@ -20,9 +20,8 @@ const log = require( '../utils/log' );
  * 2. If NPM module name is provided - gets GitHub URL from NPM and clones the repository.
  * 3. If path on disk is provided - it is used directly.
  * 4. Runs `npm install` in package repository.
- * 5. If package exists in `ckeditor5/node_modules/` - runs `npm uninstall package_name`.
- * 6. Links package directory into `ckeditor5/node_modules/`.
- * 7. Adds dependency to `ckeditor5/package.json`.
+ * 5. Links package directory into `ckeditor5/node_modules/`.
+ * 6. Adds dependency to `ckeditor5/package.json`.
  *
  * @param {String} ckeditor5Path Absolute path to `ckeditor5` repository.
  * @param {String} workspaceRoot Relative path to workspace root directory.
@@ -88,11 +87,6 @@ module.exports = ( ckeditor5Path, workspaceRoot, name ) => {
 		tools.npmInstall( repositoryPath );
 
 		const linkPath = path.join( ckeditor5Path, 'node_modules', urlInfo.name );
-
-		if ( tools.isDirectory( linkPath ) ) {
-			log.out( `Uninstalling ${ urlInfo.name } from CKEditor5 node_modules...` );
-			tools.npmUninstall( ckeditor5Path, urlInfo.name );
-		}
 
 		log.out( `Linking ${ linkPath } to ${ repositoryPath }...` );
 		tools.linkDirectories( repositoryPath, linkPath );

@@ -50,16 +50,13 @@ describe( 'utils', () => {
 			it( 'should output using log functions', () => {
 				const sh = require( 'shelljs' );
 				const execStub = sandbox.stub( sh, 'exec' ).returns( { code: 0, stdout: 'out', stderr: 'err' } );
-				const log = require( '../../tasks/dev/utils/log' );
-				const outFn = sandbox.spy();
-				const errFn = sandbox.spy();
-				log.configure( outFn, errFn );
+
+				sandbox.stub( console, 'log' );
 
 				tools.shExec( 'command' );
 
 				sinon.assert.calledOnce( execStub );
-				sinon.assert.calledWithExactly( outFn, 'out' );
-				sinon.assert.calledWithExactly( errFn, 'err' );
+				sinon.assert.calledTwice( console.log );
 			} );
 
 			it( 'should not log when in silent mode', () => {
@@ -76,12 +73,28 @@ describe( 'utils', () => {
 				sinon.assert.notCalled( outFn );
 				sinon.assert.notCalled( errFn );
 			} );
+
+			it( 'should not log if no output from executed command', () => {
+				const sh = require( 'shelljs' );
+				const execStub = sandbox.stub( sh, 'exec' ).returns( { code: 0, stdout: '', stderr: '' } );
+				const log = require( '../../tasks/dev/utils/log' );
+				const outFn = sandbox.spy();
+				const errFn = sandbox.spy();
+				log.configure( outFn, errFn );
+
+				tools.shExec( 'command' );
+
+				sinon.assert.calledOnce( execStub );
+				sinon.assert.notCalled( outFn );
+				sinon.assert.notCalled( errFn );
+			} );
 		} );
 
 		describe( 'linkDirectories', () => {
 			it( 'should be defined', () => expect( tools.linkDirectories ).to.be.a( 'function' ) );
 
 			it( 'should link directories', () => {
+				const isSymlinkStub = sandbox.stub( tools, 'isSymlink' ).returns( false );
 				const isDirectoryStub = sandbox.stub( tools, 'isDirectory' ).returns( false );
 				const symlinkStub = sandbox.stub( fs, 'symlinkSync' );
 				const source = '/source/dir';
@@ -90,6 +103,7 @@ describe( 'utils', () => {
 				tools.linkDirectories( source, destination );
 
 				expect( isDirectoryStub.calledOnce ).to.equal( true );
+				expect( isSymlinkStub.calledOnce ).to.equal( true );
 				expect( symlinkStub.calledOnce ).to.equal( true );
 				expect( symlinkStub.firstCall.args[ 0 ] ).to.equal( source );
 				expect( symlinkStub.firstCall.args[ 1 ] ).to.equal( destination );
@@ -97,6 +111,7 @@ describe( 'utils', () => {
 
 			it( 'should remove destination directory before linking', () => {
 				const shExecStub = sandbox.stub( tools, 'shExec' );
+				const isSymlinkStub = sandbox.stub( tools, 'isSymlink' ).returns( false );
 				const isDirectoryStub = sandbox.stub( tools, 'isDirectory' ).returns( true );
 				const symlinkStub = sandbox.stub( fs, 'symlinkSync' );
 				const source = '/source/dir';
@@ -105,7 +120,28 @@ describe( 'utils', () => {
 				tools.linkDirectories( source, destination );
 
 				expect( isDirectoryStub.calledOnce ).to.equal( true );
+				expect( isSymlinkStub.calledOnce ).to.equal( true );
 				expect( shExecStub.calledOnce ).to.equal( true );
+				expect( symlinkStub.firstCall.args[ 0 ] ).to.equal( source );
+				expect( symlinkStub.firstCall.args[ 1 ] ).to.equal( destination );
+			} );
+
+			it( 'should unlink destination directory if symlink', () => {
+				const shExecStub = sandbox.stub( tools, 'shExec' );
+				const isSymlinkStub = sandbox.stub( tools, 'isSymlink' ).returns( true );
+				const removeSymlinkStub = sandbox.stub( tools, 'removeSymlink' );
+				const isDirectoryStub = sandbox.stub( tools, 'isDirectory' ).returns( true );
+				const symlinkStub = sandbox.stub( fs, 'symlinkSync' );
+				const source = '/source/dir';
+				const destination = '/destination/dir';
+
+				tools.linkDirectories( source, destination );
+
+				expect( isDirectoryStub.notCalled ).to.equal( true );
+				expect( isSymlinkStub.calledOnce ).to.equal( true );
+				expect( shExecStub.notCalled ).to.equal( true );
+				expect( removeSymlinkStub.calledOnce ).to.equal( true );
+				expect( removeSymlinkStub.firstCall.args[ 0 ] ).to.equal( destination );
 				expect( symlinkStub.firstCall.args[ 0 ] ).to.equal( source );
 				expect( symlinkStub.firstCall.args[ 1 ] ).to.equal( destination );
 			} );
@@ -241,6 +277,26 @@ describe( 'utils', () => {
 			} );
 		} );
 
+		describe( 'isSymlink', () => {
+			it( 'should return true if path points to symbolic link', () => {
+				const path = 'path/to/file';
+				const fs = require( 'fs' );
+				sandbox.stub( fs, 'lstatSync' ).returns( {
+					isSymbolicLink: () => true
+				} );
+
+				expect( tools.isSymlink( path ) ).to.equal( true );
+			} );
+
+			it( 'should return false if lstatSync throws', () => {
+				const path = 'path/to/file';
+				const fs = require( 'fs' );
+				sandbox.stub( fs, 'lstatSync' ).throws();
+
+				expect( tools.isSymlink( path ) ).to.equal( false );
+			} );
+		} );
+
 		describe( 'getCKE5Directories', () => {
 			it( 'should be defined', () => expect( tools.getCKE5Directories ).to.be.a( 'function' ) );
 
@@ -348,7 +404,7 @@ describe( 'utils', () => {
 				tools.npmUpdate( path );
 
 				expect( shExecStub.calledOnce ).to.equal( true );
-				expect( shExecStub.firstCall.args[ 0 ] ).to.equal( `cd ${ path } && npm update` );
+				expect( shExecStub.firstCall.args[ 0 ] ).to.equal( `cd ${ path } && npm update --dev` );
 			} );
 		} );
 
@@ -439,6 +495,33 @@ describe( 'utils', () => {
 				} catch ( e ) {}
 
 				expect( getUrlSpy.threw( error ) ).to.equal( true );
+			} );
+		} );
+
+		describe( 'getCKE5Symlinks', () => {
+			it( 'should return CKE5 symlinks from provided path', () => {
+				const fs = require( 'fs' );
+				const path = 'path/to/dir';
+				sandbox.stub( fs, 'readdirSync' ).returns( [ 'ckeditor5-core', 'ckeditor5-image', 'other-dependency' ] );
+				sandbox.stub( tools, 'isSymlink' ).returns( true );
+
+				const symlinks = tools.getCKE5Symlinks( path );
+				expect( symlinks.length ).to.equal( 2 );
+				expect( symlinks[ 0 ] ).to.equal( 'ckeditor5-core' );
+				expect( symlinks[ 1 ] ).to.equal( 'ckeditor5-image' );
+			} );
+		} );
+
+		describe( 'removeSymlink', () => {
+			it( 'should unlink provided symlink', () => {
+				const fs = require( 'fs' );
+				const unlinkStub = sandbox.stub( fs, 'unlinkSync' );
+				const path = 'path/to/symlink';
+
+				tools.removeSymlink( path );
+
+				expect( unlinkStub.calledOnce ).to.equal( true );
+				expect( unlinkStub.firstCall.args[ 0 ] ).to.equal( path );
 			} );
 		} );
 	} );

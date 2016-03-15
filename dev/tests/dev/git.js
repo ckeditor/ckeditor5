@@ -149,7 +149,11 @@ describe( 'utils', () => {
 				const shExecStub = sandbox.stub( tools, 'shExec' );
 				const repositoryLocation = 'path/to/repository';
 				const branchName = 'branch-to-checkout';
-				const checkoutCommands = `cd ${ repositoryLocation } && git checkout ${ branchName }`;
+				const checkoutCommands = [
+					`cd ${ repositoryLocation }`,
+					`git fetch origin ${ branchName }`,
+					`git checkout ${ branchName }`
+				].join( ' && ' );
 
 				git.checkout( repositoryLocation, branchName );
 
