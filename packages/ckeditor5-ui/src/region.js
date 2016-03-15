@@ -22,21 +22,21 @@ export default class Region {
 		/**
 		 * The name of the region.
 		 *
-		 * @member {String} core.ui.Region#name
+		 * @member {String} ui.Region#name
 		 */
 		this.name = name;
 
 		/**
 		 * Views which belong to the region.
 		 *
-		 * @member {utils.Collection} core.ui.Region#views
+		 * @member {utils.Collection} ui.Region#views
 		 */
 		this.views = new Collection();
 
 		/**
 		 * Element of this region (see {@link #init}).
 		 *
-		 * @member {HTMLElement} core.ui.Region#element
+		 * @member {HTMLElement} ui.Region#element
 		 */
 		this.element = null;
 	}

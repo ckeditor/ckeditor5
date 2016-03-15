@@ -14,7 +14,7 @@ import CKEditorError from '../utils/ckeditorerror.js';
  * components can be later instantiated by providing the name of the component. The model is shared between all
  * instances of that component and has to be provided upon registering its factory.
  *
- * The main use case for the component factory is the {@link core.editorUI.EditorUI#featureComponents} factory.
+ * The main use case for the component factory is the {@link ui.editorUI.EditorUI#featureComponents} factory.
  *
  * @memberOf ui
  */
@@ -24,12 +24,12 @@ export default class ComponentFactory {
 	 * Creates ComponentFactory instance.
 	 *
 	 * @constructor
-	 * @param {core.Editor} editor The editor instance.
+	 * @param {ckeditor5.Editor} editor The editor instance.
 	 */
 	constructor( editor ) {
 		/**
 		 * @readonly
-		 * @member {core.Editor} ui.ComponentFactory#editor
+		 * @member {ckeditor5.Editor} ui.ComponentFactory#editor
 		 */
 		this.editor = editor;
 

@@ -20,7 +20,7 @@ export default class Toolbar extends BaseToolbar {
 	 *
 	 * @param {ui.Model} model
 	 * @param {ui.View} view
-	 * @param {core.Editor} editor
+	 * @param {ckeditor5.Editor} editor
 	 */
 	constructor( model, view, editor ) {
 		super( model, view );

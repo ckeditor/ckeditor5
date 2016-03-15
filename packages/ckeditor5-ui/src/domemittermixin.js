@@ -157,7 +157,7 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
  *                                fire( click, DOM Event )
  *
  * @mixin ui.DOMEmitterMixin
- * @mixes core.EmitterMixin
+ * @mixes utils.EmitterMixin
  * @implements ui.DOMEmitter
  */
 const DOMEmitterMixin = extend( {}, EmitterMixin, {
