@@ -13,9 +13,9 @@ const log = require( '../utils/log' );
 /**
  * 1. Get CKEditor 5 dependencies from package.json in main CKEditor 5 repository.
  * 2. If dependency's repository is already cloned in workspace:
- * 		2.1. Fetch and checkout to specified branch.
- * 		2.2. Pull changes to that branch.
- * 		2.3. if --npm-update was specified run npm update --dev in that repository.
+ *		2.1. Fetch and checkout to specified branch.
+ *		2.2. Pull changes to that branch.
+ *		2.3. if --npm-update was specified run npm update --dev in that repository.
  *		2.4. Recreate symbolic link between repo and main node_modules.
  * 3. If dependency's repository is not cloned yet - run gulp install on this dependency.
  * 4. Remove symbolic links to dependencies that are not used in current package.json configuration.
