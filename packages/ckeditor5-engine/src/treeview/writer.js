@@ -206,7 +206,7 @@ import CKEditorError from '../../utils/ckeditorerror.js';
 	 * {@link core.treeView.Range#start start} and {@link core.treeView.Range#end end} positions of
 	 * provided {@link core.treeView.Range Range}.
 	 *
-	 * Throws {@link core.CKEditorError CKEditorError} `treeview-writer-invalid-range-container` when
+	 * Throws {@link utils.CKEditorError CKEditorError} `treeview-writer-invalid-range-container` when
 	 * {@link core.treeView.Range#start start} and {@link core.treeView.Range#end end} positions are not placed inside
 	 * same parent container.
 	 *
@@ -346,7 +346,7 @@ import CKEditorError from '../../utils/ckeditorerror.js';
 	/**
 	 * Removes provided range from the container.
 	 *
-	 * Throws {@link core.CKEditorError CKEditorError} `treeview-writer-invalid-range-container` when
+	 * Throws {@link utils.CKEditorError CKEditorError} `treeview-writer-invalid-range-container` when
 	 * {@link core.treeView.Range#start start} and {@link core.treeView.Range#end end} positions are not placed inside
 	 * same parent container.
 	 *
@@ -391,7 +391,7 @@ import CKEditorError from '../../utils/ckeditorerror.js';
 	/**
 	 * Moves nodes from provided range to target position.
 	 *
-	 * Throws {@link core.CKEditorError CKEditorError} `treeview-writer-invalid-range-container` when
+	 * Throws {@link utils.CKEditorError CKEditorError} `treeview-writer-invalid-range-container` when
 	 * {@link core.treeView.Range#start start} and {@link core.treeView.Range#end end} positions are not placed inside
 	 * same parent container.
 	 *
@@ -409,7 +409,7 @@ import CKEditorError from '../../utils/ckeditorerror.js';
 	/**
 	 * Wraps elements within range with provided attribute element.
 	 *
-	 * Throws {@link core.CKEditorError} `treeview-writer-invalid-range-container` when {@link core.treeView.Range#start}
+	 * Throws {@link utils.CKEditorError} `treeview-writer-invalid-range-container` when {@link core.treeView.Range#start}
 	 * and {@link core.treeView.Range#end} positions are not placed inside same parent container.
 	 *
 	 * @param {core.treeView.Range} range Range to wrap.
@@ -460,7 +460,7 @@ import CKEditorError from '../../utils/ckeditorerror.js';
 	/**
 	 * Unwraps nodes within provided range from attribute element.
 	 *
-	 * Throws {@link core.CKEditorError CKEditorError} `treeview-writer-invalid-range-container` when
+	 * Throws {@link utils.CKEditorError CKEditorError} `treeview-writer-invalid-range-container` when
 	 * {@link core.treeView.Range#start start} and {@link core.treeView.Range#end end} positions are not placed inside
 	 * same parent container.
 	 *
