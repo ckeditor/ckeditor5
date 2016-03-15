@@ -7,6 +7,8 @@
 
 import ModelPosition from '../treemodel/position.js';
 import ViewPosition from '../treeview/position.js';
+import ModelRange from '../treemodel/range.js';
+import ViewRange from '../treeview/range.js';
 import ViewText from '../treeview/text.js';
 
 /**
@@ -71,6 +73,26 @@ export default class Mapper {
 	 */
 	toViewElement( modelElement ) {
 		return this._modelToViewMapping.get( modelElement );
+	}
+
+	/**
+	 * Gets the corresponding model range.
+	 *
+	 * @param {core.treeView.Range} viewRange View range.
+	 * @returns {core.treeModel.Range} Corresponding model range.
+	 */
+	toModelRange( viewRange ) {
+		return new ModelRange( this.toModelPosition( viewRange.start ), this.toModelPosition( viewRange.end ) );
+	}
+
+	/**
+	 * Gets the corresponding view range.
+	 *
+	 * @param {core.treeModel.Range} modelRange Model range.
+	 * @returns {core.treeView.Range} Corresponding view range.
+	 */
+	toViewRange( modelRange ) {
+		return new ViewRange( this.toViewPosition( modelRange.start ), this.toViewPosition( modelRange.end ) );
 	}
 
 	/**
