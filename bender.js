@@ -29,7 +29,7 @@ const config = {
 			applications: [ 'ckeditor' ],
 			paths: [
 				'build/amd/tests/**',
-				'!build/amd/tests/**/_*/**'
+				'!build/amd/tests/**/@(_utils|_assets)/**'
 			]
 		}
 	},

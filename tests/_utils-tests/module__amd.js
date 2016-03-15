@@ -7,8 +7,8 @@
 
 'use strict';
 
-import testUtils from '/tests/_utils/utils.js';
-import moduleTestUtils from '/tests/_utils/module.js';
+import testUtils from '/tests/ckeditor5/_utils/utils.js';
+import moduleTestUtils from '/tests/ckeditor5/_utils/module.js';
 
 testUtils.createSinonSandbox();
 
@@ -16,10 +16,10 @@ describe( 'amdTestUtils', () => {
 	const getModulePath = moduleTestUtils.getModulePath;
 
 	describe( 'getModulePath()', () => {
-		it( 'generates a path from a plugin name', () => {
+		it( 'generates a path from a simple name', () => {
 			const path = getModulePath( 'foo' );
 
-			expect( path ).to.equal( '/ckeditor5/foo/foo.js' );
+			expect( path ).to.equal( '/ckeditor5/foo.js' );
 		} );
 
 		it( 'generates an absolute path from a simple path', () => {
