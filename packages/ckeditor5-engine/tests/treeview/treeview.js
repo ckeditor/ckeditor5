@@ -24,7 +24,7 @@ describe( 'TreeView', () => {
 
 			expect( count( treeView.domRoots ) ).to.equal( 0 );
 			expect( count( treeView.viewRoots ) ).to.equal( 0 );
-			expect( count( treeView.observers ) ).to.equal( 0 );
+			expect( count( treeView._observers ) ).to.equal( 0 );
 			expect( treeView ).to.have.property( 'renderer' ).that.is.instanceOf( Renderer );
 			expect( treeView ).to.have.property( 'writer' ).that.is.instanceOf( Writer );
 			expect( treeView ).to.have.property( 'domConverter' ).that.is.instanceOf( DomConverter );
@@ -55,33 +55,80 @@ describe( 'TreeView', () => {
 		} );
 	} );
 
-	describe( 'observer', () => {
-		let observerMock, treeView;
+	describe( 'addObserver', () => {
+		let ObserverMock, treeView;
 
 		beforeEach( () => {
-			observerMock = new Observer();
-			observerMock.enable = sinon.spy();
-			observerMock.disable = sinon.spy();
-			observerMock.init = sinon.spy();
+			ObserverMock = class extends Observer {
+				constructor( treeView ) {
+					super( treeView );
+
+					this.enable = sinon.spy();
+					this.disable = sinon.spy();
+				}
+			};
 
 			treeView = new TreeView( document.createElement( 'div' ) );
 			treeView.renderer.render = sinon.spy();
 		} );
 
-		it( 'should be inited and enabled on adding', () => {
-			treeView.addObserver( observerMock );
+		it( 'should be instantiated and enabled on adding', () => {
+			treeView.addObserver( ObserverMock );
 
-			expect( treeView.observers.has( observerMock ) ).to.be.true;
-			sinon.assert.calledOnce( observerMock.init );
-			sinon.assert.calledWith( observerMock.init, treeView );
+			expect( treeView._observers.size ).to.equal( 1 );
+
+			const observerMock = Array.from( treeView._observers )[ 0 ];
+
+			expect( observerMock ).to.have.property( 'treeView', treeView );
 			sinon.assert.calledOnce( observerMock.enable );
 		} );
 
+		it( 'should instantiate one observer only once', () => {
+			let instantiated = 0;
+			let enabled = 0;
+
+			class ObserverMock2 extends Observer {
+				constructor( treeView ) {
+					super( treeView );
+					instantiated++;
+				}
+
+				enable() {
+					enabled++;
+				}
+			}
+
+			treeView.addObserver( ObserverMock2 );
+			treeView.addObserver( ObserverMock2 );
+
+			expect( treeView._observers.size ).to.equal( 1 );
+			expect( instantiated ).to.equal( 1 );
+			expect( enabled ).to.equal( 1 );
+
+			treeView.addObserver( ObserverMock );
+			expect( treeView._observers.size ).to.equal( 2 );
+		} );
+
+		it( 'should instantiate child class of already registered observer', () => {
+			class ObserverMock extends Observer {
+				enable() {}
+			}
+			class ChildObserverMock extends ObserverMock {
+				enable() {}
+			}
+
+			treeView.addObserver( ObserverMock );
+			treeView.addObserver( ChildObserverMock );
+
+			expect( treeView._observers.size ).to.equal( 2 );
+		} );
+
 		it( 'should be disabled and re-enabled on render', () => {
-			treeView.addObserver( observerMock );
+			treeView.addObserver( ObserverMock );
 			treeView.render();
 
-			expect( treeView.observers.has( observerMock ) ).to.be.true;
+			const observerMock = Array.from( treeView._observers )[ 0 ];
+
 			sinon.assert.calledOnce( observerMock.disable );
 			sinon.assert.calledOnce( treeView.renderer.render );
 			sinon.assert.calledTwice( observerMock.enable );

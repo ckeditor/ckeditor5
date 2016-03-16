@@ -11,29 +11,31 @@ import DomEventObserver from '/ckeditor5/core/treeview/observer/domeventobserver
 import TreeView from '/ckeditor5/core/treeview/treeview.js';
 
 class TestObserver extends DomEventObserver {
-	constructor( id ) {
-		super();
-
-		this.id = id;
+	constructor( treeView ) {
+		super( treeView );
 
 		this.domEventType = 'click';
 	}
 
 	onDomEvent( domEvt ) {
-		this.fire( 'click', this.id, domEvt );
+		this.fire( 'click', 'foo', domEvt );
 	}
 }
 
 describe( 'DomEventObserver', () => {
-	it( 'should add event lister', () => {
-		const testObserver = new TestObserver( 'foo' );
+	let treeView;
+
+	beforeEach( () => {
+		treeView = new TreeView();
+	} );
+
+	it( 'should add event listener', () => {
 		const domElement = document.createElement( 'p' );
 		const domEvent = new MouseEvent( 'click' );
-		const treeView = new TreeView();
 		const evtSpy = sinon.spy();
 
 		treeView.createRoot( domElement, 'root' );
-		treeView.addObserver( testObserver );
+		treeView.addObserver( TestObserver );
 		treeView.on( 'click', evtSpy );
 
 		domElement.dispatchEvent( domEvent );
@@ -44,16 +46,15 @@ describe( 'DomEventObserver', () => {
 	} );
 
 	it( 'should not fire event if observer is disabled', () => {
-		const testObserver = new TestObserver( 'foo' );
 		const domElement = document.createElement( 'p' );
 		const domEvent = new MouseEvent( 'click' );
-		const treeView = new TreeView();
 		const evtSpy = sinon.spy();
 
 		treeView.createRoot( domElement, 'root' );
-		treeView.addObserver( testObserver );
+		treeView.addObserver( TestObserver );
 		treeView.on( 'click', evtSpy );
 
+		const testObserver = Array.from( treeView._observers )[ 0 ];
 		testObserver.disable();
 
 		domElement.dispatchEvent( domEvent );
@@ -61,16 +62,17 @@ describe( 'DomEventObserver', () => {
 		expect( evtSpy.called ).to.be.false;
 	} );
 
-	it( 'should be fire event if observer is disabled and re-enabled', () => {
-		const testObserver = new TestObserver( 'foo' );
+	it( 'should fire event if observer is disabled and re-enabled', () => {
 		const domElement = document.createElement( 'p' );
 		const domEvent = new MouseEvent( 'click' );
 		const treeView = new TreeView();
 		const evtSpy = sinon.spy();
 
 		treeView.createRoot( domElement, 'root' );
-		treeView.addObserver( testObserver );
+		treeView.addObserver( TestObserver );
 		treeView.on( 'click', evtSpy );
+
+		const testObserver = Array.from( treeView._observers )[ 0 ];
 
 		testObserver.disable();
 
@@ -87,11 +89,8 @@ describe( 'DomEventObserver', () => {
 
 	describe( 'fire', () => {
 		it( 'should do nothing if observer is disabled', () => {
-			const testObserver = new TestObserver();
-			const treeView = new TreeView();
+			const testObserver = new TestObserver( treeView );
 			const fireSpy = sinon.spy( treeView, 'fire' );
-
-			testObserver.init( treeView );
 
 			testObserver.disable();
 

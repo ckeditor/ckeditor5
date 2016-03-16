@@ -22,12 +22,8 @@ import Observer from './observer.js';
  * @extends core.treeView.observer.Observer
  */
 export default class MutationObserver extends Observer {
-	/**
-	 * Mutation observer constructor. Note that most of the initialization is done in
-	 * {@link core.treeView.observer.MutationObserver#init} method.
-	 */
-	constructor() {
-		super();
+	constructor( treeView ) {
+		super( treeView );
 
 		/**
 		 * Native mutation observer config.
@@ -41,18 +37,6 @@ export default class MutationObserver extends Observer {
 			characterDataOldValue: true,
 			subtree: true
 		};
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	init( treeView ) {
-		/**
-		 * Reference to the {@link core.treeView.TreeView} object.
-		 *
-		 * @member {core.treeView.TreeView} core.treeView.observer.MutationObserver#treeView
-		 */
-		this.treeView = treeView;
 
 		/**
 		 * Reference to the {@link core.treeView.TreeView#domConverter}.
@@ -69,21 +53,27 @@ export default class MutationObserver extends Observer {
 		this.renderer = treeView.renderer;
 
 		/**
+		 * Observed DOM elements.
+		 *
+		 * @private
+		 * @member {HTMLElement[]} core.treeView.observer.MutationObserver#_domElements
+		 */
+		this._domElements = [];
+
+		/**
 		 * Native mutation observer.
 		 *
 		 * @private
-		 * @member {window.MutationObserver} core.treeView.observer.MutationObserver#_mutationObserver
+		 * @member {MutationObserver} core.treeView.observer.MutationObserver#_mutationObserver
 		 */
 		this._mutationObserver = new window.MutationObserver( this._onMutations.bind( this ) );
-
-		this.domElements = [];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	observe( domElement ) {
-		this.domElements.push( domElement );
+		this._domElements.push( domElement );
 
 		if ( this.isEnabled ) {
 			this._mutationObserver.observe( domElement, this._config );
@@ -96,7 +86,7 @@ export default class MutationObserver extends Observer {
 	enable() {
 		this.isEnabled = true;
 
-		for ( let domElement of this.domElements ) {
+		for ( let domElement of this._domElements ) {
 			this._mutationObserver.observe( domElement, this._config );
 		}
 	}
@@ -115,7 +105,7 @@ export default class MutationObserver extends Observer {
 	 *
 	 * @protected
 	 * @method core.treeView.observer.MutationObserver#_onMutations
-	 * @param {Array.<Object>} domMutations Array of native mutations.
+	 * @param {Object[]} domMutations Array of native mutations.
 	 */
 	_onMutations( domMutations ) {
 		// Use　map and set for deduplication.
@@ -196,7 +186,7 @@ export default class MutationObserver extends Observer {
  * mutation, so all changes which should be applied, should be handled on this event.
  *
  * @event core.treeView.TreeView#mutations
- * @param {Array.<core.treeView.TreeView~MutatatedText|core.treeView.TreeView~MutatatedChildren>} viewMutations
+ * @param {core.treeView.TreeView~MutatatedText[]|core.treeView.TreeView~MutatatedChildren[]} viewMutations
  * Array of mutations.
  * For mutated texts it will be {@link core.treeView.TreeView~MutatatedText} and for mutated elements it will be
  * {@link core.treeView.TreeView~MutatatedElement}. You can recognize the type based on the `type` property.
@@ -226,6 +216,6 @@ export default class MutationObserver extends Observer {
  *
  * @property {String} type For child nodes mutations it is always 'children'.
  * @property {core.treeView.Element} node Parent of the mutated children.
- * @property {Array.<core.treeView.Node>} oldChildren Old child nodes.
- * @property {Array.<core.treeView.Node>} newChildren New child nodes.
+ * @property {core.treeView.Node[]} oldChildren Old child nodes.
+ * @property {core.treeView.Node[]} newChildren New child nodes.
  */
