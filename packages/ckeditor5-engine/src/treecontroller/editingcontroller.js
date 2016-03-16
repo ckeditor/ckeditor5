@@ -5,13 +5,31 @@
 
 'use strict';
 
-import TreeView from '../treeview/treeview.js';
-
 export default class EditingController {
 	constructor( modelDocument ) {
 		this.model = modelDocument;
+
+		this.mapper = new Mapper();
 		this.view = new TreeView();
+
+		this.toView = new ModelConversionDispatcher( {
+			writer: this.view.writer,
+			mapper: this.mapper
+		} );
+
+		this.model.on( 'change', ( evt, type, changeInfo ) => {
+			this.toView.convertChange( type, changeInfo );
+		} );
+
+		toView.on( 'insert:text', insertText() );
+		toView.on( 'remove', remove() );
+		toView.on( 'move', move() );
 	}
 
-	destroy() {}
+	createRoot( element, name ) {
+		const viewRoot = this.view.createRoot( element, name );
+		const modelRoot = this.model.createRoot( name );
+
+		this.mapper.bindElements( modelRoot, viewRoot );
+	}
 }
