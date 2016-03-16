@@ -63,6 +63,22 @@ export default class Element extends Node {
 		if ( children ) {
 			this.insertChildren( 0, children );
 		}
+
+		/**
+		 * Set of classes associated with element instance.
+		 *
+		 * @protected
+		 * @member {Set} core.treeView.Element#_classes
+		 */
+		if ( this._attrs.has( 'class' ) ) {
+			// Remove class attribute and handle it by class set.
+			const classString = this._attrs.get( 'class' );
+			const classArray = classString.split( /\s+/ );
+			this._classes = new Set( classArray );
+			this._attrs.delete( 'class' );
+		} else {
+			this._classes = new Set();
+		}
 	}
 
 	/**

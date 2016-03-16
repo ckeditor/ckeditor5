@@ -49,6 +49,16 @@ describe( 'Element', () => {
 			expect( parent.getChildCount() ).to.equal( 1 );
 			expect( parent.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'p' );
 		} );
+
+		it( 'should move class attribute to class set ', () => {
+			const el = new ViewElement( 'p', { id: 'test', class: 'one two three' } );
+
+			expect( el._attrs.has( 'class' ) ).to.be.false;
+			expect( el._attrs.has( 'id' ) ).to.be.true;
+			expect( el._classes.has( 'one' ) ).to.be.true;
+			expect( el._classes.has( 'two' ) ).to.be.true;
+			expect( el._classes.has( 'three' ) ).to.be.true;
+		} );
 	} );
 
 	describe( 'clone', () => {
