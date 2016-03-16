@@ -295,7 +295,11 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Adds class.
+	 * Adds specified class.
+	 *
+	 * @example
+	 * element.addClass( 'foo' ); // Adds 'foo' class.
+	 * element.addClass( 'foo', 'bar' ); // Adds 'foo' and 'bar' classes.
 	 *
 	 * @param {...String} className
 	 */
@@ -304,11 +308,35 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Removes class.
+	 * Removes specified class.
+	 *
+	 * @example
+ 	 * element.removeClass( 'foo' );  // Removes 'foo' class.
+	 * element.removeClass( 'foo', 'bar' ); // Removes both 'foo' and 'bar' classes.
 	 *
 	 * @param {...String} className
 	 */
 	removeClass( ...className ) {
 		className.forEach( name => this._classes.delete( name ) );
+	}
+
+	/**
+	 * Returns true if class is present.
+	 * If more then one class is provided - returns true only when all classes are present.
+	 *
+	 * @example
+	 * element.hasClass( 'foo' ); // Returns true if 'foo' class is present.
+	 * element.hasClass( 'foo', 'bar' ); // Returns true if 'foo' and 'bar' classes are both present.
+	 *
+	 * @param {...String} className
+	 */
+	hasClass( ...className ) {
+		for ( let name of className ) {
+			if ( !this._classes.has( name ) ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }

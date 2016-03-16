@@ -352,4 +352,26 @@ describe( 'Element', () => {
 			expect( el._classes.has( 'four' ) ).to.be.true;
 		} );
 	} );
+
+	describe( 'hasClass', () => {
+		it( 'should check if element has a class', () => {
+			const el = new ViewElement( 'foo' );
+			el.addClass( 'one', 'two', 'three' );
+
+			expect( el.hasClass( 'one' ) ).to.be.true;
+			expect( el.hasClass( 'two' ) ).to.be.true;
+			expect( el.hasClass( 'three' ) ).to.be.true;
+			expect( el.hasClass( 'four' ) ).to.be.false;
+		} );
+
+		it( 'should check if element has multiple classes', () => {
+			const el = new ViewElement( 'foo' );
+			el.addClass( 'one', 'two', 'three' );
+
+			expect( el.hasClass( 'one', 'two' ) ).to.be.true;
+			expect( el.hasClass( 'three', 'two' ) ).to.be.true;
+			expect( el.hasClass( 'three', 'one', 'two' ) ).to.be.true;
+			expect( el.hasClass( 'three', 'one', 'two', 'zero' ) ).to.be.false;
+		} );
+	} );
 } );
