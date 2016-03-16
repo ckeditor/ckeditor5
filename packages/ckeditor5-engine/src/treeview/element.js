@@ -157,16 +157,33 @@ export default class Element extends Node {
 	 * @returns {Iterator.<String>} Keys for attributes.
 	 */
 	getAttributeKeys() {
-		return this._attrs.keys();
+		const iterator = this._attrs.keys();
+
+		if ( this._classes.size > 0 ) {
+			return ( function*() {
+				yield 'class';
+				yield* iterator;
+			}() );
+		}
+
+		return iterator;
 	}
 
 	/**
-	 * Gets attribute by key.
+	 * Gets attribute by key. If attribute is not present - returns undefined.
 	 *
 	 * @param {String} key Attribute key.
-	 * @returns {String} Attribute value.
+	 * @returns {String|undefined} Attribute value.
 	 */
 	getAttribute( key ) {
+		if ( key == 'class' ) {
+			if ( this._classes.size > 0 ) {
+				return [ ...this._classes ].join( ' ' );
+			}
+
+			return undefined;
+		}
+
 		return this._attrs.get( key );
 	}
 
@@ -177,6 +194,10 @@ export default class Element extends Node {
 	 * @returns {Boolean} `true` if attribute with the specified key exists in the element, false otherwise.
 	 */
 	hasAttribute( key ) {
+		if ( key == 'class' ) {
+			return this._classes.size  > 0;
+		}
+
 		return this._attrs.has( key );
 	}
 
@@ -190,7 +211,13 @@ export default class Element extends Node {
 	setAttribute( key, value ) {
 		this._fireChange( 'ATTRIBUTES', this );
 
-		this._attrs.set( key, value );
+		if ( key == 'class' ) {
+			const classArray = value.split( /\s+/ );
+			this._classes.clear();
+			this.addClass( ...classArray );
+		} else {
+			this._attrs.set( key, value );
+		}
 	}
 
 	/**

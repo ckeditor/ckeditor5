@@ -260,6 +260,33 @@ describe( 'Element', () => {
 			el = new ViewElement( 'p' );
 		} );
 
+		describe( 'setAttribute', () => {
+			it( 'should set attribute', () => {
+				el.setAttribute( 'foo', 'bar' );
+
+				expect( el._attrs.has( 'foo' ) ).to.be.true;
+				expect( el._attrs.get( 'foo' ) ).to.equal( 'bar' );
+			} );
+
+			it( 'should set class', () => {
+				el.setAttribute( 'class', 'foo bar' );
+
+				expect( el._attrs.has( 'class' ) ).to.be.false;
+				expect( el._classes.has( 'foo' )  ).to.be.true;
+				expect( el._classes.has( 'bar' )  ).to.be.true;
+			} );
+
+			it( 'should replace all existing classes', () => {
+				el.setAttribute( 'class', 'foo bar baz' );
+				el.setAttribute( 'class', 'qux' );
+
+				expect( el._classes.has( 'foo' )  ).to.be.false;
+				expect( el._classes.has( 'bar' )  ).to.be.false;
+				expect( el._classes.has( 'baz' )  ).to.be.false;
+				expect( el._classes.has( 'qux' )  ).to.be.true;
+			} );
+		} );
+
 		describe( 'getAttribute', () => {
 			it( 'should return attribute', () => {
 				el.setAttribute( 'foo', 'bar' );
@@ -275,6 +302,12 @@ describe( 'Element', () => {
 
 				expect( el.hasAttribute( 'foo' ) ).to.be.true;
 				expect( el.hasAttribute( 'bom' ) ).to.be.false;
+			} );
+
+			it( 'should return true if element has class attribute', () => {
+				expect( el.hasAttribute( 'class' ) ).to.be.false;
+				el.addClass( 'foo' );
+				expect( el.hasAttribute( 'class' ) ).to.be.true;
 			} );
 		} );
 
@@ -292,6 +325,18 @@ describe( 'Element', () => {
 				}
 
 				expect( i ).to.equal( 2 );
+			} );
+
+			it( 'should return class key', () => {
+				el.addClass( 'foo' );
+				el.setAttribute( 'bar', true );
+				const expected = [ 'class', 'bar' ];
+				let i = 0;
+
+				for ( let key of el.getAttributeKeys() ) {
+					expect( key ).to.equal( expected[ i ] );
+					i++;
+				}
 			} );
 		} );
 
