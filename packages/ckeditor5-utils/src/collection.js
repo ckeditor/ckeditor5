@@ -252,6 +252,7 @@ export default class Collection {
 	/**
 	 * Generates next (not yet used) id for unidentified item being add to the collection.
 	 *
+	 * @private
 	 * @returns {String} The next id.
 	 */
 	_getNextId() {
