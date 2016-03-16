@@ -309,4 +309,47 @@ describe( 'Element', () => {
 			} );
 		} );
 	} );
+
+	describe( 'addClass', () => {
+		it( 'should add single class', () => {
+			const el = new ViewElement( 'foo' );
+
+			el.addClass( 'one' );
+
+			expect( el._classes.has( 'one' ) ).to.be.true;
+		} );
+
+		it( 'should add multiple classes', () => {
+			const el = new ViewElement( 'foo' );
+
+			el.addClass( 'one', 'two', 'three' );
+
+			expect( el._classes.has( 'one' ) ).to.be.true;
+			expect( el._classes.has( 'two' ) ).to.be.true;
+			expect( el._classes.has( 'three' ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'removeClass', () => {
+		it( 'should remove single class', () => {
+			const el = new ViewElement( 'foo', { class: 'one two three' } );
+
+			el.removeClass( 'one' );
+
+			expect( el._classes.has( 'one' ) ).to.be.false;
+			expect( el._classes.has( 'two' ) ).to.be.true;
+			expect( el._classes.has( 'three' ) ).to.be.true;
+		} );
+
+		it( 'should remove multiple classes', () => {
+			const el = new ViewElement( 'foo', { class: 'one two three four' } );
+
+			el.removeClass( 'one', 'two', 'three' );
+
+			expect( el._classes.has( 'one' ) ).to.be.false;
+			expect( el._classes.has( 'two' ) ).to.be.false;
+			expect( el._classes.has( 'three' ) ).to.be.false;
+			expect( el._classes.has( 'four' ) ).to.be.true;
+		} );
+	} );
 } );

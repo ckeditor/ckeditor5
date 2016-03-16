@@ -293,4 +293,22 @@ export default class Element extends Node {
 
 		return true;
 	}
+
+	/**
+	 * Adds class.
+	 *
+	 * @param {...String} className
+	 */
+	addClass( ...className ) {
+		className.forEach( name => this._classes.add( name ) );
+	}
+
+	/**
+	 * Removes class.
+	 *
+	 * @param {...String} className
+	 */
+	removeClass( ...className ) {
+		className.forEach( name => this._classes.delete( name ) );
+	}
 }
