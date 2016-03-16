@@ -35,6 +35,15 @@ export default class EditorUI extends Controller {
 		this.editor = editor;
 
 		/**
+		 * Property used by the [CKEditor UI library](https://github.com/ckeditor/ckeditor5-ui) for storing
+		 * the main UI controller.
+		 *
+		 * @readonly
+		 * @member {ui.editorui.EditorUI} ckeditor5.Editor#ui
+		 */
+		editor.ui = this;
+
+		/**
 		 * @readonly
 		 * @member {ui.ComponentFactory} ui.editorUI.EditorUI#featureComponents
 		 */

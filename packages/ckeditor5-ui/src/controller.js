@@ -115,6 +115,7 @@ export default class Controller {
 			.then( this._initCollections.bind( this ) )
 			.then( () => {
 				this.ready = true;
+				this.fire( 'ready' );
 			} );
 	}
 
@@ -215,3 +216,9 @@ export default class Controller {
 }
 
 utils.mix( Controller, EmitterMixin );
+
+/**
+ * Fired when the controller is fully initialized.
+ *
+ * @event ui.Controller#ready
+ */

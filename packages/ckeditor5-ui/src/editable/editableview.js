@@ -37,17 +37,9 @@ export default class EditableView extends View {
 		this.editableElement = editableElement;
 
 		this.applyTemplateToElement( editableElement, {
-			on: {
-				focus: () => {
-					this.model.isFocused = true;
-				},
-				blur: () => {
-					this.model.isFocused = false;
-				}
-			},
-
 			attributes: {
-				contentEditable: bind.to( 'isEditable' )
+				contentEditable: bind.to( 'isEditable' ),
+				class: [ bind.to( 'isFocused', value => value ? 'ck-focused' : 'ck-blurred' ) ]
 			}
 		} );
 	}

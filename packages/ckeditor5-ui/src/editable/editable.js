@@ -21,25 +21,11 @@ export default class Editable extends Controller {
 	 *
 	 * @param editor
 	 */
-	constructor( editor ) {
+	constructor( editor, editableModel ) {
 		super();
 
 		this.editor = editor;
-
-		/**
-		 * Whether the editable is in read-write or read-only mode.
-		 *
-		 * @member {Boolean} ui.editable.Editable#isEditable
-		 */
-		this.set( 'isEditable', true );
-
-		/**
-		 * Whether the editable is focused.
-		 *
-		 * @readonly
-		 * @member {Boolean} ui.editable.Editable#isFocused
-		 */
-		this.set( 'isFocused', false );
+		this._editableModel = editableModel;
 	}
 
 	/**
@@ -53,15 +39,11 @@ export default class Editable extends Controller {
 			return this._viewModel;
 		}
 
-		const viewModel = new Model( {
-			isFocused: this.isFocused
-		} );
-		this._viewModel = viewModel;
+		this._viewModel = new Model();
 
-		viewModel.bind( 'isEditable' ).to( this );
-		this.bind( 'isFocused' ).to( viewModel );
+		this._viewModel.bind( 'isEditable', 'isFocused' ).to( this._editableModel );
 
-		return viewModel;
+		return this._viewModel;
 	}
 
 	/**
@@ -95,11 +77,13 @@ utils.mix( Editable, ObservableMixin );
 /**
  * Whether the editable has focus.
  *
+ * @readonly
  * @member {Boolean} ui.editable.EditableModel#isFocused
  */
 
 /**
  * Whether the editable is not in read-only mode.
  *
+ * @readonly
  * @member {Boolean} ui.editable.EditableModel#isEditable
  */
