@@ -14,21 +14,19 @@ import { createEditableUI, createEditorUI } from '/ckeditor5/ui/bindings/creator
 
 import BoxedEditorUI from '/tests/ckeditor5/_utils/ui/boxededitorui/boxededitorui.js';
 import BoxedEditorUIView from '/tests/ckeditor5/_utils/ui/boxededitorui/boxededitoruiview.js';
-import FramedEditableUI from '/tests/ckeditor5/_utils/ui/editable/framed/framededitable.js';
-import FramedEditableUIView from '/tests/ckeditor5/_utils/ui/editable/framed/framededitableview.js';
+import InlineEditableUI from '/tests/ckeditor5/_utils/ui/editable/inline/inlineeditable.js';
+import InlineEditableUIView from '/tests/ckeditor5/_utils/ui/editable/inline/inlineeditableview.js';
 import Model from '/ckeditor5/ui/model.js';
 import Toolbar from '/ckeditor5/ui/bindings/toolbar.js';
 import ToolbarView from '/ckeditor5/ui/toolbar/toolbarview.js';
-
 import { imitateFeatures, imitateDestroyFeatures } from '../imitatefeatures.js';
 
-export default class ClassicCreator extends Creator {
+export default class MultiCreator extends Creator {
 	constructor( editor ) {
 		super( editor, new HtmlDataProcessor() );
 
-		const editableName = editor.firstElementName;
-		editor.editables.add( new Editable( editor, editableName ) );
-		editor.document.createRoot( editableName, '$root' );
+		// Engine.
+		this._createEditables();
 
 		// UI.
 		createEditorUI( editor, BoxedEditorUI, BoxedEditorUIView );
@@ -39,32 +37,48 @@ export default class ClassicCreator extends Creator {
 
 	create() {
 		const editor = this.editor;
-		const editable = editor.editables.get( 0 );
 
 		// Features mock.
 		imitateFeatures( editor );
 
 		// UI.
-		this._replaceElement( editor.firstElement, editor.ui.view.element );
 		this._createToolbar();
-		editor.ui.add( 'main', createEditableUI( editor, editable, FramedEditableUI, FramedEditableUIView ) );
+
+		for ( let editable of editor.editables ) {
+			editor.ui.add( 'main', createEditableUI( editor, editable, InlineEditableUI, InlineEditableUIView ) );
+		}
+
+		editor.elements.forEach( ( element ) => {
+			this._replaceElement( element, null );
+		} );
 
 		// Init.
 		return super.create()
 			.then( () => editor.ui.init() )
 			// We'll be able to do that much earlier once the loading will be done to the document model,
 			// rather than straight to the editable.
-			.then( () => this.loadDataFromEditorElement() );
+			.then( () => this.loadDataFromEditorElements() );
 	}
 
 	destroy() {
 		imitateDestroyFeatures();
 
-		this.updateEditorElement();
+		this.updateEditorElements();
 
 		super.destroy();
 
-		return this.editor.ui.destroy();
+		this.editor.ui.destroy();
+	}
+
+	_createEditables() {
+		const editor = this.editor;
+
+		editor.elements.forEach( ( editorElement, editableName ) => {
+			const editable = new Editable( editor, editableName );
+
+			editor.editables.add( editable );
+			editor.document.createRoot( editableName, '$root' );
+		} );
 	}
 
 	_createToolbar() {

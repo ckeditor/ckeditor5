@@ -8,8 +8,8 @@
 import Editable from '/ckeditor5/ui/editable/editable.js';
 
 export default class FramedEditable extends Editable {
-	constructor( editor ) {
-		super( editor );
+	constructor( editor, editableModel ) {
+		super( editor, editableModel );
 
 		this.viewModel.bind( 'width', 'height' ).to( editor.ui );
 	}

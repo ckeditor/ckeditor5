@@ -11,7 +11,18 @@ export default class InlineEditableView extends EditableView {
 	constructor( model, locale, editableElement ) {
 		super( model, locale );
 
-		this.element = editableElement;
+		if ( editableElement ) {
+			this.element = editableElement;
+		} else {
+			const bind = this.attributeBinder;
+
+			this.template = {
+				tag: 'div',
+				attributes: {
+					contentEditable: bind.to( 'isEditable' )
+				}
+			};
+		}
 	}
 
 	init() {

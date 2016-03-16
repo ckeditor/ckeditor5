@@ -6,21 +6,20 @@
 'use strict';
 
 import Editor from '/ckeditor5/editor.js';
+import Document from '/ckeditor5/core/treemodel/document.js';
 import AttributeCommand from '/ckeditor5/command/attributecommand.js';
 import Text from '/ckeditor5/engine/treemodel/text.js';
 import Range from '/ckeditor5/engine/treemodel/range.js';
 import Position from '/ckeditor5/engine/treemodel/position.js';
 import Element from '/ckeditor5/engine/treemodel/element.js';
 
-let element, editor, command, modelDoc, root;
+let editor, command, modelDoc, root;
 
 const attrKey = 'bold';
 
 beforeEach( () => {
-	element = document.createElement( 'div' );
-	document.body.appendChild( element );
-
-	editor = new Editor( element );
+	editor = new Editor();
+	editor.document = new Document();
 	modelDoc = editor.document;
 	root = modelDoc.createRoot( 'root', 'div' );
 

@@ -31,6 +31,7 @@ export default class Command {
 		/**
 		 * Editor on which this command will be used.
 		 *
+		 * @readonly
 		 * @member {ckeditor5.Editor} ckeditor5.command.Command#editor
 		 */
 		this.editor = editor;

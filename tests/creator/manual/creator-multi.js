@@ -8,25 +8,28 @@
 'use strict';
 
 import CKEDITOR from '/ckeditor.js';
-import InlineCreator from '/tests/ckeditor5/creator/manual/_utils/creator/inlinecreator.js';
+import MultiCreator from '/tests/ckeditor5/creator/manual/_utils/creator/multicreator.js';
 import testUtils from '/tests/utils/_utils/utils.js';
 
-let editor, editable, observer;
+let editor, editables, observer;
 
 function initEditor() {
-	CKEDITOR.create( '#editor', {
-		creator: InlineCreator,
+	CKEDITOR.create( '.editor', {
+		creator: MultiCreator,
 		toolbar: [ 'bold', 'italic' ]
 	} )
 	.then( ( newEditor ) => {
 		console.log( 'Editor was initialized', newEditor );
-		console.log( 'You can now play with it using global `editor` and `editable` variable.' );
+		console.log( 'You can now play with it using global `editor` and `editables` variables.' );
 
 		window.editor = editor = newEditor;
-		window.editable = editable = editor.editables.get( 0 );
+		window.editables = editables = editor.editables;
 
 		observer = testUtils.createObserver();
-		observer.observe( 'Editable', editable );
+		observer.observe( 'Editable 1', editables.get( 'editable1' ) );
+		observer.observe( 'Editable 2', editables.get( 'editable2' ) );
+
+		document.getElementById( 'editorContainer' ).appendChild( editor.ui.view.element );
 	} );
 }
 
@@ -34,10 +37,12 @@ function destroyEditor() {
 	editor.destroy()
 		.then( () => {
 			window.editor = editor = null;
-			window.editable = editable = null;
+			window.editables = editables = null;
 
 			observer.stopListening();
 			observer = null;
+
+			document.getElementById( 'editorContainer' ).innerHTML = '';
 
 			console.log( 'Editor was destroyed' );
 		} );

@@ -8,9 +8,13 @@
 'use strict';
 
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
-import Creator from '/ckeditor5/creator.js';
+import BaseCreator from '/ckeditor5/creator/basecreator.js';
+import Creator from '/ckeditor5/creator/creator.js';
 import Editor from '/ckeditor5/editor.js';
-import Plugin from '/ckeditor5/plugin.js';
+import HtmlDataProcessor from '/ckeditor5/core/dataprocessor/htmldataprocessor.js';
+import Document from '/ckeditor5/core/treemodel/document.js';
+import EditingController from '/ckeditor5/core/treecontroller/editingcontroller.js';
+import DataController from '/ckeditor5/core/treecontroller/datacontroller.js';
 
 testUtils.createSinonSandbox();
 
@@ -18,110 +22,55 @@ describe( 'Creator', () => {
 	let creator, editor;
 
 	beforeEach( () => {
-		const editorElement = document.createElement( 'div' );
-		document.body.appendChild( editorElement );
+		const firstElement = document.createElement( 'div' );
+		document.body.appendChild( firstElement );
 
-		editor = new Editor( editorElement );
-		creator = new Creator( editor );
+		const secondElement = document.createElement( 'div' );
+		document.body.appendChild( secondElement );
+
+		editor = new Editor( { first: firstElement, second: secondElement } );
+		creator = new Creator( editor, new HtmlDataProcessor() );
+	} );
+
+	describe( 'constructor', () => {
+		it( 'inherits from the BaseCreator', () => {
+			expect( creator ).to.be.instanceOf( BaseCreator );
+		} );
+
+		it( 'creates the engine', () => {
+			expect( editor.document ).to.be.instanceOf( Document );
+			expect( editor.editing ).to.be.instanceOf( EditingController );
+			expect( editor.data ).to.be.instanceOf( DataController );
+			expect( editor.data.processor ).to.be.instanceOf( HtmlDataProcessor );
+		} );
 	} );
 
 	describe( 'create', () => {
-		it( 'should init the UI', () => {
-			const promise = new Promise( () => {} );
-
-			editor.ui = {
-				init: sinon.stub().returns( promise )
-			};
-
-			const ret = creator.create();
-
-			expect( ret ).to.equal( promise );
-			expect( editor.ui.init.called ).to.be.true;
-		} );
-
-		it( 'should not fail when there is no UI', () => {
-			expect( editor.ui ).to.not.exist;
-
-			return creator.create()
-				.then(); // Just checking whether a promise was returned.
+		it( 'returns a promise', () => {
+			expect( creator.create() ).to.be.instanceOf( Promise );
 		} );
 	} );
 
 	describe( 'destroy', () => {
 		it( 'calls super.destroy', () => {
-			const pluginSpy  = testUtils.sinon.spy( Plugin.prototype, 'destroy' );
-
-			editor.ui = {
-				destroy() {}
-			};
+			const baseCreatorSpy = testUtils.sinon.spy( BaseCreator.prototype, 'destroy' );
 
 			creator.destroy();
 
-			expect( pluginSpy.called ).to.be.true;
+			expect( baseCreatorSpy.called ).to.be.true;
 		} );
 
-		it( 'should destroy the UI (sync)', () => {
-			const uiSpy = sinon.spy();
+		it( 'should destroy the engine', () => {
+			const spy = editor.document.destroy = editor.data.destroy = editor.editing.destroy = sinon.spy();
 
-			editor.ui = {
-				destroy: uiSpy
-			};
+			creator.destroy();
 
-			return creator.destroy()
-				.then( () => {
-					expect( uiSpy.called ).to.be.true;
-					expect( editor.ui ).to.be.null;
-				} );
-		} );
-
-		it( 'should destroy the UI (async)', () => {
-			const uiSpy = sinon.stub().returns( Promise.resolve() );
-
-			editor.ui = {
-				destroy: uiSpy
-			};
-
-			return creator.destroy()
-				.then( () => {
-					expect( uiSpy.called ).to.be.true;
-					expect( editor.ui ).to.be.null;
-				} );
-		} );
-
-		it( 'should wait until UI is destroyed (async)', () => {
-			let resolved = false;
-			let resolve;
-			const uiSpy = sinon.stub().returns(
-				new Promise( ( r ) => {
-					resolve = r;
-				} )
-			);
-
-			editor.ui = {
-				destroy: uiSpy
-			};
-
-			// Is there an easier method to verify whether the promise chain isn't broken? ;/
-			setTimeout( () => {
-				resolved = true;
-				resolve( 'foo' );
-			} );
-
-			return creator.destroy()
-				.then( () => {
-					expect( resolved ).to.be.true;
-				} );
+			expect( spy.callCount ).to.equal( 3 );
 		} );
 
 		it( 'should restore the replaced element', () => {
-			const spy = testUtils.sinon.stub( creator, '_restoreElement' );
-			const element = document.createElement( 'div' );
+			const spy = testUtils.sinon.stub( creator, '_restoreElements' );
 
-			editor.ui = {
-				destroy() {}
-			};
-
-			creator._replaceElement( element );
 			creator.destroy();
 
 			expect( spy.calledOnce ).to.be.true;
@@ -129,29 +78,54 @@ describe( 'Creator', () => {
 	} );
 
 	describe( 'updateEditorElement', () => {
-		it( 'should pass data to the element', () => {
-			editor.editable = {
-				getData() {
-					return 'foo';
-				}
+		it( 'should pass data to the first element when element name not specified', () => {
+			editor.getData = ( rootName ) => {
+				expect( rootName ).to.equal( 'first' );
+
+				return 'foo';
 			};
 
 			creator.updateEditorElement();
 
-			expect( editor.element.innerHTML ).to.equal( 'foo' );
+			expect( editor.firstElement.innerHTML ).to.equal( 'foo' );
+		} );
+
+		it( 'should pass data to the given element', () => {
+			editor.elements.set( 'second', document.createElement( 'div' ) );
+
+			editor.getData = ( rootName ) => {
+				expect( rootName ).to.equal( 'second' );
+
+				return 'foo';
+			};
+
+			creator.updateEditorElement( 'second' );
+
+			expect( editor.elements.get( 'second' ).innerHTML ).to.equal( 'foo' );
 		} );
 	} );
 
 	describe( 'loadDataFromEditorElement', () => {
-		it( 'should pass data to the element', () => {
-			editor.editable = {
-				setData: sinon.spy()
-			};
+		it( 'should pass data to the first element', () => {
+			editor.setData = sinon.spy();
 
-			editor.element.innerHTML = 'foo';
+			editor.elements.get( 'first' ).innerHTML = 'foo';
 			creator.loadDataFromEditorElement();
 
-			expect( editor.editable.setData.args[ 0 ][ 0 ] ).to.equal( 'foo' );
+			expect( editor.setData.calledWithExactly( 'foo', 'first' ) ).to.be.true;
+		} );
+
+		it( 'should pass data to the given element', () => {
+			const element = document.createElement( 'div' );
+			element.innerHTML = 'foo';
+
+			editor.elements.set( 'second', element );
+
+			editor.setData = sinon.spy();
+
+			creator.loadDataFromEditorElement( 'second' );
+
+			expect( editor.setData.calledWithExactly( 'foo', 'second' ) ).to.be.true;
 		} );
 	} );
 
@@ -179,30 +153,39 @@ describe( 'Creator', () => {
 	} );
 
 	describe( '_replaceElement', () => {
-		it( 'should use editor ui element when arg not provided', () => {
-			editor.ui = {
-				view: {
-					element: document.createElement( 'div' )
-				}
-			};
+		it( 'should hide the element', () => {
+			const el = editor.elements.get( 'first' );
 
-			creator._replaceElement();
+			creator._replaceElement( el );
 
-			expect( editor.element.nextSibling ).to.equal( editor.ui.view.element );
+			expect( el.style.display ).to.equal( 'none' );
+		} );
+
+		it( 'should inserts the replacement next to the element being hidden', () => {
+			const el = editor.elements.get( 'first' );
+			const replacement = document.createElement( 'div' );
+
+			creator._replaceElement( el, replacement );
+
+			expect( el.nextSibling ).to.equal( replacement );
 		} );
 	} );
 
 	describe( '_restoreElement', () => {
-		it( 'should remove the replacement element', () => {
-			const element = document.createElement( 'div' );
+		it( 'should restore all elements', () => {
+			const el1 = editor.elements.get( 'first' );
+			const replacement1 = document.createElement( 'div' );
+			const el2 = editor.elements.get( 'second' );
+			const replacement2 = document.createElement( 'div' );
 
-			creator._replaceElement( element );
+			creator._replaceElement( el1, replacement1 );
+			creator._replaceElement( el2, replacement2 );
 
-			expect( editor.element.nextSibling ).to.equal( element );
+			creator._restoreElements();
 
-			creator._restoreElement();
-
-			expect( element.parentNode ).to.be.null;
+			expect( replacement1.parentNode ).to.be.null;
+			expect( replacement2.parentNode ).to.be.null;
+			expect( el2.style.display ).to.not.equal( 'none' );
 		} );
 	} );
 } );

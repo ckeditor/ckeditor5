@@ -8,7 +8,7 @@
 import ObservableMixin from './utils/observablemixin.js';
 import EditorConfig from './editorconfig.js';
 import PluginCollection from './plugincollection.js';
-import Document from './engine/treemodel/document.js';
+import EditableCollection from './editablecollection.js';
 import CKEditorError from './utils/ckeditorerror.js';
 import Locale from './utils/locale.js';
 import isArray from './utils/lib/lodash/isArray.js';
@@ -27,18 +27,26 @@ export default class Editor {
 	 * This constructor should be rarely used. When creating new editor instance use instead the
 	 * {@link CKEDITOR#create `CKEDITOR.create()` method}.
 	 *
-	 * @param {HTMLElement} element The DOM element that will be the source for the created editor.
+	 * @param {Iterable.<String, HTMLElement>|null} [elements] The DOM elements that will be the source
+	 * for the created editor.
 	 * @param {Object} config The editor config.
 	 */
-	constructor( element, config ) {
+	constructor( elements, config ) {
 		/**
-		 * The original host page element upon which the editor is created. It is only supposed to be provided on
-		 * editor creation and is not subject to be modified.
+		 * The original host page elements upon which the editor is created.
 		 *
 		 * @readonly
-		 * @member {HTMLElement} ckeditor5.Editor#element
+		 * @member {Map.<String, HTMLElement>|null} ckeditor5.Editor#elements
 		 */
-		this.element = element;
+		if ( elements ) {
+			this.elements = new Map();
+
+			for ( let name in elements ) {
+				this.elements.set( name, elements[ name ] );
+			}
+		} else {
+			this.elements = null;
+		}
 
 		/**
 		 * Holds all configurations specific to this editor instance.
@@ -61,18 +69,18 @@ export default class Editor {
 		this.plugins = new PluginCollection( this );
 
 		/**
-		 * Tree Model document managed by this editor.
+		 * The editables of the editor.
 		 *
 		 * @readonly
-		 * @member {engine.treeModel.Document} ckeditor5.Editor#document
+		 * @member {ckeditor5.EditableCollection} ckeditor5.Editor#editables
 		 */
-		this.document = new Document();
+		this.editables = new EditableCollection();
 
 		/**
 		 * Commands registered to the editor.
 		 *
 		 * @readonly
-		 * @member {Map} ckeditor5.Editor#commands
+		 * @member {Map.<ckeditor5.command.Command>} ckeditor5.Editor#commands
 		 */
 		this.commands = new Map();
 
@@ -91,11 +99,66 @@ export default class Editor {
 		this.t = this.locale.t;
 
 		/**
+		 * Tree Model document managed by this editor.
+		 *
+		 * This property is set by the {@link ckeditor5.Creator}.
+		 *
+		 * @readonly
+		 * @member {core.treeModel.Document} ckeditor5.Editor#document
+		 */
+
+		/**
+		 * Instance of the {@link core.treecontroller.EditingController editing controller}.
+		 *
+		 * This property is set by the {@link ckeditor5.Creator}.
+		 *
+		 * @readonly
+		 * @member {core.treecontroller.EditingController} ckeditor5.Editor#editing
+		 */
+
+		/**
+		 * Instance of the {@link core.treecontroller.DataController data controller}.
+		 *
+		 * This property is set by the {@link ckeditor5.Creator}.
+		 *
+		 * @readonly
+		 * @member {core.treecontroller.DataController} ckeditor5.Editor#data
+		 */
+
+		/**
 		 * The chosen creator.
 		 *
 		 * @protected
 		 * @member {ckeditor5.Creator} ckeditor5.Editor#_creator
 		 */
+	}
+
+	/**
+	 * First element from {@link ckeditor5.Editor#elements}.
+	 *
+	 * @readonly
+	 * @type {HTMLElement|null}
+	 */
+	get firstElement() {
+		if ( !this.elements ) {
+			return null;
+		}
+
+		return utils.nth( 0, this.elements )[ 1 ];
+	}
+
+	/**
+	 * Name of the first element from {@link ckeditor5.Editor#elements}.
+	 *
+	 * @readonly
+	 * @type {String|null}
+	 */
+	get firstElementName() {
+		if ( !this.elements ) {
+			return null;
+		}
+
+		return utils.nth( 0, this.elements )[ 0 ];
 	}
 
 	/**
@@ -168,26 +231,47 @@ export default class Editor {
 	 * @returns {Promise} A promise that resolves once the editor instance is fully destroyed.
 	 */
 	destroy() {
-		const that = this;
-
 		this.fire( 'destroy' );
 		this.stopListening();
 
+		// Note: The destruction order should be the reverse of the initialization order.
 		return Promise.resolve()
 			.then( () => {
-				return that._creator && that._creator.destroy();
+				return this._creator && this._creator.destroy();
 			} )
-			.then( () => {
-				delete this.element;
-			} );
+			.then( () => this.editables.destroy() );
 	}
 
-	setData( data ) {
-		this.editable.setData( data );
+	/**
+	 *
+	 */
+	setData( data, rootEditableName ) {
+		if ( !this.data ) {
+			/**
+			 * Data controller has not been defined yet, so methds like {@link ckeditor5.Editor#setData} and
+			 * {@link ckeditor5.Editor#getData} cannot be used.
+			 *
+			 * @error editor-no-datacontroller
+			 */
+			throw new CKEditorError( 'editor-no-datacontroller: Data controller has not been defined yet.' );
+		}
+
+		this.data.set( rootEditableName || this._getDefaultRootName(), data );
 	}
 
-	getData() {
-		return this.editable.getData();
+	/**
+	 *
+	 */
+	getData( rootEditableName ) {
+		if ( !this.data ) {
+			throw new CKEditorError( 'editor-no-datacontroller: Data controller has not been defined yet.' );
+		}
+
+		if ( rootEditableName ) {
+			return this.data.get( rootEditableName );
+		}
+
+		return this.data.get( this._getDefaultRootName() );
 	}
 
 	/**
@@ -209,6 +293,35 @@ export default class Editor {
 		}
 
 		command._execute( commandParam );
+	}
+
+	/**
+	 * Returns name of the root editable if there is only one. If there are multiple root editables, throws an error.
+	 *
+	 * Note: The error message makes sense only for methods like {@link ckeditor5.Editor#setData} and
+	 * {@link ckeditor5.Editor#getData}.
+	 *
+	 * @private
+	 * @returns {String}
+	 */
+	_getDefaultRootName() {
+		const rootNames = Array.from( this.document.rootNames );
+
+		if ( rootNames.length > 1 ) {
+			/**
+			 * The name of the root editable must be specified. There are multiple root editables added to the editor,
+			 * so the name of the editable must be specified.
+			 *
+			 * @error editor-root-editable-name-missing
+			 */
+			throw new CKEditorError( 'editor-root-editable-name-missing: The name of the root editable must be specified.' );
+		}
+
+		if ( rootNames.length === 0 ) {
+			throw new CKEditorError( 'editor-no-root-editables: There are no root editables defined.' );
+		}
+
+		return rootNames[ 0 ];
 	}
 }
 
