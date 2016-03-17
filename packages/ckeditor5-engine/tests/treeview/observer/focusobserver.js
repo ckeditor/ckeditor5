@@ -37,7 +37,7 @@ describe( 'FocusObserver', () => {
 			expect( spy.calledOnce ).to.be.true;
 
 			const data = spy.args[ 0 ][ 1 ];
-			expect( data.viewTarget ).to.equal( viewBody );
+			expect( data.target ).to.equal( viewBody );
 			expect( data.domTarget ).to.equal( document.body );
 		} );
 
@@ -51,7 +51,7 @@ describe( 'FocusObserver', () => {
 			expect( spy.calledOnce ).to.be.true;
 
 			const data = spy.args[ 0 ][ 1 ];
-			expect( data.viewTarget ).to.equal( viewBody );
+			expect( data.target ).to.equal( viewBody );
 			expect( data.domTarget ).to.equal( document.body );
 		} );
 	} );
