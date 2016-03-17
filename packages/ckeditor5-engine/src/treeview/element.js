@@ -97,7 +97,10 @@ export default class Element extends Node {
 			}
 		}
 
-		return new Element( this.name, this._attrs, childrenClone );
+		const cloned = new Element( this.name, this._attrs, childrenClone );
+		cloned._classes = new Set( this._classes );
+
+		return cloned;
 	}
 
 	/**

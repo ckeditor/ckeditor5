@@ -109,6 +109,17 @@ describe( 'Element', () => {
 			expect( clone.getAttribute( 'attr2' ) ).to.equal( 'bar' );
 			expect( clone.getChildCount() ).to.equal( 0 );
 		} );
+
+		it( 'should clone when with class attribute', () => {
+			const el = new ViewElement( 'p', { foo: 'bar' } );
+			el.addClass( 'baz', 'qux' );
+			const clone = el.clone( false );
+
+			expect( clone ).to.not.equal( el );
+			expect( clone.name ).to.equal( el.name );
+			expect( clone.getAttribute( 'foo' ) ).to.equal( 'bar' );
+			expect( clone.getAttribute( 'class' ) ).to.equal( 'baz qux' );
+		} );
 	} );
 
 	describe( 'isSimilar', () => {
