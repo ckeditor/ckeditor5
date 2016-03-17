@@ -8,6 +8,7 @@
 'use strict';
 
 import DomEventObserver from '/ckeditor5/core/treeview/observer/domeventobserver.js';
+import Observer from '/ckeditor5/core/treeview/observer/observer.js';
 import TreeView from '/ckeditor5/core/treeview/treeview.js';
 
 class TestObserver extends DomEventObserver {
@@ -27,6 +28,14 @@ describe( 'DomEventObserver', () => {
 
 	beforeEach( () => {
 		treeView = new TreeView();
+	} );
+
+	describe( 'constructor', () => {
+		it( 'should create Observer with properties', () => {
+			const observer = new DomEventObserver( treeView );
+
+			expect( observer ).to.be.an.instanceof( Observer );
+		} );
 	} );
 
 	it( 'should add event listener', () => {

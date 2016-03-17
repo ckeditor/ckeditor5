@@ -45,18 +45,20 @@ export default class Observer {
 	 * However, a child class may not need to be disabled, so it can implement an empty method.
 	 *
 	 * @see core.treeView.observer.Observer#disable
-	 *
-	 * @method core.treeView.observer.Observer#enable
 	 */
+	enable() {
+		this.isEnabled = true;
+	}
 
 	/**
 	 * Disables the observer. This method is called before
 	 * {@link core.treeView.TreeView#render rendering} to prevent firing events during rendering.
 	 *
 	 * @see core.treeView.observer.Observer#enable
-	 *
-	 * @method core.treeView.observer.Observer#disable
 	 */
+	disable() {
+		this.isEnabled = false;
+	}
 
 	/**
 	 * Starts observing the given root element.
