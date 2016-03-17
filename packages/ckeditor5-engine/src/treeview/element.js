@@ -156,17 +156,12 @@ export default class Element extends Node {
 	 *
 	 * @returns {Iterator.<String>} Keys for attributes.
 	 */
-	getAttributeKeys() {
-		const iterator = this._attrs.keys();
-
+	*getAttributeKeys() {
 		if ( this._classes.size > 0 ) {
-			return ( function*() {
-				yield 'class';
-				yield* iterator;
-			}() );
+			yield 'class';
 		}
 
-		return iterator;
+		yield* this._attrs.keys();
 	}
 
 	/**
