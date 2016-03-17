@@ -156,6 +156,19 @@ describe( 'Element', () => {
 			expect( el.isSimilar( other2 ) ).to.be.false;
 			expect( el.isSimilar( other3 ) ).to.be.false;
 		} );
+
+		it( 'should compare class attribute', () => {
+			const el1 = new ViewElement( 'p' );
+			const el2 = new ViewElement( 'p' );
+			const el3 = new ViewElement( 'p' );
+
+			el1.addClass( 'foo', 'bar' );
+			el2.addClass( 'bar', 'foo' );
+			el3.addClass( 'baz' );
+
+			expect( el1.isSimilar( el2 ) ).to.be.true;
+			expect( el1.isSimilar( el3 ) ).to.be.false;
+		} );
 	} );
 
 	describe( 'children manipulation methods', () => {

@@ -295,25 +295,28 @@ export default class Element extends Node {
 			return true;
 		}
 
-		// Check name and attributes.
+		// Check element name.
 		if ( this.name != otherElement.name ) {
 			return false;
 		}
 
-		const thisNodeAttrKeys = this.getAttributeKeys();
-		const otherNodeAttrKeys = otherElement.getAttributeKeys();
-		let count = 0;
-
-		for ( let key of thisNodeAttrKeys ) {
-			if ( this.getAttribute( key ) !== otherElement.getAttribute( key ) ) {
-				return false;
-			}
-
-			count++;
+		// Check number of attributes and classes.
+		if ( this._attrs.size !== otherElement._attrs.size || this._classes.size !== otherElement._classes.size ) {
+			return false;
 		}
 
-		if ( count != utils.count( otherNodeAttrKeys ) ) {
-			return false;
+		// Check if attributes are the same.
+		for ( let key of this._attrs.keys() ) {
+			if ( !otherElement._attrs.has( key ) || otherElement._attrs.get( key ) !== this._attrs.get( key ) ) {
+				return false;
+			}
+		}
+
+		// Check if classes are the same.
+		for ( let className of this._classes ) {
+			if ( !otherElement._classes.has( className ) ) {
+				return false;
+			}
 		}
 
 		return true;
