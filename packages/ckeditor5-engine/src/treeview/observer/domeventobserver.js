@@ -27,12 +27,6 @@
  *			}
  *		}
  *
- * Or:
- *
- *		const observer = new DomEventObserver();
- *		observer.domEventType = 'click';
- *		observer.onDomEvent = ( domEvt ) => observer.fire( 'click' );
- *
  * @memberOf core.treeView.observer
  * @extends core.treeView.observer.Observer
  */
