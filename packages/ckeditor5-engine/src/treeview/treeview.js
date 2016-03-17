@@ -118,6 +118,7 @@ export default class TreeView {
 	 *
 	 * @param {HTMLElement} domRoot DOM element in which the tree view should do change.
 	 * @param {String} name Name of the root.
+	 * @returns {core.treeView.element} The created view root element.
 	 */
 	createRoot( domRoot, name ) {
 		const viewRoot = this.domConverter.domToView( domRoot, { bind: true, withChildren: false } );
@@ -135,6 +136,8 @@ export default class TreeView {
 		for ( let observer of this._observers ) {
 			observer.observe( domRoot, name );
 		}
+
+		return viewRoot;
 	}
 
 	/**

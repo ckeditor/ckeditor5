@@ -39,13 +39,15 @@ describe( 'TreeView', () => {
 			domDiv.appendChild( domP );
 
 			const treeView = new TreeView();
-			treeView.createRoot( domDiv, 'editor' );
+			const ret = treeView.createRoot( domDiv, 'editor' );
 
 			expect( count( treeView.domRoots ) ).to.equal( 1 );
 			expect( count( treeView.viewRoots ) ).to.equal( 1 );
 
 			const domRoot = treeView.domRoots.get( 'editor' );
 			const viewRoot = treeView.viewRoots.get( 'editor' );
+
+			expect( ret ).to.equal( viewRoot );
 
 			expect( domRoot ).to.equal( domDiv );
 			expect( treeView.domConverter.getCorrespondingDom( viewRoot ) ).to.equal( domDiv );
