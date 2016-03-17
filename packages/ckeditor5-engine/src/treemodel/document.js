@@ -228,6 +228,19 @@ export default class Document {
 	}
 
 	/**
+	 * Gets iterator of names of all roots (without the {@link core.treeModel.Document#graveyard}).
+	 *
+	 * @returns {Iterator.<String>}
+	 */
+	*getRootNames() {
+		for ( let rootName of this._roots.keys() ) {
+			if ( rootName != graveyardSymbol ) {
+				yield rootName;
+			}
+		}
+	}
+
+	/**
 	 * Custom toJSON method to solve child-parent circular dependencies.
 	 *
 	 * @returns {Object} Clone of this object with the document property changed to string.

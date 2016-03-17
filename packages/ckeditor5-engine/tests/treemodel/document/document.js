@@ -11,6 +11,7 @@ import Document from '/ckeditor5/core/treemodel/document.js';
 import RootElement from '/ckeditor5/core/treemodel/rootelement.js';
 import Batch from '/ckeditor5/core/treemodel/batch.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
+import utils from '/ckeditor5/utils/utils.js';
 
 describe( 'Document', () => {
 	let doc;
@@ -63,6 +64,19 @@ describe( 'Document', () => {
 					doc.getRoot( 'root' );
 				}
 			).to.throw( CKEditorError, /document-getRoot-root-not-exist/ );
+		} );
+	} );
+
+	describe( 'getRootNames', () => {
+		it( 'should return empty iterator if no roots exist', () => {
+			expect( utils.count( doc.getRootNames() ) ).to.equal( 0 );
+		} );
+
+		it( 'should return an iterator of all roots without the graveyard', () => {
+			doc.createRoot( 'a' );
+			doc.createRoot( 'b' );
+
+			expect( Array.from( doc.getRootNames() ) ).to.deep.equal( [ 'a', 'b' ] );
 		} );
 	} );
 
