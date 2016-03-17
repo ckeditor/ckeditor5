@@ -12,8 +12,8 @@ import FocusObserver from '/ckeditor5/core/treeview/observer/focusobserver.js';
 
 const treeView = new TreeView();
 
-treeView.on( 'focus', ( evt, target ) => console.log( 'focus', target ) );
-treeView.on( 'blur', ( evt, target ) => console.log( 'blur', target ) );
+treeView.on( 'focus', ( evt, data ) => console.log( 'focus', data.domTarget ) );
+treeView.on( 'blur', ( evt, data ) => console.log( 'blur', data.domTarget ) );
 
 treeView.addObserver( FocusObserver );
 
