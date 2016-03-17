@@ -37,9 +37,11 @@ export default class DomEventObserver extends Observer {
 		super( treeView );
 
 		/**
-		 * Type of the DOM event the observer should listen on.
+		 * Type of the DOM event the observer should listen on. Array of types can be defined
+		 * if the obsever should listen to multiple DOM events.
 		 *
-		 * @member {String} core.treeView.observer.DomEventObserver#domEventType
+		 * @readonly
+		 * @member {String|Array.<String>} core.treeView.observer.DomEventObserver#domEventType
 		 */
 	}
 
@@ -56,10 +58,10 @@ export default class DomEventObserver extends Observer {
 	 * @inheritDoc
 	 */
 	observe( domElement ) {
-		domElement.addEventListener( this.domEventType, domEvent => {
-			if ( this.isEnabled ) {
-				this.onDomEvent( domEvent );
-			}
+		const types = typeof this.domEventType == 'string' ? [ this.domEventType ] : this.domEventType;
+
+		types.forEach( type => {
+			domElement.addEventListener( type, domEvent => this.isEnabled && this.onDomEvent( domEvent ) );
 		} );
 	}
 
@@ -72,7 +74,7 @@ export default class DomEventObserver extends Observer {
 	 */
 	fire( ...args ) {
 		if ( this.isEnabled ) {
-			this.treeView.fire.apply( this.treeView, args );
+			this.treeView.fire( ...args );
 		}
 	}
 }
