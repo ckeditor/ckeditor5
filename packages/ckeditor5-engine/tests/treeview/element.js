@@ -161,13 +161,16 @@ describe( 'Element', () => {
 			const el1 = new ViewElement( 'p' );
 			const el2 = new ViewElement( 'p' );
 			const el3 = new ViewElement( 'p' );
+			const el4 = new ViewElement( 'p' );
 
 			el1.addClass( 'foo', 'bar' );
 			el2.addClass( 'bar', 'foo' );
 			el3.addClass( 'baz' );
+			el4.addClass( 'baz', 'bar' );
 
 			expect( el1.isSimilar( el2 ) ).to.be.true;
 			expect( el1.isSimilar( el3 ) ).to.be.false;
+			expect( el1.isSimilar( el4 ) ).to.be.false;
 		} );
 	} );
 
@@ -317,6 +320,16 @@ describe( 'Element', () => {
 
 				expect( el.getAttribute( 'foo' ) ).to.equal( 'bar' );
 				expect( el.getAttribute( 'bom' ) ).to.not.be.ok;
+			} );
+
+			it( 'should return class attribute', () => {
+				el.addClass( 'foo', 'bar' );
+
+				expect( el.getAttribute( 'class' ) ).to.equal( 'foo bar' );
+			} );
+
+			it( 'should return undefined if no class attribute', () => {
+				expect( el.getAttribute( 'class' ) ).to.be.undefined;
 			} );
 		} );
 
