@@ -5,6 +5,8 @@
 
 'use strict';
 
+import Observer from './observer.js';
+
 /**
  * Base class for DOM event observers. This class handles
  * {@link core.treeView.observer.Observer#observe adding} listeners to DOM elements,
@@ -30,15 +32,9 @@
  * @memberOf core.treeView.observer
  * @extends core.treeView.observer.Observer
  */
-export default class DomEventObserver {
+export default class DomEventObserver extends Observer {
 	constructor( treeView ) {
-		/**
-		 * Reference to the {@link core.treeView.TreeView} object.
-		 *
-		 * @readonly
-		 * @member {core.treeView.TreeView} core.treeView.observer.DomEventObserver#treeView
-		 */
-		this.treeView = treeView;
+		super( treeView );
 
 		/**
 		 * Type of the DOM event the observer should listen on. Array of types can be defined
@@ -67,20 +63,6 @@ export default class DomEventObserver {
 		types.forEach( type => {
 			domElement.addEventListener( type, domEvent => this.isEnabled && this.onDomEvent( domEvent ) );
 		} );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	enable() {
-		this.isEnabled = true;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	disable() {
-		this.isEnabled = false;
 	}
 
 	/**

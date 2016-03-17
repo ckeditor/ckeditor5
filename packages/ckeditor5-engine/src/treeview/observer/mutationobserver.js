@@ -84,7 +84,7 @@ export default class MutationObserver extends Observer {
 	 * @inheritDoc
 	 */
 	enable() {
-		this.isEnabled = true;
+		super.enable();
 
 		for ( let domElement of this._domElements ) {
 			this._mutationObserver.observe( domElement, this._config );
@@ -95,7 +95,7 @@ export default class MutationObserver extends Observer {
 	 * @inheritDoc
 	 */
 	disable() {
-		this.isEnabled = false;
+		super.disable();
 
 		this._mutationObserver.disconnect();
 	}
