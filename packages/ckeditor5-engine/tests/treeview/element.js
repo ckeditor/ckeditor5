@@ -59,6 +59,19 @@ describe( 'Element', () => {
 			expect( el._classes.has( 'two' ) ).to.be.true;
 			expect( el._classes.has( 'three' ) ).to.be.true;
 		} );
+
+		it( 'should move style attribute to style map', () => {
+			const el = new ViewElement( 'p', { id: 'test', style: 'one: style1; two:style2 ; three : url(http://ckeditor.com)' } );
+
+			expect( el._attrs.has( 'style' ) ).to.be.false;
+			expect( el._attrs.has( 'id' ) ).to.be.true;
+			expect( el._styles.has( 'one' ) ).to.be.true;
+			expect( el._styles.get( 'one' ) ).to.equal( 'style1' );
+			expect( el._styles.has( 'two' ) ).to.be.true;
+			expect( el._styles.get( 'two' ) ).to.equal( 'style2' );
+			expect( el._styles.has( 'three' ) ).to.be.true;
+			expect( el._styles.get( 'three' ) ).to.equal( 'url(http://ckeditor.com)' );
+		} );
 	} );
 
 	describe( 'clone', () => {

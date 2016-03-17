@@ -79,6 +79,26 @@ export default class Element extends Node {
 		} else {
 			this._classes = new Set();
 		}
+
+		/**
+		 * Map of styles.
+		 *
+		 * @protected
+		 * @member {Set} core.treeView.Element#_styles
+		 */
+		this._styles = new Map();
+
+		if ( this._attrs.has( 'style' ) ) {
+			// TODO: Maybe parsing style string should be moved to utils?
+			const styleString = this._attrs.get( 'style' );
+			const regex = /\s*([^:;\s]+)\s*:\s*([^;]+)\s*(?=;|$)/g;
+			let matchStyle;
+
+			while ( ( matchStyle = regex.exec( styleString ) ) !== null ) {
+				this._styles.set( matchStyle[ 1 ], matchStyle[ 2 ].trim() );
+			}
+			this._attrs.delete( 'style' );
+		}
 	}
 
 	/**
@@ -98,6 +118,9 @@ export default class Element extends Node {
 		}
 
 		const cloned = new Element( this.name, this._attrs, childrenClone );
+
+		// Classes are cloned separately - it solution is faster than adding them back to attributes and
+		// parse once again in constructor.
 		cloned._classes = new Set( this._classes );
 
 		return cloned;
