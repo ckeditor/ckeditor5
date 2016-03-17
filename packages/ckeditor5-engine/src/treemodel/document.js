@@ -147,27 +147,27 @@ export default class Document {
 	/**
 	 * Creates a new top-level root.
 	 *
-	 * @param {String|Symbol} id Unique root id.
-	 * @param {String} name Element name.
+	 * @param {String|Symbol} rootName Unique root name.
+	 * @param {String} elementName Element name.
 	 * @returns {core.treeModel.RootElement} Created root.
 	 */
-	createRoot( id, name ) {
-		if ( this._roots.has( id ) ) {
+	createRoot( rootName, elementName ) {
+		if ( this._roots.has( rootName ) ) {
 			/**
-			 * Root with specified id already exists.
+			 * Root with specified name already exists.
 			 *
-			 * @error document-createRoot-id-exists
+			 * @error document-createRoot-name-exists
 			 * @param {core.treeModel.Document} doc
-			 * @param {String} id
+			 * @param {String} name
 			 */
 			throw new CKEditorError(
-				'document-createRoot-id-exists: Root with specified id already exists.',
-				{ id: id }
+				'document-createRoot-name-exists: Root with specified name already exists.',
+				{ name: rootName }
 			);
 		}
 
-		const root = new RootElement( this, name );
-		this._roots.set( id, root );
+		const root = new RootElement( this, elementName );
+		this._roots.set( rootName, root );
 
 		return root;
 	}
@@ -205,26 +205,39 @@ export default class Document {
 	}
 
 	/**
-	 * Returns top-level root by it's id.
+	 * Returns top-level root by its name.
 	 *
-	 * @param {String|Symbol} id Unique root id.
-	 * @returns {core.treeModel.RootElement} Root registered under given id.
+	 * @param {String|Symbol} name Unique root name.
+	 * @returns {core.treeModel.RootElement} Root registered under given name.
 	 */
-	getRoot( id ) {
-		if ( !this._roots.has( id ) ) {
+	getRoot( name ) {
+		if ( !this._roots.has( name ) ) {
 			/**
-			 * Root with specified id does not exist.
+			 * Root with specified name does not exist.
 			 *
 			 * @error document-getRoot-root-not-exist
-			 * @param {String} id
+			 * @param {String} name
 			 */
 			throw new CKEditorError(
-				'document-getRoot-root-not-exist: Root with specified id does not exist.',
-				{ id: id }
+				'document-getRoot-root-not-exist: Root with specified name does not exist.',
+				{ name: name }
 			);
 		}
 
-		return this._roots.get( id );
+		return this._roots.get( name );
+	}
+
+	/**
+	 * Gets iterator of names of all roots (without the {@link core.treeModel.Document#graveyard}).
+	 *
+	 * @returns {Iterator.<String>}
+	 */
+	*getRootNames() {
+		for ( let rootName of this._roots.keys() ) {
+			if ( rootName != graveyardSymbol ) {
+				yield rootName;
+			}
+		}
 	}
 
 	/**

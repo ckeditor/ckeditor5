@@ -11,6 +11,7 @@ import Document from '/ckeditor5/core/treemodel/document.js';
 import RootElement from '/ckeditor5/core/treemodel/rootelement.js';
 import Batch from '/ckeditor5/core/treemodel/batch.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
+import utils from '/ckeditor5/utils/utils.js';
 
 describe( 'Document', () => {
 	let doc;
@@ -38,19 +39,19 @@ describe( 'Document', () => {
 			expect( root.getChildCount() ).to.equal( 0 );
 		} );
 
-		it( 'should throw an error when trying to create a second root with the same id', () => {
+		it( 'should throw an error when trying to create a second root with the same name', () => {
 			doc.createRoot( 'root', 'root' );
 
 			expect(
 				() => {
 					doc.createRoot( 'root', 'root' );
 				}
-			).to.throw( CKEditorError, /document-createRoot-id-exists/ );
+			).to.throw( CKEditorError, /document-createRoot-name-exists/ );
 		} );
 	} );
 
 	describe( 'getRoot', () => {
-		it( 'should return a RootElement previously created with given id', () => {
+		it( 'should return a RootElement previously created with given name', () => {
 			let newRoot = doc.createRoot( 'root' );
 			let getRoot = doc.getRoot( 'root' );
 
@@ -63,6 +64,19 @@ describe( 'Document', () => {
 					doc.getRoot( 'root' );
 				}
 			).to.throw( CKEditorError, /document-getRoot-root-not-exist/ );
+		} );
+	} );
+
+	describe( 'getRootNames', () => {
+		it( 'should return empty iterator if no roots exist', () => {
+			expect( utils.count( doc.getRootNames() ) ).to.equal( 0 );
+		} );
+
+		it( 'should return an iterator of all roots without the graveyard', () => {
+			doc.createRoot( 'a' );
+			doc.createRoot( 'b' );
+
+			expect( Array.from( doc.getRootNames() ) ).to.deep.equal( [ 'a', 'b' ] );
 		} );
 	} );
 
