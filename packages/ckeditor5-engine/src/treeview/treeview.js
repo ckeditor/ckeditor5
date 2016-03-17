@@ -38,14 +38,6 @@ export default class TreeView {
 		this.domRoots = new Map();
 
 		/**
-		 * Set of {@link core.treeView.Observer observers}.
-		 *
-		 * @readonly
-		 * @member {Set.<core.treeView.Observer>} core.treeView.TreeView#observers
-		 */
-		this.observers = new Set();
-
-		/**
 		 * Tree View writer.
 		 *
 		 * @readonly
@@ -55,7 +47,7 @@ export default class TreeView {
 
 		/**
 		 * Instance of the {@link core.treeView.DomConverter domConverter} use by
-		 * {@link core.treeView.TreeView#renderer renderer} and {@link core.treeView.TreeView#observers observers}.
+		 * {@link core.treeView.TreeView#renderer renderer} and {@link core.treeView.observer.Observer observers}.
 		 *
 		 * @readonly
 		 * @member {core.treeView.DomConverter} core.treeView.TreeView#domConverter
@@ -77,17 +69,36 @@ export default class TreeView {
 		 * @member {core.treeView.Renderer} core.treeView.TreeView#renderer
 		 */
 		this.renderer = new Renderer( this.domConverter );
+
+		/**
+		 * Set of registered {@link core.treeView.Observer observers}.
+		 *
+		 * @protected
+		 * @member {Set.<core.treeView.Observer>} core.treeView.TreeView_#observers
+		 */
+		this._observers = new Set();
 	}
 
 	/**
-	 * Adds an observer to the set of observers. This method also {@link core.treeView.Observer#init initializes} and
-	 * {@link core.treeView.Observer#enable enables} the observer.
+	 * Creates observer of the given type if not yet created, {@link core.treeView.Observer#enable enables} it
+	 * and {@link core.treeView.observer.Observer#observe attaches} to all existing and future
+	 * {@link core.treeView.TreeView#domRoots DOM roots}.
 	 *
-	 * @param {core.treeView.Observer} observer The observer to add.
+	 * Note: Observers are recognized by their constructor (classes). A single observer will be instantiated and used only
+	 * when registered for the first time. This means that features and other components can register a single observer
+	 * multiple times without caring whether it has been already added or not.
+	 *
+	 * @param {Function} Observer The constructor of an observer to add.
+	 * Should create an instance inheriting from {@link core.treeView.observer.Observer}.
 	 */
-	addObserver( observer ) {
-		this.observers.add( observer );
-		observer.init( this );
+	addObserver( Observer ) {
+		if ( this._hasObserver( Observer ) ) {
+			return;
+		}
+
+		const observer = new Observer( this );
+
+		this._observers.add( observer );
 
 		for ( let [ name, domElement ] of this.domRoots ) {
 			observer.observe( domElement, name );
@@ -121,7 +132,7 @@ export default class TreeView {
 		this.domRoots.set( name, domRoot );
 		this.viewRoots.set( name, viewRoot );
 
-		for ( let observer of this.observers ) {
+		for ( let observer of this._observers ) {
 			observer.observe( domRoot, name );
 		}
 	}
@@ -131,15 +142,25 @@ export default class TreeView {
 	 * before rendering and reattached after that.
 	 */
 	render() {
-		for ( let observer of this.observers ) {
+		for ( let observer of this._observers ) {
 			observer.disable();
 		}
 
 		this.renderer.render();
 
-		for ( let observer of this.observers ) {
+		for ( let observer of this._observers ) {
 			observer.enable();
 		}
+	}
+
+	/**
+	 * Checks whether the given observer was already added.
+	 *
+	 * @private
+	 * @param {Function} Observer The observer constructor to check.
+	 */
+	_hasObserver( Observer ) {
+		return Array.from( this._observers ).some( ( observer ) => observer.constructor === Observer );
 	}
 }
 

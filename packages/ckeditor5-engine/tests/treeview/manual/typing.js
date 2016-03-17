@@ -18,7 +18,7 @@ treeView.createRoot( document.getElementById( 'editor' ), 'editor' );
 treeView.on( 'mutations', ( evt, mutations ) => console.log( mutations ) );
 treeView.on( 'mutations', handleTyping );
 
-treeView.addObserver( new MutationObserver() );
+treeView.addObserver( MutationObserver );
 
 treeView.viewRoots.get( 'editor' ).appendChildren( [ new Element( 'p', [], [ new Text( 'foo' ) ] ) ] );
 

@@ -14,11 +14,10 @@ import MutationObserver from '/ckeditor5/core/treeview/observer/mutationobserver
 
 const treeView = new TreeView();
 treeView.createRoot( document.getElementById( 'editor' ), 'editor' );
-const mutationObserver = new MutationObserver();
 
 treeView.on( 'mutations', ( evt, mutations ) => console.log( mutations ) );
 
-treeView.addObserver( mutationObserver );
+treeView.addObserver( MutationObserver );
 
 treeView.viewRoots.get( 'editor' ).appendChildren( [
 	new Element( 'p', [], [ new Text( 'foo' ) ] ),

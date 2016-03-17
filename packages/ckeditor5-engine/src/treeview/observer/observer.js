@@ -14,12 +14,27 @@
  */
 export default class Observer {
 	/**
-	 * Inits the observer class, caches all needed {@link core.treeView.TreeView} properties.
-	 * After being inited, the observer will be {@link core.treeView.observer.Observer#enabled enabled}.
+	 * Creates an instance of the observer.
 	 *
-	 * @method core.treeView.observer.Observer#init
-	 * @param {core.treeView.TreeView}
+	 * @param {core.treeView.TreeView} treeView
 	 */
+	constructor( treeView ) {
+		/**
+		 * Reference to the {@link core.treeView.TreeView} object.
+		 *
+		 * @readonly
+		 * @member {core.treeView.TreeView} core.treeView.observer.Observer#treeView
+		 */
+		this.treeView = treeView;
+
+		/**
+		 * State of the observer. If it is disabled events will not be fired.
+		 *
+		 * @readonly
+		 * @member {Boolean} core.treeView.observer.Observer#isEnabled
+		 */
+		this.isEnabled = false;
+	}
 
 	/**
 	 * Enables the observer. This method is called when then observer is registered to the

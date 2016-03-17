@@ -27,33 +27,17 @@
  *			}
  *		}
  *
- * Or:
- *
- *		const observer = new DomEventObserver();
- *		observer.domEventType = 'click';
- *		observer.onDomEvent = ( domEvt ) => observer.fire( 'click' );
- *
  * @memberOf core.treeView.observer
  * @extends core.treeView.observer.Observer
  */
 export default class DomEventObserver {
-	/**
-	 * @inheritDoc
-	 */
-	init( treeView ) {
+	constructor( treeView ) {
 		/**
 		 * Reference to the {@link core.treeView.TreeView} object.
 		 *
 		 * @member {core.treeView.TreeView} core.treeView.observer.DomEventObserver#treeView
 		 */
 		this.treeView = treeView;
-
-		/**
-		 * State of the observer. If it is disabled not event should be fired.
-		 *
-		 * @member {Boolean} core.treeView.observer.DomEventObserver#isEnabled
-		 */
-		this.isEnabled = false;
 
 		/**
 		 * Type of the DOM event the observer should listen on.

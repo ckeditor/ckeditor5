@@ -18,12 +18,13 @@ describe( 'MutationObserver', () => {
 	beforeEach( () => {
 		treeView = new TreeView();
 		domEditor = document.getElementById( 'editor' );
-		mutationObserver = new MutationObserver();
 		lastMutations = null;
 
 		treeView.createRoot( domEditor, 'editor' );
 
-		treeView.addObserver( mutationObserver );
+		treeView.addObserver( MutationObserver );
+		mutationObserver = Array.from( treeView._observers )[ 0 ];
+
 		treeView.on( 'mutations', ( evt, mutations ) => lastMutations = mutations );
 
 		viewRoot = treeView.viewRoots.get( 'editor' );
