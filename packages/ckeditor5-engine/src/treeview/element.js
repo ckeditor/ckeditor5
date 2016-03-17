@@ -119,9 +119,10 @@ export default class Element extends Node {
 
 		const cloned = new Element( this.name, this._attrs, childrenClone );
 
-		// Classes are cloned separately - it solution is faster than adding them back to attributes and
+		// Classes and styles are cloned separately - it solution is faster than adding them back to attributes and
 		// parse once again in constructor.
 		cloned._classes = new Set( this._classes );
+		cloned._styles = new Map( this._styles );
 
 		return cloned;
 	}

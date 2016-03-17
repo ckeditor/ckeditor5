@@ -123,7 +123,7 @@ describe( 'Element', () => {
 			expect( clone.getChildCount() ).to.equal( 0 );
 		} );
 
-		it( 'should clone when with class attribute', () => {
+		it( 'should clone class attribute', () => {
 			const el = new ViewElement( 'p', { foo: 'bar' } );
 			el.addClass( 'baz', 'qux' );
 			const clone = el.clone( false );
@@ -132,6 +132,18 @@ describe( 'Element', () => {
 			expect( clone.name ).to.equal( el.name );
 			expect( clone.getAttribute( 'foo' ) ).to.equal( 'bar' );
 			expect( clone.getAttribute( 'class' ) ).to.equal( 'baz qux' );
+		} );
+
+		it( 'should clone style attribute', () => {
+			const el = new ViewElement( 'p', { style: 'color: red; font-size: 12px;' } );
+			const clone = el.clone( false );
+
+			expect( clone ).to.not.equal( el );
+			expect( clone.name ).to.equal( el.name );
+			expect( clone._styles.has( 'color' ) ).to.be.true;
+			expect( clone._styles.get( 'color' ) ).to.equal( 'red' );
+			expect( clone._styles.has( 'font-size' ) ).to.be.true;
+			expect( clone._styles.get( 'font-size' ) ).to.equal( '12px' );
 		} );
 	} );
 
