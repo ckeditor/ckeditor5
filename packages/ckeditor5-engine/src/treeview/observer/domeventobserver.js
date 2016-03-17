@@ -92,7 +92,7 @@ export default class DomEventObserver {
 	 */
 	fire( ...args ) {
 		if ( this.isEnabled ) {
-			this.treeView.fire.apply( this.treeView, args );
+			this.treeView.fire( ...args );
 		}
 	}
 }
