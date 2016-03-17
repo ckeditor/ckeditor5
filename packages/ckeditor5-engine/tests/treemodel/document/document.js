@@ -38,19 +38,19 @@ describe( 'Document', () => {
 			expect( root.getChildCount() ).to.equal( 0 );
 		} );
 
-		it( 'should throw an error when trying to create a second root with the same id', () => {
+		it( 'should throw an error when trying to create a second root with the same name', () => {
 			doc.createRoot( 'root', 'root' );
 
 			expect(
 				() => {
 					doc.createRoot( 'root', 'root' );
 				}
-			).to.throw( CKEditorError, /document-createRoot-id-exists/ );
+			).to.throw( CKEditorError, /document-createRoot-name-exists/ );
 		} );
 	} );
 
 	describe( 'getRoot', () => {
-		it( 'should return a RootElement previously created with given id', () => {
+		it( 'should return a RootElement previously created with given name', () => {
 			let newRoot = doc.createRoot( 'root' );
 			let getRoot = doc.getRoot( 'root' );
 
