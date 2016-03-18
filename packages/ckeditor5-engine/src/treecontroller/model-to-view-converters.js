@@ -5,6 +5,9 @@
 
 'use strict';
 
+import ViewText from '../treeview/text.js';
+import ModelTreeWalker from './treemodel/treewalker.js';
+
 export function insert( nodeCreator ) {
 	return ( evt, model, context ) => {
 		model.consumable.consume( model.item, 'insert' );
@@ -18,7 +21,7 @@ export function insert( nodeCreator ) {
 		context.writer.insert( viewPosition, viewNode );
 
 		evt.stop();
-	}
+	};
 }
 
 export function insertText() {
@@ -31,16 +34,17 @@ export function insertText() {
 		context.writer.insert( viewPosition, viewNode );
 
 		evt.stop();
-	}
+	};
 }
 
 export function setAttribute( attributesCreator ) {
 	return ( evt, model, context ) => {
 		let attributes;
+
 		if ( !attributesCreator ) {
-			attributes = model.item.getAttribute( model.attributeKey )
+			attributes = model.item.getAttribute( model.attributeKey );
 		} else {
-			attributes = attributesCreator( model )
+			attributes = attributesCreator( model );
 		}
 
 		if ( attributes ) {
@@ -48,26 +52,27 @@ export function setAttribute( attributesCreator ) {
 
 			const viewElement = context.mapper.toViewElement( model.item );
 
-			if ( attributes typeof 'string' || attributes typeof 'number' ) {
+			if ( typeof attributes === 'string' || typeof attributes === 'number' ) {
 				viewElement.setAttribute( model.attributeKey, attributes );
 			} else {
-				for ( var attributeKey in attributes ) {
+				for ( let attributeKey in attributes ) {
 					viewElement.setAttribute( attributeKey, attributes[ attributeKey ] );
 				}
 			}
 
 			evt.stop();
 		}
-	}
+	};
 }
 
 export function removeAttribute( attributesCreator ) {
 	return ( evt, model, context ) => {
 		let attributeKeys;
+
 		if ( !attributesCreator ) {
 			attributeKeys = model.attributeKey;
 		} else {
-			attributeKeys = attributesCreator( model )
+			attributeKeys = attributesCreator( model );
 		}
 
 		if ( attributeKeys ) {
@@ -75,17 +80,17 @@ export function removeAttribute( attributesCreator ) {
 
 			const viewElement = context.mapper.toViewElement( model.item );
 
-			if ( attributeKeys typeof 'string' ) {
+			if ( typeof attributeKeys === 'string' ) {
 				viewElement.removeAttribute( attributeKeys );
 			} else {
-				for ( var attributeKey of attributeKeys ) {
+				for ( let attributeKey of attributeKeys ) {
 					viewElement.removeAttribute( attributeKey );
 				}
 			}
 
 			evt.stop();
 		}
-	}
+	};
 }
 
 export function wrap( nodeCreator ) {
@@ -99,10 +104,10 @@ export function wrap( nodeCreator ) {
 		context.writer.wrap( viewRange, viewNode );
 
 		evt.stop();
-	}
+	};
 }
 
-export function unwrap() {
+export function unwrap( nodeCreator ) {
 	return ( evt, model, context ) => {
 		model.consumable.consume( model.item, eventNameToConsumableType( evt.name ) );
 
@@ -113,45 +118,47 @@ export function unwrap() {
 		context.writer.unwrap( viewRange, viewNode );
 
 		evt.stop();
-	}
+	};
 }
 
 export function move() {
 	return ( evt, model, context ) => {
-		const length = 0;
-		const walker = new TreeWalker( { boundaries: range, shallow: true } );
+		const walker = new ModelTreeWalker( { boundaries: model.range, shallow: true } );
+
+		let length = 0;
 
 		for ( let value of walker ) {
 			length += value.length;
 		}
 
-		const sourceModelRange = Range.createFromPositionAndShift( sourcePosition, length );
+		const sourceModelRange = Range.createFromPositionAndShift( model.sourcePosition, length );
 
-		sourceViewRange = context.mapper.toViewRange( sourceModelRange );
-		targetViewPosition = context.mapper.toViewRange( range.start );
+		const sourceViewRange = context.mapper.toViewRange( sourceModelRange );
+		const targetViewPosition = context.mapper.toViewRange( model.range.start );
 
 		context.writer.move( sourceViewRange, targetViewPosition );
-	}
+	};
 }
 
 export function remove() {
 	return ( evt, model, context ) => {
-		const length = 0;
-		const walker = new TreeWalker( { boundaries: range, shallow: true } );
+		const walker = new ModelTreeWalker( { boundaries: model.range, shallow: true } );
+
+		let length = 0;
 
 		for ( let value of walker ) {
 			length += value.length;
 		}
 
-		const sourceModelRange = Range.createFromPositionAndShift( sourcePosition, length );
-
-		sourceViewRange = context.mapper.toViewRange( sourceModelRange );
+		const sourceModelRange = Range.createFromPositionAndShift( model.sourcePosition, length );
+		const sourceViewRange = context.mapper.toViewRange( sourceModelRange );
 
 		context.writer.remove( sourceViewRange );
-	}
+	};
 }
 
 function eventNameToConsumableType( evtName ) {
 	const parts = evtName.split( ':' );
+
 	return parts[ 0 ] + ':' + parts[ 1 ];
 }

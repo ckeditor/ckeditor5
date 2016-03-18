@@ -31,7 +31,7 @@ export default class ModelConsumable {
 	test( item, type ) {
 		const itemConsumables = this.consumable.get( item );
 
-		if ( value === undefined ) {
+		if ( itemConsumables === undefined ) {
 			return null;
 		}
 

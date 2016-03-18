@@ -6,6 +6,7 @@
 'use strict';
 
 import Consumable from './modelconsumable.js';
+import TextFragment from '../treemodel/textfragment.js';
 
 export default class ModelConversionDispatcher {
 	constructor( context ) {
@@ -49,7 +50,7 @@ export default class ModelConversionDispatcher {
 				consumable
 			};
 
-			this._testAndFire( 'insert', model, context );
+			this._testAndFire( 'insert', model, this.context );
 
 			for ( let key of item.getAttributes() ) {
 				model.attributeKey = key;
@@ -91,9 +92,6 @@ export default class ModelConversionDispatcher {
 			}
 		}
 
-		const writer = this.writer;
-		const mapper = this.mapper;
-
 		for ( let value of values ) {
 			const item = value.item;
 			const range = Range.createFromPositionAndShift( value.previousPosition, value.length );
@@ -101,6 +99,8 @@ export default class ModelConversionDispatcher {
 				item: item,
 				range: range,
 				attributeKey: key,
+				attributeOldValue: oldValue,
+				attributeNewValue: newValue,
 				consumable: consumable
 			};
 
