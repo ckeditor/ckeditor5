@@ -49,6 +49,16 @@ export default class MoveOperation extends Operation {
 		 * @member {core.treeModel.Position} core.treeModel.operation.MoveOperation#targetPosition
 		 */
 		this.targetPosition = Position.createFromPosition( targetPosition );
+
+		/**
+		 * Defines whether `MoveOperation` is sticky. If `MoveOperation` is sticky, during
+		 * {@link core.treeModel.operation.transform operational transformation} if there will be an operation that
+		 * inserts some nodes at the position equal to the boundary of this `MoveOperation`, that operation will
+		 * get their insertion path updated to the position where this `MoveOperation` moves the range.
+		 *
+		 * @type {Boolean}
+		 */
+		this.isSticky = false;
 	}
 
 	get type() {
@@ -56,23 +66,13 @@ export default class MoveOperation extends Operation {
 	}
 
 	/**
-	 * Defines whether `MoveOperation` is sticky. If `MoveOperation` is sticky, during
-	 * {@link core.treeModel.operation.transform operational transformation} if there will be an operation that
-	 * inserts some nodes at the position equal to the boundary of this `MoveOperation`, that operation will
-	 * get their insertion path updated to the position where this `MoveOperation` moves the range.
-	 *
-	 * @protected
-	 * @type {Boolean}
-	 */
-	get isSticky() {
-		return true;
-	}
-
-	/**
 	 * @returns {core.treeModel.operation.MoveOperation}
 	 */
 	clone() {
-		return new this.constructor( this.sourcePosition, this.howMany, this.targetPosition, this.baseVersion );
+		const op = new this.constructor( this.sourcePosition, this.howMany, this.targetPosition, this.baseVersion );
+		op.isSticky = this.isSticky;
+
+		return op;
 	}
 
 	/**
@@ -82,7 +82,10 @@ export default class MoveOperation extends Operation {
 		let newSourcePosition = this.targetPosition.getTransformedByDeletion( this.sourcePosition, this.howMany );
 		let newTargetPosition = this.sourcePosition.getTransformedByInsertion( this.targetPosition, this.howMany );
 
-		return new this.constructor( newSourcePosition, this.howMany, newTargetPosition, this.baseVersion + 1 );
+		const op = new this.constructor( newSourcePosition, this.howMany, newTargetPosition, this.baseVersion + 1 );
+		op.isSticky = this.isSticky;
+
+		return op;
 	}
 
 	_execute() {
@@ -112,7 +115,7 @@ export default class MoveOperation extends Operation {
 			throw new CKEditorError(
 				'operation-move-nodes-do-not-exist: The nodes which should be moved do not exist.'
 			);
-		} else if ( sourceElement === targetElement && sourceOffset <= targetOffset && targetOffset < sourceOffset + this.howMany ) {
+		} else if ( sourceElement === targetElement && sourceOffset < targetOffset && targetOffset < sourceOffset + this.howMany ) {
 			/**
 			 * Trying to move a range of nodes into the middle of that range.
 			 *

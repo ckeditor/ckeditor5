@@ -93,6 +93,7 @@ register( 'merge', function( position ) {
 	const positionBefore = Position.createFromParentAndOffset( nodeBefore, nodeBefore.getChildCount() );
 
 	const move = new MoveOperation( positionAfter, nodeAfter.getChildCount(), positionBefore, this.doc.version );
+	move.isSticky = true;
 	delta.addOperation( move );
 	this.doc.applyOperation( move );
 

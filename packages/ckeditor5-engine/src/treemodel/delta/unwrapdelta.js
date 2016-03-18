@@ -77,6 +77,7 @@ register( 'unwrap', function( element ) {
 	let sourcePosition = Position.createFromParentAndOffset( element, 0 );
 
 	const move = new MoveOperation( sourcePosition, element.getChildCount(), Position.createBefore( element ), this.doc.version );
+	move.isSticky = true;
 	delta.addOperation( move );
 	this.doc.applyOperation( move );
 
