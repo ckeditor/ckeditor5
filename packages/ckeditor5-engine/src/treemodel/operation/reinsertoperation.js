@@ -21,6 +21,11 @@ import RemoveOperation from './removeoperation.js';
  * @extends core.treeModel.operation.Operation
  */
 export default class ReinsertOperation extends MoveOperation {
+	/**
+	 * Position where re-inserted node will be inserted.
+	 *
+	 * @type {core.treeModel.Position}
+	 */
 	get position() {
 		return this.targetPosition;
 	}
@@ -32,6 +37,7 @@ export default class ReinsertOperation extends MoveOperation {
 	get type() {
 		return 'reinsert';
 	}
+
 	/**
 	 * @returns {core.treeModel.operation.RemoveOperation}
 	 */
