@@ -39,6 +39,21 @@ export default class Delta {
 	}
 
 	/**
+	 * Returns delta base version which is equal to the base version of the first operation in delta. If there
+	 * are no operations in delta, returns `null`.
+	 *
+	 * @see core.treeModel.Document
+	 * @type {Number|null} Delta base version.
+	 */
+	get baseVersion() {
+		if ( this.operations.length > 0 ) {
+			return this.operations[ 0 ].baseVersion;
+		}
+
+		return null;
+	}
+
+	/**
 	 * A class that will be used when creating reversed delta.
 	 *
 	 * @private
@@ -67,7 +82,6 @@ export default class Delta {
 	 */
 	clone() {
 		let delta = new this.constructor();
-		delta.batch = this.batch;
 
 		for ( let op of this.operations ) {
 			delta.addOperation( op.clone() );
@@ -91,13 +105,14 @@ export default class Delta {
 		let delta = new this._reverseDeltaClass();
 
 		for ( let op of this.operations ) {
-			let reversedOp = op.getReversed();
-			reversedOp.baseVersion += this.operations.length - 1;
-
-			delta.addOperation( reversedOp );
+			delta.addOperation( op.getReversed() );
 		}
 
 		delta.operations.reverse();
+
+		for ( let i = 0; i < delta.operations.length; i++ ) {
+			delta.operations[ i ].baseVersion = this.operations[ this.operations.length - 1 ].baseVersion + i + 1;
+		}
 
 		return delta;
 	}

@@ -21,7 +21,7 @@ import {
 	getFilledDocument,
 } from '/tests/core/treemodel/delta/transform/_utils/utils.js';
 
-describe( 'transform', () => {
+describe( 'Delta', () => {
 	let doc, root, baseVersion;
 
 	beforeEach( () => {
@@ -30,7 +30,19 @@ describe( 'transform', () => {
 		baseVersion = doc.version;
 	} );
 
-	it( 'should transform delta by transforming it\'s operations', () => {
+	it( 'should have baseVersion property, equal to the baseVersion of first operation in Delta or null', () => {
+		let deltaA = new Delta();
+
+		expect( deltaA.baseVersion ).to.be.null;
+
+		let version = 5;
+
+		deltaA.addOperation( new MoveOperation( new Position( root, [ 1, 2, 3 ] ), 4, new Position( root, [ 4, 0 ] ), version ) );
+
+		expect( deltaA.baseVersion ).to.equal( 5 );
+	} );
+
+	it( 'should be transformable by another Delta', () => {
 		let deltaA = new Delta();
 		let deltaB = new Delta();
 
