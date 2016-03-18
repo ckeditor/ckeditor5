@@ -8,6 +8,7 @@
 import { addTransformationCase, defaultTransform } from './transform.js';
 
 import Range from '../range.js';
+import Position from '../position.js';
 
 import AttributeOperation from '../operation/attributeoperation.js';
 
@@ -165,6 +166,42 @@ addTransformationCase( SplitDelta, WrapDelta, ( a, b, isStrong ) => {
 		// This is "no-op" delta, it has no type and no operations, it basically does nothing.
 		// It is used when we don't want to apply changes but still we need to return a delta.
 		return [ new Delta() ];
+	} else if ( utils.compareArrays( a.position.getParentPath(), b.range.end.getShiftedBy( -1 ).path ) === 'SAME' ) {
+		// Split position is directly inside the last node from wrap range.
+		// If that's the case, we manually change split delta so it will "target" inside the wrapping element.
+		// By doing so we will be inserting split node right to the original node which feels natural and is a good UX.
+		const delta = a.clone();
+
+		// 1. Fix insert operation position.
+		// Node to split is the last children of the wrapping element.
+		// Wrapping element is the element inserted by WrapDelta (re)insert operation.
+		// It is inserted after the wrapped range, but the wrapped range will be moved inside it.
+		// Having this in mind, it is correct to use wrapped range start position as the position before wrapping element.
+		const splitNodePos = Position.createFromPosition( b.range.start );
+		// Now, `splitNodePos` points before wrapping element.
+		// To get a position before last children of that element, we expand position's `path` member by proper offset.
+		splitNodePos.path.push( b.howMany - 1 );
+
+		// SplitDelta insert operation position should be right after the node we split.
+		const insertPos = splitNodePos.getShiftedBy( 1 );
+		delta._cloneOperation.position = insertPos;
+
+		// 2. Fix move operation source position.
+		// Nodes moved by SplitDelta will be moved from new position, modified by WrapDelta.
+		// To obtain that new position, `splitNodePos` will be used, as this is the node we are extracting children from.
+		const sourcePos = Position.createFromPosition( splitNodePos );
+		// Nothing changed inside split node so it is correct to use the original split position offset.
+		sourcePos.path.push( a.position.offset );
+		delta._moveOperation.sourcePosition = sourcePos;
+
+		// 3. Fix move operation target position.
+		// SplitDelta move operation target position should be inside the node inserted by operation above.
+		// Since the node is empty, we will insert at offset 0.
+		const targetPos = Position.createFromPosition( insertPos );
+		targetPos.path.push( 0 );
+		delta._moveOperation.targetPosition = targetPos;
+
+		return [ delta ];
 	}
 
 	return defaultTransform( a, b, isStrong );
@@ -210,6 +247,19 @@ addTransformationCase( WrapDelta, SplitDelta, ( a, b, isStrong ) => {
 			b.getReversed(),
 			a.clone()
 		];
+	} else if ( utils.compareArrays( b.position.getParentPath(), a.range.end.getShiftedBy( -1 ).path ) === 'SAME' ) {
+		const delta = a.clone();
+
+		// Move wrapping element insert position one node further so it is after the split node insertion.
+		delta._insertOperation.position.offset++;
+
+		// Include the split node copy.
+		delta._moveOperation.howMany++;
+
+		// Change the path to wrapping element in move operation.
+		delta._moveOperation.targetPosition.path[ delta._moveOperation.targetPosition.path.length - 2 ]++;
+
+		return [ delta ];
 	}
 
 	return defaultTransform( a, b, isStrong );

@@ -117,7 +117,7 @@ describe( 'transform', () => {
 				let splitPosition = new Position( root, [ 3, 3, 3, 1 ] );
 				let splitDelta = getSplitDelta( splitPosition, new Element( 'p' ), 11, baseVersion );
 
-				let transformed = transform( wrapDelta, splitDelta, true );
+				let transformed = transform( wrapDelta, splitDelta );
 
 				expect( transformed.length ).to.equal( 1 );
 
@@ -149,6 +149,50 @@ describe( 'transform', () => {
 
 				// WrapDelta and SplitDelta are correctly applied.
 				expect( nodesAndText ).to.equal( 'PaPPEbcfoEobarxyzP' );
+			} );
+
+			it( 'split position is inside wrapped node', () => {
+				// For this case, we need different WrapDelta so it is overwritten.
+				let wrapRange = new Range( new Position( root, [ 3, 3, 2 ] ), new Position( root, [ 3, 3, 4 ] ) );
+				let wrapElement = new Element( 'E' );
+
+				wrapDelta = getWrapDelta( wrapRange, wrapElement, baseVersion );
+
+				let splitPosition = new Position( root, [ 3, 3, 3, 3 ] );
+				let splitDelta = getSplitDelta( splitPosition, new Element( 'p' ), 9, baseVersion );
+
+				let transformed = transform( wrapDelta, splitDelta );
+
+				expect( transformed.length ).to.equal( 1 );
+
+				baseVersion = wrapDelta.operations.length;
+
+				expectDelta( transformed[ 0 ], {
+					type: WrapDelta,
+					operations: [
+						{
+							type: InsertOperation,
+							position: new Position( root, [ 3, 3, 5 ] ),
+							baseVersion: baseVersion
+						},
+						{
+							type: MoveOperation,
+							sourcePosition: new Position( root, [ 3, 3, 2 ] ),
+							howMany: 3,
+							targetPosition: new Position( root, [ 3, 3, 5, 0 ] ),
+							baseVersion: baseVersion + 1
+						}
+					]
+				} );
+
+				// Test if deltas do what they should after applying transformed delta.
+				applyDelta( splitDelta, doc );
+				applyDelta( transformed[ 0 ], doc );
+
+				let nodesAndText = getNodesAndText( Range.createFromPositionAndShift( new Position( root, [ 3, 3, 2 ] ), 1 ) );
+
+				// WrapDelta and SplitDelta are correctly applied.
+				expect( nodesAndText ).to.equal( 'EXabcdXPabcPPfoobarxyzPE' );
 			} );
 		} );
 	} );

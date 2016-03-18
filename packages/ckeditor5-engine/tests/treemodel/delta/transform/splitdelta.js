@@ -273,12 +273,51 @@ describe( 'transform', () => {
 				expect( nodesAndText ).to.equal( 'PaEbcfoEobarxyzP' );
 			} );
 
+			it( 'split position is before wrapped nodes', () => {
+				let wrapRange = new Range( new Position( root, [ 3, 3, 3, 5 ] ), new Position( root, [ 3, 3, 3, 7 ] ) );
+				let wrapElement = new Element( 'E' );
+				let wrapDelta = getWrapDelta( wrapRange, wrapElement, baseVersion );
+
+				let transformed = transform( splitDelta, wrapDelta );
+
+				expect( transformed.length ).to.equal( 1 );
+
+				baseVersion = wrapDelta.operations.length;
+
+				expectDelta( transformed[ 0 ], {
+					type: SplitDelta,
+					operations: [
+						{
+							type: InsertOperation,
+							position: new Position( root, [ 3, 3, 4 ] ),
+							baseVersion: baseVersion
+						},
+						{
+							type: MoveOperation,
+							sourcePosition: new Position( root, [ 3, 3, 3, 3 ] ),
+							howMany: 8,
+							targetPosition: new Position( root, [ 3, 3, 4, 0 ] ),
+							baseVersion: baseVersion + 1
+						}
+					]
+				} );
+
+				// Test if deltas do what they should after applying transformed delta.
+				applyDelta( wrapDelta, doc );
+				applyDelta( transformed[ 0 ], doc );
+
+				let nodesAndText = getNodesAndText( Range.createFromPositionAndShift( new Position( root, [ 3, 3, 3 ] ), 2 ) );
+
+				// WrapDelta and SplitDelta are correctly applied.
+				expect( nodesAndText ).to.equal( 'PabcPPfoEobEarxyzP' );
+			} );
+
 			it( 'split position is inside wrapped node', () => {
 				let wrapRange = new Range( new Position( root, [ 3, 3, 2 ] ), new Position( root, [ 3, 3, 4 ] ) );
 				let wrapElement = new Element( 'E' );
 				let wrapDelta = getWrapDelta( wrapRange, wrapElement, baseVersion );
 
-				let transformed = transform( splitDelta, wrapDelta, true );
+				let transformed = transform( splitDelta, wrapDelta );
 
 				expect( transformed.length ).to.equal( 1 );
 
