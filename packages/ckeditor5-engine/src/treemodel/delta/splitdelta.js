@@ -67,7 +67,7 @@ export default class SplitDelta extends Delta {
 	}
 
 	static get _priority() {
-		return 10;
+		return 5;
 	}
 }
 
