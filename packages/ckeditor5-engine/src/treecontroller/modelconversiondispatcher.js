@@ -5,7 +5,7 @@
 
 'use strict';
 
-import Consumeable from './modelconsumeable.js';
+import Consumable from './modelconsumable.js';
 
 export default class ModelConversionDispatcher {
 	constructor( context ) {
@@ -25,7 +25,7 @@ export default class ModelConversionDispatcher {
 	}
 
 	convertInsert( range ) {
-		const consumable = new Consumeable();
+		const consumable = new Consumable();
 		const values = [];
 
 		for ( let value of range ) {
@@ -78,7 +78,7 @@ export default class ModelConversionDispatcher {
 	}
 
 	convertAttribute( type, range, key, oldValue, newValue ) {
-		const consumable = new Consumeable();
+		const consumable = new Consumable();
 		const values = [];
 
 		for ( let value of range ) {
