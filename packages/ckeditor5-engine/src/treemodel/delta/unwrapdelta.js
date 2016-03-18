@@ -77,14 +77,14 @@ register( 'unwrap', function( element ) {
 	let sourcePosition = Position.createFromParentAndOffset( element, 0 );
 
 	const move = new MoveOperation( sourcePosition, element.getChildCount(), Position.createBefore( element ), this.doc.version );
-	this.doc.applyOperation( move );
 	delta.addOperation( move );
+	this.doc.applyOperation( move );
 
 	// Computing new position because we moved some nodes before `element`.
 	// If we would cache `Position.createBefore( element )` we remove wrong node.
 	const remove = new RemoveOperation( Position.createBefore( element ), 1, this.doc.version );
-	this.doc.applyOperation( remove );
 	delta.addOperation( remove );
+	this.doc.applyOperation( remove );
 
 	this.addDelta( delta );
 

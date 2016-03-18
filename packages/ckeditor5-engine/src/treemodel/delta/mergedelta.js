@@ -93,12 +93,12 @@ register( 'merge', function( position ) {
 	const positionBefore = Position.createFromParentAndOffset( nodeBefore, nodeBefore.getChildCount() );
 
 	const move = new MoveOperation( positionAfter, nodeAfter.getChildCount(), positionBefore, this.doc.version );
-	this.doc.applyOperation( move );
 	delta.addOperation( move );
+	this.doc.applyOperation( move );
 
 	const remove = new RemoveOperation( position, 1, this.doc.version );
-	this.doc.applyOperation( remove );
 	delta.addOperation( remove );
+	this.doc.applyOperation( remove );
 
 	this.addDelta( delta );
 

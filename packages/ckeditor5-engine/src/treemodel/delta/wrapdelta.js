@@ -100,13 +100,13 @@ register( 'wrap', function( range, elementOrString ) {
 	const delta = new WrapDelta();
 
 	let insert = new InsertOperation( range.end, element, this.doc.version );
-	this.doc.applyOperation( insert );
 	delta.addOperation( insert );
+	this.doc.applyOperation( insert );
 
 	let targetPosition = Position.createFromParentAndOffset( element, 0 );
 	let move = new MoveOperation( range.start, range.end.offset - range.start.offset, targetPosition, this.doc.version );
-	this.doc.applyOperation( move );
 	delta.addOperation( move );
+	this.doc.applyOperation( move );
 
 	this.addDelta( delta );
 

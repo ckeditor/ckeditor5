@@ -65,6 +65,10 @@ export default class Batch {
 		delta.batch = this;
 		this.deltas.push( delta );
 
+		if ( this.deltas.length == 1 ) {
+			this.doc.fire( 'batch', this );
+		}
+
 		return delta;
 	}
 }
@@ -87,11 +91,11 @@ export default class Batch {
  *			// Create operations which should be components of this delta.
  *			const operation = new InsertOperation( position, nodes, this.doc.version );
  *
+ *			// Add operation to the delta. It is important to add operation before applying it.
+ *			delta.addOperation( operation );
+ *
  *			// Remember to apply every operation, no magic, you need to do it manually.
  *			this.doc.applyOperation( operation );
- *
- *			// Add operation to the delta.
- *			delta.addOperation( operation );
  *
  *			// Add delta to the Batch instance.
  *			this.addDelta( delta );
