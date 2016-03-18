@@ -481,4 +481,68 @@ describe( 'Element', () => {
 			expect( el.hasClass( 'three', 'one', 'two', 'zero' ) ).to.be.false;
 		} );
 	} );
+
+	describe( 'setStyle', () => {
+		it( 'should set element style', () => {
+			const el = new ViewElement( 'p' );
+			el.setStyle( 'color', 'red' );
+
+			expect( el._styles.has( 'color' ) ).to.be.true;
+			expect( el._styles.get( 'color' ) ).to.equal( 'red' );
+		} );
+	} );
+
+	describe( 'getStyle', () => {
+		it( 'should get style', () => {
+			const el = new ViewElement( 'p' );
+			el.setStyle( 'color', 'red' );
+			el.setStyle( 'border', '1px solid red' );
+
+			expect( el.getStyle( 'color' ) ).to.equal( 'red' );
+			expect( el.getStyle( 'border' ) ).to.equal( '1px solid red' );
+		} );
+	} );
+
+	describe( 'hasStyle', () => {
+		it( 'should check if element has a style', () => {
+			const el = new ViewElement( 'p' );
+			el.setStyle( 'padding-top', '10px' );
+
+			expect( el.hasStyle( 'padding-top' ) ).to.be.true;
+			expect( el.hasStyle( 'padding-left' ) ).to.be.false;
+		} );
+
+		it( 'should check if element has multiple styles', () => {
+			const el = new ViewElement( 'p' );
+			el.setStyle( 'padding-top', '10px' );
+			el.setStyle( 'margin-left', '10px' );
+			el.setStyle( 'color', '10px;' );
+
+			expect( el.hasStyle( 'padding-top', 'margin-left' ) ).to.be.true;
+			expect( el.hasStyle( 'padding-top', 'margin-left', 'color' ) ).to.be.true;
+			expect( el.hasStyle( 'padding-top', 'padding-left' ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'removeStyle', () => {
+		it( 'should remove style', () => {
+			const el = new ViewElement();
+			el.setStyle( 'padding-top', '10px' );
+			el.removeStyle( 'padding-top' );
+
+			expect( el.hasStyle( 'padding-top' ) ).to.be.false;
+		} );
+
+		it( 'should remove multiple styles', () => {
+			const el = new ViewElement();
+			el.setStyle( 'padding-top', '10px' );
+			el.setStyle( 'margin-top', '10px' );
+			el.setStyle( 'color', 'red' );
+			el.removeStyle( 'padding-top', 'margin-top' );
+
+			expect( el.hasStyle( 'padding-top' ) ).to.be.false;
+			expect( el.hasStyle( 'margin-top' ) ).to.be.false;
+			expect( el.hasStyle( 'color' ) ).to.be.true;
+		} );
+	} );
 } );

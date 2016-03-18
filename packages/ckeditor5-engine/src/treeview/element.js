@@ -89,7 +89,6 @@ export default class Element extends Node {
 		this._styles = new Map();
 
 		if ( this._attrs.has( 'style' ) ) {
-			// TODO: Maybe parsing style string should be moved to utils?
 			const styleString = this._attrs.get( 'style' );
 			const regex = /\s*([^:;\s]+)\s*:\s*([^;]+)\s*(?=;|$)/g;
 			let matchStyle;
@@ -390,5 +389,59 @@ export default class Element extends Node {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Adds style to the element.
+	 *
+	 * @param {String} property
+	 * @param {String} value
+	 */
+	setStyle( property, value ) {
+		this._styles.set( property, value );
+	}
+
+	/**
+	 * Returns style value for given property.
+	 * Undefined is returned if style does not exist.
+	 *
+	 * @param {String} property
+	 * @returns {String|undefined}
+	 */
+	getStyle( property ) {
+		return this._styles.get( property );
+	}
+
+	/**
+	 * Returns true if style property is present.
+	 * If more then one style property is provided - returns true only when all properties are present.
+	 *
+	 * @example
+	 * element.hasStyle( 'color' ); // Returns true if 'border-top' style is present.
+	 * element.hasStyle( 'color', 'border-top' ); // Returns true if 'color' and 'border-top' styles are both present.
+	 *
+	 * @param {...String} property
+	 */
+	hasStyle( ...property ) {
+		for ( let name of property ) {
+			if ( !this._styles.has( name ) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Removes specified style.
+	 *
+	 * @example
+	 * element.removeStyle( 'color' );  // Removes 'color' style.
+	 * element.removeStyle( 'color', 'border-top' ); // Removes both 'color' and 'border-top' styles.
+	 *
+	 * @param {...String} property
+	 */
+	removeStyle( ...property ) {
+		property.forEach( name => this._styles.delete( name ) );
 	}
 }
