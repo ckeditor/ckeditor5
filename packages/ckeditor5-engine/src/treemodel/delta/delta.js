@@ -43,7 +43,7 @@ export default class Delta {
 	 * are no operations in delta, returns `null`.
 	 *
 	 * @see core.treeModel.Document
-	 * @type {Number|null} Delta base version.
+	 * @type {Number|null}
 	 */
 	get baseVersion() {
 		if ( this.operations.length > 0 ) {

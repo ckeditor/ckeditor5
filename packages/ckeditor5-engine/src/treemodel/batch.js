@@ -58,6 +58,7 @@ export default class Batch {
 	 * Adds delta to the Batch instance. All modification methods (insert, remove, split, etc.) use this method
 	 * to add created deltas.
 	 *
+	 * @fires {@link core.treeModel.Document#batch}
 	 * @param {core.treeModel.delta.Delta} delta Delta to add.
 	 * @return {core.treeModel.delta.Delta} Added delta.
 	 */

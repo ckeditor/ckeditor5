@@ -119,8 +119,7 @@ export default class Document {
 	 * {@link core.treeModel.operation.Operation operations}. To create operations in the simple way use the
 	 * {@link core.treeModel.Batch} API available via {@link core.treeModel.Document#batch} method.
 	 *
-	 * This method calls {@link core.treeModel.Document#change} event.
-	 *
+	 * @fires @link core.treeModel.Document#change
 	 * @param {core.treeModel.operation.Operation} operation Operation to be applied.
 	 */
 	applyOperation( operation ) {
@@ -199,7 +198,7 @@ export default class Document {
 	 *
 	 * When all queued changes are done {@link core.treeModel.Document#changesDone} event is fired.
 	 *
-	 * @fires {@link core.treeModel.Document#changesDone}
+	 * @fires @link core.treeModel.Document#changesDone
 	 * @param {Function} callback Callback to enqueue.
 	 */
 	enqueueChanges( callback ) {
@@ -319,6 +318,12 @@ export default class Document {
 	 * Fired when all queued document changes are done. See {@link core.treeModel.Document#enqueueChanges}.
 	 *
 	 * @event core.treeModel.Document#changesDone
+	 */
+
+	/**
+	 * Fired when a first delta is added to a batch. Can be treated as "new batch created" event.
+	 *
+	 * @event core.treeModel.Document#batch
 	 */
 }
 
