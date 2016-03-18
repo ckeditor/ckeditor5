@@ -41,6 +41,10 @@ beforeEach( () => {
 	modelDoc.schema.disallow( { name: 'img', attribute: 'bold', inside: 'div' } );
 } );
 
+afterEach( () => {
+	command.destroy();
+} );
+
 describe( 'value', () => {
 	it( 'should be set to true or false basing on selection attribute', () => {
 		modelDoc.selection.setAttribute( attrKey, true );

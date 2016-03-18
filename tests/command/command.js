@@ -30,6 +30,12 @@ beforeEach( () => {
 	command = new Command( editor );
 } );
 
+afterEach( () => {
+	// Might be redundant if editor destroys the commands.
+	command.destroy();
+	editor.destroy();
+} );
+
 describe( 'constructor', () => {
 	it( 'should create a new command instance, that is enabled and bound to given editor', () => {
 		expect( command ).to.have.property( 'editor' ).equal( editor );
@@ -56,6 +62,16 @@ describe( 'constructor', () => {
 		newCommand.refreshState();
 
 		expect( newCommand._checkEnabled.calledOnce ).to.be.true;
+	} );
+} );
+
+describe( 'destroy', () => {
+	it( 'should stop listening', () => {
+		sinon.spy( command, 'stopListening' );
+
+		command.destroy();
+
+		expect( command.stopListening.calledOnce ).to.be.true;
 	} );
 } );
 

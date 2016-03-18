@@ -52,15 +52,9 @@ export default class Command {
 		}
 	}
 
-	/**
-	 * Checks if a command should be enabled according to its own rules. Mostly it will check schema to see if the command
-	 * is allowed to be executed in given position. This method can be defined in child class (but is not obligatory).
-	 * If it is defined, it will be added as a callback to `refreshState` event.
-	 *
-	 * @protected
-	 * @method ckeditor5.command.Command#_checkEnabled
-	 * @returns {Boolean} `true` if command should be enabled according to {@link core.treeModel.Document#schema}. `false` otherwise.
-	 */
+	destroy() {
+		this.stopListening();
+	}
 
 	/**
 	 * Fires `refreshState` event and checks it's resolve value to decide whether command should be enabled or not.
@@ -118,6 +112,16 @@ export default class Command {
 	 * @protected
 	 */
 	_doExecute() {}
+
+	/**
+	 * Checks if a command should be enabled according to its own rules. Mostly it will check schema to see if the command
+	 * is allowed to be executed in given position. This method can be defined in child class (but is not obligatory).
+	 * If it is defined, it will be added as a callback to `refreshState` event.
+	 *
+	 * @protected
+	 * @method ckeditor5.command.Command#_checkEnabled
+	 * @returns {Boolean} `true` if command should be enabled according to {@link core.treeModel.Document#schema}. `false` otherwise.
+	 */
 }
 
 function disableCallback( evt, data ) {
