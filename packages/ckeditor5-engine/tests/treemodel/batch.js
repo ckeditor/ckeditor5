@@ -10,60 +10,41 @@
 /* jshint unused: false */
 import deltas from '/ckeditor5/core/treemodel/delta/basic-deltas.js';
 
+import Document from '/ckeditor5/core/treemodel/document.js';
 import Batch from '/ckeditor5/core/treemodel/batch.js';
 import { register } from '/ckeditor5/core/treemodel/batch.js';
 import Delta from '/ckeditor5/core/treemodel/delta/delta.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
+class TestDelta extends Delta {
+	constructor( batch ) {
+		super( batch, [] );
+	}
+}
+
 describe( 'Batch', () => {
 	it( 'should have registered basic methods', () => {
-		const batch = new Batch();
+		const batch = new Batch( new Document() );
 
 		expect( batch.setAttr ).to.be.a( 'function' );
 		expect( batch.removeAttr ).to.be.a( 'function' );
 	} );
 
 	describe( 'register', () => {
-		let TestDelta;
-
-		before( () => {
-			TestDelta = class extends Delta {
-				constructor( batch ) {
-					super( batch, [] );
-				}
-			};
-		} );
-
 		afterEach( () => {
 			delete Batch.prototype.foo;
 		} );
 
-		it( 'should register function which return an delta', () => {
-			register( 'foo', function() {
-				this.addDelta( new TestDelta() );
-			} );
+		it( 'should register function to the batch prototype', () => {
+			const spy = sinon.spy();
 
-			const batch = new Batch();
+			register( 'foo', spy );
 
-			batch.foo();
-
-			expect( batch.deltas.length ).to.equal( 1 );
-			expect( batch.deltas[ 0 ] ).to.be.instanceof( TestDelta );
-		} );
-
-		it( 'should register function which return an multiple deltas', () => {
-			register( 'foo', function() {
-				this.addDelta( new TestDelta() );
-				this.addDelta( new TestDelta() );
-			} );
-
-			const batch = new Batch();
+			const batch = new Batch( new Document() );
 
 			batch.foo();
 
-			expect( batch.deltas.length ).to.equal( 2 );
-			expect( batch.deltas[ 0 ] ).to.be.instanceof( TestDelta );
-			expect( batch.deltas[ 1 ] ).to.be.instanceof( TestDelta );
+			expect( spy.calledOnce ).to.be.true;
 		} );
 
 		it( 'should throw if one try to register the same batch twice', () => {
@@ -72,6 +53,36 @@ describe( 'Batch', () => {
 			expect( () => {
 				register( 'foo', () => {} );
 			} ).to.throw( CKEditorError, /^batch-register-taken/ );
+		} );
+	} );
+
+	describe( 'addDelta', () => {
+		it( 'should add delta to the batch', () => {
+			const batch = new Batch( new Document() );
+			const deltaA = new Delta();
+			const deltaB = new Delta();
+			batch.addDelta( deltaA );
+			batch.addDelta( deltaB );
+
+			expect( batch.deltas.length ).to.equal( 2 );
+			expect( batch.deltas[ 0 ] ).to.equal( deltaA );
+			expect( batch.deltas[ 1 ] ).to.equal( deltaB );
+		} );
+
+		it( 'should fire batch event on it\'s document when first delta is added to the batch', () => {
+			const doc = new Document();
+			const batch = new Batch( doc );
+			const spy = sinon.spy();
+
+			doc.on( 'batch', spy );
+
+			batch.addDelta( new Delta() );
+
+			expect( spy.calledOnce ).to.be.true;
+
+			batch.addDelta( new Delta() );
+
+			expect( spy.calledOnce ).to.be.true;
 		} );
 	} );
 } );
