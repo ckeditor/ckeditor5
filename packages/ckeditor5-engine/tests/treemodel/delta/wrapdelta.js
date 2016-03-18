@@ -124,6 +124,21 @@ describe( 'WrapDelta', () => {
 		} );
 	} );
 
+	describe( 'howMany', () => {
+		it( 'should be equal to 0 if there are no operations in delta', () => {
+			expect( wrapDelta.howMany ).to.equal( 0 );
+		} );
+
+		it( 'should be equal to the number of wrapped elements', () => {
+			let howMany = 5;
+
+			wrapDelta.operations.push( new InsertOperation( new Position( root, [ 1, 6 ] ), 1 ) );
+			wrapDelta.operations.push( new MoveOperation( new Position( root, [ 1, 1 ] ), howMany, new Position( root, [ 1, 6, 0 ] ) ) );
+
+			expect( wrapDelta.howMany ).to.equal( 5 );
+		} );
+	} );
+
 	describe( 'getReversed', () => {
 		it( 'should return empty UnwrapDelta if there are no operations in delta', () => {
 			let reversed = wrapDelta.getReversed();
@@ -149,6 +164,21 @@ describe( 'WrapDelta', () => {
 			expect( reversed.operations[ 1 ] ).to.be.instanceof( RemoveOperation );
 			expect( reversed.operations[ 1 ].sourcePosition.path ).to.deep.equal( [ 1, 6 ] );
 			expect( reversed.operations[ 1 ].howMany ).to.equal( 1 );
+		} );
+	} );
+
+	describe( '_insertOperation', () => {
+		it( 'should be null if there are no operations in the delta', () => {
+			expect( wrapDelta._insertOperation ).to.be.null;
+		} );
+
+		it( 'should be equal to the first operation in the delta', () => {
+			let insertOperation = new InsertOperation( new Position( root, [ 1, 6 ] ), 1 );
+
+			wrapDelta.operations.push( insertOperation );
+			wrapDelta.operations.push( new MoveOperation( new Position( root, [ 1, 1 ] ), 5, new Position( root, [ 1, 6, 0 ] ) ) );
+
+			expect( wrapDelta._insertOperation ).to.equal( insertOperation );
 		} );
 	} );
 } );
