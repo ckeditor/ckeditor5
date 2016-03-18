@@ -337,6 +337,17 @@ describe( 'Element', () => {
 				expect( el._classes.has( 'baz' )  ).to.be.false;
 				expect( el._classes.has( 'qux' )  ).to.be.true;
 			} );
+
+			it( 'should replace all styles', () => {
+				el.setStyle( 'color', 'red' );
+				el.setStyle( 'top', '10px' );
+				el.setAttribute( 'style', 'border:none' );
+
+				expect( el.hasStyle( 'color' ) ).to.be.false;
+				expect( el.hasStyle( 'top' ) ).to.be.false;
+				expect( el.hasStyle( 'border' ) ).to.be.true;
+				expect( el.getStyle( 'border' ) ).to.equal( 'none' );
+			} );
 		} );
 
 		describe( 'getAttribute', () => {
@@ -356,6 +367,13 @@ describe( 'Element', () => {
 			it( 'should return undefined if no class attribute', () => {
 				expect( el.getAttribute( 'class' ) ).to.be.undefined;
 			} );
+
+			it( 'should return style attribute', () => {
+				el.setStyle( 'color', 'red' );
+				el.setStyle( 'top', '10px' );
+
+				expect( el.getAttribute( 'style' ) ).to.equal( 'color:red;top:10px;' );
+			} );
 		} );
 
 		describe( 'hasAttribute', () => {
@@ -370,6 +388,12 @@ describe( 'Element', () => {
 				expect( el.hasAttribute( 'class' ) ).to.be.false;
 				el.addClass( 'foo' );
 				expect( el.hasAttribute( 'class' ) ).to.be.true;
+			} );
+
+			it( 'should return true if element has style attribute', () => {
+				expect( el.hasAttribute( 'style' ) ).to.be.false;
+				el.setStyle( 'border', '1px solid red' );
+				expect( el.hasAttribute( 'style' ) ).to.be.true;
 			} );
 		} );
 
@@ -400,6 +424,18 @@ describe( 'Element', () => {
 					i++;
 				}
 			} );
+
+			it( 'should return style key', () => {
+				el.setStyle( 'color', 'black' );
+				el.setAttribute( 'bar', true );
+				const expected = [ 'style', 'bar' ];
+				let i = 0;
+
+				for ( let key of el.getAttributeKeys() ) {
+					expect( key ).to.equal( expected[ i ] );
+					i++;
+				}
+			} );
 		} );
 
 		describe( 'removeAttribute', () => {
@@ -414,6 +450,19 @@ describe( 'Element', () => {
 
 				expect( utils.count( el.getAttributeKeys() ) ).to.equal( 0 );
 			} );
+
+			it( 'should remove classe attribute', () => {
+				el.addClass( 'foo', 'bar' );
+				el.removeAttribute( 'class' );
+
+				expect( el.hasAttribute( 'class' ) ).to.be.false;
+				expect( el.hasClass( 'foo' ) ).to.be.false;
+				expect( el.hasClass( 'bar' ) ).to.be.false;
+			} );
+
+			// it( 'should fire event', () => {
+			//
+			// } );
 		} );
 	} );
 

@@ -89,13 +89,7 @@ export default class Element extends Node {
 		this._styles = new Map();
 
 		if ( this._attrs.has( 'style' ) ) {
-			const styleString = this._attrs.get( 'style' );
-			const regex = /\s*([^:;\s]+)\s*:\s*([^;]+)\s*(?=;|$)/g;
-			let matchStyle;
-
-			while ( ( matchStyle = regex.exec( styleString ) ) !== null ) {
-				this._styles.set( matchStyle[ 1 ], matchStyle[ 2 ].trim() );
-			}
+			parseInlineStyles( this._styles, this._attrs.get( 'style' ) );
 			this._attrs.delete( 'style' );
 		}
 	}
@@ -179,12 +173,17 @@ export default class Element extends Node {
 
 	/**
 	 * Returns an iterator that contains the keys for attributes.
+	 * Order of inserting attributes is not preserved.
 	 *
 	 * @returns {Iterator.<String>} Keys for attributes.
 	 */
 	*getAttributeKeys() {
 		if ( this._classes.size > 0 ) {
 			yield 'class';
+		}
+
+		if ( this._styles.size > 0 ) {
+			yield 'style';
 		}
 
 		yield* this._attrs.keys();
@@ -205,6 +204,20 @@ export default class Element extends Node {
 			return undefined;
 		}
 
+		if ( key == 'style' ) {
+			if ( this._styles.size > 0 ) {
+				let styleString = '';
+
+				for ( let [ property, value ] of this._styles ) {
+					styleString += `${ property }:${ value };`;
+				}
+
+				return styleString;
+			}
+
+			return undefined;
+		}
+
 		return this._attrs.get( key );
 	}
 
@@ -217,6 +230,10 @@ export default class Element extends Node {
 	hasAttribute( key ) {
 		if ( key == 'class' ) {
 			return this._classes.size  > 0;
+		}
+
+		if ( key == 'style' ) {
+			return this._styles.size > 0;
 		}
 
 		return this._attrs.has( key );
@@ -235,7 +252,9 @@ export default class Element extends Node {
 		if ( key == 'class' ) {
 			const classArray = value.split( /\s+/ );
 			this._classes.clear();
-			this.addClass( ...classArray );
+			classArray.forEach( name => this._classes.add( name ) );
+		} else if ( key == 'style' ) {
+			parseInlineStyles( this._styles, value );
 		} else {
 			this._attrs.set( key, value );
 		}
@@ -279,6 +298,29 @@ export default class Element extends Node {
 	removeAttribute( key ) {
 		this._fireChange( 'ATTRIBUTES', this );
 
+		// Remove class attribute.
+		if ( key == 'class' ) {
+			if ( this._classes.size > 0 ) {
+				this._classes.clear();
+
+				return true;
+			}
+
+			return false;
+		}
+
+		// Remove style attribute.
+		if ( key == 'style' ) {
+			if ( this._styles.size > 0 ) {
+				this._styles.clear();
+
+				return true;
+			}
+
+			return false;
+		}
+
+		// Remove other attributes.
 		return this._attrs.delete( key );
 	}
 
@@ -443,5 +485,20 @@ export default class Element extends Node {
 	 */
 	removeStyle( ...property ) {
 		property.forEach( name => this._styles.delete( name ) );
+	}
+}
+
+// Parses inline styles and puts property - value pairs into styles map.
+// Styles map is cleared before insertion.
+//
+// @param {Map.<String, String>} stylesMap Map to insert parsed properties and values.
+// @param {String} stylesString Styles to parse.
+function parseInlineStyles( stylesMap, stylesString ) {
+	const regex = /\s*([^:;\s]+)\s*:\s*([^;]+)\s*(?=;|$)/g;
+	let matchStyle;
+	stylesMap.clear();
+
+	while ( ( matchStyle = regex.exec( stylesString ) ) !== null ) {
+		stylesMap.set( matchStyle[ 1 ], matchStyle[ 2 ].trim() );
 	}
 }
