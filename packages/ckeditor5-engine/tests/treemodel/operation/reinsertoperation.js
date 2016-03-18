@@ -32,6 +32,14 @@ describe( 'ReinsertOperation', () => {
 		);
 	} );
 
+	it( 'should have position property equal to the position where node will be reinserted', () => {
+		expect( operation.position.isEqual( rootPosition ) ).to.be.true;
+
+		// Setting also works:
+		operation.position = new Position( root, [ 1 ] );
+		expect( operation.position.isEqual( new Position( root, [ 1 ] ) ) ).to.be.true;
+	} );
+
 	it( 'should have proper type', () => {
 		expect( operation.type ).to.equal( 'reinsert' );
 	} );
