@@ -30,6 +30,19 @@ describe( 'Document', () => {
 		} );
 	} );
 
+	describe( 'rootNames', () => {
+		it( 'should return empty iterator if no roots exist', () => {
+			expect( utils.count( doc.rootNames ) ).to.equal( 0 );
+		} );
+
+		it( 'should return an iterator of all roots without the graveyard', () => {
+			doc.createRoot( 'a' );
+			doc.createRoot( 'b' );
+
+			expect( Array.from( doc.rootNames ) ).to.deep.equal( [ 'a', 'b' ] );
+		} );
+	} );
+
 	describe( 'createRoot', () => {
 		it( 'should create a new RootElement, add it to roots map and return it', () => {
 			let root = doc.createRoot( 'root', 'root' );
@@ -64,19 +77,6 @@ describe( 'Document', () => {
 					doc.getRoot( 'root' );
 				}
 			).to.throw( CKEditorError, /document-getRoot-root-not-exist/ );
-		} );
-	} );
-
-	describe( 'getRootNames', () => {
-		it( 'should return empty iterator if no roots exist', () => {
-			expect( utils.count( doc.getRootNames() ) ).to.equal( 0 );
-		} );
-
-		it( 'should return an iterator of all roots without the graveyard', () => {
-			doc.createRoot( 'a' );
-			doc.createRoot( 'b' );
-
-			expect( Array.from( doc.getRootNames() ) ).to.deep.equal( [ 'a', 'b' ] );
 		} );
 	} );
 

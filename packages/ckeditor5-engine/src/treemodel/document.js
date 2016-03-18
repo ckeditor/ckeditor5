@@ -106,6 +106,16 @@ export default class Document {
 	}
 
 	/**
+	 * Gets names of all roots (without the {@link core.treeModel.Document#graveyard}).
+	 *
+	 * @readonly
+	 * @type {Iterable.<String>}
+	 */
+	get rootNames() {
+		return Array.from( this._roots.keys() ).filter( ( name ) => name != graveyardSymbol );
+	}
+
+	/**
 	 * This is the entry point for all document changes. All changes on the document are done using
 	 * {@link core.treeModel.operation.Operation operations}. To create operations in the simple way use the
 	 * {@link core.treeModel.Batch} API available via {@link core.treeModel.Document#batch} method.
@@ -225,19 +235,6 @@ export default class Document {
 		}
 
 		return this._roots.get( name );
-	}
-
-	/**
-	 * Gets iterator of names of all roots (without the {@link core.treeModel.Document#graveyard}).
-	 *
-	 * @returns {Iterator.<String>}
-	 */
-	*getRootNames() {
-		for ( let rootName of this._roots.keys() ) {
-			if ( rootName != graveyardSymbol ) {
-				yield rootName;
-			}
-		}
 	}
 
 	/**
