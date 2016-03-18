@@ -11,6 +11,7 @@ import transformations from './delta/basic-transformations.js'; // jshint ignore
 
 import RootElement from './rootelement.js';
 import Batch from './batch.js';
+import History from './history.js';
 import Selection from './selection.js';
 import EmitterMixin from '../../utils/emittermixin.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
@@ -93,6 +94,14 @@ export default class Document {
 
 		// Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
 		this.createRoot( graveyardSymbol );
+
+		/**
+		 * Document's history.
+		 *
+		 * @readonly
+		 * @member {core.treeModel.History} core.treeModel.Document#history
+		 */
+		this.history = new History();
 	}
 
 	/**
@@ -130,6 +139,8 @@ export default class Document {
 		let changes = operation._execute();
 
 		this.version++;
+
+		this.history.addOperation( operation );
 
 		const batch = operation.delta && operation.delta.batch;
 		this.fire( 'change', operation.type, changes, batch );
