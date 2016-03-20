@@ -243,6 +243,15 @@ export default class Collection {
 	}
 
 	/**
+	 * Removes all items from the collection.
+	 */
+	clear() {
+		while ( this.length ) {
+			this.remove( 0 );
+		}
+	}
+
+	/**
 	 * Collection iterator.
 	 */
 	[ Symbol.iterator ]() {

@@ -485,6 +485,22 @@ describe( 'Collection', () => {
 		} );
 	} );
 
+	describe( 'clear', () => {
+		it( 'removes all items', () => {
+			const items = [ {}, {}, {} ];
+			const spy = sinon.spy();
+
+			collection.on( 'remove', spy );
+
+			items.forEach( i => collection.add( i ) );
+
+			collection.clear();
+
+			expect( spy.callCount ).to.equal( 3 );
+			expect( collection.length ).to.equal( 0 );
+		} );
+	} );
+
 	describe( 'iterator', () => {
 		it( 'covers the whole collection', () => {
 			let item1 = getItem( 'foo' );
