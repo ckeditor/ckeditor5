@@ -208,7 +208,7 @@ describe( 'View', () => {
 		} );
 	} );
 
-	describe( 'el', () => {
+	describe( 'element', () => {
 		beforeEach( createViewInstanceWithTemplate );
 
 		it( 'invokes out of #template', () => {
@@ -230,6 +230,10 @@ describe( 'View', () => {
 			view = new CustomView();
 
 			expect( view.element ).to.be.an.instanceof( HTMLElement );
+		} );
+
+		it( 'is null when there is no template', () => {
+			expect( new View().element ).to.be.null;
 		} );
 	} );
 
