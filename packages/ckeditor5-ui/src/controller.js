@@ -133,11 +133,12 @@ export default class Controller {
 		for ( collection of this.collections ) {
 			for ( childController of collection ) {
 				promises.push( childController.destroy() );
-				collection.remove( childController );
 			}
 
-			this.collections.remove( collection );
+			collection.clear();
 		}
+
+		this.collections.clear();
 
 		if ( this.view ) {
 			promises.push( Promise.resolve().then( () => {
