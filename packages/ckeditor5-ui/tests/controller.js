@@ -341,6 +341,67 @@ describe( 'Controller', () => {
 					expect( childController.collections ).to.be.null;
 				} );
 		} );
+
+		// See #11
+		it( 'should correctly destroy multiple controller collections', () => {
+			const parentController = new Controller();
+			const controllerCollectionCollection = parentController.collections; // Yep... it's correct :D.
+			const childControllers = [];
+			const collections = [ 'a', 'b', 'c' ].map( name => {
+				const collection = new ControllerCollection( name );
+				const childController = new Controller();
+
+				childController.destroy = sinon.spy();
+
+				parentController.collections.add( collection );
+				collection.add( childController );
+				childControllers.push( childController );
+
+				return collection;
+			} );
+
+			return parentController.init()
+				.then( () => {
+					return parentController.destroy();
+				} )
+				.then( () => {
+					expect( controllerCollectionCollection ).to.have.lengthOf( 0, 'parentController.collections is empty' );
+					expect( collections.map( collection => collection.length ) )
+						.to.deep.equal( [ 0, 0, 0 ], 'all collections are empty' );
+					expect( childControllers.map( controller => controller.destroy.calledOnce ) )
+						.to.deep.equal( [ true, true, true ], 'all child controllers were destroyed' );
+				} );
+		} );
+
+		// See #11
+		it( 'should correctly destroy collections with multiple child controllers', () => {
+			const parentController = new Controller();
+			const controllerCollectionCollection = parentController.collections; // Yep... it's correct :D.
+			const controllerCollection = new ControllerCollection( 'foo' );
+			const childControllers = [];
+
+			parentController.collections.add( controllerCollection );
+
+			for ( let i = 0; i < 3; i++ ) {
+				const childController = new Controller();
+
+				childController.destroy = sinon.spy();
+
+				childControllers.push( childController );
+				parentController.add( 'foo', childController );
+			}
+
+			return parentController.init()
+				.then( () => {
+					return parentController.destroy();
+				} )
+				.then( () => {
+					expect( controllerCollectionCollection ).to.have.lengthOf( 0, 'parentController.collections is empty' );
+					expect( controllerCollection ).to.have.lengthOf( 0, 'child controller collection is empty' );
+					expect( childControllers.map( controller => controller.destroy.calledOnce ) )
+						.to.deep.equal( [ true, true, true ], 'all child controllers were destroyed' );
+				} );
+		} );
 	} );
 } );
 
