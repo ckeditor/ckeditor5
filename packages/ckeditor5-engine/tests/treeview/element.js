@@ -394,6 +394,10 @@ describe( 'Element', () => {
 
 				expect( el.getAttribute( 'style' ) ).to.equal( 'color:red;top:10px;' );
 			} );
+
+			it( 'should return undefined if no style attribute', () => {
+				expect( el.getAttribute( 'style' ) ).to.be.undefined;
+			} );
 		} );
 
 		describe( 'hasAttribute', () => {
@@ -471,13 +475,31 @@ describe( 'Element', () => {
 				expect( utils.count( el.getAttributeKeys() ) ).to.equal( 0 );
 			} );
 
-			it( 'should remove classe attribute', () => {
+			it( 'should remove class attribute', () => {
 				el.addClass( 'foo', 'bar' );
-				el.removeAttribute( 'class' );
+				const el2 = new ViewElement( 'p' );
+				const removed1 = el.removeAttribute( 'class' );
+				const removed2 = el2.removeAttribute( 'class' );
 
 				expect( el.hasAttribute( 'class' ) ).to.be.false;
 				expect( el.hasClass( 'foo' ) ).to.be.false;
 				expect( el.hasClass( 'bar' ) ).to.be.false;
+				expect( removed1 ).to.be.true;
+				expect( removed2 ).to.be.false;
+			} );
+
+			it( 'should remove style attribute', () => {
+				el.setStyle( 'color', 'red' );
+				el.setStyle( 'position', 'fixed' );
+				const el2 = new ViewElement( 'p' );
+				const removed1 = el.removeAttribute( 'style' );
+				const removed2 = el2.removeAttribute( 'style' );
+
+				expect( el.hasAttribute( 'style' ) ).to.be.false;
+				expect( el.hasStyle( 'color' ) ).to.be.false;
+				expect( el.hasStyle( 'position' ) ).to.be.false;
+				expect( removed1 ).to.be.true;
+				expect( removed2 ).to.be.false;
 			} );
 
 			// it( 'should fire event', () => {
