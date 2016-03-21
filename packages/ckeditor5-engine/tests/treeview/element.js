@@ -197,6 +197,26 @@ describe( 'Element', () => {
 			expect( el1.isSimilar( el3 ) ).to.be.false;
 			expect( el1.isSimilar( el4 ) ).to.be.false;
 		} );
+
+		it( 'should compare styles attribute', () => {
+			const el1 = new ViewElement( 'p' );
+			const el2 = new ViewElement( 'p' );
+			const el3 = new ViewElement( 'p' );
+			const el4 = new ViewElement( 'p' );
+
+			el1.setStyle( 'color', 'red' );
+			el1.setStyle( 'top', '10px' );
+			el2.setStyle( 'top', '20px' );
+			el3.setStyle( 'top', '10px' );
+			el3.setStyle( 'color', 'red' );
+			el4.setStyle( 'color', 'blue' );
+			el4.setStyle( 'top', '10px' );
+
+			expect( el1.isSimilar( el2 ) ).to.be.false;
+			expect( el1.isSimilar( el3 ) ).to.be.true;
+			expect( el2.isSimilar( el3 ) ).to.be.false;
+			expect( el3.isSimilar( el4 ) ).to.be.false;
+		} );
 	} );
 
 	describe( 'children manipulation methods', () => {

@@ -366,13 +366,14 @@ export default class Element extends Node {
 		}
 
 		// Check number of attributes and classes.
-		if ( this._attrs.size !== otherElement._attrs.size || this._classes.size !== otherElement._classes.size ) {
+		if ( this._attrs.size !== otherElement._attrs.size || this._classes.size !== otherElement._classes.size ||
+			this._styles.size !== otherElement._styles.size ) {
 			return false;
 		}
 
 		// Check if attributes are the same.
-		for ( let key of this._attrs.keys() ) {
-			if ( !otherElement._attrs.has( key ) || otherElement._attrs.get( key ) !== this._attrs.get( key ) ) {
+		for ( let [ key, value ] of this._attrs ) {
+			if ( !otherElement._attrs.has( key ) || otherElement._attrs.get( key ) !== value ) {
 				return false;
 			}
 		}
@@ -380,6 +381,13 @@ export default class Element extends Node {
 		// Check if classes are the same.
 		for ( let className of this._classes ) {
 			if ( !otherElement._classes.has( className ) ) {
+				return false;
+			}
+		}
+
+		// Check if styles are the same.
+		for ( let [ property, value ] of this._styles ) {
+			if ( !otherElement._styles.has( property ) || otherElement._styles.get( property ) !== value ) {
 				return false;
 			}
 		}
