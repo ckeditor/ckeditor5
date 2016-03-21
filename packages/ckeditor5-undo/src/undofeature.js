@@ -34,6 +34,14 @@ export default class UndoFeature extends Feature {
 		 * @member {undo.UndoCommand} undo.UndoFeature#_redoCommand
 		 */
 		this._redoCommand = null;
+
+		/**
+		 * Keeps track of which batch has already been added to undo manager.
+		 *
+		 * @private
+		 * @member {Set} undo.UndoFeature#_batchRegistry
+		 */
+		this._batchRegistry = new Set();
 	}
 
 	/**
@@ -49,9 +57,12 @@ export default class UndoFeature extends Feature {
 		this.editor.commands.set( 'undo', this._undoCommand );
 
 		// Whenever new batch is created add it to undo history and clear redo history.
-		this.listenTo( this.editor.document, 'batch', ( evt, batch ) => {
-			this._undoCommand.addBatch( batch );
-			this._redoCommand.clearStack();
+		this.listenTo( this.editor.document, 'change', ( evt, type, changes, batch ) => {
+			if ( batch && !this._batchRegistry.has( batch ) ) {
+				this._batchRegistry.add( batch );
+				this._undoCommand.addBatch( batch );
+				this._redoCommand.clearStack();
+			}
 		} );
 
 		// Whenever batch is reverted by undo command, add it to redo history.

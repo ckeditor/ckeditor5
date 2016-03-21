@@ -75,7 +75,7 @@ export default class UndoCommand extends Command {
 
 		for ( let undoDelta of undoDeltas ) {
 			const undoDeltaReversed = undoDelta.getReversed();
-			const updatedDeltas = this.editor.document.history.updateDelta( undoDeltaReversed );
+			const updatedDeltas = this.editor.document.history.getTransformedDelta( undoDeltaReversed );
 
 			for ( let delta of updatedDeltas ) {
 				for ( let operation of delta.operations ) {
