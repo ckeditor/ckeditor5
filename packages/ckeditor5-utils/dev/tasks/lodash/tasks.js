@@ -26,7 +26,7 @@ function buildLodash() {
 		build( [
 			'modularize',
 			'exports=es',
-			'include=clone,extend,isPlainObject,isObject,isArray,last,isEqual',
+			'include=clone,extend,isPlainObject,isObject,isArray,isArrayLike,last,isEqual',
 			'--development',
 			'--output', DEST_PATH
 		], ( err ) => {
