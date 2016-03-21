@@ -56,6 +56,17 @@ describe( 'Batch', () => {
 			const chain = batch.unwrap( p );
 			expect( chain ).to.equal( batch );
 		} );
+
+		it( 'should add delta to batch and operation to delta before applying operation', () => {
+			sinon.spy( doc, 'applyOperation' );
+			const batch = doc.batch().unwrap( p );
+
+			const correctDeltaMatcher = sinon.match( ( operation ) => {
+				return operation.delta && operation.delta.batch && operation.delta.batch == batch;
+			} );
+
+			expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
+		} );
 	} );
 } );
 

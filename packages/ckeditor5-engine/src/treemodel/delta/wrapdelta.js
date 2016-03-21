@@ -119,6 +119,7 @@ register( 'wrap', function( range, elementOrString ) {
 	}
 
 	const delta = new WrapDelta();
+	this.addDelta( delta );
 
 	let insert = new InsertOperation( range.end, element, this.doc.version );
 	delta.addOperation( insert );
@@ -128,8 +129,6 @@ register( 'wrap', function( range, elementOrString ) {
 	let move = new MoveOperation( range.start, range.end.offset - range.start.offset, targetPosition, this.doc.version );
 	delta.addOperation( move );
 	this.doc.applyOperation( move );
-
-	this.addDelta( delta );
 
 	return this;
 } );

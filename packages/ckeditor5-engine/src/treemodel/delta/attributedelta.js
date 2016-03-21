@@ -119,22 +119,19 @@ register( 'removeAttr', function( key, nodeOrRange ) {
 } );
 
 function attribute( batch, key, value, nodeOrRange ) {
-	let delta;
-
 	if ( nodeOrRange instanceof Range ) {
-		delta = changeRange( batch.doc, key, value, nodeOrRange );
+		changeRange( batch, batch.doc, key, value, nodeOrRange );
 	} else {
-		delta = changeNode( batch.doc, key, value, nodeOrRange );
+		changeNode( batch, batch.doc, key, value, nodeOrRange );
 	}
-
-	batch.addDelta( delta );
 }
 
-function changeNode( doc, key, value, node ) {
+function changeNode( batch, doc, key, value, node ) {
 	const previousValue = node.getAttribute( key );
 	let range, operation;
 
 	const delta = node instanceof RootElement ? new RootAttributeDelta() : new AttributeDelta();
+	batch.addDelta( delta );
 
 	if ( previousValue != value ) {
 		if ( node instanceof RootElement ) {
@@ -157,15 +154,13 @@ function changeNode( doc, key, value, node ) {
 		delta.addOperation( operation );
 		doc.applyOperation( operation );
 	}
-
-	// It is expected that this method returns a delta.
-	return delta;
 }
 
 // Because attribute operation needs to have the same attribute value on the whole range, this function split the range
 // into smaller parts.
-function changeRange( doc, attributeKey, attributeValue, range ) {
+function changeRange( batch, doc, attributeKey, attributeValue, range ) {
 	const delta = new AttributeDelta();
+	batch.addDelta( delta );
 
 	// Position of the last split, the beginning of the new range.
 	let lastSplitPosition = range.start;
@@ -209,6 +204,4 @@ function changeRange( doc, attributeKey, attributeValue, range ) {
 		delta.addOperation( operation );
 		doc.applyOperation( operation );
 	}
-
-	return delta;
 }

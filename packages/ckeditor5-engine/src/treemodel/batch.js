@@ -84,6 +84,9 @@ export default class Batch {
  *			// You can use a class inherit from Delta if that class should handle OT in the special way.
  *			const delta = new Delta();
  *
+ *			// Add delta to the Batch instance. It is important to add delta to batch before applying any operation.
+ *			this.addDelta( delta );
+ *
  *			// Create operations which should be components of this delta.
  *			const operation = new InsertOperation( position, nodes, this.doc.version );
  *
@@ -92,9 +95,6 @@ export default class Batch {
  *
  *			// Remember to apply every operation, no magic, you need to do it manually.
  *			this.doc.applyOperation( operation );
- *
- *			// Add delta to the Batch instance.
- *			this.addDelta( delta );
  *
  *			// Make this method chainable.
  *			return this;

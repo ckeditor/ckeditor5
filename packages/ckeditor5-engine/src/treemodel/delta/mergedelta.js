@@ -66,6 +66,8 @@ export default class MergeDelta extends Delta {
  */
 register( 'merge', function( position ) {
 	const delta = new MergeDelta();
+	this.addDelta( delta );
+
 	const nodeBefore = position.nodeBefore;
 	const nodeAfter = position.nodeAfter;
 
@@ -100,8 +102,6 @@ register( 'merge', function( position ) {
 	const remove = new RemoveOperation( position, 1, this.doc.version );
 	delta.addOperation( remove );
 	this.doc.applyOperation( remove );
-
-	this.addDelta( delta );
 
 	return this;
 } );
