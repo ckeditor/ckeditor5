@@ -112,7 +112,7 @@ export default class Element extends Node {
 
 		const cloned = new Element( this.name, this._attrs, childrenClone );
 
-		// Classes and styles are cloned separately - it solution is faster than adding them back to attributes and
+		// Classes and styles are cloned separately - this solution is faster than adding them back to attributes and
 		// parse once again in constructor.
 		cloned._classes = new Set( this._classes );
 		cloned._styles = new Map( this._styles );
@@ -363,7 +363,7 @@ export default class Element extends Node {
 			return false;
 		}
 
-		// Check number of attributes and classes.
+		// Check number of attributes, classes and styles.
 		if ( this._attrs.size !== otherElement._attrs.size || this._classes.size !== otherElement._classes.size ||
 			this._styles.size !== otherElement._styles.size ) {
 			return false;
@@ -454,7 +454,7 @@ export default class Element extends Node {
 	 * } );
 	 *
 	 * @param {String|Object} property Property name or object with property - value pairs.
-	 * @param {String} value Value to set. This parameter is ignored if object is provided as the first parameter.
+	 * @param {String} [value] Value to set. This parameter is ignored if object is provided as the first parameter.
 	 * @fires core.treeView.Node#change
 	 */
 	setStyle( property, value ) {
