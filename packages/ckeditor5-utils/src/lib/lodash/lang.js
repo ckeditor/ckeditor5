@@ -4,6 +4,7 @@ export { default as isArguments } from './isArguments';
 export { default as isArray } from './isArray';
 export { default as isArrayLike } from './isArrayLike';
 export { default as isArrayLikeObject } from './isArrayLikeObject';
+export { default as isBuffer } from './isBuffer';
 export { default as isEqual } from './isEqual';
 export { default as isFunction } from './isFunction';
 export { default as isLength } from './isLength';

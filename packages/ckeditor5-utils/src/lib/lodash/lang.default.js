@@ -4,6 +4,7 @@ import isArguments from './isArguments';
 import isArray from './isArray';
 import isArrayLike from './isArrayLike';
 import isArrayLikeObject from './isArrayLikeObject';
+import isBuffer from './isBuffer';
 import isEqual from './isEqual';
 import isFunction from './isFunction';
 import isLength from './isLength';
@@ -18,7 +19,7 @@ import toNumber from './toNumber';
 
 export default {
   clone, eq, isArguments, isArray, isArrayLike,
-  isArrayLikeObject, isEqual, isFunction, isLength, isNative,
-  isObject, isObjectLike, isPlainObject, isString, isTypedArray,
-  toInteger, toNumber
+  isArrayLikeObject, isBuffer, isEqual, isFunction, isLength,
+  isNative, isObject, isObjectLike, isPlainObject, isString,
+  isTypedArray, toInteger, toNumber
 };

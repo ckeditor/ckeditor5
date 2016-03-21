@@ -1,4 +1,4 @@
-import getLength from './internal/getLength';
+import getLength from './_getLength';
 import isFunction from './isFunction';
 import isLength from './isLength';
 
@@ -9,7 +9,6 @@ import isLength from './isLength';
  *
  * @static
  * @memberOf _
- * @type Function
  * @category Lang
  * @param {*} value The value to check.
  * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
@@ -28,8 +27,7 @@ import isLength from './isLength';
  * // => false
  */
 function isArrayLike(value) {
-  return value != null &&
-    !(typeof value == 'function' && isFunction(value)) && isLength(getLength(value));
+  return value != null && isLength(getLength(value)) && !isFunction(value);
 }
 
 export default isArrayLike;
