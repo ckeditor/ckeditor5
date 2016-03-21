@@ -405,6 +405,7 @@ export default class Element extends Node {
 	 * @param {...String} className
 	 */
 	addClass( ...className ) {
+		this._fireChange( 'ATTRIBUTES', this );
 		className.forEach( name => this._classes.add( name ) );
 	}
 
@@ -418,6 +419,7 @@ export default class Element extends Node {
 	 * @param {...String} className
 	 */
 	removeClass( ...className ) {
+		this._fireChange( 'ATTRIBUTES', this );
 		className.forEach( name => this._classes.delete( name ) );
 	}
 
@@ -448,6 +450,7 @@ export default class Element extends Node {
 	 * @param {String} value
 	 */
 	setStyle( property, value ) {
+		this._fireChange( 'ATTRIBUTES', this );
 		this._styles.set( property, value );
 	}
 
@@ -492,6 +495,7 @@ export default class Element extends Node {
 	 * @param {...String} property
 	 */
 	removeStyle( ...property ) {
+		this._fireChange( 'ATTRIBUTES', this );
 		property.forEach( name => this._styles.delete( name ) );
 	}
 }
