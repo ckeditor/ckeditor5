@@ -114,9 +114,9 @@ export default class History {
 	}
 
 	/**
-	 * Transforms given delta by another given delta.
+	 * Transforms given delta by another given delta. Exposed for testing purposes.
 	 *
-	 * @private
+	 * @protected
 	 * @param {core.treeModel.delta.Delta} toTransform Delta to be transformed.
 	 * @param {core.treeModel.delta.Delta} transformBy Delta to transform by.
 	 */
