@@ -22,17 +22,26 @@ import RemoveOperation from './removeoperation.js';
  */
 export default class ReinsertOperation extends MoveOperation {
 	/**
-	 * @returns {core.treeModel.operation.RemoveOperation}
+	 * Position where re-inserted node will be inserted.
+	 *
+	 * @type {core.treeModel.Position}
 	 */
-	getReversed() {
-		return new RemoveOperation( this.targetPosition, this.howMany, this.baseVersion + 1 );
+	get position() {
+		return this.targetPosition;
+	}
+
+	set position( pos ) {
+		this.targetPosition = pos;
 	}
 
 	get type() {
 		return 'reinsert';
 	}
 
-	get isSticky() {
-		return false;
+	/**
+	 * @returns {core.treeModel.operation.RemoveOperation}
+	 */
+	getReversed() {
+		return new RemoveOperation( this.targetPosition, this.howMany, this.baseVersion + 1 );
 	}
 }

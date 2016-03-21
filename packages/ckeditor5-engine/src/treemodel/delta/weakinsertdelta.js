@@ -45,8 +45,8 @@ register( 'weakInsert', function( position, nodes ) {
 	}
 
 	const operation = new InsertOperation( position, nodes, this.doc.version );
-	this.doc.applyOperation( operation );
 	delta.addOperation( operation );
+	this.doc.applyOperation( operation );
 
 	this.addDelta( delta );
 

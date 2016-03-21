@@ -35,10 +35,6 @@ export default class RemoveOperation extends MoveOperation {
 		return 'remove';
 	}
 
-	get isSticky() {
-		return false;
-	}
-
 	/**
 	 * @returns {core.treeModel.operation.ReinsertOperation}
 	 */

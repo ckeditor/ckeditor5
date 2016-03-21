@@ -1713,12 +1713,27 @@ describe( 'transform', () => {
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
-			it( 'target at offset same as range end boundary: expand range', () => {
+			it( 'target at offset same as range end boundary: no operation update', () => {
 				let transformBy = new InsertOperation(
 					new Position( root, [ 2, 2, 6 ] ),
 					[ nodeA, nodeB ],
 					baseVersion
 				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'target at offset same as range end boundary (sticky move): expand range', () => {
+				let transformBy = new InsertOperation(
+					new Position( root, [ 2, 2, 6 ] ),
+					[ nodeA, nodeB ],
+					baseVersion
+				);
+
+				op.isSticky = true;
 
 				let transOp = transform( op, transformBy );
 
@@ -2035,7 +2050,7 @@ describe( 'transform', () => {
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
-			it( 'target at start boundary of transforming move range: expand move range', () => {
+			it( 'target at start boundary of transforming move range: increment source offset', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 4, 1, 0 ] ),
 					2,
@@ -2047,18 +2062,53 @@ describe( 'transform', () => {
 
 				expect( transOp.length ).to.equal( 1 );
 
+				expected.sourcePosition.offset = 6;
+
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'target at start boundary of transforming move range (sticky move): expand move range', () => {
+				let transformBy = new MoveOperation(
+					new Position( root, [ 4, 1, 0 ] ),
+					2,
+					new Position( root, [ 2, 2, 4 ] ),
+					baseVersion
+				);
+
+				op.isSticky = true;
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+
 				expected.howMany = 4;
 
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
-			it( 'target at end boundary of transforming move range: expand move range', () => {
+			it( 'target at end boundary of transforming move range: no operation update', () => {
 				let transformBy = new MoveOperation(
 					new Position( root, [ 4, 1, 0 ] ),
 					2,
 					new Position( root, [ 2, 2, 6 ] ),
 					baseVersion
 				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'target at end boundary of transforming move range (sticky move): expand move range', () => {
+				let transformBy = new MoveOperation(
+					new Position( root, [ 4, 1, 0 ] ),
+					2,
+					new Position( root, [ 2, 2, 6 ] ),
+					baseVersion
+				);
+
+				op.isSticky = true;
 
 				let transOp = transform( op, transformBy );
 

@@ -67,7 +67,7 @@ export default class SplitDelta extends Delta {
 	}
 
 	static get _priority() {
-		return 10;
+		return 5;
 	}
 }
 
@@ -108,6 +108,7 @@ register( 'split', function( position ) {
 		Position.createFromParentAndOffset( copy, 0 ),
 		this.doc.version
 	);
+	move.isSticky = true;
 
 	delta.addOperation( move );
 	this.doc.applyOperation( move );

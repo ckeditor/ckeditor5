@@ -22,8 +22,8 @@ export default class RemoveDelta extends MoveDelta {}
 
 function addRemoveOperation( batch, delta, position, howMany ) {
 	const operation = new RemoveOperation( position, howMany, batch.doc.version );
-	batch.doc.applyOperation( operation );
 	delta.addOperation( operation );
+	batch.doc.applyOperation( operation );
 }
 
 /**

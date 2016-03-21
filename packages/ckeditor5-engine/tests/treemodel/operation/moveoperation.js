@@ -40,7 +40,7 @@ describe( 'MoveOperation', () => {
 			doc.version
 		);
 
-		expect( op.isSticky ).to.be.true;
+		expect( op.isSticky ).to.be.false;
 	} );
 
 	it( 'should move from one node to another', () => {

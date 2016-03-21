@@ -252,8 +252,6 @@ const ot = {
 				isStrong = false;
 			}
 
-			let isSticky = a.isSticky && b.isSticky;
-
 			// Create ranges from MoveOperations properties.
 			const rangeA = Range.createFromPositionAndShift( a.sourcePosition, a.howMany );
 			const rangeB = Range.createFromPositionAndShift( b.sourcePosition, b.howMany );
@@ -268,8 +266,8 @@ const ot = {
 			let difference = joinRanges( rangeA.getDifference( rangeB ) );
 
 			if ( difference ) {
-				difference.start = difference.start.getTransformedByMove( b.sourcePosition, moveTargetPosition, b.howMany, !isSticky, false );
-				difference.end = difference.end.getTransformedByMove( b.sourcePosition, moveTargetPosition, b.howMany, isSticky, false );
+				difference.start = difference.start.getTransformedByMove( b.sourcePosition, moveTargetPosition, b.howMany, !a.isSticky, false );
+				difference.end = difference.end.getTransformedByMove( b.sourcePosition, moveTargetPosition, b.howMany, a.isSticky, false );
 
 				ranges.push( difference );
 			}
@@ -281,14 +279,16 @@ const ot = {
 			// * on the same tree level - it means that we move the same nodes into different places
 			// * on deeper tree level - it means that we move nodes that are inside moved nodes
 			// The operations are conflicting only if they try to move exactly same nodes, so only in the first case.
-			// So, we will handle common range if it is "deeper" or if transformed operation is more important.
-			let isDeeper = utils.compareArrays( b.sourcePosition.getParentPath(), a.sourcePosition.getParentPath() ) == 'PREFIX';
+			// That means that we transform common part in two cases:
+			// * `rangeA` is "deeper" than `rangeB` so it does not collide
+			// * `rangeA` is at the same level but is stronger than `rangeB`.
+			let aCompB = utils.compareArrays( a.sourcePosition.getParentPath(), b.sourcePosition.getParentPath() );
 
 			// If the `b` MoveOperation points inside the `a` MoveOperation range, the common part will be included in
 			// range(s) that (is) are results of processing `difference`. If that's the case, we cannot include it again.
-			let bIsIncluded = rangeA.containsPosition( b.targetPosition ) ||
-				( rangeA.start.isEqual( b.targetPosition ) && isSticky ) ||
-				( rangeA.end.isEqual( b.targetPosition ) && isSticky );
+			let bTargetsToA = rangeA.containsPosition( b.targetPosition ) ||
+				( rangeA.start.isEqual( b.targetPosition ) && a.isSticky ) ||
+				( rangeA.end.isEqual( b.targetPosition ) && a.isSticky );
 
 			// If the `b` MoveOperation range contains both whole `a` range and target position we do an exception and
 			// transform `a` operation. Normally, when same nodes are moved, we stick with stronger operation's target.
@@ -296,7 +296,7 @@ const ot = {
 			// smaller range will be moved to larger range target. The effect of this transformation feels natural.
 			let aIsInside = rangeB.containsRange( rangeA ) && rangeB.containsPosition( a.targetPosition );
 
-			if ( common !== null && ( isDeeper || isStrong || aIsInside ) && !bIsIncluded ) {
+			if ( common !== null && ( aCompB === 'EXTENSION' || ( aCompB === 'SAME' && isStrong ) || aIsInside ) && !bTargetsToA ) {
 				// Here we do not need to worry that newTargetPosition is inside moved range, because that
 				// would mean that the MoveOperation targets into itself, and that is incorrect operation.
 				// Instead, we calculate the new position of that part of original range.
@@ -318,7 +318,7 @@ const ot = {
 			}
 
 			// Target position also could be affected by the other MoveOperation. We will transform it.
-			let newTargetPosition = a.targetPosition.getTransformedByMove( b.sourcePosition, moveTargetPosition, b.howMany, !isStrong, isSticky );
+			let newTargetPosition = a.targetPosition.getTransformedByMove( b.sourcePosition, moveTargetPosition, b.howMany, !isStrong, b.isSticky );
 
 			// Map transformed range(s) to operations and return them.
 			return ranges.reverse().map( ( range ) => {

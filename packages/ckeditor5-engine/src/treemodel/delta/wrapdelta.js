@@ -35,6 +35,27 @@ export default class WrapDelta extends Delta {
 	}
 
 	/**
+	 * How many nodes is wrapped by the delta or `null` if there are no operations in delta.
+	 *
+	 * @type {Number}
+	 */
+	get howMany() {
+		let range = this.range;
+
+		return range ? range.end.offset - range.start.offset : 0;
+	}
+
+	/**
+	 * Operation that inserts wrapping element or `null` if there are no operations in the delta.
+	 *
+	 * @protected
+	 * @type {core.treeModel.operation.InsertOperation|core.treeModel.operation.ReinsertOperation}
+	 */
+	get _insertOperation() {
+		return this.operations[ 0 ] || null;
+	}
+
+	/**
 	 * Operation that moves wrapped nodes to their new parent or `null` if there are no operations in the delta.
 	 *
 	 * @protected
@@ -100,13 +121,13 @@ register( 'wrap', function( range, elementOrString ) {
 	const delta = new WrapDelta();
 
 	let insert = new InsertOperation( range.end, element, this.doc.version );
-	this.doc.applyOperation( insert );
 	delta.addOperation( insert );
+	this.doc.applyOperation( insert );
 
 	let targetPosition = Position.createFromParentAndOffset( element, 0 );
 	let move = new MoveOperation( range.start, range.end.offset - range.start.offset, targetPosition, this.doc.version );
-	this.doc.applyOperation( move );
 	delta.addOperation( move );
+	this.doc.applyOperation( move );
 
 	this.addDelta( delta );
 

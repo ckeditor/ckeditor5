@@ -154,8 +154,8 @@ function changeNode( doc, key, value, node ) {
 			operation = new AttributeOperation( range, key, previousValue, value, doc.version );
 		}
 
-		doc.applyOperation( operation );
 		delta.addOperation( operation );
+		doc.applyOperation( operation );
 	}
 
 	// It is expected that this method returns a delta.
@@ -204,10 +204,10 @@ function changeRange( doc, attributeKey, attributeValue, range ) {
 
 	function addOperation() {
 		let range = new Range( lastSplitPosition, position );
-		const operation = new AttributeOperation( range, attributeKey, attributeValueBefore, attributeValue, doc.version );
+		const operation = new AttributeOperation( range, attributeKey, attributeValueBefore || null, attributeValue, doc.version );
 
-		doc.applyOperation( operation );
 		delta.addOperation( operation );
+		doc.applyOperation( operation );
 	}
 
 	return delta;

@@ -59,7 +59,10 @@ export function getMergeDelta( position, howManyInPrev, howManyInNext, version )
 	targetPosition.offset--;
 	targetPosition.path.push( howManyInPrev );
 
-	delta.addOperation( new MoveOperation( sourcePosition, howManyInNext, targetPosition, version ) );
+	let move = new MoveOperation( sourcePosition, howManyInNext, targetPosition, version );
+	move.isSticky = true;
+
+	delta.addOperation( move );
 	delta.addOperation( new RemoveOperation( position, 1, version + 1 ) );
 
 	return delta;
@@ -94,7 +97,11 @@ export function getSplitDelta( position, nodeCopy, howManyMove, version ) {
 	targetPosition.path.push( 0 );
 
 	delta.addOperation( new InsertOperation( insertPosition, [ nodeCopy ], version ) );
-	delta.addOperation( new MoveOperation( position, howManyMove, targetPosition, version + 1 ) );
+
+	let move = new MoveOperation( position, howManyMove, targetPosition, version + 1 );
+	move.isSticky = true;
+
+	delta.addOperation( move );
 
 	return delta;
 }
@@ -121,6 +128,7 @@ export function getUnwrapDelta( positionBefore, howManyChildren, version ) {
 	sourcePosition.path.push( 0 );
 
 	let move = new MoveOperation( sourcePosition, howManyChildren, positionBefore, version );
+	move.isSticky = true;
 
 	let removePosition = Position.createFromPosition( positionBefore );
 	removePosition.offset += howManyChildren;
