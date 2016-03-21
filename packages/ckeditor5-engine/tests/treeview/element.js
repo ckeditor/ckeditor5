@@ -637,6 +637,19 @@ describe( 'Element', () => {
 
 			el.setStyle( 'color', 'red' );
 		} );
+
+		it( 'should set multiple styles by providing an object', () => {
+			const el = new ViewElement( 'p' );
+			el.setStyle( {
+				color: 'red',
+				position: 'fixed'
+			} );
+
+			expect( el._styles.has( 'color' ) ).to.be.true;
+			expect( el._styles.has( 'position' ) ).to.be.true;
+			expect( el._styles.get( 'color' ) ).to.equal( 'red' );
+			expect( el._styles.get( 'position' ) ).to.equal( 'fixed' );
+		} );
 	} );
 
 	describe( 'getStyle', () => {

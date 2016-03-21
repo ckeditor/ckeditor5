@@ -446,8 +446,15 @@ export default class Element extends Node {
 	/**
 	 * Adds style to the element.
 	 *
-	 * @param {String} property
-	 * @param {String} value
+	 * @example
+	 * element.setStyle( 'color', 'red' );
+	 * element.setStyle( {
+	 * 		color: 'red',
+	 * 		position: 'fixed'
+	 * } );
+	 *
+	 * @param {String|Object} property Property name or object with property - value pairs.
+	 * @param {String} value Value to set. This parameter is ignored if object is provided as the first parameter.
 	 * @fires core.treeView.Node#change
 	 */
 	setStyle( property, value ) {
