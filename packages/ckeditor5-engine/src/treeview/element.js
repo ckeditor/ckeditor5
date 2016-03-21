@@ -70,14 +70,13 @@ export default class Element extends Node {
 		 * @protected
 		 * @member {Set} core.treeView.Element#_classes
 		 */
+		this._classes = new Set();
+
 		if ( this._attrs.has( 'class' ) ) {
 			// Remove class attribute and handle it by class set.
 			const classString = this._attrs.get( 'class' );
-			const classArray = classString.split( /\s+/ );
-			this._classes = new Set( classArray );
+			parseClasses( this._classes, classString );
 			this._attrs.delete( 'class' );
-		} else {
-			this._classes = new Set();
 		}
 
 		/**
@@ -89,6 +88,7 @@ export default class Element extends Node {
 		this._styles = new Map();
 
 		if ( this._attrs.has( 'style' ) ) {
+			// Remove style attribute and handle it by styles map.
 			parseInlineStyles( this._styles, this._attrs.get( 'style' ) );
 			this._attrs.delete( 'style' );
 		}
@@ -250,9 +250,7 @@ export default class Element extends Node {
 		this._fireChange( 'ATTRIBUTES', this );
 
 		if ( key == 'class' ) {
-			const classArray = value.split( /\s+/ );
-			this._classes.clear();
-			classArray.forEach( name => this._classes.add( name ) );
+			parseClasses( this._classes, value );
 		} else if ( key == 'style' ) {
 			parseInlineStyles( this._styles, value );
 		} else {
@@ -403,6 +401,7 @@ export default class Element extends Node {
 	 * element.addClass( 'foo', 'bar' ); // Adds 'foo' and 'bar' classes.
 	 *
 	 * @param {...String} className
+	 * @fires core.treeView.Node#change
 	 */
 	addClass( ...className ) {
 		this._fireChange( 'ATTRIBUTES', this );
@@ -417,6 +416,7 @@ export default class Element extends Node {
 	 * element.removeClass( 'foo', 'bar' ); // Removes both 'foo' and 'bar' classes.
 	 *
 	 * @param {...String} className
+	 * @fires core.treeView.Node#change
 	 */
 	removeClass( ...className ) {
 		this._fireChange( 'ATTRIBUTES', this );
@@ -448,10 +448,20 @@ export default class Element extends Node {
 	 *
 	 * @param {String} property
 	 * @param {String} value
+	 * @fires core.treeView.Node#change
 	 */
 	setStyle( property, value ) {
 		this._fireChange( 'ATTRIBUTES', this );
-		this._styles.set( property, value );
+
+		if ( isPlainObject( property ) ) {
+			const keys = Object.keys( property );
+
+			for ( let key of keys ) {
+				this._styles.set( key, property[ key ] );
+			}
+		} else {
+			this._styles.set( property, value );
+		}
 	}
 
 	/**
@@ -493,6 +503,7 @@ export default class Element extends Node {
 	 * element.removeStyle( 'color', 'border-top' ); // Removes both 'color' and 'border-top' styles.
 	 *
 	 * @param {...String} property
+	 * @fires core.treeView.Node#change
 	 */
 	removeStyle( ...property ) {
 		this._fireChange( 'ATTRIBUTES', this );
@@ -513,4 +524,15 @@ function parseInlineStyles( stylesMap, stylesString ) {
 	while ( ( matchStyle = regex.exec( stylesString ) ) !== null ) {
 		stylesMap.set( matchStyle[ 1 ], matchStyle[ 2 ].trim() );
 	}
+}
+
+// Parses class attribute and puts all classes into classes set.
+// Classes set s cleared before insertion.
+//
+// @param {Set.<String>} classesSet Set to insert parsed classes.
+// @param {String} classesString String with classes to parse.
+function parseClasses( classesSet, classesString ) {
+	const classArray = classesString.split( /\s+/ );
+	classesSet.clear();
+	classArray.forEach( name => classesSet.add( name ) );
 }
