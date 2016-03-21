@@ -27,6 +27,10 @@ beforeEach( () => {
 describe( 'Batch', () => {
 	let batch;
 
+	const correctDeltaMatcher = sinon.match( ( operation ) => {
+		return operation.delta && operation.delta.batch && operation.delta.batch == batch;
+	} );
+
 	beforeEach( () => {
 		batch = doc.batch();
 	} );
@@ -88,6 +92,13 @@ describe( 'Batch', () => {
 				const chain = batch.setAttr( 'b', 2, node );
 				expect( chain ).to.equal( batch );
 			} );
+
+			it( 'should add delta to batch and operation to delta before applying operation', () => {
+				sinon.spy( doc, 'applyOperation' );
+				batch.setAttr( 'b', 2, node );
+
+				expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
+			} );
 		} );
 
 		describe( 'removeAttr', () => {
@@ -111,6 +122,13 @@ describe( 'Batch', () => {
 			it( 'should be chainable', () => {
 				const chain = batch.removeAttr( 'a', node );
 				expect( chain ).to.equal( batch );
+			} );
+
+			it( 'should add delta to batch and operation to delta before applying operation', () => {
+				sinon.spy( doc, 'applyOperation' );
+				batch.removeAttr( 'a', node );
+
+				expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
 			} );
 		} );
 	} );
@@ -251,6 +269,13 @@ describe( 'Batch', () => {
 				const chain = batch.setAttr( 'a', 3, getRange( 3, 6 ) );
 				expect( chain ).to.equal( batch );
 			} );
+
+			it( 'should add delta to batch and operation to delta before applying operation', () => {
+				sinon.spy( doc, 'applyOperation' );
+				batch.setAttr( 'a', 3, getRange( 3, 6 ) );
+
+				expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
+			} );
 		} );
 
 		describe( 'removeAttr', () => {
@@ -330,6 +355,13 @@ describe( 'Batch', () => {
 			it( 'should be chainable', () => {
 				const chain = batch.removeAttr( 'a', getRange( 0, 2 ) );
 				expect( chain ).to.equal( batch );
+			} );
+
+			it( 'should add delta to batch and operation to delta before applying operation', () => {
+				sinon.spy( doc, 'applyOperation' );
+				batch.removeAttr( 'a', getRange( 0, 2 ) );
+
+				expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
 			} );
 		} );
 	} );

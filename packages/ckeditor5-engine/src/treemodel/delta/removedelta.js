@@ -35,6 +35,7 @@ function addRemoveOperation( batch, delta, position, howMany ) {
  */
 register( 'remove', function( nodeOrRange ) {
 	const delta = new RemoveDelta();
+	this.addDelta( delta );
 
 	if ( nodeOrRange instanceof Range ) {
 		// The array is reversed, so the ranges are correct and do not have to be updated.
@@ -46,8 +47,6 @@ register( 'remove', function( nodeOrRange ) {
 	} else {
 		addRemoveOperation( this, delta, Position.createBefore( nodeOrRange ), 1 );
 	}
-
-	this.addDelta( delta );
 
 	return this;
 } );

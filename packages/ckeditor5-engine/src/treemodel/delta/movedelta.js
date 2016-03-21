@@ -91,6 +91,7 @@ function addMoveOperation( batch, delta, sourcePosition, howMany, targetPosition
  */
 register( 'move', function( nodeOrRange, targetPosition ) {
 	const delta = new MoveDelta();
+	this.addDelta( delta );
 
 	if ( nodeOrRange instanceof Range ) {
 		if ( !nodeOrRange.isFlat ) {
@@ -106,8 +107,6 @@ register( 'move', function( nodeOrRange, targetPosition ) {
 	} else {
 		addMoveOperation( this, delta, Position.createBefore( nodeOrRange ), 1, targetPosition );
 	}
-
-	this.addDelta( delta );
 
 	return this;
 } );

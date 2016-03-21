@@ -83,6 +83,7 @@ export default class SplitDelta extends Delta {
  */
 register( 'split', function( position ) {
 	const delta = new SplitDelta();
+	this.addDelta( delta );
 
 	const splitElement = position.parent;
 
@@ -112,8 +113,6 @@ register( 'split', function( position ) {
 
 	delta.addOperation( move );
 	this.doc.applyOperation( move );
-
-	this.addDelta( delta );
 
 	return this;
 } );

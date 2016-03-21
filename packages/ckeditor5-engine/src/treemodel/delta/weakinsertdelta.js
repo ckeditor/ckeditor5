@@ -37,6 +37,7 @@ export default class WeakInsertDelta extends InsertDelta {}
  */
 register( 'weakInsert', function( position, nodes ) {
 	const delta = new WeakInsertDelta();
+	this.addDelta( delta );
 
 	nodes = new NodeList( nodes );
 
@@ -47,8 +48,6 @@ register( 'weakInsert', function( position, nodes ) {
 	const operation = new InsertOperation( position, nodes, this.doc.version );
 	delta.addOperation( operation );
 	this.doc.applyOperation( operation );
-
-	this.addDelta( delta );
 
 	return this;
 } );

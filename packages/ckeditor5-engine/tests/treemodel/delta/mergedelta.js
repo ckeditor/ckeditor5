@@ -20,7 +20,7 @@ import RemoveOperation from '/ckeditor5/core/treemodel/operation/removeoperation
 import ReinsertOperation from '/ckeditor5/core/treemodel/operation/reinsertoperation.js';
 
 describe( 'Batch', () => {
-	let doc, root, p1, p2;
+	let doc, root, p1, p2, batch;
 
 	beforeEach( () => {
 		doc = new Document();
@@ -62,10 +62,21 @@ describe( 'Batch', () => {
 		} );
 
 		it( 'should be chainable', () => {
-			const batch = doc.batch();
+			batch = doc.batch();
 
 			const chain = batch.merge( new Position( root, [ 1 ] ) );
 			expect( chain ).to.equal( batch );
+		} );
+
+		it( 'should add delta to batch and operation to delta before applying operation', () => {
+			sinon.spy( doc, 'applyOperation' );
+			batch = doc.batch().merge( new Position( root, [ 1 ] ) );
+
+			const correctDeltaMatcher = sinon.match( ( operation ) => {
+				return operation.delta && operation.delta.batch && operation.delta.batch == batch;
+			} );
+
+			expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
 		} );
 	} );
 } );

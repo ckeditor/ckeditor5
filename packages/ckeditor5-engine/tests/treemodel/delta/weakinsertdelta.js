@@ -45,5 +45,16 @@ describe( 'Batch', () => {
 		it( 'should be chainable', () => {
 			expect( chain ).to.equal( batch );
 		} );
+
+		it( 'should add delta to batch and operation to delta before applying operation', () => {
+			sinon.spy( doc, 'applyOperation' );
+			batch.weakInsert( new Position( root, [ 2 ] ), 'xyz' );
+
+			const correctDeltaMatcher = sinon.match( ( operation ) => {
+				return operation.delta && operation.delta.batch && operation.delta.batch == batch;
+			} );
+
+			expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
+		} );
 	} );
 } );

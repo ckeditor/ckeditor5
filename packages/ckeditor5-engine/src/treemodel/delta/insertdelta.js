@@ -73,10 +73,9 @@ register( 'insert', function( position, nodes ) {
 	const delta = new InsertDelta();
 	const insert = new InsertOperation( position, nodes, this.doc.version );
 
+	this.addDelta( delta );
 	delta.addOperation( insert );
 	this.doc.applyOperation( insert );
-
-	this.addDelta( delta );
 
 	return this;
 } );

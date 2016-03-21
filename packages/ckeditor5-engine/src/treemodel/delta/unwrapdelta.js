@@ -73,6 +73,7 @@ register( 'unwrap', function( element ) {
 	}
 
 	const delta = new UnwrapDelta();
+	this.addDelta( delta );
 
 	let sourcePosition = Position.createFromParentAndOffset( element, 0 );
 
@@ -86,8 +87,6 @@ register( 'unwrap', function( element ) {
 	const remove = new RemoveOperation( Position.createBefore( element ), 1, this.doc.version );
 	delta.addOperation( remove );
 	this.doc.applyOperation( remove );
-
-	this.addDelta( delta );
 
 	return this;
 } );
