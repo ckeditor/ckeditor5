@@ -68,21 +68,5 @@ describe( 'Batch', () => {
 			expect( batch.deltas[ 0 ] ).to.equal( deltaA );
 			expect( batch.deltas[ 1 ] ).to.equal( deltaB );
 		} );
-
-		it( 'should fire batch event on it\'s document when first delta is added to the batch', () => {
-			const doc = new Document();
-			const batch = new Batch( doc );
-			const spy = sinon.spy();
-
-			doc.on( 'batch', spy );
-
-			batch.addDelta( new Delta() );
-
-			expect( spy.calledOnce ).to.be.true;
-
-			batch.addDelta( new Delta() );
-
-			expect( spy.calledOnce ).to.be.true;
-		} );
 	} );
 } );

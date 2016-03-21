@@ -84,7 +84,7 @@ export default class History {
 	 * @param {core.treeModel.delta.Delta} delta Delta to update.
 	 * @returns {Array.<core.treeModel.delta.Delta>} Result of transformation which is an array containing one or more deltas.
 	 */
-	updateDelta( delta ) {
+	getTransformedDelta( delta ) {
 		if ( delta.baseVersion === this._nextHistoryPoint ) {
 			return [ delta ];
 		}

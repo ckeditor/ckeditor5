@@ -78,7 +78,7 @@ describe( 'History', () => {
 		} );
 	} );
 
-	describe( 'updateDelta', () => {
+	describe( 'getTransformedDelta', () => {
 		it( 'should transform given delta by deltas from history which were applied since the baseVersion of given delta', () => {
 			sinon.spy( History, '_transform' );
 
@@ -104,7 +104,7 @@ describe( 'History', () => {
 
 			// `deltaX` bases on the same history point as `deltaB` -- so it already acknowledges `deltaA` existence.
 			// It should be transformed by `deltaB` and all following deltas (`deltaC` and `deltaD`).
-			history.updateDelta( deltaX );
+			history.getTransformedDelta( deltaX );
 
 			// `deltaX` was not transformed by `deltaA`.
 			expect( History._transform.calledWithExactly( deltaX, deltaA ) ).to.be.false;
@@ -126,7 +126,7 @@ describe( 'History', () => {
 
 			history.addOperation( deltaA.operations[ 0 ] );
 
-			let result = history.updateDelta( deltaB );
+			let result = history.getTransformedDelta( deltaB );
 
 			expect( result.length ).to.equal( 1 );
 			expect( result[ 0 ] ).to.equal( deltaB );
@@ -147,7 +147,7 @@ describe( 'History', () => {
 			deltaB.addOperation( new NoOperation( 1 ) );
 
 			expect( () => {
-				history.updateDelta( deltaB );
+				history.getTransformedDelta( deltaB );
 			} ).to.throw( CKEditorError, /history-wrong-version/ );
 		} );
 	} );

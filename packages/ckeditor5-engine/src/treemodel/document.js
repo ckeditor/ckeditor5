@@ -319,12 +319,6 @@ export default class Document {
 	 *
 	 * @event core.treeModel.Document#changesDone
 	 */
-
-	/**
-	 * Fired when a first delta is added to a batch. Can be treated as "new batch created" event.
-	 *
-	 * @event core.treeModel.Document#batch
-	 */
 }
 
 utils.mix( Document, EmitterMixin );
