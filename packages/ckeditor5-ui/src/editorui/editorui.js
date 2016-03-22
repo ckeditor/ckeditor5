@@ -9,6 +9,7 @@ import Controller from '../controller.js';
 import ControllerCollection from '../controllercollection.js';
 import ComponentFactory from '../componentfactory.js';
 import ObservableMixin from '../../utils/observablemixin.js';
+import IconManager from '../iconmanager/iconmanager.js';
 import utils from '../../utils/utils.js';
 
 /**
@@ -50,6 +51,26 @@ export default class EditorUI extends Controller {
 		this.featureComponents = new ComponentFactory( editor );
 
 		this.collections.add( new ControllerCollection( 'body' ) );
+	}
+
+	/**
+	 * Initializes EditorUI instance.
+	 *
+	 * @returns {Promise}
+	 */
+	init() {
+		return super.init().then( () => {
+			this._addIconManager();
+		} );
+	}
+
+	/**
+	 * Adds IconManager into DOM.
+	 *
+	 * @protected
+	 */
+	_addIconManager() {
+		this.collections.get( 'body' ).add( new IconManager( this.editor ) );
 	}
 }
 
