@@ -396,9 +396,8 @@ export default class Element extends Node {
 	/**
 	 * Adds specified class.
 	 *
-	 * @example
-	 * element.addClass( 'foo' ); // Adds 'foo' class.
-	 * element.addClass( 'foo', 'bar' ); // Adds 'foo' and 'bar' classes.
+	 *		element.addClass( 'foo' ); // Adds 'foo' class.
+	 *		element.addClass( 'foo', 'bar' ); // Adds 'foo' and 'bar' classes.
 	 *
 	 * @param {...String} className
 	 * @fires core.treeView.Node#change
@@ -411,9 +410,8 @@ export default class Element extends Node {
 	/**
 	 * Removes specified class.
 	 *
-	 * @example
- 	 * element.removeClass( 'foo' );  // Removes 'foo' class.
-	 * element.removeClass( 'foo', 'bar' ); // Removes both 'foo' and 'bar' classes.
+ 	 *		element.removeClass( 'foo' );  // Removes 'foo' class.
+	 *		element.removeClass( 'foo', 'bar' ); // Removes both 'foo' and 'bar' classes.
 	 *
 	 * @param {...String} className
 	 * @fires core.treeView.Node#change
@@ -427,9 +425,8 @@ export default class Element extends Node {
 	 * Returns true if class is present.
 	 * If more then one class is provided - returns true only when all classes are present.
 	 *
-	 * @example
-	 * element.hasClass( 'foo' ); // Returns true if 'foo' class is present.
-	 * element.hasClass( 'foo', 'bar' ); // Returns true if 'foo' and 'bar' classes are both present.
+	 *		element.hasClass( 'foo' ); // Returns true if 'foo' class is present.
+	 *		element.hasClass( 'foo', 'bar' ); // Returns true if 'foo' and 'bar' classes are both present.
 	 *
 	 * @param {...String} className
 	 */
@@ -446,14 +443,13 @@ export default class Element extends Node {
 	/**
 	 * Adds style to the element.
 	 *
-	 * @example
-	 * element.setStyle( 'color', 'red' );
-	 * element.setStyle( {
-	 * 		color: 'red',
-	 * 		position: 'fixed'
-	 * } );
+	 *		element.setStyle( 'color', 'red' );
+	 *		element.setStyle( {
+	 *			color: 'red',
+	 *			position: 'fixed'
+	 *		} );
 	 *
-	 * @param {String|Object} property Property name or object with property - value pairs.
+	 * @param {String|Object} property Property name or object with key - value pairs.
 	 * @param {String} [value] Value to set. This parameter is ignored if object is provided as the first parameter.
 	 * @fires core.treeView.Node#change
 	 */
@@ -483,12 +479,11 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Returns true if style property is present.
+	 * Returns true if style keys are present.
 	 * If more then one style property is provided - returns true only when all properties are present.
 	 *
-	 * @example
-	 * element.hasStyle( 'color' ); // Returns true if 'border-top' style is present.
-	 * element.hasStyle( 'color', 'border-top' ); // Returns true if 'color' and 'border-top' styles are both present.
+	 *		element.hasStyle( 'color' ); // Returns true if 'border-top' style is present.
+	 *		element.hasStyle( 'color', 'border-top' ); // Returns true if 'color' and 'border-top' styles are both present.
 	 *
 	 * @param {...String} property
 	 */
@@ -505,9 +500,8 @@ export default class Element extends Node {
 	/**
 	 * Removes specified style.
 	 *
-	 * @example
-	 * element.removeStyle( 'color' );  // Removes 'color' style.
-	 * element.removeStyle( 'color', 'border-top' ); // Removes both 'color' and 'border-top' styles.
+	 *		element.removeStyle( 'color' );  // Removes 'color' style.
+	 *		element.removeStyle( 'color', 'border-top' ); // Removes both 'color' and 'border-top' styles.
 	 *
 	 * @param {...String} property
 	 * @fires core.treeView.Node#change
