@@ -10,7 +10,7 @@ const jsdoc = require( 'gulp-jsdoc3' );
 const path = require( 'path' );
 
 module.exports = ( config ) => {
-	gulp.task( 'docs', [ 'build-esnext' ], function( cb ) {
+	gulp.task( 'docs', [ 'build:js:esnext' ], function( cb ) {
 		const esnextBuildPath = path.join( config.ROOT_DIR, config.BUILD_DIR, 'esnext' );
 		const jsDocConfig = {
 			opts: {
