@@ -49,6 +49,29 @@ describe( 'Element', () => {
 			expect( parent.getChildCount() ).to.equal( 1 );
 			expect( parent.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'p' );
 		} );
+
+		it( 'should move class attribute to class set ', () => {
+			const el = new ViewElement( 'p', { id: 'test', class: 'one two three' } );
+
+			expect( el._attrs.has( 'class' ) ).to.be.false;
+			expect( el._attrs.has( 'id' ) ).to.be.true;
+			expect( el._classes.has( 'one' ) ).to.be.true;
+			expect( el._classes.has( 'two' ) ).to.be.true;
+			expect( el._classes.has( 'three' ) ).to.be.true;
+		} );
+
+		it( 'should move style attribute to style map', () => {
+			const el = new ViewElement( 'p', { id: 'test', style: 'one: style1; two:style2 ; three : url(http://ckeditor.com)' } );
+
+			expect( el._attrs.has( 'style' ) ).to.be.false;
+			expect( el._attrs.has( 'id' ) ).to.be.true;
+			expect( el._styles.has( 'one' ) ).to.be.true;
+			expect( el._styles.get( 'one' ) ).to.equal( 'style1' );
+			expect( el._styles.has( 'two' ) ).to.be.true;
+			expect( el._styles.get( 'two' ) ).to.equal( 'style2' );
+			expect( el._styles.has( 'three' ) ).to.be.true;
+			expect( el._styles.get( 'three' ) ).to.equal( 'url(http://ckeditor.com)' );
+		} );
 	} );
 
 	describe( 'clone', () => {
@@ -99,6 +122,29 @@ describe( 'Element', () => {
 			expect( clone.getAttribute( 'attr2' ) ).to.equal( 'bar' );
 			expect( clone.getChildCount() ).to.equal( 0 );
 		} );
+
+		it( 'should clone class attribute', () => {
+			const el = new ViewElement( 'p', { foo: 'bar' } );
+			el.addClass( 'baz', 'qux' );
+			const clone = el.clone( false );
+
+			expect( clone ).to.not.equal( el );
+			expect( clone.name ).to.equal( el.name );
+			expect( clone.getAttribute( 'foo' ) ).to.equal( 'bar' );
+			expect( clone.getAttribute( 'class' ) ).to.equal( 'baz qux' );
+		} );
+
+		it( 'should clone style attribute', () => {
+			const el = new ViewElement( 'p', { style: 'color: red; font-size: 12px;' } );
+			const clone = el.clone( false );
+
+			expect( clone ).to.not.equal( el );
+			expect( clone.name ).to.equal( el.name );
+			expect( clone._styles.has( 'color' ) ).to.be.true;
+			expect( clone._styles.get( 'color' ) ).to.equal( 'red' );
+			expect( clone._styles.has( 'font-size' ) ).to.be.true;
+			expect( clone._styles.get( 'font-size' ) ).to.equal( '12px' );
+		} );
 	} );
 
 	describe( 'isSimilar', () => {
@@ -134,6 +180,42 @@ describe( 'Element', () => {
 			expect( el.isSimilar( other1 ) ).to.be.false;
 			expect( el.isSimilar( other2 ) ).to.be.false;
 			expect( el.isSimilar( other3 ) ).to.be.false;
+		} );
+
+		it( 'should compare class attribute', () => {
+			const el1 = new ViewElement( 'p' );
+			const el2 = new ViewElement( 'p' );
+			const el3 = new ViewElement( 'p' );
+			const el4 = new ViewElement( 'p' );
+
+			el1.addClass( 'foo', 'bar' );
+			el2.addClass( 'bar', 'foo' );
+			el3.addClass( 'baz' );
+			el4.addClass( 'baz', 'bar' );
+
+			expect( el1.isSimilar( el2 ) ).to.be.true;
+			expect( el1.isSimilar( el3 ) ).to.be.false;
+			expect( el1.isSimilar( el4 ) ).to.be.false;
+		} );
+
+		it( 'should compare styles attribute', () => {
+			const el1 = new ViewElement( 'p' );
+			const el2 = new ViewElement( 'p' );
+			const el3 = new ViewElement( 'p' );
+			const el4 = new ViewElement( 'p' );
+
+			el1.setStyle( 'color', 'red' );
+			el1.setStyle( 'top', '10px' );
+			el2.setStyle( 'top', '20px' );
+			el3.setStyle( 'top', '10px' );
+			el3.setStyle( 'color', 'red' );
+			el4.setStyle( 'color', 'blue' );
+			el4.setStyle( 'top', '10px' );
+
+			expect( el1.isSimilar( el2 ) ).to.be.false;
+			expect( el1.isSimilar( el3 ) ).to.be.true;
+			expect( el2.isSimilar( el3 ) ).to.be.false;
+			expect( el3.isSimilar( el4 ) ).to.be.false;
 		} );
 	} );
 
@@ -250,12 +332,82 @@ describe( 'Element', () => {
 			el = new ViewElement( 'p' );
 		} );
 
+		describe( 'setAttribute', () => {
+			it( 'should set attribute', () => {
+				el.setAttribute( 'foo', 'bar' );
+
+				expect( el._attrs.has( 'foo' ) ).to.be.true;
+				expect( el._attrs.get( 'foo' ) ).to.equal( 'bar' );
+			} );
+
+			it( 'should fire change event with ATTRIBUTES type', ( done ) => {
+				el.once( 'change', ( eventInfo, type ) => {
+					expect( eventInfo.name ).to.equal( 'change' );
+					expect( eventInfo.source ).to.equal( el );
+					expect( type ).to.equal( 'ATTRIBUTES' );
+					done();
+				} );
+
+				el.setAttribute( 'foo', 'bar' );
+			} );
+
+			it( 'should set class', () => {
+				el.setAttribute( 'class', 'foo bar' );
+
+				expect( el._attrs.has( 'class' ) ).to.be.false;
+				expect( el._classes.has( 'foo' )  ).to.be.true;
+				expect( el._classes.has( 'bar' )  ).to.be.true;
+			} );
+
+			it( 'should replace all existing classes', () => {
+				el.setAttribute( 'class', 'foo bar baz' );
+				el.setAttribute( 'class', 'qux' );
+
+				expect( el._classes.has( 'foo' )  ).to.be.false;
+				expect( el._classes.has( 'bar' )  ).to.be.false;
+				expect( el._classes.has( 'baz' )  ).to.be.false;
+				expect( el._classes.has( 'qux' )  ).to.be.true;
+			} );
+
+			it( 'should replace all styles', () => {
+				el.setStyle( 'color', 'red' );
+				el.setStyle( 'top', '10px' );
+				el.setAttribute( 'style', 'border:none' );
+
+				expect( el.hasStyle( 'color' ) ).to.be.false;
+				expect( el.hasStyle( 'top' ) ).to.be.false;
+				expect( el.hasStyle( 'border' ) ).to.be.true;
+				expect( el.getStyle( 'border' ) ).to.equal( 'none' );
+			} );
+		} );
+
 		describe( 'getAttribute', () => {
 			it( 'should return attribute', () => {
 				el.setAttribute( 'foo', 'bar' );
 
 				expect( el.getAttribute( 'foo' ) ).to.equal( 'bar' );
 				expect( el.getAttribute( 'bom' ) ).to.not.be.ok;
+			} );
+
+			it( 'should return class attribute', () => {
+				el.addClass( 'foo', 'bar' );
+
+				expect( el.getAttribute( 'class' ) ).to.equal( 'foo bar' );
+			} );
+
+			it( 'should return undefined if no class attribute', () => {
+				expect( el.getAttribute( 'class' ) ).to.be.undefined;
+			} );
+
+			it( 'should return style attribute', () => {
+				el.setStyle( 'color', 'red' );
+				el.setStyle( 'top', '10px' );
+
+				expect( el.getAttribute( 'style' ) ).to.equal( 'color:red;top:10px;' );
+			} );
+
+			it( 'should return undefined if no style attribute', () => {
+				expect( el.getAttribute( 'style' ) ).to.be.undefined;
 			} );
 		} );
 
@@ -265,6 +417,18 @@ describe( 'Element', () => {
 
 				expect( el.hasAttribute( 'foo' ) ).to.be.true;
 				expect( el.hasAttribute( 'bom' ) ).to.be.false;
+			} );
+
+			it( 'should return true if element has class attribute', () => {
+				expect( el.hasAttribute( 'class' ) ).to.be.false;
+				el.addClass( 'foo' );
+				expect( el.hasAttribute( 'class' ) ).to.be.true;
+			} );
+
+			it( 'should return true if element has style attribute', () => {
+				expect( el.hasAttribute( 'style' ) ).to.be.false;
+				el.setStyle( 'border', '1px solid red' );
+				expect( el.hasAttribute( 'style' ) ).to.be.true;
 			} );
 		} );
 
@@ -283,6 +447,30 @@ describe( 'Element', () => {
 
 				expect( i ).to.equal( 2 );
 			} );
+
+			it( 'should return class key', () => {
+				el.addClass( 'foo' );
+				el.setAttribute( 'bar', true );
+				const expected = [ 'class', 'bar' ];
+				let i = 0;
+
+				for ( let key of el.getAttributeKeys() ) {
+					expect( key ).to.equal( expected[ i ] );
+					i++;
+				}
+			} );
+
+			it( 'should return style key', () => {
+				el.setStyle( 'color', 'black' );
+				el.setAttribute( 'bar', true );
+				const expected = [ 'style', 'bar' ];
+				let i = 0;
+
+				for ( let key of el.getAttributeKeys() ) {
+					expect( key ).to.equal( expected[ i ] );
+					i++;
+				}
+			} );
 		} );
 
 		describe( 'removeAttribute', () => {
@@ -296,6 +484,241 @@ describe( 'Element', () => {
 				expect( el.hasAttribute( 'foo' ) ).to.be.false;
 
 				expect( utils.count( el.getAttributeKeys() ) ).to.equal( 0 );
+			} );
+
+			it( 'should fire change event with ATTRIBUTES type', ( done ) => {
+				el.setAttribute( 'foo', 'bar' );
+				el.once( 'change', ( eventInfo, type ) => {
+					expect( eventInfo.name ).to.equal( 'change' );
+					expect( eventInfo.source ).to.equal( el );
+					expect( type ).to.equal( 'ATTRIBUTES' );
+					done();
+				} );
+
+				el.removeAttribute( 'foo' );
+			} );
+
+			it( 'should remove class attribute', () => {
+				el.addClass( 'foo', 'bar' );
+				const el2 = new ViewElement( 'p' );
+				const removed1 = el.removeAttribute( 'class' );
+				const removed2 = el2.removeAttribute( 'class' );
+
+				expect( el.hasAttribute( 'class' ) ).to.be.false;
+				expect( el.hasClass( 'foo' ) ).to.be.false;
+				expect( el.hasClass( 'bar' ) ).to.be.false;
+				expect( removed1 ).to.be.true;
+				expect( removed2 ).to.be.false;
+			} );
+
+			it( 'should remove style attribute', () => {
+				el.setStyle( 'color', 'red' );
+				el.setStyle( 'position', 'fixed' );
+				const el2 = new ViewElement( 'p' );
+				const removed1 = el.removeAttribute( 'style' );
+				const removed2 = el2.removeAttribute( 'style' );
+
+				expect( el.hasAttribute( 'style' ) ).to.be.false;
+				expect( el.hasStyle( 'color' ) ).to.be.false;
+				expect( el.hasStyle( 'position' ) ).to.be.false;
+				expect( removed1 ).to.be.true;
+				expect( removed2 ).to.be.false;
+			} );
+		} );
+	} );
+
+	describe( 'classes manipulation methods', () => {
+		let el;
+
+		beforeEach( () => {
+			el = new ViewElement( 'p' );
+		} );
+
+		describe( 'addClass', () => {
+			it( 'should add single class', () => {
+				el.addClass( 'one' );
+
+				expect( el._classes.has( 'one' ) ).to.be.true;
+			} );
+
+			it( 'should fire change event with ATTRIBUTES type', ( done ) => {
+				el.once( 'change', ( eventInfo, type ) => {
+					expect( eventInfo.name ).to.equal( 'change' );
+					expect( eventInfo.source ).to.equal( el );
+					expect( type ).to.equal( 'ATTRIBUTES' );
+					done();
+				} );
+
+				el.addClass( 'one' );
+			} );
+
+			it( 'should add multiple classes', () => {
+				el.addClass( 'one', 'two', 'three' );
+
+				expect( el._classes.has( 'one' ) ).to.be.true;
+				expect( el._classes.has( 'two' ) ).to.be.true;
+				expect( el._classes.has( 'three' ) ).to.be.true;
+			} );
+		} );
+
+		describe( 'removeClass', () => {
+			it( 'should remove single class', () => {
+				el.addClass( 'one', 'two', 'three' );
+
+				el.removeClass( 'one' );
+
+				expect( el._classes.has( 'one' ) ).to.be.false;
+				expect( el._classes.has( 'two' ) ).to.be.true;
+				expect( el._classes.has( 'three' ) ).to.be.true;
+			} );
+
+			it( 'should fire change event with ATTRIBUTES type', ( done ) => {
+				el.addClass( 'one' );
+				el.once( 'change', ( eventInfo, type ) => {
+					expect( eventInfo.name ).to.equal( 'change' );
+					expect( eventInfo.source ).to.equal( el );
+					expect( type ).to.equal( 'ATTRIBUTES' );
+					done();
+				} );
+
+				el.removeClass( 'one' );
+			} );
+
+			it( 'should remove multiple classes', () => {
+				el.addClass( 'one', 'two', 'three', 'four' );
+				el.removeClass( 'one', 'two', 'three' );
+
+				expect( el._classes.has( 'one' ) ).to.be.false;
+				expect( el._classes.has( 'two' ) ).to.be.false;
+				expect( el._classes.has( 'three' ) ).to.be.false;
+				expect( el._classes.has( 'four' ) ).to.be.true;
+			} );
+		} );
+
+		describe( 'hasClass', () => {
+			it( 'should check if element has a class', () => {
+				el.addClass( 'one', 'two', 'three' );
+
+				expect( el.hasClass( 'one' ) ).to.be.true;
+				expect( el.hasClass( 'two' ) ).to.be.true;
+				expect( el.hasClass( 'three' ) ).to.be.true;
+				expect( el.hasClass( 'four' ) ).to.be.false;
+			} );
+
+			it( 'should check if element has multiple classes', () => {
+				el.addClass( 'one', 'two', 'three' );
+
+				expect( el.hasClass( 'one', 'two' ) ).to.be.true;
+				expect( el.hasClass( 'three', 'two' ) ).to.be.true;
+				expect( el.hasClass( 'three', 'one', 'two' ) ).to.be.true;
+				expect( el.hasClass( 'three', 'one', 'two', 'zero' ) ).to.be.false;
+			} );
+		} );
+	} );
+
+	describe( 'styles manipulation methods', () => {
+		let el;
+
+		beforeEach( () => {
+			el = new ViewElement( 'p' );
+		} );
+
+		describe( 'setStyle', () => {
+			it( 'should set element style', () => {
+				el.setStyle( 'color', 'red' );
+
+				expect( el._styles.has( 'color' ) ).to.be.true;
+				expect( el._styles.get( 'color' ) ).to.equal( 'red' );
+			} );
+
+			it( 'should fire change event with ATTRIBUTES type', ( done ) => {
+				el.once( 'change', ( eventInfo, type ) => {
+					expect( eventInfo.name ).to.equal( 'change' );
+					expect( eventInfo.source ).to.equal( el );
+					expect( type ).to.equal( 'ATTRIBUTES' );
+					done();
+				} );
+
+				el.setStyle( 'color', 'red' );
+			} );
+
+			it( 'should set multiple styles by providing an object', () => {
+				el.setStyle( {
+					color: 'red',
+					position: 'fixed'
+				} );
+
+				expect( el._styles.has( 'color' ) ).to.be.true;
+				expect( el._styles.has( 'position' ) ).to.be.true;
+				expect( el._styles.get( 'color' ) ).to.equal( 'red' );
+				expect( el._styles.get( 'position' ) ).to.equal( 'fixed' );
+			} );
+		} );
+
+		describe( 'getStyle', () => {
+			it( 'should get style', () => {
+				el.setStyle( {
+					color: 'red',
+					border: '1px solid red'
+				} );
+
+				expect( el.getStyle( 'color' ) ).to.equal( 'red' );
+				expect( el.getStyle( 'border' ) ).to.equal( '1px solid red' );
+			} );
+		} );
+
+		describe( 'hasStyle', () => {
+			it( 'should check if element has a style', () => {
+				el.setStyle( 'padding-top', '10px' );
+
+				expect( el.hasStyle( 'padding-top' ) ).to.be.true;
+				expect( el.hasStyle( 'padding-left' ) ).to.be.false;
+			} );
+
+			it( 'should check if element has multiple styles', () => {
+				el.setStyle( {
+					'padding-top': '10px',
+					'margin-left': '10px',
+					'color': '10px;'
+				} );
+
+				expect( el.hasStyle( 'padding-top', 'margin-left' ) ).to.be.true;
+				expect( el.hasStyle( 'padding-top', 'margin-left', 'color' ) ).to.be.true;
+				expect( el.hasStyle( 'padding-top', 'padding-left' ) ).to.be.false;
+			} );
+		} );
+
+		describe( 'removeStyle', () => {
+			it( 'should remove style', () => {
+				el.setStyle( 'padding-top', '10px' );
+				el.removeStyle( 'padding-top' );
+
+				expect( el.hasStyle( 'padding-top' ) ).to.be.false;
+			} );
+
+			it( 'should fire change event with ATTRIBUTES type', ( done ) => {
+				el.setStyle( 'color', 'red' );
+				el.once( 'change', ( eventInfo, type ) => {
+					expect( eventInfo.name ).to.equal( 'change' );
+					expect( eventInfo.source ).to.equal( el );
+					expect( type ).to.equal( 'ATTRIBUTES' );
+					done();
+				} );
+
+				el.removeStyle( 'color' );
+			} );
+
+			it( 'should remove multiple styles', () => {
+				el.setStyle( {
+					'padding-top': '10px',
+					'margin-top': '10px',
+					'color': 'red'
+				} );
+				el.removeStyle( 'padding-top', 'margin-top' );
+
+				expect( el.hasStyle( 'padding-top' ) ).to.be.false;
+				expect( el.hasStyle( 'margin-top' ) ).to.be.false;
+				expect( el.hasStyle( 'color' ) ).to.be.true;
 			} );
 		} );
 	} );

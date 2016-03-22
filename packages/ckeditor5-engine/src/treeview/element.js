@@ -63,6 +63,35 @@ export default class Element extends Node {
 		if ( children ) {
 			this.insertChildren( 0, children );
 		}
+
+		/**
+		 * Set of classes associated with element instance.
+		 *
+		 * @protected
+		 * @member {Set} core.treeView.Element#_classes
+		 */
+		this._classes = new Set();
+
+		if ( this._attrs.has( 'class' ) ) {
+			// Remove class attribute and handle it by class set.
+			const classString = this._attrs.get( 'class' );
+			parseClasses( this._classes, classString );
+			this._attrs.delete( 'class' );
+		}
+
+		/**
+		 * Map of styles.
+		 *
+		 * @protected
+		 * @member {Set} core.treeView.Element#_styles
+		 */
+		this._styles = new Map();
+
+		if ( this._attrs.has( 'style' ) ) {
+			// Remove style attribute and handle it by styles map.
+			parseInlineStyles( this._styles, this._attrs.get( 'style' ) );
+			this._attrs.delete( 'style' );
+		}
 	}
 
 	/**
@@ -81,7 +110,14 @@ export default class Element extends Node {
 			}
 		}
 
-		return new Element( this.name, this._attrs, childrenClone );
+		const cloned = new Element( this.name, this._attrs, childrenClone );
+
+		// Classes and styles are cloned separately - this solution is faster than adding them back to attributes and
+		// parse once again in constructor.
+		cloned._classes = new Set( this._classes );
+		cloned._styles = new Map( this._styles );
+
+		return cloned;
 	}
 
 	/**
@@ -137,20 +173,51 @@ export default class Element extends Node {
 
 	/**
 	 * Returns an iterator that contains the keys for attributes.
+	 * Order of inserting attributes is not preserved.
 	 *
 	 * @returns {Iterator.<String>} Keys for attributes.
 	 */
-	getAttributeKeys() {
-		return this._attrs.keys();
+	*getAttributeKeys() {
+		if ( this._classes.size > 0 ) {
+			yield 'class';
+		}
+
+		if ( this._styles.size > 0 ) {
+			yield 'style';
+		}
+
+		yield* this._attrs.keys();
 	}
 
 	/**
-	 * Gets attribute by key.
+	 * Gets attribute by key. If attribute is not present - returns undefined.
 	 *
 	 * @param {String} key Attribute key.
-	 * @returns {String} Attribute value.
+	 * @returns {String|undefined} Attribute value.
 	 */
 	getAttribute( key ) {
+		if ( key == 'class' ) {
+			if ( this._classes.size > 0 ) {
+				return [ ...this._classes ].join( ' ' );
+			}
+
+			return undefined;
+		}
+
+		if ( key == 'style' ) {
+			if ( this._styles.size > 0 ) {
+				let styleString = '';
+
+				for ( let [ property, value ] of this._styles ) {
+					styleString += `${ property }:${ value };`;
+				}
+
+				return styleString;
+			}
+
+			return undefined;
+		}
+
 		return this._attrs.get( key );
 	}
 
@@ -161,6 +228,14 @@ export default class Element extends Node {
 	 * @returns {Boolean} `true` if attribute with the specified key exists in the element, false otherwise.
 	 */
 	hasAttribute( key ) {
+		if ( key == 'class' ) {
+			return this._classes.size  > 0;
+		}
+
+		if ( key == 'style' ) {
+			return this._styles.size > 0;
+		}
+
 		return this._attrs.has( key );
 	}
 
@@ -174,7 +249,13 @@ export default class Element extends Node {
 	setAttribute( key, value ) {
 		this._fireChange( 'ATTRIBUTES', this );
 
-		this._attrs.set( key, value );
+		if ( key == 'class' ) {
+			parseClasses( this._classes, value );
+		} else if ( key == 'style' ) {
+			parseInlineStyles( this._styles, value );
+		} else {
+			this._attrs.set( key, value );
+		}
 	}
 
 	/**
@@ -215,6 +296,29 @@ export default class Element extends Node {
 	removeAttribute( key ) {
 		this._fireChange( 'ATTRIBUTES', this );
 
+		// Remove class attribute.
+		if ( key == 'class' ) {
+			if ( this._classes.size > 0 ) {
+				this._classes.clear();
+
+				return true;
+			}
+
+			return false;
+		}
+
+		// Remove style attribute.
+		if ( key == 'style' ) {
+			if ( this._styles.size > 0 ) {
+				this._styles.clear();
+
+				return true;
+			}
+
+			return false;
+		}
+
+		// Remove other attributes.
 		return this._attrs.delete( key );
 	}
 
@@ -254,27 +358,182 @@ export default class Element extends Node {
 			return true;
 		}
 
-		// Check name and attributes.
+		// Check element name.
 		if ( this.name != otherElement.name ) {
 			return false;
 		}
 
-		const thisNodeAttrKeys = this.getAttributeKeys();
-		const otherNodeAttrKeys = otherElement.getAttributeKeys();
-		let count = 0;
-
-		for ( let key of thisNodeAttrKeys ) {
-			if ( this.getAttribute( key ) !== otherElement.getAttribute( key ) ) {
-				return false;
-			}
-
-			count++;
+		// Check number of attributes, classes and styles.
+		if ( this._attrs.size !== otherElement._attrs.size || this._classes.size !== otherElement._classes.size ||
+			this._styles.size !== otherElement._styles.size ) {
+			return false;
 		}
 
-		if ( count != utils.count( otherNodeAttrKeys ) ) {
-			return false;
+		// Check if attributes are the same.
+		for ( let [ key, value ] of this._attrs ) {
+			if ( !otherElement._attrs.has( key ) || otherElement._attrs.get( key ) !== value ) {
+				return false;
+			}
+		}
+
+		// Check if classes are the same.
+		for ( let className of this._classes ) {
+			if ( !otherElement._classes.has( className ) ) {
+				return false;
+			}
+		}
+
+		// Check if styles are the same.
+		for ( let [ property, value ] of this._styles ) {
+			if ( !otherElement._styles.has( property ) || otherElement._styles.get( property ) !== value ) {
+				return false;
+			}
 		}
 
 		return true;
 	}
+
+	/**
+	 * Adds specified class.
+	 *
+	 *		element.addClass( 'foo' ); // Adds 'foo' class.
+	 *		element.addClass( 'foo', 'bar' ); // Adds 'foo' and 'bar' classes.
+	 *
+	 * @param {...String} className
+	 * @fires core.treeView.Node#change
+	 */
+	addClass( ...className ) {
+		this._fireChange( 'ATTRIBUTES', this );
+		className.forEach( name => this._classes.add( name ) );
+	}
+
+	/**
+	 * Removes specified class.
+	 *
+ 	 *		element.removeClass( 'foo' );  // Removes 'foo' class.
+	 *		element.removeClass( 'foo', 'bar' ); // Removes both 'foo' and 'bar' classes.
+	 *
+	 * @param {...String} className
+	 * @fires core.treeView.Node#change
+	 */
+	removeClass( ...className ) {
+		this._fireChange( 'ATTRIBUTES', this );
+		className.forEach( name => this._classes.delete( name ) );
+	}
+
+	/**
+	 * Returns true if class is present.
+	 * If more then one class is provided - returns true only when all classes are present.
+	 *
+	 *		element.hasClass( 'foo' ); // Returns true if 'foo' class is present.
+	 *		element.hasClass( 'foo', 'bar' ); // Returns true if 'foo' and 'bar' classes are both present.
+	 *
+	 * @param {...String} className
+	 */
+	hasClass( ...className ) {
+		for ( let name of className ) {
+			if ( !this._classes.has( name ) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Adds style to the element.
+	 *
+	 *		element.setStyle( 'color', 'red' );
+	 *		element.setStyle( {
+	 *			color: 'red',
+	 *			position: 'fixed'
+	 *		} );
+	 *
+	 * @param {String|Object} property Property name or object with key - value pairs.
+	 * @param {String} [value] Value to set. This parameter is ignored if object is provided as the first parameter.
+	 * @fires core.treeView.Node#change
+	 */
+	setStyle( property, value ) {
+		this._fireChange( 'ATTRIBUTES', this );
+
+		if ( isPlainObject( property ) ) {
+			const keys = Object.keys( property );
+
+			for ( let key of keys ) {
+				this._styles.set( key, property[ key ] );
+			}
+		} else {
+			this._styles.set( property, value );
+		}
+	}
+
+	/**
+	 * Returns style value for given property.
+	 * Undefined is returned if style does not exist.
+	 *
+	 * @param {String} property
+	 * @returns {String|undefined}
+	 */
+	getStyle( property ) {
+		return this._styles.get( property );
+	}
+
+	/**
+	 * Returns true if style keys are present.
+	 * If more then one style property is provided - returns true only when all properties are present.
+	 *
+	 *		element.hasStyle( 'color' ); // Returns true if 'border-top' style is present.
+	 *		element.hasStyle( 'color', 'border-top' ); // Returns true if 'color' and 'border-top' styles are both present.
+	 *
+	 * @param {...String} property
+	 */
+	hasStyle( ...property ) {
+		for ( let name of property ) {
+			if ( !this._styles.has( name ) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Removes specified style.
+	 *
+	 *		element.removeStyle( 'color' );  // Removes 'color' style.
+	 *		element.removeStyle( 'color', 'border-top' ); // Removes both 'color' and 'border-top' styles.
+	 *
+	 * @param {...String} property
+	 * @fires core.treeView.Node#change
+	 */
+	removeStyle( ...property ) {
+		this._fireChange( 'ATTRIBUTES', this );
+		property.forEach( name => this._styles.delete( name ) );
+	}
+}
+
+// Parses inline styles and puts property - value pairs into styles map.
+// Styles map is cleared before insertion.
+//
+// @param {Map.<String, String>} stylesMap Map to insert parsed properties and values.
+// @param {String} stylesString Styles to parse.
+function parseInlineStyles( stylesMap, stylesString ) {
+	const regex = /\s*([^:;\s]+)\s*:\s*([^;]+)\s*(?=;|$)/g;
+	let matchStyle;
+	stylesMap.clear();
+
+	while ( ( matchStyle = regex.exec( stylesString ) ) !== null ) {
+		stylesMap.set( matchStyle[ 1 ], matchStyle[ 2 ].trim() );
+	}
+}
+
+// Parses class attribute and puts all classes into classes set.
+// Classes set s cleared before insertion.
+//
+// @param {Set.<String>} classesSet Set to insert parsed classes.
+// @param {String} classesString String with classes to parse.
+function parseClasses( classesSet, classesString ) {
+	const classArray = classesString.split( /\s+/ );
+	classesSet.clear();
+	classArray.forEach( name => classesSet.add( name ) );
 }
