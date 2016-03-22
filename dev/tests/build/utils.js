@@ -562,7 +562,7 @@ describe( 'build-utils', () => {
 	} );
 
 	describe( 'filterThemeEntryPoints', () => {
-		it( 'returns a stream containing theme entry points', ( done ) => {
+		it( 'returns a stream containing theme entry points only', ( done ) => {
 			const stream = require( 'stream' );
 			const entryPoints = [];
 
@@ -680,6 +680,44 @@ describe( 'build-utils', () => {
 			expect( options ).to.have.property( 'sourceMapEmbed', true );
 			expect( options ).to.have.property( 'outputStyle', 'expanded' );
 			expect( options ).to.have.property( 'sourceComments', true );
+		} );
+	} );
+
+	describe( 'parseArguments', () => {
+		it( 'returns object with defaults', () => {
+			const args = utils.parseArguments();
+
+			expect( args.formats ).to.have.members( [ 'amd' ] );
+			expect( args.watch ).to.be.equal( false );
+		} );
+	} );
+
+	describe( 'getIconSpriteOptions', () => {
+		it( 'returns object with defaults', () => {
+			const options = utils.getIconSpriteOptions();
+
+			expect( options ).to.have.all.keys( [ 'shape', 'svg', 'mode' ] );
+		} );
+
+		it( 'returns icon ids generator out of svg file names', () => {
+			const options = utils.getIconSpriteOptions();
+
+			expect( options.shape.id.generator( 'foo.svg' ) ).to.equal( 'ck-icon-foo' );
+		} );
+
+		it( 'returns configuration to output JavaScript sprite', () => {
+			const options = utils.getIconSpriteOptions();
+
+			expect( options.mode.symbol.render.js.dest ).to.equal( 'icons.js' );
+		} );
+	} );
+
+	describe( 'getThemeFormatDestStreams', () => {
+		it( 'returns array of streams for each format', () => {
+			const streams = utils.getThemeFormatDestStreams( 'foo', [ 'a', 'b' ] );
+
+			expect( streams ).to.be.an( 'array' );
+			expect( streams ).to.have.length( 2 );
 		} );
 	} );
 } );

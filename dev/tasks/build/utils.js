@@ -20,6 +20,8 @@ const sass = require( 'node-sass' );
 const del = require( 'del' );
 const minimist = require( 'minimist' );
 const sprite = require( 'gulp-svg-sprite' );
+const pipe = require( 'multipipe' );
+const filter = require( 'gulp-filter' );
 
 const utils = {
 	/**
@@ -406,20 +408,12 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 	},
 
 	/**
-	 * Given the input stream of .scss files, this method finds entry-point
-	 * files (theme.scss) and returns them as a stream.
+	 * Filters theme entry points only from a stream of SCSS files.
 	 *
 	 * @returns {Stream}
 	 */
 	filterThemeEntryPoints() {
-		return through.obj( function( file, enc, callback ) {
-			if ( file.path.match( /\/theme\.scss$/ ) ) {
-				gutil.log( `Found theme entry point '${ gutil.colors.cyan( file.path ) }'...` );
-				this.push( file );
-			}
-
-			callback();
-		} );
+		return filter( '**/theme.scss' );
 	},
 
 	/**
@@ -442,7 +436,7 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 		}
 
 		function renderThemeFromEntryPoints( callback ) {
-			gutil.log( `Compiling theme from entry points into '${ gutil.colors.cyan( fileName ) }'...` );
+			gutil.log( `Compiling '${ gutil.colors.cyan( fileName ) }' from ${ gutil.colors.cyan( paths.length ) } entry points...` );
 
 			const dataToRender = paths.map( p => `@import '${ p }';` )
 				.join( '\n' );
@@ -462,6 +456,22 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 		}
 
 		return stream;
+	},
+
+	/**
+	 * Parses command line arguments and returns them as a user-friendly hash.
+	 *
+	 * @param {String} dataToRender
+	 * @returns {Object}
+	 */
+	getSassOptions( dataToRender ) {
+		return {
+			data: dataToRender,
+			sourceMap: true,
+			sourceMapEmbed: true,
+			outputStyle: 'expanded',
+			sourceComments: true
+		};
 	},
 
 	/**
@@ -509,25 +519,21 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 	},
 
 	/**
-	 * Parses command line arguments and returns them as a user-friendly hash.
+	 * Given a stream of .svg files it returns a stream containing JavaScript
+	 * icon sprite file.
 	 *
-	 * @param {String} dataToRender
-	 * @returns {Object}
+	 * @returns {Stream}
 	 */
-	getSassOptions( dataToRender ) {
-		return {
-			data: dataToRender,
-			sourceMap: true,
-			sourceMapEmbed: true,
-			outputStyle: 'expanded',
-			sourceComments: true
-		};
-	},
-
 	compileIconSprite() {
 		return sprite( utils.getIconSpriteOptions() );
 	},
 
+	/**
+	 * Returns svg-sprite util options to generate <symbol>-based, JavaScript
+	 * sprite file.
+	 *
+	 * @returns {Object}
+	 */
 	getIconSpriteOptions() {
 		return {
 			shape: {
@@ -541,7 +547,7 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 			},
 			mode: {
 				symbol: {
-					dest: '.', // Flatten symbol/
+					dest: './', // Flatten symbol/
 					inline: true,
 					render: {
 						js: {
@@ -554,9 +560,25 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 		};
 	},
 
-	getThemeDestsForFormats( distDir, formats ) {
+	/**
+	 * Given a stream of files it returns an array of gulp-mirror streams outputting
+	 * files to `build/[formats]/theme/` directories for each of desired output formats (cjs, amd, etc.).
+	 *
+	 * @param {String} buildDir A path to /build directory.
+	 * @param {Array} formats An array of desired output formats.
+	 * @param {Function} [transformationStream] A stream used to transform files before they're saved to
+	 * desired `build/[formats]/theme` directories. Useful for transpilation.
+	 * @returns {Stream[]} An array of streams.
+	 */
+	getThemeFormatDestStreams( buildDir, formats, transformationStream ) {
 		return formats.map( f => {
-			return gulp.dest( path.join( distDir, f, 'theme' ) );
+			return pipe(
+				transformationStream ? transformationStream( f ) : utils.noop(),
+				gulp.dest( path.join( buildDir, f, 'theme' ) ),
+				utils.noop( ( file ) => {
+					gutil.log( `Output for ${ gutil.colors.cyan( f ) } is '${ gutil.colors.cyan( file.path ) }'.` );
+				} )
+			);
 		} );
 	}
 };

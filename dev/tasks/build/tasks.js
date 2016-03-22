@@ -8,10 +8,11 @@
 const path = require( 'path' );
 const gulp = require( 'gulp' );
 const merge = require( 'merge-stream' );
-const gulpMirror = require( 'gulp-mirror' );
+const mirror = require( 'gulp-mirror' );
 const gulpWatch = require( 'gulp-watch' );
 const gulpPlumber = require( 'gulp-plumber' );
 const gutil = require( 'gulp-util' );
+const filter = require( 'gulp-filter' );
 const utils = require( './utils' );
 const runSequence = require( 'run-sequence' );
 
@@ -19,6 +20,7 @@ module.exports = ( config ) => {
 	const buildDir = path.join( config.ROOT_DIR, config.BUILD_DIR );
 	const themesGlob = path.join( 'theme', '**', '*.scss' );
 	const iconsGlob = path.join( 'theme', 'icons', '*.svg' );
+	const parsedArguments = utils.parseArguments();
 
 	const tasks = {
 		clean: {
@@ -32,8 +34,11 @@ module.exports = ( config ) => {
 			/**
 			 * Removes all but "themes" folder from "./build/{format}" directory.
 			 */
-			js() {
-				return utils.clean( buildDir, path.join( `@(${ utils.parseArguments().formats.join( '|' ) })`, '!(theme)' ) );
+			js( options ) {
+				// TODO: ES6 default function parameters
+				options = options || utils.parseArguments();
+
+				return utils.clean( buildDir, path.join( `@(${ options.formats.join( '|' ) })`, '!(theme)' ) );
 			},
 
 			/**
@@ -203,7 +208,7 @@ module.exports = ( config ) => {
 				function createConversionStream() {
 					const formatPipes = options.formats.reduce( conversionStreamGenerator, [] );
 
-					return gulpMirror.apply( null, formatPipes )
+					return mirror.apply( null, formatPipes )
 						.on( 'error', onError );
 				}
 
@@ -242,8 +247,8 @@ module.exports = ( config ) => {
 			},
 
 			/**
-			 * The task capable of watching, processing and writing CSS files into
-			 * the `build/{format}/theme` directory.
+			 * The task capable of watching, processing and writing CSS files into `build/[formats]/theme`
+			 * directories.
 			 *
 			 * @param {Object} options
 			 * @param {String} options.formats
@@ -270,24 +275,24 @@ module.exports = ( config ) => {
 				}
 
 				function build() {
-					const dests = utils.getThemeDestsForFormats( buildDir, options.formats );
+					const formatStreams = utils.getThemeFormatDestStreams( buildDir, options.formats );
 
 					return tasks.src.sass()
 						.pipe( gulpPlumber() )
 						.pipe( utils.filterThemeEntryPoints() )
-						.pipe( utils.compileThemes( 'ckeditor.css' ) )
-						.pipe( gulpMirror( dests ) )
 						.pipe(
-							utils.noop( ( file ) => {
-								gutil.log( `Output file saved to '${ gutil.colors.cyan( file.path ) }'.` );
+							utils.noop( file => {
+								gutil.log( `Found theme entry point '${ gutil.colors.cyan( file.path ) }'.` );
 							} )
 						)
+						.pipe( utils.compileThemes( 'ckeditor.css' ) )
+						.pipe( mirror( formatStreams ) )
 						.on( 'error', console.log );
 				}
 			},
 
 			/**
-			 * The task capable of converting SVG files into `build/{format}/theme/icons.js`
+			 * The task capable of converting *.svg icon files into `./build/[formats]/theme/icons.js`
 			 * sprite.
 			 *
 			 * @param {Object} options
@@ -295,16 +300,18 @@ module.exports = ( config ) => {
 			 * @returns {Stream}
 			 */
 			icons( options ) {
-				const dests = utils.getThemeDestsForFormats( buildDir, options.formats );
+				const formatStreams = utils.getThemeFormatDestStreams( buildDir, options.formats, format => {
+					if ( format !== 'esnext' ) {
+						return utils.transpile( format, utils.getBabelOptionsForSource( format ) );
+					} else {
+						return utils.noop();
+					}
+				} );
 
 				return tasks.src.icons()
 					.pipe( utils.compileIconSprite() )
-					.pipe( gulpMirror( dests ) )
-					.pipe(
-						utils.noop( ( file ) => {
-							gutil.log( `Output file saved to '${ gutil.colors.cyan( file.path ) }'.` );
-						} )
-					);
+					.pipe( filter( '*.js' ) )
+					.pipe( mirror( formatStreams ) );
 			}
 		}
 	};
@@ -315,25 +322,32 @@ module.exports = ( config ) => {
 
 	gulp.task( 'build:clean:all', tasks.clean.all );
 	gulp.task( 'build:clean:themes', tasks.clean.themes );
-	gulp.task( 'build:clean:js', tasks.clean.js );
+	gulp.task( 'build:clean:js', () => {
+		return tasks.clean.js( parsedArguments );
+	} );
 
 	gulp.task( 'build:themes', ( callback ) => {
 		runSequence( 'build:clean:themes', 'build:icons', 'build:sass', callback );
 	} );
 
 	gulp.task( 'build:sass', () => {
-		return tasks.build.sass( utils.parseArguments() );
+		return tasks.build.sass( parsedArguments );
 	} );
 
 	gulp.task( 'build:icons', () => {
-		return tasks.build.icons( utils.parseArguments() );
+		return tasks.build.icons( parsedArguments );
 	} );
 
 	gulp.task( 'build:js', [ 'build:clean:js' ], () => {
-		return tasks.build.js( utils.parseArguments() );
+		return tasks.build.js( parsedArguments );
 	} );
 
-	gulp.task( 'build:js:esnext', [ 'build:clean:js' ], () => {
+	// Tasks specific for `gulp docs` builder.
+	gulp.task( 'build:clean:js:esnext', () => {
+		return tasks.clean.js( { formats: [ 'esnext' ] } );
+	} );
+
+	gulp.task( 'build:js:esnext', [ 'build:clean:js:esnext' ], () => {
 		return tasks.build.js( { formats: [ 'esnext' ] } );
 	} );
 
