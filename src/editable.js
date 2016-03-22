@@ -10,6 +10,9 @@ import ObservableMixin from './utils/observablemixin.js';
 import FocusObserver from './core/treeview/observer/focusobserver.js';
 
 /**
+ * Class representing a single editable element. It combines the {@link ckeditor5.Editable#viewElement editable view}
+ * with the {@link ckeditor5.Editable#domElement editable DOM element} to which the view is rendering.
+ *
  * @memberOf ckeditor5
  * @mixes utils.ObservaleMixin
  */
@@ -70,7 +73,9 @@ export default class Editable {
 	}
 
 	/**
-	 * @param {HTMLElement} domElement
+	 * Binds the {@link ckeditor5.Editable#viewElement editable's view} to a concrete DOM element.
+	 *
+	 * @param {HTMLElement} domElement The DOM element which holds the editable.
 	 */
 	bindTo( domElement ) {
 		const editingView = this.editor.editing.view;
@@ -95,6 +100,9 @@ export default class Editable {
 		} );
 	}
 
+	/**
+	 * Destroys the editable.
+	 */
 	destroy() {
 		this.stopListening();
 		this.domElement = this.viewElement = null;

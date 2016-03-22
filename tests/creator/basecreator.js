@@ -24,13 +24,13 @@ describe( 'BaseCreator', () => {
 
 	describe( 'constructor', () => {
 		it( 'inherits from the Plugin', () => {
-			expect( creator ).to.be.instanceOf( Plugin );
+			expect( creator ).to.be.instanceof( Plugin );
 		} );
 	} );
 
 	describe( 'create', () => {
 		it( 'returns a promise', () => {
-			expect( creator.create() ).to.be.instanceOf( Promise );
+			expect( creator.create() ).to.be.instanceof( Promise );
 		} );
 	} );
 } );

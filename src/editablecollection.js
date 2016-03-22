@@ -10,11 +10,16 @@ import Collection from './utils/collection.js';
 import ObservableMixin from './utils/observablemixin.js';
 
 /**
+ * A collection of {@link ckeditor5.Editable editables}.
+ *
  * @memberOf ckeditor5
  * @mixes utils.ObservaleMixin
  * @extends utils.Collection
  */
 export default class EditableCollection extends Collection {
+	/**
+	 * Creates a new instance of Editabe.
+	 */
 	constructor() {
 		super( { idProperty: 'name' } );
 
@@ -37,12 +42,17 @@ export default class EditableCollection extends Collection {
 		} );
 	}
 
+	/**
+	 * Destorys the collection.
+	 */
 	destroy() {
 		this.stopListening();
 
 		for ( let editable of this ) {
 			editable.destroy();
 		}
+
+		this.clear();
 	}
 }
 

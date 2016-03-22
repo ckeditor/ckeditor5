@@ -207,7 +207,7 @@ describe( 'create', () => {
 		} );
 
 		function assertElements( editor, expectedSize ) {
-			expect( editor.elements ).to.be.instanceOf( Map );
+			expect( editor.elements ).to.be.instanceof( Map );
 			expect( editor.elements ).to.have.property( 'size', expectedSize );
 		}
 	} );

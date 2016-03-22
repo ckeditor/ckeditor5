@@ -34,20 +34,20 @@ describe( 'Creator', () => {
 
 	describe( 'constructor', () => {
 		it( 'inherits from the BaseCreator', () => {
-			expect( creator ).to.be.instanceOf( BaseCreator );
+			expect( creator ).to.be.instanceof( BaseCreator );
 		} );
 
 		it( 'creates the engine', () => {
-			expect( editor.document ).to.be.instanceOf( Document );
-			expect( editor.editing ).to.be.instanceOf( EditingController );
-			expect( editor.data ).to.be.instanceOf( DataController );
-			expect( editor.data.processor ).to.be.instanceOf( HtmlDataProcessor );
+			expect( editor.document ).to.be.instanceof( Document );
+			expect( editor.editing ).to.be.instanceof( EditingController );
+			expect( editor.data ).to.be.instanceof( DataController );
+			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
 		} );
 	} );
 
 	describe( 'create', () => {
 		it( 'returns a promise', () => {
-			expect( creator.create() ).to.be.instanceOf( Promise );
+			expect( creator.create() ).to.be.instanceof( Promise );
 		} );
 	} );
 
