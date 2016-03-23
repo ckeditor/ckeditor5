@@ -202,4 +202,114 @@ describe( 'ViewConsumable', () => {
 			} ).to.throw( 'viewconsumable-invalid-attribute' );
 		} );
 	} );
+
+	describe( 'consume', () => {
+		it( 'should consume element', () => {
+			viewConsumable.add( el );
+			const consumed = viewConsumable.consume( el );
+
+			expect( viewConsumable.test( el ) ).to.be.false;
+			expect( consumed ).to.be.true;
+		} );
+
+		it( 'should not consume element not marked for consumption', () => {
+			expect( viewConsumable.consume( el ) ).to.be.false;
+		} );
+
+		it( 'should consume attributes, classes and styles', () => {
+			viewConsumable.add( { element: el, class: 'foobar', attribute: 'href', style: 'color' } );
+
+			const consumed1 = viewConsumable.consume( { element: el, class: 'foobar' } );
+			const consumed2 = viewConsumable.consume( { element: el, attribute: 'href' } );
+			const consumed3 = viewConsumable.consume( { element: el, style: 'color' } );
+
+			expect( consumed1 ).to.be.true;
+			expect( consumed2 ).to.be.true;
+			expect( consumed3 ).to.be.true;
+
+			expect( viewConsumable.test( { element: el, class: 'foobar' } ) ).to.be.false;
+			expect( viewConsumable.test( { element: el, attribute: 'href' } ) ).to.be.false;
+			expect( viewConsumable.test( { element: el, style: 'color' } ) ).to.be.false;
+		} );
+
+		it( 'should consume multiple attributes', () => {
+			viewConsumable.add( { element: el, attribute: [ 'href', 'title', 'name' ] } );
+
+			const consumed = viewConsumable.consume( { element: el, attribute: [ 'href', 'title' ] } );
+
+			expect( consumed ).to.be.true;
+			expect( viewConsumable.test( { element: el, attribute: 'href' } ) ).to.be.false;
+			expect( viewConsumable.test( { element: el, attribute: 'title' } ) ).to.be.false;
+			expect( viewConsumable.test( { element: el, attribute: 'name' } ) ).to.be.true;
+		} );
+
+		it( 'should consume multiple styles', () => {
+			viewConsumable.add( { element: el, style: [ 'color', 'top', 'position' ] } );
+
+			const consumed = viewConsumable.consume( { element: el, style: [ 'color', 'position' ] } );
+
+			expect( consumed ).to.be.true;
+			expect( viewConsumable.test( { element: el, style: 'color' } ) ).to.be.false;
+			expect( viewConsumable.test( { element: el, style: 'position' } ) ).to.be.false;
+			expect( viewConsumable.test( { element: el, style: 'top' } ) ).to.be.true;
+		} );
+
+		it( 'should consume multiple classes', () => {
+			viewConsumable.add( { element: el, class: [ 'foo', 'bar', 'baz' ] } );
+
+			const consumed = viewConsumable.consume( { element: el, class: [ 'bar', 'baz' ] } );
+
+			expect( consumed ).to.be.true;
+			expect( viewConsumable.test( { element: el, class: 'bar' } ) ).to.be.false;
+			expect( viewConsumable.test( { element: el, class: 'baz' } ) ).to.be.false;
+			expect( viewConsumable.test( { element: el, class: 'foo' } ) ).to.be.true;
+		} );
+
+		it( 'should consume multiple items', () => {
+			viewConsumable.add( {
+				element: el,
+				attribute: [ 'name', 'href', 'title' ],
+				class: [ 'foo', 'bar', 'baz' ],
+				style: [ 'color', 'position' ]
+			} );
+
+			const consumed = viewConsumable.consume(
+				{ element: el, attribute: 'name', class: 'foo' } ,
+				{ element: el, attribute: 'href', class: [ 'bar', 'baz' ] } ,
+				{ element: el, attribute: 'title', style: 'color' }
+			);
+
+			expect( consumed ).to.be.true;
+			expect( viewConsumable.test( { element: el, attribute: 'name' } ) ).to.be.false;
+			expect( viewConsumable.test( { element: el, attribute: 'href' } ) ).to.be.false;
+			expect( viewConsumable.test( { element: el, attribute: 'title' } ) ).to.be.false;
+
+			expect( viewConsumable.test( { element: el, class: 'foo' } ) ).to.be.false;
+			expect( viewConsumable.test( { element: el, class: 'bar' } ) ).to.be.false;
+			expect( viewConsumable.test( { element: el, class: 'baz' } ) ).to.be.false;
+
+			expect( viewConsumable.test( { element: el, style: 'color' } ) ).to.be.false;
+			expect( viewConsumable.test( { element: el, style: 'position' } ) ).to.be.true;
+		} );
+
+		it( 'should consume element provided as only item in object', () => {
+			viewConsumable.add( el );
+			const consumed = viewConsumable.consume( { element: el } );
+
+			expect( viewConsumable.test( el ) ).to.be.false;
+			expect( consumed ).to.be.true;
+		} );
+
+		it( 'should consume only if all items can be consumed', () => {
+			viewConsumable.add( { element: el, style: [ 'position', 'color' ], attribute: [ 'href', 'title' ] } );
+
+			let consumed = viewConsumable.consume( el, { element: el, style: 'color' } );
+			expect( consumed ).to.be.false;
+			expect( viewConsumable.test( { element: el, style: 'color' } ) ).to.be.true;
+
+			consumed = viewConsumable.consume( { element: el, style: [ 'color', 'top' ] } );
+			expect( consumed ).to.be.false;
+			expect( viewConsumable.test( { element: el, style: 'color' } ) ).to.be.true;
+		} );
+	} );
 } );

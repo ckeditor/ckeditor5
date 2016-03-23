@@ -52,10 +52,6 @@ class ViewElementConsumables {
 	}
 
 	consume( consumables, elementOnly ) {
-		if ( !this.test( consumables, elementOnly ) ) {
-			return false;
-		}
-
 		if ( elementOnly ) {
 			this._canConsumeElement = false;
 
