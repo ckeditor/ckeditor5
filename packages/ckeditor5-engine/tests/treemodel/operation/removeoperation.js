@@ -7,11 +7,11 @@
 
 'use strict';
 
-import Document from '/ckeditor5/core/treemodel/document.js';
-import ReinsertOperation from '/ckeditor5/core/treemodel/operation/reinsertoperation.js';
-import RemoveOperation from '/ckeditor5/core/treemodel/operation/removeoperation.js';
-import MoveOperation from '/ckeditor5/core/treemodel/operation/moveoperation.js';
-import Position from '/ckeditor5/core/treemodel/position.js';
+import Document from '/ckeditor5/engine/treemodel/document.js';
+import ReinsertOperation from '/ckeditor5/engine/treemodel/operation/reinsertoperation.js';
+import RemoveOperation from '/ckeditor5/engine/treemodel/operation/removeoperation.js';
+import MoveOperation from '/ckeditor5/engine/treemodel/operation/moveoperation.js';
+import Position from '/ckeditor5/engine/treemodel/position.js';
 
 describe( 'RemoveOperation', () => {
 	let doc, root, graveyard;

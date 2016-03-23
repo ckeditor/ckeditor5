@@ -7,8 +7,8 @@
 
 'use strict';
 
-import Document from '/ckeditor5/core/treemodel/document.js';
-import Position from '/ckeditor5/core/treemodel/position.js';
+import Document from '/ckeditor5/engine/treemodel/document.js';
+import Position from '/ckeditor5/engine/treemodel/position.js';
 
 describe( 'Batch', () => {
 	let doc, root, batch, chain, attrs;

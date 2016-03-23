@@ -11,11 +11,11 @@ import arrayUtils from '../../../utils/lib/lodash/array.js';
 const specialCases = new Map();
 
 /**
- * Transforms given {@link core.treeModel.delta.Delta delta} by another {@link core.treeModel.delta.Delta delta} and
- * returns the result of that transformation as an array containing one or more {@link core.treeModel.delta.Delta delta}
+ * Transforms given {@link engine.treeModel.delta.Delta delta} by another {@link engine.treeModel.delta.Delta delta} and
+ * returns the result of that transformation as an array containing one or more {@link engine.treeModel.delta.Delta delta}
  * instances.
  *
- * Delta transformations heavily base on {@link core.treeModel.operation.transform operational transformations}. Since
+ * Delta transformations heavily base on {@link engine.treeModel.operation.transform operational transformations}. Since
  * delta is a list of operations most situations can be handled thanks to operational transformation. Unfortunately,
  * deltas are more complicated than operations and have they semantic meaning, as they represent user's editing intentions.
  *
@@ -24,20 +24,20 @@ const specialCases = new Map();
  * we need to handle transformations in special cases in a custom way.
  *
  * The function itself looks whether two given delta types have a special case function registered. If so, the deltas are
- * transformed using that function. If not, {@link core.treeModel.delta.defaultTransform default transformation algorithm}
+ * transformed using that function. If not, {@link engine.treeModel.delta.defaultTransform default transformation algorithm}
  * is used.
  *
- * @see core.treeModel.operation.transform
+ * @see engine.treeModel.operation.transform
  *
- * @external core.treeModel.delta.transform
- * @function core.treeModel.delta.transform.transform
- * @param {core.treeModel.delta.Delta} a Delta that will be transformed.
- * @param {core.treeModel.delta.Delta} b Delta to transform by.
+ * @external engine.treeModel.delta.transform
+ * @function engine.treeModel.delta.transform.transform
+ * @param {engine.treeModel.delta.Delta} a Delta that will be transformed.
+ * @param {engine.treeModel.delta.Delta} b Delta to transform by.
  * @param {Boolean} isAMoreImportantThanB Flag indicating whether the delta which will be transformed (`a`) should be treated
  * as more important when resolving conflicts. Note that this flag is used only if provided deltas have same
- * {@link core.treeModel.delta.priorities priority}. If deltas have different priorities, their importance is resolved
+ * {@link engine.treeModel.delta.priorities priority}. If deltas have different priorities, their importance is resolved
  * automatically and overwrites this flag.
- * @returns {Array.<core.treeModel.delta.Delta>} Result of the transformation.
+ * @returns {Array.<engine.treeModel.delta.Delta>} Result of the transformation.
  */
 export default function transform( a, b, isAMoreImportantThanB ) {
 	const transformAlgorithm = getTransformationCase( a, b ) || defaultTransform;
@@ -65,13 +65,13 @@ function updateBaseVersion( baseVersion, deltas ) {
  * This algorithm is similar to popular `dOPT` algorithm used in operational transformation, as we are in fact
  * transforming two sets of operations by each other.
  *
- * @param {core.treeModel.delta.Delta} a Delta that will be transformed.
- * @param {core.treeModel.delta.Delta} b Delta to transform by.
+ * @param {engine.treeModel.delta.Delta} a Delta that will be transformed.
+ * @param {engine.treeModel.delta.Delta} b Delta to transform by.
  * @param {Boolean} isAMoreImportantThanB Flag indicating whether the delta which will be transformed (`a`) should be treated
  * as more important when resolving conflicts. Note that this flag is used only if provided deltas have same
- * {@link core.treeModel.delta.priorities priority}. If deltas have different priorities, their importance is resolved
+ * {@link engine.treeModel.delta.priorities priority}. If deltas have different priorities, their importance is resolved
  * automatically and overwrites this flag.
- * @returns {Array.<core.treeModel.delta.Delta>} Result of the transformation, that is an array with single delta instance.
+ * @returns {Array.<engine.treeModel.delta.Delta>} Result of the transformation, that is an array with single delta instance.
  */
 export function defaultTransform( a, b, isAMoreImportantThanB ) {
 	// First, resolve the flag real value.
@@ -164,8 +164,8 @@ export function defaultTransform( a, b, isAMoreImportantThanB ) {
  * @param {Function} A Delta constructor which instance will get transformed.
  * @param {Function} B Delta constructor which instance will be transformed by.
  * @param {Function} resolver A callback that will handle custom special case transformation for instances of given delta classes.
- * @external core.treeModel.delta.transform
- * @function core.treeModel.delta.transform.addTransformationCase
+ * @external engine.treeModel.delta.transform
+ * @function engine.treeModel.delta.transform.addTransformationCase
  */
 export function addTransformationCase( A, B, resolver ) {
 	let casesA = specialCases.get( A );
@@ -179,12 +179,12 @@ export function addTransformationCase( A, B, resolver ) {
 }
 
 /**
- * Gets a special case callback which was previously {@link core.treeModel.delta.transform.addTransformationCase added}.
+ * Gets a special case callback which was previously {@link engine.treeModel.delta.transform.addTransformationCase added}.
  *
- * @param {core.treeModel.delta.Delta} a Delta to transform.
- * @param {core.treeModel.delta.Delta} b Delta to be transformed by.
- * @external core.treeModel.delta.transform
- * @function core.treeModel.delta.transform.getTransformationCase
+ * @param {engine.treeModel.delta.Delta} a Delta to transform.
+ * @param {engine.treeModel.delta.Delta} b Delta to be transformed by.
+ * @external engine.treeModel.delta.transform
+ * @function engine.treeModel.delta.transform.getTransformationCase
  */
 export function getTransformationCase( a, b ) {
 	let casesA = specialCases.get( a.constructor );

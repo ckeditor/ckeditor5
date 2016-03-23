@@ -7,7 +7,7 @@
 
 'use strict';
 
-import Element from '/ckeditor5/core/treemodel/element.js';
+import Element from '/ckeditor5/engine/treemodel/element.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'Node', () => {

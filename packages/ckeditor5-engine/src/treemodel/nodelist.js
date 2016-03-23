@@ -12,15 +12,15 @@ import clone from '../../utils/lib/lodash/clone.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
- * This is a private helper-class for {@link core.treeModel.NodeList} text compression utility.
+ * This is a private helper-class for {@link engine.treeModel.NodeList} text compression utility.
  *
  * @protected
- * @memberOf core.treeModel
- * @extends core.treeModel.Text
+ * @memberOf engine.treeModel
+ * @extends engine.treeModel.Text
  */
 class NodeListText extends Text {
 	/**
-	 * @see core.treeModel.Text#constructor
+	 * @see engine.treeModel.Text#constructor
 	 * @protected
 	 * @constructor
 	 */
@@ -31,10 +31,10 @@ class NodeListText extends Text {
 	}
 
 	/**
-	 * Gets a character at given index and creates a {@link core.treeModel.CharacterProxy} out of it.
+	 * Gets a character at given index and creates a {@link engine.treeModel.CharacterProxy} out of it.
 	 *
 	 * @param {Number} index Character index.
-	 * @returns {core.treeModel.CharacterProxy}
+	 * @returns {engine.treeModel.CharacterProxy}
 	 */
 	getCharAt( index ) {
 		index = index && index >= 0 ? index : 0;
@@ -58,14 +58,14 @@ class NodeListText extends Text {
 
 /**
  * List of nodes. It is used to represent multiple nodes with a given order, for example children of
- * {@link core.treeModel.Element} object or nodes inserted using {@link core.treeModel.operation.InsertOperation}.
+ * {@link engine.treeModel.Element} object or nodes inserted using {@link engine.treeModel.operation.InsertOperation}.
  *
  * Thanks to the constructor, which accepts various arguments, this class lets you easily create desired list of nodes.
  *
- * Parameters passed to constructor are converted and internally kept as an array of {@link core.treeModel.Node}
- * and {@link core.treeModel.Text} instances.
+ * Parameters passed to constructor are converted and internally kept as an array of {@link engine.treeModel.Node}
+ * and {@link engine.treeModel.Text} instances.
  *
- * @memberOf core.treeModel
+ * @memberOf engine.treeModel
  */
 export default class NodeList {
 	/**
@@ -94,9 +94,9 @@ export default class NodeList {
 	 *		nodeListA === nodeListB // true
 	 *		nodeListB.length // 3
 	 *
-	 * @see core.treeModel.NodeSet
+	 * @see engine.treeModel.NodeSet
 	 *
-	 * @param {core.treeModel.NodeSet} nodes List of nodes.
+	 * @param {engine.treeModel.NodeSet} nodes List of nodes.
 	 * @constructor
 	 */
 	constructor( nodes ) {
@@ -109,7 +109,7 @@ export default class NodeList {
 		 * Internal array to store nodes.
 		 *
 		 * @protected
-		 * @member {Array} core.treeModel.NodeList#_nodes
+		 * @member {Array} engine.treeModel.NodeList#_nodes
 		 */
 		this._nodes = [];
 
@@ -119,7 +119,7 @@ export default class NodeList {
 		 * which occupy multiple slots in `_indexMap`.
 		 *
 		 * @private
-		 * @member {Array} core.treeModel.NodeList#_indexMap
+		 * @member {Array} engine.treeModel.NodeList#_indexMap
 		 */
 		this._indexMap = [];
 
@@ -196,7 +196,7 @@ export default class NodeList {
 	 * Returns node at the given index.
 	 *
 	 * @param {Number} index Node index.
-	 * @returns {core.treeModel.Node} Node at given index.
+	 * @returns {engine.treeModel.Node} Node at given index.
 	 */
 	get( index ) {
 		let realIndex = this._indexMap[ index ];
@@ -212,7 +212,7 @@ export default class NodeList {
 	/**
 	 * Search for the element in the node list.
 	 *
-	 * @param {core.treeModel.Node} node Node to find.
+	 * @param {engine.treeModel.Node} node Node to find.
 	 * @returns {Number} Position of the element in the list or -1 if not found.
 	 */
 	indexOf( node ) {
@@ -231,7 +231,7 @@ export default class NodeList {
 	 * Inserts nodes from the given node list into this node list at the given index.
 	 *
 	 * @param {Number} index Position where nodes should be inserted.
-	 * @param {core.treeModel.NodeList} nodeList List of nodes to insert.
+	 * @param {engine.treeModel.NodeList} nodeList List of nodes to insert.
 	 */
 	insert( index, nodeList ) {
 		if ( this._nodes.length === 0 ) {
@@ -271,7 +271,7 @@ export default class NodeList {
 	 *
 	 * @param {Number} index Position of the first node to remove.
 	 * @param {Number} number Number of nodes to remove.
-	 * @returns {core.treeModel.NodeList} List of removed nodes.
+	 * @returns {engine.treeModel.NodeList} List of removed nodes.
 	 */
 	remove( index, number ) {
 		if ( this._nodes.length === 0 ) {
@@ -441,13 +441,13 @@ export default class NodeList {
 }
 
 /**
- * Value that is convertible to an item kept in {@link core.treeModel.NodeList} or an iterable collection of such items.
- * In other words, this is anything that {@link core.treeModel.NodeList#constructor} is able to take and convert to node:
- * * {@link core.treeModel.Node} will be left as is
- * * {@link core.treeModel.Text} and {String} will be converted to a set of {@link core.treeModel.CharacterProxy}
- * * {@link core.treeModel.NodeList} will clone a node list (but not the nodes inside, so the new and passed list will
+ * Value that is convertible to an item kept in {@link engine.treeModel.NodeList} or an iterable collection of such items.
+ * In other words, this is anything that {@link engine.treeModel.NodeList#constructor} is able to take and convert to node:
+ * * {@link engine.treeModel.Node} will be left as is
+ * * {@link engine.treeModel.Text} and {String} will be converted to a set of {@link engine.treeModel.CharacterProxy}
+ * * {@link engine.treeModel.NodeList} will clone a node list (but not the nodes inside, so the new and passed list will
  * point to the same nodes.
  * * Iterable collection of above items will be iterated over and all items will be added to the node list.
  *
- * @typedef {core.treeModel.Node|core.treeModel.Text|String|core.treeModel.NodeList|Iterable} core.treeModel.NodeSet
+ * @typedef {engine.treeModel.Node|engine.treeModel.Text|String|engine.treeModel.NodeList|Iterable} engine.treeModel.NodeSet
  */

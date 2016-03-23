@@ -7,11 +7,11 @@
 
 'use strict';
 
-import Element from '/ckeditor5/core/treemodel/element.js';
-import Text from '/ckeditor5/core/treemodel/text.js';
-import TextFragment from '/ckeditor5/core/treemodel/textfragment.js';
-import Document from '/ckeditor5/core/treemodel/document.js';
-import CharacterProxy from '/ckeditor5/core/treemodel/characterproxy.js';
+import Element from '/ckeditor5/engine/treemodel/element.js';
+import Text from '/ckeditor5/engine/treemodel/text.js';
+import TextFragment from '/ckeditor5/engine/treemodel/textfragment.js';
+import Document from '/ckeditor5/engine/treemodel/document.js';
+import CharacterProxy from '/ckeditor5/engine/treemodel/characterproxy.js';
 
 describe( 'TextFragment', () => {
 	let doc, text, element, textFragment, root;

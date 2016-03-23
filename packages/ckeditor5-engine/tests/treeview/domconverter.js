@@ -8,9 +8,9 @@
 'use strict';
 
 import utils from '/ckeditor5/utils/utils.js';
-import ViewElement from '/ckeditor5/core/treeview/element.js';
-import ViewText from '/ckeditor5/core/treeview/text.js';
-import DomConverter from '/ckeditor5/core/treeview/domconverter.js';
+import ViewElement from '/ckeditor5/engine/treeview/element.js';
+import ViewText from '/ckeditor5/engine/treeview/text.js';
+import DomConverter from '/ckeditor5/engine/treeview/domconverter.js';
 
 describe( 'DomConverter', () => {
 	let converter;

@@ -7,7 +7,7 @@
 
 'use strict';
 
-import Text from '/ckeditor5/core/treemodel/text.js';
+import Text from '/ckeditor5/engine/treemodel/text.js';
 
 describe( 'Text', () => {
 	describe( 'constructor', () => {

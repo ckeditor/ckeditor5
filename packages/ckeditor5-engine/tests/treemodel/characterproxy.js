@@ -7,9 +7,9 @@
 
 'use strict';
 
-import Node from '/ckeditor5/core/treemodel/node.js';
-import Element from '/ckeditor5/core/treemodel/element.js';
-import Text from '/ckeditor5/core/treemodel/text.js';
+import Node from '/ckeditor5/engine/treemodel/node.js';
+import Element from '/ckeditor5/engine/treemodel/element.js';
+import Text from '/ckeditor5/engine/treemodel/text.js';
 import utils from '/ckeditor5/utils/utils.js';
 
 describe( 'CharacterProxy', () => {

@@ -7,11 +7,11 @@
 
 'use strict';
 
-import TreeView from '/ckeditor5/core/treeview/treeview.js';
-import Observer from '/ckeditor5/core/treeview/observer/observer.js';
-import Renderer from '/ckeditor5/core/treeview/renderer.js';
-import Writer from '/ckeditor5/core/treeview/writer.js';
-import DomConverter from '/ckeditor5/core/treeview/domconverter.js';
+import TreeView from '/ckeditor5/engine/treeview/treeview.js';
+import Observer from '/ckeditor5/engine/treeview/observer/observer.js';
+import Renderer from '/ckeditor5/engine/treeview/renderer.js';
+import Writer from '/ckeditor5/engine/treeview/writer.js';
+import DomConverter from '/ckeditor5/engine/treeview/domconverter.js';
 
 import utils from '/ckeditor5/utils/utils.js';
 

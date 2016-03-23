@@ -7,12 +7,12 @@
 
 'use strict';
 
-import Writer from '/ckeditor5/core/treeview/writer.js';
-import Element from '/ckeditor5/core/treeview/element.js';
-import Position from '/ckeditor5/core/treeview/position.js';
-import Range from '/ckeditor5/core/treeview/range.js';
-import Text from '/ckeditor5/core/treeview/text.js';
-import utils from '/tests/core/treeview/writer/_utils/utils.js';
+import Writer from '/ckeditor5/engine/treeview/writer.js';
+import Element from '/ckeditor5/engine/treeview/element.js';
+import Position from '/ckeditor5/engine/treeview/position.js';
+import Range from '/ckeditor5/engine/treeview/range.js';
+import Text from '/ckeditor5/engine/treeview/text.js';
+import utils from '/tests/engine/treeview/writer/_utils/utils.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'Writer', () => {

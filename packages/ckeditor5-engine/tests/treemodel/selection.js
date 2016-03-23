@@ -7,15 +7,15 @@
 
 'use strict';
 
-import Document from '/ckeditor5/core/treemodel/document.js';
-import Element from '/ckeditor5/core/treemodel/element.js';
-import Text from '/ckeditor5/core/treemodel/text.js';
-import Range from '/ckeditor5/core/treemodel/range.js';
-import Position from '/ckeditor5/core/treemodel/position.js';
-import LiveRange from '/ckeditor5/core/treemodel/liverange.js';
-import Selection from '/ckeditor5/core/treemodel/selection.js';
-import InsertOperation from '/ckeditor5/core/treemodel/operation/insertoperation.js';
-import MoveOperation from '/ckeditor5/core/treemodel/operation/moveoperation.js';
+import Document from '/ckeditor5/engine/treemodel/document.js';
+import Element from '/ckeditor5/engine/treemodel/element.js';
+import Text from '/ckeditor5/engine/treemodel/text.js';
+import Range from '/ckeditor5/engine/treemodel/range.js';
+import Position from '/ckeditor5/engine/treemodel/position.js';
+import LiveRange from '/ckeditor5/engine/treemodel/liverange.js';
+import Selection from '/ckeditor5/engine/treemodel/selection.js';
+import InsertOperation from '/ckeditor5/engine/treemodel/operation/insertoperation.js';
+import MoveOperation from '/ckeditor5/engine/treemodel/operation/moveoperation.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'Selection', () => {

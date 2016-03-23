@@ -8,8 +8,8 @@
 'use strict';
 
 import utils from '/ckeditor5/utils/utils.js';
-import Delta from '/ckeditor5/core/treemodel/delta/delta.js';
-import Operation from '/ckeditor5/core/treemodel/operation/operation.js';
+import Delta from '/ckeditor5/engine/treemodel/delta/delta.js';
+import Operation from '/ckeditor5/engine/treemodel/operation/operation.js';
 
 // Some test examples of operations.
 class FooOperation extends Operation {

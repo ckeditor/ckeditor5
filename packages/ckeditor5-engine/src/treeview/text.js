@@ -10,8 +10,8 @@ import Node from './node.js';
 /**
  * Tree view text node.
  *
- * @memberOf core.treeView
- * @extends core.treeView.Node
+ * @memberOf engine.treeView
+ * @extends engine.treeView.Node
  */
 export default class Text extends Node {
 	/**
@@ -25,10 +25,10 @@ export default class Text extends Node {
 		/**
 		 * The text content.
 		 *
-		 * Setting the data fires the {@link core.treeView.Node#event:change change event}.
+		 * Setting the data fires the {@link engine.treeView.Node#event:change change event}.
 		 *
 		 * @private
-		 * @member {String} core.treeView.Text#_data
+		 * @member {String} engine.treeView.Text#_data
 		 */
 		this._data = data;
 	}
@@ -36,7 +36,7 @@ export default class Text extends Node {
 	/**
 	 * Clones this node.
 	 *
-	 * @returns {core.treeView.Text} Text node that is a clone of this node.
+	 * @returns {engine.treeView.Text} Text node that is a clone of this node.
 	 */
 	clone() {
 		return new Text( this.data );
@@ -61,7 +61,7 @@ export default class Text extends Node {
 	 * Checks if this text node is similar to other text node.
 	 * Both nodes should have the same data to be considered as similar.
 	 *
-	 * @param {core.treeView.Text} otherNode Node to check if it is same as this node.
+	 * @param {engine.treeView.Text} otherNode Node to check if it is same as this node.
 	 * @returns {Boolean}
 	 */
 	isSimilar( otherNode ) {

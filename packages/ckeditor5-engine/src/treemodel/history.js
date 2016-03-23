@@ -14,11 +14,11 @@ import transform from './delta/transform.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
- * History keeps the track of all the deltas applied to the {@link core.treeModel.Document document} and provides
+ * History keeps the track of all the deltas applied to the {@link engine.treeModel.Document document} and provides
  * utility tools to operate on the history. Most of times history is needed to transform a delta that has wrong
- * {@link core.treeModel.delta.Delta#baseVersion} to a state where it can be applied to the document.
+ * {@link engine.treeModel.delta.Delta#baseVersion} to a state where it can be applied to the document.
  *
- * @memberOf core.treeModel
+ * @memberOf engine.treeModel
  */
 export default class History {
 	/**
@@ -29,16 +29,16 @@ export default class History {
 		 * Deltas added to the history.
 		 *
 		 * @private
-		 * @member {Array.<core.treeModel.delta.Delta>} core.treeModel.History#_deltas
+		 * @member {Array.<engine.treeModel.delta.Delta>} engine.treeModel.History#_deltas
 		 */
 		this._deltas = [];
 
 		/**
-		 * Helper structure that maps added delta's base version to the index in {@link core.treeModel.History#_deltas}
+		 * Helper structure that maps added delta's base version to the index in {@link engine.treeModel.History#_deltas}
 		 * at which the delta was added.
 		 *
 		 * @private
-		 * @member {Map} core.treeModel.History#_historyPoints
+		 * @member {Map} engine.treeModel.History#_historyPoints
 		 */
 		this._historyPoints = new Map();
 	}
@@ -58,7 +58,7 @@ export default class History {
 	/**
 	 * Adds an operation to the history.
 	 *
-	 * @param {core.treeModel.operation.Operation} operation Operation to add.
+	 * @param {engine.treeModel.operation.Operation} operation Operation to add.
 	 */
 	addOperation( operation ) {
 		const delta = operation.delta;
@@ -79,10 +79,10 @@ export default class History {
 	/**
 	 * Transforms out-dated delta by all deltas that were added to the history since the given delta's base version. In other
 	 * words, it makes the delta up-to-date with the history. The transformed delta(s) is (are) ready to be applied
-	 * to the {@link core.treeModel.Document document}.
+	 * to the {@link engine.treeModel.Document document}.
 	 *
-	 * @param {core.treeModel.delta.Delta} delta Delta to update.
-	 * @returns {Array.<core.treeModel.delta.Delta>} Result of transformation which is an array containing one or more deltas.
+	 * @param {engine.treeModel.delta.Delta} delta Delta to update.
+	 * @returns {Array.<engine.treeModel.delta.Delta>} Result of transformation which is an array containing one or more deltas.
 	 */
 	getTransformedDelta( delta ) {
 		if ( delta.baseVersion === this._nextHistoryPoint ) {
@@ -117,8 +117,8 @@ export default class History {
 	 * Transforms given delta by another given delta. Exposed for testing purposes.
 	 *
 	 * @protected
-	 * @param {core.treeModel.delta.Delta} toTransform Delta to be transformed.
-	 * @param {core.treeModel.delta.Delta} transformBy Delta to transform by.
+	 * @param {engine.treeModel.delta.Delta} toTransform Delta to be transformed.
+	 * @param {engine.treeModel.delta.Delta} transformBy Delta to transform by.
 	 */
 	static _transform( toTransform, transformBy ) {
 		return transform( toTransform, transformBy, false );

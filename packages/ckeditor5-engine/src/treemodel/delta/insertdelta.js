@@ -12,16 +12,16 @@ import InsertOperation from '../operation/insertoperation.js';
 
 /**
  * @classdesc
- * To provide specific OT behavior and better collisions solving, the {@link core.treeModel.Batch#insert Batch#insert} method
+ * To provide specific OT behavior and better collisions solving, the {@link engine.treeModel.Batch#insert Batch#insert} method
  * uses the `InsertDelta` class which inherits from the `Delta` class and may overwrite some methods.
  *
- * @memberOf core.treeModel.delta
+ * @memberOf engine.treeModel.delta
  */
 export default class InsertDelta extends Delta {
 	/**
 	 * Position where the delta inserts nodes or `null` if there are no operations in the delta.
 	 *
-	 * @type {core.treeModel.Position|null}
+	 * @type {engine.treeModel.Position|null}
 	 */
 	get position() {
 		return this._insertOperation ? this._insertOperation.position : null;
@@ -30,7 +30,7 @@ export default class InsertDelta extends Delta {
 	/**
 	 * Node list containing all the nodes inserted by the delta or `null` if there are no operations in the delta.
 	 *
-	 * @type {core.treeModel.NodeList|null}
+	 * @type {engine.treeModel.NodeList|null}
 	 */
 	get nodeList() {
 		return this._insertOperation ? this._insertOperation.nodeList : null;
@@ -40,14 +40,14 @@ export default class InsertDelta extends Delta {
 	 * Insert operation that is saved in this delta or `null` if there are no operations in the delta.
 	 *
 	 * @protected
-	 * @type {core.treeModel.operation.InsertOperation|null}
+	 * @type {engine.treeModel.operation.InsertOperation|null}
 	 */
 	get _insertOperation() {
 		return this.operations[ 0 ] || null;
 	}
 
 	/**
-	 * @see core.treeModel.delta.Delta#_reverseDeltaClass
+	 * @see engine.treeModel.delta.Delta#_reverseDeltaClass
 	 * @private
 	 * @type {Object}
 	 */
@@ -64,10 +64,10 @@ export default class InsertDelta extends Delta {
  * Inserts a node or nodes at the given position.
  *
  * @chainable
- * @method core.treeModel.Batch#insert
- * @param {core.treeModel.Position} position Position of insertion.
- * @param {core.treeModel.NodeSet} nodes The list of nodes to be inserted.
- * List of nodes can be of any type accepted by the {@link core.treeModel.NodeList} constructor.
+ * @method engine.treeModel.Batch#insert
+ * @param {engine.treeModel.Position} position Position of insertion.
+ * @param {engine.treeModel.NodeSet} nodes The list of nodes to be inserted.
+ * List of nodes can be of any type accepted by the {@link engine.treeModel.NodeList} constructor.
  */
 register( 'insert', function( position, nodes ) {
 	const delta = new InsertDelta();

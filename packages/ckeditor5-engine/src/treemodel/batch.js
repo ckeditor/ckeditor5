@@ -28,19 +28,19 @@ import CKEditorError from '../../utils/ckeditorerror.js';
  *
  *		doc.batch().insert( firstPosition, 'foo' ).insert( secondPosition, 'bar' );
  *
- * @memberOf core.treeModel
+ * @memberOf engine.treeModel
  */
 export default class Batch {
 	/**
-	 * Creates Batch instance. Not recommended to use directly, use {@link core.treeModel.Document#batch} instead.
+	 * Creates Batch instance. Not recommended to use directly, use {@link engine.treeModel.Document#batch} instead.
 	 *
-	 * @param {core.treeModel.Document} doc Document which this Batch changes.
+	 * @param {engine.treeModel.Document} doc Document which this Batch changes.
 	 */
 	constructor( doc ) {
 		/**
 		 * Document which this Batch changes.
 		 *
-		 * @member {core.treeModel.Document} core.treeModel.Batch#doc
+		 * @member {engine.treeModel.Document} engine.treeModel.Batch#doc
 		 * @readonly
 		 */
 		this.doc = doc;
@@ -48,7 +48,7 @@ export default class Batch {
 		/**
 		 * Array of deltas which compose Batch.
 		 *
-		 * @member {Array.<core.treeModel.delta.Delta>} core.treeModel.Batch#deltas
+		 * @member {Array.<engine.treeModel.delta.Delta>} engine.treeModel.Batch#deltas
 		 * @readonly
 		 */
 		this.deltas = [];
@@ -58,8 +58,8 @@ export default class Batch {
 	 * Adds delta to the Batch instance. All modification methods (insert, remove, split, etc.) use this method
 	 * to add created deltas.
 	 *
-	 * @param {core.treeModel.delta.Delta} delta Delta to add.
-	 * @return {core.treeModel.delta.Delta} Added delta.
+	 * @param {engine.treeModel.delta.Delta} delta Delta to add.
+	 * @return {engine.treeModel.delta.Delta} Added delta.
 	 */
 	addDelta( delta ) {
 		delta.batch = this;
@@ -100,7 +100,7 @@ export default class Batch {
  *			return this;
  *		} );
  *
- * @method core.treeModel.Batch.register
+ * @method engine.treeModel.Batch.register
  * @param {String} name Method name.
  * @param {Function} creator Method body.
  */

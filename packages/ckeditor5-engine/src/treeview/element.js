@@ -12,8 +12,8 @@ import isPlainObject from '../../utils/lib/lodash/isPlainObject.js';
 /**
  * Tree view element.
  *
- * @memberOf core.treeView
- * @extends core.treeView.Node
+ * @memberOf engine.treeView
+ * @extends engine.treeView.Node
  */
 export default class Element extends Node {
 	/**
@@ -27,7 +27,7 @@ export default class Element extends Node {
 	 *
 	 * @param {String} name Node name.
 	 * @param {Object|Iterable} [attrs] Collection of attributes.
-	 * @param {core.treeView.Node|Iterable.<core.treeView.Node>} [children] List of nodes to be inserted into created element.
+	 * @param {engine.treeView.Node|Iterable.<engine.treeView.Node>} [children] List of nodes to be inserted into created element.
 	 */
 	constructor( name, attrs, children ) {
 		super();
@@ -36,7 +36,7 @@ export default class Element extends Node {
 		 * Name of the element.
 		 *
 		 * @readonly
-		 * @member {String} core.treeView.Element#name
+		 * @member {String} engine.treeView.Element#name
 		 */
 		this.name = name;
 
@@ -44,7 +44,7 @@ export default class Element extends Node {
 		 * Map of attributes, where attributes names are keys and attributes values are values.
 		 *
 		 * @protected
-		 * @member {Map} core.treeView.Element#_attrs
+		 * @member {Map} engine.treeView.Element#_attrs
 		 */
 		if ( isPlainObject( attrs ) ) {
 			this._attrs = utils.objectToMap( attrs );
@@ -56,7 +56,7 @@ export default class Element extends Node {
 		 * Array of child nodes.
 		 *
 		 * @protected
-		 * @member {Array.<core.treeView.Node>} core.treeView.Element#_children
+		 * @member {Array.<engine.treeView.Node>} engine.treeView.Element#_children
 		 */
 		this._children = [];
 
@@ -68,7 +68,7 @@ export default class Element extends Node {
 		 * Set of classes associated with element instance.
 		 *
 		 * @protected
-		 * @member {Set} core.treeView.Element#_classes
+		 * @member {Set} engine.treeView.Element#_classes
 		 */
 		this._classes = new Set();
 
@@ -83,7 +83,7 @@ export default class Element extends Node {
 		 * Map of styles.
 		 *
 		 * @protected
-		 * @member {Set} core.treeView.Element#_styles
+		 * @member {Set} engine.treeView.Element#_styles
 		 */
 		this._styles = new Map();
 
@@ -121,11 +121,11 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * {@link core.treeView.Element#insert Insert} a child node or a list of child nodes at the end of this node and sets
+	 * {@link engine.treeView.Element#insert Insert} a child node or a list of child nodes at the end of this node and sets
 	 * the parent of these nodes to this element.
 	 *
-	 * @fires core.treeView.Node#change
-	 * @param {core.treeView.Node|Iterable.<core.treeView.Node>} nodes Node or the list of nodes to be inserted.
+	 * @fires engine.treeView.Node#change
+	 * @param {engine.treeView.Node|Iterable.<engine.treeView.Node>} nodes Node or the list of nodes to be inserted.
 	 * @returns {Number} Number of appended nodes.
 
 	 */
@@ -137,7 +137,7 @@ export default class Element extends Node {
 	 * Gets child at the given index.
 	 *
 	 * @param {Number} index Index of child.
-	 * @returns {core.treeView.Node} Child node.
+	 * @returns {engine.treeView.Node} Child node.
 	 */
 	getChild( index ) {
 		return this._children[ index ];
@@ -155,7 +155,7 @@ export default class Element extends Node {
 	/**
 	 * Gets index of the given child node. Returns `-1` if child node is not found.
 	 *
-	 * @param {core.treeView.Node} node Child node.
+	 * @param {engine.treeView.Node} node Child node.
 	 * @returns {Number} Index of the child node.
 	 */
 	getChildIndex( node ) {
@@ -165,7 +165,7 @@ export default class Element extends Node {
 	/**
 	 * Gets child nodes iterator.
 	 *
-	 * @returns {Iterable.<core.treeView.Node>} Child nodes iterator.
+	 * @returns {Iterable.<engine.treeView.Node>} Child nodes iterator.
 	 */
 	getChildren() {
 		return this._children[ Symbol.iterator ]();
@@ -244,7 +244,7 @@ export default class Element extends Node {
 	 *
 	 * @param {String} key Attribute key.
 	 * @param {String} value Attribute value.
-	 * @fires core.treeView.Node#change
+	 * @fires engine.treeView.Node#change
 	 */
 	setAttribute( key, value ) {
 		this._fireChange( 'ATTRIBUTES', this );
@@ -263,8 +263,8 @@ export default class Element extends Node {
 	 * this element.
 	 *
 	 * @param {Number} index Position where nodes should be inserted.
-	 * @param {core.treeView.Node|Iterable.<core.treeView.Node>} nodes Node or the list of nodes to be inserted.
-	 * @fires core.treeView.Node#change
+	 * @param {engine.treeView.Node|Iterable.<engine.treeView.Node>} nodes Node or the list of nodes to be inserted.
+	 * @fires engine.treeView.Node#change
 	 * @returns {Number} Number of inserted nodes.
 	 */
 	insertChildren( index, nodes ) {
@@ -291,7 +291,7 @@ export default class Element extends Node {
 	 *
 	 * @param {String} key Attribute key.
 	 * @returns {Boolean} Returns true if an attribute existed and has been removed.
-	 * @fires core.treeView.Node#change
+	 * @fires engine.treeView.Node#change
 	 */
 	removeAttribute( key ) {
 		this._fireChange( 'ATTRIBUTES', this );
@@ -327,8 +327,8 @@ export default class Element extends Node {
 	 *
 	 * @param {Number} index Number of the first node to remove.
 	 * @param {Number} [howMany=1] Number of nodes to remove.
-	 * @returns {Array.<core.treeView.Node>} The array of removed nodes.
-	 * @fires core.treeView.Node#change
+	 * @returns {Array.<engine.treeView.Node>} The array of removed nodes.
+	 * @fires engine.treeView.Node#change
 	 */
 	removeChildren( index, howMany = 1 ) {
 		this._fireChange( 'CHILDREN', this );
@@ -400,7 +400,7 @@ export default class Element extends Node {
 	 *		element.addClass( 'foo', 'bar' ); // Adds 'foo' and 'bar' classes.
 	 *
 	 * @param {...String} className
-	 * @fires core.treeView.Node#change
+	 * @fires engine.treeView.Node#change
 	 */
 	addClass( ...className ) {
 		this._fireChange( 'ATTRIBUTES', this );
@@ -414,7 +414,7 @@ export default class Element extends Node {
 	 *		element.removeClass( 'foo', 'bar' ); // Removes both 'foo' and 'bar' classes.
 	 *
 	 * @param {...String} className
-	 * @fires core.treeView.Node#change
+	 * @fires engine.treeView.Node#change
 	 */
 	removeClass( ...className ) {
 		this._fireChange( 'ATTRIBUTES', this );
@@ -451,7 +451,7 @@ export default class Element extends Node {
 	 *
 	 * @param {String|Object} property Property name or object with key - value pairs.
 	 * @param {String} [value] Value to set. This parameter is ignored if object is provided as the first parameter.
-	 * @fires core.treeView.Node#change
+	 * @fires engine.treeView.Node#change
 	 */
 	setStyle( property, value ) {
 		this._fireChange( 'ATTRIBUTES', this );
@@ -504,7 +504,7 @@ export default class Element extends Node {
 	 *		element.removeStyle( 'color', 'border-top' ); // Removes both 'color' and 'border-top' styles.
 	 *
 	 * @param {...String} property
-	 * @fires core.treeView.Node#change
+	 * @fires engine.treeView.Node#change
 	 */
 	removeStyle( ...property ) {
 		this._fireChange( 'ATTRIBUTES', this );

@@ -7,27 +7,27 @@
 
 'use strict';
 
-import transformations from '/ckeditor5/core/treemodel/delta/basic-transformations.js';
+import transformations from '/ckeditor5/engine/treemodel/delta/basic-transformations.js';
 /*jshint unused: false*/
 
-import transform from '/ckeditor5/core/treemodel/delta/transform.js';
+import transform from '/ckeditor5/engine/treemodel/delta/transform.js';
 
-import Text from '/ckeditor5/core/treemodel/text.js';
-import Position from '/ckeditor5/core/treemodel/position.js';
-import Range from '/ckeditor5/core/treemodel/range.js';
+import Text from '/ckeditor5/engine/treemodel/text.js';
+import Position from '/ckeditor5/engine/treemodel/position.js';
+import Range from '/ckeditor5/engine/treemodel/range.js';
 
-import WeakInsertDelta from '/ckeditor5/core/treemodel/delta/weakinsertdelta.js';
-import AttributeDelta from '/ckeditor5/core/treemodel/delta/attributedelta.js';
+import WeakInsertDelta from '/ckeditor5/engine/treemodel/delta/weakinsertdelta.js';
+import AttributeDelta from '/ckeditor5/engine/treemodel/delta/attributedelta.js';
 
-import InsertOperation from '/ckeditor5/core/treemodel/operation/insertoperation.js';
-import AttributeOperation from '/ckeditor5/core/treemodel/operation/attributeoperation.js';
+import InsertOperation from '/ckeditor5/engine/treemodel/operation/insertoperation.js';
+import AttributeOperation from '/ckeditor5/engine/treemodel/operation/attributeoperation.js';
 
 import {
 	expectDelta,
 	getFilledDocument,
 	getAttributeDelta,
 	getWeakInsertDelta
-} from '/tests/core/treemodel/delta/transform/_utils/utils.js';
+} from '/tests/engine/treemodel/delta/transform/_utils/utils.js';
 
 describe( 'transform', () => {
 	let doc, root, baseVersion;

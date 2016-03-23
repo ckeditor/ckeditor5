@@ -7,8 +7,8 @@
 
 'use strict';
 
-import Delta from '/ckeditor5/core/treemodel/delta/delta.js';
-import Operation from '/ckeditor5/core/treemodel/operation/operation.js';
+import Delta from '/ckeditor5/engine/treemodel/delta/delta.js';
+import Operation from '/ckeditor5/engine/treemodel/operation/operation.js';
 
 describe( 'Operation', () => {
 	it( 'should save its base version', () => {
@@ -27,7 +27,7 @@ describe( 'Operation', () => {
 		let parsedIn = JSON.parse( JSON.stringify( opInDelta ) );
 		let parsedOutside = JSON.parse( JSON.stringify( opOutsideDelta ) );
 
-		expect( parsedIn.delta ).to.equal( '[core.treeModel.Delta]' );
+		expect( parsedIn.delta ).to.equal( '[engine.treeModel.Delta]' );
 		expect( parsedOutside.delta ).to.be.null;
 	} );
 } );

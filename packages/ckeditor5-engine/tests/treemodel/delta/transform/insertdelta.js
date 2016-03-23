@@ -7,23 +7,23 @@
 
 'use strict';
 
-import transformations from '/ckeditor5/core/treemodel/delta/basic-transformations.js';
+import transformations from '/ckeditor5/engine/treemodel/delta/basic-transformations.js';
 /*jshint unused: false*/
 
-import transform from '/ckeditor5/core/treemodel/delta/transform.js';
+import transform from '/ckeditor5/engine/treemodel/delta/transform.js';
 
-import Element from '/ckeditor5/core/treemodel/element.js';
-import Position from '/ckeditor5/core/treemodel/position.js';
-import Range from '/ckeditor5/core/treemodel/range.js';
+import Element from '/ckeditor5/engine/treemodel/element.js';
+import Position from '/ckeditor5/engine/treemodel/position.js';
+import Range from '/ckeditor5/engine/treemodel/range.js';
 
-import InsertDelta from '/ckeditor5/core/treemodel/delta/insertdelta.js';
-import SplitDelta from '/ckeditor5/core/treemodel/delta/splitdelta.js';
+import InsertDelta from '/ckeditor5/engine/treemodel/delta/insertdelta.js';
+import SplitDelta from '/ckeditor5/engine/treemodel/delta/splitdelta.js';
 
-import InsertOperation from '/ckeditor5/core/treemodel/operation/insertoperation.js';
-import MoveOperation from '/ckeditor5/core/treemodel/operation/moveoperation.js';
-import ReinsertOperation from '/ckeditor5/core/treemodel/operation/reinsertoperation.js';
+import InsertOperation from '/ckeditor5/engine/treemodel/operation/insertoperation.js';
+import MoveOperation from '/ckeditor5/engine/treemodel/operation/moveoperation.js';
+import ReinsertOperation from '/ckeditor5/engine/treemodel/operation/reinsertoperation.js';
 
-import treeModelTestUtils from '/tests/core/treemodel/_utils/utils.js';
+import treeModelTestUtils from '/tests/engine/treemodel/_utils/utils.js';
 const getNodesAndText = treeModelTestUtils.getNodesAndText;
 
 import {
@@ -32,7 +32,7 @@ import {
 	getFilledDocument,
 	getInsertDelta,
 	getMergeDelta
-} from '/tests/core/treemodel/delta/transform/_utils/utils.js';
+} from '/tests/engine/treemodel/delta/transform/_utils/utils.js';
 
 describe( 'transform', () => {
 	let doc, root, gy, baseVersion;

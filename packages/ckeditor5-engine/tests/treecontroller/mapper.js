@@ -7,16 +7,16 @@
 
 'use strict';
 
-import Mapper from '/ckeditor5/core/treecontroller/mapper.js';
+import Mapper from '/ckeditor5/engine/treecontroller/mapper.js';
 
-import ModelElement from '/ckeditor5/core/treemodel/element.js';
-import ModelRootElement from '/ckeditor5/core/treemodel/rootelement.js';
-import ModelText from '/ckeditor5/core/treemodel/text.js';
-import ModelPosition from '/ckeditor5/core/treemodel/position.js';
+import ModelElement from '/ckeditor5/engine/treemodel/element.js';
+import ModelRootElement from '/ckeditor5/engine/treemodel/rootelement.js';
+import ModelText from '/ckeditor5/engine/treemodel/text.js';
+import ModelPosition from '/ckeditor5/engine/treemodel/position.js';
 
-import ViewElement from '/ckeditor5/core/treeview/element.js';
-import ViewText from '/ckeditor5/core/treeview/text.js';
-import ViewPosition from '/ckeditor5/core/treeview/position.js';
+import ViewElement from '/ckeditor5/engine/treeview/element.js';
+import ViewText from '/ckeditor5/engine/treeview/text.js';
+import ViewPosition from '/ckeditor5/engine/treeview/position.js';
 
 describe( 'Mapper', () => {
 	let modelDiv, modelP, modelImg;

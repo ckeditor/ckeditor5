@@ -9,25 +9,25 @@ import clone from '../../utils/lib/lodash/clone.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
- * SchemaItem is a singular registry item in {@link core.treeModel.Schema} that groups and holds allow/disallow rules for
- * one entity. This class is used internally in {@link core.treeModel.Schema} and should not be used outside it.
+ * SchemaItem is a singular registry item in {@link engine.treeModel.Schema} that groups and holds allow/disallow rules for
+ * one entity. This class is used internally in {@link engine.treeModel.Schema} and should not be used outside it.
  *
- * @see core.treeModel.Schema
+ * @see engine.treeModel.Schema
  * @protected
- * @memberOf core.treeModel
+ * @memberOf engine.treeModel
  */
 export class SchemaItem {
 	/**
 	 * Creates SchemaItem instance.
 	 *
-	 * @param {core.treeModel.Schema} schema Schema instance that owns this item.
+	 * @param {engine.treeModel.Schema} schema Schema instance that owns this item.
 	 */
 	constructor( schema ) {
 		/**
 		 * Schema instance that owns this item.
 		 *
 		 * @private
-		 * @member {core.treeModel.Schema} core.treeModel.SchemaItem#_schema
+		 * @member {engine.treeModel.Schema} engine.treeModel.SchemaItem#_schema
 		 */
 		this._schema = schema;
 
@@ -35,7 +35,7 @@ export class SchemaItem {
 		 * Paths in which the entity, represented by this item, is allowed.
 		 *
 		 * @private
-		 * @member {Array} core.treeModel.SchemaItem#_allowed
+		 * @member {Array} engine.treeModel.SchemaItem#_allowed
 		 */
 		this._allowed = [];
 
@@ -43,7 +43,7 @@ export class SchemaItem {
 		 * Paths in which the entity, represented by this item, is disallowed.
 		 *
 		 * @private
-		 * @member {Array} core.treeModel.SchemaItem#_disallowed
+		 * @member {Array} engine.treeModel.SchemaItem#_disallowed
 		 */
 		this._disallowed = [];
 	}
@@ -184,7 +184,7 @@ export class SchemaItem {
  * E.g. `p` can inherit from `$block`, so whenever given attribute is allowed on the `$block` it will automatically be
  * also allowed on the `p` element. By default, `$text` item already inherits from `$inline`.
  *
- * @memberOf core.treeModel
+ * @memberOf engine.treeModel
  */
 export default class Schema {
 	/**
@@ -195,7 +195,7 @@ export default class Schema {
 		 * Schema items registered in the schema.
 		 *
 		 * @private
-		 * @member {Map} core.treeModel.Schema#_items
+		 * @member {Map} engine.treeModel.Schema#_items
 		 */
 		this._items = new Map();
 
@@ -203,7 +203,7 @@ export default class Schema {
 		 * Description of what entities are a base for given entity.
 		 *
 		 * @private
-		 * @member {Map} core.treeModel.Schema#_extensionChains
+		 * @member {Map} engine.treeModel.Schema#_extensionChains
 		 */
 		this._extensionChains = new Map();
 
@@ -228,7 +228,7 @@ export default class Schema {
 	 *		schema.registerItem( 'div', '$block' );
 	 *		schema.allow( { name: 'header', inside: 'div p' } ); // inside: [ 'div', 'p' ] would also work.
 	 *
-	 * @param {core.treeModel.SchemaQuery} query Allowed query.
+	 * @param {engine.treeModel.SchemaQuery} query Allowed query.
 	 */
 	allow( query ) {
 		this._getItem( query.name ).allow( query.inside, query.attribute );
@@ -237,8 +237,8 @@ export default class Schema {
 	/**
 	 * Disallows given query in the schema.
 	 *
-	 * @see {@link core.treeModel.Schema#allow}
-	 * @param {core.treeModel.SchemaQuery} query Disallowed query.
+	 * @see {@link engine.treeModel.Schema#allow}
+	 * @param {engine.treeModel.SchemaQuery} query Disallowed query.
 	 */
 	disallow( query ) {
 		this._getItem( query.name ).disallow( query.inside, query.attribute );
@@ -251,7 +251,7 @@ export default class Schema {
 	 *		let caretPos = editor.document.selection.getFirstPosition();
 	 *		if ( schema.checkAtPosition( caretPos, '$text', 'bold' ) ) { ... }
 	 *
-	 * @param {core.treeModel.Position} position Position to check at.
+	 * @param {engine.treeModel.Position} position Position to check at.
 	 * @param {String} name Entity name to check.
 	 * @param {String} [attribute] If set, schema will check for entity with given attribute.
 	 * @returns {Boolean} `true` if entity is allowed, `false` otherwise
@@ -279,7 +279,7 @@ export default class Schema {
 	 *		};
 	 *		if ( schema.checkQuery( query ) ) { ... }
 	 *
-	 * @param {core.treeModel.SchemaQuery} query Query to check.
+	 * @param {engine.treeModel.SchemaQuery} query Query to check.
 	 * @returns {Boolean} `true` if given query is allowed in schema, `false` otherwise.
 	 */
 	checkQuery( query ) {
@@ -364,12 +364,12 @@ export default class Schema {
 	}
 
 	/**
-	 * Returns {@link core.treeModel.SchemaItem schema item} that was registered in the schema under given name.
+	 * Returns {@link engine.treeModel.SchemaItem schema item} that was registered in the schema under given name.
 	 * If item has not been found, throws error.
 	 *
 	 * @private
 	 * @param {String} itemName Name to look for in schema.
-	 * @returns {core.treeModel.SchemaItem} Schema item registered under given name.
+	 * @returns {engine.treeModel.SchemaItem} Schema item registered under given name.
 	 */
 	_getItem( itemName ) {
 		if ( !this.hasItem( itemName ) ) {
@@ -388,7 +388,7 @@ export default class Schema {
 	 * Gets position and traverses through it's parents to get their names and returns them.
 	 *
 	 * @private
-	 * @param {core.treeModel.Position} position Position to start building path from.
+	 * @param {engine.treeModel.Position} position Position to start building path from.
 	 * @returns {Array.<String>} Path containing elements names from top-most to the one containing given position.
 	 */
 	static _makeItemsPathFromPosition( position ) {
@@ -407,9 +407,9 @@ export default class Schema {
 }
 
 /**
- * Object with query used by {@link core.treeModel.Schema} to query schema or add allow/disallow rules to schema.
+ * Object with query used by {@link engine.treeModel.Schema} to query schema or add allow/disallow rules to schema.
  *
- * @typedef {Object} core.treeModel.SchemaQuery
+ * @typedef {Object} engine.treeModel.SchemaQuery
  * @property {String} name Entity name.
  * @property {Array.<String>|String} inside Path inside which the entity is placed.
  * @property {String} [attribute] If set, the query applies only to entities that has attribute with given key.

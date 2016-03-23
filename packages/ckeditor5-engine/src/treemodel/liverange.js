@@ -13,18 +13,18 @@ import utils from '../../utils/utils.js';
 /**
  * LiveRange is a Range in the Tree Model that updates itself as the tree changes. It may be used as a bookmark.
  *
- * **Note:** Constructor creates it's own {@link core.treeModel.LivePosition} instances basing on passed values.
+ * **Note:** Constructor creates it's own {@link engine.treeModel.LivePosition} instances basing on passed values.
  *
  * **Note:** Be very careful when dealing with LiveRange. Each LiveRange instance bind events that might
- * have to be unbound. Use {@link core.treeModel.LiveRange#detach detach} whenever you don't need LiveRange anymore.
+ * have to be unbound. Use {@link engine.treeModel.LiveRange#detach detach} whenever you don't need LiveRange anymore.
  *
- * @memberOf core.treeModel
+ * @memberOf engine.treeModel
  */
 export default class LiveRange extends Range {
 	/**
 	 * Creates a live range.
 	 *
-	 * @see core.treeModel.Range
+	 * @see engine.treeModel.Range
 	 */
 	constructor( start, end ) {
 		super( start, end );
@@ -47,48 +47,48 @@ export default class LiveRange extends Range {
 	}
 
 	/**
-	 * @see core.treeModel.Range.createFromElement
+	 * @see engine.treeModel.Range.createFromElement
 	 * @static
-	 * @method core.treeModel.LiveRange.createFromElement
-	 * @param {core.treeModel.Element} element
-	 * @returns {core.treeModel.LiveRange}
+	 * @method engine.treeModel.LiveRange.createFromElement
+	 * @param {engine.treeModel.Element} element
+	 * @returns {engine.treeModel.LiveRange}
 	 */
 
 	/**
-	 * @see core.treeModel.Range.createFromPositionAndShift
+	 * @see engine.treeModel.Range.createFromPositionAndShift
 	 * @static
-	 * @method core.treeModel.LiveRange.createFromPositionAndShift
-	 * @param {core.treeModel.Position} position
+	 * @method engine.treeModel.LiveRange.createFromPositionAndShift
+	 * @param {engine.treeModel.Position} position
 	 * @param {Number} shift
-	 * @returns {core.treeModel.LiveRange}
+	 * @returns {engine.treeModel.LiveRange}
 	 */
 
 	/**
-	 * @see core.treeModel.Range.createFromParentsAndOffsets
+	 * @see engine.treeModel.Range.createFromParentsAndOffsets
 	 * @static
-	 * @method core.treeModel.LiveRange.createFromParentsAndOffsets
-	 * @param {core.treeModel.Element} startElement
+	 * @method engine.treeModel.LiveRange.createFromParentsAndOffsets
+	 * @param {engine.treeModel.Element} startElement
 	 * @param {Number} startOffset
-	 * @param {core.treeModel.Element} endElement
+	 * @param {engine.treeModel.Element} endElement
 	 * @param {Number} endOffset
-	 * @returns {core.treeModel.LiveRange}
+	 * @returns {engine.treeModel.LiveRange}
 	 */
 
 	/**
-	 * @see core.treeModel.Range.createFromRange
+	 * @see engine.treeModel.Range.createFromRange
 	 * @static
-	 * @method core.treeModel.LiveRange.createFromRange
-	 * @param {core.treeModel.Range} range
-	 * @returns {core.treeModel.LiveRange}
+	 * @method engine.treeModel.LiveRange.createFromRange
+	 * @param {engine.treeModel.Range} range
+	 * @returns {engine.treeModel.LiveRange}
 	 */
 }
 
 /**
- * Binds this LiveRange to the {@link core.treeModel.Document} that owns this range.
+ * Binds this LiveRange to the {@link engine.treeModel.Document} that owns this range.
  *
  * @ignore
  * @private
- * @method core.treeModel.LiveRange#bindWithDocument
+ * @method engine.treeModel.LiveRange#bindWithDocument
  */
 function bindWithDocument() {
 	/*jshint validthis: true */
@@ -104,7 +104,7 @@ function bindWithDocument() {
 }
 
 /**
- * LiveRange boundaries are instances of {@link core.treeModel.LivePosition}, so it is updated thanks to them. This method
+ * LiveRange boundaries are instances of {@link engine.treeModel.LivePosition}, so it is updated thanks to them. This method
  * additionally fixes the results of updating live positions taking into account that those live positions
  * are boundaries of a range. An example case for fixing live positions is end boundary is moved before start boundary.
  *
@@ -112,8 +112,8 @@ function bindWithDocument() {
  * @private
  * @method fixBoundaries
  * @param {String} type Type of changes applied to the Tree Model.
- * @param {core.treeModel.Range} range Range containing the result of applied change.
- * @param {core.treeModel.Position} [position] Additional position parameter provided by some change events.
+ * @param {engine.treeModel.Range} range Range containing the result of applied change.
+ * @param {engine.treeModel.Position} [position] Additional position parameter provided by some change events.
  */
 function fixBoundaries( type, range, position ) {
 	/* jshint validthis: true */

@@ -7,10 +7,10 @@
 
 'use strict';
 
-import Renderer from '/ckeditor5/core/treeview/renderer.js';
-import ViewElement from '/ckeditor5/core/treeview/element.js';
-import ViewText from '/ckeditor5/core/treeview/text.js';
-import DomConverter from '/ckeditor5/core/treeview/domconverter.js';
+import Renderer from '/ckeditor5/engine/treeview/renderer.js';
+import ViewElement from '/ckeditor5/engine/treeview/element.js';
+import ViewText from '/ckeditor5/engine/treeview/text.js';
+import DomConverter from '/ckeditor5/engine/treeview/domconverter.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'Renderer', () => {

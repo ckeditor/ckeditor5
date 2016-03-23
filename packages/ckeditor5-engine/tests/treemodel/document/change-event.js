@@ -7,14 +7,14 @@
 
 'use strict';
 
-import Document from '/ckeditor5/core/treemodel/document.js';
-import Element from '/ckeditor5/core/treemodel/element.js';
-import Position from '/ckeditor5/core/treemodel/position.js';
-import Range from '/ckeditor5/core/treemodel/range.js';
-import AttributeOperation from '/ckeditor5/core/treemodel/operation/attributeoperation.js';
-import InsertOperation from '/ckeditor5/core/treemodel/operation/insertoperation.js';
-import MoveOperation from '/ckeditor5/core/treemodel/operation/moveoperation.js';
-import RemoveOperation from '/ckeditor5/core/treemodel/operation/removeoperation.js';
+import Document from '/ckeditor5/engine/treemodel/document.js';
+import Element from '/ckeditor5/engine/treemodel/element.js';
+import Position from '/ckeditor5/engine/treemodel/position.js';
+import Range from '/ckeditor5/engine/treemodel/range.js';
+import AttributeOperation from '/ckeditor5/engine/treemodel/operation/attributeoperation.js';
+import InsertOperation from '/ckeditor5/engine/treemodel/operation/insertoperation.js';
+import MoveOperation from '/ckeditor5/engine/treemodel/operation/moveoperation.js';
+import RemoveOperation from '/ckeditor5/engine/treemodel/operation/removeoperation.js';
 
 describe( 'Document change event', () => {
 	let doc, root, graveyard, types, changes;

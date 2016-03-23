@@ -7,9 +7,9 @@
 
 'use strict';
 
-import TreeView from '/ckeditor5/core/treeview/treeview.js';
-import Element from '/ckeditor5/core/treeview/element.js';
-import Text from '/ckeditor5/core/treeview/text.js';
+import TreeView from '/ckeditor5/engine/treeview/treeview.js';
+import Element from '/ckeditor5/engine/treeview/element.js';
+import Text from '/ckeditor5/engine/treeview/text.js';
 
 const treeView = new TreeView();
 treeView.createRoot( document.getElementById( 'editor' ), 'editor' );

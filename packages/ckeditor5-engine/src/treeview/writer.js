@@ -15,7 +15,7 @@ import CKEditorError from '../../utils/ckeditorerror.js';
  * Tree View Writer class.
  * Writer defines a high-level API for TreeView manipulations.
  *
- * @memberOf core.treeView
+ * @memberOf engine.treeView
  */
  export default class Writer {
 	constructor() {
@@ -23,7 +23,7 @@ import CKEditorError from '../../utils/ckeditorerror.js';
 		 * Priorities map. Maps node to priority.
 		 * Nodes with priorities are considered as attributes.
 		 *
-		 * @member {WeakMap} core.treeView.Writer#_priorities
+		 * @member {WeakMap} engine.treeView.Writer#_priorities
 		 * @protected
 		 */
 		this._priorities = new WeakMap();
@@ -34,11 +34,11 @@ import CKEditorError from '../../utils/ckeditorerror.js';
 	 *
 	 * `Container` nodes are mostly elements like `<p>` or `<div>`. Break and merge operations are performed only in a
 	 * bounds of a container nodes. Containers will not be broken or merged by
-	 * {@link core.treeView.Writer#breakAttributes breakAttributes} and
-	 * {@link core.treeView.Writer#mergeAttributes mergeAttributes}.
+	 * {@link engine.treeView.Writer#breakAttributes breakAttributes} and
+	 * {@link engine.treeView.Writer#mergeAttributes mergeAttributes}.
 	 *
 	 * `Attribute` nodes are mostly elements like `<b>` or `<span>`. Attributes can be broken and merged. Merging requires
-	 * that attribute nodes are {@link core.treeView.Element#isSimilar similar} and have same priority. Setting different
+	 * that attribute nodes are {@link engine.treeView.Element#isSimilar similar} and have same priority. Setting different
 	 * priorities on similar nodes may prevent merging, eg. two `<abbr>` nodes next ot each other shouldn't be merged.
 	 * There might be a need to mark `<span>` element as a container node, for example in situation when it will be a
 	 * container of an inline widget:
@@ -46,7 +46,7 @@ import CKEditorError from '../../utils/ckeditorerror.js';
 	 * 		<span color="red">foobar</span>  // attribute
 	 * 		<span data-widget>foobar</span>  // container
 	 *
-	 * @param {core.treeView.Element} node Node to check.
+	 * @param {engine.treeView.Element} node Node to check.
 	 * @returns {Boolean} `True` if provided node is a container.
      */
 	isContainer( node ) {
@@ -57,11 +57,11 @@ import CKEditorError from '../../utils/ckeditorerror.js';
 
 	/**
 	 * Returns `true` if provided node is an `attribute` node.
-	 * For more information about attribute and container nodes see {@link core.treeView.Writer#isContainer isContainer}
+	 * For more information about attribute and container nodes see {@link engine.treeView.Writer#isContainer isContainer}
 	 * method description.
 	 *
-	 * @see core.treeView.Writer#isContainer
-	 * @param {core.treeView.Element} node Node to check.
+	 * @see engine.treeView.Writer#isContainer
+	 * @param {engine.treeView.Element} node Node to check.
 	 * @returns {Boolean} `True` if provided node is an attribute.
 	 */
 	isAttribute( node ) {
@@ -73,8 +73,8 @@ import CKEditorError from '../../utils/ckeditorerror.js';
 	/**
 	 * Sets node priority. When priority is defined, node is considered as `attribute`.
 	 *
-	 * @see core.treeView.Writer#isContainer
-	 * @param {core.treeView.Node} node
+	 * @see engine.treeView.Writer#isContainer
+	 * @param {engine.treeView.Node} node
 	 * @param {Number} priority
      */
 	setPriority( node, priority ) {
@@ -84,7 +84,7 @@ import CKEditorError from '../../utils/ckeditorerror.js';
 	/**
 	 * Returns node's priority.
 	 *
-	 * @param {core.treeView.Node} node Node to check its priority.
+	 * @param {engine.treeView.Node} node Node to check its priority.
 	 * @returns {Number|undefined} Priority or `undefined` if there is no priority defined.
      */
 	getPriority( node ) {
@@ -92,11 +92,11 @@ import CKEditorError from '../../utils/ckeditorerror.js';
 	}
 
 	/**
-	 * Returns first parent container of specified {@link core.treeView.Position Position}.
+	 * Returns first parent container of specified {@link engine.treeView.Position Position}.
 	 * Position's parent node is checked as first, then next parents are checked.
 	 *
-	 * @param {core.treeView.Position} position Position used as a start point to locate parent container.
-	 * @returns {core.treeView.Element|undefined} Parent container element or `undefined` if container is not found.
+	 * @param {engine.treeView.Position} position Position used as a start point to locate parent container.
+	 * @returns {engine.treeView.Element|undefined} Parent container element or `undefined` if container is not found.
 	 */
 	getParentContainer( position ) {
 		let parent = position.parent;
@@ -120,11 +120,11 @@ import CKEditorError from '../../utils/ckeditorerror.js';
 	 *		<p>{foo}<b><u>|{bar}</u></b></p> -> <p>{foo}|<b><u>{bar}</u></b></p>
 	 *		<p>{foo}<b><u>{b|ar}</u></b></p> -> <p>{foo}<b><u>{b}</u></b>|<b><u>{ar}</u></b></p>
 	 *
-	 * @see core.treeView.Writer#isContainer
-	 * @see core.treeView.Writer#isAttribute
+	 * @see engine.treeView.Writer#isContainer
+	 * @see engine.treeView.Writer#isAttribute
 	 *
-	 * @param {core.treeView.Position} position Position where to break attributes.
-	 * @returns {core.treeView.Position} New position after breaking the attributes.
+	 * @param {engine.treeView.Position} position Position where to break attributes.
+	 * @returns {engine.treeView.Position} New position after breaking the attributes.
 	 */
 	breakAttributes( position ) {
 		const positionOffset = position.offset;
@@ -202,17 +202,17 @@ import CKEditorError from '../../utils/ckeditorerror.js';
 	}
 
 	/**
-	 * Uses {@link core.treeView.Writer#breakAttributes breakAttribute} method to break attributes on
-	 * {@link core.treeView.Range#start start} and {@link core.treeView.Range#end end} positions of
-	 * provided {@link core.treeView.Range Range}.
+	 * Uses {@link engine.treeView.Writer#breakAttributes breakAttribute} method to break attributes on
+	 * {@link engine.treeView.Range#start start} and {@link engine.treeView.Range#end end} positions of
+	 * provided {@link engine.treeView.Range Range}.
 	 *
 	 * Throws {@link utils.CKEditorError CKEditorError} `treeview-writer-invalid-range-container` when
-	 * {@link core.treeView.Range#start start} and {@link core.treeView.Range#end end} positions are not placed inside
+	 * {@link engine.treeView.Range#start start} and {@link engine.treeView.Range#end end} positions are not placed inside
 	 * same parent container.
 	 *
-	 * @see core.treeView.Writer#breakAttribute
-	 * @param {core.treeView.Range} range Range which `start` and `end` positions will be used to break attributes.
-	 * @returns {core.treeView.Range} New range with located at break positions.
+	 * @see engine.treeView.Writer#breakAttribute
+	 * @param {engine.treeView.Range} range Range which `start` and `end` positions will be used to break attributes.
+	 * @returns {engine.treeView.Range} New range with located at break positions.
 	 */
 	breakRange( range ) {
 		const rangeStart = range.start;
@@ -247,7 +247,7 @@ import CKEditorError from '../../utils/ckeditorerror.js';
 
 	/**
 	 * Merges attribute nodes. It also merges text nodes if needed.
-	 * Only {@link core.treeView.Element#isSimilar similar} `attribute` nodes, with same priority can be merged.
+	 * Only {@link engine.treeView.Element#isSimilar similar} `attribute` nodes, with same priority can be merged.
 	 *
 	 * In following examples `<p>` is a container and `<b>` is an attribute node:
 	 *
@@ -255,10 +255,10 @@ import CKEditorError from '../../utils/ckeditorerror.js';
 	 *		<p><b>{foo}</b>|<b>{bar}</b> -> <p><b>{foo|bar}</b></b>
 	 *		<p><b foo="bar">{a}</b>|<b foo="baz">{b}</b> -> <p><b foo="bar">{a}</b>|<b foo="baz">{b}</b>
 	 *
-	 * @see core.treeView.Writer#isContainer
-	 * @see core.treeView.Writer#isAttribute
-	 * @param {core.treeView.Position} position Merge position.
-	 * @returns {core.treeView.Position} Position after merge.
+	 * @see engine.treeView.Writer#isContainer
+	 * @see engine.treeView.Writer#isAttribute
+	 * @param {engine.treeView.Position} position Merge position.
+	 * @returns {engine.treeView.Position} Position after merge.
 	 */
 	mergeAttributes( position ) {
 		const positionOffset = position.offset;
@@ -317,9 +317,9 @@ import CKEditorError from '../../utils/ckeditorerror.js';
 	 * Insert node or nodes at specified position. Takes care about breaking attributes before insertion
 	 * and merging them afterwards.
 	 *
-	 * @param {core.treeView.Position} position Insertion position.
-	 * @param {core.treeView.Node|Iterable.<core.treeView.Node>} nodes Node or nodes to insert.
-	 * @returns {core.treeView.Range} Range around inserted nodes.
+	 * @param {engine.treeView.Position} position Insertion position.
+	 * @param {engine.treeView.Node|Iterable.<engine.treeView.Node>} nodes Node or nodes to insert.
+	 * @returns {engine.treeView.Range} Range around inserted nodes.
 	 */
 	insert( position, nodes ) {
 		const container = this.getParentContainer( position );
@@ -347,12 +347,12 @@ import CKEditorError from '../../utils/ckeditorerror.js';
 	 * Removes provided range from the container.
 	 *
 	 * Throws {@link utils.CKEditorError CKEditorError} `treeview-writer-invalid-range-container` when
-	 * {@link core.treeView.Range#start start} and {@link core.treeView.Range#end end} positions are not placed inside
+	 * {@link engine.treeView.Range#start start} and {@link engine.treeView.Range#end end} positions are not placed inside
 	 * same parent container.
 	 *
-	 * @param {core.treeView.Range} range Range to remove from container. After removing, it will be updated
+	 * @param {engine.treeView.Range} range Range to remove from container. After removing, it will be updated
 	 * to a collapsed range showing the new position.
-	 * @returns {Array.<core.treeView.Node>} The array of removed nodes.
+	 * @returns {Array.<engine.treeView.Node>} The array of removed nodes.
 	 */
 	remove( range ) {
 		// Range should be placed inside one container.
@@ -392,13 +392,13 @@ import CKEditorError from '../../utils/ckeditorerror.js';
 	 * Moves nodes from provided range to target position.
 	 *
 	 * Throws {@link utils.CKEditorError CKEditorError} `treeview-writer-invalid-range-container` when
-	 * {@link core.treeView.Range#start start} and {@link core.treeView.Range#end end} positions are not placed inside
+	 * {@link engine.treeView.Range#start start} and {@link engine.treeView.Range#end end} positions are not placed inside
 	 * same parent container.
 	 *
-	 * @param {core.treeView.Range} sourceRange Range containing nodes to move.
-	 * @param {core.treeView.Position} targetPosition Position to insert.
-	 * @returns {core.treeView.Range} Range in target container. Inserted nodes are placed between
-	 * {@link core.treeView.Range#start start} and {@link core.treeView.Range#end end} positions.
+	 * @param {engine.treeView.Range} sourceRange Range containing nodes to move.
+	 * @param {engine.treeView.Position} targetPosition Position to insert.
+	 * @returns {engine.treeView.Range} Range in target container. Inserted nodes are placed between
+	 * {@link engine.treeView.Range#start start} and {@link engine.treeView.Range#end end} positions.
 	 */
 	move( sourceRange, targetPosition ) {
 		const nodes = this.remove( sourceRange );
@@ -409,11 +409,11 @@ import CKEditorError from '../../utils/ckeditorerror.js';
 	/**
 	 * Wraps elements within range with provided attribute element.
 	 *
-	 * Throws {@link utils.CKEditorError} `treeview-writer-invalid-range-container` when {@link core.treeView.Range#start}
-	 * and {@link core.treeView.Range#end} positions are not placed inside same parent container.
+	 * Throws {@link utils.CKEditorError} `treeview-writer-invalid-range-container` when {@link engine.treeView.Range#start}
+	 * and {@link engine.treeView.Range#end} positions are not placed inside same parent container.
 	 *
-	 * @param {core.treeView.Range} range Range to wrap.
-	 * @param {core.treeView.Element} attribute Attribute element to use as wrapper.
+	 * @param {engine.treeView.Range} range Range to wrap.
+	 * @param {engine.treeView.Element} attribute Attribute element to use as wrapper.
 	 * @param {Number} priority Priority to set.
 	 */
 	wrap( range, attribute, priority ) {
@@ -461,11 +461,11 @@ import CKEditorError from '../../utils/ckeditorerror.js';
 	 * Unwraps nodes within provided range from attribute element.
 	 *
 	 * Throws {@link utils.CKEditorError CKEditorError} `treeview-writer-invalid-range-container` when
-	 * {@link core.treeView.Range#start start} and {@link core.treeView.Range#end end} positions are not placed inside
+	 * {@link engine.treeView.Range#start start} and {@link engine.treeView.Range#end end} positions are not placed inside
 	 * same parent container.
 	 *
-	 * @param {core.treeView.Range} range
-	 * @param {core.treeView.Element} element
+	 * @param {engine.treeView.Range} range
+	 * @param {engine.treeView.Element} element
 	 */
 	unwrap( range, attribute ) {
 		// Range should be placed inside one container.
@@ -507,11 +507,11 @@ import CKEditorError from '../../utils/ckeditorerror.js';
 // `startOffset` and `endOffset` will be unwrapped.
 //
 // @private
-// @param {core.treeView.Writer} writer
-// @param {core.treeView.Element} parent
+// @param {engine.treeView.Writer} writer
+// @param {engine.treeView.Element} parent
 // @param {Number} startOffset
 // @param {Number} endOffset
-// @param {core.treeView.Element} attribute
+// @param {engine.treeView.Element} attribute
 function unwrapChildren( writer, parent, startOffset, endOffset, attribute ) {
 	let i = startOffset;
 	const unwrapPositions = [];
@@ -576,11 +576,11 @@ function unwrapChildren( writer, parent, startOffset, endOffset, attribute ) {
 // `startOffset` and `endOffset` will be wrapped.
 
 // @private
-// @param {core.treeView.Writer} writer
-// @param {core.treeView.Element} parent
+// @param {engine.treeView.Writer} writer
+// @param {engine.treeView.Element} parent
 // @param {Number} startOffset
 // @param {Number} endOffset
-// @param {core.treeView.Element} attribute
+// @param {engine.treeView.Element} attribute
 function wrapChildren( writer, parent, startOffset, endOffset, attribute ) {
 	let i = startOffset;
 	const wrapPositions = [];

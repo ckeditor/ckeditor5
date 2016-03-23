@@ -7,8 +7,8 @@
 
 'use strict';
 
-import TreeView from '/ckeditor5/core/treeview/treeview.js';
-import TreeElement from '/ckeditor5/core/treeview/element.js';
+import TreeView from '/ckeditor5/engine/treeview/treeview.js';
+import TreeElement from '/ckeditor5/engine/treeview/element.js';
 
 describe( 'TreeView integration', () => {
 	it( 'should remove content of the DOM', () => {

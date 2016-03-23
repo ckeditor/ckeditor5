@@ -15,13 +15,13 @@ import utils from '../../utils/utils.js';
 /**
  * TreeView class creates an abstract layer over the content editable area.
  * It combines the actual tree of view elements, tree of DOM elements,
- * {@link core.treeView.DomConverter DOM Converter}, {@link core.treeView.Renderer renderer} and all
- * {@link core.treeView.Observer observers}.
+ * {@link engine.treeView.DomConverter DOM Converter}, {@link engine.treeView.Renderer renderer} and all
+ * {@link engine.treeView.Observer observers}.
  *
  * If you want to only transform the tree of view elements to the DOM elements you can use the
- * {@link core.treeView.DomConverter DomConverter}.
+ * {@link engine.treeView.DomConverter DomConverter}.
  *
- * @memberOf core.treeView
+ * @memberOf engine.treeView
  * @mixes utils.EmitterMixin
  */
 export default class TreeView {
@@ -33,7 +33,7 @@ export default class TreeView {
 		 * Roots of the DOM tree. Map on the `HTMLElement`s with roots names as keys.
 		 *
 		 * @readonly
-		 * @member {Map} core.treeView.TreeView#domRoots
+		 * @member {Map} engine.treeView.TreeView#domRoots
 		 */
 		this.domRoots = new Map();
 
@@ -41,55 +41,55 @@ export default class TreeView {
 		 * Tree View writer.
 		 *
 		 * @readonly
-		 * @member {core.treeView.Writer} core.treeView.TreeView#writer
+		 * @member {engine.treeView.Writer} engine.treeView.TreeView#writer
 		 */
 		this.writer = new Writer();
 
 		/**
-		 * Instance of the {@link core.treeView.DomConverter domConverter} use by
-		 * {@link core.treeView.TreeView#renderer renderer} and {@link core.treeView.observer.Observer observers}.
+		 * Instance of the {@link engine.treeView.DomConverter domConverter} use by
+		 * {@link engine.treeView.TreeView#renderer renderer} and {@link engine.treeView.observer.Observer observers}.
 		 *
 		 * @readonly
-		 * @member {core.treeView.DomConverter} core.treeView.TreeView#domConverter
+		 * @member {engine.treeView.DomConverter} engine.treeView.TreeView#domConverter
 		 */
 		this.domConverter = new DomConverter();
 
 		/**
-		 * Roots of the view tree. Map of the {core.treeView.Element view elements} with roots names as keys.
+		 * Roots of the view tree. Map of the {engine.treeView.Element view elements} with roots names as keys.
 		 *
 		 * @readonly
-		 * @member {Map} core.treeView.TreeView#viewRoots
+		 * @member {Map} engine.treeView.TreeView#viewRoots
 		 */
 		this.viewRoots = new Map();
 
 		/**
-		 * Instance of the {@link core.treeView.TreeView#renderer renderer}.
+		 * Instance of the {@link engine.treeView.TreeView#renderer renderer}.
 		 *
 		 * @readonly
-		 * @member {core.treeView.Renderer} core.treeView.TreeView#renderer
+		 * @member {engine.treeView.Renderer} engine.treeView.TreeView#renderer
 		 */
 		this.renderer = new Renderer( this.domConverter );
 
 		/**
-		 * Set of registered {@link core.treeView.Observer observers}.
+		 * Set of registered {@link engine.treeView.Observer observers}.
 		 *
 		 * @protected
-		 * @member {Set.<core.treeView.Observer>} core.treeView.TreeView_#observers
+		 * @member {Set.<engine.treeView.Observer>} engine.treeView.TreeView_#observers
 		 */
 		this._observers = new Set();
 	}
 
 	/**
-	 * Creates observer of the given type if not yet created, {@link core.treeView.Observer#enable enables} it
-	 * and {@link core.treeView.observer.Observer#observe attaches} to all existing and future
-	 * {@link core.treeView.TreeView#domRoots DOM roots}.
+	 * Creates observer of the given type if not yet created, {@link engine.treeView.Observer#enable enables} it
+	 * and {@link engine.treeView.observer.Observer#observe attaches} to all existing and future
+	 * {@link engine.treeView.TreeView#domRoots DOM roots}.
 	 *
 	 * Note: Observers are recognized by their constructor (classes). A single observer will be instantiated and used only
 	 * when registered for the first time. This means that features and other components can register a single observer
 	 * multiple times without caring whether it has been already added or not.
 	 *
 	 * @param {Function} Observer The constructor of an observer to add.
-	 * Should create an instance inheriting from {@link core.treeView.observer.Observer}.
+	 * Should create an instance inheriting from {@link engine.treeView.observer.Observer}.
 	 */
 	addObserver( Observer ) {
 		if ( this._hasObserver( Observer ) ) {
@@ -108,17 +108,17 @@ export default class TreeView {
 	}
 
 	/**
-	 * Creates a root for the HTMLElement. It adds elements to {@link core.treeView.TreeView#domRoots} and
-	 * {@link core.treeView.TreeView#viewRoots}.
+	 * Creates a root for the HTMLElement. It adds elements to {@link engine.treeView.TreeView#domRoots} and
+	 * {@link engine.treeView.TreeView#viewRoots}.
 	 *
 	 * The constructor copies the element name and attributes to create the
 	 * root of the view, but does not copy its children. This means that while
-	 * {@link core.treeView.TreeView#render rendering}, the whole content of this
+	 * {@link engine.treeView.TreeView#render rendering}, the whole content of this
 	 * root element will be removed but the root name and attributes will be preserved.
 	 *
 	 * @param {HTMLElement} domRoot DOM element in which the tree view should do change.
 	 * @param {String} name Name of the root.
-	 * @returns {core.treeView.element} The created view root element.
+	 * @returns {engine.treeView.element} The created view root element.
 	 */
 	createRoot( domRoot, name ) {
 		const viewRoot = this.domConverter.domToView( domRoot, { bind: true, withChildren: false } );
@@ -178,5 +178,5 @@ utils.mix( TreeView, EmitterMixin );
  * * `ATTRIBUTES` - for element attributes changes,
  * * `TEXT` - for text nodes changes.
  *
- * @typedef {String} core.treeView.ChangeType
+ * @typedef {String} engine.treeView.ChangeType
  */

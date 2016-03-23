@@ -11,24 +11,24 @@ import CKEditorError from '../../../utils/ckeditorerror.js';
 /**
  * Operation to change root element's attribute. Using this class you can add, remove or change value of the attribute.
  *
- * This operation is needed, because root elements can't be changed through {@link core.treeModel.operation.AttributeOperation}.
- * It is because {@link core.treeModel.operation.AttributeOperation} requires a range to change and root element can't
- * be a part of range because every {@link core.treeModel.Position} has to be inside a root. {@link core.treeModel.Position}
+ * This operation is needed, because root elements can't be changed through {@link engine.treeModel.operation.AttributeOperation}.
+ * It is because {@link engine.treeModel.operation.AttributeOperation} requires a range to change and root element can't
+ * be a part of range because every {@link engine.treeModel.Position} has to be inside a root. {@link engine.treeModel.Position}
  * can't be created before a root element.
  *
- * @memberOf core.treeModel.operation
- * @extends core.treeModel.operation.Operation
+ * @memberOf engine.treeModel.operation
+ * @extends engine.treeModel.operation.Operation
  */
 export default class RootAttributeOperation extends Operation {
 	/**
 	 * Creates an operation that changes, removes or adds attributes on root element.
 	 *
-	 * @see core.treeModel.operation.AttributeOperation
-	 * @param {core.treeModel.RootElement} root Root element to change.
+	 * @see engine.treeModel.operation.AttributeOperation
+	 * @param {engine.treeModel.RootElement} root Root element to change.
 	 * @param {String} key Key of an attribute to change or remove.
 	 * @param {*} oldValue Old value of the attribute with given key or `null` if adding a new attribute.
 	 * @param {*} newValue New value to set for the attribute. If `null`, then the operation just removes the attribute.
-	 * @param {Number} baseVersion {@link core.treeModel.Document#version} on which the operation can be applied.
+	 * @param {Number} baseVersion {@link engine.treeModel.Document#version} on which the operation can be applied.
 	 */
 	constructor( root, key, oldValue, newValue, baseVersion ) {
 		super( baseVersion );
@@ -37,7 +37,7 @@ export default class RootAttributeOperation extends Operation {
 		 * Root element to change.
 		 *
 		 * @readonly
-		 * @member {core.treeModel.RootElement} core.treeModel.operation.RootAttributeOperation#root
+		 * @member {engine.treeModel.RootElement} engine.treeModel.operation.RootAttributeOperation#root
 		 */
 		this.root = root;
 
@@ -45,7 +45,7 @@ export default class RootAttributeOperation extends Operation {
 		 * Key of an attribute to change or remove.
 		 *
 		 * @readonly
-		 * @member {String} core.treeModel.operation.RootAttributeOperation#key
+		 * @member {String} engine.treeModel.operation.RootAttributeOperation#key
 		 */
 		this.key = key;
 
@@ -53,7 +53,7 @@ export default class RootAttributeOperation extends Operation {
 		 * Old value of the attribute with given key or `null` if adding a new attribute.
 		 *
 		 * @readonly
-		 * @member {*} core.treeModel.operation.RootAttributeOperation#oldValue
+		 * @member {*} engine.treeModel.operation.RootAttributeOperation#oldValue
 		 */
 		this.oldValue = oldValue;
 
@@ -61,7 +61,7 @@ export default class RootAttributeOperation extends Operation {
 		 * New value to set for the attribute. If `null`, then the operation just removes the attribute.
 		 *
 		 * @readonly
-		 * @member {*} core.treeModel.operation.RootAttributeOperation#newValue
+		 * @member {*} engine.treeModel.operation.RootAttributeOperation#newValue
 		 */
 		this.newValue = newValue;
 	}
@@ -71,14 +71,14 @@ export default class RootAttributeOperation extends Operation {
 	}
 
 	/**
-	 * @returns {core.treeModel.operation.RootAttributeOperation}
+	 * @returns {engine.treeModel.operation.RootAttributeOperation}
 	 */
 	clone() {
 		return new RootAttributeOperation( this.root, this.key, this.oldValue, this.newValue, this.baseVersion );
 	}
 
 	/**
-	 * @returns {core.treeModel.operation.RootAttributeOperation}
+	 * @returns {engine.treeModel.operation.RootAttributeOperation}
 	 */
 	getReversed() {
 		return new RootAttributeOperation( this.root, this.key, this.newValue, this.oldValue, this.baseVersion + 1 );
@@ -90,7 +90,7 @@ export default class RootAttributeOperation extends Operation {
 			 * The attribute which should be removed does not exists for the given node.
 			 *
 			 * @error operation-rootattribute-no-attr-to-remove
-			 * @param {core.treeModel.RootElement} root
+			 * @param {engine.treeModel.RootElement} root
 			 * @param {String} key
 			 * @param {*} value
 			 */
@@ -105,7 +105,7 @@ export default class RootAttributeOperation extends Operation {
 			 * The attribute with given key already exists for the given node.
 			 *
 			 * @error operation-rootattribute-attr-exists
-			 * @param {core.treeModel.RootElement} root
+			 * @param {engine.treeModel.RootElement} root
 			 * @param {String} key
 			 */
 			throw new CKEditorError(

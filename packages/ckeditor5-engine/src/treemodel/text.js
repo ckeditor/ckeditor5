@@ -8,12 +8,12 @@
 import utils from '../../utils/utils.js';
 
 /**
- * Data structure for text with attributes. Note that `Text` is not a {@link core.treeModel.Node}. This class is used
+ * Data structure for text with attributes. Note that `Text` is not a {@link engine.treeModel.Node}. This class is used
  * as an aggregator for multiple characters that have same attributes. Example usage:
  *
  *		let myElem = new Element( 'li', [], new Text( 'text with attributes', { foo: true, bar: true } ) );
  *
- * @memberOf core.treeModel
+ * @memberOf engine.treeModel
  */
 export default class Text {
 	/**
@@ -27,7 +27,7 @@ export default class Text {
 		 * Text.
 		 *
 		 * @readonly
-		 * @member {String} core.treeModel.Text#text
+		 * @member {String} engine.treeModel.Text#text
 		 */
 		this.text = text || '';
 
@@ -35,7 +35,7 @@ export default class Text {
 		 * List of attributes bound with the text.
 		 *
 		 * @protected
-		 * @member {Map} core.treeModel.Text#_attrs
+		 * @member {Map} engine.treeModel.Text#_attrs
 		 */
 		this._attrs = utils.toMap( attrs );
 	}

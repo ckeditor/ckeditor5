@@ -4,17 +4,17 @@
  */
 
 'use strict';
-import Range from '/ckeditor5/core/treeview/range.js';
-import Position from '/ckeditor5/core/treeview/position.js';
+import Range from '/ckeditor5/engine/treeview/range.js';
+import Position from '/ckeditor5/engine/treeview/position.js';
 
 const utils = {
 	/**
 	 * Helper function that is used to create treeView elements from description object.
 	 *
-	 * @param {core.treeView.Writer} writer Writer instance. Used to set priorities.
+	 * @param {engine.treeView.Writer} writer Writer instance. Used to set priorities.
 	 * @param {Object} description Description object.
-	 * @param {core.treeView.Range} [range] Optional parameter, used in recurrent calls.
-	 * @param {core.treeView.Position} [position] Optional parameter, used in recurrent calls.
+	 * @param {engine.treeView.Range} [range] Optional parameter, used in recurrent calls.
+	 * @param {engine.treeView.Position} [position] Optional parameter, used in recurrent calls.
 	 * @returns {Object} Returns object with `node`, `range`, `position` fields, containing created node and, optionally
 	 * range and position if description object contain information about them.
 	 */
@@ -98,10 +98,10 @@ const utils = {
 	 * 		}
 	 *
 	 *
-	 * @param {core.treeView.Writer} writer Writer instance. Used to test priority.
-	 * @param {core.treeView.Range|core.treeView.Position } location Range instance or Position instance.
+	 * @param {engine.treeView.Writer} writer Writer instance. Used to test priority.
+	 * @param {engine.treeView.Range|engine.treeView.Position } location Range instance or Position instance.
 	 * Treated as Range when when `rangeStart`, `rangeEnd` is used, treated as Position when `position` is used.
-	 * @param {core.treeView.Node} node Element to check.
+	 * @param {engine.treeView.Node} node Element to check.
 	 * @param {Object} description Object describing expected element and its children.
 	 */
 	test( writer, location, node, description ) {

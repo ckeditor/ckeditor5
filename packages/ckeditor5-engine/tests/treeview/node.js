@@ -7,8 +7,8 @@
 
 'use strict';
 
-import Element from '/ckeditor5/core/treeview/element.js';
-import Text from '/ckeditor5/core/treeview/text.js';
+import Element from '/ckeditor5/engine/treeview/element.js';
+import Text from '/ckeditor5/engine/treeview/text.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'Node', () => {

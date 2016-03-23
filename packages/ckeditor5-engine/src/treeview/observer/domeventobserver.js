@@ -9,12 +9,12 @@ import Observer from './observer.js';
 
 /**
  * Base class for DOM event observers. This class handles
- * {@link core.treeView.observer.Observer#observe adding} listeners to DOM elements,
- * {@link core.treeView.observer.Observer#disable disabling} and
- * {@link core.treeView.observer.Observer#enable re-enabling} events.
+ * {@link engine.treeView.observer.Observer#observe adding} listeners to DOM elements,
+ * {@link engine.treeView.observer.Observer#disable disabling} and
+ * {@link engine.treeView.observer.Observer#enable re-enabling} events.
  * Child class needs to define
- * {@link core.treeView.observer.DomEventObserver#domEventType DOM event type} and
- * {@link core.treeView.observer.DomEventObserver#onDomEvent callback}.
+ * {@link engine.treeView.observer.DomEventObserver#domEventType DOM event type} and
+ * {@link engine.treeView.observer.DomEventObserver#onDomEvent callback}.
  *
  * For instance:
  *
@@ -29,8 +29,8 @@ import Observer from './observer.js';
  *			}
  *		}
  *
- * @memberOf core.treeView.observer
- * @extends core.treeView.observer.Observer
+ * @memberOf engine.treeView.observer
+ * @extends engine.treeView.observer.Observer
  */
 export default class DomEventObserver extends Observer {
 	constructor( treeView ) {
@@ -41,17 +41,17 @@ export default class DomEventObserver extends Observer {
 		 * if the obsever should listen to multiple DOM events.
 		 *
 		 * @readonly
-		 * @member {String|Array.<String>} core.treeView.observer.DomEventObserver#domEventType
+		 * @member {String|Array.<String>} engine.treeView.observer.DomEventObserver#domEventType
 		 */
 	}
 
 	/**
 	 * Callback which should be called when the DOM event occurred. Note that the callback will not be called if
-	 * observer {@link core.treeView.observer.DomEventObserver#isEnabled is not enabled}.
+	 * observer {@link engine.treeView.observer.DomEventObserver#isEnabled is not enabled}.
 	 *
-	 * @see core.treeView.observer.DomEventObserver#domEventType
+	 * @see engine.treeView.observer.DomEventObserver#domEventType
 	 * @abstract
-	 * @method core.treeView.observer.DomEventObserver#onDomEvent
+	 * @method engine.treeView.observer.DomEventObserver#onDomEvent
 	 */
 
 	/**
@@ -66,11 +66,11 @@ export default class DomEventObserver extends Observer {
 	}
 
 	/**
-	 * Calls {@link core.treeView.TreeView#fire} if observer
-	 * {@link core.treeView.observer.DomEventObserver#isEnabled is enabled}.
+	 * Calls {@link engine.treeView.TreeView#fire} if observer
+	 * {@link engine.treeView.observer.DomEventObserver#isEnabled is enabled}.
 	 *
-	 * @see core.treeView.TreeView#fire
-	 * @param {...*} args Fire arguments {@link core.treeView.TreeView#fire}.
+	 * @see engine.treeView.TreeView#fire
+	 * @param {...*} args Fire arguments {@link engine.treeView.TreeView#fire}.
 	 */
 	fire( ...args ) {
 		if ( this.isEnabled ) {

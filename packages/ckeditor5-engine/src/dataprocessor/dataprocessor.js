@@ -8,13 +8,13 @@
  * Each data processor implements a certain format of the data. E.g. `MarkdownDataProcessor` will convert the data
  * (Markdown string) to a DocumentFragment and back.
  *
- * @interface core.dataProcessor.DataProcessor
+ * @interface engine.dataProcessor.DataProcessor
  */
 
 /**
  * Converts a DocumentFragment to data.
  *
- * @method core.dataProcessor.DataProcessor#toData
+ * @method engine.dataProcessor.DataProcessor#toData
  * @param {DocumentFragment} fragment DocumentFragment to be processed.
  * @returns {*}
  */
@@ -22,7 +22,7 @@
 /**
  * Converts data to a DocumentFragment.
  *
- * @method core.dataProcessor.DataProcessor#toDom
+ * @method engine.dataProcessor.DataProcessor#toDom
  * @param {*} data Data to be processed.
  * @returns {DocumentFragment}
  */

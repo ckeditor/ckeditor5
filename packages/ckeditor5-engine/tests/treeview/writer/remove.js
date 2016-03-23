@@ -7,11 +7,11 @@
 
 'use strict';
 
-import Writer from '/ckeditor5/core/treeview/writer.js';
-import Element from '/ckeditor5/core/treeview/element.js';
-import Range from '/ckeditor5/core/treeview/range.js';
-import Text from '/ckeditor5/core/treeview/text.js';
-import utils from '/tests/core/treeview/writer/_utils/utils.js';
+import Writer from '/ckeditor5/engine/treeview/writer.js';
+import Element from '/ckeditor5/engine/treeview/element.js';
+import Range from '/ckeditor5/engine/treeview/range.js';
+import Text from '/ckeditor5/engine/treeview/text.js';
+import utils from '/tests/engine/treeview/writer/_utils/utils.js';
 
 describe( 'Writer', () => {
 	const create = utils.create;

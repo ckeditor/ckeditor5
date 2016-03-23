@@ -16,26 +16,26 @@ import utils from '../../utils/utils.js';
 const storePrefix = 'selection:';
 
 /**
- * Represents a selection that is made on nodes in {@link core.treeModel.Document}. `Selection` instance is
- * created by {@link core.treeModel.Document}. You should not need to create an instance of `Selection`.
+ * Represents a selection that is made on nodes in {@link engine.treeModel.Document}. `Selection` instance is
+ * created by {@link engine.treeModel.Document}. You should not need to create an instance of `Selection`.
  *
  * Keep in mind that selection always contains at least one range. If no ranges has been added to selection or all ranges
- * got removed from selection, the selection will be reset to contain {@link core.treeModel.Selection#_getDefaultRange the default range}.
+ * got removed from selection, the selection will be reset to contain {@link engine.treeModel.Selection#_getDefaultRange the default range}.
  *
- * @memberOf core.treeModel
+ * @memberOf engine.treeModel
  */
 export default class Selection {
 	/**
 	 * Creates an empty selection.
 	 *
-	 * @param {core.treeModel.Document} document Document which owns this selection.
+	 * @param {engine.treeModel.Document} document Document which owns this selection.
 	 */
 	constructor( document ) {
 		/**
 		 * List of attributes set on current selection.
 		 *
 		 * @protected
-		 * @member {Map} core.treeModel.Selection#_attrs
+		 * @member {Map} engine.treeModel.Selection#_attrs
 		 */
 		this._attrs = new Map();
 
@@ -43,7 +43,7 @@ export default class Selection {
 		 * Document which owns this selection.
 		 *
 		 * @private
-		 * @member {core.treeModel.Document} core.treeModel.Selection#_document
+		 * @member {engine.treeModel.Document} engine.treeModel.Selection#_document
 		 */
 		this._document = document;
 
@@ -51,7 +51,7 @@ export default class Selection {
 		 * Specifies whether the last added range was added as a backward or forward range.
 		 *
 		 * @private
-		 * @member {Boolean} core.treeModel.Selection#_lastRangeBackward
+		 * @member {Boolean} engine.treeModel.Selection#_lastRangeBackward
 		 */
 		this._lastRangeBackward = false;
 
@@ -59,19 +59,19 @@ export default class Selection {
 		 * Stores all ranges that are selected.
 		 *
 		 * @private
-		 * @member {Array.<core.treeModel.LiveRange>} core.treeModel.Selection#_ranges
+		 * @member {Array.<engine.treeModel.LiveRange>} engine.treeModel.Selection#_ranges
 		 */
 		this._ranges = [];
 	}
 
 	/**
 	 * Selection anchor. Anchor may be described as a position where the selection starts. Together with
-	 * {@link core.treeModel.Selection#focus} they define the direction of selection, which is important
+	 * {@link engine.treeModel.Selection#focus} they define the direction of selection, which is important
 	 * when expanding/shrinking selection. Anchor is always the start or end of the most recent added range.
 	 * It may be a bit unintuitive when there are multiple ranges in selection.
 	 *
-	 * @see core.treeModel.Selection#focus
-	 * @type {core.treeModel.LivePosition}
+	 * @see engine.treeModel.Selection#focus
+	 * @type {engine.treeModel.LivePosition}
 	 */
 	get anchor() {
 		let range = this._ranges.length ? this._ranges[ this._ranges.length - 1 ] : this._getDefaultRange();
@@ -82,8 +82,8 @@ export default class Selection {
 	/**
 	 * Selection focus. Focus is a position where the selection ends.
 	 *
-	 * @see core.treeModel.Selection#anchor
-	 * @type {core.treeModel.LivePosition}
+	 * @see engine.treeModel.Selection#anchor
+	 * @type {engine.treeModel.LivePosition}
 	 */
 	get focus() {
 		let range = this._ranges.length ? this._ranges[ this._ranges.length - 1 ] : this._getDefaultRange();
@@ -107,16 +107,16 @@ export default class Selection {
 	}
 
 	/**
-	 * Adds a range to the selection. Added range is copied and converted to {@link core.treeModel.LiveRange}. This means
+	 * Adds a range to the selection. Added range is copied and converted to {@link engine.treeModel.LiveRange}. This means
 	 * that passed range is not saved in the Selection instance and you can safely operate on it.
 	 *
 	 * Accepts a flag describing in which way the selection is made - passed range might be selected from
-	 * {@link core.treeModel.Range#start} to {@link core.treeModel.Range#end} or from {@link core.treeModel.Range#end}
-	 * to {@link core.treeModel.Range#start}. The flag is used to set {@link core.treeModel.Selection#anchor} and
-	 * {@link core.treeModel.Selection#focus} properties.
+	 * {@link engine.treeModel.Range#start} to {@link engine.treeModel.Range#end} or from {@link engine.treeModel.Range#end}
+	 * to {@link engine.treeModel.Range#start}. The flag is used to set {@link engine.treeModel.Selection#anchor} and
+	 * {@link engine.treeModel.Selection#focus} properties.
 	 *
-	 * @fires {@link core.treeModel.Selection#change:range change:range}
-	 * @param {core.treeModel.Range} range Range to add.
+	 * @fires {@link engine.treeModel.Selection#change:range change:range}
+	 * @param {engine.treeModel.Range} range Range to add.
 	 * @param {Boolean} [isBackward] Flag describing if added range was selected forward - from start to end (`false`)
 	 * or backward - from end to start (`true`). Defaults to `false`.
 	 */
@@ -147,11 +147,11 @@ export default class Selection {
 	}
 
 	/**
-	 * Returns the first range in the selection. First range is the one which {@link core.treeModel.Range#start start} position
-	 * {@link core.treeModel.Position#isBefore is before} start position of all other ranges (not to confuse with the first range
+	 * Returns the first range in the selection. First range is the one which {@link engine.treeModel.Range#start start} position
+	 * {@link engine.treeModel.Position#isBefore is before} start position of all other ranges (not to confuse with the first range
 	 * added to the selection).
 	 *
-	 * @returns {core.treeModel.Range}
+	 * @returns {engine.treeModel.Range}
 	 */
 	getFirstRange() {
 		let first = null;
@@ -168,10 +168,10 @@ export default class Selection {
 	}
 
 	/**
-	 * Returns the first position in the selection. First position is the position that {@link core.treeModel.Position#isBefore is before}
+	 * Returns the first position in the selection. First position is the position that {@link engine.treeModel.Position#isBefore is before}
 	 * any other position in the selection ranges.
 	 *
-	 * @returns {core.treeModel.Position}
+	 * @returns {engine.treeModel.Position}
 	 */
 	getFirstPosition() {
 		return Position.createFromPosition( this.getFirstRange().start );
@@ -180,7 +180,7 @@ export default class Selection {
 	/**
 	 * Removes all ranges that were added to the selection. Fires update event.
 	 *
-	 * @fires {@link core.treeModel.Selection#change:range change:range}
+	 * @fires {@link engine.treeModel.Selection#change:range change:range}
 	 */
 	removeAllRanges() {
 		this.destroy();
@@ -194,8 +194,8 @@ export default class Selection {
 	 * is treated like the last added range and is used to set {@link #anchor} and {@link #focus}. Accepts a flag
 	 * describing in which way the selection is made (see {@link #addRange}).
 	 *
-	 * @fires {@link core.treeModel.Selection#change:range change:range}
-	 * @param {Array.<core.treeModel.Range>} newRanges Array of ranges to set.
+	 * @fires {@link engine.treeModel.Selection#change:range change:range}
+	 * @param {Array.<engine.treeModel.Range>} newRanges Array of ranges to set.
 	 * @param {Boolean} [isLastBackward] Flag describing if last added range was selected forward - from start to end (`false`)
 	 * or backward - from end to start (`true`). Defaults to `false`.
 	 */
@@ -215,7 +215,7 @@ export default class Selection {
 	/**
 	 * Removes all attributes from the selection.
 	 *
-	 * @fires {@link core.treeModel.Selection#change:range change:range}
+	 * @fires {@link engine.treeModel.Selection#change:range change:range}
 	 */
 	clearAttributes() {
 		this._attrs.clear();
@@ -256,7 +256,7 @@ export default class Selection {
 	/**
 	 * Removes an attribute with given key from the selection.
 	 *
-	 * @fires {@link core.treeModel.Selection#change:range change:range}
+	 * @fires {@link engine.treeModel.Selection#change:range change:range}
 	 * @param {String} key Key of attribute to remove.
 	 */
 	removeAttribute( key ) {
@@ -269,7 +269,7 @@ export default class Selection {
 	/**
 	 * Sets attribute on the selection. If attribute with the same key already is set, it overwrites its values.
 	 *
-	 * @fires {@link core.treeModel.Selection#change:range change:range}
+	 * @fires {@link engine.treeModel.Selection#change:range change:range}
 	 * @param {String} key Key of attribute to set.
 	 * @param {*} value Attribute value.
 	 */
@@ -283,7 +283,7 @@ export default class Selection {
 	/**
 	 * Removes all attributes from the selection and sets given attributes.
 	 *
-	 * @fires {@link core.treeModel.Selection#change:range change:range}
+	 * @fires {@link engine.treeModel.Selection#change:range change:range}
 	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set.
 	 */
 	setAttributesTo( attrs ) {
@@ -294,11 +294,11 @@ export default class Selection {
 	}
 
 	/**
-	 * Converts given range to {@link core.treeModel.LiveRange} and adds it to internal ranges array. Throws an error
+	 * Converts given range to {@link engine.treeModel.LiveRange} and adds it to internal ranges array. Throws an error
 	 * if given range is intersecting with any range that is already stored in this selection.
 	 *
 	 * @private
-	 * @param {core.treeModel.Range} range Range to add.
+	 * @param {engine.treeModel.Range} range Range to add.
 	 */
 	_pushRange( range ) {
 		for ( let i = 0; i < this._ranges.length ; i++ ) {
@@ -307,8 +307,8 @@ export default class Selection {
 				 * Trying to add a range that intersects with another range from selection.
 				 *
 				 * @error selection-range-intersects
-				 * @param {core.treeModel.Range} addedRange Range that was added to the selection.
-				 * @param {core.treeModel.Range} intersectingRange Range from selection that intersects with `addedRange`.
+				 * @param {engine.treeModel.Range} addedRange Range that was added to the selection.
+				 * @param {engine.treeModel.Range} intersectingRange Range from selection that intersects with `addedRange`.
 				 */
 				throw new CKEditorError(
 					'selection-range-intersects: Trying to add a range that intersects with another range from selection.',
@@ -487,12 +487,12 @@ export default class Selection {
 
 	/**
 	 * Returns a default range for this selection. The default range is a collapsed range that starts and ends
-	 * at the beginning of this selection's document {@link core.treeModel.Document#_getDefaultRoot default root}.
+	 * at the beginning of this selection's document {@link engine.treeModel.Document#_getDefaultRoot default root}.
 	 * This "artificial" range is important for algorithms that base on selection, so they won't break or need
 	 * special logic if there are no real ranges in the selection.
 	 *
 	 * @private
-	 * @returns {core.treeModel.Range}
+	 * @returns {engine.treeModel.Range}
 	 */
 	_getDefaultRange() {
 		const defaultRoot = this._document._getDefaultRoot();
@@ -514,14 +514,14 @@ export default class Selection {
 utils.mix( Selection, EmitterMixin );
 
 /**
- * Fired whenever selection ranges are changed through {@link core.treeModel.Selection Selection API}. Not fired when
- * {@link core.treeModel.LiveRange live ranges} inserted in selection change because of Tree Model changes.
+ * Fired whenever selection ranges are changed through {@link engine.treeModel.Selection Selection API}. Not fired when
+ * {@link engine.treeModel.LiveRange live ranges} inserted in selection change because of Tree Model changes.
  *
- * @event core.treeModel.Selection#change:range
+ * @event engine.treeModel.Selection#change:range
  */
 
 /**
  * Fired whenever selection attributes are changed.
  *
- * @event core.treeModel.Selection#change:attribute
+ * @event engine.treeModel.Selection#change:attribute
  */

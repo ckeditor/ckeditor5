@@ -7,8 +7,8 @@
 
 'use strict';
 
-import FocusObserver from '/ckeditor5/core/treeview/observer/focusobserver.js';
-import TreeView from '/ckeditor5/core/treeview/treeview.js';
+import FocusObserver from '/ckeditor5/engine/treeview/observer/focusobserver.js';
+import TreeView from '/ckeditor5/engine/treeview/treeview.js';
 
 describe( 'FocusObserver', () => {
 	let treeView, viewBody, observer;

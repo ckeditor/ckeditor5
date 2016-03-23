@@ -17,16 +17,16 @@ import CKEditorError from '../../../utils/ckeditorerror.js';
 
 /**
  * @classdesc
- * To provide specific OT behavior and better collisions solving, {@link core.treeModel.Batch#merge} method
+ * To provide specific OT behavior and better collisions solving, {@link engine.treeModel.Batch#merge} method
  * uses the `WrapDelta` class which inherits from the `Delta` class and may overwrite some methods.
  *
- * @memberOf core.treeModel.delta
+ * @memberOf engine.treeModel.delta
  */
 export default class WrapDelta extends Delta {
 	/**
 	 * Range to wrap or `null` if there are no operations in the delta.
 	 *
-	 * @type {core.treeModel.Range|null}
+	 * @type {engine.treeModel.Range|null}
 	 */
 	get range() {
 		let moveOp = this._moveOperation;
@@ -49,7 +49,7 @@ export default class WrapDelta extends Delta {
 	 * Operation that inserts wrapping element or `null` if there are no operations in the delta.
 	 *
 	 * @protected
-	 * @type {core.treeModel.operation.InsertOperation|core.treeModel.operation.ReinsertOperation}
+	 * @type {engine.treeModel.operation.InsertOperation|engine.treeModel.operation.ReinsertOperation}
 	 */
 	get _insertOperation() {
 		return this.operations[ 0 ] || null;
@@ -59,14 +59,14 @@ export default class WrapDelta extends Delta {
 	 * Operation that moves wrapped nodes to their new parent or `null` if there are no operations in the delta.
 	 *
 	 * @protected
-	 * @type {core.treeModel.operation.MoveOperation|null}
+	 * @type {engine.treeModel.operation.MoveOperation|null}
 	 */
 	get _moveOperation() {
 		return this.operations[ 1 ] || null;
 	}
 
 	/**
-	 * @see core.treeModel.delta.Delta#_reverseDeltaClass
+	 * @see engine.treeModel.delta.Delta#_reverseDeltaClass
 	 * @private
 	 * @type {Object}
 	 */
@@ -81,12 +81,12 @@ export default class WrapDelta extends Delta {
 
 /**
  * Wraps given range with given element or with a new element of specified name if string has been passed.
- * **Note:** given range should be a "flat range" (see {@link core.treeModel.Range#isFlat}). If not, error will be thrown.
+ * **Note:** given range should be a "flat range" (see {@link engine.treeModel.Range#isFlat}). If not, error will be thrown.
  *
  * @chainable
- * @method core.treeModel.Batch#wrap
- * @param {core.treeModel.Range} range Range to wrap.
- * @param {core.treeModel.Element|String} elementOrString Element or name of element to wrap the range with.
+ * @method engine.treeModel.Batch#wrap
+ * @param {engine.treeModel.Range} range Range to wrap.
+ * @param {engine.treeModel.Element|String} elementOrString Element or name of element to wrap the range with.
  */
 register( 'wrap', function( range, elementOrString ) {
 	if ( !range.isFlat ) {
