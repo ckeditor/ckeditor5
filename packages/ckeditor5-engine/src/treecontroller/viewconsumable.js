@@ -55,7 +55,7 @@ class ViewElementConsumables {
 		if ( elementOnly ) {
 			this._canConsumeElement = false;
 
-			return true;
+			return;
 		}
 
 		for ( let type in consumables ) {
@@ -63,23 +63,19 @@ class ViewElementConsumables {
 				this._consume( type, consumables[ type ] );
 			}
 		}
-
-		return true;
 	}
 
 	_add( type, item ) {
 		const items = isArray( item ) ? item : [ item ];
 		const consumables = this._consumables[ type ];
 
-		if ( consumables ) {
-			for ( let name of items ) {
-				if ( type === 'attribute' && ( name === 'class' || name === 'style' ) ) {
-					// TODO: comment error
-					throw new CKEditorError( 'viewconsumable-invalid-attribute: Classes and styles should be handled separately.' );
-				}
-
-				consumables.set( name, true );
+		for ( let name of items ) {
+			if ( type === 'attribute' && ( name === 'class' || name === 'style' ) ) {
+				// TODO: comment error
+				throw new CKEditorError( 'viewconsumable-invalid-attribute: Classes and styles should be handled separately.' );
 			}
+
+			consumables.set( name, true );
 		}
 	}
 
@@ -87,45 +83,34 @@ class ViewElementConsumables {
 		const items = isArray( item ) ? item : [ item ];
 		const consumables = this._consumables[ type ];
 
-		if ( consumables ) {
-			for ( let name of items ) {
-				if ( type === 'attribute' && ( name === 'class' || name === 'style' ) ) {
-					// TODO: comment error
-					throw new CKEditorError( 'viewconsumable-invalid-attribute: Classes and styles should be handled separately.' );
-				}
-
-				const value = consumables.get( name );
-
-				// Return null if attribute is not found.
-				if ( value === undefined ) {
-					return null;
-				}
-
-				if ( !value ) {
-					return false;
-				}
+		for ( let name of items ) {
+			if ( type === 'attribute' && ( name === 'class' || name === 'style' ) ) {
+				// TODO: comment error
+				throw new CKEditorError( 'viewconsumable-invalid-attribute: Classes and styles should be handled separately.' );
 			}
 
-			return true;
+			const value = consumables.get( name );
+
+			// Return null if attribute is not found.
+			if ( value === undefined ) {
+				return null;
+			}
+
+			if ( !value ) {
+				return false;
+			}
 		}
 
-		return false;
+		return true;
 	}
 
 	_consume( type, item ) {
 		const items = isArray( item ) ? item : [ item ];
-
-		if ( !this._test( type, items ) ) {
-			return false;
-		}
-
 		const consumables = this._consumables[ type ];
 
 		for ( let name of items ) {
 			consumables.set( name, false );
 		}
-
-		return true;
 	}
 }
 
@@ -165,9 +150,7 @@ export default class ViewConsumable {
 		}
 
 		for ( let item of description ) {
-			if ( !this._consumeOne( item ) ) {
-				return false;
-			}
+			this._consumeOne( item );
 		}
 
 		return true;
@@ -217,16 +200,14 @@ export default class ViewConsumable {
 
 	/**
 	 * Consume items provided within one description object.
-	 *
-	 * @param description
-	 * @returns {*}
 	 * @private
+	 * @param description
 	 */
 	_consumeOne( description ) {
 		const { element, includeElement } = getElement( description );
 		const elementConsumables = this._consumables.get( element );
 
-		return elementConsumables.consume( description, includeElement );
+		elementConsumables.consume( description, includeElement );
 	}
 }
 

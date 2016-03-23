@@ -311,5 +311,27 @@ describe( 'ViewConsumable', () => {
 			expect( consumed ).to.be.false;
 			expect( viewConsumable.test( { element: el, style: 'color' } ) ).to.be.true;
 		} );
+
+		it( 'should throw an error when element is not provided', () => {
+			expect( () => {
+				viewConsumable.consume( { style: 'color' } );
+			} ).to.throw( 'viewconsumable-element-missing' );
+		} );
+
+		it( 'should throw if class attribute is provided', () => {
+			viewConsumable.add( { element: el, class: 'foobar' } );
+
+			expect( () => {
+				viewConsumable.consume( { element: el, attribute: 'class' } );
+			} ).to.throw( 'viewconsumable-invalid-attribute' );
+		} );
+
+		it( 'should throw if style attribute is provided', () => {
+			viewConsumable.add( { element: el, style: 'color' } );
+
+			expect( () => {
+				viewConsumable.consume( { element: el, attribute: 'style' } );
+			} ).to.throw( 'viewconsumable-invalid-attribute' );
+		} );
 	} );
 } );
