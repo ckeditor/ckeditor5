@@ -1,0 +1,108 @@
+////
+/// @author CKSource - Frederico Knabben
+/// @group components
+/// @copyright Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+/// @license For licensing, see LICENSE.md or http://ckeditor.com/license
+////
+
+/// Implements button states.
+///
+/// @access public
+/// @param {String} $color - Background color of the button.
+@mixin ck-button-states( $color ) {
+	&:hover,
+	&:focus {
+		background: ck-color( $color, -10 );
+		border-color: ck-border-color( $color, -10 );
+	}
+
+	&:active {
+		background: ck-color( $color, -15 );
+		border-color: ck-border-color( $color, -15 );
+	}
+
+	&:focus,
+	&:active {
+		@include ck-focus-shadow();
+	}
+}
+
+/// Implements a button of given background color.
+///
+/// @access public
+/// @param {String} $color - Background color of the button.
+@mixin ck-button( $color ) {
+	background: ck-color( $color );
+	border: 1px solid ck-border-color( $color );
+	white-space: nowrap;
+	cursor: pointer;
+	vertical-align: middle;
+	line-height: $ck-icon-size / $ck-font-size-base;
+	padding: ck-spacing( 'small' ) ck-spacing();
+	position: relative;
+
+	@include ck-button-states( $color );
+}
+
+/// A helper to define button–specific icon styles.
+///
+/// @access public
+@mixin ck-button-icon {
+	[class*="ck-icon"] {
+		@content;
+	}
+}
+
+.ck-button,
+a.ck-button {
+	display: inline-block;
+	overflow: hidden;
+
+	@include ck-button( 'background' );
+	@include ck-rounded-corners();
+
+	&.ck-button-notext {
+		padding: ck-spacing( 'small' );
+
+		@include ck-button-icon {
+			margin-left: 0;
+			margin-right: 0;
+		}
+	}
+
+	&.ck-on {
+		@include ck-button( 'foreground' );
+	}
+
+	&-action {
+		text-shadow: 0 -1px ck-color( 'action', -20 );
+		color: ck-color();
+
+		@include ck-button( 'action' );
+
+		&:hover,
+		&:focus,
+		&:active {
+			text-shadow: 0 -1px ck-color( 'action', -40 );
+		}
+	}
+
+	&-bold {
+		font-weight: bold;
+	}
+
+	.ck-icon {
+		use,
+		use * {
+			color: inherit;
+		}
+
+		&-left {
+			margin-left: -#{ck-spacing( 'small' )};
+		}
+
+		&-right {
+			margin-right: -#{ck-spacing( 'small' )};
+		}
+	}
+}

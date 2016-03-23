@@ -1,0 +1,41 @@
+// Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+$ck-icon-size: 20px;
+
+#ck-sprite {
+	display: none;
+
+	* {
+		fill: currentColor; // needed by Webkit/Blink
+	}
+}
+
+.ck-icon {
+	min-width: $ck-icon-size;
+	min-height: $ck-icon-size;
+	width: #{$ck-icon-size / $ck-font-size-base}em;
+	height: #{$ck-icon-size / $ck-font-size-base}em;
+	font-size: 1em;
+	vertical-align: middle;
+	color: inherit;
+
+	&-left {
+		float: left;
+		margin-right: ck-spacing( 'small' );
+	}
+
+	&-right {
+		float: right;
+		margin-left: ck-spacing( 'small' );
+	}
+
+	* {
+		fill: currentColor; // needed by FF
+	}
+
+	use {
+		width: $ck-icon-size;
+		height: $ck-icon-size;
+	}
+}

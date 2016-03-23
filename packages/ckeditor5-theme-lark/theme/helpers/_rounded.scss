@@ -1,0 +1,11 @@
+// Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+$ck-border-radius: 3px !default;
+
+@mixin ck-rounded-corners() {
+	&.ck-rounded-corners,
+	.ck-rounded-corners & {
+		border-radius: $ck-border-radius;
+	}
+}

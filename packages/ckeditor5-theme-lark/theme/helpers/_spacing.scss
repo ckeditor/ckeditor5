@@ -1,0 +1,15 @@
+// Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+$ck-def-spacing: .8em !default;
+$ck-def-spacings: (
+	'large': 1.5,
+	'standard': 1,
+	'medium': .8,
+	'small': .5,
+	'tiny': .25
+);
+
+@function ck-spacing( $spacing: 'standard' ) {
+	@return $ck-def-spacing * map-get( $ck-def-spacings, $spacing );
+}

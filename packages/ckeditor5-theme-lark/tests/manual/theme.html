@@ -1,0 +1,222 @@
+<head>
+	<link rel="stylesheet" href="%APPS_DIR%ckeditor/build/amd/theme/ckeditor.css">
+	<style>
+		.wrappable {
+			white-space: initial;
+			line-height: 3em;
+		}
+
+		#button-responsive div > div {
+			font-size: 1.3em;
+			line-height: 2.8em;
+		}
+
+		#button-responsive div .ck-button {
+			font-size: inherit;
+		}
+
+		@keyframes icon-color-change {
+			0% {;
+				color: white;
+				background: orange;
+			}
+			50% {
+				color: orange;
+				background: white;
+			}
+			100% {
+				color: white;
+				background: orange;
+			}
+		}
+
+		#icon-color-change {
+			border: 0;
+			animation: icon-color-change 3s infinite;
+		}
+	</style>
+</head>
+
+<div id="editor"></div>
+
+<h2>Icon</h2>
+
+<p>Icons <svg class="ck-icon"><use xlink:href="#ck-icon-quote"></use></svg> and <svg class="ck-icon"><use xlink:href="#ck-icon-bold"></use></svg> in a plain paragraph.</p>
+<p style="color: red">Icons <svg class="ck-icon"><use xlink:href="#ck-icon-quote"></use></svg> follow the color of text.</p>
+<p id="icons"></p>
+
+<hr/>
+
+<h2>Button</h2>
+<h3>Button: Types</h3>
+
+<div class="ck-reset-all">
+	<button class="ck-button">A button</button>
+	<button class="ck-button ck-disabled">Disabled</button>
+	<button class="ck-button ck-button-active">On state</button>
+	<button class="ck-button ck-button-action">Action button</button>
+	<button class="ck-button ck-rounded-corners">Rounded corners</button>
+	<button class="ck-button ck-button-bold">Bold text</button>
+</div>
+
+<h3>Button: Icon</h3>
+<div class="ck-reset-all" >
+	<div id="button-icon"></div>
+
+	<br/>
+
+	<button class="ck-button">
+		<svg class="ck-icon ck-icon-left"><use xlink:href="#ck-icon-bold"></use></svg>
+		Icon to the left
+	</button>
+	<button class="ck-button">
+		<svg class="ck-icon ck-icon-right"><use xlink:href="#ck-icon-bold"></use></svg>
+		Icon to the right (RTL)
+	</button>
+	<button class="ck-button" style="border-radius: 100px; border: 0">
+		<svg class="ck-icon ck-icon-left"><use xlink:href="#ck-icon-image"></use></svg>
+		Custom style with icon
+	</button>
+
+	<br/>
+	<br/>
+
+	<button class="ck-button ck-disabled">
+		<svg class="ck-icon ck-icon-left"><use xlink:href="#ck-icon-bold"></use></svg>
+		Disabled with icon
+	</button>
+
+	<button class="ck-button ck-disabled ck-button-notext">
+		<svg class="ck-icon ck-icon-left"><use xlink:href="#ck-icon-bold"></use></svg>
+	</button>
+	<button id="icon-color-change" class="ck-button">
+		<svg class="ck-icon ck-icon-left"><use xlink:href="#ck-icon-bold"></use></svg>
+		Icon follows text color
+	</button>
+</div>
+
+<h3>Button: Responsive</h3>
+<div id="button-responsive" class="ck-reset-all">
+	<div>
+		<button class="ck-button">A button</button>
+		<button class="ck-button ck-button-action">
+			<svg class="ck-icon ck-icon-left"><use xlink:href="#ck-icon-image"></use></svg>
+			Image
+		</button>
+		<button class="ck-button">
+			<svg class="ck-icon ck-icon-left"><use xlink:href="#ck-icon-bold"></use></svg>
+		 	Bold
+		 </button>
+		<button class="ck-button ck-button-notext">
+			<svg class="ck-icon ck-icon-left"><use xlink:href="#ck-icon-link"></use></svg>
+		</button>
+		<button class="ck-button ck-button-notext">
+			<svg class="ck-icon ck-icon-left"><use xlink:href="#ck-icon-image"></use></svg>
+		</button>
+	</div>
+</div>
+
+<hr/>
+
+<h2>Toolbar</h2>
+
+<h3>Toolbar: Text</h3>
+<div class="ck-reset-all">
+	<div class="ck-toolbar">
+		Just text and some <svg class="ck-icon"><use xlink:href="#ck-icon-bold"></use></svg> icon.
+	</div>
+</div>
+
+<h3>Toolbar: Button</h3>
+<div class="ck-reset-all">
+	<div class="ck-toolbar">
+		<button class="ck-button">A button</button>
+		<button class="ck-button ck-disabled">Disabled button</button>
+		<button class="ck-button ck-button-active">Active button</button>
+		<button class="ck-button ck-button-notext">
+			<svg class="ck-icon ck-icon-left"><use xlink:href="#ck-icon-bold"></use></svg>
+		</button>
+		<button class="ck-button ck-button-notext">
+			<svg class="ck-icon ck-icon-left"><use xlink:href="#ck-icon-link"></use></svg>
+		</button>
+		And some text.
+	</div>
+</div>
+
+<h3>Toolbar: Rounded</h3>
+<div class="ck-reset-all">
+	<div class="ck-rounded-corners ck-toolbar">
+		<button class="ck-button">A button which corners are also rounded because of toolbar class</button>
+		<button class="ck-button ck-button-notext"><svg class="ck-icon ck-icon-left"><use xlink:href="#ck-icon-bold"></use></svg></button>
+	</div>
+</div>
+
+<h3>Toolbar: Wrapping content</h3>
+<div class="ck-reset-all">
+	<div class="ck-toolbar" style="width: 80px">
+		<button class="ck-button ck-button-notext">
+			<svg class="ck-icon ck-icon-left"><use xlink:href="#ck-icon-bold"></use></svg>
+		</button>
+		<button class="ck-button ck-button-notext">
+			<svg class="ck-icon ck-icon-left"><use xlink:href="#ck-icon-italic"></use></svg>
+		</button>
+		<button class="ck-button ck-button-notext">
+			<svg class="ck-icon ck-icon-left"><use xlink:href="#ck-icon-underline"></use></svg>
+		</button>
+	</div>
+</div>
+
+<h3>Toolbar: Item separators</h3>
+<div class="ck-reset-all">
+	<div class="ck-toolbar">
+		<button class="ck-button">First</button>
+		<button class="ck-button">Second</button>
+		<s class="ck-toolbar-separator"></s>
+		<button class="ck-button ck-button-notext">
+			<svg class="ck-icon ck-icon-left"><use xlink:href="#ck-icon-bold"></use></svg>
+		</button>
+		<button class="ck-button ck-button-notext">
+			<svg class="ck-icon ck-icon-left"><use xlink:href="#ck-icon-italic"></use></svg>
+		</button>
+		<button class="ck-button ck-button-notext">
+			<svg class="ck-icon ck-icon-left"><use xlink:href="#ck-icon-underline"></use></svg>
+		</button>
+		<s class="ck-toolbar-separator"></s>
+		<button class="ck-button ck-button-notext">
+			<svg class="ck-icon ck-icon-left"><use xlink:href="#ck-icon-link"></use></svg>
+		</button>
+		<button class="ck-button ck-button-notext">
+			<svg class="ck-icon ck-icon-left"><use xlink:href="#ck-icon-image"></use></svg>
+		</button>
+	</div>
+</div>
+
+<h3>Toolbar: Multi-row</h3>
+<div class="ck-reset-all">
+	<div class="ck-toolbar">
+		<button class="ck-button">First row</button>
+		<button class="ck-button ck-button-notext">
+			<svg class="ck-icon ck-icon-left"><use xlink:href="#ck-icon-bold"></use></svg>
+		</button>
+		<button class="ck-button ck-button-notext">
+			<svg class="ck-icon ck-icon-left"><use xlink:href="#ck-icon-italic"></use></svg>
+		</button>
+		<button class="ck-button ck-button-notext">
+			<svg class="ck-icon ck-icon-left"><use xlink:href="#ck-icon-underline"></use></svg>
+		</button>
+		<s class="ck-toolbar-newline"></s>
+		<button class="ck-button">Second row</button>
+		<button class="ck-button ck-button-notext">
+			<svg class="ck-icon ck-icon-left"><use xlink:href="#ck-icon-link"></use></svg>
+		</button>
+		<button class="ck-button ck-button-notext">
+			<svg class="ck-icon ck-icon-left"><use xlink:href="#ck-icon-image"></use></svg>
+		</button>
+		<button class="ck-button ck-button-notext">
+			<svg class="ck-icon ck-icon-left"><use xlink:href="#ck-icon-table"></use></svg>
+		</button>
+		<button class="ck-button ck-button-notext">
+			<svg class="ck-icon ck-icon-left"><use xlink:href="#ck-icon-source"></use></svg>
+		</button>
+	</div>
+</div>

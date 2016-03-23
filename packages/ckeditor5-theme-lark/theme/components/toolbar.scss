@@ -1,0 +1,26 @@
+// Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+.ck-toolbar {
+	line-height: 1;
+	padding: ck-spacing( 'small' );
+	border: 1px solid ck-border-color();
+	white-space: initial;
+
+	@include ck-rounded-corners();
+
+	&-separator {
+		width: 1px;
+		height: calc( 1em + 2 * #{ck-spacing( 'medium' )};
+		vertical-align: middle;
+		display: inline-block;
+		background: ck-border-color();
+		margin: 0 ck-spacing( 'tiny' );
+	}
+
+	&-newline {
+		display: block;
+		clear: left;
+		height: ck-spacing( 'small' );
+	}
+}

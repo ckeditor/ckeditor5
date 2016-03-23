@@ -1,0 +1,15 @@
+// Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+.ck-hidden {
+	display: none;
+}
+
+.ck-disabled {
+	opacity: .5;
+}
+
+@mixin ck-focus-shadow() {
+	outline: 0;
+	box-shadow: 0 0 2px 3px ck-color( 'focus' );
+}
