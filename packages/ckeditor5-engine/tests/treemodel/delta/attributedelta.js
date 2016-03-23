@@ -8,14 +8,14 @@
 'use strict';
 
 import utils from '/ckeditor5/utils/utils.js';
-import Document from '/ckeditor5/core/treemodel/document.js';
-import Text from '/ckeditor5/core/treemodel/text.js';
-import Range from '/ckeditor5/core/treemodel/range.js';
-import Position from '/ckeditor5/core/treemodel/position.js';
-import Element from '/ckeditor5/core/treemodel/element.js';
+import Document from '/ckeditor5/engine/treemodel/document.js';
+import Text from '/ckeditor5/engine/treemodel/text.js';
+import Range from '/ckeditor5/engine/treemodel/range.js';
+import Position from '/ckeditor5/engine/treemodel/position.js';
+import Element from '/ckeditor5/engine/treemodel/element.js';
 
-import AttributeDelta from '/ckeditor5/core/treemodel/delta/attributedelta.js';
-import AttributeOperation from '/ckeditor5/core/treemodel/operation/attributeoperation.js';
+import AttributeDelta from '/ckeditor5/engine/treemodel/delta/attributedelta.js';
+import AttributeOperation from '/ckeditor5/engine/treemodel/operation/attributeoperation.js';
 
 let doc, root;
 

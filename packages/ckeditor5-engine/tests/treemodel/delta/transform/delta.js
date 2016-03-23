@@ -7,19 +7,19 @@
 
 'use strict';
 
-import transformations from '/ckeditor5/core/treemodel/delta/basic-transformations.js';
+import transformations from '/ckeditor5/engine/treemodel/delta/basic-transformations.js';
 /*jshint unused: false*/
 
-import transform from '/ckeditor5/core/treemodel/delta/transform.js';
+import transform from '/ckeditor5/engine/treemodel/delta/transform.js';
 
-import Position from '/ckeditor5/core/treemodel/position.js';
-import MoveOperation from '/ckeditor5/core/treemodel/operation/moveoperation.js';
-import Delta from '/ckeditor5/core/treemodel/delta/delta.js';
+import Position from '/ckeditor5/engine/treemodel/position.js';
+import MoveOperation from '/ckeditor5/engine/treemodel/operation/moveoperation.js';
+import Delta from '/ckeditor5/engine/treemodel/delta/delta.js';
 
 import {
 	expectDelta,
 	getFilledDocument,
-} from '/tests/core/treemodel/delta/transform/_utils/utils.js';
+} from '/tests/engine/treemodel/delta/transform/_utils/utils.js';
 
 describe( 'Delta', () => {
 	let doc, root, baseVersion;

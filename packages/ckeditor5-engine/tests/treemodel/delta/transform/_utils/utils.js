@@ -7,26 +7,26 @@
 
 'use strict';
 
-import Document from '/ckeditor5/core/treemodel/document.js';
-import Element from '/ckeditor5/core/treemodel/element.js';
+import Document from '/ckeditor5/engine/treemodel/document.js';
+import Element from '/ckeditor5/engine/treemodel/element.js';
 
-import Position from '/ckeditor5/core/treemodel/position.js';
-import Range from '/ckeditor5/core/treemodel/range.js';
+import Position from '/ckeditor5/engine/treemodel/position.js';
+import Range from '/ckeditor5/engine/treemodel/range.js';
 
-import AttributeDelta from '/ckeditor5/core/treemodel/delta/attributedelta.js';
-import InsertDelta from '/ckeditor5/core/treemodel/delta/insertdelta.js';
-import WeakInsertDelta from '/ckeditor5/core/treemodel/delta/weakinsertdelta.js';
-import RemoveDelta from '/ckeditor5/core/treemodel/delta/removedelta.js';
-import MoveDelta from '/ckeditor5/core/treemodel/delta/movedelta.js';
-import MergeDelta from '/ckeditor5/core/treemodel/delta/mergedelta.js';
-import SplitDelta from '/ckeditor5/core/treemodel/delta/splitdelta.js';
-import WrapDelta from '/ckeditor5/core/treemodel/delta/wrapdelta.js';
-import UnwrapDelta from '/ckeditor5/core/treemodel/delta/unwrapdelta.js';
+import AttributeDelta from '/ckeditor5/engine/treemodel/delta/attributedelta.js';
+import InsertDelta from '/ckeditor5/engine/treemodel/delta/insertdelta.js';
+import WeakInsertDelta from '/ckeditor5/engine/treemodel/delta/weakinsertdelta.js';
+import RemoveDelta from '/ckeditor5/engine/treemodel/delta/removedelta.js';
+import MoveDelta from '/ckeditor5/engine/treemodel/delta/movedelta.js';
+import MergeDelta from '/ckeditor5/engine/treemodel/delta/mergedelta.js';
+import SplitDelta from '/ckeditor5/engine/treemodel/delta/splitdelta.js';
+import WrapDelta from '/ckeditor5/engine/treemodel/delta/wrapdelta.js';
+import UnwrapDelta from '/ckeditor5/engine/treemodel/delta/unwrapdelta.js';
 
-import AttributeOperation from '/ckeditor5/core/treemodel/operation/attributeoperation.js';
-import InsertOperation from '/ckeditor5/core/treemodel/operation/insertoperation.js';
-import MoveOperation from '/ckeditor5/core/treemodel/operation/moveoperation.js';
-import RemoveOperation from '/ckeditor5/core/treemodel/operation/removeoperation.js';
+import AttributeOperation from '/ckeditor5/engine/treemodel/operation/attributeoperation.js';
+import InsertOperation from '/ckeditor5/engine/treemodel/operation/insertoperation.js';
+import MoveOperation from '/ckeditor5/engine/treemodel/operation/moveoperation.js';
+import RemoveOperation from '/ckeditor5/engine/treemodel/operation/removeoperation.js';
 
 export function getAttributeDelta( range, key, oldValue, newValue, version ) {
 	let delta = new AttributeDelta();

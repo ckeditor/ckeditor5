@@ -5,7 +5,7 @@
 
 'use strict';
 
-import BasicHtmlWriter from '/ckeditor5/core/dataprocessor/basichtmlwriter.js';
+import BasicHtmlWriter from '/ckeditor5/engine/dataprocessor/basichtmlwriter.js';
 
 describe( 'BasicHtmlWriter', () => {
 	const basicHtmlWriter = new BasicHtmlWriter();

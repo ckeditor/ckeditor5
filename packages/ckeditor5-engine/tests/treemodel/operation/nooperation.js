@@ -7,8 +7,8 @@
 
 'use strict';
 
-import Document from '/ckeditor5/core/treemodel/document.js';
-import NoOperation from '/ckeditor5/core/treemodel/operation/nooperation.js';
+import Document from '/ckeditor5/engine/treemodel/document.js';
+import NoOperation from '/ckeditor5/engine/treemodel/operation/nooperation.js';
 
 describe( 'NoOperation', () => {
 	let noop, doc, root;

@@ -7,16 +7,16 @@
 
 'use strict';
 
-import RootElement from '/ckeditor5/core/treemodel/rootelement.js';
-import Node from '/ckeditor5/core/treemodel/node.js';
-import Position from '/ckeditor5/core/treemodel/position.js';
-import Range from '/ckeditor5/core/treemodel/range.js';
-import transform from '/ckeditor5/core/treemodel/operation/transform.js';
-import InsertOperation from '/ckeditor5/core/treemodel/operation/insertoperation.js';
-import AttributeOperation from '/ckeditor5/core/treemodel/operation/attributeoperation.js';
-import RootAttributeOperation from '/ckeditor5/core/treemodel/operation/rootattributeoperation.js';
-import MoveOperation from '/ckeditor5/core/treemodel/operation/moveoperation.js';
-import NoOperation from '/ckeditor5/core/treemodel/operation/nooperation.js';
+import RootElement from '/ckeditor5/engine/treemodel/rootelement.js';
+import Node from '/ckeditor5/engine/treemodel/node.js';
+import Position from '/ckeditor5/engine/treemodel/position.js';
+import Range from '/ckeditor5/engine/treemodel/range.js';
+import transform from '/ckeditor5/engine/treemodel/operation/transform.js';
+import InsertOperation from '/ckeditor5/engine/treemodel/operation/insertoperation.js';
+import AttributeOperation from '/ckeditor5/engine/treemodel/operation/attributeoperation.js';
+import RootAttributeOperation from '/ckeditor5/engine/treemodel/operation/rootattributeoperation.js';
+import MoveOperation from '/ckeditor5/engine/treemodel/operation/moveoperation.js';
+import NoOperation from '/ckeditor5/engine/treemodel/operation/nooperation.js';
 
 describe( 'transform', () => {
 	let root, op, nodeA, nodeB, expected, baseVersion;

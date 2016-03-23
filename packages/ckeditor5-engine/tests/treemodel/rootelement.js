@@ -7,9 +7,9 @@
 
 'use strict';
 
-import Document from '/ckeditor5/core/treemodel/document.js';
-import Element from '/ckeditor5/core/treemodel/element.js';
-import RootElement from '/ckeditor5/core/treemodel/rootelement.js';
+import Document from '/ckeditor5/engine/treemodel/document.js';
+import Element from '/ckeditor5/engine/treemodel/element.js';
+import RootElement from '/ckeditor5/engine/treemodel/rootelement.js';
 
 describe( 'Element', () => {
 	describe( 'constructor', () => {

@@ -5,7 +5,7 @@
 
 'use strict';
 
-import diff from '/ckeditor5/core/utils-diff.js';
+import diff from '/ckeditor5/engine/utils-diff.js';
 
 describe( 'diff', () => {
 	it( 'should diff arrays', () => {

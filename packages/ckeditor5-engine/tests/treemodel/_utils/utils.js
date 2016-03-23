@@ -5,7 +5,7 @@
 
 'use strict';
 
-import TreeWalker from '/ckeditor5/core/treemodel/treewalker.js';
+import TreeWalker from '/ckeditor5/engine/treemodel/treewalker.js';
 
 const utils = {
 	/**

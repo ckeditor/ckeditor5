@@ -7,7 +7,7 @@
 
 'use strict';
 
-import Position from '/ckeditor5/core/treeview/position.js';
+import Position from '/ckeditor5/engine/treeview/position.js';
 
 describe( 'Position', () => {
 	const parentMock = {};

@@ -7,8 +7,8 @@
 
 'use strict';
 
-import ViewNode from '/ckeditor5/core/treeview/node.js';
-import ViewText from '/ckeditor5/core/treeview/text.js';
+import ViewNode from '/ckeditor5/engine/treeview/node.js';
+import ViewText from '/ckeditor5/engine/treeview/text.js';
 
 describe( 'Element', () => {
 	describe( 'constructor', () => {

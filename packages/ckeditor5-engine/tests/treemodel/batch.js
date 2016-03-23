@@ -8,12 +8,12 @@
 'use strict';
 
 /* jshint unused: false */
-import deltas from '/ckeditor5/core/treemodel/delta/basic-deltas.js';
+import deltas from '/ckeditor5/engine/treemodel/delta/basic-deltas.js';
 
-import Document from '/ckeditor5/core/treemodel/document.js';
-import Batch from '/ckeditor5/core/treemodel/batch.js';
-import { register } from '/ckeditor5/core/treemodel/batch.js';
-import Delta from '/ckeditor5/core/treemodel/delta/delta.js';
+import Document from '/ckeditor5/engine/treemodel/document.js';
+import Batch from '/ckeditor5/engine/treemodel/batch.js';
+import { register } from '/ckeditor5/engine/treemodel/batch.js';
+import Delta from '/ckeditor5/engine/treemodel/delta/delta.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 class TestDelta extends Delta {

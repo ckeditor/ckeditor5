@@ -7,11 +7,11 @@
 
 'use strict';
 
-import Document from '/ckeditor5/core/treemodel/document.js';
-import Element from '/ckeditor5/core/treemodel/element.js';
-import Position from '/ckeditor5/core/treemodel/position.js';
-import LiveRange from '/ckeditor5/core/treemodel/liverange.js';
-import Range from '/ckeditor5/core/treemodel/range.js';
+import Document from '/ckeditor5/engine/treemodel/document.js';
+import Element from '/ckeditor5/engine/treemodel/element.js';
+import Position from '/ckeditor5/engine/treemodel/position.js';
+import LiveRange from '/ckeditor5/engine/treemodel/liverange.js';
+import Range from '/ckeditor5/engine/treemodel/range.js';
 
 describe( 'LiveRange', () => {
 	let doc, root, ul, p;

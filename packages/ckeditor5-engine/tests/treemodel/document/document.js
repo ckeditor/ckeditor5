@@ -7,9 +7,9 @@
 
 'use strict';
 
-import Document from '/ckeditor5/core/treemodel/document.js';
-import RootElement from '/ckeditor5/core/treemodel/rootelement.js';
-import Batch from '/ckeditor5/core/treemodel/batch.js';
+import Document from '/ckeditor5/engine/treemodel/document.js';
+import RootElement from '/ckeditor5/engine/treemodel/rootelement.js';
+import Batch from '/ckeditor5/engine/treemodel/batch.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import utils from '/ckeditor5/utils/utils.js';
 

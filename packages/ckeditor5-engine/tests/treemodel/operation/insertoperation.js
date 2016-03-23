@@ -7,13 +7,13 @@
 
 'use strict';
 
-import Document from '/ckeditor5/core/treemodel/document.js';
-import Node from '/ckeditor5/core/treemodel/node.js';
-import NodeList from '/ckeditor5/core/treemodel/nodelist.js';
-import InsertOperation from '/ckeditor5/core/treemodel/operation/insertoperation.js';
-import RemoveOperation from '/ckeditor5/core/treemodel/operation/removeoperation.js';
-import Position from '/ckeditor5/core/treemodel/position.js';
-import Text from '/ckeditor5/core/treemodel/text.js';
+import Document from '/ckeditor5/engine/treemodel/document.js';
+import Node from '/ckeditor5/engine/treemodel/node.js';
+import NodeList from '/ckeditor5/engine/treemodel/nodelist.js';
+import InsertOperation from '/ckeditor5/engine/treemodel/operation/insertoperation.js';
+import RemoveOperation from '/ckeditor5/engine/treemodel/operation/removeoperation.js';
+import Position from '/ckeditor5/engine/treemodel/position.js';
+import Text from '/ckeditor5/engine/treemodel/text.js';
 
 describe( 'InsertOperation', () => {
 	let doc, root;

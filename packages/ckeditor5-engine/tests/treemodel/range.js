@@ -7,12 +7,12 @@
 
 'use strict';
 
-import Range from '/ckeditor5/core/treemodel/range.js';
-import Position from '/ckeditor5/core/treemodel/position.js';
-import Element from '/ckeditor5/core/treemodel/element.js';
-import Text from '/ckeditor5/core/treemodel/text.js';
-import Document from '/ckeditor5/core/treemodel/document.js';
-import TreeWalker from '/ckeditor5/core/treemodel/treewalker.js';
+import Range from '/ckeditor5/engine/treemodel/range.js';
+import Position from '/ckeditor5/engine/treemodel/position.js';
+import Element from '/ckeditor5/engine/treemodel/element.js';
+import Text from '/ckeditor5/engine/treemodel/text.js';
+import Document from '/ckeditor5/engine/treemodel/document.js';
+import TreeWalker from '/ckeditor5/engine/treemodel/treewalker.js';
 
 describe( 'Range', () => {
 	let range, start, end, root, otherRoot;

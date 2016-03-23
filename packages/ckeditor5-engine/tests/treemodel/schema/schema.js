@@ -7,11 +7,11 @@
 
 'use strict';
 
-import Schema from '/ckeditor5/core/treemodel/schema.js';
-import { SchemaItem as SchemaItem } from '/ckeditor5/core/treemodel/schema.js';
-import Document from '/ckeditor5/core/treemodel/document.js';
-import Element from '/ckeditor5/core/treemodel/element.js';
-import Position from '/ckeditor5/core/treemodel/position.js';
+import Schema from '/ckeditor5/engine/treemodel/schema.js';
+import { SchemaItem as SchemaItem } from '/ckeditor5/engine/treemodel/schema.js';
+import Document from '/ckeditor5/engine/treemodel/document.js';
+import Element from '/ckeditor5/engine/treemodel/element.js';
+import Position from '/ckeditor5/engine/treemodel/position.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 let schema;

@@ -7,8 +7,8 @@
 
 'use strict';
 
-import Schema from '/ckeditor5/core/treemodel/schema.js';
-import { SchemaItem as SchemaItem } from '/ckeditor5/core/treemodel/schema.js';
+import Schema from '/ckeditor5/engine/treemodel/schema.js';
+import { SchemaItem as SchemaItem } from '/ckeditor5/engine/treemodel/schema.js';
 
 let schema, item;
 

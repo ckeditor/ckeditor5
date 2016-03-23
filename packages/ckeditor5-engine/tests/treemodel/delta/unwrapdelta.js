@@ -7,17 +7,17 @@
 
 'use strict';
 
-import Document from '/ckeditor5/core/treemodel/document.js';
-import Element from '/ckeditor5/core/treemodel/element.js';
-import Position from '/ckeditor5/core/treemodel/position.js';
+import Document from '/ckeditor5/engine/treemodel/document.js';
+import Element from '/ckeditor5/engine/treemodel/element.js';
+import Position from '/ckeditor5/engine/treemodel/position.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
-import UnwrapDelta from '/ckeditor5/core/treemodel/delta/unwrapdelta.js';
-import WrapDelta from '/ckeditor5/core/treemodel/delta/wrapdelta.js';
+import UnwrapDelta from '/ckeditor5/engine/treemodel/delta/unwrapdelta.js';
+import WrapDelta from '/ckeditor5/engine/treemodel/delta/wrapdelta.js';
 
-import MoveOperation from '/ckeditor5/core/treemodel/operation/moveoperation.js';
-import RemoveOperation from '/ckeditor5/core/treemodel/operation/removeoperation.js';
-import ReinsertOperation from '/ckeditor5/core/treemodel/operation/reinsertoperation.js';
+import MoveOperation from '/ckeditor5/engine/treemodel/operation/moveoperation.js';
+import RemoveOperation from '/ckeditor5/engine/treemodel/operation/removeoperation.js';
+import ReinsertOperation from '/ckeditor5/engine/treemodel/operation/reinsertoperation.js';
 
 describe( 'Batch', () => {
 	let doc, root, p;

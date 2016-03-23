@@ -7,8 +7,8 @@
 
 'use strict';
 
-import TreeView from '/ckeditor5/core/treeview/treeview.js';
-import DomEventObserver from '/ckeditor5/core/treeview/observer/domeventobserver.js';
+import TreeView from '/ckeditor5/engine/treeview/treeview.js';
+import DomEventObserver from '/ckeditor5/engine/treeview/observer/domeventobserver.js';
 
 const treeView = new TreeView();
 let observer1, observer2;

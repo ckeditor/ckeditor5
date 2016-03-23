@@ -7,8 +7,8 @@
 
 'use strict';
 
-import Document from '/ckeditor5/core/treemodel/document.js';
-import RootAttributeOperation from '/ckeditor5/core/treemodel/operation/rootattributeoperation.js';
+import Document from '/ckeditor5/engine/treemodel/document.js';
+import RootAttributeOperation from '/ckeditor5/engine/treemodel/operation/rootattributeoperation.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'RootAttributeOperation', () => {

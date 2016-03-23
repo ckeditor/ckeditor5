@@ -7,8 +7,8 @@
 
 'use strict';
 
-import Range from '/ckeditor5/core/treeview/range.js';
-import Position from '/ckeditor5/core/treeview/position.js';
+import Range from '/ckeditor5/engine/treeview/range.js';
+import Position from '/ckeditor5/engine/treeview/position.js';
 
 describe( 'Range', () => {
 	describe( 'constructor', () => {

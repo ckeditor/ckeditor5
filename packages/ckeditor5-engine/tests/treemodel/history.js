@@ -5,9 +5,9 @@
 
 'use strict';
 
-import History from '/ckeditor5/core/treemodel/history.js';
-import Delta from '/ckeditor5/core/treemodel/delta/delta.js';
-import NoOperation from '/ckeditor5/core/treemodel/operation/nooperation.js';
+import History from '/ckeditor5/engine/treemodel/history.js';
+import Delta from '/ckeditor5/engine/treemodel/delta/delta.js';
+import NoOperation from '/ckeditor5/engine/treemodel/operation/nooperation.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'History', () => {

@@ -7,7 +7,7 @@
 
 'use strict';
 
-import Observer from '/ckeditor5/core/treeview/observer/observer.js';
+import Observer from '/ckeditor5/engine/treeview/observer/observer.js';
 
 describe( 'Observer', () => {
 	describe( 'constructor', () => {
