@@ -23,30 +23,30 @@ const graveyardSymbol = Symbol( 'graveyard' );
 
 /**
  * Document tree model describes all editable data in the editor. It may contain multiple
- * {@link core.treeModel.Document#roots root elements}, for example if the editor have multiple editable areas, each area will be
+ * {@link engine.treeModel.Document#roots root elements}, for example if the editor have multiple editable areas, each area will be
  * represented by the separate root.
  *
- * All changes in the document are done by {@link core.treeModel.operation.Operation operations}. To create operations in
- * the simple way use use the {@link core.treeModel.Batch} API, for example:
+ * All changes in the document are done by {@link engine.treeModel.operation.Operation operations}. To create operations in
+ * the simple way use use the {@link engine.treeModel.Batch} API, for example:
  *
  *		doc.batch().insert( position, nodes ).split( otherPosition );
  *
- * @see core.treeModel.Document#batch
+ * @see engine.treeModel.Document#batch
  *
- * @memberOf core.treeModel
+ * @memberOf engine.treeModel
  */
 export default class Document {
 	/**
-	 * Creates an empty document instance with no {@link core.treeModel.Document#roots} (other than graveyard).
+	 * Creates an empty document instance with no {@link engine.treeModel.Document#roots} (other than graveyard).
 	 */
 	constructor() {
 		/**
 		 * Document version. It starts from `0` and every operation increases the version number. It is used to ensure that
-		 * operations are applied on the proper document version. If the {@link core.treeModel.operation.Operation#baseVersion} will
+		 * operations are applied on the proper document version. If the {@link engine.treeModel.operation.Operation#baseVersion} will
 		 * not match document version the {@link document-applyOperation-wrong-version} error is thrown.
 		 *
 		 * @readonly
-		 * @member {Number} core.treeModel.Document#version
+		 * @member {Number} engine.treeModel.Document#version
 		 */
 		this.version = 0;
 
@@ -54,32 +54,32 @@ export default class Document {
 		 * Selection done on this document.
 		 *
 		 * @readonly
-		 * @member {core.treeModel.Selection} core.treeModel.Document#selection
+		 * @member {engine.treeModel.Selection} engine.treeModel.Document#selection
 		 */
 		this.selection = new Selection( this );
 
 		/**
 		 * Schema for this document.
 		 *
-		 * @member {core.treeModel.Schema} core.treeModel.Document#schema
+		 * @member {engine.treeModel.Schema} engine.treeModel.Document#schema
 		 */
 		this.schema = new Schema();
 
 		/**
-		 * Array of pending changes. See: {@link core.treeModel.Document#enqueueChanges}.
+		 * Array of pending changes. See: {@link engine.treeModel.Document#enqueueChanges}.
 		 *
 		 * @private
-		 * @member {Array.<Function>} core.treeModel.Document#_pendingChanges
+		 * @member {Array.<Function>} engine.treeModel.Document#_pendingChanges
 		 */
 		this._pendingChanges = [];
 
 		/**
-		 * List of roots that are owned and managed by this document. Use {@link core.treeModel.document#createRoot} and
-		 * {@link core.treeModel.document#getRoot} to manipulate it.
+		 * List of roots that are owned and managed by this document. Use {@link engine.treeModel.document#createRoot} and
+		 * {@link engine.treeModel.document#getRoot} to manipulate it.
 		 *
 		 * @readonly
 		 * @protected
-		 * @member {Map} core.treeModel.Document#roots
+		 * @member {Map} engine.treeModel.Document#roots
 		 */
 		this._roots = new Map();
 
@@ -99,7 +99,7 @@ export default class Document {
 		 * Document's history.
 		 *
 		 * @readonly
-		 * @member {core.treeModel.History} core.treeModel.Document#history
+		 * @member {engine.treeModel.History} engine.treeModel.Document#history
 		 */
 		this.history = new History();
 	}
@@ -108,14 +108,14 @@ export default class Document {
 	 * Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
 	 *
 	 * @readonly
-	 * @type {core.treeModel.RootElement}
+	 * @type {engine.treeModel.RootElement}
 	 */
 	get graveyard() {
 		return this.getRoot( graveyardSymbol );
 	}
 
 	/**
-	 * Gets names of all roots (without the {@link core.treeModel.Document#graveyard}).
+	 * Gets names of all roots (without the {@link engine.treeModel.Document#graveyard}).
 	 *
 	 * @readonly
 	 * @type {Iterable.<String>}
@@ -126,11 +126,11 @@ export default class Document {
 
 	/**
 	 * This is the entry point for all document changes. All changes on the document are done using
-	 * {@link core.treeModel.operation.Operation operations}. To create operations in the simple way use the
-	 * {@link core.treeModel.Batch} API available via {@link core.treeModel.Document#batch} method.
+	 * {@link engine.treeModel.operation.Operation operations}. To create operations in the simple way use the
+	 * {@link engine.treeModel.Batch} API available via {@link engine.treeModel.Document#batch} method.
 	 *
-	 * @fires @link core.treeModel.Document#change
-	 * @param {core.treeModel.operation.Operation} operation Operation to be applied.
+	 * @fires @link engine.treeModel.Document#change
+	 * @param {engine.treeModel.operation.Operation} operation Operation to be applied.
 	 */
 	applyOperation( operation ) {
 		if ( operation.baseVersion !== this.version ) {
@@ -138,7 +138,7 @@ export default class Document {
 			 * Only operations with matching versions can be applied.
 			 *
 			 * @error document-applyOperation-wrong-version
-			 * @param {core.treeModel.operation.Operation} operation
+			 * @param {engine.treeModel.operation.Operation} operation
 			 */
 			throw new CKEditorError(
 				'document-applyOperation-wrong-version: Only operations with matching versions can be applied.',
@@ -156,9 +156,9 @@ export default class Document {
 	}
 
 	/**
-	 * Creates a {@link core.treeModel.Batch} instance which allows to change the document.
+	 * Creates a {@link engine.treeModel.Batch} instance which allows to change the document.
 	 *
-	 * @returns {core.treeModel.Batch} Batch instance.
+	 * @returns {engine.treeModel.Batch} Batch instance.
 	 */
 	batch() {
 		return new Batch( this );
@@ -169,7 +169,7 @@ export default class Document {
 	 *
 	 * @param {String|Symbol} rootName Unique root name.
 	 * @param {String} elementName Element name.
-	 * @returns {core.treeModel.RootElement} Created root.
+	 * @returns {engine.treeModel.RootElement} Created root.
 	 */
 	createRoot( rootName, elementName ) {
 		if ( this._roots.has( rootName ) ) {
@@ -177,7 +177,7 @@ export default class Document {
 			 * Root with specified name already exists.
 			 *
 			 * @error document-createRoot-name-exists
-			 * @param {core.treeModel.Document} doc
+			 * @param {engine.treeModel.Document} doc
 			 * @param {String} name
 			 */
 			throw new CKEditorError(
@@ -201,14 +201,14 @@ export default class Document {
 	}
 
 	/**
-	 * Enqueues document changes. Any changes to be done on document (mostly using {@link core.treeModel.Document#batch}
+	 * Enqueues document changes. Any changes to be done on document (mostly using {@link engine.treeModel.Document#batch}
 	 * should be placed in the queued callback. If no other plugin is changing document at the moment, the callback will be
 	 * called immediately. Otherwise it will wait for all previously queued changes to finish happening. This way
 	 * queued callback will not interrupt other callbacks.
 	 *
-	 * When all queued changes are done {@link core.treeModel.Document#changesDone} event is fired.
+	 * When all queued changes are done {@link engine.treeModel.Document#changesDone} event is fired.
 	 *
-	 * @fires @link core.treeModel.Document#changesDone
+	 * @fires @link engine.treeModel.Document#changesDone
 	 * @param {Function} callback Callback to enqueue.
 	 */
 	enqueueChanges( callback ) {
@@ -228,7 +228,7 @@ export default class Document {
 	 * Returns top-level root by its name.
 	 *
 	 * @param {String|Symbol} name Unique root name.
-	 * @returns {core.treeModel.RootElement} Root registered under given name.
+	 * @returns {engine.treeModel.RootElement} Root registered under given name.
 	 */
 	getRoot( name ) {
 		if ( !this._roots.has( name ) ) {
@@ -256,18 +256,18 @@ export default class Document {
 		const json = clone( this );
 
 		// Due to circular references we need to remove parent reference.
-		json.selection = '[core.treeModel.Selection]';
+		json.selection = '[engine.treeModel.Selection]';
 
 		return {};
 	}
 
 	/**
 	 * Returns default root for this document which is either the first root that was added to the the document using
-	 * {@link core.treeModel.Document#createRoot} or the {@link core.treeModel.Document#graveyard graveyard root} if
+	 * {@link engine.treeModel.Document#createRoot} or the {@link engine.treeModel.Document#graveyard graveyard root} if
 	 * no other roots were created.
 	 *
 	 * @protected
-	 * @returns {core.treeModel.RootElement} The default root for this document.
+	 * @returns {engine.treeModel.RootElement} The default root for this document.
 	 */
 	_getDefaultRoot() {
 		for ( let root of this._roots.values() ) {
@@ -294,27 +294,27 @@ export default class Document {
 	 * Change event is fired after the change is done. This means that any ranges or positions passed in
 	 * `changeInfo` are referencing nodes and paths in updated tree model.
 	 *
-	 * @event core.treeModel.Document#change
+	 * @event engine.treeModel.Document#change
 	 * @param {String} type Change type, possible option: `'insert'`, `'remove'`, `'reinsert'`, `'move'`, `'attribute'`.
 	 * @param {Object} changeInfo Additional information about the change.
-	 * @param {core.treeModel.Range} [changeInfo.range] Range containing changed nodes. Note that for `'remove'` the range will be in the
-	 * {@link core.treeModel.Document#graveyard graveyard root}. This is undefined for `'rootattribute'` type.
-	 * @param {core.treeModel.RootElement} [changeInfo.root] Root element which attributes got changed. This is defined
+	 * @param {engine.treeModel.Range} [changeInfo.range] Range containing changed nodes. Note that for `'remove'` the range will be in the
+	 * {@link engine.treeModel.Document#graveyard graveyard root}. This is undefined for `'rootattribute'` type.
+	 * @param {engine.treeModel.RootElement} [changeInfo.root] Root element which attributes got changed. This is defined
 	 * only for `'rootattribute'` type.
-	 * @param {core.treeModel.Position} [changeInfo.sourcePosition] Change source position. Exists for `'remove'`, `'reinsert'` and `'move'`.
-	 * Note that for 'reinsert' the source position will be in the {@link core.treeModel.Document#graveyard graveyard root}.
+	 * @param {engine.treeModel.Position} [changeInfo.sourcePosition] Change source position. Exists for `'remove'`, `'reinsert'` and `'move'`.
+	 * Note that for 'reinsert' the source position will be in the {@link engine.treeModel.Document#graveyard graveyard root}.
 	 * @param {String} [changeInfo.key] Only for `'attribute'` type. Key of changed / inserted / removed attribute.
 	 * @param {*} [changeInfo.oldValue] Only for `'attribute'` type. If the type is `'attribute'` and `oldValue`
 	 * is `undefined` it means that new attribute was inserted. Otherwise it contains changed or removed attribute value.
 	 * @param {*} [changeInfo.newValue] Only for `'attribute'` type. If the type is `'attribute'` and `newValue`
 	 * is `undefined` it means that attribute was removed. Otherwise it contains changed or inserted attribute value.
-	 * @param {core.treeModel.Batch} batch A batch of changes which this change is a part of.
+	 * @param {engine.treeModel.Batch} batch A batch of changes which this change is a part of.
 	 */
 
 	/**
-	 * Fired when all queued document changes are done. See {@link core.treeModel.Document#enqueueChanges}.
+	 * Fired when all queued document changes are done. See {@link engine.treeModel.Document#enqueueChanges}.
 	 *
-	 * @event core.treeModel.Document#changesDone
+	 * @event engine.treeModel.Document#changesDone
 	 */
 }
 

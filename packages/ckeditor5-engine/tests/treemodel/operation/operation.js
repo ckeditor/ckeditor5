@@ -27,7 +27,7 @@ describe( 'Operation', () => {
 		let parsedIn = JSON.parse( JSON.stringify( opInDelta ) );
 		let parsedOutside = JSON.parse( JSON.stringify( opOutsideDelta ) );
 
-		expect( parsedIn.delta ).to.equal( '[core.treeModel.Delta]' );
+		expect( parsedIn.delta ).to.equal( '[engine.treeModel.Delta]' );
 		expect( parsedOutside.delta ).to.be.null;
 	} );
 } );

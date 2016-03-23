@@ -16,16 +16,16 @@ import MergeDelta from '../delta/mergedelta.js';
 
 /**
  * @classdesc
- * To provide specific OT behavior and better collisions solving, the {@link core.treeModel.Batch#split} method
+ * To provide specific OT behavior and better collisions solving, the {@link engine.treeModel.Batch#split} method
  * uses `SplitDelta` class which inherits from the `Delta` class and may overwrite some methods.
  *
- * @memberOf core.treeModel.delta
+ * @memberOf engine.treeModel.delta
  */
 export default class SplitDelta extends Delta {
 	/**
 	 * Position of split or `null` if there are no operations in the delta.
 	 *
-	 * @type {core.treeModel.Position|null}
+	 * @type {engine.treeModel.Position|null}
 	 */
 	get position() {
 		return this._moveOperation ? this._moveOperation.sourcePosition : null;
@@ -36,11 +36,11 @@ export default class SplitDelta extends Delta {
 	 * there are no operations in the delta.
 	 *
 	 * Most commonly this will be insert operation, as `SplitDelta` has to create a new node. If `SplitDelta` was created
-	 * through {@link core.treeModel.delta.MergeDelta MergeDelta} {@link core.treeModel.delta.Delta#getReversed reversing},
+	 * through {@link engine.treeModel.delta.MergeDelta MergeDelta} {@link engine.treeModel.delta.Delta#getReversed reversing},
 	 * this will be a reinsert operation, as we will want to "insert-back" the node that was removed by `MergeDelta`.
 	 *
 	 * @protected
-	 * @type {core.treeModel.operation.InsertOpertaion|core.treeModel.operation.ReinsertOperation|null}
+	 * @type {engine.treeModel.operation.InsertOpertaion|engine.treeModel.operation.ReinsertOperation|null}
 	 */
 	get _cloneOperation() {
 		return this.operations[ 0 ] || null;
@@ -51,14 +51,14 @@ export default class SplitDelta extends Delta {
 	 * or `null` if there are no operations in the delta.
 	 *
 	 * @protected
-	 * @type {core.treeModel.operation.MoveOperation|null}
+	 * @type {engine.treeModel.operation.MoveOperation|null}
 	 */
 	get _moveOperation() {
 		return this.operations[ 1 ] || null;
 	}
 
 	/**
-	 * @see core.treeModel.delta.Delta#_reverseDeltaClass
+	 * @see engine.treeModel.delta.Delta#_reverseDeltaClass
 	 * @private
 	 * @type {Object}
 	 */
@@ -78,8 +78,8 @@ export default class SplitDelta extends Delta {
  * you try to split the root element.
  *
  * @chainable
- * @method core.treeModel.Batch#split
- * @param {core.treeModel.Position} position Position of split.
+ * @method engine.treeModel.Batch#split
+ * @param {engine.treeModel.Position} position Position of split.
  */
 register( 'split', function( position ) {
 	const delta = new SplitDelta();

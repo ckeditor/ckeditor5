@@ -12,28 +12,31 @@ import NodeList from '../nodelist.js';
 
 /**
  * @classdesc
- * To provide specific OT behavior and better collisions solving, the {@link core.treeModel.Batch#insert} method
+ * To provide specific OT behavior and better collisions solving, the {@link engine.treeModel.Batch#insert} method
  * uses the `WeakInsertDelta` class which inherits from the `Delta` class and may overwrite some methods.
  *
- * @memberOf core.treeModel.delta
+ * @memberOf engine.treeModel.delta
  */
 export default class WeakInsertDelta extends InsertDelta {}
 
 /**
- * Inserts a node or nodes at the given position. {@link core.treeModel.Batch#weakInsert weakInsert} is commonly used for actions
+ * Inserts a node or nodes at the given position. {@link engine.treeModel.Batch#weakInsert weakInsert} is commonly used for actions
  * like typing or plain-text paste (without formatting). There are two differences between
- * {@link core.treeModel.Batch#insert insert} and {@link core.treeModel.Batch#weakInsert weakInsert}:
+ * {@link engine.treeModel.Batch#insert insert} and {@link engine.treeModel.Batch#weakInsert weakInsert}:
+ *
  * * When using `weakInsert`, inserted nodes will have same attributes as the current attributes of
- * {@link core.treeModel.Document#selection document selection}.
- * * Normal behavior is that inserting inside range changed by {@link core.treeModel.operation.AttributeOperation AttributeOperation} splits
+ * {@link engine.treeModel.Document#selection document selection}.
+ * * Normal behavior is that inserting inside range changed by
+ * {@link engine.treeModel.operation.AttributeOperation AttributeOperation} splits
  * the operation into two operations, which "omit" the inserted nodes. The correct behavior for `WeakInsertDelta` is that
- * {@link core.treeModel.operation.AttributeOperation AttributeOperation} does not "break" and also applies attributes for inserted nodes.
- * The above has to be reflected during {@link core.treeModel.operation.transform operational transformation}.
+ * {@link engine.treeModel.operation.AttributeOperation AttributeOperation} does not "break" and also
+ * applies attributes for inserted nodes.
+ * The above has to be reflected during {@link engine.treeModel.operation.transform operational transformation}.
  *
  * @chainable
- * @method core.treeModel.Batch#weakInsert
- * @param {core.treeModel.Position} position Position of insertion.
- * @param {core.treeModel.NodeSet} nodes The list of nodes to be inserted.
+ * @method engine.treeModel.Batch#weakInsert
+ * @param {engine.treeModel.Position} position Position of insertion.
+ * @param {engine.treeModel.NodeSet} nodes The list of nodes to be inserted.
  */
 register( 'weakInsert', function( position, nodes ) {
 	const delta = new WeakInsertDelta();

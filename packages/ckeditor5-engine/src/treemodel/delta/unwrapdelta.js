@@ -15,16 +15,16 @@ import CKEditorError from '../../../utils/ckeditorerror.js';
 
 /**
  * @classdesc
- * To provide specific OT behavior and better collisions solving, {@link core.treeModel.Batch#merge} method
+ * To provide specific OT behavior and better collisions solving, {@link engine.treeModel.Batch#merge} method
  * uses the `UnwrapDelta` class which inherits from the `Delta` class and may overwrite some methods.
  *
- * @memberOf core.treeModel.delta
+ * @memberOf engine.treeModel.delta
  */
 export default class UnwrapDelta extends Delta {
 	/**
 	 * Position before unwrapped element or `null` if there are no operations in the delta.
 	 *
-	 * @type {core.treeModel.Position|null}
+	 * @type {engine.treeModel.Position|null}
 	 */
 	get position() {
 		return this._moveOperation ? this._moveOperation.targetPosition : null;
@@ -34,14 +34,14 @@ export default class UnwrapDelta extends Delta {
 	 * Operation in the delta that moves unwrapped nodes to their new parent or `null` if there are no operations in the delta.
 	 *
 	 * @protected
-	 * @type {core.treeModel.operation.MoveOperation|null}
+	 * @type {engine.treeModel.operation.MoveOperation|null}
 	 */
 	get _moveOperation() {
 		return this.operations[ 0 ] || null;
 	}
 
 	/**
-	 * @see core.treeModel.delta.Delta#_reverseDeltaClass
+	 * @see engine.treeModel.delta.Delta#_reverseDeltaClass
 	 * @private
 	 * @type {Object}
 	 */
@@ -59,8 +59,8 @@ export default class UnwrapDelta extends Delta {
  * error if you try to unwrap an element that does not have a parent.
  *
  * @chainable
- * @method core.treeModel.Batch#unwrap
- * @param {core.treeModel.Element} position Element to unwrap.
+ * @method engine.treeModel.Batch#unwrap
+ * @param {engine.treeModel.Element} position Element to unwrap.
  */
 register( 'unwrap', function( element ) {
 	if ( element.parent === null ) {

@@ -14,13 +14,13 @@ import utils from '../../utils/utils.js';
  * Position in the tree. Position is always located before or after a node.
  * See {@link #path} property for more information.
  *
- * @memberOf core.treeModel
+ * @memberOf engine.treeModel
  */
 export default class Position {
 	/**
 	 * Creates a position.
 	 *
-	 * @param {core.treeModel.RootElement} root Root element for the path. Note that this element can not have a parent.
+	 * @param {engine.treeModel.RootElement} root Root element for the path. Note that this element can not have a parent.
 	 * @param {Array.<Number>} path Position path. Must contain at least one item. See {@link #path} property for more information.
 	 */
 	constructor( root, path ) {
@@ -37,7 +37,7 @@ export default class Position {
 		/**
 		 * Root element for the path. Note that this element can not have a parent.
 		 *
-		 * @member {core.treeModel.RootElement} core.treeModel.Position#root
+		 * @member {engine.treeModel.RootElement} engine.treeModel.Position#root
 		 */
 		this.root = root;
 
@@ -66,7 +66,7 @@ export default class Position {
 		 *        |- a   Before: [ 1, 1, 1 ] After: [ 1, 1, 2 ]
 		 *        |- r   Before: [ 1, 1, 2 ] After: [ 1, 1, 3 ]
 		 *
-		 * @member {Array.<Number>} core.treeModel.Position#path
+		 * @member {Array.<Number>} engine.treeModel.Position#path
 		 */
 		this.path = path;
 	}
@@ -75,7 +75,7 @@ export default class Position {
 	 * Node directly after the position.
 	 *
 	 * @readonly
-	 * @type {core.treeModel.Node}
+	 * @type {engine.treeModel.Node}
 	 */
 	get nodeAfter() {
 		return this.parent.getChild( this.offset ) || null;
@@ -114,7 +114,7 @@ export default class Position {
 	 * Parent element of the position. The position is located at {@link #offset} in this element.
 	 *
 	 * @readonly
-	 * @type {core.treeModel.Element}
+	 * @type {engine.treeModel.Element}
 	 */
 	get parent() {
 		let parent = this.root;
@@ -131,8 +131,8 @@ export default class Position {
 	/**
 	 * Checks whether this position is before or after given position.
 	 *
-	 * @param {core.treeModel.Position} otherPosition Position to compare with.
-	 * @returns {core.treeModel.PositionRelation}
+	 * @param {engine.treeModel.Position} otherPosition Position to compare with.
+	 * @returns {engine.treeModel.PositionRelation}
 	 */
 	compareWith( otherPosition ) {
 		if ( this.root != otherPosition.root ) {
@@ -161,7 +161,7 @@ export default class Position {
 	}
 
 	/**
-	 * Returns the path to the parent, which is the {@link core.treeModel.Position#path} without the last element.
+	 * Returns the path to the parent, which is the {@link engine.treeModel.Position#path} without the last element.
 	 *
 	 * This method returns the parent path even if the parent does not exists.
 	 *
@@ -175,7 +175,7 @@ export default class Position {
 	 * Returns a new instance of Position with offset incremented by `shift` value.
 	 *
 	 * @param {Number} shift How position offset should get changed. Accepts negative values.
-	 * @returns {core.treeModel.Position} Shifted position.
+	 * @returns {engine.treeModel.Position} Shifted position.
 	 */
 	getShiftedBy( shift ) {
 		let shifted = Position.createFromPosition( this );
@@ -191,9 +191,9 @@ export default class Position {
 	 * It may happen that this position is in a removed node. If that is the case, `null` is returned instead.
 	 *
 	 * @protected
-	 * @param {core.treeModel.Position} deletePosition Position before the first removed node.
+	 * @param {engine.treeModel.Position} deletePosition Position before the first removed node.
 	 * @param {Number} howMany How many nodes are removed.
-	 * @returns {core.treeModel.Position|null} Transformed position or `null`.
+	 * @returns {engine.treeModel.Position|null} Transformed position or `null`.
 	 */
 	getTransformedByDeletion( deletePosition, howMany ) {
 		let transformed = Position.createFromPosition( this );
@@ -239,12 +239,12 @@ export default class Position {
 	 * Returns this position after being updated by inserting `howMany` nodes at `insertPosition`.
 	 *
 	 * @protected
-	 * @param {core.treeModel.Position} insertPosition Position where nodes are inserted.
+	 * @param {engine.treeModel.Position} insertPosition Position where nodes are inserted.
 	 * @param {Number} howMany How many nodes are inserted.
 	 * @param {Boolean} insertBefore Flag indicating whether nodes are inserted before or after `insertPosition`.
 	 * This is important only when `insertPosition` and this position are same. If that is the case and the flag is
 	 * set to `true`, this position will get transformed. If the flag is set to `false`, it won't.
-	 * @returns {core.treeModel.Position} Transformed position.
+	 * @returns {engine.treeModel.Position} Transformed position.
 	 */
 	getTransformedByInsertion( insertPosition, howMany, insertBefore ) {
 		let transformed = Position.createFromPosition( this );
@@ -279,15 +279,15 @@ export default class Position {
 	 * Returns this position after being updated by moving `howMany` nodes from `sourcePosition` to `targetPosition`.
 	 *
 	 * @protected
-	 * @param {core.treeModel.Position} sourcePosition Position before the first element to move.
-	 * @param {core.treeModel.Position} targetPosition Position where moved elements will be inserted.
+	 * @param {engine.treeModel.Position} sourcePosition Position before the first element to move.
+	 * @param {engine.treeModel.Position} targetPosition Position where moved elements will be inserted.
 	 * @param {Number} howMany How many consecutive nodes to move, starting from `sourcePosition`.
 	 * @param {Boolean} insertBefore Flag indicating whether moved nodes are pasted before or after `insertPosition`.
 	 * This is important only when `targetPosition` and this position are same. If that is the case and the flag is
 	 * set to `true`, this position will get transformed by range insertion. If the flag is set to `false`, it won't.
 	 * @param {Boolean} [sticky] Flag indicating whether this position "sticks" to range, that is if it should be moved
 	 * with the moved range if it is equal to one of range's boundaries.
-	 * @returns {core.treeModel.Position} Transformed position.
+	 * @returns {engine.treeModel.Position} Transformed position.
 	 */
 	getTransformedByMove( sourcePosition, targetPosition, howMany, insertBefore, sticky ) {
 		// Moving a range removes nodes from their original position. We acknowledge this by proper transformation.
@@ -309,9 +309,9 @@ export default class Position {
 	/**
 	 * Checks whether this position is after given position.
 	 *
-	 * @see core.treeModel.Position#isBefore
+	 * @see engine.treeModel.Position#isBefore
 	 *
-	 * @param {core.treeModel.Position} otherPosition Position to compare with.
+	 * @param {engine.treeModel.Position} otherPosition Position to compare with.
 	 * @returns {Boolean} True if this position is after given position.
 	 */
 	isAfter( otherPosition ) {
@@ -346,7 +346,7 @@ export default class Position {
 	 *			// do A.
 	 *		}
 	 *
-	 * @param {core.treeModel.Position} otherPosition Position to compare with.
+	 * @param {engine.treeModel.Position} otherPosition Position to compare with.
 	 * @returns {Boolean} True if this position is before given position.
 	 */
 	isBefore( otherPosition ) {
@@ -356,7 +356,7 @@ export default class Position {
 	/**
 	 * Checks whether this position equals given position.
 	 *
-	 * @param {core.treeModel.Position} otherPosition Position to compare with.
+	 * @param {engine.treeModel.Position} otherPosition Position to compare with.
 	 * @returns {Boolean} True if positions are same.
 	 */
 	isEqual( otherPosition ) {
@@ -368,7 +368,7 @@ export default class Position {
 	 * or empty nodes in a range between them. Technically, those positions are not equal but in many cases
 	 * they are very similar or even indistinguishable when they touch.
 	 *
-	 * @param {core.treeModel.Position} otherPosition Position to compare with.
+	 * @param {engine.treeModel.Position} otherPosition Position to compare with.
 	 * @returns {Boolean} True if positions touch.
 	 */
 	isTouching( otherPosition ) {
@@ -419,10 +419,10 @@ export default class Position {
 	/**
 	 * Creates a new position after given node.
 	 *
-	 * @see {@link core.treeModel.TreeWalkerValue}
+	 * @see {@link engine.treeModel.TreeWalkerValue}
 	 *
-	 * @param {core.treeModel.Node} node Node the position should be directly after.
-	 * @returns {core.treeModel.Position}
+	 * @param {engine.treeModel.Node} node Node the position should be directly after.
+	 * @returns {engine.treeModel.Position}
 	 */
 	static createAfter( node ) {
 		if ( !node.parent ) {
@@ -430,7 +430,7 @@ export default class Position {
 			 * You can not make position after root.
 			 *
 			 * @error position-after-root
-			 * @param {core.treeModel.Node} root
+			 * @param {engine.treeModel.Node} root
 			 */
 			throw new CKEditorError( 'position-after-root: You can not make position after root.', { root: node } );
 		}
@@ -441,10 +441,10 @@ export default class Position {
 	/**
 	 * Creates a new position before the given node.
 	 *
-	 * @see {@link core.treeModel.TreeWalkerValue}
+	 * @see {@link engine.treeModel.TreeWalkerValue}
 	 *
-	 * @param {core.treeModel.node} node Node the position should be directly before.
-	 * @returns {core.treeModel.Position}
+	 * @param {engine.treeModel.node} node Node the position should be directly before.
+	 * @returns {engine.treeModel.Position}
 	 */
 	static createBefore( node ) {
 		if ( !node.parent ) {
@@ -452,7 +452,7 @@ export default class Position {
 			 * You can not make position before root.
 			 *
 			 * @error position-before-root
-			 * @param {core.treeModel.Node} root
+			 * @param {engine.treeModel.Node} root
 			 */
 			throw new CKEditorError( 'position-before-root: You can not make position before root.', { root: node } );
 		}
@@ -463,9 +463,9 @@ export default class Position {
 	/**
 	 * Creates a new position from the parent element and the offset in that element.
 	 *
-	 * @param {core.treeModel.Element} parent Position parent element.
+	 * @param {engine.treeModel.Element} parent Position parent element.
 	 * @param {Number} offset Position offset.
-	 * @returns {core.treeModel.Position}
+	 * @returns {engine.treeModel.Position}
 	 */
 	static createFromParentAndOffset( parent, offset ) {
 		const path = parent.getPath();
@@ -478,8 +478,8 @@ export default class Position {
 	/**
 	 * Creates and returns a new instance of Position, which is equal to passed position.
 	 *
-	 * @param {core.treeModel.Position} position Position to be cloned.
-	 * @returns {core.treeModel.Position}
+	 * @param {engine.treeModel.Position} position Position to be cloned.
+	 * @returns {engine.treeModel.Position}
 	 */
 	static createFromPosition( position ) {
 		return new this( position.root, position.path.slice() );
@@ -511,9 +511,9 @@ export default class Position {
 	 * Finally, the transformed position will point to `[ 1, 1, 4, 1 ]`.
 	 *
 	 * @protected
-	 * @param {core.treeModel.Position} source Beginning of the moved range.
-	 * @param {core.treeModel.Position} target Position where the range is moved.
-	 * @returns {core.treeModel.Position} Combined position.
+	 * @param {engine.treeModel.Position} source Beginning of the moved range.
+	 * @param {engine.treeModel.Position} target Position where the range is moved.
+	 * @returns {engine.treeModel.Position} Combined position.
 	 */
 	_getCombined( source, target ) {
 		const i = source.path.length - 1;
@@ -538,5 +538,5 @@ export default class Position {
  * A flag indicating whether this position is `'BEFORE'` or `'AFTER'` or `'SAME'` as given position.
  * If positions are in different roots `'DIFFERENT'` flag is returned.
  *
- * @typedef {String} core.treeModel.PositionRelation
+ * @typedef {String} engine.treeModel.PositionRelation
  */

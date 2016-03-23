@@ -14,10 +14,10 @@ import CKEditorError from '../../../utils/ckeditorerror.js';
 
 /**
  * @classdesc
- * To provide specific OT behavior and better collisions solving, {@link core.treeModel.Batch#move} method
+ * To provide specific OT behavior and better collisions solving, {@link engine.treeModel.Batch#move} method
  * uses the `MoveDelta` class which inherits from the `Delta` class and may overwrite some methods.
  *
- * @memberOf core.treeModel.delta
+ * @memberOf engine.treeModel.delta
  */
 export default class MoveDelta extends Delta {
 	/**
@@ -30,22 +30,22 @@ export default class MoveDelta extends Delta {
 	}
 
 	/**
-	 * {@link core.treeModel.delta.MoveDelta#_moveOperation Move operation}
-	 * {@link core.treeModel.operation.MoveOperation#sourcePosition source position} or `null` if there are
+	 * {@link engine.treeModel.delta.MoveDelta#_moveOperation Move operation}
+	 * {@link engine.treeModel.operation.MoveOperation#sourcePosition source position} or `null` if there are
 	 * no operations in the delta.
 	 *
-	 * @type {core.treeModel.Position|null}
+	 * @type {engine.treeModel.Position|null}
 	 */
 	get sourcePosition() {
 		return this._moveOperation ? this._moveOperation.sourcePosition : null;
 	}
 
 	/**
-	 * {@link core.treeModel.delta.MoveDelta#_moveOperation Move operation}
-	 * {@link core.treeModel.operation.MoveOperation#targetPosition target position} or `null` if there are
+	 * {@link engine.treeModel.delta.MoveDelta#_moveOperation Move operation}
+	 * {@link engine.treeModel.operation.MoveOperation#targetPosition target position} or `null` if there are
 	 * no operations in the delta.
 	 *
-	 * @type {core.treeModel.Position|null}
+	 * @type {engine.treeModel.Position|null}
 	 */
 	get targetPosition() {
 		return this._moveOperation ? this._moveOperation.targetPosition : null;
@@ -55,14 +55,14 @@ export default class MoveDelta extends Delta {
 	 * Move operation that is saved in this delta or `null` if there are no operations in the delta.
 	 *
 	 * @protected
-	 * @type {core.treeModel.operation.MoveOperation|null}
+	 * @type {engine.treeModel.operation.MoveOperation|null}
 	 */
 	get _moveOperation() {
 		return this.operations[ 0 ] || null;
 	}
 
 	/**
-	 * @see core.treeModel.delta.Delta#_reverseDeltaClass
+	 * @see engine.treeModel.delta.Delta#_reverseDeltaClass
 	 * @private
 	 * @type {Object}
 	 */
@@ -85,9 +85,9 @@ function addMoveOperation( batch, delta, sourcePosition, howMany, targetPosition
  * Moves given node or given range of nodes to target position.
  *
  * @chainable
- * @method core.treeModel.Batch#move
- * @param {core.treeModel.Node|core.treeModel.Range} nodeOrRange Node or range of nodes to move.
- * @param {core.treeModel.Position} targetPosition Position where moved nodes will be inserted.
+ * @method engine.treeModel.Batch#move
+ * @param {engine.treeModel.Node|engine.treeModel.Range} nodeOrRange Node or range of nodes to move.
+ * @param {engine.treeModel.Position} targetPosition Position where moved nodes will be inserted.
  */
 register( 'move', function( nodeOrRange, targetPosition ) {
 	const delta = new MoveDelta();

@@ -16,20 +16,21 @@ import isEqual from '../../../utils/lib/lodash/isEqual.js';
 import utils from '../../../utils/utils.js';
 
 /**
- * Transforms given {@link core.treeModel.operation.Operation operation} by another {@link core.treeModel.operation.Operation operation} and
- * returns the result of that transformation as an array containing one or more {@link core.treeModel.operation.Operation operation}
- * elements.
+ * Transforms given {@link engine.treeModel.operation.Operation operation} by another
+ * {@link engine.treeModel.operation.Operation operation} and
+ * returns the result of that transformation as an array containing one or more
+ * {@link engine.treeModel.operation.Operation operation} elements.
  *
- * Operations work on specified positions, passed to them when they are created. Whenever {@link core.treeModel.Document document}
+ * Operations work on specified positions, passed to them when they are created. Whenever {@link engine.treeModel.Document document}
  * changes, we have to reflect those modifications by updating or "transforming" operations which are not yet applied.
  * When an operation is transformed, its parameters may change based on the operation by which it is transformed.
  * If the transform-by operation applied any modifications to the Tree Data Model which affect positions or nodes
  * connected with transformed operation, those changes will be reflected in the parameters of the returned operation(s).
  *
- * Whenever the {@link core.treeModel.Document document} has different {@link core.treeModel.Document#baseVersion}
- * than the operation you want to {@link core.treeModel.Document#applyOperation apply}, you need to transform that
- * operation by all operations which were already applied to the {@link core.treeModel.Document document} and have greater
- * {@link core.treeModel.Document#baseVersion} than the operation being applied. Transform them in the same order as those
+ * Whenever the {@link engine.treeModel.Document document} has different {@link engine.treeModel.Document#baseVersion}
+ * than the operation you want to {@link engine.treeModel.Document#applyOperation apply}, you need to transform that
+ * operation by all operations which were already applied to the {@link engine.treeModel.Document document} and have greater
+ * {@link engine.treeModel.Document#baseVersion} than the operation being applied. Transform them in the same order as those
  * operations which were applied. This way all modifications done to the Tree Data Model will be reflected
  * in the operation parameters and the operation will "operate" on "up-to-date" version of the Tree Data Model.
  * This is mostly the case with Operational Transformations but it might be needed in particular features as well.
@@ -46,13 +47,13 @@ import utils from '../../../utils/utils.js';
  * `a` by `b` and also `b` by `a`. In both transformations the same operation has to be the important one. If we assume
  * that first or the second passed operation is always more important we won't be able to solve this case.
  *
- * @external core.treeModel.operation
- * @function core.treeModel.operation.transform
- * @param {core.treeModel.operation.Operation} a Operation that will be transformed.
- * @param {core.treeModel.operation.Operation} b Operation to transform by.
+ * @external engine.treeModel.operation
+ * @function engine.treeModel.operation.transform
+ * @param {engine.treeModel.operation.Operation} a Operation that will be transformed.
+ * @param {engine.treeModel.operation.Operation} b Operation to transform by.
  * @param {Boolean} isAMoreImportantThanB Flag indicating whether the operation which will be transformed (`a`) should be treated
  * as more important when resolving conflicts.
- * @returns {Array.<core.treeModel.operation.Operation>} Result of the transformation.
+ * @returns {Array.<engine.treeModel.operation.Operation>} Result of the transformation.
  */
 
 export default transform;

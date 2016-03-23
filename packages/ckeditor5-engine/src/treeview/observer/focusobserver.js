@@ -8,10 +8,10 @@
 import DomEventObserver from './domeventobserver.js';
 
 /**
- * {@link core.treeView.TreeView#focus Focus} and {@link core.treeView.TreeView#blur blur} events observer.
+ * {@link engine.treeView.TreeView#focus Focus} and {@link engine.treeView.TreeView#blur blur} events observer.
  *
- * @memberOf core.treeView.observer
- * @extends core.treeView.observer.DomEventObserver
+ * @memberOf engine.treeView.observer
+ * @extends engine.treeView.observer.DomEventObserver
  */
 export default class FocusObserver extends DomEventObserver {
 	constructor( treeView ) {
@@ -36,15 +36,15 @@ export default class FocusObserver extends DomEventObserver {
 /**
  * Fired when one of the editables gets focus.
  *
- * @event core.treeView.TreeView#focus
- * @param {core.treeView.Element} data.target The event view target (editable element that was focused).
+ * @event engine.treeView.TreeView#focus
+ * @param {engine.treeView.Element} data.target The event view target (editable element that was focused).
  * @param {HTMLElement} data.domTarget The event DOM target (editable element that was focused).
  */
 
 /**
  * Fired when one of the editables loses focus.
  *
- * @event core.treeView.TreeView#blur
- * @param {core.treeView.Element} data.target The event view target (editable element that was blurred).
+ * @event engine.treeView.TreeView#blur
+ * @param {engine.treeView.Element} data.target The event view target (editable element that was blurred).
  * @param {HTMLElement} data.domTarget The event DOM target (editable element that was blurred).
  */

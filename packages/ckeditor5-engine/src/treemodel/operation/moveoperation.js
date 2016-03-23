@@ -14,17 +14,17 @@ import utils from '../../../utils/utils.js';
 /**
  * Operation to move list of subsequent nodes from one position in the document to another.
  *
- * @memberOf core.treeModel.operation
- * @extends core.treeModel.operation.Operation
+ * @memberOf engine.treeModel.operation
+ * @extends engine.treeModel.operation.Operation
  */
 export default class MoveOperation extends Operation {
 	/**
 	 * Creates a move operation.
 	 *
-	 * @param {core.treeModel.Position} sourcePosition Position before the first node to move.
+	 * @param {engine.treeModel.Position} sourcePosition Position before the first node to move.
 	 * @param {Number} howMany How many consecutive nodes to move, starting from `sourcePosition`.
-	 * @param {core.treeModel.Position} targetPosition Position where moved nodes will be inserted.
-	 * @param {Number} baseVersion {@link core.treeModel.Document#version} on which operation can be applied.
+	 * @param {engine.treeModel.Position} targetPosition Position where moved nodes will be inserted.
+	 * @param {Number} baseVersion {@link engine.treeModel.Document#version} on which operation can be applied.
 	 */
 	constructor( sourcePosition, howMany, targetPosition, baseVersion ) {
 		super( baseVersion );
@@ -32,27 +32,27 @@ export default class MoveOperation extends Operation {
 		/**
 		 * Source move position.
 		 *
-		 * @member {core.treeModel.Position} core.treeModel.operation.MoveOperation#sourcePosition
+		 * @member {engine.treeModel.Position} engine.treeModel.operation.MoveOperation#sourcePosition
 		 */
 		this.sourcePosition = Position.createFromPosition( sourcePosition );
 
 		/**
 		 * How many nodes to move.
 		 *
-		 * @member {Number} core.treeModel.operation.MoveOperation#howMany
+		 * @member {Number} engine.treeModel.operation.MoveOperation#howMany
 		 */
 		this.howMany = howMany;
 
 		/**
 		 * Target move position.
 		 *
-		 * @member {core.treeModel.Position} core.treeModel.operation.MoveOperation#targetPosition
+		 * @member {engine.treeModel.Position} engine.treeModel.operation.MoveOperation#targetPosition
 		 */
 		this.targetPosition = Position.createFromPosition( targetPosition );
 
 		/**
 		 * Defines whether `MoveOperation` is sticky. If `MoveOperation` is sticky, during
-		 * {@link core.treeModel.operation.transform operational transformation} if there will be an operation that
+		 * {@link engine.treeModel.operation.transform operational transformation} if there will be an operation that
 		 * inserts some nodes at the position equal to the boundary of this `MoveOperation`, that operation will
 		 * get their insertion path updated to the position where this `MoveOperation` moves the range.
 		 *
@@ -66,7 +66,7 @@ export default class MoveOperation extends Operation {
 	}
 
 	/**
-	 * @returns {core.treeModel.operation.MoveOperation}
+	 * @returns {engine.treeModel.operation.MoveOperation}
 	 */
 	clone() {
 		const op = new this.constructor( this.sourcePosition, this.howMany, this.targetPosition, this.baseVersion );
@@ -76,7 +76,7 @@ export default class MoveOperation extends Operation {
 	}
 
 	/**
-	 * @returns {core.treeModel.operation.MoveOperation}
+	 * @returns {engine.treeModel.operation.MoveOperation}
 	 */
 	getReversed() {
 		let newSourcePosition = this.targetPosition.getTransformedByDeletion( this.sourcePosition, this.howMany );

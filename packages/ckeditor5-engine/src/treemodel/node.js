@@ -12,7 +12,7 @@ import CKEditorError from '../../utils/ckeditorerror.js';
 /**
  * Tree model node. This is an abstract class for other classes representing different nodes in Tree Model.
  *
- * @memberOf core.treeModel
+ * @memberOf engine.treeModel
  */
 export default class Node {
 	/**
@@ -25,10 +25,10 @@ export default class Node {
 	 */
 	constructor( attrs ) {
 		/**
-		 * Parent element. Null by default. Set by {@link core.treeModel.Element#insertChildren}.
+		 * Parent element. Null by default. Set by {@link engine.treeModel.Element#insertChildren}.
 		 *
 		 * @readonly
-		 * @member {core.treeModel.Element|null} core.treeModel.Node#parent
+		 * @member {engine.treeModel.Element|null} engine.treeModel.Node#parent
 		 */
 		this.parent = null;
 
@@ -36,11 +36,11 @@ export default class Node {
 		 * List of attributes set on this node.
 		 *
 		 * **Note:** It is **important** that attributes of nodes already attached to the document must be changed
-		 * only by an {@link core.treeModel.operation.AttributeOperation}. Do not set attributes of such nodes
-		 * using {@link core.treeModel.Node} methods.
+		 * only by an {@link engine.treeModel.operation.AttributeOperation}. Do not set attributes of such nodes
+		 * using {@link engine.treeModel.Node} methods.
 		 *
 		 * @protected
-		 * @member {Map} core.treeModel.Node#_attrs
+		 * @member {Map} engine.treeModel.Node#_attrs
 		 */
 		this._attrs = utils.toMap( attrs );
 	}
@@ -68,7 +68,7 @@ export default class Node {
 	 * Nodes next sibling or `null` if it is the last child.
 	 *
 	 * @readonly
-	 * @type {core.treeModel.Node|null}
+	 * @type {engine.treeModel.Node|null}
 	 */
 	get nextSibling() {
 		const index = this.getIndex();
@@ -80,7 +80,7 @@ export default class Node {
 	 * Nodes previous sibling or null if it is the last child.
 	 *
 	 * @readonly
-	 * @type {core.treeModel.Node|null}
+	 * @type {engine.treeModel.Node|null}
 	 */
 	get previousSibling() {
 		const index = this.getIndex();
@@ -132,7 +132,7 @@ export default class Node {
 
 	/**
 	 * Gets path to the node. For example if the node is the second child of the first child of the root then the path
-	 * will be `[ 1, 2 ]`. This path can be used as a parameter of {@link core.treeModel.Position}.
+	 * will be `[ 1, 2 ]`. This path can be used as a parameter of {@link engine.treeModel.Position}.
 	 *
 	 * @returns {Number[]} The path.
 	 */

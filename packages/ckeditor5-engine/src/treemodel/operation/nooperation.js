@@ -13,22 +13,22 @@ import Operation from './operation.js';
  * It still has some parameters defined for transformation purposes.
  *
  * In most cases this operation is a result of transforming operations. When transformation returns
- * {@link core.treeModel.operation.NoOperation} it means that changes done by the transformed operation
+ * {@link engine.treeModel.operation.NoOperation} it means that changes done by the transformed operation
  * have already been applied.
  *
- * @memberOf core.treeModel.operation
- * @extends core.treeModel.operation.Operation
+ * @memberOf engine.treeModel.operation
+ * @extends engine.treeModel.operation.Operation
  */
 export default class NoOperation extends Operation {
 	/**
-	 * @returns {core.treeModel.operation.NoOperation}
+	 * @returns {engine.treeModel.operation.NoOperation}
 	 */
 	clone() {
 		return new NoOperation( this.baseVersion );
 	}
 
 	/**
-	 * @returns {core.treeModel.operation.NoOperation}
+	 * @returns {engine.treeModel.operation.NoOperation}
 	 */
 	getReversed() {
 		return new NoOperation( this.baseVersion + 1 );

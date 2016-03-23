@@ -9,8 +9,8 @@
  * Basic HTML writer, it uses the native `innerHTML` property for basic conversion
  * from DocumentFragment to an HTML string.
  *
- * @memberOf core.dataProcessor
- * @implements core.dataProcessor.HtmlWriter
+ * @memberOf engine.dataProcessor
+ * @implements engine.dataProcessor.HtmlWriter
  */
 export default class BasicHtmlWriter {
 	/**

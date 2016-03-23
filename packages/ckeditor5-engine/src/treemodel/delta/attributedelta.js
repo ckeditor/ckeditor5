@@ -15,12 +15,12 @@ import RootElement from '../rootelement.js';
 import Element from '../element.js';
 
 /**
- * To provide specific OT behavior and better collisions solving, change methods ({@link core.treeModel.Batch#setAttr}
- * and {@link core.treeModel.Batch#removeAttr}) use `AttributeDelta` class which inherits from the `Delta` class and may
+ * To provide specific OT behavior and better collisions solving, change methods ({@link engine.treeModel.Batch#setAttr}
+ * and {@link engine.treeModel.Batch#removeAttr}) use `AttributeDelta` class which inherits from the `Delta` class and may
  * overwrite some methods.
  *
- * @memberOf core.treeModel.delta
- * @extends core.treeModel.delta.Delta
+ * @memberOf engine.treeModel.delta
+ * @extends engine.treeModel.delta.Delta
  */
 export default class AttributeDelta extends Delta {
 	/**
@@ -44,7 +44,7 @@ export default class AttributeDelta extends Delta {
 	/**
 	 * The range on which delta operates or `null` if the delta has no operations.
 	 *
-	 * @type {core.treeModel.Range|null}
+	 * @type {engine.treeModel.Range|null}
 	 */
 	get range() {
 		// Check if it is cached.
@@ -66,7 +66,7 @@ export default class AttributeDelta extends Delta {
 	}
 
 	/**
-	 * @see core.treeModel.delta.Delta#_reverseDeltaClass
+	 * @see engine.treeModel.delta.Delta#_reverseDeltaClass
 	 * @private
 	 * @type {Object}
 	 */
@@ -80,12 +80,12 @@ export default class AttributeDelta extends Delta {
 }
 
 /**
- * To provide specific OT behavior and better collisions solving, change methods ({@link core.treeModel.Batch#setAttr}
- * and {@link core.treeModel.Batch#removeAttr}) use `RootAttributeDelta` class which inherits from the `Delta` class and may
+ * To provide specific OT behavior and better collisions solving, change methods ({@link engine.treeModel.Batch#setAttr}
+ * and {@link engine.treeModel.Batch#removeAttr}) use `RootAttributeDelta` class which inherits from the `Delta` class and may
  * overwrite some methods.
  *
- * @memberOf core.treeModel.delta
- * @extends core.treeModel.delta.Delta
+ * @memberOf engine.treeModel.delta
+ * @extends engine.treeModel.delta.Delta
  */
 export class RootAttributeDelta extends Delta {}
 
@@ -93,10 +93,10 @@ export class RootAttributeDelta extends Delta {}
  * Sets the value of the attribute of the node or on the range.
  *
  * @chainable
- * @method core.treeModel.Batch#setAttr
+ * @method engine.treeModel.Batch#setAttr
  * @param {String} key Attribute key.
  * @param {*} value Attribute new value.
- * @param {core.treeModel.Node|core.treeModel.Range} nodeOrRange Node or range on which the attribute will be set.
+ * @param {engine.treeModel.Node|engine.treeModel.Range} nodeOrRange Node or range on which the attribute will be set.
  */
 register( 'setAttr', function( key, value, nodeOrRange ) {
 	attribute( this, key, value, nodeOrRange );
@@ -108,9 +108,9 @@ register( 'setAttr', function( key, value, nodeOrRange ) {
  * Removes an attribute from the range.
  *
  * @chainable
- * @method core.treeModel.Batch#removeAttr
+ * @method engine.treeModel.Batch#removeAttr
  * @param {String} key Attribute key.
- * @param {core.treeModel.Node|core.treeModel.Range} nodeOrRange Node or range on which the attribute will be removed.
+ * @param {engine.treeModel.Node|engine.treeModel.Range} nodeOrRange Node or range on which the attribute will be removed.
  */
 register( 'removeAttr', function( key, nodeOrRange ) {
 	attribute( this, key, null, nodeOrRange );

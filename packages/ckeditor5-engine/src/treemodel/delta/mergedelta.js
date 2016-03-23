@@ -16,16 +16,16 @@ import CKEditorError from '../../../utils/ckeditorerror.js';
 
 /**
  * @classdesc
- * To provide specific OT behavior and better collisions solving, {@link core.treeModel.Batch#merge} method
+ * To provide specific OT behavior and better collisions solving, {@link engine.treeModel.Batch#merge} method
  * uses the `MergeDelta` class which inherits from the `Delta` class and may overwrite some methods.
  *
- * @memberOf core.treeModel.delta
+ * @memberOf engine.treeModel.delta
  */
 export default class MergeDelta extends Delta {
 	/**
 	 * Position between to merged nodes or `null` if the delta has no operations.
 	 *
-	 * @type {core.treeModel.Position|null}
+	 * @type {engine.treeModel.Position|null}
 	 */
 	get position() {
 		return this._removeOperation ? this._removeOperation.sourcePosition : null;
@@ -33,19 +33,19 @@ export default class MergeDelta extends Delta {
 
 	/**
 	 * Operation in this delta that removes the node after merge position (which will be empty at that point) or
-	 * `null` if the delta has no operations. Note, that after {@link core.treeModel.delta.transform transformation}
-	 * this might be an instance of {@link core.treeModel.operation.MoveOperation} instead of
-	 * {@link core.treeModel.operation.RemoveOperation}.
+	 * `null` if the delta has no operations. Note, that after {@link engine.treeModel.delta.transform transformation}
+	 * this might be an instance of {@link engine.treeModel.operation.MoveOperation} instead of
+	 * {@link engine.treeModel.operation.RemoveOperation}.
 	 *
 	 * @protected
-	 * @type {core.treeModel.operation.MoveOperation|null}
+	 * @type {engine.treeModel.operation.MoveOperation|null}
 	 */
 	get _removeOperation() {
 		return this.operations[ 1 ] || null;
 	}
 
 	/**
-	 * @see core.treeModel.delta.Delta#_reverseDeltaClass
+	 * @see engine.treeModel.delta.Delta#_reverseDeltaClass
 	 * @protected
 	 * @type {Object}
 	 */
@@ -61,8 +61,8 @@ export default class MergeDelta extends Delta {
  * `batch-merge-no-element-after` error will be thrown.
  *
  * @chainable
- * @method core.treeModel.Batch#merge
- * @param {core.treeModel.Position} position Position of merge.
+ * @method engine.treeModel.Batch#merge
+ * @param {engine.treeModel.Position} position Position of merge.
  */
 register( 'merge', function( position ) {
 	const delta = new MergeDelta();

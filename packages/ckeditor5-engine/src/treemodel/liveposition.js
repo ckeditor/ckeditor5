@@ -13,20 +13,20 @@ import utils from '../../utils/utils.js';
 /**
  * LivePosition is a position in the Tree Model that updates itself as the tree changes. It may be used as a bookmark.
  * **Note:** Be very careful when dealing with LivePosition. Each LivePosition instance bind events that might
- * have to be unbound. Use {@link core.treeModel.LivePosition#detach} whenever you don't need LivePosition anymore.
+ * have to be unbound. Use {@link engine.treeModel.LivePosition#detach} whenever you don't need LivePosition anymore.
  *
- * @memberOf core.treeModel
- * @extends core.treeModel.Position
+ * @memberOf engine.treeModel
+ * @extends engine.treeModel.Position
  */
 export default class LivePosition extends Position {
 	/**
 	 * Creates a live position.
 	 *
-	 * @see core.treeModel.Position
-	 * @param {core.treeModel.RootElement} root
+	 * @see engine.treeModel.Position
+	 * @param {engine.treeModel.RootElement} root
 	 * @param {Array.<Number>} path
-	 * @param {core.treeModel.PositionStickiness} [stickiness] Defaults to `'STICKS_TO_NEXT'`. See
-	 *  {@link core.treeModel.LivePosition#stickiness}.
+	 * @param {engine.treeModel.PositionStickiness} [stickiness] Defaults to `'STICKS_TO_NEXT'`. See
+	 *  {@link engine.treeModel.LivePosition#stickiness}.
 	 */
 	constructor( root, path, stickiness ) {
 		super( root, path );
@@ -48,7 +48,7 @@ export default class LivePosition extends Position {
 		 * - | sticks to previous node: `<p>f|[oo]</p><p>b^ar</p>` => `<p>f|</p><p>booar</p>`
 		 * - | sticks to next node: `<p>f|[oo]</p><p>b^ar</p>` => `<p>f</p><p>b|ooar</p>`
 		 *
-		 * @member {core.treeModel.PositionStickiness} core.treeModel.LivePosition#stickiness
+		 * @member {engine.treeModel.PositionStickiness} engine.treeModel.LivePosition#stickiness
 		 */
 		this.stickiness = stickiness || 'STICKS_TO_NEXT';
 
@@ -66,44 +66,44 @@ export default class LivePosition extends Position {
 
 	/**
 	 * @static
-	 * @method core.treeModel.LivePosition.createAfter
-	 * @see core.treeModel.Position.createAfter
-	 * @param {core.treeModel.Node} node
-	 * @returns {core.treeModel.LivePosition}
+	 * @method engine.treeModel.LivePosition.createAfter
+	 * @see engine.treeModel.Position.createAfter
+	 * @param {engine.treeModel.Node} node
+	 * @returns {engine.treeModel.LivePosition}
 	 */
 
 	/**
 	 * @static
-	 * @method core.treeModel.LivePosition.createBefore
-	 * @see core.treeModel.Position.createBefore
-	 * @param {core.treeModel.Node} node
-	 * @returns {core.treeModel.LivePosition}
+	 * @method engine.treeModel.LivePosition.createBefore
+	 * @see engine.treeModel.Position.createBefore
+	 * @param {engine.treeModel.Node} node
+	 * @returns {engine.treeModel.LivePosition}
 	 */
 
 	/**
 	 * @static
-	 * @method core.treeModel.LivePosition.createFromParentAndOffset
-	 * @see core.treeModel.Position.createFromParentAndOffset
-	 * @param {core.treeModel.Element} parent
+	 * @method engine.treeModel.LivePosition.createFromParentAndOffset
+	 * @see engine.treeModel.Position.createFromParentAndOffset
+	 * @param {engine.treeModel.Element} parent
 	 * @param {Number} offset
-	 * @returns {core.treeModel.LivePosition}
+	 * @returns {engine.treeModel.LivePosition}
 	 */
 
 	/**
 	 * @static
-	 * @method core.treeModel.LivePosition.createFromPosition
-	 * @see core.treeModel.Position.createFromPosition
-	 * @param {core.treeModel.Position} position
-	 * @returns {core.treeModel.LivePosition}
+	 * @method engine.treeModel.LivePosition.createFromPosition
+	 * @see engine.treeModel.Position.createFromPosition
+	 * @param {engine.treeModel.Position} position
+	 * @returns {engine.treeModel.LivePosition}
 	 */
 }
 
 /**
- * Binds this LivePosition to the {@link core.treeModel.Document} that owns this position {@link core.treeModel.RootElement root}.
+ * Binds this LivePosition to the {@link engine.treeModel.Document} that owns this position {@link engine.treeModel.RootElement root}.
  *
  * @ignore
  * @private
- * @method core.treeModel.LivePosition.bindWithDocument
+ * @method engine.treeModel.LivePosition.bindWithDocument
  */
 function bindWithDocument() {
 	/*jshint validthis: true */
@@ -125,8 +125,8 @@ function bindWithDocument() {
  * @private
  * @method transform
  * @param {String} type Type of changes applied to the Tree Model.
- * @param {core.treeModel.Range} range Range containing the result of applied change.
- * @param {core.treeModel.Position} [position] Additional position parameter provided by some change events.
+ * @param {engine.treeModel.Range} range Range containing the result of applied change.
+ * @param {engine.treeModel.Position} [position] Additional position parameter provided by some change events.
  */
 function transform( type, range, position ) {
 	/*jshint validthis: true */
@@ -171,6 +171,6 @@ utils.mix( LivePosition, EmitterMixin );
  * Enum representing how position is "sticking" with their neighbour nodes.
  * Possible values: `'STICKS_TO_NEXT'`, `'STICKS_TO_PREVIOUS'`.
  *
- * @typedef {String} core.treeModel.PositionStickiness
+ * @typedef {String} engine.treeModel.PositionStickiness
  */
 

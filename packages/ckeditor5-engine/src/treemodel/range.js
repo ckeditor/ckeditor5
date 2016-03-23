@@ -12,22 +12,22 @@ import utils from '../../utils/utils.js';
 /**
  * Range class. Range is iterable.
  *
- * @memberOf core.treeModel
+ * @memberOf engine.treeModel
  */
 export default class Range {
 	/**
 	 * Creates a range spanning from `start` position to `end` position.
-	 * **Note:** Constructor creates it's own {@link core.treeModel.Position} instances basing on passed values.
+	 * **Note:** Constructor creates it's own {@link engine.treeModel.Position} instances basing on passed values.
 	 *
-	 * @param {core.treeModel.Position} start Start position.
-	 * @param {core.treeModel.Position} end End position.
+	 * @param {engine.treeModel.Position} start Start position.
+	 * @param {engine.treeModel.Position} end End position.
 	 */
 	constructor( start, end ) {
 		/**
 		 * Start position.
 		 *
 		 * @readonly
-		 * @member {core.treeModel.Position} core.treeModel.Range#start
+		 * @member {engine.treeModel.Position} engine.treeModel.Range#start
 		 */
 		this.start = Position.createFromPosition( start );
 
@@ -35,7 +35,7 @@ export default class Range {
 		 * End position.
 		 *
 		 * @readonly
-		 * @member {core.treeModel.Position} core.treeModel.Range#end
+		 * @member {engine.treeModel.Position} engine.treeModel.Range#end
 		 */
 		this.end = Position.createFromPosition( end );
 	}
@@ -61,35 +61,35 @@ export default class Range {
 	/**
 	 * Range root element. Equals to the root of start position (which should be same as root of end position).
 	 *
-	 * @type {core.treeModel.RootElement}
+	 * @type {engine.treeModel.RootElement}
 	 */
 	get root() {
 		return this.start.root;
 	}
 
 	/**
-	 * Checks whether this contains given {@link core.treeModel.Position position}.
+	 * Checks whether this contains given {@link engine.treeModel.Position position}.
 	 *
-	 * @param {core.treeModel.Position} position Position to check.
-	 * @returns {Boolean} True if given {@link core.treeModel.Position position} is contained.
+	 * @param {engine.treeModel.Position} position Position to check.
+	 * @returns {Boolean} True if given {@link engine.treeModel.Position position} is contained.
 	 */
 	containsPosition( position ) {
 		return position.isAfter( this.start ) && position.isBefore( this.end );
 	}
 
 	/**
-	 * Checks whether this range contains given {@link core.treeModel.Range range}.
+	 * Checks whether this range contains given {@link engine.treeModel.Range range}.
 	 *
-	 * @param {core.treeModel.Range} otherRange Range to check.
-	 * @returns {Boolean} True if given {@link core.treeModel.Range range} boundaries are contained by this range.
+	 * @param {engine.treeModel.Range} otherRange Range to check.
+	 * @returns {Boolean} True if given {@link engine.treeModel.Range range} boundaries are contained by this range.
 	 */
 	containsRange( otherRange ) {
 		return this.containsPosition( otherRange.start ) && this.containsPosition( otherRange.end );
 	}
 
 	/**
-	 * Gets a part of this {@link core.treeModel.Range range} which is not a part of given {@link core.treeModel.Range range}. Returned
-	 * array contains zero, one or two {@link core.treeModel.Range ranges}.
+	 * Gets a part of this {@link engine.treeModel.Range range} which is not a part of given {@link engine.treeModel.Range range}. Returned
+	 * array contains zero, one or two {@link engine.treeModel.Range ranges}.
 	 *
 	 * Examples:
 	 *
@@ -106,8 +106,8 @@ export default class Range {
 	 *		transformed = range.getDifference( otherRange );
 	 *		// transformed array has two ranges: from [ 2, 7 ] to [ 3 ] and from [ 4 ] to [ 4, 0, 1 ]
 	 *
-	 * @param {core.treeModel.Range} otherRange Range to differentiate against.
-	 * @returns {Array.<core.treeModel.Range>} The difference between ranges.
+	 * @param {engine.treeModel.Range} otherRange Range to differentiate against.
+	 * @returns {Array.<engine.treeModel.Range>} The difference between ranges.
 	 */
 	getDifference( otherRange ) {
 		const ranges = [];
@@ -135,7 +135,7 @@ export default class Range {
 	}
 
 	/**
-	 * Returns an intersection of this {@link core.treeModel.Range range} and given {@link core.treeModel.Range range}. Intersection
+	 * Returns an intersection of this {@link engine.treeModel.Range range} and given {@link engine.treeModel.Range range}. Intersection
 	 * is a common part of both of those ranges. If ranges has no common part, returns `null`.
 	 *
 	 * Examples:
@@ -147,8 +147,8 @@ export default class Range {
 	 *		otherRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 5 ] ) );
 	 *		transformed = range.getIntersection( otherRange ); // range from [ 3 ] to [ 4, 0, 1 ]
 	 *
-	 * @param {core.treeModel.Range} otherRange Range to check for intersection.
-	 * @returns {core.treeModel.Range|null} A common part of given ranges or null if ranges have no common part.
+	 * @param {engine.treeModel.Range} otherRange Range to check for intersection.
+	 * @returns {engine.treeModel.Range|null} A common part of given ranges or null if ranges have no common part.
 	 */
 	getIntersection( otherRange ) {
 		if ( this.isIntersecting( otherRange ) ) {
@@ -209,7 +209,7 @@ export default class Range {
 	 * **Note:** this method is not returning flat ranges that contain no nodes. It may also happen that not-collapsed
 	 * range will return an empty array of flat ranges.
 	 *
-	 * @returns {Array.<core.treeModel.Range>} Array of flat ranges.
+	 * @returns {Array.<engine.treeModel.Range>} Array of flat ranges.
 	 */
 	getMinimalFlatRanges() {
 		let ranges = [];
@@ -252,33 +252,33 @@ export default class Range {
 	}
 
 	/**
-	 * Returns an iterator that iterates over all {@link core.treeModel.Item items} that are in this range and returns
-	 * them together with additional information like length or {@link core.treeModel.Position positions},
-	 * grouped as {@link core.treeModel.TreeWalkerValue}. It iterates over all {@link core.treeModel.TextFragment texts}
-	 * that are inside the range and all the {@link core.treeModel.Element}s we enter into when iterating over this
+	 * Returns an iterator that iterates over all {@link engine.treeModel.Item items} that are in this range and returns
+	 * them together with additional information like length or {@link engine.treeModel.Position positions},
+	 * grouped as {@link engine.treeModel.TreeWalkerValue}. It iterates over all {@link engine.treeModel.TextFragment texts}
+	 * that are inside the range and all the {@link engine.treeModel.Element}s we enter into when iterating over this
 	 * range.
 	 *
 	 * **Note:** iterator will not return a parent node of start position. This is in contrary to
-	 * {@link core.treeModel.TreeWalker} which will return that node with `'ELEMENT_END'` type. Iterator also
-	 * returns each {@link core.treeModel.Element} once, while simply used {@link core.treeModel.TreeWalker} might
+	 * {@link engine.treeModel.TreeWalker} which will return that node with `'ELEMENT_END'` type. Iterator also
+	 * returns each {@link engine.treeModel.Element} once, while simply used {@link engine.treeModel.TreeWalker} might
 	 * return it twice: for `'ELEMENT_START'` and `'ELEMENT_END'`.
 	 *
-	 * **Note:** because iterator does not return {@link core.treeModel.TreeWalkerValue values} with the type of
-	 * `'ELEMENT_END'`, you can use {@link core.treeModel.TreeWalkerValue.previousPosition} as a position before the
+	 * **Note:** because iterator does not return {@link engine.treeModel.TreeWalkerValue values} with the type of
+	 * `'ELEMENT_END'`, you can use {@link engine.treeModel.TreeWalkerValue.previousPosition} as a position before the
 	 * item.
 	 *
-	 * @see core.treeModel.TreeWalker
-	 * @returns {Iterable.<core.treeModel.TreeWalkerValue>}
+	 * @see engine.treeModel.TreeWalker
+	 * @returns {Iterable.<engine.treeModel.TreeWalkerValue>}
 	 */
 	*[ Symbol.iterator ]() {
 		yield* new TreeWalker( { boundaries: this, ignoreElementEnd: true } );
 	}
 
 	/**
-	 * Creates a {@link core.treeModel.TreeWalker} instance with this range as a boundary.
+	 * Creates a {@link engine.treeModel.TreeWalker} instance with this range as a boundary.
 	 *
-	 * @param {Object} options Object with configuration options. See {@link core.treeModel.TreeWalker}.
-	 * @param {core.treeModel.Position} [options.startPosition]
+	 * @param {Object} options Object with configuration options. See {@link engine.treeModel.TreeWalker}.
+	 * @param {engine.treeModel.Position} [options.startPosition]
 	 * @param {Boolean} [options.singleCharacters=false]
 	 * @param {Boolean} [options.shallow=false]
 	 * @param {Boolean} [options.ignoreElementEnd=false]
@@ -290,17 +290,17 @@ export default class Range {
 	}
 
 	/**
-	 * Returns an iterator that iterates over all {@link core.treeModel.Item items} that are in this range and returns
-	 * them. It iterates over all {@link core.treeModel.CharacterProxy characters} or
-	 * {@link core.treeModel.TextFragment texts} that are inside the range and all the {@link core.treeModel.Element}s
-	 * we enter into when iterating over this range. Note that it use {@link core.treeModel.TreeWalker} with the
-	 * {@link core.treeModel.TreeWalker#ignoreElementEnd ignoreElementEnd} option set to true.
+	 * Returns an iterator that iterates over all {@link engine.treeModel.Item items} that are in this range and returns
+	 * them. It iterates over all {@link engine.treeModel.CharacterProxy characters} or
+	 * {@link engine.treeModel.TextFragment texts} that are inside the range and all the {@link engine.treeModel.Element}s
+	 * we enter into when iterating over this range. Note that it use {@link engine.treeModel.TreeWalker} with the
+	 * {@link engine.treeModel.TreeWalker#ignoreElementEnd ignoreElementEnd} option set to true.
 	 *
-	 * @param {Object} options Object with configuration options. See {@link core.treeModel.TreeWalker}.
-	 * @param {core.treeModel.Position} [options.startPosition]
+	 * @param {Object} options Object with configuration options. See {@link engine.treeModel.TreeWalker}.
+	 * @param {engine.treeModel.Position} [options.startPosition]
 	 * @param {Boolean} [options.singleCharacters=false]
 	 * @param {Boolean} [options.shallow=false]
-	 * @returns {Iterable.<core.treeModel.Item>}
+	 * @returns {Iterable.<engine.treeModel.Item>}
 	 */
 	*getItems( options = {} ) {
 		options.boundaries = this;
@@ -314,13 +314,13 @@ export default class Range {
 	}
 
 	/**
-	 * Returns an iterator that iterates over all {@link core.treeModel.Position positions} that are boundaries or
+	 * Returns an iterator that iterates over all {@link engine.treeModel.Position positions} that are boundaries or
 	 * contained in this range.
 	 *
-	 * @param {Object} options Object with configuration options. See {@link core.treeModel.TreeWalker}.
+	 * @param {Object} options Object with configuration options. See {@link engine.treeModel.TreeWalker}.
 	 * @param {Boolean} [options.singleCharacters=false]
 	 * @param {Boolean} [options.shallow=false]
-	 * @returns {Iterable.<core.treeModel.Position>}
+	 * @returns {Iterable.<engine.treeModel.Position>}
 	 */
 	*getPositions( options = {} ) {
 		options.boundaries = this;
@@ -335,9 +335,9 @@ export default class Range {
 	}
 
 	/**
-	 * Returns an array containing one or two {core.treeModel.Range ranges} that are a result of transforming this
-	 * {@link core.treeModel.Range range} by inserting `howMany` nodes at `insertPosition`. Two {@link core.treeModel.Range ranges} are
-	 * returned if the insertion was inside this {@link core.treeModel.Range range} and `spread` is set to `true`.
+	 * Returns an array containing one or two {engine.treeModel.Range ranges} that are a result of transforming this
+	 * {@link engine.treeModel.Range range} by inserting `howMany` nodes at `insertPosition`. Two {@link engine.treeModel.Range ranges} are
+	 * returned if the insertion was inside this {@link engine.treeModel.Range range} and `spread` is set to `true`.
 	 *
 	 * Examples:
 	 *
@@ -361,13 +361,13 @@ export default class Range {
 	 *		// transformed array has one range: from [ 2, 7 ] to [ 4, 0, 5 ] because range was expanded
 	 *
 	 * @protected
-	 * @param {core.treeModel.Position} insertPosition Position where nodes are inserted.
+	 * @param {engine.treeModel.Position} insertPosition Position where nodes are inserted.
 	 * @param {Number} howMany How many nodes are inserted.
-	 * @param {Boolean} [spread] Flag indicating whether this {core.treeModel.Range range} should be spread if insertion
+	 * @param {Boolean} [spread] Flag indicating whether this {engine.treeModel.Range range} should be spread if insertion
 	 * was inside the range. Defaults to `false`.
 	 * @param {Boolean} [isSticky] Flag indicating whether insertion should expand a range if it is in a place of
 	 * range boundary. Defaults to `false`.
-	 * @returns {Array.<core.treeModel.Range>} Result of the transformation.
+	 * @returns {Array.<engine.treeModel.Range>} Result of the transformation.
 	 */
 	getTransformedByInsertion( insertPosition, howMany, spread, isSticky ) {
 		isSticky = !!isSticky;
@@ -397,7 +397,7 @@ export default class Range {
 	/**
 	 * Two ranges equal if their start and end positions equal.
 	 *
-	 * @param {core.treeModel.Range} otherRange Range to compare with.
+	 * @param {engine.treeModel.Range} otherRange Range to compare with.
 	 * @returns {Boolean} True if ranges equal.
 	 */
 	isEqual( otherRange ) {
@@ -407,7 +407,7 @@ export default class Range {
 	/**
 	 * Checks and returns whether this range intersects with given range.
 	 *
-	 * @param {core.treeModel.Range} otherRange Range to compare with.
+	 * @param {engine.treeModel.Range} otherRange Range to compare with.
 	 * @returns {Boolean} True if ranges intersect.
 	 */
 	isIntersecting( otherRange ) {
@@ -417,8 +417,8 @@ export default class Range {
 	/**
 	 * Creates a range inside an element which starts before the first child and ends after the last child.
 	 *
-	 * @param {core.treeModel.Element} element Element which is a parent for the range.
-	 * @returns {core.treeModel.Range} Created range.
+	 * @param {engine.treeModel.Element} element Element which is a parent for the range.
+	 * @returns {engine.treeModel.Range} Created range.
 	 */
 	static createFromElement( element ) {
 		return this.createFromParentsAndOffsets( element, 0, element, element.getChildCount() );
@@ -427,9 +427,9 @@ export default class Range {
 	/**
 	 * Creates a new range spreading from specified position to the same position moved by given shift.
 	 *
-	 * @param {core.treeModel.Position} position Beginning of the range.
+	 * @param {engine.treeModel.Position} position Beginning of the range.
 	 * @param {Number} shift How long the range should be.
-	 * @returns {core.treeModel.Range}
+	 * @returns {engine.treeModel.Range}
 	 */
 	static createFromPositionAndShift( position, shift ) {
 		return new this( position, position.getShiftedBy( shift ) );
@@ -438,11 +438,11 @@ export default class Range {
 	/**
 	 * Creates a range from given parents and offsets.
 	 *
-	 * @param {core.treeModel.Element} startElement Start position parent element.
+	 * @param {engine.treeModel.Element} startElement Start position parent element.
 	 * @param {Number} startOffset Start position offset.
-	 * @param {core.treeModel.Element} endElement End position parent element.
+	 * @param {engine.treeModel.Element} endElement End position parent element.
 	 * @param {Number} endOffset End position offset.
-	 * @returns {core.treeModel.Range} Created range.
+	 * @returns {engine.treeModel.Range} Created range.
 	 */
 	static createFromParentsAndOffsets( startElement, startOffset, endElement, endOffset ) {
 		return new this(
@@ -454,8 +454,8 @@ export default class Range {
 	/**
 	 * Creates and returns a new instance of Range which is equal to passed range.
 	 *
-	 * @param {core.treeModel.Range} range Range to clone.
-	 * @returns {core.treeModel.Range}
+	 * @param {engine.treeModel.Range} range Range to clone.
+	 * @returns {engine.treeModel.Range}
 	 */
 	static createFromRange( range ) {
 		return new this( range.start, range.end );
