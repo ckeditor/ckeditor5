@@ -69,15 +69,9 @@ class ViewElementConsumables {
 		if ( elementOnly ) {
 			if ( this._canConsumeElement === false ) {
 				this._canConsumeElement = true;
-
-				return false;
 			}
 
-			if ( this._canConsumeElement === true ) {
-				return false;
-			}
-
-			return null;
+			return;
 		}
 
 		for ( let type in consumables ) {
@@ -140,10 +134,14 @@ class ViewElementConsumables {
 		const consumables = this._consumables[ type ];
 
 		for ( let name of items ) {
+			if ( type === 'attribute' && ( name === 'class' || name === 'style' ) ) {
+				// TODO: comment error
+				throw new CKEditorError( 'viewconsumable-invalid-attribute: Classes and styles should be handled separately.' );
+			}
 			const value = consumables.get( name );
 
 			if ( value === false ) {
-				consumables.get( name ).set( true );
+				consumables.set( name, true );
 			}
 		}
 	}

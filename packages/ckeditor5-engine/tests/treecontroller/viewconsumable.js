@@ -7,8 +7,8 @@
 
 'use strict';
 
-import ViewElement from '/ckeditor5/core/treeview/element.js';
-import ViewConsumable from '/ckeditor5/core/treecontroller/viewconsumable.js';
+import ViewElement from '/ckeditor5/engine/treeview/element.js';
+import ViewConsumable from '/ckeditor5/engine/treecontroller/viewconsumable.js';
 
 describe( 'ViewConsumable', () => {
 	let viewConsumable;
@@ -216,6 +216,13 @@ describe( 'ViewConsumable', () => {
 			expect( viewConsumable.consume( el ) ).to.be.false;
 		} );
 
+		it( 'should not consume element already consumed', () => {
+			viewConsumable.add( el );
+
+			expect( viewConsumable.consume( el ) ).to.be.true;
+			expect( viewConsumable.consume( el ) ).to.be.false;
+		} );
+
 		it( 'should consume attributes, classes and styles', () => {
 			viewConsumable.add( { element: el, class: 'foobar', attribute: 'href', style: 'color' } );
 
@@ -331,6 +338,108 @@ describe( 'ViewConsumable', () => {
 
 			expect( () => {
 				viewConsumable.consume( { element: el, attribute: 'style' } );
+			} ).to.throw( 'viewconsumable-invalid-attribute' );
+		} );
+	} );
+
+	describe( 'revert', () => {
+		it( 'should revert single element', () => {
+			viewConsumable.add( el );
+			viewConsumable.consume( el );
+			expect( viewConsumable.test( el ) ).to.be.false;
+			viewConsumable.revert( el );
+			expect( viewConsumable.test( el ) ).to.be.true;
+		} );
+
+		it( 'should not revert element that was never added', () => {
+			viewConsumable.revert( el );
+			expect( viewConsumable.test( el ) ).to.be.null;
+		} );
+
+		it( 'should do nothing on not consumed element', () => {
+			viewConsumable.add( el );
+			viewConsumable.revert( el );
+			expect( viewConsumable.test( el ) ).to.be.true;
+		} );
+
+		it( 'should revert classes, attributes and styles', () => {
+			viewConsumable.add( { element: el, class: 'foobar', style: 'color', attribute: 'name' } );
+			viewConsumable.consume( { element: el, class: 'foobar', style: 'color', attribute: 'name' } );
+
+			viewConsumable.revert( { element: el, class: 'foobar' } );
+			viewConsumable.revert( { element: el, style: 'color' } );
+			viewConsumable.revert( { element: el, attribute: 'name' } );
+
+			expect( viewConsumable.test( { element: el, class: 'foobar', style: 'color', attribute: 'name' } ) ).to.be.true;
+		} );
+
+		it( 'should revert multiple classes, attributes and styles in one call #1', () => {
+			viewConsumable.add( {
+				element: el,
+				class: 'foobar',
+				style: 'color',
+				attribute: 'name'
+			} );
+			viewConsumable.consume( { element: el, class: 'foobar', style: 'color', attribute: 'name' } );
+			viewConsumable.revert( { element: el, class: 'foobar', style: 'color', attribute: 'name' } );
+
+			expect( viewConsumable.test( { element: el, class: 'foobar', style: 'color', attribute: 'name' } ) ).to.be.true;
+		} );
+
+		it( 'should revert multiple classes, attributes and styles in one call #2', () => {
+			const description = {
+				element: el,
+				class: [ 'foobar', 'baz' ],
+				style: [ 'color', 'position' ],
+				attribute: [ 'name', 'href' ]
+			};
+
+			viewConsumable.add( description );
+			viewConsumable.consume( description );
+			viewConsumable.revert( description );
+
+			expect( viewConsumable.test( description ) ).to.be.true;
+		} );
+
+		it( 'should not revert non consumable items', () => {
+			viewConsumable.add( { element: el, class: 'foobar' } );
+			viewConsumable.consume( { element: el, class: 'foobar' }  );
+			viewConsumable.revert( { element: el, class: 'foobar', attribute: 'name' } );
+
+			expect( viewConsumable.test( { element: el, class: 'foobar' } ) ).to.be.true;
+			expect( viewConsumable.test( { element: el, attribute: 'name' } ) ).to.be.null;
+		} );
+
+		it( 'should allow to use additional parameters in one call', () => {
+			const el2 = new ViewElement( 'p' );
+			viewConsumable.add( el, el2 );
+			expect( viewConsumable.consume( el, el2 ) ).to.be.true;
+			viewConsumable.revert( el, el2 );
+
+			expect( viewConsumable.test( el, el2 ) ).to.be.true;
+		} );
+
+		it( 'should throw an error when element is not provided', () => {
+			expect( () => {
+				viewConsumable.revert( { style: 'color' } );
+			} ).to.throw( 'viewconsumable-element-missing' );
+		} );
+
+		it( 'should throw if class attribute is provided', () => {
+			viewConsumable.add( { element: el, class: 'foobar' } );
+			viewConsumable.consume( { element: el, class: 'foobar' } );
+
+			expect( () => {
+				viewConsumable.revert( { element: el, attribute: 'class' } );
+			} ).to.throw( 'viewconsumable-invalid-attribute' );
+		} );
+
+		it( 'should throw if style attribute is provided', () => {
+			viewConsumable.add( { element: el, style: 'color' } );
+			viewConsumable.consume( { element: el, style: 'color' } );
+
+			expect( () => {
+				viewConsumable.revert( { element: el, attribute: 'style' } );
 			} ).to.throw( 'viewconsumable-invalid-attribute' );
 		} );
 	} );
