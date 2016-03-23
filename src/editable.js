@@ -7,7 +7,7 @@
 
 import utils from './utils/utils.js';
 import ObservableMixin from './utils/observablemixin.js';
-import FocusObserver from './core/treeview/observer/focusobserver.js';
+import FocusObserver from './engine/treeview/observer/focusobserver.js';
 
 /**
  * Class representing a single editable element. It combines the {@link ckeditor5.Editable#viewElement editable view}
@@ -68,7 +68,7 @@ export default class Editable {
 		 * The view element which holds this editable.
 		 *
 		 * @readonly
-		 * @member {core.treeView.Element} ckeditor5.Editable#viewElement
+		 * @member {engine.treeView.Element} ckeditor5.Editable#viewElement
 		 */
 	}
 

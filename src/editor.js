@@ -104,25 +104,25 @@ export default class Editor {
 		 * This property is set by the {@link ckeditor5.Creator}.
 		 *
 		 * @readonly
-		 * @member {core.treeModel.Document} ckeditor5.Editor#document
+		 * @member {engine.treeModel.Document} ckeditor5.Editor#document
 		 */
 
 		/**
-		 * Instance of the {@link core.treecontroller.EditingController editing controller}.
+		 * Instance of the {@link engine.treecontroller.EditingController editing controller}.
 		 *
 		 * This property is set by the {@link ckeditor5.Creator}.
 		 *
 		 * @readonly
-		 * @member {core.treecontroller.EditingController} ckeditor5.Editor#editing
+		 * @member {engine.treecontroller.EditingController} ckeditor5.Editor#editing
 		 */
 
 		/**
-		 * Instance of the {@link core.treecontroller.DataController data controller}.
+		 * Instance of the {@link engine.treecontroller.DataController data controller}.
 		 *
 		 * This property is set by the {@link ckeditor5.Creator}.
 		 *
 		 * @readonly
-		 * @member {core.treecontroller.DataController} ckeditor5.Editor#data
+		 * @member {engine.treecontroller.DataController} ckeditor5.Editor#data
 		 */
 
 		/**

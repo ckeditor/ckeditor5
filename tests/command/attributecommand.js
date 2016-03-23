@@ -6,7 +6,7 @@
 'use strict';
 
 import Editor from '/ckeditor5/editor.js';
-import Document from '/ckeditor5/core/treemodel/document.js';
+import Document from '/ckeditor5/engine/treemodel/document.js';
 import AttributeCommand from '/ckeditor5/command/attributecommand.js';
 import Text from '/ckeditor5/engine/treemodel/text.js';
 import Range from '/ckeditor5/engine/treemodel/range.js';

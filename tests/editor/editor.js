@@ -17,7 +17,7 @@ import Plugin from '/ckeditor5/plugin.js';
 import Command from '/ckeditor5/command/command.js';
 import Locale from '/ckeditor5/utils/locale.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-import Document from '/ckeditor5/core/treemodel/document.js';
+import Document from '/ckeditor5/engine/treemodel/document.js';
 
 const pluginClasses = {};
 

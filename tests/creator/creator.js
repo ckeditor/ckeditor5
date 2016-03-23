@@ -11,10 +11,10 @@ import testUtils from '/tests/ckeditor5/_utils/utils.js';
 import BaseCreator from '/ckeditor5/creator/basecreator.js';
 import Creator from '/ckeditor5/creator/creator.js';
 import Editor from '/ckeditor5/editor.js';
-import HtmlDataProcessor from '/ckeditor5/core/dataprocessor/htmldataprocessor.js';
-import Document from '/ckeditor5/core/treemodel/document.js';
-import EditingController from '/ckeditor5/core/treecontroller/editingcontroller.js';
-import DataController from '/ckeditor5/core/treecontroller/datacontroller.js';
+import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
+import Document from '/ckeditor5/engine/treemodel/document.js';
+import EditingController from '/ckeditor5/engine/treecontroller/editingcontroller.js';
+import DataController from '/ckeditor5/engine/treecontroller/datacontroller.js';
 
 testUtils.createSinonSandbox();
 

@@ -7,9 +7,9 @@
 
 import BaseCreator from './basecreator.js';
 
-import Document from '../core/treemodel/document.js';
-import DataController from '../core/treecontroller/datacontroller.js';
-import EditingController from '../core/treecontroller/editingcontroller.js';
+import Document from '../engine/treemodel/document.js';
+import DataController from '../engine/treecontroller/datacontroller.js';
+import EditingController from '../engine/treecontroller/editingcontroller.js';
 
 /**
  * Basic creator class for browser environment.

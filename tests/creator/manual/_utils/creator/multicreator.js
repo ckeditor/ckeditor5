@@ -7,7 +7,7 @@
 
 import Creator from '/ckeditor5/creator/creator.js';
 
-import HtmlDataProcessor from '/ckeditor5/core/dataprocessor/htmldataprocessor.js';
+import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
 import Editable from '/ckeditor5/editable.js';
 
 import { createEditableUI, createEditorUI } from '/ckeditor5/ui/bindings/creator-utils.js';
