@@ -152,8 +152,10 @@ export default class ViewConsumable {
 
 	test( ...description ) {
 		for ( let item of description ) {
-			if ( !this._testOne( item ) ) {
-				return false;
+			const result = this._testOne( item );
+
+			if ( !result ) {
+				return result;
 			}
 		}
 
@@ -162,7 +164,7 @@ export default class ViewConsumable {
 
 	consume( ...description ) {
 		// Consume only if all provided descriptions can be consumed.
-		if ( !this.test( description ) ) {
+		if ( !this.test( ...description ) ) {
 			return false;
 		}
 
