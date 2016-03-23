@@ -65,6 +65,28 @@ class ViewElementConsumables {
 		}
 	}
 
+	revert( consumables, elementOnly ) {
+		if ( elementOnly ) {
+			if ( this._canConsumeElement === false ) {
+				this._canConsumeElement = true;
+
+				return false;
+			}
+
+			if ( this._canConsumeElement === true ) {
+				return false;
+			}
+
+			return null;
+		}
+
+		for ( let type in consumables ) {
+			if ( type in this._consumables ) {
+				this._revert( type, consumables[ type ] );
+			}
+		}
+	}
+
 	_add( type, item ) {
 		const items = isArray( item ) ? item : [ item ];
 		const consumables = this._consumables[ type ];
@@ -112,6 +134,19 @@ class ViewElementConsumables {
 			consumables.set( name, false );
 		}
 	}
+
+	_revert( type, item ) {
+		const items = isArray( item ) ? item : [ item ];
+		const consumables = this._consumables[ type ];
+
+		for ( let name of items ) {
+			const value = consumables.get( name );
+
+			if ( value === false ) {
+				consumables.get( name ).set( true );
+			}
+		}
+	}
 }
 
 export default class ViewConsumable {
@@ -156,6 +191,12 @@ export default class ViewConsumable {
 		return true;
 	}
 
+	revert( ...description ) {
+		for ( let item of description ) {
+			this._revertOne( item );
+		}
+	}
+
 	/**
 	 * Adds single information about consumable element.
 	 *
@@ -189,7 +230,6 @@ export default class ViewConsumable {
 
 		// Return null if there is no information about provided element.
 		if ( !this._consumables.has( element ) ) {
-			// TODO: maybe return false?
 			return null;
 		}
 
@@ -208,6 +248,16 @@ export default class ViewConsumable {
 		const elementConsumables = this._consumables.get( element );
 
 		elementConsumables.consume( description, includeElement );
+	}
+
+	_revertOne( description ) {
+		const { element, includeElement } = getElement( description );
+
+		// Return null if there is no information about provided element.
+		if ( this._consumables.has( element ) ) {
+			const elementConsumables = this._consumables.get( element );
+			elementConsumables.revert( description, includeElement );
+		}
 	}
 }
 
