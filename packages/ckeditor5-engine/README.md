@@ -1,7 +1,7 @@
 CKEditor 5 Editing Engine
 ========================================
 
-[![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-editing/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-editing#info=devDependencies)
+[![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-engine/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-engine#info=devDependencies)
 
 The editing engine of CKEditor 5 project. More information about the project can be found at the following url: <https://github.com/ckeditor/ckeditor5>.
 
