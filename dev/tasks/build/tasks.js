@@ -292,7 +292,7 @@ module.exports = ( config ) => {
 			},
 
 			/**
-			 * The task capable of converting *.svg icon files into `./build/[formats]/theme/icons.js`
+			 * The task capable of converting *.svg icon files into `./build/[formats]/theme/iconmanagermodel.js`
 			 * sprite.
 			 *
 			 * @param {Object} options

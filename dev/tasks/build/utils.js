@@ -551,8 +551,8 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 					inline: true,
 					render: {
 						js: {
-							template: path.join( __dirname, 'icons-template.js' ),
-							dest: 'icons.js',
+							template: path.join( __dirname, 'iconmanagermodel.tpl' ),
+							dest: 'iconmanagermodel.js',
 						}
 					}
 				}
