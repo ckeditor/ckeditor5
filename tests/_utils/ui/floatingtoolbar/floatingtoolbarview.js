@@ -18,7 +18,7 @@ export default class FloatingToolbarView extends ToolbarView {
 		);
 
 		// This has a high risk of breaking if someone defines "on" in the parent template.
-		// See https://github.com/ckeditor/ckeditor5-core/issues/219
+		// See https://github.com/ckeditor/ckeditor5-engine/issues/219
 		this.template.on = {
 			// Added just for fun, but needed to keep the focus in the editable.
 			mousedown: ( evt ) => evt.preventDefault()

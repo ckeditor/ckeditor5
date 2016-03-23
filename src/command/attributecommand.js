@@ -6,17 +6,17 @@
 'use strict';
 
 import Command from './command.js';
-import TreeWalker from '../core/treemodel/treewalker.js';
-import Range from '../core/treemodel/range.js';
+import TreeWalker from '../engine/treemodel/treewalker.js';
+import Range from '../engine/treemodel/range.js';
 
 /**
  * An extension of basic {@link ckeditor5.command.Command} class, which provides utilities for a command that sets a single
- * attribute on a text or element with value `true`. AttributeCommand uses {@link core.treeModel.Document#selection} to
+ * attribute on a text or element with value `true`. AttributeCommand uses {@link engine.treeModel.Document#selection} to
  * decide which nodes (if any) should be changed, and applies or removes attributes from them.
- * See {@link core.treeView.Converter#execute} for more.
+ * See {@link engine.treeView.Converter#execute} for more.
  *
- * The command checks {@link core.treeModel.Document#schema} to decide if it should be enabled.
- * See {@link core.treeView.Converter#checkSchema} for more.
+ * The command checks {@link engine.treeModel.Document#schema} to decide if it should be enabled.
+ * See {@link engine.treeView.Converter#checkSchema} for more.
  *
  * @memberOf ckeditor5.command
  */
@@ -50,7 +50,7 @@ export default class AttributeCommand extends Command {
 	}
 
 	/**
-	 * Checks {@link core.treeModel.Document#schema} to decide if the command should be enabled:
+	 * Checks {@link engine.treeModel.Document#schema} to decide if the command should be enabled:
 	 * * if selection is on range, the command is enabled if any of nodes in that range can have bold,
 	 * * if selection is collapsed, the command is enabled if text with bold is allowed in that node.
 	 *
@@ -98,10 +98,10 @@ export default class AttributeCommand extends Command {
 	 *
 	 * If the command is active (`value == true`), it will remove attributes. Otherwise, it will set attributes.
 	 *
-	 * The execution result differs, depending on the {@link core.treeModel.Document#selection}:
+	 * The execution result differs, depending on the {@link engine.treeModel.Document#selection}:
 	 * * if selection is on a range, the command applies the attribute on all nodes in that ranges
-	 * (if they are allowed to have this attribute by the{@link core.treeModel.Schema schema}),
-	 * * if selection is collapsed in non-empty node, the command applies attribute to the {@link core.treeModel.Document#selection}
+	 * (if they are allowed to have this attribute by the{@link engine.treeModel.Schema schema}),
+	 * * if selection is collapsed in non-empty node, the command applies attribute to the {@link engine.treeModel.Document#selection}
 	 * itself (note that typed characters copy attributes from selection),
 	 * * if selection is collapsed in empty node, the command applies attribute to the parent node of selection (note
 	 * that selection inherits all attributes from a node if it is in empty node).
@@ -147,8 +147,8 @@ export default class AttributeCommand extends Command {
 	 * attribute set. This is done by breaking a range in two and omitting the not allowed part.
 	 *
 	 * @private
-	 * @param {Array.<core.treeModel.Range>} ranges Ranges to be validated.
-	 * @returns {Array.<core.treeModel.Range>} Ranges without invalid parts.
+	 * @param {Array.<engine.treeModel.Range>} ranges Ranges to be validated.
+	 * @returns {Array.<engine.treeModel.Range>} Ranges without invalid parts.
 	 */
 	_getSchemaValidRanges( ranges ) {
 		const validRanges = [];

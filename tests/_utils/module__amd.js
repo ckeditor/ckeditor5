@@ -63,11 +63,11 @@ const utils = {
 	 *		PluginF.requires = [ PluginE ];
 	 *		PluginE.requires = [ PluginF ];
 	 *
-	 *		amdTestUtils.define( 'E', [ 'core/plugin', 'F' ], () => {
+	 *		amdTestUtils.define( 'E/E', [ 'plugin', 'F/F' ], () => {
 	 *			return PluginE;
 	 *		} );
 	 *
-	 *		amdTestUtils.define( 'E', [ 'core/plugin', 'E' ], () => {
+	 *		amdTestUtils.define( 'F/F', [ 'plugin', 'E/E' ], () => {
 	 *			return PluginF;
 	 *		} );
 	 *
@@ -100,10 +100,10 @@ const utils = {
 	 * This method uses {@link #getModulePath} to process module and dependency paths so you need to use
 	 * the simplified notation.
 	 *
-	 *		const modules = amdTestUtils.require( { editor: 'core/Editor' } );
+	 *		const modules = amdTestUtils.require( { treeView: 'engine/treeview/treeview' } );
 	 *
 	 *		// Later on, inside tests:
-	 *		const Editor = modules.editor;
+	 *		const TreeView = modules.treeView;
 	 *
 	 * @params {Object} modules The object (`ref => modulePath`) with modules to be loaded.
 	 * @returns {Object} The object that will hold the loaded modules.

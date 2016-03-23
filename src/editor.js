@@ -8,7 +8,7 @@
 import ObservableMixin from './utils/observablemixin.js';
 import EditorConfig from './editorconfig.js';
 import PluginCollection from './plugincollection.js';
-import Document from './core/treemodel/document.js';
+import Document from './engine/treemodel/document.js';
 import CKEditorError from './utils/ckeditorerror.js';
 import Locale from './utils/locale.js';
 import isArray from './utils/lib/lodash/isArray.js';
@@ -64,7 +64,7 @@ export default class Editor {
 		 * Tree Model document managed by this editor.
 		 *
 		 * @readonly
-		 * @member {core.treeModel.Document} ckeditor5.Editor#document
+		 * @member {engine.treeModel.Document} ckeditor5.Editor#document
 		 */
 		this.document = new Document();
 

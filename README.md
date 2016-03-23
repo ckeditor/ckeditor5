@@ -27,17 +27,23 @@ The project is split into several different repositories, as described in the [d
 
 The [ckeditor5](https://github.com/ckeditor/ckeditor5) repository is the place that centralizes the development of CKEditor 5. It bundles different repositories into a single place, adding the necessary helper tools for the development workflow, like the builder and the test runner. [Basic information on how to setup the development environment](https://github.com/ckeditor/ckeditor5/wiki/Development-Environment) can be found in the wiki pages.
 
-A key repository is [ckeditor5-core](https://github.com/ckeditor/ckeditor5-core), which keeps the editor's core modules such as the basic infrastructure, the data model and the basic classes for UI libraries. **Most of the development happens in this repository**.
+The [ckeditor5](https://github.com/ckeditor/ckeditor5) repository contains also the core classes which implements the base architecture of the CKEditor 5 framework.
 
-![CKEditor 5 Development repository = Developer Tools (builder, test runner) + NPM packages (ckeditor5-core and others)](https://cloud.githubusercontent.com/assets/630060/12577912/d5c32244-c41d-11e5-8b09-2dd97a1abb05.png)
+Another key repositories are:
+
+* [ckeditor5-engine](https://github.com/ckeditor/ckeditor5-engine), which keeps the **editor's editing engine** (data model, editing and data views, etc.). Big part of the development happens in this repository, as the engine is the base of the editor.
+* [ckeditor5-ui](https://github.com/ckeditor/ckeditor5-ui) and [ckeditor5-ui-default](https://github.com/ckeditor/ckeditor5-ui-default), which keep the UI framework and default UI library (based on this framework). The official features use these packages to create their UI.
+
+**TODO: Add an architecture diagram.**
 
 ### Reporting Issues and Feature Requests
 
 Each repository independently handles its issues, so focus is kept on their scope:
-[ckeditor5-design](https://github.com/ckeditor/ckeditor5-design): issues related to macro program design, not going into the specifics of other repos.
-[ckeditor5](https://github.com/ckeditor/ckeditor5): issues related to the development environment and workflow.
-[ckeditor5-core](https://github.com/ckeditor/ckeditor5-core): issues related to the core API.
-other [ckeditor5-*](https://github.com/ckeditor?utf8=%E2%9C%93&query=ckeditor5-) repos: issues related to all other parts of the code, like features, UI libraries, themes, etc.
+
+* [ckeditor5-design](https://github.com/ckeditor/ckeditor5-design): issues related to macro program design, not going into the specifics of other repos.
+* [ckeditor5](https://github.com/ckeditor/ckeditor5): issues related to the core API as well as the development environment and workflow. When you don't know where to report an issue, report it here.
+* [ckeditor5-engine](https://github.com/ckeditor/ckeditor5-engine): issues related to the engine API.
+* other [ckeditor5-*](https://github.com/ckeditor?utf8=%E2%9C%93&query=ckeditor5-) repos: issues related to all other parts of the code, like features, UI libraries, themes, etc.
 
 ## License
 

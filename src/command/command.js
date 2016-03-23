@@ -120,7 +120,7 @@ export default class Command {
 	 *
 	 * @protected
 	 * @method ckeditor5.command.Command#_checkEnabled
-	 * @returns {Boolean} `true` if command should be enabled according to {@link core.treeModel.Document#schema}. `false` otherwise.
+	 * @returns {Boolean} `true` if command should be enabled according to {@link engine.treeModel.Document#schema}. `false` otherwise.
 	 */
 }
 
