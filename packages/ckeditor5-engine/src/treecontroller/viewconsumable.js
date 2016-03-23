@@ -160,13 +160,33 @@ export default class ViewConsumable {
 
 	add( ...description ) {
 		for ( let item of description ) {
-			this._addOne( item );
+			const { element, includeElement } = getElement( item );
+			let elementConsumables;
+
+			// Create entry in consumables map for provided element if one is not already present.
+			if ( !this._consumables.has( element ) ) {
+				elementConsumables = new ViewElementConsumables();
+				this._consumables.set( element, elementConsumables );
+			} else {
+				elementConsumables = this._consumables.get( element );
+			}
+
+			elementConsumables.add( item, includeElement );
 		}
 	}
 
 	test( ...description ) {
 		for ( let item of description ) {
-			const result = this._testOne( item );
+			let result;
+			const { element, includeElement } = getElement( item );
+
+			// Return null if there is no information about provided element.
+			if ( !this._consumables.has( element ) ) {
+				result = null;
+			} else {
+				const elementConsumables = this._consumables.get( element );
+				result =  elementConsumables.test( item, includeElement );
+			}
 
 			if ( !result ) {
 				return result;
@@ -183,7 +203,10 @@ export default class ViewConsumable {
 		}
 
 		for ( let item of description ) {
-			this._consumeOne( item );
+			const { element, includeElement } = getElement( item );
+			const elementConsumables = this._consumables.get( element );
+
+			elementConsumables.consume( item, includeElement );
 		}
 
 		return true;
@@ -191,70 +214,13 @@ export default class ViewConsumable {
 
 	revert( ...description ) {
 		for ( let item of description ) {
-			this._revertOne( item );
-		}
-	}
+			const { element, includeElement } = getElement( item );
 
-	/**
-	 * Adds single information about consumable element.
-	 *
-	 * @private
-	 * @param description
-	 */
-	_addOne( description ) {
-		const { element, includeElement } = getElement( description );
-		let elementConsumables;
-
-		// Create entry in consumables map for provided element if one is not already present.
-		if ( !this._consumables.has( element ) ) {
-			elementConsumables = new ViewElementConsumables();
-			this._consumables.set( element, elementConsumables );
-		} else {
-			elementConsumables = this._consumables.get( element );
-		}
-
-		elementConsumables.add( description, includeElement );
-	}
-
-	/**
-	 * Test single consumable element information.
-	 *
-	 * @private
-	 * @param description
-	 * @returns {Boolean|null}
-	 */
-	_testOne( description ) {
-		const { element, includeElement } = getElement( description );
-
-		// Return null if there is no information about provided element.
-		if ( !this._consumables.has( element ) ) {
-			return null;
-		}
-
-		const elementConsumables = this._consumables.get( element );
-
-		return elementConsumables.test( description, includeElement );
-	}
-
-	/**
-	 * Consume items provided within one description object.
-	 * @private
-	 * @param description
-	 */
-	_consumeOne( description ) {
-		const { element, includeElement } = getElement( description );
-		const elementConsumables = this._consumables.get( element );
-
-		elementConsumables.consume( description, includeElement );
-	}
-
-	_revertOne( description ) {
-		const { element, includeElement } = getElement( description );
-
-		// Return null if there is no information about provided element.
-		if ( this._consumables.has( element ) ) {
-			const elementConsumables = this._consumables.get( element );
-			elementConsumables.revert( description, includeElement );
+			// Return null if there is no information about provided element.
+			if ( this._consumables.has( element ) ) {
+				const elementConsumables = this._consumables.get( element );
+				elementConsumables.revert( item, includeElement );
+			}
 		}
 	}
 }
