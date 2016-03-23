@@ -18,4 +18,5 @@
   * `editables.get( 'editable1/2' ).isEditable`,
   * `boldModel.isEnabled` and `italicModel.isEnabled`.
 * Changes to `editable.isFocused/isEditable` should be logged to the console.
+* Changes to `editables.current` should be logged to the console.
 * Clicks on the buttons should be logged to the console.

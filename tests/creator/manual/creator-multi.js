@@ -25,9 +25,17 @@ function initEditor() {
 		window.editor = editor = newEditor;
 		window.editables = editables = editor.editables;
 
+		const editable1 = editables.get( 'editable1' );
+		const editable2 = editables.get( 'editable2' );
+
+		editable1.toString = editable2.toString = function() {
+			return `Editable(${ this.name })`;
+		};
+
 		observer = testUtils.createObserver();
-		observer.observe( 'Editable 1', editables.get( 'editable1' ) );
-		observer.observe( 'Editable 2', editables.get( 'editable2' ) );
+		observer.observe( 'Editable 1', editable1 );
+		observer.observe( 'Editable 2', editable2 );
+		observer.observe( 'EditableCollection', editables );
 
 		document.getElementById( 'editorContainer' ).appendChild( editor.ui.view.element );
 	} );
