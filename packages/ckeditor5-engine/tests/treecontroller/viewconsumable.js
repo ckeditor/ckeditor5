@@ -18,23 +18,25 @@ describe( 'ViewConsumable', () => {
 	} );
 
 	describe( 'add', () => {
+		let el;
+
+		beforeEach( () => {
+			el = new ViewElement( 'p' );
+		} );
+
 		it( 'should allow to add element', () => {
-			const el = new ViewElement( 'p' );
 			viewConsumable.add( el );
 
 			expect( viewConsumable.test( el ) ).to.be.true;
 		} );
 
 		it( 'should allow to add element inside description object', () => {
-			const el = new ViewElement( 'p' );
 			viewConsumable.add( { element: el } );
 
 			expect( viewConsumable.test( el ) ).to.be.true;
 		} );
 
 		it( 'should allow to add attributes classes and styles', () => {
-			const el = new ViewElement( 'p' );
-
 			viewConsumable.add( { element: el, attribute: 'href' } );
 			viewConsumable.add( { element: el, class: 'foobar' } );
 			viewConsumable.add( { element: el, style: 'color' } );
@@ -46,7 +48,6 @@ describe( 'ViewConsumable', () => {
 		} );
 
 		it( 'should allow to add attributes classes and styles in one call', () => {
-			const el = new ViewElement( 'p' );
 			viewConsumable.add( { element: el, attribute: 'href', class: 'foobar', style: 'color' } );
 
 			expect( viewConsumable.test( { element: el, attribute: 'href' } ) ).to.be.true;
@@ -56,7 +57,6 @@ describe( 'ViewConsumable', () => {
 		} );
 
 		it( 'should allow to add multiple attributes in one call', () => {
-			const el = new ViewElement( 'p' );
 			viewConsumable.add( { element: el, attribute: [ 'href', 'target', 'title' ] } );
 
 			expect( viewConsumable.test( { element: el, attribute: 'href' } ) ).to.be.true;
@@ -66,7 +66,6 @@ describe( 'ViewConsumable', () => {
 		} );
 
 		it( 'should allow to add multiple classes in one call', () => {
-			const el = new ViewElement( 'p' );
 			viewConsumable.add( { element: el, class: [ 'foo', 'bar', 'baz' ] } );
 
 			expect( viewConsumable.test( { element: el, class: 'foo' } ) ).to.be.true;
@@ -76,13 +75,37 @@ describe( 'ViewConsumable', () => {
 		} );
 
 		it( 'should allow to add multiple styles in one call', () => {
-			const el = new ViewElement( 'p' );
 			viewConsumable.add( { element: el, style: [ 'color', 'position', 'top' ] } );
 
 			expect( viewConsumable.test( { element: el, style: 'color' } ) ).to.be.true;
 			expect( viewConsumable.test( { element: el, style: 'position' } ) ).to.be.true;
 			expect( viewConsumable.test( { element: el, style: 'top' } ) ).to.be.true;
 			expect( viewConsumable.test( el ) ).to.be.false;
+		} );
+
+		it( 'should allow to add multiple consumables in one call', () => {
+			viewConsumable.add( el, { element: el, style: 'color' } );
+
+			expect( viewConsumable.test( el ) ).to.be.true;
+			expect( viewConsumable.test( { element: el, style: 'color' } ) );
+		} );
+
+		it( 'should throw an error when element is not provided', () => {
+			expect( () => {
+				viewConsumable.add( { style: 'color' } );
+			} ).to.throw( 'viewconsumable-element-missing' );
+		} );
+
+		it( 'should throw if class attribute is added', () => {
+			expect( () => {
+				viewConsumable.add( { element: el, attribute: 'class' } );
+			} ).to.throw( 'viewconsumable-invalid-attribute' );
+		} );
+
+		it( 'should throw if style attribute is added', () => {
+			expect( () => {
+				viewConsumable.add( { element: el, attribute: 'style' } );
+			} ).to.throw( 'viewconsumable-invalid-attribute' );
 		} );
 	} );
 } );
