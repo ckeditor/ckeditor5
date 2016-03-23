@@ -20,7 +20,8 @@ export function imitateFeatures( editor ) {
 	const boldModel = new Model( {
 		isEnabled: true,
 		isOn: false,
-		label: t( 'Bold' )
+		label: t( 'Bold' ),
+		icon: 'bold'
 	} );
 
 	boldModel.on( 'execute', () => {
@@ -35,7 +36,8 @@ export function imitateFeatures( editor ) {
 	const italicModel = new Model( {
 		isEnabled: true,
 		isOn: false,
-		label: t( 'Italic' )
+		label: t( 'Italic' ),
+		icon: 'italic'
 	} );
 
 	italicModel.on( 'execute', () => {

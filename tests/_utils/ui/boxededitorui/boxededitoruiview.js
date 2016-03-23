@@ -15,27 +15,27 @@ export default class BoxedEditorUIView extends EditorUIView {
 			tag: 'div',
 
 			attributes: {
-				class: 'ck-box'
+				class: 'ck-reset ck-editor'
 			},
 
 			children: [
 				{
 					tag: 'div',
 					attributes: {
-						class: 'ck-box-region ck-top'
+						class: 'ck-editor-top ck-reset-all'
 					}
 				},
 
 				{
 					tag: 'div',
 					attributes: {
-						class: 'ck-box-region ck-main'
+						class: 'ck-editor-editable ck-reset-all'
 					}
 				}
 			]
 		};
 
-		this.register( 'top', '.ck-top' );
-		this.register( 'main', '.ck-main' );
+		this.register( 'top', '.ck-editor-top' );
+		this.register( 'editable', '.ck-editor-editable' );
 	}
 }

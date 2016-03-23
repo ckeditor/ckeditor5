@@ -47,7 +47,7 @@ export default class ClassicCreator extends StandardCreator {
 		// UI.
 		this._replaceElement( editor.firstElement, editor.ui.view.element );
 		this._createToolbar();
-		editor.ui.add( 'main', createEditableUI( editor, editable, FramedEditableUI, FramedEditableUIView ) );
+		editor.ui.add( 'editable', createEditableUI( editor, editable, FramedEditableUI, FramedEditableUIView ) );
 
 		// Init.
 		return super.create()
