@@ -40,20 +40,38 @@
 <div id="editor"></div>
 
 <h2>Icon</h2>
+<h3>Icon: In–text</h3>
 
-<p>Icons <svg class="ck-icon"><use xlink:href="#ck-icon-quote"></use></svg> and <svg class="ck-icon"><use xlink:href="#ck-icon-bold"></use></svg> in a plain paragraph.</p>
-<p style="color: red">Icons <svg class="ck-icon"><use xlink:href="#ck-icon-quote"></use></svg> follow the color of text.</p>
+<p>Icons
+	<svg class="ck-icon"><use xlink:href="#ck-icon-quote"></use></svg>
+	and
+	<svg class="ck-icon"><use xlink:href="#ck-icon-bold"></use></svg> in a plain paragraph.
+	<span style="color: red">
+		Icons
+		<svg class="ck-icon"><use xlink:href="#ck-icon-link"></use></svg>
+		follow the
+		<svg class="ck-icon"><use xlink:href="#ck-icon-source"></use></svg>
+		color of text.
+	</span>
+</p>
+
+<h3>Icon: Availability</h3>
 <p id="icons"></p>
 
 <hr/>
 
 <h2>Button</h2>
+<h3>Button: States</h3>
+
+<div class="ck-reset-all">
+	<button class="ck-button">State: normal (none)</button>
+	<button class="ck-button ck-disabled">State: disabled</button>
+	<button class="ck-button ck-on">State: on</button>
+</div>
+
 <h3>Button: Types</h3>
 
 <div class="ck-reset-all">
-	<button class="ck-button">A button</button>
-	<button class="ck-button ck-disabled">Disabled</button>
-	<button class="ck-button ck-button-active">On state</button>
 	<button class="ck-button ck-button-action">Action button</button>
 	<button class="ck-button ck-rounded-corners">Rounded corners</button>
 	<button class="ck-button ck-button-bold">Bold text</button>
@@ -95,7 +113,7 @@
 	</button>
 </div>
 
-<h3>Button: Responsive</h3>
+<h3>Button: Responsiveness</h3>
 <div id="button-responsive" class="ck-reset-all">
 	<div>
 		<button class="ck-button">A button</button>

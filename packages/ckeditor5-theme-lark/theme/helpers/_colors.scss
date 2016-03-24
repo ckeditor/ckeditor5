@@ -1,24 +1,24 @@
-////
-/// @author CKSource - Frederico Knabben
-/// @group helpers
-/// @copyright Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
-/// @license For licensing, see LICENSE.md or http://ckeditor.com/license
-////
+// Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
 
-/// Colors configured by the user.
-///
-/// @type Map
-/// @access public
-/// @example
-///		$ck-colors: ( 'foreground': red );
-/// @see $_ck-colors
+/**
+ * Colors configured by the user.
+ *
+ * @type Map
+ * @access public
+ * @example
+ *		$ck-colors: ( 'foreground': red );
+ * @see $_ck-colors
+ */
 $ck-colors: () !default;
 
-/// Internal map with default colors.
-///
-/// @type Map
-/// @access private
-/// @see ck-color-add
+/**
+ * Internal map with default colors.
+ *
+ * @type Map
+ * @access private
+ * @see ck-color-add
+ */
 $_ck-colors: (
 	'action': #61B145,
 	'background': #fff,
@@ -27,37 +27,43 @@ $_ck-colors: (
 	'text': #333,
 );
 
-/// Returns a color of given name and lightness offset.
-///
-/// @access public
-/// @param {String} $name [ 'background' ] - Name of the color.
-/// @param {Number} $offset [ 0 ] - Offset of the lightness.
-/// @return {String}
-/// @see $_ck-colors
+/**
+ * Returns a color of given name and lightness offset.
+ *
+ * @access public
+ * @param {String} $name [ 'background' ] - Name of the color.
+ * @param {Number} $offset [ 0 ] - Offset of the lightness.
+ * @return {String}
+ * @see $_ck-colors
+ */
 @function ck-color( $name: 'background', $offset: 0 ) {
 	$colors: map-merge( $_ck-colors, $ck-colors );
 
 	@return scale-color( map-get( $colors, $name ), $lightness: $offset );
 }
 
-/// Returns a border–color for a given name and lightness offset.
-///
-/// @access public
-/// @param {String} $name [ 'background' ] - Name of the color.
-/// @param {Number} $offset [ 0 ] - Offset of the lightness.
-/// @return {String}
-/// @see $ck-color
+/**
+ * Returns a border–color for a given name and lightness offset.
+ *
+ * @access public
+ * @param {String} $name [ 'background' ] - Name of the color.
+ * @param {Number} $offset [ 0 ] - Offset of the lightness.
+ * @return {String}
+ * @see $ck-color
+ */
 @function ck-border-color( $name: 'background', $offset: 0 ) {
 	@return ck-color( $name, $offset - 25 );
 }
 
-/// Adds a color to internal color map.
-///
-/// @access public
-/// @example
-///		@include ck-color-add( ( 'special': yellow, 'hover': #00FF00 ) );
-/// @param {Map} $map - A map with new colors.
-/// @see $_ck-colors
+/**
+ * Adds a color to internal color map.
+ *
+ * @access public
+ * @example
+ *		@include ck-color-add( ( 'special': yellow, 'hover': #00FF00 ) );
+ * @param {Map} $map - A map with new colors.
+ * @see $_ck-colors
+ */
 @mixin ck-color-add( $map ) {
 	$_ck-colors: map-merge( $_ck-colors, $map ) !global;
 }

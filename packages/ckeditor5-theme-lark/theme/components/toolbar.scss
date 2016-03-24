@@ -7,6 +7,7 @@
 	border: 1px solid ck-border-color();
 	white-space: initial;
 
+	@include ck-unselectable();
 	@include ck-rounded-corners();
 
 	&-separator {

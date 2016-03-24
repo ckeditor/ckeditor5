@@ -9,7 +9,24 @@
 	opacity: .5;
 }
 
+/**
+ * Brings visual styling for :focus state.
+ *
+ * @access public
+ */
 @mixin ck-focus-shadow() {
-	outline: 0;
-	box-shadow: 0 0 2px 3px ck-color( 'focus' );
+	&:focus {
+		outline: 5px auto -webkit-focus-ring-color;
+	}
+}
+
+/**
+ * Makes element unselectable.
+ *
+ * @access public
+ */
+@mixin ck-unselectable() {
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
 }

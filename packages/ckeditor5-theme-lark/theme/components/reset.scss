@@ -66,4 +66,12 @@
 	table {
 		table-layout: auto;
 	}
+
+	// See http://stackoverflow.com/questions/5517744/remove-extra-button-spacing-padding-in-firefox
+	button::-moz-focus-inner {
+	    padding: 0;
+	    border: 0
+	}
 }
+
+

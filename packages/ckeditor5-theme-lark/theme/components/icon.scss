@@ -1,13 +1,20 @@
 // Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
 // For licensing, see LICENSE.md or http://ckeditor.com/license
 
+/**
+ * Default width/height of an icon.
+ *
+ * @access public
+ */
 $ck-icon-size: 20px;
 
-#ck-sprite {
+.ck-icon-manager {
 	display: none;
 
-	* {
-		fill: currentColor; // needed by Webkit/Blink
+	&-sprite {
+		* {
+			fill: currentColor; // needed by Webkit/Blink
+		}
 	}
 }
 

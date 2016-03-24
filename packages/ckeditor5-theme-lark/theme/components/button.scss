@@ -1,39 +1,14 @@
-////
-/// @author CKSource - Frederico Knabben
-/// @group components
-/// @copyright Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
-/// @license For licensing, see LICENSE.md or http://ckeditor.com/license
-////
+// Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
 
-/// Implements button states.
-///
-/// @access public
-/// @param {String} $color - Background color of the button.
-@mixin ck-button-states( $color ) {
-	&:hover,
-	&:focus {
-		background: ck-color( $color, -10 );
-		border-color: ck-border-color( $color, -10 );
-	}
-
-	&:active {
-		background: ck-color( $color, -15 );
-		border-color: ck-border-color( $color, -15 );
-	}
-
-	&:focus,
-	&:active {
-		@include ck-focus-shadow();
-	}
-}
-
-/// Implements a button of given background color.
-///
-/// @access public
-/// @param {String} $color - Background color of the button.
+/**
+ * Implements a button of given background color.
+ *
+ * @access public
+ * @param {String} $color - Background color of the button.
+ */
 @mixin ck-button( $color ) {
-	background: ck-color( $color );
-	border: 1px solid ck-border-color( $color );
+	border: 1px solid;
 	white-space: nowrap;
 	cursor: pointer;
 	vertical-align: middle;
@@ -41,12 +16,48 @@
 	padding: ck-spacing( 'small' ) ck-spacing();
 	position: relative;
 
-	@include ck-button-states( $color );
+	@include ck-button-colors( $color );
+	@include ck-focus-shadow();
 }
 
-/// A helper to define button–specific icon styles.
-///
-/// @access public
+/**
+ * Implements a button of given background color.
+ *
+ * @access public
+ * @param {String} $color - Background color of the button.
+ */
+@mixin ck-button-colors( $color, $offset: 0 ) {
+	background: ck-color( $color, $offset );
+	border-color: ck-border-color( $color, $offset );
+
+	@include ck-button-state-colors( $color, $offset );
+}
+
+/**
+ * Implements button states.
+ *
+ * @access public
+ * @param {String} $color - Background color of the button.
+ */
+@mixin ck-button-state-colors( $color, $offset: 0 ) {
+	&:hover,
+	&:focus {
+		background: ck-color( $color, $offset - 10 );
+		border-color: ck-border-color( $color, $offset - 10 );
+	}
+
+	&:active {
+		background: ck-color( $color, $offset - 15 );
+		border-color: ck-border-color( $color, $offset - 15 );
+		box-shadow: inset 0 2px 2px ck-color( $color, $offset - 25 );
+	}
+}
+
+/**
+ * A helper to define button–specific icon styles.
+ *
+ * @access public
+ */
 @mixin ck-button-icon {
 	[class*="ck-icon"] {
 		@content;
@@ -59,6 +70,7 @@ a.ck-button {
 	overflow: hidden;
 
 	@include ck-button( 'background' );
+	@include ck-unselectable();
 	@include ck-rounded-corners();
 
 	&.ck-button-notext {
