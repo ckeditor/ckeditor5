@@ -27,6 +27,11 @@ class NodeListText extends Text {
 	constructor( text, attrs ) {
 		super( text, attrs );
 
+		/**
+		 * Element that contains character nodes represented by this NodeListText.
+		 *
+		 * @type {engine.treeModel.Element|engine.treeModel.DocumentFragment|null}
+		 */
 		this.parent = null;
 	}
 

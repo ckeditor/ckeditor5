@@ -20,7 +20,7 @@ export default class Element extends Node {
 	 *
 	 * @param {String} name Node name.
 	 * @param {Iterable} attrs Iterable collection of attributes.
-	 * @param {engine.treeModel.NodeSet} children List of nodes to be inserted
+	 * @param {engine.treeModel.NodeSet} children List of nodes to be inserted.
 	 * into created element. List of nodes can be of any type accepted by the {@link engine.treeModel.NodeList} constructor.
 	 */
 	constructor( name, attrs, children ) {
@@ -97,7 +97,6 @@ export default class Element extends Node {
 	 *
 	 * @param {Number} index Position where nodes should be inserted.
 	 * @param {engine.treeModel.NodeSet} nodes The list of nodes to be inserted.
-	 * The list of nodes can be of any type accepted by the {@link engine.treeModel.NodeList} constructor.
 	 */
 	insertChildren( index, nodes ) {
 		let nodeList = new NodeList( nodes );
