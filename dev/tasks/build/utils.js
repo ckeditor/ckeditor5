@@ -14,7 +14,6 @@ const gulpFilter = require( 'gulp-filter' );
 const multipipe = require( 'multipipe' );
 const PassThrough = require( 'stream' ).PassThrough;
 const through = require( 'through2' );
-
 const fs = require( 'fs' );
 const sass = require( 'node-sass' );
 const del = require( 'del' );
@@ -385,9 +384,11 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 		// in order to workaround https://github.com/paulmillr/chokidar/issues/419.
 		return fs.readdirSync( path.join( rootDir, 'node_modules' ) )
 			// Look for ckeditor5-* directories.
-			.filter( ( fileName ) => fileName.indexOf( 'ckeditor5-' ) === 0 )
+			.filter( fileName => {
+				return fileName.indexOf( 'ckeditor5-' ) === 0;
+			} )
 			// Resolve symlinks and keep only directories.
-			.map( ( fileName ) => {
+			.map( fileName => {
 				let filePath = path.join( rootDir, 'node_modules', fileName );
 				let stat = fs.lstatSync( filePath );
 
@@ -404,7 +405,7 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 				return false;
 			} )
 			// 					...those out.
-			.filter( ( filePath ) => filePath );
+			.filter( filePath => filePath );
 	},
 
 	/**
@@ -547,7 +548,7 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 			},
 			mode: {
 				symbol: {
-					dest: './', // Flatten symbol/
+					dest: './', // Flatten symbol/ folder.
 					inline: true,
 					render: {
 						js: {
@@ -575,7 +576,7 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 			return pipe(
 				transformationStream ? transformationStream( f ) : utils.noop(),
 				gulp.dest( path.join( buildDir, f, 'theme' ) ),
-				utils.noop( ( file ) => {
+				utils.noop( file => {
 					gutil.log( `Output for ${ gutil.colors.cyan( f ) } is '${ gutil.colors.cyan( file.path ) }'.` );
 				} )
 			);

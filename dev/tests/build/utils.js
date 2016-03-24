@@ -708,7 +708,7 @@ describe( 'build-utils', () => {
 		it( 'returns configuration to output JavaScript sprite', () => {
 			const options = utils.getIconSpriteOptions();
 
-			expect( options.mode.symbol.render.js.dest ).to.equal( 'icons.js' );
+			expect( options.mode.symbol.render.js.dest ).to.equal( 'iconmanagermodel.js' );
 		} );
 	} );
 

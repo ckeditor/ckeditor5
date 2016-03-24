@@ -20,7 +20,7 @@ module.exports = ( config ) => {
 	const buildDir = path.join( config.ROOT_DIR, config.BUILD_DIR );
 	const themesGlob = path.join( 'theme', '**', '*.scss' );
 	const iconsGlob = path.join( 'theme', 'icons', '*.svg' );
-	const parsedArguments = utils.parseArguments();
+	const args = utils.parseArguments();
 
 	const tasks = {
 		clean: {
@@ -322,34 +322,19 @@ module.exports = ( config ) => {
 
 	gulp.task( 'build:clean:all', tasks.clean.all );
 	gulp.task( 'build:clean:themes', tasks.clean.themes );
-	gulp.task( 'build:clean:js', () => {
-		return tasks.clean.js( parsedArguments );
-	} );
+	gulp.task( 'build:clean:js', () => tasks.clean.js( args ) );
 
 	gulp.task( 'build:themes', ( callback ) => {
 		runSequence( 'build:clean:themes', 'build:icons', 'build:sass', callback );
 	} );
 
-	gulp.task( 'build:sass', () => {
-		return tasks.build.sass( parsedArguments );
-	} );
-
-	gulp.task( 'build:icons', () => {
-		return tasks.build.icons( parsedArguments );
-	} );
-
-	gulp.task( 'build:js', [ 'build:clean:js' ], () => {
-		return tasks.build.js( parsedArguments );
-	} );
+	gulp.task( 'build:sass', () => tasks.build.sass( args ) );
+	gulp.task( 'build:icons', () => tasks.build.icons( args ) );
+	gulp.task( 'build:js', [ 'build:clean:js' ], () => tasks.build.js( args ) );
 
 	// Tasks specific for `gulp docs` builder.
-	gulp.task( 'build:clean:js:esnext', () => {
-		return tasks.clean.js( { formats: [ 'esnext' ] } );
-	} );
-
-	gulp.task( 'build:js:esnext', [ 'build:clean:js:esnext' ], () => {
-		return tasks.build.js( { formats: [ 'esnext' ] } );
-	} );
+	gulp.task( 'build:clean:js:esnext', () => tasks.clean.js( { formats: [ 'esnext' ] } ) );
+	gulp.task( 'build:js:esnext', [ 'build:clean:js:esnext' ], () => tasks.build.js( { formats: [ 'esnext' ] } ) );
 
 	return tasks;
 };
