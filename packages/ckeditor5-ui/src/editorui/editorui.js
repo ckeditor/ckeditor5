@@ -9,7 +9,8 @@ import Controller from '../controller.js';
 import ControllerCollection from '../controllercollection.js';
 import ComponentFactory from '../componentfactory.js';
 import ObservableMixin from '../../utils/observablemixin.js';
-import IconManager from '../iconmanager/iconmanager.js';
+import IconManagerView from '../iconmanagerview.js';
+import iconManagerModel from '../../../theme/iconmanagermodel.js';
 import utils from '../../utils/utils.js';
 
 /**
@@ -59,9 +60,9 @@ export default class EditorUI extends Controller {
 	 * @returns {Promise}
 	 */
 	init() {
-		return super.init().then( () => {
-			this._addIconManager();
-		} );
+		this._setupIconManager();
+
+		return super.init();
 	}
 
 	/**
@@ -69,8 +70,24 @@ export default class EditorUI extends Controller {
 	 *
 	 * @protected
 	 */
-	_addIconManager() {
-		this.collections.get( 'body' ).add( new IconManager( this.editor ) );
+	_setupIconManager() {
+		/**
+		 * A reference to IconManager controller.
+		 *
+		 * @readonly
+		 * @member {ui.Controller} ui.editorUI.EditorUI#iconManager
+		 */
+		this.iconManager = new Controller( iconManagerModel, new IconManagerView( iconManagerModel ) );
+
+		/**
+		 * Icons available in the UI.
+		 *
+		 * @readonly
+		 * @member {Array} ui.editorUI.EditorUI#icons
+		 */
+		this.icons = iconManagerModel.icons;
+
+		this.collections.get( 'body' ).add( this.iconManager );
 	}
 }
 

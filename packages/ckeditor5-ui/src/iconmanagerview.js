@@ -5,8 +5,7 @@
 
 'use strict';
 
-import View from '../view.js';
-import IconsSprite from '../../../theme/icons.js';
+import View from './view.js';
 
 /**
  * Base class for the editor main views.
@@ -28,12 +27,21 @@ export default class IconManagerView extends View {
 	}
 
 	init() {
+		this._setupSprite();
+
+		return super.init();
+	}
+
+	/**
+	 * Injects icon sprite into DOM.
+	 *
+	 * @protected
+	 */
+	_setupSprite() {
 		// Note: Creating SVG icons with with Template class is not possible
 		// because of CSS limitations of document.createEleentNS–created elements.
-		this.element.innerHTML = `<svg
-				xmlns="http://www.w3.org/2000/svg"
-				xmlns:xlink="http://www.w3.org/1999/xlink"
-				id="ck-sprite"
-			>${ IconsSprite }</svg>`;
+		this.element.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="ck-sprite">
+				${ this.model.sprite }
+			</svg>`;
 	}
 }
