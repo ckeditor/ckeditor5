@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+ /* bender-tags: ui, iconmanager */
+
 'use strict';
 
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
