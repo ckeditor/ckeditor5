@@ -40,8 +40,10 @@ export default class IconManagerView extends View {
 	_setupSprite() {
 		// Note: Creating SVG icons with with Template class is not possible
 		// because of CSS limitations of document.createEleentNS–created elements.
-		this.element.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="ck-sprite">
-				${ this.model.sprite }
-			</svg>`;
+		this.element.innerHTML = `<svg
+				xmlns="http://www.w3.org/2000/svg"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				class="ck-icon-manager-sprite"
+			>${ this.model.sprite }</svg>`;
 	}
 }
