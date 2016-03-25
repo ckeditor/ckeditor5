@@ -9,9 +9,10 @@ import Mapper from './mapper.js';
 import ModelConversionDispatcher from './modelconversiondispatcher.js';
 import ViewConversionController from './viewconversioncontroller.js';
 import { insertText } from './model-to-view.js';
+import { convertText, convertChildren } from './view-to-model.js';
 
 import Writer from '../treview/writer.js';
-import ViewElement from '../treview/element.js';
+import ViewDocumentFragment from '../treview/documentfragment.js';
 import DomConverter from '../treview/domconverter.js';
 
 import ModelRange from '../treemodel/range.js';
@@ -21,19 +22,23 @@ export default class DataController {
 		this.model = modelDocument;
 
 		this.mapper = new Mapper();
+
 		this.writer = new Writer();
+
+		this.domConverter = new DomConverter();
+
+		this.dataProcessor = dataProcessor;
 
 		this.toView = new ModelConversionDispatcher( {
 			writer: this.writer,
 			mapper: this.mapper
 		} );
+		this.toView.on( 'insert:text', insertText() );
 
 		this.toModel = new ViewConversionController();
-
-		this.domConverter = new DomConverter();
-		this.dataProcessor = dataProcessor;
-
-		this.toView.on( 'insert:text', insertText() );
+		this.toModel.on( 'text', convertText() );
+		this.toModel.on( 'element', convertChildren(), 9999 );
+		this.toModel.on( 'documentFragment', convertChildren(), 9999 );
 	}
 
 	get( rootName ) {
@@ -42,17 +47,15 @@ export default class DataController {
 		const modelRange = ModelRange.createFromElement( modelRootElement );
 
 		// model -> view
-		const viewElement = new ViewElement(); // ViewDocumentFragment?
-		this.mapper.bindElements( modelRootElement, viewElement );
+		const viewDocumentFragment = new ViewDocumentFragment();
+		this.mapper.bindElements( modelRootElement, viewDocumentFragment );
 
 		this.toView.convertInsert( modelRange );
 
-		this.mapper.unbindElements( modelRootElement, viewElement );
+		this.mapper.unbindElements( modelRootElement, viewDocumentFragment );
 
 		// view -> DOM
-		const domElement = this.domConverter.viewToDom( viewElement, document ); // TODO new document
-
-		const domDocumentFragment = domElement; // TODO
+		const domDocumentFragment = this.domConverter.viewToDom( viewDocumentFragment, document );
 
 		// DOM -> data
 		return this.dataProcessor.toData( domDocumentFragment );
@@ -62,21 +65,17 @@ export default class DataController {
 		// data -> DOM
 		const domDocumentFragment = this.dataProcessor.toDom( data );
 
-		// view -> DOM
+		// DOM -> view
 		const viewDocumentFragment = this.domConverter.domToView( domDocumentFragment );
 
-		// view	-> model
-		this.fire( 'view', viewDocumentFragment ); // ?
-
-		const modelNodeList = this.toModel.convert( viewDocumentFragment );
-
-		this.fire( 'model', modelNodeList ); // ?
+		// view -> model
+		const modelDocumentFragment = this.toModel.convert( viewDocumentFragment );
 
 		// Save to model
 		const modelRoot = this.model.getRoot( rootName );
 
 		this.model.batch()
 			.removeChildren( 0, modelRoot.getChildCount() )
-			.appendChildren( modelRoot, rootName );
+			.appendChildren( modelRoot, modelDocumentFragment );
 	}
 }

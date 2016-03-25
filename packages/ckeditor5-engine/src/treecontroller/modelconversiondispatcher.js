@@ -9,8 +9,8 @@ import Consumable from './modelconsumable.js';
 import TextFragment from '../treemodel/textfragment.js';
 
 export default class ModelConversionDispatcher {
-	constructor( context ) {
-		this.context = context;
+	constructor( controller ) {
+		this.controller = controller;
 	}
 
 	convertChange( type, changeInfo ) {
@@ -26,12 +26,67 @@ export default class ModelConversionDispatcher {
 	}
 
 	convertInsert( range ) {
-		const consumable = new Consumable();
-		const values = [];
+		this.controller.consumable = this._createInsertConsumable();
 
 		for ( let value of range ) {
-			values.push( value );
+			const item = value.item;
+			const range = Range.createFromPositionAndShift( value.previousPosition, value.length );
+			const model = { item, range };
 
+			this._testAndFire( 'insert', model, this.controller );
+
+			for ( let key of item.getAttributes() ) {
+				model.attributeKey = key;
+
+				this._testAndFire( 'addAttribute:' + key, model, this.controller );
+			}
+		}
+
+		this.controller.consumable = undefined;
+	}
+
+	convertMove( range, sourcePosition ) {
+		const model = {
+			range: range,
+			sourcePosition: sourcePosition,
+		};
+
+		this.fire( 'move', model, this.controller );
+	}
+
+	convertRemove( range, sourcePosition ) {
+		const model = {
+			range: range,
+			sourcePosition: sourcePosition,
+		};
+
+		this.fire( 'remove', model, this.controller );
+	}
+
+	convertAttribute( type, range, key, oldValue, newValue ) {
+		this.controller.consumable = this._createAttributeConsumable( type, range, key );
+
+		for ( let value of range ) {
+			const item = value.item;
+			const range = Range.createFromPositionAndShift( value.previousPosition, value.length );
+			const model = {
+				item: item,
+				range: range,
+				attributeKey: key,
+				attributeOldValue: oldValue,
+				attributeNewValue: newValue
+			};
+
+			this._testAndFire( type + ':' + key, model, this.controller );
+		}
+
+		this.controller.consumable = undefined;
+	}
+
+	_createInsertConsumable( range ) {
+		const consumable = new Consumable();
+
+		for ( let value of range ) {
 			const item = value.item;
 
 			consumable.add( item, 'insert' );
@@ -41,74 +96,22 @@ export default class ModelConversionDispatcher {
 			}
 		}
 
-		for ( let value of values ) {
-			const item = value.item;
-			const range = Range.createFromPositionAndShift( value.previousPosition, value.length );
-			const model = {
-				item,
-				range,
-				consumable
-			};
-
-			this._testAndFire( 'insert', model, this.context );
-
-			for ( let key of item.getAttributes() ) {
-				model.attributeKey = key;
-
-				this._testAndFire( 'addAttribute:' + key, model, this.context );
-			}
-		}
+		return consumable;
 	}
 
-	convertMove( range, sourcePosition ) {
-		const model = {
-			range: range,
-			sourcePosition: sourcePosition,
-		};
-
-		this.fire( 'move', model, this.context );
-	}
-
-	convertRemove( range, sourcePosition ) {
-		const model = {
-			range: range,
-			sourcePosition: sourcePosition,
-		};
-
-		this.fire( 'remove', model, this.context );
-	}
-
-	convertAttribute( type, range, key, oldValue, newValue ) {
+	_createAttributeConsumable( type, range, key ) {
 		const consumable = new Consumable();
-		const values = [];
 
 		for ( let value of range ) {
-			values.push( value );
-
 			const item = value.item;
 
-			for ( let key of item.getAttributes() ) {
-				consumable.add( item, type + ':' + key );
-			}
+			consumable.add( item, type + ':' + key );
 		}
 
-		for ( let value of values ) {
-			const item = value.item;
-			const range = Range.createFromPositionAndShift( value.previousPosition, value.length );
-			const model = {
-				item: item,
-				range: range,
-				attributeKey: key,
-				attributeOldValue: oldValue,
-				attributeNewValue: newValue,
-				consumable: consumable
-			};
-
-			this._testAndFire( type + ':' + key, model, this.context );
-		}
+		return consumable;
 	}
 
-	_testAndFire( type, model, context ) {
+	_testAndFire( type, model, controller ) {
 		if ( !model.consumable.test( model.item, type ) ) {
 			// Do not fire event if the item was consumed.
 			return;
@@ -117,14 +120,14 @@ export default class ModelConversionDispatcher {
 		if ( type === 'insert' ) {
 			if ( model.item instanceof TextFragment ) {
 				// e.g. insert:text
-				this.fire( type + ':text', model, context );
+				this.fire( type + ':text', model, controller );
 			} else {
 				// e.g. insert:element:p
-				this.fire( type + ':element:' + model.item.name, model, context );
+				this.fire( type + ':element:' + model.item.name, model, controller );
 			}
 		} else {
 			// e.g. addAttribute:alt:img
-			this.fire( type + ':' + model.item.name, model, context );
+			this.fire( type + ':' + model.item.name, model, controller );
 		}
 	}
 }

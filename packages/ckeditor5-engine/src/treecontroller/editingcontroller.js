@@ -5,6 +5,12 @@
 
 'use strict';
 
+import Mapper from './mapper.js';
+import ModelConversionDispatcher from './modelconversiondispatcher.js';
+import { insertText, remove, move } from './model-to-view.js';
+
+import TreeView from '../treview/treview.js';
+
 export default class EditingController {
 	constructor( modelDocument ) {
 		this.model = modelDocument;
@@ -21,9 +27,9 @@ export default class EditingController {
 			this.toView.convertChange( type, changeInfo );
 		} );
 
-		toView.on( 'insert:text', insertText() );
-		toView.on( 'remove', remove() );
-		toView.on( 'move', move() );
+		this.toView.on( 'insert:text', insertText() );
+		this.toView.on( 'remove', remove() );
+		this.toView.on( 'move', move() );
 	}
 
 	createRoot( element, name ) {
