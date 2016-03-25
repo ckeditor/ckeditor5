@@ -53,7 +53,7 @@ describe( 'HtmlDataProcessor', () => {
 		} );
 
 		// Test against XSS attacks.
-		for ( const name in xssTemplates ) {
+		for ( let name in xssTemplates ) {
 			const input = xssTemplates[ name ].replace( /%xss%/g, 'testXss()' );
 
 			it( 'should prevent XSS attacks: ' + name, ( done ) => {
