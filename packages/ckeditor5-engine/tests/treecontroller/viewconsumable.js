@@ -20,160 +20,126 @@ describe( 'ViewConsumable', () => {
 	} );
 
 	describe( 'add', () => {
-		it( 'should allow to add element', () => {
-			viewConsumable.add( el );
+		it( 'should allow to add element name', () => {
+			viewConsumable.add( el, { name: true } );
 
-			expect( viewConsumable.test( el ) ).to.be.true;
-		} );
-
-		it( 'should allow to add element inside description object', () => {
-			viewConsumable.add( { element: el } );
-
-			expect( viewConsumable.test( el ) ).to.be.true;
+			expect( viewConsumable.test( el, { name: true } ) ).to.be.true;
 		} );
 
 		it( 'should allow to add attributes classes and styles', () => {
-			viewConsumable.add( { element: el, attribute: 'href' } );
-			viewConsumable.add( { element: el, class: 'foobar' } );
-			viewConsumable.add( { element: el, style: 'color' } );
+			viewConsumable.add( el, { attribute: 'href' } );
+			viewConsumable.add( el, { class: 'foobar' } );
+			viewConsumable.add( el, { style: 'color' } );
 
-			expect( viewConsumable.test( { element: el, attribute: 'href' } ) ).to.be.true;
-			expect( viewConsumable.test( { element: el, class: 'foobar' } ) ).to.be.true;
-			expect( viewConsumable.test( { element: el, style: 'color' } ) ).to.be.true;
-			expect( viewConsumable.test( el ) ).to.be.null;
+			expect( viewConsumable.test( el, { attribute: 'href' } ) ).to.be.true;
+			expect( viewConsumable.test( el, { class: 'foobar' } ) ).to.be.true;
+			expect( viewConsumable.test( el, { style: 'color' }  ) ).to.be.true;
+			expect( viewConsumable.test( el, { name: true } ) ).to.be.null;
 		} );
 
 		it( 'should allow to add attributes classes and styles in one call', () => {
-			viewConsumable.add( { element: el, attribute: 'href', class: 'foobar', style: 'color' } );
+			viewConsumable.add( el, { attribute: 'href', class: 'foobar', style: 'color' } );
 
-			expect( viewConsumable.test( { element: el, attribute: 'href' } ) ).to.be.true;
-			expect( viewConsumable.test( { element: el, class: 'foobar' } ) ).to.be.true;
-			expect( viewConsumable.test( { element: el, style: 'color' } ) ).to.be.true;
-			expect( viewConsumable.test( el ) ).to.be.null;
+			expect( viewConsumable.test( el, { attribute: 'href' } ) ).to.be.true;
+			expect( viewConsumable.test( el, { class: 'foobar' } ) ).to.be.true;
+			expect( viewConsumable.test( el, { style: 'color' } ) ).to.be.true;
+			expect( viewConsumable.test( el, { name: true } ) ).to.be.null;
 		} );
 
 		it( 'should allow to add multiple attributes in one call', () => {
-			viewConsumable.add( { element: el, attribute: [ 'href', 'target', 'title' ] } );
+			viewConsumable.add( el, { attribute: [ 'href', 'target', 'title' ] } );
 
-			expect( viewConsumable.test( { element: el, attribute: 'href' } ) ).to.be.true;
-			expect( viewConsumable.test( { element: el, attribute: 'target' } ) ).to.be.true;
-			expect( viewConsumable.test( { element: el, attribute: 'title' } ) ).to.be.true;
-			expect( viewConsumable.test( el ) ).to.be.null;
+			expect( viewConsumable.test( el, { attribute: 'href' } ) ).to.be.true;
+			expect( viewConsumable.test( el, { attribute: 'target' } ) ).to.be.true;
+			expect( viewConsumable.test( el, { attribute: 'title' } ) ).to.be.true;
+			expect( viewConsumable.test( el, { name: true } ) ).to.be.null;
 		} );
 
 		it( 'should allow to add multiple classes in one call', () => {
-			viewConsumable.add( { element: el, class: [ 'foo', 'bar', 'baz' ] } );
+			viewConsumable.add( el, { class: [ 'foo', 'bar', 'baz' ] } );
 
-			expect( viewConsumable.test( { element: el, class: 'foo' } ) ).to.be.true;
-			expect( viewConsumable.test( { element: el, class: 'bar' } ) ).to.be.true;
-			expect( viewConsumable.test( { element: el, class: 'baz' } ) ).to.be.true;
-			expect( viewConsumable.test( el ) ).to.be.null;
+			expect( viewConsumable.test( el, { class: 'foo' } ) ).to.be.true;
+			expect( viewConsumable.test( el, { class: 'bar' } ) ).to.be.true;
+			expect( viewConsumable.test( el, { class: 'baz' } ) ).to.be.true;
+			expect( viewConsumable.test( el, { name: true } ) ).to.be.null;
 		} );
 
 		it( 'should allow to add multiple styles in one call', () => {
-			viewConsumable.add( { element: el, style: [ 'color', 'position', 'top' ] } );
+			viewConsumable.add( el, { style: [ 'color', 'position', 'top' ] } );
 
-			expect( viewConsumable.test( { element: el, style: 'color' } ) ).to.be.true;
-			expect( viewConsumable.test( { element: el, style: 'position' } ) ).to.be.true;
-			expect( viewConsumable.test( { element: el, style: 'top' } ) ).to.be.true;
-			expect( viewConsumable.test( el ) ).to.be.null;
-		} );
-
-		it( 'should allow to add multiple consumables in one call', () => {
-			viewConsumable.add( el, { element: el, style: 'color' } );
-
-			expect( viewConsumable.test( el ) ).to.be.true;
-			expect( viewConsumable.test( { element: el, style: 'color' } ) );
-		} );
-
-		it( 'should throw an error when element is not provided', () => {
-			expect( () => {
-				viewConsumable.add( { style: 'color' } );
-			} ).to.throw( 'viewconsumable-element-missing' );
+			expect( viewConsumable.test( el, { style: 'color' } ) ).to.be.true;
+			expect( viewConsumable.test( el, { style: 'position' } ) ).to.be.true;
+			expect( viewConsumable.test( el, { style: 'top' } ) ).to.be.true;
+			expect( viewConsumable.test( el, { name: true } ) ).to.be.null;
 		} );
 
 		it( 'should throw if class attribute is added', () => {
 			expect( () => {
-				viewConsumable.add( { element: el, attribute: 'class' } );
+				viewConsumable.add( el, { attribute: 'class' } );
 			} ).to.throw( 'viewconsumable-invalid-attribute' );
 		} );
 
 		it( 'should throw if style attribute is added', () => {
 			expect( () => {
-				viewConsumable.add( { element: el, attribute: 'style' } );
+				viewConsumable.add( el, { attribute: 'style' } );
 			} ).to.throw( 'viewconsumable-invalid-attribute' );
 		} );
 	} );
 
 	describe( 'test', () => {
-		it( 'should test added element', () => {
+		it( 'should test element name', () => {
 			const el2 = new ViewElement( 'p' );
 
-			viewConsumable.add( el );
+			viewConsumable.add( el, { name: true } );
 
-			expect( viewConsumable.test( el ) ).to.be.true;
-			expect( viewConsumable.test( { element: el } ) ).to.be.true;
-			expect( viewConsumable.test( el2 ) ).to.be.null;
-			expect( viewConsumable.test( { element: el2 } ) ).to.be.null;
+			expect( viewConsumable.test( el, { name: true } ) ).to.be.true;
+			expect( viewConsumable.test( el2, { name: true } ) ).to.be.null;
 		} );
 
 		it( 'should test attributes, classes and styles', () => {
 			const el = new ViewElement( 'p' );
 
-			viewConsumable.add( { element: el, attribute: 'href', class: 'foobar', style: 'color' } );
+			viewConsumable.add( el, { attribute: 'href', class: 'foobar', style: 'color' } );
 
-			expect( viewConsumable.test( { element: el, attribute: 'href' } ) ).to.be.true;
-			expect( viewConsumable.test( { element: el, class: 'foobar' } ) ).to.be.true;
-			expect( viewConsumable.test( { element: el, style: 'color' } ) ).to.be.true;
-			expect( viewConsumable.test( { element: el, attribute: 'href', class: 'foobar', style: 'color' } ) ).to.be.true;
-			expect( viewConsumable.test( { element: el, attribute: 'href', class: 'baz' } ) ).to.be.null;
-			expect( viewConsumable.test( el ) ).to.be.null;
+			expect( viewConsumable.test( el, { attribute: 'href' } ) ).to.be.true;
+			expect( viewConsumable.test( el, { class: 'foobar' } ) ).to.be.true;
+			expect( viewConsumable.test( el, { style: 'color' } ) ).to.be.true;
+			expect( viewConsumable.test( el, { attribute: 'href', class: 'foobar', style: 'color' } ) ).to.be.true;
+			expect( viewConsumable.test( el, { attribute: 'href', class: 'baz' } ) ).to.be.null;
+			expect( viewConsumable.test( el, { name: true } ) ).to.be.null;
 
-			viewConsumable.consume( { element: el, style: 'color' } );
-			expect( viewConsumable.test( { element: el, attribute: 'href', style: 'color' } ) ).to.be.false;
+			viewConsumable.consume( el, { style: 'color' } );
+			expect( viewConsumable.test( el, { attribute: 'href', style: 'color' } ) ).to.be.false;
 		} );
 
 		it( 'should allow to test multiple attributes in one call', () => {
-			viewConsumable.add( { element: el, attribute: [ 'href', 'title', 'target' ] } );
+			viewConsumable.add( el, { attribute: [ 'href', 'title', 'target' ] } );
 
-			expect( viewConsumable.test( { element: el, attribute: [ 'href', 'title', 'target' ] } ) ).to.be.true;
-			expect( viewConsumable.test( { element: el, attribute: [ 'href', 'title', 'alt' ] } ) ).to.be.null;
+			expect( viewConsumable.test( el, { attribute: [ 'href', 'title', 'target' ] } ) ).to.be.true;
+			expect( viewConsumable.test( el, { attribute: [ 'href', 'title', 'alt' ] } ) ).to.be.null;
 
-			viewConsumable.consume( { element: el, attribute: 'target' } );
-			expect( viewConsumable.test( { element: el, attribute: [ 'href', 'title', 'target' ] } ) ).to.be.false;
+			viewConsumable.consume( el, { attribute: 'target' } );
+			expect( viewConsumable.test( el, { attribute: [ 'href', 'title', 'target' ] } ) ).to.be.false;
 		} );
 
 		it( 'should allow to test multiple classes in one call', () => {
-			viewConsumable.add( { element: el, class: [ 'foo', 'bar', 'baz' ] } );
+			viewConsumable.add( el, { class: [ 'foo', 'bar', 'baz' ] } );
 
-			expect( viewConsumable.test( { element: el, class: [ 'foo', 'bar', 'baz' ] } ) ).to.be.true;
-			expect( viewConsumable.test( { element: el, class: [ 'foo', 'bar', 'qux' ] } ) ).to.be.null;
+			expect( viewConsumable.test( el, { class: [ 'foo', 'bar', 'baz' ] } ) ).to.be.true;
+			expect( viewConsumable.test( el, { class: [ 'foo', 'bar', 'qux' ] } ) ).to.be.null;
 
-			viewConsumable.consume( { element: el, class: 'bar' } );
-			expect( viewConsumable.test( { element: el, class: [ 'foo', 'bar', 'baz' ] } ) ).to.be.false;
+			viewConsumable.consume( el, { class: 'bar' } );
+			expect( viewConsumable.test( el, { class: [ 'foo', 'bar', 'baz' ] } ) ).to.be.false;
 		} );
 
 		it( 'should allow to test multiple styles in one call', () => {
-			viewConsumable.add( { element: el, style: [ 'color', 'position', 'top' ] } );
+			viewConsumable.add( el, { style: [ 'color', 'position', 'top' ] } );
 
-			expect( viewConsumable.test( { element: el, style: [ 'color', 'position', 'top' ] } ) ).to.be.true;
-			expect( viewConsumable.test( { element: el, style: [ 'color', 'position', 'left' ] } ) ).to.be.null;
+			expect( viewConsumable.test( el, { style: [ 'color', 'position', 'top' ] } ) ).to.be.true;
+			expect( viewConsumable.test( el, { style: [ 'color', 'position', 'left' ] } ) ).to.be.null;
 
-			viewConsumable.consume( { element: el, style: 'top' } );
-			expect( viewConsumable.test( { element: el, style: [ 'color', 'position', 'top' ] } ) ).to.be.false;
-		} );
-
-		it( 'should allow to test with multiple parameters', () => {
-			viewConsumable.add( el, { element: el, class: 'foobar' }, { element: el, 'style': 'red' } );
-
-			expect( viewConsumable.test( el, { element: el, style: 'red' }, { element: el, class: 'foobar' } ) ).to.be.true;
-			expect( viewConsumable.test( el, { element: el, style: 'red' }, { element: el, class: 'baz' } ) ).to.be.null;
-
-			const el2 = new ViewElement( 'p' );
-			viewConsumable.add( { element: el2, attribute: 'title' } );
-			expect( viewConsumable.test( el, { element: el2, attribute: 'title' } ) ).to.be.true;
-			viewConsumable.consume( { element: el2, attribute: 'title' } );
-			expect( viewConsumable.test( el, { element: el2, attribute: 'title' } ) ).to.be.false;
+			viewConsumable.consume( el, { style: 'top' } );
+			expect( viewConsumable.test( el, { style: [ 'color', 'position', 'top' ] } ) ).to.be.false;
 		} );
 
 		it( 'should return null if not consumable', () => {
@@ -181,288 +147,219 @@ describe( 'ViewConsumable', () => {
 		} );
 
 		it( 'should return false if already consumed', () => {
-			viewConsumable.add( el );
-			viewConsumable.consume( el );
+			viewConsumable.add( el, { name: true } );
+			viewConsumable.consume( el, { name: true } );
 
-			expect( viewConsumable.test( el ) ).to.be.false;
+			expect( viewConsumable.test( el, { name: true } ) ).to.be.false;
 		} );
 
 		it( 'should return null if first non-consumable item is found', () => {
-			viewConsumable.add( { element: el, attribute: 'foo' } );
+			viewConsumable.add( el, { attribute: 'foo' } );
 
-			expect( viewConsumable.test( { element: el, attribute: [ 'foo', 'bar' ] } ) ).to.be.null;
-			expect( viewConsumable.test( { element: el, attribute: 'foo' }, el ) ).to.be.null;
+			expect( viewConsumable.test( el, { attribute: [ 'foo', 'bar' ] } ) ).to.be.null;
 		} );
 
 		it( 'should return false if first already consumed item is found', () => {
-			viewConsumable.add( { element: el, attribute: [ 'foo', 'bar' ] }, el );
-			viewConsumable.consume( { element: el, attribute: 'bar' } );
-			viewConsumable.consume( el );
+			viewConsumable.add( el, { name: true, attribute: [ 'foo', 'bar' ] } );
+			viewConsumable.consume( el, { attribute: 'bar' } );
+			viewConsumable.consume( el, { name: true } );
 
-			expect( viewConsumable.test( { element: el, attribute: [ 'foo', 'bar' ] } ) ).to.be.false;
-			expect( viewConsumable.test( el ) ).to.be.false;
-		} );
-
-		it( 'should throw an error when element is not provided', () => {
-			expect( () => {
-				viewConsumable.test( { style: 'color' } );
-			} ).to.throw( 'viewconsumable-element-missing' );
+			expect( viewConsumable.test( el, { attribute: [ 'foo', 'bar' ] } ) ).to.be.false;
+			expect( viewConsumable.test( el, { name: true } ) ).to.be.false;
 		} );
 
 		it( 'should throw if class attribute is tested', () => {
-			viewConsumable.add( { element: el, class: 'foobar' } );
+			viewConsumable.add( el, { class: 'foobar' } );
 
 			expect( () => {
-				viewConsumable.test( { element: el, attribute: 'class' } );
+				viewConsumable.test( el, { attribute: 'class' } );
 			} ).to.throw( 'viewconsumable-invalid-attribute' );
 		} );
 
 		it( 'should throw if style attribute is tested', () => {
-			viewConsumable.add( { element: el, style: 'color' } );
+			viewConsumable.add( el, { style: 'color' } );
 
 			expect( () => {
-				viewConsumable.test( { element: el, attribute: 'style' } );
+				viewConsumable.test( el, { attribute: 'style' } );
 			} ).to.throw( 'viewconsumable-invalid-attribute' );
 		} );
 	} );
 
 	describe( 'consume', () => {
 		it( 'should consume element', () => {
-			viewConsumable.add( el );
-			const consumed = viewConsumable.consume( el );
+			viewConsumable.add( el, { name: true } );
+			const consumed = viewConsumable.consume( el, { name: true } );
 
-			expect( viewConsumable.test( el ) ).to.be.false;
+			expect( viewConsumable.test( el, { name: true } ) ).to.be.false;
 			expect( consumed ).to.be.true;
 		} );
 
 		it( 'should not consume element not marked for consumption', () => {
-			expect( viewConsumable.consume( el ) ).to.be.false;
+			expect( viewConsumable.consume( el, { name: true } ) ).to.be.false;
 		} );
 
 		it( 'should not consume element already consumed', () => {
-			viewConsumable.add( el );
+			viewConsumable.add( el, { name: true } );
 
-			expect( viewConsumable.consume( el ) ).to.be.true;
-			expect( viewConsumable.consume( el ) ).to.be.false;
+			expect( viewConsumable.consume( el, { name: true } ) ).to.be.true;
+			expect( viewConsumable.consume( el, { name: true } ) ).to.be.false;
 		} );
 
 		it( 'should consume attributes, classes and styles', () => {
-			viewConsumable.add( { element: el, class: 'foobar', attribute: 'href', style: 'color' } );
+			viewConsumable.add( el, { class: 'foobar', attribute: 'href', style: 'color' } );
 
-			const consumed1 = viewConsumable.consume( { element: el, class: 'foobar' } );
-			const consumed2 = viewConsumable.consume( { element: el, attribute: 'href' } );
-			const consumed3 = viewConsumable.consume( { element: el, style: 'color' } );
+			const consumed1 = viewConsumable.consume( el, { class: 'foobar' } );
+			const consumed2 = viewConsumable.consume( el, { attribute: 'href' } );
+			const consumed3 = viewConsumable.consume( el, { style: 'color' } );
 
 			expect( consumed1 ).to.be.true;
 			expect( consumed2 ).to.be.true;
 			expect( consumed3 ).to.be.true;
 
-			expect( viewConsumable.test( { element: el, class: 'foobar' } ) ).to.be.false;
-			expect( viewConsumable.test( { element: el, attribute: 'href' } ) ).to.be.false;
-			expect( viewConsumable.test( { element: el, style: 'color' } ) ).to.be.false;
+			expect( viewConsumable.test( el, { class: 'foobar' } ) ).to.be.false;
+			expect( viewConsumable.test( el, { attribute: 'href' } ) ).to.be.false;
+			expect( viewConsumable.test( el, { style: 'color' } ) ).to.be.false;
 		} );
 
 		it( 'should consume multiple attributes', () => {
-			viewConsumable.add( { element: el, attribute: [ 'href', 'title', 'name' ] } );
+			viewConsumable.add( el, { attribute: [ 'href', 'title', 'name' ] } );
 
-			const consumed = viewConsumable.consume( { element: el, attribute: [ 'href', 'title' ] } );
+			const consumed = viewConsumable.consume( el, { attribute: [ 'href', 'title' ] } );
 
 			expect( consumed ).to.be.true;
-			expect( viewConsumable.test( { element: el, attribute: 'href' } ) ).to.be.false;
-			expect( viewConsumable.test( { element: el, attribute: 'title' } ) ).to.be.false;
-			expect( viewConsumable.test( { element: el, attribute: 'name' } ) ).to.be.true;
+			expect( viewConsumable.test( el, { attribute: 'href' } ) ).to.be.false;
+			expect( viewConsumable.test( el, { attribute: 'title' } ) ).to.be.false;
+			expect( viewConsumable.test( el, { attribute: 'name' } ) ).to.be.true;
 		} );
 
 		it( 'should consume multiple styles', () => {
-			viewConsumable.add( { element: el, style: [ 'color', 'top', 'position' ] } );
+			viewConsumable.add( el, { style: [ 'color', 'top', 'position' ] } );
 
-			const consumed = viewConsumable.consume( { element: el, style: [ 'color', 'position' ] } );
+			const consumed = viewConsumable.consume( el, { style: [ 'color', 'position' ] } );
 
 			expect( consumed ).to.be.true;
-			expect( viewConsumable.test( { element: el, style: 'color' } ) ).to.be.false;
-			expect( viewConsumable.test( { element: el, style: 'position' } ) ).to.be.false;
-			expect( viewConsumable.test( { element: el, style: 'top' } ) ).to.be.true;
+			expect( viewConsumable.test( el, { style: 'color' } ) ).to.be.false;
+			expect( viewConsumable.test( el, { style: 'position' } ) ).to.be.false;
+			expect( viewConsumable.test( el, { style: 'top' } ) ).to.be.true;
 		} );
 
 		it( 'should consume multiple classes', () => {
-			viewConsumable.add( { element: el, class: [ 'foo', 'bar', 'baz' ] } );
+			viewConsumable.add( el, { class: [ 'foo', 'bar', 'baz' ] } );
 
-			const consumed = viewConsumable.consume( { element: el, class: [ 'bar', 'baz' ] } );
-
-			expect( consumed ).to.be.true;
-			expect( viewConsumable.test( { element: el, class: 'bar' } ) ).to.be.false;
-			expect( viewConsumable.test( { element: el, class: 'baz' } ) ).to.be.false;
-			expect( viewConsumable.test( { element: el, class: 'foo' } ) ).to.be.true;
-		} );
-
-		it( 'should consume multiple items', () => {
-			viewConsumable.add( {
-				element: el,
-				attribute: [ 'name', 'href', 'title' ],
-				class: [ 'foo', 'bar', 'baz' ],
-				style: [ 'color', 'position' ]
-			} );
-
-			const consumed = viewConsumable.consume(
-				{ element: el, attribute: 'name', class: 'foo' } ,
-				{ element: el, attribute: 'href', class: [ 'bar', 'baz' ] } ,
-				{ element: el, attribute: 'title', style: 'color' }
-			);
+			const consumed = viewConsumable.consume( el, { class: [ 'bar', 'baz' ] } );
 
 			expect( consumed ).to.be.true;
-			expect( viewConsumable.test( { element: el, attribute: 'name' } ) ).to.be.false;
-			expect( viewConsumable.test( { element: el, attribute: 'href' } ) ).to.be.false;
-			expect( viewConsumable.test( { element: el, attribute: 'title' } ) ).to.be.false;
-
-			expect( viewConsumable.test( { element: el, class: 'foo' } ) ).to.be.false;
-			expect( viewConsumable.test( { element: el, class: 'bar' } ) ).to.be.false;
-			expect( viewConsumable.test( { element: el, class: 'baz' } ) ).to.be.false;
-
-			expect( viewConsumable.test( { element: el, style: 'color' } ) ).to.be.false;
-			expect( viewConsumable.test( { element: el, style: 'position' } ) ).to.be.true;
-		} );
-
-		it( 'should consume element provided as only item in object', () => {
-			viewConsumable.add( el );
-			const consumed = viewConsumable.consume( { element: el } );
-
-			expect( viewConsumable.test( el ) ).to.be.false;
-			expect( consumed ).to.be.true;
+			expect( viewConsumable.test( el, { class: 'bar' } ) ).to.be.false;
+			expect( viewConsumable.test( el, { class: 'baz' } ) ).to.be.false;
+			expect( viewConsumable.test( el, { class: 'foo' } ) ).to.be.true;
 		} );
 
 		it( 'should consume only if all items can be consumed', () => {
-			viewConsumable.add( { element: el, style: [ 'position', 'color' ], attribute: [ 'href', 'title' ] } );
+			viewConsumable.add( el, { style: [ 'position', 'color' ], attribute: [ 'href', 'title' ] } );
 
-			let consumed = viewConsumable.consume( el, { element: el, style: 'color' } );
+			const consumed = viewConsumable.consume( el, { style: [ 'color', 'top' ] } );
 			expect( consumed ).to.be.false;
-			expect( viewConsumable.test( { element: el, style: 'color' } ) ).to.be.true;
-
-			consumed = viewConsumable.consume( { element: el, style: [ 'color', 'top' ] } );
-			expect( consumed ).to.be.false;
-			expect( viewConsumable.test( { element: el, style: 'color' } ) ).to.be.true;
-		} );
-
-		it( 'should throw an error when element is not provided', () => {
-			expect( () => {
-				viewConsumable.consume( { style: 'color' } );
-			} ).to.throw( 'viewconsumable-element-missing' );
+			expect( viewConsumable.test( el, { style: 'color' } ) ).to.be.true;
 		} );
 
 		it( 'should throw if class attribute is provided', () => {
-			viewConsumable.add( { element: el, class: 'foobar' } );
+			viewConsumable.add( el, { class: 'foobar' } );
 
 			expect( () => {
-				viewConsumable.consume( { element: el, attribute: 'class' } );
+				viewConsumable.consume( el, { attribute: 'class' } );
 			} ).to.throw( 'viewconsumable-invalid-attribute' );
 		} );
 
 		it( 'should throw if style attribute is provided', () => {
-			viewConsumable.add( { element: el, style: 'color' } );
+			viewConsumable.add( el, { style: 'color' } );
 
 			expect( () => {
-				viewConsumable.consume( { element: el, attribute: 'style' } );
+				viewConsumable.consume( el, { attribute: 'style' } );
 			} ).to.throw( 'viewconsumable-invalid-attribute' );
 		} );
 	} );
 
 	describe( 'revert', () => {
 		it( 'should revert single element', () => {
-			viewConsumable.add( el );
-			viewConsumable.consume( el );
-			expect( viewConsumable.test( el ) ).to.be.false;
-			viewConsumable.revert( el );
-			expect( viewConsumable.test( el ) ).to.be.true;
+			viewConsumable.add( el, { name: true } );
+			viewConsumable.consume( el, { name: true } );
+			expect( viewConsumable.test( el, { name: true } ) ).to.be.false;
+			viewConsumable.revert( el, { name: true } );
+			expect( viewConsumable.test( el, { name: true } ) ).to.be.true;
 		} );
 
 		it( 'should not revert element that was never added', () => {
-			viewConsumable.revert( el );
-			expect( viewConsumable.test( el ) ).to.be.null;
+			viewConsumable.revert( el, { name: true } );
+			expect( viewConsumable.test( el, { name: true } ) ).to.be.null;
 		} );
 
 		it( 'should do nothing on not consumed element', () => {
-			viewConsumable.add( el );
-			viewConsumable.revert( el );
-			expect( viewConsumable.test( el ) ).to.be.true;
+			viewConsumable.add( el, { name: true } );
+			viewConsumable.revert( el, { name: true } );
+			expect( viewConsumable.test( el, { name: true } ) ).to.be.true;
 		} );
 
 		it( 'should revert classes, attributes and styles', () => {
-			viewConsumable.add( { element: el, class: 'foobar', style: 'color', attribute: 'name' } );
-			viewConsumable.consume( { element: el, class: 'foobar', style: 'color', attribute: 'name' } );
+			viewConsumable.add( el, { class: 'foobar', style: 'color', attribute: 'name' } );
+			viewConsumable.consume( el, { class: 'foobar', style: 'color', attribute: 'name' } );
 
-			viewConsumable.revert( { element: el, class: 'foobar' } );
-			viewConsumable.revert( { element: el, style: 'color' } );
-			viewConsumable.revert( { element: el, attribute: 'name' } );
+			viewConsumable.revert( el, { class: 'foobar' } );
+			viewConsumable.revert( el, { style: 'color' } );
+			viewConsumable.revert( el, { attribute: 'name' } );
 
-			expect( viewConsumable.test( { element: el, class: 'foobar', style: 'color', attribute: 'name' } ) ).to.be.true;
+			expect( viewConsumable.test( el, { class: 'foobar', style: 'color', attribute: 'name' } ) ).to.be.true;
 		} );
 
 		it( 'should revert multiple classes, attributes and styles in one call #1', () => {
-			viewConsumable.add( {
-				element: el,
+			viewConsumable.add( el, {
 				class: 'foobar',
 				style: 'color',
 				attribute: 'name'
 			} );
-			viewConsumable.consume( { element: el, class: 'foobar', style: 'color', attribute: 'name' } );
-			viewConsumable.revert( { element: el, class: 'foobar', style: 'color', attribute: 'name' } );
+			viewConsumable.consume( el, { class: 'foobar', style: 'color', attribute: 'name' } );
+			viewConsumable.revert( el, { class: 'foobar', style: 'color', attribute: 'name' } );
 
-			expect( viewConsumable.test( { element: el, class: 'foobar', style: 'color', attribute: 'name' } ) ).to.be.true;
+			expect( viewConsumable.test( el, { class: 'foobar', style: 'color', attribute: 'name' } ) ).to.be.true;
 		} );
 
 		it( 'should revert multiple classes, attributes and styles in one call #2', () => {
-			const description = {
-				element: el,
+			const consumables = {
 				class: [ 'foobar', 'baz' ],
 				style: [ 'color', 'position' ],
 				attribute: [ 'name', 'href' ]
 			};
 
-			viewConsumable.add( description );
-			viewConsumable.consume( description );
-			viewConsumable.revert( description );
+			viewConsumable.add( el, consumables );
+			viewConsumable.consume( el, consumables );
+			viewConsumable.revert( el, consumables );
 
-			expect( viewConsumable.test( description ) ).to.be.true;
+			expect( viewConsumable.test( el, consumables ) ).to.be.true;
 		} );
 
-		it( 'should not revert non consumable items', () => {
-			viewConsumable.add( { element: el, class: 'foobar' } );
-			viewConsumable.consume( { element: el, class: 'foobar' }  );
-			viewConsumable.revert( { element: el, class: 'foobar', attribute: 'name' } );
+		it( 'should revert only items that were prevoiusly added', () => {
+			viewConsumable.add( el, { class: 'foobar' } );
+			viewConsumable.consume( el, { class: 'foobar' } );
+			viewConsumable.revert( el, { class: 'foobar', attribute: 'name' } );
 
-			expect( viewConsumable.test( { element: el, class: 'foobar' } ) ).to.be.true;
-			expect( viewConsumable.test( { element: el, attribute: 'name' } ) ).to.be.null;
-		} );
-
-		it( 'should allow to use additional parameters in one call', () => {
-			const el2 = new ViewElement( 'p' );
-			viewConsumable.add( el, el2 );
-			expect( viewConsumable.consume( el, el2 ) ).to.be.true;
-			viewConsumable.revert( el, el2 );
-
-			expect( viewConsumable.test( el, el2 ) ).to.be.true;
-		} );
-
-		it( 'should throw an error when element is not provided', () => {
-			expect( () => {
-				viewConsumable.revert( { style: 'color' } );
-			} ).to.throw( 'viewconsumable-element-missing' );
+			expect( viewConsumable.test( el, { class: 'foobar' } ) ).to.be.true;
+			expect( viewConsumable.test( el, { attribute: 'name' } ) ).to.be.null;
 		} );
 
 		it( 'should throw if class attribute is provided', () => {
-			viewConsumable.add( { element: el, class: 'foobar' } );
-			viewConsumable.consume( { element: el, class: 'foobar' } );
+			viewConsumable.add( el, { class: 'foobar' } );
+			viewConsumable.consume( el, { class: 'foobar' } );
 
 			expect( () => {
-				viewConsumable.revert( { element: el, attribute: 'class' } );
+				viewConsumable.revert( el, { attribute: 'class' } );
 			} ).to.throw( 'viewconsumable-invalid-attribute' );
 		} );
 
 		it( 'should throw if style attribute is provided', () => {
-			viewConsumable.add( { element: el, style: 'color' } );
-			viewConsumable.consume( { element: el, style: 'color' } );
+			viewConsumable.add( el, { style: 'color' } );
+			viewConsumable.consume( el, { style: 'color' } );
 
 			expect( () => {
-				viewConsumable.revert( { element: el, attribute: 'style' } );
+				viewConsumable.revert( el, { attribute: 'style' } );
 			} ).to.throw( 'viewconsumable-invalid-attribute' );
 		} );
 	} );
