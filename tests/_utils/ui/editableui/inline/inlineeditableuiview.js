@@ -5,9 +5,9 @@
 
 'use strict';
 
-import EditableView from '/ckeditor5/ui/editable/editableview.js';
+import EditableUIView from '/ckeditor5/ui/editableui/editableuiview.js';
 
-export default class InlineEditableView extends EditableView {
+export default class InlineEditableView extends EditableUIView {
 	constructor( model, locale, editableElement ) {
 		super( model, locale );
 

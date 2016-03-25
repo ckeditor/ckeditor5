@@ -5,9 +5,9 @@
 
 'use strict';
 
-import Editable from '/ckeditor5/ui/editable/editable.js';
+import EditableUI from '/ckeditor5/ui/editableui/editableui.js';
 
-export default class FramedEditable extends Editable {
+export default class FramedEditableUI extends EditableUI {
 	constructor( editor, editableModel ) {
 		super( editor, editableModel );
 

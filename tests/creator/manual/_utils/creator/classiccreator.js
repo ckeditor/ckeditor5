@@ -14,8 +14,8 @@ import { createEditableUI, createEditorUI } from '/ckeditor5/ui/bindings/creator
 
 import BoxedEditorUI from '/tests/ckeditor5/_utils/ui/boxededitorui/boxededitorui.js';
 import BoxedEditorUIView from '/tests/ckeditor5/_utils/ui/boxededitorui/boxededitoruiview.js';
-import FramedEditableUI from '/tests/ckeditor5/_utils/ui/editable/framed/framededitable.js';
-import FramedEditableUIView from '/tests/ckeditor5/_utils/ui/editable/framed/framededitableview.js';
+import FramedEditableUI from '/tests/ckeditor5/_utils/ui/editableui/framed/framededitableui.js';
+import FramedEditableUIView from '/tests/ckeditor5/_utils/ui/editableui/framed/framededitableuiview.js';
 import Model from '/ckeditor5/ui/model.js';
 import Toolbar from '/ckeditor5/ui/bindings/toolbar.js';
 import ToolbarView from '/ckeditor5/ui/toolbar/toolbarview.js';

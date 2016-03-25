@@ -14,8 +14,8 @@ import { createEditableUI, createEditorUI } from '/ckeditor5/ui/bindings/creator
 
 import EditorUIView from '/ckeditor5/ui/editorui/editoruiview.js';
 import BoxlessEditorUI from '/tests/ckeditor5/_utils/ui/boxlesseditorui/boxlesseditorui.js';
-import InlineEditableUI from '/tests/ckeditor5/_utils/ui/editable/inline/inlineeditable.js';
-import InlineEditableUIView from '/tests/ckeditor5/_utils/ui/editable/inline/inlineeditableview.js';
+import EditableUI from '/ckeditor5/ui/editableui/editableui.js';
+import InlineEditableUIView from '/tests/ckeditor5/_utils/ui/editableui/inline/inlineeditableuiview.js';
 import Model from '/ckeditor5/ui/model.js';
 import FloatingToolbar from '/tests/ckeditor5/_utils/ui/floatingtoolbar/floatingtoolbar.js';
 import FloatingToolbarView from '/tests/ckeditor5/_utils/ui/floatingtoolbar/floatingtoolbarview.js';
@@ -42,7 +42,7 @@ export default class InlineCreator extends Creator {
 
 		// UI.
 		this._createToolbars();
-		editor.ui.add( 'editable', createEditableUI( editor, editable, InlineEditableUI, InlineEditableUIView ) );
+		editor.ui.add( 'editable', createEditableUI( editor, editable, EditableUI, InlineEditableUIView ) );
 
 		// Init.
 		return super.create()

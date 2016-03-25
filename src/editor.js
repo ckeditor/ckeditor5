@@ -27,7 +27,7 @@ export default class Editor {
 	 * This constructor should be rarely used. When creating new editor instance use instead the
 	 * {@link CKEDITOR#create `CKEDITOR.create()` method}.
 	 *
-	 * @param {Iterable.<String, HTMLElement>|null} [elements] The DOM elements that will be the source
+	 * @param {Object.<String, HTMLElement>|null} [elements] The DOM elements that will be the source
 	 * for the created editor.
 	 * @param {Object} config The editor config.
 	 */
