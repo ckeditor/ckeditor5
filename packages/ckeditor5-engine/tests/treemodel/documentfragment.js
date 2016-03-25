@@ -7,7 +7,6 @@
 
 'use strict';
 
-import Node from '/ckeditor5/engine/treemodel/node.js';
 import NodeList from '/ckeditor5/engine/treemodel/nodelist.js';
 import Element from '/ckeditor5/engine/treemodel/element.js';
 import DocumentFragment from '/ckeditor5/engine/treemodel/documentfragment.js';
@@ -41,6 +40,21 @@ describe( 'DocumentFragment', () => {
 			expect( frag.getChild( 2 ) ).to.have.property( 'character' ).that.equals( 'o' );
 			expect( frag.getChild( 3 ) ).to.have.property( 'character' ).that.equals( 'o' );
 			expect( frag.getChild( 4 ) ).to.have.property( 'character' ).that.equals( 'y' );
+		} );
+
+		it( 'should accept DocumentFragment as a parameter and clean it after it is added', () => {
+			let p1 = new Element( 'p' );
+			let p2 = new Element( 'p' );
+			let otherFrag = new DocumentFragment( [ p1, p2 ] );
+
+			let frag = new DocumentFragment();
+
+			frag.insertChildren( 0, otherFrag );
+
+			expect( frag.getChildCount() ).to.equal( 2 );
+			expect( frag.getChild( 0 ) ).to.equal( p1 );
+			expect( frag.getChild( 1 ) ).to.equal( p2 );
+			expect( otherFrag.getChildCount() ).to.equal( 0 );
 		} );
 	} );
 

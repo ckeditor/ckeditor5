@@ -7,6 +7,7 @@
 
 import Node from './node.js';
 import NodeList from './nodelist.js';
+import DocumentFragment from './documentfragment.js';
 import utils from '../../utils/utils.js';
 
 /**
@@ -103,6 +104,11 @@ export default class Element extends Node {
 
 		for ( let node of nodeList._nodes ) {
 			node.parent = this;
+		}
+
+		// Clean original DocumentFragment so it won't contain nodes that were added somewhere else.
+		if ( nodes instanceof DocumentFragment ) {
+			nodes._children = new NodeList();
 		}
 
 		this._children.insert( index, nodeList );

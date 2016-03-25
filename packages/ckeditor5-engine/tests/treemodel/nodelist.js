@@ -8,6 +8,7 @@
 'use strict';
 
 import NodeList from '/ckeditor5/engine/treemodel/nodelist.js';
+import DocumentFragment from '/ckeditor5/engine/treemodel/documentfragment.js';
 import Element from '/ckeditor5/engine/treemodel/element.js';
 import Text from '/ckeditor5/engine/treemodel/text.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
@@ -104,6 +105,18 @@ describe( 'NodeList', () => {
 			expect( nodeList._nodes[ 0 ].text ).to.equal( 'foo' );
 			expect( nodeList._nodes[ 1 ].text ).to.equal( 'xy' );
 			expect( nodeList._nodes[ 2 ].text ).to.equal( 'bar' );
+		} );
+
+		it( 'should accept DocumentFragment as a parameter', () => {
+			let p1 = new Element( 'p' );
+			let p2 = new Element( 'p' );
+			let frag = new DocumentFragment( [ p1, p2 ] );
+
+			let nodeList = new NodeList( frag );
+
+			expect( nodeList.length ).to.equal( 2 );
+			expect( nodeList.get( 0 ) ).to.equal( p1 );
+			expect( nodeList.get( 1 ) ).to.equal( p2 );
 		} );
 	} );
 

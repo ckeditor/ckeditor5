@@ -17,7 +17,6 @@ export default class DocumentFragment {
 	/**
 	 * Creates empty DocumentFragment.
 	 *
-	 * @protected
 	 * @param {engine.treeModel.NodeSet} children List of nodes contained inside the DocumentFragment.
 	 */
 	constructor( children ) {
@@ -83,6 +82,11 @@ export default class DocumentFragment {
 
 		for ( let node of nodeList._nodes ) {
 			node.parent = this;
+		}
+
+		// Clean original DocumentFragment so it won't contain nodes that were added somewhere else.
+		if ( nodes instanceof DocumentFragment ) {
+			nodes._children = new NodeList();
 		}
 
 		this._children.insert( index, nodeList );
