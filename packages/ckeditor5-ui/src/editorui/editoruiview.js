@@ -44,7 +44,7 @@ export default class EditorUIView extends View {
 
 		this.applyTemplateToElement( bodyElement, {
 			attributes: {
-				class: 'ck-body'
+				class: 'ck-body ck-reset-all'
 			}
 		} );
 
