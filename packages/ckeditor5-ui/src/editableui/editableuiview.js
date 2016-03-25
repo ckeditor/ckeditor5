@@ -9,15 +9,15 @@ import View from '../view.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
- * @memberOf ui.editable
+ * @memberOf ui.editableUI
  * @extends ui.View
  */
-export default class EditableView extends View {
+export default class EditableUIView extends View {
 	/**
 	 * The element which is the main editable element (usually the one with `contentEditable="true"`).
 	 *
 	 * @readonly
-	 * @member {HTMLElement} ui.editable.EditableView#editableElement
+	 * @member {HTMLElement} ui.editable.EditableUIView#editableElement
 	 */
 
 	/**
