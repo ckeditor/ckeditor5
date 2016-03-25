@@ -243,9 +243,14 @@ export default class Editor {
 	}
 
 	/**
+	 * Sets the data in the specified editor editable root.
 	 *
+	 * @param {*} data The data to load.
+	 * @param {String} [editableRootName] The name of the editable root to which the data should be loaded.
+	 * If not specified and if there's only one editable root added to the editor, then the data will be loaded
+	 * to that editable.
 	 */
-	setData( data, rootEditableName ) {
+	setData( data, editableRootName ) {
 		if ( !this.data ) {
 			/**
 			 * Data controller has not been defined yet, so methds like {@link ckeditor5.Editor#setData} and
@@ -256,22 +261,22 @@ export default class Editor {
 			throw new CKEditorError( 'editor-no-datacontroller: Data controller has not been defined yet.' );
 		}
 
-		this.data.set( rootEditableName || this._getDefaultRootName(), data );
+		this.data.set( editableRootName || this._getDefaultRootName(), data );
 	}
 
 	/**
+	 * Gets the data from the specified editor editable root.
 	 *
+	 * @param {String} [editableRootName] The name of the editable root to get the data from.
+	 * If not specified and if there's only one editable root added to the editor, then the data will be retrieved
+	 * from it.
 	 */
-	getData( rootEditableName ) {
+	getData( editableRootName ) {
 		if ( !this.data ) {
 			throw new CKEditorError( 'editor-no-datacontroller: Data controller has not been defined yet.' );
 		}
 
-		if ( rootEditableName ) {
-			return this.data.get( rootEditableName );
-		}
-
-		return this.data.get( this._getDefaultRootName() );
+		return this.data.get( editableRootName || this._getDefaultRootName() );
 	}
 
 	/**
@@ -296,7 +301,7 @@ export default class Editor {
 	}
 
 	/**
-	 * Returns name of the root editable if there is only one. If there are multiple root editables, throws an error.
+	 * Returns name of the root editable if there is only one. If there are multiple or no root editables, throws an error.
 	 *
 	 * Note: The error message makes sense only for methods like {@link ckeditor5.Editor#setData} and
 	 * {@link ckeditor5.Editor#getData}.
@@ -312,13 +317,18 @@ export default class Editor {
 			 * The name of the root editable must be specified. There are multiple root editables added to the editor,
 			 * so the name of the editable must be specified.
 			 *
-			 * @error editor-root-editable-name-missing
+			 * @error editor-editable-root-name-missing
 			 */
-			throw new CKEditorError( 'editor-root-editable-name-missing: The name of the root editable must be specified.' );
+			throw new CKEditorError( 'editor-editable-root-name-missing: The name of the editable root must be specified.' );
 		}
 
 		if ( rootNames.length === 0 ) {
-			throw new CKEditorError( 'editor-no-root-editables: There are no root editables defined.' );
+			/**
+			 * The editor does not contain any editable roots, so the data cannot be set or read from it.
+			 *
+			 * @error editor-no-editable-roots
+			 */
+			throw new CKEditorError( 'editor-no-editable-roots: There are no editable roots defined.' );
 		}
 
 		return rootNames[ 0 ];

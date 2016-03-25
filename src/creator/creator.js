@@ -49,7 +49,7 @@ export default class Creator extends BaseCreator {
 	/**
 	 * Updates the {@link ckeditor5.Editor#element editor element}'s content with the data.
 	 *
-	 * @param [elementName]
+	 * @param [elementName] If not specified, the first element will be used.
 	 */
 	updateEditorElement( elementName ) {
 		if ( !elementName ) {
@@ -70,9 +70,9 @@ export default class Creator extends BaseCreator {
 	}
 
 	/**
-	 * Loads the data from the given or first {@link ckeditor5.Editor#element editor element} to the editable.
+	 * Loads the data from the given {@link ckeditor5.Editor#element editor element} to the editable.
 	 *
-	 * @param [elementName]
+	 * @param [elementName] If not specified, the first element will be used.
 	 */
 	loadDataFromEditorElement( elementName ) {
 		if ( !elementName ) {

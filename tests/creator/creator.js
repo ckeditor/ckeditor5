@@ -105,6 +105,18 @@ describe( 'Creator', () => {
 		} );
 	} );
 
+	describe( 'updateEditorElements', () => {
+		it( 'updates all editor elements', () => {
+			const spy = sinon.stub( creator, 'updateEditorElement' );
+
+			creator.updateEditorElements();
+
+			expect( spy.calledTwice ).to.be.true;
+			expect( spy.calledWith( 'first' ) ).to.be.true;
+			expect( spy.calledWith( 'second' ) ).to.be.true;
+		} );
+	} );
+
 	describe( 'loadDataFromEditorElement', () => {
 		it( 'should pass data to the first element', () => {
 			editor.setData = sinon.spy();
@@ -126,6 +138,18 @@ describe( 'Creator', () => {
 			creator.loadDataFromEditorElement( 'second' );
 
 			expect( editor.setData.calledWithExactly( 'foo', 'second' ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'loadDataFromEditorElements', () => {
+		it( 'updates all editor elements', () => {
+			const spy = sinon.stub( creator, 'loadDataFromEditorElement' );
+
+			creator.loadDataFromEditorElements();
+
+			expect( spy.calledTwice ).to.be.true;
+			expect( spy.calledWith( 'first' ) ).to.be.true;
+			expect( spy.calledWith( 'second' ) ).to.be.true;
 		} );
 	} );
 

@@ -81,6 +81,34 @@ describe( 'Editor', () => {
 		} );
 	} );
 
+	describe( 'firstElement', () => {
+		it( 'should be set to first element', () => {
+			const editor = new Editor( { foo: 'a', bar: 'b' } );
+
+			expect( editor.firstElement ).to.equal( 'a' );
+		} );
+
+		it( 'should be set to null if there are no elements', () => {
+			const editor = new Editor();
+
+			expect( editor.firstElement ).to.be.null;
+		} );
+	} );
+
+	describe( 'firstElementName', () => {
+		it( 'should be set to first element name', () => {
+			const editor = new Editor( { foo: 'a', bar: 'b' } );
+
+			expect( editor.firstElementName ).to.equal( 'foo' );
+		} );
+
+		it( 'should be set to null if there are no elements', () => {
+			const editor = new Editor();
+
+			expect( editor.firstElementName ).to.be.null;
+		} );
+	} );
+
 	describe( 'init', () => {
 		it( 'should return a promise that resolves properly', () => {
 			const editor = new Editor( null, {
@@ -252,7 +280,7 @@ describe( 'Editor', () => {
 		it( 'should throw when no roots', () => {
 			expect( () => {
 				editor.setData( 'foo' );
-			} ).to.throw( CKEditorError, /^editor-no-root-editables:/ );
+			} ).to.throw( CKEditorError, /^editor-no-editable-roots:/ );
 		} );
 
 		it( 'should throw when more than one root and no root name given', () => {
@@ -261,7 +289,15 @@ describe( 'Editor', () => {
 
 			expect( () => {
 				editor.setData( 'foo' );
-			} ).to.throw( CKEditorError, /^editor-root-editable-name-missing:/ );
+			} ).to.throw( CKEditorError, /^editor-editable-root-name-missing:/ );
+		} );
+
+		it( 'should throw when no data controller', () => {
+			expect( () => {
+				editor.data = null;
+
+				editor.setData( 'foo' );
+			} ).to.throw( CKEditorError, /^editor-no-datacontroller:/ );
 		} );
 	} );
 
@@ -292,7 +328,7 @@ describe( 'Editor', () => {
 		it( 'should throw when no roots', () => {
 			expect( () => {
 				editor.getData();
-			} ).to.throw( CKEditorError, /^editor-no-root-editables:/ );
+			} ).to.throw( CKEditorError, /^editor-no-editable-roots:/ );
 		} );
 
 		it( 'should throw when more than one root and no root name given', () => {
@@ -301,7 +337,15 @@ describe( 'Editor', () => {
 
 			expect( () => {
 				editor.getData();
-			} ).to.throw( CKEditorError, /^editor-root-editable-name-missing:/ );
+			} ).to.throw( CKEditorError, /^editor-editable-root-name-missing:/ );
+		} );
+
+		it( 'should throw when no data controller', () => {
+			expect( () => {
+				editor.data = null;
+
+				editor.getData();
+			} ).to.throw( CKEditorError, /^editor-no-datacontroller:/ );
 		} );
 	} );
 } );

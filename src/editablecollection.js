@@ -27,6 +27,7 @@ export default class EditableCollection extends Collection {
 		 * The currently focused editable.
 		 *
 		 * @observable
+		 * @readonly
 		 * @member {ckeditor5.Editable} ckeditor5.EditableCollection#current
 		 */
 		this.set( 'current', null );
