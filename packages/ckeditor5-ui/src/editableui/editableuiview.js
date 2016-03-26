@@ -9,15 +9,25 @@ import View from '../view.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
- * @memberOf ui.editable
+ * @memberOf ui.editableUI
  * @extends ui.View
  */
-export default class EditableView extends View {
+export default class EditableUIView extends View {
+	/**
+	 * Creates an instance of the EditableUIView class.
+	 *
+	 * @method constructor
+	 * @param {ui.Model} model (View)Model of this view.
+	 * @param {utils.Locale} [locale] The {@link ckeditor5.Editor#locale editor's locale} instance.
+	 * @param {HTMLElement} [editableElement] The editable element. If not specified the editable UI view
+	 * should create it. Otherwise, the existing element should be used.
+	 */
+
 	/**
 	 * The element which is the main editable element (usually the one with `contentEditable="true"`).
 	 *
 	 * @readonly
-	 * @member {HTMLElement} ui.editable.EditableView#editableElement
+	 * @member {HTMLElement} ui.editable.EditableUIView#editableElement
 	 */
 
 	/**
@@ -37,17 +47,9 @@ export default class EditableView extends View {
 		this.editableElement = editableElement;
 
 		this.applyTemplateToElement( editableElement, {
-			on: {
-				focus: () => {
-					this.model.isFocused = true;
-				},
-				blur: () => {
-					this.model.isFocused = false;
-				}
-			},
-
 			attributes: {
-				contentEditable: bind.to( 'isEditable' )
+				contentEditable: bind.to( 'isEditable' ),
+				class: [ bind.to( 'isFocused', value => value ? 'ck-focused' : 'ck-blurred' ) ]
 			}
 		} );
 	}

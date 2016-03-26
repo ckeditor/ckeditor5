@@ -24,7 +24,7 @@ const bindIfSymbol = Symbol( 'bindIf' );
  */
 export default class View {
 	/**
-	 * Creates an instance of the {@link View} class.
+	 * Creates an instance of the {@link ui.View} class.
 	 *
 	 * @param {ui.Model} model (View)Model of this View.
 	 * @param {utils.Locale} [locale] The {@link ckeditor5.Editor#locale editor's locale} instance.
