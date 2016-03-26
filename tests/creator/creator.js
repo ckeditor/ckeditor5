@@ -195,7 +195,7 @@ describe( 'Creator', () => {
 		} );
 	} );
 
-	describe( '_restoreElement', () => {
+	describe( '_restoreElements', () => {
 		it( 'should restore all elements', () => {
 			const el1 = editor.elements.get( 'first' );
 			const replacement1 = document.createElement( 'div' );
@@ -209,6 +209,19 @@ describe( 'Creator', () => {
 
 			expect( replacement1.parentNode ).to.be.null;
 			expect( replacement2.parentNode ).to.be.null;
+			expect( el2.style.display ).to.not.equal( 'none' );
+		} );
+
+		it( 'should not try to remove replacement elements', () => {
+			const el1 = editor.elements.get( 'first' );
+			const el2 = editor.elements.get( 'second' );
+
+			creator._replaceElement( el1 );
+			creator._replaceElement( el2 );
+
+			creator._restoreElements();
+
+			expect( el1.style.display ).to.not.equal( 'none' );
 			expect( el2.style.display ).to.not.equal( 'none' );
 		} );
 	} );
