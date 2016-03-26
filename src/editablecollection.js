@@ -18,7 +18,7 @@ import ObservableMixin from './utils/observablemixin.js';
  */
 export default class EditableCollection extends Collection {
 	/**
-	 * Creates a new instance of Editabe.
+	 * Creates a new instance of EditableCollection.
 	 */
 	constructor() {
 		super( { idProperty: 'name' } );
@@ -26,8 +26,8 @@ export default class EditableCollection extends Collection {
 		/**
 		 * The currently focused editable.
 		 *
-		 * @observable
 		 * @readonly
+		 * @observable
 		 * @member {ckeditor5.Editable} ckeditor5.EditableCollection#current
 		 */
 		this.set( 'current', null );
@@ -44,7 +44,7 @@ export default class EditableCollection extends Collection {
 	}
 
 	/**
-	 * Destorys the collection.
+	 * Destroys the collection.
 	 */
 	destroy() {
 		this.stopListening();

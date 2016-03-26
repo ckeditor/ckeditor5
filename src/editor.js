@@ -243,7 +243,7 @@ export default class Editor {
 	}
 
 	/**
-	 * Sets the data in the specified editor editable root.
+	 * Sets the data in the specified editor's editable root.
 	 *
 	 * @param {*} data The data to load.
 	 * @param {String} [editableRootName] The name of the editable root to which the data should be loaded.
@@ -265,7 +265,7 @@ export default class Editor {
 	}
 
 	/**
-	 * Gets the data from the specified editor editable root.
+	 * Gets the data from the specified editor's editable root.
 	 *
 	 * @param {String} [editableRootName] The name of the editable root to get the data from.
 	 * If not specified and if there's only one editable root added to the editor, then the data will be retrieved
@@ -301,7 +301,7 @@ export default class Editor {
 	}
 
 	/**
-	 * Returns name of the root editable if there is only one. If there are multiple or no root editables, throws an error.
+	 * Returns name of the editable root if there is only one. If there are multiple or no editable roots, throws an error.
 	 *
 	 * Note: The error message makes sense only for methods like {@link ckeditor5.Editor#setData} and
 	 * {@link ckeditor5.Editor#getData}.
@@ -314,7 +314,7 @@ export default class Editor {
 
 		if ( rootNames.length > 1 ) {
 			/**
-			 * The name of the root editable must be specified. There are multiple root editables added to the editor,
+			 * The name of the editable root must be specified. There are multiple editable roots added to the editor,
 			 * so the name of the editable must be specified.
 			 *
 			 * @error editor-editable-root-name-missing

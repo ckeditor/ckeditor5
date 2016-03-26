@@ -18,6 +18,14 @@ import EditingController from '../engine/treecontroller/editingcontroller.js';
  * @extends ckeditor5.creator.Creator
  */
 export default class StandardCreator extends Creator {
+	/**
+	 * Creates an instance of the standard creator. Initializes the engine ({@link engine.treeModel.Document document},
+	 * {@link engine.treeController.EditingController editing controller} and
+	 * {@link engine.treeController.DataController data controller}).
+	 *
+	 * @param {ckeditor5.Editor} The editor instance.
+	 * @param {engine.dataProcessor.DataProcessor} The data processor to use.
+	 */
 	constructor( editor, dataProcessor ) {
 		super( editor );
 
