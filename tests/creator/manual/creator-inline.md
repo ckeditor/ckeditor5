@@ -15,7 +15,7 @@
 ## Notes:
 
 * You can play with:
-  * `editor.editable.isEditable`.
+  * `editable.isEditable`,
   * `boldModel.isEnabled` and `italicModel.isEnabled`.
 * Changes to `editable.isFocused/isEditable` should be logged to the console.
 * Buttons' states should be synchronised between toolbars (they share models).

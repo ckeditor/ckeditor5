@@ -53,7 +53,7 @@ export default class Plugin {
 	/**
 	 * Destroys the plugin.
 	 *
-	 * TODO waits to be implemented (#186).
+	 * @returns {null|Promise}
 	 */
 	destroy() {}
 }

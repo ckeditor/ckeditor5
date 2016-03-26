@@ -49,7 +49,7 @@ const utils = {
 	 * be copied to the prototype of the creator.
 	 */
 	defineEditorCreatorMock( creatorName, proto ) {
-		moduleUtils.define( `creator-${ creatorName }/creator-${ creatorName }`, [ 'creator' ], ( Creator ) => {
+		moduleUtils.define( `creator-${ creatorName }/creator-${ creatorName }`, [ 'creator/creator' ], ( Creator ) => {
 			class TestCreator extends Creator {}
 
 			if ( proto ) {

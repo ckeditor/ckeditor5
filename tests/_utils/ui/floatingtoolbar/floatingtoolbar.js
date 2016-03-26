@@ -11,6 +11,6 @@ export default class FloatingToolbar extends Toolbar {
 	constructor( model, view, editor ) {
 		super( model, view, editor );
 
-		model.bind( 'isVisible' ).to( editor.editable, 'isFocused' );
+		model.bind( 'isVisible' ).to( editor.editables.get( model.editableName ), 'isFocused' );
 	}
 }

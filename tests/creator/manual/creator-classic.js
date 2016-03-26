@@ -11,7 +11,7 @@ import CKEDITOR from '/ckeditor.js';
 import ClassicCreator from '/tests/ckeditor5/creator/manual/_utils/creator/classiccreator.js';
 import testUtils from '/tests/utils/_utils/utils.js';
 
-let editor, observer;
+let editor, editable, observer;
 
 function initEditor() {
 	CKEDITOR.create( '#editor', {
@@ -24,20 +24,21 @@ function initEditor() {
 	} )
 	.then( ( newEditor ) => {
 		console.log( 'Editor was initialized', newEditor );
-		console.log( 'You can now play with it using global `editor` variable.' );
+		console.log( 'You can now play with it using global `editor` and `editable` variables.' );
 
 		window.editor = editor = newEditor;
+		window.editable = editable = editor.editables.get( 0 );
 
 		observer = testUtils.createObserver();
-		observer.observe( 'Editable', editor.editable );
+		observer.observe( 'Editable', editable );
 	} );
 }
 
 function destroyEditor() {
 	editor.destroy()
 		.then( () => {
-			window.editor = null;
-			editor = null;
+			window.editor = editor = null;
+			window.editable = editable = null;
 
 			observer.stopListening();
 			observer = null;

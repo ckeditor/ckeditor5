@@ -10,9 +10,10 @@ import testUtils from '/tests/ckeditor5/_utils/utils.js';
 import CKEDITOR from '/ckeditor.js';
 import Editor from '/ckeditor5/editor.js';
 import Config from '/ckeditor5/utils/config.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
-let content = document.getElementById( 'content' );
-let editorConfig = { creator: 'creator-test' };
+const content = document.getElementById( 'content' );
+const editorConfig = { creator: 'creator-test' };
 
 testUtils.createSinonSandbox();
 testUtils.defineEditorCreatorMock( 'test' );
@@ -32,14 +33,6 @@ describe( 'create', () => {
 	it( 'should create a new editor instance', () => {
 		return CKEDITOR.create( content, editorConfig ).then( ( editor ) => {
 			expect( editor ).to.be.instanceof( Editor );
-			expect( editor.element ).to.equal( content );
-		} );
-	} );
-
-	it( 'should create a new editor instance (using a selector)', () => {
-		return CKEDITOR.create( '.editor', editorConfig ).then( ( editor ) => {
-			expect( editor ).to.be.instanceof( Editor );
-			expect( editor.element ).to.equal( document.querySelector( '.editor' ) );
 		} );
 	} );
 
@@ -82,18 +75,141 @@ describe( 'create', () => {
 		} );
 	} );
 
-	it( 'should be rejected on element not found', () => {
-		let addSpy = testUtils.sinon.spy( CKEDITOR.instances, 'add' );
+	describe( 'elements param', () => {
+		const container = document.createElement( 'div' );
+		let el1, el2;
 
-		return CKEDITOR.create( '.undefined' ).then( () => {
-			throw new Error( 'It should not enter this function' );
-		} ).catch( ( error ) => {
-			expect( error ).to.be.instanceof( Error );
-			expect( error.message ).to.equal( 'Element not found' );
-			// We need to make sure that create()'s execution is stopped.
-			// Assertion based on a real mistake we made that reject() wasn't followed by a return.
-			sinon.assert.notCalled( addSpy );
+		document.body.appendChild( container );
+
+		beforeEach( () => {
+			container.innerHTML = '';
+
+			el1 = document.createElement( 'div' );
+			el2 = document.createElement( 'div' );
+
+			container.appendChild( el1 );
+			container.appendChild( el2 );
 		} );
+
+		it( 'should work with a string', () => {
+			return CKEDITOR.create( 'div', editorConfig ).then( ( editor ) => {
+				assertElements( editor, document.querySelectorAll( 'div' ).length );
+			} );
+		} );
+
+		it( 'should work with an HTMLElement', () => {
+			return CKEDITOR.create( el1, editorConfig ).then( ( editor ) => {
+				assertElements( editor, 1 );
+			} );
+		} );
+
+		it( 'should work with a NodeList', () => {
+			const elements = container.querySelectorAll( 'div' );
+
+			return CKEDITOR.create( elements, editorConfig ).then( ( editor ) => {
+				assertElements( editor, 2 );
+			} );
+		} );
+
+		it( 'should work with an HTMLCollection', () => {
+			const elements = container.getElementsByTagName( 'div' );
+
+			return CKEDITOR.create( elements, editorConfig ).then( ( editor ) => {
+				assertElements( editor, 2 );
+			} );
+		} );
+
+		it( 'should work with an array', () => {
+			const elements = Array.from( container.getElementsByTagName( 'div' ) );
+
+			return CKEDITOR.create( elements, editorConfig ).then( ( editor ) => {
+				assertElements( editor, 2 );
+			} );
+		} );
+
+		it( 'should work with an object', () => {
+			const elements = {
+				editableA: el1,
+				editableB: el2
+			};
+
+			return CKEDITOR.create( elements, editorConfig ).then( ( editor ) => {
+				assertElements( editor, 2 );
+			} );
+		} );
+
+		it( 'should be rejected on element not found (when string passed)', () => {
+			let addSpy = testUtils.sinon.spy( CKEDITOR.instances, 'add' );
+
+			return CKEDITOR.create( '.undefined' )
+				.then( () => {
+					throw new Error( 'It should not enter this function.' );
+				} )
+				.catch( ( error ) => {
+					expect( error ).to.be.instanceof( CKEditorError );
+					expect( error.message ).to.match( /^ckeditor5-create-no-elements:/ );
+
+					// We need to make sure that create()'s execution is stopped.
+					// Assertion based on a real mistake we made that reject() wasn't followed by a return.
+					sinon.assert.notCalled( addSpy );
+				} );
+		} );
+
+		it( 'should be rejected on an empty elements array-like obj', () => {
+			return CKEDITOR.create( [] )
+				.then( () => {
+					throw new Error( 'It should not enter this function.' );
+				} )
+				.catch( ( error ) => {
+					expect( error ).to.be.instanceof( CKEditorError );
+					expect( error.message ).to.match( /^ckeditor5-create-no-elements:/ );
+				} );
+		} );
+
+		it( 'should be rejected on an empty object', () => {
+			return CKEDITOR.create( {} )
+				.then( () => {
+					throw new Error( 'It should not enter this function.' );
+				} )
+				.catch( ( error ) => {
+					expect( error ).to.be.instanceof( CKEditorError );
+					expect( error.message ).to.match( /^ckeditor5-create-no-elements:/ );
+				} );
+		} );
+
+		it( 'should take names from the ids or data-editable attributes', () => {
+			el1.id = 'foo';
+			el2.dataset.editable = 'bar';
+
+			return CKEDITOR.create( [ el1, el2 ], editorConfig )
+				.then( ( editor ) => {
+					expect( editor.elements.get( 'foo' ) ).to.equal( el1 );
+					expect( editor.elements.get( 'bar' ) ).to.equal( el2 );
+				} );
+		} );
+
+		it( 'should take names from the object keys', () => {
+			el1.id = 'foo';
+			el2.dataset.editable = 'bar';
+
+			return CKEDITOR.create( { a: el1, b: el2 }, editorConfig )
+				.then( ( editor ) => {
+					expect( editor.elements.get( 'a' ) ).to.equal( el1 );
+					expect( editor.elements.get( 'b' ) ).to.equal( el2 );
+				} );
+		} );
+
+		it( 'should generate editableN names', () => {
+			return CKEDITOR.create( [ el1, el2 ], editorConfig )
+				.then( ( editor ) => {
+					expect( Array.from( editor.elements.keys() ).join( ',' ) ).to.match( /^editable\d+,editable\d+$/ );
+				} );
+		} );
+
+		function assertElements( editor, expectedSize ) {
+			expect( editor.elements ).to.be.instanceof( Map );
+			expect( editor.elements ).to.have.property( 'size', expectedSize );
+		}
 	} );
 } );
 

@@ -5,13 +5,24 @@
 
 'use strict';
 
-import EditableView from '/ckeditor5/ui/editable/editableview.js';
+import EditableUIView from '/ckeditor5/ui/editableui/editableuiview.js';
 
-export default class InlineEditableView extends EditableView {
+export default class InlineEditableView extends EditableUIView {
 	constructor( model, locale, editableElement ) {
 		super( model, locale );
 
-		this.element = editableElement;
+		if ( editableElement ) {
+			this.element = editableElement;
+		} else {
+			const bind = this.attributeBinder;
+
+			this.template = {
+				tag: 'div',
+				attributes: {
+					contentEditable: bind.to( 'isEditable' )
+				}
+			};
+		}
 	}
 
 	init() {

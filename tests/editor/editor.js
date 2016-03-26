@@ -11,13 +11,15 @@ import moduleUtils from '/tests/ckeditor5/_utils/module.js';
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
 import Editor from '/ckeditor5/editor.js';
 import EditorConfig from '/ckeditor5/editorconfig.js';
+import PluginCollection from '/ckeditor5/plugincollection.js';
+import EditableCollection from '/ckeditor5/editablecollection.js';
 import Plugin from '/ckeditor5/plugin.js';
 import Command from '/ckeditor5/command/command.js';
 import Locale from '/ckeditor5/utils/locale.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
+import Document from '/ckeditor5/engine/treemodel/document.js';
 
 const pluginClasses = {};
-let element;
 
 before( () => {
 	// Define fake plugins to be used in tests.
@@ -31,218 +33,320 @@ before( () => {
 	pluginDefinition( 'D/D', [ 'C/C' ] );
 } );
 
-beforeEach( () => {
-	element = document.createElement( 'div' );
-	document.body.appendChild( element );
-} );
-
 ///////////////////
 
-describe( 'constructor', () => {
-	it( 'should create a new editor instance', () => {
-		const editor = new Editor( element );
+describe( 'Editor', () => {
+	describe( 'constructor', () => {
+		it( 'should create a new editor instance', () => {
+			const editor = new Editor();
 
-		expect( editor ).to.have.property( 'element' ).to.equal( element );
-	} );
-} );
+			expect( editor ).to.have.property( 'elements', null );
+			expect( editor.config ).to.be.an.instanceof( EditorConfig );
+			expect( editor.editables ).to.be.an.instanceof( EditableCollection );
+			expect( editor.commands ).to.be.an.instanceof( Map );
 
-describe( 'config', () => {
-	it( 'should be an instance of EditorConfig', () => {
-		const editor = new Editor( element );
-
-		expect( editor.config ).to.be.an.instanceof( EditorConfig );
-	} );
-} );
-
-describe( 'locale', () => {
-	it( 'is instantiated and t() is exposed', () => {
-		const editor = new Editor( element );
-
-		expect( editor.locale ).to.be.instanceof( Locale );
-		expect( editor.t ).to.equal( editor.locale.t );
-	} );
-
-	it( 'is configured with the config.lang', () => {
-		const editor = new Editor( element, { lang: 'pl' } );
-
-		expect( editor.locale.lang ).to.equal( 'pl' );
-	} );
-} );
-
-describe( 'init', () => {
-	it( 'should return a promise that resolves properly', () => {
-		const editor = new Editor( element, {
-			creator: 'creator-test'
-		} );
-
-		let promise = editor.init();
-
-		expect( promise ).to.be.an.instanceof( Promise );
-
-		return promise;
-	} );
-
-	it( 'should load features and creator', () => {
-		const editor = new Editor( element, {
-			features: [ 'A', 'B' ],
-			creator: 'creator-test'
-		} );
-
-		expect( getPlugins( editor ) ).to.be.empty;
-
-		return editor.init().then( () => {
-			expect( getPlugins( editor ).length ).to.equal( 3 );
-
-			expect( editor.plugins.get( 'A' ) ).to.be.an.instanceof( Plugin );
-			expect( editor.plugins.get( 'B' ) ).to.be.an.instanceof( Plugin );
-			expect( editor.plugins.get( 'creator-test' ) ).to.be.an.instanceof( Plugin );
+			expect( editor.plugins ).to.be.an.instanceof( PluginCollection );
+			expect( getPlugins( editor ) ).to.be.empty;
 		} );
 	} );
 
-	it( 'should load features passed as a string', () => {
-		const editor = new Editor( element, {
-			features: 'A,B',
-			creator: 'creator-test'
-		} );
+	describe( 'config', () => {
+		it( 'should be an instance of EditorConfig', () => {
+			const editor = new Editor();
 
-		expect( getPlugins( editor ) ).to.be.empty;
-
-		return editor.init().then( () => {
-			expect( getPlugins( editor ).length ).to.equal( 3 );
-
-			expect( editor.plugins.get( 'A' ) ).to.be.an.instanceof( Plugin );
-			expect( editor.plugins.get( 'B' ) ).to.be.an.instanceof( Plugin );
+			expect( editor.config ).to.be.an.instanceof( EditorConfig );
 		} );
 	} );
 
-	it( 'should initialize plugins in the right order', () => {
-		const editor = new Editor( element, {
-			features: [ 'A', 'D' ],
-			creator: 'creator-test'
+	describe( 'locale', () => {
+		it( 'is instantiated and t() is exposed', () => {
+			const editor = new Editor();
+
+			expect( editor.locale ).to.be.instanceof( Locale );
+			expect( editor.t ).to.equal( editor.locale.t );
 		} );
 
-		return editor.init().then( () => {
-			sinon.assert.callOrder(
-				editor.plugins.get( 'creator-test' ).init,
-				editor.plugins.get( pluginClasses[ 'A/A' ] ).init,
-				editor.plugins.get( pluginClasses[ 'B/B' ] ).init,
-				editor.plugins.get( pluginClasses[ 'C/C' ] ).init,
-				editor.plugins.get( pluginClasses[ 'D/D' ] ).init
-			);
+		it( 'is configured with the config.lang', () => {
+			const editor = new Editor( null, { lang: 'pl' } );
+
+			expect( editor.locale.lang ).to.equal( 'pl' );
 		} );
 	} );
 
-	it( 'should initialize plugins in the right order, waiting for asynchronous ones', () => {
-		class PluginAsync extends Plugin {}
-		const asyncSpy = sinon.spy().named( 'async-call-spy' );
+	describe( 'plugins', () => {
+		it( 'should be empty on new editor', () => {
+			const editor = new Editor();
 
-		// Synchronous plugin that depends on an asynchronous one.
-		pluginDefinition( 'sync/sync', [ 'async/async' ] );
+			expect( getPlugins( editor ) ).to.be.empty;
+		} );
+	} );
 
-		moduleUtils.define( 'async/async', () => {
-			PluginAsync.prototype.init = sinon.spy( () => {
-				return new Promise( ( resolve ) => {
-					setTimeout( () => {
-						asyncSpy();
-						resolve();
-					}, 0 );
-				} );
+	describe( 'firstElement', () => {
+		it( 'should be set to first element', () => {
+			const editor = new Editor( { foo: 'a', bar: 'b' } );
+
+			expect( editor.firstElement ).to.equal( 'a' );
+		} );
+
+		it( 'should be set to null if there are no elements', () => {
+			const editor = new Editor();
+
+			expect( editor.firstElement ).to.be.null;
+		} );
+	} );
+
+	describe( 'firstElementName', () => {
+		it( 'should be set to first element name', () => {
+			const editor = new Editor( { foo: 'a', bar: 'b' } );
+
+			expect( editor.firstElementName ).to.equal( 'foo' );
+		} );
+
+		it( 'should be set to null if there are no elements', () => {
+			const editor = new Editor();
+
+			expect( editor.firstElementName ).to.be.null;
+		} );
+	} );
+
+	describe( 'init', () => {
+		it( 'should return a promise that resolves properly', () => {
+			const editor = new Editor( null, {
+				creator: 'creator-test'
 			} );
 
-			return PluginAsync;
+			let promise = editor.init();
+
+			expect( promise ).to.be.an.instanceof( Promise );
+
+			return promise;
 		} );
 
-		const editor = new Editor( element, {
-			features: [ 'A', 'sync' ],
-			creator: 'creator-test'
+		it( 'should load features and creator', () => {
+			const editor = new Editor( null, {
+				features: [ 'A', 'B' ],
+				creator: 'creator-test'
+			} );
+
+			expect( getPlugins( editor ) ).to.be.empty;
+
+			return editor.init().then( () => {
+				expect( getPlugins( editor ).length ).to.equal( 3 );
+
+				expect( editor.plugins.get( 'A' ) ).to.be.an.instanceof( Plugin );
+				expect( editor.plugins.get( 'B' ) ).to.be.an.instanceof( Plugin );
+				expect( editor.plugins.get( 'creator-test' ) ).to.be.an.instanceof( Plugin );
+			} );
 		} );
 
-		return editor.init().then( () => {
-			sinon.assert.callOrder(
-				editor.plugins.get( 'creator-test' ).init,
-				editor.plugins.get( pluginClasses[ 'A/A' ] ).init,
-				editor.plugins.get( PluginAsync ).init,
-				// This one is called with delay by the async init.
-				asyncSpy,
-				editor.plugins.get( pluginClasses[ 'sync/sync' ] ).init
-			);
+		it( 'should load features passed as a string', () => {
+			const editor = new Editor( null, {
+				features: 'A,B',
+				creator: 'creator-test'
+			} );
+
+			expect( getPlugins( editor ) ).to.be.empty;
+
+			return editor.init().then( () => {
+				expect( getPlugins( editor ).length ).to.equal( 3 );
+
+				expect( editor.plugins.get( 'A' ) ).to.be.an.instanceof( Plugin );
+				expect( editor.plugins.get( 'B' ) ).to.be.an.instanceof( Plugin );
+			} );
+		} );
+
+		it( 'should initialize plugins in the right order', () => {
+			const editor = new Editor( null, {
+				features: [ 'A', 'D' ],
+				creator: 'creator-test'
+			} );
+
+			return editor.init().then( () => {
+				sinon.assert.callOrder(
+					editor.plugins.get( 'creator-test' ).init,
+					editor.plugins.get( pluginClasses[ 'A/A' ] ).init,
+					editor.plugins.get( pluginClasses[ 'B/B' ] ).init,
+					editor.plugins.get( pluginClasses[ 'C/C' ] ).init,
+					editor.plugins.get( pluginClasses[ 'D/D' ] ).init
+				);
+			} );
+		} );
+
+		it( 'should initialize plugins in the right order, waiting for asynchronous ones', () => {
+			class PluginAsync extends Plugin {}
+			const asyncSpy = sinon.spy().named( 'async-call-spy' );
+
+			// Synchronous plugin that depends on an asynchronous one.
+			pluginDefinition( 'sync/sync', [ 'async/async' ] );
+
+			moduleUtils.define( 'async/async', () => {
+				PluginAsync.prototype.init = sinon.spy( () => {
+					return new Promise( ( resolve ) => {
+						setTimeout( () => {
+							asyncSpy();
+							resolve();
+						}, 0 );
+					} );
+				} );
+
+				return PluginAsync;
+			} );
+
+			const editor = new Editor( null, {
+				features: [ 'A', 'sync' ],
+				creator: 'creator-test'
+			} );
+
+			return editor.init().then( () => {
+				sinon.assert.callOrder(
+					editor.plugins.get( 'creator-test' ).init,
+					editor.plugins.get( pluginClasses[ 'A/A' ] ).init,
+					editor.plugins.get( PluginAsync ).init,
+					// This one is called with delay by the async init.
+					asyncSpy,
+					editor.plugins.get( pluginClasses[ 'sync/sync' ] ).init
+				);
+			} );
 		} );
 	} );
-} );
 
-describe( 'plugins', () => {
-	it( 'should be empty on new editor', () => {
-		const editor = new Editor( element );
+	describe( 'destroy', () => {
+		it( 'should fire "destroy"', () => {
+			const editor = new Editor();
+			let spy = sinon.spy();
 
-		expect( getPlugins( editor ) ).to.be.empty;
+			editor.on( 'destroy', spy );
+
+			return editor.destroy().then( () => {
+				expect( spy.calledOnce ).to.be.true;
+			} );
+		} );
+
+		// Note: Tests for destroying creators are in creator/creator.js.
+		// When destroying creator will be generalized to destroying plugins,
+		// move that code here.
 	} );
-} );
 
-describe( 'destroy', () => {
-	it( 'should fire "destroy"', () => {
-		const editor = new Editor( element );
-		let spy = sinon.spy();
+	describe( 'execute', () => {
+		it( 'should execute specified command', () => {
+			const editor = new Editor();
 
-		editor.on( 'destroy', spy );
+			let command = new Command( editor );
+			sinon.spy( command, '_execute' );
 
-		return editor.destroy().then( () => {
-			sinon.assert.called( spy );
+			editor.commands.set( 'commandName', command );
+			editor.execute( 'commandName' );
+
+			expect( command._execute.calledOnce ).to.be.true;
+		} );
+
+		it( 'should throw an error if specified command has not been added', () => {
+			const editor = new Editor();
+
+			expect( () => {
+				editor.execute( 'command' );
+			} ).to.throw( CKEditorError, /^editor-command-not-found:/ );
 		} );
 	} );
 
-	it( 'should delete the "element" property', () => {
-		const editor = new Editor( element );
+	describe( 'setData', () => {
+		let editor;
 
-		return editor.destroy().then( () => {
-			expect( editor ).to.not.have.property( 'element' );
+		beforeEach( () => {
+			editor = new Editor();
+
+			editor.document = new Document();
+			editor.data = {
+				set: sinon.spy()
+			};
+		} );
+
+		it( 'should set data of the first root', () => {
+			editor.document.createRoot( 'firstRoot', 'div' );
+
+			editor.setData( 'foo' );
+
+			expect( editor.data.set.calledOnce ).to.be.true;
+			expect( editor.data.set.calledWithExactly( 'firstRoot', 'foo' ) ).to.be.true;
+		} );
+
+		it( 'should set data of the specified root', () => {
+			editor.setData( 'foo', 'someRoot' );
+
+			expect( editor.data.set.calledOnce ).to.be.true;
+			expect( editor.data.set.calledWithExactly( 'someRoot', 'foo' ) ).to.be.true;
+		} );
+
+		it( 'should throw when no roots', () => {
+			expect( () => {
+				editor.setData( 'foo' );
+			} ).to.throw( CKEditorError, /^editor-no-editable-roots:/ );
+		} );
+
+		it( 'should throw when more than one root and no root name given', () => {
+			editor.document.createRoot( 'firstRoot', 'div' );
+			editor.document.createRoot( 'secondRoot', 'div' );
+
+			expect( () => {
+				editor.setData( 'foo' );
+			} ).to.throw( CKEditorError, /^editor-editable-root-name-missing:/ );
+		} );
+
+		it( 'should throw when no data controller', () => {
+			expect( () => {
+				editor.data = null;
+
+				editor.setData( 'foo' );
+			} ).to.throw( CKEditorError, /^editor-no-datacontroller:/ );
 		} );
 	} );
-} );
 
-describe( 'execute', () => {
-	it( 'should execute specified command', () => {
-		const editor = new Editor( element );
+	describe( 'getData', () => {
+		let editor;
 
-		let command = new Command( editor );
-		sinon.spy( command, '_execute' );
+		beforeEach( () => {
+			editor = new Editor();
 
-		editor.commands.set( 'command_name', command );
-		editor.execute( 'command_name' );
+			editor.document = new Document();
+			editor.data = {
+				get( rootName ) {
+					return `data for ${ rootName }`;
+				}
+			};
+		} );
 
-		expect( command._execute.calledOnce ).to.be.true;
-	} );
+		it( 'should get data from the first root', () => {
+			editor.document.createRoot( 'firstRoot', 'div' );
 
-	it( 'should throw an error if specified command has not been added', () => {
-		const editor = new Editor( element );
+			expect( editor.getData() ).to.equal( 'data for firstRoot' );
+		} );
 
-		expect( () => {
-			editor.execute( 'command' );
-		} ).to.throw( CKEditorError, /editor-command-not-found/ );
-	} );
-} );
+		it( 'should get data from the specified root', () => {
+			expect( editor.getData( 'someRoot' ) ).to.equal( 'data for someRoot' );
+		} );
 
-describe( 'setData', () => {
-	it( 'should set data on the editable', () => {
-		const editor = new Editor( element );
-		editor.editable = {
-			setData: sinon.spy()
-		};
+		it( 'should throw when no roots', () => {
+			expect( () => {
+				editor.getData();
+			} ).to.throw( CKEditorError, /^editor-no-editable-roots:/ );
+		} );
 
-		editor.setData( 'foo' );
+		it( 'should throw when more than one root and no root name given', () => {
+			editor.document.createRoot( 'firstRoot', 'div' );
+			editor.document.createRoot( 'secondRoot', 'div' );
 
-		expect( editor.editable.setData.calledOnce ).to.be.true;
-		expect( editor.editable.setData.args[ 0 ][ 0 ] ).to.equal( 'foo' );
-	} );
+			expect( () => {
+				editor.getData();
+			} ).to.throw( CKEditorError, /^editor-editable-root-name-missing:/ );
+		} );
 
-	it( 'should get data from the editable', () => {
-		const editor = new Editor( element );
-		editor.editable = {
-			getData() {
-				return 'bar';
-			}
-		};
+		it( 'should throw when no data controller', () => {
+			expect( () => {
+				editor.data = null;
 
-		expect( editor.getData() ).to.equal( 'bar' );
+				editor.getData();
+			} ).to.throw( CKEditorError, /^editor-no-datacontroller:/ );
+		} );
 	} );
 } );
 

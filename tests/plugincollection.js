@@ -10,7 +10,7 @@ import testUtils from '/tests/ckeditor5/_utils/utils.js';
 import Editor from '/ckeditor5/editor.js';
 import PluginCollection from '/ckeditor5/plugincollection.js';
 import Plugin from '/ckeditor5/plugin.js';
-import Creator from '/ckeditor5/creator.js';
+import Creator from '/ckeditor5/creator/creator.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import log from '/ckeditor5/utils/log.js';
 

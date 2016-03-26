@@ -7,7 +7,7 @@
 
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
 import moduleTestUtils from '/tests/ckeditor5/_utils/module.js';
-import Creator from '/ckeditor5/creator.js';
+import Creator from '/ckeditor5/creator/creator.js';
 
 let createFn3 = () => {};
 let destroyFn3 = () => {};
