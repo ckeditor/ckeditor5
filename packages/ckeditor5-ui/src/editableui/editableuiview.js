@@ -14,6 +14,16 @@ import CKEditorError from '../../utils/ckeditorerror.js';
  */
 export default class EditableUIView extends View {
 	/**
+	 * Creates an instance of the EditableUIView class.
+	 *
+	 * @method constructor
+	 * @param {ui.Model} model (View)Model of this view.
+	 * @param {utils.Locale} [locale] The {@link ckeditor5.Editor#locale editor's locale} instance.
+	 * @param {HTMLElement} [editableElement] The editable element. If not specified the editable UI view
+	 * should create it. Otherwise, the existing element should be used.
+	 */
+
+	/**
 	 * The element which is the main editable element (usually the one with `contentEditable="true"`).
 	 *
 	 * @readonly

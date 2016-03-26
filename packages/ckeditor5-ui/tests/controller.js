@@ -56,11 +56,16 @@ describe( 'Controller', () => {
 				} );
 		} );
 
-		it( 'should set #ready flag', () => {
+		it( 'should set #ready flag and fire #ready event', () => {
 			const controller = new Controller();
+			const spy = sinon.spy( () => {
+				expect( controller ).to.have.property( 'ready', true );
+			} );
+
+			controller.on( 'ready', spy );
 
 			return controller.init().then( () => {
-				expect( controller.ready ).to.be.true;
+				expect( spy.calledOnce ).to.be.true;
 			} );
 		} );
 

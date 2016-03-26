@@ -16,7 +16,8 @@ export default class EditableUI extends Controller {
 	/**
 	 * Creates a new instance of the Editable class.
 	 *
-	 * @param {Observable} editableModel The model for the editable.
+	 * @param {ckeditor5.Editor} editor The editor instance.
+	 * @param {utils.Observable} editableModel The model for the editable.
 	 */
 	constructor( editor, editableModel ) {
 		super();
