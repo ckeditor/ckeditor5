@@ -10,7 +10,7 @@ import Creator from '/ckeditor5/creator/creator.js';
 import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
 import Editable from '/ckeditor5/editable.js';
 
-import { createEditableUI, createEditorUI } from '/ckeditor5/ui/bindings/creator-utils.js';
+import { createEditableUI, createEditorUI } from '/ckeditor5/ui/creator-utils.js';
 
 import EditorUIView from '/ckeditor5/ui/editorui/editoruiview.js';
 import BoxlessEditorUI from '/tests/ckeditor5/_utils/ui/boxlesseditorui/boxlesseditorui.js';
