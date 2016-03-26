@@ -101,7 +101,7 @@ export default class Editor {
 		/**
 		 * Tree Model document managed by this editor.
 		 *
-		 * This property is set by the {@link ckeditor5.Creator}.
+		 * This property is set by the {@link ckeditor5.creator.Creator}.
 		 *
 		 * @readonly
 		 * @member {engine.treeModel.Document} ckeditor5.Editor#document
@@ -110,7 +110,7 @@ export default class Editor {
 		/**
 		 * Instance of the {@link engine.treecontroller.EditingController editing controller}.
 		 *
-		 * This property is set by the {@link ckeditor5.Creator}.
+		 * This property is set by the {@link ckeditor5.creator.Creator}.
 		 *
 		 * @readonly
 		 * @member {engine.treecontroller.EditingController} ckeditor5.Editor#editing
@@ -119,7 +119,7 @@ export default class Editor {
 		/**
 		 * Instance of the {@link engine.treecontroller.DataController data controller}.
 		 *
-		 * This property is set by the {@link ckeditor5.Creator}.
+		 * This property is set by the {@link ckeditor5.creator.Creator}.
 		 *
 		 * @readonly
 		 * @member {engine.treecontroller.DataController} ckeditor5.Editor#data
@@ -129,7 +129,7 @@ export default class Editor {
 		 * The chosen creator.
 		 *
 		 * @protected
-		 * @member {ckeditor5.Creator} ckeditor5.Editor#_creator
+		 * @member {ckeditor5.creator.Creator} ckeditor5.Editor#_creator
 		 */
 	}
 

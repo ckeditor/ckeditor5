@@ -5,7 +5,7 @@
 
 'use strict';
 
-import Creator from '/ckeditor5/creator/creator.js';
+import StandardCreator from '/ckeditor5/creator/standardcreator.js';
 
 import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
 import Editable from '/ckeditor5/editable.js';
@@ -21,7 +21,7 @@ import FloatingToolbar from '/tests/ckeditor5/_utils/ui/floatingtoolbar/floating
 import FloatingToolbarView from '/tests/ckeditor5/_utils/ui/floatingtoolbar/floatingtoolbarview.js';
 import { imitateFeatures, imitateDestroyFeatures } from '../imitatefeatures.js';
 
-export default class InlineCreator extends Creator {
+export default class InlineCreator extends StandardCreator {
 	constructor( editor ) {
 		super( editor, new HtmlDataProcessor() );
 

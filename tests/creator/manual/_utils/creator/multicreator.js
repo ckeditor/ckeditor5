@@ -5,7 +5,7 @@
 
 'use strict';
 
-import Creator from '/ckeditor5/creator/creator.js';
+import StandardCreator from '/ckeditor5/creator/standardcreator.js';
 
 import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
 import Editable from '/ckeditor5/editable.js';
@@ -21,7 +21,7 @@ import Toolbar from '/ckeditor5/ui/bindings/toolbar.js';
 import ToolbarView from '/ckeditor5/ui/toolbar/toolbarview.js';
 import { imitateFeatures, imitateDestroyFeatures } from '../imitatefeatures.js';
 
-export default class MultiCreator extends Creator {
+export default class MultiCreator extends StandardCreator {
 	constructor( editor ) {
 		super( editor, new HtmlDataProcessor() );
 
