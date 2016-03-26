@@ -34,7 +34,7 @@ Another key repositories are:
 * [ckeditor5-engine](https://github.com/ckeditor/ckeditor5-engine), which keeps the **editor's editing engine** (data model, editing and data views, etc.). Big part of the development happens in this repository, as the engine is the base of the editor.
 * [ckeditor5-ui](https://github.com/ckeditor/ckeditor5-ui) and [ckeditor5-ui-default](https://github.com/ckeditor/ckeditor5-ui-default), which keep the UI framework and default UI library (based on this framework). The official features use these packages to create their UI.
 
-**TODO: Add an architecture diagram.**
+![Diagram of CKEditor 5 key repositories](https://cloud.githubusercontent.com/assets/630060/13987605/a668a8c6-f108-11e5-839f-c2337c5f9c39.png)
 
 ### Reporting Issues and Feature Requests
 
