@@ -78,14 +78,14 @@ export class SchemaItem {
 	}
 
 	/**
-	 * Specifies that the entity requires this attribute to be set.
+	 * Specifies that the entity, to be valid, requires given attributes set. It is possible to register multiple
+	 * different attributes set. If there are more than one attributes set required, the entity will be valid if
+	 * at least one of them is fulfilled.
 	 *
-	 * @param {String} attribute Attribute name that has to be set.
+	 * @param {Array.<String>} attributes Attributes that has to be set on the entity to make it valid.
 	 */
-	requireAttribute( attribute ) {
-		if ( this._requiredAttributes.indexOf( attribute ) == -1 ) {
-			this._requiredAttributes.push( attribute );
-		}
+	requireAttributes( attributes ) {
+		this._requiredAttributes.push( attributes );
 	}
 
 	/**
@@ -271,19 +271,13 @@ export default class Schema {
 	}
 
 	/**
-	 * Makes a requirement in schema that entity represented by given item has to have given attribute set.
+	 * Makes a requirement in schema that entity represented by given item has to have given set of attributes.
 	 *
 	 * @param {String} name Entity name.
-	 * @param {Array.<String>|String} attributes Attributes that are required.
+	 * @param {Array.<String>} attributes Attributes that has to be set on the entity to make it valid.
 	 */
 	requireAttributes( name, attributes ) {
-		if ( typeof attributes == 'string' || attributes instanceof String ) {
-			attributes = [ attributes ];
-		}
-
-		for ( let attribute of attributes ) {
-			this._getItem( name ).requireAttribute( attribute );
-		}
+		this._getItem( name ).requireAttributes( attributes );
 	}
 
 	/**
@@ -306,6 +300,27 @@ export default class Schema {
 		return this.checkQuery( {
 			name: name,
 			inside: Schema._makeItemsPathFromPosition( position ),
+			attributes: attributes
+		} );
+	}
+
+	/**
+	 * Checks whether entity with given name (and optionally, with given attribute(s)) is allowed in given chain of
+	 * parent {@link engine.treeModel.Element elements}.
+	 *
+	 * @param {Array.<engine.treeModel.Element>} elements Elements that are parents of queried entity.
+	 * @param {String} name Entity name to check.
+	 * @param {Array.<String>|String} [attributes] If set, schema will check for entity with given attribute(s).
+	 * @returns {Boolean} `true` if entity is allowed, `false` otherwise
+	 */
+	checkInElements( elements, name, attributes ) {
+		if ( !this.hasItem( name ) ) {
+			return false;
+		}
+
+		return this.checkQuery( {
+			name: name,
+			inside: elements.map( ( element ) => element.name ),
 			attributes: attributes
 		} );
 	}
@@ -339,12 +354,28 @@ export default class Schema {
 		const schemaItems = this._extensionChains.get( query.name ).map( ( name ) => {
 			return this._getItem( name );
 		} );
-
-		// First check if the query has all attributes that are required by this item.
 		const baseItem = this._getItem( query.name );
 
-		for ( let attribute of baseItem._requiredAttributes ) {
-			if ( query.attributes.indexOf( attribute ) == -1 ) {
+		// First check if the query meets at least one of required sets of attributes for this item (if there are any).
+		if ( baseItem._requiredAttributes.length > 0 ) {
+			let found;
+
+			for ( let attributes of baseItem._requiredAttributes ) {
+				found = true;
+
+				for ( let attribute of attributes ) {
+					if ( query.attributes.indexOf( attribute ) == -1 ) {
+						found = false;
+						break;
+					}
+				}
+
+				if ( found ) {
+					break;
+				}
+			}
+
+			if ( !found ) {
 				return false;
 			}
 		}
@@ -362,6 +393,8 @@ export default class Schema {
 		// If there are correct allow paths that match the query, this query is valid with schema.
 		// Since we are supporting multiple attributes, we have to make sure that if attributes are set,
 		// we have allowed paths for all of them.
+		// Keep in mind that if the query has no attributes, query.attribute was converted to an array
+		// with a single `undefined` value. This fits the algorithm well.
 		for ( let attribute of query.attributes ) {
 			let matched = false;
 
@@ -379,7 +412,6 @@ export default class Schema {
 			}
 		}
 
-		// All attributes were allowed.
 		return true;
 	}
 

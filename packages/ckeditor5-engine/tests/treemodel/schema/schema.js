@@ -192,6 +192,50 @@ describe( 'checkAtPosition', () => {
 	} );
 } );
 
+describe( 'checkInElements', () => {
+	beforeEach( () => {
+		schema.registerItem( 'div', '$block' );
+		schema.registerItem( 'header', '$block' );
+		schema.registerItem( 'p', '$block' );
+		schema.registerItem( 'img', '$inline' );
+
+		schema.allow( { name: '$block', inside: 'div' } );
+		schema.allow( { name: '$inline', attributes: 'bold', inside: '$block' } );
+
+		schema.disallow( { name: '$inline', attributes: 'bold', inside: 'header' } );
+	} );
+
+	it( 'should return true if given element is allowed by schema at given position', () => {
+		// P is block and block is allowed in DIV.
+		expect( schema.checkInElements( [ new Element( 'div' ) ], 'p' ) ).to.be.true;
+
+		// IMG is inline and inline is allowed in block.
+		expect( schema.checkInElements( [ new Element( 'div' ) ], 'img' ) ).to.be.true;
+		expect( schema.checkInElements( [ new Element( 'p' ) ], 'img' ) ).to.be.true;
+
+		// Inline is allowed in any block and is allowed with attribute bold.
+		expect( schema.checkInElements( [ new Element( 'div' ) ], 'img', [ 'bold' ] ) ).to.be.true;
+		expect( schema.checkInElements( [ new Element( 'p' ) ], 'img', [ 'bold' ] ) ).to.be.true;
+
+		// Inline is allowed in header which is allowed in DIV.
+		expect( schema.checkInElements( [ new Element( 'div' ) ], 'header' ) ).to.be.true;
+		expect( schema.checkInElements( [ new Element( 'header' ) ], 'img' ) ).to.be.true;
+		expect( schema.checkInElements( [ new Element( 'div' ), new Element( 'header' ) ], 'img' ) ).to.be.true;
+	} );
+
+	it( 'should return false if given element is not allowed by schema at given position', () => {
+		// P with attribute is not allowed.
+		expect( schema.checkInElements( [ new Element( 'div' ) ], 'p', 'bold' ) ).to.be.false;
+
+		// Bold text is not allowed in header
+		expect( schema.checkInElements( [ new Element( 'header' ) ], '$text', 'bold' ) ).to.be.false;
+	} );
+
+	it( 'should return false if given element is not registered in schema', () => {
+		expect( schema.checkInElements( [ new Element( 'div' ) ], 'new' ) ).to.be.false;
+	} );
+} );
+
 describe( 'checkQuery', () => {
 	it( 'should return false if given element is not registered in schema', () => {
 		expect( schema.checkQuery( { name: 'new', inside: [ 'div', 'header' ] } ) ).to.be.false;
@@ -210,14 +254,21 @@ describe( 'checkQuery', () => {
 	} );
 
 	it( 'should support required attributes', () => {
-		schema.registerItem( 'img', '$inline' );
-		schema.requireAttributes( 'img', 'src' );
-		schema.allow( { name: 'img', inside: '$block', attributes: [ 'src' ] } );
+		schema.registerItem( 'a', '$inline' );
+		schema.requireAttributes( 'a', [ 'name' ] );
+		schema.requireAttributes( 'a', [ 'href' ] );
+		schema.allow( { name: 'a', inside: '$block', attributes: [ 'name', 'href', 'title', 'target' ] } );
 
-		// Even though img is allowed in $block thanks to inheriting from $inline, we require src attribute.
-		expect( schema.checkQuery( { name: 'img', inside: '$block' } ) ).to.be.false;
+		// Even though a is allowed in $block thanks to inheriting from $inline, we require href or name attribute.
+		expect( schema.checkQuery( { name: 'a', inside: '$block' } ) ).to.be.false;
 
-		expect( schema.checkQuery( { name: 'img', inside: '$block', attributes: [ 'src' ] } ) ).to.be.true;
+		// Even though a with title is allowed, we have to meet at least on required attributes set.
+		expect( schema.checkQuery( { name: 'a', inside: '$block', attributes: [ 'title' ] } ) ).to.be.false;
+
+		expect( schema.checkQuery( { name: 'a', inside: '$block', attributes: [ 'name' ] } ) ).to.be.true;
+		expect( schema.checkQuery( { name: 'a', inside: '$block', attributes: [ 'href' ] } ) ).to.be.true;
+		expect( schema.checkQuery( { name: 'a', inside: '$block', attributes: [ 'name', 'href' ] } ) ).to.be.true;
+		expect( schema.checkQuery( { name: 'a', inside: '$block', attributes: [ 'name', 'title', 'target' ] } ) ).to.be.true;
 	} );
 
 	it( 'should support multiple attributes', () => {
