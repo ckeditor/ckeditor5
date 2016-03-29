@@ -26,7 +26,7 @@ export default class Node {
 		 * Parent element. Null by default. Set by {@link engine.treeView.Element#insertChildren}.
 		 *
 		 * @readonly
-		 * @member {engine.treeView.Element|null} engine.treeView.Node#parent
+		 * @member {engine.treeView.Element|engine.treeView.DocumentFragment|null} engine.treeView.Node#parent
 		 */
 		this.parent = null;
 

@@ -88,7 +88,6 @@ export default class DocumentFragment {
 	 *
 	 * @param {Number} index Position where nodes should be inserted.
 	 * @param {engine.treeView.Node|Iterable.<engine.treeView.Node>} nodes Node or the list of nodes to be inserted.
-	 * @fires engine.treeView.Node#change
 	 * @returns {Number} Number of inserted nodes.
 	 */
 	insertChildren( index, nodes ) {
