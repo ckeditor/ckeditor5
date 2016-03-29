@@ -121,13 +121,13 @@ describe( 'disallow', () => {
 		schema.registerItem( 'p', '$block' );
 		schema.registerItem( 'div', '$block' );
 
-		schema.allow( { name: '$block', attribute: 'bold', inside: 'div' } );
+		schema.allow( { name: '$block', attributes: 'bold', inside: 'div' } );
 
-		expect( schema.checkQuery( { name: 'p', attribute: 'bold', inside: [ 'div' ] } ) ).to.be.true;
+		expect( schema.checkQuery( { name: 'p', attributes: 'bold', inside: [ 'div' ] } ) ).to.be.true;
 
-		schema.disallow( { name: 'p', attribute: 'bold', inside: 'div' } );
+		schema.disallow( { name: 'p', attributes: 'bold', inside: 'div' } );
 
-		expect( schema.checkQuery( { name: 'p', attribute: 'bold', inside: [ 'div' ] } ) ).to.be.false;
+		expect( schema.checkQuery( { name: 'p', attributes: 'bold', inside: [ 'div' ] } ) ).to.be.false;
 	} );
 } );
 
@@ -149,9 +149,9 @@ describe( 'checkAtPosition', () => {
 		schema.registerItem( 'p', '$block' );
 
 		schema.allow( { name: '$block', inside: 'div' } );
-		schema.allow( { name: '$inline', attribute: 'bold', inside: '$block' } );
+		schema.allow( { name: '$inline', attributes: 'bold', inside: '$block' } );
 
-		schema.disallow( { name: '$inline', attribute: 'bold', inside: 'header' } );
+		schema.disallow( { name: '$inline', attributes: 'bold', inside: 'header' } );
 	} );
 
 	it( 'should return true if given element is allowed by schema at given position', () => {
@@ -206,6 +206,45 @@ describe( 'checkQuery', () => {
 		schema.allow( { name: 'p', inside: '$block' } );
 
 		expect( schema.checkQuery( { name: 'p', inside: '$block' } ) ).to.be.true;
-		expect( schema.checkQuery( { name: 'p', attribute: 'bold', inside: '$block' } ) ).to.be.false;
+		expect( schema.checkQuery( { name: 'p', attributes: 'bold', inside: '$block' } ) ).to.be.false;
+	} );
+
+	it( 'should support required attributes', () => {
+		schema.registerItem( 'img', '$inline' );
+		schema.requireAttributes( 'img', 'src' );
+		schema.allow( { name: 'img', inside: '$block', attributes: [ 'src' ] } );
+
+		// Even though img is allowed in $block thanks to inheriting from $inline, we require src attribute.
+		expect( schema.checkQuery( { name: 'img', inside: '$block' } ) ).to.be.false;
+
+		expect( schema.checkQuery( { name: 'img', inside: '$block', attributes: [ 'src' ] } ) ).to.be.true;
+	} );
+
+	it( 'should support multiple attributes', () => {
+		// Let's take example case, where image item has to have a pair of "alt" and "src" attributes.
+		// Then it could have other attribute which is allowed on inline elements, i.e. "bold".
+		schema.registerItem( 'img', '$inline' );
+		schema.requireAttributes( 'img', [ 'alt', 'src' ] );
+		schema.allow( { name: '$inline', inside: '$block', attributes: 'bold' } );
+		schema.allow( { name: 'img', inside: '$block', attributes: [ 'alt', 'src' ] } );
+
+		// Image without any attributes is not allowed.
+		expect( schema.checkQuery( { name: 'img', inside: '$block', attributes: [ 'alt' ] } ) ).to.be.false;
+
+		// Image can't have just alt or src.
+		expect( schema.checkQuery( { name: 'img', inside: '$block', attributes: [ 'alt' ] } ) ).to.be.false;
+		expect( schema.checkQuery( { name: 'img', inside: '$block', attributes: [ 'src' ] } ) ).to.be.false;
+
+		expect( schema.checkQuery( { name: 'img', inside: '$block', attributes: [ 'alt', 'src' ] } ) ).to.be.true;
+
+		// Because of inherting from $inline, image can have bold
+		expect( schema.checkQuery( { name: 'img', inside: '$block', attributes: [ 'alt', 'src', 'bold' ] } ) ).to.be.true;
+		// But it can't have only bold without alt or/and src.
+		expect( schema.checkQuery( { name: 'img', inside: '$block', attributes: [ 'alt', 'bold' ] } ) ).to.be.false;
+		expect( schema.checkQuery( { name: 'img', inside: '$block', attributes: [ 'src', 'bold' ] } ) ).to.be.false;
+		expect( schema.checkQuery( { name: 'img', inside: '$block', attributes: [ 'bold' ] } ) ).to.be.false;
+
+		// Even if image has src and alt, it can't have attributes that weren't allowed
+		expect( schema.checkQuery( { name: 'img', inside: '$block', attributes: [ 'alt', 'src', 'attr' ] } ) ).to.be.false;
 	} );
 } );
