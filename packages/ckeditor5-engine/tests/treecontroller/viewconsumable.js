@@ -363,4 +363,60 @@ describe( 'ViewConsumable', () => {
 			} ).to.throw( 'viewconsumable-invalid-attribute' );
 		} );
 	} );
+
+	describe( 'consumablesFromElement', () => {
+		it( 'should create consumable object from element', () => {
+			const consumables = ViewConsumable.consumablesFromElement( el );
+
+			expect( consumables ).to.be.an( 'object' );
+			expect( consumables.name ).to.be.true;
+			expect( consumables.attribute ).to.be.an( 'array' );
+			expect( consumables.attribute.length ).to.equal( 0 );
+			expect( consumables.class ).to.be.an( 'array' );
+			expect( consumables.class.length ).to.equal( 0 );
+			expect( consumables.style ).to.be.an( 'array' );
+			expect( consumables.style.length ).to.equal( 0 );
+		} );
+
+		it( 'should add all attributes', () => {
+			el.setAttribute( 'title', 'foobar' );
+			el.setAttribute( 'href', 'https://ckeditor.com' );
+
+			const consumables = ViewConsumable.consumablesFromElement( el );
+			expect( consumables.attribute.length ).to.equal( 2 );
+			expect( consumables.attribute.indexOf( 'title' ) > -1 ).to.be.true;
+			expect( consumables.attribute.indexOf( 'href' ) > -1 ).to.be.true;
+			expect( consumables.class.length ).to.equal( 0 );
+			expect( consumables.style.length ).to.equal( 0 );
+			expect( consumables.name ).to.be.true;
+		} );
+
+		it( 'should add all classes', () => {
+			el.addClass( 'foo', 'bar', 'baz' );
+
+			const consumables = ViewConsumable.consumablesFromElement( el );
+			expect( consumables.class.length ).to.equal( 3 );
+			expect( consumables.class.indexOf( 'foo' ) > -1 ).to.be.true;
+			expect( consumables.class.indexOf( 'bar' ) > -1 ).to.be.true;
+			expect( consumables.class.indexOf( 'baz' ) > -1 ).to.be.true;
+			expect( consumables.attribute.length ).to.equal( 0 );
+			expect( consumables.style.length ).to.equal( 0 );
+			expect( consumables.name ).to.be.true;
+		} );
+
+		it( 'should add all styles', () => {
+			el.setStyle( {
+				color: 'red',
+				position: 'absolute'
+			} );
+
+			const consumables = ViewConsumable.consumablesFromElement( el );
+			expect( consumables.style.length ).to.equal( 2 );
+			expect( consumables.style.indexOf( 'color' ) > -1 ).to.be.true;
+			expect( consumables.style.indexOf( 'position' ) > -1 ).to.be.true;
+			expect( consumables.attribute.length ).to.equal( 0 );
+			expect( consumables.class.length ).to.equal( 0 );
+			expect( consumables.name ).to.be.true;
+		} );
+	} );
 } );

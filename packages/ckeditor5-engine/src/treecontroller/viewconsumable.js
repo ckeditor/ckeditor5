@@ -441,4 +441,46 @@ export default class ViewConsumable {
 			elementConsumables.revert( consumables );
 		}
 	}
+
+	/**
+	 * Creates consumable object from {@link engine.treeView.Element view Element}. Consumable object will include
+	 * element's name and all its attributes, classes and styles.
+	 *
+	 * @static
+	 * @param {engine.treeView.Element} element
+	 * @returns {Object} consumables
+	 */
+	static consumablesFromElement( element ) {
+		const consumables = {
+			name: true,
+			attribute: [],
+			class: [],
+			style: []
+		};
+
+		const attributes = element.getAttributeKeys();
+
+		for ( let attribute of attributes ) {
+			// Skip classes and styles - will be added separately.
+			if ( attribute == 'style' || attribute == 'class' ) {
+				continue;
+			}
+
+			consumables.attribute.push( attribute );
+		}
+
+		const classes = element.getClassNames();
+
+		for ( let className of classes ) {
+			consumables.class.push( className );
+		}
+
+		const styles = element.getStyleNames();
+
+		for ( let style of styles ) {
+			consumables.style.push( style );
+		}
+
+		return consumables;
+	}
 }
