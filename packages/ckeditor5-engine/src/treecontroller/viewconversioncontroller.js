@@ -34,6 +34,7 @@ export default class ViewConversionController {
 	}
 
 	convertChildren( input, context ) {
-		return Array.from( input.getChildren() ).map( viewChild => this.convert( viewChild, context ) );
+		// TODO: flatten array (single convert may return multiple elements as an array.
+		return Array.from( input.getChildren() ).map( ( viewChild ) => this.convert( viewChild, context ) );
 	}
 }

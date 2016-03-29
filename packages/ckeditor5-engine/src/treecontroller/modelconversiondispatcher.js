@@ -8,6 +8,8 @@
 import Consumable from './modelconsumable.js';
 import TextFragment from '../treemodel/textfragment.js';
 
+// TODO: Add docs that if listener is called it means that element is consumable, so every listener need to stop the event if
+// it was consumed.
 export default class ModelConversionDispatcher {
 	constructor( controller ) {
 		this.controller = controller;

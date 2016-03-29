@@ -14,6 +14,7 @@ export function insert( nodeCreator ) {
 
 		const viewPosition = context.mapper.toViewPosition( model.range.start );
 
+		// TODO: copy element
 		const viewNode = ( nodeCreator instanceof viewNode ) ? nodeCreator : nodeCreator( model, context );
 
 		context.mapper.bind( model.item, viewNode );
@@ -93,7 +94,7 @@ export function removeAttribute( attributesCreator ) {
 	};
 }
 
-export function wrap( nodeCreator ) {
+export function wrap( nodeCreator ) { // TODO: priority
 	return ( evt, model, context ) => {
 		model.consumable.consume( model.item, eventNameToConsumableType( evt.name ) );
 

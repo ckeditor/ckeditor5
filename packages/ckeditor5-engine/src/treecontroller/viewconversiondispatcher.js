@@ -22,7 +22,7 @@ import utils from '../../utils/utils.js';
  *			if ( controller.schema.checkQuery( schemaQuery ) ) {
  *				if ( !controller.consumable.consume( data.input, { name: true } ) ) {
  *					const context = data.context.concat( paragraph );
- *					const children = controller.convertToFragment( data.input, context );
+ *					const children = controller.convertChildren( data.input, context );
  *					paragraph.appendChildren( children );
  *					data.output = paragraph;
  *				}
@@ -31,6 +31,8 @@ import utils from '../../utils/utils.js';
  *
  *		coversionDispatcher.on( 'element:a', ( data, controller ) => {
  *			if ( controller.consumable.consume( data.input, { name: true, attributes: [ 'href' ] } ) ) {
+ *				data.output = controller.convertChildren( data.input, data.context );
+ *
  *				for ( let item of Range.createFrom( data.output ) ) {
  *					const schemaQuery = {
  *						name: item.name || '$text',
@@ -42,16 +44,18 @@ import utils from '../../utils/utils.js';
  *					}
  *				}
  *			}
- *		}
+ *		} );
  */
 
 export default class ViewConversionDispatcher {
 	convert( viewDocumentFragment ) {
+		this.fire( 'viewCleanup', viewDocumentFragment );
+
 		const consumable = Consumable.createFrom( viewDocumentFragment );
 
-		const conversionContext = new ConversionController( this, consumable );
+		const conversionController = new ConversionController( this, consumable );
 
-		return conversionContext.convert( viewDocumentFragment );
+		return conversionController.convert( viewDocumentFragment );
 	}
 }
 
