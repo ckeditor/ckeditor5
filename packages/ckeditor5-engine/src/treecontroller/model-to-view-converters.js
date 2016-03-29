@@ -9,15 +9,15 @@ import ViewText from '../treeview/text.js';
 import ModelTreeWalker from './treemodel/treewalker.js';
 
 export function insert( nodeCreator ) {
-	return ( evt, model, context ) => {
-		model.consumable.consume( model.item, 'insert' );
+	return ( evt, data, context ) => {
+		data.consumable.consume( data.item, 'insert' );
 
-		const viewPosition = context.mapper.toViewPosition( model.range.start );
+		const viewPosition = context.mapper.toViewPosition( data.range.start );
 
 		// TODO: copy element
-		const viewNode = ( nodeCreator instanceof viewNode ) ? nodeCreator : nodeCreator( model, context );
+		const viewNode = ( nodeCreator instanceof viewNode ) ? nodeCreator : nodeCreator( data, context );
 
-		context.mapper.bind( model.item, viewNode );
+		context.mapper.bind( data.item, viewNode );
 
 		context.writer.insert( viewPosition, viewNode );
 
@@ -26,11 +26,11 @@ export function insert( nodeCreator ) {
 }
 
 export function insertText() {
-	return ( evt, model, context ) => {
-		model.consumable.consume( model.item, 'insert' );
+	return ( evt, data, context ) => {
+		data.consumable.consume( data.item, 'insert' );
 
-		const viewPosition = context.mapper.toViewPosition( model.position );
-		const viewNode = new ViewText( model.item.data );
+		const viewPosition = context.mapper.toViewPosition( data.position );
+		const viewNode = new ViewText( data.item.data );
 
 		context.writer.insert( viewPosition, viewNode );
 
@@ -39,22 +39,22 @@ export function insertText() {
 }
 
 export function setAttribute( attributesCreator ) {
-	return ( evt, model, context ) => {
+	return ( evt, data, context ) => {
 		let attributes;
 
 		if ( !attributesCreator ) {
-			attributes = model.item.getAttribute( model.attributeKey );
+			attributes = data.item.getAttribute( data.attributeKey );
 		} else {
-			attributes = attributesCreator( model );
+			attributes = attributesCreator( data );
 		}
 
 		if ( attributes ) {
-			model.consumable.consume( model.item, eventNameToConsumableType( evt.name ) );
+			data.consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
 
-			const viewElement = context.mapper.toViewElement( model.item );
+			const viewElement = context.mapper.toViewElement( data.item );
 
 			if ( typeof attributes === 'string' || typeof attributes === 'number' ) {
-				viewElement.setAttribute( model.attributeKey, attributes );
+				viewElement.setAttribute( data.attributeKey, attributes );
 			} else {
 				for ( let attributeKey in attributes ) {
 					viewElement.setAttribute( attributeKey, attributes[ attributeKey ] );
@@ -67,19 +67,19 @@ export function setAttribute( attributesCreator ) {
 }
 
 export function removeAttribute( attributesCreator ) {
-	return ( evt, model, context ) => {
+	return ( evt, data, context ) => {
 		let attributeKeys;
 
 		if ( !attributesCreator ) {
-			attributeKeys = model.attributeKey;
+			attributeKeys = data.attributeKey;
 		} else {
-			attributeKeys = attributesCreator( model );
+			attributeKeys = attributesCreator( data );
 		}
 
 		if ( attributeKeys ) {
-			model.consumable.consume( model.item, eventNameToConsumableType( evt.name ) );
+			data.consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
 
-			const viewElement = context.mapper.toViewElement( model.item );
+			const viewElement = context.mapper.toViewElement( data.item );
 
 			if ( typeof attributeKeys === 'string' ) {
 				viewElement.removeAttribute( attributeKeys );
@@ -95,12 +95,12 @@ export function removeAttribute( attributesCreator ) {
 }
 
 export function wrap( nodeCreator ) { // TODO: priority
-	return ( evt, model, context ) => {
-		model.consumable.consume( model.item, eventNameToConsumableType( evt.name ) );
+	return ( evt, data, context ) => {
+		data.consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
 
-		const viewRange = context.mapper.toViewRange( model.range );
+		const viewRange = context.mapper.toViewRange( data.range );
 
-		const viewNode = ( nodeCreator instanceof viewNode ) ? nodeCreator : nodeCreator( model );
+		const viewNode = ( nodeCreator instanceof viewNode ) ? nodeCreator : nodeCreator( data );
 
 		context.writer.wrap( viewRange, viewNode );
 
@@ -109,12 +109,12 @@ export function wrap( nodeCreator ) { // TODO: priority
 }
 
 export function unwrap( nodeCreator ) {
-	return ( evt, model, context ) => {
-		model.consumable.consume( model.item, eventNameToConsumableType( evt.name ) );
+	return ( evt, data, context ) => {
+		data.consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
 
-		const viewRange = context.mapper.toViewRange( model.range );
+		const viewRange = context.mapper.toViewRange( data.range );
 
-		const viewNode = ( nodeCreator instanceof viewNode ) ? nodeCreator : nodeCreator( model );
+		const viewNode = ( nodeCreator instanceof viewNode ) ? nodeCreator : nodeCreator( data );
 
 		context.writer.unwrap( viewRange, viewNode );
 
@@ -123,8 +123,8 @@ export function unwrap( nodeCreator ) {
 }
 
 export function move() {
-	return ( evt, model, context ) => {
-		const walker = new ModelTreeWalker( { boundaries: model.range, shallow: true } );
+	return ( evt, data, context ) => {
+		const walker = new ModelTreeWalker( { boundaries: data.range, shallow: true } );
 
 		let length = 0;
 
@@ -132,18 +132,18 @@ export function move() {
 			length += value.length;
 		}
 
-		const sourceModelRange = Range.createFromPositionAndShift( model.sourcePosition, length );
+		const sourceModelRange = Range.createFromPositionAndShift( data.sourcePosition, length );
 
 		const sourceViewRange = context.mapper.toViewRange( sourceModelRange );
-		const targetViewPosition = context.mapper.toViewRange( model.range.start );
+		const targetViewPosition = context.mapper.toViewRange( data.range.start );
 
 		context.writer.move( sourceViewRange, targetViewPosition );
 	};
 }
 
 export function remove() {
-	return ( evt, model, context ) => {
-		const walker = new ModelTreeWalker( { boundaries: model.range, shallow: true } );
+	return ( evt, data, context ) => {
+		const walker = new ModelTreeWalker( { boundaries: data.range, shallow: true } );
 
 		let length = 0;
 
@@ -151,7 +151,7 @@ export function remove() {
 			length += value.length;
 		}
 
-		const sourceModelRange = Range.createFromPositionAndShift( model.sourcePosition, length );
+		const sourceModelRange = Range.createFromPositionAndShift( data.sourcePosition, length );
 		const sourceViewRange = context.mapper.toViewRange( sourceModelRange );
 
 		context.writer.remove( sourceViewRange );

@@ -33,14 +33,14 @@ export default class ModelConversionDispatcher {
 		for ( let value of range ) {
 			const item = value.item;
 			const range = Range.createFromPositionAndShift( value.previousPosition, value.length );
-			const model = { item, range };
+			const data = { item, range };
 
-			this._testAndFire( 'insert', model, this.controller );
+			this._testAndFire( 'insert', data, this.controller );
 
 			for ( let key of item.getAttributes() ) {
-				model.attributeKey = key;
+				data.attributeKey = key;
 
-				this._testAndFire( 'addAttribute:' + key, model, this.controller );
+				this._testAndFire( 'addAttribute:' + key, data, this.controller );
 			}
 		}
 
@@ -48,21 +48,21 @@ export default class ModelConversionDispatcher {
 	}
 
 	convertMove( range, sourcePosition ) {
-		const model = {
+		const data = {
 			range: range,
 			sourcePosition: sourcePosition,
 		};
 
-		this.fire( 'move', model, this.controller );
+		this.fire( 'move', data, this.controller );
 	}
 
 	convertRemove( range, sourcePosition ) {
-		const model = {
+		const data = {
 			range: range,
 			sourcePosition: sourcePosition,
 		};
 
-		this.fire( 'remove', model, this.controller );
+		this.fire( 'remove', data, this.controller );
 	}
 
 	convertAttribute( type, range, key, oldValue, newValue ) {
@@ -71,7 +71,7 @@ export default class ModelConversionDispatcher {
 		for ( let value of range ) {
 			const item = value.item;
 			const range = Range.createFromPositionAndShift( value.previousPosition, value.length );
-			const model = {
+			const data = {
 				item: item,
 				range: range,
 				attributeKey: key,
@@ -79,7 +79,7 @@ export default class ModelConversionDispatcher {
 				attributeNewValue: newValue
 			};
 
-			this._testAndFire( type + ':' + key, model, this.controller );
+			this._testAndFire( type + ':' + key, data, this.controller );
 		}
 
 		this.controller.consumable = undefined;
@@ -113,23 +113,23 @@ export default class ModelConversionDispatcher {
 		return consumable;
 	}
 
-	_testAndFire( type, model, controller ) {
-		if ( !model.consumable.test( model.item, type ) ) {
+	_testAndFire( type, data, controller ) {
+		if ( !data.consumable.test( data.item, type ) ) {
 			// Do not fire event if the item was consumed.
 			return;
 		}
 
 		if ( type === 'insert' ) {
-			if ( model.item instanceof TextFragment ) {
+			if ( data.item instanceof TextFragment ) {
 				// e.g. insert:text
-				this.fire( type + ':text', model, controller );
+				this.fire( type + ':text', data, controller );
 			} else {
 				// e.g. insert:element:p
-				this.fire( type + ':element:' + model.item.name, model, controller );
+				this.fire( type + ':element:' + data.item.name, data, controller );
 			}
 		} else {
 			// e.g. addAttribute:alt:img
-			this.fire( type + ':' + model.item.name, model, controller );
+			this.fire( type + ':' + data.item.name, data, controller );
 		}
 	}
 }
