@@ -74,7 +74,7 @@ class ViewElementConsumables {
 	 *		consumables.test( { attribute: 'title', class: 'foo', style: 'color' } );
 	 *		consumables.test( { attribute: [ 'title', 'name' ], class: [ 'foo', 'bar' ] );
 	 *
-	 * @param {Object} consumables]Object describing which parts of the element should be tested.
+	 * @param {Object} consumables Object describing which parts of the element should be tested.
 	 * @param {Boolean} consumables.name If set to `true` element's name will be tested.
 	 * @param {String|Array} consumables.attribute Attribute name or array of attribute names to test.
 	 * @param {String|Array} consumables.class Class name or array of class names to test.
@@ -396,7 +396,7 @@ export default class ViewConsumable {
 	 * @param {String|Array} consumables.attribute Attribute name or array of attribute names.
 	 * @param {String|Array} consumables.class Class name or array of class names.
 	 * @param {String|Array} consumables.style Style name or array of style names.
-	 * @returns {Boolean|null} Returns `true` when all items included in method's call can be consumed,
+	 * @returns {Boolean} Returns `true` when all items included in method's call can be consumed,
 	 * otherwise returns `false`.
 	 */
 	consume( element, consumables ) {
