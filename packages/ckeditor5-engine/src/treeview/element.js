@@ -441,6 +441,15 @@ export default class Element extends Node {
 	}
 
 	/**
+	 * Returns iterator that contains all class names.
+	 *
+	 * @returns {Iterator.<String>}
+	 */
+	getClassNames() {
+		return this._classes.keys();
+	}
+
+	/**
 	 * Adds style to the element.
 	 *
 	 *		element.setStyle( 'color', 'red' );
@@ -476,6 +485,15 @@ export default class Element extends Node {
 	 */
 	getStyle( property ) {
 		return this._styles.get( property );
+	}
+
+	/**
+	 * Returns iterator that contains all style names.
+	 *
+	 * @returns {Iterator.<String>}
+	 */
+	getStyleNames() {
+		return this._styles.keys();
 	}
 
 	/**
