@@ -7,6 +7,7 @@
 
 import Node from './node.js';
 import NodeList from './nodelist.js';
+import DocumentFragment from './documentfragment.js';
 import utils from '../../utils/utils.js';
 
 /**
@@ -20,7 +21,7 @@ export default class Element extends Node {
 	 *
 	 * @param {String} name Node name.
 	 * @param {Iterable} attrs Iterable collection of attributes.
-	 * @param {engine.treeModel.NodeSet} children List of nodes to be inserted
+	 * @param {engine.treeModel.NodeSet} children List of nodes to be inserted.
 	 * into created element. List of nodes can be of any type accepted by the {@link engine.treeModel.NodeList} constructor.
 	 */
 	constructor( name, attrs, children ) {
@@ -97,13 +98,17 @@ export default class Element extends Node {
 	 *
 	 * @param {Number} index Position where nodes should be inserted.
 	 * @param {engine.treeModel.NodeSet} nodes The list of nodes to be inserted.
-	 * The list of nodes can be of any type accepted by the {@link engine.treeModel.NodeList} constructor.
 	 */
 	insertChildren( index, nodes ) {
 		let nodeList = new NodeList( nodes );
 
 		for ( let node of nodeList._nodes ) {
 			node.parent = this;
+		}
+
+		// Clean original DocumentFragment so it won't contain nodes that were added somewhere else.
+		if ( nodes instanceof DocumentFragment ) {
+			nodes._children = new NodeList();
 		}
 
 		this._children.insert( index, nodeList );

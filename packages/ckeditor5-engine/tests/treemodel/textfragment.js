@@ -16,14 +16,12 @@ import CharacterProxy from '/ckeditor5/engine/treemodel/characterproxy.js';
 describe( 'TextFragment', () => {
 	let doc, text, element, textFragment, root;
 
-	before( () => {
+	beforeEach( () => {
 		doc = new Document();
 		root = doc.createRoot( 'root' );
 		element = new Element( 'div' );
 		root.insertChildren( 0, element );
-	} );
 
-	beforeEach( () => {
 		text = new Text( 'foobar', { foo: 'bar' } );
 		element.insertChildren( 0, text );
 		textFragment = new TextFragment( element.getChild( 2 ), 3 );
@@ -93,6 +91,81 @@ describe( 'TextFragment', () => {
 				let attrs = Array.from( textFragment.getAttributes() );
 
 				expect( attrs ).to.deep.equal( [ [ 'foo', 'bar' ] ] );
+			} );
+		} );
+
+		describe( 'setAttribute', () => {
+			it( 'should set attribute on characters contained in text fragment', () => {
+				textFragment.setAttribute( 'abc', 'xyz' );
+
+				expect( element.getChild( 0 ).getAttribute( 'abc' ) ).to.be.undefined;
+				expect( element.getChild( 1 ).getAttribute( 'abc' ) ).to.be.undefined;
+				expect( element.getChild( 2 ).getAttribute( 'abc' ) ).to.equal( 'xyz' );
+				expect( element.getChild( 3 ).getAttribute( 'abc' ) ).to.equal( 'xyz' );
+				expect( element.getChild( 4 ).getAttribute( 'abc' ) ).to.equal( 'xyz' );
+				expect( element.getChild( 5 ).getAttribute( 'abc' ) ).to.be.undefined;
+			} );
+
+			it( 'should remove attribute when passed attribute value is null', () => {
+				textFragment.setAttribute( 'foo', null );
+
+				expect( element.getChild( 0 ).hasAttribute( 'foo' ) ).to.be.true;
+				expect( element.getChild( 1 ).hasAttribute( 'foo' ) ).to.be.true;
+				expect( element.getChild( 2 ).hasAttribute( 'foo' ) ).to.be.false;
+				expect( element.getChild( 3 ).hasAttribute( 'foo' ) ).to.be.false;
+				expect( element.getChild( 4 ).hasAttribute( 'foo' ) ).to.be.false;
+				expect( element.getChild( 5 ).hasAttribute( 'foo' ) ).to.be.true;
+			} );
+
+			it( 'should correctly split and merge text fragments and refresh this text fragment properties', () => {
+				let otherTextFragment = new TextFragment( element.getChild( 5 ), 1 );
+				otherTextFragment.setAttribute( 'foo', null );
+				textFragment.setAttribute( 'foo', null );
+
+				expect( element._children._nodes.length ).to.equal( 2 );
+				expect( textFragment.first._nodeListText ).to.equal( element._children._nodes[ 1 ] );
+			} );
+		} );
+
+		describe( 'setAttributesTo', () => {
+			it( 'should remove all attributes from text fragment and set given ones', () => {
+				textFragment.setAttributesTo( { abc: 'xyz' } );
+
+				expect( element.getChild( 2 ).hasAttribute( 'foo' ) ).to.be.false;
+				expect( element.getChild( 3 ).hasAttribute( 'foo' ) ).to.be.false;
+				expect( element.getChild( 4 ).hasAttribute( 'foo' ) ).to.be.false;
+
+				expect( element.getChild( 2 ).getAttribute( 'abc' ) ).to.equal( 'xyz' );
+				expect( element.getChild( 3 ).getAttribute( 'abc' ) ).to.equal( 'xyz' );
+				expect( element.getChild( 4 ).getAttribute( 'abc' ) ).to.equal( 'xyz' );
+			} );
+		} );
+
+		describe( 'removeAttribute', () => {
+			it( 'should remove given attribute from text fragment', () => {
+				textFragment.removeAttribute( 'foo' );
+
+				expect( element.getChild( 0 ).hasAttribute( 'foo' ) ).to.be.true;
+				expect( element.getChild( 1 ).hasAttribute( 'foo' ) ).to.be.true;
+				expect( element.getChild( 2 ).hasAttribute( 'foo' ) ).to.be.false;
+				expect( element.getChild( 3 ).hasAttribute( 'foo' ) ).to.be.false;
+				expect( element.getChild( 4 ).hasAttribute( 'foo' ) ).to.be.false;
+				expect( element.getChild( 5 ).hasAttribute( 'foo' ) ).to.be.true;
+			} );
+		} );
+
+		describe( 'clearAttributes', () => {
+			it( 'should remove all attributes from text fragment', () => {
+				textFragment.setAttribute( 'abc', 'xyz' );
+				textFragment.clearAttributes();
+
+				expect( element.getChild( 2 ).hasAttribute( 'foo' ) ).to.be.false;
+				expect( element.getChild( 3 ).hasAttribute( 'foo' ) ).to.be.false;
+				expect( element.getChild( 4 ).hasAttribute( 'foo' ) ).to.be.false;
+
+				expect( element.getChild( 2 ).hasAttribute( 'abc' ) ).to.be.false;
+				expect( element.getChild( 3 ).hasAttribute( 'abc' ) ).to.be.false;
+				expect( element.getChild( 4 ).hasAttribute( 'abc' ) ).to.be.false;
 			} );
 		} );
 	} );

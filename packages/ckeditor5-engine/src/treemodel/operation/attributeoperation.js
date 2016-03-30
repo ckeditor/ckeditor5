@@ -120,15 +120,10 @@ export default class AttributeOperation extends Operation {
 				);
 			}
 
-			if ( item instanceof TextFragment ) {
-				item.commonParent._children.setAttribute( item.first.getIndex(), item.text.length, this.key, this.newValue );
-			}
-			else {
-				if ( this.newValue !== null ) {
-					item.setAttribute( this.key, this.newValue );
-				} else {
-					item.removeAttribute( this.key );
-				}
+			if ( this.newValue !== null ) {
+				item.setAttribute( this.key, this.newValue );
+			} else {
+				item.removeAttribute( this.key );
 			}
 		}
 

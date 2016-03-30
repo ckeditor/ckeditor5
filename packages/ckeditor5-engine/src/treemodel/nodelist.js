@@ -7,6 +7,7 @@
 
 import CharacterProxy from './characterproxy.js';
 import Text from './text.js';
+import DocumentFragment from './documentfragment.js';
 import utils from '../../utils/utils.js';
 import clone from '../../utils/lib/lodash/clone.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
@@ -27,6 +28,11 @@ class NodeListText extends Text {
 	constructor( text, attrs ) {
 		super( text, attrs );
 
+		/**
+		 * Element that contains character nodes represented by this NodeListText.
+		 *
+		 * @type {engine.treeModel.Element|engine.treeModel.DocumentFragment|null}
+		 */
 		this.parent = null;
 	}
 
@@ -103,6 +109,8 @@ export default class NodeList {
 		if ( nodes instanceof NodeList ) {
 			// We do not clone anything.
 			return nodes;
+		} else if ( nodes instanceof DocumentFragment ) {
+			return nodes._children;
 		}
 
 		/**
@@ -449,5 +457,6 @@ export default class NodeList {
  * point to the same nodes.
  * * Iterable collection of above items will be iterated over and all items will be added to the node list.
  *
- * @typedef {engine.treeModel.Node|engine.treeModel.Text|String|engine.treeModel.NodeList|Iterable} engine.treeModel.NodeSet
+ * @typedef {engine.treeModel.Node|engine.treeModel.Text|String|engine.treeModel.NodeList|engine.treeModel.DocumentFragment|Iterable}
+ * engine.treeModel.NodeSet
  */

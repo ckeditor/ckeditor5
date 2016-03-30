@@ -25,10 +25,10 @@ export default class Node {
 	 */
 	constructor( attrs ) {
 		/**
-		 * Parent element. Null by default. Set by {@link engine.treeModel.Element#insertChildren}.
+		 * Element or DocumentFragment that is a parent of this node.
 		 *
 		 * @readonly
-		 * @member {engine.treeModel.Element|null} engine.treeModel.Node#parent
+		 * @member {engine.treeModel.Element|engine.treeModel.DocumentFragment|null} engine.treeModel.Node#parent
 		 */
 		this.parent = null;
 

@@ -8,10 +8,12 @@
 'use strict';
 
 import Document from '/ckeditor5/engine/treemodel/document.js';
+import DocumentFragment from '/ckeditor5/engine/treemodel/documentfragment.js';
 import Element from '/ckeditor5/engine/treemodel/element.js';
 import Position from '/ckeditor5/engine/treemodel/position.js';
 import LivePosition from '/ckeditor5/engine/treemodel/liveposition.js';
 import Range from '/ckeditor5/engine/treemodel/range.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'LivePosition', () => {
 	let doc, root, ul, p, li1, li2;
@@ -33,6 +35,12 @@ describe( 'LivePosition', () => {
 		live.detach();
 
 		expect( live ).to.be.instanceof( Position );
+	} );
+
+	it( 'should throw if given root is not a RootElement', () => {
+		expect( () => {
+			new LivePosition( new DocumentFragment(), [ 1 ] );
+		} ).to.throw( CKEditorError, /liveposition-root-not-rootelement/ );
 	} );
 
 	it( 'should listen to a change event of the document that owns this position root', () => {

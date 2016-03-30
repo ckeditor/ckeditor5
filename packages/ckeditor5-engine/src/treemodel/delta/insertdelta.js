@@ -67,7 +67,6 @@ export default class InsertDelta extends Delta {
  * @method engine.treeModel.Batch#insert
  * @param {engine.treeModel.Position} position Position of insertion.
  * @param {engine.treeModel.NodeSet} nodes The list of nodes to be inserted.
- * List of nodes can be of any type accepted by the {@link engine.treeModel.NodeList} constructor.
  */
 register( 'insert', function( position, nodes ) {
 	const delta = new InsertDelta();
