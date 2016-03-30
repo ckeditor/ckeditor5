@@ -27,7 +27,7 @@ The project is split into several different repositories, as described in the [d
 
 The [ckeditor5](https://github.com/ckeditor/ckeditor5) repository is the place that centralizes the development of CKEditor 5. It bundles different repositories into a single place, adding the necessary helper tools for the development workflow, like the builder and the test runner. [Basic information on how to setup the development environment](https://github.com/ckeditor/ckeditor5/wiki/Development-Environment) can be found in the wiki pages.
 
-The [ckeditor5](https://github.com/ckeditor/ckeditor5) repository contains also the core classes which implements the base architecture of the CKEditor 5 framework.
+The [ckeditor5](https://github.com/ckeditor/ckeditor5) repository contains also the core classes which implement the base architecture of the CKEditor 5 framework.
 
 Another key repositories are:
 
