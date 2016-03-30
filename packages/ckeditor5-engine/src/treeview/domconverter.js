@@ -100,15 +100,15 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Converts view to DOM. For all text nodes and not bound elements new elements will be created. For bound
-	 * elements function will return corresponding elements.
+	 * Converts view to DOM. For all text nodes, not bound elements and document fragments new items will
+	 * be created. For bound elements and document fragments function will return corresponding items.
 	 *
-	 * @param {engine.treeView.Node} viewNode View node to transform.
+	 * @param {engine.treeView.Node|engine.treeView.DocumentFragment} viewNode View node or document fragment to transform.
 	 * @param {document} domDocument Document which will be used to create DOM nodes.
 	 * @param {Object} [options] Conversion options.
 	 * @param {Boolean} [options.bind=false] Determines whether new elements will be bound.
-	 * @param {Boolean} [options.withChildren=true] If true node's children will be converted too.
-	 * @returns {Node} Converted node.
+	 * @param {Boolean} [options.withChildren=true] If true node's and document fragment's children  will be converted too.
+	 * @returns {Node|DocumentFragment} Converted node or DocumentFragment.
 	 */
 	viewToDom( viewNode, domDocument, options ) {
 		if ( !options ) {
@@ -161,14 +161,14 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Converts DOM to view. For all text nodes and not bound elements new elements will be created. For bound
-	 * elements function will return corresponding elements.
+	 * Converts DOM to view. For all text nodes, not bound elements and document fragments new items will
+	 * be created. For bound elements and document fragments function will return corresponding items.
 	 *
-	 * @param {Node} domNode DOM node to transform.
+	 * @param {Node|DocumentFragment} domNode DOM node or document fragment to transform.
 	 * @param {Object} [options] Conversion options.
 	 * @param {Boolean} [options.bind=false] Determines whether new elements will be bound.
-	 * @param {Boolean} [options.withChildren=true] It true node's children will be converted too.
-	 * @returns {engine.treeView.Node} Converted node.
+	 * @param {Boolean} [options.withChildren=true] It true node's and document fragment's children will be converted too.
+	 * @returns {engine.treeView.Node|engine.treeView.DocumentFragment} Converted node or document fragment.
 	 */
 	domToView( domNode, options ) {
 		if ( !options ) {
@@ -227,11 +227,12 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Gets corresponding view node. This function use {@link engine.treeView.DomConverter#getCorrespondingViewElement}
-	 * for elements and {@link getCorrespondingViewText} for text nodes.
+	 * Gets corresponding view item. This function use {@link engine.treeView.DomConverter#getCorrespondingViewElement}
+	 * for elements, {@link getCorrespondingViewText} for text nodes and {@link getCorrespondingViewDocumentFragment}
+	 * for document fragments.
 	 *
-	 * @param {Node} domNode DOM node.
-	 * @returns {engine.treeView.Node|null} Corresponding node.
+	 * @param {Node|DocumentFragment} domNode DOM node or document fragment.
+	 * @returns {engine.treeView.Node|engine.treeView.DocumentFragment|null} Corresponding item.
 	 */
 	getCorrespondingView( domNode ) {
 		if ( domNode instanceof HTMLElement ) {
@@ -254,6 +255,13 @@ export default class DomConverter {
 		return this._domToViewMapping.get( domElement );
 	}
 
+	/**
+	 * Gets corresponding view document fragment. Returns document fragment if an view element was
+	 * {@link engine.treeView.DomConverter#bindDocumentFragments bound} to the given DOM fragment or null otherwise.
+	 *
+	 * @param {DocumentFragment} domFragment DOM element.
+	 * @returns {engine.treeView.DocumentFragment|null} Corresponding document fragment or null if none element was bound.
+	 */
 	getCorrespondingViewDocumentFragment( domFragment ) {
 		return this._domToViewMapping.get( domFragment );
 	}
@@ -303,11 +311,12 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Gets corresponding DOM node. This function uses {@link engine.treeView.DomConverter#getCorrespondingDomElement} for
-	 * elements and {@link engine.treeView.DomConverter#getCorrespondingDomText} for text nodes.
+	 * Gets corresponding DOM item. This function uses {@link engine.treeView.DomConverter#getCorrespondingDomElement} for
+	 * elements, {@link engine.treeView.DomConverter#getCorrespondingDomText} for text nodes
+	 * and {@link getCorrespondingDomDocumentFragment} for document fragments.
 	 *
-	 * @param {engine.treeView.Node} viewNode View node.
-	 * @returns {Node|null} Corresponding DOM node.
+	 * @param {engine.treeView.Node|engine.treeView.DomFragment} viewNode View node or document fragment.
+	 * @returns {Node|DocumentFragment|null} Corresponding DOM node or document fragment.
 	 */
 	getCorrespondingDom( viewNode ) {
 		if ( viewNode instanceof ViewElement ) {
@@ -330,6 +339,13 @@ export default class DomConverter {
 		return this._viewToDomMapping.get( viewElement );
 	}
 
+	/**
+	 * Gets corresponding DOM document fragment. Returns document fragment if an DOM element was
+	 * {@link engine.treeView.DomConverter#bindDocumentFragments bound} to the given view document fragment or null otherwise.
+	 *
+	 * @param {engine.treeView.DocumentFragment} viewDocumentFragment View document fragment.
+	 * @returns {DocumentFragment|null} Corresponding document fragment or null if no fragment was bound.
+	 */
 	getCorrespondingDomDocumentFragment( viewDocumentFragment ) {
 		return this._viewToDomMapping.get( viewDocumentFragment );
 	}
