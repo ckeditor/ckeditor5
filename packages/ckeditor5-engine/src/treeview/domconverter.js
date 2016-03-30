@@ -7,6 +7,7 @@
 
 import ViewText from './text.js';
 import ViewElement from './element.js';
+import ViewDocumentFragment from './documentfragment.js';
 
 /**
  * DomConverter is a set of tools to do transformations between DOM nodes and view nodes. It also handles
@@ -64,6 +65,19 @@ export default class DomConverter {
 	}
 
 	/**
+	 * Binds DOM and View document fragments, so it will be possible to get corresponding document fragments using
+	 * {@link engine.treeView.DomConverter#getCorrespondingViewDocumentFragment} and
+	 * {@link engine.treeView.DomConverter#getCorrespondingDomDocumentFragment.
+	 *
+	 * @param {DocumentFragment} domFragment DOM document fragment to bind.
+	 * @param {engine.treeView.DocumentFragment} viewFragment View document fragment to bind.
+	 */
+	bindDocumentFragments( domFragment, viewFragment ) {
+		this._domToViewMapping.set( domFragment, viewFragment );
+		this._viewToDomMapping.set( viewFragment, domFragment );
+	}
+
+	/**
 	 * Compares DOM and View nodes. Elements are same when they are bound. Text nodes are same when they have the same
 	 * text data. Nodes need to have corresponding types. In all other cases nodes are different.
 	 *
@@ -103,6 +117,24 @@ export default class DomConverter {
 
 		if ( viewNode instanceof ViewText ) {
 			return domDocument.createTextNode( viewNode.data );
+		} else if ( viewNode instanceof  ViewDocumentFragment ) {
+			if ( this.getCorrespondingDom( viewNode ) ) {
+				return this.getCorrespondingDom( viewNode );
+			}
+
+			const domFragment = domDocument.createDocumentFragment();
+
+			if ( options.bind ) {
+				this.bindDocumentFragments( domFragment, viewNode );
+			}
+
+			if ( options.withChildren || options.withChildren === undefined ) {
+				for ( let childView of viewNode.getChildren() ) {
+					domFragment.appendChild( this.viewToDom( childView, domDocument, options ) );
+				}
+			}
+
+			return domFragment;
 		} else {
 			if ( this.getCorrespondingDom( viewNode ) ) {
 				return this.getCorrespondingDom( viewNode );
@@ -145,6 +177,26 @@ export default class DomConverter {
 
 		if ( domNode instanceof Text ) {
 			return new ViewText( domNode.data );
+		} else if ( domNode instanceof DocumentFragment ) {
+			if ( this.getCorrespondingView( domNode ) ) {
+				return this.getCorrespondingView( domNode );
+			}
+
+			const viewFragment = new ViewDocumentFragment();
+
+			if ( options.bind ) {
+				this.bindDocumentFragments( domNode, viewFragment );
+			}
+
+			if ( options.withChildren || options.withChildren === undefined ) {
+				for ( let i = 0, len = domNode.childNodes.length; i < len; i++ ) {
+					let domChild = domNode.childNodes[ i ];
+
+					viewFragment.appendChildren( this.domToView( domChild, options ) );
+				}
+			}
+
+			return viewFragment;
 		} else {
 			if ( this.getCorrespondingView( domNode ) ) {
 				return this.getCorrespondingView( domNode );
@@ -184,6 +236,8 @@ export default class DomConverter {
 	getCorrespondingView( domNode ) {
 		if ( domNode instanceof HTMLElement ) {
 			return this.getCorrespondingViewElement( domNode );
+		} else if ( domNode instanceof DocumentFragment ) {
+			return this.getCorrespondingViewDocumentFragment( domNode );
 		} else {
 			return this.getCorrespondingViewText( domNode );
 		}
@@ -198,6 +252,10 @@ export default class DomConverter {
 	 */
 	getCorrespondingViewElement( domElement ) {
 		return this._domToViewMapping.get( domElement );
+	}
+
+	getCorrespondingViewDocumentFragment( domFragment ) {
+		return this._domToViewMapping.get( domFragment );
 	}
 
 	/**
@@ -254,6 +312,8 @@ export default class DomConverter {
 	getCorrespondingDom( viewNode ) {
 		if ( viewNode instanceof ViewElement ) {
 			return this.getCorrespondingDomElement( viewNode );
+		} else if ( viewNode instanceof ViewDocumentFragment ) {
+			return this.getCorrespondingDomDocumentFragment( viewNode );
 		} else {
 			return this.getCorrespondingDomText( viewNode );
 		}
@@ -268,6 +328,10 @@ export default class DomConverter {
 	 */
 	getCorrespondingDomElement( viewElement ) {
 		return this._viewToDomMapping.get( viewElement );
+	}
+
+	getCorrespondingDomDocumentFragment( viewDocumentFragment ) {
+		return this._viewToDomMapping.get( viewDocumentFragment );
 	}
 
 	/**
