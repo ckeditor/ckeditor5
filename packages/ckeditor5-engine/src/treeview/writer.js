@@ -10,6 +10,7 @@ import Element from './element.js';
 import Text from './text.js';
 import Range from './range.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
+import DocumentFragment from './documentfragment.js';
 
 /**
  * Tree View Writer class.
@@ -352,7 +353,7 @@ import CKEditorError from '../../utils/ckeditorerror.js';
 	 *
 	 * @param {engine.treeView.Range} range Range to remove from container. After removing, it will be updated
 	 * to a collapsed range showing the new position.
-	 * @returns {Array.<engine.treeView.Node>} The array of removed nodes.
+	 * @returns {engine.treeView.DocumentFragment} Document fragment containing removed nodes.
 	 */
 	remove( range ) {
 		// Range should be placed inside one container.
@@ -367,7 +368,7 @@ import CKEditorError from '../../utils/ckeditorerror.js';
 
 		// If range is collapsed - nothing to remove.
 		if ( range.isCollapsed ) {
-			return [];
+			return new DocumentFragment();
 		}
 
 		// Break attributes at range start and end.
@@ -385,7 +386,7 @@ import CKEditorError from '../../utils/ckeditorerror.js';
 		range.end = Position.createFromPosition( mergePosition );
 
 		// Return removed nodes.
-		return removed;
+		return new DocumentFragment( removed );
 	}
 
 	/**
