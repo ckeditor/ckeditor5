@@ -5,8 +5,11 @@
 
 'use strict';
 
+import Position from './position.js';
+import Element from './element.js';
 import clone from '../../utils/lib/lodash/clone.js';
 import isArray from '../../utils/lib/lodash/isArray.js';
+import isString from '../../utils/lib/lodash/isString.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
@@ -60,7 +63,7 @@ export class SchemaItem {
 	/**
 	 * Allows entity, represented by this item, to be in given path.
 	 *
-	 * @param {Array.<String>|String} path Path in which entity is allowed. String with item names separated by spaces may be passed.
+	 * @param {Array.<String>} path Path in which entity is allowed.
 	 * @param {Array.<String>|String} [attributes] If set, this path will be used only for entities that have attribute(s) with this key.
 	 */
 	allow( path, attributes ) {
@@ -70,7 +73,7 @@ export class SchemaItem {
 	/**
 	 * Disallows entity, represented by this item, to be in given path.
 	 *
-	 * @param {Array.<String>|String} path Path in which entity is disallowed. String with item names separated by spaces may be passed.
+	 * @param {Array.<String>} path Path in which entity is disallowed.
 	 * @param {Array.<String>|String} [attributes] If set, this path will be used only for entities that have an attribute(s) with this key.
 	 */
 	disallow( path, attributes ) {
@@ -93,7 +96,7 @@ export class SchemaItem {
 	 *
 	 * @private
 	 * @param {String} member Name of the array member into which the path will be added. Possible values are `_allowed` or `_disallowed`.
-	 * @param {Array.<String>|String} path Path to be added. String with item names separated by spaces may be passed.
+	 * @param {Array.<String>} path Path to add.
 	 * @param {Array.<String>|String} [attributes] If set, this path will be used only for entities that have attribute(s) with this key.
 	 */
 	_addPath( member, path, attributes ) {
@@ -134,9 +137,38 @@ export class SchemaItem {
 	}
 
 	/**
+	 * Checks whether given set of attributes fulfills required attributes of this item.
+	 *
+	 * @protected
+	 * @see engine.treeModel.SchemaItem#requireAttributes
+	 * @param {Array.<String>} attributesToCheck Attributes to check.
+	 * @returns {Boolean} `true` if given set or attributes fulfills required attributes, `false` otherwise.
+	 */
+	_checkRequiredAttributes( attributesToCheck ) {
+		let found = true;
+
+		for ( let attributeSet of this._requiredAttributes ) {
+			found = true;
+
+			for ( let attribute of attributeSet ) {
+				if ( attributesToCheck.indexOf( attribute ) == -1 ) {
+					found = false;
+					break;
+				}
+			}
+
+			if ( found ) {
+				break;
+			}
+		}
+
+		return found;
+	}
+
+	/**
 	 * Checks whether this item has any registered path of given type that matches provided path.
 	 *
-	 * @private
+	 * @protected
 	 * @param {String} type Paths' type. Possible values are `ALLOW` or `DISALLOW`.
 	 * @param {Array.<String>} checkPath Path to check.
 	 * @param {String} [attribute] If set, only paths registered for given attribute will be checked.
@@ -257,7 +289,7 @@ export default class Schema {
 	 * @param {engine.treeModel.SchemaQuery} query Allowed query.
 	 */
 	allow( query ) {
-		this._getItem( query.name ).allow( query.inside, query.attributes );
+		this._getItem( query.name ).allow( Schema._normalizeQueryPath( query.inside ), query.attributes );
 	}
 
 	/**
@@ -267,62 +299,25 @@ export default class Schema {
 	 * @param {engine.treeModel.SchemaQuery} query Disallowed query.
 	 */
 	disallow( query ) {
-		this._getItem( query.name ).disallow( query.inside, query.attributes );
+		this._getItem( query.name ).disallow( Schema._normalizeQueryPath( query.inside ), query.attributes );
 	}
 
 	/**
-	 * Makes a requirement in schema that entity represented by given item has to have given set of attributes.
+	 * Makes a requirement in schema that entity represented by given item has to have given set of attributes. Some
+	 * elements in the model might require some attributes to be set. If multiple sets of attributes are required it
+	 * is enough that the entity fulfills only one set.
+	 *
+	 *		// "a" element must either have "href" attribute or "name" attribute
+	 *		schema.requireAttributes( 'a', [ 'href' ] );
+	 *		schema.requireAttributes( 'a', [ 'name' ] );
+	 *		// "img" element must have both "src" and "alt" attributes
+	 *		schema.requireAttributes( 'img', [ 'src', 'alt' ] );
 	 *
 	 * @param {String} name Entity name.
 	 * @param {Array.<String>} attributes Attributes that has to be set on the entity to make it valid.
 	 */
 	requireAttributes( name, attributes ) {
 		this._getItem( name ).requireAttributes( attributes );
-	}
-
-	/**
-	 * Checks whether entity with given name (and optionally, with given attribute(s)) is allowed at given position.
-	 *
-	 *		// Check whether bold text can be placed at caret position.
-	 *		let caretPos = editor.document.selection.getFirstPosition();
-	 *		if ( schema.checkAtPosition( caretPos, '$text', 'bold' ) ) { ... }
-	 *
-	 * @param {engine.treeModel.Position} position Position to check at.
-	 * @param {String} name Entity name to check.
-	 * @param {Array.<String>|String} [attributes] If set, schema will check for entity with given attribute(s).
-	 * @returns {Boolean} `true` if entity is allowed, `false` otherwise
-	 */
-	checkAtPosition( position, name, attributes ) {
-		if ( !this.hasItem( name ) ) {
-			return false;
-		}
-
-		return this.checkQuery( {
-			name: name,
-			inside: Schema._makeItemsPathFromPosition( position ),
-			attributes: attributes
-		} );
-	}
-
-	/**
-	 * Checks whether entity with given name (and optionally, with given attribute(s)) is allowed in given chain of
-	 * parent {@link engine.treeModel.Element elements}.
-	 *
-	 * @param {Array.<engine.treeModel.Element>} elements Elements that are parents of queried entity.
-	 * @param {String} name Entity name to check.
-	 * @param {Array.<String>|String} [attributes] If set, schema will check for entity with given attribute(s).
-	 * @returns {Boolean} `true` if entity is allowed, `false` otherwise
-	 */
-	checkInElements( elements, name, attributes ) {
-		if ( !this.hasItem( name ) ) {
-			return false;
-		}
-
-		return this.checkQuery( {
-			name: name,
-			inside: elements.map( ( element ) => element.name ),
-			attributes: attributes
-		} );
 	}
 
 	/**
@@ -334,50 +329,52 @@ export default class Schema {
 	 *			attributes: 'bold',
 	 *			inside: 'header'
 	 *		};
-	 *		if ( schema.checkQuery( query ) ) { ... }
+	 *		if ( schema.check( query ) ) { ... }
+	 *
+	 *		// Check whether bold and italic text can be placed at caret position.
+	 *		let caretPos = editor.document.selection.getFirstPosition();
+	 *		let query = {
+	 *			name: '$text',
+	 *			attributes: [ 'bold', 'italic' ],
+	 *			inside: caretPos
+	 *		};
+	 *		if ( schema.check( query ) ) { ... }
+	 *
+	 *		// Check whether image with alt, src and title is allowed in given elements path.
+	 *		let quoteElement = new Element( 'quote' );
+	 *		let query = {
+	 *			name: 'img',
+	 *			attributes: [ 'alt', 'src', 'title' ],
+	 *			// It is possible to mix strings with elements.
+	 *			// Query will check whether "img" can be inside "quoteElement" that is inside a block element.
+	 *			inside: [ '$block', quoteElement ]
+	 *		};
+	 *		if ( schema.check( query ) ) { ... }
 	 *
 	 * @param {engine.treeModel.SchemaQuery} query Query to check.
 	 * @returns {Boolean} `true` if given query is allowed in schema, `false` otherwise.
 	 */
-	checkQuery( query ) {
+	check( query ) {
 		if ( !this.hasItem( query.name ) ) {
 			return false;
 		}
 
+		// If attributes property is a string or undefined, wrap it in an array for easier processing.
 		if ( !isArray( query.attributes ) ) {
 			query.attributes = [ query.attributes ];
 		}
 
-		const path = ( typeof query.inside === 'string' ) ? query.inside.split( ' ' ) : query.inside;
+		// Normalize the path to an array of strings.
+		const path = Schema._normalizeQueryPath( query.inside );
 
 		// Get extension chain of given item and retrieve all schema items that are extended by given item.
 		const schemaItems = this._extensionChains.get( query.name ).map( ( name ) => {
 			return this._getItem( name );
 		} );
-		const baseItem = this._getItem( query.name );
 
-		// First check if the query meets at least one of required sets of attributes for this item (if there are any).
-		if ( baseItem._requiredAttributes.length > 0 ) {
-			let found;
-
-			for ( let attributes of baseItem._requiredAttributes ) {
-				found = true;
-
-				for ( let attribute of attributes ) {
-					if ( query.attributes.indexOf( attribute ) == -1 ) {
-						found = false;
-						break;
-					}
-				}
-
-				if ( found ) {
-					break;
-				}
-			}
-
-			if ( !found ) {
-				return false;
-			}
+		// First check if the query meets at required attributes for this item.
+		if ( !this._getItem( query.name )._checkRequiredAttributes( query.attributes ) ) {
+			return false;
 		}
 
 		// If there is matching disallow path, this query is not valid with schema.
@@ -487,24 +484,37 @@ export default class Schema {
 	}
 
 	/**
-	 * Gets position and traverses through it's parents to get their names and returns them.
+	 * Normalizes a path to an entity by converting it from {@link engine.treeModel.SchemaPath} to an array of strings.
 	 *
-	 * @private
-	 * @param {engine.treeModel.Position} position Position to start building path from.
-	 * @returns {Array.<String>} Path containing elements names from top-most to the one containing given position.
+	 * @protected
+	 * @param {engine.treeModel.SchemaPath} path Path to normalize.
+	 * @returns {Array.<String>} Normalized path.
 	 */
-	static _makeItemsPathFromPosition( position ) {
-		const path = [];
-		let parent = position.parent;
+	static _normalizeQueryPath( path ) {
+		let normalized = [];
 
-		while ( parent !== null ) {
-			path.push( parent.name );
-			parent = parent.parent;
+		if ( isArray( path ) ) {
+			for ( let pathItem of path ) {
+				if ( pathItem instanceof Element ) {
+					normalized.push( pathItem.name );
+				} else if ( isString( pathItem ) ) {
+					normalized.push( pathItem );
+				}
+			}
+		} else if ( path instanceof Position ) {
+			let parent = path.parent;
+
+			while ( parent !== null ) {
+				normalized.push( parent.name );
+				parent = parent.parent;
+			}
+
+			normalized.reverse();
+		} else if ( isString( path ) ) {
+			normalized = path.split( ' ' );
 		}
 
-		path.reverse();
-
-		return path;
+		return normalized;
 	}
 }
 
@@ -513,6 +523,14 @@ export default class Schema {
  *
  * @typedef {Object} engine.treeModel.SchemaQuery
  * @property {String} name Entity name.
- * @property {Array.<String>|String} inside Path inside which the entity is placed.
+ * @property {engine.treeModel.SchemaPath} inside Path inside which the entity is placed.
  * @property {Array.<String>|String} [attributes] If set, the query applies only to entities that has attribute(s) with given key.
+ */
+
+/**
+ * Path to an entity, begins from the top-most ancestor. Can be passed in multiple formats. Internally, normalized to
+ * an array of strings. If string is passed, entities from the path should be divided by ` ` (space character). If
+ * an array is passed, unrecognized items are skipped. If position is passed, it is assumed that the entity is at given position.
+ *
+ * @typedef {String|Array.<String|engine.treeModel.Element>|engine.treeModel.Position} engine.treeModel.SchemaPath
  */

@@ -53,18 +53,10 @@ describe( 'allow', () => {
 		expect( paths[ 1 ] ).to.deep.equal( [ 'p' ] );
 	} );
 
-	it( 'should accept paths as string with element names separated with space', () => {
-		item.allow( 'div header' );
-
-		let paths = item._getPaths( 'ALLOW' );
-
-		expect( paths[ 0 ] ).to.deep.equal( [ 'div', 'header' ] );
-	} );
-
 	it( 'should group paths by attribute', () => {
-		item.allow( 'p', 'bold' );
-		item.allow( 'div' );
-		item.allow( 'header', 'bold' );
+		item.allow( [ 'p' ], 'bold' );
+		item.allow( [ 'div' ] );
+		item.allow( [ 'header' ], 'bold' );
 
 		let pathsWithNoAttribute = item._getPaths( 'ALLOW' );
 		let pathsWithBoldAttribute = item._getPaths( 'ALLOW', 'bold' );
@@ -97,18 +89,10 @@ describe( 'disallow', () => {
 		expect( paths[ 1 ] ).to.deep.equal( [ 'p' ] );
 	} );
 
-	it( 'should accept paths as string with element names separated with space', () => {
-		item.disallow( 'div header' );
-
-		let paths = item._getPaths( 'DISALLOW' );
-
-		expect( paths[ 0 ] ).to.deep.equal( [ 'div', 'header' ] );
-	} );
-
 	it( 'should group paths by attribute', () => {
-		item.disallow( 'p', 'bold' );
-		item.disallow( 'div' );
-		item.disallow( 'header', 'bold' );
+		item.disallow( [ 'p' ], 'bold' );
+		item.disallow( [ 'div' ] );
+		item.disallow( [ 'header' ], 'bold' );
 
 		let pathsWithNoAttribute = item._getPaths( 'DISALLOW' );
 		let pathsWithBoldAttribute = item._getPaths( 'DISALLOW', 'bold' );
@@ -124,8 +108,8 @@ describe( 'disallow', () => {
 
 describe( '_hasMatchingPath', () => {
 	it( 'should return true if there is at least one allowed path that matches query path', () => {
-		item.allow( 'div header' );
-		item.allow( 'image' );
+		item.allow( [ 'div' , 'header' ] );
+		item.allow( [ 'image' ] );
 
 		expect( item._hasMatchingPath( 'ALLOW', [ 'div', 'header' ] ) ).to.be.true;
 		expect( item._hasMatchingPath( 'ALLOW', [ 'html', 'div', 'header' ] ) ).to.be.true;
@@ -134,7 +118,7 @@ describe( '_hasMatchingPath', () => {
 	} );
 
 	it( 'should return false if there are no allowed paths that match query path', () => {
-		item.allow( 'div p' );
+		item.allow( [ 'div', 'p' ] );
 
 		expect( item._hasMatchingPath( 'ALLOW', [ 'p' ] ) ).to.be.false;
 		expect( item._hasMatchingPath( 'ALLOW', [ 'div' ] ) ).to.be.false;
@@ -142,17 +126,17 @@ describe( '_hasMatchingPath', () => {
 	} );
 
 	it( 'should return true if there is at least one disallowed path that matches query path', () => {
-		item.allow( 'div header' );
-		item.disallow( 'p header' );
+		item.allow( [ 'div', 'header' ] );
+		item.disallow( [ 'p', 'header' ] );
 
 		expect( item._hasMatchingPath( 'DISALLOW', [ 'html', 'div', 'p', 'header', 'span' ] ) ).to.be.true;
 	} );
 
 	it( 'should use only paths that are registered for given attribute', () => {
-		item.allow( 'div p' );
-		item.allow( 'div', 'bold' );
-		item.allow( 'header' );
-		item.disallow( 'header', 'bold' );
+		item.allow( [ 'div', 'p' ] );
+		item.allow( [ 'div' ], 'bold' );
+		item.allow( [ 'header' ] );
+		item.disallow( [ 'header' ], 'bold' );
 
 		expect( item._hasMatchingPath( 'ALLOW', [ 'html', 'div', 'p' ]  ) ).to.be.true;
 		expect( item._hasMatchingPath( 'ALLOW', [ 'html', 'div' ] ) ).to.be.false;
