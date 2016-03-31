@@ -7,6 +7,8 @@
 
 import isArray from '../../utils/lib/lodash/isArray.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
+import ViewText from '../treeview/text.js';
+import ViewDocumentFragment from '../treeview/documentfragment.js';
 
 /**
  * This is a private helper-class for {@link engine.treeController.ViewConsumable}.
@@ -83,7 +85,7 @@ class ViewElementConsumables {
 	 * were never marked for consumption and `false` when even one of the items were already consumed.
 	 */
 	test( consumables ) {
-		// Check if name can be consumed
+		// Check if name can be consumed.
 		if ( consumables.name && !this._canConsumeName ) {
 			return this._canConsumeName;
 		}
@@ -270,7 +272,8 @@ class ViewElementConsumables {
 }
 
 /**
- * Class used for handling consumption of {@link engine.treeView.Element view Elements}.
+ * Class used for handling consumption of view {@link engine.treeView.Element elements},
+ * {@link engine.treeView.Text text nodes} and {@link engine.treeView.DocumentFragment document fragments}.
  * Element's name and its parts (attributes, classes and styles) can be consumed separately. Consuming an element's name
  * does not consume its attributes, classes and styles.
  * To add items for consumption use {@link engine.treeController.ViewConsumable#add add method}.
@@ -279,9 +282,17 @@ class ViewElementConsumables {
  * To revert already consumed items use {@link engine.treeController.ViewConsumable#revert revert method}.
  *
  *		viewConsumable.add( element, { name: true } ); // Adds element's name as ready to be consumed.
+ *		viewConsumable.add( textNode ); // Adds text node for consumption.
+ *		viewConsumable.add( docFragment ); // Adds document fragment for consumption.
  *		viewConsumable.test( element, { name: true }  ); // Tests if element's name can be consumed.
+ *		viewConsumable.test( textNode ); // Tests if text node can be consumed.
+ *		viewConsumable.test( docFragment ); // Tests if document fragment can be consumed.
  *		viewConsumable.consume( element, { name: true }  ); // Consume element's name.
+ *		viewConsumable.consume( textNode ); // Consume text node.
+ *		viewConsumable.consume( docFragment ); // Consume document fragment.
  *		viewConsumable.revert( element, { name: true }  ); // Revert already consumed element's name.
+ *		viewConsumable.revert( textNode ); // Revert already consumed text node.
+ *		viewConsumable.revert( docFragment ); // Revert already consumed document fragment.
  *
  * @memberOf engine.treeController
  */
@@ -292,23 +303,29 @@ export default class ViewConsumable {
 	 */
 	constructor() {
 		/**
-		* Map of consumable elements.
-		*
-		* @protected
-		* @member {Map.<engine.treeController.ViewElementConsumables>} engine.treeController.ViewConsumable#_consumables
+		 * Map of consumable elements. If {@link engine.treeView.Element element} is used as a key,
+		 * {@link engine.treeController.ViewElementConsumables ViewElementConsumables} instance is stored as value.
+		 * For {@link engine.treeView.Text text nodes} and {@link engine.treeView.DocumentFragment document fragments}
+		 * boolean value is stored as value.
+		 *
+		 * @protected
+		 * @member {Map.<engine.treeController.ViewElementConsumables|Boolean>} engine.treeController.ViewConsumable#_consumables
 		*/
 		this._consumables = new Map();
 	}
 
 	/**
-	 * Adds {@link engine.treeView.Element view Element} and its parts as ready to be consumed.
+	 * Adds {@link engine.treeView.Element view element}, {@link engine.treeView.Text text node} or
+	 * {@link engine.treeView.DocumentFragment document fragment} as ready to be consumed.
 	 *
 	 *		viewConsumable.add( p, { name: true } ); // Adds element's name to consume.
 	 *		viewConsumable.add( p, { attribute: 'name' } ); // Adds element's attribute.
 	 *		viewConsumable.add( p, { class: 'foobar' } ); // Adds element's class.
 	 *		viewConsumable.add( p, { style: 'color' } ); // Adds element's style
 	 *		viewConsumable.add( p, { attribute: 'name', style: 'color' } ); // Adds attribute and style.
-	 *		viewConsumable.consume( p, { class: [ 'baz', 'bar' ] } ); // Multiple consumables can be provided.
+	 *		viewConsumable.add( p, { class: [ 'baz', 'bar' ] } ); // Multiple consumables can be provided.
+	 *		viewConsumable.add( textNode ); // Adds text node to consume.
+	 *		viewConsumable.add( docFragment ); // Adds document fragment to consume.
 	 *
 	 * Throws {@link utils.CKEditorError CKEditorError} `viewconsumable-invalid-attribute` when `class` or `style`
 	 * attribute is provided - it should be handled separately by providing actual style/class.
@@ -316,8 +333,8 @@ export default class ViewConsumable {
 	 *		viewConsumable.add( p, { attribute: 'style' } ); // This call will throw an exception.
 	 *		viewConsumable.add( p, { style: 'color' } ); // This is properly handled style.
 	 *
-	 * @param {engine.treeView.Element} element
-	 * @param {Object} consumables
+	 * @param {engine.treeView.Element|engine.treeView.Text|engine.treeView.DocumentFragment} element
+	 * @param {Object} [consumables] Used only if first parameter is {@link engine.treeView.Element view element} instance.
 	 * @param {Boolean} consumables.name If set to true element's name will be included.
 	 * @param {String|Array} consumables.attribute Attribute name or array of attribute names.
 	 * @param {String|Array} consumables.class Class name or array of class names.
@@ -325,6 +342,13 @@ export default class ViewConsumable {
 	 */
 	add( element, consumables ) {
 		let elementConsumables;
+
+		// For text nodes and document fragments just mark them as consumable.
+		if ( element instanceof ViewText || element instanceof ViewDocumentFragment ) {
+			this._consumables.set( element, true );
+
+			return;
+		}
 
 		if ( !this._consumables.has( element ) ) {
 			elementConsumables = new ViewElementConsumables();
@@ -337,7 +361,8 @@ export default class ViewConsumable {
 	}
 
 	/**
-	 * Tests {@link engine.treeView.Element view Element} and its parts to check if can be consumed.
+	 * Tests if {@link engine.treeView.Element view element}, {@link engine.treeView.Text text node} or
+	 * {@link engine.treeView.DocumentFragment document fragment} can be consumed.
 	 * It returns `true` when all items included in method's call can be consumed. Returns `false` when
 	 * first already consumed item is found and `null` when first non-consumable item is found.
 	 *
@@ -346,7 +371,9 @@ export default class ViewConsumable {
 	 *		viewConsumable.test( p, { class: 'foobar' } ); // Tests class.
 	 *		viewConsumable.test( p, { style: 'color' } ); // Tests style.
 	 *		viewConsumable.test( p, { attribute: 'name', style: 'color' } ); // Tests attribute and style.
-	 *		viewConsumable.consume( p, { class: [ 'baz', 'bar' ] } ); // Multiple consumables can be tested.
+	 *		viewConsumable.test( p, { class: [ 'baz', 'bar' ] } ); // Multiple consumables can be tested.
+	 *		viewConsumable.test( textNode ); // Tests text node.
+	 *		viewConsumable.test( docFragment ); // Tests document fragment.
 	 *
 	 * Throws {@link utils.CKEditorError CKEditorError} `viewconsumable-invalid-attribute` when `class` or `style`
 	 * attribute is provided - it should be handled separately by providing actual style/class.
@@ -354,8 +381,8 @@ export default class ViewConsumable {
 	 *		viewConsumable.test( p, { attribute: 'style' } ); // This call will throw an exception.
 	 *		viewConsumable.test( p, { style: 'color' } ); // This is properly handled style.
 	 *
-	 * @param {engine.treeView.Element} element
-	 * @param {Object} consumables
+	 * @param {engine.treeView.Element|engine.treeView.Text|engine.treeView.DocumentFragment} element
+	 * @param {Object} [consumables] Used only if first parameter is {@link engine.treeView.Element view element} instance.
 	 * @param {Boolean} consumables.name If set to true element's name will be included.
 	 * @param {String|Array} consumables.attribute Attribute name or array of attribute names.
 	 * @param {String|Array} consumables.class Class name or array of class names.
@@ -370,11 +397,18 @@ export default class ViewConsumable {
 			return null;
 		}
 
+		// For text nodes and document fragments return stored boolean value.
+		if ( element instanceof ViewText || element instanceof ViewDocumentFragment ) {
+			return elementConsumables;
+		}
+
+		// For elements test consumables object.
 		return elementConsumables.test( consumables );
 	}
 
 	/**
-	 * Consumes provided {@link engine.treeView.Element view Element} and its parts.
+	 * Consumes {@link engine.treeView.Element view element}, {@link engine.treeView.Text text node} or
+	 * {@link engine.treeView.DocumentFragment document fragment}.
 	 * It returns `true` when all items included in method's call can be consumed, otherwise returns `false`.
 	 *
 	 *		viewConsumable.consume( p, { name: true } ); // Consumes element's name.
@@ -383,6 +417,8 @@ export default class ViewConsumable {
 	 *		viewConsumable.consume( p, { style: 'color' } ); // Consumes element's style.
 	 *		viewConsumable.consume( p, { attribute: 'name', style: 'color' } ); // Consumes attribute and style.
 	 *		viewConsumable.consume( p, { class: [ 'baz', 'bar' ] } ); // Multiple consumables can be consumed.
+	 *		viewConsumable.consume( textNode ); // Consumes text node.
+	 *		viewConsumable.consume( docFragment ); // Consumes document fragment.
 	 *
 	 * Throws {@link utils.CKEditorError CKEditorError} `viewconsumable-invalid-attribute` when `class` or `style`
 	 * attribute is provided - it should be handled separately by providing actual style/class.
@@ -390,8 +426,8 @@ export default class ViewConsumable {
 	 *		viewConsumable.consume( p, { attribute: 'style' } ); // This call will throw an exception.
 	 *		viewConsumable.consume( p, { style: 'color' } ); // This is properly handled style.
 	 *
-	 * @param {engine.treeView.Element} element
-	 * @param {Object} consumables
+	 * @param {engine.treeView.Element|engine.treeView.Text|engine.treeView.DocumentFragment} element
+	 * @param {Object} [consumables] Used only if first parameter is {@link engine.treeView.Element view element} instance.
 	 * @param {Boolean} consumables.name If set to true element's name will be included.
 	 * @param {String|Array} consumables.attribute Attribute name or array of attribute names.
 	 * @param {String|Array} consumables.class Class name or array of class names.
@@ -401,7 +437,13 @@ export default class ViewConsumable {
 	 */
 	consume( element, consumables ) {
 		if ( this.test( element, consumables ) ) {
-			this._consumables.get( element ).consume( consumables );
+			if ( element instanceof ViewText || element instanceof ViewDocumentFragment ) {
+				// For text nodes and document fragments set value to false.
+				this._consumables.set( element, false );
+			} else {
+				// For elements - consume consumables object.
+				this._consumables.get( element ).consume( consumables );
+			}
 
 			return true;
 		}
@@ -410,9 +452,10 @@ export default class ViewConsumable {
 	}
 
 	/**
-	 * Reverts provided {@link engine.treeView.Element view Element} and its parts so they can be consumed once again.
+	 * Reverts {@link engine.treeView.Element view element}, {@link engine.treeView.Text text node} or
+	 * {@link engine.treeView.DocumentFragment document fragment} so they can be consumed once again.
 	 * Method does not revert items that were never previously added for consumption, even if they are included in
-	 * consumables object.
+	 * method's call.
 	 *
 	 *		viewConsumable.revert( p, { name: true } ); // Reverts element's name.
 	 *		viewConsumable.revert( p, { attribute: 'name' } ); // Reverts element's attribute.
@@ -420,6 +463,8 @@ export default class ViewConsumable {
 	 *		viewConsumable.revert( p, { style: 'color' } ); // Reverts element's style.
 	 *		viewConsumable.revert( p, { attribute: 'name', style: 'color' } ); // Reverts attribute and style.
 	 *		viewConsumable.revert( p, { class: [ 'baz', 'bar' ] } ); // Multiple names can be reverted.
+	 *		viewConsumable.revert( textNode ); // Reverts text node.
+	 *		viewConsumable.revert( docFragment ); // Reverts document fragment.
 	 *
 	 * Throws {@link utils.CKEditorError CKEditorError} `viewconsumable-invalid-attribute` when `class` or `style`
 	 * attribute is provided - it should be handled separately by providing actual style/class.
@@ -427,8 +472,8 @@ export default class ViewConsumable {
 	 *		viewConsumable.revert( p, { attribute: 'style' } ); // This call will throw an exception.
 	 *		viewConsumable.revert( p, { style: 'color' } ); // This is properly handled style.
 	 *
-	 * @param {engine.treeView.Element} element
-	 * @param {Object} consumables
+	 * @param {engine.treeView.Element|engine.treeView.Text|engine.treeView.DocumentFragment} element
+	 * @param {Object} [consumables] Used only if first parameter is {@link engine.treeView.Element view element} instance.
 	 * @param {Boolean} consumables.name If set to true element's name will be included.
 	 * @param {String|Array} consumables.attribute Attribute name or array of attribute names.
 	 * @param {String|Array} consumables.class Class name or array of class names.
@@ -438,12 +483,18 @@ export default class ViewConsumable {
 		const elementConsumables = this._consumables.get( element );
 
 		if ( elementConsumables !== undefined ) {
-			elementConsumables.revert( consumables );
+			if ( element instanceof ViewText || element instanceof ViewDocumentFragment ) {
+				// For text nodes and document fragments - set consumable to true.
+				this._consumables.set( element, true );
+			} else {
+				// For elements - revert items from consumables object.
+				elementConsumables.revert( consumables );
+			}
 		}
 	}
 
 	/**
-	 * Creates consumable object from {@link engine.treeView.Element view Element}. Consumable object will include
+	 * Creates consumable object from {@link engine.treeView.Element view element}. Consumable object will include
 	 * element's name and all its attributes, classes and styles.
 	 *
 	 * @static

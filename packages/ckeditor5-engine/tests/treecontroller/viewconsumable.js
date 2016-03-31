@@ -8,6 +8,8 @@
 'use strict';
 
 import ViewElement from '/ckeditor5/engine/treeview/element.js';
+import ViewText from '/ckeditor5/engine/treeview/text.js';
+import ViewDocumentFragment from '/ckeditor5/engine/treeview/documentfragment.js';
 import ViewConsumable from '/ckeditor5/engine/treecontroller/viewconsumable.js';
 
 describe( 'ViewConsumable', () => {
@@ -24,6 +26,19 @@ describe( 'ViewConsumable', () => {
 			viewConsumable.add( el, { name: true } );
 
 			expect( viewConsumable.test( el, { name: true } ) ).to.be.true;
+		} );
+
+		it( 'should allow to add text node', () => {
+			const text = new ViewText( 'foobar' );
+			viewConsumable.add( text );
+
+			expect( viewConsumable.test( text ) ).to.be.true;
+		} );
+
+		it( 'should allow to add document fragment', () => {
+			const fragment = new ViewDocumentFragment();
+			viewConsumable.add( fragment );
+			expect( viewConsumable.test( fragment ) ).to.be.true;
 		} );
 
 		it( 'should allow to add attributes classes and styles', () => {
@@ -94,6 +109,26 @@ describe( 'ViewConsumable', () => {
 
 			expect( viewConsumable.test( el, { name: true } ) ).to.be.true;
 			expect( viewConsumable.test( el2, { name: true } ) ).to.be.null;
+		} );
+
+		it( 'should test text nodes', () => {
+			const text1 = new ViewText();
+			const text2 = new ViewText();
+
+			viewConsumable.add( text1 );
+
+			expect( viewConsumable.test( text1 ) ).to.be.true;
+			expect( viewConsumable.test( text2 ) ).to.be.null;
+		} );
+
+		it( 'should test document fragments', () => {
+			const fragment1 = new ViewDocumentFragment();
+			const fragment2 = new ViewDocumentFragment();
+
+			viewConsumable.add( fragment1 );
+
+			expect( viewConsumable.test( fragment1 ) ).to.be.true;
+			expect( viewConsumable.test( fragment2 ) ).to.be.null;
 		} );
 
 		it( 'should test attributes, classes and styles', () => {
@@ -194,6 +229,24 @@ describe( 'ViewConsumable', () => {
 			expect( consumed ).to.be.true;
 		} );
 
+		it( 'should consume text node', () => {
+			const text = new ViewText();
+			viewConsumable.add( text );
+			const consumed = viewConsumable.consume( text );
+			expect( consumed ).to.be.true;
+			expect( viewConsumable.test( text ) ).to.be.false;
+			expect( viewConsumable.consume( text ) ).to.be.false;
+		} );
+
+		it( 'should consume document fragment', () => {
+			const fragment = new ViewDocumentFragment();
+			viewConsumable.add( fragment );
+			const consumed = viewConsumable.consume( fragment );
+			expect( consumed ).to.be.true;
+			expect( viewConsumable.test( fragment ) ).to.be.false;
+			expect( viewConsumable.consume( fragment ) ).to.be.false;
+		} );
+
 		it( 'should not consume element not marked for consumption', () => {
 			expect( viewConsumable.consume( el, { name: true } ) ).to.be.false;
 		} );
@@ -286,6 +339,34 @@ describe( 'ViewConsumable', () => {
 			expect( viewConsumable.test( el, { name: true } ) ).to.be.false;
 			viewConsumable.revert( el, { name: true } );
 			expect( viewConsumable.test( el, { name: true } ) ).to.be.true;
+		} );
+
+		it( 'should revert text node', () => {
+			const text1 = new ViewText();
+			const text2 = new ViewText();
+
+			viewConsumable.add( text1 );
+			viewConsumable.consume( text1 );
+
+			viewConsumable.revert( text1 );
+			viewConsumable.revert( text2 );
+
+			expect( viewConsumable.test( text1 ) ).to.be.true;
+			expect( viewConsumable.test( text2 ) ).to.be.null;
+		} );
+
+		it( 'should revert document fragment', () => {
+			const fragment1 = new ViewDocumentFragment();
+			const fragment2 = new ViewDocumentFragment();
+
+			viewConsumable.add( fragment1 );
+			viewConsumable.consume( fragment1 );
+
+			viewConsumable.revert( fragment1 );
+			viewConsumable.revert( fragment2 );
+
+			expect( viewConsumable.test( fragment1 ) ).to.be.true;
+			expect( viewConsumable.test( fragment2 ) ).to.be.null;
 		} );
 
 		it( 'should not revert element that was never added', () => {
