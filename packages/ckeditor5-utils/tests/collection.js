@@ -5,7 +5,7 @@
 
 'use strict';
 
-import testUtils from '/tests/_utils/utils.js';
+import testUtils from '/tests/ckeditor5/_utils/utils.js';
 import Collection from '/ckeditor5/utils/collection.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import utils from '/ckeditor5/utils/utils.js';
@@ -482,6 +482,22 @@ describe( 'Collection', () => {
 			expect( ret ).to.deep.equal( [ needl ], 'ret value was forwarded' );
 
 			function callback() {}
+		} );
+	} );
+
+	describe( 'clear', () => {
+		it( 'removes all items', () => {
+			const items = [ {}, {}, {} ];
+			const spy = sinon.spy();
+
+			collection.on( 'remove', spy );
+
+			items.forEach( i => collection.add( i ) );
+
+			collection.clear();
+
+			expect( spy.callCount ).to.equal( 3 );
+			expect( collection.length ).to.equal( 0 );
 		} );
 	} );
 

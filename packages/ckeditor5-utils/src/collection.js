@@ -243,6 +243,15 @@ export default class Collection {
 	}
 
 	/**
+	 * Removes all items from the collection.
+	 */
+	clear() {
+		while ( this.length ) {
+			this.remove( 0 );
+		}
+	}
+
+	/**
 	 * Collection iterator.
 	 */
 	[ Symbol.iterator ]() {
@@ -252,6 +261,7 @@ export default class Collection {
 	/**
 	 * Generates next (not yet used) id for unidentified item being add to the collection.
 	 *
+	 * @private
 	 * @returns {String} The next id.
 	 */
 	_getNextId() {

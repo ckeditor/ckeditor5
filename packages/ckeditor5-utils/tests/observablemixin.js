@@ -5,7 +5,7 @@
 
 'use strict';
 
-import testUtils from '/tests/_utils/utils.js';
+import testUtils from '/tests/ckeditor5/_utils/utils.js';
 import utilsTestUtils from '/tests/utils/_utils/utils.js';
 import ObservableMixin from '/ckeditor5/utils/observablemixin.js';
 import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
