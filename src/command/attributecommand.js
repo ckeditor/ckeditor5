@@ -63,7 +63,7 @@ export default class AttributeCommand extends Command {
 
 		if ( selection.isCollapsed ) {
 			// Check whether schema allows for a test with `attributeKey` in caret position.
-			return schema.checkAtPosition( selection.getFirstPosition(), '$text', this.attributeKey );
+			return schema.check( { name: '$text', inside: selection.getFirstPosition(), attributes: this.attributeKey } );
 		} else {
 			const ranges = selection.getRanges();
 
@@ -78,7 +78,7 @@ export default class AttributeCommand extends Command {
 					// If returned item does not have name property, it is a treeModel.TextFragment.
 					const name = step.value.item.name || '$text';
 
-					if ( schema.checkAtPosition( last, name, this.attributeKey ) ) {
+					if ( schema.check( { name: name, inside: last, attributes: this.attributeKey } ) ) {
 						// If we found a node that is allowed to have the attribute, return true.
 						return true;
 					}
@@ -164,7 +164,7 @@ export default class AttributeCommand extends Command {
 			while ( !step.done ) {
 				const name = step.value.item.name || '$text';
 
-				if ( !this.editor.document.schema.checkAtPosition( last, name, this.attributeKey ) ) {
+				if ( !this.editor.document.schema.check( { name: name, inside: last, attributes: this.attributeKey } ) ) {
 					if ( !from.isEqual( last ) ) {
 						validRanges.push( new Range( from, last ) );
 					}

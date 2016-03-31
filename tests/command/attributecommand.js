@@ -33,11 +33,11 @@ beforeEach( () => {
 	modelDoc.schema.allow( { name: '$block', inside: 'div' } );
 
 	// Bold text is allowed only in P.
-	modelDoc.schema.allow( { name: '$text', attribute: 'bold', inside: 'p' } );
-	modelDoc.schema.allow( { name: 'p', attribute: 'bold', inside: 'div' } );
+	modelDoc.schema.allow( { name: '$text', attributes: 'bold', inside: 'p' } );
+	modelDoc.schema.allow( { name: 'p', attributes: 'bold', inside: 'div' } );
 
 	// Disallow bold on image.
-	modelDoc.schema.disallow( { name: 'img', attribute: 'bold', inside: 'div' } );
+	modelDoc.schema.disallow( { name: 'img', attributes: 'bold', inside: 'div' } );
 } );
 
 afterEach( () => {
