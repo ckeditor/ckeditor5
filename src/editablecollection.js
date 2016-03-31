@@ -33,7 +33,7 @@ export default class EditableCollection extends Collection {
 		this.set( 'current', null );
 
 		this.on( 'add', ( evt, editable ) => {
-			this.listenTo( editable, 'change:isFocused', ( evt, value ) => {
+			this.listenTo( editable, 'change:isFocused', ( evt, name, value ) => {
 				this.current = value ? editable : null;
 			} );
 		} );
