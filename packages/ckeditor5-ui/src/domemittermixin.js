@@ -93,12 +93,12 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 		// Execute parent class method first.
 		EmitterMixin.off.apply( this, arguments );
 
-		let callbacks;
+		let events;
 
 		// Remove native DOM listeners which are orphans. If no callbacks
 		// are awaiting given event, detach native DOM listener from DOM Node.
 		// See: {@link on}.
-		if ( !( callbacks = this._events[ event ] ) || !callbacks.length ) {
+		if ( !( events = this._events[ event ] ) || !events.callbacks.length ) {
 			this._domListeners[ event ].removeListener();
 		}
 	},
