@@ -8,6 +8,7 @@
 'use strict';
 
 import Document from '/ckeditor5/engine/treemodel/document.js';
+import DocumentFragment from '/ckeditor5/engine/treemodel/documentfragment.js';
 import Element from '/ckeditor5/engine/treemodel/element.js';
 import Position from '/ckeditor5/engine/treemodel/position.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
@@ -58,6 +59,12 @@ describe( 'position', () => {
 		expect( position ).to.have.property( 'root' ).that.equals( root );
 	} );
 
+	it( 'should accept DocumentFragment as a root', () => {
+		expect( () => {
+			new Position( new DocumentFragment(), [ 0 ] );
+		} ).not.to.throw;
+	} );
+
 	it( 'should throw error if given path is incorrect', () => {
 		expect( () => {
 			new Position( root, {} );
@@ -68,14 +75,14 @@ describe( 'position', () => {
 		} ).to.throw( CKEditorError, /position-path-incorrect/ );
 	} );
 
-	it( 'should throw error if given root is not a RootElement instance', () => {
+	it( 'should throw error if given root is invalid', () => {
 		expect( () => {
 			new Position();
-		} ).to.throw( CKEditorError, /position-root-not-rootelement/ );
+		} ).to.throw( CKEditorError, /position-root-invalid/ );
 
 		expect( () => {
 			new Position( new Element( 'p' ), [ 0 ] );
-		} ).to.throw( CKEditorError, /position-root-not-rootelement/ );
+		} ).to.throw( CKEditorError, /position-root-invalid/ );
 	} );
 
 	it( 'should create positions form node and offset', () => {

@@ -59,9 +59,11 @@ export default class Range {
 	}
 
 	/**
-	 * Range root element. Equals to the root of start position (which should be same as root of end position).
+	 * Range root element.
 	 *
-	 * @type {engine.treeModel.RootElement}
+	 * Equals to the root of start position (which should be same as root of end position).
+	 *
+	 * @type {engine.treeModel.RootElement|engine.treeModel.DocumentFragment}
 	 */
 	get root() {
 		return this.start.root;

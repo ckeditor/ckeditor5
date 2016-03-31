@@ -104,7 +104,7 @@ export default class TreeWalker {
 		 * Parent of the most recently visited node. Cached for optimization purposes.
 		 *
 		 * @private
-		 * @member {engine.treeModel.Element} engine.treeModel.TreeWalker#_visitedParent
+		 * @member {engine.treeModel.Element|engine.treeModel.DocumentFragment} engine.treeModel.TreeWalker#_visitedParent
 		 */
 		this._visitedParent = this.position.parent;
 	}

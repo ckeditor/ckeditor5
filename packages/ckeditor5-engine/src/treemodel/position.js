@@ -6,9 +6,9 @@
 'use strict';
 
 import RootElement from './rootelement.js';
-import CKEditorError from '../../utils/ckeditorerror.js';
 import last from '../../utils/lib/lodash/last.js';
 import utils from '../../utils/utils.js';
+import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
  * Position in the tree. Position is always located before or after a node.
@@ -20,24 +20,22 @@ export default class Position {
 	/**
 	 * Creates a position.
 	 *
-	 * @param {engine.treeModel.RootElement} root Root element for the path. Note that this element can not have a parent.
-	 * @param {Array.<Number>} path Position path. Must contain at least one item. See {@link #path} property for more information.
+	 * @param {engine.treeModel.RootElement|engine.treeModel.DocumentFragment} root Root element for the position path.
+	 * @param {Array.<Number>} path Position path. See {@link engine.treeModel.Position#path} property for more information.
 	 */
 	constructor( root, path ) {
-		if ( !( root instanceof RootElement ) ) {
+		if ( !( root instanceof RootElement ) && !( root instanceof DocumentFragment ) ) {
 			/**
-			 * Position root has to be an instance of RootElement.
+			 * Position root invalid.
 			 *
-			 * @error position-root-not-rootelement
-			 * @param root
+			 * @error position-root-invalid.
 			 */
-			throw new CKEditorError( 'position-root-not-rootelement: Position root has to be an instance of RootElement.', { root: root } );
+			throw new CKEditorError( 'position-root-invalid: Position root invalid.' );
 		}
-
 		/**
-		 * Root element for the path. Note that this element can not have a parent.
+		 * Root element for the position path.
 		 *
-		 * @member {engine.treeModel.RootElement} engine.treeModel.Position#root
+		 * @member {engine.treeModel.RootElement|engine.treeModel.DocumentFragment} engine.treeModel.Position#root
 		 */
 		this.root = root;
 
@@ -52,19 +50,19 @@ export default class Position {
 		}
 
 		/**
-		 * Position of the node it the tree. For example:
+		 * Position of the node it the tree. Must contain at least one item. For example:
 		 *
-		 * root
-		 *  |- p         Before: [ 0 ]       After: [ 1 ]
-		 *  |- ul        Before: [ 1 ]       After: [ 2 ]
-		 *     |- li     Before: [ 1, 0 ]    After: [ 1, 1 ]
-		 *     |  |- f   Before: [ 1, 0, 0 ] After: [ 1, 0, 1 ]
-		 *     |  |- o   Before: [ 1, 0, 1 ] After: [ 1, 0, 2 ]
-		 *     |  |- o   Before: [ 1, 0, 2 ] After: [ 1, 0, 3 ]
-		 *     |- li     Before: [ 1, 1 ]    After: [ 1, 2 ]
-		 *        |- b   Before: [ 1, 1, 0 ] After: [ 1, 1, 1 ]
-		 *        |- a   Before: [ 1, 1, 1 ] After: [ 1, 1, 2 ]
-		 *        |- r   Before: [ 1, 1, 2 ] After: [ 1, 1, 3 ]
+		 *		 root
+		 *		  |- p         Before: [ 0 ]       After: [ 1 ]
+		 *		  |- ul        Before: [ 1 ]       After: [ 2 ]
+		 *		     |- li     Before: [ 1, 0 ]    After: [ 1, 1 ]
+		 *		     |  |- f   Before: [ 1, 0, 0 ] After: [ 1, 0, 1 ]
+		 *		     |  |- o   Before: [ 1, 0, 1 ] After: [ 1, 0, 2 ]
+		 *		     |  |- o   Before: [ 1, 0, 2 ] After: [ 1, 0, 3 ]
+		 *		     |- li     Before: [ 1, 1 ]    After: [ 1, 2 ]
+		 *		        |- b   Before: [ 1, 1, 0 ] After: [ 1, 1, 1 ]
+		 *		        |- a   Before: [ 1, 1, 1 ] After: [ 1, 1, 2 ]
+		 *		        |- r   Before: [ 1, 1, 2 ] After: [ 1, 1, 3 ]
 		 *
 		 * @member {Array.<Number>} engine.treeModel.Position#path
 		 */

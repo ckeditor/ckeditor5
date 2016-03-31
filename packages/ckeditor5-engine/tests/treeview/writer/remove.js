@@ -11,6 +11,7 @@ import Writer from '/ckeditor5/engine/treeview/writer.js';
 import Element from '/ckeditor5/engine/treeview/element.js';
 import Range from '/ckeditor5/engine/treeview/range.js';
 import Text from '/ckeditor5/engine/treeview/text.js';
+import DocumentFragment from '/ckeditor5/engine/treeview/documentfragment.js';
 import utils from '/tests/engine/treeview/writer/_utils/utils.js';
 
 describe( 'Writer', () => {
@@ -32,13 +33,13 @@ describe( 'Writer', () => {
 			} ).to.throw( 'treeview-writer-invalid-range-container' );
 		} );
 
-		it( 'should return empty array when range is collapsed', () => {
+		it( 'should return empty DocumentFragment when range is collapsed', () => {
 			const p = new Element( 'p' );
 			const range = Range.createFromParentsAndOffsets( p, 0, p, 0 );
-			const nodes = writer.remove( range );
+			const fragment = writer.remove( range );
 
-			expect( nodes ).to.be.array;
-			expect( nodes.length ).to.equal( 0 );
+			expect( fragment ).to.be.instanceof( DocumentFragment );
+			expect( fragment.getChildCount() ).to.equal( 0 );
 			expect( range.isCollapsed ).to.be.true;
 		} );
 
@@ -63,7 +64,7 @@ describe( 'Writer', () => {
 			} );
 
 			// Test removed nodes.
-			test( writer, null, removed, [
+			test( writer, null, Array.from( removed.getChildren() ), [
 				{ instanceOf: Text, data: 'foobar' }
 			] );
 		} );

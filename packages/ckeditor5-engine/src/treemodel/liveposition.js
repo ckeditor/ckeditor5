@@ -5,13 +5,18 @@
 
 'use strict';
 
+import RootElement from './rootelement.js';
 import Position from './position.js';
 import Range from './range.js';
 import EmitterMixin from '../../utils/emittermixin.js';
 import utils from '../../utils/utils.js';
+import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
- * LivePosition is a position in the Tree Model that updates itself as the tree changes. It may be used as a bookmark.
+ * LivePosition is a position in {@link engine.treeModel.Document Document} that updates itself as Document is changed
+ * through operations. It may be used as a bookmark in the Document.
+ * **Note:** Contrary to {@link engine.treeModel.Position}, LivePosition works only in roots that are
+ * {@link engine.treeModel.RootElement}. If {@link engine.treeModel.DocumentFragment} is passed, error will be thrown.
  * **Note:** Be very careful when dealing with LivePosition. Each LivePosition instance bind events that might
  * have to be unbound. Use {@link engine.treeModel.LivePosition#detach} whenever you don't need LivePosition anymore.
  *
@@ -25,10 +30,19 @@ export default class LivePosition extends Position {
 	 * @see engine.treeModel.Position
 	 * @param {engine.treeModel.RootElement} root
 	 * @param {Array.<Number>} path
-	 * @param {engine.treeModel.PositionStickiness} [stickiness] Defaults to `'STICKS_TO_NEXT'`. See
-	 *  {@link engine.treeModel.LivePosition#stickiness}.
+	 * @param {engine.treeModel.PositionStickiness} [stickiness] Defaults to `'STICKS_TO_NEXT'`.
+	 * See {@link engine.treeModel.LivePosition#stickiness}.
 	 */
 	constructor( root, path, stickiness ) {
+		if ( !( root instanceof RootElement ) ) {
+			/**
+			 * LivePosition root has to be an instance of RootElement.
+			 *
+			 * @error liveposition-root-not-rootelement
+			 */
+			throw new CKEditorError( 'liveposition-root-not-rootelement: LivePosition root has to be an instance of RootElement.' );
+		}
+
 		super( root, path );
 
 		/**
@@ -38,15 +52,16 @@ export default class LivePosition extends Position {
 		 * position is same as LivePosition.
 		 *
 		 * Examples:
-		 * Insert:
-		 * Position is at | and we insert at the same position, marked as ^:
-		 * - | sticks to previous node: `<p>f|^oo</p>` => `<p>f|baroo</p>`
-		 * - | sticks to next node: `<p>f^|oo</p>` => `<p>fbar|oo</p>`
 		 *
-		 * Move:
-		 * Position is at | and range [ ] is moved to position ^:
-		 * - | sticks to previous node: `<p>f|[oo]</p><p>b^ar</p>` => `<p>f|</p><p>booar</p>`
-		 * - | sticks to next node: `<p>f|[oo]</p><p>b^ar</p>` => `<p>f</p><p>b|ooar</p>`
+		 *		Insert:
+		 *		Position is at | and we insert at the same position, marked as ^:
+		 *		- | sticks to previous node: `<p>f|^oo</p>` => `<p>f|baroo</p>`
+		 *		- | sticks to next node: `<p>f^|oo</p>` => `<p>fbar|oo</p>`
+		 *
+		 *		Move:
+		 *		Position is at | and range [ ] is moved to position ^:
+		 *		- | sticks to previous node: `<p>f|[oo]</p><p>b^ar</p>` => `<p>f|</p><p>booar</p>`
+		 *		- | sticks to next node: `<p>f|[oo]</p><p>b^ar</p>` => `<p>f</p><p>b|ooar</p>`
 		 *
 		 * @member {engine.treeModel.PositionStickiness} engine.treeModel.LivePosition#stickiness
 		 */
