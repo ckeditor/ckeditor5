@@ -7,6 +7,7 @@
 
 import isArray from '../../utils/lib/lodash/isArray.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
+import ViewElement from '../treeview/element.js';
 import ViewText from '../treeview/text.js';
 import ViewDocumentFragment from '../treeview/documentfragment.js';
 
@@ -533,5 +534,40 @@ export default class ViewConsumable {
 		}
 
 		return consumables;
+	}
+
+	/**
+	 * Creates {@link engine.treeController.ViewConsumable ViewConsumable} instance from
+	 * {@link engine.treeView.Element element} or {@link engine.treeView.DocumentFragment document fragment}.
+	 * Instance will contain all elements, child nodes, attributes, styles and classes added for consumption.
+	 *
+	 * @static
+	 * @param {engine.treeView.Element|engine.treeView.DocumentFragment} root
+	 * @param {engine.treeController.ViewConsumable} [instance] Optionally this instance can be used to add all
+	 * consumables from provided root. It will be returned instead of new instance.
+	 */
+	static createFromElement( root, instance ) {
+		if ( !instance ) {
+			instance = new ViewConsumable();
+		}
+
+		// Add root itself if it is an element.
+		if ( root instanceof ViewElement ) {
+			instance.add( root, ViewConsumable.consumablesFromElement( root ) );
+		}
+
+		if ( root instanceof ViewDocumentFragment ) {
+			instance.add( root );
+		}
+
+		for ( let child of root.getChildren() ) {
+			if ( child instanceof ViewText ) {
+				instance.add( child );
+			} else {
+				instance = ViewConsumable.createFromElement( child, instance );
+			}
+		}
+
+		return instance;
 	}
 }

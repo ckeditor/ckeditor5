@@ -500,4 +500,39 @@ describe( 'ViewConsumable', () => {
 			expect( consumables.name ).to.be.true;
 		} );
 	} );
+
+	describe( 'createFromElement', () => {
+		it( 'should return new ViewConsumable instance', () => {
+			const newConsumable = ViewConsumable.createFromElement( el );
+
+			expect( newConsumable ).to.be.instanceof( ViewConsumable );
+			expect( newConsumable.test( el, { name: true } ) ).to.be.true;
+		} );
+
+		it( 'should return new ViewConsumable instance from document fragment', () => {
+			const fragment = new ViewDocumentFragment();
+			const newConsumable = ViewConsumable.createFromElement( fragment );
+
+			expect( newConsumable ).to.be.instanceof( ViewConsumable );
+			expect( newConsumable.test( fragment ) ).to.be.true;
+		} );
+
+		it( 'should add all child elements', () => {
+			const text1 = new ViewText( 'foo' );
+			const text2 = new ViewText( 'bar' );
+			const child1 = new ViewElement( 'p', { 'title': 'baz' }, [ text1 ] );
+			const child2 = new ViewElement( 'p' );
+			const child3 = new ViewElement( 'p', { 'style': 'top:10px;', 'class': 'qux bar' }, [ text2, child2 ] );
+			el.appendChildren( [ child1, child3 ] );
+
+			const newConsumable = ViewConsumable.createFromElement( el );
+
+			expect( newConsumable.test( el, { name: true } ) ).to.be.true;
+			expect( newConsumable.test( text1 ) ).to.be.true;
+			expect( newConsumable.test( text2 ) ).to.be.true;
+			expect( newConsumable.test( child1, { name: true, attribute: 'title' } ) ).to.be.true;
+			expect( newConsumable.test( child2, { name: true } ) ).to.be.true;
+			expect( newConsumable.test( child3, { name: true, style: 'top', class: [ 'qux', 'bar' ] } ) ).to.be.true;
+		} );
+	} );
 } );
