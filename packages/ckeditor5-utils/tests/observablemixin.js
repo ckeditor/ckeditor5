@@ -122,9 +122,9 @@ describe( 'Observable', () => {
 			sinon.assert.calledWithExactly( spy, sinon.match.instanceOf( EventInfo ), 'color', 'blue', 'red' );
 			sinon.assert.calledWithExactly( spy, sinon.match.instanceOf( EventInfo ), 'year', 2003, 2015 );
 			sinon.assert.calledWithExactly( spy, sinon.match.instanceOf( EventInfo ), 'wheels', 4, sinon.match.typeOf( 'undefined' ) );
-			sinon.assert.calledWithExactly( spyColor, sinon.match.instanceOf( EventInfo ), 'blue', 'red' );
-			sinon.assert.calledWithExactly( spyYear, sinon.match.instanceOf( EventInfo ), 2003, 2015 );
-			sinon.assert.calledWithExactly( spyWheels, sinon.match.instanceOf( EventInfo ), 4, sinon.match.typeOf( 'undefined' ) );
+			sinon.assert.calledWithExactly( spyColor, sinon.match.instanceOf( EventInfo ), 'color', 'blue', 'red' );
+			sinon.assert.calledWithExactly( spyYear, sinon.match.instanceOf( EventInfo ), 'year', 2003, 2015 );
+			sinon.assert.calledWithExactly( spyWheels, sinon.match.instanceOf( EventInfo ), 'wheels', 4, sinon.match.typeOf( 'undefined' ) );
 		} );
 
 		it( 'should not fire the "change" event for the same attribute value', () => {

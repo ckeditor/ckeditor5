@@ -130,6 +130,47 @@ describe( 'fire', () => {
 
 		sinon.assert.notCalled( spy );
 	} );
+
+	it( 'should correctly fire callbacks for namespaced events', () => {
+		let spyFoo = sinon.spy();
+		let spyBar = sinon.spy();
+		let spyAbc = sinon.spy();
+		let spyFoo2 = sinon.spy();
+
+		// Mess up with callbacks order to check whether they are called in adding order.
+		emitter.on( 'foo', spyFoo );
+		emitter.on( 'foo:bar:abc', spyAbc );
+		emitter.on( 'foo:bar', spyBar );
+
+		// This tests whether generic callbacks are also added to specific callbacks lists.
+		emitter.on( 'foo', spyFoo2 );
+
+		// All four callbacks should be fired.
+		emitter.fire( 'foo:bar:abc' );
+
+		sinon.assert.callOrder( spyFoo, spyAbc, spyBar, spyFoo2 );
+		sinon.assert.calledOnce( spyFoo );
+		sinon.assert.calledOnce( spyAbc );
+		sinon.assert.calledOnce( spyBar );
+		sinon.assert.calledOnce( spyFoo2 );
+
+		// Only callbacks for foo and foo:bar event should be called.
+		emitter.fire( 'foo:bar' );
+
+		sinon.assert.calledOnce( spyAbc );
+		sinon.assert.calledTwice( spyFoo );
+		sinon.assert.calledTwice( spyBar );
+		sinon.assert.calledTwice( spyFoo2 );
+
+		// Only callback for foo should be called as foo:abc has not been registered.
+		// Still, foo is a valid, existing namespace.
+		emitter.fire( 'foo:abc' );
+
+		sinon.assert.calledOnce( spyAbc );
+		sinon.assert.calledTwice( spyBar );
+		sinon.assert.calledThrice( spyFoo );
+		sinon.assert.calledThrice( spyFoo2 );
+	} );
 } );
 
 describe( 'on', () => {
@@ -279,7 +320,7 @@ describe( 'off', () => {
 		sinon.assert.callCount( spy2, 4 );
 	} );
 
-	it( 'should remove the callback for a specific context only', () => {
+	it( 'should remove the callback for given context only', () => {
 		let spy = sinon.spy().named( 1 );
 
 		let ctx1 = { ctx: 1 };
@@ -299,6 +340,41 @@ describe( 'off', () => {
 		sinon.assert.calledOnce( spy );
 		sinon.assert.calledOn( spy, ctx2 );
 	} );
+
+	it( 'should properly remove callbacks for namespaced events', () => {
+		let spyFoo = sinon.spy();
+		let spyAbc = sinon.spy();
+		let spyBar = sinon.spy();
+		let spyFoo2 = sinon.spy();
+
+		emitter.on( 'foo', spyFoo );
+		emitter.on( 'foo:bar:abc', spyAbc );
+		emitter.on( 'foo:bar', spyBar );
+		emitter.on( 'foo', spyFoo2 );
+
+		emitter.off( 'foo', spyFoo );
+
+		emitter.fire( 'foo:bar:abc' );
+
+		sinon.assert.calledOnce( spyAbc );
+		sinon.assert.calledOnce( spyBar );
+		sinon.assert.calledOnce( spyFoo2 );
+		sinon.assert.notCalled( spyFoo );
+
+		emitter.fire( 'foo:bar' );
+
+		sinon.assert.notCalled( spyFoo );
+		sinon.assert.calledOnce( spyAbc );
+		sinon.assert.calledTwice( spyBar );
+		sinon.assert.calledTwice( spyFoo2 );
+
+		emitter.fire( 'foo' );
+
+		sinon.assert.notCalled( spyFoo );
+		sinon.assert.calledOnce( spyAbc );
+		sinon.assert.calledTwice( spyBar );
+		sinon.assert.calledThrice( spyFoo2 );
+	} );
 } );
 
 describe( 'listenTo', () => {
@@ -313,12 +389,30 @@ describe( 'listenTo', () => {
 
 		sinon.assert.called( spy );
 	} );
+
+	it( 'should correctly listen to namespaced events', () => {
+		let spyFoo = sinon.spy();
+		let spyBar = sinon.spy();
+
+		listener.listenTo( emitter, 'foo', spyFoo );
+		listener.listenTo( emitter, 'foo:bar', spyBar );
+
+		emitter.fire( 'foo:bar' );
+
+		sinon.assert.calledOnce( spyFoo );
+		sinon.assert.calledOnce( spyBar );
+
+		emitter.fire( 'foo' );
+
+		sinon.assert.calledTwice( spyFoo );
+		sinon.assert.calledOnce( spyBar );
+	} );
 } );
 
 describe( 'stopListening', () => {
 	beforeEach( refreshListener );
 
-	it( 'should stop listening to a specific event callback', () => {
+	it( 'should stop listening to given event callback', () => {
 		let spy1 = sinon.spy();
 		let spy2 = sinon.spy();
 
@@ -337,7 +431,7 @@ describe( 'stopListening', () => {
 		sinon.assert.calledTwice( spy2 );
 	} );
 
-	it( 'should stop listening to an specific event', () => {
+	it( 'should stop listening to given event', () => {
 		let spy1a = sinon.spy();
 		let spy1b = sinon.spy();
 		let spy2 = sinon.spy();
@@ -359,7 +453,7 @@ describe( 'stopListening', () => {
 		sinon.assert.calledTwice( spy2 );
 	} );
 
-	it( 'should stop listening to all events from a specific emitter', () => {
+	it( 'should stop listening to all events from given emitter', () => {
 		let spy1 = sinon.spy();
 		let spy2 = sinon.spy();
 
@@ -417,6 +511,21 @@ describe( 'stopListening', () => {
 		emitter1.fire( 'test' );
 
 		sinon.assert.called( spy );
+	} );
+
+	it( 'should correctly stop listening to namespaced events', () => {
+		let spyFoo = sinon.spy();
+		let spyBar = sinon.spy();
+
+		listener.listenTo( emitter, 'foo', spyFoo );
+		listener.listenTo( emitter, 'foo:bar', spyBar );
+
+		listener.stopListening( emitter, 'foo' );
+
+		emitter.fire( 'foo:bar' );
+
+		sinon.assert.notCalled( spyFoo );
+		sinon.assert.calledOnce( spyBar );
 	} );
 } );
 

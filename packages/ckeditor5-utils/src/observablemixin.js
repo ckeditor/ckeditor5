@@ -85,8 +85,7 @@ const ObservableMixin = {
 				// Note: When attributes map has no such own property, then its value is undefined.
 				if ( oldValue !== value || !attributes.has( name ) ) {
 					attributes.set( name, value );
-					this.fire( 'change', name, value, oldValue );
-					this.fire( 'change:' + name, value, oldValue );
+					this.fire( 'change:' + name, name, value, oldValue );
 				}
 			}
 		} );
