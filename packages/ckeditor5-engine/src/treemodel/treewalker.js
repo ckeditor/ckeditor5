@@ -6,7 +6,7 @@
 'use strict';
 
 import CharacterProxy from './characterproxy.js';
-import TextFragment from './textfragment.js';
+import TextProxy from './textproxy.js';
 import Element from './element.js';
 import Position from './position.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
@@ -25,7 +25,7 @@ export default class TreeWalker {
 	 * @param {engine.treeModel.Position} [options.startPosition] Starting position.
 	 * @param {Boolean} [options.singleCharacters=false] Flag indicating whether all consecutive characters with the same attributes
 	 * should be returned one by one as multiple {@link engine.treeModel.CharacterProxy} (`true`) objects or as one
-	 * {@link engine.treeModel.TextFragment} (`false`).
+	 * {@link engine.treeModel.TextProxy} (`false`).
 	 * @param {Boolean} [options.shallow=false] Flag indicating whether iterator should enter elements or not. If the
 	 * iterator is shallow child nodes of any iterated node will not be returned along with `ELEMENT_END` tag.
 	 * @param {Boolean} [options.ignoreElementEnd=false] Flag indicating whether iterator should ignore `ELEMENT_END`
@@ -167,12 +167,12 @@ export default class TreeWalker {
 					charactersCount = offset - position.offset;
 				}
 
-				let textFragment = new TextFragment( node, charactersCount );
+				let textProxy = new TextProxy( node, charactersCount );
 
 				position.offset = offset;
 				this.position = position;
 
-				return formatReturnValue( 'TEXT', textFragment, previousPosition, position, charactersCount );
+				return formatReturnValue( 'TEXT', textProxy, previousPosition, position, charactersCount );
 			}
 		} else {
 			// `node` is not set, we reached the end of current `parent`.

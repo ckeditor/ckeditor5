@@ -9,11 +9,11 @@
 
 import Element from '/ckeditor5/engine/treemodel/element.js';
 import Text from '/ckeditor5/engine/treemodel/text.js';
-import TextFragment from '/ckeditor5/engine/treemodel/textfragment.js';
+import TextProxy from '/ckeditor5/engine/treemodel/textproxy.js';
 import Document from '/ckeditor5/engine/treemodel/document.js';
 import CharacterProxy from '/ckeditor5/engine/treemodel/characterproxy.js';
 
-describe( 'TextFragment', () => {
+describe( 'TextProxy', () => {
 	let doc, text, element, textFragment, root;
 
 	beforeEach( () => {
@@ -24,21 +24,21 @@ describe( 'TextFragment', () => {
 
 		text = new Text( 'foobar', { foo: 'bar' } );
 		element.insertChildren( 0, text );
-		textFragment = new TextFragment( element.getChild( 2 ), 3 );
+		textFragment = new TextProxy( element.getChild( 2 ), 3 );
 	} );
 
 	afterEach( () => {
 		element.removeChildren( 0, 1 );
 	} );
 
-	it( 'should have first property pointing to the first character node contained in TextFragment', () => {
+	it( 'should have first property pointing to the first character node contained in TextProxy', () => {
 		let char = textFragment.first;
 
 		expect( char.getPath() ).to.deep.equal( [ 0, 2 ] );
 		expect( char.character ).to.equal( 'o' );
 	} );
 
-	it( 'should have last property pointing to the last character node contained in TextFragment', () => {
+	it( 'should have last property pointing to the last character node contained in TextProxy', () => {
 		let char = textFragment.last;
 
 		expect( char.getPath() ).to.deep.equal( [ 0, 4 ] );
@@ -118,8 +118,8 @@ describe( 'TextFragment', () => {
 			} );
 
 			it( 'should correctly split and merge text fragments and refresh this text fragment properties', () => {
-				let otherTextFragment = new TextFragment( element.getChild( 5 ), 1 );
-				otherTextFragment.setAttribute( 'foo', null );
+				let otherTextProxy = new TextProxy( element.getChild( 5 ), 1 );
+				otherTextProxy.setAttribute( 'foo', null );
 				textFragment.setAttribute( 'foo', null );
 
 				expect( element._children._nodes.length ).to.equal( 2 );

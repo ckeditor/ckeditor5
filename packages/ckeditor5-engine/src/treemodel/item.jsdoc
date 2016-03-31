@@ -4,7 +4,7 @@
  */
 
 /**
- * Item is a {@link engine.treeModel.Node Node} or {engine.treeModel.TextFragment TextFragment}.
+ * Item is a {@link engine.treeModel.Node Node} or {engine.treeModel.TextProxy TextProxy}.
  *
- * @typedef {engine.treeModel.Node|engine.treeModel.TextFragment} engine.treeModel.Item
+ * @typedef {engine.treeModel.Node|engine.treeModel.TextProxy} engine.treeModel.Item
  */

@@ -256,7 +256,7 @@ export default class Range {
 	/**
 	 * Returns an iterator that iterates over all {@link engine.treeModel.Item items} that are in this range and returns
 	 * them together with additional information like length or {@link engine.treeModel.Position positions},
-	 * grouped as {@link engine.treeModel.TreeWalkerValue}. It iterates over all {@link engine.treeModel.TextFragment texts}
+	 * grouped as {@link engine.treeModel.TreeWalkerValue}. It iterates over all {@link engine.treeModel.TextProxy texts}
 	 * that are inside the range and all the {@link engine.treeModel.Element}s we enter into when iterating over this
 	 * range.
 	 *
@@ -294,7 +294,7 @@ export default class Range {
 	/**
 	 * Returns an iterator that iterates over all {@link engine.treeModel.Item items} that are in this range and returns
 	 * them. It iterates over all {@link engine.treeModel.CharacterProxy characters} or
-	 * {@link engine.treeModel.TextFragment texts} that are inside the range and all the {@link engine.treeModel.Element}s
+	 * {@link engine.treeModel.TextProxy texts} that are inside the range and all the {@link engine.treeModel.Element}s
 	 * we enter into when iterating over this range. Note that it use {@link engine.treeModel.TreeWalker} with the
 	 * {@link engine.treeModel.TreeWalker#ignoreElementEnd ignoreElementEnd} option set to true.
 	 *
