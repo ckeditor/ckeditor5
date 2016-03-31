@@ -11,6 +11,7 @@ import utils from '/ckeditor5/utils/utils.js';
 import ViewElement from '/ckeditor5/engine/treeview/element.js';
 import ViewText from '/ckeditor5/engine/treeview/text.js';
 import DomConverter from '/ckeditor5/engine/treeview/domconverter.js';
+import ViewDocumentFragment from '/ckeditor5/engine/treeview/documentfragment.js';
 
 describe( 'DomConverter', () => {
 	let converter;
@@ -28,6 +29,18 @@ describe( 'DomConverter', () => {
 
 			expect( converter.getCorrespondingView( domElement ) ).to.equal( viewElement );
 			expect( converter.getCorrespondingDom( viewElement ) ).to.equal( domElement );
+		} );
+	} );
+
+	describe( 'bindDocumentFragments', () => {
+		it( 'should bind document fragments', () => {
+			const domFragment = document.createDocumentFragment();
+			const viewFragment = new ViewDocumentFragment();
+
+			converter.bindDocumentFragments( domFragment, viewFragment );
+
+			expect( converter.getCorrespondingView( domFragment ) ).to.equal( viewFragment );
+			expect( converter.getCorrespondingDom( viewFragment ) ).to.equal( domFragment );
 		} );
 	} );
 
@@ -138,6 +151,56 @@ describe( 'DomConverter', () => {
 			expect( viewP.getChildCount() ).to.equal( 0 );
 			expect( converter.getCorrespondingDom( viewP ) ).to.not.equal( domP );
 		} );
+
+		it( 'should create view document fragment from DOM document fragment', () => {
+			const domImg = document.createElement( 'img' );
+			const domText = document.createTextNode( 'foo' );
+			const domFragment = document.createDocumentFragment();
+
+			domFragment.appendChild( domImg );
+			domFragment.appendChild( domText );
+
+			const viewFragment = converter.domToView( domFragment, { bind: true } );
+
+			expect( viewFragment ).to.be.an.instanceof( ViewDocumentFragment );
+			expect( viewFragment.getChildCount() ).to.equal( 2 );
+			expect( viewFragment.getChild( 0 ).name ).to.equal( 'img' );
+			expect( viewFragment.getChild( 1 ).data ).to.equal( 'foo' );
+
+			expect( converter.getCorrespondingDom( viewFragment ) ).to.equal( domFragment );
+			expect( converter.getCorrespondingDom( viewFragment.getChild( 0 ) ) ).to.equal( domFragment.childNodes[ 0 ] );
+		} );
+
+		it( 'should create view document fragment from DOM document fragment without children', () => {
+			const domImg = document.createElement( 'img' );
+			const domText = document.createTextNode( 'foo' );
+			const domFragment = document.createDocumentFragment();
+
+			domFragment.appendChild( domImg );
+			domFragment.appendChild( domText );
+
+			const viewImg = new ViewElement( 'img' );
+
+			converter.bindElements( domImg, viewImg );
+
+			const viewFragment = converter.domToView( domFragment, { withChildren: false } );
+
+			expect( viewFragment ).to.be.an.instanceof( ViewDocumentFragment );
+
+			expect( viewFragment.getChildCount() ).to.equal( 0 );
+			expect( converter.getCorrespondingDom( viewFragment ) ).to.not.equal( domFragment );
+		} );
+
+		it( 'should return already bind document fragment', () => {
+			const domFragment = document.createDocumentFragment();
+			const viewFragment = new ViewDocumentFragment();
+
+			converter.bindDocumentFragments( domFragment, viewFragment );
+
+			const viewFragment2 = converter.domToView( domFragment );
+
+			expect( viewFragment2 ).to.equal( viewFragment );
+		} );
 	} );
 
 	describe( 'viewToDom', () => {
@@ -222,6 +285,56 @@ describe( 'DomConverter', () => {
 			expect( domP.childNodes.length ).to.equal( 0 );
 			expect( converter.getCorrespondingView( domP ) ).not.to.equal( viewP );
 		} );
+
+		it( 'should create DOM document fragment from view document fragment and bind elements', () => {
+			const viewImg = new ViewElement( 'img' );
+			const viewText = new ViewText( 'foo' );
+			const viewFragment = new ViewDocumentFragment();
+
+			viewFragment.appendChildren( viewImg );
+			viewFragment.appendChildren( viewText );
+
+			const domFragment = converter.viewToDom( viewFragment, document, { bind: true } );
+
+			expect( domFragment ).to.be.an.instanceof( DocumentFragment );
+			expect( domFragment.childNodes.length ).to.equal( 2 );
+			expect( domFragment.childNodes[ 0 ].tagName ).to.equal( 'IMG' );
+			expect( domFragment.childNodes[ 1 ].data ).to.equal( 'foo' );
+
+			expect( converter.getCorrespondingView( domFragment ) ).to.equal( viewFragment );
+			expect( converter.getCorrespondingView( domFragment.childNodes[ 0 ] ) ).to.equal( viewFragment.getChild( 0 ) );
+		} );
+
+		it( 'should create DOM document fragment from view document without children', () => {
+			const viewImg = new ViewElement( 'img' );
+			const viewText = new ViewText( 'foo' );
+			const viewFragment = new ViewDocumentFragment();
+
+			viewFragment.appendChildren( viewImg );
+			viewFragment.appendChildren( viewText );
+
+			const domImg = document.createElement( 'img' );
+
+			converter.bindElements( domImg, viewImg );
+
+			const domFragment = converter.viewToDom( viewFragment, document, { withChildren: false } );
+
+			expect( domFragment ).to.be.an.instanceof( DocumentFragment );
+
+			expect( domFragment.childNodes.length ).to.equal( 0 );
+			expect( converter.getCorrespondingView( domFragment ) ).not.to.equal( viewFragment );
+		} );
+
+		it( 'should return already bind document fragment', () => {
+			const domFragment = document.createDocumentFragment();
+			const viewFragment = new ViewDocumentFragment();
+
+			converter.bindDocumentFragments( domFragment, viewFragment );
+
+			const domFragment2 = converter.viewToDom( viewFragment );
+
+			expect( domFragment2 ).to.equal( domFragment );
+		} );
 	} );
 
 	describe( 'getCorrespondingView', () => {
@@ -247,6 +360,15 @@ describe( 'DomConverter', () => {
 
 			expect( converter.getCorrespondingView( domText ) ).to.equal( viewText );
 		} );
+
+		it( 'should return corresponding view document fragment', () => {
+			const domFragment = document.createDocumentFragment();
+			const viewFragment = converter.domToView( domFragment );
+
+			converter.bindElements( domFragment, viewFragment );
+
+			expect( converter.getCorrespondingView( domFragment ) ).to.equal( viewFragment );
+		} );
 	} );
 
 	describe( 'getCorrespondingViewElement', () => {
@@ -257,6 +379,17 @@ describe( 'DomConverter', () => {
 			converter.bindElements( domElement, viewElement );
 
 			expect( converter.getCorrespondingViewElement( domElement ) ).to.equal( viewElement );
+		} );
+	} );
+
+	describe( 'getCorrespondingViewDocumentFragment', () => {
+		it( 'should return corresponding view document fragment', () => {
+			const domFragment = document.createDocumentFragment();
+			const viewFragment = converter.domToView( domFragment );
+
+			converter.bindElements( domFragment, viewFragment );
+
+			expect( converter.getCorrespondingViewDocumentFragment( domFragment ) ).to.equal( viewFragment );
 		} );
 	} );
 
@@ -356,6 +489,15 @@ describe( 'DomConverter', () => {
 
 			expect( converter.getCorrespondingDom( viewText ) ).to.equal( domText );
 		} );
+
+		it( 'should return corresponding DOM document fragment', () => {
+			const domFragment = document.createDocumentFragment();
+			const viewFragment = new ViewDocumentFragment();
+
+			converter.bindElements( domFragment, viewFragment );
+
+			expect( converter.getCorrespondingDom( viewFragment ) ).to.equal( domFragment );
+		} );
 	} );
 
 	describe( 'getCorrespondingDomElement', () => {
@@ -366,6 +508,17 @@ describe( 'DomConverter', () => {
 			converter.bindElements( domElement, viewElement );
 
 			expect( converter.getCorrespondingDomElement( viewElement ) ).to.equal( domElement );
+		} );
+	} );
+
+	describe( 'getCorrespondingDomDocumentFragment', () => {
+		it( 'should return corresponding DOM document fragment', () => {
+			const domFragment = document.createDocumentFragment();
+			const viewFragment = new ViewDocumentFragment();
+
+			converter.bindElements( domFragment, viewFragment );
+
+			expect( converter.getCorrespondingDomDocumentFragment( viewFragment ) ).to.equal( domFragment );
 		} );
 	} );
 
