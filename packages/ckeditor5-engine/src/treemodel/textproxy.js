@@ -9,59 +9,59 @@ import CharacterProxy from './characterproxy.js';
 import utils from '../../utils/utils.js';
 
 /**
- * TextFragment is an aggregator for multiple CharacterProxy instances that are placed next to each other in
+ * TextProxy is an aggregator for multiple CharacterProxy instances that are placed next to each other in
  * tree model, in the same parent, and all have same attributes set. Instances of this class are created and returned
  * in various algorithms that "merge characters" (see {@link engine.treeModel.TreeWalker}, {@link engine.treeModel.Range}).
  *
- * **Note:** TextFragment instances are created on the fly basing on the current state of tree model and attributes
- * set on characters. Because of this it is highly unrecommended to store references to TextFragment instances
+ * **Note:** TextProxy instances are created on the fly basing on the current state of tree model and attributes
+ * set on characters. Because of this it is highly unrecommended to store references to TextProxy instances
  * because they might get invalidated due to operations on Document. This is especially true when you change
- * attributes of TextFragment.
+ * attributes of TextProxy.
  *
- * Difference between {@link engine.treeModel.TextFragment} and {@link engine.treeModel.Text} is that the former is a set of
+ * Difference between {@link engine.treeModel.TextProxy} and {@link engine.treeModel.Text} is that the former is a set of
  * nodes taken from tree model, while {@link engine.treeModel.Text} is simply a string with attributes set.
  *
  * You should never create an instance of this class by your own. Instead, use string literals or {@link engine.treeModel.Text}.
  *
  * @memberOf engine.treeModel
  */
-export default class TextFragment {
+export default class TextProxy {
 	/**
 	 * Creates a text fragment.
 	 *
 	 * @protected
-	 * @param {engine.treeModel.CharacterProxy} firstCharacter First character node contained in {@link engine.treeModel.TextFragment}.
-	 * @param {Number} length Whole text contained in {@link engine.treeModel.TextFragment}.
+	 * @param {engine.treeModel.CharacterProxy} firstCharacter First character node contained in {@link engine.treeModel.TextProxy}.
+	 * @param {Number} length Whole text contained in {@link engine.treeModel.TextProxy}.
 	 * @constructor
 	 */
 	constructor( firstCharacter, length ) {
 		/**
-		 * First character node contained in {@link engine.treeModel.TextFragment}.
+		 * First character node contained in {@link engine.treeModel.TextProxy}.
 		 *
 		 * @readonly
-		 * @member {engine.treeModel.CharacterProxy} engine.treeModel.TextFragment#first
+		 * @member {engine.treeModel.CharacterProxy} engine.treeModel.TextProxy#first
 		 */
 		this.first = firstCharacter;
 
 		/**
-		 * Characters contained in {@link engine.treeModel.TextFragment}.
+		 * Characters contained in {@link engine.treeModel.TextProxy}.
 		 *
 		 * @readonly
-		 * @member {String} engine.treeModel.TextFragment#text
+		 * @member {String} engine.treeModel.TextProxy#text
 		 */
 		this.text = firstCharacter._nodeListText.text.substr( this.first._index, length );
 
 		/**
-		 * Last {@link engine.treeModel.CharacterProxy character node} contained in {@link engine.treeModel.TextFragment}.
+		 * Last {@link engine.treeModel.CharacterProxy character node} contained in {@link engine.treeModel.TextProxy}.
 		 *
 		 * @readonly
-		 * @member {engine.treeModel.CharacterProxy} engine.treeModel.TextFragment#last
+		 * @member {engine.treeModel.CharacterProxy} engine.treeModel.TextProxy#last
 		 */
 		this.last = this.getCharAt( this.text.length - 1 );
 	}
 
 	/**
-	 * A common parent of all character nodes contained in {@link engine.treeModel.TextFragment}.
+	 * A common parent of all character nodes contained in {@link engine.treeModel.TextProxy}.
 	 *
 	 * @type {engine.treeModel.Element}
 	 */
@@ -115,8 +115,8 @@ export default class TextFragment {
 	/**
 	 * Sets attribute on the text fragment. If attribute with the same key already is set, it overwrites its values.
 	 *
-	 * **Note:** Changing attributes of text fragment affects document state. This TextFragment instance properties
-	 * will be refreshed, but other may get invalidated. It is highly unrecommended to store references to TextFragment instances.
+	 * **Note:** Changing attributes of text fragment affects document state. This TextProxy instance properties
+	 * will be refreshed, but other may get invalidated. It is highly unrecommended to store references to TextProxy instances.
 	 *
 	 * @param {String} key Key of attribute to set.
 	 * @param {*} value Attribute value.
@@ -133,11 +133,11 @@ export default class TextFragment {
 	/**
 	 * Removes all attributes from the text fragment and sets given attributes.
 	 *
-	 * **Note:** Changing attributes of text fragment affects document state. This TextFragment instance properties
-	 * will be refreshed, but other may get invalidated. It is highly unrecommended to store references to TextFragment instances.
+	 * **Note:** Changing attributes of text fragment affects document state. This TextProxy instance properties
+	 * will be refreshed, but other may get invalidated. It is highly unrecommended to store references to TextProxy instances.
 	 *
 	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set.
-	 * See {@link engine.treeModel.TextFragment#getAttributes}.
+	 * See {@link engine.treeModel.TextProxy#getAttributes}.
 	 */
 	setAttributesTo( attrs ) {
 		let attrsMap = utils.toMap( attrs );
@@ -152,8 +152,8 @@ export default class TextFragment {
 	/**
 	 * Removes an attribute with given key from the text fragment.
 	 *
-	 * **Note:** Changing attributes of text fragment affects document state. This TextFragment instance properties
-	 * will be refreshed, but other may get invalidated. It is highly unrecommended to store references to TextFragment instances.
+	 * **Note:** Changing attributes of text fragment affects document state. This TextProxy instance properties
+	 * will be refreshed, but other may get invalidated. It is highly unrecommended to store references to TextProxy instances.
 	 *
 	 * @param {String} key Key of attribute to remove.
 	 */
@@ -164,8 +164,8 @@ export default class TextFragment {
 	/**
 	 * Removes all attributes from the text fragment.
 	 *
-	 * **Note:** Changing attributes of text fragment affects document state. This TextFragment instance properties
-	 * will be refreshed, but other may get invalidated. It is highly unrecommended to store references to TextFragment instances.
+	 * **Note:** Changing attributes of text fragment affects document state. This TextProxy instance properties
+	 * will be refreshed, but other may get invalidated. It is highly unrecommended to store references to TextProxy instances.
 	 */
 	clearAttributes() {
 		for ( let attr of this.getAttributes() ) {

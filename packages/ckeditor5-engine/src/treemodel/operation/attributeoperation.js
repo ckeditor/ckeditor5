@@ -8,7 +8,6 @@
 import Operation from './operation.js';
 import Range from '../range.js';
 import CKEditorError from '../../../utils/ckeditorerror.js';
-import TextFragment from '../textfragment.js';
 
 /**
  * Operation to change nodes' attribute. Using this class you can add, remove or change value of the attribute.
