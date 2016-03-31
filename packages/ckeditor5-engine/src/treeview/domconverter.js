@@ -53,8 +53,8 @@ export default class DomConverter {
 
 	/**
 	 * Binds DOM and View elements, so it will be possible to get corresponding elements using
-	 * {@link engine.treeView.DomConverter#getCorrespondingViewElement} and
-	 * {@link engine.treeView.DomConverter#getCorespondingDOMElement}.
+	 * {@link engine.treeView.DomConverter#getCorrespondingViewElement getCorrespondingViewElement} and
+	 * {@link engine.treeView.DomConverter#getCorrespondingDomElement getCorrespondingDomElement}.
 	 *
 	 * @param {HTMLElement} domElement DOM element to bind.
 	 * @param {engine.treeView.Element} viewElement View element to bind.
@@ -66,8 +66,8 @@ export default class DomConverter {
 
 	/**
 	 * Binds DOM and View document fragments, so it will be possible to get corresponding document fragments using
-	 * {@link engine.treeView.DomConverter#getCorrespondingViewDocumentFragment} and
-	 * {@link engine.treeView.DomConverter#getCorrespondingDomDocumentFragment.
+	 * {@link engine.treeView.DomConverter#getCorrespondingViewDocumentFragment getCorrespondingViewDocumentFragment} and
+	 * {@link engine.treeView.DomConverter#getCorrespondingDomDocumentFragment getCorrespondingDomDocumentFragment}.
 	 *
 	 * @param {DocumentFragment} domFragment DOM document fragment to bind.
 	 * @param {engine.treeView.DocumentFragment} viewFragment View document fragment to bind.
@@ -117,37 +117,32 @@ export default class DomConverter {
 
 		if ( viewNode instanceof ViewText ) {
 			return domDocument.createTextNode( viewNode.data );
-		} else if ( viewNode instanceof  ViewDocumentFragment ) {
-			if ( this.getCorrespondingDom( viewNode ) ) {
-				return this.getCorrespondingDom( viewNode );
-			}
-
-			const domFragment = domDocument.createDocumentFragment();
-
-			if ( options.bind ) {
-				this.bindDocumentFragments( domFragment, viewNode );
-			}
-
-			if ( options.withChildren || options.withChildren === undefined ) {
-				for ( let childView of viewNode.getChildren() ) {
-					domFragment.appendChild( this.viewToDom( childView, domDocument, options ) );
-				}
-			}
-
-			return domFragment;
 		} else {
 			if ( this.getCorrespondingDom( viewNode ) ) {
 				return this.getCorrespondingDom( viewNode );
 			}
 
-			const domElement = domDocument.createElement( viewNode.name );
+			let domElement;
 
-			if ( options.bind ) {
-				this.bindElements( domElement, viewNode );
-			}
+			if ( viewNode instanceof ViewDocumentFragment ) {
+				// Create DOM document fragment.
+				domElement = domDocument.createDocumentFragment();
 
-			for ( let key of viewNode.getAttributeKeys() ) {
-				domElement.setAttribute( key, viewNode.getAttribute( key ) );
+				if ( options.bind ) {
+					this.bindDocumentFragments( domElement, viewNode );
+				}
+			} else {
+				// Create DOM element.
+				domElement = domDocument.createElement( viewNode.name );
+
+				if ( options.bind ) {
+					this.bindElements( domElement, viewNode );
+				}
+
+				// Copy element's attributes.
+				for ( let key of viewNode.getAttributeKeys() ) {
+					domElement.setAttribute( key, viewNode.getAttribute( key ) );
+				}
 			}
 
 			if ( options.withChildren || options.withChildren === undefined ) {
@@ -177,41 +172,34 @@ export default class DomConverter {
 
 		if ( domNode instanceof Text ) {
 			return new ViewText( domNode.data );
-		} else if ( domNode instanceof DocumentFragment ) {
-			if ( this.getCorrespondingView( domNode ) ) {
-				return this.getCorrespondingView( domNode );
-			}
-
-			const viewFragment = new ViewDocumentFragment();
-
-			if ( options.bind ) {
-				this.bindDocumentFragments( domNode, viewFragment );
-			}
-
-			if ( options.withChildren || options.withChildren === undefined ) {
-				for ( let i = 0, len = domNode.childNodes.length; i < len; i++ ) {
-					let domChild = domNode.childNodes[ i ];
-
-					viewFragment.appendChildren( this.domToView( domChild, options ) );
-				}
-			}
-
-			return viewFragment;
 		} else {
 			if ( this.getCorrespondingView( domNode ) ) {
 				return this.getCorrespondingView( domNode );
 			}
 
-			const viewElement = new ViewElement( domNode.tagName.toLowerCase() );
+			let viewElement;
 
-			if ( options.bind ) {
-				this.bindElements( domNode, viewElement );
-			}
+			if ( domNode instanceof  DocumentFragment ) {
+				// Create view document fragment.
+				viewElement = new ViewDocumentFragment();
 
-			const attrs = domNode.attributes;
+				if ( options.bind ) {
+					this.bindDocumentFragments( domNode, viewElement );
+				}
+			} else {
+				// Create view element.
+				viewElement = new ViewElement( domNode.tagName.toLowerCase() );
 
-			for ( let i = attrs.length - 1; i >= 0; i-- ) {
-				viewElement.setAttribute( attrs[ i ].name, attrs[ i ].value );
+				if ( options.bind ) {
+					this.bindElements( domNode, viewElement );
+				}
+
+				// Copy element's attributes.
+				const attrs = domNode.attributes;
+
+				for ( let i = attrs.length - 1; i >= 0; i-- ) {
+					viewElement.setAttribute( attrs[ i ].name, attrs[ i ].value );
+				}
 			}
 
 			if ( options.withChildren || options.withChildren === undefined ) {
@@ -227,12 +215,14 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Gets corresponding view item. This function use {@link engine.treeView.DomConverter#getCorrespondingViewElement}
-	 * for elements, {@link getCorrespondingViewText} for text nodes and {@link getCorrespondingViewDocumentFragment}
+	 * Gets corresponding view item. This function use
+	 * {@link engine.treeView.DomConverter#getCorrespondingViewElement getCorrespondingViewElement}
+	 * for elements, {@link  engine.treeView.DomConverter#getCorrespondingViewText getCorrespondingViewText} for text
+	 * nodes and {@link engine.treeView.DomConverter#getCorrespondingViewDocumentFragment getCorrespondingViewDocumentFragment}
 	 * for document fragments.
 	 *
 	 * @param {Node|DocumentFragment} domNode DOM node or document fragment.
-	 * @returns {engine.treeView.Node|engine.treeView.DocumentFragment|null} Corresponding item.
+	 * @returns {engine.treeView.Node|engine.treeView.DocumentFragment|null} Corresponding view item.
 	 */
 	getCorrespondingView( domNode ) {
 		if ( domNode instanceof HTMLElement ) {
@@ -249,7 +239,7 @@ export default class DomConverter {
 	 * {@link engine.treeView.DomConverter#bindElements bound} to the given DOM element or null otherwise.
 	 *
 	 * @param {HTMLElement} domElement DOM element.
-	 * @returns {engine.treeView.Element|null} Corresponding element or null if none element was bound.
+	 * @returns {engine.treeView.Element|null} Corresponding element or null if no element was bound.
 	 */
 	getCorrespondingViewElement( domElement ) {
 		return this._domToViewMapping.get( domElement );
@@ -311,9 +301,11 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Gets corresponding DOM item. This function uses {@link engine.treeView.DomConverter#getCorrespondingDomElement} for
-	 * elements, {@link engine.treeView.DomConverter#getCorrespondingDomText} for text nodes
-	 * and {@link getCorrespondingDomDocumentFragment} for document fragments.
+	 * Gets corresponding DOM item. This function uses
+	 * {@link engine.treeView.DomConverter#getCorrespondingDomElement getCorrespondingDomElement} for
+	 * elements, {@link engine.treeView.DomConverter#getCorrespondingDomText getCorrespondingDomText} for text nodes
+	 * and {@link engine.treeView.DomConverter#getCorrespondingDomDocumentFragment getCorrespondingDomDocumentFragment}
+	 * for document fragments.
 	 *
 	 * @param {engine.treeView.Node|engine.treeView.DomFragment} viewNode View node or document fragment.
 	 * @returns {Node|DocumentFragment|null} Corresponding DOM node or document fragment.

@@ -16,14 +16,15 @@ export default class DocumentFragment {
 	/**
 	 * Creates new DocumentFragment instance.
 	 *
-	 * @param {engine.treeView.Node|Iterable.<engine.treeView.Node>} [children] List of nodes to be inserted into created element.
+	 * @param {engine.treeView.Node|Iterable.<engine.treeView.Node>} [children] List of nodes to be inserted into
+	 * created document fragment.
 	 */
 	constructor( children ) {
 		/**
 		 * Array of child nodes.
 		 *
 		 * @protected
-		 * @member {Array.<engine.treeView.DocumentFragment>} engine.treeView.Element#_children
+		 * @member {Array.<engine.treeView.Element>} engine.treeView.DocumentFragment#_children
 		 */
 		this._children = [];
 
@@ -36,7 +37,6 @@ export default class DocumentFragment {
 	 * {@link engine.treeView.DocumentFragment#insertChildren Insert} a child node or a list of child nodes at the end
 	 * and sets the parent of these nodes to this fragment.
 	 *
-	 * @fires engine.treeView.Node#change
 	 * @param {engine.treeView.Node|Iterable.<engine.treeView.Node>} nodes Node or the list of nodes to be inserted.
 	 * @returns {Number} Number of appended nodes.
 	 */
@@ -87,7 +87,7 @@ export default class DocumentFragment {
 	 * this fragment.
 	 *
 	 * @param {Number} index Position where nodes should be inserted.
-	 * @param {engine.treeView.Node|Iterable.<engine.treeView.Node>} nodes Node or the list of nodes to be inserted.
+	 * @param {engine.treeView.Node|Iterable.<engine.treeView.Node>} nodes Node or list of nodes to be inserted.
 	 * @returns {Number} Number of inserted nodes.
 	 */
 	insertChildren( index, nodes ) {
