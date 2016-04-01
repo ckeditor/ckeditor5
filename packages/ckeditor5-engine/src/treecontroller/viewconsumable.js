@@ -23,15 +23,7 @@ class ViewElementConsumables {
 	/**
 	 * Creates ViewElementConsumables instance.
 	 */
-	constructor( element )  {
-		/**
-		 * Reference to the element that this consumables belong to.
-		 *
-		 * @private
-		 * @member {engine.treeViewElement} engine.treeController.ViewElementConsumables#_element
-		 */
-		this._element = element;
-
+	constructor()  {
 		/**
 		 * Boolean value that indicates if name of the element can be consumed.
 		 *
@@ -231,8 +223,7 @@ class ViewElementConsumables {
 		for ( let name of items ) {
 			if ( type === 'attribute' && ( name === 'class' || name === 'style' ) )  {
 				// Check all classes/styles if class/style attribute is tested.
-				const iterator = name == 'class' ? this._element.getClassNames() : this._element.getStyleNames();
-				const value = this._test( name, [ ...iterator ] );
+				const value = this._test( name, [ ...this._consumables[ name ].keys() ] );
 
 				if ( value !== true ) {
 					return value;
@@ -267,8 +258,7 @@ class ViewElementConsumables {
 		for ( let name of items ) {
 			if ( type === 'attribute' && ( name === 'class' || name === 'style' ) ) {
 				// If class or style is provided for consumption - consume them all.
-				const iterator = name == 'class' ? this._element.getClassNames() : this._element.getStyleNames();
-				this._consume( name, [ ...iterator ] );
+				this._consume( name, [ ...this._consumables[ name ].keys() ] );
 			} else {
 				consumables.set( name, false );
 			}
@@ -289,8 +279,7 @@ class ViewElementConsumables {
 		for ( let name of items ) {
 			if ( type === 'attribute' && ( name === 'class' || name === 'style' ) ) {
 				// If class or style is provided for reverting - revert them all.
-				const iterator = name == 'class' ? this._element.getClassNames() : this._element.getStyleNames();
-				this._revert( name, [ ...iterator ] );
+				this._revert( name, [ ...this._consumables[ name ].keys() ] );
 			} else {
 				const value = consumables.get( name );
 
@@ -383,7 +372,7 @@ export default class ViewConsumable {
 
 		// For elements create new ViewElementConsumables or update already existing one.
 		if ( !this._consumables.has( element ) ) {
-			elementConsumables = new ViewElementConsumables( element );
+			elementConsumables = new ViewElementConsumables();
 			this._consumables.set( element, elementConsumables );
 		} else {
 			elementConsumables = this._consumables.get( element );
@@ -407,10 +396,10 @@ export default class ViewConsumable {
 	 *		viewConsumable.test( textNode ); // Tests text node.
 	 *		viewConsumable.test( docFragment ); // Tests document fragment.
 	 *
-	 * Testing classes and styles as attribute will test if all classes/styles of that element are added for consumption.
+	 * Testing classes and styles as attribute will test if all added classes/styles can be consumed.
 	 *
-	 *		viewConsumable.test( p, { attribute: 'class' } ); // Tests if all classes within element are good to consume.
-	 *		viewConsumable.test( p, { attribute: 'style' } ); // Tests if all styles within element are good to consume.
+	 *		viewConsumable.test( p, { attribute: 'class' } ); // Tests if all added classes can be consumed.
+	 *		viewConsumable.test( p, { attribute: 'style' } ); // Tests if all added styles can be consumed.
 	 *
 	 * @param {engine.treeView.Element|engine.treeView.Text|engine.treeView.DocumentFragment} element
 	 * @param {Object} [consumables] Used only if first parameter is {@link engine.treeView.Element view element} instance.
@@ -451,10 +440,10 @@ export default class ViewConsumable {
 	 *		viewConsumable.consume( textNode ); // Consumes text node.
 	 *		viewConsumable.consume( docFragment ); // Consumes document fragment.
 	 *
-	 * Consuming classes and styles as attribute will test if all classes/styles of that element are added for consumption.
+	 * Consuming classes and styles as attribute will test if all added classes/styles can be consumed.
 	 *
-	 *		viewConsumable.consume( p, { attribute: 'class' } ); // Consume only if all classes can be consumed.
-	 *		viewConsumable.consume( p, { attribute: 'style' } ); // Consume only if all styles can be consumed.
+	 *		viewConsumable.consume( p, { attribute: 'class' } ); // Consume only if all added classes can be consumed.
+	 *		viewConsumable.consume( p, { attribute: 'style' } ); // Consume only if all added styles can be consumed.
 	 *
 	 * @param {engine.treeView.Element|engine.treeView.Text|engine.treeView.DocumentFragment} element
 	 * @param {Object} [consumables] Used only if first parameter is {@link engine.treeView.Element view element} instance.
@@ -496,8 +485,8 @@ export default class ViewConsumable {
 	 *		viewConsumable.revert( textNode ); // Reverts text node.
 	 *		viewConsumable.revert( docFragment ); // Reverts document fragment.
 	 *
-	 * Reverting classes and styles as attribute will revert all classes/styles of that element that were previously
-	 * added for consumption.
+	 * Reverting classes and styles as attribute will revert all classes/styles that were previously added for
+	 * consumption.
 	 *
 	 *		viewConsumable.revert( p, { attribute: 'class' } ); // Reverts all classes added for consumption.
 	 *		viewConsumable.revert( p, { attribute: 'style' } ); // Reverts all styles added for consumption.

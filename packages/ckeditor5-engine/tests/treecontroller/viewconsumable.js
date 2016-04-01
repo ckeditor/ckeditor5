@@ -204,7 +204,6 @@ describe( 'ViewConsumable', () => {
 		} );
 
 		it( 'should test all classes if class attribute is tested', () => {
-			el.addClass( 'foo', 'bar', 'baz' );
 			viewConsumable.add( el, { class: [ 'foo', 'bar', 'baz' ] } );
 			expect( viewConsumable.test( el, { attribute: 'class' } ) ).to.be.true;
 			expect( viewConsumable.consume( el, { class: 'baz' } ) ).to.be.true;
@@ -212,33 +211,23 @@ describe( 'ViewConsumable', () => {
 		} );
 
 		it( 'should test all styles if style attribute is tested', () => {
-			el.setStyle( {
-				'color': 'red',
-				'top': '10px',
-				'position': 'absolute'
-			} );
 			viewConsumable.add( el, { style: [ 'color', 'top', 'position' ] } );
 			expect( viewConsumable.test( el, { attribute: 'style' } ) ).to.be.true;
 			expect( viewConsumable.consume( el, { style: 'top' } ) ).to.be.true;
 			expect( viewConsumable.test( el, { attribute: 'style' } ) ).to.be.false;
 		} );
 
-		it( 'should return null when testing class attribute when not all classes are added', () => {
-			el.addClass( 'foo', 'bar', 'baz' );
+		it( 'should return false when testing class attribute when consumed classes exists', () => {
 			viewConsumable.add( el, { class: [ 'foo', 'baz' ] } );
-			expect( viewConsumable.test( el, { attribute: 'class' } ) ).to.be.null;
+			expect( viewConsumable.consume( el, { class: 'baz' } ) ).to.be.true;
+			expect( viewConsumable.test( el, { attribute: 'class' } ) ).to.be.false;
 			expect( viewConsumable.consume( el, { attribute: 'class' } ) ).to.be.false;
 		} );
 
-		it( 'should return null when testing style attribute when not all styles are added', () => {
-			el.setStyle( {
-				'color': 'red',
-				'top': '10px',
-				'position': 'absolute'
-			} );
-
-			viewConsumable.add( el, { style: [ 'color', 'position' ] } );
-			expect( viewConsumable.test( el, { attribute: 'style' } ) ).to.be.null;
+		it( 'should return false when testing style attribute when consumed styles exists', () => {
+			viewConsumable.add( el, { style: [ 'top', 'left' ] } );
+			expect( viewConsumable.consume( el, { style: 'top' } ) ).to.be.true;
+			expect( viewConsumable.test( el, { attribute: 'style' } ) ).to.be.false;
 			expect( viewConsumable.consume( el, { attribute: 'style' } ) ).to.be.false;
 		} );
 	} );
@@ -339,8 +328,6 @@ describe( 'ViewConsumable', () => {
 		} );
 
 		it( 'should consume all classes when class attribute is provided', () => {
-			el.addClass( 'foo', 'bar', 'baz' );
-
 			expect( viewConsumable.consume( el, { attribute: 'class' } ) ).to.be.false;
 			viewConsumable.add( el, { class: [ 'foo', 'bar', 'baz' ] } );
 			expect( viewConsumable.consume( el, { attribute: 'class' } ) ).to.be.true;
@@ -351,12 +338,6 @@ describe( 'ViewConsumable', () => {
 		} );
 
 		it( 'should consume all styles when style attribute is provided', () => {
-			el.setStyle( {
-				'color': 'red',
-				'top': '10px',
-				'position': 'absolute'
-			} );
-
 			expect( viewConsumable.consume( el, { attribute: 'style' } ) ).to.be.false;
 			viewConsumable.add( el, { style: [ 'color', 'top', 'position' ] } );
 			expect( viewConsumable.consume( el, { attribute: 'style' } ) ).to.be.true;
@@ -462,7 +443,6 @@ describe( 'ViewConsumable', () => {
 		} );
 
 		it( 'should revert all classes when class attribute is provided', () => {
-			el.addClass( 'foo', 'bar', 'baz', 'qux' );
 			viewConsumable.add( el, { class: [ 'foo', 'bar', 'baz' ] } );
 			expect( viewConsumable.consume( el, { class: [ 'foo', 'bar', 'baz' ] } ) ).to.be.true;
 			viewConsumable.revert( el, { attribute: 'class' } );
@@ -474,12 +454,6 @@ describe( 'ViewConsumable', () => {
 		} );
 
 		it( 'should revert all styles when style attribute is provided', () => {
-			el.setStyle( {
-				'color': 'red',
-				'top': '10px',
-				'position': 'absolute'
-			} );
-
 			viewConsumable.add( el, { style: [ 'color', 'top' ] } );
 			expect( viewConsumable.consume( el, { style: [ 'color', 'top' ] } ) ).to.be.true;
 			viewConsumable.revert( el, { attribute: 'style' } );
