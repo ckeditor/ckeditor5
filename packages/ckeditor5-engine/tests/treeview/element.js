@@ -614,6 +614,19 @@ describe( 'Element', () => {
 				expect( el.hasClass( 'three', 'one', 'two', 'zero' ) ).to.be.false;
 			} );
 		} );
+
+		describe( 'getClassNames', () => {
+			it( 'should return iterator with all class names', () => {
+				const names = [ 'one', 'two', 'three' ];
+				el.addClass( ...names );
+				const iterator = el.getClassNames();
+				let i = 0;
+
+				for ( let name of iterator ) {
+					expect( name ).to.equal( names[ i++ ] );
+				}
+			} );
+		} );
 	} );
 
 	describe( 'styles manipulation methods', () => {
@@ -664,6 +677,22 @@ describe( 'Element', () => {
 
 				expect( el.getStyle( 'color' ) ).to.equal( 'red' );
 				expect( el.getStyle( 'border' ) ).to.equal( '1px solid red' );
+			} );
+		} );
+
+		describe( 'getStyleNames', () => {
+			it( 'should return iterator with all style names', () => {
+				const names = [ 'color', 'position' ];
+				el.setStyle( {
+					color: 'red',
+					position: 'absolute'
+				} );
+				const iterator = el.getStyleNames();
+				let i = 0;
+
+				for ( let name of iterator ) {
+					expect( name ).to.equal( names[ i++ ] );
+				}
 			} );
 		} );
 
