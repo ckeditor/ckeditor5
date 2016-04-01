@@ -23,9 +23,29 @@ class ViewElementConsumables {
 	/**
 	 * Creates ViewElementConsumables instance.
 	 */
-	constructor()  {
+	constructor( element )  {
+		/**
+		 * Reference to the element that this consumables belong to.
+		 *
+		 * @private
+		 * @member {engine.treeViewElement} engine.treeController.ViewElementConsumables#_element
+		 */
+		this._element = element;
+
+		/**
+		 * Boolean value that indicates if name of the element can be consumed.
+		 *
+		 * @private
+		 * @member {Boolean} engine.treeController.ViewElementConsumables#_canConsumeName
+		 */
 		this._canConsumeName = null;
 
+		/**
+		 * Object containing maps of element's consumables: attributes, classes and styles.
+		 *
+		 * @private
+		 * @member {Object} engine.treeController.ViewElementConsumables#_consumables
+		 */
 		this._consumables = {
 			attribute: new Map(),
 			style: new Map(),
@@ -44,6 +64,9 @@ class ViewElementConsumables {
 	 *
 	 *		consumables.add( { attribute: 'title', class: 'foo', style: 'color' } );
 	 *		consumables.add( { attribute: [ 'title', 'name' ], class: [ 'foo', 'bar' ] );
+	 *
+	 * Throws {@link utils.CKEditorError CKEditorError} `viewconsumable-invalid-attribute` when `class` or `style`
+	 * attribute is provided - it should be handled separately by providing `style` and `class` in consumables object.
 	 *
 	 * @param {Object} consumables Object describing which parts of the element can be consumed.
 	 * @param {Boolean} consumables.name If set to `true` element's name will be added as consumable.
@@ -167,6 +190,9 @@ class ViewElementConsumables {
 	/**
 	 * Helper method that adds consumables from one type: attribute, class or style.
 	 *
+	 * Throws {@link utils.CKEditorError CKEditorError} `viewconsumable-invalid-attribute` when `class` or `style`
+	 * type is provided - it should be handled separately by providing actual style/class type.
+	 *
 	 * @private
 	 * @param {String} type Type of the consumable item: `attribute`, `class` or `style`.
 	 * @param {String|Array} item Consumable item or array of items.
@@ -203,24 +229,24 @@ class ViewElementConsumables {
 		const consumables = this._consumables[ type ];
 
 		for ( let name of items ) {
-			if ( type === 'attribute' && ( name === 'class' || name === 'style' ) ) {
-				/**
-				 * Class and style attributes should be handled separately.
-				 *
-				 * @error viewconsumable-invalid-attribute
-				 */
-				throw new CKEditorError( 'viewconsumable-invalid-attribute: Classes and styles should be handled separately.' );
-			}
+			if ( type === 'attribute' && ( name === 'class' || name === 'style' ) )  {
+				// Check all classes/styles if class/style attribute is tested.
+				const iterator = name == 'class' ? this._element.getClassNames() : this._element.getStyleNames();
+				const value = this._test( name, [ ...iterator ] );
 
-			const value = consumables.get( name );
+				if ( value !== true ) {
+					return value;
+				}
+			} else {
+				const value = consumables.get( name );
+				// Return null if attribute is not found.
+				if ( value === undefined ) {
+					return null;
+				}
 
-			// Return null if attribute is not found.
-			if ( value === undefined ) {
-				return null;
-			}
-
-			if ( !value ) {
-				return false;
+				if ( !value ) {
+					return false;
+				}
 			}
 		}
 
@@ -239,7 +265,13 @@ class ViewElementConsumables {
 		const consumables = this._consumables[ type ];
 
 		for ( let name of items ) {
-			consumables.set( name, false );
+			if ( type === 'attribute' && ( name === 'class' || name === 'style' ) ) {
+				// If class or style is provided for consumption - consume them all.
+				const iterator = name == 'class' ? this._element.getClassNames() : this._element.getStyleNames();
+				this._consume( name, [ ...iterator ] );
+			} else {
+				consumables.set( name, false );
+			}
 		}
 	}
 
@@ -256,17 +288,15 @@ class ViewElementConsumables {
 
 		for ( let name of items ) {
 			if ( type === 'attribute' && ( name === 'class' || name === 'style' ) ) {
-				/**
-				 * Class and style attributes should be handled separately.
-				 *
-				 * @error viewconsumable-invalid-attribute
-				 */
-				throw new CKEditorError( 'viewconsumable-invalid-attribute: Classes and styles should be handled separately.' );
-			}
-			const value = consumables.get( name );
+				// If class or style is provided for reverting - revert them all.
+				const iterator = name == 'class' ? this._element.getClassNames() : this._element.getStyleNames();
+				this._revert( name, [ ...iterator ] );
+			} else {
+				const value = consumables.get( name );
 
-			if ( value === false ) {
-				consumables.set( name, true );
+				if ( value === false ) {
+					consumables.set( name, true );
+				}
 			}
 		}
 	}
@@ -351,8 +381,9 @@ export default class ViewConsumable {
 			return;
 		}
 
+		// For elements create new ViewElementConsumables or update already existing one.
 		if ( !this._consumables.has( element ) ) {
-			elementConsumables = new ViewElementConsumables();
+			elementConsumables = new ViewElementConsumables( element );
 			this._consumables.set( element, elementConsumables );
 		} else {
 			elementConsumables = this._consumables.get( element );
@@ -376,11 +407,10 @@ export default class ViewConsumable {
 	 *		viewConsumable.test( textNode ); // Tests text node.
 	 *		viewConsumable.test( docFragment ); // Tests document fragment.
 	 *
-	 * Throws {@link utils.CKEditorError CKEditorError} `viewconsumable-invalid-attribute` when `class` or `style`
-	 * attribute is provided - it should be handled separately by providing actual style/class.
+	 * Testing classes and styles as attribute will test if all classes/styles of that element are added for consumption.
 	 *
-	 *		viewConsumable.test( p, { attribute: 'style' } ); // This call will throw an exception.
-	 *		viewConsumable.test( p, { style: 'color' } ); // This is properly handled style.
+	 *		viewConsumable.test( p, { attribute: 'class' } ); // Tests if all classes within element are good to consume.
+	 *		viewConsumable.test( p, { attribute: 'style' } ); // Tests if all styles within element are good to consume.
 	 *
 	 * @param {engine.treeView.Element|engine.treeView.Text|engine.treeView.DocumentFragment} element
 	 * @param {Object} [consumables] Used only if first parameter is {@link engine.treeView.Element view element} instance.
@@ -421,11 +451,10 @@ export default class ViewConsumable {
 	 *		viewConsumable.consume( textNode ); // Consumes text node.
 	 *		viewConsumable.consume( docFragment ); // Consumes document fragment.
 	 *
-	 * Throws {@link utils.CKEditorError CKEditorError} `viewconsumable-invalid-attribute` when `class` or `style`
-	 * attribute is provided - it should be handled separately by providing actual style/class.
+	 * Consuming classes and styles as attribute will test if all classes/styles of that element are added for consumption.
 	 *
-	 *		viewConsumable.consume( p, { attribute: 'style' } ); // This call will throw an exception.
-	 *		viewConsumable.consume( p, { style: 'color' } ); // This is properly handled style.
+	 *		viewConsumable.consume( p, { attribute: 'class' } ); // Consume only if all classes can be consumed.
+	 *		viewConsumable.consume( p, { attribute: 'style' } ); // Consume only if all styles can be consumed.
 	 *
 	 * @param {engine.treeView.Element|engine.treeView.Text|engine.treeView.DocumentFragment} element
 	 * @param {Object} [consumables] Used only if first parameter is {@link engine.treeView.Element view element} instance.
@@ -467,11 +496,11 @@ export default class ViewConsumable {
 	 *		viewConsumable.revert( textNode ); // Reverts text node.
 	 *		viewConsumable.revert( docFragment ); // Reverts document fragment.
 	 *
-	 * Throws {@link utils.CKEditorError CKEditorError} `viewconsumable-invalid-attribute` when `class` or `style`
-	 * attribute is provided - it should be handled separately by providing actual style/class.
+	 * Reverting classes and styles as attribute will revert all classes/styles of that element that were previously
+	 * added for consumption.
 	 *
-	 *		viewConsumable.revert( p, { attribute: 'style' } ); // This call will throw an exception.
-	 *		viewConsumable.revert( p, { style: 'color' } ); // This is properly handled style.
+	 *		viewConsumable.revert( p, { attribute: 'class' } ); // Reverts all classes added for consumption.
+	 *		viewConsumable.revert( p, { attribute: 'style' } ); // Reverts all styles added for consumption.
 	 *
 	 * @param {engine.treeView.Element|engine.treeView.Text|engine.treeView.DocumentFragment} element
 	 * @param {Object} [consumables] Used only if first parameter is {@link engine.treeView.Element view element} instance.
