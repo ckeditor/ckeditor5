@@ -72,14 +72,6 @@ export default class EditorUI extends Controller {
 	 */
 	_setupIconManager() {
 		/**
-		 * A reference to IconManager controller.
-		 *
-		 * @readonly
-		 * @member {ui.Controller} ui.editorUI.EditorUI#iconManager
-		 */
-		this.iconManager = new Controller( iconManagerModel, new IconManagerView( iconManagerModel ) );
-
-		/**
 		 * Icons available in the UI.
 		 *
 		 * @readonly
@@ -87,7 +79,9 @@ export default class EditorUI extends Controller {
 		 */
 		this.icons = iconManagerModel.icons;
 
-		this.collections.get( 'body' ).add( this.iconManager );
+		this.collections.get( 'body' ).add(
+			new Controller( iconManagerModel, new IconManagerView( iconManagerModel ) )
+		);
 	}
 }
 

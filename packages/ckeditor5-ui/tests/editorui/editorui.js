@@ -47,12 +47,6 @@ describe( 'EditorUI', () => {
 	} );
 
 	describe( '_setupIconManager', () => {
-		it( 'initializes icon manager and sets "iconManager" property', () => {
-			editorUI._setupIconManager();
-
-			expect( editorUI ).to.have.property( 'iconManager' );
-		} );
-
 		it( 'sets "icon" property', () => {
 			editorUI._setupIconManager();
 
