@@ -13,7 +13,7 @@ const iconPrefix = 'ck-icon-';
 /**
  * Provides a Model containing icon sprite form IconManagerView.
  *
- * @memberOf ui.iconManagerModel
+ * @memberOf ui
  * @extends ui.Model
  */
 
