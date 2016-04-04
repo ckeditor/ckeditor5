@@ -1,7 +1,7 @@
 Software License Agreement
 ==========================
 
-**Undo Feature** – https://github.com/ckeditor/ckeditor5 <br>
+**CKEditor 5 Undo Manager** – https://github.com/ckeditor/ckeditor5-undo <br>
 Copyright (c) 2003-2016, [CKSource](http://cksource.com) Frederico Knabben. All rights reserved.
 
 Licensed under the terms of any of the following licenses at your choice:
