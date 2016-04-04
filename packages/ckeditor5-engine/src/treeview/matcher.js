@@ -17,7 +17,7 @@ export default class Matcher {
 	 *
 	 * @param {...Object|String} patterns Object describing pattern details or string representing element's name.
 	 * @param {String} [patterns.name] Name of the element to match.
-	 * @param {Object} [patterns.attribute]
+	 * @param {Array} [patterns.attribute]
 	 * @param {String|Array.<String>} [patterns.class] Class name or array of class names to match.
 	 * @param {Object} [patterns.style]
 	 */
@@ -28,8 +28,8 @@ export default class Matcher {
 				pattern = { name: pattern };
 			}
 
-			// Single class name can be provided.
-			if ( pattern.class && typeof pattern.class == 'string' ) {
+			// Single class name/RegExp can be provided.
+			if ( pattern.class && ( typeof pattern.class == 'string' || pattern.class instanceof RegExp ) ) {
 				pattern.class = [ pattern.class ];
 			}
 
@@ -45,12 +45,15 @@ export default class Matcher {
 	 * @returns {*}
 	 */
 	match( ...elements ) {
-		for ( let element in elements ) {
+		for ( let element of elements ) {
 			for ( let pattern of this._patterns ) {
 				let isMath = isElementMatching( element, pattern );
 
 				if ( isMath ) {
-					return true;
+					return {
+						element: element,
+						pattern: pattern
+					};
 				}
 			}
 		}
@@ -66,32 +69,97 @@ function isElementMatching( element, pattern ) {
 	}
 
 	// Check element's name.
-	if ( pattern.name && pattern.name !== element.name ) {
+	if ( pattern.name && !matchName( pattern.name, element.name ) ) {
 		return false;
 	}
 
 	// Check element's attributes.
-	if ( pattern.attribute ) {
-		for ( let name in pattern.attribute ) {
-			if ( !element.hasAttribute( name ) || element.getAttribute( name ) !== pattern.attribute[ name ] ) {
-				return false;
-			}
-		}
+	if ( pattern.attribute && !matchAttributes( pattern.attribute, element ) ) {
+		return false;
 	}
 
 	// Check element's classes.
-	if ( pattern.class ) {
-		if ( !element.hasClass( ...pattern.class ) ) {
+	if ( pattern.class && !matchClasses( pattern.class, element ) ) {
+		return false;
+	}
+
+	// Check element's styles.
+	if ( pattern.style && !matchStyles( pattern.style, element ) ) {
+		return false;
+	}
+
+	return true;
+}
+
+function matchName( pattern, name ) {
+	// If pattern is provided as RegExp - test against this regexp.
+	if ( pattern instanceof RegExp ) {
+		return pattern.test( name );
+	}
+
+	return pattern === name;
+}
+
+function matchAttributes( patterns, element ) {
+	for ( let name in patterns ) {
+		const pattern = patterns[ name ];
+
+		if ( element.hasAttribute( name ) ) {
+			const attribute = element.getAttribute( name );
+
+			if ( pattern instanceof RegExp ) {
+				if ( !pattern.test( attribute ) ) {
+					return false;
+				}
+			} else if ( attribute !== pattern  ) {
+				return false;
+			}
+		} else {
 			return false;
 		}
 	}
 
-	// Check element's styles.
-	if ( pattern.style ) {
-		for ( let key in pattern.style ) {
-			if ( !element.hasStyle( key ) || element.getStyle( key ) !== pattern.style[ name ] ) {
+	return true;
+}
+
+function matchClasses( patterns, element ) {
+	for ( let name in patterns ) {
+		const pattern = patterns[ name ];
+
+		if ( pattern instanceof RegExp ) {
+			const classes = element.getClassNames();
+
+			for ( let name of classes ) {
+				if ( pattern.test( name ) ) {
+					return true;
+				}
+			}
+
+			return false;
+		} else if ( !element.hasClass( pattern ) ) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+function matchStyles( patterns, element ) {
+	for ( let name in patterns ) {
+		const pattern = patterns[ name ];
+
+		if ( element.hasStyle( name ) ) {
+			const style = element.getStyle( name );
+
+			if ( pattern instanceof RegExp ) {
+				if ( !pattern.test( style ) ) {
+					return false;
+				}
+			} else if ( style !== pattern  ) {
 				return false;
 			}
+		} else {
+			return false;
 		}
 	}
 
