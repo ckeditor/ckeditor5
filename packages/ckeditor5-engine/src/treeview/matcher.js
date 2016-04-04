@@ -47,12 +47,13 @@ export default class Matcher {
 	match( ...elements ) {
 		for ( let element of elements ) {
 			for ( let pattern of this._patterns ) {
-				let isMath = isElementMatching( element, pattern );
+				const match = isElementMatching( element, pattern );
 
-				if ( isMath ) {
+				if ( match ) {
 					return {
 						element: element,
-						pattern: pattern
+						pattern: pattern,
+						match: match
 					};
 				}
 			}
@@ -63,32 +64,50 @@ export default class Matcher {
 }
 
 function isElementMatching( element, pattern ) {
+	const match = {};
+
 	// If pattern is provided as function - return result of that function;
 	if ( typeof pattern == 'function' ) {
 		return pattern( element );
 	}
 
 	// Check element's name.
-	if ( pattern.name && !matchName( pattern.name, element.name ) ) {
-		return false;
+	if ( pattern.name ) {
+		match.name = matchName( pattern.name, element.name );
+
+		if ( !match.name ) {
+			return null;
+		}
 	}
 
 	// Check element's attributes.
-	if ( pattern.attribute && !matchAttributes( pattern.attribute, element ) ) {
-		return false;
+	if ( pattern.attribute ) {
+		match.attribute = matchAttributes( pattern.attribute, element );
+
+		if ( !match.attribute ) {
+			return null;
+		}
 	}
 
 	// Check element's classes.
-	if ( pattern.class && !matchClasses( pattern.class, element ) ) {
-		return false;
+	if ( pattern.class ) {
+		match.class = matchClasses( pattern.class, element );
+
+		if ( !match.class ) {
+			return false;
+		}
 	}
 
 	// Check element's styles.
-	if ( pattern.style && !matchStyles( pattern.style, element ) ) {
-		return false;
+	if ( pattern.style ) {
+		match.style = matchStyles( pattern.style, element );
+
+		if ( !match.style ) {
+			return false;
+		}
 	}
 
-	return true;
+	return match;
 }
 
 function matchName( pattern, name ) {
@@ -101,6 +120,8 @@ function matchName( pattern, name ) {
 }
 
 function matchAttributes( patterns, element ) {
+	const match = [];
+
 	for ( let name in patterns ) {
 		const pattern = patterns[ name ];
 
@@ -108,21 +129,27 @@ function matchAttributes( patterns, element ) {
 			const attribute = element.getAttribute( name );
 
 			if ( pattern instanceof RegExp ) {
-				if ( !pattern.test( attribute ) ) {
-					return false;
+				if ( pattern.test( attribute ) ) {
+					match.push( name );
+				} else {
+					return null;
 				}
-			} else if ( attribute !== pattern  ) {
-				return false;
+			} else if ( attribute === pattern  ) {
+				match.push( name );
+			} else {
+				return null;
 			}
 		} else {
-			return false;
+			return null;
 		}
 	}
 
-	return true;
+	return match;
 }
 
 function matchClasses( patterns, element ) {
+	const match = [];
+
 	for ( let name in patterns ) {
 		const pattern = patterns[ name ];
 
@@ -131,20 +158,26 @@ function matchClasses( patterns, element ) {
 
 			for ( let name of classes ) {
 				if ( pattern.test( name ) ) {
-					return true;
+					match.push( name );
 				}
 			}
 
-			return false;
-		} else if ( !element.hasClass( pattern ) ) {
-			return false;
+			if ( match.length === 0 ) {
+				return null;
+			}
+		} else if ( element.hasClass( pattern ) ) {
+			match.push( pattern );
+		} else {
+			return null;
 		}
 	}
 
-	return true;
+	return match;
 }
 
 function matchStyles( patterns, element ) {
+	const match = [];
+
 	for ( let name in patterns ) {
 		const pattern = patterns[ name ];
 
@@ -152,16 +185,20 @@ function matchStyles( patterns, element ) {
 			const style = element.getStyle( name );
 
 			if ( pattern instanceof RegExp ) {
-				if ( !pattern.test( style ) ) {
-					return false;
+				if ( pattern.test( style ) ) {
+					match.push( name );
+				} else {
+					return null;
 				}
-			} else if ( style !== pattern  ) {
-				return false;
+			} else if ( style === pattern  ) {
+				match.push( name );
+			} else {
+				return null;
 			}
 		} else {
-			return false;
+			return null;
 		}
 	}
 
-	return true;
+	return match;
 }
