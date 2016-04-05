@@ -5,6 +5,14 @@
 
 'use strict';
 
+/**
+ * View matcher class.
+ * Instance of this class can be used to find elements that match given pattern.
+ * To match element with given name:
+ *		matcher
+ *
+ * @memberOf engine.treeView
+ */
 export default class Matcher {
 	constructor( ...patterns ) {
 		this._patterns = [];
@@ -60,6 +68,26 @@ export default class Matcher {
 		}
 
 		return null;
+	}
+
+	matchAll( ...elements ) {
+		const results = [];
+
+		for ( let element of elements ) {
+			for ( let pattern of this._patterns ) {
+				const match = isElementMatching( element, pattern );
+
+				if ( match ) {
+					results.push( {
+						element: element,
+						pattern: pattern,
+						match: match
+					} );
+				}
+			}
+		}
+
+		return results.length > 0 ? results : null;
 	}
 }
 
