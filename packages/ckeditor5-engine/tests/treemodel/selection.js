@@ -59,6 +59,7 @@ describe( 'Selection', () => {
 		expect( ranges.length ).to.equal( 1 );
 		expect( selection.anchor.isEqual( new Position( root, [ 0 ] ) ) ).to.be.true;
 		expect( selection.focus.isEqual( new Position( root, [ 0 ] ) ) ).to.be.true;
+		expect( selection ).to.have.property( 'isBackward', false );
 		expect( selection._attrs ).to.be.instanceof( Map );
 		expect( selection._attrs.size ).to.equal( 0 );
 	} );
@@ -117,6 +118,14 @@ describe( 'Selection', () => {
 
 			expect( selection.anchor.path ).to.deep.equal( [ 2, 2 ] );
 			expect( selection.focus.path ).to.deep.equal( [ 2 ] );
+		} );
+
+		it( 'should set isBackward', () => {
+			selection.addRange( range, true );
+			expect( selection ).to.have.property( 'isBackward', true );
+
+			selection.addRange( liveRange );
+			expect( selection ).to.have.property( 'isBackward', false );
 		} );
 
 		it( 'should return a copy of (not a reference to) array of stored ranges', () => {
