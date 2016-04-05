@@ -278,11 +278,6 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 
 				// And prepend 'tests/'.
 				dirFrags.unshift( 'tests' );
-			} else if ( firstFrag == 'theme' ) {
-				// Remove 'theme/' from the package dir.
-				// console.log( dirFrags );
-				// dirFrags.length = 0;
-				// dirFrags.splice( 1, 2 );
 			} else {
 				throw new Error( 'Path should start with "ckeditor5-*/(src|tests|theme)".' );
 			}
