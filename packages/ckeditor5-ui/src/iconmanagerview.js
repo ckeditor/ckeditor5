@@ -8,7 +8,7 @@
 import View from './view.js';
 
 /**
- * Base class for the editor main views.
+ * Icon manager view using {@link ui.iconManager.IconManagerModel}.
  *
  * @memberOf ui.iconManager
  * @extends ui.View
