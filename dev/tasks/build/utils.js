@@ -14,6 +14,13 @@ const gulpFilter = require( 'gulp-filter' );
 const multipipe = require( 'multipipe' );
 const PassThrough = require( 'stream' ).PassThrough;
 const through = require( 'through2' );
+const fs = require( 'fs' );
+const sass = require( 'node-sass' );
+const del = require( 'del' );
+const minimist = require( 'minimist' );
+const sprite = require( 'gulp-svg-sprite' );
+const pipe = require( 'multipipe' );
+const filter = require( 'gulp-filter' );
 
 const utils = {
 	/**
@@ -272,7 +279,7 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 				// And prepend 'tests/'.
 				dirFrags.unshift( 'tests' );
 			} else {
-				throw new Error( 'Path should start with "ckeditor5-*/(src|tests)".' );
+				throw new Error( 'Path should start with "ckeditor5-*/(src|tests|theme)".' );
 			}
 
 			file.dirname = path.join.apply( null, dirFrags );
@@ -359,6 +366,216 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 	 */
 	isJSFile( file ) {
 		return file.path.endsWith( '.js' );
+	},
+
+	/**
+	 * Finds all CKEditor5 package directories in "node_modules" folder.
+	 *
+	 * @param {String} rootDir A root directory containing "node_modules" folder.
+	 * @returns {Array} Array of ckeditor5-* package directory paths.
+	 */
+	getPackages( rootDir ) {
+		// Find all CKEditor5 package directories. Resolve symlinks so we watch real directories
+		// in order to workaround https://github.com/paulmillr/chokidar/issues/419.
+		return fs.readdirSync( path.join( rootDir, 'node_modules' ) )
+			// Look for ckeditor5-* directories.
+			.filter( fileName => {
+				return fileName.indexOf( 'ckeditor5-' ) === 0;
+			} )
+			// Resolve symlinks and keep only directories.
+			.map( fileName => {
+				let filePath = path.join( rootDir, 'node_modules', fileName );
+				let stat = fs.lstatSync( filePath );
+
+				if ( stat.isSymbolicLink() ) {
+					filePath = fs.realpathSync( filePath );
+					stat = fs.lstatSync( filePath );
+				}
+
+				if ( stat.isDirectory() ) {
+					return filePath;
+				}
+
+				// Filter...
+				return false;
+			} )
+			// 					...those out.
+			.filter( filePath => filePath );
+	},
+
+	/**
+	 * Filters theme entry points only from a stream of SCSS files.
+	 *
+	 * @returns {Stream}
+	 */
+	filterThemeEntryPoints() {
+		return filter( '**/theme.scss' );
+	},
+
+	/**
+	 * Given the input stream of theme entry-point files (theme.scss), this method:
+	 * 	1. Collects paths to entry-point.
+	 * 	2. Builds the output CSS theme file using aggregated entry-points.
+	 * 	3. Returns a stream containing built CSS theme file.
+	 *
+	 * @param {String} fileName The name of the output CSS theme file.
+	 * @returns {Stream}
+	 */
+	compileThemes( fileName ) {
+		const paths = [];
+		const stream = through.obj( collectThemeEntryPoint, renderThemeFromEntryPoints );
+
+		function collectThemeEntryPoint( file, enc, callback ) {
+			paths.push( file.path );
+
+			callback();
+		}
+
+		function renderThemeFromEntryPoints( callback ) {
+			gutil.log( `Compiling '${ gutil.colors.cyan( fileName ) }' from ${ gutil.colors.cyan( paths.length ) } entry points...` );
+
+			const dataToRender = paths.map( p => `@import '${ p }';` )
+				.join( '\n' );
+
+			try {
+				const rendered = sass.renderSync( utils.getSassOptions( dataToRender ) );
+
+				stream.push( new gutil.File( {
+					path: fileName,
+					contents: new Buffer( rendered.css )
+				} ) );
+
+				callback();
+			} catch ( err ) {
+				callback( err );
+			}
+		}
+
+		return stream;
+	},
+
+	/**
+	 * Parses command line arguments and returns them as a user-friendly hash.
+	 *
+	 * @param {String} dataToRender
+	 * @returns {Object}
+	 */
+	getSassOptions( dataToRender ) {
+		return {
+			data: dataToRender,
+			sourceMap: true,
+			sourceMapEmbed: true,
+			outputStyle: 'expanded',
+			sourceComments: true
+		};
+	},
+
+	/**
+	 * Removes files and directories specified by `glob` starting from `rootDir`
+	 * and gently informs about deletion.
+	 *
+	 * @param {String} rootDir The path to the root directory (i.e. "dist/").
+	 * @param {String} glob Glob specifying what to clean.
+	 * @returns {Promise}
+	 */
+	clean( rootDir, glob ) {
+		return del( path.join( rootDir, glob ) ).then( paths => {
+			paths.forEach( p => {
+				gutil.log( `Deleted file '${ gutil.colors.cyan( p ) }'.` );
+			} );
+		} );
+	},
+
+	/**
+	 * Parses command line arguments and returns them as a user-friendly hash.
+	 *
+	 * @returns {Object} options
+	 * @returns {Array} [options.formats] Array of specified output formats ("esnext" or "amd").
+	 * @returns {Boolean} [options.watch] A flag which enables watch mode.
+	 */
+	parseArguments() {
+		const options = minimist( process.argv.slice( 2 ), {
+			string: [
+				'formats'
+			],
+
+			boolean: [
+				'watch'
+			],
+
+			default: {
+				formats: 'amd',
+				watch: false
+			}
+		} );
+
+		options.formats = options.formats.split( ',' );
+
+		return options;
+	},
+
+	/**
+	 * Given a stream of .svg files it returns a stream containing JavaScript
+	 * icon sprite file.
+	 *
+	 * @returns {Stream}
+	 */
+	compileIconSprite() {
+		return sprite( utils.getIconSpriteOptions() );
+	},
+
+	/**
+	 * Returns svg-sprite util options to generate <symbol>-based, JavaScript
+	 * sprite file.
+	 *
+	 * @returns {Object}
+	 */
+	getIconSpriteOptions() {
+		return {
+			shape: {
+				id: {
+					generator: name => `ck-icon-${ name.match( /([^\/]*)\.svg$/ )[ 1 ] }`
+				},
+			},
+			svg: {
+				xmlDeclaration: false,
+				doctypeDeclaration: false,
+			},
+			mode: {
+				symbol: {
+					dest: './', // Flatten symbol/ folder.
+					inline: true,
+					render: {
+						js: {
+							template: path.join( __dirname, 'iconmanagermodel.tpl' ),
+							dest: 'iconmanagermodel.js',
+						}
+					}
+				}
+			}
+		};
+	},
+
+	/**
+	 * Given a stream of files it returns an array of gulp-mirror streams outputting
+	 * files to `build/[formats]/theme/` directories for each of desired output formats (cjs, amd, etc.).
+	 *
+	 * @param {String} buildDir A path to /build directory.
+	 * @param {Array} formats An array of desired output formats.
+	 * @param {Function} [transformationStream] A stream used to transform files before they're saved to
+	 * desired `build/[formats]/theme` directories. Useful for transpilation.
+	 * @returns {Stream[]} An array of streams.
+	 */
+	getThemeFormatDestStreams( buildDir, formats, transformationStream ) {
+		return formats.map( f => {
+			return pipe(
+				transformationStream ? transformationStream( f ) : utils.noop(),
+				gulp.dest( path.join( buildDir, f, 'theme' ) ),
+				utils.noop( file => {
+					gutil.log( `Output for ${ gutil.colors.cyan( f ) } is '${ gutil.colors.cyan( file.path ) }'.` );
+				} )
+			);
+		} );
 	}
 };
 

@@ -45,7 +45,7 @@ export default class MultiCreator extends StandardCreator {
 		this._createToolbar();
 
 		for ( let editable of editor.editables ) {
-			editor.ui.add( 'main', createEditableUI( editor, editable, EditableUI, InlineEditableUIView ) );
+			editor.ui.add( 'editable', createEditableUI( editor, editable, EditableUI, InlineEditableUIView ) );
 		}
 
 		editor.elements.forEach( ( element ) => {
