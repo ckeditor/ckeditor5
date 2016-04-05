@@ -26,7 +26,7 @@ export default class FramedEditableUIView extends EditableUIView {
 		this.template = {
 			tag: 'iframe',
 			attributes: {
-				class: [ 'ck-framededitable' ],
+				class: [ 'ck-framededitable ck-reset-all' ],
 				// It seems that we need to allow scripts in order to be able to listen to events.
 				// TODO: Research that. Perhaps the src must be set?
 				sandbox: 'allow-same-origin allow-scripts',

@@ -25,11 +25,10 @@ export default class BoxedEditorUIView extends EditorUIView {
 						class: 'ck-editor-top ck-reset-all'
 					}
 				},
-
 				{
 					tag: 'div',
 					attributes: {
-						class: 'ck-editor-editable ck-reset-all'
+						class: 'ck-editor-editable'
 					}
 				}
 			]
