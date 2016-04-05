@@ -64,13 +64,14 @@ export default class Matcher {
 }
 
 function isElementMatching( element, pattern ) {
-	const match = {};
-
 	// If pattern is provided as function - return result of that function;
 	if ( typeof pattern == 'function' ) {
-		return pattern( element );
+		const result = pattern( element );
+
+		return result ? result : null;
 	}
 
+	const match = {};
 	// Check element's name.
 	if ( pattern.name ) {
 		match.name = matchName( pattern.name, element.name );
