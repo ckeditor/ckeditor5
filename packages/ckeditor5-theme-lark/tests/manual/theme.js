@@ -15,7 +15,7 @@ function setupIconManager() {
 }
 
 function renderIcons() {
-	const buttonIcons = document.getElementById( 'button-icon' );
+	const buttonIcons = document.getElementById( 'buttonIcon' );
 	const icons = document.getElementById( 'icons' );
 	const tmp = document.createElement( 'div' );
 
@@ -36,7 +36,7 @@ function renderIcons() {
 }
 
 function renderResponsiveButtons() {
-	const responsive = document.getElementById( 'button-responsive' );
+	const responsive = document.getElementById( 'buttonResponsive' );
 	let current = responsive.firstElementChild;
 
 	for ( let i = 3; i--; ) {

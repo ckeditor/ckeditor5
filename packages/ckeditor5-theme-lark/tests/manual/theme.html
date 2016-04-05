@@ -6,16 +6,16 @@
 			line-height: 3em;
 		}
 
-		#button-responsive div > div {
+		#buttonResponsive div > div {
 			font-size: 1.3em;
 			line-height: 2.8em;
 		}
 
-		#button-responsive div .ck-button {
+		#buttonResponsive div .ck-button {
 			font-size: inherit;
 		}
 
-		@keyframes icon-color-change {
+		@keyframes iconColorChange {
 			0% {
 				color: white;
 				background: orange;
@@ -30,9 +30,9 @@
 			}
 		}
 
-		#icon-color-change {
+		#iconColorChange {
 			border: 0;
-			animation: icon-color-change 3s infinite;
+			animation: iconColorChange 3s infinite;
 		}
 	</style>
 </head>
@@ -79,7 +79,7 @@
 
 <h3>Button: Icon</h3>
 <div class="ck-reset-all" >
-	<div id="button-icon"></div>
+	<div id="buttonIcon"></div>
 
 	<br/>
 
@@ -107,14 +107,14 @@
 	<button class="ck-button ck-disabled ck-button-notext">
 		<svg class="ck-icon ck-icon-left"><use xlink:href="#ck-icon-bold"></use></svg>
 	</button>
-	<button id="icon-color-change" class="ck-button">
+	<button id="iconColorChange" class="ck-button">
 		<svg class="ck-icon ck-icon-left"><use xlink:href="#ck-icon-bold"></use></svg>
 		Icon follows text color
 	</button>
 </div>
 
 <h3>Button: Responsiveness</h3>
-<div id="button-responsive" class="ck-reset-all">
+<div id="buttonResponsive" class="ck-reset-all">
 	<div>
 		<button class="ck-button">A button</button>
 		<button class="ck-button ck-button-action">
