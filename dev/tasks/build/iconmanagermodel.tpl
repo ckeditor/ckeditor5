@@ -10,13 +10,6 @@ import Model from '/ckeditor5/ui/model.js';
 const iconIds = [ {{#shapes}}'{{name}}',{{/shapes}} ];
 const iconPrefix = 'ck-icon-';
 
-/**
- * Provides a Model containing icon sprite form IconManagerView.
- *
- * @memberOf ui
- * @extends ui.Model
- */
-
 export default new Model( {
 	icons: iconIds.map( i => i.slice( iconPrefix.length ) ),
 	sprite: `{{#shapes}}{{{svg}}}{{/shapes}}`
