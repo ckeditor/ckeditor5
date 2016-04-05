@@ -17,6 +17,9 @@ import Selection from '/ckeditor5/engine/treemodel/selection.js';
 import InsertOperation from '/ckeditor5/engine/treemodel/operation/insertoperation.js';
 import MoveOperation from '/ckeditor5/engine/treemodel/operation/moveoperation.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
+import testUtils from '/tests/ckeditor5/_utils/utils.js';
+
+testUtils.createSinonSandbox();
 
 describe( 'Selection', () => {
 	let attrFooBar;
@@ -173,6 +176,78 @@ describe( 'Selection', () => {
 					)
 				);
 			} ).to.throw( CKEditorError, /selection-range-intersects/ );
+		} );
+	} );
+
+	describe( 'collapse', () => {
+		it( 'detaches all existing ranges', () => {
+			selection.addRange( range );
+			selection.addRange( liveRange );
+
+			const spy = testUtils.sinon.spy( LiveRange.prototype, 'detach' );
+			selection.collapse( root );
+
+			expect( spy.calledTwice ).to.be.true;
+		} );
+
+		it( 'fires change:range', () => {
+			const spy = sinon.spy();
+
+			selection.on( 'change:range', spy );
+
+			selection.collapse( root );
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'sets selection at the 0 offset if second parameter not passed', () => {
+			selection.collapse( root );
+
+			expect( selection ).to.have.property( 'isCollapsed', true );
+
+			const focus = selection.focus;
+			expect( focus ).to.have.property( 'parent', root );
+			expect( focus ).to.have.property( 'offset', 0 );
+		} );
+
+		it( 'sets selection at given offset in given parent', () => {
+			selection.collapse( root, 3 );
+
+			expect( selection ).to.have.property( 'isCollapsed', true );
+
+			const focus = selection.focus;
+			expect( focus ).to.have.property( 'parent', root );
+			expect( focus ).to.have.property( 'offset', 3 );
+		} );
+
+		it( 'sets selection at the end of the given parent', () => {
+			selection.collapse( root, 'END' );
+
+			expect( selection ).to.have.property( 'isCollapsed', true );
+
+			const focus = selection.focus;
+			expect( focus ).to.have.property( 'parent', root );
+			expect( focus ).to.have.property( 'offset', root.getChildCount() );
+		} );
+
+		it( 'sets selection before the specified element', () => {
+			selection.collapse( root.getChild( 1 ), 'BEFORE' );
+
+			expect( selection ).to.have.property( 'isCollapsed', true );
+
+			const focus = selection.focus;
+			expect( focus ).to.have.property( 'parent', root );
+			expect( focus ).to.have.property( 'offset', 1 );
+		} );
+
+		it( 'sets selection after the specified element', () => {
+			selection.collapse( root.getChild( 1 ), 'AFTER' );
+
+			expect( selection ).to.have.property( 'isCollapsed', true );
+
+			const focus = selection.focus;
+			expect( focus ).to.have.property( 'parent', root );
+			expect( focus ).to.have.property( 'offset', 2 );
 		} );
 	} );
 
