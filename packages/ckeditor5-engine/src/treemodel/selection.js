@@ -213,9 +213,41 @@ export default class Selection {
 	}
 
 	/**
-	 * Removes all attributes from the selection.
+	 * Sets collapsed selection in the specified location.
+	 *
+	 * The `location` can be specified as:
+	 *
+	 * * parent element and offset (offset defaults to `0`),
+	 * * parent element and `'END'` (sets selection at the end of that element),
+	 * * node and `'BEFORE'` or `'AFTER'` (sets selection before or after the given node).
 	 *
 	 * @fires {@link engine.treeModel.Selection#change:range change:range}
+	 * @param {engine.treeModel.Node} node
+	 * @param {Number|'END'|'BEFORE'|'AFTER'} location Offset or one of the flags.
+	 */
+	collapse( node, location ) {
+		if ( location == 'END' ) {
+			location = node.getChildCount();
+		} else if ( location == 'BEFORE' ) {
+			location = node.getIndex();
+			node = node.parent;
+		} else if ( location == 'AFTER' ) {
+			location = node.getIndex() + 1;
+			node = node.parent;
+		} else if ( !location ) {
+			location = 0;
+		}
+
+		const pos = Position.createFromParentAndOffset( node, location );
+		const range = new Range( pos, pos );
+
+		this.setRanges( [ range ] );
+	}
+
+	/**
+	 * Removes all attributes from the selection.
+	 *
+	 * @fires engine.treeModel.Selection#change:attribute
 	 */
 	clearAttributes() {
 		this._attrs.clear();

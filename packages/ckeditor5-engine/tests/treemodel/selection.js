@@ -17,6 +17,9 @@ import Selection from '/ckeditor5/engine/treemodel/selection.js';
 import InsertOperation from '/ckeditor5/engine/treemodel/operation/insertoperation.js';
 import MoveOperation from '/ckeditor5/engine/treemodel/operation/moveoperation.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
+import testUtils from '/tests/ckeditor5/_utils/utils.js';
+
+testUtils.createSinonSandbox();
 
 describe( 'Selection', () => {
 	let attrFooBar;
@@ -78,100 +81,174 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	it( 'should copy added ranges and store multiple ranges', () => {
-		selection.addRange( liveRange );
-		selection.addRange( range );
+	describe( 'addRange', () => {
+		it( 'should copy added ranges and store multiple ranges', () => {
+			selection.addRange( liveRange );
+			selection.addRange( range );
 
-		let ranges = selection.getRanges();
+			let ranges = selection.getRanges();
 
-		expect( ranges.length ).to.equal( 2 );
-		expect( ranges[ 0 ].isEqual( liveRange ) ).to.be.true;
-		expect( ranges[ 1 ].isEqual( range ) ).to.be.true;
-		expect( ranges[ 0 ] ).not.to.be.equal( liveRange );
-		expect( ranges[ 1 ] ).not.to.be.equal( range );
+			expect( ranges.length ).to.equal( 2 );
+			expect( ranges[ 0 ].isEqual( liveRange ) ).to.be.true;
+			expect( ranges[ 1 ].isEqual( range ) ).to.be.true;
+			expect( ranges[ 0 ] ).not.to.be.equal( liveRange );
+			expect( ranges[ 1 ] ).not.to.be.equal( range );
+		} );
+
+		it( 'should set anchor and focus to the start and end of the most recently added range', () => {
+			selection.addRange( liveRange );
+
+			expect( selection.anchor.path ).to.deep.equal( [ 0 ] );
+			expect( selection.focus.path ).to.deep.equal( [ 1 ] );
+
+			selection.addRange( range );
+
+			expect( selection.anchor.path ).to.deep.equal( [ 2 ] );
+			expect( selection.focus.path ).to.deep.equal( [ 2, 2 ] );
+		} );
+
+		it( 'should set anchor and focus to the end and start of the most recently added range if backward flag was used', () => {
+			selection.addRange( liveRange, true );
+
+			expect( selection.anchor.path ).to.deep.equal( [ 1 ] );
+			expect( selection.focus.path ).to.deep.equal( [ 0 ] );
+
+			selection.addRange( range, true );
+
+			expect( selection.anchor.path ).to.deep.equal( [ 2, 2 ] );
+			expect( selection.focus.path ).to.deep.equal( [ 2 ] );
+		} );
+
+		it( 'should return a copy of (not a reference to) array of stored ranges', () => {
+			selection.addRange( liveRange );
+
+			let ranges = selection.getRanges();
+
+			selection.addRange( range );
+
+			expect( ranges.length ).to.equal( 1 );
+			expect( ranges[ 0 ].isEqual( liveRange ) ).to.be.true;
+		} );
+
+		it( 'should convert added Range to LiveRange', () => {
+			selection.addRange( range );
+
+			let ranges = selection.getRanges();
+
+			expect( ranges[ 0 ] ).to.be.instanceof( LiveRange );
+		} );
+
+		it( 'should fire change:range event when adding a range', () => {
+			let spy = sinon.spy();
+			selection.on( 'change:range', spy );
+
+			selection.addRange( range );
+
+			expect( spy.called ).to.be.true;
+		} );
+
+		it( 'should unbind all events when destroyed', () => {
+			selection.addRange( liveRange );
+			selection.addRange( range );
+
+			let ranges = selection.getRanges();
+
+			sinon.spy( ranges[ 0 ], 'detach' );
+			sinon.spy( ranges[ 1 ], 'detach' );
+
+			selection.destroy();
+
+			expect( ranges[ 0 ].detach.called ).to.be.true;
+			expect( ranges[ 1 ].detach.called ).to.be.true;
+
+			ranges[ 0 ].detach.restore();
+			ranges[ 1 ].detach.restore();
+		} );
+
+		it( 'should throw an error if added range intersects with already stored range', () => {
+			selection.addRange( liveRange );
+
+			expect( () => {
+				selection.addRange(
+					new Range(
+						new Position( root, [ 0, 4 ] ),
+						new Position( root, [ 1, 2 ] )
+					)
+				);
+			} ).to.throw( CKEditorError, /selection-range-intersects/ );
+		} );
 	} );
 
-	it( 'should set anchor and focus to the start and end of the most recently added range', () => {
-		selection.addRange( liveRange );
+	describe( 'collapse', () => {
+		it( 'detaches all existing ranges', () => {
+			selection.addRange( range );
+			selection.addRange( liveRange );
 
-		expect( selection.anchor.path ).to.deep.equal( [ 0 ] );
-		expect( selection.focus.path ).to.deep.equal( [ 1 ] );
+			const spy = testUtils.sinon.spy( LiveRange.prototype, 'detach' );
+			selection.collapse( root );
 
-		selection.addRange( range );
+			expect( spy.calledTwice ).to.be.true;
+		} );
 
-		expect( selection.anchor.path ).to.deep.equal( [ 2 ] );
-		expect( selection.focus.path ).to.deep.equal( [ 2, 2 ] );
-	} );
+		it( 'fires change:range', () => {
+			const spy = sinon.spy();
 
-	it( 'should set anchor and focus to the end and start of the most recently added range if backward flag was used', () => {
-		selection.addRange( liveRange, true );
+			selection.on( 'change:range', spy );
 
-		expect( selection.anchor.path ).to.deep.equal( [ 1 ] );
-		expect( selection.focus.path ).to.deep.equal( [ 0 ] );
+			selection.collapse( root );
 
-		selection.addRange( range, true );
+			expect( spy.calledOnce ).to.be.true;
+		} );
 
-		expect( selection.anchor.path ).to.deep.equal( [ 2, 2 ] );
-		expect( selection.focus.path ).to.deep.equal( [ 2 ] );
-	} );
+		it( 'sets selection at the 0 offset if second parameter not passed', () => {
+			selection.collapse( root );
 
-	it( 'should return a copy of (not a reference to) array of stored ranges', () => {
-		selection.addRange( liveRange );
+			expect( selection ).to.have.property( 'isCollapsed', true );
 
-		let ranges = selection.getRanges();
+			const focus = selection.focus;
+			expect( focus ).to.have.property( 'parent', root );
+			expect( focus ).to.have.property( 'offset', 0 );
+		} );
 
-		selection.addRange( range );
+		it( 'sets selection at given offset in given parent', () => {
+			selection.collapse( root, 3 );
 
-		expect( ranges.length ).to.equal( 1 );
-		expect( ranges[ 0 ].isEqual( liveRange ) ).to.be.true;
-	} );
+			expect( selection ).to.have.property( 'isCollapsed', true );
 
-	it( 'should convert added Range to LiveRange', () => {
-		selection.addRange( range );
+			const focus = selection.focus;
+			expect( focus ).to.have.property( 'parent', root );
+			expect( focus ).to.have.property( 'offset', 3 );
+		} );
 
-		let ranges = selection.getRanges();
+		it( 'sets selection at the end of the given parent', () => {
+			selection.collapse( root, 'END' );
 
-		expect( ranges[ 0 ] ).to.be.instanceof( LiveRange );
-	} );
+			expect( selection ).to.have.property( 'isCollapsed', true );
 
-	it( 'should fire change:range event when adding a range', () => {
-		let spy = sinon.spy();
-		selection.on( 'change:range', spy );
+			const focus = selection.focus;
+			expect( focus ).to.have.property( 'parent', root );
+			expect( focus ).to.have.property( 'offset', root.getChildCount() );
+		} );
 
-		selection.addRange( range );
+		it( 'sets selection before the specified element', () => {
+			selection.collapse( root.getChild( 1 ), 'BEFORE' );
 
-		expect( spy.called ).to.be.true;
-	} );
+			expect( selection ).to.have.property( 'isCollapsed', true );
 
-	it( 'should unbind all events when destroyed', () => {
-		selection.addRange( liveRange );
-		selection.addRange( range );
+			const focus = selection.focus;
+			expect( focus ).to.have.property( 'parent', root );
+			expect( focus ).to.have.property( 'offset', 1 );
+		} );
 
-		let ranges = selection.getRanges();
+		it( 'sets selection after the specified element', () => {
+			selection.collapse( root.getChild( 1 ), 'AFTER' );
 
-		sinon.spy( ranges[ 0 ], 'detach' );
-		sinon.spy( ranges[ 1 ], 'detach' );
+			expect( selection ).to.have.property( 'isCollapsed', true );
 
-		selection.destroy();
-
-		expect( ranges[ 0 ].detach.called ).to.be.true;
-		expect( ranges[ 1 ].detach.called ).to.be.true;
-
-		ranges[ 0 ].detach.restore();
-		ranges[ 1 ].detach.restore();
-	} );
-
-	it( 'should throw an error if added range intersects with already stored range', () => {
-		selection.addRange( liveRange );
-
-		expect( () => {
-			selection.addRange(
-				new Range(
-					new Position( root, [ 0, 4 ] ),
-					new Position( root, [ 1, 2 ] )
-				)
-			);
-		} ).to.throw( CKEditorError, /selection-range-intersects/ );
+			const focus = selection.focus;
+			expect( focus ).to.have.property( 'parent', root );
+			expect( focus ).to.have.property( 'offset', 2 );
+		} );
 	} );
 
 	describe( 'removeAllRanges', () => {
