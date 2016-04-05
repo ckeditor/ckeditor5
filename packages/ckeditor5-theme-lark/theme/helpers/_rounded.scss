@@ -1,0 +1,22 @@
+// Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+/**
+ * Default border-radius value.
+ *
+ * @access public
+ */
+$ck-border-radius: 3px !default;
+
+/**
+ * Implements rounded corner interface for .ck-rounded-corners class.
+ *
+ * @access public
+ * @see $ck-border-radius
+ */
+@mixin ck-rounded-corners() {
+	&.ck-rounded-corners,
+	.ck-rounded-corners & {
+		border-radius: $ck-border-radius;
+	}
+}

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.5.2 (25235) - http://www.bohemiancoding.com/sketch -->
+    <title>picker</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="picker" sketch:type="MSArtboardGroup" fill="#454545">
+            <g id="icon:picker" sketch:type="MSLayerGroup" transform="translate(0.000000, 1.000000)">
+                <g id="Rectangle-230-+-Oval-3-+-Rectangle-229" transform="translate(9.683996, 9.356877) rotate(-316.000000) translate(-9.683996, -9.356877) translate(5.683996, 0.356877)" sketch:type="MSShapeGroup">
+                    <path d="M2,7 L2,15.9996343 C2,17.1039635 2.89543351,18 4,18 C5.10776926,18 6,17.1050627 6,15.9996343 L6,7 L5,7 L5,15.9996343 C5,16.552121 4.55613518,17 4,17 C3.44771525,17 3,16.5516755 3,15.9996343 L3,7 L2,7 Z M6.20527682,3.97573974 C6.22184549,3.82738584 6.23044302,3.66006568 6.23044302,3.47140644 C6.23044302,1.5542016 5.3238196,8.8817842e-15 4.20544292,8.8817842e-15 C3.08706625,8.8817842e-15 2.18044283,1.5542016 2.18044283,3.47140644 C2.18044283,3.66006568 2.18940334,3.82738584 2.20662653,3.97573974 L6.20527682,3.97573974 Z M0.513009559,4.92759357 L7.1496054,4.92759357 L7.1496054,5.8794474 L0.513009559,5.8794474 L0.513009559,4.92759357 Z" id="Oval-3"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

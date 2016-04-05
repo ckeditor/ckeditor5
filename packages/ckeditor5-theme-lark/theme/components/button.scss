@@ -1,0 +1,120 @@
+// Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+/**
+ * Implements a button of given background color.
+ *
+ * @access public
+ * @param {String} $color - Background color of the button.
+ */
+@mixin ck-button( $color ) {
+	border: 1px solid;
+	white-space: nowrap;
+	cursor: pointer;
+	vertical-align: middle;
+	line-height: $ck-icon-size / $ck-font-size-base;
+	padding: ck-spacing( 'small' ) ck-spacing();
+	position: relative;
+
+	@include ck-button-colors( $color );
+	@include ck-focus-shadow();
+}
+
+/**
+ * Implements a button of given background color.
+ *
+ * @access public
+ * @param {String} $color - Background color of the button.
+ */
+@mixin ck-button-colors( $color, $offset: 0 ) {
+	background: ck-color( $color, $offset );
+	border-color: ck-border-color( $color, $offset );
+
+	@include ck-button-state-colors( $color, $offset );
+}
+
+/**
+ * Implements button states.
+ *
+ * @access public
+ * @param {String} $color - Background color of the button.
+ */
+@mixin ck-button-state-colors( $color, $offset: 0 ) {
+	&:hover,
+	&:focus {
+		background: ck-color( $color, $offset - 10 );
+		border-color: ck-border-color( $color, $offset - 10 );
+	}
+
+	&:active {
+		background: ck-color( $color, $offset - 15 );
+		border-color: ck-border-color( $color, $offset - 15 );
+		box-shadow: inset 0 2px 2px ck-color( $color, $offset - 25 );
+	}
+}
+
+/**
+ * A helper to define button–specific icon styles.
+ *
+ * @access public
+ */
+@mixin ck-button-icon {
+	[class*="ck-icon"] {
+		@content;
+	}
+}
+
+.ck-button,
+a.ck-button {
+	display: inline-block;
+	overflow: hidden;
+
+	@include ck-button( 'background' );
+	@include ck-unselectable();
+	@include ck-rounded-corners();
+
+	&.ck-button-notext {
+		padding: ck-spacing( 'small' );
+
+		@include ck-button-icon {
+			margin-left: 0;
+			margin-right: 0;
+		}
+	}
+
+	&.ck-on {
+		@include ck-button( 'foreground' );
+	}
+
+	&-action {
+		text-shadow: 0 -1px ck-color( 'action', -20 );
+		color: ck-color();
+
+		@include ck-button( 'action' );
+
+		&:hover,
+		&:focus,
+		&:active {
+			text-shadow: 0 -1px ck-color( 'action', -40 );
+		}
+	}
+
+	&-bold {
+		font-weight: bold;
+	}
+
+	.ck-icon {
+		use,
+		use * {
+			color: inherit;
+		}
+
+		&-left {
+			margin-left: -#{ck-spacing( 'small' )};
+		}
+
+		&-right {
+			margin-right: -#{ck-spacing( 'small' )};
+		}
+	}
+}

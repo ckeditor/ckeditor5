@@ -1,0 +1,77 @@
+// Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+// Reset for single elements, not their children.
+.ck-reset {
+	// Do not include inheritable rules here.
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	text-decoration: none;
+	vertical-align: middle;
+	transition: none;
+	box-sizing: border-box;
+	width: auto;
+	height: auto;
+	position: static;
+}
+
+// Reset for elements and their children.
+.ck-reset-all {
+	&, *, a, textarea {
+		// These are rule inherited by all children elements.
+		border-collapse: collapse;
+		font: normal normal normal $ck-font-size-base $ck-font-face;
+		color: ck-color( 'text' );
+		text-align: left;
+		white-space: nowrap;
+		cursor: auto;
+		float: none;
+
+		// The following must be identical to .ck-reset.
+		@extend .ck-reset;
+	}
+
+	.ck-rtl * {
+		text-align: right;
+	}
+
+	// Defaults for some elements.
+	iframe {
+		vertical-align: inherit;	// For IE
+	}
+
+	textarea {
+		white-space: pre-wrap;
+	}
+
+	textarea,
+	input[type="text"],
+	input[type="password"] {
+		cursor: text;
+	}
+
+	textarea[disabled],
+	input[type="text"][disabled],
+	input[type="password"][disabled] {
+		cursor: default;
+	}
+
+	fieldset {
+		padding: 10px;
+		border: 2px groove #E0DFE3;
+	}
+
+	table {
+		table-layout: auto;
+	}
+
+	// See http://stackoverflow.com/questions/5517744/remove-extra-button-spacing-padding-in-firefox
+	button::-moz-focus-inner {
+	    padding: 0;
+	    border: 0
+	}
+}
+
+

@@ -1,0 +1,43 @@
+// Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+/**
+ * Base font size.
+ *
+ * @access public
+ * @see $ck-font-sizes
+ */
+$ck-font-size-base: 12px !default;
+
+/**
+ * Base font face.
+ *
+ * @access public
+ */
+$ck-font-face: Helvetica, Arial, Tahoma, Verdana, Sans-Serif !default;
+
+/**
+ * Base font sizes for scaling.
+ *
+ * @access public
+ * @see ck-font-size
+ */
+$ck-font-sizes: (
+	-1: 0.75rem,
+	 0: 1rem,
+	 1: 1.4rem,
+	 2: 1.8rem
+);
+
+/**
+ * Returns font-size in units for given level.
+ *
+ * @access public
+ * @param {Number} $level [ 0 ] - Size of the font.
+ * @return {String}
+ * @see $ck-font-sizes
+ * @see $ck-font-size-base
+ */
+@function ck-font-size( $level: 0 ) {
+	@return map-get( $ck-font-sizes, $level );
+}
