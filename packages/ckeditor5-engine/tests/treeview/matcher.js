@@ -11,6 +11,42 @@ import Matcher from '/ckeditor5/engine/treeview/matcher.js';
 import Element from '/ckeditor5/engine/treeview/element.js';
 
 describe( 'Matcher', () => {
+	describe( 'add', () => {
+		it( 'should allow to add pattern to matcher', () => {
+			const matcher = new Matcher( 'div' );
+			const el = new Element( 'p', { title: 'foobar' } );
+
+			expect( matcher.match( el ) ).to.be.null;
+			const pattern = { name: 'p', attribute: { title: 'foobar' } };
+			matcher.add( pattern );
+			const result = matcher.match( el );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'element' ).that.equal( el );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'name' ).that.is.true;
+			expect( result.match ).to.have.property( 'attribute' ).that.is.an( 'array' );
+			expect( result.match.attribute[ 0 ] ).to.equal( 'title' );
+			expect( result ).to.be.an( 'object' );
+		} );
+
+		it( 'should allow to add more than one pattern', () => {
+			const matcher = new Matcher();
+			const el1 = new Element( 'p' );
+			const el2 = new Element( 'div' );
+
+			matcher.add( 'p', 'div' );
+
+			let result = matcher.match( el1 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.have.property( 'name' ).that.equal( 'p' );
+
+			result = matcher.match( el2 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el2 );
+			expect( result ).to.have.property( 'pattern' ).that.have.property( 'name' ).that.equal( 'div' );
+		} );
+	} );
+
 	describe( 'match', () => {
 		it( 'should match element name', () => {
 			const matcher = new Matcher( 'p' );
