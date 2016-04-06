@@ -8,13 +8,12 @@
  */
 $ck-icon-size: 20px;
 
-.ck-icon-manager {
+.ck-icon-manager-sprite {
 	display: none;
 
-	&-sprite {
-		* {
-			fill: currentColor; // needed by Webkit/Blink
-		}
+	* {
+		color: inherit; // allows dynamic coloring of the icons
+		fill: currentColor; // needed by Webkit/Blink
 	}
 }
 
@@ -38,6 +37,7 @@ $ck-icon-size: 20px;
 	}
 
 	* {
+		color: inherit; // allows dynamic coloring of the icons
 		fill: currentColor; // needed by FF
 	}
 
