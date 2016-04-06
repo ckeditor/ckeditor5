@@ -49,7 +49,7 @@ export default class EditableUIView extends View {
 		this.applyTemplateToElement( editableElement, {
 			attributes: {
 				contenteditable: bind.to( 'isEditable' ),
-				class: bind.to( 'isFocused', value => value ? 'ck-focused' : 'ck-blurred' )
+				class: [ bind.to( 'isFocused', value => value ? 'ck-focused' : 'ck-blurred' ) ]
 			}
 		} );
 	}
