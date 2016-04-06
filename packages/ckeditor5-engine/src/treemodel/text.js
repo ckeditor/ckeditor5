@@ -20,7 +20,7 @@ export default class Text {
 	 * Creates a text with attributes.
 	 *
 	 * @param {String} text Described text.
-	 * @param {Iterable|Object} attrs Iterable collection of attributes.
+	 * @param {Iterable|Object} [attrs] Iterable collection of attributes.
 	 */
 	constructor( text, attrs ) {
 		/**

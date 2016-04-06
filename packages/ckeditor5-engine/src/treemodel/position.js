@@ -32,6 +32,7 @@ export default class Position {
 			 */
 			throw new CKEditorError( 'position-root-invalid: Position root invalid.' );
 		}
+
 		/**
 		 * Root element for the position path.
 		 *

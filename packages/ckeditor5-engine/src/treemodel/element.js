@@ -20,8 +20,8 @@ export default class Element extends Node {
 	 * Creates a tree data model element.
 	 *
 	 * @param {String} name Node name.
-	 * @param {Iterable} attrs Iterable collection of attributes.
-	 * @param {engine.treeModel.NodeSet} children List of nodes to be inserted.
+	 * @param {Iterable} [attrs] Iterable collection of attributes.
+	 * @param {engine.treeModel.NodeSet} [children] List of nodes to be inserted.
 	 * into created element. List of nodes can be of any type accepted by the {@link engine.treeModel.NodeList} constructor.
 	 */
 	constructor( name, attrs, children ) {

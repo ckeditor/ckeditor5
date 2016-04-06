@@ -20,8 +20,8 @@ export default class Node {
 	 *
 	 * This is an abstract class, so this constructor should not be used directly.
 	 *
-	 * @param {Iterable|Object} attrs Iterable collection of attributes.
 	 * @abstract
+	 * @param {Iterable|Object} [attrs] Iterable collection of attributes.
 	 */
 	constructor( attrs ) {
 		/**
