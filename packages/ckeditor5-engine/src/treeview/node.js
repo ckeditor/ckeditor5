@@ -106,6 +106,25 @@ export default class Node {
 	}
 
 	/**
+	 * Returns ancestors array of node. Node itself is not included in the array.
+	 *
+	 * @param {Boolean} [parentFirst=false] When set to `true`, array will be sorted from node's parent to root element,
+	 * otherwise root element will be the first item in the array.
+	 * @returns {Array} Array with ancestors. Empty array is returned when node has no ancestors.
+	 */
+	getAncestors( parentFirst ) {
+		const ancestors = [];
+		let parent = this.parent;
+
+		while ( parent !== null ) {
+			ancestors[ parentFirst ? 'push' : 'unshift' ]( parent );
+			parent = parent.parent;
+		}
+
+		return ancestors;
+	}
+
+	/**
 	 * Sets the {@link engine.treeView.TreeView} of the node. Note that not all of nodes need to have {@link engine.treeView.TreeView}
 	 * assigned, see {@link engine.treeView.Node#getTreeView}.
 	 *

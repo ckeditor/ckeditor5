@@ -57,6 +57,28 @@ describe( 'Node', () => {
 		} );
 	} );
 
+	describe( 'getAncestors', () => {
+		it( 'should return empty array for node without ancestors', () => {
+			const result = root.getAncestors();
+			expect( result ).to.be.an( 'array' );
+			expect( result.length ).to.equal( 0 );
+		} );
+
+		it( 'should return array of ancestors', () => {
+			const result = charR.getAncestors();
+			expect( result.length ).to.equal( 2 );
+			expect( result[ 0 ] ).to.equal( root );
+			expect( result[ 1 ] ).to.equal( two );
+		} );
+
+		it( 'should return array of ancestors starting from parent', () => {
+			const result = charR.getAncestors( true );
+			expect( result.length ).to.equal( 2 );
+			expect( result[ 0 ] ).to.equal( two );
+			expect( result[ 1 ] ).to.equal( root );
+		} );
+	} );
+
 	describe( 'getIndex', () => {
 		it( 'should return null if the parent is null', () => {
 			expect( root.getIndex() ).to.be.null;
