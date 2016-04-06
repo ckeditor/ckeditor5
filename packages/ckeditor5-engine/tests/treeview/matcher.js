@@ -65,7 +65,7 @@ describe( 'Matcher', () => {
 		} );
 
 		it( 'should match element name with RegExp', () => {
-			const pattern = { name: /^text...a$/ };
+			const pattern = /^text...a$/;
 			const matcher = new Matcher( pattern );
 			const el1 = new Element( 'textarea' );
 			const el2 = new Element( 'div' );
@@ -74,7 +74,7 @@ describe( 'Matcher', () => {
 
 			expect( result ).to.be.an( 'object' );
 			expect( result ).to.have.property( 'element' ).that.equal( el1 );
-			expect( result ).to.have.property( 'pattern' ).that.has.property( 'name' ).that.equal( pattern.name );
+			expect( result ).to.have.property( 'pattern' ).that.has.property( 'name' ).that.equal( pattern );
 			expect( result ).to.have.property( 'match' ).that.has.property( 'name' ).that.is.true;
 			expect( matcher.match( el2 ) ).to.be.null;
 		} );
