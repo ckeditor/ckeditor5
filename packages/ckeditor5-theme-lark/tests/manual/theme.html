@@ -6,6 +6,14 @@
 			line-height: 3em;
 		}
 
+		#icons, #iconsColored {
+			overflow: hidden;
+		}
+
+		#iconsColored {
+			color: red;
+		}
+
 		#buttonResponsive div > div {
 			font-size: 1.3em;
 			line-height: 2.8em;
@@ -56,7 +64,10 @@
 </p>
 
 <h3>Icon: Availability</h3>
-<p id="icons"></p>
+<p id="icons" class="ck-reset-all"></p>
+
+<h3>Icon: Availability (colored)</h3>
+<p id="iconsColored" class="ck-reset-all"></p>
 
 <hr/>
 
@@ -79,7 +90,7 @@
 
 <h3>Button: Icon</h3>
 <div class="ck-reset-all" >
-	<div id="buttonIcon"></div>
+	<div id="buttonIcon" class="wrappable"></div>
 
 	<br/>
 
