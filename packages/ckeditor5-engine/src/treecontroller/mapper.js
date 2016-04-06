@@ -78,8 +78,8 @@ export default class Mapper {
 	/**
 	 * Gets the corresponding model range.
 	 *
-	 * @param {core.treeView.Range} viewRange View range.
-	 * @returns {core.treeModel.Range} Corresponding model range.
+	 * @param {engine.treeView.Range} viewRange View range.
+	 * @returns {engine.treeModel.Range} Corresponding model range.
 	 */
 	toModelRange( viewRange ) {
 		return new ModelRange( this.toModelPosition( viewRange.start ), this.toModelPosition( viewRange.end ) );
@@ -88,8 +88,8 @@ export default class Mapper {
 	/**
 	 * Gets the corresponding view range.
 	 *
-	 * @param {core.treeModel.Range} modelRange Model range.
-	 * @returns {core.treeView.Range} Corresponding view range.
+	 * @param {engine.treeModel.Range} modelRange Model range.
+	 * @returns {engine.treeView.Range} Corresponding view range.
 	 */
 	toViewRange( modelRange ) {
 		return new ViewRange( this.toViewPosition( modelRange.start ), this.toViewPosition( modelRange.end ) );
