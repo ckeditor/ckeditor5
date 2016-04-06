@@ -279,6 +279,7 @@ describe( 'View', () => {
 
 				view.model.foo = 'baz';
 				expect( view.element.outerHTML ).to.equal( '<p class="baz">abc</p>' );
+				expect( view.element.attributes.getNamedItem( 'class' ).namespaceURI ).to.be.null;
 			} );
 
 			it( 'allows binding attribute to the model – simple (Text Node)', () => {
@@ -466,6 +467,31 @@ describe( 'View', () => {
 
 				view.model.foo = '';
 				expect( view.element.outerHTML ).to.equal( '<p>abc</p>' );
+			} );
+
+			it( 'allows binding attribute to the model – a custom namespace', () => {
+				setTestViewClass( function() {
+					const bind = this.attributeBinder;
+
+					return {
+						tag: 'p',
+						attributes: {
+							'class': {
+								ns: 'foo',
+								value: bind.to( 'foo' )
+							}
+						},
+						children: [ 'abc' ]
+					};
+				} );
+
+				setTestViewInstance( { foo: 'bar' } );
+				expect( view.element.outerHTML ).to.equal( '<p class="bar">abc</p>' );
+				expect( view.element.attributes.getNamedItem( 'class' ).namespaceURI ).to.equal( 'foo' );
+
+				view.model.foo = 'baz';
+				expect( view.element.outerHTML ).to.equal( '<p class="baz">abc</p>' );
+				expect( view.element.attributes.getNamedItem( 'class' ).namespaceURI ).to.equal( 'foo' );
 			} );
 		} );
 
