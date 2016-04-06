@@ -25,7 +25,7 @@ class ViewElementConsumables {
 	 */
 	constructor()  {
 		/**
-		 * Boolean value that indicates if name of the element can be consumed.
+		 * Flag indicating if name of the element can be consumed.
 		 *
 		 * @private
 		 * @member {Boolean} engine.treeController.ViewElementConsumables#_canConsumeName
@@ -33,7 +33,7 @@ class ViewElementConsumables {
 		this._canConsumeName = null;
 
 		/**
-		 * Object containing maps of element's consumables: attributes, classes and styles.
+		 * Contains maps of element's consumables: attributes, classes and styles.
 		 *
 		 * @private
 		 * @member {Object} engine.treeController.ViewElementConsumables#_consumables
@@ -46,7 +46,7 @@ class ViewElementConsumables {
 	}
 
 	/**
-	 * Adds consumable parts of the {@link engine.treeView.Element view Element}.
+	 * Adds consumable parts of the {@link engine.treeView.Element view element}.
 	 * Element's name itself can be marked to be consumed (when element's name is consumed its attributes, classes and
 	 * styles still could be consumed):
 	 *
@@ -62,9 +62,9 @@ class ViewElementConsumables {
 	 *
 	 * @param {Object} consumables Object describing which parts of the element can be consumed.
 	 * @param {Boolean} consumables.name If set to `true` element's name will be added as consumable.
-	 * @param {String|Array} consumables.attribute Attribute name or array of attribute names to add as consumable.
-	 * @param {String|Array} consumables.class Class name or array of class names to add as consumable.
-	 * @param {String|Array} consumables.style Style name or array of style names to add as consumable.
+	 * @param {String|Array.<String>} consumables.attribute Attribute name or array of attribute names to add as consumable.
+	 * @param {String|Array.<String>} consumables.class Class name or array of class names to add as consumable.
+	 * @param {String|Array.<String>} consumables.style Style name or array of style names to add as consumable.
 	 */
 	add( consumables ) {
 		if ( consumables.name ) {
@@ -79,9 +79,7 @@ class ViewElementConsumables {
 	}
 
 	/**
-	 * Tests if parts of the {@link engine.treeView.Element view Element} can be consumed. Returns `true` when all tested
-	 * items can be consumed, `null` when even one of the items were never marked for consumption and `false` when even
-	 * one of the items were already consumed.
+	 * Tests if parts of the {@link engine.treeView.Element view element} can be consumed.
 	 *
 	 * Element's name can be tested:
 	 *
@@ -94,11 +92,11 @@ class ViewElementConsumables {
 	 *
 	 * @param {Object} consumables Object describing which parts of the element should be tested.
 	 * @param {Boolean} consumables.name If set to `true` element's name will be tested.
-	 * @param {String|Array} consumables.attribute Attribute name or array of attribute names to test.
-	 * @param {String|Array} consumables.class Class name or array of class names to test.
-	 * @param {String|Array} consumables.style Style name or array of style names to test.
-	 * @returns {Boolean|null} Returns `true` when all tested items can be consumed, `null` when even one of the items
-	 * were never marked for consumption and `false` when even one of the items were already consumed.
+	 * @param {String|Array.<String>} consumables.attribute Attribute name or array of attribute names to test.
+	 * @param {String|Array.<String>} consumables.class Class name or array of class names to test.
+	 * @param {String|Array.<String>} consumables.style Style name or array of style names to test.
+	 * @returns {Boolean|null} `true` when all tested items can be consumed, `null` when even one of the items
+	 * was never marked for consumption and `false` when even one of the items was already consumed.
 	 */
 	test( consumables ) {
 		// Check if name can be consumed.
@@ -121,7 +119,7 @@ class ViewElementConsumables {
 	}
 
 	/**
-	 * Consumes parts of {@link engine.treeView.Element view Element}. This function does not check if consumable item
+	 * Consumes parts of {@link engine.treeView.Element view element}. This function does not check if consumable item
 	 * is already consumed - it consumes all consumable items provided.
 	 * Element's name can be consumed:
 	 *
@@ -134,9 +132,9 @@ class ViewElementConsumables {
 	 *
 	 * @param {Object} consumables Object describing which parts of the element should be consumed.
 	 * @param {Boolean} consumables.name If set to `true` element's name will be consumed.
-	 * @param {String|Array} consumables.attribute Attribute name or array of attribute names to consume.
-	 * @param {String|Array} consumables.class Class name or array of class names to consume.
-	 * @param {String|Array} consumables.style Style name or array of style names to consume.
+	 * @param {String|Array.<String>} consumables.attribute Attribute name or array of attribute names to consume.
+	 * @param {String|Array.<String>} consumables.class Class name or array of class names to consume.
+	 * @param {String|Array.<String>} consumables.style Style name or array of style names to consume.
 	 */
 	consume( consumables ) {
 		if ( consumables.name ) {
@@ -163,9 +161,9 @@ class ViewElementConsumables {
 	 *
 	 * @param {Object} consumables Object describing which parts of the element should be reverted.
 	 * @param {Boolean} consumables.name If set to `true` element's name will be reverted.
-	 * @param {String|Array} consumables.attribute Attribute name or array of attribute names to revert.
-	 * @param {String|Array} consumables.class Class name or array of class names to revert.
-	 * @param {String|Array} consumables.style Style name or array of style names to revert.
+	 * @param {String|Array.<String>} consumables.attribute Attribute name or array of attribute names to revert.
+	 * @param {String|Array.<String>} consumables.class Class name or array of class names to revert.
+	 * @param {String|Array.<String>} consumables.style Style name or array of style names to revert.
 	 */
 	revert( consumables ) {
 		if ( consumables.name ) {
@@ -180,14 +178,14 @@ class ViewElementConsumables {
 	}
 
 	/**
-	 * Helper method that adds consumables from one type: attribute, class or style.
+	 * Helper method that adds consumables of a given type: attribute, class or style.
 	 *
 	 * Throws {@link utils.CKEditorError CKEditorError} `viewconsumable-invalid-attribute` when `class` or `style`
 	 * type is provided - it should be handled separately by providing actual style/class type.
 	 *
 	 * @private
 	 * @param {String} type Type of the consumable item: `attribute`, `class` or `style`.
-	 * @param {String|Array} item Consumable item or array of items.
+	 * @param {String|Array.<String>} item Consumable item or array of items.
 	 */
 	_add( type, item ) {
 		const items = isArray( item ) ? item : [ item ];
@@ -208,11 +206,11 @@ class ViewElementConsumables {
 	}
 
 	/**
-	 * Helper method that tests consumables from one type: attribute, class or style.
+	 * Helper method that tests consumables of a given type: attribute, class or style.
 	 *
 	 * @private
 	 * @param {String} type Type of the consumable item: `attribute`, `class` or `style`.
-	 * @param {String|Array} item Consumable item or array of items.
+	 * @param {String|Array.<String>} item Consumable item or array of items.
 	 * @returns {Boolean|null} Returns `true` if all items can be consumed, `null` when one of the items cannot be
 	 * consumed and `false` when one of the items is already consumed.
 	 */
@@ -245,11 +243,11 @@ class ViewElementConsumables {
 	}
 
 	/**
-	 * Helper method that consumes items from one type: attribute, class or style.
+	 * Helper method that consumes items of a given type: attribute, class or style.
 	 *
 	 * @private
 	 * @param {String} type Type of the consumable item: `attribute`, `class` or `style`.
-	 * @param {String|Array} item Consumable item or array of items.
+	 * @param {String|Array.<String>} item Consumable item or array of items.
 	 */
 	_consume( type, item ) {
 		const items = isArray( item ) ? item : [ item ];
@@ -266,11 +264,11 @@ class ViewElementConsumables {
 	}
 
 	/**
-	 * Helper method that reverts items from one type: attribute, class or style.
+	 * Helper method that reverts items of a given type: attribute, class or style.
 	 *
 	 * @private
 	 * @param {String} type Type of the consumable item: `attribute`, `class` or , `style`.
-	 * @param {String|Array} item Consumable item or array of items.
+	 * @param {String|Array.<String>} item Consumable item or array of items.
 	 */
 	_revert( type, item ) {
 		const items = isArray( item ) ? item : [ item ];
@@ -356,9 +354,9 @@ export default class ViewConsumable {
 	 * @param {engine.treeView.Element|engine.treeView.Text|engine.treeView.DocumentFragment} element
 	 * @param {Object} [consumables] Used only if first parameter is {@link engine.treeView.Element view element} instance.
 	 * @param {Boolean} consumables.name If set to true element's name will be included.
-	 * @param {String|Array} consumables.attribute Attribute name or array of attribute names.
-	 * @param {String|Array} consumables.class Class name or array of class names.
-	 * @param {String|Array} consumables.style Style name or array of style names.
+	 * @param {String|Array.<String>} consumables.attribute Attribute name or array of attribute names.
+	 * @param {String|Array.<String>} consumables.class Class name or array of class names.
+	 * @param {String|Array.<String>} consumables.style Style name or array of style names.
 	 */
 	add( element, consumables ) {
 		let elementConsumables;
@@ -404,9 +402,9 @@ export default class ViewConsumable {
 	 * @param {engine.treeView.Element|engine.treeView.Text|engine.treeView.DocumentFragment} element
 	 * @param {Object} [consumables] Used only if first parameter is {@link engine.treeView.Element view element} instance.
 	 * @param {Boolean} consumables.name If set to true element's name will be included.
-	 * @param {String|Array} consumables.attribute Attribute name or array of attribute names.
-	 * @param {String|Array} consumables.class Class name or array of class names.
-	 * @param {String|Array} consumables.style Style name or array of style names.
+	 * @param {String|Array.<String>} consumables.attribute Attribute name or array of attribute names.
+	 * @param {String|Array.<String>} consumables.class Class name or array of class names.
+	 * @param {String|Array.<String>} consumables.style Style name or array of style names.
 	 * @returns {Boolean|null} Returns `true` when all items included in method's call can be consumed. Returns `false`
 	 * when first already consumed item is found and `null` when first non-consumable item is found.
 	 */
@@ -448,9 +446,9 @@ export default class ViewConsumable {
 	 * @param {engine.treeView.Element|engine.treeView.Text|engine.treeView.DocumentFragment} element
 	 * @param {Object} [consumables] Used only if first parameter is {@link engine.treeView.Element view element} instance.
 	 * @param {Boolean} consumables.name If set to true element's name will be included.
-	 * @param {String|Array} consumables.attribute Attribute name or array of attribute names.
-	 * @param {String|Array} consumables.class Class name or array of class names.
-	 * @param {String|Array} consumables.style Style name or array of style names.
+	 * @param {String|Array.<String>} consumables.attribute Attribute name or array of attribute names.
+	 * @param {String|Array.<String>} consumables.class Class name or array of class names.
+	 * @param {String|Array.<String>} consumables.style Style name or array of style names.
 	 * @returns {Boolean} Returns `true` when all items included in method's call can be consumed,
 	 * otherwise returns `false`.
 	 */
@@ -494,9 +492,9 @@ export default class ViewConsumable {
 	 * @param {engine.treeView.Element|engine.treeView.Text|engine.treeView.DocumentFragment} element
 	 * @param {Object} [consumables] Used only if first parameter is {@link engine.treeView.Element view element} instance.
 	 * @param {Boolean} consumables.name If set to true element's name will be included.
-	 * @param {String|Array} consumables.attribute Attribute name or array of attribute names.
-	 * @param {String|Array} consumables.class Class name or array of class names.
-	 * @param {String|Array} consumables.style Style name or array of style names.
+	 * @param {String|Array.<String>} consumables.attribute Attribute name or array of attribute names.
+	 * @param {String|Array.<String>} consumables.class Class name or array of class names.
+	 * @param {String|Array.<String>} consumables.style Style name or array of style names.
 	 */
 	revert( element, consumables ) {
 		const elementConsumables = this._consumables.get( element );
@@ -560,9 +558,10 @@ export default class ViewConsumable {
 	 * Instance will contain all elements, child nodes, attributes, styles and classes added for consumption.
 	 *
 	 * @static
-	 * @param {engine.treeView.Element|engine.treeView.DocumentFragment} root
-	 * @param {engine.treeController.ViewConsumable} [instance] Optionally this instance can be used to add all
-	 * consumables from provided root. It will be returned instead of new instance.
+	 * @param {engine.treeView.Element|engine.treeView.DocumentFragment} from View element or document fragment
+	 * from which `ViewConsumable` will be created.
+	 * @param {engine.treeController.ViewConsumable} [instance] If provided, given `ViewConsumable` instance will be used
+	 * to add all consumables. It will be returned instead of a new instance.
 	 */
 	static createFromElement( root, instance ) {
 		if ( !instance ) {
