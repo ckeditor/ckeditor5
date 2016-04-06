@@ -298,21 +298,21 @@ export default class Document {
 	 * Change event is fired after the change is done. This means that any ranges or positions passed in
 	 * `data` are referencing nodes and paths in updated tree model.
 	 *
-	 * @event core.treeModel.Document.change
+	 * @event engine.treeModel.Document.change
 	 * @param {String} type Change type, possible option: 'insert', 'remove', 'reinsert', 'move', 'attribute'.
 	 * @param {Object} data Additional information about the change.
-	 * @param {core.treeModel.Range} data.range Range containing changed nodes. Note that for 'remove' the range will be in the
-	 * {@link core.treeModel.Document#graveyard graveyard root}. This is undefined for root types.
-	 * @param {core.treeModel.Position} [data.sourcePosition] Change source position. Exists for 'remove', 'reinsert' and 'move'.
-	 * Note that for 'reinsert' the source position will be in the {@link core.treeModel.Document#graveyard graveyard root}.
+	 * @param {engine.treeModel.Range} data.range Range containing changed nodes. Note that for 'remove' the range will be in the
+	 * {@link engine.treeModel.Document#graveyard graveyard root}. This is undefined for root types.
+	 * @param {engine.treeModel.Position} [data.sourcePosition] Change source position. Exists for 'remove', 'reinsert' and 'move'.
+	 * Note that for 'reinsert' the source position will be in the {@link engine.treeModel.Document#graveyard graveyard root}.
 	 * @param {String} [data.key] Only for attribute types. Key of changed / inserted / removed attribute.
 	 * @param {*} [data.oldValue] Only for 'removeAttribute', 'removeRootAttribute', 'changeAttribute' or
 	 * 'changeRootAttribute' type.
 	 * @param {*} [data.newValue] Only for 'addAttribute', 'addRootAttribute', 'changeAttribute' or
 	 * 'changeRootAttribute' type.
-	 * @param {core.treeModel.RootElement} [changeInfo.root] Root element which attributes got changed. This is defined
+	 * @param {engine.treeModel.RootElement} [changeInfo.root] Root element which attributes got changed. This is defined
 	 * only for root types.
-	 * @param {core.treeModel.Batch} batch A {@link core.treeModel.Batch batch} of changes which this change is a part of.
+	 * @param {engine.treeModel.Batch} batch A {@link engine.treeModel.Batch batch} of changes which this change is a part of.
 	 */
 
 	/**
