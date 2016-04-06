@@ -8,6 +8,8 @@
 import TreeWalker from '/ckeditor5/engine/treemodel/treewalker.js';
 import Range from '/ckeditor5/engine/treemodel/range.js';
 import Position from '/ckeditor5/engine/treemodel/position.js';
+import Text from '/ckeditor5/engine/treemodel/text.js';
+import Element from '/ckeditor5/engine/treemodel/element.js';
 
 /**
  * Writes the contents of the document to an HTML-like string.
@@ -44,7 +46,34 @@ export function getData( document, rootName, options ) {
 	return ret;
 }
 
-// -- Private stuff -----------------------------------------------------------
+export function setData( document, rootName, data ) {
+	let appendTo = document.getRoot( rootName );
+	const path = [];
+
+	for ( let token of tokenize( data ) ) {
+		if ( token.type == 'text' ) {
+			appendTo.appendChildren( new Text( token.text, token.attributes ) );
+		} else if ( token.type == 'openingTag' ) {
+			let el = new Element( token.name, token.attributes );
+			appendTo.appendChildren( el );
+
+			appendTo = el;
+			path.push( token.name );
+		} else {
+			if ( path.pop() != token.name ) {
+				throw new Error( 'Parse error - unexpected closing tag.' );
+			}
+
+			appendTo = appendTo.parent;
+		}
+	}
+
+	if ( path.length ) {
+		throw new Error( 'Parse error - missing closing tags: ' + path.join( ', ' ) + '.' );
+	}
+}
+
+// -- getData helpers ---------------------------------------------------------
 
 function writeItem( walkerValue, selection, options ) {
 	const type = walkerValue.type;
@@ -133,4 +162,97 @@ function writeSelection( currentPosition, selection ) {
 	ret += ( selection.isCollapsed ? ' />' : '>' );
 
 	return ret;
+}
+
+// -- setData helpers ---------------------------------------------------------
+
+const patterns = {
+	textTag: /^<\$text ([^>]+)>([\s\S]+?)<\/\$text>/,
+	tag: /^<([^>]+)>/,
+	text: /^[^<]+/
+};
+const handlers = {
+	textTag( match ) {
+		return {
+			type: 'text',
+			attributes: parseAttributes( match[ 1 ] ),
+			text: match[ 2 ]
+		};
+	},
+
+	tag( match ) {
+		const tagContents = match[ 1 ].split( /\s+/ );
+		const tagName = tagContents.shift();
+		const attrs = tagContents.join( ' ' );
+
+		if ( tagName[ 0 ] == '/' ) {
+			return {
+				type: 'closingTag',
+				name: tagName.slice( 1 )
+			};
+		}
+
+		return {
+			type: 'openingTag',
+			name: tagName,
+			attributes: parseAttributes( attrs )
+		};
+	},
+
+	text( match ) {
+		return {
+			type: 'text',
+			text: match[ 0 ]
+		};
+	}
+};
+
+function *tokenize( data ) {
+	while ( data ) {
+		const consumed = consumeNextToken( data );
+
+		data = consumed.data;
+		yield consumed.token;
+	}
+}
+
+function consumeNextToken( data ) {
+	let match;
+
+	for ( let patternName in patterns ) {
+		match = data.match( patterns[ patternName ] );
+
+		if ( match ) {
+			data = data.slice( match[ 0 ].length );
+
+			return {
+				token: handlers[ patternName ]( match ),
+				data
+			};
+		}
+	}
+
+	throw new Error( 'Parse error - unpexpected token: ' + data + '.' );
+}
+
+function parseAttributes( attrsString  ) {
+	if ( !attrsString  ) {
+		return {};
+	}
+
+	const pattern = /(\w+)=("[^"]+"|[^\s]+)\s*/;
+	const attrs = {};
+
+	while ( attrsString ) {
+		let match = attrsString.match( pattern );
+
+		if ( !match ) {
+			throw new Error( 'Parse error - unexpected token: ' + attrsString + '.' );
+		}
+
+		attrs[ match[ 1 ] ] = JSON.parse( match[ 2 ] );
+		attrsString = attrsString.slice( match[ 0 ].length );
+	}
+
+	return attrs;
 }

@@ -5,7 +5,7 @@
 
 'use strict';
 
-import { getData } from '/tests/engine/_utils/model.js';
+import { getData, setData } from '/tests/engine/_utils/model.js';
 import Document from '/ckeditor5/engine/treemodel/document.js';
 import Element from '/ckeditor5/engine/treemodel/element.js';
 import Text from '/ckeditor5/engine/treemodel/text.js';
@@ -188,5 +188,74 @@ describe( 'model test utils', () => {
 				);
 			} );
 		} );
+	} );
+
+	describe( 'setData', () => {
+		test( 'creates elements', {
+			data: '<a></a><b><c></c></b>'
+		} );
+
+		test( 'creates text nodes', {
+			data: 'foo<a>bar</a>bom'
+		} );
+
+		test( 'sets elements attributes', {
+			data: '<a foo=1 bar=true car="x y"><b x="y"></b></a>',
+			output: '<a bar=true car="x y" foo=1><b x="y"></b></a>',
+			check() {
+				expect( root.getChild( 0 ).getAttribute( 'car' ) ).to.equal( 'x y' );
+			}
+		} );
+
+		test( 'sets complex attributes', {
+			data: '<a foo={"a":1,"b":"c"}></a>',
+			check() {
+				expect( root.getChild( 0 ).getAttribute( 'a' ) ).to.equal( 1 );
+				expect( root.getChild( 0 ).getAttribute( 'b' ) ).to.equal( 'c' );
+			}
+		} );
+
+		test( 'sets text attributes', {
+			data: '<$text bold=true italic=true>foo</$text><$text bold=true>bar</$text>bom',
+			check() {
+				expect( root.getChildCount() ).to.equal( 3 );
+				expect( root.getChild( 0 ) ).to.have.property( 'text', 'foo' );
+				expect( root.getChild( 0 ).getAttribute( 'italic' ) ).to.equal( true );
+			}
+		} );
+
+		it( 'throws when unexpected closing tag', () => {
+			expect( () => {
+				setData( document, 'main', '<a><b></a></b>' );
+			} ).to.throw();
+		} );
+
+		it( 'throws when unexpected attribute', () => {
+			expect( () => {
+				setData( document, 'main', '<a ?></a>' );
+			} ).to.throw();
+		} );
+
+		it( 'throws when incorrect tag', () => {
+			expect( () => {
+				setData( document, 'main', '<a' );
+			} ).to.throw();
+		} );
+
+		it( 'throws when missing closing tag', () => {
+			expect( () => {
+				setData( document, 'main', '<a><b></b>' );
+			} ).to.throw();
+		} );
+
+		function test( title, options ) {
+			it( title, () => {
+				let output = options.output || options.data;
+
+				setData( document, 'main', options.data, options.setDataOptions );
+
+				expect( getData( document, 'main', options.getDataOptions ) ).to.equal( output );
+			} );
+		}
 	} );
 } );
