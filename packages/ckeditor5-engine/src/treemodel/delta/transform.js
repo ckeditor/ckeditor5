@@ -65,6 +65,8 @@ function updateBaseVersion( baseVersion, deltas ) {
  * This algorithm is similar to popular `dOPT` algorithm used in operational transformation, as we are in fact
  * transforming two sets of operations by each other.
  *
+ * @external engine.treeModel.delta.transform
+ * @function engine.treeModel.delta.transform.defaultTransform
  * @param {engine.treeModel.delta.Delta} a Delta that will be transformed.
  * @param {engine.treeModel.delta.Delta} b Delta to transform by.
  * @param {Boolean} isAMoreImportantThanB Flag indicating whether the delta which will be transformed (`a`) should be treated
@@ -161,11 +163,11 @@ export function defaultTransform( a, b, isAMoreImportantThanB ) {
 /**
  * Adds a special case callback for given delta classes.
  *
+ * @external engine.treeModel.delta.transform
+ * @function engine.treeModel.delta.transform.addTransformationCase
  * @param {Function} A Delta constructor which instance will get transformed.
  * @param {Function} B Delta constructor which instance will be transformed by.
  * @param {Function} resolver A callback that will handle custom special case transformation for instances of given delta classes.
- * @external engine.treeModel.delta.transform
- * @function engine.treeModel.delta.transform.addTransformationCase
  */
 export function addTransformationCase( A, B, resolver ) {
 	let casesA = specialCases.get( A );
@@ -181,10 +183,10 @@ export function addTransformationCase( A, B, resolver ) {
 /**
  * Gets a special case callback which was previously {@link engine.treeModel.delta.transform.addTransformationCase added}.
  *
- * @param {engine.treeModel.delta.Delta} a Delta to transform.
- * @param {engine.treeModel.delta.Delta} b Delta to be transformed by.
  * @external engine.treeModel.delta.transform
  * @function engine.treeModel.delta.transform.getTransformationCase
+ * @param {engine.treeModel.delta.Delta} a Delta to transform.
+ * @param {engine.treeModel.delta.Delta} b Delta to be transformed by.
  */
 export function getTransformationCase( a, b ) {
 	let casesA = specialCases.get( a.constructor );
