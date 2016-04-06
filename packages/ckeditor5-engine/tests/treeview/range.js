@@ -73,4 +73,14 @@ describe( 'Range', () => {
 			expect( range1.isEqual( range2 ) ).to.be.false;
 		} );
 	} );
+
+	describe( 'createFromRange', () => {
+		it( 'should create a new instance of Range that is equal to passed range', () => {
+			const range = new Range( new Position( {}, 0 ), new Position( {}, 1 ) );
+			const clone = Range.createFromRange( range );
+
+			expect( clone ).not.to.be.equal( range ); // clone is not pointing to the same object as position
+			expect( clone.isEqual( range ) ).to.be.true; // but they are equal in the position-sense
+		} );
+	} );
 } );

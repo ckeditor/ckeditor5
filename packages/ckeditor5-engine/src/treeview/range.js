@@ -72,4 +72,14 @@ export default class Range {
 			new Position( endElement, endOffset )
 		);
 	}
+
+	/**
+	 * Creates and returns a new instance of Range which is equal to passed range.
+	 *
+	 * @param {engine.treeView.Range} range Range to clone.
+	 * @returns {engine.treeView.Range}
+	 */
+	static createFromRange( range ) {
+		return new this( range.start, range.end );
+	}
 }
