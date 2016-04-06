@@ -631,6 +631,11 @@ describe( 'build-utils', () => {
 						path: 'baz/qux/theme.scss',
 						contents: new Buffer( '' )
 					} ),
+					new Vinyl( {
+						cwd: './',
+						path: 'C:\\win\\dows\\theme.scss',
+						contents: new Buffer( '' )
+					} )
 				];
 
 				const fake = new stream.Readable( { objectMode: true } );
@@ -662,7 +667,8 @@ describe( 'build-utils', () => {
 				}, () => {
 					expect( compiledThemePath ).to.be.equal( 'abc.css' );
 					expect( compiledThemeCss.toString() ).to.be.equal(
-`/*! baz/qux/theme.scss */
+`/*! C:\\win\\dows\\theme.scss */
+/*! baz/qux/theme.scss */
 /*! foo/bar/theme.scss */
 ` );
 
@@ -703,6 +709,8 @@ describe( 'build-utils', () => {
 			const options = utils.getIconSpriteOptions();
 
 			expect( options.shape.id.generator( 'foo.svg' ) ).to.equal( 'ck-icon-foo' );
+			expect( options.shape.id.generator( 'foo/bar/foo.svg' ) ).to.equal( 'ck-icon-foo' );
+			expect( options.shape.id.generator( 'C:\\foo\\foo.svg' ) ).to.equal( 'ck-icon-foo' );
 		} );
 
 		it( 'returns configuration to output JavaScript sprite', () => {

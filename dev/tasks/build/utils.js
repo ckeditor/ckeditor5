@@ -434,7 +434,8 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 		function renderThemeFromEntryPoints( callback ) {
 			gutil.log( `Compiling '${ gutil.colors.cyan( fileName ) }' from ${ gutil.colors.cyan( paths.length ) } entry points...` );
 
-			const dataToRender = paths.map( p => `@import '${ p }';` )
+			// Note: Make sure windows\\style\\paths are preserved.
+			const dataToRender = paths.map( p => `@import "${ p.replace( /\\/g, '\\\\' ) }";` )
 				.join( '\n' );
 
 			try {
@@ -534,7 +535,8 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 		return {
 			shape: {
 				id: {
-					generator: name => `ck-icon-${ name.match( /([^\/]*)\.svg$/ )[ 1 ] }`
+					// Note: Consider unix/style/paths and windows\\style\\paths.
+					generator: name => `ck-icon-${ name.match( /([^\/\\]*)\.svg$/ )[ 1 ] }`
 				},
 			},
 			svg: {
