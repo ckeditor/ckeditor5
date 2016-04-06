@@ -563,25 +563,25 @@ export default class ViewConsumable {
 	 * @param {engine.treeController.ViewConsumable} [instance] If provided, given `ViewConsumable` instance will be used
 	 * to add all consumables. It will be returned instead of a new instance.
 	 */
-	static createFromElement( root, instance ) {
+	static createFrom( from, instance ) {
 		if ( !instance ) {
 			instance = new ViewConsumable();
 		}
 
-		// Add root itself if it is an element.
-		if ( root instanceof ViewElement ) {
-			instance.add( root, ViewConsumable.consumablesFromElement( root ) );
+		// Add `from` itself, if it is an element.
+		if ( from instanceof ViewElement ) {
+			instance.add( from, ViewConsumable.consumablesFromElement( from ) );
 		}
 
-		if ( root instanceof ViewDocumentFragment ) {
-			instance.add( root );
+		if ( from instanceof ViewDocumentFragment ) {
+			instance.add( from );
 		}
 
-		for ( let child of root.getChildren() ) {
+		for ( let child of from.getChildren() ) {
 			if ( child instanceof ViewText ) {
 				instance.add( child );
 			} else {
-				instance = ViewConsumable.createFromElement( child, instance );
+				instance = ViewConsumable.createFrom( child, instance );
 			}
 		}
 
