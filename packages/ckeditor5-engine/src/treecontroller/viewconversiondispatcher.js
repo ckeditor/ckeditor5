@@ -98,49 +98,21 @@ export default class ViewConversionDispatcher {
 	/**
 	 * Creates a `ViewConversionDispatcher` that operates using passed API.
 	 *
-	 * @param {Object} conversionApi Interface passed by dispatcher to the events callbacks.
+	 * @see engine.treeController.ViewConversionApi
+	 * @param {Object} conversionApi Additional properties for interface that will be passed to events fired
+	 * by `ViewConversionDispatcher`.
 	 */
-	constructor( conversionApi ) {
+	constructor( conversionApi = {} ) {
 		/**
 		 * Interface passed by dispatcher to the events callbacks.
 		 *
-		 * @member {Object} engine.treeController.ViewConversionDispatcher#conversionApi
+		 * @member {engine.treeController.ViewConversionApi} engine.treeController.ViewConversionDispatcher#conversionApi
 		 */
-		this.conversionApi = conversionApi;
+		this.conversionApi = extend( {}, conversionApi );
 
 		// `convertItem` and `convertChildren` are bound to this `ViewConversionDispatcher` instance and
 		// set on `conversionApi`. This way only a part of `ViewConversionDispatcher` API is exposed.
-		/**
-		 * Converts given item by firing an appropriate event and returning results of callbacks provided for that event.
-		 *
-		 * Every fired event is passed (as first parameter) an object with `output` property. Every event may set and/or
-		 * modify that property. When all callbacks are done, the final value of `output` property is returned by this method.
-		 *
-		 * @member {Function} engine.treeController.ViewConversionDispatcher#conversionApi.convertItem
-		 * @fires engine.treeController.ViewConversionDispatcher.element
-		 * @fires engine.treeController.ViewConversionDispatcher.text
-		 * @fires engine.treeController.ViewConversionDispatcher.documentFragment
-		 * @param {engine.treeView.DocumentFragment|engine.treeView.Element|engine.treeView.Text} input Item to convert.
-		 * @param {engine.treeController.ViewConsumable} consumable Values to consume.
-		 * @param {Object} [additionalData] Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
-		 * events. See also {@link engine.treeController.ViewConversionDispatcher.element element event}.
-		 * @returns {*} The result of item conversion, created and modified by callbacks attached to fired event.
-		 */
 		this.conversionApi.convertItem = this._convertItem.bind( this );
-
-		/**
-		 * Converts all children of given item.
-		 *
-		 * @member {Function} engine.treeController.ViewConversionDispatcher#conversionApi.convertChildren
-		 * @fires engine.treeController.ViewConversionDispatcher.element
-		 * @fires engine.treeController.ViewConversionDispatcher.text
-		 * @fires engine.treeController.ViewConversionDispatcher.documentFragment
-		 * @param {engine.treeView.DocumentFragment|engine.treeView.Element} input Item which children will be converted.
-		 * @param {engine.treeController.ViewConsumable} consumable Values to consume.
-		 * @param {Object} [additionalData] Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
-		 * events. See also {@link engine.treeController.ViewConversionDispatcher.element element event}.
-		 * @returns {Array.<*>} Array containing results of conversion of all children of given item.
-		 */
 		this.conversionApi.convertChildren = this._convertChildren.bind( this );
 	}
 
@@ -165,7 +137,7 @@ export default class ViewConversionDispatcher {
 
 	/**
 	 * @private
-	 * @see engine.treeController.ViewConversionDispatcher#conversionApi
+	 * @see engine.treeController.ViewConversionApi#convertItem
 	 */
 	_convertItem( input, consumable, additionalData = {} ) {
 		const data = extend( additionalData, {
@@ -186,7 +158,7 @@ export default class ViewConversionDispatcher {
 
 	/**
 	 * @private
-	 * @see engine.treeController.ViewConversionDispatcher#conversionApi
+	 * @see engine.treeController.ViewConversionApi#convertChildren
 	 */
 	_convertChildren( input, consumable, additionalData = {} ) {
 		const viewChildren = Array.from( input.getChildren() );
@@ -242,3 +214,46 @@ export default class ViewConversionDispatcher {
 }
 
 utils.mix( ViewConversionDispatcher, EmitterMixin );
+
+/**
+ * Conversion interface that is registered for given {@link engine.treeController.ViewConversionDispatcher} and is
+ * passed as one of parameters when {@link engine.treeController.ViewConversionDispatcher dispatcher} fires it's events.
+ *
+ * `ViewConversionApi` object is built by {@link engine.treeController.ViewConversionDispatcher} constructor. The exact
+ * list of properties of this object is determined by the object passed to the constructor.
+ *
+ * @interface engine.treeController.ViewConversionApi
+ */
+
+/**
+ * Starts conversion of given item by firing an appropriate event.
+ *
+ * Every fired event is passed (as first parameter) an object with `output` property. Every event may set and/or
+ * modify that property. When all callbacks are done, the final value of `output` property is returned by this method.
+ *
+ * @memberOf engine.treeController.ViewConversionApi
+ * @function covertItem
+ * @fires engine.treeController.ViewConversionDispatcher.element
+ * @fires engine.treeController.ViewConversionDispatcher.text
+ * @fires engine.treeController.ViewConversionDispatcher.documentFragment
+ * @param {engine.treeView.DocumentFragment|engine.treeView.Element|engine.treeView.Text} input Item to convert.
+ * @param {engine.treeController.ViewConsumable} consumable Values to consume.
+ * @param {Object} [additionalData] Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
+ * events. See also {@link engine.treeController.ViewConversionDispatcher.element element event}.
+ * @returns {*} The result of item conversion, created and modified by callbacks attached to fired event.
+ */
+
+/**
+ * Starts conversion of all children of given item by firing appropriate events for all those children.
+ *
+ * @memberOf engine.treeController.ViewConversionApi
+ * @function convertChildren
+ * @fires engine.treeController.ViewConversionDispatcher.element
+ * @fires engine.treeController.ViewConversionDispatcher.text
+ * @fires engine.treeController.ViewConversionDispatcher.documentFragment
+ * @param {engine.treeView.DocumentFragment|engine.treeView.Element} input Item which children will be converted.
+ * @param {engine.treeController.ViewConsumable} consumable Values to consume.
+ * @param {Object} [additionalData] Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
+ * events. See also {@link engine.treeController.ViewConversionDispatcher.element element event}.
+ * @returns {Array.<*>} Array containing results of conversion of all children of given item.
+ */
