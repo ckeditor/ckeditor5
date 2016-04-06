@@ -109,7 +109,8 @@ export default class Template {
 	 * @returns {HTMLElement} A rendered element.
 	 */
 	_renderElement( def, applyElement, intoFragment ) {
-		const el = applyElement || document.createElement( def.tag );
+		let el = applyElement ||
+			document.createElementNS( def.ns || 'http://www.w3.org/1999/xhtml', def.tag );
 
 		this._renderElementAttributes( def, el );
 
@@ -172,7 +173,7 @@ export default class Template {
 	_renderElementAttributes( def, el ) {
 		const attributes = def.attributes;
 		const binders = def._modelBinders && def._modelBinders.attributes;
-		let binder, attrName, attrValue;
+		let binder, attrName, attrValue, attrNs;
 
 		if ( !attributes ) {
 			return;
@@ -181,19 +182,23 @@ export default class Template {
 		for ( attrName in attributes ) {
 			// Check if there's a binder available for this attribute.
 			binder = binders && binders[ attrName ];
+			attrValue = attributes[ attrName ];
+			attrNs = attrValue.ns || null;
 
 			// Activate binder if one. Cases:
 			// 		{ class: [ 'bar', bind.to( ... ), 'baz' ] }
 			// 		{ class: bind.to( ... ) }
+			// 		{ class: { ns: 'abc', value: bind.to( ... ) } }
 			if ( binder ) {
-				binder( el, getElementAttributeUpdater( el, attrName ) );
+				binder( el, getElementAttributeUpdater( el, attrName, attrNs ) );
 			}
 
 			// Otherwise simply set the attribute.
 			// 		{ class: [ 'all', 'are', 'static' ] }
 			// 		{ class: 'foo' }
+			// 		{ class: { ns: 'abc', value: 'foo' } }
 			else {
-				attrValue = attributes[ attrName ];
+				attrValue = attrValue.value || attrValue;
 
 				// Attribute can be an array. Merge array elements:
 				if ( Array.isArray( attrValue ) ) {
@@ -202,7 +207,7 @@ export default class Template {
 					} );
 				}
 
-				el.setAttribute( attrName, attrValue );
+				el.setAttributeNS( attrNs, attrName, attrValue );
 			}
 		}
 	}
@@ -285,15 +290,16 @@ function getTextNodeUpdater( node ) {
 // @private
 // @param {Node} node DOM Node to be modified.
 // @param {String} attrName Name of the attribute to be modified.
+// @param {String} [ns] Namespace to use.
 // @returns {Object}
-function getElementAttributeUpdater( el, attrName ) {
+function getElementAttributeUpdater( el, attrName, ns = null ) {
 	return {
 		set( value ) {
-			el.setAttribute( attrName, value );
+			el.setAttributeNS( ns, attrName, value );
 		},
 
 		remove() {
-			el.removeAttribute( attrName );
+			el.removeAttributeNS( ns, attrName );
 		}
 	};
 }
@@ -356,7 +362,13 @@ function getElementAttributeUpdater( el, attrName ) {
  *				class: { model: m, attribute: 'foo', callback... }
  *
  *				// Array schema, combines the above.
- *				class: [ 'foo', { model: m, attribute: 'bar' }, 'baz' ]
+ *				class: [ 'foo', { model: m, attribute: 'bar' }, 'baz' ],
+ *
+ *				// Array schema, with custom namespace.
+ *				class: {
+ *					ns: 'http://ns.url',
+ *					value: [ 'foo', { model: m, attribute: 'bar' }, 'baz' ]
+ *				}
  *			}
  *		}
  *

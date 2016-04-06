@@ -22,27 +22,18 @@ describe( 'IconManagerView', () => {
 		} ) );
 	} );
 
-	describe( 'init', () => {
-		it( 'calls _setupSprite', () => {
-			const spy = testUtils.sinon.spy( view, '_setupSprite' );
-
-			view.init();
-			expect( spy.calledOnce ).to.be.true;
+	describe( 'constructor', () => {
+		it( 'creates element from template', () => {
+			expect( view.element.tagName ).to.be.equal( 'svg' );
+			expect( view.element.getAttribute( 'class' ) ).to.be.equal( 'ck-icon-manager-sprite' );
 		} );
 	} );
 
-	describe( '_setupSprite', () => {
+	describe( 'init', () => {
 		it( 'initializes the sprite', () => {
-			view._setupSprite();
+			view.init();
 
-			const el = view.element;
-			const svg = view.element.firstChild;
-
-			expect( el.tagName ).to.be.equal( 'DIV' );
-			expect( el.classList.item( 0 ) ).to.be.equal( 'ck-icon-manager' );
-			expect( svg.tagName ).to.be.equal( 'svg' );
-			expect( svg.innerHTML ).to.be.equal( 'foo' );
-			expect( svg.classList.item( 0 ) ).to.be.equal( 'ck-icon-manager-sprite' );
+			expect( view.element.innerHTML ).to.be.equal( 'foo' );
 		} );
 	} );
 } );

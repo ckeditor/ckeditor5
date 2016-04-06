@@ -49,6 +49,16 @@ describe( 'Template', () => {
 			expect( el ).to.be.instanceof( HTMLElement );
 			expect( el.parentNode ).to.be.null;
 			expect( el.outerHTML ).to.be.equal( '<p></p>' );
+			expect( el.namespaceURI ).to.be.equal( 'http://www.w3.org/1999/xhtml' );
+		} );
+
+		it( 'creates an element in a custom namespace', () => {
+			const el = new Template( {
+				tag: 'p',
+				ns: 'foo'
+			} ).render();
+
+			expect( el.namespaceURI ).to.be.equal( 'foo' );
 		} );
 
 		it( 'renders HTMLElement attributes', () => {
@@ -64,6 +74,7 @@ describe( 'Template', () => {
 			expect( el ).to.be.instanceof( HTMLElement );
 			expect( el.parentNode ).to.be.null;
 			expect( el.outerHTML ).to.be.equal( '<p class="a b" x="bar">foo</p>' );
+			expect( el.attributes.getNamedItem( 'class' ).namespaceURI ).to.be.null;
 		} );
 
 		it( 'renders HTMLElement attributes – empty', () => {
@@ -90,6 +101,27 @@ describe( 'Template', () => {
 			} ).render();
 
 			expect( el.outerHTML ).to.be.equal( '<p class="false" x="null">foo</p>' );
+		} );
+
+		it( 'renders HTMLElement attributes in a custom namespace', () => {
+			const el = new Template( {
+				tag: 'p',
+				attributes: {
+					'class': {
+						ns: 'foo',
+						value: [ 'a', 'b' ]
+					},
+					x: {
+						ns: 'abc',
+						value: 'bar'
+					}
+				},
+				children: [ 'foo' ]
+			} ).render();
+
+			expect( el.outerHTML ).to.be.equal( '<p class="a b" x="bar">foo</p>' );
+			expect( el.attributes.getNamedItem( 'class' ).namespaceURI ).to.equal( 'foo' );
+			expect( el.attributes.getNamedItem( 'x' ).namespaceURI ).to.equal( 'abc' );
 		} );
 
 		it( 'creates HTMLElement children', () => {

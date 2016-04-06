@@ -445,6 +445,12 @@ export default class View {
 	 * @return {Function}
 	 */
 	_getModelBinder( valueSchema ) {
+		// Normalize attributes with additional data like namespace:
+		// class: { ns: 'abc', value: [ ... ] }
+		if ( valueSchema.value ) {
+			valueSchema = valueSchema.value;
+		}
+
 		valueSchema = normalizeBinderValueSchema( valueSchema );
 
 		// Assembles the value using {@link ui.TemplateValueSchema} and stores it in a form of
@@ -677,6 +683,12 @@ function normalizeBinderValueSchema( valueSchema ) {
  * @returns {Boolean}
  */
 function hasModelBinding( valueSchema ) {
+	// Normalize attributes with additional data like namespace:
+	// class: { ns: 'abc', value: [ ... ] }
+	if ( valueSchema.value ) {
+		valueSchema = valueSchema.value;
+	}
+
 	if ( Array.isArray( valueSchema ) ) {
 		return valueSchema.some( hasModelBinding );
 	} else if ( valueSchema.model ) {

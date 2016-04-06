@@ -19,31 +19,17 @@ export default class IconManagerView extends View {
 		super( model, locale );
 
 		this.template = {
-			tag: 'div',
+			tag: 'svg',
+			ns: 'http://www.w3.org/2000/svg',
 			attributes: {
-				class: 'ck-icon-manager'
+				class: 'ck-icon-manager-sprite'
 			}
 		};
 	}
 
 	init() {
-		this._setupSprite();
+		this.element.innerHTML = this.model.sprite;
 
 		return super.init();
-	}
-
-	/**
-	 * Injects icon sprite into DOM.
-	 *
-	 * @protected
-	 */
-	_setupSprite() {
-		// Note: Creating SVG icons with with Template class is not possible
-		// because of CSS limitations of document.createEleentNS–created elements.
-		this.element.innerHTML = `<svg
-				xmlns="http://www.w3.org/2000/svg"
-				xmlns:xlink="http://www.w3.org/1999/xlink"
-				class="ck-icon-manager-sprite"
-			>${ this.model.sprite }</svg>`;
 	}
 }
