@@ -90,7 +90,13 @@ export default class ModelConsumable {
 	 * Creates an empty consumables list.
 	 */
 	constructor() {
-		this.consumable = new Map();
+		/**
+		 * Contains list of consumable values.
+		 *
+		 * @private
+		 * @member {Map} engine.treeController.ModelConsumable#_consumable.
+		 */
+		this._consumable = new Map();
 	}
 
 	/**
@@ -104,11 +110,11 @@ export default class ModelConsumable {
 	 * @param {String} type Consumable type.
 	 */
 	add( item, type ) {
-		if ( !this.consumable.has( item ) ) {
-			this.consumable.set( item, new Map() );
+		if ( !this._consumable.has( item ) ) {
+			this._consumable.set( item, new Map() );
 		}
 
-		this.consumable.get( item ).set( type, true );
+		this._consumable.get( item ).set( type, true );
 	}
 
 	/**
@@ -124,7 +130,7 @@ export default class ModelConsumable {
 	 */
 	consume( item, type ) {
 		if ( this.test( item, type ) ) {
-			this.consumable.get( item ).set( type, false );
+			this._consumable.get( item ).set( type, false );
 
 			return true;
 		} else {
@@ -145,7 +151,7 @@ export default class ModelConsumable {
 	 * already consumed or `true` if it was added and not consumed yet.
 	 */
 	test( item, type ) {
-		const itemConsumables = this.consumable.get( item );
+		const itemConsumables = this._consumable.get( item );
 
 		if ( itemConsumables === undefined ) {
 			return null;
@@ -176,7 +182,7 @@ export default class ModelConsumable {
 		const test = this.test( item, type );
 
 		if ( test === false ) {
-			this.consumable.get( item ).set( type, true );
+			this._consumable.get( item ).set( type, true );
 
 			return true;
 		} else if ( test === true ) {
