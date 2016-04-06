@@ -6,6 +6,9 @@
 'use strict';
 
 import IconManagerView from '/ckeditor5/ui/iconmanagerview.js';
+import Model from '/ckeditor5/ui/model.js';
+import IconView from '/ckeditor5/ui/icon/iconview.js';
+import ButtonView from '/ckeditor5/ui/button/buttonview.js';
 import iconManagerModel from '/theme/iconmanagermodel.js';
 
 function setupIconManager() {
@@ -15,22 +18,23 @@ function setupIconManager() {
 }
 
 function renderIcons() {
+	const containers = [
+		document.getElementById( 'icons' ),
+		document.getElementById( 'iconsColored' )
+	];
 	const buttonIcons = document.getElementById( 'buttonIcon' );
-	const icons = document.getElementById( 'icons' );
-	const tmp = document.createElement( 'div' );
 
 	iconManagerModel.icons.forEach( i => {
-		tmp.innerHTML = `<svg class="ck-icon"><use xlink:href="#ck-icon-${ i }"></use></svg>`;
+		const view = new IconView( new Model( { icon: i } ) );
+		const button = new ButtonView( new Model( { label: i, icon: i, isEnabled: true } ) );
+		button.init();
 
-		icons.appendChild( tmp.firstChild );
-		icons.appendChild( document.createTextNode( ' ' ) );
+		containers.forEach( c => {
+			c.appendChild( view.element.cloneNode( 1 ) );
+			c.appendChild( document.createTextNode( ' ' ) );
+		} );
 
-		tmp.innerHTML =
-			`<button class="ck-button ck-button-notext">
-				<svg class="ck-icon ck-icon-left"><use xlink:href="#ck-icon-${ i }"></use></svg>
-			</button>`;
-
-		buttonIcons.appendChild( tmp.firstChild );
+		buttonIcons.appendChild( button.element );
 		buttonIcons.appendChild( document.createTextNode( ' ' ) );
 	} );
 }
