@@ -210,16 +210,15 @@ describe( 'model test utils', () => {
 		test( 'sets complex attributes', {
 			data: '<a foo={"a":1,"b":"c"}></a>',
 			check() {
-				expect( root.getChild( 0 ).getAttribute( 'a' ) ).to.equal( 1 );
-				expect( root.getChild( 0 ).getAttribute( 'b' ) ).to.equal( 'c' );
+				expect( root.getChild( 0 ).getAttribute( 'foo' ) ).to.have.property( 'a', 1 );
 			}
 		} );
 
 		test( 'sets text attributes', {
 			data: '<$text bold=true italic=true>foo</$text><$text bold=true>bar</$text>bom',
 			check() {
-				expect( root.getChildCount() ).to.equal( 3 );
-				expect( root.getChild( 0 ) ).to.have.property( 'text', 'foo' );
+				expect( root.getChildCount() ).to.equal( 9 );
+				expect( root.getChild( 0 ) ).to.have.property( 'character', 'f' );
 				expect( root.getChild( 0 ).getAttribute( 'italic' ) ).to.equal( true );
 			}
 		} );
@@ -248,6 +247,101 @@ describe( 'model test utils', () => {
 			} ).to.throw();
 		} );
 
+		it( 'throws when missing closing tag for text', () => {
+			expect( () => {
+				setData( document, 'main', '</$text>' );
+			} ).to.throw();
+		} );
+
+		describe( 'selection', () => {
+			const getDataOptions = { selection: true };
+
+			test( 'sets collapsed selection in an element', {
+				data: '<a><selection /></a>',
+				getDataOptions,
+				check() {
+					expect( document.selection.getFirstPosition().parent ).to.have.property( 'name', 'a' );
+				}
+			} );
+
+			test( 'sets collapsed selection between elements', {
+				data: '<a></a><selection /><b></b>',
+				getDataOptions
+			} );
+
+			test( 'sets collapsed selection before a text', {
+				data: '<a></a><selection />foo',
+				getDataOptions
+			} );
+
+			test( 'sets collapsed selection after a text', {
+				data: 'foo<selection />',
+				getDataOptions
+			} );
+
+			test( 'sets collapsed selection within a text', {
+				data: 'foo<selection />bar',
+				getDataOptions,
+				check() {
+					expect( root.getChildCount() ).to.equal( 6 );
+				}
+			} );
+
+			test( 'sets selection attributes', {
+				data: 'foo<selection bold=true italic=true />bar',
+				getDataOptions,
+				check() {
+					expect( root.getChildCount() ).to.equal( 6 );
+				}
+			} );
+
+			test( 'sets collapsed selection between text and text with attributes', {
+				data: 'foo<selection /><$text bold=true>bar</$text>',
+				getDataOptions,
+				check() {
+					expect( root.getChildCount() ).to.equal( 6 );
+					expect( document.selection.getAttribute( 'bold' ) ).to.be.undefined;
+				}
+			} );
+
+			test( 'sets selection containing an element', {
+				data: 'x<selection><a></a></selection>',
+				getDataOptions
+			} );
+
+			test( 'sets selection with attribute containing an element', {
+				data: 'x<selection bold=true><a></a></selection>',
+				getDataOptions
+			} );
+
+			test( 'sets a backward selection containing an element', {
+				data: 'x<selection backward bold=true><a></a></selection>',
+				getDataOptions
+			} );
+
+			test( 'sets selection within a text', {
+				data: 'x<selection bold=true>y</selection>z',
+				getDataOptions
+			} );
+
+			test( 'sets selection within a text with different attributes', {
+				data: '<$text bold=true>fo<selection bold=true>o</$text>ba</selection>r',
+				getDataOptions
+			} );
+
+			it( 'throws when missing selection start', () => {
+				expect( () => {
+					setData( document, 'main', 'foo</selection>' );
+				} ).to.throw();
+			} );
+
+			it( 'throws when missing selection end', () => {
+				expect( () => {
+					setData( document, 'main', '<selection>foo' );
+				} ).to.throw();
+			} );
+		} );
+
 		function test( title, options ) {
 			it( title, () => {
 				let output = options.output || options.data;
@@ -255,6 +349,10 @@ describe( 'model test utils', () => {
 				setData( document, 'main', options.data, options.setDataOptions );
 
 				expect( getData( document, 'main', options.getDataOptions ) ).to.equal( output );
+
+				if ( options.check ) {
+					options.check();
+				}
 			} );
 		}
 	} );

@@ -18,6 +18,7 @@ import Element from '/ckeditor5/engine/treemodel/element.js';
  * @param {String} rootName
  * @param {Object} [options]
  * @param {Boolean} [options.selection] Whether to write the selection.
+ * @returns {String} The stringified data.
  */
 export function getData( document, rootName, options ) {
 	const walker = new TreeWalker( {
@@ -46,30 +47,91 @@ export function getData( document, rootName, options ) {
 	return ret;
 }
 
+/**
+ * Sets the contents of the model and the selection in it.
+ *
+ * @param {engine.treeModel.Document} document
+ * @param {String} rootName
+ * @param {String} data
+ */
 export function setData( document, rootName, data ) {
 	let appendTo = document.getRoot( rootName );
 	const path = [];
+	let selectionStart, selectionEnd, selectionAttributes, textAttributes;
 
-	for ( let token of tokenize( data ) ) {
-		if ( token.type == 'text' ) {
-			appendTo.appendChildren( new Text( token.text, token.attributes ) );
-		} else if ( token.type == 'openingTag' ) {
+	const handlers = {
+		text( token ) {
+			appendTo.appendChildren( new Text( token.text, textAttributes ) );
+		},
+
+		textStart( token ) {
+			textAttributes = token.attributes;
+			path.push( '$text' );
+		},
+
+		textEnd() {
+			if ( path.pop() != '$text' ) {
+				throw new Error( 'Parse error - unexpected closing tag.' );
+			}
+
+			textAttributes = null;
+		},
+
+		openingTag( token ) {
 			let el = new Element( token.name, token.attributes );
 			appendTo.appendChildren( el );
 
 			appendTo = el;
+
 			path.push( token.name );
-		} else {
+		},
+
+		closingTag( token ) {
 			if ( path.pop() != token.name ) {
 				throw new Error( 'Parse error - unexpected closing tag.' );
 			}
 
 			appendTo = appendTo.parent;
+		},
+
+		collapsedSelection( token ) {
+			document.selection.collapse( appendTo, 'END' );
+			document.selection.setAttributesTo( token.attributes );
+		},
+
+		selectionStart( token ) {
+			selectionStart = Position.createFromParentAndOffset( appendTo, appendTo.getChildCount() );
+			selectionAttributes = token.attributes;
+		},
+
+		selectionEnd() {
+			if ( !selectionStart ) {
+				throw new Error( 'Parse error - missing selection start' );
+			}
+
+			selectionEnd = Position.createFromParentAndOffset( appendTo, appendTo.getChildCount() );
+
+			document.selection.setRanges(
+				[ new Range( selectionStart, selectionEnd ) ],
+				selectionAttributes.backward
+			);
+
+			delete selectionAttributes.backward;
+
+			document.selection.setAttributesTo( selectionAttributes );
 		}
+	};
+
+	for ( let token of tokenize( data ) ) {
+		handlers[ token.type ]( token );
 	}
 
 	if ( path.length ) {
 		throw new Error( 'Parse error - missing closing tags: ' + path.join( ', ' ) + '.' );
+	}
+
+	if ( selectionStart && !selectionEnd ) {
+		throw new Error( 'Parse error - missing selection end.' );
 	}
 }
 
@@ -167,16 +229,32 @@ function writeSelection( currentPosition, selection ) {
 // -- setData helpers ---------------------------------------------------------
 
 const patterns = {
-	textTag: /^<\$text ([^>]+)>([\s\S]+?)<\/\$text>/,
+	selection: /^<(\/?selection)( [^>]*)?>/,
 	tag: /^<([^>]+)>/,
 	text: /^[^<]+/
 };
+
 const handlers = {
-	textTag( match ) {
+	selection( match ) {
+		const tagName = match[ 1 ];
+		const tagExtension = match[ 2 ] || '';
+
+		if ( tagName[ 0 ] == '/' ) {
+			return {
+				type: 'selectionEnd'
+			};
+		}
+
+		if ( tagExtension.endsWith( ' /' ) ) {
+			return {
+				type: 'collapsedSelection',
+				attributes: parseAttributes( tagExtension.slice( 1, -2 ) )
+			};
+		}
+
 		return {
-			type: 'text',
-			attributes: parseAttributes( match[ 1 ] ),
-			text: match[ 2 ]
+			type: 'selectionStart',
+			attributes: parseAttributes( tagExtension.slice( 1 ) )
 		};
 	},
 
@@ -184,6 +262,19 @@ const handlers = {
 		const tagContents = match[ 1 ].split( /\s+/ );
 		const tagName = tagContents.shift();
 		const attrs = tagContents.join( ' ' );
+
+		if ( tagName == '/$text' ) {
+			return {
+				type: 'textEnd'
+			};
+		}
+
+		if ( tagName == '$text' ) {
+			return {
+				type: 'textStart',
+				attributes: parseAttributes( attrs )
+			};
+		}
 
 		if ( tagName[ 0 ] == '/' ) {
 			return {
@@ -235,12 +326,14 @@ function consumeNextToken( data ) {
 	throw new Error( 'Parse error - unpexpected token: ' + data + '.' );
 }
 
-function parseAttributes( attrsString  ) {
+function parseAttributes( attrsString ) {
+	attrsString = attrsString.trim();
+
 	if ( !attrsString  ) {
 		return {};
 	}
 
-	const pattern = /(\w+)=("[^"]+"|[^\s]+)\s*/;
+	const pattern = /(?:backward|(\w+)=("[^"]+"|[^\s]+))\s*/;
 	const attrs = {};
 
 	while ( attrsString ) {
@@ -250,7 +343,12 @@ function parseAttributes( attrsString  ) {
 			throw new Error( 'Parse error - unexpected token: ' + attrsString + '.' );
 		}
 
-		attrs[ match[ 1 ] ] = JSON.parse( match[ 2 ] );
+		if ( match[ 0 ].trim() == 'backward' ) {
+			attrs.backward = true;
+		} else {
+			attrs[ match[ 1 ] ] = JSON.parse( match[ 2 ] );
+		}
+
 		attrsString = attrsString.slice( match[ 0 ].length );
 	}
 
