@@ -12,8 +12,10 @@ $ck-icon-size: 20px;
 	display: none;
 
 	* {
-		color: inherit; // allows dynamic coloring of the icons
-		fill: currentColor; // needed by Webkit/Blink
+		// Allows dynamic coloring of the icons.
+		color: inherit;
+		// Needed by Webkit/Blink.
+		fill: currentColor;
 	}
 }
 
@@ -37,8 +39,10 @@ $ck-icon-size: 20px;
 	}
 
 	* {
-		color: inherit; // allows dynamic coloring of the icons
-		fill: currentColor; // needed by FF
+		// Allows dynamic coloring of the icons.
+		color: inherit;
+		// Needed by FF.
+		fill: currentColor;
 	}
 
 	use {
