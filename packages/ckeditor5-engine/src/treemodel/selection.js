@@ -107,6 +107,15 @@ export default class Selection {
 	}
 
 	/**
+	 * Specifies whether the last added range was added as a backward or forward range.
+	 *
+	 * @type {Boolean}
+	 */
+	get isBackward() {
+		return this._lastRangeBackward;
+	}
+
+	/**
 	 * Adds a range to the selection. Added range is copied and converted to {@link engine.treeModel.LiveRange}. This means
 	 * that passed range is not saved in the Selection instance and you can safely operate on it.
 	 *
