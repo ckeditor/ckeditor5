@@ -247,7 +247,7 @@ describe( 'model test utils', () => {
 			} ).to.throw();
 		} );
 
-		it( 'throws when missing closing tag for text', () => {
+		it( 'throws when missing opening tag for text', () => {
 			expect( () => {
 				setData( document, 'main', '</$text>' );
 			} ).to.throw();
