@@ -25,7 +25,7 @@ describe( 'model test utils', () => {
 	describe( 'getData', () => {
 		it( 'writes elements and texts', () => {
 			root.appendChildren( [
-				new Element( 'a', null, [ 'atext' ] ),
+				new Element( 'a', null, 'atext' ),
 				new Element( 'b', null, [
 					new Element( 'c1' ),
 					'ctext',
@@ -103,7 +103,7 @@ describe( 'model test utils', () => {
 				);
 			} );
 
-			it( 'writes selection collapsed at the text boundary', () => {
+			it( 'writes selection collapsed at the text left boundary', () => {
 				selection.collapse( elA, 'AFTER' );
 
 				expect( getData( document, 'main', options ) ).to.equal(
@@ -111,11 +111,11 @@ describe( 'model test utils', () => {
 				);
 			} );
 
-			it( 'writes selection collapsed at the text boundary', () => {
-				selection.collapse( elA, 'AFTER' );
+			it( 'writes selection collapsed at the text right boundary', () => {
+				selection.collapse( elB, 'BEFORE' );
 
 				expect( getData( document, 'main', options ) ).to.equal(
-					'<a></a><selection />foo<$text bold=true>bar</$text><b></b>'
+					'<a></a>foo<$text bold=true>bar</$text><selection bold=true /><b></b>'
 				);
 			} );
 
