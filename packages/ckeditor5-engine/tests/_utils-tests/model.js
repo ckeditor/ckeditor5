@@ -253,6 +253,12 @@ describe( 'model test utils', () => {
 			} ).to.throw();
 		} );
 
+		it( 'throws when missing closing tag for text', () => {
+			expect( () => {
+				setData( document, 'main', '<$text>' );
+			} ).to.throw();
+		} );
+
 		describe( 'selection', () => {
 			const getDataOptions = { selection: true };
 
@@ -291,7 +297,7 @@ describe( 'model test utils', () => {
 				data: 'foo<selection bold=true italic=true />bar',
 				getDataOptions,
 				check() {
-					expect( root.getChildCount() ).to.equal( 6 );
+					expect( selection.getAttribute( 'italic' ) ).to.be.true;
 				}
 			} );
 
