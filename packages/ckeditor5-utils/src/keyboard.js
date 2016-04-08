@@ -45,6 +45,12 @@ export function getCode( key ) {
 		keyCode = keyNames[ key.toLowerCase() ];
 
 		if ( !keyCode ) {
+			/**
+			 * Unknown key name. Only key names contained by the {@link utils.keyboard.keyNames} can be used.
+			 *
+			 * @errror keyboard-unknown-key
+			 * @param {String} key
+			 */
 			throw new CKEditorError( 'keyboard-unknown-key: Unknown key name.', { key } );
 		}
 	} else {
