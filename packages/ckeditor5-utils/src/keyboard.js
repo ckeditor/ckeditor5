@@ -14,7 +14,7 @@ import CKEditorError from './ckeditorerror.js';
  */
 
 /**
- * Object with `keyName => keyCode` pairs.
+ * Object with `keyName => keyCode` pairs for a set of known keys.
  *
  * Contains:
  *
@@ -24,17 +24,17 @@ import CKEditorError from './ckeditorerror.js';
  * * `backspace`, `delete`, `enter`,
  * * `ctrl`, `cmd`, `shift`, `alt`.
  *
- * @member {Object} utils.keyboard.knownKeyNames
+ * @member {Object} utils.keyboard.keyNames
  */
-export const knownKeyNames = generateKnownKeyNames();
+export const keyNames = generateKnownKeyNames();
 
 /**
  * Converts a key name or a {@link utils.keyboard.KeystrokeInfo keystroke info} into a key code.
  *
- * Note: Key names are matched with {@link utils.keyboard.knownKeyNames} in a case-insensitive way.
+ * Note: Key names are matched with {@link utils.keyboard.keyNames} in a case-insensitive way.
  *
  * @method utils.keyboard.getCode
- * @param {String|utils.keyboard.KeystrokeInfo} Key name (see {@link utils.keyboard.knownKeyNames})
+ * @param {String|utils.keyboard.KeystrokeInfo} Key name (see {@link utils.keyboard.keyNames})
  * or a keystroke data object.
  * @returns {Number} Key or keystroke code.
  */
@@ -42,16 +42,16 @@ export function getCode( key ) {
 	let keyCode;
 
 	if ( typeof key == 'string' ) {
-		keyCode = knownKeyNames[ key.toLowerCase() ];
+		keyCode = keyNames[ key.toLowerCase() ];
 
 		if ( !keyCode ) {
 			throw new CKEditorError( 'keyboard-unknown-key: Unknown key name.', { key } );
 		}
 	} else {
 		keyCode = key.keyCode +
-			( key.altKey ? knownKeyNames.alt : 0 ) +
-			( key.ctrlKey ? knownKeyNames.ctrl : 0 ) +
-			( key.shiftKey ? knownKeyNames.shift : 0 );
+			( key.altKey ? keyNames.alt : 0 ) +
+			( key.ctrlKey ? keyNames.ctrl : 0 ) +
+			( key.shiftKey ? keyNames.shift : 0 );
 	}
 
 	return keyCode;
@@ -64,11 +64,11 @@ export function getCode( key ) {
  * The keystroke can be passed in two formats:
  *
  * * as a single string – e.g. `ctrl + A`,
- * * as an array of {@link utils.keyboard.knownKeyNames known key names} and key codes – e.g.:
+ * * as an array of {@link utils.keyboard.keyNames known key names} and key codes – e.g.:
  *   * `[ 'ctrl', 32 ]` (ctrl + space),
  *   * `[ 'ctrl', 'a' ]` (ctrl + A).
  *
- * Note: Key names are matched with {@link utils.keyboard.knownKeyNames} in a case-insensitive way.
+ * Note: Key names are matched with {@link utils.keyboard.keyNames} in a case-insensitive way.
  *
  * Note: Only keystrokes with a single non-modifier key are supported (e.g. `ctrl+A` is OK, but `ctrl+A+B` is not).
  *
@@ -87,7 +87,7 @@ export function parseKeystroke( keystroke ) {
 }
 
 function generateKnownKeyNames() {
-	const knownKeyNames = {
+	const keyNames = {
 		arrowleft: 37,
 		arrowup: 38,
 		arrowright: 39,
@@ -110,15 +110,15 @@ function generateKnownKeyNames() {
 	for ( let code = 65; code <= 90; code++ ) {
 		const letter = String.fromCharCode( code );
 
-		knownKeyNames[ letter.toLowerCase() ] = code;
+		keyNames[ letter.toLowerCase() ] = code;
 	}
 
 	// 0-9
 	for ( let code = 48; code <= 57; code++ ) {
-		knownKeyNames[ code - 48 ] = code;
+		keyNames[ code - 48 ] = code;
 	}
 
-	return knownKeyNames;
+	return keyNames;
 }
 
 /**

@@ -5,25 +5,25 @@
 
 'use strict';
 
-import { knownKeyNames, getCode, parseKeystroke } from '/ckeditor5/utils/keyboard.js';
+import { keyNames, getCode, parseKeystroke } from '/ckeditor5/utils/keyboard.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'Keyboard', () => {
-	describe( 'knownKeyNames', () => {
+	describe( 'keyNames', () => {
 		it( 'contains numbers', () => {
-			expect( knownKeyNames[ '0' ] ).to.equal( 48 );
-			expect( knownKeyNames[ '9' ] ).to.equal( 57 );
+			expect( keyNames[ '0' ] ).to.equal( 48 );
+			expect( keyNames[ '9' ] ).to.equal( 57 );
 		} );
 
 		it( 'contains letters', () => {
-			expect( knownKeyNames.a ).to.equal( 65 );
-			expect( knownKeyNames.z ).to.equal( 90 );
+			expect( keyNames.a ).to.equal( 65 );
+			expect( keyNames.z ).to.equal( 90 );
 		} );
 
 		it( 'modifiers and other keys', () => {
-			expect( knownKeyNames.delete ).to.equal( 46 );
-			expect( knownKeyNames.ctrl ).to.equal( 0x110000 );
-			expect( knownKeyNames.cmd ).to.equal( 0x110000 );
+			expect( keyNames.delete ).to.equal( 46 );
+			expect( keyNames.ctrl ).to.equal( 0x110000 );
+			expect( keyNames.cmd ).to.equal( 0x110000 );
 		} );
 	} );
 
