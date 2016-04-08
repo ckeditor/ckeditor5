@@ -28,6 +28,9 @@ $ck-icon-size: 20px;
 	vertical-align: middle;
 	color: inherit;
 
+	// Inherit cursor style (#5).
+	cursor: inherit;
+
 	&-left {
 		float: left;
 		margin-right: ck-spacing( 'small' );
@@ -39,6 +42,9 @@ $ck-icon-size: 20px;
 	}
 
 	* {
+		// Inherit cursor style (#5).
+		cursor: inherit;
+
 		// Allows dynamic coloring of the icons.
 		color: inherit;
 		// Needed by FF.
