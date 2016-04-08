@@ -24,7 +24,6 @@ export default class KeyObserver extends DomEventObserver {
 		const treeView = this.treeView;
 
 		this.fire( 'keydown', {
-			key: domEvt.key,
 			keyCode: domEvt.keyCode,
 
 			altKey: domEvt.altKey,
@@ -51,17 +50,17 @@ export default class KeyObserver extends DomEventObserver {
  * The value of the {@link engine.treeView.TreeView#keydown} event.
  *
  * @interface engine.treeView.observer.keyObserver.KeyData
- * @implements ckeditor5.keystrokeHandler.KeystrokeData
+ * @implements utils.keyboard.KeystrokeInfo
  */
 
 /**
- * The event view target (editable element that was focused).
+ * The event view target.
  *
- * @member {engine.treeView.Element} engine.treeView.observer.keyObserver.KeyData#taget
+ * @member {engine.treeView.Element} engine.treeView.observer.keyObserver.KeyData#target
  */
 
 /**
- * The event DOM target (editable element that was focused).
+ * The event DOM target.
  *
- * @member {HTMLElement} engine.treeView.observer.keyObserver.KeyData#taget
+ * @member {HTMLElement} engine.treeView.observer.keyObserver.KeyData#domTarget
  */
