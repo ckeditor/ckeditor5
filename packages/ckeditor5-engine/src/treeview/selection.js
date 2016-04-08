@@ -8,6 +8,8 @@
 import CKEditorError from '../../utils/ckeditorerror.js';
 import Range from './range.js';
 import Position from './position.js';
+import utils from '../../utils/utils.js';
+import EmitterMixin from '../../utils/emittermixin.js';
 
 /**
  * @memberOf engine.treeModel
@@ -45,8 +47,9 @@ export default class Selection {
 			return null;
 		}
 		const range = this._ranges[ this._ranges.length - 1 ];
+		const anchor = this._lastRangeBackward ? range.end : range.start;
 
-		return this._lastRangeBackward ? range.end : range.start;
+		return Position.createFromPosition( anchor );
 	}
 
 	/**
@@ -60,8 +63,9 @@ export default class Selection {
 			return null;
 		}
 		const range = this._ranges[ this._ranges.length - 1 ];
+		const focus = this._lastRangeBackward ? range.start : range.end;
 
-		return this._lastRangeBackward ? range.start : range.end;
+		return Position.createFromPosition( focus );
 	}
 
 	/**
@@ -70,8 +74,8 @@ export default class Selection {
 	 * @type {Boolean}
 	 */
 	get isCollapsed() {
-		for ( let i = 0; i < this._ranges.length; i++ ) {
-			if ( !this._ranges[ i ].isCollapsed ) {
+		for ( let range of this._ranges ) {
+			if ( !range.isCollapsed ) {
 				return false;
 			}
 		}
@@ -80,9 +84,9 @@ export default class Selection {
 	}
 
 	/**
-	 * Returns nuber of ranges in selection.
+	 * Returns number of ranges in selection.
 	 *
-	 * @returns {Number}
+	 * @type {Number}
      */
 	get rangeCount() {
 		return this._ranges.length;
@@ -103,6 +107,174 @@ export default class Selection {
 	 * @param {engine.treeView.Range} range
 	 */
 	addRange( range, isBackward ) {
+		this._pushRange( range );
+		this._lastRangeBackward = !!isBackward;
+		this.fire( 'change:range' );
+	}
+
+	/**
+	 * Returns an array of ranges added to the selection. The method returns a copy of internal array, so
+	 * it will not change when ranges get added or removed from selection.
+	 *
+	 * @returns {Array.<engine.treeView.Range>}
+	 */
+	getRanges() {
+		return this._ranges.slice();
+	}
+
+	/**
+	 * Returns copy of a range at specified index, or `null` if there is no range under that index.
+	 *
+	 * @param {Number} index Index of range in selection.
+	 * @returns {engine.treeView.Range|null}
+	 */
+	getRangeAt( index ) {
+		const range = this._ranges[ index ];
+
+		return range ? Range.createFromRange( range ) : null;
+	}
+
+	/**
+	 * Returns copy of the first range in the selection. First range is the one which
+	 * {@link engine.treeView.Range#start start} position {@link engine.treeView.Position#isBefore is before} start
+	 * position of all other ranges (not to confuse with the first range added to the selection).
+	 * Returns `null` if no ranges are added to selection.
+	 *
+	 * @returns {engine.treeView.Range|null}
+	 */
+	getFirstRange() {
+		let first = null;
+
+		for ( let range of this._ranges ) {
+			if ( !first || range.start.isBefore( first.start ) ) {
+				first = range;
+			}
+		}
+
+		return first ? Range.createFromRange( first ) : null;
+	}
+
+	/**
+	 * Returns copy of the last range in the selection. Last range is the one which {@link engine.treeView.Range#end end}
+	 * position {@link engine.treeView.Position#isAfter is after} end position of all other ranges (not to confuse
+	 * with the last range added to the selection). Returns `null` if no ranges are added to selection.
+	 *
+	 * @returns {engine.treeView.Range|null}
+	 */
+	getLastRange() {
+		let last = null;
+
+		for ( let range of this._ranges ) {
+			if ( !last || range.end.isAfter( last.end ) ) {
+				last = range;
+			}
+		}
+
+		return last ? Range.createFromRange( last ) : null;
+	}
+
+	/**
+	 * Returns copy of the first position in the selection. First position is the position that
+	 * {@link engine.treeView.Position#isBefore is before} any other position in the selection ranges.
+	 * Returns `null` if no ranges are added to selection.
+	 *
+	 * @returns {engine.treeView.Position|null}
+	 */
+	getFirstPosition() {
+		const firstRange = this.getFirstRange();
+
+		return firstRange ? Position.createFromPosition( firstRange.start ) : null;
+	}
+
+	/**
+	 * Returns copy of the last position in the selection. Last position is the position that
+	 * {@link engine.treeView.Position#isAfter is after} any other position in the selection ranges.
+	 * Returns `null` if no ranges are added to selection.
+	 *
+	 * @returns {engine.treeView.Position|null}
+	 */
+	getLastPosition() {
+		const lastRange = this.getLastRange();
+
+		return lastRange ? Position.createFromPosition( lastRange.end ) : null;
+	}
+
+	/**
+	 * Removes range at given index.
+	 *
+	 * @param {Number} index
+	 * @returns {engine.treeView.Range|null} Returns removed range or null if there is no range under given index.
+	 */
+	removeRangeAt( index ) {
+		const removed = this._ranges.splice( index, 1 );
+
+		if ( removed.length ) {
+			this.fire( 'change:range' );
+
+			return removed[ 0 ];
+		}
+
+		return null;
+	}
+
+	/**
+	 * Removes all ranges that were added to the selection.
+	 */
+	removeAllRanges() {
+		this._ranges = [];
+		this.fire( 'change:range' );
+	}
+
+	/**
+	 * Replaces all ranges that were added to the selection with given array of ranges. Last range of the array
+	 * is treated like the last added range and is used to set {@link #anchor} and {@link #focus}. Accepts a flag
+	 * describing in which way the selection is made (see {@link #addRange}).
+	 *
+	 * @param {Array.<engine.treeView.Range>} newRanges Array of ranges to set.
+	 * @param {Boolean} [isLastBackward] Flag describing if last added range was selected forward - from start to end
+	 * (`false`) or backward - from end to start (`true`). Defaults to `false`.
+	 */
+	setRanges( newRanges, isLastBackward ) {
+		this.destroy();
+		this._ranges = [];
+
+		for ( let range of newRanges ) {
+			this._pushRange( range );
+		}
+
+		this._lastRangeBackward = !!isLastBackward;
+		this.fire( 'change:range' );
+	}
+
+	/**
+	 * Collapses selection to the {@link engine.treeView.Selection#getLastPosition last position} in stored ranges.
+	 * All ranges will be removed beside one collapsed range. Nothing will be changed if there are no ranges stored
+	 * inside selection.
+	 */
+	collapseToEnd() {
+		const endPosition = this.getLastPosition();
+
+		if ( endPosition !== null ) {
+			this.setRanges( [ new Range( endPosition, endPosition ) ] );
+			this.fire( 'change:range' );
+		}
+	}
+
+	/**
+	 * Collapses selection to the {@link engine.treeView.Selection#getFirstPosition first position} in stored ranges.
+	 * All ranges will be removed beside one collapsed range. Nothing will be changed if there are no ranges stored
+	 * inside selection.
+	 */
+	collapseToStart() {
+		const startPosition = this.getFirstPosition();
+
+		if ( startPosition !== null ) {
+			this.setRanges( [ new Range( startPosition, startPosition ) ] );
+			this.fire( 'change:range' );
+		}
+	}
+
+	_pushRange( range ) {
 		for ( let storedRange of this._ranges ) {
 			if ( range.isIntersecting( storedRange ) ) {
 				/**
@@ -120,75 +292,7 @@ export default class Selection {
 		}
 
 		this._ranges.push( Range.createFromRange( range ) );
-		this._lastRangeBackward = !!isBackward;
-	}
-
-	/**
-	 * Returns an array of ranges added to the selection. The method returns a copy of internal array, so
-	 * it will not change when ranges get added or removed from selection.
-	 *
-	 * @returns {Array.<engine.treeView.Range>}
-	 */
-	getRanges() {
-		return this._ranges.slice();
-	}
-
-	/**
-	 * Returns the first range in the selection. First range is the one which {@link engine.treeView.Range#start start}
-	 * position {@link engine.treeView.Position#isBefore is before} start position of all other ranges (not to confuse
-	 * with the first range added to the selection). Returns `null` if no ranges are added to selection.
-	 *
-	 * @returns {engine.treeView.Range|null}
-	 */
-	getFirstRange() {
-		let first = null;
-
-		for ( let range of this._ranges ) {
-			if ( !first || range.start.isBefore( first.start ) ) {
-				first = range;
-			}
-		}
-
-		return first ? Range.createFromRange( first ) : null;
-	}
-
-	/**
-	 * Returns the first position in the selection. First position is the position that
-	 * {@link engine.treeView.Position#isBefore is before} any other position in the selection ranges.
-	 * Returns `null` if no ranges are added to selection.
-	 *
-	 * @returns {engine.treeView.Position|null}
-	 */
-	getFirstPosition() {
-		const firstRange = this.getFirstRange();
-
-		return firstRange ? Position.createFromPosition( this.getFirstRange().start ) : null;
-	}
-
-	/**
-	 * Removes all ranges that were added to the selection.
-	 */
-	removeAllRanges() {
-		this._ranges = [];
-	}
-
-	/**
-	 * Replaces all ranges that were added to the selection with given array of ranges. Last range of the array
-	 * is treated like the last added range and is used to set {@link #anchor} and {@link #focus}. Accepts a flag
-	 * describing in which way the selection is made (see {@link #addRange}).
-	 *
-	 * @param {Array.<engine.treeView.Range>} newRanges Array of ranges to set.
-	 * @param {Boolean} [isLastBackward] Flag describing if last added range was selected forward - from start to end
-	 * (`false`) or backward - from end to start (`true`). Defaults to `false`.
-	 */
-	setRanges( newRanges, isLastBackward ) {
-		this.destroy();
-		this._ranges = [];
-
-		for ( let range of newRanges ) {
-			this.addRange( range );
-		}
-
-		this._lastRangeBackward = !!isLastBackward;
 	}
 }
+
+utils.mix( Selection, EmitterMixin );
