@@ -19,7 +19,7 @@ class ClickObserver extends DomEventObserver {
 	}
 
 	onDomEvent( domEvt ) {
-		this.fire( 'click', 'foo', domEvt );
+		this.fire( 'click', domEvt, { foo: 1, bar: 2 } );
 	}
 }
 
@@ -31,7 +31,7 @@ class MultiObserver extends DomEventObserver {
 	}
 
 	onDomEvent( domEvt ) {
-		this.fire( domEvt.type );
+		this.fire( domEvt.type, domEvt );
 	}
 }
 
@@ -62,8 +62,12 @@ describe( 'DomEventObserver', () => {
 		domElement.dispatchEvent( domEvent );
 
 		expect( evtSpy.calledOnce ).to.be.true;
-		expect( evtSpy.args[ 0 ][ 1 ] ).to.equal( 'foo' );
-		expect( evtSpy.args[ 0 ][ 2 ] ).to.equal( domEvent );
+
+		const data = evtSpy.args[ 0 ][ 1 ];
+
+		expect( data ).to.have.property( 'foo', 1 );
+		expect( data ).to.have.property( 'bar', 2 );
+		expect( data ).to.have.property( 'domEvent', domEvent );
 	} );
 
 	it( 'should add multiple event listeners', () => {
@@ -134,13 +138,13 @@ describe( 'DomEventObserver', () => {
 
 			testObserver.disable();
 
-			testObserver.fire( 'click' );
+			testObserver.fire( 'click', {} );
 
 			expect( fireSpy.called ).to.be.false;
 
 			testObserver.enable();
 
-			testObserver.fire( 'click' );
+			testObserver.fire( 'click', {} );
 
 			expect( fireSpy.calledOnce ).to.be.true;
 		} );

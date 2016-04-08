@@ -11,13 +11,11 @@ import FocusObserver from '/ckeditor5/engine/treeview/observer/focusobserver.js'
 import TreeView from '/ckeditor5/engine/treeview/treeview.js';
 
 describe( 'FocusObserver', () => {
-	let treeView, viewBody, observer;
+	let treeView, observer;
 
 	beforeEach( () => {
 		treeView = new TreeView();
 		treeView.addObserver( FocusObserver );
-
-		viewBody = treeView.domConverter.domToView( document.body, { bind: true } );
 
 		observer = Array.from( treeView._observers )[ 0 ];
 	} );
@@ -27,7 +25,7 @@ describe( 'FocusObserver', () => {
 	} );
 
 	describe( 'onDomEvent', () => {
-		it( 'should fire focus with the target', () => {
+		it( 'should fire focus with the right event data', () => {
 			const spy = sinon.spy();
 
 			treeView.on( 'focus', spy );
@@ -37,11 +35,10 @@ describe( 'FocusObserver', () => {
 			expect( spy.calledOnce ).to.be.true;
 
 			const data = spy.args[ 0 ][ 1 ];
-			expect( data.target ).to.equal( viewBody );
 			expect( data.domTarget ).to.equal( document.body );
 		} );
 
-		it( 'should fire blur with the target', () => {
+		it( 'should fire blur with the right event data', () => {
 			const spy = sinon.spy();
 
 			treeView.on( 'blur', spy );
@@ -51,7 +48,6 @@ describe( 'FocusObserver', () => {
 			expect( spy.calledOnce ).to.be.true;
 
 			const data = spy.args[ 0 ][ 1 ];
-			expect( data.target ).to.equal( viewBody );
 			expect( data.domTarget ).to.equal( document.body );
 		} );
 	} );

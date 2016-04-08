@@ -11,13 +11,11 @@ import KeyObserver from '/ckeditor5/engine/treeview/observer/keyobserver.js';
 import TreeView from '/ckeditor5/engine/treeview/treeview.js';
 
 describe( 'KeyObserver', () => {
-	let treeView, viewBody, observer;
+	let treeView, observer;
 
 	beforeEach( () => {
 		treeView = new TreeView();
 		treeView.addObserver( KeyObserver );
-
-		viewBody = treeView.domConverter.domToView( document.body, { bind: true } );
 
 		observer = Array.from( treeView._observers )[ 0 ];
 	} );
@@ -37,7 +35,6 @@ describe( 'KeyObserver', () => {
 			expect( spy.calledOnce ).to.be.true;
 
 			const data = spy.args[ 0 ][ 1 ];
-			expect( data.target ).to.equal( viewBody );
 			expect( data.domTarget ).to.equal( document.body );
 			expect( data.keyCode ).to.equal( 111 );
 			expect( data.altKey ).to.equal( false );
