@@ -65,7 +65,7 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return array including node itself if requested', () => {
-			const result = root.getAncestors( true );
+			const result = root.getAncestors( { includeNode: true } );
 			expect( result ).to.be.an( 'array' );
 			expect( result.length ).to.equal( 1 );
 			expect( result[ 0 ] ).to.equal( root );
@@ -77,7 +77,7 @@ describe( 'Node', () => {
 			expect( result[ 0 ] ).to.equal( root );
 			expect( result[ 1 ] ).to.equal( two );
 
-			const result2 = charR.getAncestors( true );
+			const result2 = charR.getAncestors( { includeNode: true } );
 			expect( result2.length ).to.equal( 3 );
 			expect( result2[ 0 ] ).to.equal( root );
 			expect( result2[ 1 ] ).to.equal( two );
@@ -85,12 +85,12 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return array of ancestors starting from parent', () => {
-			const result = charR.getAncestors( false, true );
+			const result = charR.getAncestors( { parentFirst: true } );
 			expect( result.length ).to.equal( 2 );
 			expect( result[ 0 ] ).to.equal( two );
 			expect( result[ 1 ] ).to.equal( root );
 
-			const result2 = charR.getAncestors( true, true );
+			const result2 = charR.getAncestors( { includeNode: true, parentFirst: true } );
 			expect( result2.length ).to.equal( 3 );
 			expect( result2[ 2 ] ).to.equal( root );
 			expect( result2[ 1 ] ).to.equal( two );

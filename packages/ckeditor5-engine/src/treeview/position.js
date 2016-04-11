@@ -106,8 +106,8 @@ export default class Position {
 		}
 
 		// Get path from root to position's parent element.
-		const path = this.parent.getAncestors( true );
-		const otherPath = otherPosition.parent.getAncestors( true );
+		const path = this.parent.getAncestors( { includeNode: true } );
+		const otherPath = otherPosition.parent.getAncestors( { includeNode: true } );
 
 		// Compare both path arrays to find common ancestor.
 		const result = utils.compareArrays( path, otherPath );

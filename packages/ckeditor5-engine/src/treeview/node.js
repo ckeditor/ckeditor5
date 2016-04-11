@@ -108,17 +108,18 @@ export default class Node {
 	/**
 	 * Returns ancestors array of this node.
 	 *
-	 * @param {Boolean} [includeNode=false] When set to `true` this node will be also included in parent's array.
-	 * @param {Boolean} [parentFirst=false] When set to `true`, array will be sorted from node's parent to root element,
+	 * @param {Object} options Options object.
+	 * @param {Boolean} [options.includeNode=false] When set to `true` this node will be also included in parent's array.
+	 * @param {Boolean} [options.parentFirst=false] When set to `true`, array will be sorted from node's parent to root element,
 	 * otherwise root element will be the first item in the array.
 	 * @returns {Array} Array with ancestors.
 	 */
-	getAncestors( includeNode, parentFirst ) {
+	getAncestors( options = { includeNode: false, parentFirst: false } ) {
 		const ancestors = [];
-		let parent = includeNode ? this : this.parent;
+		let parent = options.includeNode ? this : this.parent;
 
 		while ( parent !== null ) {
-			ancestors[ parentFirst ? 'push' : 'unshift' ]( parent );
+			ancestors[ options.parentFirst ? 'push' : 'unshift' ]( parent );
 			parent = parent.parent;
 		}
 
