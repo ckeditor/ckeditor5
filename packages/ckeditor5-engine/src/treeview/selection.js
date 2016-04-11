@@ -17,6 +17,9 @@ import EmitterMixin from '../../utils/emittermixin.js';
  * @memberOf engine.treeView
  */
 export default class Selection {
+	/**
+	 * Creates new selection instance.
+	 */
 	constructor() {
 		/**
 		 * Stores all ranges that are selected.
@@ -37,7 +40,7 @@ export default class Selection {
 
 	/**
 	 * Selection anchor. Anchor may be described as a position where the selection starts. Together with
-	 * {@link engine.treeView.Selection#focus} they define the direction of selection, which is important
+	 * {@link engine.treeView.Selection#focus focus} they define the direction of selection, which is important
 	 * when expanding/shrinking selection. Anchor is always the start or end of the most recent added range.
 	 * It may be a bit unintuitive when there are multiple ranges in selection.
 	 *
@@ -96,17 +99,18 @@ export default class Selection {
 
 	/**
 	 * Adds a range to the selection. Added range is copied. This means that passed range is not saved in the
-	 * Selection instance and you can safely operate on it.
+	 * selection instance and you can safely operate on it.
 	 *
 	 * Accepts a flag describing in which way the selection is made - passed range might be selected from
-	 * {@link engine.treeView.Range#start} to {@link engine.treeView.Range#end} or from {@link engine.treeView.Range#end}
-	 * to {@link engine.treeView.Range#start}. The flag is used to set {@link engine.treeView.Selection#anchor} and
-	 * {@link engine.treeView.Selection#focus} properties.
+	 * {@link engine.treeView.Range#start start} to {@link engine.treeView.Range#end end}
+	 * or from {@link engine.treeView.Range#end end} to {@link engine.treeView.Range#start start}.
+	 * The flag is used to set {@link engine.treeView.Selection#anchor anchor} and
+	 * {@link engine.treeView.Selection#focus focus} properties.
 	 *
 	 * Throws {@link utils.CKEditorError CKEditorError} `view-selection-range-intersects` if added range intersects
 	 * with ranges already stored in Selection instance.
 	 *
-	 * @fires {@link engine.treeView.Selection#change:range change:range}
+	 * @fires engine.treeView.Selection#change:range
 	 * @param {engine.treeView.Range} range
 	 */
 	addRange( range, isBackward ) {
@@ -205,9 +209,9 @@ export default class Selection {
 	/**
 	 * Removes range at given index.
 	 *
-	 * @fires {@link engine.treeView.Selection#change:range change:range}
+	 * @fires engine.treeView.Selection#change:range
 	 * @param {Number} index
-	 * @returns {engine.treeView.Range|null} Returns removed range or null if there is no range under given index.
+	 * @returns {engine.treeView.Range|null} Returns removed range or `null` if there is no range under given index.
 	 */
 	removeRangeAt( index ) {
 		const removed = this._ranges.splice( index, 1 );
@@ -224,7 +228,7 @@ export default class Selection {
 	/**
 	 * Removes all ranges that were added to the selection.
 	 *
-	 * @fires {@link engine.treeView.Selection#change:range change:range}
+	 * @fires engine.treeView.Selection#change:range
 	 */
 	removeAllRanges() {
 		if ( this._ranges.length ) {
@@ -235,10 +239,11 @@ export default class Selection {
 
 	/**
 	 * Replaces all ranges that were added to the selection with given array of ranges. Last range of the array
-	 * is treated like the last added range and is used to set {@link #anchor} and {@link #focus}. Accepts a flag
-	 * describing in which way the selection is made (see {@link #addRange}).
+	 * is treated like the last added range and is used to set {@link engine.treeView.Selection#anchor anchor} and
+	 * {@link engine.treeView.Selection#focus focus}. Accepts a flag describing in which way the selection is made
+	 * (see {@link engine.treeView.Selection#addRange addRange}).
 	 *
-	 * @fires {@link engine.treeView.Selection#change:range change:range}
+	 * @fires engine.treeView.Selection#change:range
 	 * @param {Array.<engine.treeView.Range>} newRanges Array of ranges to set.
 	 * @param {Boolean} [isLastBackward] Flag describing if last added range was selected forward - from start to end
 	 * (`false`) or backward - from end to start (`true`). Defaults to `false`.
@@ -259,7 +264,7 @@ export default class Selection {
 	 * All ranges will be removed beside one collapsed range. Nothing will be changed if there are no ranges stored
 	 * inside selection.
 	 *
-	 * @fires {@link engine.treeView.Selection#change:range change:range}
+	 * @fires engine.treeView.Selection#change:range
 	 */
 	collapseToStart() {
 		const startPosition = this.getFirstPosition();
@@ -275,7 +280,7 @@ export default class Selection {
 	 * All ranges will be removed beside one collapsed range. Nothing will be changed if there are no ranges stored
 	 * inside selection.
 	 *
-	 * @fires {@link engine.treeView.Selection#change:range change:range}
+	 * @fires engine.treeView.Selection#change:range
 	 */
 	collapseToEnd() {
 		const endPosition = this.getLastPosition();
@@ -290,10 +295,10 @@ export default class Selection {
 	 * Adds range to selection - creates copy of given range so it can be safely used and modified.
 	 *
 	 * Throws {@link utils.CKEditorError CKEditorError} `view-selection-range-intersects` if added range intersects
-	 * with ranges already stored in Selection instance.
+	 * with ranges already stored in selection instance.
 	 *
 	 * @private
-	 * @param {engine.treeView.Range} rang
+	 * @param {engine.treeView.Range} range
 	 */
 	_pushRange( range ) {
 		for ( let storedRange of this._ranges ) {
