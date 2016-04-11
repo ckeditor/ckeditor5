@@ -12,7 +12,9 @@ import utils from '../../utils/utils.js';
 import EmitterMixin from '../../utils/emittermixin.js';
 
 /**
- * @memberOf engine.treeModel
+ * Class representing selection in tree view.
+ *
+ * @memberOf engine.treeView
  */
 export default class Selection {
 	constructor() {
@@ -104,6 +106,7 @@ export default class Selection {
 	 * Throws {@link utils.CKEditorError CKEditorError} `view-selection-range-intersects` if added range intersects
 	 * with ranges already stored in Selection instance.
 	 *
+	 * @fires {@link engine.treeView.Selection#change:range change:range}
 	 * @param {engine.treeView.Range} range
 	 */
 	addRange( range, isBackward ) {
@@ -202,6 +205,7 @@ export default class Selection {
 	/**
 	 * Removes range at given index.
 	 *
+	 * @fires {@link engine.treeView.Selection#change:range change:range}
 	 * @param {Number} index
 	 * @returns {engine.treeView.Range|null} Returns removed range or null if there is no range under given index.
 	 */
@@ -219,10 +223,14 @@ export default class Selection {
 
 	/**
 	 * Removes all ranges that were added to the selection.
+	 *
+	 * @fires {@link engine.treeView.Selection#change:range change:range}
 	 */
 	removeAllRanges() {
-		this._ranges = [];
-		this.fire( 'change:range' );
+		if ( this._ranges.length ) {
+			this._ranges = [];
+			this.fire( 'change:range' );
+		}
 	}
 
 	/**
@@ -230,12 +238,12 @@ export default class Selection {
 	 * is treated like the last added range and is used to set {@link #anchor} and {@link #focus}. Accepts a flag
 	 * describing in which way the selection is made (see {@link #addRange}).
 	 *
+	 * @fires {@link engine.treeView.Selection#change:range change:range}
 	 * @param {Array.<engine.treeView.Range>} newRanges Array of ranges to set.
 	 * @param {Boolean} [isLastBackward] Flag describing if last added range was selected forward - from start to end
 	 * (`false`) or backward - from end to start (`true`). Defaults to `false`.
 	 */
 	setRanges( newRanges, isLastBackward ) {
-		this.destroy();
 		this._ranges = [];
 
 		for ( let range of newRanges ) {
@@ -247,9 +255,27 @@ export default class Selection {
 	}
 
 	/**
+	 * Collapses selection to the {@link engine.treeView.Selection#getFirstPosition first position} in stored ranges.
+	 * All ranges will be removed beside one collapsed range. Nothing will be changed if there are no ranges stored
+	 * inside selection.
+	 *
+	 * @fires {@link engine.treeView.Selection#change:range change:range}
+	 */
+	collapseToStart() {
+		const startPosition = this.getFirstPosition();
+
+		if ( startPosition !== null ) {
+			this.setRanges( [ new Range( startPosition, startPosition ) ] );
+			this.fire( 'change:range' );
+		}
+	}
+
+	/**
 	 * Collapses selection to the {@link engine.treeView.Selection#getLastPosition last position} in stored ranges.
 	 * All ranges will be removed beside one collapsed range. Nothing will be changed if there are no ranges stored
 	 * inside selection.
+	 *
+	 * @fires {@link engine.treeView.Selection#change:range change:range}
 	 */
 	collapseToEnd() {
 		const endPosition = this.getLastPosition();
@@ -261,19 +287,14 @@ export default class Selection {
 	}
 
 	/**
-	 * Collapses selection to the {@link engine.treeView.Selection#getFirstPosition first position} in stored ranges.
-	 * All ranges will be removed beside one collapsed range. Nothing will be changed if there are no ranges stored
-	 * inside selection.
+	 * Adds range to selection - creates copy of given range so it can be safely used and modified.
+	 *
+	 * Throws {@link utils.CKEditorError CKEditorError} `view-selection-range-intersects` if added range intersects
+	 * with ranges already stored in Selection instance.
+	 *
+	 * @private
+	 * @param {engine.treeView.Range} rang
 	 */
-	collapseToStart() {
-		const startPosition = this.getFirstPosition();
-
-		if ( startPosition !== null ) {
-			this.setRanges( [ new Range( startPosition, startPosition ) ] );
-			this.fire( 'change:range' );
-		}
-	}
-
 	_pushRange( range ) {
 		for ( let storedRange of this._ranges ) {
 			if ( range.isIntersecting( storedRange ) ) {
@@ -296,3 +317,9 @@ export default class Selection {
 }
 
 utils.mix( Selection, EmitterMixin );
+
+/**
+ * Fired whenever selection ranges are changed through {@link engine.treeView.Selection Selection API}.
+ *
+ * @event engine.treeView.Selection#change:range
+ */
