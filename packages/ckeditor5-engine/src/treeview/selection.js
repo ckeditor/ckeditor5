@@ -14,6 +14,17 @@ import EmitterMixin from '../../utils/emittermixin.js';
 /**
  * Class representing selection in tree view.
  *
+ * Selection can consist of {@link engine.treeView.Range ranges} that can be added using
+ * {@link engine.treeView.Selection#addRange addRange} and {@link engine.treeView.Selection#setRanges setRanges} methods.
+ * Both methods create copies of provided ranges and store those copies internally. Further modifications to passed
+ * ranges will not change selection's state.
+ * Selection's ranges can be obtained via {@link engine.treeView.Selection#getRanges getRanges},
+ * {@link engine.treeView.Selection#getFirstRange getFirstRange} and {@link engine.treeView.Selection#getLastRange getLastRange}
+ * methods, which return copies of ranges stored inside selection. Modifications made on these copies will not change
+ * selection's state. Similar situation occurs when getting {@link engine.treeView.Selection#anchor anchor},
+ * {@link engine.treeView.Selection#focus focus}, {@link engine.treeView.Selection#getFirstPosition first} and
+ * {@link engine.treeView.Selection#getLastPosition last} positions - all will return copies of requested positions.
+ *
  * @memberOf engine.treeView
  */
 export default class Selection {
@@ -120,25 +131,14 @@ export default class Selection {
 	}
 
 	/**
-	 * Returns an array of ranges added to the selection. The method returns a copy of internal array, so
-	 * it will not change when ranges get added or removed from selection.
+	 * Returns an iterator that contains copies of all ranges added to the selection.
 	 *
-	 * @returns {Array.<engine.treeView.Range>}
+	 * @returns {Iterator.<engine.treeView.Range>}
 	 */
-	getRanges() {
-		return this._ranges.slice();
-	}
-
-	/**
-	 * Returns copy of a range at specified index, or `null` if there is no range under that index.
-	 *
-	 * @param {Number} index Index of range in selection.
-	 * @returns {engine.treeView.Range|null}
-	 */
-	getRangeAt( index ) {
-		const range = this._ranges[ index ];
-
-		return range ? Range.createFromRange( range ) : null;
+	*getRanges() {
+		for ( let range of this._ranges ) {
+			yield Range.createFromRange( range );
+		}
 	}
 
 	/**
@@ -204,25 +204,6 @@ export default class Selection {
 		const lastRange = this.getLastRange();
 
 		return lastRange ? Position.createFromPosition( lastRange.end ) : null;
-	}
-
-	/**
-	 * Removes range at given index.
-	 *
-	 * @fires engine.treeView.Selection#change
-	 * @param {Number} index
-	 * @returns {engine.treeView.Range|null} Returns removed range or `null` if there is no range under given index.
-	 */
-	removeRangeAt( index ) {
-		const removed = this._ranges.splice( index, 1 );
-
-		if ( removed.length ) {
-			this.fire( 'change' );
-
-			return removed[ 0 ];
-		}
-
-		return null;
 	}
 
 	/**

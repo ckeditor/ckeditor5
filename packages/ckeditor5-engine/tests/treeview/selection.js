@@ -115,12 +115,12 @@ describe( 'Selection', () => {
 	describe( 'addRange', () => {
 		it( 'should add range to selection ranges', () => {
 			selection.addRange( range1 );
-			expect( selection.getRangeAt( 0 ).isEqual( range1 ) ).to.be.true;
+			expect( selection._ranges[ 0 ].isEqual( range1 ) ).to.be.true;
 		} );
 
 		it( 'should fire change event', ( done ) => {
 			selection.once( 'change', () => {
-				expect( selection.getRangeAt( 0 ).isEqual( range1 ) ).to.be.true;
+				expect( selection._ranges[ 0 ].isEqual( range1 ) ).to.be.true;
 				done();
 			} );
 
@@ -141,35 +141,18 @@ describe( 'Selection', () => {
 	} );
 
 	describe( 'getRanges', () => {
-		it( 'should return copy array of all ranges', () => {
+		it( 'should return iterator with copies of all ranges', () => {
 			selection.addRange( range1 );
 			selection.addRange( range2 );
 
-			const ranges = selection.getRanges();
+			const iterable = selection.getRanges();
+			const ranges = Array.from( iterable );
+
 			expect( ranges.length ).to.equal( 2 );
 			expect( ranges[ 0 ].isEqual( range1 ) ).to.be.true;
 			expect( ranges[ 0 ] ).to.not.equal( range1 );
 			expect( ranges[ 1 ].isEqual( range2 ) ).to.be.true;
 			expect( ranges[ 1 ] ).to.not.equal( range2 );
-		} );
-	} );
-
-	describe( 'getRangeAt', () => {
-		it( 'should return copy of range at specified index', () => {
-			selection.addRange( range1 );
-			selection.addRange( range2 );
-			selection.addRange( range3 );
-
-			expect( selection.getRangeAt( 0 ).isEqual( range1 ) ).to.be.true;
-			expect( selection.getRangeAt( 1 ).isEqual( range2 ) ).to.be.true;
-			expect( selection.getRangeAt( 2 ).isEqual( range3 ) ).to.be.true;
-			expect( selection.getRangeAt( 0 ) ).to.not.equal( range1 );
-			expect( selection.getRangeAt( 1 ) ).to.not.equal( range2 );
-			expect( selection.getRangeAt( 2 ) ).to.not.equal( range3 );
-		} );
-
-		it( 'should return null if no range at given index', () => {
-			expect( selection.getRangeAt( 0 ) ).to.be.null;
 		} );
 	} );
 
@@ -241,33 +224,6 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'removeRangeAt', () => {
-		it( 'should remove range at given index', () => {
-			selection.addRange( range1 );
-			selection.addRange( range2 );
-			selection.addRange( range3 );
-
-			const range = selection.removeRangeAt( 1 );
-			expect( range.isEqual( range2 ) ).to.be.true;
-			expect( selection.rangeCount ).to.equal( 2 );
-		} );
-
-		it( 'should return null if no range at specified index', () => {
-			expect( selection.removeRangeAt( 2 ) ).to.be.null;
-		} );
-
-		it( 'should fire change event', ( done ) => {
-			selection.addRange( range1 );
-
-			selection.once( 'change', () => {
-				expect( selection.rangeCount ).to.equal( 0 );
-				done();
-			} );
-
-			selection.removeRangeAt( 0 );
-		} );
-	} );
-
 	describe( 'removeAllRanges', () => {
 		it( 'should remove all ranges and fire change event', ( done ) => {
 			selection.addRange( range1 );
@@ -296,10 +252,10 @@ describe( 'Selection', () => {
 
 			selection.once( 'change', () => {
 				expect( selection.rangeCount ).to.equal( 2 );
-				expect( selection.getRangeAt( 0 ).isEqual( range2 ) ).to.be.true;
-				expect( selection.getRangeAt( 0 ) ).is.not.equal( range2 );
-				expect( selection.getRangeAt( 1 ).isEqual( range3 ) ).to.be.true;
-				expect( selection.getRangeAt( 1 ) ).is.not.equal( range3 );
+				expect( selection._ranges[ 0 ].isEqual( range2 ) ).to.be.true;
+				expect( selection._ranges[ 0 ] ).is.not.equal( range2 );
+				expect( selection._ranges[ 1 ].isEqual( range3 ) ).to.be.true;
+				expect( selection._ranges[ 1 ] ).is.not.equal( range3 );
 				done();
 			} );
 
@@ -313,7 +269,7 @@ describe( 'Selection', () => {
 			selection.once( 'change', () => {
 				expect( selection.rangeCount ).to.equal( 1 );
 				expect( selection.isCollapsed ).to.be.true;
-				expect( selection.getRangeAt( 0 ).start.isEqual( range2.start ) ).to.be.true;
+				expect( selection._ranges[ 0 ].start.isEqual( range2.start ) ).to.be.true;
 				done();
 			} );
 
@@ -336,7 +292,7 @@ describe( 'Selection', () => {
 			selection.once( 'change', () => {
 				expect( selection.rangeCount ).to.equal( 1 );
 				expect( selection.isCollapsed ).to.be.true;
-				expect( selection.getRangeAt( 0 ).end.isEqual( range3.end ) ).to.be.true;
+				expect( selection._ranges[ 0 ].end.isEqual( range3.end ) ).to.be.true;
 				done();
 			} );
 
