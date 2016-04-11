@@ -9,6 +9,7 @@
 
 import KeyObserver from '/ckeditor5/engine/treeview/observer/keyobserver.js';
 import TreeView from '/ckeditor5/engine/treeview/treeview.js';
+import { getCode } from '/ckeditor5/utils/keyboard.js';
 
 describe( 'KeyObserver', () => {
 	let treeView, observer;
@@ -35,11 +36,15 @@ describe( 'KeyObserver', () => {
 			expect( spy.calledOnce ).to.be.true;
 
 			const data = spy.args[ 0 ][ 1 ];
-			expect( data.domTarget ).to.equal( document.body );
-			expect( data.keyCode ).to.equal( 111 );
-			expect( data.altKey ).to.equal( false );
-			expect( data.ctrlKey ).to.equal( false );
-			expect( data.shiftKey ).to.equal( false );
+			expect( data ).to.have.property( 'domTarget', document.body );
+			expect( data ).to.have.property( 'keyCode', 111 );
+			expect( data ).to.have.property( 'altKey', false );
+			expect( data ).to.have.property( 'ctrlKey', false );
+			expect( data ).to.have.property( 'shiftKey', false );
+			expect( data ).to.have.property( 'keystroke', getCode( data ) );
+
+			// Just to be sure.
+			expect( getCode( data ) ).to.equal( 111 );
 		} );
 
 		it( 'should fire keydown with proper key modifiers info', () => {
@@ -50,10 +55,14 @@ describe( 'KeyObserver', () => {
 			observer.onDomEvent( { target: document.body, keyCode: 111, altKey: true, ctrlKey: true, metaKey: false, shiftKey: true } );
 
 			const data = spy.args[ 0 ][ 1 ];
-			expect( data.keyCode ).to.equal( 111 );
-			expect( data.altKey ).to.equal( true );
-			expect( data.ctrlKey ).to.equal( true );
-			expect( data.shiftKey ).to.equal( true );
+			expect( data ).to.have.property( 'keyCode', 111 );
+			expect( data ).to.have.property( 'altKey', true );
+			expect( data ).to.have.property( 'ctrlKey', true );
+			expect( data ).to.have.property( 'shiftKey', true );
+			expect( data ).to.have.property( 'keystroke', getCode( data ) );
+
+			// Just to be sure.
+			expect( getCode( data ) ).to.be.greaterThan( 111 );
 		} );
 
 		it( 'should fire keydown ctrlKey set to true one meta (cmd) was pressed', () => {
@@ -64,7 +73,7 @@ describe( 'KeyObserver', () => {
 			observer.onDomEvent( { target: document.body, keyCode: 111, metaKey: true } );
 
 			const data = spy.args[ 0 ][ 1 ];
-			expect( data.ctrlKey ).to.equal( true );
+			expect( data ).to.have.property( 'ctrlKey', true );
 		} );
 	} );
 } );
