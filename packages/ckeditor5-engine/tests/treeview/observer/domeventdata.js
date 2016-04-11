@@ -41,4 +41,26 @@ describe( 'DomEventData', () => {
 			expect( data ).to.have.property( 'target', viewBody );
 		} );
 	} );
+
+	describe( 'preventDefault', () => {
+		it( 'executes native preventDefault()', () => {
+			const domEvt = { target: document.body, preventDefault: sinon.spy() };
+			const data = new DomEventData( treeView, domEvt );
+
+			data.preventDefault();
+
+			expect( domEvt.preventDefault.calledOnce ).to.be.true;
+		} );
+	} );
+
+	describe( 'stopPropagation', () => {
+		it( 'executes native stopPropagation()', () => {
+			const domEvt = { target: document.body, stopPropagation: sinon.spy() };
+			const data = new DomEventData( treeView, domEvt );
+
+			data.stopPropagation();
+
+			expect( domEvt.stopPropagation.calledOnce ).to.be.true;
+		} );
+	} );
 } );

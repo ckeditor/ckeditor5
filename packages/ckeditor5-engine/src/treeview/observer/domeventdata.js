@@ -57,4 +57,18 @@ export default class DomEventData {
 	get target() {
 		return this.treeView.domConverter.getCorrespondingViewElement( this.domTarget );
 	}
+
+	/**
+	 * Prevents the native's event default action.
+	 */
+	preventDefault() {
+		this.domEvent.preventDefault();
+	}
+
+	/**
+	 * Stops native event propagation.
+	 */
+	stopPropagation() {
+		this.domEvent.stopPropagation();
+	}
 }
