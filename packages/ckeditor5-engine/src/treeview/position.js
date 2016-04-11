@@ -138,16 +138,16 @@ export default class Position {
 
 		// Check if common ancestor is not one of the parents.
 		if ( commonAncestor === this.parent ) {
-			const index = this.offset - this.parent.getChildIndex( nextAncestor2 );
+			const index = this.offset - nextAncestor2.getIndex();
 
 			return index <= 0 ? 'BEFORE' : 'AFTER';
 		} else if ( commonAncestor === otherPosition.parent ) {
-			const index = otherPosition.parent.getChildIndex( nextAncestor1 ) - otherPosition.offset;
+			const index = nextAncestor1.getIndex() - otherPosition.offset;
 
 			return index < 0 ? 'BEFORE' : 'AFTER';
 		}
 
-		const index = commonAncestor.getChildIndex( nextAncestor1 ) - commonAncestor.getChildIndex( nextAncestor2 );
+		const index = nextAncestor1.getIndex() - nextAncestor2.getIndex();
 
 		// Compare indexes of next ancestors inside common one.
 		return index < 0 ? 'BEFORE' : 'AFTER';
