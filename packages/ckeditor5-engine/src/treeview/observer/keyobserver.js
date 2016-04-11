@@ -40,20 +40,20 @@ export default class KeyObserver extends DomEventObserver {
  * Fired when a key has been pressed.
  *
  * @event engine.treeView.TreeView#keydown
- * @param {engine.treeView.observer.keyObserver.KeyEventInfo} keyEventInfo
+ * @param {engine.treeView.observer.keyObserver.KeyEventData} keyEventData
  */
 
 /**
  * The value of the {@link engine.treeView.TreeView#keydown} event.
  *
- * @class engine.treeView.observer.keyObserver.KeyEventInfo
+ * @class engine.treeView.observer.keyObserver.KeyEventData
  * @extends engine.treeView.observer.DomEventData
- * @implements utils.keyboard.KeystrokeInfo
+ * @implements utils.keyboard.KeystrokeData
  */
 
 /**
  * Code of the whole keystroke. See {@link utils.keyboard.getCode}.
  *
  * @readonly
- * @member {Number} engine.treeView.observer.keyObserver.KeyEventInfo#keystroke
+ * @member {Number} engine.treeView.observer.keyObserver.KeyEventData#keystroke
  */
