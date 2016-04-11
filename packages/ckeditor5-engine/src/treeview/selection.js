@@ -110,13 +110,13 @@ export default class Selection {
 	 * Throws {@link utils.CKEditorError CKEditorError} `view-selection-range-intersects` if added range intersects
 	 * with ranges already stored in Selection instance.
 	 *
-	 * @fires engine.treeView.Selection#change:range
+	 * @fires engine.treeView.Selection#change
 	 * @param {engine.treeView.Range} range
 	 */
 	addRange( range, isBackward ) {
 		this._pushRange( range );
 		this._lastRangeBackward = !!isBackward;
-		this.fire( 'change:range' );
+		this.fire( 'change' );
 	}
 
 	/**
@@ -209,7 +209,7 @@ export default class Selection {
 	/**
 	 * Removes range at given index.
 	 *
-	 * @fires engine.treeView.Selection#change:range
+	 * @fires engine.treeView.Selection#change
 	 * @param {Number} index
 	 * @returns {engine.treeView.Range|null} Returns removed range or `null` if there is no range under given index.
 	 */
@@ -217,7 +217,7 @@ export default class Selection {
 		const removed = this._ranges.splice( index, 1 );
 
 		if ( removed.length ) {
-			this.fire( 'change:range' );
+			this.fire( 'change' );
 
 			return removed[ 0 ];
 		}
@@ -228,12 +228,12 @@ export default class Selection {
 	/**
 	 * Removes all ranges that were added to the selection.
 	 *
-	 * @fires engine.treeView.Selection#change:range
+	 * @fires engine.treeView.Selection#change
 	 */
 	removeAllRanges() {
 		if ( this._ranges.length ) {
 			this._ranges = [];
-			this.fire( 'change:range' );
+			this.fire( 'change' );
 		}
 	}
 
@@ -243,7 +243,7 @@ export default class Selection {
 	 * {@link engine.treeView.Selection#focus focus}. Accepts a flag describing in which way the selection is made
 	 * (see {@link engine.treeView.Selection#addRange addRange}).
 	 *
-	 * @fires engine.treeView.Selection#change:range
+	 * @fires engine.treeView.Selection#change
 	 * @param {Array.<engine.treeView.Range>} newRanges Array of ranges to set.
 	 * @param {Boolean} [isLastBackward] Flag describing if last added range was selected forward - from start to end
 	 * (`false`) or backward - from end to start (`true`). Defaults to `false`.
@@ -256,7 +256,7 @@ export default class Selection {
 		}
 
 		this._lastRangeBackward = !!isLastBackward;
-		this.fire( 'change:range' );
+		this.fire( 'change' );
 	}
 
 	/**
@@ -264,14 +264,14 @@ export default class Selection {
 	 * All ranges will be removed beside one collapsed range. Nothing will be changed if there are no ranges stored
 	 * inside selection.
 	 *
-	 * @fires engine.treeView.Selection#change:range
+	 * @fires engine.treeView.Selection#change
 	 */
 	collapseToStart() {
 		const startPosition = this.getFirstPosition();
 
 		if ( startPosition !== null ) {
 			this.setRanges( [ new Range( startPosition, startPosition ) ] );
-			this.fire( 'change:range' );
+			this.fire( 'change' );
 		}
 	}
 
@@ -280,14 +280,14 @@ export default class Selection {
 	 * All ranges will be removed beside one collapsed range. Nothing will be changed if there are no ranges stored
 	 * inside selection.
 	 *
-	 * @fires engine.treeView.Selection#change:range
+	 * @fires engine.treeView.Selection#change
 	 */
 	collapseToEnd() {
 		const endPosition = this.getLastPosition();
 
 		if ( endPosition !== null ) {
 			this.setRanges( [ new Range( endPosition, endPosition ) ] );
-			this.fire( 'change:range' );
+			this.fire( 'change' );
 		}
 	}
 
@@ -326,5 +326,5 @@ utils.mix( Selection, EmitterMixin );
 /**
  * Fired whenever selection ranges are changed through {@link engine.treeView.Selection Selection API}.
  *
- * @event engine.treeView.Selection#change:range
+ * @event engine.treeView.Selection#change
  */

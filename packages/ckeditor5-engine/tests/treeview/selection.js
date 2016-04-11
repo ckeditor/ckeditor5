@@ -119,7 +119,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should fire change event', ( done ) => {
-			selection.once( 'change:range', () => {
+			selection.once( 'change', () => {
 				expect( selection.getRangeAt( 0 ).isEqual( range1 ) ).to.be.true;
 				done();
 			} );
@@ -259,7 +259,7 @@ describe( 'Selection', () => {
 		it( 'should fire change event', ( done ) => {
 			selection.addRange( range1 );
 
-			selection.once( 'change:range', () => {
+			selection.once( 'change', () => {
 				expect( selection.rangeCount ).to.equal( 0 );
 				done();
 			} );
@@ -273,7 +273,7 @@ describe( 'Selection', () => {
 			selection.addRange( range1 );
 			selection.addRange( range2 );
 
-			selection.once( 'change:range', () => {
+			selection.once( 'change', () => {
 				expect( selection.rangeCount ).to.equal( 0 );
 				done();
 			} );
@@ -294,7 +294,7 @@ describe( 'Selection', () => {
 		it( 'should add ranges and fire change event', ( done ) => {
 			selection.addRange( range1 );
 
-			selection.once( 'change:range', () => {
+			selection.once( 'change', () => {
 				expect( selection.rangeCount ).to.equal( 2 );
 				expect( selection.getRangeAt( 0 ).isEqual( range2 ) ).to.be.true;
 				expect( selection.getRangeAt( 0 ) ).is.not.equal( range2 );
@@ -310,7 +310,7 @@ describe( 'Selection', () => {
 	describe( 'collapseToStart', () => {
 		it( 'should collapse to start position and fire change event', ( done ) => {
 			selection.setRanges( [ range1, range2, range3 ] );
-			selection.once( 'change:range', () => {
+			selection.once( 'change', () => {
 				expect( selection.rangeCount ).to.equal( 1 );
 				expect( selection.isCollapsed ).to.be.true;
 				expect( selection.getRangeAt( 0 ).start.isEqual( range2.start ) ).to.be.true;
@@ -333,7 +333,7 @@ describe( 'Selection', () => {
 	describe( 'collapseToEnd', () => {
 		it( 'should collapse to end position and fire change event', ( done ) => {
 			selection.setRanges( [ range1, range2, range3 ] );
-			selection.once( 'change:range', () => {
+			selection.once( 'change', () => {
 				expect( selection.rangeCount ).to.equal( 1 );
 				expect( selection.isCollapsed ).to.be.true;
 				expect( selection.getRangeAt( 0 ).end.isEqual( range3.end ) ).to.be.true;
