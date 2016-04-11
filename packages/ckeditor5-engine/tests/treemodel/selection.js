@@ -54,7 +54,7 @@ describe( 'Selection', () => {
 	} );
 
 	it( 'should be set to default range when just created', () => {
-		let ranges = selection.getRanges();
+		const ranges = Array.from( selection.getRanges() );
 
 		expect( ranges.length ).to.equal( 1 );
 		expect( selection.anchor.isEqual( new Position( root, [ 0 ] ) ) ).to.be.true;
@@ -86,7 +86,7 @@ describe( 'Selection', () => {
 			selection.addRange( liveRange );
 			selection.addRange( range );
 
-			let ranges = selection.getRanges();
+			const ranges = selection._ranges;
 
 			expect( ranges.length ).to.equal( 2 );
 			expect( ranges[ 0 ].isEqual( liveRange ) ).to.be.true;
@@ -122,7 +122,7 @@ describe( 'Selection', () => {
 		it( 'should return a copy of (not a reference to) array of stored ranges', () => {
 			selection.addRange( liveRange );
 
-			let ranges = selection.getRanges();
+			const ranges = Array.from( selection.getRanges() );
 
 			selection.addRange( range );
 
@@ -133,7 +133,7 @@ describe( 'Selection', () => {
 		it( 'should convert added Range to LiveRange', () => {
 			selection.addRange( range );
 
-			let ranges = selection.getRanges();
+			const ranges = selection._ranges;
 
 			expect( ranges[ 0 ] ).to.be.instanceof( LiveRange );
 		} );
@@ -151,7 +151,7 @@ describe( 'Selection', () => {
 			selection.addRange( liveRange );
 			selection.addRange( range );
 
-			let ranges = selection.getRanges();
+			const ranges = selection._ranges;
 
 			sinon.spy( ranges[ 0 ], 'detach' );
 			sinon.spy( ranges[ 1 ], 'detach' );
@@ -261,7 +261,7 @@ describe( 'Selection', () => {
 			spy = sinon.spy();
 			selection.on( 'change:range', spy );
 
-			ranges = selection.getRanges();
+			ranges = selection._ranges;
 
 			sinon.spy( ranges[ 0 ], 'detach' );
 			sinon.spy( ranges[ 1 ], 'detach' );
@@ -275,7 +275,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should remove all stored ranges (and reset to default range)', () => {
-			expect( selection.getRanges().length ).to.equal( 1 );
+			expect( Array.from( selection.getRanges() ).length ).to.equal( 1 );
 			expect( selection.anchor.isEqual( new Position( root, [ 0 ] ) ) ).to.be.true;
 			expect( selection.focus.isEqual( new Position( root, [ 0 ] ) ) ).to.be.true;
 		} );
@@ -307,7 +307,7 @@ describe( 'Selection', () => {
 			spy = sinon.spy();
 			selection.on( 'change:range', spy );
 
-			oldRanges = selection.getRanges();
+			oldRanges = selection._ranges;
 
 			sinon.spy( oldRanges[ 0 ], 'detach' );
 			sinon.spy( oldRanges[ 1 ], 'detach' );
@@ -321,7 +321,7 @@ describe( 'Selection', () => {
 		it( 'should remove all ranges and add given ranges', () => {
 			selection.setRanges( newRanges );
 
-			let ranges = selection.getRanges();
+			let ranges = selection._ranges;
 
 			expect( ranges.length ).to.equal( 2 );
 			expect( ranges[ 0 ].isEqual( newRanges[ 0 ] ) ).to.be.true;
@@ -411,7 +411,7 @@ describe( 'Selection', () => {
 					)
 				);
 
-				let range = selection.getRanges()[ 0 ];
+				let range = selection._ranges[ 0 ];
 
 				expect( range.start.path ).to.deep.equal( [ 0, 5 ] );
 				expect( range.end.path ).to.deep.equal( [ 1, 4 ] );
@@ -427,7 +427,7 @@ describe( 'Selection', () => {
 					)
 				);
 
-				let range = selection.getRanges()[ 0 ];
+				let range = selection._ranges[ 0 ];
 
 				expect( range.start.path ).to.deep.equal( [ 0, 2 ] );
 				expect( range.end.path ).to.deep.equal( [ 1, 7 ] );
@@ -446,7 +446,7 @@ describe( 'Selection', () => {
 					)
 				);
 
-				let range = selection.getRanges()[ 0 ];
+				let range = selection._ranges[ 0 ];
 
 				expect( range.start.path ).to.deep.equal( [ 0, 0 ] );
 				expect( range.end.path ).to.deep.equal( [ 1, 4 ] );
@@ -463,7 +463,7 @@ describe( 'Selection', () => {
 					)
 				);
 
-				let range = selection.getRanges()[ 0 ];
+				let range = selection._ranges[ 0 ];
 
 				expect( range.start.path ).to.deep.equal( [ 0, 4 ] );
 				expect( range.end.path ).to.deep.equal( [ 1, 4 ] );
@@ -480,7 +480,7 @@ describe( 'Selection', () => {
 					)
 				);
 
-				let range = selection.getRanges()[ 0 ];
+				let range = selection._ranges[ 0 ];
 
 				expect( range.start.path ).to.deep.equal( [ 0, 2 ] );
 				expect( range.end.path ).to.deep.equal( [ 1, 2 ] );
@@ -497,7 +497,7 @@ describe( 'Selection', () => {
 					)
 				);
 
-				let range = selection.getRanges()[ 0 ];
+				let range = selection._ranges[ 0 ];
 
 				expect( range.start.path ).to.deep.equal( [ 0, 2 ] );
 				expect( range.end.path ).to.deep.equal( [ 1, 3 ] );
@@ -522,7 +522,7 @@ describe( 'Selection', () => {
 					)
 				);
 
-				let range = selection.getRanges()[ 0 ];
+				let range = selection._ranges[ 0 ];
 
 				expect( range.start.path ).to.deep.equal( [ 0, 2 ] );
 				expect( range.end.path ).to.deep.equal( [ 2, 2 ] );

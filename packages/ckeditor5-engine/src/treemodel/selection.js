@@ -137,13 +137,18 @@ export default class Selection {
 	}
 
 	/**
-	 * Returns an array of ranges added to the selection. The method returns a copy of internal array, so
-	 * it will not change when ranges get added or removed from selection.
+	 * Returns an iterator that contains copies of all ranges added to the selection.
 	 *
-	 * @returns {Array.<LiveRange>}
+	 * @returns {Iterator.<engine.treeModel.Range>}
 	 */
-	getRanges() {
-		return this._ranges.length ? this._ranges.slice() : [ this._getDefaultRange() ];
+	*getRanges() {
+		if ( this._ranges.length ) {
+			for ( let range of this._ranges ) {
+				yield Range.createFromRange( range );
+			}
+		} else {
+			yield this._getDefaultRange();
+		}
 	}
 
 	/**
