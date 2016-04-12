@@ -7,6 +7,11 @@
 
 import Element from './element.js';
 
+/**
+ * Default attribute priority.
+ *
+ * @member {Number} engine.treeView.AttributeElement.DEFAULT_PRIORITY
+ */
 export const DEFAULT_PRIORITY = 10;
 
 /**
