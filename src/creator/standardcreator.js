@@ -6,11 +6,12 @@
 'use strict';
 
 import Creator from './creator.js';
-
 import Document from '../engine/model/document.js';
 import DataController from '../engine/datacontroller.js';
 import EditingController from '../engine/editingcontroller.js';
 import HtmlDataProcessor from '../engine/dataprocessor/htmldataprocessor.js';
+import KeystrokeHandler from '../keystrokehandler.js';
+
 /**
  * Standard creator for browser environment.
  *
@@ -34,6 +35,7 @@ export default class StandardCreator extends Creator {
 		editor.document = new Document();
 		editor.editing = new EditingController( editor.document );
 		editor.data = new DataController( editor.document, dataProcessor );
+		editor.keystrokes = new KeystrokeHandler( editor );
 
 		/**
 		 * The elements replaced by {@link ckeditor5.creator.StandardCreator#_replaceElement} and their replacements.
