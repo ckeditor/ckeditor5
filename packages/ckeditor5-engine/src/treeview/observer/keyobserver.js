@@ -6,6 +6,7 @@
 'use strict';
 
 import DomEventObserver from './domeventobserver.js';
+import { getCode } from '../../../utils/keyboard.js';
 
 /**
  * {@link engine.treeView.TreeView#keydown Key down} event observer.
@@ -21,20 +22,16 @@ export default class KeyObserver extends DomEventObserver {
 	}
 
 	onDomEvent( domEvt ) {
-		const treeView = this.treeView;
-
-		this.fire( 'keydown', {
+		this.fire( 'keydown', domEvt, {
 			keyCode: domEvt.keyCode,
 
 			altKey: domEvt.altKey,
 			ctrlKey: domEvt.ctrlKey || domEvt.metaKey,
 			shiftKey: domEvt.shiftKey,
 
-			get target() {
-				return treeView.domConverter.getCorrespondingViewElement( domEvt.target );
-			},
-
-			domTarget: domEvt.target
+			get keystroke() {
+				return getCode( this );
+			}
 		} );
 	}
 }
@@ -43,24 +40,20 @@ export default class KeyObserver extends DomEventObserver {
  * Fired when a key has been pressed.
  *
  * @event engine.treeView.TreeView#keydown
- * @param {engine.treeView.observer.keyObserver.KeyData} keyData
+ * @param {engine.treeView.observer.keyObserver.KeyEventData} keyEventData
  */
 
 /**
  * The value of the {@link engine.treeView.TreeView#keydown} event.
  *
- * @interface engine.treeView.observer.keyObserver.KeyData
- * @implements utils.keyboard.KeystrokeInfo
+ * @class engine.treeView.observer.keyObserver.KeyEventData
+ * @extends engine.treeView.observer.DomEventData
+ * @implements utils.keyboard.KeystrokeData
  */
 
 /**
- * The event view target.
+ * Code of the whole keystroke. See {@link utils.keyboard.getCode}.
  *
- * @member {engine.treeView.Element} engine.treeView.observer.keyObserver.KeyData#target
- */
-
-/**
- * The event DOM target.
- *
- * @member {HTMLElement} engine.treeView.observer.keyObserver.KeyData#domTarget
+ * @readonly
+ * @member {Number} engine.treeView.observer.keyObserver.KeyEventData#keystroke
  */

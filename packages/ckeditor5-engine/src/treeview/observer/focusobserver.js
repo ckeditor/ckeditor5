@@ -21,15 +21,7 @@ export default class FocusObserver extends DomEventObserver {
 	}
 
 	onDomEvent( domEvt ) {
-		const treeView = this.treeView;
-
-		this.fire( domEvt.type, {
-			get target() {
-				return treeView.domConverter.getCorrespondingViewElement( domEvt.target );
-			},
-
-			domTarget: domEvt.target
-		} );
+		this.fire( domEvt.type, domEvt );
 	}
 }
 
@@ -37,14 +29,12 @@ export default class FocusObserver extends DomEventObserver {
  * Fired when one of the editables gets focus.
  *
  * @event engine.treeView.TreeView#focus
- * @param {engine.treeView.Element} data.target The event view target (editable element that was focused).
- * @param {HTMLElement} data.domTarget The event DOM target (editable element that was focused).
+ * @param {engine.treeView.observer.DomEventData} data Event data.
  */
 
 /**
  * Fired when one of the editables loses focus.
  *
  * @event engine.treeView.TreeView#blur
- * @param {engine.treeView.Element} data.target The event view target (editable element that was blurred).
- * @param {HTMLElement} data.domTarget The event DOM target (editable element that was blurred).
+ * @param {engine.treeView.observer.DomEventData} data Event data.
  */

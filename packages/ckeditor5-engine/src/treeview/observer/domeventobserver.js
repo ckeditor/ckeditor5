@@ -6,6 +6,7 @@
 'use strict';
 
 import Observer from './observer.js';
+import DomEventData from './domeventdata.js';
 
 /**
  * Base class for DOM event observers. This class handles
@@ -33,17 +34,13 @@ import Observer from './observer.js';
  * @extends engine.treeView.observer.Observer
  */
 export default class DomEventObserver extends Observer {
-	constructor( treeView ) {
-		super( treeView );
-
-		/**
-		 * Type of the DOM event the observer should listen on. Array of types can be defined
-		 * if the obsever should listen to multiple DOM events.
-		 *
-		 * @readonly
-		 * @member {String|Array.<String>} engine.treeView.observer.DomEventObserver#domEventType
-		 */
-	}
+	/**
+	 * Type of the DOM event the observer should listen on. Array of types can be defined
+	 * if the obsever should listen to multiple DOM events.
+	 *
+	 * @readonly
+	 * @member {String|Array.<String>} engine.treeView.observer.DomEventObserver#domEventType
+	 */
 
 	/**
 	 * Callback which should be called when the DOM event occurred. Note that the callback will not be called if
@@ -70,11 +67,14 @@ export default class DomEventObserver extends Observer {
 	 * {@link engine.treeView.observer.DomEventObserver#isEnabled is enabled}.
 	 *
 	 * @see engine.treeView.TreeView#fire
-	 * @param {...*} args Fire arguments {@link engine.treeView.TreeView#fire}.
+	 * @param {String} eventType The event type (name).
+	 * @param {Event} domEvent The DOM event.
+	 * @param {Object} [additionalData] The additional data which should extend the
+	 * {@link engine.treeView.observer.DomEventData event data} object.
 	 */
-	fire( ...args ) {
+	fire( eventType, domEvent, additionalData ) {
 		if ( this.isEnabled ) {
-			this.treeView.fire( ...args );
+			this.treeView.fire( eventType, new DomEventData( this.treeView, domEvent, additionalData ) );
 		}
 	}
 }
