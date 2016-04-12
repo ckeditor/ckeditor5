@@ -9,6 +9,8 @@
 
 import Range from '/ckeditor5/engine/treeview/range.js';
 import Position from '/ckeditor5/engine/treeview/position.js';
+import Element from '/ckeditor5/engine/treeview/element.js';
+import Text from '/ckeditor5/engine/treeview/text.js';
 
 describe( 'Range', () => {
 	describe( 'constructor', () => {
@@ -71,6 +73,83 @@ describe( 'Range', () => {
 			const range2 = new Range( new Position( mockObject, 2 ), new Position( mockObject, 10 )  );
 
 			expect( range1.isEqual( range2 ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'isIntersecting', () => {
+		let root, p1, p2, t1, t2, t3;
+
+		//            root
+		//    __________|__________
+		//    |                   |
+		// ___p1___               p2
+		// |       |              |
+		// t1      t2             t3
+
+		beforeEach( () => {
+			t1 = new Text( 'foo' );
+			t2 = new Text( 'bar' );
+			t3 = new Text( 'baz' );
+			p1 = new Element( 'p', null, [ t1, t2 ] );
+			p2 = new Element( 'p', null, t3 );
+			root = new Element( 'div', null, [ p1, p2 ] );
+		} );
+
+		it( 'should return true if given range is equal', () => {
+			const range = Range.createFromParentsAndOffsets( t1, 0, t3, 2 );
+			const otherRange = Range.createFromRange( range );
+			expect( range.isIntersecting( otherRange ) ).to.be.true;
+			expect( otherRange.isIntersecting( range ) ).to.be.true;
+		} );
+
+		it( 'should return true if given range contains this range', () => {
+			const range = Range.createFromParentsAndOffsets( t1, 0, t3, 3 );
+			const otherRange = Range.createFromParentsAndOffsets( p1, 1, t2, 2 );
+
+			expect( range.isIntersecting( otherRange ) ).to.be.true;
+			expect( otherRange.isIntersecting( range ) ).to.be.true;
+		} );
+
+		it( 'should return true if given range ends in this range', () => {
+			const range = Range.createFromParentsAndOffsets( root, 1, t3, 3 );
+			const otherRange = Range.createFromParentsAndOffsets( t1, 0, p2, 0 );
+
+			expect( range.isIntersecting( otherRange ) ).to.be.true;
+			expect( otherRange.isIntersecting( range ) ).to.be.true;
+		} );
+
+		it( 'should return true if given range starts in this range', () => {
+			const range = Range.createFromParentsAndOffsets( t1, 0, t2, 3 );
+			const otherRange = Range.createFromParentsAndOffsets( p1, 1, p2, 0 );
+
+			expect( range.isIntersecting( otherRange ) ).to.be.true;
+			expect( otherRange.isIntersecting( range ) ).to.be.true;
+		} );
+
+		it( 'should return false if given range is fully before/after this range', () => {
+			const range = Range.createFromParentsAndOffsets( t1, 0, t2, 3 );
+			const otherRange = Range.createFromParentsAndOffsets( root, 1, t3, 0 );
+
+			expect( range.isIntersecting( otherRange ) ).to.be.false;
+			expect( otherRange.isIntersecting( range ) ).to.be.false;
+		} );
+
+		it( 'should return false if ranges are in different roots', () => {
+			const range = Range.createFromParentsAndOffsets( t1, 0, t2, 3 );
+			const otherRange = Range.createFromParentsAndOffsets( new Element( 'div' ), 1, t3, 0 );
+
+			expect( range.isIntersecting( otherRange ) ).to.be.false;
+			expect( otherRange.isIntersecting( range ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'createFromRange', () => {
+		it( 'should create a new instance of Range that is equal to passed range', () => {
+			const range = new Range( new Position( {}, 0 ), new Position( {}, 1 ) );
+			const clone = Range.createFromRange( range );
+
+			expect( clone ).not.to.be.equal( range ); // clone is not pointing to the same object as position
+			expect( clone.isEqual( range ) ).to.be.true; // but they are equal in the position-sense
 		} );
 	} );
 } );

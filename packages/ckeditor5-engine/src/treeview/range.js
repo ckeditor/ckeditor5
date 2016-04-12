@@ -58,6 +58,16 @@ export default class Range {
 	}
 
 	/**
+	 * Checks and returns whether this range intersects with given range.
+	 *
+	 * @param {engine.treeView.Range} otherRange Range to compare with.
+	 * @returns {Boolean} True if ranges intersect.
+	 */
+	isIntersecting( otherRange ) {
+		return this.start.isBefore( otherRange.end ) && this.end.isAfter( otherRange.start );
+	}
+
+	/**
 	 * Creates a range from given parents and offsets.
 	 *
 	 * @param {engine.treeView.Element} startElement Start position parent element.
@@ -71,5 +81,15 @@ export default class Range {
 			new Position( startElement, startOffset ),
 			new Position( endElement, endOffset )
 		);
+	}
+
+	/**
+	 * Creates and returns a new instance of Range which is equal to passed range.
+	 *
+	 * @param {engine.treeView.Range} range Range to clone.
+	 * @returns {engine.treeView.Range}
+	 */
+	static createFromRange( range ) {
+		return new this( range.start, range.end );
 	}
 }

@@ -26,7 +26,7 @@ describe( 'Document', () => {
 			expect( doc._roots.size ).to.equal( 1 );
 			expect( doc.graveyard ).to.be.instanceof( RootElement );
 			expect( doc.graveyard.getChildCount() ).to.equal( 0 );
-			expect( doc.selection.getRanges().length ).to.equal( 1 );
+			expect( utils.count( doc.selection.getRanges() ) ).to.equal( 1 );
 		} );
 	} );
 
