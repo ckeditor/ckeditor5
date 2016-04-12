@@ -35,4 +35,25 @@ describe( 'AttributeElement', () => {
 			expect( clone.priority ).to.equal( el.priority );
 		} );
 	} );
+
+	describe( 'isSimilar', () => {
+		it( 'should return true if priorities are the same', () => {
+			const b1 = new AttributeElement( 'b' );
+			b1.priority = 7;
+
+			const b2 = new AttributeElement( 'b' );
+			b2.priority = 7;
+
+			expect( b1.isSimilar( b2 ) ).to.be.true;
+		} );
+
+		it( 'should return false if priorities are different', () => {
+			const b1 = new AttributeElement( 'b' );
+			b1.priority = 7;
+
+			const b2 = new AttributeElement( 'b' ); // default priority
+
+			expect( b1.isSimilar( b2 ) ).to.be.false;
+		} );
+	} );
 } );

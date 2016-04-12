@@ -16,9 +16,7 @@ export const DEFAULT_PRIORITY = 10;
 
 /**
  * Attributes are elements which define document presentation. They are mostly elements like `<b>` or `<span>`.
- * Attributes can be broken and merged by the {@link engine.treeView.Writer}. Merging requires that attribute nodes are
- * {@link engine.treeView.Element#isSimilar similar} and have same priority. Setting different priorities on similar
- * nodes may prevent merging, eg. two `<abbr>` nodes next each other shouldn't be merged.
+ * Attributes can be broken and merged by the {@link engine.treeView.Writer}.
  *
  * Editing engine does not define fixed HTML DTD. This is why the type of the {@link engine.treeView.Element} need to
  * be defined by the feature developer. Creating an element you should use {@link engine.treeView.ContainerElement}
@@ -37,7 +35,9 @@ export default class AttributeElement extends Element {
 		super( name, attrs, children );
 
 		/**
-		 * Element priority.
+		 * Element priority. Attributes have to have the same priority to be
+		 * {@link engine.treeView.Element#isSimilar similar}. Setting different priorities on similar
+ 		 * nodes may prevent merging, eg. two `<abbr>` nodes next each other shouldn't be merged.
 		 *
 		 * @member {Number} engine.treeView.AttributeElement#priority
 		 */
@@ -58,5 +58,17 @@ export default class AttributeElement extends Element {
 		cloned.priority	= this.priority;
 
 		return cloned;
+	}
+
+	/**
+	 * Checks if this element is similar to other element.
+	 * Both elements should have the same name, attributes and priority to be considered as similar.
+	 * Two similar elements can contain different set of children nodes.
+	 *
+	 * @param {Element} otherElement
+	 * @returns {Boolean}
+	 */
+	isSimilar( otherElement ) {
+		return super.isSimilar( otherElement ) && this.priority == otherElement.priority;
 	}
 }

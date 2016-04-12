@@ -173,7 +173,7 @@ import DocumentFragment from './documentfragment.js';
 
 	/**
 	 * Merges attribute nodes. It also merges text nodes if needed.
-	 * Only {@link engine.treeView.Element#isSimilar similar} `attribute` nodes, with same priority can be merged.
+	 * Only {@link engine.treeView.AttributeElement#isSimilar similar} `attribute` nodes can be merged.
 	 *
 	 * In following examples `<p>` is a container and `<b>` is an attribute node:
 	 *
@@ -219,11 +219,6 @@ import DocumentFragment from './documentfragment.js';
 		}
 		// When selection is between same nodes.
 		else if ( nodeBefore.isSimilar( nodeAfter ) ) {
-			// Do not merge same nodes with different priorities.
-			if ( !( nodeBefore instanceof AttributeElement ) || nodeBefore.priority !== nodeAfter.priority ) {
-				return Position.createFromPosition( position );
-			}
-
 			// Move all children nodes from node placed after selection and remove that node.
 			const count = nodeBefore.getChildCount();
 			nodeBefore.appendChildren( nodeAfter.getChildren() );
@@ -458,8 +453,8 @@ function unwrapChildren( writer, parent, startOffset, endOffset, attribute ) {
 	while ( i < endOffset ) {
 		const child = parent.getChild( i );
 
-		// If attributes are the similar and have same priority, then unwrap.
-		if (  child.isSimilar( attribute ) && child.priority == attribute.priority ) {
+		// If attributes are the similar, then unwrap.
+		if (  child.isSimilar( attribute ) ) {
 			const unwrapped = child.getChildren();
 			const count = child.getChildCount();
 
