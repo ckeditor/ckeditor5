@@ -8,6 +8,7 @@
 'use strict';
 
 import Writer from '/ckeditor5/engine/treeview/writer.js';
+import Element from '/ckeditor5/engine/treeview/element.js';
 import ContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
 import AttributeElement from '/ckeditor5/engine/treeview/attributeelement.js';
 import Position from '/ckeditor5/engine/treeview/position.js';
@@ -35,7 +36,7 @@ describe( 'Writer', () => {
 				]
 			};
 			const created = create( writer, description );
-			const newRange = writer.unwrap( created.range, new ContainerElement( 'b' ), 1 );
+			const newRange = writer.unwrap( created.range, new AttributeElement( 'b' ), 1 );
 			test( writer, newRange, created.node, description );
 		} );
 
@@ -52,11 +53,24 @@ describe( 'Writer', () => {
 			};
 
 			const created = create( writer, description );
-			const b = new ContainerElement( 'b' );
+			const b = new AttributeElement( 'b' );
 			b.priority = 1;
 			const newRange = writer.unwrap( created.range, b );
 
 			test( writer, newRange, created.node, description );
+		} );
+
+		it( 'should throw error when element is not instance of AttributeElement', () => {
+			const container = new ContainerElement( 'p', null, new AttributeElement( 'b', null, new Text( 'foo' ) ) );
+			const range = new Range(
+				new Position( container, 0 ),
+				new Position( container, 1 )
+			);
+			const b = new Element( 'b' );
+
+			expect( () => {
+				writer.unwrap( range, b );
+			} ).to.throw( CKEditorError, 'treeview-writer-unwrap-invalid-attribute' );
 		} );
 
 		it( 'should throw error when range placed in two containers', () => {
@@ -66,7 +80,7 @@ describe( 'Writer', () => {
 				new Position( container1, 0 ),
 				new Position( container2, 1 )
 			);
-			const b = new ContainerElement( 'b' );
+			const b = new AttributeElement( 'b' );
 
 			expect( () => {
 				writer.unwrap( range, b, 1 );
@@ -92,7 +106,7 @@ describe( 'Writer', () => {
 				]
 			} );
 
-			const b = new ContainerElement( 'b' );
+			const b = new AttributeElement( 'b' );
 			b.priority = 1;
 			const newRange = writer.unwrap( created.range, b );
 
@@ -128,7 +142,7 @@ describe( 'Writer', () => {
 			};
 			const created = create( writer, description );
 
-			const b = new ContainerElement( 'b' );
+			const b = new AttributeElement( 'b' );
 			b.priority = 2;
 			const newRange = writer.unwrap( created.range, b );
 
@@ -171,7 +185,7 @@ describe( 'Writer', () => {
 				]
 			} );
 
-			const b = new ContainerElement( 'b' );
+			const b = new AttributeElement( 'b' );
 			b.priority = 2;
 			const newRange = writer.unwrap( created.range, b );
 
@@ -215,7 +229,7 @@ describe( 'Writer', () => {
 				]
 			} );
 
-			const b = new ContainerElement( 'b' );
+			const b = new AttributeElement( 'b' );
 			b.priority = 1;
 
 			const newRange = writer.unwrap( created.range, b );
@@ -265,7 +279,7 @@ describe( 'Writer', () => {
 					}
 				]
 			} );
-			const b = new ContainerElement( 'b' );
+			const b = new AttributeElement( 'b' );
 			b.priority = 1;
 
 			const newRange = writer.unwrap( created.range, b );
@@ -308,7 +322,7 @@ describe( 'Writer', () => {
 				]
 			} );
 
-			const b =  new ContainerElement( 'b' );
+			const b =  new AttributeElement( 'b' );
 			b.priority = 1;
 			const newRange = writer.unwrap( created.range, b );
 			test( writer, newRange, created.node, {
@@ -360,7 +374,7 @@ describe( 'Writer', () => {
 				]
 			} );
 
-			const b = new ContainerElement( 'b' );
+			const b = new AttributeElement( 'b' );
 			b.priority = 1;
 			const newRange = writer.unwrap( created.range, b );
 
@@ -419,7 +433,7 @@ describe( 'Writer', () => {
 				]
 			} );
 
-			const b = new ContainerElement( 'b' );
+			const b = new AttributeElement( 'b' );
 			b.priority = 1;
 			const newRange = writer.unwrap( created.range, b );
 
@@ -502,7 +516,7 @@ describe( 'Writer', () => {
 				]
 			} );
 
-			const b = new ContainerElement( 'b' );
+			const b = new AttributeElement( 'b' );
 			b.priority = 1;
 			const newRange = writer.unwrap( created.range, b );
 
@@ -582,7 +596,7 @@ describe( 'Writer', () => {
 				]
 			} );
 
-			const b = new ContainerElement( 'b' );
+			const b = new AttributeElement( 'b' );
 			b.priority = 1;
 			const newRange = writer.unwrap( created.range, b );
 			test( writer, newRange, created.node, {
@@ -628,7 +642,7 @@ describe( 'Writer', () => {
 					}
 				]
 			} );
-			const b = new ContainerElement( 'b' );
+			const b = new AttributeElement( 'b' );
 			b.priority = 1;
 			const newRange = writer.unwrap( created.range, b );
 			test( writer, newRange, created.node, {
@@ -673,7 +687,7 @@ describe( 'Writer', () => {
 					}
 				]
 			} );
-			const b = new ContainerElement( 'b' );
+			const b = new AttributeElement( 'b' );
 			b.priority = 1;
 			const newRange = writer.unwrap( created.range, b );
 			test( writer, newRange, created.node, {

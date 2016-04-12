@@ -8,6 +8,7 @@
 'use strict';
 
 import Writer from '/ckeditor5/engine/treeview/writer.js';
+import Element from '/ckeditor5/engine/treeview/element.js';
 import ContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
 import AttributeElement from '/ckeditor5/engine/treeview/attributeelement.js';
 import Position from '/ckeditor5/engine/treeview/position.js';
@@ -72,6 +73,19 @@ describe( 'Writer', () => {
 					}
 				]
 			} );
+		} );
+
+		it( 'should throw error when element is not instance of AttributeElement', () => {
+			const container = new ContainerElement( 'p', null, new Text( 'foo' ) );
+			const range = new Range(
+				new Position( container, 0 ),
+				new Position( container, 1 )
+			);
+			const b = new Element( 'b' );
+
+			expect( () => {
+				writer.wrap( range, b, 1 );
+			} ).to.throw( CKEditorError, 'treeview-writer-wrap-invalid-attribute' );
 		} );
 
 		it( 'should throw error when range placed in two containers', () => {

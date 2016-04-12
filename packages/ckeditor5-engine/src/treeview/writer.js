@@ -346,6 +346,15 @@ import DocumentFragment from './documentfragment.js';
 	 * @param {Number} priority Priority to set.
 	 */
 	wrap( range, attribute, priority ) {
+		if ( !( attribute instanceof AttributeElement ) ) {
+			/**
+			 * Attribute element need to be instance of attribute element.
+			 *
+			 * @error treeview-writer-wrap-invalid-attribute
+			 */
+			throw new CKEditorError( 'treeview-writer-wrap-invalid-attribute' );
+		}
+
 		// Range should be placed inside one container.
 		if ( this.getParentContainer( range.start ) !== this.getParentContainer( range.end ) ) {
 			/**
@@ -397,6 +406,15 @@ import DocumentFragment from './documentfragment.js';
 	 * @param {engine.treeView.AttributeElement} element
 	 */
 	unwrap( range, attribute ) {
+		if ( !( attribute instanceof AttributeElement ) ) {
+			/**
+			 * Attribute element need to be instance of attribute element.
+			 *
+			 * @error treeview-writer-unwrap-invalid-attribute
+			 */
+			throw new CKEditorError( 'treeview-writer-unwrap-invalid-attribute' );
+		}
+
 		// Range should be placed inside one container.
 		if ( this.getParentContainer( range.start ) !== this.getParentContainer( range.end ) ) {
 			/**
