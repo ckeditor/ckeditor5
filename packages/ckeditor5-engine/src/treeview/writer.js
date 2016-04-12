@@ -109,9 +109,6 @@ import DocumentFragment from './documentfragment.js';
 				// Break element.
 				const clonedNode = positionParent.clone();
 
-				// Clone priority.
-				clonedNode.priority = positionParent.priority;
-
 				// Insert cloned node to position's parent node.
 				positionParent.parent.insertChildren( offsetAfter, clonedNode );
 
@@ -211,21 +208,19 @@ import DocumentFragment from './documentfragment.js';
 			return position;
 		}
 
+		// When selection is between two text nodes.
 		if ( nodeBefore instanceof Text && nodeAfter instanceof Text ) {
-			// When selection is between two text nodes.
 			// Merge text data into first text node and remove second one.
 			const nodeBeforeLength = nodeBefore.data.length;
 			nodeBefore.data += nodeAfter.data;
 			positionParent.removeChildren( positionOffset );
 
 			return new Position( nodeBefore, nodeBeforeLength );
-		} else if ( nodeBefore.isSimilar( nodeAfter ) ) {
-			// When selection is between same nodes.
-			const nodeBeforePriority = nodeBefore.priority;
-			const nodeAfterPriority = nodeAfter.priority;
-
+		}
+		// When selection is between same nodes.
+		else if ( nodeBefore.isSimilar( nodeAfter ) ) {
 			// Do not merge same nodes with different priorities.
-			if ( nodeBeforePriority === undefined || nodeBeforePriority !== nodeAfterPriority ) {
+			if ( !( nodeBefore instanceof AttributeElement ) || nodeBefore.priority !== nodeAfter.priority ) {
 				return Position.createFromPosition( position );
 			}
 
@@ -536,13 +531,11 @@ function wrapChildren( writer, parent, startOffset, endOffset, attribute ) {
 		const child = parent.getChild( i );
 		const isText = child instanceof Text;
 		const isAttribute = child instanceof AttributeElement;
-		const priority = attribute.priority;
 
 		// Wrap text or attributes with higher or equal priority.
-		if ( isText || ( isAttribute && priority <= child.priority ) ) {
+		if ( isText || ( isAttribute && attribute.priority <= child.priority ) ) {
 			// Clone attribute.
 			const newAttribute = attribute.clone();
-			newAttribute.priority = priority;
 
 			// Wrap current node with new attribute;
 			child.remove();

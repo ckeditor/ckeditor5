@@ -43,4 +43,20 @@ export default class AttributeElement extends Element {
 		 */
 		this.priority = DEFAULT_PRIORITY;
 	}
+
+	/**
+	 * Clones provided element with priority.
+	 *
+	 * @param {Boolean} deep If set to `true` clones element and all its children recursively. When set to `false`,
+	 * element will be cloned without any children.
+	 * @returns {Element} Clone of this element.
+	 */
+	clone( deep ) {
+		const cloned = super.clone( deep );
+
+		// Clone priority too.
+		cloned.priority	= this.priority;
+
+		return cloned;
+	}
 }
