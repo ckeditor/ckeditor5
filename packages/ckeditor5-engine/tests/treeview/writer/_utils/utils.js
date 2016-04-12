@@ -44,7 +44,7 @@ const utils = {
 		}
 
 		if ( description.priority !== undefined ) {
-			writer.setPriority( node, description.priority );
+			node.priority = description.priority;
 		}
 
 		if ( description.rangeStart !== undefined ) {
@@ -125,7 +125,7 @@ const utils = {
 		}
 
 		if ( description.priority !== undefined ) {
-			expect( description.priority ).to.equal( writer.getPriority( node ) );
+			expect( description.priority ).to.equal( node.priority );
 		}
 
 		if ( description.rangeStart !== undefined ) {

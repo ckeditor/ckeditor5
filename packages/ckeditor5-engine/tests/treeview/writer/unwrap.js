@@ -8,7 +8,8 @@
 'use strict';
 
 import Writer from '/ckeditor5/engine/treeview/writer.js';
-import Element from '/ckeditor5/engine/treeview/element.js';
+import ContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
+import AttributeElement from '/ckeditor5/engine/treeview/attributeelement.js';
 import Position from '/ckeditor5/engine/treeview/position.js';
 import Range from '/ckeditor5/engine/treeview/range.js';
 import Text from '/ckeditor5/engine/treeview/text.js';
@@ -27,21 +28,21 @@ describe( 'Writer', () => {
 	describe( 'unwrap', () => {
 		it( 'should do nothing on collapsed ranges', () => {
 			const description = {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{ instanceOf: Text, data: 'foo', rangeStart: 1, rangeEnd: 1 }
 				]
 			};
 			const created = create( writer, description );
-			const newRange = writer.unwrap( created.range, new Element( 'b' ), 1 );
+			const newRange = writer.unwrap( created.range, new ContainerElement( 'b' ), 1 );
 			test( writer, newRange, created.node, description );
 		} );
 
 		it( 'should do nothing on single text node', () => {
 			// <p>[{foobar}]</p>
 			const description = {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				rangeEnd: 1,
@@ -51,21 +52,21 @@ describe( 'Writer', () => {
 			};
 
 			const created = create( writer, description );
-			const b = new Element( 'b' );
-			writer.setPriority( b, 1 );
+			const b = new ContainerElement( 'b' );
+			b.priority = 1;
 			const newRange = writer.unwrap( created.range, b );
 
 			test( writer, newRange, created.node, description );
 		} );
 
 		it( 'should throw error when range placed in two containers', () => {
-			const container1 = new Element( 'p' );
-			const container2 = new Element( 'p' );
+			const container1 = new ContainerElement( 'p' );
+			const container2 = new ContainerElement( 'p' );
 			const range = new Range(
 				new Position( container1, 0 ),
 				new Position( container2, 1 )
 			);
-			const b = new Element( 'b' );
+			const b = new ContainerElement( 'b' );
 
 			expect( () => {
 				writer.unwrap( range, b, 1 );
@@ -75,15 +76,15 @@ describe( 'Writer', () => {
 		it( 'should unwrap single node', () => {
 			// <p>[<b>{foobar}</b>]<p> -> <p>[{foobar}]</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				rangeEnd: 1,
 				children: [
 					{
-						instanceOf: Element,
-						priority: 1,
+						instanceOf: AttributeElement,
 						name: 'b',
+						priority: 1,
 						children: [
 							{ instanceOf: Text, data: 'foobar' }
 						]
@@ -91,12 +92,12 @@ describe( 'Writer', () => {
 				]
 			} );
 
-			const b = new Element( 'b' );
-			writer.setPriority( b, 1 );
+			const b = new ContainerElement( 'b' );
+			b.priority = 1;
 			const newRange = writer.unwrap( created.range, b );
 
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				rangeEnd: 1,
@@ -110,15 +111,15 @@ describe( 'Writer', () => {
 			// <p>[<b>{foobar}</b>]<p> -> <p>[<b>{foobar}</b>]</p>
 			// Unwrapped with <b> but using different priority.
 			const description =  {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				rangeEnd: 1,
 				children: [
 					{
-						instanceOf: Element,
-						priority: 1,
+						instanceOf: AttributeElement,
 						name: 'b',
+						priority: 1,
 						children: [
 							{ instanceOf: Text, data: 'foobar' }
 						]
@@ -127,8 +128,8 @@ describe( 'Writer', () => {
 			};
 			const created = create( writer, description );
 
-			const b = new Element( 'b' );
-			writer.setPriority( b, 2 );
+			const b = new ContainerElement( 'b' );
+			b.priority = 2;
 			const newRange = writer.unwrap( created.range, b );
 
 			test( writer, newRange, created.node, description );
@@ -138,31 +139,31 @@ describe( 'Writer', () => {
 			// <p>[<b>{foo}</b><b>{bar}</b><b>{baz}</b>]<p> -> <p>[{foo}<b>bar</b>{baz}]</p>
 			// <b> around `bar` has different priority than others.
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				rangeEnd: 3,
 				children: [
 					{
-						instanceOf: Element,
-						priority: 2,
+						instanceOf: AttributeElement,
 						name: 'b',
+						priority: 2,
 						children: [
 							{ instanceOf: Text, data: 'foo' }
 						]
 					},
 					{
-						instanceOf: Element,
-						priority: 1,
+						instanceOf: AttributeElement,
 						name: 'b',
+						priority: 1,
 						children: [
 							{ instanceOf: Text, data: 'bar' }
 						]
 					},
 					{
-						instanceOf: Element,
-						priority: 2,
+						instanceOf: AttributeElement,
 						name: 'b',
+						priority: 2,
 						children: [
 							{ instanceOf: Text, data: 'baz' }
 						]
@@ -170,21 +171,21 @@ describe( 'Writer', () => {
 				]
 			} );
 
-			const b = new Element( 'b' );
-			writer.setPriority( b, 2 );
+			const b = new ContainerElement( 'b' );
+			b.priority = 2;
 			const newRange = writer.unwrap( created.range, b );
 
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				rangeEnd: 3,
 				children: [
 					{ instanceOf: Text, data: 'foo' },
 					{
-						instanceOf: Element,
-						priority: 1,
+						instanceOf: AttributeElement,
 						name: 'b',
+						priority: 1,
 						children: [
 							{ instanceOf: Text, data: 'bar' }
 						]
@@ -197,13 +198,13 @@ describe( 'Writer', () => {
 		it( 'should unwrap part of the node', () => {
 			// <p>[{baz}<b>{foo]bar}</b><p> -> <p>[{bazfoo}]<b>{bar}</b></p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				children: [
 					{ instanceOf: Text, data: 'baz' },
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
@@ -214,20 +215,20 @@ describe( 'Writer', () => {
 				]
 			} );
 
-			const b = new Element( 'b' );
-			writer.setPriority( b, 1 );
+			const b = new ContainerElement( 'b' );
+			b.priority = 1;
 
 			const newRange = writer.unwrap( created.range, b );
 
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				rangeEnd: 1,
 				children: [
 					{ instanceOf: Text, data: 'bazfoo' },
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
@@ -242,18 +243,18 @@ describe( 'Writer', () => {
 		it( 'should unwrap nested attributes', () => {
 			// <p>[<u><b>{foobar}</b></u>]</p> -> <p>[<u>{foobar}</u>]</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				rangeEnd: 1,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'u',
 						priority: 1,
 						children: [
 							{
-								instanceOf: Element,
+								instanceOf: AttributeElement,
 								name: 'b',
 								priority: 1,
 								children: [
@@ -264,18 +265,18 @@ describe( 'Writer', () => {
 					}
 				]
 			} );
-			const b = new Element( 'b' );
-			writer.setPriority( b, 1 );
+			const b = new ContainerElement( 'b' );
+			b.priority = 1;
 
 			const newRange = writer.unwrap( created.range, b );
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				rangeEnd: 1,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'u',
 						priority: 1,
 						children: [
@@ -289,14 +290,14 @@ describe( 'Writer', () => {
 		it( 'should merge unwrapped nodes #1', () => {
 			// <p>{foo}[<b>{bar}</b>]{bom}</p> -> <p>{foo[bar]bom}</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 1,
 				rangeEnd: 2,
 				children: [
 					{ instanceOf: Text, data: 'foo' },
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
@@ -307,11 +308,11 @@ describe( 'Writer', () => {
 				]
 			} );
 
-			const b =  new Element( 'b' );
-			writer.setPriority( b, 1 );
+			const b =  new ContainerElement( 'b' );
+			b.priority = 1;
 			const newRange = writer.unwrap( created.range, b );
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{
@@ -327,14 +328,14 @@ describe( 'Writer', () => {
 		it( 'should merge unwrapped nodes #2', () => {
 			// <p>{foo}<u>{bar}</u>[<b><u>{bazqux}</u></b>]</p> -> <p>{foo}<u>{bar[bazqux}</u>]</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 2,
 				rangeEnd: 3,
 				children: [
 					{ instanceOf: Text, data: 'foo' },
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'u',
 						priority: 1,
 						children: [
@@ -342,12 +343,12 @@ describe( 'Writer', () => {
 						]
 					},
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
 							{
-								instanceOf: Element,
+								instanceOf: AttributeElement,
 								name: 'u',
 								priority: 1,
 								children: [
@@ -359,12 +360,12 @@ describe( 'Writer', () => {
 				]
 			} );
 
-			const b = new Element( 'b' );
-			writer.setPriority( b, 1 );
+			const b = new ContainerElement( 'b' );
+			b.priority = 1;
 			const newRange = writer.unwrap( created.range, b );
 
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeEnd: 2,
 				children: [
@@ -373,7 +374,7 @@ describe( 'Writer', () => {
 						data: 'foo'
 					},
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'u',
 						priority: 1,
 						children: [
@@ -387,13 +388,13 @@ describe( 'Writer', () => {
 		it( 'should merge unwrapped nodes #3', () => {
 			// <p>{foo}<u>{bar}</u>[<b><u>{baz]qux}</u></b></p> -> <p>{foo}<u>{bar[baz}</u>]<b><u>{qux}</u></b></p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 2,
 				children: [
 					{ instanceOf: Text, data: 'foo' },
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'u',
 						priority: 1,
 						children: [
@@ -401,12 +402,12 @@ describe( 'Writer', () => {
 						]
 					},
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
 							{
-								instanceOf: Element,
+								instanceOf: AttributeElement,
 								name: 'u',
 								priority: 1,
 								children: [
@@ -418,12 +419,12 @@ describe( 'Writer', () => {
 				]
 			} );
 
-			const b = new Element( 'b' );
-			writer.setPriority( b, 1 );
+			const b = new ContainerElement( 'b' );
+			b.priority = 1;
 			const newRange = writer.unwrap( created.range, b );
 
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeEnd: 2,
 				children: [
@@ -432,7 +433,7 @@ describe( 'Writer', () => {
 						data: 'foo'
 					},
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'u',
 						priority: 1,
 						children: [
@@ -440,12 +441,12 @@ describe( 'Writer', () => {
 						]
 					},
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
 							{
-								instanceOf: Element,
+								instanceOf: AttributeElement,
 								name: 'u',
 								priority: 1,
 								children: [
@@ -461,14 +462,14 @@ describe( 'Writer', () => {
 		it( 'should merge unwrapped nodes #4', () => {
 			// <p>{foo}<u>{bar}</u>[<b><u>{baz}</u></b>]<u>qux</u></p> -> <p>{foo}<u>{bar[baz]qux}</u></p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 2,
 				rangeEnd: 3,
 				children: [
 					{ instanceOf: Text, data: 'foo' },
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'u',
 						priority: 1,
 						children: [
@@ -476,12 +477,12 @@ describe( 'Writer', () => {
 						]
 					},
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
 							{
-								instanceOf: Element,
+								instanceOf: AttributeElement,
 								name: 'u',
 								priority: 1,
 								children: [
@@ -491,7 +492,7 @@ describe( 'Writer', () => {
 						]
 					},
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'u',
 						priority: 1,
 						children: [
@@ -501,12 +502,12 @@ describe( 'Writer', () => {
 				]
 			} );
 
-			const b = new Element( 'b' );
-			writer.setPriority( b, 1 );
+			const b = new ContainerElement( 'b' );
+			b.priority = 1;
 			const newRange = writer.unwrap( created.range, b );
 
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{
@@ -514,7 +515,7 @@ describe( 'Writer', () => {
 						data: 'foo'
 					},
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'u',
 						priority: 1,
 						children: [
@@ -528,18 +529,18 @@ describe( 'Writer', () => {
 		it( 'should merge unwrapped nodes #5', () => {
 			// <p>[<b><u>{foo}</u></b><b><u>{bar}</u></b><b><u>{baz}</u></b>]</p> -> <p>[<u>{foobarbaz}</u>]</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				rangeEnd: 3,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
 							{
-								instanceOf: Element,
+								instanceOf: AttributeElement,
 								name: 'u',
 								priority: 1,
 								children: [
@@ -549,12 +550,12 @@ describe( 'Writer', () => {
 						]
 					},
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
 							{
-								instanceOf: Element,
+								instanceOf: AttributeElement,
 								name: 'u',
 								priority: 1,
 								children: [
@@ -564,12 +565,12 @@ describe( 'Writer', () => {
 						]
 					},
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
 							{
-								instanceOf: Element,
+								instanceOf: AttributeElement,
 								name: 'u',
 								priority: 1,
 								children: [
@@ -581,17 +582,17 @@ describe( 'Writer', () => {
 				]
 			} );
 
-			const b = new Element( 'b' );
-			writer.setPriority( b, 1 );
+			const b = new ContainerElement( 'b' );
+			b.priority = 1;
 			const newRange = writer.unwrap( created.range, b );
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				rangeEnd: 1,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'u',
 						priority: 1,
 						children: [
@@ -605,17 +606,17 @@ describe( 'Writer', () => {
 		it( 'should unwrap mixed ranges #1', () => {
 			// <p>[<u><b>{foo}]</b></u></p> -> <p>[<u>{foo}</u>]</p
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'u',
 						priority: 1,
 						children: [
 							{
-								instanceOf: Element,
+								instanceOf: AttributeElement,
 								name: 'b',
 								priority: 1,
 								rangeEnd: 1,
@@ -627,17 +628,17 @@ describe( 'Writer', () => {
 					}
 				]
 			} );
-			const b = new Element( 'b' );
-			writer.setPriority( b, 1 );
+			const b = new ContainerElement( 'b' );
+			b.priority = 1;
 			const newRange = writer.unwrap( created.range, b );
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				rangeEnd: 1,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'u',
 						priority: 1,
 						children: [
@@ -651,17 +652,17 @@ describe( 'Writer', () => {
 		it( 'should unwrap mixed ranges #2', () => {
 			// <p>[<u><b>{foo]}</b></u></p> -> <p>[<u>{foo}</u>]</p
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'u',
 						priority: 1,
 						children: [
 							{
-								instanceOf: Element,
+								instanceOf: AttributeElement,
 								name: 'b',
 								priority: 1,
 								children: [
@@ -672,17 +673,17 @@ describe( 'Writer', () => {
 					}
 				]
 			} );
-			const b = new Element( 'b' );
-			writer.setPriority( b, 1 );
+			const b = new ContainerElement( 'b' );
+			b.priority = 1;
 			const newRange = writer.unwrap( created.range, b );
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				rangeEnd: 1,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'u',
 						priority: 1,
 						children: [

@@ -6,7 +6,8 @@
 'use strict';
 
 import Position from './position.js';
-import Element from './element.js';
+import ContainerElement from './containerelement.js';
+import AttributeElement from './attributeelement.js';
 import Text from './text.js';
 import Range from './range.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
@@ -19,79 +20,6 @@ import DocumentFragment from './documentfragment.js';
  * @memberOf engine.treeView
  */
  export default class Writer {
-	constructor() {
-		/**
-		 * Priorities map. Maps node to priority.
-		 * Nodes with priorities are considered as attributes.
-		 *
-		 * @member {WeakMap} engine.treeView.Writer#_priorities
-		 * @protected
-		 */
-		this._priorities = new WeakMap();
-	}
-
-	/**
-	 * Returns `true` if provided node is a `container` node.
-	 *
-	 * `Container` nodes are mostly elements like `<p>` or `<div>`. Break and merge operations are performed only in a
-	 * bounds of a container nodes. Containers will not be broken or merged by
-	 * {@link engine.treeView.Writer#breakAttributes breakAttributes} and
-	 * {@link engine.treeView.Writer#mergeAttributes mergeAttributes}.
-	 *
-	 * `Attribute` nodes are mostly elements like `<b>` or `<span>`. Attributes can be broken and merged. Merging requires
-	 * that attribute nodes are {@link engine.treeView.Element#isSimilar similar} and have same priority. Setting different
-	 * priorities on similar nodes may prevent merging, eg. two `<abbr>` nodes next ot each other shouldn't be merged.
-	 * There might be a need to mark `<span>` element as a container node, for example in situation when it will be a
-	 * container of an inline widget:
-	 *
-	 * 		<span color="red">foobar</span>  // attribute
-	 * 		<span data-widget>foobar</span>  // container
-	 *
-	 * @param {engine.treeView.Element} node Node to check.
-	 * @returns {Boolean} `True` if provided node is a container.
-     */
-	isContainer( node ) {
-		const isElement = node instanceof Element;
-
-		return isElement && !this._priorities.has( node );
-	}
-
-	/**
-	 * Returns `true` if provided node is an `attribute` node.
-	 * For more information about attribute and container nodes see {@link engine.treeView.Writer#isContainer isContainer}
-	 * method description.
-	 *
-	 * @see engine.treeView.Writer#isContainer
-	 * @param {engine.treeView.Element} node Node to check.
-	 * @returns {Boolean} `True` if provided node is an attribute.
-	 */
-	isAttribute( node ) {
-		const isElement = node instanceof Element;
-
-		return isElement && this._priorities.has( node );
-	}
-
-	/**
-	 * Sets node priority. When priority is defined, node is considered as `attribute`.
-	 *
-	 * @see engine.treeView.Writer#isContainer
-	 * @param {engine.treeView.Node} node
-	 * @param {Number} priority
-     */
-	setPriority( node, priority ) {
-		this._priorities.set( node, priority );
-	}
-
-	/**
-	 * Returns node's priority.
-	 *
-	 * @param {engine.treeView.Node} node Node to check its priority.
-	 * @returns {Number|undefined} Priority or `undefined` if there is no priority defined.
-     */
-	getPriority( node ) {
-		return this._priorities.get( node );
-	}
-
 	/**
 	 * Returns first parent container of specified {@link engine.treeView.Position Position}.
 	 * Position's parent node is checked as first, then next parents are checked.
@@ -102,7 +30,7 @@ import DocumentFragment from './documentfragment.js';
 	getParentContainer( position ) {
 		let parent = position.parent;
 
-		while ( !this.isContainer( parent ) ) {
+		while ( !( parent instanceof ContainerElement ) ) {
 			if ( !parent ) {
 				return undefined;
 			}
@@ -132,7 +60,7 @@ import DocumentFragment from './documentfragment.js';
 		const positionParent = position.parent;
 
 		// Position's parent is container, so no attributes to break.
-		if ( this.isContainer( positionParent ) ) {
+		if ( positionParent instanceof ContainerElement ) {
 			return Position.createFromPosition( position );
 		}
 
@@ -182,7 +110,7 @@ import DocumentFragment from './documentfragment.js';
 				const clonedNode = positionParent.clone();
 
 				// Clone priority.
-				this.setPriority( clonedNode, this.getPriority( positionParent ) );
+				clonedNode.priority = positionParent.priority;
 
 				// Insert cloned node to position's parent node.
 				positionParent.parent.insertChildren( offsetAfter, clonedNode );
@@ -279,7 +207,7 @@ import DocumentFragment from './documentfragment.js';
 		}
 
 		// When one or both nodes are containers - no attributes to merge.
-		if ( this.isContainer( nodeBefore ) || this.isContainer( nodeAfter ) ) {
+		if ( ( nodeBefore instanceof ContainerElement ) || ( nodeAfter instanceof ContainerElement ) ) {
 			return position;
 		}
 
@@ -293,8 +221,8 @@ import DocumentFragment from './documentfragment.js';
 			return new Position( nodeBefore, nodeBeforeLength );
 		} else if ( nodeBefore.isSimilar( nodeAfter ) ) {
 			// When selection is between same nodes.
-			const nodeBeforePriority = this._priorities.get( nodeBefore );
-			const nodeAfterPriority = this._priorities.get( nodeAfter );
+			const nodeBeforePriority = nodeBefore.priority;
+			const nodeAfterPriority = nodeAfter.priority;
 
 			// Do not merge same nodes with different priorities.
 			if ( nodeBeforePriority === undefined || nodeBeforePriority !== nodeAfterPriority ) {
@@ -414,7 +342,7 @@ import DocumentFragment from './documentfragment.js';
 	 * and {@link engine.treeView.Range#end} positions are not placed inside same parent container.
 	 *
 	 * @param {engine.treeView.Range} range Range to wrap.
-	 * @param {engine.treeView.Element} attribute Attribute element to use as wrapper.
+	 * @param {engine.treeView.AttributeElement} attribute Attribute element to use as wrapper.
 	 * @param {Number} priority Priority to set.
 	 */
 	wrap( range, attribute, priority ) {
@@ -434,7 +362,7 @@ import DocumentFragment from './documentfragment.js';
 		}
 
 		// Sets wrapper element priority.
-		this.setPriority( attribute, priority );
+		attribute.priority = priority;
 
 		// Break attributes at range start and end.
 		const { start: breakStart, end: breakEnd } = this.breakRange( range );
@@ -466,7 +394,7 @@ import DocumentFragment from './documentfragment.js';
 	 * same parent container.
 	 *
 	 * @param {engine.treeView.Range} range
-	 * @param {engine.treeView.Element} element
+	 * @param {engine.treeView.AttributeElement} element
 	 */
 	unwrap( range, attribute ) {
 		// Range should be placed inside one container.
@@ -522,7 +450,7 @@ function unwrapChildren( writer, parent, startOffset, endOffset, attribute ) {
 		const child = parent.getChild( i );
 
 		// If attributes are the similar and have same priority, then unwrap.
-		if (  child.isSimilar( attribute ) && writer.getPriority( child ) == writer.getPriority( attribute ) ) {
+		if (  child.isSimilar( attribute ) && child.priority == attribute.priority ) {
 			const unwrapped = child.getChildren();
 			const count = child.getChildCount();
 
@@ -542,7 +470,7 @@ function unwrapChildren( writer, parent, startOffset, endOffset, attribute ) {
 			endOffset += count - 1;
 		} else {
 			// If other nested attribute is found start unwrapping there.
-			if ( writer.isAttribute( child ) ) {
+			if ( child instanceof AttributeElement ) {
 				unwrapChildren( writer, child, 0, child.getChildCount(), attribute );
 			}
 
@@ -589,14 +517,14 @@ function wrapChildren( writer, parent, startOffset, endOffset, attribute ) {
 	while ( i < endOffset ) {
 		const child = parent.getChild( i );
 		const isText = child instanceof Text;
-		const isAttribute = writer.isAttribute( child );
-		const priority = writer.getPriority( attribute );
+		const isAttribute = child instanceof AttributeElement;
+		const priority = attribute.priority;
 
 		// Wrap text or attributes with higher or equal priority.
-		if ( isText || ( isAttribute && priority <= writer.getPriority( child ) ) ) {
+		if ( isText || ( isAttribute && priority <= child.priority ) ) {
 			// Clone attribute.
 			const newAttribute = attribute.clone();
-			writer.setPriority( newAttribute, priority );
+			newAttribute.priority = priority;
 
 			// Wrap current node with new attribute;
 			child.remove();
@@ -606,7 +534,7 @@ function wrapChildren( writer, parent, startOffset, endOffset, attribute ) {
 			wrapPositions.push(	new Position( parent, i ) );
 		} else {
 			// If other nested attribute is found start wrapping there.
-			if ( writer.isAttribute( child ) ) {
+			if ( child instanceof AttributeElement ) {
 				wrapChildren( writer, child, 0, child.getChildCount(), attribute );
 			}
 		}

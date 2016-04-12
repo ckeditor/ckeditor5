@@ -12,6 +12,14 @@ import isPlainObject from '../../utils/lib/lodash/isPlainObject.js';
 /**
  * Tree view element.
  *
+ * Editing engine does not define fixed HTML DTD. This is why the type of the {@link engine.treeView.Element} need to
+ * be defined by the feature developer. Creating an element you should use {@link engine.treeView.ContainerElement}
+ * class or {@link engine.treeView.AttributeElement}.
+ *
+ * Note that for view elements which are not created from model, like elements from mutations, paste or
+ * {@link engine.treeController.DataController#set data.set} it is not possible to define the type of the element, so
+ * these will be instances of the {@link engine.treeView.Element}.
+ *
  * @memberOf engine.treeView
  * @extends engine.treeView.Node
  */
@@ -110,7 +118,8 @@ export default class Element extends Node {
 			}
 		}
 
-		const cloned = new Element( this.name, this._attrs, childrenClone );
+		// ContainerElement and AttributeElement should be also cloned properly.
+		const cloned = new this.constructor( this.name, this._attrs, childrenClone );
 
 		// Classes and styles are cloned separately - this solution is faster than adding them back to attributes and
 		// parse once again in constructor.

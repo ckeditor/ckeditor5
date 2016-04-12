@@ -8,7 +8,8 @@
 'use strict';
 
 import Writer from '/ckeditor5/engine/treeview/writer.js';
-import Element from '/ckeditor5/engine/treeview/element.js';
+import ContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
+import AttributeElement from '/ckeditor5/engine/treeview/attributeelement.js';
 import Text from '/ckeditor5/engine/treeview/text.js';
 import utils from '/tests/engine/treeview/writer/_utils/utils.js';
 
@@ -25,7 +26,7 @@ describe( 'Writer', () => {
 		// <p>{|foobar}</p> -> <p>|{foobar}</p>
 		it( '<p>{|foobar}</p>', () => {
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{ instanceOf: Text, data: 'foobar', position: 0 }
@@ -35,7 +36,7 @@ describe( 'Writer', () => {
 			const newPosition = writer.breakAttributes( created.position );
 
 			test( writer, newPosition, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				position: 0,
 				children: [
@@ -47,7 +48,7 @@ describe( 'Writer', () => {
 		it( '<p>foo|bar</p>', () => {
 			// <p>{foo|bar}</p> -> <p>{foo}|{bar}</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{ instanceOf: Text, data: 'foobar', position: 3 }
@@ -57,7 +58,7 @@ describe( 'Writer', () => {
 			const newPosition = writer.breakAttributes( created.position );
 
 			test( writer, newPosition, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				position: 1,
 				children: [
@@ -70,7 +71,7 @@ describe( 'Writer', () => {
 		it( '<p>{foobar|}</p>', () => {
 			// <p>{foobar|}</p> -> <p>{foobar}|</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{ instanceOf: Text, data: 'foobar', position: 6 }
@@ -80,7 +81,7 @@ describe( 'Writer', () => {
 			const newPosition = writer.breakAttributes( created.position );
 
 			test( writer, newPosition, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				position: 1,
 				children: [
@@ -92,11 +93,11 @@ describe( 'Writer', () => {
 		it( '<p><b>{foo|bar}</b></p>', () => {
 			// <p><b>{foo|bar}</b></p> -> <p><b>{foo}</b>|<b>{bar}</b></p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
@@ -109,12 +110,12 @@ describe( 'Writer', () => {
 			const newPosition = writer.breakAttributes( created.position );
 
 			test( writer, newPosition, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				position: 1,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
@@ -122,7 +123,7 @@ describe( 'Writer', () => {
 						]
 					},
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
@@ -136,16 +137,16 @@ describe( 'Writer', () => {
 		it( '<p><b><u>{|foobar}</u></b></p>', () => {
 			// <p><b><u>{|foobar}</u></b></p> -> <p>|<b><u>{foobar}</u></b></p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
 							{
-								instanceOf: Element,
+								instanceOf: AttributeElement,
 								name: 'u',
 								priority: 1,
 								children: [
@@ -160,17 +161,17 @@ describe( 'Writer', () => {
 			const newPosition = writer.breakAttributes( created.position );
 
 			test( writer, newPosition, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				position: 0,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
 							{
-								instanceOf: Element,
+								instanceOf: AttributeElement,
 								name: 'u',
 								priority: 1,
 								children: [
@@ -186,16 +187,16 @@ describe( 'Writer', () => {
 		// <p><b><u>{foo|ba}r</u></b></p> -> <p><b><u>{foo}</u></b>|<b></u>{bar}</u></b></p>
 		it( '<p><b><u>{foo|bar}</u></b></p>', () => {
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
 							{
-								instanceOf: Element,
+								instanceOf: AttributeElement,
 								name: 'u',
 								priority: 1,
 								children: [
@@ -210,17 +211,17 @@ describe( 'Writer', () => {
 			const newPosition = writer.breakAttributes( created.position );
 
 			test( writer, newPosition, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				position: 1,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
 							{
-								instanceOf: Element,
+								instanceOf: AttributeElement,
 								name: 'u',
 								priority: 1,
 								children: [
@@ -230,12 +231,12 @@ describe( 'Writer', () => {
 						]
 					},
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
 							{
-								instanceOf: Element,
+								instanceOf: AttributeElement,
 								name: 'u',
 								priority: 1,
 								children: [
@@ -251,16 +252,16 @@ describe( 'Writer', () => {
 		it( '<p><b><u>{foobar|}</u></b></p>', () => {
 			// <p><b><u>{foobar|}</u></b></p> -> <p><b><u>{foobar}</u></b>|</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
 							{
-								instanceOf: Element,
+								instanceOf: AttributeElement,
 								name: 'u',
 								priority: 1,
 								children: [
@@ -275,17 +276,17 @@ describe( 'Writer', () => {
 			const newPosition = writer.breakAttributes( created.position );
 
 			test( writer, newPosition, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				position: 1,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
 							{
-								instanceOf: Element,
+								instanceOf: AttributeElement,
 								name: 'u',
 								priority: 1,
 								children: [
