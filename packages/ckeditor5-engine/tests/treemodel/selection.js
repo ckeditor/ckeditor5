@@ -258,6 +258,18 @@ describe( 'Selection', () => {
 			expect( focus ).to.have.property( 'parent', root );
 			expect( focus ).to.have.property( 'offset', 2 );
 		} );
+
+		it( 'sets selection at the specified position', () => {
+			const pos = Position.createFromParentAndOffset( root, 3 );
+
+			selection.collapse( pos );
+
+			expect( selection ).to.have.property( 'isCollapsed', true );
+
+			const focus = selection.focus;
+			expect( focus ).to.have.property( 'parent', root );
+			expect( focus ).to.have.property( 'offset', 3 );
+		} );
 	} );
 
 	describe( 'removeAllRanges', () => {

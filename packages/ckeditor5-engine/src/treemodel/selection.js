@@ -229,30 +229,41 @@ export default class Selection {
 	/**
 	 * Sets collapsed selection in the specified location.
 	 *
-	 * The `location` can be specified as:
+	 * The location can be specified as:
 	 *
+	 * * a {@link engine.treeModel.Position position},
 	 * * parent element and offset (offset defaults to `0`),
 	 * * parent element and `'END'` (sets selection at the end of that element),
 	 * * node and `'BEFORE'` or `'AFTER'` (sets selection before or after the given node).
 	 *
 	 * @fires {@link engine.treeModel.Selection#change:range change:range}
-	 * @param {engine.treeModel.Node} node
-	 * @param {Number|'END'|'BEFORE'|'AFTER'} location Offset or one of the flags.
+	 * @param {engine.treeModel.Node|engine.treeModel.Position} nodeOrPosition
+	 * @param {Number|'END'|'BEFORE'|'AFTER'} [offset=0] Offset or one of the flags. Used only when
+	 * first parameter is a node.
 	 */
-	collapse( node, location ) {
-		if ( location == 'END' ) {
-			location = node.getChildCount();
-		} else if ( location == 'BEFORE' ) {
-			location = node.getIndex();
-			node = node.parent;
-		} else if ( location == 'AFTER' ) {
-			location = node.getIndex() + 1;
-			node = node.parent;
-		} else if ( !location ) {
-			location = 0;
+	collapse( nodeOrPosition, offset ) {
+		let node, pos;
+
+		if ( nodeOrPosition instanceof Position ) {
+			pos = nodeOrPosition;
+		} else {
+			node = nodeOrPosition;
+
+			if ( offset == 'END' ) {
+				offset = node.getChildCount();
+			} else if ( offset == 'BEFORE' ) {
+				offset = node.getIndex();
+				node = node.parent;
+			} else if ( offset == 'AFTER' ) {
+				offset = node.getIndex() + 1;
+				node = node.parent;
+			} else if ( !offset ) {
+				offset = 0;
+			}
+
+			pos = Position.createFromParentAndOffset( node, offset );
 		}
 
-		const pos = Position.createFromParentAndOffset( node, location );
 		const range = new Range( pos, pos );
 
 		this.setRanges( [ range ] );
