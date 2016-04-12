@@ -9,6 +9,9 @@
 
 import Writer from '/ckeditor5/engine/treeview/writer.js';
 import Element from '/ckeditor5/engine/treeview/element.js';
+import ContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
+import AttributeElement from '/ckeditor5/engine/treeview/attributeelement.js';
+import { DEFAULT_PRIORITY } from '/ckeditor5/engine/treeview/attributeelement.js';
 import Position from '/ckeditor5/engine/treeview/position.js';
 import Range from '/ckeditor5/engine/treeview/range.js';
 import Text from '/ckeditor5/engine/treeview/text.js';
@@ -27,14 +30,14 @@ describe( 'Writer', () => {
 	describe( 'wrap', () => {
 		it( 'should do nothing on collapsed ranges', () => {
 			const description = {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{ instanceOf: Text, data: 'foo', rangeStart: 1, rangeEnd: 1 }
 				]
 			};
 			const created = create( writer, description );
-			const newRange = writer.wrap( created.range, new Element( 'b' ), 1 );
+			const newRange = writer.wrap( created.range, new AttributeElement( 'b' ) );
 			test( writer, newRange, created.node, description );
 		} );
 
@@ -43,7 +46,7 @@ describe( 'Writer', () => {
 			// wrap <b>
 			// <p>[<b>{foobar}<b>]</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				rangeEnd: 1,
@@ -52,19 +55,19 @@ describe( 'Writer', () => {
 				]
 			} );
 
-			const b = new Element( 'b' );
-			const newRange = writer.wrap( created.range, b, 1 );
+			const b = new AttributeElement( 'b' );
+			const newRange = writer.wrap( created.range, b );
 
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				rangeEnd: 1,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
-						priority: 1,
+						priority: DEFAULT_PRIORITY,
 						children: [
 							{ instanceOf: Text, data: 'foobar' }
 						]
@@ -73,14 +76,27 @@ describe( 'Writer', () => {
 			} );
 		} );
 
+		it( 'should throw error when element is not instance of AttributeElement', () => {
+			const container = new ContainerElement( 'p', null, new Text( 'foo' ) );
+			const range = new Range(
+				new Position( container, 0 ),
+				new Position( container, 1 )
+			);
+			const b = new Element( 'b' );
+
+			expect( () => {
+				writer.wrap( range, b );
+			} ).to.throw( CKEditorError, 'treeview-writer-wrap-invalid-attribute' );
+		} );
+
 		it( 'should throw error when range placed in two containers', () => {
-			const container1 = new Element( 'p' );
-			const container2 = new Element( 'p' );
+			const container1 = new ContainerElement( 'p' );
+			const container2 = new ContainerElement( 'p' );
 			const range = new Range(
 				new Position( container1, 0 ),
 				new Position( container2, 1 )
 			);
-			const b = new Element( 'b' );
+			const b = new AttributeElement( 'b' );
 
 			expect( () => {
 				writer.wrap( range, b, 1 );
@@ -92,7 +108,7 @@ describe( 'Writer', () => {
 			// wrap with <b>
 			// <p>[<b>{foo}</b>]{bar}</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				children: [
@@ -100,19 +116,19 @@ describe( 'Writer', () => {
 				]
 			} );
 
-			const b = new Element( 'b' );
-			const newRange = writer.wrap( created.range, b, 2 );
+			const b = new AttributeElement( 'b' );
+			const newRange = writer.wrap( created.range, b );
 
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				rangeEnd: 1,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
-						priority: 2,
+						priority: DEFAULT_PRIORITY,
 						children: [
 							{ instanceOf: Text, data: 'foo' }
 						]
@@ -127,26 +143,26 @@ describe( 'Writer', () => {
 			// wrap with <b>
 			// <p>[<b>{foo}</b>]{bar}</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{ instanceOf: Text, data: 'foobar', rangeStart: 0, rangeEnd: 3 }
 				]
 			} );
 
-			const b = new Element( 'b' );
-			const newRange = writer.wrap( created.range, b, 2 );
+			const b = new AttributeElement( 'b' );
+			const newRange = writer.wrap( created.range, b );
 
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				rangeEnd: 1,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
-						priority: 2,
+						priority: DEFAULT_PRIORITY,
 						children: [
 							{ instanceOf: Text, data: 'foo' }
 						]
@@ -161,27 +177,27 @@ describe( 'Writer', () => {
 			// wrap with <b>
 			// <p>{foo}[<b>{bar}</b>]</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{ instanceOf: Text, data: 'foobar', rangeStart: 3, rangeEnd: 6 }
 				]
 			} );
 
-			const b = new Element( 'b' );
-			const newRange = writer.wrap( created.range, b, 2 );
+			const b = new AttributeElement( 'b' );
+			const newRange = writer.wrap( created.range, b );
 
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 1,
 				rangeEnd: 2,
 				children: [
 					{ instanceOf: Text, data: 'foo' },
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
-						priority: 2,
+						priority: DEFAULT_PRIORITY,
 						children: [
 							{ instanceOf: Text, data: 'bar' }
 						]
@@ -195,14 +211,14 @@ describe( 'Writer', () => {
 			// wrap with <b>
 			// <div>[<b>{foobar}</b><p>{baz}</p>]</div>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'div',
 				rangeStart: 0,
 				rangeEnd: 2,
 				children: [
 					{ instanceOf: Text, data: 'foobar' },
 					{
-						instanceOf: Element,
+						instanceOf: ContainerElement,
 						name: 'p',
 						children: [
 							{ instanceOf: Text, data: 'baz' }
@@ -211,23 +227,23 @@ describe( 'Writer', () => {
 				]
 			} );
 
-			const newRange = writer.wrap( created.range, new Element( 'b' ), 1 );
+			const newRange = writer.wrap( created.range, new AttributeElement( 'b' ) );
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'div',
 				rangeStart: 0,
 				rangeEnd: 2,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
-						priority: 1,
+						priority: DEFAULT_PRIORITY,
 						children: [
 							{ instanceOf: Text, data: 'foobar' }
 						]
 					},
 					{
-						instanceOf: Element,
+						instanceOf: ContainerElement,
 						name: 'p',
 						children: [
 							{ instanceOf: Text, data: 'baz' }
@@ -242,13 +258,13 @@ describe( 'Writer', () => {
 			// wrap with <b> that has higher priority than <u>
 			// <p>[<u><b>{foobar}</b></u>]</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				rangeEnd: 1,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'u',
 						priority: 1,
 						children: [
@@ -258,22 +274,23 @@ describe( 'Writer', () => {
 				]
 			} );
 
-			const b = new Element( 'b' );
-			const newRange = writer.wrap( created.range, b, 2 );
+			const b = new AttributeElement( 'b' );
+			b.priority = 2;
+			const newRange = writer.wrap( created.range, b );
 
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				rangeEnd: 1,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'u',
 						priority: 1,
 						children: [
 							{
-								instanceOf: Element,
+								instanceOf: AttributeElement,
 								name: 'b',
 								priority: 2,
 								children: [
@@ -291,24 +308,24 @@ describe( 'Writer', () => {
 			// wrap with <b>
 			// <p>[<b>{foobarbaz}</b>]</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				rangeEnd: 3,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
-						priority: 1,
+						priority: DEFAULT_PRIORITY,
 						children: [
 							{ instanceOf: Text, data: 'foo' }
 						]
 					},
 					{ instanceOf: Text, data: 'bar' },
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
-						priority: 1,
+						priority: DEFAULT_PRIORITY,
 						children: [
 							{ instanceOf: Text, data: 'baz' }
 						]
@@ -316,19 +333,19 @@ describe( 'Writer', () => {
 				]
 			} );
 
-			const b = new Element( 'b' );
-			const newRange = writer.wrap( created.range, b, 1 );
+			const b = new AttributeElement( 'b' );
+			const newRange = writer.wrap( created.range, b );
 
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				rangeEnd: 1,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
-						priority: 1,
+						priority: DEFAULT_PRIORITY,
 						children: [
 							{ instanceOf: Text, data: 'foobarbaz' }
 						]
@@ -342,14 +359,14 @@ describe( 'Writer', () => {
 			// wrap with <b>
 			// <p><b>{foo[bar}</b>]{baz}</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 1,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
-						priority: 1,
+						priority: DEFAULT_PRIORITY,
 						children: [
 							{ instanceOf: Text, data: 'foo' }
 						]
@@ -358,16 +375,16 @@ describe( 'Writer', () => {
 				]
 			} );
 
-			const newRange = writer.wrap( created.range, new Element( 'b' ), 1 );
+			const newRange = writer.wrap( created.range, new AttributeElement( 'b' ) );
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeEnd: 1,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
-						priority: 1,
+						priority: DEFAULT_PRIORITY,
 						children: [
 							{ instanceOf: Text, data: 'foobar', rangeStart: 3 }
 						]
@@ -382,15 +399,15 @@ describe( 'Writer', () => {
 			// wrap with <b>
 			// <p><b>{foobar[baz}</b>]</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 1,
 				rangeEnd: 2,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
-						priority: 1,
+						priority: DEFAULT_PRIORITY,
 						children: [
 							{ instanceOf: Text, data: 'foobar' }
 						]
@@ -399,16 +416,16 @@ describe( 'Writer', () => {
 				]
 			} );
 
-			const newRange = writer.wrap( created.range, new Element( 'b' ), 1 );
+			const newRange = writer.wrap( created.range, new AttributeElement( 'b' ) );
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeEnd: 1,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
-						priority: 1,
+						priority: DEFAULT_PRIORITY,
 						children: [
 							{ instanceOf: Text, data: 'foobarbaz', rangeStart: 6 }
 						]
@@ -422,16 +439,16 @@ describe( 'Writer', () => {
 			// wrap with <b>
 			// <p>[<b>{foo}<i>{bar}</i></b>]{baz}</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				rangeEnd: 2,
 				children: [
 					{ instanceOf: Text, data: 'foo' },
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'i',
-						priority: 1,
+						priority: DEFAULT_PRIORITY,
 						children: [
 							{ instanceOf: Text, data: 'bar' }
 						]
@@ -440,23 +457,23 @@ describe( 'Writer', () => {
 				]
 			} );
 
-			const newRange = writer.wrap( created.range, new Element( 'b' ), 1 );
+			const newRange = writer.wrap( created.range, new AttributeElement( 'b' ) );
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				rangeEnd: 1,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
-						priority: 1,
+						priority: DEFAULT_PRIORITY,
 						children: [
 							{ instanceOf: Text, data: 'foo' },
 							{
-								instanceOf: Element,
+								instanceOf: AttributeElement,
 								name: 'i',
-								priority: 1,
+								priority: DEFAULT_PRIORITY,
 								children: [
 									{ instanceOf: Text, data: 'bar' }
 								]
@@ -473,14 +490,14 @@ describe( 'Writer', () => {
 			// wrap with <b>, that has higher priority than <i>
 			// <p>[<b>{foo}</b><i><b>{bar}</b></i><b>{baz}</b>]</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				rangeEnd: 3,
 				children: [
 					{ instanceOf: Text, data: 'foo' },
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'i',
 						priority: 1,
 						children: [
@@ -491,15 +508,17 @@ describe( 'Writer', () => {
 				]
 			} );
 
-			const newRange = writer.wrap( created.range, new Element( 'b' ), 2 );
+			const b = new AttributeElement( 'b' );
+			b.priority = 2;
+			const newRange = writer.wrap( created.range, b );
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				rangeEnd: 3,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 2,
 						children: [
@@ -507,12 +526,12 @@ describe( 'Writer', () => {
 						]
 					},
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'i',
 						priority: 1,
 						children: [
 							{
-								instanceOf: Element,
+								instanceOf: AttributeElement,
 								name: 'b',
 								priority: 2,
 								children: [
@@ -522,7 +541,7 @@ describe( 'Writer', () => {
 						]
 					},
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 2,
 						children: [

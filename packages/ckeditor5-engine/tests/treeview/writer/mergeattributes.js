@@ -8,7 +8,8 @@
 'use strict';
 
 import Writer from '/ckeditor5/engine/treeview/writer.js';
-import Element from '/ckeditor5/engine/treeview/element.js';
+import ContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
+import AttributeElement from '/ckeditor5/engine/treeview/attributeelement.js';
 import Text from '/ckeditor5/engine/treeview/text.js';
 import utils from '/tests/engine/treeview/writer/_utils/utils.js';
 
@@ -25,7 +26,7 @@ describe( 'Writer', () => {
 		it( 'should not merge if inside text node', () => {
 			// <p>{fo|obar}</p>
 			const description = {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{ instanceOf: Text, data: 'foobar', position: 2 }
@@ -39,19 +40,19 @@ describe( 'Writer', () => {
 		it( 'should not merge if between containers', () => {
 			// <div><p>{foo}</p>|<p>{bar}</p></div>
 			const description = {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'div',
 				position: 1,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: ContainerElement,
 						name: 'p',
 						children: [
 							{ instanceOf: Text, data: 'foo' }
 						]
 					},
 					{
-						instanceOf: Element,
+						instanceOf: ContainerElement,
 						name: 'p',
 						children: [
 							{ instanceOf: Text, data: 'bar' }
@@ -66,7 +67,7 @@ describe( 'Writer', () => {
 
 		it( 'should return same position when inside empty container', () => {
 			// <p>|</p>
-			const description = { instanceOf: Element, name: 'p', position: 0 };
+			const description = { instanceOf: ContainerElement, name: 'p', position: 0 };
 			const created = create( writer, description );
 			const newPosition = writer.mergeAttributes( created.position );
 			test( writer, newPosition, created.node, description );
@@ -75,12 +76,12 @@ describe( 'Writer', () => {
 		it( 'should not merge when position is placed at the beginning of the container', () => {
 			// <p>|<b></b></p>
 			const description = {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				position: 0,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1
 					}
@@ -94,12 +95,12 @@ describe( 'Writer', () => {
 		it( 'should not merge when position is placed at the end of the container', () => {
 			// <p><b></b>|</p>
 			const description = {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				position: 1,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1
 					}
@@ -113,7 +114,7 @@ describe( 'Writer', () => {
 		it( 'should merge when placed between two text nodes', () => {
 			// <p>{foo}|{bar}</p> -> <p>{foo|bar}</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				position: 1,
 				children: [
@@ -125,7 +126,7 @@ describe( 'Writer', () => {
 			const newPosition = writer.mergeAttributes( created.position );
 
 			test( writer, newPosition, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{ instanceOf: Text, data: 'foobar', position: 3 }
@@ -136,18 +137,18 @@ describe( 'Writer', () => {
 		it( 'should merge when placed between similar attribute nodes', () => {
 			// <p><b foo="bar"></b>|<b foo="bar"></b></p> -> <p><b foo="bar">|</b></p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				position: 1,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						attributes: { foo: 'bar' }
 					},
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						attributes: { foo: 'bar' }
@@ -158,11 +159,11 @@ describe( 'Writer', () => {
 			const newPosition = writer.mergeAttributes( created.position );
 
 			test( writer, newPosition, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						position: 0,
@@ -176,18 +177,18 @@ describe( 'Writer', () => {
 			// <p><b foo="bar"></b>|<b foo="baz"></b></p> ->
 			// <p><b foo="bar"></b>|<b foo="baz"></b></p>
 			const description = {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				position: 1,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						attributes: { foo: 'bar' }
 					},
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						attributes: { foo: 'baz' }
@@ -202,25 +203,25 @@ describe( 'Writer', () => {
 		it( 'should not merge when placed between similar attribute nodes with different priority', () => {
 			// <p><b foo="bar"></b>|<b foo="bar"></b></p> -> <p><b foo="bar"></b>|<b foo="bar"></b></p>
 			const description =  {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				position: 1,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						attributes: { foo: 'bar' }
 					},
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 2,
 						attributes: { foo: 'bar' }
 					}
 				]
 			};
-			const created = create( writer,description );
+			const created = create( writer, description );
 			const newPosition = writer.mergeAttributes( created.position );
 			test( writer, newPosition, created.node, description );
 		} );
@@ -230,12 +231,12 @@ describe( 'Writer', () => {
 			// <p><b foo="bar">{foo}|{bar}</b></p>
 			// <p><b foo="bar">{foo|bar}</b></p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				position: 1,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						attributes: { foo: 'bar' },
@@ -244,7 +245,7 @@ describe( 'Writer', () => {
 						]
 					},
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						attributes: { foo: 'bar' },
@@ -258,11 +259,11 @@ describe( 'Writer', () => {
 			const newPosition = writer.mergeAttributes( created.position );
 
 			test( writer, newPosition, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						attributes: { foo: 'bar' },

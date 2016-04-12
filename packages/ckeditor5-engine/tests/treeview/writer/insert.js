@@ -8,7 +8,8 @@
 'use strict';
 
 import Writer from '/ckeditor5/engine/treeview/writer.js';
-import Element from '/ckeditor5/engine/treeview/element.js';
+import ContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
+import AttributeElement from '/ckeditor5/engine/treeview/attributeelement.js';
 import Position from '/ckeditor5/engine/treeview/position.js';
 import Text from '/ckeditor5/engine/treeview/text.js';
 import utils from '/tests/engine/treeview/writer/_utils/utils.js';
@@ -26,7 +27,7 @@ describe( 'Writer', () => {
 		it( 'should return collapsed range in insertion position when using empty array', () => {
 			// <p>{foo|bar}</p> -> <p>{foo[]bar}</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{ instanceOf: Text, data: 'foobar', position: 3 }
@@ -35,7 +36,7 @@ describe( 'Writer', () => {
 
 			const newRange = writer.insert( created.position, [] );
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{ instanceOf: Text, data: 'foobar', rangeStart: 3, rangeEnd: 3 }
@@ -47,7 +48,7 @@ describe( 'Writer', () => {
 			// <p>{foo|bar}</p> insert {baz}
 			// <p>{foo[baz]bar}</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{ instanceOf: Text, data: 'foobar', position: 3 }
@@ -56,7 +57,7 @@ describe( 'Writer', () => {
 
 			const newRange = writer.insert( created.position, new Text( 'baz' ) );
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{ instanceOf: Text, data: 'foobazbar', rangeStart: 3, rangeEnd: 6 }
@@ -68,7 +69,7 @@ describe( 'Writer', () => {
 			// <p>{foobar|}</p> insert {baz}
 			// <p>{foobar[baz}]</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{ instanceOf: Text, data: 'foobar', position: 6 }
@@ -77,7 +78,7 @@ describe( 'Writer', () => {
 
 			const newRange = writer.insert( created.position, new Text( 'baz' ) );
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeEnd: 1,
 				children: [
@@ -90,7 +91,7 @@ describe( 'Writer', () => {
 			// <p>{|foobar}</p> insert {baz}
 			// <p>[{baz]foobar}</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{ instanceOf: Text, data: 'foobar', position: 0 }
@@ -99,7 +100,7 @@ describe( 'Writer', () => {
 
 			const newRange = writer.insert( created.position, new Text( 'baz' ) );
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				children: [
@@ -112,14 +113,14 @@ describe( 'Writer', () => {
 			// <p>{foo|bar}</p> insert <b>{baz}</b>
 			// <p>{foo}[<b>baz</b>]{bar}</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{ instanceOf: Text, data: 'foobar', position: 3 }
 				]
 			} );
 			const toInsert = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'b',
 				priority: 1,
 				children: [
@@ -129,14 +130,14 @@ describe( 'Writer', () => {
 
 			const newRange = writer.insert( created.position, toInsert.node );
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 1,
 				rangeEnd: 2,
 				children: [
 					{ instanceOf: Text, data: 'foo' },
 					{
-						instanceOf: Element,
+						instanceOf: ContainerElement,
 						name: 'b',
 						priority: 1,
 						children: [
@@ -152,7 +153,7 @@ describe( 'Writer', () => {
 			// <p>|{foobar}</p> insert {baz}
 			// <p>[{baz]foobar}</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				position: 0,
 				children: [
@@ -162,7 +163,7 @@ describe( 'Writer', () => {
 
 			const newRange = writer.insert( created.position, new Text( 'baz' ) );
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				children: [
@@ -175,11 +176,11 @@ describe( 'Writer', () => {
 			// <p><b>{foo|bar}</b></p> insert <b>{baz}</b>
 			// <p><b>{foo[baz]bar}</b></p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
@@ -189,7 +190,7 @@ describe( 'Writer', () => {
 				]
 			} );
 			const toInsert = create( writer, {
-				instanceOf: Element,
+				instanceOf: AttributeElement,
 				name: 'b',
 				priority: 1,
 				children: [
@@ -199,11 +200,11 @@ describe( 'Writer', () => {
 
 			const newRange = writer.insert( created.position, toInsert.node );
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
@@ -218,11 +219,11 @@ describe( 'Writer', () => {
 			// <p><b>{foo|bar}</b></p> insert <b>{baz}</b> ( different priority )
 			// <p><b>{foo}</b>[<b>{baz}</b>]<b>{bar}</b></p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
@@ -232,7 +233,7 @@ describe( 'Writer', () => {
 				]
 			} );
 			const toInsert = create( writer, {
-				instanceOf: Element,
+				instanceOf: AttributeElement,
 				name: 'b',
 				priority: 2,
 				children: [
@@ -242,13 +243,13 @@ describe( 'Writer', () => {
 
 			const newRange = writer.insert( created.position, toInsert.node );
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 1,
 				rangeEnd: 2,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
@@ -256,7 +257,7 @@ describe( 'Writer', () => {
 						]
 					},
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 2,
 						children: [
@@ -264,7 +265,7 @@ describe( 'Writer', () => {
 						]
 					},
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
@@ -278,13 +279,13 @@ describe( 'Writer', () => {
 		it( 'should allow to insert multiple nodes', () => {
 			// <p>|</p> insert <b>{foo}</b>{bar}
 			// <p>[<b>{foo}</b>{bar}]</p>
-			const root = new Element( 'p' );
+			const root = new ContainerElement( 'p' );
 			const toInsert = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'fake',
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
@@ -298,13 +299,13 @@ describe( 'Writer', () => {
 
 			const newRange = writer.insert( position, toInsert );
 			test( writer, newRange, root, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				rangeEnd: 2,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
@@ -320,12 +321,12 @@ describe( 'Writer', () => {
 			// <p><b>{qux}</b>|{baz}</p> insert <b>{foo}</b>{bar}
 			// <p><b>{qux[foo}</b>{bar]baz}</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				position: 1,
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
@@ -336,11 +337,11 @@ describe( 'Writer', () => {
 				]
 			} );
 			const toInsert = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'fake',
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
@@ -353,11 +354,11 @@ describe( 'Writer', () => {
 
 			const newRange = writer.insert( created.position, toInsert );
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [

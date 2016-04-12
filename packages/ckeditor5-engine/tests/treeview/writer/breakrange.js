@@ -8,7 +8,8 @@
 'use strict';
 
 import Writer from '/ckeditor5/engine/treeview/writer.js';
-import Element from '/ckeditor5/engine/treeview/element.js';
+import ContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
+import AttributeElement from '/ckeditor5/engine/treeview/attributeelement.js';
 import Range from '/ckeditor5/engine/treeview/range.js';
 import Text from '/ckeditor5/engine/treeview/text.js';
 import utils from '/tests/engine/treeview/writer/_utils/utils.js';
@@ -24,8 +25,8 @@ describe( 'Writer', () => {
 
 	describe( 'breakRange', () => {
 		it( 'should throw when range placed in two containers', () => {
-			const p1 = new Element( 'p' );
-			const p2 = new Element( 'p' );
+			const p1 = new ContainerElement( 'p' );
+			const p2 = new ContainerElement( 'p' );
 
 			expect( () => {
 				writer.breakRange( Range.createFromParentsAndOffsets( p1, 0, p2, 0 ) );
@@ -35,7 +36,7 @@ describe( 'Writer', () => {
 		it( 'should break at collapsed range and return collapsed one', () => {
 			// <p>{foo[]bar}</p> -> <p>{foo}[]{bar}</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{ instanceOf: Text, data: 'foobar', rangeStart: 3, rangeEnd: 3 }
@@ -45,7 +46,7 @@ describe( 'Writer', () => {
 			const newRange = writer.breakRange( created.range );
 
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 1,
 				rangeEnd: 1,
@@ -59,7 +60,7 @@ describe( 'Writer', () => {
 		it( 'should break inside text node #1', () => {
 			// <p>{foo[bar]baz}</p> -> <p>{foo}[{bar}]{baz}</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{ instanceOf: Text, data: 'foobarbaz', rangeStart: 3, rangeEnd: 6 }
@@ -69,7 +70,7 @@ describe( 'Writer', () => {
 			const newRange = writer.breakRange( created.range );
 
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 1,
 				rangeEnd: 2,
@@ -84,7 +85,7 @@ describe( 'Writer', () => {
 		it( 'should break inside text node #2', () => {
 			// <p>{foo[barbaz]}</p> -> <p>{foo}[{barbaz}]</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{ instanceOf: Text, data: 'foobarbaz', rangeStart: 3, rangeEnd: 9 }
@@ -94,7 +95,7 @@ describe( 'Writer', () => {
 			const newRange = writer.breakRange( created.range );
 
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 1,
 				rangeEnd: 2,
@@ -108,7 +109,7 @@ describe( 'Writer', () => {
 		it( 'should break inside text node #3', () => {
 			// <p>{foo[barbaz}]</p> -> <p>{foo}[{barbaz}]</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeEnd: 1,
 				children: [
@@ -119,7 +120,7 @@ describe( 'Writer', () => {
 			const newRange = writer.breakRange( created.range );
 
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 1,
 				rangeEnd: 2,
@@ -133,7 +134,7 @@ describe( 'Writer', () => {
 		it( 'should break inside text node #4', () => {
 			// <p>{[foo]barbaz}</p> -> <p>[{foo}]{barbaz]</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{ instanceOf: Text, data: 'foobarbaz', rangeStart: 0, rangeEnd: 3 }
@@ -143,7 +144,7 @@ describe( 'Writer', () => {
 			const newRange = writer.breakRange( created.range );
 
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				rangeEnd: 1,
@@ -157,7 +158,7 @@ describe( 'Writer', () => {
 		it( 'should break inside text node #5', () => {
 			// <p>[{foo]barbaz}</p> -> <p>[{foo}]{barbaz]</p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				children: [
@@ -168,7 +169,7 @@ describe( 'Writer', () => {
 			const newRange = writer.breakRange( created.range );
 
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 0,
 				rangeEnd: 1,
@@ -183,12 +184,12 @@ describe( 'Writer', () => {
 			// <p>{foo[bar}<b>{baz]qux}</b></p>
 			// <p>{foo}[{bar}<b>{baz}</b>]<b>qux</b></p>
 			const created = create( writer, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				children: [
 					{ instanceOf: Text, data: 'foobar', rangeStart: 3 },
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
@@ -200,7 +201,7 @@ describe( 'Writer', () => {
 
 			const newRange = writer.breakRange( created.range );
 			test( writer, newRange, created.node, {
-				instanceOf: Element,
+				instanceOf: ContainerElement,
 				name: 'p',
 				rangeStart: 1,
 				rangeEnd: 3,
@@ -208,7 +209,7 @@ describe( 'Writer', () => {
 					{ instanceOf: Text, data: 'foo' },
 					{ instanceOf: Text, data: 'bar' },
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
@@ -216,7 +217,7 @@ describe( 'Writer', () => {
 						]
 					},
 					{
-						instanceOf: Element,
+						instanceOf: AttributeElement,
 						name: 'b',
 						priority: 1,
 						children: [
