@@ -338,9 +338,8 @@ import DocumentFragment from './documentfragment.js';
 	 *
 	 * @param {engine.treeView.Range} range Range to wrap.
 	 * @param {engine.treeView.AttributeElement} attribute Attribute element to use as wrapper.
-	 * @param {Number} priority Priority to set.
 	 */
-	wrap( range, attribute, priority ) {
+	wrap( range, attribute ) {
 		if ( !( attribute instanceof AttributeElement ) ) {
 			/**
 			 * Attribute element need to be instance of attribute element.
@@ -364,9 +363,6 @@ import DocumentFragment from './documentfragment.js';
 		if ( range.isCollapsed ) {
 			return range;
 		}
-
-		// Sets wrapper element priority.
-		attribute.priority = priority;
 
 		// Break attributes at range start and end.
 		const { start: breakStart, end: breakEnd } = this.breakRange( range );
