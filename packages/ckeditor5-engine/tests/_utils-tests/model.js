@@ -87,6 +87,16 @@ describe( 'model test utils', () => {
 				] );
 			} );
 
+			it( 'writes selection in an empty root', () => {
+				const root = document.createRoot( 'empty', '$root' );
+
+				selection.collapse( root );
+
+				expect( getData( document, 'empty', options ) ).to.equal(
+					'<selection />'
+				);
+			} );
+
 			it( 'writes selection collapsed in an element', () => {
 				selection.collapse( root );
 

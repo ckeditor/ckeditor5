@@ -21,11 +21,12 @@ import Element from '/ckeditor5/engine/treemodel/element.js';
  * @returns {String} The stringified data.
  */
 export function getData( document, rootName, options ) {
+	const root = document.getRoot( rootName );
 	const walker = new TreeWalker( {
-		boundaries: Range.createFromElement( document.getRoot( rootName ) )
+		boundaries: Range.createFromElement( root )
 	} );
 	let ret = '';
-	let lastPosition;
+	let lastPosition = Position.createFromParentAndOffset( root, 0 );
 	const selection = document.selection;
 
 	options = options || {};
