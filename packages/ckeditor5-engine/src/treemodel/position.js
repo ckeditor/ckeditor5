@@ -7,6 +7,7 @@
 
 import RootElement from './rootelement.js';
 import DocumentFragment from './documentfragment.js';
+import Element from './element.js';
 import last from '../../utils/lib/lodash/last.js';
 import utils from '../../utils/utils.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
@@ -417,6 +418,46 @@ export default class Position {
 	}
 
 	/**
+	 * Creates position at the given location. The location can be specified as:
+	 *
+	 * * a {@link engine.treeModel.Position position},
+	 * * parent element and offset (offset defaults to `0`),
+	 * * parent element and `'END'` (sets selection at the end of that element),
+	 * * node and `'BEFORE'` or `'AFTER'` (sets selection before or after the given node).
+	 *
+	 * This method is a shortcut to other creators such as:
+	 *
+	 * * {@link engine.treeModel.Position.createBefore},
+	 * * {@link engine.treeModel.Position.createAfter},
+	 * * {@link engine.treeModel.Position.createFromParentAndOffset},
+	 *
+	 * @param {engine.treeModel.Node|engine.treeModel.Position} nodeOrPosition
+	 * @param {Number|'END'|'BEFORE'|'AFTER'} [offset=0] Offset or one of the flags. Used only when
+	 * first parameter is a node.
+	 */
+	static createAt( nodeOrPosition, offset ) {
+		let node;
+
+		if ( nodeOrPosition instanceof Position ) {
+			return this.createFromPosition( nodeOrPosition );
+		} else {
+			node = nodeOrPosition;
+
+			if ( offset == 'END' ) {
+				offset = node.getChildCount();
+			} else if ( offset == 'BEFORE' ) {
+				return this.createBefore( node );
+			} else if ( offset == 'AFTER' ) {
+				return this.createAfter( node );
+			} else if ( !offset ) {
+				offset = 0;
+			}
+
+			return this.createFromParentAndOffset( node, offset );
+		}
+	}
+
+	/**
 	 * Creates a new position after given node.
 	 *
 	 * @see {@link engine.treeModel.TreeWalkerValue}
@@ -468,6 +509,10 @@ export default class Position {
 	 * @returns {engine.treeModel.Position}
 	 */
 	static createFromParentAndOffset( parent, offset ) {
+		if ( !( parent instanceof Element ) ) {
+			throw new CKEditorError( 'position-in-text: You cannot make position in a text node.' );
+		}
+
 		const path = parent.getPath();
 
 		path.push( offset );

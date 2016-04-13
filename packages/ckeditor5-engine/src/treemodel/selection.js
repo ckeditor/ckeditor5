@@ -242,28 +242,7 @@ export default class Selection {
 	 * first parameter is a node.
 	 */
 	collapse( nodeOrPosition, offset ) {
-		let node, pos;
-
-		if ( nodeOrPosition instanceof Position ) {
-			pos = nodeOrPosition;
-		} else {
-			node = nodeOrPosition;
-
-			if ( offset == 'END' ) {
-				offset = node.getChildCount();
-			} else if ( offset == 'BEFORE' ) {
-				offset = node.getIndex();
-				node = node.parent;
-			} else if ( offset == 'AFTER' ) {
-				offset = node.getIndex() + 1;
-				node = node.parent;
-			} else if ( !offset ) {
-				offset = 0;
-			}
-
-			pos = Position.createFromParentAndOffset( node, offset );
-		}
-
+		const pos = Position.createAt( nodeOrPosition, offset );
 		const range = new Range( pos, pos );
 
 		this.setRanges( [ range ] );
