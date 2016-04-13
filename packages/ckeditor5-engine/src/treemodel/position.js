@@ -425,7 +425,7 @@ export default class Position {
 	 * * parent element and `'END'` (sets selection at the end of that element),
 	 * * node and `'BEFORE'` or `'AFTER'` (sets selection before or after the given node).
 	 *
-	 * This method is a shortcut to other creators such as:
+	 * This method is a shortcut to other constructors such as:
 	 *
 	 * * {@link engine.treeModel.Position.createBefore},
 	 * * {@link engine.treeModel.Position.createAfter},
