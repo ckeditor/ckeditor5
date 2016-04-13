@@ -24,6 +24,56 @@ describe( 'Position', () => {
 		} );
 	} );
 
+	describe( 'nodeBefore', () => {
+		it( 'should equal to node that is before position', () => {
+			const b1 = new Element( 'b' );
+			const el = new Element( 'p', null, [ b1 ] );
+			const position = new Position( el, 1 );
+
+			expect( position.nodeBefore ).to.equal( b1 );
+		} );
+
+		it( 'should equal null if there is no node before', () => {
+			const b1 = new Element( 'b' );
+			const el = new Element( 'p', null, [ b1 ] );
+			const position = new Position( el, 0 );
+
+			expect( position.nodeBefore ).to.be.null;
+		} );
+
+		it( 'should equal null if position is located inside text node', () => {
+			const text = new Text( 'foobar' );
+			const position = new Position( text, 3 );
+
+			expect( position.nodeBefore ).to.be.null;
+		} );
+	} );
+
+	describe( 'nodeAfter', () => {
+		it( 'should equal to node that is after position', () => {
+			const b1 = new Element( 'b' );
+			const el = new Element( 'p', null, [ b1 ] );
+			const position = new Position( el, 0 );
+
+			expect( position.nodeAfter ).to.equal( b1 );
+		} );
+
+		it( 'should equal null if there is no node before', () => {
+			const b1 = new Element( 'b' );
+			const el = new Element( 'p', null, [ b1 ] );
+			const position = new Position( el, 1 );
+
+			expect( position.nodeAfter ).to.be.null;
+		} );
+
+		it( 'should equal null if position is located inside text node', () => {
+			const text = new Text( 'foobar' );
+			const position = new Position( text, 3 );
+
+			expect( position.nodeAfter ).to.be.null;
+		} );
+	} );
+
 	describe( 'getShiftedBy', () => {
 		it( 'returns new instance with shifted offset', () => {
 			const position = new Position( parentMock, 10 );

@@ -6,6 +6,7 @@
 'use strict';
 
 import utils from '../../utils/utils.js';
+import Text from './text.js';
 
 /**
  * Position in the tree. Position is always located before or after a node.
@@ -16,7 +17,7 @@ export default class Position {
 	/**
 	 * Creates a position.
 	 *
-	 * @param {engine.treeView.Element} parent Position parent element.
+	 * @param {engine.treeView.Node} parent Position parent node.
 	 * @param {Number} offset Position offset.
 	 */
 	constructor( parent, offset ) {
@@ -33,6 +34,36 @@ export default class Position {
 		 * @member {Number} engine.treeView.Position#offset
 		 */
 		this.offset = offset;
+	}
+
+	/**
+	 * Node directly after the position. Equals `null` when there is no node after position or position is located
+	 * inside text node.
+	 *
+	 * @readonly
+	 * @type {engine.treeView.Node}
+	 */
+	get nodeAfter() {
+		if ( this.parent instanceof Text ) {
+			return null;
+		}
+
+		return this.parent.getChild( this.offset ) || null;
+	}
+
+	/**
+	 * Node directly before the position. Equals `null` when there is no node before position or position is located
+	 * inside text node.
+	 *
+	 * @readonly
+	 * @type {engine.treeView.Node}
+	 */
+	get nodeBefore() {
+		if ( this.parent instanceof Text ) {
+			return null;
+		}
+
+		return this.parent.getChild( this.offset - 1 ) || null;
 	}
 
 	/**
