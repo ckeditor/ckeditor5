@@ -107,6 +107,12 @@ describe( 'position', () => {
 			expect( Position.createFromParentAndOffset( li1, 2 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 2 ] );
 			expect( Position.createFromParentAndOffset( li1, 3 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 3 ] );
 		} );
+
+		it( 'throws when parent is not an element', () => {
+			expect( () => {
+				expect( Position.createFromParentAndOffset( b, 0 ) );
+			} ).to.throw( CKEditorError, /^position-in-text:/ );
+		} );
 	} );
 
 	describe( 'createAt', () => {

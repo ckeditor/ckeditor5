@@ -510,7 +510,12 @@ export default class Position {
 	 */
 	static createFromParentAndOffset( parent, offset ) {
 		if ( !( parent instanceof Element ) ) {
-			throw new CKEditorError( 'position-in-text: You cannot make position in a text node.' );
+			/**
+			 * Position cannot be in located inside a text node.
+			 *
+			 * @error position-in-text
+			 */
+			throw new CKEditorError( 'position-in-text: Position cannot be in located inside a text node.' );
 		}
 
 		const path = parent.getPath();
