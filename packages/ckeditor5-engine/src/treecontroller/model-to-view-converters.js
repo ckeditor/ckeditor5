@@ -28,10 +28,10 @@ import ViewText from '../treeview/text.js';
  * The converter automatically consumes corresponding value from consumables list, stops the event (see
  * {@link engine.treeController.ModelConversionDispatcher}) and bind model and view elements.
  *
- *		modelDispatcher.on( 'insert:element:p', insertElement( new ViewElement( 'p' ) ) );
+ *		modelDispatcher.on( 'insert:paragraph', insertElement( new ViewElement( 'p' ) ) );
  *
  *		modelDispatcher.on(
- *			'insert:element:myElem',
+ *			'insert:myElem',
  *			insertElement( ( data, consumable, conversionApi ) => {
  *				let myElem = new ViewElement( 'myElem', { myAttr: true }, new ViewText( 'myText' ) );
  *
@@ -56,7 +56,7 @@ export function insertElement( elementCreator ) {
 			elementCreator.clone( true ) :
 			elementCreator( data, consumable, conversionApi );
 
-		conversionApi.mapper.bind( data.item, viewElement );
+		conversionApi.mapper.bindElements( data.item, viewElement );
 		conversionApi.writer.insert( viewPosition, viewElement );
 
 		evt.stop();
@@ -66,10 +66,10 @@ export function insertElement( elementCreator ) {
 /**
  * Function factory, creates a default model-to-view converter for text insertion changes.
  *
- * The converter automatically consumes corresponding value from consumables list, stops the event (see
- * {@link engine.treeController.ModelConversionDispatcher}) and bind model and view elements.
+ * The converter automatically consumes corresponding value from consumables list and stops the event (see
+ * {@link engine.treeController.ModelConversionDispatcher}).
  *
- *		modelDispatcher.on( 'insert:text', insertText() );
+ *		modelDispatcher.on( 'insert:$text', insertText() );
  *
  * @external engine.treeController.modelToView
  * @function engine.treeController.modelToView.insertText
@@ -79,8 +79,8 @@ export function insertText() {
 	return ( evt, data, consumable, conversionApi ) => {
 		consumable.consume( data.item, 'insert' );
 
-		const viewPosition = conversionApi.mapper.toViewPosition( data.position );
-		const viewText = new ViewText( data.item.data );
+		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
+		const viewText = new ViewText( data.item.text );
 
 		conversionApi.writer.insert( viewPosition, viewText );
 
@@ -90,112 +90,94 @@ export function insertText() {
 
 /**
  * Function factory, creates a converter that converts set/change attribute changes from the model to the view. Attributes
- * from model are converted to the attributes in the view. You may provide a custom function to generate a set of attributes
- * that will be added/changed. If not provided, model attributes will be converted to view elements attributes on 1-to-1 basis.
+ * from model are converted to the view element attributes in the view. You may provide a custom function to generate a
+ * key-value attribute pair to add/change. If not provided, model attributes will be converted to view elements attributes
+ * on 1-to-1 basis.
  *
- * The converter automatically consumes corresponding value from consumables list, stops the event (see
- * {@link engine.treeController.ModelConversionDispatcher}) and bind model and view elements.
+ * **Note:** Provided attribute creator should always return the same `key` for given attribute from the model.
+ *
+ * The converter automatically consumes corresponding value from consumables list and stops the event (see
+ * {@link engine.treeController.ModelConversionDispatcher}).
  *
  *		modelDispatcher.on( 'addAttribute:customAttr:myElem', setAttribute( ( data ) => {
- *			let attributes = {};
+ *			// Change attribute key from `customAttr` to `class` in view.
+ *			const key = 'class';
+ *			let value = data.attributeNewValue;
  *
- *			if ( data.item.hasAttribute( 'otherCustomAttr' ) ) {
- *				// do something with attributes variable ...
- *			} else {
- *				// do something else with attributes variable ...
+ *			// Force attribute value to 'empty' if the model element is empty.
+ *			if ( data.item.getChildCount() === 0 ) {
+ *				value = 'empty';
  *			}
  *
- *			return attributes;
+ *			// Return key-value pair.
+ *			return { key, value };
  *		} ) );
  *
  * @external engine.treeController.modelToView
  * @function engine.treeController.modelToView.setAttribute
- * @param {Function} [attributesCreator] Function returning a `string`, `number` or an `object` which values are `string`s
- * or `number`s. If `object` is returned, it's keys are used as attributes keys and values as attributes values. The function
+ * @param {Function} [attributeCreator] Function returning an object with two properties: `key` and `value`, which
+ * represents attribute key and attribute value to be set on a {@link engine.treeView.Element view element}. The function
  * is passed all the parameters of the {@link engine.treeController.ModelConversionDispatcher.addAttribute}
  * or {@link engine.treeController.ModelConversionDispatcher.changeAttribute) event.
  * @returns {Function} Set/change attribute converter.
  */
-export function setAttribute( attributesCreator ) {
+export function setAttribute( attributeCreator ) {
+	attributeCreator = attributeCreator || ( ( data ) => ( { key: data.attributeKey, value: data.attributeNewValue } ) );
+
 	return ( evt, data, consumable, conversionApi ) => {
-		let attributes;
+		const { key, value } = attributeCreator( data, consumable, conversionApi );
 
-		if ( !attributesCreator ) {
-			attributes = data.item.getAttribute( data.attributeKey );
-		} else {
-			attributes = attributesCreator( data, consumable, conversionApi );
-		}
+		consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
+		conversionApi.mapper.toViewElement( data.item ).setAttribute( key, value );
 
-		if ( attributes ) {
-			consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
-
-			const viewElement = conversionApi.mapper.toViewElement( data.item );
-
-			if ( typeof attributes === 'string' || typeof attributes === 'number' ) {
-				viewElement.setAttribute( data.attributeKey, attributes );
-			} else {
-				for ( let attributeKey in attributes ) {
-					viewElement.setAttribute( attributeKey, attributes[ attributeKey ] );
-				}
-			}
-
-			evt.stop();
-		}
+		evt.stop();
 	};
 }
 
 /**
- * Function factory, creates a converter that converts remove attribute changes from the model to the view. This converter
- * assumes, that attributes from model were converted to the attributes in the view. You may provide a custom function to
- * generate a set of attributes that will be removed. If not provided, model attributes will be removed from view elements on 1-to-1 basis.
+ * Function factory, creates a converter that converts remove attribute changes from the model to the view. Removes attributes
+ * that were converted to the view element attributes in the view. You may provide a custom function to generate a
+ * key-value attribute pair to remove. If not provided, model attributes will be removed from view elements on 1-to-1 basis.
  *
- * The converter automatically consumes corresponding value from consumables list, stops the event (see
- * {@link engine.treeController.ModelConversionDispatcher}) and bind model and view elements.
+ * **Note:** Provided attribute creator should always return the same `key` for given attribute from the model.
+ *
+ * **Note:** You can use the same attribute creator as in {@link engine.treeController.modelToView.setAttribute}.
+ *
+ * The converter automatically consumes corresponding value from consumables list and stops the event (see
+ * {@link engine.treeController.ModelConversionDispatcher}).
  *
  *		modelDispatcher.on( 'removeAttribute:customAttr:myElem', removeAttribute( ( data ) => {
- *			let attributes = {};
+ *			// Change attribute key from `customAttr` to `class` in view.
+ *			const key = 'class';
+ *			let value = data.attributeNewValue;
  *
- *			if ( data.item.hasAttribute( 'otherCustomAttr' ) ) {
- *				// do something with attributes variable ...
- *			} else {
- *				// do something else with attributes variable ...
+ *			// Force attribute value to 'empty' if the model element is empty.
+ *			if ( data.item.getChildCount() === 0 ) {
+ *				value = 'empty';
  *			}
  *
- *			return attributes;
+ *			// Return key-value pair.
+ *			return { key, value };
  *		} ) );
  *
  * @external engine.treeController.modelToView
  * @function engine.treeController.modelToView.removeAttribute
- * @param {Function} [attributesCreator] Function returning a `string` or an `array` of `string`s. If `array` is returned,
- * it's values are used as attributes keys to remove. The function is passed all the parameters of the
- * {@link engine.treeController.ModelConversionDispatcher.removeAttribute} event.
+ * @param {Function} [attributeCreator] Function returning an object with two properties: `key` and `value`, which
+ * represents attribute key and attribute value to be removed from {@link engine.treeView.Element view element}. The function
+ * is passed all the parameters of the {@link engine.treeController.ModelConversionDispatcher.addAttribute}
+ * or {@link engine.treeController.ModelConversionDispatcher.changeAttribute) event.
  * @returns {Function} Remove attribute converter.
  */
-export function removeAttribute( attributesCreator ) {
+export function removeAttribute( attributeCreator ) {
+	attributeCreator = attributeCreator || ( ( data ) => ( { key: data.attributeKey } ) );
+
 	return ( evt, data, consumable, conversionApi ) => {
-		let attributeKeys;
+		const { key } = attributeCreator( data, consumable, conversionApi );
 
-		if ( !attributesCreator ) {
-			attributeKeys = data.attributeKey;
-		} else {
-			attributeKeys = attributesCreator( data, consumable, conversionApi );
-		}
+		consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
+		conversionApi.mapper.toViewElement( data.item ).removeAttribute( key );
 
-		if ( attributeKeys ) {
-			consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
-
-			const viewElement = conversionApi.mapper.toViewElement( data.item );
-
-			if ( typeof attributeKeys === 'string' ) {
-				viewElement.removeAttribute( attributeKeys );
-			} else {
-				for ( let attributeKey of attributeKeys ) {
-					viewElement.removeAttribute( attributeKey );
-				}
-			}
-
-			evt.stop();
-		}
+		evt.stop();
 	};
 }
 
@@ -216,7 +198,7 @@ export function removeAttribute( attributesCreator ) {
  * function returns a {@link engine.treeView.Element}. The result of the function will be the wrapping element.
  *
  * The converter automatically consumes corresponding value from consumables list, stops the event (see
- * {@link engine.treeController.ModelConversionDispatcher}) and bind model and view elements.
+ * {@link engine.treeController.ModelConversionDispatcher}).
  *
  *		modelDispatcher.on( 'addAttribute:bold', wrap( new ViewElement( 'strong' ) ) );
  *
@@ -234,7 +216,7 @@ export function wrap( elementCreator ) {
 
 		const viewElement = ( elementCreator instanceof ViewElement ) ?
 			elementCreator.clone( true ) :
-			elementCreator( data, consumable, conversionApi );
+			elementCreator( data.attributeNewValue, data, consumable, conversionApi );
 
 		conversionApi.writer.wrap( viewRange, viewElement, evt.priority );
 
@@ -272,7 +254,7 @@ export function unwrap( elementCreator ) {
 		const viewRange = conversionApi.mapper.toViewRange( data.range );
 		const viewNode = ( elementCreator instanceof ViewElement ) ?
 			elementCreator.clone( true ) :
-			elementCreator( data, consumable, conversionApi );
+			elementCreator( data.attributeOldValue, data, consumable, conversionApi );
 
 		conversionApi.writer.unwrap( viewRange, viewNode );
 
@@ -302,7 +284,7 @@ export function move() {
 		const sourceModelRange = ModelRange.createFromPositionAndShift( data.sourcePosition, length );
 
 		const sourceViewRange = conversionApi.mapper.toViewRange( sourceModelRange );
-		const targetViewPosition = conversionApi.mapper.toViewRange( data.range.start );
+		const targetViewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 
 		conversionApi.writer.move( sourceViewRange, targetViewPosition );
 	};
@@ -334,7 +316,13 @@ export function remove() {
 	};
 }
 
-function eventNameToConsumableType( evtName ) {
+/**
+ * Returns the consumable type that is to be consumed in an event, basing on that event name.
+ *
+ * @param {String} evtName Event name.
+ * @returns {String} Consumable type.
+ */
+export function eventNameToConsumableType( evtName ) {
 	const parts = evtName.split( ':' );
 
 	return parts[ 0 ] + ':' + parts[ 1 ];
