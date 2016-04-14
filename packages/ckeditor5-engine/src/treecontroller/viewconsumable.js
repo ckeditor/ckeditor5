@@ -568,6 +568,12 @@ export default class ViewConsumable {
 			instance = new ViewConsumable();
 		}
 
+		if ( from instanceof ViewText ) {
+			instance.add( from );
+
+			return instance;
+		}
+
 		// Add `from` itself, if it is an element.
 		if ( from instanceof ViewElement ) {
 			instance.add( from, ViewConsumable.consumablesFromElement( from ) );
@@ -578,11 +584,7 @@ export default class ViewConsumable {
 		}
 
 		for ( let child of from.getChildren() ) {
-			if ( child instanceof ViewText ) {
-				instance.add( child );
-			} else {
-				instance = ViewConsumable.createFrom( child, instance );
-			}
+			instance = ViewConsumable.createFrom( child, instance );
 		}
 
 		return instance;
