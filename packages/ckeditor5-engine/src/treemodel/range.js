@@ -427,6 +427,16 @@ export default class Range {
 	}
 
 	/**
+	 * Creates a range on given element only. The range starts just before the element and ends before the first child of the element.
+	 *
+	 * @param {engine.treeModel.Element} element Element on which range should be created.
+	 * @returns {engine.treeModel.Range} Created range.
+	 */
+	static createOnElement( element ) {
+		return this.createFromParentsAndOffsets( element.parent, element.getIndex(), element, 0 );
+	}
+
+	/**
 	 * Creates a new range spreading from specified position to the same position moved by given shift.
 	 *
 	 * @param {engine.treeModel.Position} position Beginning of the range.
