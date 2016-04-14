@@ -99,7 +99,7 @@ export default class ViewConversionDispatcher {
 	 * Creates a `ViewConversionDispatcher` that operates using passed API.
 	 *
 	 * @see engine.treeController.ViewConversionApi
-	 * @param {Object} conversionApi Additional properties for interface that will be passed to events fired
+	 * @param {Object} [conversionApi] Additional properties for interface that will be passed to events fired
 	 * by `ViewConversionDispatcher`.
 	 */
 	constructor( conversionApi = {} ) {
@@ -164,8 +164,8 @@ export default class ViewConversionDispatcher {
 		const viewChildren = Array.from( input.getChildren() );
 		const convertedChildren = viewChildren.map( ( viewChild ) => this._convertItem( viewChild, consumable, additionalData ) );
 
-		// Flatten.
-		return convertedChildren.reduce( ( a, b ) => a.concat( b ) );
+		// Flatten and remove nulls.
+		return convertedChildren.reduce( ( a, b ) => b ? a.concat( b ) : a, [] );
 	}
 
 	/**
