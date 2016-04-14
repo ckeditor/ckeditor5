@@ -7,9 +7,10 @@
 
 import Consumable from './modelconsumable.js';
 import Range from '../treemodel/range.js';
-import TextFragment from '../treemodel/textfragment.js';
+import TextProxy from '../treemodel/textproxy.js';
 import EmitterMixin from '../../utils/emittermixin.js';
 import utils from '../../utils/utils.js';
+import extend from '../../utils/lib/lodash/extend.js';
 
 /**
  * `ModelConversionDispatcher` is a central point of {@link engine.treeModel model} conversion, which is
@@ -46,15 +47,15 @@ import utils from '../../utils/utils.js';
  *
  * Example of providing a converter for `ModelConversionDispatcher`:
  *
- *		// We will convert inserting P model element into the model.
- *		modelDispatcher.on( 'insert:element:p', ( evt, data, consumable, conversionApi ) => {
+ *		// We will convert inserting "paragraph" model element into the model.
+ *		modelDispatcher.on( 'insert:paragraph', ( evt, data, consumable, conversionApi ) => {
  *			// Remember to consume the part of consumable.
  *			consumable.consume( data.item, 'insert' );
  *
  *			// Translate position in model to position in the view.
  *			const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
  *
- *			// Create a P element (note that converters is for inserting P elements -> 'insert:p').
+ *			// Create a P element (note that this converter is for inserting P elements -> 'insert:paragraph').
  *			const viewElement = new ViewElement( 'p' );
  *
  *			// Bind the newly created view element to model element so positions will map accordingly in future.
@@ -106,15 +107,15 @@ export default class ModelConversionDispatcher {
 	/**
 	 * Creates a `ModelConversionDispatcher` that operates using passed API.
 	 *
-	 * @param {Object} conversionApi Interface passed by dispatcher to the events callbacks.
+	 * @param {Object} [conversionApi] Interface passed by dispatcher to the events callbacks.
 	 */
-	constructor( conversionApi ) {
+	constructor( conversionApi = {} ) {
 		/**
 		 * Interface passed by dispatcher to the events callbacks.
 		 *
 		 * @member {Object} engine.treeController.ModelConversionDispatcher#conversionApi
 		 */
-		this.conversionApi = conversionApi;
+		this.conversionApi = extend( {}, conversionApi );
 	}
 
 	/**
@@ -250,7 +251,7 @@ export default class ModelConversionDispatcher {
 	 * Creates {@link engine.treeController.ModelConsumable} with values to consume from given range, assuming that
 	 * given range has just been inserted to the model.
 	 *
-	 * @protected
+	 * @private
 	 * @param {engine.treeModel.Range} range Inserted range.
 	 * @returns {engine.treeController.ModelConsumable} Values to consume.
 	 */
@@ -262,8 +263,8 @@ export default class ModelConversionDispatcher {
 
 			consumable.add( item, 'insert' );
 
-			for ( let key of item.getAttributes() ) {
-				consumable.add( item, 'addAttribute:' + key );
+			for ( let attr of item.getAttributes() ) {
+				consumable.add( item, 'addAttribute:' + attr[ 0 ] );
 			}
 		}
 
@@ -274,7 +275,7 @@ export default class ModelConversionDispatcher {
 	 * Creates {@link engine.treeController.ModelConsumable} with values to consume from given range, assuming that
 	 * given range has just had it's attributes changed.
 	 *
-	 * @protected
+	 * @private
 	 * @param {String} type Change type. Possible values: `addAttribute`, `removeAttribute`, `changeAttribute`.
 	 * @param {engine.treeController.Range} range Changed range.
 	 * @param {String} key Attribute key.
@@ -295,7 +296,7 @@ export default class ModelConversionDispatcher {
 	/**
 	 * Tests passed `consumable` to check whether given event can be fired and if so, fires it.
 	 *
-	 * @protected
+	 * @private
 	 * @fires engine.treeController.ModelConversionDispatcher#insert
 	 * @fires engine.treeController.ModelConversionDispatcher#addAttribute
 	 * @fires engine.treeController.ModelConversionDispatcher#removeAttribute
@@ -311,16 +312,19 @@ export default class ModelConversionDispatcher {
 		}
 
 		if ( type === 'insert' ) {
-			if ( data.item instanceof TextFragment ) {
-				// Example: insert:text.
-				this.fire( type + ':text', data, consumable, this.conversionApi );
+			if ( data.item instanceof TextProxy ) {
+				// Example: insert:$text.
+				this.fire( type + ':$text', data, consumable, this.conversionApi );
 			} else {
-				// Example: insert:element:p.
-				this.fire( type + ':element:' + data.item.name, data, consumable, this.conversionApi );
+				// Example: insert:paragraph.
+				this.fire( type + ':' + data.item.name, data, consumable, this.conversionApi );
 			}
 		} else {
 			// Example addAttribute:alt:img.
-			this.fire( type + ':' + data.item.name, data, consumable, this.conversionApi );
+			// Example addAttribute:bold:$text.
+			const name = data.item.name || '$text';
+
+			this.fire( type + ':' + name, data, consumable, this.conversionApi );
 		}
 	}
 
@@ -331,8 +335,8 @@ export default class ModelConversionDispatcher {
 	 * `insert:<type>:<elementName>`. `type` is either `text` when one or more characters has been inserted or `element`
 	 * when {@link engine.treeModel.Element} has been inserted. If `type` is `element`, `elementName` is added and is
 	 * equal to the {@link engine.treeModel.Element#name name} of inserted element. This way listeners can either
-	 * listen to very general `insert` event or, i.e., very specific `insert:element:p` event, which is fired only for
-	 * elements with name `p`.
+	 * listen to very general `insert` event or, i.e., very specific `insert:paragraph` event, which is fired only for
+	 * model elements with name `paragraph`.
 	 *
 	 * @event engine.treeController.ModelConversionDispatcher.insert
 	 * @param {Object} data Additional information about the change.
