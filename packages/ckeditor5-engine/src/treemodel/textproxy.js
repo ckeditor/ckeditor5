@@ -133,7 +133,7 @@ export default class TextProxy {
 	/**
 	 * Removes all attributes from the text fragment and sets given attributes.
 	 *
-	 * **Note:** Changing attributes of text fragment affects document state. This TextProxy instance properties
+	 * **Note:** Changing attributes of text fragment affects document state. This `TextProxy` instance properties
 	 * will be refreshed, but other may get invalidated. It is highly unrecommended to store references to TextProxy instances.
 	 *
 	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set.
@@ -152,7 +152,7 @@ export default class TextProxy {
 	/**
 	 * Removes an attribute with given key from the text fragment.
 	 *
-	 * **Note:** Changing attributes of text fragment affects document state. This TextProxy instance properties
+	 * **Note:** Changing attributes of text fragment affects document state. This `TextProxy` instance properties
 	 * will be refreshed, but other may get invalidated. It is highly unrecommended to store references to TextProxy instances.
 	 *
 	 * @param {String} key Key of attribute to remove.
@@ -164,7 +164,7 @@ export default class TextProxy {
 	/**
 	 * Removes all attributes from the text fragment.
 	 *
-	 * **Note:** Changing attributes of text fragment affects document state. This TextProxy instance properties
+	 * **Note:** Changing attributes of text fragment affects document state. This `TextProxy` instance properties
 	 * will be refreshed, but other may get invalidated. It is highly unrecommended to store references to TextProxy instances.
 	 */
 	clearAttributes() {
