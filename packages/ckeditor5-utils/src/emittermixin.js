@@ -407,7 +407,7 @@ function getCallbacksForEvent( source, eventName ) {
 		// But this could be a specific-type event that is in a namespace.
 		if ( eventName.indexOf( ':' ) > -1 ) {
 			// If the eventName is specific, try to find callback lists for more generic event.
-			return getCallbacksForEvent( source, eventName.substr( 0, eventName.indexOf( ':' ) ) );
+			return getCallbacksForEvent( source, eventName.substr( 0, eventName.lastIndexOf( ':' ) ) );
 		} else {
 			// If this is a top-level generic event, return null;
 			return null;
