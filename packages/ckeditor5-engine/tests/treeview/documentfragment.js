@@ -38,6 +38,19 @@ describe( 'DocumentFragment', () => {
 		} );
 	} );
 
+	describe( 'iterator', () => {
+		it( 'should iterate over all nodes added to document fragment', () => {
+			const children = [ new Element( 'p' ), new Element( 'div' ) ];
+			const fragment = new DocumentFragment( children );
+
+			const arr = Array.from( fragment );
+
+			expect( arr.length ).to.equal( 2 );
+			expect( arr[ 0 ] ).to.have.property( 'name' ).that.equals( 'p' );
+			expect( arr[ 1 ] ).to.have.property( 'name' ).that.equals( 'div' );
+		} );
+	} );
+
 	describe( 'children manipulation methods', () => {
 		let fragment, el1, el2, el3, el4;
 
