@@ -64,8 +64,12 @@ import DocumentFragment from './documentfragment.js';
 			return Position.createFromPosition( position );
 		}
 
-		const parentIsText = positionParent instanceof Text;
-		const length = parentIsText ? positionParent.data.length : positionParent.getChildCount();
+		// Break text and start again in new position.
+		if ( positionParent instanceof Text ) {
+			return this.breakAttributes( breakTextNode( position ) );
+		}
+
+		const length = positionParent.getChildCount();
 
 		// <p>foo<b><u>bar|</u></b></p>
 		// <p>foo<b><u>bar</u>|</b></p>
@@ -90,40 +94,23 @@ import DocumentFragment from './documentfragment.js';
 		else {
 			const offsetAfter = positionParent.getIndex() + 1;
 
-			if ( parentIsText ) {
-				// Break text.
-				// Get part of the text that need to be moved.
-				const textToMove = positionParent.data.slice( positionOffset );
+			// Break element.
+			const clonedNode = positionParent.clone();
 
-				// Leave rest of the text in position's parent.
-				positionParent.data = positionParent.data.slice( 0, positionOffset );
+			// Insert cloned node to position's parent node.
+			positionParent.parent.insertChildren( offsetAfter, clonedNode );
 
-				// Insert new text node after position's parent text node.
-				positionParent.parent.insertChildren( offsetAfter, new Text( textToMove ) );
+			// Get nodes to move.
+			const count = positionParent.getChildCount() - positionOffset;
+			const nodesToMove = positionParent.removeChildren( positionOffset, count );
 
-				// Create new position to work on.
-				const newPosition = new Position( positionParent.parent, offsetAfter );
+			// Move nodes to cloned node.
+			clonedNode.appendChildren( nodesToMove );
 
-				return this.breakAttributes( newPosition );
-			} else {
-				// Break element.
-				const clonedNode = positionParent.clone();
+			// Create new position to work on.
+			const newPosition = new Position( positionParent.parent, offsetAfter );
 
-				// Insert cloned node to position's parent node.
-				positionParent.parent.insertChildren( offsetAfter, clonedNode );
-
-				// Get nodes to move.
-				const count = positionParent.getChildCount() - positionOffset;
-				const nodesToMove = positionParent.removeChildren( positionOffset, count );
-
-				// Move nodes to cloned node.
-				clonedNode.appendChildren( nodesToMove );
-
-				// Create new position to work on.
-				const newPosition = new Position( positionParent.parent, offsetAfter );
-
-				return this.breakAttributes( newPosition );
-			}
+			return this.breakAttributes( newPosition );
 		}
 	}
 
@@ -208,15 +195,11 @@ import DocumentFragment from './documentfragment.js';
 			return position;
 		}
 
-		// When selection is between two text nodes.
+		// When position is between two text nodes.
 		if ( nodeBefore instanceof Text && nodeAfter instanceof Text ) {
-			// Merge text data into first text node and remove second one.
-			const nodeBeforeLength = nodeBefore.data.length;
-			nodeBefore.data += nodeAfter.data;
-			positionParent.removeChildren( positionOffset );
-
-			return new Position( nodeBefore, nodeBeforeLength );
+			return mergeTextNodes( nodeBefore, nodeAfter );
 		}
+
 		// When selection is between same nodes.
 		else if ( nodeBefore.isSimilar( nodeAfter ) ) {
 			// Move all children nodes from node placed after selection and remove that node.
@@ -330,6 +313,8 @@ import DocumentFragment from './documentfragment.js';
 	 *
 	 * Throws {@link utils.CKEditorError} `treeview-writer-invalid-range-container` when {@link engine.treeView.Range#start}
 	 * and {@link engine.treeView.Range#end} positions are not placed inside same parent container.
+	 * Throws {@link utils.CKEditorError} `treeview-writer-wrap-invalid-attribute` when passed attribute element is not
+	 * an instance of {engine.treeView.AttributeElement AttributeElement}.
 	 *
 	 * @param {engine.treeView.Range} range Range to wrap.
 	 * @param {engine.treeView.AttributeElement} attribute Attribute element to use as wrapper.
@@ -379,6 +364,67 @@ import DocumentFragment from './documentfragment.js';
 		const end = this.mergeAttributes( newRange.end );
 
 		return new Range( start, end );
+	}
+
+	/**
+	 * Wraps position with provided attribute. Returns new position after wrapping. This method will also merge newly
+	 * added attribute with its siblings whenever possible.
+	 *
+	 * Throws {@link utils.CKEditorError} `treeview-writer-wrap-invalid-attribute` when passed attribute element is not
+	 * an instance of {engine.treeView.AttributeElement AttributeElement}.
+	 *
+	 * @param {engine.treeView.Position} position
+	 * @param {engine.treeView.AttributeElement} attribute
+	 * @returns {Position} New position after wrapping.
+	 */
+	wrapPosition( position, attribute ) {
+		if ( !( attribute instanceof AttributeElement ) ) {
+			/**
+			 * Attribute element need to be instance of attribute element.
+			 *
+			 * @error treeview-writer-wrap-invalid-attribute
+			 */
+			throw new CKEditorError( 'treeview-writer-wrap-invalid-attribute' );
+		}
+
+		// Return same position when trying to wrap with attribute similar to position parent.
+		if ( attribute.isSimilar( position.parent ) ) {
+			return movePositionToTextNode( Position.createFromPosition( position ) );
+		}
+
+		// When position is inside text node - break it and place new position between two text nodes.
+		if ( position.parent instanceof Text ) {
+			position = breakTextNode( position );
+		}
+
+		// Create fake element that will represent position, and will not be merged with other attributes.
+		const fakePosition = new AttributeElement();
+		fakePosition.priority = Number.POSITIVE_INFINITY;
+		fakePosition.isSimilar = () => false;
+
+		// Insert fake element in position location.
+		position.parent.insertChildren( position.offset, fakePosition );
+
+		// Range around inserted fake attribute element.
+		const wrapRange = new Range( position, position.getShiftedBy( 1 ) );
+
+		// Wrap fake element with attribute (it will also merge if possible).
+		this.wrap( wrapRange, attribute );
+
+		// Remove fake element and place new position there.
+		const newPosition = new Position( fakePosition.parent, fakePosition.getIndex() );
+		fakePosition.remove();
+
+		// If position is placed between text nodes - merge them and return position inside.
+		const nodeBefore = newPosition.nodeBefore;
+		const nodeAfter = newPosition.nodeAfter;
+
+		if ( nodeBefore instanceof Text && nodeAfter instanceof Text ) {
+			return mergeTextNodes( nodeBefore, nodeAfter );
+		}
+
+		// If position is next to text node - move position inside.
+		return movePositionToTextNode( newPosition );
 	}
 
 	/**
@@ -563,4 +609,74 @@ function wrapChildren( writer, parent, startOffset, endOffset, attribute ) {
 	}
 
 	return Range.createFromParentsAndOffsets( parent, startOffset, parent, endOffset );
+}
+
+// Returns new position that is moved to near text node. Returns same position if there is no text node before of after
+// specified position.
+//
+//		<p>{foo}|</p>  ->  <p>{foo|}</p>
+//		<p>|{foo}</p>  ->  <p>{|foo}</p>
+//
+// @param {engine.treeView.Position} position
+// @returns {engine.treeView.Position} Position located inside text node or same position if there is no text nodes
+// before or after position location.
+function movePositionToTextNode( position ) {
+	const nodeBefore = position.nodeBefore;
+
+	if ( nodeBefore && nodeBefore instanceof Text ) {
+		return new Position( nodeBefore, nodeBefore.data.length );
+	}
+
+	const nodeAfter = position.nodeAfter;
+
+	if ( nodeAfter && nodeAfter instanceof Text ) {
+		return new Position( nodeAfter, 0 );
+	}
+
+	return position;
+}
+
+// Breaks text node into two text nodes when possible.
+//
+//		<p>{foo|bar}</p> -> <p>{foo}|{bar}</p>
+//		<p>{|foobar}</p> -> <p>|{foobar}</p>
+//		<p>{foobar|}</p> -> <p>{foobar}|</p>
+//
+// @param {engine.treeView.Position} position Position that need to be placed inside text node.
+// @returns {engine.treeView.Position} New position after breaking text node.
+function breakTextNode( position ) {
+	if ( position.offset == position.parent.data.length ) {
+		return new Position( position.parent.parent, position.parent.getIndex() + 1 );
+	}
+
+	if ( position.offset === 0 ) {
+		return new Position( position.parent.parent, position.parent.getIndex() );
+	}
+
+	// Get part of the text that need to be moved.
+	const textToMove = position.parent.data.slice( position.offset );
+
+	// Leave rest of the text in position's parent.
+	position.parent.data = position.parent.data.slice( 0, position.offset );
+
+	// Insert new text node after position's parent text node.
+	position.parent.parent.insertChildren( position.parent.getIndex() + 1, new Text( textToMove ) );
+
+	// Return new position between two newly created text nodes.
+	return new Position( position.parent.parent, position.parent.getIndex() + 1 );
+}
+
+// Merges two text nodes into first node. Removes second node and returns merge position.
+//
+// @param {engine.treeView.Text} t1 First text node to merge. Data from second text node will be moved at the end of
+// this text node.
+// @param {engine.treeView.Text} t2 Second text node to merge. This node will be removed after merging.
+// @returns {engine.treeView.Position} Position after merging text nodes.
+function mergeTextNodes( t1, t2 ) {
+	// Merge text data into first text node and remove second one.
+	const nodeBeforeLength = t1.data.length;
+	t1.data += t2.data;
+	t2.remove();
+
+	return new Position( t1, nodeBeforeLength );
 }
