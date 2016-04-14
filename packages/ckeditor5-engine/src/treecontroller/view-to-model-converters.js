@@ -33,7 +33,8 @@ import ModelText from '../treemodel/text.js';
  */
 export function convertToModelFragment() {
 	return ( evt, data, consumable, conversionApi ) => {
-		if ( !data.output && consumable.test( data.input ) ) {
+		// Second argument in `consumable.test` is discarded for ViewDocumentFragment but is needed for ViewElement.
+		if ( !data.output && consumable.test( data.input, { name: true } ) ) {
 			const convertedChildren = conversionApi.convertChildren( data.input, consumable, { context: data.context } );
 
 			data.output = new ModelDocumentFragment( convertedChildren );
