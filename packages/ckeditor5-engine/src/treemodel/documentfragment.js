@@ -34,6 +34,33 @@ export default class DocumentFragment {
 	}
 
 	/**
+	 * `DocumentFragment` iterator. Returns {@link engine.treeModel.Node nodes} that are added to the `DocumentFragment`.
+	 */
+	[ Symbol.iterator ]() {
+		return this._children[ Symbol.iterator ]();
+	}
+
+	/**
+	 * The root of `DocumentFragment`. Returns itself. Added for compatibility reasons with {@link engine.treeModel.Element}.
+	 *
+	 * @readonly
+	 * @type {engine.treeModel.DocumentFragment}
+	 */
+	get root() {
+		return this;
+	}
+
+	/**
+	 * Returns path to the `DocumentFragment` This is always equal to empty array and is added for compatibility reasons
+	 * with {@link engine.treeModel.Element}.
+	 *
+	 * @returns {Array} The path.
+	 */
+	getPath() {
+		return [];
+	}
+
+	/**
 	 * Gets child at the given index.
 	 *
 	 * @param {Number} index Index of child.
