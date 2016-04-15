@@ -344,6 +344,27 @@ import DocumentFragment from './documentfragment.js';
 			return range;
 		}
 
+		// Range around one element.
+		if ( range.end.isEqual( range.start.getShiftedBy( 1 ) ) ) {
+			const node = range.start.nodeAfter;
+
+			if ( node instanceof AttributeElement && wrapAttributes( attribute, node ) ) {
+				return range;
+			}
+		}
+
+		// Range is inside single attribute and spans on all children.
+		if ( range.start.parent == range.end.parent && range.end.parent instanceof AttributeElement ) {
+			if ( range.start.offset === 0 && range.end.offset === range.start.parent.getChildCount() ) {
+				if ( wrapAttributes( attribute, range.start.parent ) ) {
+					const parent = range.start.parent.parent;
+					const index = range.start.parent.getIndex();
+
+					return Range.createFromParentsAndOffsets( parent, index, parent, index + 1 ) ;
+				}
+			}
+		}
+
 		// Break attributes at range start and end.
 		const { start: breakStart, end: breakEnd } = this.breakRange( range );
 		const parentContainer = breakStart.parent;
@@ -679,4 +700,58 @@ function mergeTextNodes( t1, t2 ) {
 	t2.remove();
 
 	return new Position( t1, nodeBeforeLength );
+}
+
+function wrapAttributes( wrapper, toWrap ) {
+	// Can't merge if name or priority differs.
+	if ( wrapper.name !== toWrap.name || wrapper.priority !== toWrap.priority ) {
+		return false;
+	}
+
+	// Check if attributes can be merged.
+	for ( let key of wrapper.getAttributeKeys() ) {
+		// Classes and styles should be checked separately.
+		if ( key === 'class' || key === 'style' ) {
+			continue;
+		}
+
+		// If some attributes are different we cannot wrap.
+		if ( toWrap.hasAttribute( key ) && toWrap.getAttribute( key ) !== wrapper.getAttribute( key ) ) {
+			return false;
+		}
+	}
+
+	// Check if styles can be merged.
+	for ( let key of wrapper.getStyleNames() ) {
+		if ( toWrap.hasStyle( key ) && toWrap.getStyle( key ) !== wrapper.getStyle( key ) ) {
+			return false;
+		}
+	}
+
+	// Move all attributes/classes/styles from wrapper to wrapped attribute.
+	for ( let key of wrapper.getAttributeKeys() ) {
+		// Classes and styles should be checked separately.
+		if ( key === 'class' || key === 'style' ) {
+			continue;
+		}
+
+		// Move only these attributes that are not present - other are similar.
+		if ( !toWrap.hasAttribute( key ) ) {
+			toWrap.setAttribute( key, wrapper.getAttribute( key ) );
+		}
+	}
+
+	for ( let key of wrapper.getStyleNames() ) {
+		if ( !toWrap.hasStyle( key ) ) {
+			toWrap.setStyle( key, wrapper.getStyle( key ) );
+		}
+	}
+
+	for ( let key of wrapper.getClassNames() ) {
+		if ( !toWrap.hasClass( key ) ) {
+			toWrap.addClass( key );
+		}
+	}
+
+	return true;
 }
