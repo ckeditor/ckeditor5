@@ -19,16 +19,42 @@ describe( 'RootAttributeOperation', () => {
 		root = doc.createRoot( 'root' );
 	} );
 
-	it( 'should have proper type', () => {
-		const op = new RootAttributeOperation(
-			root,
-			'isNew',
-			null,
-			true,
-			doc.version
-		);
+	describe( 'type', () => {
+		it( 'should be addRootAttribute for adding attribute', () => {
+			const op = new RootAttributeOperation(
+				root,
+				'key',
+				null,
+				'newValue',
+				doc.version
+			);
 
-		expect( op.type ).to.equal( 'rootattribute' );
+			expect( op.type ).to.equal( 'addRootAttribute' );
+		} );
+
+		it( 'should be removeRootAttribute for removing attribute', () => {
+			const op = new RootAttributeOperation(
+				root,
+				'key',
+				'oldValue',
+				null,
+				doc.version
+			);
+
+			expect( op.type ).to.equal( 'removeRootAttribute' );
+		} );
+
+		it( 'should be changeRootAttribute for removing attribute', () => {
+			const op = new RootAttributeOperation(
+				root,
+				'key',
+				'oldValue',
+				'newValue',
+				doc.version
+			);
+
+			expect( op.type ).to.equal( 'changeRootAttribute' );
+		} );
 	} );
 
 	it( 'should add attribute on the root element', () => {

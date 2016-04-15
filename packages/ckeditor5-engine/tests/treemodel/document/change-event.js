@@ -116,7 +116,7 @@ describe( 'Document change event', () => {
 		);
 
 		expect( changes ).to.have.length( 1 );
-		expect( types[ 0 ] ).to.equal( 'attribute' );
+		expect( types[ 0 ] ).to.equal( 'addAttribute' );
 		expect( changes[ 0 ].range ).to.deep.equal( Range.createFromParentsAndOffsets( root, 0, root, 3 ) );
 		expect( changes[ 0 ].key ).to.equal( 'key' );
 		expect( changes[ 0 ].oldValue ).to.be.null;
@@ -138,7 +138,7 @@ describe( 'Document change event', () => {
 		);
 
 		expect( changes ).to.have.length( 1 );
-		expect( types[ 0 ] ).to.equal( 'attribute' );
+		expect( types[ 0 ] ).to.equal( 'removeAttribute' );
 		expect( changes[ 0 ].range ).to.deep.equal( Range.createFromParentsAndOffsets( root, 0, elem, 0 ) );
 		expect( changes[ 0 ].key ).to.equal( 'key' );
 		expect( changes[ 0 ].oldValue ).to.equal( 'old' );
@@ -160,7 +160,7 @@ describe( 'Document change event', () => {
 		);
 
 		expect( changes ).to.have.length( 1 );
-		expect( types[ 0 ] ).to.equal( 'attribute' );
+		expect( types[ 0 ] ).to.equal( 'changeAttribute' );
 		expect( changes[ 0 ].range ).to.deep.equal( Range.createFromParentsAndOffsets( root, 0, elem, 0 ) );
 		expect( changes[ 0 ].key ).to.equal( 'key' );
 		expect( changes[ 0 ].oldValue ).to.equal( 'old' );

@@ -520,9 +520,9 @@ describe( 'ViewConsumable', () => {
 		} );
 	} );
 
-	describe( 'createFromElement', () => {
+	describe( 'createFrom', () => {
 		it( 'should return new ViewConsumable instance', () => {
-			const newConsumable = ViewConsumable.createFromElement( el );
+			const newConsumable = ViewConsumable.createFrom( el );
 
 			expect( newConsumable ).to.be.instanceof( ViewConsumable );
 			expect( newConsumable.test( el, { name: true } ) ).to.be.true;
@@ -530,7 +530,7 @@ describe( 'ViewConsumable', () => {
 
 		it( 'should return new ViewConsumable instance from document fragment', () => {
 			const fragment = new ViewDocumentFragment();
-			const newConsumable = ViewConsumable.createFromElement( fragment );
+			const newConsumable = ViewConsumable.createFrom( fragment );
 
 			expect( newConsumable ).to.be.instanceof( ViewConsumable );
 			expect( newConsumable.test( fragment ) ).to.be.true;
@@ -544,7 +544,7 @@ describe( 'ViewConsumable', () => {
 			const child3 = new ViewElement( 'p', { 'style': 'top:10px;', 'class': 'qux bar' }, [ text2, child2 ] );
 			el.appendChildren( [ child1, child3 ] );
 
-			const newConsumable = ViewConsumable.createFromElement( el );
+			const newConsumable = ViewConsumable.createFrom( el );
 
 			expect( newConsumable.test( el, { name: true } ) ).to.be.true;
 			expect( newConsumable.test( text1 ) ).to.be.true;

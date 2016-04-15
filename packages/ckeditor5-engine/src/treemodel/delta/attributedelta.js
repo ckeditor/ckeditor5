@@ -148,7 +148,7 @@ function changeNode( batch, doc, key, value, node ) {
 				range = new Range( Position.createBefore( node ), Position.createAfter( node ) );
 			}
 
-			operation = new AttributeOperation( range, key, previousValue, value, doc.version );
+			operation = new AttributeOperation( range, key, previousValue || null, value || null, doc.version );
 		}
 
 		delta.addOperation( operation );
@@ -199,7 +199,7 @@ function changeRange( batch, doc, attributeKey, attributeValue, range ) {
 
 	function addOperation() {
 		let range = new Range( lastSplitPosition, position );
-		const operation = new AttributeOperation( range, attributeKey, attributeValueBefore || null, attributeValue, doc.version );
+		const operation = new AttributeOperation( range, attributeKey, attributeValueBefore || null, attributeValue || null, doc.version );
 
 		delta.addOperation( operation );
 		doc.applyOperation( operation );

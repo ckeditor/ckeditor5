@@ -13,10 +13,12 @@ import ModelElement from '/ckeditor5/engine/treemodel/element.js';
 import ModelRootElement from '/ckeditor5/engine/treemodel/rootelement.js';
 import ModelText from '/ckeditor5/engine/treemodel/text.js';
 import ModelPosition from '/ckeditor5/engine/treemodel/position.js';
+import ModelRange from '/ckeditor5/engine/treemodel/range.js';
 
 import ViewElement from '/ckeditor5/engine/treeview/element.js';
 import ViewText from '/ckeditor5/engine/treeview/text.js';
 import ViewPosition from '/ckeditor5/engine/treeview/position.js';
+import ViewRange from '/ckeditor5/engine/treeview/range.js';
 
 describe( 'Mapper', () => {
 	let modelDiv, modelP, modelImg;
@@ -210,6 +212,28 @@ describe( 'Mapper', () => {
 		it( 'should transform modelP 9', () => createToViewTest( modelP, 9, viewU, 1 ) );
 		it( 'should transform modelP 10', () => createToViewTest( modelP, 10, viewU, 2 ) );
 		it( 'should transform modelP 11', () => createToViewTest( modelP, 11, viewP, 5 ) );
+	} );
+
+	describe( 'toModelRange', () => {
+		it( 'should transform range', () => {
+			const viewRange = ViewRange.createFromParentsAndOffsets( viewDiv, 0, viewTextFOO, 2 );
+			const modelRange = mapper.toModelRange( viewRange );
+			expect( modelRange.start.parent ).to.equal( modelDiv );
+			expect( modelRange.start.offset ).to.equal( 0 );
+			expect( modelRange.end.parent ).to.equal( modelP );
+			expect( modelRange.end.offset ).to.equal( 3 );
+		} );
+	} );
+
+	describe( 'toViewRange', () => {
+		it( 'should transform range', () => {
+			const modelRange = ModelRange.createFromParentsAndOffsets( modelDiv, 0, modelP, 3 );
+			const viewRange = mapper.toViewRange( modelRange );
+			expect( viewRange.start.parent ).to.equal( viewDiv );
+			expect( viewRange.start.offset ).to.equal( 0 );
+			expect( viewRange.end.parent ).to.equal( viewTextFOO );
+			expect( viewRange.end.offset ).to.equal( 2 );
+		} );
 	} );
 } );
 

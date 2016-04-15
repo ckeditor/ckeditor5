@@ -136,7 +136,7 @@ export default class NodeList {
 				nodes = [ nodes ];
 			}
 
-			for ( let node of nodes ) {
+			for ( let node of getNodes( nodes ) ) {
 				let indexInNodes = this._nodes.length;
 				let mergedWithPrev = false;
 				let length = 1;
@@ -460,3 +460,14 @@ export default class NodeList {
  * @typedef {engine.treeModel.Node|engine.treeModel.Text|String|engine.treeModel.NodeList|engine.treeModel.DocumentFragment|Iterable}
  * engine.treeModel.NodeSet
  */
+
+// Helper function that "flattens" `engine.treeModel.DocumentFragment`.
+function* getNodes( nodes ) {
+	for ( let node of nodes ) {
+		if ( node instanceof DocumentFragment ) {
+			yield* node;
+		} else {
+			yield node;
+		}
+	}
+}

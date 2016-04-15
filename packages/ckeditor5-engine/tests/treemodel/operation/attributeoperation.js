@@ -23,16 +23,42 @@ describe( 'AttributeOperation', () => {
 		root = doc.createRoot( 'root' );
 	} );
 
-	it( 'should have proper type', () => {
-		const op = new AttributeOperation(
-			new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
-			'isNew',
-			null,
-			true,
-			doc.version
-		);
+	describe( 'type', () => {
+		it( 'should be addAttribute for adding attribute', () => {
+			const op = new AttributeOperation(
+				new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
+				'key',
+				null,
+				'newValue',
+				doc.version
+			);
 
-		expect( op.type ).to.equal( 'attribute' );
+			expect( op.type ).to.equal( 'addAttribute' );
+		} );
+
+		it( 'should be removeAttribute for removing attribute', () => {
+			const op = new AttributeOperation(
+				new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
+				'key',
+				'oldValue',
+				null,
+				doc.version
+			);
+
+			expect( op.type ).to.equal( 'removeAttribute' );
+		} );
+
+		it( 'should be changeAttribute for removing attribute', () => {
+			const op = new AttributeOperation(
+				new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
+				'key',
+				'oldValue',
+				'newValue',
+				doc.version
+			);
+
+			expect( op.type ).to.equal( 'changeAttribute' );
+		} );
 	} );
 
 	it( 'should insert attribute to the set of nodes', () => {

@@ -34,6 +34,13 @@ export default class DocumentFragment {
 	}
 
 	/**
+	 * Iterates over nodes added to this DocumentFragment.
+	 */
+	[ Symbol.iterator ]() {
+		return this._children[ Symbol.iterator ]();
+	}
+
+	/**
 	 * {@link engine.treeView.DocumentFragment#insertChildren Insert} a child node or a list of child nodes at the end
 	 * and sets the parent of these nodes to this fragment.
 	 *
