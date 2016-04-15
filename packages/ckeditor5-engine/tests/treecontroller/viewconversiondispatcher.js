@@ -8,7 +8,8 @@
 'use strict';
 
 import ViewConversionDispatcher from '/ckeditor5/engine/treecontroller/viewconversiondispatcher.js';
-import ViewContainerElement from '/ckeditor5/engine/treeview/element.js';
+import ViewContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
+import ViewAttributeElement from '/ckeditor5/engine/treeview/attributeelement.js';
 import ViewDocumentFragment from '/ckeditor5/engine/treeview/documentfragment.js';
 import ViewText from '/ckeditor5/engine/treeview/text.js';
 
@@ -214,6 +215,38 @@ describe( 'ViewConversionDispatcher', () => {
 				{ name: 'p' },
 				{ text: 'foobar' }
 			] );
+		} );
+
+		it( 'should flatten structure of non-converted elements', () => {
+			const dispatcher = new ViewConversionDispatcher();
+
+			dispatcher.on( 'text', ( evt, data ) => {
+				data.output = data.input.data;
+			} );
+
+			dispatcher.on( 'element', ( evt, data, consumable, conversionApi ) => {
+				data.output = conversionApi.convertChildren( data.input, consumable );
+			} );
+
+			const viewStructure = new ViewContainerElement( 'div', null, [
+				new ViewContainerElement( 'p', null, [
+					new ViewContainerElement( 'span', { class: 'nice' }, [
+						new ViewAttributeElement( 'a', { href: 'foo.html' }, new ViewText( 'foo' ) ),
+						new ViewText( ' bar ' ),
+						new ViewAttributeElement( 'i', null, new ViewText( 'xyz' ) )
+					] )
+				] ),
+				new ViewContainerElement( 'p', null, [
+					new ViewAttributeElement( 'strong', null, [
+						new ViewText( 'aaa ' ),
+						new ViewAttributeElement( 'span', null, new ViewText( 'bbb' ) ),
+						new ViewText( ' ' ),
+						new ViewAttributeElement( 'a', { href: 'bar.html' }, new ViewText( 'ccc' ) )
+					] )
+				] )
+			] );
+
+			expect( dispatcher.convert( viewStructure ) ).to.deep.equal( [ 'foo', ' bar ', 'xyz', 'aaa ', 'bbb', ' ', 'ccc' ] );
 		} );
 	} );
 } );
