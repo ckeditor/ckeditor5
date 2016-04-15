@@ -8,6 +8,8 @@
 'use strict';
 
 import Document from '/ckeditor5/engine/treemodel/document.js';
+import Schema from '/ckeditor5/engine/treemodel/schema.js';
+import Composer from '/ckeditor5/engine/treemodel/composer/composer.js';
 import RootElement from '/ckeditor5/engine/treemodel/rootelement.js';
 import Batch from '/ckeditor5/engine/treemodel/batch.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
@@ -27,6 +29,9 @@ describe( 'Document', () => {
 			expect( doc.graveyard ).to.be.instanceof( RootElement );
 			expect( doc.graveyard.getChildCount() ).to.equal( 0 );
 			expect( utils.count( doc.selection.getRanges() ) ).to.equal( 1 );
+
+			expect( doc.composer ).to.be.instanceof( Composer );
+			expect( doc.schema ).to.be.instanceof( Schema );
 		} );
 	} );
 
