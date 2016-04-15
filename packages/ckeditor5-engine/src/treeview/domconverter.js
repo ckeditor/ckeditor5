@@ -7,7 +7,25 @@
 
 import ViewText from './text.js';
 import ViewElement from './element.js';
+import ViewPosition from './position.js';
 import ViewDocumentFragment from './documentfragment.js';
+
+export const BR_FILLER = ( domDocument ) => {
+	const fillerBr = domDocument.createElement( 'br' );
+	fillerBr.dataset.filler = true;
+
+	return fillerBr;
+}
+
+export const NBSP_FILLER = ( domDocument ) => domDocument.createTextNode( '&nbsp;' );
+
+export const INLINE_FILLER_SIZE = 7;
+
+export let INLINE_FILLER = '';
+
+for ( var i = 0; i < INLINE_FILLER_SIZE; i++ ) {
+	this.inlineFiller += '\u200b';
+}
 
 /**
  * DomConverter is a set of tools to do transformations between DOM nodes and view nodes. It also handles
@@ -25,7 +43,7 @@ export default class DomConverter {
 	/**
 	 * Creates DOM converter.
 	 */
-	constructor() {
+	constructor( options = { blockFiller: BR_FILLER } ) {
 		// Using WeakMap prevent memory leaks: when the converter will be destroyed all referenced between View and DOM
 		// will be removed. Also because it is a *Weak*Map when both view and DOM elements will be removed referenced
 		// will be also removed, isn't it brilliant?
@@ -49,6 +67,10 @@ export default class DomConverter {
 		 * @member {WeakMap} engine.treeView.DomConverter#_viewToDomMapping
 		 */
 		this._viewToDomMapping = new WeakMap();
+
+		this.blockFillerCreator = options.blockFiller;
+
+		this._templateBlockFiller = options.blockFiller();
 	}
 
 	/**
@@ -78,28 +100,6 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Compares DOM and View nodes. Elements are same when they are bound. Text nodes are same when they have the same
-	 * text data. Nodes need to have corresponding types. In all other cases nodes are different.
-	 *
-	 * @param {Node} domNode DOM node to compare.
-	 * @param {engine.treeView.Node} viewNode View node to compare.
-	 * @returns {Boolean} True if nodes are same.
-	 */
-	compareNodes( domNode, viewNode ) {
-		// Elements.
-		if ( domNode instanceof HTMLElement && viewNode instanceof ViewElement ) {
-			return domNode === this.getCorrespondingDomElement( viewNode );
-		}
-		// Texts.
-		else if ( domNode instanceof Text && viewNode instanceof ViewText ) {
-			return domNode.data === viewNode.data;
-		}
-
-		// Not matching types.
-		return false;
-	}
-
-	/**
 	 * Converts view to DOM. For all text nodes, not bound elements and document fragments new items will
 	 * be created. For bound elements and document fragments function will return corresponding items.
 	 *
@@ -110,7 +110,7 @@ export default class DomConverter {
 	 * @param {Boolean} [options.withChildren=true] If true node's and document fragment's children  will be converted too.
 	 * @returns {Node|DocumentFragment} Converted node or DocumentFragment.
 	 */
-	viewToDom( viewNode, domDocument, options ) {
+	viewToDom( viewNode, domDocument, options = { bind: false, withChildren: true } ) {
 		if ( !options ) {
 			options = {};
 		}
@@ -145,13 +145,28 @@ export default class DomConverter {
 				}
 			}
 
-			if ( options.withChildren || options.withChildren === undefined ) {
-				for ( let childView of viewNode.getChildren() ) {
-					domElement.appendChild( this.viewToDom( childView, domDocument, options ) );
+			if ( options.withChildren ) {
+				for ( child of this.viewChildrenToDom( viewNode, domDocument, options ) ) {
+					domElement.appendChild( child );
 				}
 			}
 
 			return domElement;
+		}
+	}
+
+	*viewChildrenToDom( viewNode, domDocument, options = { bind: false, withChildren: true } ) {
+		let fillerPositionOffset = viewNode.needsFiller();
+		let offset = 0;
+
+		for ( let childView of viewNode.getChildren() ) {
+			if ( fillerPositionOffset === offset ) {
+				yield this.blockFillerCreator( domDocument );
+			}
+
+			yield this.viewToDom( childView, domDocument, options );
+
+			offset++;
 		}
 	}
 
@@ -165,13 +180,21 @@ export default class DomConverter {
 	 * @param {Boolean} [options.withChildren=true] It true node's and document fragment's children will be converted too.
 	 * @returns {engine.treeView.Node|engine.treeView.DocumentFragment} Converted node or document fragment.
 	 */
-	domToView( domNode, options ) {
+	domToView( domNode, options = { bind: false, withChildren: true } ) {
 		if ( !options ) {
 			options = {};
 		}
 
+		if ( this.isBlockFiller( domNode )  ) {
+			return null;
+		}
+
 		if ( domNode instanceof Text ) {
-			return new ViewText( domNode.data );
+			if ( this.isInlineFiller( domNode )  ) {
+				return null;
+			} else {
+				return new ViewText( domNode.data );
+			}
 		} else {
 			if ( this.getCorrespondingView( domNode ) ) {
 				return this.getCorrespondingView( domNode );
@@ -202,15 +225,23 @@ export default class DomConverter {
 				}
 			}
 
-			if ( options.withChildren || options.withChildren === undefined ) {
-				for ( let i = 0, len = domNode.childNodes.length; i < len; i++ ) {
-					let domChild = domNode.childNodes[ i ];
-
-					viewElement.appendChildren( this.domToView( domChild, options ) );
+			if ( options.withChildren ) {
+				for ( let child of this.domChildrenToView( domNode, options ) ) {
+					viewElement.appendChildren( child );
 				}
 			}
 
 			return viewElement;
+		}
+	}
+
+	*domChildrenToView( domNode, options = { bind: false, withChildren: true } ) {
+		for ( let domChild of domNode.childNodes ) {
+			const viewChild = this.domToView( domChild, options );
+
+			if ( viewChild != null ) {
+				yield viewChild;
+			}
 		}
 	}
 
@@ -273,6 +304,10 @@ export default class DomConverter {
 	 * corresponding node.
 	 */
 	getCorrespondingViewText( domText ) {
+		if ( this.isInlineFiller( domText ) ) {
+			return null;
+		}
+
 		const previousSibling = domText.previousSibling;
 
 		// Try to use previous sibling to find the corresponding text node.
@@ -290,7 +325,7 @@ export default class DomConverter {
 		}
 		// Try to use parent to find the corresponding text node.
 		else {
-			const viewElement = this.getCorrespondingViewElement( domText.parentElement );
+			const viewElement = this.getCorrespondingViewElement( domText.parentNode );
 
 			if ( viewElement ) {
 				return viewElement.getChild( 0 );
@@ -371,5 +406,122 @@ export default class DomConverter {
 		}
 
 		return null;
+	}
+
+	viewPositionToDom( viewPosition ) {
+		const viewParent = viewPosition.parent;
+
+		if ( viewParent instanceof ViewText ) {
+			const domParent = this.getCorrespondingDomText( viewParent );
+			let offset = viewPosition.offset;
+
+			if ( this.startsWithFiller( domText ) ) {
+				offset += INLINE_FILLER_SIZE;
+			}
+
+			return { parent: domParent, offset: offset };
+		} else {
+			let domParent, domBefore, domAfter;
+
+			if ( viewPosition.offset == 0 ) {
+				domParent = this.getCorrespondingDom( viewPosition.parent )
+				domAfter = parent.childNodes[ 0 ];
+			} else {
+				domBefore = getCorrespondingDom( viewPosition.nodeBefore() );
+				domParent = domBefore.parentNode;
+				domAfter = domBefore.nextSibling;
+			}
+
+			if ( domAfter instanceof ViewText && this.isInlineFiller( domAfter ) ) {
+				return { parent: domAfter, offset: INLINE_FILLER_SIZE };
+			}
+
+			const offset = domBefore ? indexOf( domBefore ) + 1 : 0;
+
+			return { parent: domParent, offset: offset }
+		}
+	}
+
+	domPositionToView( domParent, domOffset ) {
+		if ( this.isBlockFiller( domParent ) ) {
+			return this.domPositionToView( domParent.parentNode, indexOf( domParent ) );
+		}
+
+		if ( domParent instanceof Text ) {
+			if ( this.isInlineFiller( domParent ) ) {
+				return this.domPositionToView( domParent.parentNode, indexOf( domParent ) );
+			}
+
+			const viewParent = this.getCorrespondingViewText( domParent );
+			let offset = domOffset;
+
+			if ( this.startsWithFiller( domText ) ) {
+				offset -= INLINE_FILLER_SIZE;
+				offset = offset < 0 ? 0 : offset;
+			}
+
+			return new ViewPosition( viewParent, offset );
+		} else {
+			if ( domOffset == 0 ) {
+				const viewParent = this.getCorrespondingView( domParent );
+
+				return new ViewPosition( viewParent, 0 );
+			} else {
+				const viewBefore = this.getCorrespondingView( domParent.childNodes[ domOffset ] );
+
+				return new ViewPosition( viewBefore.parent, viewBefore.getIndex() + 1 );
+			}
+		}
+	}
+
+	viewRangeToDom( viewRange ) {
+		const domStart = this.viewPositionToDom( viewRange.start );
+		const domEnd = this.viewPositionToDom( viewRange.end );
+
+		const domRange = new Range();
+		domRange.setStart( domStart.parent, domStart.offset );
+		domRange.setEnd( domEnd.parent, domEnd.offset );
+
+		return domRange;
+	}
+
+	domRangeToView( domRange ) {
+		const viewStart = this.domPositionToView( domRange.startContainer, domRange.startOffset );
+		const viewEnd = this.domPositionToView( domRange.endContainer, domRange.endOffset );
+
+		return new Range( viewStart, viewEnd );
+	}
+
+	domSelectionToView( domSelection ) {
+		const viewSelection = new ViewSelection();
+
+		for ( let i = 0; i < domSelection.rangeCount; i++ ) {
+			const domRange = domSelection.getRangeAt( i );
+			const viewRange = this.domRangeToView( domRange );
+
+			viewSelection.addRange( viewRange );
+		}
+
+		return viewSelection;
+	}
+
+	startsWithFiller( domText ) {
+		return ( domText.data.substr( 0, INLINE_FILLER_SIZE ) === INLINE_FILLER );
+	}
+
+	isInlineFiller( domText ) {
+		return domText.data.length == INLINE_FILLER_SIZE && this.startsWithFiller( domText );
+	}
+
+	isBlockFiller( domNode ) {
+		return domNode.isEqualNode( this._templateBlockFiller );
+	}
+}
+
+function indexOf( domNode ) {
+	let index = 0;
+
+	while ( domNode = domNode.previousSibling ) {
+		index++;
 	}
 }

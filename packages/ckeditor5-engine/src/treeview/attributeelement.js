@@ -71,4 +71,23 @@ export default class AttributeElement extends Element {
 	isSimilar( otherElement ) {
 		return super.isSimilar( otherElement ) && this.priority == otherElement.priority;
 	}
+
+	needsFiller() {
+		// <b>foo</b> does not need filler
+		if ( !this.getChildCount() ) {
+			return false;
+		}
+
+		const element = this.parent;
+
+		// <p><b></b></p> needs filler -> <p><b><br></b></p>
+		while ( !( element instanceof ContainerElement ) ) {
+			if ( this.getChildCount() > 1 ) {
+				return false;
+			}
+			element = element.parent;
+		}
+
+		return this.getChildCount() === 1;
+	}
 }

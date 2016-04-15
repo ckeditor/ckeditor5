@@ -51,4 +51,8 @@ export default class ContainerElement extends Element {
 	constructor( name, attrs, children ) {
 		super( name, attrs, children );
 	}
+
+	needsFiller() {
+		return this.getChildCount() === 0 ? 0 : false;
+	}
 }

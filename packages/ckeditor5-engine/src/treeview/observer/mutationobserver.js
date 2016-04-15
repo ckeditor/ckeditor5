@@ -69,6 +69,10 @@ export default class MutationObserver extends Observer {
 		this._mutationObserver = new window.MutationObserver( this._onMutations.bind( this ) );
 	}
 
+	flush() {
+		this._onMutations( this._mutationObserver.takeRecords() );
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -108,9 +112,18 @@ export default class MutationObserver extends Observer {
 	 * @param {Array.<Object>} domMutations Array of native mutations.
 	 */
 	_onMutations( domMutations ) {
+		// As a result of this.flush() we can have an empty collection.
+		if ( domMutations.length == 0 ) {
+			return;
+		}
+
 		// Use　map and set for deduplication.
 		const mutatedTexts = new Map();
 		const mutatedElements = new Set();
+
+		// Assume that all elements are in the same document.
+		const domSelection = domMutations[ 0 ].target.ownerDocument.defaultView.getSelection();
+		const viewSelection = this.domConverter.domSelectionToView( domSelection );
 
 		// Handle `childList` mutations first, so we will be able to check if the `characterData` mutation is in the
 		// element with changed structure anyway.
@@ -136,7 +149,8 @@ export default class MutationObserver extends Observer {
 						type: 'text',
 						oldText: text.data,
 						newText: mutation.target.data,
-						node: text
+						node: text,
+						selection: viewSelection
 					} );
 				}
 			}
@@ -171,7 +185,8 @@ export default class MutationObserver extends Observer {
 				type: 'children',
 				oldChildren: Array.from( viewChildren ),
 				newChildren: newViewChildren,
-				node: viewElement
+				node: viewElement,
+				selection: viewSelection
 			} );
 		}
 

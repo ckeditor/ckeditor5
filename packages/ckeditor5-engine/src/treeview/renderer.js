@@ -6,7 +6,16 @@
 'use strict';
 
 import diff from '../../utils/diff.js';
+import ViewText from './text.js';
+
+import { INLINE_FILLER, INLINE_FILLER_SIZE } from './domconverter.js';
+
+import diff from '../utils-diff.js';
+
 import CKEditorError from '../../utils/ckeditorerror.js';
+import EmitterMixin from '../../utils/emittermixin.js';
+import { keyNames } from '../../utils/keyboard.js';
+
 
 /**
  * Renderer updates DOM tree, to make it a reflection of the view tree. Changed nodes need to be
@@ -23,14 +32,14 @@ export default class Renderer {
 	 *
 	 * @param {engine.treeView.DomConverter} domConverter Converter instance.
 	 */
-	constructor( domConverter ) {
+	constructor( treeView ) {
 		/**
 		 * Converter instance.
 		 *
 		 * @readonly
 		 * @member {engine.treeView.DomConverter} engine.treeView.Renderer#domConverter
 		 */
-		this.domConverter = domConverter;
+		this.domConverter = treeView.domConverter;
 
 		/**
 		 * Set of nodes which attributes changed and may need to be rendered.
@@ -55,6 +64,44 @@ export default class Renderer {
 		 * @member {Set.<engine.treeView.Node>} engine.treeView.Renderer#markedTexts
 		 */
 		this.markedTexts = new Set();
+
+		this.selection = treeView.selection;
+
+		/**
+		 * Position of the inline filler. It should always be put BEFORE the text which contains filler.
+		 *
+		 * @private
+		 * @readonly
+		 * @type {engine.treeView.Position}
+		 */
+		this._inlineFillerPosition = null;
+
+		this._domSelectionWindow = null;
+
+		this._listener = Object.create( EmitterMixin );
+
+		this._listener.listenTo( treeView, 'keydown', ( data ) => {
+			if ( data.keyCode != keyNames.arrowleft || !isInlineFillerAtSelection() ) {
+				return;
+			}
+
+			const selectionPosition = selection.getFirstPosition();
+
+			if ( selectionPosition.offset != INLINE_FILLER_SIZE ) {
+				return;
+			}
+
+			const domParent = this.domConverter( selectionPosition.parent );
+
+			// Damn iframe! I can not use global window, so element -> document -> window -> selection
+			const domSelection = domParent.ownerDocument.defaultView.getSelection();
+
+			const domRange = new Range();
+			domRange.setStart( domParent.parent, 0 );
+			domRange.collapse( true );
+			domSelection.removeAllRanges();
+			domSelection.addRange( domRange );
+		} )
 	}
 
 	/**
@@ -111,11 +158,21 @@ export default class Renderer {
 	 * {@link engine.treeView.DomConverter#getCorrespondingDomText corresponding DOM text}. The change will be handled in the
 	 * parent element.
 	 *
-	 * For nodes which changed child list it calculates a {@link diff} using {@link engine.treeView.DomConverter#compareNodes}
-	 * and add or removed nodes which changed.
+	 * For nodes which changed child list it calculates a {@link diff} and add or removed nodes which changed.
 	 */
 	render() {
 		const domConverter = this.domConverter;
+		const selection = this.selection;
+
+		if ( !isInlineFillerAtSelection() ) {
+			removeInlineFiller();
+
+			if ( needAddInlineFiller() ) {
+				this._inlineFillerPosition = selection.getFirstPosition();
+			} else {
+				this._inlineFillerPosition = null;
+			}
+		}
 
 		for ( let node of this.markedTexts ) {
 			if ( !this.markedChildren.has( node.parent ) && domConverter.getCorrespondingDom( node.parent ) ) {
@@ -131,15 +188,99 @@ export default class Renderer {
 			updateChildren( element );
 		}
 
+		updateSelection();
+
 		this.markedTexts.clear();
 		this.markedAttributes.clear();
 		this.markedChildren.clear();
 
+		function isInlineFillerAtSelection() {
+			if ( selection.rangeCount() != 1 || !selection.isCollapsed() ) {
+				return false;
+			}
+
+			const selectionPosition = selection.getFirstPosition();
+			const fillerPosition = this._inlineFillerPosition;
+
+			if ( !fillerPosition ) {
+				return false;
+			}
+
+			if ( fillerPosition.isEqual( selectionPosition )  ) {
+				return true;
+			}
+
+			if ( selectionPosition.parent instanceof ViewText ) {
+				if ( fillerPosition.isEqual( selectionPosition.parent.positionBefore() ) ) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		function removeInlineFiller() {
+			const domPosition = domConverter.viewPositionToDom( this._inlineFillerPosition );
+			const domText = domPosition.parent.childNodes[ domPosition.offset ];
+
+			if ( !domConverter.startsWithFiller( domText ) ) {
+				/**
+				 * No inline filler on expected position.
+				 *
+				 * @error renderer-render-no-inline-filler.
+				 */
+				throw new CKEditorError( 'renderer-render-no-inline-filler: No inline filler on expected position.' );
+			}
+
+			if ( domConverter.isInlineFiller( domText ) ) {
+				domPosition.parent.removeChild( domText );
+			} else {
+				domText.data = domText.data.substr( INLINE_FILLER_SIZE );
+			}
+		}
+
+		function needAddInlineFiller() {
+			if ( selection.rangeCount() != 1 || !selection.isCollapsed() ) {
+				return false;
+			}
+
+			const selectionPosition = selection.getFirstPosition();
+			const selectionParent = selectionPosition.parent;
+			const selectionOffset = selectionPosition.offset;
+
+			if ( !( selectionParent instanceof ViewElement ) ) {
+				return false;
+			}
+
+			// We have block filler, we do not need inline one.
+			if ( selectionOffset === selectionParent.needsFiller() ) {
+				return false;
+			}
+
+			const nodeBefore = selectionPosition.nodeBefore();
+			const nodeAfter = selectionPosition.nodeAfter();
+
+			if ( nodeBefore instanceof ViewText || nodeAfter instanceof ViewText ) {
+				return false;
+			}
+
+			return true;
+		}
+
 		function updateText( viewText ) {
 			const domText = domConverter.getCorrespondingDom( viewText );
 
-			if ( domText.data != viewText.data ) {
-				domText.data = viewText.data;
+			const actualText = domText.data;
+			let expectedText = viewText.data;
+
+			const filler = this._inlineFillerPosition;
+
+			if ( filler.parent == viewText.parent && filler.offset == viewText.offset ) {
+				expectedText = INLINE_FILLER + expectedText;
+			}
+
+			if ( actualText != expectedText ) {
+				actualText = expectedText;
 			}
 		}
 
@@ -163,26 +304,102 @@ export default class Renderer {
 
 		function updateChildren( viewElement ) {
 			const domElement = domConverter.getCorrespondingDom( viewElement );
-			const domChildren = domElement.childNodes;
-			const viewChildren = Array.from( viewElement.getChildren() );
 			const domDocument = domElement.ownerDocument;
 
-			const actions = diff( domChildren, viewChildren,
-				( domNode, viewNode ) => domConverter.compareNodes( domNode, viewNode ) );
+			const filler = this._inlineFillerPosition;
+
+			const actualDomChildren = domElement.childNodes;
+			const expectedDomChildren = Array.from( domConverter.viewChildrenToDom( viewElement, domDocument ) );
+
+			if ( filler.parent == viewElement ) {
+				expectedDomChildren.splice( filler.offset, 0, domDocument.createTextNode( INLINE_FILLER ) );
+			}
+
+			const actions = diff( actualDomChildren, expectedDomChildren, sameNodes );
 
 			let i = 0;
 
 			for ( let action of actions ) {
 				if ( action === 'INSERT' ) {
-					let domChildToInsert = domConverter.viewToDom( viewChildren[ i ], domDocument, { bind: true } );
-					domElement.insertBefore( domChildToInsert, domChildren[ i ] || null );
+					domElement.insertBefore( expectedDomChildren[ i ], actualDomChildren[ i ] || null );
 					i++;
 				} else if ( action === 'DELETE' ) {
-					domElement.removeChild( domChildren[ i ] );
+					domElement.removeChild( actualDomChildren[ i ] );
 				} else { // 'EQUAL'
 					i++;
 				}
 			}
+		}
+
+		function sameNodes( actualDomChild, expectedDomChild ) {
+			// Elements.
+			if ( actualDomChild === expectedDomChild ) {
+				return true;
+			}
+			// Texts.
+			else if ( actualDomChild instanceof Text && expectedDomChild instanceof Text ) {
+				return actualDomChild.data === expectedDomChild.data;
+			}
+			// Block fillers.
+			else if ( domConverter.isBlockFiller( actualDomChild ) && domConverter.isBlockFiller( expectedDomChild ) ) {
+				return true;
+			}
+
+			// Not matching types.
+			return false;
+		}
+
+		function updateSelection() {
+			const domSelection = this._domSelectionWindow && this._domSelectionWindow.getSelection();
+			const oldViewSelection = domSelection && domConverter.domSelectionToView( domSelection );
+
+			if ( ( !oldViewSelection && !selection.rangeCount ) || selection.isEqual( oldViewSelection ) ) {
+				return;
+			}
+
+			if ( domSelection ) {
+				domSelection.removeAllRanges();
+			}
+
+			for ( let range of selection.getRanges() ) {
+				const domRangeStart = domConverter.viewPositionToDom( range.start );
+				const domRangeEnd = domConverter.viewPositionToDom( range.end );
+
+				const domRange = new Range();
+				domRange.setStart( domRangeStart.parent, domRangeStart.offset );
+				domRange.setEnd( domRangeEnd.parent, domRangeEnd.offset );
+				domSelection.addRange( range );
+			}
+
+			if ( selection.rangeCount ) {
+				// Get window for selection: Selection -> Range -> element -> document -> window.
+				this._domSelectionWindow = domSelection.getRangeAt( 0 ).startContainer.ownerDocument.defaultView;
+			} else {
+				this._domSelectionWindow = null;
+			}
+		}
+
+		function sameSelections( actualDomSelection, expectedDomSelection ) {
+			if ( actualDomSelection.rangeCount !== expectedDomSelection.rangeCount ) {
+				return false;
+			}
+
+			for ( let i = 0; i < actualDomSelection.rangeCount; i++ ) {
+				const actualRange = actualDomSelection.getRangeAt( i );
+				const expectedRange = expectedDomSelection[ i ];
+
+				if ( actualRange.startContainer != expectedRange.startContainer ) {
+					return false;
+				} else if ( actualRange.endContainer != expectedRange.endContainer ) {
+					return false;
+				} else if ( actualRange.startOffset != expectedRange.startOffset ) {
+					return false;
+				} else if ( actualRange.endOffset != expectedRange.endOffset ) {
+					return false;
+				}
+			}
+
+			return true;
 		}
 	}
 }

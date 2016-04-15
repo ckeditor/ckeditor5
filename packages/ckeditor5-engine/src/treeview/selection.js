@@ -35,7 +35,7 @@ export default class Selection {
 		/**
 		 * Stores all ranges that are selected.
 		 *
-		 * @private
+		 * @protected
 		 * @member {Array.<engine.treeView.Range>} engine.treeView.Selection#_ranges
 		 */
 		this._ranges = [];
@@ -43,7 +43,7 @@ export default class Selection {
 		/**
 		 * Specifies whether the last added range was added as a backward or forward range.
 		 *
-		 * @private
+		 * @protected
 		 * @member {Boolean} engine.treeView.Selection#_lastRangeBackward
 		 */
 		this._lastRangeBackward = false;
@@ -204,6 +204,28 @@ export default class Selection {
 		const lastRange = this.getLastRange();
 
 		return lastRange ? Position.createFromPosition( lastRange.end ) : null;
+	}
+
+	/**
+	 * Two ranges equal if their start and end positions equal.
+	 *
+	 * @param {engine.treeView.Range} otherRange Range to compare with.
+	 * @returns {Boolean} True if ranges equal.
+	 */
+	isEqual( otherSelection ) {
+		const rangeCount = this.rangeCount;
+
+		if ( rangeCount != otherSelection.rangeCount() ) {
+			return false;
+		}
+
+		for ( let i = 0; i < this.rangeCount; i++ ) {
+			if ( !this._ranges[ i ].isEqual( otherSelection._ranges[ i ] ) ) {
+				return false;
+			}
+		}
+
+		return this._lastRangeBackward === otherSelection._lastRangeBackward;
 	}
 
 	/**

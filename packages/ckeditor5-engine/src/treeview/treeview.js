@@ -73,10 +73,10 @@ export default class TreeView {
 		/**
 		 * Set of registered {@link engine.treeView.Observer observers}.
 		 *
-		 * @protected
+		 * @private
 		 * @member {Set.<engine.treeView.Observer>} engine.treeView.TreeView_#observers
 		 */
-		this._observers = new Set();
+		this._observers = new Map();
 	}
 
 	/**
@@ -92,19 +92,23 @@ export default class TreeView {
 	 * Should create an instance inheriting from {@link engine.treeView.observer.Observer}.
 	 */
 	addObserver( Observer ) {
-		if ( this._hasObserver( Observer ) ) {
+		if ( this._observers.has( Observer ) ) {
 			return;
 		}
 
 		const observer = new Observer( this );
 
-		this._observers.add( observer );
+		this._observers.set( Observer, observer );
 
 		for ( let [ name, domElement ] of this.domRoots ) {
 			observer.observe( domElement, name );
 		}
 
 		observer.enable();
+	}
+
+	getObserver( Observer ) {
+		return this._observers.get( Observer );
 	}
 
 	/**
@@ -133,7 +137,7 @@ export default class TreeView {
 		this.domRoots.set( name, domRoot );
 		this.viewRoots.set( name, viewRoot );
 
-		for ( let observer of this._observers ) {
+		for ( let observer of this._observers.values() ) {
 			observer.observe( domRoot, name );
 		}
 
@@ -145,25 +149,15 @@ export default class TreeView {
 	 * before rendering and reattached after that.
 	 */
 	render() {
-		for ( let observer of this._observers ) {
+		for ( let observer of this._observers.values() ) {
 			observer.disable();
 		}
 
 		this.renderer.render();
 
-		for ( let observer of this._observers ) {
+		for ( let observer of this._observers.values() ) {
 			observer.enable();
 		}
-	}
-
-	/**
-	 * Checks whether the given observer was already added.
-	 *
-	 * @private
-	 * @param {Function} Observer The observer constructor to check.
-	 */
-	_hasObserver( Observer ) {
-		return Array.from( this._observers ).some( ( observer ) => observer.constructor === Observer );
 	}
 }
 

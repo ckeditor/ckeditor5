@@ -41,7 +41,7 @@ export default class Position {
 	 * inside text node.
 	 *
 	 * @readonly
-	 * @type {engine.treeView.Node}
+	 * @type {engine.treeView.Node|null}
 	 */
 	get nodeAfter() {
 		if ( this.parent instanceof Text ) {
@@ -56,7 +56,7 @@ export default class Position {
 	 * inside text node.
 	 *
 	 * @readonly
-	 * @type {engine.treeView.Node}
+	 * @type {engine.treeView.Node|null}
 	 */
 	get nodeBefore() {
 		if ( this.parent instanceof Text ) {
@@ -182,6 +182,50 @@ export default class Position {
 
 		// Compare indexes of next ancestors inside common one.
 		return index < 0 ? 'BEFORE' : 'AFTER';
+	}
+
+	/**
+	 * Creates a new position after given node.
+	 *
+	 * @see {@link engine.treeView.TreeWalkerValue}
+	 *
+	 * @param {engine.treeView.Node} node Node the position should be directly after.
+	 * @returns {engine.treeView.Position}
+	 */
+	static createAfter( node ) {
+		if ( !node.parent ) {
+			/**
+			 * You can not make position after root.
+			 *
+			 * @error position-after-root
+			 * @param {engine.treeView.Node} root
+			 */
+			throw new CKEditorError( 'position-after-root: You can not make position after root.', { root: node } );
+		}
+
+		return new Position( node.parent, node.getIndex() + 1 );
+	}
+
+	/**
+	 * Creates a new position before the given node.
+	 *
+	 * @see {@link engine.treeView.TreeWalkerValue}
+	 *
+	 * @param {engine.treeView.node} node Node the position should be directly before.
+	 * @returns {engine.treeView.Position}
+	 */
+	static createBefore( node ) {
+		if ( !node.parent ) {
+			/**
+			 * You can not make position before root.
+			 *
+			 * @error position-before-root
+			 * @param {engine.treeView.Node} root
+			 */
+			throw new CKEditorError( 'position-before-root: You can not make position before root.', { root: node } );
+		}
+
+		return new Position( node.parent, node.getIndex() );
 	}
 
 	/**

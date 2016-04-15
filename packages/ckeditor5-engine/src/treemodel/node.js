@@ -177,6 +177,14 @@ export default class Node {
 		return this._attrs[ Symbol.iterator ]();
 	}
 
+	positionBefore() {
+		return Position.createBefore( this );
+	}
+
+	positionAfter() {
+		return Position.createAfter( this );
+	}
+
 	/**
 	 * Custom toJSON method to solve child-parent circular dependencies.
 	 *
