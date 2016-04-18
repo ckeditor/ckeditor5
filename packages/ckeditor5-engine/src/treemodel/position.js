@@ -504,12 +504,13 @@ export default class Position {
 	/**
 	 * Creates a new position from the parent element and the offset in that element.
 	 *
-	 * @param {engine.treeModel.Element} parent Position parent element.
-	 * @param {Number} offset Position offset.
+	 * @param {engine.treeModel.Element|engine.treeModel.DocumentFragment} parent Position's parent element or
+	 * document fragment.
+	 * @param {Number} offset Position's offset.
 	 * @returns {engine.treeModel.Position}
 	 */
 	static createFromParentAndOffset( parent, offset ) {
-		if ( !( parent instanceof Element ) ) {
+		if ( !( parent instanceof Element || parent instanceof DocumentFragment ) ) {
 			/**
 			 * Position must be anchored in an element.
 			 *

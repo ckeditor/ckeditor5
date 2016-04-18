@@ -110,8 +110,14 @@ describe( 'position', () => {
 
 		it( 'throws when parent is not an element', () => {
 			expect( () => {
-				expect( Position.createFromParentAndOffset( b, 0 ) );
+				Position.createFromParentAndOffset( b, 0 );
 			} ).to.throw( CKEditorError, /^position-in-text:/ );
+		} );
+
+		it( 'works with a doc frag', () => {
+			const frag = new DocumentFragment();
+
+			expect( Position.createFromParentAndOffset( frag, 0 ) ).to.have.property( 'root', frag );
 		} );
 	} );
 
