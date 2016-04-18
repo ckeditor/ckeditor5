@@ -511,7 +511,7 @@ export default class Position {
 	static createFromParentAndOffset( parent, offset ) {
 		if ( !( parent instanceof Element ) ) {
 			/**
-			 * Position cannot be in located inside a text node.
+			 * Position must be anchored in an element.
 			 *
 			 * @error position-in-text
 			 */
