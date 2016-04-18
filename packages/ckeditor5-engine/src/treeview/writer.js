@@ -309,7 +309,7 @@ import DocumentFragment from './documentfragment.js';
 	}
 
 	/**
-	 * Wraps elements within range with provided attribute element.
+	 * Wraps elements within range with provided {@link engine.treeView.AttributeElement AttributeElement}.
 	 *
 	 * Throws {@link utils.CKEditorError} `treeview-writer-invalid-range-container` when {@link engine.treeView.Range#start}
 	 * and {@link engine.treeView.Range#end} positions are not placed inside same parent container.
@@ -354,15 +354,11 @@ import DocumentFragment from './documentfragment.js';
 		}
 
 		// Range is inside single attribute and spans on all children.
-		if ( range.start.parent == range.end.parent && range.end.parent instanceof AttributeElement ) {
-			if ( range.start.offset === 0 && range.end.offset === range.start.parent.getChildCount() ) {
-				if ( wrapAttributes( attribute, range.start.parent ) ) {
-					const parent = range.start.parent.parent;
-					const index = range.start.parent.getIndex();
+		if ( rangeSpansOnAllChildren( range ) && wrapAttributes( attribute, range.start.parent ) ) {
+			const parent = range.start.parent.parent;
+			const index = range.start.parent.getIndex();
 
-					return Range.createFromParentsAndOffsets( parent, index, parent, index + 1 ) ;
-				}
-			}
+			return Range.createFromParentsAndOffsets( parent, index, parent, index + 1 ) ;
 		}
 
 		// Break attributes at range start and end.
@@ -702,6 +698,14 @@ function mergeTextNodes( t1, t2 ) {
 	return new Position( t1, nodeBeforeLength );
 }
 
+// Wraps one {@link engine.treeView.AttributeElement AttributeElement} into another by merging them if possible.
+// Two AttributeElements can be merged when there is no attribute or style conflicts between them.
+// When merging is possible - all attributes, styles and classes are moved from wrapper element to element being
+// wrapped.
+//
+// @param {engine.treeView.AttributeElement} wrapper Wrapper AttributeElement.
+// @param {engine.treeView.AttributeElement} toWrap AttributeElement to wrap using wrapper element.
+// @returns {Boolean} Returns `true` if elements are merged.
 function wrapAttributes( wrapper, toWrap ) {
 	// Can't merge if name or priority differs.
 	if ( wrapper.name !== toWrap.name || wrapper.priority !== toWrap.priority ) {
@@ -728,7 +732,7 @@ function wrapAttributes( wrapper, toWrap ) {
 		}
 	}
 
-	// Move all attributes/classes/styles from wrapper to wrapped attribute.
+	// Move all attributes/classes/styles from wrapper to wrapped AttributeElement.
 	for ( let key of wrapper.getAttributeKeys() ) {
 		// Classes and styles should be checked separately.
 		if ( key === 'class' || key === 'style' ) {
@@ -754,4 +758,15 @@ function wrapAttributes( wrapper, toWrap ) {
 	}
 
 	return true;
+}
+
+// Returns `true` if range is located in same {@link engine.treeView.AttributeElement AttributeElement}
+// (`start` and `end` positions are located inside same {@link engine.treeView.AttributeElement AttributeElement}),
+// starts on 0 offset and ends after last child node.
+//
+// @param {engine.treeView.Range} Range
+// @returns {Boolean}
+function rangeSpansOnAllChildren( range ) {
+	return range.start.parent == range.end.parent && range.start.parent instanceof AttributeElement &&
+		range.start.offset === 0 && range.end.offset === range.start.parent.getChildCount();
 }

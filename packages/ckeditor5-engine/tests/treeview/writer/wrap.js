@@ -552,7 +552,7 @@ describe( 'Writer', () => {
 			} );
 		} );
 
-		it( 'should wrap single element by joining attributes', () => {
+		it( 'should wrap single element by merging attributes', () => {
 			// <p>[<b foo="bar" one="two"></b>]</p>
 			// wrap with <b baz="qux" one="two"></b>
 			// <p>[<b foo="bar" one="two" baz="qux"></b>]</p>
@@ -583,7 +583,38 @@ describe( 'Writer', () => {
 			} );
 		} );
 
-		it( 'should wrap single element by joining classes', () => {
+		it( 'should not merge attributes when they differ', () => {
+			// <p>[<b foo="bar" ></b>]</p>
+			// wrap with <b foo="baz"></b>
+			// <p>[<b foo="baz"><b foo="bar"></b></b>]</p>
+			const b = new AttributeElement( 'b', {
+				foo: 'bar'
+			} );
+			const p = new ContainerElement( 'p', null, b );
+			const range = Range.createFromParentsAndOffsets( p, 0, p, 1 );
+			const wrapper = new AttributeElement( 'b', {
+				foo: 'baz'
+			} );
+
+			const newRange = writer.wrap( range, wrapper );
+			expect( b.getAttribute( 'foo' ) ).to.equal( 'bar' );
+			expect( b.parent.isSimilar( wrapper ) ).to.be.true;
+			expect( b.parent.getAttribute( 'foo' ) ).to.equal( 'baz' );
+
+			test( writer, newRange, p, {
+				instanceOf: ContainerElement,
+				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 1,
+				children: [
+					{ instanceOf: AttributeElement, name: 'b', children: [
+						{ instanceOf: AttributeElement, name: 'b', children: [] }
+					] }
+				]
+			} );
+		} );
+
+		it( 'should wrap single element by merging classes', () => {
 			// <p>[<b class="foo bar baz" ></b>]</p>
 			// wrap with <b class="foo bar qux jax"></b>
 			// <p>[<b class="foo bar baz qux jax"></b>]</p>
@@ -609,7 +640,7 @@ describe( 'Writer', () => {
 			} );
 		} );
 
-		it( 'should wrap single element by joining styles', () => {
+		it( 'should wrap single element by merging styles', () => {
 			// <p>[<b style="color:red; position: absolute;"></b>]</p>
 			// wrap with <b style="color:red; top: 20px;"></b>
 			// <p>[<b class="color:red; position: absolute; top:20px;"></b>]</p>
@@ -634,6 +665,69 @@ describe( 'Writer', () => {
 				rangeEnd: 1,
 				children: [
 					{ instanceOf: AttributeElement, name: 'b', children: [] }
+				]
+			} );
+		} );
+
+		it( 'should not merge styles when they differ', () => {
+			// <p>[<b style="color:red;"></b>]</p>
+			// wrap with <b style="color:black;"></b>
+			// <p>[<b style="color:black;"><b style="color:red;"></b></b>]</p>
+			const b = new AttributeElement( 'b', {
+				style: 'color:red'
+			} );
+			const p = new ContainerElement( 'p', null, b );
+			const range = Range.createFromParentsAndOffsets( p, 0, p, 1 );
+			const wrapper = new AttributeElement( 'b', {
+				style: 'color:black'
+			} );
+
+			const newRange = writer.wrap( range, wrapper );
+			expect( b.getStyle( 'color' ) ).to.equal( 'red' );
+			expect( b.parent.isSimilar( wrapper ) ).to.be.true;
+			expect( b.parent.getStyle( 'color' ) ).to.equal( 'black' );
+
+			test( writer, newRange, p, {
+				instanceOf: ContainerElement,
+				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 1,
+				children: [
+					{ instanceOf: AttributeElement, name: 'b', children: [
+						{ instanceOf: AttributeElement, name: 'b', children: [] }
+					] }
+				]
+			} );
+		} );
+
+		it( 'should not merge single elements when they have different priority', () => {
+			// <p>[<b style="color:red;"></b>]</p>
+			// wrap with <b style="color:red;"></b> with different priority
+			// <p>[<b style="color:red;"><b style="color:red;"></b></b>]</p>
+			const b = new AttributeElement( 'b', {
+				style: 'color:red'
+			} );
+			const p = new ContainerElement( 'p', null, b );
+			const range = Range.createFromParentsAndOffsets( p, 0, p, 1 );
+			const wrapper = new AttributeElement( 'b', {
+				style: 'color:red'
+			} );
+			wrapper.priority = b.priority - 1;
+
+			const newRange = writer.wrap( range, wrapper );
+			expect( b.getStyle( 'color' ) ).to.equal( 'red' );
+			expect( b.parent.isSimilar( wrapper ) ).to.be.true;
+			expect( b.parent.getStyle( 'color' ) ).to.equal( 'red' );
+
+			test( writer, newRange, p, {
+				instanceOf: ContainerElement,
+				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 1,
+				children: [
+					{ instanceOf: AttributeElement, name: 'b', children: [
+						{ instanceOf: AttributeElement, name: 'b', children: [] }
+					] }
 				]
 			} );
 		} );
