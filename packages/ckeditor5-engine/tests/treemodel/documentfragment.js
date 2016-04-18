@@ -27,6 +27,32 @@ describe( 'DocumentFragment', () => {
 			expect( frag.getChild( 1 ) ).to.have.property( 'name' ).that.equals( 'p' );
 			expect( frag.getChild( 2 ) ).to.have.property( 'character' ).that.equals( 'y' );
 		} );
+
+		it( 'should have root property, equal to itself', () => {
+			let frag = new DocumentFragment();
+
+			expect( frag ).to.have.property( 'root' ).that.equals( frag );
+		} );
+	} );
+
+	describe( 'iterator', () => {
+		it( 'should iterate over all nodes added to document fragment', () => {
+			let frag = new DocumentFragment( [ 'x', new Element( 'p' ), 'y' ] );
+			let arr = Array.from( frag );
+
+			expect( arr.length ).to.equal( 3 );
+			expect( arr[ 0 ] ).to.have.property( 'character' ).that.equals( 'x' );
+			expect( arr[ 1 ] ).to.have.property( 'name' ).that.equals( 'p' );
+			expect( arr[ 2 ] ).to.have.property( 'character' ).that.equals( 'y' );
+		} );
+	} );
+
+	describe( 'getPath', () => {
+		it( 'should return empty array', () => {
+			let frag = new DocumentFragment( [ 'x', new Element( 'p' ), 'y' ] );
+
+			expect( frag.getPath() ).to.deep.equal( [] );
+		} );
 	} );
 
 	describe( 'insertChildren', () => {

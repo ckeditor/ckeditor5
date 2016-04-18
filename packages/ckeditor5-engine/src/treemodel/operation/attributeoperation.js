@@ -71,7 +71,13 @@ export default class AttributeOperation extends Operation {
 	}
 
 	get type() {
-		return 'attribute';
+		if ( this.oldValue === null ) {
+			return 'addAttribute';
+		} else if ( this.newValue === null ) {
+			return 'removeAttribute';
+		} else {
+			return 'changeAttribute';
+		}
 	}
 
 	/**

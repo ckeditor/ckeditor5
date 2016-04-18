@@ -67,7 +67,13 @@ export default class RootAttributeOperation extends Operation {
 	}
 
 	get type() {
-		return 'rootattribute';
+		if ( this.oldValue === null ) {
+			return 'addRootAttribute';
+		} else if ( this.newValue === null ) {
+			return 'removeRootAttribute';
+		} else {
+			return 'changeRootAttribute';
+		}
 	}
 
 	/**

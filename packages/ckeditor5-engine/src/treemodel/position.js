@@ -6,6 +6,7 @@
 'use strict';
 
 import RootElement from './rootelement.js';
+import DocumentFragment from './documentfragment.js';
 import last from '../../utils/lib/lodash/last.js';
 import utils from '../../utils/utils.js';
 import CKEditorError from '../../utils/ckeditorerror.js';

@@ -135,7 +135,7 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Sets attribute on the element. If attribute with the same key already is set, it overwrites its values.
+	 * Sets attribute on the element. If attribute with the same key already is set, it overwrites its value.
 	 *
 	 * @param {String} key Key of attribute to set.
 	 * @param {*} value Attribute value.

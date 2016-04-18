@@ -92,7 +92,7 @@ export default class Node {
 	 * The top parent for the node. If node has no parent it is the root itself.
 	 *
 	 * @readonly
-	 * @type {Number}
+	 * @type {engine.treeModel.Element}
 	 */
 	get root() {
 		let root = this;

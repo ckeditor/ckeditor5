@@ -288,27 +288,31 @@ export default class Document {
 	 * * 'remove' when nodes are removed,
 	 * * 'reinsert' when remove is undone,
 	 * * 'move' when nodes are moved,
-	 * * 'attribute' when attributes change,
-	 * * 'rootattribute' when attributes for root element change.
+	 * * 'addAttribute' when attributes are added,
+	 * * 'removeAttribute' when attributes are removed,
+	 * * 'changeAttribute' when attributes change,
+	 * * 'addRootAttribute' when attribute for root is added,
+	 * * 'removeRootAttribute' when attribute for root is removed,
+	 * * 'changeRootAttribute' when attribute for root changes.
 	 *
 	 * Change event is fired after the change is done. This means that any ranges or positions passed in
-	 * `changeInfo` are referencing nodes and paths in updated tree model.
+	 * `data` are referencing nodes and paths in updated tree model.
 	 *
-	 * @event engine.treeModel.Document#change
-	 * @param {String} type Change type, possible option: `'insert'`, `'remove'`, `'reinsert'`, `'move'`, `'attribute'`.
-	 * @param {Object} changeInfo Additional information about the change.
-	 * @param {engine.treeModel.Range} [changeInfo.range] Range containing changed nodes. Note that for `'remove'` the range will be in the
-	 * {@link engine.treeModel.Document#graveyard graveyard root}. This is undefined for `'rootattribute'` type.
-	 * @param {engine.treeModel.RootElement} [changeInfo.root] Root element which attributes got changed. This is defined
-	 * only for `'rootattribute'` type.
-	 * @param {engine.treeModel.Position} [changeInfo.sourcePosition] Change source position. Exists for `'remove'`, `'reinsert'` and `'move'`.
+	 * @event engine.treeModel.Document.change
+	 * @param {String} type Change type, possible option: 'insert', 'remove', 'reinsert', 'move', 'attribute'.
+	 * @param {Object} data Additional information about the change.
+	 * @param {engine.treeModel.Range} data.range Range containing changed nodes. Note that for 'remove' the range will be in the
+	 * {@link engine.treeModel.Document#graveyard graveyard root}. This is undefined for root types.
+	 * @param {engine.treeModel.Position} [data.sourcePosition] Change source position. Exists for 'remove', 'reinsert' and 'move'.
 	 * Note that for 'reinsert' the source position will be in the {@link engine.treeModel.Document#graveyard graveyard root}.
-	 * @param {String} [changeInfo.key] Only for `'attribute'` type. Key of changed / inserted / removed attribute.
-	 * @param {*} [changeInfo.oldValue] Only for `'attribute'` type. If the type is `'attribute'` and `oldValue`
-	 * is `undefined` it means that new attribute was inserted. Otherwise it contains changed or removed attribute value.
-	 * @param {*} [changeInfo.newValue] Only for `'attribute'` type. If the type is `'attribute'` and `newValue`
-	 * is `undefined` it means that attribute was removed. Otherwise it contains changed or inserted attribute value.
-	 * @param {engine.treeModel.Batch} batch A batch of changes which this change is a part of.
+	 * @param {String} [data.key] Only for attribute types. Key of changed / inserted / removed attribute.
+	 * @param {*} [data.oldValue] Only for 'removeAttribute', 'removeRootAttribute', 'changeAttribute' or
+	 * 'changeRootAttribute' type.
+	 * @param {*} [data.newValue] Only for 'addAttribute', 'addRootAttribute', 'changeAttribute' or
+	 * 'changeRootAttribute' type.
+	 * @param {engine.treeModel.RootElement} [changeInfo.root] Root element which attributes got changed. This is defined
+	 * only for root types.
+	 * @param {engine.treeModel.Batch} batch A {@link engine.treeModel.Batch batch} of changes which this change is a part of.
 	 */
 
 	/**

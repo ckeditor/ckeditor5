@@ -137,7 +137,7 @@ describe( 'Range', () => {
 		//     |- f
 		//     |- o
 		//     |- z
-		before( () => {
+		beforeEach( () => {
 			f = new Text( 'f' );
 			o = new Text( 'o' );
 			z = new Text( 'z' );
@@ -153,6 +153,15 @@ describe( 'Range', () => {
 
 				expect( range.start.path ).to.deep.equal( [ 0, 0 ] );
 				expect( range.end.path ).to.deep.equal( [ 0, 3 ] );
+			} );
+		} );
+
+		describe( 'createOnElement', () => {
+			it( 'should return range', () => {
+				const range = Range.createOnElement( p );
+
+				expect( range.start.path ).to.deep.equal( [ 0 ] );
+				expect( range.end.path ).to.deep.equal( [ 0, 0 ] );
 			} );
 		} );
 
