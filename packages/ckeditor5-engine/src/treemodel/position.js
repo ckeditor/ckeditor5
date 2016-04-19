@@ -430,6 +430,7 @@ export default class Position {
 	 * * {@link engine.treeModel.Position.createBefore},
 	 * * {@link engine.treeModel.Position.createAfter},
 	 * * {@link engine.treeModel.Position.createFromParentAndOffset},
+	 * * {@link engine.treeModel.Position.createFromPosition}.
 	 *
 	 * @param {engine.treeModel.Node|engine.treeModel.Position} nodeOrPosition
 	 * @param {Number|'END'|'BEFORE'|'AFTER'} [offset=0] Offset or one of the flags. Used only when
@@ -512,11 +513,11 @@ export default class Position {
 	static createFromParentAndOffset( parent, offset ) {
 		if ( !( parent instanceof Element || parent instanceof DocumentFragment ) ) {
 			/**
-			 * Position must be anchored in an element.
+			 * Position parent have to be a model element or model document fragment.
 			 *
-			 * @error position-in-text
+			 * @error position-parent-incorrect
 			 */
-			throw new CKEditorError( 'position-in-text: Position cannot be in located inside a text node.' );
+			throw new CKEditorError( 'position-parent-incorrect: Position parent have to be a model element or model document fragment.' );
 		}
 
 		const path = parent.getPath();

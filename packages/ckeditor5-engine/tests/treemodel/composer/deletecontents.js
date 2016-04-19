@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* bender-tags: treemodel, composer */
+
 'use strict';
 
 import Document from '/ckeditor5/engine/treemodel/document.js';

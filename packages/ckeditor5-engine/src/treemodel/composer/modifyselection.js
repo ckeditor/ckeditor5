@@ -21,11 +21,7 @@ import Range from '../range.js';
  * @param {Object} [options]
  * @param {'FORWARD'|'BACKWARD'} [options.direction='FORWARD'] The direction in which the selection should be modified.
  */
-export default function modifySelection( selection, options ) {
-	if ( !options ) {
-		options = {};
-	}
-
+export default function modifySelection( selection, options = {} ) {
 	const isForward = options.direction != 'BACKWARD';
 
 	const focus = selection.focus;
