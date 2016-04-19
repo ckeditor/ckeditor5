@@ -348,13 +348,13 @@ import DocumentFragment from './documentfragment.js';
 		if ( range.end.isEqual( range.start.getShiftedBy( 1 ) ) ) {
 			const node = range.start.nodeAfter;
 
-			if ( node instanceof AttributeElement && wrapAttributes( attribute, node ) ) {
+			if ( node instanceof AttributeElement && wrapAttributeElement( attribute, node ) ) {
 				return range;
 			}
 		}
 
 		// Range is inside single attribute and spans on all children.
-		if ( rangeSpansOnAllChildren( range ) && wrapAttributes( attribute, range.start.parent ) ) {
+		if ( rangeSpansOnAllChildren( range ) && wrapAttributeElement( attribute, range.start.parent ) ) {
 			const parent = range.start.parent.parent;
 			const index = range.start.parent.getIndex();
 
@@ -477,6 +477,18 @@ import DocumentFragment from './documentfragment.js';
 		// If range is collapsed - nothing to unwrap.
 		if ( range.isCollapsed ) {
 			return range;
+		}
+
+		// Range around one element - check if AttributeElement can be unwrapped partially when it's not similar.
+		// For example:
+		// <b class="foo bar" title="baz"></b> unwrap with:	<b class="foo"></p> result: <b class"bar" title="baz"></b>
+		if ( range.end.isEqual( range.start.getShiftedBy( 1 ) ) ) {
+			const node = range.start.nodeAfter;
+
+			// Unwrap single attribute element.
+			if ( !attribute.isSimilar( node ) && node instanceof AttributeElement && unwrapAttributeElement( attribute, node ) ) {
+				return range;
+			}
 		}
 
 		// Break attributes at range start and end.
@@ -706,7 +718,7 @@ function mergeTextNodes( t1, t2 ) {
 // @param {engine.treeView.AttributeElement} wrapper Wrapper AttributeElement.
 // @param {engine.treeView.AttributeElement} toWrap AttributeElement to wrap using wrapper element.
 // @returns {Boolean} Returns `true` if elements are merged.
-function wrapAttributes( wrapper, toWrap ) {
+function wrapAttributeElement( wrapper, toWrap ) {
 	// Can't merge if name or priority differs.
 	if ( wrapper.name !== toWrap.name || wrapper.priority !== toWrap.priority ) {
 		return false;
@@ -756,6 +768,56 @@ function wrapAttributes( wrapper, toWrap ) {
 			toWrap.addClass( key );
 		}
 	}
+
+	return true;
+}
+
+function unwrapAttributeElement( wrapper, toUnwrap ) {
+	// Can't unwrap if name or priority differs.
+	if ( wrapper.name !== toUnwrap.name || wrapper.priority !== toUnwrap.priority ) {
+		return false;
+	}
+
+	// Check if AttributeElement has all wrapper attributes.
+	for ( let key of wrapper.getAttributeKeys() ) {
+		// Classes and styles should be checked separately.
+		if ( key === 'class' || key === 'style' ) {
+			continue;
+		}
+
+		// If some attributes are different we cannot unwrap.
+		if ( toUnwrap.hasAttribute( key ) && toUnwrap.getAttribute( key ) !== wrapper.getAttribute( key ) ) {
+			return false;
+		}
+	}
+
+	// Check if AttributeElement has all wrapper classes.
+	if ( !toUnwrap.hasClass( ...wrapper.getClassNames() ) ) {
+		return false;
+	}
+
+	// Check if AttributeElement has all wrapper styles.
+	for ( let key of wrapper.getStyleNames() ) {
+		if ( toUnwrap.hasStyle( key ) && toUnwrap.getStyle( key ) !== wrapper.getStyle( key ) ) {
+			return false;
+		}
+	}
+
+	// Remove all wrapper's attributes from unwrapped element.
+	for ( let key of wrapper.getAttributeKeys() ) {
+		// Classes and styles should be checked separately.
+		if ( key === 'class' || key === 'style' ) {
+			continue;
+		}
+
+		toUnwrap.removeAttribute( key );
+	}
+
+	// Remove all wrapper's classes from unwrapped element.
+	toUnwrap.removeClass( ...wrapper.getClassNames() );
+
+	// Remove all wrapper's styles from unwrapped element.
+	toUnwrap.removeStyle( ...wrapper.getStyleNames() );
 
 	return true;
 }
