@@ -17,6 +17,7 @@ import EmitterMixin from '../../utils/emittermixin.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 import utils from '../../utils/utils.js';
 import Schema from './schema.js';
+import Composer from './composer/composer.js';
 import clone from '../../utils/lib/lodash/clone.js';
 
 const graveyardSymbol = Symbol( 'graveyard' );
@@ -64,6 +65,15 @@ export default class Document {
 		 * @member {engine.treeModel.Schema} engine.treeModel.Document#schema
 		 */
 		this.schema = new Schema();
+
+		/**
+		 * Composer for this document. Set of tools to work with the document.
+		 *
+		 * The features can tune up these tools to better work on their specific cases.
+		 *
+		 * @member {engine.treeModel.composer.Composer} engine.treeModel.Document#composer
+		 */
+		this.composer = new Composer();
 
 		/**
 		 * Array of pending changes. See: {@link engine.treeModel.Document#enqueueChanges}.

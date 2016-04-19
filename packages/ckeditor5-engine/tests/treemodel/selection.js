@@ -18,6 +18,7 @@ import InsertOperation from '/ckeditor5/engine/treemodel/operation/insertoperati
 import MoveOperation from '/ckeditor5/engine/treemodel/operation/moveoperation.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
+import utils from '/ckeditor5/utils/utils.js';
 
 testUtils.createSinonSandbox();
 
@@ -82,6 +83,24 @@ describe( 'Selection', () => {
 		} );
 	} );
 
+	describe( 'isBackward', () => {
+		it( 'is defined by the last added range', () => {
+			selection.addRange( range, true );
+			expect( selection ).to.have.property( 'isBackward', true );
+
+			selection.addRange( liveRange );
+			expect( selection ).to.have.property( 'isBackward', false );
+		} );
+
+		it( 'is false when last range is collapsed', () => {
+			const pos = Position.createAt( root, 0 );
+
+			selection.addRange( new Range( pos, pos ), true );
+
+			expect( selection.isBackward ).to.be.false;
+		} );
+	} );
+
 	describe( 'addRange', () => {
 		it( 'should copy added ranges and store multiple ranges', () => {
 			selection.addRange( liveRange );
@@ -118,14 +137,6 @@ describe( 'Selection', () => {
 
 			expect( selection.anchor.path ).to.deep.equal( [ 2, 2 ] );
 			expect( selection.focus.path ).to.deep.equal( [ 2 ] );
-		} );
-
-		it( 'should set isBackward', () => {
-			selection.addRange( range, true );
-			expect( selection ).to.have.property( 'isBackward', true );
-
-			selection.addRange( liveRange );
-			expect( selection ).to.have.property( 'isBackward', false );
 		} );
 
 		it( 'should return a copy of (not a reference to) array of stored ranges', () => {
@@ -269,6 +280,192 @@ describe( 'Selection', () => {
 			const focus = selection.focus;
 			expect( focus ).to.have.property( 'parent', root );
 			expect( focus ).to.have.property( 'offset', 3 );
+		} );
+	} );
+
+	describe( 'setFocus', () => {
+		it( 'keeps all existing ranges and fires no change:range when no modifications needed', () => {
+			selection.addRange( range );
+			selection.addRange( liveRange );
+
+			const spy = sinon.spy();
+			selection.on( 'change:range', spy );
+
+			selection.setFocus( selection.focus );
+
+			expect( utils.count( selection.getRanges() ) ).to.equal( 2 );
+			expect( spy.callCount ).to.equal( 0 );
+		} );
+
+		it( 'fires change:range', () => {
+			selection.addRange( range );
+
+			const spy = sinon.spy();
+			selection.on( 'change:range', spy );
+
+			selection.setFocus( Position.createAt( root, 'END' ) );
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'modifies default range', () => {
+			const startPos = selection.getFirstPosition();
+			const endPos = Position.createAt( root, 'END' );
+
+			selection.setFocus( endPos );
+
+			expect( selection.anchor.compareWith( startPos ) ).to.equal( 'SAME' );
+			expect( selection.focus.compareWith( endPos ) ).to.equal( 'SAME' );
+		} );
+
+		it( 'modifies existing collapsed selection', () => {
+			const startPos = Position.createAt( root, 1 );
+			const endPos = Position.createAt( root, 2 );
+
+			selection.collapse( startPos );
+
+			selection.setFocus( endPos );
+
+			expect( selection.anchor.compareWith( startPos ) ).to.equal( 'SAME' );
+			expect( selection.focus.compareWith( endPos ) ).to.equal( 'SAME' );
+		} );
+
+		it( 'makes existing collapsed selection a backward selection', () => {
+			const startPos = Position.createAt( root, 1 );
+			const endPos = Position.createAt( root, 0 );
+
+			selection.collapse( startPos );
+
+			selection.setFocus( endPos );
+
+			expect( selection.anchor.compareWith( startPos ) ).to.equal( 'SAME' );
+			expect( selection.focus.compareWith( endPos ) ).to.equal( 'SAME' );
+			expect( selection.isBackward ).to.be.true;
+		} );
+
+		it( 'modifies existing non-collapsed selection', () => {
+			const startPos = Position.createAt( root, 1 );
+			const endPos = Position.createAt( root, 2 );
+			const newEndPos = Position.createAt( root, 3 );
+
+			selection.addRange( new Range( startPos, endPos ) );
+
+			selection.setFocus( newEndPos );
+
+			expect( selection.anchor.compareWith( startPos ) ).to.equal( 'SAME' );
+			expect( selection.focus.compareWith( newEndPos ) ).to.equal( 'SAME' );
+		} );
+
+		it( 'makes existing non-collapsed selection a backward selection', () => {
+			const startPos = Position.createAt( root, 1 );
+			const endPos = Position.createAt( root, 2 );
+			const newEndPos = Position.createAt( root, 0 );
+
+			selection.addRange( new Range( startPos, endPos ) );
+
+			selection.setFocus( newEndPos );
+
+			expect( selection.anchor.compareWith( startPos ) ).to.equal( 'SAME' );
+			expect( selection.focus.compareWith( newEndPos ) ).to.equal( 'SAME' );
+			expect( selection.isBackward ).to.be.true;
+		} );
+
+		it( 'makes existing backward selection a forward selection', () => {
+			const startPos = Position.createAt( root, 1 );
+			const endPos = Position.createAt( root, 2 );
+			const newEndPos = Position.createAt( root, 3 );
+
+			selection.addRange( new Range( startPos, endPos ), true );
+
+			selection.setFocus( newEndPos );
+
+			expect( selection.anchor.compareWith( endPos ) ).to.equal( 'SAME' );
+			expect( selection.focus.compareWith( newEndPos ) ).to.equal( 'SAME' );
+			expect( selection.isBackward ).to.be.false;
+		} );
+
+		it( 'modifies existing backward selection', () => {
+			const startPos = Position.createAt( root, 1 );
+			const endPos = Position.createAt( root, 2 );
+			const newEndPos = Position.createAt( root, 0 );
+
+			selection.addRange( new Range( startPos, endPos ), true );
+
+			selection.setFocus( newEndPos );
+
+			expect( selection.anchor.compareWith( endPos ) ).to.equal( 'SAME' );
+			expect( selection.focus.compareWith( newEndPos ) ).to.equal( 'SAME' );
+			expect( selection.isBackward ).to.be.true;
+		} );
+
+		it( 'modifies only the last range', () => {
+			// Offsets are chosen in this way that the order of adding ranges must count, not their document order.
+			const startPos1 = Position.createAt( root, 4 );
+			const endPos1 = Position.createAt( root, 5 );
+			const startPos2 = Position.createAt( root, 1 );
+			const endPos2 = Position.createAt( root, 2 );
+
+			const newEndPos = Position.createAt( root, 0 );
+
+			selection.addRange( new Range( startPos1, endPos1 ) );
+			selection.addRange( new Range( startPos2, endPos2 ) );
+
+			const spy = sinon.spy();
+
+			selection.on( 'change:range', spy );
+
+			selection.setFocus( newEndPos );
+
+			const ranges = Array.from( selection.getRanges() );
+
+			expect( ranges ).to.have.lengthOf( 2 );
+			expect( ranges[ 0 ].start.compareWith( startPos1 ) ).to.equal( 'SAME' );
+			expect( ranges[ 0 ].end.compareWith( endPos1 ) ).to.equal( 'SAME' );
+
+			expect( selection.anchor.compareWith( startPos2 ) ).to.equal( 'SAME' );
+			expect( selection.focus.compareWith( newEndPos ) ).to.equal( 'SAME' );
+			expect( selection.isBackward ).to.be.true;
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'collapses the selection when extending to the anchor', () => {
+			const startPos = Position.createAt( root, 1 );
+			const endPos = Position.createAt( root, 2 );
+
+			selection.addRange( new Range( startPos, endPos ) );
+
+			selection.setFocus( startPos );
+
+			expect( selection.focus.compareWith( startPos ) ).to.equal( 'SAME' );
+			expect( selection.isCollapsed ).to.be.true;
+		} );
+
+		it( 'uses Position.createAt', () => {
+			const startPos = Position.createAt( root, 1 );
+			const endPos = Position.createAt( root, 2 );
+			const newEndPos = Position.createAt( root, 4 );
+			const spy = testUtils.sinon.stub( Position, 'createAt', () => newEndPos );
+
+			selection.addRange( new Range( startPos, endPos ) );
+
+			selection.setFocus( root, 'END' );
+
+			expect( spy.calledOnce ).to.be.true;
+			expect( selection.focus.compareWith( newEndPos ) ).to.equal( 'SAME' );
+		} );
+
+		it( 'detaches the range it replaces', () => {
+			const startPos = Position.createAt( root, 1 );
+			const endPos = Position.createAt( root, 2 );
+			const newEndPos = Position.createAt( root, 4 );
+			const spy = testUtils.sinon.spy( LiveRange.prototype, 'detach' );
+
+			selection.addRange( new Range( startPos, endPos ) );
+
+			selection.setFocus( newEndPos );
+
+			expect( spy.calledOnce ).to.be.true;
 		} );
 	} );
 

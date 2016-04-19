@@ -16,7 +16,6 @@ import ModelRange from '/ckeditor5/engine/treemodel/range.js';
 import ModelPosition from '/ckeditor5/engine/treemodel/position.js';
 import ModelWalker from '/ckeditor5/engine/treemodel/treewalker.js';
 
-import ViewDocumentFragment from '/ckeditor5/engine/treeview/documentfragment.js';
 import ViewElement from '/ckeditor5/engine/treeview/element.js';
 import ViewContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
 import ViewAttributeElement from '/ckeditor5/engine/treeview/attributeelement.js';

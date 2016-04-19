@@ -107,12 +107,12 @@ export default class Selection {
 	}
 
 	/**
-	 * Specifies whether the last added range was added as a backward or forward range.
+	 * Specifies whether the {@link engine.treeModel.Selection#focus} precedes {@link engine.treeModel.Selection#anchor}.
 	 *
 	 * @type {Boolean}
 	 */
 	get isBackward() {
-		return this._lastRangeBackward;
+		return !this.isCollapsed && this._lastRangeBackward;
 	}
 
 	/**
@@ -124,7 +124,7 @@ export default class Selection {
 	 * to {@link engine.treeModel.Range#start}. The flag is used to set {@link engine.treeModel.Selection#anchor} and
 	 * {@link engine.treeModel.Selection#focus} properties.
 	 *
-	 * @fires {@link engine.treeModel.Selection#change:range change:range}
+	 * @fires engine.treeModel.Selection#change:range
 	 * @param {engine.treeModel.Range} range Range to add.
 	 * @param {Boolean} [isBackward] Flag describing if added range was selected forward - from start to end (`false`)
 	 * or backward - from end to start (`true`). Defaults to `false`.
@@ -194,7 +194,7 @@ export default class Selection {
 	/**
 	 * Removes all ranges that were added to the selection. Fires update event.
 	 *
-	 * @fires {@link engine.treeModel.Selection#change:range change:range}
+	 * @fires engine.treeModel.Selection#change:range
 	 */
 	removeAllRanges() {
 		this.destroy();
@@ -208,7 +208,7 @@ export default class Selection {
 	 * is treated like the last added range and is used to set {@link #anchor} and {@link #focus}. Accepts a flag
 	 * describing in which way the selection is made (see {@link #addRange}).
 	 *
-	 * @fires {@link engine.treeModel.Selection#change:range change:range}
+	 * @fires engine.treeModel.Selection#change:range
 	 * @param {Array.<engine.treeModel.Range>} newRanges Array of ranges to set.
 	 * @param {Boolean} [isLastBackward] Flag describing if last added range was selected forward - from start to end (`false`)
 	 * or backward - from end to start (`true`). Defaults to `false`.
@@ -229,44 +229,49 @@ export default class Selection {
 	/**
 	 * Sets collapsed selection in the specified location.
 	 *
-	 * The location can be specified as:
+	 * The location can be specified in the same form as {@link engine.treeModel.Position.createAt} parameters.
 	 *
-	 * * a {@link engine.treeModel.Position position},
-	 * * parent element and offset (offset defaults to `0`),
-	 * * parent element and `'END'` (sets selection at the end of that element),
-	 * * node and `'BEFORE'` or `'AFTER'` (sets selection before or after the given node).
-	 *
-	 * @fires {@link engine.treeModel.Selection#change:range change:range}
+	 * @fires engine.treeModel.Selection#change:range
 	 * @param {engine.treeModel.Node|engine.treeModel.Position} nodeOrPosition
 	 * @param {Number|'END'|'BEFORE'|'AFTER'} [offset=0] Offset or one of the flags. Used only when
 	 * first parameter is a node.
 	 */
 	collapse( nodeOrPosition, offset ) {
-		let node, pos;
-
-		if ( nodeOrPosition instanceof Position ) {
-			pos = nodeOrPosition;
-		} else {
-			node = nodeOrPosition;
-
-			if ( offset == 'END' ) {
-				offset = node.getChildCount();
-			} else if ( offset == 'BEFORE' ) {
-				offset = node.getIndex();
-				node = node.parent;
-			} else if ( offset == 'AFTER' ) {
-				offset = node.getIndex() + 1;
-				node = node.parent;
-			} else if ( !offset ) {
-				offset = 0;
-			}
-
-			pos = Position.createFromParentAndOffset( node, offset );
-		}
-
+		const pos = Position.createAt( nodeOrPosition, offset );
 		const range = new Range( pos, pos );
 
 		this.setRanges( [ range ] );
+	}
+
+	/**
+	 * Sets {@link engine.treeModel.Selection#focus} in the specified location.
+	 *
+	 * The location can be specified in the same form as {@link engine.treeModel.Position.createAt} parameters.
+	 *
+	 * @fires engine.treeModel.Selection#change:range
+	 * @param {engine.treeModel.Node|engine.treeModel.Position} nodeOrPosition
+	 * @param {Number|'END'|'BEFORE'|'AFTER'} [offset=0] Offset or one of the flags. Used only when
+	 * first parameter is a node.
+	 */
+	setFocus( nodeOrPosition, offset ) {
+		const newFocus = Position.createAt( nodeOrPosition, offset );
+
+		if ( newFocus.compareWith( this.focus ) == 'SAME' ) {
+			return;
+		}
+
+		const anchor = this.anchor;
+
+		if ( this._ranges.length ) {
+			// TODO Replace with _popRange, so child classes can override this (needed for #329).
+			this._ranges.pop().detach();
+		}
+
+		if ( newFocus.compareWith( anchor ) == 'BEFORE' ) {
+			this.addRange( new Range( newFocus, anchor ), true );
+		} else {
+			this.addRange( new Range( anchor, newFocus ) );
+		}
 	}
 
 	/**
@@ -313,7 +318,7 @@ export default class Selection {
 	/**
 	 * Removes an attribute with given key from the selection.
 	 *
-	 * @fires {@link engine.treeModel.Selection#change:range change:range}
+	 * @fires engine.treeModel.Selection#change:attribute
 	 * @param {String} key Key of attribute to remove.
 	 */
 	removeAttribute( key ) {
@@ -326,7 +331,7 @@ export default class Selection {
 	/**
 	 * Sets attribute on the selection. If attribute with the same key already is set, it overwrites its values.
 	 *
-	 * @fires {@link engine.treeModel.Selection#change:range change:range}
+	 * @fires engine.treeModel.Selection#change:attribute
 	 * @param {String} key Key of attribute to set.
 	 * @param {*} value Attribute value.
 	 */
@@ -340,7 +345,7 @@ export default class Selection {
 	/**
 	 * Removes all attributes from the selection and sets given attributes.
 	 *
-	 * @fires {@link engine.treeModel.Selection#change:range change:range}
+	 * @fires engine.treeModel.Selection#change:attribute
 	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set.
 	 */
 	setAttributesTo( attrs ) {
@@ -553,8 +558,9 @@ export default class Selection {
 	 */
 	_getDefaultRange() {
 		const defaultRoot = this._document._getDefaultRoot();
+		const pos = new Position( defaultRoot, [ 0 ] );
 
-		return new Range( new Position( defaultRoot, [ 0 ] ), new Position( defaultRoot, [ 0 ] ) );
+		return new Range( pos, pos );
 	}
 
 	/**
