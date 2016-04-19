@@ -13,7 +13,7 @@ import Range from '../range.js';
  * Modifies the selection. Currently the supported modifications are:
  *
  * * Extending. The selection focus is moved in the specified `options.direction` with a step specified in `options.unit`
- * (defaults to `'character'`, other values are not not yet supported).
+ * (defaults to `'CHARACTER'`, other values are not not yet supported).
  * Note: if you extend a forward selection in a backward direction you will in fact shrink it.
  *
  * @method engine.treeModel.composer.modifySelection
