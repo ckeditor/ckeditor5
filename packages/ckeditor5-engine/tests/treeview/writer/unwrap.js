@@ -710,7 +710,7 @@ describe( 'Writer', () => {
 
 		it( 'should unwrap single element by removing matching attributes', () => {
 			// <p>[<b foo="bar" baz="qux" >test</b>]</p>
-			// unwrap using <b baz="qux">test</b></p>
+			// unwrap using <b baz="qux"></b>
 			// <p>[<b foo="bar">test</b>]</p>
 			const text = new Text( 'test' );
 			const b = new AttributeElement( 'b', {
@@ -746,7 +746,7 @@ describe( 'Writer', () => {
 
 		it( 'should not unwrap single element when attributes are different', () => {
 			// <p>[<b foo="bar" baz="qux">test</b>]</p>
-			// unwrap using <b baz="qux" test="true">test</b></p>
+			// unwrap using <b baz="qux" test="true"></b>
 			// <p>[<b foo="bar" baz="qux">test</b>]</p>
 			const text = new Text( 'test' );
 			const b = new AttributeElement( 'b', {
@@ -783,7 +783,7 @@ describe( 'Writer', () => {
 
 		it( 'should unwrap single element by removing matching classes', () => {
 			// <p>[<b class="foo bar baz">test</b>]</p>
-			// unwrap using <b class="baz foo">test</b></p>
+			// unwrap using <b class="baz foo"></b>
 			// <p>[<b class="bar">test</b>]</p>
 			const text = new Text( 'test' );
 			const b = new AttributeElement( 'b', {
@@ -819,7 +819,7 @@ describe( 'Writer', () => {
 
 		it( 'should not unwrap single element when classes are different', () => {
 			// <p>[<b class="foo bar baz">test</b>]</p>
-			// unwrap using <b class="baz foo qux">test</b></p>
+			// unwrap using <b class="baz foo qux"></b>
 			// <p>[<b class="foo bar baz">test</b>]</p>
 			const text = new Text( 'test' );
 			const b = new AttributeElement( 'b', {
@@ -855,7 +855,7 @@ describe( 'Writer', () => {
 
 		it( 'should unwrap single element by removing matching styles', () => {
 			// <p>[<b style="color:red; position:absolute; top:10px;">test</b>]</p>
-			// unwrap using <b style="position: absolute;">test</b></p>
+			// unwrap using <b style="position: absolute;"></b>
 			// <p>[<b style="color:red; top:10px;">test</b>]</p>
 			const text = new Text( 'test' );
 			const b = new AttributeElement( 'b', {
@@ -891,7 +891,7 @@ describe( 'Writer', () => {
 
 		it( 'should not unwrap single element when styles are different', () => {
 			// <p>[<b style="color:red; position:absolute; top:10px;">test</b>]</p>
-			// unwrap using <b style="position: relative;">test</b></p>
+			// unwrap using <b style="position: relative;"></b>
 			// <p>[<b style="color:red; position:absolute; top:10px;">test</b>]</p>
 			const text = new Text( 'test' );
 			const b = new AttributeElement( 'b', {
