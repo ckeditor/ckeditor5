@@ -491,8 +491,6 @@ describe( 'custom attribute handling for given element', () => {
 
 		modelDispatcher.convertInsert( range );
 
-		// The expected value is different than in example or than what is really expected as it should be one link,
-		// but writer does not have merging feature yet.
 		expect( viewToString( viewRoot ) ).to.equal( '<div><a href="foo.html" title="Foo title">foo</a></div>' );
 
 		// Let's change link's attributes.
