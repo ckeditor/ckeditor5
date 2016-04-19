@@ -10,7 +10,7 @@ import Position from '../position.js';
 import utils from '../../../utils/utils.js';
 
 /**
- * Delete contents of the selection and merge siblings.
+ * Delete contents of the selection and merge siblings. The resulting selection is always collapsed.
  *
  * @method engine.treeModel.composer.deleteContents
  * @param {engine.treeModel.Batch} batch Batch to which the deltas will be added.
