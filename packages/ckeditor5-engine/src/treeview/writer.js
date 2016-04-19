@@ -772,6 +772,12 @@ function wrapAttributeElement( wrapper, toWrap ) {
 	return true;
 }
 
+// Unwraps {@link engine.treeView.AttributeElement AttributeElement} from another by removing corresponding attributes,
+// classes and styles. All attributes, classes and styles from wrapper should be present inside element being unwrapped.
+//
+// @param {engine.treeView.AttributeElement} wrapper Wrapper AttributeElement.
+// @param {engine.treeView.AttributeElement} toUnwrap AttributeElement to unwrap using wrapper element.
+// @returns {Boolean} Returns `true` if elements are unwrapped.
 function unwrapAttributeElement( wrapper, toUnwrap ) {
 	// Can't unwrap if name or priority differs.
 	if ( wrapper.name !== toUnwrap.name || wrapper.priority !== toUnwrap.priority ) {
@@ -785,8 +791,8 @@ function unwrapAttributeElement( wrapper, toUnwrap ) {
 			continue;
 		}
 
-		// If some attributes are different we cannot unwrap.
-		if ( toUnwrap.hasAttribute( key ) && toUnwrap.getAttribute( key ) !== wrapper.getAttribute( key ) ) {
+		// If some attributes are missing or different we cannot unwrap.
+		if ( !toUnwrap.hasAttribute( key ) || toUnwrap.getAttribute( key ) !== wrapper.getAttribute( key ) ) {
 			return false;
 		}
 	}
@@ -798,7 +804,8 @@ function unwrapAttributeElement( wrapper, toUnwrap ) {
 
 	// Check if AttributeElement has all wrapper styles.
 	for ( let key of wrapper.getStyleNames() ) {
-		if ( toUnwrap.hasStyle( key ) && toUnwrap.getStyle( key ) !== wrapper.getStyle( key ) ) {
+		// If some styles are missing or different we cannot unwrap.
+		if ( !toUnwrap.hasStyle( key ) || toUnwrap.getStyle( key ) !== wrapper.getStyle( key ) ) {
 			return false;
 		}
 	}
