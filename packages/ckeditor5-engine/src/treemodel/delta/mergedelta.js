@@ -44,11 +44,6 @@ export default class MergeDelta extends Delta {
 		return this.operations[ 1 ] || null;
 	}
 
-	/**
-	 * @see engine.treeModel.delta.Delta#_reverseDeltaClass
-	 * @protected
-	 * @type {Object}
-	 */
 	get _reverseDeltaClass() {
 		return SplitDelta;
 	}

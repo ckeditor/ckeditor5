@@ -57,7 +57,7 @@ export default class Delta {
 	 * A class that will be used when creating reversed delta.
 	 *
 	 * @private
-	 * @type {Object}
+	 * @type {Function}
 	 */
 	get _reverseDeltaClass() {
 		return Delta;

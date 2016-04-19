@@ -417,6 +417,14 @@ export default class Position {
 		}
 	}
 
+	isAtStart() {
+		return this.offset === 0;
+	}
+
+	isAtEnd() {
+		return this.offset == this.parent.getChildCount();
+	}
+
 	/**
 	 * Creates position at the given location. The location can be specified as:
 	 *

@@ -10,13 +10,14 @@
 // which would already have all default deltas registered.
 
 // Import default suite of deltas so a feature have to include only Batch class file.
-import d1 from './insertdelta.js';
-import d2 from './weakinsertdelta.js';
-import d3 from './movedelta.js';
-import d4 from './removedelta.js';
-import d5 from './attributedelta.js';
-import d6 from './splitdelta.js';
-import d7 from './mergedelta.js';
-import d8 from './wrapdelta.js';
-import d9 from './unwrapdelta.js';
+import d01 from './attributedelta.js';
+import d02 from './insertdelta.js';
+import d03 from './mergedelta.js';
+import d04 from './movedelta.js';
+import d05 from './removedelta.js';
+import d06 from './renamedelta.js';
+import d07 from './splitdelta.js';
+import d08 from './unwrapdelta.js';
+import d09 from './weakinsertdelta.js';
+import d10 from './wrapdelta.js';
 /*jshint unused: false*/

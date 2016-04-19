@@ -65,11 +65,6 @@ export default class AttributeDelta extends Delta {
 		return null;
 	}
 
-	/**
-	 * @see engine.treeModel.delta.Delta#_reverseDeltaClass
-	 * @private
-	 * @type {Object}
-	 */
 	get _reverseDeltaClass() {
 		return AttributeDelta;
 	}

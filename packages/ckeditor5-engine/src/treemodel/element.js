@@ -8,6 +8,7 @@
 import Node from './node.js';
 import NodeList from './nodelist.js';
 import DocumentFragment from './documentfragment.js';
+import Range from './range.js';
 import utils from '../../utils/utils.js';
 
 /**
@@ -65,6 +66,10 @@ export default class Element extends Node {
 	 */
 	getChildCount() {
 		return this._children.length;
+	}
+
+	isEmpty() {
+		return this.getChildCount() === 0;
 	}
 
 	/**
@@ -168,5 +173,17 @@ export default class Element extends Node {
 	 */
 	clearAttributes() {
 		this._attrs.clear();
+	}
+
+	getText() {
+		let text = '';
+
+		for ( let value of Range.createFromElement( this ) ) {
+			if ( value.type == 'TEXT' ) {
+				text += value.item.text;
+			}
+		}
+
+		return text;
 	}
 }

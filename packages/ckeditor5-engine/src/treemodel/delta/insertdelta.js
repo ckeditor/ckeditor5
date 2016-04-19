@@ -46,11 +46,6 @@ export default class InsertDelta extends Delta {
 		return this.operations[ 0 ] || null;
 	}
 
-	/**
-	 * @see engine.treeModel.delta.Delta#_reverseDeltaClass
-	 * @private
-	 * @type {Object}
-	 */
 	get _reverseDeltaClass() {
 		return RemoveDelta;
 	}

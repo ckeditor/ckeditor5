@@ -266,11 +266,12 @@ export default class Schema {
 		this._extensionChains = new Map();
 
 		// Register some default abstract entities.
-		this.registerItem( '$inline' );
+		this.registerItem( '$root' );
 		this.registerItem( '$block' );
+		this.registerItem( '$inline' );
 		this.registerItem( '$text', '$inline' );
 
-		// Allow inline elements inside block elements.
+		this.allow( { name: '$block', inside: '$root' } );
 		this.allow( { name: '$inline', inside: '$block' } );
 	}
 
