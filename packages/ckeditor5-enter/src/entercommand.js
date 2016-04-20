@@ -30,73 +30,78 @@ export function enterBlock( batch, selection, options = {} ) {
 	const defaultBlockName = options.defaultBlockName;
 	const doc = batch.doc;
 	const isSelectionEmpty = selection.isCollapsed;
+	const range = selection.getFirstRange();
+	const startElement = range.start.parent;
+	const endElement = range.end.parent;
 
-	if ( isSelectionEmpty ) {
-		const startPos = selection.focus;
-		const startElement = startPos.parent;
-
-		// Don't touch the root.
-		if ( startElement.root == startElement ) {
-			return;
+	// Don't touch the root.
+	if ( startElement.root == startElement ) {
+		if ( !isSelectionEmpty ) {
+			doc.composer.deleteContents( batch, selection );
 		}
 
-		split( startPos );
+		return;
+	}
+
+	if ( isSelectionEmpty ) {
+		splitBlock( batch, selection, range.start, defaultBlockName );
 	} else {
-		const range = selection.getFirstRange();
-		const startElement = range.start.parent;
-		const endElement = range.end.parent;
 		const shouldMerge = range.start.isAtStart() && range.end.isAtEnd();
 		const isContainedWithinOneElement = ( startElement == endElement );
 
 		doc.composer.deleteContents( batch, selection, { merge: shouldMerge } );
 
-		// Don't touch the root.
-		if ( startElement.root == startElement ) {
-			return;
-		}
-
-		const newBlockName = getNewBlockName( doc, startElement, defaultBlockName );
-		const needsRename = startElement.name != newBlockName;
-
 		// Fully selected elements.
 		//
-		// <h>[xx</h><p>yy]<p>	-> <h>^</h>		-> <p>^</p>
-		// <h>[xxyy]</h>		-> <h>^</h>		-> <p>^</p>
+		// <h>[xx</h><p>yy]<p>	-> <h>^</h>				-> <p>^</p>
+		// <h>[xxyy]</h>		-> <h>^</h>				-> <p>^</p>
 		if ( shouldMerge ) {
+			// We'll lose the ref to the renamed element, so let's keep a position inside it
+			// (offsets won't change, so it will stay in place). See ckeditor5-engine#367.
 			const pos = Position.createFromPosition( selection.focus );
+			const newBlockName = getNewBlockName( doc, startElement, defaultBlockName );
 
-			if ( needsRename ) {
+			if ( startElement.name != newBlockName ) {
 				batch.rename( newBlockName, startElement );
 			}
 
 			selection.collapse( pos );
-		} else if ( isContainedWithinOneElement ) {
-			split( selection.focus );
-		} else {
+		}
+		// Partially selected elements.
+		//
+		// <h>x[xx]x</h>		-> <h>x^x</h>			-> <h>x</h><h>^x</h>
+		else if ( isContainedWithinOneElement ) {
+			splitBlock( batch, selection, selection.focus, defaultBlockName );
+		}
+		// Selection over multilpe elements.
+		//
+		// <h>x[x</h><p>y]y<p>	-> <h>x^</h><p>y</p>	-> <h>x</h><p>^y</p>
+		else {
 			selection.collapse( endElement );
 		}
 	}
+}
 
-	function split( splitPos ) {
-		const parent = splitPos.parent;
+function splitBlock( batch, selection, splitPos, defaultBlockName ) {
+	const doc = batch.doc;
+	const parent = splitPos.parent;
 
-		if ( splitPos.isAtEnd() ) {
-			const newElement = new Element( getNewBlockName( doc, parent, defaultBlockName ) );
+	if ( splitPos.isAtEnd() ) {
+		const newElement = new Element( getNewBlockName( doc, parent, defaultBlockName ) );
 
-			batch.insert( Position.createAfter( parent ), newElement );
+		batch.insert( Position.createAfter( parent ), newElement );
 
-			selection.collapse( newElement );
-		} else {
-			// TODO After ckeditor5-engine#340 is fixed we'll be able to base on splitPos's location.
-			const endPos = LivePosition.createFromPosition( splitPos );
-			endPos.stickiness = 'STICKS_TO_NEXT';
+		selection.collapse( newElement );
+	} else {
+		// TODO After ckeditor5-engine#340 is fixed we'll be able to base on splitPos's location.
+		const endPos = LivePosition.createFromPosition( splitPos );
+		endPos.stickiness = 'STICKS_TO_NEXT';
 
-			batch.split( splitPos );
+		batch.split( splitPos );
 
-			selection.collapse( endPos );
+		selection.collapse( endPos );
 
-			endPos.detach();
-		}
+		endPos.detach();
 	}
 }
 

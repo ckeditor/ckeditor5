@@ -120,6 +120,13 @@ describe( 'EnterCommand', () => {
 			);
 
 			test(
+				'deletes text and splits (other than default)',
+				'<h>ab<selection>cd</selection>ef</h>',
+				'<h>ab</h><h><selection />ef</h>',
+				{ defaultBlockName: 'p' }
+			);
+
+			test(
 				'places selection in the 2nd element',
 				'<h>ab<selection>c</h><p>d</selection>ef</p><p>ghi</p>',
 				'<h>ab</h><p><selection />ef</p><p>ghi</p>',
@@ -148,7 +155,7 @@ describe( 'EnterCommand', () => {
 			);
 
 			test(
-				'leaves one (default) empty element after two were fully selected (bacward)',
+				'leaves one (default) empty element after two were fully selected (backward)',
 				'<h><selection backward>abc</h><p>def</selection></p>',
 				'<p><selection /></p>',
 				{ defaultBlockName: 'p' }
