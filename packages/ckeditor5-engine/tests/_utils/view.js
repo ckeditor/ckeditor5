@@ -18,6 +18,64 @@ const ELEMENT_RANGE_END_TOKEN = ']';
 const TEXT_RANGE_START_TOKEN = '{';
 const TEXT_RANGE_END_TOKEN = '}';
 
+/**
+ * Converts view elements to its string representation.
+ * Root element can be provided as {@link engine.treeView.Element Element} or
+ * {@link engine.treeView.DocumentFragment DocumentFragment}.
+ *
+ *		const text = new Text( 'foobar' );
+ *		const b = new Element( 'b', { name: 'test' }, text );
+ *		const p = new Element( 'p', { style: 'color:red;' }, b );
+ *
+ *		getData( p ); // <p style="color:red;"><b name="test">foobar</b></p>
+ *
+ * Additionally {@link engine.treeView.Selection Selection}
+ * instance can be provided, then ranges from that selection will be converted too. If range position is placed inside
+ * element node `[` and `]` will be used there.
+ *
+ *		const text = new Text( 'foobar' );
+ *		const b = new Element( 'b', null, text );
+ *		const p = new Element( 'p', null, b );
+ *		const selection = new Selection();
+ *		selection.addRange( Range.createFromParentsAndOffsets( p, 0, p, 1 ) );
+ *
+ *		getData( p, selection ); // <p>[<b>foobar</b>]</p>
+ *
+ * If range is placed inside text node `{` and `}` will be used there.
+ *
+ *		const text = new Text( 'foobar' );
+ *		const b = new Element( 'b', null, text );
+ *		const p = new Element( 'p', null, b );
+ *		const selection = new Selection();
+ *		selection.addRange( Range.createFromParentsAndOffsets( text, 1, text, 5 ) );
+ *
+ *		getData( p, selection ); // <p><b>f{ooba}r</b></p>
+ *
+ * Additional options object can be provided.
+ * If `options.showType` property is set to `true` element types will be
+ * presented for {@link engine.treeView.AttributeElement AttributeElements} and {@link engine.treeView.ContainerElement
+ * ContainerElements}.
+ *
+ *		const attribute = new AttributeElement( 'b' );
+ *		const container = new ContainerElement( 'p' );
+ *		getData( attribute, null, { showType: true } ); // <attribute:b></attribute:b>
+ *		getData( container, null, { showType: true } ); // <container:p></container:p>
+ *
+ * if `options.showPriority` property is set to `true`, priority will be displayed for all
+ * {@link engine.treeView.AttributeElement AttributeElements}.
+ *
+ *		const attribute = new AttributeElement( 'b' );
+ *		attribute.priority = 20;
+ *		getData( attribute, null, { showPriority: true } ); // <b priority=20></b>
+ *
+ * @param {engine.treeView.Element|engine.treeView.DocumentFragment} root
+ * @param {engine.treeView.Selection} [selection]
+ * @param {Object} [options]
+ * @param {Boolean} [options.showType=false] When set to `true` type of elements will be printed ( `<container:p>`
+ * instead of `<p>` and `<attribute:b>` instead of `<b>`.
+ * @param {Boolean} [options.showPriority=false] When set to `true` AttributeElement's priority will be printed.
+ * @returns {String}
+ */
 export function getData( root, selection, options ) {
 	const viewStringify = new ViewStringify( root, selection, options );
 
