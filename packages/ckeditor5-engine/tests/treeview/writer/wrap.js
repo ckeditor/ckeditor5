@@ -551,5 +551,224 @@ describe( 'Writer', () => {
 				]
 			} );
 		} );
+
+		it( 'should wrap single element by merging attributes', () => {
+			// <p>[<b foo="bar" one="two"></b>]</p>
+			// wrap with <b baz="qux" one="two"></b>
+			// <p>[<b foo="bar" one="two" baz="qux"></b>]</p>
+			const b = new AttributeElement( 'b', {
+				foo: 'bar',
+				one: 'two'
+			} );
+			const p = new ContainerElement( 'p', null, b );
+			const range = Range.createFromParentsAndOffsets( p, 0, p, 1 );
+			const wrapper = new AttributeElement( 'b', {
+				baz: 'qux',
+				one: 'two'
+			} );
+
+			const newRange = writer.wrap( range, wrapper );
+			expect( b.getAttribute( 'foo' ) ).to.equal( 'bar' );
+			expect( b.getAttribute( 'baz' ) ).to.equal( 'qux' );
+			expect( b.getAttribute( 'one' ) ).to.equal( 'two' );
+
+			test( writer, newRange, p, {
+				instanceOf: ContainerElement,
+				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 1,
+				children: [
+					{ instanceOf: AttributeElement, name: 'b', children: [] }
+				]
+			} );
+		} );
+
+		it( 'should not merge attributes when they differ', () => {
+			// <p>[<b foo="bar" ></b>]</p>
+			// wrap with <b foo="baz"></b>
+			// <p>[<b foo="baz"><b foo="bar"></b></b>]</p>
+			const b = new AttributeElement( 'b', {
+				foo: 'bar'
+			} );
+			const p = new ContainerElement( 'p', null, b );
+			const range = Range.createFromParentsAndOffsets( p, 0, p, 1 );
+			const wrapper = new AttributeElement( 'b', {
+				foo: 'baz'
+			} );
+
+			const newRange = writer.wrap( range, wrapper );
+			expect( b.getAttribute( 'foo' ) ).to.equal( 'bar' );
+			expect( b.parent.isSimilar( wrapper ) ).to.be.true;
+			expect( b.parent.getAttribute( 'foo' ) ).to.equal( 'baz' );
+
+			test( writer, newRange, p, {
+				instanceOf: ContainerElement,
+				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 1,
+				children: [
+					{ instanceOf: AttributeElement, name: 'b', children: [
+						{ instanceOf: AttributeElement, name: 'b', children: [] }
+					] }
+				]
+			} );
+		} );
+
+		it( 'should wrap single element by merging classes', () => {
+			// <p>[<b class="foo bar baz" ></b>]</p>
+			// wrap with <b class="foo bar qux jax"></b>
+			// <p>[<b class="foo bar baz qux jax"></b>]</p>
+			const b = new AttributeElement( 'b', {
+				class: 'foo bar baz'
+			} );
+			const p = new ContainerElement( 'p', null, b );
+			const range = Range.createFromParentsAndOffsets( p, 0, p, 1 );
+			const wrapper = new AttributeElement( 'b', {
+				class: 'foo bar qux jax'
+			} );
+
+			const newRange = writer.wrap( range, wrapper );
+			expect( b.hasClass( 'foo', 'bar', 'baz', 'qux', 'jax' ) ).to.be.true;
+			test( writer, newRange, p, {
+				instanceOf: ContainerElement,
+				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 1,
+				children: [
+					{ instanceOf: AttributeElement, name: 'b', children: [] }
+				]
+			} );
+		} );
+
+		it( 'should wrap single element by merging styles', () => {
+			// <p>[<b style="color:red; position: absolute;"></b>]</p>
+			// wrap with <b style="color:red; top: 20px;"></b>
+			// <p>[<b class="color:red; position: absolute; top:20px;"></b>]</p>
+			const b = new AttributeElement( 'b', {
+				style: 'color: red; position: absolute;'
+			} );
+			const p = new ContainerElement( 'p', null, b );
+			const range = Range.createFromParentsAndOffsets( p, 0, p, 1 );
+			const wrapper = new AttributeElement( 'b', {
+				style: 'color:red; top: 20px;'
+			} );
+
+			const newRange = writer.wrap( range, wrapper );
+			expect( b.getStyle( 'color' ) ).to.equal( 'red' );
+			expect( b.getStyle( 'position' ) ).to.equal( 'absolute' );
+			expect( b.getStyle( 'top' ) ).to.equal( '20px' );
+
+			test( writer, newRange, p, {
+				instanceOf: ContainerElement,
+				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 1,
+				children: [
+					{ instanceOf: AttributeElement, name: 'b', children: [] }
+				]
+			} );
+		} );
+
+		it( 'should not merge styles when they differ', () => {
+			// <p>[<b style="color:red;"></b>]</p>
+			// wrap with <b style="color:black;"></b>
+			// <p>[<b style="color:black;"><b style="color:red;"></b></b>]</p>
+			const b = new AttributeElement( 'b', {
+				style: 'color:red'
+			} );
+			const p = new ContainerElement( 'p', null, b );
+			const range = Range.createFromParentsAndOffsets( p, 0, p, 1 );
+			const wrapper = new AttributeElement( 'b', {
+				style: 'color:black'
+			} );
+
+			const newRange = writer.wrap( range, wrapper );
+			expect( b.getStyle( 'color' ) ).to.equal( 'red' );
+			expect( b.parent.isSimilar( wrapper ) ).to.be.true;
+			expect( b.parent.getStyle( 'color' ) ).to.equal( 'black' );
+
+			test( writer, newRange, p, {
+				instanceOf: ContainerElement,
+				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 1,
+				children: [
+					{ instanceOf: AttributeElement, name: 'b', children: [
+						{ instanceOf: AttributeElement, name: 'b', children: [] }
+					] }
+				]
+			} );
+		} );
+
+		it( 'should not merge single elements when they have different priority', () => {
+			// <p>[<b style="color:red;"></b>]</p>
+			// wrap with <b style="color:red;"></b> with different priority
+			// <p>[<b style="color:red;"><b style="color:red;"></b></b>]</p>
+			const b = new AttributeElement( 'b', {
+				style: 'color:red'
+			} );
+			const p = new ContainerElement( 'p', null, b );
+			const range = Range.createFromParentsAndOffsets( p, 0, p, 1 );
+			const wrapper = new AttributeElement( 'b', {
+				style: 'color:red'
+			} );
+			wrapper.priority = b.priority - 1;
+
+			const newRange = writer.wrap( range, wrapper );
+			expect( b.getStyle( 'color' ) ).to.equal( 'red' );
+			expect( b.parent.isSimilar( wrapper ) ).to.be.true;
+			expect( b.parent.getStyle( 'color' ) ).to.equal( 'red' );
+
+			test( writer, newRange, p, {
+				instanceOf: ContainerElement,
+				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 1,
+				children: [
+					{ instanceOf: AttributeElement, name: 'b', children: [
+						{ instanceOf: AttributeElement, name: 'b', children: [] }
+					] }
+				]
+			} );
+		} );
+
+		it( 'should be merged with outside element when wrapping all children', () => {
+			// <p><b foo="bar">[{foobar}<i>{baz}</i>]</b></p>
+			// wrap with <b baz="qux"></b>
+			// <p>[<b foo="bar" baz="qux">{foobar}</b>]</p>
+			const text1 = new Text( 'foobar' );
+			const text2 = new Text( 'baz' );
+			const i = new AttributeElement( 'i', null, text2 );
+			const b = new AttributeElement( 'b', { foo: 'bar' }, [ text1, i ] );
+			const p = new ContainerElement( 'p', null, [ b ] );
+			const wrapper = new AttributeElement( 'b', { baz: 'qux' } );
+			const range = Range.createFromParentsAndOffsets( b, 0, b, 2 );
+
+			const newRange = writer.wrap( range, wrapper );
+			expect( b.getAttribute( 'foo' ) ).to.equal( 'bar' );
+			expect( b.getAttribute( 'baz' ) ).to.equal( 'qux' );
+			test( writer, newRange, p, {
+				instanceOf: ContainerElement,
+				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 1,
+				children: [
+					{
+						instanceof: AttributeElement,
+						name: 'b',
+						children: [
+							{ instanceOf: Text, data: 'foobar' },
+							{
+								instanceOf: AttributeElement,
+								name: 'i',
+								children: [
+									{ instanceOf: Text, data: 'baz' }
+								]
+							}
+						]
+					}
+				]
+			} );
+		} );
 	} );
 } );

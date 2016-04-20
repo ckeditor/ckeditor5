@@ -707,5 +707,222 @@ describe( 'Writer', () => {
 				]
 			} );
 		} );
+
+		it( 'should unwrap single element by removing matching attributes', () => {
+			// <p>[<b foo="bar" baz="qux" >test</b>]</p>
+			// unwrap using <b baz="qux"></b>
+			// <p>[<b foo="bar">test</b>]</p>
+			const text = new Text( 'test' );
+			const b = new AttributeElement( 'b', {
+				foo: 'bar',
+				baz: 'qux'
+			}, text );
+			const p = new ContainerElement( 'p', null, b );
+			const wrapper = new AttributeElement( 'b', {
+				baz: 'qux'
+			} );
+			const range = Range.createFromParentsAndOffsets( p, 0, p, 1 );
+
+			const newRange = writer.unwrap( range, wrapper );
+			expect( b.getAttribute( 'foo' ) ).to.equal( 'bar' );
+			expect( b.hasAttribute( 'baz' ) ).to.be.false;
+			expect( b.parent ).to.equal( p );
+			test( writer, newRange, p, {
+				instanceof: ContainerElement,
+				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 1,
+				children: [
+					{
+						instanceof: AttributeElement,
+						name: 'b',
+						children: [
+							{ instanceof: Text, data: 'test' }
+						]
+					}
+				]
+			} );
+		} );
+
+		it( 'should not unwrap single element when attributes are different', () => {
+			// <p>[<b foo="bar" baz="qux">test</b>]</p>
+			// unwrap using <b baz="qux" test="true"></b>
+			// <p>[<b foo="bar" baz="qux">test</b>]</p>
+			const text = new Text( 'test' );
+			const b = new AttributeElement( 'b', {
+				foo: 'bar',
+				baz: 'qux'
+			}, text );
+			const p = new ContainerElement( 'p', null, b );
+			const wrapper = new AttributeElement( 'b', {
+				baz: 'qux',
+				test: 'true'
+			} );
+			const range = Range.createFromParentsAndOffsets( p, 0, p, 1 );
+
+			const newRange = writer.unwrap( range, wrapper );
+			expect( b.getAttribute( 'foo' ) ).to.equal( 'bar' );
+			expect( b.getAttribute( 'baz' ) ).to.equal( 'qux' );
+			expect( b.parent ).to.equal( p );
+			test( writer, newRange, p, {
+				instanceof: ContainerElement,
+				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 1,
+				children: [
+					{
+						instanceof: AttributeElement,
+						name: 'b',
+						children: [
+							{ instanceof: Text, data: 'test' }
+						]
+					}
+				]
+			} );
+		} );
+
+		it( 'should unwrap single element by removing matching classes', () => {
+			// <p>[<b class="foo bar baz">test</b>]</p>
+			// unwrap using <b class="baz foo"></b>
+			// <p>[<b class="bar">test</b>]</p>
+			const text = new Text( 'test' );
+			const b = new AttributeElement( 'b', {
+				class: 'foo bar baz'
+			}, text );
+			const p = new ContainerElement( 'p', null, b );
+			const wrapper = new AttributeElement( 'b', {
+				class: 'baz foo'
+			} );
+			const range = Range.createFromParentsAndOffsets( p, 0, p, 1 );
+
+			const newRange = writer.unwrap( range, wrapper );
+			expect( b.hasClass( 'bar' ) ).to.be.true;
+			expect( b.hasClass( 'foo' ) ).to.be.false;
+			expect( b.hasClass( 'baz' ) ).to.be.false;
+			expect( b.parent ).to.equal( p );
+			test( writer, newRange, p, {
+				instanceof: ContainerElement,
+				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 1,
+				children: [
+					{
+						instanceof: AttributeElement,
+						name: 'b',
+						children: [
+							{ instanceof: Text, data: 'test' }
+						]
+					}
+				]
+			} );
+		} );
+
+		it( 'should not unwrap single element when classes are different', () => {
+			// <p>[<b class="foo bar baz">test</b>]</p>
+			// unwrap using <b class="baz foo qux"></b>
+			// <p>[<b class="foo bar baz">test</b>]</p>
+			const text = new Text( 'test' );
+			const b = new AttributeElement( 'b', {
+				class: 'foo bar baz'
+			}, text );
+			const p = new ContainerElement( 'p', null, b );
+			const wrapper = new AttributeElement( 'b', {
+				class: 'baz foo qux'
+			} );
+			const range = Range.createFromParentsAndOffsets( p, 0, p, 1 );
+
+			const newRange = writer.unwrap( range, wrapper );
+			expect( b.hasClass( 'bar' ) ).to.be.true;
+			expect( b.hasClass( 'foo' ) ).to.be.true;
+			expect( b.hasClass( 'baz' ) ).to.be.true;
+			expect( b.parent ).to.equal( p );
+			test( writer, newRange, p, {
+				instanceof: ContainerElement,
+				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 1,
+				children: [
+					{
+						instanceof: AttributeElement,
+						name: 'b',
+						children: [
+							{ instanceof: Text, data: 'test' }
+						]
+					}
+				]
+			} );
+		} );
+
+		it( 'should unwrap single element by removing matching styles', () => {
+			// <p>[<b style="color:red; position:absolute; top:10px;">test</b>]</p>
+			// unwrap using <b style="position: absolute;"></b>
+			// <p>[<b style="color:red; top:10px;">test</b>]</p>
+			const text = new Text( 'test' );
+			const b = new AttributeElement( 'b', {
+				style: 'color:red; position:absolute; top:10px;'
+			}, text );
+			const p = new ContainerElement( 'p', null, b );
+			const wrapper = new AttributeElement( 'b', {
+				style: 'position: absolute;'
+			} );
+			const range = Range.createFromParentsAndOffsets( p, 0, p, 1 );
+
+			const newRange = writer.unwrap( range, wrapper );
+			expect( b.getStyle( 'color' ) ).to.equal( 'red' );
+			expect( b.getStyle( 'top' ) ).to.equal( '10px' );
+			expect( b.hasStyle( 'position' ) ).to.be.false;
+			expect( b.parent ).to.equal( p );
+			test( writer, newRange, p, {
+				instanceof: ContainerElement,
+				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 1,
+				children: [
+					{
+						instanceof: AttributeElement,
+						name: 'b',
+						children: [
+							{ instanceof: Text, data: 'test' }
+						]
+					}
+				]
+			} );
+		} );
+
+		it( 'should not unwrap single element when styles are different', () => {
+			// <p>[<b style="color:red; position:absolute; top:10px;">test</b>]</p>
+			// unwrap using <b style="position: relative;"></b>
+			// <p>[<b style="color:red; position:absolute; top:10px;">test</b>]</p>
+			const text = new Text( 'test' );
+			const b = new AttributeElement( 'b', {
+				style: 'color:red; position:absolute; top:10px;'
+			}, text );
+			const p = new ContainerElement( 'p', null, b );
+			const wrapper = new AttributeElement( 'b', {
+				style: 'position: relative;'
+			} );
+			const range = Range.createFromParentsAndOffsets( p, 0, p, 1 );
+
+			const newRange = writer.unwrap( range, wrapper );
+			expect( b.getStyle( 'color' ) ).to.equal( 'red' );
+			expect( b.getStyle( 'top' ) ).to.equal( '10px' );
+			expect( b.getStyle( 'position' ) ).to.equal( 'absolute' );
+			expect( b.parent ).to.equal( p );
+			test( writer, newRange, p, {
+				instanceof: ContainerElement,
+				name: 'p',
+				rangeStart: 0,
+				rangeEnd: 1,
+				children: [
+					{
+						instanceof: AttributeElement,
+						name: 'b',
+						children: [
+							{ instanceof: Text, data: 'test' }
+						]
+					}
+				]
+			} );
+		} );
 	} );
 } );

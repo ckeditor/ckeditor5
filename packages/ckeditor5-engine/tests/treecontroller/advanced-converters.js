@@ -459,7 +459,6 @@ describe( 'custom attribute handling for given element', () => {
 		} );
 		modelDispatcher.on( 'removeAttribute:linkTitle:quote', modelChangeLinkAttrQuoteConverter );
 
-
 		// QUOTE VIEW TO MODEL CONVERTERS
 		viewDispatcher.on( 'element:blockquote', ( evt, data, consumable, conversionApi ) => {
 			if ( consumable.consume( data.input, { name: true } ) ) {
@@ -492,9 +491,7 @@ describe( 'custom attribute handling for given element', () => {
 
 		modelDispatcher.convertInsert( range );
 
-		// The expected value is different than in example or than what is really expected as it should be one link,
-		// but writer does not have merging feature yet.
-		expect( viewToString( viewRoot ) ).to.equal( '<div><a title="Foo title"><a href="foo.html">foo</a></a></div>' );
+		expect( viewToString( viewRoot ) ).to.equal( '<div><a href="foo.html" title="Foo title">foo</a></div>' );
 
 		// Let's change link's attributes.
 		for ( let value of range ) {
@@ -504,7 +501,7 @@ describe( 'custom attribute handling for given element', () => {
 		modelDispatcher.convertAttribute( 'changeAttribute', range, 'linkHref', 'foo.html', 'bar.html' );
 		modelDispatcher.convertAttribute( 'changeAttribute', range, 'linkTitle', 'Foo title', 'Bar title' );
 
-		expect( viewToString( viewRoot ) ).to.equal( '<div><a title="Bar title"><a href="bar.html">foo</a></a></div>' );
+		expect( viewToString( viewRoot ) ).to.equal( '<div><a href="bar.html" title="Bar title">foo</a></div>' );
 
 		// Let's remove a letter from the link.
 		const removed = modelRoot.removeChildren( 0, 1 );
@@ -514,7 +511,7 @@ describe( 'custom attribute handling for given element', () => {
 			ModelRange.createFromElement( modelDoc.graveyard )
 		);
 
-		expect( viewToString( viewRoot ) ).to.equal( '<div><a title="Bar title"><a href="bar.html">oo</a></a></div>' );
+		expect( viewToString( viewRoot ) ).to.equal( '<div><a href="bar.html" title="Bar title">oo</a></div>' );
 
 		range = ModelRange.createFromElement( modelRoot );
 
@@ -590,7 +587,7 @@ describe( 'custom attribute handling for given element', () => {
 					'a',
 					{
 						href: 'foo.html',
-						title:'Foo source'
+						title: 'Foo source'
 					},
 					new ViewText( 'see source' )
 				)
@@ -660,7 +657,8 @@ it( 'default table view to model converter', () => {
 	let model = viewDispatcher.convert( viewTable );
 	let modelFragment = new ModelDocumentFragment( model );
 
-	expect( modelToString( modelFragment ) ).to.equal( '<paragraph>foo <$text linkHref="bar.html">bar</$text></paragraph><paragraph>abc</paragraph>' );
+	expect( modelToString( modelFragment ) )
+		.to.equal( '<paragraph>foo <$text linkHref="bar.html">bar</$text></paragraph><paragraph>abc</paragraph>' );
 } );
 
 // Model converter that converts any non-converted elements and attributes into view elements and attributes.
