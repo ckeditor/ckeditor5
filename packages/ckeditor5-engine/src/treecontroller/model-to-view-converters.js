@@ -118,7 +118,7 @@ export function insertText() {
  * @param {Function} [attributeCreator] Function returning an object with two properties: `key` and `value`, which
  * represents attribute key and attribute value to be set on a {@link engine.treeView.Element view element}. The function
  * is passed all the parameters of the {@link engine.treeController.ModelConversionDispatcher.addAttribute}
- * or {@link engine.treeController.ModelConversionDispatcher.changeAttribute) event.
+ * or {@link engine.treeController.ModelConversionDispatcher.changeAttribute} event.
  * @returns {Function} Set/change attribute converter.
  */
 export function setAttribute( attributeCreator ) {
@@ -165,7 +165,7 @@ export function setAttribute( attributeCreator ) {
  * @param {Function} [attributeCreator] Function returning an object with two properties: `key` and `value`, which
  * represents attribute key and attribute value to be removed from {@link engine.treeView.Element view element}. The function
  * is passed all the parameters of the {@link engine.treeController.ModelConversionDispatcher.addAttribute}
- * or {@link engine.treeController.ModelConversionDispatcher.changeAttribute) event.
+ * or {@link engine.treeController.ModelConversionDispatcher.changeAttribute} event.
  * @returns {Function} Remove attribute converter.
  */
 export function removeAttribute( attributeCreator ) {
