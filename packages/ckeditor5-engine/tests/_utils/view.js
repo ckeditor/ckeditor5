@@ -7,6 +7,7 @@
 
 /* jshint latedef:false */
 
+import DocumentFragment from '/ckeditor5/engine/treeview/documentfragment.js';
 import Element from '/ckeditor5/engine/treeview/element.js';
 import AttributeElement from '/ckeditor5/engine/treeview/attributeelement.js';
 import ContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
@@ -23,19 +24,32 @@ export function getData( root, selection, options ) {
 	return viewStringify.stringify();
 }
 
+/**
+ * Private helper class used for converting view tree to string.
+ *
+ * @private
+ */
 class ViewStringify {
-	constructor( root, selection, options = {} ) {
+	/**
+	 * Creates ViewStringify instance.
+	 * @param root
+	 * @param {engine.treeView.Selection} [selection=null] Selection which ranges should be also converted to string.
+	 * @param {Object} [options] Options object.
+	 * @param {Boolean} [options.showType=false] When set to `true` type of elements will be printed ( `<container:p>`
+	 * instead of `<p>` and `<attribute:b>` instead of `<b>`.
+	 * @param {Boolean} [options.showPriority=false] When set to `true` AttributeElement's priority will be printed.
+	 */
+	constructor( root, selection = null, options = {} ) {
 		this.root = root;
-		this.selection = null;
+		this.selection = selection;
 		this.ranges = [];
 
-		if ( selection ) {
-			this.selection = selection;
+		if ( this.selection ) {
 			this.ranges = [ ...selection.getRanges() ];
 		}
 
-		this.showTypes = !!options.showTypes;
-		this.showPriorities = !!options.showPriorities;
+		this.showType = !!options.showType;
+		this.showPriority = !!options.showPriority;
 	}
 
 	/**
@@ -52,24 +66,38 @@ class ViewStringify {
 		return result;
 	}
 
-	_walkView( root, cb ) {
-		if ( root instanceof Element ) {
-			cb( this._stringifyElementOpen( root ) );
+	/**
+	 * Executes simple walker that iterates over all elements in the view tree starting from root element.
+	 * Calls `callback` with parsed chunks of string data.
+	 *
+	 * @private
+	 * @param root
+	 * @param {Function} callback
+	 */
+	_walkView( root, callback ) {
+		const isElement = root instanceof Element;
 
-			let offset = 0;
-			this._checkElementRanges( root, offset, cb );
-
-			for ( let child of root.getChildren() ) {
-				this._walkView( child, cb );
-				offset++;
-				this._checkElementRanges( root, offset, cb );
+		if ( isElement || root instanceof DocumentFragment ) {
+			if ( isElement ) {
+				callback( this._stringifyElementOpen( root ) );
 			}
 
-			cb( this._stringifyElementClose( root ) );
+			let offset = 0;
+			this._checkElementRanges( root, offset, callback );
+
+			for ( let child of root.getChildren() ) {
+				this._walkView( child, callback );
+				offset++;
+				this._checkElementRanges( root, offset, callback );
+			}
+
+			if ( isElement ) {
+				callback( this._stringifyElementClose( root ) );
+			}
 		}
 
 		if ( root instanceof Text ) {
-			cb( this._checkTextRanges( root ) );
+			callback( this._checkTextRanges( root ) );
 		}
 	}
 
@@ -122,39 +150,117 @@ class ViewStringify {
 		return result;
 	}
 
+	/**
+	 * Converts passed {@link engine.treeView.Element Element} to opening tag.
+	 * Depending on current configuration opening tag can be simple (`<a>`), contain type prefix (`<container:p>` or
+	 * `<attribute:a>`), contain priority information ( `<attribute:a priority=20>` ). Element's attributes also
+	 * will be included (`<a href="http://ckeditor.com" name="foobar">`).
+	 *
+	 * @private
+	 * @param {engine.treeView.Element} element
+	 * @returns {string}
+	 */
 	_stringifyElementOpen( element ) {
-		let attributes = [];
-		const namespace = this._stringifyElementType( element );
+		const name = this._stringifyElementName( element );
+		const priority = this._stringifyElementPriority( element );
+		const attributes = this._stringifyElementAttributes( element );
+		const parts = [ name, priority, attributes ];
+
+		return `<${ parts.filter( i => i !== '' ).join( ' ' ) }>`;
+	}
+
+	/**
+	 * Converts passed {@link engine.treeView.Element Element} to closing tag.
+	 * Depending on current configuration opening tag can be simple (`</a>`) or contain type prefix (`</container:p>` or
+	 * `</attribute:a>`).
+	 *
+	 * @private
+	 * @param {engine.treeView.Element} element
+	 * @returns {string}
+	 */
+	_stringifyElementClose( element ) {
+		const name = this._stringifyElementName( element );
+
+		return `</${ name }>`;
+	}
+
+	/**
+	 * Converts passed {@link engine.treeView.Element Element} its name representation.
+	 * Depending on current configuration name can be simple (`a`) or contain type prefix (`container:p` or
+	 * `attribute:a`).
+	 *
+	 * @private
+	 * @param {engine.treeView.Element} element
+	 * @returns {string}
+	 */
+	_stringifyElementName( element ) {
+		let name = element.name;
+
+		if ( this.showType ) {
+			if ( element instanceof AttributeElement ) {
+				return 'attribute:' + name;
+			}
+
+			if ( element instanceof ContainerElement ) {
+				return 'container:' + name;
+			}
+		}
+
+		return name;
+	}
+
+	/**
+	 * Converts passed {@link engine.treeView.Element Element} to its priority representation.
+	 * Priority string representation will be returned when passed element is an instance of
+	 * {@link engine.treeView.AttributeElement AttributeElement} and current configuration allow to show priority.
+	 * Otherwise returns empty string.
+	 *
+	 * @private
+	 * @param {engine.treeView.Element} element
+	 * @returns {string}
+	 */
+	_stringifyElementPriority( element ) {
+		if ( this.showPriority && element instanceof AttributeElement ) {
+			return `priority=${ element.priority }`;
+		}
+
+		return '';
+	}
+
+	/**
+	 * Converts passed {@link engine.treeView.Element Element} attributes to their string representation.
+	 * If element has no attributes - empty string is returned.
+	 *
+	 * @private
+	 * @param {engine.treeView.Element} element
+	 * @returns {string}
+	 */
+	_stringifyElementAttributes( element ) {
+		const attributes = [];
 
 		// TODO: Maybe attributes should be put in alphabetical order, it might be easier to write expected string.
 		for ( let attribute of element.getAttributeKeys() ) {
 			attributes.push( `${ attribute }="${ element.getAttribute( attribute ) }"` );
 		}
 
-		return `<${ namespace + element.name }${ attributes.length > 0 ? ' ' + attributes.join( ' ' ) : '' }>`;
+		return attributes.join( ' ' );
 	}
 
-	_stringifyElementClose( element ) {
-		const namespace = this._stringifyElementType( element );
-
-		return `</${ namespace + element.name }>`;
-	}
-
-	_stringifyElementType( element ) {
-		if ( this.showTypes ) {
-			if ( element instanceof AttributeElement ) {
-				return 'attribute:';
-			}
-
-			if ( element instanceof ContainerElement ) {
-				return 'container:';
-			}
+	/**
+	 * Inserts given text at specified index in input text.
+	 * If index is outside input text boundaries - returns same, unmodified string.
+	 *
+	 * @private
+	 * @param {String} input Input string.
+	 * @param {Number} index Index where to insert inside input string.
+	 * @param {String} insert Text to insert.
+	 * @returns {string}
+	 */
+	static _insertToString( input, index, insert ) {
+		if ( index < 0 || index > input.length ) {
+			return input;
 		}
 
-		return '';
-	}
-
-	static _insertToString( source, index, insert ) {
-		return source.substr( 0, index ) + insert + source.substr( index );
+		return input.substr( 0, index ) + insert + input.substr( index );
 	}
 }

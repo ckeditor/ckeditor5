@@ -6,6 +6,7 @@
 'use strict';
 
 import { getData } from '/tests/engine/_utils/view.js';
+import DocumentFragment from '/ckeditor5/engine/treeview/documentfragment.js';
 import Element from '/ckeditor5/engine/treeview/element.js';
 import AttributeElement from '/ckeditor5/engine/treeview/attributeelement.js';
 import ContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
@@ -87,8 +88,28 @@ describe( 'view test utils', () => {
 			const b = new AttributeElement( 'b', null, text );
 			const p = new ContainerElement( 'p', null, b );
 
-			expect( getData( p, null, { showTypes: true } ) )
+			expect( getData( p, null, { showType: true } ) )
 				.to.equal( '<container:p><attribute:b>foobar</attribute:b></container:p>' );
 		} );
+
+		it( 'should write elements priorities when needed', () => {
+			const text = new Text( 'foobar' );
+			const b = new AttributeElement( 'b', null, text );
+			const p = new ContainerElement( 'p', null, b );
+
+			expect( getData( p, null, { showType: true, showPriority: true } ) )
+				.to.equal( '<container:p><attribute:b priority=10>foobar</attribute:b></container:p>' );
+		} );
+
+		it( 'should parse DocumentFragment as root', () => {
+			const text1 = new Text( 'foobar' );
+			const text2 = new Text( 'bazqux' );
+			const b1 = new Element( 'b', null, text1 );
+			const b2 = new Element( 'b', null, text2 );
+			const fragment = new DocumentFragment( [ b1, b2 ] );
+			expect( getData( fragment, null ) ).to.equal( '<b>foobar</b><b>bazqux</b>' );
+		} );
+
+		// TODO: test when range is outside element/text
 	} );
 } );
