@@ -50,11 +50,18 @@ describe( 'Document', () => {
 
 	describe( 'createRoot', () => {
 		it( 'should create a new RootElement, add it to roots map and return it', () => {
-			let root = doc.createRoot( 'root', 'root' );
+			let root = doc.createRoot( 'root' );
 
 			expect( doc._roots.size ).to.equal( 2 );
 			expect( root ).to.be.instanceof( RootElement );
 			expect( root.getChildCount() ).to.equal( 0 );
+			expect( root ).to.have.property( 'name', '$root' );
+		} );
+
+		it( 'should create a new RootElement with the specified name', () => {
+			let root = doc.createRoot( 'root', 'foo' );
+
+			expect( root ).to.have.property( 'name', 'foo' );
 		} );
 
 		it( 'should throw an error when trying to create a second root with the same name', () => {

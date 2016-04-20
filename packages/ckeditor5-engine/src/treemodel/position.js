@@ -5,7 +5,7 @@
 
 'use strict';
 
-import RootElement from './rootelement.js';
+// import RootElement from './rootelement.js';
 import DocumentFragment from './documentfragment.js';
 import Element from './element.js';
 import last from '../../utils/lib/lodash/last.js';
@@ -22,11 +22,12 @@ export default class Position {
 	/**
 	 * Creates a position.
 	 *
-	 * @param {engine.treeModel.RootElement|engine.treeModel.DocumentFragment} root Root element for the position path.
+	 * @param {engine.treeModel.Element|engine.treeModel.DocumentFragment} root
+	 * Root of the position path. Element (most often a {@link engine.treeModel.RootElement}) or a document fragment.
 	 * @param {Array.<Number>} path Position path. See {@link engine.treeModel.Position#path} property for more information.
 	 */
 	constructor( root, path ) {
-		if ( !( root instanceof RootElement ) && !( root instanceof DocumentFragment ) ) {
+		if ( !( root instanceof Element ) && !( root instanceof DocumentFragment ) ) {
 			/**
 			 * Position root invalid.
 			 *
@@ -34,13 +35,6 @@ export default class Position {
 			 */
 			throw new CKEditorError( 'position-root-invalid: Position root invalid.' );
 		}
-
-		/**
-		 * Root element for the position path.
-		 *
-		 * @member {engine.treeModel.RootElement|engine.treeModel.DocumentFragment} engine.treeModel.Position#root
-		 */
-		this.root = root;
 
 		if ( !( path instanceof Array ) || path.length === 0 ) {
 			/**
@@ -51,6 +45,18 @@ export default class Position {
 			 */
 			throw new CKEditorError( 'position-path-incorrect: Position path must be an Array with at least one item.', { path: path } );
 		}
+
+		// Normalize the root and path (if element was passed).
+		path = root.getPath().concat( path );
+		root = root.root;
+
+		/**
+		 * Root of the position path.
+		 *
+		 * @readonly
+		 * @member {engine.treeModel.Element|engine.treeModel.DocumentFragment} engine.treeModel.Position#root
+		 */
+		this.root = root;
 
 		/**
 		 * Position of the node it the tree. Must contain at least one item. For example:
@@ -417,10 +423,20 @@ export default class Position {
 		}
 	}
 
+	/**
+	 * Whether position is at the beginning of its {@link engine.treeModel.Position#parent}.
+	 *
+	 * @returns {Boolean}
+	 */
 	isAtStart() {
 		return this.offset === 0;
 	}
 
+	/**
+	 * Whether position is at the end of its {@link engine.treeModel.Position#parent}.
+	 *
+	 * @returns {Boolean}
+	 */
 	isAtEnd() {
 		return this.offset == this.parent.getChildCount();
 	}
