@@ -71,6 +71,15 @@ describe( 'view test utils', () => {
 			expect( getData( p, selection ) ).to.equal( '<p><b>f{ooba}r</b><b>bazqux</b></p>' );
 		} );
 
+		it( 'should write collapsed selection ranges inside texts', () => {
+			const text = new Text( 'foobar' );
+			const p = new Element( 'p', null, text );
+			const range = Range.createFromParentsAndOffsets( text, 0, text, 0 );
+			const selection = new Selection();
+			selection.addRange( range );
+			expect( getData( p, selection ) ).to.equal( '<p>{}foobar</p>' );
+		} );
+
 		it( 'should write ranges that start inside text end ends between elements', () => {
 			const text1 = new Text( 'foobar' );
 			const text2 = new Text( 'bazqux' );
@@ -110,6 +119,57 @@ describe( 'view test utils', () => {
 			expect( getData( fragment, null ) ).to.equal( '<b>foobar</b><b>bazqux</b>' );
 		} );
 
-		// TODO: test when range is outside element/text
+		it( 'should not write ranges outside elements', () => {
+			const text = new Text( 'foobar' );
+			const b = new Element( 'b', null, text );
+			const p = new Element( 'p', null, b );
+			const range1 = Range.createFromParentsAndOffsets( p, 0, p, 5 );
+			const range2 = Range.createFromParentsAndOffsets( p, -1, p, 1 );
+			const range3 = Range.createFromParentsAndOffsets( text, 0, text, 7 );
+			const range4 = Range.createFromParentsAndOffsets( text, -1, text, 2 );
+			const range5 = Range.createFromParentsAndOffsets( text, 6, text, 8 );
+			const selection = new Selection();
+			selection.addRange( range1 );
+			expect( getData( p, selection ) ).to.equal( '<p>[<b>foobar</b></p>' );
+			selection.setRanges( [ range2 ] );
+			expect( getData( p, selection ) ).to.equal( '<p><b>foobar</b>]</p>' );
+			selection.setRanges( [ range3 ] );
+			expect( getData( p, selection ) ).to.equal( '<p><b>{foobar</b></p>' );
+			selection.setRanges( [ range4 ] );
+			expect( getData( p, selection ) ).to.equal( '<p><b>fo}obar</b></p>' );
+			selection.setRanges( [ range5 ] );
+			expect( getData( p, selection ) ).to.equal( '<p><b>foobar{</b></p>' );
+		} );
+
+		it( 'should write multiple ranges from selection #1', () => {
+			const text1 = new Text( 'foobar' );
+			const text2 = new Text( 'bazqux' );
+			const b1 = new Element( 'b', null, text1 );
+			const b2 = new Element( 'b', null, text2 );
+			const p = new Element( 'p', null, [ b1, b2 ] );
+			const range1 = Range.createFromParentsAndOffsets( p, 0, p, 1 );
+			const range2 = Range.createFromParentsAndOffsets( p, 1, p, 1 );
+			// const range3 = Range.createFromParentsAndOffsets( text2, 3, text2, 4 );
+			// const range4 = Range.createFromParentsAndOffsets( p, 1, p, 1 );
+			const selection = new Selection();
+			selection.setRanges( [ range2, range1 ] );
+
+			expect( getData( p, selection ) ).to.equal( '<p>[<b>foobar</b>][]<b>bazqux</b></p>' );
+		} );
+
+		it( 'should write multiple ranges from selection #2', () => {
+			const text1 = new Text( 'foobar' );
+			const text2 = new Text( 'bazqux' );
+			const b = new Element( 'b', null, text1 );
+			const p = new Element( 'p', null, [ b, text2 ] );
+			const range1 = Range.createFromParentsAndOffsets( p, 0, p, 1 );
+			const range2 = Range.createFromParentsAndOffsets( text2, 0, text2, 3 );
+			const range3 = Range.createFromParentsAndOffsets( text2, 3, text2, 4 );
+			const range4 = Range.createFromParentsAndOffsets( p, 1, p, 1 );
+			const selection = new Selection();
+			selection.setRanges( [ range1, range2, range3, range4 ] );
+
+			expect( getData( p, selection ) ).to.equal( '<p>[<b>foobar</b>][]{baz}{q}ux</p>' );
+		} );
 	} );
 } );

@@ -129,7 +129,7 @@ class ViewStringify {
 	 * Calls `callback` with parsed chunks of string data.
 	 *
 	 * @private
-	 * @param root
+	 * @param {engine.treeView.DocumentFragment|engine.treeView.Element|engine.treeView.Text} root
 	 * @param {Function} callback
 	 */
 	_walkView( root, callback ) {
@@ -141,12 +141,12 @@ class ViewStringify {
 			}
 
 			let offset = 0;
-			this._checkElementRanges( root, offset, callback );
+			callback( this._stringifyElementRanges( root, offset ) );
 
 			for ( let child of root.getChildren() ) {
 				this._walkView( child, callback );
 				offset++;
-				this._checkElementRanges( root, offset, callback );
+				callback( this._stringifyElementRanges( root, offset ) );
 			}
 
 			if ( isElement ) {
@@ -155,30 +155,38 @@ class ViewStringify {
 		}
 
 		if ( root instanceof Text ) {
-			callback( this._checkTextRanges( root ) );
+			callback( this._stringifyTextRanges( root ) );
 		}
 	}
 
 	/**
 	 * Checks if given {@link engine.treeView.Element Element} has {@link engine.treeView.Range#start range start} or
-	 * {@link engine.treeView.Range#start range end} placed at given offset. Calls `callback` function each time range
-	 * start or end is found.
+	 * {@link engine.treeView.Range#start range end} placed at given offset and returns its string representation.
 	 *
 	 * @private
 	 * @param {engine.treeView.Element} element
 	 * @param {Number} offset
-	 * @param {Function} callback
 	 */
-	_checkElementRanges( element, offset, callback ) {
+	_stringifyElementRanges( element, offset ) {
+		let start = '';
+		let end = '';
+		let collapsed = '';
+
 		for ( let range of this.ranges ) {
 			if ( range.start.parent == element && range.start.offset === offset ) {
-				callback( ELEMENT_RANGE_START_TOKEN );
+				if ( range.isCollapsed ) {
+					collapsed += ELEMENT_RANGE_START_TOKEN + ELEMENT_RANGE_END_TOKEN;
+				} else {
+					start += ELEMENT_RANGE_START_TOKEN;
+				}
 			}
 
-			if ( range.end.parent === element && range.end.offset === offset ) {
-				callback( ELEMENT_RANGE_END_TOKEN );
+			if ( range.end.parent === element && range.end.offset === offset && !range.isCollapsed ) {
+				end += ELEMENT_RANGE_END_TOKEN;
 			}
 		}
+
+		return end + collapsed + start;
 	}
 
 	/**
@@ -187,25 +195,43 @@ class ViewStringify {
 	 * with range delimiters placed inside.
 	 *
 	 * @private
-	 * @param {engine.treeView.Text} textNode
+	 * @param {engine.treeView.Text} node
 	 */
-	_checkTextRanges( textNode ) {
-		let result = textNode.data;
-		let textOffset = 0;
+	_stringifyTextRanges( node ) {
+		const length = node.data.length;
+		let result = node.data.split( '' );
+
+		// Add one more element for ranges ending after last character in text.
+		result[ length ] = '';
+
+		// Represent each letter as object with information about opening/closing ranges at each offset.
+		result = result.map( ( letter ) => {
+			return {
+				letter: letter,
+				start: '',
+				end: '',
+				collapsed: ''
+			};
+		}  );
 
 		for ( let range of this.ranges ) {
-			if ( range.start.parent == textNode ) {
-				result = ViewStringify._insertToString( result, range.start.offset + textOffset, TEXT_RANGE_START_TOKEN );
-				textOffset++;
+			const start = range.start;
+			const end = range.end;
+
+			if ( start.parent == node && start.offset >= 0 && start.offset <= length ) {
+				if ( range.isCollapsed ) {
+					result[ end.offset ].collapsed += TEXT_RANGE_START_TOKEN + TEXT_RANGE_END_TOKEN;
+				} else {
+					result[ start.offset ].start += TEXT_RANGE_START_TOKEN;
+				}
 			}
 
-			if ( range.end.parent == textNode && !range.isCollapsed ) {
-				result = ViewStringify._insertToString( result, range.end.offset + textOffset, TEXT_RANGE_END_TOKEN );
-				textOffset++;
+			if ( end.parent == node && end.offset >= 0 && end.offset <= length && !range.isCollapsed  ) {
+				result[ end.offset ].end += TEXT_RANGE_END_TOKEN;
 			}
 		}
 
-		return result;
+		return result.map( item => item.end + item.collapsed + item.start + item.letter ).join( '' );
 	}
 
 	/**
@@ -302,23 +328,5 @@ class ViewStringify {
 		}
 
 		return attributes.join( ' ' );
-	}
-
-	/**
-	 * Inserts given text at specified index in input text.
-	 * If index is outside input text boundaries - returns same, unmodified string.
-	 *
-	 * @private
-	 * @param {String} input Input string.
-	 * @param {Number} index Index where to insert inside input string.
-	 * @param {String} insert Text to insert.
-	 * @returns {string}
-	 */
-	static _insertToString( input, index, insert ) {
-		if ( index < 0 || index > input.length ) {
-			return input;
-		}
-
-		return input.substr( 0, index ) + insert + input.substr( index );
 	}
 }
