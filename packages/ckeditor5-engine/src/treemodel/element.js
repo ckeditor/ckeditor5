@@ -68,10 +68,6 @@ export default class Element extends Node {
 		return this._children.length;
 	}
 
-	isEmpty() {
-		return this.getChildCount() === 0;
-	}
-
 	/**
 	 * Gets index of the given child node.
 	 *
@@ -175,6 +171,21 @@ export default class Element extends Node {
 		this._attrs.clear();
 	}
 
+	/**
+	 * Checks whether element is empty (has no children).
+	 *
+	 * @returns {Boolean}
+	 */
+	isEmpty() {
+		return this.getChildCount() === 0;
+	}
+
+	/**
+	 * Gets the text content of the element. The return value is created by concatenating all
+	 * text nodes in this element and its descendants.
+	 *
+	 * @returns {String}
+	 */
 	getText() {
 		let text = '';
 

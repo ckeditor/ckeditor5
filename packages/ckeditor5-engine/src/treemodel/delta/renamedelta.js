@@ -26,6 +26,7 @@ export default class RenameDelta extends Delta {
 }
 
 function apply( batch, delta, operation ) {
+	batch.addDelta( delta );
 	delta.addOperation( operation );
 	batch.doc.applyOperation( operation );
 }
@@ -56,4 +57,6 @@ register( 'rename', function( newName, element ) {
 		this, delta,
 		new RemoveOperation( Position.createBefore( element ), 1, this.doc.version )
 	);
+
+	return this;
 } );

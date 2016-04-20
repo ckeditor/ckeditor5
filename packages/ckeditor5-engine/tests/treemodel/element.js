@@ -219,4 +219,24 @@ describe( 'Element', () => {
 			} );
 		} );
 	} );
+
+	describe( 'isEmpty', () => {
+		it( 'checks whether element has no children', () => {
+			expect( new Element( 'a' ).isEmpty() ).to.be.true;
+			expect( new Element( 'a', null, 'x' ).isEmpty() ).to.be.false;
+		} );
+	} );
+
+	describe( 'getText()', () => {
+		it( 'returns all text nodes', () => {
+			const el = new Element( 'p', null, [
+				new Element( 'p', null, 'abc' ),
+				'def',
+				new Element( 'p', null, 'ghi' ),
+				'jkl',
+			] );
+
+			expect( el.getText() ).to.equal( 'abcdefghijkl' );
+		} );
+	} );
 } );
