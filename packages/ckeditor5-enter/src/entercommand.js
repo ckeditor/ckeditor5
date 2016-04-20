@@ -26,6 +26,16 @@ export default class EnterCommand extends Command {
 	}
 }
 
+/**
+ * Enters new block in the way how <kbd>Enter</kbd> is expected to work.
+ *
+ * @param {engine.treeModel.Batch} batch Batch to which the deltas will be added.
+ * @param {engine.treeModel.Selection} selection
+ * @param {Object} options
+ * @param {Boolean} options.defaultBlockName Name of the block which should be created when enter leaves
+ * another block. Usuall set to `'paragraph'`. E.g. when entering block in `<heading>foo^</heading>` the result will be
+ * `<heading>foo</heading><paragraph>^</paragraph>`.
+ */
 export function enterBlock( batch, selection, options = {} ) {
 	const defaultBlockName = options.defaultBlockName;
 	const doc = batch.doc;

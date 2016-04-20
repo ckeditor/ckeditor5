@@ -45,6 +45,6 @@ export default class Enter extends Feature {
  *
  * Note: This event is fired by the {@link enter.Enter enter feature}.
  *
- * @event engine.treeView#enter
+ * @event engine.treeView.TreeView#enter
  * @param {engine.treeView.observer.DomEventData} data
  */
