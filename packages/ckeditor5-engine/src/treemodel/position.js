@@ -5,7 +5,6 @@
 
 'use strict';
 
-// import RootElement from './rootelement.js';
 import DocumentFragment from './documentfragment.js';
 import Element from './element.js';
 import last from '../../utils/lib/lodash/last.js';
