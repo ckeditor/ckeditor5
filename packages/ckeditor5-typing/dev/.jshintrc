@@ -1,0 +1,14 @@
+{
+	"node": true,
+	"esnext": true,
+
+	"immed": true,
+	"latedef": "nofunc",
+	"loopfunc": true,
+	"noarg": true,
+	"nonbsp": true,
+	"undef": true,
+	"unused": true,
+	"strict": true,
+	"varstmt": true
+}
