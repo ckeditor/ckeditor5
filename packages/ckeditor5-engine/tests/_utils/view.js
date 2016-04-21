@@ -7,11 +7,16 @@
 
 /* jshint latedef:false */
 
-import DocumentFragment from '/ckeditor5/engine/treeview/documentfragment.js';
-import Element from '/ckeditor5/engine/treeview/element.js';
+import ViewDocumentFragment from '/ckeditor5/engine/treeview/documentfragment.js';
+import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
+import ViewElement from '/ckeditor5/engine/treeview/element.js';
 import AttributeElement from '/ckeditor5/engine/treeview/attributeelement.js';
 import ContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
-import Text from '/ckeditor5/engine/treeview/text.js';
+import ViewText from '/ckeditor5/engine/treeview/text.js';
+
+const DomDocumentFragment = window.DocumentFragment;
+const DomText = window.Text;
+const DomElement = window.Element;
 
 const ELEMENT_RANGE_START_TOKEN = '[';
 const ELEMENT_RANGE_END_TOKEN = ']';
@@ -19,7 +24,7 @@ const TEXT_RANGE_START_TOKEN = '{';
 const TEXT_RANGE_END_TOKEN = '}';
 
 /**
- * Converts view elements to its string representation.
+ * Converts view elements to its string representation, an HTML-like string.
  * Root element can be provided as {@link engine.treeView.Element Element} or
  * {@link engine.treeView.DocumentFragment DocumentFragment}.
  *
@@ -82,6 +87,155 @@ export function getData( root, selection, options ) {
 	return viewStringify.stringify();
 }
 
+export function setData( data ) {
+	const viewParser = new ViewParser();
+
+	return viewParser.parse( data );
+}
+
+class ViewParser {
+
+	parse( data ) {
+		const htmlProcessor = new HtmlDataProcessor();
+		const domRoot = htmlProcessor.toDom( data );
+
+		return this._walkDom( domRoot );
+	}
+
+	_walkDom( domNode ) {
+		const isDomElement = domNode instanceof DomElement;
+
+		if ( isDomElement || domNode instanceof DomDocumentFragment ) {
+			const children = domNode.childNodes;
+			const length = children.length;
+
+			// If there is only one element inside DOM DocumentFragment - use it as root.
+			if ( !isDomElement && length == 1 ) {
+				return this._walkDom( domNode.childNodes[ 0 ] );
+			}
+
+			let viewElement;
+
+			if ( isDomElement ) {
+				viewElement = this._convertElement( domNode );
+			} else {
+				viewElement = new ViewDocumentFragment();
+			}
+
+			for ( let i = 0; i < children.length; i++ ) {
+				const child = children[ i ];
+				viewElement.appendChildren( this._walkDom( child ) );
+			}
+
+			return viewElement;
+		}
+
+		if ( domNode instanceof DomText ) {
+			return new ViewText( domNode.textContent );
+		}
+	}
+
+	_convertElement( domElement ) {
+		const info = this._convertElementName( domElement );
+		let viewElement;
+
+		if ( info.type == 'attribute' ) {
+			viewElement = new AttributeElement( info.name );
+
+			if ( info.priority !== null ) {
+				viewElement.priority = info.priority;
+			}
+		} else if ( info.type == 'container' ) {
+			viewElement = new ContainerElement( info.name );
+		} else {
+			viewElement = new ViewElement( info.name );
+		}
+
+		const attributes = domElement.attributes;
+		const attributesCount = attributes.length;
+
+		for ( let i = 0; i < attributesCount; i++ ) {
+			const attribute = attributes[ i ];
+			viewElement.setAttribute( attribute.name, attribute.value );
+		}
+
+		return viewElement;
+	}
+
+	_convertElementName( element ) {
+		const parts = element.tagName.toLowerCase().split( ':' );
+
+		if ( parts.length == 1 ) {
+			return {
+				name: parts[ 0 ],
+				type: null,
+				priority: null
+			};
+		}
+
+		if ( parts.length == 2 ) {
+			// Check if type and name: container:div.
+			const type = this._convertType( parts[ 0 ] );
+
+			if ( type ) {
+				return {
+					name: parts[ 1 ],
+					type: type,
+					priority: null
+				};
+			}
+
+			// Check if name and priority: span:10.
+			const priority = this._convertPriority( parts[ 1 ] );
+
+			if ( priority !== null ) {
+				return {
+					name: parts[ 0 ],
+					type: 'attribute',
+					priority: priority
+				};
+			}
+
+			throw new Error( `Cannot parse element's tag name: ${ element.tagName }.` );
+		}
+
+		// Check if name is in format type:name:priority.
+		if ( parts.length === 3 ) {
+			const type = this._convertType( parts[ 0 ] );
+			const priority = this._convertPriority( parts[ 2 ] );
+
+			if ( type && priority !== null ) {
+				return {
+					name: parts[ 1 ],
+					type: type,
+					priority: priority
+				};
+			}
+		}
+
+		throw new Error( `Cannot parse element's tag name: ${ element.tagName }.` );
+	}
+
+	_convertType( type ) {
+		if ( type == 'container' || type == 'attribute' ) {
+			return type;
+		}
+
+		return null;
+	}
+
+	_convertPriority( priorityString ) {
+		const priority = parseInt( priorityString, 10 );
+
+		if ( !isNaN( priority ) ) {
+			return priority;
+		}
+
+		return null;
+	}
+
+}
+
 /**
  * Private helper class used for converting view tree to string.
  *
@@ -133,9 +287,9 @@ class ViewStringify {
 	 * @param {Function} callback
 	 */
 	_walkView( root, callback ) {
-		const isElement = root instanceof Element;
+		const isElement = root instanceof ViewElement;
 
-		if ( isElement || root instanceof DocumentFragment ) {
+		if ( isElement || root instanceof ViewDocumentFragment ) {
 			if ( isElement ) {
 				callback( this._stringifyElementOpen( root ) );
 			}
@@ -154,7 +308,7 @@ class ViewStringify {
 			}
 		}
 
-		if ( root instanceof Text ) {
+		if ( root instanceof ViewText ) {
 			callback( this._stringifyTextRanges( root ) );
 		}
 	}

@@ -5,7 +5,7 @@
 
 'use strict';
 
-import { getData } from '/tests/engine/_utils/view.js';
+import { getData, setData } from '/tests/engine/_utils/view.js';
 import DocumentFragment from '/ckeditor5/engine/treeview/documentfragment.js';
 import Element from '/ckeditor5/engine/treeview/element.js';
 import AttributeElement from '/ckeditor5/engine/treeview/attributeelement.js';
@@ -168,6 +168,54 @@ describe( 'view test utils', () => {
 			selection.setRanges( [ range1, range2, range3, range4 ] );
 
 			expect( getData( p, selection ) ).to.equal( '<p>[<b>foobar</b>][]{baz}{q}ux</p>' );
+		} );
+	} );
+
+	describe( 'setData', () => {
+		it( 'should parse elements and texts', () => {
+			const view = setData( '<b>foobar</b>' );
+			const element = new Element( 'b' );
+
+			expect( view ).to.be.instanceof( Element );
+			expect( view.isSimilar( element ) ).to.be.true;
+			expect( view.getChildCount() ).to.equal( 1 );
+			const text = view.getChild( 0 );
+			expect( text ).to.be.instanceof( Text );
+			expect( text.data ).to.equal( 'foobar' );
+		} );
+
+		it( 'should parse element attributes', () => {
+			const view = setData( '<b name="foo" title="bar" class="foo bar" style="color:red;"></b>' );
+			const element = new Element( 'b', { name: 'foo', title: 'bar', class: 'foo bar', style: 'color:red;' } );
+
+			expect( view ).to.be.instanceof( Element );
+			expect( view.isSimilar( element ) ).to.be.true;
+			expect( view.getChildCount() ).to.equal( 0 );
+		} );
+
+		it( 'should parse element type', () => {
+			const view1 = setData( '<attribute:b></attribute:b>' );
+			const attribute = new AttributeElement( 'b' );
+			const view2 = setData( '<container:p></container:p>' );
+			const container = new ContainerElement( 'p' );
+
+			expect( view1 ).to.be.instanceof( AttributeElement );
+			expect( view1.isSimilar( attribute ) ).to.be.true;
+			expect( view2 ).to.be.instanceof( ContainerElement );
+			expect( view2.isSimilar( container ) ).to.be.true;
+		} );
+
+		it( 'should parse element priority', () => {
+			const parsed1 = setData( '<b:12></b:12>' );
+			const attribute1 = new AttributeElement( 'b' );
+			attribute1.priority = 12;
+			const parsed2 = setData( '<attribute:b:44></attribute:b:44>' );
+			const attribute2 = new AttributeElement( 'b' );
+			attribute2.priority = 44;
+
+			parsed1.isSimilar( attribute1 );
+			expect( parsed1.isSimilar( attribute1 ) ).to.be.true;
+			expect( parsed2.isSimilar( attribute2 ) ).to.be.true;
 		} );
 	} );
 } );
