@@ -5,7 +5,7 @@
 
 'use strict';
 
-import utils from '../utils/utils.js';
+import count from '../utils/count.js';
 
 /**
  * Change buffer allows to group atomic changes (like characters that have been typed) into
@@ -125,7 +125,7 @@ export default class ChangeBuffer {
 	 */
 	_onBatch( batch ) {
 		// 1 operation means a newly created batch.
-		if ( batch !== this._batch && utils.count( batch.getOperations() ) <= 1 ) {
+		if ( batch !== this._batch && count( batch.getOperations() ) <= 1 ) {
 			this._batch = null;
 		}
 	}
