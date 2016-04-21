@@ -106,8 +106,8 @@ describe( 'view test utils', () => {
 			const b = new AttributeElement( 'b', null, text );
 			const p = new ContainerElement( 'p', null, b );
 
-			expect( getData( p, null, { showType: true, showPriority: true } ) )
-				.to.equal( '<container:p><attribute:b priority=10>foobar</attribute:b></container:p>' );
+			expect( getData( p, null, { showPriority: true } ) )
+				.to.equal( '<p><b:10>foobar</b:10></p>' );
 		} );
 
 		it( 'should parse DocumentFragment as root', () => {
@@ -149,8 +149,6 @@ describe( 'view test utils', () => {
 			const p = new Element( 'p', null, [ b1, b2 ] );
 			const range1 = Range.createFromParentsAndOffsets( p, 0, p, 1 );
 			const range2 = Range.createFromParentsAndOffsets( p, 1, p, 1 );
-			// const range3 = Range.createFromParentsAndOffsets( text2, 3, text2, 4 );
-			// const range4 = Range.createFromParentsAndOffsets( p, 1, p, 1 );
 			const selection = new Selection();
 			selection.setRanges( [ range2, range1 ] );
 

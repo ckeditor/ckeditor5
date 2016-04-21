@@ -245,10 +245,11 @@ class ViewStringify {
 	 * @returns {string}
 	 */
 	_stringifyElementOpen( element ) {
-		const name = this._stringifyElementName( element );
 		const priority = this._stringifyElementPriority( element );
+		const type = this._stringifyElementType( element );
+		const name = [ type, element.name, priority ].filter( i=> i !== '' ).join( ':' );
 		const attributes = this._stringifyElementAttributes( element );
-		const parts = [ name, priority, attributes ];
+		const parts = [ name, attributes ];
 
 		return `<${ parts.filter( i => i !== '' ).join( ' ' ) }>`;
 	}
@@ -263,34 +264,35 @@ class ViewStringify {
 	 * @returns {string}
 	 */
 	_stringifyElementClose( element ) {
-		const name = this._stringifyElementName( element );
+		const priority = this._stringifyElementPriority( element );
+		const type = this._stringifyElementType( element );
+		const name = [ type, element.name, priority ].filter( i=> i !== '' ).join( ':' );
 
 		return `</${ name }>`;
 	}
 
 	/**
-	 * Converts passed {@link engine.treeView.Element Element} its name representation.
-	 * Depending on current configuration name can be simple (`a`) or contain type prefix (`container:p` or
-	 * `attribute:a`).
+	 * Converts passed {@link engine.treeView.Element Element's} type to its string representation
+	 * Returns 'attribute' for {@link engine.treeView.AttributeElement AttributeElements} and
+	 * 'container' for {@link engine.treeView.ContainerElement ContainerElements}. Returns empty string when current
+	 * configuration is preventing showing elements' types.
 	 *
 	 * @private
 	 * @param {engine.treeView.Element} element
 	 * @returns {string}
 	 */
-	_stringifyElementName( element ) {
-		let name = element.name;
-
+	_stringifyElementType( element ) {
 		if ( this.showType ) {
 			if ( element instanceof AttributeElement ) {
-				return 'attribute:' + name;
+				return 'attribute';
 			}
 
 			if ( element instanceof ContainerElement ) {
-				return 'container:' + name;
+				return 'container';
 			}
 		}
 
-		return name;
+		return '';
 	}
 
 	/**
@@ -305,7 +307,7 @@ class ViewStringify {
 	 */
 	_stringifyElementPriority( element ) {
 		if ( this.showPriority && element instanceof AttributeElement ) {
-			return `priority=${ element.priority }`;
+			return element.priority;
 		}
 
 		return '';
