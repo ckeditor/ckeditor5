@@ -6,6 +6,7 @@
 'use strict';
 
 import Element from './element.js';
+import ContainerElement from './containerelement.js';
 
 /**
  * Default attribute priority.
@@ -78,7 +79,7 @@ export default class AttributeElement extends Element {
 			return false;
 		}
 
-		const element = this.parent;
+		let element = this.parent;
 
 		// <p><b></b></p> needs filler -> <p><b><br></b></p>
 		while ( !( element instanceof ContainerElement ) ) {

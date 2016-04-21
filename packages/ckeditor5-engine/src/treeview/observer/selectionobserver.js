@@ -30,7 +30,7 @@ export default class SelectionObserver extends Observer {
 			return;
 		}
 
-		domDocument.addEventListener( 'selectionchange', ( domEvent ) => {
+		domDocument.addEventListener( 'selectionchange', () => {
 			if ( !this.isEnabled ) {
 				return;
 			}

@@ -5,6 +5,8 @@
 
 'use strict';
 
+import Position from './position.js';
+
 import clone from '../../utils/lib/lodash/clone.js';
 import toMap from '../../utils/tomap.js';
 import CKEditorError from '../../utils/ckeditorerror.js';

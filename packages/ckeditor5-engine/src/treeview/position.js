@@ -5,8 +5,10 @@
 
 'use strict';
 
-import compareArrays from '../../utils/comparearrays.js';
 import Text from './text.js';
+
+import compareArrays from '../../utils/comparearrays.js';
+import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
  * Position in the tree. Position is always located before or after a node.

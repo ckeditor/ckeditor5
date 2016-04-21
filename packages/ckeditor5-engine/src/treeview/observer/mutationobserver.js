@@ -113,7 +113,7 @@ export default class MutationObserver extends Observer {
 	 */
 	_onMutations( domMutations ) {
 		// As a result of this.flush() we can have an empty collection.
-		if ( domMutations.length == 0 ) {
+		if ( domMutations.length === 0 ) {
 			return;
 		}
 
