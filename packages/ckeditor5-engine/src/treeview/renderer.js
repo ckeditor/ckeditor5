@@ -5,7 +5,7 @@
 
 'use strict';
 
-import diff from '../utils-diff.js';
+import diff from '../../utils/diff.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
