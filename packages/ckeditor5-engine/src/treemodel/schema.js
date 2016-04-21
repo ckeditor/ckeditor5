@@ -234,9 +234,11 @@ export class SchemaItem {
  *		editor.document.schema.allow( '$text', 'bold' );
  *
  * Note: items prefixed with `$` are special group of items. By default, `Schema` defines three special items:
+ *
  * * `$inline` represents all inline elements,
  * * `$text` is a sub-group of `$inline` and represents text nodes,
- * * `$block` represents block elements.
+ * * `$block` represents block elements,
+ * * `$root` represents default editing roots (those that allow only `$block`s inside them).
  *
  * When registering an item it's possible to tell that this item should inherit from some other existing item.
  * E.g. `p` can inherit from `$block`, so whenever given attribute is allowed on the `$block` it will automatically be
@@ -266,11 +268,12 @@ export default class Schema {
 		this._extensionChains = new Map();
 
 		// Register some default abstract entities.
-		this.registerItem( '$inline' );
+		this.registerItem( '$root' );
 		this.registerItem( '$block' );
+		this.registerItem( '$inline' );
 		this.registerItem( '$text', '$inline' );
 
-		// Allow inline elements inside block elements.
+		this.allow( { name: '$block', inside: '$root' } );
 		this.allow( { name: '$inline', inside: '$block' } );
 	}
 

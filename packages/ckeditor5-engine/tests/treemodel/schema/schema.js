@@ -13,6 +13,9 @@ import Document from '/ckeditor5/engine/treemodel/document.js';
 import Element from '/ckeditor5/engine/treemodel/element.js';
 import Position from '/ckeditor5/engine/treemodel/position.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
+import testUtils from '/tests/ckeditor5/_utils/utils.js';
+
+testUtils.createSinonSandbox();
 
 let schema;
 
@@ -22,14 +25,17 @@ beforeEach( () => {
 
 describe( 'constructor', () => {
 	it( 'should register base items: inline, block, root', () => {
-		sinon.spy( Schema.prototype, 'registerItem' );
+		testUtils.sinon.spy( Schema.prototype, 'registerItem' );
 
 		schema = new Schema();
 
-		expect( schema.registerItem.calledWithExactly( '$inline', null ) );
+		expect( schema.registerItem.calledWithExactly( '$root', null ) );
 		expect( schema.registerItem.calledWithExactly( '$block', null ) );
+		expect( schema.registerItem.calledWithExactly( '$inline', null ) );
+	} );
 
-		Schema.prototype.registerItem.restore();
+	it( 'should allow block in root', () => {
+		expect( schema.check( { name: '$block', inside: [ '$root' ] } ) ).to.be.true;
 	} );
 
 	it( 'should allow inline in block', () => {

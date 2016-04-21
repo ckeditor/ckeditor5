@@ -77,9 +77,10 @@ describe( 'Delete utils', () => {
 			);
 
 			test(
-				'deletes a bunch of nodes',
+				'does not break things when option.merge passed',
 				'w<selection>x<img></img>y</selection>z',
-				'w<selection />z'
+				'w<selection />z',
+				{ merge: true }
 			);
 		} );
 
@@ -122,77 +123,101 @@ describe( 'Delete utils', () => {
 			test(
 				'do not merge when no need to',
 				'<p>x</p><p><selection>foo</selection></p><p>y</p>',
-				'<p>x</p><p><selection /></p><p>y</p>'
+				'<p>x</p><p><selection /></p><p>y</p>',
+				{ merge: true }
 			);
 
 			test(
 				'merges second element into the first one (same name)',
 				'<p>x</p><p>fo<selection>o</p><p>b</selection>ar</p><p>y</p>',
-				'<p>x</p><p>fo<selection />ar</p><p>y</p>'
+				'<p>x</p><p>fo<selection />ar</p><p>y</p>',
+				{ merge: true }
+			);
+
+			test(
+				'does not merge second element into the first one (same name, !option.merge)',
+				'<p>x</p><p>fo<selection>o</p><p>b</selection>ar</p><p>y</p>',
+				'<p>x</p><p>fo<selection /></p><p>ar</p><p>y</p>'
+			);
+
+			test(
+				'merges second element into the first one (same name)',
+				'<p>x</p><p>fo<selection>o</p><p>b</selection>ar</p><p>y</p>',
+				'<p>x</p><p>fo<selection />ar</p><p>y</p>',
+				{ merge: true }
 			);
 
 			test(
 				'merges second element into the first one (different name)',
 				'<p>x</p><h1>fo<selection>o</h1><p>b</selection>ar</p><p>y</p>',
-				'<p>x</p><h1>fo<selection />ar</h1><p>y</p>'
+				'<p>x</p><h1>fo<selection />ar</h1><p>y</p>',
+				{ merge: true }
 			);
 
 			test(
 				'merges second element into the first one (different name, backward selection)',
 				'<p>x</p><h1>fo<selection backward>o</h1><p>b</selection>ar</p><p>y</p>',
-				'<p>x</p><h1>fo<selection />ar</h1><p>y</p>'
+				'<p>x</p><h1>fo<selection />ar</h1><p>y</p>',
+				{ merge: true }
 			);
 
 			test(
 				'merges second element into the first one (different attrs)',
 				'<p>x</p><p align="l">fo<selection>o</p><p>b</selection>ar</p><p>y</p>',
-				'<p>x</p><p align="l">fo<selection />ar</p><p>y</p>'
+				'<p>x</p><p align="l">fo<selection />ar</p><p>y</p>',
+				{ merge: true }
 			);
 
 			test(
 				'merges second element to an empty first element',
 				'<p>x</p><h1><selection></h1><p>fo</selection>o</p><p>y</p>',
-				'<p>x</p><h1><selection />o</h1><p>y</p>'
+				'<p>x</p><h1><selection />o</h1><p>y</p>',
+				{ merge: true }
 			);
 
 			test(
 				'merges elements when deep nested',
 				'<p>x<pchild>fo<selection>o</pchild></p><p><pchild>b</selection>ar</pchild>y</p>',
-				'<p>x<pchild>fo<selection />ar</pchild>y</p>'
+				'<p>x<pchild>fo<selection />ar</pchild>y</p>',
+				{ merge: true }
 			);
 
 			// If you disagree with this case please read the notes before this section.
 			test(
 				'merges elements when left end deep nested',
 				'<p>x<pchild>fo<selection>o</pchild></p><p>b</selection>ary</p>',
-				'<p>x<pchild>fo<selection /></pchild>ary</p>'
+				'<p>x<pchild>fo<selection /></pchild>ary</p>',
+				{ merge: true }
 			);
 
 			// If you disagree with this case please read the notes before this section.
 			test(
 				'merges elements when right end deep nested',
 				'<p>xfo<selection>o</p><p><pchild>b</selection>ar</pchild>y<img></img></p>',
-				'<p>xfo<selection /><pchild>ar</pchild>y<img></img></p>'
+				'<p>xfo<selection /><pchild>ar</pchild>y<img></img></p>',
+				{ merge: true }
 			);
 
 			test(
 				'merges elements when more content in the right branch',
 				'<p>xfo<selection>o</p><p>b</selection>a<pchild>r</pchild>y</p>',
-				'<p>xfo<selection />a<pchild>r</pchild>y</p>'
+				'<p>xfo<selection />a<pchild>r</pchild>y</p>',
+				{ merge: true }
 			);
 
 			test(
 				'leaves just one element when all selected',
 				'<h1><selection>x</h1><p>foo</p><p>y</selection></p>',
-				'<h1><selection /></h1>'
+				'<h1><selection /></h1>',
+				{ merge: true }
 			);
 		} );
 
-		function test( title, input, output ) {
+		function test( title, input, output, options ) {
 			it( title, () => {
 				setData( document, 'main', input );
 
-				deleteContents( document.batch(), document.selection );
+				deleteContents( document.batch(), document.selection, options );
 
 				expect( getData( document, 'main', { selection: true } ) ).to.equal( output );
 			} );

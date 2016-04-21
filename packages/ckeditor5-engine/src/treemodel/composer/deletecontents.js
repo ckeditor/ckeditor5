@@ -15,8 +15,12 @@ import utils from '../../../utils/utils.js';
  * @method engine.treeModel.composer.deleteContents
  * @param {engine.treeModel.Batch} batch Batch to which the deltas will be added.
  * @param {engine.treeModel.Selection} selection Selection of which the content should be deleted.
+ * @param {Object} [options]
+ * @param {Boolean} [options.merge=false] Merge elements after removing the contents of the selection.
+ * For example, `<h>x[x</h><p>y]y</p>` will become: `<h>x^y</h>` with the option enabled
+ * and: `<h>x^</h><p>y</p>` without it.
  */
-export default function deleteContents( batch, selection ) {
+export default function deleteContents( batch, selection, options = {} ) {
 	if ( selection.isCollapsed ) {
 		return;
 	}
@@ -35,16 +39,18 @@ export default function deleteContents( batch, selection ) {
 	// However, the algorithm supports also merging deeper structures (up to the depth of the shallower branch),
 	// as it's hard to imagine what should actually be the default behavior. Usually, specific features will
 	// want to override that behavior anyway.
-	const endPath = endPos.path;
-	const mergeEnd = Math.min( startPos.path.length - 1, endPath.length - 1 );
-	let mergeDepth = utils.compareArrays( startPos.path, endPath );
+	if ( options.merge ) {
+		const endPath = endPos.path;
+		const mergeEnd = Math.min( startPos.path.length - 1, endPath.length - 1 );
+		let mergeDepth = utils.compareArrays( startPos.path, endPath );
 
-	if ( typeof mergeDepth == 'number' ) {
-		for ( ; mergeDepth < mergeEnd; mergeDepth++ ) {
-			const mergePath = startPos.path.slice( 0, mergeDepth );
-			mergePath.push( startPos.path[ mergeDepth ] + 1 );
+		if ( typeof mergeDepth == 'number' ) {
+			for ( ; mergeDepth < mergeEnd; mergeDepth++ ) {
+				const mergePath = startPos.path.slice( 0, mergeDepth );
+				mergePath.push( startPos.path[ mergeDepth ] + 1 );
 
-			batch.merge( new Position( endPos.root, mergePath ) );
+				batch.merge( new Position( endPos.root, mergePath ) );
+			}
 		}
 	}
 

@@ -8,6 +8,7 @@
 import Node from './node.js';
 import NodeList from './nodelist.js';
 import DocumentFragment from './documentfragment.js';
+import Range from './range.js';
 import utils from '../../utils/utils.js';
 
 /**
@@ -168,5 +169,32 @@ export default class Element extends Node {
 	 */
 	clearAttributes() {
 		this._attrs.clear();
+	}
+
+	/**
+	 * Checks whether element is empty (has no children).
+	 *
+	 * @returns {Boolean}
+	 */
+	isEmpty() {
+		return this.getChildCount() === 0;
+	}
+
+	/**
+	 * Gets the text content of the element. The return value is created by concatenating all
+	 * text nodes in this element and its descendants.
+	 *
+	 * @returns {String}
+	 */
+	getText() {
+		let text = '';
+
+		for ( let value of Range.createFromElement( this ) ) {
+			if ( value.type == 'TEXT' ) {
+				text += value.item.text;
+			}
+		}
+
+		return text;
 	}
 }

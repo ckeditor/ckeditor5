@@ -23,14 +23,28 @@ describe( 'Composer', () => {
 
 	describe( 'constructor', () => {
 		it( 'attaches deleteContents default listener', () => {
-			setData( document, 'main', '<p><selection>foo</selection>bar</p>' );
+			setData( document, 'main', '<p>f<selection>oo</p><p>ba</selection>r</p>' );
 
 			const batch = document.batch();
 
 			composer.fire( 'deleteContents', { batch, selection: document.selection } );
 
-			expect( getData( document, 'main' ) ).to.equal( '<p>bar</p>' );
+			expect( getData( document, 'main' ) ).to.equal( '<p>f</p><p>r</p>' );
 			expect( batch.deltas ).to.not.be.empty;
+		} );
+
+		it( 'attaches deleteContents default listener which passes options', () => {
+			setData( document, 'main', '<p>f<selection>oo</p><p>ba</selection>r</p>' );
+
+			const batch = document.batch();
+
+			composer.fire( 'deleteContents', {
+				batch,
+				selection: document.selection,
+				options: { merge: true }
+			} );
+
+			expect( getData( document, 'main' ) ).to.equal( '<p>fr</p>' );
 		} );
 
 		it( 'attaches modifySelection default listener', () => {

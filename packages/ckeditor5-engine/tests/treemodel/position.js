@@ -10,6 +10,7 @@
 import Document from '/ckeditor5/engine/treemodel/document.js';
 import DocumentFragment from '/ckeditor5/engine/treemodel/documentfragment.js';
 import Element from '/ckeditor5/engine/treemodel/element.js';
+import Text from '/ckeditor5/engine/treemodel/text.js';
 import Position from '/ckeditor5/engine/treemodel/position.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
@@ -64,9 +65,34 @@ describe( 'position', () => {
 		} );
 
 		it( 'should accept DocumentFragment as a root', () => {
-			expect( () => {
-				new Position( new DocumentFragment(), [ 0 ] );
-			} ).not.to.throw;
+			const frag = new DocumentFragment();
+			const pos = new Position( frag, [ 0 ] );
+
+			expect( pos ).to.have.property( 'root', frag );
+		} );
+
+		it( 'should accept detached Element as a root', () => {
+			const el = new Element( 'p' );
+			const pos = new Position( el, [ 0 ] );
+
+			expect( pos ).to.have.property( 'root', el );
+			expect( pos.path ).to.deep.equal( [ 0 ] );
+		} );
+
+		it( 'should normalize attached Element as a root', () => {
+			const pos = new Position( li1, [ 0, 2 ] );
+
+			expect( pos ).to.have.property( 'root', root );
+			expect( pos.isEqual( Position.createAt( li1, 0, 2 ) ) );
+		} );
+
+		it( 'should normalize Element from a detached branch as a root', () => {
+			const rootEl = new Element( 'p', null, [ new Element( 'a' ) ] );
+			const elA = rootEl.getChild( 0 );
+			const pos = new Position( elA, [ 0 ] );
+
+			expect( pos ).to.have.property( 'root', rootEl );
+			expect( pos.isEqual( Position.createAt( elA, 0 ) ) );
 		} );
 
 		it( 'should throw error if given path is incorrect', () => {
@@ -81,11 +107,11 @@ describe( 'position', () => {
 
 		it( 'should throw error if given root is invalid', () => {
 			expect( () => {
-				new Position();
+				new Position( new Text( 'a' ) );
 			} ).to.throw( CKEditorError, /position-root-invalid/ );
 
 			expect( () => {
-				new Position( new Element( 'p' ), [ 0 ] );
+				new Position();
 			} ).to.throw( CKEditorError, /position-root-invalid/ );
 		} );
 	} );
@@ -417,6 +443,20 @@ describe( 'position', () => {
 
 			expect( positionA.isTouching( positionB ) ).to.be.false;
 			expect( positionB.isTouching( positionA ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'isAtStart', () => {
+		it( 'should return true if position is at the beginning of its parent', () => {
+			expect( new Position( root, [ 0 ] ).isAtStart() ).to.be.true;
+			expect( new Position( root, [ 1 ] ).isAtStart() ).to.be.false;
+		} );
+	} );
+
+	describe( 'isAtEnd', () => {
+		it( 'should return true if position is at the end of its parent', () => {
+			expect( new Position( root, [ root.getChildCount() ] ).isAtEnd() ).to.be.true;
+			expect( new Position( root, [ 0 ] ).isAtEnd() ).to.be.false;
 		} );
 	} );
 
