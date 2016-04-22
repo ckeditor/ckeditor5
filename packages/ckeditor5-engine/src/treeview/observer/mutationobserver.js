@@ -170,21 +170,15 @@ export default class MutationObserver extends Observer {
 
 		for ( let viewElement of mutatedElements ) {
 			const domElement = this.domConverter.getCorrespondingDomElement( viewElement );
-			const domChildren = domElement.childNodes;
 			const viewChildren = viewElement.getChildren();
-			const newViewChildren = [];
-
-			// We want to have a list of View elements, not DOM elements.
-			for ( let i = 0; i < domChildren.length; i++ ) {
-				newViewChildren.push( this.domConverter.domToView( domChildren[ i ] ) );
-			}
+			const newViewChildren = this.domConverter.domChildrenToView( domElement );
 
 			this.renderer.markToSync( 'CHILDREN', viewElement );
 
 			viewMutations.push( {
 				type: 'children',
 				oldChildren: Array.from( viewChildren ),
-				newChildren: newViewChildren,
+				newChildren: Array.from( newViewChildren ),
 				node: viewElement,
 				selection: viewSelection
 			} );
