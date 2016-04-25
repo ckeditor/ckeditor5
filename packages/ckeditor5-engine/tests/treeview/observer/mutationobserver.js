@@ -44,7 +44,7 @@ describe( 'MutationObserver', () => {
 	it( 'should handle typing', () => {
 		domEditor.childNodes[ 0 ].childNodes[ 0 ].data = 'foom';
 
-		handleMutation();
+		mutationObserver.flush();
 
 		expectDomEditorNotToChange();
 		expect( lastMutations.length ).to.equal( 1 );
@@ -60,7 +60,7 @@ describe( 'MutationObserver', () => {
 		domB.appendChild( document.createTextNode( 'oo' ) );
 		domEditor.childNodes[ 0 ].appendChild( domB );
 
-		handleMutation();
+		mutationObserver.flush();
 
 		expectDomEditorNotToChange();
 		expect( lastMutations.length ).to.equal( 1 );
@@ -79,7 +79,7 @@ describe( 'MutationObserver', () => {
 		domEditor.childNodes[ 0 ].childNodes[ 0 ].data = 'foox';
 		domEditor.childNodes[ 0 ].childNodes[ 0 ].data = 'fooxy';
 
-		handleMutation();
+		mutationObserver.flush();
 
 		expectDomEditorNotToChange();
 		expect( lastMutations.length ).to.equal( 1 );
@@ -98,7 +98,7 @@ describe( 'MutationObserver', () => {
 		domP.appendChild( domB );
 		domB.appendChild( domText );
 
-		handleMutation();
+		mutationObserver.flush();
 
 		expectDomEditorNotToChange();
 		expect( lastMutations.length ).to.equal( 1 );
@@ -123,14 +123,10 @@ describe( 'MutationObserver', () => {
 		domEditor.childNodes[ 0 ].childNodes[ 0 ].data = 'foom';
 		domEditor2.childNodes[ 0 ].childNodes[ 0 ].data = 'foom';
 
-		handleMutation();
+		mutationObserver.flush();
 
 		expect( lastMutations.length ).to.equal( 2 );
 	} );
-
-	function handleMutation() {
-		mutationObserver._onMutations( mutationObserver._mutationObserver.takeRecords() );
-	}
 
 	function expectDomEditorNotToChange() {
 		expect( domEditor.childNodes.length ).to.equal( 2 );
