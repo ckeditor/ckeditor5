@@ -365,6 +365,8 @@ export default class Schema {
 		// If attributes property is a string or undefined, wrap it in an array for easier processing.
 		if ( !isArray( query.attributes ) ) {
 			query.attributes = [ query.attributes ];
+		} else if ( query.attributes.length === 0 ) {
+			query.attributes.push( undefined );
 		}
 
 		// Normalize the path to an array of strings.
