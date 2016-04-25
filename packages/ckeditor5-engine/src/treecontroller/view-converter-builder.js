@@ -286,18 +286,19 @@ class ViewConverterBuilder {
 	/**
 	 * Registers what model attribute will be created by converter.
 	 *
-	 * Method accepts two ways of providing what kind of model attribute will be created. You can pass `object` which
-	 * keys will be translated to model attributes keys and values to model attributes values or you can pass a function which
-	 * will return such object. If you provide creator function, it will be passed converted view element as first and only parameter.
+	 * Method accepts two ways of providing what kind of model attribute will be created. You can either pass two strings
+	 * representing attribute key and attribute value or a function that returns an object with `key` and `value` properties.
+	 * If you provide creator function, it will be passed converted view element as first and only parameter.
 	 *
-	 *		BuildViewConverterFor( dispatcher ).fromAttribute( 'style', { 'font-weight': 'bold' } ).toAttributes( { bold: true } );
+	 *		BuildViewConverterFor( dispatcher ).fromAttribute( 'style', { 'font-weight': 'bold' } ).toAttribute( 'bold', true );
 	 *		BuildViewConverterFor( dispatcher )
 	 *			.fromAttribute( 'class' )
-	 *			.toAttributes( ( viewElement ) => ( { class: viewElement.getAttribute( 'class' ) } ) );
+	 *			.toAttribute( ( viewElement ) => ( { key: 'class', value: viewElement.getAttribute( 'class' ) } ) );
 	 *
-	 * @param {Object|Function} attributes Object with model attributes or creator function.
+	 * @param {String|Function} keyOrCreator Attribute key or a creator function.
+	 * @param {String} [value] Attribute value. Required if `keyOrCreator` is a `string`. Ignored otherwise.
 	 */
-	toAttributes( attributes ) {
+	toAttribute( keyOrCreator, value ) {
 		const eventCallbackGen = function( from ) {
 			return ( evt, data, consumable, conversionApi ) => {
 				// There is one callback for all patterns in the matcher.
@@ -322,11 +323,11 @@ class ViewConverterBuilder {
 						data.output = conversionApi.convertChildren( data.input, consumable, data );
 					}
 
-					// Use attributes object creator function, if provided.
-					const modelAttributes = attributes instanceof Function ? attributes( data.input ) : attributes;
+					// Use attribute creator function, if provided.
+					let attribute = keyOrCreator instanceof Function ? keyOrCreator( data.input ) : { key: keyOrCreator, value: value };
 
-					// Set attributes on current `output`. `Schema` is checked inside this helper function.
-					setAttributesOn( data.output, modelAttributes, data, conversionApi );
+					// Set attribute on current `output`. `Schema` is checked inside this helper function.
+					setAttributeOn( data.output, attribute, data, conversionApi );
 
 					// Prevent multiple conversion if there are other correct matches.
 					break;
@@ -364,17 +365,17 @@ class ViewConverterBuilder {
 }
 
 // Helper function that sets given attributes on given `engine.treeModel.Item` or `engine.treeModel.DocumentFragment`.
-function setAttributesOn( toChange, attributes, data, conversionApi ) {
+function setAttributeOn( toChange, attribute, data, conversionApi ) {
 	if ( utils.isIterable( toChange ) ) {
 		for ( let node of toChange ) {
-			setAttributesOn( node, attributes, data, conversionApi );
+			setAttributeOn( node, attribute, data, conversionApi );
 		}
 
 		return;
 	}
 
 	// TODO: Make it more sane after .getAttributeKeys() is available for ModelElement.
-	const keys = Array.from( toChange.getAttributes() ).map( ( attribute ) => attribute[ 0 ] ).concat( Object.keys( attributes ) );
+	const keys = Array.from( toChange.getAttributes() ).map( ( attribute ) => attribute[ 0 ] ).concat( attribute.key );
 
 	const schemaQuery = {
 		name: toChange.name || '$text',
@@ -383,9 +384,7 @@ function setAttributesOn( toChange, attributes, data, conversionApi ) {
 	};
 
 	if ( conversionApi.schema.check( schemaQuery ) ) {
-		for ( let key in attributes ) {
-			toChange.setAttribute( key, attributes[ key ] );
-		}
+		toChange.setAttribute( attribute.key, attribute.value );
 	}
 }
 

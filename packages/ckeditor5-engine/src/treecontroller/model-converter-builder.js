@@ -187,7 +187,7 @@ class ModelConverterBuilder {
 	 * Registers what view attribute will be created by converter. Keep in mind, that only model attribute to
 	 * view attribute conversion is supported.
 	 *
-	 * Method accepts various ways of providing how the view element will be created:
+	 * Method accepts various ways of providing how the view attribute will be created:
 	 *
 	 * * for no passed parameter, attribute key and value will be converted 1-to-1 to view attribute,
 	 * * if you pass one `string`, it will be used as new attribute key while attribute value will be copied,
