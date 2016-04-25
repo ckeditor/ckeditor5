@@ -9,18 +9,18 @@
 // by Sun Wu, Udi Manber, Gene Myers, Webb Miller.
 
 /**
- * Calculates the difference between two arrays producing an object containing a list of actions
- * necessary to transform one array into another.
+ * Calculates the difference between two arrays or strings producing an array containing a list of actions
+ * necessary to transform input into output.
  *
- *		diff( 'aba', 'acca' ); // [ EQUAL, INSERT, INSERT, DELETE, EQUAL ]
+ *		diff( 'aba', 'acca' ); // [ 'EQUAL', 'INSERT', 'INSERT', 'DELETE', 'EQUAL' ]
  *
  * @method utils.diff
- * @param {Array} a Input array.
- * @param {Array} b Output array.
+ * @param {Array|String} a Input array or string.
+ * @param {Array|String} b Output array or string.
  * @param {Function} [cmp] Optional function used to compare array values, by default === is used.
  * @return {Array} Array of actions.
  */
- export default function diff( a, b, cmp ) {
+export default function diff( a, b, cmp ) {
 	// Set the comparator function.
 	cmp = cmp || function( a, b ) {
 			return a === b;
