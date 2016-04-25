@@ -71,7 +71,7 @@ export default class DomConverter {
 
 		this.blockFillerCreator = options.blockFiller;
 
-		this._templateBlockFiller = options.blockFiller();
+		this._templateBlockFiller = options.blockFiller( window.document );
 	}
 
 	/**

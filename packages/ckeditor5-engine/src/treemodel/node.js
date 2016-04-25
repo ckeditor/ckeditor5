@@ -5,8 +5,6 @@
 
 'use strict';
 
-import Position from './position.js';
-
 import clone from '../../utils/lib/lodash/clone.js';
 import toMap from '../../utils/tomap.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
@@ -177,14 +175,6 @@ export default class Node {
 	 */
 	getAttributes() {
 		return this._attrs[ Symbol.iterator ]();
-	}
-
-	positionBefore() {
-		return Position.createBefore( this );
-	}
-
-	positionAfter() {
-		return Position.createAfter( this );
 	}
 
 	/**

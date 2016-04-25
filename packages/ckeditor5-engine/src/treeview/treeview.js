@@ -68,7 +68,7 @@ export default class TreeView {
 		 * @readonly
 		 * @member {engine.treeView.Renderer} engine.treeView.TreeView#renderer
 		 */
-		this.renderer = new Renderer( this.domConverter );
+		this.renderer = new Renderer( this );
 
 		/**
 		 * Set of registered {@link engine.treeView.Observer observers}.

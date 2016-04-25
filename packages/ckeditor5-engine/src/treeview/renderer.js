@@ -9,10 +9,9 @@ import diff from '../../utils/diff.js';
 import ViewText from './text.js';
 
 import ViewElement from './element.js';
->>>>>>> 3849f41... Move render methods.
-import { INLINE_FILLER, INLINE_FILLER_SIZE } from './domconverter.js';
+import ViewPosition from './position.js';
 
-import diff from '../utils-diff.js';
+import { INLINE_FILLER, INLINE_FILLER_SIZE } from './domconverter.js';
 
 import CKEditorError from '../../utils/ckeditorerror.js';
 import EmitterMixin from '../../utils/emittermixin.js';
@@ -213,7 +212,7 @@ export default class Renderer {
 		}
 
 		if ( selectionPosition.parent instanceof ViewText ) {
-			if ( fillerPosition.isEqual( selectionPosition.parent.positionBefore() ) ) {
+			if ( fillerPosition.isEqual( ViewPosition.createBefore( selectionPosition.parent ) ) ) {
 				return true;
 			}
 		}

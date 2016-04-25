@@ -5,8 +5,6 @@
 
 'use strict';
 
-import Position from './position.js';
-
 import CKEditorError from '../../utils/ckeditorerror.js';
 import EmitterMixin from '../../utils/emittermixin.js';
 import mix from '../../utils/mix.js';
@@ -156,14 +154,6 @@ export default class Node {
 		if ( this.parent ) {
 			this.parent._fireChange( type, node );
 		}
-	}
-
-	positionBefore() {
-		return Position.createBefore( this );
-	}
-
-	positionAfter() {
-		return Position.createAfter( this );
 	}
 
 	/**
