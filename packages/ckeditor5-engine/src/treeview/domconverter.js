@@ -152,11 +152,11 @@ export default class DomConverter {
 		}
 	}
 
-	*viewChildrenToDom( viewNode, domDocument, options = {} ) {
-		let fillerPositionOffset = viewNode.needsFiller();
+	*viewChildrenToDom( viewElement, domDocument, options = {} ) {
+		let fillerPositionOffset = viewElement.needsFiller && viewElement.needsFiller();
 		let offset = 0;
 
-		for ( let childView of viewNode.getChildren() ) {
+		for ( let childView of viewElement.getChildren() ) {
 			if ( fillerPositionOffset === offset ) {
 				yield this.blockFillerCreator( domDocument );
 			}
@@ -229,7 +229,8 @@ export default class DomConverter {
 	}
 
 	*domChildrenToView( domNode, options = {} ) {
-		for ( let domChild of domNode.childNodes ) {
+		for ( let i = 0; i < domNode.childNodes.length; i++ ) {
+			const domChild = domNode.childNodes[ i ];
 			const viewChild = this.domToView( domChild, options );
 
 			if ( viewChild !== null ) {

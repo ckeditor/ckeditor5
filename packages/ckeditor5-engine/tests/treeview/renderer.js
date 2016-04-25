@@ -7,18 +7,18 @@
 
 'use strict';
 
-import Renderer from '/ckeditor5/engine/treeview/renderer.js';
 import ViewElement from '/ckeditor5/engine/treeview/element.js';
 import ViewText from '/ckeditor5/engine/treeview/text.js';
-import DomConverter from '/ckeditor5/engine/treeview/domconverter.js';
+import TreeView from '/ckeditor5/engine/treeview/treeview.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'Renderer', () => {
-	let domConverter, renderer;
+	let treeView, domConverter, renderer;
 
 	before( () => {
-		domConverter = new DomConverter();
-		renderer = new Renderer( domConverter );
+		treeView = new TreeView();
+		domConverter = treeView.domConverter;
+		renderer = treeView.renderer;
 	} );
 
 	describe( 'markToSync', () => {

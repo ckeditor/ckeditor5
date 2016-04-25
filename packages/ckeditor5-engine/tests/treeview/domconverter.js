@@ -44,31 +44,6 @@ describe( 'DomConverter', () => {
 		} );
 	} );
 
-	describe( 'compareNodes', () => {
-		it( 'should return false for nodes not matching types', () => {
-			const domElement = document.createElement( 'p' );
-			const viewText = new ViewText( 'foo' );
-
-			expect( converter.compareNodes( domElement, viewText ) ).to.be.false;
-		} );
-
-		it( 'should return true for bound elements', () => {
-			const domElement = document.createElement( 'p' );
-			const viewElement = new ViewElement( 'p' );
-
-			converter.bindElements( domElement, viewElement );
-
-			expect( converter.compareNodes( domElement, viewElement ) ).to.be.true;
-		} );
-
-		it( 'should return true for the same texts', () => {
-			const domText = document.createTextNode( 'foo' );
-			const viewText = new ViewText( 'foo' );
-
-			expect( converter.compareNodes( domText, viewText ) ).to.be.true;
-		} );
-	} );
-
 	describe( 'domToView', () => {
 		it( 'should create tree of view elements from DOM elements', () => {
 			const domImg = document.createElement( 'img' );

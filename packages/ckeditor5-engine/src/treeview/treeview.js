@@ -5,12 +5,13 @@
 
 'use strict';
 
-import EmitterMixin from '../../utils/emittermixin.js';
+import Selection from './selection.js';
 import Renderer from './renderer.js';
 import DomConverter from './domconverter.js';
 import Writer from './writer.js';
 
 import mix from '../../utils/mix.js';
+import EmitterMixin from '../../utils/emittermixin.js';
 
 /**
  * TreeView class creates an abstract layer over the content editable area.
@@ -36,6 +37,8 @@ export default class TreeView {
 		 * @member {Map} engine.treeView.TreeView#domRoots
 		 */
 		this.domRoots = new Map();
+
+		this.selection = new Selection();
 
 		/**
 		 * Tree View writer.

@@ -196,7 +196,7 @@ export default class Renderer {
 	}
 
 	_isInlineFillerAtSelection() {
-		if ( this.selection.rangeCount() != 1 || !this.selection.isCollapsed() ) {
+		if ( this.selection.rangeCount != 1 || !this.selection.isCollapsed() ) {
 			return false;
 		}
 
@@ -221,6 +221,11 @@ export default class Renderer {
 	}
 
 	_removeInlineFiller() {
+		if ( !this._inlineFillerPosition ) {
+			// Nothing to remove;
+			return;
+		}
+
 		const domPosition = this.domConverter.viewPositionToDom( this._inlineFillerPosition );
 		const domText = domPosition.parent.childNodes[ domPosition.offset ];
 
@@ -241,7 +246,7 @@ export default class Renderer {
 	}
 
 	_needAddInlineFiller() {
-		if ( this.selection.rangeCount() != 1 || !this.selection.isCollapsed() ) {
+		if ( this.selection.rangeCount != 1 || !this.selection.isCollapsed() ) {
 			return false;
 		}
 
@@ -276,7 +281,7 @@ export default class Renderer {
 
 		const filler = this._inlineFillerPosition;
 
-		if ( filler.parent == viewText.parent && filler.offset == viewText.offset ) {
+		if ( filler && filler.parent == viewText.parent && filler.offset == viewText.offset ) {
 			expectedText = INLINE_FILLER + expectedText;
 		}
 
@@ -311,9 +316,9 @@ export default class Renderer {
 		const filler = this._inlineFillerPosition;
 
 		const actualDomChildren = domElement.childNodes;
-		const expectedDomChildren = Array.from( domConverter.viewChildrenToDom( viewElement, domDocument ) );
+		const expectedDomChildren = Array.from( domConverter.viewChildrenToDom( viewElement, domDocument, { bind: true } ) );
 
-		if ( filler.parent == viewElement ) {
+		if ( filler && filler.parent == viewElement ) {
 			expectedDomChildren.splice( filler.offset, 0, domDocument.createTextNode( INLINE_FILLER ) );
 		}
 

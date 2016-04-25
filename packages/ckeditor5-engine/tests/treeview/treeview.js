@@ -77,7 +77,7 @@ describe( 'TreeView', () => {
 
 			expect( treeView._observers.size ).to.equal( 1 );
 
-			const observerMock = Array.from( treeView._observers )[ 0 ];
+			const observerMock = treeView.getObserver( ObserverMock );
 
 			expect( observerMock ).to.have.property( 'treeView', treeView );
 			sinon.assert.calledOnce( observerMock.enable );
@@ -127,7 +127,7 @@ describe( 'TreeView', () => {
 			treeView.addObserver( ObserverMock );
 			treeView.render();
 
-			const observerMock = Array.from( treeView._observers )[ 0 ];
+			const observerMock = treeView.getObserver( ObserverMock );
 
 			sinon.assert.calledOnce( observerMock.disable );
 			sinon.assert.calledOnce( treeView.renderer.render );

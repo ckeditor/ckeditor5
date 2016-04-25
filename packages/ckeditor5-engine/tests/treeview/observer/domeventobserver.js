@@ -98,7 +98,7 @@ describe( 'DomEventObserver', () => {
 		treeView.addObserver( ClickObserver );
 		treeView.on( 'click', evtSpy );
 
-		const testObserver = Array.from( treeView._observers )[ 0 ];
+		const testObserver = treeView.getObserver( ClickObserver );
 		testObserver.disable();
 
 		domElement.dispatchEvent( domEvent );
@@ -116,7 +116,7 @@ describe( 'DomEventObserver', () => {
 		treeView.addObserver( ClickObserver );
 		treeView.on( 'click', evtSpy );
 
-		const testObserver = Array.from( treeView._observers )[ 0 ];
+		const testObserver = treeView.getObserver( ClickObserver );
 
 		testObserver.disable();
 

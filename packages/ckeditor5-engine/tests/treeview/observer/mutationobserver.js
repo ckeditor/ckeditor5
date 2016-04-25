@@ -23,7 +23,7 @@ describe( 'MutationObserver', () => {
 		treeView.createRoot( domEditor, 'editor' );
 
 		treeView.addObserver( MutationObserver );
-		mutationObserver = Array.from( treeView._observers )[ 0 ];
+		mutationObserver = treeView.getObserver( MutationObserver );
 
 		treeView.on( 'mutations', ( evt, mutations ) => lastMutations = mutations );
 
