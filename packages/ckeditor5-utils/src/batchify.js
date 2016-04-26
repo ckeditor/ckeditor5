@@ -6,8 +6,8 @@
 'use strict';
 
 /**
- * Creates set of operations which need to be applied to the input in order to transform
- * it to the output. Can be used with strings or arrays.
+ * Creates a set of operations which need to be applied to the input in order to transform
+ * it into the output. Can be used with strings or arrays.
  *
  *		const input = Array.from( 'abc' );
  *		const output = Array.from( 'xaby' );
@@ -27,7 +27,7 @@
  * @param {Array.<'EQUAL'|'INSERT'|'DELETE'>} diff Result of {@link utils.diff}.
  * @param {String|Array} output The string or array which was passed as diff's output.
  * @returns {Array.<Object>} Set of operations (insert or delete) which need to be applied to the input
- * in order to transform it to the output.
+ * in order to transform it into the output.
  */
 export default function batchify( diff, output ) {
 	const batch = [];
