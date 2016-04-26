@@ -6,6 +6,7 @@
 'use strict';
 
 import utils from '../../utils/utils.js';
+import EmitterMixin from '../../utils/emittermixin.js';
 
 /**
  * DocumentFragment class.
@@ -98,6 +99,7 @@ export default class DocumentFragment {
 	 * @returns {Number} Number of inserted nodes.
 	 */
 	insertChildren( index, nodes ) {
+		this._fireChange( 'CHILDREN', this );
 		let count = 0;
 
 		if ( !utils.isIterable( nodes ) ) {
@@ -123,10 +125,23 @@ export default class DocumentFragment {
 	 * @returns {Array.<engine.treeView.Node>} The array of removed nodes.
 	 */
 	removeChildren( index, howMany = 1 ) {
+		this._fireChange( 'CHILDREN', this );
+
 		for ( let i = index; i < index + howMany; i++ ) {
 			this._children[ i ].parent = null;
 		}
 
 		return this._children.splice( index, howMany );
 	}
+
+	/**
+	 * @param {engine.treeView.ChangeType} type Type of the change.
+	 * @param {engine.treeView.Node} node Changed node.
+	 * @fires engine.treeView.Node#change
+	 */
+	_fireChange( type, node ) {
+		this.fire( 'change', type, node );
+	}
 }
+
+utils.mix( DocumentFragment, EmitterMixin );

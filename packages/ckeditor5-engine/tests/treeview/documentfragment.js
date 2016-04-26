@@ -88,6 +88,24 @@ describe( 'DocumentFragment', () => {
 				expect( count2 ).to.equal( 1 );
 				expect( count3 ).to.equal( 1 );
 			} );
+
+			it( 'should fire change event when inserting', ( done ) => {
+				fragment.once( 'change', ( event, type ) => {
+					expect( type ).to.equal( 'CHILDREN' );
+					done();
+				} );
+
+				fragment.insertChildren( 0, el1 );
+			} );
+
+			it( 'should fire change event when appending', ( done ) => {
+				fragment.once( 'change', ( event, type ) => {
+					expect( type ).to.equal( 'CHILDREN' );
+					done();
+				} );
+
+				fragment.appendChildren( el1 );
+			} );
 		} );
 
 		describe( 'getChildIndex', () => {
@@ -153,6 +171,17 @@ describe( 'DocumentFragment', () => {
 
 				expect( removed.length ).to.equal( 1 );
 				expect( removed[ 0 ] ).to.have.property( 'name' ).that.equals( 'el2' );
+			} );
+
+			it( 'should fire change event', ( done ) => {
+				fragment.appendChildren( el1 );
+
+				fragment.once( 'change', ( event, type ) => {
+					expect( type ).to.equal( 'CHILDREN' );
+					done();
+				} );
+
+				fragment.removeChildren( 0 );
 			} );
 		} );
 	} );
