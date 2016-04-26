@@ -6,31 +6,31 @@
 'use strict';
 
 /**
- * Creates a set of operations which need to be applied to the input in order to transform
- * it into the output. Can be used with strings or arrays.
+ * Creates a set of changes which need to be applied to the input in order to transform
+ * it into the output. This function can be used with strings or arrays.
  *
  *		const input = Array.from( 'abc' );
  *		const output = Array.from( 'xaby' );
- *		const batch = batchify( diff( input, output ), output );
+ *		const changes = diffToChanges( diff( input, output ), output );
  *
- *		batch.forEach( operation => {
- *			if ( operation.type == 'INSERT' ) {
- *				input.splice( operation.index, 0, ...operation.values );
- *			} else if ( operation.type == 'DELETE' ) {
- *				input.splice( operation.index, operation.howMany );
+ *		changes.forEach( change => {
+ *			if ( change.type == 'INSERT' ) {
+ *				input.splice( change.index, 0, ...change.values );
+ *			} else if ( change.type == 'DELETE' ) {
+ *				input.splice( change.index, change.howMany );
  *			}
  *		} );
  *
  *		input.join( '' ) == output.join( '' ); // -> true
  *
- * @method utils.batchify
+ * @method utils.diffToChanges
  * @param {Array.<'EQUAL'|'INSERT'|'DELETE'>} diff Result of {@link utils.diff}.
  * @param {String|Array} output The string or array which was passed as diff's output.
- * @returns {Array.<Object>} Set of operations (insert or delete) which need to be applied to the input
+ * @returns {Array.<Object>} Set of changes (insert or delete) which need to be applied to the input
  * in order to transform it into the output.
  */
-export default function batchify( diff, output ) {
-	const batch = [];
+export default function diffToChanges( diff, output ) {
+	const changes = [];
 	let index = 0;
 	let lastOperation;
 
@@ -70,11 +70,11 @@ export default function batchify( diff, output ) {
 
 	pushLast();
 
-	return batch;
+	return changes;
 
 	function pushLast() {
 		if ( lastOperation ) {
-			batch.push( lastOperation );
+			changes.push( lastOperation );
 			lastOperation = null;
 		}
 	}

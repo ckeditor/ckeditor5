@@ -9,7 +9,7 @@
 // by Sun Wu, Udi Manber, Gene Myers, Webb Miller.
 
 /**
- * Calculates the difference between two arrays or strings producing an array containing a list of actions
+ * Calculates the difference between two arrays or strings producing an array containing a list of changes
  * necessary to transform input into output.
  *
  *		diff( 'aba', 'acca' ); // [ 'EQUAL', 'INSERT', 'INSERT', 'DELETE', 'EQUAL' ]
@@ -18,7 +18,7 @@
  * @param {Array|String} a Input array or string.
  * @param {Array|String} b Output array or string.
  * @param {Function} [cmp] Optional function used to compare array values, by default === is used.
- * @return {Array} Array of actions.
+ * @returns {Array} Array of changes.
  */
 export default function diff( a, b, cmp ) {
 	// Set the comparator function.
@@ -62,12 +62,12 @@ export default function diff( a, b, cmp ) {
 		// The way we should go to get further.
 		const dir = y1 > y2 ? -1 : 1;
 
-		// Clone previous actions array (if any).
+		// Clone previous changes array (if any).
 		if ( es[ k + dir ] ) {
 			es[ k ] = es[ k + dir ].slice( 0 );
 		}
 
-		// Create actions array.
+		// Create changes array.
 		if ( !es[ k ] ) {
 			es[ k ] = [];
 		}
@@ -112,7 +112,7 @@ export default function diff( a, b, cmp ) {
 		p++;
 	} while ( fp[ delta ] !== n );
 
-	// Return the final list of edit actions.
+	// Return the final list of edit changes.
 	// We remove the first item that represents the action for the injected nulls.
 	return es[ delta ].slice( 1 );
 }

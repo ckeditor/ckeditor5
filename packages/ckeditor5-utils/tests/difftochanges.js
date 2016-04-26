@@ -6,9 +6,9 @@
 'use strict';
 
 import diff from '/ckeditor5/utils/diff.js';
-import batchify from '/ckeditor5/utils/batchify.js';
+import diffToChanges from '/ckeditor5/utils/difftochanges.js';
 
-describe( 'batchify', () => {
+describe( 'diffToChanges', () => {
 	describe( 'equal patterns', () => {
 		test( 0,		'',				'' );
 		test( 0,		'abc',			'abc' );
@@ -50,35 +50,35 @@ describe( 'batchify', () => {
 	it( 'works with arrays', () => {
 		const input = Array.from( 'abc' );
 		const output = Array.from( 'xaby' );
-		const batch = batchify( diff( input, output ), output );
+		const changes = diffToChanges( diff( input, output ), output );
 
-		batch.forEach( operation => {
-			if ( operation.type == 'INSERT' ) {
-				input.splice( operation.index, 0, ...operation.values );
-			} else if ( operation.type == 'DELETE' ) {
-				input.splice( operation.index, operation.howMany );
+		changes.forEach( change => {
+			if ( change.type == 'INSERT' ) {
+				input.splice( change.index, 0, ...change.values );
+			} else if ( change.type == 'DELETE' ) {
+				input.splice( change.index, change.howMany );
 			}
 		} );
 
 		expect( input ).to.deep.equal( output );
-		expect( batch ).to.have.lengthOf( 3 );
+		expect( changes ).to.have.lengthOf( 3 );
 	} );
 
-	function test( expectedOperationNumber, oldStr, newStr ) {
+	function test( expectedChangeNumber, oldStr, newStr ) {
 		it( `${ oldStr } => ${ newStr }`, () => {
-			const batch = batchify( diff( oldStr, newStr ), newStr );
+			const changes = diffToChanges( diff( oldStr, newStr ), newStr );
 			const oldStrChars = Array.from( oldStr );
 
-			batch.forEach( operation => {
-				if ( operation.type == 'INSERT' ) {
-					oldStrChars.splice( operation.index, 0, ...operation.values );
-				} else if ( operation.type == 'DELETE' ) {
-					oldStrChars.splice( operation.index, operation.howMany );
+			changes.forEach( change => {
+				if ( change.type == 'INSERT' ) {
+					oldStrChars.splice( change.index, 0, ...change.values );
+				} else if ( change.type == 'DELETE' ) {
+					oldStrChars.splice( change.index, change.howMany );
 				}
 			} );
 
 			expect( oldStrChars.join( '' ) ).to.equal( newStr );
-			expect( batch ).to.have.lengthOf( expectedOperationNumber );
+			expect( changes ).to.have.lengthOf( expectedChangeNumber );
 		} );
 	}
 } );
