@@ -31,31 +31,28 @@
  */
 export default function batchify( diff, output ) {
 	const batch = [];
-	let left = 0;
-	let right = 0;
+	let index = 0;
 	let lastOperation;
 
 	diff.forEach( change => {
 		if ( change == 'EQUAL' ) {
 			pushLast();
 
-			left++;
-			right++;
+			index++;
 		} else if ( change == 'INSERT' ) {
 			if ( isContinuationOf( 'INSERT' ) ) {
-				lastOperation.values.push( output[ right ] );
+				lastOperation.values.push( output[ index ] );
 			} else {
 				pushLast();
 
 				lastOperation = {
 					type: 'INSERT',
-					index: left,
-					values: [ output[ right ] ]
+					index: index,
+					values: [ output[ index ] ]
 				};
 			}
 
-			left++;
-			right++;
+			index++;
 		} else /* if ( change == 'DELETE' ) */ {
 			if ( isContinuationOf( 'DELETE' ) ) {
 				lastOperation.howMany++;
@@ -64,7 +61,7 @@ export default function batchify( diff, output ) {
 
 				lastOperation = {
 					type: 'DELETE',
-					index: left,
+					index: index,
 					howMany: 1
 				};
 			}
