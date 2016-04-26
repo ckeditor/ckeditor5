@@ -26,19 +26,29 @@ const TEXT_RANGE_START_TOKEN = '{';
 const TEXT_RANGE_END_TOKEN = '}';
 
 /**
- * Converts view elements to its string representation, an HTML-like string.
- * Root element can be provided as {@link engine.treeView.Element Element} or
- * {@link engine.treeView.DocumentFragment DocumentFragment}.
+ * Converts view elements to its HTML-like string representation.
+ * Root element can be provided as {@link engine.treeView.Text Text}:
+ *
+ *		const text = new Text( 'foobar' );
+ *		stringify( text ); // 'foobar'
+ *
+ * or as {@link engine.treeView.Element Element}:
+ *
+ *		const element = new Element( 'p', null, new Text( 'foobar' ) );
+ *		stringify( element ); // '<p>foobar</p>'
+ *
+ * or as {@link engine.treeView.DocumentFragment DocumentFragment}:
  *
  *		const text = new Text( 'foobar' );
  *		const b = new Element( 'b', { name: 'test' }, text );
- *		const p = new Element( 'p', { style: 'color:red;' }, b );
+ *		const p = new Element( 'p', { style: 'color:red;' } );
+ *		const fragment = new DocumentFragment( [ p, b ] );
  *
- *		getData( p ); // <p style="color:red;"><b name="test">foobar</b></p>
+ *		stringify( fragment ); // '<p style="color:red;"></p><b name="test">foobar</b>'
  *
- * Additionally {@link engine.treeView.Selection Selection}
- * instance can be provided, then ranges from that selection will be converted too. If range position is placed inside
- * element node `[` and `]` will be used there.
+ * Additionally {@link engine.treeView.Selection Selection} instance can be provided, then ranges from that selection
+ * will be included in output data.
+ * If range position is placed inside element node, it will be represented with `[` and `]`:
  *
  *		const text = new Text( 'foobar' );
  *		const b = new Element( 'b', null, text );
@@ -46,9 +56,9 @@ const TEXT_RANGE_END_TOKEN = '}';
  *		const selection = new Selection();
  *		selection.addRange( Range.createFromParentsAndOffsets( p, 0, p, 1 ) );
  *
- *		getData( p, selection ); // <p>[<b>foobar</b>]</p>
+ *		stringify( p, selection ); // <p>[<b>foobar</b>]</p>
  *
- * If range is placed inside text node `{` and `}` will be used there.
+ * If range is placed inside text node, it will be represented with `{` and `}`:
  *
  *		const text = new Text( 'foobar' );
  *		const b = new Element( 'b', null, text );
@@ -56,39 +66,89 @@ const TEXT_RANGE_END_TOKEN = '}';
  *		const selection = new Selection();
  *		selection.addRange( Range.createFromParentsAndOffsets( text, 1, text, 5 ) );
  *
- *		getData( p, selection ); // <p><b>f{ooba}r</b></p>
+ *		stringify( p, selection ); // '<p><b>f{ooba}r</b></p>'
  *
  * Additional options object can be provided.
- * If `options.showType` property is set to `true` element types will be
+ * If `options.showType` is set to `true` element's types will be
  * presented for {@link engine.treeView.AttributeElement AttributeElements} and {@link engine.treeView.ContainerElement
- * ContainerElements}.
+ * ContainerElements}:
  *
  *		const attribute = new AttributeElement( 'b' );
  *		const container = new ContainerElement( 'p' );
- *		getData( attribute, null, { showType: true } ); // <attribute:b></attribute:b>
- *		getData( container, null, { showType: true } ); // <container:p></container:p>
+ *		getData( attribute, null, { showType: true } ); // '<attribute:b></attribute:b>'
+ *		getData( container, null, { showType: true } ); // '<container:p></container:p>'
  *
- * if `options.showPriority` property is set to `true`, priority will be displayed for all
+ * If `options.showPriority` is set to `true`, priority will be displayed for all
  * {@link engine.treeView.AttributeElement AttributeElements}.
  *
  *		const attribute = new AttributeElement( 'b' );
  *		attribute.priority = 20;
- *		getData( attribute, null, { showPriority: true } ); // <b priority=20></b>
+ *		getData( attribute, null, { showPriority: true } ); // <b:20></b:20>
  *
- * @param {engine.treeView.Node} node
- * @param {engine.treeView.Selection} [selection]
- * @param {Object} [options]
- * @param {Boolean} [options.showType=false] When set to `true` type of elements will be printed ( `<container:p>`
- * instead of `<p>` and `<attribute:b>` instead of `<b>`.
- * @param {Boolean} [options.showPriority=false] When set to `true` AttributeElement's priority will be printed.
- * @returns {String}
+ * @param {engine.treeView.Text|engine.treeView.Element|engine.treeView.DocumentFragment} node Node to stringify.
+ * @param {engine.treeView.Selection} [selection = null ] Selection instance which ranges will be included in returned
+ * string data.
+ * @param {Object} [options] Object with additional options.
+ * @param {Boolean} [options.showType=false] When set to `true` type of elements will be printed (`<container:p>`
+ * instead of `<p>` and `<attribute:b>` instead of `<b>`).
+ * @param {Boolean} [options.showPriority=false] When set to `true` AttributeElement's priority will be printed
+ * (`<span:12>`, `<b:10>`).
+ * @returns {String} HTML-like string representing the view.
  */
-export function stringify( node, selection, options = {} ) {
+export function stringify( node, selection = null, options = {} ) {
 	const viewStringify = new ViewStringify( node, selection, options );
 
 	return viewStringify.stringify();
 }
 
+/**
+ * Parses HTML-like string and returns view tree nodes.
+ * Simple string will be converted to {@link engine.treeView.Text Text} node:
+ *
+ *		parse( 'foobar' ); // Returns instance of Text.
+ *
+ * {@link engine.treeView.Element Elements} will be parsed with attributes an children:
+ *
+ *		parse( '<b name="baz">foobar</b>' ); // Returns instance of Element with `baz` attribute and text child node.
+ *
+ * Multiple nodes provided on root level will be converted to {@link engine.treeView.DocumentFragment DocumentFragment}:
+ *
+ *		parse( '<b>foo</b><i>bar</i>' ); // Returns DocumentFragment with two child elements.
+ *
+ * Method can parse multiple {@link engine.treeView.Range ranges} provided in string data and return
+ * {@link engine.treeView.Selection Selection} instance containing these ranges. Ranges placed inside
+ * {@link engine.treeView.Text Text} nodes should be marked using `{` and `}` brackets:
+ *
+ * 		const { text, selection } = parse( 'f{ooba}r' );
+ *
+ * Ranges placed outside text nodes should be marked using `[` and `]` brackets:
+ *
+ *		const { root, selection } = parse( '<p>[<b>foobar</b>]</p>' );
+ *
+ * Sometimes there is a need for defining order of ranges inside created selection. This can be achieved by providing
+ * ranges order array as additional parameter:
+ *
+ *		const { root, selection } = parse( '{fo}ob{ar}{ba}z', { order: [ 2, 3, 1 ] } );
+ *
+ * In above example first range (`{fo}`) will be added to selection as second one, second range (`{ar}`) will be added
+ * as third and third range (`{ba}`) will be added as first one.
+ *
+ * If selection's last range should be added as backward one (so the {@link engine.treeView.Selection#anchor selection
+ * anchor} is represented by `end` position and {@link engine.treeView.Selection#focus selection focus} is
+ * represented by `start` position) use `lastRangeBackward` flag:
+ *
+ *		const { root, selection } = parse( `{foo}bar{baz}`, { lastRangeBackward: true } );
+ *
+ * @param {String} data HTML-like string to be parsed.
+ * @param {Object} options
+ * @param {Array.<Number>} [options.order] Array with order of parsed ranges added to returned
+ * {@link engine.treeView.Selection Selection} instance. Each element should represent desired position of each range in
+ * selection instance. For example: `[2, 3, 1]` means that first range will be placed as second, second as third and third as first.
+ * @param {Boolean} [options.lastRangeBackward=false] If set to true last range will be added as backward to the returned
+ * {@link engine.treeView.Selection Selection} instance.
+ * @returns {engine.treeView.Text|engine.treeView.Element|engine.treeView.DocumentFragment|Object} Returns parsed view node
+ * or object with two fields `view` and `selection` when selection ranges were included in data to parse.
+ */
 export function parse( data, options = { } ) {
 	options.order = options.order || [];
 	const viewParser = new ViewParser();
@@ -111,21 +171,36 @@ export function parse( data, options = { } ) {
 	return view;
 }
 
+/**
+ * Private helper class used for converting ranges text representation inside {@link engine.treeView.Text Text nodes}.
+ *
+ * @private
+ */
 class RangeParser {
-	constructor() {
-		// Todo - set in parse method.
-		this._positions = [];
-	}
-
+	/**
+	 * Parses the view, and returns ranges represented inside {@link engine.treeView.Text Text nodes}.
+	 * Method will remove all occurrences of `{`, `}`, `[` and `]` from found text nodes. If text node is empty after
+	 * the process - it will be removed too.
+	 *
+	 * @param {engine.treeView.Node} node Starting node.
+	 * @param {Array.<Number>} order Ranges order. Each element should represent desired position of the range after
+	 * sorting. For example: `[2, 3, 1]` means that first range will be placed as second, second as third and third as first.
+	 * @returns {Array.<engine.treeView.Range>} Array with ranges found.
+	 */
 	parse( node, order ) {
+		this._positions = [];
+
+		// Remove all range brackets from view nodes and save their positions.
 		this._getPositions( node );
+
+		// Create ranges using gathered positions.
 		let ranges = this._createRanges();
 
 		// Sort ranges if needed.
 		if ( order.length ) {
 			if ( order.length != ranges.length ) {
 				throw new Error(
-					`There are ${ ranges.length} ranges found, but ranges order array contains ${ order.length } elements.`
+					`Parse error - there are ${ ranges.length} ranges found, but ranges order array contains ${ order.length } elements.`
 				);
 			}
 
@@ -135,25 +210,17 @@ class RangeParser {
 		return ranges;
 	}
 
-	_sortRanges( ranges, rangesOrder ) {
-		const sortedRanges = [];
-		let index = 0;
-
-		for ( let newPosition of rangesOrder ) {
-			if ( ranges[ newPosition - 1 ] === undefined ) {
-				throw new Error( 'Provided ranges order is invalid.' );
-			}
-
-			sortedRanges[ newPosition - 1] = ranges[ index ];
-			index++;
-		}
-
-		return sortedRanges;
-	}
-
+	/**
+	 * Gathers positions of brackets inside view tree starting from provided node. Method will remove all occurrences of
+	 * `{`, `}`, `[` and `]` from found text nodes. If text node is empty after the process - it will be removed
+	 * too.
+	 *
+	 * @private
+	 * @param {engine.treeView.Node} node Staring node.
+	 */
 	_getPositions( node ) {
 		if ( node instanceof ViewDocumentFragment || node instanceof ViewElement ) {
-			// Copy elements into the array, when items will be removed from node this array will still have all the
+			// Copy elements into the array, when nodes will be removed from parent node this array will still have all the
 			// items needed for iteration.
 			const children = Array.from( node.getChildren() );
 
@@ -206,7 +273,7 @@ class RangeParser {
 					} else {
 						// Check if element range delimiter is not placed inside text node.
 						if ( item.textOffset !== 0 && item.textOffset !== text.length ) {
-							throw new Error( `Range delimiter '${ item.bracket }' is placed inside text node.` );
+							throw new Error( `Parse error - range delimiter '${ item.bracket }' is placed inside text node.` );
 						}
 
 						// If bracket is placed at the end of the text node - it should be positioned after it.
@@ -220,7 +287,7 @@ class RangeParser {
 					}
 				} else {
 					if ( item.bracket == TEXT_RANGE_START_TOKEN || item.bracket == TEXT_RANGE_END_TOKEN ) {
-						throw new Error( `Text range delimiter '${ item.bracket }' is placed inside empty text node. ` );
+						throw new Error( `Parse error - text range delimiter '${ item.bracket }' is placed inside empty text node. ` );
 					}
 
 					// Store information about element range delimiter.
@@ -233,6 +300,38 @@ class RangeParser {
 		}
 	}
 
+	/**
+	 * Sort ranges in given order. Ranges order should be an array, each element should represent desired position
+	 * of the range after sorting.
+	 * For example: `[2, 3, 1]` means that first range will be placed as second, second as third and third as first.
+	 *
+	 * @private
+	 * @param {Array.<engine.treeView.Range>} ranges Ranges to sort.
+	 * @param {Array.<Number>} rangesOrder Array with new ranges order.
+	 * @returns {Array} Sorted ranges array.
+	 */
+	_sortRanges( ranges, rangesOrder ) {
+		const sortedRanges = [];
+		let index = 0;
+
+		for ( let newPosition of rangesOrder ) {
+			if ( ranges[ newPosition - 1 ] === undefined ) {
+				throw new Error( 'Parse error - provided ranges order is invalid.' );
+			}
+
+			sortedRanges[ newPosition - 1] = ranges[ index ];
+			index++;
+		}
+
+		return sortedRanges;
+	}
+
+	/**
+	 * Uses all found bracket positions to create ranges from them.
+	 *
+	 * @private
+	 * @returns {Array.<engine.treeView.Range}
+	 */
 	_createRanges() {
 		const ranges = [];
 		let range = null;
@@ -240,13 +339,13 @@ class RangeParser {
 		for ( let item of this._positions ) {
 			// When end of range is found without opening.
 			if ( !range && ( item.bracket == ELEMENT_RANGE_END_TOKEN || item.bracket == TEXT_RANGE_END_TOKEN ) ) {
-				throw new Error( `End of range was found '${ item.bracket }' but range was not started before.` );
+				throw new Error( `Parse error - end of range was found '${ item.bracket }' but range was not started before.` );
 			}
 
 			// When second start of range is found when one is already opened - selection does not allow intersecting
 			// ranges.
 			if ( range && ( item.bracket == ELEMENT_RANGE_START_TOKEN || item.bracket == TEXT_RANGE_START_TOKEN ) ) {
-				throw new Error( `Start of range was found '${ item.bracket }' but one range is already started.` );
+				throw new Error( `Parse error - start of range was found '${ item.bracket }' but one range is already started.` );
 			}
 
 			if ( item.bracket == ELEMENT_RANGE_START_TOKEN || item.bracket == TEXT_RANGE_START_TOKEN ) {
@@ -260,21 +359,43 @@ class RangeParser {
 
 		// Check if all ranges have proper ending.
 		if ( range !== null ) {
-			throw new Error( 'Range was started but no end delimiter was found.' );
+			throw new Error( 'Parse error - range was started but no end delimiter was found.' );
 		}
 
 		return ranges;
 	}
 }
 
+/**
+ * Private helper class used that converts given HTML-like string to view tree.
+ *
+ * @private
+ */
 class ViewParser {
+
+	/**
+	 * Parses HTML-like string to view tree elements.
+	 *
+	 * @param {string} data
+	 * @returns {engine.treeView.Node|engine.treeView.DocumentFragment}
+	 */
 	parse( data ) {
 		const htmlProcessor = new HtmlDataProcessor();
+
+		// Convert HTML string to DOM.
 		const domRoot = htmlProcessor.toDom( data );
 
+		// Convert DOM to View.
 		return this._walkDom( domRoot );
 	}
 
+	/**
+	 * Walks through DOM elements and converts them to tree view elements.
+	 *
+	 * @private
+	 * @param {Node} domNode
+	 * @returns {engine.treeView.Node|engine.treeView.DocumentFragment}
+	 */
 	_walkDom( domNode ) {
 		const isDomElement = domNode instanceof DomElement;
 
@@ -306,6 +427,14 @@ class ViewParser {
 		return new ViewText( domNode.textContent );
 	}
 
+	/**
+	 * Converts DOM Element to {engine.treeView.Element view Element}.
+	 *
+	 * @param {Element} domElement DOM element to convert.
+	 * @returns {engine.treeView.Element|engine.treeView.AttributeElement|engine.treeView.ContainerElement} Tree view
+	 * element converted from DOM element.
+	 * @private
+	 */
 	_convertElement( domElement ) {
 		const info = this._convertElementName( domElement );
 		let viewElement;
@@ -333,6 +462,18 @@ class ViewParser {
 		return viewElement;
 	}
 
+	/**
+	 * Converts DOM element tag name to information needed for creating {@link engine.treeView.Element view Element} instance.
+	 * Name can be provided in couple formats: as a simple element's name (`div`), as a type and name (`container:div`,
+	 * `attribute:span`), as a name and priority (`span:12`) and as a type, priority, name trio (`attribute:span:12`);
+	 *
+	 * @private
+	 * @param {Element} element DOM Element which tag name should be converted.
+	 * @returns {Object} info Object with parsed information.
+	 * @returns {String} info.name Parsed name of the element.
+	 * @returns {String|null} info.type Parsed type of the element, can be `attribute` or `container`.
+	 * @returns {Number|null} info.priority Parsed priority of the element.
+	 */
 	_convertElementName( element ) {
 		const parts = element.tagName.toLowerCase().split( ':' );
 
@@ -367,7 +508,7 @@ class ViewParser {
 				};
 			}
 
-			throw new Error( `Cannot parse element's tag name: ${ element.tagName.toLowerCase() }.` );
+			throw new Error( `Parse error - cannot parse element's tag name: ${ element.tagName.toLowerCase() }.` );
 		}
 
 		// Check if name is in format type:name:priority.
@@ -384,9 +525,16 @@ class ViewParser {
 			}
 		}
 
-		throw new Error( `Cannot parse element's tag name: ${ element.tagName.toLowerCase() }.` );
+		throw new Error( `Parse error - cannot parse element's tag name: ${ element.tagName.toLowerCase() }.` );
 	}
 
+	/**
+	 * Checks if element's type is allowed. Returns `attribute`, `container` or `null`.
+	 *
+	 * @private
+	 * @param {String} type
+	 * @returns {String|null}
+	 */
 	_convertType( type ) {
 		if ( type == 'container' || type == 'attribute' ) {
 			return type;
@@ -395,6 +543,13 @@ class ViewParser {
 		return null;
 	}
 
+	/**
+	 * Checks if given priority is allowed. Returns null if priority cannot be converted.
+	 *
+	 * @private
+	 * @param {String} priorityString
+	 * @returns {Number|Null}
+	 */
 	_convertPriority( priorityString ) {
 		const priority = parseInt( priorityString, 10 );
 
@@ -649,7 +804,6 @@ class ViewStringify {
 	_stringifyElementAttributes( element ) {
 		const attributes = [];
 
-		// TODO: Maybe attributes should be put in alphabetical order, it might be easier to write expected string.
 		for ( let attribute of element.getAttributeKeys() ) {
 			attributes.push( `${ attribute }="${ element.getAttribute( attribute ) }"` );
 		}

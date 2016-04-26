@@ -182,6 +182,12 @@ describe( 'view test utils', () => {
 	} );
 
 	describe( 'parse', () => {
+		it( 'should parse text', () => {
+			const text = parse( 'foobar' );
+			expect( text ).to.be.instanceOf( Text );
+			expect( text.data ).to.equal( 'foobar' );
+		} );
+
 		it( 'should parse elements and texts', () => {
 			const view = parse( '<b>foobar</b>' );
 			const element = new Element( 'b' );
@@ -317,6 +323,19 @@ describe( 'view test utils', () => {
 			expect( ranges[ 0 ].isEqual( Range.createFromParentsAndOffsets( view, 3, view, 4 ) ) ).to.be.true;
 			expect( ranges[ 1 ].isEqual( Range.createFromParentsAndOffsets( view, 7, view, 8 ) ) ).to.be.true;
 			expect( ranges[ 2 ].isEqual( Range.createFromParentsAndOffsets( view, 0, view, 1 ) ) ).to.be.true;
+			expect( selection.anchor.isEqual( ranges[ 2 ].start ) ).to.be.true;
+			expect( selection.focus.isEqual( ranges[ 2 ].end ) ).to.be.true;
+		} );
+
+		it( 'should set last range backward if needed', () => {
+			const { view, selection } = parse( '{f}oo{b}arb{a}z', { order: [ 3, 1, 2 ], lastRangeBackward: true } );
+			expect( selection.rangeCount ).to.equal( 3 );
+			const ranges = Array.from( selection.getRanges() );
+			expect( ranges[ 0 ].isEqual( Range.createFromParentsAndOffsets( view, 3, view, 4 ) ) ).to.be.true;
+			expect( ranges[ 1 ].isEqual( Range.createFromParentsAndOffsets( view, 7, view, 8 ) ) ).to.be.true;
+			expect( ranges[ 2 ].isEqual( Range.createFromParentsAndOffsets( view, 0, view, 1 ) ) ).to.be.true;
+			expect( selection.anchor.isEqual( ranges[ 2 ].end ) ).to.be.true;
+			expect( selection.focus.isEqual( ranges[ 2 ].start ) ).to.be.true;
 		} );
 
 		it( 'should throw when ranges order does not include all ranges', () => {
