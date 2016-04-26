@@ -11,17 +11,27 @@ import Writer from '/ckeditor5/engine/treeview/writer.js';
 import Element from '/ckeditor5/engine/treeview/element.js';
 import ContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
 import AttributeElement from '/ckeditor5/engine/treeview/attributeelement.js';
-import { DEFAULT_PRIORITY } from '/ckeditor5/engine/treeview/attributeelement.js';
 import Position from '/ckeditor5/engine/treeview/position.js';
 import Range from '/ckeditor5/engine/treeview/range.js';
 import Text from '/ckeditor5/engine/treeview/text.js';
-import utils from '/tests/engine/treeview/writer/_utils/utils.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
+import { stringify, parse } from '/tests/engine/_utils/view.js';
 
 describe( 'Writer', () => {
-	const create = utils.create;
-	const test = utils.test;
 	let writer;
+
+	/**
+	 * Executes test using `parse` and `stringify` utils functions.
+	 *
+	 * @param {String} input
+	 * @param {String} unwrapAttribute
+	 * @param {String} expected
+	 */
+	function test( input, unwrapAttribute, expected ) {
+		const { view, selection } = parse( input );
+		const newRange = writer.wrap( selection.getFirstRange(), parse( unwrapAttribute ) );
+		expect( stringify( view, newRange, { showType: true, showPriority: true } ) ).to.equal( expected );
+	}
 
 	beforeEach( () => {
 		writer = new Writer();
@@ -29,51 +39,19 @@ describe( 'Writer', () => {
 
 	describe( 'wrap', () => {
 		it( 'should do nothing on collapsed ranges', () => {
-			const description = {
-				instanceOf: ContainerElement,
-				name: 'p',
-				children: [
-					{ instanceOf: Text, data: 'foo', rangeStart: 1, rangeEnd: 1 }
-				]
-			};
-			const created = create( writer, description );
-			const newRange = writer.wrap( created.range, new AttributeElement( 'b' ) );
-			test( writer, newRange, created.node, description );
+			test(
+				'<container:p>f{}oo</container:p>',
+				'<attribute:b></attribute:b>',
+				'<container:p>f{}oo</container:p>'
+			);
 		} );
 
 		it( 'wraps single text node', () => {
-			// <p>[{foobar}]</p>
-			// wrap <b>
-			// <p>[<b>{foobar}<b>]</p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{ instanceOf: Text, data: 'foobar' }
-				]
-			} );
-
-			const b = new AttributeElement( 'b' );
-			const newRange = writer.wrap( created.range, b );
-
-			test( writer, newRange, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: DEFAULT_PRIORITY,
-						children: [
-							{ instanceOf: Text, data: 'foobar' }
-						]
-					}
-				]
-			} );
+			test(
+				'<container:p>[foobar]</container:p>',
+				'<attribute:b:1></attribute:b:1>',
+				'<container:p>[<attribute:b:1>foobar</attribute:b:1>]</container:p>'
+			);
 		} );
 
 		it( 'should throw error when element is not instance of AttributeElement', () => {
@@ -104,671 +82,165 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'wraps part of a single text node #1', () => {
-			// <p>[{foo]bar}</p>
-			// wrap with <b>
-			// <p>[<b>{foo}</b>]{bar}</p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				children: [
-					{ instanceOf: Text, data: 'foobar', rangeEnd: 3 }
-				]
-			} );
-
-			const b = new AttributeElement( 'b' );
-			const newRange = writer.wrap( created.range, b );
-
-			test( writer, newRange, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: DEFAULT_PRIORITY,
-						children: [
-							{ instanceOf: Text, data: 'foo' }
-						]
-					},
-					{ instanceOf: Text, data: 'bar' }
-				]
-			} );
+			test(
+				'<container:p>[foo}bar</container:p>',
+				'<attribute:b:1></attribute:b:1>',
+				'<container:p>[<attribute:b:1>foo</attribute:b:1>]bar</container:p>'
+			);
 		} );
 
 		it( 'wraps part of a single text node #2', () => {
-			// <p>{[foo]bar}</p>
-			// wrap with <b>
-			// <p>[<b>{foo}</b>]{bar}</p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				children: [
-					{ instanceOf: Text, data: 'foobar', rangeStart: 0, rangeEnd: 3 }
-				]
-			} );
-
-			const b = new AttributeElement( 'b' );
-			const newRange = writer.wrap( created.range, b );
-
-			test( writer, newRange, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: DEFAULT_PRIORITY,
-						children: [
-							{ instanceOf: Text, data: 'foo' }
-						]
-					},
-					{ instanceOf: Text, data: 'bar' }
-				]
-			} );
+			test(
+				'<container:p>{foo}bar</container:p>',
+				'<attribute:b:1></attribute:b:1>',
+				'<container:p>[<attribute:b:1>foo</attribute:b:1>]bar</container:p>'
+			);
 		} );
 
 		it( 'wraps part of a single text node #3', () => {
-			// <p>{foo[bar]}</p>
-			// wrap with <b>
-			// <p>{foo}[<b>{bar}</b>]</p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				children: [
-					{ instanceOf: Text, data: 'foobar', rangeStart: 3, rangeEnd: 6 }
-				]
-			} );
-
-			const b = new AttributeElement( 'b' );
-			const newRange = writer.wrap( created.range, b );
-
-			test( writer, newRange, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 1,
-				rangeEnd: 2,
-				children: [
-					{ instanceOf: Text, data: 'foo' },
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: DEFAULT_PRIORITY,
-						children: [
-							{ instanceOf: Text, data: 'bar' }
-						]
-					}
-				]
-			} );
+			test(
+				'<container:p>foo{bar}</container:p>',
+				'<attribute:b:1></attribute:b:1>',
+				'<container:p>foo[<attribute:b:1>bar</attribute:b:1>]</container:p>'
+			);
 		} );
 
 		it( 'should not wrap inside nested containers', () => {
-			// <div>[{foobar}<p>{baz}</p>]</div>
-			// wrap with <b>
-			// <div>[<b>{foobar}</b><p>{baz}</p>]</div>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'div',
-				rangeStart: 0,
-				rangeEnd: 2,
-				children: [
-					{ instanceOf: Text, data: 'foobar' },
-					{
-						instanceOf: ContainerElement,
-						name: 'p',
-						children: [
-							{ instanceOf: Text, data: 'baz' }
-						]
-					}
-				]
-			} );
-
-			const newRange = writer.wrap( created.range, new AttributeElement( 'b' ) );
-			test( writer, newRange, created.node, {
-				instanceOf: ContainerElement,
-				name: 'div',
-				rangeStart: 0,
-				rangeEnd: 2,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: DEFAULT_PRIORITY,
-						children: [
-							{ instanceOf: Text, data: 'foobar' }
-						]
-					},
-					{
-						instanceOf: ContainerElement,
-						name: 'p',
-						children: [
-							{ instanceOf: Text, data: 'baz' }
-						]
-					}
-				]
-			} );
+			test(
+				'<container:div>[foobar<container:p>baz</container:p>]</container:div>',
+				'<attribute:b:1></attribute:b:1>',
+				'<container:div>[<attribute:b:1>foobar</attribute:b:1><container:p>baz</container:p>]</container:div>'
+			);
 		} );
 
 		it( 'wraps according to priorities', () => {
-			// <p>[<u>{foobar}</u>]</p>
-			// wrap with <b> that has higher priority than <u>
-			// <p>[<u><b>{foobar}</b></u>]</p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'u',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'foobar' }
-						]
-					}
-				]
-			} );
-
-			const b = new AttributeElement( 'b' );
-			b.priority = 2;
-			const newRange = writer.wrap( created.range, b );
-
-			test( writer, newRange, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'u',
-						priority: 1,
-						children: [
-							{
-								instanceOf: AttributeElement,
-								name: 'b',
-								priority: 2,
-								children: [
-									{ instanceOf: Text, data: 'foobar' }
-								]
-							}
-						]
-					}
-				]
-			} );
+			test(
+				'<container:p>[<attribute:u:1>foobar</attribute:u:1>]</container:p>',
+				'<attribute:b:2></attribute:b:2>',
+				'<container:p>[<attribute:u:1><attribute:b:2>foobar</attribute:b:2></attribute:u:1>]</container:p>'
+			);
 		} );
 
 		it( 'merges wrapped nodes #1', () => {
-			// <p>[<b>{foo}</b>{bar}<b>{baz}</b>]</p>
-			// wrap with <b>
-			// <p>[<b>{foobarbaz}</b>]</p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 3,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: DEFAULT_PRIORITY,
-						children: [
-							{ instanceOf: Text, data: 'foo' }
-						]
-					},
-					{ instanceOf: Text, data: 'bar' },
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: DEFAULT_PRIORITY,
-						children: [
-							{ instanceOf: Text, data: 'baz' }
-						]
-					}
-				]
-			} );
-
-			const b = new AttributeElement( 'b' );
-			const newRange = writer.wrap( created.range, b );
-
-			test( writer, newRange, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: DEFAULT_PRIORITY,
-						children: [
-							{ instanceOf: Text, data: 'foobarbaz' }
-						]
-					}
-				]
-			} );
+			test(
+				'<container:p>[<attribute:b:1>foo</attribute:b:1>bar<attribute:b:1>baz</attribute:b:1>]</container:p>',
+				'<attribute:b:1></attribute:b:1>',
+				'<container:p>[<attribute:b:1>foobarbaz</attribute:b:1>]</container:p>'
+			);
 		} );
 
 		it( 'merges wrapped nodes #2', () => {
-			// <p><b>{foo}</b>[{bar]baz}</p>
-			// wrap with <b>
-			// <p><b>{foo[bar}</b>]{baz}</p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 1,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: DEFAULT_PRIORITY,
-						children: [
-							{ instanceOf: Text, data: 'foo' }
-						]
-					},
-					{ instanceOf: Text, data: 'barbaz', rangeEnd: 3 }
-				]
-			} );
-
-			const newRange = writer.wrap( created.range, new AttributeElement( 'b' ) );
-			test( writer, newRange, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeEnd: 1,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: DEFAULT_PRIORITY,
-						children: [
-							{ instanceOf: Text, data: 'foobar', rangeStart: 3 }
-						]
-					},
-					{ instanceOf: Text, data: 'baz' }
-				]
-			} );
+			test(
+				'<container:p><attribute:b:1>foo</attribute:b:1>[bar}baz</container:p>',
+				'<attribute:b:1></attribute:b:1>',
+				'<container:p><attribute:b:1>foo{bar</attribute:b:1>]baz</container:p>'
+			);
 		} );
 
 		it( 'merges wrapped nodes #3', () => {
-			// <p><b>{foobar}</b>[{baz}]</p>
-			// wrap with <b>
-			// <p><b>{foobar[baz}</b>]</p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 1,
-				rangeEnd: 2,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: DEFAULT_PRIORITY,
-						children: [
-							{ instanceOf: Text, data: 'foobar' }
-						]
-					},
-					{ instanceOf: Text, data: 'baz', rangeEnd: 3 }
-				]
-			} );
-
-			const newRange = writer.wrap( created.range, new AttributeElement( 'b' ) );
-			test( writer, newRange, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeEnd: 1,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: DEFAULT_PRIORITY,
-						children: [
-							{ instanceOf: Text, data: 'foobarbaz', rangeStart: 6 }
-						]
-					}
-				]
-			} );
+			test(
+				'<container:p><attribute:b:1>foobar</attribute:b:1>[baz]</container:p>',
+				'<attribute:b:1></attribute:b:1>',
+				'<container:p><attribute:b:1>foobar{baz</attribute:b:1>]</container:p>'
+			);
 		} );
 
 		it( 'merges wrapped nodes #4', () => {
-			// <p>[{foo}<i>{bar}</i>]{baz}</p>
-			// wrap with <b>
-			// <p>[<b>{foo}<i>{bar}</i></b>]{baz}</p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 2,
-				children: [
-					{ instanceOf: Text, data: 'foo' },
-					{
-						instanceOf: AttributeElement,
-						name: 'i',
-						priority: DEFAULT_PRIORITY,
-						children: [
-							{ instanceOf: Text, data: 'bar' }
-						]
-					},
-					{ instanceOf: Text, data: 'baz' }
-				]
-			} );
-
-			const newRange = writer.wrap( created.range, new AttributeElement( 'b' ) );
-			test( writer, newRange, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: DEFAULT_PRIORITY,
-						children: [
-							{ instanceOf: Text, data: 'foo' },
-							{
-								instanceOf: AttributeElement,
-								name: 'i',
-								priority: DEFAULT_PRIORITY,
-								children: [
-									{ instanceOf: Text, data: 'bar' }
-								]
-							}
-						]
-					},
-					{ instanceOf: Text, data: 'baz' }
-				]
-			} );
+			test(
+				'<container:p>[foo<attribute:i:1>bar</attribute:i:1>]baz</container:p>',
+				'<attribute:b:1></attribute:b:1>',
+				'<container:p>[<attribute:b:1>foo<attribute:i:1>bar</attribute:i:1></attribute:b:1>]baz</container:p>'
+			);
 		} );
 
 		it( 'merges wrapped nodes #5', () => {
-			// <p>[{foo}<i>{bar}</i>{baz}]</p>
-			// wrap with <b>, that has higher priority than <i>
-			// <p>[<b>{foo}</b><i><b>{bar}</b></i><b>{baz}</b>]</p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 3,
-				children: [
-					{ instanceOf: Text, data: 'foo' },
-					{
-						instanceOf: AttributeElement,
-						name: 'i',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'bar' }
-						]
-					},
-					{ instanceOf: Text, data: 'baz' }
-				]
-			} );
-
-			const b = new AttributeElement( 'b' );
-			b.priority = 2;
-			const newRange = writer.wrap( created.range, b );
-			test( writer, newRange, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 3,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 2,
-						children: [
-							{ instanceOf: Text, data: 'foo' }
-						]
-					},
-					{
-						instanceOf: AttributeElement,
-						name: 'i',
-						priority: 1,
-						children: [
-							{
-								instanceOf: AttributeElement,
-								name: 'b',
-								priority: 2,
-								children: [
-									{ instanceOf: Text, data: 'bar' }
-								]
-							}
-						]
-					},
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 2,
-						children: [
-							{ instanceOf: Text, data: 'baz' }
-						]
-					}
-				]
-			} );
+			test(
+				'<container:p>[foo<attribute:i:1>bar</attribute:i:1>baz]</container:p>',
+				'<attribute:b:2></attribute:b:2>',
+				'<container:p>' +
+				'[' +
+					'<attribute:b:2>foo</attribute:b:2>' +
+					'<attribute:i:1>' +
+						'<attribute:b:2>bar</attribute:b:2>' +
+					'</attribute:i:1>' +
+					'<attribute:b:2>baz</attribute:b:2>' +
+				']' +
+				'</container:p>'
+			);
 		} );
 
 		it( 'should wrap single element by merging attributes', () => {
-			// <p>[<b foo="bar" one="two"></b>]</p>
-			// wrap with <b baz="qux" one="two"></b>
-			// <p>[<b foo="bar" one="two" baz="qux"></b>]</p>
-			const b = new AttributeElement( 'b', {
-				foo: 'bar',
-				one: 'two'
-			} );
-			const p = new ContainerElement( 'p', null, b );
-			const range = Range.createFromParentsAndOffsets( p, 0, p, 1 );
-			const wrapper = new AttributeElement( 'b', {
-				baz: 'qux',
-				one: 'two'
-			} );
-
-			const newRange = writer.wrap( range, wrapper );
-			expect( b.getAttribute( 'foo' ) ).to.equal( 'bar' );
-			expect( b.getAttribute( 'baz' ) ).to.equal( 'qux' );
-			expect( b.getAttribute( 'one' ) ).to.equal( 'two' );
-
-			test( writer, newRange, p, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{ instanceOf: AttributeElement, name: 'b', children: [] }
-				]
-			} );
+			test(
+				'<container:p>[<attribute:b:1 foo="bar" one="two"></attribute:b:1>]</container:p>',
+				'<attribute:b:1 baz="qux" one="two"></attribute:b:1>',
+				'<container:p>[<attribute:b:1 foo="bar" one="two" baz="qux"></attribute:b:1>]</container:p>'
+			);
 		} );
 
 		it( 'should not merge attributes when they differ', () => {
-			// <p>[<b foo="bar" ></b>]</p>
-			// wrap with <b foo="baz"></b>
-			// <p>[<b foo="baz"><b foo="bar"></b></b>]</p>
-			const b = new AttributeElement( 'b', {
-				foo: 'bar'
-			} );
-			const p = new ContainerElement( 'p', null, b );
-			const range = Range.createFromParentsAndOffsets( p, 0, p, 1 );
-			const wrapper = new AttributeElement( 'b', {
-				foo: 'baz'
-			} );
-
-			const newRange = writer.wrap( range, wrapper );
-			expect( b.getAttribute( 'foo' ) ).to.equal( 'bar' );
-			expect( b.parent.isSimilar( wrapper ) ).to.be.true;
-			expect( b.parent.getAttribute( 'foo' ) ).to.equal( 'baz' );
-
-			test( writer, newRange, p, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{ instanceOf: AttributeElement, name: 'b', children: [
-						{ instanceOf: AttributeElement, name: 'b', children: [] }
-					] }
-				]
-			} );
+			test(
+				'<container:p>[<attribute:b:1 foo="bar"></attribute:b:1>]</container:p>',
+				'<attribute:b:1 foo="baz"></attribute:b:1>',
+				'<container:p>[<attribute:b:1 foo="baz"><attribute:b:1 foo="bar"></attribute:b:1></attribute:b:1>]</container:p>'
+			);
 		} );
 
 		it( 'should wrap single element by merging classes', () => {
-			// <p>[<b class="foo bar baz" ></b>]</p>
-			// wrap with <b class="foo bar qux jax"></b>
-			// <p>[<b class="foo bar baz qux jax"></b>]</p>
-			const b = new AttributeElement( 'b', {
-				class: 'foo bar baz'
-			} );
-			const p = new ContainerElement( 'p', null, b );
-			const range = Range.createFromParentsAndOffsets( p, 0, p, 1 );
-			const wrapper = new AttributeElement( 'b', {
-				class: 'foo bar qux jax'
-			} );
-
-			const newRange = writer.wrap( range, wrapper );
-			expect( b.hasClass( 'foo', 'bar', 'baz', 'qux', 'jax' ) ).to.be.true;
-			test( writer, newRange, p, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{ instanceOf: AttributeElement, name: 'b', children: [] }
-				]
-			} );
+			test(
+				'<container:p>[<attribute:b:1 class="foo bar baz"></attribute:b:1>]</container:p>',
+				'<attribute:b:1 class="foo bar qux jax"></attribute:b:1>',
+				'<container:p>[<attribute:b:1 class="foo bar baz qux jax"></attribute:b:1>]</container:p>'
+			);
 		} );
 
 		it( 'should wrap single element by merging styles', () => {
-			// <p>[<b style="color:red; position: absolute;"></b>]</p>
-			// wrap with <b style="color:red; top: 20px;"></b>
-			// <p>[<b class="color:red; position: absolute; top:20px;"></b>]</p>
-			const b = new AttributeElement( 'b', {
-				style: 'color: red; position: absolute;'
-			} );
-			const p = new ContainerElement( 'p', null, b );
-			const range = Range.createFromParentsAndOffsets( p, 0, p, 1 );
-			const wrapper = new AttributeElement( 'b', {
-				style: 'color:red; top: 20px;'
-			} );
-
-			const newRange = writer.wrap( range, wrapper );
-			expect( b.getStyle( 'color' ) ).to.equal( 'red' );
-			expect( b.getStyle( 'position' ) ).to.equal( 'absolute' );
-			expect( b.getStyle( 'top' ) ).to.equal( '20px' );
-
-			test( writer, newRange, p, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{ instanceOf: AttributeElement, name: 'b', children: [] }
-				]
-			} );
+			test(
+				'<container:p>[<attribute:b:1 style="color:red; position: absolute;"></attribute:b:1>]</container:p>',
+				'<attribute:b:1 style="color:red; top: 20px;"></attribute:b:1>',
+				'<container:p>[<attribute:b:1 style="color:red;position:absolute;top:20px;"></attribute:b:1>]</container:p>'
+			);
 		} );
 
 		it( 'should not merge styles when they differ', () => {
-			// <p>[<b style="color:red;"></b>]</p>
-			// wrap with <b style="color:black;"></b>
-			// <p>[<b style="color:black;"><b style="color:red;"></b></b>]</p>
-			const b = new AttributeElement( 'b', {
-				style: 'color:red'
-			} );
-			const p = new ContainerElement( 'p', null, b );
-			const range = Range.createFromParentsAndOffsets( p, 0, p, 1 );
-			const wrapper = new AttributeElement( 'b', {
-				style: 'color:black'
-			} );
-
-			const newRange = writer.wrap( range, wrapper );
-			expect( b.getStyle( 'color' ) ).to.equal( 'red' );
-			expect( b.parent.isSimilar( wrapper ) ).to.be.true;
-			expect( b.parent.getStyle( 'color' ) ).to.equal( 'black' );
-
-			test( writer, newRange, p, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{ instanceOf: AttributeElement, name: 'b', children: [
-						{ instanceOf: AttributeElement, name: 'b', children: [] }
-					] }
-				]
-			} );
+			test(
+				'<container:p>[<attribute:b:1 style="color:red;"></attribute:b:1>]</container:p>',
+				'<attribute:b:1 style="color:black;"></attribute:b:1>',
+				'<container:p>' +
+				'[' +
+					'<attribute:b:1 style="color:black;">' +
+						'<attribute:b:1 style="color:red;"></attribute:b:1>' +
+					'</attribute:b:1>' +
+				']' +
+				'</container:p>'
+			);
 		} );
 
 		it( 'should not merge single elements when they have different priority', () => {
-			// <p>[<b style="color:red;"></b>]</p>
-			// wrap with <b style="color:red;"></b> with different priority
-			// <p>[<b style="color:red;"><b style="color:red;"></b></b>]</p>
-			const b = new AttributeElement( 'b', {
-				style: 'color:red'
-			} );
-			const p = new ContainerElement( 'p', null, b );
-			const range = Range.createFromParentsAndOffsets( p, 0, p, 1 );
-			const wrapper = new AttributeElement( 'b', {
-				style: 'color:red'
-			} );
-			wrapper.priority = b.priority - 1;
-
-			const newRange = writer.wrap( range, wrapper );
-			expect( b.getStyle( 'color' ) ).to.equal( 'red' );
-			expect( b.parent.isSimilar( wrapper ) ).to.be.true;
-			expect( b.parent.getStyle( 'color' ) ).to.equal( 'red' );
-
-			test( writer, newRange, p, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{ instanceOf: AttributeElement, name: 'b', children: [
-						{ instanceOf: AttributeElement, name: 'b', children: [] }
-					] }
-				]
-			} );
+			test(
+				'<container:p>[<attribute:b:2 style="color:red;"></attribute:b:2>]</container:p>',
+				'<attribute:b:1 style="color:red;"></attribute:b:1>',
+				'<container:p>' +
+				'[' +
+					'<attribute:b:1 style="color:red;">' +
+						'<attribute:b:2 style="color:red;"></attribute:b:2>' +
+					'</attribute:b:1>' +
+				']</container:p>'
+			);
 		} );
 
 		it( 'should be merged with outside element when wrapping all children', () => {
-			// <p><b foo="bar">[{foobar}<i>{baz}</i>]</b></p>
-			// wrap with <b baz="qux"></b>
-			// <p>[<b foo="bar" baz="qux">{foobar}</b>]</p>
-			const text1 = new Text( 'foobar' );
-			const text2 = new Text( 'baz' );
-			const i = new AttributeElement( 'i', null, text2 );
-			const b = new AttributeElement( 'b', { foo: 'bar' }, [ text1, i ] );
-			const p = new ContainerElement( 'p', null, [ b ] );
-			const wrapper = new AttributeElement( 'b', { baz: 'qux' } );
-			const range = Range.createFromParentsAndOffsets( b, 0, b, 2 );
-
-			const newRange = writer.wrap( range, wrapper );
-			expect( b.getAttribute( 'foo' ) ).to.equal( 'bar' );
-			expect( b.getAttribute( 'baz' ) ).to.equal( 'qux' );
-			test( writer, newRange, p, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{
-						instanceof: AttributeElement,
-						name: 'b',
-						children: [
-							{ instanceOf: Text, data: 'foobar' },
-							{
-								instanceOf: AttributeElement,
-								name: 'i',
-								children: [
-									{ instanceOf: Text, data: 'baz' }
-								]
-							}
-						]
-					}
-				]
-			} );
+			test(
+				'<container:p><attribute:b:1 foo="bar">[foobar<attribute:i:1>baz</attribute:i:1>]</attribute:b:1></container:p>',
+				'<attribute:b:1 baz="qux"></attribute:b:1>',
+				'<container:p>' +
+				'[' +
+					'<attribute:b:1 foo="bar" baz="qux">' +
+						'foobar' +
+						'<attribute:i:1>baz</attribute:i:1>' +
+					'</attribute:b:1>' +
+				']' +
+				'</container:p>'
+			);
 		} );
 	} );
 } );

@@ -14,13 +14,24 @@ import AttributeElement from '/ckeditor5/engine/treeview/attributeelement.js';
 import Position from '/ckeditor5/engine/treeview/position.js';
 import Range from '/ckeditor5/engine/treeview/range.js';
 import Text from '/ckeditor5/engine/treeview/text.js';
-import utils from '/tests/engine/treeview/writer/_utils/utils.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
+import { stringify, parse } from '/tests/engine/_utils/view.js';
 
 describe( 'Writer', () => {
-	const create = utils.create;
-	const test = utils.test;
 	let writer;
+
+	/**
+	 * Executes test using `parse` and `stringify` utils functions.
+	 *
+	 * @param {String} input
+	 * @param {String} unwrapAttribute
+	 * @param {String} expected
+	 */
+	function test( input, unwrapAttribute, expected ) {
+		const { view, selection } = parse( input );
+		const newRange = writer.unwrap( selection.getFirstRange(), parse( unwrapAttribute ) );
+		expect( stringify( view, newRange, { showType: true, showPriority: true } ) ).to.equal( expected );
+	}
 
 	beforeEach( () => {
 		writer = new Writer();
@@ -28,36 +39,19 @@ describe( 'Writer', () => {
 
 	describe( 'unwrap', () => {
 		it( 'should do nothing on collapsed ranges', () => {
-			const description = {
-				instanceOf: ContainerElement,
-				name: 'p',
-				children: [
-					{ instanceOf: Text, data: 'foo', rangeStart: 1, rangeEnd: 1 }
-				]
-			};
-			const created = create( writer, description );
-			const newRange = writer.unwrap( created.range, new AttributeElement( 'b' ), 1 );
-			test( writer, newRange, created.node, description );
+			test(
+				'<container:p>f{}oo</container:p>',
+				'<attribute:b:10></attribute:b:10>',
+				'<container:p>f{}oo</container:p>'
+			);
 		} );
 
 		it( 'should do nothing on single text node', () => {
-			// <p>[{foobar}]</p>
-			const description = {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{ instanceOf: Text, data: 'foobar' }
-				]
-			};
-
-			const created = create( writer, description );
-			const b = new AttributeElement( 'b' );
-			b.priority = 1;
-			const newRange = writer.unwrap( created.range, b );
-
-			test( writer, newRange, created.node, description );
+			test(
+				'<container:p>[foobar]</container:p>',
+				'<attribute:b:1></attribute:b:1>',
+				'<container:p>[foobar]</container:p>'
+			);
 		} );
 
 		it( 'should throw error when element is not instance of AttributeElement', () => {
@@ -88,841 +82,197 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should unwrap single node', () => {
-			// <p>[<b>{foobar}</b>]<p> -> <p>[{foobar}]</p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'foobar' }
-						]
-					}
-				]
-			} );
-
-			const b = new AttributeElement( 'b' );
-			b.priority = 1;
-			const newRange = writer.unwrap( created.range, b );
-
-			test( writer, newRange, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{ instanceOf: Text, data: 'foobar' }
-				]
-			} );
+			test(
+				'<container:p>[<attribute:b:1>foobar</attribute:b:1>]</container:p>',
+				'<attribute:b:1></attribute:b:1>',
+				'<container:p>[foobar]</container:p>'
+			);
 		} );
 
 		it( 'should not unwrap attributes with different priorities #1', () => {
-			// <p>[<b>{foobar}</b>]<p> -> <p>[<b>{foobar}</b>]</p>
-			// Unwrapped with <b> but using different priority.
-			const description =  {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'foobar' }
-						]
-					}
-				]
-			};
-			const created = create( writer, description );
-
-			const b = new AttributeElement( 'b' );
-			b.priority = 2;
-			const newRange = writer.unwrap( created.range, b );
-
-			test( writer, newRange, created.node, description );
+			test(
+				'<container:p>[<attribute:b:1>foobar</attribute:b:1>]</container:p>',
+				'<attribute:b:2></attribute:b:2>',
+				'<container:p>[<attribute:b:1>foobar</attribute:b:1>]</container:p>'
+			);
 		} );
 
 		it( 'should not unwrap attributes with different priorities #2', () => {
-			// <p>[<b>{foo}</b><b>{bar}</b><b>{baz}</b>]<p> -> <p>[{foo}<b>bar</b>{baz}]</p>
-			// <b> around `bar` has different priority than others.
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 3,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 2,
-						children: [
-							{ instanceOf: Text, data: 'foo' }
-						]
-					},
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'bar' }
-						]
-					},
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 2,
-						children: [
-							{ instanceOf: Text, data: 'baz' }
-						]
-					}
-				]
-			} );
-
-			const b = new AttributeElement( 'b' );
-			b.priority = 2;
-			const newRange = writer.unwrap( created.range, b );
-
-			test( writer, newRange, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 3,
-				children: [
-					{ instanceOf: Text, data: 'foo' },
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'bar' }
-						]
-					},
-					{ instanceOf: Text, data: 'baz' }
-				]
-			} );
+			test(
+				'<container:p>' +
+				'[' +
+					'<attribute:b:2>foo</attribute:b:2>' +
+					'<attribute:b:1>bar</attribute:b:1>' +
+					'<attribute:b:2>baz</attribute:b:2>' +
+				']' +
+				'</container:p>',
+				'<attribute:b:2></attribute:b:2>',
+				'<container:p>[foo<attribute:b:1>bar</attribute:b:1>baz]</container:p>'
+			);
 		} );
 
 		it( 'should unwrap part of the node', () => {
-			// <p>[{baz}<b>{foo]bar}</b><p> -> <p>[{bazfoo}]<b>{bar}</b></p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				children: [
-					{ instanceOf: Text, data: 'baz' },
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'foobar', rangeEnd: 3 }
-						]
-
-					}
-				]
-			} );
-
-			const b = new AttributeElement( 'b' );
-			b.priority = 1;
-
-			const newRange = writer.unwrap( created.range, b );
-
-			test( writer, newRange, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{ instanceOf: Text, data: 'bazfoo' },
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'bar' }
-						]
-
-					}
-				]
-			} );
+			test(
+				'<container:p>[baz<attribute:b:1>foo}bar</attribute:b:1>',
+				'<attribute:b:1></attribute:b:1>',
+				'<container:p>[bazfoo]<attribute:b:1>bar</attribute:b:1></container:p>'
+			);
 		} );
 
 		it( 'should unwrap nested attributes', () => {
-			// <p>[<u><b>{foobar}</b></u>]</p> -> <p>[<u>{foobar}</u>]</p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'u',
-						priority: 1,
-						children: [
-							{
-								instanceOf: AttributeElement,
-								name: 'b',
-								priority: 1,
-								children: [
-									{ instanceOf: Text, data: 'foobar' }
-								]
-							}
-						]
-					}
-				]
-			} );
-			const b = new AttributeElement( 'b' );
-			b.priority = 1;
-
-			const newRange = writer.unwrap( created.range, b );
-			test( writer, newRange, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'u',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'foobar' }
-						]
-					}
-				]
-			} );
+			test(
+				'<container:p>[<attribute:u:1><attribute:b:1>foobar</attribute:b:1></attribute:u:1>]</container:p>',
+				'<attribute:b:1></attribute:b:1>',
+				'<container:p>[<attribute:u:1>foobar</attribute:u:1>]</container:p>'
+			);
 		} );
 
 		it( 'should merge unwrapped nodes #1', () => {
-			// <p>{foo}[<b>{bar}</b>]{bom}</p> -> <p>{foo[bar]bom}</p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 1,
-				rangeEnd: 2,
-				children: [
-					{ instanceOf: Text, data: 'foo' },
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'bar' }
-						]
-					},
-					{ instanceOf: Text, data: 'bom' }
-				]
-			} );
-
-			const b =  new AttributeElement( 'b' );
-			b.priority = 1;
-			const newRange = writer.unwrap( created.range, b );
-			test( writer, newRange, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				children: [
-					{
-						instanceOf: Text,
-						data: 'foobarbom',
-						rangeStart: 3,
-						rangeEnd: 6
-					}
-				]
-			} );
+			test(
+				'<container:p>foo[<attribute:b:1>bar</attribute:b:1>]baz</container:p>',
+				'<attribute:b:1></attribute:b:1>',
+				'<container:p>foo{bar}baz</container:p>'
+			);
 		} );
 
 		it( 'should merge unwrapped nodes #2', () => {
-			// <p>{foo}<u>{bar}</u>[<b><u>{bazqux}</u></b>]</p> -> <p>{foo}<u>{bar[bazqux}</u>]</p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 2,
-				rangeEnd: 3,
-				children: [
-					{ instanceOf: Text, data: 'foo' },
-					{
-						instanceOf: AttributeElement,
-						name: 'u',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'bar' }
-						]
-					},
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{
-								instanceOf: AttributeElement,
-								name: 'u',
-								priority: 1,
-								children: [
-									{ instanceOf: Text, data: 'bazqux' }
-								]
-							}
-						]
-					}
-				]
-			} );
+			const input = '<container:p>' +
+			'foo' +
+				'<attribute:u:1>bar</attribute:u:1>' +
+				'[' +
+				'<attribute:b:1>' +
+					'<attribute:u:1>bazqux</attribute:u:1>' +
+				'</attribute:b:1>' +
+				']' +
+			'</container:p>';
+			const attribute = '<attribute:b:1></attribute:b:1>';
+			const result = '<container:p>foo<attribute:u:1>bar{bazqux</attribute:u:1>]</container:p>';
 
-			const b = new AttributeElement( 'b' );
-			b.priority = 1;
-			const newRange = writer.unwrap( created.range, b );
-
-			test( writer, newRange, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeEnd: 2,
-				children: [
-					{
-						instanceOf: Text,
-						data: 'foo'
-					},
-					{
-						instanceOf: AttributeElement,
-						name: 'u',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'barbazqux', rangeStart: 3 }
-						]
-					}
-				]
-			} );
+			test( input, attribute, result );
 		} );
 
 		it( 'should merge unwrapped nodes #3', () => {
-			// <p>{foo}<u>{bar}</u>[<b><u>{baz]qux}</u></b></p> -> <p>{foo}<u>{bar[baz}</u>]<b><u>{qux}</u></b></p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 2,
-				children: [
-					{ instanceOf: Text, data: 'foo' },
-					{
-						instanceOf: AttributeElement,
-						name: 'u',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'bar' }
-						]
-					},
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{
-								instanceOf: AttributeElement,
-								name: 'u',
-								priority: 1,
-								children: [
-									{ instanceOf: Text, data: 'bazqux', rangeEnd: 3 }
-								]
-							}
-						]
-					}
-				]
-			} );
+			const input = '<container:p>' +
+				'foo' +
+				'<attribute:u:1>bar</attribute:u:1>' +
+				'[' +
+				'<attribute:b:1>' +
+					'<attribute:u:1>baz}qux</attribute:u:1>' +
+				'</attribute:b:1>' +
+			'</container:p>';
+			const attribute = '<attribute:b:1></attribute:b:1>';
+			const result = '<container:p>' +
+				'foo' +
+				'<attribute:u:1>bar{baz</attribute:u:1>]' +
+				'<attribute:b:1>' +
+					'<attribute:u:1>qux</attribute:u:1>' +
+				'</attribute:b:1>' +
+			'</container:p>';
 
-			const b = new AttributeElement( 'b' );
-			b.priority = 1;
-			const newRange = writer.unwrap( created.range, b );
-
-			test( writer, newRange, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeEnd: 2,
-				children: [
-					{
-						instanceOf: Text,
-						data: 'foo'
-					},
-					{
-						instanceOf: AttributeElement,
-						name: 'u',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'barbaz', rangeStart: 3 }
-						]
-					},
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{
-								instanceOf: AttributeElement,
-								name: 'u',
-								priority: 1,
-								children: [
-									{ instanceOf: Text, data: 'qux' }
-								]
-							}
-						]
-					}
-				]
-			} );
+			test( input, attribute, result );
 		} );
 
 		it( 'should merge unwrapped nodes #4', () => {
-			// <p>{foo}<u>{bar}</u>[<b><u>{baz}</u></b>]<u>qux</u></p> -> <p>{foo}<u>{bar[baz]qux}</u></p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 2,
-				rangeEnd: 3,
-				children: [
-					{ instanceOf: Text, data: 'foo' },
-					{
-						instanceOf: AttributeElement,
-						name: 'u',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'bar' }
-						]
-					},
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{
-								instanceOf: AttributeElement,
-								name: 'u',
-								priority: 1,
-								children: [
-									{ instanceOf: Text, data: 'baz' }
-								]
-							}
-						]
-					},
-					{
-						instanceOf: AttributeElement,
-						name: 'u',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'qux' }
-						]
-					}
-				]
-			} );
+			const input = '<container:p>' +
+				'foo' +
+				'<attribute:u:1>bar</attribute:u:1>' +
+				'[' +
+				'<attribute:b:1>' +
+					'<attribute:u:1>baz</attribute:u:1>' +
+				'</attribute:b:1>' +
+				']' +
+				'<attribute:u:1>qux</attribute:u:1>' +
+			'</container:p>';
+			const attribute = '<attribute:b:1></attribute:b:1>';
+			const result = '<container:p>' +
+				'foo' +
+				'<attribute:u:1>bar{baz}qux</attribute:u:1>' +
+			'</container:p>';
 
-			const b = new AttributeElement( 'b' );
-			b.priority = 1;
-			const newRange = writer.unwrap( created.range, b );
-
-			test( writer, newRange, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				children: [
-					{
-						instanceOf: Text,
-						data: 'foo'
-					},
-					{
-						instanceOf: AttributeElement,
-						name: 'u',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'barbazqux', rangeStart: 3, rangeEnd: 6 }
-						]
-					}
-				]
-			} );
+			test( input, attribute, result );
 		} );
 
 		it( 'should merge unwrapped nodes #5', () => {
-			// <p>[<b><u>{foo}</u></b><b><u>{bar}</u></b><b><u>{baz}</u></b>]</p> -> <p>[<u>{foobarbaz}</u>]</p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 3,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{
-								instanceOf: AttributeElement,
-								name: 'u',
-								priority: 1,
-								children: [
-									{ instanceOf: Text, data: 'foo' }
-								]
-							}
-						]
-					},
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{
-								instanceOf: AttributeElement,
-								name: 'u',
-								priority: 1,
-								children: [
-									{ instanceOf: Text, data: 'bar' }
-								]
-							}
-						]
-					},
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{
-								instanceOf: AttributeElement,
-								name: 'u',
-								priority: 1,
-								children: [
-									{ instanceOf: Text, data: 'baz' }
-								]
-							}
-						]
-					}
-				]
-			} );
+			const input = '<container:p>' +
+				'[' +
+				'<attribute:b:1><attribute:u:1>foo</attribute:u:1></attribute:b:1>' +
+				'<attribute:b:1><attribute:u:1>bar</attribute:u:1></attribute:b:1>' +
+				'<attribute:b:1><attribute:u:1>baz</attribute:u:1></attribute:b:1>' +
+				']' +
+			'</container:p>';
+			const attribute = '<attribute:b:1></attribute:b:1>';
+			const result = '<container:p>[<attribute:u:1>foobarbaz</attribute:u:1>]</container:p>';
 
-			const b = new AttributeElement( 'b' );
-			b.priority = 1;
-			const newRange = writer.unwrap( created.range, b );
-			test( writer, newRange, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'u',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'foobarbaz' }
-						]
-					}
-				]
-			} );
+			test( input, attribute, result );
 		} );
 
 		it( 'should unwrap mixed ranges #1', () => {
-			// <p>[<u><b>{foo}]</b></u></p> -> <p>[<u>{foo}</u>]</p
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'u',
-						priority: 1,
-						children: [
-							{
-								instanceOf: AttributeElement,
-								name: 'b',
-								priority: 1,
-								rangeEnd: 1,
-								children: [
-									{ instanceOf: Text, data: 'foo' }
-								]
-							}
-						]
-					}
-				]
-			} );
-			const b = new AttributeElement( 'b' );
-			b.priority = 1;
-			const newRange = writer.unwrap( created.range, b );
-			test( writer, newRange, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'u',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'foo' }
-						]
-					}
-				]
-			} );
+			const input = '<container:p>' +
+				'[' +
+				'<attribute:u:1>' +
+					'<attribute:b:1>foo]</attribute:b:1>' +
+				'</attribute:u:1>' +
+			'</container:p>';
+			const attribute = '<attribute:b:1></attribute:b:1>';
+			const result = '<container:p>[<attribute:u:1>foo</attribute:u:1>]</container:p>';
+
+			test( input, attribute, result );
 		} );
 
 		it( 'should unwrap mixed ranges #2', () => {
-			// <p>[<u><b>{foo]}</b></u></p> -> <p>[<u>{foo}</u>]</p
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'u',
-						priority: 1,
-						children: [
-							{
-								instanceOf: AttributeElement,
-								name: 'b',
-								priority: 1,
-								children: [
-									{ instanceOf: Text, data: 'foo', rangeEnd: 3 }
-								]
-							}
-						]
-					}
-				]
-			} );
-			const b = new AttributeElement( 'b' );
-			b.priority = 1;
-			const newRange = writer.unwrap( created.range, b );
-			test( writer, newRange, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'u',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'foo' }
-						]
-					}
-				]
-			} );
+			test(
+				'<container:p>[<attribute:u:1><attribute:b:1>foo}</attribute:b:1></attribute:u></container:p>',
+				'<attribute:b:1></attribute:b:1>',
+				'<container:p>[<attribute:u:1>foo</attribute:u:1>]</container:p>'
+			);
 		} );
 
 		it( 'should unwrap single element by removing matching attributes', () => {
-			// <p>[<b foo="bar" baz="qux" >test</b>]</p>
-			// unwrap using <b baz="qux"></b>
-			// <p>[<b foo="bar">test</b>]</p>
-			const text = new Text( 'test' );
-			const b = new AttributeElement( 'b', {
-				foo: 'bar',
-				baz: 'qux'
-			}, text );
-			const p = new ContainerElement( 'p', null, b );
-			const wrapper = new AttributeElement( 'b', {
-				baz: 'qux'
-			} );
-			const range = Range.createFromParentsAndOffsets( p, 0, p, 1 );
-
-			const newRange = writer.unwrap( range, wrapper );
-			expect( b.getAttribute( 'foo' ) ).to.equal( 'bar' );
-			expect( b.hasAttribute( 'baz' ) ).to.be.false;
-			expect( b.parent ).to.equal( p );
-			test( writer, newRange, p, {
-				instanceof: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{
-						instanceof: AttributeElement,
-						name: 'b',
-						children: [
-							{ instanceof: Text, data: 'test' }
-						]
-					}
-				]
-			} );
+			test(
+				'<container:p>[<attribute:b:1 foo="bar" baz="qux">test</attribute:b:1>]</container:p>',
+				'<attribute:b:1 baz="qux"></attribute:b:1>',
+				'<container:p>[<attribute:b:1 foo="bar">test</attribute:b:1>]</container:p>'
+			);
 		} );
 
 		it( 'should not unwrap single element when attributes are different', () => {
-			// <p>[<b foo="bar" baz="qux">test</b>]</p>
-			// unwrap using <b baz="qux" test="true"></b>
-			// <p>[<b foo="bar" baz="qux">test</b>]</p>
-			const text = new Text( 'test' );
-			const b = new AttributeElement( 'b', {
-				foo: 'bar',
-				baz: 'qux'
-			}, text );
-			const p = new ContainerElement( 'p', null, b );
-			const wrapper = new AttributeElement( 'b', {
-				baz: 'qux',
-				test: 'true'
-			} );
-			const range = Range.createFromParentsAndOffsets( p, 0, p, 1 );
-
-			const newRange = writer.unwrap( range, wrapper );
-			expect( b.getAttribute( 'foo' ) ).to.equal( 'bar' );
-			expect( b.getAttribute( 'baz' ) ).to.equal( 'qux' );
-			expect( b.parent ).to.equal( p );
-			test( writer, newRange, p, {
-				instanceof: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{
-						instanceof: AttributeElement,
-						name: 'b',
-						children: [
-							{ instanceof: Text, data: 'test' }
-						]
-					}
-				]
-			} );
+			test(
+				'<container:p>[<attribute:b:1 foo="bar" baz="qux">test</attribute:b:1>]</container:p>',
+				'<attribute:b:1 baz="qux" test="true"></attribute:b:1>',
+				'<container:p>[<attribute:b:1 foo="bar" baz="qux">test</attribute:b:1>]</container:p>'
+			);
 		} );
 
 		it( 'should unwrap single element by removing matching classes', () => {
-			// <p>[<b class="foo bar baz">test</b>]</p>
-			// unwrap using <b class="baz foo"></b>
-			// <p>[<b class="bar">test</b>]</p>
-			const text = new Text( 'test' );
-			const b = new AttributeElement( 'b', {
-				class: 'foo bar baz'
-			}, text );
-			const p = new ContainerElement( 'p', null, b );
-			const wrapper = new AttributeElement( 'b', {
-				class: 'baz foo'
-			} );
-			const range = Range.createFromParentsAndOffsets( p, 0, p, 1 );
-
-			const newRange = writer.unwrap( range, wrapper );
-			expect( b.hasClass( 'bar' ) ).to.be.true;
-			expect( b.hasClass( 'foo' ) ).to.be.false;
-			expect( b.hasClass( 'baz' ) ).to.be.false;
-			expect( b.parent ).to.equal( p );
-			test( writer, newRange, p, {
-				instanceof: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{
-						instanceof: AttributeElement,
-						name: 'b',
-						children: [
-							{ instanceof: Text, data: 'test' }
-						]
-					}
-				]
-			} );
+			test(
+				'<container:p>[<attribute:b:1 class="foo bar baz">test</attribute:b:1>]</container:p>',
+				'<attribute:b:1 class="baz foo"></attribute:b:1>',
+				'<container:p>[<attribute:b:1 class="bar">test</attribute:b:1>]</container:p>'
+			);
 		} );
 
 		it( 'should not unwrap single element when classes are different', () => {
-			// <p>[<b class="foo bar baz">test</b>]</p>
-			// unwrap using <b class="baz foo qux"></b>
-			// <p>[<b class="foo bar baz">test</b>]</p>
-			const text = new Text( 'test' );
-			const b = new AttributeElement( 'b', {
-				class: 'foo bar baz'
-			}, text );
-			const p = new ContainerElement( 'p', null, b );
-			const wrapper = new AttributeElement( 'b', {
-				class: 'baz foo qux'
-			} );
-			const range = Range.createFromParentsAndOffsets( p, 0, p, 1 );
-
-			const newRange = writer.unwrap( range, wrapper );
-			expect( b.hasClass( 'bar' ) ).to.be.true;
-			expect( b.hasClass( 'foo' ) ).to.be.true;
-			expect( b.hasClass( 'baz' ) ).to.be.true;
-			expect( b.parent ).to.equal( p );
-			test( writer, newRange, p, {
-				instanceof: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{
-						instanceof: AttributeElement,
-						name: 'b',
-						children: [
-							{ instanceof: Text, data: 'test' }
-						]
-					}
-				]
-			} );
+			test(
+				'<container:p>[<attribute:b:1 class="foo bar baz">test</attribute:b:1>]</container:p>',
+				'<attribute:b:1 class="baz foo qux"></attribute:b:1>',
+				'<container:p>[<attribute:b:1 class="foo bar baz">test</attribute:b:1>]</container:p>'
+			);
 		} );
 
 		it( 'should unwrap single element by removing matching styles', () => {
-			// <p>[<b style="color:red; position:absolute; top:10px;">test</b>]</p>
-			// unwrap using <b style="position: absolute;"></b>
-			// <p>[<b style="color:red; top:10px;">test</b>]</p>
-			const text = new Text( 'test' );
-			const b = new AttributeElement( 'b', {
-				style: 'color:red; position:absolute; top:10px;'
-			}, text );
-			const p = new ContainerElement( 'p', null, b );
-			const wrapper = new AttributeElement( 'b', {
-				style: 'position: absolute;'
-			} );
-			const range = Range.createFromParentsAndOffsets( p, 0, p, 1 );
-
-			const newRange = writer.unwrap( range, wrapper );
-			expect( b.getStyle( 'color' ) ).to.equal( 'red' );
-			expect( b.getStyle( 'top' ) ).to.equal( '10px' );
-			expect( b.hasStyle( 'position' ) ).to.be.false;
-			expect( b.parent ).to.equal( p );
-			test( writer, newRange, p, {
-				instanceof: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{
-						instanceof: AttributeElement,
-						name: 'b',
-						children: [
-							{ instanceof: Text, data: 'test' }
-						]
-					}
-				]
-			} );
+			test(
+				'<container:p>[<attribute:b:1 style="color:red;position:absolute;top:10px;">test</attribute:b:1>]</container:p>',
+				'<attribute:b:1 style="position: absolute;"></attribute:b:1>',
+				'<container:p>[<attribute:b:1 style="color:red;top:10px;">test</attribute:b:1>]</container:p>'
+			);
 		} );
 
 		it( 'should not unwrap single element when styles are different', () => {
-			// <p>[<b style="color:red; position:absolute; top:10px;">test</b>]</p>
-			// unwrap using <b style="position: relative;"></b>
-			// <p>[<b style="color:red; position:absolute; top:10px;">test</b>]</p>
-			const text = new Text( 'test' );
-			const b = new AttributeElement( 'b', {
-				style: 'color:red; position:absolute; top:10px;'
-			}, text );
-			const p = new ContainerElement( 'p', null, b );
-			const wrapper = new AttributeElement( 'b', {
-				style: 'position: relative;'
-			} );
-			const range = Range.createFromParentsAndOffsets( p, 0, p, 1 );
-
-			const newRange = writer.unwrap( range, wrapper );
-			expect( b.getStyle( 'color' ) ).to.equal( 'red' );
-			expect( b.getStyle( 'top' ) ).to.equal( '10px' );
-			expect( b.getStyle( 'position' ) ).to.equal( 'absolute' );
-			expect( b.parent ).to.equal( p );
-			test( writer, newRange, p, {
-				instanceof: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{
-						instanceof: AttributeElement,
-						name: 'b',
-						children: [
-							{ instanceof: Text, data: 'test' }
-						]
-					}
-				]
-			} );
+			test(
+				'<container:p>[<attribute:b:1 style="color:red;position:absolute;top:10px;">test</attribute:b:1>]</container:p>',
+				'<attribute:b:1 style="position: relative;"></attribute:b:1>',
+				'<container:p>[<attribute:b:1 style="color:red;position:absolute;top:10px;">test</attribute:b:1>]</container:p>'
+			);
 		} );
 	} );
 } );
