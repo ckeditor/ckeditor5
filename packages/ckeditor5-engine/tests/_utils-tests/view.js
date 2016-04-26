@@ -7,6 +7,7 @@
 
 import { stringify, parse } from '/tests/engine/_utils/view.js';
 import DocumentFragment from '/ckeditor5/engine/treeview/documentfragment.js';
+import Position from '/ckeditor5/engine/treeview/position.js';
 import Element from '/ckeditor5/engine/treeview/element.js';
 import AttributeElement from '/ckeditor5/engine/treeview/attributeelement.js';
 import ContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
@@ -178,6 +179,20 @@ describe( 'view test utils', () => {
 			selection.setRanges( [ range1, range2, range3, range4 ] );
 
 			expect( stringify( p, selection ) ).to.equal( '<p>[<b>foobar</b>][]{baz}{q}ux</p>' );
+		} );
+
+		it( 'should use Position instance instead of Selection', () => {
+			const text = new Text( 'foobar' );
+			const position = new Position( text, 3 );
+			const string = stringify( text, position );
+			expect( string ).to.equal( 'foo{}bar' );
+		} );
+
+		it( 'should use Range instance instead of Selection', () => {
+			const text = new Text( 'foobar' );
+			const range = Range.createFromParentsAndOffsets( text, 3, text, 4 );
+			const string = stringify( text, range );
+			expect( string ).to.equal( 'foo{b}ar' );
 		} );
 	} );
 

@@ -86,8 +86,10 @@ const TEXT_RANGE_END_TOKEN = '}';
  *		getData( attribute, null, { showPriority: true } ); // <b:20></b:20>
  *
  * @param {engine.treeView.Text|engine.treeView.Element|engine.treeView.DocumentFragment} node Node to stringify.
- * @param {engine.treeView.Selection} [selection = null ] Selection instance which ranges will be included in returned
- * string data.
+ * @param {engine.treeView.Selection|engine.treeView.Position|engine.treeView.Range} [selectionOrPositionOrRange = null ]
+ * Selection instance which ranges will be included in returned string data. If Range instance is provided - it will be
+ * converted to selection containing this range. If Position instance is provided - it will be converted to selection
+ * containing one range collapsed at this position.
  * @param {Object} [options] Object with additional options.
  * @param {Boolean} [options.showType=false] When set to `true` type of elements will be printed (`<container:p>`
  * instead of `<p>` and `<attribute:b>` instead of `<b>`).
@@ -95,7 +97,19 @@ const TEXT_RANGE_END_TOKEN = '}';
  * (`<span:12>`, `<b:10>`).
  * @returns {String} HTML-like string representing the view.
  */
-export function stringify( node, selection = null, options = {} ) {
+export function stringify( node, selectionOrPositionOrRange = null, options = {} ) {
+	let selection;
+
+	if ( selectionOrPositionOrRange instanceof Position ) {
+		selection = new Selection();
+		selection.addRange( new Range( selectionOrPositionOrRange, selectionOrPositionOrRange ) );
+	} else if ( selectionOrPositionOrRange instanceof Range ) {
+		selection = new Selection( );
+		selection.addRange( selectionOrPositionOrRange );
+	} else {
+		selection = selectionOrPositionOrRange;
+	}
+
 	const viewStringify = new ViewStringify( node, selection, options );
 
 	return viewStringify.stringify();
