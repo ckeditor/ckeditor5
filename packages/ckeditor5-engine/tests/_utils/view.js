@@ -18,7 +18,6 @@ import ContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
 import ViewText from '/ckeditor5/engine/treeview/text.js';
 
 const DomDocumentFragment = window.DocumentFragment;
-const DomText = window.Text;
 const DomElement = window.Element;
 
 const ELEMENT_RANGE_START_TOKEN = '[';
@@ -125,7 +124,9 @@ class RangeParser {
 		// Sort ranges if needed.
 		if ( order.length ) {
 			if ( order.length != ranges.length ) {
-				throw new Error( `There are ${ ranges.length} ranges found, but ranges order contain ${ order.length } elements.` );
+				throw new Error(
+					`There are ${ ranges.length} ranges found, but ranges order array contains ${ order.length } elements.`
+				);
 			}
 
 			ranges = this._sortRanges( ranges,  order );
@@ -136,13 +137,15 @@ class RangeParser {
 
 	_sortRanges( ranges, rangesOrder ) {
 		const sortedRanges = [];
+		let index = 0;
 
-		for ( let index in rangesOrder ) {
-			if ( ranges[ index ] === undefined ) {
+		for ( let newPosition of rangesOrder ) {
+			if ( ranges[ newPosition - 1 ] === undefined ) {
 				throw new Error( 'Provided ranges order is invalid.' );
 			}
 
-			sortedRanges.push( ranges[ index ] );
+			sortedRanges[ newPosition - 1] = ranges[ index ];
+			index++;
 		}
 
 		return sortedRanges;
@@ -300,9 +303,7 @@ class ViewParser {
 			return viewElement;
 		}
 
-		if ( domNode instanceof DomText ) {
-			return new ViewText( domNode.textContent );
-		}
+		return new ViewText( domNode.textContent );
 	}
 
 	_convertElement( domElement ) {

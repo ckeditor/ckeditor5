@@ -15,7 +15,7 @@ import Selection from '/ckeditor5/engine/treeview/selection.js';
 import Range from '/ckeditor5/engine/treeview/range.js';
 
 describe( 'view test utils', () => {
-	describe( 'getData', () => {
+	describe( 'stringify', () => {
 		it( 'should write text', () => {
 			const text = new Text( 'foobar' );
 			expect( stringify( text ) ).to.equal( 'foobar' );
@@ -104,6 +104,11 @@ describe( 'view test utils', () => {
 
 			expect( stringify( p, null, { showType: true } ) )
 				.to.equal( '<container:p><attribute:b>foobar</attribute:b></container:p>' );
+		} );
+
+		it( 'should not write element type when type is not specified', () => {
+			const p = new Element( 'p' );
+			expect( stringify( p, null, { showType: true } ) ).to.equal( '<p></p>' );
 		} );
 
 		it( 'should write elements priorities when needed', () => {
@@ -223,6 +228,14 @@ describe( 'view test utils', () => {
 			expect( parsed2.isSimilar( attribute2 ) ).to.be.true;
 		} );
 
+		it( 'should create DocumentFragment when multiple elements on root', () => {
+			const view = parse( '<b></b><i></i>' );
+			expect( view ).to.be.instanceOf( DocumentFragment );
+			expect( view.getChildCount() ).to.equal( 2 );
+			expect( view.getChild( 0 ).isSimilar( new Element( 'b' ) ) ).to.be.true;
+			expect( view.getChild( 1 ).isSimilar( new Element( 'i' ) ) ).to.be.true;
+		} );
+
 		it( 'should paste nested elements and texts', () => {
 			const parsed = parse( '<container:p>foo<b:12>bar<i:25>qux</i:25></b:12></container:p>' );
 			expect( parsed.isSimilar( new ContainerElement( 'p' ) ) ).to.be.true;
@@ -295,6 +308,75 @@ describe( 'view test utils', () => {
 			const ranges = Array.from( selection.getRanges() );
 			expect( ranges[ 0 ].isEqual( Range.createFromParentsAndOffsets( view, 0, text1, 4 ) ) ).to.be.true;
 			expect( ranges[ 1 ].isEqual( Range.createFromParentsAndOffsets( text2, 0, view, 2 ) ) ).to.be.true;
+		} );
+
+		it( 'should use ranges order when provided', () => {
+			const { view, selection } = parse( '{f}oo{b}arb{a}z', { order: [ 3, 1, 2 ] } );
+			expect( selection.rangeCount ).to.equal( 3 );
+			const ranges = Array.from( selection.getRanges() );
+			expect( ranges[ 0 ].isEqual( Range.createFromParentsAndOffsets( view, 3, view, 4 ) ) ).to.be.true;
+			expect( ranges[ 1 ].isEqual( Range.createFromParentsAndOffsets( view, 7, view, 8 ) ) ).to.be.true;
+			expect( ranges[ 2 ].isEqual( Range.createFromParentsAndOffsets( view, 0, view, 1 ) ) ).to.be.true;
+		} );
+
+		it( 'should throw when ranges order does not include all ranges', () => {
+			expect( () => {
+				parse( '{}foobar{}', { order: [ 1 ] } );
+			} ).to.throw( Error );
+		} );
+
+		it( 'should throw when ranges order is invalid', () => {
+			expect( () => {
+				parse( '{}foobar{}', { order: [ 1, 4 ] } );
+			} ).to.throw( Error );
+		} );
+
+		it( 'should throw when element range delimiter is inside text node', () => {
+			expect( () => {
+				parse( 'foo[bar' );
+			} ).to.throw( Error );
+		} );
+
+		it( 'should throw when text range delimiter is inside empty text node', () => {
+			expect( () => {
+				parse( '<b>foo</b>}' );
+			} ).to.throw( Error );
+		} );
+
+		it( 'should throw when end of range is found before start', () => {
+			expect( () => {
+				parse( 'fo}obar' );
+			} ).to.throw( Error );
+		} );
+
+		it( 'should throw when intersecting ranges found', () => {
+			expect( () => {
+				parse( '[fo{o}bar]' );
+			} ).to.throw( Error );
+		} );
+
+		it( 'should throw when opened ranges are left', () => {
+			expect( () => {
+				parse( 'fo{obar' );
+			} ).to.throw( Error );
+		} );
+
+		it( 'should throw when wrong tag name is provided #1', () => {
+			expect( () => {
+				parse( '<b:bar></b:bar>' );
+			} ).to.throw( Error );
+		} );
+
+		it( 'should throw when wrong tag name is provided #2', () => {
+			expect( () => {
+				parse( '<container:b:bar></container:b:bar>' );
+			} ).to.throw( Error );
+		} );
+
+		it( 'should throw when wrong tag name is provided #3', () => {
+			expect( () => {
+				parse( '<container:b:10:test></container:b:10:test>' );
+			} ).to.throw( Error );
 		} );
 	} );
 } );
