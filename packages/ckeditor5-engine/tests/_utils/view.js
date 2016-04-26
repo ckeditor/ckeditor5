@@ -222,7 +222,7 @@ class RangeParser {
 		if ( node instanceof ViewDocumentFragment || node instanceof ViewElement ) {
 			// Copy elements into the array, when nodes will be removed from parent node this array will still have all the
 			// items needed for iteration.
-			const children = Array.from( node.getChildren() );
+			const children = [ ...node.getChildren() ];
 
 			for ( let child of children ) {
 				this._getPositions( child );

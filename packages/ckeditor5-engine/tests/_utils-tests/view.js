@@ -263,7 +263,7 @@ describe( 'view test utils', () => {
 			expect( view ).to.be.instanceof( Text );
 			expect( view.data ).to.equal( 'foobar' );
 			expect( selection.rangeCount ).to.equal( 2 );
-			const ranges = Array.from( selection.getRanges() );
+			const ranges = [ ...selection.getRanges() ];
 
 			expect( ranges[ 0 ].isEqual( Range.createFromParentsAndOffsets( view, 1, view, 3 ) ) ).to.be.true;
 			expect( ranges[ 1 ].isEqual( Range.createFromParentsAndOffsets( view, 4, view, 4 ) ) ).to.be.true;
@@ -281,7 +281,7 @@ describe( 'view test utils', () => {
 			expect( text ).to.be.instanceof( Text );
 			expect( text.data ).to.equal( 'foobar' );
 			expect( selection.rangeCount ).to.equal( 2 );
-			const ranges = Array.from( selection.getRanges() );
+			const ranges = [ ...selection.getRanges() ];
 			expect( ranges[ 0 ].isEqual( Range.createFromParentsAndOffsets( view, 0, b, 1 ) ) ).to.be.true;
 			expect( ranges[ 1 ].isEqual( Range.createFromParentsAndOffsets( view, 1, view, 1 ) ) ).to.be.true;
 		} );
@@ -311,7 +311,7 @@ describe( 'view test utils', () => {
 			expect( text2 ).to.be.instanceof( Text );
 			expect( text2.data ).to.equal( 'baz' );
 			expect( selection.rangeCount ).to.equal( 2 );
-			const ranges = Array.from( selection.getRanges() );
+			const ranges = [ ...selection.getRanges() ];
 			expect( ranges[ 0 ].isEqual( Range.createFromParentsAndOffsets( view, 0, text1, 4 ) ) ).to.be.true;
 			expect( ranges[ 1 ].isEqual( Range.createFromParentsAndOffsets( text2, 0, view, 2 ) ) ).to.be.true;
 		} );
@@ -319,7 +319,7 @@ describe( 'view test utils', () => {
 		it( 'should use ranges order when provided', () => {
 			const { view, selection } = parse( '{f}oo{b}arb{a}z', { order: [ 3, 1, 2 ] } );
 			expect( selection.rangeCount ).to.equal( 3 );
-			const ranges = Array.from( selection.getRanges() );
+			const ranges = [ ...selection.getRanges() ];
 			expect( ranges[ 0 ].isEqual( Range.createFromParentsAndOffsets( view, 3, view, 4 ) ) ).to.be.true;
 			expect( ranges[ 1 ].isEqual( Range.createFromParentsAndOffsets( view, 7, view, 8 ) ) ).to.be.true;
 			expect( ranges[ 2 ].isEqual( Range.createFromParentsAndOffsets( view, 0, view, 1 ) ) ).to.be.true;
@@ -330,12 +330,19 @@ describe( 'view test utils', () => {
 		it( 'should set last range backward if needed', () => {
 			const { view, selection } = parse( '{f}oo{b}arb{a}z', { order: [ 3, 1, 2 ], lastRangeBackward: true } );
 			expect( selection.rangeCount ).to.equal( 3 );
-			const ranges = Array.from( selection.getRanges() );
+			const ranges = [ ...selection.getRanges() ];
 			expect( ranges[ 0 ].isEqual( Range.createFromParentsAndOffsets( view, 3, view, 4 ) ) ).to.be.true;
 			expect( ranges[ 1 ].isEqual( Range.createFromParentsAndOffsets( view, 7, view, 8 ) ) ).to.be.true;
 			expect( ranges[ 2 ].isEqual( Range.createFromParentsAndOffsets( view, 0, view, 1 ) ) ).to.be.true;
 			expect( selection.anchor.isEqual( ranges[ 2 ].end ) ).to.be.true;
 			expect( selection.focus.isEqual( ranges[ 2 ].start ) ).to.be.true;
+		} );
+
+		it( 'should return DocumentFragment if range is around single element', () => {
+			const { view, selection } = parse( '[<b>foobar</b>]' );
+			expect( view ).to.be.instanceOf( DocumentFragment );
+			expect( selection.rangeCount ).to.equal( 1 );
+			expect( selection.getFirstRange().isEqual( Range.createFromParentsAndOffsets( view, 0, view, 1 ) ) ).to.be.true;
 		} );
 
 		it( 'should throw when ranges order does not include all ranges', () => {
