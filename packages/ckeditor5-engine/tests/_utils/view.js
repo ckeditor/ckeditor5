@@ -10,6 +10,9 @@
 import ViewDocumentFragment from '/ckeditor5/engine/treeview/documentfragment.js';
 import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
 import ViewElement from '/ckeditor5/engine/treeview/element.js';
+import Selection from '/ckeditor5/engine/treeview/selection.js';
+import Range from '/ckeditor5/engine/treeview/range.js';
+import Position from '/ckeditor5/engine/treeview/position.js';
 import AttributeElement from '/ckeditor5/engine/treeview/attributeelement.js';
 import ContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
 import ViewText from '/ckeditor5/engine/treeview/text.js';
@@ -73,7 +76,7 @@ const TEXT_RANGE_END_TOKEN = '}';
  *		attribute.priority = 20;
  *		getData( attribute, null, { showPriority: true } ); // <b priority=20></b>
  *
- * @param {engine.treeView.Element|engine.treeView.DocumentFragment} root
+ * @param {engine.treeView.Node} node
  * @param {engine.treeView.Selection} [selection]
  * @param {Object} [options]
  * @param {Boolean} [options.showType=false] When set to `true` type of elements will be printed ( `<container:p>`
@@ -81,20 +84,187 @@ const TEXT_RANGE_END_TOKEN = '}';
  * @param {Boolean} [options.showPriority=false] When set to `true` AttributeElement's priority will be printed.
  * @returns {String}
  */
-export function getData( root, selection, options ) {
-	const viewStringify = new ViewStringify( root, selection, options );
+export function stringify( node, selection, options = {} ) {
+	const viewStringify = new ViewStringify( node, selection, options );
 
 	return viewStringify.stringify();
 }
 
-export function setData( data ) {
+export function parse( data, options = { } ) {
+	options.order = options.order || [];
 	const viewParser = new ViewParser();
+	const rangeParser = new RangeParser();
 
-	return viewParser.parse( data );
+	const view = viewParser.parse( data );
+	const ranges = rangeParser.parse( view, options.order );
+
+	// When ranges are present - return object containing view, and selection.
+	if ( ranges.length ) {
+		const selection = new Selection();
+		selection.setRanges( ranges, !!options.lastRangeBackward );
+
+		return {
+			view: view,
+			selection: selection
+		};
+	}
+
+	return view;
+}
+
+class RangeParser {
+	constructor() {
+		// Todo - set in parse method.
+		this._positions = [];
+	}
+
+	parse( node, order ) {
+		this._getPositions( node );
+		let ranges = this._createRanges();
+
+		// Sort ranges if needed.
+		if ( order.length ) {
+			if ( order.length != ranges.length ) {
+				throw new Error( `There are ${ ranges.length} ranges found, but ranges order contain ${ order.length } elements.` );
+			}
+
+			ranges = this._sortRanges( ranges,  order );
+		}
+
+		return ranges;
+	}
+
+	_sortRanges( ranges, rangesOrder ) {
+		const sortedRanges = [];
+
+		for ( let index in rangesOrder ) {
+			if ( ranges[ index ] === undefined ) {
+				throw new Error( 'Provided ranges order is invalid.' );
+			}
+
+			sortedRanges.push( ranges[ index ] );
+		}
+
+		return sortedRanges;
+	}
+
+	_getPositions( node ) {
+		if ( node instanceof ViewDocumentFragment || node instanceof ViewElement ) {
+			// Copy elements into the array, when items will be removed from node this array will still have all the
+			// items needed for iteration.
+			const children = Array.from( node.getChildren() );
+
+			for ( let child of children ) {
+				this._getPositions( child );
+			}
+		}
+
+		if ( node instanceof ViewText ) {
+			const regexp = new RegExp(
+				`[ ${TEXT_RANGE_START_TOKEN}${TEXT_RANGE_END_TOKEN}\\${ELEMENT_RANGE_END_TOKEN}\\${ELEMENT_RANGE_START_TOKEN} ]`,
+				'g'
+			);
+			let text = node.data;
+			let match;
+			let offset = 0;
+			const brackets = [];
+
+			// Remove brackets from text and store info about offset inside text node.
+			while ( ( match = regexp.exec( text ) ) ) {
+				const index = match.index;
+				const bracket = match[ 0 ];
+
+				brackets.push( {
+					bracket: bracket,
+					textOffset: index - offset
+				} );
+
+				offset++;
+			}
+			text = text.replace( regexp, '' );
+			node.data = text;
+			const index = node.getIndex();
+			const parent = node.parent;
+
+			// Remove empty text nodes.
+			if ( !text ) {
+				node.remove();
+			}
+
+			for ( let item of brackets ) {
+				// Non-empty text node.
+				if ( text ) {
+					if ( item.bracket == TEXT_RANGE_START_TOKEN || item.bracket == TEXT_RANGE_END_TOKEN ) {
+						// Store information about text range delimiter.
+						this._positions.push( {
+							bracket: item.bracket,
+							position: new Position( node, item.textOffset )
+						} );
+					} else {
+						// Check if element range delimiter is not placed inside text node.
+						if ( item.textOffset !== 0 && item.textOffset !== text.length ) {
+							throw new Error( `Range delimiter '${ item.bracket }' is placed inside text node.` );
+						}
+
+						// If bracket is placed at the end of the text node - it should be positioned after it.
+						const offset = ( item.textOffset === 0 ? index : index + 1 );
+
+						// Store information about element range delimiter.
+						this._positions.push( {
+							bracket: item.bracket,
+							position: new Position( parent, offset )
+						} );
+					}
+				} else {
+					if ( item.bracket == TEXT_RANGE_START_TOKEN || item.bracket == TEXT_RANGE_END_TOKEN ) {
+						throw new Error( `Text range delimiter '${ item.bracket }' is placed inside empty text node. ` );
+					}
+
+					// Store information about element range delimiter.
+					this._positions.push( {
+						bracket: item.bracket,
+						position: new Position( parent, index )
+					} );
+				}
+			}
+		}
+	}
+
+	_createRanges() {
+		const ranges = [];
+		let range = null;
+
+		for ( let item of this._positions ) {
+			// When end of range is found without opening.
+			if ( !range && ( item.bracket == ELEMENT_RANGE_END_TOKEN || item.bracket == TEXT_RANGE_END_TOKEN ) ) {
+				throw new Error( `End of range was found '${ item.bracket }' but range was not started before.` );
+			}
+
+			// When second start of range is found when one is already opened - selection does not allow intersecting
+			// ranges.
+			if ( range && ( item.bracket == ELEMENT_RANGE_START_TOKEN || item.bracket == TEXT_RANGE_START_TOKEN ) ) {
+				throw new Error( `Start of range was found '${ item.bracket }' but one range is already started.` );
+			}
+
+			if ( item.bracket == ELEMENT_RANGE_START_TOKEN || item.bracket == TEXT_RANGE_START_TOKEN ) {
+				range = new Range( item.position, item.position );
+			} else {
+				range.end = item.position;
+				ranges.push( range );
+				range = null;
+			}
+		}
+
+		// Check if all ranges have proper ending.
+		if ( range !== null ) {
+			throw new Error( 'Range was started but no end delimiter was found.' );
+		}
+
+		return ranges;
+	}
 }
 
 class ViewParser {
-
 	parse( data ) {
 		const htmlProcessor = new HtmlDataProcessor();
 		const domRoot = htmlProcessor.toDom( data );
@@ -196,7 +366,7 @@ class ViewParser {
 				};
 			}
 
-			throw new Error( `Cannot parse element's tag name: ${ element.tagName }.` );
+			throw new Error( `Cannot parse element's tag name: ${ element.tagName.toLowerCase() }.` );
 		}
 
 		// Check if name is in format type:name:priority.
@@ -213,7 +383,7 @@ class ViewParser {
 			}
 		}
 
-		throw new Error( `Cannot parse element's tag name: ${ element.tagName }.` );
+		throw new Error( `Cannot parse element's tag name: ${ element.tagName.toLowerCase() }.` );
 	}
 
 	_convertType( type ) {
