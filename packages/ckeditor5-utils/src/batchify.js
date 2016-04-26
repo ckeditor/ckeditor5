@@ -30,7 +30,7 @@
  * in order to transform it to the output.
  */
 export default function batchify( diff, output ) {
-	const batches = [];
+	const batch = [];
 	let left = 0;
 	let right = 0;
 	let lastOperation;
@@ -73,11 +73,11 @@ export default function batchify( diff, output ) {
 
 	pushLast();
 
-	return batches;
+	return batch;
 
 	function pushLast() {
 		if ( lastOperation ) {
-			batches.push( lastOperation );
+			batch.push( lastOperation );
 			lastOperation = null;
 		}
 	}
