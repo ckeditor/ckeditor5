@@ -68,8 +68,17 @@ const TEXT_RANGE_END_TOKEN = '}';
  *
  *		stringify( p, selection ); // '<p><b>f{ooba}r</b></p>'
  *
+ * Multiple ranges are supported:
+ *
+ *		const text = new Text( 'foobar' );
+ *		const selection = new Selection();
+ *		selection.addRange( Range.createFromParentsAndOffsets( text, 0, text, 1 ) );
+ *		selection.addRange( Range.createFromParentsAndOffsets( text, 3, text, 5 ) );
+ *
+ *		strinfigy( text, selection ); // {f}oo{ba}r
+ *
  * Additional options object can be provided.
- * If `options.showType` is set to `true` element's types will be
+ * If `options.showType` is set to `true`, element's types will be
  * presented for {@link engine.treeView.AttributeElement AttributeElements} and {@link engine.treeView.ContainerElement
  * ContainerElements}:
  *
@@ -186,7 +195,7 @@ export function parse( data, options = { } ) {
 }
 
 /**
- * Private helper class used for converting ranges text representation inside {@link engine.treeView.Text Text nodes}.
+ * Private helper class used for converting ranges represented as text inside view {@link engine.treeView.Text Text nodes}.
  *
  * @private
  */
@@ -381,7 +390,7 @@ class RangeParser {
 }
 
 /**
- * Private helper class used that converts given HTML-like string to view tree.
+ * Private helper class used to convert given HTML-like string to view tree.
  *
  * @private
  */
