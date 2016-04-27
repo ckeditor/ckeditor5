@@ -10,9 +10,11 @@
 import Writer from '/ckeditor5/engine/treeview/writer.js';
 import ContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
 import AttributeElement from '/ckeditor5/engine/treeview/attributeelement.js';
+import Element from '/ckeditor5/engine/treeview/element.js';
 import Position from '/ckeditor5/engine/treeview/position.js';
 import Text from '/ckeditor5/engine/treeview/text.js';
 import utils from '/tests/engine/treeview/writer/_utils/utils.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'Writer', () => {
 	const create = utils.create;
@@ -368,6 +370,26 @@ describe( 'Writer', () => {
 					{ instanceOf: Text, data: 'barbaz', rangeEnd: 3 }
 				]
 			} );
+		} );
+
+		it( 'should throw when inserting Element', () => {
+			const element = new Element( 'b' );
+			const container = new ContainerElement( 'p' );
+			const position = new Position( container, 0 );
+			expect( () => {
+				writer.insert( position, element );
+			} ).to.throw( CKEditorError, 'treeview-writer-insert-invalid-node' );
+		} );
+
+		it( 'should throw when Element is inserted as child node', () => {
+			const element = new Element( 'b' );
+			const root = new ContainerElement( 'p', null, element );
+			const container = new ContainerElement( 'p' );
+			const position = new Position( container, 0 );
+
+			expect( () => {
+				writer.insert( position, root );
+			} ).to.throw( CKEditorError, 'treeview-writer-insert-invalid-node' );
 		} );
 	} );
 } );
