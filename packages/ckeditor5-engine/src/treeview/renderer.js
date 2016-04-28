@@ -10,12 +10,8 @@ import ViewElement from './element.js';
 import ViewPosition from './position.js';
 import { INLINE_FILLER, INLINE_FILLER_SIZE } from './domconverter.js';
 
-import SelectionObserver from './observer/selectionobserver.js';
-
 import diff from '../../utils/diff.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
-import EmitterMixin from '../../utils/emittermixin.js';
-import { keyNames } from '../../utils/keyboard.js';
 
 /**
  * Renderer updates DOM tree, to make it a reflection of the view tree. Changed nodes need to be
@@ -32,14 +28,14 @@ export default class Renderer {
 	 *
 	 * @param {engine.treeView.DomConverter} domConverter Converter instance.
 	 */
-	constructor( treeView ) {
+	constructor( domConverter, selection ) {
 		/**
 		 * Converter instance.
 		 *
 		 * @readonly
 		 * @member {engine.treeView.DomConverter} engine.treeView.Renderer#domConverter
 		 */
-		this.domConverter = treeView.domConverter;
+		this.domConverter = domConverter;
 
 		/**
 		 * Set of nodes which attributes changed and may need to be rendered.
@@ -65,7 +61,7 @@ export default class Renderer {
 		 */
 		this.markedTexts = new Set();
 
-		this.selection = treeView.selection;
+		this.selection = selection;
 
 		/**
 		 * Position of the inline filler. It should always be put BEFORE the text which contains filler.
@@ -77,39 +73,6 @@ export default class Renderer {
 		this._inlineFillerPosition = null;
 
 		this._domSelection = null;
-
-		this._listener = Object.create( EmitterMixin );
-
-		this._listener.listenTo( treeView, 'keydown', ( evt, data ) => {
-			if ( data.keyCode != keyNames.arrowleft ) {
-				return;
-			}
-
-			if ( !this._isInlineFillerAtSelection() ) {
-				return;
-			}
-
-			const selectionPosition = this.selection.getFirstPosition();
-
-			if ( selectionPosition.parent instanceof ViewText && selectionPosition.offset > 0 ) {
-				return;
-			}
-
-			const selectionObserver = treeView.getObserver( SelectionObserver );
-
-			selectionObserver.disable();
-			// Damn iframe! I can not use global window, so element -> document -> window -> selection
-			const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
-			const domParent = domSelection.getRangeAt( 0 ).startContainer;
-
-			const domRange = new Range();
-			domRange.setStart( domParent, 0 );
-			domRange.collapse( true );
-			domSelection.removeAllRanges();
-			domSelection.addRange( domRange );
-
-			selectionObserver.enable();
-		} );
 	}
 
 	/**

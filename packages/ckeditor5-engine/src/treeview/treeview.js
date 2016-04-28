@@ -9,9 +9,11 @@ import Selection from './selection.js';
 import Renderer from './renderer.js';
 import DomConverter from './domconverter.js';
 import Writer from './writer.js';
+import ViewText from './text.js';
 
 import mix from '../../utils/mix.js';
 import EmitterMixin from '../../utils/emittermixin.js';
+import { keyNames } from '../../utils/keyboard.js';
 
 /**
  * TreeView class creates an abstract layer over the content editable area.
@@ -71,7 +73,7 @@ export default class TreeView {
 		 * @readonly
 		 * @member {engine.treeView.Renderer} engine.treeView.TreeView#renderer
 		 */
-		this.renderer = new Renderer( this );
+		this.renderer = new Renderer( this.domConverter, this.selection );
 
 		/**
 		 * Set of registered {@link engine.treeView.Observer observers}.
@@ -80,6 +82,31 @@ export default class TreeView {
 		 * @member {Set.<engine.treeView.Observer>} engine.treeView.TreeView_#observers
 		 */
 		this._observers = new Map();
+
+		this.on( 'keydown', ( evt, data ) => {
+			if ( data.keyCode != keyNames.arrowleft ) {
+				return;
+			}
+
+			if ( !this.renderer._isInlineFillerAtSelection() ) {
+				return;
+			}
+
+			const selectionPosition = this.selection.getFirstPosition();
+
+			if ( selectionPosition.parent instanceof ViewText && selectionPosition.offset > 0 ) {
+				return;
+			}
+			// Damn iframe! I can not use global window, so element -> document -> window -> selection
+			const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
+			const domParent = domSelection.getRangeAt( 0 ).startContainer;
+
+			const domRange = new Range();
+			domRange.setStart( domParent, 0 );
+			domRange.collapse( true );
+			domSelection.removeAllRanges();
+			domSelection.addRange( domRange );
+		} );
 	}
 
 	/**

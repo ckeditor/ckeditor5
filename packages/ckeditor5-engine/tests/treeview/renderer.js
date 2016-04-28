@@ -9,16 +9,18 @@
 
 import ViewElement from '/ckeditor5/engine/treeview/element.js';
 import ViewText from '/ckeditor5/engine/treeview/text.js';
-import TreeView from '/ckeditor5/engine/treeview/treeview.js';
+import Selection from '/ckeditor5/engine/treeview/selection.js';
+import DomConverter from '/ckeditor5/engine/treeview/domconverter.js';
+import Renderer from '/ckeditor5/engine/treeview/renderer.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'Renderer', () => {
-	let treeView, domConverter, renderer;
+	let selection, domConverter, renderer;
 
 	before( () => {
-		treeView = new TreeView();
-		domConverter = treeView.domConverter;
-		renderer = treeView.renderer;
+		selection = new Selection();
+		domConverter = new DomConverter();
+		renderer = new Renderer( domConverter, selection );
 	} );
 
 	describe( 'markToSync', () => {
