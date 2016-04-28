@@ -5,8 +5,6 @@
 
 'use strict';
 
-/* jshint latedef:false */
-
 import ViewDocumentFragment from '/ckeditor5/engine/treeview/documentfragment.js';
 import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
 import ViewElement from '/ckeditor5/engine/treeview/element.js';
