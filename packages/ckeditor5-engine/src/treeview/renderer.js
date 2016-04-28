@@ -99,7 +99,7 @@ export default class Renderer {
 
 			selectionObserver.disable();
 			// Damn iframe! I can not use global window, so element -> document -> window -> selection
-			const domSelection = window.getSelection();
+			const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
 			const domParent = domSelection.getRangeAt( 0 ).startContainer;
 
 			const domRange = new Range();
@@ -366,10 +366,10 @@ export default class Renderer {
 	}
 
 	_updateSelection() {
-		let domSelection = window.getSelection();
+		let domSelection = this._domSelection;
 		const oldViewSelection = domSelection && this.domConverter.domSelectionToView( domSelection );
 
-		if ( ( !oldViewSelection && !this.selection.rangeCount ) ) {
+		if ( !oldViewSelection && !this.selection.rangeCount ) {
 			return;
 		}
 
@@ -381,20 +381,20 @@ export default class Renderer {
 			domSelection.removeAllRanges();
 		}
 
+		domSelection = null;
+
 		for ( let range of this.selection.getRanges() ) {
 			const domRangeStart = this.domConverter.viewPositionToDom( range.start );
 			const domRangeEnd = this.domConverter.viewPositionToDom( range.end );
 
+			domSelection = domSelection || domRangeStart.parent.ownerDocument.defaultView.getSelection();
+
 			const domRange = new Range();
 			domRange.setStart( domRangeStart.parent, domRangeStart.offset );
 			domRange.setEnd( domRangeEnd.parent, domRangeEnd.offset );
-			domRange.startContainer.ownerDocument.defaultView.getSelection().addRange( domRange );
+			domSelection.addRange( domRange );
 		}
 
-		if ( this.selection.rangeCount ) {
-			this._domSelection = domSelection;
-		} else {
-			this._domSelection = null;
-		}
+		this._domSelection = domSelection;
 	}
 }
