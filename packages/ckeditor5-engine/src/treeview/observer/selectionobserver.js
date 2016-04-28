@@ -29,31 +29,37 @@ export default class SelectionObserver extends Observer {
 		if ( this.documents.has( domDocument ) ) {
 			return;
 		}
+		this._handleSelectionChange();
 
-		domDocument.addEventListener( 'selectionchange', () => {
-			if ( !this.isEnabled ) {
-				return;
-			}
+		domDocument.addEventListener( 'selectionchange', () => this._handleSelectionChange( domDocument ) );
 
-			// Ensure the mutation event will be before selection event on all browsers.
-			this.mutationObserver.flush();
+		this.documents.add( domDocument );
+	}
 
-			// If there were mutations then the view will be re-rendered by the mutations observer and selection
-			// will be updated, so selection will be equal and event will not be fires, as expected.
-			const domSelection = domDocument.defaultView.getSelection();
-			const newViewSelection = this.domConverter.domSelectionToView( domSelection );
+	_handleSelectionChange( domDocument ) {
+		if ( !this.isEnabled ) {
+			return;
+		}
 
-			if ( this.selection.isEqual( newViewSelection ) ) {
-				return;
-			}
+		// Ensure the mutation event will be before selection event on all browsers.
+		this.mutationObserver.flush();
 
-			// Should be fired only when selection change was the only document change.
-			this.treeView.fire( 'selectionchange', {
-				oldSelection: this.selection,
-				newSelection: newViewSelection
-			} );
+		// If there were mutations then the view will be re-rendered by the mutations observer and selection
+		// will be updated, so selection will be equal and event will not be fires, as expected.
+		const domSelection = domDocument.defaultView.getSelection();
+		const newViewSelection = this.domConverter.domSelectionToView( domSelection );
 
-			this.treeView.render();
+		if ( this.selection.isEqual( newViewSelection ) ) {
+			return;
+		}
+
+		// Should be fired only when selection change was the only document change.
+		this.treeView.fire( 'selectionchange', {
+			oldSelection: this.selection,
+			newSelection: newViewSelection,
+			domSelection: domSelection
 		} );
+
+		this.treeView.render();
 	}
 }

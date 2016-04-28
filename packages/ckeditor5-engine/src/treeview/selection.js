@@ -215,7 +215,7 @@ export default class Selection {
 	isEqual( otherSelection ) {
 		const rangeCount = this.rangeCount;
 
-		if ( rangeCount != otherSelection.rangeCount() ) {
+		if ( rangeCount != otherSelection.rangeCount ) {
 			return false;
 		}
 
@@ -260,6 +260,16 @@ export default class Selection {
 
 		this._lastRangeBackward = !!isLastBackward;
 		this.fire( 'change' );
+	}
+
+	setTo( otherSelection ) {
+		this.removeAllRanges();
+
+		for ( let range of otherSelection.getRanges() ) {
+			this._pushRange( range );
+		}
+
+		this._lastRangeBackward = otherSelection._lastRangeBackward;
 	}
 
 	/**

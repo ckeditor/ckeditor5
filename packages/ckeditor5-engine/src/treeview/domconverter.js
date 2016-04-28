@@ -8,6 +8,7 @@
 import ViewText from './text.js';
 import ViewElement from './element.js';
 import ViewPosition from './position.js';
+import ViewRange from './range.js';
 import ViewSelection from './selection.js';
 import ViewDocumentFragment from './documentfragment.js';
 
@@ -165,6 +166,10 @@ export default class DomConverter {
 
 			offset++;
 		}
+
+		if ( fillerPositionOffset === offset ) {
+			yield this.blockFillerCreator( domDocument );
+		}
 	}
 
 	/**
@@ -254,9 +259,11 @@ export default class DomConverter {
 			return this.getCorrespondingViewElement( domNode );
 		} else if ( domNode instanceof DocumentFragment ) {
 			return this.getCorrespondingViewDocumentFragment( domNode );
-		} else {
+		} else if ( domNode instanceof Text ) {
 			return this.getCorrespondingViewText( domNode );
 		}
+
+		return undefined;
 	}
 
 	/**
@@ -314,7 +321,13 @@ export default class DomConverter {
 			const viewElement = this.getCorrespondingViewElement( previousSibling );
 
 			if ( viewElement ) {
-				return viewElement.getNextSibling();
+				const nextSibling = viewElement.getNextSibling();
+
+				if ( nextSibling instanceof ViewText ) {
+					return viewElement.getNextSibling();
+				} else {
+					return null;
+				}
 			}
 		}
 		// Try to use parent to find the corresponding text node.
@@ -322,7 +335,13 @@ export default class DomConverter {
 			const viewElement = this.getCorrespondingViewElement( domText.parentNode );
 
 			if ( viewElement ) {
-				return viewElement.getChild( 0 );
+				const firstChild = viewElement.getChild( 0 );
+
+				if ( firstChild instanceof ViewText ) {
+					return firstChild;
+				} else {
+					return null;
+				}
 			}
 		}
 
@@ -419,14 +438,14 @@ export default class DomConverter {
 
 			if ( viewPosition.offset === 0 ) {
 				domParent = this.getCorrespondingDom( viewPosition.parent );
-				domAfter = parent.childNodes[ 0 ];
+				domAfter = domParent.childNodes[ 0 ];
 			} else {
-				domBefore = this.getCorrespondingDom( viewPosition.nodeBefore() );
+				domBefore = this.getCorrespondingDom( viewPosition.nodeBefore );
 				domParent = domBefore.parentNode;
 				domAfter = domBefore.nextSibling;
 			}
 
-			if ( domAfter instanceof ViewText && this.isInlineFiller( domAfter ) ) {
+			if ( domAfter instanceof Text && this.startsWithFiller( domAfter ) ) {
 				return { parent: domAfter, offset: INLINE_FILLER_SIZE };
 			}
 
@@ -459,12 +478,18 @@ export default class DomConverter {
 			if ( domOffset === 0 ) {
 				const viewParent = this.getCorrespondingView( domParent );
 
-				return new ViewPosition( viewParent, 0 );
+				if ( viewParent ) {
+					return new ViewPosition( viewParent, 0 );
+				}
 			} else {
-				const viewBefore = this.getCorrespondingView( domParent.childNodes[ domOffset ] );
+				const viewBefore = this.getCorrespondingView( domParent.childNodes[ domOffset - 1 ] );
 
-				return new ViewPosition( viewBefore.parent, viewBefore.getIndex() + 1 );
+				if ( viewBefore ) {
+					return new ViewPosition( viewBefore.parent, viewBefore.getIndex() + 1 );
+				}
 			}
+
+			return undefined;
 		}
 	}
 
@@ -483,7 +508,11 @@ export default class DomConverter {
 		const viewStart = this.domPositionToView( domRange.startContainer, domRange.startOffset );
 		const viewEnd = this.domPositionToView( domRange.endContainer, domRange.endOffset );
 
-		return new Range( viewStart, viewEnd );
+		if ( viewStart && viewEnd ) {
+			return new ViewRange( viewStart, viewEnd );
+		}
+
+		return undefined;
 	}
 
 	domSelectionToView( domSelection ) {
@@ -493,7 +522,9 @@ export default class DomConverter {
 			const domRange = domSelection.getRangeAt( i );
 			const viewRange = this.domRangeToView( domRange );
 
-			viewSelection.addRange( viewRange );
+			if ( viewRange ) {
+				viewSelection.addRange( viewRange );
+			}
 		}
 
 		return viewSelection;
@@ -519,4 +550,6 @@ function indexOf( domNode ) {
 		domNode = domNode.previousSibling;
 		index++;
 	}
+
+	return index;
 }

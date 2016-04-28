@@ -117,19 +117,21 @@ export default class MutationObserver extends Observer {
 			return;
 		}
 
+		const domConverter = this.domConverter;
+
 		// Use　map and set for deduplication.
 		const mutatedTexts = new Map();
 		const mutatedElements = new Set();
 
 		// Assume that all elements are in the same document.
 		const domSelection = domMutations[ 0 ].target.ownerDocument.defaultView.getSelection();
-		const viewSelection = this.domConverter.domSelectionToView( domSelection );
+		const viewSelection = domConverter.domSelectionToView( domSelection );
 
 		// Handle `childList` mutations first, so we will be able to check if the `characterData` mutation is in the
 		// element with changed structure anyway.
 		for ( let mutation of domMutations ) {
 			if ( mutation.type === 'childList' ) {
-				const element = this.domConverter.getCorrespondingViewElement( mutation.target );
+				const element = domConverter.getCorrespondingViewElement( mutation.target );
 
 				if ( element ) {
 					mutatedElements.add( element );
@@ -140,7 +142,7 @@ export default class MutationObserver extends Observer {
 		// Handle `characterData` mutations later, when we have the full list of nodes which changed structure.
 		for ( let mutation of domMutations ) {
 			if ( mutation.type === 'characterData' ) {
-				const text = this.domConverter.getCorrespondingViewText( mutation.target );
+				const text = domConverter.getCorrespondingViewText( mutation.target );
 
 				if ( text && !mutatedElements.has( text.parent ) ) {
 					// Use text as a key, for deduplication. If there will be another mutation on the same text element
@@ -152,6 +154,8 @@ export default class MutationObserver extends Observer {
 						node: text,
 						selection: viewSelection
 					} );
+				} else if ( !text && domConverter.startsWithFiller( mutation.target ) ) {
+					mutatedElements.add( domConverter.getCorrespondingViewElement( mutation.target.parentNode ) );
 				}
 			}
 		}
@@ -168,9 +172,9 @@ export default class MutationObserver extends Observer {
 		}
 
 		for ( let viewElement of mutatedElements ) {
-			const domElement = this.domConverter.getCorrespondingDomElement( viewElement );
+			const domElement = domConverter.getCorrespondingDomElement( viewElement );
 			const viewChildren = viewElement.getChildren();
-			const newViewChildren = this.domConverter.domChildrenToView( domElement );
+			const newViewChildren = domConverter.domChildrenToView( domElement );
 
 			this.renderer.markToSync( 'CHILDREN', viewElement );
 			viewMutations.push( {

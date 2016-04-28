@@ -5,14 +5,14 @@
 
 'use strict';
 
-import diff from '../../utils/diff.js';
 import ViewText from './text.js';
-
 import ViewElement from './element.js';
 import ViewPosition from './position.js';
-
 import { INLINE_FILLER, INLINE_FILLER_SIZE } from './domconverter.js';
 
+import SelectionObserver from './observer/selectionobserver.js';
+
+import diff from '../../utils/diff.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 import EmitterMixin from '../../utils/emittermixin.js';
 import { keyNames } from '../../utils/keyboard.js';
@@ -76,31 +76,39 @@ export default class Renderer {
 		 */
 		this._inlineFillerPosition = null;
 
-		this._domSelectionWindow = null;
+		this._domSelection = null;
 
 		this._listener = Object.create( EmitterMixin );
 
-		this._listener.listenTo( treeView, 'keydown', ( data ) => {
-			if ( data.keyCode != keyNames.arrowleft || !this._isInlineFillerAtSelection() ) {
+		this._listener.listenTo( treeView, 'keydown', ( evt, data ) => {
+			if ( data.keyCode != keyNames.arrowleft ) {
+				return;
+			}
+
+			if ( !this._isInlineFillerAtSelection() ) {
 				return;
 			}
 
 			const selectionPosition = this.selection.getFirstPosition();
 
-			if ( selectionPosition.offset != INLINE_FILLER_SIZE ) {
+			if ( selectionPosition.parent instanceof ViewText && selectionPosition.offset > 0 ) {
 				return;
 			}
 
-			const domParent = this.domConverter( selectionPosition.parent );
+			const selectionObserver = treeView.getObserver( SelectionObserver );
 
+			selectionObserver.disable();
 			// Damn iframe! I can not use global window, so element -> document -> window -> selection
-			const domSelection = domParent.ownerDocument.defaultView.getSelection();
+			const domSelection = window.getSelection();
+			const domParent = domSelection.getRangeAt( 0 ).startContainer;
 
 			const domRange = new Range();
-			domRange.setStart( domParent.parent, 0 );
+			domRange.setStart( domParent, 0 );
 			domRange.collapse( true );
 			domSelection.removeAllRanges();
 			domSelection.addRange( domRange );
+
+			selectionObserver.enable();
 		} );
 	}
 
@@ -169,6 +177,7 @@ export default class Renderer {
 
 			if ( this._needAddInlineFiller() ) {
 				this._inlineFillerPosition = selection.getFirstPosition();
+				this.markedChildren.add( this._inlineFillerPosition.parent );
 			} else {
 				this._inlineFillerPosition = null;
 			}
@@ -196,7 +205,7 @@ export default class Renderer {
 	}
 
 	_isInlineFillerAtSelection() {
-		if ( this.selection.rangeCount != 1 || !this.selection.isCollapsed() ) {
+		if ( this.selection.rangeCount != 1 || !this.selection.isCollapsed ) {
 			return false;
 		}
 
@@ -226,10 +235,10 @@ export default class Renderer {
 			return;
 		}
 
-		const domPosition = this.domConverter.viewPositionToDom( this._inlineFillerPosition );
-		const domText = domPosition.parent.childNodes[ domPosition.offset ];
+		const domFillerPosition = this.domConverter.viewPositionToDom( this._inlineFillerPosition );
+		const domFillerNode = domFillerPosition.parent;
 
-		if ( !this.domConverter.startsWithFiller( domText ) ) {
+		if ( !this.domConverter.startsWithFiller( domFillerNode ) ) {
 			/**
 			 * No inline filler on expected position.
 			 *
@@ -238,15 +247,15 @@ export default class Renderer {
 			throw new CKEditorError( 'renderer-render-no-inline-filler: No inline filler on expected position.' );
 		}
 
-		if ( this.domConverter.isInlineFiller( domText ) ) {
-			domPosition.parent.removeChild( domText );
+		if ( this.domConverter.isInlineFiller( domFillerNode ) ) {
+			domFillerNode.parentNode.removeChild( domFillerNode );
 		} else {
-			domText.data = domText.data.substr( INLINE_FILLER_SIZE );
+			domFillerNode.data = domFillerNode.data.substr( INLINE_FILLER_SIZE );
 		}
 	}
 
 	_needAddInlineFiller() {
-		if ( this.selection.rangeCount != 1 || !this.selection.isCollapsed() ) {
+		if ( this.selection.rangeCount != 1 || !this.selection.isCollapsed ) {
 			return false;
 		}
 
@@ -263,8 +272,8 @@ export default class Renderer {
 			return false;
 		}
 
-		const nodeBefore = selectionPosition.nodeBefore();
-		const nodeAfter = selectionPosition.nodeAfter();
+		const nodeBefore = selectionPosition.nodeBefore;
+		const nodeAfter = selectionPosition.nodeAfter;
 
 		if ( nodeBefore instanceof ViewText || nodeAfter instanceof ViewText ) {
 			return false;
@@ -357,10 +366,14 @@ export default class Renderer {
 	}
 
 	_updateSelection() {
-		const domSelection = this._domSelectionWindow && this._domSelectionWindow.getSelection();
+		let domSelection = window.getSelection();
 		const oldViewSelection = domSelection && this.domConverter.domSelectionToView( domSelection );
 
-		if ( ( !oldViewSelection && !this.selection.rangeCount ) || this.selection.isEqual( oldViewSelection ) ) {
+		if ( ( !oldViewSelection && !this.selection.rangeCount ) ) {
+			return;
+		}
+
+		if ( oldViewSelection && this.selection.isEqual( oldViewSelection ) ) {
 			return;
 		}
 
@@ -375,14 +388,13 @@ export default class Renderer {
 			const domRange = new Range();
 			domRange.setStart( domRangeStart.parent, domRangeStart.offset );
 			domRange.setEnd( domRangeEnd.parent, domRangeEnd.offset );
-			domSelection.addRange( range );
+			domRange.startContainer.ownerDocument.defaultView.getSelection().addRange( domRange );
 		}
 
 		if ( this.selection.rangeCount ) {
-			// Get window for selection: Selection -> Range -> element -> document -> window.
-			this._domSelectionWindow = domSelection.getRangeAt( 0 ).startContainer.ownerDocument.defaultView;
+			this._domSelection = domSelection;
 		} else {
-			this._domSelectionWindow = null;
+			this._domSelection = null;
 		}
 	}
 }

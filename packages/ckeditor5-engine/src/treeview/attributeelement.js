@@ -75,7 +75,7 @@ export default class AttributeElement extends Element {
 
 	needsFiller() {
 		// <b>foo</b> does not need filler
-		if ( !this.getChildCount() ) {
+		if ( this.getChildCount() ) {
 			return false;
 		}
 
@@ -89,6 +89,10 @@ export default class AttributeElement extends Element {
 			element = element.parent;
 		}
 
-		return this.getChildCount() === 1;
+		if ( element.getChildCount() > 1 ) {
+			return false;
+		}
+
+		return 0;
 	}
 }
