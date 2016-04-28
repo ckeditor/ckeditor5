@@ -123,10 +123,6 @@ export default class MutationObserver extends Observer {
 		const mutatedTexts = new Map();
 		const mutatedElements = new Set();
 
-		// Assume that all elements are in the same document.
-		const domSelection = domMutations[ 0 ].target.ownerDocument.defaultView.getSelection();
-		const viewSelection = domConverter.domSelectionToView( domSelection );
-
 		// Handle `childList` mutations first, so we will be able to check if the `characterData` mutation is in the
 		// element with changed structure anyway.
 		for ( let mutation of domMutations ) {
@@ -151,8 +147,7 @@ export default class MutationObserver extends Observer {
 						type: 'text',
 						oldText: text.data,
 						newText: mutation.target.data,
-						node: text,
-						selection: viewSelection
+						node: text
 					} );
 				} else if ( !text && domConverter.startsWithFiller( mutation.target ) ) {
 					mutatedElements.add( domConverter.getCorrespondingViewElement( mutation.target.parentNode ) );
@@ -181,8 +176,7 @@ export default class MutationObserver extends Observer {
 				type: 'children',
 				oldChildren: Array.from( viewChildren ),
 				newChildren: Array.from( newViewChildren ),
-				node: viewElement,
-				selection: viewSelection
+				node: viewElement
 			} );
 		}
 
