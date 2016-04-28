@@ -130,26 +130,40 @@ describe( 'view test utils', () => {
 			expect( stringify( fragment, null ) ).to.equal( '<b>foobar</b><b>bazqux</b>' );
 		} );
 
-		it( 'should not write ranges outside elements', () => {
+		it( 'should not write ranges outside elements - end position outside element', () => {
 			const text = new Text( 'foobar' );
 			const b = new Element( 'b', null, text );
 			const p = new Element( 'p', null, b );
-			const range1 = Range.createFromParentsAndOffsets( p, 0, p, 5 );
-			const range2 = Range.createFromParentsAndOffsets( p, -1, p, 1 );
-			const range3 = Range.createFromParentsAndOffsets( text, 0, text, 7 );
-			const range4 = Range.createFromParentsAndOffsets( text, -1, text, 2 );
-			const range5 = Range.createFromParentsAndOffsets( text, 6, text, 8 );
-			const selection = new Selection();
-			selection.addRange( range1 );
-			expect( stringify( p, selection ) ).to.equal( '<p>[<b>foobar</b></p>' );
-			selection.setRanges( [ range2 ] );
-			expect( stringify( p, selection ) ).to.equal( '<p><b>foobar</b>]</p>' );
-			selection.setRanges( [ range3 ] );
-			expect( stringify( p, selection ) ).to.equal( '<p><b>{foobar</b></p>' );
-			selection.setRanges( [ range4 ] );
-			expect( stringify( p, selection ) ).to.equal( '<p><b>fo}obar</b></p>' );
-			selection.setRanges( [ range5 ] );
-			expect( stringify( p, selection ) ).to.equal( '<p><b>foobar{</b></p>' );
+			const range = Range.createFromParentsAndOffsets( p, 0, p, 5 );
+
+			expect( stringify( p, range ) ).to.equal( '<p>[<b>foobar</b></p>' );
+		} );
+
+		it( 'should not write ranges outside elements - start position outside element', () => {
+			const text = new Text( 'foobar' );
+			const b = new Element( 'b', null, text );
+			const p = new Element( 'p', null, b );
+			const range = Range.createFromParentsAndOffsets( p, -1, p, 1 );
+
+			expect( stringify( p, range ) ).to.equal( '<p><b>foobar</b>]</p>' );
+		} );
+
+		it( 'should not write ranges outside elements - end position outside text', () => {
+			const text = new Text( 'foobar' );
+			const b = new Element( 'b', null, text );
+			const p = new Element( 'p', null, b );
+			const range = Range.createFromParentsAndOffsets( text, 0, text, 7 );
+
+			expect( stringify( p, range ) ).to.equal( '<p><b>{foobar</b></p>' );
+		} );
+
+		it( 'should not write ranges outside elements - start position outside text', () => {
+			const text = new Text( 'foobar' );
+			const b = new Element( 'b', null, text );
+			const p = new Element( 'p', null, b );
+			const range = Range.createFromParentsAndOffsets( text, -1, text, 2 );
+
+			expect( stringify( p, range ) ).to.equal( '<p><b>fo}obar</b></p>' );
 		} );
 
 		it( 'should write multiple ranges from selection #1', () => {
