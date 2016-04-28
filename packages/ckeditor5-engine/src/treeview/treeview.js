@@ -7,9 +7,9 @@
 
 import Selection from './selection.js';
 import Renderer from './renderer.js';
-import DomConverter from './domconverter.js';
 import Writer from './writer.js';
-import ViewText from './text.js';
+import DomConverter from './domconverter.js';
+import { INLINE_FILLER_SIZE } from './domconverter.js';
 
 import mix from '../../utils/mix.js';
 import EmitterMixin from '../../utils/emittermixin.js';
@@ -84,28 +84,22 @@ export default class TreeView {
 		this._observers = new Map();
 
 		this.on( 'keydown', ( evt, data ) => {
-			if ( data.keyCode != keyNames.arrowleft ) {
-				return;
+			if ( data.keyCode == keyNames.arrowleft ) {
+				const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
+
+				if ( domSelection.rangeCount == 1 && domSelection.getRangeAt( 0 ).collapsed ) {
+					const domParent = domSelection.getRangeAt( 0 ).startContainer;
+					const domOffset = domSelection.getRangeAt( 0 ).startOffset;
+
+					if ( this.domConverter.startsWithFiller( domParent ) && domOffset <= INLINE_FILLER_SIZE ) {
+						const domRange = new Range();
+						domRange.setStart( domParent, 0 );
+						domRange.collapse( true );
+						domSelection.removeAllRanges();
+						domSelection.addRange( domRange );
+					}
+				}
 			}
-
-			if ( !this.renderer._isInlineFillerAtSelection() ) {
-				return;
-			}
-
-			const selectionPosition = this.selection.getFirstPosition();
-
-			if ( selectionPosition.parent instanceof ViewText && selectionPosition.offset > 0 ) {
-				return;
-			}
-			// Damn iframe! I can not use global window, so element -> document -> window -> selection
-			const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
-			const domParent = domSelection.getRangeAt( 0 ).startContainer;
-
-			const domRange = new Range();
-			domRange.setStart( domParent, 0 );
-			domRange.collapse( true );
-			domSelection.removeAllRanges();
-			domSelection.addRange( domRange );
 		} );
 	}
 
