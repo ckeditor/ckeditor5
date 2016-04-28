@@ -67,6 +67,17 @@ export default class Batch {
 
 		return delta;
 	}
+
+	/**
+	 * Gets an iterable collection of operations.
+	 *
+	 * @returns {Iterable.<engine.treeModel.operation.Operation}
+	 */
+	*getOperations() {
+		for ( let delta of this.deltas ) {
+			yield* delta.operations;
+		}
+	}
 }
 
 /**
