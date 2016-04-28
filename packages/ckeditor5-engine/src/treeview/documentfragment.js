@@ -135,6 +135,9 @@ export default class DocumentFragment {
 	}
 
 	/**
+	 * Fires `change` event with given type of the change.
+	 *
+	 * @private
 	 * @param {engine.treeView.ChangeType} type Type of the change.
 	 * @param {engine.treeView.Node} node Changed node.
 	 * @fires engine.treeView.Node#change
