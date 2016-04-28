@@ -54,7 +54,7 @@ const TEXT_RANGE_END_TOKEN = '}';
  *		const selection = new Selection();
  *		selection.addRange( Range.createFromParentsAndOffsets( p, 0, p, 1 ) );
  *
- *		stringify( p, selection ); // <p>[<b>foobar</b>]</p>
+ *		stringify( p, selection ); // '<p>[<b>foobar</b>]</p>'
  *
  * If range is placed inside text node, it will be represented with `{` and `}`:
  *
@@ -73,7 +73,19 @@ const TEXT_RANGE_END_TOKEN = '}';
  *		selection.addRange( Range.createFromParentsAndOffsets( text, 0, text, 1 ) );
  *		selection.addRange( Range.createFromParentsAndOffsets( text, 3, text, 5 ) );
  *
- *		strinfigy( text, selection ); // {f}oo{ba}r
+ *		stringify( text, selection ); // '{f}oo{ba}r'
+ *
+ * Instead of {@link engine.treeView.Selection Selection} instance {@link engine.treeView.Range Range} or
+ * {@link engine.treeView.Position Position} instance can be provided. If Range instance is provided - it will be
+ * converted to selection containing this range. If Position instance is provided - it will be converted to selection
+ * containing one range collapsed at this position.
+ *
+ *		const text = new Text( 'foobar' );
+ *		const range = Range.createFromParentsAndOffsets( text, 0, text, 1 );
+ *		const position = new Position( text, 3 );
+ *
+ *		stringify( text, range ); // '{f}oobar'
+ *		stringify( text, position ); // 'foo{}bar'
  *
  * Additional options object can be provided.
  * If `options.showType` is set to `true`, element's types will be
@@ -140,7 +152,7 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
  * {@link engine.treeView.Selection Selection} instance containing these ranges. Ranges placed inside
  * {@link engine.treeView.Text Text} nodes should be marked using `{` and `}` brackets:
  *
- * 		const { text, selection } = parse( 'f{ooba}r' );
+ *		const { text, selection } = parse( 'f{ooba}r' );
  *
  * Ranges placed outside text nodes should be marked using `[` and `]` brackets:
  *
@@ -252,7 +264,7 @@ class RangeParser {
 
 		if ( node instanceof ViewText ) {
 			const regexp = new RegExp(
-				`[ ${TEXT_RANGE_START_TOKEN}${TEXT_RANGE_END_TOKEN}\\${ELEMENT_RANGE_END_TOKEN}\\${ELEMENT_RANGE_START_TOKEN} ]`,
+				`[ ${ TEXT_RANGE_START_TOKEN }${ TEXT_RANGE_END_TOKEN }\\${ ELEMENT_RANGE_END_TOKEN }\\${ ELEMENT_RANGE_START_TOKEN } ]`,
 				'g'
 			);
 			let text = node.data;
@@ -393,7 +405,6 @@ class RangeParser {
  * @private
  */
 class ViewParser {
-
 	/**
 	 * Parses HTML-like string to view tree elements.
 	 *
