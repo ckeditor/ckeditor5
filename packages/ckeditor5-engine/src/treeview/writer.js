@@ -232,11 +232,7 @@ import utils from '../../utils/utils.js';
 	 * @returns {engine.treeView.Range} Range around inserted nodes.
 	 */
 	insert( position, nodes ) {
-		if ( !utils.isIterable( nodes ) ) {
-			nodes = [ nodes ];
-		} else {
-			nodes = [ ...nodes ];
-		}
+		nodes = utils.isIterable( nodes ) ? [ ...nodes ] : [ nodes ];
 
 		// Check if nodes to insert are instances of AttributeElements, ContainerElements or Text.
 		validateNodesToInsert( nodes );
@@ -879,7 +875,8 @@ function validateNodesToInsert( nodes ) {
 	for ( let node of nodes ) {
 		if ( !( node instanceof Text || node instanceof AttributeElement || node instanceof ContainerElement ) ) {
 			/**
-			 * Inserted nodes should be instance of AttributeElement, ContainerElement or Text.
+			 * Inserted nodes should be instance of {@link engine.treeView.AttributeElement AttributeElement},
+			 * {@link engine.treeView.ContainerElement ContainerElement} or {@link engine.treeView.Text Text}.
 			 *
 			 * @error treeview-writer-insert-invalid-node
 			 */
