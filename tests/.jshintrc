@@ -4,7 +4,6 @@
 
 	"expr": true,
 	"immed": true,
-	"latedef": "nofunc",
 	"loopfunc": true,
 	"noarg": true,
 	"nonbsp": true,
