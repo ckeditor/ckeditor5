@@ -189,8 +189,6 @@ export default class Position {
 	/**
 	 * Creates a new position after given node.
 	 *
-	 * @see {@link engine.treeView.TreeWalkerValue}
-	 *
 	 * @param {engine.treeView.Node} node Node the position should be directly after.
 	 * @returns {engine.treeView.Position}
 	 */
@@ -210,8 +208,6 @@ export default class Position {
 
 	/**
 	 * Creates a new position before the given node.
-	 *
-	 * @see {@link engine.treeView.TreeWalkerValue}
 	 *
 	 * @param {engine.treeView.node} node Node the position should be directly before.
 	 * @returns {engine.treeView.Position}

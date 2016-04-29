@@ -207,10 +207,10 @@ export default class Selection {
 	}
 
 	/**
-	 * Two ranges equal if their start and end positions equal.
+	 * Two selections equals if they have the same ranges and directions.
 	 *
-	 * @param {engine.treeView.Range} otherRange Range to compare with.
-	 * @returns {Boolean} True if ranges equal.
+	 * @param {engine.treeView.Selection} otherSelection Selection to compare with.
+	 * @returns {Boolean} True if selections equal.
 	 */
 	isEqual( otherSelection ) {
 		const rangeCount = this.rangeCount;
@@ -262,6 +262,11 @@ export default class Selection {
 		this.fire( 'change' );
 	}
 
+	/**
+	 * Set this selection ranges and direction to the ranges and direction of other selection
+	 *
+	 * @param {engine.treeView.Selection} otherSelection Other selection.
+	 */
 	setTo( otherSelection ) {
 		this.removeAllRanges();
 
