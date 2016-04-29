@@ -89,16 +89,10 @@ export default class History {
 			return [ delta ];
 		}
 
-		let index = this._historyPoints.get( delta.baseVersion );
-
-		if ( index === undefined ) {
-			throw new CKEditorError( 'history-wrong-version: Cannot retrieve point in history that is a base for given delta.' );
-		}
-
 		let transformed = [ delta ];
+		const historyDeltas = this.getDeltas( delta.baseVersion );
 
-		while ( index < this._deltas.length ) {
-			const historyDelta = this._deltas[ index ];
+		for ( let historyDelta of historyDeltas ) {
 			let allResults = [];
 
 			for ( let deltaToTransform of transformed ) {
@@ -107,10 +101,30 @@ export default class History {
 			}
 
 			transformed = allResults;
-			index++;
 		}
 
 		return transformed;
+	}
+
+	/**
+	 * Returns all deltas from history, starting from given history point (if passed).
+	 *
+	 * @param {Number} from History point.
+	 */
+	getDeltas( from = 0 ) {
+		let i = this._historyPoints.get( from );
+
+		if ( i === undefined ) {
+			throw new CKEditorError( 'history-wrong-version: Cannot retrieve given point in the history.' );
+		}
+
+		const result = [];
+
+		for ( ; i < this._deltas.length; i++ ) {
+			result.push( this._deltas[ i ] );
+		}
+
+		return result;
 	}
 
 	/**
