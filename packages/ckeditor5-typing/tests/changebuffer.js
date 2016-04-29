@@ -34,10 +34,10 @@ describe( 'ChangeBuffer', () => {
 			expect( buffer.batch ).to.be.instanceof( Batch );
 		} );
 
-		it( 'is reset once changes exceed the limit', () => {
+		it( 'is reset once changes reaches the limit', () => {
 			const batch1 = buffer.batch;
 
-			buffer.input( CHANGE_LIMIT );
+			buffer.input( CHANGE_LIMIT - 1 );
 
 			expect( buffer.batch ).to.equal( batch1 );
 
@@ -47,6 +47,15 @@ describe( 'ChangeBuffer', () => {
 
 			expect( batch2 ).to.be.instanceof( Batch );
 			expect( batch2 ).to.not.equal( batch1 );
+		} );
+
+		it( 'is reset once changes exceedes the limit', () => {
+			const batch1 = buffer.batch;
+
+			// Exceed the limit with one big jump to ensure that >= operator was used.
+			buffer.input( CHANGE_LIMIT + 1 );
+
+			expect( buffer.batch ).to.not.equal( batch1 );
 		} );
 
 		it( 'is reset once a new batch appears in the document', () => {

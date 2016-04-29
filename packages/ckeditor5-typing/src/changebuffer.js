@@ -79,7 +79,7 @@ export default class ChangeBuffer {
 
 	/**
 	 * Current batch to which a feature should add its deltas. Once the {@link typing.ChangeBuffer#size}
-	 * exceedes the {@link typing.ChangeBuffer#limit}, the batch is set to a new instance and size is reset.
+	 * reach or exceedes the {@link typing.ChangeBuffer#limit}, then the batch is set to a new instance and size is reset.
 	 *
 	 * @type {engine.treeModel.batch.Batch}
 	 */
@@ -93,14 +93,14 @@ export default class ChangeBuffer {
 
 	/**
 	 * Input number of changes into the buffer. Once the {@link typing.ChangeBuffer#size}
-	 * exceedes the {@link typing.ChangeBuffer#limit}, the batch is set to a new instance and size is reset.
+	 * reach or exceedes the {@link typing.ChangeBuffer#limit}, then the batch is set to a new instance and size is reset.
 	 *
 	 * @param {Number} changeCount Number of atomic changes to input.
 	 */
 	input( changeCount ) {
 		this.size += changeCount;
 
-		if ( this.size > this.limit ) {
+		if ( this.size >= this.limit ) {
 			this._batch = null;
 		}
 	}
