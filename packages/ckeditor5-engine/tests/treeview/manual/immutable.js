@@ -6,12 +6,9 @@
 'use strict';
 
 import TreeView from '/ckeditor5/engine/treeview/treeview.js';
-import ContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
-import AttributeElement from '/ckeditor5/engine/treeview/attributeelement.js';
-import Text from '/ckeditor5/engine/treeview/text.js';
-import Range from '/ckeditor5/engine/treeview/range.js';
 import MutationObserver from '/ckeditor5/engine/treeview/observer/mutationobserver.js';
 import SelectionObserver from '/ckeditor5/engine/treeview/observer/selectionobserver.js';
+import { parse } from '/tests/engine/_utils/view.js';
 
 const treeView = new TreeView();
 treeView.createRoot( document.getElementById( 'editor' ), 'editor' );
@@ -19,18 +16,14 @@ treeView.createRoot( document.getElementById( 'editor' ), 'editor' );
 treeView.addObserver( MutationObserver );
 treeView.addObserver( SelectionObserver );
 
-const p = new ContainerElement( 'p', null, [
-		new AttributeElement( 'strong', null, [ new Text( 'foo' ) ] ),
-		new AttributeElement( 'strong', null, [ new Text( 'bar' ) ] )
-	] );
+const { view, selection } = parse(
+	'<container:p><attribute:strong>foo</attribute:strong>[]<attribute:strong>bar</attribute:strong></container:p>' +
+	'<container:p></container:p>' +
+	'<container:p><attribute:strong></attribute:strong></container:p>' +
+	'<container:p>bom</container:p>' );
 
-treeView.viewRoots.get( 'editor' ).appendChildren( [
-	p,
-	new ContainerElement( 'p' ),
-	new ContainerElement( 'p', null, [ new AttributeElement( 'strong' ) ] ),
-	new ContainerElement( 'p', null, [ new Text( 'bar' ) ] )
-] );
+treeView.viewRoots.get( 'editor' ).appendChildren( view );
 
-treeView.selection.setRanges( [ Range.createFromParentsAndOffsets( p, 1, p, 1 ) ] );
+treeView.selection.setTo( selection );
 
 treeView.render();
