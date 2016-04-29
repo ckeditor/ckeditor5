@@ -9,7 +9,53 @@ import TreeWalker from '/ckeditor5/engine/treemodel/treewalker.js';
 import Range from '/ckeditor5/engine/treemodel/range.js';
 import Position from '/ckeditor5/engine/treemodel/position.js';
 import Text from '/ckeditor5/engine/treemodel/text.js';
+import RootElement from '/ckeditor5/engine/treemodel/rootelement.js';
 import Element from '/ckeditor5/engine/treemodel/element.js';
+import DocumentFragment from '/ckeditor5/engine/treemodel/documentfragment.js';
+import Selection from '/ckeditor5/engine/treemodel/selection.js';
+
+export function stringify( root, selectionOrPositionOrRange ) {
+	let selection;
+
+	// If root is Element or Text - wrap it with DocumentFragment.
+	if ( !( root instanceof RootElement ) && ( root instanceof Element || root instanceof Text ) ) {
+		root = new DocumentFragment( root );
+	}
+
+	const walker = new TreeWalker( {
+		boundaries: Range.createFromElement( root )
+	} );
+
+	if ( selectionOrPositionOrRange instanceof Selection ) {
+		selection = selectionOrPositionOrRange;
+	} else if ( selectionOrPositionOrRange instanceof Range ) {
+		selection = new Selection( new Document() );
+		selection.addRange( selectionOrPositionOrRange );
+	} else if ( selectionOrPositionOrRange instanceof Position ) {
+		selection = new Selection( new Document() );
+		selection.addRange( new Range( selectionOrPositionOrRange, selectionOrPositionOrRange ) );
+	}
+
+	let ret = '';
+	let lastPosition = Position.createFromParentAndOffset( root, 0 );
+	const withSelection = !!selection;
+
+	for ( let value of walker ) {
+		if ( withSelection ) {
+			ret += writeSelection( value.previousPosition, selection );
+		}
+
+		ret += writeItem( value, selection, { selection: withSelection } );
+
+		lastPosition = value.nextPosition;
+	}
+
+	if ( withSelection ) {
+		ret += writeSelection( lastPosition, selection );
+	}
+
+	return ret;
+}
 
 /**
  * Writes the contents of the document to an HTML-like string.
@@ -21,31 +67,14 @@ import Element from '/ckeditor5/engine/treemodel/element.js';
  * @returns {String} The stringified data.
  */
 export function getData( document, rootName, options ) {
-	const root = document.getRoot( rootName );
-	const walker = new TreeWalker( {
-		boundaries: Range.createFromElement( root )
-	} );
-	let ret = '';
-	let lastPosition = Position.createFromParentAndOffset( root, 0 );
-	const selection = document.selection;
-
 	options = options || {};
-
-	for ( let value of walker ) {
-		if ( options.selection ) {
-			ret += writeSelection( value.previousPosition, selection );
-		}
-
-		ret += writeItem( value, selection, options );
-
-		lastPosition = value.nextPosition;
-	}
+	const root = document.getRoot( rootName );
 
 	if ( options.selection ) {
-		ret += writeSelection( lastPosition, selection );
+		return stringify( root, document.selection );
+	} else {
+		return stringify( root );
 	}
-
-	return ret;
 }
 
 /**

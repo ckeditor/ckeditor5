@@ -5,8 +5,9 @@
 
 'use strict';
 
-import { getData, setData } from '/tests/engine/_utils/model.js';
+import { stringify, getData, setData } from '/tests/engine/_utils/model.js';
 import Document from '/ckeditor5/engine/treemodel/document.js';
+import DocumentFragment from '/ckeditor5/engine/treemodel/documentfragment.js';
 import Element from '/ckeditor5/engine/treemodel/element.js';
 import Text from '/ckeditor5/engine/treemodel/text.js';
 import Range from '/ckeditor5/engine/treemodel/range.js';
@@ -20,6 +21,23 @@ describe( 'model test utils', () => {
 		selection = document.selection;
 
 		selection.removeAllRanges();
+	} );
+
+	describe( 'stringify', () => {
+		it( 'should stringify text', () => {
+			const text = new Text( 'text', { underline: true, bold: true } );
+			expect( stringify( text ) ).to.equal( '<$text bold=true underline=true>text</$text>' );
+		} );
+
+		it( 'should stringify element', () => {
+			const element = new Element( 'a', null, [ new Element( 'b', null, 'btext' ), 'atext' ] );
+			expect( stringify( element ) ).to.equal( '<a><b>btext</b>atext</a>' );
+		} );
+
+		it( 'should stringify document fragment', () => {
+			const fragment = new DocumentFragment( [ new Element( 'b', null, 'btext' ), 'atext' ] );
+			expect( stringify( fragment ) ).to.equal( '<b>btext</b>atext' );
+		} );
 	} );
 
 	describe( 'getData', () => {
