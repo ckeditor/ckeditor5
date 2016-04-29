@@ -8,6 +8,10 @@
 'use strict';
 
 import Writer from '/ckeditor5/engine/treeview/writer.js';
+import ContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
+import Element from '/ckeditor5/engine/treeview/element.js';
+import Position from '/ckeditor5/engine/treeview/position.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import { stringify, parse } from '/tests/engine/_utils/view.js';
 
 describe( 'Writer', () => {
@@ -122,6 +126,26 @@ describe( 'Writer', () => {
 				[ '<attribute:b:1>foo</attribute:b:1>', 'bar' ],
 				'<container:p><attribute:b:1>qux{foo</attribute:b:1>bar}baz</container:p>'
 			);
+		} );
+
+		it( 'should throw when inserting Element', () => {
+			const element = new Element( 'b' );
+			const container = new ContainerElement( 'p' );
+			const position = new Position( container, 0 );
+			expect( () => {
+				writer.insert( position, element );
+			} ).to.throw( CKEditorError, 'treeview-writer-insert-invalid-node' );
+		} );
+
+		it( 'should throw when Element is inserted as child node', () => {
+			const element = new Element( 'b' );
+			const root = new ContainerElement( 'p', null, element );
+			const container = new ContainerElement( 'p' );
+			const position = new Position( container, 0 );
+
+			expect( () => {
+				writer.insert( position, root );
+			} ).to.throw( CKEditorError, 'treeview-writer-insert-invalid-node' );
 		} );
 	} );
 } );

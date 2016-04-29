@@ -12,6 +12,7 @@ import Text from './text.js';
 import Range from './range.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 import DocumentFragment from './documentfragment.js';
+import utils from '../../utils/utils.js';
 
 /**
  * Tree View Writer class.
@@ -219,11 +220,23 @@ import DocumentFragment from './documentfragment.js';
 	 * Insert node or nodes at specified position. Takes care about breaking attributes before insertion
 	 * and merging them afterwards.
 	 *
+	 * Throws {@link utils.CKEditorError CKEditorError} `treeview-writer-insert-invalid-node` when nodes to insert
+	 * contains instances that are not {@link engine.treeView.Text Texts},
+	 * {@link engine.treeView.AttributeElement AttributeElements} or
+	 * {@link engine.treeView.ContainerElement ContainerElements}.
+	 *
 	 * @param {engine.treeView.Position} position Insertion position.
-	 * @param {engine.treeView.Node|Iterable.<engine.treeView.Node>} nodes Node or nodes to insert.
+	 * @param {engine.treeView.Text|engine.treeView.AttributeElement|engine.treeView.ContainerElement
+	 * |Iterable.<engine.treeView.Text|engine.treeView.AttributeElement|engine.treeView.ContainerElement>} nodes Node or
+	 * nodes to insert.
 	 * @returns {engine.treeView.Range} Range around inserted nodes.
 	 */
 	insert( position, nodes ) {
+		nodes = utils.isIterable( nodes ) ? [ ...nodes ] : [ nodes ];
+
+		// Check if nodes to insert are instances of AttributeElements, ContainerElements or Text.
+		validateNodesToInsert( nodes );
+
 		const container = this.getParentContainer( position );
 		const insertionPosition = this.breakAttributes( position );
 
@@ -239,6 +252,7 @@ import DocumentFragment from './documentfragment.js';
 			if ( !start.isEqual( insertionPosition ) ) {
 				endPosition.offset--;
 			}
+
 			const end = this.mergeAttributes( endPosition );
 
 			return new Range( start, end );
@@ -646,6 +660,7 @@ function wrapChildren( writer, parent, startOffset, endOffset, attribute ) {
 //		<p>{foo}|</p>  ->  <p>{foo|}</p>
 //		<p>|{foo}</p>  ->  <p>{|foo}</p>
 //
+// @private
 // @param {engine.treeView.Position} position
 // @returns {engine.treeView.Position} Position located inside text node or same position if there is no text nodes
 // before or after position location.
@@ -671,6 +686,7 @@ function movePositionToTextNode( position ) {
 //		<p>{|foobar}</p> -> <p>|{foobar}</p>
 //		<p>{foobar|}</p> -> <p>{foobar}|</p>
 //
+// @private
 // @param {engine.treeView.Position} position Position that need to be placed inside text node.
 // @returns {engine.treeView.Position} New position after breaking text node.
 function breakTextNode( position ) {
@@ -697,6 +713,7 @@ function breakTextNode( position ) {
 
 // Merges two text nodes into first node. Removes second node and returns merge position.
 //
+// @private
 // @param {engine.treeView.Text} t1 First text node to merge. Data from second text node will be moved at the end of
 // this text node.
 // @param {engine.treeView.Text} t2 Second text node to merge. This node will be removed after merging.
@@ -715,6 +732,7 @@ function mergeTextNodes( t1, t2 ) {
 // When merging is possible - all attributes, styles and classes are moved from wrapper element to element being
 // wrapped.
 //
+// @private
 // @param {engine.treeView.AttributeElement} wrapper Wrapper AttributeElement.
 // @param {engine.treeView.AttributeElement} toWrap AttributeElement to wrap using wrapper element.
 // @returns {Boolean} Returns `true` if elements are merged.
@@ -775,6 +793,7 @@ function wrapAttributeElement( wrapper, toWrap ) {
 // Unwraps {@link engine.treeView.AttributeElement AttributeElement} from another by removing corresponding attributes,
 // classes and styles. All attributes, classes and styles from wrapper should be present inside element being unwrapped.
 //
+// @private
 // @param {engine.treeView.AttributeElement} wrapper Wrapper AttributeElement.
 // @param {engine.treeView.AttributeElement} toUnwrap AttributeElement to unwrap using wrapper element.
 // @returns {Boolean} Returns `true` if elements are unwrapped.
@@ -833,9 +852,39 @@ function unwrapAttributeElement( wrapper, toUnwrap ) {
 // (`start` and `end` positions are located inside same {@link engine.treeView.AttributeElement AttributeElement}),
 // starts on 0 offset and ends after last child node.
 //
+// @private
 // @param {engine.treeView.Range} Range
 // @returns {Boolean}
 function rangeSpansOnAllChildren( range ) {
 	return range.start.parent == range.end.parent && range.start.parent instanceof AttributeElement &&
 		range.start.offset === 0 && range.end.offset === range.start.parent.getChildCount();
+}
+
+// Checks if provided nodes are valid to insert by writer. Checks if each node is an instance of
+// {@link engine.treeView.Text Text} or {@link engine.treeView.AttributeElement AttributeElement} or
+// {@link engine.treeView.ContainerElement ContainerElement}.
+//
+// Throws {@link utils.CKEditorError CKEditorError} `treeview-writer-insert-invalid-node` when nodes to insert
+// contains instances that are not {@link engine.treeView.Text Texts},
+// {@link engine.treeView.AttributeElement AttributeElements} or
+// {@link engine.treeView.ContainerElement ContainerElements}.
+//
+// @private
+// @param Iterable.<engine.treeView.Text|engine.treeView.AttributeElement|engine.treeView.ContainerElement> nodes
+function validateNodesToInsert( nodes ) {
+	for ( let node of nodes ) {
+		if ( !( node instanceof Text || node instanceof AttributeElement || node instanceof ContainerElement ) ) {
+			/**
+			 * Inserted nodes should be instance of {@link engine.treeView.AttributeElement AttributeElement},
+			 * {@link engine.treeView.ContainerElement ContainerElement} or {@link engine.treeView.Text Text}.
+			 *
+			 * @error treeview-writer-insert-invalid-node
+			 */
+			throw new CKEditorError( 'treeview-writer-insert-invalid-node' );
+		}
+
+		if ( !( node instanceof Text ) ) {
+			validateNodesToInsert( node.getChildren() );
+		}
+	}
 }
