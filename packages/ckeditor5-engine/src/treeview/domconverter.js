@@ -154,7 +154,7 @@ export default class DomConverter {
 	}
 
 	*viewChildrenToDom( viewElement, domDocument, options = {} ) {
-		let fillerPositionOffset = viewElement.needsFiller && viewElement.needsFiller();
+		let fillerPositionOffset = viewElement.getBlockFillerOffset && viewElement.getBlockFillerOffset();
 		let offset = 0;
 
 		for ( let childView of viewElement.getChildren() ) {

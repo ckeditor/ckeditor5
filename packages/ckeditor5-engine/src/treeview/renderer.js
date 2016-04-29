@@ -231,7 +231,7 @@ export default class Renderer {
 		}
 
 		// We have block filler, we do not need inline one.
-		if ( selectionOffset === selectionParent.needsFiller() ) {
+		if ( selectionOffset === selectionParent.getBlockFillerOffset() ) {
 			return false;
 		}
 

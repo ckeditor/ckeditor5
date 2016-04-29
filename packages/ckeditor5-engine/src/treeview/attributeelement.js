@@ -73,24 +73,29 @@ export default class AttributeElement extends Element {
 		return super.isSimilar( otherElement ) && this.priority == otherElement.priority;
 	}
 
-	needsFiller() {
+	/**
+	 * Returns block filler offset or null if block filler is not needed.
+	 *
+	 * @returns {Number|false} Block filler offset or null if block filler is not needed.
+	 */
+	getBlockFillerOffset() {
 		// <b>foo</b> does not need filler
 		if ( this.getChildCount() ) {
-			return false;
+			return null;
 		}
 
 		let element = this.parent;
 
 		// <p><b></b></p> needs filler -> <p><b><br></b></p>
 		while ( !( element instanceof ContainerElement ) ) {
-			if ( this.getChildCount() > 1 ) {
-				return false;
+			if ( element.getChildCount() > 1 ) {
+				return null;
 			}
 			element = element.parent;
 		}
 
 		if ( element.getChildCount() > 1 ) {
-			return false;
+			return null;
 		}
 
 		return 0;

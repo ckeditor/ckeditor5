@@ -52,7 +52,12 @@ export default class ContainerElement extends Element {
 		super( name, attrs, children );
 	}
 
-	needsFiller() {
-		return this.getChildCount() === 0 ? 0 : false;
+	/**
+	 * Returns block filler offset or null if block filler is not needed.
+	 *
+	 * @returns {Number|false} Block filler offset or null if block filler is not needed.
+	 */
+	getBlockFillerOffset() {
+		return this.getChildCount() === 0 ? 0 : null;
 	}
 }

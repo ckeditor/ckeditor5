@@ -10,6 +10,7 @@
 import AttributeElement from '/ckeditor5/engine/treeview/attributeelement.js';
 import Element from '/ckeditor5/engine/treeview/element.js';
 import { DEFAULT_PRIORITY } from '/ckeditor5/engine/treeview/attributeelement.js';
+import { parse } from '/tests/engine/_utils/view.js';
 
 describe( 'AttributeElement', () => {
 	describe( 'constructor', () => {
@@ -54,6 +55,50 @@ describe( 'AttributeElement', () => {
 			const b2 = new AttributeElement( 'b' ); // default priority
 
 			expect( b1.isSimilar( b2 ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'getBlockFillerOffset', () => {
+		it( 'should return position 0 if it is the only element in the container', () => {
+			const { selection } = parse( '<container:p><attribute:b>[]</attribute:b></container:p>' );
+			const attribute = selection.getFirstPosition().parent;
+
+			expect( attribute.getBlockFillerOffset() ).to.equals( 0 );
+		} );
+
+		it( 'should return position 0 if it is the only nested element in the container', () => {
+			const { selection } = parse(
+				'<container:p><attribute:b><attribute:i>[]</attribute:i></attribute:b></container:p>' );
+			const attribute = selection.getFirstPosition().parent;
+
+			expect( attribute.getBlockFillerOffset() ).to.equals( 0 );
+		} );
+
+		it( 'should return null if element contains another element', () => {
+			const attribute = parse( '<attribute:b><attribute:i></attribute:i></attribute:b>' );
+
+			expect( attribute.getBlockFillerOffset() ).to.be.null;
+		} );
+
+		it( 'should return null if element contains text', () => {
+			const attribute = parse( '<attribute:b>text</attribute:b>' );
+
+			expect( attribute.getBlockFillerOffset() ).to.be.null;
+		} );
+
+		it( 'should return null if container element contains text', () => {
+			const { selection } = parse( '<container:p><attribute:b>[]</attribute:b>foo</container:p>' );
+			const attribute = selection.getFirstPosition().parent;
+
+			expect( attribute.getBlockFillerOffset() ).to.be.null;
+		} );
+
+		it( 'should return null if it is the parent contains text', () => {
+			const { selection } = parse(
+				'<container:p><attribute:b><attribute:i>[]</attribute:i>foo</attribute:b></container:p>' );
+			const attribute = selection.getFirstPosition().parent;
+
+			expect( attribute.getBlockFillerOffset() ).to.be.null;
 		} );
 	} );
 } );
