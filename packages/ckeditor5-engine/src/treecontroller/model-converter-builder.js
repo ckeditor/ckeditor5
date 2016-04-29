@@ -121,8 +121,19 @@ class ModelConverterBuilder {
 	}
 
 	/**
-	 * Changes default priority for built converter.
+	 * Changes default priority for built converter. The lower the number, the earlier converter will be fired.
+	 * Default priority is `10`.
 	 *
+	 * **Note:** Keep in mind that event priority, that is set by this modifier, is used for attribute priority
+	 * when {@link engine.treeView.Writer} is used. This changes how model attributes converter to view elements are
+	 * ordered, i.e.: `<strong><em>foo</em></strong>` vs `<em><strong>foo</strong></em>`. Using priority you can also
+	 * prevent node merging, i.e.: `<span class="bold"><span class="theme">foo</span><span>` vs `<span class="bold theme">foo</span>`.
+	 * If you want to prevent merging, just set different priority for both converters.
+	 *
+	 *		BuildModelConverterFor( dispatcher ).fromAttribute( 'bold' ).withPriority( 2 ).toElement( 'strong' );
+	 *		BuildModelConverterFor( dispatcher ).fromAttribute( 'italic' ).withPriority( 3 ).toElement( 'em' );
+	 *
+	 * @chainable
 	 * @param {Number} priority Converter priority.
 	 * @returns {engine.treeController.ModelConverterBuilder}
 	 */

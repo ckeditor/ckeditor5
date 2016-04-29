@@ -107,6 +107,7 @@ class ViewConverterBuilder {
 	 *
 	 *		BuildViewConverterFor( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
 	 *
+	 * @chainable
 	 * @param {String} elementName View element name.
 	 * @returns {engine.treeController.ViewConverterBuilder}
 	 */
@@ -119,6 +120,7 @@ class ViewConverterBuilder {
 	 *
 	 *		BuildViewConverterFor( dispatcher ).fromAttribute( 'style', { 'font-weight': 'bold' } ).toAttributes( { bold: true } );
 	 *
+	 * @chainable
 	 * @param {String|RegExp} key View attribute key.
 	 * @param {String|RegExp} [value] View attribute value.
 	 * @returns {engine.treeController.ViewConverterBuilder}
@@ -140,6 +142,7 @@ class ViewConverterBuilder {
 	 *
 	 *		BuildViewConverterFor( dispatcher ).from( { name: 'span', class: 'bold' } ).toAttributes( { bold: true } );
 	 *
+	 * @chainable
 	 * @param {Object|engine.treeView.Matcher} matcher View matcher or view matcher pattern.
 	 * @returns {engine.treeController.ViewConverterBuilder}
 	 */
@@ -177,9 +180,11 @@ class ViewConverterBuilder {
 	 *
 	 * **Note:** All and only values from passed object has to be consumable on converted view element. This means that
 	 * using `consuming` method, you can either make looser conversion conditions (like in first example) or tighter
-	 * conversion conditions (like in second example). Nevertheless, the view element has to match `from...` query clause.
+	 * conversion conditions (like in second example). So, the view element, to be converter, has to match query of
+	 * `from...` method and then have to have enough consumable values to consume.
 	 *
 	 * @see engine.treeController.ViewConsumable
+	 * @chainable
 	 * @param {Object} consume Values to consume.
 	 * @returns {engine.treeController.ViewConverterBuilder}
 	 */
@@ -192,7 +197,7 @@ class ViewConverterBuilder {
 
 	/**
 	 * Changes default priority for built converter. It modifies the last `from...` query. Can be used after each
-	 * `from...` query in given chain. Useful for overwriting converters.
+	 * `from...` query in given chain. Useful for overwriting converters. The lower the number, the earlier converter will be fired.
 	 *
 	 *		BuildViewConverterFor( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
 	 *		// Register converter with proper priority, otherwise "p" element would get consumed by first
@@ -207,6 +212,7 @@ class ViewConverterBuilder {
 	 * above `500`. It is important that model elements are created before attributes, otherwise attributes would
 	 * not be applied or other errors may occur.
 	 *
+	 * @chainable
 	 * @param {Number} priority Converter priority.
 	 * @returns {engine.treeController.ViewConverterBuilder}
 	 */
