@@ -60,6 +60,26 @@ describe( 'DOMEmitterMixin', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 
+		it( 'should listen to native DOM events - window as source', () => {
+			const spy = testUtils.sinon.spy();
+
+			domEmitter.listenTo( window, 'test', spy );
+
+			window.dispatchEvent( new Event( 'test' ) );
+
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should listen to native DOM events - document as source', () => {
+			const spy = testUtils.sinon.spy();
+
+			domEmitter.listenTo( document, 'test', spy );
+
+			document.dispatchEvent( new Event( 'test' ) );
+
+			sinon.assert.calledOnce( spy );
+		} );
+
 		// #187
 		it( 'should work for DOM Nodes belonging to another window', () => {
 			const spy = testUtils.sinon.spy();

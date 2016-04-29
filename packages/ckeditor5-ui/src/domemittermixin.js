@@ -268,7 +268,7 @@ function getNodeUID( node ) {
 // @param {Node} node
 // @return {Boolean} True when native DOM Node.
 function isDomNode( node ) {
-	return node && node.nodeType && ( typeof node.addEventListener == 'function' );
+	return node && ( typeof node.addEventListener == 'function' );
 }
 
 /**
