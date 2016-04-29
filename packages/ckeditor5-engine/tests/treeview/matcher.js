@@ -374,4 +374,36 @@ describe( 'Matcher', () => {
 			expect( matcher.matchAll( el3 ) ).to.be.null;
 		} );
 	} );
+
+	describe( 'getElementName', () => {
+		it( 'should return null if there are no patterns in the matcher instance', () => {
+			const matcher = new Matcher();
+
+			expect( matcher.getElementName() ).to.be.null;
+		} );
+
+		it( 'should return null if pattern has no name property', () => {
+			const matcher = new Matcher( { class: 'foo' } );
+
+			expect( matcher.getElementName() ).to.be.null;
+		} );
+
+		it( 'should return null if pattern has name property specified as RegExp', () => {
+			const matcher = new Matcher( { name: /foo.*/ } );
+
+			expect( matcher.getElementName() ).to.be.null;
+		} );
+
+		it( 'should return element name if matcher has one patter with name property specified as string', () => {
+			const matcher = new Matcher( { name: 'div' } );
+
+			expect( matcher.getElementName() ).to.equal( 'div' );
+		} );
+
+		it( 'should return null if matcher has more than one pattern', () => {
+			const matcher = new Matcher( { name: 'div' }, { class: 'foo' } );
+
+			expect( matcher.getElementName() ).to.be.null;
+		} );
+	} );
 } );

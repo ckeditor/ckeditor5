@@ -195,6 +195,19 @@ export default class Matcher {
 
 		return results.length > 0 ? results : null;
 	}
+
+	/**
+	 * Returns the name of the element to match if there is exactly one pattern added to the matcher instance
+	 * and it matches element name defined by `string` (not `RegExp`). Otherwise, returns `null`.
+	 *
+	 * @returns {String|null} Element name trying to match.
+	 */
+	getElementName() {
+		return this._patterns.length == 1 && this._patterns[ 0 ].name && !( this._patterns[ 0 ].name instanceof RegExp ) ?
+			this._patterns[ 0 ].name :
+			null;
+	}
+
 }
 
 // Returns match information if {@link engine.treeView.Element element} is matching provided pattern.
