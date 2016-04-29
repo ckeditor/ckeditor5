@@ -473,7 +473,11 @@ export default class View {
 						modelValue = schemaItem.callback( modelValue, node );
 					}
 
-					return modelValue;
+					if ( schemaItem.type === bindIfSymbol ) {
+						return !!modelValue ? schemaItem.valueIfTrue || true : '';
+					} else {
+						return modelValue;
+					}
 				} else {
 					return schemaItem;
 				}
@@ -498,20 +502,22 @@ export default class View {
 			// A function executed each time bound model attribute changes.
 			const onModelChange = () => {
 				let value = getBoundValue( node );
+				let shouldSet;
 
 				if ( isPlainBindIf ) {
 					value = value[ 0 ];
+					shouldSet = value !== '';
+
+					if ( shouldSet ) {
+						value = value === true ? '' : value;
+					}
 				} else {
 					value = value.reduce( binderValueReducer, '' );
+					shouldSet = value;
 				}
 
-				const isSet = isPlainBindIf ? !!value : value;
-
-				const valueToSet = isPlainBindIf ?
-					( valueSchema[ 0 ].valueIfTrue || '' ) : value;
-
-				if ( isSet ) {
-					domUpdater.set( valueToSet );
+				if ( shouldSet ) {
+					domUpdater.set( value );
 				} else {
 					domUpdater.remove();
 				}
@@ -709,7 +715,10 @@ function hasModelBinding( valueSchema ) {
  * @returns {String}
  */
 function binderValueReducer( prev, cur ) {
-	return prev === '' ? `${cur}` : `${prev} ${cur}`;
+	return prev === '' ?
+			`${cur}`
+		:
+			cur === '' ? `${prev}` : `${prev} ${cur}`;
 }
 
 /**
