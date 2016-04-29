@@ -12,16 +12,21 @@ import ViewContainerElement from '/ckeditor5/engine/treeview/containerelement.js
 import ViewDocumentFragment from '/ckeditor5/engine/treeview/documentfragment.js';
 import ViewText from '/ckeditor5/engine/treeview/text.js';
 
+import ModelSchema from '/ckeditor5/engine/treemodel/schema.js';
 import ModelDocumentFragment from '/ckeditor5/engine/treemodel/documentfragment.js';
 import ModelElement from '/ckeditor5/engine/treemodel/element.js';
 import ModelText from '/ckeditor5/engine/treemodel/text.js';
 
 import { convertToModelFragment, convertText } from '/ckeditor5/engine/treecontroller/view-to-model-converters.js';
 
-let dispatcher;
+let dispatcher, schema, objWithContext;
 
 beforeEach( () => {
-	dispatcher = new ViewConversionDispatcher();
+	schema = new ModelSchema();
+	schema.registerItem( 'paragraph', '$block' );
+	schema.allow( { name: '$text', inside: '$root' } );
+	objWithContext = { context: [ '$root' ] };
+	dispatcher = new ViewConversionDispatcher( { schema } );
 } );
 
 describe( 'convertText', () => {
@@ -30,7 +35,7 @@ describe( 'convertText', () => {
 
 		dispatcher.on( 'text', convertText() );
 
-		const result = dispatcher.convert( viewText );
+		const result = dispatcher.convert( viewText, objWithContext );
 
 		expect( result ).to.be.instanceof( ModelText );
 		expect( result.text ).to.equal( 'foobar' );
@@ -48,10 +53,25 @@ describe( 'convertText', () => {
 			}
 		} );
 
-		const result = dispatcher.convert( viewText );
+		const result = dispatcher.convert( viewText, objWithContext );
 
 		expect( result ).to.be.instanceof( ModelText );
 		expect( result.text ).to.equal( 'foo****ba****r' );
+	} );
+
+	it( 'should not convert text if it is wrong with schema', () => {
+		schema.disallow( { name: '$text', inside: '$root' } );
+
+		const viewText = new ViewText( 'foobar' );
+		dispatcher.on( 'text', convertText() );
+
+		let result = dispatcher.convert( viewText, objWithContext );
+
+		expect( result ).to.be.null;
+
+		result = dispatcher.convert( viewText, { context: [ '$block' ] } );
+		expect( result ).to.be.instanceof( ModelText );
+		expect( result.text ).to.equal( 'foobar' );
 	} );
 } );
 
@@ -68,7 +88,7 @@ describe( 'convertToModelFragment', () => {
 		dispatcher.on( 'element', convertToModelFragment() );
 		dispatcher.on( 'documentFragment', convertToModelFragment() );
 
-		const result = dispatcher.convert( viewFragment );
+		const result = dispatcher.convert( viewFragment, objWithContext );
 
 		expect( result ).to.be.instanceof( ModelDocumentFragment );
 		expect( result.getChildCount() ).to.equal( 6 );
@@ -91,11 +111,14 @@ describe( 'convertToModelFragment', () => {
 		dispatcher.on( 'element:p', ( evt, data, consumable, conversionApi ) => {
 			if ( consumable.consume( data.input, { name: true } ) ) {
 				data.output = new ModelElement( 'paragraph' );
-				data.output.appendChildren( conversionApi.convertChildren( data.input, consumable ) );
+
+				data.context.push( data.output );
+				data.output.appendChildren( conversionApi.convertChildren( data.input, consumable, data ) );
+				data.context.pop();
 			}
 		} );
 
-		const result = dispatcher.convert( viewP );
+		const result = dispatcher.convert( viewP, objWithContext );
 
 		expect( result ).to.be.instanceof( ModelElement );
 		expect( result.name ).to.equal( 'paragraph' );

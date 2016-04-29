@@ -54,7 +54,8 @@ beforeEach( () => {
 	writer = new ViewWriter();
 
 	modelDispatcher = new ModelConversionDispatcher( { mapper, writer } );
-	viewDispatcher = new ViewConversionDispatcher();
+	// Schema is mocked up because we don't care about it in those tests.
+	viewDispatcher = new ViewConversionDispatcher( { schema: { check: () => true } } );
 
 	modelDispatcher.on( 'insert:$text', insertText() );
 	modelDispatcher.on( 'move', move() );

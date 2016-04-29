@@ -39,10 +39,6 @@ describe( 'ModelConversionDispatcher', () => {
 
 		let image, imagePos;
 
-		//const flatRangeMatcher = ( parent, start, end ) => sinon.match(
-		//	( matched ) => ModelRange.createFromParentsAndOffsets( parent, start, parent, end ).isEqual( matched )
-		//);
-
 		beforeEach( () => {
 			image = new ModelElement( 'image' );
 			root.appendChildren( [ image, 'foobar' ] );
@@ -59,8 +55,6 @@ describe( 'ModelConversionDispatcher', () => {
 			const cbInsertImage = sinon.spy();
 			const cbAddAttribute = sinon.spy();
 
-			//sinon.spy( dispatcher, 'convertInsert' );
-
 			dispatcher.on( 'insert:$text', cbInsertText );
 			dispatcher.on( 'insert:image', cbInsertImage );
 			dispatcher.on( 'addAttribute:key:$text', cbAddAttribute );
@@ -71,8 +65,6 @@ describe( 'ModelConversionDispatcher', () => {
 			expect( cbInsertText.called ).to.be.true;
 			expect( cbAddAttribute.called ).to.be.true;
 			expect( cbInsertImage.called ).to.be.false;
-
-			//expect( dispatcher.convertInsert.calledWith( flatRangeMatcher( root, 0, 3 ) ) ).to.be.true;
 		} );
 
 		it( 'should fire insert and addAttribute callbacks for reinsertion changes', () => {
@@ -89,8 +81,6 @@ describe( 'ModelConversionDispatcher', () => {
 			const cbInsertImage = sinon.spy();
 			const cbAddAttribute = sinon.spy();
 
-			//sinon.spy( dispatcher, 'convertInsert' );
-
 			dispatcher.on( 'insert:$text', cbInsertText );
 			dispatcher.on( 'insert:image', cbInsertImage );
 			dispatcher.on( 'addAttribute:key:image', cbAddAttribute );
@@ -100,8 +90,6 @@ describe( 'ModelConversionDispatcher', () => {
 			expect( cbInsertImage.called ).to.be.true;
 			expect( cbAddAttribute.called ).to.be.true;
 			expect( cbInsertText.called ).to.be.false;
-
-			//expect( dispatcher.convertInsert.calledWith( flatRangeMatcher( root, 0, 1 ) ) ).to.be.true;
 		} );
 
 		it( 'should fire move callback for move changes', () => {
@@ -109,18 +97,9 @@ describe( 'ModelConversionDispatcher', () => {
 
 			dispatcher.on( 'move', cbMove );
 
-			//sinon.spy( dispatcher, 'convertMove' );
-
 			doc.batch().move( image, imagePos.getShiftedBy( 3 ) );
 
 			expect( cbMove.called );
-
-			//expect(
-			//	dispatcher.convertMove.calledWith(
-			//		sinon.match( ( position ) => imagePos.isEqual( position ) ),
-			//		flatRangeMatcher( root, 3, 4 )
-			//	)
-			//).to.be.true;
 		} );
 
 		it( 'should fire remove callback for remove changes', () => {
@@ -128,18 +107,9 @@ describe( 'ModelConversionDispatcher', () => {
 
 			dispatcher.on( 'remove', cbRemove );
 
-			//sinon.spy( dispatcher, 'convertRemove' );
-
 			doc.batch().remove( image );
 
 			expect( cbRemove.called );
-
-			//expect(
-			//	dispatcher.convertRemove.calledWith(
-			//		sinon.match( ( position ) => imagePos.isEqual( position ) ),
-			//		flatRangeMatcher( doc.graveyard, 0, 1 )
-			//	)
-			//).to.be.true;
 		} );
 
 		it( 'should fire addAttribute callbacks for add attribute change', () => {
@@ -148,8 +118,6 @@ describe( 'ModelConversionDispatcher', () => {
 
 			dispatcher.on( 'addAttribute:key:$text', cbAddText );
 			dispatcher.on( 'addAttribute:key:image', cbAddImage );
-
-			//sinon.spy( dispatcher, 'convertAttribute' );
 
 			doc.batch().setAttr( 'key', 'value', image );
 
@@ -162,16 +130,6 @@ describe( 'ModelConversionDispatcher', () => {
 			expect( cbAddText.calledOnce ).to.be.true;
 			// Callback for adding attribute on image not called this time.
 			expect( cbAddImage.calledOnce ).to.be.true;
-
-			//expect(
-			//	dispatcher.convertAttribute.calledWith(
-			//		'addAttribute',
-			//		flatRangeMatcher( root, 3, 4 ),
-			//		'key',
-			//		null,
-			//		'value'
-			//	)
-			//).to.be.true;
 		} );
 
 		it( 'should fire changeAttribute callbacks for change attribute change', () => {
@@ -180,8 +138,6 @@ describe( 'ModelConversionDispatcher', () => {
 
 			dispatcher.on( 'changeAttribute:key:$text', cbChangeText );
 			dispatcher.on( 'changeAttribute:key:image', cbChangeImage );
-
-			//sinon.spy( dispatcher, 'convertAttribute' );
 
 			doc.batch().setAttr( 'key', 'value', image ).setAttr( 'key', 'newValue', image );
 
@@ -195,16 +151,6 @@ describe( 'ModelConversionDispatcher', () => {
 			expect( cbChangeText.calledOnce ).to.be.true;
 			// Callback for adding attribute on image not called this time.
 			expect( cbChangeImage.calledOnce ).to.be.true;
-
-			//expect(
-			//	dispatcher.convertAttribute.calledWith(
-			//		'changeAttribute',
-			//		flatRangeMatcher( root, 3, 4 ),
-			//		'key',
-			//		'value',
-			//		'newValue'
-			//	)
-			//).to.be.true;
 		} );
 
 		it( 'should fire removeAttribute callbacks for remove attribute change', () => {
@@ -213,8 +159,6 @@ describe( 'ModelConversionDispatcher', () => {
 
 			dispatcher.on( 'removeAttribute:key:$text', cbRemoveText );
 			dispatcher.on( 'removeAttribute:key:image', cbRemoveImage );
-
-			//sinon.spy( dispatcher, 'convertAttribute' );
 
 			doc.batch().setAttr( 'key', 'value', image ).removeAttr( 'key', image );
 
@@ -228,16 +172,6 @@ describe( 'ModelConversionDispatcher', () => {
 			expect( cbRemoveText.calledOnce ).to.be.true;
 			// Callback for adding attribute on image not called this time.
 			expect( cbRemoveImage.calledOnce ).to.be.true;
-
-			//expect(
-			//	dispatcher.convertAttribute.calledWith(
-			//		'removeAttribute',
-			//		flatRangeMatcher( root, 3, 4 ),
-			//		'key',
-			//		'value',
-			//		null
-			//	)
-			//).to.be.true;
 		} );
 
 		it( 'should not fire any event if not recognized event type was passed', () => {
