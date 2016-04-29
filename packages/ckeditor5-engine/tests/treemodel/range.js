@@ -439,6 +439,14 @@ describe( 'Range', () => {
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 4, 4 ] );
 		} );
+
+		it( 'should move after inserted nodes if the range is collapsed', () => {
+			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 2 ] ) );
+			const transformed = range.getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 3 );
+
+			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 5 ] );
+			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 3, 5 ] );
+		} );
 	} );
 
 	describe( 'getTransformedByMove', () => {
@@ -514,6 +522,30 @@ describe( 'Range', () => {
 
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 5, 0 ] );
+		} );
+
+		it( 'should shrink range if source contained range start position', () => {
+			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 5, 4 ] ) );
+			const transformed = range.getTransformedByMove( new Position( root, [ 3, 1 ] ), new Position( root, [ 8 ] ), 2 );
+
+			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 1 ] );
+			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 5, 4 ] );
+		} );
+
+		it( 'should shrink range if source contained range end position', () => {
+			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 5, 4 ] ) );
+			const transformed = range.getTransformedByMove( new Position( root, [ 5, 3 ] ), new Position( root, [ 8 ] ), 2 );
+
+			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
+			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 5, 3 ] );
+		} );
+
+		it( 'should move range if it was contained in moved range', () => {
+			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 7 ] ) );
+			const transformed = range.getTransformedByMove( new Position( root, [ 3 ] ), new Position( root, [ 8 ] ), 2 );
+
+			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 6, 2 ] );
+			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 6, 7 ] );
 		} );
 	} );
 

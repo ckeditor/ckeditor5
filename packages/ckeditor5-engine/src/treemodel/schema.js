@@ -100,11 +100,7 @@ export class SchemaItem {
 	 * @param {Array.<String>|String} [attributes] If set, this path will be used only for entities that have attribute(s) with this key.
 	 */
 	_addPath( member, path, attributes ) {
-		if ( typeof path === 'string' ) {
-			path = path.split( ' ' );
-		} else {
-			path = path.slice();
-		}
+		path = path.slice();
 
 		if ( !isArray( attributes ) ) {
 			attributes = [ attributes ];

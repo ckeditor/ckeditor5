@@ -317,3 +317,37 @@ describe( 'check', () => {
 		} );
 	} );
 } );
+
+describe( 'normalizeQueryPath', () => {
+	it( 'should normalize string with spaces to an array of strings', () => {
+		expect( Schema._normalizeQueryPath( '$root div strong' ) ).to.deep.equal( [ '$root', 'div', 'strong' ] );
+	} );
+
+	it( 'should normalize model position to an array of strings', () => {
+		let doc = new Document();
+		let root = doc.createRoot( 'root', '$root' );
+
+		root.insertChildren( 0, [
+			new Element( 'div', null, [
+				new Element( 'header' )
+			] )
+		] );
+
+		let position = new Position( root, [ 0, 0, 0 ] );
+
+		expect( Schema._normalizeQueryPath( position ) ).to.deep.equal( [ '$root', 'div', 'header' ] );
+	} );
+
+	it( 'should normalize array with strings and model elements to an array of strings and drop unrecognized parts', () => {
+		let input = [
+			'$root',
+			[ 'div' ],
+			new Element( 'div' ),
+			null,
+			new Element( 'p' ),
+			'strong'
+		];
+
+		expect( Schema._normalizeQueryPath( input ) ).to.deep.equal( [ '$root', 'div', 'p', 'strong' ] );
+	} );
+} );

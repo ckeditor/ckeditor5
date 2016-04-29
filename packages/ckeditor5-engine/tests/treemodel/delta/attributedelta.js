@@ -365,6 +365,44 @@ describe( 'Batch', () => {
 			} );
 		} );
 	} );
+
+	describe( 'change attribute on root element', () => {
+		describe( 'setAttr', () => {
+			it( 'should create the attribute on root', () => {
+				batch.setAttr( 'b', 2, root );
+				expect( getOperationsCount() ).to.equal( 1 );
+				expect( root.getAttribute( 'b' ) ).to.equal( 2 );
+			} );
+
+			it( 'should change the attribute of root', () => {
+				batch.setAttr( 'a', 2, root );
+				expect( getOperationsCount() ).to.equal( 1 );
+				expect( root.getAttribute( 'a' ) ).to.equal( 2 );
+			} );
+
+			it( 'should do nothing if the attribute value is the same', () => {
+				batch.setAttr( 'a', 1, root );
+				expect( getOperationsCount() ).to.equal( 1 );
+				batch.setAttr( 'a', 1, root );
+				expect( getOperationsCount() ).to.equal( 1 );
+				expect( root.getAttribute( 'a' ) ).to.equal( 1 );
+			} );
+		} );
+
+		describe( 'removeAttr', () => {
+			it( 'should remove the attribute from root', () => {
+				batch.setAttr( 'a', 1, root );
+				batch.removeAttr( 'a', root );
+				expect( getOperationsCount() ).to.equal( 2 );
+				expect( root.getAttribute( 'a' ) ).to.be.undefined;
+			} );
+
+			it( 'should do nothing if the attribute is not set', () => {
+				batch.removeAttr( 'b', root );
+				expect( getOperationsCount() ).to.equal( 0 );
+			} );
+		} );
+	} );
 } );
 
 describe( 'AttributeDelta', () => {
