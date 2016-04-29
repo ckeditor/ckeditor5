@@ -352,7 +352,7 @@ class RangeParser {
 				throw new Error( 'Parse error - provided ranges order is invalid.' );
 			}
 
-			sortedRanges[ newPosition - 1] = ranges[ index ];
+			sortedRanges[ newPosition - 1 ] = ranges[ index ];
 			index++;
 		}
 
@@ -408,7 +408,7 @@ class ViewParser {
 	/**
 	 * Parses HTML-like string to view tree elements.
 	 *
-	 * @param {string} data
+	 * @param {String} data
 	 * @returns {engine.treeView.Node|engine.treeView.DocumentFragment}
 	 */
 	parse( data ) {
@@ -462,10 +462,10 @@ class ViewParser {
 	/**
 	 * Converts DOM Element to {engine.treeView.Element view Element}.
 	 *
+	 * @private
 	 * @param {Element} domElement DOM element to convert.
 	 * @returns {engine.treeView.Element|engine.treeView.AttributeElement|engine.treeView.ContainerElement} Tree view
 	 * element converted from DOM element.
-	 * @private
 	 */
 	_convertElement( domElement ) {
 		const info = this._convertElementName( domElement );
@@ -602,6 +602,7 @@ class ViewParser {
 class ViewStringify {
 	/**
 	 * Creates ViewStringify instance.
+	 *
 	 * @param root
 	 * @param {engine.treeView.Selection} [selection=null] Selection which ranges should be also converted to string.
 	 * @param {Object} [options] Options object.
@@ -625,7 +626,7 @@ class ViewStringify {
 	/**
 	 * Converts view to string.
 	 *
-	 * @returns {string} String representation of the view elements.
+	 * @returns {String} String representation of the view elements.
 	 */
 	stringify() {
 		let result = '';
@@ -754,7 +755,7 @@ class ViewStringify {
 	 *
 	 * @private
 	 * @param {engine.treeView.Element} element
-	 * @returns {string}
+	 * @returns {String}
 	 */
 	_stringifyElementOpen( element ) {
 		const priority = this._stringifyElementPriority( element );
@@ -773,7 +774,7 @@ class ViewStringify {
 	 *
 	 * @private
 	 * @param {engine.treeView.Element} element
-	 * @returns {string}
+	 * @returns {String}
 	 */
 	_stringifyElementClose( element ) {
 		const priority = this._stringifyElementPriority( element );
@@ -791,7 +792,7 @@ class ViewStringify {
 	 *
 	 * @private
 	 * @param {engine.treeView.Element} element
-	 * @returns {string}
+	 * @returns {String}
 	 */
 	_stringifyElementType( element ) {
 		if ( this.showType ) {
@@ -815,7 +816,7 @@ class ViewStringify {
 	 *
 	 * @private
 	 * @param {engine.treeView.Element} element
-	 * @returns {string}
+	 * @returns {String}
 	 */
 	_stringifyElementPriority( element ) {
 		if ( this.showPriority && element instanceof AttributeElement ) {
@@ -831,7 +832,7 @@ class ViewStringify {
 	 *
 	 * @private
 	 * @param {engine.treeView.Element} element
-	 * @returns {string}
+	 * @returns {String}
 	 */
 	_stringifyElementAttributes( element ) {
 		const attributes = [];
