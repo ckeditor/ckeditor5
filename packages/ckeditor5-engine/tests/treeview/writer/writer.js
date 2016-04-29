@@ -12,10 +12,9 @@ import ContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
 import AttributeElement from '/ckeditor5/engine/treeview/attributeelement.js';
 import Text from '/ckeditor5/engine/treeview/text.js';
 import Position from '/ckeditor5/engine/treeview/position.js';
-import utils from '/tests/engine/treeview/writer/_utils/utils.js';
+import { parse } from '/tests/engine/_utils/view.js';
 
 describe( 'Writer', () => {
-	const create = utils.create;
 	let writer;
 
 	beforeEach( () => {
@@ -47,33 +46,20 @@ describe( 'Writer', () => {
 
 	describe( 'move', () => {
 		it( 'should move nodes using remove and insert methods', () => {
-			// <p>[{foobar}]</p>
-			// Move to <div>|</div>
-			// <div>[{foobar}]</div>
-			const source = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{ instanceOf: Text, data: 'foobar' }
-				]
-			} );
-			const target = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'div',
-				position: 0
-			} );
+			const { selection: sourceSelection } = parse( '<container:p>[foobar]</container:p>' );
+			const { selection: targetSelection } = parse( '<container:div>[]</container:div>' );
 
 			const removeSpy = sinon.spy( writer, 'remove' );
 			const insertSpy = sinon.spy( writer, 'insert' );
+			const sourceRange = sourceSelection.getFirstRange();
+			const targetPosition = targetSelection.getFirstPosition();
 
-			const newRange = writer.move( source.range, target.position );
+			const newRange = writer.move( sourceRange, targetPosition );
 
 			sinon.assert.calledOnce( removeSpy );
-			sinon.assert.calledWithExactly( removeSpy, source.range );
+			sinon.assert.calledWithExactly( removeSpy, sourceRange );
 			sinon.assert.calledOnce( insertSpy );
-			sinon.assert.calledWithExactly( insertSpy, target.position, removeSpy.firstCall.returnValue );
+			sinon.assert.calledWithExactly( insertSpy, targetPosition, removeSpy.firstCall.returnValue );
 			expect( newRange ).to.equal( insertSpy.firstCall.returnValue );
 		} );
 	} );
