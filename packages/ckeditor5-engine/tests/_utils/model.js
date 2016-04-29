@@ -16,9 +16,12 @@ import Selection from '/ckeditor5/engine/treemodel/selection.js';
 
 export function stringify( root, selectionOrPositionOrRange ) {
 	let selection;
+	let document;
 
-	// If root is Element or Text - wrap it with DocumentFragment.
-	if ( !( root instanceof RootElement ) && ( root instanceof Element || root instanceof Text ) ) {
+	if ( root instanceof RootElement ) {
+		document = root.document;
+	} else if ( root instanceof Element || root instanceof Text ) {
+		// If root is Element or Text - wrap it with DocumentFragment.
 		root = new DocumentFragment( root );
 	}
 
@@ -29,10 +32,10 @@ export function stringify( root, selectionOrPositionOrRange ) {
 	if ( selectionOrPositionOrRange instanceof Selection ) {
 		selection = selectionOrPositionOrRange;
 	} else if ( selectionOrPositionOrRange instanceof Range ) {
-		selection = new Selection( new Document() );
+		selection = new Selection( document || new Document() );
 		selection.addRange( selectionOrPositionOrRange );
 	} else if ( selectionOrPositionOrRange instanceof Position ) {
-		selection = new Selection( new Document() );
+		selection = new Selection( document || new Document() );
 		selection.addRange( new Range( selectionOrPositionOrRange, selectionOrPositionOrRange ) );
 	}
 
