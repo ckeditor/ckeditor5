@@ -383,14 +383,17 @@ export default class Range {
 				new Range( this.start, insertPosition ),
 				new Range(
 					insertPosition.getTransformedByInsertion( insertPosition, howMany, true ),
-					this.end.getTransformedByInsertion( insertPosition, howMany, false )
+					this.end.getTransformedByInsertion( insertPosition, howMany, this.isCollapsed )
 				)
 			];
 		} else {
 			const range = Range.createFromRange( this );
 
-			range.start = range.start.getTransformedByInsertion( insertPosition, howMany, !isSticky );
-			range.end = range.end.getTransformedByInsertion( insertPosition, howMany, isSticky );
+			let insertBeforeStart = range.isCollapsed ? true : !isSticky;
+			let insertBeforeEnd = range.isCollapsed ? true : isSticky;
+
+			range.start = range.start.getTransformedByInsertion( insertPosition, howMany, insertBeforeStart );
+			range.end = range.end.getTransformedByInsertion( insertPosition, howMany, insertBeforeEnd );
 
 			return [ range ];
 		}
