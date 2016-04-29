@@ -365,6 +365,11 @@ export default class Schema {
 		// If attributes property is a string or undefined, wrap it in an array for easier processing.
 		if ( !isArray( query.attributes ) ) {
 			query.attributes = [ query.attributes ];
+		} else if ( query.attributes.length === 0 ) {
+			// To simplify algorithms, when a SchemaItem path is added "without" attribute, it is added with
+			// attribute equal to undefined. This means that algorithms can work the same way for specified attributes
+			// and no-atrtibutes, but we have to fill empty array with "fake" undefined value for algorithms reasons.
+			query.attributes.push( undefined );
 		}
 
 		// Normalize the path to an array of strings.

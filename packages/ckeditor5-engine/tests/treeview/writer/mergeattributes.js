@@ -9,14 +9,25 @@
 
 import Writer from '/ckeditor5/engine/treeview/writer.js';
 import ContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
-import AttributeElement from '/ckeditor5/engine/treeview/attributeelement.js';
 import Text from '/ckeditor5/engine/treeview/text.js';
-import utils from '/tests/engine/treeview/writer/_utils/utils.js';
+import Position from '/ckeditor5/engine/treeview/position.js';
+import { stringify, parse } from '/tests/engine/_utils/view.js';
 
 describe( 'Writer', () => {
-	const create = utils.create;
-	const test = utils.test;
 	let writer;
+
+	/**
+	 * Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create and
+	 * test merge position.
+	 *
+	 * @param {String} input
+	 * @param {String} expected
+	 */
+	function test( input, expected ) {
+		const { view, selection } = parse( input );
+		const newPosition = writer.mergeAttributes( selection.getFirstPosition() );
+		expect( stringify( view, newPosition, { showType: true, showPriority: true } ) ).to.equal( expected );
+	}
 
 	beforeEach( () => {
 		writer = new Writer();
@@ -24,255 +35,74 @@ describe( 'Writer', () => {
 
 	describe( 'mergeAttributes', () => {
 		it( 'should not merge if inside text node', () => {
-			// <p>{fo|obar}</p>
-			const description = {
-				instanceOf: ContainerElement,
-				name: 'p',
-				children: [
-					{ instanceOf: Text, data: 'foobar', position: 2 }
-				]
-			};
-			const created = create( writer, description );
-			const newPosition = writer.mergeAttributes( created.position );
-			test( writer, newPosition, created.node, description );
+			test( '<container:p>fo{}bar</container:p>', '<container:p>fo{}bar</container:p>' );
 		} );
 
 		it( 'should not merge if between containers', () => {
-			// <div><p>{foo}</p>|<p>{bar}</p></div>
-			const description = {
-				instanceOf: ContainerElement,
-				name: 'div',
-				position: 1,
-				children: [
-					{
-						instanceOf: ContainerElement,
-						name: 'p',
-						children: [
-							{ instanceOf: Text, data: 'foo' }
-						]
-					},
-					{
-						instanceOf: ContainerElement,
-						name: 'p',
-						children: [
-							{ instanceOf: Text, data: 'bar' }
-						]
-					}
-				]
-			};
-			const created = create( writer, description );
-			const newPosition = writer.mergeAttributes( created.position );
-			test( writer, newPosition, created.node, description );
+			test(
+				'<container:div><container:p>foo</container:p>[]<container:p>bar</container:p></container:div>',
+				'<container:div><container:p>foo</container:p>[]<container:p>bar</container:p></container:div>'
+			);
 		} );
 
 		it( 'should return same position when inside empty container', () => {
-			// <p>|</p>
-			const description = { instanceOf: ContainerElement, name: 'p', position: 0 };
-			const created = create( writer, description );
-			const newPosition = writer.mergeAttributes( created.position );
-			test( writer, newPosition, created.node, description );
+			test(
+				'<container:p>[]</container:p>',
+				'<container:p>[]</container:p>'
+			);
 		} );
 
 		it( 'should not merge when position is placed at the beginning of the container', () => {
-			// <p>|<b></b></p>
-			const description = {
-				instanceOf: ContainerElement,
-				name: 'p',
-				position: 0,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1
-					}
-				]
-			};
-			const created = create( writer, description );
-			const newPosition = writer.mergeAttributes( created.position );
-			test( writer, newPosition, created.node, description );
+			test(
+				'<container:p>[]<attribute:b:1></attribute:b:1></container:p>',
+				'<container:p>[]<attribute:b:1></attribute:b:1></container:p>'
+			);
 		} );
 
 		it( 'should not merge when position is placed at the end of the container', () => {
-			// <p><b></b>|</p>
-			const description = {
-				instanceOf: ContainerElement,
-				name: 'p',
-				position: 1,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1
-					}
-				]
-			};
-			const created = create( writer, description );
-			const newPosition = writer.mergeAttributes( created.position );
-			test( writer, newPosition, created.node, description );
+			test(
+				'<container:p><attribute:b:1></attribute:b:1>[]</container:p>',
+				'<container:p><attribute:b:1></attribute:b:1>[]</container:p>'
+			);
 		} );
 
 		it( 'should merge when placed between two text nodes', () => {
-			// <p>{foo}|{bar}</p> -> <p>{foo|bar}</p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				position: 1,
-				children: [
-					{ instanceOf: Text, data: 'foo' },
-					{ instanceOf: Text, data: 'bar' }
-				]
-			} );
+			// <p>foobar</p> -> <p>foo|bar</p>
+			const t1 = new Text( 'foo' );
+			const t2 = new Text( 'bar' );
+			const p = new ContainerElement( 'p', null, [ t1, t2 ] );
+			const position = new Position( p, 1 );
 
-			const newPosition = writer.mergeAttributes( created.position );
-
-			test( writer, newPosition, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				children: [
-					{ instanceOf: Text, data: 'foobar', position: 3 }
-				]
-			} );
+			const newPosition = writer.mergeAttributes( position );
+			expect( stringify( p, newPosition ) ).to.equal( '<p>foo{}bar</p>' );
 		} );
 
 		it( 'should merge when placed between similar attribute nodes', () => {
-			// <p><b foo="bar"></b>|<b foo="bar"></b></p> -> <p><b foo="bar">|</b></p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				position: 1,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						attributes: { foo: 'bar' }
-					},
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						attributes: { foo: 'bar' }
-					}
-				]
-			} );
-
-			const newPosition = writer.mergeAttributes( created.position );
-
-			test( writer, newPosition, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						position: 0,
-						attributes: { foo: 'bar' }
-					}
-				]
-			} );
+			test(
+				'<container:p><attribute:b:1 foo="bar"></attribute:b:1>[]<attribute:b:1 foo="bar"></attribute:b:1></container:p>',
+				'<container:p><attribute:b:1 foo="bar">[]</attribute:b:1></container:p>'
+			);
 		} );
 
 		it( 'should not merge when placed between non-similar attribute nodes', () => {
-			// <p><b foo="bar"></b>|<b foo="baz"></b></p> ->
-			// <p><b foo="bar"></b>|<b foo="baz"></b></p>
-			const description = {
-				instanceOf: ContainerElement,
-				name: 'p',
-				position: 1,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						attributes: { foo: 'bar' }
-					},
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						attributes: { foo: 'baz' }
-					}
-				]
-			};
-			const created = create( writer, description );
-			const newPosition = writer.mergeAttributes( created.position );
-			test( writer, newPosition, created.node, description );
+			test(
+				'<container:p><attribute:b:1 foo="bar"></attribute:b:1>[]<attribute:b:1 foo="baz"></attribute:b:1></container:p>',
+				'<container:p><attribute:b:1 foo="bar"></attribute:b:1>[]<attribute:b:1 foo="baz"></attribute:b:1></container:p>'
+			);
 		} );
 
 		it( 'should not merge when placed between similar attribute nodes with different priority', () => {
-			// <p><b foo="bar"></b>|<b foo="bar"></b></p> -> <p><b foo="bar"></b>|<b foo="bar"></b></p>
-			const description =  {
-				instanceOf: ContainerElement,
-				name: 'p',
-				position: 1,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						attributes: { foo: 'bar' }
-					},
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 2,
-						attributes: { foo: 'bar' }
-					}
-				]
-			};
-			const created = create( writer, description );
-			const newPosition = writer.mergeAttributes( created.position );
-			test( writer, newPosition, created.node, description );
+			test(
+				'<container:p><attribute:b:1 foo="bar"></attribute:b:1>[]<attribute:b:2 foo="bar"></attribute:b:2></container:p>',
+				'<container:p><attribute:b:1 foo="bar"></attribute:b:1>[]<attribute:b:2 foo="bar"></attribute:b:2></container:p>'
+			);
 		} );
 
 		it( 'should merge attribute nodes and their contents if possible', () => {
-			// <p><b foo="bar">{foo}</b>|<b foo="bar">{bar}</b></p>
-			// <p><b foo="bar">{foo}|{bar}</b></p>
-			// <p><b foo="bar">{foo|bar}</b></p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				position: 1,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						attributes: { foo: 'bar' },
-						children: [
-							{ instanceOf: Text, data: 'foo' }
-						]
-					},
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						attributes: { foo: 'bar' },
-						children: [
-							{ instanceOf: Text, data: 'bar' }
-						]
-					}
-				]
-			} );
-
-			const newPosition = writer.mergeAttributes( created.position );
-
-			test( writer, newPosition, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						attributes: { foo: 'bar' },
-						children: [
-							{ instanceOf: Text, data: 'foobar', position: 3 }
-						]
-					}
-				]
-			} );
+			test(
+				'<container:p><attribute:b:1 foo="bar">foo</attribute:b:1>[]<attribute:b:1 foo="bar">bar</attribute:b:1></container:p>',
+				'<container:p><attribute:b:1 foo="bar">foo{}bar</attribute:b:1></container:p>'
+			);
 		} );
 	} );
 } );

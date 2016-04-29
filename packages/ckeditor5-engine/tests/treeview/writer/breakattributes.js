@@ -9,294 +9,90 @@
 
 import Writer from '/ckeditor5/engine/treeview/writer.js';
 import ContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
-import AttributeElement from '/ckeditor5/engine/treeview/attributeelement.js';
 import Text from '/ckeditor5/engine/treeview/text.js';
-import utils from '/tests/engine/treeview/writer/_utils/utils.js';
+import Position from '/ckeditor5/engine/treeview/position.js';
+import { stringify, parse } from '/tests/engine/_utils/view.js';
 
 describe( 'Writer', () => {
-	const create = utils.create;
-	const test = utils.test;
 	let writer;
+
+	/**
+	 * Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create and
+	 * test break position.
+	 *
+	 * @param {String} input
+	 * @param {String} expected
+	 */
+	function test( input, expected ) {
+		const { view, selection } = parse( input );
+		const newPosition = writer.breakAttributes( selection.getFirstPosition() );
+		expect( stringify( view, newPosition, { showType: true, showPriority: true } ) ).to.equal( expected );
+	}
 
 	beforeEach( () => {
 		writer = new Writer();
 	} );
 
 	describe( 'breakAttributes', () => {
-		// <p>{|foobar}</p> -> <p>|{foobar}</p>
-		it( '<p>{|foobar}</p>', () => {
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				children: [
-					{ instanceOf: Text, data: 'foobar', position: 0 }
-				]
-			} );
-
-			const newPosition = writer.breakAttributes( created.position );
-
-			test( writer, newPosition, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				position: 0,
-				children: [
-					{ instanceOf: Text, data: 'foobar' }
-				]
-			} );
+		it( 'should move position from begin of text node to the element', () => {
+			test( '<container:p>{}foobar</container:p>', '<container:p>[]foobar</container:p>' );
 		} );
 
-		it( '<p>foo|bar</p>', () => {
-			// <p>{foo|bar}</p> -> <p>{foo}|{bar}</p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				children: [
-					{ instanceOf: Text, data: 'foobar', position: 3 }
-				]
-			} );
+		it( 'should split text node', () => {
+			const text = new Text( 'foobar' );
+			const container = new ContainerElement( 'p', null, text );
+			const position = new Position( text, 3 );
 
-			const newPosition = writer.breakAttributes( created.position );
+			const newPosition = writer.breakAttributes( position );
 
-			test( writer, newPosition, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				position: 1,
-				children: [
-					{ instanceOf: Text, data: 'foo' },
-					{ instanceOf: Text, data: 'bar' }
-				]
-			} );
+			expect( container.getChildCount() ).to.equal( 2 );
+			expect( container.getChild( 0 ) ).to.be.instanceOf( Text ).and.have.property( 'data' ).that.equal( 'foo' );
+			expect( container.getChild( 1 ) ).to.be.instanceOf( Text ).and.have.property( 'data' ).that.equal( 'bar' );
+			expect( newPosition.isEqual( new Position( container, 1 ) ) ).to.be.true;
 		} );
 
-		it( '<p>{foobar|}</p>', () => {
-			// <p>{foobar|}</p> -> <p>{foobar}|</p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				children: [
-					{ instanceOf: Text, data: 'foobar', position: 6 }
-				]
-			} );
-
-			const newPosition = writer.breakAttributes( created.position );
-
-			test( writer, newPosition, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				position: 1,
-				children: [
-					{ instanceOf: Text, data: 'foobar' }
-				]
-			} );
+		it( 'should move position from end of text node to the element', () => {
+			test( '<container:p>foobar{}</container:p>', '<container:p>foobar[]</container:p>' );
 		} );
 
-		it( '<p><b>{foo|bar}</b></p>', () => {
-			// <p><b>{foo|bar}</b></p> -> <p><b>{foo}</b>|<b>{bar}</b></p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'foobar', position: 3 }
-						]
-					}
-				]
-			} );
-
-			const newPosition = writer.breakAttributes( created.position );
-
-			test( writer, newPosition, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				position: 1,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'foo' }
-						]
-					},
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'bar' }
-						]
-					}
-				]
-			} );
+		it( 'should split attribute element', () => {
+			test(
+				'<container:p><attribute:b:1>foo{}bar</attribute:b:1></container:p>',
+				'<container:p><attribute:b:1>foo</attribute:b:1>[]<attribute:b:1>bar</attribute:b:1></container:p>'
+			);
 		} );
 
-		it( '<p><b><u>{|foobar}</u></b></p>', () => {
-			// <p><b><u>{|foobar}</u></b></p> -> <p>|<b><u>{foobar}</u></b></p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{
-								instanceOf: AttributeElement,
-								name: 'u',
-								priority: 1,
-								children: [
-									{ instanceOf: Text, data: 'foobar', position: 0 }
-								]
-							}
-						]
-					}
-				]
-			} );
-
-			const newPosition = writer.breakAttributes( created.position );
-
-			test( writer, newPosition, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				position: 0,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{
-								instanceOf: AttributeElement,
-								name: 'u',
-								priority: 1,
-								children: [
-									{ instanceOf: Text, data: 'foobar' }
-								]
-							}
-						]
-					}
-				]
-			} );
+		it( 'should move from beginning of the nested text node to the container', () => {
+			test(
+				'<container:p><attribute:b:1><attribute:u:1>{}foobar</attribute:u:1></attribute:b:1></container:p>',
+				'<container:p>[]<attribute:b:1><attribute:u:1>foobar</attribute:u:1></attribute:b:1></container:p>'
+			);
 		} );
 
-		// <p><b><u>{foo|ba}r</u></b></p> -> <p><b><u>{foo}</u></b>|<b></u>{bar}</u></b></p>
-		it( '<p><b><u>{foo|bar}</u></b></p>', () => {
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{
-								instanceOf: AttributeElement,
-								name: 'u',
-								priority: 1,
-								children: [
-									{ instanceOf: Text, data: 'foobar', position: 3 }
-								]
-							}
-						]
-					}
-				]
-			} );
-
-			const newPosition = writer.breakAttributes( created.position );
-
-			test( writer, newPosition, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				position: 1,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{
-								instanceOf: AttributeElement,
-								name: 'u',
-								priority: 1,
-								children: [
-									{ instanceOf: Text, data: 'foo' }
-								]
-							}
-						]
-					},
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{
-								instanceOf: AttributeElement,
-								name: 'u',
-								priority: 1,
-								children: [
-									{ instanceOf: Text, data: 'bar' }
-								]
-							}
-						]
-					}
-				]
-			} );
+		it( 'should split nested attributes', () => {
+			test(
+				'<container:p><attribute:b:1><attribute:u:1>foo{}bar</attribute:u:1></attribute:b:1></container:p>',
+				'<container:p>' +
+					'<attribute:b:1>' +
+						'<attribute:u:1>' +
+							'foo' +
+						'</attribute:u:1>' +
+					'</attribute:b:1>' +
+					'[]' +
+					'<attribute:b:1>' +
+						'<attribute:u:1>' +
+							'bar' +
+						'</attribute:u:1>' +
+					'</attribute:b:1>' +
+				'</container:p>'
+			);
 		} );
 
-		it( '<p><b><u>{foobar|}</u></b></p>', () => {
-			// <p><b><u>{foobar|}</u></b></p> -> <p><b><u>{foobar}</u></b>|</p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{
-								instanceOf: AttributeElement,
-								name: 'u',
-								priority: 1,
-								children: [
-									{ instanceOf: Text, data: 'foobar', position: 6 }
-								]
-							}
-						]
-					}
-				]
-			} );
-
-			const newPosition = writer.breakAttributes( created.position );
-
-			test( writer, newPosition, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				position: 1,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{
-								instanceOf: AttributeElement,
-								name: 'u',
-								priority: 1,
-								children: [
-									{ instanceOf: Text, data: 'foobar' }
-								]
-							}
-						]
-					}
-				]
-			} );
+		it( 'should move from end of the nested text node to the container', () => {
+			test(
+				'<container:p><attribute:b:1><attribute:u:1>foobar{}</attribute:u:1></attribute:b:1></container:p>',
+				'<container:p><attribute:b:1><attribute:u:1>foobar</attribute:u:1></attribute:b:1>[]</container:p>'
+			);
 		} );
 	} );
 } );

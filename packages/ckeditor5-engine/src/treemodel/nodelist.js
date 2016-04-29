@@ -189,15 +189,10 @@ export default class NodeList {
 	/**
 	 * Node list iterator.
 	 */
-	[ Symbol.iterator ]() {
-		let i = 0;
-
-		return {
-			next: () => ( {
-				done: i == this.length,
-				value: this.get( i++ )
-			} )
-		};
+	*[ Symbol.iterator ]() {
+		for ( let i = 0; i < this.length; i++ ) {
+			yield this.get( i );
+		}
 	}
 
 	/**

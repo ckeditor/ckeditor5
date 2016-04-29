@@ -22,7 +22,7 @@ import ViewText from '../treeview/text.js';
  * Function factory, creates a converter that converts node insertion changes from the model to the view.
  * The view element that will be added to the view depends on passed parameter. If {@link engine.treeView.Element} was passed,
  * it will be cloned and the copy will be inserted. If `Function` is provided, it is passed all the parameters of the
- * {@link engine.treeController.ModelConversionDispatcher.insert dispatcher's insert event}. It's expected that the
+ * dispatcher's {@link engine.treeController.ModelConversionDispatcher#event:insert insert event}. It's expected that the
  * function returns a {@link engine.treeView.Element}. The result of the function will be inserted to the view.
  *
  * The converter automatically consumes corresponding value from consumables list, stops the event (see
@@ -122,10 +122,10 @@ export function insertText() {
  * @returns {Function} Set/change attribute converter.
  */
 export function setAttribute( attributeCreator ) {
-	attributeCreator = attributeCreator || ( ( data ) => ( { key: data.attributeKey, value: data.attributeNewValue } ) );
+	attributeCreator = attributeCreator || ( ( value, key ) => ( { value, key } ) );
 
 	return ( evt, data, consumable, conversionApi ) => {
-		const { key, value } = attributeCreator( data, consumable, conversionApi );
+		const { key, value } = attributeCreator( data.attributeNewValue, data.attributeKey, data, consumable, conversionApi );
 
 		consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
 		conversionApi.mapper.toViewElement( data.item ).setAttribute( key, value );
@@ -164,15 +164,15 @@ export function setAttribute( attributeCreator ) {
  * @function engine.treeController.modelToView.removeAttribute
  * @param {Function} [attributeCreator] Function returning an object with two properties: `key` and `value`, which
  * represents attribute key and attribute value to be removed from {@link engine.treeView.Element view element}. The function
- * is passed all the parameters of the {@link engine.treeController.ModelConversionDispatcher.addAttribute}
- * or {@link engine.treeController.ModelConversionDispatcher.changeAttribute} event.
+ * is passed all the parameters of the {@link engine.treeController.ModelConversionDispatcher#event:addAttribute addAttribute event}
+ * or {@link engine.treeController.ModelConversionDispatcher#event:changeAttribute changeAttribute event}.
  * @returns {Function} Remove attribute converter.
  */
 export function removeAttribute( attributeCreator ) {
-	attributeCreator = attributeCreator || ( ( data ) => ( { key: data.attributeKey } ) );
+	attributeCreator = attributeCreator || ( ( value, key ) => ( { key } ) );
 
 	return ( evt, data, consumable, conversionApi ) => {
-		const { key } = attributeCreator( data, consumable, conversionApi );
+		const { key } = attributeCreator( data.attributeOldValue, data.attributeKey, data, consumable, conversionApi );
 
 		consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
 		conversionApi.mapper.toViewElement( data.item ).removeAttribute( key );
@@ -194,7 +194,7 @@ export function removeAttribute( attributeCreator ) {
  *
  * The wrapping node depends on passed parameter. If {@link engine.treeView.Element} was passed, it will be cloned and
  * the copy will become the wrapping element. If `Function` is provided, it is passed all the parameters of the
- * {@link engine.treeController.ModelConversionDispatcher.setAttribute event}. It's expected that the
+ * {@link engine.treeController.ModelConversionDispatcher#event:setAttribute setAttribute event}. It's expected that the
  * function returns a {@link engine.treeView.Element}. The result of the function will be the wrapping element.
  *
  * The converter automatically consumes corresponding value from consumables list, stops the event (see
@@ -218,6 +218,14 @@ export function wrap( elementCreator ) {
 			elementCreator.clone( true ) :
 			elementCreator( data.attributeNewValue, data, consumable, conversionApi );
 
+		// If this is a change event (because old value is not empty) and the creator is a function (so
+		// it may create different view elements basing on attribute value) we have to create
+		// view element basing on old value and unwrap it before wrapping with a newly created view element.
+		if ( data.attributeOldValue !== null && !( elementCreator instanceof ViewElement ) ) {
+			const oldViewElement = elementCreator( data.attributeOldValue, data, consumable, conversionApi );
+			conversionApi.writer.unwrap( viewRange, oldViewElement, evt.priority );
+		}
+
 		conversionApi.writer.wrap( viewRange, viewElement, evt.priority );
 
 		evt.stop();
@@ -231,9 +239,10 @@ export function wrap( elementCreator ) {
  *
  * The view element type that will be unwrapped depends on passed parameter.
  * If {@link engine.treeView.Element} was passed, it will be used to look for similar element in the view for unwrapping. If `Function`
- * is provided, it is passed all the parameters of the {@link engine.treeController.ModelConversionDispatcher.setAttribute event}.
- * It's expected that the function returns a {@link engine.treeView.Element}. The result of the function will be used to
- * look for similar element in the view for unwrapping.
+ * is provided, it is passed all the parameters of the
+ * {@link engine.treeController.ModelConversionDispatcher#event:setAttribute setAttribute event}. It's expected that the
+ * function returns a {@link engine.treeView.Element}. The result of the function will be used to look for similar element
+ * in the view for unwrapping.
  *
  * The converter automatically consumes corresponding value from consumables list, stops the event (see
  * {@link engine.treeController.ModelConversionDispatcher}) and bind model and view elements.

@@ -9,16 +9,28 @@
 
 import Writer from '/ckeditor5/engine/treeview/writer.js';
 import ContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
-import AttributeElement from '/ckeditor5/engine/treeview/attributeelement.js';
 import Range from '/ckeditor5/engine/treeview/range.js';
-import Text from '/ckeditor5/engine/treeview/text.js';
 import DocumentFragment from '/ckeditor5/engine/treeview/documentfragment.js';
-import utils from '/tests/engine/treeview/writer/_utils/utils.js';
+import { stringify, parse } from '/tests/engine/_utils/view.js';
 
 describe( 'Writer', () => {
-	const create = utils.create;
-	const test = utils.test;
 	let writer;
+
+	/**
+	 * Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create and
+	 * test ranges.
+	 *
+	 * @param {String} input
+	 * @param {String} expectedResult
+	 * @param {String} expectedRemoved
+	 */
+	function test( input, expectedResult, expectedRemoved ) {
+		const { view, selection } = parse( input );
+		const range = selection.getFirstRange();
+		const removed = writer.remove( range );
+		expect( stringify( view, range, { showType: true, showPriority: true } ) ).to.equal( expectedResult );
+		expect( stringify( removed, null, { showType: true, showPriority: true } ) ).to.equal( expectedRemoved );
+	}
 
 	beforeEach( () => {
 		writer = new Writer();
@@ -45,242 +57,39 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should remove single text node', () => {
-			// <p>[{foobar}]</p> -> <p>|</p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{ instanceOf: Text, data: 'foobar' }
-				]
-			} );
-
-			const removed = writer.remove( created.range );
-			test( writer, created.range.start, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				position: 0,
-				children: []
-			} );
-
-			// Test removed nodes.
-			test( writer, null, Array.from( removed.getChildren() ), [
-				{ instanceOf: Text, data: 'foobar' }
-			] );
+			test( '<container:p>[foobar]</container:p>', '<container:p>[]</container:p>', 'foobar' );
 		} );
 
 		it( 'should not leave empty text nodes', () => {
-			// <p>{[foobar]}</p> -> <p>|</p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				children: [
-					{ instanceOf: Text, data: 'foobar', rangeStart: 0, rangeEnd: 6 }
-				]
-			} );
-
-			const removed = writer.remove( created.range );
-			test( writer, created.range.start, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				position: 0,
-				children: []
-			} );
-
-			// Test removed nodes.
-			test( writer, null, removed, [
-				{ instanceOf: Text, data: 'foobar' }
-			] );
+			test( '<container:p>{foobar}</container:p>', '<container:p>[]</container:p>', 'foobar' );
 		} );
 
 		it( 'should remove part of the text node', () => {
-			// <p>{f[oob]ar}</p> -> <p>{f|ar}</p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				children: [
-					{ instanceOf: Text, data: 'foobar', rangeStart: 1, rangeEnd: 4 }
-				]
-			} );
-
-			const removed = writer.remove( created.range );
-			test( writer, created.range.start, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				children: [
-					{ instanceOf: Text, data: 'far', position: 1 }
-				]
-			} );
-
-			// Test removed nodes.
-			test( writer, null, removed, [
-				{ instanceOf: Text, data: 'oob' }
-			] );
+			test( '<container:p>f{oob}ar</container:p>', '<container:p>f{}ar</container:p>', 'oob' );
 		} );
 
 		it( 'should remove parts of nodes', () => {
-			// <p>{f[oo}<b>{ba]r}</b></p> -> <p>{f}|<b>r</b></p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				children: [
-					{ instanceOf: Text, data: 'foo', rangeStart: 1 },
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'bar', rangeEnd: 2 }
-						]
-					}
-				]
-			} );
-
-			const removed = writer.remove( created.range );
-			test( writer, created.range.start, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				position: 1,
-				children: [
-					{ instanceOf: Text, data: 'f' },
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'r' }
-						]
-					}
-				]
-			} );
-
-			// Test removed nodes.
-			test( writer, null, removed, [
-				{ instanceOf: Text, data: 'oo' },
-				{
-					instanceOf: AttributeElement,
-					name: 'b',
-					priority: 1,
-					children: [
-						{ instanceOf: Text, data: 'ba' }
-					]
-				}
-			] );
+			test(
+				'<container:p>f{oo<attribute:b:10>ba}r</attribute:b:10></container:p>',
+				'<container:p>f[]<attribute:b:10>r</attribute:b:10></container:p>',
+				'oo<attribute:b:10>ba</attribute:b:10>'
+			);
 		} );
 
 		it( 'should merge after removing #1', () => {
-			// <p><b>foo</b>[{bar}]<b>bazqux</b></p> -> <p><b>foo|bazqux</b></p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 1,
-				rangeEnd: 2,
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'foo' }
-						]
-					},
-					{ instanceOf: Text, data: 'bar' },
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'bazqux' }
-						]
-					}
-				]
-			} );
-
-			const removed = writer.remove( created.range );
-			test( writer, created.range.start, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'foobazqux', position: 3 }
-						]
-					}
-				]
-			} );
-
-			// Test removed nodes.
-			test( writer, null, removed, [
-				{ instanceOf: Text, data: 'bar' }
-			] );
+			test(
+				'<container:p><attribute:b:1>foo</attribute:b:1>[bar]<attribute:b:1>bazqux</attribute:b:1></container:p>',
+				'<container:p><attribute:b:1>foo{}bazqux</attribute:b:1></container:p>',
+				'bar'
+			);
 		} );
 
 		it( 'should merge after removing #2', () => {
-			// <p><b>fo[o</b>{bar}<b>ba]zqux</b></p> -> <p><b>fo|zqux</b></p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'foo', rangeStart: 2 }
-						]
-					},
-					{ instanceOf: Text, data: 'bar' },
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'bazqux', rangeEnd: 2 }
-						]
-					}
-				]
-			} );
-
-			const removed = writer.remove( created.range );
-			test( writer, created.range.start, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				children: [
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'fozqux', position: 2 }
-						]
-					}
-				]
-			} );
-
-			// Test removed nodes.
-			test( writer, null, removed, [
-				{
-					instanceOf: AttributeElement,
-					name: 'b',
-					priority: 1,
-					children: [
-						{ instanceOf: Text, data: 'o' }
-					]
-				},
-				{ instanceOf: Text, data: 'bar' },
-				{
-					instanceOf: AttributeElement,
-					name: 'b',
-					priority: 1,
-					children: [
-						{ instanceOf: Text, data: 'ba' }
-					]
-				}
-			] );
+			test(
+				'<container:p><attribute:b:1>fo{o</attribute:b:1>bar<attribute:b:1>ba}zqux</attribute:b:1></container:p>',
+				'<container:p><attribute:b:1>fo{}zqux</attribute:b:1></container:p>',
+				'<attribute:b:1>o</attribute:b:1>bar<attribute:b:1>ba</attribute:b:1>'
+			);
 		} );
 	} );
 } );

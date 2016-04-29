@@ -158,15 +158,12 @@ describe( 'setAttribute/removeAttribute', () => {
 		const modelParagraph = new ModelElement( 'paragraph', { theme: 'nice' }, 'foobar' );
 		const modelDiv = new ModelElement( 'div', { theme: 'nice' } );
 
-		const themeConverter = ( data ) => {
-			const key = 'class';
-			let value = data.attributeNewValue;
-
-			if ( value && data.item instanceof ModelElement && data.item.getChildCount() > 0 ) {
+		const themeConverter = ( value, key, data ) => {
+			if ( data.item instanceof ModelElement && data.item.getChildCount() > 0 ) {
 				value += ' ' + 'fix-content';
 			}
 
-			return { key, value };
+			return { key: 'class', value };
 		};
 
 		modelRoot.appendChildren( [ modelParagraph, modelDiv ] );
@@ -194,7 +191,7 @@ describe( 'setAttribute/removeAttribute', () => {
 } );
 
 describe( 'wrap/unwrap', () => {
-	it( 'should convert insert/remove of attribute in model into wrapping element in a view', () => {
+	it( 'should convert insert/change/remove of attribute in model into wrapping element in a view', () => {
 		const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar', { bold: true } ) );
 		const viewP = new ViewContainerElement( 'p' );
 		const viewB = new ViewAttributeElement( 'b' );

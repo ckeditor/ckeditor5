@@ -35,7 +35,7 @@ export function convertToModelFragment() {
 	return ( evt, data, consumable, conversionApi ) => {
 		// Second argument in `consumable.test` is discarded for ViewDocumentFragment but is needed for ViewElement.
 		if ( !data.output && consumable.test( data.input, { name: true } ) ) {
-			const convertedChildren = conversionApi.convertChildren( data.input, consumable, { context: data.context } );
+			const convertedChildren = conversionApi.convertChildren( data.input, consumable, data );
 
 			data.output = new ModelDocumentFragment( convertedChildren );
 		}
@@ -50,9 +50,16 @@ export function convertToModelFragment() {
  * @returns {Function} {@link engine.treeView.Text View text} converter.
  */
 export function convertText() {
-	return ( evt, data, consumable ) => {
-		if ( consumable.consume( data.input ) ) {
-			data.output = new ModelText( data.input.data );
+	return ( evt, data, consumable, conversionApi ) => {
+		const schemaQuery = {
+			name: '$text',
+			inside: data.context
+		};
+
+		if ( conversionApi.schema.check( schemaQuery ) ) {
+			if ( consumable.consume( data.input ) ) {
+				data.output = new ModelText( data.input.data );
+			}
 		}
 	};
 }

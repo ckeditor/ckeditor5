@@ -47,11 +47,12 @@ import extend from '../../utils/lib/lodash/extend.js';
  *				inside: data.context
  *			};
  *
- *			if ( conversionApi.schema.checkQuery( schemaQuery ) ) {
+ *			if ( conversionApi.schema.check( schemaQuery ) ) {
  *				if ( !consumable.consume( data.input, { name: true } ) ) {
  *					// Before converting this paragraph's children we have to update their context by this paragraph.
- *					const context = data.context.concat( paragraph );
- *					const children = conversionApi.convertChildren( data.input, consumable, { context } );
+ *					data.context.push( paragraph );
+ *					const children = conversionApi.convertChildren( data.input, consumable, data );
+ *					data.context.pop();
  *					paragraph.appendChildren( children );
  *					data.output = paragraph;
  *				}
@@ -63,7 +64,7 @@ import extend from '../../utils/lib/lodash/extend.js';
  *			if ( consumable.consume( data.input, { name: true, attributes: [ 'href' ] } ) ) {
  *				// <a> element is inline and is represented by an attribute in the model.
  *				// This is why we are not updating `context` property.
- *				data.output = conversionApi.convertChildren( data.input, consumable, { context: data.context } );
+ *				data.output = conversionApi.convertChildren( data.input, consumable, data );
  *
  *				for ( let item of Range.createFrom( data.output ) ) {
  *					const schemaQuery = {
@@ -80,8 +81,9 @@ import extend from '../../utils/lib/lodash/extend.js';
  *		} );
  *
  *		// Fire conversion.
- *		// At the beginning, the context is empty because given `viewDocumentFragment` has no parent.
- *		viewDispatcher.convert( viewDocumentFragment, { context: [] } );
+ *		// Always take care where the converted model structure will be appended to. If this `viewDocumentFragment`
+ *		// is going to be appended directly to a '$root' element, use that in `context`.
+ *		viewDispatcher.convert( viewDocumentFragment, { context: [ '$root' ] } );
  *
  * Before each conversion process, `ViewConversionDispatcher` fires {@link engine.treeController.ViewConversionDispatcher.viewCleanup}
  * event which can be used to prepare tree view for conversion.
@@ -140,7 +142,7 @@ export default class ViewConversionDispatcher {
 	 * @see engine.treeController.ViewConversionApi#convertItem
 	 */
 	_convertItem( input, consumable, additionalData = {} ) {
-		const data = extend( additionalData, {
+		const data = extend( {}, additionalData, {
 			input: input,
 			output: null
 		} );
