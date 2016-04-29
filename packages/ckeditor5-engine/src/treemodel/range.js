@@ -397,6 +397,35 @@ export default class Range {
 	}
 
 	/**
+	 * Returns an array containing {engine.treeModel.Range ranges} that are a result of transforming this
+	 * {@link engine.treeModel.Range range} by moving `howMany` nodes from `sourcePosition` to `targetPosition`.
+	 *
+	 * @param {engine.treeModel.Position} sourcePosition Position from which nodes are moved.
+	 * @param {engine.treeModel.Position} targetPosition Position to where nodes are moved.
+	 * @param {Number} howMany How many nodes are moved.
+	 * @returns {Array.<engine.treeModel.Range>} Result of the transformation.
+	 */
+	getTransformedByMove( sourcePosition, targetPosition, howMany ) {
+		const moveRange = new Range( sourcePosition, sourcePosition.getShiftedBy( howMany ) );
+
+		let containsStart = moveRange.containsPosition( this.start ) || moveRange.start.isEqual( this.start );
+		let containsEnd = moveRange.containsPosition( this.end ) || moveRange.end.isEqual( this.end );
+
+		const result = new Range( this.start, this.end );
+
+		if ( containsStart && !containsEnd ) {
+			result.start = moveRange.end;
+		} else if ( containsEnd && !containsStart ) {
+			result.end = moveRange.start;
+		}
+
+		result.start = result.start.getTransformedByMove( sourcePosition, targetPosition, howMany, true, containsStart && containsEnd );
+		result.end = result.end.getTransformedByMove( sourcePosition, targetPosition, howMany, result.isCollapsed, containsStart && containsEnd );
+
+		return [ result ];
+	}
+
+	/**
 	 * Two ranges equal if their start and end positions equal.
 	 *
 	 * @param {engine.treeModel.Range} otherRange Range to compare with.

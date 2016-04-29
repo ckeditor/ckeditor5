@@ -441,6 +441,82 @@ describe( 'Range', () => {
 		} );
 	} );
 
+	describe( 'getTransformedByMove', () => {
+		it( 'should return an array of Range objects', () => {
+			const range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
+			const transformed = range.getTransformedByMove( new Position( root, [ 2 ] ), new Position( root, [ 5 ] ), 2 );
+
+			expect( transformed ).to.be.instanceof( Array );
+			expect( transformed[ 0 ] ).to.be.instanceof( Range );
+		} );
+
+		it( 'should update it\'s positions offsets if target is before range and they are affected', () => {
+			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 4 ] ) );
+			const transformed = range.getTransformedByMove( new Position( root, [ 8, 1 ] ), new Position( root, [ 3, 1 ] ), 2 );
+
+			expect( transformed[ 0 ].start.offset ).to.equal( 4 );
+			expect( transformed[ 0 ].end.offset ).to.equal( 6 );
+		} );
+
+		it( 'should update it\'s positions paths if target is before range and they are affected', () => {
+			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 4, 4 ] ) );
+			const transformed = range.getTransformedByMove( new Position( root, [ 8 ] ), new Position( root, [ 0 ] ), 2 );
+
+			expect( transformed[ 0 ].start.path[ 0 ] ).to.equal( 5 );
+			expect( transformed[ 0 ].end.path[ 0 ] ).to.equal( 6 );
+		} );
+
+		it( 'should expand range if target was in the middle of range', () => {
+			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 5, 4 ] ) );
+			const transformed = range.getTransformedByMove( new Position( root, [ 8 ] ), new Position( root, [ 5, 0 ] ), 4 );
+
+			expect( transformed.length ).to.equal( 1 );
+
+			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
+			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 5, 8 ] );
+		} );
+
+		it( 'should not expand range if insertion is equal to start boundary of the range', () => {
+			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 8 ] ) );
+			const transformed = range.getTransformedByMove( new Position( root, [ 8, 2 ] ), new Position( root, [ 3, 2 ] ), 3 );
+
+			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 5 ] );
+			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 3, 11 ] );
+		} );
+
+		it( 'should not expand range if insertion is equal to end boundary of the range', () => {
+			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 4, 4 ] ) );
+			const transformed = range.getTransformedByMove( new Position( root, [ 8, 4 ] ), new Position( root, [ 4, 4 ] ), 3 );
+
+			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
+			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 4, 4 ] );
+		} );
+
+		it( 'should update it\'s positions offsets if source is before range and they are affected', () => {
+			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 4 ] ) );
+			const transformed = range.getTransformedByMove( new Position( root, [ 3, 0 ] ), new Position( root, [ 8, 1 ] ), 2 );
+
+			expect( transformed[ 0 ].start.offset ).to.equal( 0 );
+			expect( transformed[ 0 ].end.offset ).to.equal( 2 );
+		} );
+
+		it( 'should update it\'s positions paths if source is before range and they are affected', () => {
+			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 4, 4 ] ) );
+			const transformed = range.getTransformedByMove( new Position( root, [ 0 ] ), new Position( root, [ 8 ] ), 2 );
+
+			expect( transformed[ 0 ].start.path[ 0 ] ).to.equal( 1 );
+			expect( transformed[ 0 ].end.path[ 0 ] ).to.equal( 2 );
+		} );
+
+		it( 'should shrink range if source was in the middle of range', () => {
+			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 5, 4 ] ) );
+			const transformed = range.getTransformedByMove( new Position( root, [ 5, 0 ] ), new Position( root, [ 8 ] ), 4 );
+
+			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
+			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 5, 0 ] );
+		} );
+	} );
+
 	describe( 'getDifference', () => {
 		let range;
 
