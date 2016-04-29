@@ -51,6 +51,20 @@ export default class MoveOperation extends Operation {
 		this.targetPosition = Position.createFromPosition( targetPosition );
 
 		/**
+		 * Position of the start of the moved range after it got moved. This may be different than
+		 * {@link engine.treeModel.operation.MoveOperation#targetPosition} in some cases, i.e. when a range is moved
+		 * inside the same parent but {@link engine.treeModel.operation.MoveOperation#targetPosition targetPosition}
+		 * is after {@link engine.treeModel.operation.MoveOperation#sourcePosition sourcePosition}.
+		 *
+		 *		 vv              vv
+		 *		abcdefg ===> adefbcg
+		 *		     ^          ^
+		 *		     targetPos	movedRangeStart
+		 *		     offset 6	offset 4
+		 */
+		this.movedRangeStart = this.targetPosition.getTransformedByDeletion( this.sourcePosition, this.howMany );
+
+		/**
 		 * Defines whether `MoveOperation` is sticky. If `MoveOperation` is sticky, during
 		 * {@link engine.treeModel.operation.transform operational transformation} if there will be an operation that
 		 * inserts some nodes at the position equal to the boundary of this `MoveOperation`, that operation will
@@ -79,10 +93,9 @@ export default class MoveOperation extends Operation {
 	 * @returns {engine.treeModel.operation.MoveOperation}
 	 */
 	getReversed() {
-		let newSourcePosition = this.targetPosition.getTransformedByDeletion( this.sourcePosition, this.howMany );
 		let newTargetPosition = this.sourcePosition.getTransformedByInsertion( this.targetPosition, this.howMany );
 
-		const op = new this.constructor( newSourcePosition, this.howMany, newTargetPosition, this.baseVersion + 1 );
+		const op = new this.constructor( this.movedRangeStart, this.howMany, newTargetPosition, this.baseVersion + 1 );
 		op.isSticky = this.isSticky;
 
 		return op;
@@ -154,7 +167,7 @@ export default class MoveOperation extends Operation {
 
 		return {
 			sourcePosition: this.sourcePosition,
-			range: Range.createFromPositionAndShift( this.targetPosition, this.howMany )
+			range: Range.createFromPositionAndShift( this.movedRangeStart, this.howMany )
 		};
 	}
 }
