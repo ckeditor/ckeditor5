@@ -140,10 +140,10 @@ export default class TreeView {
 	 * root element will be removed but the root name and attributes will be preserved.
 	 *
 	 * @param {HTMLElement} domRoot DOM element in which the tree view should do change.
-	 * @param {String} name Name of the root.
+	 * @param {String} [name='main'] Name of the root.
 	 * @returns {engine.treeView.element} The created view root element.
 	 */
-	createRoot( domRoot, name ) {
+	createRoot( domRoot, name = 'main' ) {
 		const viewRoot = this.domConverter.domToView( domRoot, { bind: true, withChildren: false } );
 		viewRoot.setTreeView( this );
 
@@ -161,6 +161,17 @@ export default class TreeView {
 		}
 
 		return viewRoot;
+	}
+
+	/**
+	 * Get a {@link engine.treeView.TreeView#viewRoots view root element} with the specified name. If the name is not
+	 * specific "main" root is returned.
+	 *
+	 * @param {String} [name='main']  Name of the root.
+	 * @returns {engine.treeView.element} The view root element with the specified name.
+	 */
+	getRoot( name = 'main' ) {
+		return this.viewRoots.get( name );
 	}
 
 	/**

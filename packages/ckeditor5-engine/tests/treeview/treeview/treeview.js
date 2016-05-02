@@ -16,6 +16,36 @@ import DomConverter from '/ckeditor5/engine/treeview/domconverter.js';
 import count from '/ckeditor5/utils/count.js';
 
 describe( 'TreeView', () => {
+	let ObserverMock, ObserverMockGlobalCount, instantiated, enabled;
+
+	beforeEach( () => {
+		instantiated = 0;
+		enabled = 0;
+
+		ObserverMock = class extends Observer {
+			constructor( treeView ) {
+				super( treeView );
+
+				this.enable = sinon.spy();
+				this.disable = sinon.spy();
+				this.observe = sinon.spy();
+			}
+		};
+
+		ObserverMockGlobalCount = class extends Observer {
+			constructor( treeView ) {
+				super( treeView );
+				instantiated++;
+
+				this.observe = sinon.spy();
+			}
+
+			enable() {
+				enabled++;
+			}
+		};
+	} );
+
 	describe( 'constructor', () => {
 		it( 'should create TreeView with all properties', () => {
 			const treeView = new TreeView();
@@ -53,21 +83,71 @@ describe( 'TreeView', () => {
 			expect( viewRoot.getAttribute( 'id' ) ).to.equal( 'editor' );
 			expect( treeView.renderer.markedChildren.has( viewRoot ) ).to.be.true;
 		} );
+
+		it( 'should call observe on each observer', () => {
+			const treeView = new TreeView( document.createElement( 'div' ) );
+			treeView.renderer.render = sinon.spy();
+
+			const domDiv1 = document.createElement( 'div' );
+			domDiv1.setAttribute( 'id', 'editor' );
+
+			const domDiv2 = document.createElement( 'div' );
+			domDiv2.setAttribute( 'id', 'editor' );
+
+			treeView.addObserver( ObserverMock );
+			treeView.addObserver( ObserverMockGlobalCount );
+
+			treeView.createRoot( document.createElement( 'div' ), 'root1' );
+
+			const observerMock = treeView.getObserver( ObserverMock );
+			const observerMockGlobalCount = treeView.getObserver( ObserverMockGlobalCount );
+
+			sinon.assert.calledOnce( observerMock.observe );
+			sinon.assert.calledOnce( observerMockGlobalCount.observe );
+		} );
+
+		it( 'should create "main" root by default', () => {
+			const domDiv = document.createElement( 'div' );
+
+			const treeView = new TreeView();
+			const ret = treeView.createRoot( domDiv );
+
+			expect( count( treeView.domRoots ) ).to.equal( 1 );
+			expect( count( treeView.viewRoots ) ).to.equal( 1 );
+
+			const domRoot = treeView.domRoots.get( 'main' );
+			const viewRoot = treeView.viewRoots.get( 'main' );
+
+			expect( ret ).to.equal( viewRoot );
+
+			expect( domRoot ).to.equal( domDiv );
+		} );
+	} );
+
+	describe( 'getRoot', () => {
+		it( 'should return "main" root', () => {
+			const treeView = new TreeView();
+			treeView.createRoot( document.createElement( 'div' ) );
+
+			expect( count( treeView.viewRoots ) ).to.equal( 1 );
+
+			expect( treeView.getRoot() ).to.equal( treeView.viewRoots.get( 'main' ) );
+		} );
+
+		it( 'should return named root', () => {
+			const treeView = new TreeView();
+			treeView.createRoot( document.createElement( 'h1' ), 'header' );
+
+			expect( count( treeView.viewRoots ) ).to.equal( 1 );
+
+			expect( treeView.getRoot( 'header' ) ).to.equal( treeView.viewRoots.get( 'header' ) );
+		} );
 	} );
 
 	describe( 'addObserver', () => {
-		let ObserverMock, treeView;
+		let treeView;
 
 		beforeEach( () => {
-			ObserverMock = class extends Observer {
-				constructor( treeView ) {
-					super( treeView );
-
-					this.enable = sinon.spy();
-					this.disable = sinon.spy();
-				}
-			};
-
 			treeView = new TreeView( document.createElement( 'div' ) );
 			treeView.renderer.render = sinon.spy();
 		} );
@@ -84,22 +164,8 @@ describe( 'TreeView', () => {
 		} );
 
 		it( 'should instantiate one observer only once', () => {
-			let instantiated = 0;
-			let enabled = 0;
-
-			class ObserverMock2 extends Observer {
-				constructor( treeView ) {
-					super( treeView );
-					instantiated++;
-				}
-
-				enable() {
-					enabled++;
-				}
-			}
-
-			treeView.addObserver( ObserverMock2 );
-			treeView.addObserver( ObserverMock2 );
+			treeView.addObserver( ObserverMockGlobalCount );
+			treeView.addObserver( ObserverMockGlobalCount );
 
 			expect( treeView._observers.size ).to.equal( 1 );
 			expect( instantiated ).to.equal( 1 );
@@ -132,6 +198,17 @@ describe( 'TreeView', () => {
 			sinon.assert.calledOnce( observerMock.disable );
 			sinon.assert.calledOnce( treeView.renderer.render );
 			sinon.assert.calledTwice( observerMock.enable );
+		} );
+
+		it( 'should call observe on each root', () => {
+			treeView.createRoot( document.createElement( 'div' ), 'root1' );
+			treeView.createRoot( document.createElement( 'div' ), 'root2' );
+
+			treeView.addObserver( ObserverMock );
+
+			const observerMock = treeView.getObserver( ObserverMock );
+
+			sinon.assert.calledTwice( observerMock.observe );
 		} );
 	} );
 } );
