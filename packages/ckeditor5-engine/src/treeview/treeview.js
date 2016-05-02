@@ -40,6 +40,12 @@ export default class TreeView {
 		 */
 		this.domRoots = new Map();
 
+		/**
+		 * Selection done on this document.
+		 *
+		 * @readonly
+		 * @member {engine.treeView.Selection} engine.treeView.TreeView#selection
+		 */
 		this.selection = new Selection();
 
 		/**
@@ -83,24 +89,7 @@ export default class TreeView {
 		 */
 		this._observers = new Map();
 
-		this.on( 'keydown', ( evt, data ) => {
-			if ( data.keyCode == keyNames.arrowleft ) {
-				const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
-
-				if ( domSelection.rangeCount == 1 && domSelection.getRangeAt( 0 ).collapsed ) {
-					const domParent = domSelection.getRangeAt( 0 ).startContainer;
-					const domOffset = domSelection.getRangeAt( 0 ).startOffset;
-
-					if ( this.domConverter.startsWithFiller( domParent ) && domOffset <= INLINE_FILLER_SIZE ) {
-						const domRange = new Range();
-						domRange.setStart( domParent, 0 );
-						domRange.collapse( true );
-						domSelection.removeAllRanges();
-						domSelection.addRange( domRange );
-					}
-				}
-			}
-		} );
+		this._jumpOverInlineFiller();
 	}
 
 	/**
@@ -131,6 +120,12 @@ export default class TreeView {
 		observer.enable();
 	}
 
+	/**
+	 * Get observer of given type or undefined if such observer have not been added.
+	 *
+	 * @param {Function} Observer The constructor of an observer to get.
+	 * @returns {engine.treeView.observer.Observer|undefined} Observer instance or undefined.
+	 */
 	getObserver( Observer ) {
 		return this._observers.get( Observer );
 	}
@@ -182,6 +177,33 @@ export default class TreeView {
 		for ( let observer of this._observers.values() ) {
 			observer.enable();
 		}
+	}
+
+	/**
+	 * Assign key observer which move cursor from the end of the inline filler to the begging of it when the left arrow
+	 * is pressed, so the filler does not break navigation.
+	 *
+	 * @private
+	 */
+	_jumpOverInlineFiller() {
+		this.on( 'keydown', ( evt, data ) => {
+			if ( data.keyCode == keyNames.arrowleft ) {
+				const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
+
+				if ( domSelection.rangeCount == 1 && domSelection.getRangeAt( 0 ).collapsed ) {
+					const domParent = domSelection.getRangeAt( 0 ).startContainer;
+					const domOffset = domSelection.getRangeAt( 0 ).startOffset;
+
+					if ( this.domConverter.startsWithFiller( domParent ) && domOffset <= INLINE_FILLER_SIZE ) {
+						const domRange = new Range();
+						domRange.setStart( domParent, 0 );
+						domRange.collapse( true );
+						domSelection.removeAllRanges();
+						domSelection.addRange( domRange );
+					}
+				}
+			}
+		} );
 	}
 }
 
