@@ -103,6 +103,8 @@ export default class TreeView {
 	 *
 	 * @param {Function} Observer The constructor of an observer to add.
 	 * Should create an instance inheriting from {@link engine.treeView.observer.Observer}.
+	 *
+	 * @returns {engine.treeView.observer.Observer} Added observer instance.
 	 */
 	addObserver( Observer ) {
 		if ( this._observers.has( Observer ) ) {
@@ -118,6 +120,8 @@ export default class TreeView {
 		}
 
 		observer.enable();
+
+		return observer;
 	}
 
 	/**

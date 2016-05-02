@@ -95,10 +95,9 @@ describe( 'DomEventObserver', () => {
 		const evtSpy = sinon.spy();
 
 		treeView.createRoot( domElement, 'root' );
-		treeView.addObserver( ClickObserver );
+		const testObserver = treeView.addObserver( ClickObserver );
 		treeView.on( 'click', evtSpy );
 
-		const testObserver = treeView.getObserver( ClickObserver );
 		testObserver.disable();
 
 		domElement.dispatchEvent( domEvent );
@@ -113,10 +112,8 @@ describe( 'DomEventObserver', () => {
 		const evtSpy = sinon.spy();
 
 		treeView.createRoot( domElement, 'root' );
-		treeView.addObserver( ClickObserver );
+		const testObserver = treeView.addObserver( ClickObserver );
 		treeView.on( 'click', evtSpy );
-
-		const testObserver = treeView.getObserver( ClickObserver );
 
 		testObserver.disable();
 

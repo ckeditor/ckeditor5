@@ -94,13 +94,10 @@ describe( 'TreeView', () => {
 			const domDiv2 = document.createElement( 'div' );
 			domDiv2.setAttribute( 'id', 'editor' );
 
-			treeView.addObserver( ObserverMock );
-			treeView.addObserver( ObserverMockGlobalCount );
+			const observerMock = treeView.addObserver( ObserverMock );
+			const observerMockGlobalCount = treeView.addObserver( ObserverMockGlobalCount );
 
 			treeView.createRoot( document.createElement( 'div' ), 'root1' );
-
-			const observerMock = treeView.getObserver( ObserverMock );
-			const observerMockGlobalCount = treeView.getObserver( ObserverMockGlobalCount );
 
 			sinon.assert.calledOnce( observerMock.observe );
 			sinon.assert.calledOnce( observerMockGlobalCount.observe );
@@ -153,11 +150,9 @@ describe( 'TreeView', () => {
 		} );
 
 		it( 'should be instantiated and enabled on adding', () => {
-			treeView.addObserver( ObserverMock );
+			const observerMock = treeView.addObserver( ObserverMock );
 
 			expect( treeView._observers.size ).to.equal( 1 );
-
-			const observerMock = treeView.getObserver( ObserverMock );
 
 			expect( observerMock ).to.have.property( 'treeView', treeView );
 			sinon.assert.calledOnce( observerMock.enable );
@@ -190,10 +185,8 @@ describe( 'TreeView', () => {
 		} );
 
 		it( 'should be disabled and re-enabled on render', () => {
-			treeView.addObserver( ObserverMock );
+			const observerMock = treeView.addObserver( ObserverMock );
 			treeView.render();
-
-			const observerMock = treeView.getObserver( ObserverMock );
 
 			sinon.assert.calledOnce( observerMock.disable );
 			sinon.assert.calledOnce( treeView.renderer.render );
@@ -204,11 +197,28 @@ describe( 'TreeView', () => {
 			treeView.createRoot( document.createElement( 'div' ), 'root1' );
 			treeView.createRoot( document.createElement( 'div' ), 'root2' );
 
-			treeView.addObserver( ObserverMock );
-
-			const observerMock = treeView.getObserver( ObserverMock );
+			const observerMock = treeView.addObserver( ObserverMock );
 
 			sinon.assert.calledTwice( observerMock.observe );
+		} );
+	} );
+
+	describe( 'getObserver', () => {
+		it( 'should return observer it it is added', () => {
+			const treeView = new TreeView();
+
+			const addedObserverMock = treeView.addObserver( ObserverMock );
+			const getObserverMock = treeView.getObserver( ObserverMock );
+
+			expect( getObserverMock ).to.be.instanceof( ObserverMock );
+			expect( getObserverMock ).to.equal( addedObserverMock );
+		} );
+
+		it( 'should return undefined if observer is not added', () => {
+			const treeView = new TreeView();
+			const getObserverMock = treeView.getObserver( ObserverMock );
+
+			expect( getObserverMock ).to.be.undefined();
 		} );
 	} );
 } );

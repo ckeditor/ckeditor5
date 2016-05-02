@@ -23,8 +23,7 @@ describe( 'MutationObserver', () => {
 		treeView.selection.removeAllRanges();
 		document.getSelection().removeAllRanges();
 
-		treeView.addObserver( MutationObserver );
-		mutationObserver = treeView.getObserver( MutationObserver );
+		mutationObserver = treeView.addObserver( MutationObserver );
 
 		treeView.on( 'mutations', ( evt, mutations ) => lastMutations = mutations );
 

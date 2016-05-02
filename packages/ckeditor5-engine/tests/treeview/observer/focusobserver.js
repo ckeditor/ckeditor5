@@ -15,9 +15,7 @@ describe( 'FocusObserver', () => {
 
 	beforeEach( () => {
 		treeView = new TreeView();
-		treeView.addObserver( FocusObserver );
-
-		observer = treeView.getObserver( FocusObserver );
+		observer = treeView.addObserver( FocusObserver );
 	} );
 
 	it( 'should define domEventType', () => {
