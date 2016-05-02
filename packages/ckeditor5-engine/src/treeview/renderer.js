@@ -291,7 +291,13 @@ export default class Renderer {
 		const expectedDomChildren = Array.from( domConverter.viewChildrenToDom( viewElement, domDocument, { bind: true } ) );
 
 		if ( filler && filler.parent == viewElement ) {
-			expectedDomChildren.splice( filler.offset, 0, domDocument.createTextNode( INLINE_FILLER ) );
+			const expectedNoteAfterFiller = expectedDomChildren[ filler.offset ];
+
+			if ( expectedNoteAfterFiller instanceof Text ) {
+				expectedNoteAfterFiller.data = INLINE_FILLER + expectedNoteAfterFiller.data;
+			} else {
+				expectedDomChildren.splice( filler.offset, 0, domDocument.createTextNode( INLINE_FILLER ) );
+			}
 		}
 
 		const actions = diff( actualDomChildren, expectedDomChildren, sameNodes );

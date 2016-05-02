@@ -188,10 +188,10 @@ export default class DomConverter {
 		}
 
 		if ( domNode instanceof Text ) {
-			if ( this.isInlineFiller( domNode )  ) {
+			if ( this.isInlineFiller( domNode ) ) {
 				return null;
 			} else {
-				return new ViewText( domNode.data );
+				return new ViewText( this.getDataWithoutFiller( domNode ) );
 			}
 		} else {
 			if ( this.getCorrespondingView( domNode ) ) {
@@ -536,6 +536,14 @@ export default class DomConverter {
 
 	isInlineFiller( domText ) {
 		return domText.data.length == INLINE_FILLER_SIZE && this.startsWithFiller( domText );
+	}
+
+	getDataWithoutFiller( domText ) {
+		if ( this.startsWithFiller( domText ) ) {
+			return domText.data.slice( INLINE_FILLER_SIZE );
+		} else {
+			return domText.data;
+		}
 	}
 
 	isBlockFiller( domNode ) {

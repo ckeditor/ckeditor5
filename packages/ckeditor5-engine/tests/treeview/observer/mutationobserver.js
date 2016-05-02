@@ -8,9 +8,8 @@
 'use strict';
 
 import TreeView from '/ckeditor5/engine/treeview/treeview.js';
-import Element from '/ckeditor5/engine/treeview/element.js';
-import Text from '/ckeditor5/engine/treeview/text.js';
 import MutationObserver from '/ckeditor5/engine/treeview/observer/mutationobserver.js';
+import { parse } from '/tests/engine/_utils/view.js';
 
 describe( 'MutationObserver', () => {
 	let domEditor, treeView, viewRoot, mutationObserver, lastMutations;
@@ -21,6 +20,8 @@ describe( 'MutationObserver', () => {
 		lastMutations = null;
 
 		treeView.createRoot( domEditor, 'editor' );
+		treeView.selection.removeAllRanges();
+		document.getSelection().removeAllRanges();
 
 		treeView.addObserver( MutationObserver );
 		mutationObserver = treeView.getObserver( MutationObserver );
@@ -29,10 +30,7 @@ describe( 'MutationObserver', () => {
 
 		viewRoot = treeView.viewRoots.get( 'editor' );
 
-		viewRoot.insertChildren( 0, [
-			new Element( 'p', [], [ new Text( 'foo' ) ] ),
-			new Element( 'p', [], [ new Text( 'bar' ) ] )
-		] );
+		viewRoot.appendChildren( parse( '<container:p>foo</container:p><container:p>bar</container:p>' ) );
 
 		treeView.render();
 	} );
@@ -112,10 +110,8 @@ describe( 'MutationObserver', () => {
 		// Prepare editor2
 		treeView.createRoot( domEditor2, 'editor2' );
 
-		treeView.viewRoots.get( 'editor2' ).insertChildren( 0, [
-			new Element( 'p', [], [ new Text( 'foo' ) ] ),
-			new Element( 'p', [], [ new Text( 'bar' ) ] )
-		] );
+		treeView.viewRoots.get( 'editor2' ).appendChildren(
+			parse( '<container:p>foo</container:p><container:p>bar</container:p>' ) );
 
 		// Render editor2 (first editor has been rendered in the beforeEach function)
 		treeView.render();
@@ -126,6 +122,76 @@ describe( 'MutationObserver', () => {
 		mutationObserver.flush();
 
 		expect( lastMutations.length ).to.equal( 2 );
+	} );
+
+	it( 'should fire nothing if there were no mutations', () => {
+		mutationObserver.flush();
+
+		expectDomEditorNotToChange();
+		expect( lastMutations ).to.be.null;
+	} );
+
+	it( 'should fire children mutation if the mutation occurred in the inline filler', () => {
+		const { view, selection } = parse( '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
+
+		viewRoot.appendChildren( view );
+		treeView.selection.setTo( selection );
+
+		treeView.render();
+
+		const inlineFiller = domEditor.childNodes[ 2 ].childNodes[ 1 ].childNodes[ 0 ];
+		inlineFiller.data += 'x';
+
+		mutationObserver.flush();
+
+		expect( lastMutations.length ).to.equal( 1 );
+		expect( lastMutations[ 0 ].type ).to.equal( 'children' );
+		expect( lastMutations[ 0 ].node ).to.equal( selection.getFirstPosition().parent );
+	} );
+
+	it( 'should have no inline filler in mutation', () => {
+		const { view, selection } = parse( '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
+
+		viewRoot.appendChildren( view );
+		treeView.selection.setTo( selection );
+
+		treeView.render();
+
+		let inlineFiller = domEditor.childNodes[ 2 ].childNodes[ 1 ].childNodes[ 0 ];
+		inlineFiller.data += 'x';
+
+		view.getChild( 1 ).appendChildren( parse( 'x' ) );
+		mutationObserver.flush();
+		treeView.render();
+
+		inlineFiller = domEditor.childNodes[ 2 ].childNodes[ 1 ].childNodes[ 0 ];
+		inlineFiller.data += 'y';
+
+		mutationObserver.flush();
+
+		expect( lastMutations.length ).to.equal( 1 );
+		expect( lastMutations[ 0 ].type ).to.equal( 'text' );
+		expect( lastMutations[ 0 ].oldText ).to.equal( 'x' );
+		expect( lastMutations[ 0 ].newText ).to.equal( 'xy' );
+	} );
+
+	it( 'should have no block filler in mutation', () => {
+		viewRoot.appendChildren( parse( '<container:p></container:p>' ) );
+
+		treeView.render();
+
+		const domP = domEditor.childNodes[ 2 ];
+		domP.removeChild( domP.childNodes[ 0 ] );
+		domP.appendChild( document.createTextNode( 'foo' ) );
+
+		mutationObserver.flush();
+
+		expect( lastMutations.length ).to.equal( 1 );
+
+		expect( lastMutations[ 0 ].newChildren.length ).to.equal( 1 );
+		expect( lastMutations[ 0 ].newChildren[ 0 ].data ).to.equal( 'foo' );
+
+		expect( lastMutations[ 0 ].oldChildren.length ).to.equal( 0 );
 	} );
 
 	function expectDomEditorNotToChange() {

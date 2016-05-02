@@ -146,7 +146,7 @@ export default class MutationObserver extends Observer {
 					mutatedTexts.set( text, {
 						type: 'text',
 						oldText: text.data,
-						newText: mutation.target.data,
+						newText: domConverter.getDataWithoutFiller( mutation.target ),
 						node: text
 					} );
 				} else if ( !text && domConverter.startsWithFiller( mutation.target ) ) {
