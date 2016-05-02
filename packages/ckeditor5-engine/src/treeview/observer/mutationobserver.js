@@ -69,6 +69,12 @@ export default class MutationObserver extends Observer {
 		this._mutationObserver = new window.MutationObserver( this._onMutations.bind( this ) );
 	}
 
+	/**
+	 * Synchronously fires {@link engine.treeView.TreeView#mutations} event with all mutations in record queue.
+	 * At the same time empties the queue so mutations will not be fired twice.
+	 *
+	 * @returns {[type]} [description]
+	 */
 	flush() {
 		this._onMutations( this._mutationObserver.takeRecords() );
 	}
@@ -149,7 +155,11 @@ export default class MutationObserver extends Observer {
 						newText: domConverter.getDataWithoutFiller( mutation.target ),
 						node: text
 					} );
-				} else if ( !text && domConverter.startsWithFiller( mutation.target ) ) {
+				}
+				// When we added first letter to the text node which had only inline filler, for the DOM it is mutation
+				// on text, but for the view, where filler text node did not existed, new text node was created, so we
+				// need to fire 'children' mutation instead of 'text'.
+				else if ( !text && domConverter.startsWithFiller( mutation.target ) ) {
 					mutatedElements.add( domConverter.getCorrespondingViewElement( mutation.target.parentNode ) );
 				}
 			}
