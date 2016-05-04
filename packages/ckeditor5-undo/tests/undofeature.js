@@ -6,7 +6,8 @@
 'use strict';
 
 import Editor from '/ckeditor5/editor.js';
-import Position from '/ckeditor5/core/treemodel/position.js';
+import ModelDocument from '/ckeditor5/engine/treemodel/document.js';
+import Position from '/ckeditor5/engine/treemodel/position.js';
 import UndoFeature from '/ckeditor5/undo/undofeature.js';
 
 let element, editor, undo, batch, doc, root;
@@ -16,12 +17,14 @@ beforeEach( () => {
 	document.body.appendChild( element );
 
 	editor = new Editor( element );
-	undo = new UndoFeature( editor );
-	undo.init();
 
-	doc = editor.document;
+	doc = new ModelDocument();
+	editor.document = doc;
 	batch = doc.batch();
 	root = doc.createRoot( 'root' );
+
+	undo = new UndoFeature( editor );
+	undo.init();
 } );
 
 afterEach( () => {

@@ -132,7 +132,7 @@ export default class UndoCommand extends Command {
 							case 'move':
 							case 'remove':
 							case 'reinsert':
-								result = transformed[ t ].getTransformedByMove( operation.sourcePosition, operation.movedRangeStart, operation.howMany, true );
+								result = transformed[ t ].getTransformedByMove( operation.sourcePosition, operation.targetPosition, operation.howMany, true );
 								break;
 						}
 

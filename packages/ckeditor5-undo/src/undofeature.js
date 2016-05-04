@@ -18,7 +18,7 @@ export default class UndoFeature extends Feature {
 		super( editor );
 
 		/**
-		 * Undo command which manages undo {@link core.treeModel.Batch batches} stack (history).
+		 * Undo command which manages undo {@link engine.treeModel.Batch batches} stack (history).
 		 * Created and registered during {@link undo.UndoFeature#init feature initialization}.
 		 *
 		 * @private
@@ -27,7 +27,7 @@ export default class UndoFeature extends Feature {
 		this._undoCommand = null;
 
 		/**
-		 * Undo command which manages redo {@link core.treeModel.Batch batches} stack (history).
+		 * Undo command which manages redo {@link engine.treeModel.Batch batches} stack (history).
 		 * Created and registered during {@link undo.UndoFeature#init feature initialization}.
 		 *
 		 * @private
@@ -56,9 +56,9 @@ export default class UndoFeature extends Feature {
 		this.editor.commands.set( 'redo', this._redoCommand );
 		this.editor.commands.set( 'undo', this._undoCommand );
 
-		// Whenever new batch is created add it to undo history and clear redo history.
 		this.listenTo( this.editor.document, 'change', ( evt, type, changes, batch ) => {
 			if ( batch && !this._batchRegistry.has( batch ) ) {
+				// Whenever new batch is created add it to undo history and clear redo history.
 				this._batchRegistry.add( batch );
 				this._undoCommand.addBatch( batch );
 				this._redoCommand.clearStack();
