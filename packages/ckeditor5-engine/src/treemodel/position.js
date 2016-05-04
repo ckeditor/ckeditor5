@@ -390,13 +390,13 @@ export default class Position {
 				return true;
 
 			case 'BEFORE':
-				left = this;
-				right = otherPosition;
+				left = Position.createFromPosition( this );
+				right = Position.createFromPosition( otherPosition );
 				break;
 
 			case 'AFTER':
-				left = otherPosition;
-				right = this;
+				left = Position.createFromPosition( otherPosition );
+				right = Position.createFromPosition( this );
 				break;
 
 			default:
