@@ -120,7 +120,14 @@ function fixBoundaries( type, range, position ) {
 		case 'move':
 		case 'remove':
 		case 'reinsert':
-			const result = this.getTransformedByMove( position, range.start, howMany );
+			const sourcePosition = position;
+
+			// Range.getTransformedByMove is expecting `targetPosition` to be "before" move
+			// (before transformation). `range.start` is already after the move happened.
+			// We have to revert `range.start` to the state before the move.
+			const targetPosition = range.start.getTransformedByInsertion( sourcePosition, howMany );
+
+			const result = this.getTransformedByMove( sourcePosition, targetPosition, howMany );
 
 			// First item in the array is the "difference" part, so a part of the range
 			// that did not get moved. We use it as reference range and expand if possible.

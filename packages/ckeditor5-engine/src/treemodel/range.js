@@ -435,8 +435,10 @@ export default class Range {
 			difference = null;
 		}
 
+		const insertPosition = targetPosition.getTransformedByDeletion( sourcePosition, howMany );
+
 		if ( difference ) {
-			result = difference.getTransformedByInsertion( targetPosition, howMany, spread );
+			result = difference.getTransformedByInsertion( insertPosition, howMany, spread );
 		} else {
 			result = [];
 		}
@@ -445,10 +447,10 @@ export default class Range {
 
 		// Add common part of the range only if there is any and only if it is not
 		// already included in `difference` part.
-		if ( common && ( spread || !difference.containsPosition( targetPosition ) ) ) {
+		if ( common && ( spread || difference === null || !difference.containsPosition( insertPosition ) ) ) {
 			result.push( new Range(
-				common.start._getCombined( moveRange.start, targetPosition ),
-				common.end._getCombined( moveRange.start, targetPosition )
+				common.start._getCombined( moveRange.start, insertPosition ),
+				common.end._getCombined( moveRange.start, insertPosition )
 			) );
 		}
 
