@@ -29,10 +29,10 @@ export default class UndoCommand extends Command {
 		this._batchStack = [];
 
 		/**
-		 * Stores the selection ranges for each batch and use them to recreate selection after undo.
+		 * For each batch, it stores the information about selection needed to recreate it after undo.
 		 *
 		 * @private
-		 * @member {WeakMap.<engine.treeModel.Range>} undo.UndoCommand#_batchSelection
+		 * @member {WeakMap} undo.UndoCommand#_batchSelection
 		 */
 		this._batchSelection = new WeakMap();
 	}
@@ -46,7 +46,13 @@ export default class UndoCommand extends Command {
 	 */
 	addBatch( batch ) {
 		this._batchStack.push( batch );
-		this._batchSelection.set( batch, Array.from( this.editor.document.selection.getRanges() ) );
+		this._batchSelection.set(
+			batch,
+			{
+				ranges: Array.from( this.editor.document.selection.getRanges() ),
+				isBackward: this.editor.document.selection.isBackward
+			}
+		);
 	}
 
 	/**
@@ -54,7 +60,6 @@ export default class UndoCommand extends Command {
 	 */
 	clearStack() {
 		this._batchStack = [];
-		this._batchSelection.clear();
 	}
 
 	/**
@@ -98,8 +103,11 @@ export default class UndoCommand extends Command {
 			}
 		}
 
+		// Get the selection state stored with this batch.
+		const selectionState = this._batchSelection.get( undoBatch );
+
 		// Take all selection ranges that were stored with undone batch.
-		const ranges = this._batchSelection.get( undoBatch );
+		const ranges = selectionState.ranges;
 
 		// The ranges will be transformed by deltas from history that took place
 		// after the selection got stored.
@@ -184,7 +192,7 @@ export default class UndoCommand extends Command {
 		// `transformedRanges` may be empty if all ranges ended up in graveyard.
 		// If that is the case, do not restore selection.
 		if ( transformedRanges.length ) {
-			this.editor.document.selection.setRanges( transformedRanges );
+			this.editor.document.selection.setRanges( transformedRanges, selectionState.isBackward );
 		}
 
 		this.fire( 'undo', undoBatch );
