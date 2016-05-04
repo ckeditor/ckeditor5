@@ -12,6 +12,8 @@ import ViewRange from './range.js';
 import ViewSelection from './selection.js';
 import ViewDocumentFragment from './documentfragment.js';
 
+import indexOf from '../../utils/dom/indexof.js';
+
 export const BR_FILLER = ( domDocument ) => {
 	const fillerBr = domDocument.createElement( 'br' );
 	fillerBr.dataset.filler = true;
@@ -45,7 +47,7 @@ export default class DomConverter {
 	/**
 	 * Creates DOM converter.
 	 */
-	constructor( options = { blockFiller: BR_FILLER } ) {
+	constructor( options = {} ) {
 		// Using WeakMap prevent memory leaks: when the converter will be destroyed all referenced between View and DOM
 		// will be removed. Also because it is a *Weak*Map when both view and DOM elements will be removed referenced
 		// will be also removed, isn't it brilliant?
@@ -70,9 +72,9 @@ export default class DomConverter {
 		 */
 		this._viewToDomMapping = new WeakMap();
 
-		this.blockFillerCreator = options.blockFiller;
+		this.blockFillerCreator = options.blockFiller || BR_FILLER;
 
-		this._templateBlockFiller = options.blockFiller( window.document );
+		this._templateBlockFiller = this.blockFillerCreator( window.document );
 	}
 
 	/**
@@ -172,6 +174,51 @@ export default class DomConverter {
 		}
 	}
 
+	viewRangeToDom( viewRange ) {
+		const domStart = this.viewPositionToDom( viewRange.start );
+		const domEnd = this.viewPositionToDom( viewRange.end );
+
+		const domRange = new Range();
+		domRange.setStart( domStart.parent, domStart.offset );
+		domRange.setEnd( domEnd.parent, domEnd.offset );
+
+		return domRange;
+	}
+
+	viewPositionToDom( viewPosition ) {
+		const viewParent = viewPosition.parent;
+
+		if ( viewParent instanceof ViewText ) {
+			const domParent = this.getCorrespondingDomText( viewParent );
+			let offset = viewPosition.offset;
+
+			if ( this.startsWithFiller( domParent ) ) {
+				offset += INLINE_FILLER_SIZE;
+			}
+
+			return { parent: domParent, offset: offset };
+		} else {
+			let domParent, domBefore, domAfter;
+
+			if ( viewPosition.offset === 0 ) {
+				domParent = this.getCorrespondingDom( viewPosition.parent );
+				domAfter = domParent.childNodes[ 0 ];
+			} else {
+				domBefore = this.getCorrespondingDom( viewPosition.nodeBefore );
+				domParent = domBefore.parentNode;
+				domAfter = domBefore.nextSibling;
+			}
+
+			if ( domAfter instanceof Text && this.startsWithFiller( domAfter ) ) {
+				return { parent: domAfter, offset: INLINE_FILLER_SIZE };
+			}
+
+			const offset = domBefore ? indexOf( domBefore ) + 1 : 0;
+
+			return { parent: domParent, offset: offset };
+		}
+	}
+
 	/**
 	 * Converts DOM to view. For all text nodes, not bound elements and document fragments new items will
 	 * be created. For bound elements and document fragments function will return corresponding items.
@@ -264,6 +311,70 @@ export default class DomConverter {
 		}
 
 		return undefined;
+	}
+
+	domSelectionToView( domSelection ) {
+		const viewSelection = new ViewSelection();
+
+		for ( let i = 0; i < domSelection.rangeCount; i++ ) {
+			const domRange = domSelection.getRangeAt( i );
+			const viewRange = this.domRangeToView( domRange );
+
+			if ( viewRange ) {
+				viewSelection.addRange( viewRange );
+			}
+		}
+
+		return viewSelection;
+	}
+
+	domRangeToView( domRange ) {
+		const viewStart = this.domPositionToView( domRange.startContainer, domRange.startOffset );
+		const viewEnd = this.domPositionToView( domRange.endContainer, domRange.endOffset );
+
+		if ( viewStart && viewEnd ) {
+			return new ViewRange( viewStart, viewEnd );
+		}
+
+		return undefined;
+	}
+
+	domPositionToView( domParent, domOffset ) {
+		if ( this.isBlockFiller( domParent ) ) {
+			return this.domPositionToView( domParent.parentNode, indexOf( domParent ) );
+		}
+
+		if ( domParent instanceof Text ) {
+			if ( this.isInlineFiller( domParent ) ) {
+				return this.domPositionToView( domParent.parentNode, indexOf( domParent ) );
+			}
+
+			const viewParent = this.getCorrespondingViewText( domParent );
+			let offset = domOffset;
+
+			if ( this.startsWithFiller( domParent ) ) {
+				offset -= INLINE_FILLER_SIZE;
+				offset = offset < 0 ? 0 : offset;
+			}
+
+			return new ViewPosition( viewParent, offset );
+		} else {
+			if ( domOffset === 0 ) {
+				const viewParent = this.getCorrespondingView( domParent );
+
+				if ( viewParent ) {
+					return new ViewPosition( viewParent, 0 );
+				}
+			} else {
+				const viewBefore = this.getCorrespondingView( domParent.childNodes[ domOffset - 1 ] );
+
+				if ( viewBefore ) {
+					return new ViewPosition( viewBefore.parent, viewBefore.getIndex() + 1 );
+				}
+			}
+
+			return undefined;
+		}
 	}
 
 	/**
@@ -421,115 +532,6 @@ export default class DomConverter {
 		return null;
 	}
 
-	viewPositionToDom( viewPosition ) {
-		const viewParent = viewPosition.parent;
-
-		if ( viewParent instanceof ViewText ) {
-			const domParent = this.getCorrespondingDomText( viewParent );
-			let offset = viewPosition.offset;
-
-			if ( this.startsWithFiller( domParent ) ) {
-				offset += INLINE_FILLER_SIZE;
-			}
-
-			return { parent: domParent, offset: offset };
-		} else {
-			let domParent, domBefore, domAfter;
-
-			if ( viewPosition.offset === 0 ) {
-				domParent = this.getCorrespondingDom( viewPosition.parent );
-				domAfter = domParent.childNodes[ 0 ];
-			} else {
-				domBefore = this.getCorrespondingDom( viewPosition.nodeBefore );
-				domParent = domBefore.parentNode;
-				domAfter = domBefore.nextSibling;
-			}
-
-			if ( domAfter instanceof Text && this.startsWithFiller( domAfter ) ) {
-				return { parent: domAfter, offset: INLINE_FILLER_SIZE };
-			}
-
-			const offset = domBefore ? indexOf( domBefore ) + 1 : 0;
-
-			return { parent: domParent, offset: offset };
-		}
-	}
-
-	domPositionToView( domParent, domOffset ) {
-		if ( this.isBlockFiller( domParent ) ) {
-			return this.domPositionToView( domParent.parentNode, indexOf( domParent ) );
-		}
-
-		if ( domParent instanceof Text ) {
-			if ( this.isInlineFiller( domParent ) ) {
-				return this.domPositionToView( domParent.parentNode, indexOf( domParent ) );
-			}
-
-			const viewParent = this.getCorrespondingViewText( domParent );
-			let offset = domOffset;
-
-			if ( this.startsWithFiller( domParent ) ) {
-				offset -= INLINE_FILLER_SIZE;
-				offset = offset < 0 ? 0 : offset;
-			}
-
-			return new ViewPosition( viewParent, offset );
-		} else {
-			if ( domOffset === 0 ) {
-				const viewParent = this.getCorrespondingView( domParent );
-
-				if ( viewParent ) {
-					return new ViewPosition( viewParent, 0 );
-				}
-			} else {
-				const viewBefore = this.getCorrespondingView( domParent.childNodes[ domOffset - 1 ] );
-
-				if ( viewBefore ) {
-					return new ViewPosition( viewBefore.parent, viewBefore.getIndex() + 1 );
-				}
-			}
-
-			return undefined;
-		}
-	}
-
-	viewRangeToDom( viewRange ) {
-		const domStart = this.viewPositionToDom( viewRange.start );
-		const domEnd = this.viewPositionToDom( viewRange.end );
-
-		const domRange = new Range();
-		domRange.setStart( domStart.parent, domStart.offset );
-		domRange.setEnd( domEnd.parent, domEnd.offset );
-
-		return domRange;
-	}
-
-	domRangeToView( domRange ) {
-		const viewStart = this.domPositionToView( domRange.startContainer, domRange.startOffset );
-		const viewEnd = this.domPositionToView( domRange.endContainer, domRange.endOffset );
-
-		if ( viewStart && viewEnd ) {
-			return new ViewRange( viewStart, viewEnd );
-		}
-
-		return undefined;
-	}
-
-	domSelectionToView( domSelection ) {
-		const viewSelection = new ViewSelection();
-
-		for ( let i = 0; i < domSelection.rangeCount; i++ ) {
-			const domRange = domSelection.getRangeAt( i );
-			const viewRange = this.domRangeToView( domRange );
-
-			if ( viewRange ) {
-				viewSelection.addRange( viewRange );
-			}
-		}
-
-		return viewSelection;
-	}
-
 	startsWithFiller( domText ) {
 		return ( domText.data.substr( 0, INLINE_FILLER_SIZE ) === INLINE_FILLER );
 	}
@@ -549,15 +551,4 @@ export default class DomConverter {
 	isBlockFiller( domNode ) {
 		return domNode.isEqualNode( this._templateBlockFiller );
 	}
-}
-
-function indexOf( domNode ) {
-	let index = 0;
-
-	while ( domNode.previousSibling ) {
-		domNode = domNode.previousSibling;
-		index++;
-	}
-
-	return index;
 }

@@ -11,6 +11,8 @@ import ViewPosition from './position.js';
 import { INLINE_FILLER, INLINE_FILLER_SIZE } from './domconverter.js';
 
 import diff from '../../utils/diff.js';
+import insertAt from '../../utils/dom/insertat.js';
+import remove from '../../utils/dom/remove.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
@@ -306,10 +308,10 @@ export default class Renderer {
 
 		for ( let action of actions ) {
 			if ( action === 'INSERT' ) {
-				domElement.insertBefore( expectedDomChildren[ i ], actualDomChildren[ i ] || null );
+				insertAt( domElement, i, expectedDomChildren[ i ] );
 				i++;
 			} else if ( action === 'DELETE' ) {
-				domElement.removeChild( actualDomChildren[ i ] );
+				remove( actualDomChildren[ i ] );
 			} else { // 'EQUAL'
 				i++;
 			}
