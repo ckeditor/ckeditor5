@@ -32,9 +32,9 @@ export default class UndoCommand extends Command {
 		 * Stores the selection ranges for each batch and use them to recreate selection after undo.
 		 *
 		 * @private
-		 * @member {Map.<engine.treeModel.Range>} undo.UndoCommand#_batchSelection
+		 * @member {WeakMap.<engine.treeModel.Range>} undo.UndoCommand#_batchSelection
 		 */
-		this._batchSelection = new Map();
+		this._batchSelection = new WeakMap();
 	}
 
 	/**
@@ -103,7 +103,7 @@ export default class UndoCommand extends Command {
 
 		// The ranges will be transformed by deltas from history that took place
 		// after the selection got stored.
-		const deltas = this.editor.document.history.getDeltas( undoBatch.deltas[ 0 ].baseVersion );
+		const deltas = this.editor.document.history.getDeltas( undoBatch.deltas[ 0 ].baseVersion ) || [];
 
 		// This will keep the transformed ranges.
 		const transformedRanges = [];

@@ -39,9 +39,9 @@ export default class UndoFeature extends Feature {
 		 * Keeps track of which batch has already been added to undo manager.
 		 *
 		 * @private
-		 * @member {Set} undo.UndoFeature#_batchRegistry
+		 * @member {WeakSet.<engine.treeModel.Batch>} undo.UndoFeature#_batchRegistry
 		 */
-		this._batchRegistry = new Set();
+		this._batchRegistry = new WeakSet();
 	}
 
 	/**
