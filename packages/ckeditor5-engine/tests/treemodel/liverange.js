@@ -159,7 +159,7 @@ describe( 'LiveRange', () => {
 			} );
 
 			it( 'is to the same parent as range end and before it', () => {
-				let moveSource = new Position( root, [ 2 ] );
+				let moveSource = new Position( root, [ 3 ] );
 				let moveRange = new Range( new Position( root, [ 0, 2, 0 ] ), new Position( root, [ 0, 2, 4 ] ) );
 
 				let changes = {
@@ -331,6 +331,38 @@ describe( 'LiveRange', () => {
 				expect( live.start.path ).to.deep.equal( [ 0, 3, 1 ] );
 				expect( live.end.path ).to.deep.equal( [ 0, 3, 4 ] );
 			} );
+
+			it( 'is inside live range and points to live range', () => {
+				live.end.path = [ 0, 1, 12 ];
+
+				let moveSource = new Position( root, [ 0, 1, 6 ] );
+				let moveRange = new Range( new Position( root, [ 0, 1, 8 ] ), new Position( root, [ 0, 1, 10 ] ) );
+
+				let changes = {
+					range: moveRange,
+					sourcePosition: moveSource
+				};
+				doc.fire( 'change', 'move', changes, null );
+
+				expect( live.start.path ).to.deep.equal( [ 0, 1, 4 ] );
+				expect( live.end.path ).to.deep.equal( [ 0, 1, 12 ] );
+			} );
+
+			it( 'is intersecting with live range and points to live range', () => {
+				live.end.path = [ 0, 1, 12 ];
+
+				let moveSource = new Position( root, [ 0, 1, 2 ] );
+				let moveRange = new Range( new Position( root, [ 0, 1, 5 ] ), new Position( root, [ 0, 1, 9 ] ) );
+
+				let changes = {
+					range: moveRange,
+					sourcePosition: moveSource
+				};
+				doc.fire( 'change', 'move', changes, null );
+
+				expect( live.start.path ).to.deep.equal( [ 0, 1, 2 ] );
+				expect( live.end.path ).to.deep.equal( [ 0, 1, 12 ] );
+			} );
 		} );
 	} );
 
@@ -353,9 +385,6 @@ describe( 'LiveRange', () => {
 		} );
 
 		describe( 'insertion', () => {
-			// Technically range will be expanded but the boundaries properties will stay the same.
-			// Start won't change because insertion is after it.
-			// End won't change because it is in different node.
 			it( 'is in the same parent as range start and after it', () => {
 				let insertRange = new Range( new Position( root, [ 0, 1, 7 ] ), new Position( root, [ 0, 1, 9 ] ) );
 
@@ -390,9 +419,6 @@ describe( 'LiveRange', () => {
 		} );
 
 		describe( 'range move', () => {
-			// Technically range will be expanded but the boundaries properties will stay the same.
-			// Start won't change because insertion is after it.
-			// End won't change because it is in different node.
 			it( 'is to the same parent as range start and after it', () => {
 				let moveSource = new Position( root, [ 4 ] );
 				let moveRange = new Range( new Position( root, [ 0, 1, 7 ] ), new Position( root, [ 0, 1, 9 ] ) );
@@ -406,7 +432,7 @@ describe( 'LiveRange', () => {
 				expect( live.isEqual( clone ) ).to.be.true;
 			} );
 
-			it( 'is to the same parent as range end and before it', () => {
+			it( 'is to the same parent as range end and after it', () => {
 				let moveSource = new Position( root, [ 4 ] );
 				let moveRange = new Range( new Position( root, [ 0, 2, 3 ] ), new Position( root, [ 0, 2, 5 ] ) );
 
@@ -432,9 +458,6 @@ describe( 'LiveRange', () => {
 				expect( live.isEqual( clone ) ).to.be.true;
 			} );
 
-			// Technically range will be shrunk but the boundaries properties will stay the same.
-			// Start won't change because deletion is after it.
-			// End won't change because it is in different node.
 			it( 'is from the same parent as range start and after it', () => {
 				let moveSource = new Position( root, [ 0, 1, 6 ] );
 				let moveRange = new Range( new Position( root, [ 4, 0 ] ), new Position( root, [ 4, 3 ] ) );

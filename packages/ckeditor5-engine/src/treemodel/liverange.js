@@ -6,17 +6,14 @@
 'use strict';
 
 import Range from './range.js';
-import LivePosition from './liveposition.js';
 import EmitterMixin from '../../utils/emittermixin.js';
 import utils from '../../utils/utils.js';
 
 /**
  * LiveRange is a Range in the Tree Model that updates itself as the tree changes. It may be used as a bookmark.
  *
- * **Note:** Constructor creates it's own {@link engine.treeModel.LivePosition} instances basing on passed values.
- *
- * **Note:** Be very careful when dealing with LiveRange. Each LiveRange instance bind events that might
- * have to be unbound. Use {@link engine.treeModel.LiveRange#detach detach} whenever you don't need LiveRange anymore.
+ * **Note:** Be very careful when dealing with `LiveRange`. Each `LiveRange` instance bind events that might
+ * have to be unbound. Use {@link engine.treeModel.LiveRange#detach detach} whenever you don't need `LiveRange` anymore.
  *
  * @memberOf engine.treeModel
  */
@@ -29,9 +26,6 @@ export default class LiveRange extends Range {
 	constructor( start, end ) {
 		super( start, end );
 
-		this.start = new LivePosition( this.start.root, this.start.path.slice(), 'STICKS_TO_NEXT' );
-		this.end = new LivePosition( this.end.root, this.end.path.slice(), 'STICKS_TO_PREVIOUS' );
-
 		bindWithDocument.call( this );
 	}
 
@@ -41,8 +35,6 @@ export default class LiveRange extends Range {
 	 * referring to it).
 	 */
 	detach() {
-		this.start.detach();
-		this.end.detach();
 		this.stopListening();
 	}
 
@@ -117,23 +109,43 @@ function bindWithDocument() {
  */
 function fixBoundaries( type, range, position ) {
 	/* jshint validthis: true */
+	let updated;
+	const howMany = range.end.offset - range.start.offset;
 
-	if ( type == 'move' || type == 'remove' || type == 'reinsert' ) {
-		let containsStart = range.containsPosition( this.start ) || range.start.isEqual( this.start );
-		let containsEnd = range.containsPosition( this.end ) || range.end.isEqual( this.end );
-		position = position.getTransformedByInsertion( range.start, range.end.offset - range.start.offset, true );
+	switch ( type ) {
+		case 'insert':
+			updated = this.getTransformedByInsertion( range.start, howMany )[ 0 ];
+			break;
 
-		// If the range contains both start and end, don't do anything - LivePositions that are boundaries of
-		// this LiveRange are in correct places, they got correctly transformed.
-		if ( containsStart && !containsEnd && !range.end.isTouching( position ) ) {
-			this.start.path = position.path.slice();
-			this.start.root = position.root;
-		}
+		case 'move':
+		case 'remove':
+		case 'reinsert':
+			const result = this.getTransformedByMove( position, range.start, howMany );
 
-		if ( containsEnd && !containsStart && !range.start.isTouching( position ) ) {
-			this.end.path = position.path.slice();
-			this.end.root = position.root;
-		}
+			// First item in the array is the "difference" part, so a part of the range
+			// that did not get moved. We use it as reference range and expand if possible.
+			updated = result[ 0 ];
+
+			// We will check if there is other range and if it is touching the reference range.
+			// If it does, we will expand the reference range (at the beginning or at the end).
+			// Keep in mind that without settings `spread` flag, `getTransformedByMove` may
+			// return maximum two ranges.
+			if ( result.length > 1 ) {
+				let otherRange = result[ 1 ];
+
+				if ( updated.start.isTouching( otherRange.end ) ) {
+					updated.start = otherRange.start;
+				} else if ( updated.end.isTouching( otherRange.start ) ) {
+					updated.end = otherRange.end;
+				}
+			}
+
+			break;
+	}
+
+	if ( updated ) {
+		this.start = updated.start;
+		this.end = updated.end;
 	}
 }
 
