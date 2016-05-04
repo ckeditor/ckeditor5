@@ -28,3 +28,19 @@ export default class StickyToolbar extends Toolbar {
 		model.bind( 'isActive' ).to( editor.editables, 'current', c => !!c );
 	}
 }
+
+/**
+ * The basic sticky toolbar model interface.
+ *
+ * @memberOf ui.stickyToolbar
+ * @interface StickyToolbarModel
+ */
+
+/**
+ * Indicates whether the toolbar should be active. When any editable
+ * is focused in the editor, toolbar becomes active.
+ *
+ * @readonly
+ * @observable
+ * @member {Boolean} ui.button.StickyToolbarModel#isActive
+ */
