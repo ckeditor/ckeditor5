@@ -406,6 +406,8 @@ export default class Range {
 	 * @param {engine.treeModel.Position} sourcePosition Position from which nodes are moved.
 	 * @param {engine.treeModel.Position} targetPosition Position to where nodes are moved.
 	 * @param {Number} howMany How many nodes are moved.
+	 * @param {Boolean} [spread] Flag indicating whether this {engine.treeModel.Range range} should be spread if insertion
+	 * was inside the range. Defaults to `false`.
 	 * @returns {Array.<engine.treeModel.Range>} Result of the transformation.
 	 */
 	getTransformedByMove( sourcePosition, targetPosition, howMany, spread ) {
@@ -441,7 +443,9 @@ export default class Range {
 
 		const common = this.getIntersection( moveRange );
 
-		if ( common ) {
+		// Add common part of the range only if there is any and only if it is not
+		// already included in `difference` part.
+		if ( common && ( spread || !difference.containsPosition( targetPosition ) ) ) {
 			result.push( new Range(
 				common.start._getCombined( moveRange.start, targetPosition ),
 				common.end._getCombined( moveRange.start, targetPosition )
