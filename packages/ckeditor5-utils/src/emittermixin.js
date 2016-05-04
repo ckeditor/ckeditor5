@@ -6,7 +6,7 @@
 'use strict';
 
 import EventInfo from './eventinfo.js';
-import utils from './utils.js';
+import uid from './uid.js';
 
 // Saves how many callbacks has been already added. Does not decrement when callback is removed.
 // Used internally as a unique id for a callback.
@@ -159,7 +159,7 @@ const EmitterMixin = {
 		}
 
 		if ( !( emitterId = emitter._emitterId ) ) {
-			emitterId = emitter._emitterId = utils.uid();
+			emitterId = emitter._emitterId = uid();
 		}
 
 		if ( !( emitterInfo = emitters[ emitterId ] ) ) {

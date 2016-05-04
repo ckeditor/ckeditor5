@@ -5,7 +5,7 @@
 
 'use strict';
 
-import utils from './utils.js';
+import spy from './spy.js';
 
 /**
  * The event object passed to event callbacks. It is used to provide information about the event as well as a tool to
@@ -36,13 +36,13 @@ export default class EventInfo {
 		 *
 		 * @method utils.EventInfo#stop
 		 */
-		this.stop = utils.spy();
+		this.stop = spy();
 
 		/**
 		 * Removes the current callback from future interactions of this event.
 		 *
 		 * @method utils.EventInfo#off
 		 */
-		this.off = utils.spy();
+		this.off = spy();
 	}
 }

@@ -8,7 +8,7 @@
 import ObservableMixin from './observablemixin.js';
 import isObject from './lib/lodash/isObject.js';
 import isPlainObject from './lib/lodash/isPlainObject.js';
-import utils from './utils.js';
+import mix from './mix.js';
 
 /**
  * Handles a configuration dictionary.
@@ -188,4 +188,4 @@ export default class Config {
 	}
 }
 
-utils.mix( Config, ObservableMixin );
+mix( Config, ObservableMixin );

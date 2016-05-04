@@ -7,7 +7,8 @@
 
 import EmitterMixin from './emittermixin.js';
 import CKEditorError from './ckeditorerror.js';
-import utils from './utils.js';
+import uid from './uid.js';
+import mix from './mix.js';
 
 /**
  * Collections are ordered sets of objects. Items in the collection can be retrieved by their indexes
@@ -268,14 +269,14 @@ export default class Collection {
 		let id;
 
 		do {
-			id = String( utils.uid() );
+			id = String( uid() );
 		} while ( this._itemMap.has( id ) );
 
 		return id;
 	}
 }
 
-utils.mix( Collection, EmitterMixin );
+mix( Collection, EmitterMixin );
 
 /**
  * Fired when an item is added to the collection.
