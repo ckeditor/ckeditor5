@@ -6,7 +6,7 @@
 'use strict';
 
 /**
- * Remove given node from parent.
+ * Removes given node from parent.
  *
  * @param {Node} node Node to remove.
  */

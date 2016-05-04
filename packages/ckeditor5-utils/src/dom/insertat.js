@@ -6,7 +6,7 @@
 'use strict';
 
 /**
- * Insert node to the parent at given index.
+ * Inserts node to the parent at given index.
  *
  * @param {Element} parentElement Parent element.
  * @param {Number} index Insertions index.
