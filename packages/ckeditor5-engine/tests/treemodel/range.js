@@ -542,7 +542,7 @@ describe( 'Range', () => {
 
 		it( 'should move range if it was contained in moved range', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 7 ] ) );
-			const transformed = range.getTransformedByMove( new Position( root, [ 3 ] ), new Position( root, [ 8 ] ), 2 );
+			const transformed = range.getTransformedByMove( new Position( root, [ 3 ] ), new Position( root, [ 6 ] ), 2 );
 
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 6, 2 ] );
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 6, 7 ] );

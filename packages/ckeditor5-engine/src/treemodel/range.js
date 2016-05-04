@@ -408,24 +408,47 @@ export default class Range {
 	 * @param {Number} howMany How many nodes are moved.
 	 * @returns {Array.<engine.treeModel.Range>} Result of the transformation.
 	 */
-	getTransformedByMove( sourcePosition, targetPosition, howMany ) {
+	getTransformedByMove( sourcePosition, targetPosition, howMany, spread ) {
+		let result;
+
 		const moveRange = new Range( sourcePosition, sourcePosition.getShiftedBy( howMany ) );
 
-		let containsStart = moveRange.containsPosition( this.start ) || moveRange.start.isEqual( this.start );
-		let containsEnd = moveRange.containsPosition( this.end ) || moveRange.end.isEqual( this.end );
+		const differenceSet = this.getDifference( moveRange );
+		let difference;
 
-		const result = new Range( this.start, this.end );
-
-		if ( containsStart && !containsEnd ) {
-			result.start = moveRange.end;
-		} else if ( containsEnd && !containsStart ) {
-			result.end = moveRange.start;
+		if ( differenceSet.length == 1 ) {
+			difference = new Range(
+				differenceSet[ 0 ].start.getTransformedByDeletion( sourcePosition, howMany ),
+				differenceSet[ 0 ].end.getTransformedByDeletion( sourcePosition, howMany )
+			);
+		} else if ( differenceSet.length == 2 ) {
+			// This means that ranges were moved from the inside of this range.
+			// So we can operate on this range positions and we don't have to transform starting position.
+			difference = new Range(
+				this.start,
+				this.end.getTransformedByDeletion( sourcePosition, howMany )
+			);
+		} else {
+			// 0.
+			difference = null;
 		}
 
-		result.start = result.start.getTransformedByMove( sourcePosition, targetPosition, howMany, true, containsStart && containsEnd );
-		result.end = result.end.getTransformedByMove( sourcePosition, targetPosition, howMany, result.isCollapsed, containsStart && containsEnd );
+		if ( difference ) {
+			result = difference.getTransformedByInsertion( targetPosition, howMany, spread );
+		} else {
+			result = [];
+		}
 
-		return [ result ];
+		const common = this.getIntersection( moveRange );
+
+		if ( common ) {
+			result.push( new Range(
+				common.start._getCombined( moveRange.start, targetPosition ),
+				common.end._getCombined( moveRange.start, targetPosition )
+			) );
+		}
+
+		return result;
 	}
 
 	/**
