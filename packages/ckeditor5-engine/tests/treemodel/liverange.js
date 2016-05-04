@@ -141,6 +141,17 @@ describe( 'LiveRange', () => {
 				expect( live.start.path ).to.deep.equal( [ 0, 1, 4 ] );
 				expect( live.end.path ).to.deep.equal( [ 0, 3, 2 ] );
 			} );
+
+			it( 'is at the live range start position and live range is collapsed', () => {
+				live.end.path = [ 0, 1, 4 ];
+
+				let insertRange = new Range( new Position( root, [ 0, 1, 4 ] ), new Position( root, [ 0, 1, 8 ] ) );
+
+				doc.fire( 'change', 'insert', { range: insertRange }, null );
+
+				expect( live.start.path ).to.deep.equal( [ 0, 1, 8 ] );
+				expect( live.end.path ).to.deep.equal( [ 0, 1, 8 ] );
+			} );
 		} );
 
 		describe( 'range move', () => {
