@@ -49,7 +49,7 @@ export default class ClassicCreator extends StandardCreator {
 		// UI.
 		this._replaceElement( editor.firstElement, editor.ui.view.element );
 		this._createToolbar();
-		editor.ui.add( 'editable', createEditableUI( editor, editable, EditableUI, InlineEditableUIView ) );
+		editor.ui.add( 'main', createEditableUI( editor, editable, EditableUI, InlineEditableUIView ) );
 
 		// Init.
 		return super.create()
@@ -71,6 +71,8 @@ export default class ClassicCreator extends StandardCreator {
 
 	_createToolbar() {
 		const editor = this.editor;
+
+		// Note: Toolbar and StickyToolbarView share the same model. It may change in the future.
 		const toolbarModel = new Model();
 		const toolbar = new Toolbar( toolbarModel, new StickyToolbarView( toolbarModel, editor.locale ), editor );
 
