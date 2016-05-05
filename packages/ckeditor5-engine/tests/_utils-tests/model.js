@@ -5,7 +5,7 @@
 
 'use strict';
 
-import { stringify, getData, setData } from '/tests/engine/_utils/model.js';
+import { stringify, parse } from '/tests/engine/_utils/model.js';
 import Document from '/ckeditor5/engine/treemodel/document.js';
 import DocumentFragment from '/ckeditor5/engine/treemodel/documentfragment.js';
 import Element from '/ckeditor5/engine/treemodel/element.js';
@@ -231,7 +231,7 @@ describe( 'model test utils', () => {
 		} );
 	} );
 
-	describe( 'setData', () => {
+	describe( 'parse', () => {
 		test( 'creates elements', {
 			data: '<a></a><b><c></c></b>'
 		} );
@@ -243,21 +243,21 @@ describe( 'model test utils', () => {
 		test( 'sets elements attributes', {
 			data: '<a foo=1 bar=true car="x y"><b x="y"></b></a>',
 			output: '<a bar=true car="x y" foo=1><b x="y"></b></a>',
-			check() {
+			check( root ) {
 				expect( root.getChild( 0 ).getAttribute( 'car' ) ).to.equal( 'x y' );
 			}
 		} );
 
 		test( 'sets complex attributes', {
 			data: '<a foo={"a":1,"b":"c"}></a>',
-			check() {
+			check( root ) {
 				expect( root.getChild( 0 ).getAttribute( 'foo' ) ).to.have.property( 'a', 1 );
 			}
 		} );
 
 		test( 'sets text attributes', {
 			data: '<$text bold=true italic=true>foo</$text><$text bold=true>bar</$text>bom',
-			check() {
+			check( root ) {
 				expect( root.getChildCount() ).to.equal( 9 );
 				expect( root.getChild( 0 ) ).to.have.property( 'character', 'f' );
 				expect( root.getChild( 0 ).getAttribute( 'italic' ) ).to.equal( true );
@@ -266,139 +266,132 @@ describe( 'model test utils', () => {
 
 		it( 'throws when unexpected closing tag', () => {
 			expect( () => {
-				setData( document, 'main', '<a><b></a></b>' );
-			} ).to.throw();
+				parse( '<a><b></a></b>' );
+			} ).to.throw( Error, 'Parse error - unexpected closing tag.' );
 		} );
 
 		it( 'throws when unexpected attribute', () => {
 			expect( () => {
-				setData( document, 'main', '<a ?></a>' );
-			} ).to.throw();
+				parse( '<a ?></a>' );
+			} ).to.throw( Error, 'Parse error - unexpected token: ?.' );
 		} );
 
 		it( 'throws when incorrect tag', () => {
 			expect( () => {
-				setData( document, 'main', '<a' );
-			} ).to.throw();
+				parse( '<a' );
+			} ).to.throw( Error, 'Parse error - unexpected token: <a.' );
 		} );
 
 		it( 'throws when missing closing tag', () => {
 			expect( () => {
-				setData( document, 'main', '<a><b></b>' );
-			} ).to.throw();
+				parse( '<a><b></b>' );
+			} ).to.throw( Error, 'Parse error - missing closing tags: a.' );
 		} );
 
 		it( 'throws when missing opening tag for text', () => {
 			expect( () => {
-				setData( document, 'main', '</$text>' );
-			} ).to.throw();
+				parse( '</$text>' );
+			} ).to.throw( Error, 'Parse error - unexpected closing tag.' );
 		} );
 
 		it( 'throws when missing closing tag for text', () => {
 			expect( () => {
-				setData( document, 'main', '<$text>' );
-			} ).to.throw();
+				parse( '<$text>' );
+			} ).to.throw( Error, 'Parse error - missing closing tags: $text.' );
 		} );
 
 		describe( 'selection', () => {
-			const getDataOptions = { selection: true };
-
 			test( 'sets collapsed selection in an element', {
 				data: '<a><selection /></a>',
-				getDataOptions,
-				check() {
-					expect( document.selection.getFirstPosition().parent ).to.have.property( 'name', 'a' );
+				check( root, selection ) {
+					expect( selection.getFirstPosition().parent ).to.have.property( 'name', 'a' );
 				}
 			} );
 
 			test( 'sets collapsed selection between elements', {
-				data: '<a></a><selection /><b></b>',
-				getDataOptions
+				data: '<a></a><selection /><b></b>'
 			} );
 
 			test( 'sets collapsed selection before a text', {
-				data: '<a></a><selection />foo',
-				getDataOptions
+				data: '<a></a><selection />foo'
 			} );
 
 			test( 'sets collapsed selection after a text', {
-				data: 'foo<selection />',
-				getDataOptions
+				data: 'foo<selection />'
 			} );
 
 			test( 'sets collapsed selection within a text', {
 				data: 'foo<selection />bar',
-				getDataOptions,
-				check() {
+				check( root ) {
 					expect( root.getChildCount() ).to.equal( 6 );
 				}
 			} );
 
 			test( 'sets selection attributes', {
 				data: 'foo<selection bold=true italic=true />bar',
-				getDataOptions,
-				check() {
+				check( root, selection ) {
 					expect( selection.getAttribute( 'italic' ) ).to.be.true;
 				}
 			} );
 
 			test( 'sets collapsed selection between text and text with attributes', {
 				data: 'foo<selection /><$text bold=true>bar</$text>',
-				getDataOptions,
-				check() {
+				check( root, selection ) {
 					expect( root.getChildCount() ).to.equal( 6 );
-					expect( document.selection.getAttribute( 'bold' ) ).to.be.undefined;
+					expect( selection.getAttribute( 'bold' ) ).to.be.undefined;
 				}
 			} );
 
 			test( 'sets selection containing an element', {
-				data: 'x<selection><a></a></selection>',
-				getDataOptions
+				data: 'x<selection><a></a></selection>'
 			} );
 
 			test( 'sets selection with attribute containing an element', {
-				data: 'x<selection bold=true><a></a></selection>',
-				getDataOptions
+				data: 'x<selection bold=true><a></a></selection>'
 			} );
 
 			test( 'sets a backward selection containing an element', {
-				data: 'x<selection backward bold=true><a></a></selection>',
-				getDataOptions
+				data: 'x<selection backward bold=true><a></a></selection>'
 			} );
 
 			test( 'sets selection within a text', {
-				data: 'x<selection bold=true>y</selection>z',
-				getDataOptions
+				data: 'x<selection bold=true>y</selection>z'
 			} );
 
 			test( 'sets selection within a text with different attributes', {
-				data: '<$text bold=true>fo<selection bold=true>o</$text>ba</selection>r',
-				getDataOptions
+				data: '<$text bold=true>fo<selection bold=true>o</$text>ba</selection>r'
 			} );
 
 			it( 'throws when missing selection start', () => {
 				expect( () => {
-					setData( document, 'main', 'foo</selection>' );
-				} ).to.throw();
+					parse( 'foo</selection>' );
+				} ).to.throw( Error, 'Parse error - missing selection start.' );
 			} );
 
 			it( 'throws when missing selection end', () => {
 				expect( () => {
-					setData( document, 'main', '<selection>foo' );
-				} ).to.throw();
+					parse( '<selection>foo' );
+				} ).to.throw( Error, 'Parse error - missing selection end.' );
 			} );
 		} );
 
 		function test( title, options ) {
 			it( title, () => {
-				let output = options.output || options.data;
+				const output = options.output || options.data;
+				const data = parse( options.data );
+				let model, selection;
 
-				setData( document, 'main', options.data, options.setDataOptions );
+				if ( data.selection && data.model ) {
+					model = data.model;
+					selection = data.selection;
+				} else {
+					model = data;
+				}
 
-				expect( getData( document, 'main', options.getDataOptions ) ).to.equal( output );
+				expect( stringify( model, selection ) ).to.equal( output );
 
 				if ( options.check ) {
-					options.check();
+					options.check( model, selection );
 				}
 			} );
 		}

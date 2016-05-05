@@ -13,6 +13,7 @@ import RootElement from '/ckeditor5/engine/treemodel/rootelement.js';
 import Element from '/ckeditor5/engine/treemodel/element.js';
 import DocumentFragment from '/ckeditor5/engine/treemodel/documentfragment.js';
 import Selection from '/ckeditor5/engine/treemodel/selection.js';
+import Document from '/ckeditor5/engine/treemodel/document.js';
 
 export function stringify( root, selectionOrPositionOrRange ) {
 	let selection;
@@ -25,6 +26,8 @@ export function stringify( root, selectionOrPositionOrRange ) {
 		root = new DocumentFragment( root );
 	}
 
+	document = document || new Document();
+
 	const walker = new TreeWalker( {
 		boundaries: Range.createFromElement( root )
 	} );
@@ -32,10 +35,10 @@ export function stringify( root, selectionOrPositionOrRange ) {
 	if ( selectionOrPositionOrRange instanceof Selection ) {
 		selection = selectionOrPositionOrRange;
 	} else if ( selectionOrPositionOrRange instanceof Range ) {
-		selection = new Selection( document || new Document() );
+		selection = document.selection;
 		selection.addRange( selectionOrPositionOrRange );
 	} else if ( selectionOrPositionOrRange instanceof Position ) {
-		selection = new Selection( document || new Document() );
+		selection = document.selection;
 		selection.addRange( new Range( selectionOrPositionOrRange, selectionOrPositionOrRange ) );
 	}
 
@@ -58,6 +61,105 @@ export function stringify( root, selectionOrPositionOrRange ) {
 	}
 
 	return ret;
+}
+
+export function parse( data ) {
+	let document = new Document();
+	let appendTo = document.createRoot( 'main' );
+	let withSelection = false;
+
+	const path = [];
+	let selectionStart, selectionEnd, selectionAttributes, textAttributes;
+
+	const handlers = {
+		text( token ) {
+			appendTo.appendChildren( new Text( token.text, textAttributes ) );
+		},
+
+		textStart( token ) {
+			textAttributes = token.attributes;
+			path.push( '$text' );
+		},
+
+		textEnd() {
+			if ( path.pop() != '$text' ) {
+				throw new Error( 'Parse error - unexpected closing tag.' );
+			}
+
+			textAttributes = null;
+		},
+
+		openingTag( token ) {
+			let el = new Element( token.name, token.attributes );
+			appendTo.appendChildren( el );
+
+			appendTo = el;
+
+			path.push( token.name );
+		},
+
+		closingTag( token ) {
+			if ( path.pop() != token.name ) {
+				throw new Error( 'Parse error - unexpected closing tag.' );
+			}
+
+			appendTo = appendTo.parent;
+		},
+
+		collapsedSelection( token ) {
+			withSelection = true;
+			document.selection.collapse( appendTo, 'END' );
+			document.selection.setAttributesTo( token.attributes );
+		},
+
+		selectionStart( token ) {
+			selectionStart = Position.createFromParentAndOffset( appendTo, appendTo.getChildCount() );
+			selectionAttributes = token.attributes;
+		},
+
+		selectionEnd() {
+			if ( !selectionStart ) {
+				throw new Error( 'Parse error - missing selection start.' );
+			}
+
+			withSelection = true;
+			selectionEnd = Position.createFromParentAndOffset( appendTo, appendTo.getChildCount() );
+
+			document.selection.setRanges(
+				[ new Range( selectionStart, selectionEnd ) ],
+				selectionAttributes.backward
+			);
+
+			delete selectionAttributes.backward;
+
+			document.selection.setAttributesTo( selectionAttributes );
+		}
+	};
+
+	for ( let token of tokenize( data ) ) {
+		handlers[ token.type ]( token );
+	}
+
+	if ( path.length ) {
+		throw new Error( 'Parse error - missing closing tags: ' + path.join( ', ' ) + '.' );
+	}
+
+	if ( selectionStart && !selectionEnd ) {
+		throw new Error( 'Parse error - missing selection end.' );
+	}
+
+	if ( appendTo.getChildCount() === 0 ) {
+		appendTo = appendTo.getChild( 0 );
+	}
+
+	if ( withSelection ) {
+		return {
+			model: appendTo,
+			selection: document.selection
+		};
+	}
+
+	return appendTo;
 }
 
 /**
@@ -356,7 +458,7 @@ function consumeNextToken( data ) {
 		}
 	}
 
-	throw new Error( 'Parse error - unpexpected token: ' + data + '.' );
+	throw new Error( 'Parse error - unexpected token: ' + data + '.' );
 }
 
 function parseAttributes( attrsString ) {
