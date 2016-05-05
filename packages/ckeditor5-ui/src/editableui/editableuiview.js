@@ -38,6 +38,7 @@ export default class EditableUIView extends View {
 	 */
 	setEditableElement( editableElement, def = { attributes: {} } ) {
 		const bind = this.attributeBinder;
+		const t = this.t;
 
 		if ( this.editableElement ) {
 			throw new CKEditorError(
@@ -50,6 +51,12 @@ export default class EditableUIView extends View {
 		if ( !def.attributes.class ) {
 			def.attributes.class = [];
 		}
+
+		Object.assign( def.attributes, {
+			role: 'textbox',
+			'aria-label': t( 'Rich Text Editor, %0', [ this.model.editableName ] ),
+			title: t( 'Rich Text Editor, %0', [ this.model.editableName ] ),
+		} );
 
 		def.attributes.class.push(
 			'ck-editor__editable',

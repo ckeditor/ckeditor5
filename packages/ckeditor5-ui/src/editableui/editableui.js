@@ -38,5 +38,6 @@ export default class EditableUI extends Controller {
 		 */
 		this.viewModel = new Model();
 		this.viewModel.bind( 'isEditable', 'isFocused' ).to( editableModel );
+		this.viewModel.set( 'editableName', editableModel.name );
 	}
 }
