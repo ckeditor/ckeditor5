@@ -81,7 +81,7 @@ describe( 'TextProxy', () => {
 				expect( textFragment.getAttribute( 'foo' ) ).to.equal( 'bar' );
 			} );
 
-			it( 'should return null if text fragment does not have given attribute', () => {
+			it( 'should return undefined if text fragment does not have given attribute', () => {
 				expect( textFragment.getAttribute( 'bar' ) ).to.be.undefined;
 			} );
 		} );

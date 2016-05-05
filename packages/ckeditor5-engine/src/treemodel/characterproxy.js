@@ -6,6 +6,7 @@
 'use strict';
 
 import Node from './node.js';
+import utils from '../../utils/utils.js';
 
 /**
  * A proxy object representing one character stored in the tree data model. It looks and behaves like
@@ -67,5 +68,67 @@ export default class CharacterProxy extends Node {
 		 * @member {Number} engine.treeModel.CharacterProxy#_index
 		 */
 		this._index = index;
+	}
+
+	/**
+	 * Sets attribute on the text fragment. If attribute with the same key already is set, it overwrites its values.
+	 *
+	 * **Note:** Changing attributes of text fragment affects document state. This TextProxy instance properties
+	 * will be refreshed, but other may get invalidated. It is highly unrecommended to store references to TextProxy instances.
+	 *
+	 * @param {String} key Key of attribute to set.
+	 * @param {*} value Attribute value.
+	 */
+	setAttribute( key, value ) {
+		let index = this.getIndex();
+
+		this.parent._children.setAttribute( index, 1, key, value );
+		this._attrs.set( key, value );
+	}
+
+	/**
+	 * Removes all attributes from the character proxy and sets given attributes.
+	 *
+	 * **Note:** Changing attributes of character proxy affects document state. This `CharacterProxy` instance properties
+	 * will be refreshed, but other instances of `CharacterProxy` and `TextProxy` may get invalidated.
+	 * It is highly unrecommended to store references to `CharacterProxy` instances.
+	 *
+	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set. See
+	 * {@link engine.treeModel.CharacterProxy#getAttributes}.
+	 */
+	setAttributesTo( attrs ) {
+		let attrsMap = utils.toMap( attrs );
+
+		this.clearAttributes();
+
+		for ( let attr of attrsMap ) {
+			this.setAttribute( attr[ 0 ], attr[ 1 ] );
+		}
+	}
+
+	/**
+	 * Removes an attribute with given key from the character proxy.
+	 *
+	 * **Note:** Changing attributes of character proxy affects document state. This `CharacterProxy` instance properties
+	 * will be refreshed, but other instances of `CharacterProxy` and `TextProxy` may get invalidated.
+	 * It is highly unrecommended to store references to `CharacterProxy` instances.
+	 *
+	 * @param {String} key Key of attribute to remove.
+	 */
+	removeAttribute( key ) {
+		this.setAttribute( key, null );
+	}
+
+	/**
+	 * Removes all attributes from the character proxy.
+	 *
+	 * **Note:** Changing attributes of character proxy affects document state. This `CharacterProxy` instance properties
+	 * will be refreshed, but other instances of `CharacterProxy` and `TextProxy` may get invalidated.
+	 * It is highly unrecommended to store references to `CharacterProxy` instances.
+	 */
+	clearAttributes() {
+		for ( let attr of this.getAttributes() ) {
+			this.removeAttribute( attr[ 0 ] );
+		}
 	}
 }

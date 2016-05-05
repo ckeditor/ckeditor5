@@ -7,20 +7,14 @@
 
 'use strict';
 
-/* jshint unused: false */
-import deltas from '/ckeditor5/engine/treemodel/delta/basic-deltas.js';
+import deltas from '/ckeditor5/engine/treemodel/delta/basic-deltas.js'; // jshint ignore:line
 
 import Document from '/ckeditor5/engine/treemodel/document.js';
 import Batch from '/ckeditor5/engine/treemodel/batch.js';
 import { register } from '/ckeditor5/engine/treemodel/batch.js';
 import Delta from '/ckeditor5/engine/treemodel/delta/delta.js';
+import Operation from '/ckeditor5/engine/treemodel/operation/operation.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-
-class TestDelta extends Delta {
-	constructor( batch ) {
-		super( batch, [] );
-	}
-}
 
 describe( 'Batch', () => {
 	it( 'should have registered basic methods', () => {
@@ -67,6 +61,29 @@ describe( 'Batch', () => {
 			expect( batch.deltas.length ).to.equal( 2 );
 			expect( batch.deltas[ 0 ] ).to.equal( deltaA );
 			expect( batch.deltas[ 1 ] ).to.equal( deltaB );
+		} );
+	} );
+
+	describe( 'getOperations', () => {
+		it( 'should return collection of operations from all deltas', () => {
+			const doc = new Document();
+			const batch = new Batch( doc );
+			const deltaA = new Delta();
+			const deltaB = new Delta();
+			const ops = [
+				new Operation( doc.version ),
+				new Operation( doc.version + 1 ),
+				new Operation( doc.version + 2 )
+			];
+
+			batch.addDelta( deltaA );
+			deltaA.addOperation( ops[ 0 ] );
+			batch.addDelta( deltaB );
+			deltaA.addOperation( ops[ 1 ] );
+			deltaA.addOperation( ops[ 2 ] );
+
+			expect( Array.from( batch.getOperations() ) ).to.deep.equal( ops );
+			expect( batch.getOperations() ).to.have.property( 'next' );
 		} );
 	} );
 } );

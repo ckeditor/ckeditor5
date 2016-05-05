@@ -9,15 +9,23 @@
 
 import Writer from '/ckeditor5/engine/treeview/writer.js';
 import ContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
-import AttributeElement from '/ckeditor5/engine/treeview/attributeelement.js';
 import Range from '/ckeditor5/engine/treeview/range.js';
-import Text from '/ckeditor5/engine/treeview/text.js';
-import utils from '/tests/engine/treeview/writer/_utils/utils.js';
+import { stringify, parse } from '/tests/engine/_utils/view.js';
 
 describe( 'Writer', () => {
-	const create = utils.create;
-	const test = utils.test;
 	let writer;
+
+	/**
+	 * Executes test using `parse` and `stringify` utils functions.
+	 *
+	 * @param {String} input
+	 * @param {String} expected
+	 */
+	function test( input, expected ) {
+		const { view, selection } = parse( input );
+		const newRange = writer.breakRange( selection.getFirstRange() );
+		expect( stringify( view, newRange, { showType: true, showPriority: true } ) ).to.equal( expected );
+	}
 
 	beforeEach( () => {
 		writer = new Writer();
@@ -34,198 +42,52 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should break at collapsed range and return collapsed one', () => {
-			// <p>{foo[]bar}</p> -> <p>{foo}[]{bar}</p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				children: [
-					{ instanceOf: Text, data: 'foobar', rangeStart: 3, rangeEnd: 3 }
-				]
-			} );
-
-			const newRange = writer.breakRange( created.range );
-
-			test( writer, newRange, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 1,
-				rangeEnd: 1,
-				children: [
-					{ instanceOf: Text, data: 'foo' },
-					{ instanceOf: Text, data: 'bar' }
-				]
-			} );
+			test(
+				'<container:p>foo{}bar</container:p>',
+				'<container:p>foo[]bar</container:p>'
+			);
 		} );
 
 		it( 'should break inside text node #1', () => {
-			// <p>{foo[bar]baz}</p> -> <p>{foo}[{bar}]{baz}</p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				children: [
-					{ instanceOf: Text, data: 'foobarbaz', rangeStart: 3, rangeEnd: 6 }
-				]
-			} );
-
-			const newRange = writer.breakRange( created.range );
-
-			test( writer, newRange, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 1,
-				rangeEnd: 2,
-				children: [
-					{ instanceOf: Text, data: 'foo' },
-					{ instanceOf: Text, data: 'bar' },
-					{ instanceOf: Text, data: 'baz' }
-				]
-			} );
+			test(
+				'<container:p>foo{bar}baz</container:p>',
+				'<container:p>foo[bar]baz</container:p>'
+			);
 		} );
 
 		it( 'should break inside text node #2', () => {
-			// <p>{foo[barbaz]}</p> -> <p>{foo}[{barbaz}]</p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				children: [
-					{ instanceOf: Text, data: 'foobarbaz', rangeStart: 3, rangeEnd: 9 }
-				]
-			} );
-
-			const newRange = writer.breakRange( created.range );
-
-			test( writer, newRange, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 1,
-				rangeEnd: 2,
-				children: [
-					{ instanceOf: Text, data: 'foo' },
-					{ instanceOf: Text, data: 'barbaz' }
-				]
-			} );
+			test(
+				'<container:p>foo{barbaz}</container:p>',
+				'<container:p>foo[barbaz]</container:p>'
+			);
 		} );
 
 		it( 'should break inside text node #3', () => {
-			// <p>{foo[barbaz}]</p> -> <p>{foo}[{barbaz}]</p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeEnd: 1,
-				children: [
-					{ instanceOf: Text, data: 'foobarbaz', rangeStart: 3 }
-				]
-			} );
-
-			const newRange = writer.breakRange( created.range );
-
-			test( writer, newRange, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 1,
-				rangeEnd: 2,
-				children: [
-					{ instanceOf: Text, data: 'foo' },
-					{ instanceOf: Text, data: 'barbaz' }
-				]
-			} );
+			test(
+				'<container:p>foo{barbaz]</container:p>',
+				'<container:p>foo[barbaz]</container:p>'
+			);
 		} );
 
 		it( 'should break inside text node #4', () => {
-			// <p>{[foo]barbaz}</p> -> <p>[{foo}]{barbaz]</p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				children: [
-					{ instanceOf: Text, data: 'foobarbaz', rangeStart: 0, rangeEnd: 3 }
-				]
-			} );
-
-			const newRange = writer.breakRange( created.range );
-
-			test( writer, newRange, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{ instanceOf: Text, data: 'foo' },
-					{ instanceOf: Text, data: 'barbaz' }
-				]
-			} );
+			test(
+				'<container:p>{foo}barbaz</container:p>',
+				'<container:p>[foo]barbaz</container:p>'
+			);
 		} );
 
 		it( 'should break inside text node #5', () => {
-			// <p>[{foo]barbaz}</p> -> <p>[{foo}]{barbaz]</p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				children: [
-					{ instanceOf: Text, data: 'foobarbaz', rangeEnd: 3 }
-				]
-			} );
-
-			const newRange = writer.breakRange( created.range );
-
-			test( writer, newRange, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 0,
-				rangeEnd: 1,
-				children: [
-					{ instanceOf: Text, data: 'foo' },
-					{ instanceOf: Text, data: 'barbaz' }
-				]
-			} );
+			test(
+				'<container:p>[foo}barbaz</container:p>',
+				'<container:p>[foo]barbaz</container:p>'
+			);
 		} );
 
 		it( 'should break placed inside different nodes', () => {
-			// <p>{foo[bar}<b>{baz]qux}</b></p>
-			// <p>{foo}[{bar}<b>{baz}</b>]<b>qux</b></p>
-			const created = create( writer, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				children: [
-					{ instanceOf: Text, data: 'foobar', rangeStart: 3 },
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'bazqux', rangeEnd: 3 }
-						]
-					}
-				]
-			} );
-
-			const newRange = writer.breakRange( created.range );
-			test( writer, newRange, created.node, {
-				instanceOf: ContainerElement,
-				name: 'p',
-				rangeStart: 1,
-				rangeEnd: 3,
-				children: [
-					{ instanceOf: Text, data: 'foo' },
-					{ instanceOf: Text, data: 'bar' },
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'baz' }
-						]
-					},
-					{
-						instanceOf: AttributeElement,
-						name: 'b',
-						priority: 1,
-						children: [
-							{ instanceOf: Text, data: 'qux' }
-						]
-					}
-				]
-			} );
+			test(
+				'<container:p>foo{bar<attribute:b:1>baz}qux</attribute:b:1></container:p>',
+				'<container:p>foo[bar<attribute:b:1>baz</attribute:b:1>]<attribute:b:1>qux</attribute:b:1></container:p>'
+			);
 		} );
 	} );
 } );
