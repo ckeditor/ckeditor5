@@ -18,7 +18,7 @@ import InsertOperation from '/ckeditor5/engine/treemodel/operation/insertoperati
 import MoveOperation from '/ckeditor5/engine/treemodel/operation/moveoperation.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
-import utils from '/ckeditor5/utils/utils.js';
+import count from '/ckeditor5/utils/count.js';
 
 testUtils.createSinonSandbox();
 
@@ -293,7 +293,7 @@ describe( 'Selection', () => {
 
 			selection.setFocus( selection.focus );
 
-			expect( utils.count( selection.getRanges() ) ).to.equal( 2 );
+			expect( count( selection.getRanges() ) ).to.equal( 2 );
 			expect( spy.callCount ).to.equal( 0 );
 		} );
 

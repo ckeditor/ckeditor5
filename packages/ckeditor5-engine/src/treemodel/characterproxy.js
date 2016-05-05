@@ -6,7 +6,7 @@
 'use strict';
 
 import Node from './node.js';
-import utils from '../../utils/utils.js';
+import toMap from '../../utils/tomap.js';
 
 /**
  * A proxy object representing one character stored in the tree data model. It looks and behaves like
@@ -97,7 +97,7 @@ export default class CharacterProxy extends Node {
 	 * {@link engine.treeModel.CharacterProxy#getAttributes}.
 	 */
 	setAttributesTo( attrs ) {
-		let attrsMap = utils.toMap( attrs );
+		let attrsMap = toMap( attrs );
 
 		this.clearAttributes();
 

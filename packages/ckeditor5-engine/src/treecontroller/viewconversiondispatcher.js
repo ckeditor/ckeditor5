@@ -9,7 +9,7 @@ import ViewConsumable from './viewconsumable.js';
 import ViewElement from '../treeview/element.js';
 import ViewText from '../treeview/text.js';
 import EmitterMixin from '../../utils/emittermixin.js';
-import utils from '../../utils/utils.js';
+import mix from '../../utils/mix.js';
 import extend from '../../utils/lib/lodash/extend.js';
 
 /**
@@ -215,7 +215,7 @@ export default class ViewConversionDispatcher {
 	 */
 }
 
-utils.mix( ViewConversionDispatcher, EmitterMixin );
+mix( ViewConversionDispatcher, EmitterMixin );
 
 /**
  * Conversion interface that is registered for given {@link engine.treeController.ViewConversionDispatcher} and is

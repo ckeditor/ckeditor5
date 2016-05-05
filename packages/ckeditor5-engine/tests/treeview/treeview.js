@@ -13,9 +13,7 @@ import Renderer from '/ckeditor5/engine/treeview/renderer.js';
 import Writer from '/ckeditor5/engine/treeview/writer.js';
 import DomConverter from '/ckeditor5/engine/treeview/domconverter.js';
 
-import utils from '/ckeditor5/utils/utils.js';
-
-const count = utils.count;
+import count from '/ckeditor5/utils/count.js';
 
 describe( 'TreeView', () => {
 	describe( 'constructor', () => {

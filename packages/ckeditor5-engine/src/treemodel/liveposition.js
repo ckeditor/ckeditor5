@@ -9,7 +9,7 @@ import RootElement from './rootelement.js';
 import Position from './position.js';
 import Range from './range.js';
 import EmitterMixin from '../../utils/emittermixin.js';
-import utils from '../../utils/utils.js';
+import mix from '../../utils/mix.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
@@ -180,7 +180,7 @@ function transform( type, range, position ) {
 	this.root = transformed.root;
 }
 
-utils.mix( LivePosition, EmitterMixin );
+mix( LivePosition, EmitterMixin );
 
 /**
  * Enum representing how position is "sticking" with their neighbour nodes.

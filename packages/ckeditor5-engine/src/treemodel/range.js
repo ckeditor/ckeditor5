@@ -7,7 +7,7 @@
 
 import Position from './position.js';
 import TreeWalker from './treewalker.js';
-import utils from '../../utils/utils.js';
+import compareArrays from '../../utils/comparearrays.js';
 
 /**
  * Range class. Range is iterable.
@@ -217,7 +217,7 @@ export default class Range {
 		let ranges = [];
 
 		// We find on which tree-level start and end have the lowest common ancestor
-		let cmp = utils.compareArrays( this.start.path, this.end.path );
+		let cmp = compareArrays( this.start.path, this.end.path );
 		// If comparison returned string it means that arrays are same.
 		let diffAt = ( typeof cmp == 'string' ) ? Math.min( this.start.path.length, this.end.path.length ) : cmp;
 

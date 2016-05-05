@@ -5,7 +5,7 @@
 
 'use strict';
 
-import utils from '../../utils/utils.js';
+import toMap from '../../utils/tomap.js';
 
 /**
  * Data structure for text with attributes. Note that `Text` is not a {@link engine.treeModel.Node}. This class is used
@@ -37,7 +37,7 @@ export default class Text {
 		 * @protected
 		 * @member {Map} engine.treeModel.Text#_attrs
 		 */
-		this._attrs = utils.toMap( attrs );
+		this._attrs = toMap( attrs );
 	}
 
 	/**
@@ -85,7 +85,7 @@ export default class Text {
 	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set. See {@link engine.treeModel.Text#getAttributes}.
 	 */
 	setAttributesTo( attrs ) {
-		this._attrs = utils.toMap( attrs );
+		this._attrs = toMap( attrs );
 	}
 
 	/**

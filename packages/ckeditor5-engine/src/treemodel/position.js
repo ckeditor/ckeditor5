@@ -8,7 +8,7 @@
 import DocumentFragment from './documentfragment.js';
 import Element from './element.js';
 import last from '../../utils/lib/lodash/last.js';
-import utils from '../../utils/utils.js';
+import compareArrays from '../../utils/comparearrays';
 import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
@@ -145,7 +145,7 @@ export default class Position {
 			return 'DIFFERENT';
 		}
 
-		const result = utils.compareArrays( this.path, otherPosition.path );
+		const result = compareArrays( this.path, otherPosition.path );
 
 		switch ( result ) {
 			case 'SAME':
@@ -209,7 +209,7 @@ export default class Position {
 			return transformed;
 		}
 
-		if ( utils.compareArrays( deletePosition.getParentPath(), this.getParentPath() ) == 'SAME' ) {
+		if ( compareArrays( deletePosition.getParentPath(), this.getParentPath() ) == 'SAME' ) {
 			// If nodes are removed from the node that is pointed by this position...
 			if ( deletePosition.offset < this.offset ) {
 				// And are removed from before an offset of that position...
@@ -221,7 +221,7 @@ export default class Position {
 					transformed.offset -= howMany;
 				}
 			}
-		} else if ( utils.compareArrays( deletePosition.getParentPath(), this.getParentPath() ) == 'PREFIX' ) {
+		} else if ( compareArrays( deletePosition.getParentPath(), this.getParentPath() ) == 'PREFIX' ) {
 			// If nodes are removed from a node that is on a path to this position...
 			const i = deletePosition.path.length - 1;
 
@@ -260,14 +260,14 @@ export default class Position {
 			return transformed;
 		}
 
-		if ( utils.compareArrays( insertPosition.getParentPath(), this.getParentPath() ) == 'SAME' ) {
+		if ( compareArrays( insertPosition.getParentPath(), this.getParentPath() ) == 'SAME' ) {
 			// If nodes are inserted in the node that is pointed by this position...
 			if ( insertPosition.offset < this.offset || ( insertPosition.offset == this.offset && insertBefore ) ) {
 				// And are inserted before an offset of that position...
 				// "Push" this positions offset.
 				transformed.offset += howMany;
 			}
-		} else if ( utils.compareArrays( insertPosition.getParentPath(), this.getParentPath() ) == 'PREFIX' ) {
+		} else if ( compareArrays( insertPosition.getParentPath(), this.getParentPath() ) == 'PREFIX' ) {
 			// If nodes are inserted in a node that is on a path to this position...
 			const i = insertPosition.path.length - 1;
 

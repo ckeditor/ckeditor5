@@ -22,7 +22,7 @@ import WeakInsertDelta from './weakinsertdelta.js';
 import WrapDelta from './wrapdelta.js';
 import UnwrapDelta from './unwrapdelta.js';
 
-import utils from '../../../utils/utils.js';
+import compareArrays from '../../../utils/comparearrays.js';
 
 // Provide transformations for default deltas.
 
@@ -60,7 +60,7 @@ addTransformationCase( MoveDelta, MergeDelta, ( a, b, isStrong ) => {
 	// didn't happen) and then apply the original move operation. This is "mirrored" in MergeDelta x MoveDelta
 	// transformation below, where we simply do not apply MergeDelta.
 
-	const operateInSameParent = utils.compareArrays( a.sourcePosition.getParentPath(), b.position.getParentPath() ) === 'SAME';
+	const operateInSameParent = compareArrays( a.sourcePosition.getParentPath(), b.position.getParentPath() ) === 'SAME';
 	const mergeInsideMoveRange = a.sourcePosition.offset <= b.position.offset && a.sourcePosition.offset + a.howMany > b.position.offset;
 
 	if ( operateInSameParent && mergeInsideMoveRange ) {
@@ -91,7 +91,7 @@ addTransformationCase( MergeDelta, MoveDelta, ( a, b, isStrong ) => {
 	// If merge is applied at the position between moved nodes we cancel the merge as it's results may be unexpected and
 	// very weird. Even if we do some "magic" we don't know what really are users' expectations.
 
-	const operateInSameParent = utils.compareArrays( a.position.getParentPath(), b.sourcePosition.getParentPath() ) === 'SAME';
+	const operateInSameParent = compareArrays( a.position.getParentPath(), b.sourcePosition.getParentPath() ) === 'SAME';
 	const mergeInsideMoveRange = b.sourcePosition.offset <= a.position.offset && b.sourcePosition.offset + b.howMany > a.position.offset;
 
 	if ( operateInSameParent && mergeInsideMoveRange ) {
@@ -109,7 +109,7 @@ addTransformationCase( SplitDelta, SplitDelta, ( a, b, isStrong ) => {
 	const pathB = b.position.getParentPath();
 
 	// The special case is for splits inside the same parent.
-	if ( utils.compareArrays( pathA, pathB ) == 'SAME' ) {
+	if ( compareArrays( pathA, pathB ) == 'SAME' ) {
 		if ( a.position.offset == b.position.offset ) {
 			// We are applying split at the position where split already happened. Additional split is not needed.
 			return [ new Delta() ];
@@ -145,7 +145,7 @@ addTransformationCase( SplitDelta, SplitDelta, ( a, b, isStrong ) => {
 addTransformationCase( SplitDelta, UnwrapDelta, ( a, b, isStrong ) => {
 	// If incoming split delta tries to split a node that just got unwrapped, there is actually nothing to split,
 	// so we discard that delta.
-	if ( utils.compareArrays( b.position.path, a.position.getParentPath() ) === 'SAME' ) {
+	if ( compareArrays( b.position.path, a.position.getParentPath() ) === 'SAME' ) {
 		// This is "no-op" delta, it has no type and no operations, it basically does nothing.
 		// It is used when we don't want to apply changes but still we need to return a delta.
 		return [ new Delta() ];
@@ -159,14 +159,14 @@ addTransformationCase( SplitDelta, WrapDelta, ( a, b, isStrong ) => {
 	// If split is applied at the position between wrapped nodes, we cancel the split as it's results may be unexpected and
 	// very weird. Even if we do some "magic" we don't know what really are users' expectations.
 
-	const operateInSameParent = utils.compareArrays( a.position.getParentPath(), b.range.start.getParentPath() ) === 'SAME';
+	const operateInSameParent = compareArrays( a.position.getParentPath(), b.range.start.getParentPath() ) === 'SAME';
 	const splitInsideWrapRange = b.range.start.offset < a.position.offset && b.range.end.offset >= a.position.offset;
 
 	if ( operateInSameParent && splitInsideWrapRange ) {
 		// This is "no-op" delta, it has no type and no operations, it basically does nothing.
 		// It is used when we don't want to apply changes but still we need to return a delta.
 		return [ new Delta() ];
-	} else if ( utils.compareArrays( a.position.getParentPath(), b.range.end.getShiftedBy( -1 ).path ) === 'SAME' ) {
+	} else if ( compareArrays( a.position.getParentPath(), b.range.end.getShiftedBy( -1 ).path ) === 'SAME' ) {
 		// Split position is directly inside the last node from wrap range.
 		// If that's the case, we manually change split delta so it will "target" inside the wrapping element.
 		// By doing so we will be inserting split node right to the original node which feels natural and is a good UX.
@@ -211,7 +211,7 @@ addTransformationCase( SplitDelta, WrapDelta, ( a, b, isStrong ) => {
 addTransformationCase( UnwrapDelta, SplitDelta, ( a, b, isStrong ) => {
 	// If incoming unwrap delta tries to unwrap node that got split we should unwrap the original node and the split copy.
 	// This can be achieved either by reverting split and applying unwrap to singular node, or creating additional unwrap delta.
-	if ( utils.compareArrays( a.position.path, b.position.getParentPath() ) === 'SAME' ) {
+	if ( compareArrays( a.position.path, b.position.getParentPath() ) === 'SAME' ) {
 		return [
 			b.getReversed(),
 			a.clone()
@@ -239,7 +239,7 @@ addTransformationCase( WrapDelta, SplitDelta, ( a, b, isStrong ) => {
 	// If incoming wrap delta tries to wrap range that contains split position, we have to cancel the split and apply
 	// the wrap. Since split was already applied, we have to revert it.
 
-	const operateInSameParent = utils.compareArrays( a.range.start.getParentPath(), b.position.getParentPath() ) === 'SAME';
+	const operateInSameParent = compareArrays( a.range.start.getParentPath(), b.position.getParentPath() ) === 'SAME';
 	const splitInsideWrapRange = a.range.start.offset < b.position.offset && a.range.end.offset >= b.position.offset;
 
 	if ( operateInSameParent && splitInsideWrapRange ) {
@@ -247,7 +247,7 @@ addTransformationCase( WrapDelta, SplitDelta, ( a, b, isStrong ) => {
 			b.getReversed(),
 			a.clone()
 		];
-	} else if ( utils.compareArrays( b.position.getParentPath(), a.range.end.getShiftedBy( -1 ).path ) === 'SAME' ) {
+	} else if ( compareArrays( b.position.getParentPath(), a.range.end.getShiftedBy( -1 ).path ) === 'SAME' ) {
 		const delta = a.clone();
 
 		// Move wrapping element insert position one node further so it is after the split node insertion.

@@ -7,7 +7,7 @@
 
 'use strict';
 
-import utils from '/ckeditor5/utils/utils.js';
+import count from '/ckeditor5/utils/count.js';
 import Document from '/ckeditor5/engine/treemodel/document.js';
 import Text from '/ckeditor5/engine/treemodel/text.js';
 import Range from '/ckeditor5/engine/treemodel/range.js';
@@ -36,13 +36,13 @@ describe( 'Batch', () => {
 	} );
 
 	function getOperationsCount() {
-		let count = 0;
+		let totalNumber = 0;
 
 		for ( let delta of batch.deltas ) {
-			count += utils.count( delta.operations );
+			totalNumber += count( delta.operations );
 		}
 
-		return count;
+		return totalNumber;
 	}
 
 	describe( 'change attribute on node', () => {
@@ -155,15 +155,15 @@ describe( 'Batch', () => {
 		}
 
 		function getChangesAttrsCount() {
-			let count = 0;
+			let totalNumber = 0;
 
 			for ( let delta of batch.deltas ) {
 				for ( let operation of delta.operations ) {
-					count += utils.count( operation.range.getItems( { singleCharacters: true } ) );
+					totalNumber += count( operation.range.getItems( { singleCharacters: true } ) );
 				}
 			}
 
-			return count;
+			return totalNumber;
 		}
 
 		function getCompressedAttrs() {

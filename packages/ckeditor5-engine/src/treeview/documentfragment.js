@@ -5,7 +5,8 @@
 
 'use strict';
 
-import utils from '../../utils/utils.js';
+import mix from '../../utils/mix.js';
+import isIterable from '../../utils/isiterable.js';
 import EmitterMixin from '../../utils/emittermixin.js';
 
 /**
@@ -102,7 +103,7 @@ export default class DocumentFragment {
 		this._fireChange( 'CHILDREN', this );
 		let count = 0;
 
-		if ( !utils.isIterable( nodes ) ) {
+		if ( !isIterable( nodes ) ) {
 			nodes = [ nodes ];
 		}
 
@@ -147,4 +148,4 @@ export default class DocumentFragment {
 	}
 }
 
-utils.mix( DocumentFragment, EmitterMixin );
+mix( DocumentFragment, EmitterMixin );

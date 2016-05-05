@@ -10,7 +10,7 @@ import Renderer from './renderer.js';
 import DomConverter from './domconverter.js';
 import Writer from './writer.js';
 
-import utils from '../../utils/utils.js';
+import mix from '../../utils/mix.js';
 
 /**
  * TreeView class creates an abstract layer over the content editable area.
@@ -167,7 +167,7 @@ export default class TreeView {
 	}
 }
 
-utils.mix( TreeView, EmitterMixin );
+mix( TreeView, EmitterMixin );
 
 /**
  * Enum representing type of the change.

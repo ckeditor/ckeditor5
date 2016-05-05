@@ -9,7 +9,7 @@ import Operation from './operation.js';
 import Position from '../position.js';
 import Range from '../range.js';
 import CKEditorError from '../../../utils/ckeditorerror.js';
-import utils from '../../../utils/utils.js';
+import compareArrays from '../../../utils/comparearrays.js';
 
 /**
  * Operation to move list of subsequent nodes from one position in the document to another.
@@ -125,7 +125,7 @@ export default class MoveOperation extends Operation {
 				'operation-move-range-into-itself: Trying to move a range of nodes to the inside of that range.'
 			);
 		} else {
-			if ( utils.compareArrays( this.sourcePosition.getParentPath(), this.targetPosition.getParentPath() ) == 'PREFIX' ) {
+			if ( compareArrays( this.sourcePosition.getParentPath(), this.targetPosition.getParentPath() ) == 'PREFIX' ) {
 				let i = this.sourcePosition.path.length - 1;
 
 				if ( this.targetPosition.path[ i ] >= sourceOffset && this.targetPosition.path[ i ] < sourceOffset + this.howMany ) {

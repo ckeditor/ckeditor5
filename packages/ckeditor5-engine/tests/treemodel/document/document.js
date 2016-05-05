@@ -13,7 +13,7 @@ import Composer from '/ckeditor5/engine/treemodel/composer/composer.js';
 import RootElement from '/ckeditor5/engine/treemodel/rootelement.js';
 import Batch from '/ckeditor5/engine/treemodel/batch.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-import utils from '/ckeditor5/utils/utils.js';
+import count from '/ckeditor5/utils/count.js';
 
 describe( 'Document', () => {
 	let doc;
@@ -28,7 +28,7 @@ describe( 'Document', () => {
 			expect( doc._roots.size ).to.equal( 1 );
 			expect( doc.graveyard ).to.be.instanceof( RootElement );
 			expect( doc.graveyard.getChildCount() ).to.equal( 0 );
-			expect( utils.count( doc.selection.getRanges() ) ).to.equal( 1 );
+			expect( count( doc.selection.getRanges() ) ).to.equal( 1 );
 
 			expect( doc.composer ).to.be.instanceof( Composer );
 			expect( doc.schema ).to.be.instanceof( Schema );
@@ -37,7 +37,7 @@ describe( 'Document', () => {
 
 	describe( 'rootNames', () => {
 		it( 'should return empty iterator if no roots exist', () => {
-			expect( utils.count( doc.rootNames ) ).to.equal( 0 );
+			expect( count( doc.rootNames ) ).to.equal( 0 );
 		} );
 
 		it( 'should return an iterator of all roots without the graveyard', () => {

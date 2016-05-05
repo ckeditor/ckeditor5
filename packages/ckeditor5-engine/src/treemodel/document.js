@@ -15,7 +15,7 @@ import History from './history.js';
 import Selection from './selection.js';
 import EmitterMixin from '../../utils/emittermixin.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
-import utils from '../../utils/utils.js';
+import mix from '../../utils/mix.js';
 import Schema from './schema.js';
 import Composer from './composer/composer.js';
 import clone from '../../utils/lib/lodash/clone.js';
@@ -334,4 +334,4 @@ export default class Document {
 	 */
 }
 
-utils.mix( Document, EmitterMixin );
+mix( Document, EmitterMixin );

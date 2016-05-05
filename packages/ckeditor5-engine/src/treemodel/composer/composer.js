@@ -5,7 +5,7 @@
 
 'use strict';
 
-import utils from '../../../utils/utils.js';
+import mix from '../../../utils/mix.js';
 import EmitterMixin from '../../../utils/emittermixin.js';
 import deleteContents from './deletecontents.js';
 import modifySelection from './modifyselection.js';
@@ -63,7 +63,7 @@ export default class Composer {
 	}
 }
 
-utils.mix( Composer, EmitterMixin );
+mix( Composer, EmitterMixin );
 
 /**
  * Event fired when {@link engine.treeModel.composer.Composer#deleteContents} method is called.

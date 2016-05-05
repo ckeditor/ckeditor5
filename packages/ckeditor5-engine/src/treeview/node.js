@@ -7,7 +7,7 @@
 
 import CKEditorError from '../../utils/ckeditorerror.js';
 import EmitterMixin from '../../utils/emittermixin.js';
-import utils from '../../utils/utils.js';
+import mix from '../../utils/mix.js';
 
 /**
  * Abstract tree view node class.
@@ -184,4 +184,4 @@ export default class Node {
 	 */
 }
 
-utils.mix( Node, EmitterMixin );
+mix( Node, EmitterMixin );

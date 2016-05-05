@@ -8,7 +8,7 @@
 import Range from './range.js';
 import LivePosition from './liveposition.js';
 import EmitterMixin from '../../utils/emittermixin.js';
-import utils from '../../utils/utils.js';
+import mix from '../../utils/mix.js';
 
 /**
  * LiveRange is a Range in the Tree Model that updates itself as the tree changes. It may be used as a bookmark.
@@ -137,4 +137,4 @@ function fixBoundaries( type, range, position ) {
 	}
 }
 
-utils.mix( LiveRange, EmitterMixin );
+mix( LiveRange, EmitterMixin );

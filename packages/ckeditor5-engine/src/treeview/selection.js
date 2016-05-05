@@ -8,7 +8,7 @@
 import CKEditorError from '../../utils/ckeditorerror.js';
 import Range from './range.js';
 import Position from './position.js';
-import utils from '../../utils/utils.js';
+import mix from '../../utils/mix.js';
 import EmitterMixin from '../../utils/emittermixin.js';
 
 /**
@@ -302,7 +302,7 @@ export default class Selection {
 	}
 }
 
-utils.mix( Selection, EmitterMixin );
+mix( Selection, EmitterMixin );
 
 /**
  * Fired whenever selection ranges are changed through {@link engine.treeView.Selection Selection API}.

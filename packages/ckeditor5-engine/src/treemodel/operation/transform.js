@@ -13,7 +13,7 @@ import RemoveOperation from './removeoperation.js';
 import NoOperation from './nooperation.js';
 import Range from '../range.js';
 import isEqual from '../../../utils/lib/lodash/isEqual.js';
-import utils from '../../../utils/utils.js';
+import compareArrays from '../../../utils/compareArrays.js';
 
 /**
  * Transforms given {@link engine.treeModel.operation.Operation operation} by another
@@ -283,7 +283,7 @@ const ot = {
 			// That means that we transform common part in two cases:
 			// * `rangeA` is "deeper" than `rangeB` so it does not collide
 			// * `rangeA` is at the same level but is stronger than `rangeB`.
-			let aCompB = utils.compareArrays( a.sourcePosition.getParentPath(), b.sourcePosition.getParentPath() );
+			let aCompB = compareArrays( a.sourcePosition.getParentPath(), b.sourcePosition.getParentPath() );
 
 			// If the `b` MoveOperation points inside the `a` MoveOperation range, the common part will be included in
 			// range(s) that (is) are results of processing `difference`. If that's the case, we cannot include it again.

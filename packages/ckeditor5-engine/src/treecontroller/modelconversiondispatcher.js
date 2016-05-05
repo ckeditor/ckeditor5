@@ -9,7 +9,7 @@ import Consumable from './modelconsumable.js';
 import Range from '../treemodel/range.js';
 import TextProxy from '../treemodel/textproxy.js';
 import EmitterMixin from '../../utils/emittermixin.js';
-import utils from '../../utils/utils.js';
+import mix from '../../utils/mix.js';
 import extend from '../../utils/lib/lodash/extend.js';
 
 /**
@@ -424,4 +424,4 @@ export default class ModelConversionDispatcher {
 	 */
 }
 
-utils.mix( ModelConversionDispatcher, EmitterMixin );
+mix( ModelConversionDispatcher, EmitterMixin );

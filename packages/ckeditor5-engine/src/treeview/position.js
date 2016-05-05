@@ -5,7 +5,7 @@
 
 'use strict';
 
-import utils from '../../utils/utils.js';
+import compareArrays from '../../utils/comparearrays.js';
 import Text from './text.js';
 
 /**
@@ -141,7 +141,7 @@ export default class Position {
 		const otherPath = otherPosition.parent.getAncestors( { includeNode: true } );
 
 		// Compare both path arrays to find common ancestor.
-		const result = utils.compareArrays( path, otherPath );
+		const result = compareArrays( path, otherPath );
 
 		let commonAncestorIndex;
 
