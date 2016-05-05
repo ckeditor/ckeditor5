@@ -11,7 +11,7 @@ import Config from './ckeditor5/utils/config.js';
 import CKEditorError from './ckeditor5/utils/ckeditorerror.js';
 import isArrayLike from './ckeditor5/utils/lib/lodash/isArrayLike.js';
 import clone from './ckeditor5/utils/lib/lodash/clone.js';
-import utils from './ckeditor5/utils/utils.js';
+import uid from './ckeditor5/utils/uid.js';
 
 /**
  * This is the API entry point. The entire CKEditor code runs under this object.
@@ -124,5 +124,5 @@ function getEditorElementName( element ) {
 		return element.dataset.editable;
 	}
 
-	return 'editable' + utils.uid();
+	return 'editable' + uid();
 }

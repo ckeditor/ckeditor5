@@ -5,7 +5,7 @@
 
 'use strict';
 
-import utils from './utils/utils.js';
+import mix from './utils/mix.js';
 import ObservableMixin from './utils/observablemixin.js';
 import FocusObserver from './engine/treeview/observer/focusobserver.js';
 
@@ -109,4 +109,4 @@ export default class Editable {
 	}
 }
 
-utils.mix( Editable, ObservableMixin );
+mix( Editable, ObservableMixin );

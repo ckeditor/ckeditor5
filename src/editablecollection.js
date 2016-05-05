@@ -5,7 +5,7 @@
 
 'use strict';
 
-import utils from './utils/utils.js';
+import mix from './utils/mix.js';
 import Collection from './utils/collection.js';
 import ObservableMixin from './utils/observablemixin.js';
 
@@ -57,4 +57,4 @@ export default class EditableCollection extends Collection {
 	}
 }
 
-utils.mix( EditableCollection, ObservableMixin );
+mix( EditableCollection, ObservableMixin );
