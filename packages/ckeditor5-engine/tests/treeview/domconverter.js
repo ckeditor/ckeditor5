@@ -522,6 +522,11 @@ describe( 'DomConverter', () => {
 
 			expect( converter.getCorrespondingView( domFragment ) ).to.equal( viewFragment );
 		} );
+
+		it( 'should return null if falsy value was passed', () => {
+			expect( converter.getCorrespondingView( null ) ).to.be.null;
+			expect( converter.getCorrespondingView( undefined ) ).to.be.null;
+		} );
 	} );
 
 	describe( 'getCorrespondingViewElement', () => {
@@ -550,10 +555,7 @@ describe( 'DomConverter', () => {
 		it( 'should return corresponding view text based on sibling', () => {
 			const domImg = document.createElement( 'img' );
 			const domText = document.createTextNode( 'foo' );
-			const domP = document.createElement( 'p' );
-
-			domP.appendChild( domImg );
-			domP.appendChild( domText );
+			const domP = createElement( document, 'p', null, [ domImg, domText ] );
 
 			const viewImg = new ViewElement( 'img' );
 
@@ -567,9 +569,7 @@ describe( 'DomConverter', () => {
 
 		it( 'should return corresponding view text based on parent', () => {
 			const domText = document.createTextNode( 'foo' );
-			const domP = document.createElement( 'p' );
-
-			domP.appendChild( domText );
+			const domP = createElement( document, 'p', null, domText );
 
 			const viewP = converter.domToView( domP );
 			const viewText = viewP.getChild( 0 );
@@ -582,10 +582,7 @@ describe( 'DomConverter', () => {
 		it( 'should return null if sibling is not bound', () => {
 			const domImg = document.createElement( 'img' );
 			const domText = document.createTextNode( 'foo' );
-			const domP = document.createElement( 'p' );
-
-			domP.appendChild( domImg );
-			domP.appendChild( domText );
+			const domP = createElement( document, 'p', null, [ domImg, domText ] );
 
 			const viewP = converter.domToView( domP );
 
@@ -597,10 +594,7 @@ describe( 'DomConverter', () => {
 		it( 'should return null if sibling is not element', () => {
 			const domTextFoo = document.createTextNode( 'foo' );
 			const domTextBar = document.createTextNode( 'bar' );
-			const domP = document.createElement( 'p' );
-
-			domP.appendChild( domTextFoo );
-			domP.appendChild( domTextBar );
+			const domP = createElement( document, 'p', null, [ domTextFoo, domTextBar ] );
 
 			const viewP = converter.domToView( domP );
 
@@ -611,9 +605,46 @@ describe( 'DomConverter', () => {
 
 		it( 'should return null if parent is not bound', () => {
 			const domText = document.createTextNode( 'foo' );
-			const domP = document.createElement( 'p' );
+			createElement( document, 'p', null, domText );
 
-			domP.appendChild( domText );
+			expect( converter.getCorrespondingViewText( domText ) ).to.be.null;
+		} );
+
+		it( 'should return null for inline filler', () => {
+			const domFiller = document.createTextNode( INLINE_FILLER );
+			const domP = createElement( document, 'p', null, domFiller );
+
+			const viewP = converter.domToView( domP );
+
+			converter.bindElements( domP, viewP );
+
+			expect( converter.getCorrespondingViewText( domFiller ) ).to.be.null;
+		} );
+
+		it( 'should return null if there is no text node sibling in view', () => {
+			const domB = document.createElement( 'b' );
+			const domI = document.createElement( 'i' );
+			const domText = document.createTextNode( 'x' );
+			const domP = createElement( document, 'p', null, [ domB, domText, domI ] );
+
+			const viewP = parse( '<p><b></b><i></i></p>' );
+			const viewB = viewP.getChild( 0 );
+			const viewI = viewP.getChild( 1 );
+
+			converter.bindElements( domP, viewP );
+			converter.bindElements( domI, viewI );
+			converter.bindElements( domB, viewB );
+
+			expect( converter.getCorrespondingViewText( domText ) ).to.be.null;
+		} );
+
+		it( 'should return null if there is no child text node in view', () => {
+			const domText = document.createTextNode( 'x' );
+			const domP = createElement( document, 'p', null, domText );
+
+			const viewP = parse( '<p></p>' );
+
+			converter.bindElements( domP, viewP );
 
 			expect( converter.getCorrespondingViewText( domText ) ).to.be.null;
 		} );

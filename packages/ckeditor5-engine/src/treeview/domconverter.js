@@ -367,7 +367,7 @@ export default class DomConverter {
 			return this.getCorrespondingViewText( domNode );
 		}
 
-		return undefined;
+		return null;
 	}
 
 	/**
