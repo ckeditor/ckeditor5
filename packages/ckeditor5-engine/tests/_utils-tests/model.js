@@ -11,6 +11,7 @@ import DocumentFragment from '/ckeditor5/engine/treemodel/documentfragment.js';
 import Element from '/ckeditor5/engine/treemodel/element.js';
 import Text from '/ckeditor5/engine/treemodel/text.js';
 import Range from '/ckeditor5/engine/treemodel/range.js';
+import Position from '/ckeditor5/engine/treemodel/position.js';
 
 describe( 'model test utils', () => {
 	let document, root, selection;
@@ -209,6 +210,22 @@ describe( 'model test utils', () => {
 
 				expect( stringify( root, selection ) ).to.equal(
 					'<a><selection backward></a>foo<$text bold=true>bar</$text><b></selection></b>'
+				);
+			} );
+
+			it( 'uses range and coverts it to selection', () => {
+				const range = Range.createFromParentsAndOffsets( elA, 0, elB, 0 );
+
+				expect( stringify( root, range ) ).to.equal(
+					'<a><selection></a>foo<$text bold=true>bar</$text><b></selection></b>'
+				);
+			} );
+
+			it( 'uses position and converts it to collapsed selection', () => {
+				const position = new Position( root, [ 0 ] );
+
+				expect( stringify( root, position ) ).to.equal(
+					'<selection /><a></a>foo<$text bold=true>bar</$text><b></b>'
 				);
 			} );
 		} );
