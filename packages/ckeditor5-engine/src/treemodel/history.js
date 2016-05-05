@@ -6,9 +6,8 @@
 'use strict';
 
 // Load all basic deltas and transformations, they register themselves, but they need to be imported somewhere.
-import deltas from './delta/basic-deltas.js';
-import transformations from './delta/basic-transformations.js';
-/*jshint unused: false*/
+import deltas from './delta/basic-deltas.js'; // jshint ignore:line
+import transformations from './delta/basic-transformations.js'; // jshint ignore:line
 
 import transform from './delta/transform.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
