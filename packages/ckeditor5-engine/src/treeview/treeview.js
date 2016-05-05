@@ -89,7 +89,9 @@ export default class TreeView {
 		 */
 		this._observers = new Map();
 
-		this._jumpOverInlineFiller();
+		// Assign key observer which move cursor from the end of the inline filler to the begging of it when
+		// the left arrow is pressed, so the filler does not break navigation.
+		this.on( 'keydown', jumpOverInlineFiller );
 	}
 
 	/**
@@ -193,36 +195,29 @@ export default class TreeView {
 			observer.enable();
 		}
 	}
-
-	/**
-	 * Assign key observer which move cursor from the end of the inline filler to the begging of it when the left arrow
-	 * is pressed, so the filler does not break navigation.
-	 *
-	 * @private
-	 */
-	_jumpOverInlineFiller() {
-		this.on( 'keydown', ( evt, data ) => {
-			if ( data.keyCode == keyNames.arrowleft ) {
-				const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
-
-				if ( domSelection.rangeCount == 1 && domSelection.getRangeAt( 0 ).collapsed ) {
-					const domParent = domSelection.getRangeAt( 0 ).startContainer;
-					const domOffset = domSelection.getRangeAt( 0 ).startOffset;
-
-					if ( startsWithFiller( domParent ) && domOffset <= INLINE_FILLER_LENGTH ) {
-						const domRange = new Range();
-						domRange.setStart( domParent, 0 );
-						domRange.collapse( true );
-						domSelection.removeAllRanges();
-						domSelection.addRange( domRange );
-					}
-				}
-			}
-		} );
-	}
 }
 
 mix( TreeView, EmitterMixin );
+
+// Move cursor from the end of the inline filler to the begging of it when, so the filler does not break navigation.
+function jumpOverInlineFiller( evt, data ) {
+	if ( data.keyCode == keyNames.arrowleft ) {
+		const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
+
+		if ( domSelection.rangeCount == 1 && domSelection.getRangeAt( 0 ).collapsed ) {
+			const domParent = domSelection.getRangeAt( 0 ).startContainer;
+			const domOffset = domSelection.getRangeAt( 0 ).startOffset;
+
+			if ( startsWithFiller( domParent ) && domOffset <= INLINE_FILLER_LENGTH ) {
+				const domRange = new Range();
+				domRange.setStart( domParent, 0 );
+				domRange.collapse( true );
+				domSelection.removeAllRanges();
+				domSelection.addRange( domRange );
+			}
+		}
+	}
+}
 
 /**
  * Enum representing type of the change.
