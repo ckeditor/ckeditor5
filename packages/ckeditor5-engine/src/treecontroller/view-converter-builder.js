@@ -7,7 +7,7 @@
 
 import Matcher from '../treeview/matcher.js';
 import ModelElement from '../treemodel/element.js';
-import isIterable from '../../utils/isIterable';
+import isIterable from '../../utils/isiterable.js';
 
 /**
  * Provides chainable, high-level API to easily build basic view-to-model converters that are appended to given
