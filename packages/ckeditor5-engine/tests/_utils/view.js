@@ -24,6 +24,58 @@ const TEXT_RANGE_START_TOKEN = '{';
 const TEXT_RANGE_END_TOKEN = '}';
 
 /**
+ * Writes the contents of the {@link engine.treeView.TreeView TreeView} to an HTML-like string.
+ *
+ * @param {engine.treeView.TreeView} treeView
+ * @param {Object} [options]
+ * @param {Boolean} [options.withSelection] Whether to write the selection.
+ * @param {Boolean} [options.rootName='main'] Name of the root from which data should be stringified. If not provided
+ * default `main` name will be used.
+ * @param {Boolean} [options.showType=false] When set to `true` type of elements will be printed (`<container:p>`
+ * instead of `<p>` and `<attribute:b>` instead of `<b>`).
+ * @param {Boolean} [options.showPriority=false] When set to `true` AttributeElement's priority will be printed
+ * (`<span:12>`, `<b:10>`).
+ * @returns {String} The stringified data.
+ */
+export function getData( treeView, options ) {
+	const withSelection = !!options.withSelection;
+	const rootName = options.rootName || 'main';
+	const root = treeView.getRoot( rootName );
+
+	return withSelection ? stringify( root, treeView.selection, options ) : stringify( root, null, options );
+}
+
+/**
+ * Sets the contents of the {@link engine.treeView.TreeView TreeView} provided as HTML-like string.
+ *
+ * @param {engine.treeView.TreeView} treeView
+ * @param {String} data HTML-like string to write into TreeView.
+ * @param {Object} options
+ * @param {String} [rootName] Root name where parsed data will be stored. If not provided, default `main` name will be
+ * used.
+ */
+export function setData( treeView, data, options = {} ) {
+	let view, selection;
+	const rootName = options.rootName || 'main';
+	const result = parse( data );
+
+	if ( result.view && result.selection ) {
+		selection = result.selection;
+		view = result.view;
+	} else {
+		view = result;
+	}
+
+	const root = treeView.getRoot( rootName );
+	root.removeChildren( 0, root.getChildCount() );
+	root.appendChildren( view instanceof DocumentFragment ? view.getChildren() : view );
+
+	if ( selection ) {
+		treeView.selection.setTo( selection );
+	}
+}
+
+/**
  * Converts view elements to HTML-like string representation.
  * Root element can be provided as {@link engine.treeView.Text Text}:
  *
@@ -843,29 +895,4 @@ class ViewStringify {
 
 		return attributes.join( ' ' );
 	}
-}
-
-export function setData( treeView, data ) {
-	let view, selection;
-
-	const result = parse( data );
-
-	if ( result.view && result.selection ) {
-		selection = result.selection;
-		view = result.view;
-	} else {
-		view = result;
-	}
-
-	const root = treeView.getRoot();
-	root.removeChildren( 0, root.getChildCount() );
-	root.appendChildren( view );
-
-	if ( selection ) {
-		treeView.selection.setTo( selection );
-	}
-}
-
-export function getData( treeView ) {
-	return stringify( treeView.getRoot(), treeView.selection );
 }

@@ -16,7 +16,7 @@ import Selection from '/ckeditor5/engine/treemodel/selection.js';
 import Document from '/ckeditor5/engine/treemodel/document.js';
 
 /**
- * Writes the contents of the document to an HTML-like string.
+ * Writes the contents of the {@link engine.treeModel.Document Document} to an HTML-like string.
  *
  * @param {engine.treeModel.Document} document
  * @param {Object} [options]
@@ -34,10 +34,10 @@ export function getData( document, options = {} ) {
 }
 
 /**
- * Sets the contents of the document model provided as HTML-like string.
+ * Sets the contents of the {@link engine.treeModel.Document Document} provided as HTML-like string.
  *
  * @param {engine.treeModel.Document} document
- * @param {String} data HTML-like string to write into document.
+ * @param {String} data HTML-like string to write into Document.
  * @param {Object} options
  * @param {String} [rootName] Root name where parsed data will be stored. If not provided, default `main` name will be
  * used.
@@ -51,6 +51,7 @@ export function setData( document, data, options = {} ) {
 
 /**
  * Converts model nodes to HTML-like string representation.
+ *
  * @param {engine.treeModel.RootElement|engine.treeModel.Element|engine.treeModel.Text|
  * engine.treeModel.DocumentFragment} node Node to stringify.
  * @param {engine.treeModel.Selection|engine.treeModel.Position|engine.treeModel.Range} [selectionOrPositionOrRange = null ]
@@ -108,7 +109,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 }
 
 /**
- * Parses HTML-like string and returns model {engine.treeModel.RootElement rootElement}.
+ * Parses HTML-like string and returns model {@link engine.treeModel.RootElement rootElement}.
  *
  * @param {String} data HTML-like string to be parsed.
  * @param {Object} options
