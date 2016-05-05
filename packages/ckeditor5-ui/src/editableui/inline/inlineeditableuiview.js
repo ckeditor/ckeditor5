@@ -14,19 +14,18 @@ export default class InlineEditableView extends EditableUIView {
 		if ( editableElement ) {
 			this.element = editableElement;
 		} else {
-			const bind = this.attributeBinder;
-
 			this.template = {
-				tag: 'div',
-				attributes: {
-					contentEditable: bind.to( 'isEditable' )
-				}
+				tag: 'div'
 			};
 		}
 	}
 
 	init() {
-		this.setEditableElement( this.element );
+		this.setEditableElement( this.element, {
+			attributes: {
+				class: [ 'ck-editor__editable_inline' ]
+			},
+		} );
 
 		super.init();
 	}

@@ -34,8 +34,9 @@ export default class EditableUIView extends View {
 	 * Sets the {@link #editableElement} property and applies necessary bindings to it.
 	 *
 	 * @param {HTMLElement} editableElement
+	 * @param {ui.TemplateDefinition} def
 	 */
-	setEditableElement( editableElement ) {
+	setEditableElement( editableElement, def = { attributes: {} } ) {
 		const bind = this.attributeBinder;
 
 		if ( this.editableElement ) {
@@ -46,11 +47,17 @@ export default class EditableUIView extends View {
 
 		this.editableElement = editableElement;
 
-		this.applyTemplateToElement( editableElement, {
-			attributes: {
-				contenteditable: bind.to( 'isEditable' ),
-				class: [ bind.to( 'isFocused', value => value ? 'ck-focused' : 'ck-blurred' ) ]
-			}
-		} );
+		if ( !def.attributes.class ) {
+			def.attributes.class = [];
+		}
+
+		def.attributes.class.push(
+			'ck-editor__editable',
+			bind.to( 'isFocused', value => value ? 'ck-focused' : 'ck-blurred' )
+		);
+
+		def.attributes.contenteditable = bind.to( 'isEditable' );
+
+		this.applyTemplateToElement( editableElement, def );
 	}
 }
