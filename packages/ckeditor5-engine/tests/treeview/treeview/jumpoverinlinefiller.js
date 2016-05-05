@@ -10,7 +10,7 @@
 import ViewRange from '/ckeditor5/engine/treeview/range.js';
 import TreeView from '/ckeditor5/engine/treeview/treeview.js';
 import KeyObserver from '/ckeditor5/engine/treeview/observer/keyobserver.js';
-import { INLINE_FILLER_SIZE } from '/ckeditor5/engine/treeview/domconverter.js';
+import { INLINE_FILLER_LENGTH, isInlineFiller, startsWithFiller } from '/ckeditor5/engine/treeview/filler.js';
 
 import { keyNames } from '/ckeditor5/utils/keyboard.js';
 
@@ -36,7 +36,7 @@ describe( 'TreeView', () => {
 			treeView.fire( 'keydown', { keyCode: keyNames.arrowleft, domTarget: treeView.domRoots.get( 'main' ) } );
 
 			const domRange = document.getSelection().getRangeAt( 0 );
-			expect( treeView.domConverter.isInlineFiller( domRange.startContainer ) ).to.be.true;
+			expect( isInlineFiller( domRange.startContainer ) ).to.be.true;
 			expect( domRange.startOffset ).to.equal( 0 );
 			expect( domRange.collapsed ).to.be.true;
 		} );
@@ -48,8 +48,8 @@ describe( 'TreeView', () => {
 			treeView.fire( 'keydown', { keyCode: keyNames.arrowright, domTarget: treeView.domRoots.get( 'main' ) } );
 
 			const domRange = document.getSelection().getRangeAt( 0 );
-			expect( treeView.domConverter.isInlineFiller( domRange.startContainer ) ).to.be.true;
-			expect( domRange.startOffset ).to.equal( INLINE_FILLER_SIZE );
+			expect( isInlineFiller( domRange.startContainer ) ).to.be.true;
+			expect( domRange.startOffset ).to.equal( INLINE_FILLER_LENGTH );
 			expect( domRange.collapsed ).to.be.true;
 		} );
 
@@ -93,8 +93,8 @@ describe( 'TreeView', () => {
 			treeView.fire( 'keydown', { keyCode: keyNames.arrowleft, domTarget: treeView.domRoots.get( 'main' ) } );
 
 			const domRange = document.getSelection().getRangeAt( 0 );
-			expect( treeView.domConverter.startsWithFiller( domRange.startContainer ) ).to.be.true;
-			expect( domRange.startOffset ).to.equal( INLINE_FILLER_SIZE + 1 );
+			expect( startsWithFiller( domRange.startContainer ) ).to.be.true;
+			expect( domRange.startOffset ).to.equal( INLINE_FILLER_LENGTH + 1 );
 			expect( domRange.collapsed ).to.be.true;
 		} );
 	} );

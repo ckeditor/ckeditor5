@@ -8,7 +8,7 @@
 import ViewText from './text.js';
 import ViewElement from './element.js';
 import ViewPosition from './position.js';
-import { INLINE_FILLER, INLINE_FILLER_SIZE } from './domconverter.js';
+import { INLINE_FILLER, INLINE_FILLER_LENGTH, startsWithFiller, isInlineFiller, isBlockFiller } from './filler.js';
 
 import diff from '../../utils/diff.js';
 import insertAt from '../../utils/dom/insertat.js';
@@ -203,7 +203,7 @@ export default class Renderer {
 		const domFillerPosition = this.domConverter.viewPositionToDom( this._inlineFillerPosition );
 		const domFillerNode = domFillerPosition.parent;
 
-		if ( !this.domConverter.startsWithFiller( domFillerNode ) ) {
+		if ( !startsWithFiller( domFillerNode ) ) {
 			/**
 			 * No inline filler on expected position.
 			 *
@@ -212,10 +212,10 @@ export default class Renderer {
 			throw new CKEditorError( 'renderer-render-no-inline-filler: No inline filler on expected position.' );
 		}
 
-		if ( this.domConverter.isInlineFiller( domFillerNode ) ) {
+		if ( isInlineFiller( domFillerNode ) ) {
 			domFillerNode.parentNode.removeChild( domFillerNode );
 		} else {
-			domFillerNode.data = domFillerNode.data.substr( INLINE_FILLER_SIZE );
+			domFillerNode.data = domFillerNode.data.substr( INLINE_FILLER_LENGTH );
 		}
 	}
 
@@ -327,7 +327,8 @@ export default class Renderer {
 				return actualDomChild.data === expectedDomChild.data;
 			}
 			// Block fillers.
-			else if ( domConverter.isBlockFiller( actualDomChild ) && domConverter.isBlockFiller( expectedDomChild ) ) {
+			else if ( isBlockFiller( actualDomChild, domConverter.blockFiller ) &&
+				isBlockFiller( expectedDomChild, domConverter.blockFiller ) ) {
 				return true;
 			}
 

@@ -11,25 +11,9 @@ import ViewPosition from './position.js';
 import ViewRange from './range.js';
 import ViewSelection from './selection.js';
 import ViewDocumentFragment from './documentfragment.js';
+import { BR_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, isInlineFiller, startsWithFiller, getDataWithoutFiller } from './filler.js';
 
 import indexOf from '../../utils/dom/indexof.js';
-
-export const BR_FILLER = ( domDocument ) => {
-	const fillerBr = domDocument.createElement( 'br' );
-	fillerBr.dataset.filler = true;
-
-	return fillerBr;
-};
-
-export const NBSP_FILLER = ( domDocument ) => domDocument.createTextNode( '&nbsp;' );
-
-export const INLINE_FILLER_SIZE = 7;
-
-export let INLINE_FILLER = '';
-
-for ( let i = 0; i < INLINE_FILLER_SIZE; i++ ) {
-	INLINE_FILLER += '\u200b';
-}
 
 /**
  * DomConverter is a set of tools to do transformations between DOM nodes and view nodes. It also handles
@@ -72,9 +56,7 @@ export default class DomConverter {
 		 */
 		this._viewToDomMapping = new WeakMap();
 
-		this.blockFillerCreator = options.blockFiller || BR_FILLER;
-
-		this._templateBlockFiller = this.blockFillerCreator( window.document );
+		this.blockFiller = options.blockFiller || BR_FILLER;
 	}
 
 	/**
@@ -161,7 +143,7 @@ export default class DomConverter {
 
 		for ( let childView of viewElement.getChildren() ) {
 			if ( fillerPositionOffset === offset ) {
-				yield this.blockFillerCreator( domDocument );
+				yield this.blockFiller( domDocument );
 			}
 
 			yield this.viewToDom( childView, domDocument, options );
@@ -170,7 +152,7 @@ export default class DomConverter {
 		}
 
 		if ( fillerPositionOffset === offset ) {
-			yield this.blockFillerCreator( domDocument );
+			yield this.blockFiller( domDocument );
 		}
 	}
 
@@ -192,8 +174,8 @@ export default class DomConverter {
 			const domParent = this.getCorrespondingDomText( viewParent );
 			let offset = viewPosition.offset;
 
-			if ( this.startsWithFiller( domParent ) ) {
-				offset += INLINE_FILLER_SIZE;
+			if ( startsWithFiller( domParent ) ) {
+				offset += INLINE_FILLER_LENGTH;
 			}
 
 			return { parent: domParent, offset: offset };
@@ -209,8 +191,8 @@ export default class DomConverter {
 				domAfter = domBefore.nextSibling;
 			}
 
-			if ( domAfter instanceof Text && this.startsWithFiller( domAfter ) ) {
-				return { parent: domAfter, offset: INLINE_FILLER_SIZE };
+			if ( domAfter instanceof Text && startsWithFiller( domAfter ) ) {
+				return { parent: domAfter, offset: INLINE_FILLER_LENGTH };
 			}
 
 			const offset = domBefore ? indexOf( domBefore ) + 1 : 0;
@@ -230,15 +212,15 @@ export default class DomConverter {
 	 * @returns {engine.treeView.Node|engine.treeView.DocumentFragment} Converted node or document fragment.
 	 */
 	domToView( domNode, options = {} ) {
-		if ( this.isBlockFiller( domNode )  ) {
+		if ( isBlockFiller( domNode, this.blockFiller )  ) {
 			return null;
 		}
 
 		if ( domNode instanceof Text ) {
-			if ( this.isInlineFiller( domNode ) ) {
+			if ( isInlineFiller( domNode ) ) {
 				return null;
 			} else {
-				return new ViewText( this.getDataWithoutFiller( domNode ) );
+				return new ViewText( getDataWithoutFiller( domNode ) );
 			}
 		} else {
 			if ( this.getCorrespondingView( domNode ) ) {
@@ -340,20 +322,20 @@ export default class DomConverter {
 	}
 
 	domPositionToView( domParent, domOffset ) {
-		if ( this.isBlockFiller( domParent ) ) {
+		if ( isBlockFiller( domParent, this.blockFiller ) ) {
 			return this.domPositionToView( domParent.parentNode, indexOf( domParent ) );
 		}
 
 		if ( domParent instanceof Text ) {
-			if ( this.isInlineFiller( domParent ) ) {
+			if ( isInlineFiller( domParent ) ) {
 				return this.domPositionToView( domParent.parentNode, indexOf( domParent ) );
 			}
 
 			const viewParent = this.getCorrespondingViewText( domParent );
 			let offset = domOffset;
 
-			if ( this.startsWithFiller( domParent ) ) {
-				offset -= INLINE_FILLER_SIZE;
+			if ( startsWithFiller( domParent ) ) {
+				offset -= INLINE_FILLER_LENGTH;
 				offset = offset < 0 ? 0 : offset;
 			}
 
@@ -416,7 +398,7 @@ export default class DomConverter {
 	 * corresponding node.
 	 */
 	getCorrespondingViewText( domText ) {
-		if ( this.isInlineFiller( domText ) ) {
+		if ( isInlineFiller( domText ) ) {
 			return null;
 		}
 
@@ -530,25 +512,5 @@ export default class DomConverter {
 		}
 
 		return null;
-	}
-
-	startsWithFiller( domText ) {
-		return ( domText.data.substr( 0, INLINE_FILLER_SIZE ) === INLINE_FILLER );
-	}
-
-	isInlineFiller( domText ) {
-		return domText.data.length == INLINE_FILLER_SIZE && this.startsWithFiller( domText );
-	}
-
-	getDataWithoutFiller( domText ) {
-		if ( this.startsWithFiller( domText ) ) {
-			return domText.data.slice( INLINE_FILLER_SIZE );
-		} else {
-			return domText.data;
-		}
-	}
-
-	isBlockFiller( domNode ) {
-		return domNode.isEqualNode( this._templateBlockFiller );
 	}
 }

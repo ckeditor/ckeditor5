@@ -9,7 +9,7 @@ import Selection from './selection.js';
 import Renderer from './renderer.js';
 import Writer from './writer.js';
 import DomConverter from './domconverter.js';
-import { INLINE_FILLER_SIZE } from './domconverter.js';
+import { INLINE_FILLER_LENGTH, startsWithFiller } from './filler.js';
 
 import mix from '../../utils/mix.js';
 import EmitterMixin from '../../utils/emittermixin.js';
@@ -209,7 +209,7 @@ export default class TreeView {
 					const domParent = domSelection.getRangeAt( 0 ).startContainer;
 					const domOffset = domSelection.getRangeAt( 0 ).startOffset;
 
-					if ( this.domConverter.startsWithFiller( domParent ) && domOffset <= INLINE_FILLER_SIZE ) {
+					if ( startsWithFiller( domParent ) && domOffset <= INLINE_FILLER_LENGTH ) {
 						const domRange = new Range();
 						domRange.setStart( domParent, 0 );
 						domRange.collapse( true );

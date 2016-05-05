@@ -6,6 +6,7 @@
 'use strict';
 
 import Observer from './observer.js';
+import { startsWithFiller, getDataWithoutFiller } from '../filler.js';
 
 /**
  * Mutation observer class observes changes in the DOM, fires {@link engine.treeView.TreeView#mutations} event, mark view elements
@@ -152,14 +153,14 @@ export default class MutationObserver extends Observer {
 					mutatedTexts.set( text, {
 						type: 'text',
 						oldText: text.data,
-						newText: domConverter.getDataWithoutFiller( mutation.target ),
+						newText: getDataWithoutFiller( mutation.target ),
 						node: text
 					} );
 				}
 				// When we added first letter to the text node which had only inline filler, for the DOM it is mutation
 				// on text, but for the view, where filler text node did not existed, new text node was created, so we
 				// need to fire 'children' mutation instead of 'text'.
-				else if ( !text && domConverter.startsWithFiller( mutation.target ) ) {
+				else if ( !text && startsWithFiller( mutation.target ) ) {
 					mutatedElements.add( domConverter.getCorrespondingViewElement( mutation.target.parentNode ) );
 				}
 			}
