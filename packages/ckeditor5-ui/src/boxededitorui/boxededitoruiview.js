@@ -28,13 +28,13 @@ export default class BoxedEditorUIView extends EditorUIView {
 				{
 					tag: 'div',
 					attributes: {
-						class: 'ck-editor-editable'
+						class: 'ck-editor-main'
 					}
 				}
 			]
 		};
 
 		this.register( 'top', '.ck-editor-top' );
-		this.register( 'editable', '.ck-editor-editable' );
+		this.register( 'main', '.ck-editor-main' );
 	}
 }

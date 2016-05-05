@@ -13,7 +13,7 @@ export default class BoxedEditorUI extends EditorUI {
 		super( editor );
 
 		this.collections.add( new ControllerCollection( 'top' ) );
-		this.collections.add( new ControllerCollection( 'editable' ) );
+		this.collections.add( new ControllerCollection( 'main' ) );
 
 		const config = editor.config;
 
