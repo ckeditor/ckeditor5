@@ -127,6 +127,7 @@ export function parse( data, options = {} ) {
 	if ( options.document ) {
 		document = options.document;
 		root = document.getRoot( rootName );
+		root.removeChildren( 0, root.getChildCount() );
 	} else {
 		document = new Document();
 		root = document.createRoot( rootName );
