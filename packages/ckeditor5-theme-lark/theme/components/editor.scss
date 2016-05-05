@@ -11,10 +11,9 @@
 		}
 	}
 
-	.ck-editor-editable {
+	.ck-editor-main {
 		background: ck-color();
 		overflow: hidden;
-		padding: ck-spacing();
 	}
 
 	.ck-editor-bottom {
@@ -23,6 +22,11 @@
 		border-right: 0;
 
 		padding: ck-spacing();
+	}
+
+	.ck-editor__editable_inline {
+		overflow: auto;
+		padding: 0 ck-spacing();
 	}
 }
 
