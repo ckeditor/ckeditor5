@@ -24,7 +24,7 @@ const TEXT_RANGE_START_TOKEN = '{';
 const TEXT_RANGE_END_TOKEN = '}';
 
 /**
- * Converts view elements to its HTML-like string representation.
+ * Converts view elements to HTML-like string representation.
  * Root element can be provided as {@link engine.treeView.Text Text}:
  *
  *		const text = new Text( 'foobar' );
