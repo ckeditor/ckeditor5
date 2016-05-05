@@ -7,17 +7,34 @@
 
 'use strict';
 
-import count from '/ckeditor5/utils/count.js';
-import ViewElement from '/ckeditor5/engine/treeview/element.js';
 import ViewText from '/ckeditor5/engine/treeview/text.js';
+import ViewElement from '/ckeditor5/engine/treeview/element.js';
 import DomConverter from '/ckeditor5/engine/treeview/domconverter.js';
 import ViewDocumentFragment from '/ckeditor5/engine/treeview/documentfragment.js';
+import { INLINE_FILLER, INLINE_FILLER_LENGTH, BR_FILLER, NBSP_FILLER, isBlockFiller } from '/ckeditor5/engine/treeview/filler.js';
+
+import { parse } from '/tests/engine/_utils/view.js';
+
+import count from '/ckeditor5/utils/count.js';
+import createElement from '/ckeditor5/utils/dom/createelement.js';
 
 describe( 'DomConverter', () => {
 	let converter;
 
 	before( () => {
 		converter = new DomConverter();
+	} );
+
+	describe( 'constructor', () => {
+		it( 'should create converter with BR block filler by default', () => {
+			converter = new DomConverter();
+			expect( converter.blockFiller ).to.equal( BR_FILLER );
+		} );
+
+		it( 'should create converter with defined block filler', () => {
+			converter = new DomConverter( { blockFiller: NBSP_FILLER } );
+			expect( converter.blockFiller ).to.equal( NBSP_FILLER );
+		} );
 	} );
 
 	describe( 'bindElements', () => {
@@ -41,140 +58,6 @@ describe( 'DomConverter', () => {
 
 			expect( converter.getCorrespondingView( domFragment ) ).to.equal( viewFragment );
 			expect( converter.getCorrespondingDom( viewFragment ) ).to.equal( domFragment );
-		} );
-	} );
-
-	describe( 'domToView', () => {
-		it( 'should create tree of view elements from DOM elements', () => {
-			const domImg = document.createElement( 'img' );
-			const domText = document.createTextNode( 'foo' );
-			const domP = document.createElement( 'p' );
-
-			domP.setAttribute( 'class', 'foo' );
-
-			domP.appendChild( domImg );
-			domP.appendChild( domText );
-
-			const viewImg = new ViewElement( 'img' );
-
-			converter.bindElements( domImg, viewImg );
-
-			const viewP = converter.domToView( domP );
-
-			expect( viewP ).to.be.an.instanceof( ViewElement );
-			expect( viewP.name ).to.equal( 'p' );
-
-			expect( viewP.getAttribute( 'class' ) ).to.equal( 'foo' );
-			expect( count( viewP.getAttributeKeys() ) ).to.equal( 1 );
-
-			expect( viewP.getChildCount() ).to.equal( 2 );
-			expect( viewP.getChild( 0 ).name ).to.equal( 'img' );
-			expect( viewP.getChild( 1 ).data ).to.equal( 'foo' );
-
-			expect( converter.getCorrespondingDom( viewP ) ).to.not.equal( domP );
-			expect( converter.getCorrespondingDom( viewP.getChild( 0 ) ) ).to.equal( domImg );
-		} );
-
-		it( 'should create tree of view elements from DOM elements and bind elements', () => {
-			const domImg = document.createElement( 'img' );
-			const domText = document.createTextNode( 'foo' );
-			const domP = document.createElement( 'p' );
-
-			domP.setAttribute( 'class', 'foo' );
-
-			domP.appendChild( domImg );
-			domP.appendChild( domText );
-
-			const viewP = converter.domToView( domP, { bind: true } );
-
-			expect( viewP ).to.be.an.instanceof( ViewElement );
-			expect( viewP.name ).to.equal( 'p' );
-
-			expect( viewP.getAttribute( 'class' ) ).to.equal( 'foo' );
-			expect( count( viewP.getAttributeKeys() ) ).to.equal( 1 );
-
-			expect( viewP.getChildCount() ).to.equal( 2 );
-			expect( viewP.getChild( 0 ).name ).to.equal( 'img' );
-			expect( viewP.getChild( 1 ).data ).to.equal( 'foo' );
-
-			expect( converter.getCorrespondingDom( viewP ) ).to.equal( domP );
-			expect( converter.getCorrespondingDom( viewP.getChild( 0 ) ) ).to.equal( domP.childNodes[ 0 ] );
-		} );
-
-		it( 'should create tree of view elements from DOM element without children', () => {
-			const domImg = document.createElement( 'img' );
-			const domText = document.createTextNode( 'foo' );
-			const domP = document.createElement( 'p' );
-
-			domP.setAttribute( 'class', 'foo' );
-
-			domP.appendChild( domImg );
-			domP.appendChild( domText );
-
-			const viewImg = new ViewElement( 'img' );
-
-			converter.bindElements( domImg, viewImg );
-
-			const viewP = converter.domToView( domP, { withChildren: false } );
-
-			expect( viewP ).to.be.an.instanceof( ViewElement );
-			expect( viewP.name ).to.equal( 'p' );
-
-			expect( viewP.getAttribute( 'class' ) ).to.equal( 'foo' );
-			expect( count( viewP.getAttributeKeys() ) ).to.equal( 1 );
-
-			expect( viewP.getChildCount() ).to.equal( 0 );
-			expect( converter.getCorrespondingDom( viewP ) ).to.not.equal( domP );
-		} );
-
-		it( 'should create view document fragment from DOM document fragment', () => {
-			const domImg = document.createElement( 'img' );
-			const domText = document.createTextNode( 'foo' );
-			const domFragment = document.createDocumentFragment();
-
-			domFragment.appendChild( domImg );
-			domFragment.appendChild( domText );
-
-			const viewFragment = converter.domToView( domFragment, { bind: true } );
-
-			expect( viewFragment ).to.be.an.instanceof( ViewDocumentFragment );
-			expect( viewFragment.getChildCount() ).to.equal( 2 );
-			expect( viewFragment.getChild( 0 ).name ).to.equal( 'img' );
-			expect( viewFragment.getChild( 1 ).data ).to.equal( 'foo' );
-
-			expect( converter.getCorrespondingDom( viewFragment ) ).to.equal( domFragment );
-			expect( converter.getCorrespondingDom( viewFragment.getChild( 0 ) ) ).to.equal( domFragment.childNodes[ 0 ] );
-		} );
-
-		it( 'should create view document fragment from DOM document fragment without children', () => {
-			const domImg = document.createElement( 'img' );
-			const domText = document.createTextNode( 'foo' );
-			const domFragment = document.createDocumentFragment();
-
-			domFragment.appendChild( domImg );
-			domFragment.appendChild( domText );
-
-			const viewImg = new ViewElement( 'img' );
-
-			converter.bindElements( domImg, viewImg );
-
-			const viewFragment = converter.domToView( domFragment, { withChildren: false } );
-
-			expect( viewFragment ).to.be.an.instanceof( ViewDocumentFragment );
-
-			expect( viewFragment.getChildCount() ).to.equal( 0 );
-			expect( converter.getCorrespondingDom( viewFragment ) ).to.not.equal( domFragment );
-		} );
-
-		it( 'should return already bind document fragment', () => {
-			const domFragment = document.createDocumentFragment();
-			const viewFragment = new ViewDocumentFragment();
-
-			converter.bindDocumentFragments( domFragment, viewFragment );
-
-			const viewFragment2 = converter.domToView( domFragment );
-
-			expect( viewFragment2 ).to.equal( viewFragment );
 		} );
 	} );
 
@@ -309,6 +192,301 @@ describe( 'DomConverter', () => {
 			const domFragment2 = converter.viewToDom( viewFragment );
 
 			expect( domFragment2 ).to.equal( domFragment );
+		} );
+	} );
+
+	describe( 'viewChildrenToDom', () => {
+		it( 'should convert children', () => {
+			const viewP = parse( '<container:p>foo<attribute:b>bar</attribute:b></container:p>' );
+
+			const domChildren = Array.from( converter.viewChildrenToDom( viewP, document ) );
+
+			expect( domChildren.length ).to.equal( 2 );
+			expect( domChildren[ 0 ].data ).to.equal( 'foo' );
+			expect( domChildren[ 1 ].tagName.toLowerCase() ).to.equal( 'b' );
+			expect( domChildren[ 1 ].childNodes.length ).to.equal( 1 );
+		} );
+
+		it( 'should add bogus', () => {
+			const viewP = parse( '<container:p></container:p>' );
+
+			const domChildren = Array.from( converter.viewChildrenToDom( viewP, document ) );
+
+			expect( domChildren.length ).to.equal( 1 );
+			expect( isBlockFiller( domChildren[ 0 ], converter.blockFiller ) ).to.be.true;
+		} );
+
+		it( 'should add bogus according to fillerPositionOffset', () => {
+			const viewP = parse( '<container:p>foo</container:p>' );
+			viewP.getBlockFillerOffset = () => 0;
+
+			const domChildren = Array.from( converter.viewChildrenToDom( viewP, document ) );
+
+			expect( domChildren.length ).to.equal( 2 );
+			expect( isBlockFiller( domChildren[ 0 ], converter.blockFiller ) ).to.be.true;
+			expect( domChildren[ 1 ].data ).to.equal( 'foo' );
+		} );
+
+		it( 'should pass options', () => {
+			const viewP = parse( '<container:p>foo<attribute:b>bar</attribute:b></container:p>' );
+
+			const domChildren = Array.from( converter.viewChildrenToDom( viewP, document, { withChildren: false } ) );
+
+			expect( domChildren.length ).to.equal( 2 );
+			expect( domChildren[ 0 ].data ).to.equal( 'foo' );
+			expect( domChildren[ 1 ].tagName.toLowerCase() ).to.equal( 'b' );
+			expect( domChildren[ 1 ].childNodes.length ).to.equal( 0 );
+		} );
+	} );
+
+	describe( 'viewPositionToDom', () => {
+		it( 'should convert the position in the text', () => {
+			const domFoo = document.createTextNode( 'foo' );
+			const domP = createElement( document, 'p', null, domFoo );
+			const { view: viewP, selection } = parse( '<container:p>fo{}o</container:p>' );
+
+			converter.bindElements( domP, viewP );
+
+			const viewPosition = selection.getFirstPosition();
+			const domPosition = converter.viewPositionToDom( viewPosition );
+
+			expect( domPosition.offset ).to.equal( 2 );
+			expect( domPosition.parent ).to.equal( domFoo );
+		} );
+
+		it( 'should convert the position in the empty element', () => {
+			const domP = createElement( document, 'p' );
+			const { view: viewP, selection } = parse( '<container:p>[]</container:p>' );
+
+			converter.bindElements( domP, viewP );
+
+			const viewPosition = selection.getFirstPosition();
+			const domPosition = converter.viewPositionToDom( viewPosition );
+
+			expect( domPosition.offset ).to.equal( 0 );
+			expect( domPosition.parent ).to.equal( domP );
+		} );
+
+		it( 'should convert the position in the non-empty element', () => {
+			const domB = createElement( document, 'b', null, 'foo' );
+			const domP = createElement( document, 'p', null, domB );
+			const { view: viewP, selection } = parse( '<container:p><attribute:b>foo</attribute:b>[]</container:p>' );
+
+			converter.bindElements( domP, viewP );
+			converter.bindElements( domB, viewP.getChild( 0 ) );
+
+			const viewPosition = selection.getFirstPosition();
+			const domPosition = converter.viewPositionToDom( viewPosition );
+
+			expect( domPosition.offset ).to.equal( 1 );
+			expect( domPosition.parent ).to.equal( domP );
+		} );
+
+		it( 'should convert the position after text', () => {
+			const domP = createElement( document, 'p', null, 'foo' );
+			const { view: viewP, selection } = parse( '<container:p>foo[]</container:p>' );
+
+			converter.bindElements( domP, viewP );
+
+			const viewPosition = selection.getFirstPosition();
+			const domPosition = converter.viewPositionToDom( viewPosition );
+
+			expect( domPosition.offset ).to.equal( 1 );
+			expect( domPosition.parent ).to.equal( domP );
+		} );
+
+		it( 'should convert the position before text', () => {
+			const domP = createElement( document, 'p', null, 'foo' );
+			const { view: viewP, selection } = parse( '<container:p>[]foo</container:p>' );
+
+			converter.bindElements( domP, viewP );
+
+			const viewPosition = selection.getFirstPosition();
+			const domPosition = converter.viewPositionToDom( viewPosition );
+
+			expect( domPosition.offset ).to.equal( 0 );
+			expect( domPosition.parent ).to.equal( domP );
+		} );
+
+		it( 'should update offset if DOM text node starts with inline filler', () => {
+			const domFoo = document.createTextNode( INLINE_FILLER + 'foo' );
+			const domP = createElement( document, 'p', null, domFoo );
+			const { view: viewP, selection } = parse( '<container:p>fo{}o</container:p>' );
+
+			converter.bindElements( domP, viewP );
+
+			const viewPosition = selection.getFirstPosition();
+			const domPosition = converter.viewPositionToDom( viewPosition );
+
+			expect( domPosition.offset ).to.equal( INLINE_FILLER_LENGTH + 2 );
+			expect( domPosition.parent ).to.equal( domFoo );
+		} );
+
+		it( 'should move the position to the text node if the position is where inline filler is', () => {
+			const domFiller = document.createTextNode( INLINE_FILLER );
+			const domP = createElement( document, 'p', null, domFiller );
+			const { view: viewP, selection } = parse( '<container:p>[]</container:p>' );
+
+			converter.bindElements( domP, viewP );
+
+			const viewPosition = selection.getFirstPosition();
+			const domPosition = converter.viewPositionToDom( viewPosition );
+
+			expect( domPosition.offset ).to.equal( INLINE_FILLER_LENGTH );
+			expect( domPosition.parent ).to.equal( domFiller );
+		} );
+	} );
+
+	describe( 'viewRangeToDom', () => {
+		it( 'should convert view range to DOM range', () => {
+			const domFoo = document.createTextNode( 'foo' );
+			const domP = createElement( document, 'p', null, domFoo );
+			const { view: viewP, selection } = parse( '<container:p>fo{o]</container:p>' );
+
+			converter.bindElements( domP, viewP );
+
+			const viewRange = selection.getFirstRange();
+			const domRange = converter.viewRangeToDom( viewRange );
+
+			expect( domRange ).to.be.instanceof( Range );
+			expect( domRange.startContainer ).to.equal( domFoo );
+			expect( domRange.startOffset ).to.equal( 2 );
+			expect( domRange.endContainer ).to.equal( domP );
+			expect( domRange.endOffset ).to.equal( 1 );
+		} );
+	} );
+
+	describe( 'domToView', () => {
+		it( 'should create tree of view elements from DOM elements', () => {
+			const domImg = document.createElement( 'img' );
+			const domText = document.createTextNode( 'foo' );
+			const domP = document.createElement( 'p' );
+
+			domP.setAttribute( 'class', 'foo' );
+
+			domP.appendChild( domImg );
+			domP.appendChild( domText );
+
+			const viewImg = new ViewElement( 'img' );
+
+			converter.bindElements( domImg, viewImg );
+
+			const viewP = converter.domToView( domP );
+
+			expect( viewP ).to.be.an.instanceof( ViewElement );
+			expect( viewP.name ).to.equal( 'p' );
+
+			expect( viewP.getAttribute( 'class' ) ).to.equal( 'foo' );
+			expect( count( viewP.getAttributeKeys() ) ).to.equal( 1 );
+
+			expect( viewP.getChildCount() ).to.equal( 2 );
+			expect( viewP.getChild( 0 ).name ).to.equal( 'img' );
+			expect( viewP.getChild( 1 ).data ).to.equal( 'foo' );
+
+			expect( converter.getCorrespondingDom( viewP ) ).to.not.equal( domP );
+			expect( converter.getCorrespondingDom( viewP.getChild( 0 ) ) ).to.equal( domImg );
+		} );
+
+		it( 'should create tree of view elements from DOM elements and bind elements', () => {
+			const domImg = document.createElement( 'img' );
+			const domText = document.createTextNode( 'foo' );
+			const domP = document.createElement( 'p' );
+
+			domP.setAttribute( 'class', 'foo' );
+
+			domP.appendChild( domImg );
+			domP.appendChild( domText );
+
+			const viewP = converter.domToView( domP, { bind: true } );
+
+			expect( viewP ).to.be.an.instanceof( ViewElement );
+			expect( viewP.name ).to.equal( 'p' );
+
+			expect( viewP.getAttribute( 'class' ) ).to.equal( 'foo' );
+			expect( count( viewP.getAttributeKeys() ) ).to.equal( 1 );
+
+			expect( viewP.getChildCount() ).to.equal( 2 );
+			expect( viewP.getChild( 0 ).name ).to.equal( 'img' );
+			expect( viewP.getChild( 1 ).data ).to.equal( 'foo' );
+
+			expect( converter.getCorrespondingDom( viewP ) ).to.equal( domP );
+			expect( converter.getCorrespondingDom( viewP.getChild( 0 ) ) ).to.equal( domP.childNodes[ 0 ] );
+		} );
+
+		it( 'should create tree of view elements from DOM element without children', () => {
+			const domImg = document.createElement( 'img' );
+			const domText = document.createTextNode( 'foo' );
+			const domP = document.createElement( 'p' );
+
+			domP.setAttribute( 'class', 'foo' );
+
+			domP.appendChild( domImg );
+			domP.appendChild( domText );
+
+			const viewImg = new ViewElement( 'img' );
+
+			converter.bindElements( domImg, viewImg );
+
+			const viewP = converter.domToView( domP, { withChildren: false } );
+
+			expect( viewP ).to.be.an.instanceof( ViewElement );
+			expect( viewP.name ).to.equal( 'p' );
+
+			expect( viewP.getAttribute( 'class' ) ).to.equal( 'foo' );
+			expect( count( viewP.getAttributeKeys() ) ).to.equal( 1 );
+
+			expect( viewP.getChildCount() ).to.equal( 0 );
+			expect( converter.getCorrespondingDom( viewP ) ).to.not.equal( domP );
+		} );
+
+		it( 'should create view document fragment from DOM document fragment', () => {
+			const domImg = document.createElement( 'img' );
+			const domText = document.createTextNode( 'foo' );
+			const domFragment = document.createDocumentFragment();
+
+			domFragment.appendChild( domImg );
+			domFragment.appendChild( domText );
+
+			const viewFragment = converter.domToView( domFragment, { bind: true } );
+
+			expect( viewFragment ).to.be.an.instanceof( ViewDocumentFragment );
+			expect( viewFragment.getChildCount() ).to.equal( 2 );
+			expect( viewFragment.getChild( 0 ).name ).to.equal( 'img' );
+			expect( viewFragment.getChild( 1 ).data ).to.equal( 'foo' );
+
+			expect( converter.getCorrespondingDom( viewFragment ) ).to.equal( domFragment );
+			expect( converter.getCorrespondingDom( viewFragment.getChild( 0 ) ) ).to.equal( domFragment.childNodes[ 0 ] );
+		} );
+
+		it( 'should create view document fragment from DOM document fragment without children', () => {
+			const domImg = document.createElement( 'img' );
+			const domText = document.createTextNode( 'foo' );
+			const domFragment = document.createDocumentFragment();
+
+			domFragment.appendChild( domImg );
+			domFragment.appendChild( domText );
+
+			const viewImg = new ViewElement( 'img' );
+
+			converter.bindElements( domImg, viewImg );
+
+			const viewFragment = converter.domToView( domFragment, { withChildren: false } );
+
+			expect( viewFragment ).to.be.an.instanceof( ViewDocumentFragment );
+
+			expect( viewFragment.getChildCount() ).to.equal( 0 );
+			expect( converter.getCorrespondingDom( viewFragment ) ).to.not.equal( domFragment );
+		} );
+
+		it( 'should return already bind document fragment', () => {
+			const domFragment = document.createDocumentFragment();
+			const viewFragment = new ViewDocumentFragment();
+
+			converter.bindDocumentFragments( domFragment, viewFragment );
+
+			const viewFragment2 = converter.domToView( domFragment );
+
+			expect( viewFragment2 ).to.equal( viewFragment );
 		} );
 	} );
 

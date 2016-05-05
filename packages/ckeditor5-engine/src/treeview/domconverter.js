@@ -30,6 +30,9 @@ import indexOf from '../../utils/dom/indexof.js';
 export default class DomConverter {
 	/**
 	 * Creates DOM converter.
+	 *
+	 * @param {Object} options Object with configuration options.
+	 * @param {Function} [options.blockFiller=engine.treeView.filler.BR_FILLER] Block filler creator.
 	 */
 	constructor( options = {} ) {
 		// Using WeakMap prevent memory leaks: when the converter will be destroyed all referenced between View and DOM
@@ -56,6 +59,12 @@ export default class DomConverter {
 		 */
 		this._viewToDomMapping = new WeakMap();
 
+		/**
+		 * Block filler creator, which is used to create all block fillers during the view to DOM conversion and
+		 * to recognize block fillers during the DOM to view conversion.
+		 *
+		 * @member {Function} engine.treeView.DomConverter#blockFiller
+		 */
 		this.blockFiller = options.blockFiller || BR_FILLER;
 	}
 
@@ -191,6 +200,8 @@ export default class DomConverter {
 				domAfter = domBefore.nextSibling;
 			}
 
+			// If there is an inline filler at position return position inside the filler. We should never return
+			// the position before the inline filler.
 			if ( domAfter instanceof Text && startsWithFiller( domAfter ) ) {
 				return { parent: domAfter, offset: INLINE_FILLER_LENGTH };
 			}
@@ -273,28 +284,6 @@ export default class DomConverter {
 		}
 	}
 
-	/**
-	 * Gets corresponding view item. This function use
-	 * {@link engine.treeView.DomConverter#getCorrespondingViewElement getCorrespondingViewElement}
-	 * for elements, {@link  engine.treeView.DomConverter#getCorrespondingViewText getCorrespondingViewText} for text
-	 * nodes and {@link engine.treeView.DomConverter#getCorrespondingViewDocumentFragment getCorrespondingViewDocumentFragment}
-	 * for document fragments.
-	 *
-	 * @param {Node|DocumentFragment} domNode DOM node or document fragment.
-	 * @returns {engine.treeView.Node|engine.treeView.DocumentFragment|null} Corresponding view item.
-	 */
-	getCorrespondingView( domNode ) {
-		if ( domNode instanceof HTMLElement ) {
-			return this.getCorrespondingViewElement( domNode );
-		} else if ( domNode instanceof DocumentFragment ) {
-			return this.getCorrespondingViewDocumentFragment( domNode );
-		} else if ( domNode instanceof Text ) {
-			return this.getCorrespondingViewText( domNode );
-		}
-
-		return undefined;
-	}
-
 	domSelectionToView( domSelection ) {
 		const viewSelection = new ViewSelection();
 
@@ -357,6 +346,28 @@ export default class DomConverter {
 
 			return undefined;
 		}
+	}
+
+	/**
+	 * Gets corresponding view item. This function use
+	 * {@link engine.treeView.DomConverter#getCorrespondingViewElement getCorrespondingViewElement}
+	 * for elements, {@link  engine.treeView.DomConverter#getCorrespondingViewText getCorrespondingViewText} for text
+	 * nodes and {@link engine.treeView.DomConverter#getCorrespondingViewDocumentFragment getCorrespondingViewDocumentFragment}
+	 * for document fragments.
+	 *
+	 * @param {Node|DocumentFragment} domNode DOM node or document fragment.
+	 * @returns {engine.treeView.Node|engine.treeView.DocumentFragment|null} Corresponding view item.
+	 */
+	getCorrespondingView( domNode ) {
+		if ( domNode instanceof HTMLElement ) {
+			return this.getCorrespondingViewElement( domNode );
+		} else if ( domNode instanceof DocumentFragment ) {
+			return this.getCorrespondingViewDocumentFragment( domNode );
+		} else if ( domNode instanceof Text ) {
+			return this.getCorrespondingViewText( domNode );
+		}
+
+		return undefined;
 	}
 
 	/**
