@@ -89,9 +89,8 @@ export default class History {
 		}
 
 		let transformed = [ delta ];
-		const historyDeltas = this.getDeltas( delta.baseVersion );
 
-		for ( let historyDelta of historyDeltas ) {
+		for ( let historyDelta of this.getDeltas( delta.baseVersion ) ) {
 			let allResults = [];
 
 			for ( let deltaToTransform of transformed ) {
@@ -109,21 +108,18 @@ export default class History {
 	 * Returns all deltas from history, starting from given history point (if passed).
 	 *
 	 * @param {Number} from History point.
+	 * @returns {Iterator.<engine.treeModel.delta.Delta>} Deltas from given history point to the end of history.
 	 */
-	getDeltas( from = 0 ) {
+	*getDeltas( from = 0 ) {
 		let i = this._historyPoints.get( from );
 
 		if ( i === undefined ) {
 			throw new CKEditorError( 'history-wrong-version: Cannot retrieve given point in the history.' );
 		}
 
-		const result = [];
-
 		for ( ; i < this._deltas.length; i++ ) {
-			result.push( this._deltas[ i ] );
+			yield this._deltas[ i ];
 		}
-
-		return result;
 	}
 
 	/**
@@ -132,6 +128,7 @@ export default class History {
 	 * @protected
 	 * @param {engine.treeModel.delta.Delta} toTransform Delta to be transformed.
 	 * @param {engine.treeModel.delta.Delta} transformBy Delta to transform by.
+	 * @returns {Array.<engine.treeModel.delta.Delta>} Result of the transformation.
 	 */
 	static _transform( toTransform, transformBy ) {
 		return transform( toTransform, transformBy, false );
