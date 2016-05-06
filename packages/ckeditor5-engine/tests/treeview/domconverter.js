@@ -358,14 +358,9 @@ describe( 'DomConverter', () => {
 
 	describe( 'domToView', () => {
 		it( 'should create tree of view elements from DOM elements', () => {
-			const domImg = document.createElement( 'img' );
+			const domImg = createElement( document, 'img' );
 			const domText = document.createTextNode( 'foo' );
-			const domP = document.createElement( 'p' );
-
-			domP.setAttribute( 'class', 'foo' );
-
-			domP.appendChild( domImg );
-			domP.appendChild( domText );
+			const domP = createElement( document, 'p', { 'class': 'foo' }, [ domImg, domText ] );
 
 			const viewImg = new ViewElement( 'img' );
 
@@ -388,14 +383,9 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should create tree of view elements from DOM elements and bind elements', () => {
-			const domImg = document.createElement( 'img' );
+			const domImg = createElement( document, 'img' );
 			const domText = document.createTextNode( 'foo' );
-			const domP = document.createElement( 'p' );
-
-			domP.setAttribute( 'class', 'foo' );
-
-			domP.appendChild( domImg );
-			domP.appendChild( domText );
+			const domP = createElement( document, 'p', { 'class': 'foo' }, [ domImg, domText ] );
 
 			const viewP = converter.domToView( domP, { bind: true } );
 
@@ -414,14 +404,9 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should create tree of view elements from DOM element without children', () => {
-			const domImg = document.createElement( 'img' );
+			const domImg = createElement( document, 'img' );
 			const domText = document.createTextNode( 'foo' );
-			const domP = document.createElement( 'p' );
-
-			domP.setAttribute( 'class', 'foo' );
-
-			domP.appendChild( domImg );
-			domP.appendChild( domText );
+			const domP = createElement( document, 'p', { 'class': 'foo' }, [ domImg, domText ] );
 
 			const viewImg = new ViewElement( 'img' );
 
@@ -440,7 +425,7 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should create view document fragment from DOM document fragment', () => {
-			const domImg = document.createElement( 'img' );
+			const domImg = createElement( document, 'img' );
 			const domText = document.createTextNode( 'foo' );
 			const domFragment = document.createDocumentFragment();
 
@@ -459,7 +444,7 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should create view document fragment from DOM document fragment without children', () => {
-			const domImg = document.createElement( 'img' );
+			const domImg = createElement( document, 'img' );
 			const domText = document.createTextNode( 'foo' );
 			const domFragment = document.createDocumentFragment();
 
@@ -487,6 +472,13 @@ describe( 'DomConverter', () => {
 			const viewFragment2 = converter.domToView( domFragment );
 
 			expect( viewFragment2 ).to.equal( viewFragment );
+		} );
+
+		it( 'should return null for block filler', () => {
+			const domFiller = converter.blockFiller( document );
+			const viewFiller = converter.domToView( domFiller );
+
+			expect( viewFiller ).to.be.null;
 		} );
 	} );
 
