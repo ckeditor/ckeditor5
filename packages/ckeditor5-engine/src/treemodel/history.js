@@ -6,9 +6,8 @@
 'use strict';
 
 // Load all basic deltas and transformations, they register themselves, but they need to be imported somewhere.
-import deltas from './delta/basic-deltas.js';
-import transformations from './delta/basic-transformations.js';
-/*jshint unused: false*/
+import deltas from './delta/basic-deltas.js'; // jshint ignore:line
+import transformations from './delta/basic-transformations.js'; // jshint ignore:line
 
 import transform from './delta/transform.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
@@ -89,16 +88,9 @@ export default class History {
 			return [ delta ];
 		}
 
-		let index = this._historyPoints.get( delta.baseVersion );
-
-		if ( index === undefined ) {
-			throw new CKEditorError( 'history-wrong-version: Cannot retrieve point in history that is a base for given delta.' );
-		}
-
 		let transformed = [ delta ];
 
-		while ( index < this._deltas.length ) {
-			const historyDelta = this._deltas[ index ];
+		for ( let historyDelta of this.getDeltas( delta.baseVersion ) ) {
 			let allResults = [];
 
 			for ( let deltaToTransform of transformed ) {
@@ -107,10 +99,27 @@ export default class History {
 			}
 
 			transformed = allResults;
-			index++;
 		}
 
 		return transformed;
+	}
+
+	/**
+	 * Returns all deltas from history, starting from given history point (if passed).
+	 *
+	 * @param {Number} from History point.
+	 * @returns {Iterator.<engine.treeModel.delta.Delta>} Deltas from given history point to the end of history.
+	 */
+	*getDeltas( from = 0 ) {
+		let i = this._historyPoints.get( from );
+
+		if ( i === undefined ) {
+			throw new CKEditorError( 'history-wrong-version: Cannot retrieve given point in the history.' );
+		}
+
+		for ( ; i < this._deltas.length; i++ ) {
+			yield this._deltas[ i ];
+		}
 	}
 
 	/**
@@ -119,6 +128,7 @@ export default class History {
 	 * @protected
 	 * @param {engine.treeModel.delta.Delta} toTransform Delta to be transformed.
 	 * @param {engine.treeModel.delta.Delta} transformBy Delta to transform by.
+	 * @returns {Array.<engine.treeModel.delta.Delta>} Result of the transformation.
 	 */
 	static _transform( toTransform, transformBy ) {
 		return transform( toTransform, transformBy, false );

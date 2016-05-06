@@ -80,10 +80,9 @@ const ot = {
 		// than `b` when it comes to resolving conflicts. Returns results as an array of operations.
 		MoveOperation( a, b, isStrong ) {
 			const transformed = a.clone();
-			const moveTargetPosition = b.targetPosition.getTransformedByDeletion( b.sourcePosition, b.howMany );
 
 			// Transform insert position by the other operation parameters.
-			transformed.position = a.position.getTransformedByMove( b.sourcePosition, moveTargetPosition, b.howMany, !isStrong, b.isSticky );
+			transformed.position = a.position.getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, !isStrong, b.isSticky );
 
 			return [ transformed ];
 		}
@@ -144,9 +143,6 @@ const ot = {
 			// Convert MoveOperation properties into a range.
 			const rangeB = Range.createFromPositionAndShift( b.sourcePosition, b.howMany );
 
-			// Get target position from the state "after" nodes specified by MoveOperation are "detached".
-			const newTargetPosition = b.targetPosition.getTransformedByDeletion( b.sourcePosition, b.howMany );
-
 			// This will aggregate transformed ranges.
 			let ranges = [];
 
@@ -171,15 +167,15 @@ const ot = {
 				// previously transformed target position.
 				// Note that we do not use Position.getTransformedByMove on range boundaries because we need to
 				// transform by insertion a range as a whole, since newTargetPosition might be inside that range.
-				ranges = difference.getTransformedByInsertion( newTargetPosition, b.howMany, true, false ).reverse();
+				ranges = difference.getTransformedByInsertion( b.movedRangeStart, b.howMany, true, false ).reverse();
 			}
 
 			if ( common !== null ) {
 				// Here we do not need to worry that newTargetPosition is inside moved range, because that
 				// would mean that the MoveOperation targets into itself, and that is incorrect operation.
 				// Instead, we calculate the new position of that part of original range.
-				common.start = common.start._getCombined( b.sourcePosition, newTargetPosition );
-				common.end = common.end._getCombined( b.sourcePosition, newTargetPosition );
+				common.start = common.start._getCombined( b.sourcePosition, b.movedRangeStart );
+				common.end = common.end._getCombined( b.sourcePosition, b.movedRangeStart );
 
 				ranges.push( common );
 			}
@@ -257,9 +253,6 @@ const ot = {
 			const rangeA = Range.createFromPositionAndShift( a.sourcePosition, a.howMany );
 			const rangeB = Range.createFromPositionAndShift( b.sourcePosition, b.howMany );
 
-			// Get target position from the state "after" nodes specified by other MoveOperation are "detached".
-			const moveTargetPosition = b.targetPosition.getTransformedByDeletion( b.sourcePosition, b.howMany );
-
 			// This will aggregate transformed ranges.
 			let ranges = [];
 
@@ -267,8 +260,8 @@ const ot = {
 			let difference = joinRanges( rangeA.getDifference( rangeB ) );
 
 			if ( difference ) {
-				difference.start = difference.start.getTransformedByMove( b.sourcePosition, moveTargetPosition, b.howMany, !a.isSticky, false );
-				difference.end = difference.end.getTransformedByMove( b.sourcePosition, moveTargetPosition, b.howMany, a.isSticky, false );
+				difference.start = difference.start.getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, !a.isSticky, false );
+				difference.end = difference.end.getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, a.isSticky, false );
 
 				ranges.push( difference );
 			}
@@ -301,8 +294,8 @@ const ot = {
 				// Here we do not need to worry that newTargetPosition is inside moved range, because that
 				// would mean that the MoveOperation targets into itself, and that is incorrect operation.
 				// Instead, we calculate the new position of that part of original range.
-				common.start = common.start._getCombined( b.sourcePosition, moveTargetPosition );
-				common.end = common.end._getCombined( b.sourcePosition, moveTargetPosition );
+				common.start = common.start._getCombined( b.sourcePosition, b.movedRangeStart );
+				common.end = common.end._getCombined( b.sourcePosition, b.movedRangeStart );
 
 				// We have to take care of proper range order.
 				if ( difference && difference.start.isBefore( common.start ) ) {
@@ -319,7 +312,7 @@ const ot = {
 			}
 
 			// Target position also could be affected by the other MoveOperation. We will transform it.
-			let newTargetPosition = a.targetPosition.getTransformedByMove( b.sourcePosition, moveTargetPosition, b.howMany, !isStrong, b.isSticky );
+			let newTargetPosition = a.targetPosition.getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, !isStrong, b.isSticky );
 
 			// Map transformed range(s) to operations and return them.
 			return ranges.reverse().map( ( range ) => {
