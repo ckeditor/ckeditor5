@@ -28,7 +28,7 @@ const TEXT_RANGE_END_TOKEN = '}';
  *
  * @param {engine.treeView.TreeView} treeView
  * @param {Object} [options]
- * @param {Boolean} [options.withSelection] Whether to write the selection.
+ * @param {Boolean} [options.withSelection=false] Whether to write the selection.
  * @param {Boolean} [options.rootName='main'] Name of the root from which data should be stringified. If not provided
  * default `main` name will be used.
  * @param {Boolean} [options.showType=false] When set to `true` type of elements will be printed (`<container:p>`
@@ -37,13 +37,23 @@ const TEXT_RANGE_END_TOKEN = '}';
  * (`<span:12>`, `<b:10>`).
  * @returns {String} The stringified data.
  */
-export function getData( treeView, options ) {
+export function getData( treeView, options = {} ) {
 	const withSelection = !!options.withSelection;
 	const rootName = options.rootName || 'main';
 	const root = treeView.getRoot( rootName );
+	const stringifyOptions = {
+		showType: options.showType,
+		showPriority: options.showPriority,
+		ignoreRoot: true
+	};
 
-	return withSelection ? stringify( root, treeView.selection, options ) : stringify( root, null, options );
+	return withSelection ?
+		getData._stringify( root, treeView.selection, stringifyOptions ) :
+		getData._stringify( root, null, stringifyOptions );
 }
+
+// Set stringify as private method inside getData - needed for testing/spying.
+getData._stringify = stringify;
 
 /**
  * Sets the contents of the {@link engine.treeView.TreeView TreeView} provided as HTML-like string.
@@ -55,25 +65,18 @@ export function getData( treeView, options ) {
  * used.
  */
 export function setData( treeView, data, options = {} ) {
-	let view, selection;
 	const rootName = options.rootName || 'main';
-	const result = parse( data );
-
-	if ( result.view && result.selection ) {
-		selection = result.selection;
-		view = result.view;
-	} else {
-		view = result;
-	}
-
 	const root = treeView.getRoot( rootName );
 	root.removeChildren( 0, root.getChildCount() );
-	root.appendChildren( view instanceof DocumentFragment ? view.getChildren() : view );
+	const result = setData._parse( data, { rootElement: root } );
 
-	if ( selection ) {
-		treeView.selection.setTo( selection );
+	if ( result.view && result.selection ) {
+		treeView.selection.setTo( result.selection );
 	}
 }
+
+// Set stringify as private method inside getData - needed for testing/spying.
+setData._parse = parse;
 
 /**
  * Converts view elements to HTML-like string representation.
@@ -166,6 +169,8 @@ export function setData( treeView, data, options = {} ) {
  * instead of `<p>` and `<attribute:b>` instead of `<b>`).
  * @param {Boolean} [options.showPriority=false] When set to `true` AttributeElement's priority will be printed
  * (`<span:12>`, `<b:10>`).
+ * @param {Boolean} [options.ignoreRoot=false] When set to `true` root's element opening and closing will not be printed.
+ * Mainly used by `getData` function to ignore {@link engine.treeView.TreeView TreeView's} root element.
  * @returns {String} HTML-like string representing the view.
  */
 export function stringify( node, selectionOrPositionOrRange = null, options = {} ) {
@@ -231,6 +236,10 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
  * selection instance. For example: `[2, 3, 1]` means that first range will be placed as second, second as third and third as first.
  * @param {Boolean} [options.lastRangeBackward=false] If set to true last range will be added as backward to the returned
  * {@link engine.treeView.Selection Selection} instance.
+ * @param {engine.treeView.Element|engine.treeView.DocumentFragment} [options.rootElement=null] Default root to use when parsing elements.
+ * When set to `null` root element will be created automatically. If set to
+ * {@link engine.treeView.Element Element} or {@link engine.treeView.DocumentFragment DocumentFragment} - this node
+ * will be used as root for all parsed nodes.
  * @returns {engine.treeView.Text|engine.treeView.Element|engine.treeView.DocumentFragment|Object} Returns parsed view node
  * or object with two fields `view` and `selection` when selection ranges were included in data to parse.
  */
@@ -239,7 +248,7 @@ export function parse( data, options = {} ) {
 	const viewParser = new ViewParser();
 	const rangeParser = new RangeParser();
 
-	const view = viewParser.parse( data );
+	const view = viewParser.parse( data, options.rootElement );
 	const ranges = rangeParser.parse( view, options.order );
 
 	// When ranges are present - return object containing view, and selection.
@@ -461,16 +470,20 @@ class ViewParser {
 	 * Parses HTML-like string to view tree elements.
 	 *
 	 * @param {String} data
+	 * @param {engine.treeView.Element|engine.treeView.DocumentFragment} [rootElement=null] Default root to use when parsing elements.
+	 * When set to `null` root element will be created automatically. If set to
+	 * {@link engine.treeView.Element Element} or {@link engine.treeView.DocumentFragment DocumentFragment} - this node
+	 * will be used as root for all parsed nodes.
 	 * @returns {engine.treeView.Node|engine.treeView.DocumentFragment}
 	 */
-	parse( data ) {
+	parse( data, rootElement = null ) {
 		const htmlProcessor = new HtmlDataProcessor();
 
 		// Convert HTML string to DOM.
 		const domRoot = htmlProcessor.toDom( data );
 
 		// Convert DOM to View.
-		return this._walkDom( domRoot );
+		return this._walkDom( domRoot, rootElement );
 	}
 
 	/**
@@ -478,9 +491,11 @@ class ViewParser {
 	 *
 	 * @private
 	 * @param {Node} domNode
+	 * @param {engine.treeView.Element|engine.treeView.DocumentFragment} [rootElement=null] Default root element to use
+	 * when parsing elements.
 	 * @returns {engine.treeView.Node|engine.treeView.DocumentFragment}
 	 */
-	_walkDom( domNode ) {
+	_walkDom( domNode, rootElement = null ) {
 		const isDomElement = domNode instanceof DomElement;
 
 		if ( isDomElement || domNode instanceof DomDocumentFragment ) {
@@ -496,8 +511,12 @@ class ViewParser {
 
 			if ( isDomElement ) {
 				viewElement = this._convertElement( domNode );
+
+				if ( rootElement ) {
+					rootElement.appendChild( viewElement );
+				}
 			} else {
-				viewElement = new ViewDocumentFragment();
+				viewElement = rootElement ? rootElement : new ViewDocumentFragment();
 			}
 
 			for ( let i = 0; i < children.length; i++ ) {
@@ -505,7 +524,7 @@ class ViewParser {
 				viewElement.appendChildren( this._walkDom( child ) );
 			}
 
-			return viewElement;
+			return rootElement ? rootElement : viewElement;
 		}
 
 		return new ViewText( domNode.textContent );
@@ -661,6 +680,8 @@ class ViewStringify {
 	 * @param {Boolean} [options.showType=false] When set to `true` type of elements will be printed ( `<container:p>`
 	 * instead of `<p>` and `<attribute:b>` instead of `<b>`.
 	 * @param {Boolean} [options.showPriority=false] When set to `true` AttributeElement's priority will be printed.
+	 * @param {Boolean} [options.ignoreRoot=false] When set to `true` root's element opening and closing tag will not
+	 * be outputted.
 	 */
 	constructor( root, selection = null, options = {} ) {
 		this.root = root;
@@ -673,6 +694,7 @@ class ViewStringify {
 
 		this.showType = !!options.showType;
 		this.showPriority = !!options.showPriority;
+		this.ignoreRoot = !!options.ignoreRoot;
 	}
 
 	/**
@@ -699,9 +721,10 @@ class ViewStringify {
 	 */
 	_walkView( root, callback ) {
 		const isElement = root instanceof ViewElement;
+		const ignore = this.ignoreRoot && this.root === root;
 
 		if ( isElement || root instanceof ViewDocumentFragment ) {
-			if ( isElement ) {
+			if ( isElement && !ignore ) {
 				callback( this._stringifyElementOpen( root ) );
 			}
 
@@ -714,7 +737,7 @@ class ViewStringify {
 				callback( this._stringifyElementRanges( root, offset ) );
 			}
 
-			if ( isElement ) {
+			if ( isElement && !ignore ) {
 				callback( this._stringifyElementClose( root ) );
 			}
 		}

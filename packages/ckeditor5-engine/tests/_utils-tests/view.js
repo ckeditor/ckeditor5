@@ -5,7 +5,7 @@
 
 'use strict';
 
-import { stringify, parse } from '/tests/engine/_utils/view.js';
+import { parse, stringify, getData, setData }from '/tests/engine/_utils/view.js';
 import DocumentFragment from '/ckeditor5/engine/treeview/documentfragment.js';
 import Position from '/ckeditor5/engine/treeview/position.js';
 import Element from '/ckeditor5/engine/treeview/element.js';
@@ -14,8 +14,94 @@ import ContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
 import Text from '/ckeditor5/engine/treeview/text.js';
 import Selection from '/ckeditor5/engine/treeview/selection.js';
 import Range from '/ckeditor5/engine/treeview/range.js';
+import TreeView from '/ckeditor5/engine/treeview/treeview.js';
 
 describe( 'view test utils', () => {
+	describe( 'getData, setData', () => {
+		let sandbox;
+
+		beforeEach( () => {
+			sandbox = sinon.sandbox.create();
+		} );
+
+		afterEach( () => {
+			sandbox.restore();
+		} );
+
+		describe( 'getData', () => {
+			it( 'should use stringify method', () => {
+				const element = document.createElement( 'div' );
+				const stringifySpy = sandbox.spy( getData, '_stringify' );
+				const treeView = new TreeView();
+				const options = { showType: false, showPriority: false };
+				const root = treeView.createRoot( element );
+				root.appendChildren( new Element( 'p' ) );
+
+				expect( getData( treeView, options ) ).to.equal( '<p></p>' );
+				sinon.assert.calledOnce( stringifySpy );
+				expect( stringifySpy.firstCall.args[ 0 ] ).to.equal( root );
+				expect( stringifySpy.firstCall.args[ 1 ] ).to.equal( null );
+				const stringifyOptions = stringifySpy.firstCall.args[ 2 ];
+				expect( stringifyOptions ).to.have.property( 'showType' ).that.equals( false );
+				expect( stringifyOptions ).to.have.property( 'showPriority' ).that.equals( false );
+				expect( stringifyOptions ).to.have.property( 'ignoreRoot' ).that.equals( true );
+			} );
+
+			it( 'should use stringify method with selection', () => {
+				const element = document.createElement( 'div' );
+				const stringifySpy = sandbox.spy( getData, '_stringify' );
+				const treeView = new TreeView();
+				const options = { withSelection: true, showType: false, showPriority: false };
+				const root = treeView.createRoot( element );
+				root.appendChildren( new Element( 'p' ) );
+
+				treeView.selection.addRange( Range.createFromParentsAndOffsets( root, 0, root, 1 ) );
+
+				expect( getData( treeView, options ) ).to.equal( '[<p></p>]' );
+				sinon.assert.calledOnce( stringifySpy );
+				expect( stringifySpy.firstCall.args[ 0 ] ).to.equal( root );
+				expect( stringifySpy.firstCall.args[ 1 ] ).to.equal( treeView.selection );
+				const stringifyOptions = stringifySpy.firstCall.args[ 2 ];
+				expect( stringifyOptions ).to.have.property( 'showType' ).that.equals( false );
+				expect( stringifyOptions ).to.have.property( 'showPriority' ).that.equals( false );
+				expect( stringifyOptions ).to.have.property( 'ignoreRoot' ).that.equals( true );
+			} );
+		} );
+
+		describe( 'setData', () => {
+			it( 'should use parse method', () => {
+				const treeView = new TreeView();
+				const data = 'foobar<b>baz</b>';
+				const parseSpy = sandbox.spy( setData, '_parse' );
+
+				treeView.createRoot( document.createElement( 'div' ) );
+				setData( treeView, data );
+
+				expect( getData( treeView ) ).to.equal( 'foobar<b>baz</b>' );
+				sinon.assert.calledOnce( parseSpy );
+				const args = parseSpy.firstCall.args;
+				expect( args[ 0 ] ).to.equal( data );
+				expect( args[ 1 ] ).to.be.an( 'object' );
+				expect( args[ 1 ].rootElement ).to.equal( treeView.getRoot() );
+			} );
+
+			it( 'should use parse method with selection', () => {
+				const treeView = new TreeView();
+				const data = '[<b>baz</b>]';
+				const parseSpy = sandbox.spy( setData, '_parse' );
+
+				treeView.createRoot( document.createElement( 'div' ) );
+				setData( treeView, data );
+
+				expect( getData( treeView, { withSelection: true } ) ).to.equal( '[<b>baz</b>]' );
+				const args = parseSpy.firstCall.args;
+				expect( args[ 0 ] ).to.equal( data );
+				expect( args[ 1 ] ).to.be.an( 'object' );
+				expect( args[ 1 ].rootElement ).to.equal( treeView.getRoot() );
+			} );
+		} );
+	} );
+
 	describe( 'stringify', () => {
 		it( 'should write text', () => {
 			const text = new Text( 'foobar' );
