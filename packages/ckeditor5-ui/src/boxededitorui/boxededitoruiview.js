@@ -23,14 +23,14 @@ export default class BoxedEditorUIView extends EditorUIView {
 				role: 'application',
 				dir: 'ltr',
 				lang: locale.lang,
-				'aria-labelledby': `cke-editor__ariaLabel_${ ariaLabelUid }`
+				'aria-labelledby': `cke-editor__aria-label_${ ariaLabelUid }`
 			},
 
 			children: [
 				{
 					tag: 'span',
 					attributes: {
-						id: `cke-editor__ariaLabel_${ ariaLabelUid }`,
+						id: `cke-editor__aria-label_${ ariaLabelUid }`,
 						class: 'cke-voice-label',
 						children: [
 							// TODO: Editor name?
