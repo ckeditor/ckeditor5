@@ -10,13 +10,15 @@
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import EditableUIView from '/ckeditor5/ui/editableui/editableuiview.js';
 import Model from '/ckeditor5/ui/model.js';
+import Locale from '/ckeditor5/utils/locale.js';
 
 describe( 'EditableUIView', () => {
-	let model, view, editableElement;
+	let model, view, editableElement, locale;
 
 	beforeEach( () => {
 		model = new Model( { isEditable: true, isFocused: false } );
-		view = new EditableUIView( model );
+		locale = new Locale( 'en' );
+		view = new EditableUIView( model ,locale );
 		editableElement = document.createElement( 'div' );
 
 		return view.init();
@@ -57,6 +59,30 @@ describe( 'EditableUIView', () => {
 			model.isFocused = true;
 
 			expect( editableElement.classList.contains( 'ck-focused' ) ).to.be.true;
+		} );
+
+		it( 'sets proper accessibility role on the editableElement', () => {
+			view.setEditableElement( editableElement );
+
+			expect( editableElement.attributes.getNamedItem( 'role' ).value ).to.equal( 'textbox' );
+		} );
+
+		it( 'sets proper ARIA label on the editableElement', () => {
+			view.setEditableElement( editableElement );
+
+			expect( editableElement.attributes.getNamedItem( 'aria-label' ).value ).to.be.a( 'string' );
+		} );
+
+		it( 'sets proper title on the editableElement', () => {
+			view.setEditableElement( editableElement );
+
+			expect( editableElement.attributes.getNamedItem( 'title' ).value ).to.be.a( 'string' );
+		} );
+
+		it( 'sets proper class name of the editableElement', () => {
+			view.setEditableElement( editableElement );
+
+			expect( editableElement.classList.contains( 'ck-editor__editable' ) ).to.be.true;
 		} );
 	} );
 } );
