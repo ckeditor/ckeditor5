@@ -41,21 +41,21 @@ export default class BoxedEditorUIView extends EditorUIView {
 				{
 					tag: 'div',
 					attributes: {
-						class: 'ck-editor-top ck-reset-all',
+						class: 'ck-editor__top ck-reset-all',
 						role: 'presentation'
 					}
 				},
 				{
 					tag: 'div',
 					attributes: {
-						class: 'ck-editor-main',
+						class: 'ck-editor__main',
 						role: 'presentation'
 					}
 				}
 			]
 		};
 
-		this.register( 'top', '.ck-editor-top' );
-		this.register( 'main', '.ck-editor-main' );
+		this.register( 'top', '.ck-editor__top' );
+		this.register( 'main', '.ck-editor__main' );
 	}
 }

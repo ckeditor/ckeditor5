@@ -18,11 +18,15 @@ export default class BoxedEditorUI extends EditorUI {
 		const config = editor.config;
 
 		/**
+		 * TODO: Handle editor resizing.
+		 *
 		 * @property {Number} width
 		 */
 		this.set( 'width', config.get( 'ui.width' ) );
 
 		/**
+		 * TODO: Handle editor resizing.
+		 *
 		 * @property {Number} height
 		 */
 		this.set( 'height', config.get( 'ui.height' ) );
