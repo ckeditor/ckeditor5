@@ -61,6 +61,8 @@ export default class MoveOperation extends Operation {
 		 *		     ^          ^
 		 *		     targetPos	movedRangeStart
 		 *		     offset 6	offset 4
+		 *
+		 * @member {engine.treeModel.Position} engine.treeModel.operation.MoveOperation#movedRangeStart
 		 */
 		this.movedRangeStart = this.targetPosition.getTransformedByDeletion( this.sourcePosition, this.howMany );
 
@@ -70,7 +72,7 @@ export default class MoveOperation extends Operation {
 		 * inserts some nodes at the position equal to the boundary of this `MoveOperation`, that operation will
 		 * get their insertion path updated to the position where this `MoveOperation` moves the range.
 		 *
-		 * @type {Boolean}
+		 * @member {Boolean} engine.treeModel.operation.MoveOperation#isSticky
 		 */
 		this.isSticky = false;
 	}

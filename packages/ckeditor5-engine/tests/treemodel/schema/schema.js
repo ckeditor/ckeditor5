@@ -318,7 +318,7 @@ describe( 'check', () => {
 	} );
 } );
 
-describe( 'normalizeQueryPath', () => {
+describe( '_normalizeQueryPath', () => {
 	it( 'should normalize string with spaces to an array of strings', () => {
 		expect( Schema._normalizeQueryPath( '$root div strong' ) ).to.deep.equal( [ '$root', 'div', 'strong' ] );
 	} );
