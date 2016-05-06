@@ -307,7 +307,7 @@ export default class DomConverter {
 			return new ViewRange( viewStart, viewEnd );
 		}
 
-		return undefined;
+		return null;
 	}
 
 	domPositionToView( domParent, domOffset ) {
@@ -322,6 +322,10 @@ export default class DomConverter {
 
 			const viewParent = this.getCorrespondingViewText( domParent );
 			let offset = domOffset;
+
+			if ( !viewParent ) {
+				return null;
+			}
 
 			if ( startsWithFiller( domParent ) ) {
 				offset -= INLINE_FILLER_LENGTH;
@@ -344,7 +348,7 @@ export default class DomConverter {
 				}
 			}
 
-			return undefined;
+			return null;
 		}
 	}
 
