@@ -144,7 +144,7 @@ describe( 'Collection', () => {
 			() => {
 				// Add many items to collection
 				// to be sure that next item id will be higher than id already stored in uid cache
-				for ( let i = 0; i <= 100; i++ ) {
+				for ( let i = 0; i < 100; i++ ) {
 					collection.add( getItem( String( i ) ) );
 				}
 
