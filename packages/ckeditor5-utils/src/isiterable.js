@@ -12,6 +12,6 @@
  * @param {*} value The value to check.
  * @returns {Boolean} True if value implements iterator interface.
  */
-export default function( value ) {
+export default function isIterable( value ) {
 	return !!( value && value[ Symbol.iterator ] );
 }

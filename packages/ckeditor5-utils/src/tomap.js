@@ -19,7 +19,7 @@ import objectToMap from './objecttomap.js';
  * @param {Object|Iterable} data Object or iterable to transform.
  * @returns {Map} Map created from data.
  */
-export default function( data ) {
+export default function toMap( data ) {
 	if ( isPlainObject( data ) ) {
 		return objectToMap( data );
 	} else {

@@ -11,7 +11,7 @@
  * @memberOf utils
  * @returns {Boolean} `true` if given maps are equal, `false` otherwise.
  */
-export default function( mapA, mapB ) {
+export default function mapsEqual( mapA, mapB ) {
 	if ( mapA.size != mapB.size ) {
 		return false;
 	}

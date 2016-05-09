@@ -22,7 +22,7 @@
  * @param {Array} b Array to compare with.
  * @returns {utils.ArrayRelation} How array `a` is related to `b`.
  */
-export default function( a, b ) {
+export default function compareArrays( a, b ) {
 	const minLen = Math.min( a.length, b.length );
 
 	for ( let i = 0; i < minLen; i++ ) {

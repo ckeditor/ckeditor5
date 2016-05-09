@@ -15,7 +15,7 @@
  * @memberOf utils
  * @returns {Function} The spy function.
  */
-export default function() {
+export default function spy() {
 	return function spy() {
 		spy.called = true;
 	};

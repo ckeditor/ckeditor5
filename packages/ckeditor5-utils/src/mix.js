@@ -29,7 +29,7 @@
  * @param {Function} [baseClass] Class which prototype will be extended.
  * @param {Object} [...mixins] Objects from which to get properties.
  */
-export default function( baseClass, ...mixins ) {
+export default function mix( baseClass, ...mixins ) {
 	mixins.forEach( ( mixin ) => {
 		Object.getOwnPropertyNames( mixin ).concat( Object.getOwnPropertySymbols( mixin ) )
 			.forEach( ( key ) => {

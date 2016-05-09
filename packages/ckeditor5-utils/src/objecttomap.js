@@ -15,7 +15,7 @@
  * @param {Object} obj Object to transform.
  * @returns {Map} Map created from object.
  */
-export default function( obj ) {
+export default function objectToMap( obj ) {
 	const map = new Map();
 
 	for ( let key in obj ) {

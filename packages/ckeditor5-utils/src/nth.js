@@ -13,7 +13,7 @@
  * @param {Iterable.<*>} iterable
  * @returns {*}
  */
-export default function( index, iterable ) {
+export default function nth( index, iterable ) {
 	for ( let item of iterable ) {
 		if ( index === 0 ) {
 			return item;

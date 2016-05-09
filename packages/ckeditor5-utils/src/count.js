@@ -14,7 +14,7 @@
  * @param {Iterable.<*>} iterator Any iterator.
  * @returns {Number} Number of items returned by that iterator.
  */
-export default function( iterator ) {
+export default function count( iterator ) {
 	let count = 0;
 
 	for ( let _ of iterator ) { // jshint ignore:line
