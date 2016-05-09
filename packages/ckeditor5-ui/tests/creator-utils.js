@@ -9,7 +9,7 @@
 
 import { createEditableUI, createEditorUI } from '/ckeditor5/ui/creator-utils.js';
 import ObservableMixin from '/ckeditor5/utils/observablemixin.js';
-import utils from '/ckeditor5/utils/utils.js';
+import mix from '/ckeditor5/utils/mix.js';
 import Editor from '/ckeditor5/editor.js';
 import Controller from '/ckeditor5/ui/controller.js';
 import View from '/ckeditor5/ui/view.js';
@@ -26,7 +26,7 @@ describe( 'creator-utils', () => {
 		let editable;
 
 		class Editable {}
-		utils.mix( Editable, ObservableMixin );
+		mix( Editable, ObservableMixin );
 
 		class TestController extends Controller {
 			constructor( editor, editable ) {

@@ -10,7 +10,7 @@ import Region from './region.js';
 import Template from './template.js';
 import CKEditorError from '../utils/ckeditorerror.js';
 import DOMEmitterMixin from './domemittermixin.js';
-import utils from '../utils/utils.js';
+import mix from '../utils/mix.js';
 import isPlainObject from '../utils/lib/lodash/isPlainObject.js';
 
 const bindToSymbol = Symbol( 'bindTo' );
@@ -637,7 +637,7 @@ export default class View {
 	}
 }
 
-utils.mix( View, DOMEmitterMixin );
+mix( View, DOMEmitterMixin );
 
 const validSelectorTypes = new Set( [ 'string', 'boolean', 'function' ] );
 

@@ -11,7 +11,7 @@ import ComponentFactory from '../componentfactory.js';
 import ObservableMixin from '../../utils/observablemixin.js';
 import IconManagerView from '../iconmanagerview.js';
 import iconManagerModel from '../../../theme/iconmanagermodel.js';
-import utils from '../../utils/utils.js';
+import mix from '../../utils/mix.js';
 
 /**
  * Base class for the editor main view controllers.
@@ -85,4 +85,4 @@ export default class EditorUI extends Controller {
 	}
 }
 
-utils.mix( EditorUI, ObservableMixin );
+mix( EditorUI, ObservableMixin );

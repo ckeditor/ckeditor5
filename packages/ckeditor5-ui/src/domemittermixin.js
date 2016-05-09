@@ -6,7 +6,7 @@
 'use strict';
 
 import EmitterMixin from '../utils/emittermixin.js';
-import utils from '../utils/utils.js';
+import uid from '../utils/uid.js';
 import extend from '../utils/lib/lodash/extend.js';
 import log from '../utils/log.js';
 
@@ -259,7 +259,7 @@ export default DOMEmitterMixin;
 // @param {Node} node
 // @return {Number} UID for given DOM Node.
 function getNodeUID( node ) {
-	return node[ 'data-ck-expando' ] || ( node[ 'data-ck-expando' ] = utils.uid() );
+	return node[ 'data-ck-expando' ] || ( node[ 'data-ck-expando' ] = uid() );
 }
 
 // Checks (naively) if given node is native DOM Node.
