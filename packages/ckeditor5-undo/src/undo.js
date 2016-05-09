@@ -12,8 +12,10 @@ import UndoCommand from './undocommand.js';
  * Undo feature.
  *
  * Undo features brings in possibility to undo and re-do changes done in Tree Model by deltas through Batch API.
+ *
+ * @memberOf undo
  */
-export default class UndoFeature extends Feature {
+export default class Undo extends Feature {
 	constructor( editor ) {
 		super( editor );
 
@@ -66,17 +68,13 @@ export default class UndoFeature extends Feature {
 		} );
 
 		// Whenever batch is reverted by undo command, add it to redo history.
-		this._undoCommand.listenTo( this._redoCommand, 'undo', ( evt, batch ) => {
+		this._undoCommand.listenTo( this._redoCommand, 'revert', ( evt, batch ) => {
 			this._undoCommand.addBatch( batch );
 		} );
 
 		// Whenever batch is reverted by redo command, add it to undo history.
-		this._redoCommand.listenTo( this._undoCommand, 'undo', ( evt, batch ) => {
+		this._redoCommand.listenTo( this._undoCommand, 'revert', ( evt, batch ) => {
 			this._redoCommand.addBatch( batch );
 		} );
-	}
-
-	destroy() {
-		this.stopListening();
 	}
 }

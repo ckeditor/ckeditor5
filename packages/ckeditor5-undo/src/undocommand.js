@@ -10,13 +10,9 @@ import Command from '../command/command.js';
 /**
  * Undo command stores batches in itself and is able to and apply reverted versions of them on the document.
  *
- * undo.UndoCommand
+ * @memberOf undo
  */
 export default class UndoCommand extends Command {
-	/**
-	 * @see engine.command.Command
-	 * @param {engine.Editor} editor
-	 */
 	constructor( editor ) {
 		super( editor );
 
@@ -27,32 +23,29 @@ export default class UndoCommand extends Command {
 		 * @member {Array.<engine.treeModel.Batch>} undo.UndoCommand#_batchStack
 		 */
 		this._batchStack = [];
-
-		/**
-		 * For each batch, it stores the information about selection needed to recreate it after undo.
-		 *
-		 * @private
-		 * @member {WeakMap} undo.UndoCommand#_batchSelection
-		 */
-		this._batchSelection = new WeakMap();
 	}
 
 	/**
 	 * Stores a batch in the command. Stored batches can be then reverted.
 	 *
 	 * @param {engine.treeModel.Batch} batch Batch to add.
-	 * @param {Array.<engine.treeModel.Range>} selectionRanges All ranges that were in the selection when batch got
-	 * created.
 	 */
 	addBatch( batch ) {
-		this._batchStack.push( batch );
-		this._batchSelection.set(
-			batch,
-			{
-				ranges: Array.from( this.editor.document.selection.getRanges() ),
-				isBackward: this.editor.document.selection.isBackward
-			}
-		);
+		//this._batchStack.push( batch );
+		//this._batchSelection.set(
+		//	batch,
+		//	{
+		//		ranges: Array.from( this.editor.document.selection.getRanges() ),
+		//		isBackward: this.editor.document.selection.isBackward
+		//	}
+		//);
+
+		const selection = {
+			ranges: Array.from( this.editor.document.selection.getRanges() ),
+			isBackward: this.editor.document.selection.isBackward
+		};
+
+		this._batchStack.push( { batch, selection } );
 	}
 
 	/**
@@ -62,12 +55,6 @@ export default class UndoCommand extends Command {
 		this._batchStack = [];
 	}
 
-	/**
-	 * Checks whether this command should be enabled. Command is enabled when it has any batches in its stack.
-	 *
-	 * @private
-	 * @returns {Boolean}
-	 */
 	_checkEnabled() {
 		return this._batchStack.length > 0;
 	}
@@ -76,17 +63,18 @@ export default class UndoCommand extends Command {
 	 * Executes the command: reverts a {@link engine.treeModel.Batch batch} added to the command's stack,
 	 * applies it on the document and removes the batch from the stack.
 	 *
-	 * Fires `undo` event with reverted batch as a parameter.
-	 *
 	 * @private
+	 * @fires undo.undoCommand#event:revert
 	 * @param {Number} [batchIndex] If set, batch under the given index on the stack will be reverted and removed.
 	 * If not set, or invalid, the last added batch will be reverted and removed.
 	 */
 	_doExecute( batchIndex ) {
 		batchIndex = this._batchStack[ batchIndex ] ? batchIndex : this._batchStack.length - 1;
 
+		const undoItem = this._batchStack.splice( batchIndex, 1 )[ 0 ];
+
 		// Get the batch to undo.
-		const undoBatch = this._batchStack.splice( batchIndex, 1 )[ 0 ];
+		const undoBatch = undoItem.batch;
 		const undoDeltas = undoBatch.deltas.slice();
 		// Deltas have to be applied in reverse order, so if batch did A B C, it has to do reversed C, reversed B, reversed A.
 		undoDeltas.reverse();
@@ -104,7 +92,7 @@ export default class UndoCommand extends Command {
 		}
 
 		// Get the selection state stored with this batch.
-		const selectionState = this._batchSelection.get( undoBatch );
+		const selectionState = undoItem.selection;
 
 		// Take all selection ranges that were stored with undone batch.
 		const ranges = selectionState.ranges;
@@ -134,13 +122,22 @@ export default class UndoCommand extends Command {
 
 						switch ( operation.type ) {
 							case 'insert':
-								result = transformed[ t ].getTransformedByInsertion( operation.position, operation.nodeList.length, true );
+								result = transformed[ t ].getTransformedByInsertion(
+									operation.position,
+									operation.nodeList.length,
+									true
+								);
 								break;
 
 							case 'move':
 							case 'remove':
 							case 'reinsert':
-								result = transformed[ t ].getTransformedByMove( operation.sourcePosition, operation.targetPosition, operation.howMany, true );
+								result = transformed[ t ].getTransformedByMove(
+									operation.sourcePosition,
+									operation.targetPosition,
+									operation.howMany,
+									true
+								);
 								break;
 						}
 
@@ -195,6 +192,13 @@ export default class UndoCommand extends Command {
 			this.editor.document.selection.setRanges( transformedRanges, selectionState.isBackward );
 		}
 
-		this.fire( 'undo', undoBatch );
+		this.fire( 'revert', undoBatch );
 	}
 }
+
+/**
+ * Fired after `UndoCommand` reverts a batch.
+ *
+ * @event undo.UndoCommand#revert
+ * @param {engine.treeModel.Batch} undoBatch The batch instance that got reverted.
+ */

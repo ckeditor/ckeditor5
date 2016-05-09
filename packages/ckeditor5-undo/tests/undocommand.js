@@ -290,7 +290,7 @@ describe( 'UndoCommand', () => {
 			const batch = doc.batch();
 			const spy = sinon.spy();
 
-			undo.on( 'undo', spy );
+			undo.on( 'revert', spy );
 
 			undo._execute();
 

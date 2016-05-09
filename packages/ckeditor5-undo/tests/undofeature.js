@@ -8,7 +8,7 @@
 import Editor from '/ckeditor5/editor.js';
 import ModelDocument from '/ckeditor5/engine/treemodel/document.js';
 import Position from '/ckeditor5/engine/treemodel/position.js';
-import UndoFeature from '/ckeditor5/undo/undofeature.js';
+import UndoFeature from '/ckeditor5/undo/undo.js';
 
 let element, editor, undo, batch, doc, root;
 
@@ -56,7 +56,7 @@ describe( 'UndoFeature', () => {
 
 		sinon.spy( undo._redoCommand, 'addBatch' );
 
-		undo._undoCommand.fire( 'undo', batch );
+		undo._undoCommand.fire( 'revert', batch );
 
 		expect( undo._redoCommand.addBatch.calledOnce ).to.be.true;
 		expect( undo._redoCommand.addBatch.calledWith( batch ) ).to.be.true;
@@ -67,7 +67,7 @@ describe( 'UndoFeature', () => {
 
 		sinon.spy( undo._undoCommand, 'addBatch' );
 
-		undo._redoCommand.fire( 'undo', batch );
+		undo._redoCommand.fire( 'revert', batch );
 
 		expect( undo._undoCommand.addBatch.calledOnce ).to.be.true;
 		expect( undo._undoCommand.addBatch.calledWith( batch ) ).to.be.true;
@@ -79,13 +79,5 @@ describe( 'UndoFeature', () => {
 		batch.insert( new Position( root, [ 0 ] ), 'foobar' );
 
 		expect( undo._redoCommand.clearStack.calledOnce ).to.be.true;
-	} );
-
-	it( 'should stop listening when destroyed', () => {
-		sinon.spy( undo, 'stopListening' );
-
-		undo.destroy();
-
-		expect( undo.stopListening.called ).to.be.true;
 	} );
 } );
