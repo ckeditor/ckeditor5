@@ -203,7 +203,8 @@ export default class Renderer {
 		const domFillerPosition = this.domConverter.viewPositionToDom( this._inlineFillerPosition );
 		const domFillerNode = domFillerPosition.parent;
 
-		if ( !startsWithFiller( domFillerNode ) ) {
+		// If there is no filler viewPositionToDom will return parent node, so domFillerNode will be an element.
+		if ( !( domFillerNode instanceof Text ) || !startsWithFiller( domFillerNode ) ) {
 			/**
 			 * No inline filler on expected position.
 			 *
@@ -255,7 +256,7 @@ export default class Renderer {
 
 		const filler = this._inlineFillerPosition;
 
-		if ( filler && filler.parent == viewText.parent && filler.offset == viewText.offset ) {
+		if ( filler && filler.parent == viewText.parent && filler.offset == viewText.getIndex() ) {
 			expectedText = INLINE_FILLER + expectedText;
 		}
 
