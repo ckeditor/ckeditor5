@@ -142,15 +142,17 @@ describe( 'Collection', () => {
 			'should not override item under an existing id in case of a collision ' +
 			'between existing items and one with an automatically generated id',
 			() => {
-				collection.add( getItem( '0' ) );
-				collection.add( getItem( '1' ) );
-				collection.add( getItem( '2' ) );
+				// Add many items to collection
+				// to be sure that next item id will be higher than id already stored in uid cache
+				for ( let i = 0; i <= 100; i++ ) {
+					collection.add( getItem( String( i ) ) );
+				}
 
 				let item = {};
 
 				collection.add( item );
 
-				expect( item.id ).to.be.above( '3' );
+				expect( item.id ).to.be.at.least( 100 );
 			}
 		);
 
