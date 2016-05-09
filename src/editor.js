@@ -12,7 +12,8 @@ import EditableCollection from './editablecollection.js';
 import CKEditorError from './utils/ckeditorerror.js';
 import Locale from './utils/locale.js';
 import isArray from './utils/lib/lodash/isArray.js';
-import utils from './utils/utils.js';
+import nth from './utils/nth.js';
+import mix from './utils/mix.js';
 
 /**
  * Represents a single editor instance.
@@ -144,7 +145,7 @@ export default class Editor {
 			return null;
 		}
 
-		return utils.nth( 0, this.elements )[ 1 ];
+		return nth( 0, this.elements )[ 1 ];
 	}
 
 	/**
@@ -158,7 +159,7 @@ export default class Editor {
 			return null;
 		}
 
-		return utils.nth( 0, this.elements )[ 0 ];
+		return nth( 0, this.elements )[ 0 ];
 	}
 
 	/**
@@ -335,7 +336,7 @@ export default class Editor {
 	}
 }
 
-utils.mix( Editor, ObservableMixin );
+mix( Editor, ObservableMixin );
 
 /**
  * Fired when this editor instance is destroyed. The editor at this point is not usable and this event should be used to
