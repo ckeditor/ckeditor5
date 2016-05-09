@@ -6,7 +6,7 @@
 'use strict';
 
 import isString from '../lib/lodash/isString.js';
-import utils from '../utils.js';
+import isIterable from '../isiterable.js';
 
 /**
  * Creates element with attributes and children.
@@ -31,7 +31,7 @@ export default function createElement( doc, name, attributes = {}, children = []
 		element.setAttribute( key, attributes[ key ] );
 	}
 
-	if ( isString( children ) || !utils.isIterable( children ) ) {
+	if ( isString( children ) || !isIterable( children ) ) {
 		children = [ children ];
 	}
 

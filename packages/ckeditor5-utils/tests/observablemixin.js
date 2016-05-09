@@ -11,7 +11,7 @@ import ObservableMixin from '/ckeditor5/utils/observablemixin.js';
 import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
 import EventInfo from '/ckeditor5/utils/eventinfo.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-import utils from '/ckeditor5/utils/utils.js';
+import mix from '/ckeditor5/utils/mix.js';
 
 const assertBinding = utilsTestUtils.assertBinding;
 
@@ -39,7 +39,7 @@ describe( 'Observable', () => {
 			}
 		}
 	}
-	utils.mix( Observable, ObservableMixin );
+	mix( Observable, ObservableMixin );
 
 	let Car, car;
 
