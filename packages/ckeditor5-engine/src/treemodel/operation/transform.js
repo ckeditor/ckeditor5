@@ -13,7 +13,7 @@ import RemoveOperation from './removeoperation.js';
 import NoOperation from './nooperation.js';
 import Range from '../range.js';
 import isEqual from '../../../utils/lib/lodash/isEqual.js';
-import compareArrays from '../../../utils/compareArrays.js';
+import compareArrays from '../../../utils/comparearrays.js';
 
 /**
  * Transforms given {@link engine.treeModel.operation.Operation operation} by another
