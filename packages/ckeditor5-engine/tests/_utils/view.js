@@ -52,7 +52,7 @@ export function getData( treeView, options = {} ) {
 		getData._stringify( root, null, stringifyOptions );
 }
 
-// Set stringify as private method inside getData - needed for testing/spying.
+// Set stringify as getData private method - needed for testing/spying.
 getData._stringify = stringify;
 
 /**
@@ -75,7 +75,7 @@ export function setData( treeView, data, options = {} ) {
 	}
 }
 
-// Set stringify as private method inside getData - needed for testing/spying.
+// Set parse as setData private method - needed for testing/spying.
 setData._parse = parse;
 
 /**
@@ -482,6 +482,11 @@ class ViewParser {
 		// Convert HTML string to DOM.
 		const domRoot = htmlProcessor.toDom( data );
 
+		// If root element is provided - clear it.
+		// if ( rootElement ) {
+		// 	rootElement.removeChildren( rootElement.getChildCount() );
+		// }
+
 		// Convert DOM to View.
 		return this._walkDom( domRoot, rootElement );
 	}
@@ -504,7 +509,7 @@ class ViewParser {
 
 			// If there is only one element inside DOM DocumentFragment - use it as root.
 			if ( !isDomElement && length == 1 ) {
-				return this._walkDom( domNode.childNodes[ 0 ] );
+				return this._walkDom( domNode.childNodes[ 0 ], rootElement );
 			}
 
 			let viewElement;
@@ -513,7 +518,7 @@ class ViewParser {
 				viewElement = this._convertElement( domNode );
 
 				if ( rootElement ) {
-					rootElement.appendChild( viewElement );
+					rootElement.appendChildren( viewElement );
 				}
 			} else {
 				viewElement = rootElement ? rootElement : new ViewDocumentFragment();

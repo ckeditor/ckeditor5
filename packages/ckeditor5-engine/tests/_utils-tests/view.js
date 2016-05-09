@@ -519,5 +519,19 @@ describe( 'view test utils', () => {
 				parse( '<container:b:10:test></container:b:10:test>' );
 			} ).to.throw( Error );
 		} );
+
+		it( 'should use provided root element #1', () => {
+			const root = new Element( 'p' );
+			const data = parse( '<span>text</span>', { rootElement: root } );
+
+			expect( stringify( data ) ).to.equal( '<p><span>text</span></p>' );
+		} );
+
+		it( 'should use provided root element #2', () => {
+			const root = new Element( 'p' );
+			const data = parse( '<span>text</span><b>test</b>', { rootElement: root } );
+
+			expect( stringify( data ) ).to.equal( '<p><span>text</span><b>test</b></p>' );
+		} );
 	} );
 } );
