@@ -24,7 +24,18 @@ import StickyToolbarView from '/ckeditor5/ui/stickytoolbar/stickytoolbarview.js'
 
 import { imitateFeatures, imitateDestroyFeatures } from './utils/imitatefeatures.js';
 
+/**
+ * Classic editor creator using inline editable and sticky toolbar, all
+ * enclosed in a boxed UI.
+ *
+ * @memberOf ckeditor5.creator
+ */
 export default class ClassicCreator extends StandardCreator {
+	/**
+	 * Creates an instance of the classic creator.
+	 *
+	 * @param {ckeditor5.Editor} The editor instance.
+	 */
 	constructor( editor ) {
 		super( editor, new HtmlDataProcessor() );
 
@@ -39,6 +50,11 @@ export default class ClassicCreator extends StandardCreator {
 		this._mockDataController();
 	}
 
+	/**
+	 * Creates editor UI and loads startup data into the editor.
+	 *
+	 * @returns {Promise}
+	 */
 	create() {
 		const editor = this.editor;
 		const editable = editor.editables.get( 0 );
@@ -59,6 +75,12 @@ export default class ClassicCreator extends StandardCreator {
 			.then( () => this.loadDataFromEditorElement() );
 	}
 
+	/**
+	 * Updates the original editor element with data and destroys
+	 * the UI.
+	 *
+	 * @returns {Promise}
+	 */
 	destroy() {
 		imitateDestroyFeatures();
 
@@ -69,18 +91,30 @@ export default class ClassicCreator extends StandardCreator {
 		return this.editor.ui.destroy();
 	}
 
+	/**
+	 * Creates editor sticky toolbar and fills it with children using the configuration.
+	 *
+	 * @protected
+	 */
 	_createToolbar() {
 		const editor = this.editor;
 
 		// Note: StickyToolbar and StickyToolbarView share the same model. It may change in the future.
 		const toolbarModel = new Model();
-		const toolbar = new StickyToolbar( toolbarModel, new StickyToolbarView( toolbarModel, editor.locale ), editor );
+		const toolbarView = new StickyToolbarView( toolbarModel, editor.locale );
+		const toolbar = new StickyToolbar( toolbarModel, toolbarView, editor );
 
 		toolbar.addButtons( editor.config.toolbar );
 
 		this.editor.ui.add( 'top', toolbar );
 	}
 
+	/**
+	 * TEMP: Mocks basic data IO for the purposes of the creator.
+	 * TODO: To be replaced with actual engine bindings.
+	 *
+	 * @protected
+	 */
 	_mockDataController() {
 		const editor = this.editor;
 
