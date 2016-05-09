@@ -383,17 +383,78 @@ export default class Range {
 				new Range( this.start, insertPosition ),
 				new Range(
 					insertPosition.getTransformedByInsertion( insertPosition, howMany, true ),
-					this.end.getTransformedByInsertion( insertPosition, howMany, false )
+					this.end.getTransformedByInsertion( insertPosition, howMany, this.isCollapsed )
 				)
 			];
 		} else {
 			const range = Range.createFromRange( this );
 
-			range.start = range.start.getTransformedByInsertion( insertPosition, howMany, !isSticky );
-			range.end = range.end.getTransformedByInsertion( insertPosition, howMany, isSticky );
+			let insertBeforeStart = range.isCollapsed ? true : !isSticky;
+			let insertBeforeEnd = range.isCollapsed ? true : isSticky;
+
+			range.start = range.start.getTransformedByInsertion( insertPosition, howMany, insertBeforeStart );
+			range.end = range.end.getTransformedByInsertion( insertPosition, howMany, insertBeforeEnd );
 
 			return [ range ];
 		}
+	}
+
+	/**
+	 * Returns an array containing {engine.treeModel.Range ranges} that are a result of transforming this
+	 * {@link engine.treeModel.Range range} by moving `howMany` nodes from `sourcePosition` to `targetPosition`.
+	 *
+	 * @param {engine.treeModel.Position} sourcePosition Position from which nodes are moved.
+	 * @param {engine.treeModel.Position} targetPosition Position to where nodes are moved.
+	 * @param {Number} howMany How many nodes are moved.
+	 * @param {Boolean} [spread] Flag indicating whether this {engine.treeModel.Range range} should be spread if insertion
+	 * was inside the range. Defaults to `false`.
+	 * @returns {Array.<engine.treeModel.Range>} Result of the transformation.
+	 */
+	getTransformedByMove( sourcePosition, targetPosition, howMany, spread ) {
+		let result;
+
+		const moveRange = new Range( sourcePosition, sourcePosition.getShiftedBy( howMany ) );
+
+		const differenceSet = this.getDifference( moveRange );
+		let difference;
+
+		if ( differenceSet.length == 1 ) {
+			difference = new Range(
+				differenceSet[ 0 ].start.getTransformedByDeletion( sourcePosition, howMany ),
+				differenceSet[ 0 ].end.getTransformedByDeletion( sourcePosition, howMany )
+			);
+		} else if ( differenceSet.length == 2 ) {
+			// This means that ranges were moved from the inside of this range.
+			// So we can operate on this range positions and we don't have to transform starting position.
+			difference = new Range(
+				this.start,
+				this.end.getTransformedByDeletion( sourcePosition, howMany )
+			);
+		} else {
+			// 0.
+			difference = null;
+		}
+
+		const insertPosition = targetPosition.getTransformedByDeletion( sourcePosition, howMany );
+
+		if ( difference ) {
+			result = difference.getTransformedByInsertion( insertPosition, howMany, spread );
+		} else {
+			result = [];
+		}
+
+		const common = this.getIntersection( moveRange );
+
+		// Add common part of the range only if there is any and only if it is not
+		// already included in `difference` part.
+		if ( common && ( spread || difference === null || !difference.containsPosition( insertPosition ) ) ) {
+			result.push( new Range(
+				common.start._getCombined( moveRange.start, insertPosition ),
+				common.end._getCombined( moveRange.start, insertPosition )
+			) );
+		}
+
+		return result;
 	}
 
 	/**

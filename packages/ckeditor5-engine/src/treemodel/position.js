@@ -299,7 +299,10 @@ export default class Position {
 		// Moving a range removes nodes from their original position. We acknowledge this by proper transformation.
 		let transformed = this.getTransformedByDeletion( sourcePosition, howMany );
 
-		if ( transformed === null || ( transformed.isEqual( sourcePosition ) && sticky ) ) {
+		// Then we update target position, as it could be affected by nodes removal too.
+		targetPosition = targetPosition.getTransformedByDeletion( sourcePosition, howMany );
+
+		if ( transformed === null || ( sticky && transformed.isEqual( sourcePosition ) ) ) {
 			// This position is inside moved range (or sticks to it).
 			// In this case, we calculate a combination of this position, move source position and target position.
 			transformed = this._getCombined( sourcePosition, targetPosition );
@@ -387,13 +390,13 @@ export default class Position {
 				return true;
 
 			case 'BEFORE':
-				left = this;
-				right = otherPosition;
+				left = Position.createFromPosition( this );
+				right = Position.createFromPosition( otherPosition );
 				break;
 
 			case 'AFTER':
-				left = otherPosition;
-				right = this;
+				left = Position.createFromPosition( otherPosition );
+				right = Position.createFromPosition( this );
 				break;
 
 			default:

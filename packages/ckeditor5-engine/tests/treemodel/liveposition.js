@@ -370,5 +370,18 @@ describe( 'LivePosition', () => {
 				expect( live.path ).to.deep.equal( path );
 			} );
 		} );
+
+		it( 'attributes changed', () => {
+			let changes = {
+				range: new Range( new Position( root, [ 1, 4, 0 ] ), new Position( root, [ 1, 4, 10 ] ) ),
+				key: 'foo',
+				oldValue: null,
+				newValue: 'bar'
+			};
+
+			doc.fire( 'change', 'setAttribute', changes, null );
+
+			expect( live.path ).to.deep.equal( path );
+		} );
 	} );
 } );

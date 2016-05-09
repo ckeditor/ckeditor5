@@ -162,7 +162,11 @@ export default class Document {
 		this.history.addOperation( operation );
 
 		const batch = operation.delta && operation.delta.batch;
-		this.fire( 'change', operation.type, changes, batch );
+
+		if ( changes ) {
+			// `NoOperation` returns no changes, do not fire event for it.
+			this.fire( 'change', operation.type, changes, batch );
+		}
 	}
 
 	/**
@@ -307,16 +311,15 @@ export default class Document {
 	 * * 'removeRootAttribute' when attribute for root is removed,
 	 * * 'changeRootAttribute' when attribute for root changes.
 	 *
-	 * Change event is fired after the change is done. This means that any ranges or positions passed in
-	 * `data` are referencing nodes and paths in updated tree model.
-	 *
 	 * @event engine.treeModel.Document.change
 	 * @param {String} type Change type, possible option: 'insert', 'remove', 'reinsert', 'move', 'attribute'.
 	 * @param {Object} data Additional information about the change.
-	 * @param {engine.treeModel.Range} data.range Range containing changed nodes. Note that for 'remove' the range will be in the
-	 * {@link engine.treeModel.Document#graveyard graveyard root}. This is undefined for root types.
+	 * @param {engine.treeModel.Range} data.range Range in model containing changed nodes. Note that the range state is
+	 * after changes has been done, i.e. for 'remove' the range will be in the {@link engine.treeModel.Document#graveyard graveyard root}.
+	 * This is `undefined` for "...root..." types.
 	 * @param {engine.treeModel.Position} [data.sourcePosition] Change source position. Exists for 'remove', 'reinsert' and 'move'.
-	 * Note that for 'reinsert' the source position will be in the {@link engine.treeModel.Document#graveyard graveyard root}.
+	 * Note that this position state is before changes has been done, i.e. for 'reinsert' the source position will be in the
+	 * {@link engine.treeModel.Document#graveyard graveyard root}.
 	 * @param {String} [data.key] Only for attribute types. Key of changed / inserted / removed attribute.
 	 * @param {*} [data.oldValue] Only for 'removeAttribute', 'removeRootAttribute', 'changeAttribute' or
 	 * 'changeRootAttribute' type.

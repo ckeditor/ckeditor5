@@ -118,6 +118,20 @@ describe( 'NodeList', () => {
 			expect( nodeList.get( 0 ) ).to.equal( p1 );
 			expect( nodeList.get( 1 ) ).to.equal( p2 );
 		} );
+
+		it( 'should accept DocumentFragment as one of items in input array', () => {
+			let p1 = new Element( 'p' );
+			let p2 = new Element( 'p' );
+			let p3 = new Element( 'p' );
+			let frag = new DocumentFragment( [ p1, p2 ] );
+
+			let nodeList = new NodeList( [ frag, p3 ] );
+
+			expect( nodeList.length ).to.equal( 3 );
+			expect( nodeList.get( 0 ) ).to.equal( p1 );
+			expect( nodeList.get( 1 ) ).to.equal( p2 );
+			expect( nodeList.get( 2 ) ).to.equal( p3 );
+		} );
 	} );
 
 	describe( 'insert', () => {
