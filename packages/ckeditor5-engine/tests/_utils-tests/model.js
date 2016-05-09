@@ -5,7 +5,7 @@
 
 'use strict';
 
-import { stringify, parse } from '/tests/engine/_utils/model.js';
+import { stringify, parse, getData, setData } from '/tests/engine/_utils/model.js';
 import Document from '/ckeditor5/engine/treemodel/document.js';
 import DocumentFragment from '/ckeditor5/engine/treemodel/documentfragment.js';
 import Element from '/ckeditor5/engine/treemodel/element.js';
@@ -14,14 +14,67 @@ import Range from '/ckeditor5/engine/treemodel/range.js';
 import Position from '/ckeditor5/engine/treemodel/position.js';
 
 describe( 'model test utils', () => {
-	let document, root, selection;
+	let document, root, selection, sandbox;
 
 	beforeEach( () => {
 		document = new Document();
 		root = document.createRoot( 'main', '$root' );
 		selection = document.selection;
-
+		sandbox = sinon.sandbox.create();
 		selection.removeAllRanges();
+	} );
+
+	afterEach( () => {
+		sandbox.restore();
+	} );
+
+	describe( 'getData', () => {
+		it( 'should use stringify method', () => {
+			const stringifySpy = sandbox.spy( getData, '_stringify' );
+			root.appendChildren( new Element( 'b', null, [ 'btext' ] ) );
+
+			expect( getData( document ) ).to.equal( '<b>btext</b>' );
+			sinon.assert.calledOnce( stringifySpy );
+			sinon.assert.calledWithExactly( stringifySpy, root );
+		} );
+
+		it( 'should use stringify method with selection', () => {
+			const stringifySpy = sandbox.spy( getData, '_stringify' );
+			root.appendChildren( new Element( 'b', null, [ 'btext' ] ) );
+			document.selection.addRange( Range.createFromParentsAndOffsets( root, 0, root, 1 ) );
+
+			expect( getData( document, { withSelection: true } ) ).to.equal( '<selection><b>btext</b></selection>' );
+			sinon.assert.calledOnce( stringifySpy );
+			sinon.assert.calledWithExactly( stringifySpy, root, document.selection );
+		} );
+	} );
+
+	describe( 'setData', () => {
+		it( 'should use parse method', () => {
+			const parseSpy = sandbox.spy( setData, '_parse' );
+			const options = {};
+			const data = '<b>btext</b>text';
+
+			setData( document, data, options );
+
+			expect( getData( document ) ).to.equal( data );
+			sinon.assert.calledOnce( parseSpy );
+			const args = parseSpy.firstCall.args;
+			expect( args[ 0 ] ).to.equal( data );
+		} );
+
+		it( 'should use parse method with selection', () => {
+			const parseSpy = sandbox.spy( setData, '_parse' );
+			const options = {};
+			const data = '[<b>btext</b>]';
+
+			setData( document, data, options );
+
+			expect( getData( document ) ).to.equal( data );
+			sinon.assert.calledOnce( parseSpy );
+			const args = parseSpy.firstCall.args;
+			expect( args[ 0 ] ).to.equal( data );
+		} );
 	} );
 
 	describe( 'stringify', () => {

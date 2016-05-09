@@ -30,8 +30,11 @@ export function getData( document, options = {} ) {
 	const rootName = options.rootName || 'main';
 	const root = document.getRoot( rootName );
 
-	return withSelection ? stringify( root, document.selection ) : stringify( root );
+	return withSelection ? getData._stringify( root, document.selection ) : getData._stringify( root );
 }
+
+// Set stringify as getData private method - needed for testing/spying.
+getData._stringify = stringify;
 
 /**
  * Sets the contents of the {@link engine.treeModel.Document Document} provided as HTML-like string.
@@ -39,15 +42,18 @@ export function getData( document, options = {} ) {
  * @param {engine.treeModel.Document} document
  * @param {String} data HTML-like string to write into Document.
  * @param {Object} options
- * @param {String} [rootName] Root name where parsed data will be stored. If not provided, default `main` name will be
+ * @param {String} [options.rootName] Root name where parsed data will be stored. If not provided, default `main` name will be
  * used.
  */
 export function setData( document, data, options = {} ) {
-	parse( data, {
+	setData._parse( data, {
 		document: document,
 		rootName: options.rootName
 	} );
 }
+
+// Set parse as setData private method - needed for testing/spying.
+setData._parse = parse;
 
 /**
  * Converts model nodes to HTML-like string representation.
@@ -113,7 +119,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
  *
  * @param {String} data HTML-like string to be parsed.
  * @param {Object} options
- * @param {engine.treeModel.Document} [options.document] Document to be used to create root element and selection. If
+ * @param {engine.treeModel.Document} [options.document] Document from which root element and selection will be used. If
  * not provided new {engine.treeModel.Document document} instance will be created.
  * @param {String} [options.rootName='main'] When `document` option is provided this root name will be used to create
  * {engine.treeModel.RootElement RootElement} instance.
