@@ -15,11 +15,12 @@ import { createEditableUI, createEditorUI } from '/ckeditor5/ui/creator-utils.js
 import EditorUIView from '/ckeditor5/ui/editorui/editoruiview.js';
 import BoxlessEditorUI from '/tests/ckeditor5/_utils/ui/boxlesseditorui/boxlesseditorui.js';
 import EditableUI from '/ckeditor5/ui/editableui/editableui.js';
-import InlineEditableUIView from '/tests/ckeditor5/_utils/ui/editableui/inline/inlineeditableuiview.js';
+import InlineEditableUIView from '/ckeditor5/ui/editableui/inline/inlineeditableuiview.js';
 import Model from '/ckeditor5/ui/model.js';
 import FloatingToolbar from '/tests/ckeditor5/_utils/ui/floatingtoolbar/floatingtoolbar.js';
 import FloatingToolbarView from '/tests/ckeditor5/_utils/ui/floatingtoolbar/floatingtoolbarview.js';
-import { imitateFeatures, imitateDestroyFeatures } from '../imitatefeatures.js';
+
+import { imitateFeatures, imitateDestroyFeatures } from '/ckeditor5/creator-classic/utils/imitatefeatures.js';
 
 export default class InlineCreator extends StandardCreator {
 	constructor( editor ) {

@@ -12,17 +12,17 @@ import Editable from '/ckeditor5/editable.js';
 
 import { createEditableUI, createEditorUI } from '/ckeditor5/ui/creator-utils.js';
 
-import BoxedEditorUI from '/tests/ckeditor5/_utils/ui/boxededitorui/boxededitorui.js';
-import BoxedEditorUIView from '/tests/ckeditor5/_utils/ui/boxededitorui/boxededitoruiview.js';
+import BoxedEditorUI from '/ckeditor5/ui/boxededitorui/boxededitorui.js';
+import BoxedEditorUIView from '/ckeditor5/ui/boxededitorui/boxededitoruiview.js';
 import FramedEditableUI from '/tests/ckeditor5/_utils/ui/editableui/framed/framededitableui.js';
 import FramedEditableUIView from '/tests/ckeditor5/_utils/ui/editableui/framed/framededitableuiview.js';
 import Model from '/ckeditor5/ui/model.js';
 import Toolbar from '/ckeditor5/ui/bindings/toolbar.js';
 import ToolbarView from '/ckeditor5/ui/toolbar/toolbarview.js';
 
-import { imitateFeatures, imitateDestroyFeatures } from '../imitatefeatures.js';
+import { imitateFeatures, imitateDestroyFeatures } from '/ckeditor5/creator-classic/utils/imitatefeatures.js';
 
-export default class ClassicCreator extends StandardCreator {
+export default class LegacyCreator extends StandardCreator {
 	constructor( editor ) {
 		super( editor, new HtmlDataProcessor() );
 
@@ -47,7 +47,7 @@ export default class ClassicCreator extends StandardCreator {
 		// UI.
 		this._replaceElement( editor.firstElement, editor.ui.view.element );
 		this._createToolbar();
-		editor.ui.add( 'editable', createEditableUI( editor, editable, FramedEditableUI, FramedEditableUIView ) );
+		editor.ui.add( 'main', createEditableUI( editor, editable, FramedEditableUI, FramedEditableUIView ) );
 
 		// Init.
 		return super.create()
