@@ -12,7 +12,7 @@ import Text from './text.js';
 import Range from './range.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 import DocumentFragment from './documentfragment.js';
-import utils from '../../utils/utils.js';
+import isIterable from '../../utils/isiterable.js';
 
 /**
  * Tree View Writer class.
@@ -232,7 +232,7 @@ import utils from '../../utils/utils.js';
 	 * @returns {engine.treeView.Range} Range around inserted nodes.
 	 */
 	insert( position, nodes ) {
-		nodes = utils.isIterable( nodes ) ? [ ...nodes ] : [ nodes ];
+		nodes = isIterable( nodes ) ? [ ...nodes ] : [ nodes ];
 
 		// Check if nodes to insert are instances of AttributeElements, ContainerElements or Text.
 		validateNodesToInsert( nodes );

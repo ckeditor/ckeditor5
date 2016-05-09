@@ -7,7 +7,7 @@
 
 'use strict';
 
-import utils from '/ckeditor5/utils/utils.js';
+import count from '/ckeditor5/utils/count.js';
 import Delta from '/ckeditor5/engine/treemodel/delta/delta.js';
 import Operation from '/ckeditor5/engine/treemodel/operation/operation.js';
 
@@ -70,9 +70,9 @@ describe( 'Delta', () => {
 			delta.addOperation( {} );
 			delta.addOperation( {} );
 
-			const count = utils.count( delta.operations );
+			const totalNumber = count( delta.operations );
 
-			expect( count ).to.equal( 3 );
+			expect( totalNumber ).to.equal( 3 );
 		} );
 	} );
 

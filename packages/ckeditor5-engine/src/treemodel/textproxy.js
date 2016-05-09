@@ -6,7 +6,7 @@
 'use strict';
 
 import CharacterProxy from './characterproxy.js';
-import utils from '../../utils/utils.js';
+import toMap from '../../utils/tomap.js';
 
 /**
  * TextProxy is an aggregator for multiple CharacterProxy instances that are placed next to each other in
@@ -140,7 +140,7 @@ export default class TextProxy {
 	 * See {@link engine.treeModel.TextProxy#getAttributes}.
 	 */
 	setAttributesTo( attrs ) {
-		let attrsMap = utils.toMap( attrs );
+		let attrsMap = toMap( attrs );
 
 		this.clearAttributes();
 

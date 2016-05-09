@@ -6,7 +6,8 @@
 'use strict';
 
 import Node from './node.js';
-import utils from '../../utils/utils.js';
+import objectToMap from '../../utils/objecttomap.js';
+import isIterable from '../../utils/isiterable.js';
 import isPlainObject from '../../utils/lib/lodash/isPlainObject.js';
 
 /**
@@ -55,7 +56,7 @@ export default class Element extends Node {
 		 * @member {Map} engine.treeView.Element#_attrs
 		 */
 		if ( isPlainObject( attrs ) ) {
-			this._attrs = utils.objectToMap( attrs );
+			this._attrs = objectToMap( attrs );
 		} else {
 			this._attrs = new Map( attrs );
 		}
@@ -280,7 +281,7 @@ export default class Element extends Node {
 		this._fireChange( 'CHILDREN', this );
 		let count = 0;
 
-		if ( !utils.isIterable( nodes ) ) {
+		if ( !isIterable( nodes ) ) {
 			nodes = [ nodes ];
 		}
 

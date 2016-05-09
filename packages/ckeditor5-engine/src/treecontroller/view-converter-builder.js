@@ -7,7 +7,7 @@
 
 import Matcher from '../treeview/matcher.js';
 import ModelElement from '../treemodel/element.js';
-import utils from '../../utils/utils';
+import isIterable from '../../utils/isiterable.js';
 
 /**
  * Provides chainable, high-level API to easily build basic view-to-model converters that are appended to given
@@ -372,7 +372,7 @@ class ViewConverterBuilder {
 
 // Helper function that sets given attributes on given `engine.treeModel.Item` or `engine.treeModel.DocumentFragment`.
 function setAttributeOn( toChange, attribute, data, conversionApi ) {
-	if ( utils.isIterable( toChange ) ) {
+	if ( isIterable( toChange ) ) {
 		for ( let node of toChange ) {
 			setAttributeOn( node, attribute, data, conversionApi );
 		}

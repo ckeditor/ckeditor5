@@ -7,7 +7,7 @@
 
 'use strict';
 
-import utils from '/ckeditor5/utils/utils.js';
+import count from '/ckeditor5/utils/count.js';
 import Node from '/ckeditor5/engine/treeview/node.js';
 import ViewElement from '/ckeditor5/engine/treeview/element.js';
 
@@ -19,14 +19,14 @@ describe( 'Element', () => {
 			expect( el ).to.be.an.instanceof( Node );
 			expect( el ).to.have.property( 'name' ).that.equals( 'p' );
 			expect( el ).to.have.property( 'parent' ).that.is.null;
-			expect( utils.count( el.getAttributeKeys() ) ).to.equal( 0 );
+			expect( count( el.getAttributeKeys() ) ).to.equal( 0 );
 		} );
 
 		it( 'should create element with attributes as plain object', () => {
 			const el = new ViewElement( 'p', { foo: 'bar' } );
 
 			expect( el ).to.have.property( 'name' ).that.equals( 'p' );
-			expect( utils.count( el.getAttributeKeys() ) ).to.equal( 1 );
+			expect( count( el.getAttributeKeys() ) ).to.equal( 1 );
 			expect( el.getAttribute( 'foo' ) ).to.equal( 'bar' );
 		} );
 
@@ -37,7 +37,7 @@ describe( 'Element', () => {
 			const el = new ViewElement( 'p', attrs );
 
 			expect( el ).to.have.property( 'name' ).that.equals( 'p' );
-			expect( utils.count( el.getAttributeKeys() ) ).to.equal( 1 );
+			expect( count( el.getAttributeKeys() ) ).to.equal( 1 );
 			expect( el.getAttribute( 'foo' ) ).to.equal( 'bar' );
 		} );
 
@@ -483,7 +483,7 @@ describe( 'Element', () => {
 
 				expect( el.hasAttribute( 'foo' ) ).to.be.false;
 
-				expect( utils.count( el.getAttributeKeys() ) ).to.equal( 0 );
+				expect( count( el.getAttributeKeys() ) ).to.equal( 0 );
 			} );
 
 			it( 'should fire change event with ATTRIBUTES type', ( done ) => {

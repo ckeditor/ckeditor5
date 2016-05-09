@@ -9,7 +9,7 @@ import Node from './node.js';
 import NodeList from './nodelist.js';
 import DocumentFragment from './documentfragment.js';
 import Range from './range.js';
-import utils from '../../utils/utils.js';
+import toMap from '../../utils/tomap.js';
 
 /**
  * Tree data model element.
@@ -151,7 +151,7 @@ export default class Element extends Node {
 	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set. See {@link engine.treeModel.Node#getAttributes}.
 	 */
 	setAttributesTo( attrs ) {
-		this._attrs = utils.toMap( attrs );
+		this._attrs = toMap( attrs );
 	}
 
 	/**

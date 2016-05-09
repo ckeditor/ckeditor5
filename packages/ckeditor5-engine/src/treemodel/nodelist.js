@@ -8,7 +8,8 @@
 import CharacterProxy from './characterproxy.js';
 import Text from './text.js';
 import DocumentFragment from './documentfragment.js';
-import utils from '../../utils/utils.js';
+import mapsEqual from '../../utils/mapsequal.js';
+import isIterable from '../../utils/isiterable.js';
 import clone from '../../utils/lib/lodash/clone.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 
@@ -132,7 +133,7 @@ export default class NodeList {
 		this._indexMap = [];
 
 		if ( nodes ) {
-			if ( typeof nodes == 'string' || !utils.isIterable( nodes ) ) {
+			if ( typeof nodes == 'string' || !isIterable( nodes ) ) {
 				nodes = [ nodes ];
 			}
 
@@ -154,7 +155,7 @@ export default class NodeList {
 
 					let prev = this._nodes[ this._nodes.length - 1 ];
 
-					if ( prev instanceof NodeListText && utils.mapsEqual( prev._attrs, node._attrs ) ) {
+					if ( prev instanceof NodeListText && mapsEqual( prev._attrs, node._attrs ) ) {
 						// If previously added text has same attributes, merge this text with it.
 						prev.text += node.text;
 						mergedWithPrev = true;
@@ -417,7 +418,7 @@ export default class NodeList {
 		let nodeAfter = this._nodes[ realIndexAfter ];
 
 		// Check if both of those nodes are text objects with same attributes.
-		if ( nodeBefore instanceof NodeListText && nodeAfter instanceof NodeListText && utils.mapsEqual( nodeBefore._attrs, nodeAfter._attrs ) ) {
+		if ( nodeBefore instanceof NodeListText && nodeAfter instanceof NodeListText && mapsEqual( nodeBefore._attrs, nodeAfter._attrs ) ) {
 			// Append text of text node after index to the before one.
 			nodeBefore.text += nodeAfter.text;
 

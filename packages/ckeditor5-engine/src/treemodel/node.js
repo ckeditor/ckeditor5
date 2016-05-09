@@ -6,7 +6,7 @@
 'use strict';
 
 import clone from '../../utils/lib/lodash/clone.js';
-import utils from '../../utils/utils.js';
+import toMap from '../../utils/tomap.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
@@ -42,7 +42,7 @@ export default class Node {
 		 * @protected
 		 * @member {Map} engine.treeModel.Node#_attrs
 		 */
-		this._attrs = utils.toMap( attrs );
+		this._attrs = toMap( attrs );
 	}
 
 	/**

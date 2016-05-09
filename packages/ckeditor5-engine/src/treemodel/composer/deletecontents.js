@@ -7,7 +7,7 @@
 
 import LivePosition from '../liveposition.js';
 import Position from '../position.js';
-import utils from '../../../utils/utils.js';
+import compareArrays from '../../../utils/comparearrays.js';
 
 /**
  * Delete contents of the selection and merge siblings. The resulting selection is always collapsed.
@@ -42,7 +42,7 @@ export default function deleteContents( batch, selection, options = {} ) {
 	if ( options.merge ) {
 		const endPath = endPos.path;
 		const mergeEnd = Math.min( startPos.path.length - 1, endPath.length - 1 );
-		let mergeDepth = utils.compareArrays( startPos.path, endPath );
+		let mergeDepth = compareArrays( startPos.path, endPath );
 
 		if ( typeof mergeDepth == 'number' ) {
 			for ( ; mergeDepth < mergeEnd; mergeDepth++ ) {

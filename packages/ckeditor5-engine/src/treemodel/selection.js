@@ -11,7 +11,8 @@ import LiveRange from './liverange.js';
 import EmitterMixin from '../../utils/emittermixin.js';
 import CharacterProxy from './characterproxy.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
-import utils from '../../utils/utils.js';
+import toMap from '../../utils/tomap.js';
+import mix from '../../utils/mix.js';
 
 const storePrefix = 'selection:';
 
@@ -349,7 +350,7 @@ export default class Selection {
 	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set.
 	 */
 	setAttributesTo( attrs ) {
-		this._attrs = utils.toMap( attrs );
+		this._attrs = toMap( attrs );
 		this._setStoredAttributesTo( this._attrs );
 
 		this.fire( 'change:attribute' );
@@ -574,7 +575,7 @@ export default class Selection {
 	}
 }
 
-utils.mix( Selection, EmitterMixin );
+mix( Selection, EmitterMixin );
 
 /**
  * Fired whenever selection ranges are changed through {@link engine.treeModel.Selection Selection API}. Not fired when
