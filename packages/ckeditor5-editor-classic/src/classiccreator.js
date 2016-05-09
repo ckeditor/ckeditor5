@@ -19,7 +19,7 @@ import EditableUI from '/ckeditor5/ui/editableui/editableui.js';
 import InlineEditableUIView from '/ckeditor5/ui/editableui/inline/inlineeditableuiview.js';
 
 import Model from '/ckeditor5/ui/model.js';
-import Toolbar from '/ckeditor5/ui/bindings/stickytoolbar.js';
+import StickyToolbar from '/ckeditor5/ui/bindings/stickytoolbar.js';
 import StickyToolbarView from '/ckeditor5/ui/stickytoolbar/stickytoolbarview.js';
 
 import { imitateFeatures, imitateDestroyFeatures } from './utils/imitatefeatures.js';
@@ -72,9 +72,9 @@ export default class ClassicCreator extends StandardCreator {
 	_createToolbar() {
 		const editor = this.editor;
 
-		// Note: Toolbar and StickyToolbarView share the same model. It may change in the future.
+		// Note: StickyToolbar and StickyToolbarView share the same model. It may change in the future.
 		const toolbarModel = new Model();
-		const toolbar = new Toolbar( toolbarModel, new StickyToolbarView( toolbarModel, editor.locale ), editor );
+		const toolbar = new StickyToolbar( toolbarModel, new StickyToolbarView( toolbarModel, editor.locale ), editor );
 
 		toolbar.addButtons( editor.config.toolbar );
 
