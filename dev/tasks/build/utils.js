@@ -448,8 +448,12 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 		function renderThemeFromEntryPoints( callback ) {
 			gutil.log( `Compiling '${ gutil.colors.cyan( fileName ) }' from ${ gutil.colors.cyan( paths.length ) } entry points...` );
 
-			// Note: Make sure windows\\style\\paths are preserved.
-			const dataToRender = paths.map( p => `@import "${ p.replace( /\\/g, '\\\\' ) }";` )
+			// Sort to make sure theme is the very first SASS to build. Otherwise,
+			// packages using mixins and variables from that theme will throw errors
+			// because such are not available at this stage of compilation.
+			const dataToRender = paths.sort( a => -a.indexOf( 'ckeditor5-theme' ) )
+				// Make sure windows\\style\\paths are preserved.
+				.map( p => `@import "${ p.replace( /\\/g, '\\\\' ) }";` )
 				.join( '\n' );
 
 			try {
