@@ -8,7 +8,7 @@
 import Collection from '../utils/collection.js';
 import CKEditorError from '../utils/ckeditorerror.js';
 import EmitterMixin from '../utils/emittermixin.js';
-import utils from '../utils/utils.js';
+import mix from '../utils/mix.js';
 
 /**
  * Basic Controller class.
@@ -215,7 +215,7 @@ export default class Controller {
 	}
 }
 
-utils.mix( Controller, EmitterMixin );
+mix( Controller, EmitterMixin );
 
 /**
  * Fired when the controller is fully initialized.
