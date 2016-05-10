@@ -16,11 +16,16 @@ import remove from '../../utils/dom/remove.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
- * Renderer updates DOM tree, to make it a reflection of the view tree. Changed nodes need to be
- * {@link engine.treeView.Renderer#markToSync marked} to be rendered. Then, on {@link engine.treeView.Renderer#render render}, renderer
- * ensure they need to be refreshed and creates DOM nodes from view nodes,
- * {@link engine.treeView.DomConverter#bindElements bind} them and insert into DOM tree. Renderer use {@link engine.treeView.DomConverter}
- * to transform and bind nodes.
+ * Renderer updates DOM tree and selection, to make it a reflection of the view tree and selection.
+ *
+ * Changed nodes need to be {@link engine.treeView.Renderer#markToSync marked} to be rendered.
+ * Then, on {@link engine.treeView.Renderer#render render}, renderer ensure they need to be refreshed and creates DOM
+ * nodes from view nodes, {@link engine.treeView.DomConverter#bindElements bind} them and insert into DOM tree.
+ *
+ * Every time {@link engine.treeView.Renderer#render render} is called, Renderer additionally check if
+ * {@link engine.treeView.Renderer#selection selection} needs update and update it if so.
+ *
+ * Renderer use {@link engine.treeView.DomConverter} to transform and bind nodes.
  *
  * @memberOf engine.treeView
  */
@@ -29,6 +34,7 @@ export default class Renderer {
 	 * Creates a renderer instance.
 	 *
 	 * @param {engine.treeView.DomConverter} domConverter Converter instance.
+	 * @param {engine.treeView.Selection} selection View selection.
 	 */
 	constructor( domConverter, selection ) {
 		/**
@@ -63,17 +69,32 @@ export default class Renderer {
 		 */
 		this.markedTexts = new Set();
 
+		/**
+		 * View selection. Renderer updates DOM Selection to make it match this.
+		 *
+		 * @readonly
+		 * @member {engine.treeView.Selection} engine.treeView.Renderer#selection
+		 */
 		this.selection = selection;
 
 		/**
 		 * Position of the inline filler. It should always be put BEFORE the text which contains filler.
 		 *
 		 * @private
-		 * @readonly
-		 * @type {engine.treeView.Position}
+		 * @member {engine.treeView.Position} engine.treeView.Renderer#_inlineFillerPosition
 		 */
 		this._inlineFillerPosition = null;
 
+		/**
+		 * Last DOM selection object.
+		 *
+		 * Because renderer handle multiple roots, and because these roots might be in different documents (in case of
+		 * using iframes) renderer need to keep last DOM selection object to remove ranges from it before new selection
+		 * is rendered.
+		 *
+		 * @private
+		 * @member {Selection} engine.treeView.Renderer#_domSelection
+		 */
 		this._domSelection = null;
 	}
 
@@ -117,31 +138,33 @@ export default class Renderer {
 	}
 
 	/**
-	 * Render method check {@link engine.treeView.Renderer#markedAttributes}, {@link engine.treeView.Renderer#markedChildren} and
-	 * {@link engine.treeView.Renderer#markedTexts} and updated all nodes which needs to be updated. Then it clear all three
-	 * sets.
+	 * Render method checks {@link engine.treeView.Renderer#markedAttributes},
+	 * {@link engine.treeView.Renderer#markedChildren} and {@link engine.treeView.Renderer#markedTexts} and updated all
+	 * nodes which needs to be updated. Then it clear all three sets. Every time render is called additionally selection
+	 * is compared and updated if needed.
 	 *
-	 * Renderer try not to break IME, so it do as little as it is possible to update DOM.
+	 * Renderer try not to break IME and x-index of the selection, so it do as little as it is needed to update DOM.
 	 *
 	 * For attributes it adds new attributes to DOM elements, update attributes with different values and remove
 	 * attributes which does not exists in the view element.
 	 *
 	 * For text nodes it update the text string if it is different. Note that if parent element is marked as an element
 	 * which changed child list, text node update will not be done, because it may not be possible do find a
-	 * {@link engine.treeView.DomConverter#getCorrespondingDomText corresponding DOM text}. The change will be handled in the
-	 * parent element.
+	 * {@link engine.treeView.DomConverter#getCorrespondingDomText corresponding DOM text}. The change will be handled
+	 * in the parent element.
 	 *
-	 * For nodes which changed child list it calculates a {@link diff} and add or removed nodes which changed.
+	 * For nodes, which changed child list, it calculates a {@link diff} and add or removed nodes which changed.
+	 *
+	 * Rendering also handle {@link engine.treeView.filler fillers}. Especially it check if the inline filler is needed
+	 * at selection position and add or remove it. To prevent breaking IME inline filler will not be removed as long
+	 * selection is in the text node which needed it at first.
 	 */
 	render() {
-		const domConverter = this.domConverter;
-		const selection = this.selection;
-
 		if ( !this._isInlineFillerAtSelection() ) {
 			this._removeInlineFiller();
 
 			if ( this._needAddInlineFiller() ) {
-				this._inlineFillerPosition = selection.getFirstPosition();
+				this._inlineFillerPosition = this.selection.getFirstPosition();
 				this.markedChildren.add( this._inlineFillerPosition.parent );
 			} else {
 				this._inlineFillerPosition = null;
@@ -149,7 +172,7 @@ export default class Renderer {
 		}
 
 		for ( let node of this.markedTexts ) {
-			if ( !this.markedChildren.has( node.parent ) && domConverter.getCorrespondingDom( node.parent ) ) {
+			if ( !this.markedChildren.has( node.parent ) && this.domConverter.getCorrespondingDom( node.parent ) ) {
 				this._updateText( node );
 			}
 		}
@@ -169,6 +192,14 @@ export default class Renderer {
 		this.markedChildren.clear();
 	}
 
+	/**
+	 * Returns true if the inline filler and selection are in the same place.
+	 * If it is true it means filler had been added for a reason and selection does not
+	 * left text node, user can be in the middle of the composition so it should not be touched.
+	 *
+	 * @private
+	 * @returns {Boolean} True if the inline filler and selection are in the same place.
+	 */
 	_isInlineFillerAtSelection() {
 		if ( this.selection.rangeCount != 1 || !this.selection.isCollapsed ) {
 			return false;
@@ -194,9 +225,14 @@ export default class Renderer {
 		return false;
 	}
 
+	/**
+	 * Removes inline filler.
+	 *
+	 * @private
+	 */
 	_removeInlineFiller() {
 		if ( !this._inlineFillerPosition ) {
-			// Nothing to remove;
+			// Nothing to remove.
 			return;
 		}
 
@@ -220,6 +256,12 @@ export default class Renderer {
 		}
 	}
 
+	/**
+	 * Checks if the inline fillers should be added.
+	 *
+	 * @private
+	 * @returns {Boolean} True if the inline fillers should be added.
+	 */
 	_needAddInlineFiller() {
 		if ( this.selection.rangeCount != 1 || !this.selection.isCollapsed ) {
 			return false;
@@ -248,6 +290,12 @@ export default class Renderer {
 		return true;
 	}
 
+	/**
+	 * Checks if text needs updated and possibly updates it.
+	 *
+	 * @private
+	 * @param {engine.treeView.Text} viewText View text to update.
+	 */
 	_updateText( viewText ) {
 		const domText = this.domConverter.getCorrespondingDom( viewText );
 
@@ -265,6 +313,12 @@ export default class Renderer {
 		}
 	}
 
+	/**
+	 * Checks if attributes list needs updated and possibly updates it.
+	 *
+	 * @private
+	 * @param {engine.treeView.Element} viewElement View element to update.
+	 */
 	_updateAttrs( viewElement ) {
 		const domElement = this.domConverter.getCorrespondingDom( viewElement );
 		const domAttrKeys = Array.from( domElement.attributes ).map( attr => attr.name );
@@ -283,6 +337,12 @@ export default class Renderer {
 		}
 	}
 
+	/**
+	 * Checks if elements child list needs updated and possibly updates it.
+	 *
+	 * @private
+	 * @param {engine.treeView.Element} viewElement View element to update.
+	 */
 	_updateChildren( viewElement ) {
 		const domConverter = this.domConverter;
 		const domElement = domConverter.getCorrespondingDom( viewElement );
@@ -338,6 +398,11 @@ export default class Renderer {
 		}
 	}
 
+	/**
+	 * Checks if selection needs updated and possibly updates it.
+	 *
+	 * @private
+	 */
 	_updateSelection() {
 		let domSelection = this._domSelection;
 		const oldViewSelection = domSelection && this.domConverter.domSelectionToView( domSelection );
