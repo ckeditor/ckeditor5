@@ -25,7 +25,7 @@ describe( 'SelectionObserver', () => {
 
 		treeView = new TreeView();
 
-		treeView.createRoot( document.getElementById( 'editor' ) );
+		treeView.createRoot( document.getElementById( 'main' ) );
 
 		mutationObserver = treeView.addObserver( MutationObserver );
 		selectionObserver = treeView.addObserver( SelectionObserver );
@@ -77,7 +77,7 @@ describe( 'SelectionObserver', () => {
 
 	it( 'should add only one listener to one document', ( done ) => {
 		// Add second roots to ensure that listener is added once.
-		treeView.createRoot( document.getElementById( 'editor2' ), 'editor2' );
+		treeView.createRoot( document.getElementById( 'additional' ), 'additional' );
 
 		listenter.listenTo( treeView, 'selectionchange', () => {
 			done();
@@ -121,7 +121,7 @@ describe( 'SelectionObserver', () => {
 				expect( domSelection.rangeCount ).to.equal( 1 );
 
 				const domRange = domSelection.getRangeAt( 0 );
-				const domBar = document.getElementById( 'editor' ).childNodes[ 1 ].childNodes[ 0 ];
+				const domBar = document.getElementById( 'main' ).childNodes[ 1 ].childNodes[ 0 ];
 
 				expect( domRange.startContainer ).to.equal( domBar );
 				expect( domRange.startOffset ).to.equal( 0 );
@@ -139,7 +139,7 @@ describe( 'SelectionObserver', () => {
 function changeDomSelection() {
 	const domSelection = document.getSelection();
 	domSelection.removeAllRanges();
-	const domFoo = document.getElementById( 'editor' ).childNodes[ 0 ].childNodes[ 0 ];
+	const domFoo = document.getElementById( 'main' ).childNodes[ 0 ].childNodes[ 0 ];
 	const domRange = new Range();
 	domRange.setStart( domFoo, 1 );
 	domRange.setEnd( domFoo, 2 );

@@ -16,10 +16,10 @@ describe( 'MutationObserver', () => {
 
 	beforeEach( () => {
 		treeView = new TreeView();
-		domEditor = document.getElementById( 'editor' );
+		domEditor = document.getElementById( 'main' );
 		lastMutations = null;
 
-		treeView.createRoot( domEditor, 'editor' );
+		treeView.createRoot( domEditor );
 		treeView.selection.removeAllRanges();
 		document.getSelection().removeAllRanges();
 
@@ -27,7 +27,7 @@ describe( 'MutationObserver', () => {
 
 		treeView.on( 'mutations', ( evt, mutations ) => lastMutations = mutations );
 
-		viewRoot = treeView.viewRoots.get( 'editor' );
+		viewRoot = treeView.getRoot();
 
 		viewRoot.appendChildren( parse( '<container:p>foo</container:p><container:p>bar</container:p>' ) );
 
@@ -104,19 +104,19 @@ describe( 'MutationObserver', () => {
 	} );
 
 	it( 'should be able to observe multiple roots', () => {
-		const domEditor2 = document.getElementById( 'editor2' );
+		const domAdditionalEditor = document.getElementById( 'additional' );
 
-		// Prepare editor2
-		treeView.createRoot( domEditor2, 'editor2' );
+		// Prepare AdditionalEditor
+		treeView.createRoot( domAdditionalEditor, 'additional' );
 
-		treeView.viewRoots.get( 'editor2' ).appendChildren(
+		treeView.viewRoots.get( 'additional' ).appendChildren(
 			parse( '<container:p>foo</container:p><container:p>bar</container:p>' ) );
 
-		// Render editor2 (first editor has been rendered in the beforeEach function)
+		// Render AdditionalEditor (first editor has been rendered in the beforeEach function)
 		treeView.render();
 
 		domEditor.childNodes[ 0 ].childNodes[ 0 ].data = 'foom';
-		domEditor2.childNodes[ 0 ].childNodes[ 0 ].data = 'foom';
+		domAdditionalEditor.childNodes[ 0 ].childNodes[ 0 ].data = 'foom';
 
 		mutationObserver.flush();
 
