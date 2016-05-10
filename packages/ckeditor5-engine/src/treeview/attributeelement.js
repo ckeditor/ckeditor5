@@ -8,12 +8,8 @@
 import Element from './element.js';
 import ContainerElement from './containerelement.js';
 
-/**
- * Default attribute priority.
- *
- * @member {Number} engine.treeView.AttributeElement.DEFAULT_PRIORITY
- */
-export const DEFAULT_PRIORITY = 10;
+// Default attribute priority.
+const DEFAULT_PRIORITY = 10;
 
 /**
  * Attributes are elements which define document presentation. They are mostly elements like `<b>` or `<span>`.
@@ -101,3 +97,10 @@ export default class AttributeElement extends Element {
 		return 0;
 	}
 }
+
+/**
+ * Default attribute priority.
+ *
+ * @member {Number} engine.treeView.AttributeElement.DEFAULT_PRIORITY
+ */
+AttributeElement.DEFAULT_PRIORITY = DEFAULT_PRIORITY;
