@@ -29,7 +29,6 @@ export default class SelectionObserver extends Observer {
 		if ( this.documents.has( domDocument ) ) {
 			return;
 		}
-		this._handleSelectionChange();
 
 		domDocument.addEventListener( 'selectionchange', () => this._handleSelectionChange( domDocument ) );
 
