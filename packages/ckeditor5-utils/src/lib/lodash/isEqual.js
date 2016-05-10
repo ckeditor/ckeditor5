@@ -1,11 +1,3 @@
-/**
- * lodash 4.6.1 (Custom Build) <https://lodash.com/>
- * Build: `lodash modularize exports="es" include="clone,extend,isPlainObject,isObject,isArray,isArrayLike,last,isEqual" --development --output src/lib/lodash`
- * Copyright 2012-2016 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2016 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <https://lodash.com/license>
- */
 import baseIsEqual from './_baseIsEqual';
 
 /**
@@ -20,10 +12,12 @@ import baseIsEqual from './_baseIsEqual';
  *
  * @static
  * @memberOf _
+ * @since 0.1.0
  * @category Lang
  * @param {*} value The value to compare.
  * @param {*} other The other value to compare.
- * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+ * @returns {boolean} Returns `true` if the values are equivalent,
+ *  else `false`.
  * @example
  *
  * var object = { 'user': 'fred' };

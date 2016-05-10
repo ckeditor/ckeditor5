@@ -1,11 +1,3 @@
-/**
- * lodash 4.6.1 (Custom Build) <https://lodash.com/>
- * Build: `lodash modularize exports="es" include="clone,extend,isPlainObject,isObject,isArray,isArrayLike,last,isEqual" --development --output src/lib/lodash`
- * Copyright 2012-2016 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2016 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <https://lodash.com/license>
- */
 import assignValue from './_assignValue';
 import copyObject from './_copyObject';
 import createAssigner from './_createAssigner';
@@ -30,11 +22,13 @@ var nonEnumShadows = !propertyIsEnumerable.call({ 'valueOf': 1 }, 'valueOf');
  *
  * @static
  * @memberOf _
+ * @since 4.0.0
  * @alias extend
  * @category Object
  * @param {Object} object The destination object.
  * @param {...Object} [sources] The source objects.
  * @returns {Object} Returns `object`.
+ * @see _.assign
  * @example
  *
  * function Foo() {

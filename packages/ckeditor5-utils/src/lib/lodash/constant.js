@@ -3,9 +3,10 @@
  *
  * @static
  * @memberOf _
+ * @since 2.4.0
  * @category Util
  * @param {*} value The value to return from the new function.
- * @returns {Function} Returns the new function.
+ * @returns {Function} Returns the new constant function.
  * @example
  *
  * var object = { 'user': 'fred' };
