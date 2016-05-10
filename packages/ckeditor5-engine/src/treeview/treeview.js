@@ -13,7 +13,7 @@ import { INLINE_FILLER_LENGTH, startsWithFiller } from './filler.js';
 
 import mix from '../../utils/mix.js';
 import EmitterMixin from '../../utils/emittermixin.js';
-import { keyNames } from '../../utils/keyboard.js';
+import { keyCodes } from '../../utils/keyboard.js';
 
 /**
  * TreeView class creates an abstract layer over the content editable area.
@@ -201,7 +201,7 @@ mix( TreeView, EmitterMixin );
 
 // Move cursor from the end of the inline filler to the begging of it when, so the filler does not break navigation.
 function jumpOverInlineFiller( evt, data ) {
-	if ( data.keyCode == keyNames.arrowleft ) {
+	if ( data.keyCode == keyCodes.arrowleft ) {
 		const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
 
 		if ( domSelection.rangeCount == 1 && domSelection.getRangeAt( 0 ).collapsed ) {

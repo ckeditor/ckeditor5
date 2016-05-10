@@ -12,7 +12,7 @@ import TreeView from '/ckeditor5/engine/treeview/treeview.js';
 import KeyObserver from '/ckeditor5/engine/treeview/observer/keyobserver.js';
 import { INLINE_FILLER_LENGTH, isInlineFiller, startsWithFiller } from '/ckeditor5/engine/treeview/filler.js';
 
-import { keyNames } from '/ckeditor5/utils/keyboard.js';
+import { keyCodes } from '/ckeditor5/utils/keyboard.js';
 
 import { parse, setData } from '/tests/engine/_utils/view.js';
 
@@ -33,7 +33,7 @@ describe( 'TreeView', () => {
 			setData( treeView, '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
 			treeView.render();
 
-			treeView.fire( 'keydown', { keyCode: keyNames.arrowleft, domTarget: treeView.domRoots.get( 'main' ) } );
+			treeView.fire( 'keydown', { keyCode: keyCodes.arrowleft, domTarget: treeView.domRoots.get( 'main' ) } );
 
 			const domRange = document.getSelection().getRangeAt( 0 );
 			expect( isInlineFiller( domRange.startContainer ) ).to.be.true;
@@ -45,7 +45,7 @@ describe( 'TreeView', () => {
 			setData( treeView, '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
 			treeView.render();
 
-			treeView.fire( 'keydown', { keyCode: keyNames.arrowright, domTarget: treeView.domRoots.get( 'main' ) } );
+			treeView.fire( 'keydown', { keyCode: keyCodes.arrowright, domTarget: treeView.domRoots.get( 'main' ) } );
 
 			const domRange = document.getSelection().getRangeAt( 0 );
 			expect( isInlineFiller( domRange.startContainer ) ).to.be.true;
@@ -57,7 +57,7 @@ describe( 'TreeView', () => {
 			setData( treeView, '<container:p>foo<attribute:b>{x}</attribute:b>bar</container:p>' );
 			treeView.render();
 
-			treeView.fire( 'keydown', { keyCode: keyNames.arrowleft, domTarget: treeView.domRoots.get( 'main' ) } );
+			treeView.fire( 'keydown', { keyCode: keyCodes.arrowleft, domTarget: treeView.domRoots.get( 'main' ) } );
 
 			const domRange = document.getSelection().getRangeAt( 0 );
 			expect( domRange.startContainer.data ).to.equal( 'x' );
@@ -70,7 +70,7 @@ describe( 'TreeView', () => {
 			setData( treeView, '<container:p>foo<attribute:b>{}x</attribute:b>bar</container:p>' );
 			treeView.render();
 
-			treeView.fire( 'keydown', { keyCode: keyNames.arrowleft, domTarget: treeView.domRoots.get( 'main' ) } );
+			treeView.fire( 'keydown', { keyCode: keyCodes.arrowleft, domTarget: treeView.domRoots.get( 'main' ) } );
 
 			const domRange = document.getSelection().getRangeAt( 0 );
 			expect( domRange.startContainer.data ).to.equal( 'x' );
@@ -90,7 +90,7 @@ describe( 'TreeView', () => {
 			treeView.selection.addRange( ViewRange.createFromParentsAndOffsets( viewTextX, 1, viewTextX, 1 ) );
 			treeView.render();
 
-			treeView.fire( 'keydown', { keyCode: keyNames.arrowleft, domTarget: treeView.domRoots.get( 'main' ) } );
+			treeView.fire( 'keydown', { keyCode: keyCodes.arrowleft, domTarget: treeView.domRoots.get( 'main' ) } );
 
 			const domRange = document.getSelection().getRangeAt( 0 );
 			expect( startsWithFiller( domRange.startContainer ) ).to.be.true;

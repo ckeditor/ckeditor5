@@ -14,7 +14,7 @@ import { INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER } from '/ckeditor5/eng
 
 import { parse, stringify } from '/tests/engine/_utils/view.js';
 
-import utils from '/ckeditor5/utils/utils.js';
+import count from '/ckeditor5/utils/count.js';
 import createElement from '/ckeditor5/utils/dom/createelement.js';
 
 describe( 'DomConverter', () => {
@@ -40,7 +40,7 @@ describe( 'DomConverter', () => {
 			expect( viewP.name ).to.equal( 'p' );
 
 			expect( viewP.getAttribute( 'class' ) ).to.equal( 'foo' );
-			expect( utils.count( viewP.getAttributeKeys() ) ).to.equal( 1 );
+			expect( count( viewP.getAttributeKeys() ) ).to.equal( 1 );
 
 			expect( viewP.getChildCount() ).to.equal( 2 );
 			expect( viewP.getChild( 0 ).name ).to.equal( 'img' );
@@ -61,7 +61,7 @@ describe( 'DomConverter', () => {
 			expect( viewP.name ).to.equal( 'p' );
 
 			expect( viewP.getAttribute( 'class' ) ).to.equal( 'foo' );
-			expect( utils.count( viewP.getAttributeKeys() ) ).to.equal( 1 );
+			expect( count( viewP.getAttributeKeys() ) ).to.equal( 1 );
 
 			expect( viewP.getChildCount() ).to.equal( 2 );
 			expect( viewP.getChild( 0 ).name ).to.equal( 'img' );
@@ -86,7 +86,7 @@ describe( 'DomConverter', () => {
 			expect( viewP.name ).to.equal( 'p' );
 
 			expect( viewP.getAttribute( 'class' ) ).to.equal( 'foo' );
-			expect( utils.count( viewP.getAttributeKeys() ) ).to.equal( 1 );
+			expect( count( viewP.getAttributeKeys() ) ).to.equal( 1 );
 
 			expect( viewP.getChildCount() ).to.equal( 0 );
 			expect( converter.getCorrespondingDom( viewP ) ).to.not.equal( domP );
