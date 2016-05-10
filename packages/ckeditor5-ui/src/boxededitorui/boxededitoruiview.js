@@ -6,14 +6,14 @@
 'use strict';
 
 import EditorUIView from '/ckeditor5/ui/editorui/editoruiview.js';
-import utils from '/ckeditor5/utils/utils.js';
+import uid from '/ckeditor5/utils/uid.js';
 
 export default class BoxedEditorUIView extends EditorUIView {
 	constructor( model, locale ) {
 		super( model, locale );
 
 		const t = this.t;
-		const ariaLabelUid = utils.uid();
+		const ariaLabelUid = uid();
 
 		this.template = {
 			tag: 'div',
