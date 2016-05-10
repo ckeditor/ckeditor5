@@ -29,3 +29,19 @@ describe( 'getNodesAndText', () => {
 		expect( getNodesAndText( Range.createFromElement( root ) ) ).to.equal( 'DIVfoobarDIVPabcxyzP' );
 	} );
 } );
+
+describe( 'jsonParseStringify', () => {
+	class Foo {
+		constructor( ra ) {
+			this.ra = ra;
+		}
+	}
+
+	it( 'should return cleaned object', () => {
+		let foo = new Foo( { bar: 'bar' } );
+
+		let fooJsoned = treeModelTestUtils.jsonParseStringify( foo );
+		expect( fooJsoned ).to.not.be.instanceOf( Foo );
+		expect( fooJsoned ).to.deep.equal( { ra: { bar: 'bar' } } );
+	} );
+} );

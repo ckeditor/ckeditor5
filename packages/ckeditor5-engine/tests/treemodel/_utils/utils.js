@@ -34,6 +34,10 @@ const utils = {
 		}
 
 		return txt;
+	},
+
+	jsonParseStringify( object ) {
+		return JSON.parse( JSON.stringify( object ) );
 	}
 };
 
