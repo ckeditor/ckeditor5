@@ -118,7 +118,10 @@ module.exports = ( config ) => {
 			 * @returns {Stream}
 			 */
 			sass() {
-				const dirs = utils.getPackages( config.ROOT_DIR );
+				// Note: Sort to make sure theme is the very first SASS to build. Otherwise,
+				// packages using mixins and variables from that theme will throw errors
+				// because such are not available at this stage of compilation.
+				const dirs = utils.getPackages( config.ROOT_DIR ).sort( a => -a.indexOf( 'ckeditor5-theme' ) );
 
 				const streams = dirs.map( ( dirPath ) => {
 					const glob = path.join( dirPath, themesGlob );
