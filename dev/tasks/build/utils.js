@@ -8,6 +8,7 @@
 const path = require( 'path' );
 const gulp = require( 'gulp' );
 const rename = require( 'gulp-rename' );
+const replace = require( 'gulp-replace' );
 const gulpBabel = require( 'gulp-babel' );
 const gutil = require( 'gulp-util' );
 const gulpFilter = require( 'gulp-filter' );
@@ -96,6 +97,7 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 				conversionPipes.push(
 					filterSource,
 					transpileSource,
+					utils.fixCoverage(),
 					filterSource.restore
 				);
 
@@ -138,6 +140,18 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 				gutil.log( gutil.colors.red( err.message ) );
 				console.log( '\n' + err.codeFrame + '\n' );
 			} );
+	},
+
+	/**
+	 * Adds istanbul ignore to the code created by babel.
+	 *
+	 * @returns {Stream}
+	 */
+	fixCoverage() {
+		return replace(
+			'return obj && obj.__esModule ? obj :',
+			'/* istanbul ignore next */\n\t\t' +
+			'return obj && obj.__esModule ? obj :' );
 	},
 
 	/**

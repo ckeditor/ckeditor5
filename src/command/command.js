@@ -6,7 +6,7 @@
 'use strict';
 
 import ObservableMixin from '../utils/observablemixin.js';
-import utils from '../utils/utils.js';
+import mix from '../utils/mix.js';
 
 /**
  * The base class for CKEditor commands.
@@ -129,7 +129,7 @@ function disableCallback( evt, data ) {
 	data.isEnabled = false;
 }
 
-utils.mix( Command, ObservableMixin );
+mix( Command, ObservableMixin );
 
 /**
  * Fired whenever command has to have its {@link ckeditor5.command.Command#isEnabled} property refreshed. Every feature,
