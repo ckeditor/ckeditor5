@@ -60,8 +60,8 @@ export default class DomConverter {
 		this._viewToDomMapping = new WeakMap();
 
 		/**
-		 * Block filler creator, which is used to create all block fillers during the view to DOM conversion and
-		 * to recognize block fillers during the DOM to view conversion.
+		 * Block {@link engile.treeView.filler filler} creator, which is used to create all block fillers during the
+		 * view to DOM conversion and to recognize block fillers during the DOM to view conversion.
 		 *
 		 * @member {Function} engine.treeView.DomConverter#blockFiller
 		 */
@@ -146,6 +146,15 @@ export default class DomConverter {
 		}
 	}
 
+	/**
+	 * Converts children of the view element to DOM using {@link engine.treeView.DomConverter#viewToDom} method.
+	 * Additionally this method adds block {@link engile.treeView.filler filler} to the list of children, if needed.
+	 *
+	 * @param {engine.treeView.Element|engine.treeView.DocumentFragment} viewElement Parent view element.
+	 * @param {document} domDocument Document which will be used to create DOM nodes.
+	 * @param {Object} options See {@link engine.treeView.DomConverter#viewToDom} options parameter.
+	 * @returns {Iterable.<Node>} DOM nodes.
+	 */
 	*viewChildrenToDom( viewElement, domDocument, options = {} ) {
 		let fillerPositionOffset = viewElement.getFillerOffset && viewElement.getFillerOffset();
 		let offset = 0;
@@ -165,6 +174,13 @@ export default class DomConverter {
 		}
 	}
 
+	/**
+	 * Converts view {@link engine.treeView.Range} to DOM range.
+	 * Inline and block {@link engile.treeView.filler fillers} are handled during the conversion.
+	 *
+	 * @param {engine.treeView.Range} viewRange View range.
+	 * @returns {Range} DOM range.
+	 */
 	viewRangeToDom( viewRange ) {
 		const domStart = this.viewPositionToDom( viewRange.start );
 		const domEnd = this.viewPositionToDom( viewRange.end );
@@ -176,6 +192,17 @@ export default class DomConverter {
 		return domRange;
 	}
 
+	/**
+	 * Converts view {@link engine.treeView.Position} to DOM parent and offset.
+	 *
+	 * Inline and block {@link engile.treeView.filler fillers} are handled during the conversion.
+	 * If the converted position is directly before inline filler it is moved inside the filler.
+	 *
+	 * @param {engine.treeView.position} viewPosition View position.
+	 * @returns {Object} position
+	 * @returns {Node} position.parent DOM position parent.
+	 * @returns {Number} position.offset DOM position offset.
+	 */
 	viewPositionToDom( viewPosition ) {
 		const viewParent = viewPosition.parent;
 
@@ -188,7 +215,8 @@ export default class DomConverter {
 			}
 
 			return { parent: domParent, offset: offset };
-		} else {
+		} // instanceof HTMLElement
+		else {
 			let domParent, domBefore, domAfter;
 
 			if ( viewPosition.offset === 0 ) {
@@ -214,13 +242,15 @@ export default class DomConverter {
 
 	/**
 	 * Converts DOM to view. For all text nodes, not bound elements and document fragments new items will
-	 * be created. For bound elements and document fragments function will return corresponding items.
+	 * be created. For bound elements and document fragments function will return corresponding items. For
+	 * {@link engile.treeView.filler fillers} null will be returned.
 	 *
 	 * @param {Node|DocumentFragment} domNode DOM node or document fragment to transform.
 	 * @param {Object} [options] Conversion options.
 	 * @param {Boolean} [options.bind=false] Determines whether new elements will be bound.
 	 * @param {Boolean} [options.withChildren=true] It true node's and document fragment's children will be converted too.
-	 * @returns {engine.treeView.Node|engine.treeView.DocumentFragment} Converted node or document fragment.
+	 * @returns {engine.treeView.Node|engine.treeView.DocumentFragment|null} Converted node or document fragment. Null
+	 * if DOM node is a {@link engile.treeView.filler filler}.
 	 */
 	domToView( domNode, options = {} ) {
 		if ( isBlockFiller( domNode, this.blockFiller )  ) {
@@ -240,7 +270,7 @@ export default class DomConverter {
 
 			let viewElement;
 
-			if ( domNode instanceof  DocumentFragment ) {
+			if ( domNode instanceof DocumentFragment ) {
 				// Create view document fragment.
 				viewElement = new ViewDocumentFragment();
 
@@ -273,9 +303,17 @@ export default class DomConverter {
 		}
 	}
 
-	*domChildrenToView( domNode, options = {} ) {
-		for ( let i = 0; i < domNode.childNodes.length; i++ ) {
-			const domChild = domNode.childNodes[ i ];
+	/**
+	 * Converts children of the DOM element to view nodes using {@link engine.treeView.DomConverter#domToView} method.
+	 * Additionally this method omit block {@link engile.treeView.filler filler}, if it exists in the DOM parent.
+	 *
+	 * @param {HTMLElement} domElement Parent DOM element.
+	 * @param {Object} options See {@link engine.treeView.DomConverter#domToView} options parameter.
+	 * @returns {Iterable.<engine.treeView.Node>} View nodes.
+	 */
+	*domChildrenToView( domElement, options = {} ) {
+		for ( let i = 0; i < domElement.childNodes.length; i++ ) {
+			const domChild = domElement.childNodes[ i ];
 			const viewChild = this.domToView( domChild, options );
 
 			if ( viewChild !== null ) {
@@ -284,6 +322,13 @@ export default class DomConverter {
 		}
 	}
 
+	/**
+	 * Converts DOM selection to view {@link engine.treeView.Selection}.
+	 * Ranges which can not be converted will be omitted.
+	 *
+	 * @param {Selection} domSelection DOM selection.
+	 * @returns {engine.treeView.Selection} View selection.
+	 */
 	domSelectionToView( domSelection ) {
 		const viewSelection = new ViewSelection();
 
@@ -299,6 +344,13 @@ export default class DomConverter {
 		return viewSelection;
 	}
 
+	/**
+	 * Converts DOM Range to view {@link engine.treeView.range}.
+	 * If the start or end position can not be converted null is returned.
+	 *
+	 * @param {Range} domRange DOM range.
+	 * @returns {engine.treeView.Range|null} View range.
+	 */
 	domRangeToView( domRange ) {
 		const viewStart = this.domPositionToView( domRange.startContainer, domRange.startOffset );
 		const viewEnd = this.domPositionToView( domRange.endContainer, domRange.endOffset );
@@ -310,6 +362,18 @@ export default class DomConverter {
 		return null;
 	}
 
+	/**
+	 * Converts DOM parent and offset to view {@link engine.treeView.Position}.
+	 *
+	 * If the position is inside a {@link engile.treeView.filler filler} which has no corresponding view node,
+	 * position of the filler will be converted and returned.
+	 *
+	 * If structures are too different and it is not possible to find corresponding position then null will be returned.
+	 *
+	 * @param {Node} domParent DOM position parent.
+	 * @param {Number} domOffset DOM position offset.
+	 * @returns {engine.treeView.Position} viewPosition View position.
+	 */
 	domPositionToView( domParent, domOffset ) {
 		if ( isBlockFiller( domParent, this.blockFiller ) ) {
 			return this.domPositionToView( domParent.parentNode, indexOf( domParent ) );
@@ -333,7 +397,8 @@ export default class DomConverter {
 			}
 
 			return new ViewPosition( viewParent, offset );
-		} else {
+		} // domParent instanceof HTMLElement
+		else {
 			if ( domOffset === 0 ) {
 				const viewParent = this.getCorrespondingView( domParent );
 
@@ -358,6 +423,8 @@ export default class DomConverter {
 	 * for elements, {@link  engine.treeView.DomConverter#getCorrespondingViewText getCorrespondingViewText} for text
 	 * nodes and {@link engine.treeView.DomConverter#getCorrespondingViewDocumentFragment getCorrespondingViewDocumentFragment}
 	 * for document fragments.
+	 *
+	 * Note that for the block or inline {@link engile.treeView.filler filler} this method returns null.
 	 *
 	 * @param {Node|DocumentFragment} domNode DOM node or document fragment.
 	 * @returns {engine.treeView.Node|engine.treeView.DocumentFragment|null} Corresponding view item.
@@ -408,6 +475,8 @@ export default class DomConverter {
 	 *
 	 * Otherwise `null` is returned.
 	 *
+	 * Note that for the block or inline {@link engile.treeView.filler filler} this method returns null.
+	 *
 	 * @param {Text} domText DOM text node.
 	 * @returns {engine.treeView.Text|null} Corresponding view text node or null, if it was not possible to find a
 	 * corresponding node.
@@ -431,6 +500,7 @@ export default class DomConverter {
 			if ( viewElement ) {
 				const nextSibling = viewElement.getNextSibling();
 
+				// It might be filler which has no corresponding view node.
 				if ( nextSibling instanceof ViewText ) {
 					return viewElement.getNextSibling();
 				} else {
@@ -445,6 +515,7 @@ export default class DomConverter {
 			if ( viewElement ) {
 				const firstChild = viewElement.getChild( 0 );
 
+				// It might be filler which has no corresponding view node.
 				if ( firstChild instanceof ViewText ) {
 					return firstChild;
 				} else {
