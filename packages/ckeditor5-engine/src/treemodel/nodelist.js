@@ -7,6 +7,7 @@
 
 import CharacterProxy from './characterproxy.js';
 import Text from './text.js';
+import Element from './element.js';
 import DocumentFragment from './documentfragment.js';
 import mapsEqual from '../../utils/mapsequal.js';
 import isIterable from '../../utils/isiterable.js';
@@ -50,14 +51,18 @@ class NodeListText extends Text {
 	}
 
 	/**
-	 * Custom toJSON method to solve child-parent circular dependencies.
+	 * Custom toJSON method to solve child-parent circular dependencies when serializing NodeListText to JSON string.
 	 *
 	 * @returns {Object} Clone of this object with the parent property replaced with its name.
 	 */
 	toJSON() {
 		const json = clone( this );
 
-		json.parent = json.parent ? this.parent.name : null;
+		// Due to circular references we need to remove parent reference.
+		json.parent = this.parent ? this.parent.name : null;
+
+		// Serialize attributes as Map object is represented as "{}" when parsing to JSON.
+		json._attrs = [ ...json._attrs ];
 
 		return json;
 	}
@@ -293,7 +298,7 @@ export default class NodeList {
 
 		this._indexMap.splice( index, number );
 
-		for ( let i = index; i < this._indexMap.length ; i++ ) {
+		for ( let i = index; i < this._indexMap.length; i++ ) {
 			this._indexMap[ i ] -= removed.length;
 		}
 
@@ -351,6 +356,29 @@ export default class NodeList {
 		}
 
 		this._mergeNodeAt( index + number );
+	}
+
+	/**
+	 * Creates NodeList object from deserilized object, ie. from parsed JSON string.
+	 *
+	 *		let deserialized = JSON.parse( JSON.stringify( someNodeList ) );
+	 *		let nodeList = NodeList.fromJSON( deserialized );
+	 *
+	 * @param object
+	 * @returns {engine.treeModel.NodeList}
+	 */
+	static fromJSON( object ) {
+		let nodes = [];
+
+		for ( let node of object._nodes ) {
+			if ( node.text ) {
+				nodes.push( new Text( node.text, node._attrs ) );
+			} else {
+				nodes.push( Element.fromJSON( node ) );
+			}
+		}
+
+		return new NodeList( nodes );
 	}
 
 	/**
@@ -425,7 +453,7 @@ export default class NodeList {
 			// Remove text node after index.
 			this._nodes.splice( realIndexAfter, 1 );
 
-			for ( let i = index; i < this._indexMap.length ; i++ ) {
+			for ( let i = index; i < this._indexMap.length; i++ ) {
 				this._indexMap[ i ]--;
 			}
 		}

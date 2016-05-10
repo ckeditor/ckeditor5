@@ -11,6 +11,7 @@ import Node from '/ckeditor5/engine/treemodel/node.js';
 import NodeList from '/ckeditor5/engine/treemodel/nodelist.js';
 import Element from '/ckeditor5/engine/treemodel/element.js';
 import DocumentFragment from '/ckeditor5/engine/treemodel/documentfragment.js';
+import treeModelTestUtils from '/tests/engine/treemodel/_utils/utils.js';
 
 describe( 'Element', () => {
 	describe( 'constructor', () => {
@@ -233,10 +234,56 @@ describe( 'Element', () => {
 				new Element( 'p', null, 'abc' ),
 				'def',
 				new Element( 'p', null, 'ghi' ),
-				'jkl',
+				'jkl'
 			] );
 
 			expect( el.getText() ).to.equal( 'abcdefghijkl' );
+		} );
+	} );
+
+	describe( 'fromJSON', () => {
+		it( 'should create element without attributes', () => {
+			const el = new Element( 'el' );
+
+			let serialized = treeModelTestUtils.jsonParseStringify( el );
+
+			let deserialized = Element.fromJSON( serialized );
+
+			expect( deserialized.parent ).to.be.null;
+			expect( deserialized.name ).to.equal( 'el' );
+			expect( deserialized._children.length ).to.equal( 0 );
+			expect( deserialized._attrs.size ).to.equal( 0 );
+		} );
+
+		it( 'should create element with attributes', () => {
+			const el = new Element( 'el', { foo: true } );
+
+			let serialized = treeModelTestUtils.jsonParseStringify( el );
+
+			let deserialized = Element.fromJSON( serialized );
+
+			expect( deserialized.parent ).to.be.null;
+			expect( deserialized.name ).to.equal( 'el' );
+			expect( deserialized._children.length ).to.equal( 0 );
+			expect( deserialized._attrs.size ).to.equal( 1 );
+			expect( deserialized._attrs.get( 'foo' ) ).to.be.true;
+		} );
+
+		it( 'should create element with children', () => {
+			const p = new Element( 'p' );
+			const el = new Element( 'el', null, p );
+
+			let serialized = treeModelTestUtils.jsonParseStringify( el );
+
+			let deserialized = Element.fromJSON( serialized );
+
+			expect( deserialized.parent ).to.be.null;
+			expect( deserialized.name ).to.equal( 'el' );
+			expect( deserialized._children.length ).to.equal( 1 );
+
+			expect( deserialized._children._indexMap ).to.deep.equal( [ 0 ] );
+			expect( deserialized._children._nodes[ 0 ].name ).to.equal( 'p' );
+			expect( deserialized._children._nodes[ 0 ].parent ).to.equal( deserialized );
 		} );
 	} );
 } );

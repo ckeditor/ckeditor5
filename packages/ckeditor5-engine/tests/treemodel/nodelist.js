@@ -12,6 +12,7 @@ import DocumentFragment from '/ckeditor5/engine/treemodel/documentfragment.js';
 import Element from '/ckeditor5/engine/treemodel/element.js';
 import Text from '/ckeditor5/engine/treemodel/text.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
+import treeModelTestUtils from '/tests/engine/treemodel/_utils/utils.js';
 
 describe( 'NodeList', () => {
 	describe( 'constructor', () => {
@@ -153,7 +154,7 @@ describe( 'NodeList', () => {
 		it( 'should merge inserted text objects if possible', () => {
 			let attr = { foo: 'bar' };
 			let outerList = new NodeList( [ 'foo', new Text( 'bar', [ attr ] ) ] );
-			let innerList = new NodeList( [ 'x' , new Text( 'y', [ attr ] ) ] );
+			let innerList = new NodeList( [ 'x', new Text( 'y', [ attr ] ) ] );
 
 			outerList.insert( 3, innerList );
 
@@ -358,13 +359,131 @@ describe( 'NodeList', () => {
 		} );
 	} );
 
-	// Additional test for code coverage.
-	describe( 'NodeListText', () => {
-		it( 'should create proper JSON string using toJSON method', () => {
-			let nodeList = new NodeList( 'foo' );
-			let parsed = JSON.parse( JSON.stringify( nodeList ) );
+	describe( 'toJSON', () => {
+		it( 'should return serialized object', () => {
+			let p = new Element( 'p' );
+			let nodeList = new NodeList( p );
 
-			expect( parsed._nodes[ 0 ].parent ).to.equal( null );
+			expect( treeModelTestUtils.jsonParseStringify( nodeList ) ).to.deep.equal( {
+				_nodes: [ treeModelTestUtils.jsonParseStringify( p ) ],
+				_indexMap: [ 0 ]
+			} );
+		} );
+
+		it( 'should return serialized object with child text', () => {
+			let p = new Element( 'p', null, 'bar' );
+			let nodeList = new NodeList( p );
+
+			let newVar = {
+				_indexMap: [ 0 ],
+				_nodes: [ {
+					_attrs: [],
+					_children: {
+						_indexMap: [ 0, 0, 0 ],
+						_nodes: [ { _attrs: [], text: 'bar', parent: 'p' } ]
+					},
+					name: 'p',
+					parent: null
+				} ]
+			};
+			let jsonParseStringify = treeModelTestUtils.jsonParseStringify( nodeList );
+
+			expect( jsonParseStringify ).to.deep.equal( newVar );
+		} );
+
+		it( 'should return serialized object for text', () => {
+			let text = new Text( 'bar' );
+			let nodeList = new NodeList( text );
+
+			expect( treeModelTestUtils.jsonParseStringify( nodeList ) ).to.deep.equal( {
+				_nodes: [
+					{ _attrs: [], text: 'bar', parent: null }
+				],
+				_indexMap: [ 0, 0, 0 ]
+			} );
+		} );
+
+		it( 'should return serialized object for text with attributes', () => {
+			let text = new Text( 'bar', { bold: true } );
+			let nodeList = new NodeList( text );
+
+			expect( treeModelTestUtils.jsonParseStringify( nodeList ) ).to.deep.equal( {
+				_nodes: [
+					{ _attrs: [ [ 'bold', true ] ], text: 'bar', parent: null }
+				],
+				_indexMap: [ 0, 0, 0 ]
+			} );
+		} );
+
+		it( 'should return serialized object for text with attributes', () => {
+			let text = new Text( 'bar', { bold: true } );
+			let nodeList = new NodeList( text );
+
+			expect( treeModelTestUtils.jsonParseStringify( nodeList ) ).to.deep.equal( {
+				_nodes: [
+					{ _attrs: [ [ 'bold', true ] ], text: 'bar', parent: null }
+				],
+				_indexMap: [ 0, 0, 0 ]
+			} );
+		} );
+	} );
+
+	describe( 'fromJSON', () => {
+		it( 'should create instance from serialized text with attributes', () => {
+			let text = new Text( 'bar', { bold: true } );
+			let nodeList = new NodeList( text );
+
+			let serialized = treeModelTestUtils.jsonParseStringify( nodeList );
+
+			let deserialized = NodeList.fromJSON( serialized );
+
+			expect( deserialized._indexMap ).to.deep.equal( nodeList._indexMap );
+			expect( deserialized._nodes.length ).to.equal( nodeList._nodes.length );
+			expect( deserialized._nodes[ 0 ].text ).to.equal( nodeList._nodes[ 0 ].text );
+			expect( [ ...deserialized._nodes[ 0 ]._attrs ] ).to.deep.equal( [ ...nodeList._nodes[ 0 ]._attrs ] );
+		} );
+
+		it( 'should create instance from serialized element', () => {
+			let p = new Element( 'p' );
+			let nodeList = new NodeList( p );
+
+			let serialized = treeModelTestUtils.jsonParseStringify( nodeList );
+
+			let deserialized = NodeList.fromJSON( serialized );
+
+			expect( deserialized._indexMap ).to.deep.equal( nodeList._indexMap );
+			expect( deserialized._nodes.length ).to.equal( nodeList._nodes.length );
+			expect( deserialized._nodes[ 0 ].name ).to.equal( nodeList._nodes[ 0 ].name );
+			expect( [ ...deserialized._nodes[ 0 ]._attrs ] ).to.deep.equal( [ ...nodeList._nodes[ 0 ]._attrs ] );
+		} );
+
+		it( 'should create instance from serialized element with attributes', () => {
+			let p = new Element( 'p', { bold: true } );
+			let nodeList = new NodeList( p );
+
+			let serialized = treeModelTestUtils.jsonParseStringify( nodeList );
+
+			let deserialized = NodeList.fromJSON( serialized );
+
+			expect( deserialized._indexMap ).to.deep.equal( nodeList._indexMap );
+			expect( deserialized._nodes.length ).to.equal( nodeList._nodes.length );
+			expect( deserialized._nodes[ 0 ].name ).to.equal( nodeList._nodes[ 0 ].name );
+			expect( [ ...deserialized._nodes[ 0 ]._attrs ] ).to.deep.equal( [ ...nodeList._nodes[ 0 ]._attrs ] );
+		} );
+
+		it( 'should create instance from serialized element with parent', () => {
+			let p = new Element( 'p', null, 'bar' );
+			let nodeList = new NodeList( p );
+
+			let serialized = treeModelTestUtils.jsonParseStringify( nodeList );
+			let deserialized = NodeList.fromJSON( serialized );
+
+			expect( deserialized._indexMap ).to.deep.equal( nodeList._indexMap );
+			expect( deserialized._nodes.length ).to.equal( nodeList._nodes.length );
+			expect( deserialized._nodes[ 0 ].name ).to.equal( nodeList._nodes[ 0 ].name );
+			expect( [ ...deserialized._nodes[ 0 ]._attrs ] ).to.deep.equal( [ ...nodeList._nodes[ 0 ]._attrs ] );
+
+			expect( deserialized._nodes[ 0 ]._children._indexMap ).to.deep.equal( [ 0, 0, 0 ] );
 		} );
 	} );
 } );

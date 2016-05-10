@@ -188,6 +188,9 @@ export default class Node {
 		// Due to circular references we need to remove parent reference.
 		json.parent = this.parent ? this.parent.name : null;
 
+		// Serialize attributes as Map object is represented as "{}" when parsing to JSON.
+		json._attrs = [ ...json._attrs ];
+
 		return json;
 	}
 }

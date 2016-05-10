@@ -197,4 +197,17 @@ export default class Element extends Node {
 
 		return text;
 	}
+
+	/**
+	 * Creates Element object from deserilized object, ie. from parsed JSON string.
+	 *
+	 *		let deserialized = JSON.parse( JSON.stringify( someElementObject ) );
+	 *		let element = NodeList.fromJSON( deserialized );
+	 *
+	 * @param object
+	 * @returns {engine.treeModel.Element}
+	 */
+	static fromJSON( object ) {
+		return new Element( object.name, object._attrs, NodeList.fromJSON( object._children ) );
+	}
 }
