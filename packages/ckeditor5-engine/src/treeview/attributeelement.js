@@ -78,7 +78,7 @@ export default class AttributeElement extends Element {
 	 *
 	 * @returns {Number|false} Block filler offset or null if block filler is not needed.
 	 */
-	getBlockFillerOffset() {
+	getFillerOffset() {
 		// <b>foo</b> does not need filler
 		if ( this.getChildCount() ) {
 			return null;

@@ -58,12 +58,12 @@ describe( 'AttributeElement', () => {
 		} );
 	} );
 
-	describe( 'getBlockFillerOffset', () => {
+	describe( 'getFillerOffset', () => {
 		it( 'should return position 0 if it is the only element in the container', () => {
 			const { selection } = parse( '<container:p><attribute:b>[]</attribute:b></container:p>' );
 			const attribute = selection.getFirstPosition().parent;
 
-			expect( attribute.getBlockFillerOffset() ).to.equals( 0 );
+			expect( attribute.getFillerOffset() ).to.equals( 0 );
 		} );
 
 		it( 'should return position 0 if it is the only nested element in the container', () => {
@@ -71,26 +71,26 @@ describe( 'AttributeElement', () => {
 				'<container:p><attribute:b><attribute:i>[]</attribute:i></attribute:b></container:p>' );
 			const attribute = selection.getFirstPosition().parent;
 
-			expect( attribute.getBlockFillerOffset() ).to.equals( 0 );
+			expect( attribute.getFillerOffset() ).to.equals( 0 );
 		} );
 
 		it( 'should return null if element contains another element', () => {
 			const attribute = parse( '<attribute:b><attribute:i></attribute:i></attribute:b>' );
 
-			expect( attribute.getBlockFillerOffset() ).to.be.null;
+			expect( attribute.getFillerOffset() ).to.be.null;
 		} );
 
 		it( 'should return null if element contains text', () => {
 			const attribute = parse( '<attribute:b>text</attribute:b>' );
 
-			expect( attribute.getBlockFillerOffset() ).to.be.null;
+			expect( attribute.getFillerOffset() ).to.be.null;
 		} );
 
 		it( 'should return null if container element contains text', () => {
 			const { selection } = parse( '<container:p><attribute:b>[]</attribute:b>foo</container:p>' );
 			const attribute = selection.getFirstPosition().parent;
 
-			expect( attribute.getBlockFillerOffset() ).to.be.null;
+			expect( attribute.getFillerOffset() ).to.be.null;
 		} );
 
 		it( 'should return null if it is the parent contains text', () => {
@@ -98,7 +98,7 @@ describe( 'AttributeElement', () => {
 				'<container:p><attribute:b><attribute:i>[]</attribute:i>foo</attribute:b></container:p>' );
 			const attribute = selection.getFirstPosition().parent;
 
-			expect( attribute.getBlockFillerOffset() ).to.be.null;
+			expect( attribute.getFillerOffset() ).to.be.null;
 		} );
 	} );
 } );

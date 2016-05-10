@@ -181,7 +181,7 @@ describe( 'DomConverter', () => {
 
 		it( 'should add filler according to fillerPositionOffset', () => {
 			const viewP = parse( '<container:p>foo</container:p>' );
-			viewP.getBlockFillerOffset = () => 0;
+			viewP.getFillerOffset = () => 0;
 
 			const domChildren = Array.from( converter.viewChildrenToDom( viewP, document ) );
 

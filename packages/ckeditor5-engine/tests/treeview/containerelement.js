@@ -22,13 +22,13 @@ describe( 'ContainerElement', () => {
 		} );
 	} );
 
-	describe( 'getBlockFillerOffset', () => {
+	describe( 'getFillerOffset', () => {
 		it( 'should return position 0 if element is empty', () => {
-			expect( parse( '<container:p></container:p>' ).getBlockFillerOffset() ).to.equals( 0 );
+			expect( parse( '<container:p></container:p>' ).getFillerOffset() ).to.equals( 0 );
 		} );
 
 		it( 'should return null if element is not empty', () => {
-			expect( parse( '<container:p>foo</container:p>' ).getBlockFillerOffset() ).to.be.null;
+			expect( parse( '<container:p>foo</container:p>' ).getFillerOffset() ).to.be.null;
 		} );
 	} );
 } );
