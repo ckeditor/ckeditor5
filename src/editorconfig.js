@@ -7,6 +7,7 @@
 
 import CKEDITOR from '../ckeditor.js';
 import Config from './utils/config.js';
+import CKEditorError from './utils/ckeditorerror.js';
 
 /**
  * Handles a configuration dictionary for an editor instance.
@@ -22,11 +23,19 @@ export default class EditorConfig extends Config {
 	 * @inheritDoc
 	 */
 	get() {
-		// Try to take it from this editor instance.
-		let value = super.get.apply( this, arguments );
+		let value;
 
-		// If the configuration is not defined in the instance, try to take it from CKEDITOR.config.
-		if ( typeof value == 'undefined' ) {
+		try {
+			// Try to take it from this editor instance.
+			value = super.get.apply( this, arguments );
+		} catch ( err ) {
+			// If there is an error it could be because of undefined option in configuration.
+			if ( !CKEditorError.isErrorWithName( err, 'config-undefined-option' ) ) {
+				// If not just throw it further.
+				throw err;
+			}
+
+			// If the configuration is not defined in the instance, try to take it from CKEDITOR.config.
 			value = super.get.apply( CKEDITOR.config, arguments );
 		}
 
