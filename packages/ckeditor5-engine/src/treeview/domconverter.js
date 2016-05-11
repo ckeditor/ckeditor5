@@ -42,6 +42,17 @@ export default class DomConverter {
 		// Yes, PJ. It is.
 		//
 		// You guys so smart.
+		//
+		// I've been here. Seen stuff. Afraid of code now.
+
+		/**
+		 * Block {@link engine.treeView.filler filler} creator, which is used to create all block fillers during the
+		 * view to DOM conversion and to recognize block fillers during the DOM to view conversion.
+		 *
+		 * @readonly
+		 * @member {Function} engine.treeView.DomConverter#blockFiller
+		 */
+		this.blockFiller = options.blockFiller || BR_FILLER;
 
 		/**
 		 * DOM to View mapping.
@@ -58,14 +69,6 @@ export default class DomConverter {
 		 * @member {WeakMap} engine.treeView.DomConverter#_viewToDomMapping
 		 */
 		this._viewToDomMapping = new WeakMap();
-
-		/**
-		 * Block {@link engine.treeView.filler filler} creator, which is used to create all block fillers during the
-		 * view to DOM conversion and to recognize block fillers during the DOM to view conversion.
-		 *
-		 * @member {Function} engine.treeView.DomConverter#blockFiller
-		 */
-		this.blockFiller = options.blockFiller || BR_FILLER;
 	}
 
 	/**
@@ -215,7 +218,8 @@ export default class DomConverter {
 			}
 
 			return { parent: domParent, offset: offset };
-		} // instanceof HTMLElement
+		}
+		// viewParent instance of ViewElement.
 		else {
 			let domParent, domBefore, domAfter;
 
@@ -243,7 +247,7 @@ export default class DomConverter {
 	/**
 	 * Converts DOM to view. For all text nodes, not bound elements and document fragments new items will
 	 * be created. For bound elements and document fragments function will return corresponding items. For
-	 * {@link engine.treeView.filler fillers} null will be returned.
+	 * {@link engine.treeView.filler fillers} `null` will be returned.
 	 *
 	 * @param {Node|DocumentFragment} domNode DOM node or document fragment to transform.
 	 * @param {Object} [options] Conversion options.
@@ -305,7 +309,7 @@ export default class DomConverter {
 
 	/**
 	 * Converts children of the DOM element to view nodes using {@link engine.treeView.DomConverter#domToView} method.
-	 * Additionally this method omit block {@link engine.treeView.filler filler}, if it exists in the DOM parent.
+	 * Additionally this method omits block {@link engine.treeView.filler filler}, if it exists in the DOM parent.
 	 *
 	 * @param {HTMLElement} domElement Parent DOM element.
 	 * @param {Object} options See {@link engine.treeView.DomConverter#domToView} options parameter.
@@ -324,7 +328,7 @@ export default class DomConverter {
 
 	/**
 	 * Converts DOM selection to view {@link engine.treeView.Selection}.
-	 * Ranges which can not be converted will be omitted.
+	 * Ranges which cannot be converted will be omitted.
 	 *
 	 * @param {Selection} domSelection DOM selection.
 	 * @returns {engine.treeView.Selection} View selection.
@@ -346,7 +350,7 @@ export default class DomConverter {
 
 	/**
 	 * Converts DOM Range to view {@link engine.treeView.range}.
-	 * If the start or end position can not be converted null is returned.
+	 * If the start or end position can not be converted `null` is returned.
 	 *
 	 * @param {Range} domRange DOM range.
 	 * @returns {engine.treeView.Range|null} View range.
@@ -368,7 +372,7 @@ export default class DomConverter {
 	 * If the position is inside a {@link engine.treeView.filler filler} which has no corresponding view node,
 	 * position of the filler will be converted and returned.
 	 *
-	 * If structures are too different and it is not possible to find corresponding position then null will be returned.
+	 * If structures are too different and it is not possible to find corresponding position then `null` will be returned.
 	 *
 	 * @param {Node} domParent DOM position parent.
 	 * @param {Number} domOffset DOM position offset.
@@ -397,7 +401,8 @@ export default class DomConverter {
 			}
 
 			return new ViewPosition( viewParent, offset );
-		} // domParent instanceof HTMLElement
+		}
+		// domParent instanceof HTMLElement.
 		else {
 			if ( domOffset === 0 ) {
 				const viewParent = this.getCorrespondingView( domParent );
@@ -424,7 +429,7 @@ export default class DomConverter {
 	 * nodes and {@link engine.treeView.DomConverter#getCorrespondingViewDocumentFragment getCorrespondingViewDocumentFragment}
 	 * for document fragments.
 	 *
-	 * Note that for the block or inline {@link engine.treeView.filler filler} this method returns null.
+	 * Note that for the block or inline {@link engine.treeView.filler filler} this method returns `null`.
 	 *
 	 * @param {Node|DocumentFragment} domNode DOM node or document fragment.
 	 * @returns {engine.treeView.Node|engine.treeView.DocumentFragment|null} Corresponding view item.
@@ -443,10 +448,10 @@ export default class DomConverter {
 
 	/**
 	 * Gets corresponding view element. Returns element if an view element was
-	 * {@link engine.treeView.DomConverter#bindElements bound} to the given DOM element or null otherwise.
+	 * {@link engine.treeView.DomConverter#bindElements bound} to the given DOM element or `null` otherwise.
 	 *
 	 * @param {HTMLElement} domElement DOM element.
-	 * @returns {engine.treeView.Element|null} Corresponding element or null if no element was bound.
+	 * @returns {engine.treeView.Element|null} Corresponding element or `null` if no element was bound.
 	 */
 	getCorrespondingViewElement( domElement ) {
 		return this._domToViewMapping.get( domElement );
@@ -454,10 +459,10 @@ export default class DomConverter {
 
 	/**
 	 * Gets corresponding view document fragment. Returns document fragment if an view element was
-	 * {@link engine.treeView.DomConverter#bindDocumentFragments bound} to the given DOM fragment or null otherwise.
+	 * {@link engine.treeView.DomConverter#bindDocumentFragments bound} to the given DOM fragment or `null` otherwise.
 	 *
 	 * @param {DocumentFragment} domFragment DOM element.
-	 * @returns {engine.treeView.DocumentFragment|null} Corresponding document fragment or null if none element was bound.
+	 * @returns {engine.treeView.DocumentFragment|null} Corresponding document fragment or `null` if none element was bound.
 	 */
 	getCorrespondingViewDocumentFragment( domFragment ) {
 		return this._domToViewMapping.get( domFragment );
@@ -475,10 +480,10 @@ export default class DomConverter {
 	 *
 	 * Otherwise `null` is returned.
 	 *
-	 * Note that for the block or inline {@link engine.treeView.filler filler} this method returns null.
+	 * Note that for the block or inline {@link engine.treeView.filler filler} this method returns `null`.
 	 *
 	 * @param {Text} domText DOM text node.
-	 * @returns {engine.treeView.Text|null} Corresponding view text node or null, if it was not possible to find a
+	 * @returns {engine.treeView.Text|null} Corresponding view text node or `null`, if it was not possible to find a
 	 * corresponding node.
 	 */
 	getCorrespondingViewText( domText ) {
@@ -549,10 +554,10 @@ export default class DomConverter {
 
 	/**
 	 * Gets corresponding DOM element. Returns element if an DOM element was
-	 * {@link engine.treeView.DomConverter#bindElements bound} to the given view element or null otherwise.
+	 * {@link engine.treeView.DomConverter#bindElements bound} to the given view element or `null` otherwise.
 	 *
 	 * @param {engine.treeView.Element} viewElement View element.
-	 * @returns {HTMLElement|null} Corresponding element or null if none element was bound.
+	 * @returns {HTMLElement|null} Corresponding element or `null` if none element was bound.
 	 */
 	getCorrespondingDomElement( viewElement ) {
 		return this._viewToDomMapping.get( viewElement );
@@ -560,10 +565,10 @@ export default class DomConverter {
 
 	/**
 	 * Gets corresponding DOM document fragment. Returns document fragment if an DOM element was
-	 * {@link engine.treeView.DomConverter#bindDocumentFragments bound} to the given view document fragment or null otherwise.
+	 * {@link engine.treeView.DomConverter#bindDocumentFragments bound} to the given view document fragment or `null` otherwise.
 	 *
 	 * @param {engine.treeView.DocumentFragment} viewDocumentFragment View document fragment.
-	 * @returns {DocumentFragment|null} Corresponding document fragment or null if no fragment was bound.
+	 * @returns {DocumentFragment|null} Corresponding document fragment or `null` if no fragment was bound.
 	 */
 	getCorrespondingDomDocumentFragment( viewDocumentFragment ) {
 		return this._viewToDomMapping.get( viewDocumentFragment );
@@ -579,10 +584,10 @@ export default class DomConverter {
 	 * If this is a first child in the parent and the parent is a {@link engine.treeView.DomConverter#bindElements bound}
 	 * element, it is used to find the corresponding text node.
 	 *
-	 * Otherwise null is returned.
+	 * Otherwise `null` is returned.
 	 *
 	 * @param {engine.treeView.Text} viewText View text node.
-	 * @returns {Text|null} Corresponding DOM text node or null, if it was not possible to find a corresponding node.
+	 * @returns {Text|null} Corresponding DOM text node or `null`, if it was not possible to find a corresponding node.
 	 */
 	getCorrespondingDomText( viewText ) {
 		const previousSibling = viewText.getPreviousSibling();

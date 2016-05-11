@@ -16,16 +16,17 @@ import remove from '../../utils/dom/remove.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
- * Renderer updates DOM tree and selection, to make it a reflection of the view tree and selection.
+ * Renderer updates DOM structure and selection, to make them a reflection of the view structure and selection.
  *
- * Changed nodes need to be {@link engine.treeView.Renderer#markToSync marked} to be rendered.
- * Then, on {@link engine.treeView.Renderer#render render}, renderer ensure they need to be refreshed and creates DOM
- * nodes from view nodes, {@link engine.treeView.DomConverter#bindElements bind} them and insert into DOM tree.
+ * View nodes which may need to be rendered needs to be {@link engine.treeView.Renderer#markToSync marked}.
+ * Then, on {@link engine.treeView.Renderer#render render}, renderer compares the view nodes with the DOM nodes
+ * in order to check which ones really need to be refreshed. Finally, it creates DOM nodes from these view nodes,
+ * {@link engine.treeView.DomConverter#bindElements binds} them and inserts into the DOM tree.
  *
- * Every time {@link engine.treeView.Renderer#render render} is called, Renderer additionally check if
- * {@link engine.treeView.Renderer#selection selection} needs update and update it if so.
+ * Every time {@link engine.treeView.Renderer#render render} is called, renderer additionally checks if
+ * {@link engine.treeView.Renderer#selection selection} needs update and updates it if so.
  *
- * Renderer use {@link engine.treeView.DomConverter} to transform and bind nodes.
+ * Renderer uses {@link engine.treeView.DomConverter} to transform and bind nodes.
  *
  * @memberOf engine.treeView
  */
@@ -70,7 +71,7 @@ export default class Renderer {
 		this.markedTexts = new Set();
 
 		/**
-		 * View selection. Renderer updates DOM Selection to make it match this.
+		 * View selection. Renderer updates DOM Selection to make it match this one.
 		 *
 		 * @readonly
 		 * @member {engine.treeView.Selection} engine.treeView.Renderer#selection
@@ -89,8 +90,8 @@ export default class Renderer {
 		/**
 		 * Last DOM selection object.
 		 *
-		 * Because renderer handle multiple roots, and because these roots might be in different documents (in case of
-		 * using iframes) renderer need to keep last DOM selection object to remove ranges from it before new selection
+		 * Because renderer handles multiple roots, and because these roots might be in different documents (in case of
+		 * using `iframes`) renderer needs to keep last DOM selection object to remove ranges from it before new selection
 		 * is rendered.
 		 *
 		 * @private
@@ -140,25 +141,26 @@ export default class Renderer {
 
 	/**
 	 * Render method checks {@link engine.treeView.Renderer#markedAttributes},
-	 * {@link engine.treeView.Renderer#markedChildren} and {@link engine.treeView.Renderer#markedTexts} and updated all
-	 * nodes which needs to be updated. Then it clear all three sets. Every time render is called additionally selection
-	 * is compared and updated if needed.
+	 * {@link engine.treeView.Renderer#markedChildren} and {@link engine.treeView.Renderer#markedTexts} and updats all
+	 * nodes which need to be updated. Then it clears all three sets. Also, every time render is called it compares and
+	 * if needed updates the selection.
 	 *
-	 * Renderer try not to break IME and x-index of the selection, so it do as little as it is needed to update DOM.
+	 * Renderer tries not to break text composition (e.g. IME) and x-index of the selection,
+	 * so it does as little as it is needed to update the DOM.
 	 *
-	 * For attributes it adds new attributes to DOM elements, update attributes with different values and remove
-	 * attributes which does not exists in the view element.
+	 * For attributes it adds new attributes to DOM elements, updates values and removes
+	 * attributes which do not exist in the view element.
 	 *
-	 * For text nodes it update the text string if it is different. Note that if parent element is marked as an element
+	 * For text nodes it updates the text string if it is different. Note that if parent element is marked as an element
 	 * which changed child list, text node update will not be done, because it may not be possible do find a
 	 * {@link engine.treeView.DomConverter#getCorrespondingDomText corresponding DOM text}. The change will be handled
 	 * in the parent element.
 	 *
-	 * For nodes, which changed child list, it calculates a {@link diff} and add or removed nodes which changed.
+	 * For elements, which child lists have changed, it calculates a {@link diff} and adds or removs children which have changed.
 	 *
-	 * Rendering also handle {@link engine.treeView.filler fillers}. Especially it check if the inline filler is needed
-	 * at selection position and add or remove it. To prevent breaking IME inline filler will not be removed as long
-	 * selection is in the text node which needed it at first.
+	 * Rendering also handles {@link engine.treeView.filler fillers}. Especially, it checks if the inline filler is needed
+	 * at selection position and adds or removes it. To prevent breaking text composition inline filler will not be
+	 * removed as long selection is in the text node which needed it at first.
 	 */
 	render() {
 		if ( !this._isInlineFillerAtSelection() ) {
@@ -194,7 +196,7 @@ export default class Renderer {
 	}
 
 	/**
-	 * Returns true if the inline filler and selection are in the same place.
+	 * Returns `true` if the inline filler and selection are in the same place.
 	 * If it is true it means filler had been added for a reason and selection does not
 	 * left text node, user can be in the middle of the composition so it should not be touched.
 	 *
@@ -292,7 +294,7 @@ export default class Renderer {
 	}
 
 	/**
-	 * Checks if text needs updated and possibly updates it.
+	 * Checks if text needs to be updated and possibly updates it.
 	 *
 	 * @private
 	 * @param {engine.treeView.Text} viewText View text to update.
@@ -315,7 +317,7 @@ export default class Renderer {
 	}
 
 	/**
-	 * Checks if attributes list needs updated and possibly updates it.
+	 * Checks if attributes list needs to be updated and possibly updates it.
 	 *
 	 * @private
 	 * @param {engine.treeView.Element} viewElement View element to update.
@@ -339,7 +341,7 @@ export default class Renderer {
 	}
 
 	/**
-	 * Checks if elements child list needs updated and possibly updates it.
+	 * Checks if elements child list needs to be updated and possibly updates it.
 	 *
 	 * @private
 	 * @param {engine.treeView.Element} viewElement View element to update.
@@ -400,7 +402,7 @@ export default class Renderer {
 	}
 
 	/**
-	 * Checks if selection needs updated and possibly updates it.
+	 * Checks if selection needs to be updated and possibly updates it.
 	 *
 	 * @private
 	 */
