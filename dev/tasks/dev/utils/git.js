@@ -99,7 +99,7 @@ module.exports = {
 	 * Fetch all branches from each origin on selected repository.
 	 *
 	 * @param {String} repositoryLocation
-     */
+	 */
 	fetchAll( repositoryLocation ) {
 		const fetchCommands = [
 			`cd ${ repositoryLocation }`,
