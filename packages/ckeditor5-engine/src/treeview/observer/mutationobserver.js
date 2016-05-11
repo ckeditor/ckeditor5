@@ -114,7 +114,7 @@ export default class MutationObserver extends Observer {
 	/**
 	 * Handles mutations. Deduplicates, mark view elements to sync, fire event and call render.
 	 *
-	 * @protected
+	 * @private
 	 * @method engine.treeView.observer.MutationObserver#_onMutations
 	 * @param {Array.<Object>} domMutations Array of native mutations.
 	 */
