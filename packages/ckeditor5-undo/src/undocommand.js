@@ -17,7 +17,7 @@ export default class UndoCommand extends Command {
 		super( editor );
 
 		/**
-		 * Batches which are saved by the command. They can be reversed.
+		 * Items that are pairs of batches which are saved by the command and model selection state at the moment of saving the batch.
 		 *
 		 * @private
 		 * @member {Array.<engine.treeModel.Batch>} undo.UndoCommand#_batchStack
@@ -31,15 +31,6 @@ export default class UndoCommand extends Command {
 	 * @param {engine.treeModel.Batch} batch Batch to add.
 	 */
 	addBatch( batch ) {
-		//this._batchStack.push( batch );
-		//this._batchSelection.set(
-		//	batch,
-		//	{
-		//		ranges: Array.from( this.editor.document.selection.getRanges() ),
-		//		isBackward: this.editor.document.selection.isBackward
-		//	}
-		//);
-
 		const selection = {
 			ranges: Array.from( this.editor.document.selection.getRanges() ),
 			isBackward: this.editor.document.selection.isBackward
