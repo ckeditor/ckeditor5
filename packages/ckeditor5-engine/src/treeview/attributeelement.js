@@ -34,7 +34,7 @@ export default class AttributeElement extends Element {
 		/**
 		 * Element priority. Attributes have to have the same priority to be
 		 * {@link engine.treeView.Element#isSimilar similar}. Setting different priorities on similar
- 		 * nodes may prevent merging, eg. two `<abbr>` nodes next each other shouldn't be merged.
+ 		 * nodes may prevent merging, e.g. two `<abbr>` nodes next each other shouldn't be merged.
 		 *
 		 * @member {Number} engine.treeView.AttributeElement#priority
 		 */
@@ -52,7 +52,7 @@ export default class AttributeElement extends Element {
 		const cloned = super.clone( deep );
 
 		// Clone priority too.
-		cloned.priority	= this.priority;
+		cloned.priority = this.priority;
 
 		return cloned;
 	}
@@ -70,12 +70,12 @@ export default class AttributeElement extends Element {
 	}
 
 	/**
-	 * Returns block {@link engine.treeView.filler filler} offset or null if block filler is not needed.
+	 * Returns block {@link engine.treeView.filler filler} offset or `null` if a block filler is not needed.
 	 *
-	 * @returns {Number|false} Block filler offset or null if block filler is not needed.
+	 * @returns {Number|null} Block filler offset or `null` if block filler is not needed.
 	 */
 	getFillerOffset() {
-		// <b>foo</b> does not need filler
+		// <b>foo</b> does not need filler.
 		if ( this.getChildCount() ) {
 			return null;
 		}
@@ -87,6 +87,7 @@ export default class AttributeElement extends Element {
 			if ( element.getChildCount() > 1 ) {
 				return null;
 			}
+
 			element = element.parent;
 		}
 

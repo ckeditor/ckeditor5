@@ -36,8 +36,8 @@ import Element from './element.js';
  * There might be a need to mark `<span>` element as a container node, for example in situation when it will be a
  * container of an inline widget:
  *
- * 		<span color="red">foobar</span>  // attribute
- * 		<span data-widget>foobar</span>  // container
+ *		<span color="red">foobar</span>		// attribute
+ *		<span data-widget>foobar</span>		// container
  *
  * @memberOf engine.treeView
  * @extends engine.treeView.Element
@@ -53,9 +53,9 @@ export default class ContainerElement extends Element {
 	}
 
 	/**
-	 * Returns block {@link engine.treeView.filler filler} offset or null if block filler is not needed.
+	 * Returns block {@link engine.treeView.filler filler} offset or `null` if block filler is not needed.
 	 *
-	 * @returns {Number|false} Block filler offset or null if block filler is not needed.
+	 * @returns {Number|null} Block filler offset or `null` if block filler is not needed.
 	 */
 	getFillerOffset() {
 		return this.getChildCount() === 0 ? 0 : null;

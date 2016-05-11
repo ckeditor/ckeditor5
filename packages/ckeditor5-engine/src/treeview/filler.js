@@ -6,26 +6,26 @@
 'use strict';
 
 /**
- * Set of utils related to block and inline filler handling.
+ * Set of utils related to block and inline fillers handling.
  *
- * Browsers do not allow to put caret in an element which does not have hight. Because of it, we need to fill all
+ * Browsers do not allow to put caret in elements which does not have hight. Because of it, we need to fill all
  * empty elements which should be selectable with elements or characters called "fillers". Unfortunately there is no one
  * universal filler, this is why two types are uses:
  *
- * Block filler is an element which fill blocks, like `<p>`. CKEditor use `<br>` as a block filler during the editing,
- * as browsers do natively. So instead of empty `<p>` there will be `<p><br></p>`. The advantage of block filler is that
- * it is transparent for for selection, so when the caret is before the `<br>` and user press right arrow he will be
+ * * Block filler is an element which fill block elements, like `<p>`. CKEditor uses `<br>` as a block filler during the editing,
+ * as browsers do natively. So instead of an empty `<p>` there will be `<p><br></p>`. The advantage of block filler is that
+ * it is transparent for the selection, so when the caret is before the `<br>` and user presses right arrow he will be
  * moved to the next paragraph, not after the `<br>`. The disadvantage is that it breaks a block, so it can not be used
- * in the middle of the text. {@link engine.treeView.filler.BR_FILLER <br> filler} can be replaced with any other
- * character in the data output, for instance {@link engine.treeView.filler.NBSP_FILLER non breaking space}.
+ * in the middle of a line of text. The {@link engine.treeView.filler.BR_FILLER `<br>` filler} can be replaced with any other
+ * character in the data output, for instance {@link engine.treeView.filler.NBSP_FILLER non-breaking space}.
  *
- * Inline filler is a filler which does not break text, so can be used inside the text, for instance in the empty
- * `<b>` surrendered by text: `foo<b></b>bar`, if we want to put caret there. CKEditor use a sequence of the zero width
- * spaces as a {@link engine.treeView.filler.INLINE_FILLER inline filler} having the predetermined
- * {@link engine.treeView.filler.INLINE_FILLER_LENGTH length}. The sequence is used, instead of the single character to
- * avoid threating random zero width spaces as an inline filler. Disadvantage of the inline filler is that it is not
- * transparent for the selection. The arrow key move the caret between zero with spaces characters, so the additional
- * code is needed to handle caret.
+ * * Inline filler is a filler which does not break a line of text, so it can be used inside the text, for instance in the empty
+ * `<b>` surrendered by text: `foo<b></b>bar`, if we want to put the caret there. CKEditor uses a sequence of the zero-width
+ * spaces as an {@link engine.treeView.filler.INLINE_FILLER inline filler} having the predetermined
+ * {@link engine.treeView.filler.INLINE_FILLER_LENGTH length}. A sequence is used, instead of a single character to
+ * avoid threating random zero-width spaces as the inline filler. Disadvantage of the inline filler is that it is not
+ * transparent for the selection. The arrow key moves the caret between zero-width spaces characters, so the additional
+ * code is needed to handle the caret.
  *
  * Both inline and block fillers are handled by the {@link engine.treeView.renderer renderer} and are not present in the
  * view.
@@ -34,8 +34,8 @@
  */
 
 /**
- * Br filler creator. This is a function which creates `<br data-filler="true">` element, but should be understand as
- * configuration option more then used directly.
+ * `<br> filler creator. This is a function which creates `<br data-filler="true">` element, but should be understood as
+ * configuration option more than used directly.
  *
  * @member {Function} engine.treeView.filler.BR_FILLER
  */
@@ -47,8 +47,8 @@ export const BR_FILLER = ( domDocument ) => {
 };
 
 /**
- * Nbsp filler creator. This is a function which creates `&nbsp;` text node, but should be understand as
- * configuration option more then used directly.
+ * Non-breaking space filler creator. This is a function which creates `&nbsp;` text node, but should be understood as
+ * configuration option more than used directly.
  *
  * @member {Function} engine.treeView.filler.NBSP_FILLER_FILLER
  */
@@ -73,27 +73,27 @@ for ( let i = 0; i < INLINE_FILLER_LENGTH; i++ ) {
 }
 
 /**
- * Check if text node starts with {@link engine.treeView.filler.INLINE_FILLER inline filler}.
+ * Checks if the text node starts with the {@link engine.treeView.filler.INLINE_FILLER inline filler}.
  *
  *		startsWithFiller( document.createTextNode( INLINE_FILLER ) ); // true
  *		startsWithFiller( document.createTextNode( INLINE_FILLER + 'foo' ) ); // true
  *		startsWithFiller( document.createTextNode( 'foo' ) ); // false
  *
  * @param {Text} domText DOM text node.
- * @returns {Boolean} True if text node starts with {@link engine.treeView.filler.INLINE_FILLER inline filler}.
+ * @returns {Boolean} True if the text node starts with the {@link engine.treeView.filler.INLINE_FILLER inline filler}.
  */
 export function startsWithFiller( domText ) {
 	return ( domText.data.substr( 0, INLINE_FILLER_LENGTH ) === INLINE_FILLER );
 }
 
 /**
- * Check if text node contains only {@link engine.treeView.filler.INLINE_FILLER inline filler}.
+ * Checks if the text node contains only the {@link engine.treeView.filler.INLINE_FILLER inline filler}.
  *
  *		isInlineFiller( document.createTextNode( INLINE_FILLER ) ); // true
  *		isInlineFiller( document.createTextNode( INLINE_FILLER + 'foo' ) ); // false
  *
  * @param {Text} domText DOM text node.
- * @returns {Boolean} True if text node contains only {@link engine.treeView.filler.INLINE_FILLER inline filler}.
+ * @returns {Boolean} True if the text node contains only the {@link engine.treeView.filler.INLINE_FILLER inline filler}.
  */
 export function isInlineFiller( domText ) {
 	return domText.data.length == INLINE_FILLER_LENGTH && startsWithFiller( domText );
@@ -111,7 +111,7 @@ export function getDataWithoutFiller( domText ) {
 const templateBlockFillers = new WeakMap();
 
 /**
- * Check if the node is an instance of the block filler of the given type.
+ * Checks if the node is an instance of the block filler of the given type.
  *
  *		const brFillerInstance = BR_FILLER( document );
  *		isBlockFiller( brFillerInstance, BR_FILLER ); // true
