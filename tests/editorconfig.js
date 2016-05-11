@@ -5,10 +5,13 @@
 
 'use strict';
 
+import testUtils from '/tests/ckeditor5/_utils/utils.js';
 import EditorConfig from '/ckeditor5/editorconfig.js';
 import CKEDITOR from '/ckeditor.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 let config;
+testUtils.createSinonSandbox();
 
 beforeEach( () => {
 	config = new EditorConfig( {
@@ -35,7 +38,18 @@ describe( 'get', () => {
 		expect( config.get( 'globalConfig' ) ).to.equal( 2 );
 	} );
 
-	it( 'should return undefined for non existing configuration', () => {
-		expect( config.get( 'invalid' ) ).to.be.undefined();
+	it( 'should throw an error for non existing configuration', () => {
+		expect( () => {
+			config.get( 'invalid' );
+		} ).to.throw( CKEditorError, /config-undefined-option/ );
 	} );
+
+	it( 'should throw an error if error is not a CKEditorError instance ' +
+		'and does not have name `config-undefined-option`',
+		() => {
+			expect( () => {
+				config.get( new Map() );
+			} ).to.throw( TypeError );
+		}
+	);
 } );
