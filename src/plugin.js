@@ -6,7 +6,7 @@
 'use strict';
 
 import ObservableMixin from './utils/observablemixin.js';
-import utils from './utils/utils.js';
+import mix from './utils/mix.js';
 
 /**
  * The base class for CKEditor plugin classes.
@@ -58,4 +58,4 @@ export default class Plugin {
 	destroy() {}
 }
 
-utils.mix( Plugin, ObservableMixin );
+mix( Plugin, ObservableMixin );
