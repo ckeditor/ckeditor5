@@ -31,6 +31,10 @@ const log = require( '../utils/log' );
 module.exports = ( installTask, ckeditor5Path, packageJSON, workspaceRoot, runNpmUpdate ) => {
 	const workspaceAbsolutePath = path.join( ckeditor5Path, workspaceRoot );
 
+	// Fetch main repository
+	log.out( `Fetching branches from ${ packageJSON.name }...` );
+	git.fetchAll( ckeditor5Path );
+
 	// Get all CKEditor dependencies from package.json.
 	const dependencies = tools.getCKEditorDependencies( packageJSON.dependencies );
 
@@ -46,6 +50,9 @@ module.exports = ( installTask, ckeditor5Path, packageJSON, workspaceRoot, runNp
 			if ( directories.indexOf( urlInfo.name ) > -1 ) {
 				log.out( `Checking out ${ urlInfo.name } to ${ urlInfo.branch }...` );
 				git.checkout( repositoryAbsolutePath, urlInfo.branch );
+
+				log.out( `Fetching branches from ${ urlInfo.name }...` );
+				git.fetchAll( repositoryAbsolutePath );
 
 				log.out( `Pulling changes to ${ urlInfo.name }...` );
 				git.pull( repositoryAbsolutePath, urlInfo.branch );

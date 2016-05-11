@@ -151,7 +151,6 @@ describe( 'utils', () => {
 				const branchName = 'branch-to-checkout';
 				const checkoutCommands = [
 					`cd ${ repositoryLocation }`,
-					`git fetch --all`,
 					`git checkout ${ branchName }`
 				].join( ' && ' );
 

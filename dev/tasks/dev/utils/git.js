@@ -66,19 +66,18 @@ module.exports = {
 	},
 
 	/**
-	 * Fetches all remotes and checks out branch on selected repository.
+	 * Checks out branch on selected repository.
 	 *
 	 * @param {String} repositoryLocation Absolute path to repository.
 	 * @param {String} branchName Name of the branch to checkout.
 	 */
 	checkout( repositoryLocation, branchName ) {
-		const checkoutCommands = [
+		const checkoutCommand = [
 			`cd ${ repositoryLocation }`,
-			`git fetch --all`,
 			`git checkout ${ branchName }`
 		];
 
-		tools.shExec( checkoutCommands.join( ' && ' ) );
+		tools.shExec( checkoutCommand.join( ' && ' ) );
 	},
 
 	/**
@@ -94,6 +93,20 @@ module.exports = {
 		];
 
 		tools.shExec( pullCommands.join( ' && ' ) );
+	},
+
+	/**
+	 * Fetch all branches from each origin on selected repository.
+	 *
+	 * @param {String} repositoryLocation
+     */
+	fetchAll( repositoryLocation ) {
+		const fetchCommands = [
+			`cd ${ repositoryLocation }`,
+			`git fetch --all`
+		];
+
+		tools.shExec( fetchCommands.join( ' && ' ) );
 	},
 
 	/**
