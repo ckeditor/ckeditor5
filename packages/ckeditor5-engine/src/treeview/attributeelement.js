@@ -70,7 +70,7 @@ export default class AttributeElement extends Element {
 	}
 
 	/**
-	 * Returns block filler offset or null if block filler is not needed.
+	 * Returns block {@link engine.treeView.filler filler} offset or null if block filler is not needed.
 	 *
 	 * @returns {Number|false} Block filler offset or null if block filler is not needed.
 	 */

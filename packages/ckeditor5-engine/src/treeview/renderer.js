@@ -78,7 +78,8 @@ export default class Renderer {
 		this.selection = selection;
 
 		/**
-		 * Position of the inline filler. It should always be put BEFORE the text which contains filler.
+		 * Position of the inline {@link engine.treeView.filler filler}.
+		 * It should always be put BEFORE the text which contains filler.
 		 *
 		 * @private
 		 * @member {engine.treeView.Position} engine.treeView.Renderer#_inlineFillerPosition
@@ -257,7 +258,7 @@ export default class Renderer {
 	}
 
 	/**
-	 * Checks if the inline fillers should be added.
+	 * Checks if the inline {@link engine.treeView.filler fillers} should be added.
 	 *
 	 * @private
 	 * @returns {Boolean} True if the inline fillers should be added.
