@@ -207,7 +207,7 @@ export default class Selection {
 	}
 
 	/**
-	 * Two selections equals if they have the same ranges and directions.
+	 * Two selections equal if they have the same ranges and directions.
 	 *
 	 * @param {engine.treeView.Selection} otherSelection Selection to compare with.
 	 * @returns {Boolean} True if selections equal.
@@ -263,7 +263,7 @@ export default class Selection {
 	}
 
 	/**
-	 * Set this selection ranges and direction to the ranges and direction of other selection
+	 * Set this selection's ranges and direction to the ranges and direction of the given selection.
 	 *
 	 * @param {engine.treeView.Selection} otherSelection Other selection.
 	 */

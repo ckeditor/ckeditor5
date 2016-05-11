@@ -82,10 +82,10 @@ export default class TreeView {
 		this.renderer = new Renderer( this.domConverter, this.selection );
 
 		/**
-		 * Set of registered {@link engine.treeView.Observer observers}.
+		 * Map of registered {@link engine.treeView.Observer observers}.
 		 *
 		 * @private
-		 * @member {Set.<engine.treeView.Observer>} engine.treeView.TreeView_#observers
+		 * @member {Map.<Function, engine.treeView.Observer>} engine.treeView.TreeView_#observers
 		 */
 		this._observers = new Map();
 
@@ -105,7 +105,6 @@ export default class TreeView {
 	 *
 	 * @param {Function} Observer The constructor of an observer to add.
 	 * Should create an instance inheriting from {@link engine.treeView.observer.Observer}.
-	 *
 	 * @returns {engine.treeView.observer.Observer} Added observer instance.
 	 */
 	addObserver( Observer ) {
@@ -127,7 +126,7 @@ export default class TreeView {
 	}
 
 	/**
-	 * Get observer of given type or undefined if such observer have not been added.
+	 * Returns observer of the given type or `undefined` if such observer has not been added yet.
 	 *
 	 * @param {Function} Observer The constructor of an observer to get.
 	 * @returns {engine.treeView.observer.Observer|undefined} Observer instance or undefined.

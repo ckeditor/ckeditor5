@@ -187,15 +187,15 @@ export default class Position {
 	}
 
 	/**
-	 * Creates a new position after given node.
+	 * Creates a new position after the given node.
 	 *
-	 * @param {engine.treeView.Node} node Node the position should be directly after.
+	 * @param {engine.treeView.Node} node Node after which the position should be located.
 	 * @returns {engine.treeView.Position}
 	 */
 	static createAfter( node ) {
 		if ( !node.parent ) {
 			/**
-			 * You can not make position after root.
+			 * You can not make a position after a root.
 			 *
 			 * @error position-after-root
 			 * @param {engine.treeView.Node} root
@@ -209,13 +209,13 @@ export default class Position {
 	/**
 	 * Creates a new position before the given node.
 	 *
-	 * @param {engine.treeView.node} node Node the position should be directly before.
+	 * @param {engine.treeView.node} node Node before which the position should be located.
 	 * @returns {engine.treeView.Position}
 	 */
 	static createBefore( node ) {
 		if ( !node.parent ) {
 			/**
-			 * You can not make position before root.
+			 * You cannot make a position before a root.
 			 *
 			 * @error position-before-root
 			 * @param {engine.treeView.Node} root
@@ -227,7 +227,7 @@ export default class Position {
 	}
 
 	/**
-	 * Creates and returns a new instance of Position, which is equal to passed position.
+	 * Creates and returns a new instance of `Position`, which is equal to the passed position.
 	 *
 	 * @param {engine.treeView.Position} position Position to be cloned.
 	 * @returns {engine.treeView.Position}

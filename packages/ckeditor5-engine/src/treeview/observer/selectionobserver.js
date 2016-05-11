@@ -9,13 +9,13 @@ import Observer from './observer.js';
 import MutationObserver from './mutationobserver.js';
 
 /**
- * Selection observer class observes selection changes in the document. If selection change on the document this
- * observer checks if there are any mutations and if DOM selection is different then the
+ * Selection observer class observes selection changes in the document. If selection changes on the document this
+ * observer checks if there are any mutations and if DOM selection is different than the
  * {@link engine.treeView.TreeView#selection view selection}. Selection observer fires
  * {@link engine.treeView.TreeView#selectionchange} event only if selection change was the only change in the document
- * and DOM selection is different then view selection.
+ * and DOM selection is different then the view selection.
  *
- * @see  engine.treeView.MutationObserver
+ * @see engine.treeView.MutationObserver
  * @memberOf engine.treeView.observer
  * @extends engine.treeView.observer.Observer
  */
@@ -25,9 +25,10 @@ export default class SelectionObserver extends Observer {
 
 		/**
 		 * Instance of the mutation observer. Selection observer calls
-		 * {@link engine.treeView.observer.MutationObserver#flush} to ensure mutations will be handled before the
-		 * {@link engine.treeView.TreeView#selectionchange} event.
+		 * {@link engine.treeView.observer.MutationObserver#flush} to ensure that the mutations will be handled before the
+		 * {@link engine.treeView.TreeView#selectionchange} event is fired.
 		 *
+		 * @readonly
 		 * @member {engine.treeView.observer.MutationObserver} engine.treeView.observer.SelectionObserver#mutationObserver
 		 */
 		this.mutationObserver = treeView.getObserver( MutationObserver );
@@ -51,6 +52,7 @@ export default class SelectionObserver extends Observer {
 		/**
 		 * Reference to the {@link engine.treeView.TreeView#domConverter}.
 		 *
+		 * @readonly
 		 * @member {engine.treeView.DomConverter} engine.treeView.observer.SelectionObserver#domConverter
 		 */
 		this.domConverter = treeView.domConverter;
@@ -96,8 +98,8 @@ export default class SelectionObserver extends Observer {
 		// Ensure the mutation event will be before selection event on all browsers.
 		this.mutationObserver.flush();
 
-		// If there were mutations then the view will be re-rendered by the mutations observer and selection
-		// will be updated, so selection will be equal and event will not be fires, as expected.
+		// If there were mutations then the view will be re-rendered by the mutation observer and selection
+		// will be updated, so selections will equal and event will not be fired, as expected.
 		const domSelection = domDocument.defaultView.getSelection();
 		const newViewSelection = this.domConverter.domSelectionToView( domSelection );
 
@@ -117,8 +119,8 @@ export default class SelectionObserver extends Observer {
 }
 
 /**
- * Fired when selection changes. This event is fired only when the selection change is the only change in the
- * document, and old selection is different then new selection.
+ * Fired when selection has changed. This event is fired only when the selection change was the only change that happened
+ * in the document, and old selection is different then the new selection.
  *
  * @event engine.treeView.TreeView#selection
  * @param {Object} data
