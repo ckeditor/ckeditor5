@@ -72,12 +72,12 @@ module.exports = {
 	 * @param {String} branchName Name of the branch to checkout.
 	 */
 	checkout( repositoryLocation, branchName ) {
-		const checkoutCommand = [
+		const checkoutCommands = [
 			`cd ${ repositoryLocation }`,
 			`git checkout ${ branchName }`
 		];
 
-		tools.shExec( checkoutCommand.join( ' && ' ) );
+		tools.shExec( checkoutCommands.join( ' && ' ) );
 	},
 
 	/**
