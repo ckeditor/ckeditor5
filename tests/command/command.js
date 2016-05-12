@@ -5,6 +5,8 @@
 
 'use strict';
 
+/* bender-tags: browser-only */
+
 import Editor from '/ckeditor5/editor.js';
 import Command from '/ckeditor5/command/command.js';
 
