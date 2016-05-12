@@ -9,11 +9,10 @@ import Selection from './selection.js';
 import Renderer from './renderer.js';
 import Writer from './writer.js';
 import DomConverter from './domconverter.js';
-import { INLINE_FILLER_LENGTH, startsWithFiller } from './filler.js';
+import { injectQuirksHandling } from './filler.js';
 
 import mix from '../../utils/mix.js';
 import EmitterMixin from '../../utils/emittermixin.js';
-import { keyCodes } from '../../utils/keyboard.js';
 
 /**
  * TreeView class creates an abstract layer over the content editable area.
@@ -89,9 +88,7 @@ export default class TreeView {
 		 */
 		this._observers = new Map();
 
-		// Assign key observer which move cursor from the end of the inline filler to the begging of it when
-		// the left arrow is pressed, so the filler does not break navigation.
-		this.on( 'keydown', jumpOverInlineFiller );
+		injectQuirksHandling( this );
 	}
 
 	/**
@@ -199,26 +196,6 @@ export default class TreeView {
 }
 
 mix( TreeView, EmitterMixin );
-
-// Move cursor from the end of the inline filler to the begging of it when, so the filler does not break navigation.
-function jumpOverInlineFiller( evt, data ) {
-	if ( data.keyCode == keyCodes.arrowleft ) {
-		const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
-
-		if ( domSelection.rangeCount == 1 && domSelection.getRangeAt( 0 ).collapsed ) {
-			const domParent = domSelection.getRangeAt( 0 ).startContainer;
-			const domOffset = domSelection.getRangeAt( 0 ).startOffset;
-
-			if ( startsWithFiller( domParent ) && domOffset <= INLINE_FILLER_LENGTH ) {
-				const domRange = new Range();
-				domRange.setStart( domParent, 0 );
-				domRange.collapse( true );
-				domSelection.removeAllRanges();
-				domSelection.addRange( domRange );
-			}
-		}
-	}
-}
 
 /**
  * Enum representing type of the change.

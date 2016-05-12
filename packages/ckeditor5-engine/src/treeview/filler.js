@@ -5,6 +5,8 @@
 
 'use strict';
 
+import { keyCodes } from '../../utils/keyboard.js';
+
 /**
  * Set of utils related to block and inline fillers handling.
  *
@@ -141,4 +143,34 @@ export function isBlockFiller( domNode, blockFiller ) {
 	}
 
 	return domNode.isEqualNode( templateBlockFiller );
+}
+
+/**
+ * Assign key observer which move cursor from the end of the inline filler to the begging of it when
+ * the left arrow is pressed, so the filler does not break navigation.
+ *
+ * @param {engine.treeView.TreeView} treeView TreeView instance we should inject quirks handling on.
+ */
+export function injectQuirksHandling( treeView ) {
+	treeView.on( 'keydown', jumpOverInlineFiller );
+}
+
+// Move cursor from the end of the inline filler to the begging of it when, so the filler does not break navigation.
+function jumpOverInlineFiller( evt, data ) {
+	if ( data.keyCode == keyCodes.arrowleft ) {
+		const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
+
+		if ( domSelection.rangeCount == 1 && domSelection.getRangeAt( 0 ).collapsed ) {
+			const domParent = domSelection.getRangeAt( 0 ).startContainer;
+			const domOffset = domSelection.getRangeAt( 0 ).startOffset;
+
+			if ( startsWithFiller( domParent ) && domOffset <= INLINE_FILLER_LENGTH ) {
+				const domRange = new Range();
+				domRange.setStart( domParent, 0 );
+				domRange.collapse( true );
+				domSelection.removeAllRanges();
+				domSelection.addRange( domRange );
+			}
+		}
+	}
 }
