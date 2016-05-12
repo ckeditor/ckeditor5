@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* global console:false */
+
 'use strict';
 
 import TreeView from '/ckeditor5/engine/treeview/treeview.js';
@@ -23,6 +25,8 @@ setData( treeView,
 	'<container:p>bar</container:p>' );
 
 treeView.on( 'selectionchange', ( evt, data ) => {
+	const node = data.newSelection.getFirstPosition().parent;
+	console.log( node.name ? node.name : node._data );
 	treeView.selection.setTo( data.newSelection );
 } );
 
