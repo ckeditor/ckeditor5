@@ -15,9 +15,9 @@ export default class EditableUIView extends View {
 	/**
 	 * Creates an instance of the EditableUIView class.
 	 *
-	 * @param {ui.Model} model (View)Model of this view.
+	 * @param {utils.Observable} model (View)Model of this View.
 	 * @param {utils.Locale} [locale] The {@link ckeditor5.Editor#locale editor's locale} instance.
-	 * @param {HTMLElement} [editableElement] The editable element. If not specified the editable UI view
+	 * @param {HTMLElement} [editableElement] The editable element. If not specified, this View
 	 * should create it. Otherwise, the existing element should be used.
 	 */
 	constructor( model, locale, editableElement ) {
@@ -41,6 +41,10 @@ export default class EditableUIView extends View {
 		};
 	}
 
+	/**
+	 * Initializes the View by either applying the {@link template} to the existing
+	 * {@link editableElement} or assigns {@link element} as {@link editableElement}.
+	 */
 	init() {
 		if ( this.editableElement ) {
 			this.applyTemplateToElement( this.editableElement, this.template );
@@ -52,6 +56,8 @@ export default class EditableUIView extends View {
 	}
 
 	destroy() {
+		super.destroy();
+
 		this.editableElement.contentEditable = false;
 	}
 
@@ -59,6 +65,6 @@ export default class EditableUIView extends View {
 	 * The element which is the main editable element (usually the one with `contentEditable="true"`).
 	 *
 	 * @readonly
-	 * @member {HTMLElement} ui.editable.EditableUIView#editableElement
+	 * @member {HTMLElement} ui.editableUI.EditableUIView#editableElement
 	 */
 }
