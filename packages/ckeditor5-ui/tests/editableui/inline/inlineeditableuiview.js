@@ -33,40 +33,30 @@ describe( 'InlineEditableUIView', () => {
 		} );
 
 		it( 'accepts editableElement', () => {
-			view = new InlineEditableUIView( null, null, editableElement );
+			view = new InlineEditableUIView( model, locale, editableElement );
 
-			expect( view.element ).to.equal( editableElement );
-		} );
-
-		it( 'accepts editableElement and does not render template', () => {
-			view = new InlineEditableUIView( null, null, editableElement );
-
-			expect( view.templete ).to.be.undefined;
 			expect( view.element ).to.equal( editableElement );
 		} );
 
 		it( 'creates view#element from template when no editableElement provided', () => {
 			expect( view.template ).to.be.an( 'object' );
 		} );
-	} );
 
-	describe( 'init', () => {
-		it( 'calls setEditableElement', () => {
-			const element = view.element;
-
-			expect( element ).to.equal( view.editableElement );
-			expect( element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
-			expect( element.classList.contains( 'ck-editor__editable_inline' ) ).to.be.true;
+		it( 'sets proper accessibility role on the editableElement', () => {
+			expect( view.element.attributes.getNamedItem( 'role' ).value ).to.equal( 'textbox' );
 		} );
-	} );
 
-	describe( 'destroy', () => {
-		it( 'disables contenteditability of the view element', () => {
-			expect( view.editableElement.contentEditable ).to.equal( 'true' );
+		it( 'sets proper ARIA label on the editableElement', () => {
+			expect( view.element.attributes.getNamedItem( 'aria-label' ).value ).to.be.a( 'string' );
+		} );
 
-			view.destroy();
+		it( 'sets proper title on the editableElement', () => {
+			expect( view.element.attributes.getNamedItem( 'title' ).value ).to.be.a( 'string' );
+		} );
 
-			expect( view.editableElement.contentEditable ).to.equal( 'false' );
+		it( 'sets proper class name of the editableElement', () => {
+			expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck-editor__editable_inline' ) ).to.be.true;
 		} );
 	} );
 } );

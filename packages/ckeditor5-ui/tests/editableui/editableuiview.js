@@ -7,7 +7,6 @@
 
 'use strict';
 
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import EditableUIView from '/ckeditor5/ui/editableui/editableuiview.js';
 import Model from '/ckeditor5/ui/model.js';
 import Locale from '/ckeditor5/utils/locale.js';
@@ -18,71 +17,69 @@ describe( 'EditableUIView', () => {
 	beforeEach( () => {
 		model = new Model( { isEditable: true, isFocused: false } );
 		locale = new Locale( 'en' );
-		view = new EditableUIView( model ,locale );
+		view = new EditableUIView( model, locale );
 		editableElement = document.createElement( 'div' );
 
 		return view.init();
 	} );
 
-	describe( 'setEditableElement', () => {
-		it( 'sets the editableElement property', () => {
-			view.setEditableElement( editableElement );
+	describe( 'constructor', () => {
+		it( 'renders element from template when no editableElement', () => {
+			view = new EditableUIView( model, locale );
+			view.init();
 
-			expect( view ).to.have.property( 'editableElement', editableElement );
+			expect( view.element ).to.equal( view.editableElement );
+			expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
 		} );
 
-		it( 'throws when trying to use it twice', () => {
-			view.setEditableElement( editableElement );
+		it( 'accepts editableElement as an argument', () => {
+			view = new EditableUIView( model, locale, editableElement );
+			view.init();
 
-			expect( view ).to.have.property( 'editableElement', editableElement );
+			expect( view.element ).to.equal( editableElement );
+			expect( view.element ).to.equal( view.editableElement );
+			expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
+		} );
+	} );
 
-			expect( () => {
-				view.setEditableElement( editableElement );
-			} ).to.throw( CKEditorError, /^editableview-cannot-override-editableelement/ );
+	describe( 'View bindings', () => {
+		describe( 'class', () => {
+			it( 'has initial value set', () => {
+				expect( view.element.classList.contains( 'ck-blurred' ) ).to.be.true;
+				expect( view.element.classList.contains( 'ck-focused' ) ).to.be.false;
+			} );
+
+			it( 'reacts on model.isFocused', () => {
+				model.isFocused = true;
+
+				expect( view.element.classList.contains( 'ck-blurred' ) ).to.be.false;
+				expect( view.element.classList.contains( 'ck-focused' ) ).to.be.true;
+			} );
 		} );
 
-		it( 'sets the contentEditable attribute to model.isEditable', () => {
-			view.setEditableElement( editableElement );
+		describe( 'contenteditable', () => {
+			it( 'has initial value set', () => {
+				expect( view.element.attributes.getNamedItem( 'contenteditable' ).value ).to.equal( 'true' );
+			} );
 
-			expect( editableElement.contentEditable ).to.equal( 'true' );
+			it( 'reacts on model.isEditable', () => {
+				model.isEditable = false;
 
-			model.isEditable = false;
-
-			expect( editableElement.contentEditable ).to.equal( 'false' );
+				expect( view.element.attributes.getNamedItem( 'contenteditable' ).value ).to.equal( 'false' );
+			} );
 		} );
+	} );
 
-		it( 'sets the contentEditable attribute to model.isEditable', () => {
-			view.setEditableElement( editableElement );
+	describe( 'destroy', () => {
+		it( 'updates contentEditable property of editableElement', () => {
+			view = new EditableUIView( model, locale, editableElement );
+			view.init();
 
-			expect( editableElement.classList.contains( 'ck-blurred' ) ).to.be.true;
+			expect( view.editableElement.contentEditable ).to.equal( 'true' );
 
-			model.isFocused = true;
+			view.destroy();
 
-			expect( editableElement.classList.contains( 'ck-focused' ) ).to.be.true;
-		} );
-
-		it( 'sets proper accessibility role on the editableElement', () => {
-			view.setEditableElement( editableElement );
-
-			expect( editableElement.attributes.getNamedItem( 'role' ).value ).to.equal( 'textbox' );
-		} );
-
-		it( 'sets proper ARIA label on the editableElement', () => {
-			view.setEditableElement( editableElement );
-
-			expect( editableElement.attributes.getNamedItem( 'aria-label' ).value ).to.be.a( 'string' );
-		} );
-
-		it( 'sets proper title on the editableElement', () => {
-			view.setEditableElement( editableElement );
-
-			expect( editableElement.attributes.getNamedItem( 'title' ).value ).to.be.a( 'string' );
-		} );
-
-		it( 'sets proper class name of the editableElement', () => {
-			view.setEditableElement( editableElement );
-
-			expect( editableElement.classList.contains( 'ck-editor__editable' ) ).to.be.true;
+			expect( view.editableElement.contentEditable ).to.equal( 'false' );
 		} );
 	} );
 } );
