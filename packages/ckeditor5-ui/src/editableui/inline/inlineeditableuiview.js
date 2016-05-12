@@ -9,30 +9,16 @@ import EditableUIView from '/ckeditor5/ui/editableui/editableuiview.js';
 
 export default class InlineEditableUIView extends EditableUIView {
 	constructor( model, locale, editableElement ) {
-		super( model, locale );
+		super( model, locale, editableElement );
 
-		if ( editableElement ) {
-			this.element = editableElement;
-		} else {
-			this.template = {
-				tag: 'div'
-			};
-		}
-	}
+		const label = this.t( 'Rich Text Editor, %0', [ this.model.editableName ] );
 
-	init() {
-		this.setEditableElement( this.element, {
-			attributes: {
-				class: [ 'ck-editor__editable_inline' ]
-			},
+		Object.assign( this.template.attributes, {
+			role: 'textbox',
+			'aria-label': label,
+			title: label
 		} );
 
-		super.init();
-	}
-
-	destroy() {
-		super.destroy();
-
-		this.editableElement.contentEditable = false;
+		this.template.attributes.class.push( 'ck-editor__editable_inline' );
 	}
 }

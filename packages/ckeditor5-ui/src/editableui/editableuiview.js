@@ -6,7 +6,6 @@
 'use strict';
 
 import View from '../view.js';
-import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
  * @memberOf ui.editableUI
@@ -16,12 +15,45 @@ export default class EditableUIView extends View {
 	/**
 	 * Creates an instance of the EditableUIView class.
 	 *
-	 * @method constructor
 	 * @param {ui.Model} model (View)Model of this view.
 	 * @param {utils.Locale} [locale] The {@link ckeditor5.Editor#locale editor's locale} instance.
 	 * @param {HTMLElement} [editableElement] The editable element. If not specified the editable UI view
 	 * should create it. Otherwise, the existing element should be used.
 	 */
+	constructor( model, locale, editableElement ) {
+		super( model, locale );
+
+		const bind = this.attributeBinder;
+
+		if ( editableElement ) {
+			this.element = this.editableElement = editableElement;
+		}
+
+		this.template = {
+			tag: 'div',
+			attributes: {
+				class: [
+					bind.to( 'isFocused', value => value ? 'ck-focused' : 'ck-blurred' ),
+					'ck-editor__editable'
+				],
+				contenteditable: bind.to( 'isEditable' ),
+			}
+		};
+	}
+
+	init() {
+		if ( this.editableElement ) {
+			this.applyTemplateToElement( this.editableElement, this.template );
+		} else {
+			this.editableElement = this.element;
+		}
+
+		return super.init();
+	}
+
+	destroy() {
+		this.editableElement.contentEditable = false;
+	}
 
 	/**
 	 * The element which is the main editable element (usually the one with `contentEditable="true"`).
@@ -29,43 +61,4 @@ export default class EditableUIView extends View {
 	 * @readonly
 	 * @member {HTMLElement} ui.editable.EditableUIView#editableElement
 	 */
-
-	/**
-	 * Sets the {@link #editableElement} property and applies necessary bindings to it.
-	 *
-	 * @param {HTMLElement} editableElement
-	 * @param {ui.TemplateDefinition} def
-	 */
-	setEditableElement( editableElement, def = { attributes: {} } ) {
-		const bind = this.attributeBinder;
-		const t = this.t;
-		const label = t( 'Rich Text Editor, %0', [ this.model.editableName ] );
-
-		if ( this.editableElement ) {
-			throw new CKEditorError(
-				'editableview-cannot-override-editableelement: The editableElement cannot be overriden.'
-			);
-		}
-
-		this.editableElement = editableElement;
-
-		if ( !def.attributes.class ) {
-			def.attributes.class = [];
-		}
-
-		Object.assign( def.attributes, {
-			role: 'textbox',
-			'aria-label': label,
-			title: label,
-		} );
-
-		def.attributes.class.push(
-			'ck-editor__editable',
-			bind.to( 'isFocused', value => value ? 'ck-focused' : 'ck-blurred' )
-		);
-
-		def.attributes.contenteditable = bind.to( 'isEditable' );
-
-		this.applyTemplateToElement( editableElement, def );
-	}
 }
