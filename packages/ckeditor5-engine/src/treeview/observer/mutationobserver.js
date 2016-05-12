@@ -6,6 +6,7 @@
 'use strict';
 
 import Observer from './observer.js';
+import { startsWithFiller, getDataWithoutFiller } from '../filler.js';
 
 /**
  * Mutation observer class observes changes in the DOM, fires {@link engine.treeView.TreeView#mutations} event, mark view elements
@@ -70,6 +71,16 @@ export default class MutationObserver extends Observer {
 	}
 
 	/**
+	 * Synchronously fires {@link engine.treeView.TreeView#mutations} event with all mutations in record queue.
+	 * At the same time empties the queue so mutations will not be fired twice.
+	 *
+	 * @returns {[type]} [description]
+	 */
+	flush() {
+		this._onMutations( this._mutationObserver.takeRecords() );
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	observe( domElement ) {
@@ -103,11 +114,18 @@ export default class MutationObserver extends Observer {
 	/**
 	 * Handles mutations. Deduplicates, mark view elements to sync, fire event and call render.
 	 *
-	 * @protected
+	 * @private
 	 * @method engine.treeView.observer.MutationObserver#_onMutations
 	 * @param {Array.<Object>} domMutations Array of native mutations.
 	 */
 	_onMutations( domMutations ) {
+		// As a result of this.flush() we can have an empty collection.
+		if ( domMutations.length === 0 ) {
+			return;
+		}
+
+		const domConverter = this.domConverter;
+
 		// Use　map and set for deduplication.
 		const mutatedTexts = new Map();
 		const mutatedElements = new Set();
@@ -116,7 +134,7 @@ export default class MutationObserver extends Observer {
 		// element with changed structure anyway.
 		for ( let mutation of domMutations ) {
 			if ( mutation.type === 'childList' ) {
-				const element = this.domConverter.getCorrespondingViewElement( mutation.target );
+				const element = domConverter.getCorrespondingViewElement( mutation.target );
 
 				if ( element ) {
 					mutatedElements.add( element );
@@ -127,7 +145,7 @@ export default class MutationObserver extends Observer {
 		// Handle `characterData` mutations later, when we have the full list of nodes which changed structure.
 		for ( let mutation of domMutations ) {
 			if ( mutation.type === 'characterData' ) {
-				const text = this.domConverter.getCorrespondingViewText( mutation.target );
+				const text = domConverter.getCorrespondingViewText( mutation.target );
 
 				if ( text && !mutatedElements.has( text.parent ) ) {
 					// Use text as a key, for deduplication. If there will be another mutation on the same text element
@@ -135,9 +153,15 @@ export default class MutationObserver extends Observer {
 					mutatedTexts.set( text, {
 						type: 'text',
 						oldText: text.data,
-						newText: mutation.target.data,
+						newText: getDataWithoutFiller( mutation.target ),
 						node: text
 					} );
+				}
+				// When we added first letter to the text node which had only inline filler, for the DOM it is mutation
+				// on text, but for the view, where filler text node did not existed, new text node was created, so we
+				// need to fire 'children' mutation instead of 'text'.
+				else if ( !text && startsWithFiller( mutation.target ) ) {
+					mutatedElements.add( domConverter.getCorrespondingViewElement( mutation.target.parentNode ) );
 				}
 			}
 		}
@@ -150,27 +174,19 @@ export default class MutationObserver extends Observer {
 
 		for ( let mutatedText of mutatedTexts.values() ) {
 			this.renderer.markToSync( 'TEXT', mutatedText.node );
-
 			viewMutations.push( mutatedText );
 		}
 
 		for ( let viewElement of mutatedElements ) {
-			const domElement = this.domConverter.getCorrespondingDomElement( viewElement );
-			const domChildren = domElement.childNodes;
+			const domElement = domConverter.getCorrespondingDomElement( viewElement );
 			const viewChildren = viewElement.getChildren();
-			const newViewChildren = [];
-
-			// We want to have a list of View elements, not DOM elements.
-			for ( let i = 0; i < domChildren.length; i++ ) {
-				newViewChildren.push( this.domConverter.domToView( domChildren[ i ] ) );
-			}
+			const newViewChildren = domConverter.domChildrenToView( domElement );
 
 			this.renderer.markToSync( 'CHILDREN', viewElement );
-
 			viewMutations.push( {
 				type: 'children',
 				oldChildren: Array.from( viewChildren ),
-				newChildren: newViewChildren,
+				newChildren: Array.from( newViewChildren ),
 				node: viewElement
 			} );
 		}

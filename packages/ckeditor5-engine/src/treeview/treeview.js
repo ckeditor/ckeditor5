@@ -5,12 +5,14 @@
 
 'use strict';
 
-import EmitterMixin from '../../utils/emittermixin.js';
+import Selection from './selection.js';
 import Renderer from './renderer.js';
-import DomConverter from './domconverter.js';
 import Writer from './writer.js';
+import DomConverter from './domconverter.js';
+import { injectQuirksHandling } from './filler.js';
 
 import mix from '../../utils/mix.js';
+import EmitterMixin from '../../utils/emittermixin.js';
 
 /**
  * TreeView class creates an abstract layer over the content editable area.
@@ -36,6 +38,14 @@ export default class TreeView {
 		 * @member {Map} engine.treeView.TreeView#domRoots
 		 */
 		this.domRoots = new Map();
+
+		/**
+		 * Selection done on this document.
+		 *
+		 * @readonly
+		 * @member {engine.treeView.Selection} engine.treeView.TreeView#selection
+		 */
+		this.selection = new Selection();
 
 		/**
 		 * Tree View writer.
@@ -68,15 +78,17 @@ export default class TreeView {
 		 * @readonly
 		 * @member {engine.treeView.Renderer} engine.treeView.TreeView#renderer
 		 */
-		this.renderer = new Renderer( this.domConverter );
+		this.renderer = new Renderer( this.domConverter, this.selection );
 
 		/**
-		 * Set of registered {@link engine.treeView.Observer observers}.
+		 * Map of registered {@link engine.treeView.Observer observers}.
 		 *
-		 * @protected
-		 * @member {Set.<engine.treeView.Observer>} engine.treeView.TreeView_#observers
+		 * @private
+		 * @member {Map.<Function, engine.treeView.Observer>} engine.treeView.TreeView_#observers
 		 */
-		this._observers = new Set();
+		this._observers = new Map();
+
+		injectQuirksHandling( this );
 	}
 
 	/**
@@ -90,21 +102,36 @@ export default class TreeView {
 	 *
 	 * @param {Function} Observer The constructor of an observer to add.
 	 * Should create an instance inheriting from {@link engine.treeView.observer.Observer}.
+	 * @returns {engine.treeView.observer.Observer} Added observer instance.
 	 */
 	addObserver( Observer ) {
-		if ( this._hasObserver( Observer ) ) {
-			return;
+		let observer = this._observers.get( Observer );
+
+		if ( observer ) {
+			return observer;
 		}
 
-		const observer = new Observer( this );
+		observer = new Observer( this );
 
-		this._observers.add( observer );
+		this._observers.set( Observer, observer );
 
 		for ( let [ name, domElement ] of this.domRoots ) {
 			observer.observe( domElement, name );
 		}
 
 		observer.enable();
+
+		return observer;
+	}
+
+	/**
+	 * Returns observer of the given type or `undefined` if such observer has not been added yet.
+	 *
+	 * @param {Function} Observer The constructor of an observer to get.
+	 * @returns {engine.treeView.observer.Observer|undefined} Observer instance or undefined.
+	 */
+	getObserver( Observer ) {
+		return this._observers.get( Observer );
 	}
 
 	/**
@@ -117,10 +144,10 @@ export default class TreeView {
 	 * root element will be removed but the root name and attributes will be preserved.
 	 *
 	 * @param {HTMLElement} domRoot DOM element in which the tree view should do change.
-	 * @param {String} name Name of the root.
+	 * @param {String} [name='main'] Name of the root.
 	 * @returns {engine.treeView.element} The created view root element.
 	 */
-	createRoot( domRoot, name ) {
+	createRoot( domRoot, name = 'main' ) {
 		const viewRoot = this.domConverter.domToView( domRoot, { bind: true, withChildren: false } );
 		viewRoot.setTreeView( this );
 
@@ -133,7 +160,7 @@ export default class TreeView {
 		this.domRoots.set( name, domRoot );
 		this.viewRoots.set( name, viewRoot );
 
-		for ( let observer of this._observers ) {
+		for ( let observer of this._observers.values() ) {
 			observer.observe( domRoot, name );
 		}
 
@@ -141,29 +168,30 @@ export default class TreeView {
 	}
 
 	/**
+	 * Get a {@link engine.treeView.TreeView#viewRoots view root element} with the specified name. If the name is not
+	 * specific "main" root is returned.
+	 *
+	 * @param {String} [name='main']  Name of the root.
+	 * @returns {engine.treeView.element} The view root element with the specified name.
+	 */
+	getRoot( name = 'main' ) {
+		return this.viewRoots.get( name );
+	}
+
+	/**
 	 * Renders all changes. In order to avoid triggering the observers (e.g. mutations) all observers all detached
 	 * before rendering and reattached after that.
 	 */
 	render() {
-		for ( let observer of this._observers ) {
+		for ( let observer of this._observers.values() ) {
 			observer.disable();
 		}
 
 		this.renderer.render();
 
-		for ( let observer of this._observers ) {
+		for ( let observer of this._observers.values() ) {
 			observer.enable();
 		}
-	}
-
-	/**
-	 * Checks whether the given observer was already added.
-	 *
-	 * @private
-	 * @param {Function} Observer The observer constructor to check.
-	 */
-	_hasObserver( Observer ) {
-		return Array.from( this._observers ).some( ( observer ) => observer.constructor === Observer );
 	}
 }
 

@@ -16,9 +16,7 @@ describe( 'KeyObserver', () => {
 
 	beforeEach( () => {
 		treeView = new TreeView();
-		treeView.addObserver( KeyObserver );
-
-		observer = Array.from( treeView._observers )[ 0 ];
+		observer = treeView.addObserver( KeyObserver );
 	} );
 
 	it( 'should define domEventType', () => {

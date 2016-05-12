@@ -123,7 +123,7 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
 		selection = new Selection();
 		selection.addRange( new Range( selectionOrPositionOrRange, selectionOrPositionOrRange ) );
 	} else if ( selectionOrPositionOrRange instanceof Range ) {
-		selection = new Selection( );
+		selection = new Selection();
 		selection.addRange( selectionOrPositionOrRange );
 	} else {
 		selection = selectionOrPositionOrRange;
@@ -182,7 +182,7 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
  * @returns {engine.treeView.Text|engine.treeView.Element|engine.treeView.DocumentFragment|Object} Returns parsed view node
  * or object with two fields `view` and `selection` when selection ranges were included in data to parse.
  */
-export function parse( data, options = { } ) {
+export function parse( data, options = {} ) {
 	options.order = options.order || [];
 	const viewParser = new ViewParser();
 	const rangeParser = new RangeParser();
@@ -843,4 +843,29 @@ class ViewStringify {
 
 		return attributes.join( ' ' );
 	}
+}
+
+export function setData( treeView, data ) {
+	let view, selection;
+
+	const result = parse( data );
+
+	if ( result.view && result.selection ) {
+		selection = result.selection;
+		view = result.view;
+	} else {
+		view = result;
+	}
+
+	const root = treeView.getRoot();
+	root.removeChildren( 0, root.getChildCount() );
+	root.appendChildren( view );
+
+	if ( selection ) {
+		treeView.selection.setTo( selection );
+	}
+}
+
+export function getData( treeView ) {
+	return stringify( treeView.getRoot(), treeView.selection );
 }

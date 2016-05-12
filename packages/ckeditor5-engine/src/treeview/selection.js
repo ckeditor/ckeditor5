@@ -35,7 +35,7 @@ export default class Selection {
 		/**
 		 * Stores all ranges that are selected.
 		 *
-		 * @private
+		 * @protected
 		 * @member {Array.<engine.treeView.Range>} engine.treeView.Selection#_ranges
 		 */
 		this._ranges = [];
@@ -43,7 +43,7 @@ export default class Selection {
 		/**
 		 * Specifies whether the last added range was added as a backward or forward range.
 		 *
-		 * @private
+		 * @protected
 		 * @member {Boolean} engine.treeView.Selection#_lastRangeBackward
 		 */
 		this._lastRangeBackward = false;
@@ -207,6 +207,28 @@ export default class Selection {
 	}
 
 	/**
+	 * Two selections equal if they have the same ranges and directions.
+	 *
+	 * @param {engine.treeView.Selection} otherSelection Selection to compare with.
+	 * @returns {Boolean} True if selections equal.
+	 */
+	isEqual( otherSelection ) {
+		const rangeCount = this.rangeCount;
+
+		if ( rangeCount != otherSelection.rangeCount ) {
+			return false;
+		}
+
+		for ( let i = 0; i < this.rangeCount; i++ ) {
+			if ( !this._ranges[ i ].isEqual( otherSelection._ranges[ i ] ) ) {
+				return false;
+			}
+		}
+
+		return this._lastRangeBackward === otherSelection._lastRangeBackward;
+	}
+
+	/**
 	 * Removes all ranges that were added to the selection.
 	 *
 	 * @fires engine.treeView.Selection#change
@@ -238,6 +260,21 @@ export default class Selection {
 
 		this._lastRangeBackward = !!isLastBackward;
 		this.fire( 'change' );
+	}
+
+	/**
+	 * Set this selection's ranges and direction to the ranges and direction of the given selection.
+	 *
+	 * @param {engine.treeView.Selection} otherSelection Other selection.
+	 */
+	setTo( otherSelection ) {
+		this.removeAllRanges();
+
+		for ( let range of otherSelection.getRanges() ) {
+			this._pushRange( range );
+		}
+
+		this._lastRangeBackward = otherSelection._lastRangeBackward;
 	}
 
 	/**
