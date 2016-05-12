@@ -8,7 +8,7 @@
 'use strict';
 
 import CKEDITOR from '/ckeditor.js';
-import LegacyCreator from '/tests/ckeditor5/creator/manual/_utils/creator/classiccreator.js';
+import LegacyCreator from '/tests/ckeditor5/creator/manual/_utils/creator/legacycreator.js';
 import testUtils from '/tests/utils/_utils/utils.js';
 
 let editor, editable, observer;
