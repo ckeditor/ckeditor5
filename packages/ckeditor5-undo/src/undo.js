@@ -68,12 +68,12 @@ export default class Undo extends Feature {
 		} );
 
 		// Whenever batch is reverted by undo command, add it to redo history.
-		this._undoCommand.listenTo( this._redoCommand, 'revert', ( evt, batch ) => {
+		this.listenTo( this._redoCommand, 'revert', ( evt, batch ) => {
 			this._undoCommand.addBatch( batch );
 		} );
 
 		// Whenever batch is reverted by redo command, add it to undo history.
-		this._redoCommand.listenTo( this._undoCommand, 'revert', ( evt, batch ) => {
+		this.listenTo( this._undoCommand, 'revert', ( evt, batch ) => {
 			this._redoCommand.addBatch( batch );
 		} );
 	}

@@ -37,6 +37,7 @@ export default class UndoCommand extends Command {
 		};
 
 		this._batchStack.push( { batch, selection } );
+		this.refreshState();
 	}
 
 	/**
@@ -44,8 +45,12 @@ export default class UndoCommand extends Command {
 	 */
 	clearStack() {
 		this._batchStack = [];
+		this.refreshState();
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	_checkEnabled() {
 		return this._batchStack.length > 0;
 	}
@@ -54,13 +59,26 @@ export default class UndoCommand extends Command {
 	 * Executes the command: reverts a {@link engine.treeModel.Batch batch} added to the command's stack,
 	 * applies it on the document and removes the batch from the stack.
 	 *
-	 * @private
+	 * @protected
 	 * @fires undo.undoCommand#event:revert
-	 * @param {Number} [batchIndex] If set, batch under the given index on the stack will be reverted and removed.
-	 * If not set, or invalid, the last added batch will be reverted and removed.
+	 * @param {engine.treeModel.Batch} [batch] If set, batch that should be undone. If that batch is not on undo stack,
+	 * the command execution won't do anything. If not set, the last added batch will be undone.
 	 */
-	_doExecute( batchIndex ) {
-		batchIndex = this._batchStack[ batchIndex ] ? batchIndex : this._batchStack.length - 1;
+	_doExecute( batch = null ) {
+		let batchIndex;
+
+		// If batch is not given, set `batchIndex` to the last index in command stack.
+		// If it is given, find it on the stack.
+		if ( !batch ) {
+			batchIndex = this._batchStack.length - 1;
+		} else {
+			for ( let i = 0; i < this._batchStack.length; i++ ) {
+				if ( this._batchStack[ i ].batch == batch ) {
+					batchIndex = i;
+					break;
+				}
+			}
+		}
 
 		const undoItem = this._batchStack.splice( batchIndex, 1 )[ 0 ];
 
@@ -90,7 +108,7 @@ export default class UndoCommand extends Command {
 
 		// The ranges will be transformed by deltas from history that took place
 		// after the selection got stored.
-		const deltas = this.editor.document.history.getDeltas( undoBatch.deltas[ 0 ].baseVersion ) || [];
+		const deltas = this.editor.document.history.getDeltas( undoBatch.deltas[ 0 ].baseVersion );
 
 		// This will keep the transformed ranges.
 		const transformedRanges = [];
@@ -183,6 +201,7 @@ export default class UndoCommand extends Command {
 			this.editor.document.selection.setRanges( transformedRanges, selectionState.isBackward );
 		}
 
+		this.refreshState();
 		this.fire( 'revert', undoBatch );
 	}
 }

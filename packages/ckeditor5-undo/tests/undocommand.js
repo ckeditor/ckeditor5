@@ -213,7 +213,7 @@ describe( 'UndoCommand', () => {
 		it( 'should revert changes done by deltas from given batch, if parameter was passed (test: revert set attribute)', () => {
 			// editor.document.selection.setRanges( [ r( [ 0, 1 ], [ 0, 2 ] ) ] );
 
-			undo._execute( 1 );
+			undo._execute( batch1 );
 			// Remove attribute:
 			/*
 				[root]
@@ -239,7 +239,7 @@ describe( 'UndoCommand', () => {
 		} );
 
 		it( 'should revert changes done by deltas from given batch, if parameter was passed (test: revert insert foobar)', () => {
-			undo._execute( 0 );
+			undo._execute( batch0 );
 			// Remove foobar:
 			/*
 			 [root]
@@ -257,7 +257,7 @@ describe( 'UndoCommand', () => {
 			expect( editor.document.selection.getRanges().next().value.isEqual( r( 1, 1 ) ) ).to.be.true;
 			expect( editor.document.selection.isBackward ).to.be.false;
 
-			undo._execute( 0 );
+			undo._execute( batch1 );
 			// Remove attributes.
 			// This does nothing in the `root` because attributes were set on nodes that already got removed.
 			// But those nodes should change in they graveyard and we can check them there.
@@ -276,7 +276,7 @@ describe( 'UndoCommand', () => {
 			}
 
 			// Let's undo wrapping. This should leave us with empty root.
-			undo._execute( 1 );
+			undo._execute( batch3 );
 			expect( root.getChildCount() ).to.equal( 0 );
 
 			// Once again transformed range ends up in the graveyard.
