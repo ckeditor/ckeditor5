@@ -8,6 +8,7 @@
 import TreeView from '/ckeditor5/engine/treeview/treeview.js';
 import MutationObserver from '/ckeditor5/engine/treeview/observer/mutationobserver.js';
 import SelectionObserver from '/ckeditor5/engine/treeview/observer/selectionobserver.js';
+import KeyObserver from '/ckeditor5/engine/treeview/observer/keyobserver.js';
 import { setData } from '/tests/engine/_utils/view.js';
 
 const treeView = new TreeView();
@@ -15,6 +16,7 @@ treeView.createRoot( document.getElementById( 'editor' ) );
 
 treeView.addObserver( MutationObserver );
 treeView.addObserver( SelectionObserver );
+treeView.addObserver( KeyObserver );
 
 setData( treeView,
 	'<container:p><attribute:strong>foo</attribute:strong>[]<attribute:strong>bar</attribute:strong></container:p>' +
