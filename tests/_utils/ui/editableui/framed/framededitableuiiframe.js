@@ -7,7 +7,7 @@
 
 import EditableUI from '/ckeditor5/ui/editableui/editableui.js';
 
-export default class FramedEditableUI extends EditableUI {
+export default class FramedEditableUIIframe extends EditableUI {
 	constructor( editor, editableModel ) {
 		super( editor, editableModel );
 
