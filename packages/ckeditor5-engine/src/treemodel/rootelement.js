@@ -19,16 +19,25 @@ export default class RootElement extends Element {
 	 *
 	 * @param {engine.treeModel.Document} doc {@link engine.treeModel.Document} that is an owner of the root.
 	 * @param {String} name Node name.
+	 * @param {String} rootName Root name inside parent {@link engine.treeModel.Document}.
 	 */
-	constructor( doc, name ) {
+	constructor( doc, name, rootName ) {
 		super( name );
 
 		/**
 		 * {@link engine.treeModel.Document} that is an owner of this root.
 		 *
 		 * @readonly
-		 * @member {engine.treeModel.Document} engine.treeModel.RootElement#doc
+		 * @member {engine.treeModel.Document} engine.treeModel.RootElement#document
 		 */
 		this.document = doc;
+
+		/**
+		 * Name of this root inside {@link engine.treeModel.Document} that is an owner of this root.
+		 *
+		 * @readonly
+		 * @member {String} engine.treeModel.RootElement#rootName
+		 */
+		this.rootName = rootName;
 	}
 }

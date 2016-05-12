@@ -10,6 +10,7 @@ import Element from './element.js';
 import last from '../../utils/lib/lodash/last.js';
 import compareArrays from '../../utils/comparearrays';
 import CKEditorError from '../../utils/ckeditorerror.js';
+import clone from '../../utils/lib/lodash/clone.js';
 
 /**
  * Position in the tree. Position is always located before or after a node.
@@ -444,6 +445,18 @@ export default class Position {
 	}
 
 	/**
+	 * Custom toJSON method.
+	 *
+	 * @returns {Object} Object representation of this position with the root property replaced with its rootName.
+	 */
+	toJSON() {
+		return {
+			root: this.root.rootName,
+			path: clone( this.path )
+		};
+	}
+
+	/**
 	 * Creates position at the given location. The location can be specified as:
 	 *
 	 * * a {@link engine.treeModel.Position position},
@@ -561,6 +574,23 @@ export default class Position {
 	 */
 	static createFromPosition( position ) {
 		return new this( position.root, position.path.slice() );
+	}
+
+	/**
+	 *
+	 * @param {Object} json
+	 * @param {engine.treeModel.Document} doc
+	 * @returns {engine.treeModel.Position}
+	 */
+	static fromJSON( json, doc ) {
+		if ( !doc.hasRoot( json.root ) ) {
+			throw new CKEditorError(
+				'position-fromjson-no-root: Cannot create position for document. Root with specified name does not exist.',
+				{ rootName: json.root }
+			);
+		}
+
+		return new Position( doc.getRoot( json.root ), json.path );
 	}
 
 	/**

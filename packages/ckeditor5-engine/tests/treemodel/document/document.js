@@ -56,12 +56,14 @@ describe( 'Document', () => {
 			expect( root ).to.be.instanceof( RootElement );
 			expect( root.getChildCount() ).to.equal( 0 );
 			expect( root ).to.have.property( 'name', '$root' );
+			expect( root ).to.have.property( 'rootName', 'root' );
 		} );
 
 		it( 'should create a new RootElement with the specified name', () => {
 			let root = doc.createRoot( 'root', 'foo' );
 
 			expect( root ).to.have.property( 'name', 'foo' );
+			expect( root ).to.have.property( 'rootName', 'root' );
 		} );
 
 		it( 'should throw an error when trying to create a second root with the same name', () => {
@@ -89,6 +91,18 @@ describe( 'Document', () => {
 					doc.getRoot( 'root' );
 				}
 			).to.throw( CKEditorError, /document-getRoot-root-not-exist/ );
+		} );
+	} );
+
+	describe( 'hasRoot', () => {
+		it( 'should return true when Document has RootElement with given name', () => {
+			doc.createRoot( 'root' );
+
+			expect( doc.hasRoot( 'root' ) ).to.be.true;
+		} );
+
+		it( 'should return false when Document does not have RootElement with given name', () => {
+			expect( doc.hasRoot( 'noroot' ) ).to.be.false;
 		} );
 	} );
 

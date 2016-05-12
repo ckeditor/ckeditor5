@@ -202,7 +202,7 @@ export default class Document {
 			);
 		}
 
-		const root = new RootElement( this, elementName );
+		const root = new RootElement( this, elementName, rootName );
 		this._roots.set( rootName, root );
 
 		return root;
@@ -261,6 +261,16 @@ export default class Document {
 		}
 
 		return this._roots.get( name );
+	}
+
+	/**
+	 * Checks if root with given name is defined.
+	 *
+	 * @param {String} name Name of root to check.
+	 * @returns {Boolean}
+	 */
+	hasRoot( name ) {
+		return this._roots.has( name );
 	}
 
 	/**
