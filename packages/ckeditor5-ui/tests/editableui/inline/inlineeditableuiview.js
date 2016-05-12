@@ -41,20 +41,22 @@ describe( 'InlineEditableUIView', () => {
 		it( 'creates view#element from template when no editableElement provided', () => {
 			expect( view.template ).to.be.an( 'object' );
 		} );
+	} );
 
-		it( 'sets proper accessibility role on the editableElement', () => {
+	describe( 'editableElement', () => {
+		it( 'has proper accessibility role', () => {
 			expect( view.element.attributes.getNamedItem( 'role' ).value ).to.equal( 'textbox' );
 		} );
 
-		it( 'sets proper ARIA label on the editableElement', () => {
+		it( 'has proper ARIA label', () => {
 			expect( view.element.attributes.getNamedItem( 'aria-label' ).value ).to.be.a( 'string' );
 		} );
 
-		it( 'sets proper title on the editableElement', () => {
+		it( 'has proper title', () => {
 			expect( view.element.attributes.getNamedItem( 'title' ).value ).to.be.a( 'string' );
 		} );
 
-		it( 'sets proper class name of the editableElement', () => {
+		it( 'has proper class name', () => {
 			expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-editor__editable_inline' ) ).to.be.true;
 		} );
