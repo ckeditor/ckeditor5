@@ -21,7 +21,7 @@ treeView.addObserver( KeyObserver );
 setData( treeView,
 	'<container:p><attribute:strong>foo</attribute:strong>[]<attribute:strong>bar</attribute:strong></container:p>' );
 
-treeView.on( 'selectionchange', ( evt, data ) => {
+treeView.on( 'selectionChange', ( evt, data ) => {
 	treeView.selection.setTo( data.newSelection );
 } );
 

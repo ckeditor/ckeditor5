@@ -22,7 +22,7 @@ setData( treeView,
 	'<container:p><attribute:b>foo</attribute:b>bar</container:p>' +
 	'<container:p>bom</container:p>' );
 
-treeView.on( 'selectionchange', ( evt, data ) => {
+treeView.on( 'selectionChange', ( evt, data ) => {
 	console.log( data );
 	treeView.selection.setTo( data.newSelection );
 } );

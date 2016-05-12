@@ -12,7 +12,7 @@ import MutationObserver from './mutationobserver.js';
  * Selection observer class observes selection changes in the document. If selection changes on the document this
  * observer checks if there are any mutations and if DOM selection is different than the
  * {@link engine.treeView.TreeView#selection view selection}. Selection observer fires
- * {@link engine.treeView.TreeView#selectionchange} event only if selection change was the only change in the document
+ * {@link engine.treeView.TreeView#selectionChange} event only if selection change was the only change in the document
  * and DOM selection is different then the view selection.
  *
  * @see engine.treeView.MutationObserver
@@ -26,7 +26,7 @@ export default class SelectionObserver extends Observer {
 		/**
 		 * Instance of the mutation observer. Selection observer calls
 		 * {@link engine.treeView.observer.MutationObserver#flush} to ensure that the mutations will be handled before the
-		 * {@link engine.treeView.TreeView#selectionchange} event is fired.
+		 * {@link engine.treeView.TreeView#selectionChange} event is fired.
 		 *
 		 * @readonly
 		 * @member {engine.treeView.observer.MutationObserver} engine.treeView.observer.SelectionObserver#mutationObserver
@@ -85,7 +85,7 @@ export default class SelectionObserver extends Observer {
 
 	/**
 	 * Selection change listener. {@link engine.treeView.observer.MutationObserver#flush Flush} mutations, check if
-	 * selection changes and fires {@link engine.treeView.TreeView#selectionchange} event.
+	 * selection changes and fires {@link engine.treeView.TreeView#selectionChange} event.
 	 *
 	 * @private
 	 * @param {Document} domDocument DOM document.
@@ -108,7 +108,7 @@ export default class SelectionObserver extends Observer {
 		}
 
 		// Should be fired only when selection change was the only document change.
-		this.treeView.fire( 'selectionchange', {
+		this.treeView.fire( 'selectionChange', {
 			oldSelection: this.selection,
 			newSelection: newViewSelection,
 			domSelection: domSelection
@@ -122,7 +122,7 @@ export default class SelectionObserver extends Observer {
  * Fired when selection has changed. This event is fired only when the selection change was the only change that happened
  * in the document, and old selection is different then the new selection.
  *
- * @event engine.treeView.TreeView#selection
+ * @event engine.treeView.TreeView#selectionChange
  * @param {Object} data
  * @param {engine.treeView.Selection} data.oldSelection Old View selection which is
  * {@link engine.treeView.TreeView#selection}.

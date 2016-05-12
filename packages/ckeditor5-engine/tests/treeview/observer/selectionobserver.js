@@ -51,8 +51,8 @@ describe( 'SelectionObserver', () => {
 		listenter.stopListening();
 	} );
 
-	it( 'should fire selectionchange when it is the only change', ( done ) => {
-		listenter.listenTo( treeView, 'selectionchange', ( evt, data ) => {
+	it( 'should fire selectionChange when it is the only change', ( done ) => {
+		listenter.listenTo( treeView, 'selectionChange', ( evt, data ) => {
 			expect( data ).to.have.property( 'domSelection' ).that.equals( document.getSelection() );
 
 			expect( data ).to.have.property( 'oldSelection' ).that.is.instanceof( ViewSelection );
@@ -79,16 +79,16 @@ describe( 'SelectionObserver', () => {
 		// Add second roots to ensure that listener is added once.
 		treeView.createRoot( document.getElementById( 'additional' ), 'additional' );
 
-		listenter.listenTo( treeView, 'selectionchange', () => {
+		listenter.listenTo( treeView, 'selectionChange', () => {
 			done();
 		} );
 
 		changeDomSelection();
 	} );
 
-	it( 'should not fire selectionchange on render', ( done ) => {
-		listenter.listenTo( treeView, 'selectionchange', () => {
-			throw 'selectionchange on render';
+	it( 'should not fire selectionChange on render', ( done ) => {
+		listenter.listenTo( treeView, 'selectionChange', () => {
+			throw 'selectionChange on render';
 		} );
 
 		setTimeout( () => done(), 70 );
@@ -101,8 +101,8 @@ describe( 'SelectionObserver', () => {
 	it( 'should not fired if observer is disabled', ( done ) => {
 		treeView.getObserver( SelectionObserver ).disable();
 
-		listenter.listenTo( treeView, 'selectionchange', () => {
-			throw 'selectionchange on render';
+		listenter.listenTo( treeView, 'selectionChange', () => {
+			throw 'selectionChange on render';
 		} );
 
 		setTimeout( () => done(), 70 );
@@ -114,7 +114,7 @@ describe( 'SelectionObserver', () => {
 		const viewBar = treeView.getRoot().getChild( 1 ).getChild( 0 );
 		treeView.selection.addRange( ViewRange.createFromParentsAndOffsets( viewBar, 0, viewBar, 1 ) );
 
-		listenter.listenTo( treeView, 'selectionchange', () => {
+		listenter.listenTo( treeView, 'selectionChange', () => {
 			setTimeout( () => {
 				const domSelection = document.getSelection();
 

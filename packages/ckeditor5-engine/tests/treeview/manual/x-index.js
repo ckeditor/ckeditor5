@@ -24,7 +24,7 @@ setData( treeView,
 	'<container:p><attribute:strong></attribute:strong></container:p>' +
 	'<container:p>bar</container:p>' );
 
-treeView.on( 'selectionchange', ( evt, data ) => {
+treeView.on( 'selectionChange', ( evt, data ) => {
 	const node = data.newSelection.getFirstPosition().parent;
 	console.log( node.name ? node.name : node._data );
 	treeView.selection.setTo( data.newSelection );
