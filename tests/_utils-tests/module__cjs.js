@@ -7,13 +7,13 @@
 
 'use strict';
 
-import testUtils from '/tests/_utils/utils.js';
-import moduleTestUtils from '/tests/_utils/module.js';
+import testUtils from '/tests/ckeditor5/_utils/utils.js';
+import moduleTestUtils from '/tests/ckeditor5/_utils/module.js';
 
 testUtils.createSinonSandbox();
 
 const path = require( 'path' );
-const cjsDir = path.join( process.cwd(), 'dist', 'cjs' );
+const cjsDir = path.join( process.cwd(), 'build', 'cjs' );
 
 describe( 'module utilities', () => {
 	const getModulePath = moduleTestUtils.getModulePath;

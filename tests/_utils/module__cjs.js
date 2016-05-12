@@ -35,14 +35,14 @@ const utils = {
 	getModulePath( modulePath ) {
 		// Do nothing – path is already absolute.
 		if ( modulePath.startsWith( '/' ) ) {
-			return path.join( process.cwd(), 'dist', 'cjs', modulePath );
+			return path.join( process.cwd(), 'build', 'cjs', modulePath );
 		}
 
 		if ( modulePath.indexOf( '/' ) < 0 ) {
 			modulePath = modulePath + '/' + modulePath;
 		}
 
-		return path.join( process.cwd(), 'dist', 'cjs', 'ckeditor5', modulePath + '.js' );
+		return path.join( process.cwd(), 'build', 'cjs', 'ckeditor5', modulePath + '.js' );
 	},
 
 	/**
