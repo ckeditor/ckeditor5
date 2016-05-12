@@ -36,6 +36,6 @@ describe( 'get', () => {
 	} );
 
 	it( 'should return undefined for non existing configuration', () => {
-		expect( config.get( 'invalid' ) ).to.be.undefined();
+		expect( config.get( 'invalid' ) ).to.be.undefined;
 	} );
 } );
