@@ -48,11 +48,11 @@ module.exports = ( installTask, ckeditor5Path, packageJSON, workspaceRoot, runNp
 
 			// Check if repository's directory already exists.
 			if ( directories.indexOf( urlInfo.name ) > -1 ) {
-				log.out( `Checking out ${ urlInfo.name } to ${ urlInfo.branch }...` );
-				git.checkout( repositoryAbsolutePath, urlInfo.branch );
-
 				log.out( `Fetching branches from ${ urlInfo.name }...` );
 				git.fetchAll( repositoryAbsolutePath );
+
+				log.out( `Checking out ${ urlInfo.name } to ${ urlInfo.branch }...` );
+				git.checkout( repositoryAbsolutePath, urlInfo.branch );
 
 				log.out( `Pulling changes to ${ urlInfo.name }...` );
 				git.pull( repositoryAbsolutePath, urlInfo.branch );

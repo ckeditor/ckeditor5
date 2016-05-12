@@ -52,16 +52,16 @@ describe( 'dev-update', () => {
 		const repoPath1 = path.join( workspaceAbsolutePath, dirs[ 0 ] );
 		const repoPath2 = path.join( workspaceAbsolutePath, dirs[ 1 ] );
 
+		sinon.assert.calledThrice( spies.fetchAll );
+		sinon.assert.calledWithExactly( spies.fetchAll.firstCall, ckeditor5Path );
+		sinon.assert.calledWithExactly( spies.fetchAll.secondCall, repoPath1 );
+		sinon.assert.calledWithExactly( spies.fetchAll.thirdCall, repoPath2 );
 		sinon.assert.calledTwice( spies.checkout );
 		sinon.assert.calledWithExactly( spies.checkout.firstCall, repoPath1, 'master' );
 		sinon.assert.calledWithExactly( spies.checkout.secondCall, repoPath2, 'new-branch' );
 		sinon.assert.calledTwice( spies.pull );
 		sinon.assert.calledWithExactly( spies.pull.firstCall, repoPath1, 'master' );
 		sinon.assert.calledWithExactly( spies.pull.secondCall, repoPath2, 'new-branch' );
-		sinon.assert.calledThrice( spies.fetchAll );
-		sinon.assert.calledWithExactly( spies.fetchAll.firstCall, ckeditor5Path );
-		sinon.assert.calledWithExactly( spies.fetchAll.secondCall, repoPath1 );
-		sinon.assert.calledWithExactly( spies.fetchAll.thirdCall, repoPath2 );
 
 		sinon.assert.calledThrice( spies.npmUpdate );
 		sinon.assert.calledWithExactly( spies.npmUpdate.firstCall, path.join( workspaceAbsolutePath, dirs[ 0 ] ) );
@@ -93,16 +93,16 @@ describe( 'dev-update', () => {
 		const repoPath1 = path.join( workspaceAbsolutePath, dirs[ 0 ] );
 		const repoPath2 = path.join( workspaceAbsolutePath, dirs[ 1 ] );
 
+		sinon.assert.calledThrice( spies.fetchAll );
+		sinon.assert.calledWithExactly( spies.fetchAll.firstCall, ckeditor5Path );
+		sinon.assert.calledWithExactly( spies.fetchAll.secondCall, repoPath1 );
+		sinon.assert.calledWithExactly( spies.fetchAll.thirdCall, repoPath2 );
 		sinon.assert.calledTwice( spies.checkout );
 		sinon.assert.calledWithExactly( spies.checkout.firstCall, repoPath1, 'master' );
 		sinon.assert.calledWithExactly( spies.checkout.secondCall, repoPath2, 'new-branch' );
 		sinon.assert.calledTwice( spies.pull );
 		sinon.assert.calledWithExactly( spies.pull.firstCall, repoPath1, 'master' );
 		sinon.assert.calledWithExactly( spies.pull.secondCall, repoPath2, 'new-branch' );
-		sinon.assert.calledThrice( spies.fetchAll );
-		sinon.assert.calledWithExactly( spies.fetchAll.firstCall, ckeditor5Path );
-		sinon.assert.calledWithExactly( spies.fetchAll.secondCall, repoPath1 );
-		sinon.assert.calledWithExactly( spies.fetchAll.thirdCall, repoPath2 );
 
 		sinon.assert.calledThrice( spies.npmUpdate );
 		sinon.assert.calledWithExactly( spies.npmUpdate.firstCall, path.join( workspaceAbsolutePath, dirs[ 0 ] ) );
@@ -135,16 +135,16 @@ describe( 'dev-update', () => {
 		const repoPath1 = path.join( workspaceAbsolutePath, dirs[ 0 ] );
 		const repoPath2 = path.join( workspaceAbsolutePath, dirs[ 1 ] );
 
+		sinon.assert.calledThrice( spies.fetchAll );
+		sinon.assert.calledWithExactly( spies.fetchAll.firstCall, ckeditor5Path );
+		sinon.assert.calledWithExactly( spies.fetchAll.secondCall, repoPath1 );
+		sinon.assert.calledWithExactly( spies.fetchAll.thirdCall, repoPath2 );
 		sinon.assert.calledTwice( spies.checkout );
 		sinon.assert.calledWithExactly( spies.checkout.firstCall, repoPath1, 'master' );
 		sinon.assert.calledWithExactly( spies.checkout.secondCall, repoPath2, 'new-branch' );
 		sinon.assert.calledTwice( spies.pull );
 		sinon.assert.calledWithExactly( spies.pull.firstCall, repoPath1, 'master' );
 		sinon.assert.calledWithExactly( spies.pull.secondCall, repoPath2, 'new-branch' );
-		sinon.assert.calledThrice( spies.fetchAll );
-		sinon.assert.calledWithExactly( spies.fetchAll.firstCall, ckeditor5Path );
-		sinon.assert.calledWithExactly( spies.fetchAll.secondCall, repoPath1 );
-		sinon.assert.calledWithExactly( spies.fetchAll.thirdCall, repoPath2 );
 
 		sinon.assert.calledThrice( spies.npmUpdate );
 		sinon.assert.calledWithExactly( spies.npmUpdate.firstCall, path.join( workspaceAbsolutePath, dirs[ 0 ] ) );
@@ -183,16 +183,16 @@ describe( 'dev-update', () => {
 		const repoPath1 = path.join( workspaceAbsolutePath, dirs[ 0 ] );
 		const repoPath2 = path.join( workspaceAbsolutePath, dirs[ 1 ] );
 
+		sinon.assert.calledThrice( spies.fetchAll );
+		sinon.assert.calledWithExactly( spies.fetchAll.firstCall, ckeditor5Path );
+		sinon.assert.calledWithExactly( spies.fetchAll.secondCall, repoPath1 );
+		sinon.assert.calledWithExactly( spies.fetchAll.thirdCall, repoPath2 );
 		sinon.assert.calledTwice( spies.checkout );
 		sinon.assert.calledWithExactly( spies.checkout.firstCall, repoPath1, 'master' );
 		sinon.assert.calledWithExactly( spies.checkout.secondCall, repoPath2, 'new-branch' );
 		sinon.assert.calledTwice( spies.pull );
 		sinon.assert.calledWithExactly( spies.pull.firstCall, repoPath1, 'master' );
 		sinon.assert.calledWithExactly( spies.pull.secondCall, repoPath2, 'new-branch' );
-		sinon.assert.calledThrice( spies.fetchAll );
-		sinon.assert.calledWithExactly( spies.fetchAll.firstCall, ckeditor5Path );
-		sinon.assert.calledWithExactly( spies.fetchAll.secondCall, repoPath1 );
-		sinon.assert.calledWithExactly( spies.fetchAll.thirdCall, repoPath2 );
 
 		sinon.assert.notCalled( spies.npmUpdate );
 
