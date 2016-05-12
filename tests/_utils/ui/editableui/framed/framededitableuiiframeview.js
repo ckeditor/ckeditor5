@@ -5,48 +5,37 @@
 
 'use strict';
 
-// import EditableUIView from '/ckeditor5/ui/editableui/editableuiview.js';
-import View from '/ckeditor5/ui/view.js';
+import IframeView from '/ckeditor5/ui/iframe/iframeview.js';
 import FramedEditableUIView from './framededitableuiview.js';
 
-export default class FramedEditableUIIframeView extends View {
+/**
+ * The basic implementation of an {@link ui.iframe.IframeView IframeView}-based
+ * {@link ui.editableUI.EditableUIView}.
+ *
+ * @memberOf ui.editableUI.iframe
+ * @extends ui.iframe.IframeView
+ */
+export default class FramedEditableUIIframeView extends IframeView {
+	/**
+	 * Creates a new instance of the {@link ui.iframe.IframeView IframeView}–based
+	 * {@link ui.editableUI.EditableUIView EditableUIView}.
+	 *
+	 * @param {utils.Observable} [model] (View)Model of this View.
+	 * @param {utils.Locale} [locale] The {@link ckeditor5.Editor#locale editor's locale} instance.
+	 */
 	constructor( model, locale ) {
 		super( model, locale );
 
-		const bind = this.attributeBinder;
-
-		// Here's the tricky part - we must return the promise from init()
-		// because iframe loading may be asynchronous. However, we can't start
-		// listening to 'load' in init(), because at this point the element is already in the DOM
-		// and the 'load' event might already be fired.
-		// So here we store both - the promise and the deferred object so we're able to resolve
-		// the promise in _iframeLoaded.
-		this._iframePromise = new Promise( ( resolve, reject ) => {
-			this._iframeDeferred = { resolve, reject };
-		} );
-
-		this.template = {
-			tag: 'iframe',
-			attributes: {
-				class: [ 'ck-framededitable ck-reset-all' ],
-				// It seems that we need to allow scripts in order to be able to listen to events.
-				// TODO: Research that. Perhaps the src must be set?
-				sandbox: 'allow-same-origin allow-scripts',
-				width: bind.to( 'width' ),
-				height: bind.to( 'height' )
-			},
-			on: {
-				load: 'loaded'
-			}
-		};
+		this.template.attributes.class.push( 'ck-framededitable' );
 
 		this.on( 'loaded', this._iframeLoaded, this );
-	}
 
-	init() {
-		super.init();
-
-		return this._iframePromise;
+		/**
+		 * A view which represents the editable `<body>` element within the iframe.
+		 *
+		 * @private
+		 * @member {FramedEditableUIView} ui.editableUI.iframe#_innerView
+		 */
 	}
 
 	/**
@@ -54,24 +43,33 @@ export default class FramedEditableUIIframeView extends View {
 	 * `<body>` inside the `<iframe>` document, which is provided by `FramedEditableUIView`.
 	 */
 	get editableElement() {
-		return this.editableUIView.editableElement;
+		return this._innerView.editableElement;
 	}
 
+	/**
+	 * Destroys the View instance and child {@link _innerView}.
+	 */
+	destroy() {
+		super.destroy();
+
+		return this._innerView.destroy();
+	}
+
+	/**
+	 * When the iframe is loaded, it creates a child view out of <body> element
+	 * and initializes it. Element of this view is exposed through {@link editableElement}.
+	 *
+	 * @protected
+	 */
 	_iframeLoaded() {
-		this.editableUIView = new FramedEditableUIView(
+		this._innerView = new FramedEditableUIView(
 			this.model,
 			this.locale,
 			this.element.contentDocument.body
 		);
 
-		this.editableUIView.init();
+		this._innerView.init();
 
 		this._iframeDeferred.resolve();
-	}
-
-	destroy() {
-		super.destroy();
-
-		return this.editableUIView.destroy();
 	}
 }
