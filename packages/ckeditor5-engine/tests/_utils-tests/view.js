@@ -5,6 +5,8 @@
 
 'use strict';
 
+/* bender-tags: browser-only */
+
 import { parse, stringify, getData, setData }from '/tests/engine/_utils/view.js';
 import DocumentFragment from '/ckeditor5/engine/treeview/documentfragment.js';
 import Position from '/ckeditor5/engine/treeview/position.js';

@@ -11,7 +11,7 @@ import {
 	removeAttribute,
 	wrap,
 	unwrap
-} from '/ckeditor5/engine/treecontroller/model-to-view-converters.js';
+} from './model-to-view-converters.js';
 
 import { convertSelectionAttribute } from '/ckeditor5/engine/treecontroller/model-selection-to-view-converters.js';
 
