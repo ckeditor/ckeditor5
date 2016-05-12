@@ -34,22 +34,24 @@
  */
 
 /**
- * `<br> filler creator. This is a function which creates `<br data-filler="true">` element, but should be understood as
- * configuration option more than used directly.
+ * `<br> filler creator. This is a function which creates `<br data-cke-filler="true">` element.
+ * It defines how the filler is created.
  *
+ * @see engine.treeView.filler.NBSP_FILLER_FILLER
  * @member {Function} engine.treeView.filler.BR_FILLER
  */
 export const BR_FILLER = ( domDocument ) => {
 	const fillerBr = domDocument.createElement( 'br' );
-	fillerBr.dataset.filler = true;
+	fillerBr.dataset.ckeFiller = true;
 
 	return fillerBr;
 };
 
 /**
- * Non-breaking space filler creator. This is a function which creates `&nbsp;` text node, but should be understood as
- * configuration option more than used directly.
+ * Non-breaking space filler creator. This is a function which creates `&nbsp;` text node.
+ * It defines how the filler is created.
  *
+ * @see engine.treeView.filler.BR_FILLER
  * @member {Function} engine.treeView.filler.NBSP_FILLER_FILLER
  */
 export const NBSP_FILLER = ( domDocument ) => domDocument.createTextNode( '&nbsp;' );
@@ -99,6 +101,16 @@ export function isInlineFiller( domText ) {
 	return domText.data.length == INLINE_FILLER_LENGTH && startsWithFiller( domText );
 }
 
+/**
+ * Get string data from the text node, removing an {@link engine.treeView.filler.INLINE_FILLER inline filler} from it,
+ * if text node contains it.
+ *
+ *		getDataWithoutFiller( document.createTextNode( INLINE_FILLER + 'foo' ) ) == 'foo' // true
+ *		getDataWithoutFiller( document.createTextNode( 'foo' ) ) == 'foo' // true
+ *
+ * @param {Text} domText DOM text node, possible with inline filler.
+ * @returns {String} Data without filler.
+ */
 export function getDataWithoutFiller( domText ) {
 	if ( startsWithFiller( domText ) ) {
 		return domText.data.slice( INLINE_FILLER_LENGTH );
