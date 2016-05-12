@@ -11,15 +11,17 @@ const path = require( 'path' );
 const log = require( '../utils/log' );
 
 /**
- * 1. Get CKEditor 5 dependencies from package.json in main CKEditor 5 repository.
- * 2. If dependency's repository is already cloned in workspace:
- *		2.1. Fetch and checkout to specified branch.
- *		2.2. Pull changes to that branch.
- *		2.3. if --npm-update was specified run npm update --dev in that repository.
- *		2.4. Recreate symbolic link between repo and main node_modules.
- * 3. If dependency's repository is not cloned yet - run gulp install on this dependency.
- * 4. Remove symbolic links to dependencies that are not used in current package.json configuration.
- * 5. if --npm-update was specified run npm update --dev in main CKeditor 5 repository.
+ * 1. Fetch all branches from each origin in main CKEditor 5 repository.
+ * 2. Get CKEditor 5 dependencies from package.json in main CKEditor 5 repository.
+ * 3. If dependency's repository is already cloned in workspace:
+ *		3.1. Fetch all branches from each origin.
+ *		3.2. Checkout to specified branch.
+ *		3.3. Pull changes to that branch.
+ *		3.4. if --npm-update was specified run npm update --dev in that repository.
+ *		3.5. Recreate symbolic link between repo and main node_modules.
+ * 4. If dependency's repository is not cloned yet - run gulp install on this dependency.
+ * 5. Remove symbolic links to dependencies that are not used in current package.json configuration.
+ * 6. if --npm-update was specified run npm update --dev in main CKEditor 5 repository.
  *
  * @param {Function} installTask Install task to use on each dependency that is missing from workspace.
  * @param {String} ckeditor5Path Path to main CKEditor5 repository.
