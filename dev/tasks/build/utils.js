@@ -208,7 +208,7 @@ const utils = {
 			throw new Error( `Incorrect format: ${ format }` );
 		}
 
-		const plugins = [
+		return [
 			// Note: When plugin is specified by its name, Babel loads it from a context of a
 			// currently transpiled file (in our case - e.g. from ckeditor5-core/src/foo.js).
 			// Obviously that fails, since we have all the plugins installed only in ckeditor5/
@@ -218,13 +218,6 @@ const utils = {
 			// but it works... so let's hope it will.
 			require( `babel-plugin-transform-es2015-modules-${ babelModuleTranspiler }` )
 		];
-
-		// Add additional plugins for Node.js environment.
-		if ( format == 'cjs' ) {
-			plugins.push( require( 'babel-plugin-transform-es2015-parameters' ) );
-		}
-
-		return plugins;
 	},
 
 	/**

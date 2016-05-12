@@ -23,7 +23,6 @@
     "babel-core": "^6.4.0",
     "babel-plugin-transform-es2015-modules-amd": "^6.1.18",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.2.0",
-    "babel-plugin-transform-es2015-parameters": "^6.5.0",
     "benderjs": "^0.4.1",
     "benderjs-chai": "^0.2.0",
     "benderjs-coverage": "^0.2.1",
