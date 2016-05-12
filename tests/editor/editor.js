@@ -10,7 +10,7 @@
 import moduleUtils from '/tests/ckeditor5/_utils/module.js';
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
 import Editor from '/ckeditor5/editor.js';
-import EditorConfig from '/ckeditor5/editorconfig.js';
+import Config from '/ckeditor5/utils/config.js';
 import PluginCollection from '/ckeditor5/plugincollection.js';
 import EditableCollection from '/ckeditor5/editablecollection.js';
 import Plugin from '/ckeditor5/plugin.js';
@@ -41,20 +41,12 @@ describe( 'Editor', () => {
 			const editor = new Editor();
 
 			expect( editor ).to.have.property( 'elements', null );
-			expect( editor.config ).to.be.an.instanceof( EditorConfig );
+			expect( editor.config ).to.be.an.instanceof( Config );
 			expect( editor.editables ).to.be.an.instanceof( EditableCollection );
 			expect( editor.commands ).to.be.an.instanceof( Map );
 
 			expect( editor.plugins ).to.be.an.instanceof( PluginCollection );
 			expect( getPlugins( editor ) ).to.be.empty;
-		} );
-	} );
-
-	describe( 'config', () => {
-		it( 'should be an instance of EditorConfig', () => {
-			const editor = new Editor();
-
-			expect( editor.config ).to.be.an.instanceof( EditorConfig );
 		} );
 	} );
 

@@ -9,7 +9,6 @@ import testUtils from '/tests/ckeditor5/_utils/utils.js';
 
 import CKEDITOR from '/ckeditor.js';
 import Editor from '/ckeditor5/editor.js';
-import Config from '/ckeditor5/utils/config.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 const content = document.getElementById( 'content' );
@@ -210,11 +209,5 @@ describe( 'create', () => {
 			expect( editor.elements ).to.be.instanceof( Map );
 			expect( editor.elements ).to.have.property( 'size', expectedSize );
 		}
-	} );
-} );
-
-describe( 'config', () => {
-	it( 'should be an instance of Config', () => {
-		expect( CKEDITOR.config ).to.be.an.instanceof( Config );
 	} );
 } );
