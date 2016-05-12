@@ -108,11 +108,13 @@ export default class TreeView {
 	 * @returns {engine.treeView.observer.Observer} Added observer instance.
 	 */
 	addObserver( Observer ) {
-		if ( this._observers.has( Observer ) ) {
-			return;
+		let observer = this._observers.get( Observer );
+
+		if ( observer ) {
+			return observer;
 		}
 
-		const observer = new Observer( this );
+		observer = new Observer( this );
 
 		this._observers.set( Observer, observer );
 

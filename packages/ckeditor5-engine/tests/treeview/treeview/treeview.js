@@ -158,6 +158,15 @@ describe( 'TreeView', () => {
 			sinon.assert.calledOnce( observerMock.enable );
 		} );
 
+		it( 'should return observer instance ever time addObserver is called', () => {
+			const observerMock1 = treeView.addObserver( ObserverMock );
+			const observerMock2 = treeView.addObserver( ObserverMock );
+
+			expect( observerMock1 ).to.be.instanceof( ObserverMock );
+			expect( observerMock2 ).to.be.instanceof( ObserverMock );
+			expect( observerMock1 ).to.equals( observerMock2 );
+		} );
+
 		it( 'should instantiate one observer only once', () => {
 			treeView.addObserver( ObserverMockGlobalCount );
 			treeView.addObserver( ObserverMockGlobalCount );
