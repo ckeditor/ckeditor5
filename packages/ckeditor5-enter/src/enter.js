@@ -9,7 +9,7 @@ import Feature from '../feature.js';
 import DomEventData from '../engine/treeview/observer/domeventdata.js';
 import KeyObserver from '../engine/treeview/observer/keyobserver.js';
 import EnterCommand from './entercommand.js';
-import { getCode } from '../utils/keyboard.js';
+import { keyCodes } from '../utils/keyboard.js';
 
 /**
  * The enter feature. Handles the <kbd>Enter</kbd> and <kbd>Shift + Enter</kbd> keys in the editor.
@@ -27,7 +27,7 @@ export default class Enter extends Feature {
 		editor.commands.set( 'enter', new EnterCommand( editor ) );
 
 		this.listenTo( editingView, 'keydown', ( evt, data ) => {
-			if ( data.keyCode == getCode( 'enter' ) ) {
+			if ( data.keyCode == keyCodes.enter ) {
 				editingView.fire( 'enter', new DomEventData( editingView, data.domEvent ) );
 			}
 		} );
