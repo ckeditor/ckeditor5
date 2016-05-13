@@ -68,7 +68,6 @@ getData._stringify = stringify;
 export function setData( treeView, data, options = {} ) {
 	const rootName = options.rootName || 'main';
 	const root = treeView.getRoot( rootName );
-	root.removeChildren( 0, root.getChildCount() );
 	const result = setData._parse( data, { rootElement: root } );
 
 	if ( result.view && result.selection ) {
@@ -483,10 +482,10 @@ class ViewParser {
 		// Convert HTML string to DOM.
 		const domRoot = htmlProcessor.toDom( data );
 
-		// If root element is provided - clear it.
-		// if ( rootElement ) {
-		// 	rootElement.removeChildren( rootElement.getChildCount() );
-		// }
+		// If root element is provided - remove all children from it.
+		if ( rootElement ) {
+			rootElement.removeChildren( 0, rootElement.getChildCount() );
+		}
 
 		// Convert DOM to View.
 		return this._walkDom( domRoot, rootElement );
