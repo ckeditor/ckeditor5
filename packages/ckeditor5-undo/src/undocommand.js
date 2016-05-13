@@ -64,10 +64,9 @@ export default class UndoCommand extends Command {
 	 *
 	 * @protected
 	 * @fires undo.undoCommand#event:revert
-	 * @param {engine.treeModel.Batch} [batch] If set, batch that should be undone. If that batch is not on undo stack,
-	 * the command execution won't do anything. If not set, the last added batch will be undone.
+	 * @param {engine.treeModel.Batch} [batch] If set, batch that should be undone. If not set, the last added batch will be undone.
 	 */
-	_doExecute( batch = null ) {
+	_doExecute( batch ) {
 		let batchIndex;
 
 		// If batch is not given, set `batchIndex` to the last index in command stack.
