@@ -151,7 +151,6 @@ describe( 'utils', () => {
 				const branchName = 'branch-to-checkout';
 				const checkoutCommands = [
 					`cd ${ repositoryLocation }`,
-					`git fetch --all`,
 					`git checkout ${ branchName }`
 				].join( ' && ' );
 
@@ -164,6 +163,7 @@ describe( 'utils', () => {
 
 		describe( 'pull', () => {
 			it( 'should be defined', () => expect( git.pull ).to.be.a( 'function' ) );
+
 			it( 'should call pull commands', () => {
 				const shExecStub = sandbox.stub( tools, 'shExec' );
 				const repositoryLocation = 'path/to/repository';
@@ -177,8 +177,24 @@ describe( 'utils', () => {
 			} );
 		} );
 
+		describe( 'fetchAll', () => {
+			it( 'should be defined', () => expect( git.fetchAll ).to.be.a( 'function' ) );
+
+			it( 'should call fetch commands', () => {
+				const shExecStub = sandbox.stub( tools, 'shExec' );
+				const repositoryLocation = 'path/to/repository';
+				const fetchCommands = `cd ${ repositoryLocation } && git fetch --all`;
+
+				git.fetchAll( repositoryLocation );
+
+				expect( shExecStub.calledOnce ).to.be.equal( true );
+				expect( shExecStub.firstCall.args[ 0 ] ).to.be.equal( fetchCommands );
+			} );
+		} );
+
 		describe( 'initializeRepository', () => {
 			it( 'should be defined', () => expect( git.initializeRepository ).to.be.a( 'function' ) );
+
 			it( 'should call initialize commands', () => {
 				const shExecStub = sandbox.stub( tools, 'shExec' );
 				const repositoryLocation = 'path/to/repository';
@@ -195,6 +211,7 @@ describe( 'utils', () => {
 
 		describe( 'getStatus', () => {
 			it( 'should be defined', () => expect( git.getStatus ).to.be.a( 'function' ) );
+
 			it( 'should call status command', () => {
 				const shExecStub = sandbox.stub( tools, 'shExec' );
 				const repositoryLocation = 'path/to/repository';
@@ -209,6 +226,7 @@ describe( 'utils', () => {
 
 		describe( 'initialCommit', () => {
 			it( 'should be defined', () => expect( git.initialCommit ).to.be.a( 'function' ) );
+
 			it( 'should execute commit commands', () => {
 				const shExecStub = sandbox.stub( tools, 'shExec' );
 				const pluginName = 'ckeditor5-plugin-name';
