@@ -3,7 +3,7 @@
 
 // TODO/NOTE: This along with _editor helper will probably become a creator theme.
 @include ck-editor {
-	.ck-editor-top {
+	.ck-editor__top {
 		.ck-toolbar {
 			border-top: 0;
 			border-left: 0;
@@ -11,18 +11,22 @@
 		}
 	}
 
-	.ck-editor-editable {
+	.ck-editor__main {
 		background: ck-color();
 		overflow: hidden;
-		padding: ck-spacing();
 	}
 
-	.ck-editor-bottom {
+	.ck-editor__bottom {
 		border-bottom: 0;
 		border-left: 0;
 		border-right: 0;
 
 		padding: ck-spacing();
+	}
+
+	.ck-editor__editable_inline {
+		overflow: auto;
+		padding: 0 ck-spacing();
 	}
 }
 
