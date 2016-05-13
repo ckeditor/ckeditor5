@@ -66,7 +66,7 @@ module.exports = {
 	},
 
 	/**
-	 * Fetches and checks out branch on selected repository.
+	 * Checks out branch on selected repository.
 	 *
 	 * @param {String} repositoryLocation Absolute path to repository.
 	 * @param {String} branchName Name of the branch to checkout.
@@ -74,7 +74,6 @@ module.exports = {
 	checkout( repositoryLocation, branchName ) {
 		const checkoutCommands = [
 			`cd ${ repositoryLocation }`,
-			`git fetch origin ${ branchName }`,
 			`git checkout ${ branchName }`
 		];
 
@@ -88,12 +87,26 @@ module.exports = {
 	 * @param {String} branchName Branch name to pull.
 	 */
 	pull( repositoryLocation, branchName ) {
-		const checkoutCommands = [
+		const pullCommands = [
 			`cd ${ repositoryLocation }`,
 			`git pull origin ${ branchName }`
 		];
 
-		tools.shExec( checkoutCommands.join( ' && ' ) );
+		tools.shExec( pullCommands.join( ' && ' ) );
+	},
+
+	/**
+	 * Fetch all branches from each origin on selected repository.
+	 *
+	 * @param {String} repositoryLocation
+	 */
+	fetchAll( repositoryLocation ) {
+		const fetchCommands = [
+			`cd ${ repositoryLocation }`,
+			`git fetch --all`
+		];
+
+		tools.shExec( fetchCommands.join( ' && ' ) );
 	},
 
 	/**

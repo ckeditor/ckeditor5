@@ -13,6 +13,7 @@
     "ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark#t/8",
     "ckeditor5-ui": "ckeditor/ckeditor5-ui#t/22",
     "ckeditor5-ui-default": "ckeditor/ckeditor5-ui-default#t/10",
+    "ckeditor5-undo": "ckeditor/ckeditor5-undo",
     "ckeditor5-utils": "ckeditor/ckeditor5-utils",
     "requirejs": "Reinmar/requirejs"
   },

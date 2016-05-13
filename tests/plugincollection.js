@@ -15,7 +15,7 @@ import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import log from '/ckeditor5/utils/log.js';
 
 let editor;
-let PluginA, PluginB, PluginC, PluginD, PluginE, PluginF, PluginG;
+let PluginA, PluginB, PluginC, PluginD, PluginE, PluginF, PluginG, PluginH, PluginI;
 class TestError extends Error {}
 
 testUtils.createSinonSandbox();
@@ -28,11 +28,14 @@ before( () => {
 	PluginE = createPlugin( 'E' );
 	PluginF = createPlugin( 'F' );
 	PluginG = createPlugin( 'G', Creator );
+	PluginH = createPlugin( 'H' );
+	PluginI = createPlugin( 'I' );
 
 	PluginC.requires = [ PluginB ];
 	PluginD.requires = [ PluginA, PluginC ];
 	PluginF.requires = [ PluginE ];
 	PluginE.requires = [ PluginF ];
+	PluginH.requires = [ PluginI ];
 
 	editor = new Editor( document.body.appendChild( document.createElement( 'div' ) ) );
 } );
@@ -65,6 +68,14 @@ moduleUtils.define( 'F/F', [ 'editor', 'E/E' ], () => {
 
 moduleUtils.define( 'G/G', () => {
 	return PluginG;
+} );
+
+moduleUtils.define( 'H/H', () => {
+	return PluginH;
+} );
+
+moduleUtils.define( 'I/I', () => {
+	return PluginI;
 } );
 
 // Erroneous cases.
@@ -172,6 +183,15 @@ describe( 'load', () => {
 		return plugins.load( [ 'G' ] )
 			.then( () => {
 				expect( getPlugins( plugins ).length ).to.equal( 1 );
+			} );
+	} );
+
+	it( 'should make plugin available to get by name when plugin was loaded as dependency first', () => {
+		let plugins = new PluginCollection( editor );
+
+		return plugins.load( [ 'H', 'I' ] )
+			.then( () => {
+				expect( plugins.get( 'I' ) ).to.be.instanceof( PluginI );
 			} );
 	} );
 
