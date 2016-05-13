@@ -93,7 +93,7 @@ describe( 'view test utils', () => {
 				treeView.createRoot( document.createElement( 'div' ) );
 				setData( treeView, data );
 
-				expect( getData( treeView, { withSelection: true } ) ).to.equal( '[<b>baz</b>]' );
+				expect( getData( treeView ) ).to.equal( '[<b>baz</b>]' );
 				const args = parseSpy.firstCall.args;
 				expect( args[ 0 ] ).to.equal( data );
 				expect( args[ 1 ] ).to.be.an( 'object' );

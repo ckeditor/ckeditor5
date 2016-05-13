@@ -43,7 +43,7 @@ describe( 'model test utils', () => {
 			root.appendChildren( new Element( 'b', null, [ 'btext' ] ) );
 			document.selection.addRange( Range.createFromParentsAndOffsets( root, 0, root, 1 ) );
 
-			expect( getData( document, { withSelection: true } ) ).to.equal( '<selection><b>btext</b></selection>' );
+			expect( getData( document ) ).to.equal( '<selection><b>btext</b></selection>' );
 			sinon.assert.calledOnce( stringifySpy );
 			sinon.assert.calledWithExactly( stringifySpy, root, document.selection );
 		} );

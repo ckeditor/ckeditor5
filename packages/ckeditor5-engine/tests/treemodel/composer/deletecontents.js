@@ -219,7 +219,7 @@ describe( 'Delete utils', () => {
 
 				deleteContents( document.batch(), document.selection, options );
 
-				expect( getData( document, { withSelection: true } ) ).to.equal( output );
+				expect( getData( document ) ).to.equal( output );
 			} );
 		}
 	} );

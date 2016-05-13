@@ -57,7 +57,7 @@ describe( 'Composer', () => {
 				}
 			} );
 
-			expect( getData( document, { withSelection: true } ) )
+			expect( getData( document ) )
 				.to.equal( '<p>fo<selection backward>o</selection>bar</p>' );
 		} );
 	} );
