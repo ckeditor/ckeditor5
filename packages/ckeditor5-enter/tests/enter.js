@@ -10,7 +10,6 @@ import StandardCreator from '/ckeditor5/creator/standardcreator.js';
 import Enter from '/ckeditor5/enter/enter.js';
 import EnterCommand from '/ckeditor5/enter/entercommand.js';
 import DomEventData from '/ckeditor5/engine/treeview/observer/domeventdata.js';
-import { getCode } from '/ckeditor5/utils/keyboard.js';
 
 describe( 'Enter feature', () => {
 	let editor, editingView;
@@ -43,33 +42,6 @@ describe( 'Enter feature', () => {
 		expect( spy.calledWithExactly( 'enter' ) ).to.be.true;
 
 		expect( domEvt.preventDefault.calledOnce ).to.be.true;
-	} );
-
-	describe( 'enter event', () => {
-		it( 'is fired on keydown', () => {
-			const view = editor.editing.view;
-			const spy = sinon.spy();
-
-			view.on( 'enter', spy );
-
-			view.fire( 'keydown', new DomEventData( editingView, getDomEvent(), {
-				keyCode: getCode( 'enter' )
-			} ) );
-
-			expect( spy.calledOnce ).to.be.true;
-		} );
-		it( 'is not fired on keydown when keyCode does not match enter', () => {
-			const view = editor.editing.view;
-			const spy = sinon.spy();
-
-			view.on( 'enter', spy );
-
-			view.fire( 'keydown', new DomEventData( editingView, getDomEvent(), {
-				keyCode: 1
-			} ) );
-
-			expect( spy.calledOnce ).to.be.false;
-		} );
 	} );
 
 	function getDomEvent() {

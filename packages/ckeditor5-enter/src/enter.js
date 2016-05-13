@@ -6,10 +6,8 @@
 'use strict';
 
 import Feature from '../feature.js';
-import DomEventData from '../engine/treeview/observer/domeventdata.js';
-import KeyObserver from '../engine/treeview/observer/keyobserver.js';
 import EnterCommand from './entercommand.js';
-import { keyCodes } from '../utils/keyboard.js';
+import EnterObserver from './enterobserver.js';
 
 /**
  * The enter feature. Handles the <kbd>Enter</kbd> and <kbd>Shift + Enter</kbd> keys in the editor.
@@ -22,15 +20,9 @@ export default class Enter extends Feature {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 
-		editingView.addObserver( KeyObserver );
+		editingView.addObserver( EnterObserver );
 
 		editor.commands.set( 'enter', new EnterCommand( editor ) );
-
-		this.listenTo( editingView, 'keydown', ( evt, data ) => {
-			if ( data.keyCode == keyCodes.enter ) {
-				editingView.fire( 'enter', new DomEventData( editingView, data.domEvent ) );
-			}
-		} );
 
 		// TODO We may use keystroke handler for that.
 		this.listenTo( editingView, 'enter', ( evt, data ) => {
@@ -39,12 +31,3 @@ export default class Enter extends Feature {
 		} );
 	}
 }
-
-/**
- * Event fired when the user presses <kbd>Enter</kbd>.
- *
- * Note: This event is fired by the {@link enter.Enter enter feature}.
- *
- * @event engine.treeView.TreeView#enter
- * @param {engine.treeView.observer.DomEventData} data
- */
