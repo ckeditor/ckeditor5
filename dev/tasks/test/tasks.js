@@ -35,7 +35,14 @@ module.exports = () => {
 		},
 
 		testInNode() {
-			return gulp.src( [ 'build/cjs/tests/**/*.js', '!**/_utils/**/*.js' ] )
+			const src = [
+				'build/cjs/tests/**/*.js',
+				'!**/_utils/**/*.js',
+				'!build/cjs/tests/{ui,ui-*}/**/*.js',
+				'!build/cjs/tests/theme-*/**/*.js'
+			];
+
+			return gulp.src( src )
 				.pipe( tasks.skipManual() )
 				.pipe( tasks.skipIgnored() )
 				.pipe( mocha() );
