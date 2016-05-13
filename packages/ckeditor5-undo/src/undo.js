@@ -21,19 +21,19 @@ export default class Undo extends Feature {
 
 		/**
 		 * Undo command which manages undo {@link engine.treeModel.Batch batches} stack (history).
-		 * Created and registered during {@link undo.UndoFeature#init feature initialization}.
+		 * Created and registered during {@link undo.Undo#init feature initialization}.
 		 *
 		 * @private
-		 * @member {undo.UndoCommand} undo.UndoFeature#_undoCommand
+		 * @member {undo.UndoCommand} undo.Undo#_undoCommand
 		 */
 		this._undoCommand = null;
 
 		/**
 		 * Undo command which manages redo {@link engine.treeModel.Batch batches} stack (history).
-		 * Created and registered during {@link undo.UndoFeature#init feature initialization}.
+		 * Created and registered during {@link undo.Undo#init feature initialization}.
 		 *
 		 * @private
-		 * @member {undo.UndoCommand} undo.UndoFeature#_redoCommand
+		 * @member {undo.UndoCommand} undo.Undo#_redoCommand
 		 */
 		this._redoCommand = null;
 
@@ -41,13 +41,13 @@ export default class Undo extends Feature {
 		 * Keeps track of which batch has already been added to undo manager.
 		 *
 		 * @private
-		 * @member {WeakSet.<engine.treeModel.Batch>} undo.UndoFeature#_batchRegistry
+		 * @member {WeakSet.<engine.treeModel.Batch>} undo.Undo#_batchRegistry
 		 */
 		this._batchRegistry = new WeakSet();
 	}
 
 	/**
-	 * Initializes undo feature.
+	 * @inheritDoc
 	 */
 	init() {
 		// Create commands.
@@ -59,8 +59,8 @@ export default class Undo extends Feature {
 		this.editor.commands.set( 'undo', this._undoCommand );
 
 		this.listenTo( this.editor.document, 'change', ( evt, type, changes, batch ) => {
+			// Whenever a new batch is created add it to the undo history and clear redo history.
 			if ( batch && !this._batchRegistry.has( batch ) ) {
-				// Whenever new batch is created add it to undo history and clear redo history.
 				this._batchRegistry.add( batch );
 				this._undoCommand.addBatch( batch );
 				this._redoCommand.clearStack();
