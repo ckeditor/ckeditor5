@@ -33,7 +33,7 @@ describe( 'view test utils', () => {
 				const element = document.createElement( 'div' );
 				const stringifySpy = sandbox.spy( getData, '_stringify' );
 				const treeView = new TreeView();
-				const options = { showType: false, showPriority: false };
+				const options = { showType: false, showPriority: false, withoutSelection: true };
 				const root = treeView.createRoot( element );
 				root.appendChildren( new Element( 'p' ) );
 
@@ -51,7 +51,7 @@ describe( 'view test utils', () => {
 				const element = document.createElement( 'div' );
 				const stringifySpy = sandbox.spy( getData, '_stringify' );
 				const treeView = new TreeView();
-				const options = { withSelection: true, showType: false, showPriority: false };
+				const options = { showType: false, showPriority: false };
 				const root = treeView.createRoot( element );
 				root.appendChildren( new Element( 'p' ) );
 

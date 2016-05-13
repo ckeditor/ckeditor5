@@ -28,7 +28,8 @@ const TEXT_RANGE_END_TOKEN = '}';
  *
  * @param {engine.treeView.TreeView} treeView
  * @param {Object} [options]
- * @param {Boolean} [options.withSelection=false] Whether to write the selection.
+ * @param {Boolean} [options.withoutSelection=false] Whether to write the selection. When set to `true` selection will
+ * be not included in returned string.
  * @param {Boolean} [options.rootName='main'] Name of the root from which data should be stringified. If not provided
  * default `main` name will be used.
  * @param {Boolean} [options.showType=false] When set to `true` type of elements will be printed (`<container:p>`
@@ -38,7 +39,7 @@ const TEXT_RANGE_END_TOKEN = '}';
  * @returns {String} The stringified data.
  */
 export function getData( treeView, options = {} ) {
-	const withSelection = !!options.withSelection;
+	const withoutSelection = !!options.withoutSelection;
 	const rootName = options.rootName || 'main';
 	const root = treeView.getRoot( rootName );
 	const stringifyOptions = {
@@ -47,9 +48,9 @@ export function getData( treeView, options = {} ) {
 		ignoreRoot: true
 	};
 
-	return withSelection ?
-		getData._stringify( root, treeView.selection, stringifyOptions ) :
-		getData._stringify( root, null, stringifyOptions );
+	return withoutSelection ?
+		getData._stringify( root, null, stringifyOptions ) :
+		getData._stringify( root, treeView.selection, stringifyOptions );
 }
 
 // Set stringify as getData private method - needed for testing/spying.

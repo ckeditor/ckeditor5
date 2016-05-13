@@ -33,7 +33,7 @@ describe( 'model test utils', () => {
 			const stringifySpy = sandbox.spy( getData, '_stringify' );
 			root.appendChildren( new Element( 'b', null, [ 'btext' ] ) );
 
-			expect( getData( document ) ).to.equal( '<b>btext</b>' );
+			expect( getData( document, { withoutSelection: true } ) ).to.equal( '<b>btext</b>' );
 			sinon.assert.calledOnce( stringifySpy );
 			sinon.assert.calledWithExactly( stringifySpy, root );
 		} );
@@ -57,7 +57,7 @@ describe( 'model test utils', () => {
 
 			setData( document, data, options );
 
-			expect( getData( document ) ).to.equal( data );
+			expect( getData( document, { withoutSelection: true } ) ).to.equal( data );
 			sinon.assert.calledOnce( parseSpy );
 			const args = parseSpy.firstCall.args;
 			expect( args[ 0 ] ).to.equal( data );
@@ -66,7 +66,7 @@ describe( 'model test utils', () => {
 		it( 'should use parse method with selection', () => {
 			const parseSpy = sandbox.spy( setData, '_parse' );
 			const options = {};
-			const data = '[<b>btext</b>]';
+			const data = '<selection><b>btext</b></selection>';
 
 			setData( document, data, options );
 

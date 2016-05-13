@@ -29,7 +29,7 @@ describe( 'Composer', () => {
 
 			composer.fire( 'deleteContents', { batch, selection: document.selection } );
 
-			expect( getData( document ) ).to.equal( '<p>f</p><p>r</p>' );
+			expect( getData( document ) ).to.equal( '<p>f<selection /></p><p>r</p>' );
 			expect( batch.deltas ).to.not.be.empty;
 		} );
 
@@ -44,7 +44,7 @@ describe( 'Composer', () => {
 				options: { merge: true }
 			} );
 
-			expect( getData( document ) ).to.equal( '<p>fr</p>' );
+			expect( getData( document ) ).to.equal( '<p>f<selection />r</p>' );
 		} );
 
 		it( 'attaches modifySelection default listener', () => {

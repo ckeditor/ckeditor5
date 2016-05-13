@@ -20,17 +20,18 @@ import Document from '/ckeditor5/engine/treemodel/document.js';
  *
  * @param {engine.treeModel.Document} document
  * @param {Object} [options]
- * @param {Boolean} [options.withSelection] Whether to write the selection.
+ * @param {Boolean} [options.withoutSelection=false] Whether to write the selection. When set to `true` selection will
+ * be not included in returned string.
  * @param {Boolean} [options.rootName='main'] Name of the root from which data should be stringified. If not provided
  * default `main` name will be used.
  * @returns {String} The stringified data.
  */
 export function getData( document, options = {} ) {
-	const withSelection = !!options.withSelection;
+	const withoutSelection = !!options.withoutSelection;
 	const rootName = options.rootName || 'main';
 	const root = document.getRoot( rootName );
 
-	return withSelection ? getData._stringify( root, document.selection ) : getData._stringify( root );
+	return withoutSelection ? getData._stringify( root ) : getData._stringify( root, document.selection );
 }
 
 // Set stringify as getData private method - needed for testing/spying.
