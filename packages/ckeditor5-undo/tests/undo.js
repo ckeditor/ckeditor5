@@ -9,30 +9,30 @@ import Editor from '/ckeditor5/editor.js';
 import ModelDocument from '/ckeditor5/engine/treemodel/document.js';
 import Range from '/ckeditor5/engine/treemodel/range.js';
 import Position from '/ckeditor5/engine/treemodel/position.js';
-import UndoFeature from '/ckeditor5/undo/undo.js';
-
-let element, editor, undo, doc, root;
+import Undo from '/ckeditor5/undo/undo.js';
+import Creator from '/ckeditor5/creator/creator.js';
 
 import { getData, setData } from '/tests/engine/_utils/model.js';
 
-//import deleteContents from '/ckeditor5/engine/treemodel/composer/deletecontents.js';
+// import deleteContents from '/ckeditor5/engine/treemodel/composer/deletecontents.js';
 
-before( () => {
+let element, editor, doc, root;
+
+beforeEach( () => {
 	element = document.createElement( 'div' );
 	document.body.appendChild( element );
 
-	editor = new Editor( element );
-
 	doc = new ModelDocument();
-	editor.document = doc;
 	root = doc.createRoot( 'root' );
 
-	undo = new UndoFeature( editor );
-	undo.init();
-} );
+	editor = new Editor( element, {
+		creator: Creator,
+		features: [ Undo ]
+	} );
 
-after( () => {
-	undo.destroy();
+	editor.document = doc;
+
+	return editor.init();
 } );
 
 function setSelection( pathA, pathB ) {
@@ -52,14 +52,6 @@ function undoDisabled() {
 }
 
 describe( 'undo integration', () => {
-	beforeEach( () => {
-		// Clearing root because `setData` has a bug.
-		root.removeChildren( 0, root.getChildCount() );
-
-		editor.commands.get( 'undo' ).clearStack();
-		editor.commands.get( 'redo' ).clearStack();
-	} );
-
 	describe( 'adding and removing content', () => {
 		it( 'add and undo', () => {
 			input( '<p>fo<selection />o</p><p>bar</p>' );

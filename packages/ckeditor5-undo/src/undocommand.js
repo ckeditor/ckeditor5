@@ -17,12 +17,15 @@ export default class UndoCommand extends Command {
 		super( editor );
 
 		/**
-		 * Items that are pairs of batches which are saved by the command and model selection state at the moment of saving the batch.
+		 * Items that are pairs of:
+		 *
+		 * * batches which are saved by the command and,
+		 * * model selection state at the moment of saving the batch.
 		 *
 		 * @private
-		 * @member {Array.<engine.treeModel.Batch>} undo.UndoCommand#_batchStack
+		 * @member {Array} undo.UndoCommand#_items
 		 */
-		this._batchStack = [];
+		this._items = [];
 	}
 
 	/**
@@ -36,7 +39,7 @@ export default class UndoCommand extends Command {
 			isBackward: this.editor.document.selection.isBackward
 		};
 
-		this._batchStack.push( { batch, selection } );
+		this._items.push( { batch, selection } );
 		this.refreshState();
 	}
 
@@ -44,7 +47,7 @@ export default class UndoCommand extends Command {
 	 * Removes all batches from the stack.
 	 */
 	clearStack() {
-		this._batchStack = [];
+		this._items = [];
 		this.refreshState();
 	}
 
@@ -52,7 +55,7 @@ export default class UndoCommand extends Command {
 	 * @inheritDoc
 	 */
 	_checkEnabled() {
-		return this._batchStack.length > 0;
+		return this._items.length > 0;
 	}
 
 	/**
@@ -70,17 +73,12 @@ export default class UndoCommand extends Command {
 		// If batch is not given, set `batchIndex` to the last index in command stack.
 		// If it is given, find it on the stack.
 		if ( !batch ) {
-			batchIndex = this._batchStack.length - 1;
+			batchIndex = this._items.length - 1;
 		} else {
-			for ( let i = 0; i < this._batchStack.length; i++ ) {
-				if ( this._batchStack[ i ].batch == batch ) {
-					batchIndex = i;
-					break;
-				}
-			}
+			batchIndex = this._items.findIndex( item => item.batch == batch );
 		}
 
-		const undoItem = this._batchStack.splice( batchIndex, 1 )[ 0 ];
+		const undoItem = this._items.splice( batchIndex, 1 )[ 0 ];
 
 		// Get the batch to undo.
 		const undoBatch = undoItem.batch;

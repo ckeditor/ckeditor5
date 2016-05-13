@@ -33,16 +33,17 @@ afterEach( () => {
 describe( 'UndoCommand', () => {
 	describe( 'constructor', () => {
 		it( 'should create undo command with empty batch stack', () => {
-			expect( undo._batchStack.length ).to.equal( 0 );
+			expect( undo._checkEnabled() ).to.be.false;
 		} );
 	} );
 
 	describe( 'clearStack', () => {
 		it( 'should remove all batches from the stack', () => {
 			undo.addBatch( doc.batch() );
-			undo.clearStack();
+			expect( undo._checkEnabled() ).to.be.true;
 
-			expect( undo._batchStack.length ).to.equal( 0 );
+			undo.clearStack();
+			expect( undo._checkEnabled() ).to.be.false;
 		} );
 	} );
 
