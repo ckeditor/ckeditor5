@@ -26,7 +26,16 @@ export default class FramedEditableUIIframeView extends IframeView {
 	constructor( model, locale ) {
 		super( model, locale );
 
-		this.template.attributes.class.push( 'ck-framededitable' );
+		const bind = this.attributeBinder;
+
+		this.template.attributes.class.push( 'ck-editor__editable-iframe' );
+		this.template.attributes.style = [
+			'width:',
+			bind.to( 'width', ( w ) => `${w}px` ),
+			';',
+			'height:',
+			bind.to( 'height', ( h ) => `${h}px`  )
+		];
 
 		this.on( 'loaded', this._iframeLoaded, this );
 
@@ -73,3 +82,23 @@ export default class FramedEditableUIIframeView extends IframeView {
 		this._iframeDeferred.resolve();
 	}
 }
+
+/**
+ * The view model interface for FramedEditableUIView.
+ *
+ * @memberOf ui.editableUI.iframe
+ * @interface FramedEditableUIViewModel
+ * @mixes utils.ObservableMixin
+ */
+
+/**
+ * The width of the iframe.
+ *
+ * @member {Number} ui.editableUI.iframe.FramedEditableUIViewModel#width
+ */
+
+/**
+ * The height of the iframe.
+ *
+ * @member {Number} ui.editableUI.iframe.FramedEditableUIViewModel#height
+ */
