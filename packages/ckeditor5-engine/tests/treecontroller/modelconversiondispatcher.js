@@ -353,4 +353,53 @@ describe( 'ModelConversionDispatcher', () => {
 			expect( dispatcher.fire.calledWith( 'removeAttribute:attr:inside' ) ).to.be.false;
 		} );
 	} );
+
+	describe( 'convertSelection', () => {
+		beforeEach( () => {
+			root.appendChildren( 'foobar' );
+			doc.selection.setRanges( [
+				new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 3 ] ) ),
+				new ModelRange( new ModelPosition( root, [ 4 ] ), new ModelPosition( root, [ 5 ] ) )
+			] );
+		} );
+
+		it( 'should fire selection event', () => {
+			sinon.spy( dispatcher, 'fire' );
+
+			dispatcher.convertSelection( doc.selection );
+
+			expect( dispatcher.fire.calledWith( 'selection', sinon.match.instanceOf( doc.selection.constructor ) ) ).to.be.true;
+		} );
+
+		it( 'should prepare correct list of consumable values', () => {
+			doc.enqueueChanges( () => {
+				doc.batch()
+					.setAttr( 'bold', true, ModelRange.createFromElement( root ) )
+					.setAttr( 'italic', true, ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ) );
+			} );
+
+			dispatcher.on( 'selection', ( evt, selection, consumable ) => {
+				expect( consumable.test( selection, 'selection' ) ).to.be.true;
+				expect( consumable.test( selection, 'selectionAttribute:bold' ) ).to.be.true;
+				expect( consumable.test( selection, 'selectionAttribute:italic' ) ).to.be.null;
+			} );
+
+			dispatcher.convertSelection( doc.selection );
+		} );
+
+		it( 'should fire attributes events for selection', () => {
+			sinon.spy( dispatcher, 'fire' );
+
+			doc.enqueueChanges( () => {
+				doc.batch()
+					.setAttr( 'bold', true, ModelRange.createFromElement( root ) )
+					.setAttr( 'italic', true, ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ) );
+			} );
+
+			dispatcher.convertSelection( doc.selection );
+
+			expect( dispatcher.fire.calledWith( 'selectionAttribute:bold' ) ).to.be.true;
+			expect( dispatcher.fire.calledWith( 'selectionAttribute:italic' ) ).to.be.false;
+		} );
+	} );
 } );
