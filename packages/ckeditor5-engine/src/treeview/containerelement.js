@@ -21,9 +21,9 @@ import Element from './element.js';
  * DOM properly. {@link engine.treeView.DomConverter} will ensure that `ContainerElement` is editable and it is possible
  * to put caret inside it, even if the container is empty.
  *
- * Secondly, {@link engine.treeView.Writer} use this information.
- * {@link engine.treeView.Writer#breakAttributes Break} and {@link engine.treeView.Writer#mergeAttributes Merge}
- * operations are performed only in a bounds of a container nodes.
+ * Secondly, {@link engine.treeView.Writer} uses this information.
+ * Nodes {@link engine.treeView.Writer#breakAttributes breaking} and {@link engine.treeView.Writer#mergeAttributes merging}
+ * is performed only in a bounds of a container nodes.
  *
  * For instance if `<p>` is an container and `<b>` is attribute:
  *
