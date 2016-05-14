@@ -254,7 +254,21 @@ export default class Mapper {
 
 		// If it equals we found the position.
 		if ( modelOffset == expectedOffset ) {
-			return new ViewPosition( viewParent, viewOffset );
+			const viewPosition = new ViewPosition( viewParent, viewOffset );
+
+			// If the position is just after text node, put it at the end of that text node.
+			// If the position is just before text node, put it at the beginning of that text node.
+			const nodeBefore = viewPosition.nodeBefore;
+			const nodeAfter = viewPosition.nodeAfter;
+
+			if ( nodeBefore instanceof ViewText ) {
+				return new ViewPosition( nodeBefore, nodeBefore.data.length );
+			} else if ( nodeAfter instanceof ViewText ) {
+				return new ViewPosition( nodeAfter, 0 );
+			}
+
+			// Otherwise, just return the found position.
+			return viewPosition;
 		}
 		// If it is higher we need to enter last child.
 		else {
