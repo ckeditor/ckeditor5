@@ -20,6 +20,7 @@
 		"describe": false,
 		"expect": false,
 		"it": false,
-		"sinon": false
+		"sinon": false,
+		"bender": false
 	}
 }
