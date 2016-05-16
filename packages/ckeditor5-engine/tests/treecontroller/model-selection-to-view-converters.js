@@ -23,7 +23,7 @@ import {
 	convertRangeSelection,
 	convertCollapsedSelection,
 	convertSelectionAttribute
-} from '/ckeditor5/engine/treecontroller/selection-to-view-converters.js';
+} from '/ckeditor5/engine/treecontroller/model-selection-to-view-converters.js';
 
 import {
 	insertElement,
