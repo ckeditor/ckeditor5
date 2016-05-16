@@ -12,7 +12,7 @@ import ViewRange from '../treeview/range.js';
  * Contains {@link engine.treeModel.Selection model selection} to {@link engine.treeView.Selection view selection} converters for
  * {@link engine.treeController.ModelConversionDispatcher}.
  *
- * @namespace engine.treeController.selectionToView
+ * @namespace engine.treeController.modelSelectionToView
  */
 
 /**
@@ -22,8 +22,8 @@ import ViewRange from '../treeview/range.js';
  *
  *		modelDispatcher.on( 'selection', convertRangeSelection() );
  *
- * @external engine.treeController.selectionToView
- * @function engine.treeController.selectionToView.convertRangeSelection
+ * @external engine.treeController.modelSelectionToView
+ * @function engine.treeController.modelSelectionToView.convertRangeSelection
  * @returns {Function} Selection converter.
  */
 export function convertRangeSelection() {
@@ -37,6 +37,8 @@ export function convertRangeSelection() {
 		if ( !consumable.consume( selection, 'selection' ) ) {
 			return;
 		}
+
+		conversionApi.viewSelection.removeAllRanges();
 
 		for ( let range of selection.getRanges() ) {
 			const viewRange = conversionApi.mapper.toViewRange( range );
@@ -55,15 +57,18 @@ export function convertRangeSelection() {
  *
  * Example of view state before and after converting collapsed selection:
  *
- *		<p><strong>f^oo<strong>bar</p> -> <p><strong>f</strong>^<strong>oo</strong>bar</p>
+ *		<p><strong>f^oo<strong>bar</p>
+ *		-> <p><strong>f</strong>^<strong>oo</strong>bar</p>
  *
  * By breaking attribute elements like `<strong>` selection is in correct elements. See also complementary
- * {@link engine.treeController.selectionToView.convertSelectionAttribute attribute converter} for selection attributes,
+ * {@link engine.treeController.modelSelectionToView.convertSelectionAttribute attribute converter} for selection attributes,
  * which wraps collapsed selection into view elements. Those converters together ensure, that selection ends up in
  * appropriate elements.
  *
- * @external engine.treeController.selectionToView
- * @function engine.treeController.selectionToView.convertCollapsedSelection
+ * See also {@link engine.treeController.modelSelectionToView.clearAttributes} which do the clean-up by merging attributes.
+ *
+ * @external engine.treeController.modelSelectionToView
+ * @function engine.treeController.modelSelectionToView.convertCollapsedSelection
  * @returns {Function} Selection converter.
  */
 export function convertCollapsedSelection() {
@@ -82,6 +87,7 @@ export function convertCollapsedSelection() {
 		const viewPosition = conversionApi.mapper.toViewPosition( modelPosition );
 		const brokenPosition = conversionApi.writer.breakAttributes( viewPosition );
 
+		conversionApi.viewSelection.removeAllRanges();
 		conversionApi.viewSelection.addRange( new ViewRange( brokenPosition, brokenPosition ), selection.isBackward );
 	};
 }
@@ -132,8 +138,8 @@ export function convertCollapsedSelection() {
  * but then it got wrapped-back by `convertSelectionAttribute()` converter. In second example, notice how `<strong>` element
  * is broken to prevent putting selection in it, since selection has no `bold` attribute.
  *
- * @external engine.treeController.selectionToView
- * @function engine.treeController.selectionToView.convertCollapsedSelection
+ * @external engine.treeController.modelSelectionToView
+ * @function engine.treeController.modelSelectionToView.convertCollapsedSelection
  * @param {engine.treeView.AttributeElement|Function} elementCreator View element, or function returning a view element, which will
  * be used for wrapping.
  * @returns {Function} Selection converter.
@@ -160,5 +166,45 @@ export function convertSelectionAttribute( elementCreator ) {
 		viewPosition = conversionApi.writer.wrapPosition( viewPosition, viewElement );
 
 		conversionApi.viewSelection.addRange( new ViewRange( viewPosition, viewPosition ), selection.isBackward );
+	};
+}
+
+/**
+ * Function factory, creates a converter that clears artifacts after the previous
+ * {@link engine.treeModel.Selection model selection} conversion. It removes all empty
+ * {@link engine.treeView.AttributeElement view attribute elements} and merge sibling attributes at all start and end
+ * positions of all ranges.
+ *
+ *		<p><strong>^</strong></p>
+ *		-> <p>^</p>
+ *
+ *		<p><strong>foo</strong>^<strong>bar</strong>bar</p>
+ *		-> <p><strong>foo^bar<strong>bar</p>
+ *
+ *		<p><strong>foo</strong><em>^</em><strong>bar</strong>bar</p>
+ *		-> <p><strong>foo^bar<strong>bar</p>
+ *
+ * This listener should be assigned before any converter for the new selection:
+ *
+ *		modelDispatcher.on( 'selection', clearAttributes() );
+ *
+ * See {@link engine.treeController.modelSelectionToView.convertCollapsedSelection} which do the opposite by breaking
+ * attributes in the selection position.
+ *
+ * @external engine.treeController.modelSelectionToView
+ * @function engine.treeController.modelSelectionToView.clearAttributes
+ * @returns {Function} Selection converter.
+ */
+export function clearAttributes() {
+	return ( evt, data, consumable, conversionApi ) => {
+		for ( let range of conversionApi.viewSelection.getRanges() ) {
+			const parentNode = range.start.parent;
+
+			if ( parentNode instanceof ViewElement && parentNode.getChildCount() === 0 ) {
+				parentNode.parent.removeChildren( parentNode.getIndex() );
+			}
+		}
+
+		conversionApi.viewSelection.removeAllRanges();
 	};
 }

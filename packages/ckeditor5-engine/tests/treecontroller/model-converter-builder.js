@@ -21,7 +21,6 @@ import ViewAttributeElement from '/ckeditor5/engine/treeview/attributeelement.js
 import ViewText from '/ckeditor5/engine/treeview/text.js';
 import ViewWriter from '/ckeditor5/engine/treeview/writer.js';
 import ViewSelection from '/ckeditor5/engine/treeview/selection.js';
-import ViewRange from '/ckeditor5/engine/treeview/range.js';
 
 import Mapper from '/ckeditor5/engine/treecontroller/mapper.js';
 import ModelConversionDispatcher from '/ckeditor5/engine/treecontroller/modelconversiondispatcher.js';
@@ -31,6 +30,11 @@ import {
 	move,
 	remove
 } from '/ckeditor5/engine/treecontroller/model-to-view-converters.js';
+
+import {
+	convertCollapsedSelection,
+	clearAttributes
+} from '/ckeditor5/engine/treecontroller/model-selection-to-view-converters.js';
 
 function viewAttributesToString( item ) {
 	let result = '';
@@ -195,25 +199,9 @@ describe( 'Model converter builder', () => {
 		} );
 
 		it( 'selection conversion', () => {
-			// This test requires collapsed range selection converter (breaking attributes), clearing view selection
-			// and clearing "artifacts" (empty nodes) before new conversion happens.
-			dispatcher.on( 'selection', ( evt, data, consumable, conversionApi ) => {
-				// Clear artifacts.
-				for ( let range of conversionApi.viewSelection.getRanges() ) {
-					const parentNode = range.start.parent;
-
-					if ( parentNode instanceof ViewElement && parentNode.getChildCount() === 0 ) {
-						parentNode.parent.removeChildren( parentNode.getIndex() );
-					}
-				}
-
-				// Break attributes.
-				const viewPosition = conversionApi.mapper.toViewPosition( data.selection.getFirstPosition() );
-				const brokenPosition = conversionApi.writer.breakAttributes( viewPosition );
-
-				// Set the new range as the only range of selection (clear old ranges).
-				conversionApi.viewSelection.setRanges( [ new ViewRange( brokenPosition, brokenPosition ) ], data.selection.isBackward );
-			} );
+			// This test requires collapsed range selection converter (breaking attributes)  and clearing "artifacts".
+			dispatcher.on( 'selection', clearAttributes() );
+			dispatcher.on( 'selection', convertCollapsedSelection() );
 
 			// Model converter builder should add selection converter.
 			BuildModelConverterFor( dispatcher ).fromAttribute( 'italic' ).toElement( ( value ) => new ViewAttributeElement( value ) );
