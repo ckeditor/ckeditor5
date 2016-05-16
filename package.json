@@ -10,7 +10,7 @@
   "dependencies": {
     "ckeditor5-creator-classic": "ckeditor/ckeditor5-creator-classic#t/1",
     "ckeditor5-engine": "ckeditor/ckeditor5-engine",
-    "ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark#t/8",
+    "ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark",
     "ckeditor5-ui": "ckeditor/ckeditor5-ui#t/22",
     "ckeditor5-ui-default": "ckeditor/ckeditor5-ui-default#t/10",
     "ckeditor5-undo": "ckeditor/ckeditor5-undo",
