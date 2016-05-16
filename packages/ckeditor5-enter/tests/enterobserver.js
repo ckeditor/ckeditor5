@@ -5,26 +5,26 @@
 
 'use strict';
 
-import TreeView from '/ckeditor5/engine/treeview/treeview.js';
+import ViewDocument from '/ckeditor5/engine/treeview/document.js';
 import EnterObserver from '/ckeditor5/enter/enterobserver.js';
 import DomEventData from '/ckeditor5/engine/treeview/observer/domeventdata.js';
 import { getCode } from '/ckeditor5/utils/keyboard.js';
 
 describe( 'Enter feature', () => {
-	let treeView, observer;
+	let viewDocument, observer;
 
 	beforeEach( () => {
-		treeView = new TreeView();
-		observer = treeView.addObserver( EnterObserver );
+		viewDocument = new ViewDocument();
+		observer = viewDocument.addObserver( EnterObserver );
 	} );
 
 	describe( 'enter event', () => {
 		it( 'is fired on keydown', () => {
 			const spy = sinon.spy();
 
-			treeView.on( 'enter', spy );
+			viewDocument.on( 'enter', spy );
 
-			treeView.fire( 'keydown', new DomEventData( treeView, getDomEvent(), {
+			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
 				keyCode: getCode( 'enter' )
 			} ) );
 
@@ -33,9 +33,9 @@ describe( 'Enter feature', () => {
 		it( 'is not fired on keydown when keyCode does not match enter', () => {
 			const spy = sinon.spy();
 
-			treeView.on( 'enter', spy );
+			viewDocument.on( 'enter', spy );
 
-			treeView.fire( 'keydown', new DomEventData( treeView, getDomEvent(), {
+			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
 				keyCode: 1
 			} ) );
 
