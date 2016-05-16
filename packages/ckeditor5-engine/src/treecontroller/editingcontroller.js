@@ -5,12 +5,12 @@
 
 'use strict';
 
-import TreeDocument from '../treeview/document.js';
+import ViewDocument from '../treeview/document.js';
 
 export default class EditingController {
 	constructor( modelDocument ) {
 		this.model = modelDocument;
-		this.view = new TreeDocument();
+		this.view = new ViewDocument();
 	}
 
 	destroy() {}
