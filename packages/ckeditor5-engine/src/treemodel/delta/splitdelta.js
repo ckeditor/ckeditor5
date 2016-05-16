@@ -7,6 +7,7 @@
 
 import Delta from './delta.js';
 import { register } from '../batch.js';
+import { registerDeserializer } from './delta.js';
 import Position from '../position.js';
 import Element from '../element.js';
 import InsertOperation from '../operation/insertoperation.js';
@@ -61,6 +62,10 @@ export default class SplitDelta extends Delta {
 		return MergeDelta;
 	}
 
+	static get className() {
+		return 'engine.treeModel.delta.SplitDelta';
+	}
+
 	static get _priority() {
 		return 5;
 	}
@@ -111,3 +116,5 @@ register( 'split', function( position ) {
 
 	return this;
 } );
+
+registerDeserializer( SplitDelta.className, SplitDelta );

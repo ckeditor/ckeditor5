@@ -7,6 +7,7 @@
 
 import InsertDelta from './insertdelta.js';
 import { register } from '../batch.js';
+import { registerDeserializer } from './delta.js';
 import InsertOperation from '../operation/insertoperation.js';
 import NodeList from '../nodelist.js';
 
@@ -17,7 +18,11 @@ import NodeList from '../nodelist.js';
  *
  * @memberOf engine.treeModel.delta
  */
-export default class WeakInsertDelta extends InsertDelta {}
+export default class WeakInsertDelta extends InsertDelta {
+	static get className() {
+		return 'engine.treeModel.delta.WeakInsertDelta';
+	}
+}
 
 /**
  * Inserts a node or nodes at the given position. {@link engine.treeModel.Batch#weakInsert weakInsert} is commonly used for actions
@@ -54,3 +59,5 @@ register( 'weakInsert', function( position, nodes ) {
 
 	return this;
 } );
+
+registerDeserializer( WeakInsertDelta.className, WeakInsertDelta );

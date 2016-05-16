@@ -12,6 +12,7 @@ import Document from '/ckeditor5/engine/treemodel/document.js';
 import Position from '/ckeditor5/engine/treemodel/position.js';
 import Range from '/ckeditor5/engine/treemodel/range.js';
 import Element from '/ckeditor5/engine/treemodel/element.js';
+import RemoveDelta from '/ckeditor5/engine/treemodel/delta/removedelta.js';
 
 const getNodesAndText = treeModelTestUtils.getNodesAndText;
 
@@ -75,5 +76,11 @@ describe( 'Batch', () => {
 
 			expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
 		} );
+	} );
+} );
+
+describe( 'RemoveDelta', ()=> {
+	it( 'should provide proper className', () => {
+		expect( RemoveDelta.className ).to.equal( 'engine.treeModel.delta.RemoveDelta' );
 	} );
 } );

@@ -7,6 +7,7 @@
 
 import Delta from './delta.js';
 import { register } from '../batch.js';
+import { registerDeserializer } from './delta.js';
 import AttributeOperation from '../operation/attributeoperation.js';
 import RootAttributeOperation from '../operation/rootattributeoperation.js';
 import Position from '../position.js';
@@ -69,6 +70,10 @@ export default class AttributeDelta extends Delta {
 		return AttributeDelta;
 	}
 
+	static get className() {
+		return 'engine.treeModel.delta.AttributeDelta';
+	}
+
 	static get _priority() {
 		return 20;
 	}
@@ -82,7 +87,11 @@ export default class AttributeDelta extends Delta {
  * @memberOf engine.treeModel.delta
  * @extends engine.treeModel.delta.Delta
  */
-export class RootAttributeDelta extends Delta {}
+export class RootAttributeDelta extends Delta {
+	static get className() {
+		return 'engine.treeModel.delta.RootAttributeDelta';
+	}
+}
 
 /**
  * Sets the value of the attribute of the node or on the range.
@@ -200,3 +209,7 @@ function changeRange( batch, doc, attributeKey, attributeValue, range ) {
 		doc.applyOperation( operation );
 	}
 }
+
+registerDeserializer( AttributeDelta.className, AttributeDelta );
+
+registerDeserializer( RootAttributeDelta.className, RootAttributeDelta );

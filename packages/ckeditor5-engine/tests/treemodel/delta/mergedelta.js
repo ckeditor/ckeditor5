@@ -137,4 +137,8 @@ describe( 'MergeDelta', () => {
 			expect( reversed.operations[ 1 ].targetPosition.path ).to.deep.equal( [ 1, 2, 0 ] );
 		} );
 	} );
+
+	it( 'should provide proper className', () => {
+		expect( MergeDelta.className ).to.equal( 'engine.treeModel.delta.MergeDelta' );
+	} );
 } );

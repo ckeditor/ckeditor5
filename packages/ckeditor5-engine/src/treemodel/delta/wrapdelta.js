@@ -8,6 +8,7 @@
 import Delta from './delta.js';
 import UnwrapDelta from './unwrapdelta.js';
 import { register } from '../batch.js';
+import { registerDeserializer } from './delta.js';
 import Position from '../position.js';
 import Range from '../range.js';
 import Element from '../element.js';
@@ -69,6 +70,10 @@ export default class WrapDelta extends Delta {
 		return UnwrapDelta;
 	}
 
+	static get className() {
+		return 'engine.treeModel.delta.WrapDelta';
+	}
+
 	static get _priority() {
 		return 10;
 	}
@@ -127,3 +132,5 @@ register( 'wrap', function( range, elementOrString ) {
 
 	return this;
 } );
+
+registerDeserializer( WrapDelta.className, WrapDelta );

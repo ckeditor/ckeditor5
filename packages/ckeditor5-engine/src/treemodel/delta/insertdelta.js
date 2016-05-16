@@ -8,6 +8,7 @@
 import Delta from './delta.js';
 import RemoveDelta from './removedelta.js';
 import { register } from '../batch.js';
+import { registerDeserializer } from './delta.js';
 import InsertOperation from '../operation/insertoperation.js';
 
 /**
@@ -50,6 +51,10 @@ export default class InsertDelta extends Delta {
 		return RemoveDelta;
 	}
 
+	static get className() {
+		return 'engine.treeModel.delta.InsertDelta';
+	}
+
 	static get _priority() {
 		return 20;
 	}
@@ -73,3 +78,5 @@ register( 'insert', function( position, nodes ) {
 
 	return this;
 } );
+
+registerDeserializer( InsertDelta.className, InsertDelta );

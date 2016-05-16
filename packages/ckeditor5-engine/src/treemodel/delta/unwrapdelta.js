@@ -8,6 +8,7 @@
 import Delta from './delta.js';
 import WrapDelta from './wrapdelta.js';
 import { register } from '../batch.js';
+import { registerDeserializer } from './delta.js';
 import Position from '../position.js';
 import RemoveOperation from '../operation/removeoperation.js';
 import MoveOperation from '../operation/moveoperation.js';
@@ -42,6 +43,10 @@ export default class UnwrapDelta extends Delta {
 
 	get _reverseDeltaClass() {
 		return WrapDelta;
+	}
+
+	static get className() {
+		return 'engine.treeModel.delta.UnwrapDelta';
 	}
 
 	static get _priority() {
@@ -85,3 +90,5 @@ register( 'unwrap', function( element ) {
 
 	return this;
 } );
+
+registerDeserializer( UnwrapDelta.className, UnwrapDelta );

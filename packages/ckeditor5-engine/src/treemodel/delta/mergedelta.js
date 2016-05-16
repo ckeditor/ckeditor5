@@ -8,6 +8,7 @@
 import Delta from './delta.js';
 import SplitDelta from './splitdelta.js';
 import { register } from '../batch.js';
+import { registerDeserializer } from './delta.js';
 import Position from '../position.js';
 import Element from '../element.js';
 import RemoveOperation from '../operation/removeoperation.js';
@@ -46,6 +47,10 @@ export default class MergeDelta extends Delta {
 
 	get _reverseDeltaClass() {
 		return SplitDelta;
+	}
+
+	static get className() {
+		return 'engine.treeModel.delta.MergeDelta';
 	}
 }
 
@@ -100,3 +105,5 @@ register( 'merge', function( position ) {
 
 	return this;
 } );
+
+registerDeserializer( MergeDelta.className, MergeDelta );

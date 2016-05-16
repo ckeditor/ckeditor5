@@ -129,4 +129,8 @@ describe( 'UnwrapDelta', () => {
 			expect( reversed.operations[ 1 ].targetPosition.path ).to.deep.equal( [ 1, 6, 0 ] );
 		} );
 	} );
+
+	it( 'should provide proper className', () => {
+		expect( UnwrapDelta.className ).to.equal( 'engine.treeModel.delta.UnwrapDelta' );
+	} );
 } );

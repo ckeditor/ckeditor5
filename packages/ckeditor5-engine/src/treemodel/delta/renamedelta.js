@@ -7,6 +7,7 @@
 
 import Delta from './delta.js';
 import { register } from '../batch.js';
+import { registerDeserializer } from './delta.js';
 import InsertOperation from '../operation/insertoperation.js';
 import RemoveOperation from '../operation/removeoperation.js';
 import MoveOperation from '../operation/moveoperation.js';
@@ -22,6 +23,10 @@ import Position from '../position.js';
 export default class RenameDelta extends Delta {
 	get _reverseDeltaClass() {
 		return RenameDelta;
+	}
+
+	static get className() {
+		return 'engine.treeModel.delta.RenameDelta';
 	}
 }
 
@@ -60,3 +65,5 @@ register( 'rename', function( newName, element ) {
 
 	return this;
 } );
+
+registerDeserializer( RenameDelta.className, RenameDelta );

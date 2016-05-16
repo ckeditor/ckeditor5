@@ -174,5 +174,9 @@ describe( 'SplitDelta', () => {
 			expect( splitDelta._cloneOperation.position.path ).to.deep.equal( [ 1, 2 ] );
 		} );
 	} );
+
+	it( 'should provide proper className', () => {
+		expect( SplitDelta.className ).to.equal( 'engine.treeModel.delta.SplitDelta' );
+	} );
 } );
 

@@ -156,4 +156,8 @@ describe( 'MoveDelta', () => {
 			expect( reversed.operations[ 0 ].targetPosition.path ).to.deep.equal( [ 1, 1 ] );
 		} );
 	} );
+
+	it( 'should provide proper className', () => {
+		expect( MoveDelta.className ).to.equal( 'engine.treeModel.delta.MoveDelta' );
+	} );
 } );

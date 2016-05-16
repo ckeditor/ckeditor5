@@ -111,5 +111,6 @@ export default class Operation {
 	static fromJSON( json, doc ) {
 		return new Operation( json.baseVersion );
 	}
+
 	/*jshint unused: false*/
 }

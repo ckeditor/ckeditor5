@@ -5,6 +5,19 @@
 
 'use strict';
 
+import clone from '../../../utils/lib/lodash/clone.js';
+
+import CKEditorError from '../../../utils/ckeditorerror.js';
+
+import AttributeOperation from '../operation/attributeoperation.js';
+import InsertOperation from '../operation/insertoperation.js';
+import MoveOperation from '../operation/moveoperation.js';
+import NoOperation from '../operation/nooperation.js';
+import Operation from '../operation/operation.js';
+import ReinsertOperation from '../operation/reinsertoperation.js';
+import RemoveOperation from '../operation/removeoperation.js';
+import RootAttributeOperation from '../operation/rootattributeoperation.js';
+
 /**
  * Base class for all deltas.
  *
@@ -118,6 +131,29 @@ export default class Delta {
 	}
 
 	/**
+	 * Custom toJSON method to make deltas serializable.
+	 *
+	 * @returns {Object} Clone of this delta with added class name.
+	 */
+	toJSON() {
+		let json = clone( this );
+
+		json.__class = this.constructor.className;
+
+		return json;
+	}
+
+	/**
+	 * Delta class name. Used by {@link engine.treeModel.delta.Delta#toJSON} method for serialization and
+	 * {@link engine.treeModel.delta.Delta.fromJSON} during deserialization.
+	 *
+	 * @type {String}
+	 */
+	static get className() {
+		return 'engine.treeModel.delta.Delta';
+	}
+
+	/**
 	 * Delta priority. Used in {@link engine.treeModel.delta.transform delta transformations}. Delta with the higher
 	 * priority will be treated as more important when resolving transformation conflicts. If deltas have same
 	 * priority, other factors will be used to determine which delta is more important.
@@ -128,4 +164,64 @@ export default class Delta {
 	static get _priority() {
 		return 0;
 	}
+
+	/**
+	 * Creates InsertDelta from deserialized object, ie. from parsed JSON string
+	 *
+	 * @param {Object} json
+	 * @param {engine.treeModel.Document} doc Document on which this delta will be applied.
+	 * @returns {engine.treeModel.delta.InsertDelta}
+	 */
+	static fromJSON( json, doc ) {
+		if ( !deserializers.has( json.__class ) ) {
+			/**
+			 * This delta has no defined deserializer.
+			 *
+			 * @error delta-fromjson-no-deserializer
+			 * @param {String} name
+			 */
+			throw new CKEditorError(
+				'delta-fromjson-no-deserializer: This delta has no defined deserializer',
+				{ name: json.__class }
+			);
+		}
+
+		let Constructor = deserializers.get( json.__class );
+
+		let delta = new Constructor();
+
+		if ( json.operations.length ) {
+			json.operations.forEach( ( operation ) => delta.addOperation( operations[ operation.__class ].fromJSON( operation, doc ) ) );
+		}
+
+		return delta;
+	}
+}
+
+const operations = {};
+operations[ AttributeOperation.className ] = AttributeOperation;
+operations[ InsertOperation.className ] = InsertOperation;
+operations[ MoveOperation.className ] = MoveOperation;
+operations[ NoOperation.className ] = NoOperation;
+operations[ Operation.className ] = Operation;
+operations[ ReinsertOperation.className ] = ReinsertOperation;
+operations[ RemoveOperation.className ] = RemoveOperation;
+operations[ RootAttributeOperation.className ] = RootAttributeOperation;
+
+const deserializers = new Map();
+
+export function registerDeserializer( className, constructor ) {
+	if ( deserializers.has( className ) ) {
+		/**
+		 * This delta name is already defined.
+		 *
+		 * @error delta-register-deserializer-defined
+		 * @param {String} name
+		 */
+		throw new CKEditorError(
+			'delta-register-deserializer-defined: This delta name is already defined.',
+			{ name: className } );
+	}
+
+	deserializers.set( className, constructor );
 }
