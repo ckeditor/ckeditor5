@@ -266,7 +266,10 @@ export default class ModelConversionDispatcher {
 				value: attr[ 1 ]
 			};
 
-			this.fire( 'selectionAttribute:' + data.key, data, consumable, this.conversionApi );
+			// Do not fire event if the attribute has been consumed.
+			if ( consumable.test( selection, 'selectionAttribute:' + data.key ) ) {
+				this.fire( 'selectionAttribute:' + data.key, data, consumable, this.conversionApi );
+			}
 		}
 	}
 

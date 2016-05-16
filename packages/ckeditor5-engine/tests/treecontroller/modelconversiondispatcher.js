@@ -356,6 +356,8 @@ describe( 'ModelConversionDispatcher', () => {
 
 	describe( 'convertSelection', () => {
 		beforeEach( () => {
+			dispatcher.off( 'selection' );
+
 			root.appendChildren( 'foobar' );
 			doc.selection.setRanges( [
 				new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 3 ] ) ),
@@ -400,6 +402,24 @@ describe( 'ModelConversionDispatcher', () => {
 
 			expect( dispatcher.fire.calledWith( 'selectionAttribute:bold' ) ).to.be.true;
 			expect( dispatcher.fire.calledWith( 'selectionAttribute:italic' ) ).to.be.false;
+		} );
+
+		it( 'should not fire attributes events if attribute has been consumed', () => {
+			sinon.spy( dispatcher, 'fire' );
+
+			dispatcher.on( 'selection', ( evt, selection, consumable ) => {
+				consumable.consume( selection, 'selectionAttribute:bold' );
+			} );
+
+			doc.enqueueChanges( () => {
+				doc.batch()
+					.setAttr( 'bold', true, ModelRange.createFromElement( root ) )
+					.setAttr( 'italic', true, ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ) );
+			} );
+
+			dispatcher.convertSelection( doc.selection );
+
+			expect( dispatcher.fire.calledWith( 'selectionAttribute:bold' ) ).to.be.false;
 		} );
 	} );
 } );
