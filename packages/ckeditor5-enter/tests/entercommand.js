@@ -8,7 +8,6 @@
 import Editor from '/ckeditor5/editor.js';
 import Document from '/ckeditor5/engine/treemodel/document.js';
 import { default as EnterCommand, enterBlock } from '/ckeditor5/enter/entercommand.js';
-import { getData, setData } from '/tests/engine/_utils/model.js';
 
 let editor, doc;
 
@@ -34,11 +33,11 @@ describe( 'EnterCommand', () => {
 	it( 'enters a block using enqueueChanges', () => {
 		const spy = sinon.spy( doc, 'enqueueChanges' );
 
-		setData( doc, 'main', '<p>foo<selection /></p>' );
+		bender.model.setData( doc, '<p>foo<selection /></p>' );
 
 		editor.execute( 'enter' );
 
-		expect( getData( doc, 'main' ) ).to.equal( '<p>foo</p><p></p>' );
+		expect( bender.model.getData( doc, { withoutSelection: true } ) ).to.equal( '<p>foo</p><p></p>' );
 		expect( spy.calledOnce ).to.be.true;
 	} );
 } );
@@ -178,7 +177,7 @@ describe( 'enterBlock', () => {
 
 			doc.composer.on( 'deleteContents', spy );
 
-			setData( doc, 'main', '<p><selection>x</selection></p>' );
+			bender.model.setData( doc, '<p><selection>x</selection></p>' );
 
 			enterBlock( doc.batch(), doc.selection, { defaultBlockName: 'p' } );
 
@@ -188,11 +187,11 @@ describe( 'enterBlock', () => {
 
 	function test( title, input, output, options ) {
 		it( title, () => {
-			setData( doc, 'main', input );
+			bender.model.setData( doc, input );
 
 			enterBlock( doc.batch(), doc.selection, options );
 
-			expect( getData( doc, 'main', { selection: true } ) ).to.equal( output );
+			expect( bender.model.getData( doc ) ).to.equal( output );
 		} );
 	}
 } );
