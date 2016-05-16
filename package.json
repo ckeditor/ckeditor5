@@ -38,6 +38,7 @@
     "gulp-babel": "^6.1.0",
     "gulp-filter": "^3.0.1",
     "gulp-filter-by": "^1.2.0",
+    "gulp-istanbul": "^0.10.4",
     "gulp-jscs": "^3.0.2",
     "gulp-jsdoc3": "^0.2.0",
     "gulp-jshint": "^2.0.0",
