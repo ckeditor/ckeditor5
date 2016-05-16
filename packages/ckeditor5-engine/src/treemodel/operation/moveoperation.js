@@ -172,4 +172,21 @@ export default class MoveOperation extends Operation {
 			range: Range.createFromPositionAndShift( this.movedRangeStart, this.howMany )
 		};
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get className() {
+		return 'engine.treeModel.operation.MoveOperation';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static fromJSON( json, doc ) {
+		let sourcePosition = Position.fromJSON( json.sourcePosition, doc );
+		let targetPosition = Position.fromJSON( json.targetPosition, doc );
+
+		return new MoveOperation( sourcePosition, json.howMany, targetPosition, json.baseVersion );
+	}
 }

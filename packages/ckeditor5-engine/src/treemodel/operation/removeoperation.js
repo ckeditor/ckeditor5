@@ -48,4 +48,11 @@ export default class RemoveOperation extends MoveOperation {
 	clone() {
 		return new RemoveOperation( this.sourcePosition, this.howMany, this.baseVersion );
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get className() {
+		return 'engine.treeModel.operation.RemoveOperation';
+	}
 }

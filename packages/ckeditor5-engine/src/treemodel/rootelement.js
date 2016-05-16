@@ -40,4 +40,14 @@ export default class RootElement extends Element {
 		 */
 		this.rootName = rootName;
 	}
+
+	/**
+	 * Custom toJSON method to solve child-parent circular dependencies.
+	 *
+	 * @method engine.treeModel.RootElement#toJSON
+	 * @returns {String} Name of this root inside {@link engine.treeModel.Document} that is an owner of this root.
+	 */
+	toJSON() {
+		return typeof this.rootName === 'symbol' ? '$$graveyard' : this.rootName;
+	}
 }

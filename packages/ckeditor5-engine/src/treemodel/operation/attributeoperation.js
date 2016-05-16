@@ -134,4 +134,18 @@ export default class AttributeOperation extends Operation {
 
 		return { range: this.range, key: this.key, oldValue: this.oldValue, newValue: this.newValue };
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get className() {
+		return 'engine.treeModel.operation.AttributeOperation';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static fromJSON( json, doc ) {
+		return new AttributeOperation( Range.fromJSON( json.range, doc ), json.key, json.oldValue, json.newValue, json.baseVersion );
+	}
 }

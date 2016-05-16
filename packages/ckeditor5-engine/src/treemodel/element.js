@@ -204,10 +204,10 @@ export default class Element extends Node {
 	 *		let deserialized = JSON.parse( JSON.stringify( someElementObject ) );
 	 *		let element = NodeList.fromJSON( deserialized );
 	 *
-	 * @param object
+	 * @param {Object} json
 	 * @returns {engine.treeModel.Element}
 	 */
-	static fromJSON( object ) {
-		return new Element( object.name, object._attrs, NodeList.fromJSON( object._children ) );
+	static fromJSON( json ) {
+		return new Element( json.name, json._attrs, NodeList.fromJSON( json._children ) );
 	}
 }

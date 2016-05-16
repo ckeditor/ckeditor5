@@ -691,6 +691,14 @@ describe( 'position', () => {
 
 			expect( serialized ).to.deep.equal( { root: 'root', path: [ 0 ] } );
 		} );
+
+		it( 'should serialize position from graveyard', () => {
+			let position = new Position( doc.graveyard, [ 0 ] );
+
+			let serialized = treeModelTestUtils.jsonParseStringify( position );
+
+			expect( serialized ).to.deep.equal( { root: '$$graveyard', path: [ 0 ] } );
+		} );
 	} );
 
 	describe( 'fromJSON', () => {
@@ -698,6 +706,13 @@ describe( 'position', () => {
 			let deserialized = Position.fromJSON( { root: 'root', path: [ 0, 1, 2 ] }, doc );
 
 			expect( deserialized.root ).to.equal( root );
+			expect( deserialized.path ).to.deep.equal( [ 0, 1, 2 ] );
+		} );
+
+		it( 'should create object from graveyard', () => {
+			let deserialized = Position.fromJSON( { root: '$$graveyard', path: [ 0, 1, 2 ] }, doc );
+
+			expect( deserialized.root ).to.equal( doc.graveyard );
 			expect( deserialized.path ).to.deep.equal( [ 0, 1, 2 ] );
 		} );
 

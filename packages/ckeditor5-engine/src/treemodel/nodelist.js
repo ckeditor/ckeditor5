@@ -364,13 +364,13 @@ export default class NodeList {
 	 *		let deserialized = JSON.parse( JSON.stringify( someNodeList ) );
 	 *		let nodeList = NodeList.fromJSON( deserialized );
 	 *
-	 * @param object
+	 * @param {Object} json Deserialized JSON object.
 	 * @returns {engine.treeModel.NodeList}
 	 */
-	static fromJSON( object ) {
+	static fromJSON( json ) {
 		let nodes = [];
 
-		for ( let node of object._nodes ) {
+		for ( let node of json._nodes ) {
 			if ( node.text ) {
 				nodes.push( new Text( node.text, node._attrs ) );
 			} else {

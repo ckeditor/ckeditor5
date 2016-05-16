@@ -9,6 +9,7 @@
 
 import Delta from '/ckeditor5/engine/treemodel/delta/delta.js';
 import Operation from '/ckeditor5/engine/treemodel/operation/operation.js';
+import treeModelTestUtils from '/tests/engine/treemodel/_utils/utils.js';
 
 describe( 'Operation', () => {
 	it( 'should save its base version', () => {
@@ -27,7 +28,32 @@ describe( 'Operation', () => {
 		let parsedIn = JSON.parse( JSON.stringify( opInDelta ) );
 		let parsedOutside = JSON.parse( JSON.stringify( opOutsideDelta ) );
 
-		expect( parsedIn.delta ).to.equal( '[engine.treeModel.Delta]' );
+		expect( parsedIn.delta ).to.equal( '[engine.treeModel.delta.Delta]' );
 		expect( parsedOutside.delta ).to.be.null;
+	} );
+
+	describe( 'toJSON', () => {
+		it( 'should create proper json object', () => {
+			const op = new Operation( 4 );
+
+			const serialized = treeModelTestUtils.jsonParseStringify( op );
+
+			expect( serialized ).to.deep.equal( {
+				__class: 'engine.treeModel.operation.Operation',
+				baseVersion: 4,
+				delta: null
+			} );
+		} );
+	} );
+
+	describe( 'fromJSON', () => {
+		it( 'should create proper Operation from json object', () => {
+			const op = new Operation( 4 );
+
+			const serialized = treeModelTestUtils.jsonParseStringify( op );
+			const deserialized = Operation.fromJSON( serialized );
+
+			expect( deserialized ).to.deep.equal( op );
+		} );
 	} );
 } );

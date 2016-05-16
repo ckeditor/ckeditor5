@@ -128,4 +128,31 @@ export default class RootAttributeOperation extends Operation {
 
 		return { root: this.root, key: this.key, oldValue: this.oldValue, newValue: this.newValue };
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get className() {
+		return 'engine.treeModel.operation.RootAttributeOperation';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static fromJSON( json, doc ) {
+		if ( !doc.hasRoot( json.root ) ) {
+			/**
+			 * Cannot create RootAttributeOperation for document. Root with specified name does not exist.
+			 *
+			 * @error rootattributeoperation-fromjson-no-root
+			 * @param {String} rootName
+			 */
+			throw new CKEditorError(
+				'rootattributeoperation-fromjson-no-root: Cannot create RootAttributeOperation. Root with specified name does not exist.',
+				{ rootName: json }
+			);
+		}
+
+		return new RootAttributeOperation( doc.getRoot( json.root ), json.key, json.oldValue, json.newValue, json.baseVersion );
+	}
 }

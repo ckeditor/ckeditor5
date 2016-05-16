@@ -71,4 +71,18 @@ export default class InsertOperation extends Operation {
 			range: Range.createFromPositionAndShift( this.position, this.nodeList.length )
 		};
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get className() {
+		return 'engine.treeModel.operation.InsertOperation';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static fromJSON( json, doc ) {
+		return new InsertOperation( Position.fromJSON( json.position, doc ), NodeList.fromJSON( json.nodeList ), json.baseVersion );
+	}
 }

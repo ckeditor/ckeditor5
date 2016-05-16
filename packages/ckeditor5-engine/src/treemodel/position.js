@@ -10,7 +10,6 @@ import Element from './element.js';
 import last from '../../utils/lib/lodash/last.js';
 import compareArrays from '../../utils/comparearrays';
 import CKEditorError from '../../utils/ckeditorerror.js';
-import clone from '../../utils/lib/lodash/clone.js';
 
 /**
  * Position in the tree. Position is always located before or after a node.
@@ -445,18 +444,6 @@ export default class Position {
 	}
 
 	/**
-	 * Custom toJSON method.
-	 *
-	 * @returns {Object} Object representation of this position with the root property replaced with its rootName.
-	 */
-	toJSON() {
-		return {
-			root: this.root.rootName,
-			path: clone( this.path )
-		};
-	}
-
-	/**
 	 * Creates position at the given location. The location can be specified as:
 	 *
 	 * * a {@link engine.treeModel.Position position},
@@ -577,13 +564,24 @@ export default class Position {
 	}
 
 	/**
+	 * Creates Element object from deserilized object, ie. from parsed JSON string.
 	 *
-	 * @param {Object} json
-	 * @param {engine.treeModel.Document} doc
+	 * @param {Object} json Deserialized JSON object.
+	 * @param {engine.treeModel.Document} doc Document on which this operation will be applied.
 	 * @returns {engine.treeModel.Position}
 	 */
 	static fromJSON( json, doc ) {
+		if ( json.root === '$$graveyard' ) {
+			return new Position( doc.graveyard, json.path );
+		}
+
 		if ( !doc.hasRoot( json.root ) ) {
+			/**
+			 * Cannot create position for document. Root with specified name does not exist.
+			 *
+			 * @error position-fromjson-no-root
+			 * @param {String} rootName
+			 */
 			throw new CKEditorError(
 				'position-fromjson-no-root: Cannot create position for document. Root with specified name does not exist.',
 				{ rootName: json.root }

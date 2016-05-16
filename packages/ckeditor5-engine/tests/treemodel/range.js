@@ -13,12 +13,13 @@ import Element from '/ckeditor5/engine/treemodel/element.js';
 import Text from '/ckeditor5/engine/treemodel/text.js';
 import Document from '/ckeditor5/engine/treemodel/document.js';
 import TreeWalker from '/ckeditor5/engine/treemodel/treewalker.js';
+import treeModelTestUtils from '/tests/engine/treemodel/_utils/utils.js';
 
 describe( 'Range', () => {
-	let range, start, end, root, otherRoot;
+	let doc, range, start, end, root, otherRoot;
 
 	beforeEach( () => {
-		let doc = new Document();
+		doc = new Document();
 		root = doc.createRoot( 'root' );
 		otherRoot = doc.createRoot( 'otherRoot' );
 
@@ -225,7 +226,7 @@ describe( 'Range', () => {
 
 			expect( mapNodesToNames( items ) ).to.deep.equal(
 				[ 'T:st', 'E:h', 'E:p', 'T:lorem ipsum', 'E:p', 'E:div', 'E:p',
-				'T:foo', 'E:p', 'E:p', 'T:bar', 'E:p', 'E:div', 'E:h', 'T:se' ] );
+					'T:foo', 'E:p', 'E:p', 'T:bar', 'E:p', 'E:div', 'E:h', 'T:se' ] );
 		} );
 
 		it( 'should return treewalker with given options', () => {
@@ -697,6 +698,15 @@ describe( 'Range', () => {
 		it( 'should be false if start and end position are in different parents', () => {
 			let range = new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 3, 0, 1 ] ) );
 			expect( range.isFlat ).to.be.false;
+		} );
+	} );
+
+	describe( 'fromJSON', () => {
+		it( 'should create range from given JSON object', () => {
+			const serialized = treeModelTestUtils.jsonParseStringify( range );
+			const deserialized = Range.fromJSON( serialized, doc );
+
+			expect( deserialized ).to.deep.equal( range );
 		} );
 	} );
 
