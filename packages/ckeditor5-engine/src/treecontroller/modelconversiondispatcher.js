@@ -256,15 +256,15 @@ export default class ModelConversionDispatcher {
 	 */
 	convertSelection( selection ) {
 		const consumable = this._createSelectionConsumable( selection );
+		const data = {
+			selection: selection
+		};
 
-		this.fire( 'selection', selection, consumable, this.conversionApi );
+		this.fire( 'selection', data, consumable, this.conversionApi );
 
 		for ( let attr of selection.getAttributes() ) {
-			const data = {
-				selection: selection,
-				key: attr[ 0 ],
-				value: attr[ 1 ]
-			};
+			data.key = attr[ 0 ];
+			data.value = attr[ 1 ];
 
 			// Do not fire event if the attribute has been consumed.
 			if ( consumable.test( selection, 'selectionAttribute:' + data.key ) ) {

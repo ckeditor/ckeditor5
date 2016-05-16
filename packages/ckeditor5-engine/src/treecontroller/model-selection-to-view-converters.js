@@ -27,7 +27,9 @@ import ViewRange from '../treeview/range.js';
  * @returns {Function} Selection converter.
  */
 export function convertRangeSelection() {
-	return ( evt, selection, consumable, conversionApi ) => {
+	return ( evt, data, consumable, conversionApi ) => {
+		const selection = data.selection;
+
 		if ( selection.isCollapsed ) {
 			return;
 		}
@@ -68,7 +70,9 @@ export function convertRangeSelection() {
  * @returns {Function} Selection converter.
  */
 export function convertCollapsedSelection() {
-	return ( evt, selection, consumable, conversionApi ) => {
+	return ( evt, data, consumable, conversionApi ) => {
+		const selection = data.selection;
+
 		if ( !selection.isCollapsed ) {
 			return;
 		}
@@ -136,11 +140,13 @@ export function convertCollapsedSelection() {
  */
 export function convertSelectionAttribute( elementCreator ) {
 	return ( evt, data, consumable, conversionApi ) => {
-		if ( !data.selection.isCollapsed ) {
+		const selection = data.selection;
+
+		if ( !selection.isCollapsed ) {
 			return;
 		}
 
-		if ( !consumable.consume( data.selection, 'selectionAttribute:' + data.key ) ) {
+		if ( !consumable.consume( selection, 'selectionAttribute:' + data.key ) ) {
 			return;
 		}
 
@@ -150,11 +156,11 @@ export function convertSelectionAttribute( elementCreator ) {
 		for ( let range of ranges ) {
 			const viewElement = elementCreator instanceof ViewElement ?
 				elementCreator.clone( true ) :
-				elementCreator( data.value, data.selection, consumable, conversionApi );
+				elementCreator( data.value, selection, consumable, conversionApi );
 
 			const viewPosition = conversionApi.writer.wrapPosition( range.start, viewElement );
 
-			conversionApi.viewSelection.addRange( new ViewRange( viewPosition, viewPosition ), data.selection.isBackward );
+			conversionApi.viewSelection.addRange( new ViewRange( viewPosition, viewPosition ), selection.isBackward );
 		}
 	};
 }

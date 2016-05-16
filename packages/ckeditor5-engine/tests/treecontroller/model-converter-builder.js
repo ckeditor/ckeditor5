@@ -197,7 +197,7 @@ describe( 'Model converter builder', () => {
 		it( 'selection conversion', () => {
 			// This test requires collapsed range selection converter (breaking attributes), clearing view selection
 			// and clearing "artifacts" (empty nodes) before new conversion happens.
-			dispatcher.on( 'selection', ( evt, selection, consumable, conversionApi ) => {
+			dispatcher.on( 'selection', ( evt, data, consumable, conversionApi ) => {
 				// Clear artifacts.
 				for ( let range of conversionApi.viewSelection.getRanges() ) {
 					const parentNode = range.start.parent;
@@ -208,11 +208,11 @@ describe( 'Model converter builder', () => {
 				}
 
 				// Break attributes.
-				const viewPosition = conversionApi.mapper.toViewPosition( selection.getFirstPosition() );
+				const viewPosition = conversionApi.mapper.toViewPosition( data.selection.getFirstPosition() );
 				const brokenPosition = conversionApi.writer.breakAttributes( viewPosition );
 
 				// Set the new range as the only range of selection (clear old ranges).
-				conversionApi.viewSelection.setRanges( [ new ViewRange( brokenPosition, brokenPosition ) ], selection.isBackward );
+				conversionApi.viewSelection.setRanges( [ new ViewRange( brokenPosition, brokenPosition ) ], data.selection.isBackward );
 			} );
 
 			// Model converter builder should add selection converter.

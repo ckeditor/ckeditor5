@@ -370,7 +370,10 @@ describe( 'ModelConversionDispatcher', () => {
 
 			dispatcher.convertSelection( doc.selection );
 
-			expect( dispatcher.fire.calledWith( 'selection', sinon.match.instanceOf( doc.selection.constructor ) ) ).to.be.true;
+			expect( dispatcher.fire.calledWith(
+				'selection',
+				{ selection: sinon.match.instanceOf( doc.selection.constructor ) }
+			) ).to.be.true;
 		} );
 
 		it( 'should prepare correct list of consumable values', () => {
@@ -380,10 +383,10 @@ describe( 'ModelConversionDispatcher', () => {
 					.setAttr( 'italic', true, ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ) );
 			} );
 
-			dispatcher.on( 'selection', ( evt, selection, consumable ) => {
-				expect( consumable.test( selection, 'selection' ) ).to.be.true;
-				expect( consumable.test( selection, 'selectionAttribute:bold' ) ).to.be.true;
-				expect( consumable.test( selection, 'selectionAttribute:italic' ) ).to.be.null;
+			dispatcher.on( 'selection', ( evt, data, consumable ) => {
+				expect( consumable.test( data.selection, 'selection' ) ).to.be.true;
+				expect( consumable.test( data.selection, 'selectionAttribute:bold' ) ).to.be.true;
+				expect( consumable.test( data.selection, 'selectionAttribute:italic' ) ).to.be.null;
 			} );
 
 			dispatcher.convertSelection( doc.selection );
@@ -407,8 +410,8 @@ describe( 'ModelConversionDispatcher', () => {
 		it( 'should not fire attributes events if attribute has been consumed', () => {
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.on( 'selection', ( evt, selection, consumable ) => {
-				consumable.consume( selection, 'selectionAttribute:bold' );
+			dispatcher.on( 'selection', ( evt, data, consumable ) => {
+				consumable.consume( data.selection, 'selectionAttribute:bold' );
 			} );
 
 			doc.enqueueChanges( () => {

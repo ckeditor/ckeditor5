@@ -132,8 +132,8 @@ describe( 'default converters', () => {
 		it( 'consumes consumable values properly', () => {
 			// Add callback that will fire before default ones.
 			// This should prevent default callback doing anything.
-			dispatcher.on( 'selection', ( evt, selection, consumable ) => {
-				expect( consumable.consume( selection, 'selection' ) ).to.be.true;
+			dispatcher.on( 'selection', ( evt, data, consumable ) => {
+				expect( consumable.consume( data.selection, 'selection' ) ).to.be.true;
 			}, null, 0 );
 
 			// Similar test case as the first in this suite.
@@ -183,8 +183,8 @@ describe( 'default converters', () => {
 		it( 'consumes consumable values properly', () => {
 			// Add callbacks that will fire before default ones.
 			// This should prevent default callbacks doing anything.
-			dispatcher.on( 'selection', ( evt, selection, consumable ) => {
-				expect( consumable.consume( selection, 'selection' ) ).to.be.true;
+			dispatcher.on( 'selection', ( evt, data, consumable ) => {
+				expect( consumable.consume( data.selection, 'selection' ) ).to.be.true;
 			}, null, 0 );
 
 			dispatcher.on( 'selectionAttribute:bold', ( evt, data, consumable ) => {
@@ -306,7 +306,9 @@ describe( 'table cell selection converter', () => {
 		dispatcher.on( 'insert:td', tableConverter );
 
 		// Special converter for table cells.
-		dispatcher.on( 'selection', ( evt, selection, consumable, conversionApi ) => {
+		dispatcher.on( 'selection', ( evt, data, consumable, conversionApi ) => {
+			const selection = data.selection;
+
 			if ( !consumable.test( selection, 'selection' ) || selection.isCollapsed ) {
 				return;
 			}
