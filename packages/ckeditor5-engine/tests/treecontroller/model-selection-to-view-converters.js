@@ -31,14 +31,11 @@ import {
 	wrap
 } from '/ckeditor5/engine/treecontroller/model-to-view-converters.js';
 
-import { setData } from '/tests/engine/_utils/model.js';
-import { stringify } from '/tests/engine/_utils/view.js';
-
 let dispatcher, modelDoc, modelRoot, mapper, viewRoot, writer, viewSelection;
 
 beforeEach( () => {
 	modelDoc = new ModelDocument();
-	modelRoot = modelDoc.createRoot( 'modelRoot' );
+	modelRoot = modelDoc.createRoot( 'main' );
 	viewRoot = new ViewContainerElement( 'viewRoot' );
 
 	mapper = new Mapper();
@@ -360,7 +357,7 @@ describe( 'table cell selection converter', () => {
 // that are offsets or paths of selection positions in root element.
 function test( selectionPaths, modelInput, expectedView, selectionAttributes = {} ) {
 	// Parse passed `modelInput` string and set it as current model.
-	setData( modelDoc, 'modelRoot', modelInput );
+	bender.model.setData( modelDoc, modelInput );
 
 	// Manually set selection ranges using passed `selectionPaths`.
 	let startPath = typeof selectionPaths[ 0 ] == 'number' ? [ selectionPaths[ 0 ] ] : selectionPaths[ 0 ];
@@ -388,5 +385,5 @@ function test( selectionPaths, modelInput, expectedView, selectionAttributes = {
 	dispatcher.convertSelection( modelDoc.selection );
 
 	// Stringify view and check if it is same as expected.
-	expect( stringify( viewRoot, viewSelection, { showType: false } ) ).to.equal( '<viewRoot>' + expectedView + '</viewRoot>' );
+	expect( bender.view.stringify( viewRoot, viewSelection, { showType: false } ) ).to.equal( '<viewRoot>' + expectedView + '</viewRoot>' );
 }

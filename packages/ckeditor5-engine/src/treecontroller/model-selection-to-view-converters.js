@@ -39,10 +39,7 @@ export function convertRangeSelection() {
 		}
 
 		for ( let range of selection.getRanges() ) {
-			const startPosition = conversionApi.mapper.toViewPosition( range.start );
-			const endPosition = conversionApi.mapper.toViewPosition( range.end );
-
-			const viewRange = new ViewRange( startPosition, endPosition );
+			const viewRange = conversionApi.mapper.toViewRange( range );
 			conversionApi.viewSelection.addRange( viewRange, selection.isBackward );
 		}
 	};
@@ -81,13 +78,11 @@ export function convertCollapsedSelection() {
 			return;
 		}
 
-		// If selection is collapsed, there still might be multiple, collapsed ranges.
-		for ( let range of selection.getRanges() ) {
-			const viewPosition = conversionApi.mapper.toViewPosition( range.start );
-			const brokenPosition = conversionApi.writer.breakAttributes( viewPosition );
+		const modelPosition = selection.getFirstPosition();
+		const viewPosition = conversionApi.mapper.toViewPosition( modelPosition );
+		const brokenPosition = conversionApi.writer.breakAttributes( viewPosition );
 
-			conversionApi.viewSelection.addRange( new ViewRange( brokenPosition, brokenPosition ), selection.isBackward );
-		}
+		conversionApi.viewSelection.addRange( new ViewRange( brokenPosition, brokenPosition ), selection.isBackward );
 	};
 }
 
@@ -120,13 +115,18 @@ export function convertCollapsedSelection() {
  * but it does not have bold attribute itself, but has italic attribute instead (let's assume that user turned off bold and turned
  * on italic with selection collapsed):
  *
- *		modelDispatcher.on( 'selectionAttribute:italic', convertSelectionAttribute( new ViewAttributeElement( 'em' ) ) );
  *		modelDispatcher.on( 'selection', convertCollapsedSelection() );
+ *		modelDispatcher.on( 'selectionAttribute:italic', convertSelectionAttribute( new ViewAttributeElement( 'em' ) ) );
  *
  * Example of view states before and after converting collapsed selection:
  *
- *		<p><em>f^oo</em>bar</p> 		->	<p><em>f^oo</em>bar</p>
- *		<p><strong>f^oo<strong>bar</p>  ->	<p><strong>f</strong><em>^</em><strong>oo</strong>bar</p>
+ *		<p><em>f^oo</em>bar</p>
+ *		-> <p><em>f</em>^<em>oo</em>bar</p>
+ *		-> <p><em>f^oo</em>bar</p>
+ *
+ *		<p><strong>f^oo<strong>bar</p>
+ *		-> <p><strong>f</strong>^<strong>oo<strong>bar</p>
+ *		-> <p><strong>f</strong><em>^</em><strong>oo</strong>bar</p>
  *
  * In first example, nothing has changed, because first `<em>` element got broken by `convertCollapsedSelection()` converter,
  * but then it got wrapped-back by `convertSelectionAttribute()` converter. In second example, notice how `<strong>` element
@@ -150,17 +150,15 @@ export function convertSelectionAttribute( elementCreator ) {
 			return;
 		}
 
-		const ranges = Array.from( conversionApi.viewSelection.getRanges() );
+		let viewPosition = conversionApi.viewSelection.getFirstPosition();
 		conversionApi.viewSelection.removeAllRanges();
 
-		for ( let range of ranges ) {
-			const viewElement = elementCreator instanceof ViewElement ?
+		const viewElement = elementCreator instanceof ViewElement ?
 				elementCreator.clone( true ) :
 				elementCreator( data.value, selection, consumable, conversionApi );
 
-			const viewPosition = conversionApi.writer.wrapPosition( range.start, viewElement );
+		viewPosition = conversionApi.writer.wrapPosition( viewPosition, viewElement );
 
-			conversionApi.viewSelection.addRange( new ViewRange( viewPosition, viewPosition ), selection.isBackward );
-		}
+		conversionApi.viewSelection.addRange( new ViewRange( viewPosition, viewPosition ), selection.isBackward );
 	};
 }
