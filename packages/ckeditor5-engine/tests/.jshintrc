@@ -21,6 +21,6 @@
 		"expect": false,
 		"it": false,
 		"sinon": false,
-		"bender": true
+		"bender": false
 	}
 }
