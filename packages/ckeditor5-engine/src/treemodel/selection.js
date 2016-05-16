@@ -93,18 +93,31 @@ export default class Selection {
 	}
 
 	/**
-	 * Returns whether the selection is collapsed. Selection is collapsed when all it's ranges are collapsed.
+	 * Returns whether the selection is collapsed. Selection is collapsed when there is exactly one range which is
+	 * collapsed.
 	 *
 	 * @type {Boolean}
 	 */
 	get isCollapsed() {
-		for ( let i = 0; i < this._ranges.length; i++ ) {
-			if ( !this._ranges[ i ].isCollapsed ) {
-				return false;
-			}
-		}
+		const length = this._ranges.length;
 
-		return true;
+		if ( length === 0 ) {
+			// Default range is collapsed.
+			return true;
+		} else if ( length === 1 ) {
+			return this._ranges[ 0 ].isCollapsed;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Returns number of ranges in selection.
+	 *
+	 * @type {Number}
+     */
+	get rangeCount() {
+		return this._ranges.length ? this._ranges.length : 1;
 	}
 
 	/**

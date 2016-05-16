@@ -85,18 +85,13 @@ export default class Selection {
 	}
 
 	/**
-	 * Returns whether the selection is collapsed. Selection is collapsed when all it's ranges are collapsed.
+	 * Returns whether the selection is collapsed. Selection is collapsed when there is exactly one range which is
+	 * collapsed.
 	 *
 	 * @type {Boolean}
 	 */
 	get isCollapsed() {
-		for ( let range of this._ranges ) {
-			if ( !range.isCollapsed ) {
-				return false;
-			}
-		}
-
-		return true;
+		return this.rangeCount === 1 && this._ranges[ 0 ].isCollapsed;
 	}
 
 	/**
