@@ -5,24 +5,94 @@
 
 'use strict';
 
-import { getData, setData } from '/tests/engine/_utils/model.js';
+import { stringify, parse, getData, setData } from '/tests/engine/_utils/model.js';
 import Document from '/ckeditor5/engine/treemodel/document.js';
+import DocumentFragment from '/ckeditor5/engine/treemodel/documentfragment.js';
 import Element from '/ckeditor5/engine/treemodel/element.js';
 import Text from '/ckeditor5/engine/treemodel/text.js';
 import Range from '/ckeditor5/engine/treemodel/range.js';
+import Position from '/ckeditor5/engine/treemodel/position.js';
 
 describe( 'model test utils', () => {
-	let document, root, selection;
+	let document, root, selection, sandbox;
 
 	beforeEach( () => {
 		document = new Document();
 		root = document.createRoot( 'main', '$root' );
 		selection = document.selection;
-
+		sandbox = sinon.sandbox.create();
 		selection.removeAllRanges();
 	} );
 
+	afterEach( () => {
+		sandbox.restore();
+	} );
+
 	describe( 'getData', () => {
+		it( 'should use stringify method', () => {
+			const stringifySpy = sandbox.spy( getData, '_stringify' );
+			root.appendChildren( new Element( 'b', null, [ 'btext' ] ) );
+
+			expect( getData( document, { withoutSelection: true } ) ).to.equal( '<b>btext</b>' );
+			sinon.assert.calledOnce( stringifySpy );
+			sinon.assert.calledWithExactly( stringifySpy, root );
+		} );
+
+		it( 'should use stringify method with selection', () => {
+			const stringifySpy = sandbox.spy( getData, '_stringify' );
+			root.appendChildren( new Element( 'b', null, [ 'btext' ] ) );
+			document.selection.addRange( Range.createFromParentsAndOffsets( root, 0, root, 1 ) );
+
+			expect( getData( document ) ).to.equal( '<selection><b>btext</b></selection>' );
+			sinon.assert.calledOnce( stringifySpy );
+			sinon.assert.calledWithExactly( stringifySpy, root, document.selection );
+		} );
+	} );
+
+	describe( 'setData', () => {
+		it( 'should use parse method', () => {
+			const parseSpy = sandbox.spy( setData, '_parse' );
+			const options = {};
+			const data = '<b>btext</b>text';
+
+			setData( document, data, options );
+
+			expect( getData( document, { withoutSelection: true } ) ).to.equal( data );
+			sinon.assert.calledOnce( parseSpy );
+			const args = parseSpy.firstCall.args;
+			expect( args[ 0 ] ).to.equal( data );
+		} );
+
+		it( 'should use parse method with selection', () => {
+			const parseSpy = sandbox.spy( setData, '_parse' );
+			const options = {};
+			const data = '<selection><b>btext</b></selection>';
+
+			setData( document, data, options );
+
+			expect( getData( document ) ).to.equal( data );
+			sinon.assert.calledOnce( parseSpy );
+			const args = parseSpy.firstCall.args;
+			expect( args[ 0 ] ).to.equal( data );
+		} );
+	} );
+
+	describe( 'stringify', () => {
+		it( 'should stringify text', () => {
+			const text = new Text( 'text', { underline: true, bold: true } );
+			expect( stringify( text ) ).to.equal( '<$text bold=true underline=true>text</$text>' );
+		} );
+
+		it( 'should stringify element', () => {
+			const element = new Element( 'a', null, [ new Element( 'b', null, 'btext' ), 'atext' ] );
+			expect( stringify( element ) ).to.equal( '<a><b>btext</b>atext</a>' );
+		} );
+
+		it( 'should stringify document fragment', () => {
+			const fragment = new DocumentFragment( [ new Element( 'b', null, 'btext' ), 'atext' ] );
+			expect( stringify( fragment ) ).to.equal( '<b>btext</b>atext' );
+		} );
+
 		it( 'writes elements and texts', () => {
 			root.appendChildren( [
 				new Element( 'a', null, 'atext' ),
@@ -34,7 +104,7 @@ describe( 'model test utils', () => {
 				new Element( 'd' )
 			] );
 
-			expect( getData( document, 'main' ) ).to.equal(
+			expect( stringify( root ) ).to.equal(
 				'<a>atext</a><b><c1></c1>ctext<c2></c2></b><d></d>'
 			);
 		} );
@@ -48,7 +118,7 @@ describe( 'model test utils', () => {
 
 			// Note: attributes are written in a very simplistic way, because they are not to be parsed. They are just
 			// to be compared in the tests with some patterns.
-			expect( getData( document, 'main' ) ).to.equal(
+			expect( stringify( root ) ).to.equal(
 				'<a bar=1 car=false foo=true><b barFoo={"x":1,"y":2} fooBar="x y"></b></a>'
 			);
 		} );
@@ -63,7 +133,7 @@ describe( 'model test utils', () => {
 				] )
 			] );
 
-			expect( getData( document, 'main' ) ).to.equal(
+			expect( stringify( root ) ).to.equal(
 				'<$text bold=true>foo</$text>' +
 				'bar' +
 				'<$text bold=true italic=true>bom</$text>' +
@@ -71,9 +141,8 @@ describe( 'model test utils', () => {
 			);
 		} );
 
-		describe( 'options.selection', () => {
+		describe( 'selection', () => {
 			let elA, elB;
-			const options = { selection: true };
 
 			beforeEach( () => {
 				elA = new Element( 'a' );
@@ -89,10 +158,9 @@ describe( 'model test utils', () => {
 
 			it( 'writes selection in an empty root', () => {
 				const root = document.createRoot( 'empty', '$root' );
-
 				selection.collapse( root );
 
-				expect( getData( document, 'empty', options ) ).to.equal(
+				expect( stringify( root, selection ) ).to.equal(
 					'<selection />'
 				);
 			} );
@@ -100,7 +168,7 @@ describe( 'model test utils', () => {
 			it( 'writes selection collapsed in an element', () => {
 				selection.collapse( root );
 
-				expect( getData( document, 'main', options ) ).to.equal(
+				expect( stringify( root, selection ) ).to.equal(
 					'<selection /><a></a>foo<$text bold=true>bar</$text><b></b>'
 				);
 			} );
@@ -108,7 +176,7 @@ describe( 'model test utils', () => {
 			it( 'writes selection collapsed in a text', () => {
 				selection.collapse( root, 3 );
 
-				expect( getData( document, 'main', options ) ).to.equal(
+				expect( stringify( root, selection ) ).to.equal(
 					'<a></a>fo<selection />o<$text bold=true>bar</$text><b></b>'
 				);
 			} );
@@ -116,7 +184,7 @@ describe( 'model test utils', () => {
 			it( 'writes selection collapsed at the text left boundary', () => {
 				selection.collapse( elA, 'AFTER' );
 
-				expect( getData( document, 'main', options ) ).to.equal(
+				expect( stringify( root, selection ) ).to.equal(
 					'<a></a><selection />foo<$text bold=true>bar</$text><b></b>'
 				);
 			} );
@@ -124,7 +192,7 @@ describe( 'model test utils', () => {
 			it( 'writes selection collapsed at the text right boundary', () => {
 				selection.collapse( elB, 'BEFORE' );
 
-				expect( getData( document, 'main', options ) ).to.equal(
+				expect( stringify( root, selection ) ).to.equal(
 					'<a></a>foo<$text bold=true>bar</$text><selection bold=true /><b></b>'
 				);
 			} );
@@ -135,7 +203,7 @@ describe( 'model test utils', () => {
 				// Needed due to https://github.com/ckeditor/ckeditor5-engine/issues/320.
 				selection.clearAttributes();
 
-				expect( getData( document, 'main', options ) ).to.equal(
+				expect( stringify( root, selection ) ).to.equal(
 					'<a></a>foo<$text bold=true>bar</$text><b></b><selection />'
 				);
 			} );
@@ -144,7 +212,7 @@ describe( 'model test utils', () => {
 				selection.collapse( root );
 				selection.setAttributesTo( { italic: true, bold: true } );
 
-				expect( getData( document, 'main', options ) ).to.equal(
+				expect( stringify( root, selection )  ).to.equal(
 					'<selection bold=true italic=true /><a></a>foo<$text bold=true>bar</$text><b></b>'
 				);
 			} );
@@ -152,7 +220,7 @@ describe( 'model test utils', () => {
 			it( 'writes selection collapsed selection in a text with attributes', () => {
 				selection.collapse( root, 5 );
 
-				expect( getData( document, 'main', options ) ).to.equal(
+				expect( stringify( root, selection ) ).to.equal(
 					'<a></a>foo<$text bold=true>b<selection bold=true />ar</$text><b></b>'
 				);
 			} );
@@ -162,7 +230,7 @@ describe( 'model test utils', () => {
 					Range.createFromParentsAndOffsets( root, 0, root, 4 )
 				);
 
-				expect( getData( document, 'main', options ) ).to.equal(
+				expect( stringify( root, selection ) ).to.equal(
 					'<selection><a></a>foo</selection><$text bold=true>bar</$text><b></b>'
 				);
 			} );
@@ -172,7 +240,7 @@ describe( 'model test utils', () => {
 					Range.createFromParentsAndOffsets( root, 2, root, 3 )
 				);
 
-				expect( getData( document, 'main', options ) ).to.equal(
+				expect( stringify( root, selection ) ).to.equal(
 					'<a></a>f<selection>o</selection>o<$text bold=true>bar</$text><b></b>'
 				);
 			} );
@@ -182,7 +250,7 @@ describe( 'model test utils', () => {
 					Range.createFromParentsAndOffsets( elA, 0, elB, 0 )
 				);
 
-				expect( getData( document, 'main', options ) ).to.equal(
+				expect( stringify( root, selection ) ).to.equal(
 					'<a><selection></a>foo<$text bold=true>bar</$text><b></selection></b>'
 				);
 			} );
@@ -193,14 +261,30 @@ describe( 'model test utils', () => {
 					true
 				);
 
-				expect( getData( document, 'main', options ) ).to.equal(
+				expect( stringify( root, selection ) ).to.equal(
 					'<a><selection backward></a>foo<$text bold=true>bar</$text><b></selection></b>'
+				);
+			} );
+
+			it( 'uses range and coverts it to selection', () => {
+				const range = Range.createFromParentsAndOffsets( elA, 0, elB, 0 );
+
+				expect( stringify( root, range ) ).to.equal(
+					'<a><selection></a>foo<$text bold=true>bar</$text><b></selection></b>'
+				);
+			} );
+
+			it( 'uses position and converts it to collapsed selection', () => {
+				const position = new Position( root, [ 0 ] );
+
+				expect( stringify( root, position ) ).to.equal(
+					'<selection /><a></a>foo<$text bold=true>bar</$text><b></b>'
 				);
 			} );
 		} );
 	} );
 
-	describe( 'setData', () => {
+	describe( 'parse', () => {
 		test( 'creates elements', {
 			data: '<a></a><b><c></c></b>'
 		} );
@@ -212,21 +296,21 @@ describe( 'model test utils', () => {
 		test( 'sets elements attributes', {
 			data: '<a foo=1 bar=true car="x y"><b x="y"></b></a>',
 			output: '<a bar=true car="x y" foo=1><b x="y"></b></a>',
-			check() {
+			check( root ) {
 				expect( root.getChild( 0 ).getAttribute( 'car' ) ).to.equal( 'x y' );
 			}
 		} );
 
 		test( 'sets complex attributes', {
 			data: '<a foo={"a":1,"b":"c"}></a>',
-			check() {
+			check( root ) {
 				expect( root.getChild( 0 ).getAttribute( 'foo' ) ).to.have.property( 'a', 1 );
 			}
 		} );
 
 		test( 'sets text attributes', {
 			data: '<$text bold=true italic=true>foo</$text><$text bold=true>bar</$text>bom',
-			check() {
+			check( root ) {
 				expect( root.getChildCount() ).to.equal( 9 );
 				expect( root.getChild( 0 ) ).to.have.property( 'character', 'f' );
 				expect( root.getChild( 0 ).getAttribute( 'italic' ) ).to.equal( true );
@@ -235,139 +319,132 @@ describe( 'model test utils', () => {
 
 		it( 'throws when unexpected closing tag', () => {
 			expect( () => {
-				setData( document, 'main', '<a><b></a></b>' );
-			} ).to.throw();
+				parse( '<a><b></a></b>' );
+			} ).to.throw( Error, 'Parse error - unexpected closing tag.' );
 		} );
 
 		it( 'throws when unexpected attribute', () => {
 			expect( () => {
-				setData( document, 'main', '<a ?></a>' );
-			} ).to.throw();
+				parse( '<a ?></a>' );
+			} ).to.throw( Error, 'Parse error - unexpected token: ?.' );
 		} );
 
 		it( 'throws when incorrect tag', () => {
 			expect( () => {
-				setData( document, 'main', '<a' );
-			} ).to.throw();
+				parse( '<a' );
+			} ).to.throw( Error, 'Parse error - unexpected token: <a.' );
 		} );
 
 		it( 'throws when missing closing tag', () => {
 			expect( () => {
-				setData( document, 'main', '<a><b></b>' );
-			} ).to.throw();
+				parse( '<a><b></b>' );
+			} ).to.throw( Error, 'Parse error - missing closing tags: a.' );
 		} );
 
 		it( 'throws when missing opening tag for text', () => {
 			expect( () => {
-				setData( document, 'main', '</$text>' );
-			} ).to.throw();
+				parse( '</$text>' );
+			} ).to.throw( Error, 'Parse error - unexpected closing tag.' );
 		} );
 
 		it( 'throws when missing closing tag for text', () => {
 			expect( () => {
-				setData( document, 'main', '<$text>' );
-			} ).to.throw();
+				parse( '<$text>' );
+			} ).to.throw( Error, 'Parse error - missing closing tags: $text.' );
 		} );
 
 		describe( 'selection', () => {
-			const getDataOptions = { selection: true };
-
 			test( 'sets collapsed selection in an element', {
 				data: '<a><selection /></a>',
-				getDataOptions,
-				check() {
-					expect( document.selection.getFirstPosition().parent ).to.have.property( 'name', 'a' );
+				check( root, selection ) {
+					expect( selection.getFirstPosition().parent ).to.have.property( 'name', 'a' );
 				}
 			} );
 
 			test( 'sets collapsed selection between elements', {
-				data: '<a></a><selection /><b></b>',
-				getDataOptions
+				data: '<a></a><selection /><b></b>'
 			} );
 
 			test( 'sets collapsed selection before a text', {
-				data: '<a></a><selection />foo',
-				getDataOptions
+				data: '<a></a><selection />foo'
 			} );
 
 			test( 'sets collapsed selection after a text', {
-				data: 'foo<selection />',
-				getDataOptions
+				data: 'foo<selection />'
 			} );
 
 			test( 'sets collapsed selection within a text', {
 				data: 'foo<selection />bar',
-				getDataOptions,
-				check() {
+				check( root ) {
 					expect( root.getChildCount() ).to.equal( 6 );
 				}
 			} );
 
 			test( 'sets selection attributes', {
 				data: 'foo<selection bold=true italic=true />bar',
-				getDataOptions,
-				check() {
+				check( root, selection ) {
 					expect( selection.getAttribute( 'italic' ) ).to.be.true;
 				}
 			} );
 
 			test( 'sets collapsed selection between text and text with attributes', {
 				data: 'foo<selection /><$text bold=true>bar</$text>',
-				getDataOptions,
-				check() {
+				check( root, selection ) {
 					expect( root.getChildCount() ).to.equal( 6 );
-					expect( document.selection.getAttribute( 'bold' ) ).to.be.undefined;
+					expect( selection.getAttribute( 'bold' ) ).to.be.undefined;
 				}
 			} );
 
 			test( 'sets selection containing an element', {
-				data: 'x<selection><a></a></selection>',
-				getDataOptions
+				data: 'x<selection><a></a></selection>'
 			} );
 
 			test( 'sets selection with attribute containing an element', {
-				data: 'x<selection bold=true><a></a></selection>',
-				getDataOptions
+				data: 'x<selection bold=true><a></a></selection>'
 			} );
 
 			test( 'sets a backward selection containing an element', {
-				data: 'x<selection backward bold=true><a></a></selection>',
-				getDataOptions
+				data: 'x<selection backward bold=true><a></a></selection>'
 			} );
 
 			test( 'sets selection within a text', {
-				data: 'x<selection bold=true>y</selection>z',
-				getDataOptions
+				data: 'x<selection bold=true>y</selection>z'
 			} );
 
 			test( 'sets selection within a text with different attributes', {
-				data: '<$text bold=true>fo<selection bold=true>o</$text>ba</selection>r',
-				getDataOptions
+				data: '<$text bold=true>fo<selection bold=true>o</$text>ba</selection>r'
 			} );
 
 			it( 'throws when missing selection start', () => {
 				expect( () => {
-					setData( document, 'main', 'foo</selection>' );
-				} ).to.throw();
+					parse( 'foo</selection>' );
+				} ).to.throw( Error, 'Parse error - missing selection start.' );
 			} );
 
 			it( 'throws when missing selection end', () => {
 				expect( () => {
-					setData( document, 'main', '<selection>foo' );
-				} ).to.throw();
+					parse( '<selection>foo' );
+				} ).to.throw( Error, 'Parse error - missing selection end.' );
 			} );
 		} );
 
 		function test( title, options ) {
 			it( title, () => {
-				let output = options.output || options.data;
+				const output = options.output || options.data;
+				const data = parse( options.data );
+				let model, selection;
 
-				setData( document, 'main', options.data, options.setDataOptions );
+				if ( data.selection && data.model ) {
+					model = data.model;
+					selection = data.selection;
+				} else {
+					model = data;
+				}
 
-				expect( getData( document, 'main', options.getDataOptions ) ).to.equal( output );
+				expect( stringify( model, selection ) ).to.equal( output );
 
 				if ( options.check ) {
-					options.check();
+					options.check( model, selection );
 				}
 			} );
 		}
