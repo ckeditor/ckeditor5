@@ -9,11 +9,11 @@
 
 import DomEventObserver from '/ckeditor5/engine/treeview/observer/domeventobserver.js';
 import Observer from '/ckeditor5/engine/treeview/observer/observer.js';
-import TreeView from '/ckeditor5/engine/treeview/treeview.js';
+import ViewDocument from '/ckeditor5/engine/treeview/document.js';
 
 class ClickObserver extends DomEventObserver {
-	constructor( treeView ) {
-		super( treeView );
+	constructor( document ) {
+		super( document );
 
 		this.domEventType = 'click';
 	}
@@ -24,8 +24,8 @@ class ClickObserver extends DomEventObserver {
 }
 
 class MultiObserver extends DomEventObserver {
-	constructor( treeView ) {
-		super( treeView );
+	constructor( document ) {
+		super( document );
 
 		this.domEventType = [ 'evt1', 'evt2' ];
 	}
@@ -36,15 +36,15 @@ class MultiObserver extends DomEventObserver {
 }
 
 describe( 'DomEventObserver', () => {
-	let treeView;
+	let viewDocument;
 
 	beforeEach( () => {
-		treeView = new TreeView();
+		viewDocument = new ViewDocument();
 	} );
 
 	describe( 'constructor', () => {
 		it( 'should create Observer with properties', () => {
-			const observer = new DomEventObserver( treeView );
+			const observer = new DomEventObserver( viewDocument );
 
 			expect( observer ).to.be.an.instanceof( Observer );
 		} );
@@ -55,9 +55,9 @@ describe( 'DomEventObserver', () => {
 		const domEvent = new MouseEvent( 'click' );
 		const evtSpy = sinon.spy();
 
-		treeView.createRoot( domElement, 'root' );
-		treeView.addObserver( ClickObserver );
-		treeView.on( 'click', evtSpy );
+		viewDocument.createRoot( domElement, 'root' );
+		viewDocument.addObserver( ClickObserver );
+		viewDocument.on( 'click', evtSpy );
 
 		domElement.dispatchEvent( domEvent );
 
@@ -77,10 +77,10 @@ describe( 'DomEventObserver', () => {
 		const evtSpy1 = sinon.spy();
 		const evtSpy2 = sinon.spy();
 
-		treeView.createRoot( domElement, 'root' );
-		treeView.addObserver( MultiObserver );
-		treeView.on( 'evt1', evtSpy1 );
-		treeView.on( 'evt2', evtSpy2 );
+		viewDocument.createRoot( domElement, 'root' );
+		viewDocument.addObserver( MultiObserver );
+		viewDocument.on( 'evt1', evtSpy1 );
+		viewDocument.on( 'evt2', evtSpy2 );
 
 		domElement.dispatchEvent( domEvent1 );
 		expect( evtSpy1.calledOnce ).to.be.true;
@@ -94,9 +94,9 @@ describe( 'DomEventObserver', () => {
 		const domEvent = new MouseEvent( 'click' );
 		const evtSpy = sinon.spy();
 
-		treeView.createRoot( domElement, 'root' );
-		const testObserver = treeView.addObserver( ClickObserver );
-		treeView.on( 'click', evtSpy );
+		viewDocument.createRoot( domElement, 'root' );
+		const testObserver = viewDocument.addObserver( ClickObserver );
+		viewDocument.on( 'click', evtSpy );
 
 		testObserver.disable();
 
@@ -108,12 +108,12 @@ describe( 'DomEventObserver', () => {
 	it( 'should fire event if observer is disabled and re-enabled', () => {
 		const domElement = document.createElement( 'p' );
 		const domEvent = new MouseEvent( 'click' );
-		const treeView = new TreeView();
+		const viewDocument = new ViewDocument();
 		const evtSpy = sinon.spy();
 
-		treeView.createRoot( domElement, 'root' );
-		const testObserver = treeView.addObserver( ClickObserver );
-		treeView.on( 'click', evtSpy );
+		viewDocument.createRoot( domElement, 'root' );
+		const testObserver = viewDocument.addObserver( ClickObserver );
+		viewDocument.on( 'click', evtSpy );
 
 		testObserver.disable();
 
@@ -130,8 +130,8 @@ describe( 'DomEventObserver', () => {
 
 	describe( 'fire', () => {
 		it( 'should do nothing if observer is disabled', () => {
-			const testObserver = new ClickObserver( treeView );
-			const fireSpy = sinon.spy( treeView, 'fire' );
+			const testObserver = new ClickObserver( viewDocument );
+			const fireSpy = sinon.spy( viewDocument, 'fire' );
 
 			testObserver.disable();
 

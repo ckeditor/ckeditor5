@@ -9,14 +9,14 @@ import DomEventObserver from './domeventobserver.js';
 import { getCode } from '../../../utils/keyboard.js';
 
 /**
- * {@link engine.treeView.TreeView#keydown Key down} event observer.
+ * {@link engine.treeView.Document#keydown Key down} event observer.
  *
  * @memberOf engine.treeView.observer
  * @extends engine.treeView.observer.DomEventObserver
  */
 export default class KeyObserver extends DomEventObserver {
-	constructor( treeView ) {
-		super( treeView );
+	constructor( document ) {
+		super( document );
 
 		this.domEventType = 'keydown';
 	}
@@ -39,12 +39,12 @@ export default class KeyObserver extends DomEventObserver {
 /**
  * Fired when a key has been pressed.
  *
- * @event engine.treeView.TreeView#keydown
+ * @event engine.treeView.Document#keydown
  * @param {engine.treeView.observer.keyObserver.KeyEventData} keyEventData
  */
 
 /**
- * The value of the {@link engine.treeView.TreeView#keydown} event.
+ * The value of the {@link engine.treeView.Document#keydown} event.
  *
  * @class engine.treeView.observer.keyObserver.KeyEventData
  * @extends engine.treeView.observer.DomEventData

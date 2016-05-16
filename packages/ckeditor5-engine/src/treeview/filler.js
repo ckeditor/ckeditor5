@@ -149,10 +149,10 @@ export function isBlockFiller( domNode, blockFiller ) {
  * Assign key observer which move cursor from the end of the inline filler to the begging of it when
  * the left arrow is pressed, so the filler does not break navigation.
  *
- * @param {engine.treeView.TreeView} treeView TreeView instance we should inject quirks handling on.
+ * @param {engine.treeView.Document} document Document instance we should inject quirks handling on.
  */
-export function injectQuirksHandling( treeView ) {
-	treeView.on( 'keydown', jumpOverInlineFiller );
+export function injectQuirksHandling( document ) {
+	document.on( 'keydown', jumpOverInlineFiller );
 }
 
 // Move cursor from the end of the inline filler to the begging of it when, so the filler does not break navigation.

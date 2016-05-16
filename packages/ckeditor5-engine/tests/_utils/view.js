@@ -24,9 +24,9 @@ const TEXT_RANGE_START_TOKEN = '{';
 const TEXT_RANGE_END_TOKEN = '}';
 
 /**
- * Writes the contents of the {@link engine.treeView.TreeView TreeView} to an HTML-like string.
+ * Writes the contents of the {@link engine.treeView.Document Document} to an HTML-like string.
  *
- * @param {engine.treeView.TreeView} treeView
+ * @param {engine.treeView.Document} document
  * @param {Object} [options]
  * @param {Boolean} [options.withoutSelection=false] Whether to write the selection. When set to `true` selection will
  * be not included in returned string.
@@ -38,10 +38,10 @@ const TEXT_RANGE_END_TOKEN = '}';
  * (`<span:12>`, `<b:10>`).
  * @returns {String} The stringified data.
  */
-export function getData( treeView, options = {} ) {
+export function getData( document, options = {} ) {
 	const withoutSelection = !!options.withoutSelection;
 	const rootName = options.rootName || 'main';
-	const root = treeView.getRoot( rootName );
+	const root = document.getRoot( rootName );
 	const stringifyOptions = {
 		showType: options.showType,
 		showPriority: options.showPriority,
@@ -50,28 +50,28 @@ export function getData( treeView, options = {} ) {
 
 	return withoutSelection ?
 		getData._stringify( root, null, stringifyOptions ) :
-		getData._stringify( root, treeView.selection, stringifyOptions );
+		getData._stringify( root, document.selection, stringifyOptions );
 }
 
 // Set stringify as getData private method - needed for testing/spying.
 getData._stringify = stringify;
 
 /**
- * Sets the contents of the {@link engine.treeView.TreeView TreeView} provided as HTML-like string.
+ * Sets the contents of the {@link engine.treeView.Document Document} provided as HTML-like string.
  *
- * @param {engine.treeView.TreeView} treeView
- * @param {String} data HTML-like string to write into TreeView.
+ * @param {engine.treeView.Document} document
+ * @param {String} data HTML-like string to write into Document.
  * @param {Object} options
  * @param {String} [rootName] Root name where parsed data will be stored. If not provided, default `main` name will be
  * used.
  */
-export function setData( treeView, data, options = {} ) {
+export function setData( document, data, options = {} ) {
 	const rootName = options.rootName || 'main';
-	const root = treeView.getRoot( rootName );
+	const root = document.getRoot( rootName );
 	const result = setData._parse( data, { rootElement: root } );
 
 	if ( result.view && result.selection ) {
-		treeView.selection.setTo( result.selection );
+		document.selection.setTo( result.selection );
 	}
 }
 
@@ -170,7 +170,7 @@ setData._parse = parse;
  * @param {Boolean} [options.showPriority=false] When set to `true` AttributeElement's priority will be printed
  * (`<span:12>`, `<b:10>`).
  * @param {Boolean} [options.ignoreRoot=false] When set to `true` root's element opening and closing will not be printed.
- * Mainly used by `getData` function to ignore {@link engine.treeView.TreeView TreeView's} root element.
+ * Mainly used by `getData` function to ignore {@link engine.treeView.Document Document's} root element.
  * @returns {String} HTML-like string representing the view.
  */
 export function stringify( node, selectionOrPositionOrRange = null, options = {} ) {

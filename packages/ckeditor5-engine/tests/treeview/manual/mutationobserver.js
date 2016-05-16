@@ -7,19 +7,19 @@
 
 'use strict';
 
-import TreeView from '/ckeditor5/engine/treeview/treeview.js';
+import Document from '/ckeditor5/engine/treeview/document.js';
 import MutationObserver from '/ckeditor5/engine/treeview/observer/mutationobserver.js';
 import { setData } from '/tests/engine/_utils/view.js';
 
-const treeView = new TreeView();
-treeView.createRoot( document.getElementById( 'editor' ) );
+const viewDocument = new Document();
+viewDocument.createRoot( document.getElementById( 'editor' ) );
 
-treeView.on( 'mutations', ( evt, mutations ) => console.log( mutations ) );
+viewDocument.on( 'mutations', ( evt, mutations ) => console.log( mutations ) );
 
-treeView.addObserver( MutationObserver );
+viewDocument.addObserver( MutationObserver );
 
-setData( treeView,
+setData( viewDocument,
 	'<container:p>foo</container:p>' +
 	'<container:p>bar</container:p>' );
 
-treeView.render();
+viewDocument.render();

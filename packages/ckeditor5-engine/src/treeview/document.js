@@ -15,7 +15,7 @@ import mix from '../../utils/mix.js';
 import EmitterMixin from '../../utils/emittermixin.js';
 
 /**
- * TreeView class creates an abstract layer over the content editable area.
+ * Document class creates an abstract layer over the content editable area.
  * It combines the actual tree of view elements, tree of DOM elements,
  * {@link engine.treeView.DomConverter DOM Converter}, {@link engine.treeView.Renderer renderer} and all
  * {@link engine.treeView.Observer observers}.
@@ -26,16 +26,16 @@ import EmitterMixin from '../../utils/emittermixin.js';
  * @memberOf engine.treeView
  * @mixes utils.EmitterMixin
  */
-export default class TreeView {
+export default class Document {
 	/**
-	 * Creates a TreeView instance.
+	 * Creates a Document instance.
 	 */
 	constructor() {
 		/**
 		 * Roots of the DOM tree. Map on the `HTMLElement`s with roots names as keys.
 		 *
 		 * @readonly
-		 * @member {Map} engine.treeView.TreeView#domRoots
+		 * @member {Map} engine.treeView.Document#domRoots
 		 */
 		this.domRoots = new Map();
 
@@ -43,7 +43,7 @@ export default class TreeView {
 		 * Selection done on this document.
 		 *
 		 * @readonly
-		 * @member {engine.treeView.Selection} engine.treeView.TreeView#selection
+		 * @member {engine.treeView.Selection} engine.treeView.Document#selection
 		 */
 		this.selection = new Selection();
 
@@ -51,16 +51,16 @@ export default class TreeView {
 		 * Tree View writer.
 		 *
 		 * @readonly
-		 * @member {engine.treeView.Writer} engine.treeView.TreeView#writer
+		 * @member {engine.treeView.Writer} engine.treeView.Document#writer
 		 */
 		this.writer = new Writer();
 
 		/**
 		 * Instance of the {@link engine.treeView.DomConverter domConverter} use by
-		 * {@link engine.treeView.TreeView#renderer renderer} and {@link engine.treeView.observer.Observer observers}.
+		 * {@link engine.treeView.Document#renderer renderer} and {@link engine.treeView.observer.Observer observers}.
 		 *
 		 * @readonly
-		 * @member {engine.treeView.DomConverter} engine.treeView.TreeView#domConverter
+		 * @member {engine.treeView.DomConverter} engine.treeView.Document#domConverter
 		 */
 		this.domConverter = new DomConverter();
 
@@ -68,15 +68,15 @@ export default class TreeView {
 		 * Roots of the view tree. Map of the {engine.treeView.Element view elements} with roots names as keys.
 		 *
 		 * @readonly
-		 * @member {Map} engine.treeView.TreeView#viewRoots
+		 * @member {Map} engine.treeView.Document#viewRoots
 		 */
 		this.viewRoots = new Map();
 
 		/**
-		 * Instance of the {@link engine.treeView.TreeView#renderer renderer}.
+		 * Instance of the {@link engine.treeView.Document#renderer renderer}.
 		 *
 		 * @readonly
-		 * @member {engine.treeView.Renderer} engine.treeView.TreeView#renderer
+		 * @member {engine.treeView.Renderer} engine.treeView.Document#renderer
 		 */
 		this.renderer = new Renderer( this.domConverter, this.selection );
 
@@ -84,7 +84,7 @@ export default class TreeView {
 		 * Map of registered {@link engine.treeView.Observer observers}.
 		 *
 		 * @private
-		 * @member {Map.<Function, engine.treeView.Observer>} engine.treeView.TreeView_#observers
+		 * @member {Map.<Function, engine.treeView.Observer>} engine.treeView.Document_#observers
 		 */
 		this._observers = new Map();
 
@@ -94,7 +94,7 @@ export default class TreeView {
 	/**
 	 * Creates observer of the given type if not yet created, {@link engine.treeView.Observer#enable enables} it
 	 * and {@link engine.treeView.observer.Observer#observe attaches} to all existing and future
-	 * {@link engine.treeView.TreeView#domRoots DOM roots}.
+	 * {@link engine.treeView.Document#domRoots DOM roots}.
 	 *
 	 * Note: Observers are recognized by their constructor (classes). A single observer will be instantiated and used only
 	 * when registered for the first time. This means that features and other components can register a single observer
@@ -135,12 +135,12 @@ export default class TreeView {
 	}
 
 	/**
-	 * Creates a root for the HTMLElement. It adds elements to {@link engine.treeView.TreeView#domRoots} and
-	 * {@link engine.treeView.TreeView#viewRoots}.
+	 * Creates a root for the HTMLElement. It adds elements to {@link engine.treeView.Document#domRoots} and
+	 * {@link engine.treeView.Document#viewRoots}.
 	 *
 	 * The constructor copies the element name and attributes to create the
 	 * root of the view, but does not copy its children. This means that while
-	 * {@link engine.treeView.TreeView#render rendering}, the whole content of this
+	 * {@link engine.treeView.Document#render rendering}, the whole content of this
 	 * root element will be removed but the root name and attributes will be preserved.
 	 *
 	 * @param {HTMLElement} domRoot DOM element in which the tree view should do change.
@@ -149,7 +149,7 @@ export default class TreeView {
 	 */
 	createRoot( domRoot, name = 'main' ) {
 		const viewRoot = this.domConverter.domToView( domRoot, { bind: true, withChildren: false } );
-		viewRoot.setTreeView( this );
+		viewRoot.setDocument( this );
 
 		// Mark changed nodes in the renderer.
 		viewRoot.on( 'change', ( evt, type, node ) => {
@@ -168,7 +168,7 @@ export default class TreeView {
 	}
 
 	/**
-	 * Get a {@link engine.treeView.TreeView#viewRoots view root element} with the specified name. If the name is not
+	 * Get a {@link engine.treeView.Document#viewRoots view root element} with the specified name. If the name is not
 	 * specific "main" root is returned.
 	 *
 	 * @param {String} [name='main']  Name of the root.
@@ -195,7 +195,7 @@ export default class TreeView {
 	}
 }
 
-mix( TreeView, EmitterMixin );
+mix( Document, EmitterMixin );
 
 /**
  * Enum representing type of the change.

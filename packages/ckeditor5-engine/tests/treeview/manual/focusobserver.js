@@ -7,15 +7,15 @@
 
 'use strict';
 
-import TreeView from '/ckeditor5/engine/treeview/treeview.js';
+import Document from '/ckeditor5/engine/treeview/document.js';
 import FocusObserver from '/ckeditor5/engine/treeview/observer/focusobserver.js';
 
-const treeView = new TreeView();
+const viewDocument = new Document();
 
-treeView.on( 'focus', ( evt, data ) => console.log( 'focus', data.domTarget ) );
-treeView.on( 'blur', ( evt, data ) => console.log( 'blur', data.domTarget ) );
+viewDocument.on( 'focus', ( evt, data ) => console.log( 'focus', data.domTarget ) );
+viewDocument.on( 'blur', ( evt, data ) => console.log( 'blur', data.domTarget ) );
 
-treeView.addObserver( FocusObserver );
+viewDocument.addObserver( FocusObserver );
 
-treeView.createRoot( document.getElementById( 'editable1' ), 'editable1' );
-treeView.createRoot( document.getElementById( 'editable2' ), 'editable2' );
+viewDocument.createRoot( document.getElementById( 'editable1' ), 'editable1' );
+viewDocument.createRoot( document.getElementById( 'editable2' ), 'editable2' );

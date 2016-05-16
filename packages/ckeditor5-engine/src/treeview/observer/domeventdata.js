@@ -8,7 +8,7 @@
 import extend from '../../../utils/lib/lodash/extend.js';
 
 /**
- * Information about a DOM event in context of the {@link engine.treeView.TreeView}.
+ * Information about a DOM event in context of the {@link engine.treeView.Document}.
  * It wraps the native event, which usually should not be used as the wrapper contains
  * additional data (like key code for keyboard events).
  *
@@ -16,18 +16,18 @@ import extend from '../../../utils/lib/lodash/extend.js';
  */
 export default class DomEventData {
 	/**
-	 * @param {engine.treeView.TreeView} treeView The instance of the tree view.
+	 * @param {engine.treeView.Document} document The instance of the tree view Document.
 	 * @param {Event} domEvent The DOM event.
 	 * @param {Object} [additionalData] Additional properties that the instance should contain.
 	 */
-	constructor( treeView, domEvent, additionalData ) {
+	constructor( document, domEvent, additionalData ) {
 		/**
-		 * The instance of the tree view.
+		 * The instance of the document.
 		 *
 		 * @readonly
-		 * @member {engine.treeView.TreeView} engine.treeView.observer.DomEvent#treeView
+		 * @member {engine.treeView.Document} engine.treeView.observer.DomEvent#treeView
 		 */
-		this.treeView = treeView;
+		this.document = document;
 
 		/**
 		 * The DOM event.
@@ -55,7 +55,7 @@ export default class DomEventData {
 	 * @type engine.treeView.Element
 	 */
 	get target() {
-		return this.treeView.domConverter.getCorrespondingViewElement( this.domTarget );
+		return this.document.domConverter.getCorrespondingViewElement( this.domTarget );
 	}
 
 	/**

@@ -8,14 +8,14 @@
 import DomEventObserver from './domeventobserver.js';
 
 /**
- * {@link engine.treeView.TreeView#focus Focus} and {@link engine.treeView.TreeView#blur blur} events observer.
+ * {@link engine.treeView.Document#focus Focus} and {@link engine.treeView.Document#blur blur} events observer.
  *
  * @memberOf engine.treeView.observer
  * @extends engine.treeView.observer.DomEventObserver
  */
 export default class FocusObserver extends DomEventObserver {
-	constructor( treeView ) {
-		super( treeView );
+	constructor( document ) {
+		super( document );
 
 		this.domEventType = [ 'focus', 'blur' ];
 	}
@@ -28,13 +28,13 @@ export default class FocusObserver extends DomEventObserver {
 /**
  * Fired when one of the editables gets focus.
  *
- * @event engine.treeView.TreeView#focus
+ * @event engine.treeView.Document#focus
  * @param {engine.treeView.observer.DomEventData} data Event data.
  */
 
 /**
  * Fired when one of the editables loses focus.
  *
- * @event engine.treeView.TreeView#blur
+ * @event engine.treeView.Document#blur
  * @param {engine.treeView.observer.DomEventData} data Event data.
  */

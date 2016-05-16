@@ -5,23 +5,23 @@
 
 'use strict';
 
-import TreeView from '/ckeditor5/engine/treeview/treeview.js';
+import Document from '/ckeditor5/engine/treeview/document.js';
 import MutationObserver from '/ckeditor5/engine/treeview/observer/mutationobserver.js';
 import SelectionObserver from '/ckeditor5/engine/treeview/observer/selectionobserver.js';
 import KeyObserver from '/ckeditor5/engine/treeview/observer/keyobserver.js';
 import { setData } from '/tests/engine/_utils/view.js';
 
-const treeView = new TreeView();
-treeView.createRoot( document.getElementById( 'editor' ) );
+const viewDocument = new Document();
+viewDocument.createRoot( document.getElementById( 'editor' ) );
 
-treeView.addObserver( MutationObserver );
-treeView.addObserver( SelectionObserver );
-treeView.addObserver( KeyObserver );
+viewDocument.addObserver( MutationObserver );
+viewDocument.addObserver( SelectionObserver );
+viewDocument.addObserver( KeyObserver );
 
-setData( treeView,
+setData( viewDocument,
 	'<container:p><attribute:strong>foo</attribute:strong>[]<attribute:strong>bar</attribute:strong></container:p>' +
 	'<container:p></container:p>' +
 	'<container:p><attribute:strong></attribute:strong></container:p>' +
 	'<container:p>bom</container:p>' );
 
-treeView.render();
+viewDocument.render();

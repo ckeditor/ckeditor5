@@ -20,7 +20,7 @@ import indexOf from '../../utils/dom/indexof.js';
  * {@link engine.treeView.DomConverter#bindElements binding} these nodes.
  *
  * DomConverter does not check which nodes should be rendered (use {@link engine.treeView.Renderer}), does not keep a
- * state of a tree nor keeps synchronization between tree view and DOM tree (use {@link engine.treeView.TreeView}).
+ * state of a tree nor keeps synchronization between tree view and DOM tree (use {@link engine.treeView.Document}).
  *
  * DomConverter keeps DOM elements to View element bindings, so when the converter will be destroyed, the binding will
  * be lost. Two converters will keep separate binding maps, so one tree view can be bound with two DOM trees.
