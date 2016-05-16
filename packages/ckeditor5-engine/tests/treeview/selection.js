@@ -83,7 +83,7 @@ describe( 'Selection', () => {
 	} );
 
 	describe( 'isCollapsed', () => {
-		it( 'should return true when there is single collapsed ranges', () => {
+		it( 'should return true when there is single collapsed range', () => {
 			const range = Range.createFromParentsAndOffsets( el, 5, el, 5 );
 			selection.addRange( range );
 

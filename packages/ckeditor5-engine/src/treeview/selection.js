@@ -91,7 +91,7 @@ export default class Selection {
 	 * @type {Boolean}
 	 */
 	get isCollapsed() {
-		return this.rangeCount === 1 &&  this._ranges[ 0 ].isCollapsed;
+		return this.rangeCount === 1 && this._ranges[ 0 ].isCollapsed;
 	}
 
 	/**
