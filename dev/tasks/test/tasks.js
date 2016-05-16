@@ -70,7 +70,7 @@ module.exports = () => {
 		}
 	};
 
-	gulp.task( 'test-editor', tasks.testEditor );
+	gulp.task( 'test-editor', [ 'build:js:cjs' ], tasks.testEditor );
 
 	return tasks;
 };
