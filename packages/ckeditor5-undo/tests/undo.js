@@ -12,8 +12,6 @@ import Position from '/ckeditor5/engine/treemodel/position.js';
 import Undo from '/ckeditor5/undo/undo.js';
 import Creator from '/ckeditor5/creator/creator.js';
 
-import { getData, setData } from '/tests/engine/_utils/model.js';
-
 // import deleteContents from '/ckeditor5/engine/treemodel/composer/deletecontents.js';
 
 let element, editor, doc, root;
@@ -40,11 +38,11 @@ function setSelection( pathA, pathB ) {
 }
 
 function input( input ) {
-	setData( doc, 'root', input );
+	bender.model.setData( doc, input, { rootName: 'root' } );
 }
 
 function output( output ) {
-	expect( getData( doc, 'root', { selection: true } ) ).to.equal( output );
+	expect( bender.model.getData( doc, { rootName: 'root' } ) ).to.equal( output );
 }
 
 function undoDisabled() {
