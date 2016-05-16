@@ -66,6 +66,7 @@
     "node-sass": "^3.4.2",
     "replace": "^0.3.0",
     "run-sequence": "^1.1.5",
+    "semver": "^5.1.0",
     "shelljs": "^0",
     "sinon": "^1.17.0",
     "through2": "^2.0.0"

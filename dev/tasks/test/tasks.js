@@ -3,6 +3,7 @@
 'use strict';
 
 const gulp = require( 'gulp' );
+const gutil = require( 'gulp-util' );
 const mocha = require( 'gulp-mocha' );
 const chai = require( 'chai' );
 const filterBy = require( 'gulp-filter-by' );
@@ -10,6 +11,7 @@ const filter = require( 'gulp-filter' );
 const sinon = require( 'sinon' );
 const minimist = require( 'minimist' );
 const devTools = require( '../dev/utils/tools' );
+const semver = require( 'semver' );
 
 module.exports = () => {
 	const ignoreRegexp = /\/\* ?bender-tags:.*\bbrowser-only\b.*\*\//;
@@ -35,6 +37,15 @@ module.exports = () => {
 		},
 
 		testInNode() {
+			const minVersion = '6.1.0';
+
+			if ( semver.lt( process.version, minVersion ) ) {
+				throw new gutil.PluginError( {
+					plugin: 'test-editor',
+					message: `Wrong Node.js version. Please use Node.js in version v${ minVersion } or higher.`
+				} );
+			}
+
 			const src = [
 				'build/cjs/tests/**/*.js',
 				'!**/_utils/**/*.js',
