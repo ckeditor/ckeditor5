@@ -66,20 +66,41 @@ describe( 'Selection', () => {
 	} );
 
 	describe( 'isCollapsed', () => {
-		it( 'should be true if all ranges are collapsed', () => {
+		it( 'should return true for default range', () => {
+			expect( selection.isCollapsed ).to.be.true;
+		} );
+
+		it( 'should return true when there is single collapsed ranges', () => {
 			selection.addRange( new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) );
 
 			expect( selection.isCollapsed ).to.be.true;
 		} );
 
-		it( 'should be false when it has a range that is not collapsed', () => {
+		it( 'should return false when there are multiple ranges', () => {
+			selection.addRange( new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) );
+			selection.addRange( new Range( new Position( root, [ 2 ] ), new Position( root, [ 2 ] ) ) );
+
+			expect( selection.isCollapsed ).to.be.false;
+		} );
+
+		it( 'should return false when there is not collapsed range', () => {
 			selection.addRange( range );
 
 			expect( selection.isCollapsed ).to.be.false;
+		} );
+	} );
+
+	describe( 'rangeCount', () => {
+		it( 'should return proper range count', () => {
+			expect( selection.rangeCount ).to.equal( 1 );
 
 			selection.addRange( new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) );
 
-			expect( selection.isCollapsed ).to.be.false;
+			expect( selection.rangeCount ).to.equal( 1 );
+
+			selection.addRange( new Range( new Position( root, [ 2 ] ), new Position( root, [ 2 ] ) ) );
+
+			expect( selection.rangeCount ).to.equal( 2 );
 		} );
 	} );
 

@@ -83,20 +83,25 @@ describe( 'Selection', () => {
 	} );
 
 	describe( 'isCollapsed', () => {
-		it( 'should return true when all ranges are collapsed', () => {
+		it( 'should return true when there is single collapsed ranges', () => {
+			const range = Range.createFromParentsAndOffsets( el, 5, el, 5 );
+			selection.addRange( range );
+
+			expect( selection.isCollapsed ).to.be.true;
+		} );
+
+		it( 'should return false when there are multiple ranges', () => {
 			const range1 = Range.createFromParentsAndOffsets( el, 5, el, 5 );
 			const range2 = Range.createFromParentsAndOffsets( el, 15, el, 15 );
 			selection.addRange( range1 );
 			selection.addRange( range2 );
 
-			expect( selection.isCollapsed ).to.be.true;
+			expect( selection.isCollapsed ).to.be.false;
 		} );
 
-		it( 'should return false when not all ranges are collapsed', () => {
-			const range1 = Range.createFromParentsAndOffsets( el, 5, el, 5 );
-			const range2 = Range.createFromParentsAndOffsets( el, 15, el, 16 );
-			selection.addRange( range1 );
-			selection.addRange( range2 );
+		it( 'should return false when there is not collapsed range', () => {
+			const range = Range.createFromParentsAndOffsets( el, 15, el, 16 );
+			selection.addRange( range );
 
 			expect( selection.isCollapsed ).to.be.false;
 		} );
@@ -105,9 +110,13 @@ describe( 'Selection', () => {
 	describe( 'rangeCount', () => {
 		it( 'should return proper range count', () => {
 			expect( selection.rangeCount ).to.equal( 0 );
+
 			selection.addRange( range1 );
+
 			expect( selection.rangeCount ).to.equal( 1 );
+
 			selection.addRange( range2 );
+
 			expect( selection.rangeCount ).to.equal( 2 );
 		} );
 	} );
