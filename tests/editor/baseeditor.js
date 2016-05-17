@@ -8,21 +8,12 @@
 'use strict';
 
 import Editor from '/ckeditor5/editor.js';
-import EditorConfig from '/ckeditor5/editorconfig.js';
 import Command from '/ckeditor5/command/command.js';
 import Locale from '/ckeditor5/utils/locale.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import Document from '/ckeditor5/engine/treemodel/document.js';
 
 describe( 'Editor', () => {
-	describe( 'config', () => {
-		it( 'should be an instance of EditorConfig', () => {
-			const editor = new Editor();
-
-			expect( editor.config ).to.be.an.instanceof( EditorConfig );
-		} );
-	} );
-
 	describe( 'locale', () => {
 		it( 'is instantiated and t() is exposed', () => {
 			const editor = new Editor();
