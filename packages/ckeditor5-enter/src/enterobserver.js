@@ -11,20 +11,20 @@ import KeyObserver from '../engine/treeview/observer/keyobserver.js';
 import { keyCodes } from '../utils/keyboard.js';
 
 /**
- * Enter observer introduce {@link engine.treeView.TreeView#enter} event.
+ * Enter observer introduce {@link engine.treeView.Document#enter} event.
  *
  * @memberOf enter
  * @extends engine.treeView.observer.Observer
  */
 export default class EnterObserver extends Observer {
-	constructor( treeView ) {
-		super( treeView );
+	constructor( document ) {
+		super( document );
 
-		treeView.addObserver( KeyObserver );
+		document.addObserver( KeyObserver );
 
-		treeView.on( 'keydown', ( evt, data ) => {
+		document.on( 'keydown', ( evt, data ) => {
 			if ( this.isEnabled && data.keyCode == keyCodes.enter ) {
-				treeView.fire( 'enter', new DomEventData( treeView, data.domEvent ) );
+				document.fire( 'enter', new DomEventData( document, data.domEvent ) );
 			}
 		} );
 	}
@@ -35,6 +35,6 @@ export default class EnterObserver extends Observer {
  *
  * Note: This event is fired by the {@link enter.Enter enter feature}.
  *
- * @event engine.treeView.TreeView#enter
+ * @event engine.treeView.Document#enter
  * @param {engine.treeView.observer.DomEventData} data
  */
