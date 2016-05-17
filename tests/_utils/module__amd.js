@@ -100,10 +100,10 @@ const utils = {
 	 * This method uses {@link #getModulePath} to process module and dependency paths so you need to use
 	 * the simplified notation.
 	 *
-	 *		const modules = amdTestUtils.require( { treeView: 'engine/treeview/treeview' } );
+	 *		const modules = amdTestUtils.require( { modelDocument: 'engine/model/document' } );
 	 *
 	 *		// Later on, inside tests:
-	 *		const TreeView = modules.treeView;
+	 *		const ModelDocument = modules.modelDocument;
 	 *
 	 * @params {Object} modules The object (`ref => modulePath`) with modules to be loaded.
 	 * @returns {Object} The object that will hold the loaded modules.
