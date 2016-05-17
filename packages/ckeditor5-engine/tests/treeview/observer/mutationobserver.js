@@ -7,31 +7,31 @@
 
 'use strict';
 
-import TreeView from '/ckeditor5/engine/treeview/treeview.js';
+import ViewDocument from '/ckeditor5/engine/treeview/document.js';
 import MutationObserver from '/ckeditor5/engine/treeview/observer/mutationobserver.js';
 import { parse } from '/tests/engine/_utils/view.js';
 
 describe( 'MutationObserver', () => {
-	let domEditor, treeView, viewRoot, mutationObserver, lastMutations;
+	let domEditor, viewDocument, viewRoot, mutationObserver, lastMutations;
 
 	beforeEach( () => {
-		treeView = new TreeView();
+		viewDocument = new ViewDocument();
 		domEditor = document.getElementById( 'main' );
 		lastMutations = null;
 
-		treeView.createRoot( domEditor );
-		treeView.selection.removeAllRanges();
+		viewDocument.createRoot( domEditor );
+		viewDocument.selection.removeAllRanges();
 		document.getSelection().removeAllRanges();
 
-		mutationObserver = treeView.addObserver( MutationObserver );
+		mutationObserver = viewDocument.addObserver( MutationObserver );
 
-		treeView.on( 'mutations', ( evt, mutations ) => lastMutations = mutations );
+		viewDocument.on( 'mutations', ( evt, mutations ) => lastMutations = mutations );
 
-		viewRoot = treeView.getRoot();
+		viewRoot = viewDocument.getRoot();
 
 		viewRoot.appendChildren( parse( '<container:p>foo</container:p><container:p>bar</container:p>' ) );
 
-		treeView.render();
+		viewDocument.render();
 	} );
 
 	afterEach( () => {
@@ -107,13 +107,13 @@ describe( 'MutationObserver', () => {
 		const domAdditionalEditor = document.getElementById( 'additional' );
 
 		// Prepare AdditionalEditor
-		treeView.createRoot( domAdditionalEditor, 'additional' );
+		viewDocument.createRoot( domAdditionalEditor, 'additional' );
 
-		treeView.viewRoots.get( 'additional' ).appendChildren(
+		viewDocument.viewRoots.get( 'additional' ).appendChildren(
 			parse( '<container:p>foo</container:p><container:p>bar</container:p>' ) );
 
 		// Render AdditionalEditor (first editor has been rendered in the beforeEach function)
-		treeView.render();
+		viewDocument.render();
 
 		domEditor.childNodes[ 0 ].childNodes[ 0 ].data = 'foom';
 		domAdditionalEditor.childNodes[ 0 ].childNodes[ 0 ].data = 'foom';
@@ -134,9 +134,9 @@ describe( 'MutationObserver', () => {
 		const { view, selection } = parse( '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
 
 		viewRoot.appendChildren( view );
-		treeView.selection.setTo( selection );
+		viewDocument.selection.setTo( selection );
 
-		treeView.render();
+		viewDocument.render();
 
 		const inlineFiller = domEditor.childNodes[ 2 ].childNodes[ 1 ].childNodes[ 0 ];
 		inlineFiller.data += 'x';
@@ -152,16 +152,16 @@ describe( 'MutationObserver', () => {
 		const { view, selection } = parse( '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
 
 		viewRoot.appendChildren( view );
-		treeView.selection.setTo( selection );
+		viewDocument.selection.setTo( selection );
 
-		treeView.render();
+		viewDocument.render();
 
 		let inlineFiller = domEditor.childNodes[ 2 ].childNodes[ 1 ].childNodes[ 0 ];
 		inlineFiller.data += 'x';
 
 		view.getChild( 1 ).appendChildren( parse( 'x' ) );
 		mutationObserver.flush();
-		treeView.render();
+		viewDocument.render();
 
 		inlineFiller = domEditor.childNodes[ 2 ].childNodes[ 1 ].childNodes[ 0 ];
 		inlineFiller.data += 'y';
@@ -177,7 +177,7 @@ describe( 'MutationObserver', () => {
 	it( 'should have no block filler in mutation', () => {
 		viewRoot.appendChildren( parse( '<container:p></container:p>' ) );
 
-		treeView.render();
+		viewDocument.render();
 
 		const domP = domEditor.childNodes[ 2 ];
 		domP.removeChild( domP.childNodes[ 0 ] );

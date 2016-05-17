@@ -8,14 +8,14 @@
 'use strict';
 
 import FocusObserver from '/ckeditor5/engine/treeview/observer/focusobserver.js';
-import TreeView from '/ckeditor5/engine/treeview/treeview.js';
+import ViewDocument from '/ckeditor5/engine/treeview/document.js';
 
 describe( 'FocusObserver', () => {
-	let treeView, observer;
+	let viewDocument, observer;
 
 	beforeEach( () => {
-		treeView = new TreeView();
-		observer = treeView.addObserver( FocusObserver );
+		viewDocument = new ViewDocument();
+		observer = viewDocument.addObserver( FocusObserver );
 	} );
 
 	it( 'should define domEventType', () => {
@@ -26,7 +26,7 @@ describe( 'FocusObserver', () => {
 		it( 'should fire focus with the right event data', () => {
 			const spy = sinon.spy();
 
-			treeView.on( 'focus', spy );
+			viewDocument.on( 'focus', spy );
 
 			observer.onDomEvent( { type: 'focus', target: document.body } );
 
@@ -39,7 +39,7 @@ describe( 'FocusObserver', () => {
 		it( 'should fire blur with the right event data', () => {
 			const spy = sinon.spy();
 
-			treeView.on( 'blur', spy );
+			viewDocument.on( 'blur', spy );
 
 			observer.onDomEvent( { type: 'blur', target: document.body } );
 

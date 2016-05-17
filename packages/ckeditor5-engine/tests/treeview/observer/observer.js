@@ -12,11 +12,11 @@ import Observer from '/ckeditor5/engine/treeview/observer/observer.js';
 describe( 'Observer', () => {
 	describe( 'constructor', () => {
 		it( 'should create Observer with properties', () => {
-			const treeView = {};
-			const observer = new Observer( treeView );
+			const viewDocument = {};
+			const observer = new Observer( viewDocument );
 
 			expect( observer ).to.be.an.instanceof( Observer );
-			expect( observer ).to.have.property( 'treeView' ).that.equals( treeView );
+			expect( observer ).to.have.property( 'document' ).that.equals( viewDocument );
 			expect( observer ).to.have.property( 'isEnabled' ).that.is.false;
 		} );
 	} );

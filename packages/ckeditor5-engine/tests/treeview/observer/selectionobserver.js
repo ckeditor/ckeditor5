@@ -9,7 +9,7 @@
 
 import ViewRange from '/ckeditor5/engine/treeview/range.js';
 import ViewSelection from '/ckeditor5/engine/treeview/selection.js';
-import TreeView from '/ckeditor5/engine/treeview/treeview.js';
+import ViewDocument from '/ckeditor5/engine/treeview/document.js';
 import SelectionObserver from '/ckeditor5/engine/treeview/observer/selectionobserver.js';
 import MutationObserver from '/ckeditor5/engine/treeview/observer/mutationobserver.js';
 
@@ -18,30 +18,30 @@ import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
 import { parse } from '/tests/engine/_utils/view.js';
 
 describe( 'SelectionObserver', () => {
-	let treeView, viewRoot, mutationObserver, selectionObserver, listenter;
+	let viewDocument, viewRoot, mutationObserver, selectionObserver, listenter;
 
 	before( () => {
 		listenter = Object.create( EmitterMixin );
 
-		treeView = new TreeView();
+		viewDocument = new ViewDocument();
 
-		treeView.createRoot( document.getElementById( 'main' ) );
+		viewDocument.createRoot( document.getElementById( 'main' ) );
 
-		mutationObserver = treeView.addObserver( MutationObserver );
-		selectionObserver = treeView.addObserver( SelectionObserver );
+		mutationObserver = viewDocument.addObserver( MutationObserver );
+		selectionObserver = viewDocument.addObserver( SelectionObserver );
 
-		viewRoot = treeView.getRoot();
+		viewRoot = viewDocument.getRoot();
 
 		viewRoot.appendChildren( parse( '<container:p>foo</container:p><container:p>bar</container:p>' ) );
 
-		treeView.render();
+		viewDocument.render();
 	} );
 
 	beforeEach( ( done ) => {
-		treeView.selection.removeAllRanges();
+		viewDocument.selection.removeAllRanges();
 		document.getSelection().removeAllRanges();
 
-		treeView.getObserver( SelectionObserver ).enable();
+		viewDocument.getObserver( SelectionObserver ).enable();
 
 		// Ensure selectionchange will not be fired.
 		setTimeout( () => done(), 100 );
@@ -52,7 +52,7 @@ describe( 'SelectionObserver', () => {
 	} );
 
 	it( 'should fire selectionChange when it is the only change', ( done ) => {
-		listenter.listenTo( treeView, 'selectionChange', ( evt, data ) => {
+		listenter.listenTo( viewDocument, 'selectionChange', ( evt, data ) => {
 			expect( data ).to.have.property( 'domSelection' ).that.equals( document.getSelection() );
 
 			expect( data ).to.have.property( 'oldSelection' ).that.is.instanceof( ViewSelection );
@@ -62,7 +62,7 @@ describe( 'SelectionObserver', () => {
 			expect( data.newSelection.rangeCount ).to.equal( 1 );
 
 			const newViewRange = data.newSelection.getFirstRange();
-			const viewFoo = treeView.getRoot().getChild( 0 ).getChild( 0 );
+			const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 
 			expect( newViewRange.start.parent ).to.equal( viewFoo );
 			expect( newViewRange.start.offset ).to.equal( 1 );
@@ -77,9 +77,9 @@ describe( 'SelectionObserver', () => {
 
 	it( 'should add only one listener to one document', ( done ) => {
 		// Add second roots to ensure that listener is added once.
-		treeView.createRoot( document.getElementById( 'additional' ), 'additional' );
+		viewDocument.createRoot( document.getElementById( 'additional' ), 'additional' );
 
-		listenter.listenTo( treeView, 'selectionChange', () => {
+		listenter.listenTo( viewDocument, 'selectionChange', () => {
 			done();
 		} );
 
@@ -87,21 +87,21 @@ describe( 'SelectionObserver', () => {
 	} );
 
 	it( 'should not fire selectionChange on render', ( done ) => {
-		listenter.listenTo( treeView, 'selectionChange', () => {
+		listenter.listenTo( viewDocument, 'selectionChange', () => {
 			throw 'selectionChange on render';
 		} );
 
 		setTimeout( () => done(), 70 );
 
-		const viewBar = treeView.getRoot().getChild( 1 ).getChild( 0 );
-		treeView.selection.addRange( ViewRange.createFromParentsAndOffsets( viewBar, 1, viewBar, 2 ) );
-		treeView.render();
+		const viewBar = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
+		viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewBar, 1, viewBar, 2 ) );
+		viewDocument.render();
 	} );
 
 	it( 'should not fired if observer is disabled', ( done ) => {
-		treeView.getObserver( SelectionObserver ).disable();
+		viewDocument.getObserver( SelectionObserver ).disable();
 
-		listenter.listenTo( treeView, 'selectionChange', () => {
+		listenter.listenTo( viewDocument, 'selectionChange', () => {
 			throw 'selectionChange on render';
 		} );
 
@@ -111,10 +111,10 @@ describe( 'SelectionObserver', () => {
 	} );
 
 	it( 'should call render after selection change which reset selection if it was not changed', ( done ) => {
-		const viewBar = treeView.getRoot().getChild( 1 ).getChild( 0 );
-		treeView.selection.addRange( ViewRange.createFromParentsAndOffsets( viewBar, 0, viewBar, 1 ) );
+		const viewBar = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
+		viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewBar, 0, viewBar, 1 ) );
 
-		listenter.listenTo( treeView, 'selectionChange', () => {
+		listenter.listenTo( viewDocument, 'selectionChange', () => {
 			setTimeout( () => {
 				const domSelection = document.getSelection();
 

@@ -12,7 +12,7 @@ import ViewRange from '../treeview/range.js';
 import ViewText from '../treeview/text.js';
 
 /**
- * Maps elements and positions between {@link engine.treeView.TreeView TreeView} and {@link engine.treeModel TreeModel}.
+ * Maps elements and positions between {@link engine.treeView.Document TreeView} and {@link engine.treeModel TreeModel}.
  *
  * Mapper use binded elements to find corresponding elements and positions, so, to get proper results,
  * all Tree Model elements should be {@link engine.treeController.Mapper#bindElements binded}.

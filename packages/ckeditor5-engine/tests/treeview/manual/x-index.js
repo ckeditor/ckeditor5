@@ -7,27 +7,27 @@
 
 'use strict';
 
-import TreeView from '/ckeditor5/engine/treeview/treeview.js';
+import Document from '/ckeditor5/engine/treeview/document.js';
 import SelectionObserver from '/ckeditor5/engine/treeview/observer/selectionobserver.js';
 import MutationObserver from '/ckeditor5/engine/treeview/observer/mutationobserver.js';
 import { setData } from '/tests/engine/_utils/view.js';
 
-const treeView = new TreeView();
-treeView.createRoot( document.getElementById( 'editor' ) );
+const viewDocument = new Document();
+viewDocument.createRoot( document.getElementById( 'editor' ) );
 
-treeView.addObserver( MutationObserver );
-treeView.addObserver( SelectionObserver );
+viewDocument.addObserver( MutationObserver );
+viewDocument.addObserver( SelectionObserver );
 
-setData( treeView,
+setData( viewDocument,
 	'<container:p>fo{}o</container:p>' +
 	'<container:p></container:p>' +
 	'<container:p><attribute:strong></attribute:strong></container:p>' +
 	'<container:p>bar</container:p>' );
 
-treeView.on( 'selectionChange', ( evt, data ) => {
+viewDocument.on( 'selectionChange', ( evt, data ) => {
 	const node = data.newSelection.getFirstPosition().parent;
 	console.log( node.name ? node.name : node._data );
-	treeView.selection.setTo( data.newSelection );
+	viewDocument.selection.setTo( data.newSelection );
 } );
 
-treeView.render();
+viewDocument.render();

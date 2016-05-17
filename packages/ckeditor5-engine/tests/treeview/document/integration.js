@@ -7,32 +7,32 @@
 
 'use strict';
 
-import TreeView from '/ckeditor5/engine/treeview/treeview.js';
-import TreeElement from '/ckeditor5/engine/treeview/element.js';
+import Document from '/ckeditor5/engine/treeview/document.js';
+import ViewElement from '/ckeditor5/engine/treeview/element.js';
 
-describe( 'TreeView integration', () => {
+describe( 'Document integration', () => {
 	it( 'should remove content of the DOM', () => {
 		const domP = document.createElement( 'p' );
 		const domDiv = document.createElement( 'div' );
 		domDiv.setAttribute( 'id', 'editor' );
 		domDiv.appendChild( domP );
 
-		const treeView = new TreeView();
-		treeView.createRoot( domDiv, 'editor' );
-		treeView.render();
+		const viewDocument = new Document();
+		viewDocument.createRoot( domDiv, 'editor' );
+		viewDocument.render();
 
 		expect( domDiv.childNodes.length ).to.equal( 0 );
 		expect( domDiv.getAttribute( 'id' ) ).to.equal( 'editor' );
 	} );
 
-	it( 'should render changes in the TreeView', () => {
+	it( 'should render changes in the Document', () => {
 		const domDiv = document.createElement( 'div' );
 
-		const treeView = new TreeView();
-		treeView.createRoot( domDiv, 'editor' );
+		const viewDocument = new Document();
+		viewDocument.createRoot( domDiv, 'editor' );
 
-		treeView.viewRoots.get( 'editor' ).appendChildren( new TreeElement( 'p' ) );
-		treeView.render();
+		viewDocument.viewRoots.get( 'editor' ).appendChildren( new ViewElement( 'p' ) );
+		viewDocument.render();
 
 		expect( domDiv.childNodes.length ).to.equal( 1 );
 		expect( domDiv.childNodes[ 0 ].tagName ).to.equal( 'P' );

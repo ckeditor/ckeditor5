@@ -8,23 +8,23 @@
 'use strict';
 
 import DomEventData from '/ckeditor5/engine/treeview/observer/domeventdata.js';
-import TreeView from '/ckeditor5/engine/treeview/treeview.js';
+import ViewDocument from '/ckeditor5/engine/treeview/document.js';
 
 describe( 'DomEventData', () => {
-	let treeView, viewBody;
+	let viewDocument, viewBody;
 
 	beforeEach( () => {
-		treeView = new TreeView();
+		viewDocument = new ViewDocument();
 
-		viewBody = treeView.domConverter.domToView( document.body, { bind: true } );
+		viewBody = viewDocument.domConverter.domToView( document.body, { bind: true } );
 	} );
 
 	describe( 'constructor', () => {
 		it( 'sets properties', () => {
 			const domEvt = { target: document.body };
-			const data = new DomEventData( treeView, domEvt, { foo: 1, bar: true } );
+			const data = new DomEventData( viewDocument, domEvt, { foo: 1, bar: true } );
 
-			expect( data ).to.have.property( 'treeView', treeView );
+			expect( data ).to.have.property( 'document', viewDocument );
 			expect( data ).to.have.property( 'domEvent', domEvt );
 			expect( data ).to.have.property( 'domTarget', document.body );
 
@@ -36,7 +36,7 @@ describe( 'DomEventData', () => {
 	describe( 'target', () => {
 		it( 'returns bound element', () => {
 			const domEvt = { target: document.body };
-			const data = new DomEventData( treeView, domEvt );
+			const data = new DomEventData( viewDocument, domEvt );
 
 			expect( data ).to.have.property( 'target', viewBody );
 		} );
@@ -45,7 +45,7 @@ describe( 'DomEventData', () => {
 	describe( 'preventDefault', () => {
 		it( 'executes native preventDefault()', () => {
 			const domEvt = { target: document.body, preventDefault: sinon.spy() };
-			const data = new DomEventData( treeView, domEvt );
+			const data = new DomEventData( viewDocument, domEvt );
 
 			data.preventDefault();
 
@@ -56,7 +56,7 @@ describe( 'DomEventData', () => {
 	describe( 'stopPropagation', () => {
 		it( 'executes native stopPropagation()', () => {
 			const domEvt = { target: document.body, stopPropagation: sinon.spy() };
-			const data = new DomEventData( treeView, domEvt );
+			const data = new DomEventData( viewDocument, domEvt );
 
 			data.stopPropagation();
 
