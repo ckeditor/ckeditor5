@@ -88,7 +88,7 @@ export function convertCollapsedSelection() {
 		const brokenPosition = conversionApi.writer.breakAttributes( viewPosition );
 
 		conversionApi.viewSelection.removeAllRanges();
-		conversionApi.viewSelection.addRange( new ViewRange( brokenPosition, brokenPosition ), selection.isBackward );
+		conversionApi.viewSelection.addRange( new ViewRange( brokenPosition, brokenPosition ) );
 	};
 }
 
@@ -165,7 +165,7 @@ export function convertSelectionAttribute( elementCreator ) {
 
 		viewPosition = conversionApi.writer.wrapPosition( viewPosition, viewElement );
 
-		conversionApi.viewSelection.addRange( new ViewRange( viewPosition, viewPosition ), selection.isBackward );
+		conversionApi.viewSelection.addRange( new ViewRange( viewPosition, viewPosition ) );
 	};
 }
 
