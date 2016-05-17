@@ -104,6 +104,15 @@ export default class Selection {
 	}
 
 	/**
+	 * Specifies whether the {@link engine.treeView.Selection#focus} precedes {@link engine.treeView.Selection#anchor}.
+	 *
+	 * @type {Boolean}
+	 */
+	get isBackward() {
+		return !this.isCollapsed && this._lastRangeBackward;
+	}
+
+	/**
 	 * Adds a range to the selection. Added range is copied. This means that passed range is not saved in the
 	 * selection instance and you can safely operate on it.
 	 *

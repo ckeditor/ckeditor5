@@ -121,6 +121,27 @@ describe( 'Selection', () => {
 		} );
 	} );
 
+	describe( 'isBackward', () => {
+		it( 'is defined by the last added range', () => {
+			const range1 = Range.createFromParentsAndOffsets( el, 5, el, 10 );
+			const range2 = Range.createFromParentsAndOffsets( el, 15, el, 16 );
+
+			selection.addRange( range1, true );
+			expect( selection ).to.have.property( 'isBackward', true );
+
+			selection.addRange( range2 );
+			expect( selection ).to.have.property( 'isBackward', false );
+		} );
+
+		it( 'is false when last range is collapsed', () => {
+			const range = Range.createFromParentsAndOffsets( el, 5, el, 5 );
+
+			selection.addRange( range, true );
+
+			expect( selection.isBackward ).to.be.false;
+		} );
+	} );
+
 	describe( 'addRange', () => {
 		it( 'should add range to selection ranges', () => {
 			selection.addRange( range1 );
