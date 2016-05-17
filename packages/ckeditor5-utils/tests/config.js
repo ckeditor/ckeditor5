@@ -151,8 +151,8 @@ describe( 'set', () => {
 	it( 'should set `null` for undefined value', () => {
 		config.set( 'test' );
 
-		expect( config.test ).to.be.null();
-		expect( config.get( 'test' ) ).to.be.null();
+		expect( config.test ).to.be.null;
+		expect( config.get( 'test' ) ).to.be.null;
 	} );
 } );
 
@@ -186,11 +186,11 @@ describe( 'get', () => {
 	} );
 
 	it( 'should return undefined for non existing configuration', () => {
-		expect( config.get( 'invalid' ) ).to.be.undefined();
+		expect( config.get( 'invalid' ) ).to.be.undefined;
 	} );
 
 	it( 'should return undefined for non existing deep configuration', () => {
-		expect( config.get( 'resize.invalid.value' ) ).to.be.undefined();
+		expect( config.get( 'resize.invalid.value' ) ).to.be.undefined;
 	} );
 } );
 

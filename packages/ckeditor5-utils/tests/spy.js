@@ -12,7 +12,7 @@ describe( 'utils', () => {
 		it( 'should not have `called` after creation', () => {
 			let fn = spy();
 
-			expect( fn.called ).to.not.be.true();
+			expect( fn.called ).to.not.be.true;
 		} );
 
 		it( 'should register calls', () => {
@@ -21,8 +21,8 @@ describe( 'utils', () => {
 
 			fn1();
 
-			expect( fn1.called ).to.be.true();
-			expect( fn2.called ).to.not.be.true();
+			expect( fn1.called ).to.be.true;
+			expect( fn2.called ).to.not.be.true;
 		} );
 	} );
 } );

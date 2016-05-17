@@ -13,8 +13,8 @@ describe( 'EventInfo', () => {
 
 		expect( event.source ).to.equal( this );
 		expect( event.name ).to.equal( 'test' );
-		expect( event.stop.called ).to.not.be.true();
-		expect( event.off.called ).to.not.be.true();
+		expect( event.stop.called ).to.not.be.true;
+		expect( event.off.called ).to.not.be.true;
 	} );
 
 	it( 'should have stop() and off() marked', () => {
@@ -23,8 +23,8 @@ describe( 'EventInfo', () => {
 		event.stop();
 		event.off();
 
-		expect( event.stop.called ).to.be.true();
-		expect( event.off.called ).to.be.true();
+		expect( event.stop.called ).to.be.true;
+		expect( event.off.called ).to.be.true;
 	} );
 
 	it( 'should not mark "called" in future instances', () => {
@@ -35,7 +35,7 @@ describe( 'EventInfo', () => {
 
 		event = new EventInfo( 'test' );
 
-		expect( event.stop.called ).to.not.be.true();
-		expect( event.off.called ).to.not.be.true();
+		expect( event.stop.called ).to.not.be.true;
+		expect( event.off.called ).to.not.be.true;
 	} );
 } );
