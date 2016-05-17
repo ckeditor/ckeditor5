@@ -140,7 +140,8 @@ export default class Delta {
 
 		json.__className = this.constructor.className;
 
-		json.batch = null;
+		// Remove parent batch to avoid circular dependencies.
+		delete json.batch;
 
 		return json;
 	}

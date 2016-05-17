@@ -85,8 +85,8 @@ export default class Operation {
 
 		json.__className = this.constructor.className;
 
-		// Due to circular references we need to remove parent reference.
-		json.delta = this.delta ? `[${this.delta.constructor.className}]` : null;
+		// Remove parent delta to avoid circular dependencies.
+		delete json.delta;
 
 		return json;
 	}

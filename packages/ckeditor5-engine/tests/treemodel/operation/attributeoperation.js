@@ -384,7 +384,6 @@ describe( 'AttributeOperation', () => {
 			expect( serialized ).to.deep.equal( {
 				__className: 'engine.treeModel.operation.AttributeOperation',
 				baseVersion: 0,
-				delta: null,
 				key: 'key',
 				newValue: 'newValue',
 				oldValue: null,

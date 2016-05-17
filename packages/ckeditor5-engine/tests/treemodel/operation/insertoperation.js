@@ -190,7 +190,6 @@ describe( 'InsertOperation', () => {
 			expect( serialized ).to.deep.equal( {
 				__className: 'engine.treeModel.operation.InsertOperation',
 				baseVersion: 0,
-				delta: null,
 				nodeList: treeModelTestUtils.jsonParseStringify( new NodeList( 'x' ) ),
 				position: treeModelTestUtils.jsonParseStringify( position )
 			} );

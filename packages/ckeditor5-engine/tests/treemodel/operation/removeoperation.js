@@ -131,7 +131,6 @@ describe( 'RemoveOperation', () => {
 			expect( serialized ).to.deep.equal( {
 				__className: 'engine.treeModel.operation.RemoveOperation',
 				baseVersion: 0,
-				delta: null,
 				howMany: 2,
 				isSticky: false,
 				movedRangeStart: treeModelTestUtils.jsonParseStringify( op.movedRangeStart ),

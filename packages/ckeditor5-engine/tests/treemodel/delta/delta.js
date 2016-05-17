@@ -150,7 +150,6 @@ describe( 'Delta', () => {
 		it( 'should return JSON representation for empty delta', () => {
 			expect( treeModelTestUtils.jsonParseStringify( delta ) ).to.deep.equal( {
 				__className: FooDelta.className,
-				batch: null,
 				operations: []
 			} );
 		} );
@@ -168,7 +167,6 @@ describe( 'Delta', () => {
 
 			expect( treeModelTestUtils.jsonParseStringify( delta ) ).to.deep.equal( {
 				__className: FooDelta.className,
-				batch: null,
 				operations: [ treeModelTestUtils.jsonParseStringify( operation ) ]
 			} );
 		} );
@@ -184,7 +182,6 @@ describe( 'Delta', () => {
 
 			expect( treeModelTestUtils.jsonParseStringify( delta ) ).to.deep.equal( {
 				__className: FooDelta.className,
-				batch: null,
 				operations: [ treeModelTestUtils.jsonParseStringify( operation ) ]
 			} );
 		} );
@@ -201,7 +198,6 @@ describe( 'Delta', () => {
 
 			expect( treeModelTestUtils.jsonParseStringify( delta ) ).to.deep.equal( {
 				__className: FooDelta.className,
-				batch: null,
 				operations: [ treeModelTestUtils.jsonParseStringify( operation ) ]
 			} );
 		} );
@@ -213,7 +209,6 @@ describe( 'Delta', () => {
 
 			expect( treeModelTestUtils.jsonParseStringify( delta ) ).to.deep.equal( {
 				__className: FooDelta.className,
-				batch: null,
 				operations: [ treeModelTestUtils.jsonParseStringify( operation ) ]
 			} );
 		} );
@@ -230,7 +225,6 @@ describe( 'Delta', () => {
 
 			expect( treeModelTestUtils.jsonParseStringify( delta ) ).to.deep.equal( {
 				__className: FooDelta.className,
-				batch: null,
 				operations: [ treeModelTestUtils.jsonParseStringify( operation ) ]
 			} );
 		} );
@@ -246,7 +240,6 @@ describe( 'Delta', () => {
 
 			expect( treeModelTestUtils.jsonParseStringify( delta ) ).to.deep.equal( {
 				__className: FooDelta.className,
-				batch: null,
 				operations: [ treeModelTestUtils.jsonParseStringify( operation ) ]
 			} );
 		} );
@@ -258,7 +251,6 @@ describe( 'Delta', () => {
 
 			expect( treeModelTestUtils.jsonParseStringify( delta ) ).to.deep.equal( {
 				__className: FooDelta.className,
-				batch: null,
 				operations: [ treeModelTestUtils.jsonParseStringify( operation ) ]
 			} );
 		} );
@@ -268,7 +260,6 @@ describe( 'Delta', () => {
 
 			expect( treeModelTestUtils.jsonParseStringify( delta ) ).to.deep.equal( {
 				__className: FooDelta.className,
-				batch: null,
 				operations: []
 			} );
 		} );

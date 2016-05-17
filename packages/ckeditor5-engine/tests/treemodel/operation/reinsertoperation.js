@@ -101,7 +101,6 @@ describe( 'ReinsertOperation', () => {
 			expect( serialized ).to.deep.equal( {
 				__className: 'engine.treeModel.operation.ReinsertOperation',
 				baseVersion: 0,
-				delta: null,
 				howMany: 2,
 				isSticky: false,
 				movedRangeStart: treeModelTestUtils.jsonParseStringify( operation.movedRangeStart ),

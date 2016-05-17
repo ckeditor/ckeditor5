@@ -241,7 +241,6 @@ describe( 'RootAttributeOperation', () => {
 			expect( serialized ).to.deep.equal( {
 				__className: 'engine.treeModel.operation.RootAttributeOperation',
 				baseVersion: 0,
-				delta: null,
 				key: 'key',
 				newValue: 'newValue',
 				oldValue: null,

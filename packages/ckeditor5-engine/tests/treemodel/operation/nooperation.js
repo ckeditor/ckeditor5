@@ -44,8 +44,7 @@ describe( 'NoOperation', () => {
 
 			expect( serialized ).to.deep.equal( {
 				__className: 'engine.treeModel.operation.NoOperation',
-				baseVersion: 0,
-				delta: null
+				baseVersion: 0
 			} );
 		} );
 	} );

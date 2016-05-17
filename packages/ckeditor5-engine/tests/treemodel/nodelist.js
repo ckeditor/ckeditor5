@@ -380,10 +380,9 @@ describe( 'NodeList', () => {
 					_attrs: [],
 					_children: {
 						_indexMap: [ 0, 0, 0 ],
-						_nodes: [ { _attrs: [], text: 'bar', parent: 'p' } ]
+						_nodes: [ { _attrs: [], text: 'bar' } ]
 					},
-					name: 'p',
-					parent: null
+					name: 'p'
 				} ]
 			};
 			let jsonParseStringify = treeModelTestUtils.jsonParseStringify( nodeList );
@@ -397,7 +396,7 @@ describe( 'NodeList', () => {
 
 			expect( treeModelTestUtils.jsonParseStringify( nodeList ) ).to.deep.equal( {
 				_nodes: [
-					{ _attrs: [], text: 'bar', parent: null }
+					{ _attrs: [], text: 'bar' }
 				],
 				_indexMap: [ 0, 0, 0 ]
 			} );
@@ -409,7 +408,7 @@ describe( 'NodeList', () => {
 
 			expect( treeModelTestUtils.jsonParseStringify( nodeList ) ).to.deep.equal( {
 				_nodes: [
-					{ _attrs: [ [ 'bold', true ] ], text: 'bar', parent: null }
+					{ _attrs: [ [ 'bold', true ] ], text: 'bar' }
 				],
 				_indexMap: [ 0, 0, 0 ]
 			} );
@@ -421,7 +420,7 @@ describe( 'NodeList', () => {
 
 			expect( treeModelTestUtils.jsonParseStringify( nodeList ) ).to.deep.equal( {
 				_nodes: [
-					{ _attrs: [ [ 'bold', true ] ], text: 'bar', parent: null }
+					{ _attrs: [ [ 'bold', true ] ], text: 'bar' }
 				],
 				_indexMap: [ 0, 0, 0 ]
 			} );

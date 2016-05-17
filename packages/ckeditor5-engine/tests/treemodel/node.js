@@ -98,15 +98,6 @@ describe( 'Node', () => {
 		} );
 	} );
 
-	it( 'should create proper JSON string using toJSON method', () => {
-		let foo = new Element( 'foo', [], [ 'b' ] );
-
-		let parsedFoo = JSON.parse( JSON.stringify( foo ) );
-
-		expect( parsedFoo.parent ).to.equal( null );
-		expect( parsedFoo._children._nodes[ 0 ].parent ).to.equal( 'foo' );
-	} );
-
 	describe( 'getIndex', () => {
 		it( 'should return null if the parent is null', () => {
 			expect( root.getIndex() ).to.be.null;
@@ -190,8 +181,7 @@ describe( 'Node', () => {
 					_indexMap: [],
 					_nodes: []
 				},
-				name: 'one',
-				parent: null
+				name: 'one'
 			} );
 		} );
 
@@ -204,8 +194,7 @@ describe( 'Node', () => {
 					_indexMap: [],
 					_nodes: []
 				},
-				name: 'one',
-				parent: null
+				name: 'one'
 			} );
 		} );
 
@@ -215,21 +204,23 @@ describe( 'Node', () => {
 				_children: {
 					_indexMap: [ 0, 1, 2 ],
 					_nodes: [
-						{ _attrs: [], _children: { _indexMap: [], _nodes: [] }, name: 'one', parent: null },
+						{ _attrs: [], _children: { _indexMap: [], _nodes: [] }, name: 'one' },
 						{
-							_attrs: [], _children: {
-							_indexMap: [ 0, 0, 1, 2 ], _nodes: [
-								{ _attrs: [], text: 'ba', parent: 'two' },
-								{ _attrs: [], _children: { _indexMap: [], _nodes: [] }, name: 'img', parent: 'two' },
-								{ _attrs: [], text: 'r', parent: 'two' }
-							]
-						}, name: 'two', parent: null
+							_attrs: [],
+							_children: {
+								_indexMap: [ 0, 0, 1, 2 ],
+								_nodes: [
+									{ _attrs: [], text: 'ba' },
+									{ _attrs: [], _children: { _indexMap: [], _nodes: [] }, name: 'img' },
+									{ _attrs: [], text: 'r' }
+								]
+							},
+							name: 'two'
 						},
-						{ _attrs: [], _children: { _indexMap: [], _nodes: [] }, name: 'three', parent: null }
+						{ _attrs: [], _children: { _indexMap: [], _nodes: [] }, name: 'three' }
 					]
 				},
-				name: null,
-				parent: null
+				name: null
 			} );
 		} );
 	} );

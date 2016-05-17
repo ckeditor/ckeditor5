@@ -25,11 +25,9 @@ describe( 'Operation', () => {
 
 		let opOutsideDelta = new Operation( 0 );
 
-		let parsedIn = JSON.parse( JSON.stringify( opInDelta ) );
-		let parsedOutside = JSON.parse( JSON.stringify( opOutsideDelta ) );
+		let parsedOutside = treeModelTestUtils.jsonParseStringify( opOutsideDelta );
 
-		expect( parsedIn.delta ).to.equal( '[engine.treeModel.delta.Delta]' );
-		expect( parsedOutside.delta ).to.be.null;
+		expect( parsedOutside.delta ).to.be.undefined;
 	} );
 
 	describe( 'toJSON', () => {
@@ -40,8 +38,7 @@ describe( 'Operation', () => {
 
 			expect( serialized ).to.deep.equal( {
 				__className: 'engine.treeModel.operation.Operation',
-				baseVersion: 4,
-				delta: null
+				baseVersion: 4
 			} );
 		} );
 	} );

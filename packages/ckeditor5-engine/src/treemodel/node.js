@@ -186,7 +186,7 @@ export default class Node {
 		const json = clone( this );
 
 		// Due to circular references we need to remove parent reference.
-		json.parent = this.parent ? this.parent.name : null;
+		delete json.parent;
 
 		// Serialize attributes as Map object is represented as "{}" when parsing to JSON.
 		json._attrs = [ ...json._attrs ];
