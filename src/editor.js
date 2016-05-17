@@ -6,7 +6,7 @@
 'use strict';
 
 import ObservableMixin from './utils/observablemixin.js';
-import EditorConfig from './editorconfig.js';
+import Config from './utils/config.js';
 import PluginCollection from './plugincollection.js';
 import EditableCollection from './editablecollection.js';
 import CKEditorError from './utils/ckeditorerror.js';
@@ -52,14 +52,10 @@ export default class Editor {
 		/**
 		 * Holds all configurations specific to this editor instance.
 		 *
-		 * This instance of the {@link utils.Config} class is customized so its {@link utils.Config#get} method will retrieve
-		 * global configurations available in {@link CKEDITOR.config} if configurations are not found in the
-		 * instance itself.
-		 *
 		 * @readonly
 		 * @member {utils.Config} ckeditor5.Editor#config
 		 */
-		this.config = config = new EditorConfig( config );
+		this.config = config = new Config( config );
 
 		/**
 		 * The plugins loaded and in use by this editor instance.
