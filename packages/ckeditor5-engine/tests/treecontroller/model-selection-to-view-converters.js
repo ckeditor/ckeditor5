@@ -144,6 +144,16 @@ describe( 'default converters', () => {
 				'foobar' // No selection in view.
 			);
 		} );
+
+		it( 'should convert backward selection', () => {
+			test(
+				[ 1, 3, 'backward' ],
+				'foobar',
+				'f{oo}bar'
+			);
+
+			expect( viewSelection.focus.offset ).to.equal( 1 );
+		} );
 	} );
 
 	describe( 'collapsed selection', () => {
@@ -426,11 +436,12 @@ function test( selectionPaths, modelInput, expectedView, selectionAttributes = {
 	bender.model.setData( modelDoc, modelInput );
 
 	// Manually set selection ranges using passed `selectionPaths`.
-	let startPath = typeof selectionPaths[ 0 ] == 'number' ? [ selectionPaths[ 0 ] ] : selectionPaths[ 0 ];
-	let endPath = typeof selectionPaths[ 1 ] == 'number' ? [ selectionPaths[ 1 ] ] : selectionPaths[ 1 ];
-	let startPos = new ModelPosition( modelRoot, startPath );
-	let endPos = new ModelPosition( modelRoot, endPath );
-	modelSelection.setRanges( [ new ModelRange( startPos, endPos ) ] );
+	const startPath = typeof selectionPaths[ 0 ] == 'number' ? [ selectionPaths[ 0 ] ] : selectionPaths[ 0 ];
+	const endPath = typeof selectionPaths[ 1 ] == 'number' ? [ selectionPaths[ 1 ] ] : selectionPaths[ 1 ];
+	const startPos = new ModelPosition( modelRoot, startPath );
+	const endPos = new ModelPosition( modelRoot, endPath );
+	const isBackward = selectionPaths[ 2 ] === 'backward';
+	modelSelection.setRanges( [ new ModelRange( startPos, endPos ) ], isBackward );
 
 	// Updated selection attributes according to model.
 	modelSelection._updateAttributes();
