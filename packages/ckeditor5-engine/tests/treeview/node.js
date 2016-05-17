@@ -129,7 +129,7 @@ describe( 'Node', () => {
 	} );
 
 	describe( 'getDocument', () => {
-		it( 'should return null if any parent has not set treeview', () => {
+		it( 'should return null if any parent has not set Document', () => {
 			expect( charA.getDocument() ).to.be.null;
 		} );
 
