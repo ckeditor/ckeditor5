@@ -5,9 +5,8 @@
 
 'use strict';
 
-import Delta from './delta.js';
+import { default as Delta, registerDeserializer } from './delta.js';
 import { register } from '../batch.js';
-import { registerDeserializer } from './delta.js';
 import MoveOperation from '../operation/moveoperation.js';
 import Position from '../position.js';
 import Range from '../range.js';
@@ -66,6 +65,7 @@ export default class MoveDelta extends Delta {
 		return MoveDelta;
 	}
 
+	/** @inheritDoc */
 	static get className() {
 		return 'engine.treeModel.delta.MoveDelta';
 	}

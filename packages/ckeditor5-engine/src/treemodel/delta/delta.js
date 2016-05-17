@@ -151,6 +151,7 @@ export default class Delta {
 	 * {@link engine.treeModel.delta.Delta.fromJSON} during deserialization.
 	 *
 	 * @type {String}
+	 * @readonly
 	 */
 	static get className() {
 		return 'engine.treeModel.delta.Delta';
@@ -169,7 +170,7 @@ export default class Delta {
 	}
 
 	/**
-	 * Creates InsertDelta from deserialized object, ie. from parsed JSON string
+	 * Creates InsertDelta from deserialized object, i.e. from parsed JSON string.
 	 *
 	 * @param {Object} json
 	 * @param {engine.treeModel.Document} doc Document on which this delta will be applied.

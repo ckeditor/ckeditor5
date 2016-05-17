@@ -5,10 +5,9 @@
 
 'use strict';
 
-import Delta from './delta.js';
+import { default as Delta, registerDeserializer } from './delta.js';
 import WrapDelta from './wrapdelta.js';
 import { register } from '../batch.js';
-import { registerDeserializer } from './delta.js';
 import Position from '../position.js';
 import RemoveOperation from '../operation/removeoperation.js';
 import MoveOperation from '../operation/moveoperation.js';
@@ -45,6 +44,7 @@ export default class UnwrapDelta extends Delta {
 		return WrapDelta;
 	}
 
+	/** @inheritDoc */
 	static get className() {
 		return 'engine.treeModel.delta.UnwrapDelta';
 	}

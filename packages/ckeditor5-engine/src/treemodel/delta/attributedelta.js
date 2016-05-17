@@ -5,9 +5,8 @@
 
 'use strict';
 
-import Delta from './delta.js';
+import { default as Delta, registerDeserializer } from './delta.js';
 import { register } from '../batch.js';
-import { registerDeserializer } from './delta.js';
 import AttributeOperation from '../operation/attributeoperation.js';
 import RootAttributeOperation from '../operation/rootattributeoperation.js';
 import Position from '../position.js';
@@ -70,6 +69,7 @@ export default class AttributeDelta extends Delta {
 		return AttributeDelta;
 	}
 
+	/** @inheritDoc */
 	static get className() {
 		return 'engine.treeModel.delta.AttributeDelta';
 	}
@@ -88,6 +88,7 @@ export default class AttributeDelta extends Delta {
  * @extends engine.treeModel.delta.Delta
  */
 export class RootAttributeDelta extends Delta {
+	/** @inheritDoc */
 	static get className() {
 		return 'engine.treeModel.delta.RootAttributeDelta';
 	}

@@ -5,10 +5,9 @@
 
 'use strict';
 
-import Delta from './delta.js';
+import { default as Delta, registerDeserializer } from './delta.js';
 import SplitDelta from './splitdelta.js';
 import { register } from '../batch.js';
-import { registerDeserializer } from './delta.js';
 import Position from '../position.js';
 import Element from '../element.js';
 import RemoveOperation from '../operation/removeoperation.js';
@@ -49,6 +48,7 @@ export default class MergeDelta extends Delta {
 		return SplitDelta;
 	}
 
+	/** @inheritDoc */
 	static get className() {
 		return 'engine.treeModel.delta.MergeDelta';
 	}

@@ -19,6 +19,7 @@ import NodeList from '../nodelist.js';
  * @memberOf engine.treeModel.delta
  */
 export default class WeakInsertDelta extends InsertDelta {
+	/** @inheritDoc */
 	static get className() {
 		return 'engine.treeModel.delta.WeakInsertDelta';
 	}

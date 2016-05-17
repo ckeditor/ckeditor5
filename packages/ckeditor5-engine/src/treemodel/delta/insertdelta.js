@@ -5,10 +5,9 @@
 
 'use strict';
 
-import Delta from './delta.js';
+import { default as Delta, registerDeserializer } from './delta.js';
 import RemoveDelta from './removedelta.js';
 import { register } from '../batch.js';
-import { registerDeserializer } from './delta.js';
 import InsertOperation from '../operation/insertoperation.js';
 
 /**
@@ -51,6 +50,7 @@ export default class InsertDelta extends Delta {
 		return RemoveDelta;
 	}
 
+	/** @inheritDoc */
 	static get className() {
 		return 'engine.treeModel.delta.InsertDelta';
 	}

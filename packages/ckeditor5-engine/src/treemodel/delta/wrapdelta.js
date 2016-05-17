@@ -5,10 +5,9 @@
 
 'use strict';
 
-import Delta from './delta.js';
+import { default as Delta, registerDeserializer } from './delta.js';
 import UnwrapDelta from './unwrapdelta.js';
 import { register } from '../batch.js';
-import { registerDeserializer } from './delta.js';
 import Position from '../position.js';
 import Range from '../range.js';
 import Element from '../element.js';
