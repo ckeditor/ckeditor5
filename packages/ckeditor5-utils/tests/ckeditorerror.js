@@ -46,11 +46,11 @@ describe( 'CKEditorError', () => {
 		let data = {
 			bar: 'a',
 			bom: new Foo(),
-			bim: document.body
+			bim: 10
 		};
 		let error = new CKEditorError( 'foo', data );
 
-		expect( error ).to.have.property( 'message', 'foo {"bar":"a","bom":{"x":1},"bim":{}}' );
+		expect( error ).to.have.property( 'message', 'foo {"bar":"a","bom":{"x":1},"bim":10}' );
 		expect( error ).to.have.property( 'data', data );
 	} );
 } );
