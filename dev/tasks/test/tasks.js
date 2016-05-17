@@ -37,10 +37,8 @@ module.exports = () => {
 	global.expect = chai.expect;
 	global.assert = chai.assert;
 	global.sinon = sinon;
-	global.bender = { model: {}, view: {} };
 
 	const tasks = {
-
 		/**
 		 * Is set to `true` when code coverage report will be displayed.
 		 *
@@ -67,7 +65,7 @@ module.exports = () => {
 		 * @returns {Stream}
 		 */
 		testInNode() {
-			const minVersion = '6.1.0';
+			const minVersion = '6.0.0';
 			const src = [
 				'build/cjs/tests/**/*.js',
 				'!**/_utils/**/*.js',
@@ -81,10 +79,6 @@ module.exports = () => {
 					message: `Wrong Node.js version. Please use Node.js in version v${ minVersion } or higher.`
 				} );
 			}
-
-			// Include global test tools.
-			global.bender.model = require( '../../../build/cjs/tests/engine/_utils/model.js' );
-			global.bender.view = require( '../../../build/cjs/tests/engine/_utils/view.js' );
 
 			return gulp.src( src )
 				.pipe( tasks.skipManual() )
