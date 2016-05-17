@@ -15,15 +15,32 @@ const semver = require( 'semver' );
 const minimist = require( 'minimist' );
 const buildUtils = require( '../build/utils' );
 
+/**
+ * Defines Node.js testing task.
+ *
+ * To run tests under node:
+ *
+ *		gulp node-test
+ *
+ * To run build before testing:
+ *
+ *		gulp node-test --build
+ *
+ * To run testing with code coverage:
+ *
+ * 		gulp node-test --coverage
+ */
 module.exports = () => {
 	const ignoreRegexp = /\/\* ?bender-tags:.*\bbrowser-only\b.*\*\//;
 	const options = minimist( process.argv.slice( 2 ), {
 		boolean: [
-			'coverage'
+			'coverage',
+			'build'
 		],
 
 		default: {
-			coverage: false
+			coverage: false,
+			build: false
 		}
 	} );
 
@@ -105,7 +122,7 @@ module.exports = () => {
 	if ( options.coverage ) {
 		gulp.task( 'test-node', [ 'build:js:cjs', 'test-node:coverage' ], tasks.testInNode );
 	} else {
-		gulp.task( 'test-node', [ 'build:js:cjs' ], tasks.testInNode );
+		gulp.task( 'test-node', options.build ? [ 'build:js:cjs' ] : [], tasks.testInNode );
 	}
 
 	return tasks;
