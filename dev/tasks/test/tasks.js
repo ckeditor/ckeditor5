@@ -35,32 +35,13 @@ module.exports = () => {
 	global.bender = { model: {}, view: {} };
 
 	const tasks = {
-
-		/**
-		 * Returns stream with files for testing.
-		 *
-		 * @returns {Stream}
-		 */
-		src() {
-			const src = [
-				'build/cjs/tests/**/*.js',
-				'!**/_utils/**/*.js',
-				'!build/cjs/tests/{ui,ui-*}/**/*.js',
-				'!build/cjs/tests/theme-*/**/*.js'
-			];
-
-			return gulp.src( src )
-				.pipe( tasks.skipManual() )
-				.pipe( tasks.skipIgnored() );
-		},
-
 		/**
 		 * Prepares files for coverage report.
 		 *
 		 * @returns {Stream}
 		 */
 		prepareCoverage() {
-			return tasks.src()
+			return gulp.src( 'build/cjs/ckeditor5/**/*.js' )
 				.pipe( istanbul() )
 				.pipe( istanbul.hookRequire() );
 		},
@@ -72,6 +53,12 @@ module.exports = () => {
 		 */
 		testInNode() {
 			const minVersion = '6.1.0';
+			const src = [
+				'build/cjs/tests/**/*.js',
+				'!**/_utils/**/*.js',
+				'!build/cjs/tests/{ui,ui-*}/**/*.js',
+				'!build/cjs/tests/theme-*/**/*.js'
+			];
 
 			if ( semver.lt( process.version, minVersion ) ) {
 				throw new gutil.PluginError( {
@@ -84,7 +71,9 @@ module.exports = () => {
 			global.bender.model = require( '../../../build/cjs/tests/engine/_utils/model.js' );
 			global.bender.view = require( '../../../build/cjs/tests/engine/_utils/view.js' );
 
-			return tasks.src()
+			return gulp.src( src )
+				.pipe( tasks.skipManual() )
+				.pipe( tasks.skipIgnored() )
 				.pipe( mocha( { reporter: 'progress' } ) )
 				.pipe( options.coverage ? istanbul.writeReports() : buildUtils.noop() );
 		},
