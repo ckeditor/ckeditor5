@@ -16,9 +16,7 @@ import Range from '/ckeditor5/engine/treemodel/range.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'TreeWalker', () => {
-	let expectedSingle, expected, expectedIgnoreEnd, expectedSingleIgnoreEnd;
-	let expectedShallow, expectedCroppedStart, expectedCroppedEnd;
-
+	let expected;
 	let doc, root, img1, paragraph, b, a, r, img2, x;
 	let rootBeginning;
 
@@ -49,233 +47,171 @@ describe( 'TreeWalker', () => {
 		root.insertChildren( 0, [ img1, paragraph ] );
 
 		rootBeginning = new Position( root, [ 0 ] );
-
-		expected = [
-			{ type: 'ELEMENT_START', item: img1 },
-			{ type: 'ELEMENT_END', item: img1 },
-			{ type: 'ELEMENT_START', item: paragraph },
-			{ type: 'TEXT', text: 'ba', attrs: [ [ 'bold', true ] ] },
-			{ type: 'TEXT', text: 'r', attrs: [] },
-			{ type: 'ELEMENT_START', item: img2 },
-			{ type: 'ELEMENT_END', item: img2 },
-			{ type: 'TEXT', text: 'x', attrs: [] },
-			{ type: 'ELEMENT_END', item: paragraph }
-		];
-
-		expectedCroppedEnd = [
-			{ type: 'ELEMENT_START', item: img1 },
-			{ type: 'ELEMENT_END', item: img1 },
-			{ type: 'ELEMENT_START', item: paragraph },
-			{ type: 'TEXT', text: 'b', attrs: [ [ 'bold', true ] ] }
-		];
-
-		expectedCroppedStart = [
-			{ type: 'TEXT', text: 'a', attrs: [ [ 'bold', true ] ] },
-			{ type: 'TEXT', text: 'r', attrs: [] },
-			{ type: 'ELEMENT_START', item: img2 },
-			{ type: 'ELEMENT_END', item: img2 },
-			{ type: 'TEXT', text: 'x', attrs: [] },
-			{ type: 'ELEMENT_END', item: paragraph }
-		];
-
-		expectedSingle = [
-			{ type: 'ELEMENT_START', item: img1 },
-			{ type: 'ELEMENT_END', item: img1 },
-			{ type: 'ELEMENT_START', item: paragraph },
-			{ type: 'CHARACTER', text: 'b', attrs: [ [ 'bold', true ] ] },
-			{ type: 'CHARACTER', text: 'a', attrs: [ [ 'bold', true ] ] },
-			{ type: 'CHARACTER', text: 'r', attrs: [] },
-			{ type: 'ELEMENT_START', item: img2 },
-			{ type: 'ELEMENT_END', item: img2 },
-			{ type: 'CHARACTER', text: 'x', attrs: [] },
-			{ type: 'ELEMENT_END', item: paragraph }
-		];
-
-		expectedIgnoreEnd = [
-			{ type: 'ELEMENT_START', item: img1 },
-			{ type: 'ELEMENT_START', item: paragraph },
-			{ type: 'TEXT', text: 'ba', attrs: [ [ 'bold', true ] ] },
-			{ type: 'TEXT', text: 'r', attrs: [] },
-			{ type: 'ELEMENT_START', item: img2 },
-			{ type: 'TEXT', text: 'x', attrs: [] }
-		];
-
-		expectedSingleIgnoreEnd = [
-			{ type: 'ELEMENT_START', item: img1 },
-			{ type: 'ELEMENT_START', item: paragraph },
-			{ type: 'CHARACTER', text: 'b', attrs: [ [ 'bold', true ] ] },
-			{ type: 'CHARACTER', text: 'a', attrs: [ [ 'bold', true ] ] },
-			{ type: 'CHARACTER', text: 'r', attrs: [] },
-			{ type: 'ELEMENT_START', item: img2 },
-			{ type: 'CHARACTER', text: 'x', attrs: [] }
-		];
-
-		expectedShallow = [
-			{ type: 'ELEMENT_START', item: img1 },
-			{ type: 'ELEMENT_START', item: paragraph }
-		];
 	} );
 
-	function expectItem( item, expected, options ) {
-		expect( item.done ).to.be.false;
+	describe( 'constructor', () => {
+		it( 'should throw if neither boundaries nor starting position is set', () => {
+			expect( () => {
+				new TreeWalker();
+			} ).to.throw( CKEditorError, /^tree-walker-no-start-position/ );
 
-		expectValue( item.value, expected, options );
-	}
+			expect( () => {
+				new TreeWalker( {} );
+			} ).to.throw( CKEditorError, /^tree-walker-no-start-position/ );
 
-	function expectValue( value, expected, options ) {
-		expect( value.type ).to.equal( expected.type );
-
-		if ( value.type == 'TEXT' ) {
-			expectText( value, expected, options );
-		} else if ( value.type == 'CHARACTER' ) {
-			expectCharacter( value, expected, options );
-		} else if ( value.type == 'ELEMENT_START' ) {
-			expectStart( value, expected, options );
-		} else if ( value.type == 'ELEMENT_END' ) {
-			expectEnd( value, expected, options );
-		}
-	}
-
-	function expectText( value, expected ) {
-		expect( value.item.text ).to.equal( expected.text );
-		expect( Array.from( value.item.first._attrs ) ).to.deep.equal( expected.attrs );
-		expect( value.length ).to.equal( value.item.text.length );
-		expect( value.previousPosition ).to.deep.equal( Position.createBefore( value.item.first ) );
-		expect( value.nextPosition ).to.deep.equal( Position.createAfter( value.item.last ) );
-	}
-
-	function expectCharacter( value, expected ) {
-		expect( value.item.character ).to.equal( expected.text );
-		expect( Array.from( value.item._attrs ) ).to.deep.equal( expected.attrs );
-		expect( value.length ).to.equal( value.item.character.length );
-		expect( value.previousPosition ).to.deep.equal( Position.createBefore( value.item ) );
-		expect( value.nextPosition ).to.deep.equal( Position.createAfter( value.item ) );
-	}
-
-	function expectStart( value, expected, options ) {
-		expect( value.item ).to.equal( expected.item );
-		expect( value.length ).to.equal( 1 );
-		expect( value.previousPosition ).to.deep.equal( Position.createBefore( value.item ) );
-
-		if ( options && options.shallow ) {
-			expect( value.previousPosition ).to.deep.equal( Position.createBefore( value.item ) );
-		} else {
-			expect( value.nextPosition ).to.deep.equal( Position.createFromParentAndOffset( value.item, 0 ) );
-		}
-	}
-
-	function expectEnd( value, expected ) {
-		expect( value.item ).to.equal( expected.item );
-		expect( value.length ).to.be.undefined;
-		expect( value.previousPosition ).to.deep.equal(
-			Position.createFromParentAndOffset( value.item, value.item.getChildCount() ) );
-		expect( value.nextPosition ).to.deep.equal( Position.createAfter( value.item ) );
-	}
-
-	it( 'should provide iterator methods', () => {
-		let iterator = new TreeWalker( { startPosition: rootBeginning } );
-
-		for ( let i = 0; i <= 8; i++ ) {
-			expectItem( iterator.next(), expected[ i ] );
-		}
-		expect( iterator.next() ).to.have.property( 'done' ).that.is.true;
+			expect( () => {
+				new TreeWalker( { mergeCharacters: true } );
+			} ).to.throw( CKEditorError, /^tree-walker-no-start-position/ );
+		} );
 	} );
 
-	it( 'should provide iterator interface', () => {
-		let iterator = new TreeWalker( { startPosition: rootBeginning } );
-		let i = 0;
+	describe( 'iterate', () => {
+		beforeEach( () => {
+			expected = [
+				{ type: 'ELEMENT_START', item: img1 },
+				{ type: 'ELEMENT_END', item: img1 },
+				{ type: 'ELEMENT_START', item: paragraph },
+				{ type: 'TEXT', text: 'ba', attrs: [ [ 'bold', true ] ] },
+				{ type: 'TEXT', text: 'r', attrs: [] },
+				{ type: 'ELEMENT_START', item: img2 },
+				{ type: 'ELEMENT_END', item: img2 },
+				{ type: 'TEXT', text: 'x', attrs: [] },
+				{ type: 'ELEMENT_END', item: paragraph }
+			];
+		} );
 
-		for ( let value of iterator ) {
-			expectValue( value, expected[ i ] );
-			i++;
-		}
+		it( 'should provide iterator methods', () => {
+			let iterator = new TreeWalker( { startPosition: rootBeginning } );
 
-		expect( i ).to.equal( expected.length );
+			for ( let i = 0; i <= 8; i++ ) {
+				expectItem( iterator.next(), expected[ i ] );
+			}
+			expect( iterator.next() ).to.have.property( 'done' ).that.is.true;
+		} );
+
+		it( 'should provide iterator interface', () => {
+			let iterator = new TreeWalker( { startPosition: rootBeginning } );
+			let i = 0;
+
+			for ( let value of iterator ) {
+				expectValue( value, expected[ i ] );
+				i++;
+			}
+
+			expect( i ).to.equal( expected.length );
+		} );
+
+		it( 'should start at the startPosition', () => {
+			let iterator = new TreeWalker( { startPosition: new Position( root, [ 1 ] ) } );
+			let i = 2;
+
+			for ( let value of iterator ) {
+				expectValue( value, expected[ i ] );
+				i++;
+			}
+
+			expect( i ).to.equal( expected.length );
+		} );
 	} );
 
-	it( 'should start at the startPosition', () => {
-		let iterator = new TreeWalker( { startPosition: new Position( root, [ 1 ] ) } );
-		let i = 2;
+	describe( 'range', () => {
+		it( 'should iterating over the range', () => {
+			expected = [
+				{ type: 'ELEMENT_START', item: paragraph },
+				{ type: 'TEXT', text: 'ba', attrs: [ [ 'bold', true ] ] },
+				{ type: 'TEXT', text: 'r', attrs: [] },
+				{ type: 'ELEMENT_START', item: img2 },
+				{ type: 'ELEMENT_END', item: img2 }
+			];
 
-		for ( let value of iterator ) {
-			expectValue( value, expected[ i ] );
-			i++;
-		}
+			let start = new Position( root, [ 1 ] );
+			let end = new Position( root, [ 1, 4 ] );
+			let range = new Range( start, end );
 
-		expect( i ).to.equal( expected.length );
-	} );
+			let iterator = new TreeWalker( { boundaries: range } );
+			let i = 0;
 
-	it( 'should iterating over the range', () => {
-		let start = new Position( root, [ 1 ] );
-		let end = new Position( root, [ 1, 4 ] );
-		let range = new Range( start, end );
+			for ( let value of iterator ) {
+				expectValue( value, expected[ i ] );
+				i++;
+			}
 
-		let iterator = new TreeWalker( { boundaries: range } );
-		let i = 2;
+			expect( i ).to.equal( expected.length );
+		} );
 
-		for ( let value of iterator ) {
-			expectValue( value, expected[ i ] );
-			i++;
-		}
+		it( 'should return part of the text if range starts inside the text', () => {
+			expected = [
+				{ type: 'TEXT', text: 'a', attrs: [ [ 'bold', true ] ] },
+				{ type: 'TEXT', text: 'r', attrs: [] },
+				{ type: 'ELEMENT_START', item: img2 },
+				{ type: 'ELEMENT_END', item: img2 }
+			];
 
-		expect( i ).to.equal( 7 );
-	} );
+			let start = new Position( root, [ 1, 1 ] );
+			let end = new Position( root, [ 1, 4 ] );
+			let range = new Range( start, end );
 
-	it( 'should start iterating at startPosition even if the range is defined', () => {
-		let start = new Position( root, [ 1 ] );
-		let end = new Position( root, [ 1, 4 ] );
-		let range = new Range( start, end );
+			let iterator = new TreeWalker( { boundaries: range } );
+			let i = 0;
 
-		let iterator = new TreeWalker( { boundaries: range } );
-		let i = 2;
+			for ( let value of iterator ) {
+				expectValue( value, expected[ i ] );
+				i++;
+			}
 
-		for ( let value of iterator ) {
-			expectValue( value, expected[ i ] );
-			i++;
-		}
+			expect( i ).to.equal( expected.length );
+		} );
 
-		expect( i ).to.equal( 7 );
-	} );
+		it( 'should return part of the text if range ends inside the text', () => {
+			expected = [
+				{ type: 'ELEMENT_START', item: img1 },
+				{ type: 'ELEMENT_END', item: img1 },
+				{ type: 'ELEMENT_START', item: paragraph },
+				{ type: 'TEXT', text: 'b', attrs: [ [ 'bold', true ] ] }
+			];
 
-	it( 'should return part of the text if range starts inside the text', () => {
-		let iterator = new TreeWalker( { startPosition: new Position( root, [ 1, 1 ] ) } );
-		let i = 0;
+			let start = rootBeginning;
+			let end = new Position( root, [ 1, 1 ] );
+			let range = new Range( start, end );
 
-		for ( let value of iterator ) {
-			expectValue( value, expectedCroppedStart[ i ] );
-			i++;
-		}
+			let iterator = new TreeWalker( { boundaries: range } );
+			let i = 0;
 
-		expect( i ).to.equal( expectedCroppedStart.length );
-	} );
+			for ( let value of iterator ) {
+				expectValue( value, expected[ i ] );
+				i++;
+			}
 
-	it( 'should return part of the text if range ends inside the text', () => {
-		let start = rootBeginning;
-		let end = new Position( root, [ 1, 1 ] );
-		let range = new Range( start, end );
-
-		let iterator = new TreeWalker( { boundaries: range } );
-		let i = 0;
-
-		for ( let value of iterator ) {
-			expectValue( value, expectedCroppedEnd[ i ] );
-			i++;
-		}
-
-		expect( i ).to.equal( expectedCroppedEnd.length );
+			expect( i ).to.equal( expected.length );
+		} );
 	} );
 
 	describe( 'singleCharacters', () => {
+		beforeEach( () => {
+			expected = [
+				{ type: 'ELEMENT_START', item: img1 },
+				{ type: 'ELEMENT_END', item: img1 },
+				{ type: 'ELEMENT_START', item: paragraph },
+				{ type: 'CHARACTER', text: 'b', attrs: [ [ 'bold', true ] ] },
+				{ type: 'CHARACTER', text: 'a', attrs: [ [ 'bold', true ] ] },
+				{ type: 'CHARACTER', text: 'r', attrs: [] },
+				{ type: 'ELEMENT_START', item: img2 },
+				{ type: 'ELEMENT_END', item: img2 },
+				{ type: 'CHARACTER', text: 'x', attrs: [] },
+				{ type: 'ELEMENT_END', item: paragraph }
+			];
+		} );
+
 		it( 'should return single characters', () => {
 			let iterator = new TreeWalker( { startPosition: rootBeginning, singleCharacters: true } );
 			let i = 0;
 
 			for ( let value of iterator ) {
-				expectValue( value, expectedSingle[ i ] );
+				expectValue( value, expected[ i ] );
 				i++;
 			}
 
-			expect( i ).to.equal( expectedSingle.length );
+			expect( i ).to.equal( expected.length );
 		} );
 
 		it( 'should respect boundaries', () => {
@@ -286,7 +222,7 @@ describe( 'TreeWalker', () => {
 			let i = 3;
 
 			for ( let value of iterator ) {
-				expectValue( value, expectedSingle[ i ] );
+				expectValue( value, expected[ i ] );
 				i++;
 			}
 
@@ -295,56 +231,127 @@ describe( 'TreeWalker', () => {
 	} );
 
 	describe( 'shallow', () => {
+		beforeEach( () => {
+			expected = [
+				{ type: 'ELEMENT_START', item: img1 },
+				{ type: 'ELEMENT_START', item: paragraph }
+			];
+		} );
+
 		it( 'should not enter elements', () => {
 			let iterator = new TreeWalker( { startPosition: rootBeginning, shallow: true } );
 			let i = 0;
 
 			for ( let value of iterator ) {
-				expectValue( value, expectedShallow[ i ], { shallow: true } );
+				expectValue( value, expected[ i ], { shallow: true } );
 				i++;
 			}
 
-			expect( i ).to.equal( expectedShallow.length );
+			expect( i ).to.equal( expected.length );
 		} );
 	} );
 
 	describe( 'ignoreElementEnd', () => {
 		it( 'should iterate ignoring ELEMENT_END', () => {
+			expected = [
+				{ type: 'ELEMENT_START', item: img1 },
+				{ type: 'ELEMENT_START', item: paragraph },
+				{ type: 'TEXT', text: 'ba', attrs: [ [ 'bold', true ] ] },
+				{ type: 'TEXT', text: 'r', attrs: [] },
+				{ type: 'ELEMENT_START', item: img2 },
+				{ type: 'TEXT', text: 'x', attrs: [] }
+			];
+
 			let iterator = new TreeWalker( { startPosition: rootBeginning, ignoreElementEnd: true } );
 			let i = 0;
 
 			for ( let value of iterator ) {
-				expectValue( value, expectedIgnoreEnd[ i ] );
+				expectValue( value, expected[ i ] );
 				i++;
 			}
 
-			expect( i ).to.equal( expectedIgnoreEnd.length );
+			expect( i ).to.equal( expected.length );
 		} );
 
 		it( 'should return single characters ignoring ELEMENT_END', () => {
-			let iterator = new TreeWalker( { startPosition: rootBeginning, singleCharacters: true, ignoreElementEnd: true } );
+			expected = [
+				{ type: 'ELEMENT_START', item: img1 },
+				{ type: 'ELEMENT_START', item: paragraph },
+				{ type: 'CHARACTER', text: 'b', attrs: [ [ 'bold', true ] ] },
+				{ type: 'CHARACTER', text: 'a', attrs: [ [ 'bold', true ] ] },
+				{ type: 'CHARACTER', text: 'r', attrs: [] },
+				{ type: 'ELEMENT_START', item: img2 },
+				{ type: 'CHARACTER', text: 'x', attrs: [] }
+			];
+
+			let iterator = new TreeWalker( {
+				startPosition: rootBeginning,
+				singleCharacters: true,
+				ignoreElementEnd: true
+			} );
 			let i = 0;
 
 			for ( let value of iterator ) {
-				expectValue( value, expectedSingleIgnoreEnd[ i ] );
+				expectValue( value, expected[ i ] );
 				i++;
 			}
 
-			expect( i ).to.equal( expectedSingleIgnoreEnd.length );
+			expect( i ).to.equal( expected.length );
 		} );
 	} );
-
-	it( 'should throw if neither boundaries nor starting position is set', () => {
-		expect( () => {
-			new TreeWalker();
-		} ).to.throw( CKEditorError, /^tree-walker-no-start-position/ );
-
-		expect( () => {
-			new TreeWalker( {} );
-		} ).to.throw( CKEditorError, /^tree-walker-no-start-position/ );
-
-		expect( () => {
-			new TreeWalker( { mergeCharacters: true } );
-		} ).to.throw( CKEditorError, /^tree-walker-no-start-position/ );
-	} );
 } );
+
+function expectItem( item, expected, options ) {
+	expect( item.done ).to.be.false;
+	expectValue( item.value, expected, options );
+}
+
+function expectValue( value, expected, options ) {
+	expect( value.type ).to.equal( expected.type );
+
+	if ( value.type == 'TEXT' ) {
+		expectText( value, expected, options );
+	} else if ( value.type == 'CHARACTER' ) {
+		expectCharacter( value, expected, options );
+	} else if ( value.type == 'ELEMENT_START' ) {
+		expectStart( value, expected, options );
+	} else if ( value.type == 'ELEMENT_END' ) {
+		expectEnd( value, expected, options );
+	}
+}
+
+function expectText( value, expected ) {
+	expect( value.item.text ).to.equal( expected.text );
+	expect( Array.from( value.item.first._attrs ) ).to.deep.equal( expected.attrs );
+	expect( value.length ).to.equal( value.item.text.length );
+	expect( value.previousPosition ).to.deep.equal( Position.createBefore( value.item.first ) );
+	expect( value.nextPosition ).to.deep.equal( Position.createAfter( value.item.last ) );
+}
+
+function expectCharacter( value, expected ) {
+	expect( value.item.character ).to.equal( expected.text );
+	expect( Array.from( value.item._attrs ) ).to.deep.equal( expected.attrs );
+	expect( value.length ).to.equal( value.item.character.length );
+	expect( value.previousPosition ).to.deep.equal( Position.createBefore( value.item ) );
+	expect( value.nextPosition ).to.deep.equal( Position.createAfter( value.item ) );
+}
+
+function expectStart( value, expected, options ) {
+	expect( value.item ).to.equal( expected.item );
+	expect( value.length ).to.equal( 1 );
+	expect( value.previousPosition ).to.deep.equal( Position.createBefore( value.item ) );
+
+	if ( options && options.shallow ) {
+		expect( value.previousPosition ).to.deep.equal( Position.createBefore( value.item ) );
+	} else {
+		expect( value.nextPosition ).to.deep.equal( Position.createFromParentAndOffset( value.item, 0 ) );
+	}
+}
+
+function expectEnd( value, expected ) {
+	expect( value.item ).to.equal( expected.item );
+	expect( value.length ).to.be.undefined;
+	expect( value.previousPosition ).to.deep.equal(
+		Position.createFromParentAndOffset( value.item, value.item.getChildCount() ) );
+	expect( value.nextPosition ).to.deep.equal( Position.createAfter( value.item ) );
+}
