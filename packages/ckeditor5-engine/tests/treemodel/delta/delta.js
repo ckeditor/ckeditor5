@@ -262,6 +262,16 @@ describe( 'Delta', () => {
 				operations: [ treeModelTestUtils.jsonParseStringify( operation ) ]
 			} );
 		} );
+
+		it( 'should remove batch reference', () => {
+			delta.batch = { foo: 'bar' };
+
+			expect( treeModelTestUtils.jsonParseStringify( delta ) ).to.deep.equal( {
+				__class: FooDelta.className,
+				batch: null,
+				operations: []
+			} );
+		} );
 	} );
 
 	describe( 'fromJSON', () => {
