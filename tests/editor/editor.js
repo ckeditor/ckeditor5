@@ -11,9 +11,9 @@ import moduleUtils from '/tests/ckeditor5/_utils/module.js';
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
 import Editor from '/ckeditor5/editor.js';
 import Plugin from '/ckeditor5/plugin.js';
+import Config from '/ckeditor5/utils/config.js';
 import PluginCollection from '/ckeditor5/plugincollection.js';
 import EditableCollection from '/ckeditor5/editablecollection.js';
-import EditorConfig from '/ckeditor5/editorconfig.js';
 
 const pluginClasses = {};
 
@@ -37,12 +37,48 @@ describe( 'Editor', () => {
 			const editor = new Editor();
 
 			expect( editor ).to.have.property( 'elements', null );
-			expect( editor.config ).to.be.an.instanceof( EditorConfig );
+			expect( editor.config ).to.be.an.instanceof( Config );
 			expect( editor.editables ).to.be.an.instanceof( EditableCollection );
 			expect( editor.commands ).to.be.an.instanceof( Map );
 
 			expect( editor.plugins ).to.be.an.instanceof( PluginCollection );
 			expect( getPlugins( editor ) ).to.be.empty;
+		} );
+	} );
+
+	describe( 'plugins', () => {
+		it( 'should be empty on new editor', () => {
+			const editor = new Editor();
+
+			expect( getPlugins( editor ) ).to.be.empty;
+		} );
+	} );
+
+	describe( 'firstElement', () => {
+		it( 'should be set to first element', () => {
+			const editor = new Editor( { foo: 'a', bar: 'b' } );
+
+			expect( editor.firstElement ).to.equal( 'a' );
+		} );
+
+		it( 'should be set to null if there are no elements', () => {
+			const editor = new Editor();
+
+			expect( editor.firstElement ).to.be.null;
+		} );
+	} );
+
+	describe( 'firstElementName', () => {
+		it( 'should be set to first element name', () => {
+			const editor = new Editor( { foo: 'a', bar: 'b' } );
+
+			expect( editor.firstElementName ).to.equal( 'foo' );
+		} );
+
+		it( 'should be set to null if there are no elements', () => {
+			const editor = new Editor();
+
+			expect( editor.firstElementName ).to.be.null;
 		} );
 	} );
 

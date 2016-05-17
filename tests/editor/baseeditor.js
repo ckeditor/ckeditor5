@@ -38,34 +38,6 @@ describe( 'Editor', () => {
 		} );
 	} );
 
-	describe( 'firstElement', () => {
-		it( 'should be set to first element', () => {
-			const editor = new Editor( { foo: 'a', bar: 'b' } );
-
-			expect( editor.firstElement ).to.equal( 'a' );
-		} );
-
-		it( 'should be set to null if there are no elements', () => {
-			const editor = new Editor();
-
-			expect( editor.firstElement ).to.be.null;
-		} );
-	} );
-
-	describe( 'firstElementName', () => {
-		it( 'should be set to first element name', () => {
-			const editor = new Editor( { foo: 'a', bar: 'b' } );
-
-			expect( editor.firstElementName ).to.equal( 'foo' );
-		} );
-
-		it( 'should be set to null if there are no elements', () => {
-			const editor = new Editor();
-
-			expect( editor.firstElementName ).to.be.null;
-		} );
-	} );
-
 	describe( 'destroy', () => {
 		it( 'should fire "destroy"', () => {
 			const editor = new Editor();
