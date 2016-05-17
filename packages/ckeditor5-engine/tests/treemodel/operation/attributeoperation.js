@@ -380,9 +380,9 @@ describe( 'AttributeOperation', () => {
 
 			const serialized = treeModelTestUtils.jsonParseStringify( op );
 
-			expect( serialized.__class ).to.equal( 'engine.treeModel.operation.AttributeOperation' );
+			expect( serialized.__className ).to.equal( 'engine.treeModel.operation.AttributeOperation' );
 			expect( serialized ).to.deep.equal( {
-				__class: 'engine.treeModel.operation.AttributeOperation',
+				__className: 'engine.treeModel.operation.AttributeOperation',
 				baseVersion: 0,
 				delta: null,
 				key: 'key',

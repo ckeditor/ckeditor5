@@ -39,7 +39,7 @@ describe( 'Operation', () => {
 			const serialized = treeModelTestUtils.jsonParseStringify( op );
 
 			expect( serialized ).to.deep.equal( {
-				__class: 'engine.treeModel.operation.Operation',
+				__className: 'engine.treeModel.operation.Operation',
 				baseVersion: 4,
 				delta: null
 			} );

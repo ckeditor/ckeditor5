@@ -138,7 +138,7 @@ export default class Delta {
 	toJSON() {
 		let json = clone( this );
 
-		json.__class = this.constructor.className;
+		json.__className = this.constructor.className;
 
 		json.batch = null;
 
@@ -175,7 +175,7 @@ export default class Delta {
 	 * @returns {engine.treeModel.delta.InsertDelta}
 	 */
 	static fromJSON( json, doc ) {
-		if ( !deserializers.has( json.__class ) ) {
+		if ( !deserializers.has( json.__className ) ) {
 			/**
 			 * This delta has no defined deserializer.
 			 *
@@ -184,16 +184,16 @@ export default class Delta {
 			 */
 			throw new CKEditorError(
 				'delta-fromjson-no-deserializer: This delta has no defined deserializer',
-				{ name: json.__class }
+				{ name: json.__className }
 			);
 		}
 
-		let Constructor = deserializers.get( json.__class );
+		let Constructor = deserializers.get( json.__className );
 
 		let delta = new Constructor();
 
 		if ( json.operations.length ) {
-			json.operations.forEach( ( operation ) => delta.addOperation( operations[ operation.__class ].fromJSON( operation, doc ) ) );
+			json.operations.forEach( ( operation ) => delta.addOperation( operations[ operation.__className ].fromJSON( operation, doc ) ) );
 		}
 
 		return delta;

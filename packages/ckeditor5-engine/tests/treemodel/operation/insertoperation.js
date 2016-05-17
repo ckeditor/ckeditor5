@@ -188,7 +188,7 @@ describe( 'InsertOperation', () => {
 			const serialized = treeModelTestUtils.jsonParseStringify( op );
 
 			expect( serialized ).to.deep.equal( {
-				__class: 'engine.treeModel.operation.InsertOperation',
+				__className: 'engine.treeModel.operation.InsertOperation',
 				baseVersion: 0,
 				delta: null,
 				nodeList: treeModelTestUtils.jsonParseStringify( new NodeList( 'x' ) ),

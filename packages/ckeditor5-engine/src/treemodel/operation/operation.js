@@ -83,7 +83,7 @@ export default class Operation {
 	toJSON() {
 		const json = clone( this, true );
 
-		json.__class = this.constructor.className;
+		json.__className = this.constructor.className;
 
 		// Due to circular references we need to remove parent reference.
 		json.delta = this.delta ? `[${this.delta.constructor.className}]` : null;
