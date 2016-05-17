@@ -22,7 +22,8 @@ import ModelConversionDispatcher from '/ckeditor5/engine/treecontroller/modelcon
 import {
 	convertRangeSelection,
 	convertCollapsedSelection,
-	convertSelectionAttribute
+	convertSelectionAttribute,
+	clearAttributes
 } from '/ckeditor5/engine/treecontroller/model-selection-to-view-converters.js';
 
 import {
@@ -31,11 +32,13 @@ import {
 	wrap
 } from '/ckeditor5/engine/treecontroller/model-to-view-converters.js';
 
-let dispatcher, modelDoc, modelRoot, mapper, viewRoot, writer, viewSelection;
+let dispatcher, modelDoc, modelRoot, modelSelection, mapper, viewRoot, writer, viewSelection;
 
 beforeEach( () => {
 	modelDoc = new ModelDocument();
 	modelRoot = modelDoc.createRoot( 'main' );
+	modelSelection = modelDoc.selection;
+
 	viewRoot = new ViewContainerElement( 'viewRoot' );
 
 	mapper = new Mapper();
@@ -50,6 +53,7 @@ beforeEach( () => {
 	dispatcher.on( 'addAttribute:bold', wrap( new ViewAttributeElement( 'strong' ) ) );
 
 	// Default selection converters.
+	dispatcher.on( 'selection', clearAttributes() );
 	dispatcher.on( 'selection', convertRangeSelection() );
 	dispatcher.on( 'selection', convertCollapsedSelection() );
 } );
@@ -194,6 +198,68 @@ describe( 'default converters', () => {
 				'f<$text bold=true>ooba</$text>r',
 				'f<strong>ooba</strong>r' // No selection in view.
 			);
+		} );
+	} );
+} );
+
+describe( 'clean-up', () => {
+	describe( 'convertRangeSelection', () => {
+		it( 'should remove all ranges before adding new range', () => {
+			test(
+				[ 0, 2 ],
+				'foobar',
+				'{fo}obar'
+			);
+
+			test(
+				[ 3, 5 ],
+				'foobar',
+				'foo{ba}r'
+			);
+
+			expect( viewSelection.rangeCount ).to.equal( 1 );
+		} );
+	} );
+
+	describe( 'convertCollapsedSelection', () => {
+		it( 'should remove all ranges before adding new range', () => {
+			test(
+				[ 2, 2 ],
+				'foobar',
+				'fo{}obar'
+			);
+
+			test(
+				[ 3, 3 ],
+				'foobar',
+				'foo{}bar'
+			);
+
+			expect( viewSelection.rangeCount ).to.equal( 1 );
+		} );
+	} );
+
+	describe( 'clearAttributes', () => {
+		it( 'should remove all ranges before adding new range', () => {
+			dispatcher.on( 'selectionAttribute:bold', convertSelectionAttribute( new ViewAttributeElement( 'b' ) ) );
+			dispatcher.on( 'addAttribute:style', wrap( new ViewAttributeElement( 'b' ) ) );
+
+			test(
+				[ 3, 3 ],
+				'foobar',
+				'foo<b>[]</b>bar',
+				{ bold: 'true' }
+			);
+
+			const modelRange = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 1 );
+			modelDoc.selection.setRanges( [ modelRange ] );
+
+			dispatcher.convertSelection( modelDoc.selection );
+
+			expect( viewSelection.rangeCount ).to.equal( 1 );
+
+			const viewString = bender.view.stringify( viewRoot, viewSelection, { showType: false } );
+			expect( viewString ).to.equal( '<viewRoot>f{}oobar</viewRoot>' );
 		} );
 	} );
 } );
@@ -364,25 +430,28 @@ function test( selectionPaths, modelInput, expectedView, selectionAttributes = {
 	let endPath = typeof selectionPaths[ 1 ] == 'number' ? [ selectionPaths[ 1 ] ] : selectionPaths[ 1 ];
 	let startPos = new ModelPosition( modelRoot, startPath );
 	let endPos = new ModelPosition( modelRoot, endPath );
-	modelDoc.selection.setRanges( [ new ModelRange( startPos, endPos ) ] );
+	modelSelection.setRanges( [ new ModelRange( startPos, endPos ) ] );
 
 	// Updated selection attributes according to model.
-	modelDoc.selection._updateAttributes();
+	modelSelection._updateAttributes();
 
 	// And add or remove passed attributes.
 	for ( let key in selectionAttributes ) {
 		let value = selectionAttributes[ key ];
 
 		if ( value ) {
-			modelDoc.selection.setAttribute( key, value );
+			modelSelection.setAttribute( key, value );
 		} else {
-			modelDoc.selection.removeAttribute( key );
+			modelSelection.removeAttribute( key );
 		}
 	}
 
+	// Remove view children since we do not want to convert deletion.
+	viewRoot.removeChildren( 0, viewRoot.getChildCount() );
+
 	// Convert model to view.
 	dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
-	dispatcher.convertSelection( modelDoc.selection );
+	dispatcher.convertSelection( modelSelection );
 
 	// Stringify view and check if it is same as expected.
 	expect( bender.view.stringify( viewRoot, viewSelection, { showType: false } ) ).to.equal( '<viewRoot>' + expectedView + '</viewRoot>' );
