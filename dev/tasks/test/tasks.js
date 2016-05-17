@@ -12,7 +12,6 @@ const filter = require( 'gulp-filter' );
 const sinon = require( 'sinon' );
 const devTools = require( '../dev/utils/tools' );
 const semver = require( 'semver' );
-const minimist = require( 'minimist' );
 const buildUtils = require( '../build/utils' );
 
 /**
@@ -20,29 +19,18 @@ const buildUtils = require( '../build/utils' );
  *
  * To run tests under node:
  *
- *		gulp node-test
+ *		gulp test:node
  *
  * To run build before testing:
  *
- *		gulp node-test --build
+ *		gulp test:node:build
  *
  * To run testing with code coverage:
  *
- * 		gulp node-test --coverage
+ * 		gulp test:node:coverage
  */
 module.exports = () => {
 	const ignoreRegexp = /\/\* ?bender-tags:.*\bbrowser-only\b.*\*\//;
-	const options = minimist( process.argv.slice( 2 ), {
-		boolean: [
-			'coverage',
-			'build'
-		],
-
-		default: {
-			coverage: false,
-			build: false
-		}
-	} );
 
 	// Inject globals before running tests.
 	global.should = chai.should;
@@ -52,12 +40,22 @@ module.exports = () => {
 	global.bender = { model: {}, view: {} };
 
 	const tasks = {
+
+		/**
+		 * Is set to `true` when code coverage report will be displayed.
+		 *
+		 * @type {Boolean}
+		 */
+		coverage: false,
+
 		/**
 		 * Prepares files for coverage report.
 		 *
 		 * @returns {Stream}
 		 */
 		prepareCoverage() {
+			tasks.coverage = true;
+
 			return gulp.src( 'build/cjs/ckeditor5/**/*.js' )
 				.pipe( istanbul() )
 				.pipe( istanbul.hookRequire() );
@@ -92,7 +90,7 @@ module.exports = () => {
 				.pipe( tasks.skipManual() )
 				.pipe( tasks.skipIgnored() )
 				.pipe( mocha( { reporter: 'progress' } ) )
-				.pipe( options.coverage ? istanbul.writeReports() : buildUtils.noop() );
+				.pipe( tasks.coverage ? istanbul.writeReports() : buildUtils.noop() );
 		},
 
 		/**
@@ -117,13 +115,10 @@ module.exports = () => {
 		}
 	};
 
-	gulp.task( 'test-node:coverage', [ 'build:js:cjs' ], tasks.prepareCoverage );
-
-	if ( options.coverage ) {
-		gulp.task( 'test-node', [ 'build:js:cjs', 'test-node:coverage' ], tasks.testInNode );
-	} else {
-		gulp.task( 'test-node', options.build ? [ 'build:js:cjs' ] : [], tasks.testInNode );
-	}
+	gulp.task( 'test:node:pre-coverage', [ 'build:js:cjs' ], tasks.prepareCoverage );
+	gulp.task( 'test:node', tasks.testInNode );
+	gulp.task( 'test:node:build', [ 'build:js:cjs' ] , tasks.testInNode );
+	gulp.task( 'test:node:coverage', [ 'build:js:cjs', 'test:node:pre-coverage' ], tasks.testInNode );
 
 	return tasks;
 };
