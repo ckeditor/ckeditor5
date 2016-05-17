@@ -27,7 +27,7 @@ const buildUtils = require( '../build/utils' );
  *
  * To run testing with code coverage:
  *
- * 		gulp test:node:coverage
+ *		gulp test:node:coverage
  */
 module.exports = () => {
 	const ignoreRegexp = /\/\* ?bender-tags:.*\bbrowser-only\b.*\*\//;
