@@ -23,9 +23,9 @@ describe( 'amdTestUtils', () => {
 		} );
 
 		it( 'generates an absolute path from a simple path', () => {
-			const path = getModulePath( 'engine/treeview' );
+			const path = getModulePath( 'engine/dataController' );
 
-			expect( path ).to.equal( '/ckeditor5/engine/treeview.js' );
+			expect( path ).to.equal( '/ckeditor5/engine/dataController.js' );
 		} );
 
 		it( 'does not process an absolute path', () => {

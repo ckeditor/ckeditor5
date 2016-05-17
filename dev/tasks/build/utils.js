@@ -32,11 +32,18 @@ const utils = {
 	 */
 	benderLauncherCode:
 `
-require( [ 'tests' ], bender.defer(), function( err ) {
-	// The problem with Require.JS is that there are no stacktraces if we won't log this.
-	console.error( err );
-	console.log( err.stack );
-} );
+	var defer = bender.defer();
+	require( [ 'tests', '/tests/engine/_utils/view.js', '/tests/engine/_utils/model.js' ], 
+	function( tests, view, model ) { 
+		bender.view = view;
+		bender.model = model;
+		defer();
+	}, 
+	function( err ) {
+		// The problem with Require.JS is that there are no stacktraces if we won't log this.
+		console.error( err );
+		console.log( err.stack );
+	} );
 `,
 
 	/**
