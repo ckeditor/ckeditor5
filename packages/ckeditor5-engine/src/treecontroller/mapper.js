@@ -254,7 +254,7 @@ export default class Mapper {
 
 		// If it equals we found the position.
 		if ( modelOffset == expectedOffset ) {
-			return new ViewPosition( viewParent, viewOffset );
+			return this._moveViewPositionToTextNode( new ViewPosition( viewParent, viewOffset ) );
 		}
 		// If it is higher we need to enter last child.
 		else {
@@ -262,5 +262,33 @@ export default class Mapper {
 			// so we subtract it from the expected offset to fine the offset in the child.
 			return this._findPositionIn( viewNode, expectedOffset - ( modelOffset - lastLength ) );
 		}
+	}
+
+	/**
+	 * Because we prefer positions in text nodes over positions next to text node moves view position to the text node
+	 * if it was next to it.
+	 *
+	 *		<p>[]<b>foo</b></p> -> <p>[]<b>foo</b></p> // do not touch if position is not directly next to text
+	 *		<p>foo[]<b>foo</b></p> -> <p>foo{}<b>foo</b></p> // move to text node
+	 *		<p><b>[]foo</b></p> -> <p><b>{}foo</b></p> // move to text node
+	 *
+	 * @private
+	 * @param {engine.treeView.Position} viewPosition Position potentially next to text node.
+	 * @returns {engine.treeView.Position} Position in text node if possible.
+	 */
+	_moveViewPositionToTextNode( viewPosition ) {
+		// If the position is just after text node, put it at the end of that text node.
+		// If the position is just before text node, put it at the beginning of that text node.
+		const nodeBefore = viewPosition.nodeBefore;
+		const nodeAfter = viewPosition.nodeAfter;
+
+		if ( nodeBefore instanceof ViewText ) {
+			return new ViewPosition( nodeBefore, nodeBefore.data.length );
+		} else if ( nodeAfter instanceof ViewText ) {
+			return new ViewPosition( nodeAfter, 0 );
+		}
+
+		// Otherwise, just return the given position.
+		return viewPosition;
 	}
 }

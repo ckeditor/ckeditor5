@@ -353,4 +353,76 @@ describe( 'ModelConversionDispatcher', () => {
 			expect( dispatcher.fire.calledWith( 'removeAttribute:attr:inside' ) ).to.be.false;
 		} );
 	} );
+
+	describe( 'convertSelection', () => {
+		beforeEach( () => {
+			dispatcher.off( 'selection' );
+
+			root.appendChildren( 'foobar' );
+			doc.selection.setRanges( [
+				new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 3 ] ) ),
+				new ModelRange( new ModelPosition( root, [ 4 ] ), new ModelPosition( root, [ 5 ] ) )
+			] );
+		} );
+
+		it( 'should fire selection event', () => {
+			sinon.spy( dispatcher, 'fire' );
+
+			dispatcher.convertSelection( doc.selection );
+
+			expect( dispatcher.fire.calledWith(
+				'selection',
+				{ selection: sinon.match.instanceOf( doc.selection.constructor ) }
+			) ).to.be.true;
+		} );
+
+		it( 'should prepare correct list of consumable values', () => {
+			doc.enqueueChanges( () => {
+				doc.batch()
+					.setAttr( 'bold', true, ModelRange.createFromElement( root ) )
+					.setAttr( 'italic', true, ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ) );
+			} );
+
+			dispatcher.on( 'selection', ( evt, data, consumable ) => {
+				expect( consumable.test( data.selection, 'selection' ) ).to.be.true;
+				expect( consumable.test( data.selection, 'selectionAttribute:bold' ) ).to.be.true;
+				expect( consumable.test( data.selection, 'selectionAttribute:italic' ) ).to.be.null;
+			} );
+
+			dispatcher.convertSelection( doc.selection );
+		} );
+
+		it( 'should fire attributes events for selection', () => {
+			sinon.spy( dispatcher, 'fire' );
+
+			doc.enqueueChanges( () => {
+				doc.batch()
+					.setAttr( 'bold', true, ModelRange.createFromElement( root ) )
+					.setAttr( 'italic', true, ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ) );
+			} );
+
+			dispatcher.convertSelection( doc.selection );
+
+			expect( dispatcher.fire.calledWith( 'selectionAttribute:bold' ) ).to.be.true;
+			expect( dispatcher.fire.calledWith( 'selectionAttribute:italic' ) ).to.be.false;
+		} );
+
+		it( 'should not fire attributes events if attribute has been consumed', () => {
+			sinon.spy( dispatcher, 'fire' );
+
+			dispatcher.on( 'selection', ( evt, data, consumable ) => {
+				consumable.consume( data.selection, 'selectionAttribute:bold' );
+			} );
+
+			doc.enqueueChanges( () => {
+				doc.batch()
+					.setAttr( 'bold', true, ModelRange.createFromElement( root ) )
+					.setAttr( 'italic', true, ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ) );
+			} );
+
+			dispatcher.convertSelection( doc.selection );
+
+			expect( dispatcher.fire.calledWith( 'selectionAttribute:bold' ) ).to.be.false;
+		} );
+	} );
 } );

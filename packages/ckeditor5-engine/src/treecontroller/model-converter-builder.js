@@ -13,6 +13,8 @@ import {
 	unwrap
 } from '/ckeditor5/engine/treecontroller/model-to-view-converters.js';
 
+import { convertSelectionAttribute } from '/ckeditor5/engine/treecontroller/model-selection-to-view-converters.js';
+
 import ViewAttributeElement from '/ckeditor5/engine/treeview/attributeelement.js';
 import ViewContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
 
@@ -165,9 +167,10 @@ class ModelConverterBuilder {
 	 * Creator function will be passed different values depending whether conversion is from element or from attribute:
 	 *
 	 * * from element: dispatcher's {@link engine.treeController.ModelConversionDispatcher#event:insert insert event} parameters
-	 * will be passed
-	 * * from attribute: first parameter is attribute value, then the rest of parameters are dispatcher's
-	 * {@link engine.treeController.ModelConversionDispatcher#event:changeAttribute changeAttribute event} parameters.
+	 * will be passed,
+	 * * from attribute: there is one parameter and it is attribute value.
+	 *
+	 * This method also registers model selection to view selection converter, if conversion is from attribute.
 	 *
 	 * This method creates the converter and adds it as a callback to a proper
 	 * {@link engine.treeController.ModelConversionDispatcher conversion dispatcher} event.
@@ -190,6 +193,8 @@ class ModelConverterBuilder {
 				dispatcher.on( 'addAttribute:' + this._from.key, wrap( element ), null, priority );
 				dispatcher.on( 'changeAttribute:' + this._from.key, wrap( element ), null, priority );
 				dispatcher.on( 'removeAttribute:' + this._from.key, unwrap( element ), null, priority );
+
+				dispatcher.on( 'selectionAttribute:' + this._from.key, convertSelectionAttribute( element ), null, priority );
 			}
 		}
 	}

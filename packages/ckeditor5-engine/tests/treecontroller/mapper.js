@@ -194,23 +194,23 @@ describe( 'Mapper', () => {
 			expect( viewPosition.offset ).to.equal( viewOffset );
 		}
 
-		it( 'should transform modelDiv 0', () => createToViewTest( modelDiv, 0, viewDiv, 0 ) );
-		it( 'should transform modelDiv 1', () => createToViewTest( modelDiv, 1, viewDiv, 1 ) );
-		it( 'should transform modelDiv 2', () => createToViewTest( modelDiv, 2, viewDiv, 2 ) );
+		it( 'should transform modelDiv 0', () => createToViewTest( modelDiv, 0, viewTextX, 0 ) );
+		it( 'should transform modelDiv 1', () => createToViewTest( modelDiv, 1, viewTextX, 1 ) );
+		it( 'should transform modelDiv 2', () => createToViewTest( modelDiv, 2, viewTextZZ, 0 ) );
 		it( 'should transform modelDiv 3', () => createToViewTest( modelDiv, 3, viewTextZZ, 1 ) );
-		it( 'should transform modelDiv 4', () => createToViewTest( modelDiv, 4, viewDiv, 3 ) );
+		it( 'should transform modelDiv 4', () => createToViewTest( modelDiv, 4, viewTextZZ, 2 ) );
 
-		it( 'should transform modelP 0', () => createToViewTest( modelP, 0, viewP, 0 ) );
-		it( 'should transform modelP 1', () => createToViewTest( modelP, 1, viewP, 1 ) );
+		it( 'should transform modelP 0', () => createToViewTest( modelP, 0, viewTextY, 0 ) );
+		it( 'should transform modelP 1', () => createToViewTest( modelP, 1, viewTextY, 1 ) );
 		it( 'should transform modelP 2', () => createToViewTest( modelP, 2, viewTextFOO, 1 ) );
 		it( 'should transform modelP 3', () => createToViewTest( modelP, 3, viewTextFOO, 2 ) );
-		it( 'should transform modelP 4', () => createToViewTest( modelP, 4, viewP, 2 ) );
+		it( 'should transform modelP 4', () => createToViewTest( modelP, 4, viewTextBAR, 0 ) );
 		it( 'should transform modelP 5', () => createToViewTest( modelP, 5, viewTextBAR, 1 ) );
 		it( 'should transform modelP 6', () => createToViewTest( modelP, 6, viewTextBAR, 2 ) );
-		it( 'should transform modelP 7', () => createToViewTest( modelP, 7, viewP, 3 ) );
+		it( 'should transform modelP 7', () => createToViewTest( modelP, 7, viewTextBAR, 3 ) );
 		it( 'should transform modelP 8', () => createToViewTest( modelP, 8, viewP, 4 ) );
-		it( 'should transform modelP 9', () => createToViewTest( modelP, 9, viewU, 1 ) );
-		it( 'should transform modelP 10', () => createToViewTest( modelP, 10, viewU, 2 ) );
+		it( 'should transform modelP 9', () => createToViewTest( modelP, 9, viewTextB, 1 ) );
+		it( 'should transform modelP 10', () => createToViewTest( modelP, 10, viewTextM, 0 ) );
 		it( 'should transform modelP 11', () => createToViewTest( modelP, 11, viewP, 5 ) );
 	} );
 
@@ -229,7 +229,7 @@ describe( 'Mapper', () => {
 		it( 'should transform range', () => {
 			const modelRange = ModelRange.createFromParentsAndOffsets( modelDiv, 0, modelP, 3 );
 			const viewRange = mapper.toViewRange( modelRange );
-			expect( viewRange.start.parent ).to.equal( viewDiv );
+			expect( viewRange.start.parent ).to.equal( viewTextX );
 			expect( viewRange.start.offset ).to.equal( 0 );
 			expect( viewRange.end.parent ).to.equal( viewTextFOO );
 			expect( viewRange.end.offset ).to.equal( 2 );
@@ -354,17 +354,17 @@ describe( 'Mapper for widget', () => {
 			expect( viewPosition.offset ).to.equal( viewOffset );
 		}
 
-		it( 'should transform modelDiv 0', () => createToViewTest( modelDiv, 0, viewDiv, 0 ) );
-		it( 'should transform modelDiv 1', () => createToViewTest( modelDiv, 1, viewDiv, 1 ) );
-		it( 'should transform modelDiv 2', () => createToViewTest( modelDiv, 2, viewDiv, 2 ) );
+		it( 'should transform modelDiv 0', () => createToViewTest( modelDiv, 0, viewTextX, 0 ) );
+		it( 'should transform modelDiv 1', () => createToViewTest( modelDiv, 1, viewTextX, 1 ) );
+		it( 'should transform modelDiv 2', () => createToViewTest( modelDiv, 2, viewTextZZ, 0 ) );
 		it( 'should transform modelDiv 3', () => createToViewTest( modelDiv, 3, viewTextZZ, 1 ) );
-		it( 'should transform modelDiv 4', () => createToViewTest( modelDiv, 4, viewDiv, 3 ) );
+		it( 'should transform modelDiv 4', () => createToViewTest( modelDiv, 4, viewTextZZ, 2 ) );
 
 		it( 'should transform modelImg 0', () => createToViewTest( modelImg, 0, viewImg, 0 ) );
 
-		it( 'should transform modelCaption 0', () => createToViewTest( modelCaption, 0, viewCaption, 0 ) );
+		it( 'should transform modelCaption 0', () => createToViewTest( modelCaption, 0, viewTextFOO, 0 ) );
 		it( 'should transform modelCaption 1', () => createToViewTest( modelCaption, 1, viewTextFOO, 1 ) );
 		it( 'should transform modelCaption 2', () => createToViewTest( modelCaption, 2, viewTextFOO, 2 ) );
-		it( 'should transform modelCaption 3', () => createToViewTest( modelCaption, 3, viewCaption, 1 ) );
+		it( 'should transform modelCaption 3', () => createToViewTest( modelCaption, 3, viewTextFOO, 3 ) );
 	} );
 } );

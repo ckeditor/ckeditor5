@@ -482,7 +482,7 @@ export default class Selection {
 	}
 
 	/**
-	 * Updates this selection attributes based on it's position in the Tree Model.
+	 * Updates this selection attributes based on it's position in the model.
 	 *
 	 * @protected
 	 */
@@ -492,7 +492,7 @@ export default class Selection {
 
 		let attrs = null;
 
-		if ( this.isCollapsed === false ) {
+		if ( !this.isCollapsed ) {
 			// 1. If selection is a range...
 			const range = this.getFirstRange();
 
@@ -503,10 +503,9 @@ export default class Selection {
 					break;
 				}
 			}
-		}
+		} else {
+			// 2. If the selection is a caret or the range does not contain a character node...
 
-		// 2. If the selection is a caret or the range does not contain a character node...
-		if ( !attrs && this.isCollapsed === true ) {
 			const nodeBefore = positionParent.getChild( position.offset - 1 );
 			const nodeAfter = positionParent.getChild( position.offset );
 

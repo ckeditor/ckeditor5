@@ -13,12 +13,14 @@ import ModelDocument from '/ckeditor5/engine/treemodel/document.js';
 import ModelElement from '/ckeditor5/engine/treemodel/element.js';
 import ModelText from '/ckeditor5/engine/treemodel/text.js';
 import ModelRange from '/ckeditor5/engine/treemodel/range.js';
+import ModelPosition from '/ckeditor5/engine/treemodel/position.js';
 
 import ViewElement from '/ckeditor5/engine/treeview/element.js';
 import ViewContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
 import ViewAttributeElement from '/ckeditor5/engine/treeview/attributeelement.js';
 import ViewText from '/ckeditor5/engine/treeview/text.js';
 import ViewWriter from '/ckeditor5/engine/treeview/writer.js';
+import ViewSelection from '/ckeditor5/engine/treeview/selection.js';
 
 import Mapper from '/ckeditor5/engine/treecontroller/mapper.js';
 import ModelConversionDispatcher from '/ckeditor5/engine/treecontroller/modelconversiondispatcher.js';
@@ -28,6 +30,11 @@ import {
 	move,
 	remove
 } from '/ckeditor5/engine/treecontroller/model-to-view-converters.js';
+
+import {
+	convertCollapsedSelection,
+	clearAttributes
+} from '/ckeditor5/engine/treecontroller/model-selection-to-view-converters.js';
 
 function viewAttributesToString( item ) {
 	let result = '';
@@ -63,7 +70,7 @@ function viewToString( item ) {
 }
 
 describe( 'Model converter builder', () => {
-	let dispatcher, modelDoc, modelRoot, viewRoot, mapper, writer;
+	let dispatcher, modelDoc, modelRoot, viewRoot, mapper, writer, viewSelection;
 
 	beforeEach( () => {
 		modelDoc = new ModelDocument();
@@ -75,8 +82,9 @@ describe( 'Model converter builder', () => {
 		mapper.bindElements( modelRoot, viewRoot );
 
 		writer = new ViewWriter();
+		viewSelection = new ViewSelection();
 
-		dispatcher = new ModelConversionDispatcher( { writer, mapper } );
+		dispatcher = new ModelConversionDispatcher( { writer, mapper, viewSelection } );
 
 		dispatcher.on( 'insert:$text', insertText() );
 		dispatcher.on( 'move', move() );
@@ -188,6 +196,69 @@ describe( 'Model converter builder', () => {
 			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createFromElement( modelRoot ), 'italic', 'i', null );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div>foo</div>' );
+		} );
+
+		it( 'selection conversion', () => {
+			// This test requires collapsed range selection converter (breaking attributes)  and clearing "artifacts".
+			dispatcher.on( 'selection', clearAttributes() );
+			dispatcher.on( 'selection', convertCollapsedSelection() );
+
+			// Model converter builder should add selection converter.
+			BuildModelConverterFor( dispatcher ).fromAttribute( 'italic' ).toElement( ( value ) => new ViewAttributeElement( value ) );
+
+			modelRoot.appendChildren( new ModelText( 'foo', { italic: 'em' } ) );
+
+			// Set collapsed selection after "f".
+			const position = new ModelPosition( modelRoot, [ 1 ] );
+			modelDoc.selection.setRanges( [ new ModelRange( position, position ) ] );
+			modelDoc.selection._updateAttributes();
+
+			// Convert stuff.
+			dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+			dispatcher.convertSelection( modelDoc.selection );
+
+			// Check if view structure is ok.
+			expect( viewToString( viewRoot ) ).to.equal( '<div><em>foo</em></div>' );
+
+			// Check if view selection is collapsed after "f" letter.
+			let ranges = Array.from( viewSelection.getRanges() );
+			expect( ranges.length ).to.equal( 1 );
+			expect( ranges[ 0 ].start.isEqual( ranges[ 0 ].end ) ).to.be.true;
+			expect( ranges[ 0 ].start.parent ).to.be.instanceof( ViewText ); // "foo".
+			expect( ranges[ 0 ].start.offset ).to.equal( 1 );
+
+			// Change selection attribute, convert it.
+			modelDoc.selection.setAttribute( 'italic', 'i' );
+			dispatcher.convertSelection( modelDoc.selection );
+
+			// Check if view structure has changed.
+			expect( viewToString( viewRoot ) ).to.equal( '<div><em>f</em><i></i><em>oo</em></div>' );
+
+			// Check if view selection is inside new <em> element.
+			ranges = Array.from( viewSelection.getRanges() );
+			expect( ranges.length ).to.equal( 1 );
+			expect( ranges[ 0 ].start.isEqual( ranges[ 0 ].end ) ).to.be.true;
+			expect( ranges[ 0 ].start.parent.name ).to.equal( 'i' );
+			expect( ranges[ 0 ].start.offset ).to.equal( 0 );
+
+			// Some more tests checking how selection attributes changes are converted:
+			modelDoc.selection.removeAttribute( 'italic' );
+			dispatcher.convertSelection( modelDoc.selection );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><em>f</em><em>oo</em></div>' );
+			ranges = Array.from( viewSelection.getRanges() );
+			expect( ranges[ 0 ].start.parent.name ).to.equal( 'div' );
+			expect( ranges[ 0 ].start.offset ).to.equal( 1 );
+
+			modelDoc.selection.setAttribute( 'italic', 'em' );
+			dispatcher.convertSelection( modelDoc.selection );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><em>foo</em></div>' );
+			ranges = Array.from( viewSelection.getRanges() );
+			expect( ranges.length ).to.equal( 1 );
+			expect( ranges[ 0 ].start.isEqual( ranges[ 0 ].end ) ).to.be.true;
+			expect( ranges[ 0 ].start.parent ).to.be.instanceof( ViewText ); // "foo".
+			expect( ranges[ 0 ].start.offset ).to.equal( 1 );
 		} );
 	} );
 
