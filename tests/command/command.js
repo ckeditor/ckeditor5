@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 /* bender-tags: browser-only */
+
+'use strict';
 
 import Editor from '/ckeditor5/editor.js';
 import Command from '/ckeditor5/command/command.js';
