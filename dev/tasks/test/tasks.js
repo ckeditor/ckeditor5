@@ -36,6 +36,11 @@ module.exports = () => {
 
 	const tasks = {
 
+		/**
+		 * Returns stream with files for testing.
+		 *
+		 * @returns {Stream}
+		 */
 		src() {
 			const src = [
 				'build/cjs/tests/**/*.js',
@@ -49,11 +54,14 @@ module.exports = () => {
 				.pipe( tasks.skipIgnored() );
 		},
 
+		/**
+		 * Prepares files for coverage report.
+		 *
+		 * @returns {Stream}
+		 */
 		prepareCoverage() {
 			return tasks.src()
-				// Covering files
 				.pipe( istanbul() )
-				// Force `require` to return covered files
 				.pipe( istanbul.hookRequire() );
 		},
 

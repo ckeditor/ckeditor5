@@ -12,7 +12,7 @@ const buildUtils = require( '../../tasks/build/utils' );
 const devTools = require( '../../tasks/dev/utils/tools' );
 const Vinyl = require( 'vinyl' );
 
-describe( 'test-editor', () => {
+describe( 'test-node', () => {
 	describe( 'skipManual', () => {
 		it( 'should skip manual tests', ( done ) => {
 			const stream = tasks.skipManual();
