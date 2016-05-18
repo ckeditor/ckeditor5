@@ -242,28 +242,17 @@ describe( 'Element', () => {
 	} );
 
 	describe( 'toJSON', () => {
-		it( 'should serialize empty node', () => {
+		it( 'should serialize empty element', () => {
 			let element = new Element( 'one' );
 
-			expect( jsonParseStringify( element ) ).to.deep.equal( {
-				_attrs: [],
-				_children: {
-					_indexMap: [],
-					_nodes: []
-				},
-				name: 'one'
-			} );
+			expect( jsonParseStringify( element ) ).to.deep.equal( { name: 'one' } );
 		} );
 
-		it( 'should serialize node with attributes', () => {
-			let node = new Element( 'one', { foo: true, bar: false } );
+		it( 'should serialize element with attributes', () => {
+			let element = new Element( 'one', { foo: true, bar: false } );
 
-			expect( jsonParseStringify( node ) ).to.deep.equal( {
-				_attrs: [ [ 'foo', true ], [ 'bar', false ] ],
-				_children: {
-					_indexMap: [],
-					_nodes: []
-				},
+			expect( jsonParseStringify( element ) ).to.deep.equal( {
+				attributes: [ [ 'foo', true ], [ 'bar', false ] ],
 				name: 'one'
 			} );
 		} );
@@ -277,24 +266,20 @@ describe( 'Element', () => {
 			let node = new Element( null, null, [ one, two, three ] );
 
 			expect( jsonParseStringify( node ) ).to.deep.equal( {
-				_attrs: [],
-				_children: {
-					_indexMap: [ 0, 1, 2 ],
-					_nodes: [
-						{ _attrs: [], _children: { _indexMap: [], _nodes: [] }, name: 'one' },
+				children: {
+					nodes: [
+						{ name: 'one' },
 						{
-							_attrs: [],
-							_children: {
-								_indexMap: [ 0, 0, 1, 2 ],
-								_nodes: [
-									{ _attrs: [], text: 'ba' },
-									{ _attrs: [], _children: { _indexMap: [], _nodes: [] }, name: 'img' },
-									{ _attrs: [], text: 'r' }
+							children: {
+								nodes: [
+									{ text: 'ba' },
+									{ name: 'img' },
+									{ text: 'r' }
 								]
 							},
 							name: 'two'
 						},
-						{ _attrs: [], _children: { _indexMap: [], _nodes: [] }, name: 'three' }
+						{ name: 'three' }
 					]
 				},
 				name: null

@@ -11,7 +11,6 @@ import Element from './element.js';
 import DocumentFragment from './documentfragment.js';
 import mapsEqual from '../../utils/mapsequal.js';
 import isIterable from '../../utils/isiterable.js';
-import clone from '../../utils/lib/lodash/clone.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
@@ -48,23 +47,6 @@ class NodeListText extends Text {
 		index = index && index >= 0 ? index : 0;
 
 		return new CharacterProxy( this, index );
-	}
-
-	/**
-	 * Custom toJSON method to solve child-parent circular dependencies when serializing NodeListText to JSON string.
-	 *
-	 * @returns {Object} Clone of this object with the parent property replaced with its name.
-	 */
-	toJSON() {
-		const json = clone( this );
-
-		// Due to circular references we need to remove parent reference.
-		delete json.parent;
-
-		// Serialize attributes as Map object is represented as "{}" when parsing to JSON.
-		json._attrs = [ ...json._attrs ];
-
-		return json;
 	}
 }
 
@@ -359,6 +341,25 @@ export default class NodeList {
 	}
 
 	/**
+	 * Custom toJSON method to solve child-parent circular dependencies.
+	 *
+	 * @returns {Object} Clone of this object with the parent property replaced with its name.
+	 */
+	toJSON() {
+		if ( !this._nodes.length ) {
+			return {};
+		}
+
+		let json = { nodes: [] };
+
+		for ( let node of this._nodes ) {
+			json.nodes.push( node.toJSON() );
+		}
+
+		return json;
+	}
+
+	/**
 	 * Creates NodeList object from deserilized object, ie. from parsed JSON string.
 	 *
 	 *		let deserialized = JSON.parse( JSON.stringify( someNodeList ) );
@@ -370,11 +371,13 @@ export default class NodeList {
 	static fromJSON( json ) {
 		let nodes = [];
 
-		for ( let node of json._nodes ) {
-			if ( node.text ) {
-				nodes.push( new Text( node.text, node._attrs ) );
-			} else {
-				nodes.push( Element.fromJSON( node ) );
+		if ( json.nodes ) {
+			for ( let node of json.nodes ) {
+				if ( node.text ) {
+					nodes.push( new Text( node.text, node.attributes ) );
+				} else {
+					nodes.push( Element.fromJSON( node ) );
+				}
 			}
 		}
 

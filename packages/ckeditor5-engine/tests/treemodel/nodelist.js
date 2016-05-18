@@ -360,14 +360,17 @@ describe( 'NodeList', () => {
 	} );
 
 	describe( 'toJSON', () => {
+		it( 'should return serialized empty object', () => {
+			let nodeList = new NodeList();
+
+			expect( jsonParseStringify( nodeList ) ).to.deep.equal( {} );
+		} );
+
 		it( 'should return serialized object', () => {
 			let p = new Element( 'p' );
 			let nodeList = new NodeList( p );
 
-			expect( jsonParseStringify( nodeList ) ).to.deep.equal( {
-				_nodes: [ jsonParseStringify( p ) ],
-				_indexMap: [ 0 ]
-			} );
+			expect( jsonParseStringify( nodeList ) ).to.deep.equal( { nodes: [ jsonParseStringify( p ) ] } );
 		} );
 
 		it( 'should return serialized object with child text', () => {
@@ -375,13 +378,8 @@ describe( 'NodeList', () => {
 			let nodeList = new NodeList( p );
 
 			let newVar = {
-				_indexMap: [ 0 ],
-				_nodes: [ {
-					_attrs: [],
-					_children: {
-						_indexMap: [ 0, 0, 0 ],
-						_nodes: [ { _attrs: [], text: 'bar' } ]
-					},
+				nodes: [ {
+					children: { nodes: [ { text: 'bar' } ] },
 					name: 'p'
 				} ]
 			};
@@ -393,12 +391,14 @@ describe( 'NodeList', () => {
 			let text = new Text( 'bar' );
 			let nodeList = new NodeList( text );
 
-			expect( jsonParseStringify( nodeList ) ).to.deep.equal( {
-				_nodes: [
-					{ _attrs: [], text: 'bar' }
-				],
-				_indexMap: [ 0, 0, 0 ]
-			} );
+			expect( jsonParseStringify( nodeList ) ).to.deep.equal( { nodes: [ { text: 'bar' } ] } );
+		} );
+
+		it( 'should return serialized object for text with attributes', () => {
+			let text = new Text( 'bar', { bold: true } );
+			let nodeList = new NodeList( text );
+
+			expect( jsonParseStringify( nodeList ) ).to.deep.equal( { nodes: [ { attributes: [ [ 'bold', true ] ], text: 'bar' } ] } );
 		} );
 
 		it( 'should return serialized object for text with attributes', () => {
@@ -406,27 +406,23 @@ describe( 'NodeList', () => {
 			let nodeList = new NodeList( text );
 
 			expect( jsonParseStringify( nodeList ) ).to.deep.equal( {
-				_nodes: [
-					{ _attrs: [ [ 'bold', true ] ], text: 'bar' }
-				],
-				_indexMap: [ 0, 0, 0 ]
-			} );
-		} );
-
-		it( 'should return serialized object for text with attributes', () => {
-			let text = new Text( 'bar', { bold: true } );
-			let nodeList = new NodeList( text );
-
-			expect( jsonParseStringify( nodeList ) ).to.deep.equal( {
-				_nodes: [
-					{ _attrs: [ [ 'bold', true ] ], text: 'bar' }
-				],
-				_indexMap: [ 0, 0, 0 ]
+				nodes: [ { attributes: [ [ 'bold', true ] ], text: 'bar' } ]
 			} );
 		} );
 	} );
 
 	describe( 'fromJSON', () => {
+		it( 'should create instance from empty serialized element', () => {
+			let nodeList = new NodeList();
+
+			let serialized = jsonParseStringify( nodeList );
+
+			let deserialized = NodeList.fromJSON( serialized );
+
+			expect( deserialized._indexMap ).to.deep.equal( nodeList._indexMap );
+			expect( deserialized._nodes.length ).to.equal( nodeList._nodes.length );
+		} );
+
 		it( 'should create instance from serialized text with attributes', () => {
 			let text = new Text( 'bar', { bold: true } );
 			let nodeList = new NodeList( text );
