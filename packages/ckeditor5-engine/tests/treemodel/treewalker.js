@@ -163,10 +163,8 @@ describe( 'TreeWalker', () => {
 	} );
 
 	describe( 'iterate trough the range `boundary`', () => {
-		let start, end, range;
-
 		describe( 'range starts between elements', () => {
-			let expected;
+			let expected, range;
 
 			before( () => {
 				expected = [
@@ -177,9 +175,7 @@ describe( 'TreeWalker', () => {
 					{ type: 'ELEMENT_END', item: img2 }
 				];
 
-				start = new Position( root, [ 1 ] );
-				end = new Position( root, [ 1, 4 ] );
-				range = new Range( start, end );
+				range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 1, 4 ] ) );
 			} );
 
 			it( 'should iterating over the range', () => {
@@ -195,7 +191,7 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should iterating over the range going backward', () => {
-				let iterator = new TreeWalker( { boundaries: range, startPosition: range.end, direction: 'BACKWARD' } );
+				let iterator = new TreeWalker( { boundaries: range, direction: 'BACKWARD' } );
 				let i = expected.length;
 
 				for ( let value of iterator ) {
@@ -207,7 +203,7 @@ describe( 'TreeWalker', () => {
 		} );
 
 		describe( 'range starts inside the text', () => {
-			let expected;
+			let expected, range;
 
 			before( () => {
 				expected = [
@@ -217,9 +213,7 @@ describe( 'TreeWalker', () => {
 					{ type: 'ELEMENT_END', item: img2 }
 				];
 
-				start = new Position( root, [ 1, 1 ] );
-				end = new Position( root, [ 1, 4 ] );
-				range = new Range( start, end );
+				range = new Range( new Position( root, [ 1, 1 ] ), new Position( root, [ 1, 4 ] ) );
 			} );
 
 			it( 'should return part of the text', () => {
@@ -237,7 +231,6 @@ describe( 'TreeWalker', () => {
 			it( 'should return part of the text going backward', () => {
 				let iterator = new TreeWalker( {
 					boundaries: range,
-					startPosition: range.end,
 					direction: 'BACKWARD' }
 				);
 				let i = expected.length;
@@ -251,7 +244,7 @@ describe( 'TreeWalker', () => {
 		} );
 
 		describe( 'range ends inside the text', () => {
-			let expected;
+			let expected, range;
 
 			before( () => {
 				expected = [
@@ -261,9 +254,7 @@ describe( 'TreeWalker', () => {
 					{ type: 'TEXT', text: 'b', attrs: [ [ 'bold', true ] ] }
 				];
 
-				start = rootBeginning;
-				end = new Position( root, [ 1, 1 ] );
-				range = new Range( start, end );
+				range = new Range( rootBeginning, new Position( root, [ 1, 1 ] ) );
 			} );
 
 			it( 'should return part of the text', () => {
@@ -282,6 +273,54 @@ describe( 'TreeWalker', () => {
 				let iterator = new TreeWalker( {
 					boundaries: range,
 					startPosition: range.end,
+					direction: 'BACKWARD'
+				} );
+				let i = expected.length;
+
+				for ( let value of iterator ) {
+					expectValue( value, expected[ --i ], { direction: 'BACKWARD' } );
+				}
+
+				expect( i ).to.equal( 0 );
+			} );
+		} );
+
+		describe( 'custom start position', () => {
+			it( 'should iterating from the start position', () => {
+				let expected = [
+					{ type: 'TEXT', text: 'r', attrs: [] },
+					{ type: 'ELEMENT_START', item: img2 },
+					{ type: 'ELEMENT_END', item: img2 }
+				];
+
+				let range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 1, 4 ] ) );
+
+				let iterator = new TreeWalker( {
+					boundaries: range,
+					startPosition: new Position( root, [ 1, 2 ] )
+				} );
+				let i = 0;
+
+				for ( let value of iterator ) {
+					expectValue( value, expected[ i ] );
+					i++;
+				}
+
+				expect( i ).to.equal( expected.length );
+			} );
+
+			it( 'should iterating from the start position going backward', () => {
+				let expected = [
+					{ type: 'TEXT', text: 'r', attrs: [] },
+					{ type: 'ELEMENT_START', item: img2 },
+					{ type: 'ELEMENT_END', item: img2 }
+				];
+
+				let range = new Range( new Position( root, [ 1, 2 ] ), new Position( root, [ 1, 6 ] ) );
+
+				let iterator = new TreeWalker( {
+					boundaries: range,
+					startPosition: new Position( root, [ 1, 4 ] ),
 					direction: 'BACKWARD'
 				} );
 				let i = expected.length;

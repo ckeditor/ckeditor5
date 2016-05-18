@@ -27,48 +27,47 @@ export default function modifySelection( selection, options = {} ) {
 	const focus = selection.focus;
 	const walker = new TreeWalker( {
 		boundaries: getSearchRange( focus, isForward ),
-		singleCharacters: true
+		singleCharacters: true,
+		direction: isForward ? 'FORWARD' : 'BACKWARD'
 	} );
 
-	const items = Array.from( walker );
-	let next = items[ isForward ? 'shift' : 'pop' ]();
+	let next = walker.next();
 
 	// 1. Nothing to do here.
-	if ( !next ) {
+	if ( next.done ) {
 		return;
 	}
 
 	// 2. Consume next character.
-	if ( next.type == 'CHARACTER' ) {
-		selection.setFocus( next[ isForward ? 'nextPosition' : 'previousPosition' ] );
+	if ( next.value.type == 'CHARACTER' ) {
+		selection.setFocus( next.value.nextPosition );
 
 		return;
 	}
 
 	// 3. We're entering an element, so let's consume it fully.
-	if ( next.type == ( isForward ? 'ELEMENT_START' : 'ELEMENT_END' ) ) {
-		selection.setFocus( next.item, isForward ? 'AFTER' : 'BEFORE' );
+	if ( next.value.type == ( isForward ? 'ELEMENT_START' : 'ELEMENT_END' ) ) {
+		selection.setFocus( next.value.item, isForward ? 'AFTER' : 'BEFORE' );
 
 		return;
 	}
 
 	// 4. We're leaving an element. That's more tricky.
-
-	next = items[ isForward ? 'shift' : 'pop' ]();
+	next = walker.next();
 
 	// 4.1. Nothing left, so let's stay where we were.
-	if ( !next ) {
+	if ( next.done ) {
 		return;
 	}
 
 	// 4.2. Character found after element end. Not really a valid case in our data model, but let's
 	// do something sensible and put the selection focus before that character.
-	if ( next.type == 'CHARACTER' ) {
-		selection.setFocus( next[ isForward ? 'previousPosition' : 'nextPosition' ] );
+	if ( next.value.type == 'CHARACTER' ) {
+		selection.setFocus( next.value.previousPosition );
 	}
 	// 4.3. OK, we're entering a new element. So let's place there the focus.
 	else {
-		selection.setFocus( next.item, isForward ? 0 : 'END' );
+		selection.setFocus( next.value.item, isForward ? 0 : 'END' );
 	}
 }
 

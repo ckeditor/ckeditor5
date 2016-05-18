@@ -95,9 +95,13 @@ export default class TreeWalker {
 		 *
 		 * @member {engine.treeModel.Position} engine.treeModel.TreeWalker#position
 		 */
-		this.position = startPosition ?
-			Position.createFromPosition( startPosition ) :
-			Position.createFromPosition( boundaries.start );
+		if ( startPosition ) {
+			this.position = Position.createFromPosition( startPosition );
+		} else {
+			this.position = direction == 'BACKWARD' ?
+				Position.createFromPosition( boundaries.end ) :
+				Position.createFromPosition( boundaries.start );
+		}
 
 		/**
 		 * Walking direction. Defaults `FORWARD`.
