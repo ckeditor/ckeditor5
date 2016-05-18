@@ -336,5 +336,9 @@ module.exports = ( config ) => {
 	gulp.task( 'build:clean:js:esnext', () => tasks.clean.js( { formats: [ 'esnext' ] } ) );
 	gulp.task( 'build:js:esnext', [ 'build:clean:js:esnext' ], () => tasks.build.js( { formats: [ 'esnext' ] } ) );
 
+	// Tasks specific for testing under node.
+	gulp.task( 'build:clean:js:cjs', () => tasks.clean.js( { formats: [ 'cjs' ] } ) );
+	gulp.task( 'build:js:cjs', [ 'build:clean:js:cjs' ], () => tasks.build.js( { formats: [ 'cjs' ] } ) );
+
 	return tasks;
 };

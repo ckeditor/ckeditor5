@@ -7,7 +7,6 @@
 
 import Editor from './ckeditor5/editor.js';
 import Collection from './ckeditor5/utils/collection.js';
-import Config from './ckeditor5/utils/config.js';
 import CKEditorError from './ckeditor5/utils/ckeditorerror.js';
 import isArrayLike from './ckeditor5/utils/lib/lodash/isArrayLike.js';
 import clone from './ckeditor5/utils/lib/lodash/clone.js';
@@ -26,15 +25,6 @@ const CKEDITOR = {
 	 * @member {utils.Collection} CKEDITOR.instances
 	 */
 	instances: new Collection(),
-
-	/**
-	 * Holds global configuration defaults, which will be used by editor instances when such configurations are not
-	 * available on them directly.
-	 *
-	 * @readonly
-	 * @member {utils.Config} CKEDITOR.config
-	 */
-	config: new Config(),
 
 	/**
 	 * Creates an editor instance for the provided DOM element.
