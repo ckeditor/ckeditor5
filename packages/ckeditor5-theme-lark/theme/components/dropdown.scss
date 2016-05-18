@@ -22,7 +22,7 @@
 .ck-dropdown__panel {
 	border: 1px solid ck-border-color( 'foreground' );
 	display: none;
-	padding: ck-spacing( 'small' );
+
 	position: absolute;
 
 	// Compensate double border from button and from box when positioned below the button.
@@ -30,5 +30,20 @@
 
 	&-active {
 		display: inline-block;
+	}
+
+	&__list {
+		overflow: hidden;
+		list-style-type: none;
+
+		&__item {
+			display: block;
+			border-bottom: 1px solid ck-border-color();
+			padding: ck-spacing( 'small' );
+
+			&:last-of-type {
+				border: none;
+			}
+		}
 	}
 }
