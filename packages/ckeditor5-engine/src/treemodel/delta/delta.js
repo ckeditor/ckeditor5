@@ -215,17 +215,5 @@ operations[ RootAttributeOperation.className ] = RootAttributeOperation;
 const deserializers = new Map();
 
 export function registerDeserializer( className, constructor ) {
-	if ( deserializers.has( className ) ) {
-		/**
-		 * This delta name is already defined.
-		 *
-		 * @error delta-register-deserializer-defined
-		 * @param {String} name
-		 */
-		throw new CKEditorError(
-			'delta-register-deserializer-defined: This delta name is already defined.',
-			{ name: className } );
-	}
-
 	deserializers.set( className, constructor );
 }
