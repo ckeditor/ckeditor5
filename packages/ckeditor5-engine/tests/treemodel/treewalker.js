@@ -16,7 +16,6 @@ import Range from '/ckeditor5/engine/treemodel/range.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'TreeWalker', () => {
-	let expected;
 	let doc, root, img1, paragraph, b, a, r, img2, x;
 	let rootBeginning, rootEnding;
 
@@ -73,6 +72,8 @@ describe( 'TreeWalker', () => {
 	} );
 
 	describe( 'iterate from start position `startPosition`', () => {
+		let expected;
+
 		beforeEach( () => {
 			expected = [
 				{ type: 'ELEMENT_START', item: img1 },
@@ -116,7 +117,7 @@ describe( 'TreeWalker', () => {
 			let i = expected.length;
 
 			for ( let value of iterator ) {
-				expectValue( value, expected[ --i ] );
+				expectValue( value, expected[ --i ], { direction: 'BACKWARD' } );
 			}
 
 			expect( i ).to.equal( 0 );
@@ -145,7 +146,7 @@ describe( 'TreeWalker', () => {
 		} );
 
 		it( 'should start iterating at the startPosition witch is not a root bound, going backward', () => {
-			expected = [
+			let expected = [
 				{ type: 'ELEMENT_START', item: img1 },
 				{ type: 'ELEMENT_END', item: img1 }
 			];
@@ -154,7 +155,7 @@ describe( 'TreeWalker', () => {
 			let i = expected.length;
 
 			for ( let value of iterator ) {
-				expectValue( value, expected[ --i ] );
+				expectValue( value, expected[ --i ], { direction: 'BACKWARD' } );
 			}
 
 			expect( i ).to.equal( 0 );
@@ -165,6 +166,8 @@ describe( 'TreeWalker', () => {
 		let start, end, range;
 
 		describe( 'range starts between elements', () => {
+			let expected;
+
 			before( () => {
 				expected = [
 					{ type: 'ELEMENT_START', item: paragraph },
@@ -196,7 +199,7 @@ describe( 'TreeWalker', () => {
 				let i = expected.length;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ --i ] );
+					expectValue( value, expected[ --i ], { direction: 'BACKWARD' } );
 				}
 
 				expect( i ).to.equal( 0 );
@@ -204,6 +207,8 @@ describe( 'TreeWalker', () => {
 		} );
 
 		describe( 'range starts inside the text', () => {
+			let expected;
+
 			before( () => {
 				expected = [
 					{ type: 'TEXT', text: 'a', attrs: [ [ 'bold', true ] ] },
@@ -230,11 +235,15 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should return part of the text going backward', () => {
-				let iterator = new TreeWalker( { boundaries: range, startPosition: range.end, direction: 'BACKWARD' } );
+				let iterator = new TreeWalker( {
+					boundaries: range,
+					startPosition: range.end,
+					direction: 'BACKWARD' }
+				);
 				let i = expected.length;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ --i ] );
+					expectValue( value, expected[ --i ], { direction: 'BACKWARD' } );
 				}
 
 				expect( i ).to.equal( 0 );
@@ -242,6 +251,8 @@ describe( 'TreeWalker', () => {
 		} );
 
 		describe( 'range ends inside the text', () => {
+			let expected;
+
 			before( () => {
 				expected = [
 					{ type: 'ELEMENT_START', item: img1 },
@@ -268,11 +279,15 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should return part of the text going backward', () => {
-				let iterator = new TreeWalker( { boundaries: range, startPosition: range.end, direction: 'BACKWARD' } );
+				let iterator = new TreeWalker( {
+					boundaries: range,
+					startPosition: range.end,
+					direction: 'BACKWARD'
+				} );
 				let i = expected.length;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ --i ] );
+					expectValue( value, expected[ --i ], { direction: 'BACKWARD' } );
 				}
 
 				expect( i ).to.equal( 0 );
@@ -282,6 +297,8 @@ describe( 'TreeWalker', () => {
 
 	describe( 'iterate by every single characters `singleCharacter`', () => {
 		describe( 'whole root', () => {
+			let expected;
+
 			before( () => {
 				expected = [
 					{ type: 'ELEMENT_START', item: img1 },
@@ -318,7 +335,7 @@ describe( 'TreeWalker', () => {
 				let i = expected.length;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ --i ] );
+					expectValue( value, expected[ --i ], { direction: 'BACKWARD' } );
 				}
 
 				expect( i ).to.equal( 0 );
@@ -326,7 +343,7 @@ describe( 'TreeWalker', () => {
 		} );
 
 		describe( 'range', () => {
-			let start, end, range;
+			let start, end, range, expected;
 
 			before( () => {
 				expected = [
@@ -363,7 +380,7 @@ describe( 'TreeWalker', () => {
 				let i = expected.length;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ --i ] );
+					expectValue( value, expected[ --i ], { direction: 'BACKWARD' } );
 				}
 
 				expect( i ).to.equal( 0 );
@@ -372,6 +389,8 @@ describe( 'TreeWalker', () => {
 	} );
 
 	describe( 'iterate omitting child nodes and ELEMENT_END `shallow`', () => {
+		let expected;
+
 		before( () => {
 			expected = [
 				{ type: 'ELEMENT_START', item: img1 },
@@ -396,7 +415,7 @@ describe( 'TreeWalker', () => {
 			let i = expected.length;
 
 			for ( let value of iterator ) {
-				expectValue( value, expected[ --i ], { shallow: true } );
+				expectValue( value, expected[ --i ], { shallow: true, direction: 'BACKWARD' } );
 			}
 
 			expect( i ).to.equal( 0 );
@@ -405,6 +424,8 @@ describe( 'TreeWalker', () => {
 
 	describe( 'iterate omitting ELEMENT_END `ignoreElementEnd`', () => {
 		describe( 'merged text', () => {
+			let expected;
+
 			before( () => {
 				expected = [
 					{ type: 'ELEMENT_START', item: img1 },
@@ -437,7 +458,7 @@ describe( 'TreeWalker', () => {
 				let i = expected.length;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ --i ] );
+					expectValue( value, expected[ --i ], { direction: 'BACKWARD' } );
 				}
 
 				expect( i ).to.equal( 0 );
@@ -445,6 +466,8 @@ describe( 'TreeWalker', () => {
 		} );
 
 		describe( 'single character', () => {
+			let expected;
+
 			before( () => {
 				expected = [
 					{ type: 'ELEMENT_START', item: img1 },
@@ -483,7 +506,7 @@ describe( 'TreeWalker', () => {
 				let i = expected.length;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ --i ] );
+					expectValue( value, expected[ --i ], { direction: 'BACKWARD' } );
 				}
 
 				expect( i ).to.equal( 0 );
@@ -506,37 +529,79 @@ function expectValue( value, expected, options ) {
 	}
 }
 
-function expectText( value, expected ) {
+function expectText( value, expected, options = {} ) {
+	let previousPosition, nextPosition;
+
 	expect( value.item.text ).to.equal( expected.text );
 	expect( Array.from( value.item.first._attrs ) ).to.deep.equal( expected.attrs );
 	expect( value.length ).to.equal( value.item.text.length );
-	expect( value.previousPosition ).to.deep.equal( Position.createBefore( value.item.first ) );
-	expect( value.nextPosition ).to.deep.equal( Position.createAfter( value.item.last ) );
+
+	if ( options.direction == 'BACKWARD' ) {
+		previousPosition = Position.createAfter( value.item.last );
+		nextPosition = Position.createBefore( value.item.first );
+	} else {
+		previousPosition = Position.createBefore( value.item.first );
+		nextPosition = Position.createAfter( value.item.last );
+	}
+
+	expect( value.previousPosition ).to.deep.equal( previousPosition );
+	expect( value.nextPosition ).to.deep.equal( nextPosition );
 }
 
-function expectCharacter( value, expected ) {
+function expectCharacter( value, expected, options = {} ) {
+	let previousPosition, nextPosition;
+
 	expect( value.item.character ).to.equal( expected.text );
 	expect( Array.from( value.item._attrs ) ).to.deep.equal( expected.attrs );
 	expect( value.length ).to.equal( value.item.character.length );
-	expect( value.previousPosition ).to.deep.equal( Position.createBefore( value.item ) );
-	expect( value.nextPosition ).to.deep.equal( Position.createAfter( value.item ) );
+
+	if ( options.direction == 'BACKWARD' ) {
+		previousPosition = Position.createAfter( value.item );
+		nextPosition = Position.createBefore( value.item );
+	} else {
+		previousPosition = Position.createBefore( value.item );
+		nextPosition = Position.createAfter( value.item );
+	}
+
+	expect( value.previousPosition ).to.deep.equal( previousPosition );
+	expect( value.nextPosition ).to.deep.equal( nextPosition );
 }
 
-function expectStart( value, expected, options ) {
+function expectStart( value, expected, options = {} ) {
+	let previousPosition, nextPosition;
+
 	expect( value.item ).to.equal( expected.item );
 	expect( value.length ).to.equal( 1 );
 
-	if ( options && options.shallow ) {
-		expect( value.previousPosition ).to.deep.equal( Position.createBefore( value.item ) );
+	if ( options.direction == 'BACKWARD' ) {
+		previousPosition = Position.createAfter( value.item );
+		nextPosition = Position.createBefore( value.item );
 	} else {
-		expect( value.nextPosition ).to.deep.equal( Position.createFromParentAndOffset( value.item, 0 ) );
+		previousPosition = Position.createBefore( value.item );
+		nextPosition = Position.createFromParentAndOffset( value.item, 0 );
+	}
+
+	if ( options.shallow ) {
+		expect( value.previousPosition ).to.deep.equal( previousPosition );
+	} else {
+		expect( value.nextPosition ).to.deep.equal( nextPosition );
 	}
 }
 
-function expectEnd( value, expected ) {
+function expectEnd( value, expected, options = {} ) {
+	let previousPosition, nextPosition;
+
 	expect( value.item ).to.equal( expected.item );
 	expect( value.length ).to.be.undefined;
-	expect( value.previousPosition ).to.deep.equal(
-		Position.createFromParentAndOffset( value.item, value.item.getChildCount() ) );
-	expect( value.nextPosition ).to.deep.equal( Position.createAfter( value.item ) );
+
+	if ( options.direction == 'BACKWARD' ) {
+		previousPosition = Position.createAfter( value.item );
+		nextPosition = Position.createFromParentAndOffset( value.item, value.item.getChildCount() );
+	} else {
+		previousPosition = Position.createFromParentAndOffset( value.item, value.item.getChildCount() );
+		nextPosition = Position.createAfter( value.item );
+	}
+
+	expect( value.previousPosition ).to.deep.equal( previousPosition );
+	expect( value.nextPosition ).to.deep.equal( nextPosition );
 }

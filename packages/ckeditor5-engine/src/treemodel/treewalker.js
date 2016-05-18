@@ -12,7 +12,7 @@ import Position from './position.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
- * Position iterator class. It allows to iterate forward and backward over the tree document.
+ * Position iterator class. It allows to iterate forward and backward over the document.
  *
  * @memberOf engine.treeModel
  */
@@ -23,6 +23,7 @@ export default class TreeWalker {
 	 * @param {Object} options Object with configuration.
 	 * @param {engine.treeModel.Range} [options.boundaries] Range to define boundaries of the iterator.
 	 * @param {engine.treeModel.Position} [options.startPosition] Starting position.
+	 * @param {'FORWARD'|'BACKWARD'} [options.direction] Walking direction.
 	 * @param {Boolean} [options.singleCharacters=false] Flag indicating whether all consecutive characters with the same attributes
 	 * should be returned one by one as multiple {@link engine.treeModel.CharacterProxy} (`true`) objects or as one
 	 * {@link engine.treeModel.TextProxy} (`false`).
@@ -34,8 +35,17 @@ export default class TreeWalker {
 	 * twice: for `'ELEMENT_START'` and `'ELEMENT_END'`.
 	 * @constructor
 	 */
-	constructor( options ) {
-		if ( !options || ( !options.boundaries && !options.startPosition ) ) {
+	constructor(
+		{
+			boundaries,
+			startPosition,
+			direction = 'FORWARD',
+			singleCharacters = false,
+			shallow = false,
+			ignoreElementEnd = false,
+		} = {}
+	) {
+		if ( !boundaries && !startPosition ) {
 			/**
 			 * Neither boundaries nor starting position have been defined.
 			 *
@@ -44,15 +54,10 @@ export default class TreeWalker {
 			throw new CKEditorError( 'tree-walker-no-start-position: Neither boundaries nor starting position have been defined.' );
 		}
 
-		if ( options && options.direction && [ 'FORWARD', 'BACKWARD' ].indexOf( options.direction ) < 0 ) {
-			/**
-			 * Unknown direction.
-			 *
-			 * @error tree-walker-unknown-direction
-			 */
+		if ( direction != 'FORWARD' && direction != 'BACKWARD' ) {
 			throw new CKEditorError(
 				'tree-walker-unknown-direction: Only `BACKWARD` and `FORWARD` direction allowed.',
-				{ direction: options.direction }
+				{ direction }
 			);
 		}
 
@@ -66,7 +71,7 @@ export default class TreeWalker {
 		 *
 		 * @member {engine.treeModel.Range} engine.treeModel.TreeWalker#boundaries
 		 */
-		this.boundaries = options.boundaries || null;
+		this.boundaries = boundaries || null;
 
 		/**
 		 * Start boundary cached for optimization purposes.
@@ -90,17 +95,17 @@ export default class TreeWalker {
 		 *
 		 * @member {engine.treeModel.Position} engine.treeModel.TreeWalker#position
 		 */
-		this.position = options.startPosition ?
-			Position.createFromPosition( options.startPosition ) :
-			Position.createFromPosition( options.boundaries.start );
+		this.position = startPosition ?
+			Position.createFromPosition( startPosition ) :
+			Position.createFromPosition( boundaries.start );
 
 		/**
 		 * Walking direction. Defaults `FORWARD`.
 		 *
 		 * @member engine.treeModel.TreeWalker#direction
-		 * @type {String} core.treeModel.TreeWalkerDirection
+		 * @type {'BACKWARD'|'FORWARD'} core.treeModel.TreeWalkerDirection
 		 */
-		this.direction = !options.direction ? 'FORWARD' : options.direction;
+		this.direction = direction || 'FORWARD';
 
 		/**
 		 * Flag indicating whether all consecutive characters with the same attributes should be
@@ -108,7 +113,7 @@ export default class TreeWalker {
 		 *
 		 * @member {Boolean} engine.treeModel.TreeWalker#singleCharacters
 		 */
-		this.singleCharacters = !!options.singleCharacters;
+		this.singleCharacters = !!singleCharacters;
 
 		/**
 		 * Flag indicating whether iterator should enter elements or not. If the iterator is shallow child nodes of any
@@ -116,7 +121,7 @@ export default class TreeWalker {
 		 *
 		 * @member {Boolean} engine.treeModel.TreeWalker#shallow
 		 */
-		this.shallow = !!options.shallow;
+		this.shallow = !!shallow;
 
 		/**
 		 * Flag indicating whether iterator should ignore `ELEMENT_END` tags. If the option is true walker will not
@@ -126,7 +131,7 @@ export default class TreeWalker {
 		 *
 		 * @member {Boolean} engine.treeModel.TreeWalker#ignoreElementEnd
 		 */
-		this.ignoreElementEnd = !!options.ignoreElementEnd;
+		this.ignoreElementEnd = !!ignoreElementEnd;
 
 		/**
 		 * Parent of the most recently visited node. Cached for optimization purposes.
@@ -156,11 +161,6 @@ export default class TreeWalker {
 		} else if ( this.direction == 'BACKWARD' ) {
 			return this._previous();
 		} else {
-			/**
-			 * Unknown direction.
-			 *
-			 * @error tree-walker-unknown-direction
-			 */
 			throw new CKEditorError(
 				'tree-walker-unknown-direction: Only `BACKWARD` and `FORWARD` direction allowed.',
 				{ direction: this.direction }
@@ -169,7 +169,7 @@ export default class TreeWalker {
 	}
 
 	/**
-	 * Makes a step forward in tree model. Moves the {@link #position} to the next position and returns the encountered value.
+	 * Makes a step forward in model. Moves the {@link #position} to the next position and returns the encountered value.
 	 *
 	 * @private
 	 * @returns {Boolean} return.done True if iterator is done.
@@ -242,7 +242,7 @@ export default class TreeWalker {
 	}
 
 	/**
-	 * Makes a step backward in tree model. Moves the {@link #position} to the previous position and returns the encountered value.
+	 * Makes a step backward in model. Moves the {@link #position} to the previous position and returns the encountered value.
 	 *
 	 * @private
 	 * @returns {Boolean} return.done True if iterator is done.
@@ -277,19 +277,19 @@ export default class TreeWalker {
 				if ( this.ignoreElementEnd ) {
 					return this._previous();
 				} else {
-					return formatReturnValue( 'ELEMENT_END', node, position, previousPosition );
+					return formatReturnValue( 'ELEMENT_END', node, previousPosition, position );
 				}
 			} else {
 				this.position = position;
 
-				return formatReturnValue( 'ELEMENT_START', node, position, previousPosition, 1 );
+				return formatReturnValue( 'ELEMENT_START', node, previousPosition, position, 1 );
 			}
 		} else if ( node instanceof CharacterProxy ) {
 			if ( this.singleCharacters ) {
 				position.offset--;
 				this.position = position;
 
-				return formatReturnValue( 'CHARACTER', node, position, previousPosition, 1 );
+				return formatReturnValue( 'CHARACTER', node, previousPosition, position, 1 );
 			} else {
 				let charactersCount = node._index + 1;
 				let offset = position.offset - charactersCount;
@@ -304,14 +304,14 @@ export default class TreeWalker {
 				position.offset = offset;
 				this.position = position;
 
-				return formatReturnValue( 'TEXT', textFragment, position, previousPosition, charactersCount );
+				return formatReturnValue( 'TEXT', textFragment, previousPosition, position, charactersCount );
 			}
 		} else {
 			position.path.pop();
 			this.position = position;
 			this._visitedParent = parent.parent;
 
-			return formatReturnValue( 'ELEMENT_START', parent, position, previousPosition, 1 );
+			return formatReturnValue( 'ELEMENT_START', parent, previousPosition, position, 1 );
 		}
 	}
 }
@@ -339,19 +339,26 @@ function formatReturnValue( type, item, previousPosition, nextPosition, length )
  */
 
 /**
- * Object returned by {@link engine.treeModel.TreeWalker} when traversing tree model.
+ * Object returned by {@link engine.treeModel.TreeWalker} when traversing model.
  *
  * @typedef {Object} engine.treeModel.TreeWalkerValue
  * @property {engine.treeModel.TreeWalkerValueType} type
  * @property {engine.treeModel.Item} item Item between old and new positions of {@link engine.treeModel.TreeWalker}.
- * @property {engine.treeModel.Position} previousPosition Previous position of the iterator. For `'ELEMENT_END'` it is the last
- * position inside the element. For all other types it is the position before the item. Note that it is more
- * efficient to use this position then calculate the position before the node using
- * {@link engine.treeModel.Position.createBefore}. It is also more efficient to get the position after node by shifting
- * `previousPosition` by `length`, using {@link engine.treeModel.Position#getShiftedBy}, then calculate the position using
- * {@link engine.treeModel.Position.createAfter}.
- * @property {engine.treeModel.Position} nextPosition Next position of the iterator. For `'ELEMENT_START'` it is the first
- * position inside the element. For all other types it is the position after the item.
+ * @property {engine.treeModel.Position} previousPosition Previous position of the iterator.
+ * 		Forward iteration:
+ * 			For `'ELEMENT_END'` it is the last position inside the element. For all other types it is the position
+ * 			before the item. Note that it is more efficient to use this position then calculate the position before
+ * 			the node using {@link engine.treeModel.Position.createBefore}. It is also more efficient to get the
+ * 			position after node by shifting `previousPosition` by `length`, using {@link engine.treeModel.Position#getShiftedBy},
+ * 			then calculate the position using {@link engine.treeModel.Position.createAfter}.
+ * 		Backward iteration:
+ * 			For `'ELEMENT_START'` it is the first position inside the element. For all other types it is the position
+ * 			after item.
+ * @property {engine.treeModel.Position} nextPosition Next position of the iterator.
+ * 		Forward iteration:
+ * 			For `'ELEMENT_START'` it is the first position inside the element. For all other types it is the position after the item.
+ * 		Backward iteration:
+ *			For `'ELEMENT_END'` it is last position inside element. For all other types it is the position before the item.
  * @property {Number} [length] Length of the item. For `'ELEMENT_START'` and `'CHARACTER'` it is 1. For `'TEXT'` it is
  * the length of the text. For `'ELEMENT_END'` it is undefined.
  */
