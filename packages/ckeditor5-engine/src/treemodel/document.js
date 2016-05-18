@@ -20,7 +20,7 @@ import Schema from './schema.js';
 import Composer from './composer/composer.js';
 import clone from '../../utils/lib/lodash/clone.js';
 
-const graveyardSymbol = Symbol( 'graveyard' );
+const graveyardName = '$graveyard';
 
 /**
  * Document tree model describes all editable data in the editor. It may contain multiple
@@ -103,7 +103,7 @@ export default class Document {
 		} );
 
 		// Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
-		this.createRoot( graveyardSymbol );
+		this.createRoot( graveyardName );
 
 		/**
 		 * Document's history.
@@ -121,7 +121,7 @@ export default class Document {
 	 * @type {engine.treeModel.RootElement}
 	 */
 	get graveyard() {
-		return this.getRoot( graveyardSymbol );
+		return this.getRoot( graveyardName );
 	}
 
 	/**
@@ -131,7 +131,7 @@ export default class Document {
 	 * @type {Iterable.<String>}
 	 */
 	get rootNames() {
-		return Array.from( this._roots.keys() ).filter( ( name ) => name != graveyardSymbol );
+		return Array.from( this._roots.keys() ).filter( ( name ) => name != graveyardName );
 	}
 
 	/**

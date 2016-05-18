@@ -571,7 +571,7 @@ export default class Position {
 	 * @returns {engine.treeModel.Position}
 	 */
 	static fromJSON( json, doc ) {
-		if ( json.root === '$$graveyard' ) {
+		if ( json.root === '$graveyard' ) {
 			return new Position( doc.graveyard, json.path );
 		}
 

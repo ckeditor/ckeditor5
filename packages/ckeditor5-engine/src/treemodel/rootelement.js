@@ -48,6 +48,6 @@ export default class RootElement extends Element {
 	 * @returns {String} Name of this root inside {@link engine.treeModel.Document} that is an owner of this root.
 	 */
 	toJSON() {
-		return typeof this.rootName === 'symbol' ? '$$graveyard' : this.rootName;
+		return this.rootName;
 	}
 }

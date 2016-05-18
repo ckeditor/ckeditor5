@@ -697,7 +697,7 @@ describe( 'position', () => {
 
 			let serialized = jsonParseStringify( position );
 
-			expect( serialized ).to.deep.equal( { root: '$$graveyard', path: [ 0 ] } );
+			expect( serialized ).to.deep.equal( { root: '$graveyard', path: [ 0 ] } );
 		} );
 	} );
 
@@ -710,7 +710,7 @@ describe( 'position', () => {
 		} );
 
 		it( 'should create object from graveyard', () => {
-			let deserialized = Position.fromJSON( { root: '$$graveyard', path: [ 0, 1, 2 ] }, doc );
+			let deserialized = Position.fromJSON( { root: '$graveyard', path: [ 0, 1, 2 ] }, doc );
 
 			expect( deserialized.root ).to.equal( doc.graveyard );
 			expect( deserialized.path ).to.deep.equal( [ 0, 1, 2 ] );
