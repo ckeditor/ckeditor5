@@ -15,9 +15,6 @@ import AttributeElement from '/ckeditor5/engine/treeview/attributeelement.js';
 import ContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
 import ViewText from '/ckeditor5/engine/treeview/text.js';
 
-const DomDocumentFragment = window.DocumentFragment;
-const DomElement = window.Element;
-
 const ELEMENT_RANGE_START_TOKEN = '[';
 const ELEMENT_RANGE_END_TOKEN = ']';
 const TEXT_RANGE_START_TOKEN = '{';
@@ -501,9 +498,9 @@ class ViewParser {
 	 * @returns {engine.treeView.Node|engine.treeView.DocumentFragment}
 	 */
 	_walkDom( domNode, rootElement = null ) {
-		const isDomElement = domNode instanceof DomElement;
+		const isDomElement = domNode instanceof window.Element;
 
-		if ( isDomElement || domNode instanceof DomDocumentFragment ) {
+		if ( isDomElement || domNode instanceof window.DocumentFragment ) {
 			const children = domNode.childNodes;
 			const length = children.length;
 

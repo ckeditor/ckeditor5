@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: treeview */
+/* bender-tags: treeview, browser-only */
 
 'use strict';
 

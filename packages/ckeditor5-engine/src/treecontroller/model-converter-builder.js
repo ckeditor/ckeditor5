@@ -11,12 +11,12 @@ import {
 	removeAttribute,
 	wrap,
 	unwrap
-} from '/ckeditor5/engine/treecontroller/model-to-view-converters.js';
+} from './model-to-view-converters.js';
 
-import { convertSelectionAttribute } from '/ckeditor5/engine/treecontroller/model-selection-to-view-converters.js';
+import { convertSelectionAttribute } from './model-selection-to-view-converters.js';
 
-import ViewAttributeElement from '/ckeditor5/engine/treeview/attributeelement.js';
-import ViewContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
+import ViewAttributeElement from '../treeview/attributeelement.js';
+import ViewContainerElement from '../treeview/containerelement.js';
 
 /**
  * Provides chainable, high-level API to easily build basic model-to-view converters that are appended to given
