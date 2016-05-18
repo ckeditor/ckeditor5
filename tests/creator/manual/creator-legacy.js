@@ -29,8 +29,6 @@ function initEditor() {
 		window.editor = editor = newEditor;
 		window.editable = editable = editor.editables.get( 0 );
 
-		console.log( window.editor, editor );
-
 		observer = testUtils.createObserver();
 		observer.observe( 'Editable', editable );
 	} );
