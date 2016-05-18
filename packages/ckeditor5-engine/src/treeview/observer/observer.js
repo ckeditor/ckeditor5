@@ -7,7 +7,7 @@
 
 /**
  * Abstract base observer class. Observers are classes which observe changes on DOM elements, do the preliminary
- * processing and fire events on the {@link engine.treeView.TreeView} objects.
+ * processing and fire events on the {@link engine.treeView.Document} objects.
  *
  * @abstract
  * @memberOf engine.treeView.observer
@@ -16,16 +16,16 @@ export default class Observer {
 	/**
 	 * Creates an instance of the observer.
 	 *
-	 * @param {engine.treeView.TreeView} treeView
+	 * @param {engine.treeView.Document} document
 	 */
-	constructor( treeView ) {
+	constructor( document ) {
 		/**
-		 * Reference to the {@link engine.treeView.TreeView} object.
+		 * Reference to the {@link engine.treeView.Document} object.
 		 *
 		 * @readonly
-		 * @member {engine.treeView.TreeView} engine.treeView.observer.Observer#treeView
+		 * @member {engine.treeView.Document} engine.treeView.observer.Observer#document
 		 */
-		this.treeView = treeView;
+		this.document = document;
 
 		/**
 		 * State of the observer. If it is disabled events will not be fired.
@@ -38,7 +38,7 @@ export default class Observer {
 
 	/**
 	 * Enables the observer. This method is called when then observer is registered to the
-	 * {@link engine.treeView.TreeView} and after {@link engine.treeView.TreeView#render rendering}
+	 * {@link engine.treeView.Document} and after {@link engine.treeView.Document#render rendering}
 	 * (all observers are {@link engine.treeView.observer.Observer#disable disabled} before rendering).
 	 *
 	 * A typical use case for disabling observers is that mutation observers need to be disabled for the rendering.
@@ -52,7 +52,7 @@ export default class Observer {
 
 	/**
 	 * Disables the observer. This method is called before
-	 * {@link engine.treeView.TreeView#render rendering} to prevent firing events during rendering.
+	 * {@link engine.treeView.Document#render rendering} to prevent firing events during rendering.
 	 *
 	 * @see engine.treeView.observer.Observer#enable
 	 */

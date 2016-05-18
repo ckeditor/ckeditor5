@@ -108,7 +108,7 @@ export default class Element extends Node {
 	 *
 	 * @param {Boolean} deep If set to `true` clones element and all its children recursively. When set to `false`,
 	 * element will be cloned without any children.
-	 * @returns {Element} Clone of this element.
+	 * @returns {engine.treeView.Element} Clone of this element.
 	 */
 	clone( deep ) {
 		const childrenClone = [];
@@ -355,7 +355,7 @@ export default class Element extends Node {
 	 * Both elements should have the same name and attributes to be considered as similar. Two similar elements
 	 * can contain different set of children nodes.
 	 *
-	 * @param {Element} otherElement
+	 * @param {engine.treeView.Element} otherElement
 	 * @returns {Boolean}
 	 */
 	isSimilar( otherElement ) {

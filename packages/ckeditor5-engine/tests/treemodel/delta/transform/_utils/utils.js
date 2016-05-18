@@ -152,17 +152,15 @@ export function expectDelta( delta, expected ) {
 
 export function expectOperation( op, params ) {
 	for ( let i in params ) {
-		if ( params.hasOwnProperty( i ) ) {
-			if ( i == 'type' ) {
-				expect( op ).to.be.instanceof( params[ i ] );
-			}
-			else if ( i == 'nodes' ) {
-				expect( op.nodeList._nodes ).to.deep.equal( params[ i ] );
-			} else if ( params[ i ] instanceof Position || params[ i ] instanceof Range ) {
-				expect( op[ i ].isEqual( params[ i ] ) ).to.be.true;
-			} else {
-				expect( op[ i ] ).to.equal( params[ i ] );
-			}
+		if ( i == 'type' ) {
+			expect( op ).to.be.instanceof( params[ i ] );
+		}
+		else if ( i == 'nodes' ) {
+			expect( op.nodeList._nodes ).to.deep.equal( params[ i ] );
+		} else if ( params[ i ] instanceof Position || params[ i ] instanceof Range ) {
+			expect( op[ i ].isEqual( params[ i ] ) ).to.be.true;
+		} else {
+			expect( op[ i ] ).to.equal( params[ i ] );
 		}
 	}
 }

@@ -5,7 +5,9 @@
 
 'use strict';
 
-import { stringify, parse } from '/tests/engine/_utils/view.js';
+/* bender-tags: browser-only */
+
+import { parse, stringify, getData, setData }from '/tests/engine/_utils/view.js';
 import DocumentFragment from '/ckeditor5/engine/treeview/documentfragment.js';
 import Position from '/ckeditor5/engine/treeview/position.js';
 import Element from '/ckeditor5/engine/treeview/element.js';
@@ -14,8 +16,94 @@ import ContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
 import Text from '/ckeditor5/engine/treeview/text.js';
 import Selection from '/ckeditor5/engine/treeview/selection.js';
 import Range from '/ckeditor5/engine/treeview/range.js';
+import Document from '/ckeditor5/engine/treeview/document.js';
 
 describe( 'view test utils', () => {
+	describe( 'getData, setData', () => {
+		let sandbox;
+
+		beforeEach( () => {
+			sandbox = sinon.sandbox.create();
+		} );
+
+		afterEach( () => {
+			sandbox.restore();
+		} );
+
+		describe( 'getData', () => {
+			it( 'should use stringify method', () => {
+				const element = document.createElement( 'div' );
+				const stringifySpy = sandbox.spy( getData, '_stringify' );
+				const viewDocument = new Document();
+				const options = { showType: false, showPriority: false, withoutSelection: true };
+				const root = viewDocument.createRoot( element );
+				root.appendChildren( new Element( 'p' ) );
+
+				expect( getData( viewDocument, options ) ).to.equal( '<p></p>' );
+				sinon.assert.calledOnce( stringifySpy );
+				expect( stringifySpy.firstCall.args[ 0 ] ).to.equal( root );
+				expect( stringifySpy.firstCall.args[ 1 ] ).to.equal( null );
+				const stringifyOptions = stringifySpy.firstCall.args[ 2 ];
+				expect( stringifyOptions ).to.have.property( 'showType' ).that.equals( false );
+				expect( stringifyOptions ).to.have.property( 'showPriority' ).that.equals( false );
+				expect( stringifyOptions ).to.have.property( 'ignoreRoot' ).that.equals( true );
+			} );
+
+			it( 'should use stringify method with selection', () => {
+				const element = document.createElement( 'div' );
+				const stringifySpy = sandbox.spy( getData, '_stringify' );
+				const viewDocument = new Document();
+				const options = { showType: false, showPriority: false };
+				const root = viewDocument.createRoot( element );
+				root.appendChildren( new Element( 'p' ) );
+
+				viewDocument.selection.addRange( Range.createFromParentsAndOffsets( root, 0, root, 1 ) );
+
+				expect( getData( viewDocument, options ) ).to.equal( '[<p></p>]' );
+				sinon.assert.calledOnce( stringifySpy );
+				expect( stringifySpy.firstCall.args[ 0 ] ).to.equal( root );
+				expect( stringifySpy.firstCall.args[ 1 ] ).to.equal( viewDocument.selection );
+				const stringifyOptions = stringifySpy.firstCall.args[ 2 ];
+				expect( stringifyOptions ).to.have.property( 'showType' ).that.equals( false );
+				expect( stringifyOptions ).to.have.property( 'showPriority' ).that.equals( false );
+				expect( stringifyOptions ).to.have.property( 'ignoreRoot' ).that.equals( true );
+			} );
+		} );
+
+		describe( 'setData', () => {
+			it( 'should use parse method', () => {
+				const viewDocument = new Document();
+				const data = 'foobar<b>baz</b>';
+				const parseSpy = sandbox.spy( setData, '_parse' );
+
+				viewDocument.createRoot( document.createElement( 'div' ) );
+				setData( viewDocument, data );
+
+				expect( getData( viewDocument ) ).to.equal( 'foobar<b>baz</b>' );
+				sinon.assert.calledOnce( parseSpy );
+				const args = parseSpy.firstCall.args;
+				expect( args[ 0 ] ).to.equal( data );
+				expect( args[ 1 ] ).to.be.an( 'object' );
+				expect( args[ 1 ].rootElement ).to.equal( viewDocument.getRoot() );
+			} );
+
+			it( 'should use parse method with selection', () => {
+				const viewDocument = new Document();
+				const data = '[<b>baz</b>]';
+				const parseSpy = sandbox.spy( setData, '_parse' );
+
+				viewDocument.createRoot( document.createElement( 'div' ) );
+				setData( viewDocument, data );
+
+				expect( getData( viewDocument ) ).to.equal( '[<b>baz</b>]' );
+				const args = parseSpy.firstCall.args;
+				expect( args[ 0 ] ).to.equal( data );
+				expect( args[ 1 ] ).to.be.an( 'object' );
+				expect( args[ 1 ].rootElement ).to.equal( viewDocument.getRoot() );
+			} );
+		} );
+	} );
+
 	describe( 'stringify', () => {
 		it( 'should write text', () => {
 			const text = new Text( 'foobar' );
@@ -432,6 +520,20 @@ describe( 'view test utils', () => {
 			expect( () => {
 				parse( '<container:b:10:test></container:b:10:test>' );
 			} ).to.throw( Error );
+		} );
+
+		it( 'should use provided root element #1', () => {
+			const root = new Element( 'p' );
+			const data = parse( '<span>text</span>', { rootElement: root } );
+
+			expect( stringify( data ) ).to.equal( '<p><span>text</span></p>' );
+		} );
+
+		it( 'should use provided root element #2', () => {
+			const root = new Element( 'p' );
+			const data = parse( '<span>text</span><b>test</b>', { rootElement: root } );
+
+			expect( stringify( data ) ).to.equal( '<p><span>text</span><b>test</b></p>' );
 		} );
 	} );
 } );

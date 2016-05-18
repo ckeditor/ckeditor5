@@ -63,10 +63,10 @@ export default class DomEventObserver extends Observer {
 	}
 
 	/**
-	 * Calls {@link engine.treeView.TreeView#fire} if observer
+	 * Calls {@link engine.treeView.Document#fire} if observer
 	 * {@link engine.treeView.observer.DomEventObserver#isEnabled is enabled}.
 	 *
-	 * @see engine.treeView.TreeView#fire
+	 * @see engine.treeView.Document#fire
 	 * @param {String} eventType The event type (name).
 	 * @param {Event} domEvent The DOM event.
 	 * @param {Object} [additionalData] The additional data which should extend the
@@ -74,7 +74,7 @@ export default class DomEventObserver extends Observer {
 	 */
 	fire( eventType, domEvent, additionalData ) {
 		if ( this.isEnabled ) {
-			this.treeView.fire( eventType, new DomEventData( this.treeView, domEvent, additionalData ) );
+			this.document.fire( eventType, new DomEventData( this.document, domEvent, additionalData ) );
 		}
 	}
 }

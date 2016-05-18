@@ -9,39 +9,106 @@ import TreeWalker from '/ckeditor5/engine/treemodel/treewalker.js';
 import Range from '/ckeditor5/engine/treemodel/range.js';
 import Position from '/ckeditor5/engine/treemodel/position.js';
 import Text from '/ckeditor5/engine/treemodel/text.js';
+import RootElement from '/ckeditor5/engine/treemodel/rootelement.js';
 import Element from '/ckeditor5/engine/treemodel/element.js';
+import DocumentFragment from '/ckeditor5/engine/treemodel/documentfragment.js';
+import Selection from '/ckeditor5/engine/treemodel/selection.js';
+import Document from '/ckeditor5/engine/treemodel/document.js';
 
 /**
- * Writes the contents of the document to an HTML-like string.
+ * Writes the contents of the {@link engine.treeModel.Document Document} to an HTML-like string.
  *
  * @param {engine.treeModel.Document} document
- * @param {String} rootName
  * @param {Object} [options]
- * @param {Boolean} [options.selection] Whether to write the selection.
+ * @param {Boolean} [options.withoutSelection=false] Whether to write the selection. When set to `true` selection will
+ * be not included in returned string.
+ * @param {Boolean} [options.rootName='main'] Name of the root from which data should be stringified. If not provided
+ * default `main` name will be used.
  * @returns {String} The stringified data.
  */
-export function getData( document, rootName, options ) {
+export function getData( document, options = {} ) {
+	const withoutSelection = !!options.withoutSelection;
+	const rootName = options.rootName || 'main';
 	const root = document.getRoot( rootName );
-	const walker = new TreeWalker( {
-		boundaries: Range.createFromElement( root )
-	} );
-	let ret = '';
-	let lastPosition = Position.createFromParentAndOffset( root, 0 );
-	const selection = document.selection;
 
-	options = options || {};
+	return withoutSelection ? getData._stringify( root ) : getData._stringify( root, document.selection );
+}
+
+// Set stringify as getData private method - needed for testing/spying.
+getData._stringify = stringify;
+
+/**
+ * Sets the contents of the {@link engine.treeModel.Document Document} provided as HTML-like string.
+ *
+ * @param {engine.treeModel.Document} document
+ * @param {String} data HTML-like string to write into Document.
+ * @param {Object} options
+ * @param {String} [options.rootName] Root name where parsed data will be stored. If not provided, default `main` name will be
+ * used.
+ */
+export function setData( document, data, options = {} ) {
+	setData._parse( data, {
+		document: document,
+		rootName: options.rootName
+	} );
+}
+
+// Set parse as setData private method - needed for testing/spying.
+setData._parse = parse;
+
+/**
+ * Converts model nodes to HTML-like string representation.
+ *
+ * @param {engine.treeModel.RootElement|engine.treeModel.Element|engine.treeModel.Text|
+ * engine.treeModel.DocumentFragment} node Node to stringify.
+ * @param {engine.treeModel.Selection|engine.treeModel.Position|engine.treeModel.Range} [selectionOrPositionOrRange = null ]
+ * Selection instance which ranges will be included in returned string data. If Range instance is provided - it will be
+ * converted to selection containing this range. If Position instance is provided - it will be converted to selection
+ * containing one range collapsed at this position.
+ * @returns {String} HTML-like string representing the model.
+ */
+export function stringify( node, selectionOrPositionOrRange = null ) {
+	let selection;
+	let document;
+
+	if ( node instanceof RootElement ) {
+		document = node.document;
+	} else if ( node instanceof Element || node instanceof Text ) {
+		// If root is Element or Text - wrap it with DocumentFragment.
+		node = new DocumentFragment( node );
+	}
+
+	document = document || new Document();
+
+	const walker = new TreeWalker( {
+		boundaries: Range.createFromElement( node )
+	} );
+
+	if ( selectionOrPositionOrRange instanceof Selection ) {
+		selection = selectionOrPositionOrRange;
+	} else if ( selectionOrPositionOrRange instanceof Range ) {
+		selection = document.selection;
+		selection.addRange( selectionOrPositionOrRange );
+	} else if ( selectionOrPositionOrRange instanceof Position ) {
+		selection = document.selection;
+		selection.addRange( new Range( selectionOrPositionOrRange, selectionOrPositionOrRange ) );
+	}
+
+	let ret = '';
+	let lastPosition = Position.createFromParentAndOffset( node, 0 );
+	const withSelection = !!selection;
 
 	for ( let value of walker ) {
-		if ( options.selection ) {
+		if ( withSelection ) {
 			ret += writeSelection( value.previousPosition, selection );
 		}
 
-		ret += writeItem( value, selection, options );
+		ret += writeItem( value, selection, { selection: withSelection } );
 
 		lastPosition = value.nextPosition;
 	}
 
-	if ( options.selection ) {
+	if ( withSelection ) {
 		ret += writeSelection( lastPosition, selection );
 	}
 
@@ -49,20 +116,37 @@ export function getData( document, rootName, options ) {
 }
 
 /**
- * Sets the contents of the model and the selection in it.
+ * Parses HTML-like string and returns model {@link engine.treeModel.RootElement rootElement}.
  *
- * @param {engine.treeModel.Document} document
- * @param {String} rootName
- * @param {String} data
+ * @param {String} data HTML-like string to be parsed.
+ * @param {Object} options
+ * @param {engine.treeModel.Document} [options.document] Document from which root element and selection will be used. If
+ * not provided new {engine.treeModel.Document document} instance will be created.
+ * @param {String} [options.rootName='main'] When `document` option is provided this root name will be used to create
+ * {engine.treeModel.RootElement RootElement} instance.
+ * @returns {engine.treeModel.RootElement|Object} Returns parsed RootElement or object with two fields `model`
+ * and `selection` when selection ranges were included in data to parse.
  */
-export function setData( document, rootName, data ) {
-	let appendTo = document.getRoot( rootName );
+export function parse( data, options = {} ) {
+	let document, root;
+	let withSelection = false;
+	const rootName = options.rootName || 'main';
+
+	if ( options.document ) {
+		document = options.document;
+		root = document.getRoot( rootName );
+		root.removeChildren( 0, root.getChildCount() );
+	} else {
+		document = new Document();
+		root = document.createRoot( rootName );
+	}
+
 	const path = [];
 	let selectionStart, selectionEnd, selectionAttributes, textAttributes;
 
 	const handlers = {
 		text( token ) {
-			appendTo.appendChildren( new Text( token.text, textAttributes ) );
+			root.appendChildren( new Text( token.text, textAttributes ) );
 		},
 
 		textStart( token ) {
@@ -80,9 +164,9 @@ export function setData( document, rootName, data ) {
 
 		openingTag( token ) {
 			let el = new Element( token.name, token.attributes );
-			appendTo.appendChildren( el );
+			root.appendChildren( el );
 
-			appendTo = el;
+			root = el;
 
 			path.push( token.name );
 		},
@@ -92,25 +176,27 @@ export function setData( document, rootName, data ) {
 				throw new Error( 'Parse error - unexpected closing tag.' );
 			}
 
-			appendTo = appendTo.parent;
+			root = root.parent;
 		},
 
 		collapsedSelection( token ) {
-			document.selection.collapse( appendTo, 'END' );
+			withSelection = true;
+			document.selection.collapse( root, 'END' );
 			document.selection.setAttributesTo( token.attributes );
 		},
 
 		selectionStart( token ) {
-			selectionStart = Position.createFromParentAndOffset( appendTo, appendTo.getChildCount() );
+			selectionStart = Position.createFromParentAndOffset( root, root.getChildCount() );
 			selectionAttributes = token.attributes;
 		},
 
 		selectionEnd() {
 			if ( !selectionStart ) {
-				throw new Error( 'Parse error - missing selection start' );
+				throw new Error( 'Parse error - missing selection start.' );
 			}
 
-			selectionEnd = Position.createFromParentAndOffset( appendTo, appendTo.getChildCount() );
+			withSelection = true;
+			selectionEnd = Position.createFromParentAndOffset( root, root.getChildCount() );
 
 			document.selection.setRanges(
 				[ new Range( selectionStart, selectionEnd ) ],
@@ -134,6 +220,15 @@ export function setData( document, rootName, data ) {
 	if ( selectionStart && !selectionEnd ) {
 		throw new Error( 'Parse error - missing selection end.' );
 	}
+
+	if ( withSelection ) {
+		return {
+			model: root,
+			selection: document.selection
+		};
+	}
+
+	return root;
 }
 
 // -- getData helpers ---------------------------------------------------------
@@ -324,7 +419,7 @@ function consumeNextToken( data ) {
 		}
 	}
 
-	throw new Error( 'Parse error - unpexpected token: ' + data + '.' );
+	throw new Error( 'Parse error - unexpected token: ' + data + '.' );
 }
 
 function parseAttributes( attrsString ) {

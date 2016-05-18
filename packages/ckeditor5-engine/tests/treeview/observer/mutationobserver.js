@@ -3,38 +3,35 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: treeview */
+/* bender-tags: treeview, browser-only */
 
 'use strict';
 
-import TreeView from '/ckeditor5/engine/treeview/treeview.js';
-import Element from '/ckeditor5/engine/treeview/element.js';
-import Text from '/ckeditor5/engine/treeview/text.js';
+import ViewDocument from '/ckeditor5/engine/treeview/document.js';
 import MutationObserver from '/ckeditor5/engine/treeview/observer/mutationobserver.js';
+import { parse } from '/tests/engine/_utils/view.js';
 
 describe( 'MutationObserver', () => {
-	let domEditor, treeView, viewRoot, mutationObserver, lastMutations;
+	let domEditor, viewDocument, viewRoot, mutationObserver, lastMutations;
 
 	beforeEach( () => {
-		treeView = new TreeView();
-		domEditor = document.getElementById( 'editor' );
+		viewDocument = new ViewDocument();
+		domEditor = document.getElementById( 'main' );
 		lastMutations = null;
 
-		treeView.createRoot( domEditor, 'editor' );
+		viewDocument.createRoot( domEditor );
+		viewDocument.selection.removeAllRanges();
+		document.getSelection().removeAllRanges();
 
-		treeView.addObserver( MutationObserver );
-		mutationObserver = Array.from( treeView._observers )[ 0 ];
+		mutationObserver = viewDocument.addObserver( MutationObserver );
 
-		treeView.on( 'mutations', ( evt, mutations ) => lastMutations = mutations );
+		viewDocument.on( 'mutations', ( evt, mutations ) => lastMutations = mutations );
 
-		viewRoot = treeView.viewRoots.get( 'editor' );
+		viewRoot = viewDocument.getRoot();
 
-		viewRoot.insertChildren( 0, [
-			new Element( 'p', [], [ new Text( 'foo' ) ] ),
-			new Element( 'p', [], [ new Text( 'bar' ) ] )
-		] );
+		viewRoot.appendChildren( parse( '<container:p>foo</container:p><container:p>bar</container:p>' ) );
 
-		treeView.render();
+		viewDocument.render();
 	} );
 
 	afterEach( () => {
@@ -44,7 +41,7 @@ describe( 'MutationObserver', () => {
 	it( 'should handle typing', () => {
 		domEditor.childNodes[ 0 ].childNodes[ 0 ].data = 'foom';
 
-		handleMutation();
+		mutationObserver.flush();
 
 		expectDomEditorNotToChange();
 		expect( lastMutations.length ).to.equal( 1 );
@@ -60,7 +57,7 @@ describe( 'MutationObserver', () => {
 		domB.appendChild( document.createTextNode( 'oo' ) );
 		domEditor.childNodes[ 0 ].appendChild( domB );
 
-		handleMutation();
+		mutationObserver.flush();
 
 		expectDomEditorNotToChange();
 		expect( lastMutations.length ).to.equal( 1 );
@@ -79,7 +76,7 @@ describe( 'MutationObserver', () => {
 		domEditor.childNodes[ 0 ].childNodes[ 0 ].data = 'foox';
 		domEditor.childNodes[ 0 ].childNodes[ 0 ].data = 'fooxy';
 
-		handleMutation();
+		mutationObserver.flush();
 
 		expectDomEditorNotToChange();
 		expect( lastMutations.length ).to.equal( 1 );
@@ -98,7 +95,7 @@ describe( 'MutationObserver', () => {
 		domP.appendChild( domB );
 		domB.appendChild( domText );
 
-		handleMutation();
+		mutationObserver.flush();
 
 		expectDomEditorNotToChange();
 		expect( lastMutations.length ).to.equal( 1 );
@@ -107,30 +104,94 @@ describe( 'MutationObserver', () => {
 	} );
 
 	it( 'should be able to observe multiple roots', () => {
-		const domEditor2 = document.getElementById( 'editor2' );
+		const domAdditionalEditor = document.getElementById( 'additional' );
 
-		// Prepare editor2
-		treeView.createRoot( domEditor2, 'editor2' );
+		// Prepare AdditionalEditor
+		viewDocument.createRoot( domAdditionalEditor, 'additional' );
 
-		treeView.viewRoots.get( 'editor2' ).insertChildren( 0, [
-			new Element( 'p', [], [ new Text( 'foo' ) ] ),
-			new Element( 'p', [], [ new Text( 'bar' ) ] )
-		] );
+		viewDocument.viewRoots.get( 'additional' ).appendChildren(
+			parse( '<container:p>foo</container:p><container:p>bar</container:p>' ) );
 
-		// Render editor2 (first editor has been rendered in the beforeEach function)
-		treeView.render();
+		// Render AdditionalEditor (first editor has been rendered in the beforeEach function)
+		viewDocument.render();
 
 		domEditor.childNodes[ 0 ].childNodes[ 0 ].data = 'foom';
-		domEditor2.childNodes[ 0 ].childNodes[ 0 ].data = 'foom';
+		domAdditionalEditor.childNodes[ 0 ].childNodes[ 0 ].data = 'foom';
 
-		handleMutation();
+		mutationObserver.flush();
 
 		expect( lastMutations.length ).to.equal( 2 );
 	} );
 
-	function handleMutation() {
-		mutationObserver._onMutations( mutationObserver._mutationObserver.takeRecords() );
-	}
+	it( 'should fire nothing if there were no mutations', () => {
+		mutationObserver.flush();
+
+		expectDomEditorNotToChange();
+		expect( lastMutations ).to.be.null;
+	} );
+
+	it( 'should fire children mutation if the mutation occurred in the inline filler', () => {
+		const { view, selection } = parse( '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
+
+		viewRoot.appendChildren( view );
+		viewDocument.selection.setTo( selection );
+
+		viewDocument.render();
+
+		const inlineFiller = domEditor.childNodes[ 2 ].childNodes[ 1 ].childNodes[ 0 ];
+		inlineFiller.data += 'x';
+
+		mutationObserver.flush();
+
+		expect( lastMutations.length ).to.equal( 1 );
+		expect( lastMutations[ 0 ].type ).to.equal( 'children' );
+		expect( lastMutations[ 0 ].node ).to.equal( selection.getFirstPosition().parent );
+	} );
+
+	it( 'should have no inline filler in mutation', () => {
+		const { view, selection } = parse( '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
+
+		viewRoot.appendChildren( view );
+		viewDocument.selection.setTo( selection );
+
+		viewDocument.render();
+
+		let inlineFiller = domEditor.childNodes[ 2 ].childNodes[ 1 ].childNodes[ 0 ];
+		inlineFiller.data += 'x';
+
+		view.getChild( 1 ).appendChildren( parse( 'x' ) );
+		mutationObserver.flush();
+		viewDocument.render();
+
+		inlineFiller = domEditor.childNodes[ 2 ].childNodes[ 1 ].childNodes[ 0 ];
+		inlineFiller.data += 'y';
+
+		mutationObserver.flush();
+
+		expect( lastMutations.length ).to.equal( 1 );
+		expect( lastMutations[ 0 ].type ).to.equal( 'text' );
+		expect( lastMutations[ 0 ].oldText ).to.equal( 'x' );
+		expect( lastMutations[ 0 ].newText ).to.equal( 'xy' );
+	} );
+
+	it( 'should have no block filler in mutation', () => {
+		viewRoot.appendChildren( parse( '<container:p></container:p>' ) );
+
+		viewDocument.render();
+
+		const domP = domEditor.childNodes[ 2 ];
+		domP.removeChild( domP.childNodes[ 0 ] );
+		domP.appendChild( document.createTextNode( 'foo' ) );
+
+		mutationObserver.flush();
+
+		expect( lastMutations.length ).to.equal( 1 );
+
+		expect( lastMutations[ 0 ].newChildren.length ).to.equal( 1 );
+		expect( lastMutations[ 0 ].newChildren[ 0 ].data ).to.equal( 'foo' );
+
+		expect( lastMutations[ 0 ].oldChildren.length ).to.equal( 0 );
+	} );
 
 	function expectDomEditorNotToChange() {
 		expect( domEditor.childNodes.length ).to.equal( 2 );

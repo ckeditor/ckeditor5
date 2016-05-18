@@ -7,13 +7,13 @@
 
 'use strict';
 
-import TreeView from '/ckeditor5/engine/treeview/treeview.js';
+import Document from '/ckeditor5/engine/treeview/document.js';
 import KeyObserver from '/ckeditor5/engine/treeview/observer/keyobserver.js';
 
-const treeView = new TreeView();
+const viewDocument = new Document();
 
-treeView.on( 'keydown', ( evt, data ) => console.log( 'keydown', data ) );
+viewDocument.on( 'keydown', ( evt, data ) => console.log( 'keydown', data ) );
 
-treeView.addObserver( KeyObserver );
+viewDocument.addObserver( KeyObserver );
 
-treeView.createRoot( document.getElementById( 'editable' ), 'editable' );
+viewDocument.createRoot( document.getElementById( 'editable' ), 'editable' );

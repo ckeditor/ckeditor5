@@ -21,9 +21,9 @@ import Element from './element.js';
  * DOM properly. {@link engine.treeView.DomConverter} will ensure that `ContainerElement` is editable and it is possible
  * to put caret inside it, even if the container is empty.
  *
- * Secondly, {@link engine.treeView.Writer} use this information.
- * {@link engine.treeView.Writer#breakAttributes Break} and {@link engine.treeView.Writer#mergeAttributes Merge}
- * operations are performed only in a bounds of a container nodes.
+ * Secondly, {@link engine.treeView.Writer} uses this information.
+ * Nodes {@link engine.treeView.Writer#breakAttributes breaking} and {@link engine.treeView.Writer#mergeAttributes merging}
+ * is performed only in a bounds of a container nodes.
  *
  * For instance if `<p>` is an container and `<b>` is attribute:
  *
@@ -36,8 +36,8 @@ import Element from './element.js';
  * There might be a need to mark `<span>` element as a container node, for example in situation when it will be a
  * container of an inline widget:
  *
- * 		<span color="red">foobar</span>  // attribute
- * 		<span data-widget>foobar</span>  // container
+ *		<span color="red">foobar</span>		// attribute
+ *		<span data-widget>foobar</span>		// container
  *
  * @memberOf engine.treeView
  * @extends engine.treeView.Element
@@ -50,5 +50,14 @@ export default class ContainerElement extends Element {
 	 */
 	constructor( name, attrs, children ) {
 		super( name, attrs, children );
+	}
+
+	/**
+	 * Returns block {@link engine.treeView.filler filler} offset or `null` if block filler is not needed.
+	 *
+	 * @returns {Number|null} Block filler offset or `null` if block filler is not needed.
+	 */
+	getFillerOffset() {
+		return this.getChildCount() === 0 ? 0 : null;
 	}
 }

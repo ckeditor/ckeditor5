@@ -46,19 +46,38 @@ import isIterable from '../../utils/isiterable.js';
 	 *
 	 * In following examples `<p>` is a container, `<b>` and `<u>` are attribute nodes:
 	 *
-	 *		<p>{foo}<b><u>{bar}|</u></b></p> -> <p>{foo}<b><u>{bar}</u></b>|</p>
-	 *		<p>{foo}<b><u>|{bar}</u></b></p> -> <p>{foo}|<b><u>{bar}</u></b></p>
-	 *		<p>{foo}<b><u>{b|ar}</u></b></p> -> <p>{foo}<b><u>{b}</u></b>|<b><u>{ar}</u></b></p>
+	 *		<p>foo<b><u>bar{}</u></b></p> -> <p>foo<b><u>bar</u></b>[]</p>
+	 *		<p>foo<b><u>{}bar</u></b></p> -> <p>foo{}<b><u>bar</u></b></p>
+	 *		<p>foo<b><u>b{}ar</u></b></p> -> <p>foo<b><u>b</u></b>[]<b><u>ar</u></b></p>
 	 *
-	 * @see engine.treeView.Writer#isContainer
-	 * @see engine.treeView.Writer#isAttribute
-	 *
+	 * @see engine.treeView.AttributeElement
+	 * @see engine.treeView.ContainerElement
 	 * @param {engine.treeView.Position} position Position where to break attributes.
 	 * @returns {engine.treeView.Position} New position after breaking the attributes.
 	 */
 	breakAttributes( position ) {
+		return this._breakAttributes( position, false );
+	}
+
+	/**
+	 * Private method used by both public breakAttributes (without splitting text nodes) and by other methods (with
+	 * splitting text nodes).
+	 *
+	 * @private
+	 * @param {engine.treeView.Position} position Position where to break attributes.
+	 * @param {Boolean} [forceSplitText = false] If set to `true`, will break text nodes even if they are directly in
+	 * container element. This behavior will result in incorrect view state, but is needed by other `Writer` methods
+	 * which then fixes view state. Defaults to `false`.
+	 * @returns {engine.treeView.Position} New position after breaking the attributes.
+	 */
+	_breakAttributes( position, forceSplitText = false ) {
 		const positionOffset = position.offset;
 		const positionParent = position.parent;
+
+		// There are no attributes to break and text nodes breaking is not forced.
+		if ( !forceSplitText && positionParent instanceof Text && positionParent.parent instanceof ContainerElement ) {
+			return Position.createFromPosition( position );
+		}
 
 		// Position's parent is container, so no attributes to break.
 		if ( positionParent instanceof ContainerElement ) {
@@ -67,31 +86,31 @@ import isIterable from '../../utils/isiterable.js';
 
 		// Break text and start again in new position.
 		if ( positionParent instanceof Text ) {
-			return this.breakAttributes( breakTextNode( position ) );
+			return this._breakAttributes( breakTextNode( position ), forceSplitText );
 		}
 
 		const length = positionParent.getChildCount();
 
-		// <p>foo<b><u>bar|</u></b></p>
-		// <p>foo<b><u>bar</u>|</b></p>
-		// <p>foo<b><u>bar</u></b>|</p>
+		// <p>foo<b><u>bar{}</u></b></p>
+		// <p>foo<b><u>bar</u>[]</b></p>
+		// <p>foo<b><u>bar</u></b>[]</p>
 		if ( positionOffset == length ) {
 			const newPosition = new Position( positionParent.parent, positionParent.getIndex() + 1 );
 
-			return this.breakAttributes( newPosition );
+			return this._breakAttributes( newPosition, forceSplitText );
 		} else
-		// <p>foo<b><u>|bar</u></b></p>
-		// <p>foo<b>|<u>bar</u></b></p>
-		// <p>foo|<b><u>bar</u></b></p>
+		// <p>foo<b><u>{}bar</u></b></p>
+		// <p>foo<b>[]<u>bar</u></b></p>
+		// <p>foo{}<b><u>bar</u></b></p>
 		if ( positionOffset === 0 ) {
 			const newPosition = new Position( positionParent.parent, positionParent.getIndex() );
 
-			return this.breakAttributes( newPosition );
+			return this._breakAttributes( newPosition, forceSplitText );
 		}
-		// <p>foo<b><u>"b|ar"</u></b></p>
-		// <p>foo<b><u>"b"|"ar"</u></b></p>
-		// <p>foo<b><u>b</u>|<u>ar</u></b></p>
-		// <p>foo<b><u>b</u></b>|<b><u>ar</u></b></p>
+		// <p>foo<b><u>b{}ar</u></b></p>
+		// <p>foo<b><u>b[]ar</u></b></p>
+		// <p>foo<b><u>b</u>[]<u>ar</u></b></p>
+		// <p>foo<b><u>b</u></b>[]<b><u>ar</u></b></p>
 		else {
 			const offsetAfter = positionParent.getIndex() + 1;
 
@@ -111,12 +130,12 @@ import isIterable from '../../utils/isiterable.js';
 			// Create new position to work on.
 			const newPosition = new Position( positionParent.parent, offsetAfter );
 
-			return this.breakAttributes( newPosition );
+			return this._breakAttributes( newPosition, forceSplitText );
 		}
 	}
 
 	/**
-	 * Uses {@link engine.treeView.Writer#breakAttributes breakAttribute} method to break attributes on
+	 * Uses {@link engine.treeView.Writer#breakAttributes breakAttributes} method to break attributes on
 	 * {@link engine.treeView.Range#start start} and {@link engine.treeView.Range#end end} positions of
 	 * provided {@link engine.treeView.Range Range}.
 	 *
@@ -129,6 +148,22 @@ import isIterable from '../../utils/isiterable.js';
 	 * @returns {engine.treeView.Range} New range with located at break positions.
 	 */
 	breakRange( range ) {
+		return this._breakRange( range );
+	}
+
+	/**
+	 * Private method used by both public breakRange (without splitting text nodes) and by other methods (with
+	 * splitting text nodes).
+	 *
+	 * @private
+	 * @see engine.treeView.Writer#_breakAttribute
+	 * @param {engine.treeView.Range} range Range which `start` and `end` positions will be used to break attributes.
+	 * @param {Boolean} [forceSplitText = false] If set to `true`, will break text nodes even if they are directly in
+	 * container element. This behavior will result in incorrect view state, but is needed by other `Writer` methods
+	 * which then fixes view state. Defaults to `false`.
+	 * @returns {engine.treeView.Range} New range with located at break positions.
+	 */
+	_breakRange( range, forceSplitText = false ) {
 		const rangeStart = range.start;
 		const rangeEnd = range.end;
 
@@ -144,14 +179,14 @@ import isIterable from '../../utils/isiterable.js';
 
 		// Break at the collapsed position. Return new collapsed range.
 		if ( range.isCollapsed ) {
-			const position = this.breakAttributes( range.start );
+			const position = this._breakAttributes( range.start, forceSplitText );
 
 			return new Range( position, position );
 		}
 
-		const breakEnd = this.breakAttributes( rangeEnd );
+		const breakEnd = this._breakAttributes( rangeEnd, forceSplitText );
 		const count = breakEnd.parent.getChildCount();
-		const breakStart = this.breakAttributes( rangeStart );
+		const breakStart = this._breakAttributes( rangeStart, forceSplitText );
 
 		// Calculate new break end offset.
 		breakEnd.offset += breakEnd.parent.getChildCount() - count;
@@ -165,12 +200,12 @@ import isIterable from '../../utils/isiterable.js';
 	 *
 	 * In following examples `<p>` is a container and `<b>` is an attribute node:
 	 *
-	 *		<p>{foo}|{bar}</p> -> <p>{foo|bar}</p>
-	 *		<p><b>{foo}</b>|<b>{bar}</b> -> <p><b>{foo|bar}</b></b>
-	 *		<p><b foo="bar">{a}</b>|<b foo="baz">{b}</b> -> <p><b foo="bar">{a}</b>|<b foo="baz">{b}</b>
+	 *		<p>foo[]bar</p> -> <p>foo{}bar</p>
+	 *		<p><b>foo</b>[]<b>bar</b> -> <p><b>foo{}bar</b></b>
+	 *		<p><b foo="bar">a</b>[]<b foo="baz">b</b> -> <p><b foo="bar">a</b>[]<b foo="baz">b</b>
 	 *
-	 * @see engine.treeView.Writer#isContainer
-	 * @see engine.treeView.Writer#isAttribute
+	 * @see engine.treeView.AttributeElement
+	 * @see engine.treeView.ContainerElement
 	 * @param {engine.treeView.Position} position Merge position.
 	 * @returns {engine.treeView.Position} Position after merge.
 	 */
@@ -238,7 +273,7 @@ import isIterable from '../../utils/isiterable.js';
 		validateNodesToInsert( nodes );
 
 		const container = this.getParentContainer( position );
-		const insertionPosition = this.breakAttributes( position );
+		const insertionPosition = this._breakAttributes( position, true );
 
 		const length = container.insertChildren( insertionPosition.offset, nodes );
 		const endPosition = insertionPosition.getShiftedBy( length );
@@ -287,7 +322,7 @@ import isIterable from '../../utils/isiterable.js';
 		}
 
 		// Break attributes at range start and end.
-		const { start: breakStart, end: breakEnd } = this.breakRange( range );
+		const { start: breakStart, end: breakEnd } = this._breakRange( range, true );
 		const parentContainer = breakStart.parent;
 
 		const count = breakEnd.offset - breakStart.offset;
@@ -376,7 +411,7 @@ import isIterable from '../../utils/isiterable.js';
 		}
 
 		// Break attributes at range start and end.
-		const { start: breakStart, end: breakEnd } = this.breakRange( range );
+		const { start: breakStart, end: breakEnd } = this._breakRange( range, true );
 		const parentContainer = breakStart.parent;
 
 		// Unwrap children located between break points.
@@ -506,7 +541,7 @@ import isIterable from '../../utils/isiterable.js';
 		}
 
 		// Break attributes at range start and end.
-		const { start: breakStart, end: breakEnd } = this.breakRange( range );
+		const { start: breakStart, end: breakEnd } = this._breakRange( range, true );
 		const parentContainer = breakStart.parent;
 
 		// Unwrap children located between break points.
@@ -657,8 +692,8 @@ function wrapChildren( writer, parent, startOffset, endOffset, attribute ) {
 // Returns new position that is moved to near text node. Returns same position if there is no text node before of after
 // specified position.
 //
-//		<p>{foo}|</p>  ->  <p>{foo|}</p>
-//		<p>|{foo}</p>  ->  <p>{|foo}</p>
+//		<p>foo[]</p>  ->  <p>foo{}</p>
+//		<p>[]foo</p>  ->  <p>{}foo</p>
 //
 // @private
 // @param {engine.treeView.Position} position
@@ -682,9 +717,9 @@ function movePositionToTextNode( position ) {
 
 // Breaks text node into two text nodes when possible.
 //
-//		<p>{foo|bar}</p> -> <p>{foo}|{bar}</p>
-//		<p>{|foobar}</p> -> <p>|{foobar}</p>
-//		<p>{foobar|}</p> -> <p>{foobar}|</p>
+//		<p>foo{}bar</p> -> <p>foo[]bar</p>
+//		<p>{}foobar</p> -> <p>[]foobar</p>
+//		<p>foobar{}</p> -> <p>foobar[]</p>
 //
 // @private
 // @param {engine.treeView.Position} position Position that need to be placed inside text node.

@@ -5,15 +5,17 @@
 
 'use strict';
 
-import EmitterMixin from '../../utils/emittermixin.js';
+import Selection from './selection.js';
 import Renderer from './renderer.js';
-import DomConverter from './domconverter.js';
 import Writer from './writer.js';
+import DomConverter from './domconverter.js';
+import { injectQuirksHandling } from './filler.js';
 
 import mix from '../../utils/mix.js';
+import EmitterMixin from '../../utils/emittermixin.js';
 
 /**
- * TreeView class creates an abstract layer over the content editable area.
+ * Document class creates an abstract layer over the content editable area.
  * It combines the actual tree of view elements, tree of DOM elements,
  * {@link engine.treeView.DomConverter DOM Converter}, {@link engine.treeView.Renderer renderer} and all
  * {@link engine.treeView.Observer observers}.
@@ -24,33 +26,41 @@ import mix from '../../utils/mix.js';
  * @memberOf engine.treeView
  * @mixes utils.EmitterMixin
  */
-export default class TreeView {
+export default class Document {
 	/**
-	 * Creates a TreeView instance.
+	 * Creates a Document instance.
 	 */
 	constructor() {
 		/**
 		 * Roots of the DOM tree. Map on the `HTMLElement`s with roots names as keys.
 		 *
 		 * @readonly
-		 * @member {Map} engine.treeView.TreeView#domRoots
+		 * @member {Map} engine.treeView.Document#domRoots
 		 */
 		this.domRoots = new Map();
+
+		/**
+		 * Selection done on this document.
+		 *
+		 * @readonly
+		 * @member {engine.treeView.Selection} engine.treeView.Document#selection
+		 */
+		this.selection = new Selection();
 
 		/**
 		 * Tree View writer.
 		 *
 		 * @readonly
-		 * @member {engine.treeView.Writer} engine.treeView.TreeView#writer
+		 * @member {engine.treeView.Writer} engine.treeView.Document#writer
 		 */
 		this.writer = new Writer();
 
 		/**
 		 * Instance of the {@link engine.treeView.DomConverter domConverter} use by
-		 * {@link engine.treeView.TreeView#renderer renderer} and {@link engine.treeView.observer.Observer observers}.
+		 * {@link engine.treeView.Document#renderer renderer} and {@link engine.treeView.observer.Observer observers}.
 		 *
 		 * @readonly
-		 * @member {engine.treeView.DomConverter} engine.treeView.TreeView#domConverter
+		 * @member {engine.treeView.DomConverter} engine.treeView.Document#domConverter
 		 */
 		this.domConverter = new DomConverter();
 
@@ -58,31 +68,33 @@ export default class TreeView {
 		 * Roots of the view tree. Map of the {engine.treeView.Element view elements} with roots names as keys.
 		 *
 		 * @readonly
-		 * @member {Map} engine.treeView.TreeView#viewRoots
+		 * @member {Map} engine.treeView.Document#viewRoots
 		 */
 		this.viewRoots = new Map();
 
 		/**
-		 * Instance of the {@link engine.treeView.TreeView#renderer renderer}.
+		 * Instance of the {@link engine.treeView.Document#renderer renderer}.
 		 *
 		 * @readonly
-		 * @member {engine.treeView.Renderer} engine.treeView.TreeView#renderer
+		 * @member {engine.treeView.Renderer} engine.treeView.Document#renderer
 		 */
-		this.renderer = new Renderer( this.domConverter );
+		this.renderer = new Renderer( this.domConverter, this.selection );
 
 		/**
-		 * Set of registered {@link engine.treeView.Observer observers}.
+		 * Map of registered {@link engine.treeView.Observer observers}.
 		 *
-		 * @protected
-		 * @member {Set.<engine.treeView.Observer>} engine.treeView.TreeView_#observers
+		 * @private
+		 * @member {Map.<Function, engine.treeView.Observer>} engine.treeView.Document_#observers
 		 */
-		this._observers = new Set();
+		this._observers = new Map();
+
+		injectQuirksHandling( this );
 	}
 
 	/**
 	 * Creates observer of the given type if not yet created, {@link engine.treeView.Observer#enable enables} it
 	 * and {@link engine.treeView.observer.Observer#observe attaches} to all existing and future
-	 * {@link engine.treeView.TreeView#domRoots DOM roots}.
+	 * {@link engine.treeView.Document#domRoots DOM roots}.
 	 *
 	 * Note: Observers are recognized by their constructor (classes). A single observer will be instantiated and used only
 	 * when registered for the first time. This means that features and other components can register a single observer
@@ -90,39 +102,54 @@ export default class TreeView {
 	 *
 	 * @param {Function} Observer The constructor of an observer to add.
 	 * Should create an instance inheriting from {@link engine.treeView.observer.Observer}.
+	 * @returns {engine.treeView.observer.Observer} Added observer instance.
 	 */
 	addObserver( Observer ) {
-		if ( this._hasObserver( Observer ) ) {
-			return;
+		let observer = this._observers.get( Observer );
+
+		if ( observer ) {
+			return observer;
 		}
 
-		const observer = new Observer( this );
+		observer = new Observer( this );
 
-		this._observers.add( observer );
+		this._observers.set( Observer, observer );
 
 		for ( let [ name, domElement ] of this.domRoots ) {
 			observer.observe( domElement, name );
 		}
 
 		observer.enable();
+
+		return observer;
 	}
 
 	/**
-	 * Creates a root for the HTMLElement. It adds elements to {@link engine.treeView.TreeView#domRoots} and
-	 * {@link engine.treeView.TreeView#viewRoots}.
+	 * Returns observer of the given type or `undefined` if such observer has not been added yet.
+	 *
+	 * @param {Function} Observer The constructor of an observer to get.
+	 * @returns {engine.treeView.observer.Observer|undefined} Observer instance or undefined.
+	 */
+	getObserver( Observer ) {
+		return this._observers.get( Observer );
+	}
+
+	/**
+	 * Creates a root for the HTMLElement. It adds elements to {@link engine.treeView.Document#domRoots} and
+	 * {@link engine.treeView.Document#viewRoots}.
 	 *
 	 * The constructor copies the element name and attributes to create the
 	 * root of the view, but does not copy its children. This means that while
-	 * {@link engine.treeView.TreeView#render rendering}, the whole content of this
+	 * {@link engine.treeView.Document#render rendering}, the whole content of this
 	 * root element will be removed but the root name and attributes will be preserved.
 	 *
 	 * @param {HTMLElement} domRoot DOM element in which the tree view should do change.
-	 * @param {String} name Name of the root.
+	 * @param {String} [name='main'] Name of the root.
 	 * @returns {engine.treeView.element} The created view root element.
 	 */
-	createRoot( domRoot, name ) {
+	createRoot( domRoot, name = 'main' ) {
 		const viewRoot = this.domConverter.domToView( domRoot, { bind: true, withChildren: false } );
-		viewRoot.setTreeView( this );
+		viewRoot.setDocument( this );
 
 		// Mark changed nodes in the renderer.
 		viewRoot.on( 'change', ( evt, type, node ) => {
@@ -133,7 +160,7 @@ export default class TreeView {
 		this.domRoots.set( name, domRoot );
 		this.viewRoots.set( name, viewRoot );
 
-		for ( let observer of this._observers ) {
+		for ( let observer of this._observers.values() ) {
 			observer.observe( domRoot, name );
 		}
 
@@ -141,33 +168,34 @@ export default class TreeView {
 	}
 
 	/**
+	 * Get a {@link engine.treeView.Document#viewRoots view root element} with the specified name. If the name is not
+	 * specific "main" root is returned.
+	 *
+	 * @param {String} [name='main']  Name of the root.
+	 * @returns {engine.treeView.element} The view root element with the specified name.
+	 */
+	getRoot( name = 'main' ) {
+		return this.viewRoots.get( name );
+	}
+
+	/**
 	 * Renders all changes. In order to avoid triggering the observers (e.g. mutations) all observers all detached
 	 * before rendering and reattached after that.
 	 */
 	render() {
-		for ( let observer of this._observers ) {
+		for ( let observer of this._observers.values() ) {
 			observer.disable();
 		}
 
 		this.renderer.render();
 
-		for ( let observer of this._observers ) {
+		for ( let observer of this._observers.values() ) {
 			observer.enable();
 		}
 	}
-
-	/**
-	 * Checks whether the given observer was already added.
-	 *
-	 * @private
-	 * @param {Function} Observer The observer constructor to check.
-	 */
-	_hasObserver( Observer ) {
-		return Array.from( this._observers ).some( ( observer ) => observer.constructor === Observer );
-	}
 }
 
-mix( TreeView, EmitterMixin );
+mix( Document, EmitterMixin );
 
 /**
  * Enum representing type of the change.

@@ -229,11 +229,11 @@ describe( 'Delete utils', () => {
 
 	function test( title, input, output, options ) {
 		it( title, () => {
-			setData( document, 'main', input );
+			setData( document, input );
 
 			modifySelection( document.selection, options );
 
-			expect( getData( document, 'main', { selection: true } ) ).to.equal( output );
+			expect( getData( document ) ).to.equal( output );
 		} );
 	}
 } );

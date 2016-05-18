@@ -248,6 +248,32 @@ export default class ModelConversionDispatcher {
 	}
 
 	/**
+	 * Fires events for given {@link engine.treeModel.Selection selection} to start selection conversion.
+	 *
+	 * @fires engine.treeController.ModelConversionDispatcher#selection
+	 * @fires engine.treeController.ModelConversionDispatcher#selectionAttribute
+	 * @param {engine.treeModel.Selection} selection Selection to convert.
+	 */
+	convertSelection( selection ) {
+		const consumable = this._createSelectionConsumable( selection );
+		const data = {
+			selection: selection
+		};
+
+		this.fire( 'selection', data, consumable, this.conversionApi );
+
+		for ( let attr of selection.getAttributes() ) {
+			data.key = attr[ 0 ];
+			data.value = attr[ 1 ];
+
+			// Do not fire event if the attribute has been consumed.
+			if ( consumable.test( selection, 'selectionAttribute:' + data.key ) ) {
+				this.fire( 'selectionAttribute:' + data.key, data, consumable, this.conversionApi );
+			}
+		}
+	}
+
+	/**
 	 * Creates {@link engine.treeController.ModelConsumable} with values to consume from given range, assuming that
 	 * given range has just been inserted to the model.
 	 *
@@ -288,6 +314,25 @@ export default class ModelConversionDispatcher {
 			const item = value.item;
 
 			consumable.add( item, type + ':' + key );
+		}
+
+		return consumable;
+	}
+
+	/**
+	 * Creates {@link engine.treeController.ModelConsumable} with selection consumable values.
+	 *
+	 * @private
+	 * @param {engine.treeModel.Selection} selection Selection to create consumable from.
+	 * @returns {engine.treeController.ModelConsumable} Values to consume.
+	 */
+	_createSelectionConsumable( selection ) {
+		const consumable = new Consumable();
+
+		consumable.add( selection, 'selection' );
+
+		for ( let attr of selection.getAttributes() ) {
+			consumable.add( selection, 'selectionAttribute:' + attr[ 0 ] );
 		}
 
 		return consumable;
@@ -419,6 +464,31 @@ export default class ModelConversionDispatcher {
 	 * @param {String} data.attributeKey Attribute key.
 	 * @param {*} data.attributeOldValue Attribute value before the change.
 	 * @param {*} data.attributeNewValue New attribute value.
+	 * @param {engine.treeController.ModelConsumable} consumable Values to consume.
+	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
+	 */
+
+	/**
+	 * Fired for {@link engine.treeModel.Selection selection} changes.
+	 *
+	 * @event engine.treeController.ModelConversionDispatcher.selection
+	 * @param {engine.treeModel.Selection} selection `Selection` instance that is converted.
+	 * @param {engine.treeController.ModelConsumable} consumable Values to consume.
+	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
+	 */
+
+	/**
+	 * Fired for {@link engine.treeModel.Selection selection} attributes changes.
+	 *
+	 * `selectionAttribute` is a namespace for a class of events. Names of actually called events follow this pattern:
+	 * `selectionAttribute:<attributeKey>`. `attributeKey` is the key of selection attribute. This way listen can listen to
+	 * certain attribute, i.e. `addAttribute:bold`.
+	 *
+	 * @event engine.treeController.ModelConversionDispatcher.selectionAttribute
+	 * @param {Object} data Additional information about the change.
+	 * @param {engine.treeModel.Selection} data.selection Selection that is converted.
+	 * @param {String} data.attributeKey Key of changed attribute.
+	 * @param {*} data.attributeValue Value of changed attribute.
 	 * @param {engine.treeController.ModelConsumable} consumable Values to consume.
 	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
 	 */

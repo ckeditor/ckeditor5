@@ -10,8 +10,8 @@ import TextProxy from '../treemodel/textproxy.js';
 /**
  * Manages a list of consumable values for {@link engine.treeModel.Item model items}.
  *
- * Consumables are various aspects of the model items. A model item can be broken down into singular properties
- * that might be taken into consideration when converting that item.
+ * Consumables are various aspects of the model. A model item can be broken down into singular properties that might be
+ * taken into consideration when converting that item.
  *
  * `ModelConsumable` is used by {@link engine.treeController.ModelConversionDispatcher} while analyzing changed
  * parts of {@link engine.treeModel.Document the document}. The added / changed / removed model items are broken down
@@ -19,14 +19,13 @@ import TextProxy from '../treemodel/textproxy.js';
  * during conversion, when given part of model item is converted (i.e. the view element has been inserted into the view,
  * but without attributes), consumable value is removed from `ModelConsumable`.
  *
- * Although `ModelConsumable` might store consumable values of any type (see {@link engine.treeController.ModelConsumable#add}),
- * the commonly used ones are similar to events names fired by {@link engine.treeController.ModelConversionDispatcher}:
- * `insert`, `addAttribute:<attributeKey>`, `changeAttribute:<attributeKey>`, `removeAttribute:<attributeKey>`.
+ * For model items, `ModelConsumable` stores consumable values of one of following types: `insert`, `addAttribute:<attributeKey>`,
+ * `changeAttribute:<attributeKey>`, `removeAttribute:<attributeKey>`.
  *
- * Most commonly, {@link engine.treeController.ModelConsumable#add add method} will be used only by
- * {@link engine.treeController.ModelConversionDispatcher} to gather consumable values. However, it is important to
- * understand how consumable values can be {@link engine.treeController.ModelConsumable#consume consumed}. See also:
- * {@link engine.treeController.modelToView}.
+ * In most cases, it is enough to let {@link engine.treeController.ModelConversionDispatcher} gather consumable values, so
+ * there is no need to use {@link engine.treeController.ModelConsumable#add add method} directly. However, it is important to
+ * understand how consumable values can be {@link engine.treeController.ModelConsumable#consume consumed}. See
+ * {@link engine.treeController.modelToView default model to view converters} for more information.
  *
  * Keep in mind, that one conversion event may have multiple callbacks (converters) attached to it. Each of those is
  * able to convert one or more parts of the model. However, when one of those callbacks actually converts
@@ -109,7 +108,7 @@ export default class ModelConsumable {
 		 * `ModelConsumable` translates `TextProxy` to that unique `Symbol`.
 		 *
 		 * @private
-		 * @member {Map} engine.treeController.ModelConsumable#_textParentsRegistry
+		 * @member {Map} engine.treeController.ModelConsumable#_textProxyRegistry
 		 */
 		this._textProxyRegistry = new Map();
 	}
@@ -120,8 +119,10 @@ export default class ModelConsumable {
 	 *		modelConsumable.add( modelElement, 'insert' ); // Add `modelElement` insertion change to consumable values.
 	 *		modelConsumable.add( modelElement, 'addAttribute:bold' ); // Add `bold` attribute insertion on `modelElement` change.
 	 *		modelConsumable.add( modelElement, 'removeAttribute:bold' ); // Add `bold` attribute removal on `modelElement` change.
+	 *		modelConsumable.add( modelSelection, 'selection' ); // Add `modelSelection` to consumable values.
+	 *		modelConsumable.add( modelSelection, 'selectionAttribute:bold' ); // Add `bold` attribute on `modelSelection` to consumables.
 	 *
-	 * @param {engine.treeModel.Item} item Model item that has the consumable.
+	 * @param {engine.treeModel.Item|engine.treeModel.Selection} item Model item or selection that has the consumable.
 	 * @param {String} type Consumable type.
 	 */
 	add( item, type ) {
@@ -142,8 +143,10 @@ export default class ModelConsumable {
 	 *		modelConsumable.consume( modelElement, 'insert' ); // Remove `modelElement` insertion change from consumable values.
 	 *		modelConsumable.consume( modelElement, 'addAttribute:bold' ); // Remove `bold` attribute insertion on `modelElement` change.
 	 *		modelConsumable.consume( modelElement, 'removeAttribute:bold' ); // Remove `bold` attribute removal on `modelElement` change.
+	 *		modelConsumable.consume( modelSelection, 'selection' ); // Remove `modelSelection` from consumable values.
+	 *		modelConsumable.consume( modelSelection, 'selectionAttribute:bold' ); // Remove `bold` on `modelSelection` from consumables.
 	 *
-	 * @param {engine.treeModel.Item} item Model item from which consumable will be consumed.
+	 * @param {engine.treeModel.Item|engine.treeModel.Selection} item Model item or selection from which consumable will be consumed.
 	 * @param {String} type Consumable type.
 	 * @returns {Boolean} `true` if consumable value was available and was consumed, `false` otherwise.
 	 */
@@ -167,8 +170,10 @@ export default class ModelConsumable {
 	 *		modelConsumable.test( modelElement, 'insert' ); // Check for `modelElement` insertion change.
 	 *		modelConsumable.test( modelElement, 'addAttribute:bold' ); // Check for `bold` attribute insertion on `modelElement` change.
 	 *		modelConsumable.test( modelElement, 'removeAttribute:bold' ); // Check for `bold` attribute removal on `modelElement` change.
+	 *		modelConsumable.test( modelSelection, 'selection' ); // Check if `modelSelection` is consumable.
+	 *		modelConsumable.test( modelSelection, 'selectionAttribute:bold' ); // Check if `bold` on `modelSelection` is consumable.
 	 *
-	 * @param {engine.treeModel.Item} item Model item that will be tested.
+	 * @param {engine.treeModel.Item|engine.treeModel.Selection} item Model item or selection that will be tested.
 	 * @param {String} type Consumable type.
 	 * @returns {null|Boolean} `null` if such consumable was never added, `false` if the consumable values was
 	 * already consumed or `true` if it was added and not consumed yet.
@@ -199,8 +204,10 @@ export default class ModelConsumable {
 	 *		modelConsumable.revert( modelElement, 'insert' ); // Revert consuming `modelElement` insertion change.
 	 *		modelConsumable.revert( modelElement, 'addAttribute:bold' ); // Revert consuming `bold` attribute insert from `modelElement`.
 	 *		modelConsumable.revert( modelElement, 'removeAttribute:bold' ); // Revert consuming `bold` attribute remove from `modelElement`.
+	 *		modelConsumable.revert( modelSelection, 'selection' ); // Revert consuming `modelSelection`.
+	 *		modelConsumable.revert( modelSelection, 'selectionAttribute:bold' ); // Revert consuming `bold` from `modelSelection`.
 	 *
-	 * @param {engine.treeModel.Item} item Model item that will be tested.
+	 * @param {engine.treeModel.Item|engine.treeModel.Selection} item Model item or selection that will be reverted.
 	 * @param {String} type Consumable type.
 	 * @returns {null|Boolean} `true` if consumable has been reversed, `false` otherwise. `null` if the consumable has
 	 * never been added.

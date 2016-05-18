@@ -83,20 +83,25 @@ describe( 'Selection', () => {
 	} );
 
 	describe( 'isCollapsed', () => {
-		it( 'should return true when all ranges are collapsed', () => {
+		it( 'should return true when there is single collapsed range', () => {
+			const range = Range.createFromParentsAndOffsets( el, 5, el, 5 );
+			selection.addRange( range );
+
+			expect( selection.isCollapsed ).to.be.true;
+		} );
+
+		it( 'should return false when there are multiple ranges', () => {
 			const range1 = Range.createFromParentsAndOffsets( el, 5, el, 5 );
 			const range2 = Range.createFromParentsAndOffsets( el, 15, el, 15 );
 			selection.addRange( range1 );
 			selection.addRange( range2 );
 
-			expect( selection.isCollapsed ).to.be.true;
+			expect( selection.isCollapsed ).to.be.false;
 		} );
 
-		it( 'should return false when not all ranges are collapsed', () => {
-			const range1 = Range.createFromParentsAndOffsets( el, 5, el, 5 );
-			const range2 = Range.createFromParentsAndOffsets( el, 15, el, 16 );
-			selection.addRange( range1 );
-			selection.addRange( range2 );
+		it( 'should return false when there is not collapsed range', () => {
+			const range = Range.createFromParentsAndOffsets( el, 15, el, 16 );
+			selection.addRange( range );
 
 			expect( selection.isCollapsed ).to.be.false;
 		} );
@@ -105,10 +110,35 @@ describe( 'Selection', () => {
 	describe( 'rangeCount', () => {
 		it( 'should return proper range count', () => {
 			expect( selection.rangeCount ).to.equal( 0 );
+
 			selection.addRange( range1 );
+
 			expect( selection.rangeCount ).to.equal( 1 );
+
 			selection.addRange( range2 );
+
 			expect( selection.rangeCount ).to.equal( 2 );
+		} );
+	} );
+
+	describe( 'isBackward', () => {
+		it( 'is defined by the last added range', () => {
+			const range1 = Range.createFromParentsAndOffsets( el, 5, el, 10 );
+			const range2 = Range.createFromParentsAndOffsets( el, 15, el, 16 );
+
+			selection.addRange( range1, true );
+			expect( selection ).to.have.property( 'isBackward', true );
+
+			selection.addRange( range2 );
+			expect( selection ).to.have.property( 'isBackward', false );
+		} );
+
+		it( 'is false when last range is collapsed', () => {
+			const range = Range.createFromParentsAndOffsets( el, 5, el, 5 );
+
+			selection.addRange( range, true );
+
+			expect( selection.isBackward ).to.be.false;
 		} );
 	} );
 
@@ -224,6 +254,56 @@ describe( 'Selection', () => {
 		} );
 	} );
 
+	describe( 'isEqual', () => {
+		it( 'should return true if selections equal', () => {
+			selection.addRange( range1 );
+			selection.addRange( range2 );
+
+			const otherSelection = new Selection();
+			otherSelection.addRange( range1 );
+			otherSelection.addRange( range2 );
+
+			expect( selection.isEqual( otherSelection ) ).to.be.true;
+		} );
+
+		it( 'should return true if backward selections equal', () => {
+			selection.addRange( range1, true );
+
+			const otherSelection = new Selection();
+			otherSelection.addRange( range1, true );
+
+			expect( selection.isEqual( otherSelection ) ).to.be.true;
+		} );
+
+		it( 'should return false if ranges count does not equal', () => {
+			selection.addRange( range1 );
+			selection.addRange( range2 );
+
+			const otherSelection = new Selection();
+			otherSelection.addRange( range1 );
+
+			expect( selection.isEqual( otherSelection ) ).to.be.false;
+		} );
+
+		it( 'should return false if ranges do not equal', () => {
+			selection.addRange( range1 );
+
+			const otherSelection = new Selection();
+			otherSelection.addRange( range2 );
+
+			expect( selection.isEqual( otherSelection ) ).to.be.false;
+		} );
+
+		it( 'should return false if directions do not equal', () => {
+			selection.addRange( range1 );
+
+			const otherSelection = new Selection();
+			otherSelection.addRange( range2, true );
+
+			expect( selection.isEqual( otherSelection ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'removeAllRanges', () => {
 		it( 'should remove all ranges and fire change event', ( done ) => {
 			selection.addRange( range1 );
@@ -260,6 +340,26 @@ describe( 'Selection', () => {
 			} );
 
 			selection.setRanges( [ range2, range3 ] );
+		} );
+	} );
+
+	describe( 'setTo', () => {
+		it( 'should return true if selections equal', () => {
+			selection.addRange( range1 );
+
+			const otherSelection = new Selection();
+			otherSelection.addRange( range2 );
+			otherSelection.addRange( range3, true );
+
+			selection.setTo( otherSelection );
+
+			expect( selection.rangeCount ).to.equal( 2 );
+			expect( selection._ranges[ 0 ].isEqual( range2 ) ).to.be.true;
+			expect( selection._ranges[ 0 ] ).is.not.equal( range2 );
+			expect( selection._ranges[ 1 ].isEqual( range3 ) ).to.be.true;
+			expect( selection._ranges[ 1 ] ).is.not.equal( range3 );
+
+			expect( selection.anchor.isEqual( range3.end ) ).to.be.true;
 		} );
 	} );
 

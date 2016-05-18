@@ -6,24 +6,25 @@
 'use strict';
 
 import Observer from './observer.js';
+import { startsWithFiller, getDataWithoutFiller } from '../filler.js';
 
 /**
- * Mutation observer class observes changes in the DOM, fires {@link engine.treeView.TreeView#mutations} event, mark view elements
+ * Mutation observer class observes changes in the DOM, fires {@link engine.treeView.Document#mutations} event, mark view elements
  * as changed and call {@link engine.treeView.render}. Because all mutated nodes are marked as "to be rendered" and the
  * {@link engine.treeView.render} is called, all changes will be reverted, unless the mutation will be handled by the
- * {@link engine.treeView.TreeView#mutations} event listener. It means user will see only handled changes, and the editor will
+ * {@link engine.treeView.Document#mutations} event listener. It means user will see only handled changes, and the editor will
  * block all changes which are not handled.
  *
  * Mutation Observer also take care of reducing number of mutations which are fired. It removes duplicates and
  * mutations on elements which do not have corresponding view elements. Also
- * {@link engine.treeView.TreeView.MutatatedText text mutation} is fired only if parent element do not change child list.
+ * {@link engine.treeView.Document.MutatatedText text mutation} is fired only if parent element do not change child list.
  *
  * @memberOf engine.treeView.observer
  * @extends engine.treeView.observer.Observer
  */
 export default class MutationObserver extends Observer {
-	constructor( treeView ) {
-		super( treeView );
+	constructor( document ) {
+		super( document );
 
 		/**
 		 * Native mutation observer config.
@@ -39,18 +40,18 @@ export default class MutationObserver extends Observer {
 		};
 
 		/**
-		 * Reference to the {@link engine.treeView.TreeView#domConverter}.
+		 * Reference to the {@link engine.treeView.Document#domConverter}.
 		 *
 		 * @member {engine.treeView.DomConverter} engine.treeView.observer.MutationObserver#domConverter
 		 */
-		this.domConverter = treeView.domConverter;
+		this.domConverter = document.domConverter;
 
 		/**
-		 * Reference to the {@link engine.treeView.TreeView#renderer}.
+		 * Reference to the {@link engine.treeView.Document#renderer}.
 		 *
 		 * @member {engine.treeView.Renderer} engine.treeView.observer.MutationObserver#renderer
 		 */
-		this.renderer = treeView.renderer;
+		this.renderer = document.renderer;
 
 		/**
 		 * Observed DOM elements.
@@ -67,6 +68,16 @@ export default class MutationObserver extends Observer {
 		 * @member {MutationObserver} engine.treeView.observer.MutationObserver#_mutationObserver
 		 */
 		this._mutationObserver = new window.MutationObserver( this._onMutations.bind( this ) );
+	}
+
+	/**
+	 * Synchronously fires {@link engine.treeView.Document#mutations} event with all mutations in record queue.
+	 * At the same time empties the queue so mutations will not be fired twice.
+	 *
+	 * @returns {[type]} [description]
+	 */
+	flush() {
+		this._onMutations( this._mutationObserver.takeRecords() );
 	}
 
 	/**
@@ -103,11 +114,18 @@ export default class MutationObserver extends Observer {
 	/**
 	 * Handles mutations. Deduplicates, mark view elements to sync, fire event and call render.
 	 *
-	 * @protected
+	 * @private
 	 * @method engine.treeView.observer.MutationObserver#_onMutations
 	 * @param {Array.<Object>} domMutations Array of native mutations.
 	 */
 	_onMutations( domMutations ) {
+		// As a result of this.flush() we can have an empty collection.
+		if ( domMutations.length === 0 ) {
+			return;
+		}
+
+		const domConverter = this.domConverter;
+
 		// Use　map and set for deduplication.
 		const mutatedTexts = new Map();
 		const mutatedElements = new Set();
@@ -116,7 +134,7 @@ export default class MutationObserver extends Observer {
 		// element with changed structure anyway.
 		for ( let mutation of domMutations ) {
 			if ( mutation.type === 'childList' ) {
-				const element = this.domConverter.getCorrespondingViewElement( mutation.target );
+				const element = domConverter.getCorrespondingViewElement( mutation.target );
 
 				if ( element ) {
 					mutatedElements.add( element );
@@ -127,7 +145,7 @@ export default class MutationObserver extends Observer {
 		// Handle `characterData` mutations later, when we have the full list of nodes which changed structure.
 		for ( let mutation of domMutations ) {
 			if ( mutation.type === 'characterData' ) {
-				const text = this.domConverter.getCorrespondingViewText( mutation.target );
+				const text = domConverter.getCorrespondingViewText( mutation.target );
 
 				if ( text && !mutatedElements.has( text.parent ) ) {
 					// Use text as a key, for deduplication. If there will be another mutation on the same text element
@@ -135,9 +153,15 @@ export default class MutationObserver extends Observer {
 					mutatedTexts.set( text, {
 						type: 'text',
 						oldText: text.data,
-						newText: mutation.target.data,
+						newText: getDataWithoutFiller( mutation.target ),
 						node: text
 					} );
+				}
+				// When we added first letter to the text node which had only inline filler, for the DOM it is mutation
+				// on text, but for the view, where filler text node did not existed, new text node was created, so we
+				// need to fire 'children' mutation instead of 'text'.
+				else if ( !text && startsWithFiller( mutation.target ) ) {
+					mutatedElements.add( domConverter.getCorrespondingViewElement( mutation.target.parentNode ) );
 				}
 			}
 		}
@@ -150,34 +174,26 @@ export default class MutationObserver extends Observer {
 
 		for ( let mutatedText of mutatedTexts.values() ) {
 			this.renderer.markToSync( 'TEXT', mutatedText.node );
-
 			viewMutations.push( mutatedText );
 		}
 
 		for ( let viewElement of mutatedElements ) {
-			const domElement = this.domConverter.getCorrespondingDomElement( viewElement );
-			const domChildren = domElement.childNodes;
+			const domElement = domConverter.getCorrespondingDomElement( viewElement );
 			const viewChildren = viewElement.getChildren();
-			const newViewChildren = [];
-
-			// We want to have a list of View elements, not DOM elements.
-			for ( let i = 0; i < domChildren.length; i++ ) {
-				newViewChildren.push( this.domConverter.domToView( domChildren[ i ] ) );
-			}
+			const newViewChildren = domConverter.domChildrenToView( domElement );
 
 			this.renderer.markToSync( 'CHILDREN', viewElement );
-
 			viewMutations.push( {
 				type: 'children',
 				oldChildren: Array.from( viewChildren ),
-				newChildren: newViewChildren,
+				newChildren: Array.from( newViewChildren ),
 				node: viewElement
 			} );
 		}
 
-		this.treeView.fire( 'mutations', viewMutations );
+		this.document.fire( 'mutations', viewMutations );
 
-		this.treeView.render();
+		this.document.render();
 	}
 }
 
@@ -185,17 +201,17 @@ export default class MutationObserver extends Observer {
  * Fired when mutation occurred. If tree view is not changed on this event, DOM will be reverter to the state before
  * mutation, so all changes which should be applied, should be handled on this event.
  *
- * @event engine.treeView.TreeView#mutations
- * @param {Array.<engine.treeView.TreeView~MutatatedText|engine.treeView.TreeView~MutatatedChildren>} viewMutations
+ * @event engine.treeView.Document#mutations
+ * @param {Array.<engine.treeView.Document~MutatatedText|engine.treeView.Document~MutatatedChildren>} viewMutations
  * Array of mutations.
- * For mutated texts it will be {@link engine.treeView.TreeView~MutatatedText} and for mutated elements it will be
- * {@link engine.treeView.TreeView~MutatatedElement}. You can recognize the type based on the `type` property.
+ * For mutated texts it will be {@link engine.treeView.Document~MutatatedText} and for mutated elements it will be
+ * {@link engine.treeView.Document~MutatatedElement}. You can recognize the type based on the `type` property.
  */
 
 /**
  * Mutation item for text.
  *
- * @see engine.treeView.TreeView#mutations
+ * @see engine.treeView.Document#mutations
  * @see engine.treeView.MutatatedChildren
  *
  * @typedef {Object} engine.treeView.MutatatedText
@@ -209,7 +225,7 @@ export default class MutationObserver extends Observer {
 /**
  * Mutation item for child nodes.
  *
- * @see engine.treeView.TreeView#mutations
+ * @see engine.treeView.Document#mutations
  * @see engine.treeView.MutatatedText
  *
  * @typedef {Object} engine.treeView.MutatatedChildren

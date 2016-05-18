@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: treeview */
+/* bender-tags: treeview, browser-only */
 
 'use strict';
 
@@ -11,6 +11,10 @@ import Position from '/ckeditor5/engine/treeview/position.js';
 import Node from '/ckeditor5/engine/treeview/node.js';
 import Element from '/ckeditor5/engine/treeview/element.js';
 import Text from '/ckeditor5/engine/treeview/text.js';
+
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
+
+import { parse } from '/tests/engine/_utils/view.js';
 
 describe( 'Position', () => {
 	const parentMock = {};
@@ -281,6 +285,38 @@ describe( 'Position', () => {
 			const compared = new Position( root2, 1 );
 
 			expect( position.compareWith( compared ) ).to.equal( 'DIFFERENT' );
+		} );
+	} );
+
+	describe( 'createBefore', () => {
+		it( 'should create positions before nodes', () => {
+			const { selection } = parse( '<p>[]<b></b></p>' );
+			const position = selection.getFirstPosition();
+			const nodeAfter = position.nodeAfter;
+
+			expect( Position.createBefore( nodeAfter ).isEqual( position ) ).to.be.true;
+		} );
+
+		it( 'should throw error if one try to create positions before root', () => {
+			expect( () => {
+				Position.createBefore( parse( '<p></p>' ) );
+			} ).to.throw( CKEditorError, /position-before-root/ );
+		} );
+	} );
+
+	describe( 'createAfter', () => {
+		it( 'should create positions after nodes', () => {
+			const { selection } = parse( '<p><b></b>[]</p>' );
+			const position = selection.getFirstPosition();
+			const nodeBefore = position.nodeBefore;
+
+			expect( Position.createAfter( nodeBefore ).isEqual( position ) ).to.be.true;
+		} );
+
+		it( 'should throw error if one try to create positions after root', () => {
+			expect( () => {
+				Position.createAfter( parse( '<p></p>' ) );
+			} ).to.throw( CKEditorError, /position-after-root/ );
 		} );
 	} );
 } );

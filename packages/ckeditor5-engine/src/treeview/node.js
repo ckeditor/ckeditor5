@@ -31,12 +31,12 @@ export default class Node {
 		this.parent = null;
 
 		/**
-		 * {@link engine.treeView.TreeView} reference.
+		 * {@link engine.treeView.Document} reference.
 		 *
 		 * @protected
-		 * @member {engine.treeView.TreeView} engine.treeView.Node#_treeView
+		 * @member {engine.treeView.Document} engine.treeView.Node#_document
 		 */
-		this._treeView = null;
+		this._document = null;
 	}
 
 	/**
@@ -89,17 +89,17 @@ export default class Node {
 	}
 
 	/**
-	 * Gets {@link engine.treeView.TreeView} reference. If the node has {@link engine.treeView.TreeView}, assign by
-	 * {@link engine.treeView.Node#setTreeView} it will be returned. Otherwise {@link engine.treeView.TreeView} of the parents node
+	 * Gets {@link engine.treeView.Document} reference. If the node has {@link engine.treeView.Document}, assign by
+	 * {@link engine.treeView.Node#setDocument} it will be returned. Otherwise {@link engine.treeView.Document} of the parents node
 	 * will be returned. If node has no parent, `null` will be returned.
 	 *
-	 * @returns {engine.treeView.TreeView|null} Tree view of the node, tree view of the parent or null.
+	 * @returns {engine.treeView.Document|null} Tree view of the node, tree view of the parent or null.
 	 */
-	getTreeView() {
-		if ( this._treeView ) {
-			return this._treeView;
+	getDocument() {
+		if ( this._document ) {
+			return this._document;
 		} else if ( this.parent ) {
-			return this.parent.getTreeView();
+			return this.parent.getDocument();
 		} else {
 			return null;
 		}
@@ -127,13 +127,13 @@ export default class Node {
 	}
 
 	/**
-	 * Sets the {@link engine.treeView.TreeView} of the node. Note that not all of nodes need to have {@link engine.treeView.TreeView}
-	 * assigned, see {@link engine.treeView.Node#getTreeView}.
+	 * Sets the {@link engine.treeView.Document} of the node. Note that not all of nodes need to have {@link engine.treeView.Document}
+	 * assigned, see {@link engine.treeView.Node#getDocument}.
 	 *
-	 * @param {engine.treeView.TreeView} treeView Tree view.
+	 * @param {engine.treeView.Document} document Document.
 	 */
-	setTreeView( treeView ) {
-		this._treeView = treeView;
+	setDocument( document ) {
+		this._document = document;
 	}
 
 	/**

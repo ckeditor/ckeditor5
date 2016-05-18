@@ -5,8 +5,10 @@
 
 'use strict';
 
-import compareArrays from '../../utils/comparearrays.js';
 import Text from './text.js';
+
+import compareArrays from '../../utils/comparearrays.js';
+import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
  * Position in the tree. Position is always located before or after a node.
@@ -41,7 +43,7 @@ export default class Position {
 	 * inside text node.
 	 *
 	 * @readonly
-	 * @type {engine.treeView.Node}
+	 * @type {engine.treeView.Node|null}
 	 */
 	get nodeAfter() {
 		if ( this.parent instanceof Text ) {
@@ -56,7 +58,7 @@ export default class Position {
 	 * inside text node.
 	 *
 	 * @readonly
-	 * @type {engine.treeView.Node}
+	 * @type {engine.treeView.Node|null}
 	 */
 	get nodeBefore() {
 		if ( this.parent instanceof Text ) {
@@ -185,7 +187,47 @@ export default class Position {
 	}
 
 	/**
-	 * Creates and returns a new instance of Position, which is equal to passed position.
+	 * Creates a new position after the given node.
+	 *
+	 * @param {engine.treeView.Node} node Node after which the position should be located.
+	 * @returns {engine.treeView.Position}
+	 */
+	static createAfter( node ) {
+		if ( !node.parent ) {
+			/**
+			 * You can not make a position after a root.
+			 *
+			 * @error position-after-root
+			 * @param {engine.treeView.Node} root
+			 */
+			throw new CKEditorError( 'position-after-root: You can not make position after root.', { root: node } );
+		}
+
+		return new Position( node.parent, node.getIndex() + 1 );
+	}
+
+	/**
+	 * Creates a new position before the given node.
+	 *
+	 * @param {engine.treeView.node} node Node before which the position should be located.
+	 * @returns {engine.treeView.Position}
+	 */
+	static createBefore( node ) {
+		if ( !node.parent ) {
+			/**
+			 * You cannot make a position before a root.
+			 *
+			 * @error position-before-root
+			 * @param {engine.treeView.Node} root
+			 */
+			throw new CKEditorError( 'position-before-root: You can not make position before root.', { root: node } );
+		}
+
+		return new Position( node.parent, node.getIndex() );
+	}
+
+	/**
+	 * Creates and returns a new instance of `Position`, which is equal to the passed position.
 	 *
 	 * @param {engine.treeView.Position} position Position to be cloned.
 	 * @returns {engine.treeView.Position}

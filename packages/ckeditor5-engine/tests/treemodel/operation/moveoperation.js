@@ -239,6 +239,25 @@ describe( 'MoveOperation', () => {
 		expect( p.getChild( 0 ).character ).to.equal( 'b' );
 	} );
 
+	it( 'should not throw when operation paths looks like incorrect but move is between different roots', () => {
+		let p = new Element( 'p' );
+		root.insertChildren( 0, [ 'a', p, 'b' ] );
+		doc.graveyard.insertChildren( 0, [ 'abc' ] );
+
+		let operation = new MoveOperation(
+			new Position( doc.graveyard, [ 0 ] ),
+			2,
+			new Position( root, [ 1, 0 ] ),
+			doc.version
+		);
+
+		expect(
+			() => {
+				doc.applyOperation( operation );
+			}
+		).not.to.throw();
+	} );
+
 	it( 'should create MoveOperation with the same parameters when cloned', () => {
 		let sourcePosition = new Position( root, [ 0 ] );
 		let targetPosition = new Position( root, [ 1 ] );

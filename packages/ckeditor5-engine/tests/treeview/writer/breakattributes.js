@@ -3,14 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: treeview */
+/* bender-tags: treeview, browser-only */
 
 'use strict';
 
 import Writer from '/ckeditor5/engine/treeview/writer.js';
-import ContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
-import Text from '/ckeditor5/engine/treeview/text.js';
-import Position from '/ckeditor5/engine/treeview/position.js';
 import { stringify, parse } from '/tests/engine/_utils/view.js';
 
 describe( 'Writer', () => {
@@ -34,25 +31,25 @@ describe( 'Writer', () => {
 	} );
 
 	describe( 'breakAttributes', () => {
-		it( 'should move position from begin of text node to the element', () => {
-			test( '<container:p>{}foobar</container:p>', '<container:p>[]foobar</container:p>' );
+		it( 'should not break text nodes if they are not in attribute elements - middle', () => {
+			test(
+				'<container:p>foo{}bar</container:p>',
+				'<container:p>foo{}bar</container:p>'
+			);
 		} );
 
-		it( 'should split text node', () => {
-			const text = new Text( 'foobar' );
-			const container = new ContainerElement( 'p', null, text );
-			const position = new Position( text, 3 );
-
-			const newPosition = writer.breakAttributes( position );
-
-			expect( container.getChildCount() ).to.equal( 2 );
-			expect( container.getChild( 0 ) ).to.be.instanceOf( Text ).and.have.property( 'data' ).that.equal( 'foo' );
-			expect( container.getChild( 1 ) ).to.be.instanceOf( Text ).and.have.property( 'data' ).that.equal( 'bar' );
-			expect( newPosition.isEqual( new Position( container, 1 ) ) ).to.be.true;
+		it( 'should not break text nodes if they are not in attribute elements - beginning', () => {
+			test(
+				'<container:p>{}foobar</container:p>',
+				'<container:p>{}foobar</container:p>'
+			);
 		} );
 
-		it( 'should move position from end of text node to the element', () => {
-			test( '<container:p>foobar{}</container:p>', '<container:p>foobar[]</container:p>' );
+		it( 'should not break text nodes if they are not in attribute elements #2 - end', () => {
+			test(
+				'<container:p>foobar{}</container:p>',
+				'<container:p>foobar{}</container:p>'
+			);
 		} );
 
 		it( 'should split attribute element', () => {
@@ -66,6 +63,13 @@ describe( 'Writer', () => {
 			test(
 				'<container:p><attribute:b:1><attribute:u:1>{}foobar</attribute:u:1></attribute:b:1></container:p>',
 				'<container:p>[]<attribute:b:1><attribute:u:1>foobar</attribute:u:1></attribute:b:1></container:p>'
+			);
+		} );
+
+		it( 'should stick selection in text node if it is in container', () => {
+			test(
+				'<container:p>foo{}<attribute:b:1>bar</attribute:b:1></container:p>',
+				'<container:p>foo{}<attribute:b:1>bar</attribute:b:1></container:p>'
 			);
 		} );
 

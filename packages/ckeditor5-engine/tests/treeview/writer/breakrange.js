@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: treeview */
+/* bender-tags: treeview, browser-only */
 
 'use strict';
 
@@ -24,7 +24,7 @@ describe( 'Writer', () => {
 	function test( input, expected ) {
 		const { view, selection } = parse( input );
 		const newRange = writer.breakRange( selection.getFirstRange() );
-		expect( stringify( view, newRange, { showType: true, showPriority: true } ) ).to.equal( expected );
+		expect( stringify( view, newRange, { showType: true } ) ).to.equal( expected );
 	}
 
 	beforeEach( () => {
@@ -41,52 +41,59 @@ describe( 'Writer', () => {
 			} ).to.throw( 'treeview-writer-invalid-range-container' );
 		} );
 
-		it( 'should break at collapsed range and return collapsed one', () => {
+		it( 'should not break text nodes if they are not in attribute elements', () => {
 			test(
 				'<container:p>foo{}bar</container:p>',
-				'<container:p>foo[]bar</container:p>'
+				'<container:p>foo{}bar</container:p>'
+			);
+		} );
+
+		it( 'should break at collapsed range and return collapsed one', () => {
+			test(
+				'<container:p><attribute:b>foo{}bar</attribute:b></container:p>',
+				'<container:p><attribute:b>foo</attribute:b>[]<attribute:b>bar</attribute:b></container:p>'
 			);
 		} );
 
 		it( 'should break inside text node #1', () => {
 			test(
-				'<container:p>foo{bar}baz</container:p>',
-				'<container:p>foo[bar]baz</container:p>'
+				'<container:p><attribute:b>foo{bar}baz</attribute:b></container:p>',
+				'<container:p><attribute:b>foo</attribute:b>[<attribute:b>bar</attribute:b>]<attribute:b>baz</attribute:b></container:p>'
 			);
 		} );
 
 		it( 'should break inside text node #2', () => {
 			test(
-				'<container:p>foo{barbaz}</container:p>',
-				'<container:p>foo[barbaz]</container:p>'
+				'<container:p><attribute:b>foo{barbaz}</attribute:b></container:p>',
+				'<container:p><attribute:b>foo</attribute:b>[<attribute:b>barbaz</attribute:b>]</container:p>'
 			);
 		} );
 
 		it( 'should break inside text node #3', () => {
 			test(
-				'<container:p>foo{barbaz]</container:p>',
-				'<container:p>foo[barbaz]</container:p>'
+				'<container:p><attribute:b>foo{barbaz]</attribute:b></container:p>',
+				'<container:p><attribute:b>foo</attribute:b>[<attribute:b>barbaz</attribute:b>]</container:p>'
 			);
 		} );
 
 		it( 'should break inside text node #4', () => {
 			test(
-				'<container:p>{foo}barbaz</container:p>',
-				'<container:p>[foo]barbaz</container:p>'
+				'<container:p><attribute:b>{foo}barbaz</attribute:b></container:p>',
+				'<container:p>[<attribute:b>foo</attribute:b>]<attribute:b>barbaz</attribute:b></container:p>'
 			);
 		} );
 
 		it( 'should break inside text node #5', () => {
 			test(
-				'<container:p>[foo}barbaz</container:p>',
-				'<container:p>[foo]barbaz</container:p>'
+				'<container:p><attribute:b>[foo}barbaz</attribute:b></container:p>',
+				'<container:p>[<attribute:b>foo</attribute:b>]<attribute:b>barbaz</attribute:b></container:p>'
 			);
 		} );
 
 		it( 'should break placed inside different nodes', () => {
 			test(
-				'<container:p>foo{bar<attribute:b:1>baz}qux</attribute:b:1></container:p>',
-				'<container:p>foo[bar<attribute:b:1>baz</attribute:b:1>]<attribute:b:1>qux</attribute:b:1></container:p>'
+				'<container:p>foo{bar<attribute:b>baz}qux</attribute:b></container:p>',
+				'<container:p>foo{bar<attribute:b>baz</attribute:b>]<attribute:b>qux</attribute:b></container:p>'
 			);
 		} );
 	} );

@@ -3,22 +3,20 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: treeview */
+/* bender-tags: treeview, browser-only */
 
 'use strict';
 
 import KeyObserver from '/ckeditor5/engine/treeview/observer/keyobserver.js';
-import TreeView from '/ckeditor5/engine/treeview/treeview.js';
+import ViewDocument from '/ckeditor5/engine/treeview/document.js';
 import { getCode } from '/ckeditor5/utils/keyboard.js';
 
 describe( 'KeyObserver', () => {
-	let treeView, observer;
+	let viewDocument, observer;
 
 	beforeEach( () => {
-		treeView = new TreeView();
-		treeView.addObserver( KeyObserver );
-
-		observer = Array.from( treeView._observers )[ 0 ];
+		viewDocument = new ViewDocument();
+		observer = viewDocument.addObserver( KeyObserver );
 	} );
 
 	it( 'should define domEventType', () => {
@@ -29,7 +27,7 @@ describe( 'KeyObserver', () => {
 		it( 'should fire keydown with the target and key info', () => {
 			const spy = sinon.spy();
 
-			treeView.on( 'keydown', spy );
+			viewDocument.on( 'keydown', spy );
 
 			observer.onDomEvent( { target: document.body, keyCode: 111, altKey: false, ctrlKey: false, metaKey: false, shiftKey: false } );
 
@@ -50,7 +48,7 @@ describe( 'KeyObserver', () => {
 		it( 'should fire keydown with proper key modifiers info', () => {
 			const spy = sinon.spy();
 
-			treeView.on( 'keydown', spy );
+			viewDocument.on( 'keydown', spy );
 
 			observer.onDomEvent( { target: document.body, keyCode: 111, altKey: true, ctrlKey: true, metaKey: false, shiftKey: true } );
 
@@ -68,7 +66,7 @@ describe( 'KeyObserver', () => {
 		it( 'should fire keydown ctrlKey set to true one meta (cmd) was pressed', () => {
 			const spy = sinon.spy();
 
-			treeView.on( 'keydown', spy );
+			viewDocument.on( 'keydown', spy );
 
 			observer.onDomEvent( { target: document.body, keyCode: 111, metaKey: true } );
 

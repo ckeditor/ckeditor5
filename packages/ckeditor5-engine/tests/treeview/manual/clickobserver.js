@@ -7,15 +7,15 @@
 
 'use strict';
 
-import TreeView from '/ckeditor5/engine/treeview/treeview.js';
+import Document from '/ckeditor5/engine/treeview/document.js';
 import DomEventObserver from '/ckeditor5/engine/treeview/observer/domeventobserver.js';
 
-const treeView = new TreeView();
+const viewDocument = new Document();
 let observer1, observer2;
 
 class ClickObserver1 extends DomEventObserver {
-	constructor( treeView ) {
-		super( treeView );
+	constructor( viewDocument ) {
+		super( viewDocument );
 
 		this.id = 1;
 		this.domEventType = 'click';
@@ -28,8 +28,8 @@ class ClickObserver1 extends DomEventObserver {
 }
 
 class ClickObserver2 extends DomEventObserver {
-	constructor( treeView ) {
-		super( treeView );
+	constructor( viewDocument ) {
+		super( viewDocument );
 
 		this.id = 2;
 		this.domEventType = 'click';
@@ -41,15 +41,15 @@ class ClickObserver2 extends DomEventObserver {
 	}
 }
 
-treeView.on( 'click', ( evt, eventId, elementId ) => console.log( 'click', eventId, elementId ) );
+viewDocument.on( 'click', ( evt, eventId, elementId ) => console.log( 'click', eventId, elementId ) );
 document.getElementById( 'enable1' ).addEventListener( 'click', () => observer1.enable() );
 document.getElementById( 'disable1' ).addEventListener( 'click', () => observer1.disable() );
 
 // Random order.
-treeView.addObserver( ClickObserver1 );
+viewDocument.addObserver( ClickObserver1 );
 
-treeView.createRoot( document.getElementById( 'clickerA' ), 'clickerA' );
+viewDocument.createRoot( document.getElementById( 'clickerA' ), 'clickerA' );
 
-treeView.addObserver( ClickObserver2 );
+viewDocument.addObserver( ClickObserver2 );
 
-treeView.createRoot( document.getElementById( 'clickerB' ), 'clickerB' );
+viewDocument.createRoot( document.getElementById( 'clickerB' ), 'clickerB' );

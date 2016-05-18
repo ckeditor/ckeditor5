@@ -128,31 +128,31 @@ describe( 'Node', () => {
 		} );
 	} );
 
-	describe( 'getTreeView', () => {
-		it( 'should return null if any parent has not set treeview', () => {
-			expect( charA.getTreeView() ).to.be.null;
+	describe( 'getDocument', () => {
+		it( 'should return null if any parent has not set Document', () => {
+			expect( charA.getDocument() ).to.be.null;
 		} );
 
 		it( 'should return TreeView attached to the element', () => {
 			const tvMock = {};
 			const element = new Element( 'p' );
 
-			element.setTreeView( tvMock );
+			element.setDocument( tvMock );
 
-			expect( element.getTreeView() ).to.equal( tvMock );
+			expect( element.getDocument() ).to.equal( tvMock );
 		} );
 
-		it( 'should return TreeView attached to the parent element', () => {
-			const tvMock = {};
+		it( 'should return Document attached to the parent element', () => {
+			const docMock = {};
 			const parent = new Element( 'div' );
 			const child = new Element( 'p' );
 
 			child.parent = parent;
 
-			parent.setTreeView( tvMock );
+			parent.setDocument( docMock );
 
-			expect( parent.getTreeView() ).to.equal( tvMock );
-			expect( child.getTreeView() ).to.equal( tvMock );
+			expect( parent.getDocument() ).to.equal( docMock );
+			expect( child.getDocument() ).to.equal( docMock );
 		} );
 	} );
 
