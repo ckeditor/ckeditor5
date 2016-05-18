@@ -14,7 +14,7 @@ import InsertOperation from '/ckeditor5/engine/treemodel/operation/insertoperati
 import RemoveOperation from '/ckeditor5/engine/treemodel/operation/removeoperation.js';
 import Position from '/ckeditor5/engine/treemodel/position.js';
 import Text from '/ckeditor5/engine/treemodel/text.js';
-import treeModelTestUtils from '/tests/engine/treemodel/_utils/utils.js';
+import { jsonParseStringify } from '/tests/engine/treemodel/_utils/utils.js';
 
 describe( 'InsertOperation', () => {
 	let doc, root;
@@ -185,13 +185,13 @@ describe( 'InsertOperation', () => {
 			const position = new Position( root, [ 0 ] );
 			const op = new InsertOperation( position, new Text( 'x' ), doc.version );
 
-			const serialized = treeModelTestUtils.jsonParseStringify( op );
+			const serialized = jsonParseStringify( op );
 
 			expect( serialized ).to.deep.equal( {
 				__className: 'engine.treeModel.operation.InsertOperation',
 				baseVersion: 0,
-				nodeList: treeModelTestUtils.jsonParseStringify( new NodeList( 'x' ) ),
-				position: treeModelTestUtils.jsonParseStringify( position )
+				nodeList: jsonParseStringify( new NodeList( 'x' ) ),
+				position: jsonParseStringify( position )
 			} );
 		} );
 	} );
@@ -201,7 +201,7 @@ describe( 'InsertOperation', () => {
 			const position = new Position( root, [ 0 ] );
 			const op = new InsertOperation( position, new Text( 'x' ), doc.version );
 
-			const serialized = treeModelTestUtils.jsonParseStringify( op );
+			const serialized = jsonParseStringify( op );
 			const deserialized = InsertOperation.fromJSON( serialized, doc );
 
 			expect( deserialized ).to.deep.equal( op );

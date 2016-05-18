@@ -23,8 +23,7 @@ import InsertOperation from '/ckeditor5/engine/treemodel/operation/insertoperati
 import MoveOperation from '/ckeditor5/engine/treemodel/operation/moveoperation.js';
 import ReinsertOperation from '/ckeditor5/engine/treemodel/operation/reinsertoperation.js';
 
-import treeModelTestUtils from '/tests/engine/treemodel/_utils/utils.js';
-const getNodesAndText = treeModelTestUtils.getNodesAndText;
+import { default as getNodesAndText, jsonParseStringify } from '/tests/engine/treemodel/_utils/utils.js';
 
 import {
 	applyDelta,

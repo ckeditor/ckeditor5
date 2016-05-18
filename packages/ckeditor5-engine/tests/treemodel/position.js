@@ -14,7 +14,7 @@ import Text from '/ckeditor5/engine/treemodel/text.js';
 import Position from '/ckeditor5/engine/treemodel/position.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
-import treeModelTestUtils from '/tests/engine/treemodel/_utils/utils.js';
+import { jsonParseStringify } from '/tests/engine/treemodel/_utils/utils.js';
 
 testUtils.createSinonSandbox();
 
@@ -687,7 +687,7 @@ describe( 'position', () => {
 		it( 'should serialize position', () => {
 			let position = new Position( root, [ 0 ] );
 
-			let serialized = treeModelTestUtils.jsonParseStringify( position );
+			let serialized = jsonParseStringify( position );
 
 			expect( serialized ).to.deep.equal( { root: 'root', path: [ 0 ] } );
 		} );
@@ -695,7 +695,7 @@ describe( 'position', () => {
 		it( 'should serialize position from graveyard', () => {
 			let position = new Position( doc.graveyard, [ 0 ] );
 
-			let serialized = treeModelTestUtils.jsonParseStringify( position );
+			let serialized = jsonParseStringify( position );
 
 			expect( serialized ).to.deep.equal( { root: '$$graveyard', path: [ 0 ] } );
 		} );

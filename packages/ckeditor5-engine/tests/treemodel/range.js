@@ -13,7 +13,7 @@ import Element from '/ckeditor5/engine/treemodel/element.js';
 import Text from '/ckeditor5/engine/treemodel/text.js';
 import Document from '/ckeditor5/engine/treemodel/document.js';
 import TreeWalker from '/ckeditor5/engine/treemodel/treewalker.js';
-import treeModelTestUtils from '/tests/engine/treemodel/_utils/utils.js';
+import { jsonParseStringify } from '/tests/engine/treemodel/_utils/utils.js';
 
 describe( 'Range', () => {
 	let doc, range, start, end, root, otherRoot;
@@ -703,7 +703,7 @@ describe( 'Range', () => {
 
 	describe( 'fromJSON', () => {
 		it( 'should create range from given JSON object', () => {
-			const serialized = treeModelTestUtils.jsonParseStringify( range );
+			const serialized = jsonParseStringify( range );
 			const deserialized = Range.fromJSON( serialized, doc );
 
 			expect( deserialized ).to.deep.equal( range );

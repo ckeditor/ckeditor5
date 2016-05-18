@@ -12,7 +12,7 @@ import MoveOperation from '/ckeditor5/engine/treemodel/operation/moveoperation.j
 import Position from '/ckeditor5/engine/treemodel/position.js';
 import Element from '/ckeditor5/engine/treemodel/element.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-import treeModelTestUtils from '/tests/engine/treemodel/_utils/utils.js';
+import { jsonParseStringify } from '/tests/engine/treemodel/_utils/utils.js';
 
 describe( 'MoveOperation', () => {
 	let doc, root;
@@ -265,16 +265,16 @@ describe( 'MoveOperation', () => {
 			const targetPosition = new Position( root, [ 1, 0 ] );
 			const op = new MoveOperation( sourcePosition, 1, targetPosition, doc.version );
 
-			const serialized = treeModelTestUtils.jsonParseStringify( op );
+			const serialized = jsonParseStringify( op );
 
 			expect( serialized ).to.deep.equal( {
 				__className: 'engine.treeModel.operation.MoveOperation',
 				baseVersion: 0,
 				howMany: 1,
 				isSticky: false,
-				movedRangeStart: treeModelTestUtils.jsonParseStringify( op.movedRangeStart ),
-				sourcePosition: treeModelTestUtils.jsonParseStringify( sourcePosition ),
-				targetPosition: treeModelTestUtils.jsonParseStringify( targetPosition )
+				movedRangeStart: jsonParseStringify( op.movedRangeStart ),
+				sourcePosition: jsonParseStringify( sourcePosition ),
+				targetPosition: jsonParseStringify( targetPosition )
 			} );
 		} );
 	} );
@@ -285,7 +285,7 @@ describe( 'MoveOperation', () => {
 			const targetPosition = new Position( root, [ 1, 0 ] );
 			const op = new MoveOperation( sourcePosition, 1, targetPosition, doc.version );
 
-			const serialized = treeModelTestUtils.jsonParseStringify( op );
+			const serialized = jsonParseStringify( op );
 			const deserialized = MoveOperation.fromJSON( serialized, doc );
 
 			expect( deserialized ).to.deep.equal( op );

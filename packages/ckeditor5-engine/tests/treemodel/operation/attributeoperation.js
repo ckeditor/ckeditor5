@@ -14,7 +14,7 @@ import Position from '/ckeditor5/engine/treemodel/position.js';
 import Range from '/ckeditor5/engine/treemodel/range.js';
 import Text from '/ckeditor5/engine/treemodel/text.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-import treeModelTestUtils from '/tests/engine/treemodel/_utils/utils.js';
+import { jsonParseStringify } from '/tests/engine/treemodel/_utils/utils.js';
 
 describe( 'AttributeOperation', () => {
 	let doc, root;
@@ -378,7 +378,7 @@ describe( 'AttributeOperation', () => {
 				doc.version
 			);
 
-			const serialized = treeModelTestUtils.jsonParseStringify( op );
+			const serialized = jsonParseStringify( op );
 
 			expect( serialized.__className ).to.equal( 'engine.treeModel.operation.AttributeOperation' );
 			expect( serialized ).to.deep.equal( {
@@ -387,7 +387,7 @@ describe( 'AttributeOperation', () => {
 				key: 'key',
 				newValue: 'newValue',
 				oldValue: null,
-				range: treeModelTestUtils.jsonParseStringify( range )
+				range: jsonParseStringify( range )
 			} );
 		} );
 	} );
@@ -403,7 +403,7 @@ describe( 'AttributeOperation', () => {
 				doc.version
 			);
 
-			const serialized = treeModelTestUtils.jsonParseStringify( op );
+			const serialized = jsonParseStringify( op );
 			const deserialized = AttributeOperation.fromJSON( serialized, doc );
 
 			expect( deserialized ).to.deep.equal( op );

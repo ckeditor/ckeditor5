@@ -10,7 +10,7 @@
 import Document from '/ckeditor5/engine/treemodel/document.js';
 import RootAttributeOperation from '/ckeditor5/engine/treemodel/operation/rootattributeoperation.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-import treeModelTestUtils from '/tests/engine/treemodel/_utils/utils.js';
+import { jsonParseStringify } from '/tests/engine/treemodel/_utils/utils.js';
 
 describe( 'RootAttributeOperation', () => {
 	let doc, root;
@@ -235,7 +235,7 @@ describe( 'RootAttributeOperation', () => {
 				doc.version
 			);
 
-			const serialized = treeModelTestUtils.jsonParseStringify( op );
+			const serialized = jsonParseStringify( op );
 
 			expect( serialized.__className ).to.equal( 'engine.treeModel.operation.RootAttributeOperation' );
 			expect( serialized ).to.deep.equal( {
@@ -253,7 +253,7 @@ describe( 'RootAttributeOperation', () => {
 		it( 'should create proper RootAttributeOperation from json object', () => {
 			const op = new RootAttributeOperation( root, 'key', null, 'newValue', doc.version );
 
-			const serialized = treeModelTestUtils.jsonParseStringify( op );
+			const serialized = jsonParseStringify( op );
 			const deserialized = RootAttributeOperation.fromJSON( serialized, doc );
 
 			expect( deserialized ).to.deep.equal( op );
@@ -268,7 +268,7 @@ describe( 'RootAttributeOperation', () => {
 				doc.version
 			);
 
-			const serialized = treeModelTestUtils.jsonParseStringify( op );
+			const serialized = jsonParseStringify( op );
 			serialized.root = 'no-root';
 
 			expect( () => {

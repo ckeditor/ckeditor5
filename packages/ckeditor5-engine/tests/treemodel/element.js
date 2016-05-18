@@ -11,7 +11,7 @@ import Node from '/ckeditor5/engine/treemodel/node.js';
 import NodeList from '/ckeditor5/engine/treemodel/nodelist.js';
 import Element from '/ckeditor5/engine/treemodel/element.js';
 import DocumentFragment from '/ckeditor5/engine/treemodel/documentfragment.js';
-import treeModelTestUtils from '/tests/engine/treemodel/_utils/utils.js';
+import { jsonParseStringify } from '/tests/engine/treemodel/_utils/utils.js';
 
 describe( 'Element', () => {
 	describe( 'constructor', () => {
@@ -245,7 +245,7 @@ describe( 'Element', () => {
 		it( 'should serialize empty node', () => {
 			let element = new Element( 'one' );
 
-			expect( treeModelTestUtils.jsonParseStringify( element ) ).to.deep.equal( {
+			expect( jsonParseStringify( element ) ).to.deep.equal( {
 				_attrs: [],
 				_children: {
 					_indexMap: [],
@@ -258,7 +258,7 @@ describe( 'Element', () => {
 		it( 'should serialize node with attributes', () => {
 			let node = new Element( 'one', { foo: true, bar: false } );
 
-			expect( treeModelTestUtils.jsonParseStringify( node ) ).to.deep.equal( {
+			expect( jsonParseStringify( node ) ).to.deep.equal( {
 				_attrs: [ [ 'foo', true ], [ 'bar', false ] ],
 				_children: {
 					_indexMap: [],
@@ -276,7 +276,7 @@ describe( 'Element', () => {
 
 			let node = new Element( null, null, [ one, two, three ] );
 
-			expect( treeModelTestUtils.jsonParseStringify( node ) ).to.deep.equal( {
+			expect( jsonParseStringify( node ) ).to.deep.equal( {
 				_attrs: [],
 				_children: {
 					_indexMap: [ 0, 1, 2 ],
@@ -306,7 +306,7 @@ describe( 'Element', () => {
 		it( 'should create element without attributes', () => {
 			const el = new Element( 'el' );
 
-			let serialized = treeModelTestUtils.jsonParseStringify( el );
+			let serialized = jsonParseStringify( el );
 
 			let deserialized = Element.fromJSON( serialized );
 
@@ -319,7 +319,7 @@ describe( 'Element', () => {
 		it( 'should create element with attributes', () => {
 			const el = new Element( 'el', { foo: true } );
 
-			let serialized = treeModelTestUtils.jsonParseStringify( el );
+			let serialized = jsonParseStringify( el );
 
 			let deserialized = Element.fromJSON( serialized );
 
@@ -334,7 +334,7 @@ describe( 'Element', () => {
 			const p = new Element( 'p' );
 			const el = new Element( 'el', null, p );
 
-			let serialized = treeModelTestUtils.jsonParseStringify( el );
+			let serialized = jsonParseStringify( el );
 
 			let deserialized = Element.fromJSON( serialized );
 

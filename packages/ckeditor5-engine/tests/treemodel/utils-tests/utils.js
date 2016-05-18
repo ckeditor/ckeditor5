@@ -5,12 +5,10 @@
 
 'use strict';
 
-import treeModelTestUtils from '/tests/engine/treemodel/_utils/utils.js';
+import { default as getNodesAndText, jsonParseStringify } from '/tests/engine/treemodel/_utils/utils.js';
 import Document from '/ckeditor5/engine/treemodel/document.js';
 import Range from '/ckeditor5/engine/treemodel/range.js';
 import Element from '/ckeditor5/engine/treemodel/element.js';
-
-const getNodesAndText = treeModelTestUtils.getNodesAndText;
 
 describe( 'getNodesAndText', () => {
 	let doc, root, div, p;
@@ -40,7 +38,7 @@ describe( 'jsonParseStringify', () => {
 	it( 'should return cleaned object', () => {
 		let foo = new Foo( { bar: 'bar' } );
 
-		let fooJsoned = treeModelTestUtils.jsonParseStringify( foo );
+		let fooJsoned = jsonParseStringify( foo );
 		expect( fooJsoned ).to.not.be.instanceOf( Foo );
 		expect( fooJsoned ).to.deep.equal( { ra: { bar: 'bar' } } );
 	} );

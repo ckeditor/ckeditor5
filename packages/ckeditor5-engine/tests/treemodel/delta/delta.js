@@ -22,7 +22,7 @@ import { registerDeserializer } from '/ckeditor5/engine/treemodel/delta/delta.js
 import Document from '/ckeditor5/engine/treemodel/document.js';
 import Position from '/ckeditor5/engine/treemodel/position.js';
 import Range from '/ckeditor5/engine/treemodel/range.js';
-import treeModelTestUtils from '/tests/engine/treemodel/_utils/utils.js';
+import { jsonParseStringify } from '/tests/engine/treemodel/_utils/utils.js';
 
 // Some test examples of operations.
 class FooOperation extends Operation {
@@ -148,7 +148,7 @@ describe( 'Delta', () => {
 		} );
 
 		it( 'should return JSON representation for empty delta', () => {
-			expect( treeModelTestUtils.jsonParseStringify( delta ) ).to.deep.equal( {
+			expect( jsonParseStringify( delta ) ).to.deep.equal( {
 				__className: FooDelta.className,
 				operations: []
 			} );
@@ -165,9 +165,9 @@ describe( 'Delta', () => {
 
 			delta.addOperation( operation );
 
-			expect( treeModelTestUtils.jsonParseStringify( delta ) ).to.deep.equal( {
+			expect( jsonParseStringify( delta ) ).to.deep.equal( {
 				__className: FooDelta.className,
-				operations: [ treeModelTestUtils.jsonParseStringify( operation ) ]
+				operations: [ jsonParseStringify( operation ) ]
 			} );
 		} );
 
@@ -180,9 +180,9 @@ describe( 'Delta', () => {
 
 			delta.addOperation( operation );
 
-			expect( treeModelTestUtils.jsonParseStringify( delta ) ).to.deep.equal( {
+			expect( jsonParseStringify( delta ) ).to.deep.equal( {
 				__className: FooDelta.className,
-				operations: [ treeModelTestUtils.jsonParseStringify( operation ) ]
+				operations: [ jsonParseStringify( operation ) ]
 			} );
 		} );
 
@@ -196,9 +196,9 @@ describe( 'Delta', () => {
 
 			delta.addOperation( operation );
 
-			expect( treeModelTestUtils.jsonParseStringify( delta ) ).to.deep.equal( {
+			expect( jsonParseStringify( delta ) ).to.deep.equal( {
 				__className: FooDelta.className,
-				operations: [ treeModelTestUtils.jsonParseStringify( operation ) ]
+				operations: [ jsonParseStringify( operation ) ]
 			} );
 		} );
 
@@ -207,9 +207,9 @@ describe( 'Delta', () => {
 
 			delta.addOperation( operation );
 
-			expect( treeModelTestUtils.jsonParseStringify( delta ) ).to.deep.equal( {
+			expect( jsonParseStringify( delta ) ).to.deep.equal( {
 				__className: FooDelta.className,
-				operations: [ treeModelTestUtils.jsonParseStringify( operation ) ]
+				operations: [ jsonParseStringify( operation ) ]
 			} );
 		} );
 
@@ -223,9 +223,9 @@ describe( 'Delta', () => {
 
 			delta.addOperation( operation );
 
-			expect( treeModelTestUtils.jsonParseStringify( delta ) ).to.deep.equal( {
+			expect( jsonParseStringify( delta ) ).to.deep.equal( {
 				__className: FooDelta.className,
-				operations: [ treeModelTestUtils.jsonParseStringify( operation ) ]
+				operations: [ jsonParseStringify( operation ) ]
 			} );
 		} );
 
@@ -238,9 +238,9 @@ describe( 'Delta', () => {
 
 			delta.addOperation( operation );
 
-			expect( treeModelTestUtils.jsonParseStringify( delta ) ).to.deep.equal( {
+			expect( jsonParseStringify( delta ) ).to.deep.equal( {
 				__className: FooDelta.className,
-				operations: [ treeModelTestUtils.jsonParseStringify( operation ) ]
+				operations: [ jsonParseStringify( operation ) ]
 			} );
 		} );
 
@@ -249,16 +249,16 @@ describe( 'Delta', () => {
 
 			delta.addOperation( operation );
 
-			expect( treeModelTestUtils.jsonParseStringify( delta ) ).to.deep.equal( {
+			expect( jsonParseStringify( delta ) ).to.deep.equal( {
 				__className: FooDelta.className,
-				operations: [ treeModelTestUtils.jsonParseStringify( operation ) ]
+				operations: [ jsonParseStringify( operation ) ]
 			} );
 		} );
 
 		it( 'should remove batch reference', () => {
 			delta.batch = { foo: 'bar' };
 
-			expect( treeModelTestUtils.jsonParseStringify( delta ) ).to.deep.equal( {
+			expect( jsonParseStringify( delta ) ).to.deep.equal( {
 				__className: FooDelta.className,
 				operations: []
 			} );
@@ -281,7 +281,7 @@ describe( 'Delta', () => {
 
 		it( 'should throw error for unregistered delta', () => {
 			expect( () => {
-				Delta.fromJSON( treeModelTestUtils.jsonParseStringify( new BarDelta() ), {} );
+				Delta.fromJSON( jsonParseStringify( new BarDelta() ), {} );
 			} ).to.throw( CKEditorError, /^delta-fromjson-no-deserializer/ );
 		} );
 
@@ -294,7 +294,7 @@ describe( 'Delta', () => {
 				doc.version
 			) );
 
-			let deserialized = Delta.fromJSON( treeModelTestUtils.jsonParseStringify( delta ), doc );
+			let deserialized = Delta.fromJSON( jsonParseStringify( delta ), doc );
 
 			expect( deserialized ).to.deep.equal( delta );
 		} );
@@ -306,7 +306,7 @@ describe( 'Delta', () => {
 				doc.version
 			) );
 
-			let deserialized = Delta.fromJSON( treeModelTestUtils.jsonParseStringify( delta ), doc );
+			let deserialized = Delta.fromJSON( jsonParseStringify( delta ), doc );
 
 			expect( deserialized ).to.deep.equal( delta );
 		} );
@@ -319,7 +319,7 @@ describe( 'Delta', () => {
 				doc.version
 			) );
 
-			let deserialized = Delta.fromJSON( treeModelTestUtils.jsonParseStringify( delta ), doc );
+			let deserialized = Delta.fromJSON( jsonParseStringify( delta ), doc );
 
 			expect( deserialized ).to.deep.equal( delta );
 		} );
@@ -327,7 +327,7 @@ describe( 'Delta', () => {
 		it( 'should create delta with NoOperation', () => {
 			delta.addOperation( new NoOperation( 0 ) );
 
-			let deserialized = Delta.fromJSON( treeModelTestUtils.jsonParseStringify( delta ), doc );
+			let deserialized = Delta.fromJSON( jsonParseStringify( delta ), doc );
 
 			expect( deserialized ).to.deep.equal( delta );
 		} );
@@ -340,7 +340,7 @@ describe( 'Delta', () => {
 				doc.version
 			) );
 
-			let deserialized = Delta.fromJSON( treeModelTestUtils.jsonParseStringify( delta ), doc );
+			let deserialized = Delta.fromJSON( jsonParseStringify( delta ), doc );
 
 			expect( deserialized ).to.deep.equal( delta );
 		} );
@@ -352,7 +352,7 @@ describe( 'Delta', () => {
 				doc.version
 			) );
 
-			let deserialized = Delta.fromJSON( treeModelTestUtils.jsonParseStringify( delta ), doc );
+			let deserialized = Delta.fromJSON( jsonParseStringify( delta ), doc );
 
 			expect( deserialized ).to.deep.equal( delta );
 		} );
@@ -360,7 +360,7 @@ describe( 'Delta', () => {
 		it( 'should create delta with RootAttributeOperation', () => {
 			delta.addOperation( new RootAttributeOperation( root, 'key', null, 'newValue', doc.version ) );
 
-			let deserialized = Delta.fromJSON( treeModelTestUtils.jsonParseStringify( delta ), doc );
+			let deserialized = Delta.fromJSON( jsonParseStringify( delta ), doc );
 
 			expect( deserialized ).to.deep.equal( delta );
 		} );
@@ -375,14 +375,6 @@ describe( 'Delta', () => {
 			function deserializer() {
 				done();
 			}
-		} );
-
-		it( 'should throw error for adding already defined deserializer', () => {
-			registerDeserializer( 'BAR', FooDelta );
-
-			expect( () => {
-				registerDeserializer( 'BAR', FooDelta );
-			} ).to.throw( CKEditorError, /^delta-register-deserializer-defined/ );
 		} );
 	} );
 } );

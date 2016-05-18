@@ -12,7 +12,7 @@ import ReinsertOperation from '/ckeditor5/engine/treemodel/operation/reinsertope
 import RemoveOperation from '/ckeditor5/engine/treemodel/operation/removeoperation.js';
 import MoveOperation from '/ckeditor5/engine/treemodel/operation/moveoperation.js';
 import Position from '/ckeditor5/engine/treemodel/position.js';
-import treeModelTestUtils from '/tests/engine/treemodel/_utils/utils.js';
+import { jsonParseStringify } from '/tests/engine/treemodel/_utils/utils.js';
 
 describe( 'RemoveOperation', () => {
 	let doc, root, graveyard;
@@ -126,16 +126,16 @@ describe( 'RemoveOperation', () => {
 				doc.version
 			);
 
-			const serialized = treeModelTestUtils.jsonParseStringify( op );
+			const serialized = jsonParseStringify( op );
 
 			expect( serialized ).to.deep.equal( {
 				__className: 'engine.treeModel.operation.RemoveOperation',
 				baseVersion: 0,
 				howMany: 2,
 				isSticky: false,
-				movedRangeStart: treeModelTestUtils.jsonParseStringify( op.movedRangeStart ),
-				sourcePosition: treeModelTestUtils.jsonParseStringify( op.sourcePosition ),
-				targetPosition: treeModelTestUtils.jsonParseStringify( op.targetPosition )
+				movedRangeStart: jsonParseStringify( op.movedRangeStart ),
+				sourcePosition: jsonParseStringify( op.sourcePosition ),
+				targetPosition: jsonParseStringify( op.targetPosition )
 			} );
 		} );
 	} );
@@ -148,7 +148,7 @@ describe( 'RemoveOperation', () => {
 				doc.version
 			);
 
-			const serialized = treeModelTestUtils.jsonParseStringify( op );
+			const serialized = jsonParseStringify( op );
 			const deserialized = RemoveOperation.fromJSON( serialized, doc );
 
 			expect( deserialized ).to.deep.equal( op );

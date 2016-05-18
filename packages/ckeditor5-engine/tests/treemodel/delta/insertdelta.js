@@ -19,7 +19,7 @@ import Delta from '/ckeditor5/engine/treemodel/delta/delta.js';
 import RemoveDelta from '/ckeditor5/engine/treemodel/delta/removedelta.js';
 import RemoveOperation from '/ckeditor5/engine/treemodel/operation/removeoperation.js';
 
-import treeModelTestUtils from '/tests/engine/treemodel/_utils/utils.js';
+import { jsonParseStringify } from '/tests/engine/treemodel/_utils/utils.js';
 
 describe( 'Batch', () => {
 	let doc, root, batch, p, ul, chain;
@@ -129,7 +129,7 @@ describe( 'InsertDelta', () => {
 
 	describe( 'fromJSON', () => {
 		it( 'should create InsertDelta instance from serialized JSON object', () => {
-			let serialized = treeModelTestUtils.jsonParseStringify( insertDelta );
+			let serialized = jsonParseStringify( insertDelta );
 			let deserialized = Delta.fromJSON( serialized, doc );
 
 			expect( deserialized ).to.be.instanceOf( InsertDelta );

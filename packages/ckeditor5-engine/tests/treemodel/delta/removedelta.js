@@ -7,14 +7,12 @@
 
 'use strict';
 
-import treeModelTestUtils from '/tests/engine/treemodel/_utils/utils.js';
+import { default as getNodesAndText } from '/tests/engine/treemodel/_utils/utils.js';
 import Document from '/ckeditor5/engine/treemodel/document.js';
 import Position from '/ckeditor5/engine/treemodel/position.js';
 import Range from '/ckeditor5/engine/treemodel/range.js';
 import Element from '/ckeditor5/engine/treemodel/element.js';
 import RemoveDelta from '/ckeditor5/engine/treemodel/delta/removedelta.js';
-
-const getNodesAndText = treeModelTestUtils.getNodesAndText;
 
 describe( 'Batch', () => {
 	let doc, root, div, p, batch, chain, range;

@@ -9,7 +9,7 @@
 
 import Document from '/ckeditor5/engine/treemodel/document.js';
 import NoOperation from '/ckeditor5/engine/treemodel/operation/nooperation.js';
-import treeModelTestUtils from '/tests/engine/treemodel/_utils/utils.js';
+import { jsonParseStringify } from '/tests/engine/treemodel/_utils/utils.js';
 
 describe( 'NoOperation', () => {
 	let noop, doc, root;
@@ -40,7 +40,7 @@ describe( 'NoOperation', () => {
 
 	describe( 'toJSON', () => {
 		it( 'should create proper json object', () => {
-			const serialized = treeModelTestUtils.jsonParseStringify( noop );
+			const serialized = jsonParseStringify( noop );
 
 			expect( serialized ).to.deep.equal( {
 				__className: 'engine.treeModel.operation.NoOperation',
@@ -51,7 +51,7 @@ describe( 'NoOperation', () => {
 
 	describe( 'fromJSON', () => {
 		it( 'should create proper NoOperation from json object', () => {
-			const serialized = treeModelTestUtils.jsonParseStringify( noop );
+			const serialized = jsonParseStringify( noop );
 			const deserialized = NoOperation.fromJSON( serialized, doc );
 
 			expect( deserialized ).to.deep.equal( noop );
