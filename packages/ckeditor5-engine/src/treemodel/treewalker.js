@@ -135,14 +135,6 @@ export default class TreeWalker {
 		 * @member {engine.treeModel.Element|engine.treeModel.DocumentFragment} engine.treeModel.TreeWalker#_visitedParent
 		 */
 		this._visitedParent = this.position.parent;
-
-		/**
-		 * Enum type that specifies relation between two positions.
-		 *
-		 * Possible values: `'AFTER'`, `'BEFORE'`, `'SAME'`.
-		 *
-		 * @typedef {String} PositionRelation
-		 */
 	}
 
 	/**
