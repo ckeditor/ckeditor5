@@ -9,7 +9,6 @@
 
 import Element from '/ckeditor5/engine/treemodel/element.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-import treeModelTestUtils from '/tests/engine/treemodel/_utils/utils.js';
 
 describe( 'Node', () => {
 	let root;
@@ -167,60 +166,6 @@ describe( 'Node', () => {
 		describe( 'getAttributes', () => {
 			it( 'should return an iterator that iterates over all attributes set on the element', () => {
 				expect( Array.from( node.getAttributes() ) ).to.deep.equal( [ [ 'foo', 'bar' ] ] );
-			} );
-		} );
-	} );
-
-	describe( 'toJSON', () => {
-		it( 'should serialize empty node', () => {
-			let node = new Element( 'one' );
-
-			expect( treeModelTestUtils.jsonParseStringify( node ) ).to.deep.equal( {
-				_attrs: [],
-				_children: {
-					_indexMap: [],
-					_nodes: []
-				},
-				name: 'one'
-			} );
-		} );
-
-		it( 'should serialize node with attributes', () => {
-			let node = new Element( 'one', { foo: true, bar: false } );
-
-			expect( treeModelTestUtils.jsonParseStringify( node ) ).to.deep.equal( {
-				_attrs: [ [ 'foo', true ], [ 'bar', false ] ],
-				_children: {
-					_indexMap: [],
-					_nodes: []
-				},
-				name: 'one'
-			} );
-		} );
-
-		it( 'should serialize node with children', () => {
-			expect( treeModelTestUtils.jsonParseStringify( root ) ).to.deep.equal( {
-				_attrs: [],
-				_children: {
-					_indexMap: [ 0, 1, 2 ],
-					_nodes: [
-						{ _attrs: [], _children: { _indexMap: [], _nodes: [] }, name: 'one' },
-						{
-							_attrs: [],
-							_children: {
-								_indexMap: [ 0, 0, 1, 2 ],
-								_nodes: [
-									{ _attrs: [], text: 'ba' },
-									{ _attrs: [], _children: { _indexMap: [], _nodes: [] }, name: 'img' },
-									{ _attrs: [], text: 'r' }
-								]
-							},
-							name: 'two'
-						},
-						{ _attrs: [], _children: { _indexMap: [], _nodes: [] }, name: 'three' }
-					]
-				},
-				name: null
 			} );
 		} );
 	} );

@@ -241,6 +241,67 @@ describe( 'Element', () => {
 		} );
 	} );
 
+	describe( 'toJSON', () => {
+		it( 'should serialize empty node', () => {
+			let element = new Element( 'one' );
+
+			expect( treeModelTestUtils.jsonParseStringify( element ) ).to.deep.equal( {
+				_attrs: [],
+				_children: {
+					_indexMap: [],
+					_nodes: []
+				},
+				name: 'one'
+			} );
+		} );
+
+		it( 'should serialize node with attributes', () => {
+			let node = new Element( 'one', { foo: true, bar: false } );
+
+			expect( treeModelTestUtils.jsonParseStringify( node ) ).to.deep.equal( {
+				_attrs: [ [ 'foo', true ], [ 'bar', false ] ],
+				_children: {
+					_indexMap: [],
+					_nodes: []
+				},
+				name: 'one'
+			} );
+		} );
+
+		it( 'should serialize node with children', () => {
+			let img = new Element( 'img' );
+			let one = new Element( 'one' );
+			let two = new Element( 'two', null, [ 'b', 'a', img, 'r' ] );
+			let three = new Element( 'three' );
+
+			let node = new Element( null, null, [ one, two, three ] );
+
+			expect( treeModelTestUtils.jsonParseStringify( node ) ).to.deep.equal( {
+				_attrs: [],
+				_children: {
+					_indexMap: [ 0, 1, 2 ],
+					_nodes: [
+						{ _attrs: [], _children: { _indexMap: [], _nodes: [] }, name: 'one' },
+						{
+							_attrs: [],
+							_children: {
+								_indexMap: [ 0, 0, 1, 2 ],
+								_nodes: [
+									{ _attrs: [], text: 'ba' },
+									{ _attrs: [], _children: { _indexMap: [], _nodes: [] }, name: 'img' },
+									{ _attrs: [], text: 'r' }
+								]
+							},
+							name: 'two'
+						},
+						{ _attrs: [], _children: { _indexMap: [], _nodes: [] }, name: 'three' }
+					]
+				},
+				name: null
+			} );
+		} );
+	} );
+
 	describe( 'fromJSON', () => {
 		it( 'should create element without attributes', () => {
 			const el = new Element( 'el' );
