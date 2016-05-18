@@ -41,7 +41,7 @@ export default class DataController {
 		this.toModel.on( 'documentFragment', convertChildren(), 9999 );
 	}
 
-	get( rootName ) {
+	get( rootName = 'main' ) {
 		// Get model range
 		const modelRootElement = this.model.getRoot( rootName );
 		const modelRange = ModelRange.createFromElement( modelRootElement );
