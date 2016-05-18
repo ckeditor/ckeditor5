@@ -181,11 +181,15 @@ export default class MoveOperation extends Operation {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Creates MoveOperation object from deserilized object, i.e. from parsed JSON string.
+	 *
+	 * @param {Object} json Deserialized JSON object.
+	 * @param {engine.treeModel.Document} document Document on which this operation will be applied.
+	 * @returns {engine.treeModel.operation.MoveOperation}
 	 */
-	static fromJSON( json, doc ) {
-		let sourcePosition = Position.fromJSON( json.sourcePosition, doc );
-		let targetPosition = Position.fromJSON( json.targetPosition, doc );
+	static fromJSON( json, document ) {
+		let sourcePosition = Position.fromJSON( json.sourcePosition, document );
+		let targetPosition = Position.fromJSON( json.targetPosition, document );
 
 		return new MoveOperation( sourcePosition, json.howMany, targetPosition, json.baseVersion );
 	}

@@ -100,17 +100,14 @@ export default class Operation {
 		return 'engine.treeModel.operation.Operation';
 	}
 
-	/*jshint unused: true*/
 	/**
-	 * Creates Element object from deserilized object, ie. from parsed JSON string.
+	 * Creates Operation object from deserilized object, i.e. from parsed JSON string.
 	 *
 	 * @param {Object} json Deserialized JSON object.
 	 * @param {engine.treeModel.Document} doc Document on which this operation will be applied.
-	 * @returns {engine.treeModel.operationOperation}
+	 * @returns {engine.treeModel.operation.Operation}
 	 */
-	static fromJSON( json, doc ) {
+	static fromJSON( json ) {
 		return new Operation( json.baseVersion );
 	}
-
-	/*jshint unused: false*/
 }

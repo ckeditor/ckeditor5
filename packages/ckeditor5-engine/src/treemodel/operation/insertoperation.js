@@ -80,9 +80,13 @@ export default class InsertOperation extends Operation {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Creates InsertOperation object from deserilized object, i.e. from parsed JSON string.
+	 *
+	 * @param {Object} json Deserialized JSON object.
+	 * @param {engine.treeModel.Document} document Document on which this operation will be applied.
+	 * @returns {engine.treeModel.operation.InsertOperation}
 	 */
-	static fromJSON( json, doc ) {
-		return new InsertOperation( Position.fromJSON( json.position, doc ), NodeList.fromJSON( json.nodeList ), json.baseVersion );
+	static fromJSON( json, document ) {
+		return new InsertOperation( Position.fromJSON( json.position, document ), NodeList.fromJSON( json.nodeList ), json.baseVersion );
 	}
 }

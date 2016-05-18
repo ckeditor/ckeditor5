@@ -143,9 +143,13 @@ export default class AttributeOperation extends Operation {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Creates AttributeOperation object from deserilized object, i.e. from parsed JSON string.
+	 *
+	 * @param {Object} json Deserialized JSON object.
+	 * @param {engine.treeModel.Document} document Document on which this operation will be applied.
+	 * @returns {engine.treeModel.operation.AttributeOperation}
 	 */
-	static fromJSON( json, doc ) {
-		return new AttributeOperation( Range.fromJSON( json.range, doc ), json.key, json.oldValue, json.newValue, json.baseVersion );
+	static fromJSON( json, document ) {
+		return new AttributeOperation( Range.fromJSON( json.range, document ), json.key, json.oldValue, json.newValue, json.baseVersion );
 	}
 }

@@ -137,10 +137,14 @@ export default class RootAttributeOperation extends Operation {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Creates RootAttributeOperation object from deserilized object, i.e. from parsed JSON string.
+	 *
+	 * @param {Object} json Deserialized JSON object.
+	 * @param {engine.treeModel.Document} document Document on which this operation will be applied.
+	 * @returns {engine.treeModel.operation.RootAttributeOperation}
 	 */
-	static fromJSON( json, doc ) {
-		if ( !doc.hasRoot( json.root ) ) {
+	static fromJSON( json, document ) {
+		if ( !document.hasRoot( json.root ) ) {
 			/**
 			 * Cannot create RootAttributeOperation for document. Root with specified name does not exist.
 			 *
@@ -153,6 +157,6 @@ export default class RootAttributeOperation extends Operation {
 			);
 		}
 
-		return new RootAttributeOperation( doc.getRoot( json.root ), json.key, json.oldValue, json.newValue, json.baseVersion );
+		return new RootAttributeOperation( document.getRoot( json.root ), json.key, json.oldValue, json.newValue, json.baseVersion );
 	}
 }
