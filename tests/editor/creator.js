@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
+/* bender-tags: editor, creator, browser-only */
 
-/* bender-tags: editor, creator */
+'use strict';
 
 import moduleUtils from '/tests/ckeditor5/_utils/module.js';
 import testUtils from '/tests/ckeditor5/_utils/utils.js';

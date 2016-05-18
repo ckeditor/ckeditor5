@@ -123,10 +123,22 @@ describe( 'build-utils', () => {
 			const plugins = [ 'foo' ];
 			sandbox.stub( utils, 'getBabelPlugins', () => plugins );
 
-			const options = utils.getBabelOptionsForSource( 'format' );
+			const options = utils.getBabelOptionsForSource( 'amd' );
 
 			expect( options ).to.have.property( 'plugins', plugins );
 			expect( options ).to.have.property( 'resolveModuleSource' );
+			expect( options.resolveModuleSource ).to.equal( utils.appendModuleExtension );
+		} );
+
+		it( 'should return plugins for cjs format', () => {
+			const plugins = [ 'foo' ];
+			sandbox.stub( utils, 'getBabelPlugins', () => plugins );
+
+			const options = utils.getBabelOptionsForSource( 'cjs' );
+
+			expect( options ).to.have.property( 'plugins', plugins );
+			expect( options ).to.have.property( 'resolveModuleSource' );
+			expect( options.resolveModuleSource ).to.equal( utils.resolveModuleSource );
 		} );
 	} );
 
@@ -135,18 +147,36 @@ describe( 'build-utils', () => {
 			const plugins = [ 'foo' ];
 			sandbox.stub( utils, 'getBabelPlugins', () => plugins );
 
-			const options = utils.getBabelOptionsForTests( 'format' );
+			const options = utils.getBabelOptionsForTests( 'amd' );
 
 			expect( options ).to.have.property( 'plugins', plugins );
 			expect( options ).to.have.property( 'resolveModuleSource' );
 			expect( options ).to.have.property( 'moduleIds', true );
 			expect( options ).to.have.property( 'moduleId', 'tests' );
+			expect( options.resolveModuleSource ).to.equal( utils.appendModuleExtension );
+		} );
+
+		it( 'should return plugins for cjs format', () => {
+			const plugins = [ 'foo' ];
+			sandbox.stub( utils, 'getBabelPlugins', () => plugins );
+
+			const options = utils.getBabelOptionsForTests( 'cjs' );
+
+			expect( options ).to.have.property( 'plugins', plugins );
+			expect( options ).to.have.property( 'resolveModuleSource' );
+			expect( options ).to.have.property( 'moduleIds', true );
+			expect( options ).to.have.property( 'moduleId', 'tests' );
+			expect( options.resolveModuleSource ).to.equal( utils.resolveModuleSource );
 		} );
 	} );
 
 	describe( 'getBabelPlugins', () => {
 		it( 'should return plugins for amd format', () => {
 			expect( utils.getBabelPlugins( 'amd' ) ).to.be.an( 'array' );
+		} );
+
+		it( 'should return plugins for cjs format', () => {
+			expect( utils.getBabelPlugins( 'cjs' ) ).to.be.an( 'array' );
 		} );
 
 		it( 'should throw an exception when incorrect format is provided', () => {
@@ -236,7 +266,31 @@ describe( 'build-utils', () => {
 		} );
 
 		describe( 'created conversion stream', () => {
-			it( 'should process test file', ( done ) => {
+			it( 'should process test file in amd format', ( done ) => {
+				const buildDir = 'build/';
+				const formats = [ 'amd' ];
+				const fn = utils.getConversionStreamGenerator( buildDir );
+				const streams = formats.reduce( fn, [] );
+
+				expect( streams ).to.have.length( 1 );
+
+				const stream = streams[ 0 ];
+
+				stream.pipe(
+					utils.noop( ( file ) => {
+						expect( file.contents.toString() ).to.equal( 'foo();amd;tests;launcher' );
+						done();
+					} )
+				);
+
+				stream.write( new Vinyl( {
+					cwd: './',
+					path: 'tests/core/file.js',
+					contents: new Buffer( 'foo()' )
+				} ) );
+			} );
+			
+			it( 'should process test file in cjs format', ( done ) => {
 				const buildDir = 'build/';
 				const formats = [ 'cjs' ];
 				const fn = utils.getConversionStreamGenerator( buildDir );
@@ -248,7 +302,7 @@ describe( 'build-utils', () => {
 
 				stream.pipe(
 					utils.noop( ( file ) => {
-						expect( file.contents.toString() ).to.equal( 'foo();cjs;tests;launcher' );
+						expect( file.contents.toString() ).to.equal( 'foo();cjs;tests' );
 						done();
 					} )
 				);
@@ -726,6 +780,22 @@ describe( 'build-utils', () => {
 
 			expect( streams ).to.be.an( 'array' );
 			expect( streams ).to.have.length( 2 );
+		} );
+	} );
+
+	describe( 'resolveModuleSource', () => {
+		it( 'does not modify relative source paths', () => {
+			const source = '../module';
+			const resolved = utils.resolveModuleSource( source, '' );
+			expect( resolved ).to.equal( source );
+		} );
+
+		it( 'resolves absolute source paths', () => {
+			const source = '/ckeditor5/path/to/module.js';
+			const file = path.join( process.cwd(), 'tests', 'module', 'module.js' );
+
+			const resolved = utils.resolveModuleSource( source, file );
+			expect( resolved ).to.equal( '../../ckeditor5/path/to/module.js' );
 		} );
 	} );
 } );

@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* bender-tags: browser-only */
+
 'use strict';
 
 import Plugin from '/ckeditor5/plugin.js';

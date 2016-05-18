@@ -18,6 +18,7 @@ const config = {
 require( './dev/tasks/build/tasks' )( config );
 require( './dev/tasks/dev/tasks' )( config );
 require( './dev/tasks/lint/tasks' )( config );
+require( './dev/tasks/test/tasks' )( config );
 require( './dev/tasks/docs/tasks' )( config );
 
 gulp.task( 'default', [ 'build' ] );
