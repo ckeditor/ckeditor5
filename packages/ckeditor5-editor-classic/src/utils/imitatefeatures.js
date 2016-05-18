@@ -24,6 +24,10 @@ export function imitateFeatures( editor ) {
 		icon: 'bold'
 	} );
 
+	// Note – most of the contents of this file is ignored, as it's a temporary file that will
+	// be replaced with real features.
+
+	/* istanbul ignore next */
 	boldModel.on( 'execute', () => {
 		/* global console */
 		console.log( 'bold executed' );
@@ -33,6 +37,7 @@ export function imitateFeatures( editor ) {
 
 	editor.ui.featureComponents.add( 'bold', Button, ButtonView, boldModel );
 
+	/* istanbul ignore next */
 	const italicModel = new Model( {
 		isEnabled: true,
 		isOn: false,
@@ -40,6 +45,7 @@ export function imitateFeatures( editor ) {
 		icon: 'italic'
 	} );
 
+	/* istanbul ignore next */
 	italicModel.on( 'execute', () => {
 		/* global console */
 		console.log( 'italic executed' );
