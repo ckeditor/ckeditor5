@@ -98,9 +98,7 @@ export default class TreeWalker {
 		if ( startPosition ) {
 			this.position = Position.createFromPosition( startPosition );
 		} else {
-			this.position = direction == 'BACKWARD' ?
-				Position.createFromPosition( boundaries.end ) :
-				Position.createFromPosition( boundaries.start );
+			this.position = Position.createFromPosition( boundaries[ direction == 'BACKWARD' ? 'end' : 'start' ] );
 		}
 
 		/**
@@ -370,7 +368,5 @@ function formatReturnValue( type, item, previousPosition, nextPosition, length )
 /**
  * Tree walking directions.
  *
- * Possible values: `'FORWARD'`, `'BACKWARD'`.
- *
- * @typedef {String} core.treeModel.TreeWalkerDirection
+ * @typedef {'FORWARD'|'BACKWARD'} core.treeModel.TreeWalkerDirection
  */
