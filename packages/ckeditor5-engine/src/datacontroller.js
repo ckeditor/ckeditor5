@@ -6,77 +6,86 @@
 'use strict';
 
 import Mapper from './treecontroller/mapper.js';
-import ModelConversionDispatcher from './treecontroller/modelconversiondispatcher.js';
-import ViewConversionController from './treecontroller/viewconversioncontroller.js';
-import { insertText } from './treecontroller/model-to-view.js';
-import { convertText, convertChildren } from './treecontroller/view-to-model.js';
 
-import Writer from './treview/writer.js';
-import ViewDocumentFragment from './treview/documentfragment.js';
-import DomConverter from './treview/domconverter.js';
+import ModelConversionDispatcher from './treecontroller/modelconversiondispatcher.js';
+import { insertText } from './treecontroller/model-to-view-converters.js';
+
+import ViewConversionDispatcher from './treecontroller/viewconversiondispatcher.js';
+import { convertText, convertToModelFragment } from './treecontroller/view-to-model-converters.js';
+
+import Writer from './treeview/writer.js';
+import ViewDocumentFragment from './treeview/documentfragment.js';
+import DomConverter from './treeview/domconverter.js';
 
 import ModelRange from './treemodel/range.js';
+import ModelPosition from './treemodel/position.js';
 
 export default class DataController {
 	constructor( modelDocument, dataProcessor ) {
 		this.model = modelDocument;
 
-		this.mapper = new Mapper();
+		this._mapper = new Mapper();
 
-		this.writer = new Writer();
+		this._writer = new Writer();
 
-		this.domConverter = new DomConverter();
+		this._domConverter = new DomConverter();
 
-		this.processor = dataProcessor;
+		this._processor = dataProcessor;
 
 		this.toView = new ModelConversionDispatcher( {
-			writer: this.writer,
-			mapper: this.mapper
+			writer: this._writer,
+			mapper: this._mapper
 		} );
 		this.toView.on( 'insert:text', insertText() );
 
-		this.toModel = new ViewConversionController();
+		this.toModel = new ViewConversionDispatcher( {
+			schema: modelDocument.schema
+		} );
 		this.toModel.on( 'text', convertText() );
-		this.toModel.on( 'element', convertChildren(), 9999 );
-		this.toModel.on( 'documentFragment', convertChildren(), 9999 );
+		this.toModel.on( 'element', convertToModelFragment(), null, 9999 );
+		this.toModel.on( 'documentFragment', convertToModelFragment(), null, 9999 );
 	}
 
 	get( rootName = 'main' ) {
 		// Get model range
-		const modelRootElement = this.model.getRoot( rootName );
-		const modelRange = ModelRange.createFromElement( modelRootElement );
+		const modelRoot = this.model.getRoot( rootName );
+		const modelRange = ModelRange.createFromElement( modelRoot );
 
 		// model -> view
 		const viewDocumentFragment = new ViewDocumentFragment();
-		this.mapper.bindElements( modelRootElement, viewDocumentFragment );
+		this._mapper.bindElements( modelRoot, viewDocumentFragment );
 
 		this.toView.convertInsert( modelRange );
 
-		this.mapper.unbindElements( modelRootElement, viewDocumentFragment );
+		this._mapper.clearBindings();
 
 		// view -> DOM
-		const domDocumentFragment = this.domConverter.viewToDom( viewDocumentFragment, document );
+		const domDocumentFragment = this._domConverter.viewToDom( viewDocumentFragment, document );
 
 		// DOM -> data
-		return this.processor.toData( domDocumentFragment );
+		return this._processor.toData( domDocumentFragment );
 	}
 
-	set( data, rootName ) {
+	set( rootName, data ) {
+		if ( !data ) {
+			data = rootName;
+			rootName = 'main';
+		}
 		// data -> DOM
-		const domDocumentFragment = this.processor.toDom( data );
+		const domDocumentFragment = this._processor.toDom( data );
 
 		// DOM -> view
-		const viewDocumentFragment = this.domConverter.domToView( domDocumentFragment );
+		const viewDocumentFragment = this._domConverter.domToView( domDocumentFragment );
 
 		// view -> model
-		const modelDocumentFragment = this.toModel.convert( viewDocumentFragment );
+		const modelDocumentFragment = this.toModel.convert( viewDocumentFragment, { context: [ '$root' ] } );
 
 		// Save to model
 		const modelRoot = this.model.getRoot( rootName );
 
 		this.model.batch()
-			.removeChildren( 0, modelRoot.getChildCount() )
-			.appendChildren( modelRoot, modelDocumentFragment );
+			.remove( ModelRange.createFromElement( modelRoot ) )
+			.insert( ModelPosition.createAt( modelRoot, 0 ), modelDocumentFragment );
 	}
 
 	destroy() {}
