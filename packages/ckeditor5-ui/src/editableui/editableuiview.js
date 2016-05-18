@@ -52,7 +52,7 @@ export default class EditableUIView extends View {
 			this.editableElement = this.element;
 		}
 
-		return super.init();
+		super.init();
 	}
 
 	destroy() {

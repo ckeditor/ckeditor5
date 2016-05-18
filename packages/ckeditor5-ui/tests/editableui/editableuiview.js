@@ -20,7 +20,7 @@ describe( 'EditableUIView', () => {
 		view = new EditableUIView( model, locale );
 		editableElement = document.createElement( 'div' );
 
-		return view.init();
+		view.init();
 	} );
 
 	describe( 'constructor', () => {
