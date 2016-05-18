@@ -17,7 +17,7 @@ import NoOperation from '/ckeditor5/engine/treemodel/operation/nooperation.js';
 import ReinsertOperation from '/ckeditor5/engine/treemodel/operation/reinsertoperation.js';
 import RemoveOperation from '/ckeditor5/engine/treemodel/operation/removeoperation.js';
 import RootAttributeOperation from '/ckeditor5/engine/treemodel/operation/rootattributeoperation.js';
-import { registerDeserializer } from '/ckeditor5/engine/treemodel/delta/delta.js';
+import { registerDeserializer } from '/ckeditor5/engine/treemodel/delta/deltafactory.js';
 import Document from '/ckeditor5/engine/treemodel/document.js';
 import Position from '/ckeditor5/engine/treemodel/position.js';
 import Range from '/ckeditor5/engine/treemodel/range.js';

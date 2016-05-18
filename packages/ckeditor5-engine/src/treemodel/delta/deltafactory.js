@@ -45,8 +45,8 @@ export default class DeltaFactory {
 
 		let delta = new Constructor();
 
-		if ( json.operations.length ) {
-			json.operations.forEach( ( operation ) => delta.addOperation( OperationFactory.fromJSON( operation, doc ) ) );
+		for ( let operation of json.operations ) {
+			delta.addOperation( OperationFactory.fromJSON( operation, doc ) );
 		}
 
 		return delta;
