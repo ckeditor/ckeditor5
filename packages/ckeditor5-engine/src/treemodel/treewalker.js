@@ -44,6 +44,18 @@ export default class TreeWalker {
 			throw new CKEditorError( 'tree-walker-no-start-position: Neither boundaries nor starting position have been defined.' );
 		}
 
+		if ( options && options.direction && [ 'FORWARD', 'BACKWARD' ].indexOf( options.direction ) < 0 ) {
+			/**
+			 * Unknown direction.
+			 *
+			 * @error tree-walker-unknown-direction
+			 */
+			throw new CKEditorError(
+				'tree-walker-unknown-direction: Only `BACKWARD` and `FORWARD` direction allowed.',
+				{ direction: options.direction }
+			);
+		}
+
 		/**
 		 * Iterator boundaries.
 		 *
@@ -55,6 +67,14 @@ export default class TreeWalker {
 		 * @member {engine.treeModel.Range} engine.treeModel.TreeWalker#boundaries
 		 */
 		this.boundaries = options.boundaries || null;
+
+		/**
+		 * Start boundary cached for optimization purposes.
+		 *
+		 * @private
+		 * @member {engine.treeModel.Element} engine.treeModel.TreeWalker#_boundaryStartParent
+		 */
+		this._boundaryStartParent = this.boundaries ? this.boundaries.start.parent : null;
 
 		/**
 		 * End boundary cached for optimization purposes.
@@ -73,6 +93,14 @@ export default class TreeWalker {
 		this.position = options.startPosition ?
 			Position.createFromPosition( options.startPosition ) :
 			Position.createFromPosition( options.boundaries.start );
+
+		/**
+		 * Walking direction. Defaults `FORWARD`.
+		 *
+		 * @member engine.treeModel.TreeWalker#direction
+		 * @type {String} core.treeModel.TreeWalkerDirection
+		 */
+		this.direction = !options.direction ? 'FORWARD' : options.direction;
 
 		/**
 		 * Flag indicating whether all consecutive characters with the same attributes should be
@@ -107,6 +135,14 @@ export default class TreeWalker {
 		 * @member {engine.treeModel.Element|engine.treeModel.DocumentFragment} engine.treeModel.TreeWalker#_visitedParent
 		 */
 		this._visitedParent = this.position.parent;
+
+		/**
+		 * Enum type that specifies relation between two positions.
+		 *
+		 * Possible values: `'AFTER'`, `'BEFORE'`, `'SAME'`.
+		 *
+		 * @typedef {String} PositionRelation
+		 */
 	}
 
 	/**
@@ -117,13 +153,37 @@ export default class TreeWalker {
 	}
 
 	/**
-	 * Makes a step forward in tree model. Moves the {@link #position} to the next position and returns the encountered value.
+	 * Iterator interface method.
+	 * Detects walking direction and makes step forward or backward.
 	 *
 	 * @returns {Object} Object implementing iterator interface, returning information about taken step.
+ 	 */
+	next() {
+		if ( this.direction == 'FORWARD' ) {
+			return this._next();
+		} else if ( this.direction == 'BACKWARD' ) {
+			return this._previous();
+		} else {
+			/**
+			 * Unknown direction.
+			 *
+			 * @error tree-walker-unknown-direction
+			 */
+			throw new CKEditorError(
+				'tree-walker-unknown-direction: Only `BACKWARD` and `FORWARD` direction allowed.',
+				{ direction: this.direction }
+			);
+		}
+	}
+
+	/**
+	 * Makes a step forward in tree model. Moves the {@link #position} to the next position and returns the encountered value.
+	 *
+	 * @private
 	 * @returns {Boolean} return.done True if iterator is done.
 	 * @returns {engine.treeModel.TreeWalkerValue} return.value Information about taken step.
 	 */
-	next() {
+	_next() {
 		const previousPosition = this.position;
 		const position = Position.createFromPosition( this.position );
 		const parent = this._visitedParent;
@@ -179,14 +239,87 @@ export default class TreeWalker {
 			position.path.pop();
 			position.offset++;
 			this.position = position;
-
 			this._visitedParent = parent.parent;
 
 			if ( this.ignoreElementEnd ) {
-				return this.next();
+				return this._next();
 			} else {
 				return formatReturnValue( 'ELEMENT_END', parent, previousPosition, position );
 			}
+		}
+	}
+
+	/**
+	 * Makes a step backward in tree model. Moves the {@link #position} to the previous position and returns the encountered value.
+	 *
+	 * @private
+	 * @returns {Boolean} return.done True if iterator is done.
+	 * @returns {core.treeModel.TreeWalkerValue} return.value Information about taken step.
+	 */
+	_previous() {
+		const previousPosition = this.position;
+		const position = Position.createFromPosition( this.position );
+		const parent = this._visitedParent;
+
+		// We are at the beginning of the root.
+		if ( parent.parent === null && position.offset === 0 ) {
+			return { done: true };
+		}
+
+		// We reached the walker boundary.
+		if ( parent == this._boundaryStartParent && position.offset == this.boundaries.start.offset ) {
+			return { done: true };
+		}
+
+		// Get node just before current position
+		const node = parent.getChild( position.offset - 1 );
+
+		if ( node instanceof Element ) {
+			position.offset--;
+
+			if ( !this.shallow ) {
+				position.path.push( node.getChildCount() );
+				this.position = position;
+				this._visitedParent = node;
+
+				if ( this.ignoreElementEnd ) {
+					return this._previous();
+				} else {
+					return formatReturnValue( 'ELEMENT_END', node, position, previousPosition );
+				}
+			} else {
+				this.position = position;
+
+				return formatReturnValue( 'ELEMENT_START', node, position, previousPosition, 1 );
+			}
+		} else if ( node instanceof CharacterProxy ) {
+			if ( this.singleCharacters ) {
+				position.offset--;
+				this.position = position;
+
+				return formatReturnValue( 'CHARACTER', node, position, previousPosition, 1 );
+			} else {
+				let charactersCount = node._index + 1;
+				let offset = position.offset - charactersCount;
+
+				if ( this._boundaryStartParent == parent && this.boundaries.start.offset > offset ) {
+					offset = this.boundaries.start.offset;
+					charactersCount = position.offset - offset;
+				}
+
+				let textFragment = new TextProxy( parent.getChild( offset ), charactersCount );
+
+				position.offset = offset;
+				this.position = position;
+
+				return formatReturnValue( 'TEXT', textFragment, position, previousPosition, charactersCount );
+			}
+		} else {
+			position.path.pop();
+			this.position = position;
+			this._visitedParent = parent.parent;
+
+			return formatReturnValue( 'ELEMENT_START', parent, position, previousPosition, 1 );
 		}
 	}
 }
@@ -229,4 +362,12 @@ function formatReturnValue( type, item, previousPosition, nextPosition, length )
  * position inside the element. For all other types it is the position after the item.
  * @property {Number} [length] Length of the item. For `'ELEMENT_START'` and `'CHARACTER'` it is 1. For `'TEXT'` it is
  * the length of the text. For `'ELEMENT_END'` it is undefined.
+ */
+
+/**
+ * Tree walking directions.
+ *
+ * Possible values: `'FORWARD'`, `'BACKWARD'`.
+ *
+ * @typedef {String} core.treeModel.TreeWalkerDirection
  */
