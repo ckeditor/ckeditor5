@@ -18,15 +18,21 @@ export default class BoxedEditorUI extends EditorUI {
 		const config = editor.config;
 
 		/**
-		 * TODO: Handle editor resizing.
+		 * The editor's width. Defaults to {@link ckeditor5.editor.config.ui.width}.
 		 *
+		 * Note: a specific creator that was used must support this setting.
+		 *
+		 * @observable
 		 * @property {Number} width
 		 */
 		this.set( 'width', config.get( 'ui.width' ) );
 
 		/**
-		 * TODO: Handle editor resizing.
+		 * The editor's height. Defaults to {@link ckeditor5.editor.config.ui.height}.
 		 *
+		 * Note: a specific creator that was used must support this setting.
+		 *
+		 * @observable
 		 * @property {Number} height
 		 */
 		this.set( 'height', config.get( 'ui.height' ) );
