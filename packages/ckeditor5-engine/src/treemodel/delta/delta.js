@@ -9,14 +9,7 @@ import clone from '../../../utils/lib/lodash/clone.js';
 
 import CKEditorError from '../../../utils/ckeditorerror.js';
 
-import AttributeOperation from '../operation/attributeoperation.js';
-import InsertOperation from '../operation/insertoperation.js';
-import MoveOperation from '../operation/moveoperation.js';
-import NoOperation from '../operation/nooperation.js';
-import Operation from '../operation/operation.js';
-import ReinsertOperation from '../operation/reinsertoperation.js';
-import RemoveOperation from '../operation/removeoperation.js';
-import RootAttributeOperation from '../operation/rootattributeoperation.js';
+import OperationFactory from '../operation/operationfactory.js';
 
 /**
  * Base class for all deltas.
@@ -195,22 +188,12 @@ export default class Delta {
 		let delta = new Constructor();
 
 		if ( json.operations.length ) {
-			json.operations.forEach( ( operation ) => delta.addOperation( operations[ operation.__className ].fromJSON( operation, doc ) ) );
+			json.operations.forEach( ( operation ) => delta.addOperation( OperationFactory.fromJSON( operation, doc ) ) );
 		}
 
 		return delta;
 	}
 }
-
-const operations = {};
-operations[ AttributeOperation.className ] = AttributeOperation;
-operations[ InsertOperation.className ] = InsertOperation;
-operations[ MoveOperation.className ] = MoveOperation;
-operations[ NoOperation.className ] = NoOperation;
-operations[ Operation.className ] = Operation;
-operations[ ReinsertOperation.className ] = ReinsertOperation;
-operations[ RemoveOperation.className ] = RemoveOperation;
-operations[ RootAttributeOperation.className ] = RootAttributeOperation;
 
 const deserializers = new Map();
 
