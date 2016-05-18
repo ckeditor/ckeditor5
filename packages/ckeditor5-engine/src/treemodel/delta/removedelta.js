@@ -7,7 +7,7 @@
 
 import MoveDelta from './movedelta.js';
 import { register } from '../batch.js';
-import { registerDeserializer } from './delta.js';
+import { registerDeserializer } from './deltafactory.js';
 import RemoveOperation from '../operation/removeoperation.js';
 import Position from '../position.js';
 import Range from '../range.js';

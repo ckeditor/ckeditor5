@@ -5,7 +5,8 @@
 
 'use strict';
 
-import { default as Delta, registerDeserializer } from './delta.js';
+import Delta from './delta.js';
+import { registerDeserializer } from './deltafactory.js';
 import { register } from '../batch.js';
 import MoveOperation from '../operation/moveoperation.js';
 import Position from '../position.js';

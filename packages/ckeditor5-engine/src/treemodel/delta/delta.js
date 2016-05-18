@@ -6,10 +6,7 @@
 'use strict';
 
 import clone from '../../../utils/lib/lodash/clone.js';
-
-import CKEditorError from '../../../utils/ckeditorerror.js';
-
-import OperationFactory from '../operation/operationfactory.js';
+import { registerDeserializer } from './deltafactory.js';
 
 /**
  * Base class for all deltas.
@@ -141,7 +138,7 @@ export default class Delta {
 
 	/**
 	 * Delta class name. Used by {@link engine.treeModel.delta.Delta#toJSON} method for serialization and
-	 * {@link engine.treeModel.delta.Delta.fromJSON} during deserialization.
+	 * {@link engine.treeModel.delta.DeltaFactory.fromJSON} during deserialization.
 	 *
 	 * @type {String}
 	 * @readonly
@@ -161,42 +158,6 @@ export default class Delta {
 	static get _priority() {
 		return 0;
 	}
-
-	/**
-	 * Creates InsertDelta from deserialized object, i.e. from parsed JSON string.
-	 *
-	 * @param {Object} json
-	 * @param {engine.treeModel.Document} doc Document on which this delta will be applied.
-	 * @returns {engine.treeModel.delta.InsertDelta}
-	 */
-	static fromJSON( json, doc ) {
-		if ( !deserializers.has( json.__className ) ) {
-			/**
-			 * This delta has no defined deserializer.
-			 *
-			 * @error delta-fromjson-no-deserializer
-			 * @param {String} name
-			 */
-			throw new CKEditorError(
-				'delta-fromjson-no-deserializer: This delta has no defined deserializer',
-				{ name: json.__className }
-			);
-		}
-
-		let Constructor = deserializers.get( json.__className );
-
-		let delta = new Constructor();
-
-		if ( json.operations.length ) {
-			json.operations.forEach( ( operation ) => delta.addOperation( OperationFactory.fromJSON( operation, doc ) ) );
-		}
-
-		return delta;
-	}
 }
 
-const deserializers = new Map();
-
-export function registerDeserializer( className, constructor ) {
-	deserializers.set( className, constructor );
-}
+registerDeserializer( Delta.className, Delta );

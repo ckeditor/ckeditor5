@@ -14,12 +14,8 @@ import Position from '/ckeditor5/engine/treemodel/position.js';
 import InsertOperation from '/ckeditor5/engine/treemodel/operation/insertoperation.js';
 import InsertDelta from '/ckeditor5/engine/treemodel/delta/insertdelta.js';
 
-import Delta from '/ckeditor5/engine/treemodel/delta/delta.js';
-
 import RemoveDelta from '/ckeditor5/engine/treemodel/delta/removedelta.js';
 import RemoveOperation from '/ckeditor5/engine/treemodel/operation/removeoperation.js';
-
-import { jsonParseStringify } from '/tests/engine/treemodel/_utils/utils.js';
 
 describe( 'Batch', () => {
 	let doc, root, batch, p, ul, chain;
@@ -124,16 +120,6 @@ describe( 'InsertDelta', () => {
 			expect( reversed.operations[ 0 ] ).to.be.instanceof( RemoveOperation );
 			expect( reversed.operations[ 0 ].sourcePosition.isEqual( position ) ).to.be.true;
 			expect( reversed.operations[ 0 ].howMany ).to.equal( 1 );
-		} );
-	} );
-
-	describe( 'fromJSON', () => {
-		it( 'should create InsertDelta instance from serialized JSON object', () => {
-			let serialized = jsonParseStringify( insertDelta );
-			let deserialized = Delta.fromJSON( serialized, doc );
-
-			expect( deserialized ).to.be.instanceOf( InsertDelta );
-			expect( deserialized.operations ).to.have.length( 0 );
 		} );
 	} );
 
