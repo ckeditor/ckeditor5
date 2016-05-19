@@ -913,8 +913,9 @@ class ViewStringify {
 	 */
 	_stringifyElementAttributes( element ) {
 		const attributes = [];
+		const keys = [ ...element.getAttributeKeys() ].sort();
 
-		for ( let attribute of element.getAttributeKeys() ) {
+		for ( let attribute of keys ) {
 			attributes.push( `${ attribute }="${ element.getAttribute( attribute ) }"` );
 		}
 

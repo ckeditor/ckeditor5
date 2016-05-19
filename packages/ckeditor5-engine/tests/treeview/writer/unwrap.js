@@ -237,9 +237,9 @@ describe( 'Writer', () => {
 
 		it( 'should not unwrap single element when attributes are different', () => {
 			test(
-				'<container:p>[<attribute:b:1 foo="bar" baz="qux">test</attribute:b:1>]</container:p>',
+				'<container:p>[<attribute:b:1 baz="qux" foo="bar">test</attribute:b:1>]</container:p>',
 				'<attribute:b:1 baz="qux" test="true"></attribute:b:1>',
-				'<container:p>[<attribute:b:1 foo="bar" baz="qux">test</attribute:b:1>]</container:p>'
+				'<container:p>[<attribute:b:1 baz="qux" foo="bar">test</attribute:b:1>]</container:p>'
 			);
 		} );
 

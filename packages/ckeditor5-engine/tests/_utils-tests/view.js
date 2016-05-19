@@ -118,7 +118,7 @@ describe( 'view test utils', () => {
 			expect( stringify( p ) ).to.equal( '<p><b>foobar</b></p>' );
 		} );
 
-		it( 'should write elements with attributes', () => {
+		it( 'should write elements with attributes (attributes in alphabetical order)', () => {
 			const text = new Text( 'foobar' );
 			const b = new Element( 'b', {
 				foo: 'bar'
@@ -129,7 +129,7 @@ describe( 'view test utils', () => {
 				class: 'short wide'
 			}, b );
 
-			expect( stringify( p ) ).to.equal( '<p class="short wide" baz="qux" bar="taz"><b foo="bar">foobar</b></p>' );
+			expect( stringify( p ) ).to.equal( '<p bar="taz" baz="qux" class="short wide"><b foo="bar">foobar</b></p>' );
 		} );
 
 		it( 'should write selection ranges inside elements', () => {
