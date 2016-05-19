@@ -20,7 +20,7 @@ describe( 'Toolbar', () => {
 		editor = new Editor();
 		model = new Model();
 		view = new View( model );
-		toolbar = new Toolbar( view, model, editor );
+		toolbar = new Toolbar( model, view, editor );
 	} );
 
 	describe( 'constructor', () => {
@@ -46,7 +46,7 @@ describe( 'Toolbar', () => {
 			expect( createSpy.secondCall.calledWith( 'bar' ) ).to.be.true;
 		} );
 
-		it( 'adds created compoments to the collection of buttons', () => {
+		it( 'adds created components to the collection of buttons', () => {
 			const component = new Controller();
 			const createSpy = sinon.spy( () => component );
 

@@ -607,6 +607,31 @@ describe( 'View', () => {
 				expect( view.element.outerHTML ).to.equal( '<p>bar</p>' );
 			} );
 
+			it( 'allows binding attribute to the model – array of bindings (HTMLElement attribute)', () => {
+				setTestViewClass( function() {
+					const bind = this.attributeBinder;
+
+					return {
+						tag: 'p',
+						attributes: {
+							'class': [
+								'ck-class',
+								bind.if( 'foo', 'foo-set' ),
+								bind.if( 'bar', 'bar-not-set', ( value ) => !value ),
+								'ck-end'
+							]
+						},
+						children: [ 'abc' ]
+					};
+				} );
+
+				setTestViewInstance( { foo: true, bar: true } );
+				expect( view.element.outerHTML ).to.equal( '<p class="ck-class foo-set ck-end">abc</p>' );
+
+				view.model.foo = view.model.bar = false;
+				expect( view.element.outerHTML ).to.equal( '<p class="ck-class bar-not-set ck-end">abc</p>' );
+			} );
+
 			it( 'allows binding attribute to the model – value of an attribute processed by a callback', () => {
 				setTestViewClass( function() {
 					const bind = this.attributeBinder;
