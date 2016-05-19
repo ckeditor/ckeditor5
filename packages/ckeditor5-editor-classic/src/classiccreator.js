@@ -12,8 +12,8 @@ import Editable from '/ckeditor5/editable.js';
 
 import { createEditableUI, createEditorUI } from '/ckeditor5/ui/creator-utils.js';
 
-import BoxedEditorUI from '/ckeditor5/ui/boxededitorui/boxededitorui.js';
-import BoxedEditorUIView from '/ckeditor5/ui/boxededitorui/boxededitoruiview.js';
+import BoxedEditorUI from '/ckeditor5/ui/editorui/boxed/boxededitorui.js';
+import BoxedEditorUIView from '/ckeditor5/ui/editorui/boxed/boxededitoruiview.js';
 
 import EditableUI from '/ckeditor5/ui/editableui/editableui.js';
 import InlineEditableUIView from '/ckeditor5/ui/editableui/inline/inlineeditableuiview.js';
@@ -28,7 +28,8 @@ import { imitateFeatures, imitateDestroyFeatures } from './utils/imitatefeatures
  * Classic editor creator using inline editable and sticky toolbar, all
  * enclosed in a boxed UI.
  *
- * @memberOf ckeditor5.creator
+ * @memberOf creator-classic
+ * @extends ckeditor5.creator.StandardCreator
  */
 export default class ClassicCreator extends StandardCreator {
 	/**
@@ -41,7 +42,7 @@ export default class ClassicCreator extends StandardCreator {
 
 		const editableName = editor.firstElementName;
 		editor.editables.add( new Editable( editor, editableName ) );
-		editor.document.createRoot( editableName, '$root' );
+		editor.document.createRoot( editableName );
 
 		// UI.
 		createEditorUI( editor, BoxedEditorUI, BoxedEditorUIView );
