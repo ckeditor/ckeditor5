@@ -12,8 +12,9 @@ import DataController from '/ckeditor5/engine/datacontroller.js';
 import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/HtmlDataProcessor.js';
 
 import BuildViewConverterFor  from '/ckeditor5/engine/treecontroller/view-converter-builder.js';
+import BuildModelConverterFor  from '/ckeditor5/engine/treecontroller/model-converter-builder.js';
 
-import { getData } from '/tests/engine/_utils/model.js';
+import { getData, setData } from '/tests/engine/_utils/model.js';
 
 describe( 'DataController', () => {
 	let modelDocument, htmlDataProcessor, data, schema;
@@ -69,6 +70,61 @@ describe( 'DataController', () => {
 
 			expect( getData( modelDocument, { withoutSelection: true } ) ).to.equal(
 				'<paragraph>foo<$text bold=true>bar</$text></paragraph>' );
+		} );
+	} );
+
+	describe( 'get', () => {
+		it( 'should get paragraph with text', () => {
+			setData( modelDocument, '<paragraph>foo</paragraph>' );
+
+			BuildModelConverterFor( data.toView ).fromElement( 'paragraph' ).toElement( 'p' );
+
+			expect( data.get() ).to.equal( '<p>foo</p>' );
+		} );
+
+		it( 'should get empty paragraph', () => {
+			setData( modelDocument, '<paragraph></paragraph>' );
+
+			BuildModelConverterFor( data.toView ).fromElement( 'paragraph' ).toElement( 'p' );
+
+			expect( data.get() ).to.equal( '<p>&nbsp;</p>' );
+		} );
+
+		it( 'should get two paragraphs', () => {
+			setData( modelDocument, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
+
+			BuildModelConverterFor( data.toView ).fromElement( 'paragraph' ).toElement( 'p' );
+
+			expect( data.get() ).to.equal( '<p>foo</p><p>bar</p>' );
+		} );
+
+		it( 'should get text directly in root', () => {
+			setData( modelDocument, 'foo' );
+
+			expect( data.get() ).to.equal( 'foo' );
+		} );
+
+		it( 'should get paragraphs without bold', () => {
+			setData( modelDocument, '<paragraph>foo<$text bold=true>bar</$text></paragraph>' );
+
+			BuildModelConverterFor( data.toView ).fromElement( 'paragraph' ).toElement( 'p' );
+
+			expect( data.get() ).to.equal( '<p>foobar</p>' );
+		} );
+
+		it( 'should get paragraphs with bold', () => {
+			setData( modelDocument, '<paragraph>foo<$text bold=true>bar</$text></paragraph>' );
+
+			BuildModelConverterFor( data.toView ).fromElement( 'paragraph' ).toElement( 'p' );
+			BuildModelConverterFor( data.toView ).fromAttribute( 'bold' ).toElement( 'b' );
+
+			expect( data.get() ).to.equal( '<p>foo<b>bar</b></p>' );
+		} );
+	} );
+
+	describe( 'destroy', () => {
+		it( 'should be there for you', () => {
+			expect( data ).to.respondTo( 'destroy' );
 		} );
 	} );
 } );

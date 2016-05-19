@@ -16,6 +16,7 @@ import { convertText, convertToModelFragment } from './treecontroller/view-to-mo
 import Writer from './treeview/writer.js';
 import ViewDocumentFragment from './treeview/documentfragment.js';
 import DomConverter from './treeview/domconverter.js';
+import { NBSP_FILLER } from './treeview/filler.js';
 
 import ModelRange from './treemodel/range.js';
 import ModelPosition from './treemodel/position.js';
@@ -28,7 +29,7 @@ export default class DataController {
 
 		this._writer = new Writer();
 
-		this._domConverter = new DomConverter();
+		this._domConverter = new DomConverter( { blockFiller: NBSP_FILLER } );
 
 		this._processor = dataProcessor;
 
@@ -36,7 +37,7 @@ export default class DataController {
 			writer: this._writer,
 			mapper: this._mapper
 		} );
-		this.toView.on( 'insert:text', insertText() );
+		this.toView.on( 'insert:$text', insertText() );
 
 		this.toModel = new ViewConversionDispatcher( {
 			schema: modelDocument.schema
