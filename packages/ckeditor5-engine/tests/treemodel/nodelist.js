@@ -419,8 +419,7 @@ describe( 'NodeList', () => {
 
 			let deserialized = NodeList.fromJSON( serialized );
 
-			expect( deserialized._indexMap ).to.deep.equal( nodeList._indexMap );
-			expect( deserialized._nodes.length ).to.equal( nodeList._nodes.length );
+			expect( deserialized.length ).to.equal( nodeList.length );
 		} );
 
 		it( 'should create instance from serialized text with attributes', () => {
@@ -431,10 +430,13 @@ describe( 'NodeList', () => {
 
 			let deserialized = NodeList.fromJSON( serialized );
 
-			expect( deserialized._indexMap ).to.deep.equal( nodeList._indexMap );
-			expect( deserialized._nodes.length ).to.equal( nodeList._nodes.length );
-			expect( deserialized._nodes[ 0 ].text ).to.equal( nodeList._nodes[ 0 ].text );
-			expect( [ ...deserialized._nodes[ 0 ]._attrs ] ).to.deep.equal( [ ...nodeList._nodes[ 0 ]._attrs ] );
+			expect( deserialized.length ).to.equal( nodeList.length );
+
+			for ( let i = 0; i < 3; i++ ) {
+				expect( deserialized.get( i ).character ).to.equal( nodeList.get( i ).character );
+				expect( deserialized.get( i ).hasAttribute( 'bold' ) ).to.equal( nodeList.get( i ).hasAttribute( 'bold' ) );
+				expect( deserialized.get( i ).getAttribute( 'bold' ) ).to.equal( nodeList.get( i ).getAttribute( 'bold' ) );
+			}
 		} );
 
 		it( 'should create instance from serialized element', () => {
@@ -445,10 +447,8 @@ describe( 'NodeList', () => {
 
 			let deserialized = NodeList.fromJSON( serialized );
 
-			expect( deserialized._indexMap ).to.deep.equal( nodeList._indexMap );
-			expect( deserialized._nodes.length ).to.equal( nodeList._nodes.length );
-			expect( deserialized._nodes[ 0 ].name ).to.equal( nodeList._nodes[ 0 ].name );
-			expect( [ ...deserialized._nodes[ 0 ]._attrs ] ).to.deep.equal( [ ...nodeList._nodes[ 0 ]._attrs ] );
+			expect( deserialized.length ).to.equal( nodeList.length );
+			expect( deserialized.get( 0 ).name ).to.deep.equal( nodeList.get( 0 ).name );
 		} );
 
 		it( 'should create instance from serialized element with attributes', () => {
@@ -459,10 +459,10 @@ describe( 'NodeList', () => {
 
 			let deserialized = NodeList.fromJSON( serialized );
 
-			expect( deserialized._indexMap ).to.deep.equal( nodeList._indexMap );
-			expect( deserialized._nodes.length ).to.equal( nodeList._nodes.length );
-			expect( deserialized._nodes[ 0 ].name ).to.equal( nodeList._nodes[ 0 ].name );
-			expect( [ ...deserialized._nodes[ 0 ]._attrs ] ).to.deep.equal( [ ...nodeList._nodes[ 0 ]._attrs ] );
+			expect( deserialized.length ).to.equal( nodeList.length );
+			expect( deserialized.get( 0 ).name ).to.deep.equal( nodeList.get( 0 ).name );
+			expect( deserialized.get( 0 ).hasAttribute( 'bold' ) ).to.equal( nodeList.get( 0 ).hasAttribute( 'bold' ) );
+			expect( deserialized.get( 0 ).getAttribute( 'bold' ) ).to.equal( nodeList.get( 0 ).getAttribute( 'bold' ) );
 		} );
 
 		it( 'should create instance from serialized element with parent', () => {
@@ -472,12 +472,15 @@ describe( 'NodeList', () => {
 			let serialized = jsonParseStringify( nodeList );
 			let deserialized = NodeList.fromJSON( serialized );
 
-			expect( deserialized._indexMap ).to.deep.equal( nodeList._indexMap );
-			expect( deserialized._nodes.length ).to.equal( nodeList._nodes.length );
-			expect( deserialized._nodes[ 0 ].name ).to.equal( nodeList._nodes[ 0 ].name );
-			expect( [ ...deserialized._nodes[ 0 ]._attrs ] ).to.deep.equal( [ ...nodeList._nodes[ 0 ]._attrs ] );
+			expect( deserialized.length ).to.equal( nodeList.length );
+			expect( deserialized.get( 0 ).name ).to.equal( nodeList.get( 0 ).name );
+			expect( deserialized.get( 0 ).getChildCount() ).to.equal( nodeList.get( 0 ).getChildCount() );
 
-			expect( deserialized._nodes[ 0 ]._children._indexMap ).to.deep.equal( [ 0, 0, 0 ] );
+			for ( let i = 0; i < 3; i++ ) {
+				expect( deserialized.get( 0 ).getChild( i ).character ).to.equal( nodeList.get( 0 ).getChild( i ).character );
+				expect( deserialized.get( 0 ).getChild( i ).hasAttribute( 'bold' ) ).to.equal( nodeList.get( 0 ).getChild( i ).hasAttribute( 'bold' ) );
+				expect( deserialized.get( 0 ).getChild( i ).getAttribute( 'bold' ) ).to.equal( nodeList.get( 0 ).getChild( i ).getAttribute( 'bold' ) );
+			}
 		} );
 	} );
 } );

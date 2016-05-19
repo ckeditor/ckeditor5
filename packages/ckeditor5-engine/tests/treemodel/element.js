@@ -297,8 +297,7 @@ describe( 'Element', () => {
 
 			expect( deserialized.parent ).to.be.null;
 			expect( deserialized.name ).to.equal( 'el' );
-			expect( deserialized._children.length ).to.equal( 0 );
-			expect( deserialized._attrs.size ).to.equal( 0 );
+			expect( deserialized.getChildCount() ).to.equal( 0 );
 		} );
 
 		it( 'should create element with attributes', () => {
@@ -310,9 +309,9 @@ describe( 'Element', () => {
 
 			expect( deserialized.parent ).to.be.null;
 			expect( deserialized.name ).to.equal( 'el' );
-			expect( deserialized._children.length ).to.equal( 0 );
-			expect( deserialized._attrs.size ).to.equal( 1 );
-			expect( deserialized._attrs.get( 'foo' ) ).to.be.true;
+			expect( deserialized.getChildCount() ).to.equal( 0 );
+			expect( deserialized.hasAttribute( 'foo' ) ).to.be.true;
+			expect( deserialized.getAttribute( 'foo' ) ).to.be.true;
 		} );
 
 		it( 'should create element with children', () => {
@@ -325,11 +324,10 @@ describe( 'Element', () => {
 
 			expect( deserialized.parent ).to.be.null;
 			expect( deserialized.name ).to.equal( 'el' );
-			expect( deserialized._children.length ).to.equal( 1 );
+			expect( deserialized.getChildCount() ).to.equal( 1 );
 
-			expect( deserialized._children._indexMap ).to.deep.equal( [ 0 ] );
-			expect( deserialized._children._nodes[ 0 ].name ).to.equal( 'p' );
-			expect( deserialized._children._nodes[ 0 ].parent ).to.equal( deserialized );
+			expect( deserialized.getChild( 0 ).name ).to.equal( 'p' );
+			expect( deserialized.getChild( 0 ).parent ).to.equal( deserialized );
 		} );
 	} );
 } );
