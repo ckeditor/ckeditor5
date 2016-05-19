@@ -8,14 +8,14 @@
 'use strict';
 
 import CKEDITOR from '/ckeditor.js';
-import ClassicCreator from '/tests/ckeditor5/creator/manual/_utils/creator/classiccreator.js';
+import LegacyCreator from '/tests/ckeditor5/creator/manual/_utils/creator/legacycreator.js';
 import testUtils from '/tests/utils/_utils/utils.js';
 
 let editor, editable, observer;
 
 function initEditor() {
 	CKEDITOR.create( '#editor', {
-		creator: ClassicCreator,
+		creator: LegacyCreator,
 		ui: {
 			width: 400,
 			height: 400

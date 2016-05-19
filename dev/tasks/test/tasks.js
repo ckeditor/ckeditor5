@@ -85,7 +85,8 @@ module.exports = () => {
 			const src = [
 				...benderSrc,
 				'!build/cjs/tests/{ui,ui-*}/**/*.js',
-				'!build/cjs/tests/theme-*/**/*.js'
+				'!build/cjs/tests/theme-*/**/*.js',
+				'!build/cjs/tests/creator-*/**/*.js'
 			];
 
 			return gulp.src( src )

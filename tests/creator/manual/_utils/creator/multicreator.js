@@ -12,14 +12,15 @@ import Editable from '/ckeditor5/editable.js';
 
 import { createEditableUI, createEditorUI } from '/ckeditor5/ui/creator-utils.js';
 
-import BoxedEditorUI from '/tests/ckeditor5/_utils/ui/boxededitorui/boxededitorui.js';
-import BoxedEditorUIView from '/tests/ckeditor5/_utils/ui/boxededitorui/boxededitoruiview.js';
+import BoxedEditorUI from '/ckeditor5/ui/editorui/boxed/boxededitorui.js';
+import BoxedEditorUIView from '/ckeditor5/ui/editorui/boxed/boxededitoruiview.js';
 import EditableUI from '/ckeditor5/ui/editableui/editableui.js';
-import InlineEditableUIView from '/tests/ckeditor5/_utils/ui/editableui/inline/inlineeditableuiview.js';
+import InlineEditableUIView from '/ckeditor5/ui/editableui/inline/inlineeditableuiview.js';
 import Model from '/ckeditor5/ui/model.js';
 import Toolbar from '/ckeditor5/ui/bindings/toolbar.js';
 import ToolbarView from '/ckeditor5/ui/toolbar/toolbarview.js';
-import { imitateFeatures, imitateDestroyFeatures } from '../imitatefeatures.js';
+
+import { imitateFeatures, imitateDestroyFeatures } from '/ckeditor5/creator-classic/utils/imitatefeatures.js';
 
 export default class MultiCreator extends StandardCreator {
 	constructor( editor ) {
@@ -45,7 +46,7 @@ export default class MultiCreator extends StandardCreator {
 		this._createToolbar();
 
 		for ( let editable of editor.editables ) {
-			editor.ui.add( 'editable', createEditableUI( editor, editable, EditableUI, InlineEditableUIView ) );
+			editor.ui.add( 'main', createEditableUI( editor, editable, EditableUI, InlineEditableUIView ) );
 		}
 
 		editor.elements.forEach( ( element ) => {

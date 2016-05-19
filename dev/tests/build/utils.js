@@ -289,7 +289,7 @@ describe( 'build-utils', () => {
 					contents: new Buffer( 'foo()' )
 				} ) );
 			} );
-			
+
 			it( 'should process test file in cjs format', ( done ) => {
 				const buildDir = 'build/';
 				const formats = [ 'cjs' ];
@@ -677,12 +677,12 @@ describe( 'build-utils', () => {
 				const files = [
 					new Vinyl( {
 						cwd: './',
-						path: 'foo/bar/theme.scss',
+						path: 'aaa/aaa/theme.scss',
 						contents: new Buffer( '' )
 					} ),
 					new Vinyl( {
 						cwd: './',
-						path: 'baz/qux/theme.scss',
+						path: 'zzz/ckeditor5-theme-quz/theme.scss',
 						contents: new Buffer( '' )
 					} ),
 					new Vinyl( {
@@ -721,9 +721,11 @@ describe( 'build-utils', () => {
 				}, () => {
 					expect( compiledThemePath ).to.be.equal( 'abc.css' );
 					expect( compiledThemeCss.toString() ).to.be.equal(
-`/*! C:\\win\\dows\\theme.scss */
-/*! baz/qux/theme.scss */
-/*! foo/bar/theme.scss */
+// Note: Order matters. The first one should be ckeditor5-theme-* in order
+// to provide necessary dependencies (mixins, vars) for the following files.
+`/*! zzz/ckeditor5-theme-quz/theme.scss */
+/*! aaa/aaa/theme.scss */
+/*! C:\\win\\dows\\theme.scss */
 ` );
 
 					done();
