@@ -44,7 +44,7 @@ describe( 'DataController', () => {
 		it( 'should set paragraph', () => {
 			schema.registerItem( 'paragraph', '$block' );
 
-			BuildViewConverterFor( data.toModel ).fromElement( 'p' ).toElement( 'paragraph' );
+			BuildViewConverterFor( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
 
 			const model = data.parse( '<p>foo<b>bar</b></p>' );
 
@@ -54,7 +54,7 @@ describe( 'DataController', () => {
 		it( 'should set two paragraphs', () => {
 			schema.registerItem( 'paragraph', '$block' );
 
-			BuildViewConverterFor( data.toModel ).fromElement( 'p' ).toElement( 'paragraph' );
+			BuildViewConverterFor( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
 
 			const model = data.parse( '<p>foo</p><p>bar</p>' );
 
@@ -66,8 +66,8 @@ describe( 'DataController', () => {
 			schema.registerItem( 'paragraph', '$block' );
 			schema.allow( { name: '$text', attributes: [ 'bold' ], inside: '$block' } );
 
-			BuildViewConverterFor( data.toModel ).fromElement( 'p' ).toElement( 'paragraph' );
-			BuildViewConverterFor( data.toModel ).fromElement( 'b' ).toAttribute( 'bold', true );
+			BuildViewConverterFor( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
+			BuildViewConverterFor( data.viewToModel ).fromElement( 'b' ).toAttribute( 'bold', true );
 
 			const model = data.parse( '<p>foo<b>bar</b></p>' );
 
@@ -107,7 +107,7 @@ describe( 'DataController', () => {
 		it( 'should get paragraph with text', () => {
 			setData( modelDocument, '<paragraph>foo</paragraph>' );
 
-			BuildModelConverterFor( data.toView ).fromElement( 'paragraph' ).toElement( 'p' );
+			BuildModelConverterFor( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
 
 			expect( data.get() ).to.equal( '<p>foo</p>' );
 		} );
@@ -115,7 +115,7 @@ describe( 'DataController', () => {
 		it( 'should get empty paragraph', () => {
 			setData( modelDocument, '<paragraph></paragraph>' );
 
-			BuildModelConverterFor( data.toView ).fromElement( 'paragraph' ).toElement( 'p' );
+			BuildModelConverterFor( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
 
 			expect( data.get() ).to.equal( '<p>&nbsp;</p>' );
 		} );
@@ -123,7 +123,7 @@ describe( 'DataController', () => {
 		it( 'should get two paragraphs', () => {
 			setData( modelDocument, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 
-			BuildModelConverterFor( data.toView ).fromElement( 'paragraph' ).toElement( 'p' );
+			BuildModelConverterFor( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
 
 			expect( data.get() ).to.equal( '<p>foo</p><p>bar</p>' );
 		} );
@@ -137,7 +137,7 @@ describe( 'DataController', () => {
 		it( 'should get paragraphs without bold', () => {
 			setData( modelDocument, '<paragraph>foo<$text bold=true>bar</$text></paragraph>' );
 
-			BuildModelConverterFor( data.toView ).fromElement( 'paragraph' ).toElement( 'p' );
+			BuildModelConverterFor( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
 
 			expect( data.get() ).to.equal( '<p>foobar</p>' );
 		} );
@@ -145,8 +145,8 @@ describe( 'DataController', () => {
 		it( 'should get paragraphs with bold', () => {
 			setData( modelDocument, '<paragraph>foo<$text bold=true>bar</$text></paragraph>' );
 
-			BuildModelConverterFor( data.toView ).fromElement( 'paragraph' ).toElement( 'p' );
-			BuildModelConverterFor( data.toView ).fromAttribute( 'bold' ).toElement( 'b' );
+			BuildModelConverterFor( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
+			BuildModelConverterFor( data.modelToView ).fromAttribute( 'bold' ).toElement( 'b' );
 
 			expect( data.get() ).to.equal( '<p>foo<b>bar</b></p>' );
 		} );
@@ -155,8 +155,8 @@ describe( 'DataController', () => {
 			setData( modelDocument, '<paragraph>foo</paragraph>', { rootName: 'main' } );
 			setData( modelDocument, 'Bar', { rootName: 'title' } );
 
-			BuildModelConverterFor( data.toView ).fromElement( 'paragraph' ).toElement( 'p' );
-			BuildModelConverterFor( data.toView ).fromAttribute( 'bold' ).toElement( 'b' );
+			BuildModelConverterFor( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
+			BuildModelConverterFor( data.modelToView ).fromAttribute( 'bold' ).toElement( 'b' );
 
 			expect( data.get() ).to.equal( '<p>foo</p>' );
 			expect( data.get( 'main' ) ).to.equal( '<p>foo</p>' );
