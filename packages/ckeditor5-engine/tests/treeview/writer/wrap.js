@@ -173,7 +173,7 @@ describe( 'Writer', () => {
 			test(
 				'<container:p>[<attribute:b:1 foo="bar" one="two"></attribute:b:1>]</container:p>',
 				'<attribute:b:1 baz="qux" one="two"></attribute:b:1>',
-				'<container:p>[<attribute:b:1 foo="bar" one="two" baz="qux"></attribute:b:1>]</container:p>'
+				'<container:p>[<attribute:b:1 baz="qux" foo="bar" one="two"></attribute:b:1>]</container:p>'
 			);
 		} );
 
@@ -234,7 +234,7 @@ describe( 'Writer', () => {
 				'<attribute:b:1 baz="qux"></attribute:b:1>',
 				'<container:p>' +
 				'[' +
-					'<attribute:b:1 foo="bar" baz="qux">' +
+					'<attribute:b:1 baz="qux" foo="bar">' +
 						'foobar' +
 						'<attribute:i:1>baz</attribute:i:1>' +
 					'</attribute:b:1>' +
