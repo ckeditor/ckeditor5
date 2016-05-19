@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* bender-tags: browser-only */
+
 'use strict';
 
 import BasicHtmlWriter from '/ckeditor5/engine/dataprocessor/basichtmlwriter.js';
