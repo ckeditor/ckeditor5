@@ -5,7 +5,7 @@
 
 'use strict';
 
-import BoxedEditorUIView from '/ckeditor5/ui/boxededitorui/boxededitoruiview.js';
+import BoxedEditorUIView from '/ckeditor5/ui/editorui/boxed/boxededitoruiview.js';
 import Model from '/ckeditor5/ui/model.js';
 import Locale from '/ckeditor5/utils/locale.js';
 

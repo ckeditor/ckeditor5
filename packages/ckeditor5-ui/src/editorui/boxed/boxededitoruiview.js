@@ -8,7 +8,19 @@
 import EditorUIView from '/ckeditor5/ui/editorui/editoruiview.js';
 import uid from '/ckeditor5/utils/uid.js';
 
+/**
+ * Boxed editor UI view.
+ *
+ * @member ui.editorUI.boxed
+ * @extends ui.editorUI.EditorUIView
+ */
 export default class BoxedEditorUIView extends EditorUIView {
+	/**
+	 * Creates a BoxedEditorUIView instance.
+	 *
+	 * @param {utils.Observable} model (View)Model of this view.
+	 * @param {utils.Locale} [locale] The {@link ckeditor5.Editor#locale editor's locale} instance.
+	 */
 	constructor( model, locale ) {
 		super( model, locale );
 

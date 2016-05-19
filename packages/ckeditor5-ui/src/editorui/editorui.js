@@ -20,7 +20,6 @@ import mix from '../../utils/mix.js';
  * @extends ui.Controller
  * @mixes utils.ObservaleMixin
  */
-
 export default class EditorUI extends Controller {
 	/**
 	 * Creates an EditorUI instance.

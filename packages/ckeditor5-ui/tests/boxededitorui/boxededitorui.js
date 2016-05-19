@@ -6,7 +6,7 @@
 'use strict';
 
 import Editor from '/ckeditor5/editor.js';
-import BoxedEditorUI from '/ckeditor5/ui/boxededitorui/boxededitorui.js';
+import BoxedEditorUI from '/ckeditor5/ui/editorui/boxed/boxededitorui.js';
 import ControllerCollection from '/ckeditor5/ui/controllercollection.js';
 
 describe( 'BoxedEditorUI', () => {

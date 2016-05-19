@@ -13,7 +13,6 @@ import Toolbar from './toolbar.js';
  * @memberOf ui.bindings
  * @extends ui.toolbar.Toolbar
  */
-
 export default class StickyToolbar extends Toolbar {
 	/**
 	 * Creates a new toolbar instance.

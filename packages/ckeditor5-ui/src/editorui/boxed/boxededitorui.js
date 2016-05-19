@@ -8,7 +8,19 @@
 import EditorUI from '/ckeditor5/ui/editorui/editorui.js';
 import ControllerCollection from '/ckeditor5/ui/controllercollection.js';
 
+/**
+ * Boxed editor UI. The class representing classic editor interface, which contains of a toolbar and editable are,
+ * closed within a box.
+ *
+ * @member ui.editorUI.boxed
+ * @extends ui.editorUI.EditorUI
+ */
 export default class BoxedEditorUI extends EditorUI {
+	/**
+	 * Creates a BoxedEditorUI instance.
+	 *
+	 * @param {ckeditor5.Editor} editor
+	 */
 	constructor( editor ) {
 		super( editor );
 
@@ -40,7 +52,7 @@ export default class BoxedEditorUI extends EditorUI {
 
 	/**
 	 * @readonly
-	 * @property {Model} viewModel
+	 * @property {ui.Model} viewModel
 	 */
 	get viewModel() {
 		return this;
