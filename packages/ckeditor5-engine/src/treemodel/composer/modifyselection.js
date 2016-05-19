@@ -38,19 +38,18 @@ export default function modifySelection( selection, options = {} ) {
 		return;
 	}
 
-	// Replace TreeWalker step wrapper by clean step value.
-	next = next.value;
+	let value = next.value;
 
 	// 2. Consume next character.
-	if ( next.type == 'CHARACTER' ) {
-		selection.setFocus( next.nextPosition );
+	if ( value.type == 'CHARACTER' ) {
+		selection.setFocus( value.nextPosition );
 
 		return;
 	}
 
 	// 3. We're entering an element, so let's consume it fully.
-	if ( next.type == ( isForward ? 'ELEMENT_START' : 'ELEMENT_END' ) ) {
-		selection.setFocus( next.item, isForward ? 'AFTER' : 'BEFORE' );
+	if ( value.type == ( isForward ? 'ELEMENT_START' : 'ELEMENT_END' ) ) {
+		selection.setFocus( value.item, isForward ? 'AFTER' : 'BEFORE' );
 
 		return;
 	}
@@ -64,16 +63,16 @@ export default function modifySelection( selection, options = {} ) {
 	}
 
 	// Replace TreeWalker step wrapper by clean step value.
-	next = next.value;
+	value = next.value;
 
 	// 4.2. Character found after element end. Not really a valid case in our data model, but let's
 	// do something sensible and put the selection focus before that character.
-	if ( next.type == 'CHARACTER' ) {
-		selection.setFocus( next.previousPosition );
+	if ( value.type == 'CHARACTER' ) {
+		selection.setFocus( value.previousPosition );
 	}
 	// 4.3. OK, we're entering a new element. So let's place there the focus.
 	else {
-		selection.setFocus( next.item, isForward ? 0 : 'END' );
+		selection.setFocus( value.item, isForward ? 0 : 'END' );
 	}
 }
 

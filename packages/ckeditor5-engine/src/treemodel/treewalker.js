@@ -21,9 +21,9 @@ export default class TreeWalker {
 	 * Creates a range iterator. All parameters are optional, but you have to specify either `boundaries` or `startPosition`.
 	 *
 	 * @param {Object} options Object with configuration.
-	 * @param {engine.treeModel.Range} [options.boundaries] Range to define boundaries of the iterator.
+	 * @param {engine.treeModel.Range} [options.boundaries=null] Range to define boundaries of the iterator.
 	 * @param {engine.treeModel.Position} [options.startPosition] Starting position.
-	 * @param {'FORWARD'|'BACKWARD'} [options.direction] Walking direction.
+	 * @param {'FORWARD'|'BACKWARD'} [options.direction='FORWARD'] Walking direction.
 	 * @param {Boolean} [options.singleCharacters=false] Flag indicating whether all consecutive characters with the same attributes
 	 * should be returned one by one as multiple {@link engine.treeModel.CharacterProxy} (`true`) objects or as one
 	 * {@link engine.treeModel.TextProxy} (`false`).
@@ -37,7 +37,7 @@ export default class TreeWalker {
 	 */
 	constructor(
 		{
-			boundaries,
+			boundaries = null,
 			startPosition,
 			direction = 'FORWARD',
 			singleCharacters = false,
@@ -71,7 +71,7 @@ export default class TreeWalker {
 		 *
 		 * @member {engine.treeModel.Range} engine.treeModel.TreeWalker#boundaries
 		 */
-		this.boundaries = boundaries || null;
+		this.boundaries = boundaries;
 
 		/**
 		 * Start boundary cached for optimization purposes.
@@ -107,7 +107,7 @@ export default class TreeWalker {
 		 * @member engine.treeModel.TreeWalker#direction
 		 * @type {'BACKWARD'|'FORWARD'} core.treeModel.TreeWalkerDirection
 		 */
-		this.direction = direction || 'FORWARD';
+		this.direction = direction;
 
 		/**
 		 * Flag indicating whether all consecutive characters with the same attributes should be
@@ -347,20 +347,18 @@ function formatReturnValue( type, item, previousPosition, nextPosition, length )
  * @property {engine.treeModel.TreeWalkerValueType} type
  * @property {engine.treeModel.Item} item Item between old and new positions of {@link engine.treeModel.TreeWalker}.
  * @property {engine.treeModel.Position} previousPosition Previous position of the iterator.
- * 		Forward iteration:
- * 			For `'ELEMENT_END'` it is the last position inside the element. For all other types it is the position
- * 			before the item. Note that it is more efficient to use this position then calculate the position before
- * 			the node using {@link engine.treeModel.Position.createBefore}. It is also more efficient to get the
- * 			position after node by shifting `previousPosition` by `length`, using {@link engine.treeModel.Position#getShiftedBy},
- * 			then calculate the position using {@link engine.treeModel.Position.createAfter}.
- * 		Backward iteration:
- * 			For `'ELEMENT_START'` it is the first position inside the element. For all other types it is the position
- * 			after item.
+ * * Forward iteration: For `'ELEMENT_END'` it is the last position inside the element. For all other types it is the
+ * position before the item. Note that it is more efficient to use this position then calculate the position before
+ * the node using {@link engine.treeModel.Position.createBefore}. It is also more efficient to get the
+ * position after node by shifting `previousPosition` by `length`, using {@link engine.treeModel.Position#getShiftedBy},
+ * then calculate the position using {@link engine.treeModel.Position.createAfter}.
+ * * Backward iteration: For `'ELEMENT_START'` it is the first position inside the element. For all other types it is
+ * the position after item.
  * @property {engine.treeModel.Position} nextPosition Next position of the iterator.
- * 		Forward iteration:
- * 			For `'ELEMENT_START'` it is the first position inside the element. For all other types it is the position after the item.
- * 		Backward iteration:
- *			For `'ELEMENT_END'` it is last position inside element. For all other types it is the position before the item.
+ * * Forward iteration: For `'ELEMENT_START'` it is the first position inside the element. For all other types it is
+ * the position after the item.
+ * * Backward iteration: For `'ELEMENT_END'` it is last position inside element. For all other types it is the position
+ * before the item.
  * @property {Number} [length] Length of the item. For `'ELEMENT_START'` and `'CHARACTER'` it is 1. For `'TEXT'` it is
  * the length of the text. For `'ELEMENT_END'` it is undefined.
  */
