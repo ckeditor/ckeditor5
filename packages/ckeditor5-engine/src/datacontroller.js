@@ -72,6 +72,16 @@ export default class DataController {
 			data = rootName;
 			rootName = 'main';
 		}
+
+		// Save to model
+		const modelRoot = this.model.getRoot( rootName );
+
+		this.model.batch()
+			.remove( ModelRange.createFromElement( modelRoot ) )
+			.insert( ModelPosition.createAt( modelRoot, 0 ), this.parse( data ) );
+	}
+
+	parse( data ) {
 		// data -> DOM
 		const domDocumentFragment = this._processor.toDom( data );
 
@@ -81,12 +91,7 @@ export default class DataController {
 		// view -> model
 		const modelDocumentFragment = this.toModel.convert( viewDocumentFragment, { context: [ '$root' ] } );
 
-		// Save to model
-		const modelRoot = this.model.getRoot( rootName );
-
-		this.model.batch()
-			.remove( ModelRange.createFromElement( modelRoot ) )
-			.insert( ModelPosition.createAt( modelRoot, 0 ), modelDocumentFragment );
+		return modelDocumentFragment;
 	}
 
 	destroy() {}

@@ -14,7 +14,9 @@ import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/HtmlDataProcessor
 import BuildViewConverterFor  from '/ckeditor5/engine/treecontroller/view-converter-builder.js';
 import BuildModelConverterFor  from '/ckeditor5/engine/treecontroller/model-converter-builder.js';
 
-import { getData, setData } from '/tests/engine/_utils/model.js';
+import { getData, setData, stringify } from '/tests/engine/_utils/model.js';
+
+import count from '/ckeditor5/utils/count.js';
 
 describe( 'DataController', () => {
 	let modelDocument, htmlDataProcessor, data, schema;
@@ -22,6 +24,7 @@ describe( 'DataController', () => {
 	beforeEach( () => {
 		modelDocument = new ModelDocument();
 		modelDocument.createRoot( 'main' );
+		modelDocument.createRoot( 'title' );
 
 		htmlDataProcessor = new HtmlDataProcessor();
 
@@ -30,12 +33,12 @@ describe( 'DataController', () => {
 		schema = modelDocument.schema;
 	} );
 
-	describe( 'set', () => {
+	describe( 'parse', () => {
 		it( 'should set text', () => {
 			schema.allow( { name: '$text', inside: '$root' } );
-			data.set( '<p>foo<b>bar</b></p>' );
+			const model = data.parse( '<p>foo<b>bar</b></p>' );
 
-			expect( getData( modelDocument, { withoutSelection: true } ) ).to.equal( 'foobar' );
+			expect( stringify( model ) ).to.equal( 'foobar' );
 		} );
 
 		it( 'should set paragraph', () => {
@@ -43,9 +46,9 @@ describe( 'DataController', () => {
 
 			BuildViewConverterFor( data.toModel ).fromElement( 'p' ).toElement( 'paragraph' );
 
-			data.set( '<p>foo<b>bar</b></p>' );
+			const model = data.parse( '<p>foo<b>bar</b></p>' );
 
-			expect( getData( modelDocument, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
+			expect( stringify( model ) ).to.equal( '<paragraph>foobar</paragraph>' );
 		} );
 
 		it( 'should set two paragraphs', () => {
@@ -53,9 +56,9 @@ describe( 'DataController', () => {
 
 			BuildViewConverterFor( data.toModel ).fromElement( 'p' ).toElement( 'paragraph' );
 
-			data.set( '<p>foo</p><p>bar</p>' );
+			const model = data.parse( '<p>foo</p><p>bar</p>' );
 
-			expect( getData( modelDocument, { withoutSelection: true } ) ).to.equal(
+			expect( stringify( model ) ).to.equal(
 				'<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 		} );
 
@@ -66,10 +69,37 @@ describe( 'DataController', () => {
 			BuildViewConverterFor( data.toModel ).fromElement( 'p' ).toElement( 'paragraph' );
 			BuildViewConverterFor( data.toModel ).fromElement( 'b' ).toAttribute( 'bold', true );
 
-			data.set( '<p>foo<b>bar</b></p>' );
+			const model = data.parse( '<p>foo<b>bar</b></p>' );
 
-			expect( getData( modelDocument, { withoutSelection: true } ) ).to.equal(
+			expect( stringify( model ) ).to.equal(
 				'<paragraph>foo<$text bold=true>bar</$text></paragraph>' );
+		} );
+	} );
+
+	describe( 'set', () => {
+		it( 'should set data to root', () => {
+			schema.allow( { name: '$text', inside: '$root' } );
+			data.set( 'foo' );
+
+			expect( getData( modelDocument, { withoutSelection: true } ) ).to.equal( 'foo' );
+		} );
+
+		it( 'should create a batch', () => {
+			schema.allow( { name: '$text', inside: '$root' } );
+			data.set( 'foo' );
+
+			expect( count( modelDocument.history.getDeltas() ) ).to.equal( 1 );
+		} );
+
+		it( 'should get root name as a parameter', () => {
+			schema.allow( { name: '$text', inside: '$root' } );
+			data.set( 'main', 'foo' );
+			data.set( 'title', 'Bar' );
+
+			expect( getData( modelDocument, { withoutSelection: true, rootName: 'main' } ) ).to.equal( 'foo' );
+			expect( getData( modelDocument, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'Bar' );
+
+			expect( count( modelDocument.history.getDeltas() ) ).to.equal( 2 );
 		} );
 	} );
 
@@ -120,10 +150,25 @@ describe( 'DataController', () => {
 
 			expect( data.get() ).to.equal( '<p>foo<b>bar</b></p>' );
 		} );
+
+		it( 'should get root name as a parameter', () => {
+			setData( modelDocument, '<paragraph>foo</paragraph>', { rootName: 'main' } );
+			setData( modelDocument, 'Bar', { rootName: 'title' } );
+
+			BuildModelConverterFor( data.toView ).fromElement( 'paragraph' ).toElement( 'p' );
+			BuildModelConverterFor( data.toView ).fromAttribute( 'bold' ).toElement( 'b' );
+
+			expect( data.get() ).to.equal( '<p>foo</p>' );
+			expect( data.get( 'main' ) ).to.equal( '<p>foo</p>' );
+			expect( data.get( 'title' ) ).to.equal( 'Bar' );
+		} );
 	} );
 
 	describe( 'destroy', () => {
 		it( 'should be there for you', () => {
+			// Should not throw.
+			data.destroy();
+
 			expect( data ).to.respondTo( 'destroy' );
 		} );
 	} );
