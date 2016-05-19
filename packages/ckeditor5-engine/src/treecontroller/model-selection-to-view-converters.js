@@ -198,13 +198,12 @@ export function convertSelectionAttribute( elementCreator ) {
 export function clearAttributes() {
 	return ( evt, data, consumable, conversionApi ) => {
 		for ( let range of conversionApi.viewSelection.getRanges() ) {
-			const parentNode = range.start.parent;
+			conversionApi.writer.mergeAttributes( range.end );
 
-			if ( parentNode instanceof ViewElement && parentNode.getChildCount() === 0 ) {
-				parentNode.parent.removeChildren( parentNode.getIndex() );
+			if ( !range.isCollapsed ) {
+				conversionApi.writer.mergeAttributes( range.start );
 			}
 		}
-
 		conversionApi.viewSelection.removeAllRanges();
 	};
 }

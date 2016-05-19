@@ -204,6 +204,11 @@ import isIterable from '../../utils/isiterable.js';
 	 *		<p><b>foo</b>[]<b>bar</b> -> <p><b>foo{}bar</b></b>
 	 *		<p><b foo="bar">a</b>[]<b foo="baz">b</b> -> <p><b foo="bar">a</b>[]<b foo="baz">b</b>
 	 *
+	 * It will also take care about empty attributes when merging:
+	 *
+	 *		<p><b>[]</b></p> -> <p>[]</p>
+	 *		<p><b>foo</b><i>[]</i><b>bar</b></p> -> <p><b>foo{}bar</b></p>
+	 *
 	 * @see engine.treeView.AttributeElement
 	 * @see engine.treeView.ContainerElement
 	 * @param {engine.treeView.Position} position Merge position.
@@ -216,6 +221,15 @@ import isIterable from '../../utils/isiterable.js';
 		// When inside text node - nothing to merge.
 		if ( positionParent instanceof Text ) {
 			return position;
+		}
+
+		// When inside empty attribute - remove it.
+		if ( positionParent instanceof AttributeElement && positionParent.getChildCount() === 0 ) {
+			const parent = positionParent.parent;
+			const offset = positionParent.getIndex();
+			positionParent.remove();
+
+			return this.mergeAttributes( new Position( parent, offset ) );
 		}
 
 		const nodeBefore = positionParent.getChild( positionOffset - 1 );
