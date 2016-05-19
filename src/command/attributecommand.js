@@ -40,6 +40,7 @@ export default class AttributeCommand extends Command {
 		 * Flag indicating whether command is active. For collapsed selection it means that typed characters will have
 		 * the command's attribute set. For range selection it means that all nodes inside have the attribute applied.
 		 *
+		 * @observable
 		 * @member {Boolean} ckeditor5.command.AttributeCommand#value
 		 */
 		this.set( 'value', false );
