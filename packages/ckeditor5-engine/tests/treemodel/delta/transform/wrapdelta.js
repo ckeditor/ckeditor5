@@ -22,7 +22,7 @@ import InsertOperation from '/ckeditor5/engine/treemodel/operation/insertoperati
 import MergeDelta from '/ckeditor5/engine/treemodel/delta/mergedelta.js';
 import WrapDelta from '/ckeditor5/engine/treemodel/delta/wrapdelta.js';
 
-import { default as getNodesAndText, jsonParseStringify } from '/tests/engine/treemodel/_utils/utils.js';
+import { getNodesAndText, jsonParseStringify } from '/tests/engine/treemodel/_utils/utils.js';
 
 import {
 	applyDelta,

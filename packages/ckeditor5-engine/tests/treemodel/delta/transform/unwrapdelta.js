@@ -21,7 +21,7 @@ import MoveOperation from '/ckeditor5/engine/treemodel/operation/moveoperation.j
 import MergeDelta from '/ckeditor5/engine/treemodel/delta/mergedelta.js';
 import UnwrapDelta from '/ckeditor5/engine/treemodel/delta/unwrapdelta.js';
 
-import { default as getNodesAndText, jsonParseStringify } from '/tests/engine/treemodel/_utils/utils.js';
+import { getNodesAndText, jsonParseStringify } from '/tests/engine/treemodel/_utils/utils.js';
 
 import {
 	applyDelta,

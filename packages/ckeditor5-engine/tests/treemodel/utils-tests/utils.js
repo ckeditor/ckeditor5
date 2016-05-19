@@ -5,7 +5,7 @@
 
 'use strict';
 
-import { default as getNodesAndText, jsonParseStringify } from '/tests/engine/treemodel/_utils/utils.js';
+import { getNodesAndText, jsonParseStringify } from '/tests/engine/treemodel/_utils/utils.js';
 import Document from '/ckeditor5/engine/treemodel/document.js';
 import Range from '/ckeditor5/engine/treemodel/range.js';
 import Element from '/ckeditor5/engine/treemodel/element.js';

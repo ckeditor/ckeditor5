@@ -7,7 +7,7 @@
 
 'use strict';
 
-import { default as getNodesAndText } from '/tests/engine/treemodel/_utils/utils.js';
+import { getNodesAndText } from '/tests/engine/treemodel/_utils/utils.js';
 import Document from '/ckeditor5/engine/treemodel/document.js';
 import Position from '/ckeditor5/engine/treemodel/position.js';
 import Range from '/ckeditor5/engine/treemodel/range.js';

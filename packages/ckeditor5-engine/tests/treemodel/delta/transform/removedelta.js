@@ -20,7 +20,7 @@ import SplitDelta from '/ckeditor5/engine/treemodel/delta/splitdelta.js';
 
 import MoveOperation from '/ckeditor5/engine/treemodel/operation/moveoperation.js';
 
-import { default as getNodesAndText, jsonParseStringify } from '/tests/engine/treemodel/_utils/utils.js';
+import { getNodesAndText, jsonParseStringify } from '/tests/engine/treemodel/_utils/utils.js';
 
 import {
 	applyDelta,

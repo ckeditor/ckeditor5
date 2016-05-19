@@ -17,7 +17,7 @@ import TreeWalker from '/ckeditor5/engine/treemodel/treewalker.js';
  * @param {engine.treeModel.Range} range Range to stringify.
  * @returns {String} String representing element inner structure.
  */
-export default function getNodesAndText( range ) {
+export function getNodesAndText( range ) {
 	let txt = '';
 	const treeWalker = new TreeWalker( { boundaries: range } );
 
