@@ -39,7 +39,7 @@
 @include ck-editor {
 	.ck-toolbar {
 		.ck-button {
-			border: 0;
+			border-width: 0;
 		}
 
 		// Make sure the next button does not overlap focused one.
@@ -53,6 +53,14 @@
 
 		.ck-button.ck-on {
 			@include ck-button-colors( 'foreground', -10 );
+		}
+
+		.ck-dropdown__button {
+			border-width: 1px;
+		}
+
+		.ck-dropdown__button:not(:hover):not(:focus):not(.ck-on) {
+			background: ck-color( 'background' );
 		}
 	}
 }
