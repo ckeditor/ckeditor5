@@ -20,7 +20,9 @@ import Range from '../range.js';
  * @memberOf engine.treeModel.delta
  */
 export default class RemoveDelta extends MoveDelta {
-	/** @inheritDoc */
+	/**
+	 * @inheritDoc
+	 */
 	static get className() {
 		return 'engine.treeModel.delta.RemoveDelta';
 	}

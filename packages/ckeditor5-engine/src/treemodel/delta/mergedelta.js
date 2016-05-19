@@ -49,7 +49,9 @@ export default class MergeDelta extends Delta {
 		return SplitDelta;
 	}
 
-	/** @inheritDoc */
+	/**
+	 * @inheritDoc
+	 */
 	static get className() {
 		return 'engine.treeModel.delta.MergeDelta';
 	}

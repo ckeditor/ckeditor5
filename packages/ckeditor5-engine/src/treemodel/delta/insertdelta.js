@@ -51,7 +51,9 @@ export default class InsertDelta extends Delta {
 		return RemoveDelta;
 	}
 
-	/** @inheritDoc */
+	/**
+	 * @inheritDoc
+	 */
 	static get className() {
 		return 'engine.treeModel.delta.InsertDelta';
 	}

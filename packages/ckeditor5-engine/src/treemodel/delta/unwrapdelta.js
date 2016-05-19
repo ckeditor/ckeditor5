@@ -45,7 +45,9 @@ export default class UnwrapDelta extends Delta {
 		return WrapDelta;
 	}
 
-	/** @inheritDoc */
+	/**
+	 * @inheritDoc
+	 */
 	static get className() {
 		return 'engine.treeModel.delta.UnwrapDelta';
 	}

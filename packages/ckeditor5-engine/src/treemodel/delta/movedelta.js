@@ -66,7 +66,9 @@ export default class MoveDelta extends Delta {
 		return MoveDelta;
 	}
 
-	/** @inheritDoc */
+	/**
+	 * @inheritDoc
+	 */
 	static get className() {
 		return 'engine.treeModel.delta.MoveDelta';
 	}

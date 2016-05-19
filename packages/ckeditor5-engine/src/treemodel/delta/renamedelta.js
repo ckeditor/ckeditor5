@@ -25,7 +25,9 @@ export default class RenameDelta extends Delta {
 		return RenameDelta;
 	}
 
-	/** @inheritDoc */
+	/**
+	 * @inheritDoc
+	 */
 	static get className() {
 		return 'engine.treeModel.delta.RenameDelta';
 	}

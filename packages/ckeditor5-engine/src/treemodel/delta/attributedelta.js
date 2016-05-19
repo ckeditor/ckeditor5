@@ -70,7 +70,9 @@ export default class AttributeDelta extends Delta {
 		return AttributeDelta;
 	}
 
-	/** @inheritDoc */
+	/**
+	 * @inheritDoc
+	 */
 	static get className() {
 		return 'engine.treeModel.delta.AttributeDelta';
 	}
@@ -89,7 +91,9 @@ export default class AttributeDelta extends Delta {
  * @extends engine.treeModel.delta.Delta
  */
 export class RootAttributeDelta extends Delta {
-	/** @inheritDoc */
+	/**
+	 * @inheritDoc
+	 */
 	static get className() {
 		return 'engine.treeModel.delta.RootAttributeDelta';
 	}
