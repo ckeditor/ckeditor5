@@ -6,7 +6,7 @@
 'use strict';
 
 import Delta from './delta.js';
-import { registerDeserializer } from './deltafactory.js';
+import DeltaFactory from './deltafactory.js';
 import { register } from '../batch.js';
 import Position from '../position.js';
 import Element from '../element.js';
@@ -120,4 +120,4 @@ register( 'split', function( position ) {
 	return this;
 } );
 
-registerDeserializer( SplitDelta.className, SplitDelta );
+DeltaFactory.register( SplitDelta );

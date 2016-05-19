@@ -41,9 +41,9 @@ export default class DeltaFactory {
 			);
 		}
 
-		let Constructor = deserializers.get( json.__className );
+		let Delta = deserializers.get( json.__className );
 
-		let delta = new Constructor();
+		let delta = new Delta();
 
 		for ( let operation of json.operations ) {
 			delta.addOperation( OperationFactory.fromJSON( operation, doc ) );
@@ -51,10 +51,15 @@ export default class DeltaFactory {
 
 		return delta;
 	}
+
+	/**
+	 * Registers a class for delta factory.
+	 *
+	 * @param {Function} Delta A delta class to register.
+	 */
+	static register( Delta ) {
+		deserializers.set( Delta.className, Delta );
+	}
 }
 
 const deserializers = new Map();
-
-export function registerDeserializer( className, constructor ) {
-	deserializers.set( className, constructor );
-}

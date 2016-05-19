@@ -7,7 +7,7 @@
 
 import InsertDelta from './insertdelta.js';
 import { register } from '../batch.js';
-import { registerDeserializer } from './deltafactory.js';
+import DeltaFactory from './deltafactory.js';
 import InsertOperation from '../operation/insertoperation.js';
 import NodeList from '../nodelist.js';
 
@@ -63,4 +63,4 @@ register( 'weakInsert', function( position, nodes ) {
 	return this;
 } );
 
-registerDeserializer( WeakInsertDelta.className, WeakInsertDelta );
+DeltaFactory.register( WeakInsertDelta );

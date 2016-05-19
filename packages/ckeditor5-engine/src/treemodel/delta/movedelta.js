@@ -6,7 +6,7 @@
 'use strict';
 
 import Delta from './delta.js';
-import { registerDeserializer } from './deltafactory.js';
+import DeltaFactory from './deltafactory.js';
 import { register } from '../batch.js';
 import MoveOperation from '../operation/moveoperation.js';
 import Position from '../position.js';
@@ -114,4 +114,4 @@ register( 'move', function( nodeOrRange, targetPosition ) {
 	return this;
 } );
 
-registerDeserializer( MoveDelta.className, MoveDelta );
+DeltaFactory.register( MoveDelta );

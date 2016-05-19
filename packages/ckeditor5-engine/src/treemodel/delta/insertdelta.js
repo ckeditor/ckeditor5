@@ -6,7 +6,7 @@
 'use strict';
 
 import Delta from './delta.js';
-import { registerDeserializer } from './deltafactory.js';
+import DeltaFactory from './deltafactory.js';
 import RemoveDelta from './removedelta.js';
 import { register } from '../batch.js';
 import InsertOperation from '../operation/insertoperation.js';
@@ -82,4 +82,4 @@ register( 'insert', function( position, nodes ) {
 	return this;
 } );
 
-registerDeserializer( InsertDelta.className, InsertDelta );
+DeltaFactory.register( InsertDelta );

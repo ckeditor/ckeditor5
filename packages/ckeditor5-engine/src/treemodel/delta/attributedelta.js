@@ -6,7 +6,7 @@
 'use strict';
 
 import Delta from './delta.js';
-import { registerDeserializer } from './deltafactory.js';
+import DeltaFactory from './deltafactory.js';
 import { register } from '../batch.js';
 import AttributeOperation from '../operation/attributeoperation.js';
 import RootAttributeOperation from '../operation/rootattributeoperation.js';
@@ -216,6 +216,6 @@ function changeRange( batch, doc, attributeKey, attributeValue, range ) {
 	}
 }
 
-registerDeserializer( AttributeDelta.className, AttributeDelta );
+DeltaFactory.register( AttributeDelta );
 
-registerDeserializer( RootAttributeDelta.className, RootAttributeDelta );
+DeltaFactory.register( RootAttributeDelta );

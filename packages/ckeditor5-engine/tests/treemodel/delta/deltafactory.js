@@ -20,7 +20,7 @@ import RootAttributeOperation from '/ckeditor5/engine/treemodel/operation/rootat
 
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
-import { default as DeltaFactory, registerDeserializer } from '/ckeditor5/engine/treemodel/delta/deltafactory.js';
+import DeltaFactory from '/ckeditor5/engine/treemodel/delta/deltafactory.js';
 
 import Document from '/ckeditor5/engine/treemodel/document.js';
 import Position from '/ckeditor5/engine/treemodel/position.js';
@@ -39,22 +39,16 @@ class BarDelta extends Delta {
 	}
 }
 
-class FooBarDelta extends Delta {
-	static get className() {
-		return 'tets.delta.foobar';
-	}
-}
-
 describe( 'DeltaFactory', () => {
 	describe( 'fromJSON', () => {
 		let delta, root, doc;
 
 		before( () => {
-			registerDeserializer( FooBarDelta.className, FooDelta );
+			DeltaFactory.register( FooDelta );
 		} );
 
 		beforeEach( () => {
-			delta = new FooBarDelta();
+			delta = new FooDelta();
 
 			doc = new Document();
 			root = doc.createRoot( 'root' );
@@ -156,15 +150,21 @@ describe( 'DeltaFactory', () => {
 		} );
 	} );
 
-	describe( 'registerDeserializer', () => {
+	describe( 'register', () => {
 		it( 'should add delta deserializer', ( done ) => {
-			registerDeserializer( 'foo', deserializer );
+			class SomeDelta {
+				constructor() {
+					done();
+				}
+
+				static get className() {
+					return 'foo';
+				}
+			}
+
+			DeltaFactory.register( SomeDelta );
 
 			DeltaFactory.fromJSON( { __className: 'foo', operations: [] } );
-
-			function deserializer() {
-				done();
-			}
 		} );
 	} );
 } );

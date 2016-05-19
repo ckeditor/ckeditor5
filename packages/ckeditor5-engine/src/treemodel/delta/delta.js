@@ -6,7 +6,7 @@
 'use strict';
 
 import clone from '../../../utils/lib/lodash/clone.js';
-import { registerDeserializer } from './deltafactory.js';
+import DeltaFactory from './deltafactory.js';
 
 /**
  * Base class for all deltas.
@@ -160,4 +160,4 @@ export default class Delta {
 	}
 }
 
-registerDeserializer( Delta.className, Delta );
+DeltaFactory.register( Delta );

@@ -6,7 +6,7 @@
 'use strict';
 
 import Delta from './delta.js';
-import { registerDeserializer } from './deltafactory.js';
+import DeltaFactory from './deltafactory.js';
 import WrapDelta from './wrapdelta.js';
 import { register } from '../batch.js';
 import Position from '../position.js';
@@ -94,4 +94,4 @@ register( 'unwrap', function( element ) {
 	return this;
 } );
 
-registerDeserializer( UnwrapDelta.className, UnwrapDelta );
+DeltaFactory.register( UnwrapDelta );
