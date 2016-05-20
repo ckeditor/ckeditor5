@@ -43,6 +43,12 @@ describe( 'Creator', () => {
 			expect( editor.data ).to.be.instanceof( DataController );
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
 		} );
+
+		it( 'uses HtmlDataProcessor if no processor is provided in constructor', () => {
+			creator = new StandardCreator( editor );
+
+			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
+		} );
 	} );
 
 	describe( 'create', () => {
