@@ -25,7 +25,12 @@ describe( 'Writer', () => {
 	 * @param {String} expectedRemoved
 	 */
 	function test( input, expectedResult, expectedRemoved ) {
-		const { view, selection } = parse( input );
+		let { view, selection } = parse( input );
+
+		if ( !( view instanceof DocumentFragment ) ) {
+			view = new DocumentFragment( view );
+		}
+
 		const range = selection.getFirstRange();
 		const removed = writer.remove( range );
 		expect( stringify( view, range, { showType: true, showPriority: true } ) ).to.equal( expectedResult );
@@ -90,6 +95,10 @@ describe( 'Writer', () => {
 				'<container:p><attribute:b:1>fo{}zqux</attribute:b:1></container:p>',
 				'<attribute:b:1>o</attribute:b:1>bar<attribute:b:1>ba</attribute:b:1>'
 			);
+		} );
+
+		it( 'should remove part of the text node in document fragment', () => {
+			test( 'fo{ob}ar', 'fo{}ar', 'ob' );
 		} );
 	} );
 } );

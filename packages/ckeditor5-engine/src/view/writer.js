@@ -25,13 +25,16 @@ import isIterable from '../../utils/isiterable.js';
 	 * Returns first parent container of specified {@link engine.view.Position Position}.
 	 * Position's parent node is checked as first, then next parents are checked.
 	 *
+	 * Note that {@link engine.view.DocumentFragment DocumentFragment} is thread like a container.
+	 *
 	 * @param {engine.view.Position} position Position used as a start point to locate parent container.
-	 * @returns {engine.view.Element|undefined} Parent container element or `undefined` if container is not found.
+	 * @returns {engine.view.ContainerElement|engine.view.DocumentFragment|undefined} Parent container element or
+	 * `undefined` if container is not found.
 	 */
 	getParentContainer( position ) {
 		let parent = position.parent;
 
-		while ( !( parent instanceof ContainerElement ) ) {
+		while ( !isContainerOrFragment( parent ) ) {
 			if ( !parent ) {
 				return undefined;
 			}
@@ -49,6 +52,8 @@ import isIterable from '../../utils/isiterable.js';
 	 *		<p>foo<b><u>bar{}</u></b></p> -> <p>foo<b><u>bar</u></b>[]</p>
 	 *		<p>foo<b><u>{}bar</u></b></p> -> <p>foo{}<b><u>bar</u></b></p>
 	 *		<p>foo<b><u>b{}ar</u></b></p> -> <p>foo<b><u>b</u></b>[]<b><u>ar</u></b></p>
+	 *
+	 * Note that {@link engine.view.DocumentFragment DocumentFragment} is thread like a container.
 	 *
 	 * @see engine.view.AttributeElement
 	 * @see engine.view.ContainerElement
@@ -75,12 +80,12 @@ import isIterable from '../../utils/isiterable.js';
 		const positionParent = position.parent;
 
 		// There are no attributes to break and text nodes breaking is not forced.
-		if ( !forceSplitText && positionParent instanceof Text && positionParent.parent instanceof ContainerElement ) {
+		if ( !forceSplitText && positionParent instanceof Text && isContainerOrFragment( positionParent.parent ) ) {
 			return Position.createFromPosition( position );
 		}
 
 		// Position's parent is container, so no attributes to break.
-		if ( positionParent instanceof ContainerElement ) {
+		if ( isContainerOrFragment( positionParent ) ) {
 			return Position.createFromPosition( position );
 		}
 
@@ -142,6 +147,8 @@ import isIterable from '../../utils/isiterable.js';
 	 * Throws {@link utils.CKEditorError CKEditorError} `view-writer-invalid-range-container` when
 	 * {@link engine.view.Range#start start} and {@link engine.view.Range#end end} positions are not placed inside
 	 * same parent container.
+	 *
+	 * Note that {@link engine.view.DocumentFragment DocumentFragment} is thread like a container.
 	 *
 	 * @see engine.view.Writer#breakAttribute
 	 * @param {engine.view.Range} range Range which `start` and `end` positions will be used to break attributes.
@@ -936,4 +943,9 @@ function validateNodesToInsert( nodes ) {
 			validateNodesToInsert( node.getChildren() );
 		}
 	}
+}
+
+// Checks if node is ContainerElement or DocumentFragment, because in most cases they should be thread the same way.
+function isContainerOrFragment( node ) {
+	return node instanceof ContainerElement || node instanceof DocumentFragment;
 }

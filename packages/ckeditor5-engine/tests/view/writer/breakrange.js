@@ -8,6 +8,7 @@
 'use strict';
 
 import Writer from '/ckeditor5/engine/view/writer.js';
+import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import Range from '/ckeditor5/engine/view/range.js';
 import { stringify, parse } from '/tests/engine/_utils/view.js';
@@ -22,7 +23,12 @@ describe( 'Writer', () => {
 	 * @param {String} expected
 	 */
 	function test( input, expected ) {
-		const { view, selection } = parse( input );
+		let { view, selection } = parse( input );
+
+		if ( !( view instanceof DocumentFragment ) ) {
+			view = new DocumentFragment( view );
+		}
+
 		const newRange = writer.breakRange( selection.getFirstRange() );
 		expect( stringify( view, newRange, { showType: true } ) ).to.equal( expected );
 	}
@@ -94,6 +100,20 @@ describe( 'Writer', () => {
 			test(
 				'<container:p>foo{bar<attribute:b>baz}qux</attribute:b></container:p>',
 				'<container:p>foo{bar<attribute:b>baz</attribute:b>]<attribute:b>qux</attribute:b></container:p>'
+			);
+		} );
+
+		it( 'should split attribute element directly in document fragment', () => {
+			test(
+				'<attribute:b>fo{ob}ar</attribute:b>',
+				'<attribute:b>fo</attribute:b>[<attribute:b>ob</attribute:b>]<attribute:b>ar</attribute:b>'
+			);
+		} );
+
+		it( 'should not split text directly in document fragment', () => {
+			test(
+				'foo{}bar',
+				'foo{}bar'
 			);
 		} );
 	} );
