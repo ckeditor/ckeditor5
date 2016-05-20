@@ -26,13 +26,16 @@ beforeEach( () => {
 
 describe( 'constructor', () => {
 	it( 'should set configurations', () => {
-		expect( config ).to.have.property( 'creator' ).to.equal( 'inline' );
-		expect( config ).to.have.property( 'language' ).to.equal( 'pl' );
-		expect( config ).to.have.property( 'resize' ).to.have.property( 'minheight' ).to.equal( 300 );
-		expect( config ).to.have.property( 'resize' ).to.have.property( 'maxheight' ).to.equal( 800 );
-		expect( config ).to.have.property( 'resize' ).to.have.property( 'icon' )
-			.to.have.property( 'path' ).to.equal( 'xyz' );
-		expect( config ).to.have.property( 'toolbar' ).to.equal( 'top' );
+		expect( config.get( 'creator' ) ).to.equal( 'inline' );
+		expect( config.get( 'language' ) ).to.equal( 'pl' );
+		expect( config.get( 'resize' ) ).to.eql( {
+			minheight: 300,
+			maxheight: 800,
+			icon: {
+				path: 'xyz'
+			}
+		} );
+		expect( config.get( 'toolbar' ) ).to.equal( 'top' );
 	} );
 
 	it( 'should work with no parameters', () => {
@@ -43,8 +46,8 @@ describe( 'constructor', () => {
 
 describe( 'set', () => {
 	it( 'should create Config instances for objects', () => {
-		expect( config.resize ).to.be.an.instanceof( Config );
-		expect( config.resize.icon ).to.be.an.instanceof( Config );
+		expect( config.get( 'resize' ) ).to.be.an.instanceof( Config );
+		expect( config.get( 'resize.icon' ) ).to.be.an.instanceof( Config );
 	} );
 
 	it( 'should set configurations when passing objects', () => {
@@ -55,32 +58,53 @@ describe( 'set', () => {
 			}
 		} );
 
-		expect( config )
-			.to.have.property( 'option1' ).to.equal( 1 );
-
-		expect( config )
-			.to.have.property( 'option2' )
-			.to.have.property( 'suboption21' ).to.equal( 21 );
+		expect( config.get( 'option1' ) ).to.equal( 1 );
+		expect( config.get( 'option2.suboption21' ) ).to.equal( 21 );
 	} );
 
 	it( 'should set configurations when passing name and value', () => {
 		config.set( 'something', 'anything' );
 
-		expect( config ).to.have.property( 'something' ).to.equal( 'anything' );
+		expect( config.get( 'something' ) ).to.equal( 'anything' );
 	} );
 
 	it( 'should set configurations when passing name.with.deep and value', () => {
 		config.set( 'color.red', 'f00' );
 		config.set( 'background.color.blue', '00f' );
 
-		expect( config )
-			.to.have.property( 'color' )
-			.to.have.property( 'red' ).to.equal( 'f00' );
+		expect( config.get( 'color.red' ) ).to.equal( 'f00' );
+		expect( config.get( 'background.color.blue' ) ).to.equal( '00f' );
+	} );
 
-		expect( config )
-			.to.have.property( 'background' )
-			.to.have.property( 'color' )
-			.to.have.property( 'blue' ).to.equal( '00f' );
+	it( 'should replace a simple entry with a Config instance', () => {
+		config.set( 'test', 1 );
+		config.set( 'test', {
+			prop: 1
+		} );
+
+		expect( config.get( 'test' ) ).to.be.an.instanceof( Config );
+		expect( config.get( 'test.prop' ) ).to.equal( 1 );
+	} );
+
+	it( 'should replace a simple entry with a Config instance when passing an object', () => {
+		config.set( 'test', 1 );
+		config.set( {
+			test: {
+				prop: 1
+			}
+		} );
+
+		expect( config.get( 'test' ) ).to.be.an.instanceof( Config );
+		expect( config.get( 'test.prop' ) ).to.equal( 1 );
+	} );
+
+	it( 'should replace a simple entry with a Config instance when passing a name.with.deep', () => {
+		config.set( 'test.prop', 1 );
+		config.set( 'test.prop.value', 1 );
+
+		expect( config.get( 'test' ) ).to.be.an.instanceof( Config );
+		expect( config.get( 'test.prop' ) ).to.be.an.instanceof( Config );
+		expect( config.get( 'test.prop.value' ) ).to.equal( 1 );
 	} );
 
 	it( 'should override and expand deep configurations', () => {
@@ -95,45 +119,36 @@ describe( 'set', () => {
 			}
 		} );
 
-		expect( config ).to.have.property( 'resize' );
-		expect( config.resize ).to.have.property( 'minheight' ).to.equal( 400 );
-		expect( config.resize ).to.have.property( 'maxheight' ).to.equal( 800 );	// Not touched
-		expect( config.resize ).to.have.property( 'hidden' ).to.equal( true );
-
-		expect( config.resize ).to.have.property( 'icon' );
-		expect( config.resize.icon ).to.have.property( 'path' ).to.equal( 'abc' );
-		expect( config.resize.icon ).to.have.property( 'url' ).to.equal( true );
-	} );
-
-	it( 'should replace a simple entry with a Config instance', () => {
-		config.set( 'test', 1 );
-		config.set( 'test', {
-			prop: 1
+		expect( config.get( 'resize' ) ).to.be.eql( {
+			minheight: 400,		// Overridden
+			maxheight: 800,		// The same
+			hidden: true,		// Expanded
+			icon: {
+				path: 'abc',	// Overridden
+				url: true		// Expanded
+			}
 		} );
-
-		expect( config.test ).to.be.an.instanceof( Config );
-		expect( config.test.prop ).to.equal( 1 );
 	} );
 
-	it( 'should replace a simple entry with a Config instance when passing an object', () => {
-		config.set( 'test', 1 );
-		config.set( {
-			test: {
-				prop: 1
+	it( 'should override and expand Config instance when passing an object', () => {
+		config.set( 'resize', {
+			minHeight: 400,		// Override
+			hidden: true,		// Expand
+			icon: {
+				path: 'abc',	// Override
+				url: true		// Expand
 			}
 		} );
 
-		expect( config.test ).to.be.an.instanceof( Config );
-		expect( config.test.prop ).to.equal( 1 );
-	} );
-
-	it( 'should replace a simple entry with a Config instance when passing a name.with.deep', () => {
-		config.set( 'test.prop', 1 );
-		config.set( 'test.prop.value', 1 );
-
-		expect( config.test ).to.be.an.instanceof( Config );
-		expect( config.test.prop ).to.be.an.instanceof( Config );
-		expect( config.test.prop.value ).to.equal( 1 );
+		expect( config.get( 'resize' ) ).to.be.eql( {
+			minheight: 400,		// Overridden
+			maxheight: 800,		// The same
+			hidden: true,		// Expanded
+			icon: {
+				path: 'abc',	// Overridden
+				url: true		// Expanded
+			}
+		} );
 	} );
 
 	it( 'should not create Config instances for non-pure objects', () => {
@@ -144,15 +159,114 @@ describe( 'set', () => {
 			instance: new SomeClass()
 		} );
 
-		expect( config.date ).to.be.an.instanceof( Date );
-		expect( config.instance ).to.be.an.instanceof( SomeClass );
+		expect( config.get( 'date' ) ).to.be.an.instanceof( Date );
+		expect( config.get( 'instance' ) ).to.be.an.instanceof( SomeClass );
 	} );
 
 	it( 'should set `null` for undefined value', () => {
 		config.set( 'test' );
 
-		expect( config.test ).to.be.null;
-		expect( config.get( 'test' ) ).to.be.null;
+		expect( config.get( 'test' ) ).to.be.null();
+	} );
+} );
+
+describe( 'define', () => {
+	it( 'should set configurations when passing objects', () => {
+		config.set( {
+			option1: 1,
+			option2: {
+				subOption21: 21
+			}
+		} );
+
+		expect( config.get( 'option1' ) ).to.equal( 1 );
+		expect( config.get( 'option2.suboption21' ) ).to.equal( 21 );
+	} );
+
+	it( 'should set configurations when passing name and value', () => {
+		config.set( 'something', 'anything' );
+
+		expect( config.get( 'something' ) ).to.equal( 'anything' );
+	} );
+
+	it( 'should set configurations when passing name.with.deep and value', () => {
+		config.set( 'color.red', 'f00' );
+		config.set( 'background.color.blue', '00f' );
+
+		expect( config.get( 'color.red' ) ).to.equal( 'f00' );
+		expect( config.get( 'background.color.blue' ) ).to.equal( '00f' );
+	} );
+
+	it( 'should not replace already defined values', () => {
+		config.define( 'language', 'en' );
+		config.define( 'resize.minHeight', 400 );
+		config.define( 'resize.icon', 'some value' );
+
+		expect( config.get( 'language' ) ).to.equal( 'pl' );
+		expect( config.get( 'resize.icon' ) ).to.be.instanceof( Config );
+		expect( config.get( 'resize.minheight' ) ).to.equal( 300 );
+	} );
+
+	it( 'should expand but not override deep configurations', () => {
+		config.define( {
+			resize: {
+				minHeight: 400,		// Override
+				hidden: true,		// Expand
+				icon: {
+					path: 'abc',	// Override
+					url: true		// Expand
+				}
+			}
+		} );
+
+		expect( config.get( 'resize' ) ).to.be.eql( {
+			minheight: 300,		// The same
+			maxheight: 800,		// The same
+			hidden: true,		// Expanded
+			icon: {
+				path: 'xyz',	// The same
+				url: true		// Expanded
+			}
+		} );
+	} );
+
+	it( 'should expand but not override Config instance when passing an object', () => {
+		config.define( 'resize', {
+			minHeight: 400,		// Override
+			hidden: true,		// Expand
+			icon: {
+				path: 'abc',	// Override
+				url: true		// Expand
+			}
+		} );
+
+		expect( config.get( 'resize' ) ).to.be.eql( {
+			minheight: 300,		// The same
+			maxheight: 800,		// The same
+			hidden: true,		// Expanded
+			icon: {
+				path: 'xyz',	// The same
+				url: true		// Expanded
+			}
+		} );
+	} );
+
+	it( 'should not create Config instances for non-pure objects', () => {
+		function SomeClass() {}
+
+		config.define( 'date', new Date() );
+		config.define( {
+			instance: new SomeClass()
+		} );
+
+		expect( config.get( 'date' ) ).to.be.an.instanceof( Date );
+		expect( config.get( 'instance' ) ).to.be.an.instanceof( SomeClass );
+	} );
+
+	it( 'should set `null` for undefined value', () => {
+		config.define( 'test' );
+
+		expect( config.get( 'test' ) ).to.be.null();
 	} );
 } );
 
@@ -169,13 +283,13 @@ describe( 'get', () => {
 	it( 'should retrieve a subset of the configuration', () => {
 		let resizeConfig = config.get( 'resize' );
 
-		expect( resizeConfig ).to.have.property( 'minheight' ).to.equal( 300 );
-		expect( resizeConfig ).to.have.property( 'maxheight' ).to.equal( 800 );
-		expect( resizeConfig ).to.have.property( 'icon' ).to.have.property( 'path' ).to.equal( 'xyz' );
+		expect( resizeConfig.get( 'minheight' ) ).equal( 300 );
+		expect( resizeConfig.get( 'maxheight' ) ).to.equal( 800 );
+		expect( resizeConfig.get( 'icon' ) ).to.be.instanceof( Config );
 
 		let iconConfig = resizeConfig.get( 'icon' );
 
-		expect( iconConfig ).to.have.property( 'path' ).to.equal( 'xyz' );
+		expect( iconConfig.get( 'path' ) ).to.equal( 'xyz' );
 	} );
 
 	it( 'should retrieve values case-insensitively', () => {
@@ -189,50 +303,21 @@ describe( 'get', () => {
 		expect( config.get( 'invalid' ) ).to.be.undefined;
 	} );
 
+	it( 'should return undefined for empty configuration', () => {
+		config = new Config();
+
+		expect( config.get( 'invalid' ) ).to.be.undefined;
+		expect( config.get( 'deep.invalid' ) ).to.be.undefined;
+	} );
+
 	it( 'should return undefined for non existing deep configuration', () => {
 		expect( config.get( 'resize.invalid.value' ) ).to.be.undefined;
 	} );
-} );
 
-describe( 'define', () => {
-	it( 'should create the definition property', () => {
-		expect( config ).to.not.have.property( 'definition' );
-
-		config.define( 'test', 1 );
-
-		expect( config ).to.have.property( 'definition' );
-	} );
-
-	it( 'should set configurations in the definition property', () => {
-		config.define( 'test1', 1 );
-
-		// This is for Code Coverage to ensure that it works when `definition` is already defined.
-		config.define( 'test2', 2 );
-
-		expect( config.definition ).to.have.property( 'test1' ).to.equal( 1 );
-		expect( config.definition ).to.have.property( 'test2' ).to.equal( 2 );
-	} );
-
-	it( 'should set configurations passed as object in the definition property', () => {
-		config.define( {
-			test: 1
-		} );
-
-		expect( config.definition ).to.have.property( 'test' ).to.equal( 1 );
-	} );
-
-	it( 'should not define main config properties but still be retrieved with get()', () => {
-		config.define( 'test', 1 );
-
-		expect( config ).to.not.have.property( 'test' );
-		expect( config.get( 'test' ) ).to.equal( 1 );
-	} );
-
-	it( 'should be overridden by set()', () => {
-		config.define( 'test', 1 );
-		config.set( 'test', 2 );
-
-		expect( config ).to.have.property( 'test' ).to.equal( 2 );
-		expect( config.get( 'test' ) ).to.equal( 2 );
+	it( 'should not be possible to retrieve value directly from config object', () => {
+		expect( config.creator ).to.be.undefined;
+		expect( () => {
+			config.resize.maxheight;
+		} ).to.throw();
 	} );
 } );

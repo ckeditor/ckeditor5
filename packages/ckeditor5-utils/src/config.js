@@ -5,18 +5,16 @@
 
 'use strict';
 
-import ObservableMixin from './observablemixin.js';
 import isObject from './lib/lodash/isObject.js';
 import isPlainObject from './lib/lodash/isPlainObject.js';
-import mix from './mix.js';
 
 /**
  * Handles a configuration dictionary.
  *
  * @memberOf utils
- * @mixes utils.ObservableMixin
  */
 export default class Config {
+
 	/**
 	 * Creates an instance of the {@link Config} class.
 	 *
@@ -24,8 +22,16 @@ export default class Config {
 	 */
 	constructor( configurations ) {
 		if ( configurations ) {
-			this.set( configurations );
+			this._set( configurations );
 		}
+
+		/**
+		 * Store for whole configuration. Configuration is hide it private property to be not accessible
+		 * directly from Config instance to keep consistent API.
+		 *
+		 * @private
+		 * @member {ConfigSubset} utils.config#_config
+		 */
 	}
 
 	/**
@@ -66,53 +72,19 @@ export default class Config {
 	 * @param {*} [value=null] The configuration value. Used if a name is passed to nameOrConfigurations.
 	 */
 	set( name, value ) {
-		// Just pass the call to the original set() in case of an object. It'll deal with recursing through the
-		// object and calling set( name, value ) again for each property.
-		if ( isObject( name ) ) {
-			ObservableMixin.set.apply( this, arguments );
+		this._set( name, value );
+	}
 
-			return;
-		}
-
-		// The target for this configuration is, for now, this object.
-		let target = this;
-
-		// The configuration name should be split into parts if it has dots. E.g: `resize.width`.
-		const parts = name.toLowerCase().split( '.' );
-
-		// Take the name of the configuration out of the parts. E.g. `resize.width` -> `width`
-		name = parts.pop();
-
-		// Retrieves the final target for this configuration recursively.
-		for ( let i = 0; i < parts.length; i++ ) {
-			// The target will always be an instance of Config.
-			if ( !( target[ parts[ i ] ] instanceof Config ) ) {
-				target.set( parts[ i ], new Config() );
-			}
-
-			target = target[ parts[ i ] ];
-		}
-
-		// Values set as pure objects will be treated as Config subsets.
-		if ( isPlainObject( value ) ) {
-			// If the target is an instance of Config (a deep config subset).
-			if ( target[ name ] instanceof Config ) {
-				// Amend the target with the value, instead of replacing it.
-				target[ name ].set( value );
-
-				return;
-			}
-
-			value = new Config( value );
-		}
-
-		// Values will never be undefined.
-		if ( typeof value == 'undefined' ) {
-			value = null;
-		}
-
-		// Call the original set() on the target.
-		ObservableMixin.set.call( target, name, value );
+	/**
+	 * Does exactly the same as {@link utils.Config#set} with one exception - passed configuration extends
+	 * existing one, but does not overwrite already defined values.
+	 *
+	 * @param {String|Object} name The configuration name or an object from which take properties as
+	 * configuration entries. Configuration names are case-insensitive.
+	 * @param {*} [value=null] The configuration value. Used if a name is passed to nameOrConfigurations.
+	 */
+	define( name, value ) {
+		this._set( name, value, true );
 	}
 
 	/**
@@ -131,16 +103,26 @@ export default class Config {
 		// The target for this configuration is, for now, this object.
 		let source = this;
 
-		// The configuration name should be split into parts if it has dots. E.g. `resize.width` -> [`resize`, `width`]
+		// Whole configuration is stored in private property.
+		if ( !( source instanceof ConfigSubset ) ) {
+			// Configuration is empty.
+			if ( !source._config ) {
+				return;
+			}
+
+			source = source._config;
+		}
+
+		// The configuration name should be split into parts if it has dots. E.g. `resize.width` -> [`resize`, `width`].
 		const parts = name.toLowerCase().split( '.' );
 
-		// Take the name of the configuration from the parts. E.g. `resize.width` -> `width`
+		// Take the name of the configuration out of the parts. E.g. `resize.width` -> `width`.
 		name = parts.pop();
 
 		// Retrieves the source for this configuration recursively.
 		for ( let i = 0; i < parts.length; i++ ) {
 			// The target will always be an instance of Config.
-			if ( !( source[ parts[ i ] ] instanceof Config ) ) {
+			if ( !( source[ parts[ i ] ] instanceof ConfigSubset ) ) {
 				source = null;
 				break;
 			}
@@ -148,44 +130,98 @@ export default class Config {
 			source = source[ parts[ i ] ];
 		}
 
-		// Try to retrieve it from the source object.
-		if ( source && ( typeof source[ name ] != 'undefined' ) ) {
-			return source[ name ];
-		}
-
-		// If not found, take it from the definition.
-		if ( this.definition ) {
-			return this.definition[ name ];
-		}
+		// Always returns undefined for non existing configuration
+		return source ? source[ name ] : undefined;
 	}
 
 	/**
-	 * Defines the name and default value for configurations. It accepts the same parameters as the
-	 * {@link Config#set set()} method.
+	 * Converts and saves passed configuration.
 	 *
-	 * On first call, the {@link Config#definition definition} property is created to hold all defined
-	 * configurations.
-	 *
-	 * This method is supposed to be called by plugin developers to setup plugin's configurations. It would be
-	 * rarely used for other needs.
-	 *
+	 * @private
 	 * @param {String|Object} name The configuration name or an object from which take properties as
-	 * configuration entries.
-	 * @param {*} [value] The configuration value. Used if a name is passed to nameOrConfigurations. If undefined,
-	 * the configuration is set to `null`.
+	 * configuration entries. Configuration names are case-insensitive.
+	 * @param {*} [value=null] The configuration value. Used if a name is passed to nameOrConfigurations.
+	 * @param {Boolean} [isDefine=false] Define if passed configuration should overwrite existing one.
 	 */
-	define( name, value ) {
-		if ( !this.definition ) {
-			/**
-			 * TODO
-			 *
-			 * @type {Config}
-			 */
-			this.definition = new Config();
+	_set( name, value, isDefine ) {
+		// In case of an object, iterate through it and call set( name, value ) again for each property.
+		if ( isObject( name ) ) {
+			this._setObject( name, isDefine );
+
+			return;
 		}
 
-		this.definition.set( name, value );
+		// The target for this configuration is, for now, this object.
+		let target = this;
+
+		// If we are at the top of the configuration tree, hide configuration in private property
+		// to prevent of getting properties directly from config, to keep consistent API.
+		if ( !( target instanceof ConfigSubset ) ) {
+			if ( !target._config ) {
+				target._config = new ConfigSubset();
+			}
+
+			target = target._config;
+		}
+
+		// The configuration name should be split into parts if it has dots. E.g: `resize.width`.
+		const parts = name.toLowerCase().split( '.' );
+
+		// Take the name of the configuration out of the parts. E.g. `resize.width` -> `width`
+		name = parts.pop();
+
+		// Retrieves the final target for this configuration recursively.
+		for ( let i = 0; i < parts.length; i++ ) {
+			// The target will always be an instance of Config.
+			if ( !( target[ parts[ i ] ] instanceof ConfigSubset ) ) {
+				target.set( parts[ i ], new ConfigSubset() );
+			}
+
+			target = target[ parts[ i ] ];
+		}
+
+		// Values set as pure objects will be treated as Config subsets.
+		if ( isPlainObject( value ) ) {
+			// If the target is an instance of Config (a deep config subset).
+			if ( target[ name ] instanceof ConfigSubset ) {
+				// Amend the target with the value, instead of replacing it.
+				target[ name ]._setObject( value, isDefine );
+
+				return;
+			}
+
+			value = new ConfigSubset( value );
+		}
+
+		// Do nothing if there is already defined configuration for this name
+		// and configuration is set as default.
+		if ( isDefine && typeof target[ name ] != 'undefined' ) {
+			return;
+		}
+
+		// Values will never be undefined.
+		if ( typeof value == 'undefined' ) {
+			value = null;
+		}
+
+		target[ name ] = value;
+	}
+
+	/**
+	 * Iterate through passed object and call set method with object key and value for each property.
+	 *
+	 * @private
+	 * @param {Object} configuration Configuration data set
+	 * @param {Boolean} isDefine Defines if passed configuration is default configuration or not
+	 */
+	_setObject( configuration, isDefine ) {
+		Object.keys( configuration ).forEach( ( key ) => {
+			this._set( key, configuration[ key ], isDefine );
+		}, this );
 	}
 }
 
-mix( Config, ObservableMixin );
+/**
+ * Helper class to recognize if current configuration is nested or the top.
+ */
+class ConfigSubset extends Config {}
