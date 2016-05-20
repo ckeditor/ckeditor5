@@ -12,6 +12,8 @@ import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import Range from '/ckeditor5/engine/view/range.js';
 import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import { stringify, parse } from '/tests/engine/_utils/view.js';
+import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
+import Text from '/ckeditor5/engine/view/text.js';
 
 describe( 'Writer', () => {
 	let writer;
@@ -25,7 +27,12 @@ describe( 'Writer', () => {
 	 * @param {String} expectedRemoved
 	 */
 	function test( input, expectedResult, expectedRemoved ) {
-		const { view, selection } = parse( input );
+		let { view, selection } = parse( input );
+
+		if ( view instanceof AttributeElement || view instanceof Text ) {
+			view = new DocumentFragment( view );
+		}
+
 		const range = selection.getFirstRange();
 		const removed = writer.remove( range );
 		expect( stringify( view, range, { showType: true, showPriority: true } ) ).to.equal( expectedResult );
@@ -90,6 +97,10 @@ describe( 'Writer', () => {
 				'<container:p><attribute:b:1>fo{}zqux</attribute:b:1></container:p>',
 				'<attribute:b:1>o</attribute:b:1>bar<attribute:b:1>ba</attribute:b:1>'
 			);
+		} );
+
+		it( 'should remove part of the text node in document fragment', () => {
+			test( 'fo{ob}ar', 'fo{}ar', 'ob' );
 		} );
 	} );
 } );

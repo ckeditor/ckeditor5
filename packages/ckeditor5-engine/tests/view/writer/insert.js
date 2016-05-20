@@ -8,11 +8,14 @@
 'use strict';
 
 import Writer from '/ckeditor5/engine/view/writer.js';
+import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import Element from '/ckeditor5/engine/view/element.js';
 import Position from '/ckeditor5/engine/view/position.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import { stringify, parse } from '/tests/engine/_utils/view.js';
+import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
+import Text from '/ckeditor5/engine/view/text.js';
 
 describe( 'Writer', () => {
 	let writer;
@@ -26,7 +29,12 @@ describe( 'Writer', () => {
 	 */
 	function test( input, nodesToInsert, expected ) {
 		nodesToInsert = nodesToInsert.map( node => parse( node ) );
-		const { view, selection } = parse( input );
+		let { view, selection } = parse( input );
+
+		if ( view instanceof AttributeElement || view instanceof Text ) {
+			view = new DocumentFragment( view );
+		}
+
 		const newRange = writer.insert( selection.getFirstPosition(), nodesToInsert );
 		expect( stringify( view, newRange, { showType: true, showPriority: true } ) ).to.equal( expected );
 	}
@@ -125,6 +133,22 @@ describe( 'Writer', () => {
 				'<container:p><attribute:b:1>qux</attribute:b:1>[]baz</container:p>',
 				[ '<attribute:b:1>foo</attribute:b:1>', 'bar' ],
 				'<container:p><attribute:b:1>qux{foo</attribute:b:1>bar}baz</container:p>'
+			);
+		} );
+
+		it( 'should insert text into in document fragment', () => {
+			test(
+				'foo{}bar',
+				[ 'baz' ],
+				'foo{baz}bar'
+			);
+		} );
+
+		it( 'should merge same attribute nodes in document fragment', () => {
+			test(
+				'<attribute:b:2>foo</attribute:b:2>[]',
+				[ '<attribute:b:1>bar</attribute:b:1>' ],
+				'<attribute:b:2>foo</attribute:b:2>[<attribute:b:1>bar</attribute:b:1>]'
 			);
 		} );
 

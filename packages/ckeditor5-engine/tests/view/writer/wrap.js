@@ -11,6 +11,7 @@ import Writer from '/ckeditor5/engine/view/writer.js';
 import Element from '/ckeditor5/engine/view/element.js';
 import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
+import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import Position from '/ckeditor5/engine/view/position.js';
 import Range from '/ckeditor5/engine/view/range.js';
 import Text from '/ckeditor5/engine/view/text.js';
@@ -28,7 +29,12 @@ describe( 'Writer', () => {
 	 * @param {String} expected
 	 */
 	function test( input, unwrapAttribute, expected ) {
-		const { view, selection } = parse( input );
+		let { view, selection } = parse( input );
+
+		if ( view instanceof AttributeElement || view instanceof Text ) {
+			view = new DocumentFragment( view );
+		}
+
 		const newRange = writer.wrap( selection.getFirstRange(), parse( unwrapAttribute ) );
 		expect( stringify( view, newRange, { showType: true, showPriority: true } ) ).to.equal( expected );
 	}
@@ -51,6 +57,14 @@ describe( 'Writer', () => {
 				'<container:p>[foobar]</container:p>',
 				'<attribute:b:1></attribute:b:1>',
 				'<container:p>[<attribute:b:1>foobar</attribute:b:1>]</container:p>'
+			);
+		} );
+
+		it( 'wraps single text node in document fragment', () => {
+			test(
+				'{foobar}',
+				'<attribute:b:1></attribute:b:1>',
+				'[<attribute:b:1>foobar</attribute:b:1>]'
 			);
 		} );
 

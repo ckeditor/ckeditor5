@@ -8,6 +8,9 @@
 'use strict';
 
 import Writer from '/ckeditor5/engine/view/writer.js';
+import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
+import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
+import Text from '/ckeditor5/engine/view/text.js';
 import { stringify, parse } from '/tests/engine/_utils/view.js';
 
 describe( 'Writer', () => {
@@ -21,7 +24,13 @@ describe( 'Writer', () => {
 	 * @param {String} expected
 	 */
 	function test( input, expected ) {
-		const { view, selection } = parse( input );
+		let { view, selection } = parse( input );
+
+		// Wrap attributes and text into DocumentFragment.
+		if ( view instanceof AttributeElement || view instanceof Text ) {
+			view = new DocumentFragment( view );
+		}
+
 		const newPosition = writer.breakAttributes( selection.getFirstPosition() );
 		expect( stringify( view, newPosition, { showType: true, showPriority: true } ) ).to.equal( expected );
 	}
@@ -96,6 +105,20 @@ describe( 'Writer', () => {
 			test(
 				'<container:p><attribute:b:1><attribute:u:1>foobar{}</attribute:u:1></attribute:b:1></container:p>',
 				'<container:p><attribute:b:1><attribute:u:1>foobar</attribute:u:1></attribute:b:1>[]</container:p>'
+			);
+		} );
+
+		it( 'should split attribute element directly in document fragment', () => {
+			test(
+				'<attribute:b:1>foo{}bar</attribute:b:1>',
+				'<attribute:b:1>foo</attribute:b:1>[]<attribute:b:1>bar</attribute:b:1>'
+			);
+		} );
+
+		it( 'should not split text directly in document fragment', () => {
+			test(
+				'foo{}bar',
+				'foo{}bar'
 			);
 		} );
 	} );

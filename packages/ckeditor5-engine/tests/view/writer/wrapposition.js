@@ -11,9 +11,11 @@ import Writer from '/ckeditor5/engine/view/writer.js';
 import Text from '/ckeditor5/engine/view/text.js';
 import Element from '/ckeditor5/engine/view/element.js';
 import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
+import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import Position from '/ckeditor5/engine/view/position.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import { stringify, parse } from '/tests/engine/_utils/view.js';
+import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
 
 describe( 'wrapPosition', () => {
 	let writer;
@@ -26,7 +28,12 @@ describe( 'wrapPosition', () => {
 	 * @param {String} expected
 	 */
 	function test( input, unwrapAttribute, expected ) {
-		const { view, selection } = parse( input );
+		let { view, selection } = parse( input );
+
+		if ( view instanceof AttributeElement || view instanceof Text ) {
+			view = new DocumentFragment( view );
+		}
+
 		const newPosition = writer.wrapPosition( selection.getFirstPosition(), parse( unwrapAttribute ) );
 		expect( stringify( view, newPosition, { showType: true, showPriority: true } ) ).to.equal( expected );
 	}
@@ -58,6 +65,14 @@ describe( 'wrapPosition', () => {
 			'<container:p>foo{}bar</container:p>',
 			'<attribute:b:1></attribute:b:1>',
 			'<container:p>foo<attribute:b:1>[]</attribute:b:1>bar</container:p>'
+		);
+	} );
+
+	it( 'should wrap position inside document fragment', () => {
+		test(
+			'<attribute:b:1>foo</attribute:b:1>[]<attribute:b:3>bar</attribute:b:3>',
+			'<attribute:b:2></attribute:b:2>',
+			'<attribute:b:1>foo</attribute:b:1><attribute:b:2>[]</attribute:b:2><attribute:b:3>bar</attribute:b:3>'
 		);
 	} );
 
