@@ -20,6 +20,7 @@ export default class TreeWalker {
 	/**
 	 * Creates a range iterator. All parameters are optional, but you have to specify either `boundaries` or `startPosition`.
 	 *
+	 * @constructor
 	 * @param {Object} options Object with configuration.
 	 * @param {engine.model.Position} [options.startPosition] Starting position.
 	 * @param {engine.model.Range} [options.boundaries=null] Range to define boundaries of the iterator.
@@ -34,7 +35,6 @@ export default class TreeWalker {
 	 * tags. If the option is true walker will not return a parent node of start position. If this option is `true`
 	 * each {@link engine.model.Element} will be returned once, while if the option is `false` they might be returned
 	 * twice: for `'ELEMENT_START'` and `'ELEMENT_END'`.
-	 * @constructor
 	 */
 	constructor(
 		{
@@ -70,9 +70,60 @@ export default class TreeWalker {
 		 *
 		 * If boundaries are not defined they are set before first and after last child of the root node.
 		 *
+		 * @readonly
 		 * @member {engine.model.Range} engine.model.TreeWalker#boundaries
 		 */
 		this.boundaries = boundaries;
+
+		/**
+		 * Iterator position. This is always static position, even if the initial position was a
+		 * {@link engine.model.LivePosition live position}.
+		 *
+		 * @readonly
+		 * @member {engine.model.Position} engine.model.TreeWalker#position
+		 */
+		if ( startPosition ) {
+			this.position = Position.createFromPosition( startPosition );
+		} else {
+			this.position = Position.createFromPosition( boundaries[ direction == 'BACKWARD' ? 'end' : 'start' ] );
+		}
+
+		/**
+		 * Walking direction. Defaults `FORWARD`.
+		 *
+		 * @readonly
+		 * @member {'BACKWARD'|'FORWARD'} engine.model.TreeWalker#direction
+		 */
+		this.direction = direction;
+
+		/**
+		 * Flag indicating whether all consecutive characters with the same attributes should be
+		 * returned as one {@link engine.model.CharacterProxy} (`true`) or one by one (`false`).
+		 *
+		 * @readonly
+		 * @member {Boolean} engine.model.TreeWalker#singleCharacters
+		 */
+		this.singleCharacters = !!singleCharacters;
+
+		/**
+		 * Flag indicating whether iterator should enter elements or not. If the iterator is shallow child nodes of any
+		 * iterated node will not be returned along with `ELEMENT_END` tag.
+		 *
+		 * @readonly
+		 * @member {Boolean} engine.model.TreeWalker#shallow
+		 */
+		this.shallow = !!shallow;
+
+		/**
+		 * Flag indicating whether iterator should ignore `ELEMENT_END` tags. If the option is true walker will not
+		 * return a parent node of the start position. If this option is `true` each {@link engine.model.Element} will
+		 * be returned once, while if the option is `false` they might be returned twice:
+		 * for `'ELEMENT_START'` and `'ELEMENT_END'`.
+		 *
+		 * @readonly
+		 * @member {Boolean} engine.model.TreeWalker#ignoreElementEnd
+		 */
+		this.ignoreElementEnd = !!ignoreElementEnd;
 
 		/**
 		 * Start boundary cached for optimization purposes.
@@ -89,52 +140,6 @@ export default class TreeWalker {
 		 * @member {engine.model.Element} engine.model.TreeWalker#_boundaryEndParent
 		 */
 		this._boundaryEndParent = this.boundaries ? this.boundaries.end.parent : null;
-
-		/**
-		 * Iterator position. This is always static position, even if the initial position was a
-		 * {@link engine.model.LivePosition live position}.
-		 *
-		 * @member {engine.model.Position} engine.model.TreeWalker#position
-		 */
-		if ( startPosition ) {
-			this.position = Position.createFromPosition( startPosition );
-		} else {
-			this.position = Position.createFromPosition( boundaries[ direction == 'BACKWARD' ? 'end' : 'start' ] );
-		}
-
-		/**
-		 * Walking direction. Defaults `FORWARD`.
-		 *
-		 * @member engine.model.TreeWalker#direction
-		 * @type {'BACKWARD'|'FORWARD'} core.model.TreeWalkerDirection
-		 */
-		this.direction = direction;
-
-		/**
-		 * Flag indicating whether all consecutive characters with the same attributes should be
-		 * returned as one {@link engine.model.CharacterProxy} (`true`) or one by one (`false`).
-		 *
-		 * @member {Boolean} engine.model.TreeWalker#singleCharacters
-		 */
-		this.singleCharacters = !!singleCharacters;
-
-		/**
-		 * Flag indicating whether iterator should enter elements or not. If the iterator is shallow child nodes of any
-		 * iterated node will not be returned along with `ELEMENT_END` tag.
-		 *
-		 * @member {Boolean} engine.model.TreeWalker#shallow
-		 */
-		this.shallow = !!shallow;
-
-		/**
-		 * Flag indicating whether iterator should ignore `ELEMENT_END` tags. If the option is true walker will not
-		 * return a parent node of the start position. If this option is `true` each {@link engine.model.Element} will
-		 * be returned once, while if the option is `false` they might be returned twice:
-		 * for `'ELEMENT_START'` and `'ELEMENT_END'`.
-		 *
-		 * @member {Boolean} engine.model.TreeWalker#ignoreElementEnd
-		 */
-		this.ignoreElementEnd = !!ignoreElementEnd;
 
 		/**
 		 * Parent of the most recently visited node. Cached for optimization purposes.
@@ -157,7 +162,7 @@ export default class TreeWalker {
 	 * Detects walking direction and makes step forward or backward.
 	 *
 	 * @returns {Object} Object implementing iterator interface, returning information about taken step.
- 	 */
+	 */
 	next() {
 		if ( this.direction == 'FORWARD' ) {
 			return this._next();
@@ -175,6 +180,7 @@ export default class TreeWalker {
 	 * Makes a step forward in model. Moves the {@link #position} to the next position and returns the encountered value.
 	 *
 	 * @private
+	 * @returns {Object}
 	 * @returns {Boolean} return.done True if iterator is done.
 	 * @returns {engine.model.TreeWalkerValue} return.value Information about taken step.
 	 */
@@ -248,6 +254,7 @@ export default class TreeWalker {
 	 * Makes a step backward in model. Moves the {@link #position} to the previous position and returns the encountered value.
 	 *
 	 * @private
+	 * @returns {Object}
 	 * @returns {Boolean} return.done True if iterator is done.
 	 * @returns {core.model.TreeWalkerValue} return.value Information about taken step.
 	 */
