@@ -9,6 +9,11 @@ import Model from '/ckeditor5/ui/model.js';
 import Button from '/ckeditor5/ui/button/button.js';
 import ButtonView from '/ckeditor5/ui/button/buttonview.js';
 
+import Collection from '/ckeditor5/utils/collection.js';
+
+import ListDropdown from '/ckeditor5/ui/dropdown/list/listdropdown.js';
+import DropdownView from '/ckeditor5/ui/dropdown/dropdownview.js';
+
 /**
  * Immitates that some features were loaded and did their job.
  *
@@ -37,6 +42,8 @@ export function imitateFeatures( editor ) {
 
 	editor.ui.featureComponents.add( 'bold', Button, ButtonView, boldModel );
 
+	// -------------------------------------------------------------------------------------------
+
 	/* istanbul ignore next */
 	const italicModel = new Model( {
 		isEnabled: true,
@@ -57,9 +64,40 @@ export function imitateFeatures( editor ) {
 
 	window.boldModel = boldModel;
 	window.italicModel = italicModel;
+
+	// -------------------------------------------------------------------------------------------
+
+	const fontCollection = new Collection( { idProperty: 'label' } );
+
+	/* istanbul ignore next */
+	[ 'Arial', 'Times New Roman', 'Comic Sans MS', 'Georgia', 'Trebuchet MS', 'Verdana' ]
+		.sort()
+		.forEach( font => {
+			fontCollection.add( new Model( { label: font, style: `font-family: "${ font }"` } ) );
+		} );
+
+	/* istanbul ignore next */
+	const fontListModel = new Model( {
+		items: fontCollection
+	} );
+
+	/* istanbul ignore next */
+	const fontModel = new Model( {
+		label: t( 'Font' ),
+		isEnabled: true,
+		isOn: false,
+		content: fontListModel
+	} );
+
+	editor.ui.featureComponents.add( 'font', ListDropdown, DropdownView, fontModel );
+
+	window.fontCollection = fontCollection;
+	window.Model = Model;
 }
 
 export function imitateDestroyFeatures() {
 	delete window.boldModel;
 	delete window.italicModel;
+	delete window.fontCollection;
+	delete window.Model;
 }

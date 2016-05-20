@@ -16,7 +16,7 @@ let editor, editable, observer;
 function initEditor() {
 	CKEDITOR.create( '#editor', {
 		creator: ClassicCreator,
-		toolbar: [ 'bold', 'italic' ]
+		toolbar: [ 'bold', 'italic', 'font' ]
 	} )
 	.then( ( newEditor ) => {
 		console.log( 'Editor was initialized', newEditor );
@@ -45,3 +45,5 @@ function destroyEditor() {
 
 document.getElementById( 'initEditor' ).addEventListener( 'click', initEditor );
 document.getElementById( 'destroyEditor' ).addEventListener( 'click', destroyEditor );
+
+initEditor();
