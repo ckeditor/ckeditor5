@@ -20,7 +20,7 @@ export default class Undo extends Feature {
 		super( editor );
 
 		/**
-		 * Undo command which manages undo {@link engine.treeModel.Batch batches} stack (history).
+		 * Undo command which manages undo {@link engine.model.Batch batches} stack (history).
 		 * Created and registered during {@link undo.Undo#init feature initialization}.
 		 *
 		 * @private
@@ -29,7 +29,7 @@ export default class Undo extends Feature {
 		this._undoCommand = null;
 
 		/**
-		 * Undo command which manages redo {@link engine.treeModel.Batch batches} stack (history).
+		 * Undo command which manages redo {@link engine.model.Batch batches} stack (history).
 		 * Created and registered during {@link undo.Undo#init feature initialization}.
 		 *
 		 * @private
@@ -41,7 +41,7 @@ export default class Undo extends Feature {
 		 * Keeps track of which batch has already been added to undo manager.
 		 *
 		 * @private
-		 * @member {WeakSet.<engine.treeModel.Batch>} undo.Undo#_batchRegistry
+		 * @member {WeakSet.<engine.model.Batch>} undo.Undo#_batchRegistry
 		 */
 		this._batchRegistry = new WeakSet();
 	}

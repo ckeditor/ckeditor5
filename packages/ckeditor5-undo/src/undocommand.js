@@ -31,7 +31,7 @@ export default class UndoCommand extends Command {
 	/**
 	 * Stores a batch in the command. Stored batches can be then reverted.
 	 *
-	 * @param {engine.treeModel.Batch} batch Batch to add.
+	 * @param {engine.model.Batch} batch Batch to add.
 	 */
 	addBatch( batch ) {
 		const selection = {
@@ -59,12 +59,12 @@ export default class UndoCommand extends Command {
 	}
 
 	/**
-	 * Executes the command: reverts a {@link engine.treeModel.Batch batch} added to the command's stack,
+	 * Executes the command: reverts a {@link engine.model.Batch batch} added to the command's stack,
 	 * applies it on the document and removes the batch from the stack.
 	 *
 	 * @protected
 	 * @fires undo.undoCommand#event:revert
-	 * @param {engine.treeModel.Batch} [batch] If set, batch that should be undone. If not set, the last added batch will be undone.
+	 * @param {engine.model.Batch} [batch] If set, batch that should be undone. If not set, the last added batch will be undone.
 	 */
 	_doExecute( batch ) {
 		let batchIndex;
@@ -207,5 +207,5 @@ export default class UndoCommand extends Command {
  * Fired after `UndoCommand` reverts a batch.
  *
  * @event undo.UndoCommand#revert
- * @param {engine.treeModel.Batch} undoBatch The batch instance that got reverted.
+ * @param {engine.model.Batch} undoBatch The batch instance that got reverted.
  */

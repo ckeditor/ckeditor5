@@ -8,8 +8,8 @@
 'use strict';
 
 import Editor from '/ckeditor5/editor.js';
-import ModelDocument from '/ckeditor5/engine/treemodel/document.js';
-import Position from '/ckeditor5/engine/treemodel/position.js';
+import ModelDocument from '/ckeditor5/engine/model/document.js';
+import Position from '/ckeditor5/engine/model/position.js';
 import UndoFeature from '/ckeditor5/undo/undo.js';
 
 let element, editor, undo, batch, doc, root;
