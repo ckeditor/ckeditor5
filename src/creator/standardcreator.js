@@ -8,8 +8,8 @@
 import Creator from './creator.js';
 
 import Document from '../engine/treemodel/document.js';
-import DataController from '../engine/treecontroller/datacontroller.js';
-import EditingController from '../engine/treecontroller/editingcontroller.js';
+import DataController from '../engine/datacontroller.js';
+import EditingController from '../engine/editingcontroller.js';
 
 /**
  * Standard creator for browser environment.
@@ -20,8 +20,8 @@ import EditingController from '../engine/treecontroller/editingcontroller.js';
 export default class StandardCreator extends Creator {
 	/**
 	 * Creates an instance of the standard creator. Initializes the engine ({@link engine.treeModel.Document document},
-	 * {@link engine.treeController.EditingController editing controller} and
-	 * {@link engine.treeController.DataController data controller}).
+	 * {@link engine.EditingController editing controller} and
+	 * {@link engine.DataController data controller}).
 	 *
 	 * @param {ckeditor5.Editor} The editor instance.
 	 * @param {engine.dataProcessor.DataProcessor} The data processor to use.
