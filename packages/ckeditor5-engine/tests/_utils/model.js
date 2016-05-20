@@ -5,20 +5,20 @@
 
 'use strict';
 
-import TreeWalker from '/ckeditor5/engine/treemodel/treewalker.js';
-import Range from '/ckeditor5/engine/treemodel/range.js';
-import Position from '/ckeditor5/engine/treemodel/position.js';
-import Text from '/ckeditor5/engine/treemodel/text.js';
-import RootElement from '/ckeditor5/engine/treemodel/rootelement.js';
-import Element from '/ckeditor5/engine/treemodel/element.js';
-import DocumentFragment from '/ckeditor5/engine/treemodel/documentfragment.js';
-import Selection from '/ckeditor5/engine/treemodel/selection.js';
-import Document from '/ckeditor5/engine/treemodel/document.js';
+import TreeWalker from '/ckeditor5/engine/model/treewalker.js';
+import Range from '/ckeditor5/engine/model/range.js';
+import Position from '/ckeditor5/engine/model/position.js';
+import Text from '/ckeditor5/engine/model/text.js';
+import RootElement from '/ckeditor5/engine/model/rootelement.js';
+import Element from '/ckeditor5/engine/model/element.js';
+import DocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
+import Selection from '/ckeditor5/engine/model/selection.js';
+import Document from '/ckeditor5/engine/model/document.js';
 
 /**
- * Writes the contents of the {@link engine.treeModel.Document Document} to an HTML-like string.
+ * Writes the contents of the {@link engine.model.Document Document} to an HTML-like string.
  *
- * @param {engine.treeModel.Document} document
+ * @param {engine.model.Document} document
  * @param {Object} [options]
  * @param {Boolean} [options.withoutSelection=false] Whether to write the selection. When set to `true` selection will
  * be not included in returned string.
@@ -38,9 +38,9 @@ export function getData( document, options = {} ) {
 getData._stringify = stringify;
 
 /**
- * Sets the contents of the {@link engine.treeModel.Document Document} provided as HTML-like string.
+ * Sets the contents of the {@link engine.model.Document Document} provided as HTML-like string.
  *
- * @param {engine.treeModel.Document} document
+ * @param {engine.model.Document} document
  * @param {String} data HTML-like string to write into Document.
  * @param {Object} options
  * @param {String} [options.rootName] Root name where parsed data will be stored. If not provided, default `main` name will be
@@ -59,9 +59,9 @@ setData._parse = parse;
 /**
  * Converts model nodes to HTML-like string representation.
  *
- * @param {engine.treeModel.RootElement|engine.treeModel.Element|engine.treeModel.Text|
- * engine.treeModel.DocumentFragment} node Node to stringify.
- * @param {engine.treeModel.Selection|engine.treeModel.Position|engine.treeModel.Range} [selectionOrPositionOrRange = null ]
+ * @param {engine.model.RootElement|engine.model.Element|engine.model.Text|
+ * engine.model.DocumentFragment} node Node to stringify.
+ * @param {engine.model.Selection|engine.model.Position|engine.model.Range} [selectionOrPositionOrRange = null ]
  * Selection instance which ranges will be included in returned string data. If Range instance is provided - it will be
  * converted to selection containing this range. If Position instance is provided - it will be converted to selection
  * containing one range collapsed at this position.
@@ -116,15 +116,15 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 }
 
 /**
- * Parses HTML-like string and returns model {@link engine.treeModel.RootElement rootElement}.
+ * Parses HTML-like string and returns model {@link engine.model.RootElement rootElement}.
  *
  * @param {String} data HTML-like string to be parsed.
  * @param {Object} options
- * @param {engine.treeModel.Document} [options.document] Document from which root element and selection will be used. If
- * not provided new {engine.treeModel.Document document} instance will be created.
+ * @param {engine.model.Document} [options.document] Document from which root element and selection will be used. If
+ * not provided new {engine.model.Document document} instance will be created.
  * @param {String} [options.rootName='main'] When `document` option is provided this root name will be used to create
- * {engine.treeModel.RootElement RootElement} instance.
- * @returns {engine.treeModel.RootElement|Object} Returns parsed RootElement or object with two fields `model`
+ * {engine.model.RootElement RootElement} instance.
+ * @returns {engine.model.RootElement|Object} Returns parsed RootElement or object with two fields `model`
  * and `selection` when selection ranges were included in data to parse.
  */
 export function parse( data, options = {} ) {

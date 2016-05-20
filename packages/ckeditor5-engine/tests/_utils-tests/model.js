@@ -6,12 +6,12 @@
 'use strict';
 
 import { stringify, parse, getData, setData } from '/tests/engine/_utils/model.js';
-import Document from '/ckeditor5/engine/treemodel/document.js';
-import DocumentFragment from '/ckeditor5/engine/treemodel/documentfragment.js';
-import Element from '/ckeditor5/engine/treemodel/element.js';
-import Text from '/ckeditor5/engine/treemodel/text.js';
-import Range from '/ckeditor5/engine/treemodel/range.js';
-import Position from '/ckeditor5/engine/treemodel/position.js';
+import Document from '/ckeditor5/engine/model/document.js';
+import DocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
+import Element from '/ckeditor5/engine/model/element.js';
+import Text from '/ckeditor5/engine/model/text.js';
+import Range from '/ckeditor5/engine/model/range.js';
+import Position from '/ckeditor5/engine/model/position.js';
 
 describe( 'model test utils', () => {
 	let document, root, selection, sandbox;
