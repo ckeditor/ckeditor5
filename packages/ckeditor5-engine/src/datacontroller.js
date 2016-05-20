@@ -111,7 +111,7 @@ export default class DataController {
 		 *
 		 * Or use {@link engine.conversion.ViewConverterBuilder}:
 		 *
-		 *		BuildViewConverterFor( data.viewToModel ).fromElement( 'b' ).toAttribute( 'bold', true );
+		 *		BuildViewConverterFor( data.viewToModel ).fromElement( 'b' ).toAttribute( 'bold', 'true' );
 		 *
 		 * @readonly
 		 * @member {engine.conversion.ViewConversionDispatcher} engine.DataController#viewToModel
