@@ -15,18 +15,18 @@ export default class Paragraph extends Feature {
 		const document = editor.document;
 		const schema = document.schema;
 		const data = editor.data;
-		const editing = editor.editing;
+		// const editing = editor.editing;
 
 		// Schema.
 		schema.registerItem( 'paragraph', '$block' );
 
 		// Build converter from model to view for data and editing pipelines.
-		BuildModelConverterFor( data.toView, editing.toView )
+		BuildModelConverterFor( data.modelToView )
 			.fromElement( 'paragraph' )
 			.toElement( 'p' );
 
 		// Build converter from view to model for data and editing pipelines.
-		BuildViewConverterFor( data.toModel, editing.toModel )
+		BuildViewConverterFor( data.viewToModel )
 			.fromElement( 'p' )
 			.toElement( 'paragraph' );
 	}
