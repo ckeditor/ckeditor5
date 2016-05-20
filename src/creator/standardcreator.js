@@ -7,7 +7,7 @@
 
 import Creator from './creator.js';
 
-import Document from '../engine/treemodel/document.js';
+import Document from '../engine/model/document.js';
 import DataController from '../engine/datacontroller.js';
 import EditingController from '../engine/editingcontroller.js';
 
@@ -19,7 +19,7 @@ import EditingController from '../engine/editingcontroller.js';
  */
 export default class StandardCreator extends Creator {
 	/**
-	 * Creates an instance of the standard creator. Initializes the engine ({@link engine.treeModel.Document document},
+	 * Creates an instance of the standard creator. Initializes the engine ({@link engine.model.Document document},
 	 * {@link engine.EditingController editing controller} and
 	 * {@link engine.DataController data controller}).
 	 *

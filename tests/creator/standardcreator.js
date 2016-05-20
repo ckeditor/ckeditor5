@@ -12,7 +12,7 @@ import Creator from '/ckeditor5/creator/creator.js';
 import StandardCreator from '/ckeditor5/creator/standardcreator.js';
 import Editor from '/ckeditor5/editor.js';
 import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
-import Document from '/ckeditor5/engine/treemodel/document.js';
+import Document from '/ckeditor5/engine/model/document.js';
 import EditingController from '/ckeditor5/engine/editingcontroller.js';
 import DataController from '/ckeditor5/engine/datacontroller.js';
 

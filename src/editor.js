@@ -101,7 +101,7 @@ export default class Editor {
 		 * This property is set by the {@link ckeditor5.creator.Creator}.
 		 *
 		 * @readonly
-		 * @member {engine.treeModel.Document} ckeditor5.Editor#document
+		 * @member {engine.model.Document} ckeditor5.Editor#document
 		 */
 
 		/**

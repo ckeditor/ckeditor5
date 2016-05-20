@@ -6,12 +6,12 @@
 'use strict';
 
 import Editor from '/ckeditor5/editor.js';
-import Document from '/ckeditor5/engine/treemodel/document.js';
+import Document from '/ckeditor5/engine/model/document.js';
 import AttributeCommand from '/ckeditor5/command/attributecommand.js';
-import Text from '/ckeditor5/engine/treemodel/text.js';
-import Range from '/ckeditor5/engine/treemodel/range.js';
-import Position from '/ckeditor5/engine/treemodel/position.js';
-import Element from '/ckeditor5/engine/treemodel/element.js';
+import Text from '/ckeditor5/engine/model/text.js';
+import Range from '/ckeditor5/engine/model/range.js';
+import Position from '/ckeditor5/engine/model/position.js';
+import Element from '/ckeditor5/engine/model/element.js';
 
 let editor, command, modelDoc, root;
 

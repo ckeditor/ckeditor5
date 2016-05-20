@@ -11,7 +11,7 @@ import Editor from '/ckeditor5/editor.js';
 import Command from '/ckeditor5/command/command.js';
 import Locale from '/ckeditor5/utils/locale.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-import Document from '/ckeditor5/engine/treemodel/document.js';
+import Document from '/ckeditor5/engine/model/document.js';
 
 describe( 'Editor', () => {
 	describe( 'locale', () => {

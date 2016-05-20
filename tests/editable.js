@@ -10,7 +10,7 @@
 import Editor from '/ckeditor5/editor.js';
 import Editable from '/ckeditor5/editable.js';
 import EditingController from '/ckeditor5/engine/editingcontroller.js';
-import ViewElement from '/ckeditor5/engine/treeview/element.js';
+import ViewElement from '/ckeditor5/engine/view/element.js';
 
 describe( 'Editable', () => {
 	const ELEMENT_NAME = 'h1';
