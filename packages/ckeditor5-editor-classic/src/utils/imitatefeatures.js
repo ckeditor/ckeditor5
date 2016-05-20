@@ -12,7 +12,7 @@ import ButtonView from '/ckeditor5/ui/button/buttonview.js';
 import Collection from '/ckeditor5/utils/collection.js';
 
 import ListDropdown from '/ckeditor5/ui/dropdown/list/listdropdown.js';
-import DropdownView from '/ckeditor5/ui/dropdown/dropdownview.js';
+import ListDropdownView from '/ckeditor5/ui/dropdown/list/listdropdownview.js';
 
 /**
  * Immitates that some features were loaded and did their job.
@@ -94,7 +94,7 @@ export function imitateFeatures( editor ) {
 		content: fontListModel
 	} );
 
-	editor.ui.featureComponents.add( 'font', ListDropdown, DropdownView, fontModel );
+	editor.ui.featureComponents.add( 'font', ListDropdown, ListDropdownView, fontModel );
 
 	window.fontCollection = fontCollection;
 	window.Model = Model;
