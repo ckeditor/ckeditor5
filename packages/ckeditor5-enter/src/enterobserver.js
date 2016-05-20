@@ -5,16 +5,16 @@
 
 'use strict';
 
-import Observer from '../engine/treeview/observer/observer.js';
-import DomEventData from '../engine/treeview/observer/domeventdata.js';
-import KeyObserver from '../engine/treeview/observer/keyobserver.js';
+import Observer from '../engine/view/observer/observer.js';
+import DomEventData from '../engine/view/observer/domeventdata.js';
+import KeyObserver from '../engine/view/observer/keyobserver.js';
 import { keyCodes } from '../utils/keyboard.js';
 
 /**
- * Enter observer introduce {@link engine.treeView.Document#enter} event.
+ * Enter observer introduce {@link engine.view.Document#enter} event.
  *
  * @memberOf enter
- * @extends engine.treeView.observer.Observer
+ * @extends engine.view.observer.Observer
  */
 export default class EnterObserver extends Observer {
 	constructor( document ) {
@@ -35,6 +35,6 @@ export default class EnterObserver extends Observer {
  *
  * Note: This event is fired by the {@link enter.Enter enter feature}.
  *
- * @event engine.treeView.Document#enter
- * @param {engine.treeView.observer.DomEventData} data
+ * @event engine.view.Document#enter
+ * @param {engine.view.observer.DomEventData} data
  */

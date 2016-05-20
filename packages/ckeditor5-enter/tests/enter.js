@@ -9,7 +9,7 @@ import Editor from '/ckeditor5/editor.js';
 import StandardCreator from '/ckeditor5/creator/standardcreator.js';
 import Enter from '/ckeditor5/enter/enter.js';
 import EnterCommand from '/ckeditor5/enter/entercommand.js';
-import DomEventData from '/ckeditor5/engine/treeview/observer/domeventdata.js';
+import DomEventData from '/ckeditor5/engine/view/observer/domeventdata.js';
 
 describe( 'Enter feature', () => {
 	let editor, editingView;

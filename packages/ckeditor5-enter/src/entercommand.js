@@ -6,9 +6,9 @@
 'use strict';
 
 import Command from '../command/command.js';
-import Element from '../engine/treemodel/element.js';
-import LivePosition from '../engine/treemodel/liveposition.js';
-import Position from '../engine/treemodel/position.js';
+import Element from '../engine/model/element.js';
+import LivePosition from '../engine/model/liveposition.js';
+import Position from '../engine/model/position.js';
 
 /**
  * Enter command. Used by the {@link enter.Enter enter feature} to handle the <kbd>Enter</kbd> key.
@@ -29,8 +29,8 @@ export default class EnterCommand extends Command {
 /**
  * Enters new block in the way how <kbd>Enter</kbd> is expected to work.
  *
- * @param {engine.treeModel.Batch} batch Batch to which the deltas will be added.
- * @param {engine.treeModel.Selection} selection
+ * @param {engine.model.Batch} batch Batch to which the deltas will be added.
+ * @param {engine.model.Selection} selection
  * @param {Object} options
  * @param {Boolean} options.defaultBlockName Name of the block which should be created when enter leaves
  * another block. Usuall set to `'paragraph'`. E.g. when entering block in `<heading>foo^</heading>` the result will be

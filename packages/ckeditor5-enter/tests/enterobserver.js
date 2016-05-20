@@ -5,9 +5,9 @@
 
 'use strict';
 
-import ViewDocument from '/ckeditor5/engine/treeview/document.js';
+import ViewDocument from '/ckeditor5/engine/view/document.js';
 import EnterObserver from '/ckeditor5/enter/enterobserver.js';
-import DomEventData from '/ckeditor5/engine/treeview/observer/domeventdata.js';
+import DomEventData from '/ckeditor5/engine/view/observer/domeventdata.js';
 import { getCode } from '/ckeditor5/utils/keyboard.js';
 
 describe( 'Enter feature', () => {

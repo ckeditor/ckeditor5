@@ -6,7 +6,7 @@
 'use strict';
 
 import Editor from '/ckeditor5/editor.js';
-import Document from '/ckeditor5/engine/treemodel/document.js';
+import Document from '/ckeditor5/engine/model/document.js';
 import { default as EnterCommand, enterBlock } from '/ckeditor5/enter/entercommand.js';
 import { getData, setData } from '/tests/engine/_utils/model.js';
 
