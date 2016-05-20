@@ -3,6 +3,7 @@
 
 .ck-dropdown {
 	display: inline-block;
+	position: relative;
 }
 
 .ck-dropdown__button {
@@ -24,36 +25,14 @@
 	display: none;
 	box-shadow: 0 0 5px ck-color( 'foreground', -15 );
 	position: absolute;
+	left: 0px;
 
 	// Compensate double border from button and from box when positioned below the button.
 	margin-top: -1px;
 
+	@include ck-rounded-corners();
+
 	&-active {
 		display: inline-block;
-	}
-
-	&__list {
-		overflow: hidden;
-		list-style-type: none;
-		background: ck-color( 'background' );
-
-		@include ck-unselectable();
-		@include ck-rounded-corners();
-
-		&__item {
-			display: block;
-			min-width: 12em;
-			padding: ck-spacing( 'medium' );
-			cursor: pointer;
-
-			&:hover,
-			&:focus {
-				background: ck-color( 'foreground' );
-			}
-
-			&:last-of-type {
-				border: none;
-			}
-		}
 	}
 }
