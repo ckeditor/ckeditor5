@@ -22,26 +22,28 @@ import ModelRange from './model/range.js';
 import ModelPosition from './model/position.js';
 
 /**
- * Data pipeline controlling class. The main usage for this class is to let user {@link engine.DataController#get get}
+ * Controller for the data pipeline. The data pipeline controls how data is retrieved from the document
+ * and set inside it. Hence, the controller features two methods which allow to {@link engine.DataController#get get}
  * and {@link engine.DataController#set set} data of the {@link engine.DataController#model model}
- * using given {@link engine.dataProcessor.DataProcessor DataProcessor} and
- * {@link engine.conversion.ModelConversionDispatcher model to view} and
+ * using given:
+ *
+ * * {@link engine.dataProcessor.DataProcessor data processor},
+ * * {@link engine.conversion.ModelConversionDispatcher model to view} and
  * {@link engine.conversion.ViewConversionDispatcher view to model} converters.
  *
  * @memberOf engine
  */
 export default class DataController {
 	/**
-	 * Creates data controller instance for {@link engine.DataController#get getting} data from and
-	 * {@link engine.DataController#set setting} data to the given {@link engine.model.document document model},
-	 * using given {@link engine.dataProcessor.DataProcessor DataProcessor}.
+	 * Creates data controller instance.
 	 *
-	 * @param {engine.model.Document} modelDocument Controlled model document.
+	 *
+	 * @param {engine.model.Document} modelDocument Model document.
 	 * @param {engine.dataProcessor.DataProcessor} dataProcessor Data processor which should used by the controller.
 	 */
 	constructor( modelDocument, dataProcessor ) {
 		/**
-		 * Controlled model document.
+		 * Model document.
 		 *
 		 * @readonly
 		 * @member {engine.model.document} engine.DataController#model
@@ -49,7 +51,7 @@ export default class DataController {
 		this.model = modelDocument;
 
 		/**
-		 * DataProcessor used during the conversion.
+		 * Data processor used during the conversion.
 		 *
 		 * @readonly
 		 * @member {engine.dataProcessor.DataProcessor} engine.DataController#processor
@@ -57,9 +59,9 @@ export default class DataController {
 		this.processor = dataProcessor;
 
 		/**
-		 * Mapper used for the conversion. In has no permanent bindings, because they are created on getting data and cleared
-		 * directly after data are converted. However, the mapper is defined as class property, because it need to be
-		 * passed to the `ModelConversionDispatcher` as a conversion API.
+		 * Mapper used for the conversion. It has no permanent bindings, because they are created when getting data and
+		 * cleared directly after data are converted. However, the mapper is defined as class property, because
+		 * it needs to be passed to the `ModelConversionDispatcher` as a conversion API.
 		 *
 		 * @private
 		 * @member {engine.conversion.Mapper} engine.DataController#_mapper
@@ -75,7 +77,7 @@ export default class DataController {
 		this._writer = new Writer();
 
 		/**
-		 * DomConverter used during the conversion.
+		 * DOM converter used during the conversion.
 		 *
 		 * @private
 		 * @member {engine.view.DomConverter} engine.DataController#_domConverter
@@ -123,18 +125,18 @@ export default class DataController {
 	}
 
 	/**
-	 * Returns model data converted by {@link engine.DataController#modelToView model to view converters} and
-	 * formated by the {@link engine.DataController#processor data processor}.
+	 * Returns model's data converted by the {@link engine.DataController#modelToView model to view converters} and
+	 * formatted by the {@link engine.DataController#processor data processor}.
 	 *
 	 * @param {String} [rootName='main'] Root name.
 	 * @returns {String} Output data.
 	 */
 	get( rootName = 'main' ) {
-		// Get model range
+		// Get model range.
 		const modelRoot = this.model.getRoot( rootName );
 		const modelRange = ModelRange.createFromElement( modelRoot );
 
-		// model -> view
+		// model -> view.
 		const viewDocumentFragment = new ViewDocumentFragment();
 		this._mapper.bindElements( modelRoot, viewDocumentFragment );
 
@@ -142,19 +144,19 @@ export default class DataController {
 
 		this._mapper.clearBindings();
 
-		// view -> DOM
+		// view -> DOM.
 		const domDocumentFragment = this._domConverter.viewToDom( viewDocumentFragment, document );
 
-		// DOM -> data
+		// DOM -> data.
 		return this.processor.toData( domDocumentFragment );
 	}
 
 	/**
 	 * Sets input data parsed by the {@link engine.DataController#processor data processor} and
-	 * converted by {@link engine.DataController#viewToModel view to model converters}.
+	 * converted by the {@link engine.DataController#viewToModel view to model converters}.
 	 *
-	 * This method also creates a batch with applied changes. If all you need is to parse data use
-	 * {@link engine.dataController#parse}.
+	 * This method also creates a batch with all the changes applied. If all you need is to parse data use
+	 * the {@link engine.dataController#parse} method.
 	 *
 	 * @param {String} [rootName='main'] Roots name.
 	 * @param {String} data Input data.
@@ -165,7 +167,7 @@ export default class DataController {
 			rootName = 'main';
 		}
 
-		// Save to model
+		// Save to model.
 		const modelRoot = this.model.getRoot( rootName );
 
 		this.model.batch()
@@ -175,20 +177,20 @@ export default class DataController {
 
 	/**
 	 * Returns data parsed by the {@link engine.DataController#processor data processor} and then
-	 * converted by {@link engine.DataController#viewToModel view to model converters}.
+	 * converted by the {@link engine.DataController#viewToModel view to model converters}.
 	 *
-	 * @see engine.dataController#set
+	 * @see engine.DataController#set
 	 * @param {String} data Data to parse.
 	 * @returns {engine.model.DocumentFragment} Parsed data.
 	 */
 	parse( data ) {
-		// data -> DOM
+		// data -> DOM.
 		const domDocumentFragment = this.processor.toDom( data );
 
-		// DOM -> view
+		// DOM -> view.
 		const viewDocumentFragment = this._domConverter.domToView( domDocumentFragment );
 
-		// view -> model
+		// view -> model.
 		const modelDocumentFragment = this.viewToModel.convert( viewDocumentFragment, { context: [ '$root' ] } );
 
 		return modelDocumentFragment;
