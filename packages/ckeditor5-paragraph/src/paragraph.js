@@ -6,8 +6,8 @@
 'use strict';
 
 import Feature from '../feature.js';
-import BuildModelConverterFor from '../engine/treecontroller/model-converter-builder.js';
-import BuildViewConverterFor from '../engine/treecontroller/view-converter-builder.js';
+import BuildModelConverterFor from '../engine/conversion/model-converter-builder.js';
+import BuildViewConverterFor from '../engine/conversion/view-converter-builder.js';
 
 export default class Paragraph extends Feature {
 	init() {

@@ -21,6 +21,7 @@ describe( 'Paragraph feature', () => {
 
 		return editor.init().then( () => {
 			document = editor.document;
+			document.createRoot( 'main' );
 		} );
 	} );
 
@@ -28,8 +29,13 @@ describe( 'Paragraph feature', () => {
 		expect( editor.plugins.get( Paragraph ) ).to.be.instanceOf( Paragraph );
 	} );
 
+	it( 'should set proper schema rules', () => {
+		expect( document.schema.hasItem( 'paragraph' ) ).to.be.true;
+		expect( document.schema.check( { name: 'paragraph', inside: '$root' } ) ).to.be.true;
+		expect( document.schema.check( { name: '$inline', inside: 'paragraph' } ) ).to.be.true;
+	} );
+
 	it( 'should convert paragraph', () => {
-		document.createRoot( 'main' );
 		editor.setData( '<p>foobar</p>' );
 
 		expect( getData( document, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
@@ -37,7 +43,6 @@ describe( 'Paragraph feature', () => {
 	} );
 
 	it( 'should convert paragraph only', () => {
-		document.createRoot( 'main' );
 		editor.setData( '<p>foo<b>baz</b>bar</p>' );
 
 		expect( getData( document, { withoutSelection: true } ) ).to.equal( '<paragraph>foobazbar</paragraph>' );
@@ -45,7 +50,6 @@ describe( 'Paragraph feature', () => {
 	} );
 
 	it( 'should convert multiple paragraphs', () => {
-		document.createRoot( 'main' );
 		editor.setData( '<p>foo</p><p>baz</p>' );
 
 		expect( getData( document, { withoutSelection: true } ) ).to.equal( '<paragraph>foo</paragraph><paragraph>baz</paragraph>' );
