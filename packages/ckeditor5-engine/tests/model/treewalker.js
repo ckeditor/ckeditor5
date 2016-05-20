@@ -123,16 +123,6 @@ describe( 'TreeWalker', () => {
 			expect( i ).to.equal( 0 );
 		} );
 
-		it( 'should throw if walking direction is unknown', () => {
-			let iterator = new TreeWalker( { startPosition: rootEnding } );
-
-			iterator.direction = 'UNKNOWN';
-
-			expect( () => {
-				iterator.next();
-			} ).to.throw( CKEditorError, /^tree-walker-unknown-direction/ );
-		} );
-
 		it( 'should start iterating at the startPosition witch is not a root bound', () => {
 			let iterator = new TreeWalker( { startPosition: new Position( root, [ 1 ] ) } );
 			let i = 2;

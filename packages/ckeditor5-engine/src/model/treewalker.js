@@ -166,13 +166,8 @@ export default class TreeWalker {
 	next() {
 		if ( this.direction == 'FORWARD' ) {
 			return this._next();
-		} else if ( this.direction == 'BACKWARD' ) {
-			return this._previous();
 		} else {
-			throw new CKEditorError(
-				'tree-walker-unknown-direction: Only `BACKWARD` and `FORWARD` direction allowed.',
-				{ direction: this.direction }
-			);
+			return this._previous();
 		}
 	}
 
