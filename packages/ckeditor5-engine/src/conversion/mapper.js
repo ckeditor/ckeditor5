@@ -56,6 +56,14 @@ export default class Mapper {
 	}
 
 	/**
+	 * Removes all model to view and view to model bindings.
+	 */
+	clearBindings() {
+		this._modelToViewMapping = new WeakMap();
+		this._viewToModelMapping = new WeakMap();
+	}
+
+	/**
 	 * Gets the corresponding model element.
 	 *
 	 * @param {engine.view.Element} viewElement View element.

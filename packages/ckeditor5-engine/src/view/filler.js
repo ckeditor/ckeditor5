@@ -56,7 +56,7 @@ export const BR_FILLER = ( domDocument ) => {
  * @see engine.view.filler.BR_FILLER
  * @member {Function} engine.view.filler.NBSP_FILLER_FILLER
  */
-export const NBSP_FILLER = ( domDocument ) => domDocument.createTextNode( '&nbsp;' );
+export const NBSP_FILLER = ( domDocument ) => domDocument.createTextNode( '\u00A0' );
 
 /**
  * Length of the {@link engine.view.filler.INLINE_FILLER INLINE_FILLER}.

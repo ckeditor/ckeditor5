@@ -28,20 +28,20 @@ import isIterable from '../../utils/isiterable.js';
  *
  * 2. View element to model attribute:
  *
- *		BuildViewConverterFor( dispatcher ).fromElement( 'b' ).fromElement( 'strong' ).toAttributes( { bold: true } );
+ *		BuildViewConverterFor( dispatcher ).fromElement( 'b' ).fromElement( 'strong' ).toAttribute( 'bold', 'true' );
  *
  * 3. View attribute to model attribute:
  *
- *		BuildViewConverterFor( dispatcher ).fromAttribute( 'style', { 'font-weight': 'bold' } ).toAttributes( { bold: true } );
+ *		BuildViewConverterFor( dispatcher ).fromAttribute( 'style', { 'font-weight': 'bold' } ).toAttribute( 'bold', 'true' );
  *		BuildViewConverterFor( dispatcher )
  *			.fromAttribute( 'class' )
- *			.toAttributes( ( viewElement ) => ( { class: viewElement.getAttribute( 'class' ) } ) );
+ *			.toAttribute( ( viewElement ) => ( { class: viewElement.getAttribute( 'class' ) } ) );
  *
  * 4. View elements and attributes to model attribute:
  *
  *		BuildViewConverterFor( dispatcher )
  *			.fromElement( 'b' ).fromElement( 'strong' ).fromAttribute( 'style', { 'font-weight': 'bold' } )
- *			.toAttributes( { bold: true } );
+ *			.toAttribute( 'bold', 'true' );
  *
  * 5. View {@link engine.view.Matcher view element matcher instance} or {@link engine.view.Matcher#add matcher pattern}
  * to model element or attribute:
@@ -50,13 +50,13 @@ import isIterable from '../../utils/isiterable.js';
  *		matcher.add( 'div', { class: 'quote' } );
  *		BuildViewConverterFor( dispatcher ).from( matcher ).toElement( 'quote' );
  *
- *		BuildViewConverterFor( dispatcher ).from( { name: 'span', class: 'bold' } ).toAttributes( { bold: true } );
+ *		BuildViewConverterFor( dispatcher ).from( { name: 'span', class: 'bold' } ).toAttribute( 'bold', 'true' );
  *
  * Note, that converters built using `ViewConverterBuilder` automatically check {@link engine.model.Schema schema}
  * if created model structure is valid. If given conversion would be invalid according to schema, it is ignored.
  *
  * It is possible to provide creator functions as parameters for {@link engine.conversion.ViewConverterBuilder#toElement}
- * and {@link engine.conversion.ViewConverterBuilder#toAttributes} methods. See their descriptions to learn more.
+ * and {@link engine.conversion.ViewConverterBuilder#toAttribute} methods. See their descriptions to learn more.
  *
  * By default, converter will {@link engine.conversion.ViewConsumable#consume consume} every value specified in
  * given `from...` query, i.e. `.from( { name: 'span', class: 'bold' } )` will make converter consume both `span` name
@@ -118,7 +118,7 @@ class ViewConverterBuilder {
 	/**
 	 * Registers what view attribute should be converted.
 	 *
-	 *		BuildViewConverterFor( dispatcher ).fromAttribute( 'style', { 'font-weight': 'bold' } ).toAttributes( { bold: true } );
+	 *		BuildViewConverterFor( dispatcher ).fromAttribute( 'style', { 'font-weight': 'bold' } ).toAttribute( 'bold', 'true' );
 	 *
 	 * @chainable
 	 * @param {String|RegExp} key View attribute key.
@@ -140,7 +140,7 @@ class ViewConverterBuilder {
 	 *		matcher.add( 'div', { class: 'quote' } );
 	 *		BuildViewConverterFor( dispatcher ).from( matcher ).toElement( 'quote' );
 	 *
-	 *		BuildViewConverterFor( dispatcher ).from( { name: 'span', class: 'bold' } ).toAttributes( { bold: true } );
+	 *		BuildViewConverterFor( dispatcher ).from( { name: 'span', class: 'bold' } ).toAttribute( 'bold', 'true' );
 	 *
 	 * @chainable
 	 * @param {Object|engine.view.Matcher} matcher View matcher or view matcher pattern.
@@ -171,7 +171,7 @@ class ViewConverterBuilder {
 	 *		// span element would not be fired.
 	 *		BuildViewConverterFor( dispatcher )
 	 *			.from( { name: 'span', class: 'bold' } ).consuming( { class: 'bold' } )
-	 *			.toAttribute( { bold: true } );
+	 *			.toAttribute( 'bold', 'true' } );
 	 *
 	 *		BuildViewConverterFor( dispatcher )
 	 *			.fromElement( 'img' ).consuming( { name: true, attributes: [ 'src', 'title' ] } )
@@ -206,9 +206,9 @@ class ViewConverterBuilder {
 	 *			.from( { name: 'p', class: 'custom' } ).withPriority( 9 )
 	 *			.toElement( 'customParagraph' );
 	 *
-	 * **Note:** `ViewConverterBuilder` takes care so all `toElement` conversions takes place before all `toAttributes`
-	 * conversions. This is done by setting default `toElement` priority to `10` and `toAttributes` priority to `1000`.
-	 * It is recommended to set converter priority for `toElement` conversions below `500` and `toAttributes` priority
+	 * **Note:** `ViewConverterBuilder` takes care so all `toElement` conversions takes place before all `toAttribute`
+	 * conversions. This is done by setting default `toElement` priority to `10` and `toAttribute` priority to `1000`.
+	 * It is recommended to set converter priority for `toElement` conversions below `500` and `toAttribute` priority
 	 * above `500`. It is important that model elements are created before attributes, otherwise attributes would
 	 * not be applied or other errors may occur.
 	 *
@@ -296,7 +296,7 @@ class ViewConverterBuilder {
 	 * representing attribute key and attribute value or a function that returns an object with `key` and `value` properties.
 	 * If you provide creator function, it will be passed converted view element as first and only parameter.
 	 *
-	 *		BuildViewConverterFor( dispatcher ).fromAttribute( 'style', { 'font-weight': 'bold' } ).toAttribute( 'bold', true );
+	 *		BuildViewConverterFor( dispatcher ).fromAttribute( 'style', { 'font-weight': 'bold' } ).toAttribute( 'bold', 'true' );
 	 *		BuildViewConverterFor( dispatcher )
 	 *			.fromAttribute( 'class' )
 	 *			.toAttribute( ( viewElement ) => ( { key: 'class', value: viewElement.getAttribute( 'class' ) } ) );
