@@ -51,7 +51,7 @@ export default class Region {
 
 		if ( regionElement ) {
 			this.views.on( 'add', ( evt, childView, index ) => {
-				regionElement.insertBefore( childView.element, regionElement.childNodes[ index + 1 ] );
+				regionElement.insertBefore( childView.element, regionElement.childNodes[ index ] );
 			} );
 
 			this.views.on( 'remove', ( evt, childView ) => {
