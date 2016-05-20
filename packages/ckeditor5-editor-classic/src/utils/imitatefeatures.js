@@ -81,6 +81,11 @@ export function imitateFeatures( editor ) {
 		items: fontCollection
 	} );
 
+	fontListModel.on( 'execute', ( evtInfo, itemModel ) => {
+		/* global console */
+		console.log( 'List item executed', itemModel );
+	} );
+
 	/* istanbul ignore next */
 	const fontModel = new Model( {
 		label: t( 'Font' ),
