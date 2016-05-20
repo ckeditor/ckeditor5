@@ -9,6 +9,8 @@
 
 import Writer from '/ckeditor5/engine/view/writer.js';
 import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
+import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
+import Text from '/ckeditor5/engine/view/text.js';
 import { stringify, parse } from '/tests/engine/_utils/view.js';
 
 describe( 'Writer', () => {
@@ -24,7 +26,8 @@ describe( 'Writer', () => {
 	function test( input, expected ) {
 		let { view, selection } = parse( input );
 
-		if ( !( view instanceof DocumentFragment ) ) {
+		// Wrap attributes and text into DocumentFragment.
+		if ( view instanceof AttributeElement || view instanceof Text ) {
 			view = new DocumentFragment( view );
 		}
 

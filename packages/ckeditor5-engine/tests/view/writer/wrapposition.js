@@ -15,6 +15,7 @@ import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import Position from '/ckeditor5/engine/view/position.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import { stringify, parse } from '/tests/engine/_utils/view.js';
+import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
 
 describe( 'wrapPosition', () => {
 	let writer;
@@ -29,7 +30,7 @@ describe( 'wrapPosition', () => {
 	function test( input, unwrapAttribute, expected ) {
 		let { view, selection } = parse( input );
 
-		if ( !( view instanceof DocumentFragment ) ) {
+		if ( view instanceof AttributeElement || view instanceof Text ) {
 			view = new DocumentFragment( view );
 		}
 

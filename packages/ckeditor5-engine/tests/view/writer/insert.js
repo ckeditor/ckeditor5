@@ -14,6 +14,8 @@ import Element from '/ckeditor5/engine/view/element.js';
 import Position from '/ckeditor5/engine/view/position.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import { stringify, parse } from '/tests/engine/_utils/view.js';
+import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
+import Text from '/ckeditor5/engine/view/text.js';
 
 describe( 'Writer', () => {
 	let writer;
@@ -29,7 +31,7 @@ describe( 'Writer', () => {
 		nodesToInsert = nodesToInsert.map( node => parse( node ) );
 		let { view, selection } = parse( input );
 
-		if ( !( view instanceof DocumentFragment ) ) {
+		if ( view instanceof AttributeElement || view instanceof Text ) {
 			view = new DocumentFragment( view );
 		}
 

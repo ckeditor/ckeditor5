@@ -31,7 +31,7 @@ describe( 'Writer', () => {
 	function test( input, unwrapAttribute, expected ) {
 		let { view, selection } = parse( input );
 
-		if ( !( view instanceof DocumentFragment ) ) {
+		if ( view instanceof AttributeElement || view instanceof Text ) {
 			view = new DocumentFragment( view );
 		}
 

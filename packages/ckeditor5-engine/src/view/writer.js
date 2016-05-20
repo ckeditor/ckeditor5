@@ -946,6 +946,10 @@ function validateNodesToInsert( nodes ) {
 }
 
 // Checks if node is ContainerElement or DocumentFragment, because in most cases they should be thread the same way.
+//
+// @private
+// @param {engine.view.Node} node
+// @returns {Boolean} Returns `true` if node is instance of ContainerElement or DocumentFragment.
 function isContainerOrFragment( node ) {
 	return node instanceof ContainerElement || node instanceof DocumentFragment;
 }
