@@ -6,6 +6,7 @@
 'use strict';
 
 import Delta from './delta.js';
+import DeltaFactory from './deltafactory.js';
 import UnwrapDelta from './unwrapdelta.js';
 import { register } from '../batch.js';
 import Position from '../position.js';
@@ -69,6 +70,10 @@ export default class WrapDelta extends Delta {
 		return UnwrapDelta;
 	}
 
+	static get className() {
+		return 'engine.treeModel.delta.WrapDelta';
+	}
+
 	static get _priority() {
 		return 10;
 	}
@@ -127,3 +132,5 @@ register( 'wrap', function( range, elementOrString ) {
 
 	return this;
 } );
+
+DeltaFactory.register( WrapDelta );

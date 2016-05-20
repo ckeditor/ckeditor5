@@ -533,4 +533,15 @@ export default class Range {
 	static createFromRange( range ) {
 		return new this( range.start, range.end );
 	}
+
+	/**
+	 * Creates Range from deserilized object, ie. from parsed JSON string.
+	 *
+	 * @param {Object} json Deserialized JSON object.
+	 * @param {engine.treeModel.Document} doc Document on which this operation will be applied.
+	 * @returns {engine.treeModel.Range}
+	 */
+	static fromJSON( json, doc ) {
+		return new this( Position.fromJSON( json.start, doc ), Position.fromJSON( json.end, doc ) );
+	}
 }

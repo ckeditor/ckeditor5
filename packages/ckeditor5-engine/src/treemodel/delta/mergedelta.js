@@ -6,6 +6,7 @@
 'use strict';
 
 import Delta from './delta.js';
+import DeltaFactory from './deltafactory.js';
 import SplitDelta from './splitdelta.js';
 import { register } from '../batch.js';
 import Position from '../position.js';
@@ -46,6 +47,13 @@ export default class MergeDelta extends Delta {
 
 	get _reverseDeltaClass() {
 		return SplitDelta;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get className() {
+		return 'engine.treeModel.delta.MergeDelta';
 	}
 }
 
@@ -100,3 +108,5 @@ register( 'merge', function( position ) {
 
 	return this;
 } );
+
+DeltaFactory.register( MergeDelta );

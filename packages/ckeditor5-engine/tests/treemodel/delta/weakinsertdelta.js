@@ -9,6 +9,7 @@
 
 import Document from '/ckeditor5/engine/treemodel/document.js';
 import Position from '/ckeditor5/engine/treemodel/position.js';
+import WeakInsertDelta from '/ckeditor5/engine/treemodel/delta/weakinsertdelta.js';
 
 describe( 'Batch', () => {
 	let doc, root, batch, chain, attrs;
@@ -56,5 +57,11 @@ describe( 'Batch', () => {
 
 			expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
 		} );
+	} );
+} );
+
+describe( 'WeakInsertDelta', ()=> {
+	it( 'should provide proper className', () => {
+		expect( WeakInsertDelta.className ).to.equal( 'engine.treeModel.delta.WeakInsertDelta' );
 	} );
 } );

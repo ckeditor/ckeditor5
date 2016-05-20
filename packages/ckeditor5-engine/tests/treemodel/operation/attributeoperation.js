@@ -14,6 +14,7 @@ import Position from '/ckeditor5/engine/treemodel/position.js';
 import Range from '/ckeditor5/engine/treemodel/range.js';
 import Text from '/ckeditor5/engine/treemodel/text.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
+import { jsonParseStringify } from '/tests/engine/treemodel/_utils/utils.js';
 
 describe( 'AttributeOperation', () => {
 	let doc, root;
@@ -364,5 +365,48 @@ describe( 'AttributeOperation', () => {
 
 		expect( root._children._nodes[ 0 ].text ).to.equal( 'a' );
 		expect( root._children._nodes[ 1 ].text ).to.equal( 'bcxyz' );
+	} );
+
+	describe( 'toJSON', () => {
+		it( 'should create proper serialized object', () => {
+			const range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) );
+			const op = new AttributeOperation(
+				range,
+				'key',
+				null,
+				'newValue',
+				doc.version
+			);
+
+			const serialized = jsonParseStringify( op );
+
+			expect( serialized.__className ).to.equal( 'engine.treeModel.operation.AttributeOperation' );
+			expect( serialized ).to.deep.equal( {
+				__className: 'engine.treeModel.operation.AttributeOperation',
+				baseVersion: 0,
+				key: 'key',
+				newValue: 'newValue',
+				oldValue: null,
+				range: jsonParseStringify( range )
+			} );
+		} );
+	} );
+
+	describe( 'fromJSON', () => {
+		it( 'should create proper AttributeOperation from json object', () => {
+			const range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) );
+			const op = new AttributeOperation(
+				range,
+				'key',
+				null,
+				'newValue',
+				doc.version
+			);
+
+			const serialized = jsonParseStringify( op );
+			const deserialized = AttributeOperation.fromJSON( serialized, doc );
+
+			expect( deserialized ).to.deep.equal( op );
+		} );
 	} );
 } );

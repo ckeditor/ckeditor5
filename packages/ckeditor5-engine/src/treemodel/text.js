@@ -11,7 +11,7 @@ import toMap from '../../utils/tomap.js';
  * Data structure for text with attributes. Note that `Text` is not a {@link engine.treeModel.Node}. This class is used
  * as an aggregator for multiple characters that have same attributes. Example usage:
  *
- *		let myElem = new Element( 'li', [], new Text( 'text with attributes', { foo: true, bar: true } ) );
+ *        let myElem = new Element( 'li', [], new Text( 'text with attributes', { foo: true, bar: true } ) );
  *
  * @memberOf engine.treeModel
  */
@@ -103,5 +103,22 @@ export default class Text {
 	 */
 	clearAttributes() {
 		this._attrs.clear();
+	}
+
+	/**
+	 * Custom toJSON method to solve child-parent circular dependencies.
+	 *
+	 * @returns {Object} Clone of this object with the parent property replaced with its name.
+	 */
+	toJSON() {
+		let json = {
+			text: this.text
+		};
+
+		if ( this._attrs.size ) {
+			json.attributes = [ ...this._attrs ];
+		}
+
+		return json;
 	}
 }

@@ -7,6 +7,7 @@
 
 import MoveDelta from './movedelta.js';
 import { register } from '../batch.js';
+import DeltaFactory from './deltafactory.js';
 import RemoveOperation from '../operation/removeoperation.js';
 import Position from '../position.js';
 import Range from '../range.js';
@@ -18,7 +19,14 @@ import Range from '../range.js';
  *
  * @memberOf engine.treeModel.delta
  */
-export default class RemoveDelta extends MoveDelta {}
+export default class RemoveDelta extends MoveDelta {
+	/**
+	 * @inheritDoc
+	 */
+	static get className() {
+		return 'engine.treeModel.delta.RemoveDelta';
+	}
+}
 
 function addRemoveOperation( batch, delta, position, howMany ) {
 	const operation = new RemoveOperation( position, howMany, batch.doc.version );
@@ -50,3 +58,5 @@ register( 'remove', function( nodeOrRange ) {
 
 	return this;
 } );
+
+DeltaFactory.register( RemoveDelta );

@@ -12,6 +12,7 @@ import DocumentFragment from '/ckeditor5/engine/treemodel/documentfragment.js';
 import Element from '/ckeditor5/engine/treemodel/element.js';
 import Text from '/ckeditor5/engine/treemodel/text.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
+import { jsonParseStringify } from '/tests/engine/treemodel/_utils/utils.js';
 
 describe( 'NodeList', () => {
 	describe( 'constructor', () => {
@@ -153,7 +154,7 @@ describe( 'NodeList', () => {
 		it( 'should merge inserted text objects if possible', () => {
 			let attr = { foo: 'bar' };
 			let outerList = new NodeList( [ 'foo', new Text( 'bar', [ attr ] ) ] );
-			let innerList = new NodeList( [ 'x' , new Text( 'y', [ attr ] ) ] );
+			let innerList = new NodeList( [ 'x', new Text( 'y', [ attr ] ) ] );
 
 			outerList.insert( 3, innerList );
 
@@ -358,13 +359,128 @@ describe( 'NodeList', () => {
 		} );
 	} );
 
-	// Additional test for code coverage.
-	describe( 'NodeListText', () => {
-		it( 'should create proper JSON string using toJSON method', () => {
-			let nodeList = new NodeList( 'foo' );
-			let parsed = JSON.parse( JSON.stringify( nodeList ) );
+	describe( 'toJSON', () => {
+		it( 'should return serialized empty object', () => {
+			let nodeList = new NodeList();
 
-			expect( parsed._nodes[ 0 ].parent ).to.equal( null );
+			expect( jsonParseStringify( nodeList ) ).to.deep.equal( {} );
+		} );
+
+		it( 'should return serialized object', () => {
+			let p = new Element( 'p' );
+			let nodeList = new NodeList( p );
+
+			expect( jsonParseStringify( nodeList ) ).to.deep.equal( { nodes: [ jsonParseStringify( p ) ] } );
+		} );
+
+		it( 'should return serialized object with child text', () => {
+			let p = new Element( 'p', null, 'bar' );
+			let nodeList = new NodeList( p );
+
+			let newVar = {
+				nodes: [ {
+					children: { nodes: [ { text: 'bar' } ] },
+					name: 'p'
+				} ]
+			};
+
+			expect( jsonParseStringify( nodeList ) ).to.deep.equal( newVar );
+		} );
+
+		it( 'should return serialized object for text', () => {
+			let text = new Text( 'bar' );
+			let nodeList = new NodeList( text );
+
+			expect( jsonParseStringify( nodeList ) ).to.deep.equal( { nodes: [ { text: 'bar' } ] } );
+		} );
+
+		it( 'should return serialized object for text with attributes', () => {
+			let text = new Text( 'bar', { bold: true } );
+			let nodeList = new NodeList( text );
+
+			expect( jsonParseStringify( nodeList ) ).to.deep.equal( { nodes: [ { attributes: [ [ 'bold', true ] ], text: 'bar' } ] } );
+		} );
+
+		it( 'should return serialized object for text with attributes', () => {
+			let text = new Text( 'bar', { bold: true } );
+			let nodeList = new NodeList( text );
+
+			expect( jsonParseStringify( nodeList ) ).to.deep.equal( {
+				nodes: [ { attributes: [ [ 'bold', true ] ], text: 'bar' } ]
+			} );
+		} );
+	} );
+
+	describe( 'fromJSON', () => {
+		it( 'should create instance from empty serialized element', () => {
+			let nodeList = new NodeList();
+
+			let serialized = jsonParseStringify( nodeList );
+
+			let deserialized = NodeList.fromJSON( serialized );
+
+			expect( deserialized.length ).to.equal( nodeList.length );
+		} );
+
+		it( 'should create instance from serialized text with attributes', () => {
+			let text = new Text( 'bar', { bold: true } );
+			let nodeList = new NodeList( text );
+
+			let serialized = jsonParseStringify( nodeList );
+
+			let deserialized = NodeList.fromJSON( serialized );
+
+			expect( deserialized.length ).to.equal( nodeList.length );
+
+			for ( let i = 0; i < 3; i++ ) {
+				expect( deserialized.get( i ).character ).to.equal( nodeList.get( i ).character );
+				expect( deserialized.get( i ).hasAttribute( 'bold' ) ).to.equal( nodeList.get( i ).hasAttribute( 'bold' ) );
+				expect( deserialized.get( i ).getAttribute( 'bold' ) ).to.equal( nodeList.get( i ).getAttribute( 'bold' ) );
+			}
+		} );
+
+		it( 'should create instance from serialized element', () => {
+			let p = new Element( 'p' );
+			let nodeList = new NodeList( p );
+
+			let serialized = jsonParseStringify( nodeList );
+
+			let deserialized = NodeList.fromJSON( serialized );
+
+			expect( deserialized.length ).to.equal( nodeList.length );
+			expect( deserialized.get( 0 ).name ).to.deep.equal( nodeList.get( 0 ).name );
+		} );
+
+		it( 'should create instance from serialized element with attributes', () => {
+			let p = new Element( 'p', { bold: true } );
+			let nodeList = new NodeList( p );
+
+			let serialized = jsonParseStringify( nodeList );
+
+			let deserialized = NodeList.fromJSON( serialized );
+
+			expect( deserialized.length ).to.equal( nodeList.length );
+			expect( deserialized.get( 0 ).name ).to.deep.equal( nodeList.get( 0 ).name );
+			expect( deserialized.get( 0 ).hasAttribute( 'bold' ) ).to.equal( nodeList.get( 0 ).hasAttribute( 'bold' ) );
+			expect( deserialized.get( 0 ).getAttribute( 'bold' ) ).to.equal( nodeList.get( 0 ).getAttribute( 'bold' ) );
+		} );
+
+		it( 'should create instance from serialized element with parent', () => {
+			let p = new Element( 'p', null, 'bar' );
+			let nodeList = new NodeList( p );
+
+			let serialized = jsonParseStringify( nodeList );
+			let deserialized = NodeList.fromJSON( serialized );
+
+			expect( deserialized.length ).to.equal( nodeList.length );
+			expect( deserialized.get( 0 ).name ).to.equal( nodeList.get( 0 ).name );
+			expect( deserialized.get( 0 ).getChildCount() ).to.equal( nodeList.get( 0 ).getChildCount() );
+
+			for ( let i = 0; i < 3; i++ ) {
+				expect( deserialized.get( 0 ).getChild( i ).character ).to.equal( nodeList.get( 0 ).getChild( i ).character );
+				expect( deserialized.get( 0 ).getChild( i ).hasAttribute( 'bold' ) ).to.equal( nodeList.get( 0 ).getChild( i ).hasAttribute( 'bold' ) );
+				expect( deserialized.get( 0 ).getChild( i ).getAttribute( 'bold' ) ).to.equal( nodeList.get( 0 ).getChild( i ).getAttribute( 'bold' ) );
+			}
 		} );
 	} );
 } );

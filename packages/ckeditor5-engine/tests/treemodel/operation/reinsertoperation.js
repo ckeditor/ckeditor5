@@ -12,6 +12,7 @@ import ReinsertOperation from '/ckeditor5/engine/treemodel/operation/reinsertope
 import RemoveOperation from '/ckeditor5/engine/treemodel/operation/removeoperation.js';
 import MoveOperation from '/ckeditor5/engine/treemodel/operation/moveoperation.js';
 import Position from '/ckeditor5/engine/treemodel/position.js';
+import { jsonParseStringify } from '/tests/engine/treemodel/_utils/utils.js';
 
 describe( 'ReinsertOperation', () => {
 	let doc, root, graveyard, operation, graveyardPosition, rootPosition;
@@ -91,5 +92,30 @@ describe( 'ReinsertOperation', () => {
 		expect( graveyard.getChild( 0 ).character ).to.equal( 'b' );
 		expect( graveyard.getChild( 1 ).character ).to.equal( 'a' );
 		expect( graveyard.getChild( 2 ).character ).to.equal( 'r' );
+	} );
+
+	describe( 'toJSON', () => {
+		it( 'should create proper json object', () => {
+			const serialized = jsonParseStringify( operation );
+
+			expect( serialized ).to.deep.equal( {
+				__className: 'engine.treeModel.operation.ReinsertOperation',
+				baseVersion: 0,
+				howMany: 2,
+				isSticky: false,
+				movedRangeStart: jsonParseStringify( operation.movedRangeStart ),
+				sourcePosition: jsonParseStringify( operation.sourcePosition ),
+				targetPosition: jsonParseStringify( operation.targetPosition )
+			} );
+		} );
+	} );
+
+	describe( 'fromJSON', () => {
+		it( 'should create proper ReinsertOperation from json object', () => {
+			const serialized = jsonParseStringify( operation );
+			const deserialized = ReinsertOperation.fromJSON( serialized, doc );
+
+			expect( deserialized ).to.deep.equal( operation );
+		} );
 	} );
 } );

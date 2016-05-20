@@ -81,11 +81,33 @@ export default class Operation {
 	 * @returns {Object} Clone of this object with the delta property replaced with string.
 	 */
 	toJSON() {
-		const json = clone( this );
+		const json = clone( this, true );
 
-		// Due to circular references we need to remove parent reference.
-		json.delta = this.delta ? '[engine.treeModel.Delta]' : null;
+		json.__className = this.constructor.className;
+
+		// Remove parent delta to avoid circular dependencies.
+		delete json.delta;
 
 		return json;
+	}
+
+	/**
+	 * Name of the operation class used for serialization.
+	 *
+	 * @type {String}
+	 */
+	static get className() {
+		return 'engine.treeModel.operation.Operation';
+	}
+
+	/**
+	 * Creates Operation object from deserilized object, i.e. from parsed JSON string.
+	 *
+	 * @param {Object} json Deserialized JSON object.
+	 * @param {engine.treeModel.Document} doc Document on which this operation will be applied.
+	 * @returns {engine.treeModel.operation.Operation}
+	 */
+	static fromJSON( json ) {
+		return new Operation( json.baseVersion );
 	}
 }

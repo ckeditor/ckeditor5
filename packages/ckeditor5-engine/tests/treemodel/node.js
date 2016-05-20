@@ -97,15 +97,6 @@ describe( 'Node', () => {
 		} );
 	} );
 
-	it( 'should create proper JSON string using toJSON method', () => {
-		let foo = new Element( 'foo', [], [ 'b' ] );
-
-		let parsedFoo = JSON.parse( JSON.stringify( foo ) );
-
-		expect( parsedFoo.parent ).to.equal( null );
-		expect( parsedFoo._children._nodes[ 0 ].parent ).to.equal( 'foo' );
-	} );
-
 	describe( 'getIndex', () => {
 		it( 'should return null if the parent is null', () => {
 			expect( root.getIndex() ).to.be.null;

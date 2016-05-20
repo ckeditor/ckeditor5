@@ -15,6 +15,7 @@ import Position from '/ckeditor5/engine/treemodel/position.js';
 import Element from '/ckeditor5/engine/treemodel/element.js';
 
 import AttributeDelta from '/ckeditor5/engine/treemodel/delta/attributedelta.js';
+import { RootAttributeDelta } from '/ckeditor5/engine/treemodel/delta/attributedelta.js';
 import AttributeOperation from '/ckeditor5/engine/treemodel/operation/attributeoperation.js';
 
 let doc, root;
@@ -493,5 +494,15 @@ describe( 'AttributeDelta', () => {
 			expect( reversed.operations[ 1 ].oldValue ).to.equal( 'new' );
 			expect( reversed.operations[ 1 ].newValue ).to.equal( 'oldA' );
 		} );
+	} );
+
+	it( 'should provide proper className', () => {
+		expect( AttributeDelta.className ).to.equal( 'engine.treeModel.delta.AttributeDelta' );
+	} );
+} );
+
+describe( 'RootAttributeDelta', () => {
+	it( 'should provide proper className', () => {
+		expect( RootAttributeDelta.className ).to.equal( 'engine.treeModel.delta.RootAttributeDelta' );
 	} );
 } );

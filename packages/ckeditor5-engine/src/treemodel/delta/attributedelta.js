@@ -6,6 +6,7 @@
 'use strict';
 
 import Delta from './delta.js';
+import DeltaFactory from './deltafactory.js';
 import { register } from '../batch.js';
 import AttributeOperation from '../operation/attributeoperation.js';
 import RootAttributeOperation from '../operation/rootattributeoperation.js';
@@ -69,6 +70,13 @@ export default class AttributeDelta extends Delta {
 		return AttributeDelta;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	static get className() {
+		return 'engine.treeModel.delta.AttributeDelta';
+	}
+
 	static get _priority() {
 		return 20;
 	}
@@ -82,7 +90,14 @@ export default class AttributeDelta extends Delta {
  * @memberOf engine.treeModel.delta
  * @extends engine.treeModel.delta.Delta
  */
-export class RootAttributeDelta extends Delta {}
+export class RootAttributeDelta extends Delta {
+	/**
+	 * @inheritDoc
+	 */
+	static get className() {
+		return 'engine.treeModel.delta.RootAttributeDelta';
+	}
+}
 
 /**
  * Sets the value of the attribute of the node or on the range.
@@ -200,3 +215,7 @@ function changeRange( batch, doc, attributeKey, attributeValue, range ) {
 		doc.applyOperation( operation );
 	}
 }
+
+DeltaFactory.register( AttributeDelta );
+
+DeltaFactory.register( RootAttributeDelta );

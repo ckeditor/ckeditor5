@@ -11,6 +11,7 @@ import Node from '/ckeditor5/engine/treemodel/node.js';
 import NodeList from '/ckeditor5/engine/treemodel/nodelist.js';
 import Element from '/ckeditor5/engine/treemodel/element.js';
 import DocumentFragment from '/ckeditor5/engine/treemodel/documentfragment.js';
+import { jsonParseStringify } from '/tests/engine/treemodel/_utils/utils.js';
 
 describe( 'Element', () => {
 	describe( 'constructor', () => {
@@ -233,10 +234,100 @@ describe( 'Element', () => {
 				new Element( 'p', null, 'abc' ),
 				'def',
 				new Element( 'p', null, 'ghi' ),
-				'jkl',
+				'jkl'
 			] );
 
 			expect( el.getText() ).to.equal( 'abcdefghijkl' );
+		} );
+	} );
+
+	describe( 'toJSON', () => {
+		it( 'should serialize empty element', () => {
+			let element = new Element( 'one' );
+
+			expect( jsonParseStringify( element ) ).to.deep.equal( { name: 'one' } );
+		} );
+
+		it( 'should serialize element with attributes', () => {
+			let element = new Element( 'one', { foo: true, bar: false } );
+
+			expect( jsonParseStringify( element ) ).to.deep.equal( {
+				attributes: [ [ 'foo', true ], [ 'bar', false ] ],
+				name: 'one'
+			} );
+		} );
+
+		it( 'should serialize node with children', () => {
+			let img = new Element( 'img' );
+			let one = new Element( 'one' );
+			let two = new Element( 'two', null, [ 'b', 'a', img, 'r' ] );
+			let three = new Element( 'three' );
+
+			let node = new Element( null, null, [ one, two, three ] );
+
+			expect( jsonParseStringify( node ) ).to.deep.equal( {
+				children: {
+					nodes: [
+						{ name: 'one' },
+						{
+							children: {
+								nodes: [
+									{ text: 'ba' },
+									{ name: 'img' },
+									{ text: 'r' }
+								]
+							},
+							name: 'two'
+						},
+						{ name: 'three' }
+					]
+				},
+				name: null
+			} );
+		} );
+	} );
+
+	describe( 'fromJSON', () => {
+		it( 'should create element without attributes', () => {
+			const el = new Element( 'el' );
+
+			let serialized = jsonParseStringify( el );
+
+			let deserialized = Element.fromJSON( serialized );
+
+			expect( deserialized.parent ).to.be.null;
+			expect( deserialized.name ).to.equal( 'el' );
+			expect( deserialized.getChildCount() ).to.equal( 0 );
+		} );
+
+		it( 'should create element with attributes', () => {
+			const el = new Element( 'el', { foo: true } );
+
+			let serialized = jsonParseStringify( el );
+
+			let deserialized = Element.fromJSON( serialized );
+
+			expect( deserialized.parent ).to.be.null;
+			expect( deserialized.name ).to.equal( 'el' );
+			expect( deserialized.getChildCount() ).to.equal( 0 );
+			expect( deserialized.hasAttribute( 'foo' ) ).to.be.true;
+			expect( deserialized.getAttribute( 'foo' ) ).to.be.true;
+		} );
+
+		it( 'should create element with children', () => {
+			const p = new Element( 'p' );
+			const el = new Element( 'el', null, p );
+
+			let serialized = jsonParseStringify( el );
+
+			let deserialized = Element.fromJSON( serialized );
+
+			expect( deserialized.parent ).to.be.null;
+			expect( deserialized.name ).to.equal( 'el' );
+			expect( deserialized.getChildCount() ).to.equal( 1 );
+
+			expect( deserialized.getChild( 0 ).name ).to.equal( 'p' );
+			expect( deserialized.getChild( 0 ).parent ).to.equal( deserialized );
 		} );
 	} );
 } );

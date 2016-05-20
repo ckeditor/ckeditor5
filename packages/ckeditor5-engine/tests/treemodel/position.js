@@ -14,6 +14,7 @@ import Text from '/ckeditor5/engine/treemodel/text.js';
 import Position from '/ckeditor5/engine/treemodel/position.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
+import { jsonParseStringify } from '/tests/engine/treemodel/_utils/utils.js';
 
 testUtils.createSinonSandbox();
 
@@ -679,6 +680,48 @@ describe( 'position', () => {
 			let shifted = position.getShiftedBy( -7 );
 
 			expect( shifted.path ).to.deep.equal( [ 1, 2, 0 ] );
+		} );
+	} );
+
+	describe( 'toJSON', () => {
+		it( 'should serialize position', () => {
+			let position = new Position( root, [ 0 ] );
+
+			let serialized = jsonParseStringify( position );
+
+			expect( serialized ).to.deep.equal( { root: 'root', path: [ 0 ] } );
+		} );
+
+		it( 'should serialize position from graveyard', () => {
+			let position = new Position( doc.graveyard, [ 0 ] );
+
+			let serialized = jsonParseStringify( position );
+
+			expect( serialized ).to.deep.equal( { root: '$graveyard', path: [ 0 ] } );
+		} );
+	} );
+
+	describe( 'fromJSON', () => {
+		it( 'should create object with given document', () => {
+			let deserialized = Position.fromJSON( { root: 'root', path: [ 0, 1, 2 ] }, doc );
+
+			expect( deserialized.root ).to.equal( root );
+			expect( deserialized.path ).to.deep.equal( [ 0, 1, 2 ] );
+		} );
+
+		it( 'should create object from graveyard', () => {
+			let deserialized = Position.fromJSON( { root: '$graveyard', path: [ 0, 1, 2 ] }, doc );
+
+			expect( deserialized.root ).to.equal( doc.graveyard );
+			expect( deserialized.path ).to.deep.equal( [ 0, 1, 2 ] );
+		} );
+
+		it( 'should throw error when creating object in document that does not have provided root', () => {
+			expect(
+				() => {
+					Position.fromJSON( { root: 'noroot', path: [ 0 ] }, doc );
+				}
+			).to.throw( CKEditorError, /position-fromjson-no-root/ );
 		} );
 	} );
 } );

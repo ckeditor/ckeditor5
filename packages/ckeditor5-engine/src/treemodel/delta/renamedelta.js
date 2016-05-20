@@ -6,6 +6,7 @@
 'use strict';
 
 import Delta from './delta.js';
+import DeltaFactory from './deltafactory.js';
 import { register } from '../batch.js';
 import InsertOperation from '../operation/insertoperation.js';
 import RemoveOperation from '../operation/removeoperation.js';
@@ -22,6 +23,13 @@ import Position from '../position.js';
 export default class RenameDelta extends Delta {
 	get _reverseDeltaClass() {
 		return RenameDelta;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get className() {
+		return 'engine.treeModel.delta.RenameDelta';
 	}
 }
 
@@ -60,3 +68,5 @@ register( 'rename', function( newName, element ) {
 
 	return this;
 } );
+
+DeltaFactory.register( RenameDelta );

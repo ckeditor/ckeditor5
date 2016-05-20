@@ -5,6 +5,9 @@
 
 'use strict';
 
+import clone from '../../../utils/lib/lodash/clone.js';
+import DeltaFactory from './deltafactory.js';
+
 /**
  * Base class for all deltas.
  *
@@ -118,6 +121,33 @@ export default class Delta {
 	}
 
 	/**
+	 * Custom toJSON method to make deltas serializable.
+	 *
+	 * @returns {Object} Clone of this delta with added class name.
+	 */
+	toJSON() {
+		let json = clone( this );
+
+		json.__className = this.constructor.className;
+
+		// Remove parent batch to avoid circular dependencies.
+		delete json.batch;
+
+		return json;
+	}
+
+	/**
+	 * Delta class name. Used by {@link engine.treeModel.delta.Delta#toJSON} method for serialization and
+	 * {@link engine.treeModel.delta.DeltaFactory.fromJSON} during deserialization.
+	 *
+	 * @type {String}
+	 * @readonly
+	 */
+	static get className() {
+		return 'engine.treeModel.delta.Delta';
+	}
+
+	/**
 	 * Delta priority. Used in {@link engine.treeModel.delta.transform delta transformations}. Delta with the higher
 	 * priority will be treated as more important when resolving transformation conflicts. If deltas have same
 	 * priority, other factors will be used to determine which delta is more important.
@@ -129,3 +159,5 @@ export default class Delta {
 		return 0;
 	}
 }
+
+DeltaFactory.register( Delta );

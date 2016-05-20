@@ -6,6 +6,7 @@
 'use strict';
 
 import Delta from './delta.js';
+import DeltaFactory from './deltafactory.js';
 import RemoveDelta from './removedelta.js';
 import { register } from '../batch.js';
 import InsertOperation from '../operation/insertoperation.js';
@@ -50,6 +51,13 @@ export default class InsertDelta extends Delta {
 		return RemoveDelta;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	static get className() {
+		return 'engine.treeModel.delta.InsertDelta';
+	}
+
 	static get _priority() {
 		return 20;
 	}
@@ -73,3 +81,5 @@ register( 'insert', function( position, nodes ) {
 
 	return this;
 } );
+
+DeltaFactory.register( InsertDelta );

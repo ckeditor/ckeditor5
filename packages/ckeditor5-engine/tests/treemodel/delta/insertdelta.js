@@ -122,4 +122,8 @@ describe( 'InsertDelta', () => {
 			expect( reversed.operations[ 0 ].howMany ).to.equal( 1 );
 		} );
 	} );
+
+	it( 'should provide proper className', () => {
+		expect( InsertDelta.className ).to.equal( 'engine.treeModel.delta.InsertDelta' );
+	} );
 } );

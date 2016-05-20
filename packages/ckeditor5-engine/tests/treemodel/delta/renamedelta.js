@@ -91,4 +91,8 @@ describe( 'RenameDelta', () => {
 			expect( root.getChild( 0 ).getText() ).to.equal( 'abc' );
 		} );
 	} );
+
+	it( 'should provide proper className', () => {
+		expect( RenameDelta.className ).to.equal( 'engine.treeModel.delta.RenameDelta' );
+	} );
 } );

@@ -192,5 +192,9 @@ describe( 'WrapDelta', () => {
 			expect( wrapDelta._insertOperation ).to.equal( insertOperation );
 		} );
 	} );
+
+	it( 'should provide proper className', () => {
+		expect( WrapDelta.className ).to.equal( 'engine.treeModel.delta.WrapDelta' );
+	} );
 } );
 

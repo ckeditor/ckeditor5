@@ -44,4 +44,12 @@ export default class ReinsertOperation extends MoveOperation {
 	getReversed() {
 		return new RemoveOperation( this.targetPosition, this.howMany, this.baseVersion + 1 );
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get className() {
+		return 'engine.treeModel.operation.ReinsertOperation';
+	}
+
 }

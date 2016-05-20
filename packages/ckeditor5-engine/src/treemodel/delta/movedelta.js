@@ -6,6 +6,7 @@
 'use strict';
 
 import Delta from './delta.js';
+import DeltaFactory from './deltafactory.js';
 import { register } from '../batch.js';
 import MoveOperation from '../operation/moveoperation.js';
 import Position from '../position.js';
@@ -65,6 +66,13 @@ export default class MoveDelta extends Delta {
 		return MoveDelta;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	static get className() {
+		return 'engine.treeModel.delta.MoveDelta';
+	}
+
 	static get _priority() {
 		return 20;
 	}
@@ -105,3 +113,5 @@ register( 'move', function( nodeOrRange, targetPosition ) {
 
 	return this;
 } );
+
+DeltaFactory.register( MoveDelta );

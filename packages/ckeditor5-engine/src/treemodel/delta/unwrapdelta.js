@@ -6,6 +6,7 @@
 'use strict';
 
 import Delta from './delta.js';
+import DeltaFactory from './deltafactory.js';
 import WrapDelta from './wrapdelta.js';
 import { register } from '../batch.js';
 import Position from '../position.js';
@@ -42,6 +43,13 @@ export default class UnwrapDelta extends Delta {
 
 	get _reverseDeltaClass() {
 		return WrapDelta;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get className() {
+		return 'engine.treeModel.delta.UnwrapDelta';
 	}
 
 	static get _priority() {
@@ -85,3 +93,5 @@ register( 'unwrap', function( element ) {
 
 	return this;
 } );
+
+DeltaFactory.register( UnwrapDelta );

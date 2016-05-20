@@ -37,4 +37,11 @@ export default class NoOperation extends Operation {
 	_execute() {
 		// Do nothing.
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get className() {
+		return 'engine.treeModel.operation.NoOperation';
+	}
 }

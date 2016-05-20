@@ -10,6 +10,7 @@
 import Document from '/ckeditor5/engine/treemodel/document.js';
 import RootAttributeOperation from '/ckeditor5/engine/treemodel/operation/rootattributeoperation.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
+import { jsonParseStringify } from '/tests/engine/treemodel/_utils/utils.js';
 
 describe( 'RootAttributeOperation', () => {
 	let doc, root;
@@ -222,5 +223,57 @@ describe( 'RootAttributeOperation', () => {
 		expect( clone.oldValue ).to.equal( 'old' );
 		expect( clone.newValue ).to.equal( 'new' );
 		expect( clone.baseVersion ).to.equal( baseVersion );
+	} );
+
+	describe( 'toJSON', () => {
+		it( 'should create proper serialized object', () => {
+			const op = new RootAttributeOperation(
+				root,
+				'key',
+				null,
+				'newValue',
+				doc.version
+			);
+
+			const serialized = jsonParseStringify( op );
+
+			expect( serialized.__className ).to.equal( 'engine.treeModel.operation.RootAttributeOperation' );
+			expect( serialized ).to.deep.equal( {
+				__className: 'engine.treeModel.operation.RootAttributeOperation',
+				baseVersion: 0,
+				key: 'key',
+				newValue: 'newValue',
+				oldValue: null,
+				root: 'root'
+			} );
+		} );
+	} );
+
+	describe( 'fromJSON', () => {
+		it( 'should create proper RootAttributeOperation from json object', () => {
+			const op = new RootAttributeOperation( root, 'key', null, 'newValue', doc.version );
+
+			const serialized = jsonParseStringify( op );
+			const deserialized = RootAttributeOperation.fromJSON( serialized, doc );
+
+			expect( deserialized ).to.deep.equal( op );
+		} );
+
+		it( 'should throw an error when root does not exists', () => {
+			const op = new RootAttributeOperation(
+				root,
+				'key',
+				null,
+				'newValue',
+				doc.version
+			);
+
+			const serialized = jsonParseStringify( op );
+			serialized.root = 'no-root';
+
+			expect( () => {
+				RootAttributeOperation.fromJSON( serialized, doc );
+			} ).to.throw( CKEditorError, /rootattributeoperation-fromjson-no-root/ );
+		} );
 	} );
 } );

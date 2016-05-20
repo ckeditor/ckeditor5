@@ -5,7 +5,6 @@
 
 'use strict';
 
-import clone from '../../utils/lib/lodash/clone.js';
 import toMap from '../../utils/tomap.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 
@@ -183,10 +182,11 @@ export default class Node {
 	 * @returns {Object} Clone of this object with the parent property replaced with its name.
 	 */
 	toJSON() {
-		const json = clone( this );
+		let json = {};
 
-		// Due to circular references we need to remove parent reference.
-		json.parent = this.parent ? this.parent.name : null;
+		if ( this._attrs.size ) {
+			json.attributes = [ ...this._attrs ];
+		}
 
 		return json;
 	}

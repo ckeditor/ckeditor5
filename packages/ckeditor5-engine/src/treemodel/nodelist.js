@@ -7,10 +7,10 @@
 
 import CharacterProxy from './characterproxy.js';
 import Text from './text.js';
+import Element from './element.js';
 import DocumentFragment from './documentfragment.js';
 import mapsEqual from '../../utils/mapsequal.js';
 import isIterable from '../../utils/isiterable.js';
-import clone from '../../utils/lib/lodash/clone.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
@@ -47,19 +47,6 @@ class NodeListText extends Text {
 		index = index && index >= 0 ? index : 0;
 
 		return new CharacterProxy( this, index );
-	}
-
-	/**
-	 * Custom toJSON method to solve child-parent circular dependencies.
-	 *
-	 * @returns {Object} Clone of this object with the parent property replaced with its name.
-	 */
-	toJSON() {
-		const json = clone( this );
-
-		json.parent = json.parent ? this.parent.name : null;
-
-		return json;
 	}
 }
 
@@ -293,7 +280,7 @@ export default class NodeList {
 
 		this._indexMap.splice( index, number );
 
-		for ( let i = index; i < this._indexMap.length ; i++ ) {
+		for ( let i = index; i < this._indexMap.length; i++ ) {
 			this._indexMap[ i ] -= removed.length;
 		}
 
@@ -351,6 +338,50 @@ export default class NodeList {
 		}
 
 		this._mergeNodeAt( index + number );
+	}
+
+	/**
+	 * Custom toJSON method to solve child-parent circular dependencies.
+	 *
+	 * @returns {Object} Clone of this object with the parent property replaced with its name.
+	 */
+	toJSON() {
+		if ( !this._nodes.length ) {
+			return {};
+		}
+
+		let json = { nodes: [] };
+
+		for ( let node of this._nodes ) {
+			json.nodes.push( node.toJSON() );
+		}
+
+		return json;
+	}
+
+	/**
+	 * Creates NodeList object from deserilized object, ie. from parsed JSON string.
+	 *
+	 *		let deserialized = JSON.parse( JSON.stringify( someNodeList ) );
+	 *		let nodeList = NodeList.fromJSON( deserialized );
+	 *
+	 * @param {Object} json Deserialized JSON object.
+	 * @returns {engine.treeModel.NodeList}
+	 */
+	static fromJSON( json ) {
+		let nodes = [];
+
+		if ( json.nodes ) {
+			for ( let node of json.nodes ) {
+				if ( node.text ) {
+					nodes.push( new Text( node.text, node.attributes ) );
+				} else {
+					nodes.push( Element.fromJSON( node ) );
+				}
+			}
+		}
+
+		return new NodeList( nodes );
 	}
 
 	/**
@@ -425,7 +456,7 @@ export default class NodeList {
 			// Remove text node after index.
 			this._nodes.splice( realIndexAfter, 1 );
 
-			for ( let i = index; i < this._indexMap.length ; i++ ) {
+			for ( let i = index; i < this._indexMap.length; i++ ) {
 				this._indexMap[ i ]--;
 			}
 		}

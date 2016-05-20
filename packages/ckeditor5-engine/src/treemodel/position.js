@@ -564,6 +564,34 @@ export default class Position {
 	}
 
 	/**
+	 * Creates Element object from deserilized object, ie. from parsed JSON string.
+	 *
+	 * @param {Object} json Deserialized JSON object.
+	 * @param {engine.treeModel.Document} doc Document on which this operation will be applied.
+	 * @returns {engine.treeModel.Position}
+	 */
+	static fromJSON( json, doc ) {
+		if ( json.root === '$graveyard' ) {
+			return new Position( doc.graveyard, json.path );
+		}
+
+		if ( !doc.hasRoot( json.root ) ) {
+			/**
+			 * Cannot create position for document. Root with specified name does not exist.
+			 *
+			 * @error position-fromjson-no-root
+			 * @param {String} rootName
+			 */
+			throw new CKEditorError(
+				'position-fromjson-no-root: Cannot create position for document. Root with specified name does not exist.',
+				{ rootName: json.root }
+			);
+		}
+
+		return new Position( doc.getRoot( json.root ), json.path );
+	}
+
+	/**
 	 * Returns a new position that is a combination of this position and given positions. The combined
 	 * position is this position transformed by moving a range starting at `from` to `to` position.
 	 * It is expected that this position is inside the moved range.

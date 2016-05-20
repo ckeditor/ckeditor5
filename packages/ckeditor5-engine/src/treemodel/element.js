@@ -197,4 +197,38 @@ export default class Element extends Node {
 
 		return text;
 	}
+
+	/**
+	 * Custom toJSON method to solve child-parent circular dependencies.
+	 *
+	 * @returns {Object} Clone of this object with the parent property replaced with its name.
+	 */
+	toJSON() {
+		let json = super.toJSON();
+
+		if ( this._children.length ) {
+			json.children = this._children.toJSON();
+		}
+
+		json.name = this.name;
+
+		return json;
+	}
+
+	/**
+	 * Creates Element object from deserilized object, ie. from parsed JSON string.
+	 *
+	 *		let deserialized = JSON.parse( JSON.stringify( someElementObject ) );
+	 *		let element = NodeList.fromJSON( deserialized );
+	 *
+	 * @param {Object} json
+	 * @returns {engine.treeModel.Element}
+	 */
+	static fromJSON( json ) {
+		if ( json.children ) {
+			return new Element( json.name, json.attributes, NodeList.fromJSON( json.children ) );
+		}
+
+		return new Element( json.name, json.attributes );
+	}
 }
