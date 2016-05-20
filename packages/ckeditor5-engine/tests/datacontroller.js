@@ -93,13 +93,27 @@ describe( 'DataController', () => {
 
 		it( 'should get root name as a parameter', () => {
 			schema.allow( { name: '$text', inside: '$root' } );
-			data.set( 'main', 'foo' );
-			data.set( 'title', 'Bar' );
+			data.set( 'foo', 'main' );
+			data.set( 'Bar', 'title' );
 
 			expect( getData( modelDocument, { withoutSelection: true, rootName: 'main' } ) ).to.equal( 'foo' );
 			expect( getData( modelDocument, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'Bar' );
 
 			expect( count( modelDocument.history.getDeltas() ) ).to.equal( 2 );
+		} );
+
+		// This case was added when order of params was different and it really didn't work. Let's keep it
+		// if anyone will ever try to change this.
+		it( 'should allow setting empty data', () => {
+			schema.allow( { name: '$text', inside: '$root' } );
+
+			data.set( 'foo', 'title' );
+
+			expect( getData( modelDocument, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'foo' );
+
+			data.set( '', 'title' );
+
+			expect( getData( modelDocument, { withoutSelection: true, rootName: 'title' } ) ).to.equal( '' );
 		} );
 	} );
 

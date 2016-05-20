@@ -158,15 +158,10 @@ export default class DataController {
 	 * This method also creates a batch with all the changes applied. If all you need is to parse data use
 	 * the {@link engine.dataController#parse} method.
 	 *
-	 * @param {String} [rootName='main'] Roots name.
 	 * @param {String} data Input data.
+	 * @param {String} [rootName='main'] Root name.
 	 */
-	set( rootName, data ) {
-		if ( !data ) {
-			data = rootName;
-			rootName = 'main';
-		}
-
+	set( data, rootName = 'main' ) {
 		// Save to model.
 		const modelRoot = this.model.getRoot( rootName );
 
@@ -197,7 +192,7 @@ export default class DataController {
 	}
 
 	/**
-	 * Removes all events listeners set by the DataController.
+	 * Removes all event listeners set by the DataController.
 	 */
 	destroy() {}
 }
