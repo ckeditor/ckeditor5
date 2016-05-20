@@ -5,15 +5,15 @@
 
 'use strict';
 
-import ViewDocumentFragment from '/ckeditor5/engine/treeview/documentfragment.js';
+import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
-import ViewElement from '/ckeditor5/engine/treeview/element.js';
-import Selection from '/ckeditor5/engine/treeview/selection.js';
-import Range from '/ckeditor5/engine/treeview/range.js';
-import Position from '/ckeditor5/engine/treeview/position.js';
-import AttributeElement from '/ckeditor5/engine/treeview/attributeelement.js';
-import ContainerElement from '/ckeditor5/engine/treeview/containerelement.js';
-import ViewText from '/ckeditor5/engine/treeview/text.js';
+import ViewElement from '/ckeditor5/engine/view/element.js';
+import Selection from '/ckeditor5/engine/view/selection.js';
+import Range from '/ckeditor5/engine/view/range.js';
+import Position from '/ckeditor5/engine/view/position.js';
+import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
+import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
+import ViewText from '/ckeditor5/engine/view/text.js';
 
 const ELEMENT_RANGE_START_TOKEN = '[';
 const ELEMENT_RANGE_END_TOKEN = ']';
@@ -21,9 +21,9 @@ const TEXT_RANGE_START_TOKEN = '{';
 const TEXT_RANGE_END_TOKEN = '}';
 
 /**
- * Writes the contents of the {@link engine.treeView.Document Document} to an HTML-like string.
+ * Writes the contents of the {@link engine.view.Document Document} to an HTML-like string.
  *
- * @param {engine.treeView.Document} document
+ * @param {engine.view.Document} document
  * @param {Object} [options]
  * @param {Boolean} [options.withoutSelection=false] Whether to write the selection. When set to `true` selection will
  * be not included in returned string.
@@ -54,9 +54,9 @@ export function getData( document, options = {} ) {
 getData._stringify = stringify;
 
 /**
- * Sets the contents of the {@link engine.treeView.Document Document} provided as HTML-like string.
+ * Sets the contents of the {@link engine.view.Document Document} provided as HTML-like string.
  *
- * @param {engine.treeView.Document} document
+ * @param {engine.view.Document} document
  * @param {String} data HTML-like string to write into Document.
  * @param {Object} options
  * @param {String} [rootName] Root name where parsed data will be stored. If not provided, default `main` name will be
@@ -77,17 +77,17 @@ setData._parse = parse;
 
 /**
  * Converts view elements to HTML-like string representation.
- * Root element can be provided as {@link engine.treeView.Text Text}:
+ * Root element can be provided as {@link engine.view.Text Text}:
  *
  *		const text = new Text( 'foobar' );
  *		stringify( text ); // 'foobar'
  *
- * or as {@link engine.treeView.Element Element}:
+ * or as {@link engine.view.Element Element}:
  *
  *		const element = new Element( 'p', null, new Text( 'foobar' ) );
  *		stringify( element ); // '<p>foobar</p>'
  *
- * or as {@link engine.treeView.DocumentFragment DocumentFragment}:
+ * or as {@link engine.view.DocumentFragment DocumentFragment}:
  *
  *		const text = new Text( 'foobar' );
  *		const b = new Element( 'b', { name: 'test' }, text );
@@ -96,7 +96,7 @@ setData._parse = parse;
  *
  *		stringify( fragment ); // '<p style="color:red;"></p><b name="test">foobar</b>'
  *
- * Additionally {@link engine.treeView.Selection Selection} instance can be provided, then ranges from that selection
+ * Additionally {@link engine.view.Selection Selection} instance can be provided, then ranges from that selection
  * will be included in output data.
  * If range position is placed inside element node, it will be represented with `[` and `]`:
  *
@@ -127,8 +127,8 @@ setData._parse = parse;
  *
  *		stringify( text, selection ); // '{f}oo{ba}r'
  *
- * Instead of {@link engine.treeView.Selection Selection} instance {@link engine.treeView.Range Range} or
- * {@link engine.treeView.Position Position} instance can be provided. If Range instance is provided - it will be
+ * Instead of {@link engine.view.Selection Selection} instance {@link engine.view.Range Range} or
+ * {@link engine.view.Position Position} instance can be provided. If Range instance is provided - it will be
  * converted to selection containing this range. If Position instance is provided - it will be converted to selection
  * containing one range collapsed at this position.
  *
@@ -141,7 +141,7 @@ setData._parse = parse;
  *
  * Additional options object can be provided.
  * If `options.showType` is set to `true`, element's types will be
- * presented for {@link engine.treeView.AttributeElement AttributeElements} and {@link engine.treeView.ContainerElement
+ * presented for {@link engine.view.AttributeElement AttributeElements} and {@link engine.view.ContainerElement
  * ContainerElements}:
  *
  *		const attribute = new AttributeElement( 'b' );
@@ -150,14 +150,14 @@ setData._parse = parse;
  *		getData( container, null, { showType: true } ); // '<container:p></container:p>'
  *
  * If `options.showPriority` is set to `true`, priority will be displayed for all
- * {@link engine.treeView.AttributeElement AttributeElements}.
+ * {@link engine.view.AttributeElement AttributeElements}.
  *
  *		const attribute = new AttributeElement( 'b' );
  *		attribute.priority = 20;
  *		getData( attribute, null, { showPriority: true } ); // <b:20></b:20>
  *
- * @param {engine.treeView.Text|engine.treeView.Element|engine.treeView.DocumentFragment} node Node to stringify.
- * @param {engine.treeView.Selection|engine.treeView.Position|engine.treeView.Range} [selectionOrPositionOrRange = null ]
+ * @param {engine.view.Text|engine.view.Element|engine.view.DocumentFragment} node Node to stringify.
+ * @param {engine.view.Selection|engine.view.Position|engine.view.Range} [selectionOrPositionOrRange = null ]
  * Selection instance which ranges will be included in returned string data. If Range instance is provided - it will be
  * converted to selection containing this range. If Position instance is provided - it will be converted to selection
  * containing one range collapsed at this position.
@@ -167,7 +167,7 @@ setData._parse = parse;
  * @param {Boolean} [options.showPriority=false] When set to `true` AttributeElement's priority will be printed
  * (`<span:12>`, `<b:10>`).
  * @param {Boolean} [options.ignoreRoot=false] When set to `true` root's element opening and closing will not be printed.
- * Mainly used by `getData` function to ignore {@link engine.treeView.Document Document's} root element.
+ * Mainly used by `getData` function to ignore {@link engine.view.Document Document's} root element.
  * @returns {String} HTML-like string representing the view.
  */
 export function stringify( node, selectionOrPositionOrRange = null, options = {} ) {
@@ -190,21 +190,21 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
 
 /**
  * Parses HTML-like string and returns view tree nodes.
- * Simple string will be converted to {@link engine.treeView.Text Text} node:
+ * Simple string will be converted to {@link engine.view.Text Text} node:
  *
  *		parse( 'foobar' ); // Returns instance of Text.
  *
- * {@link engine.treeView.Element Elements} will be parsed with attributes an children:
+ * {@link engine.view.Element Elements} will be parsed with attributes an children:
  *
  *		parse( '<b name="baz">foobar</b>' ); // Returns instance of Element with `baz` attribute and text child node.
  *
- * Multiple nodes provided on root level will be converted to {@link engine.treeView.DocumentFragment DocumentFragment}:
+ * Multiple nodes provided on root level will be converted to {@link engine.view.DocumentFragment DocumentFragment}:
  *
  *		parse( '<b>foo</b><i>bar</i>' ); // Returns DocumentFragment with two child elements.
  *
- * Method can parse multiple {@link engine.treeView.Range ranges} provided in string data and return
- * {@link engine.treeView.Selection Selection} instance containing these ranges. Ranges placed inside
- * {@link engine.treeView.Text Text} nodes should be marked using `{` and `}` brackets:
+ * Method can parse multiple {@link engine.view.Range ranges} provided in string data and return
+ * {@link engine.view.Selection Selection} instance containing these ranges. Ranges placed inside
+ * {@link engine.view.Text Text} nodes should be marked using `{` and `}` brackets:
  *
  *		const { text, selection } = parse( 'f{ooba}r' );
  *
@@ -220,8 +220,8 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
  * In above example first range (`{fo}`) will be added to selection as second one, second range (`{ar}`) will be added
  * as third and third range (`{ba}`) will be added as first one.
  *
- * If selection's last range should be added as backward one (so the {@link engine.treeView.Selection#anchor selection
- * anchor} is represented by `end` position and {@link engine.treeView.Selection#focus selection focus} is
+ * If selection's last range should be added as backward one (so the {@link engine.view.Selection#anchor selection
+ * anchor} is represented by `end` position and {@link engine.view.Selection#focus selection focus} is
  * represented by `start` position) use `lastRangeBackward` flag:
  *
  *		const { root, selection } = parse( `{foo}bar{baz}`, { lastRangeBackward: true } );
@@ -229,15 +229,15 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
  * @param {String} data HTML-like string to be parsed.
  * @param {Object} options
  * @param {Array.<Number>} [options.order] Array with order of parsed ranges added to returned
- * {@link engine.treeView.Selection Selection} instance. Each element should represent desired position of each range in
+ * {@link engine.view.Selection Selection} instance. Each element should represent desired position of each range in
  * selection instance. For example: `[2, 3, 1]` means that first range will be placed as second, second as third and third as first.
  * @param {Boolean} [options.lastRangeBackward=false] If set to true last range will be added as backward to the returned
- * {@link engine.treeView.Selection Selection} instance.
- * @param {engine.treeView.Element|engine.treeView.DocumentFragment} [options.rootElement=null] Default root to use when parsing elements.
+ * {@link engine.view.Selection Selection} instance.
+ * @param {engine.view.Element|engine.view.DocumentFragment} [options.rootElement=null] Default root to use when parsing elements.
  * When set to `null` root element will be created automatically. If set to
- * {@link engine.treeView.Element Element} or {@link engine.treeView.DocumentFragment DocumentFragment} - this node
+ * {@link engine.view.Element Element} or {@link engine.view.DocumentFragment DocumentFragment} - this node
  * will be used as root for all parsed nodes.
- * @returns {engine.treeView.Text|engine.treeView.Element|engine.treeView.DocumentFragment|Object} Returns parsed view node
+ * @returns {engine.view.Text|engine.view.Element|engine.view.DocumentFragment|Object} Returns parsed view node
  * or object with two fields `view` and `selection` when selection ranges were included in data to parse.
  */
 export function parse( data, options = {} ) {
@@ -263,20 +263,20 @@ export function parse( data, options = {} ) {
 }
 
 /**
- * Private helper class used for converting ranges represented as text inside view {@link engine.treeView.Text Text nodes}.
+ * Private helper class used for converting ranges represented as text inside view {@link engine.view.Text Text nodes}.
  *
  * @private
  */
 class RangeParser {
 	/**
-	 * Parses the view, and returns ranges represented inside {@link engine.treeView.Text Text nodes}.
+	 * Parses the view, and returns ranges represented inside {@link engine.view.Text Text nodes}.
 	 * Method will remove all occurrences of `{`, `}`, `[` and `]` from found text nodes. If text node is empty after
 	 * the process - it will be removed too.
 	 *
-	 * @param {engine.treeView.Node} node Starting node.
+	 * @param {engine.view.Node} node Starting node.
 	 * @param {Array.<Number>} order Ranges order. Each element should represent desired position of the range after
 	 * sorting. For example: `[2, 3, 1]` means that first range will be placed as second, second as third and third as first.
-	 * @returns {Array.<engine.treeView.Range>} Array with ranges found.
+	 * @returns {Array.<engine.view.Range>} Array with ranges found.
 	 */
 	parse( node, order ) {
 		this._positions = [];
@@ -307,7 +307,7 @@ class RangeParser {
 	 * too.
 	 *
 	 * @private
-	 * @param {engine.treeView.Node} node Staring node.
+	 * @param {engine.view.Node} node Staring node.
 	 */
 	_getPositions( node ) {
 		if ( node instanceof ViewDocumentFragment || node instanceof ViewElement ) {
@@ -397,7 +397,7 @@ class RangeParser {
 	 * For example: `[2, 3, 1]` means that first range will be placed as second, second as third and third as first.
 	 *
 	 * @private
-	 * @param {Array.<engine.treeView.Range>} ranges Ranges to sort.
+	 * @param {Array.<engine.view.Range>} ranges Ranges to sort.
 	 * @param {Array.<Number>} rangesOrder Array with new ranges order.
 	 * @returns {Array} Sorted ranges array.
 	 */
@@ -421,7 +421,7 @@ class RangeParser {
 	 * Uses all found bracket positions to create ranges from them.
 	 *
 	 * @private
-	 * @returns {Array.<engine.treeView.Range}
+	 * @returns {Array.<engine.view.Range}
 	 */
 	_createRanges() {
 		const ranges = [];
@@ -467,11 +467,11 @@ class ViewParser {
 	 * Parses HTML-like string to view tree elements.
 	 *
 	 * @param {String} data
-	 * @param {engine.treeView.Element|engine.treeView.DocumentFragment} [rootElement=null] Default root to use when parsing elements.
+	 * @param {engine.view.Element|engine.view.DocumentFragment} [rootElement=null] Default root to use when parsing elements.
 	 * When set to `null` root element will be created automatically. If set to
-	 * {@link engine.treeView.Element Element} or {@link engine.treeView.DocumentFragment DocumentFragment} - this node
+	 * {@link engine.view.Element Element} or {@link engine.view.DocumentFragment DocumentFragment} - this node
 	 * will be used as root for all parsed nodes.
-	 * @returns {engine.treeView.Node|engine.treeView.DocumentFragment}
+	 * @returns {engine.view.Node|engine.view.DocumentFragment}
 	 */
 	parse( data, rootElement = null ) {
 		const htmlProcessor = new HtmlDataProcessor();
@@ -493,9 +493,9 @@ class ViewParser {
 	 *
 	 * @private
 	 * @param {Node} domNode
-	 * @param {engine.treeView.Element|engine.treeView.DocumentFragment} [rootElement=null] Default root element to use
+	 * @param {engine.view.Element|engine.view.DocumentFragment} [rootElement=null] Default root element to use
 	 * when parsing elements.
-	 * @returns {engine.treeView.Node|engine.treeView.DocumentFragment}
+	 * @returns {engine.view.Node|engine.view.DocumentFragment}
 	 */
 	_walkDom( domNode, rootElement = null ) {
 		const isDomElement = domNode instanceof window.Element;
@@ -533,11 +533,11 @@ class ViewParser {
 	}
 
 	/**
-	 * Converts DOM Element to {engine.treeView.Element view Element}.
+	 * Converts DOM Element to {engine.view.Element view Element}.
 	 *
 	 * @private
 	 * @param {Element} domElement DOM element to convert.
-	 * @returns {engine.treeView.Element|engine.treeView.AttributeElement|engine.treeView.ContainerElement} Tree view
+	 * @returns {engine.view.Element|engine.view.AttributeElement|engine.view.ContainerElement} Tree view
 	 * element converted from DOM element.
 	 */
 	_convertElement( domElement ) {
@@ -568,7 +568,7 @@ class ViewParser {
 	}
 
 	/**
-	 * Converts DOM element tag name to information needed for creating {@link engine.treeView.Element view Element} instance.
+	 * Converts DOM element tag name to information needed for creating {@link engine.view.Element view Element} instance.
 	 * Name can be provided in couple formats: as a simple element's name (`div`), as a type and name (`container:div`,
 	 * `attribute:span`), as a name and priority (`span:12`) and as a type, priority, name trio (`attribute:span:12`);
 	 *
@@ -677,7 +677,7 @@ class ViewStringify {
 	 * Creates ViewStringify instance.
 	 *
 	 * @param root
-	 * @param {engine.treeView.Selection} [selection=null] Selection which ranges should be also converted to string.
+	 * @param {engine.view.Selection} [selection=null] Selection which ranges should be also converted to string.
 	 * @param {Object} [options] Options object.
 	 * @param {Boolean} [options.showType=false] When set to `true` type of elements will be printed ( `<container:p>`
 	 * instead of `<p>` and `<attribute:b>` instead of `<b>`.
@@ -718,7 +718,7 @@ class ViewStringify {
 	 * Calls `callback` with parsed chunks of string data.
 	 *
 	 * @private
-	 * @param {engine.treeView.DocumentFragment|engine.treeView.Element|engine.treeView.Text} root
+	 * @param {engine.view.DocumentFragment|engine.view.Element|engine.view.Text} root
 	 * @param {Function} callback
 	 */
 	_walkView( root, callback ) {
@@ -750,11 +750,11 @@ class ViewStringify {
 	}
 
 	/**
-	 * Checks if given {@link engine.treeView.Element Element} has {@link engine.treeView.Range#start range start} or
-	 * {@link engine.treeView.Range#start range end} placed at given offset and returns its string representation.
+	 * Checks if given {@link engine.view.Element Element} has {@link engine.view.Range#start range start} or
+	 * {@link engine.view.Range#start range end} placed at given offset and returns its string representation.
 	 *
 	 * @private
-	 * @param {engine.treeView.Element} element
+	 * @param {engine.view.Element} element
 	 * @param {Number} offset
 	 */
 	_stringifyElementRanges( element, offset ) {
@@ -780,12 +780,12 @@ class ViewStringify {
 	}
 
 	/**
-	 * Checks if given {@link engine.treeView.Element Text node} has {@link engine.treeView.Range#start range start} or
-	 * {@link engine.treeView.Range#start range end} placed somewhere inside. Returns string representation of text
+	 * Checks if given {@link engine.view.Element Text node} has {@link engine.view.Range#start range start} or
+	 * {@link engine.view.Range#start range end} placed somewhere inside. Returns string representation of text
 	 * with range delimiters placed inside.
 	 *
 	 * @private
-	 * @param {engine.treeView.Text} node
+	 * @param {engine.view.Text} node
 	 */
 	_stringifyTextRanges( node ) {
 		const length = node.data.length;
@@ -825,13 +825,13 @@ class ViewStringify {
 	}
 
 	/**
-	 * Converts passed {@link engine.treeView.Element Element} to opening tag.
+	 * Converts passed {@link engine.view.Element Element} to opening tag.
 	 * Depending on current configuration opening tag can be simple (`<a>`), contain type prefix (`<container:p>` or
 	 * `<attribute:a>`), contain priority information ( `<attribute:a priority=20>` ). Element's attributes also
 	 * will be included (`<a href="http://ckeditor.com" name="foobar">`).
 	 *
 	 * @private
-	 * @param {engine.treeView.Element} element
+	 * @param {engine.view.Element} element
 	 * @returns {String}
 	 */
 	_stringifyElementOpen( element ) {
@@ -845,12 +845,12 @@ class ViewStringify {
 	}
 
 	/**
-	 * Converts passed {@link engine.treeView.Element Element} to closing tag.
+	 * Converts passed {@link engine.view.Element Element} to closing tag.
 	 * Depending on current configuration opening tag can be simple (`</a>`) or contain type prefix (`</container:p>` or
 	 * `</attribute:a>`).
 	 *
 	 * @private
-	 * @param {engine.treeView.Element} element
+	 * @param {engine.view.Element} element
 	 * @returns {String}
 	 */
 	_stringifyElementClose( element ) {
@@ -862,13 +862,13 @@ class ViewStringify {
 	}
 
 	/**
-	 * Converts passed {@link engine.treeView.Element Element's} type to its string representation
-	 * Returns 'attribute' for {@link engine.treeView.AttributeElement AttributeElements} and
-	 * 'container' for {@link engine.treeView.ContainerElement ContainerElements}. Returns empty string when current
+	 * Converts passed {@link engine.view.Element Element's} type to its string representation
+	 * Returns 'attribute' for {@link engine.view.AttributeElement AttributeElements} and
+	 * 'container' for {@link engine.view.ContainerElement ContainerElements}. Returns empty string when current
 	 * configuration is preventing showing elements' types.
 	 *
 	 * @private
-	 * @param {engine.treeView.Element} element
+	 * @param {engine.view.Element} element
 	 * @returns {String}
 	 */
 	_stringifyElementType( element ) {
@@ -886,13 +886,13 @@ class ViewStringify {
 	}
 
 	/**
-	 * Converts passed {@link engine.treeView.Element Element} to its priority representation.
+	 * Converts passed {@link engine.view.Element Element} to its priority representation.
 	 * Priority string representation will be returned when passed element is an instance of
-	 * {@link engine.treeView.AttributeElement AttributeElement} and current configuration allow to show priority.
+	 * {@link engine.view.AttributeElement AttributeElement} and current configuration allow to show priority.
 	 * Otherwise returns empty string.
 	 *
 	 * @private
-	 * @param {engine.treeView.Element} element
+	 * @param {engine.view.Element} element
 	 * @returns {String}
 	 */
 	_stringifyElementPriority( element ) {
@@ -904,11 +904,11 @@ class ViewStringify {
 	}
 
 	/**
-	 * Converts passed {@link engine.treeView.Element Element} attributes to their string representation.
+	 * Converts passed {@link engine.view.Element Element} attributes to their string representation.
 	 * If element has no attributes - empty string is returned.
 	 *
 	 * @private
-	 * @param {engine.treeView.Element} element
+	 * @param {engine.view.Element} element
 	 * @returns {String}
 	 */
 	_stringifyElementAttributes( element ) {
