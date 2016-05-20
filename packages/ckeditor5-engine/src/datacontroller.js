@@ -5,38 +5,38 @@
 
 'use strict';
 
-import Mapper from './treecontroller/mapper.js';
+import Mapper from './conversion/mapper.js';
 
-import ModelConversionDispatcher from './treecontroller/modelconversiondispatcher.js';
-import { insertText } from './treecontroller/model-to-view-converters.js';
+import ModelConversionDispatcher from './conversion/modelconversiondispatcher.js';
+import { insertText } from './conversion/model-to-view-converters.js';
 
-import ViewConversionDispatcher from './treecontroller/viewconversiondispatcher.js';
-import { convertText, convertToModelFragment } from './treecontroller/view-to-model-converters.js';
+import ViewConversionDispatcher from './conversion/viewconversiondispatcher.js';
+import { convertText, convertToModelFragment } from './conversion/view-to-model-converters.js';
 
-import Writer from './treeview/writer.js';
-import ViewDocumentFragment from './treeview/documentfragment.js';
-import DomConverter from './treeview/domconverter.js';
-import { NBSP_FILLER } from './treeview/filler.js';
+import Writer from './view/writer.js';
+import ViewDocumentFragment from './view/documentfragment.js';
+import DomConverter from './view/domconverter.js';
+import { NBSP_FILLER } from './view/filler.js';
 
-import ModelRange from './treemodel/range.js';
-import ModelPosition from './treemodel/position.js';
+import ModelRange from './model/range.js';
+import ModelPosition from './model/position.js';
 
 /**
  * Data pipeline controlling class. The main usage for this class is to let user {@link engine.DataController#get get}
  * and {@link engine.DataController#set set} data of the {@link engine.DataController#model model}
  * using given {@link engine.dataProcessor.DataProcessor DataProcessor} and
- * {@link engine.treeController.ModelConversionDispatcher model to view} and
- * {@link engine.treeController.ViewConversionDispatcher view to model} converters.
+ * {@link engine.conversion.ModelConversionDispatcher model to view} and
+ * {@link engine.conversion.ViewConversionDispatcher view to model} converters.
  *
  * @memberOf engine
  */
 export default class DataController {
 	/**
 	 * Creates data controller instance for {@link engine.DataController#get getting} data from and
-	 * {@link engine.DataController#set setting} data to the given {@link engine.treeModel.document document model},
+	 * {@link engine.DataController#set setting} data to the given {@link engine.model.document document model},
 	 * using given {@link engine.dataProcessor.DataProcessor DataProcessor}.
 	 *
-	 * @param {engine.treeModel.Document} modelDocument Controlled model document.
+	 * @param {engine.model.Document} modelDocument Controlled model document.
 	 * @param {engine.dataProcessor.DataProcessor} dataProcessor Data processor which should used by the controller.
 	 */
 	constructor( modelDocument, dataProcessor ) {
@@ -44,7 +44,7 @@ export default class DataController {
 		 * Controlled model document.
 		 *
 		 * @readonly
-		 * @member {engine.treeModel.document} engine.DataController#model
+		 * @member {engine.model.document} engine.DataController#model
 		 */
 		this.model = modelDocument;
 
@@ -62,7 +62,7 @@ export default class DataController {
 		 * passed to the `ModelConversionDispatcher` as a conversion API.
 		 *
 		 * @private
-		 * @member {engine.treeController.Mapper} engine.DataController#_mapper
+		 * @member {engine.conversion.Mapper} engine.DataController#_mapper
 		 */
 		this._mapper = new Mapper();
 
@@ -70,7 +70,7 @@ export default class DataController {
 		 * Writer used during the conversion.
 		 *
 		 * @private
-		 * @member {engine.treeView.Writer} engine.DataController#_writer
+		 * @member {engine.view.Writer} engine.DataController#_writer
 		 */
 		this._writer = new Writer();
 
@@ -78,7 +78,7 @@ export default class DataController {
 		 * DomConverter used during the conversion.
 		 *
 		 * @private
-		 * @member {engine.treeView.DomConverter} engine.DataController#_domConverter
+		 * @member {engine.view.DomConverter} engine.DataController#_domConverter
 		 */
 		this._domConverter = new DomConverter( { blockFiller: NBSP_FILLER } );
 
@@ -88,12 +88,12 @@ export default class DataController {
 		 *
 		 *		data.modelToView( 'insert:$element', customInsertConverter );
 		 *
-		 * Or use {@link engine.treeController.ModelConverterBuilder}:
+		 * Or use {@link engine.conversion.ModelConverterBuilder}:
 		 *
 		 *		BuildModelConverterFor( data.modelToView ).fromAttribute( 'bold' ).toElement( 'b' );
 		 *
 		 * @readonly
-		 * @member {engine.treeController.ModelConversionDispatcher} engine.DataController#modelToView
+		 * @member {engine.conversion.ModelConversionDispatcher} engine.DataController#modelToView
 		 */
 		this.modelToView = new ModelConversionDispatcher( {
 			writer: this._writer,
@@ -107,12 +107,12 @@ export default class DataController {
 		 *
 		 *		data.viewToModel( 'element', customElementConverter );
 		 *
-		 * Or use {@link engine.treeController.ViewConverterBuilder}:
+		 * Or use {@link engine.conversion.ViewConverterBuilder}:
 		 *
 		 *		BuildViewConverterFor( data.viewToModel ).fromElement( 'b' ).toAttribute( 'bold', true );
 		 *
 		 * @readonly
-		 * @member {engine.treeController.ViewConversionDispatcher} engine.DataController#viewToModel
+		 * @member {engine.conversion.ViewConversionDispatcher} engine.DataController#viewToModel
 		 */
 		this.viewToModel = new ViewConversionDispatcher( {
 			schema: modelDocument.schema
@@ -179,7 +179,7 @@ export default class DataController {
 	 *
 	 * @see engine.dataController#set
 	 * @param {String} data Data to parse.
-	 * @returns {engine.treeModel.DocumentFragment} Parsed data.
+	 * @returns {engine.model.DocumentFragment} Parsed data.
 	 */
 	parse( data ) {
 		// data -> DOM

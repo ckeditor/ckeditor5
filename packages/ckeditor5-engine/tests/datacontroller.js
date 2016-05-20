@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: treeview */
+/* bender-tags: view */
 
 'use strict';
 
-import ModelDocument from '/ckeditor5/engine/treemodel/document.js';
+import ModelDocument from '/ckeditor5/engine/model/document.js';
 import DataController from '/ckeditor5/engine/datacontroller.js';
 import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/HtmlDataProcessor.js';
 
-import BuildViewConverterFor  from '/ckeditor5/engine/treecontroller/view-converter-builder.js';
-import BuildModelConverterFor  from '/ckeditor5/engine/treecontroller/model-converter-builder.js';
+import BuildViewConverterFor  from '/ckeditor5/engine/conversion/view-converter-builder.js';
+import BuildModelConverterFor  from '/ckeditor5/engine/conversion/model-converter-builder.js';
 
 import { getData, setData, stringify } from '/tests/engine/_utils/model.js';
 
