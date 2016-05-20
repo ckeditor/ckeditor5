@@ -83,7 +83,7 @@ export function imitateFeatures( editor ) {
 
 	fontListModel.on( 'execute', ( evtInfo, itemModel ) => {
 		/* global console */
-		console.log( 'List item executed', itemModel );
+		console.log( 'Font list item executed', itemModel );
 	} );
 
 	/* istanbul ignore next */
