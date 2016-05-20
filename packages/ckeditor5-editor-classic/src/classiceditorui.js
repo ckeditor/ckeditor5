@@ -61,8 +61,10 @@ export default class ClassicEditorUI extends BoxedEditorUI {
 	 * @inheritDoc
 	 */
 	init() {
-		if ( this.editor.config.toolbar ) {
-			this.toolbar.addButtons( this.editor.config.toolbar );
+		const toolbar = this.editor.config.get( 'toolbar' );
+
+		if ( toolbar ) {
+			this.toolbar.addButtons( toolbar );
 		}
 
 		return super.init();
