@@ -9,9 +9,12 @@ import Feature from '../feature.js';
 import ChangeBuffer from './changebuffer.js';
 import MutationObserver from '../engine/view/observer/mutationobserver.js';
 import KeyObserver from '../engine/view/observer/keyobserver.js';
+import SelectionObserver from '../engine/view/observer/selectionobserver.js';
 import ModelPosition from '../engine/model/position.js';
 import ModelRange from '../engine/model/range.js';
 import ViewPosition from '../engine/view/position.js';
+import ViewText from '../engine/view/text.js';
+import ViewContainerElement from '../engine/view/containerelement.js';
 import diff from '../utils/diff.js';
 import diffToChanges from '../utils/difftochanges.js';
 import { getCode } from '../utils/keyboard.js';
@@ -24,37 +27,31 @@ import { getData } from '/tests/engine/_utils/model.js';
  * @extends ckeditor5.Feature
  */
 export default class Typing extends Feature {
-	constructor( editor ) {
-		super( editor );
-	}
-
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
-		const doc = editor.document;
 		const editingView = editor.editing.view;
 
-		this.buffer = new ChangeBuffer( doc, 5 );
+		this.buffer = new ChangeBuffer( editor.document, 5 );
 
 		editingView.addObserver( MutationObserver );
 		editingView.addObserver( KeyObserver );
+		editingView.addObserver( SelectionObserver );
 
 		this.listenTo( editingView, 'keydown', ( evt, data ) => {
-			if ( isSafeKeystroke( data ) || doc.selection.isCollapsed ) {
-				return;
-			}
-
-			doc.enqueueChanges( () => {
-				doc.composer.deleteContents( this.buffer.batch, doc.selection );
-			} );
-
-			data.preventDefault();
+			this._handleKeydown( data );
 		}, null, 9999 ); // LOWEST
 
 		this.listenTo( editingView, 'mutations', ( evt, mutations ) => {
-			mutations.forEach( mutation => this._handleMutation( mutation ) );
+			this._handleMutations( mutations );
 		} );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	destroy() {
 		super.destroy();
 
@@ -62,61 +59,160 @@ export default class Typing extends Feature {
 		this.buffer = null;
 	}
 
-	_handleMutation( mutation ) {
-		if ( mutation.type == 'children' ) {
-			this._handleChildrenMutation( mutation );
-		} else {
-			this._handleTextMutation( mutation );
-		}
-	}
-
-	_handleChildrenMutation( mutation ) {
-		// TODO Currently it's a bit tricky to implement this piece because quirks are not filtered out
-		// so typing inside <p>^<br></p> will give us "remove <br>, add 'x'".
-
-		console.log( 'Children mutation', mutation ); // jshint ignore:line
-	}
-
-	_handleTextMutation( mutation ) {
+	_handleKeydown( evtData ) {
 		const doc = this.editor.document;
-		const changes = diffToChanges( diff( mutation.oldText, mutation.newText ), mutation.newText );
-		let lastPos;
-		let insertedCharacters = 0;
 
-		console.log( 'Text mutation', JSON.stringify( changes ) ); // jshint ignore:line
-		console.log( mutation ); // jshint ignore:line
+		if ( isSafeKeystroke( evtData ) || doc.selection.isCollapsed ) {
+			return;
+		}
 
 		doc.enqueueChanges( () => {
-			changes
-				.forEach( change => {
+			doc.composer.deleteContents( this.buffer.batch, doc.selection );
+		} );
+
+		evtData.preventDefault();
+	}
+
+	_handleMutations( mutations ) {
+		const doc = this.editor.document;
+		const handler = new MutationHandler( this.editor.editing, this.buffer );
+
+		doc.enqueueChanges( () => {
+			handler.handle( mutations );
+			handler.commit();
+		} );
+	}
+}
+
+class MutationHandler {
+	constructor( editing, buffer ) {
+		this.editing = editing;
+		this.buffer = buffer;
+
+		this.reset();
+	}
+
+	reset() {
+		this.insertedCharacterCount = 0;
+		this.selectionPosition = null;
+	}
+
+	handle( mutations ) {
+		// mutations = mutations.slice( 0 );
+
+		// for ( let consumer of consumers.multi ) {
+		// 	consumer( mutations, this );
+
+		// 	if ( !mutations.length ) {
+		// 		return;
+		// 	}
+		// }
+
+		mutations.forEach( mutation => {
+			for ( let consumer of consumers.single ) {
+				if ( consumer.check( mutation ) ) {
+					consumer.consume( mutation, this );
+
+					return;
+				}
+			}
+		} );
+	}
+
+	commit() {
+		this.buffer.input( this.insertedCharacterCount );
+
+		// Placing the selection right after the last change will work for many cases, but not
+		// for ones like autocorrection or spellchecking. The caret should be placed after the whole piece
+		// which was corrected (e.g. a word), not after the letter that was replaced.
+		if ( this.selectionPosition ) {
+			this.editing.model.selection.collapse( this.selectionPosition );
+		}
+
+		this.reset();
+
+		console.log( getData( this.editing.model, { rootName: 'editor' } ) ); // jshint ignore:line
+	}
+
+	insert( { position, text, selectionPosition } ) {
+		this.buffer.batch.weakInsert( position, text );
+
+		this.insertedCharacterCount += text.length;
+		this.selectionPosition = selectionPosition;
+	}
+
+	remove( { range, selectionPosition } ) {
+		this.buffer.batch.remove( range );
+
+		this.selectionPosition = selectionPosition;
+	}
+}
+
+const consumers = {
+	// multi: [],
+
+	single: [
+		// Simple text nodes change.
+		{
+			check( mutation ) {
+				return ( mutation.type == 'text' );
+			},
+
+			consume( mutation, handler ) {
+				const changes = diffToChanges( diff( mutation.oldText, mutation.newText ), mutation.newText );
+
+				console.log( 'Text node change handler', JSON.stringify( changes ) ); // jshint ignore:line
+				console.log( mutation ); // jshint ignore:line
+
+				changes.forEach( change => {
 					const viewPos = new ViewPosition( mutation.node, change.index );
-					const modelPos = this.editor.editing.mapper.toModelPosition( viewPos );
+					const modelPos = handler.editing.mapper.toModelPosition( viewPos );
 
 					if ( change.type == 'INSERT' ) {
 						const insertedText = change.values.join( '' );
 
-						this.buffer.batch.weakInsert( modelPos, insertedText );
-
-						lastPos = ModelPosition.createAt( modelPos.parent, modelPos.offset + insertedText.length );
-						insertedCharacters += insertedText.length;
+						handler.insert( {
+							position: modelPos,
+							text: insertedText,
+							selectionPosition: ModelPosition.createAt( modelPos.parent, modelPos.offset + insertedText.length )
+						} );
 					} else /* if ( change.type == 'DELETE' ) */ {
-						this.buffer.batch.remove( new ModelRange( modelPos, modelPos.getShiftedBy( change.howMany ) ) );
-
-						lastPos = modelPos;
+						handler.remove( {
+							range: new ModelRange( modelPos, modelPos.getShiftedBy( change.howMany ) ),
+							selectionPosition: modelPos
+						} );
 					}
 				} );
+			}
+		},
 
-			// Placing the selection right after the last change will work for many cases, but not
-			// for ones like autocorrection or spellchecking. The caret should be placed after the whole piece
-			// which was corrected (e.g. a word), not after the letter that was replaced.
-			doc.selection.collapse( lastPos );
+		// Insertion into empty container.
+		{
+			check( mutation ) {
+				return (
+					mutation.oldChildren.length === 0 &&
+					mutation.newChildren.length === 1 &&
+					( mutation.newChildren[ 0 ] instanceof ViewText ) &&
+					( mutation.node instanceof ViewContainerElement )
+				);
+			},
 
-			this.buffer.input( insertedCharacters );
+			consume( mutation, handler ) {
+				console.log( 'Insertion into empty container handler', mutation ); // jshint ignore:line
 
-			console.log( getData( doc, { rootName: 'editor' } ) ); // jshint ignore:line
-		} );
-	}
-}
+				const viewPos = new ViewPosition( mutation.node, 0 );
+				const modelPos = handler.editing.mapper.toModelPosition( viewPos );
+				const insertedText = mutation.newChildren[ 0 ].data;
+
+				handler.insert( {
+					position: modelPos,
+					text: insertedText,
+					selectionPosition: ModelPosition.createAt( modelPos.parent, 'END' )
+				} );
+			}
+		}
+	]
+};
 
 // This is absolutely lame, but it's enough for now.
 

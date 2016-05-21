@@ -29,6 +29,7 @@ CKEDITOR.create( '#editor', {
 		new ModelPosition( doc.getRoot( 'editor' ), [ 0 ] ),
 		[
 			new ModelElement( 'paragraph', null, 'foobar' ),
+			new ModelElement( 'paragraph' ),
 			new ModelElement( 'paragraph', null, 'barfoo' )
 		]
 	);
