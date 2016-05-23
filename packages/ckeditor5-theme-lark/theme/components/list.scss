@@ -11,9 +11,9 @@
 
 	&__item {
 		display: block;
-		min-width: 12em;
 		padding: ck-spacing( 'medium' );
 		cursor: pointer;
+		min-width: 12em;
 
 		&:hover,
 		&:focus {

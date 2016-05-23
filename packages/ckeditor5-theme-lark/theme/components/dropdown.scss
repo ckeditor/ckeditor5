@@ -26,6 +26,8 @@
 	box-shadow: 0 0 5px ck-color( 'foreground', -15 );
 	position: absolute;
 	left: 0px;
+	background: ck-color( 'background' );
+	z-index: ck-z();
 
 	// Compensate double border from button and from box when positioned below the button.
 	margin-top: -1px;
