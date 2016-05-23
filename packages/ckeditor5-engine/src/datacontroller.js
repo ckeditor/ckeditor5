@@ -119,6 +119,12 @@ export default class DataController {
 		this.viewToModel = new ViewConversionDispatcher( {
 			schema: modelDocument.schema
 		} );
+
+		// Define default converters for text and elements.
+		//
+		// Note that if there is no default converter for the element it will be skipped, for instance `<b>foo</b>` will be
+		// converted to nothing. We add `convertToModelFragment` as a last converter so it converts children of that
+		// element to the document fragment so `<b>foo</b>` will be converted to `foo` if there is no converter for `<b>`.
 		this.viewToModel.on( 'text', convertText() );
 		this.viewToModel.on( 'element', convertToModelFragment(), null, 9999 );
 		this.viewToModel.on( 'documentFragment', convertToModelFragment(), null, 9999 );
