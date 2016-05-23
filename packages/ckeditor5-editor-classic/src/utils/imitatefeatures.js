@@ -26,7 +26,8 @@ export function imitateFeatures( editor ) {
 		isEnabled: true,
 		isOn: false,
 		label: t( 'Bold' ),
-		icon: 'bold'
+		icon: 'bold',
+		iconAlign: 'left'
 	} );
 
 	// Note – most of the contents of this file is ignored, as it's a temporary file that will
@@ -49,7 +50,8 @@ export function imitateFeatures( editor ) {
 		isEnabled: true,
 		isOn: false,
 		label: t( 'Italic' ),
-		icon: 'italic'
+		icon: 'italic',
+		iconAlign: 'left'
 	} );
 
 	/* istanbul ignore next */
@@ -97,6 +99,7 @@ export function imitateFeatures( editor ) {
 	editor.ui.featureComponents.add( 'font', ListDropdown, ListDropdownView, fontModel );
 
 	window.fontCollection = fontCollection;
+	window.fontModel = fontModel;
 	window.Model = Model;
 }
 
