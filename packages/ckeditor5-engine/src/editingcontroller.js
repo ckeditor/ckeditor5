@@ -7,10 +7,10 @@
 
 import ViewDocument from './view/document.js';
 
-import MutationObserver from './ckeditor5/engine/view/observer/mutationobserver.js';
-import SelectionObserver from './ckeditor5/engine/view/observer/selectionobserver.js';
+import MutationObserver from './view/observer/mutationobserver.js';
+import SelectionObserver from './view/observer/selectionobserver.js';
 import FocusObserver from './view/observer/focusobserver.js';
-import KeyObserver from './ckeditor5/engine/view/observer/keyobserver.js';
+import KeyObserver from './view/observer/keyobserver.js';
 
 import Mapper from './conversion/mapper.js';
 import ModelConversionDispatcher from './conversion/modelconversiondispatcher.js';
@@ -19,13 +19,13 @@ import {
 	convertRangeSelection,
 	convertCollapsedSelection,
 	clearAttributes
-} from '/ckeditor5/engine/conversion/model-selection-to-view-converters.js';
+} from './conversion/model-selection-to-view-converters.js';
 
 import {
 	insertText,
 	remove,
 	move
-} from './conversion/model-to-view.js';
+} from './conversion/model-to-view-converters.js';
 
 import EmitterMixin from '../utils/emittermixin.js';
 
@@ -73,9 +73,9 @@ export default class EditingController {
 		this.modelToView.on( 'selection', convertCollapsedSelection() );
 	}
 
-	createRoot( element, name = 'main' ) {
-		const viewRoot = this.view.createRoot( element, name );
-		const modelRoot = this.model.createRoot( name );
+	createRoot( domRoot, name = 'main' ) {
+		const viewRoot = this.view.createRoot( domRoot, name );
+		const modelRoot = this.model.getRoot( name );
 
 		this.mapper.bindElements( modelRoot, viewRoot );
 	}

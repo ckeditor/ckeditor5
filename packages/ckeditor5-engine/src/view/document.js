@@ -9,6 +9,7 @@ import Selection from './selection.js';
 import Renderer from './renderer.js';
 import Writer from './writer.js';
 import DomConverter from './domconverter.js';
+import ContainerElement from './containerelement.js';
 import { injectQuirksHandling } from './filler.js';
 
 import mix from '../../utils/mix.js';
@@ -148,23 +149,37 @@ export default class Document {
 	 * @returns {engine.view.element} The created view root element.
 	 */
 	createRoot( domRoot, name = 'main' ) {
-		const viewRoot = this.domConverter.domToView( domRoot, { bind: true, withChildren: false } );
+		const rootTag = typeof domRoot == 'string' ? domRoot : domRoot.tagName;
+
+		const viewRoot = new ContainerElement( rootTag );
 		viewRoot.setDocument( this );
+
+		this.viewRoots.set( name, viewRoot );
 
 		// Mark changed nodes in the renderer.
 		viewRoot.on( 'change', ( evt, type, node ) => {
 			this.renderer.markToSync( type, node );
 		} );
-		this.renderer.markToSync( 'CHILDREN', viewRoot );
+
+		if ( domRoot instanceof Element ) {
+			this.attachDomRoot( domRoot, name );
+		}
+
+		return viewRoot;
+	}
+
+	attachDomRoot( domRoot, name = 'main' ) {
+		const viewRoot = this.getRoot( name );
 
 		this.domRoots.set( name, domRoot );
-		this.viewRoots.set( name, viewRoot );
+
+		this.domConverter.bindElements( domRoot, viewRoot );
+
+		this.renderer.markToSync( 'CHILDREN', viewRoot );
 
 		for ( let observer of this._observers.values() ) {
 			observer.observe( domRoot, name );
 		}
-
-		return viewRoot;
 	}
 
 	/**

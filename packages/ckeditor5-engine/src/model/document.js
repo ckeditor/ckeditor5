@@ -181,13 +181,13 @@ export default class Document {
 	/**
 	 * Creates a new top-level root.
 	 *
-	 * @param {String|Symbol} rootName Unique root name.
+	 * @param {String|Symbol} [rootName='main'] Unique root name.
 	 * @param {String} [elementName='$root'] Element name. Defaults to `'$root'` which also have
 	 * some basic schema defined (`$block`s are allowed inside the `$root`). Make sure to define a proper
 	 * schema if you use a different name.
 	 * @returns {engine.model.RootElement} Created root.
 	 */
-	createRoot( rootName, elementName = '$root' ) {
+	createRoot( rootName = 'main', elementName = '$root' ) {
 		if ( this._roots.has( rootName ) ) {
 			/**
 			 * Root with specified name already exists.
@@ -243,10 +243,10 @@ export default class Document {
 	/**
 	 * Returns top-level root by its name.
 	 *
-	 * @param {String|Symbol} name Unique root name.
+	 * @param {String} [name='main'] Unique root name.
 	 * @returns {engine.model.RootElement} Root registered under given name.
 	 */
-	getRoot( name ) {
+	getRoot( name = 'main' ) {
 		if ( !this._roots.has( name ) ) {
 			/**
 			 * Root with specified name does not exist.
