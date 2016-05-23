@@ -30,24 +30,34 @@ import {
 import EmitterMixin from '../utils/emittermixin.js';
 
 export default class EditingController {
-	constructor( modelDocument ) {
+	constructor( model ) {
 		this._listenters = Object.create( EmitterMixin );
 
-		this.model = modelDocument;
+		this.model = model;
 
-		this.view = new ViewDocument();
+		const view = new ViewDocument();
+		this.view = view;
 
 		this.view.addObserver( MutationObserver );
 		this.view.addObserver( SelectionObserver );
 		this.view.addObserver( FocusObserver );
 		this.view.addObserver( KeyObserver );
 
-		// Move selection change to model
-		// this._listenters.listenTo( this.view, 'selectionChange', ( evt, data ) => {
-		// 	data.newSelection.getRanges();
-		// } );
-
 		this.mapper = new Mapper();
+
+		// Move selection change to model
+		this._listenters.listenTo( this.view, 'selectionChange', ( evt, data ) => {
+			model.enqueueChanges( () => {
+				const viewSelection = data.newSelection;
+
+				model.selection.removeAllRanges();
+
+				for ( let viewRange of viewSelection.getRanges() ) {
+					const modelRange = this.mapper.toModelRange( viewRange );
+					model.selection.addRange( modelRange, viewSelection.isBackward );
+				}
+			} );
+		} );
 
 		this.modelToView = new ModelConversionDispatcher( {
 			writer: this.view.writer,
@@ -60,7 +70,7 @@ export default class EditingController {
 		} );
 
 		this._listenters.listenTo( this.model, 'changesDone', () => {
-			this.modelToView.convertSelection( this.model.selection );
+			this.modelToView.convertSelection( model.selection );
 			this.view.render();
 		} );
 
