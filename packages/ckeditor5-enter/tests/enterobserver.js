@@ -10,12 +10,19 @@ import EnterObserver from '/ckeditor5/enter/enterobserver.js';
 import DomEventData from '/ckeditor5/engine/view/observer/domeventdata.js';
 import { getCode } from '/ckeditor5/utils/keyboard.js';
 
-describe( 'Enter feature', () => {
+describe( 'EnterObserver', () => {
 	let viewDocument, observer;
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument();
 		observer = viewDocument.addObserver( EnterObserver );
+	} );
+
+	// See #10.
+	it( 'can be initialized', () => {
+		expect( () => {
+			viewDocument.createRoot( document.createElement( 'div' ) );
+		} ).to.not.throw();
 	} );
 
 	describe( 'enter event', () => {
@@ -30,6 +37,7 @@ describe( 'Enter feature', () => {
 
 			expect( spy.calledOnce ).to.be.true;
 		} );
+
 		it( 'is not fired on keydown when keyCode does not match enter', () => {
 			const spy = sinon.spy();
 

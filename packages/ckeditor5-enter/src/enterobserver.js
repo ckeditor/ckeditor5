@@ -28,6 +28,11 @@ export default class EnterObserver extends Observer {
 			}
 		} );
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	observe() {}
 }
 
 /**
