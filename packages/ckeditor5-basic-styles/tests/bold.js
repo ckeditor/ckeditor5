@@ -8,15 +8,16 @@
 import Editor from '/ckeditor5/editor.js';
 import Bold from '/ckeditor5/basic-styles/bold.js';
 import BoldEngine from '/ckeditor5/basic-styles/boldengine.js';
-import StandardCreator from '/ckeditor5/creator/standardcreator.js';
+import ClassicCreator from '/ckeditor5/creator-classic/classiccreator.js';
 
 describe( 'Bold', () => {
 	let editor;
 
 	beforeEach( () => {
-		editor = new Editor( null, {
-			creator: StandardCreator,
-			features: [ Bold ]
+		editor = new Editor( { 'editor': document.getElementById( 'editor' ) }, {
+			creator: ClassicCreator,
+			features: [ Bold ],
+			toolbar: [ 'bold' ]
 		} );
 
 		return editor.init();
