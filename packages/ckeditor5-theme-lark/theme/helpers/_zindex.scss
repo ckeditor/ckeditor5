@@ -1,0 +1,12 @@
+// Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+$ck-def-z: (
+	'default': 1
+	// 'modal': 10
+	// 'topmost': 9999
+);
+
+@function ck-z( $index: 'default' ) {
+	@return map-get( $ck-def-z, $index );
+}
