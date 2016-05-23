@@ -11,6 +11,7 @@ import StandardCreator from '/ckeditor5/creator/standardcreator.js';
 import { getData } from '/tests/engine/_utils/model.js';
 import BuildModelConverterFor from '/ckeditor5/engine/conversion/model-converter-builder.js';
 import BuildViewConverterFor from '/ckeditor5/engine/conversion/view-converter-builder.js';
+import AttributeCommand from '/ckeditor5/command/attributecommand.js';
 
 describe( 'BoldEngine', () => {
 	let editor, document;
@@ -45,7 +46,14 @@ describe( 'BoldEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( document.schema.check( { name: '$inline', attributes: [ 'bold' ], inside: '$block' } ) ).to.be.true;
+		expect( document.schema.check( { name: '$inline', attributes: [ 'bold' ] } ) ).to.be.true;
+	} );
+
+	it( 'should register bold command', () => {
+		expect( editor.commands.has( 'bold' ) ).to.be.true;
+		const command = editor.commands.get( 'bold' );
+		expect( command ).to.be.instanceOf( AttributeCommand );
+		expect( command.attributeKey ).to.equal( 'bold' );
 	} );
 
 	it( 'should convert <strong> to bold attribute', () => {
@@ -63,7 +71,7 @@ describe( 'BoldEngine', () => {
 	} );
 
 	it( 'should convert font-weight:bold to bold attribute', () => {
-		editor.setData( '<p style="font-weight: bold;">foobar</p>' );
+		editor.setData( '<p><span style="font-weight: bold;">foobar</span></p>' );
 
 		expect( getData( document, { withoutSelection: true } ) ).to.equal( '<p><$text bold=true>foobar</$text></p>' );
 		expect( editor.getData() ).to.equal( '<p><strong>foobar</strong></p>' );

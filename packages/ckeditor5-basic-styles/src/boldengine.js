@@ -8,6 +8,9 @@
 import Feature from '../feature.js';
 import BuildModelConverterFor from '../engine/conversion/model-converter-builder.js';
 import BuildViewConverterFor from '../engine/conversion/view-converter-builder.js';
+import AttributeCommand from '../command/attributecommand.js';
+
+const BOLD_ATTRIBUTE = 'bold';
 
 export default class BoldEngine extends Feature {
 	init() {
@@ -17,18 +20,24 @@ export default class BoldEngine extends Feature {
 		const data = editor.data;
 
 		// Schema.
-		schema.allow( { name: '$inline', attributes: [ 'bold' ], inside: '$block' } );
+		schema.allow( { name: '$inline', attributes: [ BOLD_ATTRIBUTE ] } );
 
-		// Build converter from model to view for data and editing pipelines.
+		// Build converter from model to view for data pipeline.
+		// TODO: Converter for editing pipeline.
 		BuildModelConverterFor( data.modelToView )
-			.fromAttribute( 'bold' )
+			.fromAttribute( BOLD_ATTRIBUTE )
 			.toElement( 'strong' );
 
-		// Build converter from view to model for data and editing pipelines.
+		// Build converter from view to model for data pipeline.
+		// TODO: Converter for editing pipeline.
 		BuildViewConverterFor( data.viewToModel )
 			.fromElement( 'strong' )
 			.fromElement( 'b' )
 			.fromAttribute( 'style', { 'font-weight': 'bold' } )
-			.toAttribute( 'bold', true );
+			.toAttribute( BOLD_ATTRIBUTE, true );
+
+		// Command.
+		const command = new AttributeCommand( editor, BOLD_ATTRIBUTE );
+		editor.commands.set( BOLD_ATTRIBUTE, command );
 	}
 }
