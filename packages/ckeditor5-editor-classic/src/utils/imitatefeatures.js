@@ -5,9 +5,9 @@
 
 'use strict';
 
-import Model from '/ckeditor5/ui/model.js';
-import Button from '/ckeditor5/ui/button/button.js';
-import ButtonView from '/ckeditor5/ui/button/buttonview.js';
+import Model from '../../ui/model.js';
+import Button from '../../ui/button/button.js';
+import ButtonView from '../../ui/button/buttonview.js';
 
 import Collection from '/ckeditor5/utils/collection.js';
 
