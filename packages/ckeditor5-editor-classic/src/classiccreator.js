@@ -5,22 +5,22 @@
 
 'use strict';
 
-import StandardCreator from '/ckeditor5/creator/standardcreator.js';
+import StandardCreator from '../creator/standardcreator.js';
 
-import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
-import Editable from '/ckeditor5/editable.js';
+import HtmlDataProcessor from '../engine/dataprocessor/htmldataprocessor.js';
+import Editable from '../editable.js';
 
-import { createEditableUI, createEditorUI } from '/ckeditor5/ui/creator-utils.js';
+import { createEditableUI, createEditorUI } from '../ui/creator-utils.js';
 
-import BoxedEditorUI from '/ckeditor5/ui/editorui/boxed/boxededitorui.js';
-import BoxedEditorUIView from '/ckeditor5/ui/editorui/boxed/boxededitoruiview.js';
+import BoxedEditorUI from '../ui/editorui/boxed/boxededitorui.js';
+import BoxedEditorUIView from '../ui/editorui/boxed/boxededitoruiview.js';
 
-import EditableUI from '/ckeditor5/ui/editableui/editableui.js';
-import InlineEditableUIView from '/ckeditor5/ui/editableui/inline/inlineeditableuiview.js';
+import EditableUI from '../ui/editableui/editableui.js';
+import InlineEditableUIView from '../ui/editableui/inline/inlineeditableuiview.js';
 
-import Model from '/ckeditor5/ui/model.js';
-import StickyToolbar from '/ckeditor5/ui/bindings/stickytoolbar.js';
-import StickyToolbarView from '/ckeditor5/ui/stickytoolbar/stickytoolbarview.js';
+import Model from '../ui/model.js';
+import StickyToolbar from '../ui/bindings/stickytoolbar.js';
+import StickyToolbarView from '../ui/stickytoolbar/stickytoolbarview.js';
 
 import { imitateFeatures, imitateDestroyFeatures } from './utils/imitatefeatures.js';
 
