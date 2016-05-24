@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* global console:false */
+
 'use strict';
 
 import CKEDITOR from '/ckeditor.js';
@@ -13,4 +15,10 @@ CKEDITOR.create( '#editor1', {
 	creator: ClassicCreator,
 	features: [ Bold ],
 	toolbar: [ 'bold' ]
+} )
+.then( editor => {
+	window.editor = editor;
+} )
+.catch( err => {
+	console.error( err.stack );
 } );
