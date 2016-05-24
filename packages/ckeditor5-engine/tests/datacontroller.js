@@ -9,7 +9,7 @@
 
 import ModelDocument from '/ckeditor5/engine/model/document.js';
 import DataController from '/ckeditor5/engine/datacontroller.js';
-import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/HtmlDataProcessor.js';
+import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
 
 import BuildViewConverterFor  from '/ckeditor5/engine/conversion/view-converter-builder.js';
 import BuildModelConverterFor  from '/ckeditor5/engine/conversion/model-converter-builder.js';
