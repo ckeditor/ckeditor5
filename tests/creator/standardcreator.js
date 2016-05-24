@@ -12,9 +12,9 @@ import Creator from '/ckeditor5/creator/creator.js';
 import StandardCreator from '/ckeditor5/creator/standardcreator.js';
 import Editor from '/ckeditor5/editor.js';
 import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
-import Document from '/ckeditor5/engine/treemodel/document.js';
-import EditingController from '/ckeditor5/engine/treecontroller/editingcontroller.js';
-import DataController from '/ckeditor5/engine/treecontroller/datacontroller.js';
+import Document from '/ckeditor5/engine/model/document.js';
+import EditingController from '/ckeditor5/engine/editingcontroller.js';
+import DataController from '/ckeditor5/engine/datacontroller.js';
 
 testUtils.createSinonSandbox();
 
@@ -41,6 +41,12 @@ describe( 'Creator', () => {
 			expect( editor.document ).to.be.instanceof( Document );
 			expect( editor.editing ).to.be.instanceof( EditingController );
 			expect( editor.data ).to.be.instanceof( DataController );
+			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
+		} );
+
+		it( 'uses HtmlDataProcessor if no processor is provided in constructor', () => {
+			creator = new StandardCreator( editor );
+
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
 		} );
 	} );

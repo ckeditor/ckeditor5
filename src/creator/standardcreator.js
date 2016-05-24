@@ -7,10 +7,10 @@
 
 import Creator from './creator.js';
 
-import Document from '../engine/treemodel/document.js';
-import DataController from '../engine/treecontroller/datacontroller.js';
-import EditingController from '../engine/treecontroller/editingcontroller.js';
-
+import Document from '../engine/model/document.js';
+import DataController from '../engine/datacontroller.js';
+import EditingController from '../engine/editingcontroller.js';
+import HtmlDataProcessor from '../engine/dataprocessor/htmldataprocessor.js';
 /**
  * Standard creator for browser environment.
  *
@@ -19,14 +19,16 @@ import EditingController from '../engine/treecontroller/editingcontroller.js';
  */
 export default class StandardCreator extends Creator {
 	/**
-	 * Creates an instance of the standard creator. Initializes the engine ({@link engine.treeModel.Document document},
-	 * {@link engine.treeController.EditingController editing controller} and
-	 * {@link engine.treeController.DataController data controller}).
+	 * Creates an instance of the standard creator. Initializes the engine ({@link engine.model.Document document},
+	 * {@link engine.EditingController editing controller} and
+	 * {@link engine.DataController data controller}).
 	 *
-	 * @param {ckeditor5.Editor} The editor instance.
-	 * @param {engine.dataProcessor.DataProcessor} The data processor to use.
+	 * @param {ckeditor5.Editor} editor The editor instance.
+	 * @param {engine.dataProcessor.DataProcessor} [dataProcessor=engine.dataProcessor.HtmlDataProcessor] The data
+	 * processor to use. If no data processor is provided {@link engine.dataProcessor.HtmlDataProcessor HtmlDataProcessor}
+	 * will be used.
 	 */
-	constructor( editor, dataProcessor ) {
+	constructor( editor, dataProcessor = new HtmlDataProcessor() ) {
 		super( editor );
 
 		editor.document = new Document();

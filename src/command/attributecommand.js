@@ -6,17 +6,17 @@
 'use strict';
 
 import Command from './command.js';
-import TreeWalker from '../engine/treemodel/treewalker.js';
-import Range from '../engine/treemodel/range.js';
+import TreeWalker from '../engine/model/treewalker.js';
+import Range from '../engine/model/range.js';
 
 /**
  * An extension of basic {@link ckeditor5.command.Command} class, which provides utilities for a command that sets a single
- * attribute on a text or element with value `true`. AttributeCommand uses {@link engine.treeModel.Document#selection} to
+ * attribute on a text or element with value `true`. AttributeCommand uses {@link engine.model.Document#selection} to
  * decide which nodes (if any) should be changed, and applies or removes attributes from them.
- * See {@link engine.treeView.Converter#execute} for more.
+ * See {@link engine.view.Converter#execute} for more.
  *
- * The command checks {@link engine.treeModel.Document#schema} to decide if it should be enabled.
- * See {@link engine.treeView.Converter#checkSchema} for more.
+ * The command checks {@link engine.model.Document#schema} to decide if it should be enabled.
+ * See {@link engine.view.Converter#checkSchema} for more.
  *
  * @memberOf ckeditor5.command
  */
@@ -40,6 +40,7 @@ export default class AttributeCommand extends Command {
 		 * Flag indicating whether command is active. For collapsed selection it means that typed characters will have
 		 * the command's attribute set. For range selection it means that all nodes inside have the attribute applied.
 		 *
+		 * @observable
 		 * @member {Boolean} ckeditor5.command.AttributeCommand#value
 		 */
 		this.set( 'value', false );
@@ -50,7 +51,7 @@ export default class AttributeCommand extends Command {
 	}
 
 	/**
-	 * Checks {@link engine.treeModel.Document#schema} to decide if the command should be enabled:
+	 * Checks {@link engine.model.Document#schema} to decide if the command should be enabled:
 	 * * if selection is on range, the command is enabled if any of nodes in that range can have bold,
 	 * * if selection is collapsed, the command is enabled if text with bold is allowed in that node.
 	 *
@@ -75,7 +76,7 @@ export default class AttributeCommand extends Command {
 
 				// Walk the range.
 				while ( !step.done ) {
-					// If returned item does not have name property, it is a treeModel.TextFragment.
+					// If returned item does not have name property, it is a model.TextFragment.
 					const name = step.value.item.name || '$text';
 
 					if ( schema.check( { name: name, inside: last, attributes: this.attributeKey } ) ) {
@@ -98,10 +99,10 @@ export default class AttributeCommand extends Command {
 	 *
 	 * If the command is active (`value == true`), it will remove attributes. Otherwise, it will set attributes.
 	 *
-	 * The execution result differs, depending on the {@link engine.treeModel.Document#selection}:
+	 * The execution result differs, depending on the {@link engine.model.Document#selection}:
 	 * * if selection is on a range, the command applies the attribute on all nodes in that ranges
-	 * (if they are allowed to have this attribute by the{@link engine.treeModel.Schema schema}),
-	 * * if selection is collapsed in non-empty node, the command applies attribute to the {@link engine.treeModel.Document#selection}
+	 * (if they are allowed to have this attribute by the{@link engine.model.Schema schema}),
+	 * * if selection is collapsed in non-empty node, the command applies attribute to the {@link engine.model.Document#selection}
 	 * itself (note that typed characters copy attributes from selection),
 	 * * if selection is collapsed in empty node, the command applies attribute to the parent node of selection (note
 	 * that selection inherits all attributes from a node if it is in empty node).
@@ -147,8 +148,8 @@ export default class AttributeCommand extends Command {
 	 * attribute set. This is done by breaking a range in two and omitting the not allowed part.
 	 *
 	 * @private
-	 * @param {Array.<engine.treeModel.Range>} ranges Ranges to be validated.
-	 * @returns {Array.<engine.treeModel.Range>} Ranges without invalid parts.
+	 * @param {Array.<engine.model.Range>} ranges Ranges to be validated.
+	 * @returns {Array.<engine.model.Range>} Ranges without invalid parts.
 	 */
 	_getSchemaValidRanges( ranges ) {
 		const validRanges = [];

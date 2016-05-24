@@ -40,6 +40,7 @@ export default class Command {
 		 * Flag indicating whether a command is enabled or disabled.
 		 * A disabled command should do nothing upon it's execution.
 		 *
+		 * @observable
 		 * @member {Boolean} ckeditor5.command.Command#isEnabled
 		 */
 		this.set( 'isEnabled', true );
@@ -121,7 +122,7 @@ export default class Command {
 	 *
 	 * @protected
 	 * @method ckeditor5.command.Command#_checkEnabled
-	 * @returns {Boolean} `true` if command should be enabled according to {@link engine.treeModel.Document#schema}. `false` otherwise.
+	 * @returns {Boolean} `true` if command should be enabled according to {@link engine.model.Document#schema}. `false` otherwise.
 	 */
 }
 
