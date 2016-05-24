@@ -15,6 +15,8 @@ import MutationObserver from './mutationobserver.js';
  * {@link engine.view.Document#selectionChange} event only if selection change was the only change in the document
  * and DOM selection is different then the view selection.
  *
+ * Note that this observer is attached by the {@link engine.EditingController} and should be available by default.
+ *
  * @see engine.view.MutationObserver
  * @memberOf engine.view.observer
  * @extends engine.view.observer.Observer
@@ -122,6 +124,12 @@ export default class SelectionObserver extends Observer {
  * Fired when selection has changed. This event is fired only when the selection change was the only change that happened
  * in the document, and old selection is different then the new selection.
  *
+ * Introduced by {@link engine.view.observer.SelectionObserver}.
+ *
+ * Note that because {@link engine.view.observer.SelectionObserver} is attached by the {@link engine.EditingController}
+ * this event should be available by default.
+ *
+ * @see engine.view.observer.SelectionObserver
  * @event engine.view.Document#selectionChange
  * @param {Object} data
  * @param {engine.view.Selection} data.oldSelection Old View selection which is
