@@ -5,8 +5,8 @@
 
 'use strict';
 
-import EditorUIView from '/ckeditor5/ui/editorui/editoruiview.js';
-import uid from '/ckeditor5/utils/uid.js';
+import EditorUIView from '../../editorui/editoruiview.js';
+import uid from '../../../utils/uid.js';
 
 /**
  * Boxed editor UI view.

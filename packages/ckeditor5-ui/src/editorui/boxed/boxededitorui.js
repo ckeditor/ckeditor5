@@ -5,8 +5,8 @@
 
 'use strict';
 
-import EditorUI from '/ckeditor5/ui/editorui/editorui.js';
-import ControllerCollection from '/ckeditor5/ui/controllercollection.js';
+import EditorUI from '../../../ui/editorui/editorui.js';
+import ControllerCollection from '../../../ui/controllercollection.js';
 
 /**
  * Boxed editor UI. The class representing classic editor interface, which contains of a toolbar and editable are,

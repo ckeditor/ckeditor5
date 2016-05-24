@@ -9,7 +9,7 @@ import EmitterMixin from '../utils/emittermixin.js';
 import uid from '../utils/uid.js';
 import extend from '../utils/lib/lodash/extend.js';
 import log from '../utils/log.js';
-import isNative from '/ckeditor5/utils/lib/lodash/isNative.js';
+import isNative from '../utils/lib/lodash/isNative.js';
 
 /**
  * Creates a ProxyEmitter instance. Such an instance is a bridge between a DOM Node firing events
