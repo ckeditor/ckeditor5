@@ -11,7 +11,7 @@ import Editor from '/ckeditor5/editor.js';
 import ModelDocument from '/ckeditor5/engine/model/document.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import Position from '/ckeditor5/engine/model/position.js';
-import Undo from '/ckeditor5/undo/undo.js';
+import UndoEngine from '/ckeditor5/undo/undoengine.js';
 import Creator from '/ckeditor5/creator/creator.js';
 
 import { setData, getData } from '/tests/engine/_utils/model.js';
@@ -29,7 +29,7 @@ beforeEach( () => {
 
 	editor = new Editor( element, {
 		creator: Creator,
-		features: [ Undo ]
+		features: [ UndoEngine ]
 	} );
 
 	editor.document = doc;
@@ -53,7 +53,7 @@ function undoDisabled() {
 	expect( editor.commands.get( 'undo' ).isEnabled ).to.be.false;
 }
 
-describe( 'undo integration', () => {
+describe( 'UndoEngine integration', () => {
 	describe( 'adding and removing content', () => {
 		it( 'add and undo', () => {
 			input( '<p>fo<selection />o</p><p>bar</p>' );

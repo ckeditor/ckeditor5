@@ -9,31 +9,31 @@ import Feature from '../feature.js';
 import UndoCommand from './undocommand.js';
 
 /**
- * Undo feature.
+ * Undo engine feature.
  *
  * Undo features brings in possibility to undo and re-do changes done in Tree Model by deltas through Batch API.
  *
  * @memberOf undo
  */
-export default class Undo extends Feature {
+export default class UndoEngine extends Feature {
 	constructor( editor ) {
 		super( editor );
 
 		/**
 		 * Undo command which manages undo {@link engine.model.Batch batches} stack (history).
-		 * Created and registered during {@link undo.Undo#init feature initialization}.
+		 * Created and registered during {@link undo.UndoEngine#init feature initialization}.
 		 *
 		 * @private
-		 * @member {undo.UndoCommand} undo.Undo#_undoCommand
+		 * @member {undo.UndoEngineCommand} undo.UndoEngine#_undoCommand
 		 */
 		this._undoCommand = null;
 
 		/**
 		 * Undo command which manages redo {@link engine.model.Batch batches} stack (history).
-		 * Created and registered during {@link undo.Undo#init feature initialization}.
+		 * Created and registered during {@link undo.UndoEngine#init feature initialization}.
 		 *
 		 * @private
-		 * @member {undo.UndoCommand} undo.Undo#_redoCommand
+		 * @member {undo.UndoEngineCommand} undo.UndoEngine#_redoCommand
 		 */
 		this._redoCommand = null;
 
@@ -41,7 +41,7 @@ export default class Undo extends Feature {
 		 * Keeps track of which batch has already been added to undo manager.
 		 *
 		 * @private
-		 * @member {WeakSet.<engine.model.Batch>} undo.Undo#_batchRegistry
+		 * @member {WeakSet.<engine.model.Batch>} undo.UndoEngine#_batchRegistry
 		 */
 		this._batchRegistry = new WeakSet();
 	}

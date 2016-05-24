@@ -10,7 +10,7 @@
 import Editor from '/ckeditor5/editor.js';
 import ModelDocument from '/ckeditor5/engine/model/document.js';
 import Position from '/ckeditor5/engine/model/position.js';
-import UndoFeature from '/ckeditor5/undo/undo.js';
+import UndoEngine from '/ckeditor5/undo/undoengine.js';
 
 let element, editor, undo, batch, doc, root;
 
@@ -25,7 +25,7 @@ beforeEach( () => {
 	batch = doc.batch();
 	root = doc.createRoot( 'root' );
 
-	undo = new UndoFeature( editor );
+	undo = new UndoEngine( editor );
 	undo.init();
 } );
 
@@ -33,7 +33,7 @@ afterEach( () => {
 	undo.destroy();
 } );
 
-describe( 'UndoFeature', () => {
+describe( 'UndoEngine', () => {
 	it( 'should register undo command and redo command', () => {
 		expect( editor.commands.get( 'undo' ) ).to.equal( undo._undoCommand );
 		expect( editor.commands.get( 'redo' ) ).to.equal( undo._redoCommand );
