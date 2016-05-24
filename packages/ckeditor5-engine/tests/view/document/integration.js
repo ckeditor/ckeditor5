@@ -9,29 +9,32 @@
 
 import Document from '/ckeditor5/engine/view/document.js';
 import ViewElement from '/ckeditor5/engine/view/element.js';
+import { isBlockFiller, BR_FILLER } from '/ckeditor5/engine/view/filler.js';
+
+import createElement from '/ckeditor5/utils/dom/createelement.js';
 
 describe( 'Document integration', () => {
 	it( 'should remove content of the DOM', () => {
-		const domP = document.createElement( 'p' );
-		const domDiv = document.createElement( 'div' );
-		domDiv.setAttribute( 'id', 'editor' );
-		domDiv.appendChild( domP );
+		const domDiv = createElement( document, 'div', { id: 'editor' }, [
+			createElement( document, 'p' ),
+			createElement( document, 'p' )
+		] );
 
 		const viewDocument = new Document();
-		viewDocument.createRoot( domDiv, 'editor' );
+		viewDocument.createRoot( domDiv );
 		viewDocument.render();
 
-		expect( domDiv.childNodes.length ).to.equal( 0 );
-		expect( domDiv.getAttribute( 'id' ) ).to.equal( 'editor' );
+		expect( domDiv.childNodes.length ).to.equal( 1 );
+		expect( isBlockFiller( domDiv.childNodes[ 0 ], BR_FILLER ) ).to.be.true;
 	} );
 
 	it( 'should render changes in the Document', () => {
 		const domDiv = document.createElement( 'div' );
 
 		const viewDocument = new Document();
-		viewDocument.createRoot( domDiv, 'editor' );
+		viewDocument.createRoot( domDiv );
 
-		viewDocument.viewRoots.get( 'editor' ).appendChildren( new ViewElement( 'p' ) );
+		viewDocument.getRoot().appendChildren( new ViewElement( 'p' ) );
 		viewDocument.render();
 
 		expect( domDiv.childNodes.length ).to.equal( 1 );

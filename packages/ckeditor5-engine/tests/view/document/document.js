@@ -63,24 +63,23 @@ describe( 'Document', () => {
 		it( 'should create root', () => {
 			const domP = document.createElement( 'p' );
 			const domDiv = document.createElement( 'div' );
-			domDiv.setAttribute( 'id', 'editor' );
 			domDiv.appendChild( domP );
 
 			const viewDocument = new Document();
-			const ret = viewDocument.createRoot( domDiv, 'editor' );
+			const ret = viewDocument.createRoot( domDiv );
 
 			expect( count( viewDocument.domRoots ) ).to.equal( 1 );
 			expect( count( viewDocument.viewRoots ) ).to.equal( 1 );
 
-			const domRoot = viewDocument.domRoots.get( 'editor' );
-			const viewRoot = viewDocument.viewRoots.get( 'editor' );
+			const domRoot = viewDocument.getDomRoot();
+			const viewRoot = viewDocument.getRoot();
 
 			expect( ret ).to.equal( viewRoot );
 
 			expect( domRoot ).to.equal( domDiv );
 			expect( viewDocument.domConverter.getCorrespondingDom( viewRoot ) ).to.equal( domDiv );
-			expect( viewRoot.name ).to.equal( 'div' );
-			expect( viewRoot.getAttribute( 'id' ) ).to.equal( 'editor' );
+
+			expect( viewRoot.name.toLowerCase() ).to.equal( 'div' );
 			expect( viewDocument.renderer.markedChildren.has( viewRoot ) ).to.be.true;
 		} );
 

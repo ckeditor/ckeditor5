@@ -167,7 +167,7 @@ export default class Document {
 			this.renderer.markToSync( type, node );
 		} );
 
-		if ( domRoot instanceof Element ) {
+		if ( domRoot instanceof HTMLElement ) {
 			this.attachDomRoot( domRoot, name );
 		}
 
