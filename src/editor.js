@@ -258,7 +258,7 @@ export default class Editor {
 			throw new CKEditorError( 'editor-no-datacontroller: Data controller has not been defined yet.' );
 		}
 
-		this.data.set( editableRootName || this._getDefaultRootName(), data );
+		this.data.set( data, editableRootName || this._getDefaultRootName() );
 	}
 
 	/**
