@@ -12,6 +12,9 @@ import Command from '/ckeditor5/command/command.js';
 import Locale from '/ckeditor5/utils/locale.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import Document from '/ckeditor5/engine/model/document.js';
+import DataController from '/ckeditor5/engine/datacontroller.js';
+import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
+import { getData, setData } from '/tests/engine/_utils/model.js';
 
 describe( 'Editor', () => {
 	describe( 'locale', () => {
@@ -86,14 +89,14 @@ describe( 'Editor', () => {
 			editor.setData( 'foo' );
 
 			expect( editor.data.set.calledOnce ).to.be.true;
-			expect( editor.data.set.calledWithExactly( 'firstRoot', 'foo' ) ).to.be.true;
+			expect( editor.data.set.calledWithExactly( 'foo', 'firstRoot' ) ).to.be.true;
 		} );
 
 		it( 'should set data of the specified root', () => {
 			editor.setData( 'foo', 'someRoot' );
 
 			expect( editor.data.set.calledOnce ).to.be.true;
-			expect( editor.data.set.calledWithExactly( 'someRoot', 'foo' ) ).to.be.true;
+			expect( editor.data.set.calledWithExactly( 'foo', 'someRoot' ) ).to.be.true;
 		} );
 
 		it( 'should throw when no roots', () => {
@@ -117,6 +120,31 @@ describe( 'Editor', () => {
 
 				editor.setData( 'foo' );
 			} ).to.throw( CKEditorError, /^editor-no-datacontroller:/ );
+		} );
+
+		describe( 'integrational tests', () => {
+			beforeEach( () => {
+				editor.data = new DataController( editor.document, new HtmlDataProcessor() );
+
+				editor.document.schema.allow( { name: '$text', inside: '$root' } );
+			} );
+
+			it( 'should set data of the first root', () => {
+				editor.document.createRoot( 'firstRoot', 'div' );
+
+				editor.setData( 'foo' );
+
+				expect( getData( editor.document, { rootName: 'firstRoot', withoutSelection: true } ) ).to.equal( 'foo' );
+			} );
+
+			it( 'should set data of the specified root', () => {
+				editor.document.createRoot( 'firstRoot', 'div' );
+				editor.document.createRoot( 'secondRoot', 'div' );
+
+				editor.setData( 'foo', 'secondRoot' );
+
+				expect( getData( editor.document, { rootName: 'secondRoot', withoutSelection: true } ) ).to.equal( 'foo' );
+			} );
 		} );
 	} );
 
@@ -165,6 +193,31 @@ describe( 'Editor', () => {
 
 				editor.getData();
 			} ).to.throw( CKEditorError, /^editor-no-datacontroller:/ );
+		} );
+
+		describe( 'integrational tests', () => {
+			beforeEach( () => {
+				editor.data = new DataController( editor.document, new HtmlDataProcessor() );
+
+				editor.document.schema.allow( { name: '$text', inside: '$root' } );
+			} );
+
+			it( 'should set data of the first root', () => {
+				editor.document.createRoot( 'firstRoot', 'div' );
+
+				setData( editor.document, 'foo', { rootName: 'firstRoot' } );
+
+				expect( editor.getData() ).to.equal( 'foo' );
+			} );
+
+			it( 'should set data of the specified root', () => {
+				editor.document.createRoot( 'firstRoot', 'div' );
+				editor.document.createRoot( 'secondRoot', 'div' );
+
+				setData( editor.document, 'foo', { rootName: 'secondRoot' } );
+
+				expect( editor.getData( 'secondRoot' ) ).to.equal( 'foo' );
+			} );
 		} );
 	} );
 } );

@@ -31,9 +31,6 @@ export default class MultiCreator extends StandardCreator {
 
 		// UI.
 		createEditorUI( editor, BoxedEditorUI, BoxedEditorUIView );
-
-		// Data controller mock.
-		this._mockDataController();
 	}
 
 	create() {
@@ -90,17 +87,5 @@ export default class MultiCreator extends StandardCreator {
 		toolbar.addButtons( editor.config.toolbar );
 
 		this.editor.ui.add( 'top', toolbar );
-	}
-
-	_mockDataController() {
-		const editor = this.editor;
-
-		editor.data.get = ( rootName ) => {
-			return editor.editables.get( rootName ).domElement.innerHTML + `<p>getData( '${ rootName }' )</p>`;
-		};
-
-		this.editor.data.set = ( rootName, data ) => {
-			editor.editables.get( rootName ).domElement.innerHTML = data + `<p>setData( '${ rootName }' )</p>`;
-		};
 	}
 }

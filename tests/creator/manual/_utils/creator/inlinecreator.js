@@ -29,9 +29,6 @@ export default class InlineCreator extends StandardCreator {
 		this._createEditable();
 
 		createEditorUI( editor, BoxlessEditorUI, EditorUIView );
-
-		// Data controller mock.
-		this._mockDataController();
 	}
 
 	create() {
@@ -89,17 +86,5 @@ export default class InlineCreator extends StandardCreator {
 
 		this.editor.ui.add( 'body', toolbar1 );
 		this.editor.ui.add( 'body', toolbar2 );
-	}
-
-	_mockDataController() {
-		const editor = this.editor;
-
-		editor.data.get = ( rootName ) => {
-			return editor.editables.get( rootName ).domElement.innerHTML + `<p>getData( '${ rootName }' )</p>`;
-		};
-
-		this.editor.data.set = ( rootName, data ) => {
-			editor.editables.get( rootName ).domElement.innerHTML = data + `<p>setData( '${ rootName }' )</p>`;
-		};
 	}
 }
