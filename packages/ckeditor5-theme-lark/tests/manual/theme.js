@@ -67,42 +67,42 @@ function renderIcon( ui ) {
 
 	// --- In-text ------------------------------------------------------------
 
-	ui.add( 'icon-plain-1', getIcon( 'bold' ) );
-	ui.add( 'icon-plain-2', getIcon( 'quote' ) );
+	ui.add( 'icon-plain-1', icon( 'bold' ) );
+	ui.add( 'icon-plain-2', icon( 'quote' ) );
 
-	ui.add( 'icon-color-1', getIcon( 'bold' ) );
-	ui.add( 'icon-color-2', getIcon( 'quote' ) );
+	ui.add( 'icon-color-1', icon( 'bold' ) );
+	ui.add( 'icon-color-2', icon( 'quote' ) );
 
 	// --- Availability ------------------------------------------------------------
 
 	iconManagerModel.icons.forEach( i => {
-		ui.add( 'icon-availability', getIcon( i ) );
-		ui.add( 'icon-availability-color', getIcon( i ) );
+		ui.add( 'icon-availability', icon( i ) );
+		ui.add( 'icon-availability-color', icon( i ) );
 	} );
 }
 
 function renderButton( ui ) {
 	// --- States ------------------------------------------------------------
 
-	ui.add( 'button-states', getButton( {
+	ui.add( 'button-states', button( {
 		label: 'State: normal (none)',
 	} ) );
 
-	ui.add( 'button-states', getButton( {
+	ui.add( 'button-states', button( {
 		label: 'State: disabled',
 		isEnabled: false
 	} ) );
 
-	ui.add( 'button-states', getButton( {
+	ui.add( 'button-states', button( {
 		label: 'State: on',
 		isOn: true
 	} ) );
 
 	// --- Types ------------------------------------------------------------
 
-	const actionButton = getButton( { label: 'Action button' } );
-	const roundedButton = getButton( { label: 'Rounded corners' } );
-	const boldButton = getButton( { label: 'Bold text' } );
+	const actionButton = button( { label: 'Action button' } );
+	const roundedButton = button( { label: 'Rounded corners' } );
+	const boldButton = button( { label: 'Bold text' } );
 
 	// TODO: It requires model interface.
 	actionButton.view.element.classList.add( 'ck-button-action' );
@@ -120,26 +120,26 @@ function renderButton( ui ) {
 	// --- Icon ------------------------------------------------------------
 
 	iconManagerModel.icons.forEach( i => {
-		ui.add( 'button-icon', getButton( {
+		ui.add( 'button-icon', button( {
 			label: i,
 			icon: i,
 			iconAlign: 'left'
 		} ) );
 	} );
 
-	ui.add( 'button-icon-custom', getButton( {
+	ui.add( 'button-icon-custom', button( {
 		label: 'Icon to the left',
 		icon: 'bold',
 		iconAlign: 'left'
 	} ) );
 
-	ui.add( 'button-icon-custom', getButton( {
+	ui.add( 'button-icon-custom', button( {
 		label: 'Icon to the right (RTL)',
 		icon: 'bold',
 		iconAlign: 'right'
 	} ) );
 
-	const styledButton = getButton( {
+	const styledButton = button( {
 		label: 'Button with icon and custom styles',
 		icon: 'italic',
 		iconAlign: 'left'
@@ -150,14 +150,14 @@ function renderButton( ui ) {
 
 	ui.add( 'button-icon-custom', styledButton );
 
-	ui.add( 'button-icon-states', getButton( {
+	ui.add( 'button-icon-states', button( {
 		label: 'Disabled',
 		icon: 'bold',
 		iconAlign: 'left',
 		isEnabled: false
 	} ) );
 
-	const notextButton = getButton( {
+	const notextButton = button( {
 		label: '',
 		icon: 'bold',
 		iconAlign: 'left'
@@ -168,7 +168,7 @@ function renderButton( ui ) {
 
 	ui.add( 'button-icon-states', notextButton );
 
-	const colChangeButton = getButton( {
+	const colChangeButton = button( {
 		label: 'Icon follows text color',
 		icon: 'bold',
 		iconAlign: 'left'
@@ -182,19 +182,19 @@ function renderButton( ui ) {
 	// --- Responsive ------------------------------------------------------------
 
 	for ( let i = 1; i < 4; i++ ) {
-		ui.add( `button-responsive-${ i }`, getButton( {
+		ui.add( `button-responsive-${ i }`, button( {
 			label: 'A button',
 			isEnabled: true
 		} ) );
 
-		ui.add( `button-responsive-${ i }`, getButton( {
+		ui.add( `button-responsive-${ i }`, button( {
 			label: 'Bold',
 			icon: 'bold',
 			iconAlign: 'left',
 			isEnabled: true
 		} ) );
 
-		const notextButton = getButton( {
+		const notextButton = button( {
 			label: '',
 			icon: 'link',
 			iconAlign: 'left'
@@ -245,17 +245,17 @@ function renderDropdown( ui ) {
 function renderToolbar( ui ) {
 	// --- Text ------------------------------------------------------------
 
-	ui.add( 'toolbar-text', getToolbar( [
-		getIcon( 'bold' ),
-		getText()
+	ui.add( 'toolbar-text', toolbar( [
+		icon( 'bold' ),
+		text()
 	] ) );
 
 	// --- Button ------------------------------------------------------------
 
-	ui.add( 'toolbar-button', getToolbar( [
-		getButton(),
-		getText(),
-		getButton( {
+	ui.add( 'toolbar-button', toolbar( [
+		button(),
+		text(),
+		button( {
 			label: 'Button with icon',
 			icon: 'bold',
 			iconAlign: 'left'
@@ -264,11 +264,11 @@ function renderToolbar( ui ) {
 
 	// --- Rounded ------------------------------------------------------------
 
-	ui.add( 'toolbar-rounded', getToolbar( [
-		getButton( {
+	ui.add( 'toolbar-rounded', toolbar( [
+		button( {
 			label: 'A button which corners are also rounded because of toolbar class'
 		} ),
-		getButton( {
+		button( {
 			label: 'Button with icon',
 			icon: 'bold',
 			iconAlign: 'left'
@@ -277,10 +277,10 @@ function renderToolbar( ui ) {
 
 	// --- Wrap ------------------------------------------------------------
 
-	const wrapToolbar = getToolbar( [
-		getButton(),
-		getButton(),
-		getButton()
+	const wrapToolbar = toolbar( [
+		button(),
+		button(),
+		button()
 	] );
 
 	wrapToolbar.view.element.style.width = '150px';
@@ -289,17 +289,17 @@ function renderToolbar( ui ) {
 
 	// --- Separator ------------------------------------------------------------
 
-	ui.add( 'toolbar-separator', getToolbar( [
-		getButton(),
-		getButton(),
-		getToolbarSeparator(),
-		getButton( {
+	ui.add( 'toolbar-separator', toolbar( [
+		button(),
+		button(),
+		toolbarSeparator(),
+		button( {
 			label: 'Link',
 			icon: 'link',
 			iconAlign: 'left'
 		} ),
-		getToolbarSeparator(),
-		getButton( {
+		toolbarSeparator(),
+		button( {
 			label: 'Unlink RTL',
 			icon: 'unlink',
 			iconAlign: 'right'
@@ -308,21 +308,21 @@ function renderToolbar( ui ) {
 
 	// --- Multi row ------------------------------------------------------------
 
-	ui.add( 'toolbar-multi-row', getToolbar( [
-		getButton(),
-		getButton(),
-		getToolbarNewline(),
-		getButton( {
+	ui.add( 'toolbar-multi-row', toolbar( [
+		button(),
+		button(),
+		toolbarNewLine(),
+		button( {
 			label: 'Link',
 			icon: 'link',
 			iconAlign: 'left'
 		} ),
-		getButton( {
+		button( {
 			label: 'Unlink RTL',
 			icon: 'unlink',
 			iconAlign: 'right'
 		} ),
-		getButton( {
+		button( {
 			label: 'Link',
 			icon: 'link',
 			iconAlign: 'left'
@@ -338,21 +338,21 @@ const TextView = class extends View {
 	}
 };
 
-function getText() {
+function text() {
 	return new Controller( null, new TextView( null ) );
 }
 
-function getIcon( name ) {
+function icon( name ) {
 	return new Controller( null, new IconView( new Model( { icon: name } ) ) );
 }
 
-function getButton( { label = 'Button', isEnabled = true, isOn = false, icon, iconAlign } = {} ) {
+function button( { label = 'Button', isEnabled = true, isOn = false, icon, iconAlign } = {} ) {
 	const model = new Model( { label, isEnabled, isOn, icon, iconAlign } );
 
 	return new Button( model, new ButtonView( model ) );
 }
 
-function getToolbar( children = [] ) {
+function toolbar( children = [] ) {
 	const toolbar = new Toolbar( null, new ToolbarView( null ) );
 
 	children.forEach( c => {
@@ -375,7 +375,7 @@ const ToolbarSeparatorView = class extends View {
 	}
 };
 
-function getToolbarSeparator() {
+function toolbarSeparator() {
 	return new Controller( null, new ToolbarSeparatorView( null ) );
 }
 
@@ -392,6 +392,6 @@ const ToolbarNewlineView = class extends View {
 	}
 };
 
-function getToolbarNewline() {
+function toolbarNewLine() {
 	return new Controller( null, new ToolbarNewlineView( null ) );
 }
