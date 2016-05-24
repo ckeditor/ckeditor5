@@ -22,6 +22,9 @@ import ButtonView from '/ckeditor5/ui/button/buttonview.js';
 import ListDropdown from '/ckeditor5/ui/dropdown/list/listdropdown.js';
 import ListDropdownView from '/ckeditor5/ui/dropdown/list/listdropdownview.js';
 
+import Toolbar from '/ckeditor5/ui/toolbar/toolbar.js';
+import ToolbarView from '/ckeditor5/ui/toolbar/toolbarview.js';
+
 testUtils.createTestUIController( {
 	'icon-plain-1':					'#icon-plain-1',
 	'icon-plain-2':					'#icon-plain-2',
@@ -51,7 +54,6 @@ testUtils.createTestUIController( {
 
 	body:							'div#body'
 } ).then( ui => {
-	setupIconManager( ui );
 	renderIcon( ui );
 	renderButton( ui );
 	renderDropdown( ui );
@@ -59,6 +61,10 @@ testUtils.createTestUIController( {
 } );
 
 function renderIcon( ui ) {
+	// --- IconManager ------------------------------------------------------------
+
+	ui.add( 'body', new Controller( null, new IconManagerView( iconManagerModel ) ) );
+
 	// --- In-text ------------------------------------------------------------
 
 	ui.add( 'icon-plain-1', getIcon( 'bold' ) );
@@ -239,115 +245,121 @@ function renderDropdown( ui ) {
 function renderToolbar( ui ) {
 	// --- Text ------------------------------------------------------------
 
-	ui.add( 'toolbar-text', getIcon( 'bold' ) );
+	ui.add( 'toolbar-text', getToolbar( [
+		getIcon( 'bold' ),
+		getText()
+	] ) );
 
 	// --- Button ------------------------------------------------------------
 
-	ui.add( 'toolbar-button', getButton( {
-		label: 'Some button'
-	} ) );
-
-	ui.add( 'toolbar-button', getButton( {
-		label: 'Button with icon',
-		icon: 'bold',
-		iconAlign: 'left'
-	} ) );
+	ui.add( 'toolbar-button', getToolbar( [
+		getButton(),
+		getText(),
+		getButton( {
+			label: 'Button with icon',
+			icon: 'bold',
+			iconAlign: 'left'
+		} )
+	] ) );
 
 	// --- Rounded ------------------------------------------------------------
 
-	ui.add( 'toolbar-rounded', getButton( {
-		label: 'A button which corners are also rounded because of toolbar class'
-	} ) );
-
-	ui.add( 'toolbar-rounded', getButton( {
-		label: 'Button with icon',
-		icon: 'bold',
-		iconAlign: 'left'
-	} ) );
+	ui.add( 'toolbar-rounded', getToolbar( [
+		getButton( {
+			label: 'A button which corners are also rounded because of toolbar class'
+		} ),
+		getButton( {
+			label: 'Button with icon',
+			icon: 'bold',
+			iconAlign: 'left'
+		} )
+	] ) );
 
 	// --- Wrap ------------------------------------------------------------
 
-	ui.add( 'toolbar-wrap', getButton( {
-		label: 'Some button'
-	} ) );
+	const wrapToolbar = getToolbar( [
+		getButton(),
+		getButton(),
+		getButton()
+	] );
 
-	ui.add( 'toolbar-wrap', getButton( {
-		label: 'Some button'
-	} ) );
+	wrapToolbar.view.element.style.width = '150px';
 
-	ui.add( 'toolbar-wrap', getButton( {
-		label: 'Some button'
-	} ) );
+	ui.add( 'toolbar-wrap', wrapToolbar );
 
 	// --- Separator ------------------------------------------------------------
 
-	ui.add( 'toolbar-separator', getButton( {
-		label: 'Some button'
-	} ) );
-
-	ui.add( 'toolbar-separator', getButton( {
-		label: 'Another button'
-	} ) );
-
-	ui.add( 'toolbar-separator', getToolbarSeparator() );
-
-	ui.add( 'toolbar-separator', getButton( {
-		label: 'Link',
-		icon: 'link',
-		iconAlign: 'left'
-	} ) );
-
-	ui.add( 'toolbar-separator', getToolbarSeparator() );
-
-	ui.add( 'toolbar-separator', getButton( {
-		label: 'Unlink RTL',
-		icon: 'unlink',
-		iconAlign: 'right'
-	} ) );
+	ui.add( 'toolbar-separator', getToolbar( [
+		getButton(),
+		getButton(),
+		getToolbarSeparator(),
+		getButton( {
+			label: 'Link',
+			icon: 'link',
+			iconAlign: 'left'
+		} ),
+		getToolbarSeparator(),
+		getButton( {
+			label: 'Unlink RTL',
+			icon: 'unlink',
+			iconAlign: 'right'
+		} )
+	] ) );
 
 	// --- Multi row ------------------------------------------------------------
 
-	ui.add( 'toolbar-multi-row', getButton( {
-		label: 'Some button'
-	} ) );
-
-	ui.add( 'toolbar-multi-row', getButton( {
-		label: 'Another button'
-	} ) );
-
-	ui.add( 'toolbar-multi-row', getToolbarNewline() );
-
-	ui.add( 'toolbar-multi-row', getButton( {
-		label: 'Link',
-		icon: 'link',
-		iconAlign: 'left'
-	} ) );
-
-	ui.add( 'toolbar-multi-row', getButton( {
-		label: 'Unlink RTL',
-		icon: 'unlink',
-		iconAlign: 'right'
-	} ) );
-
-	ui.add( 'toolbar-multi-row', getButton( {
-		label: 'Link',
-		icon: 'link',
-		iconAlign: 'left'
-	} ) );
+	ui.add( 'toolbar-multi-row', getToolbar( [
+		getButton(),
+		getButton(),
+		getToolbarNewline(),
+		getButton( {
+			label: 'Link',
+			icon: 'link',
+			iconAlign: 'left'
+		} ),
+		getButton( {
+			label: 'Unlink RTL',
+			icon: 'unlink',
+			iconAlign: 'right'
+		} ),
+		getButton( {
+			label: 'Link',
+			icon: 'link',
+			iconAlign: 'left'
+		} )
+	] ) );
 }
 
-function setupIconManager( ui ) {
-	ui.add( 'body', new Controller( null, new IconManagerView( iconManagerModel ) ) );
+const TextView = class extends View {
+	constructor() {
+		super();
+
+		this.element = document.createTextNode( 'Sample text' );
+	}
+};
+
+function getText() {
+	return new Controller( null, new TextView( null ) );
 }
 
 function getIcon( name ) {
 	return new Controller( null, new IconView( new Model( { icon: name } ) ) );
 }
 
-function getButton( { label = 'A button', isEnabled = true, isOn = false, icon, iconAlign } = {} ) {
+function getButton( { label = 'Button', isEnabled = true, isOn = false, icon, iconAlign } = {} ) {
 	const model = new Model( { label, isEnabled, isOn, icon, iconAlign } );
 
 	return new Button( model, new ButtonView( model ) );
+}
+
+function getToolbar( children = [] ) {
+	const toolbar = new Toolbar( null, new ToolbarView( null ) );
+
+	children.forEach( c => {
+		toolbar.add( 'buttons', c );
+	} );
+
+	return toolbar;
 }
 
 const ToolbarSeparatorView = class extends View {
