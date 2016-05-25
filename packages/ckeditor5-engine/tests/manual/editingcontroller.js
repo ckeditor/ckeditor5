@@ -17,7 +17,7 @@ import BuildModelConverterFor from '/ckeditor5/engine/conversion/model-converter
 
 const model = new Document();
 window.model = model;
-model.createRoot();
+const modelRoot = model.createRoot();
 
 const editing = new EditingController( model );
 editing.createRoot( document.getElementById( 'editor' ) );
@@ -32,7 +32,9 @@ const modelData = new ModelDocumentFragment( parse(
 )._children );
 
 model.enqueueChanges( () => {
-	model.batch().insert( ModelPosition.createAt( model.getRoot(), 0 ), modelData );
+	model.batch().insert( ModelPosition.createAt( modelRoot, 0 ), modelData );
+	model.selection.addRange( ModelRange.createFromParentsAndOffsets(
+		modelRoot.getChild( 0 ), 0, modelRoot.getChild( 0 ), 0 ) );
 } );
 
 // enter
