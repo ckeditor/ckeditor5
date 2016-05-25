@@ -27,7 +27,7 @@ export function imitateFeatures( editor ) {
 		isOn: false,
 		label: t( 'Bold' ),
 		icon: 'bold',
-		iconAlign: 'left'
+		iconAlign: 'LEFT'
 	} );
 
 	// Note – most of the contents of this file is ignored, as it's a temporary file that will
@@ -51,7 +51,7 @@ export function imitateFeatures( editor ) {
 		isOn: false,
 		label: t( 'Italic' ),
 		icon: 'italic',
-		iconAlign: 'left'
+		iconAlign: 'LEFT'
 	} );
 
 	/* istanbul ignore next */
