@@ -49,9 +49,9 @@ export default class EditingController {
 		 * stop listening on {@link engine.EditingController#destroy}.
 		 *
 		 * @private
-		 * @member {utils.EmitterMixin} engine.EditingController#_listenters
+		 * @member {utils.EmitterMixin} engine.EditingController#_listenter
 		 */
-		this._listenters = Object.create( EmitterMixin );
+		this._listenter = Object.create( EmitterMixin );
 
 		/**
 		 * Model document.
@@ -84,7 +84,7 @@ export default class EditingController {
 		this.mapper = new Mapper();
 
 		// Convert view selection to model.
-		this._listenters.listenTo( this.view, 'selectionChange', convertSelectionChange( model, this.mapper ) );
+		this._listenter.listenTo( this.view, 'selectionChange', convertSelectionChange( model, this.mapper ) );
 
 		/**
 		 * Model to view conversion dispatcher, which converts changes from the model to
@@ -107,11 +107,11 @@ export default class EditingController {
 			viewSelection: this.view.selection
 		} );
 
-		this._listenters.listenTo( this.model, 'change', ( evt, type, changes ) => {
+		this._listenter.listenTo( this.model, 'change', ( evt, type, changes ) => {
 			this.modelToView.convertChange( type, changes );
 		} );
 
-		this._listenters.listenTo( this.model, 'changesDone', () => {
+		this._listenter.listenTo( this.model, 'changesDone', () => {
 			this.modelToView.convertSelection( model.selection );
 			this.view.render();
 		} );
@@ -157,6 +157,6 @@ export default class EditingController {
 	 * Removes all event listeners attached by the EditingController.
 	 */
 	destroy() {
-		this._listenters.stopListening();
+		this._listenter.stopListening();
 	}
 }
