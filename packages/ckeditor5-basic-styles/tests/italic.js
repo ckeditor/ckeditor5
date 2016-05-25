@@ -27,6 +27,10 @@ describe( 'Italic', () => {
 		return editor.init();
 	} );
 
+	afterEach( () => {
+		return editor.destroy();
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( Italic ) ).to.be.instanceOf( Italic );
 	} );

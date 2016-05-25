@@ -27,6 +27,10 @@ describe( 'Bold', () => {
 		return editor.init();
 	} );
 
+	afterEach( () => {
+		return editor.destroy();
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( Bold ) ).to.be.instanceOf( Bold );
 	} );
