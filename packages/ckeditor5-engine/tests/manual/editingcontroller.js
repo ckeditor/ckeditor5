@@ -31,9 +31,9 @@ const modelData = new ModelDocumentFragment( parse(
 	'<paragraph>bar</paragraph>'
 )._children );
 
-model.batch().insert( ModelPosition.createAt( model.getRoot(), 0 ), modelData );
-
-editing.view.render();
+model.enqueueChanges( () => {
+	model.batch().insert( ModelPosition.createAt( model.getRoot(), 0 ), modelData );
+} );
 
 // enter
 editing.view.on( 'keydown', ( evt, data ) => {
