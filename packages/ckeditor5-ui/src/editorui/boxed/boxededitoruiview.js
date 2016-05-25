@@ -31,7 +31,11 @@ export default class BoxedEditorUIView extends EditorUIView {
 			tag: 'div',
 
 			attributes: {
-				class: 'ck-reset ck-editor',
+				class: [
+					'ck-reset',
+					'ck-editor',
+					'ck-rounded-corners'
+				],
 				role: 'application',
 				dir: 'ltr',
 				lang: locale.lang,

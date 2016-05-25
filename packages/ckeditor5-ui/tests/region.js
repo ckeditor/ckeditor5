@@ -35,15 +35,28 @@ describe( 'View', () => {
 
 	describe( 'views collection', () => {
 		it( 'updates DOM when adding views', () => {
+			let view;
+
 			region.init( el );
 
 			expect( region.element.childNodes.length ).to.be.equal( 0 );
 
-			region.views.add( new TestViewA() );
+			view = new TestViewA();
+			region.views.add( view, 0 );
 			expect( region.element.childNodes.length ).to.be.equal( 1 );
 
 			region.views.add( new TestViewA() );
 			expect( region.element.childNodes.length ).to.be.equal( 2 );
+
+			view = new TestViewA();
+			region.views.add( view, 1 );
+			expect( region.element.childNodes.length ).to.be.equal( 3 );
+			expect( region.element.childNodes[ 1 ] ).to.equal( view.element );
+
+			view = new TestViewA();
+			region.views.add( view, 0 );
+			expect( region.element.childNodes.length ).to.be.equal( 4 );
+			expect( region.element.childNodes[ 0 ] ).to.equal( view.element );
 		} );
 
 		it( 'does not update DOM when no region element', () => {
