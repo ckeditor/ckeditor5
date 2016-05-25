@@ -34,9 +34,7 @@ export default class Bold extends Feature {
 		buttonModel.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 
 		// Execute command.
-		this.listenTo( buttonModel, 'execute', () => {
-			editor.execute( 'bold' );
-		} );
+		this.listenTo( buttonModel, 'execute', () => editor.execute( 'bold' ) );
 
 		// Add bold button to feature components.
 		ui.featureComponents.add( 'bold', ButtonController, ButtonView, buttonModel );
