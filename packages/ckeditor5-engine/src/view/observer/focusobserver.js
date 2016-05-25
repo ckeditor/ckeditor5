@@ -22,8 +22,20 @@ export default class FocusObserver extends DomEventObserver {
 		this.domEventType = [ 'focus', 'blur' ];
 	}
 
-	onDomEvent( domEvt ) {
-		this.fire( domEvt.type, domEvt );
+	onDomEvent( domEvent ) {
+		const target = this.document.domConverter.getCorrespondingViewElement( domEvent.target );
+
+		for ( let root of this.document.roots.values() ) {
+			if ( target === root ) {
+				if ( domEvent.type == 'focus' ) {
+					root.isFocused = true;
+				} else {
+					root.isFocused = false;
+				}
+			}
+		}
+
+		this.fire( domEvent.type, domEvent );
 	}
 }
 

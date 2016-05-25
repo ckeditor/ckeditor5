@@ -9,7 +9,7 @@ import Selection from './selection.js';
 import Renderer from './renderer.js';
 import Writer from './writer.js';
 import DomConverter from './domconverter.js';
-import ContainerElement from './containerelement.js';
+import RootEditableElement from './rooteditableelement.js';
 import { injectQuirksHandling } from './filler.js';
 
 import mix from '../../utils/mix.js';
@@ -152,20 +152,19 @@ export default class Document {
 	 * @param {Element|String} domRoot DOM root element or the tag name of view root element if the DOM element will be
 	 * attached later.
 	 * @param {String} [name='main'] Name of the root.
-	 * @returns {engine.view.ContainerElement} The created view root element.
+	 * @returns {engine.view.RootEditableElement} The created view root element.
 	 */
 	createRoot( domRoot, name = 'main' ) {
 		const rootTag = typeof domRoot == 'string' ? domRoot : domRoot.tagName;
 
-		const viewRoot = new ContainerElement( rootTag );
-		viewRoot.setDocument( this );
+		const viewRoot = new RootEditableElement( this, rootTag, name );
 
 		this.roots.set( name, viewRoot );
 
 		// Mark changed nodes in the renderer.
-		viewRoot.on( 'change', ( evt, type, node ) => {
-			this.renderer.markToSync( type, node );
-		} );
+		viewRoot.on( 'change:children', ( evt, type, node ) => this.renderer.markToSync( 'CHILDREN', node ) );
+		viewRoot.on( 'change:attribute', ( evt, type, node ) => this.renderer.markToSync( 'ATTRIBTE', node ) );
+		viewRoot.on( 'change:text', ( evt, type, node ) => this.renderer.markToSync( 'TEXT', node ) );
 
 		if ( domRoot instanceof HTMLElement ) {
 			this.attachDomRoot( domRoot, name );
@@ -204,7 +203,7 @@ export default class Document {
 	 * specific "main" root is returned.
 	 *
 	 * @param {String} [name='main'] Name of the root.
-	 * @returns {engine.view.ContainerElement} The view root element with the specified name.
+	 * @returns {engine.view.RootEditableElement} The view root element with the specified name.
 	 */
 	getRoot( name = 'main' ) {
 		return this.roots.get( name );
