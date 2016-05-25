@@ -37,12 +37,12 @@ export default class KeystrokeHandler {
 		this.editor = editor;
 
 		/**
-		 * Observer used to listen to events for easier keystroke handler destruction.
+		 * Listener used to listen to events for easier keystroke handler destruction.
 		 *
 		 * @private
-		 * @member {utils.Emitter} ckeditor5.KeystrokeHandler#_observer
+		 * @member {utils.Emitter} ckeditor5.KeystrokeHandler#_listener
 		 */
-		this._observer = Object.create( EmitterMixin );
+		this._listener = Object.create( EmitterMixin );
 
 		/**
 		 * Map of the defined keystrokes. Keystroke codes are the keys.
@@ -54,7 +54,7 @@ export default class KeystrokeHandler {
 
 		editor.editing.view.addObserver( KeyObserver );
 
-		this._observer.listenTo( editor.editing.view, 'keydown', ( evt, data ) => {
+		this._listener.listenTo( editor.editing.view, 'keydown', ( evt, data ) => {
 			const handled = this.press( data );
 
 			if ( handled ) {
@@ -107,6 +107,6 @@ export default class KeystrokeHandler {
 	 */
 	destroy() {
 		this._keystrokes = new Map();
-		this._observer.stopListening();
+		this._listener.stopListening();
 	}
 }
