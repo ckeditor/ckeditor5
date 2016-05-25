@@ -109,7 +109,7 @@ describe( 'MutationObserver', () => {
 		// Prepare AdditionalEditor
 		viewDocument.createRoot( domAdditionalEditor, 'additional' );
 
-		viewDocument.viewRoots.get( 'additional' ).appendChildren(
+		viewDocument.getRoot( 'additional' ).appendChildren(
 			parse( '<container:p>foo</container:p><container:p>bar</container:p>' ) );
 
 		// Render AdditionalEditor (first editor has been rendered in the beforeEach function)

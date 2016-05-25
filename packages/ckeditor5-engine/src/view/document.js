@@ -69,9 +69,9 @@ export default class Document {
 		 * Roots of the view tree. Map of the {engine.view.Element view elements} with roots names as keys.
 		 *
 		 * @readonly
-		 * @member {Map} engine.view.Document#viewRoots
+		 * @member {Map} engine.view.Document#roots
 		 */
-		this.viewRoots = new Map();
+		this.roots = new Map();
 
 		/**
 		 * Instance of the {@link engine.view.Document#renderer renderer}.
@@ -136,7 +136,7 @@ export default class Document {
 	}
 
 	/**
-	 * Creates a {@link engine.view.Document#viewRoots view root element}.
+	 * Creates a {@link engine.view.Document#roots view root element}.
 	 *
 	 * If the DOM element will be passed as a first parameter it will be automatically
 	 * {@link engine.view.Document#attachDomRoot attached}:
@@ -160,7 +160,7 @@ export default class Document {
 		const viewRoot = new ContainerElement( rootTag );
 		viewRoot.setDocument( this );
 
-		this.viewRoots.set( name, viewRoot );
+		this.roots.set( name, viewRoot );
 
 		// Mark changed nodes in the renderer.
 		viewRoot.on( 'change', ( evt, type, node ) => {
@@ -200,14 +200,14 @@ export default class Document {
 	}
 
 	/**
-	 * Gets a {@link engine.view.Document#viewRoots view root element} with the specified name. If the name is not
+	 * Gets a {@link engine.view.Document#roots view root element} with the specified name. If the name is not
 	 * specific "main" root is returned.
 	 *
 	 * @param {String} [name='main'] Name of the root.
 	 * @returns {engine.view.ContainerElement} The view root element with the specified name.
 	 */
 	getRoot( name = 'main' ) {
-		return this.viewRoots.get( name );
+		return this.roots.get( name );
 	}
 
 	/**
