@@ -123,26 +123,26 @@ function renderButton( ui ) {
 		ui.add( 'button-icon', button( {
 			label: i,
 			icon: i,
-			iconAlign: 'left'
+			iconAlign: 'LEFT'
 		} ) );
 	} );
 
 	ui.add( 'button-icon-custom', button( {
 		label: 'Icon to the left',
 		icon: 'bold',
-		iconAlign: 'left'
+		iconAlign: 'LEFT'
 	} ) );
 
 	ui.add( 'button-icon-custom', button( {
 		label: 'Icon to the right (RTL)',
 		icon: 'bold',
-		iconAlign: 'right'
+		iconAlign: 'RIGHT'
 	} ) );
 
 	const styledButton = button( {
 		label: 'Button with icon and custom styles',
 		icon: 'italic',
-		iconAlign: 'left'
+		iconAlign: 'LEFT'
 	} );
 
 	// TODO: It probably requires model interface.
@@ -153,14 +153,14 @@ function renderButton( ui ) {
 	ui.add( 'button-icon-states', button( {
 		label: 'Disabled',
 		icon: 'bold',
-		iconAlign: 'left',
+		iconAlign: 'LEFT',
 		isEnabled: false
 	} ) );
 
 	const notextButton = button( {
 		label: '',
 		icon: 'bold',
-		iconAlign: 'left'
+		iconAlign: 'LEFT'
 	} );
 
 	// TODO: It requires model interface.
@@ -171,7 +171,7 @@ function renderButton( ui ) {
 	const colChangeButton = button( {
 		label: 'Icon follows text color',
 		icon: 'bold',
-		iconAlign: 'left'
+		iconAlign: 'LEFT'
 	} );
 
 	// TODO: It requires model interface.
@@ -190,14 +190,14 @@ function renderButton( ui ) {
 		ui.add( `button-responsive-${ i }`, button( {
 			label: 'Bold',
 			icon: 'bold',
-			iconAlign: 'left',
+			iconAlign: 'LEFT',
 			isEnabled: true
 		} ) );
 
 		const notextButton = button( {
 			label: '',
 			icon: 'link',
-			iconAlign: 'left'
+			iconAlign: 'LEFT'
 		} );
 
 		// TODO: It requires model interface.
@@ -258,7 +258,7 @@ function renderToolbar( ui ) {
 		button( {
 			label: 'Button with icon',
 			icon: 'bold',
-			iconAlign: 'left'
+			iconAlign: 'LEFT'
 		} )
 	] ) );
 
@@ -271,7 +271,7 @@ function renderToolbar( ui ) {
 		button( {
 			label: 'Button with icon',
 			icon: 'bold',
-			iconAlign: 'left'
+			iconAlign: 'LEFT'
 		} )
 	] ) );
 
@@ -296,13 +296,13 @@ function renderToolbar( ui ) {
 		button( {
 			label: 'Link',
 			icon: 'link',
-			iconAlign: 'left'
+			iconAlign: 'LEFT'
 		} ),
 		toolbarSeparator(),
 		button( {
 			label: 'Unlink RTL',
 			icon: 'unlink',
-			iconAlign: 'right'
+			iconAlign: 'RIGHT'
 		} )
 	] ) );
 
@@ -315,17 +315,17 @@ function renderToolbar( ui ) {
 		button( {
 			label: 'Link',
 			icon: 'link',
-			iconAlign: 'left'
+			iconAlign: 'LEFT'
 		} ),
 		button( {
 			label: 'Unlink RTL',
 			icon: 'unlink',
-			iconAlign: 'right'
+			iconAlign: 'RIGHT'
 		} ),
 		button( {
 			label: 'Link',
 			icon: 'link',
-			iconAlign: 'left'
+			iconAlign: 'LEFT'
 		} )
 	] ) );
 }
