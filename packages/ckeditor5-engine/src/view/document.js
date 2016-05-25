@@ -221,16 +221,30 @@ export default class Document {
 	}
 
 	/**
-	 * Renders all changes. In order to avoid triggering the observers (e.g. mutations) all observers all detached
-	 * before rendering and reattached after that.
+	 * Renders all changes. In order to avoid triggering the observers (e.g. mutations) all observers are disabled
+	 * before rendering and re-enabled after that.
 	 */
 	render() {
-		for ( let observer of this._observers.values() ) {
-			observer.disable();
-		}
+		this.disableObservers();
 
 		this.renderer.render();
 
+		this.enableObservers();
+	}
+
+	/**
+	 * Disable all added observers.
+	 */
+	disableObservers() {
+		for ( let observer of this._observers.values() ) {
+			observer.disable();
+		}
+	}
+
+	/**
+	 * Enable all added observers.
+	 */
+	enableObservers() {
 		for ( let observer of this._observers.values() ) {
 			observer.enable();
 		}

@@ -300,4 +300,38 @@ describe( 'Document', () => {
 			expect( getObserverMock ).to.be.undefined();
 		} );
 	} );
+
+	describe( 'disableObservers', () => {
+		it( 'should disable observers', () => {
+			const viewDocument = new Document();
+
+			const addedObserverMock = viewDocument.addObserver( ObserverMock );
+
+			expect( addedObserverMock.enable.calledOnce ).to.be.true;
+			expect( addedObserverMock.disable.called ).to.be.false;
+
+			viewDocument.disableObservers();
+
+			expect( addedObserverMock.enable.calledOnce ).to.be.true;
+			expect( addedObserverMock.disable.calledOnce ).to.be.true;
+		} );
+	} );
+
+	describe( 'enableObservers', () => {
+		it( 'should enable observers', () => {
+			const viewDocument = new Document();
+
+			const addedObserverMock = viewDocument.addObserver( ObserverMock );
+
+			viewDocument.disableObservers();
+
+			expect( addedObserverMock.enable.calledOnce ).to.be.true;
+			expect( addedObserverMock.disable.calledOnce ).to.be.true;
+
+			viewDocument.enableObservers();
+
+			expect( addedObserverMock.enable.calledTwice ).to.be.true;
+			expect( addedObserverMock.disable.calledOnce ).to.be.true;
+		} );
+	} );
 } );
