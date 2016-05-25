@@ -123,6 +123,15 @@ export default class Editor {
 		 */
 
 		/**
+		 * Instance of the {@link ckeditor5.KeystrokeHandler}.
+		 *
+		 * This property is set by the {@link ckeditor5.creator.Creator}.
+		 *
+		 * @readonly
+		 * @member {engine.treecontroller.DataController} ckeditor5.Editor#keystrokes
+		 */
+
+		/**
 		 * The chosen creator.
 		 *
 		 * @protected

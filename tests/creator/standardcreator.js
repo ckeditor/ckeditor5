@@ -15,6 +15,7 @@ import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor
 import Document from '/ckeditor5/engine/model/document.js';
 import EditingController from '/ckeditor5/engine/editingcontroller.js';
 import DataController from '/ckeditor5/engine/datacontroller.js';
+import KeystrokeHandler from '/ckeditor5/keystrokehandler.js';
 
 testUtils.createSinonSandbox();
 
@@ -42,6 +43,10 @@ describe( 'Creator', () => {
 			expect( editor.editing ).to.be.instanceof( EditingController );
 			expect( editor.data ).to.be.instanceof( DataController );
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
+		} );
+
+		it( 'creates the keystroke handler', () => {
+			expect( editor.keystrokes ).to.be.instanceof( KeystrokeHandler );
 		} );
 
 		it( 'uses HtmlDataProcessor if no processor is provided in constructor', () => {
