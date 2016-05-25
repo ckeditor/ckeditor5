@@ -9,6 +9,11 @@ import Model from '../../ui/model.js';
 import Button from '../../ui/button/button.js';
 import ButtonView from '../../ui/button/buttonview.js';
 
+import Collection from '/ckeditor5/utils/collection.js';
+
+import ListDropdown from '/ckeditor5/ui/dropdown/list/listdropdown.js';
+import ListDropdownView from '/ckeditor5/ui/dropdown/list/listdropdownview.js';
+
 /**
  * Immitates that some features were loaded and did their job.
  *
@@ -21,7 +26,8 @@ export function imitateFeatures( editor ) {
 		isEnabled: true,
 		isOn: false,
 		label: t( 'Bold' ),
-		icon: 'bold'
+		icon: 'bold',
+		iconAlign: 'LEFT'
 	} );
 
 	// Note – most of the contents of this file is ignored, as it's a temporary file that will
@@ -37,12 +43,15 @@ export function imitateFeatures( editor ) {
 
 	editor.ui.featureComponents.add( 'bold', Button, ButtonView, boldModel );
 
+	// -------------------------------------------------------------------------------------------
+
 	/* istanbul ignore next */
 	const italicModel = new Model( {
 		isEnabled: true,
 		isOn: false,
 		label: t( 'Italic' ),
-		icon: 'italic'
+		icon: 'italic',
+		iconAlign: 'LEFT'
 	} );
 
 	/* istanbul ignore next */
@@ -57,9 +66,47 @@ export function imitateFeatures( editor ) {
 
 	window.boldModel = boldModel;
 	window.italicModel = italicModel;
+
+	// -------------------------------------------------------------------------------------------
+
+	const fontCollection = new Collection( { idProperty: 'label' } );
+
+	/* istanbul ignore next */
+	[ 'Arial', 'Times New Roman', 'Comic Sans MS', 'Georgia', 'Trebuchet MS', 'Verdana' ]
+		.sort()
+		.forEach( font => {
+			fontCollection.add( new Model( { label: font, style: `font-family: "${ font }"` } ) );
+		} );
+
+	/* istanbul ignore next */
+	const fontListModel = new Model( {
+		items: fontCollection
+	} );
+
+	/* istanbul ignore next */
+	fontListModel.on( 'execute', ( evtInfo, itemModel ) => {
+		/* global console */
+		console.log( 'Font list item executed', itemModel );
+	} );
+
+	/* istanbul ignore next */
+	const fontModel = new Model( {
+		label: t( 'Font' ),
+		isEnabled: true,
+		isOn: false,
+		content: fontListModel
+	} );
+
+	editor.ui.featureComponents.add( 'font', ListDropdown, ListDropdownView, fontModel );
+
+	window.fontCollection = fontCollection;
+	window.fontModel = fontModel;
+	window.Model = Model;
 }
 
 export function imitateDestroyFeatures() {
 	delete window.boldModel;
 	delete window.italicModel;
+	delete window.fontCollection;
+	delete window.Model;
 }
