@@ -10,11 +10,12 @@
 import CKEDITOR from '/ckeditor.js';
 import ClassicCreator from '/ckeditor5/creator-classic/classiccreator.js';
 import Bold from '/ckeditor5/basic-styles/bold.js';
+import Italic from '/ckeditor5/basic-styles/italic.js';
 
 CKEDITOR.create( '#editor1', {
 	creator: ClassicCreator,
-	features: [ Bold ],
-	toolbar: [ 'bold' ]
+	features: [ Bold, Italic ],
+	toolbar: [ 'bold', 'italic' ]
 } )
 .then( editor => {
 	window.editor = editor;
