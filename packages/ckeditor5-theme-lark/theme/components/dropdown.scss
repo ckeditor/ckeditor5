@@ -1,0 +1,42 @@
+// Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+.ck-dropdown {
+	display: inline-block;
+	position: relative;
+}
+
+.ck-dropdown__button {
+	&:after {
+		content: '';
+		width: 0;
+		height: 0;
+		border-style: solid;
+		border-width: .4em .4em 0 .4em;
+		border-color: ck-color( 'text', 30 ) transparent;
+		position: relative;
+		top: .9em;
+		margin-left: ck-spacing( 'medium' );
+	}
+}
+
+.ck-dropdown__panel {
+	border: 1px solid ck-border-color( 'foreground' );
+	display: none;
+	box-shadow: 0 0 5px ck-color( 'foreground', -15 );
+	position: absolute;
+	left: 0px;
+
+	// Compensate double border from button and from box when positioned below the button.
+	bottom: 2px;
+
+	transform: translateY( 100% );
+	background: ck-color( 'background' );
+	z-index: ck-z();
+
+	@include ck-rounded-corners();
+
+	&-active {
+		display: inline-block;
+	}
+}

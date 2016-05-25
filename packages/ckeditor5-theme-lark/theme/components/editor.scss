@@ -3,6 +3,8 @@
 
 // TODO/NOTE: This along with _editor helper will probably become a creator theme.
 @include ck-editor {
+	@include ck-rounded-corners();
+
 	.ck-editor__top {
 		.ck-toolbar {
 			border-top: 0;
@@ -28,18 +30,13 @@
 		overflow: auto;
 		padding: 0 ck-spacing();
 	}
-}
 
-.ck-editor,
-.ck-editor-bottom {
-	background: ck-color( 'foreground' );
-	border: 1px solid ck-border-color( 'foreground' );
-}
-
-@include ck-editor {
 	.ck-toolbar {
+		// Toolbars should not react to ck-rounded-corners() mixin.
+		border-radius: 0;
+
 		.ck-button {
-			border: 0;
+			border-width: 0;
 		}
 
 		// Make sure the next button does not overlap focused one.
@@ -54,5 +51,19 @@
 		.ck-button.ck-on {
 			@include ck-button-colors( 'foreground', -10 );
 		}
+
+		.ck-dropdown__button {
+			border-width: 1px;
+		}
+
+		.ck-dropdown__button:not(:hover):not(:focus):not(.ck-on) {
+			background: ck-color( 'background' );
+		}
 	}
+}
+
+.ck-editor,
+.ck-editor-bottom {
+	background: ck-color( 'foreground' );
+	border: 1px solid ck-border-color( 'foreground' );
 }
