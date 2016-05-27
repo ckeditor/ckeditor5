@@ -6,7 +6,6 @@
 'use strict';
 
 import EmitterMixin from './utils/emittermixin.js';
-import KeyObserver from './engine/view/observer/keyobserver.js';
 import { getCode, parseKeystroke } from './utils/keyboard.js';
 
 /**
@@ -51,8 +50,6 @@ export default class KeystrokeHandler {
 		 * @member {Map} ckeditor5.KeystrokeHandler#_keystrokes
 		 */
 		this._keystrokes = new Map();
-
-		editor.editing.view.addObserver( KeyObserver );
 
 		this._listener.listenTo( editor.editing.view, 'keydown', ( evt, data ) => {
 			const handled = this.press( data );
