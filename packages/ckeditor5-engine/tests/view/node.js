@@ -193,9 +193,9 @@ describe( 'Node', () => {
 			root = new Element( 'p', { renderer: { markToSync: rootChangeSpy } } );
 			root.appendChildren( [ text, img ] );
 
-			root.on( 'change', ( evt, type, node ) => {
-				rootChangeSpy( type, node );
-			} );
+			root.on( 'change:children', ( evt, node ) => rootChangeSpy( 'children', node ) );
+			root.on( 'change:attributes', ( evt, node ) => rootChangeSpy( 'attributes', node ) );
+			root.on( 'change:text', ( evt, node ) => rootChangeSpy( 'text', node ) );
 
 			rootChangeSpy.reset();
 		} );
@@ -203,21 +203,21 @@ describe( 'Node', () => {
 		it( 'should be fired on the node', () => {
 			const imgChangeSpy = sinon.spy();
 
-			img.on( 'change', ( evt, type, node ) => {
-				imgChangeSpy( type, node );
+			img.on( 'change:attributes', ( evt, node ) => {
+				imgChangeSpy( 'attributes', node );
 			} );
 
 			img.setAttribute( 'width', 100 );
 
 			sinon.assert.calledOnce( imgChangeSpy );
-			sinon.assert.calledWith( imgChangeSpy, 'ATTRIBUTES', img );
+			sinon.assert.calledWith( imgChangeSpy, 'attributes', img );
 		} );
 
 		it( 'should be fired on the parent', () => {
 			img.setAttribute( 'width', 100 );
 
 			sinon.assert.calledOnce( rootChangeSpy );
-			sinon.assert.calledWith( rootChangeSpy, 'ATTRIBUTES', img );
+			sinon.assert.calledWith( rootChangeSpy, 'attributes', img );
 		} );
 
 		describe( 'setAttr', () => {
@@ -225,7 +225,7 @@ describe( 'Node', () => {
 				img.setAttribute( 'width', 100 );
 
 				sinon.assert.calledOnce( rootChangeSpy );
-				sinon.assert.calledWith( rootChangeSpy, 'ATTRIBUTES', img );
+				sinon.assert.calledWith( rootChangeSpy, 'attributes', img );
 			} );
 		} );
 
@@ -234,7 +234,7 @@ describe( 'Node', () => {
 				img.removeAttribute( 'src' );
 
 				sinon.assert.calledOnce( rootChangeSpy );
-				sinon.assert.calledWith( rootChangeSpy, 'ATTRIBUTES', img );
+				sinon.assert.calledWith( rootChangeSpy, 'attributes', img );
 			} );
 		} );
 
@@ -243,7 +243,7 @@ describe( 'Node', () => {
 				root.insertChildren( 1, new Element( 'img' ) );
 
 				sinon.assert.calledOnce( rootChangeSpy );
-				sinon.assert.calledWith( rootChangeSpy, 'CHILDREN', root );
+				sinon.assert.calledWith( rootChangeSpy, 'children', root );
 			} );
 		} );
 
@@ -252,7 +252,7 @@ describe( 'Node', () => {
 				root.appendChildren( new Element( 'img' ) );
 
 				sinon.assert.calledOnce( rootChangeSpy );
-				sinon.assert.calledWith( rootChangeSpy, 'CHILDREN', root );
+				sinon.assert.calledWith( rootChangeSpy, 'children', root );
 			} );
 		} );
 
@@ -261,7 +261,7 @@ describe( 'Node', () => {
 				root.removeChildren( 1, 1 );
 
 				sinon.assert.calledOnce( rootChangeSpy );
-				sinon.assert.calledWith( rootChangeSpy, 'CHILDREN', root );
+				sinon.assert.calledWith( rootChangeSpy, 'children', root );
 			} );
 		} );
 
@@ -270,7 +270,7 @@ describe( 'Node', () => {
 				text.data = 'bar';
 
 				sinon.assert.calledOnce( rootChangeSpy );
-				sinon.assert.calledWith( rootChangeSpy, 'TEXT', text );
+				sinon.assert.calledWith( rootChangeSpy, 'text', text );
 			} );
 		} );
 	} );

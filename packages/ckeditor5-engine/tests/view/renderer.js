@@ -44,7 +44,7 @@ describe( 'Renderer', () => {
 		it( 'should mark attributes which need update', () => {
 			viewRoot.setAttribute( 'class', 'foo' );
 
-			renderer.markToSync( 'ATTRIBUTES', viewRoot );
+			renderer.markToSync( 'attributes', viewRoot );
 
 			expect( renderer.markedAttributes.has( viewRoot ) ).to.be.true;
 		} );
@@ -52,7 +52,7 @@ describe( 'Renderer', () => {
 		it( 'should mark children which need update', () => {
 			viewRoot.appendChildren( new ViewText( 'foo' ) );
 
-			renderer.markToSync( 'CHILDREN', viewRoot );
+			renderer.markToSync( 'children', viewRoot );
 
 			expect( renderer.markedChildren.has( viewRoot ) ).to.be.true;
 		} );
@@ -63,7 +63,7 @@ describe( 'Renderer', () => {
 
 			viewRoot.appendChildren( new ViewText( 'foo' ) );
 
-			renderer.markToSync( 'CHILDREN', viewRoot );
+			renderer.markToSync( 'children', viewRoot );
 
 			expect( renderer.markedTexts.has( viewRoot ) ).to.be.false;
 		} );
@@ -73,7 +73,7 @@ describe( 'Renderer', () => {
 			viewRoot.appendChildren( viewText );
 			viewText.data = 'bar';
 
-			renderer.markToSync( 'TEXT', viewText );
+			renderer.markToSync( 'text', viewText );
 
 			expect( renderer.markedTexts.has( viewText ) ).to.be.true;
 		} );
@@ -86,7 +86,7 @@ describe( 'Renderer', () => {
 			viewRoot.appendChildren( viewText );
 			viewText.data = 'bar';
 
-			renderer.markToSync( 'TEXT', viewText );
+			renderer.markToSync( 'text', viewText );
 
 			expect( renderer.markedTexts.has( viewText ) ).to.be.false;
 		} );
@@ -118,7 +118,7 @@ describe( 'Renderer', () => {
 		it( 'should update attributes', () => {
 			viewRoot.setAttribute( 'class', 'foo' );
 
-			renderer.markToSync( 'ATTRIBUTES', viewRoot );
+			renderer.markToSync( 'attributes', viewRoot );
 			renderer.render();
 
 			expect( domRoot.getAttribute( 'class' ) ).to.equal( 'foo' );
@@ -131,7 +131,7 @@ describe( 'Renderer', () => {
 			domRoot.setAttribute( 'id', 'bar' );
 			domRoot.setAttribute( 'class', 'bar' );
 
-			renderer.markToSync( 'ATTRIBUTES', viewRoot );
+			renderer.markToSync( 'attributes', viewRoot );
 			renderer.render();
 
 			expect( domRoot.getAttribute( 'class' ) ).to.equal( 'foo' );
@@ -143,7 +143,7 @@ describe( 'Renderer', () => {
 		it( 'should add children', () => {
 			viewRoot.appendChildren( new ViewText( 'foo' ) );
 
-			renderer.markToSync( 'CHILDREN', viewRoot );
+			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
 
 			expect( domRoot.childNodes.length ).to.equal( 1 );
@@ -155,7 +155,7 @@ describe( 'Renderer', () => {
 		it( 'should remove children', () => {
 			viewRoot.appendChildren( new ViewText( 'foo' ) );
 
-			renderer.markToSync( 'CHILDREN', viewRoot );
+			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
 
 			expect( domRoot.childNodes.length ).to.equal( 1 );
@@ -163,7 +163,7 @@ describe( 'Renderer', () => {
 
 			viewRoot.removeChildren( 0, 1 );
 
-			renderer.markToSync( 'CHILDREN', viewRoot );
+			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
 
 			expect( domRoot.childNodes.length ).to.equal( 0 );
@@ -175,7 +175,7 @@ describe( 'Renderer', () => {
 			const viewText = new ViewText( 'foo' );
 			viewRoot.appendChildren( viewText );
 
-			renderer.markToSync( 'CHILDREN', viewRoot );
+			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
 
 			expect( domRoot.childNodes.length ).to.equal( 1 );
@@ -183,7 +183,7 @@ describe( 'Renderer', () => {
 
 			viewText.data = 'bar';
 
-			renderer.markToSync( 'TEXT', viewText );
+			renderer.markToSync( 'text', viewText );
 			renderer.render();
 
 			expect( domRoot.childNodes.length ).to.equal( 1 );
@@ -197,8 +197,8 @@ describe( 'Renderer', () => {
 			const viewText = new ViewText( 'foo' );
 			viewRoot.appendChildren( [ viewImg, viewText ] );
 
-			renderer.markToSync( 'CHILDREN', viewRoot );
-			renderer.markToSync( 'TEXT', viewText );
+			renderer.markToSync( 'children', viewRoot );
+			renderer.markToSync( 'text', viewText );
 			renderer.render();
 
 			expect( domRoot.childNodes.length ).to.equal( 2 );
@@ -210,13 +210,13 @@ describe( 'Renderer', () => {
 			const viewText = new ViewText( 'foo' );
 			viewRoot.appendChildren( viewText );
 
-			renderer.markToSync( 'CHILDREN', viewRoot );
+			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
 
 			// This should not be changed during the render.
 			const domText = domRoot.childNodes[ 0 ];
 
-			renderer.markToSync( 'TEXT', viewText );
+			renderer.markToSync( 'text', viewText );
 			renderer.render();
 
 			expect( domRoot.childNodes.length ).to.equal( 1 );
@@ -227,13 +227,13 @@ describe( 'Renderer', () => {
 			const viewText = new ViewText( 'foo' );
 			viewRoot.appendChildren( viewText );
 
-			renderer.markToSync( 'CHILDREN', viewRoot );
+			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
 
 			// This should not be changed during the render.
 			const domText = domRoot.childNodes[ 0 ];
 
-			renderer.markToSync( 'CHILDREN', viewRoot );
+			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
 
 			expect( domRoot.childNodes.length ).to.equal( 1 );
@@ -250,7 +250,7 @@ describe( 'Renderer', () => {
 
 			domConverter.bindElements( domImg, viewImg );
 
-			renderer.markToSync( 'CHILDREN', viewRoot );
+			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
 
 			expect( domRoot.childNodes.length ).to.equal( 1 );
@@ -261,14 +261,14 @@ describe( 'Renderer', () => {
 			const viewImg = new ViewElement( 'img' );
 			viewRoot.appendChildren( viewImg );
 
-			renderer.markToSync( 'CHILDREN', viewRoot );
+			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
 
 			const viewP = new ViewElement( 'p' );
 			viewRoot.removeChildren( 0, 1 );
 			viewRoot.appendChildren( viewP );
 
-			renderer.markToSync( 'CHILDREN', viewRoot );
+			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
 
 			expect( domRoot.childNodes.length ).to.equal( 1 );
@@ -285,7 +285,7 @@ describe( 'Renderer', () => {
 			viewRoot.appendChildren( viewP );
 			selection.setTo( newSelection );
 
-			renderer.markToSync( 'CHILDREN', viewRoot );
+			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
 
 			expect( domRoot.childNodes.length ).to.equal( 1 );
@@ -306,8 +306,8 @@ describe( 'Renderer', () => {
 			expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
 
 			// Step 2: No mutation on second render
-			renderer.markToSync( 'CHILDREN', viewRoot );
-			renderer.markToSync( 'CHILDREN', viewP );
+			renderer.markToSync( 'children', viewRoot );
+			renderer.markToSync( 'children', viewP );
 
 			renderAndExpectNoChanges( renderer, domRoot );
 
@@ -329,8 +329,8 @@ describe( 'Renderer', () => {
 			expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
 
 			// Step 4: No mutation on second render
-			renderer.markToSync( 'CHILDREN', viewRoot );
-			renderer.markToSync( 'CHILDREN', viewP );
+			renderer.markToSync( 'children', viewRoot );
+			renderer.markToSync( 'children', viewP );
 
 			renderAndExpectNoChanges( renderer, domRoot );
 		} );
@@ -345,7 +345,7 @@ describe( 'Renderer', () => {
 			viewRoot.appendChildren( viewP );
 			selection.setTo( newSelection );
 
-			renderer.markToSync( 'CHILDREN', viewRoot );
+			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
 
 			const domP = domRoot.childNodes[ 0 ];
@@ -362,7 +362,7 @@ describe( 'Renderer', () => {
 			expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
 
 			// Step 2: No mutation on second render
-			renderer.markToSync( 'CHILDREN', viewP );
+			renderer.markToSync( 'children', viewP );
 			renderAndExpectNoChanges( renderer, domRoot );
 
 			// Step 3: <p><b>{}foo</b></p>
@@ -383,7 +383,7 @@ describe( 'Renderer', () => {
 			expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
 
 			// Step 4: No mutation on second render
-			renderer.markToSync( 'CHILDREN', viewP );
+			renderer.markToSync( 'children', viewP );
 			renderAndExpectNoChanges( renderer, domRoot );
 		} );
 
@@ -397,7 +397,7 @@ describe( 'Renderer', () => {
 			viewRoot.appendChildren( viewP );
 			selection.setTo( newSelection );
 
-			renderer.markToSync( 'CHILDREN', viewRoot );
+			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
 
 			const domP = domRoot.childNodes[ 0 ];
@@ -414,7 +414,7 @@ describe( 'Renderer', () => {
 			expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
 
 			// Step 2: No mutation on second render
-			renderer.markToSync( 'CHILDREN', viewP );
+			renderer.markToSync( 'children', viewP );
 			renderAndExpectNoChanges( renderer, domRoot );
 
 			// Step 3: <p><b>foo{}</b></p>
@@ -435,7 +435,7 @@ describe( 'Renderer', () => {
 			expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
 
 			// Step 4: No mutation on second render
-			renderer.markToSync( 'CHILDREN', viewP );
+			renderer.markToSync( 'children', viewP );
 			renderAndExpectNoChanges( renderer, domRoot );
 		} );
 
@@ -448,7 +448,7 @@ describe( 'Renderer', () => {
 			viewRoot.appendChildren( viewP );
 			selection.setTo( newSelection );
 
-			renderer.markToSync( 'CHILDREN', viewRoot );
+			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
 
 			const domP = domRoot.childNodes[ 0 ];
@@ -476,7 +476,7 @@ describe( 'Renderer', () => {
 			viewRoot.appendChildren( viewP );
 			selection.setTo( newSelection );
 
-			renderer.markToSync( 'CHILDREN', viewRoot );
+			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
 
 			const domP = domRoot.childNodes[ 0 ];
@@ -504,7 +504,7 @@ describe( 'Renderer', () => {
 			selection.removeAllRanges();
 			selection.addRange( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
-			renderer.markToSync( 'CHILDREN', viewP );
+			renderer.markToSync( 'children', viewP );
 			renderAndExpectNoChanges( renderer, domRoot );
 		} );
 
@@ -516,7 +516,7 @@ describe( 'Renderer', () => {
 			viewRoot.appendChildren( viewP );
 			selection.setTo( newSelection );
 
-			renderer.markToSync( 'CHILDREN', viewRoot );
+			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
 
 			const domP = domRoot.childNodes[ 0 ];
@@ -535,7 +535,7 @@ describe( 'Renderer', () => {
 			selection.removeAllRanges();
 			selection.addRange( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
-			renderer.markToSync( 'CHILDREN', viewP );
+			renderer.markToSync( 'children', viewP );
 			renderer.render();
 
 			expect( domP.childNodes.length ).to.equal( 1 );
@@ -555,7 +555,7 @@ describe( 'Renderer', () => {
 			viewRoot.appendChildren( viewP );
 			selection.setTo( newSelection );
 
-			renderer.markToSync( 'CHILDREN', viewRoot );
+			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
 
 			const domP = domRoot.childNodes[ 0 ];
@@ -583,7 +583,7 @@ describe( 'Renderer', () => {
 			selection.removeAllRanges();
 			selection.addRange( ViewRange.createFromParentsAndOffsets( viewP, 0, viewP, 0 ) );
 
-			renderer.markToSync( 'CHILDREN', viewP );
+			renderer.markToSync( 'children', viewP );
 			renderAndExpectNoChanges( renderer, domRoot );
 		} );
 
@@ -596,7 +596,7 @@ describe( 'Renderer', () => {
 			viewRoot.appendChildren( viewP );
 			selection.setTo( newSelection );
 
-			renderer.markToSync( 'CHILDREN', viewRoot );
+			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
 
 			const domP = domRoot.childNodes[ 0 ];
@@ -630,11 +630,11 @@ describe( 'Renderer', () => {
 			selection.removeAllRanges();
 			selection.addRange( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
-			renderer.markToSync( 'CHILDREN', viewP );
+			renderer.markToSync( 'children', viewP );
 			renderAndExpectNoChanges( renderer, domRoot );
 		} );
 
-		it( 'should handle typing in empty attribute as a CHILDREN change, render if needed', () => {
+		it( 'should handle typing in empty attribute as a children change, render if needed', () => {
 			const domSelection = document.getSelection();
 
 			const { view: viewP, selection: newSelection } = parse(
@@ -643,7 +643,7 @@ describe( 'Renderer', () => {
 			viewRoot.appendChildren( viewP );
 			selection.setTo( newSelection );
 
-			renderer.markToSync( 'CHILDREN', viewRoot );
+			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
 
 			const domP = domRoot.childNodes[ 0 ];
@@ -669,7 +669,7 @@ describe( 'Renderer', () => {
 			selection.removeAllRanges();
 			selection.addRange( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
-			renderer.markToSync( 'CHILDREN', viewB );
+			renderer.markToSync( 'children', viewB );
 			renderer.render();
 
 			expect( domB.childNodes.length ).to.equal( 1 );
@@ -681,7 +681,7 @@ describe( 'Renderer', () => {
 			expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
 		} );
 
-		it( 'should handle typing in empty attribute as a TEXT change, render if needed', () => {
+		it( 'should handle typing in empty attribute as a text change, render if needed', () => {
 			const domSelection = document.getSelection();
 
 			const { view: viewP, selection: newSelection } = parse(
@@ -690,7 +690,7 @@ describe( 'Renderer', () => {
 			viewRoot.appendChildren( viewP );
 			selection.setTo( newSelection );
 
-			renderer.markToSync( 'CHILDREN', viewRoot );
+			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
 
 			const domP = domRoot.childNodes[ 0 ];
@@ -716,7 +716,7 @@ describe( 'Renderer', () => {
 			selection.removeAllRanges();
 			selection.addRange( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
-			renderer.markToSync( 'TEXT', viewText );
+			renderer.markToSync( 'text', viewText );
 			renderer.render();
 
 			expect( domB.childNodes.length ).to.equal( 1 );
@@ -737,7 +737,7 @@ describe( 'Renderer', () => {
 			viewRoot.appendChildren( viewP );
 			selection.setTo( newSelection );
 
-			renderer.markToSync( 'CHILDREN', viewRoot );
+			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
 
 			const domP = domRoot.childNodes[ 0 ];
@@ -754,7 +754,7 @@ describe( 'Renderer', () => {
 			expect( domSelection.getRangeAt( 0 ).endContainer ).to.equal( domP.childNodes[ 1 ].childNodes[ 0 ] );
 			expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( 1 );
 
-			renderer.markToSync( 'CHILDREN', viewP );
+			renderer.markToSync( 'children', viewP );
 			renderAndExpectNoChanges( renderer, domRoot );
 		} );
 
@@ -766,7 +766,7 @@ describe( 'Renderer', () => {
 			viewRoot.appendChildren( viewP );
 			selection.setTo( newSelection );
 
-			renderer.markToSync( 'CHILDREN', viewRoot );
+			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
 
 			const domP = domRoot.childNodes[ 0 ];
@@ -787,7 +787,7 @@ describe( 'Renderer', () => {
 			viewRoot.appendChildren( viewP );
 			selection.setTo( newSelection );
 
-			renderer.markToSync( 'CHILDREN', viewRoot );
+			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
 
 			const domB = domRoot.childNodes[ 0 ].childNodes[ 1 ];
@@ -799,7 +799,7 @@ describe( 'Renderer', () => {
 			domB.childNodes[ 0 ].data = '';
 
 			selection.removeAllRanges();
-			renderer.markToSync( 'CHILDREN', viewB );
+			renderer.markToSync( 'children', viewB );
 
 			expect( () => {
 				renderer.render();

@@ -340,11 +340,9 @@ describe( 'Element', () => {
 				expect( el._attrs.get( 'foo' ) ).to.equal( 'bar' );
 			} );
 
-			it( 'should fire change event with ATTRIBUTES type', ( done ) => {
-				el.once( 'change', ( eventInfo, type ) => {
-					expect( eventInfo.name ).to.equal( 'change' );
+			it( 'should fire change event with attributes type', ( done ) => {
+				el.once( 'change:attributes', ( eventInfo ) => {
 					expect( eventInfo.source ).to.equal( el );
-					expect( type ).to.equal( 'ATTRIBUTES' );
 					done();
 				} );
 
@@ -486,12 +484,10 @@ describe( 'Element', () => {
 				expect( count( el.getAttributeKeys() ) ).to.equal( 0 );
 			} );
 
-			it( 'should fire change event with ATTRIBUTES type', ( done ) => {
+			it( 'should fire change event with attributes type', ( done ) => {
 				el.setAttribute( 'foo', 'bar' );
-				el.once( 'change', ( eventInfo, type ) => {
-					expect( eventInfo.name ).to.equal( 'change' );
+				el.once( 'change:attributes', ( eventInfo ) => {
 					expect( eventInfo.source ).to.equal( el );
-					expect( type ).to.equal( 'ATTRIBUTES' );
 					done();
 				} );
 
@@ -541,11 +537,9 @@ describe( 'Element', () => {
 				expect( el._classes.has( 'one' ) ).to.be.true;
 			} );
 
-			it( 'should fire change event with ATTRIBUTES type', ( done ) => {
-				el.once( 'change', ( eventInfo, type ) => {
-					expect( eventInfo.name ).to.equal( 'change' );
+			it( 'should fire change event with attributes type', ( done ) => {
+				el.once( 'change:attributes', ( eventInfo ) => {
 					expect( eventInfo.source ).to.equal( el );
-					expect( type ).to.equal( 'ATTRIBUTES' );
 					done();
 				} );
 
@@ -572,12 +566,10 @@ describe( 'Element', () => {
 				expect( el._classes.has( 'three' ) ).to.be.true;
 			} );
 
-			it( 'should fire change event with ATTRIBUTES type', ( done ) => {
+			it( 'should fire change event with attributes type', ( done ) => {
 				el.addClass( 'one' );
-				el.once( 'change', ( eventInfo, type ) => {
-					expect( eventInfo.name ).to.equal( 'change' );
+				el.once( 'change:attributes', ( eventInfo ) => {
 					expect( eventInfo.source ).to.equal( el );
-					expect( type ).to.equal( 'ATTRIBUTES' );
 					done();
 				} );
 
@@ -644,11 +636,9 @@ describe( 'Element', () => {
 				expect( el._styles.get( 'color' ) ).to.equal( 'red' );
 			} );
 
-			it( 'should fire change event with ATTRIBUTES type', ( done ) => {
-				el.once( 'change', ( eventInfo, type ) => {
-					expect( eventInfo.name ).to.equal( 'change' );
+			it( 'should fire change event with attributes type', ( done ) => {
+				el.once( 'change:attributes', ( eventInfo ) => {
 					expect( eventInfo.source ).to.equal( el );
-					expect( type ).to.equal( 'ATTRIBUTES' );
 					done();
 				} );
 
@@ -725,12 +715,10 @@ describe( 'Element', () => {
 				expect( el.hasStyle( 'padding-top' ) ).to.be.false;
 			} );
 
-			it( 'should fire change event with ATTRIBUTES type', ( done ) => {
+			it( 'should fire change event with attributes type', ( done ) => {
 				el.setStyle( 'color', 'red' );
-				el.once( 'change', ( eventInfo, type ) => {
-					expect( eventInfo.name ).to.equal( 'change' );
+				el.once( 'change:attributes', ( eventInfo ) => {
 					expect( eventInfo.source ).to.equal( el );
-					expect( type ).to.equal( 'ATTRIBUTES' );
 					done();
 				} );
 

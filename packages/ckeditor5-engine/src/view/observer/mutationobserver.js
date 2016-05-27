@@ -175,7 +175,7 @@ export default class MutationObserver extends Observer {
 		const viewMutations = [];
 
 		for ( let mutatedText of mutatedTexts.values() ) {
-			this.renderer.markToSync( 'TEXT', mutatedText.node );
+			this.renderer.markToSync( 'text', mutatedText.node );
 			viewMutations.push( mutatedText );
 		}
 
@@ -184,7 +184,7 @@ export default class MutationObserver extends Observer {
 			const viewChildren = viewElement.getChildren();
 			const newViewChildren = domConverter.domChildrenToView( domElement );
 
-			this.renderer.markToSync( 'CHILDREN', viewElement );
+			this.renderer.markToSync( 'children', viewElement );
 			viewMutations.push( {
 				type: 'children',
 				oldChildren: Array.from( viewChildren ),

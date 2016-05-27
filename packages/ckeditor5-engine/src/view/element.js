@@ -257,7 +257,7 @@ export default class Element extends Node {
 	 * @fires engine.view.Node#change
 	 */
 	setAttribute( key, value ) {
-		this._fireChange( 'ATTRIBUTES', this );
+		this._fireChange( 'attributes', this );
 
 		if ( key == 'class' ) {
 			parseClasses( this._classes, value );
@@ -278,7 +278,7 @@ export default class Element extends Node {
 	 * @returns {Number} Number of inserted nodes.
 	 */
 	insertChildren( index, nodes ) {
-		this._fireChange( 'CHILDREN', this );
+		this._fireChange( 'children', this );
 		let count = 0;
 
 		if ( !isIterable( nodes ) ) {
@@ -304,7 +304,7 @@ export default class Element extends Node {
 	 * @fires engine.view.Node#change
 	 */
 	removeAttribute( key ) {
-		this._fireChange( 'ATTRIBUTES', this );
+		this._fireChange( 'attributes', this );
 
 		// Remove class attribute.
 		if ( key == 'class' ) {
@@ -341,7 +341,7 @@ export default class Element extends Node {
 	 * @fires engine.view.Node#change
 	 */
 	removeChildren( index, howMany = 1 ) {
-		this._fireChange( 'CHILDREN', this );
+		this._fireChange( 'children', this );
 
 		for ( let i = index; i < index + howMany; i++ ) {
 			this._children[ i ].parent = null;
@@ -413,7 +413,7 @@ export default class Element extends Node {
 	 * @fires engine.view.Node#change
 	 */
 	addClass( ...className ) {
-		this._fireChange( 'ATTRIBUTES', this );
+		this._fireChange( 'attributes', this );
 		className.forEach( name => this._classes.add( name ) );
 	}
 
@@ -427,7 +427,7 @@ export default class Element extends Node {
 	 * @fires engine.view.Node#change
 	 */
 	removeClass( ...className ) {
-		this._fireChange( 'ATTRIBUTES', this );
+		this._fireChange( 'attributes', this );
 		className.forEach( name => this._classes.delete( name ) );
 	}
 
@@ -473,7 +473,7 @@ export default class Element extends Node {
 	 * @fires engine.view.Node#change
 	 */
 	setStyle( property, value ) {
-		this._fireChange( 'ATTRIBUTES', this );
+		this._fireChange( 'attributes', this );
 
 		if ( isPlainObject( property ) ) {
 			const keys = Object.keys( property );
@@ -535,7 +535,7 @@ export default class Element extends Node {
 	 * @fires engine.view.Node#change
 	 */
 	removeStyle( ...property ) {
-		this._fireChange( 'ATTRIBUTES', this );
+		this._fireChange( 'attributes', this );
 		property.forEach( name => this._styles.delete( name ) );
 	}
 }

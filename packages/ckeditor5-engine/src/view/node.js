@@ -143,7 +143,7 @@ export default class Node {
 	 * @fires engine.view.Node#change
 	 */
 	_fireChange( type, node ) {
-		this.fire( 'change' + type.toLowerCase(), type, node );
+		this.fire( 'change:' + type, node );
 
 		if ( this.parent ) {
 			this.parent._fireChange( type, node );
@@ -165,15 +165,29 @@ export default class Node {
 	 */
 
 	/**
-	 * Fired when a node changes.
-	 *
-	 * * In case of {@link engine.view.Text text nodes} it will be a change of the text data.
-	 * * In case of {@link engine.view.Element elements} it will be a change of child nodes or attributes.
+	 * Fired when list of {@link engine.view.Element elements} children changes.
 	 *
 	 * Change event is bubbling, it is fired on the ancestors chain.
 	 *
-	 * @event engine.view.Node#change
-	 * @param {engine.view.ChangeType} Type of the change.
+	 * @event engine.view.Node#change:children
+	 * @param {engine.view.Node} Changed node.
+	 */
+
+	/**
+	 * Fired when list of {@link engine.view.Element elements} attributes changes.
+	 *
+	 * Change event is bubbling, it is fired on the ancestors chain.
+	 *
+	 * @event engine.view.Node#change:attributes
+	 * @param {engine.view.Node} Changed node.
+	 */
+
+	/**
+	 * Fired when {@link engine.view.Text text nodes} data changes.
+	 *
+	 * Change event is bubbling, it is fired on the ancestors chain.
+	 *
+	 * @event engine.view.Node#change:text
 	 * @param {engine.view.Node} Changed node.
 	 */
 }

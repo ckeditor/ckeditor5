@@ -52,7 +52,7 @@ export default class Text extends Node {
 	}
 
 	set data( data ) {
-		this._fireChange( 'TEXT', this );
+		this._fireChange( 'text', this );
 
 		this._data = data;
 	}

@@ -162,9 +162,9 @@ export default class Document {
 		this.roots.set( name, viewRoot );
 
 		// Mark changed nodes in the renderer.
-		viewRoot.on( 'change:children', ( evt, type, node ) => this.renderer.markToSync( 'CHILDREN', node ) );
-		viewRoot.on( 'change:attribute', ( evt, type, node ) => this.renderer.markToSync( 'ATTRIBTE', node ) );
-		viewRoot.on( 'change:text', ( evt, type, node ) => this.renderer.markToSync( 'TEXT', node ) );
+		viewRoot.on( 'change:children', ( evt, node ) => this.renderer.markToSync( 'children', node ) );
+		viewRoot.on( 'change:attributes', ( evt, node ) => this.renderer.markToSync( 'attributes', node ) );
+		viewRoot.on( 'change:text', ( evt, node ) => this.renderer.markToSync( 'text', node ) );
 
 		if ( domRoot instanceof HTMLElement ) {
 			this.attachDomRoot( domRoot, name );
@@ -191,7 +191,7 @@ export default class Document {
 
 		this.domConverter.bindElements( domRoot, viewRoot );
 
-		this.renderer.markToSync( 'CHILDREN', viewRoot );
+		this.renderer.markToSync( 'children', viewRoot );
 
 		for ( let observer of this._observers.values() ) {
 			observer.observe( domRoot, name );
@@ -257,9 +257,9 @@ mix( Document, EmitterMixin );
  *
  * Possible values:
  *
- * * `CHILDREN` - for child list changes,
- * * `ATTRIBUTES` - for element attributes changes,
- * * `TEXT` - for text nodes changes.
+ * * `children` - for child list changes,
+ * * `attributes` - for element attributes changes,
+ * * `text` - for text nodes changes.
  *
  * @typedef {String} engine.view.ChangeType
  */
