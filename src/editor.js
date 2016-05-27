@@ -9,8 +9,13 @@ import ObservableMixin from './utils/observablemixin.js';
 import Config from './utils/config.js';
 import PluginCollection from './plugincollection.js';
 import EditableCollection from './editablecollection.js';
-import CKEditorError from './utils/ckeditorerror.js';
 import Locale from './utils/locale.js';
+import KeystrokeHandler from './keystrokehandler.js';
+import EditingController from './engine/editingcontroller.js';
+import DataController from './engine/datacontroller.js';
+import Document from './engine/model/document.js';
+
+import CKEditorError from './utils/ckeditorerror.js';
 import isArray from './utils/lib/lodash/isArray.js';
 import nth from './utils/nth.js';
 import mix from './utils/mix.js';
@@ -103,6 +108,7 @@ export default class Editor {
 		 * @readonly
 		 * @member {engine.model.Document} ckeditor5.Editor#document
 		 */
+		this.document = new Document();
 
 		/**
 		 * Instance of the {@link engine.EditingController editing controller}.
@@ -112,6 +118,7 @@ export default class Editor {
 		 * @readonly
 		 * @member {engine.EditingController} ckeditor5.Editor#editing
 		 */
+		this.editing = new EditingController( this.document );
 
 		/**
 		 * Instance of the {@link engine.DataController data controller}.
@@ -121,6 +128,7 @@ export default class Editor {
 		 * @readonly
 		 * @member {engine.DataController} ckeditor5.Editor#data
 		 */
+		this.data = new DataController( this.document );
 
 		/**
 		 * Instance of the {@link ckeditor5.KeystrokeHandler}.
@@ -130,6 +138,7 @@ export default class Editor {
 		 * @readonly
 		 * @member {engine.treecontroller.DataController} ckeditor5.Editor#keystrokes
 		 */
+		this.keystrokes = new KeystrokeHandler( this );
 
 		/**
 		 * The chosen creator.
@@ -245,7 +254,12 @@ export default class Editor {
 			.then( () => {
 				return this._creator && this._creator.destroy();
 			} )
-			.then( () => this.editables.destroy() );
+			.then( () => this.editables.destroy() )
+			.then( () => {
+				this.document.destroy();
+				this.editing.destroy();
+				this.data.destroy();
+			} );
 	}
 
 	/**
