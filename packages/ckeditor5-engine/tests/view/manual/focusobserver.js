@@ -23,5 +23,5 @@ const domEditable2 = document.getElementById( 'editable2' );
 const editable1 = viewDocument.createRoot( domEditable1, 'editable1' );
 const editable2 = viewDocument.createRoot( domEditable2, 'editable2' );
 
-editable1.on( 'change:isFocused', () => domEditable1.style.border = editable1.isFocused ? 'solid 1px green' : 'solid 1px red' );
-editable2.on( 'change:isFocused', () => domEditable2.style.border = editable2.isFocused ? 'solid 1px green' : 'solid 1px red' );
+editable1.on( 'change:isFocused', () => domEditable1.style.backgroundColor = editable1.isFocused ? 'green' : 'red' );
+editable2.on( 'change:isFocused', () => domEditable2.style.backgroundColor = editable2.isFocused ? 'green' : 'red' );
