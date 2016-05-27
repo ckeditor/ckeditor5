@@ -9,6 +9,7 @@
 
 import Element from '/ckeditor5/engine/view/element.js';
 import Text from '/ckeditor5/engine/view/text.js';
+import RootEditableElement from '/ckeditor5/engine/view/rooteditableelement.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'Node', () => {
@@ -133,26 +134,33 @@ describe( 'Node', () => {
 			expect( charA.getDocument() ).to.be.null;
 		} );
 
-		it( 'should return view attached to the element', () => {
-			const tvMock = {};
-			const element = new Element( 'p' );
-
-			element.setDocument( tvMock );
-
-			expect( element.getDocument() ).to.equal( tvMock );
-		} );
-
 		it( 'should return Document attached to the parent element', () => {
 			const docMock = {};
-			const parent = new Element( 'div' );
+			const parent = new RootEditableElement( docMock, 'div' );
 			const child = new Element( 'p' );
 
 			child.parent = parent;
 
-			parent.setDocument( docMock );
-
 			expect( parent.getDocument() ).to.equal( docMock );
 			expect( child.getDocument() ).to.equal( docMock );
+		} );
+	} );
+
+	describe( 'getRoot', () => {
+		it( 'should return this element if it has no parent', () => {
+			const child = new Element( 'p' );
+
+			expect( child.getRoot() ).to.equal( child );
+		} );
+
+		it( 'should return root element', () => {
+			const parent = new RootEditableElement( {}, 'div' );
+			const child = new Element( 'p' );
+
+			child.parent = parent;
+
+			expect( parent.getRoot() ).to.equal( parent );
+			expect( child.getRoot() ).to.equal( parent );
 		} );
 	} );
 
@@ -193,9 +201,9 @@ describe( 'Node', () => {
 			root = new Element( 'p', { renderer: { markToSync: rootChangeSpy } } );
 			root.appendChildren( [ text, img ] );
 
-			root.on( 'change', ( evt, type, node ) => {
-				rootChangeSpy( type, node );
-			} );
+			root.on( 'change:children', ( evt, node ) => rootChangeSpy( 'children', node ) );
+			root.on( 'change:attributes', ( evt, node ) => rootChangeSpy( 'attributes', node ) );
+			root.on( 'change:text', ( evt, node ) => rootChangeSpy( 'text', node ) );
 
 			rootChangeSpy.reset();
 		} );
@@ -203,21 +211,21 @@ describe( 'Node', () => {
 		it( 'should be fired on the node', () => {
 			const imgChangeSpy = sinon.spy();
 
-			img.on( 'change', ( evt, type, node ) => {
-				imgChangeSpy( type, node );
+			img.on( 'change:attributes', ( evt, node ) => {
+				imgChangeSpy( 'attributes', node );
 			} );
 
 			img.setAttribute( 'width', 100 );
 
 			sinon.assert.calledOnce( imgChangeSpy );
-			sinon.assert.calledWith( imgChangeSpy, 'ATTRIBUTES', img );
+			sinon.assert.calledWith( imgChangeSpy, 'attributes', img );
 		} );
 
 		it( 'should be fired on the parent', () => {
 			img.setAttribute( 'width', 100 );
 
 			sinon.assert.calledOnce( rootChangeSpy );
-			sinon.assert.calledWith( rootChangeSpy, 'ATTRIBUTES', img );
+			sinon.assert.calledWith( rootChangeSpy, 'attributes', img );
 		} );
 
 		describe( 'setAttr', () => {
@@ -225,7 +233,7 @@ describe( 'Node', () => {
 				img.setAttribute( 'width', 100 );
 
 				sinon.assert.calledOnce( rootChangeSpy );
-				sinon.assert.calledWith( rootChangeSpy, 'ATTRIBUTES', img );
+				sinon.assert.calledWith( rootChangeSpy, 'attributes', img );
 			} );
 		} );
 
@@ -234,7 +242,7 @@ describe( 'Node', () => {
 				img.removeAttribute( 'src' );
 
 				sinon.assert.calledOnce( rootChangeSpy );
-				sinon.assert.calledWith( rootChangeSpy, 'ATTRIBUTES', img );
+				sinon.assert.calledWith( rootChangeSpy, 'attributes', img );
 			} );
 		} );
 
@@ -243,7 +251,7 @@ describe( 'Node', () => {
 				root.insertChildren( 1, new Element( 'img' ) );
 
 				sinon.assert.calledOnce( rootChangeSpy );
-				sinon.assert.calledWith( rootChangeSpy, 'CHILDREN', root );
+				sinon.assert.calledWith( rootChangeSpy, 'children', root );
 			} );
 		} );
 
@@ -252,7 +260,7 @@ describe( 'Node', () => {
 				root.appendChildren( new Element( 'img' ) );
 
 				sinon.assert.calledOnce( rootChangeSpy );
-				sinon.assert.calledWith( rootChangeSpy, 'CHILDREN', root );
+				sinon.assert.calledWith( rootChangeSpy, 'children', root );
 			} );
 		} );
 
@@ -261,7 +269,7 @@ describe( 'Node', () => {
 				root.removeChildren( 1, 1 );
 
 				sinon.assert.calledOnce( rootChangeSpy );
-				sinon.assert.calledWith( rootChangeSpy, 'CHILDREN', root );
+				sinon.assert.calledWith( rootChangeSpy, 'children', root );
 			} );
 		} );
 
@@ -270,7 +278,7 @@ describe( 'Node', () => {
 				text.data = 'bar';
 
 				sinon.assert.calledOnce( rootChangeSpy );
-				sinon.assert.calledWith( rootChangeSpy, 'TEXT', text );
+				sinon.assert.calledWith( rootChangeSpy, 'text', text );
 			} );
 		} );
 	} );

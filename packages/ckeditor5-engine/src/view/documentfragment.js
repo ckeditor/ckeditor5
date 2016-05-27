@@ -100,7 +100,7 @@ export default class DocumentFragment {
 	 * @returns {Number} Number of inserted nodes.
 	 */
 	insertChildren( index, nodes ) {
-		this._fireChange( 'CHILDREN', this );
+		this._fireChange( 'children', this );
 		let count = 0;
 
 		if ( !isIterable( nodes ) ) {
@@ -126,7 +126,7 @@ export default class DocumentFragment {
 	 * @returns {Array.<engine.view.Node>} The array of removed nodes.
 	 */
 	removeChildren( index, howMany = 1 ) {
-		this._fireChange( 'CHILDREN', this );
+		this._fireChange( 'children', this );
 
 		for ( let i = index; i < index + howMany; i++ ) {
 			this._children[ i ].parent = null;

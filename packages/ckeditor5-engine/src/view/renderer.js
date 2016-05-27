@@ -113,7 +113,7 @@ export default class Renderer {
 	 * @param {engine.view.Node} node Node to be marked.
 	 */
 	markToSync( type, node ) {
-		if ( type === 'TEXT' ) {
+		if ( type === 'text' ) {
 			if ( this.domConverter.getCorrespondingDom( node.parent ) ) {
 				this.markedTexts.add( node );
 			}
@@ -124,9 +124,9 @@ export default class Renderer {
 				return;
 			}
 
-			if ( type === 'ATTRIBUTES' ) {
+			if ( type === 'attributes' ) {
 				this.markedAttributes.add( node );
-			} else if ( type === 'CHILDREN' ) {
+			} else if ( type === 'children' ) {
 				this.markedChildren.add( node );
 			} else {
 				/**

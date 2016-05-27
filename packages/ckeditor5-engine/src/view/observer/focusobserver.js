@@ -9,6 +9,8 @@ import DomEventObserver from './domeventobserver.js';
 
 /**
  * {@link engine.view.Document#focus Focus} and {@link engine.view.Document#blur blur} events observer.
+ * Focus observer handle also {@link engine.view.RootEditableElement#isFocused isFocused} property of the
+ * {@link engine.view.RootEditableElement root elements}.
  *
  * Note that this observer is attached by the {@link engine.EditingController} and is available by default.
  *
@@ -20,10 +22,31 @@ export default class FocusObserver extends DomEventObserver {
 		super( document );
 
 		this.domEventType = [ 'focus', 'blur' ];
+
+		// Update `isFocus` property of root elements.
+		document.on( 'focus', ( evt, data ) => {
+			const target = data.target;
+
+			for ( let root of document.roots.values() ) {
+				if ( target === root ) {
+					root.isFocused = true;
+				}
+			}
+		} );
+
+		document.on( 'blur', ( evt, data ) => {
+			const target = data.target;
+
+			for ( let root of document.roots.values() ) {
+				if ( target === root ) {
+					root.isFocused = false;
+				}
+			}
+		} );
 	}
 
-	onDomEvent( domEvt ) {
-		this.fire( domEvt.type, domEvt );
+	onDomEvent( domEvent ) {
+		this.fire( domEvent.type, domEvent );
 	}
 }
 

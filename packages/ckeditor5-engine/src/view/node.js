@@ -29,14 +29,6 @@ export default class Node {
 		 * @member {engine.view.Element|engine.view.DocumentFragment|null} engine.view.Node#parent
 		 */
 		this.parent = null;
-
-		/**
-		 * {@link engine.view.Document} reference.
-		 *
-		 * @protected
-		 * @member {engine.view.Document} engine.view.Node#_document
-		 */
-		this._document = null;
 	}
 
 	/**
@@ -89,20 +81,32 @@ export default class Node {
 	}
 
 	/**
-	 * Gets {@link engine.view.Document} reference. If the node has {@link engine.view.Document}, assign by
-	 * {@link engine.view.Node#setDocument} it will be returned. Otherwise {@link engine.view.Document} of the parents node
-	 * will be returned. If node has no parent, `null` will be returned.
+	 * Gets {@link engine.view.Document} reference, from the {@link engine.view.Node#getRoot root} or
+	 * returns null if the root has no reference to the {@link engine.view.Document}.
 	 *
-	 * @returns {engine.view.Document|null} Tree view of the node, tree view of the parent or null.
+	 * @returns {engine.view.Document|null} View Document of the node or null.
 	 */
 	getDocument() {
-		if ( this._document ) {
-			return this._document;
-		} else if ( this.parent ) {
+		if ( this.parent ) {
 			return this.parent.getDocument();
 		} else {
 			return null;
 		}
+	}
+
+	/**
+	 * Gets the top parent for the node. If node has no parent it is the root itself.
+	 *
+	 * @returns {engine.view.Node}
+	 */
+	getRoot() {
+		let root = this;
+
+		while ( root.parent ) {
+			root = root.parent;
+		}
+
+		return root;
 	}
 
 	/**
@@ -127,16 +131,6 @@ export default class Node {
 	}
 
 	/**
-	 * Sets the {@link engine.view.Document} of the node. Note that not all of nodes need to have {@link engine.view.Document}
-	 * assigned, see {@link engine.view.Node#getDocument}.
-	 *
-	 * @param {engine.view.Document} document Document.
-	 */
-	setDocument( document ) {
-		this._document = document;
-	}
-
-	/**
 	 * Removes node from parent.
 	 */
 	remove() {
@@ -149,7 +143,7 @@ export default class Node {
 	 * @fires engine.view.Node#change
 	 */
 	_fireChange( type, node ) {
-		this.fire( 'change', type, node );
+		this.fire( 'change:' + type, node );
 
 		if ( this.parent ) {
 			this.parent._fireChange( type, node );
@@ -171,15 +165,29 @@ export default class Node {
 	 */
 
 	/**
-	 * Fired when a node changes.
+	 * Fired when list of {@link engine.view.Element elements} children changes.
 	 *
-	 * * In case of {@link engine.view.Text text nodes} it will be a change of the text data.
-	 * * In case of {@link engine.view.Element elements} it will be a change of child nodes or attributes.
+	 * Change event is bubbled – it is fired on all ancestors.
 	 *
-	 * Change event is bubbling, it is fired on the ancestors chain.
+	 * @event engine.view.Node#change:children
+	 * @param {engine.view.Node} Changed node.
+	 */
+
+	/**
+	 * Fired when list of {@link engine.view.Element elements} attributes changes.
 	 *
-	 * @event engine.view.Node#change
-	 * @param {engine.view.ChangeType} Type of the change.
+	 * Change event is bubbled – it is fired on all ancestors.
+	 *
+	 * @event engine.view.Node#change:attributes
+	 * @param {engine.view.Node} Changed node.
+	 */
+
+	/**
+	 * Fired when {@link engine.view.Text text nodes} data changes.
+	 *
+	 * Change event is bubbled – it is fired on all ancestors.
+	 *
+	 * @event engine.view.Node#change:text
 	 * @param {engine.view.Node} Changed node.
 	 */
 }
