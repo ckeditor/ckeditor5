@@ -233,7 +233,7 @@ export default class Document {
 	}
 
 	/**
-	 * Disable all added observers.
+	 * Disables all added observers.
 	 */
 	disableObservers() {
 		for ( let observer of this._observers.values() ) {
@@ -242,7 +242,7 @@ export default class Document {
 	}
 
 	/**
-	 * Enable all added observers.
+	 * Enables all added observers.
 	 */
 	enableObservers() {
 		for ( let observer of this._observers.values() ) {
