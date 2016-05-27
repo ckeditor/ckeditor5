@@ -1,4 +1,4 @@
-CKEditor 5 Basic Styles
+CKEditor 5 Basic Styles Feature
 ========================================
 
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-basic-styles/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-basic-styles#info=devDependencies)
