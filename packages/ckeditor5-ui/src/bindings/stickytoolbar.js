@@ -24,6 +24,6 @@ export default class StickyToolbar extends Toolbar {
 	constructor( model, view, editor ) {
 		super( model, view, editor );
 
-		model.bind( 'isActive' ).to( editor.editables, 'current', c => !!c );
+		model.bind( 'isActive' ).to( editor.editing.view.getRoot(), 'isFocused' );
 	}
 }

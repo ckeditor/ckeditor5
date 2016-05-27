@@ -14,17 +14,12 @@
  * @param {Function} EditableUIView Editable UI view constructor.
  * @returns {ui.editableui.EditableUI} Instance of the editable UI.
  */
-export function createEditableUI( editor, editable, EditableUI, EditableUIView ) {
-	const domElement = editable.domElement;
+export function createEditableUI( editor, EditableUI, EditableUIView, rootName = 'main' ) {
+	const editable = editor.editing.view.getRoot( rootName );
 	const editableUI = new EditableUI( editor, editable );
-	const editableUIView = new EditableUIView( editableUI.viewModel, editor.locale, domElement );
+	const editableUIView = new EditableUIView( editableUI.viewModel, editor.locale );
 
 	editableUI.view = editableUIView;
-
-	// If editable.domElement is set then the editable.bindTo() must've been already called.
-	if ( !domElement ) {
-		editable.listenTo( editableUI, 'ready', () => editable.bindTo( editableUIView.editableElement ) );
-	}
 
 	return editableUI;
 }

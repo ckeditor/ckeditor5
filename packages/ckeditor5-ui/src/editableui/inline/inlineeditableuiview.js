@@ -25,7 +25,7 @@ export default class InlineEditableUIView extends EditableUIView {
 	constructor( model, locale, editableElement ) {
 		super( model, locale, editableElement );
 
-		const label = this.t( 'Rich Text Editor, %0', [ this.model.editableName ] );
+		const label = this.t( 'Rich Text Editor, %0', [ this.model.name ] );
 
 		Object.assign( this.template.attributes, {
 			role: 'textbox',
