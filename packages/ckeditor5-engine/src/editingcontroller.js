@@ -30,6 +30,7 @@ import EmitterMixin from '../utils/emittermixin.js';
  * observers.
  *
  * Note that the following observers are attached by the controller and are always available:
+ *
  * * {@link view.observer.MutationObserver},
  * * {@link view.observer.SelectionObserver},
  * * {@link view.observer.FocusObserver},
@@ -41,20 +42,11 @@ export default class EditingController {
 	/**
 	 * Creates editing controller instance.
 	 *
-	 * @param {engine.model.Document} model Model document.
+	 * @param {engine.model.Document} model Document model.
 	 */
 	constructor( model ) {
 		/**
-		 * Property keeping all listenters attached by controller on other objects, so it can
-		 * stop listening on {@link engine.EditingController#destroy}.
-		 *
-		 * @private
-		 * @member {utils.EmitterMixin} engine.EditingController#_listenter
-		 */
-		this._listenter = Object.create( EmitterMixin );
-
-		/**
-		 * Model document.
+		 * Document model.
 		 *
 		 * @readonly
 		 * @member {engine.model.document} engine.EditingController#model
@@ -76,15 +68,12 @@ export default class EditingController {
 		this.view.addObserver( KeyObserver );
 
 		/**
-		 * Mapper which describe model-view binding.
+		 * Mapper which describes model-view binding.
 		 *
 		 * @readonly
 		 * @member {engine.conversion.Mapper} engine.EditingController#mapper
 		 */
 		this.mapper = new Mapper();
-
-		// Convert view selection to model.
-		this._listenter.listenTo( this.view, 'selectionChange', convertSelectionChange( model, this.mapper ) );
 
 		/**
 		 * Model to view conversion dispatcher, which converts changes from the model to
@@ -106,6 +95,18 @@ export default class EditingController {
 			mapper: this.mapper,
 			viewSelection: this.view.selection
 		} );
+
+		/**
+		 * Property keeping all listenters attached by controller on other objects, so it can
+		 * stop listening on {@link engine.EditingController#destroy}.
+		 *
+		 * @private
+		 * @member {utils.EmitterMixin} engine.EditingController#_listenter
+		 */
+		this._listenter = Object.create( EmitterMixin );
+
+		// Convert view selection to model.
+		this._listenter.listenTo( this.view, 'selectionChange', convertSelectionChange( model, this.mapper ) );
 
 		this._listenter.listenTo( this.model, 'change', ( evt, type, changes ) => {
 			this.modelToView.convertChange( type, changes );
