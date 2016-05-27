@@ -7,7 +7,8 @@
 
 /**
  * Abstract base observer class. Observers are classes which observe changes on DOM elements, do the preliminary
- * processing and fire events on the {@link engine.view.Document} objects.
+ * processing and fire events on the {@link engine.view.Document} objects. Observers can also add features to the view,
+ * for instance by updating its status or marking elements which need refresh on DOM events.
  *
  * @abstract
  * @memberOf engine.view.observer

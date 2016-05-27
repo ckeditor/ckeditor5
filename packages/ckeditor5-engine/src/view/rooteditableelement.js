@@ -33,6 +33,9 @@ export default class RootEditableElement extends EditableElement {
 		/**
 		 * Whether the editable is focused.
 		 *
+		 * This property is updated by the {@link engine.view.obsever.FocusObserver}.
+		 * If the {@link engine.view.obsever.FocusObserver} is disabled this property will not change.
+		 *
 		 * @readonly
 		 * @observable
 		 * @member {Boolean} engine.view.RootEditableElement#isFocused
