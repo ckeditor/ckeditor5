@@ -48,14 +48,13 @@ export default class StandardCreator extends Creator {
 	/**
 	 * Updates the {@link ckeditor5.Editor#element editor element}'s content with the data.
 	 *
-	 * @param [elementName] If not specified, the first element will be used.
+	 * @param [elementName='main'] If not specified, the first element will be used.
 	 */
-	updateEditorElement( elementName ) {
-		if ( !elementName ) {
-			elementName = this.editor.firstElementName;
-		}
-
-		StandardCreator.setDataInElement( this.editor.elements.get( elementName ), this.editor.getData( elementName ) );
+	updateEditorElement( elementName = 'main' ) {
+		StandardCreator.setDataInElement(
+			this.editor.elements.get( this.editor.firstElementName ),
+			this.editor.getData( elementName )
+		);
 	}
 
 	/**
@@ -71,14 +70,13 @@ export default class StandardCreator extends Creator {
 	/**
 	 * Loads the data from the given {@link ckeditor5.Editor#element editor element} to the editable.
 	 *
-	 * @param [elementName] If not specified, the first element will be used.
+	 * @param [elementName='main']
 	 */
-	loadDataFromEditorElement( elementName ) {
-		if ( !elementName ) {
-			elementName = this.editor.firstElementName;
-		}
-
-		this.editor.setData( StandardCreator.getDataFromElement( this.editor.elements.get( elementName ) ), elementName );
+	loadDataFromEditorElement( elementName = 'main' ) {
+		this.editor.setData(
+			StandardCreator.getDataFromElement( this.editor.elements.get( this.editor.firstElementName ) ),
+			elementName
+		);
 	}
 
 	/**

@@ -8,7 +8,6 @@
 import ObservableMixin from './utils/observablemixin.js';
 import Config from './utils/config.js';
 import PluginCollection from './plugincollection.js';
-import EditableCollection from './editablecollection.js';
 import Locale from './utils/locale.js';
 import KeystrokeHandler from './keystrokehandler.js';
 import EditingController from './engine/editingcontroller.js';
@@ -69,14 +68,6 @@ export default class Editor {
 		 * @member {ckeditor5.PluginCollection} ckeditor5.Editor#plugins
 		 */
 		this.plugins = new PluginCollection( this );
-
-		/**
-		 * The editables of the editor.
-		 *
-		 * @readonly
-		 * @member {ckeditor5.EditableCollection} ckeditor5.Editor#editables
-		 */
-		this.editables = new EditableCollection();
 
 		/**
 		 * Commands registered to the editor.
