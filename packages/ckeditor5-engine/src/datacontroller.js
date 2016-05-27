@@ -37,12 +37,12 @@ export default class DataController {
 	/**
 	 * Creates data controller instance.
 	 *
-	 * @param {engine.model.Document} model Model document.
+	 * @param {engine.model.Document} model Document model.
 	 * @param {engine.dataProcessor.DataProcessor} dataProcessor Data processor which should used by the controller.
 	 */
 	constructor( model, dataProcessor ) {
 		/**
-		 * Model document.
+		 * Document model.
 		 *
 		 * @readonly
 		 * @member {engine.model.document} engine.DataController#model

@@ -42,11 +42,11 @@ export default class EditingController {
 	/**
 	 * Creates editing controller instance.
 	 *
-	 * @param {engine.model.Document} model Model document.
+	 * @param {engine.model.Document} model Document model.
 	 */
 	constructor( model ) {
 		/**
-		 * Model document.
+		 * Document model.
 		 *
 		 * @readonly
 		 * @member {engine.model.document} engine.EditingController#model

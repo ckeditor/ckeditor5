@@ -23,7 +23,7 @@
  *		view.document.on( 'selectionChange', convertSelectionChange( model, mapper ) );
  *
  * @function engine.conversion.viewSelectionToModel.convertSelectionChange
- * @param {engine.model.Document} model Model document on which selection should be updated.
+ * @param {engine.model.Document} model Document model on which selection should be updated.
  * @param {engine.conversion.Mapper} mapper Conversion mapper.
  * @returns {Function} {@link engine.view.Document#selectionChange} callback function.
  */
