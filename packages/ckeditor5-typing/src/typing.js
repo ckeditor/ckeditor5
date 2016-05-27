@@ -31,7 +31,15 @@ export default class Typing extends Feature {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 
-		this.buffer = new ChangeBuffer( editor.document, 5 );
+		/**
+		 * Typing's change buffer used to group subsequent changes into batches.
+		 *
+		 * @private
+		 * @member {typing.ChangeBuffer} typing.Typing#_buffer
+		 */
+		this._buffer = new ChangeBuffer( editor.document, editor.config.get( 'typing.undoLimit' ) || 20 );
+
+		// TODO The above default config value should be defines using editor.config.define() once it's fixed.
 
 		this.listenTo( editingView, 'keydown', ( evt, data ) => {
 			this._handleKeydown( data );
@@ -48,10 +56,25 @@ export default class Typing extends Feature {
 	destroy() {
 		super.destroy();
 
-		this.buffer.destroy();
-		this.buffer = null;
+		this._buffer.destroy();
+		this._buffer = null;
 	}
 
+	/**
+	 * Handles keydown event. We need to guess whether such a keystroke is going to result
+	 * in typing. If so, then before character insertion happens, we need to delete
+	 * any selected content. Otherwise, a default browser deletion mechanism would be
+	 * triggered, resulting in:
+	 *
+	 * * hundreds of mutations which couldn't be handled,
+	 * * but most importantly, loss of a control over how content is being deleted.
+	 *
+	 * The method is used in a low-prior listener, hence allowing other listeners (e.g. delete or enter features)
+	 * to handle the event.
+	 *
+	 * @private
+	 * @param {engine.view.observer.keyObserver.KeyEventData} evtData
+	 */
 	_handleKeydown( evtData ) {
 		const doc = this.editor.document;
 
@@ -60,40 +83,86 @@ export default class Typing extends Feature {
 		}
 
 		doc.enqueueChanges( () => {
-			doc.composer.deleteContents( this.buffer.batch, doc.selection );
+			doc.composer.deleteContents( this._buffer.batch, doc.selection );
 		} );
 
 		evtData.preventDefault();
 	}
 
+	/**
+	 * Handles DOM mutations.
+	 *
+	 * @param {Array.<engine.view.Document~MutatatedText|engine.view.Document~MutatatedChildren>} mutations
+	 */
 	_handleMutations( mutations ) {
 		const doc = this.editor.document;
-		const handler = new MutationHandler( this.editor.editing, this.buffer );
+		const handler = new MutationHandler( this.editor.editing, this._buffer );
 
-		doc.enqueueChanges( () => {
-			handler.handle( mutations );
-			handler.commit();
-		} );
+		doc.enqueueChanges( () => handler.handle( mutations ) );
 	}
 }
 
+/**
+ * Helper class for translating DOM mutations into model changes.
+ *
+ * @private
+ * @member typing.typing
+ */
 class MutationHandler {
+	/**
+	 * Creates instance of the mutation handler.
+	 *
+	 * @param {engine.EditingController} editing
+	 * @param {typing.ChangeBuffer} buffer
+	 */
 	constructor( editing, buffer ) {
+		/**
+		 * The editing controller.
+		 *
+		 * @member {engine.EditingController} typing.typing.MutationHandler#editing
+		 */
 		this.editing = editing;
+
+		/**
+		 * The change buffer.
+		 *
+		 * @member {engine.EditingController} typing.typing.MutationHandler#buffer
+		 */
 		this.buffer = buffer;
 
-		this.reset();
-	}
-
-	reset() {
+		/**
+		 * Number of inserted characters which need to be feed to the {@link #buffer change buffer}
+		 * on {@link #commit}.
+		 *
+		 * @member {Number} typing.typing.MutationHandler#insertedCharacterCount
+		 */
 		this.insertedCharacterCount = 0;
-		this.selectionPosition = null;
+
+		/**
+		 * Position to which the selection should be moved on {@link #commit}.
+		 *
+		 * Note: Currently, the mutation handler will move selection to the position set by the
+		 * last consumer. Placing the selection right after the last change will work for many cases, but not
+		 * for ones like autocorrection or spellchecking. The caret should be placed after the whole piece
+		 * which was corrected (e.g. a word), not after the letter that was replaced.
+		 *
+		 * @member {engine.model.Position} typing.typing.MutationHandler#selectionPosition
+		 */
 	}
 
+	/**
+	 * Handle given mutations.
+	 *
+	 * @param {Array.<engine.view.Document~MutatatedText|engine.view.Document~MutatatedChildren>} mutations
+	 */
 	handle( mutations ) {
+		// The below code indicates how multi-mutations consumers can be implemented.
+		// In the future we may need those to handle more advanced case, like spellchecking across text with attributes.
+		//
+		// // Clone the array, because consumers will modify it.
 		// mutations = mutations.slice( 0 );
 
-		// for ( let consumer of consumers.multi ) {
+		// for ( let consumer of MutationHandler.consumers.multi ) {
 		// 	consumer( mutations, this );
 
 		// 	if ( !mutations.length ) {
@@ -102,7 +171,7 @@ class MutationHandler {
 		// }
 
 		mutations.forEach( mutation => {
-			for ( let consumer of consumers.single ) {
+			for ( let consumer of MutationHandler.consumers.single ) {
 				if ( consumer.check( mutation ) ) {
 					consumer.consume( mutation, this );
 
@@ -110,21 +179,8 @@ class MutationHandler {
 				}
 			}
 		} );
-	}
 
-	commit() {
-		this.buffer.input( this.insertedCharacterCount );
-
-		// Placing the selection right after the last change will work for many cases, but not
-		// for ones like autocorrection or spellchecking. The caret should be placed after the whole piece
-		// which was corrected (e.g. a word), not after the letter that was replaced.
-		if ( this.selectionPosition ) {
-			this.editing.model.selection.collapse( this.selectionPosition );
-		}
-
-		this.reset();
-
-		console.log( getData( this.editing.model, { rootName: 'editor' } ) ); // jshint ignore:line
+		this._commit();
 	}
 
 	insert( { position, text, selectionPosition } ) {
@@ -139,11 +195,33 @@ class MutationHandler {
 
 		this.selectionPosition = selectionPosition;
 	}
+
+	/**
+	 * Commits all changes. While specific consumers will modify the document,
+	 * also the change buffer and selection needs to be updated. This should be done
+	 * once, at the end.
+	 *
+	 * @private
+	 */
+	_commit() {
+		this.buffer.input( this.insertedCharacterCount );
+
+		if ( this.selectionPosition ) {
+			this.editing.model.selection.collapse( this.selectionPosition );
+		}
+
+		console.log( getData( this.editing.model, { rootName: 'editor' } ) ); // jshint ignore:line
+	}
 }
 
-const consumers = {
-	// multi: [],
-
+/**
+ * @static
+ * @member {Object} typing.typing.MutationHandler.consumers
+ */
+MutationHandler.consumers = {
+	/**
+	 * @member {Array} typing.typing.MutationHandler.consumers.single
+	 */
 	single: [
 		// Simple text nodes change.
 		{
