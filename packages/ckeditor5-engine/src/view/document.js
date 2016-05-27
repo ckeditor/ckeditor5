@@ -138,16 +138,16 @@ export default class Document {
 	/**
 	 * Creates a {@link engine.view.Document#viewRoots view root element}.
 	 *
-	 * If the DOM element will be passed as a first parameter it will be automatically
+	 * If the DOM element is passed as a first parameter it will be automatically
 	 * {@link engine.view.Document#attachDomRoot attached}:
 	 *
-	 *		document.createRoot( document.querySelector( div#editor ) ); // will call document.attachDomRoot
+	 *		document.createRoot( document.querySelector( 'div#editor' ) ); // Will call document.attachDomRoot.
 	 *
-	 * However, if the string will be passed, then only the view element will be created and the DOM element have to be
+	 * However, if the string is passed, then only the view element will be created and the DOM element have to be
 	 * attached separately:
 	 *
 	 *		document.createRoot( 'body' );
-	 *		document.attachDomRoot( document.querySelector( body#editor ) );
+	 *		document.attachDomRoot( document.querySelector( 'body#editor' ) );
 	 *
 	 * @param {Element|String} domRoot DOM root element or the tag name of view root element if the DOM element will be
 	 * attached later.
@@ -176,10 +176,10 @@ export default class Document {
 
 	/**
 	 * Attaches DOM root element to the view element and enable all observers on that element. This method also
-	 * {@link engine.view.Renderer#markToSync mark element} to be synchronize with the view what means that all child
+	 * {@link engine.view.Renderer#markToSync mark element} to be synchronized with the view what means that all child
 	 * nodes will be removed and replaced with content of the view root.
 	 *
-	 * Note that {@link engine.view.Document#createRoot} will call this method automatically if the DOM element will be
+	 * Note that {@link engine.view.Document#createRoot} will call this method automatically if the DOM element is
 	 * passed to it.
 	 *
 	 * @param {Element|String} domRoot DOM root element.
@@ -216,7 +216,7 @@ export default class Document {
 	 * @param {String} [name='main']  Name of the root.
 	 * @returns {Element} DOM root element instance.
 	 */
-	getDomRoot(  name = 'main'  ) {
+	getDomRoot( name = 'main' ) {
 		return this.domRoots.get( name );
 	}
 
