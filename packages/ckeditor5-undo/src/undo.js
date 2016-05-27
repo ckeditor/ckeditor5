@@ -30,27 +30,30 @@ export default class Undo extends Feature {
 		const editor = this.editor;
 		const t = editor.t;
 
-		const undoCommand = editor.commands.get( 'undo' );
-		const redoCommand = editor.commands.get( 'redo' );
+		this._initFeature( 'undo', t( 'Undo' ) );
+		this._initFeature( 'redo', t( 'Redo' ) );
 
-		const undoModel = new Model( {
+		editor.keystrokes.set( 'ctrl + z', 'undo' );
+		editor.keystrokes.set( 'ctrl + y', 'redo' );
+		editor.keystrokes.set( 'ctrl + shift + z', 'redo' );
+	}
+
+	_initFeature( name, label ) {
+		const editor = this.editor;
+
+		const command = editor.commands.get( name );
+
+		const model = new Model( {
 			isOn: false,
-			label: t( 'Undo' ),
-			icon: 'undo'
-		} );
-		const redoModel = new Model( {
-			isOn: false,
-			label: t( 'Redo' ),
-			icon: 'redo'
+			label: label,
+			icon: name,
+			iconAlign: 'LEFT'
 		} );
 
-		undoModel.bind( 'isEnabled' ).to( undoCommand, 'isEnabled' );
-		redoModel.bind( 'isEnabled' ).to( redoCommand, 'isEnabled' );
+		model.bind( 'isEnabled' ).to( command, 'isEnabled' );
 
-		this.listenTo( undoModel, 'execute', () => editor.execute( 'undo' ) );
-		this.listenTo( redoModel, 'execute', () => editor.execute( 'redo' ) );
+		this.listenTo( model, 'execute', () => editor.execute( name ) );
 
-		editor.ui.featureComponents.add( 'undo', Button, ButtonView, undoModel );
-		editor.ui.featureComponents.add( 'redo', Button, ButtonView, redoModel );
+		editor.ui.featureComponents.add( name, Button, ButtonView, model );
 	}
 }
