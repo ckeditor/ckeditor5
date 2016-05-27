@@ -7,7 +7,6 @@
 
 import Observer from '../engine/view/observer/observer.js';
 import DomEventData from '../engine/view/observer/domeventdata.js';
-import KeyObserver from '../engine/view/observer/keyobserver.js';
 import { keyCodes } from '../utils/keyboard.js';
 
 /**
@@ -19,8 +18,6 @@ import { keyCodes } from '../utils/keyboard.js';
 export default class EnterObserver extends Observer {
 	constructor( document ) {
 		super( document );
-
-		document.addObserver( KeyObserver );
 
 		document.on( 'keydown', ( evt, data ) => {
 			if ( this.isEnabled && data.keyCode == keyCodes.enter ) {
