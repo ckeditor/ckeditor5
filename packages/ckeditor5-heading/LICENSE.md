@@ -1,7 +1,7 @@
 Software License Agreement
 ==========================
 
-**CKEditor5 Format Feature** – https://github.com/ckeditor/ckeditor5-format <br>
+**CKEditor5 Formats Feature** – https://github.com/ckeditor/ckeditor5-format <br>
 Copyright (c) 2003-2016, [CKSource](http://cksource.com) Frederico Knabben. All rights reserved.
 
 Licensed under the terms of any of the following licenses at your choice:
