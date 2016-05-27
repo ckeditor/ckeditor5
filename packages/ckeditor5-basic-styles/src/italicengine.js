@@ -18,18 +18,17 @@ export default class ItalicEngine extends Feature {
 		const document = editor.document;
 		const schema = document.schema;
 		const data = editor.data;
+		const editing = editor.editing;
 
 		// Schema.
 		schema.allow( { name: '$inline', attributes: [ ITALIC ] } );
 
 		// Build converter from model to view for data pipeline.
-		// TODO: Converter for editing pipeline.
-		BuildModelConverterFor( data.modelToView )
+		BuildModelConverterFor( data.modelToView, editing.modelToView )
 			.fromAttribute( ITALIC )
 			.toElement( 'em' );
 
 		// Build converter from view to model for data pipeline.
-		// TODO: Converter for editing pipeline.
 		BuildViewConverterFor( data.viewToModel )
 			.fromElement( 'em' )
 			.fromElement( 'i' )

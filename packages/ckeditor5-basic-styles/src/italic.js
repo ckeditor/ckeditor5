@@ -27,7 +27,8 @@ export default class Italic extends Feature {
 			isEnabled: true,
 			isOn: false,
 			label: t( 'Italic' ),
-			icon: 'italic'
+			icon: 'italic',
+			iconAlign: 'LEFT'
 		} );
 
 		// Bind button model to command.
