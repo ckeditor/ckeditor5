@@ -33,6 +33,14 @@ describe( 'DataController', () => {
 		schema = modelDocument.schema;
 	} );
 
+	describe( 'constructor', () => {
+		it( 'works without data processor', () => {
+			const data = new DataController( modelDocument );
+
+			expect( data.processor ).to.be.undefined;
+		} );
+	} );
+
 	describe( 'parse', () => {
 		it( 'should set text', () => {
 			schema.allow( { name: '$text', inside: '$root' } );
@@ -89,6 +97,17 @@ describe( 'DataController', () => {
 			data.set( 'foo' );
 
 			expect( count( modelDocument.history.getDeltas() ) ).to.equal( 1 );
+		} );
+
+		it( 'should fire #changesDone', () => {
+			const spy = sinon.spy();
+
+			schema.allow( { name: '$text', inside: '$root' } );
+			modelDocument.on( 'changesDone', spy );
+
+			data.set( 'foo' );
+
+			expect( spy.calledOnce ).to.be.true;
 		} );
 
 		it( 'should get root name as a parameter', () => {

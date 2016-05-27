@@ -38,7 +38,7 @@ export default class DataController {
 	 * Creates data controller instance.
 	 *
 	 * @param {engine.model.Document} model Document model.
-	 * @param {engine.dataProcessor.DataProcessor} dataProcessor Data processor which should used by the controller.
+	 * @param {engine.dataProcessor.DataProcessor} [dataProcessor] Data processor which should used by the controller.
 	 */
 	constructor( model, dataProcessor ) {
 		/**
@@ -170,9 +170,11 @@ export default class DataController {
 		// Save to model.
 		const modelRoot = this.model.getRoot( rootName );
 
-		this.model.batch()
-			.remove( ModelRange.createFromElement( modelRoot ) )
-			.insert( ModelPosition.createAt( modelRoot, 0 ), this.parse( data ) );
+		this.model.enqueueChanges( () => {
+			this.model.batch()
+				.remove( ModelRange.createFromElement( modelRoot ) )
+				.insert( ModelPosition.createAt( modelRoot, 0 ), this.parse( data ) );
+		} );
 	}
 
 	/**
