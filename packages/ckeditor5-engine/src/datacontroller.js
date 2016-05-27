@@ -170,9 +170,11 @@ export default class DataController {
 		// Save to model.
 		const modelRoot = this.model.getRoot( rootName );
 
-		this.model.batch()
-			.remove( ModelRange.createFromElement( modelRoot ) )
-			.insert( ModelPosition.createAt( modelRoot, 0 ), this.parse( data ) );
+		this.model.enqueueChanges( () => {
+			this.model.batch()
+				.remove( ModelRange.createFromElement( modelRoot ) )
+				.insert( ModelPosition.createAt( modelRoot, 0 ), this.parse( data ) );
+		} );
 	}
 
 	/**

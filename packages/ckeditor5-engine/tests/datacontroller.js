@@ -99,6 +99,17 @@ describe( 'DataController', () => {
 			expect( count( modelDocument.history.getDeltas() ) ).to.equal( 1 );
 		} );
 
+		it( 'should fire #changesDone', () => {
+			const spy = sinon.spy();
+
+			schema.allow( { name: '$text', inside: '$root' } );
+			modelDocument.on( 'changesDone', spy );
+
+			data.set( 'foo' );
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
 		it( 'should get root name as a parameter', () => {
 			schema.allow( { name: '$text', inside: '$root' } );
 			data.set( 'foo', 'main' );
