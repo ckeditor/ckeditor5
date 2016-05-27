@@ -51,6 +51,18 @@ describe( 'utilsTestUtils.createObserver()', () => {
 			expect( spy.callCount ).to.equal( 3 );
 		} );
 
+		it( 'logs changes to specified properties', () => {
+			const spy = testUtils.sinon.stub( console, 'log' );
+
+			observer.observe( 'Some observable', observable, [ 'foo' ] );
+
+			observable.foo = 1;
+			expect( spy.callCount ).to.equal( 1 );
+
+			observable2.bar = 1;
+			expect( spy.callCount ).to.equal( 1 );
+		} );
+
 		it( 'stops listening when asked to do so', () => {
 			const spy = testUtils.sinon.stub( console, 'log' );
 
