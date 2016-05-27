@@ -167,7 +167,7 @@ export default class Node {
 	/**
 	 * Fired when list of {@link engine.view.Element elements} children changes.
 	 *
-	 * Change event is bubbling, it is fired on the ancestors chain.
+	 * Change event is bubbled – it is fired on all ancestors.
 	 *
 	 * @event engine.view.Node#change:children
 	 * @param {engine.view.Node} Changed node.
@@ -176,7 +176,7 @@ export default class Node {
 	/**
 	 * Fired when list of {@link engine.view.Element elements} attributes changes.
 	 *
-	 * Change event is bubbling, it is fired on the ancestors chain.
+	 * Change event is bubbled – it is fired on all ancestors.
 	 *
 	 * @event engine.view.Node#change:attributes
 	 * @param {engine.view.Node} Changed node.
@@ -185,7 +185,7 @@ export default class Node {
 	/**
 	 * Fired when {@link engine.view.Text text nodes} data changes.
 	 *
-	 * Change event is bubbling, it is fired on the ancestors chain.
+	 * Change event is bubbled – it is fired on all ancestors.
 	 *
 	 * @event engine.view.Node#change:text
 	 * @param {engine.view.Node} Changed node.

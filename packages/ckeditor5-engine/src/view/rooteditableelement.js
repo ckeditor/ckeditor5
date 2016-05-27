@@ -8,8 +8,9 @@
 import EditableElement from './editableelement.js';
 
 /**
- * Roots of nodes trees in data view. They are editable element binded to editable DOM element, which are the base for
- * the editable areas.
+ * Class representing a single root in the data view. A root can be either {@link #isReadOnly editable or read-only}, but
+ * in both cases it is called "an editable". Roots can contain other {@link engine.view.EditableElement editable elements}
+ * making them "nested editables".
  *
  * @memberOf engine.view
  * @extends engine.view.EditableElement
@@ -55,9 +56,9 @@ export default class RootEditableElement extends EditableElement {
 	}
 
 	/**
-	 * Gets {@link engine.view.Document} reference.
+	 * Gets the {@link engine.view.Document} reference.
 	 *
-	 * @returns {engine.view.Document|null} View Document of the node or null.
+	 * @returns {engine.view.Document|null} View Document of the node or `null`.
 	 */
 	getDocument() {
 		return this._document;

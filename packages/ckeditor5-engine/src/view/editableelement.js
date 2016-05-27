@@ -11,7 +11,7 @@ import mix from '../../utils/mix.js';
 import ObservableMixin from '../../utils/observablemixin.js';
 
 /**
- * Editable element which be a {@link view.engine.RootEditableElement root} or nested editable area in the editor.
+ * Editable element which can be a {@link view.engine.RootEditableElement root} or nested editable area in the editor.
  *
  * @memberOf engine.view
  * @extends engine.view.ContainerElement
@@ -23,6 +23,7 @@ export default class EditableElement extends ContainerElement {
 	 */
 	constructor( name, attrs, children ) {
 		super( name, attrs, children );
+
 		/**
 		 * Whether the editable is in read-write or read-only mode.
 		 *
