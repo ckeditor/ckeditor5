@@ -40,4 +40,24 @@ describe( 'Document integration', () => {
 		expect( domDiv.childNodes.length ).to.equal( 1 );
 		expect( domDiv.childNodes[ 0 ].tagName ).to.equal( 'P' );
 	} );
+
+	it( 'should render attribute changes', () => {
+		const domRoot = document.createElement( 'div' );
+
+		const viewDocument = new Document();
+		const viewRoot = viewDocument.createRoot( domRoot );
+
+		const viewP = new ViewElement( 'p', { class: 'foo' } );
+		viewRoot.appendChildren( viewP );
+		viewDocument.render();
+
+		expect( domRoot.childNodes.length ).to.equal( 1 );
+		expect( domRoot.childNodes[ 0 ].getAttribute( 'class' ) ).to.equal( 'foo' );
+
+		viewP.setAttribute( 'class', 'bar' );
+		viewDocument.render();
+
+		expect( domRoot.childNodes.length ).to.equal( 1 );
+		expect( domRoot.childNodes[ 0 ].getAttribute( 'class' ) ).to.equal( 'bar' );
+	} );
 } );
