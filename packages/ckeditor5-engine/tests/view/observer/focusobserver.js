@@ -49,4 +49,36 @@ describe( 'FocusObserver', () => {
 			expect( data.domTarget ).to.equal( document.body );
 		} );
 	} );
+
+	describe( 'handle isFocused property of root elements', () => {
+		let domMain, domHeader, viewMain, viewHeader;
+
+		beforeEach( () => {
+			domMain = document.createElement( 'div' );
+			domHeader = document.createElement( 'h1' );
+
+			viewMain = viewDocument.createRoot( domMain );
+			viewHeader = viewDocument.createRoot( domHeader, 'header' );
+		} );
+
+		it( 'should change isFocused on focus event', () => {
+			observer.onDomEvent( { type: 'focus', target: domMain } );
+
+			expect( viewMain.isFocused ).to.be.true;
+			expect( viewHeader.isFocused ).to.be.false;
+		} );
+
+		it( 'should change isFocused on blur event', () => {
+			observer.onDomEvent( { type: 'focus', target: domMain } );
+
+			expect( viewMain.isFocused ).to.be.true;
+			expect( viewHeader.isFocused ).to.be.false;
+
+			observer.onDomEvent( { type: 'blur', target: domMain } );
+			observer.onDomEvent( { type: 'focus', target: domHeader } );
+
+			expect( viewMain.isFocused ).to.be.false;
+			expect( viewHeader.isFocused ).to.be.true;
+		} );
+	} );
 } );

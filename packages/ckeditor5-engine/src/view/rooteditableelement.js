@@ -11,7 +11,7 @@ export default class RootEditableElement extends EditableElement {
 	/**
 	 * Creates an root editable element.
 	 */
-	constructor( document, name, rootName ) {
+	constructor( document, name, rootName = 'main' ) {
 		super( name );
 
 		/**

@@ -9,6 +9,7 @@
 
 import Element from '/ckeditor5/engine/view/element.js';
 import Text from '/ckeditor5/engine/view/text.js';
+import RootEditableElement from '/ckeditor5/engine/view/rooteditableelement.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'Node', () => {
@@ -133,26 +134,33 @@ describe( 'Node', () => {
 			expect( charA.getDocument() ).to.be.null;
 		} );
 
-		it( 'should return view attached to the element', () => {
-			const tvMock = {};
-			const element = new Element( 'p' );
-
-			element.setDocument( tvMock );
-
-			expect( element.getDocument() ).to.equal( tvMock );
-		} );
-
 		it( 'should return Document attached to the parent element', () => {
 			const docMock = {};
-			const parent = new Element( 'div' );
+			const parent = new RootEditableElement( docMock, 'div' );
 			const child = new Element( 'p' );
 
 			child.parent = parent;
 
-			parent.setDocument( docMock );
-
 			expect( parent.getDocument() ).to.equal( docMock );
 			expect( child.getDocument() ).to.equal( docMock );
+		} );
+	} );
+
+	describe( 'getRoot', () => {
+		it( 'should return this element if it has no parent', () => {
+			const child = new Element( 'p' );
+
+			expect( child.getRoot() ).to.equal( child );
+		} );
+
+		it( 'should return root element', () => {
+			const parent = new RootEditableElement( {}, 'div' );
+			const child = new Element( 'p' );
+
+			child.parent = parent;
+
+			expect( parent.getRoot() ).to.equal( parent );
+			expect( child.getRoot() ).to.equal( parent );
 		} );
 	} );
 
