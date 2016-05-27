@@ -1,7 +1,7 @@
 {
   "name": "ckeditor5-basic-styles",
   "version": "0.0.1",
-  "description": "CKEditor 5 Basic Styles feature.",
+  "description": "Basic styles feature for CKEditor 5.",
   "keywords": [],
   "dependencies": {},
   "devDependencies": {
