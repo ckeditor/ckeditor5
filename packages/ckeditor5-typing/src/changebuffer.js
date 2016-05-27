@@ -59,7 +59,13 @@ export default class ChangeBuffer {
 		 */
 		this.limit = limit;
 
-		this._changeCallback = ( evt, type, changes, batch ) => this._onBatch( batch );
+		this._changeCallback = ( evt, type, changes, batch ) => {
+			// See #7.
+			if ( batch ) {
+				this._onBatch( batch );
+			}
+		};
+
 		doc.on( 'change', this._changeCallback );
 
 		/**

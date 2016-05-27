@@ -9,6 +9,8 @@ import ChangeBuffer from '/ckeditor5/typing/changebuffer.js';
 import Document from '/ckeditor5/engine/model/document.js';
 import Batch from '/ckeditor5/engine/model/batch.js';
 import Position from '/ckeditor5/engine/model/position.js';
+import InsertDelta from '/ckeditor5/engine/model/delta/insertdelta.js';
+import InsertOperation from '/ckeditor5/engine/model/operation/insertoperation.js';
 
 describe( 'ChangeBuffer', () => {
 	const CHANGE_LIMIT = 3;
@@ -88,6 +90,19 @@ describe( 'ChangeBuffer', () => {
 
 			doc.batch().insert( Position.createAt( root, 0 ), 'c' );
 			expect( buffer.batch ).to.not.equal( bufferBatch );
+		} );
+
+		// See #7.
+		it( 'is not reset when changes are applied without a batch', () => {
+			const bufferBatch = buffer.batch;
+
+			const delta = new InsertDelta();
+			const insert = new InsertOperation( Position.createAt( root, 0 ), 'a', doc.version );
+
+			delta.addOperation( insert );
+			doc.applyOperation( insert );
+
+			expect( buffer.batch ).to.equal( bufferBatch );
 		} );
 	} );
 
