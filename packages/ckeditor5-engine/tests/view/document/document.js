@@ -51,7 +51,7 @@ describe( 'Document', () => {
 			const viewDocument = new Document();
 
 			expect( count( viewDocument.domRoots ) ).to.equal( 0 );
-			expect( count( viewDocument.viewRoots ) ).to.equal( 0 );
+			expect( count( viewDocument.roots ) ).to.equal( 0 );
 			expect( count( viewDocument._observers ) ).to.equal( 0 );
 			expect( viewDocument ).to.have.property( 'renderer' ).that.is.instanceOf( Renderer );
 			expect( viewDocument ).to.have.property( 'writer' ).that.is.instanceOf( Writer );
@@ -69,7 +69,7 @@ describe( 'Document', () => {
 			const ret = viewDocument.createRoot( domDiv );
 
 			expect( count( viewDocument.domRoots ) ).to.equal( 1 );
-			expect( count( viewDocument.viewRoots ) ).to.equal( 1 );
+			expect( count( viewDocument.roots ) ).to.equal( 1 );
 
 			const domRoot = viewDocument.getDomRoot();
 			const viewRoot = viewDocument.getRoot();
@@ -109,10 +109,10 @@ describe( 'Document', () => {
 			const ret = viewDocument.createRoot( domDiv );
 
 			expect( count( viewDocument.domRoots ) ).to.equal( 1 );
-			expect( count( viewDocument.viewRoots ) ).to.equal( 1 );
+			expect( count( viewDocument.roots ) ).to.equal( 1 );
 
 			const domRoot = viewDocument.domRoots.get( 'main' );
-			const viewRoot = viewDocument.viewRoots.get( 'main' );
+			const viewRoot = viewDocument.roots.get( 'main' );
 
 			expect( ret ).to.equal( viewRoot );
 
@@ -126,10 +126,10 @@ describe( 'Document', () => {
 			const ret = viewDocument.createRoot( domDiv, 'header' );
 
 			expect( count( viewDocument.domRoots ) ).to.equal( 1 );
-			expect( count( viewDocument.viewRoots ) ).to.equal( 1 );
+			expect( count( viewDocument.roots ) ).to.equal( 1 );
 
 			const domRoot = viewDocument.domRoots.get( 'header' );
-			const viewRoot = viewDocument.viewRoots.get( 'header' );
+			const viewRoot = viewDocument.roots.get( 'header' );
 
 			expect( ret ).to.equal( viewRoot );
 
@@ -141,7 +141,7 @@ describe( 'Document', () => {
 			const ret = viewDocument.createRoot( 'div' );
 
 			expect( count( viewDocument.domRoots ) ).to.equal( 0 );
-			expect( count( viewDocument.viewRoots ) ).to.equal( 1 );
+			expect( count( viewDocument.roots ) ).to.equal( 1 );
 			expect( ret ).to.equal( viewDocument.getRoot() );
 		} );
 	} );
@@ -154,13 +154,13 @@ describe( 'Document', () => {
 			const viewRoot = viewDocument.createRoot( 'div' );
 
 			expect( count( viewDocument.domRoots ) ).to.equal( 0 );
-			expect( count( viewDocument.viewRoots ) ).to.equal( 1 );
+			expect( count( viewDocument.roots ) ).to.equal( 1 );
 			expect( viewRoot ).to.equal( viewDocument.getRoot() );
 
 			viewDocument.attachDomRoot( domDiv );
 
 			expect( count( viewDocument.domRoots ) ).to.equal( 1 );
-			expect( count( viewDocument.viewRoots ) ).to.equal( 1 );
+			expect( count( viewDocument.roots ) ).to.equal( 1 );
 
 			expect( viewDocument.getDomRoot() ).to.equal( domDiv );
 			expect( viewDocument.domConverter.getCorrespondingDom( viewRoot ) ).to.equal( domDiv );
@@ -176,13 +176,13 @@ describe( 'Document', () => {
 			const viewH1 = viewDocument.createRoot( 'h1', 'header' );
 
 			expect( count( viewDocument.domRoots ) ).to.equal( 0 );
-			expect( count( viewDocument.viewRoots ) ).to.equal( 2 );
+			expect( count( viewDocument.roots ) ).to.equal( 2 );
 			expect( viewH1 ).to.equal( viewDocument.getRoot( 'header' ) );
 
 			viewDocument.attachDomRoot( domH1, 'header' );
 
 			expect( count( viewDocument.domRoots ) ).to.equal( 1 );
-			expect( count( viewDocument.viewRoots ) ).to.equal( 2 );
+			expect( count( viewDocument.roots ) ).to.equal( 2 );
 
 			expect( viewDocument.getDomRoot( 'header' ) ).to.equal( domH1 );
 			expect( viewDocument.domConverter.getCorrespondingDom( viewH1 ) ).to.equal( domH1 );
@@ -196,18 +196,18 @@ describe( 'Document', () => {
 			const viewDocument = new Document();
 			viewDocument.createRoot( document.createElement( 'div' ) );
 
-			expect( count( viewDocument.viewRoots ) ).to.equal( 1 );
+			expect( count( viewDocument.roots ) ).to.equal( 1 );
 
-			expect( viewDocument.getRoot() ).to.equal( viewDocument.viewRoots.get( 'main' ) );
+			expect( viewDocument.getRoot() ).to.equal( viewDocument.roots.get( 'main' ) );
 		} );
 
 		it( 'should return named root', () => {
 			const viewDocument = new Document();
 			viewDocument.createRoot( document.createElement( 'h1' ), 'header' );
 
-			expect( count( viewDocument.viewRoots ) ).to.equal( 1 );
+			expect( count( viewDocument.roots ) ).to.equal( 1 );
 
-			expect( viewDocument.getRoot( 'header' ) ).to.equal( viewDocument.viewRoots.get( 'header' ) );
+			expect( viewDocument.getRoot( 'header' ) ).to.equal( viewDocument.roots.get( 'header' ) );
 		} );
 	} );
 
@@ -298,6 +298,40 @@ describe( 'Document', () => {
 			const getObserverMock = viewDocument.getObserver( ObserverMock );
 
 			expect( getObserverMock ).to.be.undefined();
+		} );
+	} );
+
+	describe( 'disableObservers', () => {
+		it( 'should disable observers', () => {
+			const viewDocument = new Document();
+
+			const addedObserverMock = viewDocument.addObserver( ObserverMock );
+
+			expect( addedObserverMock.enable.calledOnce ).to.be.true;
+			expect( addedObserverMock.disable.called ).to.be.false;
+
+			viewDocument.disableObservers();
+
+			expect( addedObserverMock.enable.calledOnce ).to.be.true;
+			expect( addedObserverMock.disable.calledOnce ).to.be.true;
+		} );
+	} );
+
+	describe( 'enableObservers', () => {
+		it( 'should enable observers', () => {
+			const viewDocument = new Document();
+
+			const addedObserverMock = viewDocument.addObserver( ObserverMock );
+
+			viewDocument.disableObservers();
+
+			expect( addedObserverMock.enable.calledOnce ).to.be.true;
+			expect( addedObserverMock.disable.calledOnce ).to.be.true;
+
+			viewDocument.enableObservers();
+
+			expect( addedObserverMock.enable.calledTwice ).to.be.true;
+			expect( addedObserverMock.disable.calledOnce ).to.be.true;
 		} );
 	} );
 } );
