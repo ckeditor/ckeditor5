@@ -210,7 +210,7 @@ class MutationHandler {
 			this.editing.model.selection.collapse( this.selectionPosition );
 		}
 
-		console.log( getData( this.editing.model, { rootName: 'editor' } ) ); // jshint ignore:line
+		console.log( getData( this.editing.model ) ); // jshint ignore:line
 	}
 }
 
