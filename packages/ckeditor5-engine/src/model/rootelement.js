@@ -8,20 +8,20 @@
 import Element from './element.js';
 
 /**
- * Class for nodes that are roots of trees in tree data model.
+ * Class for nodes that are roots of trees in data model.
  *
  * @memberOf engine.model
  * @extends engine.model.Element
  */
 export default class RootElement extends Element {
 	/**
-	 * Creates tree root node.
+	 * Creates root element.
 	 *
 	 * @param {engine.model.Document} doc {@link engine.model.Document} that is an owner of the root.
 	 * @param {String} name Node name.
-	 * @param {String} rootName Root name inside parent {@link engine.model.Document}.
+	 * @param {String} [rootName='main'] Root name inside parent {@link engine.model.Document}.
 	 */
-	constructor( doc, name, rootName ) {
+	constructor( doc, name, rootName = 'main' ) {
 		super( name );
 
 		/**

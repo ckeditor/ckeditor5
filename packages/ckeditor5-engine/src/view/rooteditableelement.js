@@ -7,9 +7,20 @@
 
 import EditableElement from './editableelement.js';
 
+/**
+ * Roots of nodes trees in data view. They are editable element binded to editable DOM element, which are the base for
+ * the editable areas.
+ *
+ * @memberOf engine.view
+ * @extends engine.view.EditableElement
+ */
 export default class RootEditableElement extends EditableElement {
 	/**
-	 * Creates an root editable element.
+	 * Creates root editable element.
+	 *
+	 * @param {engine.view.Document} document {@link engine.view.Document} that is an owner of the root.
+	 * @param {String} name Node name.
+	 * @param {String} [rootName='main'] Root name inside parent {@link engine.view.Document}.
 	 */
 	constructor( document, name, rootName = 'main' ) {
 		super( name );
