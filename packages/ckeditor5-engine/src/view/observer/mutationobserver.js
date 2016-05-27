@@ -19,6 +19,8 @@ import { startsWithFiller, getDataWithoutFiller } from '../filler.js';
  * mutations on elements which do not have corresponding view elements. Also
  * {@link engine.view.Document.MutatatedText text mutation} is fired only if parent element do not change child list.
  *
+ * Note that this observer is attached by the {@link engine.EditingController} and is available by default.
+ *
  * @memberOf engine.view.observer
  * @extends engine.view.observer.Observer
  */
@@ -201,6 +203,12 @@ export default class MutationObserver extends Observer {
  * Fired when mutation occurred. If tree view is not changed on this event, DOM will be reverter to the state before
  * mutation, so all changes which should be applied, should be handled on this event.
  *
+ * Introduced by {@link engine.view.observer.MutationObserver}.
+ *
+ * Note that because {@link engine.view.observer.MutationObserver} is attached by the {@link engine.EditingController}
+ * this event is available by default.
+ *
+ * @see engine.view.observer.MutationObserver
  * @event engine.view.Document#mutations
  * @param {Array.<engine.view.Document~MutatatedText|engine.view.Document~MutatatedChildren>} viewMutations
  * Array of mutations.

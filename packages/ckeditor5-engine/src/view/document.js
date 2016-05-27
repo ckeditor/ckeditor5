@@ -9,6 +9,7 @@ import Selection from './selection.js';
 import Renderer from './renderer.js';
 import Writer from './writer.js';
 import DomConverter from './domconverter.js';
+import ContainerElement from './containerelement.js';
 import { injectQuirksHandling } from './filler.js';
 
 import mix from '../../utils/mix.js';
@@ -135,47 +136,88 @@ export default class Document {
 	}
 
 	/**
-	 * Creates a root for the HTMLElement. It adds elements to {@link engine.view.Document#domRoots} and
-	 * {@link engine.view.Document#viewRoots}.
+	 * Creates a {@link engine.view.Document#viewRoots view root element}.
 	 *
-	 * The constructor copies the element name and attributes to create the
-	 * root of the view, but does not copy its children. This means that while
-	 * {@link engine.view.Document#render rendering}, the whole content of this
-	 * root element will be removed but the root name and attributes will be preserved.
+	 * If the DOM element is passed as a first parameter it will be automatically
+	 * {@link engine.view.Document#attachDomRoot attached}:
 	 *
-	 * @param {HTMLElement} domRoot DOM element in which the tree view should do change.
+	 *		document.createRoot( document.querySelector( 'div#editor' ) ); // Will call document.attachDomRoot.
+	 *
+	 * However, if the string is passed, then only the view element will be created and the DOM element have to be
+	 * attached separately:
+	 *
+	 *		document.createRoot( 'body' );
+	 *		document.attachDomRoot( document.querySelector( 'body#editor' ) );
+	 *
+	 * @param {Element|String} domRoot DOM root element or the tag name of view root element if the DOM element will be
+	 * attached later.
 	 * @param {String} [name='main'] Name of the root.
-	 * @returns {engine.view.element} The created view root element.
+	 * @returns {engine.view.ContainerElement} The created view root element.
 	 */
 	createRoot( domRoot, name = 'main' ) {
-		const viewRoot = this.domConverter.domToView( domRoot, { bind: true, withChildren: false } );
+		const rootTag = typeof domRoot == 'string' ? domRoot : domRoot.tagName;
+
+		const viewRoot = new ContainerElement( rootTag );
 		viewRoot.setDocument( this );
+
+		this.viewRoots.set( name, viewRoot );
 
 		// Mark changed nodes in the renderer.
 		viewRoot.on( 'change', ( evt, type, node ) => {
 			this.renderer.markToSync( type, node );
 		} );
-		this.renderer.markToSync( 'CHILDREN', viewRoot );
 
-		this.domRoots.set( name, domRoot );
-		this.viewRoots.set( name, viewRoot );
-
-		for ( let observer of this._observers.values() ) {
-			observer.observe( domRoot, name );
+		if ( domRoot instanceof HTMLElement ) {
+			this.attachDomRoot( domRoot, name );
 		}
 
 		return viewRoot;
 	}
 
 	/**
-	 * Get a {@link engine.view.Document#viewRoots view root element} with the specified name. If the name is not
+	 * Attaches DOM root element to the view element and enable all observers on that element. This method also
+	 * {@link engine.view.Renderer#markToSync mark element} to be synchronized with the view what means that all child
+	 * nodes will be removed and replaced with content of the view root.
+	 *
+	 * Note that {@link engine.view.Document#createRoot} will call this method automatically if the DOM element is
+	 * passed to it.
+	 *
+	 * @param {Element|String} domRoot DOM root element.
+	 * @param {String} [name='main'] Name of the root.
+	 */
+	attachDomRoot( domRoot, name = 'main' ) {
+		const viewRoot = this.getRoot( name );
+
+		this.domRoots.set( name, domRoot );
+
+		this.domConverter.bindElements( domRoot, viewRoot );
+
+		this.renderer.markToSync( 'CHILDREN', viewRoot );
+
+		for ( let observer of this._observers.values() ) {
+			observer.observe( domRoot, name );
+		}
+	}
+
+	/**
+	 * Gets a {@link engine.view.Document#viewRoots view root element} with the specified name. If the name is not
 	 * specific "main" root is returned.
 	 *
-	 * @param {String} [name='main']  Name of the root.
-	 * @returns {engine.view.element} The view root element with the specified name.
+	 * @param {String} [name='main'] Name of the root.
+	 * @returns {engine.view.ContainerElement} The view root element with the specified name.
 	 */
 	getRoot( name = 'main' ) {
 		return this.viewRoots.get( name );
+	}
+
+	/**
+	 * Gets DOM root element.
+	 *
+	 * @param {String} [name='main']  Name of the root.
+	 * @returns {Element} DOM root element instance.
+	 */
+	getDomRoot( name = 'main' ) {
+		return this.domRoots.get( name );
 	}
 
 	/**

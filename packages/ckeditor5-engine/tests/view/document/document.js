@@ -63,24 +63,23 @@ describe( 'Document', () => {
 		it( 'should create root', () => {
 			const domP = document.createElement( 'p' );
 			const domDiv = document.createElement( 'div' );
-			domDiv.setAttribute( 'id', 'editor' );
 			domDiv.appendChild( domP );
 
 			const viewDocument = new Document();
-			const ret = viewDocument.createRoot( domDiv, 'editor' );
+			const ret = viewDocument.createRoot( domDiv );
 
 			expect( count( viewDocument.domRoots ) ).to.equal( 1 );
 			expect( count( viewDocument.viewRoots ) ).to.equal( 1 );
 
-			const domRoot = viewDocument.domRoots.get( 'editor' );
-			const viewRoot = viewDocument.viewRoots.get( 'editor' );
+			const domRoot = viewDocument.getDomRoot();
+			const viewRoot = viewDocument.getRoot();
 
 			expect( ret ).to.equal( viewRoot );
 
 			expect( domRoot ).to.equal( domDiv );
 			expect( viewDocument.domConverter.getCorrespondingDom( viewRoot ) ).to.equal( domDiv );
-			expect( viewRoot.name ).to.equal( 'div' );
-			expect( viewRoot.getAttribute( 'id' ) ).to.equal( 'editor' );
+
+			expect( viewRoot.name.toLowerCase() ).to.equal( 'div' );
 			expect( viewDocument.renderer.markedChildren.has( viewRoot ) ).to.be.true;
 		} );
 
@@ -118,6 +117,77 @@ describe( 'Document', () => {
 			expect( ret ).to.equal( viewRoot );
 
 			expect( domRoot ).to.equal( domDiv );
+		} );
+
+		it( 'should create root with given name', () => {
+			const domDiv = document.createElement( 'div' );
+
+			const viewDocument = new Document();
+			const ret = viewDocument.createRoot( domDiv, 'header' );
+
+			expect( count( viewDocument.domRoots ) ).to.equal( 1 );
+			expect( count( viewDocument.viewRoots ) ).to.equal( 1 );
+
+			const domRoot = viewDocument.domRoots.get( 'header' );
+			const viewRoot = viewDocument.viewRoots.get( 'header' );
+
+			expect( ret ).to.equal( viewRoot );
+
+			expect( domRoot ).to.equal( domDiv );
+		} );
+
+		it( 'should create root without attaching DOM element', () => {
+			const viewDocument = new Document();
+			const ret = viewDocument.createRoot( 'div' );
+
+			expect( count( viewDocument.domRoots ) ).to.equal( 0 );
+			expect( count( viewDocument.viewRoots ) ).to.equal( 1 );
+			expect( ret ).to.equal( viewDocument.getRoot() );
+		} );
+	} );
+
+	describe( 'attachDomRoot', () => {
+		it( 'should create root without attach DOM element to the view element', () => {
+			const domDiv = document.createElement( 'div' );
+
+			const viewDocument = new Document();
+			const viewRoot = viewDocument.createRoot( 'div' );
+
+			expect( count( viewDocument.domRoots ) ).to.equal( 0 );
+			expect( count( viewDocument.viewRoots ) ).to.equal( 1 );
+			expect( viewRoot ).to.equal( viewDocument.getRoot() );
+
+			viewDocument.attachDomRoot( domDiv );
+
+			expect( count( viewDocument.domRoots ) ).to.equal( 1 );
+			expect( count( viewDocument.viewRoots ) ).to.equal( 1 );
+
+			expect( viewDocument.getDomRoot() ).to.equal( domDiv );
+			expect( viewDocument.domConverter.getCorrespondingDom( viewRoot ) ).to.equal( domDiv );
+
+			expect( viewDocument.renderer.markedChildren.has( viewRoot ) ).to.be.true;
+		} );
+
+		it( 'should create root without attach DOM element to the view element with given name', () => {
+			const domH1 = document.createElement( 'h1' );
+
+			const viewDocument = new Document();
+			viewDocument.createRoot( 'div' );
+			const viewH1 = viewDocument.createRoot( 'h1', 'header' );
+
+			expect( count( viewDocument.domRoots ) ).to.equal( 0 );
+			expect( count( viewDocument.viewRoots ) ).to.equal( 2 );
+			expect( viewH1 ).to.equal( viewDocument.getRoot( 'header' ) );
+
+			viewDocument.attachDomRoot( domH1, 'header' );
+
+			expect( count( viewDocument.domRoots ) ).to.equal( 1 );
+			expect( count( viewDocument.viewRoots ) ).to.equal( 2 );
+
+			expect( viewDocument.getDomRoot( 'header' ) ).to.equal( domH1 );
+			expect( viewDocument.domConverter.getCorrespondingDom( viewH1 ) ).to.equal( domH1 );
+
+			expect( viewDocument.renderer.markedChildren.has( viewH1 ) ).to.be.true;
 		} );
 	} );
 

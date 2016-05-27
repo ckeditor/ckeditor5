@@ -11,6 +11,8 @@ import { getCode } from '../../../utils/keyboard.js';
 /**
  * {@link engine.view.Document#keydown Key down} event observer.
  *
+ * Note that this observer is attached by the {@link engine.EditingController} and is available by default.
+ *
  * @memberOf engine.view.observer
  * @extends engine.view.observer.DomEventObserver
  */
@@ -39,6 +41,12 @@ export default class KeyObserver extends DomEventObserver {
 /**
  * Fired when a key has been pressed.
  *
+ * Introduced by {@link engine.view.observer.KeyObserver}.
+ *
+ * Note that because {@link engine.view.observer.KeyObserver} is attached by the {@link engine.EditingController}
+ * this event is available by default.
+ *
+ * @see engine.view.observer.KeyObserver
  * @event engine.view.Document#keydown
  * @param {engine.view.observer.keyObserver.KeyEventData} keyEventData
  */
