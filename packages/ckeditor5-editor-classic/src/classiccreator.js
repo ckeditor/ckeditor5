@@ -7,9 +7,6 @@
 
 import StandardCreator from '../creator/standardcreator.js';
 
-import HtmlDataProcessor from '../engine/dataprocessor/htmldataprocessor.js';
-import Editable from '../editable.js';
-
 import { createEditableUI, createEditorUI } from '../ui/creator-utils.js';
 
 import BoxedEditorUI from '../ui/editorui/boxed/boxededitorui.js';
@@ -21,8 +18,6 @@ import InlineEditableUIView from '../ui/editableui/inline/inlineeditableuiview.j
 import Model from '../ui/model.js';
 import StickyToolbar from '../ui/bindings/stickytoolbar.js';
 import StickyToolbarView from '../ui/stickytoolbar/stickytoolbarview.js';
-
-import { imitateFeatures, imitateDestroyFeatures } from './utils/imitatefeatures.js';
 
 /**
  * Classic editor creator using inline editable and sticky toolbar, all
@@ -38,11 +33,10 @@ export default class ClassicCreator extends StandardCreator {
 	 * @param {ckeditor5.Editor} The editor instance.
 	 */
 	constructor( editor ) {
-		super( editor, new HtmlDataProcessor() );
+		super( editor );
 
-		const editableName = editor.firstElementName;
-		editor.editables.add( new Editable( editor, editableName ) );
-		editor.document.createRoot( editableName );
+		editor.document.createRoot();
+		editor.editing.createRoot( 'div' );
 
 		// UI.
 		createEditorUI( editor, BoxedEditorUI, BoxedEditorUIView );
@@ -55,19 +49,20 @@ export default class ClassicCreator extends StandardCreator {
 	 */
 	create() {
 		const editor = this.editor;
-		const editable = editor.editables.get( 0 );
-
-		// Features mock.
-		imitateFeatures( editor );
+		const editorElement = editor.firstElement;
 
 		// UI.
-		this._replaceElement( editor.firstElement, editor.ui.view.element );
+		this._replaceElement( editorElement, editor.ui.view.element );
 		this._createToolbar();
-		editor.ui.add( 'main', createEditableUI( editor, editable, EditableUI, InlineEditableUIView ) );
+
+		const editableUI = createEditableUI( editor, EditableUI, InlineEditableUIView );
+
+		editor.ui.add( 'main', editableUI );
 
 		// Init.
 		return super.create()
 			.then( () => editor.ui.init() )
+			.then( () => editor.editing.view.attachDomRoot( editableUI.view.element ) )
 			// We'll be able to do that much earlier once the loading will be done to the document model,
 			// rather than straight to the editable.
 			.then( () => this.loadDataFromEditorElement() );
@@ -80,8 +75,6 @@ export default class ClassicCreator extends StandardCreator {
 	 * @returns {Promise}
 	 */
 	destroy() {
-		imitateDestroyFeatures();
-
 		this.updateEditorElement();
 
 		super.destroy();

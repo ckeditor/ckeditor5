@@ -16,17 +16,18 @@ let editor, editable, observer;
 function initEditor() {
 	CKEDITOR.create( '#editor', {
 		creator: ClassicCreator,
-		toolbar: [ 'bold', 'italic', 'font' ]
+		features: [ 'delete', 'enter', 'typing', 'paragraph', 'undo', 'basic-styles/bold', 'basic-styles/italic' ],
+		toolbar: [ 'bold', 'italic', 'undo', 'redo' ]
 	} )
 	.then( ( newEditor ) => {
 		console.log( 'Editor was initialized', newEditor );
 		console.log( 'You can now play with it using global `editor` and `editable` variables.' );
 
 		window.editor = editor = newEditor;
-		window.editable = editable = editor.editables.get( 0 );
+		window.editable = editable = editor.editing.view.getRoot();
 
 		observer = testUtils.createObserver();
-		observer.observe( 'Editable', editable );
+		observer.observe( 'Editable', editable, [ 'isFocused' ] );
 	} );
 }
 
@@ -45,3 +46,6 @@ function destroyEditor() {
 
 document.getElementById( 'initEditor' ).addEventListener( 'click', initEditor );
 document.getElementById( 'destroyEditor' ).addEventListener( 'click', destroyEditor );
+
+// TODO remove me!
+initEditor();
