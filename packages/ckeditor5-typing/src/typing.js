@@ -7,9 +7,6 @@
 
 import Feature from '../feature.js';
 import ChangeBuffer from './changebuffer.js';
-import MutationObserver from '../engine/view/observer/mutationobserver.js';
-import KeyObserver from '../engine/view/observer/keyobserver.js';
-import SelectionObserver from '../engine/view/observer/selectionobserver.js';
 import ModelPosition from '../engine/model/position.js';
 import ModelRange from '../engine/model/range.js';
 import ViewPosition from '../engine/view/position.js';
@@ -35,10 +32,6 @@ export default class Typing extends Feature {
 		const editingView = editor.editing.view;
 
 		this.buffer = new ChangeBuffer( editor.document, 5 );
-
-		editingView.addObserver( MutationObserver );
-		editingView.addObserver( KeyObserver );
-		editingView.addObserver( SelectionObserver );
 
 		this.listenTo( editingView, 'keydown', ( evt, data ) => {
 			this._handleKeydown( data );
