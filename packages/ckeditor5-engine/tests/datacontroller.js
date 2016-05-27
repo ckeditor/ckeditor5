@@ -33,6 +33,14 @@ describe( 'DataController', () => {
 		schema = modelDocument.schema;
 	} );
 
+	describe( 'constructor', () => {
+		it( 'works without data processor', () => {
+			const data = new DataController( modelDocument );
+
+			expect( data.processor ).to.be.undefined;
+		} );
+	} );
+
 	describe( 'parse', () => {
 		it( 'should set text', () => {
 			schema.allow( { name: '$text', inside: '$root' } );
