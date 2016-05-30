@@ -49,7 +49,7 @@ describe( 'ClassicEditor', () => {
 				} );
 		} );
 
-		it( 'create an instance which inherits from the ClassicEditor', () => {
+		it( 'creates an instance which inherits from the ClassicEditor', () => {
 			expect( editor ).to.be.instanceof( ClassicEditor );
 		} );
 

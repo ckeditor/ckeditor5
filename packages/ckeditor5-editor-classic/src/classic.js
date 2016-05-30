@@ -52,6 +52,20 @@ export default class ClassicEditor extends StandardEditor {
 		 * @member {utils.ElementReplacer} editor-classic.Classic#_elementReplacer
 		 */
 		this._elementReplacer = new ElementReplacer();
+
+		/**
+		 * Toolbar controller.
+		 *
+		 * @protected
+		 * @member {ui.toolbar.Toolbar} editor-classic.Classic#_toolbar
+		 */
+
+		/**
+		 * Editable UI controller.
+		 *
+		 * @protected
+		 * @member {ui.editableUI.EditableUI} editor-classic.Classic#_editableUI
+		 */
 	}
 
 	/**
