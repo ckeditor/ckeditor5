@@ -86,7 +86,7 @@ export default class Typing extends Feature {
 			doc.composer.deleteContents( this._buffer.batch, doc.selection );
 		} );
 
-		evtData.preventDefault();
+		// No 'preventDefalt', not to prevent mutations.
 	}
 
 	/**
@@ -299,5 +299,5 @@ const safeKeystrokes = [
 ];
 
 function isSafeKeystroke( keyData ) {
-	return safeKeystrokes.indexOf( keyData.keyCode );
+	return safeKeystrokes.indexOf( keyData.keyCode ) > -1;
 }
