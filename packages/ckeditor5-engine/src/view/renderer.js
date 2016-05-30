@@ -87,6 +87,13 @@ export default class Renderer {
 		 */
 		this._inlineFillerPosition = null;
 
+		/**
+		 * {@link engine.view.EditableElement} in which selection is allowed to be rendered.
+		 * If it is null, then selection will not be rendered.
+		 *
+		 * @readonly
+		 * @member {engine.view.EditableElement|null} engine.view.Renderer#focusedEditable
+		 */
 		this.focusedEditable = null;
 	}
 
@@ -414,7 +421,7 @@ export default class Renderer {
 		}
 
 		for ( let range of this.selection.getRanges() ) {
-			// Updated ranges only in currently focused editable.
+			// Update ranges only in currently focused editable.
 			if ( range.start.parent.getRoot() == this.focusedEditable ) {
 				const domRangeStart = this.domConverter.viewPositionToDom( range.start );
 				const domRangeEnd = this.domConverter.viewPositionToDom( range.end );
