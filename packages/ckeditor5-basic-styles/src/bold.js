@@ -19,7 +19,6 @@ export default class Bold extends Feature {
 	init() {
 		const editor = this.editor;
 		const t = editor.t;
-		const ui = editor.ui;
 		const command = editor.commands.get( 'bold' );
 
 		// Create button model.
@@ -38,6 +37,6 @@ export default class Bold extends Feature {
 		this.listenTo( buttonModel, 'execute', () => editor.execute( 'bold' ) );
 
 		// Add bold button to feature components.
-		ui.featureComponents.add( 'bold', ButtonController, ButtonView, buttonModel );
+		editor.ui.featureComponents.add( 'bold', ButtonController, ButtonView, buttonModel );
 	}
 }

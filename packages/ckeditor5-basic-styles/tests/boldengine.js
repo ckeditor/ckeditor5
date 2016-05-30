@@ -6,8 +6,7 @@
 'use strict';
 
 import BoldEngine from '/ckeditor5/basic-styles/boldengine.js';
-import Editor from '/ckeditor5/editor.js';
-import StandardCreator from '/ckeditor5/creator/standardcreator.js';
+import VirtualTestEditor from '/tests/ckeditor5/_utils/virtualtesteditor.js';
 import { getData } from '/tests/engine/_utils/model.js';
 import BuildModelConverterFor from '/ckeditor5/engine/conversion/model-converter-builder.js';
 import BuildViewConverterFor from '/ckeditor5/engine/conversion/view-converter-builder.js';
@@ -17,28 +16,28 @@ describe( 'BoldEngine', () => {
 	let editor, document;
 
 	beforeEach( () => {
-		editor = new Editor( null, {
-			creator: StandardCreator,
-			features: [ BoldEngine ]
-		} );
+		return VirtualTestEditor.create( {
+				features: [ BoldEngine ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
 
-		return editor.init().then( () => {
-			document = editor.document;
-			document.createRoot( 'main' );
+				document = editor.document;
+				document.createRoot();
 
-			// Register some block element for tests.
-			document.schema.registerItem( 'p', '$block' );
+				// Register some block element for tests.
+				document.schema.registerItem( 'p', '$block' );
 
-			// Build converter from model to view for data and editing pipelines.
-			BuildModelConverterFor( editor.data.modelToView )
-				.fromElement( 'p' )
-				.toElement( 'p' );
+				// Build converter from model to view for data and editing pipelines.
+				BuildModelConverterFor( editor.data.modelToView )
+					.fromElement( 'p' )
+					.toElement( 'p' );
 
-			// Build converter from view to model for data and editing pipelines.
-			BuildViewConverterFor( editor.data.viewToModel )
-				.fromElement( 'p' )
-				.toElement( 'p' );
-		} );
+				// Build converter from view to model for data and editing pipelines.
+				BuildViewConverterFor( editor.data.viewToModel )
+					.fromElement( 'p' )
+					.toElement( 'p' );
+			} );
 	} );
 
 	it( 'should be loaded', () => {
@@ -51,7 +50,9 @@ describe( 'BoldEngine', () => {
 
 	it( 'should register bold command', () => {
 		expect( editor.commands.has( 'bold' ) ).to.be.true;
+
 		const command = editor.commands.get( 'bold' );
+
 		expect( command ).to.be.instanceOf( AttributeCommand );
 		expect( command.attributeKey ).to.equal( 'bold' );
 	} );

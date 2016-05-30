@@ -5,10 +5,9 @@
 
 'use strict';
 
-import Editor from '/ckeditor5/editor.js';
+import ClassicTestEditor from '/tests/ckeditor5/_utils/classictesteditor.js';
 import Bold from '/ckeditor5/basic-styles/bold.js';
 import BoldEngine from '/ckeditor5/basic-styles/boldengine.js';
-import ClassicCreator from '/ckeditor5/creator-classic/classiccreator.js';
 import ButtonController from '/ckeditor5/ui/button/button.js';
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
 
@@ -18,13 +17,13 @@ describe( 'Bold', () => {
 	let editor;
 
 	beforeEach( () => {
-		editor = new Editor( { 'editor': document.getElementById( 'editor' ) }, {
-			creator: ClassicCreator,
-			features: [ Bold ],
-			toolbar: [ 'bold' ]
-		} );
-
-		return editor.init();
+		return ClassicTestEditor.create( document.getElementById( 'editor' ), {
+				features: [ Bold ],
+				toolbar: [ 'bold' ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+			} );
 	} );
 
 	afterEach( () => {
@@ -62,10 +61,8 @@ describe( 'Bold', () => {
 		const command = editor.commands.get( 'bold' );
 
 		expect( model.isOn ).to.be.false;
-		expect( command.value ).to.be.false;
 
 		expect( model.isEnabled ).to.be.true;
-		expect( command.isEnabled ).to.be.true;
 
 		command.value = true;
 		expect( model.isOn ).to.equal( true );

@@ -19,7 +19,6 @@ export default class Italic extends Feature {
 	init() {
 		const editor = this.editor;
 		const t = editor.t;
-		const ui = editor.ui;
 		const command = editor.commands.get( 'italic' );
 
 		// Create button model.
@@ -38,6 +37,6 @@ export default class Italic extends Feature {
 		this.listenTo( buttonModel, 'execute', () => editor.execute( 'italic' ) );
 
 		// Add bold button to feature components.
-		ui.featureComponents.add( 'italic', ButtonController, ButtonView, buttonModel );
+		editor.ui.featureComponents.add( 'italic', ButtonController, ButtonView, buttonModel );
 	}
 }
