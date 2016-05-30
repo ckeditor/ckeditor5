@@ -16,13 +16,13 @@ import EditableUI from '../ui/editableui/editableui.js';
 import InlineEditableUIView from '../ui/editableui/inline/inlineeditableuiview.js';
 
 import Model from '../ui/model.js';
-import StickyToolbar from '../ui/bindings/stickytoolbar.js';
+import Toolbar from '../ui/bindings/toolbar.js';
 import StickyToolbarView from '../ui/stickytoolbar/stickytoolbarview.js';
 
 import ElementReplacer from '../utils/elementreplacer.js';
 
 /**
- * Classic editor creator using inline editable and sticky toolbar, all
+ * Classic editor. Uses inline editable and sticky toolbar, all
  * enclosed in a boxed UI.
  *
  * @memberOf editor-classic
@@ -30,9 +30,11 @@ import ElementReplacer from '../utils/elementreplacer.js';
  */
 export default class ClassicEditor extends StandardEditor {
 	/**
-	 * Creates an instance of the classic creator.
+	 * Creates an instance of the classic editor.
 	 *
-	 * @param {ckeditor5.Editor} The editor instance.
+	 * @param {HTMLElement} element The DOM element that will be the source for the created editor.
+	 * The data will be loaded from it and loaded back to it once the editor is destroyed.
+	 * @param {Object} config The editor config.
 	 */
 	constructor( element, config ) {
 		super( element, config );
@@ -43,12 +45,19 @@ export default class ClassicEditor extends StandardEditor {
 
 		this.data.processor = new HtmlDataProcessor();
 
+		/**
+		 * The element replacer instance used to hide editor element.
+		 *
+		 * @private
+		 * @member {utils.ElementReplacer} editor-classic.Classic#_elementReplacer
+		 */
 		this._elementReplacer = new ElementReplacer();
 	}
 
 	/**
-	 * Updates the original editor element with data and destroys
-	 * the UI.
+	 * Destroys the editor instance, releasing all resources used by it.
+	 *
+	 * Updates the original editor element with the data.
 	 *
 	 * @returns {Promise}
 	 */
@@ -60,6 +69,46 @@ export default class ClassicEditor extends StandardEditor {
 			.then( () => super.destroy() );
 	}
 
+	/**
+	 * Creates a classic editor instance.
+	 *
+	 *		ClassicEditor.create( document.querySelector( '#editor' ), {
+	 *			features: [ 'delete', 'enter', 'typing', 'paragraph', 'undo', 'basic-styles/bold', 'basic-styles/italic' ],
+	 *			toolbar: [ 'bold', 'italic', 'undo', 'redo' ]
+	 *		} )
+	 *		.then( editor => {
+	 *			console.log( 'Editor was initialized', editor );
+	 *		} )
+	 *		.catch( err => {
+	 *			console.error( err.stack );
+	 *		} );
+	 *
+	 * @param {HTMLElement} element See {@link ckeditor5.editor.ClassicEditor#constructor}'s param.
+	 * @param {Object} config See {@link ckeditor5.editor.ClassicEditor#constructor}'s param.
+	 * @returns {Promise} Promise resolved once editor is ready.
+	 * @returns {ckeditor5.editor.StandardEditor} return.editor The editor instance.
+	 */
+	static create( element, config ) {
+		return new Promise( ( resolve ) => {
+			const editor = new ClassicEditor( element, config );
+
+			resolve(
+				editor._createUI()
+					.then( () => editor.initPlugins() )
+					.then( () => editor._initUI() )
+					.then( () => editor.loadDataFromEditorElement() )
+					.then( () => editor )
+			);
+		} );
+	}
+
+	/**
+	 * Creates editor UI (the {@link ui.editorUI.BoxedEditorUI boxed version} of it) with a sticky toolbar and an
+	 * inline editable.
+	 *
+	 * @protected
+	 * @returns {Promise}
+	 */
 	_createUI() {
 		const editorUI = new BoxedEditorUI( this );
 		const editorUIView = new BoxedEditorUIView( editorUI.viewModel, this.locale );
@@ -76,39 +125,43 @@ export default class ClassicEditor extends StandardEditor {
 		return Promise.resolve();
 	}
 
+	/**
+	 * Initializes editor UI. The UI has to be {@link #_createUI created} beforehand.
+	 *
+	 * @protected
+	 * @returns {Promise}
+	 */
 	_initUI() {
-		this._toolbar.addButtons( this.config.toolbar );
+		if ( this.config.toolbar ) {
+			this._toolbar.addButtons( this.config.toolbar );
+		}
 
 		return this.ui.init()
 			.then( () => this.editing.view.attachDomRoot( this._editableUI.view.element ) );
 	}
 
-	static create( element, config ) {
-		const editor = new ClassicEditor( element, config );
-
-		return editor._createUI()
-			.then( () => editor.initPlugins() )
-			.then( () => editor._initUI() )
-			.then( () => editor.loadDataFromEditorElement() )
-			.then( () => editor );
-	}
-
 	/**
-	 * Creates editor sticky toolbar and fills it with children using the configuration.
+	 * Creates editor sticky toolbar.
 	 *
 	 * @protected
 	 */
 	_createToolbar() {
-		// Note: StickyToolbar and StickyToolbarView share the same model. It may change in the future.
 		const toolbarModel = new Model();
 		const toolbarView = new StickyToolbarView( toolbarModel, this.locale );
-		const toolbar = new StickyToolbar( toolbarModel, toolbarView, this );
+		const toolbar = new Toolbar( toolbarModel, toolbarView, this );
+
+		toolbarModel.bind( 'isActive' ).to( this.editing.view.getRoot(), 'isFocused' );
 
 		this.ui.add( 'top', toolbar );
 
 		this._toolbar = toolbar;
 	}
 
+	/**
+	 * Creates editor main editable.
+	 *
+	 * @protected
+	 */
 	_createEditableUI() {
 		const editable = this.editing.view.getRoot();
 		const editableUI = new EditableUI( this, editable );

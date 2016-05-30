@@ -17,7 +17,7 @@ function initEditor() {
 		features: [ 'delete', 'enter', 'typing', 'paragraph', 'undo', 'basic-styles/bold', 'basic-styles/italic' ],
 		toolbar: [ 'bold', 'italic', 'undo', 'redo' ]
 	} )
-	.then( ( newEditor ) => {
+	.then( newEditor => {
 		console.log( 'Editor was initialized', newEditor );
 		console.log( 'You can now play with it using global `editor` and `editable` variables.' );
 
@@ -26,6 +26,9 @@ function initEditor() {
 
 		observer = testUtils.createObserver();
 		observer.observe( 'Editable', editable, [ 'isFocused' ] );
+	} )
+	.catch( err => {
+		console.error( err.stack );
 	} );
 }
 
