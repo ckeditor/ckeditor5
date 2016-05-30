@@ -8,14 +8,19 @@
 import Feature from '../feature.js';
 import BuildModelConverterFor from '../engine/conversion/model-converter-builder.js';
 import BuildViewConverterFor from '../engine/conversion/view-converter-builder.js';
+import Paragraph from '../paragraph/paragraph.js';
 
-export default class FormatEngine extends Feature {
-	// TODO - include Paragraph feature
+export default class FormatsEngine extends Feature {
+	static get requires() {
+		return [ Paragraph ];
+	}
+
 	init() {
 		const editor = this.editor;
 		const document = editor.document;
 		const schema = document.schema;
 		const data = editor.data;
+		const editing = editor.editing;
 
 		// Schema.
 		schema.registerItem( 'heading1', '$block' );
@@ -23,8 +28,7 @@ export default class FormatEngine extends Feature {
 		schema.registerItem( 'heading3', '$block' );
 
 		// Build converter from model to view for data pipeline.
-		// TODO: Converter for editing pipeline.
-		BuildModelConverterFor( data.modelToView )
+		BuildModelConverterFor( data.modelToView, editing.modelToView )
 			.fromElement( 'heading1' )
 			.toElement( 'h2' );
 
@@ -37,7 +41,6 @@ export default class FormatEngine extends Feature {
 			.toElement( 'h4' );
 
 		// Build converter from view to model for data pipeline.
-		// TODO: Converter for editing pipeline.
 		BuildViewConverterFor( data.viewToModel )
 			.fromElement( 'h2' )
 			.toElement( 'heading1' );

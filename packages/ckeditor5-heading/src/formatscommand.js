@@ -7,7 +7,7 @@
 
 import Command from '../command.js';
 
-export default class FormatCommand extends Command {
+export default class FormatsCommand extends Command {
 	constructor( editor ) {
 		super( editor );
 
@@ -29,7 +29,25 @@ export default class FormatCommand extends Command {
 				case 'h4':
 					this.value = 'heading3';
 					break;
+
+				default:
+					this.value = 'paragraph';
 			}
 		} );
+	}
+
+	_doExecute( forceValue ) {
+		const document = this.editor.document;
+		const selection = document.selection;
+		const value = ( forceValue === undefined ) ? 'paragraph' : forceValue;
+		let element;
+
+		if ( selection.isCollapsed ) {
+			const position = selection.getFirstPosition();
+			element = position.parent;
+		}
+
+		const batch = document.batch();
+		batch.rename( value, element );
 	}
 }
