@@ -59,7 +59,7 @@ describe( 'utilsTestUtils.createObserver()', () => {
 			observable.foo = 1;
 			expect( spy.callCount ).to.equal( 1 );
 
-			observable2.bar = 1;
+			observable.bar = 1;
 			expect( spy.callCount ).to.equal( 1 );
 		} );
 
