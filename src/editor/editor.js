@@ -153,6 +153,24 @@ export default class Editor {
 
 		command._execute( commandParam );
 	}
+
+	/**
+	 * Creates a basic editor instance.
+	 *
+	 * @param {Object} config See {@link ckeditor5.editor.StandardEditor}'s param.
+	 * @returns {Promise} Promise resolved once editor is ready.
+	 * @returns {ckeditor5.editor.StandardEditor} return.editor The editor instance.
+	 */
+	static create( config ) {
+		return new Promise( ( resolve ) => {
+			const editor = new this( config );
+
+			resolve(
+				editor.initPlugins()
+					.then( () => editor )
+			);
+		} );
+	}
 }
 
 mix( Editor, EmitterMixin );

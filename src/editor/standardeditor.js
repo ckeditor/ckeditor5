@@ -9,7 +9,6 @@ import Editor from './editor.js';
 import KeystrokeHandler from '../keystrokehandler.js';
 import EditingController from '../engine/editingcontroller.js';
 
-import CKEditorError from '../utils/ckeditorerror.js';
 import getDataFromElement from '../utils/dom/getdatafromelement.js';
 import setDataInElement from '../utils/dom/setdatainelement.js';
 
@@ -70,16 +69,6 @@ export default class StandardEditor extends Editor {
 	 * @param {*} data The data to load.
 	 */
 	setData( data ) {
-		if ( !this.data ) {
-			/**
-			 * Data controller has not been defined yet, so methods like {@link ckeditor5.editor.StandardEditor#setData} and
-			 * {@link ckeditor5.editor.StandardEditor#getData} cannot be used.
-			 *
-			 * @error editor-no-datacontroller
-			 */
-			throw new CKEditorError( 'editor-no-datacontroller: Data controller has not been defined yet.' );
-		}
-
 		this.data.set( data );
 	}
 
@@ -87,10 +76,6 @@ export default class StandardEditor extends Editor {
 	 * Gets the data from the editor's main root.
 	 */
 	getData() {
-		if ( !this.data ) {
-			throw new CKEditorError( 'editor-no-datacontroller: Data controller has not been defined yet.' );
-		}
-
 		return this.data.get();
 	}
 
@@ -111,12 +96,19 @@ export default class StandardEditor extends Editor {
 	/**
 	 * Creates a standard editor instance.
 	 *
-	 * @abstract
-	 * @static
-	 * @method #create
 	 * @param {HTMLElement} element See {@link ckeditor5.editor.StandardEditor}'s param.
 	 * @param {Object} config See {@link ckeditor5.editor.StandardEditor}'s param.
 	 * @returns {Promise} Promise resolved once editor is ready.
 	 * @returns {ckeditor5.editor.StandardEditor} return.editor The editor instance.
 	 */
+	static create( element, config ) {
+		return new Promise( ( resolve ) => {
+			const editor = new this( element, config );
+
+			resolve(
+				editor.initPlugins()
+					.then( () => editor )
+			);
+		} );
+	}
 }
