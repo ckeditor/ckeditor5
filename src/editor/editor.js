@@ -17,9 +17,11 @@ import isArray from '../utils/lib/lodash/isArray.js';
 import mix from '../utils/mix.js';
 
 /**
- * Represents a single editor instance.
+ * Class representing a basic editor. It contains a base architecture, without much additional logic.
  *
- * @memberOf ckeditor5
+ * See also {@link ckeditor5.editor.StandardEditor}.
+ *
+ * @memberOf ckeditor5.editor
  * @mixes utils.EmitterMixin
  */
 export default class Editor {
@@ -85,7 +87,7 @@ export default class Editor {
 	}
 
 	/**
-	 * TODO
+	 * Loads and initilizes plugins specified in `config.features`.
 	 *
 	 * @returns {Promise} A promise which resolves once the initialization is completed.
 	 */
@@ -115,21 +117,18 @@ export default class Editor {
 	}
 
 	/**
-	 * Destroys the editor instance, releasing all resources used by it. If the editor replaced an element, the
-	 * element will be recovered.
+	 * Destroys the editor instance, releasing all resources used by it.
 	 *
-	 * @fires ckeditor5.Editor#destroy
+	 * @fires ckeditor5.editor.Editor#destroy
 	 * @returns {Promise} A promise that resolves once the editor instance is fully destroyed.
 	 */
 	destroy() {
 		this.fire( 'destroy' );
 		this.stopListening();
 
-		// Note: The destruction order should be the reverse of the initialization order.
 		return Promise.resolve()
 			.then( () => {
 				this.document.destroy();
-				this.editing.destroy();
 				this.data.destroy();
 			} );
 	}
@@ -162,5 +161,5 @@ mix( Editor, EmitterMixin );
  * Fired when this editor instance is destroyed. The editor at this point is not usable and this event should be used to
  * perform the clean-up in any plugin.
  *
- * @event ckeditor5.Editor#destroy
+ * @event ckeditor5.editor.Editor#destroy
  */
