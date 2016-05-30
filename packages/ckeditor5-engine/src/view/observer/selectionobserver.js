@@ -93,6 +93,10 @@ export default class SelectionObserver extends Observer {
 	 * @param {Document} domDocument DOM document.
 	 */
 	_handleSelectionChange( domDocument ) {
+		if ( !this.document.focusedEditable ) {
+			return;
+		}
+
 		if ( !this.isEnabled ) {
 			return;
 		}
@@ -103,6 +107,7 @@ export default class SelectionObserver extends Observer {
 		// If there were mutations then the view will be re-rendered by the mutation observer and selection
 		// will be updated, so selections will equal and event will not be fired, as expected.
 		const domSelection = domDocument.defaultView.getSelection();
+
 		const newViewSelection = this.domConverter.domSelectionToView( domSelection );
 
 		if ( this.selection.isEqual( newViewSelection ) ) {

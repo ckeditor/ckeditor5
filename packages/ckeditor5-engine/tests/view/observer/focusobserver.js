@@ -81,4 +81,53 @@ describe( 'FocusObserver', () => {
 			expect( viewHeader.isFocused ).to.be.true;
 		} );
 	} );
+
+	describe( 'handle focusedEditable property of the document', () => {
+		let domMain, domHeader, viewMain, viewHeader;
+
+		beforeEach( () => {
+			domMain = document.createElement( 'div' );
+			domHeader = document.createElement( 'h1' );
+
+			viewMain = viewDocument.createRoot( domMain );
+			viewHeader = viewDocument.createRoot( domHeader, 'header' );
+		} );
+
+		it( 'should set focusedEditable on focus', () => {
+			observer.onDomEvent( { type: 'focus', target: domMain } );
+
+			expect( viewDocument.focusedEditable ).to.equal( viewMain );
+		} );
+
+		it( 'should change focusedEditable on focus', () => {
+			observer.onDomEvent( { type: 'focus', target: domMain } );
+
+			expect( viewDocument.focusedEditable ).to.equal( viewMain );
+
+			observer.onDomEvent( { type: 'focus', target: domHeader } );
+
+			expect( viewDocument.focusedEditable ).to.equal( viewHeader );
+		} );
+
+		it( 'should set focusedEditable to null on blur', () => {
+			observer.onDomEvent( { type: 'focus', target: domMain } );
+
+			expect( viewDocument.focusedEditable ).to.equal( viewMain );
+
+			observer.onDomEvent( { type: 'blur', target: domMain } );
+
+			expect( viewDocument.focusedEditable ).to.be.null;
+		} );
+
+		it( 'should not touch focusedEditable on blur if it is already changed', () => {
+			observer.onDomEvent( { type: 'focus', target: domMain } );
+
+			expect( viewDocument.focusedEditable ).to.equal( viewMain );
+
+			observer.onDomEvent( { type: 'focus', target: domHeader } );
+			observer.onDomEvent( { type: 'blur', target: domMain } );
+
+			expect( viewDocument.focusedEditable ).to.equal( viewHeader );
+		} );
+	} );
 } );

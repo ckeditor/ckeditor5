@@ -131,6 +131,8 @@ describe( 'EditingController', () => {
 		} );
 
 		beforeEach( () => {
+			document.getElementById( 'focusPlaceholder' ).focus();
+
 			model.selection.removeAllRanges();
 			modelRoot.removeChildren( 0, modelRoot.getChildCount() );
 

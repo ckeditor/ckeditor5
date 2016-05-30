@@ -87,17 +87,7 @@ export default class Renderer {
 		 */
 		this._inlineFillerPosition = null;
 
-		/**
-		 * Last DOM selection object.
-		 *
-		 * Because renderer handles multiple roots, and because these roots might be in different documents (in case of
-		 * using `iframes`) renderer needs to keep last DOM selection object to remove ranges from it before new selection
-		 * is rendered.
-		 *
-		 * @private
-		 * @member {Selection} engine.view.Renderer#_domSelection
-		 */
-		this._domSelection = null;
+		this.focusedEditable = null;
 	}
 
 	/**
@@ -407,12 +397,13 @@ export default class Renderer {
 	 * @private
 	 */
 	_updateSelection() {
-		let domSelection = this._domSelection;
-		const oldViewSelection = domSelection && this.domConverter.domSelectionToView( domSelection );
-
-		if ( !oldViewSelection && !this.selection.rangeCount ) {
+		if ( !this.focusedEditable ) {
 			return;
 		}
+
+		const domRoot = this.domConverter.getCorrespondingDomElement( this.focusedEditable );
+		const domSelection = domRoot.ownerDocument.defaultView.getSelection();
+		const oldViewSelection = domSelection && this.domConverter.domSelectionToView( domSelection );
 
 		if ( oldViewSelection && this.selection.isEqual( oldViewSelection ) ) {
 			return;
@@ -422,20 +413,16 @@ export default class Renderer {
 			domSelection.removeAllRanges();
 		}
 
-		domSelection = null;
-
 		for ( let range of this.selection.getRanges() ) {
-			const domRangeStart = this.domConverter.viewPositionToDom( range.start );
-			const domRangeEnd = this.domConverter.viewPositionToDom( range.end );
-
-			domSelection = domSelection || domRangeStart.parent.ownerDocument.defaultView.getSelection();
-
-			const domRange = new Range();
-			domRange.setStart( domRangeStart.parent, domRangeStart.offset );
-			domRange.setEnd( domRangeEnd.parent, domRangeEnd.offset );
-			domSelection.addRange( domRange );
+			// Updated ranges only in currently focused editable.
+			if ( range.start.parent.getRoot() == this.focusedEditable ) {
+				const domRangeStart = this.domConverter.viewPositionToDom( range.start );
+				const domRangeEnd = this.domConverter.viewPositionToDom( range.end );
+				const domRange = new Range();
+				domRange.setStart( domRangeStart.parent, domRangeStart.offset );
+				domRange.setEnd( domRangeEnd.parent, domRangeEnd.offset );
+				domSelection.addRange( domRange );
+			}
 		}
-
-		this._domSelection = domSelection;
 	}
 }

@@ -112,6 +112,8 @@ describe( 'Renderer', () => {
 			renderer.markedAttributes.clear();
 			renderer.markedChildren.clear();
 
+			renderer.focusedEditable = viewRoot;
+
 			selection.removeAllRanges();
 		} );
 

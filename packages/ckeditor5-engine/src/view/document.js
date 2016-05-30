@@ -13,7 +13,7 @@ import RootEditableElement from './rooteditableelement.js';
 import { injectQuirksHandling } from './filler.js';
 
 import mix from '../../utils/mix.js';
-import EmitterMixin from '../../utils/emittermixin.js';
+import ObservableMixin from '../../utils/observablemixin.js';
 
 /**
  * Document class creates an abstract layer over the content editable area.
@@ -85,9 +85,21 @@ export default class Document {
 		 * Map of registered {@link engine.view.Observer observers}.
 		 *
 		 * @private
-		 * @member {Map.<Function, engine.view.Observer>} engine.view.Document_#observers
+		 * @member {Map.<Function, engine.view.Observer>} engine.view.Document#_observers
 		 */
 		this._observers = new Map();
+
+		/**
+		 * {@link engine.view.EditableElement} which is currently focused or null if all of them are blurred.
+		 *
+		 * This property is updated by the {@link engine.view.obsever.FocusObserver}.
+		 * If the {@link engine.view.obsever.FocusObserver} is disabled this property will not change.
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {engine.view.EditableElement|null} engine.view.Document#focusedEditable
+		 */
+		this.set( 'focusedEditable', null );
 
 		injectQuirksHandling( this );
 	}
@@ -165,6 +177,7 @@ export default class Document {
 		viewRoot.on( 'change:children', ( evt, node ) => this.renderer.markToSync( 'children', node ) );
 		viewRoot.on( 'change:attributes', ( evt, node ) => this.renderer.markToSync( 'attributes', node ) );
 		viewRoot.on( 'change:text', ( evt, node ) => this.renderer.markToSync( 'text', node ) );
+		this.on( 'change:focusedEditable', () => this.renderer.focusedEditable = this.focusedEditable );
 
 		if ( domRoot instanceof HTMLElement ) {
 			this.attachDomRoot( domRoot, name );
@@ -250,7 +263,7 @@ export default class Document {
 	}
 }
 
-mix( Document, EmitterMixin );
+mix( Document, ObservableMixin );
 
 /**
  * Enum representing type of the change.

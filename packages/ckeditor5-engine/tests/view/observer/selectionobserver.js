@@ -12,6 +12,7 @@ import ViewSelection from '/ckeditor5/engine/view/selection.js';
 import ViewDocument from '/ckeditor5/engine/view/document.js';
 import SelectionObserver from '/ckeditor5/engine/view/observer/selectionobserver.js';
 import MutationObserver from '/ckeditor5/engine/view/observer/mutationobserver.js';
+import FocusObserver from '/ckeditor5/engine/view/observer/focusobserver.js';
 
 import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
 
@@ -29,6 +30,7 @@ describe( 'SelectionObserver', () => {
 
 		mutationObserver = viewDocument.addObserver( MutationObserver );
 		selectionObserver = viewDocument.addObserver( SelectionObserver );
+		viewDocument.addObserver( FocusObserver );
 
 		viewRoot = viewDocument.getRoot();
 
@@ -38,6 +40,8 @@ describe( 'SelectionObserver', () => {
 	} );
 
 	beforeEach( ( done ) => {
+		document.getElementById( 'focusPlaceholder' ).focus();
+
 		viewDocument.selection.removeAllRanges();
 		document.getSelection().removeAllRanges();
 

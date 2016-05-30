@@ -23,7 +23,7 @@ export default class FocusObserver extends DomEventObserver {
 
 		this.domEventType = [ 'focus', 'blur' ];
 
-		// Update `isFocus` property of root elements.
+		// Update `isFocus` property of root elements and `document#focusedEditable`.
 		document.on( 'focus', ( evt, data ) => {
 			const target = data.target;
 
@@ -32,6 +32,8 @@ export default class FocusObserver extends DomEventObserver {
 					root.isFocused = true;
 				}
 			}
+
+			document.focusedEditable = target;
 		} );
 
 		document.on( 'blur', ( evt, data ) => {
@@ -41,6 +43,10 @@ export default class FocusObserver extends DomEventObserver {
 				if ( target === root ) {
 					root.isFocused = false;
 				}
+			}
+
+			if ( document.focusedEditable == target ) {
+				document.focusedEditable = null;
 			}
 		} );
 	}

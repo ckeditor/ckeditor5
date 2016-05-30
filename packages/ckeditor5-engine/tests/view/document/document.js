@@ -56,6 +56,7 @@ describe( 'Document', () => {
 			expect( viewDocument ).to.have.property( 'renderer' ).that.is.instanceOf( Renderer );
 			expect( viewDocument ).to.have.property( 'writer' ).that.is.instanceOf( Writer );
 			expect( viewDocument ).to.have.property( 'domConverter' ).that.is.instanceOf( DomConverter );
+			expect( viewDocument ).to.have.property( 'focusedEditable' ).that.is.null;
 		} );
 	} );
 
