@@ -7,20 +7,19 @@
 
 import FormatsEngine from '/ckeditor5/formats/formatsengine.js';
 import Paragraph from '/ckeditor5/paragraph/paragraph.js';
-import Editor from '/ckeditor5/editor.js';
-import StandardCreator from '/ckeditor5/creator/standardcreator.js';
+import StandardEditor from '/ckeditor5/editor/standardeditor.js';
+import FormatsCommand from '/ckeditor5/formats/formatscommand.js';
 import { getData } from '/tests/engine/_utils/model.js';
 
 describe( 'FormatsEngine', () => {
 	let editor, document;
 
 	beforeEach( () => {
-		editor = new Editor( null, {
-			creator: StandardCreator,
+		editor = new StandardEditor( null, {
 			features: [ FormatsEngine ]
 		} );
 
-		return editor.init().then( () => {
+		return editor.initPlugins().then( () => {
 			document = editor.document;
 			document.createRoot( 'main' );
 		} );
@@ -49,24 +48,31 @@ describe( 'FormatsEngine', () => {
 		expect( document.schema.check( { name: '$inline', inside: 'heading3' } ) ).to.be.true;
 	} );
 
-	// it( 'should convert heading1', () => {
-	// 	editor.setData( '<h2>foobar</h2>' );
-	//
-	// 	expect( getData( document, { withoutSelection: true } ) ).to.equal( '<heading1>foobar</heading1>' );
-	// 	expect( editor.getData() ).to.equal( '<h2>foobar</h2>' );
-	// } );
+	it( 'should register format command', () => {
+		expect( editor.commands.has( 'format' ) ).to.be.true;
+		const command = editor.commands.get( 'format' );
 
-	// it( 'should convert heading2', () => {
-	// 	editor.setData( '<h3>foobar</h3>' );
-	//
-	// 	expect( getData( document, { withoutSelection: true } ) ).to.equal( '<heading2>foobar</heading2>' );
-	// 	expect( editor.getData() ).to.equal( '<h3>foobar</h3>' );
-	// } );
-	//
-	// it( 'should convert heading3', () => {
-	// 	editor.setData( '<h4>foobar</h4>' );
-	//
-	// 	expect( getData( document, { withoutSelection: true } ) ).to.equal( '<heading3>foobar</heading3>' );
-	// 	expect( editor.getData() ).to.equal( '<h4>foobar</h4>' );
-	// } );
+		expect( command ).to.be.instanceOf( FormatsCommand );
+	} );
+
+	it( 'should convert heading1', () => {
+		editor.setData( '<h2>foobar</h2>' );
+
+		expect( getData( document, { withoutSelection: true } ) ).to.equal( '<heading1>foobar</heading1>' );
+		expect( editor.getData() ).to.equal( '<h2>foobar</h2>' );
+	} );
+
+	it( 'should convert heading2', () => {
+		editor.setData( '<h3>foobar</h3>' );
+
+		expect( getData( document, { withoutSelection: true } ) ).to.equal( '<heading2>foobar</heading2>' );
+		expect( editor.getData() ).to.equal( '<h3>foobar</h3>' );
+	} );
+
+	it( 'should convert heading3', () => {
+		editor.setData( '<h4>foobar</h4>' );
+
+		expect( getData( document, { withoutSelection: true } ) ).to.equal( '<heading3>foobar</heading3>' );
+		expect( editor.getData() ).to.equal( '<h4>foobar</h4>' );
+	} );
 } );

@@ -5,49 +5,56 @@
 
 'use strict';
 
-import Command from '../command.js';
+import Command from '../command/command.js';
 
 export default class FormatsCommand extends Command {
-	constructor( editor ) {
+	constructor( editor, formats ) {
 		super( editor );
 
-		this.set( 'value', 'paragraph' );
+		this.formats = formats;
+		this.defaultFormat = this.formats[ 0 ];
+
+		this.set( 'value', this.formats[ 0 ] );
 
 		this.listenTo( editor.document.selection, 'change', () => {
 			const position = editor.document.selection.getFirstPosition();
 			const parent = position.parent;
-
-			switch ( parent.name ) {
-				case 'h2':
-					this.value = 'heading1';
-					break;
-
-				case 'h3':
-					this.value = 'heading2';
-					break;
-
-				case 'h4':
-					this.value = 'heading3';
-					break;
-
-				default:
-					this.value = 'paragraph';
-			}
+			this.value = parent.name;
 		} );
 	}
 
 	_doExecute( forceValue ) {
 		const document = this.editor.document;
 		const selection = document.selection;
-		const value = ( forceValue === undefined ) ? 'paragraph' : forceValue;
-		let element;
+		const newValue = ( forceValue === undefined ) ? 'paragraph' : forceValue;
+		const position = selection.getFirstPosition();
+		const elements = [];
+		let remove = false;
 
-		if ( selection.isCollapsed ) {
-			const position = selection.getFirstPosition();
-			element = position.parent;
+		// If start position is same as new value - we are toggling already applied format back to default one.
+		if ( newValue === position.parent.name ) {
+			remove = true;
 		}
 
-		const batch = document.batch();
-		batch.rename( value, element );
+		if ( selection.isCollapsed ) {
+			elements.push( position.parent );
+		}
+
+		document.enqueueChanges( () => {
+			const batch = document.batch();
+
+			for ( let element of elements ) {
+				// When removing applied format.
+				if ( remove ) {
+					if ( element.name === newValue ) {
+						batch.rename( this.defaultFormat.id, element );
+					}
+				}
+				// When applying new format.
+				else {
+					batch.rename( newValue, element );
+				}
+			}
+		} );
 	}
 }

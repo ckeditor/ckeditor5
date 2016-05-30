@@ -9,6 +9,14 @@ import Feature from '../feature.js';
 import BuildModelConverterFor from '../engine/conversion/model-converter-builder.js';
 import BuildViewConverterFor from '../engine/conversion/view-converter-builder.js';
 import Paragraph from '../paragraph/paragraph.js';
+import FormatsCommand from './formatscommand.js';
+
+const formats = [
+	{ id: 'paragraph', viewElement: 'p' },
+	{ id: 'heading1', viewElement: 'h2' },
+	{ id: 'heading2', viewElement: 'h3' },
+	{ id: 'heading3', viewElement: 'h4' }
+];
 
 export default class FormatsEngine extends Feature {
 	static get requires() {
@@ -22,37 +30,26 @@ export default class FormatsEngine extends Feature {
 		const data = editor.data;
 		const editing = editor.editing;
 
-		// Schema.
-		schema.registerItem( 'heading1', '$block' );
-		schema.registerItem( 'heading2', '$block' );
-		schema.registerItem( 'heading3', '$block' );
+		for ( let format of formats ) {
+			// Skip paragraph - it is defined in required Paragraph feature.
+			if ( format.id !== 'paragraph' ) {
+				// Schema.
+				schema.registerItem( format.id, '$block' );
 
-		// Build converter from model to view for data pipeline.
-		BuildModelConverterFor( data.modelToView, editing.modelToView )
-			.fromElement( 'heading1' )
-			.toElement( 'h2' );
+				// Build converter from model to view for data pipeline.
+				BuildModelConverterFor( data.modelToView, editing.modelToView )
+					.fromElement( format.id )
+					.toElement( format.viewElement );
 
-		BuildModelConverterFor( data.modelToView )
-			.fromElement( 'heading2' )
-			.toElement( 'h3' );
+				// Build converter from view to model for data pipeline.
+				BuildViewConverterFor( data.viewToModel )
+					.fromElement( format.viewElement )
+					.toElement( format.id );
+			}
+		}
 
-		BuildModelConverterFor( data.modelToView )
-			.fromElement( 'heading3' )
-			.toElement( 'h4' );
-
-		// Build converter from view to model for data pipeline.
-		BuildViewConverterFor( data.viewToModel )
-			.fromElement( 'h2' )
-			.toElement( 'heading1' );
-
-		BuildViewConverterFor( data.viewToModel )
-			.fromElement( 'h3' )
-			.toElement( 'heading2' );
-
-		BuildViewConverterFor( data.viewToModel )
-			.fromElement( 'h4' )
-			.toElement( 'heading3' );
-
-		// TODO: register command.
+		// Register command.
+		const command = new FormatsCommand( editor, formats );
+		editor.commands.set( 'format', command );
 	}
 }
