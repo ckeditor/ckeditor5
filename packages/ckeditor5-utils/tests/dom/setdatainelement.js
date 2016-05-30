@@ -19,7 +19,7 @@ describe( 'setDataInElement', () => {
 			setDataInElement( el, expectedData );
 
 			const actualData = getDataFromElement( el );
-			expect( actualData ).to.equal( actualData );
+			expect( actualData ).to.equal( expectedData );
 		} );
 	} );
 } );
