@@ -12,10 +12,10 @@ import Paragraph from '../paragraph/paragraph.js';
 import FormatsCommand from './formatscommand.js';
 
 const formats = [
-	{ id: 'paragraph', viewElement: 'p' },
-	{ id: 'heading1', viewElement: 'h2' },
-	{ id: 'heading2', viewElement: 'h3' },
-	{ id: 'heading3', viewElement: 'h4' }
+	{ id: 'paragraph', viewElement: 'p', label: 'Paragraph' },
+	{ id: 'heading1', viewElement: 'h2', label: 'Heading 1' },
+	{ id: 'heading2', viewElement: 'h3', label: 'Heading 2' },
+	{ id: 'heading3', viewElement: 'h4', label: 'Heading 3' }
 ];
 
 export default class FormatsEngine extends Feature {
