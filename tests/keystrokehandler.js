@@ -7,19 +7,19 @@
 
 'use strict';
 
-import Editor from '/ckeditor5/editor.js';
-import StandardCreator from '/ckeditor5/creator/standardcreator.js';
+import VirtualTestEditor from '/tests/ckeditor5/_utils/virtualtesteditor.js';
+import KeystrokeHandler from '/ckeditor5/keystrokehandler.js';
 import { keyCodes } from '/ckeditor5/utils/keyboard.js';
 
 describe( 'KeystrokeHandler', () => {
 	let editor;
 
 	beforeEach( () => {
-		editor = new Editor( null, {
-			creator: StandardCreator
-		} );
-
-		return editor.init();
+		return VirtualTestEditor.create()
+			.then( newEditor => {
+				editor = newEditor;
+				editor.keystrokes = new KeystrokeHandler( editor );
+			} );
 	} );
 
 	describe( 'constructor', () => {

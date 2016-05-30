@@ -84,6 +84,19 @@ export default class Editor {
 		 * @member {engine.DataController} ckeditor5.Editor#data
 		 */
 		this.data = new DataController( this.document );
+
+		/**
+		 * Instance of the {@link engine.EditingController editing controller}.
+		 *
+		 * This property is set by more specialized editor classes (such as {@link ckeditor5.editor.StandardEditor}),
+		 * however, it's required for features to work as their engine-related parts will try to connect converters.
+		 *
+		 * When defining a virtual editor class, like one working in Node.js, it's possible to plug a virtual
+		 * editing controller which only instantiates necessary properties, but without any observers and listeners.
+		 *
+		 * @readonly
+		 * @member {engine.EditingController} ckeditor5.editor.Editor#editing
+		 */
 	}
 
 	/**

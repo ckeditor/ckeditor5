@@ -12,7 +12,16 @@ import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor
 import BoxedEditorUI from '/ckeditor5/ui/editorui/boxed/boxededitorui.js';
 import BoxedEditorUIView from '/ckeditor5/ui/editorui/boxed/boxededitoruiview.js';
 
+/**
+ * A simplified classic editor. Useful for testing features.
+ *
+ * @memberOf tests.ckeditor5._utils
+ * @extends ckeditor5.editor.StandardEditor
+ */
 export default class ClassicTestEditor extends StandardEditor {
+	/**
+	 * @inheritDoc
+	 */
 	constructor( element, config ) {
 		super( element, config );
 
@@ -27,11 +36,17 @@ export default class ClassicTestEditor extends StandardEditor {
 		this.data.processor = new HtmlDataProcessor();
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	destroy() {
 		return this.ui.destroy()
 			.then( () => super.destroy() );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	static create( element, config ) {
 		return new Promise( ( resolve ) => {
 			const editor = new this( element, config );
@@ -46,6 +61,11 @@ export default class ClassicTestEditor extends StandardEditor {
 		} );
 	}
 
+	/**
+	 * Creates boxed editor UI.
+	 *
+	 * @returns {Promise}
+	 */
 	_createUI() {
 		const editorUI = new BoxedEditorUI( this );
 		const editorUIView = new BoxedEditorUIView( editorUI.viewModel, this.locale );
@@ -57,6 +77,11 @@ export default class ClassicTestEditor extends StandardEditor {
 		return Promise.resolve();
 	}
 
+	/**
+	 * Initilizes editor UI.
+	 *
+	 * @returns {Promise}
+	 */
 	_initUI() {
 		return this.ui.init();
 	}

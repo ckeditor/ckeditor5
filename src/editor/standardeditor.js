@@ -37,12 +37,7 @@ export default class StandardEditor extends Editor {
 		 */
 		this.element = element;
 
-		/**
-		 * Instance of the {@link engine.EditingController editing controller}.
-		 *
-		 * @readonly
-		 * @member {engine.EditingController} ckeditor5.editor.StandardEditor#editing
-		 */
+		// Documented in Editor.
 		this.editing = new EditingController( this.document );
 
 		/**
@@ -52,6 +47,17 @@ export default class StandardEditor extends Editor {
 		 * @member {engine.treecontroller.DataController} ckeditor5.editor.StandardEditor#keystrokes
 		 */
 		this.keystrokes = new KeystrokeHandler( this );
+
+		/**
+		 * Editor UI instance.
+		 *
+		 * This property is set by more specialized editor constructors. However, it's required
+		 * for features to work (their UI-related part will try to interact with editor UI),
+		 * so every editor class which is meant to work with default features should set this property.
+		 *
+		 * @readonly
+		 * @member {ui.editorUI.EditorUI} ckeditor5.editor.StandardEditor#ui
+		 */
 	}
 
 	/**

@@ -3,14 +3,12 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: browser-only */
-
 'use strict';
 
-import Editor from '/ckeditor5/editor.js';
+import Editor from '/ckeditor5/editor/editor.js';
 import Command from '/ckeditor5/command/command.js';
 
-let element, editor, command;
+let editor, command;
 
 class CommandWithSchema extends Command {
 	constructor( editor, schemaValid ) {
@@ -25,10 +23,7 @@ class CommandWithSchema extends Command {
 }
 
 beforeEach( () => {
-	element = document.createElement( 'div' );
-	document.body.appendChild( element );
-
-	editor = new Editor( element );
+	editor = new Editor();
 	command = new Command( editor );
 } );
 

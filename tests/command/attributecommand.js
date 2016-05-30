@@ -5,7 +5,7 @@
 
 'use strict';
 
-import Editor from '/ckeditor5/editor.js';
+import Editor from '/ckeditor5/editor/editor.js';
 import Document from '/ckeditor5/engine/model/document.js';
 import AttributeCommand from '/ckeditor5/command/attributecommand.js';
 import Text from '/ckeditor5/engine/model/text.js';
@@ -20,24 +20,25 @@ const attrKey = 'bold';
 beforeEach( () => {
 	editor = new Editor();
 	editor.document = new Document();
+
 	modelDoc = editor.document;
-	root = modelDoc.createRoot( 'root', 'div' );
+	root = modelDoc.createRoot();
 
 	command = new AttributeCommand( editor, attrKey );
 
-	modelDoc.schema.registerItem( 'div', '$block' );
 	modelDoc.schema.registerItem( 'p', '$block' );
+	modelDoc.schema.registerItem( 'h1', '$block' );
 	modelDoc.schema.registerItem( 'img', '$inline' );
 
 	// Allow block in "root" (DIV)
-	modelDoc.schema.allow( { name: '$block', inside: 'div' } );
+	modelDoc.schema.allow( { name: '$block', inside: '$root' } );
 
 	// Bold text is allowed only in P.
 	modelDoc.schema.allow( { name: '$text', attributes: 'bold', inside: 'p' } );
-	modelDoc.schema.allow( { name: 'p', attributes: 'bold', inside: 'div' } );
+	modelDoc.schema.allow( { name: 'p', attributes: 'bold', inside: '$root' } );
 
 	// Disallow bold on image.
-	modelDoc.schema.disallow( { name: 'img', attributes: 'bold', inside: 'div' } );
+	modelDoc.schema.disallow( { name: 'img', attributes: 'bold', inside: '$root' } );
 } );
 
 afterEach( () => {
@@ -198,7 +199,7 @@ describe( '_checkEnabled', () => {
 				new Element( 'img' ),
 				'bar'
 			] ),
-			new Element( 'div' ),
+			new Element( 'h1' ),
 			new Element( 'p' )
 		] );
 	} );
