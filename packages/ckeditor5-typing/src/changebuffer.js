@@ -108,6 +108,7 @@ export default class ChangeBuffer {
 
 		if ( this.size >= this.limit ) {
 			this._batch = null;
+			this.size = 0;
 		}
 	}
 
