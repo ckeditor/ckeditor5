@@ -5,7 +5,7 @@
 
 'use strict';
 
-import Model from '/ckeditor5/ui/model.js';
+import Model from '../ckeditor5/ui/model.js';
 
 const iconIds = [ {{#shapes}}'{{name}}',{{/shapes}} ];
 const iconPrefix = 'ck-icon-';

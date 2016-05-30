@@ -26,9 +26,14 @@ module.exports = ( config ) => {
 		clean: {
 			/**
 			 * Removes "themes" folder from "./build/{format}" directory.
+			 *
+			 * @param {Object} options
+			 * @param {String} options.formats
 			 */
-			themes() {
-				return utils.clean( buildDir, path.join( `@(${ utils.parseArguments().formats.join( '|' ) })`, 'theme' ) );
+			themes( options = {} ) {
+				let formats = options.formats || utils.parseArguments().formats;
+
+				return utils.clean( buildDir, path.join( `@(${ formats.join( '|' ) })`, 'theme' ) );
 			},
 
 			/**
@@ -68,7 +73,7 @@ module.exports = ( config ) => {
 				 * @returns {Stream}
 				 */
 				main( watch ) {
-					const glob = path.join( config.ROOT_DIR, 'ckeditor.js' );
+					const glob = path.join( config.ROOT_DIR, config.MAIN_FILE );
 
 					return gulp.src( glob )
 						.pipe( watch ? gulpWatch( glob ) : utils.noop() );
@@ -332,9 +337,15 @@ module.exports = ( config ) => {
 	gulp.task( 'build:icons', () => tasks.build.icons( args ) );
 	gulp.task( 'build:js', [ 'build:clean:js' ], () => tasks.build.js( args ) );
 
-	// Tasks specific for `gulp docs` builder.
+	// Tasks specific for preparing build with unmodified source files. Uses by `gulp docs` or `gulp bundle`.
 	gulp.task( 'build:clean:js:esnext', () => tasks.clean.js( { formats: [ 'esnext' ] } ) );
+	gulp.task( 'build:clean:themes:esnext', () => tasks.clean.themes( { formats: [ 'esnext' ] } ) );
+	gulp.task( 'build:sass:esnext', () => tasks.build.sass( { formats: [ 'esnext' ] } ) );
+	gulp.task( 'build:icons:esnext', () => tasks.build.icons( { formats: [ 'esnext' ] } ) );
 	gulp.task( 'build:js:esnext', [ 'build:clean:js:esnext' ], () => tasks.build.js( { formats: [ 'esnext' ] } ) );
+	gulp.task( 'build:themes:esnext', ( callback ) => {
+		runSequence( 'build:clean:themes:esnext', 'build:icons:esnext', 'build:sass:esnext', callback );
+	} );
 
 	// Tasks specific for testing under node.
 	gulp.task( 'build:clean:js:cjs', () => tasks.clean.js( { formats: [ 'cjs' ] } ) );

@@ -135,7 +135,7 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 	 */
 	transpile( format, options ) {
 		return gulpBabel( options )
-			.on( 'error', function( err ) {
+			.on( 'error', ( err ) => {
 				gutil.log( gutil.colors.red( `Error (Babel:${ format })` ) );
 				gutil.log( gutil.colors.red( err.message ) );
 				console.log( '\n' + err.codeFrame + '\n' );
@@ -165,7 +165,7 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 			plugins: utils.getBabelPlugins( format ),
 			// Ensure that all paths ends with '.js' because Require.JS (unlike Common.JS/System.JS)
 			// will not add it to module names which look like paths.
-			resolveModuleSource: format == 'cjs' ? utils.resolveModuleSource : utils.appendModuleExtension
+			resolveModuleSource: format == 'cjs' ? utils.resolveModuleSource : utils.appendModuleExtension,
 		};
 	},
 
