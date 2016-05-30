@@ -15,7 +15,7 @@ describe( 'InlineEditableUIView', () => {
 	let model, view, editableElement, locale;
 
 	beforeEach( () => {
-		model = new Model( { isEditable: true, isFocused: false } );
+		model = new Model( { isEditable: true, isFocused: false, name: 'foo' } );
 		locale = new Locale( 'en' );
 		view = new InlineEditableUIView( model, locale );
 		editableElement = document.createElement( 'div' );
@@ -44,16 +44,18 @@ describe( 'InlineEditableUIView', () => {
 	} );
 
 	describe( 'editableElement', () => {
+		const ariaLabel = 'Rich Text Editor, foo';
+
 		it( 'has proper accessibility role', () => {
 			expect( view.element.attributes.getNamedItem( 'role' ).value ).to.equal( 'textbox' );
 		} );
 
 		it( 'has proper ARIA label', () => {
-			expect( view.element.attributes.getNamedItem( 'aria-label' ).value ).to.be.a( 'string' );
+			expect( view.element.getAttribute( 'aria-label' ) ).to.equal( ariaLabel );
 		} );
 
 		it( 'has proper title', () => {
-			expect( view.element.attributes.getNamedItem( 'title' ).value ).to.be.a( 'string' );
+			expect( view.element.getAttribute( 'title' ) ).to.equal( ariaLabel );
 		} );
 
 		it( 'has proper class name', () => {

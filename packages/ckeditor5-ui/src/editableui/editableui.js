@@ -17,9 +17,9 @@ export default class EditableUI extends Controller {
 	 * Creates a new instance of the Editable class.
 	 *
 	 * @param {ckeditor5.Editor} editor The editor instance.
-	 * @param {engine.view.RootEditableElement} editableModel The model for the editable.
+	 * @param {engine.view.RootEditableElement} editable The editable element.
 	 */
-	constructor( editor, editableModel ) {
+	constructor( editor, editable ) {
 		super();
 
 		/**
@@ -38,7 +38,7 @@ export default class EditableUI extends Controller {
 		 */
 		this.viewModel = new Model();
 
-		this.viewModel.bind( 'isReadOnly', 'isFocused' ).to( editableModel );
-		this.viewModel.set( 'name', editableModel.rootName );
+		this.viewModel.bind( 'isReadOnly', 'isFocused' ).to( editable );
+		this.viewModel.set( 'name', editable.rootName );
 	}
 }

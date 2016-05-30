@@ -15,7 +15,7 @@ describe( 'EditableUIView', () => {
 	let model, view, editableElement, locale;
 
 	beforeEach( () => {
-		model = new Model( { isEditable: true, isFocused: false } );
+		model = new Model( { isReadOnly: false, isFocused: false } );
 		locale = new Locale( 'en' );
 		view = new EditableUIView( model, locale );
 		editableElement = document.createElement( 'div' );
@@ -59,13 +59,13 @@ describe( 'EditableUIView', () => {
 
 		describe( 'contenteditable', () => {
 			it( 'has initial value set', () => {
-				expect( view.element.attributes.getNamedItem( 'contenteditable' ).value ).to.equal( 'true' );
+				expect( view.element.getAttribute( 'contenteditable' ) ).to.equal( 'true' );
 			} );
 
-			it( 'reacts on model.isEditable', () => {
-				model.isEditable = false;
+			it( 'reacts on model.isReadOnly', () => {
+				model.isReadOnly = true;
 
-				expect( view.element.attributes.getNamedItem( 'contenteditable' ).value ).to.equal( 'false' );
+				expect( view.element.getAttribute( 'contenteditable' ) ).to.equal( 'false' );
 			} );
 		} );
 	} );
