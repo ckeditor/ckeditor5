@@ -11,7 +11,7 @@
     "ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles#t/1",
     "ckeditor5-creator-classic": "ckeditor/ckeditor5-creator-classic#t/9",
     "ckeditor5-delete": "ckeditor/ckeditor5-delete#t/6",
-    "ckeditor5-engine": "ckeditor/ckeditor5-engine",
+    "ckeditor5-engine": "ckeditor/ckeditor5-engine#t/452",
     "ckeditor5-enter": "ckeditor/ckeditor5-enter#t/12",
     "ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph#t/1",
     "ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark",

@@ -5,26 +5,40 @@
 
 'use strict';
 
-import StandardEditor from '/ckeditor5/editor/standardeditor.js';
+import Editor from '/ckeditor5/editor/editor.js';
 import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
 
 /**
- * A simple editor implementation useful for testing the engine part of the features.
- * It contains full data pipepilne and the engine pipeline but without rendering to DOM.
+ * A simple editor implementation with a functional model part of the engine (the document).
+ * It contains a full data pipeline but no editing pipeline.
  *
  * Should work in Node.js. If not now, then in the future :).
  *
  * @memberOf tests.ckeditor5._utils
  */
-export default class VirtualTestEditor extends StandardEditor {
+export default class ModelTestEditor extends Editor {
 	constructor( config ) {
-		super( null, config );
+		super( config );
 
 		this.document.createRoot();
 
-		this.editing.createRoot( 'div' );
-
 		this.data.processor = new HtmlDataProcessor();
+	}
+
+	/**
+	 * Sets the data in the editor's main root.
+	 *
+	 * @param {*} data The data to load.
+	 */
+	setData( data ) {
+		this.data.set( data );
+	}
+
+	/**
+	 * Gets the data from the editor's main root.
+	 */
+	getData() {
+		return this.data.get();
 	}
 
 	/**
