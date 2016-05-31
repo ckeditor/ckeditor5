@@ -38,7 +38,7 @@ describe( 'ClassicTestEditor', () => {
 			const editor = new ClassicTestEditor( { foo: 1 } );
 
 			expect( editor.document.getRoot() ).to.have.property( 'name', '$root' );
-			expect( editor.editing.view.getRoot() ).to.have.property( 'name', 'DIV' ); // See ckeditor5-engine#450.
+			expect( editor.editing.view.getRoot() ).to.have.property( 'name', 'div' );
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
 		} );
 	} );

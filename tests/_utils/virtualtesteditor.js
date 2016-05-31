@@ -5,8 +5,7 @@
 
 'use strict';
 
-import Editor from '/ckeditor5/editor/editor.js';
-import VirtualEditingController from './virtualeditingcontroller.js';
+import StandardEditor from '/ckeditor5/editor/standardeditor.js';
 import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
 
 /**
@@ -17,27 +16,32 @@ import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor
  *
  * @memberOf tests.ckeditor5._utils
  */
-export default class VirtualTestEditor extends Editor {
+export default class VirtualTestEditor extends StandardEditor {
 	constructor( config ) {
-		super( config );
+		super( null, config );
 
-		this.editing = new VirtualEditingController( this.document );
+		this.document.createRoot();
+
+		this.editing.createRoot( 'div' );
+
 		this.data.processor = new HtmlDataProcessor();
 	}
 
 	/**
-	 * Sets the data in the editor's main root.
+	 * Creates a virtual, element-less editor instance.
 	 *
-	 * @param {*} data The data to load.
+	 * @param {Object} config See {@link ckeditor5.editor.StandardEditor}'s param.
+	 * @returns {Promise} Promise resolved once editor is ready.
+	 * @returns {ckeditor5.editor.VirtualTestEditor} return.editor The editor instance.
 	 */
-	setData( data ) {
-		this.data.set( data );
-	}
+	static create( config ) {
+		return new Promise( ( resolve ) => {
+			const editor = new this( config );
 
-	/**
-	 * Gets the data from the editor's main root.
-	 */
-	getData() {
-		return this.data.get();
+			resolve(
+				editor.initPlugins()
+					.then( () => editor )
+			);
+		} );
 	}
 }

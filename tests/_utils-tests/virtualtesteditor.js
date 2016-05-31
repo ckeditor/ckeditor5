@@ -5,61 +5,41 @@
 
 'use strict';
 
-import Editor from '/ckeditor5/editor/editor.js';
+import StandardEditor from '/ckeditor5/editor/standardeditor.js';
 import VirtualTestEditor from '/tests/ckeditor5/_utils/virtualtesteditor.js';
-import VirtualEditingController from '/tests/ckeditor5/_utils/virtualeditingcontroller.js';
 import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
-import { getData, setData } from '/tests/engine/_utils/model.js';
+
+import testUtils from '/tests/ckeditor5/_utils/utils.js';
+
+testUtils.createSinonSandbox();
 
 describe( 'VirtualTestEditor', () => {
 	describe( 'constructor', () => {
 		it( 'creates an instance of editor', () => {
 			const editor = new VirtualTestEditor( { foo: 1 } );
 
-			expect( editor ).to.be.instanceof( Editor );
-		} );
-
-		it( 'sets necessary properties', () => {
-			const editor = new VirtualTestEditor( { foo: 1 } );
+			expect( editor ).to.be.instanceof( StandardEditor );
 
 			expect( editor.config.get( 'foo' ) ).to.equal( 1 );
+		} );
 
-			expect( editor.editing ).to.be.instanceof( VirtualEditingController );
+		it( 'creates model and view roots', () => {
+			const editor = new VirtualTestEditor( { foo: 1 } );
+
+			expect( editor.document.getRoot() ).to.have.property( 'name', '$root' );
+			expect( editor.editing.view.getRoot() ).to.have.property( 'name', 'div' );
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
 		} );
 	} );
 
-	describe( 'setData', () => {
-		let editor;
+	describe( 'create', () => {
+		it( 'creates an instance of editor', () => {
+			return VirtualTestEditor.create( { foo: 1 } )
+				.then( editor => {
+					expect( editor ).to.be.instanceof( VirtualTestEditor );
 
-		beforeEach( () => {
-			editor = new VirtualTestEditor();
-			editor.document.schema.allow( { name: '$text', inside: '$root' } );
-		} );
-
-		it( 'should set data', () => {
-			editor.document.createRoot();
-
-			editor.setData( 'foo' );
-
-			expect( getData( editor.document, { rootName: 'main', withoutSelection: true } ) ).to.equal( 'foo' );
-		} );
-	} );
-
-	describe( 'getData', () => {
-		let editor;
-
-		beforeEach( () => {
-			editor = new VirtualTestEditor();
-			editor.document.schema.allow( { name: '$text', inside: '$root' } );
-		} );
-
-		it( 'should get data', () => {
-			editor.document.createRoot();
-
-			setData( editor.document, 'foo' );
-
-			expect( editor.getData() ).to.equal( 'foo' );
+					expect( editor.config.get( 'foo' ) ).to.equal( 1 );
+				} );
 		} );
 	} );
 } );

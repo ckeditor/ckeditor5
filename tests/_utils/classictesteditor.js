@@ -25,15 +25,14 @@ export default class ClassicTestEditor extends StandardEditor {
 	constructor( element, config ) {
 		super( element, config );
 
-		const editableElement = document.createElement( 'div' );
-
-		document.body.appendChild( editableElement );
-
 		this.document.createRoot();
 
-		this.editing.createRoot( editableElement );
+		this.editing.createRoot( 'div' );
 
 		this.data.processor = new HtmlDataProcessor();
+
+		this.ui = new BoxedEditorUI( this );
+		this.ui.view = new BoxedEditorUIView( this.ui.viewModel, this.locale );
 	}
 
 	/**
@@ -52,39 +51,11 @@ export default class ClassicTestEditor extends StandardEditor {
 			const editor = new this( element, config );
 
 			resolve(
-				editor._createUI()
-					.then( () => editor.initPlugins() )
-					.then( () => editor._initUI() )
+				editor.initPlugins()
+					.then( () => editor.ui.init() )
 					.then( () => editor.loadDataFromEditorElement() )
 					.then( () => editor )
 			);
 		} );
-	}
-
-	/**
-	 * Creates boxed editor UI.
-	 *
-	 * @protected
-	 * @returns {Promise}
-	 */
-	_createUI() {
-		const editorUI = new BoxedEditorUI( this );
-		const editorUIView = new BoxedEditorUIView( editorUI.viewModel, this.locale );
-
-		editorUI.view = editorUIView;
-
-		this.ui = editorUI;
-
-		return Promise.resolve();
-	}
-
-	/**
-	 * Initilizes editor UI.
-	 *
-	 * @protected
-	 * @returns {Promise}
-	 */
-	_initUI() {
-		return this.ui.init();
 	}
 }
