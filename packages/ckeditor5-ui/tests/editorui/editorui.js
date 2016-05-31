@@ -29,10 +29,6 @@ describe( 'EditorUI', () => {
 
 			expect( editorUI.collections.get( 'body' ) ).to.be.instanceof( ControllerCollection );
 		} );
-
-		it( 'sets editor.ui property', () => {
-			expect( editor ).to.have.property( 'ui', editorUI );
-		} );
 	} );
 
 	describe( 'init', () => {
