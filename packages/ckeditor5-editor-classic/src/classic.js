@@ -9,15 +9,8 @@ import StandardEditor from '../editor/standardeditor.js';
 
 import HtmlDataProcessor from '../engine/dataprocessor/htmldataprocessor.js';
 
-import BoxedEditorUI from '../ui/editorui/boxed/boxededitorui.js';
+import ClassicEditorUI from './classiceditorui.js';
 import BoxedEditorUIView from '../ui/editorui/boxed/boxededitoruiview.js';
-
-import EditableUI from '../ui/editableui/editableui.js';
-import InlineEditableUIView from '../ui/editableui/inline/inlineeditableuiview.js';
-
-import Model from '../ui/model.js';
-import Toolbar from '../ui/bindings/toolbar.js';
-import StickyToolbarView from '../ui/stickytoolbar/stickytoolbarview.js';
 
 import ElementReplacer from '../utils/elementreplacer.js';
 
@@ -45,27 +38,16 @@ export default class ClassicEditor extends StandardEditor {
 
 		this.data.processor = new HtmlDataProcessor();
 
+		this.ui = new ClassicEditorUI( this );
+		this.ui.view = new BoxedEditorUIView( this.ui.viewModel, this.locale );
+
 		/**
 		 * The element replacer instance used to hide editor element.
 		 *
-		 * @private
+		 * @protected
 		 * @member {utils.ElementReplacer} editor-classic.Classic#_elementReplacer
 		 */
 		this._elementReplacer = new ElementReplacer();
-
-		/**
-		 * Toolbar controller.
-		 *
-		 * @protected
-		 * @member {ui.toolbar.Toolbar} editor-classic.Classic#_toolbar
-		 */
-
-		/**
-		 * Editable UI controller.
-		 *
-		 * @protected
-		 * @member {ui.editableUI.EditableUI} editor-classic.Classic#_editableUI
-		 */
 	}
 
 	/**
@@ -107,84 +89,13 @@ export default class ClassicEditor extends StandardEditor {
 			const editor = new ClassicEditor( element, config );
 
 			resolve(
-				editor._createUI()
-					.then( () => editor.initPlugins() )
-					.then( () => editor._initUI() )
+				editor.initPlugins()
+					.then( () => editor._elementReplacer.replace( element, editor.ui.view.element ) )
+					.then( () => editor.ui.init() )
+					.then( () => editor.editing.view.attachDomRoot( editor.ui.editableElement ) )
 					.then( () => editor.loadDataFromEditorElement() )
 					.then( () => editor )
 			);
 		} );
-	}
-
-	/**
-	 * Creates editor UI (the {@link ui.editorUI.BoxedEditorUI boxed version} of it) with a sticky toolbar and an
-	 * inline editable.
-	 *
-	 * @protected
-	 * @returns {Promise}
-	 */
-	_createUI() {
-		const editorUI = new BoxedEditorUI( this );
-		const editorUIView = new BoxedEditorUIView( editorUI.viewModel, this.locale );
-
-		editorUI.view = editorUIView;
-
-		this.ui = editorUI;
-
-		this._createToolbar();
-		this._createEditableUI();
-
-		this._elementReplacer.replace( this.element, this.ui.view.element );
-
-		return Promise.resolve();
-	}
-
-	/**
-	 * Initializes editor UI. The UI has to be {@link #_createUI created} beforehand.
-	 *
-	 * @protected
-	 * @returns {Promise}
-	 */
-	_initUI() {
-		if ( this.config.toolbar ) {
-			this._toolbar.addButtons( this.config.toolbar );
-		}
-
-		return this.ui.init()
-			.then( () => this.editing.view.attachDomRoot( this._editableUI.view.element ) );
-	}
-
-	/**
-	 * Creates editor sticky toolbar.
-	 *
-	 * @protected
-	 */
-	_createToolbar() {
-		const toolbarModel = new Model();
-		const toolbarView = new StickyToolbarView( toolbarModel, this.locale );
-		const toolbar = new Toolbar( toolbarModel, toolbarView, this );
-
-		toolbarModel.bind( 'isActive' ).to( this.editing.view.getRoot(), 'isFocused' );
-
-		this.ui.add( 'top', toolbar );
-
-		this._toolbar = toolbar;
-	}
-
-	/**
-	 * Creates editor main editable.
-	 *
-	 * @protected
-	 */
-	_createEditableUI() {
-		const editable = this.editing.view.getRoot();
-		const editableUI = new EditableUI( this, editable );
-		const editableUIView = new InlineEditableUIView( editableUI.viewModel, this.locale );
-
-		editableUI.view = editableUIView;
-
-		this.ui.add( 'main', editableUI );
-
-		this._editableUI = editableUI;
 	}
 }

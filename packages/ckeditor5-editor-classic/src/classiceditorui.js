@@ -1,0 +1,105 @@
+/**
+ * @license Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+'use strict';
+
+import BoxedEditorUI from '../ui/editorui/boxed/boxededitorui.js';
+
+import EditableUI from '../ui/editableui/editableui.js';
+import InlineEditableUIView from '../ui/editableui/inline/inlineeditableuiview.js';
+
+import Model from '../ui/model.js';
+import Toolbar from '../ui/bindings/toolbar.js';
+import StickyToolbarView from '../ui/stickytoolbar/stickytoolbarview.js';
+
+/**
+ * Classic editor. Uses inline editable and sticky toolbar, all
+ * enclosed in a boxed UI.
+ *
+ * @memberOf editor-classic
+ * @extends ui.editorUI.boxed.BoxedEditorUI
+ */
+export default class ClassicEditorUI extends BoxedEditorUI {
+	/**
+	 * Creates an instance of the classic editor UI.
+	 *
+	 * @param {ckeditor5.editor.Editor} editor
+	 */
+	constructor( editor ) {
+		super( editor );
+
+		/**
+		 * Toolbar controller.
+		 *
+		 * @readonly
+		 * @member {ui.toolbar.Toolbar} editor-classic.ClassicEditorUI#toolbar
+		 */
+		this.toolbar = this._createToolbar();
+
+		/**
+		 * Editable UI controller.
+		 *
+		 * @readonly
+		 * @member {ui.editableUI.EditableUI} editor-classic.ClassicEditorUI#editableUI
+		 */
+		this.editableUI = this._createEditableUI();
+	}
+
+	/**
+	 * The HTML element which is editable (usually the one with `contentEditable=true`).
+	 *
+	 * @readonly
+	 * @type {HTMLElement}
+	 */
+	get editableElement() {
+		return this.editableUI.view.element;
+	}
+
+	init() {
+		if ( this.editor.config.toolbar ) {
+			this.toolbar.addButtons( this.editor.config.toolbar );
+		}
+
+		return super.init();
+	}
+
+	/**
+	 * Creates editor sticky toolbar.
+	 *
+	 * @protected
+	 */
+	_createToolbar() {
+		const editor = this.editor;
+
+		const toolbarModel = new Model();
+		const toolbarView = new StickyToolbarView( toolbarModel, editor.locale );
+		const toolbar = new Toolbar( toolbarModel, toolbarView, editor );
+
+		toolbarModel.bind( 'isActive' ).to( editor.editing.view.getRoot(), 'isFocused' );
+
+		this.add( 'top', toolbar );
+
+		return toolbar;
+	}
+
+	/**
+	 * Creates editor main editable.
+	 *
+	 * @protected
+	 */
+	_createEditableUI() {
+		const editor = this.editor;
+
+		const editable = editor.editing.view.getRoot();
+		const editableUI = new EditableUI( editor, editable );
+		const editableUIView = new InlineEditableUIView( editableUI.viewModel, editor.locale );
+
+		editableUI.view = editableUIView;
+
+		this.add( 'main', editableUI );
+
+		return editableUI;
+	}
+}

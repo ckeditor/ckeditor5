@@ -15,9 +15,7 @@
 ## Notes:
 
 * You can play with:
-  * `editable.isEditable`,
-  * `boldModel.isEnabled`, `italicModel.isEnabled` and `fontModel.isEnabled`.
-  * `fontModel.isOn`.
-* Changes to `editable.isFocused/isEditable` should be logged to the console.
+  * `editable.isReadOnly`,
+* Changes to `editable.isFocused` should be logged to the console.
 * Clicks on the buttons should be logged to the console.
 
