@@ -167,7 +167,7 @@ export default class Renderer {
 
 			if ( this._needAddInlineFiller() ) {
 				this._inlineFillerPosition = this.selection.getFirstPosition();
-				this.markedChildren.add( this._inlineFillerPosition.parent );
+				this.markToSync( 'children', this._inlineFillerPosition.parent );
 			} else {
 				this._inlineFillerPosition = null;
 			}
@@ -411,6 +411,11 @@ export default class Renderer {
 		}
 
 		const domRoot = this.domConverter.getCorrespondingDomElement( this.focusedEditable );
+
+		if ( !domRoot ) {
+			return;
+		}
+
 		const domSelection = domRoot.ownerDocument.defaultView.getSelection();
 		const oldViewSelection = domSelection && this.domConverter.domSelectionToView( domSelection );
 
