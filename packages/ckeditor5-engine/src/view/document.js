@@ -74,6 +74,18 @@ export default class Document {
 		this.roots = new Map();
 
 		/**
+		 * {@link engine.view.EditableElement} which is currently focused or null if all of them are blurred.
+		 *
+		 * This property is updated by the {@link engine.view.obsever.FocusObserver}.
+		 * If the {@link engine.view.obsever.FocusObserver} is disabled this property will not change.
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {engine.view.EditableElement|null} engine.view.Document#focusedEditable
+		 */
+		this.set( 'focusedEditable', null );
+
+		/**
 		 * Instance of the {@link engine.view.Document#renderer renderer}.
 		 *
 		 * @readonly
@@ -89,18 +101,6 @@ export default class Document {
 		 * @member {Map.<Function, engine.view.Observer>} engine.view.Document#_observers
 		 */
 		this._observers = new Map();
-
-		/**
-		 * {@link engine.view.EditableElement} which is currently focused or null if all of them are blurred.
-		 *
-		 * This property is updated by the {@link engine.view.obsever.FocusObserver}.
-		 * If the {@link engine.view.obsever.FocusObserver} is disabled this property will not change.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {engine.view.EditableElement|null} engine.view.Document#focusedEditable
-		 */
-		this.set( 'focusedEditable', null );
 
 		injectQuirksHandling( this );
 	}
