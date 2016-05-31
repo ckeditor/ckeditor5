@@ -5,8 +5,7 @@
 
 'use strict';
 
-import Editor from '/ckeditor5/editor.js';
-import StandardCreator from '/ckeditor5/creator/standardcreator.js';
+import VirtualTestEditor from '/tests/ckeditor5/_utils/virtualtesteditor.js';
 import Enter from '/ckeditor5/enter/enter.js';
 import EnterCommand from '/ckeditor5/enter/entercommand.js';
 import DomEventData from '/ckeditor5/engine/view/observer/domeventdata.js';
@@ -15,14 +14,11 @@ describe( 'Enter feature', () => {
 	let editor, editingView;
 
 	beforeEach( () => {
-		editor = new Editor( null, {
-			creator: StandardCreator,
-			features: [ Enter ]
-		} );
-
-		return editor.init()
-			.then( () => {
-				editor.document.createRoot( 'main' );
+		return VirtualTestEditor.create( {
+				features: [ Enter ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
 				editingView = editor.editing.view;
 			} );
 	} );
