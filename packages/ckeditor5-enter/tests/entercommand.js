@@ -5,19 +5,17 @@
 
 'use strict';
 
-import VirtualTestEditor from '/tests/ckeditor5/_utils/virtualtesteditor.js';
+import ModelTestEditor from '/tests/ckeditor5/_utils/modeltesteditor.js';
 import { default as EnterCommand, enterBlock } from '/ckeditor5/enter/entercommand.js';
 import { getData, setData } from '/tests/engine/_utils/model.js';
 
 let editor, doc;
 
 beforeEach( () => {
-	return VirtualTestEditor.create( )
+	return ModelTestEditor.create()
 		.then( newEditor => {
 			editor = newEditor;
 			doc = editor.document;
-
-			doc.createRoot();
 
 			const command = new EnterCommand( editor );
 			editor.commands.set( 'enter', command );
