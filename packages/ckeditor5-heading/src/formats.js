@@ -19,7 +19,6 @@ export default class Formats extends Feature {
 
 	init() {
 		const editor = this.editor;
-		const t = editor.t;
 		const command = editor.commands.get( 'format' );
 		const formats = command.formats;
 		const collection = new Collection();
@@ -28,7 +27,7 @@ export default class Formats extends Feature {
 		for ( let format of formats ) {
 			collection.add( new Model( {
 				id: format.id,
-				label: t( format.label )
+				label: format.label
 			} ) );
 		}
 
@@ -41,17 +40,20 @@ export default class Formats extends Feature {
 		const dropdownModel = new Model( {
 			isEnabled: true,
 			isOn: false,
-			label: t( 'Formats' ),
+			label: 'Formats',
 			content: itemListModel
 		} );
 
 		//Bind dropdown model to command.
 		dropdownModel.bind( 'isEnabled' ).to( command, 'isEnabled' );
+		dropdownModel.bind( 'label' ).to( command, 'format', ( format ) => {
+			return format.label;
+		} );
 
 		// Execute command when item from dropdown is selected.
 		this.listenTo( itemListModel, 'execute', ( evtInfo, itemModel ) => {
 			editor.execute( 'format', itemModel.id );
-			dropdownModel.label = t( itemModel.label );
+			dropdownModel.label = itemModel.label;
 		} );
 
 		editor.ui.featureComponents.add( 'formats', ListDropdownController, ListDropdownView, dropdownModel );
