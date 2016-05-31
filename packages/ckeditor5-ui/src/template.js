@@ -44,7 +44,7 @@ export default class Template {
 	 * @returns {HTMLElement}
 	 */
 	render() {
-		return this._renderNode( this.definition, null, true );
+		return this._renderNode( this.definition, undefined, true );
 	}
 
 	/**
@@ -70,10 +70,6 @@ export default class Template {
 		return this._renderNode( this.definition, node );
 	}
 
-	destroy() {
-		this.stopListening();
-	}
-
 	/**
 	 * Renders a DOM Node from definition.
 	 *
@@ -84,16 +80,12 @@ export default class Template {
 	 * @returns {HTMLElement} A rendered Node.
 	 */
 	_renderNode( def, applyNode, intoFragment ) {
-		const isText = def.text || typeof def == 'string';
-		let isInvalid;
+		normalize( def );
 
-		if ( applyNode ) {
-			// When applying, a definition cannot have "tag" and "text" at the same time.
-			isInvalid = def.tag && isText;
-		} else {
-			// When rendering, a definition must have either "tag" or "text": XOR( def.tag, isText ).
-			isInvalid = def.tag ? isText : !isText;
-		}
+		// When applying, a definition cannot have "tag" and "text" at the same time.
+		// When rendering, a definition must have either "tag" or "text": XOR( def.tag, def.text ).
+		const isInvalid = applyNode ?
+			( def.tag && def.text ) : ( def.tag ? def.text : !def.text );
 
 		if ( isInvalid ) {
 			/**
@@ -105,7 +97,7 @@ export default class Template {
 			throw new CKEditorError( 'ui-template-wrong-syntax' );
 		}
 
-		return isText ?
+		return def.text ?
 			this._renderText( def, applyNode ) : this._renderElement( def, applyNode, intoFragment );
 	}
 
@@ -119,7 +111,7 @@ export default class Template {
 	 * @returns {HTMLElement} A rendered element.
 	 */
 	_renderElement( def, applyElement, intoFragment ) {
-		let el = applyElement ||
+		const el = applyElement ||
 			document.createElementNS( def.ns || 'http://www.w3.org/1999/xhtml', def.tag );
 
 		this._renderElementAttributes( def, el );
@@ -135,8 +127,8 @@ export default class Template {
 			this._renderElementChildren( def, el, !!applyElement );
 		}
 
-		// Activate DOM bindings for event listeners.
-		this._activateElementListenerAttachers( def, el );
+		// Setup DOM bindings event listeners.
+		this._setupListeners( def, el );
 
 		return el;
 	}
@@ -146,25 +138,22 @@ export default class Template {
 	 *
 	 * @protected
 	 * @param {TemplateDefinition|String} def Definition of Text or its value.
-	 * @param {HTMLElement} applyText If specified, template `def` will be applied to existing Text Node.
+	 * @param {HTMLElement} textNode If specified, template `def` will be applied to existing Text Node.
 	 * @returns {Text} A rendered Text.
 	 */
-	_renderText( valueSchemaOrText, applyText ) {
-		const textNode = applyText || document.createTextNode( '' );
-
-		// Check if there's a binder available for this Text Node.
-		if ( hasModelBinding( valueSchemaOrText.text ) ) {
-			// Activate binder if one. Cases:
-			//		{ text: Template.bind.to( ... ) }
-			//		{ text: [ 'foo', Template.bind.to( ... ), ... ] }
-			this._setupBinding( valueSchemaOrText.text, textNode, getTextNodeUpdater( textNode ) );
+	_renderText( valueSchemaOrText, textNode = document.createTextNode( '' ) ) {
+		// Check if there's a binder available for this Text Node. Cases:
+		//		{ text: [ Template.bind.to( ... ) ] }
+		//		{ text: [ 'foo', Template.bind.to( ... ), ... ] }
+		if ( isBound( valueSchemaOrText.text ) ) {
+			this._bindToObservable( valueSchemaOrText.text, textNode, getTextUpdater( textNode ) );
 		}
+
 		// Simply set text. Cases:
 		// 		{ text: [ 'all', 'are', 'static' ] }
-		// 		{ text: 'foo' }
-		// 		'foo'
+		// 		{ text: [ 'foo' ] }
 		else {
-			textNode.textContent = valueSchemaOrText.text || valueSchemaOrText;
+			textNode.textContent = valueSchemaOrText.text;
 		}
 
 		return textNode;
@@ -177,42 +166,39 @@ export default class Template {
 	 * @param {ui.TemplateDefinition} def Definition of an element.
 	 * @param {HTMLElement} el Element which is rendered.
 	 */
-	_renderElementAttributes( def, el ) {
-		const attributes = def.attributes;
-		const binders = def._modelBinders && def._modelBinders.attributes;
-		let binder, attrName, attrValue, attrNs;
+	_renderElementAttributes( { attributes }, el ) {
+		let attrName, attrValue, attrNs;
 
 		if ( !attributes ) {
 			return;
 		}
 
 		for ( attrName in attributes ) {
-			// Check if there's a binder available for this attribute.
-			binder = binders && binders[ attrName ];
 			attrValue = attributes[ attrName ];
-			attrNs = attrValue.ns || null;
+			attrNs = attrValue[ 0 ].ns || null;
 
 			// Activate binder if one. Cases:
+			// 		{ class: [ Template.bind.to( ... ) ] }
 			// 		{ class: [ 'bar', Template.bind.to( ... ), 'baz' ] }
-			// 		{ class: Template.bind.to( ... ) }
 			// 		{ class: { ns: 'abc', value: Template.bind.to( ... ) } }
-			if ( hasModelBinding( attrValue ) ) {
-				this._setupBinding( attrValue, el, getElementAttributeUpdater( el, attrName, attrNs ) );
+			if ( isBound( attrValue ) ) {
+				// Normalize attributes with additional data like namespace:
+				//		{ class: { ns: 'abc', value: [ ... ] } }
+				this._bindToObservable( attrValue[ 0 ].value || attrValue, el, getAttributeUpdater( el, attrName, attrNs ) );
 			}
 
 			// Otherwise simply set the attribute.
+			// 		{ class: [ 'foo' ] }
 			// 		{ class: [ 'all', 'are', 'static' ] }
-			// 		{ class: 'foo' }
-			// 		{ class: { ns: 'abc', value: 'foo' } }
+			// 		{ class: [ { ns: 'abc', value: [ 'foo' ] } ] }
 			else {
-				attrValue = attrValue.value || attrValue;
-
-				// Attribute can be an array. Merge array elements:
-				if ( Array.isArray( attrValue ) ) {
-					attrValue = attrValue.reduce( ( prev, cur ) => {
-						return prev === '' ? `${cur}` : `${prev} ${cur}`;
-					} );
-				}
+				attrValue = attrValue
+					// Retrieve "values" from { class: [ { ns: 'abc', value: [ ... ] } ] }
+					.map( v => v ? ( v.value || v ) : v )
+					// Flatten the array.
+					.reduce( ( p, n ) => p.concat( n ), [] )
+					// Convert into string.
+					.reduce( arrayValueReducer );
 
 				el.setAttributeNS( attrNs, attrName, attrValue );
 			}
@@ -247,27 +233,26 @@ export default class Template {
 	 * @param {ui.TemplateDefinition} def Definition of an element.
 	 * @param {HTMLElement} el Element which is rendered.
 	 */
-	_activateElementListenerAttachers( def, el ) {
+	_setupListeners( def, el ) {
 		if ( !def.on ) {
 			return;
 		}
 
-		const attachers = def.on._listenerAttachers;
+		for ( let key in def.on ) {
+			const [ domEvtName, domSelector ] = key.split( '@' );
 
-		Object.keys( attachers )
-			.map( name => [ name, ...name.split( '@' ) ] )
-			.forEach( split => {
-				// TODO: ES6 destructuring.
-				const key = split[ 0 ];
-				const evtName = split[ 1 ];
-				const evtSelector = split[ 2 ] || null;
-
-				if ( Array.isArray( attachers[ key ] ) ) {
-					attachers[ key ].forEach( i => i( el, evtName, evtSelector ) );
-				} else {
-					attachers[ key ]( el, evtName, evtSelector );
-				}
+			def.on[ key ].forEach( schemaItem => {
+				schemaItem.emitter.listenTo( el, domEvtName, ( evt, domEvt ) => {
+					if ( !domSelector || domEvt.target.matches( domSelector ) ) {
+						if ( typeof schemaItem.eventNameOrFuncion == 'function' ) {
+							schemaItem.eventNameOrFuncion( domEvt );
+						} else {
+							schemaItem.observable.fire( schemaItem.eventNameOrFuncion, domEvt );
+						}
+					}
+				} );
 			} );
+		}
 	}
 
 	/**
@@ -282,15 +267,7 @@ export default class Template {
 	 * @param {Function} domUpdater A function provided by {@link Template} which updates corresponding
 	 * DOM attribute or `textContent`.
 	 */
-	_setupBinding( valueSchema, node, domUpdater ) {
-		// Normalize attributes with additional data like namespace:
-		// class: { ns: 'abc', value: [ ... ] }
-		if ( valueSchema.value ) {
-			valueSchema = valueSchema.value;
-		}
-
-		valueSchema = normalizeBinderValueSchema( valueSchema );
-
+	_bindToObservable( valueSchema, node, domUpdater ) {
 		// Assembles the value using {@link ui.TemplateValueSchema} and stores it in a form of
 		// an Array. Each entry of an Array corresponds to one of {@link ui.TemplateValueSchema}
 		// items.
@@ -338,7 +315,7 @@ export default class Template {
 					value = value === true ? '' : value;
 				}
 			} else {
-				value = value.reduce( binderValueReducer, '' );
+				value = value.reduce( arrayValueReducer, '' );
 				shouldSet = value;
 			}
 
@@ -371,11 +348,11 @@ mix( Template, EmitterMixin );
  * @type ui.TemplateBinding
  */
 Template.bind = ( observable, emitter ) => {
-	const binderFunction = ( eventName ) => {
+	const binderFunction = ( eventNameOrFuncion ) => {
 		return {
 			type: bindDOMEvtSymbol,
 			observable, emitter,
-			eventName
+			eventNameOrFuncion
 		};
 	};
 
@@ -464,13 +441,13 @@ Template.bind = ( observable, emitter ) => {
 /*
  * Returns an object consisting of `set` and `remove` functions, which
  * can be used in the context of DOM Node to set or reset `textContent`.
- * @see ui.View#_setupBinding
+ * @see ui.View#_bindToObservable
  *
  * @private
  * @param {Node} node DOM Node to be modified.
  * @returns {Object}
  */
-function getTextNodeUpdater( node ) {
+function getTextUpdater( node ) {
 	return {
 		set( value ) {
 			node.textContent = value;
@@ -485,7 +462,7 @@ function getTextNodeUpdater( node ) {
 /*
  * Returns an object consisting of `set` and `remove` functions, which
  * can be used in the context of DOM Node to set or reset an attribute.
- * @see ui.View#_setupBinding
+ * @see ui.View#_bindToObservable
  *
  * @private
  * @param {Node} node DOM Node to be modified.
@@ -493,7 +470,7 @@ function getTextNodeUpdater( node ) {
  * @param {String} [ns] Namespace to use.
  * @returns {Object}
  */
-function getElementAttributeUpdater( el, attrName, ns = null ) {
+function getAttributeUpdater( el, attrName, ns = null ) {
 	return {
 		set( value ) {
 			el.setAttributeNS( ns, attrName, value );
@@ -508,21 +485,79 @@ function getElementAttributeUpdater( el, attrName, ns = null ) {
 /**
  * Normalizes given {@link ui.TemplateValueSchema} it's always in an Array–like format:
  *
- * 		{ attributeName/text: 'bar' } ->
- * 			{ attributeName/text: [ 'bar' ] }
+ * 		{ attr|text: 'bar' } ->
+ * 			{ attr|text: [ 'bar' ] }
  *
- * 		{ attributeName/text: { model: ..., modelAttributeName: ..., callback: ... } } ->
- * 			{ attributeName/text: [ { model: ..., modelAttributeName: ..., callback: ... } ] }
+ * 		{ attr|text: { model: ..., modelAttributeName: ..., callback: ... } } ->
+ * 			{ attr|text: [ { model: ..., modelAttributeName: ..., callback: ... } ] }
  *
- * 		{ attributeName/text: [ 'bar', { model: ..., modelAttributeName: ... }, 'baz' ] }
+ * 		{ attr|text: [ 'bar', { model: ..., modelAttributeName: ... }, 'baz' ] }
+ *
+ *		'foo@selector': 'bar' ->
+ * 			'foo@selector': [ 'bar' ],
+ *
+ *		'foo@selector': [ 'bar', () => { ... } ] ->
+ *			'foo@selector': [ 'bar', () => { ... } ],
  *
  * @ignore
  * @private
  * @param {ui.TemplateValueSchema} valueSchema
  * @returns {Array}
  */
-function normalizeBinderValueSchema( valueSchema ) {
-	return Array.isArray( valueSchema ) ? valueSchema : [ valueSchema ];
+function normalize( def ) {
+	if ( !def ) {
+		return;
+	}
+
+	if ( def.attributes ) {
+		normalizeAttributes( def.attributes );
+	}
+
+	if ( def.on ) {
+		normalizeListeners( def.on );
+	}
+
+	if ( def.children ) {
+		normalizeTextChildren( def );
+	}
+}
+
+function normalizeAttributes( attrs ) {
+	for ( let a in attrs ) {
+		if ( attrs[ a ].value ) {
+			attrs[ a ].value = [].concat( attrs[ a ].value );
+		}
+
+		arrayify( attrs, a );
+	}
+}
+
+function normalizeListeners( listeners ) {
+	for ( let l in listeners ) {
+		arrayify( listeners, l );
+	}
+}
+
+function normalizeTextChildren( def ) {
+	def.children = def.children.map( c => {
+		if ( typeof c == 'string' ) {
+			return {
+				text: [ c ]
+			};
+		} else {
+			if ( c.text && !Array.isArray( c.text ) ) {
+				c.text = [ c.text ];
+			}
+		}
+
+		return c;
+	} );
+}
+
+function arrayify( obj, key ) {
+	if ( !Array.isArray( obj[ key ] ) ) {
+		obj[ key ] = [ obj[ key ] ];
+	}
 }
 
 /**
@@ -535,7 +570,7 @@ function normalizeBinderValueSchema( valueSchema ) {
  * @param {String} cur
  * @returns {String}
  */
-function binderValueReducer( prev, cur ) {
+function arrayValueReducer( prev, cur ) {
 	return prev === '' ?
 			`${cur}`
 		:
@@ -551,19 +586,19 @@ function binderValueReducer( prev, cur ) {
  * @param {ui.TemplateValueSchema} valueSchema
  * @returns {Boolean}
  */
-function hasModelBinding( valueSchema ) {
+function isBound( valueSchema ) {
 	if ( !valueSchema ) {
 		return false;
 	}
 
 	// Normalize attributes with additional data like namespace:
-	// class: { ns: 'abc', value: [ ... ] }
+	// 		class: { ns: 'abc', value: [ ... ] }
 	if ( valueSchema.value ) {
 		valueSchema = valueSchema.value;
 	}
 
 	if ( Array.isArray( valueSchema ) ) {
-		return valueSchema.some( hasModelBinding );
+		return valueSchema.some( isBound );
 	} else if ( valueSchema.observable ) {
 		return true;
 	}

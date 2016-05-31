@@ -13,6 +13,7 @@ import Template from '/ckeditor5/ui/template.js';
 import Model from '/ckeditor5/ui/model.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
+import DOMEmitterMixin from '/ckeditor5/ui/domemittermixin.js';
 import extend from '/ckeditor5/utils/lib/lodash/extend.js';
 
 testUtils.createSinonSandbox();
@@ -42,6 +43,62 @@ describe( 'Template', () => {
 					text: 'foo'
 				} ).render();
 			} ).to.throw( CKEditorError, /ui-template-wrong-syntax/ );
+		} );
+
+		it( 'normalizes template definition', () => {
+			const bind = Template.bind( new Model( {} ), extend( {}, DOMEmitterMixin ) );
+
+			const tpl = new Template( {
+				tag: 'p',
+				attributes: {
+					a: 'foo',
+					b: [ 'bar', 'baz' ],
+					c: {
+						ns: 'abc',
+						value: bind.to( 'qux' )
+					}
+				},
+				children: [
+					{
+						text: 'content'
+					},
+					{
+						text: bind.to( 'x' )
+					},
+					'abc',
+					{
+						text: [ 'a', 'b' ]
+					}
+				],
+				on: {
+					'a@span': bind( 'b' ),
+					'b@span': bind( () => {} ),
+					'c@span': [
+						bind( 'c' ),
+						bind( () => {} )
+					]
+				}
+			} );
+
+			tpl.render();
+
+			const def = tpl.definition;
+
+			expect( def.attributes.a[ 0 ] ).to.equal( 'foo' );
+			expect( def.attributes.b[ 0 ] ).to.equal( 'bar' );
+			expect( def.attributes.b[ 1 ] ).to.equal( 'baz' );
+			expect( def.attributes.c[ 0 ].value[ 0 ].type ).to.be.a( 'symbol' );
+
+			expect( def.children[ 0 ].text[ 0 ] ).to.equal( 'content' );
+			expect( def.children[ 1 ].text[ 0 ].type ).to.be.a( 'symbol' );
+			expect( def.children[ 2 ].text[ 0 ] ).to.equal( 'abc' );
+			expect( def.children[ 3 ].text[ 0 ] ).to.equal( 'a' );
+			expect( def.children[ 3 ].text[ 1 ] ).to.equal( 'b' );
+
+			expect( def.on[ 'a@span' ][ 0 ].type ).to.be.a( 'symbol' );
+			expect( def.on[ 'b@span' ][ 0 ].type ).to.be.a( 'symbol' );
+			expect( def.on[ 'c@span' ][ 0 ].type ).to.be.a( 'symbol' );
+			expect( def.on[ 'c@span' ][ 1 ].type ).to.be.a( 'symbol' );
 		} );
 
 		it( 'creates a HTMLElement', () => {
@@ -110,7 +167,7 @@ describe( 'Template', () => {
 			const el = new Template( {
 				tag: 'p',
 				attributes: {
-					'class': {
+					class: {
 						ns: 'foo',
 						value: [ 'a', 'b' ]
 					},
@@ -181,86 +238,6 @@ describe( 'Template', () => {
 
 			expect( el.childNodes ).to.have.length( 4 );
 			expect( el.outerHTML ).to.be.equal( '<p>abcd</p>' );
-		} );
-
-		it( 'activates listener attachers – root', () => {
-			const spy1 = testUtils.sinon.spy();
-			const spy2 = testUtils.sinon.spy();
-			const spy3 = testUtils.sinon.spy();
-
-			const el = new Template( {
-				tag: 'p',
-				on: {
-					_listenerAttachers: {
-						foo: spy1,
-						baz: [ spy2, spy3 ]
-					}
-				}
-			} ).render();
-
-			sinon.assert.calledWithExactly( spy1, el, 'foo', null );
-			sinon.assert.calledWithExactly( spy2, el, 'baz', null );
-			sinon.assert.calledWithExactly( spy3, el, 'baz', null );
-		} );
-
-		it( 'activates listener attachers – children', () => {
-			const spy = testUtils.sinon.spy();
-			const el = new Template( {
-				tag: 'p',
-				children: [
-					{
-						tag: 'span',
-						on: {
-							_listenerAttachers: {
-								bar: spy
-							}
-						}
-					}
-				],
-			} ).render();
-
-			sinon.assert.calledWithExactly( spy, el.firstChild, 'bar', null );
-		} );
-
-		it( 'activates listener attachers – DOM selectors', () => {
-			const spy1 = testUtils.sinon.spy();
-			const spy2 = testUtils.sinon.spy();
-			const spy3 = testUtils.sinon.spy();
-			const spy4 = testUtils.sinon.spy();
-
-			const el = new Template( {
-				tag: 'p',
-				children: [
-					{
-						tag: 'span',
-						attributes: {
-							'id': 'x'
-						}
-					},
-					{
-						tag: 'span',
-						attributes: {
-							'class': 'y'
-						},
-						on: {
-							_listenerAttachers: {
-								'bar@p': spy2
-							}
-						}
-					},
-				],
-				on: {
-					_listenerAttachers: {
-						'foo@span': spy1,
-						'baz@.y': [ spy3, spy4 ]
-					}
-				}
-			} ).render();
-
-			sinon.assert.calledWithExactly( spy1, el, 'foo', 'span' );
-			sinon.assert.calledWithExactly( spy2, el.lastChild, 'bar', 'p' );
-			sinon.assert.calledWithExactly( spy3, el, 'baz', '.y' );
-			sinon.assert.calledWithExactly( spy4, el, 'baz', '.y' );
 		} );
 
 		it( 'activates model bindings – root', () => {
@@ -417,42 +394,6 @@ describe( 'Template', () => {
 
 			expect( el.outerHTML ).to.be.equal( '<div class="parent">Children: <span class="child"></span></div>' );
 		} );
-
-		it( 'activates listener attachers – root', () => {
-			const spy = testUtils.sinon.spy();
-
-			new Template( {
-				tag: 'div',
-				on: {
-					_listenerAttachers: {
-						click: spy
-					}
-				}
-			} ).apply( el );
-
-			sinon.assert.calledWithExactly( spy, el, 'click', null );
-		} );
-
-		it( 'activates listener attachers – children', () => {
-			const spy = testUtils.sinon.spy();
-			el.appendChild( document.createElement( 'span' ) );
-
-			new Template( {
-				tag: 'div',
-				children: [
-					{
-						tag: 'span',
-						on: {
-							_listenerAttachers: {
-								click: spy
-							}
-						}
-					}
-				]
-			} ).apply( el );
-
-			sinon.assert.calledWithExactly( spy, el.firstChild, 'click', null );
-		} );
 	} );
 
 	describe( 'bind', () => {
@@ -469,6 +410,220 @@ describe( 'Template', () => {
 		} );
 
 		describe( 'event', () => {
+			let observable, domEmitter, bind;
+
+			beforeEach( () => {
+				observable = new Model( {
+					foo: 'bar',
+					baz: 'qux'
+				} );
+
+				domEmitter = extend( {}, DOMEmitterMixin );
+				bind = Template.bind( observable, domEmitter );
+			} );
+
+			it( 'accepts plain binding', () => {
+				const spy = testUtils.sinon.spy();
+
+				setElement( {
+					tag: 'p',
+					on: {
+						x: bind( 'a' ),
+					}
+				} );
+
+				observable.on( 'a', spy );
+				dispatchEvent( el, 'x' );
+
+				sinon.assert.calledWithExactly( spy,
+					sinon.match.has( 'name', 'a' ),
+					sinon.match.has( 'target', el )
+				);
+			} );
+
+			it( 'accepts an array of event bindings', () => {
+				const spy1 = testUtils.sinon.spy();
+				const spy2 = testUtils.sinon.spy();
+
+				setElement( {
+					tag: 'p',
+					on: {
+						x: [
+							bind( 'a' ),
+							bind( 'b' )
+						]
+					}
+				} );
+
+				observable.on( 'a', spy1 );
+				observable.on( 'b', spy2 );
+				dispatchEvent( el, 'x' );
+
+				sinon.assert.calledWithExactly( spy1,
+					sinon.match.has( 'name', 'a' ),
+					sinon.match.has( 'target', el )
+				);
+				sinon.assert.calledWithExactly( spy2,
+					sinon.match.has( 'name', 'b' ),
+					sinon.match.has( 'target', el )
+				);
+			} );
+
+			it( 'accepts DOM selectors', () => {
+				const spy1 = testUtils.sinon.spy();
+				const spy2 = testUtils.sinon.spy();
+				const spy3 = testUtils.sinon.spy();
+
+				setElement( {
+					tag: 'p',
+					children: [
+						{
+							tag: 'span',
+							attributes: {
+								'class': 'y',
+							},
+							on: {
+								'test@p': bind( 'c' )
+							}
+						},
+						{
+							tag: 'div',
+							children: [
+								{
+									tag: 'span',
+									attributes: {
+										'class': 'y',
+									}
+								}
+							],
+						}
+					],
+					on: {
+						'test@.y': bind( 'a' ),
+						'test@div': bind( 'b' )
+					}
+				} );
+
+				observable.on( 'a', spy1 );
+				observable.on( 'b', spy2 );
+				observable.on( 'c', spy3 );
+
+				// Test "test@p".
+				dispatchEvent( el, 'test' );
+
+				sinon.assert.callCount( spy1, 0 );
+				sinon.assert.callCount( spy2, 0 );
+				sinon.assert.callCount( spy3, 0 );
+
+				// Test "test@.y".
+				dispatchEvent( el.firstChild, 'test' );
+
+				expect( spy1.firstCall.calledWithExactly(
+					sinon.match.has( 'name', 'a' ),
+					sinon.match.has( 'target', el.firstChild )
+				) ).to.be.true;
+
+				sinon.assert.callCount( spy2, 0 );
+				sinon.assert.callCount( spy3, 0 );
+
+				// Test "test@div".
+				dispatchEvent( el.lastChild, 'test' );
+
+				sinon.assert.callCount( spy1, 1 );
+
+				expect( spy2.firstCall.calledWithExactly(
+					sinon.match.has( 'name', 'b' ),
+					sinon.match.has( 'target', el.lastChild )
+				) ).to.be.true;
+
+				sinon.assert.callCount( spy3, 0 );
+
+				// Test "test@.y".
+				dispatchEvent( el.lastChild.firstChild, 'test' );
+
+				expect( spy1.secondCall.calledWithExactly(
+					sinon.match.has( 'name', 'a' ),
+					sinon.match.has( 'target', el.lastChild.firstChild )
+				) ).to.be.true;
+
+				sinon.assert.callCount( spy2, 1 );
+				sinon.assert.callCount( spy3, 0 );
+			} );
+
+			it( 'accepts function callbacks', () => {
+				const spy1 = testUtils.sinon.spy();
+				const spy2 = testUtils.sinon.spy();
+
+				setElement( {
+					tag: 'p',
+					children: [
+						{
+							tag: 'span'
+						}
+					],
+					on: {
+						x: bind( spy1 ),
+						'y@span': [
+							bind( spy2 ),
+							bind( 'c' )
+						]
+					}
+				} );
+
+				dispatchEvent( el, 'x' );
+				dispatchEvent( el.firstChild, 'y' );
+
+				sinon.assert.calledWithExactly( spy1,
+					sinon.match.has( 'target', el )
+				);
+
+				sinon.assert.calledWithExactly( spy2,
+					sinon.match.has( 'target', el.firstChild )
+				);
+			} );
+
+			it( 'supports event delegation', () => {
+				const spy = testUtils.sinon.spy();
+
+				setElement( {
+					tag: 'p',
+					children: [
+						{
+							tag: 'span'
+						}
+					],
+					on: {
+						x: bind( 'a' ),
+					}
+				} );
+
+				observable.on( 'a', spy );
+
+				dispatchEvent( el.firstChild, 'x' );
+				sinon.assert.calledWithExactly( spy,
+					sinon.match.has( 'name', 'a' ),
+					sinon.match.has( 'target', el.firstChild )
+				);
+			} );
+
+			it( 'works for future elements', () => {
+				const spy = testUtils.sinon.spy();
+
+				setElement( {
+					tag: 'p',
+					on: {
+						'test@div': bind( 'a' )
+					}
+				} );
+
+				observable.on( 'a', spy );
+
+				const div = document.createElement( 'div' );
+				el.appendChild( div );
+
+				dispatchEvent( div, 'test' );
+				sinon.assert.calledWithExactly( spy, sinon.match.has( 'name', 'a' ), sinon.match.has( 'target', div ) );
+			} );
 		} );
 
 		describe( 'model', () => {
@@ -497,7 +652,7 @@ describe( 'Template', () => {
 				} );
 
 				it( 'allows binding attribute to the observable – simple (HTMLElement attribute)', () => {
-					const element = getElement( {
+					setElement( {
 						tag: 'p',
 						attributes: {
 							'class': bind.to( 'foo' )
@@ -505,15 +660,15 @@ describe( 'Template', () => {
 						children: [ 'abc' ]
 					} );
 
-					expect( element.outerHTML ).to.equal( '<p class="bar">abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p class="bar">abc</p>' );
 
 					observable.foo = 'baz';
-					expect( element.outerHTML ).to.equal( '<p class="baz">abc</p>' );
-					expect( element.attributes.getNamedItem( 'class' ).namespaceURI ).to.be.null;
+					expect( el.outerHTML ).to.equal( '<p class="baz">abc</p>' );
+					expect( el.attributes.getNamedItem( 'class' ).namespaceURI ).to.be.null;
 				} );
 
 				it( 'allows binding attribute to the observable – simple (Text Node)', () => {
-					const element = getElement( {
+					setElement( {
 						tag: 'p',
 						children: [
 							{
@@ -522,15 +677,15 @@ describe( 'Template', () => {
 						]
 					} );
 
-					expect( element.outerHTML ).to.equal( '<p>bar</p>' );
+					expect( el.outerHTML ).to.equal( '<p>bar</p>' );
 
 					observable.foo = 'baz';
-					expect( element.outerHTML ).to.equal( '<p>baz</p>' );
+					expect( el.outerHTML ).to.equal( '<p>baz</p>' );
 				} );
 
 				it( 'allows binding attribute to the observable – value processing', () => {
 					const callback = value => value > 0 ? 'positive' : 'negative';
-					const element = getElement( {
+					setElement( {
 						tag: 'p',
 						attributes: {
 							'class': bind.to( 'foo', callback )
@@ -543,10 +698,10 @@ describe( 'Template', () => {
 					} );
 
 					observable.foo = 3;
-					expect( element.outerHTML ).to.equal( '<p class="positive">positive</p>' );
+					expect( el.outerHTML ).to.equal( '<p class="positive">positive</p>' );
 
 					observable.foo = -7;
-					expect( element.outerHTML ).to.equal( '<p class="negative">negative</p>' );
+					expect( el.outerHTML ).to.equal( '<p class="negative">negative</p>' );
 				} );
 
 				it( 'allows binding attribute to the observable – value processing (use Node)', () => {
@@ -554,7 +709,7 @@ describe( 'Template', () => {
 						return ( !!node.tagName && value > 0 ) ? 'HTMLElement positive' : '';
 					};
 
-					const element = getElement( {
+					setElement( {
 						tag: 'p',
 						attributes: {
 							'class': bind.to( 'foo', callback )
@@ -567,14 +722,14 @@ describe( 'Template', () => {
 					} );
 
 					observable.foo = 3;
-					expect( element.outerHTML ).to.equal( '<p class="HTMLElement positive"></p>' );
+					expect( el.outerHTML ).to.equal( '<p class="HTMLElement positive"></p>' );
 
 					observable.foo = -7;
-					expect( element.outerHTML ).to.equal( '<p></p>' );
+					expect( el.outerHTML ).to.equal( '<p></p>' );
 				} );
 
 				it( 'allows binding attribute to the observable – custom callback', () => {
-					const element = getElement( {
+					setElement( {
 						tag: 'p',
 						attributes: {
 							'class': bind.to( 'foo', ( value, el ) => {
@@ -588,14 +743,14 @@ describe( 'Template', () => {
 					} );
 
 					observable.foo = 'moo';
-					expect( element.outerHTML ).to.equal( '<p class="undefined">moo</p>' );
+					expect( el.outerHTML ).to.equal( '<p class="undefined">moo</p>' );
 
 					observable.foo = 'changed';
-					expect( element.outerHTML ).to.equal( '<p class="changed">changed</p>' );
+					expect( el.outerHTML ).to.equal( '<p class="changed">changed</p>' );
 				} );
 
 				it( 'allows binding attribute to the observable – array of bindings (HTMLElement attribute)', () => {
-					const element = getElement( {
+					setElement( {
 						tag: 'p',
 						attributes: {
 							'class': [
@@ -611,15 +766,15 @@ describe( 'Template', () => {
 
 					observable.foo = 'a';
 					observable.baz = 'b';
-					expect( element.outerHTML ).to.equal( '<p class="ck-class a b foo-is-a ck-end">abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p class="ck-class a b foo-is-a ck-end">abc</p>' );
 
 					observable.foo = 'c';
 					observable.baz = 'd';
-					expect( element.outerHTML ).to.equal( '<p class="ck-class c d foo-is-c ck-end">abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p class="ck-class c d foo-is-c ck-end">abc</p>' );
 				} );
 
 				it( 'allows binding attribute to the observable – array of bindings (Text Node)', () => {
-					const element = getElement( {
+					setElement( {
 						tag: 'p',
 						attributes: {
 						},
@@ -638,15 +793,15 @@ describe( 'Template', () => {
 
 					observable.foo = 'a';
 					observable.baz = 'b';
-					expect( element.outerHTML ).to.equal( '<p>ck-class a b foo-is-a ck-end</p>' );
+					expect( el.outerHTML ).to.equal( '<p>ck-class a b foo-is-a ck-end</p>' );
 
 					observable.foo = 'c';
 					observable.baz = 'd';
-					expect( element.outerHTML ).to.equal( '<p>ck-class c d foo-is-c ck-end</p>' );
+					expect( el.outerHTML ).to.equal( '<p>ck-class c d foo-is-c ck-end</p>' );
 				} );
 
 				it( 'allows binding attribute to the observable – falsy values', () => {
-					const element = getElement( {
+					setElement( {
 						tag: 'p',
 						attributes: {
 							'class': bind.to( 'foo' )
@@ -655,43 +810,50 @@ describe( 'Template', () => {
 					} );
 
 					observable.foo = 'bar';
-					expect( element.outerHTML ).to.equal( '<p class="bar">abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p class="bar">abc</p>' );
 
 					observable.foo = false;
-					expect( element.outerHTML ).to.equal( '<p class="false">abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p class="false">abc</p>' );
 
 					observable.foo = null;
-					expect( element.outerHTML ).to.equal( '<p class="null">abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p class="null">abc</p>' );
 
 					observable.foo = undefined;
-					expect( element.outerHTML ).to.equal( '<p class="undefined">abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p class="undefined">abc</p>' );
 
 					observable.foo = 0;
-					expect( element.outerHTML ).to.equal( '<p class="0">abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p class="0">abc</p>' );
 
 					observable.foo = '';
-					expect( element.outerHTML ).to.equal( '<p>abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p>abc</p>' );
 				} );
 
 				it( 'allows binding attribute to the observable – a custom namespace', () => {
-					const element = getElement( {
+					setElement( {
 						tag: 'p',
 						attributes: {
-							'class': {
+							class: {
 								ns: 'foo',
 								value: bind.to( 'foo' )
+							},
+							custom: {
+								ns: 'foo',
+								value: [
+									bind.to( 'foo' ),
+									bind.to( 'baz' )
+								]
 							}
 						},
 						children: [ 'abc' ]
 					} );
 
 					observable.foo = 'bar';
-					expect( element.outerHTML ).to.equal( '<p class="bar">abc</p>' );
-					expect( element.attributes.getNamedItem( 'class' ).namespaceURI ).to.equal( 'foo' );
+					expect( el.outerHTML ).to.equal( '<p class="bar" custom="bar qux">abc</p>' );
+					expect( el.attributes.getNamedItem( 'class' ).namespaceURI ).to.equal( 'foo' );
 
 					observable.foo = 'baz';
-					expect( element.outerHTML ).to.equal( '<p class="baz">abc</p>' );
-					expect( element.attributes.getNamedItem( 'class' ).namespaceURI ).to.equal( 'foo' );
+					expect( el.outerHTML ).to.equal( '<p class="baz" custom="baz qux">abc</p>' );
+					expect( el.attributes.getNamedItem( 'class' ).namespaceURI ).to.equal( 'foo' );
 				} );
 			} );
 
@@ -709,7 +871,7 @@ describe( 'Template', () => {
 				} );
 
 				it( 'allows binding attribute to the observable – presence of an attribute (HTMLElement attribute)', () => {
-					const element = getElement( {
+					setElement( {
 						tag: 'p',
 						attributes: {
 							'class': bind.if( 'foo' )
@@ -718,19 +880,19 @@ describe( 'Template', () => {
 					} );
 
 					observable.foo = true;
-					expect( element.outerHTML ).to.equal( '<p class="">abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p class="">abc</p>' );
 
 					observable.foo = false;
-					expect( element.outerHTML ).to.equal( '<p>abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p>abc</p>' );
 
 					observable.foo = 'bar';
-					expect( element.outerHTML ).to.equal( '<p class="">abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p class="">abc</p>' );
 				} );
 
 				// TODO: Is this alright? It makes sense but it's pretty useless. Text Node cannot be
 				// removed just like an attribute of some HTMLElement.
 				it( 'allows binding attribute to the observable – presence of an attribute (Text Node)', () => {
-					const element = getElement( {
+					setElement( {
 						tag: 'p',
 						children: [
 							{
@@ -740,17 +902,17 @@ describe( 'Template', () => {
 					} );
 
 					observable.foo = true;
-					expect( element.outerHTML ).to.equal( '<p></p>' );
+					expect( el.outerHTML ).to.equal( '<p></p>' );
 
 					observable.foo = false;
-					expect( element.outerHTML ).to.equal( '<p></p>' );
+					expect( el.outerHTML ).to.equal( '<p></p>' );
 
 					observable.foo = 'bar';
-					expect( element.outerHTML ).to.equal( '<p></p>' );
+					expect( el.outerHTML ).to.equal( '<p></p>' );
 				} );
 
 				it( 'allows binding attribute to the observable – value of an attribute (HTMLElement attribute)', () => {
-					const element = getElement( {
+					setElement( {
 						tag: 'p',
 						attributes: {
 							'class': bind.if( 'foo', 'bar' )
@@ -759,17 +921,17 @@ describe( 'Template', () => {
 					} );
 
 					observable.foo = 'bar';
-					expect( element.outerHTML ).to.equal( '<p class="bar">abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p class="bar">abc</p>' );
 
 					observable.foo = false;
-					expect( element.outerHTML ).to.equal( '<p>abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p>abc</p>' );
 
 					observable.foo = 64;
-					expect( element.outerHTML ).to.equal( '<p class="bar">abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p class="bar">abc</p>' );
 				} );
 
 				it( 'allows binding attribute to the observable – value of an attribute (Text Node)', () => {
-					const element = getElement( {
+					setElement( {
 						tag: 'p',
 						children: [
 							{
@@ -779,17 +941,17 @@ describe( 'Template', () => {
 					} );
 
 					observable.foo = 'bar';
-					expect( element.outerHTML ).to.equal( '<p>bar</p>' );
+					expect( el.outerHTML ).to.equal( '<p>bar</p>' );
 
 					observable.foo = false;
-					expect( element.outerHTML ).to.equal( '<p></p>' );
+					expect( el.outerHTML ).to.equal( '<p></p>' );
 
 					observable.foo = 64;
-					expect( element.outerHTML ).to.equal( '<p>bar</p>' );
+					expect( el.outerHTML ).to.equal( '<p>bar</p>' );
 				} );
 
 				it( 'allows binding attribute to the observable – array of bindings (HTMLElement attribute)', () => {
-					const element = getElement( {
+					setElement( {
 						tag: 'p',
 						attributes: {
 							'class': [
@@ -803,14 +965,14 @@ describe( 'Template', () => {
 					} );
 
 					observable.foo = observable.bar = true;
-					expect( element.outerHTML ).to.equal( '<p class="ck-class foo-set ck-end">abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p class="ck-class foo-set ck-end">abc</p>' );
 
 					observable.foo = observable.bar = false;
-					expect( element.outerHTML ).to.equal( '<p class="ck-class bar-not-set ck-end">abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p class="ck-class bar-not-set ck-end">abc</p>' );
 				} );
 
 				it( 'allows binding attribute to the observable – value of an attribute processed by a callback', () => {
-					const element = getElement( {
+					setElement( {
 						tag: 'p',
 						attributes: {
 							'class': bind.if( 'foo', 'there–is–no–foo', value => !value )
@@ -819,17 +981,17 @@ describe( 'Template', () => {
 					} );
 
 					observable.foo = 'bar';
-					expect( element.outerHTML ).to.equal( '<p>abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p>abc</p>' );
 
 					observable.foo = false;
-					expect( element.outerHTML ).to.equal( '<p class="there–is–no–foo">abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p class="there–is–no–foo">abc</p>' );
 
 					observable.foo = 64;
-					expect( element.outerHTML ).to.equal( '<p>abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p>abc</p>' );
 				} );
 
 				it( 'allows binding attribute to the observable – value of an attribute processed by a callback (use Node)', () => {
-					const element = getElement( {
+					setElement( {
 						tag: 'p',
 						attributes: {
 							'class': bind.if( 'foo', 'eqls-tag-name', ( value, el ) => el.tagName === value )
@@ -838,17 +1000,17 @@ describe( 'Template', () => {
 					} );
 
 					observable.foo = 'bar';
-					expect( element.outerHTML ).to.equal( '<p>abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p>abc</p>' );
 
 					observable.foo = 'P';
-					expect( element.outerHTML ).to.equal( '<p class="eqls-tag-name">abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p class="eqls-tag-name">abc</p>' );
 
 					observable.foo = 64;
-					expect( element.outerHTML ).to.equal( '<p>abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p>abc</p>' );
 				} );
 
 				it( 'allows binding attribute to the observable – falsy values', () => {
-					const element = getElement( {
+					setElement( {
 						tag: 'p',
 						attributes: {
 							'class': bind.if( 'foo', 'foo-is-set' )
@@ -857,22 +1019,22 @@ describe( 'Template', () => {
 					} );
 
 					observable.foo = 'bar';
-					expect( element.outerHTML ).to.equal( '<p class="foo-is-set">abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p class="foo-is-set">abc</p>' );
 
 					observable.foo = false;
-					expect( element.outerHTML ).to.equal( '<p>abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p>abc</p>' );
 
 					observable.foo = null;
-					expect( element.outerHTML ).to.equal( '<p>abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p>abc</p>' );
 
 					observable.foo = undefined;
-					expect( element.outerHTML ).to.equal( '<p>abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p>abc</p>' );
 
 					observable.foo = '';
-					expect( element.outerHTML ).to.equal( '<p>abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p>abc</p>' );
 
 					observable.foo = 0;
-					expect( element.outerHTML ).to.equal( '<p>abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p>abc</p>' );
 				} );
 			} );
 
@@ -920,6 +1082,17 @@ describe( 'Template', () => {
 	} );
 } );
 
-function getElement( template ) {
-	return new Template( template ).render();
+function setElement( template ) {
+	el = new Template( template ).render();
+	document.body.appendChild( el );
+}
+
+function dispatchEvent( el, domEvtName ) {
+	if ( !el.parentNode ) {
+		throw new Error( 'To dispatch an event, element must be in DOM. Otherwise #target is null.' );
+	}
+
+	el.dispatchEvent( new Event( domEvtName, {
+		bubbles: true
+	} ) );
 }
