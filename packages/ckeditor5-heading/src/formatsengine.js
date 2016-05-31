@@ -12,7 +12,7 @@ import Paragraph from '../paragraph/paragraph.js';
 import FormatsCommand from './formatscommand.js';
 
 const formats = [
-	{ id: 'paragraph', viewElement: 'p', label: 'Paragraph' },
+	{ id: 'paragraph', viewElement: 'p', label: 'Paragraph', default: true },
 	{ id: 'heading1', viewElement: 'h2', label: 'Heading 1' },
 	{ id: 'heading2', viewElement: 'h3', label: 'Heading 2' },
 	{ id: 'heading3', viewElement: 'h4', label: 'Heading 3' }
@@ -36,7 +36,7 @@ export default class FormatsEngine extends Feature {
 				// Schema.
 				schema.registerItem( format.id, '$block' );
 
-				// Build converter from model to view for data pipeline.
+				// Build converter from model to view for data and editing pipelines.
 				BuildModelConverterFor( data.modelToView, editing.modelToView )
 					.fromElement( format.id )
 					.toElement( format.viewElement );

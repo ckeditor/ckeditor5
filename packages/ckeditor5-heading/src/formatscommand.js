@@ -12,33 +12,52 @@ export default class FormatsCommand extends Command {
 		super( editor );
 
 		this.formats = formats;
-		this.defaultFormat = this.formats[ 0 ];
+		this.defaultFormat = this._getDefaultFormat();
 
-		this.set( 'value', this.formats[ 0 ] );
+		this.set( 'format', this.defaultFormat );
 
+		// Listen on selection change and set current command's format to format in current selection.
 		this.listenTo( editor.document.selection, 'change', () => {
 			const position = editor.document.selection.getFirstPosition();
 			const parent = position.parent;
-			this.value = parent.name;
+			const format = this._getFormatById( parent.name );
+
+			// TODO: What should happen if current format is not found? Is it possible?
+			if ( format !== undefined ) {
+				this.format = format;
+			}
 		} );
 	}
 
-	_doExecute( forceValue ) {
+	_doExecute( formatId ) {
+		// TODO: Check if format Id is valid.
 		const document = this.editor.document;
 		const selection = document.selection;
-		const newValue = ( forceValue === undefined ) ? 'paragraph' : forceValue;
+		const newValue = ( formatId === undefined ) ? this.defaultFormat.id : formatId;
 		const position = selection.getFirstPosition();
 		const elements = [];
 		let remove = false;
 
-		// If start position is same as new value - we are toggling already applied format back to default one.
-		if ( newValue === position.parent.name ) {
+		// If current format is same as new format - toggle already applied format back to default one.
+		if ( newValue === this.format.id ) {
 			remove = true;
 		}
 
 		if ( selection.isCollapsed ) {
 			elements.push( position.parent );
+		} else {
+			const ranges = selection.getRanges();
+
+			for ( let range in ranges ) {
+				const start = range.start;
+				const end = range.end;
+
+				console.log( start );
+			}
+
 		}
+
+		//TODO: when selection is not collapsed - gather all elements that needs to be renamed.
 
 		document.enqueueChanges( () => {
 			const batch = document.batch();
@@ -55,6 +74,18 @@ export default class FormatsCommand extends Command {
 					batch.rename( newValue, element );
 				}
 			}
+		} );
+	}
+
+	_getFormatById( id ) {
+		return this.formats.find( ( item ) => {
+			return item.id && item.id === id;
+		} );
+	}
+
+	_getDefaultFormat() {
+		return this.formats.find( ( item ) => {
+			return item.default;
 		} );
 	}
 }

@@ -11,7 +11,7 @@ import Range from '/ckeditor5/engine/model/range.js';
 import { setData, getData } from '/tests/engine/_utils/model.js';
 
 const formats = [
-	{ id: 'paragraph', viewElement: 'p' },
+	{ id: 'paragraph', viewElement: 'p', default: true },
 	{ id: 'heading1', viewElement: 'h2' },
 	{ id: 'heading2', viewElement: 'h3' },
 	{ id: 'heading3', viewElement: 'h4' }
@@ -48,7 +48,7 @@ describe( 'FormatsCommand', () => {
 				const element = root.getChild( 0 );
 				document.selection.addRange( Range.createFromParentsAndOffsets( element, 3, element, 3 ) );
 
-				expect( command.value ).to.equal( format.id );
+				expect( command.format ).to.equal( format );
 			} );
 		}
 	} );
