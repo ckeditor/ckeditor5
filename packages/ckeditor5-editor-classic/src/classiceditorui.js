@@ -15,7 +15,7 @@ import Toolbar from '../ui/bindings/toolbar.js';
 import StickyToolbarView from '../ui/stickytoolbar/stickytoolbarview.js';
 
 /**
- * Classic editor. Uses inline editable and sticky toolbar, all
+ * Classic editor UI. Uses inline editable and sticky toolbar, all
  * enclosed in a boxed UI.
  *
  * @memberOf editor-classic
@@ -42,21 +42,24 @@ export default class ClassicEditorUI extends BoxedEditorUI {
 		 * Editable UI controller.
 		 *
 		 * @readonly
-		 * @member {ui.editableUI.EditableUI} editor-classic.ClassicEditorUI#editableUI
+		 * @member {ui.editableUI.EditableUI} editor-classic.ClassicEditorUI#editable
 		 */
-		this.editableUI = this._createEditableUI();
+		this.editable = this._createEditableUI();
 	}
 
 	/**
-	 * The HTML element which is editable (usually the one with `contentEditable=true`).
+	 * The editing host.
 	 *
 	 * @readonly
 	 * @type {HTMLElement}
 	 */
 	get editableElement() {
-		return this.editableUI.view.element;
+		return this.editable.view.element;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		if ( this.editor.config.toolbar ) {
 			this.toolbar.addButtons( this.editor.config.toolbar );
