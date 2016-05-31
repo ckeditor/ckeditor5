@@ -8,37 +8,26 @@
 'use strict';
 
 import moduleUtils from '/tests/ckeditor5/_utils/module.js';
-import testUtils from '/tests/ckeditor5/_utils/utils.js';
-import Editor from '/ckeditor5/editor.js';
+import Editor from '/ckeditor5/editor/editor.js';
 import Plugin from '/ckeditor5/plugin.js';
 import Config from '/ckeditor5/utils/config.js';
 import PluginCollection from '/ckeditor5/plugincollection.js';
-import EditableCollection from '/ckeditor5/editablecollection.js';
 
 const pluginClasses = {};
 
 before( () => {
-	// Define fake plugins to be used in tests.
-	testUtils.defineEditorCreatorMock( 'test', {
-		init: sinon.spy().named( 'creator-test' )
-	} );
-
 	pluginDefinition( 'A/A' );
 	pluginDefinition( 'B/B' );
 	pluginDefinition( 'C/C', [ 'B/B' ] );
 	pluginDefinition( 'D/D', [ 'C/C' ] );
 } );
 
-///////////////////
-
 describe( 'Editor', () => {
 	describe( 'constructor', () => {
 		it( 'should create a new editor instance', () => {
 			const editor = new Editor();
 
-			expect( editor ).to.have.property( 'elements', null );
 			expect( editor.config ).to.be.an.instanceof( Config );
-			expect( editor.editables ).to.be.an.instanceof( EditableCollection );
 			expect( editor.commands ).to.be.an.instanceof( Map );
 
 			expect( editor.plugins ).to.be.an.instanceof( PluginCollection );
@@ -54,74 +43,52 @@ describe( 'Editor', () => {
 		} );
 	} );
 
-	describe( 'firstElement', () => {
-		it( 'should be set to first element', () => {
-			const editor = new Editor( { foo: 'a', bar: 'b' } );
-
-			expect( editor.firstElement ).to.equal( 'a' );
-		} );
-
-		it( 'should be set to null if there are no elements', () => {
-			const editor = new Editor();
-
-			expect( editor.firstElement ).to.be.null;
-		} );
-	} );
-
-	describe( 'firstElementName', () => {
-		it( 'should be set to first element name', () => {
-			const editor = new Editor( { foo: 'a', bar: 'b' } );
-
-			expect( editor.firstElementName ).to.equal( 'foo' );
-		} );
-
-		it( 'should be set to null if there are no elements', () => {
-			const editor = new Editor();
-
-			expect( editor.firstElementName ).to.be.null;
-		} );
-	} );
-
-	describe( 'init', () => {
+	describe( 'create', () => {
 		it( 'should return a promise that resolves properly', () => {
-			const editor = new Editor( null, {
-				creator: 'creator-test'
-			} );
-
-			let promise = editor.init();
+			let promise = Editor.create();
 
 			expect( promise ).to.be.an.instanceof( Promise );
 
 			return promise;
 		} );
 
-		it( 'should load features and creator', () => {
-			const editor = new Editor( null, {
-				features: [ 'A', 'B' ],
-				creator: 'creator-test'
+		it( 'loads plugins', () => {
+			return Editor.create( {
+					features: [ 'A' ]
+				} )
+				.then( editor => {
+					expect( getPlugins( editor ).length ).to.equal( 1 );
+
+					expect( editor.plugins.get( 'A' ) ).to.be.an.instanceof( Plugin );
+				} );
+		} );
+	} );
+
+	describe( 'initPlugins', () => {
+		it( 'should load features', () => {
+			const editor = new Editor( {
+				features: [ 'A', 'B' ]
 			} );
 
 			expect( getPlugins( editor ) ).to.be.empty;
 
-			return editor.init().then( () => {
-				expect( getPlugins( editor ).length ).to.equal( 3 );
+			return editor.initPlugins().then( () => {
+				expect( getPlugins( editor ).length ).to.equal( 2 );
 
 				expect( editor.plugins.get( 'A' ) ).to.be.an.instanceof( Plugin );
 				expect( editor.plugins.get( 'B' ) ).to.be.an.instanceof( Plugin );
-				expect( editor.plugins.get( 'creator-test' ) ).to.be.an.instanceof( Plugin );
 			} );
 		} );
 
 		it( 'should load features passed as a string', () => {
-			const editor = new Editor( null, {
-				features: 'A,B',
-				creator: 'creator-test'
+			const editor = new Editor( {
+				features: 'A,B'
 			} );
 
 			expect( getPlugins( editor ) ).to.be.empty;
 
-			return editor.init().then( () => {
-				expect( getPlugins( editor ).length ).to.equal( 3 );
+			return editor.initPlugins().then( () => {
+				expect( getPlugins( editor ).length ).to.equal( 2 );
 
 				expect( editor.plugins.get( 'A' ) ).to.be.an.instanceof( Plugin );
 				expect( editor.plugins.get( 'B' ) ).to.be.an.instanceof( Plugin );
@@ -129,14 +96,12 @@ describe( 'Editor', () => {
 		} );
 
 		it( 'should initialize plugins in the right order', () => {
-			const editor = new Editor( null, {
-				features: [ 'A', 'D' ],
-				creator: 'creator-test'
+			const editor = new Editor( {
+				features: [ 'A', 'D' ]
 			} );
 
-			return editor.init().then( () => {
+			return editor.initPlugins().then( () => {
 				sinon.assert.callOrder(
-					editor.plugins.get( 'creator-test' ).init,
 					editor.plugins.get( pluginClasses[ 'A/A' ] ).init,
 					editor.plugins.get( pluginClasses[ 'B/B' ] ).init,
 					editor.plugins.get( pluginClasses[ 'C/C' ] ).init,
@@ -165,14 +130,12 @@ describe( 'Editor', () => {
 				return PluginAsync;
 			} );
 
-			const editor = new Editor( null, {
-				features: [ 'A', 'sync' ],
-				creator: 'creator-test'
+			const editor = new Editor( {
+				features: [ 'A', 'sync' ]
 			} );
 
-			return editor.init().then( () => {
+			return editor.initPlugins().then( () => {
 				sinon.assert.callOrder(
-					editor.plugins.get( 'creator-test' ).init,
 					editor.plugins.get( pluginClasses[ 'A/A' ] ).init,
 					editor.plugins.get( PluginAsync ).init,
 					// This one is called with delay by the async init.
@@ -182,20 +145,10 @@ describe( 'Editor', () => {
 			} );
 		} );
 	} );
-
-	describe( 'plugins', () => {
-		it( 'should be empty on new editor', () => {
-			const editor = new Editor();
-
-			expect( getPlugins( editor ) ).to.be.empty;
-		} );
-	} );
 } );
 
-/**
- * @param {String} name Name of the plugin.
- * @param {String[]} deps Dependencies of the plugin (only other plugins).
- */
+// @param {String} name Name of the plugin.
+// @param {String[]} deps Dependencies of the plugin (only other plugins).
 function pluginDefinition( name, deps ) {
 	moduleUtils.define( name, deps || [], function() {
 		class NewPlugin extends Plugin {}
@@ -209,9 +162,7 @@ function pluginDefinition( name, deps ) {
 	} );
 }
 
-/**
- * Returns an array of loaded plugins.
- */
+// Returns an array of loaded plugins.
 function getPlugins( editor ) {
 	const plugins = [];
 

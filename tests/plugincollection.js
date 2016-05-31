@@ -9,16 +9,17 @@
 
 import moduleUtils from '/tests/ckeditor5/_utils/module.js';
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
-import Editor from '/ckeditor5/editor.js';
+import Editor from '/ckeditor5/editor/editor.js';
 import PluginCollection from '/ckeditor5/plugincollection.js';
 import Plugin from '/ckeditor5/plugin.js';
-import Creator from '/ckeditor5/creator/creator.js';
+import Feature from '/ckeditor5/feature.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import log from '/ckeditor5/utils/log.js';
 
 let editor;
 let PluginA, PluginB, PluginC, PluginD, PluginE, PluginF, PluginG, PluginH, PluginI;
 class TestError extends Error {}
+class GrandPlugin extends Feature {}
 
 testUtils.createSinonSandbox();
 
@@ -29,7 +30,7 @@ before( () => {
 	PluginD = createPlugin( 'D' );
 	PluginE = createPlugin( 'E' );
 	PluginF = createPlugin( 'F' );
-	PluginG = createPlugin( 'G', Creator );
+	PluginG = createPlugin( 'G', GrandPlugin );
 	PluginH = createPlugin( 'H' );
 	PluginI = createPlugin( 'I' );
 
@@ -39,7 +40,7 @@ before( () => {
 	PluginE.requires = [ PluginF ];
 	PluginH.requires = [ PluginI ];
 
-	editor = new Editor( document.body.appendChild( document.createElement( 'div' ) ) );
+	editor = new Editor();
 } );
 
 // Create fake plugins that will be used on tests.
@@ -52,19 +53,19 @@ moduleUtils.define( 'B/B', () => {
 	return PluginB;
 } );
 
-moduleUtils.define( 'C/C', [ 'editor', 'B/B' ], () => {
+moduleUtils.define( 'C/C', [ 'editor/editor', 'B/B' ], () => {
 	return PluginC;
 } );
 
-moduleUtils.define( 'D/D', [ 'editor', 'A/A', 'C/C' ], () => {
+moduleUtils.define( 'D/D', [ 'editor/editor', 'A/A', 'C/C' ], () => {
 	return PluginD;
 } );
 
-moduleUtils.define( 'E/E', [ 'editor', 'F/F' ], () => {
+moduleUtils.define( 'E/E', [ 'editor/editor', 'F/F' ], () => {
 	return PluginE;
 } );
 
-moduleUtils.define( 'F/F', [ 'editor', 'E/E' ], () => {
+moduleUtils.define( 'F/F', [ 'editor/editor', 'E/E' ], () => {
 	return PluginF;
 } );
 

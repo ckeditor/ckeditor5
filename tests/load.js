@@ -8,15 +8,15 @@
 import load from '/ckeditor5/load.js';
 
 describe( 'load()', () => {
-	it( 'loads ckeditor.js', () => {
-		return load( 'ckeditor.js' )
-			.then( ( CKEDITORModule ) => {
-				expect( CKEDITORModule.default ).to.have.property( 'create' );
+	it( 'loads plugin.js', () => {
+		return load( 'ckeditor5/plugin.js' )
+			.then( ( PluginModule ) => {
+				expect( PluginModule.default ).to.be.a( 'function' );
 			} );
 	} );
 
-	it( 'loads ckeditor5/editor', () => {
-		return load( 'ckeditor5/editor.js' )
+	it( 'loads ckeditor5/editor/editor.js', () => {
+		return load( 'ckeditor5/editor/editor.js' )
 			.then( ( EditorModule ) => {
 				expect( EditorModule.default ).to.be.a( 'function' );
 			} );
