@@ -5,18 +5,18 @@
 
 'use strict';
 
-import VirtualTestEditor from '/tests/ckeditor5/_utils/virtualtesteditor.js';
+import ModelTestEditor from '/tests/ckeditor5/_utils/modeltesteditor.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import UndoEngine from '/ckeditor5/undo/undoengine.js';
 
 let editor, undo, batch, doc, root;
 
 beforeEach( () => {
-	editor = new VirtualTestEditor();
+	editor = new ModelTestEditor();
 
 	doc = editor.document;
 	batch = doc.batch();
-	root = doc.createRoot();
+	root = doc.getRoot();
 
 	undo = new UndoEngine( editor );
 	undo.init();

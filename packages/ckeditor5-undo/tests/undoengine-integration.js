@@ -5,7 +5,7 @@
 
 'use strict';
 
-import VirtualTestEditor from '/tests/ckeditor5/_utils/virtualtesteditor.js';
+import ModelTestEditor from '/tests/ckeditor5/_utils/modeltesteditor.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import UndoEngine from '/ckeditor5/undo/undoengine.js';
@@ -17,13 +17,13 @@ import { setData, getData } from '/tests/engine/_utils/model.js';
 let editor, doc, root;
 
 beforeEach( () => {
-	return VirtualTestEditor.create( {
+	return ModelTestEditor.create( {
 			features: [ UndoEngine ]
 		} )
 		.then( newEditor => {
 			editor = newEditor;
 			doc = editor.document;
-			root = doc.createRoot();
+			root = doc.getRoot();
 		} );
 } );
 

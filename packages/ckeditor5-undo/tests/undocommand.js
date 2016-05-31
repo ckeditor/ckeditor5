@@ -5,7 +5,7 @@
 
 'use strict';
 
-import VirtualTestEditor from '/tests/ckeditor5/_utils/virtualtesteditor.js';
+import ModelTestEditor from '/tests/ckeditor5/_utils/modeltesteditor.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import UndoCommand from '/ckeditor5/undo/undocommand.js';
@@ -13,12 +13,12 @@ import UndoCommand from '/ckeditor5/undo/undocommand.js';
 let editor, doc, root, undo;
 
 beforeEach( () => {
-	editor = new VirtualTestEditor();
+	editor = new ModelTestEditor();
 	undo = new UndoCommand( editor );
 
 	doc = editor.document;
 
-	root = doc.createRoot( 'root' );
+	root = doc.getRoot();
 } );
 
 afterEach( () => {
