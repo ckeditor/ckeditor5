@@ -7,13 +7,11 @@
 
 'use strict';
 
-import CKEDITOR from '/ckeditor.js';
-import ClassicCreator from '/ckeditor5/creator-classic/classiccreator.js';
+import ClassicEditor from '/ckeditor5/creator-classic/classic.js';
 
-CKEDITOR.create( '#editor', {
-	creator: ClassicCreator,
-	features: [ 'undo' ],
-	toolbar: [ 'undo', 'redo' ]
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	features: [ 'delete', 'enter', 'typing', 'paragraph', 'undo', 'basic-styles/bold', 'basic-styles/italic' ],
+	toolbar: [ 'bold', 'italic', 'undo', 'redo' ]
 } )
 .then( editor => {
 	window.editor = editor;

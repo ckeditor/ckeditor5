@@ -1,3 +1,3 @@
 @bender-ui: collapsed
 
-TODO
+Test the undo/redo features.

@@ -3,38 +3,28 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: browser-only */
-
 'use strict';
 
-import Editor from '/ckeditor5/editor.js';
-import ModelDocument from '/ckeditor5/engine/model/document.js';
+import VirtualTestEditor from '/tests/ckeditor5/_utils/virtualtesteditor.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import UndoEngine from '/ckeditor5/undo/undoengine.js';
-import Creator from '/ckeditor5/creator/creator.js';
 
 import { setData, getData } from '/tests/engine/_utils/model.js';
 
 // import deleteContents from '/ckeditor5/engine/model/composer/deletecontents.js';
 
-let element, editor, doc, root;
+let editor, doc, root;
 
 beforeEach( () => {
-	element = document.createElement( 'div' );
-	document.body.appendChild( element );
-
-	doc = new ModelDocument();
-	root = doc.createRoot( 'root' );
-
-	editor = new Editor( element, {
-		creator: Creator,
-		features: [ UndoEngine ]
-	} );
-
-	editor.document = doc;
-
-	return editor.init();
+	return VirtualTestEditor.create( {
+			features: [ UndoEngine ]
+		} )
+		.then( newEditor => {
+			editor = newEditor;
+			doc = editor.document;
+			root = doc.createRoot();
+		} );
 } );
 
 function setSelection( pathA, pathB ) {
@@ -42,11 +32,11 @@ function setSelection( pathA, pathB ) {
 }
 
 function input( input ) {
-	setData( doc, input, { rootName: 'root' } );
+	setData( doc, input );
 }
 
 function output( output ) {
-	expect( getData( doc, { rootName: 'root' } ) ).to.equal( output );
+	expect( getData( doc ) ).to.equal( output );
 }
 
 function undoDisabled() {
