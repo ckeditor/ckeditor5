@@ -23,13 +23,12 @@ describe( 'BoldEngine', () => {
 				editor = newEditor;
 
 				document = editor.document;
-				document.createRoot();
 
 				// Register some block element for tests.
 				document.schema.registerItem( 'p', '$block' );
 
 				// Build converter from model to view for data and editing pipelines.
-				BuildModelConverterFor( editor.data.modelToView )
+				BuildModelConverterFor( editor.data.modelToView, editor.editing.modelToView )
 					.fromElement( 'p' )
 					.toElement( 'p' );
 
