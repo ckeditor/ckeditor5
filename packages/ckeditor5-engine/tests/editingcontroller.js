@@ -131,8 +131,6 @@ describe( 'EditingController', () => {
 		} );
 
 		beforeEach( () => {
-			document.getElementById( 'focusPlaceholder' ).focus();
-
 			model.selection.removeAllRanges();
 			modelRoot.removeChildren( 0, modelRoot.getChildCount() );
 
@@ -191,6 +189,8 @@ describe( 'EditingController', () => {
 					done();
 				} );
 			} );
+
+			editing.view.focusedEditable = viewRoot;
 
 			const domSelection = document.getSelection();
 			domSelection.removeAllRanges();
