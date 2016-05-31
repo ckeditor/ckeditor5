@@ -8,6 +8,12 @@
 'use strict';
 
 import CKEditorError from '../utils/ckeditorerror.js';
+import mix from '../utils/mix.js';
+import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
+
+const bindToSymbol = Symbol( 'bindTo' );
+const bindIfSymbol = Symbol( 'bindIf' );
+const bindDOMEvtSymbol = Symbol( 'bindDOMEvt' );
 
 /**
  * Basic Template class.
@@ -62,6 +68,10 @@ export default class Template {
 		}
 
 		return this._renderNode( this.definition, node );
+	}
+
+	destroy() {
+		this.stopListening();
 	}
 
 	/**
@@ -139,25 +149,22 @@ export default class Template {
 	 * @param {HTMLElement} applyText If specified, template `def` will be applied to existing Text Node.
 	 * @returns {Text} A rendered Text.
 	 */
-	_renderText( defOrText, applyText ) {
+	_renderText( valueSchemaOrText, applyText ) {
 		const textNode = applyText || document.createTextNode( '' );
 
 		// Check if there's a binder available for this Text Node.
-		const binder = defOrText._modelBinders && defOrText._modelBinders.text;
-
-		// Activate binder if one. Cases:
-		//		{ text: bind.to( ... ) }
-		//		{ text: [ 'foo', bind.to( ... ), ... ] }
-		if ( binder ) {
-			binder( textNode, getTextNodeUpdater( textNode ) );
+		if ( hasModelBinding( valueSchemaOrText.text ) ) {
+			// Activate binder if one. Cases:
+			//		{ text: Template.bind.to( ... ) }
+			//		{ text: [ 'foo', Template.bind.to( ... ), ... ] }
+			this._setupBinding( valueSchemaOrText.text, textNode, getTextNodeUpdater( textNode ) );
 		}
-
 		// Simply set text. Cases:
 		// 		{ text: [ 'all', 'are', 'static' ] }
 		// 		{ text: 'foo' }
 		// 		'foo'
 		else {
-			textNode.textContent = defOrText.text || defOrText;
+			textNode.textContent = valueSchemaOrText.text || valueSchemaOrText;
 		}
 
 		return textNode;
@@ -186,11 +193,11 @@ export default class Template {
 			attrNs = attrValue.ns || null;
 
 			// Activate binder if one. Cases:
-			// 		{ class: [ 'bar', bind.to( ... ), 'baz' ] }
-			// 		{ class: bind.to( ... ) }
-			// 		{ class: { ns: 'abc', value: bind.to( ... ) } }
-			if ( binder ) {
-				binder( el, getElementAttributeUpdater( el, attrName, attrNs ) );
+			// 		{ class: [ 'bar', Template.bind.to( ... ), 'baz' ] }
+			// 		{ class: Template.bind.to( ... ) }
+			// 		{ class: { ns: 'abc', value: Template.bind.to( ... ) } }
+			if ( hasModelBinding( attrValue ) ) {
+				this._setupBinding( attrValue, el, getElementAttributeUpdater( el, attrName, attrNs ) );
 			}
 
 			// Otherwise simply set the attribute.
@@ -202,7 +209,7 @@ export default class Template {
 
 				// Attribute can be an array. Merge array elements:
 				if ( Array.isArray( attrValue ) ) {
-					attrValue = attrValue.reduce( function binderValueReducer( prev, cur ) {
+					attrValue = attrValue.reduce( ( prev, cur ) => {
 						return prev === '' ? `${cur}` : `${prev} ${cur}`;
 					} );
 				}
@@ -262,15 +269,207 @@ export default class Template {
 				}
 			} );
 	}
+
+	/**
+	 * For given {@link ui.TemplateValueSchema} containing {@link ui.TemplateBinding} it activates the
+	 * binding and sets its initial value.
+	 *
+	 * Note: {@link ui.TemplateValueSchema} can be for HTMLElement attributes or Text Node `textContent`.
+	 *
+	 * @protected
+	 * @param {ui.TemplateValueSchema}
+	 * @param {Node} node DOM Node to be updated when {@link View#model} changes.
+	 * @param {Function} domUpdater A function provided by {@link Template} which updates corresponding
+	 * DOM attribute or `textContent`.
+	 */
+	_setupBinding( valueSchema, node, domUpdater ) {
+		// Normalize attributes with additional data like namespace:
+		// class: { ns: 'abc', value: [ ... ] }
+		if ( valueSchema.value ) {
+			valueSchema = valueSchema.value;
+		}
+
+		valueSchema = normalizeBinderValueSchema( valueSchema );
+
+		// Assembles the value using {@link ui.TemplateValueSchema} and stores it in a form of
+		// an Array. Each entry of an Array corresponds to one of {@link ui.TemplateValueSchema}
+		// items.
+		//
+		// @private
+		// @param {Node} node
+		// @return {Array}
+		const getBoundValue = ( node ) => {
+			let model, modelValue;
+
+			return valueSchema.map( schemaItem => {
+				model = schemaItem.observable;
+
+				if ( model ) {
+					modelValue = model[ schemaItem.attribute ];
+
+					if ( schemaItem.callback ) {
+						modelValue = schemaItem.callback( modelValue, node );
+					}
+
+					if ( schemaItem.type === bindIfSymbol ) {
+						return !!modelValue ? schemaItem.valueIfTrue || true : '';
+					} else {
+						return modelValue;
+					}
+				} else {
+					return schemaItem;
+				}
+			} );
+		};
+
+		// A function executed each time bound Observable attribute changes, which updates DOM with a value
+		// constructed from {@link ui.TemplateValueSchema}.
+		const onObservableChange = () => {
+			let value = getBoundValue( node );
+			let shouldSet;
+
+			// Check if valueSchema is a single Template.bind.if, like:
+			//		{ class: Template.bind.if( 'foo' ) }
+			if ( valueSchema.length == 1 && valueSchema[ 0 ].type == bindIfSymbol ) {
+				value = value[ 0 ];
+				shouldSet = value !== '';
+
+				if ( shouldSet ) {
+					value = value === true ? '' : value;
+				}
+			} else {
+				value = value.reduce( binderValueReducer, '' );
+				shouldSet = value;
+			}
+
+			if ( shouldSet ) {
+				domUpdater.set( value );
+			} else {
+				domUpdater.remove();
+			}
+		};
+
+		valueSchema
+			.filter( schemaItem => schemaItem.observable )
+			.forEach( schemaItem => {
+				schemaItem.emitter.listenTo( schemaItem.observable, 'change:' + schemaItem.attribute, onObservableChange );
+			} );
+
+		// Set initial values.
+		onObservableChange();
+	}
 }
 
-// Returns an object consisting of `set` and `remove` functions, which
-// can be used in the context of DOM Node to set or reset `textContent`.
-// @see ui.View#_getModelBinder
-//
-// @private
-// @param {Node} node DOM Node to be modified.
-// @returns {Object}
+mix( Template, EmitterMixin );
+
+/**
+ * And entry point to the interface which allows binding attributes of {@link View#model}
+ * to the DOM items like HTMLElement attributes or Text Node `textContent`, so their state
+ * is synchronized with {@link View#model}.
+ *
+ * @readonly
+ * @type ui.TemplateBinding
+ */
+Template.bind = ( observable, emitter ) => {
+	const binderFunction = ( eventName ) => {
+		return {
+			type: bindDOMEvtSymbol,
+			observable, emitter,
+			eventName
+		};
+	};
+
+	/**
+	 * Binds {@link utils.ObservableMixin} to HTMLElement attribute or Text Node `textContent`
+	 * so remains in sync with the Model when it changes.
+	 *
+	 *		this.template = {
+	 *			tag: 'p',
+	 *			attributes: {
+	 *				// class="..." attribute gets bound to this.observable.a
+	 *				'class': Template.bind.to( 'a' )
+	 *			},
+	 *			children: [
+	 *				// <p>...</p> gets bound to this.observable.b; always `toUpperCase()`.
+	 *				{ text: Template.bind.to( 'b', ( value, node ) => value.toUpperCase() ) }
+	 *			]
+	 *		}
+	 *
+	 * @static
+	 * @property {attributeBinder.to}
+	 * @param {String} attribute Name of {@link utils.ObservableMixin} used in the binding.
+	 * @param {Function} [callback] Allows processing of the value. Accepts `Node` and `value` as arguments.
+	 * @return {ui.TemplateBinding}
+	 */
+	binderFunction.to = ( attribute, callback ) => {
+		return {
+			type: bindToSymbol,
+			observable, emitter,
+			attribute, callback
+		};
+	};
+
+	/**
+	 * Binds {@link utils.ObservableMixin} to HTMLElement attribute or Text Node `textContent`
+	 * so remains in sync with the Model when it changes. Unlike {@link View#attributeBinder.to},
+	 * it controls the presence of the attribute/`textContent` depending on the "falseness" of
+	 * {@link utils.ObservableMixin} attribute.
+	 *
+	 *		this.template = {
+	 *			tag: 'input',
+	 *			attributes: {
+	 *				// <input checked> this.observable.a is not undefined/null/false/''
+	 *				// <input> this.observable.a is undefined/null/false
+	 *				checked: Template.bind.if( 'a' )
+	 *			},
+	 *			children: [
+	 *				{
+	 *					// <input>"b-is-not-set"</input> when this.observable.b is undefined/null/false/''
+	 *					// <input></input> when this.observable.b is not "falsy"
+	 *					text: Template.bind.if( 'b', 'b-is-not-set', ( value, node ) => !value )
+	 *				}
+	 *			]
+	 *		}
+	 *
+	 * @static
+	 * @property {attributeBinder.if}
+	 * @param {String} attribute Name of {@link utils.ObservableMixin} used in the binding.
+	 * @param {String} [valueIfTrue] Value set when {@link utils.ObservableMixin} attribute is not undefined/null/false/''.
+	 * @param {Function} [callback] Allows processing of the value. Accepts `Node` and `value` as arguments.
+	 * @return {ui.TemplateBinding}
+	 */
+	binderFunction.if = ( attribute, valueIfTrue, callback ) => {
+		return {
+			type: bindIfSymbol,
+			observable, emitter,
+			attribute, valueIfTrue, callback
+		};
+	};
+
+	return binderFunction;
+};
+
+/**
+ * Describes Model binding created by {@link View#attributeBinder}.
+ *
+ * @typedef ui.TemplateBinding
+ * @type Object
+ * @property {Symbol} type
+ * @property {ui.Model} model
+ * @property {String} attribute
+ * @property {String} [valueIfTrue]
+ * @property {Function} [callback]
+ */
+
+/*
+ * Returns an object consisting of `set` and `remove` functions, which
+ * can be used in the context of DOM Node to set or reset `textContent`.
+ * @see ui.View#_setupBinding
+ *
+ * @private
+ * @param {Node} node DOM Node to be modified.
+ * @returns {Object}
+ */
 function getTextNodeUpdater( node ) {
 	return {
 		set( value ) {
@@ -283,15 +482,17 @@ function getTextNodeUpdater( node ) {
 	};
 }
 
-// Returns an object consisting of `set` and `remove` functions, which
-// can be used in the context of DOM Node to set or reset an attribute.
-// @see ui.View#_getModelBinder
-//
-// @private
-// @param {Node} node DOM Node to be modified.
-// @param {String} attrName Name of the attribute to be modified.
-// @param {String} [ns] Namespace to use.
-// @returns {Object}
+/*
+ * Returns an object consisting of `set` and `remove` functions, which
+ * can be used in the context of DOM Node to set or reset an attribute.
+ * @see ui.View#_setupBinding
+ *
+ * @private
+ * @param {Node} node DOM Node to be modified.
+ * @param {String} attrName Name of the attribute to be modified.
+ * @param {String} [ns] Namespace to use.
+ * @returns {Object}
+ */
 function getElementAttributeUpdater( el, attrName, ns = null ) {
 	return {
 		set( value ) {
@@ -302,6 +503,72 @@ function getElementAttributeUpdater( el, attrName, ns = null ) {
 			el.removeAttributeNS( ns, attrName );
 		}
 	};
+}
+
+/**
+ * Normalizes given {@link ui.TemplateValueSchema} it's always in an Array–like format:
+ *
+ * 		{ attributeName/text: 'bar' } ->
+ * 			{ attributeName/text: [ 'bar' ] }
+ *
+ * 		{ attributeName/text: { model: ..., modelAttributeName: ..., callback: ... } } ->
+ * 			{ attributeName/text: [ { model: ..., modelAttributeName: ..., callback: ... } ] }
+ *
+ * 		{ attributeName/text: [ 'bar', { model: ..., modelAttributeName: ... }, 'baz' ] }
+ *
+ * @ignore
+ * @private
+ * @param {ui.TemplateValueSchema} valueSchema
+ * @returns {Array}
+ */
+function normalizeBinderValueSchema( valueSchema ) {
+	return Array.isArray( valueSchema ) ? valueSchema : [ valueSchema ];
+}
+
+/**
+ * A helper which concatenates the value avoiding unwanted
+ * leading white spaces.
+ *
+ * @ignore
+ * @private
+ * @param {String} prev
+ * @param {String} cur
+ * @returns {String}
+ */
+function binderValueReducer( prev, cur ) {
+	return prev === '' ?
+			`${cur}`
+		:
+			cur === '' ? `${prev}` : `${prev} ${cur}`;
+}
+
+/**
+ * Checks whether given {@link ui.TemplateValueSchema} contains a
+ * {@link ui.TemplateBinding}.
+ *
+ * @ignore
+ * @private
+ * @param {ui.TemplateValueSchema} valueSchema
+ * @returns {Boolean}
+ */
+function hasModelBinding( valueSchema ) {
+	if ( !valueSchema ) {
+		return false;
+	}
+
+	// Normalize attributes with additional data like namespace:
+	// class: { ns: 'abc', value: [ ... ] }
+	if ( valueSchema.value ) {
+		valueSchema = valueSchema.value;
+	}
+
+	if ( Array.isArray( valueSchema ) ) {
+		return valueSchema.some( hasModelBinding );
+	} else if ( valueSchema.observable ) {
+		return true;
+	}
+
+	return false;
 }
 
 /**
