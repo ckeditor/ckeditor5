@@ -80,6 +80,7 @@ export default class Document {
 		 * @member {engine.view.Renderer} engine.view.Document#renderer
 		 */
 		this.renderer = new Renderer( this.domConverter, this.selection );
+		this.renderer.bind( 'focusedEditable' ).to( this, 'focusedEditable' );
 
 		/**
 		 * Map of registered {@link engine.view.Observer observers}.
@@ -177,7 +178,6 @@ export default class Document {
 		viewRoot.on( 'change:children', ( evt, node ) => this.renderer.markToSync( 'children', node ) );
 		viewRoot.on( 'change:attributes', ( evt, node ) => this.renderer.markToSync( 'attributes', node ) );
 		viewRoot.on( 'change:text', ( evt, node ) => this.renderer.markToSync( 'text', node ) );
-		this.on( 'change:focusedEditable', () => this.renderer.focusedEditable = this.focusedEditable );
 
 		if ( domRoot instanceof HTMLElement ) {
 			this.attachDomRoot( domRoot, name );
