@@ -19,8 +19,6 @@ describe( 'Paragraph feature', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				doc = editor.document;
-
-				doc.createRoot();
 			} );
 	} );
 
