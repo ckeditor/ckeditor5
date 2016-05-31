@@ -14,8 +14,6 @@
  * needed to initialize editor.
  */
 
-import 'babel-runtime/regenerator'; // For test
-
 import CKEDITOR from '../../../build/esnext/ckeditor.js';
 import ClassicCreator from '../../../build/esnext/ckeditor5/creator-classic/classiccreator.js';
 

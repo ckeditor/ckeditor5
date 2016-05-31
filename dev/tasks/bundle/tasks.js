@@ -8,13 +8,9 @@
 const path = require( 'path' );
 const gulp = require( 'gulp' );
 const gulpCssnano = require( 'gulp-cssnano' );
-const gulpUglify = require( 'gulp-uglify' );
 const runSequence = require( 'run-sequence' );
 const utils = require( './utils' );
 const rollup = require( 'rollup' ).rollup;
-const rollupBabel = require( 'rollup-plugin-babel' );
-const rollupCommonJS = require( 'rollup-plugin-commonjs' );
-const rollupNodeResolve = require( 'rollup-plugin-node-resolve' );
 
 module.exports = ( config ) => {
 	const sourceBuildDir = path.join( config.ROOT_DIR, config.BUILD_DIR, 'esnext' );
@@ -48,18 +44,7 @@ module.exports = ( config ) => {
 				const outputFile = path.join( bundleDir, config.MAIN_FILE );
 
 				return rollup( {
-					entry: entryFilePath,
-					plugins: [
-						rollupCommonJS( {
-							include: 'node_modules/**'
-						} ),
-						rollupNodeResolve( {
-							jsnext: true
-						} ),
-						rollupBabel( {
-							presets: [ 'es2015-rollup' ]
-						} )
-					]
+					entry: entryFilePath
 				} ).then( ( bundle ) => {
 					return bundle.write( {
 						dest: outputFile,
@@ -86,12 +71,14 @@ module.exports = ( config ) => {
 		minify: {
 			/**
 			 * JS minification by UglifyJS.
+			 *
+			 * At this we don't minify JS file because there is no minifier fully sports esnext syntax.
+			 * For consistency `ckeditor.min.js` file is created, but is not minified yed.
 			 */
 			js() {
-				let stream = gulp.src( path.join( bundleDir, config.MAIN_FILE ) )
-					.pipe( gulpUglify() );
+				let stream = gulp.src( path.join( bundleDir, config.MAIN_FILE ) );
 
-				utils.saveStreamAsMinifiedFile( stream, bundleDir );
+				return utils.saveStreamAsMinifiedFile( stream, bundleDir );
 			},
 
 			/**
@@ -110,19 +97,18 @@ module.exports = ( config ) => {
 	gulp.task( 'bundle:generate', [ 'bundle:clean', 'build:js:esnext', 'build:themes:esnext' ], tasks.generate );
 	gulp.task( 'bundle:minify:js', tasks.minify.js );
 	gulp.task( 'bundle:minify:css', tasks.minify.css );
+	gulp.task( 'bundle:next', tasks.next );
 
 	gulp.task( 'bundle', ( callback ) => {
 		runSequence( 'bundle:generate', [ 'bundle:minify:js', 'bundle:minify:css' ], () => {
 			// Print files size on console just before the end of the task.
-			const files = [ 'ckeditor.js', 'ckeditor.min.js', 'ckeditor.css', 'ckeditor.min.css' ];
+			const files = [ 'ckeditor.js', 'ckeditor.css', 'ckeditor.min.js', 'ckeditor.min.css' ];
 			utils.logFilesSize( files, bundleDir );
 
 			// Finish the task.
 			callback();
 		} );
 	} );
-
-	gulp.task( 'bundle:babelRuntime', tasks.customBabelRuntime );
 
 	return tasks;
 };
