@@ -41,7 +41,10 @@ const config = {
 			'build/amd/tests/**/_*/*.js',
 			'!build/amd/ckeditor5/*/lib/**'
 		]
-	}
+	},
+
+	// Due to https://github.com/ckeditor/ckeditor5/issues/190.
+	testTimeout: 5 * 1000 // 5s
 };
 
 module.exports = config;
