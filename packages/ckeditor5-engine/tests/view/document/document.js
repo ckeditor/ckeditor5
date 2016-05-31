@@ -335,4 +335,19 @@ describe( 'Document', () => {
 			expect( addedObserverMock.disable.calledOnce ).to.be.true;
 		} );
 	} );
+
+	describe( 'focusedEditable', () => {
+		it( 'should change renderer.focusedEditable too', () => {
+			const viewDocument = new Document();
+			const viewRoot = viewDocument.createRoot( 'div' );
+
+			expect( viewDocument.focusedEditable ).to.equal( null );
+			expect( viewDocument.renderer.focusedEditable ).to.equal( null );
+
+			viewDocument.focusedEditable = viewRoot;
+
+			expect( viewDocument.focusedEditable ).to.equal( viewRoot );
+			expect( viewDocument.renderer.focusedEditable ).to.equal( viewRoot );
+		} );
+	} );
 } );
