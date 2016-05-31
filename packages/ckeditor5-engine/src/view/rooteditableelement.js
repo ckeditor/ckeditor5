@@ -45,14 +45,13 @@ export default class RootEditableElement extends EditableElement {
 		/**
 		 * Whether the editable is focused.
 		 *
-		 * This property is updated by the {@link engine.view.obsever.FocusObserver}.
-		 * If the {@link engine.view.obsever.FocusObserver} is disabled this property will not change.
+		 * This property updates when {@link engine.view.Document#focusedEditable} changes.
 		 *
 		 * @readonly
 		 * @observable
 		 * @member {Boolean} engine.view.RootEditableElement#isFocused
 		 */
-		this.set( 'isFocused', false );
+		this.bind( 'isFocused' ).to( document, 'focusedEditable', ( focusedEditable ) => focusedEditable == this );
 	}
 
 	/**

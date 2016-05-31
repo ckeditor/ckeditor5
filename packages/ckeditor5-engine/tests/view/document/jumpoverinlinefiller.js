@@ -9,7 +9,6 @@
 
 import ViewRange from '/ckeditor5/engine/view/range.js';
 import ViewDocument from '/ckeditor5/engine/view/document.js';
-import FocusObserver from '/ckeditor5/engine/view/observer/focusobserver.js';
 import KeyObserver from '/ckeditor5/engine/view/observer/keyobserver.js';
 import { INLINE_FILLER_LENGTH, isInlineFiller, startsWithFiller } from '/ckeditor5/engine/view/filler.js';
 
@@ -21,18 +20,15 @@ describe( 'Document', () => {
 	let viewDocument;
 
 	beforeEach( () => {
-		document.getElementById( 'focusPlaceholder' ).focus();
-
 		viewDocument = new ViewDocument();
 
 		viewDocument.addObserver( KeyObserver );
-		viewDocument.addObserver( FocusObserver );
 
-		viewDocument.createRoot( document.getElementById( 'editor' ) );
+		const viewRoot = viewDocument.createRoot( document.getElementById( 'editor' ) );
 
 		document.getSelection().removeAllRanges();
 
-		viewDocument.getDomRoot().focus();
+		viewDocument.focusedEditable = viewRoot;
 	} );
 
 	describe( 'jump over inline filler hack', () => {
