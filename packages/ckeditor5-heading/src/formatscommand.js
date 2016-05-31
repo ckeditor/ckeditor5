@@ -34,7 +34,7 @@ export default class FormatsCommand extends Command {
 		const document = this.editor.document;
 		const selection = document.selection;
 		const newValue = ( formatId === undefined ) ? this.defaultFormat.id : formatId;
-		const position = selection.getFirstPosition();
+		const startPosition = selection.getFirstPosition();
 		const elements = [];
 		let remove = false;
 
@@ -43,18 +43,24 @@ export default class FormatsCommand extends Command {
 			remove = true;
 		}
 
+		// Collect elements to change format.
 		if ( selection.isCollapsed ) {
-			elements.push( position.parent );
+			elements.push( _findTopmostBlock( startPosition.parent ) );
 		} else {
 			const ranges = selection.getRanges();
 
 			for ( let range in ranges ) {
-				const start = range.start;
-				const end = range.end;
+				// Get topmost blocks element from start and end range position and adds all elements between them.
+				let startBlock = _findTopmostBlock( range.start.parent );
+				const endBlock = _findTopmostBlock( range.end.parent );
 
-				console.log( start );
+				elements.push( startBlock );
+
+				while ( startBlock !== endBlock ) {
+					startBlock = startBlock.getNextSibling();
+					elements.push( startBlock );
+				}
 			}
-
 		}
 
 		//TODO: when selection is not collapsed - gather all elements that needs to be renamed.
@@ -88,4 +94,12 @@ export default class FormatsCommand extends Command {
 			return item.default;
 		} );
 	}
+}
+
+function _findTopmostBlock( element ) {
+	while ( element.parent.name !== '$root' ) {
+		element = element.parent;
+	}
+
+	return element;
 }
