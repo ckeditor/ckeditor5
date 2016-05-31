@@ -6,7 +6,7 @@
 'use strict';
 
 import Editor from '/ckeditor5/editor/editor.js';
-import ModelTestEditor from '/tests/ckeditor5/_utils/virtualtesteditor.js';
+import ModelTestEditor from '/tests/ckeditor5/_utils/modeltesteditor.js';
 import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
 import { getData, setData } from '/tests/engine/_utils/model.js';
 
