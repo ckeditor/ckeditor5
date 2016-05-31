@@ -418,9 +418,7 @@ export default class Renderer {
 			return;
 		}
 
-		if ( domSelection ) {
-			domSelection.removeAllRanges();
-		}
+		domSelection.removeAllRanges();
 
 		for ( let range of this.selection.getRanges() ) {
 			// Update ranges only in currently focused editable.
