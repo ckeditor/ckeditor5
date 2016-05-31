@@ -11,23 +11,9 @@ const gulp = require( 'gulp' );
 const gulpRename = require( 'gulp-rename' );
 const gutil = require( 'gulp-util' );
 const filesize = require( 'filesize' );
-const clean = require( '../build/utils' ).clean;
+const mainUtils = require( '../utils' );
 
 const utils = {
-	/**
-	 * Copy file.
-	 *
-	 * @param {String} from source file path
-	 * @param {String} to destination path
-	 * @param {Function} [callback=() => {}] function executed at the end of asynchronous task
-	 * @returns {Stream}
-	 */
-	copyFile( from, to, callback = () => {} ) {
-		return gulp.src( from )
-			.pipe( gulp.dest( to ) )
-			.on( 'end', callback );
-	},
-
 	/**
 	 * Save files from stream in specific destination and add `.min` suffix to the name.
 	 *
@@ -35,7 +21,7 @@ const utils = {
 	 * @param {String} destination path
 	 * @returns {Stream}
 	 */
-	saveStreamAsMinifiedFile( stream, destination ) {
+	saveFileFromStreamAsMinified( stream, destination ) {
 		return stream
 			.pipe( gulpRename( {
 				suffix: '.min'
@@ -73,8 +59,19 @@ const utils = {
 		} );
 
 		gutil.log( gutil.colors.green( `\n${ files.join( '\n' ) }` ) );
+	},
+
+	/**
+	 * Copy specified file to specified destination.
+	 *
+	 * @param {String} from file path
+	 * @param {String} to copied file destination
+	 * @return {Stream}
+	 */
+	copyFile( from, to ) {
+		return gulp.src( from ).pipe( gulp.dest( to ) );
 	}
 };
 
-// Extends utils by a clean method from build utils.
-module.exports = Object.assign( utils, { clean } );
+// Assign properties from top level utils.
+module.exports = Object.assign( utils, mainUtils );

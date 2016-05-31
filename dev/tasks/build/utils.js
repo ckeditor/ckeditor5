@@ -17,11 +17,11 @@ const PassThrough = require( 'stream' ).PassThrough;
 const through = require( 'through2' );
 const fs = require( 'fs' );
 const sass = require( 'node-sass' );
-const del = require( 'del' );
 const minimist = require( 'minimist' );
 const sprite = require( 'gulp-svg-sprite' );
 const pipe = require( 'multipipe' );
 const filter = require( 'gulp-filter' );
+const mainUtils = require( '../utils' );
 
 const utils = {
 	/**
@@ -490,22 +490,6 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 	},
 
 	/**
-	 * Removes files and directories specified by `glob` starting from `rootDir`
-	 * and gently informs about deletion.
-	 *
-	 * @param {String} rootDir The path to the root directory (i.e. "dist/").
-	 * @param {String} glob Glob specifying what to clean.
-	 * @returns {Promise}
-	 */
-	clean( rootDir, glob ) {
-		return del( path.join( rootDir, glob ) ).then( paths => {
-			paths.forEach( p => {
-				gutil.log( `Deleted file '${ gutil.colors.cyan( p ) }'.` );
-			} );
-		} );
-	},
-
-	/**
 	 * Parses command line arguments and returns them as a user-friendly hash.
 	 *
 	 * @returns {Object} options
@@ -628,4 +612,5 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 	}
 };
 
-module.exports = utils;
+// Assign properties from top level utils.
+module.exports = Object.assign( utils, mainUtils );

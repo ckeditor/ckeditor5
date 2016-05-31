@@ -58,10 +58,9 @@ module.exports = ( config ) => {
 			 * CSS is already bundled by a build task, so we need only to copy it.
 			 */
 			function bundleCSS() {
-				return new Promise( ( resolve ) => {
-					const cssSource = path.join( sourceBuildDir, 'theme', 'ckeditor.css' );
-					utils.copyFile( cssSource, bundleDir, resolve );
-				} );
+				const cssSource = path.join( sourceBuildDir, 'theme', 'ckeditor.css' );
+
+				return utils.copyFile( cssSource, bundleDir );
 			}
 
 			// Lets wait for both - JS and CSS.
@@ -72,13 +71,13 @@ module.exports = ( config ) => {
 			/**
 			 * JS minification by UglifyJS.
 			 *
-			 * At this we don't minify JS file because there is no minifier fully sports esnext syntax.
+			 * At this moment we don't minify JS file because there is no minifier fully sports esnext syntax.
 			 * For consistency `ckeditor.min.js` file is created, but is not minified yed.
 			 */
 			js() {
 				let stream = gulp.src( path.join( bundleDir, config.MAIN_FILE ) );
 
-				return utils.saveStreamAsMinifiedFile( stream, bundleDir );
+				return utils.saveFileFromStreamAsMinified( stream, bundleDir );
 			},
 
 			/**
@@ -88,7 +87,7 @@ module.exports = ( config ) => {
 				let stream = gulp.src( path.join( bundleDir, 'ckeditor.css' ) )
 					.pipe( gulpCssnano() );
 
-				return utils.saveStreamAsMinifiedFile( stream, bundleDir );
+				return utils.saveFileFromStreamAsMinified( stream, bundleDir );
 			}
 		}
 	};
