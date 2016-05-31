@@ -13,10 +13,12 @@ import SelectionObserver from '/ckeditor5/engine/view/observer/selectionobserver
 import { setData } from '/tests/engine/_utils/view.js';
 
 const viewDocument = new Document();
-viewDocument.createRoot( document.getElementById( 'editor' ) );
+const viewRoot = viewDocument.createRoot( document.getElementById( 'editor' ) );
 
 viewDocument.addObserver( MutationObserver );
 viewDocument.addObserver( SelectionObserver );
+
+viewDocument.focusedEditable = viewRoot;
 
 setData( viewDocument,
 	'<container:p><attribute:b>foo</attribute:b>bar</container:p>' +

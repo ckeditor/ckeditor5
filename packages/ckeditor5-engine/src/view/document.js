@@ -13,7 +13,7 @@ import RootEditableElement from './rooteditableelement.js';
 import { injectQuirksHandling } from './filler.js';
 
 import mix from '../../utils/mix.js';
-import EmitterMixin from '../../utils/emittermixin.js';
+import ObservableMixin from '../../utils/observablemixin.js';
 
 /**
  * Document class creates an abstract layer over the content editable area.
@@ -74,18 +74,31 @@ export default class Document {
 		this.roots = new Map();
 
 		/**
+		 * {@link engine.view.EditableElement} which is currently focused or null if all of them are blurred.
+		 *
+		 * This property is updated by the {@link engine.view.obsever.FocusObserver}.
+		 * If the {@link engine.view.obsever.FocusObserver} is disabled this property will not change.
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {engine.view.EditableElement|null} engine.view.Document#focusedEditable
+		 */
+		this.set( 'focusedEditable', null );
+
+		/**
 		 * Instance of the {@link engine.view.Document#renderer renderer}.
 		 *
 		 * @readonly
 		 * @member {engine.view.Renderer} engine.view.Document#renderer
 		 */
 		this.renderer = new Renderer( this.domConverter, this.selection );
+		this.renderer.bind( 'focusedEditable' ).to( this, 'focusedEditable' );
 
 		/**
 		 * Map of registered {@link engine.view.Observer observers}.
 		 *
 		 * @private
-		 * @member {Map.<Function, engine.view.Observer>} engine.view.Document_#observers
+		 * @member {Map.<Function, engine.view.Observer>} engine.view.Document#_observers
 		 */
 		this._observers = new Map();
 
@@ -250,7 +263,7 @@ export default class Document {
 	}
 }
 
-mix( Document, EmitterMixin );
+mix( Document, ObservableMixin );
 
 /**
  * Enum representing type of the change.

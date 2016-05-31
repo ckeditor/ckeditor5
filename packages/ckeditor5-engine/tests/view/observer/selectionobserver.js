@@ -41,6 +41,8 @@ describe( 'SelectionObserver', () => {
 		viewDocument.selection.removeAllRanges();
 		document.getSelection().removeAllRanges();
 
+		viewDocument.focusedEditable = viewRoot;
+
 		viewDocument.getObserver( SelectionObserver ).enable();
 
 		// Ensure selectionchange will not be fired.
@@ -100,6 +102,18 @@ describe( 'SelectionObserver', () => {
 
 	it( 'should not fired if observer is disabled', ( done ) => {
 		viewDocument.getObserver( SelectionObserver ).disable();
+
+		listenter.listenTo( viewDocument, 'selectionChange', () => {
+			throw 'selectionChange on render';
+		} );
+
+		setTimeout( () => done(), 70 );
+
+		changeDomSelection();
+	} );
+
+	it( 'should not fired if there is no focusedEditable', ( done ) => {
+		viewDocument.focusedEditable = null;
 
 		listenter.listenTo( viewDocument, 'selectionChange', () => {
 			throw 'selectionChange on render';

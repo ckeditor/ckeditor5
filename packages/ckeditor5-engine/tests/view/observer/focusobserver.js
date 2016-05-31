@@ -50,7 +50,7 @@ describe( 'FocusObserver', () => {
 		} );
 	} );
 
-	describe( 'handle isFocused property of root elements', () => {
+	describe( 'handle focusedEditable property of the document', () => {
 		let domMain, domHeader, viewMain, viewHeader;
 
 		beforeEach( () => {
@@ -61,24 +61,41 @@ describe( 'FocusObserver', () => {
 			viewHeader = viewDocument.createRoot( domHeader, 'header' );
 		} );
 
-		it( 'should change isFocused on focus event', () => {
+		it( 'should set focusedEditable on focus', () => {
 			observer.onDomEvent( { type: 'focus', target: domMain } );
 
-			expect( viewMain.isFocused ).to.be.true;
-			expect( viewHeader.isFocused ).to.be.false;
+			expect( viewDocument.focusedEditable ).to.equal( viewMain );
 		} );
 
-		it( 'should change isFocused on blur event', () => {
+		it( 'should change focusedEditable on focus', () => {
 			observer.onDomEvent( { type: 'focus', target: domMain } );
 
-			expect( viewMain.isFocused ).to.be.true;
-			expect( viewHeader.isFocused ).to.be.false;
+			expect( viewDocument.focusedEditable ).to.equal( viewMain );
 
-			observer.onDomEvent( { type: 'blur', target: domMain } );
 			observer.onDomEvent( { type: 'focus', target: domHeader } );
 
-			expect( viewMain.isFocused ).to.be.false;
-			expect( viewHeader.isFocused ).to.be.true;
+			expect( viewDocument.focusedEditable ).to.equal( viewHeader );
+		} );
+
+		it( 'should set focusedEditable to null on blur', () => {
+			observer.onDomEvent( { type: 'focus', target: domMain } );
+
+			expect( viewDocument.focusedEditable ).to.equal( viewMain );
+
+			observer.onDomEvent( { type: 'blur', target: domMain } );
+
+			expect( viewDocument.focusedEditable ).to.be.null;
+		} );
+
+		it( 'should not touch focusedEditable on blur if it is already changed', () => {
+			observer.onDomEvent( { type: 'focus', target: domMain } );
+
+			expect( viewDocument.focusedEditable ).to.equal( viewMain );
+
+			observer.onDomEvent( { type: 'focus', target: domHeader } );
+			observer.onDomEvent( { type: 'blur', target: domMain } );
+
+			expect( viewDocument.focusedEditable ).to.equal( viewHeader );
 		} );
 	} );
 } );

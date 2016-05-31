@@ -21,8 +21,16 @@ export default class EditableElement extends ContainerElement {
 	/**
 	 * Creates an editable element.
 	 */
-	constructor( name, attrs, children ) {
+	constructor( document, name, attrs, children ) {
 		super( name, attrs, children );
+
+		/**
+		 * {@link engine.view.Document} that is an owner of this root.
+		 *
+		 * @private
+		 * @member {engine.view.Document} engine.view.RootEditableElement#_document
+		 */
+		this._document = document;
 
 		/**
 		 * Whether the editable is in read-write or read-only mode.
@@ -31,6 +39,26 @@ export default class EditableElement extends ContainerElement {
 		 * @member {Boolean} engine.view.EditableElement#isReadOnly
 		 */
 		this.set( 'isReadOnly', false );
+
+		/**
+		 * Whether the editable is focused.
+		 *
+		 * This property updates when {@link engine.view.Document#focusedEditable} changes.
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {Boolean} engine.view.RootEditableElement#isFocused
+		 */
+		this.bind( 'isFocused' ).to( document, 'focusedEditable', ( focusedEditable ) => focusedEditable == this );
+	}
+
+	/**
+	 * Gets the {@link engine.view.Document} reference.
+	 *
+	 * @returns {engine.view.Document|null} View Document of the node or `null`.
+	 */
+	getDocument() {
+		return this._document;
 	}
 }
 

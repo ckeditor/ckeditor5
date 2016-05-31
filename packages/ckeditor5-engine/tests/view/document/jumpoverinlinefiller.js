@@ -23,9 +23,12 @@ describe( 'Document', () => {
 		viewDocument = new ViewDocument();
 
 		viewDocument.addObserver( KeyObserver );
-		viewDocument.createRoot( document.getElementById( 'editor' ) );
+
+		const viewRoot = viewDocument.createRoot( document.getElementById( 'editor' ) );
 
 		document.getSelection().removeAllRanges();
+
+		viewDocument.focusedEditable = viewRoot;
 	} );
 
 	describe( 'jump over inline filler hack', () => {

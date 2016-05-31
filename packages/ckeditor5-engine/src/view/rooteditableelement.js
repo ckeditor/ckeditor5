@@ -24,15 +24,7 @@ export default class RootEditableElement extends EditableElement {
 	 * @param {String} [rootName='main'] Root name inside parent {@link engine.view.Document}.
 	 */
 	constructor( document, name, rootName = 'main' ) {
-		super( name );
-
-		/**
-		 * {@link engine.view.Document} that is an owner of this root.
-		 *
-		 * @private
-		 * @member {engine.view.Document} engine.view.RootEditableElement#_document
-		 */
-		this._document = document;
+		super( document, name );
 
 		/**
 		 * Name of this root inside {@link engine.view.Document} that is an owner of this root.
@@ -41,26 +33,5 @@ export default class RootEditableElement extends EditableElement {
 		 * @member {String} engine.view.RootEditableElement#rootName
 		 */
 		this.rootName = rootName;
-
-		/**
-		 * Whether the editable is focused.
-		 *
-		 * This property is updated by the {@link engine.view.obsever.FocusObserver}.
-		 * If the {@link engine.view.obsever.FocusObserver} is disabled this property will not change.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Boolean} engine.view.RootEditableElement#isFocused
-		 */
-		this.set( 'isFocused', false );
-	}
-
-	/**
-	 * Gets the {@link engine.view.Document} reference.
-	 *
-	 * @returns {engine.view.Document|null} View Document of the node or `null`.
-	 */
-	getDocument() {
-		return this._document;
 	}
 }

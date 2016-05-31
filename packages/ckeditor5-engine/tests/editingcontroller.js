@@ -190,6 +190,8 @@ describe( 'EditingController', () => {
 				} );
 			} );
 
+			editing.view.focusedEditable = viewRoot;
+
 			const domSelection = document.getSelection();
 			domSelection.removeAllRanges();
 			const domBar = domRoot.childNodes[ 2 ].childNodes[ 0 ];

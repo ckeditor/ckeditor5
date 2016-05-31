@@ -12,6 +12,8 @@ import Text from '/ckeditor5/engine/view/text.js';
 import RootEditableElement from '/ckeditor5/engine/view/rooteditableelement.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
+import createDocumentMock from '/tests/engine/view/_utils/createdocumentmock.js';
+
 describe( 'Node', () => {
 	let root;
 	let one, two, three;
@@ -135,7 +137,7 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return Document attached to the parent element', () => {
-			const docMock = {};
+			const docMock = createDocumentMock();
 			const parent = new RootEditableElement( docMock, 'div' );
 			const child = new Element( 'p' );
 
@@ -154,7 +156,7 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return root element', () => {
-			const parent = new RootEditableElement( {}, 'div' );
+			const parent = new RootEditableElement( createDocumentMock(), 'div' );
 			const child = new Element( 'p' );
 
 			child.parent = parent;
