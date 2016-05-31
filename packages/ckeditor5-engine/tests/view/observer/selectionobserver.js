@@ -35,13 +35,13 @@ describe( 'SelectionObserver', () => {
 		viewRoot.appendChildren( parse( '<container:p>foo</container:p><container:p>bar</container:p>' ) );
 
 		viewDocument.render();
-
-		viewDocument.focusedEditable = viewRoot;
 	} );
 
 	beforeEach( ( done ) => {
 		viewDocument.selection.removeAllRanges();
 		document.getSelection().removeAllRanges();
+
+		viewDocument.focusedEditable = viewRoot;
 
 		viewDocument.getObserver( SelectionObserver ).enable();
 
@@ -102,6 +102,18 @@ describe( 'SelectionObserver', () => {
 
 	it( 'should not fired if observer is disabled', ( done ) => {
 		viewDocument.getObserver( SelectionObserver ).disable();
+
+		listenter.listenTo( viewDocument, 'selectionChange', () => {
+			throw 'selectionChange on render';
+		} );
+
+		setTimeout( () => done(), 70 );
+
+		changeDomSelection();
+	} );
+
+	it( 'should not fired if there is no focusedEditable', ( done ) => {
+		viewDocument.focusedEditable = null;
 
 		listenter.listenTo( viewDocument, 'selectionChange', () => {
 			throw 'selectionChange on render';

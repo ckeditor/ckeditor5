@@ -10,9 +10,11 @@ import ViewElement from './element.js';
 import ViewPosition from './position.js';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, startsWithFiller, isInlineFiller, isBlockFiller } from './filler.js';
 
+import mix from '../../utils/mix.js';
 import diff from '../../utils/diff.js';
 import insertAt from '../../utils/dom/insertat.js';
 import remove from '../../utils/dom/remove.js';
+import ObservableMixin from '../../utils/observablemixin.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
@@ -433,3 +435,5 @@ export default class Renderer {
 		}
 	}
 }
+
+mix( Renderer, ObservableMixin );
