@@ -64,6 +64,7 @@ export default class ClassicTestEditor extends StandardEditor {
 	/**
 	 * Creates boxed editor UI.
 	 *
+	 * @protected
 	 * @returns {Promise}
 	 */
 	_createUI() {
@@ -80,6 +81,7 @@ export default class ClassicTestEditor extends StandardEditor {
 	/**
 	 * Initilizes editor UI.
 	 *
+	 * @protected
 	 * @returns {Promise}
 	 */
 	_initUI() {

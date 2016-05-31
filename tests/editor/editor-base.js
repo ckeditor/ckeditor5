@@ -39,6 +39,19 @@ describe( 'Editor', () => {
 				expect( spy.calledOnce ).to.be.true;
 			} );
 		} );
+
+		it( 'should destroy all components it initialized', () => {
+			const editor = new Editor();
+
+			const spy1 = sinon.spy( editor.data, 'destroy' );
+			const spy2 = sinon.spy( editor.document, 'destroy' );
+
+			return editor.destroy()
+				.then( () => {
+					expect( spy1.calledOnce ).to.be.true;
+					expect( spy2.calledOnce ).to.be.true;
+				} );
+		} );
 	} );
 
 	describe( 'execute', () => {

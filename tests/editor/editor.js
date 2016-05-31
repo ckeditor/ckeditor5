@@ -53,7 +53,14 @@ describe( 'Editor', () => {
 		} );
 
 		it( 'loads plugins', () => {
-			// TODO
+			return Editor.create( {
+					features: [ 'A' ]
+				} )
+				.then( editor => {
+					expect( getPlugins( editor ).length ).to.equal( 1 );
+
+					expect( editor.plugins.get( 'A' ) ).to.be.an.instanceof( Plugin );
+				} );
 		} );
 	} );
 
