@@ -13,7 +13,7 @@ import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
 
 const bindToSymbol = Symbol( 'bindTo' );
 const bindIfSymbol = Symbol( 'bindIf' );
-const bindDOMEvtSymbol = Symbol( 'bindDOMEvt' );
+const bindDOMEvtSymbol = Symbol( 'bindDomEvt' );
 
 /**
  * Basic Template class.
@@ -184,7 +184,11 @@ export default class Template {
 			if ( isBound( attrValue ) ) {
 				// Normalize attributes with additional data like namespace:
 				//		{ class: { ns: 'abc', value: [ ... ] } }
-				this._bindToObservable( attrValue[ 0 ].value || attrValue, el, getAttributeUpdater( el, attrName, attrNs ) );
+				this._bindToObservable(
+					attrValue[ 0 ].value || attrValue,
+					el,
+					getAttributeUpdater( el, attrName, attrNs )
+				);
 			}
 
 			// Otherwise simply set the attribute.
@@ -231,7 +235,7 @@ export default class Template {
 	 *
 	 * @protected
 	 * @param {ui.TemplateDefinition} def Definition of an element.
-	 * @param {HTMLElement} el Element which is rendered.
+	 * @param {HTMLElement} el Element which is being rendered.
 	 */
 	_setupListeners( def, el ) {
 		if ( !def.on ) {
@@ -263,92 +267,65 @@ export default class Template {
 	 *
 	 * @protected
 	 * @param {ui.TemplateValueSchema}
-	 * @param {Node} node DOM Node to be updated when {@link View#model} changes.
-	 * @param {Function} domUpdater A function provided by {@link Template} which updates corresponding
-	 * DOM attribute or `textContent`.
+	 * @param {Node} node DOM Node to be updated when {@link utils.ObservableMixin} changes.
+	 * @param {Function} domUpdater A function which updates DOM (like attribute or text).
 	 */
-	_bindToObservable( valueSchema, node, domUpdater ) {
-		// Assembles the value using {@link ui.TemplateValueSchema} and stores it in a form of
-		// an Array. Each entry of an Array corresponds to one of {@link ui.TemplateValueSchema}
-		// items.
-		//
-		// @private
-		// @param {Node} node
-		// @return {Array}
-		const getBoundValue = ( node ) => {
-			let model, modelValue;
-
-			return valueSchema.map( schemaItem => {
-				model = schemaItem.observable;
-
-				if ( model ) {
-					modelValue = model[ schemaItem.attribute ];
-
-					if ( schemaItem.callback ) {
-						modelValue = schemaItem.callback( modelValue, node );
-					}
-
-					if ( schemaItem.type === bindIfSymbol ) {
-						return !!modelValue ? schemaItem.valueIfTrue || true : '';
-					} else {
-						return modelValue;
-					}
-				} else {
-					return schemaItem;
-				}
-			} );
-		};
-
-		// A function executed each time bound Observable attribute changes, which updates DOM with a value
-		// constructed from {@link ui.TemplateValueSchema}.
-		const onObservableChange = () => {
-			let value = getBoundValue( node );
-			let shouldSet;
-
-			// Check if valueSchema is a single Template.bind.if, like:
-			//		{ class: Template.bind.if( 'foo' ) }
-			if ( valueSchema.length == 1 && valueSchema[ 0 ].type == bindIfSymbol ) {
-				value = value[ 0 ];
-				shouldSet = value !== '';
-
-				if ( shouldSet ) {
-					value = value === true ? '' : value;
-				}
-			} else {
-				value = value.reduce( arrayValueReducer, '' );
-				shouldSet = value;
-			}
-
-			if ( shouldSet ) {
-				domUpdater.set( value );
-			} else {
-				domUpdater.remove();
-			}
-		};
-
+	_bindToObservable( valueSchema ) {
 		valueSchema
-			.filter( schemaItem => schemaItem.observable )
-			.forEach( schemaItem => {
-				schemaItem.emitter.listenTo( schemaItem.observable, 'change:' + schemaItem.attribute, onObservableChange );
+			// Filter inactive bindings from schema, like static strings, etc.
+			.filter( item => item.observable )
+			// Let the emitter listen to observable change:attribute event.
+			// TODO: Reduce the number of listeners attached as many bindings may listen
+			// to the same observable attribute.
+			.forEach( ( { emitter, observable, attribute } ) => {
+				emitter.listenTo( observable, 'change:' + attribute, () => {
+					syncDom( ...arguments );
+				} );
 			} );
 
 		// Set initial values.
-		onObservableChange();
+		syncDom( ...arguments );
 	}
 }
 
 mix( Template, EmitterMixin );
 
 /**
- * And entry point to the interface which allows binding attributes of {@link View#model}
+ * An entry point to the interface which allows binding attributes of {@link utils.ObservableMixin}
  * to the DOM items like HTMLElement attributes or Text Node `textContent`, so their state
  * is synchronized with {@link View#model}.
  *
- * @readonly
- * @type ui.TemplateBinding
+ * @param {utils.ObservableMixin} observable An instance of ObservableMixin class.
+ * @param {utils.EmitterMixin} emitter An instance of EmitterMixin class.
  */
 Template.bind = ( observable, emitter ) => {
-	const binderFunction = ( eventNameOrFuncion ) => {
+	/**
+	 * Binds {@link utils.ObservableMixin} instance to HTMLElement DOM event, so the DOM events
+	 * are propagated through Observable.
+	 *
+	 *		const bind = Template.bind( observableInstance, emitterInstance );
+	 *
+	 *		new Template( {
+	 *			tag: 'p',
+	 *			on: {
+	 *				click: [
+	 *					// "clicked" event will be fired on `observableInstance` when "click" fires in DOM.
+	 *					bind( 'clicked' ),
+	 *
+	 *					// A custom callback function will be executed when "click" fires in DOM.
+	 *					bind( () => {
+	 *						...
+	 *					} )
+	 *				]
+	 *			}
+	 *		} ).render();
+	 *
+	 * @static
+	 * @property {ui.Template.bind#eventBinder}
+	 * @param {String} eventNameOrFuncion Name of the DOM event to be fired along with DOM event or custom function.
+	 * @return {ui.TemplateBinding}
+	 */
+	const eventBinder = ( eventNameOrFuncion ) => {
 		return {
 			type: bindDOMEvtSymbol,
 			observable, emitter,
@@ -358,27 +335,29 @@ Template.bind = ( observable, emitter ) => {
 
 	/**
 	 * Binds {@link utils.ObservableMixin} to HTMLElement attribute or Text Node `textContent`
-	 * so remains in sync with the Model when it changes.
+	 * so remains in sync with the Observable when it changes.
 	 *
-	 *		this.template = {
+	 *		const bind = Template.bind( observableInstance, emitterInstance );
+	 *
+	 *		new Template( {
 	 *			tag: 'p',
 	 *			attributes: {
-	 *				// class="..." attribute gets bound to this.observable.a
-	 *				'class': Template.bind.to( 'a' )
+	 *				// class="..." attribute gets bound to `observableInstance#a`
+	 *				'class': bind.to( 'a' )
 	 *			},
 	 *			children: [
-	 *				// <p>...</p> gets bound to this.observable.b; always `toUpperCase()`.
-	 *				{ text: Template.bind.to( 'b', ( value, node ) => value.toUpperCase() ) }
+	 *				// <p>...</p> gets bound to `observableInstance#b`; always `toUpperCase()`.
+	 *				{ text: bind.to( 'b', ( value, node ) => value.toUpperCase() ) }
 	 *			]
-	 *		}
+	 *		} ).render();
 	 *
 	 * @static
-	 * @property {attributeBinder.to}
+	 * @property {ui.Template.bind.eventBinder#to}
 	 * @param {String} attribute Name of {@link utils.ObservableMixin} used in the binding.
 	 * @param {Function} [callback] Allows processing of the value. Accepts `Node` and `value` as arguments.
 	 * @return {ui.TemplateBinding}
 	 */
-	binderFunction.to = ( attribute, callback ) => {
+	eventBinder.to = ( attribute, callback ) => {
 		return {
 			type: bindToSymbol,
 			observable, emitter,
@@ -388,34 +367,36 @@ Template.bind = ( observable, emitter ) => {
 
 	/**
 	 * Binds {@link utils.ObservableMixin} to HTMLElement attribute or Text Node `textContent`
-	 * so remains in sync with the Model when it changes. Unlike {@link View#attributeBinder.to},
+	 * so remains in sync with the Model when it changes. Unlike {@link ui.Template.bind.eventBinder#to},
 	 * it controls the presence of the attribute/`textContent` depending on the "falseness" of
 	 * {@link utils.ObservableMixin} attribute.
 	 *
-	 *		this.template = {
+	 *		const bind = Template.bind( observableInstance, emitterInstance );
+	 *
+	 *		new Template( {
 	 *			tag: 'input',
 	 *			attributes: {
-	 *				// <input checked> this.observable.a is not undefined/null/false/''
-	 *				// <input> this.observable.a is undefined/null/false
-	 *				checked: Template.bind.if( 'a' )
+	 *				// <input checked> when `observableInstance#a` is not undefined/null/false/''
+	 *				// <input> when `observableInstance#a` is undefined/null/false
+	 *				checked: bind.if( 'a' )
 	 *			},
 	 *			children: [
 	 *				{
-	 *					// <input>"b-is-not-set"</input> when this.observable.b is undefined/null/false/''
-	 *					// <input></input> when this.observable.b is not "falsy"
-	 *					text: Template.bind.if( 'b', 'b-is-not-set', ( value, node ) => !value )
+	 *					// <input>"b-is-not-set"</input> when `observableInstance#b` is undefined/null/false/''
+	 *					// <input></input> when `observableInstance#b` is not "falsy"
+	 *					text: bind.if( 'b', 'b-is-not-set', ( value, node ) => !value )
 	 *				}
 	 *			]
-	 *		}
+	 *		} ).render();
 	 *
 	 * @static
-	 * @property {attributeBinder.if}
-	 * @param {String} attribute Name of {@link utils.ObservableMixin} used in the binding.
+	 * @property {ui.Template.bind.eventBinder#if}
+	 * @param {String} attribute An attribute name of {@link utils.ObservableMixin} used in the binding.
 	 * @param {String} [valueIfTrue] Value set when {@link utils.ObservableMixin} attribute is not undefined/null/false/''.
 	 * @param {Function} [callback] Allows processing of the value. Accepts `Node` and `value` as arguments.
 	 * @return {ui.TemplateBinding}
 	 */
-	binderFunction.if = ( attribute, valueIfTrue, callback ) => {
+	eventBinder.if = ( attribute, valueIfTrue, callback ) => {
 		return {
 			type: bindIfSymbol,
 			observable, emitter,
@@ -423,11 +404,72 @@ Template.bind = ( observable, emitter ) => {
 		};
 	};
 
-	return binderFunction;
+	return eventBinder;
 };
 
 /**
- * Describes Model binding created by {@link View#attributeBinder}.
+ * Assembles the value using {@link ui.TemplateValueSchema} and stores it in a form of
+ * an Array. Each entry of an Array corresponds to one of {@link ui.TemplateValueSchema}
+ * items.
+ *
+ * @private
+ * @param {Node} domNode
+ * @return {Array}
+ */
+function getBoundValue( valueSchema, domNode ) {
+	return valueSchema.map( schemaItem => {
+		let { observable, callback, type } = schemaItem;
+
+		if ( observable ) {
+			let modelValue = observable[ schemaItem.attribute ];
+
+			// Process the value with the callback.
+			if ( callback ) {
+				modelValue = callback( modelValue, domNode );
+			}
+
+			if ( type === bindIfSymbol ) {
+				return !!modelValue ? schemaItem.valueIfTrue || true : '';
+			} else {
+				return modelValue;
+			}
+		} else {
+			return schemaItem;
+		}
+	} );
+}
+
+/**
+ * A function executed each time bound Observable attribute changes, which updates DOM with a value
+ * constructed from {@link ui.TemplateValueSchema}.
+ */
+function syncDom( valueSchema, domNode, domUpdater ) {
+	let value = getBoundValue( valueSchema, domNode );
+	let shouldSet;
+
+	// Check if valueSchema is a single Template.bind.if, like:
+	//		{ class: Template.bind.if( 'foo' ) }
+	if ( valueSchema.length == 1 && valueSchema[ 0 ].type == bindIfSymbol ) {
+		value = value[ 0 ];
+		shouldSet = value !== '';
+
+		if ( shouldSet ) {
+			value = value === true ? '' : value;
+		}
+	} else {
+		value = value.reduce( arrayValueReducer, '' );
+		shouldSet = value;
+	}
+
+	if ( shouldSet ) {
+		domUpdater.set( value );
+	} else {
+		domUpdater.remove();
+	}
+}
+
+/**
+ * Describes Model binding created by {@link Template#bind}.
  *
  * @typedef ui.TemplateBinding
  * @type Object
@@ -505,10 +547,6 @@ function getAttributeUpdater( el, attrName, ns = null ) {
  * @returns {Array}
  */
 function normalize( def ) {
-	if ( !def ) {
-		return;
-	}
-
 	if ( def.attributes ) {
 		normalizeAttributes( def.attributes );
 	}
