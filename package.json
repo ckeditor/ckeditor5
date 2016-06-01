@@ -13,7 +13,7 @@
     "ckeditor5-delete": "ckeditor/ckeditor5-delete#t/6",
     "ckeditor5-engine": "ckeditor/ckeditor5-engine#t/452",
     "ckeditor5-enter": "ckeditor/ckeditor5-enter#t/12",
-    "ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph#t/1",
+    "ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph",
     "ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark",
     "ckeditor5-typing": "ckeditor/ckeditor5-typing#t/1",
     "ckeditor5-ui": "ckeditor/ckeditor5-ui",
