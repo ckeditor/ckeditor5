@@ -498,9 +498,10 @@ export default class Selection {
 
 			// ...look for a first character node in that range and take attributes from it.
 			for ( let item of range ) {
-				if ( item.type == 'TEXT' ) {
+				// This is not an optimal solution because of https://github.com/ckeditor/ckeditor5-engine/issues/454.
+				// It can be done better by using `break;` instead of checking `attrs === null`.
+				if ( item.type == 'TEXT' && attrs === null ) {
 					attrs = item.item.getAttributes();
-					break;
 				}
 			}
 		} else {
