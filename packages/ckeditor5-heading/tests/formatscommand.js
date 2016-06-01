@@ -5,7 +5,7 @@
 
 'use strict';
 
-import VirtualTestEditor from '/tests/ckeditor5/_utils/virtualtesteditor.js';
+import ModelTestEditor from '/tests/ckeditor5/_utils/modeltesteditor.js';
 import FormatsCommand from '/ckeditor5/formats/formatscommand.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import { setData, getData } from '/tests/engine/_utils/model.js';
@@ -21,7 +21,7 @@ describe( 'FormatsCommand', () => {
 	let editor, document, command, root;
 
 	beforeEach( () => {
-		return VirtualTestEditor.create()
+		return ModelTestEditor.create()
 			.then( newEditor => {
 				editor = newEditor;
 				document = editor.document;

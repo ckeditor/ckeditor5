@@ -106,7 +106,7 @@ function _findTopmostBlock( position, nodeAfter = true ) {
 		return nodeAfter ? position.nodeAfter : position.nodeBefore ;
 	}
 
-	while ( !( parent instanceof RootElement ) ) {
+	while ( !( parent.parent instanceof RootElement ) ) {
 		parent = parent.parent;
 	}
 
