@@ -22,32 +22,16 @@ let el, text;
 
 describe( 'Template', () => {
 	describe( 'constructor', () => {
-		it( 'accepts the definition', () => {
+		it( 'accepts template definition', () => {
 			const def = {
 				tag: 'p'
 			};
 
 			expect( new Template( def ).definition ).to.equal( def );
 		} );
-	} );
-
-	describe( 'render', () => {
-		it( 'throws when wrong template definition', () => {
-			expect( () => {
-				new Template( {} ).render();
-			} ).to.throw( CKEditorError, /ui-template-wrong-syntax/ );
-
-			expect( () => {
-				new Template( {
-					tag: 'p',
-					text: 'foo'
-				} ).render();
-			} ).to.throw( CKEditorError, /ui-template-wrong-syntax/ );
-		} );
 
 		it( 'normalizes template definition', () => {
 			const bind = Template.bind( new Model( {} ), extend( {}, DOMEmitterMixin ) );
-
 			const tpl = new Template( {
 				tag: 'p',
 				attributes: {
@@ -80,8 +64,6 @@ describe( 'Template', () => {
 				}
 			} );
 
-			tpl.render();
-
 			const def = tpl.definition;
 
 			expect( def.attributes.a[ 0 ] ).to.equal( 'foo' );
@@ -99,6 +81,21 @@ describe( 'Template', () => {
 			expect( def.on[ 'b@span' ][ 0 ].type ).to.be.a( 'symbol' );
 			expect( def.on[ 'c@span' ][ 0 ].type ).to.be.a( 'symbol' );
 			expect( def.on[ 'c@span' ][ 1 ].type ).to.be.a( 'symbol' );
+		} );
+	} );
+
+	describe( 'render', () => {
+		it( 'throws when wrong template definition', () => {
+			expect( () => {
+				new Template( {} ).render();
+			} ).to.throw( CKEditorError, /ui-template-wrong-syntax/ );
+
+			expect( () => {
+				new Template( {
+					tag: 'p',
+					text: 'foo'
+				} ).render();
+			} ).to.throw( CKEditorError, /ui-template-wrong-syntax/ );
 		} );
 
 		it( 'creates a HTMLElement', () => {
@@ -233,11 +230,17 @@ describe( 'Template', () => {
 		it( 'creates multiple child Text Nodes', () => {
 			const el = new Template( {
 				tag: 'p',
-				children: [ 'a', 'b', { text: 'c' }, 'd' ]
+				children: [
+					'a',
+					'b',
+					{ text: 'c' },
+					'd',
+					{ text: [ 'e', 'f' ] }
+				]
 			} ).render();
 
-			expect( el.childNodes ).to.have.length( 4 );
-			expect( el.outerHTML ).to.be.equal( '<p>abcd</p>' );
+			expect( el.childNodes ).to.have.length( 5 );
+			expect( el.outerHTML ).to.be.equal( '<p>abcdef</p>' );
 		} );
 
 		it( 'activates model bindings – root', () => {
@@ -274,17 +277,20 @@ describe( 'Template', () => {
 						tag: 'span',
 						children: [
 							{
-								text: bind.to( 'foo' )
+								text: [
+									bind.to( 'foo' ),
+									'static'
+								]
 							}
 						]
 					}
 				]
 			} ).render();
 
-			expect( el.firstChild.textContent ).to.equal( 'bar' );
+			expect( el.firstChild.textContent ).to.equal( 'bar static' );
 
 			observable.foo = 'baz';
-			expect( el.firstChild.textContent ).to.equal( 'baz' );
+			expect( el.firstChild.textContent ).to.equal( 'baz static' );
 		} );
 	} );
 
@@ -1080,11 +1086,628 @@ describe( 'Template', () => {
 			} );
 		} );
 	} );
+
+	describe( 'extend', () => {
+		let observable, emitter, bind;
+
+		beforeEach( () => {
+			observable = new Model( {
+				foo: 'bar',
+				baz: 'qux'
+			} );
+
+			emitter = extend( {}, DOMEmitterMixin );
+			bind = Template.bind( observable, emitter );
+		} );
+
+		describe( 'attributes', () => {
+			it( 'extends existing - simple', () => {
+				extensionTest(
+					{
+						tag: 'p',
+						attributes: {
+							a: 'b'
+						}
+					},
+					{
+						attributes: {
+							a: 'c'
+						}
+					},
+					'<p a="b c"></p>'
+				);
+			} );
+
+			it( 'extends existing - complex #1', () => {
+				extensionTest(
+					{
+						tag: 'p',
+						attributes: {
+							a: [ 'b', 'c' ]
+						}
+					},
+					{
+						attributes: {
+							a: 'd'
+						}
+					},
+					'<p a="b c d"></p>'
+				);
+			} );
+
+			it( 'extends existing - complex #2', () => {
+				extensionTest(
+					{
+						tag: 'p',
+						attributes: {
+							a: {
+								value: 'b'
+							}
+						}
+					},
+					{
+						attributes: {
+							a: [ 'c', 'd' ]
+						}
+					},
+					'<p a="b c d"></p>'
+				);
+			} );
+
+			it( 'extends existing - complex #3', () => {
+				extensionTest(
+					{
+						tag: 'p',
+						attributes: {
+							a: [ 'b' ]
+						}
+					},
+					{
+						attributes: {
+							a: [ 'c', 'd' ]
+						}
+					},
+					'<p a="b c d"></p>'
+				);
+			} );
+
+			it( 'extends existing - bindings #1', () => {
+				const el = extensionTest(
+					{
+						tag: 'p',
+						attributes: {
+							a: bind.to( 'foo' )
+						}
+					},
+					{
+						attributes: {
+							a: [ 'c', 'd' ]
+						}
+					},
+					'<p a="bar c d"></p>'
+				);
+
+				observable.foo = 'baz';
+
+				expect( el.outerHTML ).to.equal( '<p a="baz c d"></p>' );
+			} );
+
+			it( 'extends existing - bindings #2', () => {
+				const el = extensionTest(
+					{
+						tag: 'p',
+						attributes: {
+							a: [ 'b', bind.to( 'foo' ) ]
+						}
+					},
+					{
+						attributes: {
+							a: [ 'c', bind.to( 'baz' ) ]
+						}
+					},
+					'<p a="b bar c qux"></p>'
+				);
+
+				observable.foo = 'abc';
+				observable.baz = 'def';
+
+				expect( el.outerHTML ).to.equal( '<p a="b abc c def"></p>' );
+			} );
+
+			it( 'creates new - simple', () => {
+				extensionTest(
+					{
+						tag: 'p',
+						attributes: {
+							a: 'b'
+						}
+					},
+					{
+						attributes: {
+							c: 'd'
+						}
+					},
+					'<p a="b" c="d"></p>'
+				);
+			} );
+
+			it( 'creates new - array', () => {
+				extensionTest(
+					{
+						tag: 'p',
+						attributes: {
+							a: 'b'
+						}
+					},
+					{
+						attributes: {
+							c: [ 'd', 'e' ]
+						}
+					},
+					'<p a="b" c="d e"></p>'
+				);
+			} );
+
+			it( 'creates new - bindings #1', () => {
+				const el = extensionTest(
+					{
+						tag: 'p',
+						attributes: {
+							a: 'b'
+						}
+					},
+					{
+						attributes: {
+							c: bind.to( 'foo' )
+						}
+					},
+					'<p a="b" c="bar"></p>'
+				);
+
+				observable.foo = 'abc';
+
+				expect( el.outerHTML ).to.equal( '<p a="b" c="abc"></p>' );
+			} );
+
+			it( 'creates new - bindings #2', () => {
+				const el = extensionTest(
+					{
+						tag: 'p',
+						attributes: {
+							a: 'b'
+						}
+					},
+					{
+						attributes: {
+							c: [ 'd', bind.to( 'foo' ) ]
+						}
+					},
+					'<p a="b" c="d bar"></p>'
+				);
+
+				observable.foo = 'abc';
+
+				expect( el.outerHTML ).to.equal( '<p a="b" c="d abc"></p>' );
+			} );
+		} );
+
+		describe( 'text', () => {
+			it( 'extends existing - simple', () => {
+				const el = extensionTest(
+					{
+						tag: 'p',
+						children: [
+							'foo'
+						]
+					},
+					{
+						children: [
+							'bar'
+						]
+					},
+					'<p>foobar</p>'
+				);
+
+				expect( el.childNodes ).to.have.length( 1 );
+			} );
+
+			it( 'extends existing - complex #1', () => {
+				const el = extensionTest(
+					{
+						tag: 'p',
+						children: [
+							{ text: 'foo' }
+						]
+					},
+					{
+						children: [
+							'bar'
+						]
+					},
+					'<p>foobar</p>'
+				);
+
+				expect( el.childNodes ).to.have.length( 1 );
+			} );
+
+			it( 'extends existing - complex #2', () => {
+				const el = extensionTest(
+					{
+						tag: 'p',
+						children: [
+							{ text: 'foo' }
+						]
+					},
+					{
+						children: [
+							{ text: 'bar' }
+						]
+					},
+					'<p>foobar</p>'
+				);
+
+				expect( el.childNodes ).to.have.length( 1 );
+			} );
+
+			it( 'extends existing - bindings #1', () => {
+				const el = extensionTest(
+					{
+						tag: 'p',
+						children: [
+							{ text: bind.to( 'foo' ) }
+						]
+					},
+					{
+						children: [
+							'abc'
+						]
+					},
+					'<p>bar abc</p>'
+				);
+
+				observable.foo = 'asd';
+
+				expect( el.outerHTML ).to.equal( '<p>asd abc</p>' );
+				expect( el.childNodes ).to.have.length( 1 );
+			} );
+
+			it( 'extends existing - bindings #2', () => {
+				const el = extensionTest(
+					{
+						tag: 'p',
+						children: [
+							'abc'
+						]
+					},
+					{
+						children: [
+							{ text: bind.to( 'foo' ) }
+						]
+					},
+					'<p>abc bar</p>'
+				);
+
+				observable.foo = 'asd';
+
+				expect( el.outerHTML ).to.equal( '<p>abc asd</p>' );
+				expect( el.childNodes ).to.have.length( 1 );
+			} );
+
+			it( 'extends existing - bindings #3', () => {
+				const el = extensionTest(
+					{
+						tag: 'p',
+						children: [
+							{ text: bind.to( 'foo' ) },
+							'X'
+						]
+					},
+					{
+						children: [
+							{ text: bind.to( 'baz' ) },
+							'Y'
+						]
+					},
+					'<p>bar quxXY</p>'
+				);
+
+				observable.foo = 'A';
+				observable.baz = 'B';
+
+				expect( el.outerHTML ).to.equal( '<p>A BXY</p>' );
+				expect( el.childNodes ).to.have.length( 2 );
+			} );
+
+			it( 'appends new - simple', () => {
+				const el = extensionTest(
+					{
+						tag: 'p',
+						children: [
+							'foo'
+						]
+					},
+					{
+						children: [
+							'',
+							'bar'
+						]
+					},
+					'<p>foobar</p>'
+				);
+
+				expect( el.childNodes ).to.have.length( 2 );
+			} );
+
+			it( 'appends new - complex', () => {
+				const el = extensionTest(
+					{
+						tag: 'p',
+						children: [
+							{ text: 'foo' },
+							'bar'
+						]
+					},
+					{
+						children: [
+							'',
+							'',
+							'C'
+						]
+					},
+					'<p>foobarC</p>'
+				);
+
+				expect( el.childNodes ).to.have.length( 3 );
+			} );
+		} );
+
+		describe( 'children', () => {
+			it( 'extends existing - simple', () => {
+				extensionTest(
+					{
+						tag: 'p',
+						children: [
+							{
+								tag: 'span',
+								attributes: {
+									class: 'foo'
+								}
+							}
+						]
+					},
+					{
+						children: [
+							{
+								tag: 'span',
+								attributes: {
+									class: 'bar'
+								}
+							}
+						]
+					},
+					'<p><span class="foo bar"></span></p>'
+				);
+			} );
+
+			it( 'extends existing - complex', () => {
+				extensionTest(
+					{
+						tag: 'p',
+						children: [
+							{
+								tag: 'span',
+								attributes: {
+									class: 'A'
+								},
+								children: [
+									'A',
+									{
+										tag: 'span',
+										attributes: {
+											class: 'AA'
+										},
+										children: [
+											'AA'
+										]
+									}
+								]
+							}
+						]
+					},
+					{
+						children: [
+							{
+								tag: 'span',
+								attributes: {
+									class: 'B'
+								},
+								children: [
+									'B',
+									{
+										tag: 'span',
+										attributes: {
+											class: 'BB'
+										},
+										children: [
+											'BB'
+										]
+									}
+								]
+							}
+						]
+					},
+					'<p><span class="A B">AB<span class="AA BB">AABB</span></span></p>'
+				);
+			} );
+
+			it( 'appends new - element', () => {
+				extensionTest(
+					{
+						tag: 'p',
+						children: [
+							{
+								tag: 'span',
+								attributes: {
+									class: 'foo'
+								}
+							}
+						]
+					},
+					{
+						children: [
+							{},
+							{
+								tag: 'span',
+								attributes: {
+									class: 'bar'
+								}
+							}
+						]
+					},
+					'<p><span class="foo"></span><span class="bar"></span></p>'
+				);
+			} );
+
+			it( 'appends new - text', () => {
+				extensionTest(
+					{
+						tag: 'p',
+						children: [
+							{
+								tag: 'span',
+								attributes: {
+									class: 'foo'
+								}
+							}
+						]
+					},
+					{
+						children: [
+							{},
+							'A'
+						]
+					},
+					'<p><span class="foo"></span>A</p>'
+				);
+			} );
+		} );
+
+		describe( 'listeners', () => {
+			it( 'extends existing', () => {
+				const spy1 = testUtils.sinon.spy();
+				const spy2 = testUtils.sinon.spy();
+				const spy3 = testUtils.sinon.spy();
+				const spy4 = testUtils.sinon.spy();
+				const spy5 = testUtils.sinon.spy();
+
+				observable.on( 'A', spy1 );
+				observable.on( 'C', spy2 );
+
+				observable.on( 'B', spy3 );
+				observable.on( 'D', spy4 );
+
+				const el = extensionTest(
+					{
+						tag: 'p',
+						children: [
+							{
+								tag: 'span'
+							}
+						],
+						on: {
+							click: bind.to( 'A' ),
+							'click@span': [
+								bind.to( 'B' ),
+								bind.to( spy5 )
+							]
+						}
+					},
+					{
+						on: {
+							click: bind.to( 'C' ),
+							'click@span': bind.to( 'D' )
+						}
+					},
+					'<p><span></span></p>'
+				);
+
+				dispatchEvent( el, 'click' );
+
+				expect( spy1.calledOnce ).to.be.true;
+				expect( spy2.calledOnce ).to.be.true;
+				expect( spy3.called ).to.be.false;
+				expect( spy4.called ).to.be.false;
+				expect( spy5.called ).to.be.false;
+
+				dispatchEvent( el.firstChild, 'click' );
+
+				expect( spy1.calledTwice ).to.be.true;
+				expect( spy2.calledTwice ).to.be.true;
+				expect( spy3.calledOnce ).to.be.true;
+				expect( spy4.calledOnce ).to.be.true;
+				expect( spy5.calledOnce ).to.be.true;
+			} );
+
+			it( 'creates new', () => {
+				const spy1 = testUtils.sinon.spy();
+				const spy2 = testUtils.sinon.spy();
+				const spy3 = testUtils.sinon.spy();
+
+				observable.on( 'A', spy1 );
+				observable.on( 'B', spy2 );
+
+				const el = extensionTest(
+					{
+						tag: 'p',
+						children: [
+							{
+								tag: 'span'
+							}
+						],
+					},
+					{
+						on: {
+							click: bind.to( 'A' ),
+							'click@span': [
+								bind.to( 'B' ),
+								bind.to( spy3 )
+							]
+						}
+					},
+					'<p><span></span></p>'
+				);
+
+				dispatchEvent( el, 'click' );
+
+				expect( spy1.calledOnce ).to.be.true;
+				expect( spy2.called ).to.be.false;
+				expect( spy3.called ).to.be.false;
+
+				dispatchEvent( el.firstChild, 'click' );
+
+				expect( spy1.calledTwice ).to.be.true;
+				expect( spy2.calledOnce ).to.be.true;
+				expect( spy3.calledOnce ).to.be.true;
+			} );
+		} );
+	} );
 } );
 
 function setElement( template ) {
 	el = new Template( template ).render();
 	document.body.appendChild( el );
+}
+
+function extensionTest( base, extension, expectedHtml ) {
+	const template = new Template( base );
+	template.extend( extension );
+	const el = template.render();
+
+	document.body.appendChild( el );
+
+	expect( el.outerHTML ).to.equal( expectedHtml );
+
+	return el;
 }
 
 function dispatchEvent( el, domEvtName ) {

@@ -28,6 +28,8 @@ export default class Template {
 	 * @param {ui.TemplateDefinition} def The definition of the template.
 	 */
 	constructor( def ) {
+		normalize( def );
+
 		/**
 		 * Definition of this template.
 		 *
@@ -72,6 +74,59 @@ export default class Template {
 	}
 
 	/**
+	 * Extends {@link ui.Template#definition} with additional content.
+	 *
+	 *		const bind = Template.bind( observable, emitterInstance );
+	 *		const template = new Template( {
+	 *			tag: 'p',
+	 *			attributes: {
+	 *				class: 'a',
+	 *				data-x: bind.to( 'foo' )
+	 *			},
+	 *			children: [
+	 *				{
+	 *					tag: 'span',
+	 *					attributes: {
+	 *						class: 'b'
+	 *					},
+	 *					children: [
+	 *						'Span.'
+	 *					]
+	 *				}
+	 *			]
+	 *		 } );
+	 *
+	 *		template.extend( {
+	 *			attributes: {
+	 *				class: 'b',
+	 *				data-x: bind.to( 'bar' )
+	 *			},
+	 *			children: [
+	 *				{
+	 *					attributes: {
+	 *						class: 'c'
+	 *					}
+	 *				},
+	 *				'Paragraph.'
+	 *			]
+	 *		} );
+	 *
+	 * the `template.render().outerHTML` is
+	 *
+	 *		<p class="a b" data-x="{ observable.foo } { observable.bar }">
+	 *			<span class="b c">Span.</span>
+	 *			Paragraph.
+	 *		</p>
+	 *
+	 * @param {ui.TemplateDefinition} extDef An extension to existing definition.
+	 */
+	extend( extDef ) {
+		normalize( extDef );
+
+		extendTemplateDefinition( this.definition, extDef );
+	}
+
+	/**
 	 * Renders a DOM Node from definition.
 	 *
 	 * @protected
@@ -81,12 +136,15 @@ export default class Template {
 	 * @returns {HTMLElement} A rendered Node.
 	 */
 	_renderNode( def, applyNode, intoFragment ) {
-		normalize( def );
+		let isInvalid;
 
-		// When applying, a definition cannot have "tag" and "text" at the same time.
-		// When rendering, a definition must have either "tag" or "text": XOR( def.tag, def.text ).
-		const isInvalid = applyNode ?
-			( def.tag && def.text ) : ( def.tag ? def.text : !def.text );
+		if ( applyNode ) {
+			// When applying, a definition cannot have "tag" and "text" at the same time.
+			isInvalid = def.tag && def.text;
+		} else {
+			// When rendering, a definition must have either "tag" or "text": XOR( def.tag, def.text ).
+			isInvalid = def.tag ? def.text : !def.text;
+		}
 
 		if ( isInvalid ) {
 			/**
@@ -154,7 +212,7 @@ export default class Template {
 		// 		{ text: [ 'all', 'are', 'static' ] }
 		// 		{ text: [ 'foo' ] }
 		else {
-			textNode.textContent = valueSchemaOrText.text;
+			textNode.textContent = valueSchemaOrText.text.join( '' );
 		}
 
 		return textNode;
@@ -549,7 +607,8 @@ function getAttributeUpdater( el, attrName, ns = null ) {
  * See:
  *  * {@link normalizeAttributes}
  *  * {@link normalizeListeners}
- *  * {@link normalizeTextChildren}
+ *  * {@link normalizeTextString}
+ *  * {@link normalizeTextDefinition}
  *
  * @ignore
  * @private
@@ -557,6 +616,10 @@ function getAttributeUpdater( el, attrName, ns = null ) {
  * @returns {Array}
  */
 function normalize( def ) {
+	if ( def.text ) {
+		normalizeTextDefinition( def );
+	}
+
 	if ( def.attributes ) {
 		normalizeAttributes( def.attributes );
 	}
@@ -566,7 +629,11 @@ function normalize( def ) {
 	}
 
 	if ( def.children ) {
-		normalizeTextChildren( def );
+		// Splicing children array inside so no forEach.
+		for ( let i = def.children.length; i--; ) {
+			normalizeTextString( def.children, def.children[ i ], i );
+			normalize( def.children[ i ] );
+		}
 	}
 }
 
@@ -633,10 +700,36 @@ function normalizeListeners( listeners ) {
 }
 
 /**
- * Normalizes text in "children" section of {@link ui.TemplateDefinition}.
+ * Normalizes "string" text in "children" section of {@link ui.TemplateDefinition}.
  *
  *		children: [
  *			'abc',
+ *		]
+ *
+ * becomes
+ *
+ *		children: [
+ *			{ text: [ 'abc' ] },
+ *		]
+ *
+ * @ignore
+ * @private
+ * @param {Array} children
+ * @param {ui.TemplateDefinition} child
+ * @param {Number} index
+ */
+function normalizeTextString( children, child, index ) {
+	if ( typeof child == 'string' ) {
+		children.splice( index, 1, {
+			text: [ child ]
+		} );
+	}
+}
+
+/**
+ * Normalizes text {@link ui.TemplateDefinition}.
+ *
+ *		children: [
  *			{ text: 'def' },
  *			{ text: {@link ui.TemplateBinding} }
  *		]
@@ -644,7 +737,6 @@ function normalizeListeners( listeners ) {
  * becomes
  *
  *		children: [
- *			{ text: [ 'abc' ] },
  *			{ text: [ 'def' ] },
  *			{ text: [ {@link ui.TemplateBinding} ] }
  *		]
@@ -653,20 +745,10 @@ function normalizeListeners( listeners ) {
  * @private
  * @param {ui.TemplateDefinition} def
  */
-function normalizeTextChildren( def ) {
-	def.children = def.children.map( c => {
-		if ( typeof c == 'string' ) {
-			return {
-				text: [ c ]
-			};
-		} else {
-			if ( c.text && !Array.isArray( c.text ) ) {
-				c.text = [ c.text ];
-			}
-		}
-
-		return c;
-	} );
+function normalizeTextDefinition( def ) {
+	if ( !Array.isArray( def.text ) ) {
+		def.text = [ def.text ];
+	}
 }
 
 /**
@@ -710,6 +792,88 @@ function arrayValueReducer( prev, cur ) {
 			`${cur}`
 		:
 			cur === '' ? `${prev}` : `${prev} ${cur}`;
+}
+
+/**
+ * Extends one object defined in the following format:
+ *
+ *		{
+ *			key1: [Array1],
+ *			key2: [Array2],
+ *			...
+ *			keyN: [ArrayN]
+ *		}
+ *
+ * with another object of the same data format.
+ *
+ * @ignore
+ * @private
+ * @param {Object} obj Base object.
+ * @param {Object} ext Object extending base.
+ * @returns {String}
+ */
+function extendObjectValueArray( obj, ext ) {
+	for ( let a in ext ) {
+		if ( obj[ a ] ) {
+			obj[ a ].push( ...ext[ a ] || [] );
+		} else {
+			obj[ a ] = ext[ a ];
+		}
+	}
+}
+
+/**
+ * A helper for {@link ui.Template#extend}. Recursively extends {@link ui.Template#definition}
+ * with content from another definition. See {@link ui.Template#extend} to learn more.
+ *
+ * @ignore
+ * @private
+ * @param {ui.TemplateDefinition} def A base template definition.
+ * @param {ui.TemplateDefinition} extDef An extension to existing definition.
+ * @param {Array} [defSiblings] An array `def` belongs to.
+ */
+function extendTemplateDefinition( def, extDef, defSiblings ) {
+	if ( !def ) {
+		defSiblings.push( def = {} );
+	}
+
+	if ( extDef.tag && !def.tag ) {
+		def.tag = extDef.tag;
+	}
+
+	if ( extDef.attributes ) {
+		if ( !def.attributes ) {
+			def.attributes = {};
+		}
+
+		extendObjectValueArray( def.attributes, extDef.attributes );
+	}
+
+	if ( extDef.on ) {
+		if ( !def.on ) {
+			def.on = {};
+		}
+
+		extendObjectValueArray( def.on, extDef.on );
+	}
+
+	if ( extDef.text ) {
+		if ( !def.text ) {
+			def.text = [];
+		}
+
+		def.text.push( ...extDef.text );
+	}
+
+	if ( extDef.children ) {
+		if ( !def.children ) {
+			def.children = [];
+		}
+
+		extDef.children.forEach( ( extChildDef, index ) => {
+			extendTemplateDefinition( def.children[ index ], extChildDef, def.children );
+		} );
+	}
 }
 
 /**
