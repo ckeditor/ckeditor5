@@ -279,6 +279,23 @@ describe( 'Renderer', () => {
 			expect( domRoot.childNodes[ 0 ].tagName ).to.equal( 'P' );
 		} );
 
+		it( 'should not care about filler if there is no DOM', () => {
+			const { view: viewP, selection: newSelection } = parse(
+				'<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
+
+			const viewRoot = new ViewElement( 'p' );
+			viewRoot.appendChildren( viewP );
+			selection.setTo( newSelection );
+
+			renderer.focusedEditable = viewRoot;
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			// Expect no error on render.
+			expect( viewRoot ).to.be.ok;
+		} );
+
 		it( 'should add and remove inline filler in case <p>foo<b>[]</b>bar</p>', () => {
 			const domSelection = document.getSelection();
 
