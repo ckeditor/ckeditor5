@@ -815,7 +815,7 @@ function arrayValueReducer( prev, cur ) {
 function extendObjectValueArray( obj, ext ) {
 	for ( let a in ext ) {
 		if ( obj[ a ] ) {
-			obj[ a ].push( ...ext[ a ] || [] );
+			obj[ a ].push( ...ext[ a ] );
 		} else {
 			obj[ a ] = ext[ a ];
 		}

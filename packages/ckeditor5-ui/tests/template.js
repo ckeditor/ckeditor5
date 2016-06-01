@@ -1540,6 +1540,25 @@ describe( 'Template', () => {
 				);
 			} );
 
+			it( 'appends new - no children', () => {
+				extensionTest(
+					{
+						tag: 'p'
+					},
+					{
+						children: [
+							{
+								tag: 'span',
+								attributes: {
+									class: 'bar'
+								}
+							}
+						]
+					},
+					'<p><span class="bar"></span></p>'
+				);
+			} );
+
 			it( 'appends new - element', () => {
 				extensionTest(
 					{
