@@ -21,9 +21,9 @@ describe( 'Formats', () => {
 			features: [ Formats ],
 			toolbar: [ 'formats' ]
 		} )
-			.then( newEditor => {
-				editor = newEditor;
-			} );
+		.then( newEditor => {
+			editor = newEditor;
+		} );
 	} );
 
 	afterEach( () => {

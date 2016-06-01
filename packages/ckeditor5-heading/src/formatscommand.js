@@ -6,6 +6,7 @@
 'use strict';
 
 import Command from '../command/command.js';
+import RootElement from '../engine/model/rootelement.js';
 
 export default class FormatsCommand extends Command {
 	constructor( editor, formats ) {
@@ -45,14 +46,17 @@ export default class FormatsCommand extends Command {
 
 		// Collect elements to change format.
 		if ( selection.isCollapsed ) {
-			elements.push( _findTopmostBlock( startPosition.parent ) );
+			const block = _findTopmostBlock( startPosition );
+
+			if ( block ) {
+				elements.push( block );
+			}
 		} else {
 			const ranges = selection.getRanges();
 
 			for ( let range in ranges ) {
-				// Get topmost blocks element from start and end range position and adds all elements between them.
-				let startBlock = _findTopmostBlock( range.start.parent );
-				const endBlock = _findTopmostBlock( range.end.parent );
+				let startBlock = _findTopmostBlock( range.start );
+				const endBlock = _findTopmostBlock( range.end, false );
 
 				elements.push( startBlock );
 
@@ -62,8 +66,6 @@ export default class FormatsCommand extends Command {
 				}
 			}
 		}
-
-		//TODO: when selection is not collapsed - gather all elements that needs to be renamed.
 
 		document.enqueueChanges( () => {
 			const batch = document.batch();
@@ -96,10 +98,17 @@ export default class FormatsCommand extends Command {
 	}
 }
 
-function _findTopmostBlock( element ) {
-	while ( element.parent.name !== '$root' ) {
-		element = element.parent;
+function _findTopmostBlock( position, nodeAfter = true ) {
+	let parent = position.parent;
+
+	// If position is placed inside root - get element after/before it.
+	if ( parent instanceof RootElement ) {
+		return nodeAfter ? position.nodeAfter : position.nodeBefore ;
 	}
 
-	return element;
+	while ( !( parent instanceof RootElement ) ) {
+		parent = parent.parent;
+	}
+
+	return parent;
 }

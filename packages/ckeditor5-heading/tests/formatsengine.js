@@ -7,7 +7,7 @@
 
 import FormatsEngine from '/ckeditor5/formats/formatsengine.js';
 import Paragraph from '/ckeditor5/paragraph/paragraph.js';
-import StandardEditor from '/ckeditor5/editor/standardeditor.js';
+import VirtualTestEditor from '/tests/ckeditor5/_utils/virtualtesteditor.js';
 import FormatsCommand from '/ckeditor5/formats/formatscommand.js';
 import { getData } from '/tests/engine/_utils/model.js';
 
@@ -15,13 +15,12 @@ describe( 'FormatsEngine', () => {
 	let editor, document;
 
 	beforeEach( () => {
-		editor = new StandardEditor( null, {
+		return VirtualTestEditor.create( {
 			features: [ FormatsEngine ]
-		} );
-
-		return editor.initPlugins().then( () => {
+		} )
+		.then( newEditor => {
+			editor = newEditor;
 			document = editor.document;
-			document.createRoot( 'main' );
 		} );
 	} );
 

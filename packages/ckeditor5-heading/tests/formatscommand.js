@@ -5,7 +5,7 @@
 
 'use strict';
 
-import StandardEditor from '/ckeditor5/editor/standardeditor.js';
+import VirtualTestEditor from '/tests/ckeditor5/_utils/virtualtesteditor.js';
 import FormatsCommand from '/ckeditor5/formats/formatscommand.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import { setData, getData } from '/tests/engine/_utils/model.js';
@@ -21,16 +21,19 @@ describe( 'FormatsCommand', () => {
 	let editor, document, command, root;
 
 	beforeEach( () => {
-		editor = new StandardEditor( null );
-		document = editor.document;
-		command = new FormatsCommand( editor, formats );
-		const schema = document.schema;
+		return VirtualTestEditor.create()
+			.then( newEditor => {
+				editor = newEditor;
+				document = editor.document;
+				command = new FormatsCommand( editor, formats );
+				const schema = document.schema;
 
-		for ( let format of formats ) {
-			schema.registerItem( format.id, '$block' );
-		}
+				for ( let format of formats ) {
+					schema.registerItem( format.id, '$block' );
+				}
 
-		root = document.createRoot();
+				root = document.getRoot();
+			} );
 	} );
 
 	afterEach( () => {
