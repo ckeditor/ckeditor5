@@ -5,29 +5,29 @@
 
 'use strict';
 
-import Editor from '/ckeditor5/editor.js';
-import Document from '/ckeditor5/engine/model/document.js';
+import ModelTestEditor from '/tests/ckeditor5/_utils/modeltesteditor.js';
 import { default as EnterCommand, enterBlock } from '/ckeditor5/enter/entercommand.js';
 import { getData, setData } from '/tests/engine/_utils/model.js';
 
 let editor, doc;
 
 beforeEach( () => {
-	editor = new Editor();
-	doc = editor.document = new Document();
+	return ModelTestEditor.create()
+		.then( newEditor => {
+			editor = newEditor;
+			doc = editor.document;
 
-	doc.createRoot( 'main', '$root' );
+			const command = new EnterCommand( editor );
+			editor.commands.set( 'enter', command );
 
-	const command = new EnterCommand( editor );
-	editor.commands.set( 'enter', command );
+			const schema = doc.schema;
 
-	const schema = doc.schema;
-
-	// Note: We could use real names like 'paragraph', but that would make test patterns too long.
-	// Plus, this is actually a good test that the algorithm can be used for any model.
-	schema.registerItem( 'img', '$inline' );
-	schema.registerItem( 'p', '$block' );
-	schema.registerItem( 'h', '$block' );
+			// Note: We could use real names like 'paragraph', but that would make test patterns too long.
+			// Plus, this is actually a good test that the algorithm can be used for any model.
+			schema.registerItem( 'img', '$inline' );
+			schema.registerItem( 'p', '$block' );
+			schema.registerItem( 'h', '$block' );
+		} );
 } );
 
 describe( 'EnterCommand', () => {
