@@ -146,7 +146,7 @@ export default class Template {
 		// Check if this Text Node is bound to Observable. Cases:
 		//		{ text: [ Template.bind.to( ... ) ] }
 		//		{ text: [ 'foo', Template.bind.to( ... ), ... ] }
-		if ( isBound( valueSchemaOrText.text ) ) {
+		if ( hasBinding( valueSchemaOrText.text ) ) {
 			this._bindToObservable( valueSchemaOrText.text, textNode, getTextUpdater( textNode ) );
 		}
 
@@ -182,7 +182,7 @@ export default class Template {
 			// 		{ class: [ Template.bind.to( ... ) ] }
 			// 		{ class: [ 'bar', Template.bind.to( ... ), 'baz' ] }
 			// 		{ class: { ns: 'abc', value: Template.bind.to( ... ) } }
-			if ( isBound( attrValue ) ) {
+			if ( hasBinding( attrValue ) ) {
 				// Normalize attributes with additional data like namespace:
 				//		{ class: { ns: 'abc', value: [ ... ] } }
 				this._bindToObservable(
@@ -280,12 +280,12 @@ export default class Template {
 			// to the same observable attribute.
 			.forEach( ( { emitter, observable, attribute } ) => {
 				emitter.listenTo( observable, 'change:' + attribute, () => {
-					syncDom( ...arguments );
+					syncBinding( ...arguments );
 				} );
 			} );
 
 		// Set initial values.
-		syncDom( ...arguments );
+		syncBinding( ...arguments );
 	}
 }
 
@@ -400,6 +400,35 @@ Template.bind = ( observable, emitter ) => {
 };
 
 /**
+ * Checks whether given {@link ui.TemplateValueSchema} contains a
+ * {@link ui.TemplateBinding}.
+ *
+ * @ignore
+ * @private
+ * @param {ui.TemplateValueSchema} valueSchema
+ * @returns {Boolean}
+ */
+function hasBinding( valueSchema ) {
+	if ( !valueSchema ) {
+		return false;
+	}
+
+	// Normalize attributes with additional data like namespace:
+	// 		class: { ns: 'abc', value: [ ... ] }
+	if ( valueSchema.value ) {
+		valueSchema = valueSchema.value;
+	}
+
+	if ( Array.isArray( valueSchema ) ) {
+		return valueSchema.some( hasBinding );
+	} else if ( valueSchema.observable ) {
+		return true;
+	}
+
+	return false;
+}
+
+/**
  * Assembles the value using {@link ui.TemplateValueSchema} and stores it in a form of
  * an Array. Each entry of an Array corresponds to one of {@link ui.TemplateValueSchema}
  * items.
@@ -410,7 +439,7 @@ Template.bind = ( observable, emitter ) => {
  * @param {Node} node DOM Node updated when {@link utils.ObservableMixin} changes.
  * @return {Array}
  */
-function getBoundValue( valueSchema, domNode ) {
+function getBindingValue( valueSchema, domNode ) {
 	return valueSchema.map( schemaItem => {
 		let { observable, callback, type } = schemaItem;
 
@@ -443,8 +472,8 @@ function getBoundValue( valueSchema, domNode ) {
  * @param {Node} node DOM Node updated when {@link utils.ObservableMixin} changes.
  * @param {Function} domUpdater A function which updates DOM (like attribute or text).
  */
-function syncDom( valueSchema, domNode, domUpdater ) {
-	let value = getBoundValue( valueSchema, domNode );
+function syncBinding( valueSchema, domNode, domUpdater ) {
+	let value = getBindingValue( valueSchema, domNode );
 	let shouldSet;
 
 	// Check if valueSchema is a single Template.bind.if, like:
@@ -681,35 +710,6 @@ function arrayValueReducer( prev, cur ) {
 			`${cur}`
 		:
 			cur === '' ? `${prev}` : `${prev} ${cur}`;
-}
-
-/**
- * Checks whether given {@link ui.TemplateValueSchema} contains a
- * {@link ui.TemplateBinding}.
- *
- * @ignore
- * @private
- * @param {ui.TemplateValueSchema} valueSchema
- * @returns {Boolean}
- */
-function isBound( valueSchema ) {
-	if ( !valueSchema ) {
-		return false;
-	}
-
-	// Normalize attributes with additional data like namespace:
-	// 		class: { ns: 'abc', value: [ ... ] }
-	if ( valueSchema.value ) {
-		valueSchema = valueSchema.value;
-	}
-
-	if ( Array.isArray( valueSchema ) ) {
-		return valueSchema.some( isBound );
-	} else if ( valueSchema.observable ) {
-		return true;
-	}
-
-	return false;
 }
 
 /**
