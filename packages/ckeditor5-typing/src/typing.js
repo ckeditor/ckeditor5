@@ -15,7 +15,6 @@ import ViewContainerElement from '../engine/view/containerelement.js';
 import diff from '../utils/diff.js';
 import diffToChanges from '../utils/difftochanges.js';
 import { getCode } from '../utils/keyboard.js';
-import { getData } from '/tests/engine/_utils/model.js';
 
 /**
  * The typing feature. Handles... typing.
@@ -209,8 +208,6 @@ class MutationHandler {
 		if ( this.selectionPosition ) {
 			this.editing.model.selection.collapse( this.selectionPosition );
 		}
-
-		console.log( getData( this.editing.model ) ); // jshint ignore:line
 	}
 }
 
