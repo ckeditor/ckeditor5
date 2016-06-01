@@ -772,8 +772,12 @@ function isBound( valueSchema ) {
  */
 
 /**
- * Describes a value of HTMLElement attribute or `textContent`.
- * See: {@link ui.TemplateDefinition}.
+ * Describes a value of HTMLElement attribute or `textContent`. See:
+ *  * {@link ui.TemplateDefinition},
+ *  * {@link ui.Template.bind.binder#to},
+ *  * {@link ui.Template.bind.binder#if}.
+ *
+ *		const bind = Template.bind( observableInstance, emitterInstance );
  *
  *		new Template( {
  *			tag: 'p',
@@ -782,19 +786,19 @@ function isBound( valueSchema ) {
  *				class: 'static-text'
  *
  *				// Object schema, an `ObservableMixin` binding.
- *				class: {@link ui.TemplateBinding}
+ *				class: bind.to( 'foo' )
  *
  *				// Array schema, combines the above.
  *				class: [
  *					'static-text',
- *					{@link ui.TemplateBinding}
+ *					bind.to( 'bar', () => { ... } )
  *				],
  *
  *				// Array schema, with custom namespace.
  *				class: {
  *					ns: 'http://ns.url',
  *					value: [
- *						{@link ui.TemplateBinding},
+ *						bind.if( 'baz', 'value-when-true' )
  *						'static-text'
  *					]
  *				}
