@@ -17,7 +17,7 @@ export default class EditableUIView extends View {
 	 *
 	 * @param {utils.Observable} model (View)Model of this View.
 	 * @param {utils.Locale} [locale] The {@link ckeditor5.Editor#locale editor's locale} instance.
-	 * @param {HTMLElement} [editableElement] The editable element. If not specified, this View
+	 * @param {HTMLElement} [editableElement] The editable element. If not specified, this view
 	 * should create it. Otherwise, the existing element should be used.
 	 */
 	constructor( model, locale, editableElement ) {
@@ -36,9 +36,16 @@ export default class EditableUIView extends View {
 					bind.to( 'isFocused', value => value ? 'ck-focused' : 'ck-blurred' ),
 					'ck-editor__editable'
 				],
-				contenteditable: bind.to( 'isEditable' ),
+				contenteditable: bind.to( 'isReadOnly', value => !value ),
 			}
 		};
+
+		/**
+		 * The element which is the main editable element (usually the one with `contentEditable="true"`).
+		 *
+		 * @readonly
+		 * @member {HTMLElement} ui.editableUI.EditableUIView#editableElement
+		 */
 	}
 
 	/**
@@ -60,11 +67,4 @@ export default class EditableUIView extends View {
 
 		this.editableElement.contentEditable = false;
 	}
-
-	/**
-	 * The element which is the main editable element (usually the one with `contentEditable="true"`).
-	 *
-	 * @readonly
-	 * @member {HTMLElement} ui.editableUI.EditableUIView#editableElement
-	 */
 }

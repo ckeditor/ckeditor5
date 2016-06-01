@@ -7,8 +7,7 @@
 
 'use strict';
 
-import Editor from '/ckeditor5/editor.js';
-import Editable from '/ckeditor5/editable.js';
+import StandardEditor from '/ckeditor5/editor/standardeditor.js';
 import EditableUI from '/ckeditor5/ui/editableui/editableui.js';
 import Model from '/ckeditor5/ui/model.js';
 import testUtils from '/tests/utils/_utils/utils.js';
@@ -17,8 +16,8 @@ describe( 'EditableUI', () => {
 	let editable, editableUI, editor;
 
 	beforeEach( () => {
-		editor = new Editor();
-		editable = new Editable( editor, 'foo' );
+		editor = new StandardEditor();
+		editable = editor.editing.view.createRoot( document.createElement( 'div' ) );
 		editableUI = new EditableUI( editor, editable );
 	} );
 
@@ -31,7 +30,7 @@ describe( 'EditableUI', () => {
 
 	describe( 'viewModel', () => {
 		it( 'constains observable attributes', () => {
-			expect( editableUI.viewModel ).to.have.property( 'isEditable', true );
+			expect( editableUI.viewModel ).to.have.property( 'isReadOnly', false );
 			expect( editableUI.viewModel ).to.have.property( 'isFocused', false );
 		} );
 
@@ -46,14 +45,14 @@ describe( 'EditableUI', () => {
 			);
 		} );
 
-		it( 'binds isEditable to editable.isEditable', () => {
+		it( 'binds isReadOnly to editable.isReadOnly', () => {
 			testUtils.assertBinding(
 				editableUI.viewModel,
-				{ isEditable: true },
+				{ isReadOnly: false },
 				[
-					[ editable, { isEditable: false } ]
+					[ editable, { isReadOnly: true } ]
 				],
-				{ isEditable: false }
+				{ isReadOnly: true }
 			);
 		} );
 	} );

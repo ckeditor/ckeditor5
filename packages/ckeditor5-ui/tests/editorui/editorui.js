@@ -6,7 +6,7 @@
 'use strict';
 
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
-import Editor from '/ckeditor5/editor.js';
+import Editor from '/ckeditor5/editor/editor.js';
 import EditorUI from '/ckeditor5/ui/editorui/editorui.js';
 import ComponentFactory from '/ckeditor5/ui/componentfactory.js';
 import ControllerCollection from '/ckeditor5/ui/controllercollection.js';
@@ -28,10 +28,6 @@ describe( 'EditorUI', () => {
 			expect( editorUI.featureComponents ).to.be.instanceof( ComponentFactory );
 
 			expect( editorUI.collections.get( 'body' ) ).to.be.instanceof( ControllerCollection );
-		} );
-
-		it( 'sets editor.ui property', () => {
-			expect( editor ).to.have.property( 'ui', editorUI );
 		} );
 	} );
 

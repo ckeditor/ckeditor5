@@ -7,7 +7,7 @@
 
 'use strict';
 
-import Editor from '/ckeditor5/editor.js';
+import Editor from '/ckeditor5/editor/editor.js';
 import ComponentFactory from '/ckeditor5/ui/componentfactory.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
