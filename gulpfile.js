@@ -9,7 +9,6 @@ const config = {
 	BUILD_DIR: 'build',
 	BUNDLE_DIR: 'bundle',
 	WORKSPACE_DIR: '..',
-	MAIN_FILE: 'ckeditor.js',
 
 	// Files ignored by jshint and jscs tasks. Files from .gitignore will be added automatically during tasks execution.
 	IGNORED_FILES: [

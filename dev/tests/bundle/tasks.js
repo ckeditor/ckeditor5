@@ -15,8 +15,7 @@ describe( 'build-tasks', () => {
 	const config = {
 		ROOT_DIR: '.',
 		BUILD_DIR: 'build',
-		BUNDLE_DIR: 'bundle',
-		MAIN_FILE: 'ckeditor.js'
+		BUNDLE_DIR: 'bundle'
 	};
 
 	beforeEach( () => {
@@ -57,7 +56,7 @@ describe( 'build-tasks', () => {
 			sinon.assert.calledWithExactly( rollupBundleWriteMock, {
 				dest: 'bundle/ckeditor.js',
 				format: 'iife',
-				moduleName: 'createEditor'
+				moduleName: 'ClassicEditor'
 			} );
 		} );
 	} );

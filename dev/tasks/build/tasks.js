@@ -73,7 +73,7 @@ module.exports = ( config ) => {
 				 * @returns {Stream}
 				 */
 				main( watch ) {
-					const glob = path.join( config.ROOT_DIR, config.MAIN_FILE );
+					const glob = path.join( config.ROOT_DIR, 'ckeditor.js' );
 
 					return gulp.src( glob )
 						.pipe( watch ? gulpWatch( glob ) : utils.noop() );

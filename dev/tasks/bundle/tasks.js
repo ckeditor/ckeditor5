@@ -11,11 +11,13 @@ const gulpCssnano = require( 'gulp-cssnano' );
 const runSequence = require( 'run-sequence' );
 const utils = require( './utils' );
 const rollup = require( 'rollup' ).rollup;
+const rollupBabel = require( 'rollup-plugin-babel' );
+const gulpUglify = require( 'gulp-uglify' );
 
 module.exports = ( config ) => {
 	const sourceBuildDir = path.join( config.ROOT_DIR, config.BUILD_DIR, 'esnext' );
 	const bundleDir = path.join( config.ROOT_DIR, config.BUNDLE_DIR );
-	const entryFilePath = path.join( config.ROOT_DIR, 'dev', 'tasks', 'bundle', 'classiccreatorbundle.js' );
+	const entryFilePath = path.join( config.ROOT_DIR, 'dev', 'tasks', 'bundle', 'buildclassiceditor.js' );
 
 	const tasks = {
 		/**
@@ -37,19 +39,23 @@ module.exports = ( config ) => {
 			 * we have created a custom entry file where we defined some of imports with features
 			 * needed to initialize editor.
 			 *
-			 * Bundled `ckeditor.js` file exposes a global function `createEditor`.
-			 * For more details see docs from `classiccreatorbundle.js`.
+			 * For more details see `buildclassiceditor.js`.
 			 */
 			function bundleJS() {
-				const outputFile = path.join( bundleDir, config.MAIN_FILE );
+				const outputFile = path.join( bundleDir, 'ckeditor.js' );
 
 				return rollup( {
-					entry: entryFilePath
+					entry: entryFilePath,
+					plugins: [
+						rollupBabel( {
+							presets: [ 'es2015-rollup' ]
+						} )
+					]
 				} ).then( ( bundle ) => {
 					return bundle.write( {
 						dest: outputFile,
 						format: 'iife',
-						moduleName: 'createEditor'
+						moduleName: 'ClassicEditor'
 					} );
 				} );
 			}
@@ -70,12 +76,10 @@ module.exports = ( config ) => {
 		minify: {
 			/**
 			 * JS minification by UglifyJS.
-			 *
-			 * At this moment we don't minify JS file because there is no minifier fully sports esnext syntax.
-			 * For consistency `ckeditor.min.js` file is created, but is not minified yed.
 			 */
 			js() {
-				let stream = gulp.src( path.join( bundleDir, config.MAIN_FILE ) );
+				let stream = gulp.src( path.join( bundleDir, 'ckeditor.js' ) )
+					.pipe( gulpUglify() );
 
 				return utils.saveFileFromStreamAsMinified( stream, bundleDir );
 			},
@@ -101,7 +105,7 @@ module.exports = ( config ) => {
 	gulp.task( 'bundle', ( callback ) => {
 		runSequence( 'bundle:generate', [ 'bundle:minify:js', 'bundle:minify:css' ], () => {
 			// Print files size on console just before the end of the task.
-			const files = [ 'ckeditor.js', 'ckeditor.css', 'ckeditor.min.js', 'ckeditor.min.css' ];
+			const files = [ 'ckeditor.js', 'ckeditor.min.js', 'ckeditor.css', 'ckeditor.min.css' ];
 			utils.logFilesSize( files, bundleDir );
 
 			// Finish the task.

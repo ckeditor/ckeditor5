@@ -66,10 +66,14 @@ const utils = {
 	 *
 	 * @param {String} from file path
 	 * @param {String} to copied file destination
-	 * @return {Stream}
+	 * @return {Promise}
 	 */
 	copyFile( from, to ) {
-		return gulp.src( from ).pipe( gulp.dest( to ) );
+		return new Promise( ( resolve ) => {
+			gulp.src( from )
+				.pipe( gulp.dest( to ) )
+				.on( 'finish', resolve );
+		} );
 	}
 };
 
