@@ -15,15 +15,13 @@ const ITALIC = 'italic';
 export default class ItalicEngine extends Feature {
 	init() {
 		const editor = this.editor;
-		const document = editor.document;
-		const schema = document.schema;
 		const data = editor.data;
 		const editing = editor.editing;
 
-		// Schema.
-		schema.allow( { name: '$inline', attributes: [ ITALIC ] } );
+		// Allow italic attribute on all inline nodes.
+		editor.document.schema.allow( { name: '$inline', attributes: [ ITALIC ] } );
 
-		// Build converter from model to view for data pipeline.
+		// Build converter from model to view for data and editing pipelines.
 		BuildModelConverterFor( data.modelToView, editing.modelToView )
 			.fromAttribute( ITALIC )
 			.toElement( 'em' );
@@ -35,8 +33,7 @@ export default class ItalicEngine extends Feature {
 			.fromAttribute( 'style', { 'font-style': 'italic' } )
 			.toAttribute( ITALIC, true );
 
-		// Command.
-		const command = new AttributeCommand( editor, ITALIC );
-		editor.commands.set( ITALIC, command );
+		// Create italic command.
+		editor.commands.set( ITALIC, new AttributeCommand( editor, ITALIC ) );
 	}
 }

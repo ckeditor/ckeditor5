@@ -10,19 +10,24 @@ import Bold from '/ckeditor5/basic-styles/bold.js';
 import BoldEngine from '/ckeditor5/basic-styles/boldengine.js';
 import ButtonController from '/ckeditor5/ui/button/button.js';
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
+import { keyCodes } from '/ckeditor5/utils/keyboard.js';
 
 testUtils.createSinonSandbox();
 
 describe( 'Bold', () => {
-	let editor;
+	let editor, boldController;
 
 	beforeEach( () => {
-		return ClassicTestEditor.create( document.getElementById( 'editor' ), {
-				features: [ Bold ],
-				toolbar: [ 'bold' ]
+		const editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
+
+		return ClassicTestEditor.create( editorElement, {
+				features: [ Bold ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
+
+				boldController = editor.ui.featureComponents.create( 'bold' );
 			} );
 	} );
 
@@ -39,15 +44,12 @@ describe( 'Bold', () => {
 	} );
 
 	it( 'should register bold feature component', () => {
-		const controller = editor.ui.featureComponents.create( 'bold' );
-
-		expect( controller ).to.be.instanceOf( ButtonController );
+		expect( boldController ).to.be.instanceOf( ButtonController );
 	} );
 
 	it( 'should execute bold command on model execute event', () => {
 		const executeSpy = testUtils.sinon.spy( editor, 'execute' );
-		const controller = editor.ui.featureComponents.create( 'bold' );
-		const model = controller.model;
+		const model = boldController.model;
 
 		model.fire( 'execute' );
 
@@ -56,8 +58,7 @@ describe( 'Bold', () => {
 	} );
 
 	it( 'should bind model to bold command', () => {
-		const controller = editor.ui.featureComponents.create( 'bold' );
-		const model = controller.model;
+		const model = boldController.model;
 		const command = editor.commands.get( 'bold' );
 
 		expect( model.isOn ).to.be.false;
@@ -65,9 +66,18 @@ describe( 'Bold', () => {
 		expect( model.isEnabled ).to.be.true;
 
 		command.value = true;
-		expect( model.isOn ).to.equal( true );
+		expect( model.isOn ).to.be.true;
 
 		command.isEnabled = false;
-		expect( model.isEnabled ).to.equal( false );
+		expect( model.isEnabled ).to.be.false;
+	} );
+
+	it( 'should set CTRL+B keystroke', () => {
+		const spy = sinon.spy( editor, 'execute' );
+
+		const wasHandled = editor.keystrokes.press( { keyCode: keyCodes.b, ctrlKey: true } );
+
+		expect( wasHandled ).to.be.true;
+		expect( spy.calledOnce ).to.be.true;
 	} );
 } );

@@ -15,15 +15,13 @@ const BOLD = 'bold';
 export default class BoldEngine extends Feature {
 	init() {
 		const editor = this.editor;
-		const document = editor.document;
-		const schema = document.schema;
 		const data = editor.data;
 		const editing = editor.editing;
 
-		// Schema.
-		schema.allow( { name: '$inline', attributes: [ BOLD ] } );
+		// Allow bold attribute on all inline nodes.
+		editor.document.schema.allow( { name: '$inline', attributes: [ BOLD ] } );
 
-		// Build converter from model to view for data pipeline.
+		// Build converter from model to view for data and editing pipelines.
 		BuildModelConverterFor( data.modelToView, editing.modelToView )
 			.fromAttribute( BOLD )
 			.toElement( 'strong' );
@@ -35,8 +33,7 @@ export default class BoldEngine extends Feature {
 			.fromAttribute( 'style', { 'font-weight': 'bold' } )
 			.toAttribute( BOLD, true );
 
-		// Command.
-		const command = new AttributeCommand( editor, BOLD );
-		editor.commands.set( BOLD, command );
+		// Create bold command.
+		editor.commands.set( BOLD, new AttributeCommand( editor, BOLD ) );
 	}
 }

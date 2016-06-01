@@ -38,5 +38,8 @@ export default class Bold extends Feature {
 
 		// Add bold button to feature components.
 		editor.ui.featureComponents.add( 'bold', ButtonController, ButtonView, buttonModel );
+
+		// Set the CTRL+B keystroke.
+		editor.keystrokes.set( 'CTRL+B', 'bold' );
 	}
 }

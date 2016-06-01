@@ -7,13 +7,12 @@
 
 import BoldEngine from '/ckeditor5/basic-styles/boldengine.js';
 import VirtualTestEditor from '/tests/ckeditor5/_utils/virtualtesteditor.js';
-import { getData } from '/tests/engine/_utils/model.js';
-import BuildModelConverterFor from '/ckeditor5/engine/conversion/model-converter-builder.js';
-import BuildViewConverterFor from '/ckeditor5/engine/conversion/view-converter-builder.js';
+import { getData as getModelData } from '/tests/engine/_utils/model.js';
+import { getData as getViewData } from '/tests/engine/_utils/view.js';
 import AttributeCommand from '/ckeditor5/command/attributecommand.js';
 
 describe( 'BoldEngine', () => {
-	let editor, document;
+	let editor, doc;
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
@@ -22,20 +21,9 @@ describe( 'BoldEngine', () => {
 			.then( newEditor => {
 				editor = newEditor;
 
-				document = editor.document;
+				doc = editor.document;
 
-				// Register some block element for tests.
-				document.schema.registerItem( 'p', '$block' );
-
-				// Build converter from model to view for data and editing pipelines.
-				BuildModelConverterFor( editor.data.modelToView, editor.editing.modelToView )
-					.fromElement( 'p' )
-					.toElement( 'p' );
-
-				// Build converter from view to model for data and editing pipelines.
-				BuildViewConverterFor( editor.data.viewToModel )
-					.fromElement( 'p' )
-					.toElement( 'p' );
+				doc.schema.allow( { name: '$text', inside: '$root' } );
 			} );
 	} );
 
@@ -44,36 +32,49 @@ describe( 'BoldEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( document.schema.check( { name: '$inline', attributes: [ 'bold' ] } ) ).to.be.true;
+		expect( doc.schema.check( { name: '$inline', attributes: [ 'bold' ] } ) ).to.be.true;
 	} );
 
-	it( 'should register bold command', () => {
-		expect( editor.commands.has( 'bold' ) ).to.be.true;
+	describe( 'command', () => {
+		it( 'should register bold command', () => {
+			expect( editor.commands.has( 'bold' ) ).to.be.true;
 
-		const command = editor.commands.get( 'bold' );
+			const command = editor.commands.get( 'bold' );
 
-		expect( command ).to.be.instanceOf( AttributeCommand );
-		expect( command.attributeKey ).to.equal( 'bold' );
+			expect( command ).to.be.instanceOf( AttributeCommand );
+			expect( command ).to.have.property( 'attributeKey', 'bold' );
+		} );
 	} );
 
-	it( 'should convert <strong> to bold attribute', () => {
-		editor.setData( '<p><strong>foobar</strong></p>' );
+	describe( 'data pipeline conversions', () => {
+		it( 'should convert <strong> to bold attribute', () => {
+			editor.setData( '<strong>foo</strong>bar' );
 
-		expect( getData( document, { withoutSelection: true } ) ).to.equal( '<p><$text bold=true>foobar</$text></p>' );
-		expect( editor.getData() ).to.equal( '<p><strong>foobar</strong></p>' );
+			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<$text bold=true>foo</$text>bar' );
+			expect( editor.getData() ).to.equal( '<strong>foo</strong>bar' );
+		} );
+
+		it( 'should convert <b> to bold attribute', () => {
+			editor.setData( '<b>foo</b>bar' );
+
+			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<$text bold=true>foo</$text>bar' );
+			expect( editor.getData() ).to.equal( '<strong>foo</strong>bar' );
+		} );
+
+		it( 'should convert font-weight:bold to bold attribute', () => {
+			editor.setData( '<span style="font-weight: bold;">foo</span>bar' );
+
+			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<$text bold=true>foo</$text>bar' );
+			expect( editor.getData() ).to.equal( '<strong>foo</strong>bar' );
+		} );
 	} );
 
-	it( 'should convert <b> to bold attribute', () => {
-		editor.setData( '<p><b>foobar</b></p>' );
+	describe( 'editing pipeline conversion', () => {
+		it( 'should convert paragraph', () => {
+			// Workaround for setting model data: https://github.com/ckeditor/ckeditor5-engine/issues/455
+			editor.setData( '<strong>foo</strong>bar' );
 
-		expect( getData( document, { withoutSelection: true } ) ).to.equal( '<p><$text bold=true>foobar</$text></p>' );
-		expect( editor.getData() ).to.equal( '<p><strong>foobar</strong></p>' );
-	} );
-
-	it( 'should convert font-weight:bold to bold attribute', () => {
-		editor.setData( '<p><span style="font-weight: bold;">foobar</span></p>' );
-
-		expect( getData( document, { withoutSelection: true } ) ).to.equal( '<p><$text bold=true>foobar</$text></p>' );
-		expect( editor.getData() ).to.equal( '<p><strong>foobar</strong></p>' );
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<strong>foo</strong>bar' );
+		} );
 	} );
 } );

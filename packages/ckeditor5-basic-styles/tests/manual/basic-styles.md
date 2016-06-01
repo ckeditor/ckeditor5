@@ -1,3 +1,8 @@
 @bender-ui: collapsed
+
 ## Basic styles
-TODO: Create valid test description once features are finished.
+
+1. The data should be loaded with:
+  * italic "This",
+  * bold "editor".
+2. Test the bold and italic features live.

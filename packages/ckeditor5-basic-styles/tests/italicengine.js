@@ -7,13 +7,12 @@
 
 import ItalicEngine from '/ckeditor5/basic-styles/italicengine.js';
 import VirtualTestEditor from '/tests/ckeditor5/_utils/virtualtesteditor.js';
-import { getData } from '/tests/engine/_utils/model.js';
-import BuildModelConverterFor from '/ckeditor5/engine/conversion/model-converter-builder.js';
-import BuildViewConverterFor from '/ckeditor5/engine/conversion/view-converter-builder.js';
+import { getData as getModelData } from '/tests/engine/_utils/model.js';
+import { getData as getViewData } from '/tests/engine/_utils/view.js';
 import AttributeCommand from '/ckeditor5/command/attributecommand.js';
 
 describe( 'ItalicEngine', () => {
-	let editor, document;
+	let editor, doc;
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
@@ -22,20 +21,9 @@ describe( 'ItalicEngine', () => {
 			.then( newEditor => {
 				editor = newEditor;
 
-				document = editor.document;
+				doc = editor.document;
 
-				// Register some block element for tests.
-				document.schema.registerItem( 'p', '$block' );
-
-				// Build converter from model to view for data and editing pipelines.
-				BuildModelConverterFor( editor.data.modelToView, editor.editing.modelToView )
-					.fromElement( 'p' )
-					.toElement( 'p' );
-
-				// Build converter from view to model for data and editing pipelines.
-				BuildViewConverterFor( editor.data.viewToModel )
-					.fromElement( 'p' )
-					.toElement( 'p' );
+				doc.schema.allow( { name: '$text', inside: '$root' } );
 			} );
 	} );
 
@@ -44,36 +32,49 @@ describe( 'ItalicEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( document.schema.check( { name: '$inline', attributes: [ 'italic' ] } ) ).to.be.true;
+		expect( doc.schema.check( { name: '$inline', attributes: [ 'italic' ] } ) ).to.be.true;
 	} );
 
-	it( 'should register bold command', () => {
-		expect( editor.commands.has( 'italic' ) ).to.be.true;
+	describe( 'command', () => {
+		it( 'should register italic command', () => {
+			expect( editor.commands.has( 'italic' ) ).to.be.true;
 
-		const command = editor.commands.get( 'italic' );
+			const command = editor.commands.get( 'italic' );
 
-		expect( command ).to.be.instanceOf( AttributeCommand );
-		expect( command.attributeKey ).to.equal( 'italic' );
+			expect( command ).to.be.instanceOf( AttributeCommand );
+			expect( command ).to.have.property( 'attributeKey', 'italic' );
+		} );
 	} );
 
-	it( 'should convert <em> to italic attribute', () => {
-		editor.setData( '<p><em>foobar</em></p>' );
+	describe( 'data pipeline conversions', () => {
+		it( 'should convert <em> to italic attribute', () => {
+			editor.setData( '<em>foo</em>bar' );
 
-		expect( getData( document, { withoutSelection: true } ) ).to.equal( '<p><$text italic=true>foobar</$text></p>' );
-		expect( editor.getData() ).to.equal( '<p><em>foobar</em></p>' );
+			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<$text italic=true>foo</$text>bar' );
+			expect( editor.getData() ).to.equal( '<em>foo</em>bar' );
+		} );
+
+		it( 'should convert <i> to italic attribute', () => {
+			editor.setData( '<i>foo</i>bar' );
+
+			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<$text italic=true>foo</$text>bar' );
+			expect( editor.getData() ).to.equal( '<em>foo</em>bar' );
+		} );
+
+		it( 'should convert font-weight:italic to italic attribute', () => {
+			editor.setData( '<span style="font-style: italic;">foo</span>bar' );
+
+			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<$text italic=true>foo</$text>bar' );
+			expect( editor.getData() ).to.equal( '<em>foo</em>bar' );
+		} );
 	} );
 
-	it( 'should convert <i> to italic attribute', () => {
-		editor.setData( '<p><i>foobar</i></p>' );
+	describe( 'editing pipeline conversion', () => {
+		it( 'should convert paragraph', () => {
+			// Workaround for setting model data: https://github.com/ckeditor/ckeditor5-engine/issues/455
+			editor.setData( '<em>foo</em>bar' );
 
-		expect( getData( document, { withoutSelection: true } ) ).to.equal( '<p><$text italic=true>foobar</$text></p>' );
-		expect( editor.getData() ).to.equal( '<p><em>foobar</em></p>' );
-	} );
-
-	it( 'should convert font-style:italic to italic attribute', () => {
-		editor.setData( '<p><span style="font-style: italic;">foobar</span></p>' );
-
-		expect( getData( document, { withoutSelection: true } ) ).to.equal( '<p><$text italic=true>foobar</$text></p>' );
-		expect( editor.getData() ).to.equal( '<p><em>foobar</em></p>' );
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<em>foo</em>bar' );
+		} );
 	} );
 } );

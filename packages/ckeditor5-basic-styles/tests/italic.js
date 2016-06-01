@@ -10,19 +10,24 @@ import Italic from '/ckeditor5/basic-styles/italic.js';
 import ItalicEngine from '/ckeditor5/basic-styles/italicengine.js';
 import ButtonController from '/ckeditor5/ui/button/button.js';
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
+import { keyCodes } from '/ckeditor5/utils/keyboard.js';
 
 testUtils.createSinonSandbox();
 
 describe( 'Italic', () => {
-	let editor;
+	let editor, italicController;
 
 	beforeEach( () => {
-		return ClassicTestEditor.create( document.getElementById( 'editor' ), {
-				features: [ Italic ],
-				toolbar: [ 'italic' ]
+		const editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
+
+		return ClassicTestEditor.create( editorElement, {
+				features: [ Italic ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
+
+				italicController = editor.ui.featureComponents.create( 'italic' );
 			} );
 	} );
 
@@ -34,20 +39,17 @@ describe( 'Italic', () => {
 		expect( editor.plugins.get( Italic ) ).to.be.instanceOf( Italic );
 	} );
 
-	it( 'should load BoldEngine', () => {
+	it( 'should load ItalicEngine', () => {
 		expect( editor.plugins.get( ItalicEngine ) ).to.be.instanceOf( ItalicEngine );
 	} );
 
-	it( 'should register bold feature component', () => {
-		const controller = editor.ui.featureComponents.create( 'italic' );
-
-		expect( controller ).to.be.instanceOf( ButtonController );
+	it( 'should register italic feature component', () => {
+		expect( italicController ).to.be.instanceOf( ButtonController );
 	} );
 
-	it( 'should execute bold command on model execute event', () => {
+	it( 'should execute italic command on model execute event', () => {
 		const executeSpy = testUtils.sinon.spy( editor, 'execute' );
-		const controller = editor.ui.featureComponents.create( 'italic' );
-		const model = controller.model;
+		const model = italicController.model;
 
 		model.fire( 'execute' );
 
@@ -55,9 +57,8 @@ describe( 'Italic', () => {
 		sinon.assert.calledWithExactly( executeSpy, 'italic' );
 	} );
 
-	it( 'should bind model to bold command', () => {
-		const controller = editor.ui.featureComponents.create( 'italic' );
-		const model = controller.model;
+	it( 'should bind model to italic command', () => {
+		const model = italicController.model;
 		const command = editor.commands.get( 'italic' );
 
 		expect( model.isOn ).to.be.false;
@@ -65,9 +66,18 @@ describe( 'Italic', () => {
 		expect( model.isEnabled ).to.be.true;
 
 		command.value = true;
-		expect( model.isOn ).to.equal( true );
+		expect( model.isOn ).to.be.true;
 
 		command.isEnabled = false;
-		expect( model.isEnabled ).to.equal( false );
+		expect( model.isEnabled ).to.be.false;
+	} );
+
+	it( 'should set CTRL+I keystroke', () => {
+		const spy = sinon.spy( editor, 'execute' );
+
+		const wasHandled = editor.keystrokes.press( { keyCode: keyCodes.i, ctrlKey: true } );
+
+		expect( wasHandled ).to.be.true;
+		expect( spy.calledOnce ).to.be.true;
 	} );
 } );

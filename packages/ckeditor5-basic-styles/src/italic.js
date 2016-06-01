@@ -38,5 +38,8 @@ export default class Italic extends Feature {
 
 		// Add bold button to feature components.
 		editor.ui.featureComponents.add( 'italic', ButtonController, ButtonView, buttonModel );
+
+		// Set the CTRL+I keystroke.
+		editor.keystrokes.set( 'CTRL+I', 'italic' );
 	}
 }
