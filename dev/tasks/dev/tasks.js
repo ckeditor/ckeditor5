@@ -51,6 +51,10 @@ module.exports = ( config ) => {
 		statusTask( ckeditor5Path, packageJSON, config.WORKSPACE_DIR );
 	} );
 
+	gulp.task( 'st', () => {
+		statusTask( ckeditor5Path, packageJSON, config.WORKSPACE_DIR );
+	} );
+
 	gulp.task( 'relink', () => {
 		relinkTask( ckeditor5Path, packageJSON, config.WORKSPACE_DIR );
 	} );
