@@ -8,7 +8,7 @@
     "WYSIWYG"
   ],
   "dependencies": {
-    "ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles#t/1",
+    "ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles",
     "ckeditor5-creator-classic": "ckeditor/ckeditor5-creator-classic",
     "ckeditor5-delete": "ckeditor/ckeditor5-delete",
     "ckeditor5-engine": "ckeditor/ckeditor5-engine",
