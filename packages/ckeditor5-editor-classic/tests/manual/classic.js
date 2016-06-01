@@ -7,26 +7,28 @@
 
 'use strict';
 
-import CKEDITOR from '/ckeditor.js';
-import ClassicCreator from '/ckeditor5/creator-classic/classiccreator.js';
+import ClassicEditor from '/ckeditor5/creator-classic/classic.js';
 import testUtils from '/tests/utils/_utils/utils.js';
 
 let editor, editable, observer;
 
 function initEditor() {
-	CKEDITOR.create( '#editor', {
-		creator: ClassicCreator,
-		toolbar: [ 'bold', 'italic', 'font' ]
+	ClassicEditor.create( document.querySelector( '#editor' ), {
+		features: [ 'delete', 'enter', 'typing', 'paragraph', 'undo', 'basic-styles/bold', 'basic-styles/italic' ],
+		toolbar: [ 'bold', 'italic', 'undo', 'redo' ]
 	} )
-	.then( ( newEditor ) => {
+	.then( newEditor => {
 		console.log( 'Editor was initialized', newEditor );
 		console.log( 'You can now play with it using global `editor` and `editable` variables.' );
 
 		window.editor = editor = newEditor;
-		window.editable = editable = editor.editables.get( 0 );
+		window.editable = editable = editor.editing.view.getRoot();
 
 		observer = testUtils.createObserver();
-		observer.observe( 'Editable', editable );
+		observer.observe( 'Editable', editable, [ 'isFocused' ] );
+	} )
+	.catch( err => {
+		console.error( err.stack );
 	} );
 }
 
