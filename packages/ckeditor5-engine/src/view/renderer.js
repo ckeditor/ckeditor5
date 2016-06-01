@@ -167,7 +167,8 @@ export default class Renderer {
 
 			if ( this._needAddInlineFiller() ) {
 				this._inlineFillerPosition = this.selection.getFirstPosition();
-				this.markToSync( 'children', this._inlineFillerPosition.parent );
+				// Do not use `markToSync` so it will be added even if the parent is already added.
+				this.markedChildren.add( this._inlineFillerPosition.parent );
 			} else {
 				this._inlineFillerPosition = null;
 			}
@@ -273,6 +274,11 @@ export default class Renderer {
 		const selectionParent = selectionPosition.parent;
 		const selectionOffset = selectionPosition.offset;
 
+		// If there is no DOM root we do not care about fillers.
+		if ( !this.domConverter.getCorrespondingDomElement( selectionParent.getRoot() ) ) {
+			return false;
+		}
+
 		if ( !( selectionParent instanceof ViewElement ) ) {
 			return false;
 		}
@@ -356,10 +362,10 @@ export default class Renderer {
 		const expectedDomChildren = Array.from( domConverter.viewChildrenToDom( viewElement, domDocument, { bind: true } ) );
 
 		if ( filler && filler.parent == viewElement ) {
-			const expectedNoteAfterFiller = expectedDomChildren[ filler.offset ];
+			const expectedNodeAfterFiller = expectedDomChildren[ filler.offset ];
 
-			if ( expectedNoteAfterFiller instanceof Text ) {
-				expectedNoteAfterFiller.data = INLINE_FILLER + expectedNoteAfterFiller.data;
+			if ( expectedNodeAfterFiller instanceof Text ) {
+				expectedNodeAfterFiller.data = INLINE_FILLER + expectedNodeAfterFiller.data;
 			} else {
 				expectedDomChildren.splice( filler.offset, 0, domDocument.createTextNode( INLINE_FILLER ) );
 			}
