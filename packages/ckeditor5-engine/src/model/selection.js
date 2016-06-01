@@ -498,9 +498,8 @@ export default class Selection {
 
 			// ...look for a first character node in that range and take attributes from it.
 			for ( let item of range ) {
-				if ( item.type == 'TEXT' ) {
+				if ( item.type == 'TEXT' && attrs === null ) {
 					attrs = item.item.getAttributes();
-					break;
 				}
 			}
 		} else {
