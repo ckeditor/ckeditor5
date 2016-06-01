@@ -799,7 +799,7 @@ function wrapAttributeElement( wrapper, toWrap ) {
 	}
 
 	// Check if attributes can be merged.
-	for ( let key of [ ...wrapper.getAttributeKeys() ] ) {
+	for ( let key of wrapper.getAttributeKeys() ) {
 		// Classes and styles should be checked separately.
 		if ( key === 'class' || key === 'style' ) {
 			continue;
@@ -860,7 +860,7 @@ function unwrapAttributeElement( wrapper, toUnwrap ) {
 	}
 
 	// Check if AttributeElement has all wrapper attributes.
-	for ( let key of [ ...wrapper.getAttributeKeys() ] ) {
+	for ( let key of wrapper.getAttributeKeys() ) {
 		// Classes and styles should be checked separately.
 		if ( key === 'class' || key === 'style' ) {
 			continue;

@@ -196,7 +196,11 @@ export default class Element extends Node {
 			yield 'style';
 		}
 
-		yield* this._attrs.keys();
+		// This is not an optimal solution because of https://github.com/ckeditor/ckeditor5-engine/issues/454.
+		// It can be simplified to `yield* this._attrs.keys();`.
+		for ( let key of this._attrs.keys() ) {
+			yield key;
+		}
 	}
 
 	/**
