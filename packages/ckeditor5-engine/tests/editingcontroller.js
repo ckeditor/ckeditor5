@@ -131,6 +131,8 @@ describe( 'EditingController', () => {
 		} );
 
 		beforeEach( () => {
+			// Note: The below code is highly overcomplicated due to #455.
+
 			model.selection.removeAllRanges();
 			modelRoot.removeChildren( 0, modelRoot.getChildCount() );
 
