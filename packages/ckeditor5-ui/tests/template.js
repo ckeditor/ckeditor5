@@ -71,11 +71,11 @@ describe( 'Template', () => {
 					}
 				],
 				on: {
-					'a@span': bind( 'b' ),
-					'b@span': bind( () => {} ),
+					'a@span': bind.to( 'b' ),
+					'b@span': bind.to( () => {} ),
 					'c@span': [
-						bind( 'c' ),
-						bind( () => {} )
+						bind.to( 'c' ),
+						bind.to( () => {} )
 					]
 				}
 			} );
@@ -397,8 +397,8 @@ describe( 'Template', () => {
 	} );
 
 	describe( 'bind', () => {
-		it( 'returns function', () => {
-			expect( Template.bind() ).to.be.a( 'function' );
+		it( 'returns object', () => {
+			expect( Template.bind() ).to.be.an( 'object' );
 		} );
 
 		it( 'provides "to" and "if" interface', () => {
@@ -428,7 +428,7 @@ describe( 'Template', () => {
 				setElement( {
 					tag: 'p',
 					on: {
-						x: bind( 'a' ),
+						x: bind.to( 'a' ),
 					}
 				} );
 
@@ -449,8 +449,8 @@ describe( 'Template', () => {
 					tag: 'p',
 					on: {
 						x: [
-							bind( 'a' ),
-							bind( 'b' )
+							bind.to( 'a' ),
+							bind.to( 'b' )
 						]
 					}
 				} );
@@ -483,7 +483,7 @@ describe( 'Template', () => {
 								'class': 'y',
 							},
 							on: {
-								'test@p': bind( 'c' )
+								'test@p': bind.to( 'c' )
 							}
 						},
 						{
@@ -499,8 +499,8 @@ describe( 'Template', () => {
 						}
 					],
 					on: {
-						'test@.y': bind( 'a' ),
-						'test@div': bind( 'b' )
+						'test@.y': bind.to( 'a' ),
+						'test@div': bind.to( 'b' )
 					}
 				} );
 
@@ -562,10 +562,10 @@ describe( 'Template', () => {
 						}
 					],
 					on: {
-						x: bind( spy1 ),
+						x: bind.to( spy1 ),
 						'y@span': [
-							bind( spy2 ),
-							bind( 'c' )
+							bind.to( spy2 ),
+							bind.to( 'c' )
 						]
 					}
 				} );
@@ -593,7 +593,7 @@ describe( 'Template', () => {
 						}
 					],
 					on: {
-						x: bind( 'a' ),
+						x: bind.to( 'a' ),
 					}
 				} );
 
@@ -612,7 +612,7 @@ describe( 'Template', () => {
 				setElement( {
 					tag: 'p',
 					on: {
-						'test@div': bind( 'a' )
+						'test@div': bind.to( 'a' )
 					}
 				} );
 
@@ -645,7 +645,7 @@ describe( 'Template', () => {
 					const binding = bind.to( 'foo', spy );
 
 					expect( spy.called ).to.be.false;
-					expect( binding ).to.have.keys( [ 'type', 'observable', 'emitter', 'attribute', 'callback' ] );
+					expect( binding ).to.have.keys( [ 'type', 'observable', 'eventNameOrFuncion', 'emitter', 'attribute', 'callback' ] );
 					expect( binding.observable ).to.equal( observable );
 					expect( binding.callback ).to.equal( spy );
 					expect( binding.attribute ).to.equal( 'foo' );
