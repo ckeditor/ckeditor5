@@ -72,6 +72,7 @@ export default class ClassicEditorUI extends BoxedEditorUI {
 	 * Creates editor sticky toolbar.
 	 *
 	 * @protected
+	 * @returns {ui.toolbar.Toolbar}
 	 */
 	_createToolbar() {
 		const editor = this.editor;
@@ -91,6 +92,7 @@ export default class ClassicEditorUI extends BoxedEditorUI {
 	 * Creates editor main editable.
 	 *
 	 * @protected
+	 * @returns {ui.editableUI.EditableUI}
 	 */
 	_createEditableUI() {
 		const editor = this.editor;
