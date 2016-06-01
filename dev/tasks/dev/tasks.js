@@ -40,13 +40,9 @@ module.exports = ( config ) => {
 
 	gulp.task( 'pull', updateTaskHandler );
 
-	gulp.task( 'status', () => {
-		statusTask( ckeditor5Path, packageJSON, config.WORKSPACE_DIR );
-	} );
+	gulp.task( 'status', statusTaskHandler );
 
-	gulp.task( 'st', () => {
-		statusTask( ckeditor5Path, packageJSON, config.WORKSPACE_DIR );
-	} );
+	gulp.task( 'st', statusTaskHandler );
 
 	gulp.task( 'relink', () => {
 		relinkTask( ckeditor5Path, packageJSON, config.WORKSPACE_DIR );
@@ -75,6 +71,10 @@ module.exports = ( config ) => {
 			}
 		} );
 
-		updateTask( installTask, ckeditor5Path, packageJSON, config.WORKSPACE_DIR, options[ 'npm-update' ] );
+		return updateTask( installTask, ckeditor5Path, packageJSON, config.WORKSPACE_DIR, options[ 'npm-update' ] );
+	}
+
+	function statusTaskHandler() {
+		return statusTask( ckeditor5Path, packageJSON, config.WORKSPACE_DIR );
 	}
 };
