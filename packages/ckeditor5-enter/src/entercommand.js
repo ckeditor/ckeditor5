@@ -21,7 +21,7 @@ export default class EnterCommand extends Command {
 		const doc = this.editor.document;
 
 		doc.enqueueChanges( () => {
-			enterBlock( doc.batch(), doc.selection, { defaultBlock: 'paragraph' } );
+			enterBlock( doc.batch(), doc.selection, { defaultBlockName: 'paragraph' } );
 		} );
 	}
 }
