@@ -1214,6 +1214,20 @@ describe( 'Template', () => {
 				expect( el.outerHTML ).to.equal( '<p a="b abc c def"></p>' );
 			} );
 
+			it( 'creates new - no attributes', () => {
+				extensionTest(
+					{
+						tag: 'p',
+					},
+					{
+						attributes: {
+							c: 'd'
+						}
+					},
+					'<p c="d"></p>'
+				);
+			} );
+
 			it( 'creates new - simple', () => {
 				extensionTest(
 					{

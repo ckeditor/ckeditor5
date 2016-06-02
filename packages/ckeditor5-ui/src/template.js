@@ -844,17 +844,8 @@ function extendObjectValueArray( obj, ext ) {
  * @private
  * @param {ui.TemplateDefinition} def A base template definition.
  * @param {ui.TemplateDefinition} extDef An extension to existing definition.
- * @param {Array} [defSiblings] An array `def` belongs to.
  */
-function extendTemplateDefinition( def, extDef, defSiblings ) {
-	if ( !def ) {
-		defSiblings.push( def = {} );
-	}
-
-	if ( extDef.tag && !def.tag ) {
-		def.tag = extDef.tag;
-	}
-
+function extendTemplateDefinition( def, extDef ) {
 	if ( extDef.attributes ) {
 		if ( !def.attributes ) {
 			def.attributes = {};
@@ -872,10 +863,6 @@ function extendTemplateDefinition( def, extDef, defSiblings ) {
 	}
 
 	if ( extDef.text ) {
-		if ( !def.text ) {
-			def.text = [];
-		}
-
 		def.text.push( ...extDef.text );
 	}
 
@@ -890,7 +877,7 @@ function extendTemplateDefinition( def, extDef, defSiblings ) {
 		}
 
 		extDef.children.forEach( ( extChildDef, index ) => {
-			extendTemplateDefinition( def.children[ index ], extChildDef, def.children );
+			extendTemplateDefinition( def.children[ index ], extChildDef );
 		} );
 	}
 }
