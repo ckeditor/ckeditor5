@@ -44,11 +44,11 @@ describe( 'EnterCommand', () => {
 
 	it( 'uses paragraph as default block', () => {
 		schema.registerItem( 'paragraph', '$block' );
-		setData( doc, '<p>foo<selection /></p>' );
+		setData( doc, '<h>foo<selection /></h>' );
 
 		editor.execute( 'enter' );
 
-		expect( getData( doc, { withoutSelection: true } ) ).to.equal( '<p>foo</p><paragraph></paragraph>' );
+		expect( getData( doc, { withoutSelection: true } ) ).to.equal( '<h>foo</h><paragraph></paragraph>' );
 	} );
 } );
 
