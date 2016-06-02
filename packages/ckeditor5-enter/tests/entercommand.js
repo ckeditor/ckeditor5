@@ -9,7 +9,7 @@ import ModelTestEditor from '/tests/ckeditor5/_utils/modeltesteditor.js';
 import { default as EnterCommand, enterBlock } from '/ckeditor5/enter/entercommand.js';
 import { getData, setData } from '/tests/engine/_utils/model.js';
 
-let editor, doc;
+let editor, doc, schema;
 
 beforeEach( () => {
 	return ModelTestEditor.create()
@@ -20,7 +20,7 @@ beforeEach( () => {
 			const command = new EnterCommand( editor );
 			editor.commands.set( 'enter', command );
 
-			const schema = doc.schema;
+			schema = doc.schema;
 
 			// Note: We could use real names like 'paragraph', but that would make test patterns too long.
 			// Plus, this is actually a good test that the algorithm can be used for any model.
@@ -40,6 +40,15 @@ describe( 'EnterCommand', () => {
 
 		expect( getData( doc, { withoutSelection: true } ) ).to.equal( '<p>foo</p><p></p>' );
 		expect( spy.calledOnce ).to.be.true;
+	} );
+
+	it( 'uses paragraph as default block', () => {
+		schema.registerItem( 'paragraph', '$block' );
+		setData( doc, '<h>foo<selection /></h>' );
+
+		editor.execute( 'enter' );
+
+		expect( getData( doc, { withoutSelection: true } ) ).to.equal( '<h>foo</h><paragraph></paragraph>' );
 	} );
 } );
 
