@@ -42,7 +42,8 @@ describe( 'dev-create-package', () => {
 			initializeRepository: sinon.stub( git, 'initializeRepository' ),
 			updateJSONFile: sinon.stub( tools, 'updateJSONFile' ),
 			copy: sinon.stub( tools, 'copyTemplateFiles' ),
-			initialCommit: sinon.stub( git, 'initialCommit' )
+			initialCommit: sinon.stub( git, 'initialCommit' ),
+			addRemote: sinon.stub( git, 'addRemote' )
 		};
 	}
 
@@ -66,6 +67,9 @@ describe( 'dev-create-package', () => {
 			expect( spies.getPackageDescription.calledOnce ).to.equal( true );
 			expect( spies.initializeRepository.calledOnce ).to.equal( true );
 			expect( spies.initializeRepository.firstCall.args[ 0 ] ).to.equal( repositoryPath );
+			expect( spies.addRemote.calledOnce ).to.equal( true );
+			expect( spies.addRemote.firstCall.args[ 0 ] ).to.equal( repositoryPath );
+			expect( spies.addRemote.firstCall.args[ 1 ] ).to.equal( gitHubUrl );
 			expect( spies.copy.called ).to.equal( true );
 			expect( spies.updateJSONFile.calledTwice ).to.equal( true );
 			expect( spies.updateJSONFile.firstCall.args[ 0 ] ).to.equal( path.join( repositoryPath, 'package.json' ) );

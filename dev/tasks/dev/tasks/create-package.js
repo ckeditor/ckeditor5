@@ -16,12 +16,13 @@ const log = require( '../utils/log' );
  * 2. Ask for initial version.
  * 3. Ask for GitHub URL.
  * 4. Initialize repository.
- * 5. Copy files to new repository.
- * 6. Update package.json file in new package's repository.
- * 7. Update package.json file in CKEditor5 repository.
- * 8. Create initial commit.
- * 9. Link new package.
- * 10. Call `npm install` in package repository.
+ * 5. Add remote.
+ * 6. Copy files to new repository.
+ * 7. Update package.json file in new package's repository.
+ * 8. Update package.json file in CKEditor5 repository.
+ * 9. Create initial commit.
+ * 10. Link new package.
+ * 11. Call `npm install` in package repository.
  *
  * @param {String} ckeditor5Path Path to main CKEditor5 repository.
  * @param {String} workspaceRoot Relative path to workspace root.
@@ -88,6 +89,9 @@ module.exports = ( ckeditor5Path, workspaceRoot ) => {
 
 			log.out( `Initializing repository ${ repositoryPath }...` );
 			git.initializeRepository( repositoryPath );
+
+			log.out( `Adding remote ${ repositoryPath }...` );
+			git.addRemote( repositoryPath, gitHubUrl );
 
 			log.out( `Copying files into ${ repositoryPath }...` );
 
