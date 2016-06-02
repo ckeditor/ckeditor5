@@ -428,6 +428,7 @@ Template.bind = ( observable, emitter ) => {
  *			]
  *		 } );
  *
+ *		// Instance-level extension.
  *		Template.extend( instance, {
  *			attributes: {
  *				class: 'b',
@@ -442,10 +443,17 @@ Template.bind = ( observable, emitter ) => {
  *			]
  *		} );
  *
+ *		// Fragment extension.
+ *		Template.extend( instance.definition.children[ 0 ], {
+ *			attributes: {
+ *				class: 'd'
+ *			}
+ *		} );
+ *
  * the `instance.render().outerHTML` is
  *
  *		<p class="a b" data-x="{ observable.foo } { observable.bar }">
- *			<span class="b c">Span</span>
+ *			<span class="b c d">Span</span>
  *		</p>
  *
  * @static
