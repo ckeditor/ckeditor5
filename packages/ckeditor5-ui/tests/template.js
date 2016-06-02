@@ -1417,51 +1417,90 @@ describe( 'Template', () => {
 				expect( el.outerHTML ).to.equal( '<p>A BXY</p>' );
 				expect( el.childNodes ).to.have.length( 2 );
 			} );
-
-			it( 'appends new - simple', () => {
-				const el = extensionTest(
-					{
-						tag: 'p',
-						children: [
-							'foo'
-						]
-					},
-					{
-						children: [
-							'',
-							'bar'
-						]
-					},
-					'<p>foobar</p>'
-				);
-
-				expect( el.childNodes ).to.have.length( 2 );
-			} );
-
-			it( 'appends new - complex', () => {
-				const el = extensionTest(
-					{
-						tag: 'p',
-						children: [
-							{ text: 'foo' },
-							'bar'
-						]
-					},
-					{
-						children: [
-							'',
-							'',
-							'C'
-						]
-					},
-					'<p>foobarC</p>'
-				);
-
-				expect( el.childNodes ).to.have.length( 3 );
-			} );
 		} );
 
 		describe( 'children', () => {
+			it( 'should throw when the number of children does not correspond', () => {
+				expect( () => {
+					extensionTest(
+						{
+							tag: 'p',
+							children: [
+								'foo'
+							]
+						},
+						{
+							children: [
+								'foo',
+								'bar'
+							]
+						},
+						'it should fail'
+					);
+				} ).to.throw( CKEditorError, /ui-template-extend-children-mismatch/ );
+			} );
+
+			it( 'should throw when no children in target but extending one', () => {
+				expect( () => {
+					extensionTest(
+						{
+							tag: 'p',
+						},
+						{
+							children: [
+								{
+									tag: 'b'
+								}
+							]
+						},
+						'it should fail'
+					);
+				} ).to.throw( CKEditorError, /ui-template-extend-children-mismatch/ );
+			} );
+
+			it( 'should throw when the number of children does not correspond on some deeper level', () => {
+				expect( () => {
+					extensionTest(
+						{
+							tag: 'p',
+							children: [
+								{
+									tag: 'span',
+									attributes: {
+										class: 'A'
+									},
+									children: [
+										'A',
+										{
+											tag: 'span',
+											attributes: {
+												class: 'AA'
+											},
+											children: [
+												'AA'
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							children: [
+								{
+									attributes: {
+										class: 'B'
+									},
+									children: [
+										'B'
+									]
+								}
+							]
+						},
+						'it should fail'
+					);
+				} ).to.throw( CKEditorError, /ui-template-extend-children-mismatch/ );
+			} );
+
 			it( 'extends existing - simple', () => {
 				extensionTest(
 					{
@@ -1540,74 +1579,68 @@ describe( 'Template', () => {
 				);
 			} );
 
-			it( 'appends new - no children', () => {
-				extensionTest(
-					{
-						tag: 'p'
-					},
-					{
-						children: [
-							{
-								tag: 'span',
-								attributes: {
-									class: 'bar'
-								}
+			it( 'allows extending a particular child', () => {
+				const template = new Template( {
+					tag: 'p',
+					children: [
+						{
+							tag: 'span',
+							attributes: {
+								class: 'foo'
 							}
-						]
-					},
-					'<p><span class="bar"></span></p>'
-				);
+						}
+					]
+				} );
+
+				Template.extend( template.definition.children[ 0 ], {
+					attributes: {
+						class: 'bar'
+					}
+				} );
+
+				expect( template.render().outerHTML ).to.equal( '<p><span class="foo bar"></span></p>' );
 			} );
 
-			it( 'appends new - element', () => {
-				extensionTest(
-					{
-						tag: 'p',
-						children: [
-							{
-								tag: 'span',
-								attributes: {
-									class: 'foo'
+			it( 'allows extending a particular child – recursively', () => {
+				const template = new Template( {
+					tag: 'p',
+					children: [
+						{
+							tag: 'span',
+							attributes: {
+								class: 'A'
+							},
+							children: [
+								'A',
+								{
+									tag: 'span',
+									attributes: {
+										class: 'AA'
+									},
+									children: [
+										'AA'
+									]
 								}
-							}
-						]
-					},
-					{
-						children: [
-							{},
-							{
-								tag: 'span',
-								attributes: {
-									class: 'bar'
-								}
-							}
-						]
-					},
-					'<p><span class="foo"></span><span class="bar"></span></p>'
-				);
-			} );
+							]
+						}
+					]
+				} );
 
-			it( 'appends new - text', () => {
-				extensionTest(
-					{
-						tag: 'p',
-						children: [
-							{
-								tag: 'span',
-								attributes: {
-									class: 'foo'
-								}
+				Template.extend( template.definition.children[ 0 ], {
+					attributes: {
+						class: 'B',
+					},
+					children: [
+						'B',
+						{
+							attributes: {
+								class: 'BB'
 							}
-						]
-					},
-					{
-						children: [
-							{},
-							'A'
-						]
-					},
-					'<p><span class="foo"></span>A</p>'
-				);
+						}
+					]
+				} );
+
+				expect( template.render().outerHTML ).to.equal( '<p><span class="A B">AB<span class="AA BB">AA</span></span></p>' );
 			} );
 		} );
 

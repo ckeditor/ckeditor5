@@ -872,8 +872,13 @@ function extendTemplateDefinition( def, extDef, defSiblings ) {
 	}
 
 	if ( extDef.children ) {
-		if ( !def.children ) {
-			def.children = [];
+		if ( !def.children || def.children.length != extDef.children.length ) {
+			/**
+			 * The number of children in extended definition does not match.
+			 *
+			 * @error ui-template-extend-children-mismatch
+			 */
+			throw new CKEditorError( 'ui-template-extend-children-mismatch' );
 		}
 
 		extDef.children.forEach( ( extChildDef, index ) => {
