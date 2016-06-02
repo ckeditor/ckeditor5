@@ -19,6 +19,7 @@ const utils = {
 	 * * `{String} observableName` – Identifier for the observable object. E.g. `"Editable"` when
 	 * you observe one of editor's editables. This name will be displayed on the console.
 	 * * `{utils.Observable observable} – The object to observe.
+	 * * `{Array.<String>} filterNames` – Array of propery names to be observed.
 	 *
 	 * Typical usage:
 	 *
@@ -33,9 +34,11 @@ const utils = {
 	createObserver() {
 		const observer = Object.create( EmitterMixin, {
 			observe: {
-				value: function observe( observableName, observable ) {
+				value: function observe( observableName, observable, filterNames ) {
 					observer.listenTo( observable, 'change', ( evt, propertyName, value, oldValue ) => {
-						console.log( `[Change in ${ observableName }] ${ propertyName } = '${ value }' (was '${ oldValue }')` );
+						if ( !filterNames || filterNames.includes( propertyName ) ) {
+							console.log( `[Change in ${ observableName }] ${ propertyName } = '${ value }' (was '${ oldValue }')` );
+						}
 					} );
 
 					return observer;
