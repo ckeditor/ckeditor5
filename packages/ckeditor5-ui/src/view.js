@@ -61,7 +61,7 @@ export default class View {
 		/**
 		 * Template of this view.
 		 *
-		 * @member {Object} ui.View#template
+		 * @member {ui.Template} ui.View#template
 		 */
 
 		/**
@@ -77,13 +77,6 @@ export default class View {
 		 *
 		 * @private
 		 * @member {HTMLElement} ui.View.#_element
-		 */
-
-		/**
-		 * An instance of Template to generate {@link ui.View#_el}.
-		 *
-		 * @private
-		 * @member {ui.Template} ui.View#_template
 		 */
 	}
 
@@ -103,9 +96,7 @@ export default class View {
 			return null;
 		}
 
-		this._template = new Template( this.template );
-
-		return ( this._element = this._template.render() );
+		return ( this._element = this.template.render() );
 	}
 
 	set element( el ) {
@@ -254,7 +245,7 @@ export default class View {
 		}
 
 		this.model = this.regions = this.template = this.locale = this.t = null;
-		this._regionSelectors = this._element = this._template = null;
+		this._regionSelectors = this._element = null;
 	}
 
 	/**

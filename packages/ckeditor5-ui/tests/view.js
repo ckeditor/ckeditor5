@@ -57,13 +57,13 @@ describe( 'View', () => {
 
 	describe( 'init', () => {
 		beforeEach( () => {
-			setTestViewClass( () => ( {
+			setTestViewClass( {
 				tag: 'p',
 				children: [
 					{ tag: 'span' },
 					{ tag: 'strong' }
 				]
-			} ) );
+			} );
 		} );
 
 		it( 'calls child regions #init', () => {
@@ -178,12 +178,12 @@ describe( 'View', () => {
 		} );
 
 		it( 'should override an existing region with override flag', () => {
-			view.template = {
+			view.template = new Template( {
 				tag: 'div',
 				children: [
 					{ tag: 'span' }
 				]
-			};
+			} );
 
 			const region1 = new Region( 'x' );
 			const region2 = new Region( 'x' );
@@ -381,20 +381,20 @@ describe( 'View', () => {
 } );
 
 function createViewInstanceWithTemplate() {
-	setTestViewClass( () => ( { tag: 'a' } ) );
+	setTestViewClass( { tag: 'a' } );
 	setTestViewInstance();
 }
 
-function setTestViewClass( templateFn, regionsFn ) {
+function setTestViewClass( templateDef, regionsFn ) {
 	TestView = class V extends View {
 		constructor( model ) {
 			super( model );
 
-			if ( templateFn ) {
-				this.template = templateFn.call( this );
+			if ( templateDef ) {
+				this.template = new Template( templateDef );
 			}
 
-			if ( templateFn && regionsFn ) {
+			if ( templateDef && regionsFn ) {
 				regionsFn.call( this );
 			}
 		}
