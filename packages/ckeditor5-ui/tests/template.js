@@ -98,7 +98,7 @@ describe( 'Template', () => {
 			} ).to.throw( CKEditorError, /ui-template-wrong-syntax/ );
 		} );
 
-		it( 'creates a HTMLElement', () => {
+		it( 'creates HTMLElement', () => {
 			const el = new Template( {
 				tag: 'p',
 			} ).render();
@@ -345,7 +345,7 @@ describe( 'Template', () => {
 			expect( el.outerHTML ).to.be.equal( '<div class="a b" x="bar"></div>' );
 		} );
 
-		it( 'applies doesn\'t apply new child to an HTMLElement – Text Node', () => {
+		it( 'doesn\'t apply new child to an HTMLElement – Text Node', () => {
 			new Template( {
 				tag: 'div',
 				children: [ 'foo' ]
@@ -354,7 +354,7 @@ describe( 'Template', () => {
 			expect( el.outerHTML ).to.be.equal( '<div></div>' );
 		} );
 
-		it( 'applies doesn\'t apply new child to an HTMLElement – HTMLElement', () => {
+		it( 'doesn\'t apply new child to an HTMLElement – HTMLElement', () => {
 			new Template( {
 				tag: 'div',
 				children: [

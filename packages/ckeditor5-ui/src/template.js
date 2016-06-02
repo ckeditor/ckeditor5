@@ -910,10 +910,10 @@ function extendTemplateDefinition( def, extDef, defSiblings ) {
  * @typedef ui.TemplateDefinition
  * @type Object
  * @property {String} tag
- * @property {Array} [children]
- * @property {Object} [attributes]
- * @property {String} [text]
- * @property {Object} [on]
+ * @property {Array.<ui.TemplateDefinition|ui.TemplateValueSchema} [children]
+ * @property {Object.<String,ui.TemplateValueSchema>} [attributes]
+ * @property {String|ui.TemplateValueSchema} [text]
+ * @property {Object.<String,ui.TemplateListenerSchema>} [on]
  */
 
 /**
