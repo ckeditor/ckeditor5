@@ -16,7 +16,11 @@
 
 /**
  * Babel helper.
- * @TODO: should be injected by bundle task.
+ *
+ * @TODO: Move to bundle task.
+ * Should be injected by bundle task, because our source code don't have to know that will be transformed.
+ * But it is not so easy. It is only possible to pass string with file path to rollup,
+ * so to do it we need to create a temporary file.
  */
 import '../../../node_modules/regenerator-runtime/runtime.js';
 

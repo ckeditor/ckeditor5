@@ -30,7 +30,7 @@ describe( 'build-utils', () => {
 		sandbox.restore();
 	} );
 
-	it( 'should be extended by level utils', () => {
+	it( 'should be extended by top level utils', () => {
 		expect( utils.clean ).to.be.equal( mainUtils.clean );
 	} );
 

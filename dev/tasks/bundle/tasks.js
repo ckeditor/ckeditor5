@@ -8,11 +8,11 @@
 const path = require( 'path' );
 const gulp = require( 'gulp' );
 const gulpCssnano = require( 'gulp-cssnano' );
+const gulpUglify = require( 'gulp-uglify' );
 const runSequence = require( 'run-sequence' );
 const utils = require( './utils' );
 const rollup = require( 'rollup' ).rollup;
 const rollupBabel = require( 'rollup-plugin-babel' );
-const gulpUglify = require( 'gulp-uglify' );
 
 module.exports = ( config ) => {
 	const sourceBuildDir = path.join( config.ROOT_DIR, config.BUILD_DIR, 'esnext' );
