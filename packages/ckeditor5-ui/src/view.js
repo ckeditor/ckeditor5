@@ -59,6 +59,14 @@ export default class View {
 		} );
 
 		/**
+		 * Shorthand for {@link ui.Template#bind}, bound to {@link ui.View#model}
+		 * and {@link ui.View}.
+		 *
+		 * @method ui.View#bind
+		 */
+		this.bind = Template.bind( this.model, this );
+
+		/**
 		 * Template of this view.
 		 *
 		 * @member {ui.Template} ui.View#template

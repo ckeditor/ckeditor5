@@ -44,6 +44,16 @@ describe( 'View', () => {
 			expect( view.regions.length ).to.equal( 0 );
 		} );
 
+		it( 'creates view#bind shorthand for Template binding', () => {
+			expect( view.bind.to ).to.be.a( 'function' );
+			expect( view.bind.if ).to.be.a( 'function' );
+
+			const binding = view.bind.to( 'a' );
+
+			expect( binding.observable ).to.equal( view.model );
+			expect( binding.emitter ).to.equal( view );
+		} );
+
 		it( 'defines the locale property and the t function', () => {
 			const model = new Model();
 			const locale = { t() {} };
@@ -307,7 +317,6 @@ describe( 'View', () => {
 			const spy1 = testUtils.sinon.spy();
 			const spy2 = testUtils.sinon.spy();
 			const spy3 = testUtils.sinon.spy();
-			const bind = Template.bind( view.model, view );
 
 			view.model.on( 'ku', spy1 );
 			view.model.on( 'kd', spy2 );
@@ -319,10 +328,10 @@ describe( 'View', () => {
 					{
 						tag: 'a',
 						on: {
-							keyup: bind.to( 'ku' )
+							keyup: view.bind.to( 'ku' )
 						},
 						attributes: {
-							class: bind.to( 'b', b => 'applied-A-' + b ),
+							class: view.bind.to( 'b', b => 'applied-A-' + b ),
 							id: 'applied-A'
 						},
 						children: [ 'Text applied to childA.' ]
@@ -330,10 +339,10 @@ describe( 'View', () => {
 					{
 						tag: 'b',
 						on: {
-							keydown: bind.to( 'kd' )
+							keydown: view.bind.to( 'kd' )
 						},
 						attributes: {
-							class: bind.to( 'b', b => 'applied-B-' + b ),
+							class: view.bind.to( 'b', b => 'applied-B-' + b ),
 							id: 'applied-B'
 						},
 						children: [ 'Text applied to childB.' ]
@@ -341,11 +350,11 @@ describe( 'View', () => {
 					'Text which is not to be applied because it does NOT exist in original element.'
 				],
 				on: {
-					'mouseover@a': bind.to( 'mo' )
+					'mouseover@a': view.bind.to( 'mo' )
 				},
 				attributes: {
-					id: bind.to( 'a', a => a.toUpperCase() ),
-					class: bind.to( 'b', b => 'applied-parent-' + b )
+					id: view.bind.to( 'a', a => a.toUpperCase() ),
+					class: view.bind.to( 'b', b => 'applied-parent-' + b )
 				}
 			} );
 
