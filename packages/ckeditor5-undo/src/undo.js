@@ -12,11 +12,10 @@ import Button from '../ui/button/button.js';
 import ButtonView from '../ui/button/buttonview.js';
 
 /**
- * Undo feature.
- *
- * Undo features brings in possibility to undo and re-do changes done in Tree Model by deltas through Batch API.
+ * Undo feature. Introduces the "Undo" and "Redo" buttons to the editor.
  *
  * @memberOf undo
+ * @extends ckeditor5.Feature
  */
 export default class Undo extends Feature {
 	static get requires() {
