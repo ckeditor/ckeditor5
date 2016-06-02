@@ -9,6 +9,7 @@
 
 import Element from '/ckeditor5/engine/view/element.js';
 import Text from '/ckeditor5/engine/view/text.js';
+import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import RootEditableElement from '/ckeditor5/engine/view/rooteditableelement.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
@@ -145,6 +146,13 @@ describe( 'Node', () => {
 
 			expect( parent.getDocument() ).to.equal( docMock );
 			expect( child.getDocument() ).to.equal( docMock );
+		} );
+
+		it( 'should return null if element is inside DocumentFragment', () => {
+			const child = new Element( 'p' );
+			new DocumentFragment( [ child ] );
+
+			expect( child.getDocument() ).to.be.null;
 		} );
 	} );
 

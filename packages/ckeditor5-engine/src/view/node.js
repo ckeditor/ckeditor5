@@ -87,7 +87,8 @@ export default class Node {
 	 * @returns {engine.view.Document|null} View Document of the node or null.
 	 */
 	getDocument() {
-		if ( this.parent ) {
+		// Parent might be Node, null or DocumentFragment.
+		if ( this.parent instanceof Node ) {
 			return this.parent.getDocument();
 		} else {
 			return null;
