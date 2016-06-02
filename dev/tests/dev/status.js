@@ -11,6 +11,9 @@ const sinon = require( 'sinon' );
 const tools = require( '../../tasks/dev/utils/tools' );
 const git = require( '../../tasks/dev/utils/git' );
 const path = require( 'path' );
+const chai = require( 'chai' );
+const expect = chai.expect;
+const gulp = require( '../../../gulpfile' );
 
 describe( 'dev-status', () => {
 	const statusTask = require( '../../tasks/dev/tasks/status' );
@@ -107,5 +110,21 @@ describe( 'dev-status', () => {
 		sinon.assert.calledOnce( statusStub );
 		sinon.assert.calledOnce( writeErrorSpy );
 		sinon.assert.calledWithExactly( writeErrorSpy, error );
+	} );
+} );
+
+describe( 'gulp task status', () => {
+	const tasks = gulp.tasks;
+
+	it( 'should be available', () => {
+		expect( tasks ).to.have.property( 'status' );
+		expect( tasks.status.fn ).to.be.a( 'function' );
+	} );
+
+	it( 'should have an alias', () => {
+		expect( tasks ).to.have.property( 'st' );
+		expect( tasks.st.fn ).to.be.a( 'function' );
+
+		expect( tasks.st.fn ).to.equal( tasks.status.fn );
 	} );
 } );
