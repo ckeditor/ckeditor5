@@ -49,6 +49,7 @@ describe( 'ChangeBuffer', () => {
 
 			expect( batch2 ).to.be.instanceof( Batch );
 			expect( batch2 ).to.not.equal( batch1 );
+			expect( buffer.size ).to.equal( 0 );
 		} );
 
 		it( 'is reset once changes exceedes the limit', () => {
@@ -58,14 +59,19 @@ describe( 'ChangeBuffer', () => {
 			buffer.input( CHANGE_LIMIT + 1 );
 
 			expect( buffer.batch ).to.not.equal( batch1 );
+			expect( buffer.size ).to.equal( 0 );
 		} );
 
 		it( 'is reset once a new batch appears in the document', () => {
 			const batch1 = buffer.batch;
 
+			// Ensure that size is reset too.
+			buffer.input( 1 );
+
 			doc.batch().insert( Position.createAt( root, 0 ), 'a' );
 
 			expect( buffer.batch ).to.not.equal( batch1 );
+			expect( buffer.size ).to.equal( 0 );
 		} );
 
 		it( 'is not reset when changes are added to the buffer\'s batch', () => {

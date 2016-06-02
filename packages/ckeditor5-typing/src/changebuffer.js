@@ -107,8 +107,7 @@ export default class ChangeBuffer {
 		this.size += changeCount;
 
 		if ( this.size >= this.limit ) {
-			this._batch = null;
-			this.size = 0;
+			this._reset();
 		}
 	}
 
@@ -133,7 +132,17 @@ export default class ChangeBuffer {
 	_onBatch( batch ) {
 		// 1 operation means a newly created batch.
 		if ( batch !== this._batch && count( batch.getOperations() ) <= 1 ) {
-			this._batch = null;
+			this._reset();
 		}
+	}
+
+	/**
+	 * Resets change buffer.
+	 *
+	 * @private
+	 */
+	_reset() {
+		this._batch = null;
+		this.size = 0;
 	}
 }
