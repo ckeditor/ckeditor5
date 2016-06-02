@@ -15,12 +15,11 @@ import ModelText from '/ckeditor5/engine/model/text.js';
 import ModelRange from '/ckeditor5/engine/model/range.js';
 import ModelPosition from '/ckeditor5/engine/model/position.js';
 
+import ViewDocument from '/ckeditor5/engine/view/document.js';
 import ViewElement from '/ckeditor5/engine/view/element.js';
 import ViewContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import ViewAttributeElement from '/ckeditor5/engine/view/attributeelement.js';
 import ViewText from '/ckeditor5/engine/view/text.js';
-import ViewWriter from '/ckeditor5/engine/view/writer.js';
-import ViewSelection from '/ckeditor5/engine/view/selection.js';
 
 import Mapper from '/ckeditor5/engine/conversion/mapper.js';
 import ModelConversionDispatcher from '/ckeditor5/engine/conversion/modelconversiondispatcher.js';
@@ -70,19 +69,21 @@ function viewToString( item ) {
 }
 
 describe( 'Model converter builder', () => {
-	let dispatcher, modelDoc, modelRoot, viewRoot, mapper, writer, viewSelection;
+	let dispatcher, mapper;
+	let modelDoc, modelRoot;
+	let viewDoc, viewRoot, writer, viewSelection;
 
 	beforeEach( () => {
 		modelDoc = new ModelDocument();
 		modelRoot = modelDoc.createRoot( 'root', 'root' );
 
-		viewRoot = new ViewContainerElement( 'div' );
+		viewDoc = new ViewDocument();
+		viewRoot = viewDoc.createRoot( 'div' );
+		writer = viewDoc.writer;
+		viewSelection = viewDoc.selection;
 
 		mapper = new Mapper();
 		mapper.bindElements( modelRoot, viewRoot );
-
-		writer = new ViewWriter();
-		viewSelection = new ViewSelection();
 
 		dispatcher = new ModelConversionDispatcher( { writer, mapper, viewSelection } );
 
