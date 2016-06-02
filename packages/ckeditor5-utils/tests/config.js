@@ -28,7 +28,7 @@ describe( 'constructor', () => {
 	it( 'should set configurations', () => {
 		expect( config.get( 'creator' ) ).to.equal( 'inline' );
 		expect( config.get( 'language' ) ).to.equal( 'pl' );
-		expect( config.get( 'resize' ) ).to.eql( {
+		expect( config.get( 'resize' ) ).to.deep.equal( {
 			minheight: 300,
 			maxheight: 800,
 			icon: {
@@ -45,11 +45,6 @@ describe( 'constructor', () => {
 } );
 
 describe( 'set', () => {
-	it( 'should create Config instances for objects', () => {
-		expect( config.get( 'resize' ) ).to.be.an.instanceof( Config );
-		expect( config.get( 'resize.icon' ) ).to.be.an.instanceof( Config );
-	} );
-
 	it( 'should set configurations when passing objects', () => {
 		config.set( {
 			option1: 1,
@@ -82,7 +77,7 @@ describe( 'set', () => {
 			prop: 1
 		} );
 
-		expect( config.get( 'test' ) ).to.be.an.instanceof( Config );
+		expect( config.get( 'test' ) ).to.be.an( 'object' );
 		expect( config.get( 'test.prop' ) ).to.equal( 1 );
 	} );
 
@@ -94,7 +89,7 @@ describe( 'set', () => {
 			}
 		} );
 
-		expect( config.get( 'test' ) ).to.be.an.instanceof( Config );
+		expect( config.get( 'test' ) ).to.be.an( 'object' );
 		expect( config.get( 'test.prop' ) ).to.equal( 1 );
 	} );
 
@@ -102,8 +97,8 @@ describe( 'set', () => {
 		config.set( 'test.prop', 1 );
 		config.set( 'test.prop.value', 1 );
 
-		expect( config.get( 'test' ) ).to.be.an.instanceof( Config );
-		expect( config.get( 'test.prop' ) ).to.be.an.instanceof( Config );
+		expect( config.get( 'test' ) ).to.be.an( 'object' );
+		expect( config.get( 'test.prop' ) ).to.be.an( 'object' );
 		expect( config.get( 'test.prop.value' ) ).to.equal( 1 );
 	} );
 
@@ -119,7 +114,7 @@ describe( 'set', () => {
 			}
 		} );
 
-		expect( config.get( 'resize' ) ).to.be.eql( {
+		expect( config.get( 'resize' ) ).to.be.deep.equal( {
 			minheight: 400,		// Overridden
 			maxheight: 800,		// The same
 			hidden: true,		// Expanded
@@ -140,7 +135,7 @@ describe( 'set', () => {
 			}
 		} );
 
-		expect( config.get( 'resize' ) ).to.be.eql( {
+		expect( config.get( 'resize' ) ).to.deep.equal( {
 			minheight: 400,		// Overridden
 			maxheight: 800,		// The same
 			hidden: true,		// Expanded
@@ -161,12 +156,6 @@ describe( 'set', () => {
 
 		expect( config.get( 'date' ) ).to.be.an.instanceof( Date );
 		expect( config.get( 'instance' ) ).to.be.an.instanceof( SomeClass );
-	} );
-
-	it( 'should set `null` for undefined value', () => {
-		config.set( 'test' );
-
-		expect( config.get( 'test' ) ).to.be.null();
 	} );
 } );
 
@@ -203,7 +192,7 @@ describe( 'define', () => {
 		config.define( 'resize.icon', 'some value' );
 
 		expect( config.get( 'language' ) ).to.equal( 'pl' );
-		expect( config.get( 'resize.icon' ) ).to.be.instanceof( Config );
+		expect( config.get( 'resize.icon' ) ).to.be.an( 'object' );
 		expect( config.get( 'resize.minheight' ) ).to.equal( 300 );
 	} );
 
@@ -219,7 +208,7 @@ describe( 'define', () => {
 			}
 		} );
 
-		expect( config.get( 'resize' ) ).to.be.eql( {
+		expect( config.get( 'resize' ) ).to.be.deep.equal( {
 			minheight: 300,		// The same
 			maxheight: 800,		// The same
 			hidden: true,		// Expanded
@@ -240,7 +229,7 @@ describe( 'define', () => {
 			}
 		} );
 
-		expect( config.get( 'resize' ) ).to.be.eql( {
+		expect( config.get( 'resize' ) ).to.be.deep.equal( {
 			minheight: 300,		// The same
 			maxheight: 800,		// The same
 			hidden: true,		// Expanded
@@ -262,12 +251,6 @@ describe( 'define', () => {
 		expect( config.get( 'date' ) ).to.be.an.instanceof( Date );
 		expect( config.get( 'instance' ) ).to.be.an.instanceof( SomeClass );
 	} );
-
-	it( 'should set `null` for undefined value', () => {
-		config.define( 'test' );
-
-		expect( config.get( 'test' ) ).to.be.null();
-	} );
 } );
 
 describe( 'get', () => {
@@ -280,16 +263,15 @@ describe( 'get', () => {
 		expect( config.get( 'resize.icon.path' ) ).to.equal( 'xyz' );
 	} );
 
-	it( 'should retrieve a subset of the configuration', () => {
+	it( 'should retrieve a object of the configuration', () => {
 		let resizeConfig = config.get( 'resize' );
 
-		expect( resizeConfig.get( 'minheight' ) ).equal( 300 );
-		expect( resizeConfig.get( 'maxheight' ) ).to.equal( 800 );
-		expect( resizeConfig.get( 'icon' ) ).to.be.instanceof( Config );
+		expect( resizeConfig ).to.be.an( 'object' );
+		expect( resizeConfig.minheight ).equal( 300 );
+		expect( resizeConfig.maxheight ).to.equal( 800 );
+		expect( resizeConfig.icon ).to.be.an( 'object' );
 
-		let iconConfig = resizeConfig.get( 'icon' );
-
-		expect( iconConfig.get( 'path' ) ).to.equal( 'xyz' );
+		expect( resizeConfig.icon ).to.be.an( 'object' );
 	} );
 
 	it( 'should retrieve values case-insensitively', () => {
