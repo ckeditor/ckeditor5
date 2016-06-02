@@ -1719,7 +1719,9 @@ function setElement( template ) {
 
 function extensionTest( base, extension, expectedHtml ) {
 	const template = new Template( base );
-	template.extend( extension );
+
+	Template.extend( template, extension );
+
 	const el = template.render();
 
 	document.body.appendChild( el );

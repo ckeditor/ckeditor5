@@ -74,59 +74,6 @@ export default class Template {
 	}
 
 	/**
-	 * Extends {@link ui.Template#definition} with additional content.
-	 *
-	 *		const bind = Template.bind( observable, emitterInstance );
-	 *		const template = new Template( {
-	 *			tag: 'p',
-	 *			attributes: {
-	 *				class: 'a',
-	 *				data-x: bind.to( 'foo' )
-	 *			},
-	 *			children: [
-	 *				{
-	 *					tag: 'span',
-	 *					attributes: {
-	 *						class: 'b'
-	 *					},
-	 *					children: [
-	 *						'Span.'
-	 *					]
-	 *				}
-	 *			]
-	 *		 } );
-	 *
-	 *		template.extend( {
-	 *			attributes: {
-	 *				class: 'b',
-	 *				data-x: bind.to( 'bar' )
-	 *			},
-	 *			children: [
-	 *				{
-	 *					attributes: {
-	 *						class: 'c'
-	 *					}
-	 *				},
-	 *				'Paragraph.'
-	 *			]
-	 *		} );
-	 *
-	 * the `template.render().outerHTML` is
-	 *
-	 *		<p class="a b" data-x="{ observable.foo } { observable.bar }">
-	 *			<span class="b c">Span.</span>
-	 *			Paragraph.
-	 *		</p>
-	 *
-	 * @param {ui.TemplateDefinition} extDef An extension to existing definition.
-	 */
-	extend( extDef ) {
-		normalize( extDef );
-
-		extendTemplateDefinition( this.definition, extDef );
-	}
-
-	/**
 	 * Renders a DOM Node from definition.
 	 *
 	 * @protected
@@ -359,6 +306,7 @@ mix( Template, EmitterMixin );
  * * DOM events fired on `HTMLElement` can be propagated through {@link utils.ObservableMixin}.
  * See {@link ui.Template.bind#to}.
  *
+ * @property ui.Template#bind
  * @param {utils.ObservableMixin} observable An instance of ObservableMixin class.
  * @param {utils.EmitterMixin} emitter An instance of `EmitterMixin` class. It listens
  * to `observable` attribute changes and DOM Events, depending on the binding. Usually {@link ui.View} instance.
@@ -403,7 +351,7 @@ Template.bind = ( observable, emitter ) => {
 		 *		} ).render();
 		 *
 		 * @static
-		 * @property {ui.Template.bind#to}
+		 * @method ui.Template.bind#to
 		 * @param {String} attribute Name of {@link utils.ObservableMixin} used in the binding.
 		 * @param {Function} [callback] Allows processing of the value. Accepts `Node` and `value` as arguments.
 		 * @return {ui.TemplateBinding}
@@ -442,7 +390,7 @@ Template.bind = ( observable, emitter ) => {
 		 *		} ).render();
 		 *
 		 * @static
-		 * @property {ui.Template.bind#if}
+		 * @method ui.Template.bind#if
 		 * @param {String} attribute An attribute name of {@link utils.ObservableMixin} used in the binding.
 		 * @param {String} [valueIfTrue] Value set when {@link utils.ObservableMixin} attribute is not undefined/null/false/''.
 		 * @param {Function} [callback] Allows processing of the value. Accepts `Node` and `value` as arguments.
@@ -455,6 +403,64 @@ Template.bind = ( observable, emitter ) => {
 			};
 		}
 	};
+};
+
+/**
+ * Extends {@link ui.Template} or {@link ui.TemplateDefinition} with additional content.
+ *
+ *		const bind = Template.bind( observable, emitterInstance );
+ *		const instance = new Template( {
+ *			tag: 'p',
+ *			attributes: {
+ *				class: 'a',
+ *				data-x: bind.to( 'foo' )
+ *			},
+ *			children: [
+ *				{
+ *					tag: 'span',
+ *					attributes: {
+ *						class: 'b'
+ *					},
+ *					children: [
+ *						'Span'
+ *					]
+ *				}
+ *			]
+ *		 } );
+ *
+ *		Template.extend( instance, {
+ *			attributes: {
+ *				class: 'b',
+ *				data-x: bind.to( 'bar' )
+ *			},
+ *			children: [
+ *				{
+ *					attributes: {
+ *						class: 'c'
+ *					}
+ *				}
+ *			]
+ *		} );
+ *
+ * the `instance.render().outerHTML` is
+ *
+ *		<p class="a b" data-x="{ observable.foo } { observable.bar }">
+ *			<span class="b c">Span</span>
+ *		</p>
+ *
+ * @static
+ * @method ui.Template#extend
+ * @param {ui.Template|ui.TemplateDefinition} instanceOrDef Existing Template instance or definition to be extended.
+ * @param {ui.TemplateDefinition} extDef An extension to existing instance or definition.
+ */
+Template.extend = ( instanceOrDef, extDef ) => {
+	normalize( extDef );
+
+	if ( instanceOrDef instanceof Template ) {
+		extendTemplateDefinition( instanceOrDef.definition, extDef );
+	} else {
+		extendTemplateDefinition( instanceOrDef, extDef );
+	}
 };
 
 /**
