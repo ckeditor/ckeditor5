@@ -30,15 +30,22 @@ export default class Undo extends Feature {
 		const editor = this.editor;
 		const t = editor.t;
 
-		this._initFeature( 'undo', t( 'Undo' ) );
-		this._initFeature( 'redo', t( 'Redo' ) );
+		this._addButton( 'undo', t( 'Undo' ) );
+		this._addButton( 'redo', t( 'Redo' ) );
 
-		editor.keystrokes.set( 'ctrl + z', 'undo' );
-		editor.keystrokes.set( 'ctrl + y', 'redo' );
-		editor.keystrokes.set( 'ctrl + shift + z', 'redo' );
+		editor.keystrokes.set( 'CTRL+Z', 'undo' );
+		editor.keystrokes.set( 'CTRL+Y', 'redo' );
+		editor.keystrokes.set( 'CTRL+SHIFT+Z', 'redo' );
 	}
 
-	_initFeature( name, label ) {
+	/**
+	 * Creates a button for a specified command.
+	 *
+	 * @private
+	 * @param {String} name Command name.
+	 * @param {String} label Button label.
+	 */
+	_addButton( name, label ) {
 		const editor = this.editor;
 
 		const command = editor.commands.get( name );
