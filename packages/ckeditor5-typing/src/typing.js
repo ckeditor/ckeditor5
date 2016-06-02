@@ -11,7 +11,6 @@ import ModelPosition from '../engine/model/position.js';
 import ModelRange from '../engine/model/range.js';
 import ViewPosition from '../engine/view/position.js';
 import ViewText from '../engine/view/text.js';
-import ViewContainerElement from '../engine/view/containerelement.js';
 import diff from '../utils/diff.js';
 import diffToChanges from '../utils/difftochanges.js';
 import { getCode } from '../utils/keyboard.js';
@@ -155,140 +154,91 @@ class MutationHandler {
 	 * @param {Array.<engine.view.Document~MutatatedText|engine.view.Document~MutatatedChildren>} mutations
 	 */
 	handle( mutations ) {
-		// The below code indicates how multi-mutations consumers can be implemented.
-		// In the future we may need those to handle more advanced case, like spellchecking across text with attributes.
-		//
-		// // Clone the array, because consumers will modify it.
-		// mutations = mutations.slice( 0 );
+		for ( let mutation of mutations ) {
+			// Fortunately it will never be both.
+			this._handleTextMutation( mutation );
+			this._handleTextNodeInsertion( mutation );
+		}
 
-		// for ( let consumer of MutationHandler.consumers.multi ) {
-		// 	consumer( mutations, this );
-
-		// 	if ( !mutations.length ) {
-		// 		return;
-		// 	}
-		// }
-
-		mutations.forEach( mutation => {
-			for ( let consumer of MutationHandler.consumers.single ) {
-				if ( consumer.check( mutation ) ) {
-					consumer.consume( mutation, this );
-
-					return;
-				}
-			}
-		} );
-
-		this._commit();
-	}
-
-	insert( { position, text, selectionPosition } ) {
-		this.buffer.batch.weakInsert( position, text );
-
-		this.insertedCharacterCount += text.length;
-		this.selectionPosition = selectionPosition;
-	}
-
-	remove( { range, selectionPosition } ) {
-		this.buffer.batch.remove( range );
-
-		this.selectionPosition = selectionPosition;
-	}
-
-	/**
-	 * Commits all changes. While specific consumers will modify the document,
-	 * also the change buffer and selection needs to be updated. This should be done
-	 * once, at the end.
-	 *
-	 * @private
-	 */
-	_commit() {
-		this.buffer.input( this.insertedCharacterCount );
+		this.buffer.input( Math.max( this.insertedCharacterCount, 0 ) );
 
 		if ( this.selectionPosition ) {
 			this.editing.model.selection.collapse( this.selectionPosition );
 		}
 	}
-}
 
-/**
- * @static
- * @member {Object} typing.typing.MutationHandler.consumers
- */
-MutationHandler.consumers = {
-	/**
-	 * @member {Array} typing.typing.MutationHandler.consumers.single
-	 */
-	single: [
-		// Simple text nodes change.
-		{
-			check( mutation ) {
-				return ( mutation.type == 'text' );
-			},
+	_handleTextMutation( mutation ) {
+		if ( mutation.type != 'text' ) {
+			return;
+		}
 
-			consume( mutation, handler ) {
-				const changes = diffToChanges( diff( mutation.oldText, mutation.newText ), mutation.newText );
+		const changes = diffToChanges( diff( mutation.oldText, mutation.newText ), mutation.newText );
 
-				console.log( 'Text node change handler', JSON.stringify( changes ) ); // jshint ignore:line
-				console.log( mutation ); // jshint ignore:line
+		for ( let change of changes ) {
+			const viewPos = new ViewPosition( mutation.node, change.index );
+			const modelPos = this.editing.mapper.toModelPosition( viewPos );
 
-				changes.forEach( change => {
-					const viewPos = new ViewPosition( mutation.node, change.index );
-					const modelPos = handler.editing.mapper.toModelPosition( viewPos );
+			if ( change.type == 'INSERT' ) {
+				const insertedText = change.values.join( '' );
 
-					if ( change.type == 'INSERT' ) {
-						const insertedText = change.values.join( '' );
+				this._insert( modelPos, insertedText );
 
-						handler.insert( {
-							position: modelPos,
-							text: insertedText,
-							selectionPosition: ModelPosition.createAt( modelPos.parent, modelPos.offset + insertedText.length )
-						} );
-					} else /* if ( change.type == 'DELETE' ) */ {
-						handler.remove( {
-							range: new ModelRange( modelPos, modelPos.getShiftedBy( change.howMany ) ),
-							selectionPosition: modelPos
-						} );
-					}
-				} );
-			}
-		},
+				this.selectionPosition = ModelPosition.createAt( modelPos.parent, modelPos.offset + insertedText.length );
+			} else /* if ( change.type == 'DELETE' ) */ {
+				this._remove( new ModelRange( modelPos, modelPos.getShiftedBy( change.howMany ) ), change.howMany );
 
-		// Insertion into empty container.
-		{
-			check( mutation ) {
-				return (
-					mutation.oldChildren.length === 0 &&
-					mutation.newChildren.length === 1 &&
-					( mutation.newChildren[ 0 ] instanceof ViewText ) &&
-					( mutation.node instanceof ViewContainerElement )
-				);
-			},
-
-			consume( mutation, handler ) {
-				console.log( 'Insertion into empty container handler', mutation ); // jshint ignore:line
-
-				const viewPos = new ViewPosition( mutation.node, 0 );
-				const modelPos = handler.editing.mapper.toModelPosition( viewPos );
-				const insertedText = mutation.newChildren[ 0 ].data;
-
-				handler.insert( {
-					position: modelPos,
-					text: insertedText,
-					selectionPosition: ModelPosition.createAt( modelPos.parent, 'END' )
-				} );
+				this.selectionPosition = modelPos;
 			}
 		}
-	]
-};
+	}
+
+	_handleTextNodeInsertion( mutation ) {
+		if ( mutation.type != 'children' ) {
+			return;
+		}
+
+		// One new node.
+		if ( mutation.newChildren.length - mutation.oldChildren.length != 1 ) {
+			return false;
+		}
+		// Which is text.
+		const changes = diffToChanges( diff( mutation.oldChildren, mutation.newChildren ), mutation.newChildren );
+		const change = changes[ 0 ];
+
+		if ( change.type != 'INSERT' ) {
+			return false;
+		}
+
+		if ( !( change.values[ 0 ] instanceof ViewText ) ) {
+			return false;
+		}
+
+		const viewPos = new ViewPosition( mutation.node, change.index );
+		const modelPos = this.editing.mapper.toModelPosition( viewPos );
+		const insertedText = mutation.newChildren[ 0 ].data;
+
+		this._insert( modelPos, insertedText );
+
+		this.selectionPosition = ModelPosition.createAt( modelPos.parent, 'END' );
+	}
+
+	_insert( position, text ) {
+		this.buffer.batch.weakInsert( position, text );
+
+		this.insertedCharacterCount += text.length;
+	}
+
+	_remove( range, length ) {
+		this.buffer.batch.remove( range );
+
+		this.insertedCharacterCount -= length;
+	}
+}
 
 // This is absolutely lame, but it's enough for now.
 
 const safeKeystrokes = [
-	getCode( 'ctrl' ),
-	getCode( 'cmd' ),
 	getCode( 'shift' ),
-	getCode( 'alt' ),
 	getCode( 'arrowUp' ),
 	getCode( 'arrowRight' ),
 	getCode( 'arrowDown' ),
@@ -296,5 +246,9 @@ const safeKeystrokes = [
 ];
 
 function isSafeKeystroke( keyData ) {
+	if ( keyData.ctrlKey || keyData.altKey ) {
+		return true;
+	}
+
 	return safeKeystrokes.indexOf( keyData.keyCode ) > -1;
 }
