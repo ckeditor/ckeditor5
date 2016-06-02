@@ -18,6 +18,9 @@ import ButtonView from '../ui/button/buttonview.js';
  * @extends ckeditor5.Feature
  */
 export default class Undo extends Feature {
+	/**
+	 * @inheritDoc
+	 */
 	static get requires() {
 		return [ UndoEngine ];
 	}
@@ -38,7 +41,7 @@ export default class Undo extends Feature {
 	}
 
 	/**
-	 * Creates a button for a specified command.
+	 * Creates a button for the specified command.
 	 *
 	 * @private
 	 * @param {String} name Command name.

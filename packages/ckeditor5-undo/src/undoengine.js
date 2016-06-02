@@ -11,11 +11,16 @@ import UndoCommand from './undocommand.js';
 /**
  * Undo engine feature.
  *
- * Undo features brings in possibility to undo and re-do changes done in Tree Model by deltas through Batch API.
+ * Undo brings in possibility to undo and redo changes done in the model by deltas through
+ * the {@link engine.model.Document#batch Batch API}.
  *
  * @memberOf undo
+ * @extends ckeditor5.Feature
  */
 export default class UndoEngine extends Feature {
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor ) {
 		super( editor );
 
