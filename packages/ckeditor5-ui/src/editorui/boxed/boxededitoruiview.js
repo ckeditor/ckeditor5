@@ -7,6 +7,7 @@
 
 import EditorUIView from '../../editorui/editoruiview.js';
 import uid from '../../../utils/uid.js';
+import Template from '/ckeditor5/ui/template.js';
 
 /**
  * Boxed editor UI view.
@@ -27,7 +28,7 @@ export default class BoxedEditorUIView extends EditorUIView {
 		const t = this.t;
 		const ariaLabelUid = uid();
 
-		this.template = {
+		this.template = new Template( {
 			tag: 'div',
 
 			attributes: {
@@ -69,7 +70,7 @@ export default class BoxedEditorUIView extends EditorUIView {
 					}
 				}
 			]
-		};
+		} );
 
 		this.register( 'top', '.ck-editor__top' );
 		this.register( 'main', '.ck-editor__main' );

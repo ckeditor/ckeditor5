@@ -6,6 +6,7 @@
 'use strict';
 
 import View from '../view.js';
+import Template from '/ckeditor5/ui/template.js';
 
 /**
  * @memberOf ui.editableUI
@@ -29,7 +30,7 @@ export default class EditableUIView extends View {
 			this.element = this.editableElement = editableElement;
 		}
 
-		this.template = {
+		this.template = new Template( {
 			tag: 'div',
 			attributes: {
 				class: [
@@ -38,7 +39,7 @@ export default class EditableUIView extends View {
 				],
 				contenteditable: bind.to( 'isReadOnly', value => !value ),
 			}
-		};
+		} );
 
 		/**
 		 * The element which is the main editable element (usually the one with `contentEditable="true"`).

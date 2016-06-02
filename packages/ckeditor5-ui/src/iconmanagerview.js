@@ -6,6 +6,7 @@
 'use strict';
 
 import View from './view.js';
+import Template from '/ckeditor5/ui/template.js';
 
 /**
  * Icon manager view using {@link ui.iconManager.IconManagerModel}.
@@ -18,13 +19,13 @@ export default class IconManagerView extends View {
 	constructor( model, locale ) {
 		super( model, locale );
 
-		this.template = {
+		this.template = new Template( {
 			tag: 'svg',
 			ns: 'http://www.w3.org/2000/svg',
 			attributes: {
 				class: 'ck-icon-manager-sprite'
 			}
-		};
+		} );
 	}
 
 	init() {
