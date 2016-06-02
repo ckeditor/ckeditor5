@@ -77,17 +77,18 @@ for ( let i = 0; i < INLINE_FILLER_LENGTH; i++ ) {
 }
 
 /**
- * Checks if the text node starts with the {@link engine.view.filler.INLINE_FILLER inline filler}.
+ * Checks if the node is a text node which starts with the {@link engine.view.filler.INLINE_FILLER inline filler}.
  *
  *		startsWithFiller( document.createTextNode( INLINE_FILLER ) ); // true
  *		startsWithFiller( document.createTextNode( INLINE_FILLER + 'foo' ) ); // true
  *		startsWithFiller( document.createTextNode( 'foo' ) ); // false
+ *		startsWithFiller( document.createElement( 'p' ) ); // false
  *
- * @param {Text} domText DOM text node.
+ * @param {Node} domNode DOM node.
  * @returns {Boolean} True if the text node starts with the {@link engine.view.filler.INLINE_FILLER inline filler}.
  */
-export function startsWithFiller( domText ) {
-	return ( domText.data.substr( 0, INLINE_FILLER_LENGTH ) === INLINE_FILLER );
+export function startsWithFiller( domNode ) {
+	return ( domNode instanceof Text ) && ( domNode.data.substr( 0, INLINE_FILLER_LENGTH ) === INLINE_FILLER );
 }
 
 /**
