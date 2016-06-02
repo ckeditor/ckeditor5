@@ -15,7 +15,10 @@ describe( 'EditableUIView', () => {
 	let model, view, editableElement, locale;
 
 	beforeEach( () => {
-		model = new Model( { isReadOnly: false, isFocused: false } );
+		model = new Model( {
+			isReadOnly: false,
+			isFocused: false
+		} );
 		locale = new Locale( 'en' );
 		view = new EditableUIView( model, locale );
 		editableElement = document.createElement( 'div' );

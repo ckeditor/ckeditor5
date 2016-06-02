@@ -24,8 +24,6 @@ export default class EditableUIView extends View {
 	constructor( model, locale, editableElement ) {
 		super( model, locale );
 
-		const bind = this.attributeBinder;
-
 		if ( editableElement ) {
 			this.element = this.editableElement = editableElement;
 		}
@@ -34,10 +32,10 @@ export default class EditableUIView extends View {
 			tag: 'div',
 			attributes: {
 				class: [
-					bind.to( 'isFocused', value => value ? 'ck-focused' : 'ck-blurred' ),
+					this.bind.to( 'isFocused', value => value ? 'ck-focused' : 'ck-blurred' ),
 					'ck-editor__editable'
 				],
-				contenteditable: bind.to( 'isReadOnly', value => !value ),
+				contenteditable: this.bind.to( 'isReadOnly', value => !value ),
 			}
 		} );
 
@@ -55,7 +53,7 @@ export default class EditableUIView extends View {
 	 */
 	init() {
 		if ( this.editableElement ) {
-			this.applyTemplateToElement( this.editableElement, this.template );
+			this.applyTemplateToElement( this.editableElement, this.template.definition );
 		} else {
 			this.editableElement = this.element;
 		}
