@@ -12,6 +12,7 @@ import IconManagerView from '/ckeditor5/ui/iconmanagerview.js';
 import Model from '/ckeditor5/ui/model.js';
 import Controller from '/ckeditor5/ui/controller.js';
 import View from '/ckeditor5/ui/view.js';
+import Template from '/ckeditor5/ui/template.js';
 
 import iconManagerModel from '/theme/iconmanagermodel.js';
 import IconView from '/ckeditor5/ui/icon/iconview.js';
@@ -366,12 +367,12 @@ const ToolbarSeparatorView = class extends View {
 	constructor() {
 		super();
 
-		this.template = {
+		this.template = new Template( {
 			tag: 'span',
 			attributes: {
 				class: 'ck-toolbar-separator'
 			}
-		};
+		} );
 	}
 };
 
@@ -383,12 +384,12 @@ const ToolbarNewlineView = class extends View {
 	constructor() {
 		super();
 
-		this.template = {
+		this.template = new Template( {
 			tag: 'span',
 			attributes: {
 				class: 'ck-toolbar-newline'
 			}
-		};
+		} );
 	}
 };
 
