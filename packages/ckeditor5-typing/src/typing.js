@@ -32,7 +32,7 @@ export default class Typing extends Feature {
 		/**
 		 * Typing's change buffer used to group subsequent changes into batches.
 		 *
-		 * @private
+		 * @protected
 		 * @member {typing.ChangeBuffer} typing.Typing#_buffer
 		 */
 		this._buffer = new ChangeBuffer( editor.document, editor.config.get( 'typing.undoLimit' ) || 20 );
@@ -204,10 +204,6 @@ class MutationHandler {
 		// Which is text.
 		const changes = diffToChanges( diff( mutation.oldChildren, mutation.newChildren ), mutation.newChildren );
 		const change = changes[ 0 ];
-
-		if ( change.type != 'INSERT' ) {
-			return false;
-		}
 
 		if ( !( change.values[ 0 ] instanceof ViewText ) ) {
 			return false;
