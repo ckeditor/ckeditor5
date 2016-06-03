@@ -10,7 +10,7 @@ const path = require( 'path' );
 const gulp = require( 'gulp' );
 const gulpRename = require( 'gulp-rename' );
 const gutil = require( 'gulp-util' );
-const filesize = require( 'filesize' );
+const prettyBytes = require( 'pretty-bytes' );
 const mainUtils = require( '../utils' );
 
 const utils = {
@@ -35,7 +35,7 @@ const utils = {
 	 * @param {String} path path to the file
 	 */
 	getFileSize( path ) {
-		return filesize( fs.statSync( path ).size );
+		return prettyBytes( fs.statSync( path ).size );
 	},
 
 	/**

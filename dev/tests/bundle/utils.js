@@ -35,10 +35,10 @@ describe( 'bundle-utils', () => {
 		it( 'should return human readable file size', () => {
 			let filePath = 'path/to/file';
 			let statSyncMock = sandbox.stub( fs, 'statSync', () => {
-				return { size: 102400 };
+				return { size: 1337 };
 			} );
 
-			expect( utils.getFileSize( filePath ) ).to.be.equal( '100 KB' );
+			expect( utils.getFileSize( filePath ) ).to.be.equal( '1.34 kB' );
 			sinon.assert.calledWithExactly( statSyncMock, filePath );
 		} );
 	} );
