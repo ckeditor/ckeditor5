@@ -121,23 +121,22 @@ export default class FormatsCommand extends Command {
 	}
 }
 
-/**
- * Looks for topmost element from position parent to element placed in root.
- *
- * NOTE: This method does not checks schema directly - assumes that only block elements can be placed directly inside
- * root.
- *
- * @param {engine.model.Position} position
- * @param {Boolean} [nodeAfter=true] When position is placed inside root element this will determine if element before
- * or after given position will be returned.
- * @returns {engine.model.Element}
- */
+// Looks for topmost element from position parent to element placed in root.
+//
+// NOTE: This method does not checks schema directly - assumes that only block elements can be placed directly inside
+// root.
+//
+// @private
+// @param {engine.model.Position} position
+// @param {Boolean} [nodeAfter=true] When position is placed inside root element this will determine if element before
+// or after given position will be returned.
+// @returns {engine.model.Element}
 function findTopmostBlock( position, nodeAfter = true ) {
 	let parent = position.parent;
 
 	// If position is placed inside root - get element after/before it.
 	if ( parent instanceof RootElement ) {
-		return nodeAfter ? position.nodeAfter : position.nodeBefore ;
+		return nodeAfter ? position.nodeAfter : position.nodeBefore;
 	}
 
 	while ( !( parent.parent instanceof RootElement ) ) {
