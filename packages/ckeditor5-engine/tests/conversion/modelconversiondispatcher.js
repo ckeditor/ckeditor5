@@ -181,6 +181,17 @@ describe( 'ModelConversionDispatcher', () => {
 
 			expect( dispatcher.fire.called ).to.be.false;
 		} );
+
+		it( 'should not fire any event if change was in graveyard root and change type is different than remove', () => {
+			sinon.spy( dispatcher, 'fire' );
+
+			let gyNode = new ModelElement( 'image' );
+			doc.graveyard.appendChildren( gyNode );
+
+			doc.batch().setAttr( 'key', 'value', gyNode );
+
+			expect( dispatcher.fire.called ).to.be.false;
+		} );
 	} );
 
 	describe( 'convertInsert', () => {
