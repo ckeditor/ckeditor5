@@ -83,8 +83,6 @@ export default class Typing extends Feature {
 		doc.enqueueChanges( () => {
 			doc.composer.deleteContents( this._buffer.batch, doc.selection );
 		} );
-
-		// No 'preventDefalt', not to prevent mutations.
 	}
 
 	/**
@@ -231,20 +229,38 @@ class MutationHandler {
 	}
 }
 
-// This is absolutely lame, but it's enough for now.
-
-const safeKeystrokes = [
-	getCode( 'shift' ),
+const safeKeycodes = [
 	getCode( 'arrowUp' ),
 	getCode( 'arrowRight' ),
 	getCode( 'arrowDown' ),
-	getCode( 'arrowLeft' )
+	getCode( 'arrowLeft' ),
+	16, // Shift
+	17, // Ctrl
+	18, // Alt
+	20, // CapsLock
+	27, // Escape
+	33, // PageUp
+	34, // PageDown
+	35, // Home
+	36, // End
 ];
 
+// Function keys.
+for ( let code = 112; code <= 135; code++ ) {
+	safeKeycodes.push( code );
+}
+
+// Returns true if a keystroke should not cause any content change caused by "typing".
+//
+// Note: this implementation is very simple and will need to be refined with time.
+//
+// @param {engine.view.observer.keyObserver.KeyEventData} keyData
+// @returns {Boolean}
 function isSafeKeystroke( keyData ) {
-	if ( keyData.ctrlKey || keyData.altKey ) {
+	// Keystrokes which contain Ctrl don't represent typing.
+	if ( keyData.ctrlKey ) {
 		return true;
 	}
 
-	return safeKeystrokes.indexOf( keyData.keyCode ) > -1;
+	return safeKeycodes.includes( keyData.keyCode );
 }
