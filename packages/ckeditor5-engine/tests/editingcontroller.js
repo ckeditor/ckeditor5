@@ -248,6 +248,7 @@ describe( 'EditingController', () => {
 
 			model = new ModelDocument();
 			model.createRoot();
+			model.schema.registerItem( 'paragraph', '$block' );
 
 			editing = new EditingController( model );
 
