@@ -5,7 +5,7 @@
 
 'use strict';
 
-import utils from '../utils/utils.js';
+import count from '../utils/count.js';
 
 /**
  * Change buffer allows to group atomic changes (like characters that have been typed) into
@@ -59,7 +59,13 @@ export default class ChangeBuffer {
 		 */
 		this.limit = limit;
 
-		this._changeCallback = ( evt, type, changes, batch ) => this._onBatch( batch );
+		this._changeCallback = ( evt, type, changes, batch ) => {
+			// See #7.
+			if ( batch ) {
+				this._onBatch( batch );
+			}
+		};
+
 		doc.on( 'change', this._changeCallback );
 
 		/**
@@ -79,7 +85,7 @@ export default class ChangeBuffer {
 
 	/**
 	 * Current batch to which a feature should add its deltas. Once the {@link typing.ChangeBuffer#size}
-	 * exceedes the {@link typing.ChangeBuffer#limit}, the batch is set to a new instance and size is reset.
+	 * reach or exceedes the {@link typing.ChangeBuffer#limit}, then the batch is set to a new instance and size is reset.
 	 *
 	 * @type {engine.treeModel.batch.Batch}
 	 */
@@ -93,15 +99,15 @@ export default class ChangeBuffer {
 
 	/**
 	 * Input number of changes into the buffer. Once the {@link typing.ChangeBuffer#size}
-	 * exceedes the {@link typing.ChangeBuffer#limit}, the batch is set to a new instance and size is reset.
+	 * reach or exceedes the {@link typing.ChangeBuffer#limit}, then the batch is set to a new instance and size is reset.
 	 *
 	 * @param {Number} changeCount Number of atomic changes to input.
 	 */
 	input( changeCount ) {
 		this.size += changeCount;
 
-		if ( this.size > this.limit ) {
-			this._batch = null;
+		if ( this.size >= this.limit ) {
+			this._reset();
 		}
 	}
 
@@ -125,8 +131,18 @@ export default class ChangeBuffer {
 	 */
 	_onBatch( batch ) {
 		// 1 operation means a newly created batch.
-		if ( batch !== this._batch && utils.count( batch.getOperations() ) <= 1 ) {
-			this._batch = null;
+		if ( batch !== this._batch && count( batch.getOperations() ) <= 1 ) {
+			this._reset();
 		}
+	}
+
+	/**
+	 * Resets change buffer.
+	 *
+	 * @private
+	 */
+	_reset() {
+		this._batch = null;
+		this.size = 0;
 	}
 }
