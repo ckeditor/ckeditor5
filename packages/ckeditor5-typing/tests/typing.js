@@ -51,6 +51,22 @@ describe( 'Typing feature', () => {
 		listenter.stopListening();
 	} );
 
+	it( 'has a buffer configured to default value of config.typing.undoStep', () => {
+		expect( editor.plugins.get( Typing )._buffer ).to.have.property( 'limit', 20 );
+	} );
+
+	it( 'has a buffer configured to config.typing.undoStep', () => {
+		return VirtualTestEditor.create( {
+				features: [ Typing ],
+				typing: {
+					undoStep: 5
+				}
+			} )
+			.then( editor => {
+				expect( editor.plugins.get( Typing )._buffer ).to.have.property( 'limit', 5 );
+			} );
+	} );
+
 	describe( 'mutations handling', () => {
 		it( 'should handle text mutation', () => {
 			view.fire( 'mutations', [

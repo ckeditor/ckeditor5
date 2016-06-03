@@ -35,7 +35,7 @@ export default class Typing extends Feature {
 		 * @protected
 		 * @member {typing.ChangeBuffer} typing.Typing#_buffer
 		 */
-		this._buffer = new ChangeBuffer( editor.document, editor.config.get( 'typing.undoLimit' ) || 20 );
+		this._buffer = new ChangeBuffer( editor.document, editor.config.get( 'typing.undoStep' ) || 20 );
 
 		// TODO The above default config value should be defines using editor.config.define() once it's fixed.
 
