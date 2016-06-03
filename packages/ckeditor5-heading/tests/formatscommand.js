@@ -80,6 +80,13 @@ describe( 'FormatsCommand', () => {
 				expect( getData( document ) ).to.equal( '<paragraph>foo<selection />bar</paragraph>' );
 			} );
 
+			it( 'converts topmost blocks', () => {
+				setData( document, '<heading1><b>foo<selection /></b>bar</heading1>' );
+				command._doExecute( 'heading1' );
+
+				expect( getData( document ) ).to.equal( '<paragraph><b>foo<selection /></b>bar</paragraph>' );
+			} );
+
 			function test( from, to ) {
 				it( `converts ${ from.id } to ${ to.id } on collapsed selection`, () => {
 					setData( document, `<${ from.id }>foo<selection />bar</${ from.id }>` );
@@ -108,11 +115,11 @@ describe( 'FormatsCommand', () => {
 			} );
 
 			it( 'resets to default value all elements with same format', () => {
-				setData( document, '<heading1>foo<selection></heading1><heading1>bar</heading1><heading2></selection>baz</heading2>' );
+				setData( document, '<heading1>foo<selection></heading1><heading1>bar</heading1><heading2>baz</heading2></selection>' );
 				command._doExecute( 'heading1' );
 
 				expect( getData( document ) ).to.equal(
-					'<paragraph>foo<selection></paragraph><paragraph>bar</paragraph><heading2></selection>baz</heading2>'
+					'<paragraph>foo<selection></paragraph><paragraph>bar</paragraph><heading2>baz</heading2></selection>'
 				);
 			} );
 

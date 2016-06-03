@@ -20,11 +20,12 @@ export default class FormatsCommand extends Command {
 		// Listen on selection change and set current command's format to format in current selection.
 		this.listenTo( editor.document.selection, 'change', () => {
 			const position = editor.document.selection.getFirstPosition();
-			const parent = position.parent;
-			const format = this._getFormatById( parent.name );
+			const block = findTopmostBlock( position );
 
-			// TODO: What should happen if format is not found?
-			if ( format !== undefined ) {
+			if ( block ) {
+				const format = this._getFormatById( block.name );
+
+				// TODO: What should happen if format is not found?
 				this.format = format;
 			}
 		} );
