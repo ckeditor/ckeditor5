@@ -41,6 +41,29 @@ export default class Range {
 	}
 
 	/**
+	 * Returns an iterator that iterates over all {@link engine.model.Item items} that are in this range and returns
+	 * them together with additional information like length or {@link engine.model.Position positions},
+	 * grouped as {@link engine.model.TreeWalkerValue}. It iterates over all {@link engine.model.TextProxy texts}
+	 * that are inside the range and all the {@link engine.model.Element}s we enter into when iterating over this
+	 * range.
+	 *
+	 * **Note:** iterator will not return a parent node of start position. This is in contrary to
+	 * {@link engine.model.TreeWalker} which will return that node with `'ELEMENT_END'` type. Iterator also
+	 * returns each {@link engine.model.Element} once, while simply used {@link engine.model.TreeWalker} might
+	 * return it twice: for `'ELEMENT_START'` and `'ELEMENT_END'`.
+	 *
+	 * **Note:** because iterator does not return {@link engine.model.TreeWalkerValue values} with the type of
+	 * `'ELEMENT_END'`, you can use {@link engine.model.TreeWalkerValue.previousPosition} as a position before the
+	 * item.
+	 *
+	 * @see engine.model.TreeWalker
+	 * @returns {Iterable.<engine.model.TreeWalkerValue>}
+	 */
+	*[ Symbol.iterator ]() {
+		yield* new TreeWalker( { boundaries: this, ignoreElementEnd: true } );
+	}
+
+	/**
 	 * Returns whether the range is collapsed, that is it start and end positions are equal.
 	 *
 	 * @type {Boolean}
@@ -56,6 +79,15 @@ export default class Range {
 	 */
 	get isFlat() {
 		return this.start.parent === this.end.parent;
+	}
+
+	/**
+	 * Returns whether this range has any nodes in it.
+	 *
+	 * @type {Boolean}
+	 */
+	get isEmpty() {
+		return this.start.isTouching( this.end );
 	}
 
 	/**
@@ -254,29 +286,6 @@ export default class Range {
 	}
 
 	/**
-	 * Returns an iterator that iterates over all {@link engine.model.Item items} that are in this range and returns
-	 * them together with additional information like length or {@link engine.model.Position positions},
-	 * grouped as {@link engine.model.TreeWalkerValue}. It iterates over all {@link engine.model.TextProxy texts}
-	 * that are inside the range and all the {@link engine.model.Element}s we enter into when iterating over this
-	 * range.
-	 *
-	 * **Note:** iterator will not return a parent node of start position. This is in contrary to
-	 * {@link engine.model.TreeWalker} which will return that node with `'ELEMENT_END'` type. Iterator also
-	 * returns each {@link engine.model.Element} once, while simply used {@link engine.model.TreeWalker} might
-	 * return it twice: for `'ELEMENT_START'` and `'ELEMENT_END'`.
-	 *
-	 * **Note:** because iterator does not return {@link engine.model.TreeWalkerValue values} with the type of
-	 * `'ELEMENT_END'`, you can use {@link engine.model.TreeWalkerValue.previousPosition} as a position before the
-	 * item.
-	 *
-	 * @see engine.model.TreeWalker
-	 * @returns {Iterable.<engine.model.TreeWalkerValue>}
-	 */
-	*[ Symbol.iterator ]() {
-		yield* new TreeWalker( { boundaries: this, ignoreElementEnd: true } );
-	}
-
-	/**
 	 * Creates a {@link engine.model.TreeWalker} instance with this range as a boundary.
 	 *
 	 * @param {Object} options Object with configuration options. See {@link engine.model.TreeWalker}.
@@ -371,9 +380,7 @@ export default class Range {
 	 * range boundary. Defaults to `false`.
 	 * @returns {Array.<engine.model.Range>} Result of the transformation.
 	 */
-	getTransformedByInsertion( insertPosition, howMany, spread, isSticky ) {
-		isSticky = !!isSticky;
-
+	getTransformedByInsertion( insertPosition, howMany, spread = false, isSticky = false ) {
 		if ( spread && this.containsPosition( insertPosition ) ) {
 			// Range has to be spread. The first part is from original start to the spread point.
 			// The other part is from spread point to the original end, but transformed by
@@ -389,8 +396,8 @@ export default class Range {
 		} else {
 			const range = Range.createFromRange( this );
 
-			let insertBeforeStart = range.isCollapsed ? true : !isSticky;
-			let insertBeforeEnd = range.isCollapsed ? true : isSticky;
+			let insertBeforeStart = range.isCollapsed ? isSticky : !isSticky;
+			let insertBeforeEnd = isSticky;
 
 			range.start = range.start.getTransformedByInsertion( insertPosition, howMany, insertBeforeStart );
 			range.end = range.end.getTransformedByInsertion( insertPosition, howMany, insertBeforeEnd );
@@ -410,7 +417,7 @@ export default class Range {
 	 * was inside the range. Defaults to `false`.
 	 * @returns {Array.<engine.model.Range>} Result of the transformation.
 	 */
-	getTransformedByMove( sourcePosition, targetPosition, howMany, spread ) {
+	getTransformedByMove( sourcePosition, targetPosition, howMany, spread, isSticky = false ) {
 		let result;
 
 		const moveRange = new Range( sourcePosition, sourcePosition.getShiftedBy( howMany ) );
@@ -438,7 +445,7 @@ export default class Range {
 		const insertPosition = targetPosition.getTransformedByDeletion( sourcePosition, howMany );
 
 		if ( difference ) {
-			result = difference.getTransformedByInsertion( insertPosition, howMany, spread );
+			result = difference.getTransformedByInsertion( insertPosition, howMany, spread, isSticky );
 		} else {
 			result = [];
 		}

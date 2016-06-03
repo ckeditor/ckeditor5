@@ -114,7 +114,7 @@ function fixBoundaries( type, range, position ) {
 
 	switch ( type ) {
 		case 'insert':
-			updated = this.getTransformedByInsertion( range.start, howMany )[ 0 ];
+			updated = this.getTransformedByInsertion( range.start, howMany, false, true )[ 0 ];
 			break;
 
 		case 'move':
@@ -127,7 +127,7 @@ function fixBoundaries( type, range, position ) {
 			// We have to revert `range.start` to the state before the move.
 			const targetPosition = range.start.getTransformedByInsertion( sourcePosition, howMany );
 
-			const result = this.getTransformedByMove( sourcePosition, targetPosition, howMany );
+			const result = this.getTransformedByMove( sourcePosition, targetPosition, howMany, false, true );
 
 			// First item in the array is the "difference" part, so a part of the range
 			// that did not get moved. We use it as reference range and expand if possible.

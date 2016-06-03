@@ -25,11 +25,15 @@ export default function deleteContents( batch, selection, options = {} ) {
 		return;
 	}
 
-	const startPos = selection.getFirstRange().start;
-	const endPos = LivePosition.createFromPosition( selection.getFirstRange().end );
+	const selRange = selection.getFirstRange();
 
-	// 1. Remove the contents.
-	batch.remove( selection.getFirstRange() );
+	const startPos = selRange.start;
+	const endPos = LivePosition.createFromPosition( selRange.end );
+
+	// 1. Remove the contents if there are any.
+	if ( !selRange.isEmpty ) {
+		batch.remove( selRange );
+	}
 
 	// 2. Merge elements in the right branch to the elements in the left branch.
 	// The only reasonable (in terms of data and selection correctness) case in which we need to do that is:
