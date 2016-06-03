@@ -101,6 +101,14 @@ export default class History {
 			transformed = allResults;
 		}
 
+		// Fix base versions.
+		let baseVersion = transformed[ 0 ].operations[ 0 ].baseVersion;
+
+		for ( let i = 0; i < transformed.length; i++ ) {
+			transformed[ i ].baseVersion = baseVersion;
+			baseVersion += transformed[ i ].operations.length;
+		}
+
 		return transformed;
 	}
 
@@ -131,6 +139,6 @@ export default class History {
 	 * @returns {Array.<engine.model.delta.Delta>} Result of the transformation.
 	 */
 	static _transform( toTransform, transformBy ) {
-		return transform( toTransform, transformBy, false );
+		return transform( toTransform, transformBy, true );
 	}
 }
