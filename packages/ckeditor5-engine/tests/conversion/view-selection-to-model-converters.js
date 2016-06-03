@@ -25,6 +25,7 @@ describe( 'convertSelectionChange', () => {
 	beforeEach( () => {
 		model = new ModelDocument();
 		modelRoot = model.createRoot();
+		model.schema.registerItem( 'paragraph', '$block' );
 
 		modelSetData( model, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 

@@ -572,9 +572,17 @@ export default class Selection {
 	 */
 	_getDefaultRange() {
 		const defaultRoot = this._document._getDefaultRoot();
-		const pos = new Position( defaultRoot, [ 0 ] );
 
-		return new Range( pos, pos );
+		// Find the first position where the selection can be put.
+		for ( let position of Range.createFromElement( defaultRoot ).getPositions() ) {
+			if ( this._document.schema.check( { name: '$text', inside: position } ) ) {
+				return new Range( position, position );
+			}
+		}
+
+		const position = new Position( defaultRoot, [ 0 ] );
+
+		return new Range( position, position );
 	}
 
 	/**

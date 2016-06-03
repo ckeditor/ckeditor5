@@ -33,8 +33,8 @@ describe( 'Selection', () => {
 
 	beforeEach( () => {
 		doc = new Document();
-		root = doc.createRoot( 'root' );
-		root.insertChildren( 0, [
+		root = doc.createRoot();
+		root.appendChildren( [
 			new Element( 'p' ),
 			new Element( 'p' ),
 			new Element( 'p', [], 'foobar' ),
@@ -44,6 +44,7 @@ describe( 'Selection', () => {
 			new Element( 'p', [], 'foobar' )
 		] );
 		selection = doc.selection;
+		doc.schema.registerItem( 'p', '$block' );
 
 		liveRange = new LiveRange( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
 		range = new Range( new Position( root, [ 2 ] ), new Position( root, [ 2, 2 ] ) );
@@ -54,15 +55,54 @@ describe( 'Selection', () => {
 		liveRange.detach();
 	} );
 
-	it( 'should be set to default range when just created', () => {
-		const ranges = Array.from( selection.getRanges() );
+	describe( 'default range', () => {
+		it( 'should go to the first editable element', () => {
+			const ranges = Array.from( selection.getRanges() );
 
-		expect( ranges.length ).to.equal( 1 );
-		expect( selection.anchor.isEqual( new Position( root, [ 0 ] ) ) ).to.be.true;
-		expect( selection.focus.isEqual( new Position( root, [ 0 ] ) ) ).to.be.true;
-		expect( selection ).to.have.property( 'isBackward', false );
-		expect( selection._attrs ).to.be.instanceof( Map );
-		expect( selection._attrs.size ).to.equal( 0 );
+			expect( ranges.length ).to.equal( 1 );
+			expect( selection.anchor.isEqual( new Position( root, [ 0, 0 ] ) ) ).to.be.true;
+			expect( selection.focus.isEqual( new Position( root, [ 0, 0 ] ) ) ).to.be.true;
+			expect( selection ).to.have.property( 'isBackward', false );
+			expect( selection._attrs ).to.be.instanceof( Map );
+			expect( selection._attrs.size ).to.equal( 0 );
+		} );
+
+		it( 'should be set to the beginning of the doc if there is no editable element', () => {
+			doc = new Document();
+			root = doc.createRoot();
+			root.insertChildren( 0, 'foobar' );
+			selection = doc.selection;
+
+			const ranges = Array.from( selection.getRanges() );
+
+			expect( ranges.length ).to.equal( 1 );
+			expect( selection.anchor.isEqual( new Position( root, [ 0 ] ) ) ).to.be.true;
+			expect( selection.focus.isEqual( new Position( root, [ 0 ] ) ) ).to.be.true;
+			expect( selection ).to.have.property( 'isBackward', false );
+			expect( selection._attrs ).to.be.instanceof( Map );
+			expect( selection._attrs.size ).to.equal( 0 );
+		} );
+
+		it( 'should skip element when you can not put selection', () => {
+			doc = new Document();
+			root = doc.createRoot();
+			root.insertChildren( 0, [
+				new Element( 'img' ),
+				new Element( 'p', [], 'foobar' )
+			] );
+			doc.schema.registerItem( 'img' );
+			doc.schema.registerItem( 'p', '$block' );
+			selection = doc.selection;
+
+			const ranges = Array.from( selection.getRanges() );
+
+			expect( ranges.length ).to.equal( 1 );
+			expect( selection.anchor.isEqual( new Position( root, [ 1, 0 ] ) ) ).to.be.true;
+			expect( selection.focus.isEqual( new Position( root, [ 1, 0 ] ) ) ).to.be.true;
+			expect( selection ).to.have.property( 'isBackward', false );
+			expect( selection._attrs ).to.be.instanceof( Map );
+			expect( selection._attrs.size ).to.equal( 0 );
+		} );
 	} );
 
 	describe( 'isCollapsed', () => {
@@ -515,8 +555,8 @@ describe( 'Selection', () => {
 
 		it( 'should remove all stored ranges (and reset to default range)', () => {
 			expect( Array.from( selection.getRanges() ).length ).to.equal( 1 );
-			expect( selection.anchor.isEqual( new Position( root, [ 0 ] ) ) ).to.be.true;
-			expect( selection.focus.isEqual( new Position( root, [ 0 ] ) ) ).to.be.true;
+			expect( selection.anchor.isEqual( new Position( root, [ 0, 0 ] ) ) ).to.be.true;
+			expect( selection.focus.isEqual( new Position( root, [ 0, 0 ] ) ) ).to.be.true;
 		} );
 
 		it( 'should fire exactly one update event', () => {
