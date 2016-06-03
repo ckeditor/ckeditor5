@@ -32,6 +32,7 @@ describe( 'FormatsCommand', () => {
 					schema.registerItem( format.id, '$block' );
 				}
 
+				schema.registerItem( 'b', '$inline' );
 				root = document.getRoot();
 			} );
 	} );
@@ -57,34 +58,72 @@ describe( 'FormatsCommand', () => {
 	} );
 
 	describe( '_doExecute', () => {
-		let convertTo = formats[ formats.length - 1 ];
+		describe( 'collapsed selection', () => {
+			let convertTo = formats[ formats.length - 1 ];
 
-		for ( let format of formats ) {
-			test( format, convertTo );
-			convertTo = format;
-		}
+			for ( let format of formats ) {
+				test( format, convertTo );
+				convertTo = format;
+			}
 
-		it( 'uses paragraph as default value', () => {
-			setData( document, '<heading1>foo<selection />bar</heading1>' );
-			command._doExecute();
+			it( 'uses paragraph as default value', () => {
+				setData( document, '<heading1>foo<selection />bar</heading1>' );
+				command._doExecute();
 
-			expect( getData( document ) ).to.equal( '<paragraph>foo<selection />bar</paragraph>' );
-		} );
-
-		it( 'converts to default format when executed with already applied format', () => {
-			setData( document, '<heading1>foo<selection />bar</heading1>' );
-			command._doExecute( 'heading1' );
-
-			expect( getData( document ) ).to.equal( '<paragraph>foo<selection />bar</paragraph>' );
-		} );
-
-		function test( from, to ) {
-			it( `converts ${ from.id } to ${ to.id } on collapsed selection`, () => {
-				setData( document, `<${ from.id }>foo<selection />bar</${ from.id }>` );
-				command._doExecute( to.id );
-
-				expect( getData( document ) ).to.equal( `<${ to.id }>foo<selection />bar</${ to.id }>` );
+				expect( getData( document ) ).to.equal( '<paragraph>foo<selection />bar</paragraph>' );
 			} );
-		}
+
+			it( 'converts to default format when executed with already applied format', () => {
+				setData( document, '<heading1>foo<selection />bar</heading1>' );
+				command._doExecute( 'heading1' );
+
+				expect( getData( document ) ).to.equal( '<paragraph>foo<selection />bar</paragraph>' );
+			} );
+
+			function test( from, to ) {
+				it( `converts ${ from.id } to ${ to.id } on collapsed selection`, () => {
+					setData( document, `<${ from.id }>foo<selection />bar</${ from.id }>` );
+					command._doExecute( to.id );
+
+					expect( getData( document ) ).to.equal( `<${ to.id }>foo<selection />bar</${ to.id }>` );
+				} );
+			}
+		} );
+
+		describe( 'non-collapsed selection', () => {
+			let convertTo = formats[ formats.length - 1 ];
+
+			for ( let format of formats ) {
+				test( format, convertTo );
+				convertTo = format;
+			}
+
+			it( 'converts all elements where selection is applied', () => {
+				setData( document, '<heading1>foo<selection></heading1><heading2>bar</heading2><heading2></selection>baz</heading2>' );
+				command._doExecute( 'paragraph' );
+
+				expect( getData( document ) ).to.equal(
+					'<paragraph>foo<selection></paragraph><paragraph>bar</paragraph><paragraph></selection>baz</paragraph>'
+				);
+			} );
+
+			it( 'resets to default value all elements with same format', () => {
+				setData( document, '<heading1>foo<selection></heading1><heading1>bar</heading1><heading2></selection>baz</heading2>' );
+				command._doExecute( 'heading1' );
+
+				expect( getData( document ) ).to.equal(
+					'<paragraph>foo<selection></paragraph><paragraph>bar</paragraph><heading2></selection>baz</heading2>'
+				);
+			} );
+
+			function test( from, to ) {
+				it( `converts ${ from.id } to ${ to.id } on non-collapsed selection`, () => {
+					setData( document, `<${ from.id }>foo<selection>bar</${ from.id }><${ from.id }>baz</selection>qux</${ from.id }>` );
+					command._doExecute( to.id );
+
+					expect( getData( document ) ).to.equal( `<${ to.id }>foo<selection>bar</${ to.id }><${ to.id }>baz</selection>qux</${ to.id }>` );
+				} );
+			}
+		} );
 	} );
 } );
