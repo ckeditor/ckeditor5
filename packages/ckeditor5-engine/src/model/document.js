@@ -321,7 +321,7 @@ export default class Document {
 	 * * 'removeRootAttribute' when attribute for root is removed,
 	 * * 'changeRootAttribute' when attribute for root changes.
 	 *
-	 * @event engine.model.Document.change
+	 * @event engine.model.Document#change
 	 * @param {String} type Change type, possible option: 'insert', 'remove', 'reinsert', 'move', 'attribute'.
 	 * @param {Object} data Additional information about the change.
 	 * @param {engine.model.Range} data.range Range in model containing changed nodes. Note that the range state is
