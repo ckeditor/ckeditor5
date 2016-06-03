@@ -248,9 +248,4 @@ describe( '_checkEnabled', () => {
 			expect( command._checkEnabled() ).to.be.false;
 		} );
 	} );
-
-	it( 'should return false if selection has no ranges', () => {
-		modelDoc.selection.removeAllRanges();
-		expect( command._checkEnabled() ).to.be.false;
-	} );
 } );
