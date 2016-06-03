@@ -215,14 +215,16 @@ const ot = {
 			let range = Range.createFromPositionAndShift( a.sourcePosition, a.howMany );
 			range = range.getTransformedByInsertion( b.position, b.nodeList.length, false, a.isSticky )[ 0 ];
 
-			return [
-				new a.constructor(
-					range.start,
-					range.end.offset - range.start.offset,
-					a instanceof RemoveOperation ? a.baseVersion : a.targetPosition.getTransformedByInsertion( b.position, b.nodeList.length, !isStrong ),
-					a instanceof RemoveOperation ? undefined : a.baseVersion
-				)
-			];
+			let result = new a.constructor(
+				range.start,
+				range.end.offset - range.start.offset,
+				a instanceof RemoveOperation ? a.baseVersion : a.targetPosition.getTransformedByInsertion( b.position, b.nodeList.length, !isStrong ),
+				a instanceof RemoveOperation ? undefined : a.baseVersion
+			);
+
+			result.isSticky = a.isSticky;
+
+			return [ result ];
 		},
 
 		AttributeOperation: doNotUpdate,
@@ -317,12 +319,16 @@ const ot = {
 			// Map transformed range(s) to operations and return them.
 			return ranges.reverse().map( ( range ) => {
 				// We want to keep correct operation class.
-				return new a.constructor(
+				let result = new a.constructor(
 					range.start,
 					range.end.offset - range.start.offset,
 					a instanceof RemoveOperation ? a.baseVersion : newTargetPosition,
 					a instanceof RemoveOperation ? undefined : a.baseVersion
 				);
+
+				result.isSticky = a.isSticky;
+
+				return result;
 			} );
 		}
 	}
