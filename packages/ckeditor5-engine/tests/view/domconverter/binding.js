@@ -239,6 +239,10 @@ describe( 'DomConverter', () => {
 
 			expect( converter.getCorrespondingDom( viewFragment ) ).to.equal( domFragment );
 		} );
+
+		it( 'should return null if wrong parameter is passed', () => {
+			expect( converter.getCorrespondingDom( null ) ).to.be.null;
+		} );
 	} );
 
 	describe( 'getCorrespondingDomElement', () => {

@@ -597,8 +597,8 @@ export default class DomConverter {
 			return this.getCorrespondingDom( previousSibling ).nextSibling;
 		}
 
-		// Try to use parent to find the corresponding text node.
-		if ( !previousSibling && this.getCorrespondingDom( viewText.parent ) ) {
+		// If this is a first node, try to use parent to find the corresponding text node.
+		if ( !previousSibling && viewText.parent && this.getCorrespondingDom( viewText.parent ) ) {
 			return this.getCorrespondingDom( viewText.parent ).childNodes[ 0 ];
 		}
 
