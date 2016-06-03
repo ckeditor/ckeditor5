@@ -198,10 +198,12 @@ export function convertSelectionAttribute( elementCreator ) {
 export function clearAttributes() {
 	return ( evt, data, consumable, conversionApi ) => {
 		for ( let range of conversionApi.viewSelection.getRanges() ) {
-			conversionApi.writer.mergeAttributes( range.end );
-
-			if ( !range.isCollapsed ) {
-				conversionApi.writer.mergeAttributes( range.start );
+			// Not collapsed selection should not have artifacts.
+			if ( range.isCollapsed ) {
+				// Position might be in the node removed by the Writer.
+				if ( range.end.parent.getDocument() ) {
+					conversionApi.writer.mergeAttributes( range.start );
+				}
 			}
 		}
 		conversionApi.viewSelection.removeAllRanges();

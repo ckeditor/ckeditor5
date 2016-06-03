@@ -99,5 +99,12 @@ describe( 'AttributeElement', () => {
 
 			expect( attribute.getFillerOffset() ).to.be.null;
 		} );
+
+		it( 'should return null if there is no parent container element', () => {
+			const { selection } = parse( '<attribute:b><attribute:i>[]</attribute:i>foo</attribute:b>' );
+			const attribute = selection.getFirstPosition().parent;
+
+			expect( attribute.getFillerOffset() ).to.be.null;
+		} );
 	} );
 } );

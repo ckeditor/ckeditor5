@@ -26,16 +26,22 @@ describe( 'filler', () => {
 	} );
 
 	describe( 'startsWithFiller', () => {
-		it( 'should be true for element which contains only filler', () => {
+		it( 'should be true for node which contains only filler', () => {
 			const node = document.createTextNode( INLINE_FILLER );
 
 			expect( startsWithFiller( node ) ).to.be.true;
 		} );
 
-		it( 'should be true for element which starts with filler', () => {
+		it( 'should be true for node which starts with filler', () => {
 			const node = document.createTextNode( INLINE_FILLER + 'foo' );
 
 			expect( startsWithFiller( node ) ).to.be.true;
+		} );
+
+		it( 'should be false for element', () => {
+			const node = document.createElement( 'p' );
+
+			expect( startsWithFiller( node ) ).to.be.false;
 		} );
 
 		it( 'should be false which contains filler in the middle', () => {

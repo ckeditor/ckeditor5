@@ -12,10 +12,9 @@ import ModelElement from '/ckeditor5/engine/model/element.js';
 import ModelRange from '/ckeditor5/engine/model/range.js';
 import ModelPosition from '/ckeditor5/engine/model/position.js';
 
+import ViewDocument from '/ckeditor5/engine/view/document.js';
 import ViewContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import ViewAttributeElement from '/ckeditor5/engine/view/attributeelement.js';
-import ViewWriter from  '/ckeditor5/engine/view/writer.js';
-import ViewSelection from  '/ckeditor5/engine/view/selection.js';
 
 import Mapper from '/ckeditor5/engine/conversion/mapper.js';
 import ModelConversionDispatcher from '/ckeditor5/engine/conversion/modelconversiondispatcher.js';
@@ -35,20 +34,22 @@ import {
 import { stringify as stringifyView } from '/tests/engine/_utils/view.js';
 import { setData as setModelData } from '/tests/engine/_utils/model.js';
 
-let dispatcher, modelDoc, modelRoot, modelSelection, mapper, viewRoot, writer, viewSelection;
+let dispatcher, mapper;
+let modelDoc, modelRoot, modelSelection;
+let viewDoc, viewRoot, writer, viewSelection;
 
 beforeEach( () => {
 	modelDoc = new ModelDocument();
 	modelRoot = modelDoc.createRoot( 'main' );
 	modelSelection = modelDoc.selection;
 
-	viewRoot = new ViewContainerElement( 'viewRoot' );
+	viewDoc = new ViewDocument();
+	viewRoot = viewDoc.createRoot( 'div' );
+	writer = viewDoc.writer;
+	viewSelection = viewDoc.selection;
 
 	mapper = new Mapper();
 	mapper.bindElements( modelRoot, viewRoot );
-
-	writer = new ViewWriter();
-	viewSelection = new ViewSelection();
 
 	dispatcher = new ModelConversionDispatcher( { mapper, writer, viewSelection } );
 
@@ -272,7 +273,32 @@ describe( 'clean-up', () => {
 			expect( viewSelection.rangeCount ).to.equal( 1 );
 
 			const viewString = stringifyView( viewRoot, viewSelection, { showType: false } );
-			expect( viewString ).to.equal( '<viewRoot>f{}oobar</viewRoot>' );
+			expect( viewString ).to.equal( '<div>f{}oobar</div>' );
+		} );
+
+		it( 'should do nothing if the attribute element had been already removed', () => {
+			dispatcher.on( 'selectionAttribute:bold', convertSelectionAttribute( new ViewAttributeElement( 'b' ) ) );
+			dispatcher.on( 'addAttribute:style', wrap( new ViewAttributeElement( 'b' ) ) );
+
+			test(
+				[ 3, 3 ],
+				'foobar',
+				'foo<b>[]</b>bar',
+				{ bold: 'true' }
+			);
+
+			// Remove <b></b> manually.
+			writer.mergeAttributes( viewSelection.getFirstPosition() );
+
+			const modelRange = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 1 );
+			modelDoc.selection.setRanges( [ modelRange ] );
+
+			dispatcher.convertSelection( modelDoc.selection );
+
+			expect( viewSelection.rangeCount ).to.equal( 1 );
+
+			const viewString = stringifyView( viewRoot, viewSelection, { showType: false } );
+			expect( viewString ).to.equal( '<div>f{}oobar</div>' );
 		} );
 	} );
 } );
@@ -468,5 +494,5 @@ function test( selectionPaths, modelInput, expectedView, selectionAttributes = {
 	dispatcher.convertSelection( modelSelection );
 
 	// Stringify view and check if it is same as expected.
-	expect( stringifyView( viewRoot, viewSelection, { showType: false } ) ).to.equal( '<viewRoot>' + expectedView + '</viewRoot>' );
+	expect( stringifyView( viewRoot, viewSelection, { showType: false } ) ).to.equal( '<div>' + expectedView + '</div>' );
 }
