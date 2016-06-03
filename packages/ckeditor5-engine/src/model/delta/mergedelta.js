@@ -32,6 +32,16 @@ export default class MergeDelta extends Delta {
 		return this._removeOperation ? this._removeOperation.sourcePosition : null;
 	}
 
+	getReversed() {
+		let delta = super.getReversed();
+
+		if ( delta.operations.length > 0 ) {
+			delta.operations[ 1 ].isSticky = false;
+		}
+
+		return delta;
+	}
+
 	/**
 	 * Operation in this delta that removes the node after merge position (which will be empty at that point) or
 	 * `null` if the delta has no operations. Note, that after {@link engine.model.delta.transform transformation}

@@ -32,6 +32,16 @@ export default class SplitDelta extends Delta {
 		return this._moveOperation ? this._moveOperation.sourcePosition : null;
 	}
 
+	getReversed() {
+		let delta = super.getReversed();
+
+		if ( delta.operations.length > 0 ) {
+			delta.operations[ 0 ].isSticky = true;
+		}
+
+		return delta;
+	}
+
 	/**
 	 * Operation in the delta that adds a node to the tree model where split elements will be moved to or `null` if
 	 * there are no operations in the delta.
