@@ -10,7 +10,7 @@ import DomEventData from '../engine/view/observer/domeventdata.js';
 import { keyCodes } from '../utils/keyboard.js';
 
 /**
- * Enter observer introduce {@link engine.view.Document#enter} event.
+ * Enter observer introduce the {@link engine.view.Document#enter} event.
  *
  * @memberOf enter
  * @extends engine.view.observer.Observer
@@ -35,7 +35,8 @@ export default class EnterObserver extends Observer {
 /**
  * Event fired when the user presses <kbd>Enter</kbd>.
  *
- * Note: This event is fired by the {@link enter.Enter enter feature}.
+ * Note: This event is fired by the {@link enter.EnterObserver observer}
+ * (usually registered by the {@link enter.Enter enter feature}).
  *
  * @event engine.view.Document#enter
  * @param {engine.view.observer.DomEventData} data
