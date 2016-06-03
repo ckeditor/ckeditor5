@@ -7,13 +7,14 @@
 
 'use strict';
 
+require( '../../tasks/dev/tasks' )( {} );
 const sinon = require( 'sinon' );
 const tools = require( '../../tasks/dev/utils/tools' );
 const git = require( '../../tasks/dev/utils/git' );
 const path = require( 'path' );
 const chai = require( 'chai' );
 const expect = chai.expect;
-const gulp = require( '../../../gulpfile' );
+const gulp = require( 'gulp' );
 
 describe( 'dev-update', () => {
 	const updateTask = require( '../../tasks/dev/tasks/update' );

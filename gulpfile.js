@@ -23,6 +23,3 @@ require( './dev/tasks/docs/tasks' )( config );
 
 gulp.task( 'default', [ 'build' ] );
 gulp.task( 'pre-commit', [ 'lint-staged' ] );
-
-// Required to check registered tasks
-module.exports = gulp;
