@@ -23,7 +23,7 @@ export default class FormatsCommand extends Command {
 			const parent = position.parent;
 			const format = this._getFormatById( parent.name );
 
-			// TODO: What should happen if current format is not found? Is it possible?
+			// TODO: What should happen if format is not found?
 			if ( format !== undefined ) {
 				this.format = format;
 			}
@@ -31,12 +31,14 @@ export default class FormatsCommand extends Command {
 	}
 
 	_doExecute( formatId ) {
-		// TODO: Check if format Id is valid.
+		// TODO: What should happen if format is not found?
 		const document = this.editor.document;
 		const selection = document.selection;
 		const newValue = ( formatId === undefined ) ? this.defaultFormat.id : formatId;
 		const startPosition = selection.getFirstPosition();
 		const elements = [];
+		let ranges = null;
+		let isSelectionBackward = false;
 		let remove = false;
 
 		// If current format is same as new format - toggle already applied format back to default one.
@@ -46,22 +48,24 @@ export default class FormatsCommand extends Command {
 
 		// Collect elements to change format.
 		if ( selection.isCollapsed ) {
-			const block = _findTopmostBlock( startPosition );
+			const block = findTopmostBlock( startPosition );
 
 			if ( block ) {
 				elements.push( block );
 			}
 		} else {
-			const ranges = selection.getRanges();
+			// Storing selection ranges and direction to fix selection after renaming. See ckeditor5-engine#367.
+			ranges = [ ...selection.getRanges() ];
+			isSelectionBackward = selection.isBackward;
 
-			for ( let range in ranges ) {
-				let startBlock = _findTopmostBlock( range.start );
-				const endBlock = _findTopmostBlock( range.end, false );
+			for ( let range of ranges ) {
+				let startBlock = findTopmostBlock( range.start );
+				const endBlock = findTopmostBlock( range.end, false );
 
 				elements.push( startBlock );
 
 				while ( startBlock !== endBlock ) {
-					startBlock = startBlock.getNextSibling();
+					startBlock = startBlock.nextSibling;
 					elements.push( startBlock );
 				}
 			}
@@ -82,23 +86,53 @@ export default class FormatsCommand extends Command {
 					batch.rename( newValue, element );
 				}
 			}
+
+			// If range's selection start/end is placed directly in renamed block - we need to restore it's position
+			// after renaming, because renaming puts new element there.
+			if ( ranges !== null ) {
+				document.selection.setRanges( ranges, isSelectionBackward );
+			}
 		} );
 	}
 
+	/**
+	 * Returns format by given id.
+	 *
+	 * @private
+	 * @param {String} id
+	 * @returns {Object}
+	 */
 	_getFormatById( id ) {
-		return this.formats.find( ( item ) => {
+		return this.formats.find( item => {
 			return item.id && item.id === id;
 		} );
 	}
 
+	/**
+	 * Returns default format.
+	 *
+	 * @private
+	 * @returns {Object}
+	 */
 	_getDefaultFormat() {
-		return this.formats.find( ( item ) => {
+		return this.formats.find( item => {
 			return item.default;
 		} );
 	}
 }
 
-function _findTopmostBlock( position, nodeAfter = true ) {
+/**
+ * Looks for topmost element from position parent to element placed in root.
+ *
+ * NOTE: This method does not checks schema directly - assumes that only block elements can be placed directly inside
+ * root.
+ *
+ * @param {engine.model.Position} position
+ * @param {Boolean} [nodeAfter=true] When position is placed inside root element this will determine if element before
+ * or after given position will be returned.
+ * @returns {engine.model.Element}
+ */
+function findTopmostBlock( position, nodeAfter = true ) {
 	let parent = position.parent;
 
 	// If position is placed inside root - get element after/before it.
