@@ -6,75 +6,63 @@
 'use strict';
 
 import Feature from '../feature.js';
-import UndoCommand from './undocommand.js';
+import UndoEngine from './undoengine.js';
+import Model from '../ui/model.js';
+import Button from '../ui/button/button.js';
+import ButtonView from '../ui/button/buttonview.js';
 
 /**
- * Undo feature.
- *
- * Undo features brings in possibility to undo and re-do changes done in Tree Model by deltas through Batch API.
+ * Undo feature. Introduces the "Undo" and "Redo" buttons to the editor.
  *
  * @memberOf undo
+ * @extends ckeditor5.Feature
  */
 export default class Undo extends Feature {
-	constructor( editor ) {
-		super( editor );
-
-		/**
-		 * Undo command which manages undo {@link engine.model.Batch batches} stack (history).
-		 * Created and registered during {@link undo.Undo#init feature initialization}.
-		 *
-		 * @private
-		 * @member {undo.UndoCommand} undo.Undo#_undoCommand
-		 */
-		this._undoCommand = null;
-
-		/**
-		 * Undo command which manages redo {@link engine.model.Batch batches} stack (history).
-		 * Created and registered during {@link undo.Undo#init feature initialization}.
-		 *
-		 * @private
-		 * @member {undo.UndoCommand} undo.Undo#_redoCommand
-		 */
-		this._redoCommand = null;
-
-		/**
-		 * Keeps track of which batch has already been added to undo manager.
-		 *
-		 * @private
-		 * @member {WeakSet.<engine.model.Batch>} undo.Undo#_batchRegistry
-		 */
-		this._batchRegistry = new WeakSet();
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ UndoEngine ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	init() {
-		// Create commands.
-		this._redoCommand = new UndoCommand( this.editor );
-		this._undoCommand = new UndoCommand( this.editor );
+		const editor = this.editor;
+		const t = editor.t;
 
-		// Register command to the editor.
-		this.editor.commands.set( 'redo', this._redoCommand );
-		this.editor.commands.set( 'undo', this._undoCommand );
+		this._addButton( 'undo', t( 'Undo' ) );
+		this._addButton( 'redo', t( 'Redo' ) );
 
-		this.listenTo( this.editor.document, 'change', ( evt, type, changes, batch ) => {
-			// Whenever a new batch is created add it to the undo history and clear redo history.
-			if ( batch && !this._batchRegistry.has( batch ) ) {
-				this._batchRegistry.add( batch );
-				this._undoCommand.addBatch( batch );
-				this._redoCommand.clearStack();
-			}
+		editor.keystrokes.set( 'CTRL+Z', 'undo' );
+		editor.keystrokes.set( 'CTRL+Y', 'redo' );
+		editor.keystrokes.set( 'CTRL+SHIFT+Z', 'redo' );
+	}
+
+	/**
+	 * Creates a button for the specified command.
+	 *
+	 * @private
+	 * @param {String} name Command name.
+	 * @param {String} label Button label.
+	 */
+	_addButton( name, label ) {
+		const editor = this.editor;
+
+		const command = editor.commands.get( name );
+
+		const model = new Model( {
+			isOn: false,
+			label: label,
+			icon: name,
+			iconAlign: 'LEFT'
 		} );
 
-		// Whenever batch is reverted by undo command, add it to redo history.
-		this.listenTo( this._redoCommand, 'revert', ( evt, batch ) => {
-			this._undoCommand.addBatch( batch );
-		} );
+		model.bind( 'isEnabled' ).to( command, 'isEnabled' );
 
-		// Whenever batch is reverted by redo command, add it to undo history.
-		this.listenTo( this._undoCommand, 'revert', ( evt, batch ) => {
-			this._redoCommand.addBatch( batch );
-		} );
+		this.listenTo( model, 'execute', () => editor.execute( name ) );
+
+		editor.ui.featureComponents.add( name, Button, ButtonView, model );
 	}
 }

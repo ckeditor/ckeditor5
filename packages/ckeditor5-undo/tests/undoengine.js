@@ -3,29 +3,22 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: browser-only */
-
 'use strict';
 
-import Editor from '/ckeditor5/editor.js';
-import ModelDocument from '/ckeditor5/engine/model/document.js';
+import ModelTestEditor from '/tests/ckeditor5/_utils/modeltesteditor.js';
 import Position from '/ckeditor5/engine/model/position.js';
-import UndoFeature from '/ckeditor5/undo/undo.js';
+import UndoEngine from '/ckeditor5/undo/undoengine.js';
 
-let element, editor, undo, batch, doc, root;
+let editor, undo, batch, doc, root;
 
 beforeEach( () => {
-	element = document.createElement( 'div' );
-	document.body.appendChild( element );
+	editor = new ModelTestEditor();
 
-	editor = new Editor( element );
-
-	doc = new ModelDocument();
-	editor.document = doc;
+	doc = editor.document;
 	batch = doc.batch();
-	root = doc.createRoot( 'root' );
+	root = doc.getRoot();
 
-	undo = new UndoFeature( editor );
+	undo = new UndoEngine( editor );
 	undo.init();
 } );
 
@@ -33,7 +26,7 @@ afterEach( () => {
 	undo.destroy();
 } );
 
-describe( 'UndoFeature', () => {
+describe( 'UndoEngine', () => {
 	it( 'should register undo command and redo command', () => {
 		expect( editor.commands.get( 'undo' ) ).to.equal( undo._undoCommand );
 		expect( editor.commands.get( 'redo' ) ).to.equal( undo._redoCommand );

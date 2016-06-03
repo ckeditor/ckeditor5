@@ -3,29 +3,22 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: browser-only */
-
 'use strict';
 
-import Editor from '/ckeditor5/editor.js';
-import ModelDocument from '/ckeditor5/engine/model/document.js';
+import ModelTestEditor from '/tests/ckeditor5/_utils/modeltesteditor.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import UndoCommand from '/ckeditor5/undo/undocommand.js';
 
-let element, editor, doc, root, undo;
+let editor, doc, root, undo;
 
 beforeEach( () => {
-	element = document.createElement( 'div' );
-	document.body.appendChild( element );
-
-	editor = new Editor( element );
+	editor = new ModelTestEditor();
 	undo = new UndoCommand( editor );
 
-	doc = new ModelDocument();
-	editor.document = doc;
+	doc = editor.document;
 
-	root = doc.createRoot( 'root' );
+	root = doc.getRoot();
 } );
 
 afterEach( () => {
