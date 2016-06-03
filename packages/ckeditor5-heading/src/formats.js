@@ -46,14 +46,11 @@ export default class Formats extends Feature {
 
 		// Bind dropdown model to command.
 		dropdownModel.bind( 'isEnabled' ).to( command, 'isEnabled' );
-		dropdownModel.bind( 'label' ).to( command, 'format', format => {
-			return format.label;
-		} );
+		dropdownModel.bind( 'label' ).to( command, 'format', format => format.label );
 
 		// Execute command when item from dropdown is selected.
 		this.listenTo( itemListModel, 'execute', ( evt, itemModel ) => {
 			editor.execute( 'format', itemModel.id );
-			dropdownModel.label = itemModel.label;
 		} );
 
 		editor.ui.featureComponents.add( 'formats', ListDropdownController, ListDropdownView, dropdownModel );
