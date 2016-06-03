@@ -52,7 +52,7 @@ describe( 'FormatsCommand', () => {
 				const element = root.getChild( 0 );
 				document.selection.addRange( Range.createFromParentsAndOffsets( element, 3, element, 3 ) );
 
-				expect( command.format ).to.equal( format );
+				expect( command.value ).to.equal( format );
 			} );
 		}
 	} );

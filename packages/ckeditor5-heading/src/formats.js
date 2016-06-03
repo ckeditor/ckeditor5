@@ -46,7 +46,7 @@ export default class Formats extends Feature {
 
 		// Bind dropdown model to command.
 		dropdownModel.bind( 'isEnabled' ).to( command, 'isEnabled' );
-		dropdownModel.bind( 'label' ).to( command, 'format', format => format.label );
+		dropdownModel.bind( 'label' ).to( command, 'value', format => format.label );
 
 		// Execute command when item from dropdown is selected.
 		this.listenTo( itemListModel, 'execute', ( evt, itemModel ) => {

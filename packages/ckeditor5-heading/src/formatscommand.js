@@ -13,9 +13,8 @@ export default class FormatsCommand extends Command {
 		super( editor );
 
 		this.formats = formats;
-		this.defaultFormat = this._getDefaultFormat();
 
-		this.set( 'format', this.defaultFormat );
+		this.set( 'value', this.defaultFormat );
 
 		// Listen on selection change and set current command's format to format in current selection.
 		this.listenTo( editor.document.selection, 'change', () => {
@@ -26,28 +25,35 @@ export default class FormatsCommand extends Command {
 				const format = this._getFormatById( block.name );
 
 				// TODO: What should happen if format is not found?
-				this.format = format;
+				this.value = format;
 			}
 		} );
 	}
 
-	_doExecute( formatId ) {
+	/**
+	 * The default format.
+	 *
+	 * @type {Object}
+	 */
+	get defaultFormat() {
+		// See https://github.com/ckeditor/ckeditor5/issues/98.
+		return this._getFormatById( 'paragraph' );
+	}
+
+	_doExecute( formatId = this.defaultFormat.id ) {
 		// TODO: What should happen if format is not found?
-		const document = this.editor.document;
-		const selection = document.selection;
-		const newValue = ( formatId === undefined ) ? this.defaultFormat.id : formatId;
+		const doc = this.editor.document;
+		const selection = doc.selection;
 		const startPosition = selection.getFirstPosition();
 		const elements = [];
-		let ranges = null;
-		let isSelectionBackward = false;
-		let remove = false;
-
+		// Storing selection ranges and direction to fix selection after renaming. See ckeditor5-engine#367.
+		const ranges = [ ...selection.getRanges() ];
+		const isSelectionBackward = selection.isBackward;
 		// If current format is same as new format - toggle already applied format back to default one.
-		if ( newValue === this.format.id ) {
-			remove = true;
-		}
+		const shouldRemove = ( formatId === this.value.id );
 
 		// Collect elements to change format.
+		// This implementation may not be future proof but it's satisfactory at this stage.
 		if ( selection.isCollapsed ) {
 			const block = findTopmostBlock( startPosition );
 
@@ -55,10 +61,6 @@ export default class FormatsCommand extends Command {
 				elements.push( block );
 			}
 		} else {
-			// Storing selection ranges and direction to fix selection after renaming. See ckeditor5-engine#367.
-			ranges = [ ...selection.getRanges() ];
-			isSelectionBackward = selection.isBackward;
-
 			for ( let range of ranges ) {
 				let startBlock = findTopmostBlock( range.start );
 				const endBlock = findTopmostBlock( range.end, false );
@@ -72,27 +74,25 @@ export default class FormatsCommand extends Command {
 			}
 		}
 
-		document.enqueueChanges( () => {
-			const batch = document.batch();
+		doc.enqueueChanges( () => {
+			const batch = doc.batch();
 
 			for ( let element of elements ) {
 				// When removing applied format.
-				if ( remove ) {
-					if ( element.name === newValue ) {
+				if ( shouldRemove ) {
+					if ( element.name === formatId ) {
 						batch.rename( this.defaultFormat.id, element );
 					}
 				}
 				// When applying new format.
 				else {
-					batch.rename( newValue, element );
+					batch.rename( formatId, element );
 				}
 			}
 
 			// If range's selection start/end is placed directly in renamed block - we need to restore it's position
 			// after renaming, because renaming puts new element there.
-			if ( ranges !== null ) {
-				document.selection.setRanges( ranges, isSelectionBackward );
-			}
+			doc.selection.setRanges( ranges, isSelectionBackward );
 		} );
 	}
 
@@ -104,21 +104,7 @@ export default class FormatsCommand extends Command {
 	 * @returns {Object}
 	 */
 	_getFormatById( id ) {
-		return this.formats.find( item => {
-			return item.id && item.id === id;
-		} );
-	}
-
-	/**
-	 * Returns default format.
-	 *
-	 * @private
-	 * @returns {Object}
-	 */
-	_getDefaultFormat() {
-		return this.formats.find( item => {
-			return item.default;
-		} );
+		return this.formats.find( item => item.id === id );
 	}
 }
 

@@ -17,7 +17,10 @@ describe( 'Formats', () => {
 	let editor, controller;
 
 	beforeEach( () => {
-		return ClassicTestEditor.create( document.getElementById( 'editor' ), {
+		const editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
+
+		return ClassicTestEditor.create( editorElement, {
 			features: [ Formats ],
 			toolbar: [ 'formats' ]
 		} )
@@ -72,7 +75,7 @@ describe( 'Formats', () => {
 
 		it( 'label', () => {
 			expect( model.label ).to.equal( 'Paragraph' );
-			command.format = command.formats[ 1 ];
+			command.value = command.formats[ 1 ];
 			expect( model.label ).to.equal( 'Heading 1' );
 		} );
 	} );
