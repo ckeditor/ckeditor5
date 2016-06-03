@@ -57,6 +57,15 @@ export default class Delta {
 	}
 
 	/**
+	 * @param {Number} baseVersion
+	 */
+	set baseVersion( baseVersion ) {
+		for ( let operation of this.operations ) {
+			operation.baseVersion = baseVersion++;
+		}
+	}
+
+	/**
 	 * A class that will be used when creating reversed delta.
 	 *
 	 * @private

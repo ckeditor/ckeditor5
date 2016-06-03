@@ -59,6 +59,32 @@ describe( 'Delta', () => {
 		} );
 	} );
 
+	describe( 'baseVersion', () => {
+		it( 'should return baseVersion of first operation in the delta', () => {
+			const delta = new Delta();
+
+			delta.addOperation( { baseVersion: 0 } );
+			delta.addOperation( { baseVersion: 1 } );
+			delta.addOperation( { baseVersion: 2 } );
+
+			expect( delta.baseVersion ).to.equal( 0 );
+		} );
+
+		it( 'should change baseVersion of it\'s operations', () => {
+			const delta = new Delta();
+
+			delta.addOperation( { baseVersion: 0 } );
+			delta.addOperation( { baseVersion: 1 } );
+			delta.addOperation( { baseVersion: 2 } );
+
+			delta.baseVersion = 10;
+
+			expect( delta.operations[ 0 ].baseVersion ).to.equal( 10 );
+			expect( delta.operations[ 1 ].baseVersion ).to.equal( 11 );
+			expect( delta.operations[ 2 ].baseVersion ).to.equal( 12 );
+		} );
+	} );
+
 	describe( 'addOperation', () => {
 		it( 'should add operation to the delta', () => {
 			const delta = new Delta();
