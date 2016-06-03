@@ -14,7 +14,7 @@ import testUtils from '/tests/ckeditor5/_utils/utils.js';
 testUtils.createSinonSandbox();
 
 describe( 'Formats', () => {
-	let editor;
+	let editor, controller;
 
 	beforeEach( () => {
 		return ClassicTestEditor.create( document.getElementById( 'editor' ), {
@@ -23,6 +23,7 @@ describe( 'Formats', () => {
 		} )
 		.then( newEditor => {
 			editor = newEditor;
+			controller = editor.ui.featureComponents.create( 'formats' );
 		} );
 	} );
 
@@ -53,5 +54,26 @@ describe( 'Formats', () => {
 
 		sinon.assert.calledOnce( executeSpy );
 		sinon.assert.calledWithExactly( executeSpy, 'format', 'paragraph' );
+	} );
+
+	describe( 'model to commanad binding', () => {
+		let model, command;
+
+		beforeEach( () => {
+			model = controller.model;
+			command = editor.commands.get( 'format' );
+		} );
+
+		it( 'isEnabled', () => {
+			expect( model.isEnabled ).to.be.true;
+			command.isEnabled = false;
+			expect( model.isEnabled ).to.be.false;
+		} );
+
+		it( 'label', () => {
+			expect( model.label ).to.equal( 'Paragraph' );
+			command.format = command.formats[ 1 ];
+			expect( model.label ).to.equal( 'Heading 1' );
+		} );
 	} );
 } );
