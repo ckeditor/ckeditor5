@@ -52,7 +52,7 @@ module.exports = () => {
 		 *
 		 * @returns {Stream}
 		 */
-		prepareCoverage() {
+		prepareNodeCoverage() {
 			const src = benderConfig.coverage.paths.map( ( item ) => {
 				return item.replace( 'build/amd/', 'build/cjs/' );
 			} );
@@ -115,13 +115,41 @@ module.exports = () => {
 		 */
 		skipIgnored() {
 			return filterBy( file => !file.contents.toString().match( ignoreRegexp ) );
+		},
+
+		/**
+		 * Runs dev unit tests.
+		 *
+		 * @returns {Stream}
+		 */
+		devTest() {
+			return gulp.src( 'dev/tests/**/*.js' )
+				.pipe( mocha() )
+				.pipe( tasks.coverage ? istanbul.writeReports() : buildUtils.noop() );
+		},
+
+		/**
+		 * Prepares files for coverage report.
+		 *
+		 * @returns {Stream}
+		 */
+		prepareDevCoverage() {
+			tasks.coverage = true;
+
+			return gulp.src( 'dev/tasks/**/*.js' )
+				.pipe( istanbul() )
+				.pipe( istanbul.hookRequire() );
 		}
 	};
 
-	gulp.task( 'test:node:pre-coverage', [ 'build:js:cjs' ], tasks.prepareCoverage );
+	gulp.task( 'test:node:pre-coverage', [ 'build:js:cjs' ], tasks.prepareNodeCoverage );
 	gulp.task( 'test:node', tasks.testInNode );
 	gulp.task( 'test:node:build', [ 'build:js:cjs' ] , tasks.testInNode );
 	gulp.task( 'test:node:coverage', [ 'build:js:cjs', 'test:node:pre-coverage' ], tasks.testInNode );
+
+	gulp.task( 'test:dev:pre-coverage', tasks.prepareDevCoverage );
+	gulp.task( 'test:dev', tasks.devTest );
+	gulp.task( 'test:dev:coverage', [ 'test:dev:pre-coverage' ], tasks.devTest );
 
 	return tasks;
 };
