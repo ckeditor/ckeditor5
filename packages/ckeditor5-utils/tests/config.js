@@ -71,7 +71,7 @@ describe( 'set', () => {
 		expect( config.get( 'background.color.blue' ) ).to.equal( '00f' );
 	} );
 
-	it( 'should replace a simple entry with a Config instance', () => {
+	it( 'should replace a simple entry with an object', () => {
 		config.set( 'test', 1 );
 		config.set( 'test', {
 			prop: 1
@@ -81,7 +81,7 @@ describe( 'set', () => {
 		expect( config.get( 'test.prop' ) ).to.equal( 1 );
 	} );
 
-	it( 'should replace a simple entry with a Config instance when passing an object', () => {
+	it( 'should replace a simple entry with an object when passing only object', () => {
 		config.set( 'test', 1 );
 		config.set( {
 			test: {
@@ -93,7 +93,7 @@ describe( 'set', () => {
 		expect( config.get( 'test.prop' ) ).to.equal( 1 );
 	} );
 
-	it( 'should replace a simple entry with a Config instance when passing a name.with.deep', () => {
+	it( 'should replace a simple entry with an object when passing a name.with.deep', () => {
 		config.set( 'test.prop', 1 );
 		config.set( 'test.prop.value', 1 );
 
@@ -125,7 +125,7 @@ describe( 'set', () => {
 		} );
 	} );
 
-	it( 'should override and expand Config instance when passing an object', () => {
+	it( 'should override and expand object when passing an object', () => {
 		config.set( 'resize', {
 			minHeight: 400,		// Override
 			hidden: true,		// Expand
@@ -146,7 +146,7 @@ describe( 'set', () => {
 		} );
 	} );
 
-	it( 'should not create Config instances for non-pure objects', () => {
+	it( 'should not create object for non-pure objects', () => {
 		function SomeClass() {}
 
 		config.set( 'date', new Date() );
@@ -219,7 +219,7 @@ describe( 'define', () => {
 		} );
 	} );
 
-	it( 'should expand but not override Config instance when passing an object', () => {
+	it( 'should expand but not override when passing an object', () => {
 		config.define( 'resize', {
 			minHeight: 400,		// Override
 			hidden: true,		// Expand
@@ -240,7 +240,7 @@ describe( 'define', () => {
 		} );
 	} );
 
-	it( 'should not create Config instances for non-pure objects', () => {
+	it( 'should not create an object for non-pure objects', () => {
 		function SomeClass() {}
 
 		config.define( 'date', new Date() );
@@ -264,14 +264,14 @@ describe( 'get', () => {
 	} );
 
 	it( 'should retrieve a object of the configuration', () => {
-		let resizeConfig = config.get( 'resize' );
+		let resize = config.get( 'resize' );
 
-		expect( resizeConfig ).to.be.an( 'object' );
-		expect( resizeConfig.minheight ).equal( 300 );
-		expect( resizeConfig.maxheight ).to.equal( 800 );
-		expect( resizeConfig.icon ).to.be.an( 'object' );
+		expect( resize ).to.be.an( 'object' );
+		expect( resize.minheight ).equal( 300 );
+		expect( resize.maxheight ).to.equal( 800 );
+		expect( resize.icon ).to.be.an( 'object' );
 
-		expect( resizeConfig.icon ).to.be.an( 'object' );
+		expect( resize.icon ).to.be.an( 'object' );
 	} );
 
 	it( 'should retrieve values case-insensitively', () => {
