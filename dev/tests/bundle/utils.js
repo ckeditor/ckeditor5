@@ -10,10 +10,10 @@
 const chai = require( 'chai' );
 const expect = chai.expect;
 const sinon = require( 'sinon' );
-const gutil = require( 'gulp-util' );
 const path = require( 'path' );
 const fs = require( 'fs' );
 const mainUtils = require( '../../tasks/utils' );
+const gzipSize = require( 'gzip-size' );
 
 describe( 'bundle-utils', () => {
 	const utils = require( '../../tasks/bundle/utils' );
@@ -32,49 +32,79 @@ describe( 'bundle-utils', () => {
 	} );
 
 	describe( 'getFileSize', () => {
-		it( 'should return human readable file size', () => {
-			let filePath = 'path/to/file';
-			let statSyncMock = sandbox.stub( fs, 'statSync', () => {
-				return { size: 1337 };
+		it( 'should return file size in bytes', () => {
+			const filePath = 'path/to/file';
+			const size = 1337;
+			const statSyncMock = sandbox.stub( fs, 'statSync', () => {
+				return { size };
 			} );
 
-			expect( utils.getFileSize( filePath ) ).to.be.equal( '1.34 kB' );
+			expect( utils.getFileSize( filePath ) ).to.be.equal( size );
 			sinon.assert.calledWithExactly( statSyncMock, filePath );
 		} );
 	} );
 
-	describe( 'logFilesSize', () => {
-		let gutilLogSpy;
+	describe( 'getGzippedFileSize', () => {
+		it( 'should return file size in bytes', () => {
+			const filePath = 'path/to/file';
+			const size = 1337;
+			const fileContent = 'some string';
+			const readFileSyncMock = sandbox.stub( fs, 'readFileSync', () => fileContent );
+			const gzipSizeMock = sandbox.stub( gzipSize, 'sync', () => 1337 );
+
+			expect( utils.getGzippedFileSize( filePath ) ).to.be.equal( size );
+			sinon.assert.calledWithExactly( readFileSyncMock, filePath );
+			sinon.assert.calledWithExactly( gzipSizeMock, fileContent );
+		} );
+	} );
+
+	describe( 'getFilesSizeStats', () => {
+		let size, gzippedSize;
 
 		beforeEach( () => {
-			gutilLogSpy = sandbox.stub( gutil, 'log' );
-			sandbox.stub( utils, 'getFileSize', () => '1 MB' );
+			size = 1337;
+			gzippedSize = 543;
+
+			sandbox.stub( utils, 'getFileSize', () => size );
+			sandbox.stub( utils, 'getGzippedFileSize', () => gzippedSize );
 		} );
 
-		it( 'should log only files base name with file size separate by new line character', () => {
-			const expected = gutil.colors.green( `\nfile1.js: 1 MB\nfile2.js: 1 MB` );
+		it( 'should returns an array with two elements', () => {
+			const result = utils.getFilesSizeStats( [ 'sub/dir/file.js', 'other/sub/dir/file.css' ] , 'root/path' );
 
-			utils.logFilesSize( [ 'sub/dir/file1.js', 'other/sub/dir/file2.js' ] , 'root/path' );
+			expect( result ).to.be.an( 'array' );
+			expect( result ).to.have.length( 2 );
+		} );
 
-			sinon.assert.calledWithExactly( gutilLogSpy, expected );
+		it( 'should returns list of object with files stats', () => {
+			const result = utils.getFilesSizeStats( [ 'sub/dir/file.js', 'other/sub/dir/file.css' ] , 'root/path' );
+
+			expect( result ).to.be.deep.equal( [
+				{ name: 'file.js', size, gzippedSize },
+				{ name: 'file.css', size, gzippedSize }
+			] );
 		} );
 
 		it( 'should get files from root directory', () => {
 			let basenameSpy = sandbox.spy( path, 'basename' );
 
-			utils.logFilesSize( [ 'sub/dir/file1.js', 'other/sub/dir/file2.js' ] , 'root/path' );
+			const result = utils.getFilesSizeStats( [ 'sub/dir/file.js', 'other/sub/dir/file.css' ] , 'root/path' );
 
-			sinon.assert.calledWithExactly( basenameSpy.firstCall, 'root/path/sub/dir/file1.js' );
-			sinon.assert.calledWithExactly( basenameSpy.secondCall, 'root/path/other/sub/dir/file2.js' );
+			expect( result[0] ).to.have.property( 'name' ).equal( 'file.js' );
+			expect( result[1] ).to.have.property( 'name' ).equal( 'file.css' );
+			sinon.assert.calledWithExactly( basenameSpy.firstCall, 'root/path/sub/dir/file.js' );
+			sinon.assert.calledWithExactly( basenameSpy.secondCall, 'root/path/other/sub/dir/file.css' );
 		} );
 
 		it( 'should get files if root directory is not specified', () => {
 			let basenameSpy = sandbox.spy( path, 'basename' );
 
-			utils.logFilesSize( [ 'sub/dir/file1.js', 'file2.js' ] );
+			const result = utils.getFilesSizeStats( [ 'sub/dir/file.js', 'file.css' ] );
 
-			sinon.assert.calledWithExactly( basenameSpy.firstCall, 'sub/dir/file1.js' );
-			sinon.assert.calledWithExactly( basenameSpy.secondCall, 'file2.js' );
+			expect( result[0] ).to.have.property( 'name' ).equal( 'file.js' );
+			expect( result[1] ).to.have.property( 'name' ).equal( 'file.css' );
+			sinon.assert.calledWithExactly( basenameSpy.firstCall, 'sub/dir/file.js' );
+			sinon.assert.calledWithExactly( basenameSpy.secondCall, 'file.css' );
 		} );
 	} );
 } );

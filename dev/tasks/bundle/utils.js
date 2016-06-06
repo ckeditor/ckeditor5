@@ -11,6 +11,7 @@ const gulp = require( 'gulp' );
 const gulpRename = require( 'gulp-rename' );
 const gutil = require( 'gulp-util' );
 const prettyBytes = require( 'pretty-bytes' );
+const gzipSize = require( 'gzip-size' );
 const mainUtils = require( '../utils' );
 
 const utils = {
@@ -30,43 +31,11 @@ const utils = {
 	},
 
 	/**
-	 * Get human readable size of the file.
-	 *
-	 * @param {String} path path to the file
-	 */
-	getFileSize( path ) {
-		return prettyBytes( fs.statSync( path ).size );
-	},
-
-	/**
-	 * Log on console size of every passed file in specified directory.
-	 *
-	 * 		utils.logFileSize( [ 'ckeditor.min.js', 'ckeditor.min.css' ], 'path/to/dir' );
-	 *
-	 * 		ckeditor.min.js: 192.43 KB
-	 * 		ckeditor.min.css: 5.38 KB
-	 *
-	 * @param {String} [rootDir='']
-	 * @param {Array<String>} files
-	 */
-	logFilesSize( files, rootDir = '' ) {
-		files = files.map( ( file ) => {
-			let filePath = path.join( rootDir, file );
-			let name = path.basename( filePath );
-			let size = utils.getFileSize( filePath );
-
-			return `${name}: ${size}`;
-		} );
-
-		gutil.log( gutil.colors.green( `\n${ files.join( '\n' ) }` ) );
-	},
-
-	/**
 	 * Copy specified file to specified destination.
 	 *
 	 * @param {String} from file path
 	 * @param {String} to copied file destination
-	 * @return {Promise}
+	 * @returns {Promise}
 	 */
 	copyFile( from, to ) {
 		return new Promise( ( resolve ) => {
@@ -74,6 +43,64 @@ const utils = {
 				.pipe( gulp.dest( to ) )
 				.on( 'finish', resolve );
 		} );
+	},
+
+	/**
+	 * Get size of the file.
+	 *
+	 * @param {String} path path to the file
+	 * @returns {Number} size size in bytes
+	 */
+	getFileSize( path ) {
+		return fs.statSync( path ).size;
+	},
+
+	/**
+	 * Get human readable gzipped size of the file.
+	 *
+	 * @param {String} path path to the file
+	 * @returns {Number} size size in bytes
+	 */
+	getGzippedFileSize( path ) {
+		return gzipSize.sync( fs.readFileSync( path ) );
+	},
+
+	/**
+	 * Get normal and gzipped size of every passed file in specified directory.
+	 *
+	 * @param {String} [rootDir='']
+	 * @param {Array<String>} files
+	 * @returns {Array<Object>} List with file size data
+	 */
+	getFilesSizeStats( files, rootDir = '' ) {
+		return files.map( ( file ) => {
+			const filePath = path.join( rootDir, file );
+
+			return {
+				name: path.basename( filePath ),
+				size: utils.getFileSize( filePath ),
+				gzippedSize: utils.getGzippedFileSize( filePath )
+			};
+		} );
+	},
+
+	/**
+	 * Print on console list of files with their size stats.
+	 *
+	 * 		Title:
+	 * 		file.js: 1 MB (gzipped: 400 kB)
+	 * 		file.css 500 kB (gzipped: 100 kB)
+	 *
+	 * @param {String} title
+	 * @param {Array<Object>} filesStats
+	 */
+	showFilesSummary( title, filesStats ) {
+		const label = gutil.colors.underline( title );
+		const filesSummary = filesStats.map( ( file ) => {
+			return `${ file.name }: ${ prettyBytes( file.size ) } (gzipped: ${ prettyBytes( file.gzippedSize ) })`;
+		} ).join( '\n' );
+
+		gutil.log( gutil.colors.green( `\n${ label }:\n${ filesSummary }` ) );
 	}
 };
 

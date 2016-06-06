@@ -104,9 +104,11 @@ module.exports = ( config ) => {
 
 	gulp.task( 'bundle', ( callback ) => {
 		runSequence( 'bundle:generate', [ 'bundle:minify:js', 'bundle:minify:css' ], () => {
-			// Print files size on console just before the end of the task.
-			const files = [ 'ckeditor.js', 'ckeditor.min.js', 'ckeditor.css', 'ckeditor.min.css' ];
-			utils.logFilesSize( files, bundleDir );
+			const files = [ 'ckeditor.js', 'ckeditor.css', 'ckeditor.min.js', 'ckeditor.min.css' ];
+			const filesStats = utils.getFilesSizeStats( files, bundleDir );
+
+			// Show bundle summary on console.
+			utils.showFilesSummary( 'Bundle summary', filesStats );
 
 			// Finish the task.
 			callback();
