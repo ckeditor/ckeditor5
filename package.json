@@ -14,11 +14,12 @@
     "ckeditor5-engine": "ckeditor/ckeditor5-engine",
     "ckeditor5-enter": "ckeditor/ckeditor5-enter",
     "ckeditor5-formats": "ckeditor/ckeditor5-formats",
+    "ckeditor5-hackathon": "ckeditor/ckeditor5-hackathon#autocomplete",
     "ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph",
     "ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark",
     "ckeditor5-typing": "ckeditor/ckeditor5-typing",
     "ckeditor5-ui": "ckeditor/ckeditor5-ui",
-    "ckeditor5-ui-default": "ckeditor/ckeditor5-ui-default",
+    "ckeditor5-ui-default": "ckeditor/ckeditor5-ui-default#t/hackathon/autocomplete",
     "ckeditor5-undo": "ckeditor/ckeditor5-undo",
     "ckeditor5-utils": "ckeditor/ckeditor5-utils",
     "requirejs": "Reinmar/requirejs"
