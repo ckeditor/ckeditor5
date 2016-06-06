@@ -182,6 +182,14 @@ describe( 'Delete utils', () => {
 				{ merge: true }
 			);
 
+			// For code coverage reasons.
+			test(
+				'merges element when selection is in two consecutive nodes even when it is empty',
+				'<p>foo<selection></p><p></selection>bar</p>',
+				'<p>foo<selection />bar</p>',
+				{ merge: true }
+			);
+
 			// If you disagree with this case please read the notes before this section.
 			test(
 				'merges elements when left end deep nested',

@@ -57,6 +57,7 @@ export default class Delta {
 	}
 
 	/**
+	 * @protected
 	 * @param {Number} baseVersion
 	 */
 	set baseVersion( baseVersion ) {
