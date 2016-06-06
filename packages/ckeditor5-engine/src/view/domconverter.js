@@ -547,9 +547,11 @@ export default class DomConverter {
 			return this.getCorrespondingDomElement( viewNode );
 		} else if ( viewNode instanceof ViewDocumentFragment ) {
 			return this.getCorrespondingDomDocumentFragment( viewNode );
-		} else {
+		} else if ( viewNode instanceof ViewText ) {
 			return this.getCorrespondingDomText( viewNode );
 		}
+
+		return null;
 	}
 
 	/**
