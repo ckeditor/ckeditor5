@@ -116,6 +116,36 @@ describe( 'History', () => {
 			expect( History._transform.calledWithExactly( sinon.match.instanceOf( Delta ), deltaD ) ).to.be.true;
 		} );
 
+		it( 'should correctly set base versions if multiple deltas are result of transformation', () => {
+			// Let's stub History._transform so it will always return two deltas with two operations each.
+			History._transform = function() {
+				let resultA = new Delta();
+				resultA.addOperation( new NoOperation( 1 ) );
+				resultA.addOperation( new NoOperation( 1 ) );
+
+				let resultB = new Delta();
+				resultB.addOperation( new NoOperation( 1 ) );
+				resultB.addOperation( new NoOperation( 1 ) );
+
+				return [ resultA, resultB ];
+			};
+
+			let deltaA = new Delta();
+			deltaA.addOperation( new NoOperation( 0 ) );
+
+			let deltaX = new Delta();
+			deltaX.addOperation( new NoOperation( 0 ) );
+
+			history.addOperation( deltaA.operations[ 0 ] );
+
+			let result = history.getTransformedDelta( deltaX );
+
+			expect( result[ 0 ].operations[ 0 ].baseVersion ).to.equal( 1 );
+			expect( result[ 0 ].operations[ 1 ].baseVersion ).to.equal( 2 );
+			expect( result[ 1 ].operations[ 0 ].baseVersion ).to.equal( 3 );
+			expect( result[ 1 ].operations[ 1 ].baseVersion ).to.equal( 4 );
+		} );
+
 		it( 'should not transform given delta if it bases on current version of history', () => {
 			let deltaA = new Delta();
 			deltaA.addOperation( new NoOperation( 0 ) );

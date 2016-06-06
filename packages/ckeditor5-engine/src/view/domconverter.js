@@ -547,9 +547,11 @@ export default class DomConverter {
 			return this.getCorrespondingDomElement( viewNode );
 		} else if ( viewNode instanceof ViewDocumentFragment ) {
 			return this.getCorrespondingDomDocumentFragment( viewNode );
-		} else {
+		} else if ( viewNode instanceof ViewText ) {
 			return this.getCorrespondingDomText( viewNode );
 		}
+
+		return null;
 	}
 
 	/**
@@ -597,8 +599,8 @@ export default class DomConverter {
 			return this.getCorrespondingDom( previousSibling ).nextSibling;
 		}
 
-		// Try to use parent to find the corresponding text node.
-		if ( !previousSibling && this.getCorrespondingDom( viewText.parent ) ) {
+		// If this is a first node, try to use parent to find the corresponding text node.
+		if ( !previousSibling && viewText.parent && this.getCorrespondingDom( viewText.parent ) ) {
 			return this.getCorrespondingDom( viewText.parent ).childNodes[ 0 ];
 		}
 

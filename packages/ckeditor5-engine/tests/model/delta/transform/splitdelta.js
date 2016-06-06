@@ -20,7 +20,9 @@ import Delta from '/ckeditor5/engine/model/delta/delta.js';
 import SplitDelta from '/ckeditor5/engine/model/delta/splitdelta.js';
 
 import InsertOperation from '/ckeditor5/engine/model/operation/insertoperation.js';
+import ReinsertOperation from '/ckeditor5/engine/model/operation/reinsertoperation.js';
 import MoveOperation from '/ckeditor5/engine/model/operation/moveoperation.js';
+import NoOperation from '/ckeditor5/engine/model/operation/nooperation.js';
 
 import { getNodesAndText, jsonParseStringify } from '/tests/engine/model/_utils/utils.js';
 
@@ -56,11 +58,18 @@ describe( 'transform', () => {
 				let splitDeltaB = getSplitDelta( splitPosition, new Element( 'p' ), 9, baseVersion );
 				let transformed = transform( splitDelta, splitDeltaB );
 
+				baseVersion = splitDeltaB.operations.length;
+
 				expect( transformed.length ).to.equal( 1 );
 
 				expectDelta( transformed[ 0 ], {
 					type: Delta,
-					operations: []
+					operations: [
+						{
+							type: NoOperation,
+							baseVersion: baseVersion
+						}
+					]
 				} );
 
 				// Test if deltas do what they should after applying transformed delta.
@@ -112,6 +121,51 @@ describe( 'transform', () => {
 				expect( nodesAndText ).to.equal( 'XXXXXabcdXPabcPPfoPPobarxyzP' );
 			} );
 
+			it( 'split in same parent, incoming delta splits closer, split deltas have reinsert operations', () => {
+				let reOp = new ReinsertOperation(
+					new Position( gy, [ 1 ] ),
+					1,
+					Position.createFromPosition( splitDelta.operations[ 0 ].position ),
+					splitDelta.operations[ 0 ].baseVersion
+				);
+				splitDelta.operations[ 0 ] = reOp;
+
+				let splitDeltaB = getSplitDelta( new Position( root, [ 3, 3, 3, 5 ] ), new Element( 'p' ), 7, baseVersion );
+				reOp = new ReinsertOperation(
+					new Position( gy, [ 0 ] ),
+					1,
+					Position.createFromPosition( splitDeltaB.operations[ 0 ].position ),
+					splitDeltaB.operations[ 0 ].baseVersion
+				);
+				splitDeltaB.operations[ 0 ] = reOp;
+
+				let transformed = transform( splitDelta, splitDeltaB );
+
+				baseVersion = splitDeltaB.operations.length;
+
+				expect( transformed.length ).to.equal( 1 );
+
+				expectDelta( transformed[ 0 ], {
+					type: SplitDelta,
+					operations: [
+						{
+							type: ReinsertOperation,
+							sourcePosition: new Position( gy, [ 0 ] ),
+							howMany: 1,
+							targetPosition: new Position( root, [ 3, 3, 4 ] ),
+							baseVersion: baseVersion
+						},
+						{
+							type: MoveOperation,
+							sourcePosition: new Position( root, [ 3, 3, 3, 3 ] ),
+							howMany: 2,
+							targetPosition: new Position( root, [ 3, 3, 4, 0 ] ),
+							baseVersion: baseVersion + 1
+						}
+					]
+				} );
+			} );
+
 			it( 'split in same parent, incoming delta splits further', () => {
 				let splitDeltaB = getSplitDelta( new Position( root, [ 3, 3, 3, 1 ] ), new Element( 'p' ), 11, baseVersion );
 				let transformed = transform( splitDelta, splitDeltaB );
@@ -147,6 +201,51 @@ describe( 'transform', () => {
 
 				// P element is correctly split, there are three P elements, letters in P elements are in correct order.
 				expect( nodesAndText ).to.equal( 'XXXXXabcdXPaPPbcPPfoobarxyzP' );
+			} );
+
+			it( 'split in same parent, incoming delta splits further, split deltas have reinsert operations', () => {
+				let reOp = new ReinsertOperation(
+					new Position( gy, [ 1 ] ),
+					1,
+					Position.createFromPosition( splitDelta.operations[ 0 ].position ),
+					splitDelta.operations[ 0 ].baseVersion
+				);
+				splitDelta.operations[ 0 ] = reOp;
+
+				let splitDeltaB = getSplitDelta( new Position( root, [ 3, 3, 3, 1 ] ), new Element( 'p' ), 11, baseVersion );
+				reOp = new ReinsertOperation(
+					new Position( gy, [ 0 ] ),
+					1,
+					Position.createFromPosition( splitDeltaB.operations[ 0 ].position ),
+					splitDeltaB.operations[ 0 ].baseVersion
+				);
+				splitDeltaB.operations[ 0 ] = reOp;
+
+				let transformed = transform( splitDelta, splitDeltaB );
+
+				baseVersion = splitDeltaB.operations.length;
+
+				expect( transformed.length ).to.equal( 1 );
+
+				expectDelta( transformed[ 0 ], {
+					type: SplitDelta,
+					operations: [
+						{
+							type: ReinsertOperation,
+							sourcePosition: new Position( gy, [ 0 ] ),
+							howMany: 1,
+							targetPosition: new Position( root, [ 3, 3, 5 ] ),
+							baseVersion: baseVersion
+						},
+						{
+							type: MoveOperation,
+							sourcePosition: new Position( root, [ 3, 3, 4, 2 ] ),
+							howMany: 9,
+							targetPosition: new Position( root, [ 3, 3, 5, 0 ] ),
+							baseVersion: baseVersion + 1
+						}
+					]
+				} );
 			} );
 
 			it( 'split in split parent', () => {
@@ -192,11 +291,18 @@ describe( 'transform', () => {
 				let unwrapDelta = getUnwrapDelta( new Position( root, [ 3, 3, 3 ] ), 12, baseVersion );
 				let transformed = transform( splitDelta, unwrapDelta );
 
+				baseVersion = unwrapDelta.operations.length;
+
 				expect( transformed.length ).to.equal( 1 );
 
 				expectDelta( transformed[ 0 ], {
 					type: Delta,
-					operations: []
+					operations: [
+						{
+							type: NoOperation,
+							baseVersion: baseVersion
+						}
+					]
 				} );
 
 				// Test if deltas do what they should after applying transformed delta.
@@ -255,11 +361,18 @@ describe( 'transform', () => {
 
 				let transformed = transform( splitDelta, wrapDelta );
 
+				baseVersion = wrapDelta.operations.length;
+
 				expect( transformed.length ).to.equal( 1 );
 
 				expectDelta( transformed[ 0 ], {
 					type: Delta,
-					operations: []
+					operations: [
+						{
+							type: NoOperation,
+							baseVersion: baseVersion
+						}
+					]
 				} );
 
 				// Test if deltas do what they should after applying transformed delta.

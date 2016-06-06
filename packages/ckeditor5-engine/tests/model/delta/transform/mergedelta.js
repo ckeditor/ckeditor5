@@ -21,6 +21,7 @@ import MergeDelta from '/ckeditor5/engine/model/delta/mergedelta.js';
 
 import MoveOperation from '/ckeditor5/engine/model/operation/moveoperation.js';
 import RemoveOperation from '/ckeditor5/engine/model/operation/removeoperation.js';
+import NoOperation from '/ckeditor5/engine/model/operation/nooperation.js';
 
 import { getNodesAndText, jsonParseStringify } from '/tests/engine/model/_utils/utils.js';
 
@@ -65,11 +66,18 @@ describe( 'transform', () => {
 
 				// Expected: MergeDelta gets ignored and is not applied.
 
+				baseVersion = insertDelta.operations.length;
+
 				expect( transformed.length ).to.equal( 1 );
 
 				expectDelta( transformed[ 0 ], {
 					type: Delta,
-					operations: []
+					operations: [
+						{
+							type: NoOperation,
+							baseVersion: baseVersion
+						}
+					]
 				} );
 
 				// Test if deltas do what they should after applying transformed delta.
@@ -134,11 +142,18 @@ describe( 'transform', () => {
 				let moveDelta = getMoveDelta( new Position( root, [ 3, 3, 3 ] ), 1, new Position( root, [ 3, 3, 0 ] ), baseVersion );
 				let transformed = transform( mergeDelta, moveDelta );
 
+				baseVersion = moveDelta.operations.length;
+
 				expect( transformed.length ).to.equal( 1 );
 
 				expectDelta( transformed[ 0 ], {
 					type: Delta,
-					operations: []
+					operations: [
+						{
+							type: NoOperation,
+							baseVersion: baseVersion
+						}
+					]
 				} );
 
 				// Test if deltas do what they should after applying transformed delta.

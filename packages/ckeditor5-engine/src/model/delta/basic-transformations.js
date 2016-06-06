@@ -10,7 +10,9 @@ import { addTransformationCase, defaultTransform } from './transform.js';
 import Range from '../range.js';
 import Position from '../position.js';
 
+import NoOperation from '../operation/nooperation.js';
 import AttributeOperation from '../operation/attributeoperation.js';
+import ReinsertOperation from '../operation/reinsertoperation.js';
 
 import Delta from './delta.js';
 import AttributeDelta from './attributedelta.js';
@@ -60,7 +62,10 @@ addTransformationCase( MoveDelta, MergeDelta, ( a, b, isStrong ) => {
 	// didn't happen) and then apply the original move operation. This is "mirrored" in MergeDelta x MoveDelta
 	// transformation below, where we simply do not apply MergeDelta.
 
-	const operateInSameParent = compareArrays( a.sourcePosition.getParentPath(), b.position.getParentPath() ) === 'SAME';
+	const operateInSameParent =
+		a.sourcePosition.root == b.position.root &&
+		compareArrays( a.sourcePosition.getParentPath(), b.position.getParentPath() ) === 'SAME';
+
 	const mergeInsideMoveRange = a.sourcePosition.offset <= b.position.offset && a.sourcePosition.offset + a.howMany > b.position.offset;
 
 	if ( operateInSameParent && mergeInsideMoveRange ) {
@@ -78,9 +83,7 @@ addTransformationCase( MergeDelta, InsertDelta, ( a, b, isStrong ) => {
 	// If merge is applied at the same position where we inserted a range of nodes we cancel the merge as it's results
 	// may be unexpected and very weird. Even if we do some "magic" we don't know what really are users' expectations.
 	if ( a.position.isEqual( b.position ) ) {
-		// This is "no-op" delta, it has no type and no operations, it basically does nothing.
-		// It is used when we don't want to apply changes but still we need to return a delta.
-		return [ new Delta() ];
+		return [ noDelta() ];
 	}
 
 	return defaultTransform( a, b, isStrong );
@@ -91,13 +94,14 @@ addTransformationCase( MergeDelta, MoveDelta, ( a, b, isStrong ) => {
 	// If merge is applied at the position between moved nodes we cancel the merge as it's results may be unexpected and
 	// very weird. Even if we do some "magic" we don't know what really are users' expectations.
 
-	const operateInSameParent = compareArrays( a.position.getParentPath(), b.sourcePosition.getParentPath() ) === 'SAME';
+	const operateInSameParent =
+		a.position.root == b.sourcePosition.root &&
+		compareArrays( a.position.getParentPath(), b.sourcePosition.getParentPath() ) === 'SAME';
+
 	const mergeInsideMoveRange = b.sourcePosition.offset <= a.position.offset && b.sourcePosition.offset + b.howMany > a.position.offset;
 
 	if ( operateInSameParent && mergeInsideMoveRange ) {
-		// This is "no-op" delta, it has no type and no operations, it basically does nothing.
-		// It is used when we don't want to apply changes but still we need to return a delta.
-		return [ new Delta() ];
+		return [ noDelta() ];
 	}
 
 	return defaultTransform( a, b, isStrong );
@@ -112,7 +116,7 @@ addTransformationCase( SplitDelta, SplitDelta, ( a, b, isStrong ) => {
 	if ( compareArrays( pathA, pathB ) == 'SAME' ) {
 		if ( a.position.offset == b.position.offset ) {
 			// We are applying split at the position where split already happened. Additional split is not needed.
-			return [ new Delta() ];
+			return [ noDelta() ];
 		} else if ( a.position.offset < b.position.offset ) {
 			// Incoming split delta splits at closer offset. So we simply have to once again split the same node,
 			// but since it was already split (at further offset) there are less child nodes in the split node.
@@ -120,6 +124,15 @@ addTransformationCase( SplitDelta, SplitDelta, ( a, b, isStrong ) => {
 
 			const delta = a.clone();
 			delta._moveOperation.howMany = b.position.offset - a.position.offset;
+
+			// If both SplitDeltas are taking their nodes from graveyard, we have to transform their ReinsertOperations.
+			if (
+				a._cloneOperation instanceof ReinsertOperation &&
+				b._cloneOperation instanceof ReinsertOperation &&
+				a._cloneOperation.sourcePosition.offset > b._cloneOperation.sourcePosition.offset
+			) {
+				delta._cloneOperation.sourcePosition.offset--;
+			}
 
 			return [ delta ];
 		} else {
@@ -134,6 +147,15 @@ addTransformationCase( SplitDelta, SplitDelta, ( a, b, isStrong ) => {
 			delta._moveOperation.targetPosition.path[ delta._moveOperation.targetPosition.path.length - 2 ]++;
 			delta._moveOperation.sourcePosition.offset = a.position.offset - b.position.offset;
 
+			// If both SplitDeltas are taking their nodes from graveyard, we have to transform their ReinsertOperations.
+			if (
+				a._cloneOperation instanceof ReinsertOperation &&
+				b._cloneOperation instanceof ReinsertOperation &&
+				a._cloneOperation.sourcePosition.offset > b._cloneOperation.sourcePosition.offset
+			) {
+				delta._cloneOperation.sourcePosition.offset--;
+			}
+
 			return [ delta ];
 		}
 	}
@@ -146,9 +168,7 @@ addTransformationCase( SplitDelta, UnwrapDelta, ( a, b, isStrong ) => {
 	// If incoming split delta tries to split a node that just got unwrapped, there is actually nothing to split,
 	// so we discard that delta.
 	if ( compareArrays( b.position.path, a.position.getParentPath() ) === 'SAME' ) {
-		// This is "no-op" delta, it has no type and no operations, it basically does nothing.
-		// It is used when we don't want to apply changes but still we need to return a delta.
-		return [ new Delta() ];
+		return [ noDelta() ];
 	}
 
 	return defaultTransform( a, b, isStrong );
@@ -163,9 +183,7 @@ addTransformationCase( SplitDelta, WrapDelta, ( a, b, isStrong ) => {
 	const splitInsideWrapRange = b.range.start.offset < a.position.offset && b.range.end.offset >= a.position.offset;
 
 	if ( operateInSameParent && splitInsideWrapRange ) {
-		// This is "no-op" delta, it has no type and no operations, it basically does nothing.
-		// It is used when we don't want to apply changes but still we need to return a delta.
-		return [ new Delta() ];
+		return [ noDelta() ];
 	} else if ( compareArrays( a.position.getParentPath(), b.range.end.getShiftedBy( -1 ).path ) === 'SAME' ) {
 		// Split position is directly inside the last node from wrap range.
 		// If that's the case, we manually change split delta so it will "target" inside the wrapping element.
@@ -309,4 +327,15 @@ function _getComplementaryAttrDelta( weakInsertDelta, attributeDelta ) {
 	complementaryAttrDelta.addOperation( new AttributeOperation( range, attributeDelta.key, val, attributeDelta.value, 0 ) );
 
 	return complementaryAttrDelta;
+}
+
+// This is "no-op" delta, it has no type and only no-operation, it basically does nothing.
+// It is used when we don't want to apply changes but still we need to return a delta.
+function noDelta() {
+	let noDelta = new Delta();
+
+	// BaseVersion will be fixed later anyway.
+	noDelta.addOperation( new NoOperation( 0 ) );
+
+	return noDelta;
 }

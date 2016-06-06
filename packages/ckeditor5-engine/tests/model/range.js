@@ -441,9 +441,17 @@ describe( 'Range', () => {
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 4, 4 ] );
 		} );
 
-		it( 'should move after inserted nodes if the range is collapsed', () => {
+		it( 'should not change if the range is collapsed and isSticky is false', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 2 ] ) );
-			const transformed = range.getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 3 );
+			const transformed = range.getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 3, false, false );
+
+			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
+			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 3, 2 ] );
+		} );
+
+		it( 'should move after inserted nodes if the range is collapsed and isSticky is true', () => {
+			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 2 ] ) );
+			const transformed = range.getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 3, false, true );
 
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 5 ] );
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 3, 5 ] );
@@ -707,6 +715,22 @@ describe( 'Range', () => {
 			const deserialized = Range.fromJSON( serialized, doc );
 
 			expect( deserialized ).to.deep.equal( range );
+		} );
+	} );
+
+	describe( 'isEmpty', () => {
+		beforeEach( () => {
+			prepareRichRoot( root );
+		} );
+
+		it( 'should be true if there are no nodes between range start and end', () => {
+			let range = new Range( new Position( root, [ 0, 0, 5 ] ), new Position( root, [ 0, 1, 0 ] ) );
+			expect( range.isEmpty ).to.be.true;
+		} );
+
+		it( 'should be false if there are nodes between range start and end', () => {
+			let range = new Range( new Position( root, [ 0, 0, 5 ] ), new Position( root, [ 0, 1, 1 ] ) );
+			expect( range.isEmpty ).to.be.false;
 		} );
 	} );
 

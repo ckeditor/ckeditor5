@@ -134,6 +134,12 @@ export default class ModelConversionDispatcher {
 	 * @param {Object} data Additional information about the change.
 	 */
 	convertChange( type, data ) {
+		// Do not convert changes if they happen in graveyard.
+		// Graveyard is a special root that has no view / no other representation and changes done in it should not be converted.
+		if ( type !== 'remove' && data.range && data.range.root.rootName == '$graveyard' ) {
+			return;
+		}
+
 		if ( type == 'insert' || type == 'reinsert' ) {
 			this.convertInsert( data.range );
 		} else if ( type == 'move' ) {
