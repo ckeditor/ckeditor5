@@ -14,6 +14,7 @@
     "ckeditor5-engine": "ckeditor/ckeditor5-engine",
     "ckeditor5-enter": "ckeditor/ckeditor5-enter",
     "ckeditor5-formats": "ckeditor/ckeditor5-formats",
+    "ckeditor5-hackathon": "ckeditor/ckeditor5-hackathon#markdown-editor",
     "ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph",
     "ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark",
     "ckeditor5-typing": "ckeditor/ckeditor5-typing",
