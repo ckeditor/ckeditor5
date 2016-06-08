@@ -12,6 +12,7 @@ import Element from '/ckeditor5/engine/model/element.js';
 import Text from '/ckeditor5/engine/model/text.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import Position from '/ckeditor5/engine/model/position.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'model test utils', () => {
 	let document, root, selection, sandbox;
@@ -46,6 +47,12 @@ describe( 'model test utils', () => {
 			expect( getData( document ) ).to.equal( '<selection><b>btext</b></selection>' );
 			sinon.assert.calledOnce( stringifySpy );
 			sinon.assert.calledWithExactly( stringifySpy, root, document.selection );
+		} );
+
+		it( 'should throw an error when passing invalid document', () => {
+			expect( () => {
+				getData( { foo: 'bar' } );
+			} ).to.throw( CKEditorError, /model-getData-invalid-document/ );
 		} );
 	} );
 
