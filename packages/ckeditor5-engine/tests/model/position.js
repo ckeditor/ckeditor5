@@ -35,8 +35,8 @@ describe( 'position', () => {
 	before( () => {
 		doc = new Document();
 
-		root = doc.createRoot( 'root' );
-		otherRoot = doc.createRoot( 'otherRoot' );
+		root = doc.createRoot( '$root', 'root' );
+		otherRoot = doc.createRoot( '$root', 'otherRoot' );
 
 		li1 = new Element( 'li', [], 'foz' );
 

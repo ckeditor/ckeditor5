@@ -40,7 +40,7 @@ let viewDoc, viewRoot, writer, viewSelection;
 
 beforeEach( () => {
 	modelDoc = new ModelDocument();
-	modelRoot = modelDoc.createRoot( 'main' );
+	modelRoot = modelDoc.createRoot();
 	modelSelection = modelDoc.selection;
 
 	viewDoc = new ViewDocument();

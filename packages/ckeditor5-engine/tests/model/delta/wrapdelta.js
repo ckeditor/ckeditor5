@@ -25,7 +25,7 @@ describe( 'Batch', () => {
 
 	beforeEach( () => {
 		doc = new Document();
-		root = doc.createRoot( 'root' );
+		root = doc.createRoot( '$root', 'root' );
 
 		root.insertChildren( 0, 'foobar' );
 
@@ -111,7 +111,7 @@ describe( 'WrapDelta', () => {
 
 	beforeEach( () => {
 		doc = new Document();
-		root = doc.createRoot( 'root' );
+		root = doc.createRoot( '$root', 'root' );
 		wrapDelta = new WrapDelta();
 	} );
 

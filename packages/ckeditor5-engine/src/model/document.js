@@ -103,7 +103,7 @@ export default class Document {
 		} );
 
 		// Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
-		this.createRoot( graveyardName );
+		this.createRoot( '$root', graveyardName );
 
 		/**
 		 * Document's history.
@@ -187,7 +187,7 @@ export default class Document {
 	 * schema if you use a different name.
 	 * @returns {engine.model.RootElement} Created root.
 	 */
-	createRoot( rootName = 'main', elementName = '$root' ) {
+	createRoot( elementName = '$root', rootName = 'main' ) {
 		if ( this._roots.has( rootName ) ) {
 			/**
 			 * Root with specified name already exists.

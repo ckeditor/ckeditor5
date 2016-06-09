@@ -17,7 +17,7 @@ describe( 'NoOperation', () => {
 	beforeEach( () => {
 		noop = new NoOperation( 0 );
 		doc = new Document();
-		root = doc.createRoot( 'root' );
+		root = doc.createRoot( '$root', 'root' );
 	} );
 
 	it( 'should not throw an error when applied', () => {

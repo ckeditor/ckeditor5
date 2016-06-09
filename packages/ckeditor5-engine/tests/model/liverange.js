@@ -18,7 +18,7 @@ describe( 'LiveRange', () => {
 
 	before( () => {
 		doc = new Document();
-		root = doc.createRoot( 'root' );
+		root = doc.createRoot( '$root', 'root' );
 
 		let lis = [
 			new Element( 'li', [], 'aaaaaaaaaa' ),
@@ -381,7 +381,7 @@ describe( 'LiveRange', () => {
 		let otherRoot;
 
 		before( () => {
-			otherRoot = doc.createRoot( 'otherRoot' );
+			otherRoot = doc.createRoot( '$root', 'otherRoot' );
 		} );
 
 		let live, clone;

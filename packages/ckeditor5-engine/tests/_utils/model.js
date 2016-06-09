@@ -138,7 +138,7 @@ export function parse( data, options = {} ) {
 		root.removeChildren( 0, root.getChildCount() );
 	} else {
 		document = new Document();
-		root = document.createRoot( rootName );
+		root = document.createRoot( '$root', rootName );
 	}
 
 	const path = [];

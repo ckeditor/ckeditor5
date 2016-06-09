@@ -17,7 +17,7 @@ describe( 'RootAttributeOperation', () => {
 
 	beforeEach( () => {
 		doc = new Document();
-		root = doc.createRoot( 'root' );
+		root = doc.createRoot( '$root', 'root' );
 	} );
 
 	describe( 'type', () => {

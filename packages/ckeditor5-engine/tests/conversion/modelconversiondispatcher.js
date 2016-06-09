@@ -21,7 +21,7 @@ describe( 'ModelConversionDispatcher', () => {
 	beforeEach( () => {
 		dispatcher = new ModelConversionDispatcher();
 		doc = new ModelDocument();
-		root = doc.createRoot( 'root' );
+		root = doc.createRoot( '$root', 'root' );
 	} );
 
 	describe( 'constructor', () => {

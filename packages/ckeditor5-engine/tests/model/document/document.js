@@ -41,8 +41,8 @@ describe( 'Document', () => {
 		} );
 
 		it( 'should return an iterator of all roots without the graveyard', () => {
-			doc.createRoot( 'a' );
-			doc.createRoot( 'b' );
+			doc.createRoot( '$root', 'a' );
+			doc.createRoot( '$root', 'b' );
 
 			expect( Array.from( doc.rootNames ) ).to.deep.equal( [ 'a', 'b' ] );
 		} );
@@ -50,7 +50,7 @@ describe( 'Document', () => {
 
 	describe( 'createRoot', () => {
 		it( 'should create a new RootElement, add it to roots map and return it', () => {
-			let root = doc.createRoot( 'root' );
+			let root = doc.createRoot( '$root', 'root' );
 
 			expect( doc._roots.size ).to.equal( 2 );
 			expect( root ).to.be.instanceof( RootElement );
@@ -60,7 +60,7 @@ describe( 'Document', () => {
 		} );
 
 		it( 'should create a new RootElement with the specified name', () => {
-			let root = doc.createRoot( 'root', 'foo' );
+			let root = doc.createRoot( 'foo', 'root' );
 
 			expect( root ).to.have.property( 'name', 'foo' );
 			expect( root ).to.have.property( 'rootName', 'root' );
@@ -79,7 +79,7 @@ describe( 'Document', () => {
 
 	describe( 'getRoot', () => {
 		it( 'should return a RootElement previously created with given name', () => {
-			let newRoot = doc.createRoot( 'root' );
+			let newRoot = doc.createRoot( '$root', 'root' );
 			let getRoot = doc.getRoot( 'root' );
 
 			expect( getRoot ).to.equal( newRoot );
@@ -96,7 +96,7 @@ describe( 'Document', () => {
 
 	describe( 'hasRoot', () => {
 		it( 'should return true when Document has RootElement with given name', () => {
-			doc.createRoot( 'root' );
+			doc.createRoot( '$root', 'root' );
 
 			expect( doc.hasRoot( 'root' ) ).to.be.true;
 		} );
@@ -233,9 +233,9 @@ describe( 'Document', () => {
 		} );
 
 		it( 'should return the first root added to the document', () => {
-			let rootA = doc.createRoot( 'rootA' );
-			doc.createRoot( 'rootB' );
-			doc.createRoot( 'rootC' );
+			let rootA = doc.createRoot( '$root', 'rootA' );
+			doc.createRoot( '$root', 'rootB' );
+			doc.createRoot( '$root', 'rootC' );
 
 			expect( doc._getDefaultRoot() ).to.equal( rootA );
 		} );

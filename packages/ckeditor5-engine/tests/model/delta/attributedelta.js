@@ -22,7 +22,7 @@ let doc, root;
 
 beforeEach( () => {
 	doc = new Document();
-	root = doc.createRoot( 'root' );
+	root = doc.createRoot( '$root', 'root' );
 } );
 
 describe( 'Batch', () => {

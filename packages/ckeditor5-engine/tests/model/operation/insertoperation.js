@@ -21,7 +21,7 @@ describe( 'InsertOperation', () => {
 
 	beforeEach( () => {
 		doc = new Document();
-		root = doc.createRoot( 'root' );
+		root = doc.createRoot( '$root', 'root' );
 	} );
 
 	it( 'should have proper type', () => {
