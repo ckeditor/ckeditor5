@@ -18,7 +18,7 @@ describe( 'ChangeBuffer', () => {
 
 	beforeEach( () => {
 		doc = new Document();
-		root = doc.createRoot( 'main' );
+		root = doc.createRoot();
 		buffer = new ChangeBuffer( doc, CHANGE_LIMIT );
 	} );
 
