@@ -36,20 +36,13 @@ module.exports = ( config ) => {
 			.catch( ( error )  => done( error ) );
 	} );
 
-	gulp.task( 'update', () => {
-		const options = minimist( process.argv.slice( 2 ), {
-			boolean: [ 'npm-update' ],
-			default: {
-				'npm-update': false
-			}
-		} );
+	gulp.task( 'update', updateTaskHandler );
 
-		updateTask( installTask, ckeditor5Path, packageJSON, config.WORKSPACE_DIR, options[ 'npm-update' ] );
-	} );
+	gulp.task( 'pull', updateTaskHandler );
 
-	gulp.task( 'status', () => {
-		statusTask( ckeditor5Path, packageJSON, config.WORKSPACE_DIR );
-	} );
+	gulp.task( 'status', statusTaskHandler );
+
+	gulp.task( 'st', statusTaskHandler );
 
 	gulp.task( 'relink', () => {
 		relinkTask( ckeditor5Path, packageJSON, config.WORKSPACE_DIR );
@@ -69,4 +62,19 @@ module.exports = ( config ) => {
 			throw new Error( 'Please provide a package to install: gulp dev-install --plugin <path|GitHub URL|name>' );
 		}
 	} );
+
+	function updateTaskHandler() {
+		const options = minimist( process.argv.slice( 2 ), {
+			boolean: [ 'npm-update' ],
+			default: {
+				'npm-update': false
+			}
+		} );
+
+		return updateTask( installTask, ckeditor5Path, packageJSON, config.WORKSPACE_DIR, options[ 'npm-update' ] );
+	}
+
+	function statusTaskHandler() {
+		return statusTask( ckeditor5Path, packageJSON, config.WORKSPACE_DIR );
+	}
 };

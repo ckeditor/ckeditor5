@@ -7,10 +7,14 @@
 
 'use strict';
 
+require( '../../tasks/dev/tasks' )( {} );
 const sinon = require( 'sinon' );
 const tools = require( '../../tasks/dev/utils/tools' );
 const git = require( '../../tasks/dev/utils/git' );
 const path = require( 'path' );
+const chai = require( 'chai' );
+const expect = chai.expect;
+const gulp = require( 'gulp' );
 
 describe( 'dev-update', () => {
 	const updateTask = require( '../../tasks/dev/tasks/update' );
@@ -234,5 +238,21 @@ describe( 'dev-update', () => {
 		sinon.assert.notCalled( installTask );
 
 		sinon.assert.notCalled( spies.removeSymlink );
+	} );
+} );
+
+describe( 'gulp task update', () => {
+	const tasks = gulp.tasks;
+
+	it( 'should be available', () => {
+		expect( tasks ).to.have.property( 'update' );
+		expect( tasks.update.fn ).to.be.a( 'function' );
+	} );
+
+	it( 'should have an alias', () => {
+		expect( tasks ).to.have.property( 'pull' );
+		expect( tasks.pull.fn ).to.be.a( 'function' );
+
+		expect( tasks.pull.fn ).to.equal( tasks.update.fn );
 	} );
 } );
