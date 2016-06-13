@@ -77,10 +77,10 @@ module.exports = {
 };
 
 function appendPeriodIfMissing( text ) {
-	text = text ? String.prototype.trim.call( text ) : '';
+	text = text ? text.trim() : '';
 	const length = text.length;
 
-	if ( length > 0 && text[length - 1] !== '.' ) {
+	if ( length > 0 && text[ length - 1 ] !== '.' ) {
 		text += '.';
 	}
 
