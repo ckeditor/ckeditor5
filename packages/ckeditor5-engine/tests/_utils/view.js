@@ -38,7 +38,7 @@ const TEXT_RANGE_END_TOKEN = '}';
  */
 export function getData( document, options = {} ) {
 	if ( !( document instanceof Document ) ) {
-		throw new TypeError( 'Document needs to be an instance of engine.view.Document' );
+		throw new TypeError( 'Document needs to be an instance of engine.view.Document.' );
 	}
 
 	const withoutSelection = !!options.withoutSelection;
@@ -69,7 +69,7 @@ getData._stringify = stringify;
  */
 export function setData( document, data, options = {} ) {
 	if ( !( document instanceof Document ) ) {
-		throw new TypeError( 'Document needs to be an instance of engine.view.Document' );
+		throw new TypeError( 'Document needs to be an instance of engine.view.Document.' );
 	}
 
 	const rootName = options.rootName || 'main';

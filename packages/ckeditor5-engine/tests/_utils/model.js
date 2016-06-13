@@ -28,7 +28,7 @@ import Document from '/ckeditor5/engine/model/document.js';
  */
 export function getData( document, options = {} ) {
 	if ( !( document instanceof Document ) ) {
-		throw new TypeError( 'Document needs to be an instance of engine.model.Document' );
+		throw new TypeError( 'Document needs to be an instance of engine.model.Document.' );
 	}
 
 	const withoutSelection = !!options.withoutSelection;
@@ -52,7 +52,7 @@ getData._stringify = stringify;
  */
 export function setData( document, data, options = {} ) {
 	if ( !( document instanceof Document ) ) {
-		throw new TypeError( 'Document needs to be an instance of engine.model.Document' );
+		throw new TypeError( 'Document needs to be an instance of engine.model.Document.' );
 	}
 
 	setData._parse( data, {
