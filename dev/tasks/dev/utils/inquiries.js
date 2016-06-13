@@ -6,6 +6,7 @@
 'use strict';
 
 const inquirer = require( 'inquirer' );
+const sanitize = require( './sanitize' );
 const DEFAULT_PLUGIN_NAME_PREFIX = 'ckeditor5-';
 const DEFAULT_PLUGIN_VERSION = '0.0.1';
 const DEFAULT_GITHUB_URL_PREFIX = 'ckeditor/';
@@ -70,19 +71,8 @@ module.exports = {
 				name: 'description',
 				message: 'Package description (one sentence, must end with period):'
 			} ], ( answers ) => {
-				resolve( appendPeriodIfMissing( answers.description ) );
+				resolve( sanitize.appendPeriodIfMissing( answers.description ) );
 			} );
 		} );
 	}
 };
-
-function appendPeriodIfMissing( text ) {
-	text = text ? text.trim() : '';
-	const length = text.length;
-
-	if ( length > 0 && text[ length - 1 ] !== '.' ) {
-		text += '.';
-	}
-
-	return text;
-}
