@@ -68,10 +68,21 @@ module.exports = {
 		return new Promise( ( resolve ) => {
 			inquirer.prompt( [ {
 				name: 'description',
-				message: 'Package description (one sentence):'
+				message: 'Package description (one sentence, must end with period):'
 			} ], ( answers ) => {
-				resolve( answers.description || '' );
+				resolve( appendPeriodIfMissing( answers.description ) );
 			} );
 		} );
 	}
 };
+
+function appendPeriodIfMissing( text ) {
+	text = text ? String.prototype.trim.call( text ) : '';
+	const length = text.length;
+
+	if ( length > 0 && text[length - 1] !== '.' ) {
+		text += '.';
+	}
+
+	return text;
+}
