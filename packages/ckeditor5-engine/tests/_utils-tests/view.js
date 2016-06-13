@@ -68,6 +68,12 @@ describe( 'view test utils', () => {
 				expect( stringifyOptions ).to.have.property( 'showPriority' ).that.equals( false );
 				expect( stringifyOptions ).to.have.property( 'ignoreRoot' ).that.equals( true );
 			} );
+
+			it( 'should throw an error when passing invalid document', () => {
+				expect( () => {
+					getData( { invalid: 'document' } );
+				} ).to.throw( TypeError, 'Document needs to be an instance of engine.view.Document.' );
+			} );
 		} );
 
 		describe( 'setData', () => {
@@ -100,6 +106,12 @@ describe( 'view test utils', () => {
 				expect( args[ 0 ] ).to.equal( data );
 				expect( args[ 1 ] ).to.be.an( 'object' );
 				expect( args[ 1 ].rootElement ).to.equal( viewDocument.getRoot() );
+			} );
+
+			it( 'should throw an error when passing invalid document', () => {
+				expect( () => {
+					setData( { invalid: 'document' } );
+				} ).to.throw( TypeError, 'Document needs to be an instance of engine.view.Document.' );
 			} );
 		} );
 	} );
