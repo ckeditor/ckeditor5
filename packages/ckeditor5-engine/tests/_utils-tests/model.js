@@ -12,7 +12,6 @@ import Element from '/ckeditor5/engine/model/element.js';
 import Text from '/ckeditor5/engine/model/text.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import Position from '/ckeditor5/engine/model/position.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'model test utils', () => {
 	let document, root, selection, sandbox;
@@ -51,8 +50,8 @@ describe( 'model test utils', () => {
 
 		it( 'should throw an error when passing invalid document', () => {
 			expect( () => {
-				getData( { foo: 'bar' } );
-			} ).to.throw( CKEditorError, /model-getData-invalid-document/ );
+				getData( { invalid: 'document' } );
+			} ).to.throw( TypeError, /Document needs to be an instance of engine.model.Document/ );
 		} );
 	} );
 
@@ -81,6 +80,12 @@ describe( 'model test utils', () => {
 			sinon.assert.calledOnce( parseSpy );
 			const args = parseSpy.firstCall.args;
 			expect( args[ 0 ] ).to.equal( data );
+		} );
+
+		it( 'should throw an error when passing invalid document', () => {
+			expect( () => {
+				getData( { invalid: 'document' } );
+			} ).to.throw( TypeError, /Document needs to be an instance of engine.model.Document/ );
 		} );
 	} );
 

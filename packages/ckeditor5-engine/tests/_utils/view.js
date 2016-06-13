@@ -5,6 +5,7 @@
 
 'use strict';
 
+import Document from '/ckeditor5/engine/view/document.js';
 import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
 import ViewElement from '/ckeditor5/engine/view/element.js';
@@ -36,6 +37,10 @@ const TEXT_RANGE_END_TOKEN = '}';
  * @returns {String} The stringified data.
  */
 export function getData( document, options = {} ) {
+	if ( !( document instanceof Document ) ) {
+		throw new TypeError( 'Document needs to be an instance of engine.view.Document' );
+	}
+
 	const withoutSelection = !!options.withoutSelection;
 	const rootName = options.rootName || 'main';
 	const root = document.getRoot( rootName );
@@ -63,6 +68,10 @@ getData._stringify = stringify;
  * used.
  */
 export function setData( document, data, options = {} ) {
+	if ( !( document instanceof Document ) ) {
+		throw new TypeError( 'Document needs to be an instance of engine.view.Document' );
+	}
+
 	const rootName = options.rootName || 'main';
 	const root = document.getRoot( rootName );
 	const result = setData._parse( data, { rootElement: root } );

@@ -14,7 +14,6 @@ import Element from '/ckeditor5/engine/model/element.js';
 import DocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
 import Selection from '/ckeditor5/engine/model/selection.js';
 import Document from '/ckeditor5/engine/model/document.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 /**
  * Writes the contents of the {@link engine.model.Document Document} to an HTML-like string.
@@ -29,10 +28,7 @@ import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
  */
 export function getData( document, options = {} ) {
 	if ( !( document instanceof Document ) ) {
-		throw new CKEditorError(
-			'model-getData-invalid-document: document needs to be an instance of Document class',
-			{ document }
-		);
+		throw new TypeError( 'Document needs to be an instance of engine.model.Document' );
 	}
 
 	const withoutSelection = !!options.withoutSelection;
@@ -55,6 +51,10 @@ getData._stringify = stringify;
  * used.
  */
 export function setData( document, data, options = {} ) {
+	if ( !( document instanceof Document ) ) {
+		throw new TypeError( 'Document needs to be an instance of engine.model.Document' );
+	}
+
 	setData._parse( data, {
 		document: document,
 		rootName: options.rootName
