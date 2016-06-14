@@ -100,7 +100,7 @@ export default class Editor {
 	}
 
 	/**
-	 * Loads and initilizes plugins specified in `config.features`.
+	 * Loads and initilizes plugins specified in config features.
 	 *
 	 * @returns {Promise} A promise which resolves once the initialization is completed.
 	 */
@@ -112,7 +112,7 @@ export default class Editor {
 			.then( initPlugins );
 
 		function loadPlugins() {
-			let plugins = config.features || [];
+			let plugins = config.get( 'features' ) || [];
 
 			// Handle features passed as a string.
 			if ( !isArray( plugins ) ) {
