@@ -22,7 +22,6 @@ export default class TreeWalker {
 	 *
 	 * @constructor
 	 * @param {Object} options Object with configuration.
-	 * @param {engine.model.Position} [options.startPosition] Starting position.
 	 * @param {engine.model.Range} [options.boundaries=null] Range to define boundaries of the iterator.
 	 * @param {engine.model.Position} [options.startPosition] Starting position.
 	 * @param {'FORWARD'|'BACKWARD'} [options.direction='FORWARD'] Walking direction.
@@ -65,8 +64,8 @@ export default class TreeWalker {
 		/**
 		 * Iterator boundaries.
 		 *
-		 * When the {@link #next} method is called on the end boundary or the {@link #previous} method
-		 * on the start boundary, then `{ done: true }` is returned.
+		 * When the iterator is walking `FORWARD` on the end of boundary or is walking `BACKWARD`
+		 * on the start of boundary, then `{ done: true }` is returned.
 		 *
 		 * If boundaries are not defined they are set before first and after last child of the root node.
 		 *
@@ -77,7 +76,9 @@ export default class TreeWalker {
 
 		/**
 		 * Iterator position. This is always static position, even if the initial position was a
-		 * {@link engine.model.LivePosition live position}.
+		 * {@link engine.model.LivePosition live position}. If start position is not defined then position depends
+		 * on {@link #direction}. If direction is `FORWARD` position starts form the beginning, when direction
+		 * is `BACKWARD` position starts from the end.
 		 *
 		 * @readonly
 		 * @member {engine.model.Position} engine.model.TreeWalker#position
@@ -251,7 +252,7 @@ export default class TreeWalker {
 	 * @private
 	 * @returns {Object}
 	 * @returns {Boolean} return.done True if iterator is done.
-	 * @returns {core.model.TreeWalkerValue} return.value Information about taken step.
+	 * @returns {engine.model.TreeWalkerValue} return.value Information about taken step.
 	 */
 	_previous() {
 		const previousPosition = this.position;
@@ -312,6 +313,7 @@ export default class TreeWalker {
 				return formatReturnValue( 'TEXT', textFragment, previousPosition, position, charactersCount );
 			}
 		} else {
+			// `node` is not set, we reached the beginning of current `parent`.
 			position.path.pop();
 			this.position = position;
 			this._visitedParent = parent.parent;
@@ -369,5 +371,5 @@ function formatReturnValue( type, item, previousPosition, nextPosition, length )
 /**
  * Tree walking directions.
  *
- * @typedef {'FORWARD'|'BACKWARD'} core.model.TreeWalkerDirection
+ * @typedef {'FORWARD'|'BACKWARD'} engine.view.TreeWalkerDirection
  */
