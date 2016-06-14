@@ -17,8 +17,7 @@ describe( 'utils', () => {
 			it( 'should be defined', () => expect( sanitize.appendPeriodIfMissing ).to.be.a( 'function' ) );
 
 			it( 'should trim whitespace/new lines to empty string', () => {
-				// jscs: disable validateQuoteMarks
-				const sanitized = sanitize.appendPeriodIfMissing( "\n\t\r " );
+				const sanitized = sanitize.appendPeriodIfMissing( '\n\t\r ' );
 
 				expect( sanitized ).to.equal( '' );
 			} );
