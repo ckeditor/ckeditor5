@@ -8,9 +8,8 @@
 module.exports = {
 	appendPeriodIfMissing( text ) {
 		text = text.trim();
-		const length = text.length;
 
-		if ( length > 0 && !text.endsWith( '.' ) ) {
+		if ( text.length > 0 && !text.endsWith( '.' ) ) {
 			text += '.';
 		}
 

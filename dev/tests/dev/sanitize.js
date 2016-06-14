@@ -42,7 +42,9 @@ describe( 'utils', () => {
 			} );
 
 			it( 'should return empty string when invoked with empty string', () => {
-				expect( sanitize.appendPeriodIfMissing( '' ) ).to.equal( '' );
+				const sanitized = sanitize.appendPeriodIfMissing( '' );
+
+				expect( sanitized ).to.equal( '' );
 			} );
 		} );
 	} );
