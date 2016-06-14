@@ -7,7 +7,7 @@
 
 import EditorUIView from '../../editorui/editoruiview.js';
 import uid from '../../../utils/uid.js';
-import Template from '/ckeditor5/ui/template.js';
+import Template from '../../template.js';
 
 /**
  * Boxed editor UI view.

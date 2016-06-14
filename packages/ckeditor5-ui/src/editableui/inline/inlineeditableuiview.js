@@ -6,7 +6,7 @@
 'use strict';
 
 import EditableUIView from '../../editableui/editableuiview.js';
-import Template from '/ckeditor5/ui/template.js';
+import Template from '../../template.js';
 
 /**
  * The class implementing an inline {@link ui.editableUI.EditableUIView}.

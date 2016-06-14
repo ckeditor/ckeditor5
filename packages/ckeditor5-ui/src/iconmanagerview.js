@@ -6,7 +6,7 @@
 'use strict';
 
 import View from './view.js';
-import Template from '/ckeditor5/ui/template.js';
+import Template from './template.js';
 
 /**
  * Icon manager view using {@link ui.iconManager.IconManagerModel}.
