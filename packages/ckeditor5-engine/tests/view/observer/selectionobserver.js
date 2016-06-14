@@ -146,12 +146,17 @@ describe( 'SelectionObserver', () => {
 			}
 		} );
 
-		testUtils.sinon.stub( log, 'warn', ( msg ) => {
-			expect( msg ).to.match( /^selectionchange-inifite-loop/ );
-			done();
+		let warnedOnce = false;
 
-			// Prevent "done() called multiple times" error.
-			done = () => {};
+		testUtils.sinon.stub( log, 'warn', ( msg ) => {
+			if ( !warnedOnce ) {
+				warnedOnce = true;
+
+				setTimeout( () => {
+					expect( msg ).to.match( /^selectionchange-inifite-loop/ );
+					done();
+				}, 200 );
+			}
 		} );
 
 		changeDomSelection();
