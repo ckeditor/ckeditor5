@@ -7,7 +7,6 @@
 
 'use strict';
 
-require( '../../tasks/dev/tasks' )( {} );
 const sinon = require( 'sinon' );
 const tools = require( '../../tasks/dev/utils/tools' );
 const git = require( '../../tasks/dev/utils/git' );

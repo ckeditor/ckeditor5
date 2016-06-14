@@ -87,9 +87,5 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/ckeditor/ckeditor5.git"
-  },
-  "scripts": {
-    "test": "mocha dev/tests --recursive",
-    "coverage": "istanbul cover _mocha dev/tests/ -- --recursive"
   }
 }
