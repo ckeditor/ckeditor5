@@ -40,12 +40,6 @@ describe( 'utils', () => {
 
 				expect( sanitized ).to.equal( '' );
 			} );
-
-			it( 'should return empty string when invoked with empty string', () => {
-				const sanitized = sanitize.appendPeriodIfMissing( '' );
-
-				expect( sanitized ).to.equal( '' );
-			} );
 		} );
 	} );
 } );
