@@ -168,11 +168,11 @@ export default class Config {
 	/**
 	 * Get specified configuration from specified source (nested object).
 	 *
-     * @private
+	 * @private
 	 * @param {Object} source level of nested object.
 	 * @param {String} name The configuration name. Configuration names are case-insensitive.
 	 * @returns {*} The configuration value or `undefined` if the configuration entry was not found.
-     */
+	 */
 	_getFromSource( source, name ) {
 		// The configuration name should be split into parts if it has dots. E.g. `resize.width` -> [`resize`, `width`].
 		const parts = name.toLowerCase().split( '.' );
