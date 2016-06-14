@@ -6,7 +6,6 @@ const gulp = require( 'gulp' );
 const jshint = require( 'gulp-jshint' );
 const jscs = require( 'gulp-jscs' );
 const fs = require( 'fs' );
-const guppy = require( 'git-guppy' )( gulp );
 const gulpFilter = require( 'gulp-filter' );
 const gutil = require( 'gulp-util' );
 
@@ -30,6 +29,8 @@ module.exports = ( config ) => {
 		 * @returns {Stream}
 		 */
 		lintStaged() {
+			const guppy = require( 'git-guppy' )( gulp );
+
 			return guppy.stream( 'pre-commit', { base: './' } )
 				.pipe( gulpFilter( src ) )
 				.pipe( lint() )
