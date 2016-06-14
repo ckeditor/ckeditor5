@@ -14,7 +14,6 @@ import Model from '/ckeditor5/ui/model.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
 import DOMEmitterMixin from '/ckeditor5/ui/domemittermixin.js';
-import extend from '/ckeditor5/utils/lib/lodash/extend.js';
 
 testUtils.createSinonSandbox();
 
@@ -31,7 +30,7 @@ describe( 'Template', () => {
 		} );
 
 		it( 'normalizes template definition', () => {
-			const bind = Template.bind( new Model( {} ), extend( {}, DOMEmitterMixin ) );
+			const bind = Template.bind( new Model( {} ), Object.create( DOMEmitterMixin ) );
 			const tpl = new Template( {
 				tag: 'p',
 				attributes: {
@@ -248,7 +247,7 @@ describe( 'Template', () => {
 				foo: 'bar'
 			} );
 
-			const emitter = extend( {}, EmitterMixin );
+			const emitter = Object.create( EmitterMixin );
 			const bind = Template.bind( observable, emitter );
 			const el = new Template( {
 				tag: 'div',
@@ -268,7 +267,7 @@ describe( 'Template', () => {
 				foo: 'bar'
 			} );
 
-			const emitter = extend( {}, EmitterMixin );
+			const emitter = Object.create( EmitterMixin );
 			const bind = Template.bind( observable, emitter );
 			const el = new Template( {
 				tag: 'div',
@@ -424,7 +423,7 @@ describe( 'Template', () => {
 					baz: 'qux'
 				} );
 
-				domEmitter = extend( {}, DOMEmitterMixin );
+				domEmitter = Object.create( DOMEmitterMixin );
 				bind = Template.bind( observable, domEmitter );
 			} );
 
@@ -641,7 +640,7 @@ describe( 'Template', () => {
 					baz: 'qux'
 				} );
 
-				emitter = extend( {}, EmitterMixin );
+				emitter = Object.create( EmitterMixin );
 				bind = Template.bind( observable, emitter );
 			} );
 
@@ -1096,7 +1095,7 @@ describe( 'Template', () => {
 				baz: 'qux'
 			} );
 
-			emitter = extend( {}, DOMEmitterMixin );
+			emitter = Object.create( DOMEmitterMixin );
 			bind = Template.bind( observable, emitter );
 		} );
 
