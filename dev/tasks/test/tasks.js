@@ -16,19 +16,27 @@ const buildUtils = require( '../build/utils' );
 const benderConfig = require( '../../../bender' );
 
 /**
- * Defines Node.js testing task.
+ * Defines Node.js testing task and development tools testing tasks.
  *
- * To run tests under node:
+ * To run tests under Node.js:
  *
  *		gulp test:node
  *
- * To run build before testing:
+ * To run build under Node.js before testing:
  *
  *		gulp test:node:build
  *
- * To run testing with code coverage:
+ * To run testing under Node.js with code coverage:
  *
  *		gulp test:node:coverage
+ *
+ * To run development tools tests:
+ *
+ * 		gulp test:dev
+ *
+ * To run development tools tests with coverage:
+ *
+ * 		gulp test:dev:coverage
  */
 module.exports = () => {
 	const ignoreRegexp = /\/\* ?bender-tags:.*\bbrowser-only\b.*\*\//;
