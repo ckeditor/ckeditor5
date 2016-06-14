@@ -54,10 +54,27 @@ export default class Template {
 	 * Applies template {@link ui.Template#def} to existing DOM tree.
 	 *
 	 * **Note:** No new DOM nodes (elements, text nodes) will be created.
+	 *		const element = document.createElement( 'div' );
+	 *		const bind = Template.bind( observableInstance, emitterInstance );
+	 *
+	 *		const template = new Template( {
+	 *			attrs: {
+	 *				id: 'first-div',
+	 *				class: bind.to( 'divClass' )
+	 *			},
+	 *			on: {
+	 *				click: bind( 'elementClicked' ) // Will be fired by the observableInstance.
+	 *			}
+	 *			children: [
+	 *				'Div text.'
+	 *			]
+	 *		} );
+	 *
+	 *		template.apply( element );
+	 *
+	 *		element.outerHTML == "<div id="first-div" class="my-div">Div text.</div>"
 	 *
 	 * @see ui.Template#render
-	 * @see ui.View#applyTemplateToElement.
-	 *
 	 * @param {Node} element Root element for template to apply.
 	 */
 	apply( node ) {

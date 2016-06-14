@@ -53,7 +53,7 @@ export default class EditableUIView extends View {
 	 */
 	init() {
 		if ( this.editableElement ) {
-			this.applyTemplateToElement( this.editableElement, this.template.definition );
+			this.template.apply( this.editableElement );
 		} else {
 			this.editableElement = this.element;
 		}

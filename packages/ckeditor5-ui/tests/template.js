@@ -294,9 +294,19 @@ describe( 'Template', () => {
 	} );
 
 	describe( 'apply', () => {
+		let observable, domEmitter, bind;
+
 		beforeEach( () => {
 			el = document.createElement( 'div' );
 			text = document.createTextNode( '' );
+
+			observable = new Model( {
+				foo: 'bar',
+				baz: 'qux'
+			} );
+
+			domEmitter = Object.create( DOMEmitterMixin );
+			bind = Template.bind( observable, domEmitter );
 		} );
 
 		it( 'throws when wrong template definition', () => {
@@ -398,6 +408,91 @@ describe( 'Template', () => {
 			} ).apply( el );
 
 			expect( el.outerHTML ).to.be.equal( '<div class="parent">Children: <span class="child"></span></div>' );
+		} );
+
+		it( 'should work for deep DOM structure', () => {
+			const childA = document.createElement( 'a' );
+			const childB = document.createElement( 'b' );
+
+			childA.textContent = 'anchor';
+			childB.textContent = 'bold';
+
+			el.appendChild( childA );
+			el.appendChild( childB );
+
+			expect( el.outerHTML ).to.equal( '<div><a>anchor</a><b>bold</b></div>' );
+
+			const spy1 = testUtils.sinon.spy();
+			const spy2 = testUtils.sinon.spy();
+			const spy3 = testUtils.sinon.spy();
+
+			observable.on( 'ku', spy1 );
+			observable.on( 'kd', spy2 );
+			observable.on( 'mo', spy3 );
+
+			new Template( {
+				tag: 'div',
+				children: [
+					{
+						tag: 'a',
+						on: {
+							keyup: bind.to( 'ku' )
+						},
+						attributes: {
+							class: bind.to( 'foo', val => 'applied-A-' + val ),
+							id: 'applied-A'
+						},
+						children: [ 'Text applied to childA.' ]
+					},
+					{
+						tag: 'b',
+						on: {
+							keydown: bind.to( 'kd' )
+						},
+						attributes: {
+							class: bind.to( 'baz', val => 'applied-B-' + val ),
+							id: 'applied-B'
+						},
+						children: [ 'Text applied to childB.' ]
+					},
+					'Text which is not to be applied because it does NOT exist in original element.'
+				],
+				on: {
+					'mouseover@a': bind.to( 'mo' )
+				},
+				attributes: {
+					id: bind.to( 'foo', val => val.toUpperCase() ),
+					class: bind.to( 'baz', val => 'applied-parent-' + val )
+				}
+			} ).apply( el );
+
+			expect( el.outerHTML ).to.equal( '<div id="BAR" class="applied-parent-qux">' +
+				'<a class="applied-A-bar" id="applied-A">Text applied to childA.</a>' +
+				'<b class="applied-B-qux" id="applied-B">Text applied to childB.</b>' +
+			'</div>' );
+
+			observable.foo = 'updated';
+
+			expect( el.outerHTML ).to.equal( '<div id="UPDATED" class="applied-parent-qux">' +
+				'<a class="applied-A-updated" id="applied-A">Text applied to childA.</a>' +
+				'<b class="applied-B-qux" id="applied-B">Text applied to childB.</b>' +
+			'</div>' );
+
+			document.body.appendChild( el );
+
+			// Test "mouseover@a".
+			dispatchEvent( el, 'mouseover' );
+			dispatchEvent( childA, 'mouseover' );
+
+			// Test "keyup".
+			dispatchEvent( childA, 'keyup' );
+
+			// Test "keydown".
+			dispatchEvent( childB, 'keydown' );
+
+			sinon.assert.calledOnce( spy1 );
+			sinon.assert.calledOnce( spy2 );
+			sinon.assert.calledOnce( spy3 );
 		} );
 	} );
 

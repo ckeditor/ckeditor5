@@ -294,99 +294,6 @@ describe( 'View', () => {
 			} ).to.not.throw();
 		} );
 	} );
-
-	describe( 'applyTemplateToElement', () => {
-		beforeEach( () => {
-			setTestViewClass();
-			setTestViewInstance( { a: 'foo', b: 42 } );
-		} );
-
-		it( 'should work for deep DOM structure', () => {
-			const el = document.createElement( 'div' );
-			const childA = document.createElement( 'a' );
-			const childB = document.createElement( 'b' );
-
-			childA.textContent = 'anchor';
-			childB.textContent = 'bold';
-
-			el.appendChild( childA );
-			el.appendChild( childB );
-
-			expect( el.outerHTML ).to.equal( '<div><a>anchor</a><b>bold</b></div>' );
-
-			const spy1 = testUtils.sinon.spy();
-			const spy2 = testUtils.sinon.spy();
-			const spy3 = testUtils.sinon.spy();
-
-			view.model.on( 'ku', spy1 );
-			view.model.on( 'kd', spy2 );
-			view.model.on( 'mo', spy3 );
-
-			view.applyTemplateToElement( el, {
-				tag: 'div',
-				children: [
-					{
-						tag: 'a',
-						on: {
-							keyup: view.bind.to( 'ku' )
-						},
-						attributes: {
-							class: view.bind.to( 'b', b => 'applied-A-' + b ),
-							id: 'applied-A'
-						},
-						children: [ 'Text applied to childA.' ]
-					},
-					{
-						tag: 'b',
-						on: {
-							keydown: view.bind.to( 'kd' )
-						},
-						attributes: {
-							class: view.bind.to( 'b', b => 'applied-B-' + b ),
-							id: 'applied-B'
-						},
-						children: [ 'Text applied to childB.' ]
-					},
-					'Text which is not to be applied because it does NOT exist in original element.'
-				],
-				on: {
-					'mouseover@a': view.bind.to( 'mo' )
-				},
-				attributes: {
-					id: view.bind.to( 'a', a => a.toUpperCase() ),
-					class: view.bind.to( 'b', b => 'applied-parent-' + b )
-				}
-			} );
-
-			expect( el.outerHTML ).to.equal( '<div id="FOO" class="applied-parent-42">' +
-				'<a class="applied-A-42" id="applied-A">Text applied to childA.</a>' +
-				'<b class="applied-B-42" id="applied-B">Text applied to childB.</b>' +
-			'</div>' );
-
-			view.model.b = 16;
-
-			expect( el.outerHTML ).to.equal( '<div id="FOO" class="applied-parent-16">' +
-				'<a class="applied-A-16" id="applied-A">Text applied to childA.</a>' +
-				'<b class="applied-B-16" id="applied-B">Text applied to childB.</b>' +
-			'</div>' );
-
-			document.body.appendChild( el );
-
-			// Test "mouseover@a".
-			dispatchEvent( el, 'mouseover' );
-			dispatchEvent( childA, 'mouseover' );
-
-			// Test "keyup".
-			dispatchEvent( childA, 'keyup' );
-
-			// Test "keydown".
-			dispatchEvent( childB, 'keydown' );
-
-			sinon.assert.calledOnce( spy1 );
-			sinon.assert.calledOnce( spy2 );
-			sinon.assert.calledOnce( spy3 );
-		} );
-	} );
 } );
 
 function createViewInstanceWithTemplate() {
@@ -416,14 +323,4 @@ function setTestViewInstance( model ) {
 	if ( view.template ) {
 		document.body.appendChild( view.element );
 	}
-}
-
-function dispatchEvent( el, domEvtName ) {
-	if ( !el.parentNode ) {
-		throw new Error( 'To dispatch an event, element must be in DOM. Otherwise #target is null.' );
-	}
-
-	el.dispatchEvent( new Event( domEvtName, {
-		bubbles: true
-	} ) );
 }

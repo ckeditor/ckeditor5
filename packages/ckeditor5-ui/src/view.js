@@ -197,38 +197,6 @@ export default class View {
 	}
 
 	/**
-	 * Applies template to existing DOM element in the context of a View.
-	 *
-	 *		const element = document.createElement( 'div' );
-	 *		const model = new Model( { divClass: 'my-div' } );
-	 *		const view = new View( model );
-	 *		const bind = Template.bind( model, view )
-	 *
-	 *		view.applyTemplateToElement( element, {
-	 *			attrs: {
-	 *				id: 'first-div',
-	 *				class: bind.to( 'divClass' )
-	 *			},
-	 *			on: {
-	 *				click: 'elementClicked' // Will be fired by the View instance.
-	 *			}
-	 *			children: [
-	 *				'Div text.'
-	 *			]
-	 *		} );
-	 *
-	 *		element.outerHTML == "<div id="first-div" class="my-div">Div text.</div>"
-	 *
-	 * See: {@link ui.Template#apply}.
-	 *
-	 * @param {DOMElement} element DOM Element to initialize.
-	 * @param {ui.TemplateDefinition} def Template definition to be applied.
-	 */
-	applyTemplateToElement( element, def ) {
-		new Template( def ).apply( element );
-	}
-
-	/**
 	 * Destroys the view instance. The process includes:
 	 *
 	 * 1. Removal of child views from {@link ui.View#regions}.
