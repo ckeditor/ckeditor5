@@ -41,9 +41,8 @@ describe( 'utils', () => {
 				expect( sanitized ).to.equal( '' );
 			} );
 
-			it( 'should cast false/empty string to empty string', () => {
+			it( 'should return empty string when invoked with empty string', () => {
 				expect( sanitize.appendPeriodIfMissing( '' ) ).to.equal( '' );
-				expect( sanitize.appendPeriodIfMissing( false ) ).to.equal( '' );
 			} );
 		} );
 	} );
