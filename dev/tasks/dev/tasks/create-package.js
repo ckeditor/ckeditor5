@@ -14,7 +14,7 @@ const log = require( '../utils/log' );
 /**
  * 1. Ask for new package name.
  * 2. Ask for initial version.
- * 3. Ask for GitHub URL.
+ * 3. Ask for GitHub path.
  * 4. Initialize repository.
  * 5. Add remote.
  * 6. Copy files to new repository.
@@ -59,7 +59,7 @@ module.exports = ( ckeditor5Path, workspaceRoot ) => {
 	let packageFullName;
 	let repositoryPath;
 	let packageVersion;
-	let gitHubUrl;
+	let gitHubPath;
 	let packageDescription;
 
 	return inquiries.getPackageName()
@@ -77,10 +77,10 @@ module.exports = ( ckeditor5Path, workspaceRoot ) => {
 		.then( result => {
 			packageVersion = result;
 
-			return inquiries.getPackageGitHubUrl( packageName );
+			return inquiries.getPackageGitHubPath( packageName );
 		} )
 		.then( result => {
-			gitHubUrl = result;
+			gitHubPath = result;
 
 			return inquiries.getPackageDescription();
 		} )
@@ -91,14 +91,14 @@ module.exports = ( ckeditor5Path, workspaceRoot ) => {
 			git.initializeRepository( repositoryPath );
 
 			log.out( `Adding remote ${ repositoryPath }...` );
-			git.addRemote( repositoryPath, gitHubUrl );
+			git.addRemote( repositoryPath, gitHubPath );
 
 			log.out( `Copying files into ${ repositoryPath }...` );
 
 			for ( let destination in fileStructure ) {
 				tools.copyTemplateFiles( fileStructure[ destination ], path.join( repositoryPath, destination ), {
 					'{{AppName}}': packageFullName,
-					'{{GitHubRepositoryPath}}': gitHubUrl,
+					'{{GitHubRepositoryPath}}': gitHubPath,
 					'{{ProjectDescription}}': packageDescription
 				} );
 			}
@@ -116,7 +116,7 @@ module.exports = ( ckeditor5Path, workspaceRoot ) => {
 				if ( !json.dependencies ) {
 					json.dependencies = {};
 				}
-				json.dependencies[ packageName ] = gitHubUrl;
+				json.dependencies[ packageName ] = gitHubPath;
 				json.dependencies = tools.sortObject( json.dependencies );
 
 				return json;
