@@ -138,7 +138,7 @@ export default class SelectionObserver extends Observer {
 		}
 
 		// Ensure we are no in the infinite loop (#400).
-		if ( this._isInfiteLoop( newViewSelection ) ) {
+		if ( this._isInfiniteLoop( newViewSelection ) ) {
 			/**
 			 * Selection infinite loop. Most probably you try to put the selection in the position which is not allowed
 			 * by the browser and browser fix it automatically what causes selectionChange event, re-rendering wrong
@@ -168,7 +168,7 @@ export default class SelectionObserver extends Observer {
 	 * @param {engine.view.Selection} newSelection DOM selection converted to view.
 	 * @returns {Boolean} True is the same selection repeat more then 10 times.
 	 */
-	_isInfiteLoop( newSelection ) {
+	_isInfiniteLoop( newSelection ) {
 		// If the position is the same a the last one or the last but one we increment the counter.
 		if ( this._lastSelection && this._lastButOneSelection &&
 			( newSelection.isEqual( this._lastSelection ) || newSelection.isEqual( this._lastButOneSelection ) ) ) {
