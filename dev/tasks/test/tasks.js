@@ -139,17 +139,19 @@ module.exports = () => {
 			return gulp.src( 'dev/tasks/**/*.js' )
 				.pipe( istanbul() )
 				.pipe( istanbul.hookRequire() );
+		},
+
+		register() {
+			gulp.task( 'test:node:pre-coverage', [ 'build:js:cjs' ], tasks.prepareNodeCoverage );
+			gulp.task( 'test:node', tasks.testInNode );
+			gulp.task( 'test:node:build', [ 'build:js:cjs' ] , tasks.testInNode );
+			gulp.task( 'test:node:coverage', [ 'build:js:cjs', 'test:node:pre-coverage' ], tasks.testInNode );
+
+			gulp.task( 'test:dev:pre-coverage', tasks.prepareDevCoverage );
+			gulp.task( 'test:dev', tasks.devTest );
+			gulp.task( 'test:dev:coverage', [ 'test:dev:pre-coverage' ], tasks.devTest );
 		}
 	};
-
-	gulp.task( 'test:node:pre-coverage', [ 'build:js:cjs' ], tasks.prepareNodeCoverage );
-	gulp.task( 'test:node', tasks.testInNode );
-	gulp.task( 'test:node:build', [ 'build:js:cjs' ] , tasks.testInNode );
-	gulp.task( 'test:node:coverage', [ 'build:js:cjs', 'test:node:pre-coverage' ], tasks.testInNode );
-
-	gulp.task( 'test:dev:pre-coverage', tasks.prepareDevCoverage );
-	gulp.task( 'test:dev', tasks.devTest );
-	gulp.task( 'test:dev:coverage', [ 'test:dev:pre-coverage' ], tasks.devTest );
 
 	return tasks;
 };
