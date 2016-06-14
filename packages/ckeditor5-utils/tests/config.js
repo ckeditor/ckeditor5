@@ -199,10 +199,10 @@ describe( 'define', () => {
 	it( 'should expand but not override deep configurations', () => {
 		config.define( {
 			resize: {
-				minHeight: 400,		// Override
+				minHeight: 400,		// No override
 				hidden: true,		// Expand
 				icon: {
-					path: 'abc',	// Override
+					path: 'abc',	// No override
 					url: true		// Expand
 				}
 			}
@@ -221,10 +221,10 @@ describe( 'define', () => {
 
 	it( 'should expand but not override when passing an object', () => {
 		config.define( 'resize', {
-			minHeight: 400,		// Override
+			minHeight: 400,		// No override
 			hidden: true,		// Expand
 			icon: {
-				path: 'abc',	// Override
+				path: 'abc',	// No override
 				url: true		// Expand
 			}
 		} );
