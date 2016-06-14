@@ -13,7 +13,6 @@ import isPlainObject from './lib/lodash/isPlainObject.js';
  * @memberOf utils
  */
 export default class Config {
-
 	/**
 	 * Creates an instance of the {@link Config} class.
 	 *
@@ -21,16 +20,14 @@ export default class Config {
 	 */
 	constructor( configurations ) {
 		/**
-		 * Store for whole configuration.
+		 * Store for the whole configuration.
 		 *
 		 * @private
 		 * @member {Object} utils.config#_config
 		 */
 		this._config = {};
 
-		/**
-		 * Set initial configuration.
-		 */
+		// Set initial configuration.
 		if ( configurations ) {
 			this._setObjectToTarget( this._config, configurations );
 		}
@@ -78,7 +75,7 @@ export default class Config {
 	}
 
 	/**
-	 * Does exactly the same as {@link utils.Config#set} with one exception - passed configuration extends
+	 * Does exactly the same as {@link #set} with one exception – passed configuration extends
 	 * existing one, but does not overwrite already defined values.
 	 *
 	 * This method is supposed to be called by plugin developers to setup plugin's configurations. It would be
@@ -113,12 +110,12 @@ export default class Config {
 	/**
 	 * Saves passed configuration to the specified target (nested object).
 	 *
-	 * @param {Object} target level of nested object.
+	 * @private
+	 * @param {Object} target Nested config object.
 	 * @param {String|Object} name The configuration name or an object from which take properties as
 	 * configuration entries. Configuration names are case-insensitive.
 	 * @param {*} value The configuration value. Used if a name is passed.
 	 * @param {Boolean} [isDefine=false] Define if passed configuration should overwrite existing one.
-	 * @private
 	 */
 	_setToTarget( target, name, value, isDefine = false ) {
 		// In case of an object, iterate through it and call `_setToTarget` again for each property.
@@ -171,10 +168,10 @@ export default class Config {
 	/**
 	 * Get specified configuration from specified source (nested object).
 	 *
+     * @private
 	 * @param {Object} source level of nested object.
 	 * @param {String} name The configuration name. Configuration names are case-insensitive.
 	 * @returns {*} The configuration value or `undefined` if the configuration entry was not found.
-     * @private
      */
 	_getFromSource( source, name ) {
 		// The configuration name should be split into parts if it has dots. E.g. `resize.width` -> [`resize`, `width`].
@@ -199,16 +196,16 @@ export default class Config {
 	}
 
 	/**
-	 * Iterate through passed object and call `_setToTarget` method with object key and value for each property.
+	 * Iterate through passed object and call {@link #_setToTarget} method with object key and value for each property.
 	 *
-	 * @param {Object} target level of nested object.
-	 * @param {Object} configuration Configuration data set
-	 * @param {Boolean} [isDefine] Defines if passed configuration is default configuration or not
 	 * @private
+	 * @param {Object} target Nested config object.
+	 * @param {Object} configuration Configuration data set
+	 * @param {Boolean} [isDefine] Defines if passed configuration is default configuration or not.
 	 */
 	_setObjectToTarget( target, configuration, isDefine ) {
-		Object.keys( configuration ).forEach( ( key ) => {
+		Object.keys( configuration ).forEach( key => {
 			this._setToTarget( target, key, configuration[ key ], isDefine );
-		}, this );
+		} );
 	}
 }
