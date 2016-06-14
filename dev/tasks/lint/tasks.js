@@ -6,7 +6,6 @@ const gulp = require( 'gulp' );
 const jshint = require( 'gulp-jshint' );
 const jscs = require( 'gulp-jscs' );
 const fs = require( 'fs' );
-const guppy = require( 'git-guppy' )( gulp );
 const gulpFilter = require( 'gulp-filter' );
 const gutil = require( 'gulp-util' );
 
@@ -30,6 +29,8 @@ module.exports = ( config ) => {
 		 * @returns {Stream}
 		 */
 		lintStaged() {
+			const guppy = require( 'git-guppy' )( gulp );
+
 			return guppy.stream( 'pre-commit', { base: './' } )
 				.pipe( gulpFilter( src ) )
 				.pipe( lint() )
@@ -48,11 +49,13 @@ module.exports = ( config ) => {
 				gutil.log( gutil.colors.red( 'Linting failed, commit aborted' ) );
 				process.exit( 1 );
 			}
+		},
+
+		register() {
+			gulp.task( 'lint', tasks.lint );
+			gulp.task( 'lint-staged', tasks.lintStaged );
 		}
 	};
-
-	gulp.task( 'lint', tasks.lint );
-	gulp.task( 'lint-staged', tasks.lintStaged );
 
 	return tasks;
 

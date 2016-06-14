@@ -16,19 +16,27 @@ const buildUtils = require( '../build/utils' );
 const benderConfig = require( '../../../bender' );
 
 /**
- * Defines Node.js testing task.
+ * Defines Node.js testing task and development tools testing tasks.
  *
- * To run tests under node:
+ * To run tests under Node.js:
  *
  *		gulp test:node
  *
- * To run build before testing:
+ * To run build under Node.js before testing:
  *
  *		gulp test:node:build
  *
- * To run testing with code coverage:
+ * To run testing under Node.js with code coverage:
  *
  *		gulp test:node:coverage
+ *
+ * To run development tools tests:
+ *
+ * 		gulp test:dev
+ *
+ * To run development tools tests with coverage:
+ *
+ * 		gulp test:dev:coverage
  */
 module.exports = () => {
 	const ignoreRegexp = /\/\* ?bender-tags:.*\bbrowser-only\b.*\*\//;
@@ -52,7 +60,7 @@ module.exports = () => {
 		 *
 		 * @returns {Stream}
 		 */
-		prepareCoverage() {
+		prepareNodeCoverage() {
 			const src = benderConfig.coverage.paths.map( ( item ) => {
 				return item.replace( 'build/amd/', 'build/cjs/' );
 			} );
@@ -115,13 +123,43 @@ module.exports = () => {
 		 */
 		skipIgnored() {
 			return filterBy( file => !file.contents.toString().match( ignoreRegexp ) );
+		},
+
+		/**
+		 * Runs dev unit tests.
+		 *
+		 * @returns {Stream}
+		 */
+		devTest() {
+			return gulp.src( 'dev/tests/**/*.js' )
+				.pipe( mocha() )
+				.pipe( tasks.coverage ? istanbul.writeReports() : buildUtils.noop() );
+		},
+
+		/**
+		 * Prepares files for coverage report.
+		 *
+		 * @returns {Stream}
+		 */
+		prepareDevCoverage() {
+			tasks.coverage = true;
+
+			return gulp.src( 'dev/tasks/**/*.js' )
+				.pipe( istanbul() )
+				.pipe( istanbul.hookRequire() );
+		},
+
+		register() {
+			gulp.task( 'test:node:pre-coverage', [ 'build:js:cjs' ], tasks.prepareNodeCoverage );
+			gulp.task( 'test:node', tasks.testInNode );
+			gulp.task( 'test:node:build', [ 'build:js:cjs' ] , tasks.testInNode );
+			gulp.task( 'test:node:coverage', [ 'build:js:cjs', 'test:node:pre-coverage' ], tasks.testInNode );
+
+			gulp.task( 'test:dev:pre-coverage', tasks.prepareDevCoverage );
+			gulp.task( 'test:dev', tasks.devTest );
+			gulp.task( 'test:dev:coverage', [ 'test:dev:pre-coverage' ], tasks.devTest );
 		}
 	};
-
-	gulp.task( 'test:node:pre-coverage', [ 'build:js:cjs' ], tasks.prepareCoverage );
-	gulp.task( 'test:node', tasks.testInNode );
-	gulp.task( 'test:node:build', [ 'build:js:cjs' ] , tasks.testInNode );
-	gulp.task( 'test:node:coverage', [ 'build:js:cjs', 'test:node:pre-coverage' ], tasks.testInNode );
 
 	return tasks;
 };
