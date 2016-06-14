@@ -7,10 +7,10 @@
 
 module.exports = {
 	appendPeriodIfMissing( text ) {
-		text = text ? text.trim() : '';
+		text = text.trim();
 		const length = text.length;
 
-		if ( length > 0 && text[ length - 1 ] !== '.' ) {
+		if ( length > 0 && !text.endsWith( '.' ) ) {
 			text += '.';
 		}
 

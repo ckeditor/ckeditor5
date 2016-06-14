@@ -71,7 +71,7 @@ module.exports = {
 				name: 'description',
 				message: 'Package description (one sentence, must end with period):'
 			} ], ( answers ) => {
-				resolve( sanitize.appendPeriodIfMissing( answers.description ) );
+				resolve( sanitize.appendPeriodIfMissing( answers.description || '' ) );
 			} );
 		} );
 	}
