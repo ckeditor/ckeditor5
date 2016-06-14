@@ -430,7 +430,7 @@ class RangeParser {
 	 * Uses all found bracket positions to create ranges from them.
 	 *
 	 * @private
-	 * @returns {Array.<engine.view.Range}
+	 * @returns {Array.<engine.view.Range>}
 	 */
 	_createRanges() {
 		const ranges = [];
