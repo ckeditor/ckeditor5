@@ -7,7 +7,7 @@
 
 'use strict';
 
-import ClassicEditor from '/ckeditor5/creator-classic/classic.js';
+import ClassicEditor from '/ckeditor5/editor-classic/classic.js';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	features: [ 'delete', 'enter', 'typing', 'paragraph', 'undo', 'basic-styles/bold', 'basic-styles/italic' ],
