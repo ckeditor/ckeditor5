@@ -170,7 +170,15 @@ class MutationHandler {
 			return;
 		}
 
-		const changes = diffToChanges( diff( mutation.oldText, mutation.newText ), mutation.newText );
+		const compare = ( oldChild, newChild ) => {
+			if ( oldChild instanceof ViewText && newChild instanceof ViewText ) {
+				return oldChild.data == newChild.data;
+			} else {
+				return oldChild == newChild;
+			}
+		};
+		const diffResult = diff( mutation.oldText, mutation.newText, compare );
+		const changes = diffToChanges( diffResult, mutation.newText );
 
 		for ( let change of changes ) {
 			const viewPos = new ViewPosition( mutation.node, change.index );
@@ -199,8 +207,17 @@ class MutationHandler {
 		if ( mutation.newChildren.length - mutation.oldChildren.length != 1 ) {
 			return false;
 		}
+
 		// Which is text.
-		const changes = diffToChanges( diff( mutation.oldChildren, mutation.newChildren ), mutation.newChildren );
+		const compare = ( oldChild, newChild ) => {
+			if ( oldChild instanceof ViewText && newChild instanceof ViewText ) {
+				return oldChild.data == newChild.data;
+			} else {
+				return oldChild == newChild;
+			}
+		};
+		const diffResult = diff( mutation.oldChildren, mutation.newChildren, compare );
+		const changes = diffToChanges( diffResult, mutation.newChildren );
 		const change = changes[ 0 ];
 
 		if ( !( change.values[ 0 ] instanceof ViewText ) ) {
@@ -209,7 +226,7 @@ class MutationHandler {
 
 		const viewPos = new ViewPosition( mutation.node, change.index );
 		const modelPos = this.editing.mapper.toModelPosition( viewPos );
-		const insertedText = mutation.newChildren[ 0 ].data;
+		const insertedText = change.values[ 0 ].data;
 
 		this._insert( modelPos, insertedText );
 
