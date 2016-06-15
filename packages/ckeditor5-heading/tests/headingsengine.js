@@ -5,18 +5,18 @@
 
 'use strict';
 
-import FormatsEngine from '/ckeditor5/formats/formatsengine.js';
+import HeadingsEngine from '/ckeditor5/headings/headingsengine.js';
 import Paragraph from '/ckeditor5/paragraph/paragraph.js';
 import VirtualTestEditor from '/tests/ckeditor5/_utils/virtualtesteditor.js';
-import FormatsCommand from '/ckeditor5/formats/formatscommand.js';
+import HeadingsCommand from '/ckeditor5/headings/headingscommand.js';
 import { getData } from '/tests/engine/_utils/model.js';
 
-describe( 'FormatsEngine', () => {
+describe( 'HeadingsEngine', () => {
 	let editor, document;
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-			features: [ FormatsEngine ]
+			features: [ HeadingsEngine ]
 		} )
 		.then( newEditor => {
 			editor = newEditor;
@@ -25,7 +25,7 @@ describe( 'FormatsEngine', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( FormatsEngine ) ).to.be.instanceOf( FormatsEngine );
+		expect( editor.plugins.get( HeadingsEngine ) ).to.be.instanceOf( HeadingsEngine );
 	} );
 
 	it( 'should load paragraph feature', () => {
@@ -48,10 +48,10 @@ describe( 'FormatsEngine', () => {
 	} );
 
 	it( 'should register format command', () => {
-		expect( editor.commands.has( 'format' ) ).to.be.true;
-		const command = editor.commands.get( 'format' );
+		expect( editor.commands.has( 'headings' ) ).to.be.true;
+		const command = editor.commands.get( 'headings' );
 
-		expect( command ).to.be.instanceOf( FormatsCommand );
+		expect( command ).to.be.instanceOf( HeadingsCommand );
 	} );
 
 	it( 'should convert heading1', () => {

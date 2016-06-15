@@ -6,20 +6,20 @@
 'use strict';
 
 import Feature from '../feature.js';
-import FormatsEngine from './formatsengine.js';
+import HeadingsEngine from './headingsengine.js';
 import Model from '../ui/model.js';
 import ListDropdownController from '../ui/dropdown/list/listdropdown.js';
 import ListDropdownView from '../ui/dropdown/list/listdropdownview.js';
 import Collection from '../utils/collection.js';
 
-export default class Formats extends Feature {
+export default class Headings extends Feature {
 	static get requires() {
-		return [ FormatsEngine ];
+		return [ HeadingsEngine ];
 	}
 
 	init() {
 		const editor = this.editor;
-		const command = editor.commands.get( 'format' );
+		const command = editor.commands.get( 'headings' );
 		const formats = command.formats;
 		const collection = new Collection();
 
@@ -40,7 +40,7 @@ export default class Formats extends Feature {
 		const dropdownModel = new Model( {
 			isEnabled: true,
 			isOn: false,
-			label: 'Formats',
+			label: 'Headings',
 			content: itemListModel
 		} );
 
@@ -50,9 +50,9 @@ export default class Formats extends Feature {
 
 		// Execute command when item from dropdown is selected.
 		this.listenTo( itemListModel, 'execute', ( evt, itemModel ) => {
-			editor.execute( 'format', itemModel.id );
+			editor.execute( 'headings', itemModel.id );
 		} );
 
-		editor.ui.featureComponents.add( 'formats', ListDropdownController, ListDropdownView, dropdownModel );
+		editor.ui.featureComponents.add( 'headings', ListDropdownController, ListDropdownView, dropdownModel );
 	}
 }

@@ -6,14 +6,14 @@
 'use strict';
 
 import ClassicTestEditor from '/tests/ckeditor5/_utils/classictesteditor.js';
-import Formats from '/ckeditor5/formats/formats.js';
-import FormatsEngine from '/ckeditor5/formats/formatsengine.js';
+import Headings from '/ckeditor5/headings/headings.js';
+import HeadingsEngine from '/ckeditor5/headings/headingsengine.js';
 import ListDropdown from '/ckeditor5/ui/dropdown/list/listdropdown.js';
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
 
 testUtils.createSinonSandbox();
 
-describe( 'Formats', () => {
+describe( 'Headings', () => {
 	let editor, controller;
 
 	beforeEach( () => {
@@ -21,12 +21,12 @@ describe( 'Formats', () => {
 		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor.create( editorElement, {
-			features: [ Formats ],
-			toolbar: [ 'formats' ]
+			features: [ Headings ],
+			toolbar: [ 'headings' ]
 		} )
 		.then( newEditor => {
 			editor = newEditor;
-			controller = editor.ui.featureComponents.create( 'formats' );
+			controller = editor.ui.featureComponents.create( 'headings' );
 		} );
 	} );
 
@@ -35,36 +35,36 @@ describe( 'Formats', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( Formats ) ).to.be.instanceOf( Formats );
+		expect( editor.plugins.get( Headings ) ).to.be.instanceOf( Headings );
 	} );
 
 	it( 'should load FormatsEngine', () => {
-		expect( editor.plugins.get( FormatsEngine ) ).to.be.instanceOf( FormatsEngine );
+		expect( editor.plugins.get( HeadingsEngine ) ).to.be.instanceOf( HeadingsEngine );
 	} );
 
 	it( 'should register formats feature component', () => {
-		const controller = editor.ui.featureComponents.create( 'formats' );
+		const controller = editor.ui.featureComponents.create( 'headings' );
 
 		expect( controller ).to.be.instanceOf( ListDropdown );
 	} );
 
 	it( 'should execute format command on model execute event', () => {
 		const executeSpy = testUtils.sinon.spy( editor, 'execute' );
-		const controller = editor.ui.featureComponents.create( 'formats' );
+		const controller = editor.ui.featureComponents.create( 'headings' );
 		const model = controller.model.content;
 
 		model.fire( 'execute', { id: 'paragraph', label: 'Paragraph' } );
 
 		sinon.assert.calledOnce( executeSpy );
-		sinon.assert.calledWithExactly( executeSpy, 'format', 'paragraph' );
+		sinon.assert.calledWithExactly( executeSpy, 'headings', 'paragraph' );
 	} );
 
-	describe( 'model to commanad binding', () => {
+	describe( 'model to command binding', () => {
 		let model, command;
 
 		beforeEach( () => {
 			model = controller.model;
-			command = editor.commands.get( 'format' );
+			command = editor.commands.get( 'headings' );
 		} );
 
 		it( 'isEnabled', () => {

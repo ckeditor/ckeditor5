@@ -9,7 +9,7 @@ import Feature from '../feature.js';
 import BuildModelConverterFor from '../engine/conversion/model-converter-builder.js';
 import BuildViewConverterFor from '../engine/conversion/view-converter-builder.js';
 import Paragraph from '../paragraph/paragraph.js';
-import FormatsCommand from './formatscommand.js';
+import HeadingsCommand from './headingscommand.js';
 
 const formats = [
 	{ id: 'paragraph', viewElement: 'p', label: 'Paragraph' },
@@ -18,7 +18,7 @@ const formats = [
 	{ id: 'heading3', viewElement: 'h4', label: 'Heading 3' }
 ];
 
-export default class FormatsEngine extends Feature {
+export default class HeadingsEngine extends Feature {
 	static get requires() {
 		return [ Paragraph ];
 	}
@@ -47,7 +47,7 @@ export default class FormatsEngine extends Feature {
 		}
 
 		// Register command.
-		const command = new FormatsCommand( editor, formats );
-		editor.commands.set( 'format', command );
+		const command = new HeadingsCommand( editor, formats );
+		editor.commands.set( 'headings', command );
 	}
 }

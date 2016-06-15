@@ -1,7 +1,7 @@
-CKEditor5 Formats Feature Changelog
+CKEditor5 Headings Feature Changelog
 ========================================
 
-## CKEditor5 Formats Feature 0.0.2
+## CKEditor5 Headings Feature 0.0.2
 
 **Major|Minor|Patch Release** - Build Date: yyyy-mm-dd
 
@@ -20,6 +20,6 @@ Other Changes:
 * Item 1
 * Item 2
 
-## CKEditor5 Formats Feature 0.0.1
+## CKEditor5 Headings Feature 0.0.1
 
 ...

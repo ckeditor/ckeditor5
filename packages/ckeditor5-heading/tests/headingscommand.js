@@ -6,7 +6,7 @@
 'use strict';
 
 import ModelTestEditor from '/tests/ckeditor5/_utils/modeltesteditor.js';
-import FormatsCommand from '/ckeditor5/formats/formatscommand.js';
+import HeadingsCommand from '/ckeditor5/headings/headingscommand.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import { setData, getData } from '/tests/engine/_utils/model.js';
 
@@ -17,7 +17,7 @@ const formats = [
 	{ id: 'heading3', viewElement: 'h4' }
 ];
 
-describe( 'FormatsCommand', () => {
+describe( 'HeadingsCommand', () => {
 	let editor, document, command, root;
 
 	beforeEach( () => {
@@ -25,7 +25,7 @@ describe( 'FormatsCommand', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				document = editor.document;
-				command = new FormatsCommand( editor, formats );
+				command = new HeadingsCommand( editor, formats );
 				const schema = document.schema;
 
 				for ( let format of formats ) {

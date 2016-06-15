@@ -1,9 +1,9 @@
-CKEditor5 Formats Feature
+CKEditor5 Headings Feature
 ========================================
 
-[![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-formats/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-formats#info=devDependencies)
+[![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-headings/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-headings#info=devDependencies)
 
- More information about the project can be found at the following url: <https://github.com/ckeditor/ckeditor5-formats>.
+ More information about the project can be found at the following url: <https://github.com/ckeditor/ckeditor5-headings>.
 
 ## License
 

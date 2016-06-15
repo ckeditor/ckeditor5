@@ -8,7 +8,7 @@
 import Command from '../command/command.js';
 import RootElement from '../engine/model/rootelement.js';
 
-export default class FormatsCommand extends Command {
+export default class HeadingsCommand extends Command {
 	constructor( editor, formats ) {
 		super( editor );
 
