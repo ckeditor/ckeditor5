@@ -7,12 +7,12 @@
 
 'use strict';
 
-import ClassicEditorUI from '/ckeditor5/creator-classic/classiceditorui.js';
+import ClassicEditorUI from '/ckeditor5/editor-classic/classiceditorui.js';
 import BoxedEditorUIView from '/ckeditor5/ui/editorui/boxed/boxededitoruiview.js';
 
 import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
 
-import ClassicEditor from '/ckeditor5/creator-classic/classic.js';
+import ClassicEditor from '/ckeditor5/editor-classic/classic.js';
 
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
 import count from '/ckeditor5/utils/count.js';

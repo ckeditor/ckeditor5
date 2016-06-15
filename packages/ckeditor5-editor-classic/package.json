@@ -1,7 +1,7 @@
 {
-  "name": "ckeditor5-creator-classic",
+  "name": "ckeditor5-editor-classic",
   "version": "0.0.1",
-  "description": "Classic Creator for CKEditor 5.",
+  "description": "Classic Editor for CKEditor 5.",
   "keywords": [],
   "dependencies": {},
   "devDependencies": {

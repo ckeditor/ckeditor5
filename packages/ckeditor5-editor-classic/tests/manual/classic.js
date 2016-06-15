@@ -7,7 +7,7 @@
 
 'use strict';
 
-import ClassicEditor from '/ckeditor5/creator-classic/classic.js';
+import ClassicEditor from '/ckeditor5/editor-classic/classic.js';
 import testUtils from '/tests/utils/_utils/utils.js';
 
 let editor, editable, observer;

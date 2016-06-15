@@ -1,9 +1,9 @@
-Creator Classic
+Classic Editor
 ========================================
 
-[![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-creator-classic/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-creator-classic#info=devDependencies)
+[![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-editor-classic/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-editor-classic#info=devDependencies)
 
-Classic Creator for CKEditor 5. More information about the project can be found at the following url: <https://github.com/ckeditor/ckeditor5-creator-classic>.
+Classic Editor for CKEditor 5. More information about the project can be found at the following url: <https://github.com/ckeditor/ckeditor5-editor-classic>.
 
 ## License
 
