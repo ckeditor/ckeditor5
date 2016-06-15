@@ -173,6 +173,8 @@ export default class SelectionObserver extends Observer {
 	 */
 	_isInfiniteLoop( newSelection ) {
 		// If the position is the same a the last one or the last but one we increment the counter.
+		// We need to check last two selections because the browser will first fire a selectionchange event
+		// for an incorrect selection and then for a corrected one.
 		if ( this._lastSelection && this._lastButOneSelection &&
 			( newSelection.isEqual( this._lastSelection ) || newSelection.isEqual( this._lastButOneSelection ) ) ) {
 			this._loopbackCounter++;
