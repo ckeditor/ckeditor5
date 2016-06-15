@@ -6,6 +6,7 @@
 'use strict';
 
 import Text from './text.js';
+import TextProxy from './textproxy.js';
 
 import compareArrays from '../../utils/comparearrays.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
@@ -189,7 +190,7 @@ export default class Position {
 	/**
 	 * Creates a new position after the given node.
 	 *
-	 * @param {engine.view.Node} node Node after which the position should be located.
+	 * @param {engine.view.Node|engine.view.TextProxy} node Node after which the position should be located.
 	 * @returns {engine.view.Position}
 	 */
 	static createAfter( node ) {
@@ -203,13 +204,18 @@ export default class Position {
 			throw new CKEditorError( 'position-after-root: You can not make position after root.', { root: node } );
 		}
 
+		// {@link engine.view.TextProxy} is not a instance of {@link engine.view.Node} so we need do handle it in specific way.
+		if ( node instanceof TextProxy ) {
+			return new Position( node._textNodeParent, node._index + 1 );
+		}
+
 		return new Position( node.parent, node.getIndex() + 1 );
 	}
 
 	/**
 	 * Creates a new position before the given node.
 	 *
-	 * @param {engine.view.node} node Node before which the position should be located.
+	 * @param {engine.view.Node|engine.view.TextProxy} node Node before which the position should be located.
 	 * @returns {engine.view.Position}
 	 */
 	static createBefore( node ) {
@@ -221,6 +227,11 @@ export default class Position {
 			 * @param {engine.view.Node} root
 			 */
 			throw new CKEditorError( 'position-before-root: You can not make position before root.', { root: node } );
+		}
+
+		// {@link engine.view.TextProxy} is not a instance of {@link engine.view.Node} so we need do handle it in specific way.
+		if ( node instanceof TextProxy ) {
+			return new Position( node._textNodeParent, node._index );
 		}
 
 		return new Position( node.parent, node.getIndex() );
