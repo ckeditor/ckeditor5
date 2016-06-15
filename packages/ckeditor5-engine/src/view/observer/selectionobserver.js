@@ -71,21 +71,21 @@ export default class SelectionObserver extends Observer {
 		this._documents = new WeakSet();
 
 		/**
-		 * Private property to store the last selection, to check if the code do not enter infinite loop.
+		 * Private property to store the last selection, to check if the code does not enter infinite loop.
 		 *
 		 * @private
 		 * @member {engine.view.Selection} engine.view.observer.SelectionObserver#_lastSelection
 		 */
 
 		/**
-		 * Private property to store the last but one selection, to check if the code do not enter infinite loop.
+		 * Private property to store the last but one selection, to check if the code does not enter infinite loop.
 		 *
 		 * @private
 		 * @member {engine.view.Selection} engine.view.observer.SelectionObserver#_lastButOneSelection
 		 */
 
 		/**
-		 * Private property to check if the code do not enter infinite loop.
+		 * Private property to check if the code does not enter infinite loop.
 		 *
 		 * @private
 		 * @member {Number} engine.view.observer.SelectionObserver#_loopbackCounter
@@ -137,16 +137,17 @@ export default class SelectionObserver extends Observer {
 			return;
 		}
 
-		// Ensure we are no in the infinite loop (#400).
+		// Ensure we are not in the infinite loop (#400).
 		if ( this._isInfiniteLoop( newViewSelection ) ) {
 			/**
-			 * Selection infinite loop. Most probably you try to put the selection in the position which is not allowed
-			 * by the browser and browser fix it automatically what causes selectionChange event, re-rendering wrong
-			 * selection and again.
+			 * Selection change observer detected an infinite rendering loop.
+			 * Most probably you try to put the selection in the position which is not allowed
+			 * by the browser and browser fixes it automatically what causes `selectionchange` event on
+			 * which a loopback through a model tries to re-render the wrong selection and again.
 			 *
-			 * @error selectionchange-inifite-loop
+			 * @error selectionchange-infinite-loop
 			 */
-			log.warn( 'selectionchange-inifite-loop: Selection change enter infinite loop.' );
+			log.warn( 'selectionchange-infinite-loop: Selection change observer detected an infinite rendering loop.' );
 
 			return;
 		}
@@ -162,7 +163,7 @@ export default class SelectionObserver extends Observer {
 	}
 
 	/**
-	 * Checks if we do enter infinite loop.
+	 * Checks if selection rendering entered an infinite loop.
 	 *
 	 * @private
 	 * @param {engine.view.Selection} newSelection DOM selection converted to view.

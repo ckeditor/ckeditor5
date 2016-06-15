@@ -153,7 +153,7 @@ describe( 'SelectionObserver', () => {
 				warnedOnce = true;
 
 				setTimeout( () => {
-					expect( msg ).to.match( /^selectionchange-inifite-loop/ );
+					expect( msg ).to.match( /^selectionchange-infinite-loop/ );
 					done();
 				}, 200 );
 			}
@@ -162,7 +162,7 @@ describe( 'SelectionObserver', () => {
 		changeDomSelection();
 	} );
 
-	it( 'should not be thread as an infinite loop if the position is different', ( done ) => {
+	it( 'should not be treated as an infinite loop if the position is different', ( done ) => {
 		let counter = 30;
 
 		const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
@@ -181,7 +181,7 @@ describe( 'SelectionObserver', () => {
 		changeCollapsedDomSelection( counter );
 	} );
 
-	it( 'should not be thread as an infinite loop if it is less then 3 times', ( done ) => {
+	it( 'should not be treated as an infinite loop if it is less then 3 times', ( done ) => {
 		let counter = 3;
 
 		const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
