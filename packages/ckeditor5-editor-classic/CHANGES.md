@@ -1,7 +1,7 @@
-Creator Classic Changelog
+Classic Editor Changelog
 ========================================
 
-## Creator Classic 0.0.2
+## Classic Editor 0.0.2
 
 **Major|Minor|Patch Release** - Build Date: yyyy-mm-dd
 
@@ -20,6 +20,6 @@ Other Changes:
 * Item 1
 * Item 2
 
-## Creator Classic 0.0.1
+## Classic Editor 0.0.1
 
 ...

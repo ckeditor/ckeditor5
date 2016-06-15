@@ -1,7 +1,7 @@
 Software License Agreement
 ==========================
 
-**Creator Classic** – https://github.com/ckeditor/ckeditor5-creator-classic <br>
+**Classic Editor** – https://github.com/ckeditor/ckeditor5-editor-classic <br>
 Copyright (c) 2003-2016, [CKSource](http://cksource.com) Frederico Knabben. All rights reserved.
 
 Licensed under the terms of any of the following licenses at your choice:
