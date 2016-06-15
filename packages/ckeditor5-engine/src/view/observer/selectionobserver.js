@@ -165,6 +165,8 @@ export default class SelectionObserver extends Observer {
 	/**
 	 * Checks if selection rendering entered an infinite loop.
 	 *
+	 * See https://github.com/ckeditor/ckeditor5-engine/issues/400.
+	 *
 	 * @private
 	 * @param {engine.view.Selection} newSelection DOM selection converted to view.
 	 * @returns {Boolean} True is the same selection repeat more then 10 times.
