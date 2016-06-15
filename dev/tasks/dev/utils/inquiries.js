@@ -6,6 +6,7 @@
 'use strict';
 
 const inquirer = require( 'inquirer' );
+const sanitize = require( './sanitize' );
 const DEFAULT_PLUGIN_NAME_PREFIX = 'ckeditor5-';
 const DEFAULT_PLUGIN_VERSION = '0.0.1';
 const DEFAULT_GITHUB_URL_PREFIX = 'ckeditor/';
@@ -68,9 +69,9 @@ module.exports = {
 		return new Promise( ( resolve ) => {
 			inquirer.prompt( [ {
 				name: 'description',
-				message: 'Package description (one sentence):'
+				message: 'Package description (one sentence, must end with period):'
 			} ], ( answers ) => {
-				resolve( answers.description || '' );
+				resolve( sanitize.appendPeriodIfMissing( answers.description || '' ) );
 			} );
 		} );
 	}
