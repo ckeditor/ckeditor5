@@ -8,14 +8,18 @@
 'use strict';
 
 import ViewRange from '/ckeditor5/engine/view/range.js';
+import testUtils from '/tests/ckeditor5/_utils/utils.js';
 import ViewSelection from '/ckeditor5/engine/view/selection.js';
 import ViewDocument from '/ckeditor5/engine/view/document.js';
 import SelectionObserver from '/ckeditor5/engine/view/observer/selectionobserver.js';
 import MutationObserver from '/ckeditor5/engine/view/observer/mutationobserver.js';
 
 import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
+import log from '/ckeditor5/utils/log.js';
 
 import { parse } from '/tests/engine/_utils/view.js';
+
+testUtils.createSinonSandbox();
 
 describe( 'SelectionObserver', () => {
 	let viewDocument, viewRoot, mutationObserver, selectionObserver, listenter;
@@ -32,7 +36,9 @@ describe( 'SelectionObserver', () => {
 
 		viewRoot = viewDocument.getRoot();
 
-		viewRoot.appendChildren( parse( '<container:p>foo</container:p><container:p>bar</container:p>' ) );
+		viewRoot.appendChildren( parse(
+			'<container:p>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</container:p>' +
+			'<container:p>yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy</container:p>' ) );
 
 		viewDocument.render();
 	} );
@@ -124,6 +130,76 @@ describe( 'SelectionObserver', () => {
 		changeDomSelection();
 	} );
 
+	it( 'should warn and not enter infinite loop', ( done ) => {
+		let counter = 30;
+
+		const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
+		viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewFoo, 0, viewFoo, 0 ) );
+
+		listenter.listenTo( viewDocument, 'selectionChange', () => {
+			counter--;
+
+			if ( counter > 0 ) {
+				setTimeout( changeDomSelection );
+			} else {
+				throw( 'Infinite loop!' );
+			}
+		} );
+
+		let warnedOnce = false;
+
+		testUtils.sinon.stub( log, 'warn', ( msg ) => {
+			if ( !warnedOnce ) {
+				warnedOnce = true;
+
+				setTimeout( () => {
+					expect( msg ).to.match( /^selectionchange-infinite-loop/ );
+					done();
+				}, 200 );
+			}
+		} );
+
+		changeDomSelection();
+	} );
+
+	it( 'should not be treated as an infinite loop if the position is different', ( done ) => {
+		let counter = 30;
+
+		const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
+		viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewFoo, 0, viewFoo, 0 ) );
+
+		listenter.listenTo( viewDocument, 'selectionChange', () => {
+			counter--;
+
+			if ( counter > 0 ) {
+				setTimeout( () => changeCollapsedDomSelection( counter ) );
+			} else {
+				done();
+			}
+		} );
+
+		changeCollapsedDomSelection( counter );
+	} );
+
+	it( 'should not be treated as an infinite loop if it is less then 3 times', ( done ) => {
+		let counter = 3;
+
+		const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
+		viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewFoo, 0, viewFoo, 0 ) );
+
+		listenter.listenTo( viewDocument, 'selectionChange', () => {
+			counter--;
+
+			if ( counter > 0 ) {
+				setTimeout( () => changeDomSelection() );
+			} else {
+				done();
+			}
+		} );
+
+		changeDomSelection();
+	} );
+
 	it( 'should call render after selection change which reset selection if it was not changed', ( done ) => {
 		const viewBar = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
 		viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewBar, 0, viewBar, 1 ) );
@@ -149,6 +225,16 @@ describe( 'SelectionObserver', () => {
 		changeDomSelection();
 	} );
 } );
+
+function changeCollapsedDomSelection( pos = 1 ) {
+	const domSelection = document.getSelection();
+	domSelection.removeAllRanges();
+	const domFoo = document.getElementById( 'main' ).childNodes[ 0 ].childNodes[ 0 ];
+	const domRange = new Range();
+	domRange.setStart( domFoo, pos );
+	domRange.setEnd( domFoo, pos );
+	domSelection.addRange( domRange );
+}
 
 function changeDomSelection() {
 	const domSelection = document.getSelection();
