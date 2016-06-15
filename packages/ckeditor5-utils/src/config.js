@@ -126,7 +126,7 @@ export default class Config {
 		}
 
 		// The configuration name should be split into parts if it has dots. E.g. `resize.width` -> [`resize`, `width`].
-		const parts = name.toLowerCase().split( '.' );
+		const parts = name.split( '.' );
 
 		// Take the name of the configuration out of the parts. E.g. `resize.width` -> `width`.
 		name = parts.pop();
@@ -175,7 +175,7 @@ export default class Config {
 	 */
 	_getFromSource( source, name ) {
 		// The configuration name should be split into parts if it has dots. E.g. `resize.width` -> [`resize`, `width`].
-		const parts = name.toLowerCase().split( '.' );
+		const parts = name.split( '.' );
 
 		// Take the name of the configuration out of the parts. E.g. `resize.width` -> `width`.
 		name = parts.pop();
