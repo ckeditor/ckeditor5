@@ -1,7 +1,7 @@
 {
-  "name": "ckeditor5-formats",
+  "name": "ckeditor5-headings",
   "version": "0.0.1",
-  "description": "Formats feature for CKEditor 5.",
+  "description": "Headings feature for CKEditor 5.",
   "keywords": [],
   "dependencies": {},
   "devDependencies": {
