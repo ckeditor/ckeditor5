@@ -113,7 +113,7 @@ export default class TreeWalker {
 
 		/**
 		 * Flag indicating whether iterator should ignore `ELEMENT_END` tags. If the option is true walker will not
-		 * return a parent node of the start position. If this option is `true` each {@link engine.model.Element} will
+		 * return a parent node of the start position. If this option is `true` each {@link engine.view.Element} will
 		 * be returned once, while if the option is `false` they might be returned twice:
 		 * for `'ELEMENT_START'` and `'ELEMENT_END'`.
 		 *
@@ -253,7 +253,7 @@ export default class TreeWalker {
 	}
 
 	/**
-	 * Makes a step backward in model. Moves the {@link #position} to the previous position and returns the encountered value.
+	 * Makes a step backward in view. Moves the {@link #position} to the previous position and returns the encountered value.
 	 *
 	 * @private
 	 * @returns {Object}
@@ -366,14 +366,14 @@ function formatReturnValue( type, item, previousPosition, nextPosition, length )
 
 /**
  * Type of the step made by {@link engine.view.TreeWalker}.
- * Possible values: `'ELEMENT_START'` if walker is at the beginning of a node, `'ELEMENT_END'` if walker is at the end of node,
- * `'CHARACTER'` if walker traversed over a character, or `'TEXT'` if walker traversed over multiple characters.
+ * Possible values: `'ELEMENT_START'` if walker is at the beginning of a node, `'ELEMENT_END'` if walker is at the end
+ * of node, or `'TEXT'` if walker traversed over single and multiple characters.
  *
  * @typedef {String} engine.view.TreeWalkerValueType
  */
 
 /**
- * Object returned by {@link engine.view.TreeWalker} when traversing tree model.
+ * Object returned by {@link engine.view.TreeWalker} when traversing tree view.
  *
  * @typedef {Object} engine.view.TreeWalkerValue
  * @property {engine.view.TreeWalkerValueType} type
@@ -389,7 +389,7 @@ function formatReturnValue( type, item, previousPosition, nextPosition, length )
  * the position after the item.
  * * Backward iteration: For `'ELEMENT_END'` it is last position inside element. For all other types it is the position
  * before the item.
- * @property {Number} [length] Length of the item. For `'ELEMENT_START'` and `'CHARACTER'` it is 1. For `'TEXT'` it is
+ * @property {Number} [length] Length of the item. For `'ELEMENT_START'` it is 1. For `'TEXT'` it is
  * the length of the text. For `'ELEMENT_END'` it is undefined.
  */
 
