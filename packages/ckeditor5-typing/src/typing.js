@@ -170,14 +170,7 @@ class MutationHandler {
 			return;
 		}
 
-		const compare = ( oldChild, newChild ) => {
-			if ( oldChild instanceof ViewText && newChild instanceof ViewText ) {
-				return oldChild.data == newChild.data;
-			} else {
-				return oldChild == newChild;
-			}
-		};
-		const diffResult = diff( mutation.oldText, mutation.newText, compare );
+		const diffResult = diff( mutation.oldText, mutation.newText );
 		const changes = diffToChanges( diffResult, mutation.newText );
 
 		for ( let change of changes ) {
@@ -205,23 +198,22 @@ class MutationHandler {
 
 		// One new node.
 		if ( mutation.newChildren.length - mutation.oldChildren.length != 1 ) {
-			return false;
+			return;
 		}
 
 		// Which is text.
-		const compare = ( oldChild, newChild ) => {
-			if ( oldChild instanceof ViewText && newChild instanceof ViewText ) {
-				return oldChild.data == newChild.data;
-			} else {
-				return oldChild == newChild;
-			}
-		};
 		const diffResult = diff( mutation.oldChildren, mutation.newChildren, compare );
 		const changes = diffToChanges( diffResult, mutation.newChildren );
+
+		// In case of [ REMOVE, INSERT, INSERT ] the previous check will not exit.
+		if ( changes.length > 1 ) {
+			return;
+		}
+
 		const change = changes[ 0 ];
 
 		if ( !( change.values[ 0 ] instanceof ViewText ) ) {
-			return false;
+			return;
 		}
 
 		const viewPos = new ViewPosition( mutation.node, change.index );
@@ -231,6 +223,14 @@ class MutationHandler {
 		this._insert( modelPos, insertedText );
 
 		this.selectionPosition = ModelPosition.createAt( modelPos.parent, 'END' );
+
+		function compare( oldChild, newChild ) {
+			if ( oldChild instanceof ViewText && newChild instanceof ViewText ) {
+				return oldChild.data === newChild.data;
+			} else {
+				return oldChild === newChild;
+			}
+		}
 	}
 
 	_insert( position, text ) {
