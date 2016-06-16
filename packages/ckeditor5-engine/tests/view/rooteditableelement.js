@@ -65,18 +65,19 @@ describe( 'RootEditableElement', () => {
 			expect( isFocusedSpy.calledOnce ).to.be.true;
 		} );
 
-		it( 'should change isFocused when focusedEditable changes', () => {
-			docMock.focusedEditable = viewMain;
+		it( 'should change isFocused when selectedEditable changes', () => {
+			docMock.selectedEditable = viewMain;
+			docMock.isFocused = true;
 
 			expect( viewMain.isFocused ).to.be.true;
 			expect( viewHeader.isFocused ).to.be.false;
 
-			docMock.focusedEditable = viewHeader;
+			docMock.selectedEditable = viewHeader;
 
 			expect( viewMain.isFocused ).to.be.false;
 			expect( viewHeader.isFocused ).to.be.true;
 
-			docMock.focusedEditable = null;
+			docMock.selectedEditable = null;
 
 			expect( viewMain.isFocused ).to.be.false;
 			expect( viewHeader.isFocused ).to.be.false;

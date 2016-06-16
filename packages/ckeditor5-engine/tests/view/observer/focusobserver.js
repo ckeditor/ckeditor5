@@ -50,7 +50,7 @@ describe( 'FocusObserver', () => {
 		} );
 	} );
 
-	describe( 'handle focusedEditable property of the document', () => {
+	describe( 'handle isFocused property of the document', () => {
 		let domMain, domHeader, viewMain, viewHeader;
 
 		beforeEach( () => {
@@ -61,41 +61,20 @@ describe( 'FocusObserver', () => {
 			viewHeader = viewDocument.createRoot( domHeader, 'header' );
 		} );
 
-		it( 'should set focusedEditable on focus', () => {
+		it( 'should set isFocused to true on focus', () => {
 			observer.onDomEvent( { type: 'focus', target: domMain } );
 
-			expect( viewDocument.focusedEditable ).to.equal( viewMain );
+			expect( viewDocument.isFocused ).to.equal( true );
 		} );
 
-		it( 'should change focusedEditable on focus', () => {
+		it( 'should set isFocused to false on blur', () => {
 			observer.onDomEvent( { type: 'focus', target: domMain } );
 
-			expect( viewDocument.focusedEditable ).to.equal( viewMain );
-
-			observer.onDomEvent( { type: 'focus', target: domHeader } );
-
-			expect( viewDocument.focusedEditable ).to.equal( viewHeader );
-		} );
-
-		it( 'should set focusedEditable to null on blur', () => {
-			observer.onDomEvent( { type: 'focus', target: domMain } );
-
-			expect( viewDocument.focusedEditable ).to.equal( viewMain );
+			expect( viewDocument.isFocused ).to.equal( true );
 
 			observer.onDomEvent( { type: 'blur', target: domMain } );
 
-			expect( viewDocument.focusedEditable ).to.be.null;
-		} );
-
-		it( 'should not touch focusedEditable on blur if it is already changed', () => {
-			observer.onDomEvent( { type: 'focus', target: domMain } );
-
-			expect( viewDocument.focusedEditable ).to.equal( viewMain );
-
-			observer.onDomEvent( { type: 'focus', target: domHeader } );
-			observer.onDomEvent( { type: 'blur', target: domMain } );
-
-			expect( viewDocument.focusedEditable ).to.equal( viewHeader );
+			expect( viewDocument.isFocused ).to.be.false;
 		} );
 	} );
 } );

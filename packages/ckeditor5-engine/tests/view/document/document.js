@@ -56,7 +56,8 @@ describe( 'Document', () => {
 			expect( viewDocument ).to.have.property( 'renderer' ).that.is.instanceOf( Renderer );
 			expect( viewDocument ).to.have.property( 'writer' ).that.is.instanceOf( Writer );
 			expect( viewDocument ).to.have.property( 'domConverter' ).that.is.instanceOf( DomConverter );
-			expect( viewDocument ).to.have.property( 'focusedEditable' ).that.is.null;
+			expect( viewDocument ).to.have.property( 'selectedEditable' ).that.is.null;
+			expect( viewDocument ).to.have.property( 'isFocused' ).that.is.false;
 		} );
 	} );
 
@@ -336,18 +337,17 @@ describe( 'Document', () => {
 		} );
 	} );
 
-	describe( 'focusedEditable', () => {
-		it( 'should change renderer.focusedEditable too', () => {
+	describe( 'isFocused', () => {
+		it( 'should change renderer.isFocused too', () => {
 			const viewDocument = new Document();
-			const viewRoot = viewDocument.createRoot( 'div' );
 
-			expect( viewDocument.focusedEditable ).to.equal( null );
-			expect( viewDocument.renderer.focusedEditable ).to.equal( null );
+			expect( viewDocument.isFocused ).to.equal( false );
+			expect( viewDocument.renderer.isFocused ).to.equal( false );
 
-			viewDocument.focusedEditable = viewRoot;
+			viewDocument.isFocused = true;
 
-			expect( viewDocument.focusedEditable ).to.equal( viewRoot );
-			expect( viewDocument.renderer.focusedEditable ).to.equal( viewRoot );
+			expect( viewDocument.isFocused ).to.equal( true );
+			expect( viewDocument.renderer.isFocused ).to.equal( true );
 		} );
 	} );
 } );

@@ -114,7 +114,7 @@ describe( 'Renderer', () => {
 			renderer.markedAttributes.clear();
 			renderer.markedChildren.clear();
 
-			renderer.focusedEditable = viewRoot;
+			renderer.isFocused = true;
 
 			selection.removeAllRanges();
 		} );
@@ -287,7 +287,7 @@ describe( 'Renderer', () => {
 			viewRoot.appendChildren( viewP );
 			selection.setTo( newSelection );
 
-			renderer.focusedEditable = viewRoot;
+			renderer.selectedEditable = viewRoot;
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -779,7 +779,7 @@ describe( 'Renderer', () => {
 			renderAndExpectNoChanges( renderer, domRoot );
 		} );
 
-		it( 'should not change selection if there is no focusedEditable', () => {
+		it( 'should not change selection if there is no selectedEditable', () => {
 			const domDiv = createElement( document, 'div', null, 'not editable' );
 			document.body.appendChild( domDiv );
 
@@ -791,7 +791,7 @@ describe( 'Renderer', () => {
 			domRange.collapse( true );
 			domSelection.addRange( domRange );
 
-			renderer.focusedEditable = null;
+			renderer.selectedEditable = null;
 
 			const { view: viewP, selection: newSelection } = parse( '<container:p>fo{o}</container:p>' );
 
@@ -806,14 +806,14 @@ describe( 'Renderer', () => {
 			expect( domSelection.getRangeAt( 0 ).collapsed ).to.equal( true );
 		} );
 
-		it( 'should not add ranges if different editable is focused', () => {
+		it( 'should not add ranges if different editable is selected', () => {
 			const domHeader = document.createElement( 'h1' );
 			const viewHeader = new ViewElement( 'h1' );
 			document.body.appendChild( domHeader );
 
 			domConverter.bindElements( domHeader, viewHeader );
 
-			renderer.focusedEditable = viewHeader;
+			renderer.selectedEditable = viewHeader;
 
 			const { view: viewP, selection: newSelection } = parse( '<container:p>fo{o}</container:p>' );
 

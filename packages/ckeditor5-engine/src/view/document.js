@@ -74,16 +74,27 @@ export default class Document {
 		this.roots = new Map();
 
 		/**
-		 * {@link engine.view.EditableElement} which is currently focused or null if all of them are blurred.
+		 * True if document is focused.
 		 *
 		 * This property is updated by the {@link engine.view.obsever.FocusObserver}.
 		 * If the {@link engine.view.obsever.FocusObserver} is disabled this property will not change.
 		 *
 		 * @readonly
 		 * @observable
-		 * @member {engine.view.EditableElement|null} engine.view.Document#focusedEditable
+		 * @member {Boolean} engine.view.Document#isFocused
 		 */
-		this.set( 'focusedEditable', null );
+		this.set( 'isFocused', false );
+
+		/**
+		 * {@link engine.view.EditableElement EditableElement} which is containing selection. It can be `null` if
+		 * there is no selection found.
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {engine.view.EditableElement|null} engine.view.Document#selectedEditable
+		 */
+		this.set( 'selectedEditable', null );
+		this.selection.on( 'change', () => this.selectedEditable = this.selection.getEditableElement() );
 
 		/**
 		 * Instance of the {@link engine.view.Document#renderer renderer}.
@@ -92,7 +103,7 @@ export default class Document {
 		 * @member {engine.view.Renderer} engine.view.Document#renderer
 		 */
 		this.renderer = new Renderer( this.domConverter, this.selection );
-		this.renderer.bind( 'focusedEditable' ).to( this, 'focusedEditable' );
+		this.renderer.bind( 'isFocused' ).to( this, 'isFocused' );
 
 		/**
 		 * Map of registered {@link engine.view.Observer observers}.

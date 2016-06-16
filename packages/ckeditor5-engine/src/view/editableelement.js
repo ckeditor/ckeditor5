@@ -43,13 +43,20 @@ export default class EditableElement extends ContainerElement {
 		/**
 		 * Whether the editable is focused.
 		 *
-		 * This property updates when {@link engine.view.Document#focusedEditable} changes.
+		 * This property updates when {@link engine.view.Document#isFocused} or {@link engine.view.Document#selectedEditable}
+		 * change.
 		 *
 		 * @readonly
 		 * @observable
 		 * @member {Boolean} engine.view.RootEditableElement#isFocused
 		 */
-		this.bind( 'isFocused' ).to( document, 'focusedEditable', ( focusedEditable ) => focusedEditable == this );
+		this.bind( 'isFocused' ).to(
+			document,
+			'isFocused',
+			document,
+			'selectedEditable',
+			( isFocused, selectedEditable ) => isFocused && selectedEditable == this
+		);
 	}
 
 	/**

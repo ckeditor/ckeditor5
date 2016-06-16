@@ -10,6 +10,7 @@ import Range from './range.js';
 import Position from './position.js';
 import mix from '../../utils/mix.js';
 import EmitterMixin from '../../utils/emittermixin.js';
+import EditableElement from './editableelement.js';
 
 /**
  * Class representing selection in tree view.
@@ -311,6 +312,29 @@ export default class Selection {
 			this.setRanges( [ new Range( endPosition, endPosition ) ] );
 			this.fire( 'change' );
 		}
+	}
+
+	/**
+	 * Returns {@link engine.view.EditableElement EditableElement} instance that contains this selection.
+	 *
+	 * @returns {engine.view.EditableElement|null} Returns closest EditableElement or null if none is found.
+	 */
+	getEditableElement() {
+		if ( this.rangeCount ) {
+			let editable = this.getFirstPosition().parent;
+
+			while ( !( editable instanceof EditableElement ) ) {
+				if ( editable.parent ) {
+					editable = editable.parent;
+				} else {
+					return null;
+				}
+			}
+
+			return editable;
+		}
+
+		return null;
 	}
 
 	/**

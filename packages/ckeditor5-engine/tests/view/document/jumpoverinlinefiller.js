@@ -28,7 +28,8 @@ describe( 'Document', () => {
 
 		document.getSelection().removeAllRanges();
 
-		viewDocument.focusedEditable = viewRoot;
+		viewDocument.selectedEditable = viewRoot;
+		viewDocument.isFocused = true;
 	} );
 
 	describe( 'jump over inline filler hack', () => {
