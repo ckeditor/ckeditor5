@@ -35,15 +35,8 @@ export default class TreeWalker {
 	 * each {@link engine.view.Element} will be returned once, while if the option is `false` they might be returned
 	 * twice: for `'ELEMENT_START'` and `'ELEMENT_END'`.
 	 */
-	constructor( {
-		boundaries = null,
-		startPosition,
-		direction = 'FORWARD',
-		singleCharacters = false,
-		shallow = false,
-		ignoreElementEnd = false,
-	} = {} ) {
-		if ( !boundaries && !startPosition ) {
+	constructor( options = {} ) {
+		if ( !options.boundaries && !options.startPosition ) {
 			/**
 			 * Neither boundaries nor starting position have been defined.
 			 *
@@ -52,10 +45,10 @@ export default class TreeWalker {
 			throw new CKEditorError( 'tree-walker-no-start-position: Neither boundaries nor starting position have been defined.' );
 		}
 
-		if ( direction != 'FORWARD' && direction != 'BACKWARD' ) {
+		if ( options.direction && options.direction != 'FORWARD' && options.direction != 'BACKWARD' ) {
 			throw new CKEditorError(
 				'tree-walker-unknown-direction: Only `BACKWARD` and `FORWARD` direction allowed.',
-				{ direction }
+				{ direction: options.direction }
 			);
 		}
 
@@ -70,7 +63,7 @@ export default class TreeWalker {
 		 * @readonly
 		 * @member {engine.view.Range} engine.view.TreeWalker#boundaries
 		 */
-		this.boundaries = boundaries;
+		this.boundaries = options.boundaries || null;
 
 		/**
 		 * Iterator position. If start position is not defined then position depends on {@link #direction}. If direction is
@@ -79,10 +72,10 @@ export default class TreeWalker {
 		 * @readonly
 		 * @member {engine.view.Position} engine.view.TreeWalker#position
 		 */
-		if ( startPosition ) {
-			this.position = Position.createFromPosition( startPosition );
+		if ( options.startPosition ) {
+			this.position = Position.createFromPosition( options.startPosition );
 		} else {
-			this.position = Position.createFromPosition( boundaries[ direction == 'BACKWARD' ? 'end' : 'start' ] );
+			this.position = Position.createFromPosition( options.boundaries[ options.direction == 'BACKWARD' ? 'end' : 'start' ] );
 		}
 
 		/**
@@ -91,7 +84,7 @@ export default class TreeWalker {
 		 * @readonly
 		 * @member {'BACKWARD'|'FORWARD'} engine.view.TreeWalker#direction
 		 */
-		this.direction = direction;
+		this.direction = options.direction || 'FORWARD';
 
 		/**
 		 * Flag indicating whether all characters from {@link engine.view.Text} should be returned as one
@@ -100,7 +93,7 @@ export default class TreeWalker {
 		 * @readonly
 		 * @member {Boolean} engine.view.TreeWalker#singleCharacters
 		 */
-		this.singleCharacters = !!singleCharacters;
+		this.singleCharacters = !!options.singleCharacters;
 
 		/**
 		 * Flag indicating whether iterator should enter elements or not. If the iterator is shallow child nodes of any
@@ -109,7 +102,7 @@ export default class TreeWalker {
 		 * @readonly
 		 * @member {Boolean} engine.view.TreeWalker#shallow
 		 */
-		this.shallow = !!shallow;
+		this.shallow = !!options.shallow;
 
 		/**
 		 * Flag indicating whether iterator should ignore `ELEMENT_END` tags. If the option is true walker will not
@@ -120,7 +113,7 @@ export default class TreeWalker {
 		 * @readonly
 		 * @member {Boolean} engine.view.TreeWalker#ignoreElementEnd
 		 */
-		this.ignoreElementEnd = !!ignoreElementEnd;
+		this.ignoreElementEnd = !!options.ignoreElementEnd;
 
 		/**
 		 * Start boundary cached for optimization purposes.
