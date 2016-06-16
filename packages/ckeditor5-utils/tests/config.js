@@ -157,18 +157,6 @@ describe( 'set', () => {
 		expect( config.get( 'date' ) ).to.be.an.instanceof( Date );
 		expect( config.get( 'instance' ) ).to.be.an.instanceof( SomeClass );
 	} );
-
-	it( 'should not transform keys to lowerCase', () => {
-		config.set( 'Foo', 'Bar' );
-		config.set( 'Example.First', 1 );
-		config.set( 'Example.Second', 2 );
-
-		expect( config.get( 'Foo' ) ).to.equal( 'Bar' );
-		expect( config.get( 'Example' ) ).to.deep.equal( {
-			First: 1,
-			Second: 2
-		} );
-	} );
 } );
 
 describe( 'define', () => {
@@ -262,18 +250,6 @@ describe( 'define', () => {
 
 		expect( config.get( 'date' ) ).to.be.an.instanceof( Date );
 		expect( config.get( 'instance' ) ).to.be.an.instanceof( SomeClass );
-	} );
-
-	it( 'should not transform keys to lowerCase', () => {
-		config.set( 'Foo', 'Bar' );
-		config.set( 'Example.First', 1 );
-		config.set( 'Example.Second', 2 );
-
-		expect( config.get( 'Foo' ) ).to.equal( 'Bar' );
-		expect( config.get( 'Example' ) ).to.deep.equal( {
-			First: 1,
-			Second: 2
-		} );
 	} );
 } );
 
