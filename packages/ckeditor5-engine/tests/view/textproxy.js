@@ -33,10 +33,24 @@ describe( 'TextProxy', () => {
 			expect( textProxy ).to.have.property( '_textNode' ).to.equal( text );
 			expect( textProxy ).to.have.property( '_index' ).to.equal( 2 );
 		} );
+
+		it( 'should get text from specified offset to the end of textNode if length is not defined', () => {
+			textProxy = new TextProxy( text, 2 );
+
+			expect( textProxy ).to.have.property( '_data' ).to.equal( 'cdefgh' );
+			expect( textProxy ).to.have.property( '_index' ).to.equal( 2 );
+		} );
 	} );
 
 	describe( 'getDocument', () => {
 		it( 'should return null if any parent has not set Document', () => {
+			expect( textProxy.getDocument() ).to.be.null;
+		} );
+
+		it( 'should return null if has no parent', () => {
+			text = new Text( 'abcdefgh' );
+			textProxy = new TextProxy( text, 1 );
+
 			expect( textProxy.getDocument() ).to.be.null;
 		} );
 
