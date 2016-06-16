@@ -575,7 +575,7 @@ function expectText( value, expected ) {
 	expect( value.length ).to.equal( value.item._data.length );
 
 	/**
-	 * @TODO: Checking (next|prev)Position
+	 * @TODO: Checking previous and next position.
 	 */
 }
 
