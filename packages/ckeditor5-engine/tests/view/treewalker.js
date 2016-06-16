@@ -558,7 +558,7 @@ describe( 'TreeWalker', () => {
 	} );
 } );
 
-function expectValue( value, expected, options ) {
+function expectValue( value, expected, options = {} ) {
 	expect( value.type ).to.equal( expected.type );
 
 	if ( value.type == 'TEXT' ) {
@@ -570,16 +570,25 @@ function expectValue( value, expected, options ) {
 	}
 }
 
-function expectText( value, expected ) {
+function expectText( value, expected, options ) {
+	let previousPosition, nextPosition;
+
 	expect( value.item._data ).to.equal( expected.text );
 	expect( value.length ).to.equal( value.item._data.length );
 
-	/**
-	 * @TODO: Checking previous and next position.
-	 */
+	if ( options.direction == 'BACKWARD' ) {
+		previousPosition = Position.createAfter( value.item );
+		nextPosition = Position.createBefore( value.item );
+	} else {
+		previousPosition = Position.createBefore( value.item );
+		nextPosition = Position.createAfter( value.item );
+	}
+
+	expect( value.previousPosition ).to.deep.equal( previousPosition );
+	expect( value.nextPosition ).to.deep.equal( nextPosition );
 }
 
-function expectStart( value, expected, options = {} ) {
+function expectStart( value, expected, options ) {
 	let previousPosition, nextPosition;
 
 	expect( value.item ).to.equal( expected.item );
@@ -600,7 +609,7 @@ function expectStart( value, expected, options = {} ) {
 	}
 }
 
-function expectEnd( value, expected, options = {} ) {
+function expectEnd( value, expected, options ) {
 	let previousPosition, nextPosition;
 
 	expect( value.item ).to.equal( expected.item );

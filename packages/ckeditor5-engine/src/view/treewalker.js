@@ -204,16 +204,15 @@ export default class TreeWalker {
 				return this._next();
 			} else {
 				let charactersCount = node._data.length;
+				let prevPosition = previousPosition;
 				let item = node;
 
-				// If text stick out of walker range, we need to cut it.
+				// If text stick out of walker range, we need to cut it and wrap by TextProxy.
 				if ( node == this._boundaryEndParent ) {
-					const offset = this.boundaries.end.offset;
-					const textFragment = node._data.substring( 0, offset );
-
-					charactersCount = textFragment.length;
-					item = new TextProxy( textFragment, node.parent, node, 0 );
+					charactersCount = this.boundaries.end.offset;
+					item = new TextProxy( node, 0, charactersCount );
 					position = Position.createAfter( item );
+					prevPosition = Position.createBefore( item );
 				} else {
 					// If not just move forward.
 					position.offset++;
@@ -221,13 +220,11 @@ export default class TreeWalker {
 
 				this.position = position;
 
-				return formatReturnValue( 'TEXT', item, previousPosition, position, charactersCount );
+				return formatReturnValue( 'TEXT', item, prevPosition, position, charactersCount );
 			}
 		} else if ( typeof node == 'string' ) {
+			const textProxy = new TextProxy( parent, position.offset, 1 );
 			position.offset++;
-
-			const textProxy = new TextProxy( node, parent.parent, parent, position.offset );
-
 			this.position = position;
 
 			return formatReturnValue( 'TEXT', textProxy, previousPosition, position, 1 );
@@ -302,16 +299,18 @@ export default class TreeWalker {
 				return this._previous();
 			} else {
 				let charactersCount = node._data.length;
+				let prevPosition = previousPosition;
 				let item = node;
 
-				// If text stick out of walker range, we need to cut it.
+				// If text stick out of walker range, we need to cut it and wrap by TextProxy.
 				if ( node == this._boundaryStartParent ) {
 					const offset = this.boundaries.start.offset;
-					const textFragment = node._data.substring( offset, charactersCount );
 
-					charactersCount = textFragment.length;
-					item = new TextProxy( textFragment, node.parent, node, offset );
+					item = new TextProxy( node, offset );
+
 					position = Position.createBefore( item );
+					prevPosition = Position.createAfter( item );
+					charactersCount = item._data.length;
 				} else {
 					// If not just move backward.
 					position.offset--;
@@ -319,12 +318,12 @@ export default class TreeWalker {
 
 				this.position = position;
 
-				return formatReturnValue( 'TEXT', item, previousPosition, position, charactersCount );
+				return formatReturnValue( 'TEXT', item, prevPosition, position, charactersCount );
 			}
 		} else if ( typeof node == 'string' ) {
 			position.offset--;
 
-			const textProxy = new TextProxy( node, parent.parent, parent, position.offset );
+			const textProxy = new TextProxy( parent, position.offset, 1 );
 
 			this.position = position;
 

@@ -206,7 +206,7 @@ export default class Position {
 
 		// {@link engine.view.TextProxy} is not a instance of {@link engine.view.Node} so we need do handle it in specific way.
 		if ( node instanceof TextProxy ) {
-			return new Position( node._textNodeParent, node._index + 1 );
+			return new Position( node._textNode, node._index + 1 );
 		}
 
 		return new Position( node.parent, node.getIndex() + 1 );
@@ -231,7 +231,7 @@ export default class Position {
 
 		// {@link engine.view.TextProxy} is not a instance of {@link engine.view.Node} so we need do handle it in specific way.
 		if ( node instanceof TextProxy ) {
-			return new Position( node._textNodeParent, node._index );
+			return new Position( node._textNode, node._index );
 		}
 
 		return new Position( node.parent, node.getIndex() );
