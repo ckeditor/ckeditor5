@@ -32,8 +32,9 @@ export default class ChangeBuffer {
 	 *
 	 * @param {engine.treeModel.Document} document
 	 * @param {Number} limit Maximum number of atomic changes which can be contained in one batch.
+	 * By default limit equals to 20.
 	 */
-	constructor( doc, limit ) {
+	constructor( doc, limit = 20 ) {
 		/**
 		 * Instance of the document.
 		 *
