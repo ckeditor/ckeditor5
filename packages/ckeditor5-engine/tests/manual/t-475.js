@@ -5,7 +5,7 @@
 
 'use strict';
 
-import ClassicEditor from '/ckeditor5/creator-classic/classic.js';
+import ClassicEditor from '/ckeditor5/editor-classic/classic.js';
 import Link from '/ckeditor5/hackathon/link.js';
 import TextTransformator from '/ckeditor5/hackathon/texttransformator.js';
 import AutoLinker from '/ckeditor5/hackathon/autolinker.js';
