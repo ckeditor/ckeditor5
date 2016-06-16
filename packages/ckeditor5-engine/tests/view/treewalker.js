@@ -17,7 +17,7 @@ import Range from '/ckeditor5/engine/view/range.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'TreeWalker', () => {
-	let doc, root, img1, paragraph, bold, ba, r, img2, x;
+	let doc, root, img1, paragraph, bold, textBa, charR, img2, charX;
 	let rootBeginning, rootEnding;
 
 	before( () => {
@@ -37,13 +37,13 @@ describe( 'TreeWalker', () => {
 		//     |
 		//     |- X
 
-		ba = new Text( 'ba' );
-		bold = new Element( 'b', [], [ ba ] );
-		r = new Text( 'r' );
+		textBa = new Text( 'ba' );
+		bold = new Element( 'b', [], [ textBa ] );
+		charR = new Text( 'r' );
 		img2 = new Element( 'img2' );
-		x = new Text( 'x' );
+		charX = new Text( 'x' );
 
-		paragraph = new ContainerElement( 'p', [], [ bold, r, img2, x ] );
+		paragraph = new ContainerElement( 'p', [], [ bold, charR, img2, charX ] );
 		img1 = new Element( 'img1' );
 
 		root.insertChildren( 0, [ img1, paragraph ] );
@@ -211,7 +211,7 @@ describe( 'TreeWalker', () => {
 					{ type: 'ELEMENT_END', item: img2 }
 				];
 
-				range = Range.createFromParentsAndOffsets( ba, 1, paragraph, 3 );
+				range = Range.createFromParentsAndOffsets( textBa, 1, paragraph, 3 );
 			} );
 
 			it( 'should return part of the text', () => {
@@ -254,7 +254,7 @@ describe( 'TreeWalker', () => {
 					{ type: 'TEXT', text: 'b' }
 				];
 
-				range = new Range( rootBeginning, new Position( ba, 1 ) );
+				range = new Range( rootBeginning, new Position( textBa, 1 ) );
 			} );
 
 			it( 'should return part of the text', () => {
@@ -317,7 +317,7 @@ describe( 'TreeWalker', () => {
 					{ type: 'TEXT', text: 'a' }
 				];
 
-				let range = new Range( new Position( ba, 1 ), new Position( paragraph, 3 ) );
+				let range = new Range( new Position( textBa, 1 ), new Position( paragraph, 3 ) );
 
 				let iterator = new TreeWalker( {
 					boundaries: range,
