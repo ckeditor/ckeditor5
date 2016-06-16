@@ -86,7 +86,7 @@ export default class ChangeBuffer {
 
 	/**
 	 * Current batch to which a feature should add its deltas. Once the {@link typing.ChangeBuffer#size}
-	 * reach or exceedes the {@link typing.ChangeBuffer#limit}, then the batch is set to a new instance and size is reset.
+	 * reach or exceeds the {@link typing.ChangeBuffer#limit}, then the batch is set to a new instance and size is reset.
 	 *
 	 * @type {engine.treeModel.batch.Batch}
 	 */
