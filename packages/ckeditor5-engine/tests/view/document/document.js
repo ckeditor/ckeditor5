@@ -80,7 +80,7 @@ describe( 'Document', () => {
 			expect( domRoot ).to.equal( domDiv );
 			expect( viewDocument.domConverter.getCorrespondingDom( viewRoot ) ).to.equal( domDiv );
 
-			expect( viewRoot.name.toLowerCase() ).to.equal( 'div' );
+			expect( viewRoot.name ).to.equal( 'div' );
 			expect( viewDocument.renderer.markedChildren.has( viewRoot ) ).to.be.true;
 		} );
 
@@ -173,7 +173,7 @@ describe( 'Document', () => {
 			const domH1 = document.createElement( 'h1' );
 
 			const viewDocument = new Document();
-			viewDocument.createRoot( 'div' );
+			viewDocument.createRoot( 'DIV' );
 			const viewH1 = viewDocument.createRoot( 'h1', 'header' );
 
 			expect( count( viewDocument.domRoots ) ).to.equal( 0 );
@@ -188,6 +188,7 @@ describe( 'Document', () => {
 			expect( viewDocument.getDomRoot( 'header' ) ).to.equal( domH1 );
 			expect( viewDocument.domConverter.getCorrespondingDom( viewH1 ) ).to.equal( domH1 );
 
+			expect( viewDocument.getRoot().name ).to.equal( 'div' );
 			expect( viewDocument.renderer.markedChildren.has( viewH1 ) ).to.be.true;
 		} );
 	} );

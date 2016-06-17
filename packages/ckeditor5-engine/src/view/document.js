@@ -162,6 +162,8 @@ export default class Document {
 	 *		document.createRoot( 'body' );
 	 *		document.attachDomRoot( document.querySelector( 'body#editor' ) );
 	 *
+	 * In both cases, rootName is always transform to lower case.
+	 *
 	 * @param {Element|String} domRoot DOM root element or the tag name of view root element if the DOM element will be
 	 * attached later.
 	 * @param {String} [name='main'] Name of the root.
@@ -170,7 +172,7 @@ export default class Document {
 	createRoot( domRoot, name = 'main' ) {
 		const rootTag = typeof domRoot == 'string' ? domRoot : domRoot.tagName;
 
-		const viewRoot = new RootEditableElement( this, rootTag, name );
+		const viewRoot = new RootEditableElement( this, rootTag.toLowerCase(), name );
 
 		this.roots.set( name, viewRoot );
 
