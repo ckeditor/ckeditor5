@@ -502,15 +502,11 @@ Template.extend = ( instanceOrDef, extDef ) => {
 	}
 };
 
-/**
- * Checks whether given {@link ui.TemplateValueSchema} contains a
- * {@link ui.TemplateBinding}.
- *
- * @ignore
- * @private
- * @param {ui.TemplateValueSchema} valueSchema
- * @returns {Boolean}
- */
+// Checks whether given {@link ui.TemplateValueSchema} contains a
+// {@link ui.TemplateBinding}.
+//
+// @param {ui.TemplateValueSchema} valueSchema
+// @returns {Boolean}
 function hasBinding( valueSchema ) {
 	if ( !valueSchema ) {
 		return false;
@@ -531,17 +527,13 @@ function hasBinding( valueSchema ) {
 	return false;
 }
 
-/**
- * Assembles the value using {@link ui.TemplateValueSchema} and stores it in a form of
- * an Array. Each entry of an Array corresponds to one of {@link ui.TemplateValueSchema}
- * items.
- *
- * @ignore
- * @private
- * @param {ui.TemplateValueSchema} valueSchema
- * @param {Node} node DOM Node updated when {@link utils.ObservableMixin} changes.
- * @return {Array}
- */
+// Assembles the value using {@link ui.TemplateValueSchema} and stores it in a form of
+// an Array. Each entry of an Array corresponds to one of {@link ui.TemplateValueSchema}
+// items.
+//
+// @param {ui.TemplateValueSchema} valueSchema
+// @param {Node} node DOM Node updated when {@link utils.ObservableMixin} changes.
+// @return {Array}
 function getBindingValue( valueSchema, domNode ) {
 	return valueSchema.map( schemaItem => {
 		let { observable, callback, type } = schemaItem;
@@ -565,16 +557,12 @@ function getBindingValue( valueSchema, domNode ) {
 	} );
 }
 
-/**
- * A function executed each time bound Observable attribute changes, which updates DOM with a value
- * constructed from {@link ui.TemplateValueSchema}.
- *
- * @ignore
- * @private
- * @param {ui.TemplateValueSchema} valueSchema
- * @param {Node} node DOM Node updated when {@link utils.ObservableMixin} changes.
- * @param {Function} domUpdater A function which updates DOM (like attribute or text).
- */
+// A function executed each time bound Observable attribute changes, which updates DOM with a value
+// constructed from {@link ui.TemplateValueSchema}.
+//
+// @param {ui.TemplateValueSchema} valueSchema
+// @param {Node} node DOM Node updated when {@link utils.ObservableMixin} changes.
+// @param {Function} domUpdater A function which updates DOM (like attribute or text).
 function syncBinding( valueSchema, domNode, domUpdater ) {
 	let value = getBindingValue( valueSchema, domNode );
 	let shouldSet;
@@ -600,16 +588,12 @@ function syncBinding( valueSchema, domNode, domUpdater ) {
 	}
 }
 
-/*
- * Returns an object consisting of `set` and `remove` functions, which
- * can be used in the context of DOM Node to set or reset `textContent`.
- * @see ui.View#_bindToObservable
- *
- * @ignore
- * @private
- * @param {Node} node DOM Node to be modified.
- * @returns {Object}
- */
+// Returns an object consisting of `set` and `remove` functions, which
+// can be used in the context of DOM Node to set or reset `textContent`.
+// @see ui.View#_bindToObservable
+//
+// @param {Node} node DOM Node to be modified.
+// @returns {Object}
 function getTextUpdater( node ) {
 	return {
 		set( value ) {
@@ -622,18 +606,14 @@ function getTextUpdater( node ) {
 	};
 }
 
-/*
- * Returns an object consisting of `set` and `remove` functions, which
- * can be used in the context of DOM Node to set or reset an attribute.
- * @see ui.View#_bindToObservable
- *
- * @ignore
- * @private
- * @param {Node} node DOM Node to be modified.
- * @param {String} attrName Name of the attribute to be modified.
- * @param {String} [ns=null] Namespace to use.
- * @returns {Object}
- */
+// Returns an object consisting of `set` and `remove` functions, which
+// can be used in the context of DOM Node to set or reset an attribute.
+// @see ui.View#_bindToObservable
+//
+// @param {Node} node DOM Node to be modified.
+// @param {String} attrName Name of the attribute to be modified.
+// @param {String} [ns=null] Namespace to use.
+// @returns {Object}
 function getAttributeUpdater( el, attrName, ns = null ) {
 	return {
 		set( value ) {
@@ -646,14 +626,10 @@ function getAttributeUpdater( el, attrName, ns = null ) {
 	};
 }
 
-/*
- * Clones definition of the template.
- *
- * @ignore
- * @private
- * @param {ui.TemplateDefinition} def
- * @returns {ui.TemplateDefinition}
- */
+// Clones definition of the template.
+//
+// @param {ui.TemplateDefinition} def
+// @returns {ui.TemplateDefinition}
 function clone( def ) {
 	const clone = cloneDeepWith( def, value => {
 		// Don't clone Template.bind* bindings because there are references
@@ -667,19 +643,15 @@ function clone( def ) {
 	return clone;
 }
 
-/**
- * Normalizes given {@link ui.TemplateDefinition}.
- *
- * See:
- *  * {@link normalizeAttributes}
- *  * {@link normalizeListeners}
- *  * {@link normalizeTextString}
- *  * {@link normalizeTextDefinition}
- *
- * @ignore
- * @private
- * @param {ui.TemplateDefinition} def
- */
+// Normalizes given {@link ui.TemplateDefinition}.
+//
+// See:
+//  * {@link normalizeAttributes}
+//  * {@link normalizeListeners}
+//  * {@link normalizeTextString}
+//  * {@link normalizeTextDefinition}
+//
+// @param {ui.TemplateDefinition} def
 function normalize( def ) {
 	if ( def.text ) {
 		normalizeTextDefinition( def );
@@ -702,31 +674,27 @@ function normalize( def ) {
 	}
 }
 
-/**
- * Normalizes "attributes" section of {@link ui.TemplateDefinition}.
- *
- *		attributes: {
- *			a: 'bar',
- *			b: {@link ui.TemplateBinding},
- *			c: {
- *				value: 'bar'
- *			}
- *		}
- *
- * becomes
- *
- *		attributes: {
- *			a: [ 'bar' ],
- *			b: [ {@link ui.TemplateBinding} ],
- *			c: {
- *				value: [ 'bar' ]
- *			}
- *		}
- *
- * @ignore
- * @private
- * @param {Object} attrs
- */
+// Normalizes "attributes" section of {@link ui.TemplateDefinition}.
+//
+//		attributes: {
+//			a: 'bar',
+//			b: {@link ui.TemplateBinding},
+//			c: {
+//				value: 'bar'
+//			}
+//		}
+//
+// becomes
+//
+//		attributes: {
+//			a: [ 'bar' ],
+//			b: [ {@link ui.TemplateBinding} ],
+//			c: {
+//				value: [ 'bar' ]
+//			}
+//		}
+//
+// @param {Object} attrs
 function normalizeAttributes( attrs ) {
 	for ( let a in attrs ) {
 		if ( attrs[ a ].value ) {
@@ -737,52 +705,44 @@ function normalizeAttributes( attrs ) {
 	}
 }
 
-/**
- * Normalizes "on" section of {@link ui.TemplateDefinition}.
- *
- *		on: {
- *			a: 'bar',
- *			b: {@link ui.TemplateBinding},
- *			c: [ {@link ui.TemplateBinding}, () => { ... } ]
- *		}
- *
- * becomes
- *
- *		on: {
- *			a: [ 'bar' ],
- *			b: [ {@link ui.TemplateBinding} ],
- *			c: [ {@link ui.TemplateBinding}, () => { ... } ]
- *		}
- *
- * @ignore
- * @private
- * @param {Object} listeners
- */
+// Normalizes "on" section of {@link ui.TemplateDefinition}.
+//
+//		on: {
+//			a: 'bar',
+//			b: {@link ui.TemplateBinding},
+//			c: [ {@link ui.TemplateBinding}, () => { ... } ]
+//		}
+//
+// becomes
+//
+//		on: {
+//			a: [ 'bar' ],
+//			b: [ {@link ui.TemplateBinding} ],
+//			c: [ {@link ui.TemplateBinding}, () => { ... } ]
+//		}
+//
+// @param {Object} listeners
 function normalizeListeners( listeners ) {
 	for ( let l in listeners ) {
 		arrayify( listeners, l );
 	}
 }
 
-/**
- * Normalizes "string" text in "children" section of {@link ui.TemplateDefinition}.
- *
- *		children: [
- *			'abc',
- *		]
- *
- * becomes
- *
- *		children: [
- *			{ text: [ 'abc' ] },
- *		]
- *
- * @ignore
- * @private
- * @param {Array} children
- * @param {ui.TemplateDefinition} child
- * @param {Number} index
- */
+// Normalizes "string" text in "children" section of {@link ui.TemplateDefinition}.
+//
+//		children: [
+//			'abc',
+//		]
+//
+// becomes
+//
+//		children: [
+//			{ text: [ 'abc' ] },
+//		]
+//
+// @param {Array} children
+// @param {ui.TemplateDefinition} child
+// @param {Number} index
 function normalizeTextString( children, child, index ) {
 	if ( typeof child == 'string' ) {
 		children.splice( index, 1, {
@@ -791,67 +751,55 @@ function normalizeTextString( children, child, index ) {
 	}
 }
 
-/**
- * Normalizes text {@link ui.TemplateDefinition}.
- *
- *		children: [
- *			{ text: 'def' },
- *			{ text: {@link ui.TemplateBinding} }
- *		]
- *
- * becomes
- *
- *		children: [
- *			{ text: [ 'def' ] },
- *			{ text: [ {@link ui.TemplateBinding} ] }
- *		]
- *
- * @ignore
- * @private
- * @param {ui.TemplateDefinition} def
- */
+// Normalizes text {@link ui.TemplateDefinition}.
+//
+//		children: [
+//			{ text: 'def' },
+//			{ text: {@link ui.TemplateBinding} }
+//		]
+//
+// becomes
+//
+//		children: [
+//			{ text: [ 'def' ] },
+//			{ text: [ {@link ui.TemplateBinding} ] }
+//		]
+//
+// @param {ui.TemplateDefinition} def
 function normalizeTextDefinition( def ) {
 	if ( !Array.isArray( def.text ) ) {
 		def.text = [ def.text ];
 	}
 }
 
-/**
- * Wraps an entry in Object in an Array, if not already one.
- *
- *		{
- *			x: 'y',
- *			a: [ 'b' ]
- *		}
- *
- * becomes
- *
- *		{
- *			x: [ 'y' ],
- *			a: [ 'b' ]
- *		}
- *
- * @ignore
- * @private
- * @param {Object} obj
- * @param {String} key
- */
+// Wraps an entry in Object in an Array, if not already one.
+//
+//		{
+//			x: 'y',
+//			a: [ 'b' ]
+//		}
+//
+// becomes
+//
+//		{
+//			x: [ 'y' ],
+//			a: [ 'b' ]
+//		}
+//
+// @param {Object} obj
+// @param {String} key
 function arrayify( obj, key ) {
 	if ( !Array.isArray( obj[ key ] ) ) {
 		obj[ key ] = [ obj[ key ] ];
 	}
 }
 
-/**
- * A helper which concatenates the value avoiding unwanted
- * leading white spaces.
- *
- * @ignore
- * @private
- * @param {String} prev
- * @param {String} cur
- * @returns {String}
- */
+// A helper which concatenates the value avoiding unwanted
+// leading white spaces.
+//
+// @param {String} prev
+// @param {String} cur
+// @returns {String}
 function arrayValueReducer( prev, cur ) {
 	return prev === '' ?
 			`${cur}`
@@ -859,24 +807,20 @@ function arrayValueReducer( prev, cur ) {
 			cur === '' ? `${prev}` : `${prev} ${cur}`;
 }
 
-/**
- * Extends one object defined in the following format:
- *
- *		{
- *			key1: [Array1],
- *			key2: [Array2],
- *			...
- *			keyN: [ArrayN]
- *		}
- *
- * with another object of the same data format.
- *
- * @ignore
- * @private
- * @param {Object} obj Base object.
- * @param {Object} ext Object extending base.
- * @returns {String}
- */
+// Extends one object defined in the following format:
+//
+//		{
+//			key1: [Array1],
+//			key2: [Array2],
+//			...
+//			keyN: [ArrayN]
+//		}
+//
+// with another object of the same data format.
+//
+// @param {Object} obj Base object.
+// @param {Object} ext Object extending base.
+// @returns {String}
 function extendObjectValueArray( obj, ext ) {
 	for ( let a in ext ) {
 		if ( obj[ a ] ) {
@@ -887,15 +831,11 @@ function extendObjectValueArray( obj, ext ) {
 	}
 }
 
-/**
- * A helper for {@link ui.Template#extend}. Recursively extends {@link ui.Template#definition}
- * with content from another definition. See {@link ui.Template#extend} to learn more.
- *
- * @ignore
- * @private
- * @param {ui.TemplateDefinition} def A base template definition.
- * @param {ui.TemplateDefinition} extDef An extension to existing definition.
- */
+// A helper for {@link ui.Template#extend}. Recursively extends {@link ui.Template#definition}
+// with content from another definition. See {@link ui.Template#extend} to learn more.
+//
+// @param {ui.TemplateDefinition} def A base template definition.
+// @param {ui.TemplateDefinition} extDef An extension to existing definition.
 function extendTemplateDefinition( def, extDef ) {
 	if ( extDef.attributes ) {
 		if ( !def.attributes ) {
