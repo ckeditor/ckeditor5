@@ -40,11 +40,11 @@ describe( 'TreeWalker', () => {
 		textBa = new Text( 'ba' );
 		bold = new AttributeElement( 'b', null, [ textBa ] );
 		charR = new Text( 'r' );
-		img2 = new AttributeElement( 'img2' );
+		img2 = new ContainerElement( 'img2' );
 		charX = new Text( 'x' );
 
 		paragraph = new ContainerElement( 'p', null, [ bold, charR, img2, charX ] );
-		img1 = new AttributeElement( 'img1' );
+		img1 = new ContainerElement( 'img1' );
 
 		root.insertChildren( 0, [ img1, paragraph ] );
 
