@@ -209,7 +209,11 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 			//
 			// Anyway, I haven't found in the docs that you can also pass a plugin instance here,
 			// but it works... so let's hope it will.
-			require( `babel-plugin-transform-es2015-modules-${ babelModuleTranspiler }` )
+			require( `babel-plugin-transform-es2015-modules-${ babelModuleTranspiler }` ),
+
+			// Istanbul doesn't support some of ES6 features we are using.
+			require( 'babel-plugin-transform-es2015-destructuring' ),
+			require( 'babel-plugin-transform-es2015-parameters' )
 		];
 	},
 
