@@ -18,7 +18,7 @@ describe( 'LiveRange', () => {
 
 	before( () => {
 		doc = new Document();
-		root = doc.createRoot( '$root', 'root' );
+		root = doc.createRoot();
 
 		let lis = [
 			new Element( 'li', [], 'aaaaaaaaaa' ),

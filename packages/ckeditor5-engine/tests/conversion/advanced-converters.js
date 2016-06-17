@@ -45,7 +45,7 @@ let modelDoc, modelRoot, viewRoot, mapper, writer, modelDispatcher, viewDispatch
 
 beforeEach( () => {
 	modelDoc = new ModelDocument();
-	modelRoot = modelDoc.createRoot( '$root', 'root' );
+	modelRoot = modelDoc.createRoot();
 	viewRoot = new ViewContainerElement( 'div' );
 
 	mapper = new Mapper();

@@ -19,7 +19,7 @@ describe( 'RemoveOperation', () => {
 
 	beforeEach( () => {
 		doc = new Document();
-		root = doc.createRoot( '$root', 'root' );
+		root = doc.createRoot();
 		graveyard = doc.graveyard;
 	} );
 

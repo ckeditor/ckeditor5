@@ -18,7 +18,7 @@ describe( 'TextProxy', () => {
 
 	beforeEach( () => {
 		doc = new Document();
-		root = doc.createRoot( '$root', 'root' );
+		root = doc.createRoot();
 		element = new Element( 'div' );
 		root.insertChildren( 0, element );
 

@@ -20,7 +20,7 @@ describe( 'LivePosition', () => {
 
 	before( () => {
 		doc = new Document();
-		root = doc.createRoot( '$root', 'root' );
+		root = doc.createRoot();
 
 		li1 = new Element( 'li', [], 'abcdef' );
 		li2 = new Element( 'li', [], 'foobar' );

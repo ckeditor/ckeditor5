@@ -21,7 +21,7 @@ describe( 'TreeWalker', () => {
 
 	before( () => {
 		doc = new Document();
-		root = doc.createRoot( '$root', 'root' );
+		root = doc.createRoot();
 
 		// root
 		//  |- img1

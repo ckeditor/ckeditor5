@@ -24,7 +24,7 @@ describe( 'Batch', () => {
 
 	beforeEach( () => {
 		doc = new Document();
-		root = doc.createRoot( '$root', 'root' );
+		root = doc.createRoot();
 
 		p1 = new Element( 'p', { key1: 'value1' }, 'foo' );
 		p2 = new Element( 'p', { key2: 'value2' }, 'bar' );
@@ -86,7 +86,7 @@ describe( 'MergeDelta', () => {
 
 	beforeEach( () => {
 		doc = new Document();
-		root = doc.createRoot( '$root', 'root' );
+		root = doc.createRoot();
 		mergeDelta = new MergeDelta();
 	} );
 

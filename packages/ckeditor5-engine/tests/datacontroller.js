@@ -23,7 +23,7 @@ describe( 'DataController', () => {
 
 	beforeEach( () => {
 		modelDocument = new ModelDocument();
-		modelDocument.createRoot( '$root', 'main' );
+		modelDocument.createRoot();
 		modelDocument.createRoot( '$root', 'title' );
 
 		htmlDataProcessor = new HtmlDataProcessor();

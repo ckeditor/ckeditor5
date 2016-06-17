@@ -35,7 +35,7 @@ describe( 'position', () => {
 	before( () => {
 		doc = new Document();
 
-		root = doc.createRoot( '$root', 'root' );
+		root = doc.createRoot();
 		otherRoot = doc.createRoot( '$root', 'otherRoot' );
 
 		li1 = new Element( 'li', [], 'foz' );
@@ -689,7 +689,7 @@ describe( 'position', () => {
 
 			let serialized = jsonParseStringify( position );
 
-			expect( serialized ).to.deep.equal( { root: 'root', path: [ 0 ] } );
+			expect( serialized ).to.deep.equal( { root: 'main', path: [ 0 ] } );
 		} );
 
 		it( 'should serialize position from graveyard', () => {
@@ -703,7 +703,7 @@ describe( 'position', () => {
 
 	describe( 'fromJSON', () => {
 		it( 'should create object with given document', () => {
-			let deserialized = Position.fromJSON( { root: 'root', path: [ 0, 1, 2 ] }, doc );
+			let deserialized = Position.fromJSON( { root: 'main', path: [ 0, 1, 2 ] }, doc );
 
 			expect( deserialized.root ).to.equal( root );
 			expect( deserialized.path ).to.deep.equal( [ 0, 1, 2 ] );

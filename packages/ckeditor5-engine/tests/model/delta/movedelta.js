@@ -22,7 +22,7 @@ describe( 'Batch', () => {
 
 	beforeEach( () => {
 		doc = new Document();
-		root = doc.createRoot( '$root', 'root' );
+		root = doc.createRoot();
 
 		div = new Element( 'div', [], 'foobar' );
 		p = new Element( 'p', [], 'abcxyz' );
@@ -84,7 +84,7 @@ describe( 'MoveDelta', () => {
 
 	beforeEach( () => {
 		doc = new Document();
-		root = doc.createRoot( '$root', 'root' );
+		root = doc.createRoot();
 		moveDelta = new MoveDelta();
 	} );
 

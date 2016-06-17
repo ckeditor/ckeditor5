@@ -24,7 +24,7 @@ describe( 'Batch', () => {
 
 	beforeEach( () => {
 		doc = new Document();
-		root = doc.createRoot( '$root', 'root' );
+		root = doc.createRoot();
 
 		p = new Element( 'p', { key: 'value' }, 'foobar' );
 
@@ -107,7 +107,7 @@ describe( 'SplitDelta', () => {
 
 	beforeEach( () => {
 		doc = new Document();
-		root = doc.createRoot( '$root', 'root' );
+		root = doc.createRoot();
 		splitDelta = new SplitDelta();
 	} );
 

@@ -36,7 +36,7 @@ let dispatcher, modelDoc, modelRoot, mapper, viewRoot, writer;
 
 beforeEach( () => {
 	modelDoc = new ModelDocument();
-	modelRoot = modelDoc.createRoot( '$root', 'root' );
+	modelRoot = modelDoc.createRoot();
 	viewRoot = new ViewContainerElement( 'div' );
 
 	mapper = new Mapper();
