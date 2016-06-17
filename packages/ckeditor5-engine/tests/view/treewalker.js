@@ -8,7 +8,7 @@
 'use strict';
 
 import Document from '/ckeditor5/engine/view/document.js';
-import Element from '/ckeditor5/engine/view/element.js';
+import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
 import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import Text from '/ckeditor5/engine/view/text.js';
 import TreeWalker from '/ckeditor5/engine/view/treewalker.js';
@@ -38,13 +38,13 @@ describe( 'TreeWalker', () => {
 		//     |- X
 
 		textBa = new Text( 'ba' );
-		bold = new Element( 'b', [], [ textBa ] );
+		bold = new AttributeElement( 'b', null, [ textBa ] );
 		charR = new Text( 'r' );
-		img2 = new Element( 'img2' );
+		img2 = new AttributeElement( 'img2' );
 		charX = new Text( 'x' );
 
-		paragraph = new ContainerElement( 'p', [], [ bold, charR, img2, charX ] );
-		img1 = new Element( 'img1' );
+		paragraph = new ContainerElement( 'p', null, [ bold, charR, img2, charX ] );
+		img1 = new AttributeElement( 'img1' );
 
 		root.insertChildren( 0, [ img1, paragraph ] );
 
