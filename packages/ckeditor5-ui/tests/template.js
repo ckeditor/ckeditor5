@@ -26,7 +26,8 @@ describe( 'Template', () => {
 				tag: 'p'
 			};
 
-			expect( new Template( def ).definition ).to.equal( def );
+			expect( new Template( def ).definition ).to.not.equal( def );
+			expect( new Template( def ).definition.tag ).to.equal( 'p' );
 		} );
 
 		it( 'normalizes template definition', () => {
@@ -80,6 +81,29 @@ describe( 'Template', () => {
 			expect( def.on[ 'b@span' ][ 0 ].type ).to.be.a( 'symbol' );
 			expect( def.on[ 'c@span' ][ 0 ].type ).to.be.a( 'symbol' );
 			expect( def.on[ 'c@span' ][ 1 ].type ).to.be.a( 'symbol' );
+		} );
+
+		it( 'does not modify passed definition', () => {
+			const def = {
+				tag: 'p',
+				attributes: {
+					a: 'foo',
+				},
+				children: [
+					{
+						tag: 'span'
+					}
+				]
+			};
+			const tpl = new Template( def );
+
+			expect( def ).to.not.equal( tpl.definition );
+			expect( def.attributes ).to.not.equal( tpl.definition.attributes );
+			expect( def.children ).to.not.equal( tpl.definition.children );
+			expect( def.children[ 0 ] ).to.not.equal( tpl.definition.children[ 0 ] );
+
+			expect( tpl.definition.attributes.a[ 0 ] ).to.equal( 'foo' );
+			expect( def.attributes.a ).to.equal( 'foo' );
 		} );
 	} );
 
@@ -1192,6 +1216,29 @@ describe( 'Template', () => {
 
 			emitter = Object.create( DOMEmitterMixin );
 			bind = Template.bind( observable, emitter );
+		} );
+
+		it( 'does not modify passed definition', () => {
+			const def = {
+				tag: 'p',
+				attributes: {
+					a: 'foo',
+				}
+			};
+			const ext = {
+				attributes: {
+					b: 'bar'
+				}
+			};
+			const tpl = new Template( def );
+
+			Template.extend( tpl, ext );
+
+			expect( def.attributes.a ).to.equal( 'foo' );
+			expect( ext.attributes.b ).to.equal( 'bar' );
+
+			expect( tpl.definition.attributes.a[ 0 ] ).to.equal( 'foo' );
+			expect( tpl.definition.attributes.b[ 0 ] ).to.equal( 'bar' );
 		} );
 
 		describe( 'attributes', () => {

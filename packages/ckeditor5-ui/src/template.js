@@ -10,6 +10,7 @@
 import CKEditorError from '../utils/ckeditorerror.js';
 import mix from '../utils/mix.js';
 import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
+import cloneDeepWith from '../utils/lib/lodash/clonedeepwith.js';
 
 const bindToSymbol = Symbol( 'bindTo' );
 const bindIfSymbol = Symbol( 'bindIf' );
@@ -28,7 +29,9 @@ export default class Template {
 	 * @param {ui.TemplateDefinition} def The definition of the template.
 	 */
 	constructor( def ) {
-		normalize( def );
+		const defClone = clone( def );
+
+		normalize( defClone );
 
 		/**
 		 * Definition of this template.
@@ -36,7 +39,7 @@ export default class Template {
 		 * @readonly
 		 * @member {ui.TemplateDefinition} ui.Template#definition
 		 */
-		this.definition = def;
+		this.definition = defClone;
 	}
 
 	/**
@@ -479,12 +482,23 @@ Template.bind = ( observable, emitter ) => {
  * @param {ui.TemplateDefinition} extDef An extension to existing instance or definition.
  */
 Template.extend = ( instanceOrDef, extDef ) => {
-	normalize( extDef );
+	const extDefClone = clone( extDef );
+
+	normalize( extDefClone );
 
 	if ( instanceOrDef instanceof Template ) {
-		extendTemplateDefinition( instanceOrDef.definition, extDef );
-	} else {
-		extendTemplateDefinition( instanceOrDef, extDef );
+		extendTemplateDefinition( instanceOrDef.definition, extDefClone );
+	}
+	// Extend a particular child in existing template instance.
+	//
+	//		Template.extend( instance.definition.children[ 0 ], {
+	//			attributes: {
+	//				class: 'd'
+	//			}
+	//		} );
+	//
+	else {
+		extendTemplateDefinition( instanceOrDef, extDefClone );
 	}
 };
 
@@ -632,6 +646,27 @@ function getAttributeUpdater( el, attrName, ns = null ) {
 	};
 }
 
+/*
+ * Clones definition of the template.
+ *
+ * @ignore
+ * @private
+ * @param {ui.TemplateDefinition} def
+ * @returns {ui.TemplateDefinition}
+ */
+function clone( def ) {
+	const clone = cloneDeepWith( def, value => {
+		// Don't clone Template.bind* bindings because there are references
+		// to Observable and DOMEmitterMixin instances inside, which are external
+		// to the Template.
+		if ( value && value.type ) {
+			return value;
+		}
+	} );
+
+	return clone;
+}
+
 /**
  * Normalizes given {@link ui.TemplateDefinition}.
  *
@@ -643,8 +678,7 @@ function getAttributeUpdater( el, attrName, ns = null ) {
  *
  * @ignore
  * @private
- * @param {ui.TemplateValueSchema} valueSchema
- * @returns {Array}
+ * @param {ui.TemplateDefinition} def
  */
 function normalize( def ) {
 	if ( def.text ) {
