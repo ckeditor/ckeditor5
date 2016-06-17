@@ -47,13 +47,6 @@ describe( 'TextProxy', () => {
 			expect( textProxy.getDocument() ).to.be.null;
 		} );
 
-		it( 'should return null if has no parent', () => {
-			text = new Text( 'abcdefgh' );
-			textProxy = new TextProxy( text, 1 );
-
-			expect( textProxy.getDocument() ).to.be.null;
-		} );
-
 		it( 'should return Document attached to the parent element', () => {
 			const docMock = createDocumentMock();
 			const root = new RootEditableElement( docMock, 'div' );
@@ -105,14 +98,14 @@ describe( 'TextProxy', () => {
 			expect( result ).to.length( 3 );
 			expect( result[ 0 ] ).to.equal( wrapper );
 			expect( result[ 1 ] ).to.equal( parent );
-			expect( result[ 2 ] ).to.equal( textProxy );
+			expect( result[ 2 ] ).to.equal( text );
 		} );
 
 		it( 'should return array of ancestors including node itself `includeNode` starting from parent `parentFirst`', () => {
 			const result = textProxy.getAncestors( { includeNode: true, parentFirst: true } );
 
 			expect( result.length ).to.equal( 3 );
-			expect( result[ 0 ] ).to.equal( textProxy );
+			expect( result[ 0 ] ).to.equal( text );
 			expect( result[ 1 ] ).to.equal( parent );
 			expect( result[ 2 ] ).to.equal( wrapper );
 		} );

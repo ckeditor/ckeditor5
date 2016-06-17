@@ -5,8 +5,6 @@
 
 'use strict';
 
-import Node from './node.js';
-
 /**
  * Tree view text proxy.
  * It is a wrapper for substring of {@link engine.view.Text}.
@@ -23,7 +21,7 @@ export default class TextProxy {
 	 */
 	constructor( textNode, startOffset, length ) {
 		/**
-		 * Element that is a parent of this node.
+		 * Element that is a parent of this text proxy.
 		 *
 		 * @readonly
 		 * @member {engine.view.Element|engine.view.DocumentFragment|null} engine.view.Node#parent
@@ -63,47 +61,36 @@ export default class TextProxy {
 	}
 
 	/**
-	 * Gets {@link engine.view.Document} reference, from the {@link engine.view.Node#getRoot root} or
-	 * returns null if the root has no reference to the {@link engine.view.Document}.
+	 * Gets {@link engine.view.Document} reference, from the {@link engine.view.Node#getRoot root} of
+	 * {#_textNode} or returns null if the root has no reference to the {@link engine.view.Document}.
 	 *
-	 * @returns {engine.view.Document|null} View Document of the node or null.
+	 * @returns {engine.view.Document|null} View Document of the text proxy or null.
 	 */
 	getDocument() {
-		// Parent might be Node, null or DocumentFragment.
-		if ( this.parent instanceof Node ) {
-			return this.parent.getDocument();
-		} else {
-			return null;
-		}
+		return this._textNode.getDocument();
 	}
 
 	/**
-	 * Gets the top parent for the node. If node has no parent it is the root itself.
+	 * Gets the top parent for the {#_textNode}. If there is no parent {#_textNode} is the root.
 	 *
 	 * @returns {engine.view.Node}
 	 */
 	getRoot() {
-		let root = this;
-
-		while ( root.parent ) {
-			root = root.parent;
-		}
-
-		return root;
+		return this._textNode.getRoot();
 	}
 
 	/**
-	 * Returns ancestors array of this node.
+	 * Returns ancestors array of this text proxy.
 	 *
 	 * @param {Object} options Options object.
-	 * @param {Boolean} [options.includeNode=false] When set to `true` this node will be also included in parent's array.
-	 * @param {Boolean} [options.parentFirst=false] When set to `true`, array will be sorted from node's parent to root element,
-	 * otherwise root element will be the first item in the array.
+	 * @param {Boolean} [options.includeNode=false] When set to `true` {#_textNode} will be also included in parent's array.
+	 * @param {Boolean} [options.parentFirst=false] When set to `true`, array will be sorted from text proxy parent to
+	 * root element, otherwise root element will be the first item in the array.
 	 * @returns {Array} Array with ancestors.
 	 */
 	getAncestors( options = { includeNode: false, parentFirst: false } ) {
 		const ancestors = [];
-		let parent = options.includeNode ? this : this.parent;
+		let parent = options.includeNode ? this._textNode : this.parent;
 
 		while ( parent !== null ) {
 			ancestors[ options.parentFirst ? 'push' : 'unshift' ]( parent );
