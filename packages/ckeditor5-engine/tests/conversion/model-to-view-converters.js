@@ -243,6 +243,40 @@ describe( 'wrap/unwrap', () => {
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 	} );
+
+	it( 'should update range on re-wrapping attribute (#475)', () => {
+		const modelElement = new ModelElement( 'paragraph', null,
+			[ 'x', new ModelText( 'foo', { link: 'http://foo.com' } ), 'x' ] );
+		const viewP = new ViewContainerElement( 'p' );
+
+		const elementGenerator = ( href ) => new ViewAttributeElement( 'a', { href } );
+
+		modelRoot.appendChildren( modelElement );
+		dispatcher.on( 'insert:paragraph', insertElement( viewP ) );
+		dispatcher.on( 'insert:$text', insertText() );
+		dispatcher.on( 'addAttribute:link', wrap( elementGenerator ) );
+		dispatcher.on( 'changeAttribute:link', wrap( elementGenerator ) );
+
+		dispatcher.convertInsert(
+			ModelRange.createFromElement( modelRoot )
+		);
+
+		expect( viewToString( viewRoot ) ).to.equal( '<div><p>x<a href="http://foo.com">foo</a>x</p></div>' );
+
+		for ( let value of ModelRange.createFromElement( modelElement ) ) {
+			value.item.setAttribute( 'link', 'http://foobar.com' );
+		}
+
+		dispatcher.convertAttribute(
+			'changeAttribute',
+			ModelRange.createFromElement( modelElement ),
+			'link',
+			'http://foo.com',
+			'http://foobar.com'
+		);
+
+		expect( viewToString( viewRoot ) ).to.equal( '<div><p><a href="http://foobar.com">xfoox</a></p></div>' );
+	} );
 } );
 
 describe( 'move', () => {
