@@ -454,7 +454,7 @@ export default class Template {
 		for ( let key in def.on ) {
 			const [ domEvtName, domSelector ] = key.split( '@' );
 
-			def.on[ key ].forEach( schemaItem => {
+			for ( let schemaItem of def.on[ key ] ) {
 				schemaItem.emitter.listenTo( el, domEvtName, ( evt, domEvt ) => {
 					if ( !domSelector || domEvt.target.matches( domSelector ) ) {
 						if ( typeof schemaItem.eventNameOrFunction == 'function' ) {
@@ -464,7 +464,7 @@ export default class Template {
 						}
 					}
 				} );
-			} );
+			}
 		}
 	}
 
