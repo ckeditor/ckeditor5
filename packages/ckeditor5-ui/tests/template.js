@@ -769,7 +769,7 @@ describe( 'Template', () => {
 					const binding = bind.to( 'foo', spy );
 
 					expect( spy.called ).to.be.false;
-					expect( binding ).to.have.keys( [ 'type', 'observable', 'eventNameOrFuncion', 'emitter', 'attribute', 'callback' ] );
+					expect( binding ).to.have.keys( [ 'type', 'observable', 'eventNameOrFunction', 'emitter', 'attribute', 'callback' ] );
 					expect( binding.observable ).to.equal( observable );
 					expect( binding.callback ).to.equal( spy );
 					expect( binding.attribute ).to.equal( 'foo' );

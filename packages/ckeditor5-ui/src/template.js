@@ -274,10 +274,10 @@ export default class Template {
 			def.on[ key ].forEach( schemaItem => {
 				schemaItem.emitter.listenTo( el, domEvtName, ( evt, domEvt ) => {
 					if ( !domSelector || domEvt.target.matches( domSelector ) ) {
-						if ( typeof schemaItem.eventNameOrFuncion == 'function' ) {
-							schemaItem.eventNameOrFuncion( domEvt );
+						if ( typeof schemaItem.eventNameOrFunction == 'function' ) {
+							schemaItem.eventNameOrFunction( domEvt );
 						} else {
-							schemaItem.observable.fire( schemaItem.eventNameOrFuncion, domEvt );
+							schemaItem.observable.fire( schemaItem.eventNameOrFunction, domEvt );
 						}
 					}
 				} );
@@ -376,10 +376,10 @@ Template.bind = ( observable, emitter ) => {
 		 * @param {Function} [callback] Allows processing of the value. Accepts `Node` and `value` as arguments.
 		 * @return {ui.TemplateBinding}
 		 */
-		to: ( eventNameOrFuncionOrAttribute, callback ) => {
+		to( eventNameOrFuncionOrAttribute, callback ) {
 			return {
 				type: bindToSymbol,
-				eventNameOrFuncion: eventNameOrFuncionOrAttribute,
+				eventNameOrFunction: eventNameOrFuncionOrAttribute,
 				attribute: eventNameOrFuncionOrAttribute,
 				observable, emitter, callback
 			};
@@ -416,7 +416,7 @@ Template.bind = ( observable, emitter ) => {
 		 * @param {Function} [callback] Allows processing of the value. Accepts `Node` and `value` as arguments.
 		 * @return {ui.TemplateBinding}
 		 */
-		if: ( attribute, valueIfTrue, callback ) => {
+		if( attribute, valueIfTrue, callback ) {
 			return {
 				type: bindIfSymbol,
 				observable, emitter, attribute, valueIfTrue, callback
