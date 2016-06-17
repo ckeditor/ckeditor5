@@ -337,7 +337,7 @@ export default class Template {
 		}
 
 		// Setup DOM bindings event listeners.
-		this._setupListeners( def, el );
+		this._setUpListeners( def, el );
 
 		return el;
 	}
@@ -446,7 +446,7 @@ export default class Template {
 	 * @param {ui.TemplateDefinition} def Definition of an element.
 	 * @param {HTMLElement} el Element which is being rendered.
 	 */
-	_setupListeners( def, el ) {
+	_setUpListeners( def, el ) {
 		if ( !def.on ) {
 			return;
 		}
