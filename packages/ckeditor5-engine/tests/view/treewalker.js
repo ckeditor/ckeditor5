@@ -98,8 +98,7 @@ describe( 'TreeWalker', () => {
 			let i = 0;
 
 			for ( let value of iterator ) {
-				expectValue( value, expected[ i ] );
-				i++;
+				expectValue( value, expected[ i++ ] );
 			}
 
 			expect( i ).to.equal( expected.length );
@@ -110,8 +109,7 @@ describe( 'TreeWalker', () => {
 			let i = 0;
 
 			for ( let value of iterator ) {
-				expectValue( value, expected[ i ] );
-				i++;
+				expectValue( value, expected[ i++ ] );
 			}
 
 			expect( i ).to.equal( expected.length );
@@ -133,8 +131,7 @@ describe( 'TreeWalker', () => {
 			let i = 2;
 
 			for ( let value of iterator ) {
-				expectValue( value, expected[ i ] );
-				i++;
+				expectValue( value, expected[ i++ ] );
 			}
 
 			expect( i ).to.equal( expected.length );
@@ -180,8 +177,7 @@ describe( 'TreeWalker', () => {
 				let i = 0;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ i ] );
-					i++;
+					expectValue( value, expected[ i++ ] );
 				}
 
 				expect( i ).to.equal( expected.length );
@@ -219,8 +215,7 @@ describe( 'TreeWalker', () => {
 				let i = 0;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ i ] );
-					i++;
+					expectValue( value, expected[ i++ ] );
 				}
 
 				expect( i ).to.equal( expected.length );
@@ -262,8 +257,7 @@ describe( 'TreeWalker', () => {
 				let i = 0;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ i ] );
-					i++;
+					expectValue( value, expected[ i++ ] );
 				}
 
 				expect( i ).to.equal( expected.length );
@@ -303,8 +297,7 @@ describe( 'TreeWalker', () => {
 				let i = 0;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ i ] );
-					i++;
+					expectValue( value, expected[ i++ ] );
 				}
 
 				expect( i ).to.equal( expected.length );
@@ -327,8 +320,7 @@ describe( 'TreeWalker', () => {
 				let i = 0;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ i ], { direction: 'BACKWARD' } );
-					i++;
+					expectValue( value, expected[ i++ ], { direction: 'BACKWARD' } );
 				}
 
 				expect( i ).to.equal( expected.length );
@@ -362,8 +354,7 @@ describe( 'TreeWalker', () => {
 				let i = 0;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ i ] );
-					i++;
+					expectValue( value, expected[ i++ ] );
 				}
 
 				expect( i ).to.equal( expected.length );
@@ -405,8 +396,7 @@ describe( 'TreeWalker', () => {
 				let i = 0;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ i ] );
-					i++;
+					expectValue( value, expected[ i++ ] );
 				}
 
 				expect( i ).to.equal( expected.length );
@@ -444,8 +434,7 @@ describe( 'TreeWalker', () => {
 			let i = 0;
 
 			for ( let value of iterator ) {
-				expectValue( value, expected[ i ], { shallow: true } );
-				i++;
+				expectValue( value, expected[ i++ ], { shallow: true } );
 			}
 
 			expect( i ).to.equal( expected.length );
@@ -484,8 +473,7 @@ describe( 'TreeWalker', () => {
 				let i = 0;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ i ] );
-					i++;
+					expectValue( value, expected[ i++ ] );
 				}
 
 				expect( i ).to.equal( expected.length );
@@ -532,8 +520,7 @@ describe( 'TreeWalker', () => {
 				let i = 0;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ i ] );
-					i++;
+					expectValue( value, expected[ i++ ] );
 				}
 
 				expect( i ).to.equal( expected.length );
