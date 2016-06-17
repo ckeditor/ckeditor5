@@ -75,8 +75,6 @@ export default class MutationObserver extends Observer {
 	/**
 	 * Synchronously fires {@link engine.view.Document#mutations} event with all mutations in record queue.
 	 * At the same time empties the queue so mutations will not be fired twice.
-	 *
-	 * @returns {[type]} [description]
 	 */
 	flush() {
 		this._onMutations( this._mutationObserver.takeRecords() );

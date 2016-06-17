@@ -47,6 +47,12 @@ describe( 'model test utils', () => {
 			sinon.assert.calledOnce( stringifySpy );
 			sinon.assert.calledWithExactly( stringifySpy, root, document.selection );
 		} );
+
+		it( 'should throw an error when passing invalid document', () => {
+			expect( () => {
+				getData( { invalid: 'document' } );
+			} ).to.throw( TypeError, 'Document needs to be an instance of engine.model.Document.' );
+		} );
 	} );
 
 	describe( 'setData', () => {
@@ -74,6 +80,12 @@ describe( 'model test utils', () => {
 			sinon.assert.calledOnce( parseSpy );
 			const args = parseSpy.firstCall.args;
 			expect( args[ 0 ] ).to.equal( data );
+		} );
+
+		it( 'should throw an error when passing invalid document', () => {
+			expect( () => {
+				setData( { invalid: 'document' } );
+			} ).to.throw( TypeError, 'Document needs to be an instance of engine.model.Document.' );
 		} );
 	} );
 

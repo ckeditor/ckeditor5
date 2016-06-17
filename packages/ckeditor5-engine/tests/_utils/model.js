@@ -27,6 +27,10 @@ import Document from '/ckeditor5/engine/model/document.js';
  * @returns {String} The stringified data.
  */
 export function getData( document, options = {} ) {
+	if ( !( document instanceof Document ) ) {
+		throw new TypeError( 'Document needs to be an instance of engine.model.Document.' );
+	}
+
 	const withoutSelection = !!options.withoutSelection;
 	const rootName = options.rootName || 'main';
 	const root = document.getRoot( rootName );
@@ -47,6 +51,10 @@ getData._stringify = stringify;
  * used.
  */
 export function setData( document, data, options = {} ) {
+	if ( !( document instanceof Document ) ) {
+		throw new TypeError( 'Document needs to be an instance of engine.model.Document.' );
+	}
+
 	setData._parse( data, {
 		document: document,
 		rootName: options.rootName

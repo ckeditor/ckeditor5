@@ -71,7 +71,7 @@ export default class Batch {
 	/**
 	 * Gets an iterable collection of operations.
 	 *
-	 * @returns {Iterable.<engine.model.operation.Operation}
+	 * @returns {Iterable.<engine.model.operation.Operation>}
 	 */
 	*getOperations() {
 		for ( let delta of this.deltas ) {
