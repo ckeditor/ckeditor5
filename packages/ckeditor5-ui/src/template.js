@@ -16,9 +16,25 @@ const bindToSymbol = Symbol( 'bindTo' );
 const bindIfSymbol = Symbol( 'bindIf' );
 
 /**
- * Basic Template class.
+ * A basic Template class. It renders DOM HTMLElements from {@link ui.TemplateDefinition} and supports
+ * element attributes, children, bindings to {@link utils.ObservableMixin} instances and DOM events
+ * propagation. For example:
  *
- * See {@link ui.TemplateDefinition}.
+ *		new Template( {
+ *			tag: 'p',
+ *			attributes: {
+ *				class: 'foo'
+ *			},
+ *			children: [
+ *				'A paragraph.'
+ *			]
+ *		} ).render();
+ *
+ * will render the following HTMLElement:
+ *
+ *		<p class="foo">A paragraph.</p>
+ *
+ * See {@link ui.TemplateDefinition} to know more about templates and see complex examples.
  *
  * @memberOf ui
  */
