@@ -194,6 +194,11 @@ export default class Position {
 	 * @returns {engine.view.Position}
 	 */
 	static createAfter( node ) {
+		// {@link engine.view.TextProxy} is not a instance of {@link engine.view.Node} so we need do handle it in specific way.
+		if ( node instanceof TextProxy ) {
+			return new Position( node._textNode, node._index + 1 );
+		}
+
 		if ( !node.parent ) {
 			/**
 			 * You can not make a position after a root.
@@ -202,11 +207,6 @@ export default class Position {
 			 * @param {engine.view.Node} root
 			 */
 			throw new CKEditorError( 'position-after-root: You can not make position after root.', { root: node } );
-		}
-
-		// {@link engine.view.TextProxy} is not a instance of {@link engine.view.Node} so we need do handle it in specific way.
-		if ( node instanceof TextProxy ) {
-			return new Position( node._textNode, node._index + 1 );
 		}
 
 		return new Position( node.parent, node.getIndex() + 1 );
@@ -219,6 +219,11 @@ export default class Position {
 	 * @returns {engine.view.Position}
 	 */
 	static createBefore( node ) {
+		// {@link engine.view.TextProxy} is not a instance of {@link engine.view.Node} so we need do handle it in specific way.
+		if ( node instanceof TextProxy ) {
+			return new Position( node._textNode, node._index );
+		}
+
 		if ( !node.parent ) {
 			/**
 			 * You cannot make a position before a root.
@@ -227,11 +232,6 @@ export default class Position {
 			 * @param {engine.view.Node} root
 			 */
 			throw new CKEditorError( 'position-before-root: You can not make position before root.', { root: node } );
-		}
-
-		// {@link engine.view.TextProxy} is not a instance of {@link engine.view.Node} so we need do handle it in specific way.
-		if ( node instanceof TextProxy ) {
-			return new Position( node._textNode, node._index );
 		}
 
 		return new Position( node.parent, node.getIndex() );

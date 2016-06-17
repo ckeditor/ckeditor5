@@ -306,12 +306,11 @@ describe( 'Position', () => {
 
 		it( 'should create positions before `TextProxy`', () => {
 			const text = new Text( 'abc' );
-			const paragraph = new Element( 'p', [], [ text ] );
 
-			const textProxy = new TextProxy( 'b', paragraph, text, 1 );
+			const textProxy = new TextProxy( text, 1, 1 );
 			const position = new Position( text, 1 );
 
-			expect( Position.createBefore( textProxy ).isEqual( position ) ).to.be.true;
+			expect( Position.createBefore( textProxy ) ).deep.equal( position );
 		} );
 	} );
 
@@ -332,12 +331,11 @@ describe( 'Position', () => {
 
 		it( 'should create positions after `TextProxy`', () => {
 			const text = new Text( 'abc' );
-			const paragraph = new Element( 'p', [], [ text ] );
 
-			const textProxy = new TextProxy( 'b', paragraph, text, 1 );
+			const textProxy = new TextProxy( text, 1, 1 );
 			const position = new Position( text, 2 );
 
-			expect( Position.createAfter( textProxy ).isEqual( position ) ).to.be.true;
+			expect( Position.createAfter( textProxy ) ).deep.equal( position );
 		} );
 	} );
 } );
