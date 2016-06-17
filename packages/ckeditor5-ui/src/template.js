@@ -87,7 +87,7 @@ export default class Template {
 			 *
 			 * @error ui-template-wrong-syntax
 			 */
-			throw new CKEditorError( 'ui-template-wrong-node' );
+			throw new CKEditorError( 'ui-template-wrong-node: No DOM Node specified.' );
 		}
 
 		return this._renderNode( this.definition, node );
@@ -303,7 +303,7 @@ export default class Template {
 			 *
 			 * @error ui-template-wrong-syntax
 			 */
-			throw new CKEditorError( 'ui-template-wrong-syntax' );
+			throw new CKEditorError( 'ui-template-wrong-syntax: Node definition must have either "tag" or "text" when rendering new Node.' );
 		}
 
 		return def.text ?
@@ -861,7 +861,7 @@ function extendTemplateDefinition( def, extDef ) {
 			 *
 			 * @error ui-template-extend-children-mismatch
 			 */
-			throw new CKEditorError( 'ui-template-extend-children-mismatch' );
+			throw new CKEditorError( 'ui-template-extend-children-mismatch: The number of children in extended definition does not match.' );
 		}
 
 		extDef.children.forEach( ( extChildDef, index ) => {
