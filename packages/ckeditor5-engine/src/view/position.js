@@ -190,7 +190,7 @@ export default class Position {
 	/**
 	 * Creates a new position after the given node.
 	 *
-	 * @param {engine.view.Node|engine.view.TextProxy} node Node after which the position should be located.
+	 * @param {engine.view.Node|engine.view.TextProxy} node Node or text proxy after which the position should be located.
 	 * @returns {engine.view.Position}
 	 */
 	static createAfter( node ) {
@@ -215,7 +215,7 @@ export default class Position {
 	/**
 	 * Creates a new position before the given node.
 	 *
-	 * @param {engine.view.Node|engine.view.TextProxy} node Node before which the position should be located.
+	 * @param {engine.view.Node|engine.view.TextProxy} node Node or text proxy before which the position should be located.
 	 * @returns {engine.view.Position}
 	 */
 	static createBefore( node ) {
