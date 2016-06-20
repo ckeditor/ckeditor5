@@ -17,7 +17,7 @@ describe( 'RootAttributeOperation', () => {
 
 	beforeEach( () => {
 		doc = new Document();
-		root = doc.createRoot( 'root' );
+		root = doc.createRoot();
 	} );
 
 	describe( 'type', () => {
@@ -244,7 +244,7 @@ describe( 'RootAttributeOperation', () => {
 				key: 'key',
 				newValue: 'newValue',
 				oldValue: null,
-				root: 'root'
+				root: 'main'
 			} );
 		} );
 	} );

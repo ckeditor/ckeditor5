@@ -21,7 +21,7 @@ describe( 'Document change event', () => {
 
 	beforeEach( () => {
 		doc = new Document();
-		root = doc.createRoot( 'root' );
+		root = doc.createRoot();
 		graveyard = doc.graveyard;
 
 		types = [];
