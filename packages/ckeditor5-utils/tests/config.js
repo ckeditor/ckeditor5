@@ -29,8 +29,8 @@ describe( 'constructor', () => {
 		expect( config.get( 'creator' ) ).to.equal( 'inline' );
 		expect( config.get( 'language' ) ).to.equal( 'pl' );
 		expect( config.get( 'resize' ) ).to.deep.equal( {
-			minheight: 300,
-			maxheight: 800,
+			minHeight: 300,
+			maxHeight: 800,
 			icon: {
 				path: 'xyz'
 			}
@@ -54,7 +54,7 @@ describe( 'set', () => {
 		} );
 
 		expect( config.get( 'option1' ) ).to.equal( 1 );
-		expect( config.get( 'option2.suboption21' ) ).to.equal( 21 );
+		expect( config.get( 'option2.subOption21' ) ).to.equal( 21 );
 	} );
 
 	it( 'should set configurations when passing name and value', () => {
@@ -115,8 +115,8 @@ describe( 'set', () => {
 		} );
 
 		expect( config.get( 'resize' ) ).to.be.deep.equal( {
-			minheight: 400,		// Overridden
-			maxheight: 800,		// The same
+			minHeight: 400,		// Overridden
+			maxHeight: 800,		// The same
 			hidden: true,		// Expanded
 			icon: {
 				path: 'abc',	// Overridden
@@ -136,8 +136,8 @@ describe( 'set', () => {
 		} );
 
 		expect( config.get( 'resize' ) ).to.deep.equal( {
-			minheight: 400,		// Overridden
-			maxheight: 800,		// The same
+			minHeight: 400,		// Overridden
+			maxHeight: 800,		// The same
 			hidden: true,		// Expanded
 			icon: {
 				path: 'abc',	// Overridden
@@ -169,7 +169,7 @@ describe( 'define', () => {
 		} );
 
 		expect( config.get( 'option1' ) ).to.equal( 1 );
-		expect( config.get( 'option2.suboption21' ) ).to.equal( 21 );
+		expect( config.get( 'option2.subOption21' ) ).to.equal( 21 );
 	} );
 
 	it( 'should set configurations when passing name and value', () => {
@@ -193,7 +193,7 @@ describe( 'define', () => {
 
 		expect( config.get( 'language' ) ).to.equal( 'pl' );
 		expect( config.get( 'resize.icon' ) ).to.be.an( 'object' );
-		expect( config.get( 'resize.minheight' ) ).to.equal( 300 );
+		expect( config.get( 'resize.minHeight' ) ).to.equal( 300 );
 	} );
 
 	it( 'should expand but not override deep configurations', () => {
@@ -209,8 +209,8 @@ describe( 'define', () => {
 		} );
 
 		expect( config.get( 'resize' ) ).to.be.deep.equal( {
-			minheight: 300,		// The same
-			maxheight: 800,		// The same
+			minHeight: 300,		// The same
+			maxHeight: 800,		// The same
 			hidden: true,		// Expanded
 			icon: {
 				path: 'xyz',	// The same
@@ -230,8 +230,8 @@ describe( 'define', () => {
 		} );
 
 		expect( config.get( 'resize' ) ).to.be.deep.equal( {
-			minheight: 300,		// The same
-			maxheight: 800,		// The same
+			minHeight: 300,		// The same
+			maxHeight: 800,		// The same
 			hidden: true,		// Expanded
 			icon: {
 				path: 'xyz',	// The same
@@ -259,7 +259,7 @@ describe( 'get', () => {
 	} );
 
 	it( 'should retrieve a deep configuration', () => {
-		expect( config.get( 'resize.minheight' ) ).to.equal( 300 );
+		expect( config.get( 'resize.minHeight' ) ).to.equal( 300 );
 		expect( config.get( 'resize.icon.path' ) ).to.equal( 'xyz' );
 	} );
 
@@ -267,18 +267,16 @@ describe( 'get', () => {
 		let resize = config.get( 'resize' );
 
 		expect( resize ).to.be.an( 'object' );
-		expect( resize.minheight ).equal( 300 );
-		expect( resize.maxheight ).to.equal( 800 );
+		expect( resize.minHeight ).equal( 300 );
+		expect( resize.maxHeight ).to.equal( 800 );
 		expect( resize.icon ).to.be.an( 'object' );
 
 		expect( resize.icon ).to.be.an( 'object' );
 	} );
 
-	it( 'should retrieve values case-insensitively', () => {
-		expect( config.get( 'Creator' ) ).to.equal( 'inline' );
-		expect( config.get( 'CREATOR' ) ).to.equal( 'inline' );
-		expect( config.get( 'resize.minHeight' ) ).to.equal( 300 );
-		expect( config.get( 'resize.MINHEIGHT' ) ).to.equal( 300 );
+	it( 'should not retrieve values case-insensitively', () => {
+		expect( config.get( 'Creator' ) ).to.be.undefined;
+		expect( config.get( 'resize.MINHEIGHT' ) ).to.be.undefined;
 	} );
 
 	it( 'should return undefined for non existing configuration', () => {
@@ -299,7 +297,7 @@ describe( 'get', () => {
 	it( 'should not be possible to retrieve value directly from config object', () => {
 		expect( config.creator ).to.be.undefined;
 		expect( () => {
-			config.resize.maxheight;
+			config.resize.maxHeight;
 		} ).to.throw();
 	} );
 } );

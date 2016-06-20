@@ -67,7 +67,7 @@ export default class Config {
 	 *		config.get( 'toolbar.color' ); // 'red'
 	 *
 	 * @param {String|Object} name The configuration name or an object from which take properties as
-	 * configuration entries. Configuration names are case-insensitive.
+	 * configuration entries. Configuration names are case-sensitive.
 	 * @param {*} value The configuration value. Used if a name is passed.
 	 */
 	set( name, value ) {
@@ -82,7 +82,7 @@ export default class Config {
 	 * rarely used for other needs.
 	 *
 	 * @param {String|Object} name The configuration name or an object from which take properties as
-	 * configuration entries. Configuration names are case-insensitive.
+	 * configuration entries. Configuration names are case-sensitive.
 	 * @param {*} value The configuration value. Used if a name is passed.
 	 */
 	define( name, value ) {
@@ -100,7 +100,7 @@ export default class Config {
 	 *
 	 *		config.get( 'toolbar.collapsed' );
 	 *
-	 * @param {String} name The configuration name. Configuration names are case-insensitive.
+	 * @param {String} name The configuration name. Configuration names are case-sensitive.
 	 * @returns {*} The configuration value or `undefined` if the configuration entry was not found.
 	 */
 	get( name ) {
@@ -113,7 +113,7 @@ export default class Config {
 	 * @private
 	 * @param {Object} target Nested config object.
 	 * @param {String|Object} name The configuration name or an object from which take properties as
-	 * configuration entries. Configuration names are case-insensitive.
+	 * configuration entries. Configuration names are case-sensitive.
 	 * @param {*} value The configuration value. Used if a name is passed.
 	 * @param {Boolean} [isDefine=false] Define if passed configuration should overwrite existing one.
 	 */
@@ -126,7 +126,7 @@ export default class Config {
 		}
 
 		// The configuration name should be split into parts if it has dots. E.g. `resize.width` -> [`resize`, `width`].
-		const parts = name.toLowerCase().split( '.' );
+		const parts = name.split( '.' );
 
 		// Take the name of the configuration out of the parts. E.g. `resize.width` -> `width`.
 		name = parts.pop();
@@ -170,12 +170,12 @@ export default class Config {
 	 *
 	 * @private
 	 * @param {Object} source level of nested object.
-	 * @param {String} name The configuration name. Configuration names are case-insensitive.
+	 * @param {String} name The configuration name. Configuration names are case-sensitive.
 	 * @returns {*} The configuration value or `undefined` if the configuration entry was not found.
 	 */
 	_getFromSource( source, name ) {
 		// The configuration name should be split into parts if it has dots. E.g. `resize.width` -> [`resize`, `width`].
-		const parts = name.toLowerCase().split( '.' );
+		const parts = name.split( '.' );
 
 		// Take the name of the configuration out of the parts. E.g. `resize.width` -> `width`.
 		name = parts.pop();
