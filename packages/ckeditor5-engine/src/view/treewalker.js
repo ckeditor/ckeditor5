@@ -223,11 +223,23 @@ export default class TreeWalker {
 				return formatReturnValue( 'TEXT', item, prevPosition, position, charactersCount );
 			}
 		} else if ( typeof node == 'string' ) {
-			const textProxy = new TextProxy( parent, position.offset, 1 );
-			position.offset++;
+			let textLength;
+
+			if ( !this.singleCharacters ) {
+				// Check if text stick out of walker range.
+				const endOffset = parent === this._boundaryEndParent ? this.boundaries.end.offset : parent._data.length;
+
+				textLength = endOffset - position.offset;
+			} else {
+				textLength = 1;
+			}
+
+			const textProxy = new TextProxy( parent, position.offset, textLength );
+
+			position.offset += textLength;
 			this.position = position;
 
-			return formatReturnValue( 'TEXT', textProxy, previousPosition, position, 1 );
+			return formatReturnValue( 'TEXT', textProxy, previousPosition, position, textLength );
 		} else {
 			// `node` is not set, we reached the end of current `parent`.
 			position = Position.createAfter( parent );
@@ -321,13 +333,24 @@ export default class TreeWalker {
 				return formatReturnValue( 'TEXT', item, prevPosition, position, charactersCount );
 			}
 		} else if ( typeof node == 'string' ) {
-			position.offset--;
+			let textLength;
 
-			const textProxy = new TextProxy( parent, position.offset, 1 );
+			if ( !this.singleCharacters ) {
+				// Check if text stick out of walker range.
+				const startOffset = parent === this._boundaryStartParent ? this.boundaries.start.offset : 0;
+
+				textLength = position.offset - startOffset;
+			} else {
+				textLength = 1;
+			}
+
+			position.offset -= textLength;
+
+			const textProxy = new TextProxy( parent, position.offset, textLength );
 
 			this.position = position;
 
-			return formatReturnValue( 'TEXT', textProxy, previousPosition, position, 1 );
+			return formatReturnValue( 'TEXT', textProxy, previousPosition, position, textLength );
 		} else {
 			// `node` is not set, we reached the beginning of current `parent`.
 			position = Position.createBefore( parent );

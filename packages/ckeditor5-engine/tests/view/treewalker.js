@@ -17,7 +17,7 @@ import Range from '/ckeditor5/engine/view/range.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'TreeWalker', () => {
-	let doc, root, img1, paragraph, bold, textBa, charR, img2, charX;
+	let doc, root, img1, paragraph, bold, textAbcd, charY, img2, charX;
 	let rootBeginning, rootEnding;
 
 	before( () => {
@@ -28,22 +28,24 @@ describe( 'TreeWalker', () => {
 		//  |- img1
 		//  |- p
 		//     |- b
-		//     |  |- B
 		//     |  |- A
+		//     |  |- B
+		//     |  |- C
+		//     |  |- D
 		//     |
-		//     |- R
+		//     |- Y
 		//     |
 		//     |- img2
 		//     |
 		//     |- X
 
-		textBa = new Text( 'ba' );
-		bold = new AttributeElement( 'b', null, [ textBa ] );
-		charR = new Text( 'r' );
+		textAbcd = new Text( 'abcd' );
+		bold = new AttributeElement( 'b', null, [ textAbcd ] );
+		charY = new Text( 'y' );
 		img2 = new ContainerElement( 'img2' );
 		charX = new Text( 'x' );
 
-		paragraph = new ContainerElement( 'p', null, [ bold, charR, img2, charX ] );
+		paragraph = new ContainerElement( 'p', null, [ bold, charY, img2, charX ] );
 		img1 = new ContainerElement( 'img1' );
 
 		root.insertChildren( 0, [ img1, paragraph ] );
@@ -83,9 +85,9 @@ describe( 'TreeWalker', () => {
 				{ type: 'ELEMENT_END', item: img1 },
 				{ type: 'ELEMENT_START', item: paragraph },
 				{ type: 'ELEMENT_START', item: bold },
-				{ type: 'TEXT', text: 'ba' },
+				{ type: 'TEXT', text: 'abcd' },
 				{ type: 'ELEMENT_END', item: bold },
-				{ type: 'TEXT', text: 'r' },
+				{ type: 'TEXT', text: 'y' },
 				{ type: 'ELEMENT_START', item: img2 },
 				{ type: 'ELEMENT_END', item: img2 },
 				{ type: 'TEXT', text: 'x' },
@@ -162,9 +164,9 @@ describe( 'TreeWalker', () => {
 				expected = [
 					{ type: 'ELEMENT_START', item: paragraph },
 					{ type: 'ELEMENT_START', item: bold },
-					{ type: 'TEXT', text: 'ba' },
+					{ type: 'TEXT', text: 'abcd' },
 					{ type: 'ELEMENT_END', item: bold },
-					{ type: 'TEXT', text: 'r' },
+					{ type: 'TEXT', text: 'y' },
 					{ type: 'ELEMENT_START', item: img2 },
 					{ type: 'ELEMENT_END', item: img2 }
 				];
@@ -200,14 +202,14 @@ describe( 'TreeWalker', () => {
 
 			before( () => {
 				expected = [
-					{ type: 'TEXT', text: 'a' },
+					{ type: 'TEXT', text: 'bcd' },
 					{ type: 'ELEMENT_END', item: bold },
-					{ type: 'TEXT', text: 'r' },
+					{ type: 'TEXT', text: 'y' },
 					{ type: 'ELEMENT_START', item: img2 },
 					{ type: 'ELEMENT_END', item: img2 }
 				];
 
-				range = Range.createFromParentsAndOffsets( textBa, 1, paragraph, 3 );
+				range = Range.createFromParentsAndOffsets( textAbcd, 1, paragraph, 3 );
 			} );
 
 			it( 'should return part of the text', () => {
@@ -246,10 +248,49 @@ describe( 'TreeWalker', () => {
 					{ type: 'ELEMENT_END', item: img1 },
 					{ type: 'ELEMENT_START', item: paragraph },
 					{ type: 'ELEMENT_START', item: bold },
-					{ type: 'TEXT', text: 'b' }
+					{ type: 'TEXT', text: 'ab' }
 				];
 
-				range = new Range( rootBeginning, new Position( textBa, 1 ) );
+				range = new Range( rootBeginning, new Position( textAbcd, 2 ) );
+			} );
+
+			it( 'should return part of the text', () => {
+				let iterator = new TreeWalker( { boundaries: range } );
+				let i = 0;
+
+				for ( let value of iterator ) {
+					expectValue( value, expected[ i++ ] );
+				}
+
+				expect( i ).to.equal( expected.length );
+			} );
+
+			it( 'should return part of the text going backward', () => {
+				let iterator = new TreeWalker( {
+					boundaries: range,
+					startPosition: range.end,
+					direction: 'BACKWARD'
+				} );
+
+				let i = expected.length;
+
+				for ( let value of iterator ) {
+					expectValue( value, expected[ --i ], { direction: 'BACKWARD' } );
+				}
+
+				expect( i ).to.equal( 0 );
+			} );
+		} );
+
+		describe( 'range starts and ends inside the same text', () => {
+			let expected, range;
+
+			before( () => {
+				expected = [
+					{ type: 'TEXT', text: 'bc' }
+				];
+
+				range = new Range( new Position( textAbcd, 1 ), new Position( textAbcd, 3 ) );
 			} );
 
 			it( 'should return part of the text', () => {
@@ -283,7 +324,7 @@ describe( 'TreeWalker', () => {
 		describe( 'custom start position', () => {
 			it( 'should iterating from the start position', () => {
 				let expected = [
-					{ type: 'TEXT', text: 'r' },
+					{ type: 'TEXT', text: 'y' },
 					{ type: 'ELEMENT_START', item: img2 },
 					{ type: 'ELEMENT_END', item: img2 }
 				];
@@ -305,12 +346,12 @@ describe( 'TreeWalker', () => {
 
 			it( 'should iterating from the start position going backward', () => {
 				let expected = [
-					{ type: 'TEXT', text: 'r' },
+					{ type: 'TEXT', text: 'y' },
 					{ type: 'ELEMENT_END', item: bold },
-					{ type: 'TEXT', text: 'a' }
+					{ type: 'TEXT', text: 'bcd' }
 				];
 
-				let range = new Range( new Position( textBa, 1 ), new Position( paragraph, 3 ) );
+				let range = new Range( new Position( textAbcd, 1 ), new Position( paragraph, 3 ) );
 
 				let iterator = new TreeWalker( {
 					boundaries: range,
@@ -338,10 +379,12 @@ describe( 'TreeWalker', () => {
 					{ type: 'ELEMENT_END', item: img1 },
 					{ type: 'ELEMENT_START', item: paragraph },
 					{ type: 'ELEMENT_START', item: bold },
-					{ type: 'TEXT', text: 'b' },
 					{ type: 'TEXT', text: 'a' },
+					{ type: 'TEXT', text: 'b' },
+					{ type: 'TEXT', text: 'c' },
+					{ type: 'TEXT', text: 'd' },
 					{ type: 'ELEMENT_END', item: bold },
-					{ type: 'TEXT', text: 'r' },
+					{ type: 'TEXT', text: 'y' },
 					{ type: 'ELEMENT_START', item: img2 },
 					{ type: 'ELEMENT_END', item: img2 },
 					{ type: 'TEXT', text: 'x' },
@@ -381,10 +424,12 @@ describe( 'TreeWalker', () => {
 
 			before( () => {
 				expected = [
-					{ type: 'TEXT', text: 'b' },
 					{ type: 'TEXT', text: 'a' },
+					{ type: 'TEXT', text: 'b' },
+					{ type: 'TEXT', text: 'c' },
+					{ type: 'TEXT', text: 'd' },
 					{ type: 'ELEMENT_END', item: bold },
-					{ type: 'TEXT', text: 'r' },
+					{ type: 'TEXT', text: 'y' },
 					{ type: 'ELEMENT_START', item: img2 }
 				];
 
@@ -461,8 +506,8 @@ describe( 'TreeWalker', () => {
 					{ type: 'ELEMENT_START', item: img1 },
 					{ type: 'ELEMENT_START', item: paragraph },
 					{ type: 'ELEMENT_START', item: bold },
-					{ type: 'TEXT', text: 'ba' },
-					{ type: 'TEXT', text: 'r' },
+					{ type: 'TEXT', text: 'abcd' },
+					{ type: 'TEXT', text: 'y' },
 					{ type: 'ELEMENT_START', item: img2 },
 					{ type: 'TEXT', text: 'x' }
 				];
@@ -503,9 +548,11 @@ describe( 'TreeWalker', () => {
 					{ type: 'ELEMENT_START', item: img1 },
 					{ type: 'ELEMENT_START', item: paragraph },
 					{ type: 'ELEMENT_START', item: bold },
-					{ type: 'TEXT', text: 'b' },
 					{ type: 'TEXT', text: 'a' },
-					{ type: 'TEXT', text: 'r' },
+					{ type: 'TEXT', text: 'b' },
+					{ type: 'TEXT', text: 'c' },
+					{ type: 'TEXT', text: 'd' },
+					{ type: 'TEXT', text: 'y' },
 					{ type: 'ELEMENT_START', item: img2 },
 					{ type: 'TEXT', text: 'x' }
 				];
