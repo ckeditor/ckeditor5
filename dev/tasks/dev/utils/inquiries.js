@@ -9,7 +9,7 @@ const inquirer = require( 'inquirer' );
 const sanitize = require( './sanitize' );
 const DEFAULT_PLUGIN_NAME_PREFIX = 'ckeditor5-';
 const DEFAULT_PLUGIN_VERSION = '0.0.1';
-const DEFAULT_GITHUB_URL_PREFIX = 'ckeditor/';
+const DEFAULT_GITHUB_PATH_PREFIX = 'ckeditor/';
 
 module.exports = {
 	getPackageName() {
@@ -51,16 +51,16 @@ module.exports = {
 		} );
 	},
 
-	getPackageGitHubUrl( packageName ) {
-		const defaultGitHubUrl = DEFAULT_GITHUB_URL_PREFIX + packageName;
+	getPackageGitHubPath( packageName ) {
+		const defaultGitHubPath = DEFAULT_GITHUB_PATH_PREFIX + packageName;
 
 		return new Promise( ( resolve ) => {
 			inquirer.prompt( [ {
-				name: 'gitHubUrl',
-				message: 'Enter package\'s GitHub URL:',
-				default: defaultGitHubUrl
+				name: 'gitHubPath',
+				message: 'Enter package\'s GitHub path:',
+				default: defaultGitHubPath
 			} ], ( answers ) => {
-				resolve( answers.gitHubUrl );
+				resolve( answers.gitHubPath );
 			} );
 		} );
 	},
