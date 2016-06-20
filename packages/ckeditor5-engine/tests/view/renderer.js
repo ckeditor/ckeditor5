@@ -16,8 +16,10 @@ import Renderer from '/ckeditor5/engine/view/renderer.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import { parse } from '/tests/engine/_utils/view.js';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, BR_FILLER } from '/ckeditor5/engine/view/filler.js';
-
+import testUtils from '/tests/ckeditor5/_utils/utils.js';
 import createElement from '/ckeditor5/utils/dom/createelement.js';
+
+testUtils.createSinonSandbox();
 
 describe( 'Renderer', () => {
 	let selection, domConverter, renderer;
@@ -101,7 +103,7 @@ describe( 'Renderer', () => {
 	} );
 
 	describe( 'render', () => {
-		let viewRoot, domRoot;
+		let viewRoot, domRoot, selectionEditable;
 
 		beforeEach( () => {
 			viewRoot = new ViewElement( 'div' );
@@ -114,9 +116,14 @@ describe( 'Renderer', () => {
 			renderer.markedAttributes.clear();
 			renderer.markedChildren.clear();
 
+			selection.removeAllRanges();
+
+			selectionEditable = viewRoot;
+
 			renderer.isFocused = true;
 
-			selection.removeAllRanges();
+			// Fake selection editable - it is needed to render selection properly.
+			testUtils.sinon.stub( selection, 'getEditableElement', () => selectionEditable );
 		} );
 
 		it( 'should update attributes', () => {
@@ -286,8 +293,6 @@ describe( 'Renderer', () => {
 			const viewRoot = new ViewElement( 'p' );
 			viewRoot.appendChildren( viewP );
 			selection.setTo( newSelection );
-
-			renderer.selectedEditable = viewRoot;
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -779,7 +784,7 @@ describe( 'Renderer', () => {
 			renderAndExpectNoChanges( renderer, domRoot );
 		} );
 
-		it( 'should not change selection if there is no selectedEditable', () => {
+		it( 'should not change selection if there is no editable with selection', () => {
 			const domDiv = createElement( document, 'div', null, 'not editable' );
 			document.body.appendChild( domDiv );
 
@@ -791,7 +796,34 @@ describe( 'Renderer', () => {
 			domRange.collapse( true );
 			domSelection.addRange( domRange );
 
-			renderer.selectedEditable = null;
+			selectionEditable = null;
+
+			const { view: viewP, selection: newSelection } = parse( '<container:p>fo{o}</container:p>' );
+
+			viewRoot.appendChildren( viewP );
+			selection.setTo( newSelection );
+
+			renderer.render();
+
+			expect( domSelection.rangeCount ).to.equal( 1 );
+			expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domDiv );
+			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 0 );
+			expect( domSelection.getRangeAt( 0 ).collapsed ).to.equal( true );
+		} );
+
+		it( 'should not change selection if there is no focus', () => {
+			const domDiv = createElement( document, 'div', null, 'not editable' );
+			document.body.appendChild( domDiv );
+
+			const domSelection = document.getSelection();
+
+			domSelection.removeAllRanges();
+			const domRange = new Range();
+			domRange.setStart( domDiv, 0 );
+			domRange.collapse( true );
+			domSelection.addRange( domRange );
+
+			renderer.isFocused = false;
 
 			const { view: viewP, selection: newSelection } = parse( '<container:p>fo{o}</container:p>' );
 
@@ -813,7 +845,7 @@ describe( 'Renderer', () => {
 
 			domConverter.bindElements( domHeader, viewHeader );
 
-			renderer.selectedEditable = viewHeader;
+			selectionEditable = viewHeader;
 
 			const { view: viewP, selection: newSelection } = parse( '<container:p>fo{o}</container:p>' );
 
