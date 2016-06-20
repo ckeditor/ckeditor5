@@ -9,6 +9,7 @@
 
 import FocusObserver from '/ckeditor5/engine/view/observer/focusobserver.js';
 import ViewDocument from '/ckeditor5/engine/view/document.js';
+import ViewRange from '/ckeditor5/engine/view/range.js';
 
 describe( 'FocusObserver', () => {
 	let viewDocument, observer;
@@ -75,6 +76,30 @@ describe( 'FocusObserver', () => {
 			observer.onDomEvent( { type: 'blur', target: domMain } );
 
 			expect( viewDocument.isFocused ).to.be.false;
+		} );
+
+		it( 'should set isFocused to false on blur when selection in same editable', () => {
+			viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewMain, 0, viewMain, 0 ) );
+
+			observer.onDomEvent( { type: 'focus', target: domMain } );
+
+			expect( viewDocument.isFocused ).to.equal( true );
+
+			observer.onDomEvent( { type: 'blur', target: domMain } );
+
+			expect( viewDocument.isFocused ).to.be.false;
+		} );
+
+		it( 'should not set isFocused to false on blur when it is fired on other editable', () => {
+			viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewMain, 0, viewMain, 0 ) );
+
+			observer.onDomEvent( { type: 'focus', target: domMain } );
+
+			expect( viewDocument.isFocused ).to.equal( true );
+
+			observer.onDomEvent( { type: 'blur', target: domHeader } );
+
+			expect( viewDocument.isFocused ).to.be.true;
 		} );
 	} );
 } );
