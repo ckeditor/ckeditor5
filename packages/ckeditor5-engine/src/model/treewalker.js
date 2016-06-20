@@ -22,9 +22,9 @@ export default class TreeWalker {
 	 *
 	 * @constructor
 	 * @param {Object} [options={}] Object with configuration.
+	 * @param {'FORWARD'|'BACKWARD'} [options.direction='FORWARD'] Walking direction.
 	 * @param {engine.model.Range} [options.boundaries=null] Range to define boundaries of the iterator.
 	 * @param {engine.model.Position} [options.startPosition] Starting position.
-	 * @param {'FORWARD'|'BACKWARD'} [options.direction='FORWARD'] Walking direction.
 	 * @param {Boolean} [options.singleCharacters=false] Flag indicating whether all consecutive characters with the same attributes
 	 * should be returned one by one as multiple {@link engine.model.CharacterProxy} (`true`) objects or as one
 	 * {@link engine.model.TextProxy} (`false`).
@@ -45,12 +45,22 @@ export default class TreeWalker {
 			throw new CKEditorError( 'tree-walker-no-start-position: Neither boundaries nor starting position have been defined.' );
 		}
 
-		if ( options.direction && options.direction != 'FORWARD' && options.direction != 'BACKWARD' ) {
+		const direction = options.direction || 'FORWARD';
+
+		if ( direction != 'FORWARD' && direction != 'BACKWARD' ) {
 			throw new CKEditorError(
 				'tree-walker-unknown-direction: Only `BACKWARD` and `FORWARD` direction allowed.',
-				{ direction: options.direction }
+				{ direction }
 			);
 		}
+
+		/**
+		 * Walking direction. Defaults `FORWARD`.
+		 *
+		 * @readonly
+		 * @member {'BACKWARD'|'FORWARD'} engine.model.TreeWalker#direction
+		 */
+		this.direction = direction;
 
 		/**
 		 * Iterator boundaries.
@@ -75,16 +85,8 @@ export default class TreeWalker {
 		if ( options.startPosition ) {
 			this.position = Position.createFromPosition( options.startPosition );
 		} else {
-			this.position = Position.createFromPosition( options.boundaries[ options.direction == 'BACKWARD' ? 'end' : 'start' ] );
+			this.position = Position.createFromPosition( this.boundaries[ this.direction == 'BACKWARD' ? 'end' : 'start' ] );
 		}
-
-		/**
-		 * Walking direction. Defaults `FORWARD`.
-		 *
-		 * @readonly
-		 * @member {'BACKWARD'|'FORWARD'} engine.model.TreeWalker#direction
-		 */
-		this.direction = options.direction || 'FORWARD';
 
 		/**
 		 * Flag indicating whether all consecutive characters with the same attributes should be
