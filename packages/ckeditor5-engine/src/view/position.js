@@ -196,7 +196,7 @@ export default class Position {
 	static createAfter( node ) {
 		// {@link engine.view.TextProxy} is not a instance of {@link engine.view.Node} so we need do handle it in specific way.
 		if ( node instanceof TextProxy ) {
-			return new Position( node._textNode, node._index + 1 );
+			return new Position( node._textNode, node._index + node._data.length );
 		}
 
 		if ( !node.parent ) {

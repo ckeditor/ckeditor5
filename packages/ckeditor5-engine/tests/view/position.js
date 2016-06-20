@@ -330,10 +330,10 @@ describe( 'Position', () => {
 		} );
 
 		it( 'should create positions after `TextProxy`', () => {
-			const text = new Text( 'abc' );
+			const text = new Text( 'abcd' );
 
-			const textProxy = new TextProxy( text, 1, 1 );
-			const position = new Position( text, 2 );
+			const textProxy = new TextProxy( text, 1, 2 );
+			const position = new Position( text, 3 );
 
 			expect( Position.createAfter( textProxy ) ).deep.equal( position );
 		} );
