@@ -10,6 +10,7 @@
 import Document from '/ckeditor5/engine/view/document.js';
 import Observer from '/ckeditor5/engine/view/observer/observer.js';
 import Renderer from '/ckeditor5/engine/view/renderer.js';
+import ViewRange from '/ckeditor5/engine/view/range.js';
 import Writer from '/ckeditor5/engine/view/writer.js';
 import DomConverter from '/ckeditor5/engine/view/domconverter.js';
 
@@ -348,6 +349,19 @@ describe( 'Document', () => {
 
 			expect( viewDocument.isFocused ).to.equal( true );
 			expect( viewDocument.renderer.isFocused ).to.equal( true );
+		} );
+	} );
+
+	describe( 'selectedEditable', () => {
+		it( 'should change when selection is moved to different editable', () => {
+			const viewDocument = new Document();
+
+			expect( viewDocument.selectedEditable ).to.equal( null );
+
+			const viewRoot = viewDocument.createRoot( 'div' );
+			viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewRoot, 0, viewRoot, 0 ) );
+
+			expect( viewDocument.selectedEditable ).to.equal( viewRoot );
 		} );
 	} );
 } );
