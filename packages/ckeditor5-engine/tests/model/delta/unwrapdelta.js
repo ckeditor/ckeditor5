@@ -24,7 +24,7 @@ describe( 'Batch', () => {
 
 	beforeEach( () => {
 		doc = new Document();
-		root = doc.createRoot( 'root' );
+		root = doc.createRoot();
 
 		p = new Element( 'p', [], 'xyz' );
 		root.insertChildren( 0, [ 'a', p, 'b' ] );
@@ -75,7 +75,7 @@ describe( 'UnwrapDelta', () => {
 
 	beforeEach( () => {
 		doc = new Document();
-		root = doc.createRoot( 'root' );
+		root = doc.createRoot();
 		unwrapDelta = new UnwrapDelta();
 	} );
 

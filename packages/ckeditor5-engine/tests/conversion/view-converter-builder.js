@@ -92,7 +92,7 @@ describe( 'View converter builder', () => {
 		dispatcher.on( 'text', convertText() );
 
 		modelDoc = new ModelDocument();
-		modelRoot = modelDoc.createRoot( 'root', '$root' );
+		modelRoot = modelDoc.createRoot();
 	} );
 
 	it( 'should convert from view element to model element', () => {

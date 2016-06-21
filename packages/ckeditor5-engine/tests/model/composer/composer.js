@@ -16,7 +16,7 @@ describe( 'Composer', () => {
 
 	beforeEach( () => {
 		document = new Document();
-		document.createRoot( 'main', '$root' );
+		document.createRoot();
 
 		composer = new Composer();
 	} );

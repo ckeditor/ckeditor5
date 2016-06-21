@@ -157,7 +157,7 @@ describe( 'Delta', () => {
 			delta = new FooDelta();
 
 			doc = new Document();
-			root = doc.createRoot( 'root' );
+			root = doc.createRoot();
 		} );
 
 		it( 'should return JSON representation for empty delta', () => {

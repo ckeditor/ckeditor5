@@ -103,7 +103,7 @@ export default class Document {
 		} );
 
 		// Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
-		this.createRoot( graveyardName );
+		this.createRoot( '$root', graveyardName );
 
 		/**
 		 * Document's history.
@@ -181,13 +181,13 @@ export default class Document {
 	/**
 	 * Creates a new top-level root.
 	 *
-	 * @param {String} [rootName='main'] Unique root name.
 	 * @param {String} [elementName='$root'] Element name. Defaults to `'$root'` which also have
 	 * some basic schema defined (`$block`s are allowed inside the `$root`). Make sure to define a proper
 	 * schema if you use a different name.
+	 * @param {String} [rootName='main'] Unique root name.
 	 * @returns {engine.model.RootElement} Created root.
 	 */
-	createRoot( rootName = 'main', elementName = '$root' ) {
+	createRoot( elementName = '$root', rootName = 'main' ) {
 		if ( this._roots.has( rootName ) ) {
 			/**
 			 * Root with specified name already exists.

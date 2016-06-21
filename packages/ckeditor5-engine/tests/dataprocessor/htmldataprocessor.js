@@ -8,7 +8,7 @@
 'use strict';
 
 import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
-import xssTemplates from './_utils/xsstemplates.js';
+import xssTemplates from '/tests/engine/dataprocessor/_utils/xsstemplates.js';
 
 describe( 'HtmlDataProcessor', () => {
 	const dataProcessor = new HtmlDataProcessor();

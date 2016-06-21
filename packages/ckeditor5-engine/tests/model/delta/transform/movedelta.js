@@ -35,7 +35,7 @@ describe( 'transform', () => {
 
 	beforeEach( () => {
 		doc = getFilledDocument();
-		root = doc.getRoot( 'root' );
+		root = doc.getRoot();
 		gy = doc.graveyard;
 		baseVersion = doc.version;
 	} );

@@ -51,7 +51,7 @@ describe( 'DeltaFactory', () => {
 			delta = new FooDelta();
 
 			doc = new Document();
-			root = doc.createRoot( 'root' );
+			root = doc.createRoot();
 		} );
 
 		it( 'should throw error for unregistered delta', () => {
