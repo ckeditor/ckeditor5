@@ -59,7 +59,7 @@ describe( 'EditingController', () => {
 		beforeEach( () => {
 			model = new ModelDocument();
 			modelRoot = model.createRoot();
-			model.createRoot( 'header' );
+			model.createRoot( '$root', 'header' );
 
 			editing = new EditingController( model );
 		} );

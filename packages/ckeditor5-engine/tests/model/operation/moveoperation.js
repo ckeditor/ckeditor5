@@ -19,7 +19,7 @@ describe( 'MoveOperation', () => {
 
 	beforeEach( () => {
 		doc = new Document();
-		root = doc.createRoot( 'root' );
+		root = doc.createRoot();
 	} );
 
 	it( 'should have proper type', () => {

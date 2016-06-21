@@ -20,8 +20,8 @@ describe( 'Range', () => {
 
 	beforeEach( () => {
 		doc = new Document();
-		root = doc.createRoot( 'root' );
-		otherRoot = doc.createRoot( 'otherRoot' );
+		root = doc.createRoot();
+		otherRoot = doc.createRoot( '$root', 'otherRoot' );
 
 		start = new Position( root, [ 1 ] );
 		end = new Position( root, [ 2 ] );

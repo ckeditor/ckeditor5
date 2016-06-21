@@ -17,7 +17,7 @@ describe( 'Batch', () => {
 
 	beforeEach( () => {
 		doc = new Document();
-		root = doc.createRoot( 'root' );
+		root = doc.createRoot();
 
 		const p = new Element( 'p', null, 'abc' );
 		root.appendChildren( p );
@@ -56,7 +56,7 @@ describe( 'RenameDelta', () => {
 
 	beforeEach( () => {
 		doc = new Document();
-		root = doc.createRoot( 'root' );
+		root = doc.createRoot();
 		renameDelta = new RenameDelta();
 	} );
 

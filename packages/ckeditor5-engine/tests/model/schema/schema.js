@@ -261,7 +261,7 @@ describe( 'check', () => {
 
 		beforeEach( () => {
 			doc = new Document();
-			root = doc.createRoot( 'root', 'div' );
+			root = doc.createRoot( 'div' );
 
 			root.insertChildren( 0, [
 				new Element( 'div' ),
@@ -325,7 +325,7 @@ describe( '_normalizeQueryPath', () => {
 
 	it( 'should normalize model position to an array of strings', () => {
 		let doc = new Document();
-		let root = doc.createRoot( 'root', '$root' );
+		let root = doc.createRoot();
 
 		root.insertChildren( 0, [
 			new Element( 'div', null, [
