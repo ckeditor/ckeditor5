@@ -130,6 +130,16 @@ export default class TreeWalker {
 		 * @member {engine.view.Element} engine.view.TreeWalker#_boundaryEndParent
 		 */
 		this._boundaryEndParent = this.boundaries ? this.boundaries.end.parent : null;
+
+		/**
+		 * Not every step is returned by iterator e.g. `ELEMENT_START` or `ELEMENT_END` for Text. So if iterator
+		 * omit some step than last returned position needs to be cached, because nextPosition of previousStep must
+		 * be equal to previousPosition of nextStep.
+		 *
+		 * @private
+		 * @member {engine.view.Position} engine.view.TreeWalker#_lastPosition
+		 */
+		this._previousReturnedPosition = this.position;
 	}
 
 	/**
@@ -163,7 +173,6 @@ export default class TreeWalker {
 	 */
 	_next() {
 		let position = Position.createFromPosition( this.position );
-		const previousPosition = this.position;
 		const parent = position.parent;
 
 		// We are at the end of the root.
@@ -195,7 +204,7 @@ export default class TreeWalker {
 
 			this.position = position;
 
-			return formatReturnValue( 'ELEMENT_START', node, previousPosition, position, 1 );
+			return this._formatReturnValue( 'ELEMENT_START', node, this._previousReturnedPosition, position, 1 );
 		} else if ( node instanceof Text ) {
 			if ( this.singleCharacters ) {
 				position = new Position( node, 0 );
@@ -204,7 +213,7 @@ export default class TreeWalker {
 				return this._next();
 			} else {
 				let charactersCount = node._data.length;
-				let prevPosition = previousPosition;
+				let previousPosition = this._previousReturnedPosition;
 				let item = node;
 
 				// If text stick out of walker range, we need to cut it and wrap by TextProxy.
@@ -212,7 +221,7 @@ export default class TreeWalker {
 					charactersCount = this.boundaries.end.offset;
 					item = new TextProxy( node, 0, charactersCount );
 					position = Position.createAfter( item );
-					prevPosition = Position.createBefore( item );
+					previousPosition = Position.createBefore( item );
 				} else {
 					// If not just move forward.
 					position.offset++;
@@ -220,18 +229,18 @@ export default class TreeWalker {
 
 				this.position = position;
 
-				return formatReturnValue( 'TEXT', item, prevPosition, position, charactersCount );
+				return this._formatReturnValue( 'TEXT', item, previousPosition, position, charactersCount );
 			}
 		} else if ( typeof node == 'string' ) {
 			let textLength;
 
-			if ( !this.singleCharacters ) {
+			if ( this.singleCharacters ) {
+				textLength = 1;
+			} else {
 				// Check if text stick out of walker range.
 				const endOffset = parent === this._boundaryEndParent ? this.boundaries.end.offset : parent._data.length;
 
 				textLength = endOffset - position.offset;
-			} else {
-				textLength = 1;
 			}
 
 			const textProxy = new TextProxy( parent, position.offset, textLength );
@@ -239,7 +248,7 @@ export default class TreeWalker {
 			position.offset += textLength;
 			this.position = position;
 
-			return formatReturnValue( 'TEXT', textProxy, previousPosition, position, textLength );
+			return this._formatReturnValue( 'TEXT', textProxy, this._previousReturnedPosition, position, textLength );
 		} else {
 			// `node` is not set, we reached the end of current `parent`.
 			position = Position.createAfter( parent );
@@ -249,7 +258,7 @@ export default class TreeWalker {
 			if ( this.ignoreElementEnd || parent instanceof Text ) {
 				return this._next();
 			} else {
-				return formatReturnValue( 'ELEMENT_END', parent, previousPosition, position );
+				return this._formatReturnValue( 'ELEMENT_END', parent, this._previousReturnedPosition, position );
 			}
 		}
 	}
@@ -264,7 +273,6 @@ export default class TreeWalker {
 	 */
 	_previous() {
 		let position = Position.createFromPosition( this.position );
-		const previousPosition = this.position;
 		const parent = position.parent;
 
 		// We are at the beginning of the root.
@@ -295,13 +303,13 @@ export default class TreeWalker {
 				if ( this.ignoreElementEnd ) {
 					return this._previous();
 				} else {
-					return formatReturnValue( 'ELEMENT_END', node, previousPosition, position );
+					return this._formatReturnValue( 'ELEMENT_END', node, this._previousReturnedPosition, position );
 				}
 			} else {
 				position.offset--;
 				this.position = position;
 
-				return formatReturnValue( 'ELEMENT_START', node, previousPosition, position, 1 );
+				return this._formatReturnValue( 'ELEMENT_START', node, this._previousReturnedPosition, position, 1 );
 			}
 		} else if ( node instanceof Text ) {
 			if ( this.singleCharacters ) {
@@ -311,7 +319,7 @@ export default class TreeWalker {
 				return this._previous();
 			} else {
 				let charactersCount = node._data.length;
-				let prevPosition = previousPosition;
+				let previousPosition = this._previousReturnedPosition;
 				let item = node;
 
 				// If text stick out of walker range, we need to cut it and wrap by TextProxy.
@@ -321,7 +329,7 @@ export default class TreeWalker {
 					item = new TextProxy( node, offset );
 
 					position = Position.createBefore( item );
-					prevPosition = Position.createAfter( item );
+					previousPosition = Position.createAfter( item );
 					charactersCount = item._data.length;
 				} else {
 					// If not just move backward.
@@ -330,7 +338,7 @@ export default class TreeWalker {
 
 				this.position = position;
 
-				return formatReturnValue( 'TEXT', item, prevPosition, position, charactersCount );
+				return this._formatReturnValue( 'TEXT', item, previousPosition, position, charactersCount );
 			}
 		} else if ( typeof node == 'string' ) {
 			let textLength;
@@ -350,7 +358,7 @@ export default class TreeWalker {
 
 			this.position = position;
 
-			return formatReturnValue( 'TEXT', textProxy, previousPosition, position, textLength );
+			return this._formatReturnValue( 'TEXT', textProxy, this._previousReturnedPosition, position, textLength );
 		} else {
 			// `node` is not set, we reached the beginning of current `parent`.
 			position = Position.createBefore( parent );
@@ -358,25 +366,41 @@ export default class TreeWalker {
 
 			// We don't return `ELEMENT_START` for {@link engine.view.Text} element.
 			if ( parent instanceof Text ) {
+				position = Position.createBefore( parent );
+				this.position = position;
+
 				return this._previous();
 			}
 
-			return formatReturnValue( 'ELEMENT_START', parent, previousPosition, position, 1 );
+			return this._formatReturnValue( 'ELEMENT_START', parent, this._previousReturnedPosition, position, 1 );
 		}
 	}
-}
 
-function formatReturnValue( type, item, previousPosition, nextPosition, length ) {
-	return {
-		done: false,
-		value: {
-			type: type,
-			item: item,
-			previousPosition: previousPosition,
-			nextPosition: nextPosition,
-			length: length
-		}
-	};
+	/**
+	 * Format returned data and store information about previous position {#_previousReturnedPosition}.
+	 *
+	 * @private
+	 * @param {engine.view.TreeWalkerValueType} type Type of step.
+	 * @param {engine.view.Item} item Item between old and new position.
+	 * @param {engine.view.Position} previousPosition Previous position of iterator.
+	 * @param {engine.view.Position} nextPosition Next position of iterator.
+	 * @param {Number} [length] Length of the item.
+	 * @returns {engine.view.TreeWalkerValue}
+	 */
+	_formatReturnValue( type, item, previousPosition, nextPosition, length ) {
+		this._previousReturnedPosition = nextPosition;
+
+		return {
+			done: false,
+			value: {
+				type: type,
+				item: item,
+				previousPosition: previousPosition,
+				nextPosition: nextPosition,
+				length: length
+			}
+		};
+	}
 }
 
 /**

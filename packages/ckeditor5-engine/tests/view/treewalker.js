@@ -604,59 +604,17 @@ function expectValue( value, expected, options = {} ) {
 	}
 }
 
-function expectText( value, expected, options ) {
-	let previousPosition, nextPosition;
-
+function expectText( value, expected ) {
 	expect( value.item._data ).to.equal( expected.text );
 	expect( value.length ).to.equal( value.item._data.length );
-
-	if ( options.direction == 'BACKWARD' ) {
-		previousPosition = Position.createAfter( value.item );
-		nextPosition = Position.createBefore( value.item );
-	} else {
-		previousPosition = Position.createBefore( value.item );
-		nextPosition = Position.createAfter( value.item );
-	}
-
-	expect( value.previousPosition ).to.deep.equal( previousPosition );
-	expect( value.nextPosition ).to.deep.equal( nextPosition );
 }
 
-function expectStart( value, expected, options ) {
-	let previousPosition, nextPosition;
-
+function expectStart( value, expected ) {
 	expect( value.item ).to.equal( expected.item );
 	expect( value.length ).to.equal( 1 );
-
-	if ( options.direction == 'BACKWARD' ) {
-		previousPosition = Position.createAfter( value.item );
-		nextPosition = Position.createBefore( value.item );
-	} else {
-		previousPosition = Position.createBefore( value.item );
-		nextPosition = new Position( value.item, 0 );
-	}
-
-	if ( options.shallow ) {
-		expect( value.previousPosition ).to.deep.equal( previousPosition );
-	} else {
-		expect( value.nextPosition ).to.deep.equal( nextPosition );
-	}
 }
 
-function expectEnd( value, expected, options ) {
-	let previousPosition, nextPosition;
-
+function expectEnd( value, expected ) {
 	expect( value.item ).to.equal( expected.item );
 	expect( value.length ).to.be.undefined;
-
-	if ( options.direction == 'BACKWARD' ) {
-		previousPosition = Position.createAfter( value.item );
-		nextPosition = new Position( value.item, value.item.getChildCount() );
-	} else {
-		previousPosition = new Position( value.item, value.item.getChildCount() );
-		nextPosition = Position.createAfter( value.item );
-	}
-
-	expect( value.previousPosition ).to.deep.equal( previousPosition );
-	expect( value.nextPosition ).to.deep.equal( nextPosition );
 }
