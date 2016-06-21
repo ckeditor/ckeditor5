@@ -56,7 +56,7 @@ describe( 'ModelTestEditor', () => {
 		} );
 
 		it( 'should set data of the first root', () => {
-			editor.document.createRoot( 'secondRoot' );
+			editor.document.createRoot( '$root', 'secondRoot' );
 
 			editor.setData( 'foo' );
 
