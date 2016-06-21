@@ -100,4 +100,22 @@ describe( 'Batch', () => {
 			expect( batch.getOperations() ).to.have.property( 'next' );
 		} );
 	} );
+
+	describe( 'baseVersion', () => {
+		it( 'should return base version of first delta from the batch', () => {
+			const batch = new Batch( new Document() );
+			const delta = new Delta();
+			const operation = new Operation( 2 );
+			delta.addOperation( operation );
+			batch.addDelta( delta );
+
+			expect( batch.baseVersion ).to.equal( 2 );
+		} );
+
+		it( 'should return null if there are no deltas in batch', () => {
+			const batch = new Batch( new Document() );
+
+			expect( batch.baseVersion ).to.be.null;
+		} );
+	} );
 } );

@@ -68,6 +68,16 @@ export default class Batch {
 		 */
 		this.type = type;
 	}
+
+	/**
+	 * Returns this batch base version, which is equal to the base version of first delta in the batch.
+	 * If there are no deltas in the batch, returns null.
+	 *
+	 * @readonly
+	 * @returns {Number|null}
+	 */
+	get baseVersion() {
+		return this.deltas.length > 0 ? this.deltas[ 0 ].baseVersion : null;
 	}
 
 	/**
