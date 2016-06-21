@@ -155,6 +155,12 @@ describe( 'Document', () => {
 			expect( batch ).to.be.instanceof( Batch );
 			expect( batch ).to.have.property( 'doc' ).that.equals( doc );
 		} );
+
+		it( 'should set given batch type', () => {
+			const batch = doc.batch( 'ignore' );
+
+			expect( batch ).to.have.property( 'type' ).that.equals( 'ignore' );
+		} );
 	} );
 
 	describe( 'enqueue', () => {

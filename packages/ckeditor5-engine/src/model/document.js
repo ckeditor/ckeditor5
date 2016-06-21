@@ -172,10 +172,11 @@ export default class Document {
 	/**
 	 * Creates a {@link engine.model.Batch} instance which allows to change the document.
 	 *
+	 * @param {String} [type] Batch type. See {@link engine.model.Batch#type}.
 	 * @returns {engine.model.Batch} Batch instance.
 	 */
-	batch() {
-		return new Batch( this );
+	batch( type ) {
+		return new Batch( this, type );
 	}
 
 	/**

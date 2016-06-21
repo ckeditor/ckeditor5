@@ -24,6 +24,20 @@ describe( 'Batch', () => {
 		expect( batch.removeAttr ).to.be.a( 'function' );
 	} );
 
+	describe( 'type', () => {
+		it( 'should default to "default"', () => {
+			const batch = new Batch( new Document() );
+
+			expect( batch.type ).to.equal( 'default' );
+		} );
+
+		it( 'should be set to the value set in constructor', () => {
+			const batch = new Batch( new Document(), 'ignore' );
+
+			expect( batch.type ).to.equal( 'ignore' );
+		} );
+	} );
+
 	describe( 'register', () => {
 		afterEach( () => {
 			delete Batch.prototype.foo;
