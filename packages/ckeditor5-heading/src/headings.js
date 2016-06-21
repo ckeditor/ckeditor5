@@ -12,11 +12,23 @@ import ListDropdownController from '../ui/dropdown/list/listdropdown.js';
 import ListDropdownView from '../ui/dropdown/list/listdropdownview.js';
 import Collection from '../utils/collection.js';
 
+/**
+ * The headings feature. Handles switching between different block types.
+ *
+ * @memberOf headings
+ * @extends ckeditor5.Feature
+ */
 export default class Headings extends Feature {
+	/**
+	 * @inheritDoc
+	 */
 	static get requires() {
 		return [ HeadingsEngine ];
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const command = editor.commands.get( 'headings' );
