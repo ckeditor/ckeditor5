@@ -6,6 +6,7 @@
 'use strict';
 
 import View from '../view.js';
+import Template from '../template.js';
 
 /**
  * Base class for the editor main views.
@@ -47,11 +48,11 @@ export default class EditorUIView extends View {
 		const bodyElement = document.createElement( 'div' );
 		document.body.appendChild( bodyElement );
 
-		this.applyTemplateToElement( bodyElement, {
+		new Template( {
 			attributes: {
 				class: 'ck-body ck-reset-all'
 			}
-		} );
+		} ).apply( bodyElement );
 
 		this._bodyRegionContainer = bodyElement;
 

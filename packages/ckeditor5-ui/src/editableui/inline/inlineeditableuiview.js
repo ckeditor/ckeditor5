@@ -6,6 +6,7 @@
 'use strict';
 
 import EditableUIView from '../../editableui/editableuiview.js';
+import Template from '../../template.js';
 
 /**
  * The class implementing an inline {@link ui.editableUI.EditableUIView}.
@@ -27,12 +28,13 @@ export default class InlineEditableUIView extends EditableUIView {
 
 		const label = this.t( 'Rich Text Editor, %0', [ this.model.name ] );
 
-		Object.assign( this.template.attributes, {
-			role: 'textbox',
-			'aria-label': label,
-			title: label
+		Template.extend( this.template, {
+			attributes: {
+				role: 'textbox',
+				'aria-label': label,
+				title: label,
+				class: 'ck-editor__editable_inline'
+			}
 		} );
-
-		this.template.attributes.class.push( 'ck-editor__editable_inline' );
 	}
 }

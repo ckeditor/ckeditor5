@@ -10,6 +10,7 @@
 
 import Region from '/ckeditor5/ui/region.js';
 import View from '/ckeditor5/ui/view.js';
+import Template from '/ckeditor5/ui/template.js';
 
 let TestViewA, TestViewB;
 let region, el;
@@ -121,14 +122,14 @@ function createRegionInstance() {
 	class A extends View {
 		constructor() {
 			super();
-			this.template = { tag: 'a' };
+			this.template = new Template( { tag: 'a' } );
 		}
 	}
 
 	class B extends View {
 		constructor() {
 			super();
-			this.template = { tag: 'b' };
+			this.template = new Template( { tag: 'b' } );
 		}
 	}
 

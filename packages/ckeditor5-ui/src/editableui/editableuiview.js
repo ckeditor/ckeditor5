@@ -6,6 +6,7 @@
 'use strict';
 
 import View from '../view.js';
+import Template from '../template.js';
 
 /**
  * @memberOf ui.editableUI
@@ -23,13 +24,13 @@ export default class EditableUIView extends View {
 	constructor( model, locale, editableElement ) {
 		super( model, locale );
 
-		const bind = this.attributeBinder;
+		const bind = this.bind;
 
 		if ( editableElement ) {
 			this.element = this.editableElement = editableElement;
 		}
 
-		this.template = {
+		this.template = new Template( {
 			tag: 'div',
 			attributes: {
 				class: [
@@ -38,7 +39,7 @@ export default class EditableUIView extends View {
 				],
 				contenteditable: bind.to( 'isReadOnly', value => !value ),
 			}
-		};
+		} );
 
 		/**
 		 * The element which is the main editable element (usually the one with `contentEditable="true"`).
@@ -54,7 +55,7 @@ export default class EditableUIView extends View {
 	 */
 	init() {
 		if ( this.editableElement ) {
-			this.applyTemplateToElement( this.editableElement, this.template );
+			this.template.apply( this.editableElement );
 		} else {
 			this.editableElement = this.element;
 		}
