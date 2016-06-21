@@ -25,16 +25,27 @@ module.exports = ( config ) => {
 
 	const tasks = {
 		execOnRepositories() {
-			const options = minimist( process.argv.slice( 2 ), {
+			// Omit `gulp exec` part of arguments
+			const options = minimist( process.argv.slice( 3 ), {
 				boolean: [ 'dry-run' ],
+				alias: { t: 'task' },
 				default: {
-					'dry-run': true
-				}
+					'dry-run': false
+				},
+				stopEarly: false
 			} );
+			let execTask;
 
-			const installTask = () => {};
+			try {
+				execTask = require( `./functions/${ options.task }` );
+			}
+			catch ( error ) {
+				log.err( `Cannot find task ${ options.task }` );
+			}
 
-			return exec( installTask, ckeditor5Path, packageJSON, config.WORKSPACE_DIR, options[ 'dry-run' ] );
+			if ( execTask ) {
+				exec( execTask, ckeditor5Path, packageJSON, config.WORKSPACE_DIR, options[ 'dry-run' ] );
+			}
 		},
 
 		register() {

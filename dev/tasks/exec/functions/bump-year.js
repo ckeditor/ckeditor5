@@ -9,4 +9,6 @@
  * {String} packagePath
  * {Minimatch} params
  */
-module.exports = () => {};
+module.exports = () => {
+	return 'bump-year!';
+};

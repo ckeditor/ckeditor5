@@ -11,13 +11,13 @@ const path = require( 'path' );
 const log = require( '../utils/log' );
 
 /**
- * @param {Function} installTask Install task to use on each dependency that is missing from workspace.
+ * @param {Function} execTask Task to use on each dependency.
  * @param {String} ckeditor5Path Path to main CKEditor5 repository.
  * @param {Object} packageJSON Parsed package.json file from CKEditor5 repository.
  * @param {String} workspaceRoot Relative path to workspace root.
  * @param {Boolean} dryRun
  */
-module.exports = ( installTask, ckeditor5Path, packageJSON, workspaceRoot, dryRun ) => {
+module.exports = ( execTask, ckeditor5Path, packageJSON, workspaceRoot, dryRun ) => {
 	const workspaceAbsolutePath = path.join( ckeditor5Path, workspaceRoot );
 
 	// Get all CKEditor dependencies from package.json.
@@ -39,13 +39,11 @@ module.exports = ( installTask, ckeditor5Path, packageJSON, workspaceRoot, dryRu
 					} else {
 						try {
 							log.out( `Executing task on ${ repositoryURL }...` );
+							log.out( execTask() );
 						} catch ( error ) {
 							log.err( error );
 						}
 					}
-				} else {
-					// Directory does not exits in workspace - install it.
-					// installTask( ckeditor5Path, workspaceRoot, repositoryURL );
 				}
 			}
 		} else {
