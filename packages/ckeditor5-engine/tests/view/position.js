@@ -10,6 +10,8 @@
 import Position from '/ckeditor5/engine/view/position.js';
 import Node from '/ckeditor5/engine/view/node.js';
 import Element from '/ckeditor5/engine/view/element.js';
+import EditableElement from '/ckeditor5/engine/view/editableelement.js';
+import Document from '/ckeditor5/engine/view/document.js';
 import Text from '/ckeditor5/engine/view/text.js';
 
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
@@ -317,6 +319,23 @@ describe( 'Position', () => {
 			expect( () => {
 				Position.createAfter( parse( '<p></p>' ) );
 			} ).to.throw( CKEditorError, /position-after-root/ );
+		} );
+	} );
+
+	describe( 'getEditableElement', () => {
+		it( 'should return null if position is not inside EditableElement', () => {
+			const position = new Position( new Element( 'p' ), 0 );
+
+			expect( position.getEditableElement() ).to.be.null;
+		} );
+
+		it( 'should return EditableElement when position is placed inside', () => {
+			const document = new Document();
+			const p = new Element( 'p' );
+			const editable = new EditableElement( document, 'div', null, p );
+			const position = new Position( p, 0 );
+
+			expect( position.getEditableElement() ).to.equal( editable );
 		} );
 	} );
 } );
