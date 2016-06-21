@@ -34,7 +34,7 @@ module.exports = ( config ) => {
 				'!' + path.join( esnextBuildPath, 'ckeditor5', '*', 'lib', '**', '*' )
 			];
 
-			return gulp.src( patterns, { read: false } )
+			gulp.src( patterns, { read: false } )
 				.pipe( jsdoc( jsDocConfig, cb ) );
 		},
 
