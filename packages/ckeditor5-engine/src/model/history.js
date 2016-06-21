@@ -5,18 +5,14 @@
 
 'use strict';
 
-// Load all basic deltas and transformations, they register themselves, but they need to be imported somewhere.
-import deltas from './delta/basic-deltas.js'; // jshint ignore:line
-import transformations from './delta/basic-transformations.js'; // jshint ignore:line
-
-import transform from './delta/transform.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
- * History keeps the track of all the deltas applied to the {@link engine.model.Document document} and provides
- * utility tools to operate on the history. Most of times history is needed to transform a delta that has wrong
- * {@link engine.model.delta.Delta#baseVersion} to a state where it can be applied to the document.
+ * `History` keeps the track of all the deltas applied to the {@link engine.model.Document document}. `History` can be
+ * seen as "add-only" structure. You can read and add deltas, but can't modify them. Use this version of history to
+ * retrieve applied deltas as they were, in the original form.
  *
+ * @see engine.model.CompressedHistory
  * @memberOf engine.model
  */
 export default class History {
@@ -27,7 +23,7 @@ export default class History {
 		/**
 		 * Deltas added to the history.
 		 *
-		 * @private
+		 * @protected
 		 * @member {Array.<engine.model.delta.Delta>} engine.model.History#_deltas
 		 */
 		this._deltas = [];
@@ -36,38 +32,19 @@ export default class History {
 		 * Helper structure that maps added delta's base version to the index in {@link engine.model.History#_deltas}
 		 * at which the delta was added.
 		 *
-		 * @private
+		 * @protected
 		 * @member {Map} engine.model.History#_historyPoints
 		 */
 		this._historyPoints = new Map();
 	}
 
 	/**
-	 * Gets the number of base version which an up-to-date operation should have.
+	 * Adds delta to the history.
 	 *
-	 * @private
-	 * @type {Number}
+	 * @param {engine.model.delta.Delta} delta Delta to add.
 	 */
-	get _nextHistoryPoint() {
-		const lastDelta = this._deltas[ this._deltas.length - 1 ];
-
-		return lastDelta.baseVersion + lastDelta.operations.length;
-	}
-
-	/**
-	 * Adds an operation to the history.
-	 *
-	 * @param {engine.model.operation.Operation} operation Operation to add.
-	 */
-	addOperation( operation ) {
-		const delta = operation.delta;
-
-		// History cares about deltas not singular operations.
-		// Operations from a delta are added one by one, from first to last.
-		// Operations from one delta cannot be mixed with operations from other deltas.
-		// This all leads us to the conclusion that we could just save deltas history.
-		// What is more, we need to check only the last position in history to check if delta is already in the history.
-		if ( delta && this._deltas[ this._deltas.length - 1 ] !== delta ) {
+	addDelta( delta ) {
+		if ( delta.operations.length > 0 && !this._historyPoints.has( delta.baseVersion ) ) {
 			const index = this._deltas.length;
 
 			this._deltas[ index ] = delta;
@@ -76,69 +53,80 @@ export default class History {
 	}
 
 	/**
-	 * Transforms out-dated delta by all deltas that were added to the history since the given delta's base version. In other
-	 * words, it makes the delta up-to-date with the history. The transformed delta(s) is (are) ready to be applied
-	 * to the {@link engine.model.Document document}.
+	 * Returns deltas added to the history.
 	 *
-	 * @param {engine.model.delta.Delta} delta Delta to update.
-	 * @returns {Array.<engine.model.delta.Delta>} Result of transformation which is an array containing one or more deltas.
+	 * @param {Number} from Base version from which deltas should be returned (inclusive). Defaults to `0` which means
+	 * that deltas from the first one will be returned.
+	 * @param {Number} to Base version up to which deltas should be returned (exclusive). Defaults to `Number.POSITIVE_INFINITY`
+	 * which means that deltas up to the last one will be returned.
+	 * @returns {Iterator.<engine.model.delta.Delta>} Deltas added to the history.
 	 */
-	getTransformedDelta( delta ) {
-		if ( delta.baseVersion === this._nextHistoryPoint ) {
-			return [ delta ];
+	*getDeltas( from = 0, to = Number.POSITIVE_INFINITY ) {
+		// No deltas added, nothing to yield.
+		if ( this._deltas.length === 0 ) {
+			return;
 		}
 
-		let transformed = [ delta ];
+		// Will throw if base version is incorrect.
+		let fromIndex = this._getIndex( from );
 
-		for ( let historyDelta of this.getDeltas( delta.baseVersion ) ) {
-			let allResults = [];
+		// Base version is too low or too high and is not found in history.
+		if ( fromIndex == -1 ) {
+			return;
+		}
 
-			for ( let deltaToTransform of transformed ) {
-				const transformedDelta = History._transform( deltaToTransform, historyDelta );
-				allResults = allResults.concat( transformedDelta );
+		// We have correct `fromIndex` so let's iterate starting from it.
+		while ( fromIndex < this._deltas.length ) {
+			const delta = this._deltas[ fromIndex++ ];
+
+			if ( delta.baseVersion >= to ) {
+				break;
 			}
 
-			transformed = allResults;
-		}
-
-		// Fix base versions.
-		let baseVersion = transformed[ 0 ].operations[ 0 ].baseVersion;
-
-		for ( let i = 0; i < transformed.length; i++ ) {
-			transformed[ i ].baseVersion = baseVersion;
-			baseVersion += transformed[ i ].operations.length;
-		}
-
-		return transformed;
-	}
-
-	/**
-	 * Returns all deltas from history, starting from given history point (if passed).
-	 *
-	 * @param {Number} from History point.
-	 * @returns {Iterator.<engine.model.delta.Delta>} Deltas from given history point to the end of history.
-	 */
-	*getDeltas( from = 0 ) {
-		let i = this._historyPoints.get( from );
-
-		if ( i === undefined ) {
-			throw new CKEditorError( 'history-wrong-version: Cannot retrieve given point in the history.' );
-		}
-
-		for ( ; i < this._deltas.length; i++ ) {
-			yield this._deltas[ i ];
+			yield delta;
 		}
 	}
 
 	/**
-	 * Transforms given delta by another given delta. Exposed for testing purposes.
+	 * Returns a delta from the history that has given {@link engine.model.delta.Delta#baseVersion}.
 	 *
-	 * @protected
-	 * @param {engine.model.delta.Delta} toTransform Delta to be transformed.
-	 * @param {engine.model.delta.Delta} transformBy Delta to transform by.
-	 * @returns {Array.<engine.model.delta.Delta>} Result of the transformation.
+	 * @param {Number} baseVersion Base version of the delta to retrieve.
+	 * @returns {engine.model.delta.Delta|null} Delta with given base version or null if no such delta is in history.
 	 */
-	static _transform( toTransform, transformBy ) {
-		return transform( toTransform, transformBy, true );
+	getDelta( baseVersion ) {
+		let index = this._historyPoints.get( baseVersion );
+
+		return this._deltas[ index ] || null;
+	}
+
+	/**
+	 * Gets an index in {@link engine.model.History#_deltas} where delta with given `baseVersion` is added.
+	 *
+	 * @param {Number} baseVersion Base version of delta.
+	 * @private
+	 */
+	_getIndex( baseVersion ) {
+		let index = this._historyPoints.get( baseVersion );
+
+		// Base version not found - it is either too high or too low, or is in the middle of delta.
+		if ( index === undefined ) {
+			const lastDelta = this._deltas[ this._deltas.length - 1 ];
+			const nextBaseVersion = lastDelta.baseVersion + lastDelta.operations.length;
+
+			if ( baseVersion < 0 || baseVersion >= nextBaseVersion ) {
+				// Base version is too high or too low - it's acceptable situation.
+				// Return -1 because `baseVersion` was correct.
+				return -1;
+			}
+
+			/**
+			 * Given base version points to the middle of a delta.
+			 *
+			 * @error history-wrong-version
+			 */
+			throw new CKEditorError( 'history-wrong-version: Given base version points to the middle of a delta.' );
+		}
+
+		return index;
 	}
 }
