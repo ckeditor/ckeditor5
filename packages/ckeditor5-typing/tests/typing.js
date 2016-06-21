@@ -10,6 +10,8 @@ import Typing from '/ckeditor5/typing/typing.js';
 import Paragraph from '/ckeditor5/paragraph/paragraph.js';
 
 import ModelRange from '/ckeditor5/engine/model/range.js';
+import BuildModelConverterFor from '/ckeditor5/engine/conversion/model-converter-builder.js';
+import BuildViewConverterFor from '/ckeditor5/engine/conversion/view-converter-builder.js';
 
 import ViewText from '/ckeditor5/engine/view/text.js';
 import ViewElement from '/ckeditor5/engine/view/element.js';
@@ -30,6 +32,17 @@ describe( 'Typing feature', () => {
 				features: [ Typing, Paragraph ]
 			} )
 			.then( newEditor => {
+				// Mock image feature.
+				newEditor.document.schema.registerItem( 'image', '$block' );
+
+				BuildModelConverterFor( newEditor.data.modelToView, newEditor.editing.modelToView )
+					.fromElement( 'image' )
+					.toElement( 'img' );
+
+				BuildViewConverterFor( newEditor.data.viewToModel )
+					.fromElement( 'img' )
+					.toElement( 'image' );
+
 				editor = newEditor;
 				model = editor.editing.model;
 				modelRoot = model.getRoot();
@@ -128,11 +141,41 @@ describe( 'Typing feature', () => {
 			expect( getViewData( view ) ).to.equal( '<p></p>' );
 		} );
 
+		it( 'should do nothing when two nodes where inserted and one removed', () => {
+			view.fire( 'mutations', [
+				{
+					type: 'children',
+					oldChildren: [ new ViewText( 'foobar' ) ],
+					newChildren: [ new ViewText( 'x' ), new ViewElement( 'img' ) ],
+					node: viewRoot.getChild( 0 )
+				}
+			] );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo<selection />bar</paragraph>' );
+			expect( getViewData( view ) ).to.equal( '<p>foo{}bar</p>' );
+		} );
+
+		it( 'should handle multiple children in the node', () => {
+			editor.setData( '<p>foo<img></img></p>' );
+
+			view.fire( 'mutations', [
+				{
+					type: 'children',
+					oldChildren: [ new ViewText( 'foo' ), viewRoot.getChild( 0 ).getChild( 1 ) ],
+					newChildren: [ new ViewText( 'foo' ), viewRoot.getChild( 0 ).getChild( 1 ), new ViewText( 'x' ) ],
+					node: viewRoot.getChild( 0 )
+				}
+			] );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo<image></image>x<selection /></paragraph>' );
+			expect( getViewData( view ) ).to.equal( '<p>foo<img></img>x{}</p>' );
+		} );
+
 		it( 'should do nothing when node was removed', () => {
 			view.fire( 'mutations', [
 				{
 					type: 'children',
-					oldChildren: [ viewRoot.getChild( 0 ).getChild( 0 ) ],
+					oldChildren: [ new ViewText( 'foobar' ) ],
 					newChildren: [],
 					node: viewRoot.getChild( 0 )
 				}
