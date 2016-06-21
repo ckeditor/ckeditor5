@@ -122,7 +122,7 @@ describe( 'TreeWalker', () => {
 			let i = expected.length;
 
 			for ( let value of iterator ) {
-				expectValue( value, expected[ --i ], { direction: 'BACKWARD' } );
+				expectValue( value, expected[ --i ] );
 			}
 
 			expect( i ).to.equal( 0 );
@@ -149,7 +149,7 @@ describe( 'TreeWalker', () => {
 			let i = expected.length;
 
 			for ( let value of iterator ) {
-				expectValue( value, expected[ --i ], { direction: 'BACKWARD' } );
+				expectValue( value, expected[ --i ] );
 			}
 
 			expect( i ).to.equal( 0 );
@@ -190,7 +190,7 @@ describe( 'TreeWalker', () => {
 				let i = expected.length;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ --i ], { direction: 'BACKWARD' } );
+					expectValue( value, expected[ --i ] );
 				}
 
 				expect( i ).to.equal( 0 );
@@ -232,7 +232,7 @@ describe( 'TreeWalker', () => {
 				let i = expected.length;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ --i ], { direction: 'BACKWARD' } );
+					expectValue( value, expected[ --i ] );
 				}
 
 				expect( i ).to.equal( 0 );
@@ -275,7 +275,7 @@ describe( 'TreeWalker', () => {
 				let i = expected.length;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ --i ], { direction: 'BACKWARD' } );
+					expectValue( value, expected[ --i ] );
 				}
 
 				expect( i ).to.equal( 0 );
@@ -314,7 +314,7 @@ describe( 'TreeWalker', () => {
 				let i = expected.length;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ --i ], { direction: 'BACKWARD' } );
+					expectValue( value, expected[ --i ] );
 				}
 
 				expect( i ).to.equal( 0 );
@@ -361,7 +361,7 @@ describe( 'TreeWalker', () => {
 				let i = 0;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ i++ ], { direction: 'BACKWARD' } );
+					expectValue( value, expected[ i++ ] );
 				}
 
 				expect( i ).to.equal( expected.length );
@@ -412,7 +412,7 @@ describe( 'TreeWalker', () => {
 				let i = expected.length;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ --i ], { direction: 'BACKWARD' } );
+					expectValue( value, expected[ --i ] );
 				}
 
 				expect( i ).to.equal( 0 );
@@ -456,7 +456,7 @@ describe( 'TreeWalker', () => {
 				let i = expected.length;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ --i ], { direction: 'BACKWARD' } );
+					expectValue( value, expected[ --i ] );
 				}
 
 				expect( i ).to.equal( 0 );
@@ -479,7 +479,7 @@ describe( 'TreeWalker', () => {
 			let i = 0;
 
 			for ( let value of iterator ) {
-				expectValue( value, expected[ i++ ], { shallow: true } );
+				expectValue( value, expected[ i++ ] );
 			}
 
 			expect( i ).to.equal( expected.length );
@@ -490,7 +490,7 @@ describe( 'TreeWalker', () => {
 			let i = expected.length;
 
 			for ( let value of iterator ) {
-				expectValue( value, expected[ --i ], { shallow: true, direction: 'BACKWARD' } );
+				expectValue( value, expected[ --i ] );
 			}
 
 			expect( i ).to.equal( 0 );
@@ -533,7 +533,7 @@ describe( 'TreeWalker', () => {
 				let i = expected.length;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ --i ], { direction: 'BACKWARD' } );
+					expectValue( value, expected[ --i ] );
 				}
 
 				expect( i ).to.equal( 0 );
@@ -583,7 +583,7 @@ describe( 'TreeWalker', () => {
 				let i = expected.length;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ --i ], { direction: 'BACKWARD' } );
+					expectValue( value, expected[ --i ] );
 				}
 
 				expect( i ).to.equal( 0 );
@@ -592,15 +592,15 @@ describe( 'TreeWalker', () => {
 	} );
 } );
 
-function expectValue( value, expected, options = {} ) {
+function expectValue( value, expected ) {
 	expect( value.type ).to.equal( expected.type );
 
 	if ( value.type == 'TEXT' ) {
-		expectText( value, expected, options );
+		expectText( value, expected );
 	} else if ( value.type == 'ELEMENT_START' ) {
-		expectStart( value, expected, options );
+		expectStart( value, expected );
 	} else if ( value.type == 'ELEMENT_END' ) {
-		expectEnd( value, expected, options );
+		expectEnd( value, expected );
 	}
 }
 
