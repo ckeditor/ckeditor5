@@ -20,8 +20,7 @@ const formats = [
 
 /**
  * The headings feature. Handles switching between block formats - different headings and paragraph.
- * This class represents part of the feature that can be used without any UI - for example inside
- * Node.js environment.
+ * This class represents the engine part of the Headings feature.
  *
  * @memberOf headings
  * @extends ckeditor5.Feature

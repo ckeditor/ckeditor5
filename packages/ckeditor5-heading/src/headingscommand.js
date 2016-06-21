@@ -66,7 +66,11 @@ export default class HeadingsCommand extends Command {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Executes the command if it is enabled.
+	 *
+	 * @param {String} [formatId] Identifier of the headings format that should be applied. It should be one of the
+	 * {@link headings.HeadingsFormat} provided to the command's constructor. If this parameter is not provided, value
+	 * from {@link headings.HeadingsCommand#defaultFormat defaultFormat} will be used.
 	 */
 	_doExecute( formatId = this.defaultFormat.id ) {
 		// TODO: What should happen if format is not found?

@@ -13,7 +13,7 @@ import ListDropdownView from '../ui/dropdown/list/listdropdownview.js';
 import Collection from '../utils/collection.js';
 
 /**
- * The headings feature. Handles switching between different block types.
+ * The headings feature. Introduces a "headings" drop-down and a command which allow switching paragraphs into headings.
  *
  * @memberOf headings
  * @extends ckeditor5.Feature
