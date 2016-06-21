@@ -188,20 +188,6 @@ describe( 'build-utils', () => {
 		} );
 	} );
 
-	describe( 'getBabelPlugins', () => {
-		it( 'should return plugins for amd format', () => {
-			expect( utils.getBabelPlugins( 'amd' ) ).to.be.an( 'array' );
-		} );
-
-		it( 'should throw an exception when incorrect format is provided', () => {
-			const format = 'incorrect-format';
-
-			expect( () => {
-				utils.getBabelPlugins( format );
-			} ).to.throw( Error, `Incorrect format: ${ format }` );
-		} );
-	} );
-
 	describe( 'getConversionStreamGenerator', () => {
 		beforeEach( () => {
 			sandbox.stub( utils, 'getBabelOptionsForSource', () => 'src' );
