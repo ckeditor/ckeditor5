@@ -93,7 +93,7 @@ export default class Document {
 		 * @observable
 		 * @member {engine.view.EditableElement|null} engine.view.Document#selectedEditable
 		 */
-		this.set( 'selectedEditable', null );
+		this.set( 'selectedEditable', this.selection.getEditableElement() );
 		this.selection.on( 'change', () => this.selectedEditable = this.selection.getEditableElement() );
 
 		/**
