@@ -8,12 +8,37 @@
 import Command from '../command/command.js';
 import RootElement from '../engine/model/rootelement.js';
 
+/**
+ * Headings command. Used by the {@link headings.Headings headings feature}.
+ *
+ * @memberOf headings
+ * @extends ckeditor5.command.Command
+ */
 export default class HeadingsCommand extends Command {
+	/**
+	 * Creates instance of the command.
+	 *
+	 * @param {ckeditor5.editor.Editor} editor Editor instance.
+	 * @param {Array.<headings.HeadingsFormat>} formats Headings formats to be used by command's instance.
+	 */
 	constructor( editor, formats ) {
 		super( editor );
 
+		/**
+		 * Headings formats used by this command.
+		 *
+		 * @readonly
+		 * @member {headings.HeadingsFormat} headings.HeadingsCommand#formats
+		 */
 		this.formats = formats;
 
+		/**
+		 * Currently selected headings format.
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {headings.HeadingsFormat} headings.HeadingsCommand#value
+		 */
 		this.set( 'value', this.defaultFormat );
 
 		// Listen on selection change and set current command's format to format in current selection.
@@ -33,13 +58,20 @@ export default class HeadingsCommand extends Command {
 	/**
 	 * The default format.
 	 *
-	 * @type {Object}
+	 * @type {headings.HeadingsFormat}
 	 */
 	get defaultFormat() {
 		// See https://github.com/ckeditor/ckeditor5/issues/98.
 		return this._getFormatById( 'paragraph' );
 	}
 
+	/**
+	 * Executes the command if it is enabled.
+	 *
+	 * @param {String} [formatId] Identifier of the headings format that should be applied. It should be one of the
+	 * {@link headings.HeadingsFormat} provided to the command's constructor. If this parameter is not provided, value
+	 * from {@link headings.HeadingsCommand#defaultFormat defaultFormat} will be used.
+	 */
 	_doExecute( formatId = this.defaultFormat.id ) {
 		// TODO: What should happen if format is not found?
 		const doc = this.editor.document;
@@ -101,7 +133,7 @@ export default class HeadingsCommand extends Command {
 	 *
 	 * @private
 	 * @param {String} id
-	 * @returns {Object}
+	 * @returns {headings.HeadingsFormat}
 	 */
 	_getFormatById( id ) {
 		return this.formats.find( item => item.id === id );
@@ -132,3 +164,12 @@ function findTopmostBlock( position, nodeAfter = true ) {
 
 	return parent;
 }
+
+/**
+ * Headings format descriptor.
+ *
+ * @typedef {Object} headings.HeadingsFormat
+ * @property {String} id Format identifier, it will be used as element's name in the model.
+ * @property {String} viewElement Name of the view element that will be used to represent model element in the view.
+ * @property {String} label Display name of the format.
+ */

@@ -12,11 +12,23 @@ import ListDropdownController from '../ui/dropdown/list/listdropdown.js';
 import ListDropdownView from '../ui/dropdown/list/listdropdownview.js';
 import Collection from '../utils/collection.js';
 
+/**
+ * The headings feature. Introduces a "headings" drop-down and a command which allow switching paragraphs into headings.
+ *
+ * @memberOf headings
+ * @extends ckeditor5.Feature
+ */
 export default class Headings extends Feature {
+	/**
+	 * @inheritDoc
+	 */
 	static get requires() {
 		return [ HeadingsEngine ];
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const command = editor.commands.get( 'headings' );

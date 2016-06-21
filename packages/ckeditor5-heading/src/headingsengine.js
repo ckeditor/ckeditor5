@@ -18,11 +18,24 @@ const formats = [
 	{ id: 'heading3', viewElement: 'h4', label: 'Heading 3' }
 ];
 
+/**
+ * The headings feature. Handles switching between block formats - different headings and paragraph.
+ * This class represents the engine part of the Headings feature.
+ *
+ * @memberOf headings
+ * @extends ckeditor5.Feature
+ */
 export default class HeadingsEngine extends Feature {
+	/**
+	 * @inheritDoc
+	 */
 	static get requires() {
 		return [ Paragraph ];
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const data = editor.data;
