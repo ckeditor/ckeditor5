@@ -7,7 +7,6 @@
 
 import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
 import EventInfo from '/ckeditor5/utils/eventinfo.js';
-import extend from '/ckeditor5/utils/lib/lodash/extend.js';
 
 let emitter, listener;
 
@@ -538,5 +537,5 @@ function refreshListener() {
 }
 
 function getEmitterInstance() {
-	return extend( {}, EmitterMixin );
+	return Object.create( EmitterMixin );
 }
