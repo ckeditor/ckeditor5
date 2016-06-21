@@ -20,6 +20,7 @@ require( './dev/tasks/dev/tasks' )( config ).register();
 require( './dev/tasks/lint/tasks' )( config ).register();
 require( './dev/tasks/test/tasks' )( config ).register();
 require( './dev/tasks/docs/tasks' )( config ).register();
+require( './dev/tasks/exec/tasks' )( config ).register();
 
 gulp.task( 'default', [ 'build' ] );
 gulp.task( 'pre-commit', [ 'lint-staged' ] );
