@@ -22,7 +22,7 @@ describe( 'Batch', () => {
 
 	beforeEach( () => {
 		doc = new Document();
-		root = doc.createRoot( 'root' );
+		root = doc.createRoot();
 		root.insertChildren( 0, 'abc' );
 
 		batch = doc.batch();
@@ -62,7 +62,7 @@ describe( 'InsertDelta', () => {
 
 	beforeEach( () => {
 		doc = new Document();
-		root = doc.createRoot( 'root' );
+		root = doc.createRoot();
 		insertDelta = new InsertDelta();
 	} );
 

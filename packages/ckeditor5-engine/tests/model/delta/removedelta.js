@@ -19,7 +19,7 @@ describe( 'Batch', () => {
 
 	beforeEach( () => {
 		doc = new Document();
-		root = doc.createRoot( 'root' );
+		root = doc.createRoot();
 
 		div = new Element( 'div', [], 'foobar' );
 		p = new Element( 'p', [], 'abcxyz' );

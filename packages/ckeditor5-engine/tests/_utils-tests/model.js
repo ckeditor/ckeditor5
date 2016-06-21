@@ -18,7 +18,7 @@ describe( 'model test utils', () => {
 
 	beforeEach( () => {
 		document = new Document();
-		root = document.createRoot( 'main', '$root' );
+		root = document.createRoot();
 		selection = document.selection;
 		sandbox = sinon.sandbox.create();
 		selection.removeAllRanges();
@@ -169,7 +169,7 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'writes selection in an empty root', () => {
-				const root = document.createRoot( 'empty', '$root' );
+				const root = document.createRoot( '$root', 'empty' );
 				selection.collapse( root );
 
 				expect( stringify( root, selection ) ).to.equal(

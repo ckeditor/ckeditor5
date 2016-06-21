@@ -16,7 +16,7 @@ describe( 'Delete utils', () => {
 
 	beforeEach( () => {
 		document = new Document();
-		document.createRoot( 'main', '$root' );
+		document.createRoot();
 
 		const schema = document.schema;
 

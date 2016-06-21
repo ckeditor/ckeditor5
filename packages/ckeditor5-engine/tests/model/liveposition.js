@@ -20,7 +20,7 @@ describe( 'LivePosition', () => {
 
 	before( () => {
 		doc = new Document();
-		root = doc.createRoot( 'root' );
+		root = doc.createRoot();
 
 		li1 = new Element( 'li', [], 'abcdef' );
 		li2 = new Element( 'li', [], 'foobar' );
@@ -225,7 +225,7 @@ describe( 'LivePosition', () => {
 
 		before( () => {
 			path = [ 1, 4, 6 ];
-			otherRoot = doc.createRoot( 'otherRoot' );
+			otherRoot = doc.createRoot( '$root', 'otherRoot' );
 		} );
 
 		let live;
