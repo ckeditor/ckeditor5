@@ -327,5 +327,12 @@ describe( 'DomConverter', () => {
 
 			expect( converter.getCorrespondingDomText( viewText ) ).to.be.null;
 		} );
+
+		it( 'should return null if there is no previous sibling and parent', () => {
+			const domText = document.createTextNode( 'foo' );
+			const viewText = converter.domToView( domText );
+
+			expect( converter.getCorrespondingDomText( viewText ) ).to.be.null;
+		} );
 	} );
 } );
