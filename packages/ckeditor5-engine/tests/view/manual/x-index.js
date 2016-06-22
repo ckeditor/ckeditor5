@@ -18,7 +18,8 @@ const viewRoot = viewDocument.createRoot( document.getElementById( 'editor' ) );
 viewDocument.addObserver( MutationObserver );
 viewDocument.addObserver( SelectionObserver );
 
-viewDocument.focusedEditable = viewRoot;
+viewDocument.selectedEditable = viewRoot;
+viewDocument.isFocused = true;
 
 setData( viewDocument,
 	'<container:p>fo{}o</container:p>' +

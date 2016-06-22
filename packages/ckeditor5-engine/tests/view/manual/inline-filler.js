@@ -12,13 +12,13 @@ import KeyObserver from '/ckeditor5/engine/view/observer/keyobserver.js';
 import { setData } from '/tests/engine/_utils/view.js';
 
 const viewDocument = new Document();
-const viewRoot = viewDocument.createRoot( document.getElementById( 'editor' ) );
+viewDocument.createRoot( document.getElementById( 'editor' ) );
 
 viewDocument.addObserver( MutationObserver );
 viewDocument.addObserver( SelectionObserver );
 viewDocument.addObserver( KeyObserver );
 
-viewDocument.focusedEditable = viewRoot;
+viewDocument.isFocused = true;
 
 setData( viewDocument,
 	'<container:p><attribute:strong>foo</attribute:strong>[]<attribute:strong>bar</attribute:strong></container:p>' );
@@ -28,4 +28,3 @@ viewDocument.on( 'selectionChange', ( evt, data ) => {
 } );
 
 viewDocument.render();
-
