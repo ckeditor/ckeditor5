@@ -213,7 +213,6 @@ export default class TreeWalker {
 				return this._next();
 			} else {
 				let charactersCount = node._data.length;
-				let previousPosition = this._previousReturnedPosition;
 				let item = node;
 
 				// If text stick out of walker range, we need to cut it and wrap by TextProxy.
@@ -221,15 +220,14 @@ export default class TreeWalker {
 					charactersCount = this.boundaries.end.offset;
 					item = new TextProxy( node, 0, charactersCount );
 					position = Position.createAfter( item );
-					previousPosition = Position.createBefore( item );
 				} else {
-					// If not just move forward.
+					// If not just keep moving forward.
 					position.offset++;
 				}
 
 				this.position = position;
 
-				return this._formatReturnValue( 'TEXT', item, previousPosition, position, charactersCount );
+				return this._formatReturnValue( 'TEXT', item, this._previousReturnedPosition, position, charactersCount );
 			}
 		} else if ( typeof node == 'string' ) {
 			let textLength;
@@ -246,6 +244,12 @@ export default class TreeWalker {
 			const textProxy = new TextProxy( parent, position.offset, textLength );
 
 			position.offset += textLength;
+
+			// Position at the end of Text is always out of Text node not inside.
+			if ( position.offset == parent._data.length ) {
+				position = new Position( parent.parent, parent.getIndex() + 1 );
+			}
+
 			this.position = position;
 
 			return this._formatReturnValue( 'TEXT', textProxy, this._previousReturnedPosition, position, textLength );
@@ -255,7 +259,11 @@ export default class TreeWalker {
 			this.position = position;
 
 			// We don't return `ELEMENT_END` for {@link engine.view.Text} element.
-			if ( this.ignoreElementEnd || parent instanceof Text ) {
+			if ( parent instanceof Text ) {
+				return this._next();
+			} else if ( this.ignoreElementEnd ) {
+				this._previousReturnedPosition = position;
+
 				return this._next();
 			} else {
 				return this._formatReturnValue( 'ELEMENT_END', parent, this._previousReturnedPosition, position );
@@ -301,6 +309,8 @@ export default class TreeWalker {
 				this.position = position;
 
 				if ( this.ignoreElementEnd ) {
+					this._previousReturnedPosition = position;
+
 					return this._previous();
 				} else {
 					return this._formatReturnValue( 'ELEMENT_END', node, this._previousReturnedPosition, position );
@@ -319,7 +329,6 @@ export default class TreeWalker {
 				return this._previous();
 			} else {
 				let charactersCount = node._data.length;
-				let previousPosition = this._previousReturnedPosition;
 				let item = node;
 
 				// If text stick out of walker range, we need to cut it and wrap by TextProxy.
@@ -327,18 +336,16 @@ export default class TreeWalker {
 					const offset = this.boundaries.start.offset;
 
 					item = new TextProxy( node, offset );
-
-					position = Position.createBefore( item );
-					previousPosition = Position.createAfter( item );
 					charactersCount = item._data.length;
+					position = Position.createBefore( item );
 				} else {
-					// If not just move backward.
+					// If not just keep moving backward.
 					position.offset--;
 				}
 
 				this.position = position;
 
-				return this._formatReturnValue( 'TEXT', item, previousPosition, position, charactersCount );
+				return this._formatReturnValue( 'TEXT', item, this._previousReturnedPosition, position, charactersCount );
 			}
 		} else if ( typeof node == 'string' ) {
 			let textLength;
@@ -356,6 +363,11 @@ export default class TreeWalker {
 
 			const textProxy = new TextProxy( parent, position.offset, textLength );
 
+			// Position at the beginning of Text is always out of Text node, not inside.
+			if ( position.offset === 0 ) {
+				position = new Position( parent.parent, parent.getIndex() );
+			}
+
 			this.position = position;
 
 			return this._formatReturnValue( 'TEXT', textProxy, this._previousReturnedPosition, position, textLength );
@@ -363,14 +375,6 @@ export default class TreeWalker {
 			// `node` is not set, we reached the beginning of current `parent`.
 			position = Position.createBefore( parent );
 			this.position = position;
-
-			// We don't return `ELEMENT_START` for {@link engine.view.Text} element.
-			if ( parent instanceof Text ) {
-				position = Position.createBefore( parent );
-				this.position = position;
-
-				return this._previous();
-			}
 
 			return this._formatReturnValue( 'ELEMENT_START', parent, this._previousReturnedPosition, position, 1 );
 		}
