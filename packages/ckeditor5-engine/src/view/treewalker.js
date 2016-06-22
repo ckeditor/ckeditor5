@@ -360,7 +360,7 @@ export default class TreeWalker {
 	}
 
 	/**
-	 * Format returned data and adjust `previousPosition` if reach the bound of the {@link engine.view.Text}.
+	 * Format returned data and adjust `previousPosition` and `nextPosition` if reach the bound of the {@link engine.view.Text}.
 	 *
 	 * @private
 	 * @param {engine.view.TreeWalkerValueType} type Type of step.
@@ -373,14 +373,14 @@ export default class TreeWalker {
 	_formatReturnValue( type, item, previousPosition, nextPosition, length ) {
 		// Text is a specific parent, because contains string instead of childs.
 		// We decided to not enter to the Text except situations when walker is iterating over every single character,
-		// or the bound starts/ends inside the Text. So when position is at the beginning or the end of the Text
+		// or the bound starts/ends inside the Text. So when the position is at the beginning or at the end of the Text
 		// we move it just before or just after Text.
 		if ( item instanceof TextProxy ) {
 			// Position is at the end of Text.
 			if ( item._index + item._data.length == item._textNode._data.length ) {
 				if ( this.direction == 'FORWARD' ) {
 					nextPosition = Position.createAfter( item._textNode );
-					// When we change nextPosition of returned value we need also update walker position.
+					// When we change nextPosition of returned value we need also update walker current position.
 					this.position = nextPosition;
 				} else {
 					previousPosition = Position.createAfter( item._textNode );
@@ -393,7 +393,7 @@ export default class TreeWalker {
 					previousPosition = Position.createBefore( item._textNode );
 				} else {
 					nextPosition = Position.createBefore( item._textNode );
-					// When we change nextPosition of returned value we need also update walker position.
+					// When we change nextPosition of returned value we need also update walker current position.
 					this.position = nextPosition;
 				}
 			}
