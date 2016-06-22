@@ -122,7 +122,7 @@ export default class Template {
 	 * @param {utils.ObservableMixin} observable An instance of ObservableMixin class.
 	 * @param {utils.EmitterMixin} emitter An instance of `EmitterMixin` class. It listens
 	 * to `observable` attribute changes and DOM Events, depending on the binding. Usually {@link ui.View} instance.
-	 * @returns {ui.TemplateBinding}
+	 * @returns {Object}
 	 */
 	static bind( observable, emitter ) {
 		return {
