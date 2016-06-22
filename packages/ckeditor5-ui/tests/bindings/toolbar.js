@@ -18,7 +18,9 @@ describe( 'Toolbar', () => {
 
 	beforeEach( () => {
 		editor = new Editor();
-		model = new Model();
+		model = new Model( {
+			isActive: false
+		} );
 		view = new View( model );
 		toolbar = new Toolbar( model, view, editor );
 	} );
