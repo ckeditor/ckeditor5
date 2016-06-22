@@ -193,5 +193,26 @@ describe( 'RedoCommand', () => {
 			expect( editor.document.selection.getRanges().next().value.isEqual( r( 4, 6 ) ) ).to.be.true;
 			expect( editor.document.selection.isBackward ).to.be.false;
 		} );
+
+		it( 'should transform redo batch by changes written in history that happened after undo but before redo', () => {
+			// Undo moving "oo" to the end of string. Now it is "foobar".
+			undo._execute( batch2 );
+
+			// Remove "ar".
+			editor.document.selection.setRanges( [ r( 4, 6 ) ] );
+			doc.batch().remove( r( 4, 6 ) );
+			editor.document.selection.setRanges( [ r( 4, 4 ) ] );
+
+			// Redo moving "oo" to the end of string. It should be "fboo".
+			redo._execute();
+
+			expect( Array.from( root._children._nodes.map( node => node.text ) ).join( '' ) ).to.equal( 'fboo' );
+			expect( root.getChild( 1 ).getAttribute( 'key' ) ).to.equal( 'value' );
+			expect( root.getChild( 3 ).getAttribute( 'key' ) ).to.equal( 'value' );
+
+			// Selection after redo is not working properly if there was another batch in-between.
+			// Thankfully this will be very rare situation outside of OT, because normally an applied batch
+			// would reset the redo stack so you won't be able to redo. #12
+		} );
 	} );
 } );

@@ -9,6 +9,7 @@ import ModelTestEditor from '/tests/ckeditor5/_utils/modeltesteditor.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import UndoCommand from '/ckeditor5/undo/undocommand.js';
+import AttributeDelta from '/ckeditor5/engine/model/delta/attributedelta.js';
 
 let editor, doc, root, undo;
 
@@ -26,10 +27,10 @@ afterEach( () => {
 } );
 
 describe( 'UndoCommand', () => {
-	describe( '_execute', () => {
-		const p = pos => new Position( root, [].concat( pos ) );
-		const r = ( a, b ) => new Range( p( a ), p( b ) );
+	const p = pos => new Position( root, [].concat( pos ) );
+	const r = ( a, b ) => new Range( p( a ), p( b ) );
 
+	describe( '_execute', () => {
 		let batch0, batch1, batch2, batch3;
 
 		beforeEach( () => {
@@ -85,9 +86,9 @@ describe( 'UndoCommand', () => {
 			 [root]
 			 - f
 			 - [p]
-			 	- {b (key: value)
-			 	- a
-			 	- r}
+			 - {b (key: value)
+			 - a
+			 - r}
 			 - o
 			 - o (key: value)
 			 */
@@ -96,9 +97,9 @@ describe( 'UndoCommand', () => {
 			/*
 			 [root]
 			 - [p]
-			 	- b (key: value)
-			 	- a
-			 	- r
+			 - b (key: value)
+			 - a
+			 - r
 			 - o
 			 - f
 			 - o{} (key: value)
@@ -111,13 +112,13 @@ describe( 'UndoCommand', () => {
 
 			// Selection is restored. Wrap is removed:
 			/*
-				[root]
-				- {b (key: value)
-				- a
-				- r}
-				- o
-				- f
-				- o (key: value)
+			 [root]
+			 - {b (key: value)
+			 - a
+			 - r}
+			 - o
+			 - f
+			 - o (key: value)
 			 */
 
 			expect( Array.from( root._children._nodes.map( node => node.text ) ).join( '' ) ).to.equal( 'barofo' );
@@ -131,13 +132,13 @@ describe( 'UndoCommand', () => {
 
 			// Two moves are removed:
 			/*
-				[root]
-				- f
-			 	- {o
-			 	- o} (key: value)
-				- b (key: value)
-				- a
-				- r
+			 [root]
+			 - f
+			 - {o
+			 - o} (key: value)
+			 - b (key: value)
+			 - a
+			 - r
 			 */
 
 			expect( Array.from( root._children._nodes.map( node => node.text ) ).join( '' ) ).to.equal( 'foobar' );
@@ -151,13 +152,13 @@ describe( 'UndoCommand', () => {
 
 			// Set attribute is undone:
 			/*
-				[root]
-				- f
-				- o
-				- {o
-				- b}
-				- a
-				- r
+			 [root]
+			 - f
+			 - o
+			 - {o
+			 - b}
+			 - a
+			 - r
 			 */
 
 			expect( Array.from( root._children._nodes.map( node => node.text ) ).join( '' ) ).to.equal( 'foobar' );
@@ -171,7 +172,7 @@ describe( 'UndoCommand', () => {
 
 			// Insert is undone:
 			/*
-				[root]
+			 [root]
 			 */
 
 			expect( root.getChildCount() ).to.equal( 0 );
@@ -184,14 +185,14 @@ describe( 'UndoCommand', () => {
 			undo._execute( batch1 );
 			// Remove attribute:
 			/*
-				[root]
-				- [p]
-					- b
-					- a
-					- r
-				- o
-				- f
-				- o
+			 [root]
+			 - [p]
+			 - b
+			 - a
+			 - r
+			 - o
+			 - f
+			 - o
 			 */
 
 			expect( root.getChild( 0 ).name ).to.equal( 'p' );
@@ -248,6 +249,97 @@ describe( 'UndoCommand', () => {
 			// Once again transformed range ends up in the graveyard.
 			expect( editor.document.selection.getRanges().next().value.isEqual( r( 0, 0 ) ) ).to.be.true;
 			expect( editor.document.selection.isBackward ).to.be.false;
+		} );
+	} );
+
+	// Some tests to ensure 100% CC and proper behavior in edge cases.
+	describe( 'edge cases', () => {
+		function getText( root ) {
+			let text = '';
+
+			for ( let i = 0; i < root.getChildCount(); i++ ) {
+				let node = root.getChild( i );
+				text += node.getAttribute( 'uppercase' ) ? node.character.toUpperCase() : node.character;
+			}
+
+			return text;
+		}
+
+		it( 'correctly handles deltas in compressed history that were earlier updated into multiple deltas (or split when undoing)', () => {
+			// In this case we assume that one of the deltas in compressed history was updated to two deltas.
+			// This is a tricky edge case because it is almost impossible to come up with convincing scenario that produces it.
+			// At the moment of writing this test and comment, only Undo feature uses `CompressedHistory#updateDelta`.
+			// Because deltas that "stays" in history are transformed with `isStrong` flag set to `false`, `MoveOperation`
+			// won't get split and `AttributeDelta` can hold multiple `AttributeOperation` in it. So using most common deltas
+			// (`InsertDelta`, `RemoveDelta`, `MoveDelta`, `AttributeDelta`) and undo it's impossible to get to this edge case.
+			// Still there might be some weird scenarios connected with OT / Undo / Collaborative Editing / other deltas /
+			// fancy 3rd party plugin where it may come up, so it's better to be safe than sorry.
+
+			root.appendChildren( 'abcdef' );
+			expect( getText( root ) ).to.equal( 'abcdef' );
+
+			editor.document.selection.setRanges( [ r( 1, 4 ) ] );
+			let batch0 = doc.batch();
+			undo.addBatch( batch0 );
+			batch0.move( r( 1, 4 ), p( 5 ) );
+			expect( getText( root ) ).to.equal( 'aebcdf' );
+
+			editor.document.selection.setRanges( [ r( 1, 1 ) ]  );
+			let batch1 = doc.batch();
+			undo.addBatch( batch1 );
+			batch1.remove( r( 0, 1 ) );
+			expect( getText( root ) ).to.equal( 'ebcdf' );
+
+			editor.document.selection.setRanges( [ r( 0, 3 ) ] );
+			let batch2 = doc.batch();
+			undo.addBatch( batch2 );
+			batch2.setAttr( 'uppercase', true, r( 0, 3 ) );
+			expect( getText( root ) ).to.equal( 'EBCdf' );
+
+			undo._execute( batch0 );
+			expect( getText( root ) ).to.equal( 'BCdEf' );
+
+			// Let's simulate splitting the delta by updating the history by hand.
+			let attrHistoryDelta = doc.history.getDelta( 2 )[ 0 ];
+			let attrDelta1 = new AttributeDelta();
+			attrDelta1.addOperation( attrHistoryDelta.operations[ 0 ] );
+			let attrDelta2 = new AttributeDelta();
+			attrDelta2.addOperation( attrHistoryDelta.operations[ 1 ] );
+			doc.history.updateDelta( 2, [ attrDelta1, attrDelta2 ] );
+
+			undo._execute( batch1 );
+			// After this execution, undo algorithm should update both `attrDelta1` and `attrDelta2` with new
+			// versions, that have incremented offsets.
+			expect( getText( root ) ).to.equal( 'aBCdEf' );
+
+			undo._execute( batch2 );
+			// This execution checks whether undo algorithm correctly updated deltas in previous execution
+			// and also whether it correctly "reads" both deltas from history.
+			expect( getText( root ) ).to.equal( 'abcdef' );
+		} );
+
+		it( 'merges touching ranges when restoring selection', () => {
+			root.appendChildren( 'abcdef' );
+			expect( getText( root ) ).to.equal( 'abcdef' );
+
+			editor.document.selection.setRanges( [ r( 1, 4 ) ] );
+			let batch0 = doc.batch();
+			undo.addBatch( batch0 );
+			batch0.setAttr( 'uppercase', true, r( 1, 4 ) );
+			expect( getText( root ) ).to.equal( 'aBCDef' );
+
+			editor.document.selection.setRanges( [ r( 3, 4 ) ] );
+			let batch1 = doc.batch();
+			undo.addBatch( batch1 );
+			batch1.move( r( 3, 4 ), p( 1 ) );
+			expect( getText( root ) ).to.equal( 'aDBCef' );
+
+			undo._execute( batch0 );
+
+			// After undo-attr: acdbef <--- "cdb" should be selected, it would look weird if only "cd" or "b" is selected
+			// but the whole unbroken part "cdb" changed attribute.
+			expect( getText( root ) ).to.equal( 'adbcef' );
+			expect( editor.document.selection.getRanges().next().value.isEqual( r( 1, 4 ) ) ).to.be.true;
 		} );
 	} );
 } );
