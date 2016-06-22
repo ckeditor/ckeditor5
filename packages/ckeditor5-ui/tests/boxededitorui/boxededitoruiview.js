@@ -6,14 +6,13 @@
 'use strict';
 
 import BoxedEditorUIView from '/ckeditor5/ui/editorui/boxed/boxededitoruiview.js';
-import Model from '/ckeditor5/ui/model.js';
 import Locale from '/ckeditor5/utils/locale.js';
 
 describe( 'BoxedEditorUIView', () => {
 	let boxedEditorUIView, element, topRegionEl, mainRegionEl;
 
 	beforeEach( () => {
-		boxedEditorUIView = new BoxedEditorUIView( new Model(), new Locale( 'en' ) );
+		boxedEditorUIView = new BoxedEditorUIView( new Locale( 'en' ) );
 		boxedEditorUIView.init();
 
 		element = boxedEditorUIView.element;

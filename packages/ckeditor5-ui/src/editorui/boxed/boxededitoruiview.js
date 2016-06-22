@@ -19,11 +19,10 @@ export default class BoxedEditorUIView extends EditorUIView {
 	/**
 	 * Creates a BoxedEditorUIView instance.
 	 *
-	 * @param {utils.Observable} model (View)Model of this view.
 	 * @param {utils.Locale} [locale] The {@link ckeditor5.Editor#locale editor's locale} instance.
 	 */
-	constructor( model, locale ) {
-		super( model, locale );
+	constructor( locale ) {
+		super( locale );
 
 		const t = this.t;
 		const ariaLabelUid = uid();
