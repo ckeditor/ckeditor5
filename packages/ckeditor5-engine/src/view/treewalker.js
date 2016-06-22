@@ -235,12 +235,6 @@ export default class TreeWalker {
 			const textProxy = new TextProxy( parent, position.offset, textLength );
 
 			position.offset += textLength;
-
-			// Position at the end of Text is always out of Text node not inside.
-			if ( position.offset == parent._data.length ) {
-				position = new Position( parent.parent, parent.getIndex() + 1 );
-			}
-
 			this.position = position;
 
 			return this._formatReturnValue( 'TEXT', textProxy, previousPosition, position, textLength );
@@ -349,9 +343,9 @@ export default class TreeWalker {
 			const textProxy = new TextProxy( parent, position.offset, textLength );
 
 			// Position at the beginning of Text is always out of Text node, not inside.
-			if ( position.offset === 0 ) {
-				position = new Position( parent.parent, parent.getIndex() );
-			}
+			// if ( position.offset === 0 ) {
+			// 	position = new Position( parent.parent, parent.getIndex() );
+			// }
 
 			this.position = position;
 
@@ -382,10 +376,26 @@ export default class TreeWalker {
 		// or the bound starts/ends inside the Text. So when position is at the beginning or the end of the Text
 		// we move it just before or just after Text.
 		if ( item instanceof TextProxy ) {
-			if ( this.direction == 'FORWARD' && item._index === 0 ) {
-				previousPosition = Position.createBefore( item._textNode );
-			} else if ( this.direction == 'BACKWARD' && item._index == item._textNode._data.length - 1 ) {
-				previousPosition = Position.createAfter( item._textNode );
+			// Position is at the end of Text.
+			if ( item._index + item._data.length == item._textNode._data.length ) {
+				if ( this.direction == 'FORWARD' ) {
+					nextPosition = Position.createAfter( item._textNode );
+					// When we change nextPosition of returned value we need also update walker position.
+					this.position = nextPosition;
+				} else {
+					previousPosition = Position.createAfter( item._textNode );
+				}
+			}
+
+			// Position is at the begining ot the text.
+			if ( item._index === 0 ) {
+				if ( this.direction == 'FORWARD' ) {
+					previousPosition = Position.createBefore( item._textNode );
+				} else {
+					nextPosition = Position.createBefore( item._textNode );
+					// When we change nextPosition of returned value we need also update walker position.
+					this.position = nextPosition;
+				}
 			}
 		}
 
