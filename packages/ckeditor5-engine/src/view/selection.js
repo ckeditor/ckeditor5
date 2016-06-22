@@ -279,6 +279,7 @@ export default class Selection {
 		}
 
 		this._lastRangeBackward = otherSelection._lastRangeBackward;
+		this.fire( 'change' );
 	}
 
 	/**

@@ -362,6 +362,19 @@ describe( 'Selection', () => {
 
 			expect( selection.anchor.isEqual( range3.end ) ).to.be.true;
 		} );
+
+		it( 'should fire change event', ( done ) => {
+			selection.on( 'change', () => {
+				expect( selection.rangeCount ).to.equal( 1 );
+				expect( selection.getFirstRange().isEqual( range1 ) ).to.be.true;
+				done();
+			} );
+
+			const otherSelection = new Selection();
+			otherSelection.addRange( range1 );
+
+			selection.setTo( otherSelection );
+		} );
 	} );
 
 	describe( 'collapseToStart', () => {
