@@ -94,6 +94,12 @@ export default class UndoCommand extends BaseCommand {
 			// To prevent errors, we will take an updated version of it from the history, basing on delta's `baseVersion`.
 			const updatedDeltaToUndo = history.getDelta( baseVersion );
 
+			// This is a safe valve in case of not finding delta to undo in history. This may come up if that delta
+			// got updated into no deltas, or removed from history.
+			if ( updatedDeltaToUndo === null ) {
+				continue;
+			}
+
 			// 2. Reverse delta from the history.
 			updatedDeltaToUndo.reverse();
 			let reversedDelta = [];

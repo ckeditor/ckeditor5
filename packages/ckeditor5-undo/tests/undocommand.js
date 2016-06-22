@@ -341,5 +341,26 @@ describe( 'UndoCommand', () => {
 			expect( getText( root ) ).to.equal( 'adbcef' );
 			expect( editor.document.selection.getRanges().next().value.isEqual( r( 1, 4 ) ) ).to.be.true;
 		} );
+
+		it( 'does nothing (and not crashes) if delta to undo is no longer in history', () => {
+			// Also an edgy situation but it may come up if other plugins use `CompressedHistory` API.
+			root.appendChildren( 'abcdef' );
+			expect( getText( root ) ).to.equal( 'abcdef' );
+
+			editor.document.selection.setRanges( [ r( 0, 1 ) ] );
+			let batch0 = doc.batch();
+			undo.addBatch( batch0 );
+			batch0.setAttr( 'uppercase', true, r( 0, 1 ) );
+			expect( getText( root ) ).to.equal( 'Abcdef' );
+
+			doc.history.removeDelta( 0 );
+			root.getChild( 0 ).removeAttribute( 'uppercase' );
+			expect( getText( root ) ).to.equal( 'abcdef' );
+
+			undo._execute();
+
+			// Nothing happened. We are still alive.
+			expect( getText( root ) ).to.equal( 'abcdef' );
+		} );
 	} );
 } );
