@@ -26,34 +26,6 @@ afterEach( () => {
 } );
 
 describe( 'UndoCommand', () => {
-	describe( 'constructor', () => {
-		it( 'should create undo command with empty batch stack', () => {
-			expect( undo._checkEnabled() ).to.be.false;
-		} );
-	} );
-
-	describe( 'clearStack', () => {
-		it( 'should remove all batches from the stack', () => {
-			undo.addBatch( doc.batch() );
-			expect( undo._checkEnabled() ).to.be.true;
-
-			undo.clearStack();
-			expect( undo._checkEnabled() ).to.be.false;
-		} );
-	} );
-
-	describe( '_checkEnabled', () => {
-		it( 'should return false if there are no batches in command stack', () => {
-			expect( undo._checkEnabled() ).to.be.false;
-		} );
-
-		it( 'should return true if there are batches in command stack', () => {
-			undo.addBatch( doc.batch() );
-
-			expect( undo._checkEnabled() ).to.be.true;
-		} );
-	} );
-
 	describe( '_execute', () => {
 		const p = pos => new Position( root, [].concat( pos ) );
 		const r = ( a, b ) => new Range( p( a ), p( b ) );
@@ -248,24 +220,22 @@ describe( 'UndoCommand', () => {
 			expect( root.getChildCount() ).to.equal( 1 );
 			expect( root.getChild( 0 ).name ).to.equal( 'p' );
 
-			// Because P element was inserted in the middle of removed text and it was not removed,
-			// the selection is set after it.
-			expect( editor.document.selection.getRanges().next().value.isEqual( r( 1, 1 ) ) ).to.be.true;
+			expect( editor.document.selection.getRanges().next().value.isEqual( r( 0, 0 ) ) ).to.be.true;
 			expect( editor.document.selection.isBackward ).to.be.false;
 
 			undo._execute( batch1 );
 			// Remove attributes.
 			// This does nothing in the `root` because attributes were set on nodes that already got removed.
-			// But those nodes should change in they graveyard and we can check them there.
+			// But those nodes should change in the graveyard and we can check them there.
 
 			expect( root.getChildCount() ).to.equal( 1 );
 			expect( root.getChild( 0 ).name ).to.equal( 'p' );
 
 			// Operations for undoing that batch were working on graveyard so document selection should not change.
-			expect( editor.document.selection.getRanges().next().value.isEqual( r( 1, 1 ) ) ).to.be.true;
+			expect( editor.document.selection.getRanges().next().value.isEqual( r( 0, 0 ) ) ).to.be.true;
 			expect( editor.document.selection.isBackward ).to.be.false;
 
-			expect( doc.graveyard.getChildCount() ).to.equal( 6 );
+			expect( doc.graveyard.getChild( 0 ).getChildCount() ).to.equal( 6 );
 
 			for ( let char of doc.graveyard._children ) {
 				expect( char.hasAttribute( 'key' ) ).to.be.false;
@@ -276,22 +246,8 @@ describe( 'UndoCommand', () => {
 			expect( root.getChildCount() ).to.equal( 0 );
 
 			// Once again transformed range ends up in the graveyard.
-			// So we do not restore it. But since Selection is a LiveRange itself it will update
-			// because the node before it (P element) got removed.
 			expect( editor.document.selection.getRanges().next().value.isEqual( r( 0, 0 ) ) ).to.be.true;
 			expect( editor.document.selection.isBackward ).to.be.false;
-		} );
-
-		it( 'should fire undo event with the undone batch', () => {
-			const batch = doc.batch();
-			const spy = sinon.spy();
-
-			undo.on( 'revert', spy );
-
-			undo._execute();
-
-			expect( spy.calledOnce ).to.be.true;
-			expect( spy.calledWith( batch ) );
 		} );
 	} );
 } );
