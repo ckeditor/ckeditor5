@@ -32,47 +32,42 @@ describe( 'UndoEngine', () => {
 		expect( editor.commands.get( 'redo' ) ).to.equal( undo._redoCommand );
 	} );
 
-	it( 'should add a batch to undo command whenever a new batch is applied to the document', () => {
+	it( 'should add a batch to undo command and clear redo stack, if it\'s type is different than "undo" and "redo"', () => {
 		sinon.spy( undo._undoCommand, 'addBatch' );
+		sinon.spy( undo._redoCommand, 'clearStack' );
 
 		expect( undo._undoCommand.addBatch.called ).to.be.false;
+		expect( undo._redoCommand.clearStack.called ).to.be.false;
 
 		batch.insert( new Position( root, [ 0 ] ), 'foobar' );
 
 		expect( undo._undoCommand.addBatch.calledOnce ).to.be.true;
-
-		batch.insert( new Position( root, [ 0 ] ), 'foobar' );
-
-		expect( undo._undoCommand.addBatch.calledOnce ).to.be.true;
+		expect( undo._redoCommand.clearStack.calledOnce ).to.be.true;
 	} );
 
-	it( 'should add a batch to redo command whenever a batch is undone by undo command', () => {
+	it( 'should add a batch to undo command, if it\'s type is redo and not clear redo stack', () => {
+		sinon.spy( undo._undoCommand, 'addBatch' );
+		sinon.spy( undo._redoCommand, 'clearStack' );
+
+		batch.type = 'redo';
+
+		expect( undo._undoCommand.addBatch.called ).to.be.false;
+		expect( undo._redoCommand.clearStack.called ).to.be.false;
+
 		batch.insert( new Position( root, [ 0 ] ), 'foobar' );
+
+		expect( undo._undoCommand.addBatch.calledOnce ).to.be.true;
+		expect( undo._redoCommand.clearStack.calledOnce ).to.be.false;
+	} );
+
+	it( 'should add a batch to redo command, if it\'s type is undo', () => {
+		batch.type = 'undo';
 
 		sinon.spy( undo._redoCommand, 'addBatch' );
 
-		undo._undoCommand.fire( 'revert', batch );
+		batch.insert( new Position( root, [ 0 ] ), 'foobar' );
 
 		expect( undo._redoCommand.addBatch.calledOnce ).to.be.true;
 		expect( undo._redoCommand.addBatch.calledWith( batch ) ).to.be.true;
-	} );
-
-	it( 'should add a batch to undo command whenever a batch is redone by redo command', () => {
-		batch.insert( new Position( root, [ 0 ] ), 'foobar' );
-
-		sinon.spy( undo._undoCommand, 'addBatch' );
-
-		undo._redoCommand.fire( 'revert', batch );
-
-		expect( undo._undoCommand.addBatch.calledOnce ).to.be.true;
-		expect( undo._undoCommand.addBatch.calledWith( batch ) ).to.be.true;
-	} );
-
-	it( 'should clear redo command stack whenever a new batch is applied to the document', () => {
-		sinon.spy( undo._redoCommand, 'clearStack' );
-
-		batch.insert( new Position( root, [ 0 ] ), 'foobar' );
-
-		expect( undo._redoCommand.clearStack.calledOnce ).to.be.true;
 	} );
 } );
