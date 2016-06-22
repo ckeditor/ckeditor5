@@ -33,7 +33,7 @@ describe( 'Typing feature', () => {
 			} )
 			.then( newEditor => {
 				// Mock image feature.
-				newEditor.document.schema.registerItem( 'image', '$block' );
+				newEditor.document.schema.registerItem( 'image', '$inline' );
 
 				BuildModelConverterFor( newEditor.data.modelToView, newEditor.editing.modelToView )
 					.fromElement( 'image' )
@@ -125,7 +125,7 @@ describe( 'Typing feature', () => {
 			expect( getViewData( view ) ).to.equal( '<p>x{}</p>' );
 		} );
 
-		it( 'should do nothing when two nodes where inserted', () => {
+		it( 'should do nothing when two nodes were inserted', () => {
 			editor.setData( '<p></p>' );
 
 			view.fire( 'mutations', [
@@ -141,7 +141,7 @@ describe( 'Typing feature', () => {
 			expect( getViewData( view ) ).to.equal( '<p></p>' );
 		} );
 
-		it( 'should do nothing when two nodes where inserted and one removed', () => {
+		it( 'should do nothing when two nodes were inserted and one removed', () => {
 			view.fire( 'mutations', [
 				{
 					type: 'children',
