@@ -35,8 +35,7 @@ export default class UndoCommand extends BaseCommand {
 		const item = this._items.splice( batchIndex, 1 )[ 0 ];
 
 		// All changes done by the command execution will be saved as one batch.
-		const newBatch = this.editor.document.batch();
-		newBatch.type = 'undo';
+		const newBatch = this.editor.document.batch( 'undo' );
 
 		// All changes has to be done in one `enqueueChanges` callback so other listeners will not
 		// step between consecutive deltas, or won't do changes to the document before selection is properly restored.
