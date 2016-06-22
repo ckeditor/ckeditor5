@@ -21,10 +21,10 @@ export default class TreeWalker {
 	 * Creates a range iterator. All parameters are optional, but you have to specify either `boundaries` or `startPosition`.
 	 *
 	 * @constructor
-	 * @param {Object} options Object with configuration.
+	 * @param {Object} [options={}] Object with configuration.
+	 * @param {'FORWARD'|'BACKWARD'} [options.direction='FORWARD'] Walking direction.
 	 * @param {engine.model.Range} [options.boundaries=null] Range to define boundaries of the iterator.
 	 * @param {engine.model.Position} [options.startPosition] Starting position.
-	 * @param {'FORWARD'|'BACKWARD'} [options.direction='FORWARD'] Walking direction.
 	 * @param {Boolean} [options.singleCharacters=false] Flag indicating whether all consecutive characters with the same attributes
 	 * should be returned one by one as multiple {@link engine.model.CharacterProxy} (`true`) objects or as one
 	 * {@link engine.model.TextProxy} (`false`).
@@ -35,17 +35,8 @@ export default class TreeWalker {
 	 * each {@link engine.model.Element} will be returned once, while if the option is `false` they might be returned
 	 * twice: for `'ELEMENT_START'` and `'ELEMENT_END'`.
 	 */
-	constructor(
-		{
-			boundaries = null,
-			startPosition,
-			direction = 'FORWARD',
-			singleCharacters = false,
-			shallow = false,
-			ignoreElementEnd = false,
-		} = {}
-	) {
-		if ( !boundaries && !startPosition ) {
+	constructor( options = {} ) {
+		if ( !options.boundaries && !options.startPosition ) {
 			/**
 			 * Neither boundaries nor starting position have been defined.
 			 *
@@ -54,12 +45,22 @@ export default class TreeWalker {
 			throw new CKEditorError( 'tree-walker-no-start-position: Neither boundaries nor starting position have been defined.' );
 		}
 
+		const direction = options.direction || 'FORWARD';
+
 		if ( direction != 'FORWARD' && direction != 'BACKWARD' ) {
 			throw new CKEditorError(
 				'tree-walker-unknown-direction: Only `BACKWARD` and `FORWARD` direction allowed.',
 				{ direction }
 			);
 		}
+
+		/**
+		 * Walking direction. Defaults `FORWARD`.
+		 *
+		 * @readonly
+		 * @member {'BACKWARD'|'FORWARD'} engine.model.TreeWalker#direction
+		 */
+		this.direction = direction;
 
 		/**
 		 * Iterator boundaries.
@@ -72,7 +73,7 @@ export default class TreeWalker {
 		 * @readonly
 		 * @member {engine.model.Range} engine.model.TreeWalker#boundaries
 		 */
-		this.boundaries = boundaries;
+		this.boundaries = options.boundaries || null;
 
 		/**
 		 * Iterator position. This is always static position, even if the initial position was a
@@ -83,19 +84,11 @@ export default class TreeWalker {
 		 * @readonly
 		 * @member {engine.model.Position} engine.model.TreeWalker#position
 		 */
-		if ( startPosition ) {
-			this.position = Position.createFromPosition( startPosition );
+		if ( options.startPosition ) {
+			this.position = Position.createFromPosition( options.startPosition );
 		} else {
-			this.position = Position.createFromPosition( boundaries[ direction == 'BACKWARD' ? 'end' : 'start' ] );
+			this.position = Position.createFromPosition( this.boundaries[ this.direction == 'BACKWARD' ? 'end' : 'start' ] );
 		}
-
-		/**
-		 * Walking direction. Defaults `FORWARD`.
-		 *
-		 * @readonly
-		 * @member {'BACKWARD'|'FORWARD'} engine.model.TreeWalker#direction
-		 */
-		this.direction = direction;
 
 		/**
 		 * Flag indicating whether all consecutive characters with the same attributes should be
@@ -104,7 +97,7 @@ export default class TreeWalker {
 		 * @readonly
 		 * @member {Boolean} engine.model.TreeWalker#singleCharacters
 		 */
-		this.singleCharacters = !!singleCharacters;
+		this.singleCharacters = !!options.singleCharacters;
 
 		/**
 		 * Flag indicating whether iterator should enter elements or not. If the iterator is shallow child nodes of any
@@ -113,7 +106,7 @@ export default class TreeWalker {
 		 * @readonly
 		 * @member {Boolean} engine.model.TreeWalker#shallow
 		 */
-		this.shallow = !!shallow;
+		this.shallow = !!options.shallow;
 
 		/**
 		 * Flag indicating whether iterator should ignore `ELEMENT_END` tags. If the option is true walker will not
@@ -124,7 +117,7 @@ export default class TreeWalker {
 		 * @readonly
 		 * @member {Boolean} engine.model.TreeWalker#ignoreElementEnd
 		 */
-		this.ignoreElementEnd = !!ignoreElementEnd;
+		this.ignoreElementEnd = !!options.ignoreElementEnd;
 
 		/**
 		 * Start boundary cached for optimization purposes.
