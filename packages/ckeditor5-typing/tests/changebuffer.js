@@ -28,6 +28,12 @@ describe( 'ChangeBuffer', () => {
 			expect( buffer ).to.have.property( 'limit', CHANGE_LIMIT );
 			expect( buffer ).to.have.property( 'size', 0 );
 		} );
+
+		it( 'sets limit property according to default value', () => {
+			buffer = new ChangeBuffer( doc );
+
+			expect( buffer ).to.have.property( 'limit', 20 );
+		} );
 	} );
 
 	describe( 'batch', () => {
