@@ -24,7 +24,7 @@ export default class TextProxy {
 	 *
 	 * @param {engine.view.Text} textNode Text node which text proxy is a substring.
 	 * @param {Number} startOffset Offset from beginning of {#_textNodeParent} and first character of {#_data}.
-	 * @param {Number} [length] Length of substring. If is not set the end offset is at the end of {#_textNodeParent}.
+	 * @param {Number} [length] Length of substring. If is not set then the end offset is at the end of {#_textNodeParent}.
 	 */
 	constructor( textNode, startOffset, length ) {
 		/**
