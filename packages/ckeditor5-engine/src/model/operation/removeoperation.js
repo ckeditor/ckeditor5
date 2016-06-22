@@ -39,13 +39,23 @@ export default class RemoveOperation extends MoveOperation {
 	}
 
 	/**
-	 * Returns the offset of graveyard "holder" element, in which nodes removed by this operation are stored.
+	 * Offset of the graveyard "holder" element, in which nodes removed by this operation are stored.
 	 *
-	 * @private
+	 * @protected
 	 * @type {Number}
 	 */
 	get _holderElementOffset() {
 		return this.targetPosition.path[ 0 ];
+	}
+
+	/**
+	 * Sets {@link engine.model.operation.RemoveOperation#_holderElementOffset}.
+	 *
+	 * @protected
+	 * @param {Number} offset
+	 */
+	set _holderElementOffset( offset ) {
+		this.targetPosition.path[ 0 ] = offset;
 	}
 
 	/**
