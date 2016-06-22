@@ -150,7 +150,7 @@ const ot = {
 			// creates a "holder" element for them in graveyard. If there was a RemoveOperation pointing to an offset
 			// before this AttributeOperation, we have to increment AttributeOperation's offset.
 			if ( b instanceof RemoveOperation && b._insertHolderElement &&
-				a.range.root == b.targetPosition.root && a.range.start.path[ 0 ] >= b.targetPosition.path[ 0 ]
+				a.range.root == b.targetPosition.root && a.range.start.path[ 0 ] >= b._holderElementOffset
 			) {
 				// Do not change original operation!
 				a = a.clone();
@@ -363,6 +363,7 @@ const ot = {
 				);
 
 				result.isSticky = a.isSticky;
+				result._holderElementOffset = a._holderElementOffset;
 
 				return result;
 			} );
