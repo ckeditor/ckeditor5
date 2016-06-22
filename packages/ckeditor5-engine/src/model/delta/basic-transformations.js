@@ -230,10 +230,19 @@ addTransformationCase( UnwrapDelta, SplitDelta, ( a, b, isStrong ) => {
 	// If incoming unwrap delta tries to unwrap node that got split we should unwrap the original node and the split copy.
 	// This can be achieved either by reverting split and applying unwrap to singular node, or creating additional unwrap delta.
 	if ( compareArrays( a.position.path, b.position.getParentPath() ) === 'SAME' ) {
-		return [
+		const transformed = [
 			b.getReversed(),
 			a.clone()
 		];
+
+		// It's a kind of magic-magic-magic-maaaaagiiic!
+		transformed[ 1 ].operations[ 1 ].targetPosition.path[ 0 ]++;
+		// But seriously, we have to fix RemoveOperation in the second delta because reversed UnwrapDelta creates
+		// MergeDelta which also has RemoveOperation. Those two operations cannot point to the same "holder" element
+		// in the graveyard, so we fix it by hand. This is the only case where it happens in "special" transformation
+		// cases, and it won't happen for "default" transformation apart of RemoveDelta, where it is okay.
+
+		return transformed;
 	}
 
 	return defaultTransform( a, b, isStrong );

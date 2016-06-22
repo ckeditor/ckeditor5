@@ -112,14 +112,10 @@ describe( 'transform', () => {
 							baseVersion: baseVersion
 						},
 						{
-							// This is `MoveOperation` instead of `RemoveOperation` because during OT,
-							// `RemoveOperation` may get converted to `MoveOperation`. Still, this expectation is
-							// correct because `RemoveOperation` is deriving from `MoveOperation`. So we can expect
-							// that something that was `RemoveOperation` is a `MoveOperation`.
-							type: MoveOperation,
+							type: RemoveOperation,
 							sourcePosition: new Position( root, [ 3, 3, 3 ] ),
 							howMany: 1,
-							targetPosition: new Position( gy, [ 0 ] ),
+							targetPosition: new Position( gy, [ 0, 0 ] ),
 							baseVersion: baseVersion + 1
 						}
 					]

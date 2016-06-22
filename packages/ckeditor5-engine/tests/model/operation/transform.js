@@ -7,22 +7,27 @@
 
 'use strict';
 
+import transform from '/ckeditor5/engine/model/operation/transform.js';
+
+import Document from '/ckeditor5/engine/model/document.js';
 import RootElement from '/ckeditor5/engine/model/rootelement.js';
 import Node from '/ckeditor5/engine/model/node.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import Range from '/ckeditor5/engine/model/range.js';
-import transform from '/ckeditor5/engine/model/operation/transform.js';
+
 import InsertOperation from '/ckeditor5/engine/model/operation/insertoperation.js';
 import AttributeOperation from '/ckeditor5/engine/model/operation/attributeoperation.js';
 import RootAttributeOperation from '/ckeditor5/engine/model/operation/rootattributeoperation.js';
 import MoveOperation from '/ckeditor5/engine/model/operation/moveoperation.js';
+import RemoveOperation from '/ckeditor5/engine/model/operation/removeoperation.js';
 import NoOperation from '/ckeditor5/engine/model/operation/nooperation.js';
 
 describe( 'transform', () => {
-	let root, op, nodeA, nodeB, expected, baseVersion;
+	let doc, root, op, nodeA, nodeB, expected, baseVersion;
 
 	beforeEach( () => {
-		root = new RootElement( null );
+		doc = new Document();
+		root = doc.createRoot();
 
 		nodeA = new Node();
 		nodeB = new Node();
@@ -1328,6 +1333,56 @@ describe( 'transform', () => {
 
 					expectOperation( transOp[ 2 ], expected );
 				} );
+			} );
+		} );
+
+		describe( 'by RemoveOperation', () => {
+			beforeEach( () => {
+				start = new Position( doc.graveyard, [ 2, 0 ] );
+				end = new Position( doc.graveyard, [ 2, 4 ] );
+
+				range = new Range( start, end );
+
+				op = new AttributeOperation( range, 'foo', 'abc', 'bar', baseVersion );
+
+				expected.range = new Range( start, end );
+			} );
+
+			it( 'remove operation inserted holder element before attribute operation range: increment path', () => {
+				let transformBy = new RemoveOperation(
+					new Position( root, [ 0 ] ),
+					2,
+					baseVersion
+				);
+
+				transformBy.targetPosition.path = [ 0, 0 ];
+				transformBy.movedRangeStart.path = [ 0, 0 ];
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+
+				expected.range.start.path = [ 3, 0 ];
+				expected.range.end.path = [ 3, 4 ];
+
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'remove operation inserted holder element after attribute operation range: do nothing', () => {
+				let transformBy = new RemoveOperation(
+					new Position( root, [ 0 ] ),
+					2,
+					baseVersion
+				);
+
+				transformBy.targetPosition.path = [ 4, 0 ];
+				transformBy.movedRangeStart.path = [ 4, 0 ];
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+
+				expectOperation( transOp[ 0 ], expected );
 			} );
 		} );
 	} );

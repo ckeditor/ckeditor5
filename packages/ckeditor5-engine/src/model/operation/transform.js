@@ -146,6 +146,18 @@ const ot = {
 			// This will aggregate transformed ranges.
 			let ranges = [];
 
+			// Special case when MoveOperation is in fact a RemoveOperation. RemoveOperation not only moves nodes but also
+			// creates a "holder" element for them in graveyard. If there was a RemoveOperation pointing to an offset
+			// before this AttributeOperation, we have to increment AttributeOperation's offset.
+			if ( b instanceof RemoveOperation && b._insertHolderElement &&
+				a.range.root == b.targetPosition.root && a.range.start.path[ 0 ] >= b.targetPosition.path[ 0 ]
+			) {
+				// Do not change original operation!
+				a = a.clone();
+				a.range.start.path[ 0 ]++;
+				a.range.end.path[ 0 ]++;
+			}
+
 			// Difference is a part of changed range that is modified by AttributeOperation but is not affected
 			// by MoveOperation. This can be zero, one or two ranges (if moved range is inside changed range).
 			// Right now we will make a simplification and join difference ranges and transform them as one. We will cover rangeB later.
@@ -243,7 +255,22 @@ const ot = {
 				return [ b.getReversed() ];
 			}
 
-			// If one of operations is actually a remove operation, we force remove operation to be the "stronger" one
+			// Special case when both operations are RemoveOperations. RemoveOperation not only moves nodes but also
+			// (usually) creates a "holder" element for them in graveyard. Each RemoveOperation should move nodes to different
+			// "holder" element. If `a` operation points after `b` operation, we move `a` offset to acknowledge
+			// "holder" element insertion.
+			if ( a instanceof RemoveOperation && b instanceof RemoveOperation && b._insertHolderElement ) {
+				const aTarget = a.targetPosition.path[ 0 ];
+				const bTarget = b.targetPosition.path[ 0 ];
+
+				if ( aTarget > bTarget || ( aTarget == bTarget && isStrong ) ) {
+					// Do not change original operation!
+					a = a.clone();
+					a.targetPosition.path[ 0 ]++;
+				}
+			}
+
+			// If only one of operations is a remove operation, we force remove operation to be the "stronger" one
 			// to provide more expected results.
 			if ( a instanceof RemoveOperation && !( b instanceof RemoveOperation ) ) {
 				isStrong = true;
@@ -290,7 +317,10 @@ const ot = {
 			// transform `a` operation. Normally, when same nodes are moved, we stick with stronger operation's target.
 			// Here it is a move inside larger range so there is no conflict because after all, all nodes from
 			// smaller range will be moved to larger range target. The effect of this transformation feels natural.
-			let aIsInside = rangeB.containsRange( rangeA ) && rangeB.containsPosition( a.targetPosition );
+			// Also if we wouldn't do that, we would get different results on both sides of transformation (i.e. in
+			// collaborative editing).
+			let aIsInside = rangeB.containsRange( rangeA ) &&
+				( rangeB.containsPosition( a.targetPosition ) || rangeB.start.isEqual( a.targetPosition ) || rangeB.end.isEqual( a.targetPosition ) );
 
 			if ( common !== null && ( aCompB === 'EXTENSION' || ( aCompB === 'SAME' && isStrong ) || aIsInside ) && !bTargetsToA ) {
 				// Here we do not need to worry that newTargetPosition is inside moved range, because that
@@ -314,7 +344,13 @@ const ot = {
 			}
 
 			// Target position also could be affected by the other MoveOperation. We will transform it.
-			let newTargetPosition = a.targetPosition.getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, !isStrong, b.isSticky );
+			let newTargetPosition = a.targetPosition.getTransformedByMove(
+				b.sourcePosition,
+				b.targetPosition,
+				b.howMany,
+				!isStrong,
+				b.isSticky || aIsInside
+			);
 
 			// Map transformed range(s) to operations and return them.
 			return ranges.reverse().map( ( range ) => {
