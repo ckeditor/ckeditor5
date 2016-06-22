@@ -212,7 +212,7 @@ export function wrap( elementCreator ) {
 	return ( evt, data, consumable, conversionApi ) => {
 		consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
 
-		const viewRange = conversionApi.mapper.toViewRange( data.range );
+		let viewRange = conversionApi.mapper.toViewRange( data.range );
 
 		const viewElement = ( elementCreator instanceof ViewElement ) ?
 			elementCreator.clone( true ) :
@@ -223,7 +223,7 @@ export function wrap( elementCreator ) {
 		// view element basing on old value and unwrap it before wrapping with a newly created view element.
 		if ( data.attributeOldValue !== null && !( elementCreator instanceof ViewElement ) ) {
 			const oldViewElement = elementCreator( data.attributeOldValue, data, consumable, conversionApi );
-			conversionApi.writer.unwrap( viewRange, oldViewElement, evt.priority );
+			viewRange = conversionApi.writer.unwrap( viewRange, oldViewElement, evt.priority );
 		}
 
 		conversionApi.writer.wrap( viewRange, viewElement, evt.priority );
