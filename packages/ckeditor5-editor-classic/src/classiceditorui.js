@@ -80,11 +80,9 @@ export default class ClassicEditorUI extends BoxedEditorUI {
 		const editor = this.editor;
 
 		const toolbarModel = new Model();
-		const toolbarView = new StickyToolbarView( toolbarModel, editor.locale );
-		const toolbar = new Toolbar( toolbarModel, toolbarView, editor );
-
 		toolbarModel.bind( 'isActive' ).to( editor.editing.view.getRoot(), 'isFocused' );
 
+		const toolbar = new Toolbar( toolbarModel, new StickyToolbarView( editor.locale ), editor );
 		this.add( 'top', toolbar );
 
 		return toolbar;
@@ -100,10 +98,7 @@ export default class ClassicEditorUI extends BoxedEditorUI {
 		const editor = this.editor;
 
 		const editable = editor.editing.view.getRoot();
-		const editableUI = new EditableUI( editor, editable );
-		const editableUIView = new InlineEditableUIView( editableUI.viewModel, editor.locale );
-
-		editableUI.view = editableUIView;
+		const editableUI = new EditableUI( editor, editable, new InlineEditableUIView( editor.locale ) );
 
 		this.add( 'main', editableUI );
 
