@@ -341,7 +341,7 @@ const TextView = class extends View {
 };
 
 function text() {
-	return new Controller( null, new TextView( null ) );
+	return new Controller( null, new TextView() );
 }
 
 function icon( name ) {
@@ -356,7 +356,7 @@ function icon( name ) {
 function button( { label = 'Button', noText = false, isEnabled = true, isOn = false, icon, iconAlign } = {} ) {
 	const model = new Model( { label, noText, isEnabled, isOn, icon, iconAlign } );
 
-	return new Button( model, new ButtonView( model ) );
+	return new Button( model, new ButtonView() );
 }
 
 function toolbar( children = [] ) {
@@ -384,7 +384,7 @@ const ToolbarSeparatorView = class extends View {
 };
 
 function toolbarSeparator() {
-	return new Controller( null, new ToolbarSeparatorView( null ) );
+	return new Controller( null, new ToolbarSeparatorView() );
 }
 
 const ToolbarNewlineView = class extends View {
@@ -401,5 +401,5 @@ const ToolbarNewlineView = class extends View {
 };
 
 function toolbarNewLine() {
-	return new Controller( null, new ToolbarNewlineView( null ) );
+	return new Controller( null, new ToolbarNewlineView() );
 }
