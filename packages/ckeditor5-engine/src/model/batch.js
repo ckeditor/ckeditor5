@@ -35,7 +35,7 @@ export default class Batch {
 	 * Creates Batch instance. Not recommended to use directly, use {@link engine.model.Document#batch} instead.
 	 *
 	 * @param {engine.model.Document} doc Document which this Batch changes.
-	 * @param {'ignore'|'undo'|'redo'|'default'} [type='default'] Type of the batch.
+	 * @param {'transparent'|'default'} [type='default'] Type of the batch.
 	 */
 	constructor( doc, type = 'default' ) {
 		/**
@@ -58,13 +58,11 @@ export default class Batch {
 		 * Type of the batch.
 		 *
 		 * Can be one of the following values:
-		 * * `'default'` - all "normal" batches. Most commonly used type.
-		 * * `'undo'` - batch created by undo command.
-		 * * `'redo'` - batch created by redo command.
-		 * * `'ignore'` - batch that should be ignored by other features.
+		 * * `'default'` - all "normal" batches, most commonly used type.
+		 * * `'transparent'` - batch that should be ignored by other features, i.e. initial batch or collaborative editing changes.
 		 *
 		 * @readonly
-		 * @member {'ignore'|'undo'|'redo'|'default'} engine.model.Batch#type
+		 * @member {'transparent'|'default'} engine.model.Batch#type
 		 */
 		this.type = type;
 	}
