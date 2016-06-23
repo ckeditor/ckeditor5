@@ -149,7 +149,7 @@ const ot = {
 			// Special case when MoveOperation is in fact a RemoveOperation. RemoveOperation not only moves nodes but also
 			// creates a "holder" element for them in graveyard. If there was a RemoveOperation pointing to an offset
 			// before this AttributeOperation, we have to increment AttributeOperation's offset.
-			if ( b instanceof RemoveOperation && b._insertHolderElement &&
+			if ( b instanceof RemoveOperation && b._needsHolderElement &&
 				a.range.root == b.targetPosition.root && a.range.start.path[ 0 ] >= b._holderElementOffset
 			) {
 				// Do not change original operation!
@@ -259,7 +259,7 @@ const ot = {
 			// (usually) creates a "holder" element for them in graveyard. Each RemoveOperation should move nodes to different
 			// "holder" element. If `a` operation points after `b` operation, we move `a` offset to acknowledge
 			// "holder" element insertion.
-			if ( a instanceof RemoveOperation && b instanceof RemoveOperation && b._insertHolderElement ) {
+			if ( a instanceof RemoveOperation && b instanceof RemoveOperation && b._needsHolderElement ) {
 				const aTarget = a.targetPosition.path[ 0 ];
 				const bTarget = b.targetPosition.path[ 0 ];
 
