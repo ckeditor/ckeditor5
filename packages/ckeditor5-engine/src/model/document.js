@@ -11,7 +11,7 @@ import transformations from './delta/basic-transformations.js'; // jshint ignore
 
 import RootElement from './rootelement.js';
 import Batch from './batch.js';
-import CompressedHistory from './compressedhistory.js';
+import History from './history.js';
 import Selection from './selection.js';
 import EmitterMixin from '../../utils/emittermixin.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
@@ -108,13 +108,12 @@ export default class Document {
 		/**
 		 * Document's history.
 		 *
-		 * This is a compressed document history. It means that stored deltas might be removed or different
-		 * than originally applied deltas.
+		 * **Note:** Be aware that deltas applied to the stored deltas might be removed or changed.
 		 *
 		 * @readonly
-		 * @member {engine.model.CompressedHistory} engine.model.Document#history
+		 * @member {engine.model.History} engine.model.Document#history
 		 */
-		this.history = new CompressedHistory( this );
+		this.history = new History( this );
 	}
 
 	/**
