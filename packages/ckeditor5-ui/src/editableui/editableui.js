@@ -6,7 +6,6 @@
 'use strict';
 
 import Controller from '../controller.js';
-import Model from '../model.js';
 
 /**
  * @memberOf ui.editableUI
@@ -18,9 +17,10 @@ export default class EditableUI extends Controller {
 	 *
 	 * @param {ckeditor5.Editor} editor The editor instance.
 	 * @param {engine.view.RootEditableElement} editable The editable element.
+	 * @param {ui.View} [view] EditableUI View instance.
 	 */
-	constructor( editor, editable ) {
-		super();
+	constructor( editor, editable, view ) {
+		super( editable, view );
 
 		/**
 		 * The editor instance.
@@ -30,15 +30,7 @@ export default class EditableUI extends Controller {
 		 */
 		this.editor = editor;
 
-		/**
-		 * The model for the view.
-		 *
-		 * @readonly
-		 * @member {ui.Model} ui.editableUI.EditableUI#viewModel
-		 */
-		this.viewModel = new Model();
-
-		this.viewModel.bind( 'isReadOnly', 'isFocused' ).to( editable );
-		this.viewModel.set( 'name', editable.rootName );
+		view.model.bind( 'isReadOnly', 'isFocused' ).to( editable );
+		view.model.set( 'name', editable.rootName );
 	}
 }

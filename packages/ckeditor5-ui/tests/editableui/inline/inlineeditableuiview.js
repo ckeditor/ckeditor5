@@ -7,33 +7,34 @@
 
 'use strict';
 
+import EditableUI from '/ckeditor5/ui/editableui/editableui.js';
 import InlineEditableUIView from '/ckeditor5/ui/editableui/inline/inlineeditableuiview.js';
 import Model from '/ckeditor5/ui/model.js';
 import Locale from '/ckeditor5/utils/locale.js';
 
 describe( 'InlineEditableUIView', () => {
-	let model, view, editableElement, locale;
+	let editable, view, editableElement, locale;
 
 	beforeEach( () => {
-		model = new Model( { isEditable: true, isFocused: false, name: 'foo' } );
+		editable = new Model( {
+			isReadOnly: false,
+			isFocused: false,
+			rootName: 'foo'
+		} );
 		locale = new Locale( 'en' );
-		view = new InlineEditableUIView( model, locale );
+		view = new InlineEditableUIView( locale );
 		editableElement = document.createElement( 'div' );
 
-		return view.init();
+		return new EditableUI( null, editable, view ).init();
 	} );
 
 	describe( 'constructor', () => {
-		it( 'accepts model', () => {
-			expect( view.model ).to.equal( model );
-		} );
-
 		it( 'accepts locale', () => {
 			expect( view.locale ).to.equal( locale );
 		} );
 
 		it( 'accepts editableElement', () => {
-			view = new InlineEditableUIView( model, locale, editableElement );
+			view = new InlineEditableUIView( locale, editableElement );
 
 			expect( view.element ).to.equal( editableElement );
 		} );

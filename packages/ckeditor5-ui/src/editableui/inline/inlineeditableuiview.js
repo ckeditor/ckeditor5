@@ -23,16 +23,21 @@ export default class InlineEditableUIView extends EditableUIView {
 	 * @param {HTMLElement} [editableElement] The editable element. If not specified, the {@link EditableUIView}
 	 * should create it. Otherwise, the existing element should be used.
 	 */
-	constructor( model, locale, editableElement ) {
-		super( model, locale, editableElement );
+	constructor( locale, editableElement ) {
+		super( locale, editableElement );
 
-		const label = this.t( 'Rich Text Editor, %0', [ this.model.name ] );
+		const bind = this.bind;
+
+		// TODO: Allow passing context to bind.to()/bind.it().
+		const getLabel = ( value ) => {
+			return this.t( 'Rich Text Editor, %0', [ value ] );
+		};
 
 		Template.extend( this.template, {
 			attributes: {
 				role: 'textbox',
-				'aria-label': label,
-				title: label,
+				'aria-label': bind.to( 'name', getLabel ),
+				title: bind.to( 'name', getLabel ),
 				class: 'ck-editor__editable_inline'
 			}
 		} );
