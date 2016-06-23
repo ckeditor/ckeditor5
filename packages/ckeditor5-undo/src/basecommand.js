@@ -14,7 +14,7 @@ import transform from '../engine/model/delta/transform.js';
  * @protected
  * @memberOf undo
  */
-export default class UndoCommand extends Command {
+export default class BaseCommand extends Command {
 	constructor( editor ) {
 		super( editor );
 
