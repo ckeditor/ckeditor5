@@ -19,7 +19,7 @@ export default class UndoCommand extends Command {
 		super( editor );
 
 		/**
-		 * Items stored by command. These are pairs of:
+		 * Items stored by the command. These are pairs of:
 		 *
 		 * * {@link engine.model.Batch batch} saved by the command and,
 		 * * {@link engine.model.Selection selection} state at the moment of saving the batch.

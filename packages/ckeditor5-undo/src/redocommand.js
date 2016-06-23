@@ -17,6 +17,7 @@ import { transformDelta as transformDelta } from './basecommand.js';
  * undone batch was applied.
  *
  * @memberOf undo
+ * @extends undo.BaseCommand
  */
 export default class RedoCommand extends BaseCommand {
 	/**

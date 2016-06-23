@@ -17,6 +17,7 @@ import { transformDelta as transformDelta } from './basecommand.js';
  * undone batch was applied.
  *
  * @memberOf undo
+ * @extends undo.BaseCommand
  */
 export default class UndoCommand extends BaseCommand {
 	/**
@@ -25,7 +26,7 @@ export default class UndoCommand extends BaseCommand {
 	 * Then, restores {@link engine.model.Document#selection document selection}.
 	 *
 	 * @protected
-	 * @fires undo.undoCommand#event:revert
+	 * @fires undo.UndoCommand#event:revert
 	 * @param {engine.model.Batch} [batch] Batch that should be undone. If not set, the last added batch will be undone.
 	 */
 	_doExecute( batch = null ) {

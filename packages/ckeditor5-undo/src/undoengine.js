@@ -32,7 +32,6 @@ export default class UndoEngine extends Feature {
 		 * @private
 		 * @member {undo.UndoEngineCommand} undo.UndoEngine#_undoCommand
 		 */
-		this._undoCommand = null;
 
 		/**
 		 * Command which manages redo {@link engine.model.Batch batches} stack (history).
@@ -41,7 +40,6 @@ export default class UndoEngine extends Feature {
 		 * @private
 		 * @member {undo.UndoEngineCommand} undo.UndoEngine#_redoCommand
 		 */
-		this._redoCommand = null;
 
 		/**
 		 * Keeps track of which batch has been registered in Undo.
