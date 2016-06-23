@@ -8,13 +8,16 @@
 import testUtils from '/tests/ui/_utils/utils.js';
 
 import Collection from '/ckeditor5/utils/collection.js';
-import IconManagerView from '/ckeditor5/ui/iconmanagerview.js';
 import Model from '/ckeditor5/ui/model.js';
 import Controller from '/ckeditor5/ui/controller.js';
 import View from '/ckeditor5/ui/view.js';
 import Template from '/ckeditor5/ui/template.js';
 
 import iconManagerModel from '/theme/iconmanagermodel.js';
+import IconManager from '/ckeditor5/ui/iconmanager/iconmanager.js';
+import IconManagerView from '/ckeditor5/ui/iconmanager/iconmanagerview.js';
+
+import Icon from '/ckeditor5/ui/icon/icon.js';
 import IconView from '/ckeditor5/ui/icon/iconview.js';
 
 import Button from '/ckeditor5/ui/button/button.js';
@@ -64,7 +67,7 @@ testUtils.createTestUIController( {
 function renderIcon( ui ) {
 	// --- IconManager ------------------------------------------------------------
 
-	ui.add( 'body', new Controller( null, new IconManagerView( iconManagerModel ) ) );
+	ui.add( 'body', new IconManager( iconManagerModel, new IconManagerView() ) );
 
 	// --- In-text ------------------------------------------------------------
 
@@ -342,7 +345,12 @@ function text() {
 }
 
 function icon( name ) {
-	return new Controller( null, new IconView( new Model( { icon: name } ) ) );
+	const model = new Model( {
+		name: name,
+		align: ''
+	} );
+
+	return new Icon( model, new IconView() );
 }
 
 function button( { label = 'Button', noText = false, isEnabled = true, isOn = false, icon, iconAlign } = {} ) {
@@ -352,7 +360,8 @@ function button( { label = 'Button', noText = false, isEnabled = true, isOn = fa
 }
 
 function toolbar( children = [] ) {
-	const toolbar = new Toolbar( null, new ToolbarView( null ) );
+	const model = new Model( { isActive: false } );
+	const toolbar = new Toolbar( model, new ToolbarView() );
 
 	children.forEach( c => {
 		toolbar.add( 'buttons', c );
