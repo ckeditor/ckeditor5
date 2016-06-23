@@ -57,14 +57,14 @@ import ButtonView from '../ui/button/buttonview.js';
  *
  * Next is delta `C2`, reversed to `C2r`. `C2r` bases on `C2`, so it bases on wrong document state. It needs to be
  * transformed by deltas from history that happened after it, so it "knows" about them. Let `C2' = C2r * B3 * C3 * C3r`,
- * where `*` means "transformed by". As can be seen, `C2r` is transformed by a delta which is reversed afterwards anyway.
+ * where `*` means "transformed by". As can be seen, `C2r` is transformed by a delta which is undone afterwards anyway.
  * This brings two problems: lower effectiveness (obvious) and incorrect results. Bad results come from the fact that
  * operational transformation algorithms assume there is no connection between two transformed operations when resolving
  * conflicts, which is true for, i.e. collaborative editing, but is not true for undo algorithm.
  *
- * To prevent both problems, `CompressedHistory` introduces an API to remove deltas from history. It is used to remove
- * undone and undoing delta after they are applied. It even makes sense naturally - delta is undone/reversed = "removed",
- * there should be no sign of it in history (fig. 1). `---` symbolizes removed delta.
+ * To prevent both problems, `CompressedHistory` introduces an API to {@link engine.model.CompressedDelta#removeDelta remove}
+ * deltas from history. It is used to remove undone and undoing deltas after they are applied. It feels right - delta is
+ * undone/reversed = "removed", there should be no sign of it in history (fig. 1). `---` symbolizes removed delta.
  *
  *		history (fig. 1)            history (fig. 2)            history (fig. 3)
  *		================            ================            ================
@@ -82,7 +82,13 @@ import ButtonView from '../ui/button/buttonview.js';
  * Now we can transform `C2r` only by `B3` and remove both it and `C2` (fig. 2). Same with `C1` (fig. 3). `'` symbolizes
  * reversed delta that was later transformed.
  *
- * Unfortunately, a problem appears with batch `B3`. It still remembers context of deltas `C2` and `C1` on which it bases.
+ * But what about that selection? For batch `C`, undo feature remembers selection just before `C1` was applied. It can be
+ * visualized between delta `B2` and `B3` (see fig. 3). Obviously a lot happened to the document since the selection
+ * state was remembered. Setting document selection as it was remembered would be incorrect. It feels natural that
+ * selection state should also be transformed by deltas from history. Same pattern applies as with transforming deltas - ranges
+ * should not be transformed by undone and undoing deltas. Thankfully, those deltas are already removed from history.
+ *
+ * Unfortunately, a problem appears with delta `B3`. It still remembers context of deltas `C2` and `C1` on which it bases.
  * It is an obvious error: i.e. transforming by that delta would lead to wrong results or "repeating" history would
  * produce different document than actual.
  *
@@ -106,7 +112,7 @@ import ButtonView from '../ui/button/buttonview.js';
  *		        [---C1'--]                               [---C1'--]
  *		                                                 [---A1'--]
  *
- * Selective undo works on the same base, however instead of undoing the last batch in undo stack, any batch can be undone.
+ * Selective undo works on the same basis, however instead of undoing the last batch in undo stack, any batch can be undone.
  * Same algorithm applies: deltas from batch (i.e. `A1`) are reversed and then transformed by deltas stored in history,
  * simultaneously updating them. Then deltas are applied to the document and removed from history (fig. 5).
  *
