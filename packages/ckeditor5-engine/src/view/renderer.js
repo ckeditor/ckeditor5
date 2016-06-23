@@ -188,6 +188,7 @@ export default class Renderer {
 		}
 
 		this._updateSelection();
+		this._updateFocus();
 
 		this.markedTexts.clear();
 		this.markedAttributes.clear();
@@ -440,6 +441,25 @@ export default class Renderer {
 				domRange.setStart( domRangeStart.parent, domRangeStart.offset );
 				domRange.setEnd( domRangeEnd.parent, domRangeEnd.offset );
 				domSelection.addRange( domRange );
+			}
+		}
+	}
+
+	/**
+	 * Checks if focus needs to be updated and possibly updates it.
+	 *
+	 * @private
+	 */
+	_updateFocus() {
+		if ( this.isFocused ) {
+			const editable = this.selection.getEditableElement();
+
+			if ( editable ) {
+				const domElement = this.domConverter.getCorrespondingDomElement( editable );
+
+				if ( domElement && domElement.ownerDocument.activeElement !== domElement ) {
+					domElement.focus();
+				}
 			}
 		}
 	}

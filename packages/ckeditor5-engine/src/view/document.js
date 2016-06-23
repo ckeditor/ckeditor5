@@ -256,6 +256,17 @@ export default class Document {
 	}
 
 	/**
+	 * Focuses document. It will focus {@link engine.view.EditableElement EditableElement} that is currently having
+	 * selection inside.
+	 *
+	 * @fires engine.view.Document#focus
+	 */
+	focus() {
+		this.fire( 'focus' );
+		this.render();
+	}
+
+	/**
 	 * Disables all added observers.
 	 */
 	disableObservers() {
