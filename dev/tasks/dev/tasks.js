@@ -47,7 +47,7 @@ module.exports = ( config ) => {
 		},
 
 		createPackage( done ) {
-			return pluginCreateTask( ckeditor5Path, config.WORKSPACE_DIR )
+			pluginCreateTask( ckeditor5Path, config.WORKSPACE_DIR )
 				.then( done )
 				.catch( ( error ) => done( error ) );
 		},
