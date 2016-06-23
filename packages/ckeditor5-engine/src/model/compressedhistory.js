@@ -14,7 +14,7 @@ import History from './history.js';
  *
  * **Note:** deltas kept in `CompressedHistory` should be used only to transform deltas. Do not use `CompressedHistory` to get original
  * delta (especially basing on its {@link engine.model.delta.Delta#baseVersion baseVersion}). Do not trust base versions of deltas
- * returned by `CompressedHistory`. After transforming your delta by deltas from `CompressedHistory`, fix it's base version accordingly.
+ * returned by `CompressedHistory`. After transforming your delta by deltas from `CompressedHistory`, fix its base version accordingly.
  *
  * @see engine.model.History
  * @memberOf engine.model
@@ -25,6 +25,7 @@ export default class CompressedHistory extends History {
 
 		/**
 		 * Stores base versions of deltas which has been marked as inactive.
+		 *
 		 * @private
 		 * @member {Array.<Number>} engine.model.CompressedHistory#_inactiveBaseVersions
 		 */
@@ -120,8 +121,8 @@ export default class CompressedHistory extends History {
 	/**
 	 * Returns base versions of deltas which has been marked as reversed, in given base versions range.
 	 *
-	 * @param {Number} from Start of base versions range to check.
-	 * @param {Number} to End of base versions range to check.
+	 * @param {Number} [from=0] Start of base versions range to check.
+	 * @param {Number} [to=Number.POSITIVE_INFINITY] End of base versions range to check.
 	 * @returns {Iterator.<Number>} Base versions of deltas marked as reversed.
 	 */
 	*getInactiveBaseVersions( from = 0, to = Number.POSITIVE_INFINITY ) {
@@ -135,9 +136,9 @@ export default class CompressedHistory extends History {
 	/**
 	 * Updates {@link engine.model.History#_historyPoints} structure.
 	 *
+	 * @private
 	 * @param {Number} baseVersion Base version of delta after which history points should be updated.
 	 * @param {Number} changeBy By how much change history points. Can be a negative value.
-	 * @private
 	 */
 	_updateHistoryPointsAfter( baseVersion, changeBy ) {
 		for ( let key of this._historyPoints.keys() ) {

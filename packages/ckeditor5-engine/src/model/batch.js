@@ -35,11 +35,11 @@ export default class Batch {
 	 * Creates Batch instance. Not recommended to use directly, use {@link engine.model.Document#batch} instead.
 	 *
 	 * @param {engine.model.Document} doc Document which this Batch changes.
-	 * @param {'ignore'|'undo'|'redo'|'default'} type Type of batch. Defaults to `'default'`.
+	 * @param {'ignore'|'undo'|'redo'|'default'} type Type of the batch. Defaults to `'default'`.
 	 */
 	constructor( doc, type = 'default' ) {
 		/**
-		 * Document which this Batch changes.
+		 * Document which this batch changes.
 		 *
 		 * @readonly
 		 * @member {engine.model.Document} engine.model.Batch#doc
@@ -47,7 +47,7 @@ export default class Batch {
 		this.doc = doc;
 
 		/**
-		 * Array of deltas which compose Batch.
+		 * Array of deltas which compose this batch.
 		 *
 		 * @readonly
 		 * @member {Array.<engine.model.delta.Delta>} engine.model.Batch#deltas
@@ -55,7 +55,7 @@ export default class Batch {
 		this.deltas = [];
 
 		/**
-		 * Type of batch.
+		 * Type of the batch.
 		 *
 		 * Can be one of the following values:
 		 * * `'default'` - all "normal" batches. Most commonly used type.
@@ -71,7 +71,7 @@ export default class Batch {
 
 	/**
 	 * Returns this batch base version, which is equal to the base version of first delta in the batch.
-	 * If there are no deltas in the batch, returns null.
+	 * If there are no deltas in the batch, it returns `null`.
 	 *
 	 * @readonly
 	 * @type {Number|null}
@@ -81,7 +81,7 @@ export default class Batch {
 	}
 
 	/**
-	 * Adds delta to the Batch instance. All modification methods (insert, remove, split, etc.) use this method
+	 * Adds delta to the batch instance. All modification methods (insert, remove, split, etc.) use this method
 	 * to add created deltas.
 	 *
 	 * @param {engine.model.delta.Delta} delta Delta to add.
@@ -107,7 +107,7 @@ export default class Batch {
 }
 
 /**
- * Function to register Batch methods. To make code scalable Batch do not have modification
+ * Function to register batch methods. To make code scalable Batch do not have modification
  * methods built in. They can be registered using this method.
  *
  * This method checks if there is no naming collision and throws `batch-register-taken` if the method name

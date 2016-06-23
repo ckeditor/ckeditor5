@@ -55,10 +55,10 @@ export default class History {
 	/**
 	 * Returns deltas added to the history.
 	 *
-	 * @param {Number} from Base version from which deltas should be returned (inclusive). Defaults to `0` which means
+	 * @param {Number} [from=0] Base version from which deltas should be returned (inclusive). Defaults to `0` which means
 	 * that deltas from the first one will be returned.
-	 * @param {Number} to Base version up to which deltas should be returned (exclusive). Defaults to `Number.POSITIVE_INFINITY`
-	 * which means that deltas up to the last one will be returned.
+	 * @param {Number} [to=Number.POSITIVE_INFINITY] Base version up to which deltas should be returned (exclusive).
+	 * Defaults to `Number.POSITIVE_INFINITY` which means that deltas up to the last one will be returned.
 	 * @returns {Iterator.<engine.model.delta.Delta>} Deltas added to the history.
 	 */
 	*getDeltas( from = 0, to = Number.POSITIVE_INFINITY ) {
@@ -102,8 +102,8 @@ export default class History {
 	/**
 	 * Gets an index in {@link engine.model.History#_deltas} where delta with given `baseVersion` is added.
 	 *
-	 * @param {Number} baseVersion Base version of delta.
 	 * @private
+	 * @param {Number} baseVersion Base version of delta.
 	 */
 	_getIndex( baseVersion ) {
 		let index = this._historyPoints.get( baseVersion );
