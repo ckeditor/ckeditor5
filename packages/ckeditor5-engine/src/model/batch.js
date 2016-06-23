@@ -35,7 +35,7 @@ export default class Batch {
 	 * Creates Batch instance. Not recommended to use directly, use {@link engine.model.Document#batch} instead.
 	 *
 	 * @param {engine.model.Document} doc Document which this Batch changes.
-	 * @param {'ignore'|'undo'|'redo'|'default'} type Type of the batch. Defaults to `'default'`.
+	 * @param {'ignore'|'undo'|'redo'|'default'} [type='default'] Type of the batch.
 	 */
 	constructor( doc, type = 'default' ) {
 		/**
