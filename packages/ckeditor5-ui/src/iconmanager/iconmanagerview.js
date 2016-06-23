@@ -5,8 +5,8 @@
 
 'use strict';
 
-import View from './view.js';
-import Template from './template.js';
+import View from '../view.js';
+import Template from '../template.js';
 
 /**
  * Icon manager view using {@link ui.iconManager.IconManagerModel}.
@@ -14,10 +14,9 @@ import Template from './template.js';
  * @memberOf ui.iconManager
  * @extends ui.View
  */
-
 export default class IconManagerView extends View {
-	constructor( model, locale ) {
-		super( model, locale );
+	constructor( locale ) {
+		super( locale );
 
 		this.template = new Template( {
 			tag: 'svg',

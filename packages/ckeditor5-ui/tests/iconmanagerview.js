@@ -8,18 +8,22 @@
 'use strict';
 
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
-import IconManagerView from '/ckeditor5/ui/iconmanagerview.js';
+import IconManager from '/ckeditor5/ui/iconmanager/iconmanager.js';
+import IconManagerView from '/ckeditor5/ui/iconmanager/iconmanagerview.js';
 import Model from '/ckeditor5/ui/model.js';
 
 testUtils.createSinonSandbox();
 
 describe( 'IconManagerView', () => {
-	let view;
+	let model, view;
 
 	beforeEach( () => {
-		view = new IconManagerView( new Model( {
+		view = new IconManagerView();
+		model = new Model( {
 			sprite: 'foo'
-		} ) );
+		} );
+
+		return new IconManager( model, view ).init();
 	} );
 
 	describe( 'constructor', () => {
