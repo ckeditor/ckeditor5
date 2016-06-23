@@ -62,29 +62,19 @@ export default class CompressedHistory extends History {
 	}
 
 	/**
-	 * Marks delta as reversed/reversing delta and makes it "inactive". This happens i.e., when a delta is undone by
-	 * another delta. Both undone delta and undoing delta should be marked as inactive nad have no impact on transforming
-	 * other deltas.
+	 * Removes delta from the history. This happens i.e., when a delta is undone by another delta. Both undone delta and
+	 * undoing delta should be removed so they won't have an impact on transforming other deltas.
 	 *
 	 * **Note:** using this method does not change the state of {@link engine.model.Document model}. It just affects
 	 * the state of `CompressedHistory`.
 	 *
-	 * **Note:** when some deltas are marked as "inactive", deltas between them should probably get updated. See
+	 * **Note:** when some deltas are removed, deltas between them should probably get updated. See
 	 * {@link engine.model.CompressedHistory#updateDelta}.
 	 *
-	 * **Note:** if delta with `baseVersion` got updated by multiple deltas, all updated deltas will be marked as
-	 * "inactive".
+	 * **Note:** if delta with `baseVersion` got {@link engine.model.CompressedHistory#updateDelta updated} by multiple
+	 * deltas, all updated deltas will be removed.
 	 *
-	 * Due to how nodes removing works, we can't just removed those deltas from history. Here is explanation:
-	 * since a delta got undone, both it and it's undoing counterpart should not have any impact on transformations of other
-	 * deltas. State of tree structure should look like "nothing happened". Unfortunately, this is not true for inserting nodes,
-	 * because they are not removed from the tree structure. Instead, removing nodes actually moves them to
-	 * {@link engine.model.Document#graveyard graveyard root}. When {@link engine.model.delta.InsertDelta InsertDelta} is
-	 * reversed (by {@link engine.model.delta.RemoveDelta RemoveDelta} the state of the tree is not like before insert delta
-	 * happened - there is an additional node in graveyard root. This means that it is incorrect to just remove inactive deltas from
-	 * history. Instead, for graveyard-related operations fake fix operations are created. Non-graveyard-related operations are removed.
-	 *
-	 * @param {Number} baseVersion Base version of a delta to be marked as reversed/reversing delta.
+	 * @param {Number} baseVersion Base version of a delta to be removed.
 	 */
 	removeDelta( baseVersion ) {
 		this.updateDelta( baseVersion, [] );
