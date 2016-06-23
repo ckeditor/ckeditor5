@@ -9,7 +9,8 @@ import Controller from '../controller.js';
 import ControllerCollection from '../controllercollection.js';
 import ComponentFactory from '../componentfactory.js';
 import ObservableMixin from '../../utils/observablemixin.js';
-import IconManagerView from '../iconmanagerview.js';
+import IconManager from '../iconmanager/iconmanager.js';
+import IconManagerView from '../iconmanager/iconmanagerview.js';
 import iconManagerModel from '../../../theme/iconmanagermodel.js';
 import mix from '../../utils/mix.js';
 
@@ -70,7 +71,7 @@ export default class EditorUI extends Controller {
 		this.icons = iconManagerModel.icons;
 
 		this.collections.get( 'body' ).add(
-			new Controller( iconManagerModel, new IconManagerView( iconManagerModel ) )
+			new IconManager( iconManagerModel, new IconManagerView() )
 		);
 	}
 }

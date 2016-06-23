@@ -49,12 +49,4 @@ export default class BoxedEditorUI extends EditorUI {
 		 */
 		this.set( 'height', config.get( 'ui.height' ) );
 	}
-
-	/**
-	 * @readonly
-	 * @property {ui.Model} viewModel
-	 */
-	get viewModel() {
-		return this;
-	}
 }
