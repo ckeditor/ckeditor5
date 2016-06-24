@@ -28,7 +28,7 @@ export default class RedoCommand extends BaseCommand {
 	 * @protected
 	 */
 	_doExecute() {
-		const item = this._items.pop();
+		const item = this._stack.pop();
 
 		// All changes have to be done in one `enqueueChanges` callback so other listeners will not
 		// step between consecutive deltas, or won't do changes to the document before selection is properly restored.

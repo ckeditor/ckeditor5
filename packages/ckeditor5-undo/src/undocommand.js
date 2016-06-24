@@ -31,9 +31,9 @@ export default class UndoCommand extends BaseCommand {
 	 */
 	_doExecute( batch = null ) {
 		// If batch is not given, set `batchIndex` to the last index in command stack.
-		let batchIndex = batch ? this._items.findIndex( ( a ) => a.batch == batch ) : this._items.length - 1;
+		let batchIndex = batch ? this._stack.findIndex( ( a ) => a.batch == batch ) : this._stack.length - 1;
 
-		const item = this._items.splice( batchIndex, 1 )[ 0 ];
+		const item = this._stack.splice( batchIndex, 1 )[ 0 ];
 
 		// All changes has to be done in one `enqueueChanges` callback so other listeners will not
 		// step between consecutive deltas, or won't do changes to the document before selection is properly restored.
@@ -47,7 +47,7 @@ export default class UndoCommand extends BaseCommand {
 	}
 
 	/**
-	 * Returns index in {@link undo.BaseCommand#_items} pointing to the item that is storing a batch that has given
+	 * Returns index in {@link undo.BaseCommand#_stack} pointing to the item that is storing a batch that has given
 	 * {@link engine.model.Batch#baseVersion}.
 	 *
 	 * @private
@@ -55,8 +55,8 @@ export default class UndoCommand extends BaseCommand {
 	 * @returns {Number|null}
 	 */
 	_getItemIndexFromBaseVersion( baseVersion ) {
-		for ( let i = 0; i < this._items.length; i++ ) {
-			if ( this._items[ i ].batch.baseVersion == baseVersion ) {
+		for ( let i = 0; i < this._stack.length; i++ ) {
+			if ( this._stack[ i ].batch.baseVersion == baseVersion ) {
 				return i;
 			}
 		}
@@ -128,7 +128,7 @@ export default class UndoCommand extends BaseCommand {
 				// This is fine, because we want to transform each selection only once, before transforming reversed delta
 				// by the first delta of the batch connected with the ranges.
 				if ( itemIndex !== null ) {
-					this._items[ itemIndex ].selection.ranges = transformRangesByDeltas( this._items[ itemIndex ].selection.ranges, reversedDelta );
+					this._stack[ itemIndex ].selection.ranges = transformRangesByDeltas( this._stack[ itemIndex ].selection.ranges, reversedDelta );
 				}
 
 				// 3.2. Transform history delta by reversed delta. We need this to update document history.

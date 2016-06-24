@@ -19,15 +19,15 @@ export default class BaseCommand extends Command {
 		super( editor );
 
 		/**
-		 * Items stored by the command. These are pairs of:
+		 * Stack of items stored by the command. These are pairs of:
 		 *
 		 * * {@link engine.model.Batch batch} saved by the command and,
 		 * * {@link engine.model.Selection selection} state at the moment of saving the batch.
 		 *
-		 * @private
-		 * @member {Array} undo.BaseCommand#_items
+		 * @protected
+		 * @member {Array} undo.BaseCommand#_stack
 		 */
-		this._items = [];
+		this._stack = [];
 
 		/**
 		 * Stores all batches that were created by this command.
@@ -53,7 +53,7 @@ export default class BaseCommand extends Command {
 			isBackward: this.editor.document.selection.isBackward
 		};
 
-		this._items.push( { batch, selection } );
+		this._stack.push( { batch, selection } );
 		this.refreshState();
 	}
 
@@ -61,7 +61,7 @@ export default class BaseCommand extends Command {
 	 * Removes all items from the stack.
 	 */
 	clearStack() {
-		this._items = [];
+		this._stack = [];
 		this.refreshState();
 	}
 
@@ -69,7 +69,7 @@ export default class BaseCommand extends Command {
 	 * @inheritDoc
 	 */
 	_checkEnabled() {
-		return this._items.length > 0;
+		return this._stack.length > 0;
 	}
 }
 
