@@ -226,22 +226,19 @@ function renderDropdown( ui ) {
 		items: collection
 	} );
 
-	const enabledModel = new Model( {
+	ui.add( 'dropdown', dropdown( {
 		label: 'Normal state',
 		isEnabled: true,
 		isOn: false,
 		content: itemListModel
-	} );
+	} ) );
 
-	const disabledModel = new Model( {
+	ui.add( 'dropdown', dropdown( {
 		label: 'Disabled',
 		isEnabled: false,
 		isOn: false,
 		content: itemListModel
-	} );
-
-	ui.add( 'dropdown', new ListDropdown( enabledModel, new ListDropdownView( enabledModel ) ) );
-	ui.add( 'dropdown', new ListDropdown( disabledModel, new ListDropdownView( disabledModel ) ) );
+	} ) );
 }
 
 function renderToolbar( ui ) {
@@ -261,7 +258,9 @@ function renderToolbar( ui ) {
 			label: 'Button with icon',
 			icon: 'bold',
 			iconAlign: 'LEFT'
-		} )
+		} ),
+		dropdown(),
+		button()
 	] ) );
 
 	// --- Rounded ------------------------------------------------------------
@@ -360,14 +359,25 @@ function button( { label = 'Button', noText = false, isEnabled = true, isOn = fa
 }
 
 function toolbar( children = [] ) {
-	const model = new Model( { isActive: false } );
-	const toolbar = new Toolbar( model, new ToolbarView() );
+	const toolbar = new Toolbar( new ToolbarView() );
 
 	children.forEach( c => {
 		toolbar.add( 'buttons', c );
 	} );
 
 	return toolbar;
+}
+
+function dropdown( {
+	label = 'Dropdown',
+	isEnabled = true,
+	isOn = false,
+	content = new Model( { items: new Collection( { idProperty: 'label' } ) } )
+} = {} ) {
+	const model = new Model( { label, isEnabled, isOn, content } );
+	const dropdown = new ListDropdown( model, new ListDropdownView() );
+
+	return dropdown;
 }
 
 const ToolbarSeparatorView = class extends View {
