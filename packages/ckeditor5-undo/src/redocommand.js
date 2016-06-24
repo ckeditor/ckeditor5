@@ -75,7 +75,7 @@ export default class RedoCommand extends BaseCommand {
 			// Omit deltas from "redo" batches, because reversed delta already bases on them. Transforming by them
 			// again will result in incorrect deltas.
 			for ( let historyDelta of document.history.getDeltas( nextBaseVersion ) ) {
-				if ( historyDelta.batch.type != 'redo' ) {
+				if ( !this._createdBatches.has( historyDelta.batch ) ) {
 					reversedDelta = transformDelta( reversedDelta, [ historyDelta ], true );
 				}
 			}

@@ -39,7 +39,7 @@ describe( 'RedoCommand', () => {
 
 			// Simple integration with undo.
 			doc.on( 'change', ( evt, type, data, batch ) => {
-				if ( batch.type == 'undo' && !batches.has( batch ) ) {
+				if ( undo._createdBatches.has( batch ) && !batches.has( batch ) ) {
 					redo.addBatch( batch );
 					batches.add( batch );
 				}

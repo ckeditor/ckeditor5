@@ -64,21 +64,21 @@ export default class UndoEngine extends Feature {
 
 		this.listenTo( this.editor.document, 'change', ( evt, type, changes, batch ) => {
 			// If changes are not a part of a batch or this is not a new batch, omit those changes.
-			if ( !batch || this._batchRegistry.has( batch ) || batch.type == 'ignore' ) {
+			if ( this._batchRegistry.has( batch ) || batch.type == 'transparent' ) {
 				return;
-			}
-
-			if ( batch.type == 'undo' ) {
-				// If this batch comes from `undoCommand`, add it to `redoCommand` stack.
-				this._redoCommand.addBatch( batch );
-			} else if ( batch.type == 'redo' ) {
-				// If this batch comes from `redoCommand`, add it to `undoCommand` stack.
-				this._undoCommand.addBatch( batch );
 			} else {
-				// Any other batch - these are new changes in the document.
-				// Add them to `undoCommand` stack and clear `redoCommand` stack.
-				this._undoCommand.addBatch( batch );
-				this._redoCommand.clearStack();
+				if ( this._undoCommand._createdBatches.has( batch ) ) {
+					// If this batch comes from `undoCommand`, add it to `redoCommand` stack.
+					this._redoCommand.addBatch( batch );
+				} else if ( this._redoCommand._createdBatches.has( batch ) ) {
+					// If this batch comes from `redoCommand`, add it to `undoCommand` stack.
+					this._undoCommand.addBatch( batch );
+				} else {
+					// A default batch - these are new changes in the document, not introduced by undo feature.
+					// Add them to `undoCommand` stack and clear `redoCommand` stack.
+					this._undoCommand.addBatch( batch );
+					this._redoCommand.clearStack();
+				}
 			}
 
 			// Add the batch to the registry so it will not be processed again.

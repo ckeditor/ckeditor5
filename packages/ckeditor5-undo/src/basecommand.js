@@ -29,6 +29,14 @@ export default class BaseCommand extends Command {
 		 */
 		this._items = [];
 
+		/**
+		 * Stores all batches that were created by this command.
+		 *
+		 * @protected
+		 * @member {WeakSet.<engine.model.Batch>} undo.BaseCommand#_createdBatches
+		 */
+		this._createdBatches = new WeakSet();
+
 		// Refresh state, so command is inactive just after initialization.
 		this.refreshState();
 	}
