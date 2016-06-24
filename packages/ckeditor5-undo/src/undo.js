@@ -83,7 +83,7 @@ import ButtonView from '../ui/button/buttonview.js';
  * reversed delta that was later transformed.
  *
  * But what about that selection? For batch `C`, undo feature remembers selection just before `C1` was applied. It can be
- * visualized between delta `B2` and `B3` (see fig. 3). Obviously a lot happened to the document since the selection
+ * visualized between delta `B2` and `B3` (see fig. 3). As can be seen, some operations were applied to the document since the selection
  * state was remembered. Setting document selection as it was remembered would be incorrect. It feels natural that
  * selection state should also be transformed by deltas from history. Same pattern applies as with transforming deltas - ranges
  * should not be transformed by undone and undoing deltas. Thankfully, those deltas are already removed from history.
