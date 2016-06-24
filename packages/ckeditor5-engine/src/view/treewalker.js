@@ -179,9 +179,9 @@ export default class TreeWalker {
 		// Get node just after current position.
 		let node;
 
-		// Text {@link engine.view.Text} element is a specific parent because it contains string instead of child nodes.
+		// Text is a specific parent because it contains string instead of child nodes.
 		if ( parent instanceof Text ) {
-			node = parent._data[ position.offset ];
+			node = parent.data[ position.offset ];
 		} else {
 			node = parent.getChild( position.offset );
 		}
@@ -203,7 +203,7 @@ export default class TreeWalker {
 
 				return this._next();
 			} else {
-				let charactersCount = node._data.length;
+				let charactersCount = node.data.length;
 				let item = node;
 
 				// If text stick out of walker range, we need to cut it and wrap by TextProxy.
@@ -227,7 +227,7 @@ export default class TreeWalker {
 				textLength = 1;
 			} else {
 				// Check if text stick out of walker range.
-				const endOffset = parent === this._boundaryEndParent ? this.boundaries.end.offset : parent._data.length;
+				const endOffset = parent === this._boundaryEndParent ? this.boundaries.end.offset : parent.data.length;
 
 				textLength = endOffset - position.offset;
 			}
@@ -302,12 +302,12 @@ export default class TreeWalker {
 			}
 		} else if ( node instanceof Text ) {
 			if ( this.singleCharacters ) {
-				position = new Position( node, node._data.length );
+				position = new Position( node, node.data.length );
 				this.position = position;
 
 				return this._previous();
 			} else {
-				let charactersCount = node._data.length;
+				let charactersCount = node.data.length;
 				let item = node;
 
 				// If text stick out of walker range, we need to cut it and wrap by TextProxy.
@@ -315,7 +315,7 @@ export default class TreeWalker {
 					const offset = this.boundaries.start.offset;
 
 					item = new TextProxy( node, offset );
-					charactersCount = item._data.length;
+					charactersCount = item.data.length;
 					position = Position.createBefore( item );
 				} else {
 					// If not just keep moving backward.
@@ -342,11 +342,6 @@ export default class TreeWalker {
 
 			const textProxy = new TextProxy( parent, position.offset, textLength );
 
-			// Position at the beginning of Text is always out of Text node, not inside.
-			// if ( position.offset === 0 ) {
-			// 	position = new Position( parent.parent, parent.getIndex() );
-			// }
-
 			this.position = position;
 
 			return this._formatReturnValue( 'TEXT', textProxy, previousPosition, position, textLength );
@@ -372,27 +367,27 @@ export default class TreeWalker {
 	 */
 	_formatReturnValue( type, item, previousPosition, nextPosition, length ) {
 		// Text is a specific parent, because contains string instead of childs.
-		// We decided to not enter to the Text except situations when walker is iterating over every single character,
+		// Walker doesn't enter to the Text except situations when walker is iterating over every single character,
 		// or the bound starts/ends inside the Text. So when the position is at the beginning or at the end of the Text
 		// we move it just before or just after Text.
 		if ( item instanceof TextProxy ) {
 			// Position is at the end of Text.
-			if ( item._index + item._data.length == item._textNode._data.length ) {
+			if ( item.index + item.data.length == item.textNode.data.length ) {
 				if ( this.direction == 'FORWARD' ) {
-					nextPosition = Position.createAfter( item._textNode );
+					nextPosition = Position.createAfter( item.textNode );
 					// When we change nextPosition of returned value we need also update walker current position.
 					this.position = nextPosition;
 				} else {
-					previousPosition = Position.createAfter( item._textNode );
+					previousPosition = Position.createAfter( item.textNode );
 				}
 			}
 
 			// Position is at the begining ot the text.
-			if ( item._index === 0 ) {
+			if ( item.index === 0 ) {
 				if ( this.direction == 'FORWARD' ) {
-					previousPosition = Position.createBefore( item._textNode );
+					previousPosition = Position.createBefore( item.textNode );
 				} else {
-					nextPosition = Position.createBefore( item._textNode );
+					nextPosition = Position.createBefore( item.textNode );
 					// When we change nextPosition of returned value we need also update walker current position.
 					this.position = nextPosition;
 				}
@@ -416,6 +411,7 @@ export default class TreeWalker {
  * Type of the step made by {@link engine.view.TreeWalker}.
  * Possible values: `'ELEMENT_START'` if walker is at the beginning of a node, `'ELEMENT_END'` if walker is at the end
  * of node, or `'TEXT'` if walker traversed over single and multiple characters.
+ * For {@link engine.view.Text} `ELEMENT_START` and `ELEMENT_END` is not returned.
  *
  * @typedef {String} engine.view.TreeWalkerValueType
  */
@@ -432,11 +428,15 @@ export default class TreeWalker {
  * the node using {@link engine.view.Position.createBefore}.
  * * Backward iteration: For `'ELEMENT_START'` it is the first position inside the element. For all other types it is
  * the position after item.
+ * * If the position is at the beginning or at the end of the {@link engine.view.Text} it is always moved from the
+ * inside of the Text to its parent just before or just after Text.
  * @property {engine.view.Position} nextPosition Next position of the iterator.
  * * Forward iteration: For `'ELEMENT_START'` it is the first position inside the element. For all other types it is
  * the position after the item.
  * * Backward iteration: For `'ELEMENT_END'` it is last position inside element. For all other types it is the position
  * before the item.
+ * * If the position is at the beginning or at the end of the {@link engine.view.Text} it is always moved from the
+ * inside of the Text to its parent just before or just after Text.
  * @property {Number} [length] Length of the item. For `'ELEMENT_START'` it is 1. For `'TEXT'` it is
  * the length of the text. For `'ELEMENT_END'` it is undefined.
  */

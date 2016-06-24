@@ -1002,8 +1002,8 @@ function expectValue( value, expected, options = {} ) {
 }
 
 function expectText( value, expected ) {
-	expect( value.item._data ).to.equal( expected.text );
-	expect( value.length ).to.equal( value.item._data.length );
+	expect( value.item.data ).to.equal( expected.text );
+	expect( value.length ).to.equal( value.item.data.length );
 }
 
 function expectStart( value, expected ) {
