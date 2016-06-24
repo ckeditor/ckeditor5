@@ -12,6 +12,7 @@ import Schema from '/ckeditor5/engine/model/schema.js';
 import Composer from '/ckeditor5/engine/model/composer/composer.js';
 import RootElement from '/ckeditor5/engine/model/rootelement.js';
 import Batch from '/ckeditor5/engine/model/batch.js';
+import Delta from '/ckeditor5/engine/model/delta/delta.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import count from '/ckeditor5/utils/count.js';
 
@@ -114,14 +115,17 @@ describe( 'Document', () => {
 			const changeCallback = sinon.spy();
 			const type = 't';
 			const data = { data: 'x' };
-			const batch = 'batch';
+			const batch = new Batch();
+			const delta = new Delta();
 
 			let operation = {
 				type: type,
-				delta: { batch: batch },
 				baseVersion: 0,
 				_execute: sinon.stub().returns( data )
 			};
+
+			delta.addOperation( operation );
+			batch.addDelta( delta );
 
 			doc.on( 'change', changeCallback );
 			doc.applyOperation( operation );
@@ -154,6 +158,12 @@ describe( 'Document', () => {
 
 			expect( batch ).to.be.instanceof( Batch );
 			expect( batch ).to.have.property( 'doc' ).that.equals( doc );
+		} );
+
+		it( 'should set given batch type', () => {
+			const batch = doc.batch( 'ignore' );
+
+			expect( batch ).to.have.property( 'type' ).that.equals( 'ignore' );
 		} );
 	} );
 

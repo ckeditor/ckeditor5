@@ -72,7 +72,7 @@ describe( 'transform', () => {
 							// is treated in OT as `MoveOperation` and might be converted to it. This is why we have to
 							// check whether the operation type is `MoveOperation`. This is all perfectly valid.
 							type: MoveOperation,
-							sourcePosition: new Position( gy, [ 0 ] ),
+							sourcePosition: new Position( gy, [ 0, 0 ] ),
 							howMany: 1,
 							targetPosition: new Position( root, [ 3, 3, 3 ] ),
 							baseVersion: baseVersion

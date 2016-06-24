@@ -68,7 +68,7 @@ describe( 'transform', () => {
 					operations: [
 						{
 							type: MoveOperation,
-							sourcePosition: new Position( gy, [ 0 ] ),
+							sourcePosition: new Position( gy, [ 0, 0 ] ),
 							howMany: 1,
 							targetPosition: new Position( root, [ 3, 3, 3 ] ),
 							baseVersion: baseVersion

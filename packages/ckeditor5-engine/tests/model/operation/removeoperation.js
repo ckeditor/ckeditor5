@@ -53,7 +53,7 @@ describe( 'RemoveOperation', () => {
 		expect( operation ).to.be.instanceof( MoveOperation );
 	} );
 
-	it( 'should remove set of nodes and append them to graveyard root', () => {
+	it( 'should remove set of nodes and append them to holder element in graveyard root', () => {
 		root.insertChildren( 0, 'fozbar' );
 
 		doc.applyOperation(
@@ -68,9 +68,42 @@ describe( 'RemoveOperation', () => {
 		expect( root.getChildCount() ).to.equal( 4 );
 		expect( root.getChild( 2 ).character ).to.equal( 'a' );
 
-		expect( graveyard.getChildCount() ).to.equal( 2 );
-		expect( graveyard.getChild( 0 ).character ).to.equal( 'z' );
-		expect( graveyard.getChild( 1 ).character ).to.equal( 'b' );
+		expect( graveyard.getChildCount() ).to.equal( 1 );
+		expect( graveyard.getChild( 0 ).getChild( 0 ).character ).to.equal( 'z' );
+		expect( graveyard.getChild( 0 ).getChild( 1 ).character ).to.equal( 'b' );
+	} );
+
+	it( 'should create new holder element for each remove operation', () => {
+		root.insertChildren( 0, 'fozbar' );
+
+		doc.applyOperation(
+			new RemoveOperation(
+				new Position( root, [ 0 ] ),
+				1,
+				doc.version
+			)
+		);
+
+		doc.applyOperation(
+			new RemoveOperation(
+				new Position( root, [ 0 ] ),
+				1,
+				doc.version
+			)
+		);
+
+		doc.applyOperation(
+			new RemoveOperation(
+				new Position( root, [ 0 ] ),
+				1,
+				doc.version
+			)
+		);
+
+		expect( graveyard.getChildCount() ).to.equal( 3 );
+		expect( graveyard.getChild( 0 ).getChild( 0 ).character ).to.equal( 'f' );
+		expect( graveyard.getChild( 1 ).getChild( 0 ).character ).to.equal( 'o' );
+		expect( graveyard.getChild( 2 ).getChild( 0 ).character ).to.equal( 'z' );
 	} );
 
 	it( 'should create RemoveOperation with same parameters when cloned', () => {

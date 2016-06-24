@@ -108,10 +108,12 @@ export default class Document {
 		/**
 		 * Document's history.
 		 *
+		 * **Note:** Be aware that deltas applied to the stored deltas might be removed or changed.
+		 *
 		 * @readonly
 		 * @member {engine.model.History} engine.model.Document#history
 		 */
-		this.history = new History();
+		this.history = new History( this );
 	}
 
 	/**
@@ -159,7 +161,10 @@ export default class Document {
 
 		this.version++;
 
-		this.history.addOperation( operation );
+		if ( operation.delta ) {
+			// Right now I can't imagine operations without deltas, but let's be safe.
+			this.history.addDelta( operation.delta );
+		}
 
 		const batch = operation.delta && operation.delta.batch;
 
@@ -172,10 +177,11 @@ export default class Document {
 	/**
 	 * Creates a {@link engine.model.Batch} instance which allows to change the document.
 	 *
+	 * @param {String} [type] Batch type. See {@link engine.model.Batch#type}.
 	 * @returns {engine.model.Batch} Batch instance.
 	 */
-	batch() {
-		return new Batch( this );
+	batch( type ) {
+		return new Batch( this, type );
 	}
 
 	/**

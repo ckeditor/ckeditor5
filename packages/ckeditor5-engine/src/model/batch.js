@@ -35,27 +35,51 @@ export default class Batch {
 	 * Creates Batch instance. Not recommended to use directly, use {@link engine.model.Document#batch} instead.
 	 *
 	 * @param {engine.model.Document} doc Document which this Batch changes.
+	 * @param {'transparent'|'default'} [type='default'] Type of the batch.
 	 */
-	constructor( doc ) {
+	constructor( doc, type = 'default' ) {
 		/**
-		 * Document which this Batch changes.
+		 * Document which this batch changes.
 		 *
-		 * @member {engine.model.Document} engine.model.Batch#doc
 		 * @readonly
+		 * @member {engine.model.Document} engine.model.Batch#doc
 		 */
 		this.doc = doc;
 
 		/**
-		 * Array of deltas which compose Batch.
+		 * Array of deltas which compose this batch.
 		 *
-		 * @member {Array.<engine.model.delta.Delta>} engine.model.Batch#deltas
 		 * @readonly
+		 * @member {Array.<engine.model.delta.Delta>} engine.model.Batch#deltas
 		 */
 		this.deltas = [];
+
+		/**
+		 * Type of the batch.
+		 *
+		 * Can be one of the following values:
+		 * * `'default'` - all "normal" batches, most commonly used type.
+		 * * `'transparent'` - batch that should be ignored by other features, i.e. initial batch or collaborative editing changes.
+		 *
+		 * @readonly
+		 * @member {'transparent'|'default'} engine.model.Batch#type
+		 */
+		this.type = type;
 	}
 
 	/**
-	 * Adds delta to the Batch instance. All modification methods (insert, remove, split, etc.) use this method
+	 * Returns this batch base version, which is equal to the base version of first delta in the batch.
+	 * If there are no deltas in the batch, it returns `null`.
+	 *
+	 * @readonly
+	 * @type {Number|null}
+	 */
+	get baseVersion() {
+		return this.deltas.length > 0 ? this.deltas[ 0 ].baseVersion : null;
+	}
+
+	/**
+	 * Adds delta to the batch instance. All modification methods (insert, remove, split, etc.) use this method
 	 * to add created deltas.
 	 *
 	 * @param {engine.model.delta.Delta} delta Delta to add.
@@ -81,7 +105,7 @@ export default class Batch {
 }
 
 /**
- * Function to register Batch methods. To make code scalable Batch do not have modification
+ * Function to register batch methods. To make code scalable Batch do not have modification
  * methods built in. They can be registered using this method.
  *
  * This method checks if there is no naming collision and throws `batch-register-taken` if the method name

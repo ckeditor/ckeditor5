@@ -171,7 +171,8 @@ export default class DataController {
 		const modelRoot = this.model.getRoot( rootName );
 
 		this.model.enqueueChanges( () => {
-			this.model.batch()
+			// Initial batch should be ignored by features like undo, etc.
+			this.model.batch( 'transparent' )
 				.remove( ModelRange.createFromElement( modelRoot ) )
 				.insert( ModelPosition.createAt( modelRoot, 0 ), this.parse( data ) );
 		} );

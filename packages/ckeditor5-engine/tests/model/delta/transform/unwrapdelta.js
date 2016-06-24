@@ -73,7 +73,7 @@ describe( 'transform', () => {
 							type: MoveOperation,
 							sourcePosition: new Position( root, [ 3, 3, 4 ] ),
 							howMany: 1,
-							targetPosition: new Position( gy, [ 0 ] ),
+							targetPosition: new Position( gy, [ 0, 0 ] ),
 							baseVersion: baseVersion + 1
 						}
 					]
@@ -90,11 +90,10 @@ describe( 'transform', () => {
 							baseVersion: baseVersion + 2
 						},
 						{
-							// `RemoveOperation` as `MoveOperation`
 							type: MoveOperation,
 							sourcePosition: new Position( root, [ 3, 3, 15 ] ),
 							howMany: 1,
-							targetPosition: new Position( gy, [ 0 ] ),
+							targetPosition: new Position( gy, [ 1, 0 ] ),
 							baseVersion: baseVersion + 3
 						}
 					]
@@ -135,7 +134,7 @@ describe( 'transform', () => {
 							type: MoveOperation,
 							sourcePosition: new Position( root, [ 3, 4, 12 ] ),
 							howMany: 1,
-							targetPosition: new Position( gy, [ 0 ] ),
+							targetPosition: new Position( gy, [ 0, 0 ] ),
 							baseVersion: baseVersion + 1
 						}
 					]
