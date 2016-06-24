@@ -6,6 +6,7 @@
 'use strict';
 
 import Text from './text.js';
+import TextProxy from './textproxy.js';
 
 import compareArrays from '../../utils/comparearrays.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
@@ -209,10 +210,15 @@ export default class Position {
 	/**
 	 * Creates a new position after the given node.
 	 *
-	 * @param {engine.view.Node} node Node after which the position should be located.
+	 * @param {engine.view.Node|engine.view.TextProxy} node Node or text proxy after which the position should be located.
 	 * @returns {engine.view.Position}
 	 */
 	static createAfter( node ) {
+		// {@link engine.view.TextProxy} is not a instance of {@link engine.view.Node} so we need do handle it in specific way.
+		if ( node instanceof TextProxy ) {
+			return new Position( node.textNode, node.index + node.data.length );
+		}
+
 		if ( !node.parent ) {
 			/**
 			 * You can not make a position after a root.
@@ -229,10 +235,15 @@ export default class Position {
 	/**
 	 * Creates a new position before the given node.
 	 *
-	 * @param {engine.view.node} node Node before which the position should be located.
+	 * @param {engine.view.Node|engine.view.TextProxy} node Node or text proxy before which the position should be located.
 	 * @returns {engine.view.Position}
 	 */
 	static createBefore( node ) {
+		// {@link engine.view.TextProxy} is not a instance of {@link engine.view.Node} so we need do handle it in specific way.
+		if ( node instanceof TextProxy ) {
+			return new Position( node.textNode, node.index );
+		}
+
 		if ( !node.parent ) {
 			/**
 			 * You cannot make a position before a root.
