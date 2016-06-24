@@ -11,7 +11,7 @@ import EditableUI from '../ui/editableui/editableui.js';
 import InlineEditableUIView from '../ui/editableui/inline/inlineeditableuiview.js';
 
 import Model from '../ui/model.js';
-import Toolbar from '../ui/bindings/toolbar.js';
+import StickyToolbar from '../ui/bindings/stickytoolbar.js';
 import StickyToolbarView from '../ui/stickytoolbar/stickytoolbarview.js';
 
 /**
@@ -79,10 +79,10 @@ export default class ClassicEditorUI extends BoxedEditorUI {
 	_createToolbar() {
 		const editor = this.editor;
 
-		const toolbarModel = new Model();
-		toolbarModel.bind( 'isActive' ).to( editor.editing.view.getRoot(), 'isFocused' );
+		const model = new Model();
+		model.bind( 'isActive' ).to( editor.editing.view.getRoot(), 'isFocused' );
 
-		const toolbar = new Toolbar( toolbarModel, new StickyToolbarView( editor.locale ), editor );
+		const toolbar = new StickyToolbar( model, new StickyToolbarView( editor.locale ), editor );
 		this.add( 'top', toolbar );
 
 		return toolbar;
