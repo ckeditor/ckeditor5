@@ -60,10 +60,7 @@ export default class ChangeBuffer {
 		this.limit = limit;
 
 		this._changeCallback = ( evt, type, changes, batch ) => {
-			// See #7.
-			if ( batch ) {
-				this._onBatch( batch );
-			}
+			this._onBatch( batch );
 		};
 
 		doc.on( 'change', this._changeCallback );
@@ -85,7 +82,7 @@ export default class ChangeBuffer {
 
 	/**
 	 * Current batch to which a feature should add its deltas. Once the {@link typing.ChangeBuffer#size}
-	 * reach or exceedes the {@link typing.ChangeBuffer#limit}, then the batch is set to a new instance and size is reset.
+	 * reach or exceeds the {@link typing.ChangeBuffer#limit}, then the batch is set to a new instance and size is reset.
 	 *
 	 * @type {engine.treeModel.batch.Batch}
 	 */
@@ -130,8 +127,8 @@ export default class ChangeBuffer {
 	 * @param {engine.treeModel.batch.Batch} batch The batch which appears in the document.
 	 */
 	_onBatch( batch ) {
-		// 1 operation means a newly created batch.
-		if ( batch !== this._batch && count( batch.getOperations() ) <= 1 ) {
+		// One operation means a newly created batch.
+		if ( batch.type != 'transparent' && batch !== this._batch && count( batch.getOperations() ) <= 1 ) {
 			this._reset();
 		}
 	}
