@@ -331,7 +331,7 @@ class RangeParser {
 
 		if ( node instanceof ViewText ) {
 			const regexp = new RegExp(
-				`[ ${ TEXT_RANGE_START_TOKEN }${ TEXT_RANGE_END_TOKEN }\\${ ELEMENT_RANGE_END_TOKEN }\\${ ELEMENT_RANGE_START_TOKEN } ]`,
+				`[${ TEXT_RANGE_START_TOKEN }${ TEXT_RANGE_END_TOKEN }\\${ ELEMENT_RANGE_END_TOKEN }\\${ ELEMENT_RANGE_START_TOKEN }]`,
 				'g'
 			);
 			let text = node.data;

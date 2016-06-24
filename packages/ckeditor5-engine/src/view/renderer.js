@@ -90,13 +90,12 @@ export default class Renderer {
 		this._inlineFillerPosition = null;
 
 		/**
-		 * {@link engine.view.EditableElement} in which selection is allowed to be rendered.
-		 * If it is null, then selection will not be rendered.
+		 * Indicates if view document is focused and selection can be rendered. Selection will not be rendered if
+		 * this is set to `false`.
 		 *
-		 * @readonly
-		 * @member {engine.view.EditableElement|null} engine.view.Renderer#focusedEditable
+		 * @type {boolean}
 		 */
-		this.focusedEditable = null;
+		this.isFocused = false;
 	}
 
 	/**
@@ -412,11 +411,12 @@ export default class Renderer {
 	 * @private
 	 */
 	_updateSelection() {
-		if ( !this.focusedEditable ) {
+		if ( !this.isFocused ) {
 			return;
 		}
 
-		const domRoot = this.domConverter.getCorrespondingDomElement( this.focusedEditable );
+		const selectedEditable = this.selection.getEditableElement();
+		const domRoot = this.domConverter.getCorrespondingDomElement( selectedEditable );
 
 		if ( !domRoot ) {
 			return;
@@ -432,8 +432,8 @@ export default class Renderer {
 		domSelection.removeAllRanges();
 
 		for ( let range of this.selection.getRanges() ) {
-			// Update ranges only in currently focused editable.
-			if ( range.start.parent.getRoot() == this.focusedEditable ) {
+			// Update ranges only in currently selected editable.
+			if ( range.start.parent.getRoot() == selectedEditable ) {
 				const domRangeStart = this.domConverter.viewPositionToDom( range.start );
 				const domRangeEnd = this.domConverter.viewPositionToDom( range.end );
 				const domRange = new Range();

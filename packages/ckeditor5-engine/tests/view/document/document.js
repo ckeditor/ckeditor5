@@ -10,6 +10,7 @@
 import Document from '/ckeditor5/engine/view/document.js';
 import Observer from '/ckeditor5/engine/view/observer/observer.js';
 import Renderer from '/ckeditor5/engine/view/renderer.js';
+import ViewRange from '/ckeditor5/engine/view/range.js';
 import Writer from '/ckeditor5/engine/view/writer.js';
 import DomConverter from '/ckeditor5/engine/view/domconverter.js';
 
@@ -56,7 +57,8 @@ describe( 'Document', () => {
 			expect( viewDocument ).to.have.property( 'renderer' ).that.is.instanceOf( Renderer );
 			expect( viewDocument ).to.have.property( 'writer' ).that.is.instanceOf( Writer );
 			expect( viewDocument ).to.have.property( 'domConverter' ).that.is.instanceOf( DomConverter );
-			expect( viewDocument ).to.have.property( 'focusedEditable' ).that.is.null;
+			expect( viewDocument ).to.have.property( 'selectedEditable' ).that.is.null;
+			expect( viewDocument ).to.have.property( 'isFocused' ).that.is.false;
 		} );
 	} );
 
@@ -336,18 +338,30 @@ describe( 'Document', () => {
 		} );
 	} );
 
-	describe( 'focusedEditable', () => {
-		it( 'should change renderer.focusedEditable too', () => {
+	describe( 'isFocused', () => {
+		it( 'should change renderer.isFocused too', () => {
 			const viewDocument = new Document();
+
+			expect( viewDocument.isFocused ).to.equal( false );
+			expect( viewDocument.renderer.isFocused ).to.equal( false );
+
+			viewDocument.isFocused = true;
+
+			expect( viewDocument.isFocused ).to.equal( true );
+			expect( viewDocument.renderer.isFocused ).to.equal( true );
+		} );
+	} );
+
+	describe( 'selectedEditable', () => {
+		it( 'should change when selection is moved to different editable', () => {
+			const viewDocument = new Document();
+
+			expect( viewDocument.selectedEditable ).to.equal( null );
+
 			const viewRoot = viewDocument.createRoot( 'div' );
+			viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewRoot, 0, viewRoot, 0 ) );
 
-			expect( viewDocument.focusedEditable ).to.equal( null );
-			expect( viewDocument.renderer.focusedEditable ).to.equal( null );
-
-			viewDocument.focusedEditable = viewRoot;
-
-			expect( viewDocument.focusedEditable ).to.equal( viewRoot );
-			expect( viewDocument.renderer.focusedEditable ).to.equal( viewRoot );
+			expect( viewDocument.selectedEditable ).to.equal( viewRoot );
 		} );
 	} );
 } );

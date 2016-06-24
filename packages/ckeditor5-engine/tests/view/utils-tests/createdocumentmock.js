@@ -14,11 +14,16 @@ describe( 'createDocumentMock', () => {
 		const docMock = createDocumentMock();
 		const rootMock = {};
 
-		docMock.on( 'change:focusedEditable', ( evt, key, value ) => {
+		docMock.on( 'change:selectedEditable', ( evt, key, value ) => {
 			expect( value ).to.equal( rootMock );
+		} );
+
+		docMock.on( 'change:isFocused', ( evt, key, value ) => {
+			expect( value ).to.be.true;
 			done();
 		} );
 
-		docMock.focusedEditable = rootMock;
+		docMock.selectedEditable = rootMock;
+		docMock.isFocused = true;
 	} );
 } );

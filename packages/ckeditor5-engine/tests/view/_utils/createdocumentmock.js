@@ -16,7 +16,8 @@ import ObservableMixin from '/ckeditor5/utils/observablemixin.js';
  */
 export default function createDocumentMock() {
 	const doc = Object.create( ObservableMixin );
-	doc.set( 'focusedEditable', null );
+	doc.set( 'isFocused', false );
+	doc.set( 'selectedEditable', null );
 
 	return doc;
 }

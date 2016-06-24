@@ -9,6 +9,7 @@ import Text from './text.js';
 
 import compareArrays from '../../utils/comparearrays.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
+import EditableElement from './editableelement.js';
 
 /**
  * Position in the tree. Position is always located before or after a node.
@@ -184,6 +185,25 @@ export default class Position {
 
 		// Compare indexes of next ancestors inside common one.
 		return index < 0 ? 'BEFORE' : 'AFTER';
+	}
+
+	/**
+	 * Returns {@link engine.view.EditableElement EditableElement} instance that contains this position.
+	 *
+	 * @returns {engine.view.EditableElement|null} Returns closest EditableElement or null if none is found.
+	 */
+	getEditableElement() {
+		let editable = this.parent;
+
+		while ( !( editable instanceof EditableElement ) ) {
+			if ( editable.parent ) {
+				editable = editable.parent;
+			} else {
+				return null;
+			}
+		}
+
+		return editable;
 	}
 
 	/**

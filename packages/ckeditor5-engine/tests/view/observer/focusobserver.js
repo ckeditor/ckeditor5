@@ -9,6 +9,7 @@
 
 import FocusObserver from '/ckeditor5/engine/view/observer/focusobserver.js';
 import ViewDocument from '/ckeditor5/engine/view/document.js';
+import ViewRange from '/ckeditor5/engine/view/range.js';
 
 describe( 'FocusObserver', () => {
 	let viewDocument, observer;
@@ -50,7 +51,7 @@ describe( 'FocusObserver', () => {
 		} );
 	} );
 
-	describe( 'handle focusedEditable property of the document', () => {
+	describe( 'handle isFocused property of the document', () => {
 		let domMain, domHeader, viewMain, viewHeader;
 
 		beforeEach( () => {
@@ -61,41 +62,44 @@ describe( 'FocusObserver', () => {
 			viewHeader = viewDocument.createRoot( domHeader, 'header' );
 		} );
 
-		it( 'should set focusedEditable on focus', () => {
+		it( 'should set isFocused to true on focus', () => {
 			observer.onDomEvent( { type: 'focus', target: domMain } );
 
-			expect( viewDocument.focusedEditable ).to.equal( viewMain );
+			expect( viewDocument.isFocused ).to.equal( true );
 		} );
 
-		it( 'should change focusedEditable on focus', () => {
+		it( 'should set isFocused to false on blur', () => {
 			observer.onDomEvent( { type: 'focus', target: domMain } );
 
-			expect( viewDocument.focusedEditable ).to.equal( viewMain );
-
-			observer.onDomEvent( { type: 'focus', target: domHeader } );
-
-			expect( viewDocument.focusedEditable ).to.equal( viewHeader );
-		} );
-
-		it( 'should set focusedEditable to null on blur', () => {
-			observer.onDomEvent( { type: 'focus', target: domMain } );
-
-			expect( viewDocument.focusedEditable ).to.equal( viewMain );
+			expect( viewDocument.isFocused ).to.equal( true );
 
 			observer.onDomEvent( { type: 'blur', target: domMain } );
 
-			expect( viewDocument.focusedEditable ).to.be.null;
+			expect( viewDocument.isFocused ).to.be.false;
 		} );
 
-		it( 'should not touch focusedEditable on blur if it is already changed', () => {
+		it( 'should set isFocused to false on blur when selection in same editable', () => {
+			viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewMain, 0, viewMain, 0 ) );
+
 			observer.onDomEvent( { type: 'focus', target: domMain } );
 
-			expect( viewDocument.focusedEditable ).to.equal( viewMain );
+			expect( viewDocument.isFocused ).to.equal( true );
 
-			observer.onDomEvent( { type: 'focus', target: domHeader } );
 			observer.onDomEvent( { type: 'blur', target: domMain } );
 
-			expect( viewDocument.focusedEditable ).to.equal( viewHeader );
+			expect( viewDocument.isFocused ).to.be.false;
+		} );
+
+		it( 'should not set isFocused to false on blur when it is fired on other editable', () => {
+			viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewMain, 0, viewMain, 0 ) );
+
+			observer.onDomEvent( { type: 'focus', target: domMain } );
+
+			expect( viewDocument.isFocused ).to.equal( true );
+
+			observer.onDomEvent( { type: 'blur', target: domHeader } );
+
+			expect( viewDocument.isFocused ).to.be.true;
 		} );
 	} );
 } );

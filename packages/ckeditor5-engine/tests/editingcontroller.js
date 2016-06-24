@@ -192,7 +192,8 @@ describe( 'EditingController', () => {
 				} );
 			} );
 
-			editing.view.focusedEditable = viewRoot;
+			editing.view.selectedEditable = viewRoot;
+			editing.view.isFocused = true;
 
 			const domSelection = document.getSelection();
 			domSelection.removeAllRanges();

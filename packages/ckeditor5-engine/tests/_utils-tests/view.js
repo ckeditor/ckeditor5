@@ -317,6 +317,12 @@ describe( 'view test utils', () => {
 			expect( text.data ).to.equal( 'foobar' );
 		} );
 
+		it( 'should parse text with spaces', () => {
+			const text = parse( 'foo bar' );
+			expect( text ).to.be.instanceOf( Text );
+			expect( text.data ).to.equal( 'foo bar' );
+		} );
+
 		it( 'should parse elements and texts', () => {
 			const view = parse( '<b>foobar</b>' );
 			const element = new Element( 'b' );

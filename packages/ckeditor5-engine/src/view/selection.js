@@ -279,6 +279,7 @@ export default class Selection {
 		}
 
 		this._lastRangeBackward = otherSelection._lastRangeBackward;
+		this.fire( 'change' );
 	}
 
 	/**
@@ -311,6 +312,19 @@ export default class Selection {
 			this.setRanges( [ new Range( endPosition, endPosition ) ] );
 			this.fire( 'change' );
 		}
+	}
+
+	/**
+	 * Returns {@link engine.view.EditableElement EditableElement} instance that contains this selection.
+	 *
+	 * @returns {engine.view.EditableElement|null} Returns closest EditableElement or null if none is found.
+	 */
+	getEditableElement() {
+		if ( this.rangeCount ) {
+			return this.getFirstPosition().getEditableElement();
+		}
+
+		return null;
 	}
 
 	/**
