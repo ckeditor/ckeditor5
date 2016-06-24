@@ -30,13 +30,10 @@ export default class RedoCommand extends BaseCommand {
 	_doExecute() {
 		const item = this._items.pop();
 
-		// All changes done by the command execution will be saved as one batch.
-		const newBatch = this.editor.document.batch( 'redo' );
-
 		// All changes have to be done in one `enqueueChanges` callback so other listeners will not
 		// step between consecutive deltas, or won't do changes to the document before selection is properly restored.
 		this.editor.document.enqueueChanges( () => {
-			this._redo( item.batch, newBatch, this.editor.document );
+			this._redo( item.batch );
 			this._restoreSelection( item.selection.ranges, item.selection.isBackward );
 		} );
 
@@ -52,7 +49,13 @@ export default class RedoCommand extends BaseCommand {
 	 * @param {engine.model.Batch} redoingBatch Batch that will contain transformed and applied deltas from `storedBatch`.
 	 * @param {engine.model.Document} document Document that is operated on by the command.
 	 */
-	_redo( storedBatch, redoingBatch, document ) {
+	_redo( storedBatch ) {
+		const document = this.editor.document;
+
+		// All changes done by the command execution will be saved as one batch.
+		const redoingBatch = document.batch();
+		this._createdBatches.add( redoingBatch );
+
 		const deltasToRedo = storedBatch.deltas.slice();
 		deltasToRedo.reverse();
 

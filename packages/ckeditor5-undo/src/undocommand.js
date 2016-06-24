@@ -35,14 +35,11 @@ export default class UndoCommand extends BaseCommand {
 
 		const item = this._items.splice( batchIndex, 1 )[ 0 ];
 
-		// All changes done by the command execution will be saved as one batch.
-		const newBatch = this.editor.document.batch( 'undo' );
-
 		// All changes has to be done in one `enqueueChanges` callback so other listeners will not
 		// step between consecutive deltas, or won't do changes to the document before selection is properly restored.
 		this.editor.document.enqueueChanges( () => {
-			this._undo( item.batch, newBatch, this.editor.document );
-			this._restoreSelection( item.selection.ranges, item.selection.isBackward, item.batch.baseVersion, this.editor.document );
+			this._undo( item.batch );
+			this._restoreSelection( item.selection.ranges, item.selection.isBackward, item.batch.baseVersion );
 		} );
 
 		this.fire( 'revert', item.batch );
@@ -76,7 +73,13 @@ export default class UndoCommand extends BaseCommand {
 	 * @param {engine.model.Batch} undoingBatch Batch that will contain transformed and applied deltas from `batchToUndo`.
 	 * @param {engine.model.Document} document Document that is operated on by the command.
 	 */
-	_undo( batchToUndo, undoingBatch, document ) {
+	_undo( batchToUndo ) {
+		const document = this.editor.document;
+
+		// All changes done by the command execution will be saved as one batch.
+		const undoingBatch = document.batch();
+		this._createdBatches.add( undoingBatch );
+
 		const history = document.history;
 		const deltasToUndo = batchToUndo.deltas.slice();
 		deltasToUndo.reverse();
@@ -183,7 +186,9 @@ export default class UndoCommand extends BaseCommand {
 	 * @param {Number} baseVersion
 	 * @param {engine.model.Document} document Document that is operated on by the command.
 	 */
-	_restoreSelection( ranges, isBackward, baseVersion, document ) {
+	_restoreSelection( ranges, isBackward, baseVersion ) {
+		const document = this.editor.document;
+
 		// This will keep the transformed selection ranges.
 		const selectionRanges = [];
 
