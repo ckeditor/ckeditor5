@@ -7,6 +7,7 @@
 
 import Feature from '../feature.js';
 import UndoCommand from './undocommand.js';
+import RedoCommand from './redocommand.js';
 
 /**
  * Undo engine feature.
@@ -25,25 +26,23 @@ export default class UndoEngine extends Feature {
 		super( editor );
 
 		/**
-		 * Undo command which manages undo {@link engine.model.Batch batches} stack (history).
+		 * Command which manages undo {@link engine.model.Batch batches} stack (history).
 		 * Created and registered during {@link undo.UndoEngine#init feature initialization}.
 		 *
 		 * @private
 		 * @member {undo.UndoEngineCommand} undo.UndoEngine#_undoCommand
 		 */
-		this._undoCommand = null;
 
 		/**
-		 * Undo command which manages redo {@link engine.model.Batch batches} stack (history).
+		 * Command which manages redo {@link engine.model.Batch batches} stack (history).
 		 * Created and registered during {@link undo.UndoEngine#init feature initialization}.
 		 *
 		 * @private
 		 * @member {undo.UndoEngineCommand} undo.UndoEngine#_redoCommand
 		 */
-		this._redoCommand = null;
 
 		/**
-		 * Keeps track of which batch has already been added to undo manager.
+		 * Keeps track of which batch has been registered in Undo.
 		 *
 		 * @private
 		 * @member {WeakSet.<engine.model.Batch>} undo.UndoEngine#_batchRegistry
@@ -56,30 +55,34 @@ export default class UndoEngine extends Feature {
 	 */
 	init() {
 		// Create commands.
-		this._redoCommand = new UndoCommand( this.editor );
 		this._undoCommand = new UndoCommand( this.editor );
+		this._redoCommand = new RedoCommand( this.editor );
 
 		// Register command to the editor.
-		this.editor.commands.set( 'redo', this._redoCommand );
 		this.editor.commands.set( 'undo', this._undoCommand );
+		this.editor.commands.set( 'redo', this._redoCommand );
 
 		this.listenTo( this.editor.document, 'change', ( evt, type, changes, batch ) => {
-			// Whenever a new batch is created add it to the undo history and clear redo history.
-			if ( batch && !this._batchRegistry.has( batch ) ) {
-				this._batchRegistry.add( batch );
-				this._undoCommand.addBatch( batch );
-				this._redoCommand.clearStack();
+			// If changes are not a part of a batch or this is not a new batch, omit those changes.
+			if ( this._batchRegistry.has( batch ) || batch.type == 'transparent' ) {
+				return;
+			} else {
+				if ( this._undoCommand._createdBatches.has( batch ) ) {
+					// If this batch comes from `undoCommand`, add it to `redoCommand` stack.
+					this._redoCommand.addBatch( batch );
+				} else if ( this._redoCommand._createdBatches.has( batch ) ) {
+					// If this batch comes from `redoCommand`, add it to `undoCommand` stack.
+					this._undoCommand.addBatch( batch );
+				} else {
+					// A default batch - these are new changes in the document, not introduced by undo feature.
+					// Add them to `undoCommand` stack and clear `redoCommand` stack.
+					this._undoCommand.addBatch( batch );
+					this._redoCommand.clearStack();
+				}
 			}
-		} );
 
-		// Whenever batch is reverted by undo command, add it to redo history.
-		this.listenTo( this._redoCommand, 'revert', ( evt, batch ) => {
-			this._undoCommand.addBatch( batch );
-		} );
-
-		// Whenever batch is reverted by redo command, add it to undo history.
-		this.listenTo( this._undoCommand, 'revert', ( evt, batch ) => {
-			this._redoCommand.addBatch( batch );
+			// Add the batch to the registry so it will not be processed again.
+			this._batchRegistry.add( batch );
 		} );
 	}
 }
