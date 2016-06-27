@@ -53,6 +53,74 @@ describe( 'DocumentSelection', () => {
 		liveRange.detach();
 	} );
 
+	describe( 'default range', () => {
+		it( 'should go to the first editable element', () => {
+			const ranges = Array.from( selection.getRanges() );
+
+			expect( ranges.length ).to.equal( 1 );
+			expect( selection.anchor.isEqual( new Position( root, [ 0, 0 ] ) ) ).to.be.true;
+			expect( selection.focus.isEqual( new Position( root, [ 0, 0 ] ) ) ).to.be.true;
+			expect( selection ).to.have.property( 'isBackward', false );
+		} );
+
+		it( 'should be set to the beginning of the doc if there is no editable element', () => {
+			doc = new Document();
+			root = doc.createRoot();
+			root.insertChildren( 0, 'foobar' );
+			selection = doc.selection;
+
+			const ranges = Array.from( selection.getRanges() );
+
+			expect( ranges.length ).to.equal( 1 );
+			expect( selection.anchor.isEqual( new Position( root, [ 0 ] ) ) ).to.be.true;
+			expect( selection.focus.isEqual( new Position( root, [ 0 ] ) ) ).to.be.true;
+			expect( selection ).to.have.property( 'isBackward', false );
+			expect( selection._attrs ).to.be.instanceof( Map );
+			expect( selection._attrs.size ).to.equal( 0 );
+		} );
+
+		it( 'should skip element when you can not put selection', () => {
+			doc = new Document();
+			root = doc.createRoot();
+			root.insertChildren( 0, [
+				new Element( 'img' ),
+				new Element( 'p', [], 'foobar' )
+			] );
+			doc.schema.registerItem( 'img' );
+			doc.schema.registerItem( 'p', '$block' );
+			selection = doc.selection;
+
+			const ranges = Array.from( selection.getRanges() );
+
+			expect( ranges.length ).to.equal( 1 );
+			expect( selection.anchor.isEqual( new Position( root, [ 1, 0 ] ) ) ).to.be.true;
+			expect( selection.focus.isEqual( new Position( root, [ 1, 0 ] ) ) ).to.be.true;
+			expect( selection ).to.have.property( 'isBackward', false );
+			expect( selection._attrs ).to.be.instanceof( Map );
+			expect( selection._attrs.size ).to.equal( 0 );
+		} );
+	} );
+
+	describe( 'isCollapsed', () => {
+		it( 'should return true for default range', () => {
+			expect( selection.isCollapsed ).to.be.true;
+		} );
+	} );
+
+	describe( 'rangeCount', () => {
+		it( 'should return proper range count', () => {
+			expect( selection.rangeCount ).to.equal( 1 );
+
+			selection.addRange( new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) );
+
+			expect( selection.rangeCount ).to.equal( 1 );
+
+			selection.addRange( new Range( new Position( root, [ 2 ] ), new Position( root, [ 2 ] ) ) );
+
+			expect( selection.rangeCount ).to.equal( 2 );
+		} );
+	} );
+
 	describe( 'addRange', () => {
 		it( 'should convert added Range to LiveRange', () => {
 			selection.addRange( range );
@@ -96,6 +164,16 @@ describe( 'DocumentSelection', () => {
 	} );
 
 	describe( 'setFocus', () => {
+		it( 'modifies default range', () => {
+			const startPos = selection.getFirstPosition();
+			const endPos = Position.createAt( root, 'END' );
+
+			selection.setFocus( endPos );
+
+			expect( selection.anchor.compareWith( startPos ) ).to.equal( 'SAME' );
+			expect( selection.focus.compareWith( endPos ) ).to.equal( 'SAME' );
+		} );
+
 		it( 'detaches the range it replaces', () => {
 			const startPos = Position.createAt( root, 1 );
 			const endPos = Position.createAt( root, 2 );
@@ -131,6 +209,12 @@ describe( 'DocumentSelection', () => {
 		afterEach( () => {
 			ranges[ 0 ].detach.restore();
 			ranges[ 1 ].detach.restore();
+		} );
+
+		it( 'should remove all stored ranges (and reset to default range)', () => {
+			expect( Array.from( selection.getRanges() ).length ).to.equal( 1 );
+			expect( selection.anchor.isEqual( new Position( root, [ 0, 0 ] ) ) ).to.be.true;
+			expect( selection.focus.isEqual( new Position( root, [ 0, 0 ] ) ) ).to.be.true;
 		} );
 
 		it( 'should detach ranges', () => {
@@ -171,6 +255,23 @@ describe( 'DocumentSelection', () => {
 			selection.setRanges( newRanges );
 			expect( oldRanges[ 0 ].detach.called ).to.be.true;
 			expect( oldRanges[ 1 ].detach.called ).to.be.true;
+		} );
+	} );
+
+	describe( 'getFirstRange', () => {
+		it( 'should return default range if no ranges were added', () => {
+			const firstRange = selection.getFirstRange();
+
+			expect( firstRange.start.isEqual( new Position( root, [ 0, 0 ] ) ) );
+			expect( firstRange.end.isEqual( new Position( root, [ 0, 0 ] ) ) );
+		} );
+	} );
+
+	describe( 'getFirstPosition', () => {
+		it( 'should return start position of default range if no ranges were added', () => {
+			const firstPosition = selection.getFirstPosition();
+
+			expect( firstPosition.isEqual( new Position( root, [ 0, 0 ] ) ) );
 		} );
 	} );
 

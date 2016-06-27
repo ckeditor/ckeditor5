@@ -34,8 +34,7 @@ describe( 'Selection', () => {
 			new Element( 'p' ),
 			new Element( 'p', [], 'foobar' )
 		] );
-		selection = new Selection( doc );
-		doc.schema.registerItem( 'p', '$block' );
+		selection = new Selection();
 
 		liveRange = new LiveRange( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
 		range = new Range( new Position( root, [ 2 ] ), new Position( root, [ 2, 2 ] ) );
@@ -46,57 +45,9 @@ describe( 'Selection', () => {
 		liveRange.detach();
 	} );
 
-	describe( 'default range', () => {
-		it( 'should go to the first editable element', () => {
-			const ranges = Array.from( selection.getRanges() );
-
-			expect( ranges.length ).to.equal( 1 );
-			expect( selection.anchor.isEqual( new Position( root, [ 0, 0 ] ) ) ).to.be.true;
-			expect( selection.focus.isEqual( new Position( root, [ 0, 0 ] ) ) ).to.be.true;
-			expect( selection ).to.have.property( 'isBackward', false );
-		} );
-
-		it( 'should be set to the beginning of the doc if there is no editable element', () => {
-			doc = new Document();
-			root = doc.createRoot();
-			root.insertChildren( 0, 'foobar' );
-			selection = doc.selection;
-
-			const ranges = Array.from( selection.getRanges() );
-
-			expect( ranges.length ).to.equal( 1 );
-			expect( selection.anchor.isEqual( new Position( root, [ 0 ] ) ) ).to.be.true;
-			expect( selection.focus.isEqual( new Position( root, [ 0 ] ) ) ).to.be.true;
-			expect( selection ).to.have.property( 'isBackward', false );
-			expect( selection._attrs ).to.be.instanceof( Map );
-			expect( selection._attrs.size ).to.equal( 0 );
-		} );
-
-		it( 'should skip element when you can not put selection', () => {
-			doc = new Document();
-			root = doc.createRoot();
-			root.insertChildren( 0, [
-				new Element( 'img' ),
-				new Element( 'p', [], 'foobar' )
-			] );
-			doc.schema.registerItem( 'img' );
-			doc.schema.registerItem( 'p', '$block' );
-			selection = doc.selection;
-
-			const ranges = Array.from( selection.getRanges() );
-
-			expect( ranges.length ).to.equal( 1 );
-			expect( selection.anchor.isEqual( new Position( root, [ 1, 0 ] ) ) ).to.be.true;
-			expect( selection.focus.isEqual( new Position( root, [ 1, 0 ] ) ) ).to.be.true;
-			expect( selection ).to.have.property( 'isBackward', false );
-			expect( selection._attrs ).to.be.instanceof( Map );
-			expect( selection._attrs.size ).to.equal( 0 );
-		} );
-	} );
-
 	describe( 'isCollapsed', () => {
-		it( 'should return true for default range', () => {
-			expect( selection.isCollapsed ).to.be.true;
+		it( 'should return false for empty selection', () => {
+			expect( selection.isCollapsed ).to.be.false;
 		} );
 
 		it( 'should return true when there is single collapsed ranges', () => {
@@ -121,7 +72,7 @@ describe( 'Selection', () => {
 
 	describe( 'rangeCount', () => {
 		it( 'should return proper range count', () => {
-			expect( selection.rangeCount ).to.equal( 1 );
+			expect( selection.rangeCount ).to.equal( 0 );
 
 			selection.addRange( new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) );
 
@@ -322,14 +273,12 @@ describe( 'Selection', () => {
 			expect( spy.calledOnce ).to.be.true;
 		} );
 
-		it( 'modifies default range', () => {
-			const startPos = selection.getFirstPosition();
+		it( 'throws if there are no ranges in selection', () => {
 			const endPos = Position.createAt( root, 'END' );
 
-			selection.setFocus( endPos );
-
-			expect( selection.anchor.compareWith( startPos ) ).to.equal( 'SAME' );
-			expect( selection.focus.compareWith( endPos ) ).to.equal( 'SAME' );
+			expect( () => {
+				selection.setFocus( endPos );
+			} ).to.throw( CKEditorError, /selection-setFocus-no-ranges/ );
 		} );
 
 		it( 'modifies existing collapsed selection', () => {
@@ -485,10 +434,8 @@ describe( 'Selection', () => {
 			selection.removeAllRanges();
 		} );
 
-		it( 'should remove all stored ranges (and reset to default range)', () => {
-			expect( Array.from( selection.getRanges() ).length ).to.equal( 1 );
-			expect( selection.anchor.isEqual( new Position( root, [ 0, 0 ] ) ) ).to.be.true;
-			expect( selection.focus.isEqual( new Position( root, [ 0, 0 ] ) ) ).to.be.true;
+		it( 'should remove all stored ranges', () => {
+			expect( Array.from( selection.getRanges() ).length ).to.equal( 0 );
 		} );
 
 		it( 'should fire exactly one update event', () => {
@@ -545,6 +492,10 @@ describe( 'Selection', () => {
 	} );
 
 	describe( 'getFirstRange', () => {
+		it( 'should return null if no ranges were added', () => {
+			expect( selection.getFirstRange() ).to.be.null;
+		} );
+
 		it( 'should return a range which start position is before all other ranges\' start positions', () => {
 			// This will not be the first range despite being added as first
 			selection.addRange( new Range( new Position( root, [ 4 ] ), new Position( root, [ 5 ] ) ) );
@@ -563,6 +514,10 @@ describe( 'Selection', () => {
 	} );
 
 	describe( 'getFirstPosition', () => {
+		it( 'should return null if no ranges were added', () => {
+			expect( selection.getFirstPosition() ).to.be.null;
+		} );
+
 		it( 'should return a position that is in selection and is before any other position from the selection', () => {
 			// This will not be a range containing the first position despite being added as first
 			selection.addRange( new Range( new Position( root, [ 4 ] ), new Position( root, [ 5 ] ) ) );

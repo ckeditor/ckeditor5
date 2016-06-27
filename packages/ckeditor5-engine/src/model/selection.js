@@ -20,18 +20,8 @@ import mix from '../../utils/mix.js';
 export default class Selection {
 	/**
 	 * Creates an empty selection.
-	 *
-	 * @param {engine.model.Document} document Document which owns this selection.
 	 */
-	constructor( document ) {
-		/**
-		 * Document which owns this selection.
-		 *
-		 * @private
-		 * @member {engine.model.Document} engine.model.Selection#_document
-		 */
-		this._document = document;
-
+	constructor() {
 		/**
 		 * Specifies whether the last added range was added as a backward or forward range.
 		 *
@@ -54,25 +44,37 @@ export default class Selection {
 	 * {@link engine.model.Selection#focus} they define the direction of selection, which is important
 	 * when expanding/shrinking selection. Anchor is always the start or end of the most recent added range.
 	 *
+	 * Is set to `null` if there are no ranges in selection.
+	 *
 	 * @see engine.model.Selection#focus
-	 * @type {engine.model.Position}
+	 * @type {engine.model.Position|null}
 	 */
 	get anchor() {
-		let range = this._ranges.length ? this._ranges[ this._ranges.length - 1 ] : this._getDefaultRange();
+		if ( this._ranges.length > 0 ) {
+			const range = this._ranges[ this._ranges.length - 1 ];
 
-		return this._lastRangeBackward ? range.end : range.start;
+			return this._lastRangeBackward ? range.end : range.start;
+		}
+
+		return null;
 	}
 
 	/**
 	 * Selection focus. Focus is a position where the selection ends.
 	 *
+	 * Is set to `null` if there are no ranges in selection.
+	 *
 	 * @see engine.model.Selection#anchor
-	 * @type {engine.model.Position}
+	 * @type {engine.model.Position|null}
 	 */
 	get focus() {
-		let range = this._ranges.length ? this._ranges[ this._ranges.length - 1 ] : this._getDefaultRange();
+		if ( this._ranges.length > 0 ) {
+			const range = this._ranges[ this._ranges.length - 1 ];
 
-		return this._lastRangeBackward ? range.start : range.end;
+			return this._lastRangeBackward ? range.start : range.end;
+		}
+
+		return null;
 	}
 
 	/**
@@ -84,10 +86,7 @@ export default class Selection {
 	get isCollapsed() {
 		const length = this._ranges.length;
 
-		if ( length === 0 ) {
-			// Default range is collapsed.
-			return true;
-		} else if ( length === 1 ) {
+		if ( length === 1 ) {
 			return this._ranges[ 0 ].isCollapsed;
 		} else {
 			return false;
@@ -100,7 +99,7 @@ export default class Selection {
 	 * @type {Number}
      */
 	get rangeCount() {
-		return this._ranges.length ? this._ranges.length : 1;
+		return this._ranges.length;
 	}
 
 	/**
@@ -139,21 +138,19 @@ export default class Selection {
 	 * @returns {Iterator.<engine.model.Range>}
 	 */
 	*getRanges() {
-		if ( this._ranges.length ) {
-			for ( let range of this._ranges ) {
-				yield Range.createFromRange( range );
-			}
-		} else {
-			yield this._getDefaultRange();
+		for ( let range of this._ranges ) {
+			yield Range.createFromRange( range );
 		}
 	}
 
 	/**
-	 * Returns the first range in the selection. First range is the one which {@link engine.model.Range#start start} position
+	 * Returns a copy of the first range in the selection. First range is the one which {@link engine.model.Range#start start} position
 	 * {@link engine.model.Position#isBefore is before} start position of all other ranges (not to confuse with the first range
 	 * added to the selection).
 	 *
-	 * @returns {engine.model.Range}
+	 * Returns `null` if there are no ranges in selection.
+	 *
+	 * @returns {engine.model.Range|null}
 	 */
 	getFirstRange() {
 		let first = null;
@@ -166,17 +163,21 @@ export default class Selection {
 			}
 		}
 
-		return first ? Range.createFromRange( first ) : this._getDefaultRange();
+		return first ? Range.createFromRange( first ) : null;
 	}
 
 	/**
 	 * Returns the first position in the selection. First position is the position that {@link engine.model.Position#isBefore is before}
 	 * any other position in the selection ranges.
 	 *
-	 * @returns {engine.model.Position}
+	 * Returns `null` if there are no ranges in selection.
+	 *
+	 * @returns {engine.model.Position|null}
 	 */
 	getFirstPosition() {
-		return Position.createFromPosition( this.getFirstRange().start );
+		const first = this.getFirstRange();
+
+		return first ? Position.createFromPosition( first.start ) : null;
 	}
 
 	/**
@@ -240,6 +241,15 @@ export default class Selection {
 	 * first parameter is a node.
 	 */
 	setFocus( nodeOrPosition, offset ) {
+		if ( this._ranges.length === 0 ) {
+			/**
+			 * Cannot set selection focus if there are no ranges in selection.
+			 *
+			 * @error selection-setFocus-no-ranges
+			 */
+			throw new CKEditorError( 'selection-setFocus-no-ranges: Cannot set selection focus if there are no ranges in selection.' );
+		}
+
 		const newFocus = Position.createAt( nodeOrPosition, offset );
 
 		if ( newFocus.compareWith( this.focus ) == 'SAME' ) {
@@ -303,30 +313,6 @@ export default class Selection {
 	_pushRange( range ) {
 		this._checkRange( range );
 		this._ranges.push( Range.createFromRange( range ) );
-	}
-
-	/**
-	 * Returns a default range for this selection. The default range is a collapsed range that starts and ends
-	 * at the beginning of this selection's document {@link engine.model.Document#_getDefaultRoot default root}.
-	 * This "artificial" range is important for algorithms that base on selection, so they won't break or need
-	 * special logic if there are no real ranges in the selection.
-	 *
-	 * @private
-	 * @returns {engine.model.Range}
-	 */
-	_getDefaultRange() {
-		const defaultRoot = this._document._getDefaultRoot();
-
-		// Find the first position where the selection can be put.
-		for ( let position of Range.createFromElement( defaultRoot ).getPositions() ) {
-			if ( this._document.schema.check( { name: '$text', inside: position } ) ) {
-				return new Range( position, position );
-			}
-		}
-
-		const position = new Position( defaultRoot, [ 0 ] );
-
-		return new Range( position, position );
 	}
 }
 

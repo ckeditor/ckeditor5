@@ -6,6 +6,8 @@
 'use strict';
 
 import LiveRange from './liverange.js';
+import Range from './range.js';
+import Position from './position.js';
 import CharacterProxy from './characterproxy.js';
 import toMap from '../../utils/tomap.js';
 
@@ -18,7 +20,9 @@ const storePrefix = 'selection:';
  * that user interacts with. `DocumentSelection` instance is created by {@link engine.model.Document}. You should not
  * create an instance of `DocumentSelection`.
  *
- * Differences between {@link engine.model.Selection} and `DocumentSelection` are two:
+ * Differences between {@link engine.model.Selection} and `DocumentSelection` are three:
+ * * there is always a range in `DocumentSelection`, even if no ranges were added - in this case, there is a
+ * "default range" in selection which is a collapsed range set at the beginning of the {@link engine.model.Document document},
  * * ranges added to this selection updates automatically when the document changes,
  * * document selection may have attributes.
  *
@@ -26,10 +30,20 @@ const storePrefix = 'selection:';
  */
 export default class DocumentSelection extends Selection {
 	/**
-	 * @inheritDoc
+	 * Creates an empty document selection for given {@link engine.model.Document}.
+	 *
+	 * @param {engine.model.Document} document Document which owns this selection.
 	 */
 	constructor( document ) {
-		super( document );
+		super();
+
+		/**
+		 * Document which owns this selection.
+		 *
+		 * @private
+		 * @member {engine.model.Document} engine.model.Selection#_document
+		 */
+		this._document = document;
 
 		/**
 		 * List of attributes set on current selection.
@@ -41,12 +55,60 @@ export default class DocumentSelection extends Selection {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	get isCollapsed() {
+		const length = this._ranges.length;
+
+		return length === 0 ? true : super.isCollapsed;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	get anchor() {
+		return super.anchor || this._getDefaultRange().start;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	get focus() {
+		return super.focus || this._getDefaultRange().start;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	get rangeCount() {
+		return this._ranges.length ? this._ranges.length : 1;
+	}
+
+	/**
 	 * Unbinds all events previously bound by document selection.
 	 */
 	destroy() {
 		for ( let i = 0; i < this._ranges.length; i++ ) {
 			this._ranges[ i ].detach();
 		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	*getRanges() {
+		if ( this._ranges.length ) {
+			yield *super.getRanges();
+		} else {
+			yield this._getDefaultRange();
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	getFirstRange() {
+		return super.getFirstRange() || this._getDefaultRange();
 	}
 
 	/**
@@ -159,6 +221,30 @@ export default class DocumentSelection extends Selection {
 	_pushRange( range ) {
 		this._checkRange( range );
 		this._ranges.push( LiveRange.createFromRange( range ) );
+	}
+
+	/**
+	 * Returns a default range for this selection. The default range is a collapsed range that starts and ends
+	 * at the beginning of this selection's document {@link engine.model.Document#_getDefaultRoot default root}.
+	 * This "artificial" range is important for algorithms that base on selection, so they won't break or need
+	 * special logic if there are no real ranges in the selection.
+	 *
+	 * @private
+	 * @returns {engine.model.Range}
+	 */
+	_getDefaultRange() {
+		const defaultRoot = this._document._getDefaultRoot();
+
+		// Find the first position where the selection can be put.
+		for ( let position of Range.createFromElement( defaultRoot ).getPositions() ) {
+			if ( this._document.schema.check( { name: '$text', inside: position } ) ) {
+				return new Range( position, position );
+			}
+		}
+
+		const position = new Position( defaultRoot, [ 0 ] );
+
+		return new Range( position, position );
 	}
 
 	/**
