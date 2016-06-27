@@ -15,7 +15,13 @@ import iconManagerModel from '../../../theme/iconmanagermodel.js';
 import mix from '../../utils/mix.js';
 
 /**
- * Base class for the editor main view controllers.
+ * The EditorUI controller class. It's a base class for the editor
+ * main view controllers.
+ *
+ *		// An instance of EditorUI.
+ *		new EditorUI( editor );
+ *
+ * See {@link ui.editorUI.EditorUIView}.
  *
  * @memberOf ui.editorUI
  * @extends ui.Controller
@@ -23,7 +29,7 @@ import mix from '../../utils/mix.js';
  */
 export default class EditorUI extends Controller {
 	/**
-	 * Creates an EditorUI instance.
+	 * Creates an instance of {@link ui.editorUI.EditorUI} class.
 	 *
 	 * @param {ckeditor5.Editor} editor
 	 */

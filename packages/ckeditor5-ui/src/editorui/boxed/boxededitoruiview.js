@@ -10,16 +10,17 @@ import uid from '../../../utils/uid.js';
 import Template from '../../template.js';
 
 /**
- * Boxed editor UI view.
+ * The BoxedEditorUIView class. This class represents an editor interface
+ * consisting of a toolbar and an editable area, enclosed within a box.
+ *
+ * See {@link ui.editorUI.boxed.BoxedEditorUI}.
  *
  * @member ui.editorUI.boxed
  * @extends ui.editorUI.EditorUIView
  */
 export default class BoxedEditorUIView extends EditorUIView {
 	/**
-	 * Creates a BoxedEditorUIView instance.
-	 *
-	 * @param {utils.Locale} [locale] The {@link ckeditor5.Editor#locale editor's locale} instance.
+	 * @inheritDoc
 	 */
 	constructor( locale ) {
 		super( locale );
