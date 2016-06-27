@@ -13,8 +13,11 @@ import Renderer from '/ckeditor5/engine/view/renderer.js';
 import ViewRange from '/ckeditor5/engine/view/range.js';
 import Writer from '/ckeditor5/engine/view/writer.js';
 import DomConverter from '/ckeditor5/engine/view/domconverter.js';
-
+import testUtils from '/tests/ckeditor5/_utils/utils.js';
 import count from '/ckeditor5/utils/count.js';
+import log from '/ckeditor5/utils/log.js';
+
+testUtils.createSinonSandbox();
 
 describe( 'Document', () => {
 	let ObserverMock, ObserverMockGlobalCount, instantiated, enabled;
@@ -362,6 +365,60 @@ describe( 'Document', () => {
 			viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewRoot, 0, viewRoot, 0 ) );
 
 			expect( viewDocument.selectedEditable ).to.equal( viewRoot );
+		} );
+	} );
+
+	describe( 'focus', () => {
+		let viewDocument, domEditable, viewEditable;
+
+		beforeEach( () => {
+			viewDocument = new Document();
+			domEditable = document.createElement( 'div' );
+			domEditable.setAttribute( 'contenteditable', 'true' );
+			document.body.appendChild( domEditable );
+			viewEditable = viewDocument.createRoot( domEditable );
+			viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewEditable, 0, viewEditable, 0 ) );
+		} );
+
+		afterEach( () => {
+			document.body.removeChild( domEditable );
+		} );
+
+		it( 'should focus editable with selection', () => {
+			const converterFocusSpy = testUtils.sinon.spy( viewDocument.domConverter, 'focus' );
+			const renderSpy = testUtils.sinon.spy( viewDocument, 'render' );
+
+			viewDocument.focus();
+
+			expect( converterFocusSpy.calledOnce ).to.be.true;
+			expect( renderSpy.calledOnce ).to.be.true;
+			expect( document.activeElement ).to.equal( domEditable );
+			const domSelection = document.getSelection();
+			expect( domSelection.rangeCount ).to.equal( 1 );
+			const domRange = domSelection.getRangeAt( 0 );
+			expect( domRange.startContainer ).to.equal( domEditable );
+			expect( domRange.startOffset ).to.equal( 0 );
+			expect( domRange.collapsed ).to.be.true;
+		} );
+
+		it( 'should not focus if document is already focused', () => {
+			const converterFocusSpy = testUtils.sinon.spy( viewDocument.domConverter, 'focus' );
+			const renderSpy = testUtils.sinon.spy( viewDocument, 'render' );
+			viewDocument.isFocused = true;
+
+			viewDocument.focus();
+
+			expect( converterFocusSpy.called ).to.be.false;
+			expect( renderSpy.called ).to.be.false;
+		} );
+
+		it( 'should log warning when no selection', () => {
+			const logSpy = testUtils.sinon.stub( log, 'warn' );
+			viewDocument.selection.removeAllRanges();
+
+			viewDocument.focus();
+			expect( logSpy.calledOnce ).to.be.true;
+			expect( logSpy.args[ 0 ][ 0 ] ).to.match( /^view-focus-no-selection/ );
 		} );
 	} );
 } );

@@ -606,4 +606,17 @@ export default class DomConverter {
 
 		return null;
 	}
+
+	/**
+	 * Focuses DOM editable that is corresponding to provided {@link engine.view.EditableElement EditableElement}.
+	 *
+	 * @param {engine.view.EditableElement} viewEditable
+	 */
+	focus( viewEditable ) {
+		const domEditable = this.getCorrespondingDomElement( viewEditable );
+
+		if ( domEditable && domEditable.ownerDocument.activeElement !== domEditable ) {
+			domEditable.focus();
+		}
+	}
 }

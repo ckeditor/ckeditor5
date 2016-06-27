@@ -455,11 +455,7 @@ export default class Renderer {
 			const editable = this.selection.getEditableElement();
 
 			if ( editable ) {
-				const domElement = this.domConverter.getCorrespondingDomElement( editable );
-
-				if ( domElement && domElement.ownerDocument.activeElement !== domElement ) {
-					domElement.focus();
-				}
+				this.domConverter.focus( editable );
 			}
 		}
 	}
