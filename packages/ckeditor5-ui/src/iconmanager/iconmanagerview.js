@@ -9,7 +9,9 @@ import View from '../view.js';
 import Template from '../template.js';
 
 /**
- * Icon manager view using {@link ui.iconManager.IconManagerModel}.
+ * The IconManagerView class.
+ *
+ * See {@link ui.iconManager.IconManager}.
  *
  * @memberOf ui.iconManager
  * @extends ui.View
@@ -25,6 +27,12 @@ export default class IconManagerView extends View {
 				class: 'ck-icon-manager-sprite'
 			}
 		} );
+
+		/**
+		 * Model of this IconManagerView.
+		 *
+		 * @member {ui.iconManager.IconManagerViewModel} ui.iconManager.IconManagerView#model
+		 */
 	}
 
 	init() {
@@ -33,3 +41,16 @@ export default class IconManagerView extends View {
 		return super.init();
 	}
 }
+
+/**
+ * The IconManagerView {@link ui.Model} interface.
+ *
+ * @memberOf ui.iconManager
+ * @interface ui.iconManager.IconManagerViewModel
+ */
+
+/**
+ * The actual SVG (HTML) of the icons to be injected in DOM.
+ *
+ * @member {String} ui.iconManager.IconManagerViewModel#sprite
+ */

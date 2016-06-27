@@ -8,17 +8,28 @@
 import Controller from '../controller.js';
 
 /**
- * Icon manager class.
+ * The IconManager controller class. It provides SVG icons, which then can
+ * be used by {@link ui.icon.Icon} component and similar.
+ *
+ *		const model = new Model( {
+ *			icons: [ 'bold', 'italic', ... ],
+ *			sprite: '...' // SVG sprite
+ *		} );
+ *
+ *		// An instance of IconManager.
+ *		new IconManager( model, new IconManagerView() );
+ *
+ * See {@link ui.iconManager.IconManagerView}.
  *
  * @memberOf ui.iconManager
  * @extends ui.Controller
  */
 export default class IconManager extends Controller {
 	/**
-	 * Creates a new instance of the IconManager class.
+	 * Creates an instance of {@link ui.iconManager.IconManager} class.
 	 *
-	 * @param {utils.Observable} model
-	 * @param {ui.View} [view] View instance.
+	 * @param {ui.iconManager.IconManagerModel} model Model of this IconManager.
+	 * @param {ui.View} view View of this IconManager.
 	 */
 	constructor( model, view ) {
 		super( model, view );
@@ -26,3 +37,22 @@ export default class IconManager extends Controller {
 		view.model.bind( 'sprite' ).to( model );
 	}
 }
+
+/**
+ * The IconManager component {@link ui.Model} interface.
+ *
+ * @memberOf ui.iconManager
+ * @interface ui.iconManager.IconManagerModel
+ */
+
+/**
+ * An array of icon names which are brought by the {@link ui.iconManager.IconManagerModel#sprite}.
+ *
+ * @member {Array.<String>} ui.iconManager.IconManagerModel#icons
+ */
+
+/**
+ * The actual SVG (HTML) of the icons to be injected in DOM.
+ *
+ * @member {String} ui.iconManager.IconManagerModel#sprite
+ */
