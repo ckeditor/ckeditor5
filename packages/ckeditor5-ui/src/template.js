@@ -23,7 +23,10 @@ const bindIfSymbol = Symbol( 'bindIf' );
  *		new Template( {
  *			tag: 'p',
  *			attributes: {
- *				class: 'foo'
+ *				class: 'foo',
+ *				style: {
+ *					backgroundColor: 'yellow'
+ *				}
  *			},
  *			children: [
  *				'A paragraph.'
@@ -32,7 +35,7 @@ const bindIfSymbol = Symbol( 'bindIf' );
  *
  * will render the following HTMLElement:
  *
- *		<p class="foo">A paragraph.</p>
+ *		<p class="foo" style="backgroundColor:yellow">A paragraph.</p>
  *
  * See {@link ui.TemplateDefinition} to know more about templates and see complex examples.
  *
@@ -402,6 +405,14 @@ export default class Template {
 			attrValue = attributes[ attrName ];
 			attrNs = attrValue[ 0 ].ns || null;
 
+			// Attribute style has specific format so needs to be parsed in a specific way:
+			// 		input: { style: { property: value, otherProperty: Template.bind.to( ... ) } }
+			// 		output: style="property:value;other-property:otherValue"
+			if ( attrName == 'style' ) {
+				this._renderAttributeStyle( attrValue[ 0 ].value || attrValue[ 0 ], attrNs, el );
+				continue;
+			}
+
 			// Activate binding if one is found. Cases:
 			// 		{ class: [ Template.bind.to( ... ) ] }
 			// 		{ class: [ 'bar', Template.bind.to( ... ), 'baz' ] }
@@ -432,6 +443,60 @@ export default class Template {
 				el.setAttributeNS( attrNs, attrName, attrValue );
 			}
 		}
+	}
+
+	/**
+	 * Render attribute `style`.
+	 * Attribute style has specific format so needs to be parsed in a specific way. For example:
+	 *
+	 * 		style: {
+	 * 			property: value,
+	 * 			otherProperty: otherValue
+	 * 		}
+	 *
+	 * 	will be rendered as:
+	 *
+	 * 		style="property:value;other-property:otherValue"
+	 *
+	 * Note: Multiple-word properties are always defined in camelCase format, and then are parsed to dash format.
+	 *
+	 * @private
+	 * @param {ui.TemplateDefinition.attributes.styles} styles Styles definition. Multiple-word properties needs to be
+	 * defined in camelCase format.
+	 * @param {String} attrNs Attribute namespace.
+	 * @param {HTMLElement} el Element which is rendered.
+	 */
+	_renderAttributeStyle( styles, attrNs, el ) {
+		// Normalization in case of style attribute is created with additional data as custom namespace.
+		styles = styles[ 0 ] || styles;
+
+		// Iterate through every single style.
+		// Attach listener to style property if is observable and get initial value for each style.
+		const initialStyles = Object.keys( styles ).map( ( style ) => {
+			// If style value is not observable.
+			if ( !styles[ style ].observable ) {
+				// Just return style as `property-name: value`.
+				// Note that style property has to be transformed from camelCase to dash
+				// for setting initial value by `setAttributeNS()`.
+				return `${ camelCaseToDash( style ) }:${ styles[ style ] }`;
+			}
+
+			// If style value is observable.
+			let { emitter, observable, attribute } = styles[ style ];
+
+			// Add listener.
+			emitter.listenTo( observable, `change:${ attribute }`, ( eventInfo, property, value ) => {
+				// And update only this style which has been changed.
+				el.style[ style ] = value;
+			} );
+
+			// A the end return style as `property-name: value`.
+			// Note that style property has to be transformed from camelCase to dash
+			// for setting initial value by `setAttributeNS()`.
+			return `${ camelCaseToDash( style ) }:${ styles[ style ].observable[ attribute ] }`;
+		} );
+
+		el.setAttributeNS( attrNs, 'style', initialStyles.join( ';' ) );
 	}
 
 	/**
@@ -884,6 +949,14 @@ function extendTemplateDefinition( def, extDef ) {
 			extendTemplateDefinition( def.children[ index ], extChildDef );
 		} );
 	}
+}
+
+// Transform camelCase to dash. `someString` to `some-string`.
+//
+// @param {String} value String to transform.
+// @returns {String} Transformed string.
+function camelCaseToDash( value ) {
+	return value.replace( /([a-z])([A-Z])/g, '$1-$2' ).toLowerCase();
 }
 
 /**

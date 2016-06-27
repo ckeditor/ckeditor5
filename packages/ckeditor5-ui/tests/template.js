@@ -204,6 +204,55 @@ describe( 'Template', () => {
 			expect( el.attributes.getNamedItem( 'x' ).namespaceURI ).to.equal( 'abc' );
 		} );
 
+		it( 'renders HTMLElement attribute style with dynamic and static properties', () => {
+			const observable = new Model( {
+				width: '100px',
+				color: 'yellow'
+			} );
+
+			const emitter = Object.create( EmitterMixin );
+			const bind = Template.bind( observable, emitter );
+			const el = new Template( {
+				tag: 'p',
+				attributes: {
+					style: {
+						width: bind.to( 'width' ),
+						height: '200px',
+						backgroundColor: bind.to( 'color' )
+					}
+				}
+			} ).render();
+
+			expect( el.outerHTML ).to.be.equal( '<p style="width:100px;height:200px;background-color:yellow"></p>' );
+			expect( el.style.width ).to.be.equal( '100px' );
+			expect( el.style.height ).to.be.equal( '200px' );
+			expect( el.style.backgroundColor ).to.be.equal( 'yellow' );
+
+			observable.width = '50px';
+			observable.color = 'green';
+
+			expect( el.style.width ).to.be.equal( '50px' );
+			expect( el.style.height ).to.be.equal( '200px' );
+			expect( el.style.backgroundColor ).to.be.equal( 'green' );
+		} );
+
+		it( 'renders HTMLElement attribute style in a custom namespace', () => {
+			const el = new Template( {
+				tag: 'p',
+				attributes: {
+					style: {
+						ns: 'abc',
+						value: {
+							width: '100px'
+						}
+					}
+				}
+			} ).render();
+
+			expect( el.outerHTML ).to.be.equal( '<p style="width:100px"></p>' );
+			expect( el.attributes.getNamedItem( 'style' ).namespaceURI ).to.equal( 'abc' );
+		} );
+
 		it( 'creates HTMLElement children', () => {
 			const el = new Template( {
 				tag: 'p',
