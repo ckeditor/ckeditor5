@@ -229,14 +229,12 @@ function renderDropdown( ui ) {
 	ui.add( 'dropdown', dropdown( {
 		label: 'Normal state',
 		isEnabled: true,
-		isOn: false,
 		content: itemListModel
 	} ) );
 
 	ui.add( 'dropdown', dropdown( {
 		label: 'Disabled',
 		isEnabled: false,
-		isOn: false,
 		content: itemListModel
 	} ) );
 }
@@ -371,10 +369,9 @@ function toolbar( children = [] ) {
 function dropdown( {
 	label = 'Dropdown',
 	isEnabled = true,
-	isOn = false,
 	content = new Model( { items: new Collection( { idProperty: 'label' } ) } )
 } = {} ) {
-	const model = new Model( { label, isEnabled, isOn, content } );
+	const model = new Model( { label, isEnabled, content } );
 	const dropdown = new ListDropdown( model, new ListDropdownView() );
 
 	return dropdown;
