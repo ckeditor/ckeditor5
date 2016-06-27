@@ -9,7 +9,9 @@ import EditableUIView from '../../editableui/editableuiview.js';
 import Template from '../../template.js';
 
 /**
- * The class implementing an inline {@link ui.editableUI.EditableUIView}.
+ * The InlineEditableUIView class implementing an inline {@link ui.editableUI.EditableUIView}.
+ *
+ * See {@link ui.editableUI.EditableUI}, {@link ui.editableUI.EditableUIView}.
  *
  * @memberOf ui.editableUI.inline
  * @extends ui.editableUI.EditableUIView
@@ -18,7 +20,6 @@ export default class InlineEditableUIView extends EditableUIView {
 	/**
 	 * Creates an instance of the InlineEditableUIView class.
 	 *
-	 * @param {utils.Observable} model (View)Model of this view.
 	 * @param {utils.Locale} [locale] The {@link ckeditor5.Editor#locale editor's locale} instance.
 	 * @param {HTMLElement} [editableElement] The editable element. If not specified, the {@link EditableUIView}
 	 * should create it. Otherwise, the existing element should be used.
