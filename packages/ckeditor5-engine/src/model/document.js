@@ -162,7 +162,6 @@ export default class Document {
 		this.version++;
 
 		if ( operation.delta ) {
-			// Right now I can't imagine operations without deltas, but let's be safe.
 			this.history.addDelta( operation.delta );
 		}
 
@@ -288,9 +287,9 @@ export default class Document {
 		const json = clone( this );
 
 		// Due to circular references we need to remove parent reference.
-		json.selection = '[engine.model.Selection]';
+		json.selection = '[engine.model.DocumentSelection]';
 
-		return {};
+		return json;
 	}
 
 	/**
