@@ -12,7 +12,7 @@ import transformations from './delta/basic-transformations.js'; // jshint ignore
 import RootElement from './rootelement.js';
 import Batch from './batch.js';
 import History from './history.js';
-import Selection from './selection.js';
+import DocumentSelection from './documentselection.js';
 import EmitterMixin from '../../utils/emittermixin.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 import mix from '../../utils/mix.js';
@@ -55,9 +55,9 @@ export default class Document {
 		 * Selection done on this document.
 		 *
 		 * @readonly
-		 * @member {engine.model.Selection} engine.model.Document#selection
+		 * @member {engine.model.DocumentSelection} engine.model.Document#selection
 		 */
-		this.selection = new Selection( this );
+		this.selection = new DocumentSelection( this );
 
 		/**
 		 * Schema for this document.
