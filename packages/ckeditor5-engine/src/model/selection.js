@@ -197,15 +197,15 @@ export default class Selection {
 	 * describing in which way the selection is made (see {@link #addRange}).
 	 *
 	 * @fires engine.model.Selection#change:range
-	 * @param {Array.<engine.model.Range>} newRanges Array of ranges to set.
+	 * @param {Iterable.<engine.model.Range>} newRanges Iterable set of ranges that should be set.
 	 * @param {Boolean} [isLastBackward] Flag describing if last added range was selected forward - from start to end (`false`)
 	 * or backward - from end to start (`true`). Defaults to `false`.
 	 */
 	setRanges( newRanges, isLastBackward ) {
 		this._ranges = [];
 
-		for ( let i = 0; i < newRanges.length; i++ ) {
-			this._pushRange( newRanges[ i ] );
+		for ( let range of newRanges ) {
+			this._pushRange( range );
 		}
 
 		this._lastRangeBackward = !!isLastBackward;
@@ -241,7 +241,7 @@ export default class Selection {
 	 * first parameter is a node.
 	 */
 	setFocus( nodeOrPosition, offset ) {
-		if ( this._ranges.length === 0 ) {
+		if ( this.anchor === null ) {
 			/**
 			 * Cannot set selection focus if there are no ranges in selection.
 			 *

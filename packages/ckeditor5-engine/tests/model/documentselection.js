@@ -275,7 +275,39 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
-	// Selection uses LiveRanges so here are only simple test to see if integration is
+	describe( 'getSnapshot', () => {
+		it( 'should return a Selection instance with default range if no ranges were added', () => {
+			const snapshot = selection.getSnapshot();
+
+			expect( selection.isBackward ).to.equal( snapshot.isBackward );
+
+			const snapshotRanges = Array.from( snapshot.getRanges() );
+
+			expect( snapshotRanges.length ).to.equal( 1 );
+			expect( snapshotRanges[ 0 ].start.path ).to.deep.equal( [ 0, 0 ] );
+			expect( snapshotRanges[ 0 ].end.path ).to.deep.equal( [ 0, 0 ] );
+		} );
+
+		it( 'should return a Selection instance with same ranges and direction as this selection', () => {
+			selection.addRange( liveRange );
+			selection.addRange( range, true );
+
+			const snapshot = selection.getSnapshot();
+
+			expect( selection.isBackward ).to.equal( snapshot.isBackward );
+
+			const selectionRanges = Array.from( selection.getRanges() );
+			const snapshotRanges = Array.from( snapshot.getRanges() );
+
+			expect( selectionRanges.length ).to.equal( snapshotRanges.length );
+
+			for ( let i = 0; i < selectionRanges.length; i++ ) {
+				expect( selectionRanges[ i ].isEqual( snapshotRanges[ i ] ) ).to.be.true;
+			}
+		} );
+	} );
+
+	// DocumentSelection uses LiveRanges so here are only simple test to see if integration is
 	// working well, without getting into complicated corner cases.
 	describe( 'after applying an operation should get updated and not fire update event', () => {
 		let spy;

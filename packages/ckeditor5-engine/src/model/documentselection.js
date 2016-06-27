@@ -128,6 +128,20 @@ export default class DocumentSelection extends Selection {
 	}
 
 	/**
+	 * Creates an instance of {@link engine.model.Selection} that has same ranges and direction as this selection. Since
+	 * this will be instance of `Selection` instead of `DocumentSelection`, it will not be automatically updated or rendered,
+	 * so it can be used in algorithms using and modifying selection.
+	 *
+	 * @returns {engine.model.Selection} Selection instance which ranges and direction is equal to this selection.
+	 */
+	getSnapshot() {
+		const selection = new Selection();
+		selection.setRanges( this.getRanges(), this.isBackward );
+
+		return selection;
+	}
+
+	/**
 	 * Removes all attributes from the selection.
 	 *
 	 * @fires engine.model.DocumentSelection#change:attribute
