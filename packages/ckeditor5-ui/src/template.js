@@ -405,12 +405,20 @@ export default class Template {
 			attrValue = attributes[ attrName ];
 			attrNs = attrValue[ 0 ].ns || null;
 
-			// Attribute style has specific format so needs to be parsed in a specific way:
-			// 		input: { style: { property: value, otherProperty: Template.bind.to( ... ) } }
-			// 		output: style="property:value;other-property:otherValue"
+			// Attribute style might have specific format so needs to be parsed in a specific way.
+			// 		input: { style: { width: '100px', height: '200px' } }
+			// 		output: style="width:100px;height:200px"
 			if ( attrName == 'style' ) {
-				this._renderAttributeStyle( attrValue[ 0 ].value || attrValue[ 0 ], attrNs, el );
-				continue;
+				const styleValue = attrValue[ 0 ].value || attrValue[ 0 ];
+
+				// If whole attribute is binded we don't parse it.
+				// It means that style will be render the same way as the rest of attributes:
+				// 		input: { style: 'width:100px;height:200px' }
+				// 		output: style="width:100px;height:200px"
+				if ( !styleValue.observable ) {
+					this._renderAttributeStyle( styleValue, el );
+					continue;
+				}
 			}
 
 			// Activate binding if one is found. Cases:
@@ -459,19 +467,16 @@ export default class Template {
 	 * 		style="property:value;other-property:otherValue"
 	 *
 	 * Note: Multiple-word properties are always defined in camelCase format, and then are parsed to dash format.
+	 * Note: Attribute `style` is rendered without setting namespace because setting custom namespace seems to be not
+	 * necessary in this case.
 	 *
 	 * @private
 	 * @param {ui.TemplateDefinition.attributes.styles} styles Styles definition. Multiple-word properties needs to be
 	 * defined in camelCase format.
-	 * @param {String} attrNs Attribute namespace.
 	 * @param {HTMLElement} el Element which is rendered.
 	 */
-	_renderAttributeStyle( styles, attrNs, el ) {
-		// Normalization in case of style attribute is created with additional data as custom namespace.
-		styles = styles[ 0 ] || styles;
-
+	_renderAttributeStyle( styles, el ) {
 		// Iterate through every single style.
-		// Attach listener to style property if is observable and get initial value for each style.
 		const initialStyles = Object.keys( styles ).map( ( style ) => {
 			// If style value is not observable.
 			if ( !styles[ style ].observable ) {
@@ -482,7 +487,7 @@ export default class Template {
 			}
 
 			// If style value is observable.
-			let { emitter, observable, attribute } = styles[ style ];
+			const { emitter, observable, attribute } = styles[ style ];
 
 			// Add listener.
 			emitter.listenTo( observable, `change:${ attribute }`, ( eventInfo, property, value ) => {
@@ -496,7 +501,7 @@ export default class Template {
 			return `${ camelCaseToDash( style ) }:${ styles[ style ].observable[ attribute ] }`;
 		} );
 
-		el.setAttributeNS( attrNs, 'style', initialStyles.join( ';' ) );
+		el.style.cssText = `${ initialStyles.join( ';' ) }`;
 	}
 
 	/**

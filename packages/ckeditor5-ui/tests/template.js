@@ -223,7 +223,6 @@ describe( 'Template', () => {
 				}
 			} ).render();
 
-			expect( el.outerHTML ).to.be.equal( '<p style="width:100px;height:200px;background-color:yellow"></p>' );
 			expect( el.style.width ).to.be.equal( '100px' );
 			expect( el.style.height ).to.be.equal( '200px' );
 			expect( el.style.backgroundColor ).to.be.equal( 'yellow' );
@@ -236,21 +235,26 @@ describe( 'Template', () => {
 			expect( el.style.backgroundColor ).to.be.equal( 'green' );
 		} );
 
-		it( 'renders HTMLElement attribute style in a custom namespace', () => {
+		it( 'renders HTMLElement attribute style fully binded', () => {
+			const observable = new Model( {
+				style: 'width: 100px'
+			} );
+
+			const emitter = Object.create( EmitterMixin );
+			const bind = Template.bind( observable, emitter );
 			const el = new Template( {
 				tag: 'p',
 				attributes: {
-					style: {
-						ns: 'abc',
-						value: {
-							width: '100px'
-						}
-					}
+					style: bind.to( 'style' )
 				}
 			} ).render();
 
-			expect( el.outerHTML ).to.be.equal( '<p style="width:100px"></p>' );
-			expect( el.attributes.getNamedItem( 'style' ).namespaceURI ).to.equal( 'abc' );
+			expect( el.style.width ).to.be.equal( '100px' );
+
+			observable.style = 'width:20px;height:50px';
+
+			expect( el.style.width ).to.be.equal( '20px' );
+			expect( el.style.height ).to.be.equal( '50px' );
 		} );
 
 		it( 'creates HTMLElement children', () => {
