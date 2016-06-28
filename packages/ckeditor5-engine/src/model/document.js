@@ -161,10 +161,7 @@ export default class Document {
 
 		this.version++;
 
-		if ( operation.delta ) {
-			// Right now I can't imagine operations without deltas, but let's be safe.
-			this.history.addDelta( operation.delta );
-		}
+		this.history.addDelta( operation.delta );
 
 		const batch = operation.delta && operation.delta.batch;
 

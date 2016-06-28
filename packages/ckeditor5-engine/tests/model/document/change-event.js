@@ -15,6 +15,7 @@ import AttributeOperation from '/ckeditor5/engine/model/operation/attributeopera
 import InsertOperation from '/ckeditor5/engine/model/operation/insertoperation.js';
 import MoveOperation from '/ckeditor5/engine/model/operation/moveoperation.js';
 import RemoveOperation from '/ckeditor5/engine/model/operation/removeoperation.js';
+import { wrapInDelta } from '/tests/engine/model/_utils/utils.js';
 
 describe( 'Document change event', () => {
 	let doc, root, graveyard, types, changes;
@@ -34,7 +35,7 @@ describe( 'Document change event', () => {
 	} );
 
 	it( 'should be fired when text is inserted', () => {
-		doc.applyOperation( new InsertOperation( new Position( root, [ 0 ] ), 'foo', doc.version ) );
+		doc.applyOperation( wrapInDelta( new InsertOperation( new Position( root, [ 0 ] ), 'foo', doc.version ) ) );
 
 		expect( changes ).to.have.length( 1 );
 		expect( types[ 0 ] ).to.equal( 'insert' );
@@ -43,7 +44,7 @@ describe( 'Document change event', () => {
 
 	it( 'should be fired when element is inserted', () => {
 		const element = new Element( 'p' );
-		doc.applyOperation( new InsertOperation( new Position( root, [ 0 ] ), element, doc.version ) );
+		doc.applyOperation( wrapInDelta( new InsertOperation( new Position( root, [ 0 ] ), element, doc.version ) ) );
 
 		expect( changes ).to.have.length( 1 );
 		expect( types[ 0 ] ).to.equal( 'insert' );
@@ -52,7 +53,7 @@ describe( 'Document change event', () => {
 
 	it( 'should be fired when nodes are inserted', () => {
 		const element = new Element( 'p' );
-		doc.applyOperation( new InsertOperation( new Position( root, [ 0 ] ), [ element, 'foo' ], doc.version ) );
+		doc.applyOperation( wrapInDelta( new InsertOperation( new Position( root, [ 0 ] ), [ element, 'foo' ], doc.version ) ) );
 
 		expect( changes ).to.have.length( 1 );
 		expect( types[ 0 ] ).to.equal( 'insert' );
@@ -67,14 +68,14 @@ describe( 'Document change event', () => {
 
 		root.insertChildren( 0, [ p1, p2 ] );
 
-		doc.applyOperation(
+		doc.applyOperation( wrapInDelta(
 			new MoveOperation(
 				new Position( root, [ 0, 0 ] ),
 				3,
 				new Position( root, [ 1, 0 ] ),
 				doc.version
 			)
-		);
+		) );
 
 		expect( changes ).to.have.length( 1 );
 		expect( types[ 0 ] ).to.equal( 'move' );
@@ -86,10 +87,10 @@ describe( 'Document change event', () => {
 		root.insertChildren( 0, 'foo' );
 
 		const removeOperation = new RemoveOperation( new Position( root, [ 0 ] ), 3, doc.version );
-		doc.applyOperation( removeOperation );
+		doc.applyOperation( wrapInDelta( removeOperation ) );
 
 		const reinsertOperation = removeOperation.getReversed();
-		doc.applyOperation( reinsertOperation );
+		doc.applyOperation( wrapInDelta( reinsertOperation ) );
 
 		expect( changes ).to.have.length( 2 );
 
@@ -107,7 +108,7 @@ describe( 'Document change event', () => {
 	it( 'should be fired when attribute is inserted', () => {
 		root.insertChildren( 0, 'foo' );
 
-		doc.applyOperation(
+		doc.applyOperation( wrapInDelta(
 			new AttributeOperation(
 				Range.createFromParentsAndOffsets( root, 0, root, 3 ),
 				'key',
@@ -115,7 +116,7 @@ describe( 'Document change event', () => {
 				'new',
 				doc.version
 			)
-		);
+		) );
 
 		expect( changes ).to.have.length( 1 );
 		expect( types[ 0 ] ).to.equal( 'addAttribute' );
@@ -129,7 +130,7 @@ describe( 'Document change event', () => {
 		const elem = new Element( 'p', { key: 'old' } );
 		root.insertChildren( 0, elem );
 
-		doc.applyOperation(
+		doc.applyOperation( wrapInDelta(
 			new AttributeOperation(
 				Range.createFromParentsAndOffsets( root, 0, elem, 0 ),
 				'key',
@@ -137,7 +138,7 @@ describe( 'Document change event', () => {
 				null,
 				doc.version
 			)
-		);
+		) );
 
 		expect( changes ).to.have.length( 1 );
 		expect( types[ 0 ] ).to.equal( 'removeAttribute' );
@@ -151,7 +152,7 @@ describe( 'Document change event', () => {
 		const elem = new Element( 'p', { key: 'old' } );
 		root.insertChildren( 0, elem );
 
-		doc.applyOperation(
+		doc.applyOperation( wrapInDelta(
 			new AttributeOperation(
 				Range.createFromParentsAndOffsets( root, 0, elem, 0 ),
 				'key',
@@ -159,7 +160,7 @@ describe( 'Document change event', () => {
 				'new',
 				doc.version
 			)
-		);
+		) );
 
 		expect( changes ).to.have.length( 1 );
 		expect( types[ 0 ] ).to.equal( 'changeAttribute' );

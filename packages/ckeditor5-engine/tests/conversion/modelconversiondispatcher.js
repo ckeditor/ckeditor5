@@ -14,6 +14,7 @@ import ModelElement from '/ckeditor5/engine/model/element.js';
 import ModelRange from '/ckeditor5/engine/model/range.js';
 import ModelPosition from '/ckeditor5/engine/model/position.js';
 import RemoveOperation from '/ckeditor5/engine/model/operation/removeoperation.js';
+import { wrapInDelta } from '/tests/engine/model/_utils/utils.js';
 
 describe( 'ModelConversionDispatcher', () => {
 	let dispatcher, doc, root;
@@ -75,7 +76,7 @@ describe( 'ModelConversionDispatcher', () => {
 			const removeOperation = new RemoveOperation( imagePos, 1, 0 );
 
 			// Let's apply remove operation so reinsert operation won't break.
-			doc.applyOperation( removeOperation );
+			doc.applyOperation( wrapInDelta( removeOperation ) );
 
 			const cbInsertText = sinon.spy();
 			const cbInsertImage = sinon.spy();
@@ -85,7 +86,7 @@ describe( 'ModelConversionDispatcher', () => {
 			dispatcher.on( 'insert:image', cbInsertImage );
 			dispatcher.on( 'addAttribute:key:image', cbAddAttribute );
 
-			doc.applyOperation( removeOperation.getReversed() );
+			doc.applyOperation( wrapInDelta( removeOperation.getReversed() ) );
 
 			expect( cbInsertImage.called ).to.be.true;
 			expect( cbAddAttribute.called ).to.be.true;

@@ -9,7 +9,7 @@
 
 import Document from '/ckeditor5/engine/model/document.js';
 import NoOperation from '/ckeditor5/engine/model/operation/nooperation.js';
-import { jsonParseStringify } from '/tests/engine/model/_utils/utils.js';
+import { jsonParseStringify, wrapInDelta } from '/tests/engine/model/_utils/utils.js';
 
 describe( 'NoOperation', () => {
 	let noop, doc, root;
@@ -21,7 +21,7 @@ describe( 'NoOperation', () => {
 	} );
 
 	it( 'should not throw an error when applied', () => {
-		expect( () => doc.applyOperation( noop ) ).to.not.throw( Error );
+		expect( () => doc.applyOperation( wrapInDelta( noop ) ) ).to.not.throw( Error );
 	} );
 
 	it( 'should create a NoOperation as a reverse', () => {
