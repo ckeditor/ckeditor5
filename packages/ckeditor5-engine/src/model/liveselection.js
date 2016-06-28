@@ -16,19 +16,19 @@ import Selection from './selection.js';
 const storePrefix = 'selection:';
 
 /**
- * Represents a main {@link engine.model.Selection selection} of a {@link engine.model.Document}. This is the selection
- * that user interacts with. `DocumentSelection` instance is created by {@link engine.model.Document}. You should not
- * create an instance of `DocumentSelection`.
+ * `LiveSelection` is a special type of {@link engine.model.Selection selection} that listens to changes on a
+ * {@link engine.model.Document document} and has it ranges updated accordingly. Internal implementation of this
+ * mechanism bases on {@link engine.model.LiveRange live ranges}.
  *
- * Differences between {@link engine.model.Selection} and `DocumentSelection` are three:
- * * there is always a range in `DocumentSelection`, even if no ranges were added - in this case, there is a
+ * Differences between {@link engine.model.Selection} and `LiveSelection` are three:
+ * * there is always a range in `LiveSelection`, even if no ranges were added - in this case, there is a
  * "default range" in selection which is a collapsed range set at the beginning of the {@link engine.model.Document document},
  * * ranges added to this selection updates automatically when the document changes,
- * * document selection may have attributes.
+ * * live selection may have attributes.
  *
  * @memberOf engine.model
  */
-export default class DocumentSelection extends Selection {
+export default class LiveSelection extends Selection {
 	/**
 	 * Creates an empty document selection for given {@link engine.model.Document}.
 	 *
@@ -49,7 +49,7 @@ export default class DocumentSelection extends Selection {
 		 * List of attributes set on current selection.
 		 *
 		 * @protected
-		 * @member {Map} engine.model.DocumentSelection#_attrs
+		 * @member {Map} engine.model.LiveSelection#_attrs
 		 */
 		this._attrs = new Map();
 	}
@@ -129,7 +129,7 @@ export default class DocumentSelection extends Selection {
 
 	/**
 	 * Creates an instance of {@link engine.model.Selection} that has same ranges and direction as this selection. Since
-	 * this will be instance of `Selection` instead of `DocumentSelection`, it will not be automatically updated or rendered,
+	 * this will be instance of `Selection` instead of `LiveSelection`, it will not be automatically updated or rendered,
 	 * so it can be used in algorithms using and modifying selection.
 	 *
 	 * @returns {engine.model.Selection} Selection instance which ranges and direction is equal to this selection.
@@ -144,7 +144,7 @@ export default class DocumentSelection extends Selection {
 	/**
 	 * Removes all attributes from the selection.
 	 *
-	 * @fires engine.model.DocumentSelection#change:attribute
+	 * @fires engine.model.LiveSelection#change:attribute
 	 */
 	clearAttributes() {
 		this._attrs.clear();
@@ -185,7 +185,7 @@ export default class DocumentSelection extends Selection {
 	/**
 	 * Removes an attribute with given key from the selection.
 	 *
-	 * @fires engine.model.DocumentSelection#change:attribute
+	 * @fires engine.model.LiveSelection#change:attribute
 	 * @param {String} key Key of attribute to remove.
 	 */
 	removeAttribute( key ) {
@@ -198,7 +198,7 @@ export default class DocumentSelection extends Selection {
 	/**
 	 * Sets attribute on the selection. If attribute with the same key already is set, it overwrites its values.
 	 *
-	 * @fires engine.model.DocumentSelection#change:attribute
+	 * @fires engine.model.LiveSelection#change:attribute
 	 * @param {String} key Key of attribute to set.
 	 * @param {*} value Attribute value.
 	 */
@@ -212,7 +212,7 @@ export default class DocumentSelection extends Selection {
 	/**
 	 * Removes all attributes from the selection and sets given attributes.
 	 *
-	 * @fires engine.model.DocumentSelection#change:attribute
+	 * @fires engine.model.LiveSelection#change:attribute
 	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set.
 	 */
 	setAttributesTo( attrs ) {
@@ -290,7 +290,7 @@ export default class DocumentSelection extends Selection {
 		const selectionParent = this.getFirstPosition().parent;
 
 		if ( this.isCollapsed && selectionParent.getChildCount() === 0 ) {
-			const storeKey = DocumentSelection._getStoreAttributeKey( key );
+			const storeKey = LiveSelection._getStoreAttributeKey( key );
 
 			this._document.enqueueChanges( () => {
 				this._document.batch().removeAttr( storeKey, selectionParent );
@@ -310,7 +310,7 @@ export default class DocumentSelection extends Selection {
 		const selectionParent = this.getFirstPosition().parent;
 
 		if ( this.isCollapsed && selectionParent.getChildCount() === 0 ) {
-			const storeKey = DocumentSelection._getStoreAttributeKey( key );
+			const storeKey = LiveSelection._getStoreAttributeKey( key );
 
 			this._document.enqueueChanges( () => {
 				this._document.batch().setAttr( storeKey, value, selectionParent );
@@ -332,13 +332,13 @@ export default class DocumentSelection extends Selection {
 				const batch = this._document.batch();
 
 				for ( let attr of this._getStoredAttributes() ) {
-					const storeKey = DocumentSelection._getStoreAttributeKey( attr[ 0 ] );
+					const storeKey = LiveSelection._getStoreAttributeKey( attr[ 0 ] );
 
 					batch.removeAttr( storeKey, selectionParent );
 				}
 
 				for ( let attr of attrs ) {
-					const storeKey = DocumentSelection._getStoreAttributeKey( attr[ 0 ] );
+					const storeKey = LiveSelection._getStoreAttributeKey( attr[ 0 ] );
 
 					batch.setAttr( storeKey, attr[ 1 ], selectionParent );
 				}
@@ -349,7 +349,7 @@ export default class DocumentSelection extends Selection {
 	/**
 	 * Updates this selection attributes according to it's ranges and the document.
 	 *
-	 * @fires engine.model.DocumentSelection#change:attribute
+	 * @fires engine.model.LiveSelection#change:attribute
 	 * @protected
 	 */
 	_updateAttributes() {
@@ -441,5 +441,5 @@ export default class DocumentSelection extends Selection {
 /**
  * Fired whenever selection attributes are changed.
  *
- * @event engine.model.DocumentSelection#change:attribute
+ * @event engine.model.LiveSelection#change:attribute
  */

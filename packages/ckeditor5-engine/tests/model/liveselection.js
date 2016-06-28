@@ -13,14 +13,14 @@ import Text from '/ckeditor5/engine/model/text.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import LiveRange from '/ckeditor5/engine/model/liverange.js';
-import DocumentSelection from '/ckeditor5/engine/model/documentselection.js';
+import LiveSelection from '/ckeditor5/engine/model/liveselection.js';
 import InsertOperation from '/ckeditor5/engine/model/operation/insertoperation.js';
 import MoveOperation from '/ckeditor5/engine/model/operation/moveoperation.js';
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
 
 testUtils.createSinonSandbox();
 
-describe( 'DocumentSelection', () => {
+describe( 'LiveSelection', () => {
 	let attrFooBar;
 
 	before( () => {
@@ -307,7 +307,7 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
-	// DocumentSelection uses LiveRanges so here are only simple test to see if integration is
+	// LiveSelection uses LiveRanges so here are only simple test to see if integration is
 	// working well, without getting into complicated corner cases.
 	describe( 'after applying an operation should get updated and not fire update event', () => {
 		let spy;
@@ -473,7 +473,7 @@ describe( 'DocumentSelection', () => {
 				selection.setAttribute( 'foo', 'bar' );
 
 				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
-				expect( fullP.hasAttribute( DocumentSelection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
+				expect( fullP.hasAttribute( LiveSelection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
 			} );
 
 			it( 'should store attribute if the selection is in empty node', () => {
@@ -482,7 +482,7 @@ describe( 'DocumentSelection', () => {
 
 				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
 
-				expect( emptyP.getAttribute( DocumentSelection._getStoreAttributeKey( 'foo' ) ) ).to.equal( 'bar' );
+				expect( emptyP.getAttribute( LiveSelection._getStoreAttributeKey( 'foo' ) ) ).to.equal( 'bar' );
 			} );
 
 			it( 'should fire change:attribute event', () => {
@@ -535,8 +535,8 @@ describe( 'DocumentSelection', () => {
 				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
 				expect( selection.getAttribute( 'abc' ) ).to.be.undefined;
 
-				expect( fullP.hasAttribute( DocumentSelection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
-				expect( fullP.hasAttribute( DocumentSelection._getStoreAttributeKey( 'abc' ) ) ).to.be.false;
+				expect( fullP.hasAttribute( LiveSelection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
+				expect( fullP.hasAttribute( LiveSelection._getStoreAttributeKey( 'abc' ) ) ).to.be.false;
 			} );
 
 			it( 'should remove all stored attributes and store the given ones if the selection is in empty node', () => {
@@ -547,8 +547,8 @@ describe( 'DocumentSelection', () => {
 				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
 				expect( selection.getAttribute( 'abc' ) ).to.be.undefined;
 
-				expect( emptyP.getAttribute( DocumentSelection._getStoreAttributeKey( 'foo' ) ) ).to.equal( 'bar' );
-				expect( emptyP.hasAttribute( DocumentSelection._getStoreAttributeKey( 'abc' ) ) ).to.be.false;
+				expect( emptyP.getAttribute( LiveSelection._getStoreAttributeKey( 'foo' ) ) ).to.equal( 'bar' );
+				expect( emptyP.hasAttribute( LiveSelection._getStoreAttributeKey( 'abc' ) ) ).to.be.false;
 			} );
 
 			it( 'should fire change:attribute event', () => {
@@ -569,7 +569,7 @@ describe( 'DocumentSelection', () => {
 
 				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
 
-				expect( fullP.hasAttribute( DocumentSelection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
+				expect( fullP.hasAttribute( LiveSelection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
 			} );
 
 			it( 'should remove stored attribute if the selection is in empty node', () => {
@@ -579,7 +579,7 @@ describe( 'DocumentSelection', () => {
 
 				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
 
-				expect( emptyP.hasAttribute( DocumentSelection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
+				expect( emptyP.hasAttribute( LiveSelection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
 			} );
 
 			it( 'should fire change:attribute event', () => {
@@ -603,8 +603,8 @@ describe( 'DocumentSelection', () => {
 				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
 				expect( selection.getAttribute( 'abc' ) ).to.be.undefined;
 
-				expect( fullP.hasAttribute( DocumentSelection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
-				expect( fullP.hasAttribute( DocumentSelection._getStoreAttributeKey( 'abc' ) ) ).to.be.false;
+				expect( fullP.hasAttribute( LiveSelection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
+				expect( fullP.hasAttribute( LiveSelection._getStoreAttributeKey( 'abc' ) ) ).to.be.false;
 			} );
 
 			it( 'should remove all stored attributes if the selection is in empty node', () => {
@@ -617,8 +617,8 @@ describe( 'DocumentSelection', () => {
 				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
 				expect( selection.getAttribute( 'abc' ) ).to.be.undefined;
 
-				expect( emptyP.hasAttribute( DocumentSelection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
-				expect( emptyP.hasAttribute( DocumentSelection._getStoreAttributeKey( 'abc' ) ) ).to.be.false;
+				expect( emptyP.hasAttribute( LiveSelection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
+				expect( emptyP.hasAttribute( LiveSelection._getStoreAttributeKey( 'abc' ) ) ).to.be.false;
 			} );
 
 			it( 'should fire change:attribute event', () => {

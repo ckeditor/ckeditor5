@@ -12,7 +12,7 @@ import transformations from './delta/basic-transformations.js'; // jshint ignore
 import RootElement from './rootelement.js';
 import Batch from './batch.js';
 import History from './history.js';
-import DocumentSelection from './documentselection.js';
+import LiveSelection from './liveselection.js';
 import EmitterMixin from '../../utils/emittermixin.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 import mix from '../../utils/mix.js';
@@ -55,9 +55,9 @@ export default class Document {
 		 * Selection done on this document.
 		 *
 		 * @readonly
-		 * @member {engine.model.DocumentSelection} engine.model.Document#selection
+		 * @member {engine.model.LiveSelection} engine.model.Document#selection
 		 */
-		this.selection = new DocumentSelection( this );
+		this.selection = new LiveSelection( this );
 
 		/**
 		 * Schema for this document.
@@ -287,7 +287,7 @@ export default class Document {
 		const json = clone( this );
 
 		// Due to circular references we need to remove parent reference.
-		json.selection = '[engine.model.DocumentSelection]';
+		json.selection = '[engine.model.LiveSelection]';
 
 		return json;
 	}

@@ -256,6 +256,6 @@ describe( 'Document', () => {
 	} );
 
 	it( 'should be correctly converted to json', () => {
-		expect( jsonParseStringify( doc ).selection ).to.equal( '[engine.model.DocumentSelection]' );
+		expect( jsonParseStringify( doc ).selection ).to.equal( '[engine.model.LiveSelection]' );
 	} );
 } );
