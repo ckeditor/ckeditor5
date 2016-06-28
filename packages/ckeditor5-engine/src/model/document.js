@@ -161,9 +161,7 @@ export default class Document {
 
 		this.version++;
 
-		if ( operation.delta ) {
-			this.history.addDelta( operation.delta );
-		}
+		this.history.addDelta( operation.delta );
 
 		const batch = operation.delta && operation.delta.batch;
 

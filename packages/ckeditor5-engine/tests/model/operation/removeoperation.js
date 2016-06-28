@@ -12,7 +12,7 @@ import ReinsertOperation from '/ckeditor5/engine/model/operation/reinsertoperati
 import RemoveOperation from '/ckeditor5/engine/model/operation/removeoperation.js';
 import MoveOperation from '/ckeditor5/engine/model/operation/moveoperation.js';
 import Position from '/ckeditor5/engine/model/position.js';
-import { jsonParseStringify } from '/tests/engine/model/_utils/utils.js';
+import { jsonParseStringify, wrapInDelta } from '/tests/engine/model/_utils/utils.js';
 
 describe( 'RemoveOperation', () => {
 	let doc, root, graveyard;
@@ -56,13 +56,13 @@ describe( 'RemoveOperation', () => {
 	it( 'should remove set of nodes and append them to holder element in graveyard root', () => {
 		root.insertChildren( 0, 'fozbar' );
 
-		doc.applyOperation(
+		doc.applyOperation( wrapInDelta(
 			new RemoveOperation(
 				new Position( root, [ 2 ] ),
 				2,
 				doc.version
 			)
-		);
+		) );
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 4 );
@@ -76,29 +76,29 @@ describe( 'RemoveOperation', () => {
 	it( 'should create new holder element for each remove operation', () => {
 		root.insertChildren( 0, 'fozbar' );
 
-		doc.applyOperation(
+		doc.applyOperation( wrapInDelta(
 			new RemoveOperation(
 				new Position( root, [ 0 ] ),
 				1,
 				doc.version
 			)
-		);
+		) );
 
-		doc.applyOperation(
+		doc.applyOperation( wrapInDelta(
 			new RemoveOperation(
 				new Position( root, [ 0 ] ),
 				1,
 				doc.version
 			)
-		);
+		) );
 
-		doc.applyOperation(
+		doc.applyOperation( wrapInDelta(
 			new RemoveOperation(
 				new Position( root, [ 0 ] ),
 				1,
 				doc.version
 			)
-		);
+		) );
 
 		expect( graveyard.getChildCount() ).to.equal( 3 );
 		expect( graveyard.getChild( 0 ).getChild( 0 ).character ).to.equal( 'f' );
@@ -137,12 +137,12 @@ describe( 'RemoveOperation', () => {
 
 		root.insertChildren( 0, 'bar' );
 
-		doc.applyOperation( operation );
+		doc.applyOperation( wrapInDelta( operation ) );
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 0 );
 
-		doc.applyOperation( reverse );
+		doc.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.getChildCount() ).to.equal( 3 );

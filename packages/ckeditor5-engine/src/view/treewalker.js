@@ -88,7 +88,7 @@ export default class TreeWalker {
 
 		/**
 		 * Flag indicating whether all characters from {@link engine.view.Text} should be returned as one
-		 * {@link engine.view.Text} or one by one as {@link.engine.TextProxy}.
+		 * {@link engine.view.Text} or one by one as {@link engine.view.TextProxy}.
 		 *
 		 * @readonly
 		 * @member {Boolean} engine.view.TreeWalker#singleCharacters
@@ -105,10 +105,9 @@ export default class TreeWalker {
 		this.shallow = !!options.shallow;
 
 		/**
-		 * Flag indicating whether iterator should ignore `ELEMENT_END` tags. If the option is true walker will not
-		 * return a parent node of the start position. If this option is `true` each {@link engine.view.Element} will
-		 * be returned once, while if the option is `false` they might be returned twice:
-		 * for `'ELEMENT_START'` and `'ELEMENT_END'`.
+		 * Flag indicating whether iterator should ignore `ELEMENT_END` tags. If set to `true`, walker will not
+		 * return a parent node of the start position. Each {@link engine.view.Element} will be returned once.
+		 * When set to `false` each element might be returned twice: for `'ELEMENT_START'` and `'ELEMENT_END'`.
 		 *
 		 * @readonly
 		 * @member {Boolean} engine.view.TreeWalker#ignoreElementEnd
@@ -116,18 +115,18 @@ export default class TreeWalker {
 		this.ignoreElementEnd = !!options.ignoreElementEnd;
 
 		/**
-		 * Start boundary cached for optimization purposes.
+		 * Start boundary parent.
 		 *
 		 * @private
-		 * @member {engine.view.Element} engine.view.TreeWalker#_boundaryStartParent
+		 * @member {engine.view.Node} engine.view.TreeWalker#_boundaryStartParent
 		 */
 		this._boundaryStartParent = this.boundaries ? this.boundaries.start.parent : null;
 
 		/**
-		 * End boundary cached for optimization purposes.
+		 * End boundary parent.
 		 *
 		 * @private
-		 * @member {engine.view.Element} engine.view.TreeWalker#_boundaryEndParent
+		 * @member {engine.view.Node} engine.view.TreeWalker#_boundaryEndParent
 		 */
 		this._boundaryEndParent = this.boundaries ? this.boundaries.end.parent : null;
 	}
@@ -158,7 +157,7 @@ export default class TreeWalker {
 	 *
 	 * @private
 	 * @returns {Object}
-	 * @returns {Boolean} return.done True if iterator is done.
+	 * @returns {Boolean} return.done `true` if iterator is done, `false` otherwise.
 	 * @returns {engine.view.TreeWalkerValue} return.value Information about taken step.
 	 */
 	_next() {
@@ -279,7 +278,7 @@ export default class TreeWalker {
 
 		// Text {@link engine.view.Text} element is a specific parent because contains string instead of child nodes.
 		if ( parent instanceof Text ) {
-			node = parent._data[ position.offset - 1 ];
+			node = parent.data[ position.offset - 1 ];
 		} else {
 			node = parent.getChild( position.offset - 1 );
 		}

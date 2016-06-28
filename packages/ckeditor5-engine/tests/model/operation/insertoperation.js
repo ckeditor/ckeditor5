@@ -14,7 +14,7 @@ import InsertOperation from '/ckeditor5/engine/model/operation/insertoperation.j
 import RemoveOperation from '/ckeditor5/engine/model/operation/removeoperation.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import Text from '/ckeditor5/engine/model/text.js';
-import { jsonParseStringify } from '/tests/engine/model/_utils/utils.js';
+import { jsonParseStringify, wrapInDelta } from '/tests/engine/model/_utils/utils.js';
 
 describe( 'InsertOperation', () => {
 	let doc, root;
@@ -35,13 +35,13 @@ describe( 'InsertOperation', () => {
 	} );
 
 	it( 'should insert node', () => {
-		doc.applyOperation(
+		doc.applyOperation( wrapInDelta(
 			new InsertOperation(
 				new Position( root, [ 0 ] ),
 				new Text( 'x' ),
 				doc.version
 			)
-		);
+		) );
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 1 );
@@ -49,13 +49,13 @@ describe( 'InsertOperation', () => {
 	} );
 
 	it( 'should insert set of nodes', () => {
-		doc.applyOperation(
+		doc.applyOperation( wrapInDelta(
 			new InsertOperation(
 				new Position( root, [ 0 ] ),
 				'bar',
 				doc.version
 			)
-		);
+		) );
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 3 );
@@ -67,13 +67,13 @@ describe( 'InsertOperation', () => {
 	it( 'should insert between existing nodes', () => {
 		root.insertChildren( 0, 'xy' );
 
-		doc.applyOperation(
+		doc.applyOperation( wrapInDelta(
 			new InsertOperation(
 				new Position( root, [ 1 ] ),
 				'bar',
 				doc.version
 			)
-		);
+		) );
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 5 );
@@ -85,13 +85,13 @@ describe( 'InsertOperation', () => {
 	} );
 
 	it( 'should insert text', () => {
-		doc.applyOperation(
+		doc.applyOperation( wrapInDelta(
 			new InsertOperation(
 				new Position( root, [ 0 ] ),
 				[ 'foo', new Text( 'x' ), 'bar' ],
 				doc.version
 			)
-		);
+		) );
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 7 );
@@ -129,11 +129,11 @@ describe( 'InsertOperation', () => {
 
 		let reverse = operation.getReversed();
 
-		doc.applyOperation( operation );
+		doc.applyOperation( wrapInDelta( operation ) );
 
 		expect( doc.version ).to.equal( 1 );
 
-		doc.applyOperation( reverse );
+		doc.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.getChildCount() ).to.equal( 0 );
@@ -148,11 +148,11 @@ describe( 'InsertOperation', () => {
 
 		let reverse = operation.getReversed();
 
-		doc.applyOperation( operation );
+		doc.applyOperation( wrapInDelta( operation ) );
 
 		expect( doc.version ).to.equal( 1 );
 
-		doc.applyOperation( reverse );
+		doc.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.getChildCount() ).to.equal( 0 );

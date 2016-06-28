@@ -9,12 +9,12 @@
  * TextProxy is a wrapper for substring of {@link engine.view.Text}. Instance of this class is created by
  * {@link engine.view.TreeWalker} when only a part of {@link engine.view.Text} needs to be returned.
  *
- * **Note:** TextProxy instances are created on the fly basing on the current state of parent {@link engine.view.Text}.
- * Because of this it is highly unrecommended to store references to TextProxy instances because they might get
- * invalidated due to operations on Document. Also TextProxy is not a {@link engine.view.Node} so it can not be
+ * **Note:** `TextProxy` instances are created on the fly basing on the current state of parent {@link engine.view.Text}.
+ * Because of this it is highly unrecommended to store references to `TextProxy` instances because they might get
+ * invalidated due to operations on the document. Also, `TextProxy` is not a {@link engine.view.Node} so it cannot be
  * inserted as a child of {@link engine.view.Element}.
  *
- * You should never create an instance of this class by your own. Instead, use string literals or {@link engine.model.Text}.
+ * You should never create an instance of this class by your own.
  *
  * @memberOf engine.view
  */

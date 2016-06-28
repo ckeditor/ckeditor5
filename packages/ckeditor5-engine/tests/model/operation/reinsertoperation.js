@@ -13,7 +13,7 @@ import RemoveOperation from '/ckeditor5/engine/model/operation/removeoperation.j
 import MoveOperation from '/ckeditor5/engine/model/operation/moveoperation.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import Element from '/ckeditor5/engine/model/element.js';
-import { jsonParseStringify } from '/tests/engine/model/_utils/utils.js';
+import { jsonParseStringify, wrapInDelta } from '/tests/engine/model/_utils/utils.js';
 
 describe( 'ReinsertOperation', () => {
 	let doc, root, graveyard, operation, graveyardPosition, rootPosition;
@@ -81,13 +81,13 @@ describe( 'ReinsertOperation', () => {
 		element.insertChildren( 0, 'xx' );
 		graveyard.insertChildren( 0, element );
 
-		doc.applyOperation( operation );
+		doc.applyOperation( wrapInDelta( operation ) );
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 2 );
 		expect( element.getChildCount() ).to.equal( 0 );
 
-		doc.applyOperation( reverse );
+		doc.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.getChildCount() ).to.equal( 0 );
