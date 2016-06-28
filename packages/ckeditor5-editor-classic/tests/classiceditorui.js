@@ -27,7 +27,7 @@ describe( 'ClassicEditorUI', () => {
 
 		editor = new ClassicTestEditor( editorElement );
 		editorUI = new ClassicEditorUI( editor );
-		editorUI.view = new BoxedEditorUIView( editorUI.viewModel, editor.locale );
+		editorUI.view = new BoxedEditorUIView( editor.locale );
 	} );
 
 	describe( 'constructor', () => {
