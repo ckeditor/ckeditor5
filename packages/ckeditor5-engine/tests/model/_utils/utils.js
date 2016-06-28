@@ -6,6 +6,7 @@
 'use strict';
 
 import TreeWalker from '/ckeditor5/engine/model/treewalker.js';
+import Delta from '/ckeditor5/engine/model/delta/delta.js';
 
 /**
  * Returns tree structure as a simplified string. Elements are uppercase and characters are lowercase.
@@ -42,4 +43,19 @@ export function getNodesAndText( range ) {
  */
 export function jsonParseStringify( object ) {
 	return JSON.parse( JSON.stringify( object ) );
+}
+
+/**
+ * Adds given {@link engine.model.operation.Operation operation} to a newly created {@link engine.model.delta.Delta delta}
+ * and returns it back. Every operation, when applied, have to be added to a delta. This helper function is useful in those
+ * tests which focus on operations, not deltas.
+ *
+ * @param {engine.model.operation.Operation} operation Operation to wrap
+ * @returns {engine.model.operation.Operation}
+ */
+export function wrapInDelta( operation ) {
+	const delta = new Delta();
+	delta.addOperation( operation );
+
+	return operation;
 }
