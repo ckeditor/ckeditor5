@@ -17,6 +17,7 @@ import LiveSelection from '/ckeditor5/engine/model/liveselection.js';
 import InsertOperation from '/ckeditor5/engine/model/operation/insertoperation.js';
 import MoveOperation from '/ckeditor5/engine/model/operation/moveoperation.js';
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
+import { wrapInDelta } from '/tests/engine/model/_utils/utils.js';
 
 testUtils.createSinonSandbox();
 
@@ -323,13 +324,13 @@ describe( 'LiveSelection', () => {
 
 		describe( 'InsertOperation', () => {
 			it( 'before selection', () => {
-				doc.applyOperation(
+				doc.applyOperation( wrapInDelta(
 					new InsertOperation(
 						new Position( root, [ 0, 1 ] ),
 						'xyz',
 						doc.version
 					)
-				);
+				) );
 
 				let range = selection._ranges[ 0 ];
 
@@ -339,13 +340,13 @@ describe( 'LiveSelection', () => {
 			} );
 
 			it( 'inside selection', () => {
-				doc.applyOperation(
+				doc.applyOperation( wrapInDelta(
 					new InsertOperation(
 						new Position( root, [ 1, 0 ] ),
 						'xyz',
 						doc.version
 					)
-				);
+				) );
 
 				let range = selection._ranges[ 0 ];
 
@@ -357,14 +358,14 @@ describe( 'LiveSelection', () => {
 
 		describe( 'MoveOperation', () => {
 			it( 'move range from before a selection', () => {
-				doc.applyOperation(
+				doc.applyOperation( wrapInDelta(
 					new MoveOperation(
 						new Position( root, [ 0, 0 ] ),
 						2,
 						new Position( root, [ 2 ] ),
 						doc.version
 					)
-				);
+				) );
 
 				let range = selection._ranges[ 0 ];
 
@@ -374,14 +375,14 @@ describe( 'LiveSelection', () => {
 			} );
 
 			it( 'moved into before a selection', () => {
-				doc.applyOperation(
+				doc.applyOperation( wrapInDelta(
 					new MoveOperation(
 						new Position( root, [ 2 ] ),
 						2,
 						new Position( root, [ 0, 0 ] ),
 						doc.version
 					)
-				);
+				) );
 
 				let range = selection._ranges[ 0 ];
 
@@ -391,14 +392,14 @@ describe( 'LiveSelection', () => {
 			} );
 
 			it( 'move range from inside of selection', () => {
-				doc.applyOperation(
+				doc.applyOperation( wrapInDelta(
 					new MoveOperation(
 						new Position( root, [ 1, 0 ] ),
 						2,
 						new Position( root, [ 2 ] ),
 						doc.version
 					)
-				);
+				) );
 
 				let range = selection._ranges[ 0 ];
 
@@ -408,14 +409,14 @@ describe( 'LiveSelection', () => {
 			} );
 
 			it( 'moved range intersects with selection', () => {
-				doc.applyOperation(
+				doc.applyOperation( wrapInDelta(
 					new MoveOperation(
 						new Position( root, [ 1, 3 ] ),
 						2,
 						new Position( root, [ 4 ] ),
 						doc.version
 					)
-				);
+				) );
 
 				let range = selection._ranges[ 0 ];
 
@@ -425,22 +426,22 @@ describe( 'LiveSelection', () => {
 			} );
 
 			it( 'split inside selection (do not break selection)', () => {
-				doc.applyOperation(
+				doc.applyOperation( wrapInDelta(
 					new InsertOperation(
 						new Position( root, [ 2 ] ),
 						new Element( 'p' ),
 						doc.version
 					)
-				);
+				) );
 
-				doc.applyOperation(
+				doc.applyOperation( wrapInDelta(
 					new MoveOperation(
 						new Position( root, [ 1, 2 ] ),
 						4,
 						new Position( root, [ 2, 0 ] ),
 						doc.version
 					)
-				);
+				) );
 
 				let range = selection._ranges[ 0 ];
 
