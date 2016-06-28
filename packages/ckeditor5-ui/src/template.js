@@ -406,19 +406,9 @@ export default class Template {
 			attrNs = attrValue[ 0 ].ns || null;
 
 			// Attribute style might have specific format so needs to be parsed in a specific way.
-			// 		input: { style: { width: '100px', height: '200px' } }
-			// 		output: style="width:100px;height:200px"
 			if ( attrName == 'style' ) {
-				const styleValue = attrValue[ 0 ].value || attrValue[ 0 ];
-
-				// If whole attribute is binded we don't parse it.
-				// It means that style will be render the same way as the rest of attributes:
-				// 		input: { style: 'width:100px;height:200px' }
-				// 		output: style="width:100px;height:200px"
-				if ( !styleValue.observable ) {
-					this._renderAttributeStyle( styleValue, el );
-					continue;
-				}
+				this._renderAttributeStyle( attrValue[ 0 ].value || attrValue[ 0 ], el );
+				continue;
 			}
 
 			// Activate binding if one is found. Cases:
@@ -455,34 +445,83 @@ export default class Template {
 
 	/**
 	 * Render attribute `style`.
-	 * Attribute style has specific format so needs to be parsed in a specific way. For example:
 	 *
-	 * 		style: {
-	 * 			property: value,
-	 * 			otherProperty: otherValue
+	 * Attribute style value could be an Object with static or binded to model properties:
+	 *
+	 *		new Model( {
+	 *			modelProperty: 'value'
+	 *		} );
+	 *
+	 *		attributes: {
+	 * 			style: {
+	 * 				property: value,
+	 * 				otherProperty: bind.to( 'modelProperty' ),
+	 * 			}
 	 * 		}
 	 *
-	 * 	will be rendered as:
+	 * 	or a String if whole style attribute is binded to model property:
 	 *
-	 * 		style="property:value;other-property:otherValue"
+	 * 		new Model( {
+	 *			style: 'value'
+	 *		} );
 	 *
-	 * Note: Multiple-word properties are always defined in camelCase format, and then are parsed to dash format.
+	 * 		attributes: {
+	 *			style: bind.to( 'style' )
+	 * 		}
+	 *
+	 * Note: Multiple-word properties are always defined in camelCase format:
+	 *
+	 * 		attributes: {
+	 * 			style: {
+	 * 				backgroundColor: ...,
+	 * 				borderWidth: ...
+	 * 			}
+	 * 		}
+	 *
 	 * Note: Attribute `style` is rendered without setting namespace because setting custom namespace seems to be not
 	 * necessary in this case.
 	 *
 	 * @private
-	 * @param {ui.TemplateDefinition.attributes.styles} styles Styles definition. Multiple-word properties needs to be
-	 * defined in camelCase format.
+	 * @param {ui.TemplateDefinition.attributes.styles} styles Styles definition.
 	 * @param {HTMLElement} el Element which is rendered.
 	 */
 	_renderAttributeStyle( styles, el ) {
+		// If whole attribute is binded we don't parse value.
+		if ( styles.observable ) {
+			const { emitter, observable, attribute } = styles;
+
+			// Validate value format for initial value.
+			if ( typeof observable[ attribute ] != 'string' ) {
+				throw new CKEditorError(
+					'template-renderAttributeStyle-invalid-format: Value for Whole binded property must be a string',
+					{ value: observable[ attribute ] }
+				);
+			}
+
+			emitter.listenTo( observable, `change:${ attribute }`, ( eventInfo, property, value ) => {
+				// Validate value format for updated value.
+				if ( typeof value != 'string' ) {
+					throw new CKEditorError(
+						'template-renderAttributeStyle-invalid-format: Value for Whole binded property must be a string',
+						{ value }
+					);
+				}
+
+				el.style.cssText = value;
+			} );
+
+			el.style.cssText = observable[ attribute ];
+
+			return;
+		}
+
 		// Iterate through every single style.
 		const initialStyles = Object.keys( styles ).map( ( style ) => {
 			// If style value is not observable.
 			if ( !styles[ style ].observable ) {
 				// Just return style as `property-name: value`.
 				// Note that style property has to be transformed from camelCase to dash
-				// for setting initial value by `setAttributeNS()`.
+				// for setting initial value by `el.style.cssText`.
 				return `${ camelCaseToDash( style ) }:${ styles[ style ] }`;
 			}
 

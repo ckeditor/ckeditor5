@@ -204,59 +204,6 @@ describe( 'Template', () => {
 			expect( el.attributes.getNamedItem( 'x' ).namespaceURI ).to.equal( 'abc' );
 		} );
 
-		it( 'renders HTMLElement attribute style with dynamic and static properties', () => {
-			const observable = new Model( {
-				width: '100px',
-				color: 'yellow'
-			} );
-
-			const emitter = Object.create( EmitterMixin );
-			const bind = Template.bind( observable, emitter );
-			const el = new Template( {
-				tag: 'p',
-				attributes: {
-					style: {
-						width: bind.to( 'width' ),
-						height: '200px',
-						backgroundColor: bind.to( 'color' )
-					}
-				}
-			} ).render();
-
-			expect( el.style.width ).to.be.equal( '100px' );
-			expect( el.style.height ).to.be.equal( '200px' );
-			expect( el.style.backgroundColor ).to.be.equal( 'yellow' );
-
-			observable.width = '50px';
-			observable.color = 'green';
-
-			expect( el.style.width ).to.be.equal( '50px' );
-			expect( el.style.height ).to.be.equal( '200px' );
-			expect( el.style.backgroundColor ).to.be.equal( 'green' );
-		} );
-
-		it( 'renders HTMLElement attribute style fully binded', () => {
-			const observable = new Model( {
-				style: 'width: 100px'
-			} );
-
-			const emitter = Object.create( EmitterMixin );
-			const bind = Template.bind( observable, emitter );
-			const el = new Template( {
-				tag: 'p',
-				attributes: {
-					style: bind.to( 'style' )
-				}
-			} ).render();
-
-			expect( el.style.width ).to.be.equal( '100px' );
-
-			observable.style = 'width:20px;height:50px';
-
-			expect( el.style.width ).to.be.equal( '20px' );
-			expect( el.style.height ).to.be.equal( '50px' );
-		} );
-
 		it( 'creates HTMLElement children', () => {
 			const el = new Template( {
 				tag: 'p',
@@ -367,6 +314,102 @@ describe( 'Template', () => {
 
 			observable.foo = 'baz';
 			expect( el.firstChild.textContent ).to.equal( 'baz static' );
+		} );
+
+		describe( '`style` attribute', () => {
+			it( 'renders with dynamic and static properties', () => {
+				const observable = new Model( {
+					width: '100px',
+					color: 'yellow'
+				} );
+
+				const emitter = Object.create( EmitterMixin );
+				const bind = Template.bind( observable, emitter );
+				const el = new Template( {
+					tag: 'p',
+					attributes: {
+						style: {
+							width: bind.to( 'width' ),
+							height: '200px',
+							backgroundColor: bind.to( 'color' )
+						}
+					}
+				} ).render();
+
+				expect( el.style.width ).to.be.equal( '100px' );
+				expect( el.style.height ).to.be.equal( '200px' );
+				expect( el.style.backgroundColor ).to.be.equal( 'yellow' );
+
+				observable.width = '50px';
+				observable.color = 'green';
+
+				expect( el.style.width ).to.be.equal( '50px' );
+				expect( el.style.height ).to.be.equal( '200px' );
+				expect( el.style.backgroundColor ).to.be.equal( 'green' );
+			} );
+
+			it( 'renders fully binded', () => {
+				const observable = new Model( {
+					style: 'width: 100px'
+				} );
+
+				const emitter = Object.create( EmitterMixin );
+				const bind = Template.bind( observable, emitter );
+				const el = new Template( {
+					tag: 'p',
+					attributes: {
+						style: bind.to( 'style' )
+					}
+				} ).render();
+
+				expect( el.style.width ).to.be.equal( '100px' );
+
+				observable.style = 'width:20px;height:50px';
+
+				expect( el.style.width ).to.be.equal( '20px' );
+				expect( el.style.height ).to.be.equal( '50px' );
+			} );
+
+			it( 'throws when wrong format for initial value of fully binded', () => {
+				const observable = new Model( {
+					style: {
+						width: '100px'
+					}
+				} );
+
+				const emitter = Object.create( EmitterMixin );
+				const bind = Template.bind( observable, emitter );
+
+				expect( () => {
+					new Template( {
+						tag: 'p',
+						attributes: {
+							style: bind.to( 'style' )
+						}
+					} ).render();
+				} ).to.throw( CKEditorError, /template-renderAttributeStyle-invalid-format/ );
+			} );
+
+			it( 'throws when wrong format for updated value of fully binded', () => {
+				const observable = new Model( {
+					style: 'width: 100px'
+				} );
+
+				const emitter = Object.create( EmitterMixin );
+				const bind = Template.bind( observable, emitter );
+				new Template( {
+					tag: 'p',
+					attributes: {
+						style: bind.to( 'style' )
+					}
+				} ).render();
+
+				expect( () => {
+					observable.style = {
+						width: '100px'
+					};
+				} ).to.throw( CKEditorError, /template-renderAttributeStyle-invalid-format/ );
+			} );
 		} );
 	} );
 
