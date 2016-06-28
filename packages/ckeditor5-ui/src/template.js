@@ -35,7 +35,7 @@ const bindIfSymbol = Symbol( 'bindIf' );
  *
  * will render the following HTMLElement:
  *
- *		<p class="foo" style="backgroundColor:yellow">A paragraph.</p>
+ *		<p class="foo" style="background-color:yellow">A paragraph.</p>
  *
  * See {@link ui.TemplateDefinition} to know more about templates and see complex examples.
  *
@@ -446,7 +446,7 @@ export default class Template {
 	/**
 	 * Render attribute `style`.
 	 *
-	 * Attribute style value could be an Object with static or binded to model properties:
+	 * Attribute style value could be an {Object} with static or binded to model properties:
 	 *
 	 *		new Model( {
 	 *			modelProperty: 'value'
@@ -459,7 +459,7 @@ export default class Template {
 	 * 			}
 	 * 		}
 	 *
-	 * 	or a String if whole style attribute is binded to model property:
+	 * 	or a {String} if whole style attribute is binded to model property:
 	 *
 	 * 		new Model( {
 	 *			style: 'value'
@@ -478,8 +478,10 @@ export default class Template {
 	 * 			}
 	 * 		}
 	 *
-	 * Note: Attribute `style` is rendered without setting namespace because setting custom namespace seems to be not
-	 * necessary in this case.
+	 * Note: Attribute `style` is rendered without setting namespace because:
+	 * 1. It seems to be not necessary
+	 * 2. We are using more efficient methods for setting styles `el.style.property` and `el.style.cssText` instead of
+	 * `setAttributeNS()`
 	 *
 	 * @private
 	 * @param {ui.TemplateDefinition.attributes.styles} styles Styles definition.
@@ -487,6 +489,7 @@ export default class Template {
 	 */
 	_renderAttributeStyle( styles, el ) {
 		// If whole attribute is binded we don't parse value.
+		// We render attribute in similar way to the rest of attributes and we take care of proper value format.
 		if ( styles.observable ) {
 			const { emitter, observable, attribute } = styles;
 
