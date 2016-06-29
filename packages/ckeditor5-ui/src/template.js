@@ -9,7 +9,7 @@
 
 import CKEditorError from '../utils/ckeditorerror.js';
 import mix from '../utils/mix.js';
-import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
+import EmitterMixin from '../utils/emittermixin.js';
 import cloneDeepWith from '../utils/lib/lodash/cloneDeepWith.js';
 
 const bindToSymbol = Symbol( 'bindTo' );
