@@ -234,7 +234,7 @@ export default class DomConverter {
 
 			// If there is an inline filler at position return position inside the filler. We should never return
 			// the position before the inline filler.
-			if ( domAfter instanceof Text && startsWithFiller( domAfter ) ) {
+			if ( this.isText( domAfter ) && startsWithFiller( domAfter ) ) {
 				return { parent: domAfter, offset: INLINE_FILLER_LENGTH };
 			}
 
@@ -261,7 +261,7 @@ export default class DomConverter {
 			return null;
 		}
 
-		if ( domNode instanceof Text ) {
+		if ( this.isText( domNode ) ) {
 			if ( isInlineFiller( domNode ) ) {
 				return null;
 			} else {
@@ -274,7 +274,7 @@ export default class DomConverter {
 
 			let viewElement;
 
-			if ( domNode instanceof DocumentFragment ) {
+			if ( this.isDocumentFragment( domNode ) ) {
 				// Create view document fragment.
 				viewElement = new ViewDocumentFragment();
 
@@ -383,7 +383,7 @@ export default class DomConverter {
 			return this.domPositionToView( domParent.parentNode, indexOf( domParent ) );
 		}
 
-		if ( domParent instanceof Text ) {
+		if ( this.isText( domParent ) ) {
 			if ( isInlineFiller( domParent ) ) {
 				return this.domPositionToView( domParent.parentNode, indexOf( domParent ) );
 			}
@@ -435,11 +435,11 @@ export default class DomConverter {
 	 * @returns {engine.view.Node|engine.view.DocumentFragment|null} Corresponding view item.
 	 */
 	getCorrespondingView( domNode ) {
-		if ( domNode instanceof HTMLElement ) {
+		if ( this.isElement( domNode ) ) {
 			return this.getCorrespondingViewElement( domNode );
-		} else if ( domNode instanceof DocumentFragment ) {
+		} else if ( this.isDocumentFragment( domNode ) ) {
 			return this.getCorrespondingViewDocumentFragment( domNode );
-		} else if ( domNode instanceof Text ) {
+		} else if ( this.isText( domNode ) ) {
 			return this.getCorrespondingViewText( domNode );
 		}
 
@@ -495,7 +495,7 @@ export default class DomConverter {
 
 		// Try to use previous sibling to find the corresponding text node.
 		if ( previousSibling ) {
-			if ( !( previousSibling instanceof HTMLElement ) ) {
+			if ( !( this.isElement( previousSibling ) ) ) {
 				// The previous is text or comment.
 				return null;
 			}
@@ -618,5 +618,35 @@ export default class DomConverter {
 		if ( domEditable && domEditable.ownerDocument.activeElement !== domEditable ) {
 			domEditable.focus();
 		}
+	}
+
+	/**
+	 * Returns `true` when `node.nodeType` equals `Node.TEXT_NODE`.
+	 *
+	 * @param {Node} node Node to check.
+	 * @returns {Boolean}
+	 */
+	isText( node ) {
+		return node && node.nodeType == Node.TEXT_NODE;
+	}
+
+	/**
+	 * Returns `true` when `node.nodeType` equals `Node.ELEMENT_NODE`.
+	 *
+	 * @param {Node} node Node to check.
+	 * @returns {Boolean}
+	 */
+	isElement( node ) {
+		return node && node.nodeType == Node.ELEMENT_NODE;
+	}
+
+	/**
+	 * Returns `true` when `node.nodeType` equals `Node.DOCUMENT_FRAGMENT_NODE`.
+	 *
+	 * @param {Node} node Node to check.
+	 * @returns {Boolean}
+	 */
+	isDocumentFragment( node ) {
+		return node && node.nodeType == Node.DOCUMENT_FRAGMENT_NODE;
 	}
 }
