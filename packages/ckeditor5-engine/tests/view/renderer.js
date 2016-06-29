@@ -24,7 +24,7 @@ testUtils.createSinonSandbox();
 describe( 'Renderer', () => {
 	let selection, domConverter, renderer;
 
-	before( () => {
+	beforeEach( () => {
 		selection = new Selection();
 		domConverter = new DomConverter();
 		renderer = new Renderer( domConverter, selection );
@@ -904,6 +904,35 @@ describe( 'Renderer', () => {
 			expect( () => {
 				renderer.render();
 			} ).to.throw();
+		} );
+
+		it( 'should handle focusing element', () => {
+			const domFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
+			const editable = selection.getEditableElement();
+
+			renderer.render();
+
+			expect( editable ).to.equal( viewRoot );
+			expect( domFocusSpy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should not focus editable if isFocues is set to false', () => {
+			const domFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
+
+			renderer.isFocused = false;
+			renderer.render();
+
+			expect( domFocusSpy.calledOnce ).to.be.false;
+		} );
+
+		it( 'should not focus already focused DOM element', () => {
+			domRoot.setAttribute( 'contentEditable', true );
+			domRoot.focus();
+			const domFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
+
+			renderer.render();
+
+			expect( domFocusSpy.called ).to.be.false;
 		} );
 	} );
 } );

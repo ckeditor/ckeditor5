@@ -11,6 +11,7 @@ import Writer from './writer.js';
 import DomConverter from './domconverter.js';
 import RootEditableElement from './rooteditableelement.js';
 import { injectQuirksHandling } from './filler.js';
+import log from '../../utils/log.js';
 
 import mix from '../../utils/mix.js';
 import ObservableMixin from '../../utils/observablemixin.js';
@@ -253,6 +254,30 @@ export default class Document {
 		this.renderer.render();
 
 		this.enableObservers();
+	}
+
+	/**
+	 * Focuses document. It will focus {@link engine.view.EditableElement EditableElement} that is currently having
+	 * selection inside.
+	 */
+	focus() {
+		if ( !this.isFocused ) {
+			const editable = this.selectedEditable;
+
+			if ( editable ) {
+				this.domConverter.focus( editable );
+				this.render();
+			} else {
+				/**
+				 * Before focusing view document, selection should be placed inside one of the view's editables.
+				 * Normally its selection will be converted from model document (which have default selection), but
+				 * when using view document on its own, we need to manually place selection before focusing it.
+				 *
+				 * @error view-focus-no-selection
+				 */
+				log.warn( 'view-focus-no-selection: There is no selection in any editable to focus.' );
+			}
+		}
 	}
 
 	/**
