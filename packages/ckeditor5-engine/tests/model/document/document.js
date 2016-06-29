@@ -15,6 +15,7 @@ import Batch from '/ckeditor5/engine/model/batch.js';
 import Delta from '/ckeditor5/engine/model/delta/delta.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import count from '/ckeditor5/utils/count.js';
+import { jsonParseStringify } from '/tests/engine/model/_utils/utils.js';
 
 describe( 'Document', () => {
 	let doc;
@@ -252,5 +253,9 @@ describe( 'Document', () => {
 
 			expect( doc._getDefaultRoot() ).to.equal( rootA );
 		} );
+	} );
+
+	it( 'should be correctly converted to json', () => {
+		expect( jsonParseStringify( doc ).selection ).to.equal( '[engine.model.LiveSelection]' );
 	} );
 } );
