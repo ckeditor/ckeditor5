@@ -28,6 +28,7 @@ describe( 'Renderer', () => {
 		selection = new Selection();
 		domConverter = new DomConverter();
 		renderer = new Renderer( domConverter, selection );
+		renderer.domDocuments.add( document );
 	} );
 
 	describe( 'markToSync', () => {
