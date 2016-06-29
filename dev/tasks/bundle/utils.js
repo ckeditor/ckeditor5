@@ -68,8 +68,8 @@ const utils = {
 	/**
 	 * Get normal and gzipped size of every passed file in specified directory.
 	 *
-	 * @param {String} [rootDir='']
 	 * @param {Array<String>} files
+	 * @param {String} [rootDir='']
 	 * @returns {Array<Object>} List with file size data
 	 */
 	getFilesSizeStats( files, rootDir = '' ) {

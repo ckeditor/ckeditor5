@@ -93,27 +93,29 @@ module.exports = ( config ) => {
 
 				return utils.saveFileFromStreamAsMinified( stream, bundleDir );
 			}
+		},
+
+		register() {
+			gulp.task( 'bundle:clean', tasks.clean );
+			gulp.task( 'bundle:generate', [ 'bundle:clean', 'build:js:esnext', 'build:themes:esnext' ], tasks.generate );
+			gulp.task( 'bundle:minify:js', tasks.minify.js );
+			gulp.task( 'bundle:minify:css', tasks.minify.css );
+			gulp.task( 'bundle:next', tasks.next );
+
+			gulp.task( 'bundle', ( callback ) => {
+				runSequence( 'bundle:generate', [ 'bundle:minify:js', 'bundle:minify:css' ], () => {
+					const files = [ 'ckeditor.js', 'ckeditor.css', 'ckeditor.min.js', 'ckeditor.min.css' ];
+					const filesStats = utils.getFilesSizeStats( files, bundleDir );
+
+					// Show bundle summary on console.
+					utils.showFilesSummary( 'Bundle summary', filesStats );
+
+					// Finish the task.
+					callback();
+				} );
+			} );
 		}
 	};
-
-	gulp.task( 'bundle:clean', tasks.clean );
-	gulp.task( 'bundle:generate', [ 'bundle:clean', 'build:js:esnext', 'build:themes:esnext' ], tasks.generate );
-	gulp.task( 'bundle:minify:js', tasks.minify.js );
-	gulp.task( 'bundle:minify:css', tasks.minify.css );
-	gulp.task( 'bundle:next', tasks.next );
-
-	gulp.task( 'bundle', ( callback ) => {
-		runSequence( 'bundle:generate', [ 'bundle:minify:js', 'bundle:minify:css' ], () => {
-			const files = [ 'ckeditor.js', 'ckeditor.css', 'ckeditor.min.js', 'ckeditor.min.css' ];
-			const filesStats = utils.getFilesSizeStats( files, bundleDir );
-
-			// Show bundle summary on console.
-			utils.showFilesSummary( 'Bundle summary', filesStats );
-
-			// Finish the task.
-			callback();
-		} );
-	} );
 
 	return tasks;
 };

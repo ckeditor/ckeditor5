@@ -24,7 +24,7 @@
  */
 import '../../../node_modules/regenerator-runtime/runtime.js';
 
-import ClassicEditor from '../../../build/esnext/ckeditor5/creator-classic/classic.js';
+import ClassicEditor from '../../../build/esnext/ckeditor5/editor-classic/classic.js';
 import Delete from '../../../build/esnext/ckeditor5/delete/delete.js';
 import Enter from '../../../build/esnext/ckeditor5/enter/enter.js';
 import Typing from '../../../build/esnext/ckeditor5/typing/typing.js';

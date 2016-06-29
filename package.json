@@ -9,11 +9,11 @@
   ],
   "dependencies": {
     "ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles",
-    "ckeditor5-creator-classic": "ckeditor/ckeditor5-creator-classic",
     "ckeditor5-delete": "ckeditor/ckeditor5-delete",
+    "ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic",
     "ckeditor5-engine": "ckeditor/ckeditor5-engine",
     "ckeditor5-enter": "ckeditor/ckeditor5-enter",
-    "ckeditor5-formats": "ckeditor/ckeditor5-formats",
+    "ckeditor5-headings": "ckeditor/ckeditor5-headings",
     "ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph",
     "ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark",
     "ckeditor5-typing": "ckeditor/ckeditor5-typing",
@@ -25,13 +25,13 @@
   },
   "devDependencies": {
     "almond": "^0.3.0",
-    "babel-core": "^6.4.0",
-    "babel-plugin-transform-es2015-modules-amd": "^6.1.18",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.2.0",
+    "babel-core": "^6.9.0",
+    "babel-plugin-transform-es2015-modules-amd": "^6.8.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.10.0",
     "babel-preset-es2015-rollup": "^1.1.1",
     "benderjs": "^0.4.1",
     "benderjs-chai": "^0.2.0",
-    "benderjs-coverage": "^0.2.1",
+    "benderjs-coverage": "benderjs/benderjs-coverage#t/4",
     "benderjs-mocha": "^0.3.0",
     "benderjs-promise": "^0.1.0",
     "benderjs-sinon": "^0.3.0",
@@ -56,19 +56,17 @@
     "gulp-replace": "^0.5.4",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-svg-sprite": "^1.2.19",
-    "gulp-uglify": "^1.5.3",
+    "gulp-uglify": "^1.5.4",
     "gulp-util": "^3.0.7",
-    "gulp-watch": "4.3.5",
+    "gulp-watch": "^4.3.7",
     "guppy-pre-commit": "^0.3.0",
     "gzip-size": "^3.0.0",
     "inquirer": "^0.11.0",
-    "istanbul": "^0.4.1",
     "jsdoc": "^3.4.0",
     "jshint": "^2.9.1",
     "jshint-reporter-jscs": "^0.1.0",
     "merge-stream": "^1.0.0",
     "minimist": "^1.2.0",
-    "mocha": "^2.2.5",
     "mockery": "^1.4.0",
     "multipipe": "^0.3.0",
     "ncp": "^2.0.0",
@@ -82,7 +80,8 @@
     "semver": "^5.1.0",
     "shelljs": "^0",
     "sinon": "^1.17.0",
-    "through2": "^2.0.0"
+    "through2": "^2.0.0",
+    "uglify": "^0.1.5"
   },
   "engines": {
     "node": ">=5.0.0",
@@ -95,9 +94,5 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/ckeditor/ckeditor5.git"
-  },
-  "scripts": {
-    "test": "mocha dev/tests --recursive",
-    "coverage": "istanbul cover _mocha dev/tests/ -- --recursive"
   }
 }

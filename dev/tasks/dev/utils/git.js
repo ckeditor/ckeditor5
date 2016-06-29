@@ -6,6 +6,7 @@
 'use strict';
 
 const tools = require( './tools' );
+const defaultOrigin = 'origin';
 
 module.exports = {
 
@@ -89,7 +90,7 @@ module.exports = {
 	pull( repositoryLocation, branchName ) {
 		const pullCommands = [
 			`cd ${ repositoryLocation }`,
-			`git pull origin ${ branchName }`
+			`git pull ${ defaultOrigin } ${ branchName }`
 		];
 
 		tools.shExec( pullCommands.join( ' && ' ) );
@@ -142,5 +143,20 @@ module.exports = {
 		];
 
 		tools.shExec( commitCommands.join( ' && ' ) );
+	},
+
+	/**
+	 * Adds remote to repository under specified path.
+	 *
+	 * @param {String} repositoryPath
+	 * @param {String} gitHubPath
+	 */
+	addRemote( repositoryPath, gitHubPath ) {
+		const addRemoteCommands = [
+			`cd ${ repositoryPath }`,
+			`git remote add ${ defaultOrigin } git@github.com:${ gitHubPath }.git`
+		];
+
+		tools.shExec( addRemoteCommands.join( ' && ' ) );
 	}
 };
