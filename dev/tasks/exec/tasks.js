@@ -12,6 +12,7 @@ const exec = require( './tasks/exec' );
 
 const log = require( './utils/log' );
 const gutil = require( 'gulp-util' );
+// const through = require( 'through2' );
 
 module.exports = ( config ) => {
 	const ckeditor5Path = process.cwd();
@@ -44,7 +45,7 @@ module.exports = ( config ) => {
 			}
 
 			if ( execTask ) {
-				exec( execTask, ckeditor5Path, packageJSON, config.WORKSPACE_DIR, options[ 'dry-run' ] );
+				return exec( execTask, ckeditor5Path, packageJSON, config.WORKSPACE_DIR, options[ 'dry-run' ] );
 			}
 		},
 

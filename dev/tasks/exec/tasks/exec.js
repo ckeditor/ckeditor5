@@ -9,6 +9,7 @@ const tools = require( '../utils/tools' );
 const git = require( '../utils/git' );
 const path = require( 'path' );
 const log = require( '../utils/log' );
+const merge = require( 'merge-stream' );
 
 /**
  * @param {Function} execTask Task to use on each dependency.
@@ -22,6 +23,7 @@ module.exports = ( execTask, ckeditor5Path, packageJSON, workspaceRoot, dryRun )
 
 	// Get all CKEditor dependencies from package.json.
 	const dependencies = tools.getCKEditorDependencies( packageJSON.dependencies );
+	const streams = merge();
 
 	if ( dependencies ) {
 		const directories = tools.getCKE5Directories( workspaceAbsolutePath );
@@ -30,7 +32,7 @@ module.exports = ( execTask, ckeditor5Path, packageJSON, workspaceRoot, dryRun )
 			for ( let dependency in dependencies ) {
 				const repositoryURL = dependencies[ dependency ];
 				const urlInfo = git.parseRepositoryUrl( repositoryURL );
-				// const repositoryAbsolutePath = path.join( workspaceAbsolutePath, dependency );
+				const repositoryAbsolutePath = path.join( ckeditor5Path, 'node_modules', dependency );
 
 				// Check if repository's directory already exists.
 				if ( directories.indexOf( urlInfo.name ) > -1 ) {
@@ -39,7 +41,8 @@ module.exports = ( execTask, ckeditor5Path, packageJSON, workspaceRoot, dryRun )
 					} else {
 						try {
 							log.out( `Executing task on ${ repositoryURL }...` );
-							log.out( execTask() );
+
+							streams.add( execTask( repositoryAbsolutePath ) );
 						} catch ( error ) {
 							log.err( error );
 						}
@@ -52,4 +55,6 @@ module.exports = ( execTask, ckeditor5Path, packageJSON, workspaceRoot, dryRun )
 	} else {
 		log.out( 'No CKEditor5 dependencies found in package.json file.' );
 	}
+
+	return streams;
 };
