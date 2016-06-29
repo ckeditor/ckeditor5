@@ -128,20 +128,6 @@ export default class LiveSelection extends Selection {
 	}
 
 	/**
-	 * Creates an instance of {@link engine.model.Selection} that has same ranges and direction as this selection. Since
-	 * this will be instance of `Selection` instead of `LiveSelection`, it will not be automatically updated or rendered,
-	 * so it can be used in algorithms using and modifying selection.
-	 *
-	 * @returns {engine.model.Selection} Selection instance which ranges and direction is equal to this selection.
-	 */
-	getSnapshot() {
-		const selection = new Selection();
-		selection.setRanges( this.getRanges(), this.isBackward );
-
-		return selection;
-	}
-
-	/**
 	 * Removes all attributes from the selection.
 	 *
 	 * @fires engine.model.LiveSelection#change:attribute
@@ -221,6 +207,14 @@ export default class LiveSelection extends Selection {
 
 		this.fire( 'change:attribute' );
 	}
+
+	/**
+	 * Creates and returns an instance of {@link engine.model.LiveSelection} that is a clone of given selection,
+	 * meaning that it has same ranges and same direction as it.
+	 *
+	 * @params {engine.model.Selection} otherSelection Selection to be cloned.
+	 * @returns {engine.model.LiveSelection} `LiveSelection` instance that is a clone of given selection.
+	 */
 
 	/**
 	 * @inheritDoc

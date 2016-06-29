@@ -33,7 +33,7 @@ export default class Selection {
 		/**
 		 * Stores all ranges that are selected.
 		 *
-		 * @private
+		 * @protected
 		 * @member {Array.<engine.model.Range>} engine.model.Selection#_ranges
 		 */
 		this._ranges = [];
@@ -267,6 +267,20 @@ export default class Selection {
 		} else {
 			this.addRange( new Range( anchor, newFocus ) );
 		}
+	}
+
+	/**
+	 * Creates and returns an instance of {@link engine.model.Selection} that is a clone of given selection,
+	 * meaning that it has same ranges and same direction as it.
+	 *
+	 * @params {engine.model.Selection} otherSelection Selection to be cloned.
+	 * @returns {engine.model.Selection} `Selection` instance that is a clone of given selection.
+	 */
+	static createFromSelection( otherSelection ) {
+		const selection = new this();
+		selection.setRanges( otherSelection.getRanges(), otherSelection.isBackward );
+
+		return selection;
 	}
 
 	/**

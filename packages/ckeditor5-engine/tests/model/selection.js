@@ -533,4 +533,24 @@ describe( 'Selection', () => {
 			expect( position.path ).to.deep.equal( [ 1 ] );
 		} );
 	} );
+
+	describe( 'createFromSelection', () => {
+		it( 'should return a Selection instance with same ranges and direction as given selection', () => {
+			selection.addRange( liveRange );
+			selection.addRange( range, true );
+
+			const snapshot = Selection.createFromSelection( selection );
+
+			expect( selection.isBackward ).to.equal( snapshot.isBackward );
+
+			const selectionRanges = Array.from( selection.getRanges() );
+			const snapshotRanges = Array.from( snapshot.getRanges() );
+
+			expect( selectionRanges.length ).to.equal( snapshotRanges.length );
+
+			for ( let i = 0; i < selectionRanges.length; i++ ) {
+				expect( selectionRanges[ i ].isEqual( snapshotRanges[ i ] ) ).to.be.true;
+			}
+		} );
+	} );
 } );
