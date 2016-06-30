@@ -405,12 +405,6 @@ export default class Template {
 			attrValue = attributes[ attrName ];
 			attrNs = attrValue[ 0 ].ns || null;
 
-			// Attribute style might have specific format so needs to be parsed in a specific way.
-			if ( attrName == 'style' ) {
-				this._renderAttributeStyle( attrValue[ 0 ].value || attrValue[ 0 ], el );
-				continue;
-			}
-
 			// Activate binding if one is found. Cases:
 			// 		{ class: [ Template.bind.to( ... ) ] }
 			// 		{ class: [ 'bar', Template.bind.to( ... ), 'baz' ] }
@@ -423,6 +417,15 @@ export default class Template {
 					el,
 					getAttributeUpdater( el, attrName, attrNs )
 				);
+			}
+
+			// Attribute style has a specific format so needs to be parsed in a specific way
+			// 		{ style: {
+			// 			width: '100px',
+			// 			height: Template.bind.to( ... )
+			// 		}
+			else if ( attrName == 'style' ) {
+				this._renderStyleAttribute( attrValue[ 0 ].value || attrValue[ 0 ], el );
 			}
 
 			// Otherwise simply set the attribute.
@@ -444,106 +447,39 @@ export default class Template {
 	}
 
 	/**
-	 * Render attribute `style`.
+	 * Render `style` attribute.
 	 *
-	 * Attribute style value could be an {Object} with static or binded to model properties:
-	 *
-	 *		new Model( {
-	 *			modelProperty: 'value'
-	 *		} );
+	 * Value of style attribute is an {Object} with static or bound to model properties:
 	 *
 	 *		attributes: {
 	 * 			style: {
 	 * 				property: value,
-	 * 				otherProperty: bind.to( 'modelProperty' ),
-	 * 			}
-	 * 		}
-	 *
-	 * 	or a {String} if whole style attribute is binded to model property:
-	 *
-	 * 		new Model( {
-	 *			style: 'value'
-	 *		} );
-	 *
-	 * 		attributes: {
-	 *			style: bind.to( 'style' )
-	 * 		}
-	 *
-	 * Note: Multiple-word properties are always defined in camelCase format:
-	 *
-	 * 		attributes: {
-	 * 			style: {
-	 * 				backgroundColor: ...,
-	 * 				borderWidth: ...
+	 * 				otherProperty: bind.to( ... ),
 	 * 			}
 	 * 		}
 	 *
 	 * Note: Attribute `style` is rendered without setting namespace because:
 	 * 1. It seems to be not necessary
-	 * 2. We are using more efficient methods for setting styles `el.style.property` and `el.style.cssText` instead of
-	 * `setAttributeNS()`
+	 * 2. We are using more efficient way for updating style `el.style.property = value;` instead of
+	 * `setAttributeNS( 'style', value );`
 	 *
 	 * @private
 	 * @param {ui.TemplateDefinition.attributes.styles} styles Styles definition.
 	 * @param {HTMLElement} el Element which is rendered.
 	 */
-	_renderAttributeStyle( styles, el ) {
-		// If whole attribute is binded we don't parse value.
-		// We render attribute in similar way to the rest of attributes and we take care of proper value format.
-		if ( styles.observable ) {
-			const { emitter, observable, attribute } = styles;
+	_renderStyleAttribute( styles, el ) {
+		for ( let styleName in styles ) {
+			const styleValue = styles[ styleName ];
 
-			// Validate value format for initial value.
-			if ( typeof observable[ attribute ] != 'string' ) {
-				throw new CKEditorError(
-					'template-renderAttributeStyle-invalid-format: Value for Whole binded property must be a string',
-					{ value: observable[ attribute ] }
-				);
+			// style: { color: bind.to( 'attribute' ) }
+			if ( hasBinding( styleValue ) ) {
+				this._bindToObservable( [ styleValue ], el, getStyleUpdater( el, styleName ) );
 			}
-
-			emitter.listenTo( observable, `change:${ attribute }`, ( eventInfo, property, value ) => {
-				// Validate value format for updated value.
-				if ( typeof value != 'string' ) {
-					throw new CKEditorError(
-						'template-renderAttributeStyle-invalid-format: Value for Whole binded property must be a string',
-						{ value }
-					);
-				}
-
-				el.style.cssText = value;
-			} );
-
-			el.style.cssText = observable[ attribute ];
-
-			return;
+			// style: { color: 'red' }
+			else {
+				el.style[ styleName ] = styleValue;
+			}
 		}
-
-		// Iterate through every single style.
-		const initialStyles = Object.keys( styles ).map( ( style ) => {
-			// If style value is not observable.
-			if ( !styles[ style ].observable ) {
-				// Just return style as `property-name: value`.
-				// Note that style property has to be transformed from camelCase to dash
-				// for setting initial value by `el.style.cssText`.
-				return `${ camelCaseToDash( style ) }:${ styles[ style ] }`;
-			}
-
-			// If style value is observable.
-			const { emitter, observable, attribute } = styles[ style ];
-
-			// Add listener.
-			emitter.listenTo( observable, `change:${ attribute }`, ( eventInfo, property, value ) => {
-				// And update only this style which has been changed.
-				el.style[ style ] = value;
-			} );
-
-			// A the end return style as `property-name: value`.
-			// Note that style property has to be transformed from camelCase to dash
-			// for setting initial value by `setAttributeNS()`.
-			return `${ camelCaseToDash( style ) }:${ styles[ style ].observable[ attribute ] }`;
-		} );
-
-		el.style.cssText = `${ initialStyles.join( ';' ) }`;
 	}
 
 	/**
@@ -747,6 +683,25 @@ function getAttributeUpdater( el, attrName, ns = null ) {
 
 		remove() {
 			el.removeAttributeNS( ns, attrName );
+		}
+	};
+}
+
+// Returns an object consisting of `set` and `remove` functions, which
+// can be used in the context of CSSStyleDeclaration to set or remove an style.
+// @see ui.View#_bindToObservable
+//
+// @param {Node} node DOM Node to be modified.
+// @param {String} styleName Name of the style to be modified.
+// @returns {Object}
+function getStyleUpdater( el, styleName ) {
+	return {
+		set( value ) {
+			el.style[ styleName ] = value;
+		},
+
+		remove() {
+			el.style[ styleName ] = null;
 		}
 	};
 }
@@ -996,14 +951,6 @@ function extendTemplateDefinition( def, extDef ) {
 			extendTemplateDefinition( def.children[ index ], extChildDef );
 		} );
 	}
-}
-
-// Transform camelCase to dash. `someString` to `some-string`.
-//
-// @param {String} value String to transform.
-// @returns {String} Transformed string.
-function camelCaseToDash( value ) {
-	return value.replace( /([a-z])([A-Z])/g, '$1-$2' ).toLowerCase();
 }
 
 /**
