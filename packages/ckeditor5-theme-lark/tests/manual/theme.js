@@ -350,7 +350,13 @@ function icon( name ) {
 	return new Icon( model, new IconView() );
 }
 
-function button( { label = 'Button', noText = false, isEnabled = true, isOn = false, icon, iconAlign } = {} ) {
+function button( {
+	label = 'Button',
+	noText = false,
+	isEnabled = true,
+	isOn = false,
+	icon, iconAlign
+} = {} ) {
 	const model = new Model( { label, noText, isEnabled, isOn, icon, iconAlign } );
 
 	return new Button( model, new ButtonView() );
