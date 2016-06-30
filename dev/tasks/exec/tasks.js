@@ -41,7 +41,7 @@ module.exports = ( config ) => {
 				execTask = require( `./functions/${ options.task }` );
 			}
 			catch ( error ) {
-				log.err( `Cannot find task ${ options.task }` );
+				log.err( error );
 			}
 
 			if ( execTask ) {
