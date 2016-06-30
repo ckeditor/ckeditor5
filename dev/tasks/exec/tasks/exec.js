@@ -48,6 +48,9 @@ module.exports = ( execTask, ckeditor5Path, packageJSON, workspaceRoot, dryRun )
 						}
 					}
 				}
+
+				// FIXME stop after first repository
+				return;
 			}
 		} else {
 			log.out( 'No CKEditor5 plugins in development mode.' );

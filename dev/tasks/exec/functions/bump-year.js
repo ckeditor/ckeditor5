@@ -8,13 +8,11 @@
 const gulp = require( 'gulp' );
 const through = require( 'through2' );
 const path = require( 'path' );
-// const gitignore = require( 'gulp-gitignore' );
-
 const filter = require( 'gulp-filter' );
 const gitignore = require( 'parse-gitignore' );
 const fs = require( 'fs' );
-
 const PassThrough = require( 'stream' ).PassThrough;
+const replace = require( 'gulp-replace' );
 
 function filterGitignore() {
 	const fp = '.gitignore';
@@ -24,7 +22,9 @@ function filterGitignore() {
 	}
 
 	let glob = gitignore( fp );
-	let inverted = glob.map( pattern => pattern.startsWith( '!' ) ? pattern.slice( 1 ) : '!' + pattern );
+	let inverted = glob.map(
+		pattern => pattern.startsWith( '!' ) ? pattern.slice( 1 ) : '!' + pattern
+	);
 	inverted.unshift( '**/*' );
 
 	return filter( inverted );
@@ -35,17 +35,24 @@ function filterGitignore() {
  */
 module.exports = ( workdir ) => {
 	const glob = path.join( workdir, '**/*' );
+	const reLicense = /(@license Copyright \(c\) 2003-)[0-9]{4}/g;
+	const yearReplacement = '$12017';
 
 	let fileCount = 0;
 
 	return gulp.src( glob )
 		.pipe( filterGitignore() )
-		.pipe( through.obj( ( file, enc, cb ) => {
+		.pipe( replace(
+			reLicense,
+			yearReplacement,
+			{ skipBinary: true }
+		) )
+		.pipe( through.obj( ( file, enc, next ) => {
 			fileCount++;
-			// console.log( file.path );
 
-			cb( );
+			next( null, file );
 		} ) )
+		.pipe( gulp.dest( workdir ) )
 		.on( 'end', ( ) => {
 			console.log( 'File count:', fileCount );
 		} );
