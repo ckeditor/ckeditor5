@@ -80,6 +80,10 @@ a.ck-button {
 			margin-left: 0;
 			margin-right: 0;
 		}
+
+		.ck-button__label {
+			display: none;
+		}
 	}
 
 	&.ck-on {
@@ -116,5 +120,14 @@ a.ck-button {
 		&-right {
 			margin-right: -#{ck-spacing( 'small' )};
 		}
+	}
+
+	.ck-button__label {
+		float: left;
+		line-height: inherit;
+		font-size: inherit;
+		font-weight: inherit;
+		color: inherit;
+		cursor: inherit;
 	}
 }

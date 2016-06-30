@@ -159,13 +159,11 @@ function renderButton( ui ) {
 	} ) );
 
 	const notextButton = button( {
-		label: '',
+		label: 'Bold',
+		noText: true,
 		icon: 'bold',
 		iconAlign: 'LEFT'
 	} );
-
-	// TODO: It requires model interface.
-	notextButton.view.element.classList.add( 'ck-button-notext' );
 
 	ui.add( 'button-icon-states', notextButton );
 
@@ -196,13 +194,13 @@ function renderButton( ui ) {
 		} ) );
 
 		const notextButton = button( {
-			label: '',
+			label: 'Link',
+			noText: true,
 			icon: 'link',
 			iconAlign: 'LEFT'
 		} );
 
 		// TODO: It requires model interface.
-		notextButton.view.element.classList.add( 'ck-button-notext' );
 		notextButton.view.element.classList.add( 'ck-button-action' );
 
 		ui.add( `button-responsive-${ i }`, notextButton );
@@ -347,8 +345,8 @@ function icon( name ) {
 	return new Controller( null, new IconView( new Model( { icon: name } ) ) );
 }
 
-function button( { label = 'Button', isEnabled = true, isOn = false, icon, iconAlign } = {} ) {
-	const model = new Model( { label, isEnabled, isOn, icon, iconAlign } );
+function button( { label = 'Button', noText = false, isEnabled = true, isOn = false, icon, iconAlign } = {} ) {
+	const model = new Model( { label, noText, isEnabled, isOn, icon, iconAlign } );
 
 	return new Button( model, new ButtonView( model ) );
 }
