@@ -35,7 +35,7 @@ const bindIfSymbol = Symbol( 'bindIf' );
  *
  * will render the following HTMLElement:
  *
- *		<p class="foo" style="background-color:yellow">A paragraph.</p>
+ *		<p class="foo" style="background-color: yellow;">A paragraph.</p>
  *
  * See {@link ui.TemplateDefinition} to know more about templates and see complex examples.
  *

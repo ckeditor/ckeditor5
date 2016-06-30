@@ -376,7 +376,7 @@ describe( 'Template', () => {
 					}
 				} );
 
-				expect( el.outerHTML ).to.be.equal( '<p style="background-color: yellow;"></p>' );
+				expect( el.outerHTML ).to.be.equal( '<p></p>' );
 			} );
 
 			it( 'renders with empty properties', () => {
