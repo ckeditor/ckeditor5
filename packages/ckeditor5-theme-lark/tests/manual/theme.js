@@ -369,9 +369,10 @@ function toolbar( children = [] ) {
 function dropdown( {
 	label = 'Dropdown',
 	isEnabled = true,
+	isOn = false,
 	content = new Model( { items: new Collection( { idProperty: 'label' } ) } )
 } = {} ) {
-	const model = new Model( { label, isEnabled, content } );
+	const model = new Model( { label, isEnabled, content, isOn } );
 	const dropdown = new ListDropdown( model, new ListDropdownView() );
 
 	return dropdown;
