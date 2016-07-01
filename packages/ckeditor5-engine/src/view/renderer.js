@@ -425,18 +425,7 @@ export default class Renderer {
 
 		// If there is no selection - remove it from DOM elements that belongs to the editor.
 		if ( this.selection.rangeCount === 0 ) {
-			for ( let doc of this.domDocuments ) {
-				const domSelection = doc.getSelection();
-
-				if ( domSelection.rangeCount ) {
-					const activeDomElement = doc.activeElement;
-					const viewElement = this.domConverter.getCorrespondingViewElement( activeDomElement );
-
-					if ( activeDomElement && viewElement ) {
-						doc.getSelection().removeAllRanges();
-					}
-				}
-			}
+			this._removeDomSelction();
 
 			return;
 		}
@@ -466,6 +455,21 @@ export default class Renderer {
 				domRange.setStart( domRangeStart.parent, domRangeStart.offset );
 				domRange.setEnd( domRangeEnd.parent, domRangeEnd.offset );
 				domSelection.addRange( domRange );
+			}
+		}
+	}
+
+	_removeDomSelction() {
+		for ( let doc of this.domDocuments ) {
+			const domSelection = doc.getSelection();
+
+			if ( domSelection.rangeCount ) {
+				const activeDomElement = doc.activeElement;
+				const viewElement = this.domConverter.getCorrespondingViewElement( activeDomElement );
+
+				if ( activeDomElement && viewElement ) {
+					doc.getSelection().removeAllRanges();
+				}
 			}
 		}
 	}
