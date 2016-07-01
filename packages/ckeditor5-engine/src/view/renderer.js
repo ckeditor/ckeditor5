@@ -41,6 +41,13 @@ export default class Renderer {
 	 */
 	constructor( domConverter, selection ) {
 		/**
+		 * Set of DOM Documents instances.
+		 *
+		 * @member {Set.<Document>} engine.view.Renderer#domDocuments
+		 */
+		this.domDocuments = new Set();
+
+		/**
 		 * Converter instance.
 		 *
 		 * @readonly
@@ -93,7 +100,7 @@ export default class Renderer {
 		 * Indicates if view document is focused and selection can be rendered. Selection will not be rendered if
 		 * this is set to `false`.
 		 *
-		 * @type {boolean}
+		 * @member {Boolean} engine.view.Renderer#isFocused
 		 */
 		this.isFocused = false;
 	}
@@ -243,7 +250,7 @@ export default class Renderer {
 		const domFillerNode = domFillerPosition.parent;
 
 		// If there is no filler viewPositionToDom will return parent node, so domFillerNode will be an element.
-		if ( !( domFillerNode instanceof Text ) || !startsWithFiller( domFillerNode ) ) {
+		if ( !( this.domConverter.isText( domFillerNode ) ) || !startsWithFiller( domFillerNode ) ) {
 			/**
 			 * No inline filler on expected position.
 			 *
@@ -364,7 +371,7 @@ export default class Renderer {
 		if ( filler && filler.parent == viewElement ) {
 			const expectedNodeAfterFiller = expectedDomChildren[ filler.offset ];
 
-			if ( expectedNodeAfterFiller instanceof Text ) {
+			if ( this.domConverter.isText( expectedNodeAfterFiller ) ) {
 				expectedNodeAfterFiller.data = INLINE_FILLER + expectedNodeAfterFiller.data;
 			} else {
 				expectedDomChildren.splice( filler.offset, 0, domDocument.createTextNode( INLINE_FILLER ) );
@@ -392,7 +399,7 @@ export default class Renderer {
 				return true;
 			}
 			// Texts.
-			else if ( actualDomChild instanceof Text && expectedDomChild instanceof Text ) {
+			else if ( domConverter.isText( actualDomChild ) && domConverter.isText( expectedDomChild ) ) {
 				return actualDomChild.data === expectedDomChild.data;
 			}
 			// Block fillers.
@@ -412,6 +419,13 @@ export default class Renderer {
 	 * @private
 	 */
 	_updateSelection() {
+		// If there is no selection - remove it from DOM elements that belongs to the editor.
+		if ( this.selection.rangeCount === 0 ) {
+			this._removeDomSelction();
+
+			return;
+		}
+
 		if ( !this.isFocused ) {
 			return;
 		}
@@ -441,6 +455,21 @@ export default class Renderer {
 				domRange.setStart( domRangeStart.parent, domRangeStart.offset );
 				domRange.setEnd( domRangeEnd.parent, domRangeEnd.offset );
 				domSelection.addRange( domRange );
+			}
+		}
+	}
+
+	_removeDomSelction() {
+		for ( let doc of this.domDocuments ) {
+			const domSelection = doc.getSelection();
+
+			if ( domSelection.rangeCount ) {
+				const activeDomElement = doc.activeElement;
+				const viewElement = this.domConverter.getCorrespondingViewElement( activeDomElement );
+
+				if ( activeDomElement && viewElement ) {
+					doc.getSelection().removeAllRanges();
+				}
 			}
 		}
 	}

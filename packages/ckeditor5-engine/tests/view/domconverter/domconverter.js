@@ -65,4 +65,50 @@ describe( 'DomConverter', () => {
 			expect( focusSpy.calledOnce ).to.be.true;
 		} );
 	} );
+
+	describe( 'DOM nodes type checking', () => {
+		let text, element, documentFragment;
+
+		before( () => {
+			text = document.createTextNode( 'test' );
+			element = document.createElement( 'div' );
+			documentFragment = document.createDocumentFragment();
+		} );
+
+		describe( 'isText', () => {
+			it( 'should return true for Text nodes', () => {
+				expect( converter.isText( text ) ).to.be.true;
+			} );
+
+			it( 'should return false for other arguments', () => {
+				expect( converter.isText( element ) ).to.be.false;
+				expect( converter.isText( documentFragment ) ).to.be.false;
+				expect( converter.isText( {} ) ).to.be.false;
+			} );
+		} );
+
+		describe( 'isElement', () => {
+			it( 'should return true for HTMLElement nodes', () => {
+				expect( converter.isElement( element ) ).to.be.true;
+			} );
+
+			it( 'should return false for other arguments', () => {
+				expect( converter.isElement( text ) ).to.be.false;
+				expect( converter.isElement( documentFragment ) ).to.be.false;
+				expect( converter.isElement( {} ) ).to.be.false;
+			} );
+		} );
+
+		describe( 'isDocumentFragment', () => {
+			it( 'should return true for HTMLElement nodes', () => {
+				expect( converter.isDocumentFragment( documentFragment ) ).to.be.true;
+			} );
+
+			it( 'should return false for other arguments', () => {
+				expect( converter.isDocumentFragment( text ) ).to.be.false;
+				expect( converter.isDocumentFragment( element ) ).to.be.false;
+				expect( converter.isDocumentFragment( {} ) ).to.be.false;
+			} );
+		} );
+	} );
 } );

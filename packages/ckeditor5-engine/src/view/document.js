@@ -191,7 +191,7 @@ export default class Document {
 		viewRoot.on( 'change:attributes', ( evt, node ) => this.renderer.markToSync( 'attributes', node ) );
 		viewRoot.on( 'change:text', ( evt, node ) => this.renderer.markToSync( 'text', node ) );
 
-		if ( domRoot instanceof HTMLElement ) {
+		if ( this.domConverter.isElement( domRoot ) ) {
 			this.attachDomRoot( domRoot, name );
 		}
 
@@ -217,6 +217,7 @@ export default class Document {
 		this.domConverter.bindElements( domRoot, viewRoot );
 
 		this.renderer.markToSync( 'children', viewRoot );
+		this.renderer.domDocuments.add( domRoot.ownerDocument );
 
 		for ( let observer of this._observers.values() ) {
 			observer.observe( domRoot, name );
