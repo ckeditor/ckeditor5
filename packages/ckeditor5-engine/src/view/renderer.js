@@ -419,14 +419,14 @@ export default class Renderer {
 	 * @private
 	 */
 	_updateSelection() {
-		if ( !this.isFocused ) {
-			return;
-		}
-
 		// If there is no selection - remove it from DOM elements that belongs to the editor.
 		if ( this.selection.rangeCount === 0 ) {
 			this._removeDomSelction();
 
+			return;
+		}
+
+		if ( !this.isFocused ) {
 			return;
 		}
 
