@@ -12,6 +12,7 @@ import ReinsertOperation from '/ckeditor5/engine/model/operation/reinsertoperati
 import RemoveOperation from '/ckeditor5/engine/model/operation/removeoperation.js';
 import MoveOperation from '/ckeditor5/engine/model/operation/moveoperation.js';
 import Position from '/ckeditor5/engine/model/position.js';
+import Delta from '/ckeditor5/engine/model/delta/delta.js';
 import { jsonParseStringify, wrapInDelta } from '/tests/engine/model/_utils/utils.js';
 
 describe( 'RemoveOperation', () => {
@@ -73,7 +74,7 @@ describe( 'RemoveOperation', () => {
 		expect( graveyard.getChild( 0 ).getChild( 1 ).character ).to.equal( 'b' );
 	} );
 
-	it( 'should create new holder element for each remove operation', () => {
+	it( 'should create new holder element for remove operations in different deltas', () => {
 		root.insertChildren( 0, 'fozbar' );
 
 		doc.applyOperation( wrapInDelta(
@@ -104,6 +105,34 @@ describe( 'RemoveOperation', () => {
 		expect( graveyard.getChild( 0 ).getChild( 0 ).character ).to.equal( 'f' );
 		expect( graveyard.getChild( 1 ).getChild( 0 ).character ).to.equal( 'o' );
 		expect( graveyard.getChild( 2 ).getChild( 0 ).character ).to.equal( 'z' );
+	} );
+
+	it( 'should not create new holder element for remove operation if it was already created for given delta', () => {
+		root.insertChildren( 0, 'fozbar' );
+
+		let delta = new Delta();
+
+		// This simulates i.e. RemoveOperation that got split into two operations during OT.
+		let removeOpA = new RemoveOperation(
+			new Position( root, [ 1 ] ),
+			1,
+			doc.version
+		);
+		let removeOpB = new RemoveOperation(
+			new Position( root, [ 0 ] ),
+			1,
+			doc.version + 1
+		);
+
+		delta.addOperation( removeOpA );
+		delta.addOperation( removeOpB );
+
+		doc.applyOperation( removeOpA );
+		doc.applyOperation( removeOpB );
+
+		expect( graveyard.getChildCount() ).to.equal( 1 );
+		expect( graveyard.getChild( 0 ).getChild( 0 ).character ).to.equal( 'f' );
+		expect( graveyard.getChild( 0 ).getChild( 1 ).character ).to.equal( 'o' );
 	} );
 
 	it( 'should create RemoveOperation with same parameters when cloned', () => {
