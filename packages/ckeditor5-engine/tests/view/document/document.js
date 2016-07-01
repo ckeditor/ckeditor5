@@ -60,7 +60,6 @@ describe( 'Document', () => {
 			expect( viewDocument ).to.have.property( 'renderer' ).that.is.instanceOf( Renderer );
 			expect( viewDocument ).to.have.property( 'writer' ).that.is.instanceOf( Writer );
 			expect( viewDocument ).to.have.property( 'domConverter' ).that.is.instanceOf( DomConverter );
-			expect( viewDocument ).to.have.property( 'selectedEditable' ).that.is.null;
 			expect( viewDocument ).to.have.property( 'isFocused' ).that.is.false;
 		} );
 	} );
@@ -352,19 +351,6 @@ describe( 'Document', () => {
 
 			expect( viewDocument.isFocused ).to.equal( true );
 			expect( viewDocument.renderer.isFocused ).to.equal( true );
-		} );
-	} );
-
-	describe( 'selectedEditable', () => {
-		it( 'should change when selection is moved to different editable', () => {
-			const viewDocument = new Document();
-
-			expect( viewDocument.selectedEditable ).to.equal( null );
-
-			const viewRoot = viewDocument.createRoot( 'div' );
-			viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewRoot, 0, viewRoot, 0 ) );
-
-			expect( viewDocument.selectedEditable ).to.equal( viewRoot );
 		} );
 	} );
 

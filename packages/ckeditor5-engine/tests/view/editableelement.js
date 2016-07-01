@@ -9,6 +9,7 @@
 
 import createDocumentMock from '/tests/engine/view/_utils/createdocumentmock.js';
 import RootEditableElement from '/ckeditor5/engine/view/rooteditableelement.js';
+import Range from '/ckeditor5/engine/view/range.js';
 
 describe( 'EditableElement', () => {
 	describe( 'isFocused', () => {
@@ -37,26 +38,26 @@ describe( 'EditableElement', () => {
 			expect( isFocusedSpy.calledOnce ).to.be.true;
 		} );
 
-		it( 'should change isFocused when selectedEditable changes', () => {
-			docMock.selectedEditable = viewMain;
+		it( 'should change isFocused on document render event', () => {
+			const rangeMain = Range.createFromParentsAndOffsets( viewMain, 0, viewMain, 0 );
+			const rangeHeader = Range.createFromParentsAndOffsets( viewHeader, 0, viewHeader, 0 );
+			docMock.selection.addRange( rangeMain );
 			docMock.isFocused = true;
 
 			expect( viewMain.isFocused ).to.be.true;
 			expect( viewHeader.isFocused ).to.be.false;
 
-			docMock.selectedEditable = viewHeader;
+			docMock.selection.setRanges( [ rangeHeader ] );
+			docMock.fire( 'render' );
 
 			expect( viewMain.isFocused ).to.be.false;
 			expect( viewHeader.isFocused ).to.be.true;
-
-			docMock.selectedEditable = null;
-
-			expect( viewMain.isFocused ).to.be.false;
-			expect( viewHeader.isFocused ).to.be.false;
 		} );
 
 		it( 'should change isFocused when document.isFocus changes', () => {
-			docMock.selectedEditable = viewMain;
+			const rangeMain = Range.createFromParentsAndOffsets( viewMain, 0, viewMain, 0 );
+			const rangeHeader = Range.createFromParentsAndOffsets( viewHeader, 0, viewHeader, 0 );
+			docMock.selection.addRange( rangeMain );
 			docMock.isFocused = true;
 
 			expect( viewMain.isFocused ).to.be.true;
@@ -67,7 +68,7 @@ describe( 'EditableElement', () => {
 			expect( viewMain.isFocused ).to.be.false;
 			expect( viewHeader.isFocused ).to.be.false;
 
-			docMock.selectedEditable = viewHeader;
+			docMock.selection.setRanges( [ rangeHeader ] );
 
 			expect( viewMain.isFocused ).to.be.false;
 			expect( viewHeader.isFocused ).to.be.false;

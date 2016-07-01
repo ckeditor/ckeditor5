@@ -87,17 +87,6 @@ export default class Document {
 		this.set( 'isFocused', false );
 
 		/**
-		 * {@link engine.view.EditableElement EditableElement} which is containing selection. It can be `null` if
-		 * there is no selection found.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {engine.view.EditableElement|null} engine.view.Document#selectedEditable
-		 */
-		this.set( 'selectedEditable', this.selection.getEditableElement() );
-		this.selection.on( 'change', () => this.selectedEditable = this.selection.getEditableElement() );
-
-		/**
 		 * Instance of the {@link engine.view.Document#renderer renderer}.
 		 *
 		 * @readonly
@@ -115,6 +104,14 @@ export default class Document {
 		this._observers = new Map();
 
 		injectQuirksHandling( this );
+
+		// Listens `render` event on default priority.
+		// This way we can attach other listeners before or after rendering execution.
+		this.on( 'render', () => {
+			this.disableObservers();
+			this.renderer.render();
+			this.enableObservers();
+		} );
 	}
 
 	/**
@@ -250,11 +247,7 @@ export default class Document {
 	 * before rendering and re-enabled after that.
 	 */
 	render() {
-		this.disableObservers();
-
-		this.renderer.render();
-
-		this.enableObservers();
+		this.fire( 'render' );
 	}
 
 	/**
@@ -263,7 +256,7 @@ export default class Document {
 	 */
 	focus() {
 		if ( !this.isFocused ) {
-			const editable = this.selectedEditable;
+			const editable = this.selection.getEditableElement();
 
 			if ( editable ) {
 				this.domConverter.focus( editable );

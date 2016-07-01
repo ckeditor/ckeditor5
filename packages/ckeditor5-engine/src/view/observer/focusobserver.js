@@ -28,7 +28,9 @@ export default class FocusObserver extends DomEventObserver {
 		} );
 
 		document.on( 'blur', ( evt, data ) => {
-			if ( document.selectedEditable === null || document.selectedEditable === data.target ) {
+			const selectedEditable = document.selection.getEditableElement();
+
+			if ( selectedEditable === null || selectedEditable === data.target ) {
 				document.isFocused = false;
 			}
 		} );
