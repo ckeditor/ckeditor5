@@ -306,3 +306,10 @@ mix( Document, ObservableMixin );
  *
  * @typedef {String} engine.view.ChangeType
  */
+
+/**
+ * Fired when {@link engine.view.Document#render render} method is called. Actual rendering is executed as a listener to
+ * this event with default priority. This way other listeners can be used to run code before or after rendering.
+ *
+ * @event engine.view.Document.render
+ */
