@@ -12,7 +12,7 @@ import InlineEditableUIView from '../ui/editableui/inline/inlineeditableuiview.j
 
 import Model from '../ui/model.js';
 import StickyToolbar from '../ui/bindings/stickytoolbar.js';
-import StickyToolbarView from '../ui/stickytoolbar/stickytoolbarview.js';
+import StickyToolbarView from '../ui/toolbar/sticky/stickytoolbarview.js';
 
 /**
  * Classic editor UI. Uses inline editable and sticky toolbar, all
