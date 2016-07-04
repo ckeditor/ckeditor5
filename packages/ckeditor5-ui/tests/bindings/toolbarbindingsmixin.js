@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: ui, mixinInstance */
+/* bender-tags: ui, toolbar */
 
 'use strict';
 
@@ -12,7 +12,7 @@ import Controller from '/ckeditor5/ui/controller.js';
 import ControllerCollection from '/ckeditor5/ui/controllercollection.js';
 import ToolbarBindingsMixin from '/ckeditor5/ui/bindings/toolbarbindingsmixin.js';
 
-describe( 'StickyToolbar', () => {
+describe( 'ToolbarBindingsMixin', () => {
 	let mixinInstance, editor;
 
 	beforeEach( () => {
