@@ -13,8 +13,72 @@ const gutil = require( 'gulp-util' );
 const prettyBytes = require( 'pretty-bytes' );
 const gzipSize = require( 'gzip-size' );
 const mainUtils = require( '../utils' );
+const minimist = require( 'minimist' );
 
 const utils = {
+	/**
+	 * Parses command line arguments and returns them as a user-friendly hash.
+	 *
+	 * @returns {Object} options
+	 * @returns {String} [options.config] Path to the bundle configuration file.
+	 */
+	parseArguments() {
+		const options = minimist( process.argv.slice( 2 ), {
+			string: [
+				'config'
+			]
+		} );
+
+		return options;
+	},
+
+	/**
+	 * Render content for entry file which needs to be passed as main file to Rollup.
+	 *
+	 * @param {Object} data
+	 * @param {String} [data.moduleName] Name of the editor class exposed in bundle. e.g. MyCKEditor.
+	 * @param {String} [data.creator] Path to the editor creator as ClassicEditor, StandardEditor etc.
+	 * @param {Array<String>} [data.features] List of paths or names to features which need to be included in bundle.
+	 * @returns {string}
+	 */
+	renderEntryFileContent( data ) {
+		const creatorName = path.basename( data.creator, '.js' );
+		const creatorPath = path.relative( './tmp', data.creator );
+		let featureNames = [];
+		let template = `'use strict';\n\n`;
+
+		// Imports babel helpers.
+		template += `import '../node_modules/regenerator-runtime/runtime.js';\n`;
+
+		// Imports editor creator
+		template += `import ${ creatorName } from '${ creatorPath }';\n`;
+
+		// Imports editor features.
+		for ( let feature of data.features ) {
+			const featureName = path.basename( feature, '.js' );
+			const featurePath = path.relative( './tmp', feature );
+
+			template += `import ${ featureName } from '${ featurePath }';\n`;
+			featureNames.push( featureName );
+		}
+
+		// Class definition.
+		template += `\nexport default class ${ data.moduleName } extends ${ creatorName } {
+	static create( element, config = {} ) {
+		if ( !config.features ) {
+			config.features = [];
+		}
+
+		config.features = [ ...config.features, ${ featureNames.join( ', ' ) } ];
+
+		return ${ creatorName }.create( element, config );
+	}
+}
+`;
+
+		return template;
+	},
+
 	/**
 	 * Save files from stream in specific destination and add `.min` suffix to the name.
 	 *
@@ -87,9 +151,9 @@ const utils = {
 	/**
 	 * Print on console list of files with their size stats.
 	 *
-	 * 		Title:
-	 * 		file.js: 1 MB (gzipped: 400 kB)
-	 * 		file.css 500 kB (gzipped: 100 kB)
+	 *        Title:
+	 *        file.js: 1 MB (gzipped: 400 kB)
+	 *        file.css 500 kB (gzipped: 100 kB)
 	 *
 	 * @param {String} title
 	 * @param {Array<Object>} filesStats

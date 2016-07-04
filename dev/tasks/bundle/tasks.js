@@ -5,19 +5,22 @@
 
 'use strict';
 
+const fs = require( 'fs' );
 const path = require( 'path' );
 const gulp = require( 'gulp' );
 const gulpCssnano = require( 'gulp-cssnano' );
 const gulpUglify = require( 'gulp-uglify' );
+const gutil = require( 'gulp-util' );
 const runSequence = require( 'run-sequence' );
 const utils = require( './utils' );
 const rollup = require( 'rollup' ).rollup;
 const rollupBabel = require( 'rollup-plugin-babel' );
 
 module.exports = ( config ) => {
+	const args = utils.parseArguments();
 	const sourceBuildDir = path.join( config.ROOT_DIR, config.BUILD_DIR, 'esnext' );
 	const bundleDir = path.join( config.ROOT_DIR, config.BUNDLE_DIR );
-	const entryFilePath = path.join( config.ROOT_DIR, 'dev', 'tasks', 'bundle', 'buildclassiceditor.js' );
+	const temporaryEntryFilePath = './tmp/entryfile.js';
 
 	const tasks = {
 		/**
@@ -29,23 +32,33 @@ module.exports = ( config ) => {
 
 		/**
 		 * Combine whole editor files into two files `ckeditor.js` and `ckeditor.css`.
+		 *
+		 * @param {String} configFilePath Path to the bundle configuration file.
+		 * @return {Promise} Promise that resolve bundling for CSS anf JS.
 		 */
-		generate() {
+		generate( configFilePath ) {
+			// When config file is not specified.
+			if ( !configFilePath ) {
+				// Then log error.
+				gutil.log( gutil.colors.red( `Bundle Error: Path to the config file is required. 'gulp bundle --config path/to/file.js'` ) );
+				// And stop process as failed.
+				process.exit( 1 );
+			}
+
+			// Get configuration from the configuration file.
+			const config = require( path.resolve( '.', configFilePath ) );
+
+			// Create temporary entry file.
+			fs.writeFileSync( temporaryEntryFilePath, utils.renderEntryFileContent( config ) );
+
 			/**
 			 * Bundling JS by Rollup.
-			 *
-			 * At this moment we don't know a list of every dependency needed in the bundle. It is because
-			 * editor features load automatically during initialization process. To work around this problem
-			 * we have created a custom entry file where we defined some of imports with features
-			 * needed to initialize editor.
-			 *
-			 * For more details see `buildclassiceditor.js`.
 			 */
 			function bundleJS() {
 				const outputFile = path.join( bundleDir, 'ckeditor.js' );
 
 				return rollup( {
-					entry: entryFilePath,
+					entry: temporaryEntryFilePath,
 					plugins: [
 						rollupBabel( {
 							presets: [ 'es2015-rollup' ]
@@ -55,8 +68,18 @@ module.exports = ( config ) => {
 					return bundle.write( {
 						dest: outputFile,
 						format: 'iife',
-						moduleName: 'ClassicEditor'
+						moduleName: config.moduleName
 					} );
+				} ).then( () => {
+					// If everything went well then remove temporary entry file.
+					utils.clean( '', temporaryEntryFilePath );
+				} ).catch( ( err ) => {
+					// If something went wrong then log error.
+					gutil.log( gutil.colors.red( `Bundle Error` ) );
+					gutil.log( gutil.colors.red( err.stack ) );
+
+					// And remove temporary entry file.
+					utils.clean( '', temporaryEntryFilePath );
 				} );
 			}
 
@@ -97,7 +120,14 @@ module.exports = ( config ) => {
 
 		register() {
 			gulp.task( 'bundle:clean', tasks.clean );
-			gulp.task( 'bundle:generate', [ 'bundle:clean', 'build:js:esnext', 'build:themes:esnext' ], tasks.generate );
+			gulp.task( 'bundle:generate',
+				[
+					'bundle:clean',
+					'build:js:esnext',
+					'build:themes:esnext'
+				],
+				() => tasks.generate( args.config )
+			);
 			gulp.task( 'bundle:minify:js', tasks.minify.js );
 			gulp.task( 'bundle:minify:css', tasks.minify.css );
 			gulp.task( 'bundle:next', tasks.next );
