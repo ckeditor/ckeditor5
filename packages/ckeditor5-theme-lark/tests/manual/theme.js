@@ -8,13 +8,16 @@
 import testUtils from '/tests/ui/_utils/utils.js';
 
 import Collection from '/ckeditor5/utils/collection.js';
-import IconManagerView from '/ckeditor5/ui/iconmanagerview.js';
 import Model from '/ckeditor5/ui/model.js';
 import Controller from '/ckeditor5/ui/controller.js';
 import View from '/ckeditor5/ui/view.js';
 import Template from '/ckeditor5/ui/template.js';
 
 import iconManagerModel from '/theme/iconmanagermodel.js';
+import IconManager from '/ckeditor5/ui/iconmanager/iconmanager.js';
+import IconManagerView from '/ckeditor5/ui/iconmanager/iconmanagerview.js';
+
+import Icon from '/ckeditor5/ui/icon/icon.js';
 import IconView from '/ckeditor5/ui/icon/iconview.js';
 
 import Button from '/ckeditor5/ui/button/button.js';
@@ -64,7 +67,7 @@ testUtils.createTestUIController( {
 function renderIcon( ui ) {
 	// --- IconManager ------------------------------------------------------------
 
-	ui.add( 'body', new Controller( null, new IconManagerView( iconManagerModel ) ) );
+	ui.add( 'body', new IconManager( iconManagerModel, new IconManagerView() ) );
 
 	// --- In-text ------------------------------------------------------------
 
@@ -223,22 +226,17 @@ function renderDropdown( ui ) {
 		items: collection
 	} );
 
-	const enabledModel = new Model( {
+	ui.add( 'dropdown', dropdown( {
 		label: 'Normal state',
 		isEnabled: true,
-		isOn: false,
 		content: itemListModel
-	} );
+	} ) );
 
-	const disabledModel = new Model( {
+	ui.add( 'dropdown', dropdown( {
 		label: 'Disabled',
 		isEnabled: false,
-		isOn: false,
 		content: itemListModel
-	} );
-
-	ui.add( 'dropdown', new ListDropdown( enabledModel, new ListDropdownView( enabledModel ) ) );
-	ui.add( 'dropdown', new ListDropdown( disabledModel, new ListDropdownView( disabledModel ) ) );
+	} ) );
 }
 
 function renderToolbar( ui ) {
@@ -258,7 +256,9 @@ function renderToolbar( ui ) {
 			label: 'Button with icon',
 			icon: 'bold',
 			iconAlign: 'LEFT'
-		} )
+		} ),
+		dropdown(),
+		button()
 	] ) );
 
 	// --- Rounded ------------------------------------------------------------
@@ -338,27 +338,50 @@ const TextView = class extends View {
 };
 
 function text() {
-	return new Controller( null, new TextView( null ) );
+	return new Controller( null, new TextView() );
 }
 
 function icon( name ) {
-	return new Controller( null, new IconView( new Model( { icon: name } ) ) );
+	const model = new Model( {
+		name: name,
+		align: ''
+	} );
+
+	return new Icon( model, new IconView() );
 }
 
-function button( { label = 'Button', noText = false, isEnabled = true, isOn = false, icon, iconAlign } = {} ) {
+function button( {
+	label = 'Button',
+	noText = false,
+	isEnabled = true,
+	isOn = false,
+	icon, iconAlign
+} = {} ) {
 	const model = new Model( { label, noText, isEnabled, isOn, icon, iconAlign } );
 
-	return new Button( model, new ButtonView( model ) );
+	return new Button( model, new ButtonView() );
 }
 
 function toolbar( children = [] ) {
-	const toolbar = new Toolbar( null, new ToolbarView( null ) );
+	const toolbar = new Toolbar( null, new ToolbarView() );
 
 	children.forEach( c => {
 		toolbar.add( 'buttons', c );
 	} );
 
 	return toolbar;
+}
+
+function dropdown( {
+	label = 'Dropdown',
+	isEnabled = true,
+	isOn = false,
+	content = new Model( { items: new Collection( { idProperty: 'label' } ) } )
+} = {} ) {
+	const model = new Model( { label, isEnabled, content, isOn } );
+	const dropdown = new ListDropdown( model, new ListDropdownView() );
+
+	return dropdown;
 }
 
 const ToolbarSeparatorView = class extends View {
@@ -375,7 +398,7 @@ const ToolbarSeparatorView = class extends View {
 };
 
 function toolbarSeparator() {
-	return new Controller( null, new ToolbarSeparatorView( null ) );
+	return new Controller( null, new ToolbarSeparatorView() );
 }
 
 const ToolbarNewlineView = class extends View {
@@ -392,5 +415,5 @@ const ToolbarNewlineView = class extends View {
 };
 
 function toolbarNewLine() {
-	return new Controller( null, new ToolbarNewlineView( null ) );
+	return new Controller( null, new ToolbarNewlineView() );
 }
