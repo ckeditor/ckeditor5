@@ -159,6 +159,7 @@ module.exports = {
 
 		tools.shExec( addRemoteCommands.join( ' && ' ) );
 	},
+
 	/*
 	 * Creates commit on repository under specified path
 	 *
