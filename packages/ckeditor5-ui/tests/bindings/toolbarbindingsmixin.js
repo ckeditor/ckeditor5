@@ -7,6 +7,7 @@
 
 'use strict';
 
+import mix from '/ckeditor5/utils/mix.js';
 import Editor from '/ckeditor5/editor/editor.js';
 import Controller from '/ckeditor5/ui/controller.js';
 import ControllerCollection from '/ckeditor5/ui/controllercollection.js';
@@ -18,11 +19,18 @@ describe( 'ToolbarBindingsMixin', () => {
 	beforeEach( () => {
 		editor = new Editor();
 
-		mixinInstance = new Controller();
-		mixinInstance.collections.add( new ControllerCollection( 'buttons' ) );
-		mixinInstance.editor = editor;
+		class MixClass extends Controller {
+			constructor( model, view ) {
+				super( model, view );
 
-		Object.assign( mixinInstance, ToolbarBindingsMixin );
+				this.collections.add( new ControllerCollection( 'buttons' ) );
+			}
+		}
+
+		mix( MixClass, ToolbarBindingsMixin );
+
+		mixinInstance = new MixClass();
+		mixinInstance.editor = editor;
 	} );
 
 	describe( 'addButtons', () => {

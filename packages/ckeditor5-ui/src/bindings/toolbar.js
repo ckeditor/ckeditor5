@@ -5,6 +5,7 @@
 
 'use strict';
 
+import mix from '../../utils/mix.js';
 import ToolbarBindingsMixin from './toolbarbindingsmixin.js';
 import BaseToolbar from '../toolbar/toolbar.js';
 
@@ -31,4 +32,4 @@ export default class Toolbar extends BaseToolbar {
 	}
 }
 
-Object.assign( Toolbar.prototype, ToolbarBindingsMixin );
+mix( Toolbar, ToolbarBindingsMixin );
