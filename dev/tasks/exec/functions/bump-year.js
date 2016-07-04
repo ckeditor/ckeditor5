@@ -20,14 +20,14 @@ module.exports = ( workdir ) => {
 	// Change this to correct year
 	const year = '2017';
 
-	const licenseRegexp = /(@license Copyright \(c\) 2003-)[0-9]{4}/g;
+	const licenseRegexp = /(@license Copyright \(c\) 2003-)[0-9]{4}(, CKSource - Frederico Knabben\.)/g;
 	const glob = path.join( workdir, '**/*' );
 
 	return gulp.src( glob )
 		.pipe( gitignore() )
 		.pipe( replace(
 			licenseRegexp,
-			`$1${ year }`,
+			`$1${ year }$2`,
 			{ skipBinary: true }
 		) )
 		.pipe( gulp.dest( workdir ) );
