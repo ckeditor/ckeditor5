@@ -10,9 +10,9 @@
 import Editor from '/ckeditor5/editor/editor.js';
 import Model from '/ckeditor5/ui/model.js';
 import View from '/ckeditor5/ui/view.js';
-import Toolbar from '/ckeditor5/ui/bindings/toolbar.js';
+import StickyToolbar from '/ckeditor5/ui/bindings/toolbar.js';
 
-describe( 'Toolbar', () => {
+describe( 'StickyToolbar', () => {
 	let toolbar, model, editor;
 
 	beforeEach( () => {
@@ -20,7 +20,7 @@ describe( 'Toolbar', () => {
 		model = new Model( {
 			isActive: false
 		} );
-		toolbar = new Toolbar( model, new View(), editor );
+		toolbar = new StickyToolbar( model, new View(), editor );
 	} );
 
 	describe( 'constructor', () => {

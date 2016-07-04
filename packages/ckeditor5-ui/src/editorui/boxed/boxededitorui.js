@@ -9,15 +9,20 @@ import EditorUI from '../../../ui/editorui/editorui.js';
 import ControllerCollection from '../../../ui/controllercollection.js';
 
 /**
- * Boxed editor UI. The class representing classic editor interface, which contains of a toolbar and editable are,
- * closed within a box.
+ * The boxed editor UI controller class. This class controls an editor interface
+ * consisting of a toolbar and an editable area, enclosed within a box.
+ *
+ *		// An instance of BoxedEditorUI.
+ *		new BoxedEditorUI( editor );
+ *
+ * See {@link ui.editorUI.boxed.BoxedEditorUIView}.
  *
  * @member ui.editorUI.boxed
  * @extends ui.editorUI.EditorUI
  */
 export default class BoxedEditorUI extends EditorUI {
 	/**
-	 * Creates a BoxedEditorUI instance.
+	 * Creates a boxed editor UI instance.
 	 *
 	 * @param {ckeditor5.Editor} editor
 	 */
@@ -48,13 +53,5 @@ export default class BoxedEditorUI extends EditorUI {
 		 * @property {Number} height
 		 */
 		this.set( 'height', config.get( 'ui.height' ) );
-	}
-
-	/**
-	 * @readonly
-	 * @property {ui.Model} viewModel
-	 */
-	get viewModel() {
-		return this;
 	}
 }

@@ -33,10 +33,4 @@ describe( 'BoxedEditorUI', () => {
 			expect( boxedEditorUI.height ).to.equal( editor.config.get( 'ui.height' ) );
 		} );
 	} );
-
-	describe( 'viewModel', () => {
-		it( 'points to the BoxedEditorUI instance', () => {
-			expect( boxedEditorUI.viewModel ).to.equal( boxedEditorUI );
-		} );
-	} );
 } );

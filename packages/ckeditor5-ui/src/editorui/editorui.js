@@ -9,12 +9,19 @@ import Controller from '../controller.js';
 import ControllerCollection from '../controllercollection.js';
 import ComponentFactory from '../componentfactory.js';
 import ObservableMixin from '../../utils/observablemixin.js';
-import IconManagerView from '../iconmanagerview.js';
+import IconManager from '../iconmanager/iconmanager.js';
+import IconManagerView from '../iconmanager/iconmanagerview.js';
 import iconManagerModel from '../../../theme/iconmanagermodel.js';
 import mix from '../../utils/mix.js';
 
 /**
- * Base class for the editor main view controllers.
+ * The editor UI controller class. It's a base class for the editor
+ * main view controllers.
+ *
+ *		// An instance of EditorUI.
+ *		new EditorUI( editor );
+ *
+ * See {@link ui.editorUI.EditorUIView}, {@link ui.iconManager.IconManager}.
  *
  * @memberOf ui.editorUI
  * @extends ui.Controller
@@ -22,7 +29,7 @@ import mix from '../../utils/mix.js';
  */
 export default class EditorUI extends Controller {
 	/**
-	 * Creates an EditorUI instance.
+	 * Creates an instance of {@link ui.editorUI.EditorUI} class.
 	 *
 	 * @param {ckeditor5.Editor} editor
 	 */
@@ -56,7 +63,7 @@ export default class EditorUI extends Controller {
 	}
 
 	/**
-	 * Adds IconManager into DOM.
+	 * Injects the {@link ui.iconManager.IconManager} into DOM.
 	 *
 	 * @protected
 	 */
@@ -70,7 +77,7 @@ export default class EditorUI extends Controller {
 		this.icons = iconManagerModel.icons;
 
 		this.collections.get( 'body' ).add(
-			new Controller( iconManagerModel, new IconManagerView( iconManagerModel ) )
+			new IconManager( iconManagerModel, new IconManagerView() )
 		);
 	}
 }

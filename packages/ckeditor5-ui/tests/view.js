@@ -13,7 +13,6 @@ import View from '/ckeditor5/ui/view.js';
 import Template from '/ckeditor5/ui/template.js';
 import Region from '/ckeditor5/ui/region.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-import Model from '/ckeditor5/ui/model.js';
 
 let TestView, view;
 
@@ -26,39 +25,17 @@ describe( 'View', () => {
 			setTestViewInstance();
 		} );
 
-		it( 'accepts the model', () => {
-			setTestViewInstance( { a: 'foo', b: 42 } );
-
-			expect( view.model ).to.be.an.instanceof( Model );
-			expect( view ).to.have.deep.property( 'model.a', 'foo' );
-			expect( view ).to.have.deep.property( 'model.b', 42 );
-		} );
-
 		it( 'defines basic view properties', () => {
-			const model = new Model();
+			view = new View();
 
-			view = new View( model );
-
-			expect( view.model ).to.equal( model );
 			expect( view.t ).to.be.undefined;
 			expect( view.regions.length ).to.equal( 0 );
 		} );
 
-		it( 'creates view#bind shorthand for Template binding', () => {
-			expect( view.bind.to ).to.be.a( 'function' );
-			expect( view.bind.if ).to.be.a( 'function' );
-
-			const binding = view.bind.to( 'a' );
-
-			expect( binding.observable ).to.equal( view.model );
-			expect( binding.emitter ).to.equal( view );
-		} );
-
-		it( 'defines the locale property and the t function', () => {
-			const model = new Model();
+		it( 'defines the locale property and the "t" function', () => {
 			const locale = { t() {} };
 
-			view = new View( model, locale );
+			view = new View( locale );
 
 			expect( view.locale ).to.equal( locale );
 			expect( view.t ).to.equal( locale.t );
@@ -137,6 +114,23 @@ describe( 'View', () => {
 
 			expect( region1.element ).to.be.null;
 			expect( region2.element ).to.be.null;
+		} );
+	} );
+
+	describe( 'bind', () => {
+		beforeEach( () => {
+			setTestViewClass();
+			setTestViewInstance();
+		} );
+
+		it( 'returns a shorthand for Template binding', () => {
+			expect( view.bind.to ).to.be.a( 'function' );
+			expect( view.bind.if ).to.be.a( 'function' );
+
+			const binding = view.bind.to( 'a' );
+
+			expect( binding.observable ).to.equal( view.model );
+			expect( binding.emitter ).to.equal( view );
 		} );
 	} );
 
@@ -223,7 +217,9 @@ describe( 'View', () => {
 		beforeEach( createViewInstanceWithTemplate );
 
 		it( 'invokes out of #template', () => {
-			setTestViewInstance( { a: 1 } );
+			setTestViewInstance();
+
+			view.model.set( 'a', 1 );
 
 			expect( view.element ).to.be.an.instanceof( HTMLElement );
 			expect( view.element.nodeName ).to.equal( 'A' );
@@ -303,8 +299,8 @@ function createViewInstanceWithTemplate() {
 
 function setTestViewClass( templateDef, regionsFn ) {
 	TestView = class V extends View {
-		constructor( model ) {
-			super( model );
+		constructor() {
+			super();
 
 			if ( templateDef ) {
 				this.template = new Template( templateDef );
@@ -317,8 +313,8 @@ function setTestViewClass( templateDef, regionsFn ) {
 	};
 }
 
-function setTestViewInstance( model ) {
-	view = new TestView( new Model( model ) );
+function setTestViewInstance() {
+	view = new TestView();
 
 	if ( view.template ) {
 		document.body.appendChild( view.element );

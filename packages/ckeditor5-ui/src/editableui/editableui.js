@@ -6,21 +6,29 @@
 'use strict';
 
 import Controller from '../controller.js';
-import Model from '../model.js';
 
 /**
+ * The editable UI controller class. It glues the engine editable
+ * {@link engine.view.RootEditableElement} with the UI.
+ *
+ *		// An instance of EditableUI.
+ *		new EditableUI( editor, editable, new EditableUIView() );
+ *
+ * See {@link ui.editableUI.EditableUIView}.
+ *
  * @memberOf ui.editableUI
  * @extends ui.Controller
  */
 export default class EditableUI extends Controller {
 	/**
-	 * Creates a new instance of the Editable class.
+	 * Creates an instance of {@link ui.editableUI.EditableUI} class.
 	 *
-	 * @param {ckeditor5.Editor} editor The editor instance.
-	 * @param {engine.view.RootEditableElement} editable The editable element.
+	 * @param {engine.view.RootEditableElement} editable The editable element (in the engine).
+	 * @param {ui.View} [view] An instance of EditableUIView.
+	 * @param {ckeditor5.Editor} [editor] The editor instance.
 	 */
-	constructor( editor, editable ) {
-		super();
+	constructor( editable, view, editor ) {
+		super( editable, view );
 
 		/**
 		 * The editor instance.
@@ -30,15 +38,7 @@ export default class EditableUI extends Controller {
 		 */
 		this.editor = editor;
 
-		/**
-		 * The model for the view.
-		 *
-		 * @readonly
-		 * @member {ui.Model} ui.editableUI.EditableUI#viewModel
-		 */
-		this.viewModel = new Model();
-
-		this.viewModel.bind( 'isReadOnly', 'isFocused' ).to( editable );
-		this.viewModel.set( 'name', editable.rootName );
+		view.model.bind( 'isReadOnly', 'isFocused' ).to( editable );
+		view.model.set( 'name', editable.rootName );
 	}
 }

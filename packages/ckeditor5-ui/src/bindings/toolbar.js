@@ -5,15 +5,18 @@
 
 'use strict';
 
+import mix from '../../utils/mix.js';
+import ToolbarBindingsMixin from './toolbarbindingsmixin.js';
 import BaseToolbar from '../toolbar/toolbar.js';
 
 /**
  * The editor toolbar controller class.
  *
+ * See {@link ui.toolbar.Toolbar}.
+ *
  * @memberOf ui.bindings
  * @extends ui.toolbar.Toolbar
  */
-
 export default class Toolbar extends BaseToolbar {
 	/**
 	 * Creates a new toolbar instance.
@@ -27,16 +30,6 @@ export default class Toolbar extends BaseToolbar {
 
 		this.editor = editor;
 	}
-
-	/**
-	 * Adds buttons to the toolbar. Buttons are taken from the {@link ui.editorUI.EditorUI#featureComponents}
-	 * factory.
-	 *
-	 * @param {String[]} buttons The name of the buttons to add to the toolbar.
-	 */
-	addButtons( buttons ) {
-		for ( let button of buttons ) {
-			this.add( 'buttons', this.editor.ui.featureComponents.create( button ) );
-		}
-	}
 }
+
+mix( Toolbar, ToolbarBindingsMixin );

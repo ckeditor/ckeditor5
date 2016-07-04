@@ -9,20 +9,23 @@ import View from '../view.js';
 import Template from '../template.js';
 
 /**
+ * The editable UI view class.
+ *
+ * See {@link ui.editableUI.EditableUI}.
+ *
  * @memberOf ui.editableUI
  * @extends ui.View
  */
 export default class EditableUIView extends View {
 	/**
-	 * Creates an instance of the EditableUIView class.
+	 * Creates an instance of {@link ui.editableUI.EditableUIView} class.
 	 *
-	 * @param {utils.Observable} model (View)Model of this View.
 	 * @param {utils.Locale} [locale] The {@link ckeditor5.Editor#locale editor's locale} instance.
 	 * @param {HTMLElement} [editableElement] The editable element. If not specified, this view
 	 * should create it. Otherwise, the existing element should be used.
 	 */
-	constructor( model, locale, editableElement ) {
-		super( model, locale );
+	constructor( locale, editableElement ) {
+		super( locale );
 
 		const bind = this.bind;
 
@@ -47,6 +50,12 @@ export default class EditableUIView extends View {
 		 * @readonly
 		 * @member {HTMLElement} ui.editableUI.EditableUIView#editableElement
 		 */
+
+		/**
+		 * Model of this editable UI view.
+		 *
+		 * @member {ui.editableUI.EditableUIViewModel} ui.editableUI.EditableUIView#model
+		 */
 	}
 
 	/**
@@ -69,3 +78,27 @@ export default class EditableUIView extends View {
 		this.editableElement.contentEditable = false;
 	}
 }
+
+/**
+ * The editable UI view {@link ui.Model} interface.
+ *
+ * @interface ui.editableUI.EditableUIViewModel
+ */
+
+/**
+ * Controls whether the editable is writable or not.
+ *
+ * @member {Boolean} ui.editableUI.EditableUIViewModel#isReadOnly
+ */
+
+/**
+ * Controls whether the editable is focused, i.e. the user is typing in it.
+ *
+ * @member {Boolean} ui.editableUI.EditableUIViewModel#isFocused
+ */
+
+/**
+ * The name of the editable UI view.
+ *
+ * @member {String} ui.editableUI.EditableUIViewModel#name
+ */

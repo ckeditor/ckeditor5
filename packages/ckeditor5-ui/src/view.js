@@ -5,6 +5,7 @@
 
 'use strict';
 
+import Model from './model.js';
 import Collection from '../utils/collection.js';
 import Region from './region.js';
 import Template from './template.js';
@@ -22,16 +23,15 @@ export default class View {
 	/**
 	 * Creates an instance of the {@link ui.View} class.
 	 *
-	 * @param {ui.Model} model (View)Model of this View.
 	 * @param {utils.Locale} [locale] The {@link ckeditor5.Editor#locale editor's locale} instance.
 	 */
-	constructor( model, locale ) {
+	constructor( locale ) {
 		/**
 		 * Model of this view.
 		 *
 		 * @member {ui.Model} ui.View#model
 		 */
-		this.model = model;
+		this.model = new Model();
 
 		/**
 		 * @readonly
@@ -59,14 +59,6 @@ export default class View {
 		} );
 
 		/**
-		 * Shorthand for {@link ui.Template#bind}, bound to {@link ui.View#model}
-		 * and {@link ui.View}.
-		 *
-		 * @method ui.View#bind
-		 */
-		this.bind = Template.bind( this.model, this );
-
-		/**
 		 * Template of this view.
 		 *
 		 * @member {ui.Template} ui.View#template
@@ -85,6 +77,14 @@ export default class View {
 		 *
 		 * @private
 		 * @member {HTMLElement} ui.View.#_element
+		 */
+
+		/**
+		 * Cached {@link ui.Template} binder object specific for this instance.
+		 * See {@link ui.View#bind}.
+		 *
+		 * @private
+		 * @member {Object} ui.View.#_bind
 		 */
 	}
 
@@ -109,6 +109,22 @@ export default class View {
 
 	set element( el ) {
 		this._element = el;
+	}
+
+	/**
+	 * Shorthand for {@link ui.Template#bind}, bound to {@link ui.View#model}
+	 * and {@link ui.View} on the first access.
+	 *
+	 * Cached {@link ui.Template#bind} object is stored in {@link ui.View.#_bind}.
+	 *
+	 * @method ui.View#bind
+	 */
+	get bind() {
+		if ( this._bind ) {
+			return this._bind;
+		}
+
+		return ( this._bind = Template.bind( this.model, this ) );
 	}
 
 	/**

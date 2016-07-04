@@ -7,28 +7,30 @@
 
 'use strict';
 
+import EditableUI from '/ckeditor5/ui/editableui/editableui.js';
 import EditableUIView from '/ckeditor5/ui/editableui/editableuiview.js';
 import Model from '/ckeditor5/ui/model.js';
 import Locale from '/ckeditor5/utils/locale.js';
 
 describe( 'EditableUIView', () => {
-	let model, view, editableElement, locale;
+	let editable, view, editableElement, locale;
 
 	beforeEach( () => {
-		model = new Model( {
+		editable = new Model( {
 			isReadOnly: false,
-			isFocused: false
+			isFocused: false,
+			rootName: 'foo'
 		} );
 		locale = new Locale( 'en' );
-		view = new EditableUIView( model, locale );
+		view = new EditableUIView( locale );
 		editableElement = document.createElement( 'div' );
 
-		view.init();
+		return new EditableUI( editable, view ).init();
 	} );
 
 	describe( 'constructor', () => {
 		it( 'renders element from template when no editableElement', () => {
-			view = new EditableUIView( model, locale );
+			view = new EditableUIView( locale );
 			view.init();
 
 			expect( view.element ).to.equal( view.editableElement );
@@ -36,7 +38,7 @@ describe( 'EditableUIView', () => {
 		} );
 
 		it( 'accepts editableElement as an argument', () => {
-			view = new EditableUIView( model, locale, editableElement );
+			view = new EditableUIView( locale, editableElement );
 			view.init();
 
 			expect( view.element ).to.equal( editableElement );
@@ -52,8 +54,8 @@ describe( 'EditableUIView', () => {
 				expect( view.element.classList.contains( 'ck-focused' ) ).to.be.false;
 			} );
 
-			it( 'reacts on model.isFocused', () => {
-				model.isFocused = true;
+			it( 'reacts on editable.isFocused', () => {
+				editable.isFocused = true;
 
 				expect( view.element.classList.contains( 'ck-blurred' ) ).to.be.false;
 				expect( view.element.classList.contains( 'ck-focused' ) ).to.be.true;
@@ -65,8 +67,8 @@ describe( 'EditableUIView', () => {
 				expect( view.element.getAttribute( 'contenteditable' ) ).to.equal( 'true' );
 			} );
 
-			it( 'reacts on model.isReadOnly', () => {
-				model.isReadOnly = true;
+			it( 'reacts on editable.isReadOnly', () => {
+				editable.isReadOnly = true;
 
 				expect( view.element.getAttribute( 'contenteditable' ) ).to.equal( 'false' );
 			} );
@@ -75,14 +77,15 @@ describe( 'EditableUIView', () => {
 
 	describe( 'destroy', () => {
 		it( 'updates contentEditable property of editableElement', () => {
-			view = new EditableUIView( model, locale, editableElement );
-			view.init();
+			view = new EditableUIView( locale, editableElement );
 
-			expect( view.editableElement.contentEditable ).to.equal( 'true' );
+			return new EditableUI( editable, view ).init().then( () => {
+				expect( view.editableElement.contentEditable ).to.equal( 'true' );
 
-			view.destroy();
+				view.destroy();
 
-			expect( view.editableElement.contentEditable ).to.equal( 'false' );
+				expect( view.editableElement.contentEditable ).to.equal( 'false' );
+			} );
 		} );
 	} );
 } );
