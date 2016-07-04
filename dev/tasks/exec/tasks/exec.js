@@ -28,7 +28,7 @@ module.exports = ( execTask, ckeditor5Path, packageJSON, workspaceRoot, params )
 	if ( dependencies ) {
 		const directories = tools.getCKE5Directories( workspaceAbsolutePath );
 
-		if ( dependencies ) {
+		if ( directories.length ) {
 			for ( let dependency in dependencies ) {
 				const repositoryURL = dependencies[ dependency ];
 				const urlInfo = git.parseRepositoryUrl( repositoryURL );
