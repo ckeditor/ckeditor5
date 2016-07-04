@@ -41,7 +41,6 @@ export default class IconManager extends Controller {
 /**
  * The icon manager component {@link ui.Model} interface.
  *
- * @memberOf ui.iconManager
  * @interface ui.iconManager.IconManagerModel
  */
 

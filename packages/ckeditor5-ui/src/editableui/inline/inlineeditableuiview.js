@@ -28,10 +28,10 @@ export default class InlineEditableUIView extends EditableUIView {
 		super( locale, editableElement );
 
 		const bind = this.bind;
+		const t = this.t;
 
-		// TODO: Allow passing context to bind.to()/bind.it().
 		const getLabel = ( value ) => {
-			return this.t( 'Rich Text Editor, %0', [ value ] );
+			return t( 'Rich Text Editor, %0', [ value ] );
 		};
 
 		Template.extend( this.template, {

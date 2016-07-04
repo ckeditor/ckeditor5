@@ -45,7 +45,6 @@ export default class IconManagerView extends View {
 /**
  * The icon manager view {@link ui.Model} interface.
  *
- * @memberOf ui.iconManager
  * @interface ui.iconManager.IconManagerViewModel
  */
 

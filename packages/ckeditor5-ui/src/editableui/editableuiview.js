@@ -82,20 +82,19 @@ export default class EditableUIView extends View {
 /**
  * The editable UI view {@link ui.Model} interface.
  *
- * @memberOf ui.editableUI
  * @interface ui.editableUI.EditableUIViewModel
  */
 
 /**
  * Controls whether the editable is writable or not.
  *
- * @member {String} ui.editableUI.EditableUIViewModel#isReadOnly
+ * @member {Boolean} ui.editableUI.EditableUIViewModel#isReadOnly
  */
 
 /**
  * Controls whether the editable is focused, i.e. the user is typing in it.
  *
- * @member {String} ui.editableUI.EditableUIViewModel#isFocused
+ * @member {Boolean} ui.editableUI.EditableUIViewModel#isFocused
  */
 
 /**
