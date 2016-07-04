@@ -8,7 +8,7 @@
 'use strict';
 
 const sinon = require( 'sinon' );
-const log = require( '../../lib/log' );
+const log = require( '../../utils/log' );
 
 describe( 'log', () => {
 	it( 'should log using configured functions', () => {

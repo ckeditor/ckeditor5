@@ -5,7 +5,7 @@
 
 'use strict';
 
-const git = require( '../lib/git' );
+const git = require( '../utils/git' );
 const PassThrough = require( 'stream' ).PassThrough;
 
 /**

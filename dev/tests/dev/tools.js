@@ -10,7 +10,7 @@
 const chai = require( 'chai' );
 const sinon = require( 'sinon' );
 const expect = chai.expect;
-const tools = require( '../../lib/tools' );
+const tools = require( '../../utils/tools' );
 const path = require( 'path' );
 const fs = require( 'fs' );
 let sandbox;
@@ -62,7 +62,7 @@ describe( 'utils', () => {
 			it( 'should not log when in silent mode', () => {
 				const sh = require( 'shelljs' );
 				const execStub = sandbox.stub( sh, 'exec' ).returns( { code: 0, stdout: 'out', stderr: 'err' } );
-				const log = require( '../../lib/log' );
+				const log = require( '../../utils/log' );
 				const outFn = sandbox.spy();
 				const errFn = sandbox.spy();
 				log.configure( outFn, errFn );
@@ -77,7 +77,7 @@ describe( 'utils', () => {
 			it( 'should not log if no output from executed command', () => {
 				const sh = require( 'shelljs' );
 				const execStub = sandbox.stub( sh, 'exec' ).returns( { code: 0, stdout: '', stderr: '' } );
-				const log = require( '../../lib/log' );
+				const log = require( '../../utils/log' );
 				const outFn = sandbox.spy();
 				const errFn = sandbox.spy();
 				log.configure( outFn, errFn );

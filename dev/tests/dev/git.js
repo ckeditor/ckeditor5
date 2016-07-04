@@ -8,10 +8,10 @@
 'use strict';
 
 let sandbox;
-const git = require( '../../lib/git' );
+const git = require( '../../utils/git' );
 const chai = require( 'chai' );
 const sinon = require( 'sinon' );
-const tools = require( '../../lib/tools' );
+const tools = require( '../../utils/tools' );
 const expect = chai.expect;
 
 describe( 'utils', () => {

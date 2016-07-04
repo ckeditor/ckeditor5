@@ -9,8 +9,8 @@
 
 const chai = require( 'chai' );
 const sinon = require( 'sinon' );
-const git = require( '../../lib/git' );
-const tools = require( '../../lib/tools' );
+const git = require( '../../utils/git' );
+const tools = require( '../../utils/tools' );
 const installTask = require( '../../tasks/dev/tasks/install' );
 const expect = chai.expect;
 const path = require( 'path' );

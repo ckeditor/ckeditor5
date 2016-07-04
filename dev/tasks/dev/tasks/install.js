@@ -5,10 +5,10 @@
 
 'use strict';
 
-const git = require( '../../../lib/git' );
-const tools = require( '../../../lib/tools' );
+const git = require( '../../../utils/git' );
+const tools = require( '../../../utils/tools' );
 const path = require( 'path' );
-const log = require( '../../../lib/log' );
+const log = require( '../../../utils/log' );
 
 /**
  * This tasks install specified package in development mode. It can be executed by typing:

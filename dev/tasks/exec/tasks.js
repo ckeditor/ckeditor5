@@ -11,9 +11,9 @@ const minimist = require( 'minimist' );
 const path = require( 'path' );
 const merge = require( 'merge-stream' );
 
-const log = require( '../../lib/log' );
-const tools = require( '../../lib/tools' );
-const git = require( '../../lib/git' );
+const log = require( '../../utils/log' );
+const tools = require( '../../utils/tools' );
+const git = require( '../../utils/git' );
 
 module.exports = ( config ) => {
 	const ckeditor5Path = process.cwd();

@@ -8,8 +8,8 @@
 'use strict';
 
 const sinon = require( 'sinon' );
-const tools = require( '../../lib/tools' );
-const git = require( '../../lib/git' );
+const tools = require( '../../utils/tools' );
+const git = require( '../../utils/git' );
 const path = require( 'path' );
 const chai = require( 'chai' );
 const expect = chai.expect;
@@ -98,7 +98,7 @@ describe( 'dev-status', () => {
 			}
 		};
 		const writeErrorSpy = sinon.spy();
-		const log = require( '../../lib/log' );
+		const log = require( '../../utils/log' );
 		log.configure( () => {}, writeErrorSpy );
 
 		statusTask( ckeditor5Path, json, workspaceRoot );
