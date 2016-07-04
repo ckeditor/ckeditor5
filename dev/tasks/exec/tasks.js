@@ -28,13 +28,10 @@ module.exports = ( config ) => {
 		execOnRepositories() {
 			// Omit `gulp exec` part of arguments
 			const options = minimist( process.argv.slice( 3 ), {
-				boolean: [ 'dry-run' ],
 				alias: { t: 'task' },
-				default: {
-					'dry-run': false
-				},
 				stopEarly: false
 			} );
+
 			let execTask;
 
 			try {
@@ -45,7 +42,7 @@ module.exports = ( config ) => {
 			}
 
 			if ( execTask ) {
-				return exec( execTask, ckeditor5Path, packageJSON, config.WORKSPACE_DIR, options[ 'dry-run' ] );
+				return exec( execTask, ckeditor5Path, packageJSON, config.WORKSPACE_DIR, options );
 			}
 		},
 

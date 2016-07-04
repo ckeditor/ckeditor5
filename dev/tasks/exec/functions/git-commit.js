@@ -5,15 +5,24 @@
 
  'use strict';
 
-const gulp = require( 'gulp' );
-const path = require( 'path' );
+const git = require( '../utils/git' );
+const PassThrough = require( 'stream' ).PassThrough;
 
 /**
- * {String} workdir
+ * Adds only modified files to git repository and commits them with provided message
+ *
+ * @param {String} workdir
+ * @param {Object} params
+ * @returns {Object} stream
  */
-module.exports = ( workdir ) => {
-	const glob = path.join( workdir, '**/*' );
+module.exports = ( workdir, params ) => {
+	if ( !( params.message || params.m ) ) {
+		throw new Error( 'You must provide commit message with parameter: --message | -m ' );
+	}
+	const message = params.message || params.m;
 
-	return gulp.src( glob )
-		.pipe( gulp.dest( workdir ) );
+	git.commit( message, workdir );
+
+	// Return dummy stream to inform gulp about finishing task
+	return new PassThrough();
 };

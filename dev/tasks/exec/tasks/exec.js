@@ -18,7 +18,7 @@ const merge = require( 'merge-stream' );
  * @param {String} workspaceRoot Relative path to workspace root.
  * @param {Boolean} dryRun
  */
-module.exports = ( execTask, ckeditor5Path, packageJSON, workspaceRoot, dryRun ) => {
+module.exports = ( execTask, ckeditor5Path, packageJSON, workspaceRoot, params ) => {
 	const workspaceAbsolutePath = path.join( ckeditor5Path, workspaceRoot );
 
 	// Get all CKEditor dependencies from package.json.
@@ -36,21 +36,14 @@ module.exports = ( execTask, ckeditor5Path, packageJSON, workspaceRoot, dryRun )
 
 				// Check if repository's directory already exists.
 				if ( directories.indexOf( urlInfo.name ) > -1 ) {
-					if ( dryRun ) {
-						log.out( `Dry run in ${ urlInfo.name }...` );
-					} else {
-						try {
-							log.out( `Executing task on ${ repositoryURL }...` );
+					try {
+						log.out( `Executing task on ${ repositoryURL }...` );
 
-							streams.add( execTask( repositoryAbsolutePath ) );
-						} catch ( error ) {
-							log.err( error );
-						}
+						streams.add( execTask( repositoryAbsolutePath, params ) );
+					} catch ( error ) {
+						log.err( error );
 					}
 				}
-
-				// FIXME stop after first repository
-				return;
 			}
 		} else {
 			log.out( 'No CKEditor5 plugins in development mode.' );

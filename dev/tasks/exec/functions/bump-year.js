@@ -11,11 +11,15 @@ const replace = require( 'gulp-replace' );
 const gitignore = require( '../utils/gitignore-filter' );
 
 /**
- * {String} workdir
+ * Replaces license date in source files with new date
+ *
+ * @param {String} workdir
+ * @returns {Object} stream
  */
 module.exports = ( workdir ) => {
-	// Change to correct year
+	// Change this to correct year
 	const year = '2017';
+
 	const licenseRegexp = /(@license Copyright \(c\) 2003-)[0-9]{4}/g;
 	const glob = path.join( workdir, '**/*' );
 
