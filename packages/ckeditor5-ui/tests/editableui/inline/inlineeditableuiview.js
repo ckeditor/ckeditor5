@@ -25,7 +25,7 @@ describe( 'InlineEditableUIView', () => {
 		view = new InlineEditableUIView( locale );
 		editableElement = document.createElement( 'div' );
 
-		return new EditableUI( null, editable, view ).init();
+		return new EditableUI( editable, view ).init();
 	} );
 
 	describe( 'constructor', () => {

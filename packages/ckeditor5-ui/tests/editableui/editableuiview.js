@@ -25,7 +25,7 @@ describe( 'EditableUIView', () => {
 		view = new EditableUIView( locale );
 		editableElement = document.createElement( 'div' );
 
-		return new EditableUI( null, editable, view ).init();
+		return new EditableUI( editable, view ).init();
 	} );
 
 	describe( 'constructor', () => {
@@ -79,7 +79,7 @@ describe( 'EditableUIView', () => {
 		it( 'updates contentEditable property of editableElement', () => {
 			view = new EditableUIView( locale, editableElement );
 
-			return new EditableUI( null, editable, view ).init().then( () => {
+			return new EditableUI( editable, view ).init().then( () => {
 				expect( view.editableElement.contentEditable ).to.equal( 'true' );
 
 				view.destroy();

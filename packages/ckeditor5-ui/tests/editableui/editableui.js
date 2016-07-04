@@ -19,7 +19,7 @@ describe( 'EditableUI', () => {
 		editor = new StandardEditor();
 		editable = editor.editing.view.createRoot( document.createElement( 'div' ) );
 		editableUIView = new EditableUIView( editor.locale );
-		editableUI = new EditableUI( editor, editable, editableUIView );
+		editableUI = new EditableUI( editable, editableUIView, editor );
 	} );
 
 	describe( 'constructor', () => {

@@ -23,11 +23,11 @@ export default class EditableUI extends Controller {
 	/**
 	 * Creates an instance of {@link ui.editableUI.EditableUI} class.
 	 *
-	 * @param {ckeditor5.Editor} editor The editor instance.
 	 * @param {engine.view.RootEditableElement} editable The editable element (in the engine).
 	 * @param {ui.View} [view] An instance of EditableUIView.
+	 * @param {ckeditor5.Editor} [editor] The editor instance.
 	 */
-	constructor( editor, editable, view ) {
+	constructor( editable, view, editor ) {
 		super( editable, view );
 
 		/**
