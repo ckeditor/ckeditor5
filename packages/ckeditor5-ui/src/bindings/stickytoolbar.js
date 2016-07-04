@@ -6,7 +6,7 @@
 'use strict';
 
 import ToolbarBindingsMixin from './toolbarbindingsmixin.js';
-import BaseStickyToolbar from '../stickytoolbar/stickytoolbar.js';
+import BaseStickyToolbar from '../toolbar/sticky/stickytoolbar.js';
 
 /**
  * The editor StickyToolbar controller class.
