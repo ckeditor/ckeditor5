@@ -29,16 +29,17 @@ module.exports = ( config ) => {
 		execOnRepositories() {
 			// Omit `gulp exec` part of arguments
 			const options = minimist( process.argv.slice( 3 ), {
-				alias: { t: 'task' },
-				stopEarly: false
+				stopEarly: false,
 			} );
-
 			let execTask;
 
 			try {
-				execTask = require( `./functions/${ options.task }` );
-			}
-			catch ( error ) {
+				if ( options.task ) {
+					execTask = require( `./functions/${ options.task }` );
+				} else {
+					throw new Error( 'Missing task parameter: --task task-name' );
+				}
+			} catch ( error ) {
 				log.err( error );
 			}
 
@@ -60,7 +61,7 @@ module.exports = ( config ) => {
  * @param {String} ckeditor5Path Path to main CKEditor5 repository.
  * @param {Object} packageJSON Parsed package.json file from CKEditor5 repository.
  * @param {String} workspaceRoot Relative path to workspace root.
- * @param {Boolean} dryRun
+ * @param {Object} params Parameters provided to the task via command-line.
  */
 function exec( execTask, ckeditor5Path, packageJSON, workspaceRoot, params ) {
 	const workspaceAbsolutePath = path.join( ckeditor5Path, workspaceRoot );
