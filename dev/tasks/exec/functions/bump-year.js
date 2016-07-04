@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
- 'use strict';
+'use strict';
 
 const gulp = require( 'gulp' );
 const path = require( 'path' );

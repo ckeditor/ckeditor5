@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
- 'use strict';
+'use strict';
 
 const git = require( '../utils/git' );
 const PassThrough = require( 'stream' ).PassThrough;
