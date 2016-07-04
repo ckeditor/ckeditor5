@@ -168,7 +168,7 @@ module.exports = {
 	commit( message, repositoryPath ) {
 		const commitCommands = [
 			`cd ${ repositoryPath }`,
-			`git commit --dry-run --all --message "${ message }"`
+			`git commit --all --message "${ message }"`
 		];
 
 		tools.shExec( commitCommands.join( ' && ' ) );
