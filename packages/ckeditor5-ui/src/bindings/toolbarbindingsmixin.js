@@ -8,6 +8,8 @@
 /**
  * Mixin that injects the common Toolbar–like bindings.
  *
+ * See {@link ui.bindings.Toolbar}.
+ *
  * @mixin ui.bindings.ToolbarBindingsMixin
  */
 const ToolbarBindingsMixin = {

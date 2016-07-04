@@ -9,7 +9,7 @@ import View from '../view.js';
 import Template from '../template.js';
 
 /**
- * The EditorUIView class. Base class for the editor main views.
+ * The editor UI view class. Base class for the editor main views.
  *
  * See {@link ui.editorUI.EditorUI}.
  *
@@ -18,7 +18,7 @@ import Template from '../template.js';
  */
 export default class EditorUIView extends View {
 	/**
-	 * Creates an instance of the EditorUIView class.
+	 * Creates an instance of the editor UI view class.
 	 *
 	 * @param {utils.Locale} [locale] The {@link ckeditor5.Editor#locale editor's locale} instance.
 	 */

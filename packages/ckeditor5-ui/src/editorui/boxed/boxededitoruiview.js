@@ -10,7 +10,7 @@ import uid from '../../../utils/uid.js';
 import Template from '../../template.js';
 
 /**
- * The BoxedEditorUIView class. This class represents an editor interface
+ * The boxed editor UI view class. This class represents an editor interface
  * consisting of a toolbar and an editable area, enclosed within a box.
  *
  * See {@link ui.editorUI.boxed.BoxedEditorUI}.

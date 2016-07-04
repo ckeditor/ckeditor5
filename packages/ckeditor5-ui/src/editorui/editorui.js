@@ -15,13 +15,13 @@ import iconManagerModel from '../../../theme/iconmanagermodel.js';
 import mix from '../../utils/mix.js';
 
 /**
- * The EditorUI controller class. It's a base class for the editor
+ * The editor UI controller class. It's a base class for the editor
  * main view controllers.
  *
  *		// An instance of EditorUI.
  *		new EditorUI( editor );
  *
- * See {@link ui.editorUI.EditorUIView}.
+ * See {@link ui.editorUI.EditorUIView}, {@link ui.iconManager.IconManager}.
  *
  * @memberOf ui.editorUI
  * @extends ui.Controller
@@ -63,7 +63,7 @@ export default class EditorUI extends Controller {
 	}
 
 	/**
-	 * Adds IconManager into DOM.
+	 * Injects the {@link ui.iconManager.IconManager} into DOM.
 	 *
 	 * @protected
 	 */

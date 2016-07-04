@@ -9,7 +9,7 @@ import View from '../view.js';
 import Template from '../template.js';
 
 /**
- * The IconManagerView class.
+ * The icon manager view class.
  *
  * See {@link ui.iconManager.IconManager}.
  *
@@ -29,7 +29,7 @@ export default class IconManagerView extends View {
 		} );
 
 		/**
-		 * Model of this IconManagerView.
+		 * Model of this icon manager view.
 		 *
 		 * @member {ui.iconManager.IconManagerViewModel} ui.iconManager.IconManagerView#model
 		 */
@@ -43,7 +43,7 @@ export default class IconManagerView extends View {
 }
 
 /**
- * The IconManagerView {@link ui.Model} interface.
+ * The icon manager view {@link ui.Model} interface.
  *
  * @memberOf ui.iconManager
  * @interface ui.iconManager.IconManagerViewModel

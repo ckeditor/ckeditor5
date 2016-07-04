@@ -9,7 +9,7 @@ import EditableUIView from '../../editableui/editableuiview.js';
 import Template from '../../template.js';
 
 /**
- * The InlineEditableUIView class implementing an inline {@link ui.editableUI.EditableUIView}.
+ * The inline editable UI class implementing an inline {@link ui.editableUI.EditableUIView}.
  *
  * See {@link ui.editableUI.EditableUI}, {@link ui.editableUI.EditableUIView}.
  *

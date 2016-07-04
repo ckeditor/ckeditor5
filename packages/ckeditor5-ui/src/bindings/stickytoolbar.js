@@ -9,7 +9,7 @@ import ToolbarBindingsMixin from './toolbarbindingsmixin.js';
 import BaseStickyToolbar from '../toolbar/sticky/stickytoolbar.js';
 
 /**
- * The editor StickyToolbar controller class.
+ * The editor sticky toolbar controller class.
  *
  * See {@link ui.stickyToolbar.StickyToolbar}.
  *
@@ -20,8 +20,8 @@ export default class StickyToolbar extends BaseStickyToolbar {
 	/**
 	 * Creates an instance of {@link ui.bindings.StickyToolbar} class.
 	 *
-	 * @param {ui.stickyToolbar.StickyToolbarModel} model Model of this StickyToolbar.
-	 * @param {ui.View} view View of this StickyToolbar.
+	 * @param {ui.stickyToolbar.StickyToolbarModel} model Model of this sticky toolbar.
+	 * @param {ui.View} view View of this sticky toolbar.
 	 * @param {ckeditor5.Editor} editor
 	 */
 	constructor( model, view, editor ) {

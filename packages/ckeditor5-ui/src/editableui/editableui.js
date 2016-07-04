@@ -8,7 +8,7 @@
 import Controller from '../controller.js';
 
 /**
- * The EditableUI controller class. It glues the engine editable
+ * The editable UI controller class. It glues the engine editable
  * {@link engine.view.RootEditableElement} with the UI.
  *
  *		// An instance of EditableUI.
@@ -24,8 +24,8 @@ export default class EditableUI extends Controller {
 	 * Creates an instance of {@link ui.editableUI.EditableUI} class.
 	 *
 	 * @param {ckeditor5.Editor} editor The editor instance.
-	 * @param {engine.view.RootEditableElement} editable The editable element in the engine.
-	 * @param {ui.View} [view] An instance of EditableUIView instance.
+	 * @param {engine.view.RootEditableElement} editable The editable element (in the engine).
+	 * @param {ui.View} [view] An instance of EditableUIView.
 	 */
 	constructor( editor, editable, view ) {
 		super( editable, view );

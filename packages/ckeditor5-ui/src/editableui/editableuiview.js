@@ -9,7 +9,7 @@ import View from '../view.js';
 import Template from '../template.js';
 
 /**
- * The EditableUIView class.
+ * The editable UI view class.
  *
  * See {@link ui.editableUI.EditableUI}.
  *
@@ -18,7 +18,7 @@ import Template from '../template.js';
  */
 export default class EditableUIView extends View {
 	/**
-	 * Creates an instance of the EditableUIView class.
+	 * Creates an instance of {@link ui.editableUI.EditableUIView} class.
 	 *
 	 * @param {utils.Locale} [locale] The {@link ckeditor5.Editor#locale editor's locale} instance.
 	 * @param {HTMLElement} [editableElement] The editable element. If not specified, this view
@@ -52,7 +52,7 @@ export default class EditableUIView extends View {
 		 */
 
 		/**
-		 * Model of this EditableUIView.
+		 * Model of this editable UI view.
 		 *
 		 * @member {ui.editableUI.EditableUIViewModel} ui.editableUI.EditableUIView#model
 		 */
@@ -80,7 +80,7 @@ export default class EditableUIView extends View {
 }
 
 /**
- * The EditableUIView {@link ui.Model} interface.
+ * The editable UI view {@link ui.Model} interface.
  *
  * @memberOf ui.editableUI
  * @interface ui.editableUI.EditableUIViewModel
@@ -99,7 +99,7 @@ export default class EditableUIView extends View {
  */
 
 /**
- * The name of the EditableUIView.
+ * The name of the editable UI view.
  *
  * @member {String} ui.editableUI.EditableUIViewModel#name
  */

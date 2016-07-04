@@ -8,7 +8,7 @@
 import Controller from '../controller.js';
 
 /**
- * The IconManager controller class. It provides SVG icons, which then can
+ * The icon manager controller class. It provides SVG icons, which then can
  * be used by {@link ui.icon.Icon} component and similar.
  *
  *		const model = new Model( {
@@ -39,7 +39,7 @@ export default class IconManager extends Controller {
 }
 
 /**
- * The IconManager component {@link ui.Model} interface.
+ * The icon manager component {@link ui.Model} interface.
  *
  * @memberOf ui.iconManager
  * @interface ui.iconManager.IconManagerModel
