@@ -363,7 +363,7 @@ function button( {
 }
 
 function toolbar( children = [] ) {
-	const toolbar = new Toolbar( new ToolbarView() );
+	const toolbar = new Toolbar( null, new ToolbarView() );
 
 	children.forEach( c => {
 		toolbar.add( 'buttons', c );
