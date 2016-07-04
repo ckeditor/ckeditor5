@@ -11,7 +11,7 @@ import ClassicEditorUI from '/ckeditor5/editor-classic/classiceditorui.js';
 import BoxedEditorUIView from '/ckeditor5/ui/editorui/boxed/boxededitoruiview.js';
 
 import Toolbar from '/ckeditor5/ui/toolbar/toolbar.js';
-import StickyToolbarView from '/ckeditor5/ui/stickytoolbar/stickytoolbarview.js';
+import StickyToolbarView from '/ckeditor5/ui/toolbar/sticky/stickytoolbarview.js';
 
 import EditableUI from '/ckeditor5/ui/editableui/editableui.js';
 import InlineEditableUIView from '/ckeditor5/ui/editableui/inline/inlineeditableuiview.js';
@@ -27,7 +27,7 @@ describe( 'ClassicEditorUI', () => {
 
 		editor = new ClassicTestEditor( editorElement );
 		editorUI = new ClassicEditorUI( editor );
-		editorUI.view = new BoxedEditorUIView( editorUI.viewModel, editor.locale );
+		editorUI.view = new BoxedEditorUIView( editor.locale );
 	} );
 
 	describe( 'constructor', () => {

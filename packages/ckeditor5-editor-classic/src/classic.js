@@ -39,7 +39,7 @@ export default class ClassicEditor extends StandardEditor {
 		this.data.processor = new HtmlDataProcessor();
 
 		this.ui = new ClassicEditorUI( this );
-		this.ui.view = new BoxedEditorUIView( this.ui.viewModel, this.locale );
+		this.ui.view = new BoxedEditorUIView( this.locale );
 
 		/**
 		 * The element replacer instance used to hide editor element.
