@@ -98,7 +98,7 @@ export default class ClassicEditorUI extends BoxedEditorUI {
 		const editor = this.editor;
 
 		const editable = editor.editing.view.getRoot();
-		const editableUI = new EditableUI( editor, editable, new InlineEditableUIView( editor.locale ) );
+		const editableUI = new EditableUI( editable, new InlineEditableUIView( editor.locale ), editor );
 
 		this.add( 'main', editableUI );
 
