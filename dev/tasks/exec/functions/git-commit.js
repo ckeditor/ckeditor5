@@ -5,21 +5,23 @@
 
 'use strict';
 
-const git = require( '../utils/git' );
+const git = require( '../lib/git' );
 const PassThrough = require( 'stream' ).PassThrough;
 
 /**
  * Adds only modified files to git repository and commits them with provided message
+ * Example: gulp exec --task git-commit --message "Commit message."
  *
  * @param {String} workdir
  * @param {Object} params
  * @returns {Object} stream
  */
 module.exports = ( workdir, params ) => {
-	if ( !( params.message || params.m ) ) {
-		throw new Error( 'You must provide commit message with parameter: --message | -m ' );
+	const message = params.message;
+
+	if ( !message ) {
+		throw new Error( 'You must provide commit message with parameter: --message' );
 	}
-	const message = params.message || params.m;
 
 	git.commit( message, workdir );
 
