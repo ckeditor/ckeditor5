@@ -68,7 +68,7 @@ function exec( execTask, ckeditor5Path, packageJSON, workspaceRoot, params ) {
 
 	// Get all CKEditor dependencies from package.json.
 	const dependencies = tools.getCKEditorDependencies( packageJSON.dependencies );
-	const streams = merge();
+	const mergedStream = merge();
 
 	if ( dependencies ) {
 		const directories = tools.getCKE5Directories( workspaceAbsolutePath );
@@ -84,7 +84,7 @@ function exec( execTask, ckeditor5Path, packageJSON, workspaceRoot, params ) {
 					try {
 						log.out( `Executing task on ${ repositoryURL }...` );
 
-						streams.add( execTask( repositoryAbsolutePath, params ) );
+						mergedStream.add( execTask( repositoryAbsolutePath, params ) );
 					} catch ( error ) {
 						log.err( error );
 					}
@@ -97,5 +97,5 @@ function exec( execTask, ckeditor5Path, packageJSON, workspaceRoot, params ) {
 		log.out( 'No CKEditor5 dependencies found in package.json file.' );
 	}
 
-	return streams;
+	return mergedStream;
 }
