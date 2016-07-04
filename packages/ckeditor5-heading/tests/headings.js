@@ -59,6 +59,16 @@ describe( 'Headings', () => {
 		sinon.assert.calledWithExactly( executeSpy, 'headings', 'paragraph' );
 	} );
 
+	it( 'should focus view after command execution', () => {
+		const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+		const controller = editor.ui.featureComponents.create( 'headings' );
+		const model = controller.model.content;
+
+		model.fire( 'execute', { id: 'paragraph', label: 'Paragraph' } );
+
+		sinon.assert.calledOnce( focusSpy );
+	} );
+
 	describe( 'model to command binding', () => {
 		let model, command;
 
