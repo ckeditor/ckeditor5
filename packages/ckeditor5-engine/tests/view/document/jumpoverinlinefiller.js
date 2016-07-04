@@ -24,11 +24,10 @@ describe( 'Document', () => {
 
 		viewDocument.addObserver( KeyObserver );
 
-		const viewRoot = viewDocument.createRoot( document.getElementById( 'editor' ) );
+		viewDocument.createRoot( document.getElementById( 'editor' ) );
 
 		document.getSelection().removeAllRanges();
 
-		viewDocument.selectedEditable = viewRoot;
 		viewDocument.isFocused = true;
 	} );
 

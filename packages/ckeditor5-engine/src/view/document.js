@@ -87,17 +87,6 @@ export default class Document {
 		this.set( 'isFocused', false );
 
 		/**
-		 * {@link engine.view.EditableElement EditableElement} which is containing selection. It can be `null` if
-		 * there is no selection found.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {engine.view.EditableElement|null} engine.view.Document#selectedEditable
-		 */
-		this.set( 'selectedEditable', this.selection.getEditableElement() );
-		this.selection.on( 'change', () => this.selectedEditable = this.selection.getEditableElement() );
-
-		/**
 		 * Instance of the {@link engine.view.Document#renderer renderer}.
 		 *
 		 * @readonly
@@ -115,6 +104,14 @@ export default class Document {
 		this._observers = new Map();
 
 		injectQuirksHandling( this );
+
+		// Listens `render` event on default priority.
+		// This way we can attach other listeners before or after rendering execution.
+		this.on( 'render', () => {
+			this.disableObservers();
+			this.renderer.render();
+			this.enableObservers();
+		} );
 	}
 
 	/**
@@ -248,13 +245,11 @@ export default class Document {
 	/**
 	 * Renders all changes. In order to avoid triggering the observers (e.g. mutations) all observers are disabled
 	 * before rendering and re-enabled after that.
+	 *
+	 * @fires engine.view.Document#render
 	 */
 	render() {
-		this.disableObservers();
-
-		this.renderer.render();
-
-		this.enableObservers();
+		this.fire( 'render' );
 	}
 
 	/**
@@ -263,7 +258,7 @@ export default class Document {
 	 */
 	focus() {
 		if ( !this.isFocused ) {
-			const editable = this.selectedEditable;
+			const editable = this.selection.getEditableElement();
 
 			if ( editable ) {
 				this.domConverter.focus( editable );
@@ -312,4 +307,11 @@ mix( Document, ObservableMixin );
  * * `text` - for text nodes changes.
  *
  * @typedef {String} engine.view.ChangeType
+ */
+
+/**
+ * Fired when {@link engine.view.Document#render render} method is called. Actual rendering is executed as a listener to
+ * this event with default priority. This way other listeners can be used to run code before or after rendering.
+ *
+ * @event engine.view.Document.render
  */

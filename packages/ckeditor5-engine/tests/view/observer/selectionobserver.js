@@ -47,7 +47,6 @@ describe( 'SelectionObserver', () => {
 		viewDocument.selection.removeAllRanges();
 		document.getSelection().removeAllRanges();
 
-		viewDocument.selectedEditable = viewRoot;
 		viewDocument.isFocused = true;
 
 		viewDocument.getObserver( SelectionObserver ).enable();

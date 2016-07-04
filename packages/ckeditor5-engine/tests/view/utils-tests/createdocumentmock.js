@@ -23,7 +23,6 @@ describe( 'createDocumentMock', () => {
 			done();
 		} );
 
-		docMock.selectedEditable = rootMock;
 		docMock.isFocused = true;
 	} );
 } );
