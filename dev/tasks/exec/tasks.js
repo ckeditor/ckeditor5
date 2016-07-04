@@ -6,13 +6,11 @@
 'use strict';
 
 const gulp = require( 'gulp' );
+const gutil = require( 'gulp-util' );
 const minimist = require( 'minimist' );
 
 const exec = require( './tasks/exec' );
-
-const log = require( './utils/log' );
-const gutil = require( 'gulp-util' );
-// const through = require( 'through2' );
+const log = require( '../../lib/log' );
 
 module.exports = ( config ) => {
 	const ckeditor5Path = process.cwd();

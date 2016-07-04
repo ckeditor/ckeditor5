@@ -158,5 +158,33 @@ module.exports = {
 		];
 
 		tools.shExec( addRemoteCommands.join( ' && ' ) );
+	},
+	/*
+	 * Creates commit on repository under specified path
+	 *
+	 * @param {String} message
+	 * @param {String} repositoryPath
+	 */
+	commit( message, repositoryPath ) {
+		const commitCommands = [
+			`cd ${ repositoryPath }`,
+			`git commit --dry-run --all --message "${ message }"`
+		];
+
+		tools.shExec( commitCommands.join( ' && ' ) );
+	},
+
+	/**
+	 * Pushes changes to repository's default location
+	 *
+	 * @param {String} repositoryPath
+	 */
+	push( repositoryPath ) {
+		const pushCommands = [
+			`cd ${ repositoryPath }`,
+			`git push`
+		];
+
+		tools.shExec( pushCommands.join( ' && ' ) );
 	}
 };

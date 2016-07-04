@@ -5,10 +5,10 @@
 
 'use strict';
 
-const tools = require( '../utils/tools' );
-const git = require( '../utils/git' );
+const tools = require( '../../../lib/tools' );
+const git = require( '../../../lib/git' );
 const path = require( 'path' );
-const log = require( '../utils/log' );
+const log = require( '../../../lib/log' );
 const merge = require( 'merge-stream' );
 
 /**

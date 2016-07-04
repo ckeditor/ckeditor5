@@ -8,8 +8,8 @@
 'use strict';
 
 const sinon = require( 'sinon' );
-const tools = require( '../../tasks/dev/utils/tools' );
-const git = require( '../../tasks/dev/utils/git' );
+const tools = require( '../../lib/tools' );
+const git = require( '../../lib/git' );
 const path = require( 'path' );
 const chai = require( 'chai' );
 const expect = chai.expect;
@@ -162,7 +162,7 @@ describe( 'dev-update', () => {
 	} );
 
 	it( 'should catch linking errors', () => {
-		const log = require( '../../tasks/dev/utils/log' );
+		const log = require( '../../lib/log' );
 		const dirs = [ 'ckeditor5-core', 'ckeditor5-devtest' ];
 		const installTask = sinon.spy();
 		const outSpy = sinon.spy();

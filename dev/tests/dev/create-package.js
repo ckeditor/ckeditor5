@@ -10,9 +10,9 @@
 const chai = require( 'chai' );
 const sinon = require( 'sinon' );
 const expect = chai.expect;
-const tools = require( '../../tasks/dev/utils/tools' );
+const tools = require( '../../lib/tools' );
 const inquiries = require( '../../tasks/dev/utils/inquiries' );
-const git = require( '../../tasks/dev/utils/git' );
+const git = require( '../../lib/git' );
 const path = require( 'path' );
 
 describe( 'dev-create-package', () => {

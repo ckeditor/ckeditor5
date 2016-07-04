@@ -13,7 +13,7 @@ const installTask = require( './tasks/install' );
 const pluginCreateTask = require( './tasks/create-package' );
 const updateTask = require( './tasks/update' );
 const relinkTask = require( './tasks/relink' );
-const log = require( './utils/log' );
+const log = require( '../../lib/log' );
 const gutil = require( 'gulp-util' );
 
 module.exports = ( config ) => {

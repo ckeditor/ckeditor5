@@ -9,7 +9,7 @@
 
 const tasks = require( '../../tasks/test/tasks' )();
 const buildUtils = require( '../../tasks/build/utils' );
-const devTools = require( '../../tasks/dev/utils/tools' );
+const devTools = require( '../../lib/tools' );
 const Vinyl = require( 'vinyl' );
 
 describe( 'test-node', () => {

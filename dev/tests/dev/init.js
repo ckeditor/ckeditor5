@@ -8,7 +8,7 @@
 'use strict';
 
 const sinon = require( 'sinon' );
-const tools = require( '../../tasks/dev/utils/tools' );
+const tools = require( '../../lib/tools' );
 
 describe( 'dev-init', () => {
 	const initTask = require( '../../tasks/dev/tasks/init' );

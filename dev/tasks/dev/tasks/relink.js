@@ -5,9 +5,9 @@
 
 'use strict';
 
-const tools = require( '../utils/tools' );
+const tools = require( '../../../lib/tools' );
 const path = require( 'path' );
-const log = require( '../utils/log' );
+const log = require( '../../../lib/log' );
 
 /**
  * 1. Get CKEditor5 dependencies from package.json file.

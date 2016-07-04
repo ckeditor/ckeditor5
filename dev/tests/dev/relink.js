@@ -8,7 +8,7 @@
 'use strict';
 
 const sinon = require( 'sinon' );
-const tools = require( '../../tasks/dev/utils/tools' );
+const tools = require( '../../lib/tools' );
 const path = require( 'path' );
 
 describe( 'dev-relink', () => {
@@ -95,7 +95,7 @@ describe( 'dev-relink', () => {
 			}
 		};
 		const writeErrorSpy = sinon.spy();
-		const log = require( '../../tasks/dev/utils/log' );
+		const log = require( '../../lib/log' );
 		log.configure( () => {}, writeErrorSpy );
 
 		task( ckeditor5Path, json, workspaceRoot );
