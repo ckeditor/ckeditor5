@@ -23,7 +23,10 @@ const bindIfSymbol = Symbol( 'bindIf' );
  *		new Template( {
  *			tag: 'p',
  *			attributes: {
- *				class: 'foo'
+ *				class: 'foo',
+ *				style: {
+ *					backgroundColor: 'yellow'
+ *				}
  *			},
  *			children: [
  *				'A paragraph.'
@@ -32,7 +35,7 @@ const bindIfSymbol = Symbol( 'bindIf' );
  *
  * will render the following HTMLElement:
  *
- *		<p class="foo">A paragraph.</p>
+ *		<p class="foo" style="background-color: yellow;">A paragraph.</p>
  *
  * See {@link ui.TemplateDefinition} to know more about templates and see complex examples.
  *
@@ -368,8 +371,8 @@ export default class Template {
 	 */
 	_renderText( valueSchemaOrText, textNode = document.createTextNode( '' ) ) {
 		// Check if this Text Node is bound to Observable. Cases:
-		//		{ text: [ Template.bind.to( ... ) ] }
-		//		{ text: [ 'foo', Template.bind.to( ... ), ... ] }
+		//		{ text: [ Template.bind( ... ).to( ... ) ] }
+		//		{ text: [ 'foo', Template.bind( ... ).to( ... ), ... ] }
 		if ( hasBinding( valueSchemaOrText.text ) ) {
 			this._bindToObservable( valueSchemaOrText.text, textNode, getTextUpdater( textNode ) );
 		}
@@ -403,9 +406,9 @@ export default class Template {
 			attrNs = attrValue[ 0 ].ns || null;
 
 			// Activate binding if one is found. Cases:
-			// 		{ class: [ Template.bind.to( ... ) ] }
-			// 		{ class: [ 'bar', Template.bind.to( ... ), 'baz' ] }
-			// 		{ class: { ns: 'abc', value: Template.bind.to( ... ) } }
+			// 		{ class: [ Template.bind( ... ).to( ... ) ] }
+			// 		{ class: [ 'bar', Template.bind( ... ).to( ... ), 'baz' ] }
+			// 		{ class: { ns: 'abc', value: Template.bind( ... ).to( ... ) } }
 			if ( hasBinding( attrValue ) ) {
 				// Normalize attributes with additional data like namespace:
 				//		{ class: { ns: 'abc', value: [ ... ] } }
@@ -416,7 +419,16 @@ export default class Template {
 				);
 			}
 
-			// Otherwise simply set the attribute.
+			// Style attribute could be an Object so it needs to be parsed in a specific way.
+			//		style: {
+			//			width: '100px',
+			//			height: Template.bind( ... ).to( ... )
+			//		}
+			else if ( attrName == 'style' && typeof attrValue[ 0 ] !== 'string' ) {
+				this._renderStyleAttribute( attrValue[ 0 ], el );
+			}
+
+			// Otherwise simply set the static attribute.
 			// 		{ class: [ 'foo' ] }
 			// 		{ class: [ 'all', 'are', 'static' ] }
 			// 		{ class: [ { ns: 'abc', value: [ 'foo' ] } ] }
@@ -430,6 +442,52 @@ export default class Template {
 					.reduce( arrayValueReducer );
 
 				el.setAttributeNS( attrNs, attrName, attrValue );
+			}
+		}
+	}
+
+	/**
+	 * Renders `style` attribute.
+	 *
+	 * Style attribute is an {Object} with static values:
+	 *
+	 *		attributes: {
+	 * 			style: {
+	 * 				color: 'red'
+	 * 			}
+	 * 		}
+	 *
+	 * or values bound to {@link ui.Model} properties:
+	 *
+	 *		attributes: {
+	 * 			style: {
+	 * 				color: bind.to( ... )
+	 * 			}
+	 * 		}
+	 *
+	 * Note: `style` attribute is rendered without setting namespace. It does not seem to be
+	 * needed.
+	 *
+	 * @private
+	 * @param {ui.TemplateDefinition.attributes.styles} styles Styles definition.
+	 * @param {HTMLElement} el Element which is rendered.
+	 */
+	_renderStyleAttribute( styles, el ) {
+		for ( let styleName in styles ) {
+			const styleValue = styles[ styleName ];
+
+			// style: {
+			//	color: bind.to( 'attribute' )
+			// }
+			if ( hasBinding( styleValue ) ) {
+				this._bindToObservable( [ styleValue ], el, getStyleUpdater( el, styleName ) );
+			}
+
+			// style: {
+			//	color: 'red'
+			// }
+			else {
+				el.style[ styleName ] = styleValue;
 			}
 		}
 	}
@@ -635,6 +693,25 @@ function getAttributeUpdater( el, attrName, ns = null ) {
 
 		remove() {
 			el.removeAttributeNS( ns, attrName );
+		}
+	};
+}
+
+// Returns an object consisting of `set` and `remove` functions, which
+// can be used in the context of CSSStyleDeclaration to set or remove a style.
+// @see ui.View#_bindToObservable
+//
+// @param {Node} node DOM Node to be modified.
+// @param {String} styleName Name of the style to be modified.
+// @returns {Object}
+function getStyleUpdater( el, styleName ) {
+	return {
+		set( value ) {
+			el.style[ styleName ] = value;
+		},
+
+		remove() {
+			el.style[ styleName ] = null;
 		}
 	};
 }
@@ -908,6 +985,7 @@ function extendTemplateDefinition( def, extDef ) {
  *			attributes: {
  *				class: {@link ui.TemplateValueSchema},
  *				id: {@link ui.TemplateValueSchema},
+ *				style: {@link ui.TemplateValueSchema}
  *				...
  *			},
  *			on: {
@@ -955,6 +1033,12 @@ function extendTemplateDefinition( def, extDef ) {
  *						bind.if( 'baz', 'value-when-true' )
  *						'static-text'
  *					]
+ *				},
+ *
+ *				// Object literal schema, specific for styles.
+ *				style: {
+ *					color: 'red',
+ *					backgroundColor: bind.to( 'qux', () => { ... } )
  *				}
  *			}
  *		} );
