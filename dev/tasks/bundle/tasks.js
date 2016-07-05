@@ -15,12 +15,14 @@ const runSequence = require( 'run-sequence' );
 const utils = require( './utils' );
 const rollup = require( 'rollup' ).rollup;
 const rollupBabel = require( 'rollup-plugin-babel' );
+const mkdirp = require( 'mkdirp' );
 
 module.exports = ( config ) => {
 	const args = utils.parseArguments();
 	const sourceBuildDir = path.join( config.ROOT_DIR, config.BUILD_DIR, 'esnext' );
 	const bundleDir = path.join( config.ROOT_DIR, config.BUNDLE_DIR );
-	const temporaryEntryFilePath = './tmp/entryfile.js';
+	const bundleTmpDir = path.join( bundleDir, 'tmp' );
+	const temporaryEntryFilePath = path.join( bundleTmpDir, 'entryfile.js' );
 
 	const tasks = {
 		/**
@@ -33,24 +35,29 @@ module.exports = ( config ) => {
 		/**
 		 * Combine whole editor files into two files `ckeditor.js` and `ckeditor.css`.
 		 *
-		 * For JS bundle is needed to pass configuration file `gulp bundle --config path/to/file.js` where
-		 * we need to specify which features and creator we want to include in our bundle.
+		 * For JS bundle is required to pass configuration file `gulp bundle --config path/to/file.js` where
+		 * we need to specify which editor and features we want to include in our bundle.
 		 *
-		 * 		example-config-file.js
-		 * 		modude.exports = {
-		 * 			// Name of CKEditor instance exposed by bundle.
-		 * 			moduleName 'MyCKEditor',
+		 * 		example-config-file.js:
+		 * 		module.exports = {
+		 * 			// Name of CKEditor instance exposed as global variable by a bundle.
+		 * 			moduleName: 'MyCKEditor',
 		 *
-		 * 			// E.g. `path/to/classic-editor/classic.js`.
-		 * 			creator: 'path/to/editor.creator.js'
+		 * 			// Path to specified editor.
+		 * 			// It could be a path relative to `build/esnext/ckeditor5` directory e.g. `classic-editor/classic.js`
+		 * 			// or path relative to directory where build task will be executed `./full/path/to/custom/editor.js`.
+		 * 			editor: 'classic-editor/classic.js'
 		 *
 		 * 			// List of features.
 		 * 			features: [
-		 * 				// It could be whole path.
-		 * 				'path/to/some/feature.js',
+		 * 				// It could be a plugin name only if plugin is a default CKEditor plugin.
+		 * 				'delete',
 		 *
-		 * 				// And it could be only name of feature if feature is default CKEditor feature.
-		 * 				'typing'
+		 * 				// It could be a path relative to `build/esnext/ckeditor5` directory.
+		 * 				`typing/typing.js`
+		 *
+		 * 				// Or it could be path relative to directory where build task will be executed.
+		 * 				'./path/to/some/custom/feature.js',
 		 * 			]
 		 * 		}
 		 *
@@ -62,15 +69,19 @@ module.exports = ( config ) => {
 			if ( !configFilePath ) {
 				// Then log error.
 				gutil.log( gutil.colors.red( `Bundle Error: Path to the config file is required. 'gulp bundle --config path/to/file.js'` ) );
-				// And stop process as failed.
-				process.exit( 1 );
+
+				// And stop task. as failed
+				return Promise.reject();
 			}
 
 			// Get configuration from the configuration file.
 			const config = require( path.resolve( '.', configFilePath ) );
 
-			// Create temporary entry file.
-			fs.writeFileSync( temporaryEntryFilePath, utils.renderEntryFileContent( config ) );
+			// Create a temporary entry file.
+			// Create proper directory structure first if not exist.
+			mkdirp.sync( bundleTmpDir );
+
+			fs.writeFileSync( temporaryEntryFilePath, utils.renderEntryFileContent( bundleTmpDir, config ) );
 
 			/**
 			 * Bundling JS by Rollup.
@@ -92,15 +103,15 @@ module.exports = ( config ) => {
 						moduleName: config.moduleName
 					} );
 				} ).then( () => {
-					// If everything went well then remove temporary entry file.
-					utils.clean( '', temporaryEntryFilePath );
+					// If everything went well then remove tmp directory.
+					utils.clean( bundleTmpDir, path.join( '' ) );
 				} ).catch( ( err ) => {
 					// If something went wrong then log error.
 					gutil.log( gutil.colors.red( `Bundle Error` ) );
 					gutil.log( gutil.colors.red( err.stack ) );
 
-					// And remove temporary entry file.
-					utils.clean( '', temporaryEntryFilePath );
+					// And remove tmp directory.
+					utils.clean( bundleTmpDir, path.join( '' ) );
 				} );
 			}
 
@@ -142,11 +153,6 @@ module.exports = ( config ) => {
 		register() {
 			gulp.task( 'bundle:clean', tasks.clean );
 			gulp.task( 'bundle:generate',
-				[
-					'bundle:clean',
-					'build:js:esnext',
-					'build:themes:esnext'
-				],
 				() => tasks.generate( args.config )
 			);
 			gulp.task( 'bundle:minify:js', tasks.minify.js );

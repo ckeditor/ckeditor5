@@ -67,6 +67,7 @@
     "jshint-reporter-jscs": "^0.1.0",
     "merge-stream": "^1.0.0",
     "minimist": "^1.2.0",
+    "mkdirp": "^0.5.1",
     "mockery": "^1.4.0",
     "multipipe": "^0.3.0",
     "ncp": "^2.0.0",

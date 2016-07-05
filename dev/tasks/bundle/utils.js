@@ -33,53 +33,95 @@ const utils = {
 	},
 
 	/**
-	 * Resolves a simplified plugin name to a real path.
+	 * When module path is not relative then treat this path as a path to the one of the ckeditor5 default module
+	 * (relative to ./bundle/exnext/ckedotir5) and add prefix `./build/esnext/ckeditor5/` to this path.
+	 *
+	 * @param {String} modulePath Path the ckeditor5 module.
+	 */
+	getFullPath( modulePath ) {
+		// If path is not a relative path (no leading ./ or ../).
+		if ( modulePath.charAt( 0 ) != '.' ) {
+			return `./${ path.join( 'build/esnext/ckeditor5', modulePath ) }`;
+		}
+
+		return modulePath;
+	},
+
+	/**
+	 * Resolves a simplified plugin name to a real path if only name is passed.
+	 * E.g. 'delete' will be transformed to './build/esnext/ckeditor5/delete/delete.js'.
 	 *
 	 * @param {String} name
 	 * @returns {String} Path to the module.
 	 */
 	getPluginPath( name ) {
-		if ( name.indexOf( '/' ) > 0 ) {
-			return name;
+		if ( name.indexOf( '/' ) >= 0 ) {
+			return utils.getFullPath( name );
 		}
 
-		return './build/esnext/ckeditor5/' + ( name + '/' + name ) + '.js';
+		return utils.getFullPath( `${ name }/${ name }.js` );
+	},
+
+	/**
+	 * Transform first letter of passed string to the upper case.
+	 *
+	 * @params {String} string String that will be transformed.
+	 * @returns {String} Transformed string.
+	 */
+	capitalize( string ) {
+		return string.charAt( 0 ).toUpperCase() + string.slice( 1 );
 	},
 
 	/**
 	 * Render content for entry file which needs to be passed as main file to the Rollup.
 	 *
-	 * @param {Object} data
-	 * @param {String} [data.moduleName] Name of the editor class exposed in bundle. e.g. MyCKEditor.
-	 * @param {String} [data.creator] Path to the editor creator.
-	 * @param {Array<String>} [data.features] List of paths or names to features which need to be included in bundle.
+	 * @param {String} dir Path to the entryfile directory. Import paths need to be relative to this directory.
+	 * @param {Object} data Configuration object.
+	 * @param {String} [data.moduleName] Name of the editor class exposed as global variable by bundle. e.g. MyCKEditor.
+	 * @param {String} [data.editor] Path to the editor version e.g. `classic-editor/classic.js`.
+	 * @param {Array.<String>} [data.features] List of paths or names to features which need to be included in bundle.
 	 * @returns {string}
 	 */
-	renderEntryFileContent( data ) {
-		const creatorName = path.basename( data.creator, '.js' );
-		const creatorPath = path.relative( './tmp', data.creator );
+	renderEntryFileContent( dir, data ) {
+		const creatorName = utils.capitalize( path.basename( data.editor, '.js' ) );
+		const creatorPath = path.relative( dir, utils.getFullPath( data.editor ) );
 		let featureNames = [];
-		let template = `'use strict';\n\n`;
 
-		// Imports babel helpers.
-		template += `import '../node_modules/regenerator-runtime/runtime.js';\n`;
+		function renderPluginImports( features = [] ) {
+			let templateFragment = '';
 
-		// Imports editor creator
-		template += `import ${ creatorName } from '${ creatorPath }';\n`;
+			for ( let feature of features ) {
+				feature = utils.getPluginPath( feature );
 
-		// Imports editor features.
-		for ( let feature of data.features ) {
-			feature = utils.getPluginPath( feature );
+				const featurePath = path.relative( dir, feature );
 
-			const featureName = path.basename( feature, '.js' );
-			const featurePath = path.relative( './tmp', feature );
+				// Generate unique feature name.
+				// In case of two ore more features will have the same name but different path
+				// 		'typing', 'path/to/other/plugin/typing'
+				let featureName = utils.capitalize( path.basename( feature, '.js' ) );
+				let i = 0;
 
-			template += `import ${ featureName } from '${ featurePath }';\n`;
-			featureNames.push( featureName );
+				while ( featureNames.indexOf( featureName ) >= 0 ) {
+					featureName = utils.capitalize( path.basename( feature, `.js` ) ) + ( ++i ).toString();
+				}
+
+				templateFragment += `import ${ featureName } from '${ featurePath }';\n`;
+				featureNames.push( featureName );
+			}
+
+			return templateFragment;
 		}
 
-		// Class definition.
-		template += `\nexport default class ${ data.moduleName } extends ${ creatorName } {
+		return `
+'use strict';
+
+// Babel helpers.
+import '${ path.relative( dir, 'node_modules/regenerator-runtime/runtime.js' ) }';
+
+import ${ creatorName } from '${ creatorPath }';
+${ renderPluginImports( data.features ) }
+
+export default class ${ data.moduleName } extends ${ creatorName } {
 	static create( element, config = {} ) {
 		if ( !config.features ) {
 			config.features = [];
@@ -91,8 +133,6 @@ const utils = {
 	}
 }
 `;
-
-		return template;
 	},
 
 	/**
@@ -148,7 +188,7 @@ const utils = {
 	/**
 	 * Get normal and gzipped size of every passed file in specified directory.
 	 *
-	 * @param {Array<String>} files
+	 * @param {Array.<String>} files
 	 * @param {String} [rootDir='']
 	 * @returns {Array<Object>} List with file size data
 	 */
@@ -172,7 +212,7 @@ const utils = {
 	 *        file.css 500 kB (gzipped: 100 kB)
 	 *
 	 * @param {String} title
-	 * @param {Array<Object>} filesStats
+	 * @param {Array.<Object>} filesStats
 	 */
 	showFilesSummary( title, filesStats ) {
 		const label = gutil.colors.underline( title );

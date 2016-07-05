@@ -7,7 +7,7 @@
 
 module.exports = {
 	moduleName: 'MyCKEditor',
-	creator: './build/esnext/ckeditor5/editor-classic/classic.js',
+	editor: 'editor-classic/classic.js',
 	features: [
 		'enter',
 		'paragraph',

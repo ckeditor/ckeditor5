@@ -28,7 +28,151 @@ describe( 'bundle-utils', () => {
 	} );
 
 	it( 'should be extended by top level utils', () => {
-		expect( utils.clean ).to.be.equal( mainUtils.clean );
+		expect( utils.clean ).to.equal( mainUtils.clean );
+	} );
+
+	describe( 'getFullPath', () => {
+		it( 'should return full path when passed path not relative', () => {
+			expect( utils.getFullPath( 'editor-classic/classic.js' ) ).to.equal( './build/esnext/ckeditor5/editor-classic/classic.js' );
+		} );
+
+		it( 'should return unmodified path when passed path is a relative', () => {
+			expect( utils.getFullPath( './path/to/editor-classic/classic.js' ) ).to.equal( './path/to/editor-classic/classic.js' );
+			expect( utils.getFullPath( '../path/to/editor-classic/classic.js' ) ).to.equal( '../path/to/editor-classic/classic.js' );
+		} );
+	} );
+
+	describe( 'getPluginPath()', () => {
+		it( 'should resolve a simple plugin name to the full path', () => {
+			expect( utils.getPluginPath( 'typing' ) ).to.equal( './build/esnext/ckeditor5/typing/typing.js' );
+		} );
+
+		it( 'should return full path if passed argument is a relative path', () => {
+			expect( utils.getPluginPath( 'typing/typing.js' ) ).to.equal( './build/esnext/ckeditor5/typing/typing.js' );
+		} );
+
+		it( 'should return unmodified plugin path if passed argument is a relative path', () => {
+			expect( utils.getPluginPath( './typing.js' ) ).to.equal( './typing.js' );
+			expect( utils.getPluginPath( '../typing.js' ) ).to.equal( '../typing.js' );
+		} );
+	} );
+
+	describe( 'capitalize()', () => {
+		it( 'should transform first letter of the passed string to uppercase', () => {
+			expect( utils.capitalize( 'string' ) ).to.equal( 'String' );
+			expect( utils.capitalize( 'multi word string' ) ).to.equal( 'Multi word string' );
+		} );
+	} );
+
+	describe( 'renderEntryFileContent()', () => {
+		it( 'should render file content with proper data', () => {
+			const result = utils.renderEntryFileContent( './bundle/tmp', {
+				moduleName: 'MyCKEditor',
+				editor: 'editor-classic/classic.js',
+				features: [
+					'delete',
+					'path/to/default.js',
+					'./path/to/custom.js'
+				]
+			} );
+
+			const expected = `
+'use strict';
+
+// Babel helpers.
+import '../../node_modules/regenerator-runtime/runtime.js';
+
+import Classic from '../../build/esnext/ckeditor5/editor-classic/classic.js';
+import Delete from '../../build/esnext/ckeditor5/delete/delete.js';
+import Default from '../../build/esnext/ckeditor5/path/to/default.js';
+import Custom from '../../path/to/custom.js';
+
+
+export default class MyCKEditor extends Classic {
+	static create( element, config = {} ) {
+		if ( !config.features ) {
+			config.features = [];
+		}
+
+		config.features = [ ...config.features, Delete, Default, Custom ];
+
+		return Classic.create( element, config );
+	}
+}
+`;
+
+			expect( result ).to.equal( expected );
+		} );
+
+		it( 'should render file content with unique plugin names', () => {
+			const result = utils.renderEntryFileContent( './bundle/tmp', {
+				moduleName: 'MyCKEditor',
+				editor: 'editor-classic/classic.js',
+				features: [
+					'plugin',
+					'path/to/plugin.js',
+					'other/path/to/plugin.js'
+				]
+			} );
+
+			const expected = `
+'use strict';
+
+// Babel helpers.
+import '../../node_modules/regenerator-runtime/runtime.js';
+
+import Classic from '../../build/esnext/ckeditor5/editor-classic/classic.js';
+import Plugin from '../../build/esnext/ckeditor5/plugin/plugin.js';
+import Plugin1 from '../../build/esnext/ckeditor5/path/to/plugin.js';
+import Plugin2 from '../../build/esnext/ckeditor5/other/path/to/plugin.js';
+
+
+export default class MyCKEditor extends Classic {
+	static create( element, config = {} ) {
+		if ( !config.features ) {
+			config.features = [];
+		}
+
+		config.features = [ ...config.features, Plugin, Plugin1, Plugin2 ];
+
+		return Classic.create( element, config );
+	}
+}
+`;
+
+			expect( result ).to.equal( expected );
+		} );
+
+		it( 'should render file content with proper without features', () => {
+			const result = utils.renderEntryFileContent( './bundle/tmp', {
+				moduleName: 'MyCKEditor',
+				editor: 'editor-classic/classic.js'
+			} );
+
+			const expected = `
+'use strict';
+
+// Babel helpers.
+import '../../node_modules/regenerator-runtime/runtime.js';
+
+import Classic from '../../build/esnext/ckeditor5/editor-classic/classic.js';
+
+
+export default class MyCKEditor extends Classic {
+	static create( element, config = {} ) {
+		if ( !config.features ) {
+			config.features = [];
+		}
+
+		config.features = [ ...config.features,  ];
+
+		return Classic.create( element, config );
+	}
+}
+`;
+
+			expect( result ).to.equal( expected );
+		} );
 	} );
 
 	describe( 'getFileSize', () => {
@@ -70,14 +214,14 @@ describe( 'bundle-utils', () => {
 		} );
 
 		it( 'should returns an array with two elements', () => {
-			const result = utils.getFilesSizeStats( [ 'sub/dir/file.js', 'other/sub/dir/file.css' ] , 'root/path' );
+			const result = utils.getFilesSizeStats( [ 'sub/dir/file.js', 'other/sub/dir/file.css' ], 'root/path' );
 
 			expect( result ).to.be.an( 'array' );
 			expect( result ).to.have.length( 2 );
 		} );
 
 		it( 'should returns list of object with files stats', () => {
-			const result = utils.getFilesSizeStats( [ 'sub/dir/file.js', 'other/sub/dir/file.css' ] , 'root/path' );
+			const result = utils.getFilesSizeStats( [ 'sub/dir/file.js', 'other/sub/dir/file.css' ], 'root/path' );
 
 			expect( result ).to.be.deep.equal( [
 				{ name: 'file.js', size, gzippedSize },
@@ -88,10 +232,10 @@ describe( 'bundle-utils', () => {
 		it( 'should get files from root directory', () => {
 			let basenameSpy = sandbox.spy( path, 'basename' );
 
-			const result = utils.getFilesSizeStats( [ 'sub/dir/file.js', 'other/sub/dir/file.css' ] , 'root/path' );
+			const result = utils.getFilesSizeStats( [ 'sub/dir/file.js', 'other/sub/dir/file.css' ], 'root/path' );
 
-			expect( result[0] ).to.have.property( 'name' ).equal( 'file.js' );
-			expect( result[1] ).to.have.property( 'name' ).equal( 'file.css' );
+			expect( result[ 0 ] ).to.have.property( 'name', 'file.js' );
+			expect( result[ 1 ] ).to.have.property( 'name', 'file.css' );
 			sinon.assert.calledWithExactly( basenameSpy.firstCall, 'root/path/sub/dir/file.js' );
 			sinon.assert.calledWithExactly( basenameSpy.secondCall, 'root/path/other/sub/dir/file.css' );
 		} );
@@ -101,8 +245,8 @@ describe( 'bundle-utils', () => {
 
 			const result = utils.getFilesSizeStats( [ 'sub/dir/file.js', 'file.css' ] );
 
-			expect( result[0] ).to.have.property( 'name' ).equal( 'file.js' );
-			expect( result[1] ).to.have.property( 'name' ).equal( 'file.css' );
+			expect( result[ 0 ] ).to.have.property( 'name', 'file.js' );
+			expect( result[ 1 ] ).to.have.property( 'name', 'file.css' );
 			sinon.assert.calledWithExactly( basenameSpy.firstCall, 'sub/dir/file.js' );
 			sinon.assert.calledWithExactly( basenameSpy.secondCall, 'file.css' );
 		} );
