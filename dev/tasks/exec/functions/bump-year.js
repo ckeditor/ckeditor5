@@ -8,7 +8,7 @@
 const gulp = require( 'gulp' );
 const path = require( 'path' );
 const replace = require( 'gulp-replace' );
-const gitignore = require( '../utils/gitignore-filter' );
+const filterGitignore = require( '../utils/filtergitignore' );
 
 /**
  * Replaces license date in source files with new date
@@ -24,7 +24,7 @@ module.exports = ( workdir ) => {
 	const glob = path.join( workdir, '**/*' );
 
 	return gulp.src( glob )
-		.pipe( gitignore() )
+		.pipe( filterGitignore() )
 		.pipe( replace(
 			licenseRegexp,
 			`$1${ year }$2`,

@@ -10,7 +10,7 @@ const filter = require( 'gulp-filter' );
 const gitignore = require( 'parse-gitignore' );
 const PassThrough = require( 'stream' ).PassThrough;
 
-module.exports = () => {
+module.exports = function filterGitignore() {
 	const fp = '.gitignore';
 
 	if ( !fs.existsSync( fp ) ) {
