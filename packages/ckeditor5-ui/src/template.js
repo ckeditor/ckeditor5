@@ -985,6 +985,7 @@ function extendTemplateDefinition( def, extDef ) {
  *			attributes: {
  *				class: {@link ui.TemplateValueSchema},
  *				id: {@link ui.TemplateValueSchema},
+ *				style: {@link ui.TemplateValueSchema}
  *				...
  *			},
  *			on: {
@@ -1032,6 +1033,12 @@ function extendTemplateDefinition( def, extDef ) {
  *						bind.if( 'baz', 'value-when-true' )
  *						'static-text'
  *					]
+ *				},
+ *
+ *				// Object literal schema, specific for styles.
+ *				style: {
+ *					color: 'red',
+ *					backgroundColor: bind.to( 'qux', () => { ... } )
  *				}
  *			}
  *		} );
