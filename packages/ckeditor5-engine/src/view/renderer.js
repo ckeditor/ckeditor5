@@ -146,7 +146,7 @@ export default class Renderer {
 
 	/**
 	 * Render method checks {@link engine.view.Renderer#markedAttributes},
-	 * {@link engine.view.Renderer#markedChildren} and {@link engine.view.Renderer#markedTexts} and updats all
+	 * {@link engine.view.Renderer#markedChildren} and {@link engine.view.Renderer#markedTexts} and updates all
 	 * nodes which need to be updated. Then it clears all three sets. Also, every time render is called it compares and
 	 * if needed updates the selection.
 	 *
@@ -161,7 +161,7 @@ export default class Renderer {
 	 * {@link engine.view.DomConverter#getCorrespondingDomText corresponding DOM text}. The change will be handled
 	 * in the parent element.
 	 *
-	 * For elements, which child lists have changed, it calculates a {@link diff} and adds or removs children which have changed.
+	 * For elements, which child lists have changed, it calculates a {@link diff} and adds or removes children which have changed.
 	 *
 	 * Rendering also handles {@link engine.view.filler fillers}. Especially, it checks if the inline filler is needed
 	 * at selection position and adds or removes it. To prevent breaking text composition inline filler will not be
