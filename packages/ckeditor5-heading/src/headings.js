@@ -63,6 +63,7 @@ export default class Headings extends Feature {
 		// Execute command when item from dropdown is selected.
 		this.listenTo( itemListModel, 'execute', ( evt, itemModel ) => {
 			editor.execute( 'headings', itemModel.id );
+			editor.editing.view.focus();
 		} );
 
 		editor.ui.featureComponents.add( 'headings', ListDropdownController, ListDropdownView, dropdownModel );
