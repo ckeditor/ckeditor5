@@ -316,7 +316,7 @@ describe( 'Template', () => {
 			expect( el.firstChild.textContent ).to.equal( 'baz static' );
 		} );
 
-		describe( '`style` attribute', () => {
+		describe( 'style attribute', () => {
 			let observable, emitter, bind;
 
 			beforeEach( () => {
@@ -329,70 +329,84 @@ describe( 'Template', () => {
 				bind = Template.bind( observable, emitter );
 			} );
 
-			it( 'renders with static and bound properties', () => {
+			it( 'renders as a static value', () => {
 				setElement( {
 					tag: 'p',
 					attributes: {
-						style: {
-							width: bind.to( 'width' ),
-							height: '10px',
-							backgroundColor: bind.to( 'backgroundColor' )
-						}
+						style: 'color: red'
 					}
 				} );
 
-				expect( el.outerHTML ).to.equal( '<p style="width: 10px; height: 10px; background-color: yellow;"></p>' );
-
-				observable.width = '20px';
-				observable.backgroundColor = 'green';
-
-				expect( el.outerHTML ).to.equal( '<p style="width: 20px; height: 10px; background-color: green;"></p>' );
+				expect( el.outerHTML ).to.equal( '<p style="color: red;"></p>' );
 			} );
 
-			it( 'renders with empty properties', () => {
+			it( 'renders as a value bound to the model', () => {
 				setElement( {
 					tag: 'p',
 					attributes: {
-						style: {
-							width: '',
-							backgroundColor: bind.to( 'backgroundColor' )
-						}
+						style: bind.to( 'width', w => `width: ${ w }` )
 					}
 				} );
 
-				observable.backgroundColor = '';
+				expect( el.outerHTML ).to.equal( '<p style="width: 10px"></p>' );
 
-				expect( el.outerHTML ).to.be.equal( '<p></p>' );
+				observable.width = '1em';
+
+				expect( el.outerHTML ).to.equal( '<p style="width: 1em"></p>' );
 			} );
 
-			it( 'renders with falsy values', () => {
-				setElement( {
-					tag: 'p',
-					attributes: {
-						style: {
-							width: null,
-							height: false
+			describe( 'object', () => {
+				it( 'renders with static and bound attributes', () => {
+					setElement( {
+						tag: 'p',
+						attributes: {
+							style: {
+								width: bind.to( 'width' ),
+								height: '10px',
+								backgroundColor: bind.to( 'backgroundColor' )
+							}
 						}
-					}
+					} );
+
+					expect( el.outerHTML ).to.equal( '<p style="width: 10px; height: 10px; background-color: yellow;"></p>' );
+
+					observable.width = '20px';
+					observable.backgroundColor = 'green';
+
+					expect( el.outerHTML ).to.equal( '<p style="width: 20px; height: 10px; background-color: green;"></p>' );
 				} );
 
-				expect( el.outerHTML ).to.be.equal( '<p></p>' );
-			} );
-
-			it( 'renders with empty properties', () => {
-				setElement( {
-					tag: 'p',
-					attributes: {
-						style: {
-							width: '',
-							backgroundColor: bind.to( 'backgroundColor' )
+				it( 'renders with empty string attributes', () => {
+					setElement( {
+						tag: 'p',
+						attributes: {
+							style: {
+								width: '',
+								backgroundColor: bind.to( 'backgroundColor' )
+							}
 						}
-					}
+					} );
+
+					expect( el.outerHTML ).to.be.equal( '<p style="background-color: yellow;"></p>' );
+
+					observable.backgroundColor = '';
+
+					expect( el.outerHTML ).to.be.equal( '<p></p>' );
 				} );
 
-				observable.backgroundColor = '';
+				it( 'renders with falsy values', () => {
+					setElement( {
+						tag: 'p',
+						attributes: {
+							style: {
+								width: null,
+								height: false
+							}
+						}
+					} );
 
-				expect( el.outerHTML ).to.be.equal( '<p></p>' );
+					expect( el.outerHTML ).to.be.equal( '<p></p>' );
+				} );
 			} );
 		} );
 	} );
