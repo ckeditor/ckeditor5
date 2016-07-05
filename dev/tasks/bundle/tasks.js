@@ -33,6 +33,27 @@ module.exports = ( config ) => {
 		/**
 		 * Combine whole editor files into two files `ckeditor.js` and `ckeditor.css`.
 		 *
+		 * For JS bundle is needed to pass configuration file `gulp bundle --config path/to/file.js` where
+		 * we need to specify which features and creator we want to include in our bundle.
+		 *
+		 * 		example-config-file.js
+		 * 		modude.exports = {
+		 * 			// Name of CKEditor instance exposed by bundle.
+		 * 			moduleName 'MyCKEditor',
+		 *
+		 * 			// E.g. `path/to/classic-editor/classic.js`.
+		 * 			creator: 'path/to/editor.creator.js'
+		 *
+		 * 			// List of features.
+		 * 			features: [
+		 * 				// It could be whole path.
+		 * 				'path/to/some/feature.js',
+		 *
+		 * 				// And it could be only name of feature if feature is default CKEditor feature.
+		 * 				'typing'
+		 * 			]
+		 * 		}
+		 *
 		 * @param {String} configFilePath Path to the bundle configuration file.
 		 * @return {Promise} Promise that resolve bundling for CSS anf JS.
 		 */
