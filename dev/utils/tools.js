@@ -7,8 +7,6 @@
 
 const gutil = require( 'gulp-util' );
 
-const dependencyRegExp = /^ckeditor5-/;
-
 module.exports = {
 
 	/**
@@ -60,31 +58,6 @@ module.exports = {
 		}
 
 		fs.symlinkSync( source, destination, 'dir' );
-	},
-
-	/**
-	 * Returns dependencies that starts with ckeditor5-, and have valid, short GitHub url. Returns null if no
-	 * dependencies are found.
-	 *
-	 * @param {Object} dependencies Dependencies object loaded from package.json file.
-	 * @returns {Object|null}
-	 */
-	getCKEditorDependencies( dependencies ) {
-		let result = null;
-
-		if ( dependencies ) {
-			Object.keys( dependencies ).forEach( function( key ) {
-				if ( dependencyRegExp.test( key ) ) {
-					if ( result === null ) {
-						result = {};
-					}
-
-					result[ key ] = dependencies[ key ];
-				}
-			} );
-		}
-
-		return result;
 	},
 
 	/**
@@ -147,18 +120,6 @@ module.exports = {
 		} catch ( e ) {}
 
 		return false;
-	},
-
-	/**
-	 * Returns all directories under specified path that match 'ckeditor5' pattern.
-	 *
-	 * @param {String} path
-	 * @returns {Array}
-	 */
-	getCKE5Directories( path ) {
-		return this.getDirectories( path ).filter( dir => {
-			return dependencyRegExp.test( dir );
-		} );
 	},
 
 	/**
@@ -298,23 +259,6 @@ module.exports = {
 		}
 
 		return null;
-	},
-
-	/**
-	 * Returns list of symbolic links to directories with names starting with `ckeditor5-` prefix.
-	 *
-	 * @param {String} path Path to directory,
-	 * @returns {Array} Array with directories names.
-	 */
-	getCKE5Symlinks( path ) {
-		const fs = require( 'fs' );
-		const pth = require( 'path' );
-
-		return fs.readdirSync( path ).filter( item => {
-			const fullPath = pth.join( path, item );
-
-			return dependencyRegExp.test( item ) && this.isSymlink( fullPath );
-		} );
 	},
 
 	/**

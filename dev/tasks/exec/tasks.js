@@ -10,8 +10,7 @@ const minimist = require( 'minimist' );
 const path = require( 'path' );
 const merge = require( 'merge-stream' );
 const log = require( '../../utils/log' );
-const tools = require( '../../utils/tools' );
-const git = require( '../../utils/git' );
+const ckeditor5Dirs = require( '../../utils/ckeditor5-dirs' );
 
 /**
  * Run task over ckeditor5 repositories.
@@ -72,7 +71,7 @@ function execute( execTask, ckeditor5Path, packageJSON, workspaceRoot, parameter
 	const mergedStream = merge();
 	const specificRepository = parameters.repository;
 
-	let devDirectories = getCKE5DevDirectories( workspacePath, packageJSON, ckeditor5Path );
+	let devDirectories = ckeditor5Dirs.getCKE5DevDirectories( workspacePath, packageJSON, ckeditor5Path );
 
 	if ( specificRepository ) {
 		devDirectories = devDirectories.filter( ( dir ) => {
@@ -90,35 +89,4 @@ function execute( execTask, ckeditor5Path, packageJSON, workspaceRoot, parameter
 	}
 
 	return mergedStream;
-}
-
-/**
- * Returns array with information about ckeditor5-* directories/repositories.
- *
- * @param {String} workspacePath Absolute path to workspace.
- * @param {Object} packageJSON Contents of ckeditor5 repo package.json file.
- * @param {String} ckeditor5Path Absolute path to ckeditor5 root directory.
- * @returns {Array.<Object>}
- */
-function getCKE5DevDirectories( workspacePath, packageJSON, ckeditor5Path ) {
-	const directories = tools.getCKE5Directories( workspacePath );
-	const dependencies = tools.getCKEditorDependencies( packageJSON.dependencies );
-
-	let devDirectories = [];
-
-	for ( let dependency in dependencies ) {
-		const repositoryURL = dependencies[ dependency ];
-		const urlInfo = git.parseRepositoryUrl( repositoryURL );
-		const repositoryPath = path.join( ckeditor5Path, 'node_modules', dependency );
-
-		// Check if repository's directory already exists.
-		if ( directories.indexOf( urlInfo.name ) > -1 ) {
-			devDirectories.push( {
-				repositoryPath,
-				repositoryURL
-			} );
-		}
-	}
-
-	return devDirectories;
 }

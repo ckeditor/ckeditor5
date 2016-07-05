@@ -9,6 +9,7 @@
 
 const sinon = require( 'sinon' );
 const tools = require( '../../utils/tools' );
+const ckeditor5Dirs = require( '../../utils/ckeditor5-dirs' );
 const path = require( 'path' );
 
 describe( 'dev-relink', () => {
@@ -20,8 +21,8 @@ describe( 'dev-relink', () => {
 
 	it( 'should link dev repositories', () => {
 		const dirs = [ 'ckeditor5-core', 'ckeditor5-devtest' ];
-		const getDependenciesSpy = sinon.spy( tools, 'getCKEditorDependencies' );
-		const getDirectoriesStub = sinon.stub( tools, 'getCKE5Directories' ).returns( dirs );
+		const getDependenciesSpy = sinon.spy( ckeditor5Dirs, 'getCKEditorDependencies' );
+		const getDirectoriesStub = sinon.stub( ckeditor5Dirs, 'getCKE5Directories' ).returns( dirs );
 		const linkStub = sinon.stub( tools, 'linkDirectories' );
 		const json = {
 			dependencies: {
@@ -43,8 +44,8 @@ describe( 'dev-relink', () => {
 	} );
 
 	it( 'should not link when no dependencies are found', () => {
-		const getDependenciesSpy = sinon.spy( tools, 'getCKEditorDependencies' );
-		const getDirectoriesStub = sinon.stub( tools, 'getCKE5Directories' );
+		const getDependenciesSpy = sinon.spy( ckeditor5Dirs, 'getCKEditorDependencies' );
+		const getDirectoriesStub = sinon.stub( ckeditor5Dirs, 'getCKE5Directories' );
 		const linkStub = sinon.stub( tools, 'linkDirectories' );
 		const json = {
 			dependencies: {
@@ -62,8 +63,8 @@ describe( 'dev-relink', () => {
 	} );
 
 	it( 'should not link when no plugins in dev mode', () => {
-		const getDependenciesSpy = sinon.spy( tools, 'getCKEditorDependencies' );
-		const getDirectoriesStub = sinon.stub( tools, 'getCKE5Directories' ).returns( [] );
+		const getDependenciesSpy = sinon.spy( ckeditor5Dirs, 'getCKEditorDependencies' );
+		const getDirectoriesStub = sinon.stub( ckeditor5Dirs, 'getCKE5Directories' ).returns( [] );
 		const linkStub = sinon.stub( tools, 'linkDirectories' );
 		const json = {
 			dependencies: {
@@ -83,8 +84,8 @@ describe( 'dev-relink', () => {
 
 	it( 'should write error message when linking is unsuccessful', () => {
 		const dirs = [ 'ckeditor5-core' ];
-		const getDependenciesSpy = sinon.spy( tools, 'getCKEditorDependencies' );
-		const getDirectoriesStub = sinon.stub( tools, 'getCKE5Directories' ).returns( dirs );
+		const getDependenciesSpy = sinon.spy( ckeditor5Dirs, 'getCKEditorDependencies' );
+		const getDirectoriesStub = sinon.stub( ckeditor5Dirs, 'getCKE5Directories' ).returns( dirs );
 		const error = new Error( 'Error message.' );
 		const linkStub = sinon.stub( tools, 'linkDirectories' ).throws( error );
 		const json = {

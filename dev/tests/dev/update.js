@@ -9,6 +9,7 @@
 
 const sinon = require( 'sinon' );
 const tools = require( '../../utils/tools' );
+const ckeditor5Dirs = require( '../../utils/ckeditor5-dirs' );
 const git = require( '../../utils/git' );
 const path = require( 'path' );
 const chai = require( 'chai' );
@@ -23,7 +24,7 @@ describe( 'dev-update', () => {
 	const spies = {};
 
 	beforeEach( () => {
-		spies.getDependencies = sinon.spy( tools, 'getCKEditorDependencies' );
+		spies.getDependencies = sinon.spy( ckeditor5Dirs, 'getCKEditorDependencies' );
 		spies.checkout = sinon.stub( git, 'checkout' );
 		spies.pull = sinon.stub( git, 'pull' );
 		spies.fetchAll = sinon.stub( git, 'fetchAll' );
@@ -39,8 +40,8 @@ describe( 'dev-update', () => {
 	it( 'should update dev repositories', () => {
 		const dirs = [ 'ckeditor5-core', 'ckeditor5-devtest' ];
 		const installTask = sinon.spy();
-		spies.getDirectories = sinon.stub( tools, 'getCKE5Directories' ).returns( dirs );
-		spies.getCKE5Symlinks = sinon.stub( tools, 'getCKE5Symlinks' ).returns( [] );
+		spies.getDirectories = sinon.stub( ckeditor5Dirs, 'getCKE5Directories' ).returns( dirs );
+		spies.getCKE5Symlinks = sinon.stub( ckeditor5Dirs, 'getCKE5Symlinks' ).returns( [] );
 
 		const json = {
 			dependencies: {
@@ -79,8 +80,8 @@ describe( 'dev-update', () => {
 	it( 'should install missing dependencies', () => {
 		const dirs = [ 'ckeditor5-core', 'ckeditor5-devtest' ];
 		const installTask = sinon.spy();
-		spies.getDirectories = sinon.stub( tools, 'getCKE5Directories' ).returns( dirs );
-		spies.getCKE5Symlinks = sinon.stub( tools, 'getCKE5Symlinks' ).returns( [] );
+		spies.getDirectories = sinon.stub( ckeditor5Dirs, 'getCKE5Directories' ).returns( dirs );
+		spies.getCKE5Symlinks = sinon.stub( ckeditor5Dirs, 'getCKE5Symlinks' ).returns( [] );
 
 		const json = {
 			dependencies: {
@@ -122,8 +123,8 @@ describe( 'dev-update', () => {
 	it( 'should remove symlinks that are not needed', () => {
 		const dirs = [ 'ckeditor5-core', 'ckeditor5-devtest' ];
 		const installTask = sinon.spy();
-		spies.getDirectories = sinon.stub( tools, 'getCKE5Directories' ).returns( dirs );
-		spies.getCKE5Symlinks = sinon.stub( tools, 'getCKE5Symlinks' ).returns( [ 'ckeditor5-unused' ] );
+		spies.getDirectories = sinon.stub( ckeditor5Dirs, 'getCKE5Directories' ).returns( dirs );
+		spies.getCKE5Symlinks = sinon.stub( ckeditor5Dirs, 'getCKE5Symlinks' ).returns( [ 'ckeditor5-unused' ] );
 
 		const json = {
 			dependencies: {
@@ -167,8 +168,8 @@ describe( 'dev-update', () => {
 		const installTask = sinon.spy();
 		const outSpy = sinon.spy();
 		const errSpy = sinon.spy();
-		spies.getDirectories = sinon.stub( tools, 'getCKE5Directories' ).returns( dirs );
-		spies.getCKE5Symlinks = sinon.stub( tools, 'getCKE5Symlinks' ).returns( [ 'ckeditor5-unused' ] );
+		spies.getDirectories = sinon.stub( ckeditor5Dirs, 'getCKE5Directories' ).returns( dirs );
+		spies.getCKE5Symlinks = sinon.stub( ckeditor5Dirs, 'getCKE5Symlinks' ).returns( [ 'ckeditor5-unused' ] );
 		spies.linkDirectories.throws();
 
 		log.configure( outSpy, errSpy );
@@ -209,11 +210,11 @@ describe( 'dev-update', () => {
 
 	it( 'should skip updating if no dependencies found and fetch only main repository', () => {
 		spies.getDependencies.restore();
-		spies.getDependencies = sinon.stub( tools, 'getCKEditorDependencies' ).returns( null );
+		spies.getDependencies = sinon.stub( ckeditor5Dirs, 'getCKEditorDependencies' ).returns( null );
 		const dirs = [ 'ckeditor5-core', 'ckeditor5-devtest' ];
 		const installTask = sinon.spy();
-		spies.getDirectories = sinon.stub( tools, 'getCKE5Directories' ).returns( dirs );
-		spies.getCKE5Symlinks = sinon.stub( tools, 'getCKE5Symlinks' ).returns( [] );
+		spies.getDirectories = sinon.stub( ckeditor5Dirs, 'getCKE5Directories' ).returns( dirs );
+		spies.getCKE5Symlinks = sinon.stub( ckeditor5Dirs, 'getCKE5Symlinks' ).returns( [] );
 
 		const json = {
 			dependencies: {
