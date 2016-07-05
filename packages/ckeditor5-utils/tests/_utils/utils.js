@@ -65,16 +65,20 @@ const utils = {
 	 *		);
 	 */
 	assertBinding( observable, stateBefore, data, stateAfter ) {
-		let key, pair;
+		let key, boundObservable, attrs;
 
 		for ( key in stateBefore ) {
 			expect( observable[ key ] ).to.be.equal( stateBefore[ key ] );
 		}
 
 		// Change attributes of bound observables.
-		for ( pair of data ) {
-			for ( key in pair[ 1 ] ) {
-				pair[ 0 ][ key ] = pair[ 1 ][ key ];
+		for ( [ boundObservable, attrs ] of data ) {
+			for ( key in attrs ) {
+				if ( !boundObservable.hasOwnProperty( key ) ) {
+					boundObservable.set( key, attrs[ key ] );
+				} else {
+					boundObservable[ key ] = attrs[ key ];
+				}
 			}
 		}
 
