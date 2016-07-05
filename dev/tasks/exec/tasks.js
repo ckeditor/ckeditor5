@@ -15,15 +15,17 @@ const git = require( '../../utils/git' );
 
 /**
  * Run task over ckeditor5 repositories.
+ *
  * Example:
- *	 gulp exec --task task-name
+ *		gulp exec --task task-name
+ *
  * Example of running task just for one repository:
- *   gulp exec --task task-name --one-repo
+ *		gulp exec --task task-name --repository ckeditor5-util
  *
  * @param {Object} config Task runner configuration.
  * @returns {Stream} Stream with processed files.
  */
-module.exports = function tasks( config ) {
+module.exports = ( config ) => {
 	const ckeditor5Path = process.cwd();
 	const packageJSON = require( '../../../package.json' );
 	const tasks = {
@@ -44,9 +46,7 @@ module.exports = function tasks( config ) {
 				log.err( error );
 			}
 
-			if ( task ) {
-				return execute( task, ckeditor5Path, packageJSON, config.WORKSPACE_DIR, parameters );
-			}
+			return execute( task, ckeditor5Path, packageJSON, config.WORKSPACE_DIR, parameters );
 		},
 
 		register() {
@@ -58,6 +58,8 @@ module.exports = function tasks( config ) {
 };
 
 /**
+ * Execute given task with provided options and command-line parameters.
+ *
  * @param {Function} execTask Task to use on each dependency.
  * @param {String} ckeditor5Path Path to main CKEditor5 repository.
  * @param {Object} packageJSON Parsed package.json file from CKEditor5 repository.
@@ -67,22 +69,23 @@ module.exports = function tasks( config ) {
  */
 function execute( execTask, ckeditor5Path, packageJSON, workspaceRoot, parameters ) {
 	const workspacePath = path.join( ckeditor5Path, workspaceRoot );
-	const devDirectories = getCKE5DevDirectories( workspacePath, packageJSON, ckeditor5Path );
-	const shouldRunOnce = parameters[ 'one-repo' ];
 	const mergedStream = merge();
+	const specificRepository = parameters.repository;
 
-	for ( let i = 0, len = devDirectories.length; i < len; i++ ) {
-		const devDir = devDirectories[i];
+	let devDirectories = getCKE5DevDirectories( workspacePath, packageJSON, ckeditor5Path );
 
+	if ( specificRepository ) {
+		devDirectories = devDirectories.filter( ( dir ) => {
+			return dir.repositoryURL === `ckeditor/${ specificRepository }`;
+		} );
+	}
+
+	for ( let dir of devDirectories ) {
 		try {
-			log.out( `Executing task on ${ devDir.repositoryURL }...` );
-			mergedStream.add( execTask( devDir.repositoryPath, parameters ) );
+			log.out( `Executing task on ${ dir.repositoryURL }...` );
+			mergedStream.add( execTask( dir.repositoryPath, parameters ) );
 		} catch ( error ) {
 			log.err( error );
-		}
-
-		if ( shouldRunOnce ) {
-			break;
 		}
 	}
 
@@ -95,7 +98,7 @@ function execute( execTask, ckeditor5Path, packageJSON, workspaceRoot, parameter
  * @param {String} workspacePath Absolute path to workspace.
  * @param {Object} packageJSON Contents of ckeditor5 repo package.json file.
  * @param {String} ckeditor5Path Absolute path to ckeditor5 root directory.
- * @returns {Array} Array of objects.
+ * @returns {Array.<Object>}
  */
 function getCKE5DevDirectories( workspacePath, packageJSON, ckeditor5Path ) {
 	const directories = tools.getCKE5Directories( workspacePath );

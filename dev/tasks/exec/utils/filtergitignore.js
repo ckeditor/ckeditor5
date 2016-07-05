@@ -17,8 +17,8 @@ module.exports = function filterGitignore() {
 		return new PassThrough( { objectMode: true } );
 	}
 
-	let glob = parseGitignore( fp );
-	let inverted = glob.map(
+	const glob = parseGitignore( fp );
+	const inverted = glob.map(
 		pattern => pattern.startsWith( '!' ) ? pattern.slice( 1 ) : '!' + pattern
 	);
 	inverted.unshift( '**/*' );
