@@ -33,11 +33,25 @@ const utils = {
 	},
 
 	/**
-	 * Render content for entry file which needs to be passed as main file to Rollup.
+	 * Resolves a simplified plugin name to a real path.
+	 *
+	 * @param {String} name
+	 * @returns {String} Path to the module.
+	 */
+	getPluginPath( name ) {
+		if ( name.indexOf( '/' ) > 0 ) {
+			return name;
+		}
+
+		return './build/esnext/ckeditor5/' + ( name + '/' + name ) + '.js';
+	},
+
+	/**
+	 * Render content for entry file which needs to be passed as main file to the Rollup.
 	 *
 	 * @param {Object} data
 	 * @param {String} [data.moduleName] Name of the editor class exposed in bundle. e.g. MyCKEditor.
-	 * @param {String} [data.creator] Path to the editor creator as ClassicEditor, StandardEditor etc.
+	 * @param {String} [data.creator] Path to the editor creator.
 	 * @param {Array<String>} [data.features] List of paths or names to features which need to be included in bundle.
 	 * @returns {string}
 	 */
@@ -55,6 +69,8 @@ const utils = {
 
 		// Imports editor features.
 		for ( let feature of data.features ) {
+			feature = utils.getPluginPath( feature );
+
 			const featureName = path.basename( feature, '.js' );
 			const featurePath = path.relative( './tmp', feature );
 

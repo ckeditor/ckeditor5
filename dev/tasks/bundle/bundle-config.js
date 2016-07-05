@@ -6,11 +6,11 @@
 'use strict';
 
 module.exports = {
-	creator: './build/esnext/ckeditor5/editor-classic/classic.js',
 	moduleName: 'MyCKEditor',
+	creator: './build/esnext/ckeditor5/editor-classic/classic.js',
 	features: [
-		'./build/esnext/ckeditor5/enter/enter.js',
-		'./build/esnext/ckeditor5/paragraph/paragraph.js',
+		'enter',
+		'paragraph',
 		'./build/esnext/ckeditor5/typing/typing.js',
 		'./build/esnext/ckeditor5/undo/undo.js',
 		'./build/esnext/ckeditor5/headings/headings.js'
