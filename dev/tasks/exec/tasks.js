@@ -6,11 +6,9 @@
 'use strict';
 
 const gulp = require( 'gulp' );
-const gutil = require( 'gulp-util' );
 const minimist = require( 'minimist' );
 const path = require( 'path' );
 const merge = require( 'merge-stream' );
-
 const log = require( '../../utils/log' );
 const tools = require( '../../utils/tools' );
 const git = require( '../../utils/git' );
@@ -18,13 +16,6 @@ const git = require( '../../utils/git' );
 module.exports = ( config ) => {
 	const ckeditor5Path = process.cwd();
 	const packageJSON = require( '../../../package.json' );
-
-	// Configure logging.
-	log.configure(
-		( msg ) => gutil.log( msg ),
-		( msg ) => gutil.log( gutil.colors.red( msg ) )
-	);
-
 	const tasks = {
 		execOnRepositories() {
 			// Omit `gulp exec` part of arguments

@@ -5,8 +5,10 @@
 
 'use strict';
 
-let logOut;
-let logErr;
+const gutil = require( 'gulp-util' );
+
+let logOut = ( msg ) => gutil.log( msg );
+let logErr = ( msg ) => gutil.log( gutil.colors.red( msg ) );
 
 module.exports = {
 	/**
