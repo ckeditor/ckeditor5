@@ -89,6 +89,14 @@ function execute( execTask, ckeditor5Path, packageJSON, workspaceRoot, parameter
 	return mergedStream;
 }
 
+/**
+ * Returns array with information about ckeditor5-* directories/repositories.
+ *
+ * @param {String} workspacePath Absolute path to workspace.
+ * @param {Object} packageJSON Contents of ckeditor5 repo package.json file.
+ * @param {String} ckeditor5Path Absolute path to ckeditor5 root directory.
+ * @returns {Array} Array of objects.
+ */
 function getCKE5DevDirectories( workspacePath, packageJSON, ckeditor5Path ) {
 	const directories = tools.getCKE5Directories( workspacePath );
 	const dependencies = tools.getCKEditorDependencies( packageJSON.dependencies );
