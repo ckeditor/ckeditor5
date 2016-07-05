@@ -165,7 +165,7 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 			plugins: utils.getBabelPlugins( format ),
 			// Ensure that all paths ends with '.js' because Require.JS (unlike Common.JS/System.JS)
 			// will not add it to module names which look like paths.
-			resolveModuleSource: format == 'cjs' ? utils.resolveModuleSource : utils.appendModuleExtension,
+			resolveModuleSource: format == 'cjs' ? utils.resolveModuleSource : utils.appendModuleExtension
 		};
 	},
 
