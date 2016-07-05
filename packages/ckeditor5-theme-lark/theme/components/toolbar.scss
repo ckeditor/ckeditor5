@@ -16,12 +16,16 @@
 		vertical-align: middle;
 		display: inline-block;
 		background: ck-border-color();
-		margin: 0 ck-spacing( 'tiny' );
 	}
 
 	&-newline {
 		display: block;
 		clear: left;
 		height: ck-spacing( 'small' );
+	}
+
+	// (#11) Separate toolbar items.
+	& > * + * {
+		margin-left: ck-spacing( 'small' );
 	}
 }
