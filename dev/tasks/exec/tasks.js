@@ -63,44 +63,51 @@ module.exports = function tasks( config ) {
  * @param {Object} packageJSON Parsed package.json file from CKEditor5 repository.
  * @param {String} workspaceRoot Relative path to workspace root.
  * @param {Object} parameters Parameters provided to the task via command-line.
+ * @returns {Stream} Merged stream of processed files.
  */
 function execute( execTask, ckeditor5Path, packageJSON, workspaceRoot, parameters ) {
-	const workspaceAbsolutePath = path.join( ckeditor5Path, workspaceRoot );
-	const oneRepository = parameters[ 'one-repo' ];
-	// Get all CKEditor dependencies from package.json.
-	const dependencies = tools.getCKEditorDependencies( packageJSON.dependencies );
+	const workspacePath = path.join( ckeditor5Path, workspaceRoot );
+	const devDirectories = getCKE5DevDirectories( workspacePath, packageJSON, ckeditor5Path );
+	const shouldRunOnce = parameters[ 'one-repo' ];
 	const mergedStream = merge();
 
-	if ( dependencies ) {
-		const directories = tools.getCKE5Directories( workspaceAbsolutePath );
+	for ( let i = 0, len = devDirectories.length; i < len; i++ ) {
+		const devDir = devDirectories[i];
 
-		if ( directories.length ) {
-			for ( let dependency in dependencies ) {
-				const repositoryURL = dependencies[ dependency ];
-				const urlInfo = git.parseRepositoryUrl( repositoryURL );
-				const repositoryAbsolutePath = path.join( ckeditor5Path, 'node_modules', dependency );
-
-				// Check if repository's directory already exists.
-				if ( directories.indexOf( urlInfo.name ) > -1 ) {
-					try {
-						log.out( `Executing task on ${ repositoryURL }...` );
-
-						mergedStream.add( execTask( repositoryAbsolutePath, parameters ) );
-					} catch ( error ) {
-						log.err( error );
-					}
-				}
-
-				if ( oneRepository ) {
-					return;
-				}
-			}
-		} else {
-			log.out( 'No CKEditor5 plugins in development mode.' );
+		try {
+			log.out( `Executing task on ${ devDir.repositoryURL }...` );
+			mergedStream.add( execTask( devDir.repositoryPath, parameters ) );
+		} catch ( error ) {
+			log.err( error );
 		}
-	} else {
-		log.out( 'No CKEditor5 dependencies found in package.json file.' );
+
+		if ( shouldRunOnce ) {
+			break;
+		}
 	}
 
 	return mergedStream;
+}
+
+function getCKE5DevDirectories( workspacePath, packageJSON, ckeditor5Path ) {
+	const directories = tools.getCKE5Directories( workspacePath );
+	const dependencies = tools.getCKEditorDependencies( packageJSON.dependencies );
+
+	let devDirectories = [];
+
+	for ( let dependency in dependencies ) {
+		const repositoryURL = dependencies[ dependency ];
+		const urlInfo = git.parseRepositoryUrl( repositoryURL );
+		const repositoryPath = path.join( ckeditor5Path, 'node_modules', dependency );
+
+		// Check if repository's directory already exists.
+		if ( directories.indexOf( urlInfo.name ) > -1 ) {
+			devDirectories.push( {
+				repositoryPath,
+				repositoryURL
+			} );
+		}
+	}
+
+	return devDirectories;
 }
