@@ -424,8 +424,8 @@ export default class Template {
 			//			width: '100px',
 			//			height: Template.bind( ... ).to( ... )
 			//		}
-			else if ( attrName == 'style' ) {
-				this._renderStyleAttribute( attrValue[ 0 ].value || attrValue[ 0 ], el );
+			else if ( attrName == 'style' && typeof attrValue[ 0 ] !== 'string' ) {
+				this._renderStyleAttribute( attrValue[ 0 ], el );
 			}
 
 			// Otherwise simply set the static attribute.
