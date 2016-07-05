@@ -14,7 +14,7 @@ const PassThrough = require( 'stream' ).PassThrough;
  *
  * @param {String} workdir
  * @param {Object} params
- * @returns {Object} stream
+ * @returns {Stream} stream
  */
 module.exports = ( workdir, params ) => {
 	const message = params.message;
