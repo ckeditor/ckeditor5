@@ -396,16 +396,6 @@ function bindTo( ...args ) {
 		if ( !to.attrs.length ) {
 			to.attrs = this._bindAttrs;
 		}
-
-		// Eliminate A.bind( 'x', 'y' ).to( B, 'a', 'b' ) when B has no 'a'.
-		if ( !hasAttributes( to.observable, to.attrs ) ) {
-			/*
-			 * Observable has no such attribute(s).
-			 *
-			 * @error observable-bind-to-missing-attr
-			 */
-			throw new CKEditorError( 'observable-bind-to-missing-attr: Observable has no such attribute(s).' );
-		}
 	} );
 
 	this._to = parsedArgs.to;
@@ -424,16 +414,6 @@ function bindTo( ...args ) {
 	this._bindAttrs.forEach( attrName => {
 		updateBoundObservableAttr( this._observable, attrName );
 	} );
-}
-
-// Check if the {@link utils.Observable} has given `attrs`.
-//
-// @private
-// @param {Observable} observable Observable to be checked.
-// @param {Array} arr An array of `String`.
-// @returns {Boolean}
-function hasAttributes( observable, attrs ) {
-	return attrs.every( a => observable[ attributesSymbol ].has( a ) );
 }
 
 // Check if all entries of the array are of `String` type.

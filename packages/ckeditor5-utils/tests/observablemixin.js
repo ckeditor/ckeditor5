@@ -327,20 +327,46 @@ describe( 'Observable', () => {
 				} ).to.throw( CKEditorError, /observable-bind-to-attrs-length/ );
 			} );
 
-			it( 'should throw when attributes don\'t exist in to() observable', () => {
+			it( 'should work when attributes don\'t exist in to() observable #1', () => {
 				const vehicle = new Car();
 
-				expect( () => {
-					vehicle.bind( 'color' ).to( car, 'nonexistent in car' );
-				} ).to.throw( CKEditorError, /observable-bind-to-missing-attr/ );
+				vehicle.bind( 'color' ).to( car, 'nonexistent in car' );
 
-				expect( () => {
-					vehicle.bind( 'nonexistent in car' ).to( car );
-				} ).to.throw( CKEditorError, /observable-bind-to-missing-attr/ );
+				assertBinding( vehicle,
+					{ color: undefined, year: undefined },
+					[
+						[ car, { 'nonexistent in car': 'foo', year: 1969 } ]
+					],
+					{ color: 'foo', year: undefined }
+				);
+			} );
 
-				expect( () => {
-					vehicle.bind( 'year' ).to( car, 'color', car, 'nonexistent in car', () => {} );
-				} ).to.throw( CKEditorError, /observable-bind-to-missing-attr/ );
+			it( 'should work when attributes don\'t exist in to() observable #2', () => {
+				const vehicle = new Car();
+
+				vehicle.bind( 'nonexistent in car' ).to( car );
+
+				assertBinding( vehicle,
+					{ 'nonexistent in car': undefined, year: undefined },
+					[
+						[ car, { 'nonexistent in car': 'foo', year: 1969 } ]
+					],
+					{ 'nonexistent in car': 'foo', year: undefined }
+				);
+			} );
+
+			it( 'should work when attributes don\'t exist in to() observable #3', () => {
+				const vehicle = new Car();
+
+				vehicle.bind( 'year' ).to( car, 'color', car, 'nonexistent in car', ( a, b ) => a + b );
+
+				assertBinding( vehicle,
+					{ color: undefined, year: car.color + undefined },
+					[
+						[ car, { color: 'blue', year: 1969 } ]
+					],
+					{ color: undefined, year: 'blueundefined' }
+				);
 			} );
 
 			it( 'should set new observable attributes', () => {
