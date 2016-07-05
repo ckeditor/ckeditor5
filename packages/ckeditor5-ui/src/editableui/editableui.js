@@ -24,6 +24,7 @@ export default class EditableUI extends Controller {
 	 * Creates an instance of {@link ui.editableUI.EditableUI} class.
 	 *
 	 * @param {engine.view.RootEditableElement} editable The editable element (in the engine).
+	 * Also the {@link ui.editableUI.EditableUIModel} for editable UI instance.
 	 * @param {ui.View} [view] An instance of EditableUIView.
 	 * @param {ckeditor5.Editor} [editor] The editor instance.
 	 */
@@ -42,3 +43,27 @@ export default class EditableUI extends Controller {
 		view.model.set( 'name', editable.rootName );
 	}
 }
+
+/**
+ * The editable UI {@link ui.Model} interface.
+ *
+ * @interface ui.editableUI.EditableUIModel
+ */
+
+/**
+ * Controls whether the editable is writable or not.
+ *
+ * @member {Boolean} ui.editableUI.EditableUIModel#isReadOnly
+ */
+
+/**
+ * Controls whether the editable is focused, i.e. the user is typing in it.
+ *
+ * @member {Boolean} ui.editableUI.EditableUIModel#isFocused
+ */
+
+/**
+ * The name of the editable UI.
+ *
+ * @member {String} ui.editableUI.EditableUIModel#name
+ */
