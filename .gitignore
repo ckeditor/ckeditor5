@@ -12,4 +12,3 @@ build/**
 bundle/**
 coverage/**
 dist/**
-tmp/**
