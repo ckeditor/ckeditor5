@@ -337,7 +337,18 @@ describe( 'Template', () => {
 					}
 				} );
 
-				expect( el.outerHTML ).to.equal( '<p style="color: red;"></p>' );
+				expect( el.outerHTML ).to.equal( '<p style="color: red"></p>' );
+			} );
+
+			it( 'renders as a static value (Array of values)', () => {
+				setElement( {
+					tag: 'p',
+					attributes: {
+						style: [ 'color: red;', 'display: block;' ]
+					}
+				} );
+
+				expect( el.outerHTML ).to.equal( '<p style="color: red; display: block;"></p>' );
 			} );
 
 			it( 'renders as a value bound to the model', () => {
@@ -353,6 +364,24 @@ describe( 'Template', () => {
 				observable.width = '1em';
 
 				expect( el.outerHTML ).to.equal( '<p style="width: 1em"></p>' );
+			} );
+
+			it( 'renders as a value bound to the model (Array of bindings)', () => {
+				setElement( {
+					tag: 'p',
+					attributes: {
+						style: [
+							bind.to( 'width', w => `width: ${ w };` ),
+							bind.to( 'backgroundColor', c => `background-color: ${ c };` )
+						]
+					}
+				} );
+
+				expect( el.outerHTML ).to.equal( '<p style="width: 10px; background-color: yellow;"></p>' );
+
+				observable.width = '1em';
+
+				expect( el.outerHTML ).to.equal( '<p style="width: 1em; background-color: yellow;"></p>' );
 			} );
 
 			describe( 'object', () => {
