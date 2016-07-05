@@ -371,8 +371,8 @@ export default class Template {
 	 */
 	_renderText( valueSchemaOrText, textNode = document.createTextNode( '' ) ) {
 		// Check if this Text Node is bound to Observable. Cases:
-		//		{ text: [ Template.bind.to( ... ) ] }
-		//		{ text: [ 'foo', Template.bind.to( ... ), ... ] }
+		//		{ text: [ Template.bind( ... ).to( ... ) ] }
+		//		{ text: [ 'foo', Template.bind( ... ).to( ... ), ... ] }
 		if ( hasBinding( valueSchemaOrText.text ) ) {
 			this._bindToObservable( valueSchemaOrText.text, textNode, getTextUpdater( textNode ) );
 		}
@@ -406,9 +406,9 @@ export default class Template {
 			attrNs = attrValue[ 0 ].ns || null;
 
 			// Activate binding if one is found. Cases:
-			// 		{ class: [ Template.bind.to( ... ) ] }
-			// 		{ class: [ 'bar', Template.bind.to( ... ), 'baz' ] }
-			// 		{ class: { ns: 'abc', value: Template.bind.to( ... ) } }
+			// 		{ class: [ Template.bind( ... ).to( ... ) ] }
+			// 		{ class: [ 'bar', Template.bind( ... ).to( ... ), 'baz' ] }
+			// 		{ class: { ns: 'abc', value: Template.bind( ... ).to( ... ) } }
 			if ( hasBinding( attrValue ) ) {
 				// Normalize attributes with additional data like namespace:
 				//		{ class: { ns: 'abc', value: [ ... ] } }
@@ -419,16 +419,16 @@ export default class Template {
 				);
 			}
 
-			// Attribute style has a specific format so needs to be parsed in a specific way
-			// 		{ style: {
-			// 			width: '100px',
-			// 			height: Template.bind.to( ... )
-			// 		}
+			// Style attribute could be an Object so it needs to be parsed in a specific way.
+			//		style: {
+			//			width: '100px',
+			//			height: Template.bind( ... ).to( ... )
+			//		}
 			else if ( attrName == 'style' ) {
 				this._renderStyleAttribute( attrValue[ 0 ].value || attrValue[ 0 ], el );
 			}
 
-			// Otherwise simply set the attribute.
+			// Otherwise simply set the static attribute.
 			// 		{ class: [ 'foo' ] }
 			// 		{ class: [ 'all', 'are', 'static' ] }
 			// 		{ class: [ { ns: 'abc', value: [ 'foo' ] } ] }
@@ -447,21 +447,26 @@ export default class Template {
 	}
 
 	/**
-	 * Render `style` attribute.
+	 * Renders `style` attribute.
 	 *
-	 * Value of style attribute is an {Object} with static or bound to model properties:
+	 * Style attribute is an {Object} with static values:
 	 *
 	 *		attributes: {
 	 * 			style: {
-	 * 				property: value,
-	 * 				otherProperty: bind.to( ... ),
+	 * 				color: 'red'
 	 * 			}
 	 * 		}
 	 *
-	 * Note: Attribute `style` is rendered without setting namespace because:
-	 * 1. It seems to be not necessary
-	 * 2. We are using more efficient way for updating style `el.style.property = value;` instead of
-	 * `setAttributeNS( 'style', value );`
+	 * or values bound to {@link ui.Model} properties:
+	 *
+	 *		attributes: {
+	 * 			style: {
+	 * 				color: bind.to( ... )
+	 * 			}
+	 * 		}
+	 *
+	 * Note: `style` attribute is rendered without setting namespace. It does not seem to be
+	 * needed.
 	 *
 	 * @private
 	 * @param {ui.TemplateDefinition.attributes.styles} styles Styles definition.
@@ -471,11 +476,16 @@ export default class Template {
 		for ( let styleName in styles ) {
 			const styleValue = styles[ styleName ];
 
-			// style: { color: bind.to( 'attribute' ) }
+			// style: {
+			//	color: bind.to( 'attribute' )
+			// }
 			if ( hasBinding( styleValue ) ) {
 				this._bindToObservable( [ styleValue ], el, getStyleUpdater( el, styleName ) );
 			}
-			// style: { color: 'red' }
+
+			// style: {
+			//	color: 'red'
+			// }
 			else {
 				el.style[ styleName ] = styleValue;
 			}
@@ -688,7 +698,7 @@ function getAttributeUpdater( el, attrName, ns = null ) {
 }
 
 // Returns an object consisting of `set` and `remove` functions, which
-// can be used in the context of CSSStyleDeclaration to set or remove an style.
+// can be used in the context of CSSStyleDeclaration to set or remove a style.
 // @see ui.View#_bindToObservable
 //
 // @param {Node} node DOM Node to be modified.
