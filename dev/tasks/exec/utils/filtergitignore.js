@@ -7,7 +7,7 @@
 
 const fs = require( 'fs' );
 const filter = require( 'gulp-filter' );
-const gitignore = require( 'parse-gitignore' );
+const parseGitignore = require( 'parse-gitignore' );
 const PassThrough = require( 'stream' ).PassThrough;
 
 module.exports = function filterGitignore() {
@@ -17,7 +17,7 @@ module.exports = function filterGitignore() {
 		return new PassThrough( { objectMode: true } );
 	}
 
-	let glob = gitignore( fp );
+	let glob = parseGitignore( fp );
 	let inverted = glob.map(
 		pattern => pattern.startsWith( '!' ) ? pattern.slice( 1 ) : '!' + pattern
 	);
