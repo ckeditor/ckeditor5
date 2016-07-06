@@ -67,6 +67,7 @@
     "multipipe": "^0.3.0",
     "ncp": "^2.0.0",
     "node-sass": "^3.7.0",
+    "parse-gitignore": "^0.2.0",
     "replace": "^0.3.0",
     "run-sequence": "^1.1.5",
     "semver": "^5.1.0",
