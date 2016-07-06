@@ -6,7 +6,6 @@
 'use strict';
 
 const git = require( '../utils/git' );
-const PassThrough = require( 'stream' ).PassThrough;
 
 /**
  * Adds only modified files to git repository and commits them with provided message.
@@ -17,7 +16,6 @@ const PassThrough = require( 'stream' ).PassThrough;
  *
  * @param {String} workdir
  * @param {Object} params
- * @returns {Stream}
  */
 module.exports = function executeGitCommit( workdir, params ) {
 	const message = params.message;
@@ -27,7 +25,4 @@ module.exports = function executeGitCommit( workdir, params ) {
 	}
 
 	git.commit( message, workdir );
-
-	// Return dummy stream to inform gulp about finishing task.
-	return new PassThrough();
 };

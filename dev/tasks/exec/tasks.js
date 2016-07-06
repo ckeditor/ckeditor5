@@ -88,7 +88,11 @@ function execute( execTask, ckeditor5Path, packageJSON, workspaceRoot, params ) 
 		try {
 			log.out( `Executing task on ${ dir.repositoryURL }...` );
 
-			mergedStream.add( execTask( dir.repositoryPath, params ) );
+			const result = execTask( dir.repositoryPath, params );
+
+			if ( result ) {
+				mergedStream.add( result );
+			}
 		} catch ( err ) {
 			log.err( err );
 		}

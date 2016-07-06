@@ -21,7 +21,7 @@ const year = '2017';
  *		gulp exec --task bump-year
  *
  * @param {String} workdir
- * @returns {Object}
+ * @returns {Stream}
  */
 module.exports = function executeBumpYear( workdir ) {
 	const licenseRegexp = /(@license Copyright \(c\) 2003-)[0-9]{4}(, CKSource - Frederico Knabben\.)/g;
