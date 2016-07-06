@@ -11,10 +11,14 @@ const PassThrough = require( 'stream' ).PassThrough;
 /**
  * Pushes changes of current branch in repository to default origin.
  *
+ * Example:
+ *
+ *		gulp exec --task git-push
+ *
  * @param {String} workdir
- * @returns {Object} stream
+ * @returns {Stream}
  */
-module.exports = ( workdir ) => {
+module.exports = function executeGitPush( workdir ) {
 	git.push( workdir );
 
 	// Return dummy stream to inform gulp about finishing task.

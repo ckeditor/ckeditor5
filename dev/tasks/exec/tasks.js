@@ -13,14 +13,14 @@ const log = require( '../../utils/log' );
 const ckeditor5Dirs = require( '../../utils/ckeditor5-dirs' );
 
 /**
- * Run task over ckeditor5 repositories.
+ * Run task over `ckeditor5-*` repositories.
  *
  * Example:
-
+ *
  *		gulp exec --task task-name
  *
  * Example of running task just for one repository:
-
+ *
  *		gulp exec --task task-name --repository ckeditor5-utils
  *
  * @param {Object} config Task runner configuration.
@@ -29,25 +29,28 @@ const ckeditor5Dirs = require( '../../utils/ckeditor5-dirs' );
 module.exports = ( config ) => {
 	const ckeditor5Path = process.cwd();
 	const packageJSON = require( '../../../package.json' );
+
 	const tasks = {
 		execOnRepositories() {
 			// Omit `gulp exec` part of arguments
-			const parameters = minimist( process.argv.slice( 3 ), {
+			const params = minimist( process.argv.slice( 3 ), {
 				stopEarly: false,
 			} );
 			let task;
 
 			try {
-				if ( parameters.task ) {
-					task = require( `./functions/${ parameters.task }` );
+				if ( params.task ) {
+					task = require( `./functions/${ params.task }` );
 				} else {
 					throw new Error( 'Missing task parameter: --task task-name' );
 				}
-			} catch ( error ) {
-				log.err( error );
+			} catch ( err ) {
+				log.err( err );
+
+				return;
 			}
 
-			return execute( task, ckeditor5Path, packageJSON, config.WORKSPACE_DIR, parameters );
+			return execute( task, ckeditor5Path, packageJSON, config.WORKSPACE_DIR, params );
 		},
 
 		register() {
@@ -63,15 +66,15 @@ module.exports = ( config ) => {
  *
  * @param {Function} execTask Task to use on each dependency.
  * @param {String} ckeditor5Path Path to main CKEditor5 repository.
- * @param {Object} packageJSON Parsed package.json file from CKEditor5 repository.
+ * @param {Object} packageJSON Parsed `package.json` file from CKEditor 5 repository.
  * @param {String} workspaceRoot Relative path to workspace root.
- * @param {Object} parameters Parameters provided to the task via command-line.
+ * @param {Object} params Parameters provided to the task via command-line.
  * @returns {Stream} Merged stream of processed files.
  */
-function execute( execTask, ckeditor5Path, packageJSON, workspaceRoot, parameters ) {
+function execute( execTask, ckeditor5Path, packageJSON, workspaceRoot, params ) {
 	const workspacePath = path.join( ckeditor5Path, workspaceRoot );
 	const mergedStream = merge();
-	const specificRepository = parameters.repository;
+	const specificRepository = params.repository;
 
 	let devDirectories = ckeditor5Dirs.getDevDirectories( workspacePath, packageJSON, ckeditor5Path );
 
@@ -81,12 +84,13 @@ function execute( execTask, ckeditor5Path, packageJSON, workspaceRoot, parameter
 		} );
 	}
 
-	for ( let dir of devDirectories ) {
+	for ( const dir of devDirectories ) {
 		try {
 			log.out( `Executing task on ${ dir.repositoryURL }...` );
-			mergedStream.add( execTask( dir.repositoryPath, parameters ) );
-		} catch ( error ) {
-			log.err( error );
+
+			mergedStream.add( execTask( dir.repositoryPath, params ) );
+		} catch ( err ) {
+			log.err( err );
 		}
 	}
 

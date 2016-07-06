@@ -534,7 +534,7 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 	},
 
 	/**
-	 * Given a stream of .svg files it returns a stream containing JavaScript
+	 * Given a stream of `.svg` files it returns a stream containing JavaScript
 	 * icon sprite file.
 	 *
 	 * @returns {Stream}

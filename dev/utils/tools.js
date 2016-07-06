@@ -8,7 +8,6 @@
 const gutil = require( 'gulp-util' );
 
 module.exports = {
-
 	/**
 	 * Executes a shell command.
 	 *

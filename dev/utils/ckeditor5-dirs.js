@@ -12,19 +12,18 @@ const git = require( './git' );
 const dependencyRegExp = /^ckeditor5-/;
 
 module.exports = {
-
 	/**
-	 * Returns dependencies that starts with ckeditor5-, and have valid, short GitHub url. Returns null if no
+	 * Returns dependencies that starts with `ckeditor5-`, and have valid, short GitHub url. Returns `null` if no
 	 * dependencies are found.
 	 *
-	 * @param {Object} dependencies Dependencies object loaded from package.json file.
+	 * @param {Object} dependencies Dependencies object loaded from `package.json` file.
 	 * @returns {Object|null}
 	 */
 	getDependencies( dependencies ) {
 		let result = null;
 
 		if ( dependencies ) {
-			Object.keys( dependencies ).forEach( function( key ) {
+			Object.keys( dependencies ).forEach( ( key ) => {
 				if ( dependencyRegExp.test( key ) ) {
 					if ( result === null ) {
 						result = {};
@@ -39,10 +38,10 @@ module.exports = {
 	},
 
 	/**
-	 * Returns all directories under specified path that match 'ckeditor5' pattern.
+	 * Returns all directories under specified path that match `ckeditor5-*` pattern.
 	 *
 	 * @param {String} path
-	 * @returns {Array}
+	 * @returns {Array.<String>}
 	 */
 	getDirectories( path ) {
 		return tools.getDirectories( path ).filter( dir => {
@@ -51,7 +50,7 @@ module.exports = {
 	},
 
 	/**
-	 * Returns list of symbolic links to directories with names starting with `ckeditor5-` prefix.
+	 * Returns a list of symbolic links to directories with names starting with `ckeditor5-` prefix.
 	 *
 	 * @param {String} path Path to directory,
 	 * @returns {Array} Array with directories names.
@@ -68,10 +67,10 @@ module.exports = {
 	},
 
 	/**
-	 * Returns array with information about ckeditor5-* directories in development mode.
+	 * Returns an array with information about `ckeditor5-*` directories in development mode.
 	 *
 	 * @param {String} workspacePath Absolute path to workspace.
-	 * @param {Object} packageJSON Contents of ckeditor5 repo package.json file.
+	 * @param {Object} packageJSON Contents of `ckeditor5` repo `package.json` file.
 	 * @param {String} ckeditor5Path Absolute path to ckeditor5 root directory.
 	 * @returns {Array.<Object>}
 	 */

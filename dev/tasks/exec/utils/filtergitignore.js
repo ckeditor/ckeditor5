@@ -11,17 +11,17 @@ const parseGitignore = require( 'parse-gitignore' );
 const PassThrough = require( 'stream' ).PassThrough;
 
 module.exports = function filterGitignore() {
-	const fp = '.gitignore';
+	const fileName = '.gitignore';
 
-	if ( !fs.existsSync( fp ) ) {
+	if ( !fs.existsSync( fileName ) ) {
 		return new PassThrough( { objectMode: true } );
 	}
 
-	const glob = parseGitignore( fp );
-	const inverted = glob.map(
-		pattern => pattern.startsWith( '!' ) ? pattern.slice( 1 ) : '!' + pattern
-	);
-	inverted.unshift( '**/*' );
+	const gitignoreGlob =
+		parseGitignore( fileName )
+			// Invert '!foo' -> 'foo' and 'foo' -> '!foo'.
+			.map( pattern => pattern.startsWith( '!' ) ? pattern.slice( 1 ) : '!' + pattern )
+			.unshift( '**/*' );
 
-	return filter( inverted );
+	return filter( gitignoreGlob );
 };

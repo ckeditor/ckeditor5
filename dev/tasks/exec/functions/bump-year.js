@@ -10,16 +10,20 @@ const path = require( 'path' );
 const replace = require( 'gulp-replace' );
 const filterGitignore = require( '../utils/filtergitignore' );
 
+// Change this to correct year.
+const year = '2017';
+
 /**
  * Replaces license date in source files with new date.
  *
+ * Example (remember to change the year harcoded in the module):
+ *
+ *		gulp exec --task bump-year
+ *
  * @param {String} workdir
- * @returns {Object} stream
+ * @returns {Object}
  */
-module.exports = ( workdir ) => {
-	// Change this to correct year.
-	const year = '2017';
-
+module.exports = function executeBumpYear( workdir ) {
 	const licenseRegexp = /(@license Copyright \(c\) 2003-)[0-9]{4}(, CKSource - Frederico Knabben\.)/g;
 	const glob = path.join( workdir, '**/*' );
 

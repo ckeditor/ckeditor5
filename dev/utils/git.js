@@ -9,7 +9,6 @@ const tools = require( './tools' );
 const defaultOrigin = 'origin';
 
 module.exports = {
-
 	/**
 	 * Parses GitHub URL. Extracts used server, repository and branch.
 	 *
