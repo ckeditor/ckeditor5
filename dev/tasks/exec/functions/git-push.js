@@ -9,7 +9,7 @@ const git = require( '../utils/git' );
 const PassThrough = require( 'stream' ).PassThrough;
 
 /**
- * Pushes changes of current branch in repository to default origin
+ * Pushes changes of current branch in repository to default origin.
  *
  * @param {String} workdir
  * @returns {Object} stream
@@ -17,6 +17,6 @@ const PassThrough = require( 'stream' ).PassThrough;
 module.exports = ( workdir ) => {
 	git.push( workdir );
 
-	// Return dummy stream to inform gulp about finishing task
+	// Return dummy stream to inform gulp about finishing task.
 	return new PassThrough();
 };

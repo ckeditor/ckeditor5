@@ -16,9 +16,11 @@ const ckeditor5Dirs = require( '../../utils/ckeditor5-dirs' );
  * Run task over ckeditor5 repositories.
  *
  * Example:
+
  *		gulp exec --task task-name
  *
  * Example of running task just for one repository:
+
  *		gulp exec --task task-name --repository ckeditor5-utils
  *
  * @param {Object} config Task runner configuration.

@@ -12,6 +12,7 @@ const PassThrough = require( 'stream' ).PassThrough;
  * Adds only modified files to git repository and commits them with provided message.
  *
  * Example:
+
  *		gulp exec --task git-commit --message "Commit message."
  *
  * @param {String} workdir
@@ -27,6 +28,6 @@ module.exports = ( workdir, params ) => {
 
 	git.commit( message, workdir );
 
-	// Return dummy stream to inform gulp about finishing task
+	// Return dummy stream to inform gulp about finishing task.
 	return new PassThrough();
 };
