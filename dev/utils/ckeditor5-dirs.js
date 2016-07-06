@@ -20,7 +20,7 @@ module.exports = {
 	 * @param {Object} dependencies Dependencies object loaded from package.json file.
 	 * @returns {Object|null}
 	 */
-	getCKEditorDependencies( dependencies ) {
+	getDependencies( dependencies ) {
 		let result = null;
 
 		if ( dependencies ) {
@@ -44,7 +44,7 @@ module.exports = {
 	 * @param {String} path
 	 * @returns {Array}
 	 */
-	getCKE5Directories( path ) {
+	getDirectories( path ) {
 		return tools.getDirectories( path ).filter( dir => {
 			return dependencyRegExp.test( dir );
 		} );
@@ -56,7 +56,7 @@ module.exports = {
 	 * @param {String} path Path to directory,
 	 * @returns {Array} Array with directories names.
 	 */
-	getCKE5Symlinks( path ) {
+	getSymlinks( path ) {
 		const fs = require( 'fs' );
 		const pth = require( 'path' );
 
@@ -75,9 +75,9 @@ module.exports = {
 	 * @param {String} ckeditor5Path Absolute path to ckeditor5 root directory.
 	 * @returns {Array.<Object>}
 	 */
-	getCKE5DevDirectories( workspacePath, packageJSON, ckeditor5Path ) {
-		const directories = this.getCKE5Directories( workspacePath );
-		const dependencies = this.getCKEditorDependencies( packageJSON.dependencies );
+	getDevDirectories( workspacePath, packageJSON, ckeditor5Path ) {
+		const directories = this.getDirectories( workspacePath );
+		const dependencies = this.getDependencies( packageJSON.dependencies );
 
 		let devDirectories = [];
 

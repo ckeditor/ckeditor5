@@ -23,8 +23,8 @@ describe( 'dev-status', () => {
 
 	it( 'should show status of dev repositories', () => {
 		const dirs = [ 'ckeditor5-core', 'ckeditor5-devtest' ];
-		const getDependenciesSpy = sinon.spy( ckeditor5Dirs, 'getCKEditorDependencies' );
-		const getDirectoriesStub = sinon.stub( ckeditor5Dirs, 'getCKE5Directories' ).returns( dirs );
+		const getDependenciesSpy = sinon.spy( ckeditor5Dirs, 'getDependencies' );
+		const getDirectoriesStub = sinon.stub( ckeditor5Dirs, 'getDirectories' ).returns( dirs );
 		const statusStub = sinon.stub( git, 'getStatus' );
 		const json = {
 			dependencies: {
@@ -46,8 +46,8 @@ describe( 'dev-status', () => {
 	} );
 
 	it( 'should not get status when no dependencies are found', () => {
-		const getDependenciesSpy = sinon.spy( ckeditor5Dirs, 'getCKEditorDependencies' );
-		const getDirectoriesStub = sinon.stub( ckeditor5Dirs, 'getCKE5Directories' );
+		const getDependenciesSpy = sinon.spy( ckeditor5Dirs, 'getDependencies' );
+		const getDirectoriesStub = sinon.stub( ckeditor5Dirs, 'getDirectories' );
 		const statusStub = sinon.stub( git, 'getStatus' );
 		const json = {
 			dependencies: {
@@ -65,8 +65,8 @@ describe( 'dev-status', () => {
 	} );
 
 	it( 'should not get status when no plugins in dev mode', () => {
-		const getDependenciesSpy = sinon.spy( ckeditor5Dirs, 'getCKEditorDependencies' );
-		const getDirectoriesStub = sinon.stub( ckeditor5Dirs, 'getCKE5Directories' ).returns( [] );
+		const getDependenciesSpy = sinon.spy( ckeditor5Dirs, 'getDependencies' );
+		const getDirectoriesStub = sinon.stub( ckeditor5Dirs, 'getDirectories' ).returns( [] );
 		const statusStub = sinon.stub( git, 'getStatus' );
 		const json = {
 			dependencies: {
@@ -86,8 +86,8 @@ describe( 'dev-status', () => {
 
 	it( 'should write error message when getStatus is unsuccessful', () => {
 		const dirs = [ 'ckeditor5-core' ];
-		const getDependenciesSpy = sinon.spy( ckeditor5Dirs, 'getCKEditorDependencies' );
-		const getDirectoriesStub = sinon.stub( ckeditor5Dirs, 'getCKE5Directories' ).returns( dirs );
+		const getDependenciesSpy = sinon.spy( ckeditor5Dirs, 'getDependencies' );
+		const getDirectoriesStub = sinon.stub( ckeditor5Dirs, 'getDirectories' ).returns( dirs );
 		const error = new Error( 'Error message.' );
 		const statusStub = sinon.stub( git, 'getStatus' ).throws( error );
 		const json = {

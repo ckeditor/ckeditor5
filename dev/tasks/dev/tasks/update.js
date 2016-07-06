@@ -39,10 +39,10 @@ module.exports = ( installTask, ckeditor5Path, packageJSON, workspaceRoot, runNp
 	git.fetchAll( ckeditor5Path );
 
 	// Get all CKEditor dependencies from package.json.
-	const dependencies = ckeditor5Dirs.getCKEditorDependencies( packageJSON.dependencies );
+	const dependencies = ckeditor5Dirs.getDependencies( packageJSON.dependencies );
 
 	if ( dependencies ) {
-		const directories = ckeditor5Dirs.getCKE5Directories( workspaceAbsolutePath );
+		const directories = ckeditor5Dirs.getDirectories( workspaceAbsolutePath );
 
 		for ( let dependency in dependencies ) {
 			const repositoryURL = dependencies[ dependency ];
@@ -87,7 +87,7 @@ module.exports = ( installTask, ckeditor5Path, packageJSON, workspaceRoot, runNp
 
 	// Remove symlinks not used in this configuration.
 	const nodeModulesPath = path.join( ckeditor5Path, 'node_modules' );
-	const symlinks = ckeditor5Dirs.getCKE5Symlinks( nodeModulesPath );
+	const symlinks = ckeditor5Dirs.getSymlinks( nodeModulesPath );
 	symlinks
 		.filter( dir => typeof dependencies[ dir ] == 'undefined' )
 		.forEach( dir => {

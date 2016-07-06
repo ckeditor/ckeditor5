@@ -24,8 +24,8 @@ describe( 'utils', () => {
 	} );
 
 	describe( 'ckeditor5dirs', () => {
-		describe( 'getCKEditorDependencies', () => {
-			it( 'should be defined', () => expect( ckeditor5Dirs.getCKEditorDependencies ).to.be.a( 'function' ) );
+		describe( 'getDependencies', () => {
+			it( 'should be defined', () => expect( ckeditor5Dirs.getDependencies ).to.be.a( 'function' ) );
 
 			it( 'should return null if no CKEditor5 repository is found', () => {
 				const dependencies = {
@@ -33,8 +33,8 @@ describe( 'utils', () => {
 					'plugin2': '',
 					'plugin3': ''
 				};
-				expect( ckeditor5Dirs.getCKEditorDependencies( dependencies ) ).to.equal( null );
-				expect( ckeditor5Dirs.getCKEditorDependencies() ).to.equal( null );
+				expect( ckeditor5Dirs.getDependencies( dependencies ) ).to.equal( null );
+				expect( ckeditor5Dirs.getDependencies() ).to.equal( null );
 			} );
 
 			it( 'should return only ckeditor5- dependencies', () => {
@@ -44,7 +44,7 @@ describe( 'utils', () => {
 					'plugin2': '',
 					'ckeditor5-core': 'ckeditor/ckeditor5-core'
 				};
-				const ckeditorDependencies = ckeditor5Dirs.getCKEditorDependencies( dependencies );
+				const ckeditorDependencies = ckeditor5Dirs.getDependencies( dependencies );
 
 				expect( ckeditorDependencies ).to.be.an( 'object' );
 				expect( ckeditorDependencies.plugin1 ).to.be.a( 'undefined' );
@@ -54,14 +54,14 @@ describe( 'utils', () => {
 			} );
 		} );
 
-		describe( 'getCKE5Directories', () => {
-			it( 'should be defined', () => expect( ckeditor5Dirs.getCKE5Directories ).to.be.a( 'function' ) );
+		describe( 'getDirectories', () => {
+			it( 'should be defined', () => expect( ckeditor5Dirs.getDirectories ).to.be.a( 'function' ) );
 
 			it( 'should return only ckeditor5 directories', () => {
 				const workspacePath = '/workspace/path';
 				const sourceDirectories = [ 'tools', 'ckeditor5', 'ckeditor5-core', '.bin', 'ckeditor5-plugin-image' ];
 				sandbox.stub( tools, 'getDirectories', () => sourceDirectories );
-				const directories = ckeditor5Dirs.getCKE5Directories( workspacePath );
+				const directories = ckeditor5Dirs.getDirectories( workspacePath );
 
 				expect( directories.length ).equal( 2 );
 				expect( directories[ 0 ] ).equal( 'ckeditor5-core' );
@@ -69,14 +69,14 @@ describe( 'utils', () => {
 			} );
 		} );
 
-		describe( 'getCKE5Symlinks', () => {
+		describe( 'getSymlinks', () => {
 			it( 'should return CKE5 symlinks from provided path', () => {
 				const fs = require( 'fs' );
 				const path = 'path/to/dir';
 				sandbox.stub( fs, 'readdirSync' ).returns( [ 'ckeditor5-core', 'ckeditor5-image', 'other-dependency' ] );
 				sandbox.stub( tools, 'isSymlink' ).returns( true );
 
-				const symlinks = ckeditor5Dirs.getCKE5Symlinks( path );
+				const symlinks = ckeditor5Dirs.getSymlinks( path );
 				expect( symlinks.length ).to.equal( 2 );
 				expect( symlinks[ 0 ] ).to.equal( 'ckeditor5-core' );
 				expect( symlinks[ 1 ] ).to.equal( 'ckeditor5-image' );

@@ -23,10 +23,10 @@ module.exports = ( ckeditor5Path, packageJSON, workspaceRoot ) => {
 	const workspaceAbsolutePath = path.join( ckeditor5Path, workspaceRoot );
 
 	// Get all CKEditor dependencies from package.json.
-	const dependencies = ckeditor5Dirs.getCKEditorDependencies( packageJSON.dependencies );
+	const dependencies = ckeditor5Dirs.getDependencies( packageJSON.dependencies );
 
 	if ( dependencies ) {
-		const directories = ckeditor5Dirs.getCKE5Directories( workspaceAbsolutePath );
+		const directories = ckeditor5Dirs.getDirectories( workspaceAbsolutePath );
 
 		if ( directories.length ) {
 			for ( let dependency in dependencies ) {

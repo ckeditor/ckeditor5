@@ -73,7 +73,7 @@ function execute( execTask, ckeditor5Path, packageJSON, workspaceRoot, parameter
 	const mergedStream = merge();
 	const specificRepository = parameters.repository;
 
-	let devDirectories = ckeditor5Dirs.getCKE5DevDirectories( workspacePath, packageJSON, ckeditor5Path );
+	let devDirectories = ckeditor5Dirs.getDevDirectories( workspacePath, packageJSON, ckeditor5Path );
 
 	if ( specificRepository ) {
 		devDirectories = devDirectories.filter( ( dir ) => {

@@ -19,7 +19,7 @@ const log = require( '../../../utils/log' );
  */
 module.exports = ( installTask, ckeditor5Path, packageJSON, workspaceRoot ) => {
 	// Get all CKEditor dependencies from package.json.
-	const dependencies = ckeditor5Dirs.getCKEditorDependencies( packageJSON.dependencies );
+	const dependencies = ckeditor5Dirs.getDependencies( packageJSON.dependencies );
 
 	if ( dependencies ) {
 		for ( let dependency in dependencies ) {
