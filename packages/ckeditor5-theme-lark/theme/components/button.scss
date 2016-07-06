@@ -13,7 +13,6 @@
 	cursor: pointer;
 	vertical-align: middle;
 	line-height: $ck-icon-size / $ck-font-size-base;
-	padding: ck-spacing( 'small' ) ck-spacing();
 	position: relative;
 
 	@include ck-button-colors( $color );
@@ -68,6 +67,7 @@
 a.ck-button {
 	display: inline-block;
 	overflow: hidden;
+	padding: ck-spacing( 'small' ) ck-spacing();
 
 	@include ck-button( 'background' );
 	@include ck-unselectable();
