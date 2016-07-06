@@ -20,8 +20,9 @@ module.exports = function filterGitignore() {
 	const gitignoreGlob =
 		parseGitignore( fileName )
 			// Invert '!foo' -> 'foo' and 'foo' -> '!foo'.
-			.map( pattern => pattern.startsWith( '!' ) ? pattern.slice( 1 ) : '!' + pattern )
-			.unshift( '**/*' );
+			.map( pattern => pattern.startsWith( '!' ) ? pattern.slice( 1 ) : '!' + pattern );
+
+	gitignoreGlob.unshift( '**/*' );
 
 	return filter( gitignoreGlob );
 };
