@@ -25,7 +25,11 @@
 	}
 
 	// (#11) Separate toolbar items.
-	& > * + * {
-		margin-left: ck-spacing( 'small' );
+	& > * {
+		margin-right: ck-spacing( 'small' );
+	}
+
+	& > *:last-child {
+		margin-right: 0;
 	}
 }
