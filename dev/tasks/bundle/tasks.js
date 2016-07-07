@@ -46,7 +46,7 @@ module.exports = ( config ) => {
 		 * 			// Path to specified editor.
 		 * 			// It could be a path relative to `build/esnext/ckeditor5` directory e.g. `classic-editor/classic.js`
 		 * 			// or path relative to directory where build task will be executed `./full/path/to/custom/editor.js`.
-		 * 			editor: 'classic-editor/classic.js'
+		 * 			editor: 'classic-editor/classic.js',
 		 *
 		 * 			// List of features.
 		 * 			features: [
@@ -61,8 +61,8 @@ module.exports = ( config ) => {
 		 * 			]
 		 * 		}
 		 *
-		 * @params {String} configFilePath Path to the bundle configuration file.
-		 * @return {Promise} Promise that resolve bundling for CSS anf JS.
+		 * @param {String} configFilePath Path to the bundle configuration file.
+		 * @returns {Promise} Promise that resolve bundling for CSS and JS.
 		 */
 		generate( configFilePath ) {
 			// When config file is not specified.

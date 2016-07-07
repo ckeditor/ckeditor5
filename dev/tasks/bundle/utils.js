@@ -34,7 +34,7 @@ const utils = {
 
 	/**
 	 * When module path is not relative then treat this path as a path to the one of the ckeditor5 default module
-	 * (relative to ./bundle/exnext/ckedotir5) and add prefix `./build/esnext/ckeditor5/` to this path.
+	 * (relative to ./bundle/exnext/ckeditor5) and add prefix `./build/esnext/ckeditor5/` to this path.
 	 *
 	 * @param {String} modulePath Path the ckeditor5 module.
 	 */
@@ -65,7 +65,7 @@ const utils = {
 	/**
 	 * Transform first letter of passed string to the uppercase.
 	 *
-	 * @params {String} string String that will be transformed.
+	 * @param {String} string String that will be transformed.
 	 * @returns {String} Transformed string.
 	 */
 	capitalize( string ) {
@@ -142,8 +142,8 @@ export default class ${ data.moduleName } extends ${ creatorName } {
 	/**
 	 * Save files from stream in specific destination and add `.min` suffix to the name.
 	 *
-	 * @params {Stream} stream Source stream.
-	 * @params {String} destination Path to the destination directory.
+	 * @param {Stream} stream Source stream.
+	 * @param {String} destination Path to the destination directory.
 	 * @returns {Stream}
 	 */
 	saveFileFromStreamAsMinified( stream, destination ) {
@@ -157,8 +157,8 @@ export default class ${ data.moduleName } extends ${ creatorName } {
 	/**
 	 * Copy specified file to specified destination.
 	 *
-	 * @params {String} from Source path.
-	 * @params {String} to Destination directory.
+	 * @param {String} from Source path.
+	 * @param {String} to Destination directory.
 	 * @returns {Promise}
 	 */
 	copyFile( from, to ) {
@@ -172,7 +172,7 @@ export default class ${ data.moduleName } extends ${ creatorName } {
 	/**
 	 * Get size of the file.
 	 *
-	 * @params {String} path Path to the file.
+	 * @param {String} path Path to the file.
 	 * @returns {Number} Size in bytes.
 	 */
 	getFileSize( path ) {
@@ -182,7 +182,7 @@ export default class ${ data.moduleName } extends ${ creatorName } {
 	/**
 	 * Get human readable gzipped size of the file.
 	 *
-	 * @params {String} path Path to the file.
+	 * @param {String} path Path to the file.
 	 * @returns {Number} Size in bytes.
 	 */
 	getGzippedFileSize( path ) {
@@ -192,8 +192,8 @@ export default class ${ data.moduleName } extends ${ creatorName } {
 	/**
 	 * Get normal and gzipped size of every passed file in specified directory.
 	 *
-	 * @params {Array.<String>} files List of file paths.
-	 * @params {String} [rootDir=''] When each file is in the same directory.
+	 * @param {Array.<String>} files List of file paths.
+	 * @param {String} [rootDir=''] When each file is in the same directory.
 	 * @returns {Array.<Object>} List with file size data.
 	 * @returns {Array.<Object.name>} File name.
 	 * @returns {Array.<Object.size>} File size in human readable format.
