@@ -56,12 +56,12 @@ module.exports = ( config ) => {
 		 * 				// It could be a path relative to `build/esnext/ckeditor5` directory.
 		 * 				`typing/typing.js`
 		 *
-		 * 				// Or it could be path relative to directory where build task will be executed.
+		 * 				// Or it could be a path relative to directory where build task will be executed.
 		 * 				'./path/to/some/custom/feature.js',
 		 * 			]
 		 * 		}
 		 *
-		 * @param {String} configFilePath Path to the bundle configuration file.
+		 * @params {String} configFilePath Path to the bundle configuration file.
 		 * @return {Promise} Promise that resolve bundling for CSS anf JS.
 		 */
 		generate( configFilePath ) {
@@ -70,17 +70,15 @@ module.exports = ( config ) => {
 				// Then log error.
 				gutil.log( gutil.colors.red( `Bundle Error: Path to the config file is required. 'gulp bundle --config path/to/file.js'` ) );
 
-				// And stop task. as failed
+				// And stop task as failed.
 				return Promise.reject();
 			}
 
 			// Get configuration from the configuration file.
 			const config = require( path.resolve( '.', configFilePath ) );
 
-			// Create a temporary entry file.
-			// Create proper directory structure first if not exist.
+			// Create a temporary entry file with proper directory structure if not exist.
 			mkdirp.sync( bundleTmpDir );
-
 			fs.writeFileSync( temporaryEntryFilePath, utils.renderEntryFileContent( bundleTmpDir, config ) );
 
 			/**
@@ -153,11 +151,15 @@ module.exports = ( config ) => {
 		register() {
 			gulp.task( 'bundle:clean', tasks.clean );
 			gulp.task( 'bundle:generate',
+				[
+					'bundle:clean',
+					'build:js:esnext',
+					'build:themes:esnext'
+				],
 				() => tasks.generate( args.config )
 			);
 			gulp.task( 'bundle:minify:js', tasks.minify.js );
 			gulp.task( 'bundle:minify:css', tasks.minify.css );
-			gulp.task( 'bundle:next', tasks.next );
 
 			gulp.task( 'bundle', ( callback ) => {
 				runSequence( 'bundle:generate', [ 'bundle:minify:js', 'bundle:minify:css' ], () => {

@@ -612,5 +612,5 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 	}
 };
 
-// Assign properties from top level utils.
+// Extend top level utils.
 module.exports = Object.assign( utils, mainUtils );

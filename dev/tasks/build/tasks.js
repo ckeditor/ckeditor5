@@ -31,7 +31,7 @@ module.exports = ( config ) => {
 			 * @param {String} options.formats
 			 */
 			themes( options = {} ) {
-				let formats = options.formats || utils.parseArguments().formats;
+				let formats = options.formats || args.formats;
 
 				return utils.clean( buildDir, path.join( `@(${ formats.join( '|' ) })`, 'theme' ) );
 			},

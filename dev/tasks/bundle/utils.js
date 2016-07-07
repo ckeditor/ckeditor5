@@ -63,7 +63,7 @@ const utils = {
 	},
 
 	/**
-	 * Transform first letter of passed string to the upper case.
+	 * Transform first letter of passed string to the uppercase.
 	 *
 	 * @params {String} string String that will be transformed.
 	 * @returns {String} Transformed string.
@@ -73,20 +73,21 @@ const utils = {
 	},
 
 	/**
-	 * Render content for entry file which needs to be passed as main file to the Rollup.
+	 * Render content for the entry file which needs to be passed as main file to the Rollup.
 	 *
 	 * @param {String} dir Path to the entryfile directory. Import paths need to be relative to this directory.
 	 * @param {Object} data Configuration object.
 	 * @param {String} [data.moduleName] Name of the editor class exposed as global variable by bundle. e.g. MyCKEditor.
-	 * @param {String} [data.editor] Path to the editor version e.g. `classic-editor/classic.js`.
+	 * @param {String} [data.editor] Path to the editor type e.g. `classic-editor/classic.js`.
 	 * @param {Array.<String>} [data.features] List of paths or names to features which need to be included in bundle.
-	 * @returns {string}
+	 * @returns {String} Entry file content.
 	 */
 	renderEntryFileContent( dir, data ) {
 		const creatorName = utils.capitalize( path.basename( data.editor, '.js' ) );
 		const creatorPath = path.relative( dir, utils.getFullPath( data.editor ) );
 		let featureNames = [];
 
+		// Returns a list of plugin imports.
 		function renderPluginImports( features = [] ) {
 			let templateFragment = '';
 
@@ -96,8 +97,11 @@ const utils = {
 				const featurePath = path.relative( dir, feature );
 
 				// Generate unique feature name.
-				// In case of two ore more features will have the same name but different path
-				// 		'typing', 'path/to/other/plugin/typing'
+				// In case of two ore more features will have the same name:
+				// 		features: [
+				// 			'typing',
+				// 			'path/to/other/plugin/typing'
+				// 		]
 				let featureName = utils.capitalize( path.basename( feature, '.js' ) );
 				let i = 0;
 
@@ -138,8 +142,8 @@ export default class ${ data.moduleName } extends ${ creatorName } {
 	/**
 	 * Save files from stream in specific destination and add `.min` suffix to the name.
 	 *
-	 * @param {Stream} stream
-	 * @param {String} destination path
+	 * @params {Stream} stream Source stream.
+	 * @params {String} destination Path to the destination directory.
 	 * @returns {Stream}
 	 */
 	saveFileFromStreamAsMinified( stream, destination ) {
@@ -153,8 +157,8 @@ export default class ${ data.moduleName } extends ${ creatorName } {
 	/**
 	 * Copy specified file to specified destination.
 	 *
-	 * @param {String} from file path
-	 * @param {String} to copied file destination
+	 * @params {String} from Source path.
+	 * @params {String} to Destination directory.
 	 * @returns {Promise}
 	 */
 	copyFile( from, to ) {
@@ -168,8 +172,8 @@ export default class ${ data.moduleName } extends ${ creatorName } {
 	/**
 	 * Get size of the file.
 	 *
-	 * @param {String} path path to the file
-	 * @returns {Number} size size in bytes
+	 * @params {String} path Path to the file.
+	 * @returns {Number} Size in bytes.
 	 */
 	getFileSize( path ) {
 		return fs.statSync( path ).size;
@@ -178,8 +182,8 @@ export default class ${ data.moduleName } extends ${ creatorName } {
 	/**
 	 * Get human readable gzipped size of the file.
 	 *
-	 * @param {String} path path to the file
-	 * @returns {Number} size size in bytes
+	 * @params {String} path Path to the file.
+	 * @returns {Number} Size in bytes.
 	 */
 	getGzippedFileSize( path ) {
 		return gzipSize.sync( fs.readFileSync( path ) );
@@ -188,9 +192,12 @@ export default class ${ data.moduleName } extends ${ creatorName } {
 	/**
 	 * Get normal and gzipped size of every passed file in specified directory.
 	 *
-	 * @param {Array.<String>} files
-	 * @param {String} [rootDir='']
-	 * @returns {Array<Object>} List with file size data
+	 * @params {Array.<String>} files List of file paths.
+	 * @params {String} [rootDir=''] When each file is in the same directory.
+	 * @returns {Array.<Object>} List with file size data.
+	 * @returns {Array.<Object.name>} File name.
+	 * @returns {Array.<Object.size>} File size in human readable format.
+	 * @returns {Array.<Object.gzippedSize>} Gzipped file size in human readable format.
 	 */
 	getFilesSizeStats( files, rootDir = '' ) {
 		return files.map( ( file ) => {
@@ -205,13 +212,13 @@ export default class ${ data.moduleName } extends ${ creatorName } {
 	},
 
 	/**
-	 * Print on console list of files with their size stats.
+	 * Print on console summary with a list of files with their size stats.
 	 *
-	 *        Title:
-	 *        file.js: 1 MB (gzipped: 400 kB)
-	 *        file.css 500 kB (gzipped: 100 kB)
+	 * 		Title:
+	 * 		file.js: 1 MB (gzipped: 400 kB)
+	 * 		file.css 500 kB (gzipped: 100 kB)
 	 *
-	 * @param {String} title
+	 * @param {String} title Summary title.
 	 * @param {Array.<Object>} filesStats
 	 */
 	showFilesSummary( title, filesStats ) {
@@ -224,5 +231,5 @@ export default class ${ data.moduleName } extends ${ creatorName } {
 	}
 };
 
-// Assign properties from top level utils.
+// Extend top level utils.
 module.exports = Object.assign( utils, mainUtils );
