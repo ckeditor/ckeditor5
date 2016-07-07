@@ -36,15 +36,17 @@ const utils = {
 	 * When module path is not relative then treat this path as a path to the one of the ckeditor5 default module
 	 * (relative to ./bundle/exnext/ckeditor5) and add prefix `./build/esnext/ckeditor5/` to this path.
 	 *
-	 * @param {String} modulePath Path the ckeditor5 module.
+	 * This method also adds `.js` extension.
+	 *
+	 * @param {String} modulePath Path to the module (without extension).
 	 */
 	getFullPath( modulePath ) {
 		// If path is not a relative path (no leading ./ or ../).
 		if ( modulePath.charAt( 0 ) != '.' ) {
-			return `./${ path.join( 'build/esnext/ckeditor5', modulePath ) }`;
+			return `./${ path.join( 'build/esnext/ckeditor5', modulePath ) }.js`;
 		}
 
-		return modulePath;
+		return modulePath + '.js';
 	},
 
 	/**
@@ -59,7 +61,7 @@ const utils = {
 			return utils.getFullPath( name );
 		}
 
-		return utils.getFullPath( `${ name }/${ name }.js` );
+		return utils.getFullPath( `${ name }/${ name }` );
 	},
 
 	/**

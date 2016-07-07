@@ -44,21 +44,25 @@ module.exports = ( config ) => {
 		 *			// Name of CKEditor instance exposed as global variable by a bundle.
 		 *			moduleName: 'MyCKEditor',
 		 *
-		 *			// Path to specified editor.
-		 *			// It could be a path relative to `build/esnext/ckeditor5` directory e.g. `classic-editor/classic.js`
-		 *			// or path relative to directory where build task will be executed `./full/path/to/custom/editor.js`.
-		 *			editor: 'classic-editor/classic.js',
+		 *			// Path to specified editor module.
+		 *			// It could be a path relative to `build/esnext/ckeditor5` directory e.g. `classic-editor/classic`
+		 *			// or path relative to directory where build task will be executed `./full/path/to/custom/editor`.
+		 *			//
+		 *			// Note: file extension is appended automatically.
+		 *			editor: 'classic-editor/classic',
 		 *
 		 *			// List of features.
+		 *			//
+		 *			// Note: file extension is appended automatically.
 		 *			features: [
 		 *				// It could be a plugin name only if plugin is a default CKEditor plugin.
 		 *				'delete',
 		 *
 		 *				// It could be a path relative to `build/esnext/ckeditor5` directory.
-		 *				`typing/typing.js`
+		 *				`typing/typing`,
 		 *
 		 *				// Or it could be a path relative to directory where build task will be executed.
-		 *				'./path/to/some/custom/feature.js',
+		 *				'./path/to/some/custom/feature',
 		 *			]
 		 *		};
 		 *

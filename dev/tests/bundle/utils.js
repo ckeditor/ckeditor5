@@ -33,12 +33,12 @@ describe( 'bundle-utils', () => {
 
 	describe( 'getFullPath', () => {
 		it( 'should return full path when passed path not relative', () => {
-			expect( utils.getFullPath( 'editor-classic/classic.js' ) ).to.equal( './build/esnext/ckeditor5/editor-classic/classic.js' );
+			expect( utils.getFullPath( 'editor-classic/classic' ) ).to.equal( './build/esnext/ckeditor5/editor-classic/classic.js' );
 		} );
 
 		it( 'should return unmodified path when passed path is a relative', () => {
-			expect( utils.getFullPath( './path/to/editor-classic/classic.js' ) ).to.equal( './path/to/editor-classic/classic.js' );
-			expect( utils.getFullPath( '../path/to/editor-classic/classic.js' ) ).to.equal( '../path/to/editor-classic/classic.js' );
+			expect( utils.getFullPath( './path/to/editor-classic/classic' ) ).to.equal( './path/to/editor-classic/classic.js' );
+			expect( utils.getFullPath( '../path/to/editor-classic/classic' ) ).to.equal( '../path/to/editor-classic/classic.js' );
 		} );
 	} );
 
@@ -48,12 +48,12 @@ describe( 'bundle-utils', () => {
 		} );
 
 		it( 'should return full path if passed argument is a relative path', () => {
-			expect( utils.getPluginPath( 'typing/typing.js' ) ).to.equal( './build/esnext/ckeditor5/typing/typing.js' );
+			expect( utils.getPluginPath( 'typing/typing' ) ).to.equal( './build/esnext/ckeditor5/typing/typing.js' );
 		} );
 
 		it( 'should return unmodified plugin path if passed argument is a relative path', () => {
-			expect( utils.getPluginPath( './typing.js' ) ).to.equal( './typing.js' );
-			expect( utils.getPluginPath( '../typing.js' ) ).to.equal( '../typing.js' );
+			expect( utils.getPluginPath( './typing' ) ).to.equal( './typing.js' );
+			expect( utils.getPluginPath( '../typing' ) ).to.equal( '../typing.js' );
 		} );
 	} );
 
@@ -68,11 +68,11 @@ describe( 'bundle-utils', () => {
 		it( 'should render file content with proper data', () => {
 			const result = utils.renderEntryFileContent( './bundle/tmp', {
 				moduleName: 'MyCKEditor',
-				editor: 'editor-classic/classic.js',
+				editor: 'editor-classic/classic',
 				features: [
 					'delete',
-					'path/to/default.js',
-					'./path/to/custom.js'
+					'path/to/default',
+					'./path/to/custom'
 				]
 			} );
 
@@ -107,11 +107,11 @@ export default class MyCKEditor extends Classic {
 		it( 'should render file content with unique plugin names', () => {
 			const result = utils.renderEntryFileContent( './bundle/tmp', {
 				moduleName: 'MyCKEditor',
-				editor: 'editor-classic/classic.js',
+				editor: 'editor-classic/classic',
 				features: [
 					'plugin',
-					'path/to/plugin.js',
-					'other/path/to/plugin.js'
+					'path/to/plugin',
+					'other/path/to/plugin'
 				]
 			} );
 
@@ -146,7 +146,7 @@ export default class MyCKEditor extends Classic {
 		it( 'should render file content with proper without features', () => {
 			const result = utils.renderEntryFileContent( './bundle/tmp', {
 				moduleName: 'MyCKEditor',
-				editor: 'editor-classic/classic.js'
+				editor: 'editor-classic/classic'
 			} );
 
 			const expected = `
