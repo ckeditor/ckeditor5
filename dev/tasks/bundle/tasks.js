@@ -45,11 +45,11 @@ module.exports = ( config ) => {
 		 *			moduleName: 'MyCKEditor',
 		 *
 		 *			// Path to specified editor module.
-		 *			// It could be a path relative to `build/esnext/ckeditor5` directory e.g. `classic-editor/classic`
+		 *			// It could be a path relative to `build/esnext/ckeditor5` directory e.g. `editor-classic/classic`
 		 *			// or path relative to directory where build task will be executed `./full/path/to/custom/editor`.
 		 *			//
 		 *			// Note: file extension is appended automatically.
-		 *			editor: 'classic-editor/classic',
+		 *			editor: 'editor-classic/classic',
 		 *
 		 *			// List of features.
 		 *			//
