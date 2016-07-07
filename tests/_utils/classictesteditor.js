@@ -32,7 +32,7 @@ export default class ClassicTestEditor extends StandardEditor {
 		this.data.processor = new HtmlDataProcessor();
 
 		this.ui = new BoxedEditorUI( this );
-		this.ui.view = new BoxedEditorUIView( this.ui.viewModel, this.locale );
+		this.ui.view = new BoxedEditorUIView( this.locale );
 	}
 
 	/**
