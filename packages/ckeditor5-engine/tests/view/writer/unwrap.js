@@ -7,7 +7,7 @@
 
 'use strict';
 
-import Writer from '/ckeditor5/engine/view/writer.js';
+import { unwrap } from '/ckeditor5/engine/view/writer.js';
 import Element from '/ckeditor5/engine/view/element.js';
 import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
@@ -18,9 +18,7 @@ import Text from '/ckeditor5/engine/view/text.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import { stringify, parse } from '/tests/engine/_utils/view.js';
 
-describe( 'Writer', () => {
-	let writer;
-
+describe( 'writer', () => {
 	/**
 	 * Executes test using `parse` and `stringify` utils functions.
 	 *
@@ -35,13 +33,9 @@ describe( 'Writer', () => {
 			view = new DocumentFragment( view );
 		}
 
-		const newRange = writer.unwrap( selection.getFirstRange(), parse( unwrapAttribute ) );
+		const newRange = unwrap( selection.getFirstRange(), parse( unwrapAttribute ) );
 		expect( stringify( view, newRange, { showType: true, showPriority: true } ) ).to.equal( expected );
 	}
-
-	beforeEach( () => {
-		writer = new Writer();
-	} );
 
 	describe( 'unwrap', () => {
 		it( 'should do nothing on collapsed ranges', () => {
@@ -69,7 +63,7 @@ describe( 'Writer', () => {
 			const b = new Element( 'b' );
 
 			expect( () => {
-				writer.unwrap( range, b );
+				unwrap( range, b );
 			} ).to.throw( CKEditorError, 'view-writer-unwrap-invalid-attribute' );
 		} );
 
@@ -83,7 +77,7 @@ describe( 'Writer', () => {
 			const b = new AttributeElement( 'b' );
 
 			expect( () => {
-				writer.unwrap( range, b, 1 );
+				unwrap( range, b, 1 );
 			} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
 		} );
 

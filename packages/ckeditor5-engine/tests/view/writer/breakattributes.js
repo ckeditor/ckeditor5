@@ -7,15 +7,13 @@
 
 'use strict';
 
-import Writer from '/ckeditor5/engine/view/writer.js';
+import { breakAttributes } from '/ckeditor5/engine/view/writer.js';
 import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
 import Text from '/ckeditor5/engine/view/text.js';
 import { stringify, parse } from '/tests/engine/_utils/view.js';
 
-describe( 'Writer', () => {
-	let writer;
-
+describe( 'writer', () => {
 	/**
 	 * Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create and
 	 * test break position.
@@ -31,13 +29,9 @@ describe( 'Writer', () => {
 			view = new DocumentFragment( view );
 		}
 
-		const newPosition = writer.breakAttributes( selection.getFirstPosition() );
+		const newPosition = breakAttributes( selection.getFirstPosition() );
 		expect( stringify( view, newPosition, { showType: true, showPriority: true } ) ).to.equal( expected );
 	}
-
-	beforeEach( () => {
-		writer = new Writer();
-	} );
 
 	describe( 'breakAttributes', () => {
 		it( 'should not break text nodes if they are not in attribute elements - middle', () => {

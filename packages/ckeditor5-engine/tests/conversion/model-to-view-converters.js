@@ -17,7 +17,6 @@ import ViewElement from '/ckeditor5/engine/view/element.js';
 import ViewContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import ViewAttributeElement from '/ckeditor5/engine/view/attributeelement.js';
 import ViewText from '/ckeditor5/engine/view/text.js';
-import ViewWriter from  '/ckeditor5/engine/view/writer.js';
 
 import Mapper from '/ckeditor5/engine/conversion/mapper.js';
 import ModelConversionDispatcher from '/ckeditor5/engine/conversion/modelconversiondispatcher.js';
@@ -32,7 +31,7 @@ import {
 	remove
 } from '/ckeditor5/engine/conversion/model-to-view-converters.js';
 
-let dispatcher, modelDoc, modelRoot, mapper, viewRoot, writer;
+let dispatcher, modelDoc, modelRoot, mapper, viewRoot;
 
 beforeEach( () => {
 	modelDoc = new ModelDocument();
@@ -42,9 +41,7 @@ beforeEach( () => {
 	mapper = new Mapper();
 	mapper.bindElements( modelRoot, viewRoot );
 
-	writer = new ViewWriter();
-
-	dispatcher = new ModelConversionDispatcher( { mapper, writer } );
+	dispatcher = new ModelConversionDispatcher( { mapper } );
 } );
 
 function viewAttributesToString( item ) {

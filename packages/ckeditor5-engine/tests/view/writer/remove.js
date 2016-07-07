@@ -7,7 +7,7 @@
 
 'use strict';
 
-import Writer from '/ckeditor5/engine/view/writer.js';
+import { remove } from '/ckeditor5/engine/view/writer.js';
 import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import Range from '/ckeditor5/engine/view/range.js';
 import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
@@ -15,9 +15,7 @@ import { stringify, parse } from '/tests/engine/_utils/view.js';
 import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
 import Text from '/ckeditor5/engine/view/text.js';
 
-describe( 'Writer', () => {
-	let writer;
-
+describe( 'writer', () => {
 	/**
 	 * Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create and
 	 * test ranges.
@@ -34,14 +32,10 @@ describe( 'Writer', () => {
 		}
 
 		const range = selection.getFirstRange();
-		const removed = writer.remove( range );
+		const removed = remove( range );
 		expect( stringify( view, range, { showType: true, showPriority: true } ) ).to.equal( expectedResult );
 		expect( stringify( removed, null, { showType: true, showPriority: true } ) ).to.equal( expectedRemoved );
 	}
-
-	beforeEach( () => {
-		writer = new Writer();
-	} );
 
 	describe( 'remove', () => {
 		it( 'should throw when range placed in two containers', () => {
@@ -49,14 +43,14 @@ describe( 'Writer', () => {
 			const p2 = new ContainerElement( 'p' );
 
 			expect( () => {
-				writer.remove( Range.createFromParentsAndOffsets( p1, 0, p2, 0 ) );
+				remove( Range.createFromParentsAndOffsets( p1, 0, p2, 0 ) );
 			} ).to.throw( 'view-writer-invalid-range-container' );
 		} );
 
 		it( 'should return empty DocumentFragment when range is collapsed', () => {
 			const p = new ContainerElement( 'p' );
 			const range = Range.createFromParentsAndOffsets( p, 0, p, 0 );
-			const fragment = writer.remove( range );
+			const fragment = remove( range );
 
 			expect( fragment ).to.be.instanceof( DocumentFragment );
 			expect( fragment.getChildCount() ).to.equal( 0 );

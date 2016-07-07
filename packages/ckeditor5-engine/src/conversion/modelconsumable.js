@@ -74,11 +74,11 @@ import TextProxy from '../model/textproxy.js';
  *
  *					conversionApi.mapper.bindElements( modelCaption, viewCaption );
  *					conversionApi.mapper.bindElements( data.item, viewImageHolder );
- *					conversionApi.writer.insert( insertPosition, viewImageHolder );
+ *					viewWriter.insert( insertPosition, viewImageHolder );
  *				}
  *			} else {
  *				conversionApi.mapper.bindElements( data.item, viewImage );
- *				conversionApi.writer.insert( insertPosition, viewImage );
+ *				viewWriter.insert( insertPosition, viewImage );
  *			}
  *
  *			evt.stop();

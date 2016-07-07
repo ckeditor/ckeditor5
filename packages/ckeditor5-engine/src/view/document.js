@@ -7,7 +7,6 @@
 
 import Selection from './selection.js';
 import Renderer from './renderer.js';
-import Writer from './writer.js';
 import DomConverter from './domconverter.js';
 import RootEditableElement from './rooteditableelement.js';
 import { injectQuirksHandling } from './filler.js';
@@ -48,14 +47,6 @@ export default class Document {
 		 * @member {engine.view.Selection} engine.view.Document#selection
 		 */
 		this.selection = new Selection();
-
-		/**
-		 * Tree View writer.
-		 *
-		 * @readonly
-		 * @member {engine.view.Writer} engine.view.Document#writer
-		 */
-		this.writer = new Writer();
 
 		/**
 		 * Instance of the {@link engine.view.DomConverter domConverter} use by

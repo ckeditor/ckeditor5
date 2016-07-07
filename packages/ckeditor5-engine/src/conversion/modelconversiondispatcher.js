@@ -62,7 +62,7 @@ import extend from '../../utils/lib/lodash/extend.js';
  *			conversionApi.mapper.bindElements( data.item, viewNode );
  *
  *			// Add the newly created view element to the view.
- *			conversionApi.writer.insert( viewPosition, viewElement );
+ *			viewWriter.insert( viewPosition, viewElement );
  *
  *			// Remember to stop the event propagation if the data.item was consumed.
  *			evt.stop();
@@ -96,7 +96,7 @@ import extend from '../../utils/lib/lodash/extend.js';
  *			// different source, `data.item` already existed. This means we are safe to get `viewQuote` from mapper.
  *			const viewQuote = conversionApi.mapper.toViewElement( data.item );
  *			const position = new ViewPosition( viewQuote, viewQuote.getChildCount() );
- *			conversionApi.writer.insert( position, viewSourceBtn );
+ *			viewWriter.insert( position, viewSourceBtn );
  *
  *			evt.stop();
  *		}, 1 );

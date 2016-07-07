@@ -7,15 +7,13 @@
 
 'use strict';
 
-import Writer from '/ckeditor5/engine/view/writer.js';
+import { mergeAttributes } from '/ckeditor5/engine/view/writer.js';
 import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import Text from '/ckeditor5/engine/view/text.js';
 import Position from '/ckeditor5/engine/view/position.js';
 import { stringify, parse } from '/tests/engine/_utils/view.js';
 
-describe( 'Writer', () => {
-	let writer;
-
+describe( 'writer', () => {
 	/**
 	 * Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create and
 	 * test merge position.
@@ -25,13 +23,9 @@ describe( 'Writer', () => {
 	 */
 	function test( input, expected ) {
 		const { view, selection } = parse( input );
-		const newPosition = writer.mergeAttributes( selection.getFirstPosition() );
+		const newPosition = mergeAttributes( selection.getFirstPosition() );
 		expect( stringify( view, newPosition, { showType: true, showPriority: true } ) ).to.equal( expected );
 	}
-
-	beforeEach( () => {
-		writer = new Writer();
-	} );
 
 	describe( 'mergeAttributes', () => {
 		it( 'should not merge if inside text node', () => {
@@ -73,7 +67,7 @@ describe( 'Writer', () => {
 			const p = new ContainerElement( 'p', null, [ t1, t2 ] );
 			const position = new Position( p, 1 );
 
-			const newPosition = writer.mergeAttributes( position );
+			const newPosition = mergeAttributes( position );
 			expect( stringify( p, newPosition ) ).to.equal( '<p>foo{}bar</p>' );
 		} );
 

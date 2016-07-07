@@ -7,6 +7,7 @@
 
 import ViewElement from '../view/element.js';
 import ViewRange from '../view/range.js';
+import viewWriter from '../view/writer.js';
 
 /**
  * Contains {@link engine.model.Selection model selection} to {@link engine.view.Selection view selection} converters for
@@ -85,7 +86,7 @@ export function convertCollapsedSelection() {
 
 		const modelPosition = selection.getFirstPosition();
 		const viewPosition = conversionApi.mapper.toViewPosition( modelPosition );
-		const brokenPosition = conversionApi.writer.breakAttributes( viewPosition );
+		const brokenPosition = viewWriter.breakAttributes( viewPosition );
 
 		conversionApi.viewSelection.removeAllRanges();
 		conversionApi.viewSelection.addRange( new ViewRange( brokenPosition, brokenPosition ) );
@@ -163,7 +164,7 @@ export function convertSelectionAttribute( elementCreator ) {
 				elementCreator.clone( true ) :
 				elementCreator( data.value, selection, consumable, conversionApi );
 
-		viewPosition = conversionApi.writer.wrapPosition( viewPosition, viewElement );
+		viewPosition = viewWriter.wrapPosition( viewPosition, viewElement );
 
 		conversionApi.viewSelection.addRange( new ViewRange( viewPosition, viewPosition ) );
 	};
@@ -202,7 +203,7 @@ export function clearAttributes() {
 			if ( range.isCollapsed ) {
 				// Position might be in the node removed by the Writer.
 				if ( range.end.parent.getDocument() ) {
-					conversionApi.writer.mergeAttributes( range.start );
+					viewWriter.mergeAttributes( range.start );
 				}
 			}
 		}
