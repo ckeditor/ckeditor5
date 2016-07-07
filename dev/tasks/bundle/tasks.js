@@ -26,40 +26,41 @@ module.exports = ( config ) => {
 
 	const tasks = {
 		/**
-		 * Remove all files from bundle directory.
+		 * Removes all files from bundle directory.
 		 */
 		clean() {
 			return utils.clean( bundleDir, '*.*' );
 		},
 
 		/**
-		 * Combine whole editor files into two files `ckeditor.js` and `ckeditor.css`.
+		 * Combines whole editor files into two files `ckeditor.js` and `ckeditor.css`.
 		 *
 		 * For JS bundle is required to pass configuration file `gulp bundle --config path/to/file.js` where
 		 * we need to specify which editor and features we want to include in our bundle.
 		 *
-		 * 		example-config-file.js:
-		 * 		module.exports = {
-		 * 			// Name of CKEditor instance exposed as global variable by a bundle.
-		 * 			moduleName: 'MyCKEditor',
+		 *		// example-config-file.js:
 		 *
-		 * 			// Path to specified editor.
-		 * 			// It could be a path relative to `build/esnext/ckeditor5` directory e.g. `classic-editor/classic.js`
-		 * 			// or path relative to directory where build task will be executed `./full/path/to/custom/editor.js`.
-		 * 			editor: 'classic-editor/classic.js',
+		 *		module.exports = {
+		 *			// Name of CKEditor instance exposed as global variable by a bundle.
+		 *			moduleName: 'MyCKEditor',
 		 *
-		 * 			// List of features.
-		 * 			features: [
-		 * 				// It could be a plugin name only if plugin is a default CKEditor plugin.
-		 * 				'delete',
+		 *			// Path to specified editor.
+		 *			// It could be a path relative to `build/esnext/ckeditor5` directory e.g. `classic-editor/classic.js`
+		 *			// or path relative to directory where build task will be executed `./full/path/to/custom/editor.js`.
+		 *			editor: 'classic-editor/classic.js',
 		 *
-		 * 				// It could be a path relative to `build/esnext/ckeditor5` directory.
-		 * 				`typing/typing.js`
+		 *			// List of features.
+		 *			features: [
+		 *				// It could be a plugin name only if plugin is a default CKEditor plugin.
+		 *				'delete',
 		 *
-		 * 				// Or it could be a path relative to directory where build task will be executed.
-		 * 				'./path/to/some/custom/feature.js',
-		 * 			]
-		 * 		}
+		 *				// It could be a path relative to `build/esnext/ckeditor5` directory.
+		 *				`typing/typing.js`
+		 *
+		 *				// Or it could be a path relative to directory where build task will be executed.
+		 *				'./path/to/some/custom/feature.js',
+		 *			]
+		 *		};
 		 *
 		 * @param {String} configFilePath Path to the bundle configuration file.
 		 * @returns {Promise} Promise that resolve bundling for CSS and JS.
@@ -81,9 +82,7 @@ module.exports = ( config ) => {
 			mkdirp.sync( bundleTmpDir );
 			fs.writeFileSync( temporaryEntryFilePath, utils.renderEntryFileContent( bundleTmpDir, config ) );
 
-			/**
-			 * Bundling JS by Rollup.
-			 */
+			// Bundling JS by Rollup.
 			function bundleJS() {
 				const outputFile = path.join( bundleDir, 'ckeditor.js' );
 
@@ -113,17 +112,15 @@ module.exports = ( config ) => {
 				} );
 			}
 
-			/**
-			 * CSS is already bundled by a build task, so we need only to copy it.
-			 */
-			function bundleCSS() {
+			// CSS is already bundled by a build task, so we need only to copy it.
+			function bundleCss() {
 				const cssSource = path.join( sourceBuildDir, 'theme', 'ckeditor.css' );
 
 				return utils.copyFile( cssSource, bundleDir );
 			}
 
 			// Lets wait for both - JS and CSS.
-			return Promise.all( [ bundleJS(), bundleCSS() ] );
+			return Promise.all( [ bundleJS(), bundleCss() ] );
 		},
 
 		minify: {

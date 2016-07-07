@@ -63,7 +63,7 @@ const utils = {
 	},
 
 	/**
-	 * Transform first letter of passed string to the uppercase.
+	 * Transforms first letter of passed string to the uppercase.
 	 *
 	 * @param {String} string String that will be transformed.
 	 * @returns {String} Transformed string.
@@ -73,7 +73,7 @@ const utils = {
 	},
 
 	/**
-	 * Render content for the entry file which needs to be passed as main file to the Rollup.
+	 * Renders content for the entry file which needs to be passed as main file to the Rollup.
 	 *
 	 * @param {String} dir Path to the entryfile directory. Import paths need to be relative to this directory.
 	 * @param {Object} data Configuration object.
@@ -140,7 +140,7 @@ export default class ${ data.moduleName } extends ${ creatorName } {
 	},
 
 	/**
-	 * Save files from stream in specific destination and add `.min` suffix to the name.
+	 * Saves files from stream in specific destination and add `.min` suffix to the name.
 	 *
 	 * @param {Stream} stream Source stream.
 	 * @param {String} destination Path to the destination directory.
@@ -155,7 +155,7 @@ export default class ${ data.moduleName } extends ${ creatorName } {
 	},
 
 	/**
-	 * Copy specified file to specified destination.
+	 * Copies specified file to specified destination.
 	 *
 	 * @param {String} from Source path.
 	 * @param {String} to Destination directory.
@@ -170,7 +170,7 @@ export default class ${ data.moduleName } extends ${ creatorName } {
 	},
 
 	/**
-	 * Get size of the file.
+	 * Gets size of the file.
 	 *
 	 * @param {String} path Path to the file.
 	 * @returns {Number} Size in bytes.
@@ -180,7 +180,7 @@ export default class ${ data.moduleName } extends ${ creatorName } {
 	},
 
 	/**
-	 * Get human readable gzipped size of the file.
+	 * Gets human readable gzipped size of the file.
 	 *
 	 * @param {String} path Path to the file.
 	 * @returns {Number} Size in bytes.
@@ -190,14 +190,17 @@ export default class ${ data.moduleName } extends ${ creatorName } {
 	},
 
 	/**
-	 * Get normal and gzipped size of every passed file in specified directory.
+	 * Gets normal and gzipped size of every passed file in specified directory.
 	 *
 	 * @param {Array.<String>} files List of file paths.
 	 * @param {String} [rootDir=''] When each file is in the same directory.
 	 * @returns {Array.<Object>} List with file size data.
-	 * @returns {Array.<Object.name>} File name.
-	 * @returns {Array.<Object.size>} File size in human readable format.
-	 * @returns {Array.<Object.gzippedSize>} Gzipped file size in human readable format.
+	 *
+	 * Objects contain the following fields:
+	 *
+	 * * name – File name.
+	 * * size – File size in human readable format.
+	 * * gzippedSize – Gzipped file size in human readable format.
 	 */
 	getFilesSizeStats( files, rootDir = '' ) {
 		return files.map( ( file ) => {
@@ -212,11 +215,11 @@ export default class ${ data.moduleName } extends ${ creatorName } {
 	},
 
 	/**
-	 * Print on console summary with a list of files with their size stats.
+	 * Prints on console summary with a list of files with their size stats.
 	 *
-	 * 		Title:
-	 * 		file.js: 1 MB (gzipped: 400 kB)
-	 * 		file.css 500 kB (gzipped: 100 kB)
+	 *		Title:
+	 *		file.js: 1 MB (gzipped: 400 kB)
+	 *		file.css 500 kB (gzipped: 100 kB)
 	 *
 	 * @param {String} title Summary title.
 	 * @param {Array.<Object>} filesStats
