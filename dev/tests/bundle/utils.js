@@ -31,14 +31,14 @@ describe( 'bundle-utils', () => {
 		expect( utils.clean ).to.equal( mainUtils.clean );
 	} );
 
-	describe( 'getFullPath', () => {
+	describe( 'getModuleFullPath', () => {
 		it( 'should return full path when passed path not relative', () => {
-			expect( utils.getFullPath( 'editor-classic/classic' ) ).to.equal( './build/esnext/ckeditor5/editor-classic/classic.js' );
+			expect( utils.getModuleFullPath( 'editor-classic/classic' ) ).to.equal( './build/esnext/ckeditor5/editor-classic/classic.js' );
 		} );
 
 		it( 'should return unmodified path when passed path is a relative', () => {
-			expect( utils.getFullPath( './path/to/editor-classic/classic' ) ).to.equal( './path/to/editor-classic/classic.js' );
-			expect( utils.getFullPath( '../path/to/editor-classic/classic' ) ).to.equal( '../path/to/editor-classic/classic.js' );
+			expect( utils.getModuleFullPath( './path/to/editor-classic/classic' ) ).to.equal( './path/to/editor-classic/classic.js' );
+			expect( utils.getModuleFullPath( '../path/to/editor-classic/classic' ) ).to.equal( '../path/to/editor-classic/classic.js' );
 		} );
 	} );
 

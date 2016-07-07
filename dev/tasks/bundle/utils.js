@@ -40,7 +40,7 @@ const utils = {
 	 *
 	 * @param {String} modulePath Path to the module (without extension).
 	 */
-	getFullPath( modulePath ) {
+	getModuleFullPath( modulePath ) {
 		// If path is not a relative path (no leading ./ or ../).
 		if ( modulePath.charAt( 0 ) != '.' ) {
 			return `./${ path.join( 'build/esnext/ckeditor5', modulePath ) }.js`;
@@ -58,10 +58,10 @@ const utils = {
 	 */
 	getPluginPath( name ) {
 		if ( name.indexOf( '/' ) >= 0 ) {
-			return utils.getFullPath( name );
+			return utils.getModuleFullPath( name );
 		}
 
-		return utils.getFullPath( `${ name }/${ name }` );
+		return utils.getModuleFullPath( `${ name }/${ name }` );
 	},
 
 	/**
@@ -86,7 +86,7 @@ const utils = {
 	 */
 	renderEntryFileContent( dir, data ) {
 		const creatorName = utils.capitalize( path.basename( data.editor, '.js' ) );
-		const creatorPath = path.relative( dir, utils.getFullPath( data.editor ) );
+		const creatorPath = path.relative( dir, utils.getModuleFullPath( data.editor ) );
 		let featureNames = [];
 
 		// Returns a list of plugin imports.
