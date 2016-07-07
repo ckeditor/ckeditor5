@@ -97,22 +97,26 @@ module.exports = ( config ) => {
 							presets: [ 'es2015-rollup' ]
 						} )
 					]
-				} ).then( ( bundle ) => {
+				} )
+				.then( ( bundle ) => {
 					return bundle.write( {
 						dest: outputFile,
 						format: 'iife',
 						moduleName: config.moduleName
 					} );
-				} ).then( () => {
+				} )
+				.then( () => {
 					// If everything went well then remove tmp directory.
 					utils.clean( bundleTmpDir, path.join( '' ) );
-				} ).catch( ( err ) => {
+				} )
+				.catch( ( err ) => {
 					// If something went wrong then log error.
-					gutil.log( gutil.colors.red( `Bundle Error` ) );
 					gutil.log( gutil.colors.red( err.stack ) );
 
 					// And remove tmp directory.
 					utils.clean( bundleTmpDir, path.join( '' ) );
+
+					throw new Error( 'Build error.' );
 				} );
 			}
 
