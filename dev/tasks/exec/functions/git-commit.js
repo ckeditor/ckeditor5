@@ -5,7 +5,7 @@
 
 'use strict';
 
-const git = require( '../utils/git' );
+const git = require( '../../../utils/git' );
 
 /**
  * Adds only modified files to git repository and commits them with provided message.

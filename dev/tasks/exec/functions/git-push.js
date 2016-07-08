@@ -5,7 +5,7 @@
 
 'use strict';
 
-const git = require( '../utils/git' );
+const git = require( '../../../utils/git' );
 
 /**
  * Pushes changes of current branch in repository to default origin.
