@@ -165,5 +165,15 @@ describe( 'writer', () => {
 				insert( position, root );
 			} ).to.throw( CKEditorError, 'view-writer-insert-invalid-node' );
 		} );
+
+		it( 'should throw when position is not placed inside container', () => {
+			const element = new Element( 'b' );
+			const position = new Position( element, 0 );
+			const attributeElement = new AttributeElement( 'i' );
+
+			expect( () => {
+				insert( position, attributeElement );
+			} ).to.throw( CKEditorError, 'view-writer-invalid-position-container' );
+		} );
 	} );
 } );

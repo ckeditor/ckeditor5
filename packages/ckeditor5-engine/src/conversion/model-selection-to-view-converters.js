@@ -86,7 +86,7 @@ export function convertCollapsedSelection() {
 
 		const modelPosition = selection.getFirstPosition();
 		const viewPosition = conversionApi.mapper.toViewPosition( modelPosition );
-		const brokenPosition = viewWriter.breakAttributes( viewPosition );
+		const brokenPosition = viewWriter.breakAt( viewPosition );
 
 		conversionApi.viewSelection.removeAllRanges();
 		conversionApi.viewSelection.addRange( new ViewRange( brokenPosition, brokenPosition ) );
@@ -201,9 +201,9 @@ export function clearAttributes() {
 		for ( let range of conversionApi.viewSelection.getRanges() ) {
 			// Not collapsed selection should not have artifacts.
 			if ( range.isCollapsed ) {
-				// Position might be in the node removed by the Writer.
+				// Position might be in the node removed by the view writer.
 				if ( range.end.parent.getDocument() ) {
-					viewWriter.mergeAttributes( range.start );
+					viewWriter.mergeAt( range.start );
 				}
 			}
 		}

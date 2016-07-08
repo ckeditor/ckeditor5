@@ -7,7 +7,7 @@
 
 'use strict';
 
-import { breakAttributes } from '/ckeditor5/engine/view/writer.js';
+import { breakAt } from '/ckeditor5/engine/view/writer.js';
 import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
 import Text from '/ckeditor5/engine/view/text.js';
@@ -29,11 +29,11 @@ describe( 'writer', () => {
 			view = new DocumentFragment( view );
 		}
 
-		const newPosition = breakAttributes( selection.getFirstPosition() );
+		const newPosition = breakAt( selection.getFirstPosition() );
 		expect( stringify( view, newPosition, { showType: true, showPriority: true } ) ).to.equal( expected );
 	}
 
-	describe( 'breakAttributes', () => {
+	describe( 'breakAt', () => {
 		it( 'should not break text nodes if they are not in attribute elements - middle', () => {
 			test(
 				'<container:p>foo{}bar</container:p>',

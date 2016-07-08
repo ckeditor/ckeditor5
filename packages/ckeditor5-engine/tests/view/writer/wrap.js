@@ -85,7 +85,16 @@ describe( 'writer', () => {
 			const b = new AttributeElement( 'b' );
 
 			expect( () => {
-				wrap( range, b, 1 );
+				wrap( range, b );
+			} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
+		} );
+
+		it( 'should throw when range has no parent container', () => {
+			const el = new AttributeElement( 'b' );
+			const b = new AttributeElement( 'b' );
+
+			expect( () => {
+				wrap( Range.createFromParentsAndOffsets( el, 0, el, 0 ), b );
 			} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
 		} );
 

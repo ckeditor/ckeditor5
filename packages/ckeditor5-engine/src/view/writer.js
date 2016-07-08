@@ -21,10 +21,9 @@ import isIterable from '../../utils/isiterable.js';
  */
 
 export default {
-	getParentContainer,
-	breakAttributes,
+	breakAt,
 	breakRange,
-	mergeAttributes,
+	mergeAt,
 	insert,
 	remove,
 	move,
@@ -32,30 +31,6 @@ export default {
 	wrapPosition,
 	unwrap
 };
-
-/**
- * Returns first parent container of specified {@link engine.view.Position Position}.
- * Position's parent node is checked as first, then next parents are checked.
- *
- * Note that {@link engine.view.DocumentFragment DocumentFragment} is thread like a container.
- *
- * @function engine.view.writer.getParentContainer
- * @param {engine.view.Position} position Position used as a start point to locate parent container.
- * @returns {engine.view.ContainerElement|engine.view.DocumentFragment|undefined} Parent container element or
- * `undefined` if container is not found.
- */
-export function getParentContainer( position ) {
-	let parent = position.parent;
-
-	while ( !isContainerOrFragment( parent ) ) {
-		if ( !parent ) {
-			return undefined;
-		}
-		parent = parent.parent;
-	}
-
-	return parent;
-}
 
 /**
  * Breaks attribute nodes at provided position. It breaks `attribute` nodes inside `container` node.
@@ -66,20 +41,20 @@ export function getParentContainer( position ) {
  *		<p>foo<b><u>{}bar</u></b></p> -> <p>foo{}<b><u>bar</u></b></p>
  *		<p>foo<b><u>b{}ar</u></b></p> -> <p>foo<b><u>b</u></b>[]<b><u>ar</u></b></p>
  *
- * Note that {@link engine.view.DocumentFragment DocumentFragment} is thread like a container.
+ * Note that {@link engine.view.DocumentFragment DocumentFragment} is treated like a container.
  *
  * @see engine.view.AttributeElement
  * @see engine.view.ContainerElement
- * @function engine.view.writer.breakAttributes
+ * @function engine.view.writer.breakAt
  * @param {engine.view.Position} position Position where to break attributes.
  * @returns {engine.view.Position} New position after breaking the attributes.
  */
-export function breakAttributes( position ) {
-	return _breakAttributes( position, false );
+export function breakAt( position ) {
+	return _breakAt( position, false );
 }
 
 /**
- * Uses {@link engine.view.writer.breakAttributes breakAttributes} method to break attributes on
+ * Uses {@link engine.view.writer.breakAt breakAt} method to break attributes on
  * {@link engine.view.Range#start start} and {@link engine.view.Range#end end} positions of
  * provided {@link engine.view.Range Range}.
  *
@@ -87,12 +62,12 @@ export function breakAttributes( position ) {
  * {@link engine.view.Range#start start} and {@link engine.view.Range#end end} positions are not placed inside
  * same parent container.
  *
- * Note that {@link engine.view.DocumentFragment DocumentFragment} is thread like a container.
+ * Note that {@link engine.view.DocumentFragment DocumentFragment} is treated like a container.
  *
- * @see engine.view.writer.breakAttributes
+ * @see engine.view.writer.breakAt
  * @function engine.view.writer.breakRange
  * @param {engine.view.Range} range Range which `start` and `end` positions will be used to break attributes.
- * @returns {engine.view.Range} New range with located at break positions.
+ * @returns {engine.view.Range} New range with boundaries located at break positions.
  */
 export function breakRange( range ) {
 	return _breakRange( range );
@@ -115,11 +90,11 @@ export function breakRange( range ) {
  *
  * @see engine.view.AttributeElement
  * @see engine.view.ContainerElement
- * @function engine.view.writer.mergeAttributes
+ * @function engine.view.writer.mergeAt
  * @param {engine.view.Position} position Merge position.
  * @returns {engine.view.Position} Position after merge.
  */
-export function mergeAttributes( position ) {
+export function mergeAt( position ) {
 	const positionOffset = position.offset;
 	const positionParent = position.parent;
 
@@ -134,7 +109,7 @@ export function mergeAttributes( position ) {
 		const offset = positionParent.getIndex();
 		positionParent.remove();
 
-		return mergeAttributes( new Position( parent, offset ) );
+		return mergeAt( new Position( parent, offset ) );
 	}
 
 	const nodeBefore = positionParent.getChild( positionOffset - 1 );
@@ -164,7 +139,7 @@ export function mergeAttributes( position ) {
 
 		// New position is located inside the first node, before new nodes.
 		// Call this method recursively to merge again if needed.
-		return mergeAttributes( new Position( nodeBefore, count ) );
+		return mergeAt( new Position( nodeBefore, count ) );
 	}
 
 	return position;
@@ -193,11 +168,21 @@ export function insert( position, nodes ) {
 	validateNodesToInsert( nodes );
 
 	const container = getParentContainer( position );
-	const insertionPosition = _breakAttributes( position, true );
+
+	if ( !container ) {
+		/**
+		 * Position container cannot be found.
+		 *
+		 * @error view-writer-invalid-position-container
+		 */
+		throw new CKEditorError( 'view-writer-invalid-position-container' );
+	}
+
+	const insertionPosition = _breakAt( position, true );
 
 	const length = container.insertChildren( insertionPosition.offset, nodes );
 	const endPosition = insertionPosition.getShiftedBy( length );
-	const start = mergeAttributes( insertionPosition );
+	const start = mergeAt( insertionPosition );
 
 	// When no nodes were inserted - return collapsed range.
 	if ( length === 0 ) {
@@ -208,7 +193,7 @@ export function insert( position, nodes ) {
 			endPosition.offset--;
 		}
 
-		const end = mergeAttributes( endPosition );
+		const end = mergeAt( endPosition );
 
 		return new Range( start, end );
 	}
@@ -227,15 +212,7 @@ export function insert( position, nodes ) {
  * @returns {engine.view.DocumentFragment} Document fragment containing removed nodes.
  */
 export function remove( range ) {
-	// Range should be placed inside one container.
-	if ( getParentContainer( range.start ) !== getParentContainer( range.end ) ) {
-		/**
-		 * Range is not placed inside same container.
-		 *
-		 * @error view-writer-invalid-range-container
-		 */
-		throw new CKEditorError( 'view-writer-invalid-range-container' );
-	}
+	validateRangeContainer( range );
 
 	// If range is collapsed - nothing to remove.
 	if ( range.isCollapsed ) {
@@ -252,7 +229,7 @@ export function remove( range ) {
 	const removed = parentContainer.removeChildren( breakStart.offset, count );
 
 	// Merge after removing.
-	const mergePosition = mergeAttributes( breakStart );
+	const mergePosition = mergeAt( breakStart );
 	range.start = mergePosition;
 	range.end = Position.createFromPosition( mergePosition );
 
@@ -301,15 +278,7 @@ export function wrap( range, attribute ) {
 		throw new CKEditorError( 'view-writer-wrap-invalid-attribute' );
 	}
 
-	// Range should be placed inside one container.
-	if ( getParentContainer( range.start ) !== getParentContainer( range.end ) ) {
-		/**
-		 * Range is not placed inside same container.
-		 *
-		 * @error view-writer-invalid-range-container
-		 */
-		throw new CKEditorError( 'view-writer-invalid-range-container' );
-	}
+	validateRangeContainer( range );
 
 	// If range is collapsed - nothing to wrap.
 	if ( range.isCollapsed ) {
@@ -344,13 +313,13 @@ export function wrap( range, attribute ) {
 	const newRange = wrapChildren( parentContainer, unwrappedRange.start.offset, unwrappedRange.end.offset, attribute );
 
 	// Merge attributes at the both ends and return a new range.
-	const start = mergeAttributes( newRange.start );
+	const start = mergeAt( newRange.start );
 
 	// If start position was merged - move end position back.
 	if ( !start.isEqual( newRange.start ) ) {
 		newRange.end.offset--;
 	}
-	const end = mergeAttributes( newRange.end );
+	const end = mergeAt( newRange.end );
 
 	return new Range( start, end );
 }
@@ -438,15 +407,7 @@ export function unwrap( range, attribute ) {
 		throw new CKEditorError( 'view-writer-unwrap-invalid-attribute' );
 	}
 
-	// Range should be placed inside one container.
-	if ( getParentContainer( range.start ) !== getParentContainer( range.end ) ) {
-		/**
-		 * Range is not placed inside same container.
-		 *
-		 * @error view-writer-invalid-range-container
-		 */
-		throw new CKEditorError( 'view-writer-invalid-range-container' );
-	}
+	validateRangeContainer( range );
 
 	// If range is collapsed - nothing to unwrap.
 	if ( range.isCollapsed ) {
@@ -473,21 +434,40 @@ export function unwrap( range, attribute ) {
 	const newRange = unwrapChildren( parentContainer, breakStart.offset, breakEnd.offset, attribute );
 
 	// Merge attributes at the both ends and return a new range.
-	const start = mergeAttributes( newRange.start );
+	const start = mergeAt( newRange.start );
 
 	// If start position was merged - move end position back.
 	if ( !start.isEqual( newRange.start ) ) {
 		newRange.end.offset--;
 	}
-	const end = mergeAttributes( newRange.end );
+	const end = mergeAt( newRange.end );
 
 	return new Range( start, end );
+}
+
+// Returns first parent container of specified {@link engine.view.Position Position}.
+// Position's parent node is checked as first, then next parents are checked.
+// Note that {@link engine.view.DocumentFragment DocumentFragment} is treated like a container.
+//
+// @param {engine.view.Position} position Position used as a start point to locate parent container.
+// @returns {engine.view.ContainerElement|engine.view.DocumentFragment|undefined} Parent container element or
+// `undefined` if container is not found.
+function getParentContainer( position ) {
+	let parent = position.parent;
+
+	while ( !isContainerOrFragment( parent ) ) {
+		if ( !parent ) {
+			return undefined;
+		}
+		parent = parent.parent;
+	}
+
+	return parent;
 }
 
 // Function used by both public breakRange (without splitting text nodes) and by other methods (with
 // splitting text nodes).
 //
-// @private
 // @param {engine.view.Range} range Range which `start` and `end` positions will be used to break attributes.
 // @param {Boolean} [forceSplitText = false] If set to `true`, will break text nodes even if they are directly in
 // container element. This behavior will result in incorrect view state, but is needed by other view writing methods
@@ -497,26 +477,18 @@ function _breakRange( range, forceSplitText = false ) {
 	const rangeStart = range.start;
 	const rangeEnd = range.end;
 
-	// Range should be placed inside one container.
-	if ( getParentContainer( rangeStart ) !== getParentContainer( rangeEnd ) ) {
-		/**
-		 * Range is not placed inside same container.
-		 *
-		 * @error view-writer-invalid-range-container
-		 */
-		throw new CKEditorError( 'view-writer-invalid-range-container' );
-	}
+	validateRangeContainer( range );
 
 	// Break at the collapsed position. Return new collapsed range.
 	if ( range.isCollapsed ) {
-		const position = _breakAttributes( range.start, forceSplitText );
+		const position = _breakAt( range.start, forceSplitText );
 
 		return new Range( position, position );
 	}
 
-	const breakEnd = _breakAttributes( rangeEnd, forceSplitText );
+	const breakEnd = _breakAt( rangeEnd, forceSplitText );
 	const count = breakEnd.parent.getChildCount();
-	const breakStart = _breakAttributes( rangeStart, forceSplitText );
+	const breakStart = _breakAt( rangeStart, forceSplitText );
 
 	// Calculate new break end offset.
 	breakEnd.offset += breakEnd.parent.getChildCount() - count;
@@ -524,16 +496,15 @@ function _breakRange( range, forceSplitText = false ) {
 	return new Range( breakStart, breakEnd );
 }
 
-// Function used by both public breakAttributes (without splitting text nodes) and by other methods (with
+// Function used by public breakAt (without splitting text nodes) and by other methods (with
 // splitting text nodes).
 //
-// @private
 // @param {engine.view.Position} position Position where to break attributes.
 // @param {Boolean} [forceSplitText = false] If set to `true`, will break text nodes even if they are directly in
 // container element. This behavior will result in incorrect view state, but is needed by other view writing methods
 // which then fixes view state. Defaults to `false`.
 // @returns {engine.view.Position} New position after breaking the attributes.
-function _breakAttributes( position, forceSplitText = false ) {
+function _breakAt( position, forceSplitText = false ) {
 	const positionOffset = position.offset;
 	const positionParent = position.parent;
 
@@ -549,7 +520,7 @@ function _breakAttributes( position, forceSplitText = false ) {
 
 	// Break text and start again in new position.
 	if ( positionParent instanceof Text ) {
-		return _breakAttributes( breakTextNode( position ), forceSplitText );
+		return _breakAt( breakTextNode( position ), forceSplitText );
 	}
 
 	const length = positionParent.getChildCount();
@@ -560,7 +531,7 @@ function _breakAttributes( position, forceSplitText = false ) {
 	if ( positionOffset == length ) {
 		const newPosition = new Position( positionParent.parent, positionParent.getIndex() + 1 );
 
-		return _breakAttributes( newPosition, forceSplitText );
+		return _breakAt( newPosition, forceSplitText );
 	} else
 	// <p>foo<b><u>{}bar</u></b></p>
 	// <p>foo<b>[]<u>bar</u></b></p>
@@ -568,7 +539,7 @@ function _breakAttributes( position, forceSplitText = false ) {
 	if ( positionOffset === 0 ) {
 		const newPosition = new Position( positionParent.parent, positionParent.getIndex() );
 
-		return _breakAttributes( newPosition, forceSplitText );
+		return _breakAt( newPosition, forceSplitText );
 	}
 	// <p>foo<b><u>b{}ar</u></b></p>
 	// <p>foo<b><u>b[]ar</u></b></p>
@@ -593,14 +564,13 @@ function _breakAttributes( position, forceSplitText = false ) {
 		// Create new position to work on.
 		const newPosition = new Position( positionParent.parent, offsetAfter );
 
-		return _breakAttributes( newPosition, forceSplitText );
+		return _breakAt( newPosition, forceSplitText );
 	}
 }
 
 // Unwraps children from provided `attribute`. Only children contained in `parent` element between
 // `startOffset` and `endOffset` will be unwrapped.
 //
-// @private
 // @param {engine.view.Element} parent
 // @param {Number} startOffset
 // @param {Number} endOffset
@@ -653,7 +623,7 @@ function unwrapChildren( parent, startOffset, endOffset, attribute ) {
 			continue;
 		}
 
-		const newPosition = mergeAttributes( position );
+		const newPosition = mergeAt( position );
 
 		// If nodes were merged - other merge offsets will change.
 		if ( !newPosition.isEqual( position ) ) {
@@ -667,8 +637,7 @@ function unwrapChildren( parent, startOffset, endOffset, attribute ) {
 
 // Wraps children with provided `attribute`. Only children contained in `parent` element between
 // `startOffset` and `endOffset` will be wrapped.
-
-// @private
+//
 // @param {engine.view.Element} parent
 // @param {Number} startOffset
 // @param {Number} endOffset
@@ -712,7 +681,7 @@ function wrapChildren( parent, startOffset, endOffset, attribute ) {
 			continue;
 		}
 
-		const newPosition = mergeAttributes( position );
+		const newPosition = mergeAt( position );
 
 		// If nodes were merged - other merge offsets will change.
 		if ( !newPosition.isEqual( position ) ) {
@@ -730,7 +699,6 @@ function wrapChildren( parent, startOffset, endOffset, attribute ) {
 //		<p>foo[]</p>  ->  <p>foo{}</p>
 //		<p>[]foo</p>  ->  <p>{}foo</p>
 //
-// @private
 // @param {engine.view.Position} position
 // @returns {engine.view.Position} Position located inside text node or same position if there is no text nodes
 // before or after position location.
@@ -756,7 +724,6 @@ function movePositionToTextNode( position ) {
 //		<p>{}foobar</p> -> <p>[]foobar</p>
 //		<p>foobar{}</p> -> <p>foobar[]</p>
 //
-// @private
 // @param {engine.view.Position} position Position that need to be placed inside text node.
 // @returns {engine.view.Position} New position after breaking text node.
 function breakTextNode( position ) {
@@ -783,7 +750,6 @@ function breakTextNode( position ) {
 
 // Merges two text nodes into first node. Removes second node and returns merge position.
 //
-// @private
 // @param {engine.view.Text} t1 First text node to merge. Data from second text node will be moved at the end of
 // this text node.
 // @param {engine.view.Text} t2 Second text node to merge. This node will be removed after merging.
@@ -802,7 +768,6 @@ function mergeTextNodes( t1, t2 ) {
 // When merging is possible - all attributes, styles and classes are moved from wrapper element to element being
 // wrapped.
 //
-// @private
 // @param {engine.view.AttributeElement} wrapper Wrapper AttributeElement.
 // @param {engine.view.AttributeElement} toWrap AttributeElement to wrap using wrapper element.
 // @returns {Boolean} Returns `true` if elements are merged.
@@ -863,7 +828,6 @@ function wrapAttributeElement( wrapper, toWrap ) {
 // Unwraps {@link engine.view.AttributeElement AttributeElement} from another by removing corresponding attributes,
 // classes and styles. All attributes, classes and styles from wrapper should be present inside element being unwrapped.
 //
-// @private
 // @param {engine.view.AttributeElement} wrapper Wrapper AttributeElement.
 // @param {engine.view.AttributeElement} toUnwrap AttributeElement to unwrap using wrapper element.
 // @returns {Boolean} Returns `true` if elements are unwrapped.
@@ -922,7 +886,6 @@ function unwrapAttributeElement( wrapper, toUnwrap ) {
 // (`start` and `end` positions are located inside same {@link engine.view.AttributeElement AttributeElement}),
 // starts on 0 offset and ends after last child node.
 //
-// @private
 // @param {engine.view.Range} Range
 // @returns {Boolean}
 function rangeSpansOnAllChildren( range ) {
@@ -939,7 +902,6 @@ function rangeSpansOnAllChildren( range ) {
 // {@link engine.view.AttributeElement AttributeElements} or
 // {@link engine.view.ContainerElement ContainerElements}.
 //
-// @private
 // @param Iterable.<engine.view.Text|engine.view.AttributeElement|engine.view.ContainerElement> nodes
 function validateNodesToInsert( nodes ) {
 	for ( let node of nodes ) {
@@ -959,11 +921,31 @@ function validateNodesToInsert( nodes ) {
 	}
 }
 
-// Checks if node is ContainerElement or DocumentFragment, because in most cases they should be thread the same way.
+// Checks if node is ContainerElement or DocumentFragment, because in most cases they should be treated the same way.
 //
-// @private
 // @param {engine.view.Node} node
 // @returns {Boolean} Returns `true` if node is instance of ContainerElement or DocumentFragment.
 function isContainerOrFragment( node ) {
 	return node instanceof ContainerElement || node instanceof DocumentFragment;
+}
+
+// Checks if {@link engine.view.Range#start range start} and {@link engine.view.Range#end range end} are placed
+// inside same {@link engine.view.ContainerElement container}.
+// Throws {@link utils.CKEditorError CKEditorError} `view-writer-invalid-range-container` when validation fails.
+//
+// @param {engine.view.Range} range
+function validateRangeContainer( range ) {
+	const startContainer = getParentContainer( range.start );
+	const endContainer = getParentContainer( range.end );
+
+	if ( !startContainer || !endContainer || startContainer !== endContainer ) {
+		/**
+		 * Range container is invalid. This can happen if {@link engine.view.Range#start range start} and
+		 * {@link engine.view.Range#end range end} positions are not placed inside same container or
+		 * parent container for this positions cannot be found.
+		 *
+		 * @error view-writer-invalid-range-container
+		 */
+		throw new CKEditorError( 'view-writer-invalid-range-container' );
+	}
 }
