@@ -1,6 +1,6 @@
 {
   "name": "ckeditor5-theme-lark",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A bright theme for CKEditor 5.",
   "keywords": [],
   "dependencies": {},
