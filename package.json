@@ -84,7 +84,7 @@
     "through2": "^2.0.0"
   },
   "engines": {
-    "node": ">=5.0.0",
+    "node": ">=6.0.0",
     "npm": ">=3.0.0"
   },
   "author": "CKSource (http://cksource.com/)",
