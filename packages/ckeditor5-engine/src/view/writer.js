@@ -171,7 +171,7 @@ export function insert( position, nodes ) {
 
 	if ( !container ) {
 		/**
-		 * Position container cannot be found.
+		 * Position's parent container cannot be found.
 		 *
 		 * @error view-writer-invalid-position-container
 		 */
@@ -942,7 +942,7 @@ function validateRangeContainer( range ) {
 		/**
 		 * Range container is invalid. This can happen if {@link engine.view.Range#start range start} and
 		 * {@link engine.view.Range#end range end} positions are not placed inside same container or
-		 * parent container for this positions cannot be found.
+		 * parent container for these positions cannot be found.
 		 *
 		 * @error view-writer-invalid-range-container
 		 */
