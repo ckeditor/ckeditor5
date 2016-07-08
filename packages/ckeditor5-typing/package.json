@@ -1,6 +1,6 @@
 {
   "name": "ckeditor5-typing",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Typing feature for CKEditor 5.",
   "keywords": [],
   "dependencies": {},
