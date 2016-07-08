@@ -12,7 +12,6 @@ const expect = chai.expect;
 const sinon = require( 'sinon' );
 const path = require( 'path' );
 const fs = require( 'fs' );
-const mainUtils = require( '../../tasks/utils' );
 const gzipSize = require( 'gzip-size' );
 
 describe( 'bundle-utils', () => {
@@ -25,10 +24,6 @@ describe( 'bundle-utils', () => {
 
 	afterEach( () => {
 		sandbox.restore();
-	} );
-
-	it( 'should be extended by top level utils', () => {
-		expect( utils.clean ).to.equal( mainUtils.clean );
 	} );
 
 	describe( 'getModuleFullPath', () => {

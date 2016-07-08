@@ -16,7 +16,6 @@ const path = require( 'path' );
 const stream = require( 'stream' );
 const Vinyl = require( 'vinyl' );
 const through = require( 'through2' );
-const mainUtils = require( '../../tasks/utils' );
 
 describe( 'build-utils', () => {
 	const utils = require( '../../tasks/build/utils' );
@@ -28,10 +27,6 @@ describe( 'build-utils', () => {
 
 	afterEach( () => {
 		sandbox.restore();
-	} );
-
-	it( 'should be extended by top level utils', () => {
-		expect( utils.clean ).to.be.equal( mainUtils.clean );
 	} );
 
 	describe( 'noop', () => {

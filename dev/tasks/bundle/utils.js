@@ -12,7 +12,6 @@ const gulpRename = require( 'gulp-rename' );
 const gutil = require( 'gulp-util' );
 const prettyBytes = require( 'pretty-bytes' );
 const gzipSize = require( 'gzip-size' );
-const mainUtils = require( '../utils' );
 const minimist = require( 'minimist' );
 
 const utils = {
@@ -236,5 +235,4 @@ export default class ${ data.moduleName } extends ${ creatorName } {
 	}
 };
 
-// Extend top level utils.
-module.exports = Object.assign( utils, mainUtils );
+module.exports = utils;

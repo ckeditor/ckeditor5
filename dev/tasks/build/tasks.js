@@ -15,6 +15,7 @@ const gutil = require( 'gulp-util' );
 const filter = require( 'gulp-filter' );
 const utils = require( './utils' );
 const runSequence = require( 'run-sequence' );
+const tools = require( '../../utils/tools' );
 
 module.exports = ( config ) => {
 	const buildDir = path.join( config.ROOT_DIR, config.BUILD_DIR );
@@ -33,7 +34,7 @@ module.exports = ( config ) => {
 			themes( options = {} ) {
 				let formats = options.formats || args.formats;
 
-				return utils.clean( buildDir, path.join( `@(${ formats.join( '|' ) })`, 'theme' ) );
+				return tools.clean( buildDir, path.join( `@(${ formats.join( '|' ) })`, 'theme' ) );
 			},
 
 			/**
@@ -43,14 +44,14 @@ module.exports = ( config ) => {
 				// TODO: ES6 default function parameters
 				options = options || utils.parseArguments();
 
-				return utils.clean( buildDir, path.join( `@(${ options.formats.join( '|' ) })`, '!(theme)' ) );
+				return tools.clean( buildDir, path.join( `@(${ options.formats.join( '|' ) })`, '!(theme)' ) );
 			},
 
 			/**
 			 * Removes the "./build" directory.
 			 */
 			all() {
-				return utils.clean( buildDir, path.join() );
+				return tools.clean( buildDir, path.join() );
 			}
 		},
 
