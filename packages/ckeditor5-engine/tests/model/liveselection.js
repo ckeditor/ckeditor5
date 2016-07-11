@@ -445,14 +445,6 @@ describe( 'LiveSelection', () => {
 		} );
 
 		describe( 'setAttribute', () => {
-			it( 'should set given attribute on the selection', () => {
-				selection.setRanges( [ rangeInFullP ] );
-				selection.setAttribute( 'foo', 'bar' );
-
-				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
-				expect( fullP.hasAttribute( LiveSelection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
-			} );
-
 			it( 'should store attribute if the selection is in empty node', () => {
 				selection.setRanges( [ rangeInEmptyP ] );
 				selection.setAttribute( 'foo', 'bar' );
@@ -461,61 +453,9 @@ describe( 'LiveSelection', () => {
 
 				expect( emptyP.getAttribute( LiveSelection._getStoreAttributeKey( 'foo' ) ) ).to.equal( 'bar' );
 			} );
-
-			it( 'should fire change:attribute event', () => {
-				let spy = sinon.spy();
-				selection.on( 'change:attribute', spy );
-
-				selection.setAttribute( 'foo', 'bar' );
-
-				expect( spy.called ).to.be.true;
-			} );
-		} );
-
-		describe( 'hasAttribute', () => {
-			it( 'should return true if element contains attribute with given key', () => {
-				selection.setRanges( [ rangeInFullP ] );
-				selection.setAttribute( 'foo', 'bar' );
-
-				expect( selection.hasAttribute( 'foo' ) ).to.be.true;
-			} );
-
-			it( 'should return false if element does not contain attribute with given key', () => {
-				expect( selection.hasAttribute( 'abc' ) ).to.be.false;
-			} );
-		} );
-
-		describe( 'getAttribute', () => {
-			it( 'should return undefined if element does not contain given attribute', () => {
-				expect( selection.getAttribute( 'abc' ) ).to.be.undefined;
-			} );
-		} );
-
-		describe( 'getAttributes', () => {
-			it( 'should return an iterator that iterates over all attributes set on the text fragment', () => {
-				selection.setRanges( [ rangeInFullP ] );
-				selection.setAttribute( 'foo', 'bar' );
-				selection.setAttribute( 'abc', 'xyz' );
-
-				let attrs = Array.from( selection.getAttributes() );
-
-				expect( attrs ).to.deep.equal( [ [ 'foo', 'bar' ], [ 'abc', 'xyz' ] ] );
-			} );
 		} );
 
 		describe( 'setAttributesTo', () => {
-			it( 'should remove all attributes set on element and set the given ones', () => {
-				selection.setRanges( [ rangeInFullP ] );
-				selection.setAttribute( 'abc', 'xyz' );
-				selection.setAttributesTo( { foo: 'bar' } );
-
-				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
-				expect( selection.getAttribute( 'abc' ) ).to.be.undefined;
-
-				expect( fullP.hasAttribute( LiveSelection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
-				expect( fullP.hasAttribute( LiveSelection._getStoreAttributeKey( 'abc' ) ) ).to.be.false;
-			} );
-
 			it( 'should remove all stored attributes and store the given ones if the selection is in empty node', () => {
 				selection.setRanges( [ rangeInEmptyP ] );
 				selection.setAttribute( 'abc', 'xyz' );
@@ -526,15 +466,6 @@ describe( 'LiveSelection', () => {
 
 				expect( emptyP.getAttribute( LiveSelection._getStoreAttributeKey( 'foo' ) ) ).to.equal( 'bar' );
 				expect( emptyP.hasAttribute( LiveSelection._getStoreAttributeKey( 'abc' ) ) ).to.be.false;
-			} );
-
-			it( 'should fire change:attribute event', () => {
-				let spy = sinon.spy();
-				selection.on( 'change:attribute', spy );
-
-				selection.setAttributesTo( { foo: 'bar' } );
-
-				expect( spy.called ).to.be.true;
 			} );
 		} );
 
@@ -558,32 +489,9 @@ describe( 'LiveSelection', () => {
 
 				expect( emptyP.hasAttribute( LiveSelection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
 			} );
-
-			it( 'should fire change:attribute event', () => {
-				let spy = sinon.spy();
-				selection.on( 'change:attribute', spy );
-
-				selection.removeAttribute( 'foo' );
-
-				expect( spy.called ).to.be.true;
-			} );
 		} );
 
 		describe( 'clearAttributes', () => {
-			it( 'should remove all attributes from the element', () => {
-				selection.setRanges( [ rangeInFullP ] );
-				selection.setAttribute( 'foo', 'bar' );
-				selection.setAttribute( 'abc', 'xyz' );
-
-				selection.clearAttributes();
-
-				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
-				expect( selection.getAttribute( 'abc' ) ).to.be.undefined;
-
-				expect( fullP.hasAttribute( LiveSelection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
-				expect( fullP.hasAttribute( LiveSelection._getStoreAttributeKey( 'abc' ) ) ).to.be.false;
-			} );
-
 			it( 'should remove all stored attributes if the selection is in empty node', () => {
 				selection.setRanges( [ rangeInEmptyP ] );
 				selection.setAttribute( 'foo', 'bar' );
@@ -596,15 +504,6 @@ describe( 'LiveSelection', () => {
 
 				expect( emptyP.hasAttribute( LiveSelection._getStoreAttributeKey( 'foo' ) ) ).to.be.false;
 				expect( emptyP.hasAttribute( LiveSelection._getStoreAttributeKey( 'abc' ) ) ).to.be.false;
-			} );
-
-			it( 'should fire change:attribute event', () => {
-				let spy = sinon.spy();
-				selection.on( 'change:attribute', spy );
-
-				selection.clearAttributes();
-
-				expect( spy.called ).to.be.true;
 			} );
 		} );
 	} );

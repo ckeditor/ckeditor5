@@ -248,6 +248,24 @@ describe( 'Selection', () => {
 		} );
 	} );
 
+	describe( 'focus', () => {
+		it( 'should return first end start', () => {
+			selection.addRange( range );
+
+			expect( selection.focus.isEqual( range.end ) ).to.be.true;
+		} );
+
+		it( 'should return first range start when backward', () => {
+			selection.addRange( range, true );
+
+			expect( selection.focus.isEqual( range.start ) ).to.be.true;
+		} );
+
+		it( 'should return null if no ranges in selection', () => {
+			expect( selection.focus ).to.be.null;
+		} );
+	} );
+
 	describe( 'setFocus', () => {
 		it( 'keeps all existing ranges and fires no change:range when no modifications needed', () => {
 			selection.addRange( range );
@@ -551,6 +569,120 @@ describe( 'Selection', () => {
 			for ( let i = 0; i < selectionRanges.length; i++ ) {
 				expect( selectionRanges[ i ].isEqual( snapshotRanges[ i ] ) ).to.be.true;
 			}
+		} );
+	} );
+
+	describe( 'attributes interface', () => {
+		let rangeInFullP;
+
+		beforeEach( () => {
+			root.insertChildren( 0, [
+				new Element( 'p', [], 'foobar' ),
+				new Element( 'p', [], [] )
+			] );
+
+			rangeInFullP = new Range( new Position( root, [ 0, 4 ] ), new Position( root, [ 0, 4 ] ) );
+		} );
+
+		describe( 'setAttribute', () => {
+			it( 'should set given attribute on the selection', () => {
+				selection.setRanges( [ rangeInFullP ] );
+				selection.setAttribute( 'foo', 'bar' );
+
+				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
+			} );
+
+			it( 'should fire change:attribute event', () => {
+				let spy = sinon.spy();
+				selection.on( 'change:attribute', spy );
+
+				selection.setAttribute( 'foo', 'bar' );
+
+				expect( spy.called ).to.be.true;
+			} );
+		} );
+
+		describe( 'getAttribute', () => {
+			it( 'should return undefined if element does not contain given attribute', () => {
+				expect( selection.getAttribute( 'abc' ) ).to.be.undefined;
+			} );
+		} );
+
+		describe( 'getAttributes', () => {
+			it( 'should return an iterator that iterates over all attributes set on the text fragment', () => {
+				selection.setRanges( [ rangeInFullP ] );
+				selection.setAttribute( 'foo', 'bar' );
+				selection.setAttribute( 'abc', 'xyz' );
+
+				let attrs = Array.from( selection.getAttributes() );
+
+				expect( attrs ).to.deep.equal( [ [ 'foo', 'bar' ], [ 'abc', 'xyz' ] ] );
+			} );
+		} );
+
+		describe( 'hasAttribute', () => {
+			it( 'should return true if element contains attribute with given key', () => {
+				selection.setRanges( [ rangeInFullP ] );
+				selection.setAttribute( 'foo', 'bar' );
+
+				expect( selection.hasAttribute( 'foo' ) ).to.be.true;
+			} );
+
+			it( 'should return false if element does not contain attribute with given key', () => {
+				expect( selection.hasAttribute( 'abc' ) ).to.be.false;
+			} );
+		} );
+
+		describe( 'clearAttributes', () => {
+			it( 'should remove all attributes from the element', () => {
+				selection.setRanges( [ rangeInFullP ] );
+				selection.setAttribute( 'foo', 'bar' );
+				selection.setAttribute( 'abc', 'xyz' );
+
+				selection.clearAttributes();
+
+				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
+				expect( selection.getAttribute( 'abc' ) ).to.be.undefined;
+			} );
+
+			it( 'should fire change:attribute event', () => {
+				let spy = sinon.spy();
+				selection.on( 'change:attribute', spy );
+
+				selection.clearAttributes();
+
+				expect( spy.called ).to.be.true;
+			} );
+		} );
+
+		describe( 'removeAttribute', () => {
+			it( 'should remove attribute', () => {
+				selection.setRanges( [ rangeInFullP ] );
+				selection.setAttribute( 'foo', 'bar' );
+				selection.removeAttribute( 'foo' );
+
+				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
+			} );
+
+			it( 'should fire change:attribute event', () => {
+				let spy = sinon.spy();
+				selection.on( 'change:attribute', spy );
+
+				selection.removeAttribute( 'foo' );
+
+				expect( spy.called ).to.be.true;
+			} );
+		} );
+
+		describe( 'setAttributesTo', () => {
+			it( 'should remove all attributes set on element and set the given ones', () => {
+				selection.setRanges( [ rangeInFullP ] );
+				selection.setAttribute( 'abc', 'xyz' );
+				selection.setAttributesTo( { foo: 'bar' } );
+
+				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
+				expect( selection.getAttribute( 'abc' ) ).to.be.undefined;
+			} );
 		} );
 	} );
 } );
