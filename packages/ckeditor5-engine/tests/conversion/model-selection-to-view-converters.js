@@ -15,6 +15,7 @@ import ModelPosition from '/ckeditor5/engine/model/position.js';
 import ViewDocument from '/ckeditor5/engine/view/document.js';
 import ViewContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import ViewAttributeElement from '/ckeditor5/engine/view/attributeelement.js';
+import { mergeAt } from '/ckeditor5/engine/view/writer.js';
 
 import Mapper from '/ckeditor5/engine/conversion/mapper.js';
 import ModelConversionDispatcher from '/ckeditor5/engine/conversion/modelconversiondispatcher.js';
@@ -36,7 +37,7 @@ import { setData as setModelData } from '/tests/engine/_utils/model.js';
 
 let dispatcher, mapper;
 let modelDoc, modelRoot, modelSelection;
-let viewDoc, viewRoot, writer, viewSelection;
+let viewDoc, viewRoot, viewSelection;
 
 beforeEach( () => {
 	modelDoc = new ModelDocument();
@@ -45,13 +46,12 @@ beforeEach( () => {
 
 	viewDoc = new ViewDocument();
 	viewRoot = viewDoc.createRoot( 'div' );
-	writer = viewDoc.writer;
 	viewSelection = viewDoc.selection;
 
 	mapper = new Mapper();
 	mapper.bindElements( modelRoot, viewRoot );
 
-	dispatcher = new ModelConversionDispatcher( { mapper, writer, viewSelection } );
+	dispatcher = new ModelConversionDispatcher( { mapper, viewSelection } );
 
 	dispatcher.on( 'insert:$text', insertText() );
 	dispatcher.on( 'addAttribute:bold', wrap( new ViewAttributeElement( 'strong' ) ) );
@@ -288,7 +288,7 @@ describe( 'clean-up', () => {
 			);
 
 			// Remove <b></b> manually.
-			writer.mergeAttributes( viewSelection.getFirstPosition() );
+			mergeAt( viewSelection.getFirstPosition() );
 
 			const modelRange = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 1 );
 			modelDoc.selection.setRanges( [ modelRange ] );

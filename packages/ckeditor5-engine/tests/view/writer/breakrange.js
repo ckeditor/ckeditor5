@@ -7,17 +7,16 @@
 
 'use strict';
 
-import Writer from '/ckeditor5/engine/view/writer.js';
+import { breakRange } from '/ckeditor5/engine/view/writer.js';
 import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
 import Text from '/ckeditor5/engine/view/text.js';
 import Range from '/ckeditor5/engine/view/range.js';
 import { stringify, parse } from '/tests/engine/_utils/view.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
-describe( 'Writer', () => {
-	let writer;
-
+describe( 'writer', () => {
 	/**
 	 * Executes test using `parse` and `stringify` utils functions.
 	 *
@@ -31,13 +30,9 @@ describe( 'Writer', () => {
 			view = new DocumentFragment( view );
 		}
 
-		const newRange = writer.breakRange( selection.getFirstRange() );
+		const newRange = breakRange( selection.getFirstRange() );
 		expect( stringify( view, newRange, { showType: true } ) ).to.equal( expected );
 	}
-
-	beforeEach( () => {
-		writer = new Writer();
-	} );
 
 	describe( 'breakRange', () => {
 		it( 'should throw when range placed in two containers', () => {
@@ -45,8 +40,16 @@ describe( 'Writer', () => {
 			const p2 = new ContainerElement( 'p' );
 
 			expect( () => {
-				writer.breakRange( Range.createFromParentsAndOffsets( p1, 0, p2, 0 ) );
-			} ).to.throw( 'view-writer-invalid-range-container' );
+				breakRange( Range.createFromParentsAndOffsets( p1, 0, p2, 0 ) );
+			} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
+		} );
+
+		it( 'should throw when range has no parent container', () => {
+			const el = new AttributeElement( 'b' );
+
+			expect( () => {
+				breakRange( Range.createFromParentsAndOffsets( el, 0, el, 0 ) );
+			} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
 		} );
 
 		it( 'should not break text nodes if they are not in attribute elements', () => {

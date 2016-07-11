@@ -71,7 +71,7 @@ function viewToString( item ) {
 describe( 'Model converter builder', () => {
 	let dispatcher, mapper;
 	let modelDoc, modelRoot;
-	let viewDoc, viewRoot, writer, viewSelection;
+	let viewDoc, viewRoot, viewSelection;
 
 	beforeEach( () => {
 		modelDoc = new ModelDocument();
@@ -79,13 +79,12 @@ describe( 'Model converter builder', () => {
 
 		viewDoc = new ViewDocument();
 		viewRoot = viewDoc.createRoot( 'div' );
-		writer = viewDoc.writer;
 		viewSelection = viewDoc.selection;
 
 		mapper = new Mapper();
 		mapper.bindElements( modelRoot, viewRoot );
 
-		dispatcher = new ModelConversionDispatcher( { writer, mapper, viewSelection } );
+		dispatcher = new ModelConversionDispatcher( { mapper, viewSelection } );
 
 		dispatcher.on( 'insert:$text', insertText() );
 		dispatcher.on( 'move', move() );

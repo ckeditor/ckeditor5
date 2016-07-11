@@ -127,7 +127,7 @@ class ModelConverterBuilder {
 	 * Default priority is `10`.
 	 *
 	 * **Note:** Keep in mind that event priority, that is set by this modifier, is used for attribute priority
-	 * when {@link engine.view.Writer} is used. This changes how model attributes converter to view elements are
+	 * when {@link engine.view.writer} is used. This changes how model attributes converter to view elements are
 	 * ordered, i.e.: `<strong><em>foo</em></strong>` vs `<em><strong>foo</strong></em>`. Using priority you can also
 	 * prevent node merging, i.e.: `<span class="bold"><span class="theme">foo</span><span>` vs `<span class="bold theme">foo</span>`.
 	 * If you want to prevent merging, just set different priority for both converters.

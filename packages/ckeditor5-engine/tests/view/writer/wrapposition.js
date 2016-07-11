@@ -7,7 +7,7 @@
 
 'use strict';
 
-import Writer from '/ckeditor5/engine/view/writer.js';
+import { wrapPosition } from '/ckeditor5/engine/view/writer.js';
 import Text from '/ckeditor5/engine/view/text.js';
 import Element from '/ckeditor5/engine/view/element.js';
 import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
@@ -18,8 +18,6 @@ import { stringify, parse } from '/tests/engine/_utils/view.js';
 import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
 
 describe( 'wrapPosition', () => {
-	let writer;
-
 	/**
 	 * Executes test using `parse` and `stringify` utils functions.
 	 *
@@ -34,13 +32,9 @@ describe( 'wrapPosition', () => {
 			view = new DocumentFragment( view );
 		}
 
-		const newPosition = writer.wrapPosition( selection.getFirstPosition(), parse( unwrapAttribute ) );
+		const newPosition = wrapPosition( selection.getFirstPosition(), parse( unwrapAttribute ) );
 		expect( stringify( view, newPosition, { showType: true, showPriority: true } ) ).to.equal( expected );
 	}
-
-	beforeEach( () => {
-		writer = new Writer();
-	} );
 
 	it( 'should throw error when element is not instance of AttributeElement', () => {
 		const container = new ContainerElement( 'p', null, new Text( 'foo' ) );
@@ -48,7 +42,7 @@ describe( 'wrapPosition', () => {
 		const b = new Element( 'b' );
 
 		expect( () => {
-			writer.wrapPosition( position, b );
+			wrapPosition( position, b );
 		} ).to.throw( CKEditorError, 'view-writer-wrap-invalid-attribute' );
 	} );
 

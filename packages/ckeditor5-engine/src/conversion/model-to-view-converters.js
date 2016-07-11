@@ -10,6 +10,7 @@ import ModelRange from '../model/range.js';
 
 import ViewElement from '../view/element.js';
 import ViewText from '../view/text.js';
+import viewWriter from '../view/writer.js';
 
 /**
  * Contains {@link engine.model model} to {@link engine.view view} converters for
@@ -57,7 +58,7 @@ export function insertElement( elementCreator ) {
 			elementCreator( data, consumable, conversionApi );
 
 		conversionApi.mapper.bindElements( data.item, viewElement );
-		conversionApi.writer.insert( viewPosition, viewElement );
+		viewWriter.insert( viewPosition, viewElement );
 
 		evt.stop();
 	};
@@ -82,7 +83,7 @@ export function insertText() {
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 		const viewText = new ViewText( data.item.text );
 
-		conversionApi.writer.insert( viewPosition, viewText );
+		viewWriter.insert( viewPosition, viewText );
 
 		evt.stop();
 	};
@@ -223,10 +224,10 @@ export function wrap( elementCreator ) {
 		// view element basing on old value and unwrap it before wrapping with a newly created view element.
 		if ( data.attributeOldValue !== null && !( elementCreator instanceof ViewElement ) ) {
 			const oldViewElement = elementCreator( data.attributeOldValue, data, consumable, conversionApi );
-			viewRange = conversionApi.writer.unwrap( viewRange, oldViewElement, evt.priority );
+			viewRange = viewWriter.unwrap( viewRange, oldViewElement, evt.priority );
 		}
 
-		conversionApi.writer.wrap( viewRange, viewElement, evt.priority );
+		viewWriter.wrap( viewRange, viewElement, evt.priority );
 
 		evt.stop();
 	};
@@ -265,7 +266,7 @@ export function unwrap( elementCreator ) {
 			elementCreator.clone( true ) :
 			elementCreator( data.attributeOldValue, data, consumable, conversionApi );
 
-		conversionApi.writer.unwrap( viewRange, viewNode );
+		viewWriter.unwrap( viewRange, viewNode );
 
 		evt.stop();
 	};
@@ -295,7 +296,7 @@ export function move() {
 		const sourceViewRange = conversionApi.mapper.toViewRange( sourceModelRange );
 		const targetViewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 
-		conversionApi.writer.move( sourceViewRange, targetViewPosition );
+		viewWriter.move( sourceViewRange, targetViewPosition );
 	};
 }
 
@@ -321,7 +322,7 @@ export function remove() {
 		const sourceModelRange = ModelRange.createFromPositionAndShift( data.sourcePosition, length );
 		const sourceViewRange = conversionApi.mapper.toViewRange( sourceModelRange );
 
-		conversionApi.writer.remove( sourceViewRange );
+		viewWriter.remove( sourceViewRange );
 	};
 }
 

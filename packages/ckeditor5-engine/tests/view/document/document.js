@@ -11,7 +11,6 @@ import Document from '/ckeditor5/engine/view/document.js';
 import Observer from '/ckeditor5/engine/view/observer/observer.js';
 import Renderer from '/ckeditor5/engine/view/renderer.js';
 import ViewRange from '/ckeditor5/engine/view/range.js';
-import Writer from '/ckeditor5/engine/view/writer.js';
 import DomConverter from '/ckeditor5/engine/view/domconverter.js';
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
 import count from '/ckeditor5/utils/count.js';
@@ -58,7 +57,6 @@ describe( 'Document', () => {
 			expect( count( viewDocument.roots ) ).to.equal( 0 );
 			expect( count( viewDocument._observers ) ).to.equal( 0 );
 			expect( viewDocument ).to.have.property( 'renderer' ).that.is.instanceOf( Renderer );
-			expect( viewDocument ).to.have.property( 'writer' ).that.is.instanceOf( Writer );
 			expect( viewDocument ).to.have.property( 'domConverter' ).that.is.instanceOf( DomConverter );
 			expect( viewDocument ).to.have.property( 'isFocused' ).that.is.false;
 		} );

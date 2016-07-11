@@ -91,7 +91,6 @@ export default class EditingController {
 		 * @member {engine.conversion.ModelConversionDispatcher} engine.EditingController#modelToView
 		 */
 		this.modelToView = new ModelConversionDispatcher( {
-			writer: this.view.writer,
 			mapper: this.mapper,
 			viewSelection: this.view.selection
 		} );
