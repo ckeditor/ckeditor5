@@ -17,6 +17,16 @@ describe( 'exec-tasks', () => {
 	const config = {
 		WORKSPACE_DIR: '/path/exec/'
 	};
+	const getDevDirectoriesResult = [
+		{
+			repositoryPath: '/path/1',
+			repositoryURL: 'ckeditor/test1'
+		},
+		{
+			repositoryPath: '/path/2',
+			repositoryURL: 'ckeditor/test2'
+		}
+	];
 
 	beforeEach( () => {
 		mockery.enable( {
@@ -36,7 +46,7 @@ describe( 'exec-tasks', () => {
 		it( 'should throw error when there is no specified task', () => {
 			const errorMessage = 'Missing task parameter: --task task-name';
 			const log = require( '../../utils/log' );
-			const logErrSpy = sandbox.spy( log, 'err' );
+			const logErrSpy = sandbox.stub( log, 'err' );
 
 			mockery.registerMock( 'minimist', () => {
 				return { };
@@ -52,7 +62,7 @@ describe( 'exec-tasks', () => {
 
 		it( 'should throw error when task cannot be found', () => {
 			const log = require( '../../utils/log' );
-			const logErrSpy = sandbox.spy( log, 'err' );
+			const logErrSpy = sandbox.stub( log, 'err' );
 
 			mockery.registerMock( 'minimist', () => {
 				return { task: 'task-to-run' };
@@ -69,7 +79,7 @@ describe( 'exec-tasks', () => {
 		it( 'should load task module', () => {
 			const ckeditor5Dirs = require( '../../utils/ckeditor5-dirs' );
 			const log = require( '../../utils/log' );
-			const logErrSpy = sandbox.spy( log, 'err' );
+			const logErrSpy = sandbox.stub( log, 'err' );
 
 			sandbox.stub( ckeditor5Dirs, 'getDevDirectories' ).returns( [] );
 			mockery.registerMock( 'minimist', () => {
@@ -83,6 +93,30 @@ describe( 'exec-tasks', () => {
 			sinon.assert.notCalled( logErrSpy );
 		} );
 
+		it( 'should log error when task is throwing exceptions', () => {
+			const ckeditor5Dirs = require( '../../utils/ckeditor5-dirs' );
+			const taskStub = sinon.stub();
+			const log = require( '../../utils/log' );
+			const logErrSpy = sandbox.stub( log, 'err' );
+
+			taskStub.onSecondCall().throws();
+
+			mockery.registerMock( 'minimist', () => {
+				return { task: 'task-to-run' };
+			} );
+			sandbox.stub( ckeditor5Dirs, 'getDevDirectories' ).returns( getDevDirectoriesResult );
+			mockery.registerMock( './functions/task-to-run', taskStub );
+			const tasks = require( '../../tasks/exec/tasks' )( config );
+
+			tasks.execOnRepositories();
+
+			sinon.assert.calledOnce( logErrSpy );
+			expect( logErrSpy.firstCall.args[ 0 ] ).to.be.an( 'error' );
+			sinon.assert.calledTwice( taskStub );
+			sinon.assert.calledWith( taskStub, '/path/1', { task: 'task-to-run' } );
+			sinon.assert.calledWith( taskStub, '/path/2', { task: 'task-to-run' } );
+		} );
+
 		it( 'should execute task over directories', () => {
 			const ckeditor5Dirs = require( '../../utils/ckeditor5-dirs' );
 			const taskStub = sinon.stub();
@@ -90,16 +124,7 @@ describe( 'exec-tasks', () => {
 			mockery.registerMock( 'minimist', () => {
 				return { task: 'task-to-run' };
 			} );
-			sandbox.stub( ckeditor5Dirs, 'getDevDirectories' ).returns( [
-				{
-					repositoryPath: '/path/1',
-					repositoryURL: 'repo/test1'
-				},
-				{
-					repositoryPath: '/path/2',
-					repositoryURL: 'repo/test2'
-				}
-			] );
+			sandbox.stub( ckeditor5Dirs, 'getDevDirectories' ).returns( getDevDirectoriesResult );
 			mockery.registerMock( './functions/task-to-run', taskStub );
 			const tasks = require( '../../tasks/exec/tasks' )( config );
 
@@ -108,6 +133,28 @@ describe( 'exec-tasks', () => {
 			sinon.assert.calledTwice( taskStub );
 			sinon.assert.calledWith( taskStub, '/path/1', { task: 'task-to-run' } );
 			sinon.assert.calledWith( taskStub, '/path/2', { task: 'task-to-run' } );
+		} );
+
+		it( 'should execute task over specific directory', () => {
+			const Stream = require( 'stream' );
+			const ckeditor5Dirs = require( '../../utils/ckeditor5-dirs' );
+			const taskStub = sinon.stub().returns( new Stream() );
+
+			mockery.registerMock( 'minimist', () => {
+				return {
+					task: 'task-to-run',
+					repository: 'test1'
+				};
+			} );
+			sandbox.stub( ckeditor5Dirs, 'getDevDirectories' ).returns( getDevDirectoriesResult );
+			mockery.registerMock( './functions/task-to-run', taskStub );
+			const tasks = require( '../../tasks/exec/tasks' )( config );
+
+			tasks.execOnRepositories();
+
+			sinon.assert.calledOnce( taskStub );
+			sinon.assert.calledWith( taskStub, '/path/1', { task: 'task-to-run', repository: 'test1' } );
+			sinon.assert.neverCalledWith( taskStub, '/path/2', { task: 'task-to-run', repository: 'test1' } );
 		} );
 	} );
 } );
