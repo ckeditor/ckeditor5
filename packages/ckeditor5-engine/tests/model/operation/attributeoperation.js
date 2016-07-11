@@ -14,14 +14,14 @@ import Position from '/ckeditor5/engine/model/position.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import Text from '/ckeditor5/engine/model/text.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-import { jsonParseStringify } from '/tests/engine/model/_utils/utils.js';
+import { jsonParseStringify, wrapInDelta } from '/tests/engine/model/_utils/utils.js';
 
 describe( 'AttributeOperation', () => {
 	let doc, root;
 
 	beforeEach( () => {
 		doc = new Document();
-		root = doc.createRoot( 'root' );
+		root = doc.createRoot();
 	} );
 
 	describe( 'type', () => {
@@ -65,7 +65,7 @@ describe( 'AttributeOperation', () => {
 	it( 'should insert attribute to the set of nodes', () => {
 		root.insertChildren( 0, 'bar' );
 
-		doc.applyOperation(
+		doc.applyOperation( wrapInDelta(
 			new AttributeOperation(
 				new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
 				'isNew',
@@ -73,7 +73,7 @@ describe( 'AttributeOperation', () => {
 				true,
 				doc.version
 			)
-		);
+		) );
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 3 );
@@ -85,7 +85,7 @@ describe( 'AttributeOperation', () => {
 	it( 'should add attribute to the existing attributes', () => {
 		root.insertChildren( 0, new Text( 'x', { foo: true, bar: true } ) );
 
-		doc.applyOperation(
+		doc.applyOperation( wrapInDelta(
 			new AttributeOperation(
 				new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
 				'isNew',
@@ -93,7 +93,7 @@ describe( 'AttributeOperation', () => {
 				true,
 				doc.version
 			)
-		);
+		) );
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 1 );
@@ -106,7 +106,7 @@ describe( 'AttributeOperation', () => {
 	it( 'should change attribute to the set of nodes', () => {
 		root.insertChildren( 0, new Text( 'bar', { isNew: false } ) );
 
-		doc.applyOperation(
+		doc.applyOperation( wrapInDelta(
 			new AttributeOperation(
 				new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
 				'isNew',
@@ -114,7 +114,7 @@ describe( 'AttributeOperation', () => {
 				true,
 				doc.version
 			)
-		);
+		) );
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 3 );
@@ -129,7 +129,7 @@ describe( 'AttributeOperation', () => {
 	it( 'should change attribute in the middle of existing attributes', () => {
 		root.insertChildren( 0, new Text( 'x', { foo: true, x: 1, bar: true } ) );
 
-		doc.applyOperation(
+		doc.applyOperation( wrapInDelta(
 			new AttributeOperation(
 				new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
 				'x',
@@ -137,7 +137,7 @@ describe( 'AttributeOperation', () => {
 				2,
 				doc.version
 			)
-		);
+		) );
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 1 );
@@ -150,7 +150,7 @@ describe( 'AttributeOperation', () => {
 	it( 'should remove attribute', () => {
 		root.insertChildren( 0, new Text( 'x', { foo: true, x: true, bar: true } ) );
 
-		doc.applyOperation(
+		doc.applyOperation( wrapInDelta(
 			new AttributeOperation(
 				new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
 				'x',
@@ -158,7 +158,7 @@ describe( 'AttributeOperation', () => {
 				null,
 				doc.version
 			)
-		);
+		) );
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 1 );
@@ -193,8 +193,8 @@ describe( 'AttributeOperation', () => {
 
 		let reverse = operation.getReversed();
 
-		doc.applyOperation( operation );
-		doc.applyOperation( reverse );
+		doc.applyOperation( wrapInDelta( operation ) );
+		doc.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.getChildCount() ).to.equal( 3 );
@@ -209,7 +209,7 @@ describe( 'AttributeOperation', () => {
 
 		root.insertChildren( 0, [ eleA, eleB ] );
 
-		doc.applyOperation(
+		doc.applyOperation( wrapInDelta(
 			new AttributeOperation(
 				new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 1, 2 ] ) ),
 				'foo',
@@ -217,7 +217,7 @@ describe( 'AttributeOperation', () => {
 				true,
 				doc.version
 			)
-		);
+		) );
 
 		expect( root.getChild( 0 ).hasAttribute( 'foo' ) ).to.be.false;
 	} );
@@ -230,7 +230,7 @@ describe( 'AttributeOperation', () => {
 
 		root.insertChildren( 0, [ eleA, eleB ] );
 
-		doc.applyOperation(
+		doc.applyOperation( wrapInDelta(
 			new AttributeOperation(
 				new Range( new Position( root, [ 0, 3 ] ), new Position( root, [ 1, 0 ] ) ),
 				'foo',
@@ -238,7 +238,7 @@ describe( 'AttributeOperation', () => {
 				null,
 				doc.version
 			)
-		);
+		) );
 
 		expect( root.getChild( 0 ).hasAttribute( 'foo' ) ).to.be.true;
 	} );
@@ -256,8 +256,8 @@ describe( 'AttributeOperation', () => {
 
 		let reverse = operation.getReversed();
 
-		doc.applyOperation( operation );
-		doc.applyOperation( reverse );
+		doc.applyOperation( wrapInDelta( operation ) );
+		doc.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.getChildCount() ).to.equal( 3 );
@@ -282,8 +282,8 @@ describe( 'AttributeOperation', () => {
 
 		let reverse = operation.getReversed();
 
-		doc.applyOperation( operation );
-		doc.applyOperation( reverse );
+		doc.applyOperation( wrapInDelta( operation ) );
+		doc.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.getChildCount() ).to.equal( 3 );
@@ -299,7 +299,7 @@ describe( 'AttributeOperation', () => {
 		root.insertChildren( 0, 'x' );
 
 		expect( () => {
-			doc.applyOperation(
+			doc.applyOperation( wrapInDelta(
 				new AttributeOperation(
 					new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
 					'foo',
@@ -307,7 +307,7 @@ describe( 'AttributeOperation', () => {
 					null,
 					doc.version
 				)
-			);
+			) );
 		} ).to.throw( CKEditorError, /operation-attribute-no-attr-to-remove/ );
 	} );
 
@@ -315,7 +315,7 @@ describe( 'AttributeOperation', () => {
 		root.insertChildren( 0, new Text( 'x', { x: 1 } ) );
 
 		expect( () => {
-			doc.applyOperation(
+			doc.applyOperation( wrapInDelta(
 				new AttributeOperation(
 					new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
 					'x',
@@ -323,7 +323,7 @@ describe( 'AttributeOperation', () => {
 					2,
 					doc.version
 				)
-			);
+			) );
 		} ).to.throw( CKEditorError, /operation-attribute-attr-exists/ );
 	} );
 
@@ -353,14 +353,14 @@ describe( 'AttributeOperation', () => {
 		root.insertChildren( 0, new Text( 'abc', attrA ) );
 		root.insertChildren( 3, new Text( 'xyz', attrB ) );
 
-		doc.applyOperation(
+		doc.applyOperation( wrapInDelta(
 			new AttributeOperation(
 				new Range( new Position( root, [ 1 ] ), new Position( root, [ 3 ] ) ),
 				'foo',
 				'a',
 				'b',
 				doc.version
-			)
+			) )
 		);
 
 		expect( root._children._nodes[ 0 ].text ).to.equal( 'a' );

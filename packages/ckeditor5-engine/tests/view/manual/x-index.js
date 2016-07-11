@@ -13,12 +13,12 @@ import MutationObserver from '/ckeditor5/engine/view/observer/mutationobserver.j
 import { setData } from '/tests/engine/_utils/view.js';
 
 const viewDocument = new Document();
-const viewRoot = viewDocument.createRoot( document.getElementById( 'editor' ) );
+viewDocument.createRoot( document.getElementById( 'editor' ) );
 
 viewDocument.addObserver( MutationObserver );
 viewDocument.addObserver( SelectionObserver );
 
-viewDocument.focusedEditable = viewRoot;
+viewDocument.isFocused = true;
 
 setData( viewDocument,
 	'<container:p>fo{}o</container:p>' +

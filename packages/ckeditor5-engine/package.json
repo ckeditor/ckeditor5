@@ -1,6 +1,6 @@
 {
   "name": "ckeditor5-engine",
-  "version": "0.0.1-0.dev",
+  "version": "0.1.0",
   "description": "CKEditor 5 Editing Engine",
   "keywords": [
     "CKEditor"

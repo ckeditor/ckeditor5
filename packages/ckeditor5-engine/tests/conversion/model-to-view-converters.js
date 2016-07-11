@@ -17,7 +17,6 @@ import ViewElement from '/ckeditor5/engine/view/element.js';
 import ViewContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import ViewAttributeElement from '/ckeditor5/engine/view/attributeelement.js';
 import ViewText from '/ckeditor5/engine/view/text.js';
-import ViewWriter from  '/ckeditor5/engine/view/writer.js';
 
 import Mapper from '/ckeditor5/engine/conversion/mapper.js';
 import ModelConversionDispatcher from '/ckeditor5/engine/conversion/modelconversiondispatcher.js';
@@ -32,19 +31,17 @@ import {
 	remove
 } from '/ckeditor5/engine/conversion/model-to-view-converters.js';
 
-let dispatcher, modelDoc, modelRoot, mapper, viewRoot, writer;
+let dispatcher, modelDoc, modelRoot, mapper, viewRoot;
 
 beforeEach( () => {
 	modelDoc = new ModelDocument();
-	modelRoot = modelDoc.createRoot( 'root' );
+	modelRoot = modelDoc.createRoot();
 	viewRoot = new ViewContainerElement( 'div' );
 
 	mapper = new Mapper();
 	mapper.bindElements( modelRoot, viewRoot );
 
-	writer = new ViewWriter();
-
-	dispatcher = new ModelConversionDispatcher( { mapper, writer } );
+	dispatcher = new ModelConversionDispatcher( { mapper } );
 } );
 
 function viewAttributesToString( item ) {
@@ -242,6 +239,40 @@ describe( 'wrap/unwrap', () => {
 		dispatcher.convertAttribute( 'removeAttribute', ModelRange.createFromElement( modelElement ), 'style', 'bold', null );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+	} );
+
+	it( 'should update range on re-wrapping attribute (#475)', () => {
+		const modelElement = new ModelElement( 'paragraph', null,
+			[ 'x', new ModelText( 'foo', { link: 'http://foo.com' } ), 'x' ] );
+		const viewP = new ViewContainerElement( 'p' );
+
+		const elementGenerator = ( href ) => new ViewAttributeElement( 'a', { href } );
+
+		modelRoot.appendChildren( modelElement );
+		dispatcher.on( 'insert:paragraph', insertElement( viewP ) );
+		dispatcher.on( 'insert:$text', insertText() );
+		dispatcher.on( 'addAttribute:link', wrap( elementGenerator ) );
+		dispatcher.on( 'changeAttribute:link', wrap( elementGenerator ) );
+
+		dispatcher.convertInsert(
+			ModelRange.createFromElement( modelRoot )
+		);
+
+		expect( viewToString( viewRoot ) ).to.equal( '<div><p>x<a href="http://foo.com">foo</a>x</p></div>' );
+
+		for ( let value of ModelRange.createFromElement( modelElement ) ) {
+			value.item.setAttribute( 'link', 'http://foobar.com' );
+		}
+
+		dispatcher.convertAttribute(
+			'changeAttribute',
+			ModelRange.createFromElement( modelElement ),
+			'link',
+			'http://foo.com',
+			'http://foobar.com'
+		);
+
+		expect( viewToString( viewRoot ) ).to.equal( '<div><p><a href="http://foobar.com">xfoox</a></p></div>' );
 	} );
 } );
 

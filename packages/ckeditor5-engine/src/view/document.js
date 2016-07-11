@@ -7,10 +7,10 @@
 
 import Selection from './selection.js';
 import Renderer from './renderer.js';
-import Writer from './writer.js';
 import DomConverter from './domconverter.js';
 import RootEditableElement from './rooteditableelement.js';
 import { injectQuirksHandling } from './filler.js';
+import log from '../../utils/log.js';
 
 import mix from '../../utils/mix.js';
 import ObservableMixin from '../../utils/observablemixin.js';
@@ -49,14 +49,6 @@ export default class Document {
 		this.selection = new Selection();
 
 		/**
-		 * Tree View writer.
-		 *
-		 * @readonly
-		 * @member {engine.view.Writer} engine.view.Document#writer
-		 */
-		this.writer = new Writer();
-
-		/**
 		 * Instance of the {@link engine.view.DomConverter domConverter} use by
 		 * {@link engine.view.Document#renderer renderer} and {@link engine.view.observer.Observer observers}.
 		 *
@@ -74,16 +66,16 @@ export default class Document {
 		this.roots = new Map();
 
 		/**
-		 * {@link engine.view.EditableElement} which is currently focused or null if all of them are blurred.
+		 * True if document is focused.
 		 *
 		 * This property is updated by the {@link engine.view.obsever.FocusObserver}.
 		 * If the {@link engine.view.obsever.FocusObserver} is disabled this property will not change.
 		 *
 		 * @readonly
 		 * @observable
-		 * @member {engine.view.EditableElement|null} engine.view.Document#focusedEditable
+		 * @member {Boolean} engine.view.Document#isFocused
 		 */
-		this.set( 'focusedEditable', null );
+		this.set( 'isFocused', false );
 
 		/**
 		 * Instance of the {@link engine.view.Document#renderer renderer}.
@@ -92,7 +84,7 @@ export default class Document {
 		 * @member {engine.view.Renderer} engine.view.Document#renderer
 		 */
 		this.renderer = new Renderer( this.domConverter, this.selection );
-		this.renderer.bind( 'focusedEditable' ).to( this, 'focusedEditable' );
+		this.renderer.bind( 'isFocused' ).to( this, 'isFocused' );
 
 		/**
 		 * Map of registered {@link engine.view.Observer observers}.
@@ -103,6 +95,14 @@ export default class Document {
 		this._observers = new Map();
 
 		injectQuirksHandling( this );
+
+		// Listens `render` event on default priority.
+		// This way we can attach other listeners before or after rendering execution.
+		this.on( 'render', () => {
+			this.disableObservers();
+			this.renderer.render();
+			this.enableObservers();
+		} );
 	}
 
 	/**
@@ -181,7 +181,7 @@ export default class Document {
 		viewRoot.on( 'change:attributes', ( evt, node ) => this.renderer.markToSync( 'attributes', node ) );
 		viewRoot.on( 'change:text', ( evt, node ) => this.renderer.markToSync( 'text', node ) );
 
-		if ( domRoot instanceof HTMLElement ) {
+		if ( this.domConverter.isElement( domRoot ) ) {
 			this.attachDomRoot( domRoot, name );
 		}
 
@@ -207,6 +207,7 @@ export default class Document {
 		this.domConverter.bindElements( domRoot, viewRoot );
 
 		this.renderer.markToSync( 'children', viewRoot );
+		this.renderer.domDocuments.add( domRoot.ownerDocument );
 
 		for ( let observer of this._observers.values() ) {
 			observer.observe( domRoot, name );
@@ -237,13 +238,35 @@ export default class Document {
 	/**
 	 * Renders all changes. In order to avoid triggering the observers (e.g. mutations) all observers are disabled
 	 * before rendering and re-enabled after that.
+	 *
+	 * @fires engine.view.Document#render
 	 */
 	render() {
-		this.disableObservers();
+		this.fire( 'render' );
+	}
 
-		this.renderer.render();
+	/**
+	 * Focuses document. It will focus {@link engine.view.EditableElement EditableElement} that is currently having
+	 * selection inside.
+	 */
+	focus() {
+		if ( !this.isFocused ) {
+			const editable = this.selection.getEditableElement();
 
-		this.enableObservers();
+			if ( editable ) {
+				this.domConverter.focus( editable );
+				this.render();
+			} else {
+				/**
+				 * Before focusing view document, selection should be placed inside one of the view's editables.
+				 * Normally its selection will be converted from model document (which have default selection), but
+				 * when using view document on its own, we need to manually place selection before focusing it.
+				 *
+				 * @error view-focus-no-selection
+				 */
+				log.warn( 'view-focus-no-selection: There is no selection in any editable to focus.' );
+			}
+		}
 	}
 
 	/**
@@ -277,4 +300,11 @@ mix( Document, ObservableMixin );
  * * `text` - for text nodes changes.
  *
  * @typedef {String} engine.view.ChangeType
+ */
+
+/**
+ * Fired when {@link engine.view.Document#render render} method is called. Actual rendering is executed as a listener to
+ * this event with default priority. This way other listeners can be used to run code before or after rendering.
+ *
+ * @event engine.view.Document.render
  */

@@ -24,6 +24,20 @@ describe( 'Batch', () => {
 		expect( batch.removeAttr ).to.be.a( 'function' );
 	} );
 
+	describe( 'type', () => {
+		it( 'should default to "default"', () => {
+			const batch = new Batch( new Document() );
+
+			expect( batch.type ).to.equal( 'default' );
+		} );
+
+		it( 'should be set to the value set in constructor', () => {
+			const batch = new Batch( new Document(), 'ignore' );
+
+			expect( batch.type ).to.equal( 'ignore' );
+		} );
+	} );
+
 	describe( 'register', () => {
 		afterEach( () => {
 			delete Batch.prototype.foo;
@@ -84,6 +98,24 @@ describe( 'Batch', () => {
 
 			expect( Array.from( batch.getOperations() ) ).to.deep.equal( ops );
 			expect( batch.getOperations() ).to.have.property( 'next' );
+		} );
+	} );
+
+	describe( 'baseVersion', () => {
+		it( 'should return base version of first delta from the batch', () => {
+			const batch = new Batch( new Document() );
+			const delta = new Delta();
+			const operation = new Operation( 2 );
+			delta.addOperation( operation );
+			batch.addDelta( delta );
+
+			expect( batch.baseVersion ).to.equal( 2 );
+		} );
+
+		it( 'should return null if there are no deltas in batch', () => {
+			const batch = new Batch( new Document() );
+
+			expect( batch.baseVersion ).to.be.null;
 		} );
 	} );
 } );

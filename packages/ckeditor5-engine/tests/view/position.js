@@ -10,7 +10,10 @@
 import Position from '/ckeditor5/engine/view/position.js';
 import Node from '/ckeditor5/engine/view/node.js';
 import Element from '/ckeditor5/engine/view/element.js';
+import EditableElement from '/ckeditor5/engine/view/editableelement.js';
+import Document from '/ckeditor5/engine/view/document.js';
 import Text from '/ckeditor5/engine/view/text.js';
+import TextProxy from '/ckeditor5/engine/view/textproxy.js';
 
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
@@ -289,7 +292,13 @@ describe( 'Position', () => {
 	} );
 
 	describe( 'createBefore', () => {
-		it( 'should create positions before nodes', () => {
+		it( 'should throw error if one try to create positions before root', () => {
+			expect( () => {
+				Position.createBefore( parse( '<p></p>' ) );
+			} ).to.throw( CKEditorError, /position-before-root/ );
+		} );
+
+		it( 'should create positions before `Node`', () => {
 			const { selection } = parse( '<p>[]<b></b></p>' );
 			const position = selection.getFirstPosition();
 			const nodeAfter = position.nodeAfter;
@@ -297,15 +306,24 @@ describe( 'Position', () => {
 			expect( Position.createBefore( nodeAfter ).isEqual( position ) ).to.be.true;
 		} );
 
-		it( 'should throw error if one try to create positions before root', () => {
-			expect( () => {
-				Position.createBefore( parse( '<p></p>' ) );
-			} ).to.throw( CKEditorError, /position-before-root/ );
+		it( 'should create positions before `TextProxy`', () => {
+			const text = new Text( 'abc' );
+
+			const textProxy = new TextProxy( text, 1, 1 );
+			const position = new Position( text, 1 );
+
+			expect( Position.createBefore( textProxy ) ).deep.equal( position );
 		} );
 	} );
 
 	describe( 'createAfter', () => {
-		it( 'should create positions after nodes', () => {
+		it( 'should throw error if one try to create positions after root', () => {
+			expect( () => {
+				Position.createAfter( parse( '<p></p>' ) );
+			} ).to.throw( CKEditorError, /position-after-root/ );
+		} );
+
+		it( 'should create positions after `Node`', () => {
 			const { selection } = parse( '<p><b></b>[]</p>' );
 			const position = selection.getFirstPosition();
 			const nodeBefore = position.nodeBefore;
@@ -313,10 +331,30 @@ describe( 'Position', () => {
 			expect( Position.createAfter( nodeBefore ).isEqual( position ) ).to.be.true;
 		} );
 
-		it( 'should throw error if one try to create positions after root', () => {
-			expect( () => {
-				Position.createAfter( parse( '<p></p>' ) );
-			} ).to.throw( CKEditorError, /position-after-root/ );
+		it( 'should create positions after `TextProxy`', () => {
+			const text = new Text( 'abcd' );
+
+			const textProxy = new TextProxy( text, 1, 2 );
+			const position = new Position( text, 3 );
+
+			expect( Position.createAfter( textProxy ) ).deep.equal( position );
+		} );
+	} );
+
+	describe( 'getEditableElement', () => {
+		it( 'should return null if position is not inside EditableElement', () => {
+			const position = new Position( new Element( 'p' ), 0 );
+
+			expect( position.getEditableElement() ).to.be.null;
+		} );
+
+		it( 'should return EditableElement when position is placed inside', () => {
+			const document = new Document();
+			const p = new Element( 'p' );
+			const editable = new EditableElement( document, 'div', null, p );
+			const position = new Position( p, 0 );
+
+			expect( position.getEditableElement() ).to.equal( editable );
 		} );
 	} );
 } );

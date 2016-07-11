@@ -21,15 +21,15 @@ import Element from './element.js';
  * DOM properly. {@link engine.view.DomConverter} will ensure that `ContainerElement` is editable and it is possible
  * to put caret inside it, even if the container is empty.
  *
- * Secondly, {@link engine.view.Writer} uses this information.
- * Nodes {@link engine.view.Writer#breakAttributes breaking} and {@link engine.view.Writer#mergeAttributes merging}
+ * Secondly, {@link engine.view.writer view writer} uses this information.
+ * Nodes {@link engine.view.writer.breakAt breaking} and {@link engine.view.writer.mergeAt merging}
  * is performed only in a bounds of a container nodes.
  *
  * For instance if `<p>` is an container and `<b>` is attribute:
  *
  *		<p><b>fo^o</b></p>
  *
- * {@link engine.view.Writer#breakAttributes breakAttributes} will create:
+ * {@link engine.view.writer.breakAt breakAt} will create:
  *
  *		<p><b>fo</b><b>o</b></p>
  *

@@ -12,8 +12,10 @@ import Schema from '/ckeditor5/engine/model/schema.js';
 import Composer from '/ckeditor5/engine/model/composer/composer.js';
 import RootElement from '/ckeditor5/engine/model/rootelement.js';
 import Batch from '/ckeditor5/engine/model/batch.js';
+import Delta from '/ckeditor5/engine/model/delta/delta.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import count from '/ckeditor5/utils/count.js';
+import { jsonParseStringify } from '/tests/engine/model/_utils/utils.js';
 
 describe( 'Document', () => {
 	let doc;
@@ -41,37 +43,40 @@ describe( 'Document', () => {
 		} );
 
 		it( 'should return an iterator of all roots without the graveyard', () => {
-			doc.createRoot( 'a' );
-			doc.createRoot( 'b' );
+			doc.createRoot( '$root', 'a' );
+			doc.createRoot( '$root', 'b' );
 
 			expect( Array.from( doc.rootNames ) ).to.deep.equal( [ 'a', 'b' ] );
 		} );
 	} );
 
 	describe( 'createRoot', () => {
-		it( 'should create a new RootElement, add it to roots map and return it', () => {
-			let root = doc.createRoot( 'root' );
+		it( 'should create a new RootElement with default element and root names, add it to roots map and return it', () => {
+			let root = doc.createRoot();
 
 			expect( doc._roots.size ).to.equal( 2 );
 			expect( root ).to.be.instanceof( RootElement );
 			expect( root.getChildCount() ).to.equal( 0 );
 			expect( root ).to.have.property( 'name', '$root' );
-			expect( root ).to.have.property( 'rootName', 'root' );
+			expect( root ).to.have.property( 'rootName', 'main' );
 		} );
 
-		it( 'should create a new RootElement with the specified name', () => {
-			let root = doc.createRoot( 'root', 'foo' );
+		it( 'should create a new RootElement with custom element and root names, add it to roots map and return it', () => {
+			let root = doc.createRoot( 'customElementName', 'customRootName' );
 
-			expect( root ).to.have.property( 'name', 'foo' );
-			expect( root ).to.have.property( 'rootName', 'root' );
+			expect( doc._roots.size ).to.equal( 2 );
+			expect( root ).to.be.instanceof( RootElement );
+			expect( root.getChildCount() ).to.equal( 0 );
+			expect( root ).to.have.property( 'name', 'customElementName' );
+			expect( root ).to.have.property( 'rootName', 'customRootName' );
 		} );
 
 		it( 'should throw an error when trying to create a second root with the same name', () => {
-			doc.createRoot( 'root', 'root' );
+			doc.createRoot( '$root', 'rootName' );
 
 			expect(
 				() => {
-					doc.createRoot( 'root', 'root' );
+					doc.createRoot( '$root', 'rootName' );
 				}
 			).to.throw( CKEditorError, /document-createRoot-name-exists/ );
 		} );
@@ -79,8 +84,8 @@ describe( 'Document', () => {
 
 	describe( 'getRoot', () => {
 		it( 'should return a RootElement previously created with given name', () => {
-			let newRoot = doc.createRoot( 'root' );
-			let getRoot = doc.getRoot( 'root' );
+			let newRoot = doc.createRoot();
+			let getRoot = doc.getRoot();
 
 			expect( getRoot ).to.equal( newRoot );
 		} );
@@ -96,9 +101,9 @@ describe( 'Document', () => {
 
 	describe( 'hasRoot', () => {
 		it( 'should return true when Document has RootElement with given name', () => {
-			doc.createRoot( 'root' );
+			doc.createRoot();
 
-			expect( doc.hasRoot( 'root' ) ).to.be.true;
+			expect( doc.hasRoot( 'main' ) ).to.be.true;
 		} );
 
 		it( 'should return false when Document does not have RootElement with given name', () => {
@@ -111,14 +116,17 @@ describe( 'Document', () => {
 			const changeCallback = sinon.spy();
 			const type = 't';
 			const data = { data: 'x' };
-			const batch = 'batch';
+			const batch = new Batch();
+			const delta = new Delta();
 
 			let operation = {
 				type: type,
-				delta: { batch: batch },
 				baseVersion: 0,
 				_execute: sinon.stub().returns( data )
 			};
+
+			delta.addOperation( operation );
+			batch.addDelta( delta );
 
 			doc.on( 'change', changeCallback );
 			doc.applyOperation( operation );
@@ -151,6 +159,12 @@ describe( 'Document', () => {
 
 			expect( batch ).to.be.instanceof( Batch );
 			expect( batch ).to.have.property( 'doc' ).that.equals( doc );
+		} );
+
+		it( 'should set given batch type', () => {
+			const batch = doc.batch( 'ignore' );
+
+			expect( batch ).to.have.property( 'type' ).that.equals( 'ignore' );
 		} );
 	} );
 
@@ -233,11 +247,15 @@ describe( 'Document', () => {
 		} );
 
 		it( 'should return the first root added to the document', () => {
-			let rootA = doc.createRoot( 'rootA' );
-			doc.createRoot( 'rootB' );
-			doc.createRoot( 'rootC' );
+			let rootA = doc.createRoot( '$root', 'rootA' );
+			doc.createRoot( '$root', 'rootB' );
+			doc.createRoot( '$root', 'rootC' );
 
 			expect( doc._getDefaultRoot() ).to.equal( rootA );
 		} );
+	} );
+
+	it( 'should be correctly converted to json', () => {
+		expect( jsonParseStringify( doc ).selection ).to.equal( '[engine.model.LiveSelection]' );
 	} );
 } );

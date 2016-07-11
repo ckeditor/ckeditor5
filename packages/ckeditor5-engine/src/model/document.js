@@ -12,7 +12,7 @@ import transformations from './delta/basic-transformations.js'; // jshint ignore
 import RootElement from './rootelement.js';
 import Batch from './batch.js';
 import History from './history.js';
-import Selection from './selection.js';
+import LiveSelection from './liveselection.js';
 import EmitterMixin from '../../utils/emittermixin.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 import mix from '../../utils/mix.js';
@@ -55,9 +55,9 @@ export default class Document {
 		 * Selection done on this document.
 		 *
 		 * @readonly
-		 * @member {engine.model.Selection} engine.model.Document#selection
+		 * @member {engine.model.LiveSelection} engine.model.Document#selection
 		 */
-		this.selection = new Selection( this );
+		this.selection = new LiveSelection( this );
 
 		/**
 		 * Schema for this document.
@@ -103,15 +103,17 @@ export default class Document {
 		} );
 
 		// Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
-		this.createRoot( graveyardName );
+		this.createRoot( '$root', graveyardName );
 
 		/**
 		 * Document's history.
 		 *
+		 * **Note:** Be aware that deltas applied to the stored deltas might be removed or changed.
+		 *
 		 * @readonly
 		 * @member {engine.model.History} engine.model.Document#history
 		 */
-		this.history = new History();
+		this.history = new History( this );
 	}
 
 	/**
@@ -159,7 +161,7 @@ export default class Document {
 
 		this.version++;
 
-		this.history.addOperation( operation );
+		this.history.addDelta( operation.delta );
 
 		const batch = operation.delta && operation.delta.batch;
 
@@ -172,22 +174,23 @@ export default class Document {
 	/**
 	 * Creates a {@link engine.model.Batch} instance which allows to change the document.
 	 *
+	 * @param {String} [type] Batch type. See {@link engine.model.Batch#type}.
 	 * @returns {engine.model.Batch} Batch instance.
 	 */
-	batch() {
-		return new Batch( this );
+	batch( type ) {
+		return new Batch( this, type );
 	}
 
 	/**
 	 * Creates a new top-level root.
 	 *
-	 * @param {String} [rootName='main'] Unique root name.
 	 * @param {String} [elementName='$root'] Element name. Defaults to `'$root'` which also have
 	 * some basic schema defined (`$block`s are allowed inside the `$root`). Make sure to define a proper
 	 * schema if you use a different name.
+	 * @param {String} [rootName='main'] Unique root name.
 	 * @returns {engine.model.RootElement} Created root.
 	 */
-	createRoot( rootName = 'main', elementName = '$root' ) {
+	createRoot( elementName = '$root', rootName = 'main' ) {
 		if ( this._roots.has( rootName ) ) {
 			/**
 			 * Root with specified name already exists.
@@ -282,9 +285,9 @@ export default class Document {
 		const json = clone( this );
 
 		// Due to circular references we need to remove parent reference.
-		json.selection = '[engine.model.Selection]';
+		json.selection = '[engine.model.LiveSelection]';
 
-		return {};
+		return json;
 	}
 
 	/**

@@ -10,15 +10,15 @@
 import Document from '/ckeditor5/engine/view/document.js';
 import MutationObserver from '/ckeditor5/engine/view/observer/mutationobserver.js';
 import SelectionObserver from '/ckeditor5/engine/view/observer/selectionobserver.js';
+import FocusObserver from '/ckeditor5/engine/view/observer/focusobserver.js';
 import { setData } from '/tests/engine/_utils/view.js';
 
 const viewDocument = new Document();
-const viewRoot = viewDocument.createRoot( document.getElementById( 'editor' ) );
+viewDocument.createRoot( document.getElementById( 'editor' ) );
 
 viewDocument.addObserver( MutationObserver );
 viewDocument.addObserver( SelectionObserver );
-
-viewDocument.focusedEditable = viewRoot;
+viewDocument.addObserver( FocusObserver );
 
 setData( viewDocument,
 	'<container:p><attribute:b>foo</attribute:b>bar</container:p>' +

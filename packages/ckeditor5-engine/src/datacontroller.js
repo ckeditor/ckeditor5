@@ -13,7 +13,6 @@ import { insertText } from './conversion/model-to-view-converters.js';
 import ViewConversionDispatcher from './conversion/viewconversiondispatcher.js';
 import { convertText, convertToModelFragment } from './conversion/view-to-model-converters.js';
 
-import Writer from './view/writer.js';
 import ViewDocumentFragment from './view/documentfragment.js';
 import DomConverter from './view/domconverter.js';
 import { NBSP_FILLER } from './view/filler.js';
@@ -68,14 +67,6 @@ export default class DataController {
 		this._mapper = new Mapper();
 
 		/**
-		 * Writer used during the conversion.
-		 *
-		 * @private
-		 * @member {engine.view.Writer} engine.DataController#_writer
-		 */
-		this._writer = new Writer();
-
-		/**
 		 * DOM converter used during the conversion.
 		 *
 		 * @private
@@ -97,7 +88,6 @@ export default class DataController {
 		 * @member {engine.conversion.ModelConversionDispatcher} engine.DataController#modelToView
 		 */
 		this.modelToView = new ModelConversionDispatcher( {
-			writer: this._writer,
 			mapper: this._mapper
 		} );
 		this.modelToView.on( 'insert:$text', insertText() );
@@ -171,7 +161,8 @@ export default class DataController {
 		const modelRoot = this.model.getRoot( rootName );
 
 		this.model.enqueueChanges( () => {
-			this.model.batch()
+			// Initial batch should be ignored by features like undo, etc.
+			this.model.batch( 'transparent' )
 				.remove( ModelRange.createFromElement( modelRoot ) )
 				.insert( ModelPosition.createAt( modelRoot, 0 ), this.parse( data ) );
 		} );

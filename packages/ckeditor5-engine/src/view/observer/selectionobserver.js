@@ -116,11 +116,7 @@ export default class SelectionObserver extends Observer {
 	 * @param {Document} domDocument DOM document.
 	 */
 	_handleSelectionChange( domDocument ) {
-		if ( !this.isEnabled ) {
-			return;
-		}
-
-		if ( !this.document.focusedEditable ) {
+		if ( !this.isEnabled || !this.document.isFocused ) {
 			return;
 		}
 

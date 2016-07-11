@@ -12,14 +12,14 @@ import MoveOperation from '/ckeditor5/engine/model/operation/moveoperation.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import Element from '/ckeditor5/engine/model/element.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-import { jsonParseStringify } from '/tests/engine/model/_utils/utils.js';
+import { jsonParseStringify, wrapInDelta } from '/tests/engine/model/_utils/utils.js';
 
 describe( 'MoveOperation', () => {
 	let doc, root;
 
 	beforeEach( () => {
 		doc = new Document();
-		root = doc.createRoot( 'root' );
+		root = doc.createRoot();
 	} );
 
 	it( 'should have proper type', () => {
@@ -50,14 +50,14 @@ describe( 'MoveOperation', () => {
 
 		root.insertChildren( 0, [ p1, p2 ] );
 
-		doc.applyOperation(
+		doc.applyOperation( wrapInDelta(
 			new MoveOperation(
 				new Position( root, [ 0, 0 ] ),
 				1,
 				new Position( root, [ 1, 0 ] ),
 				doc.version
 			)
-		);
+		) );
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 2 );
@@ -71,14 +71,14 @@ describe( 'MoveOperation', () => {
 	it( 'should move position of children in one node backward', () => {
 		root.insertChildren( 0, 'xbarx' );
 
-		doc.applyOperation(
+		doc.applyOperation( wrapInDelta(
 			new MoveOperation(
 				new Position( root, [ 2 ] ),
 				2,
 				new Position( root, [ 1 ] ),
 				doc.version
 			)
-		);
+		) );
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 5 );
@@ -92,14 +92,14 @@ describe( 'MoveOperation', () => {
 	it( 'should move position of children in one node forward', () => {
 		root.insertChildren( 0, 'xbarx' );
 
-		doc.applyOperation(
+		doc.applyOperation( wrapInDelta(
 			new MoveOperation(
 				new Position( root, [ 1 ] ),
 				2,
 				new Position( root, [ 4 ] ),
 				doc.version
 			)
-		);
+		) );
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 5 );
@@ -143,7 +143,7 @@ describe( 'MoveOperation', () => {
 			doc.version
 		);
 
-		doc.applyOperation( operation );
+		doc.applyOperation( wrapInDelta( operation ) );
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 2 );
@@ -151,7 +151,7 @@ describe( 'MoveOperation', () => {
 		expect( p2.getChildCount() ).to.equal( 1 );
 		expect( p2.getChild( 0 ).name ).to.equal( 'x' );
 
-		doc.applyOperation( operation.getReversed() );
+		doc.applyOperation( wrapInDelta( operation.getReversed() ) );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.getChildCount() ).to.equal( 2 );
@@ -170,7 +170,7 @@ describe( 'MoveOperation', () => {
 			doc.version
 		);
 
-		expect( () => doc.applyOperation( operation ) ).to.throw( CKEditorError, /operation-move-nodes-do-not-exist/ );
+		expect( () => doc.applyOperation( wrapInDelta( operation ) ) ).to.throw( CKEditorError, /operation-move-nodes-do-not-exist/ );
 	} );
 
 	it( 'should throw an error if target or source parent-element specified by position does not exist', () => {
@@ -187,7 +187,7 @@ describe( 'MoveOperation', () => {
 
 		root.removeChildren( 2, 1 );
 
-		expect( () => doc.applyOperation( operation ) ).to.throw( CKEditorError, /operation-move-position-invalid/ );
+		expect( () => doc.applyOperation( wrapInDelta( operation ) ) ).to.throw( CKEditorError, /operation-move-position-invalid/ );
 	} );
 
 	it( 'should throw an error if operation tries to move a range between the beginning and the end of that range', () => {
@@ -200,7 +200,7 @@ describe( 'MoveOperation', () => {
 			doc.version
 		);
 
-		expect( () => doc.applyOperation( operation ) ).to.throw( CKEditorError, /operation-move-range-into-itself/ );
+		expect( () => doc.applyOperation( wrapInDelta( operation ) ) ).to.throw( CKEditorError, /operation-move-range-into-itself/ );
 	} );
 
 	it( 'should throw an error if operation tries to move a range into a sub-tree of a node that is in that range', () => {
@@ -214,7 +214,7 @@ describe( 'MoveOperation', () => {
 			doc.version
 		);
 
-		expect( () => doc.applyOperation( operation ) ).to.throw( CKEditorError, /operation-move-node-into-itself/ );
+		expect( () => doc.applyOperation( wrapInDelta( operation ) ) ).to.throw( CKEditorError, /operation-move-node-into-itself/ );
 	} );
 
 	it( 'should not throw an error if operation move a range into a sibling', () => {
@@ -230,7 +230,7 @@ describe( 'MoveOperation', () => {
 
 		expect(
 			() => {
-				doc.applyOperation( operation );
+				doc.applyOperation( wrapInDelta( operation ) );
 			}
 		).not.to.throw();
 
@@ -253,7 +253,7 @@ describe( 'MoveOperation', () => {
 
 		expect(
 			() => {
-				doc.applyOperation( operation );
+				doc.applyOperation( wrapInDelta( operation ) );
 			}
 		).not.to.throw();
 	} );

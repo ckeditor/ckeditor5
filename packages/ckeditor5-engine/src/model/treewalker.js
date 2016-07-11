@@ -21,11 +21,10 @@ export default class TreeWalker {
 	 * Creates a range iterator. All parameters are optional, but you have to specify either `boundaries` or `startPosition`.
 	 *
 	 * @constructor
-	 * @param {Object} options Object with configuration.
-	 * @param {engine.model.Position} [options.startPosition] Starting position.
+	 * @param {Object} [options={}] Object with configuration.
+	 * @param {'FORWARD'|'BACKWARD'} [options.direction='FORWARD'] Walking direction.
 	 * @param {engine.model.Range} [options.boundaries=null] Range to define boundaries of the iterator.
 	 * @param {engine.model.Position} [options.startPosition] Starting position.
-	 * @param {'FORWARD'|'BACKWARD'} [options.direction='FORWARD'] Walking direction.
 	 * @param {Boolean} [options.singleCharacters=false] Flag indicating whether all consecutive characters with the same attributes
 	 * should be returned one by one as multiple {@link engine.model.CharacterProxy} (`true`) objects or as one
 	 * {@link engine.model.TextProxy} (`false`).
@@ -36,17 +35,8 @@ export default class TreeWalker {
 	 * each {@link engine.model.Element} will be returned once, while if the option is `false` they might be returned
 	 * twice: for `'ELEMENT_START'` and `'ELEMENT_END'`.
 	 */
-	constructor(
-		{
-			boundaries = null,
-			startPosition,
-			direction = 'FORWARD',
-			singleCharacters = false,
-			shallow = false,
-			ignoreElementEnd = false,
-		} = {}
-	) {
-		if ( !boundaries && !startPosition ) {
+	constructor( options = {} ) {
+		if ( !options.boundaries && !options.startPosition ) {
 			/**
 			 * Neither boundaries nor starting position have been defined.
 			 *
@@ -55,37 +45,13 @@ export default class TreeWalker {
 			throw new CKEditorError( 'tree-walker-no-start-position: Neither boundaries nor starting position have been defined.' );
 		}
 
+		const direction = options.direction || 'FORWARD';
+
 		if ( direction != 'FORWARD' && direction != 'BACKWARD' ) {
 			throw new CKEditorError(
 				'tree-walker-unknown-direction: Only `BACKWARD` and `FORWARD` direction allowed.',
 				{ direction }
 			);
-		}
-
-		/**
-		 * Iterator boundaries.
-		 *
-		 * When the {@link #next} method is called on the end boundary or the {@link #previous} method
-		 * on the start boundary, then `{ done: true }` is returned.
-		 *
-		 * If boundaries are not defined they are set before first and after last child of the root node.
-		 *
-		 * @readonly
-		 * @member {engine.model.Range} engine.model.TreeWalker#boundaries
-		 */
-		this.boundaries = boundaries;
-
-		/**
-		 * Iterator position. This is always static position, even if the initial position was a
-		 * {@link engine.model.LivePosition live position}.
-		 *
-		 * @readonly
-		 * @member {engine.model.Position} engine.model.TreeWalker#position
-		 */
-		if ( startPosition ) {
-			this.position = Position.createFromPosition( startPosition );
-		} else {
-			this.position = Position.createFromPosition( boundaries[ direction == 'BACKWARD' ? 'end' : 'start' ] );
 		}
 
 		/**
@@ -97,13 +63,41 @@ export default class TreeWalker {
 		this.direction = direction;
 
 		/**
+		 * Iterator boundaries.
+		 *
+		 * When the iterator is walking `FORWARD` on the end of boundary or is walking `BACKWARD`
+		 * on the start of boundary, then `{ done: true }` is returned.
+		 *
+		 * If boundaries are not defined they are set before first and after last child of the root node.
+		 *
+		 * @readonly
+		 * @member {engine.model.Range} engine.model.TreeWalker#boundaries
+		 */
+		this.boundaries = options.boundaries || null;
+
+		/**
+		 * Iterator position. This is always static position, even if the initial position was a
+		 * {@link engine.model.LivePosition live position}. If start position is not defined then position depends
+		 * on {@link #direction}. If direction is `FORWARD` position starts form the beginning, when direction
+		 * is `BACKWARD` position starts from the end.
+		 *
+		 * @readonly
+		 * @member {engine.model.Position} engine.model.TreeWalker#position
+		 */
+		if ( options.startPosition ) {
+			this.position = Position.createFromPosition( options.startPosition );
+		} else {
+			this.position = Position.createFromPosition( this.boundaries[ this.direction == 'BACKWARD' ? 'end' : 'start' ] );
+		}
+
+		/**
 		 * Flag indicating whether all consecutive characters with the same attributes should be
 		 * returned as one {@link engine.model.CharacterProxy} (`true`) or one by one (`false`).
 		 *
 		 * @readonly
 		 * @member {Boolean} engine.model.TreeWalker#singleCharacters
 		 */
-		this.singleCharacters = !!singleCharacters;
+		this.singleCharacters = !!options.singleCharacters;
 
 		/**
 		 * Flag indicating whether iterator should enter elements or not. If the iterator is shallow child nodes of any
@@ -112,7 +106,7 @@ export default class TreeWalker {
 		 * @readonly
 		 * @member {Boolean} engine.model.TreeWalker#shallow
 		 */
-		this.shallow = !!shallow;
+		this.shallow = !!options.shallow;
 
 		/**
 		 * Flag indicating whether iterator should ignore `ELEMENT_END` tags. If the option is true walker will not
@@ -123,7 +117,7 @@ export default class TreeWalker {
 		 * @readonly
 		 * @member {Boolean} engine.model.TreeWalker#ignoreElementEnd
 		 */
-		this.ignoreElementEnd = !!ignoreElementEnd;
+		this.ignoreElementEnd = !!options.ignoreElementEnd;
 
 		/**
 		 * Start boundary cached for optimization purposes.
@@ -251,7 +245,7 @@ export default class TreeWalker {
 	 * @private
 	 * @returns {Object}
 	 * @returns {Boolean} return.done True if iterator is done.
-	 * @returns {core.model.TreeWalkerValue} return.value Information about taken step.
+	 * @returns {engine.model.TreeWalkerValue} return.value Information about taken step.
 	 */
 	_previous() {
 		const previousPosition = this.position;
@@ -312,6 +306,7 @@ export default class TreeWalker {
 				return formatReturnValue( 'TEXT', textFragment, previousPosition, position, charactersCount );
 			}
 		} else {
+			// `node` is not set, we reached the beginning of current `parent`.
 			position.path.pop();
 			this.position = position;
 			this._visitedParent = parent.parent;
@@ -369,5 +364,5 @@ function formatReturnValue( type, item, previousPosition, nextPosition, length )
 /**
  * Tree walking directions.
  *
- * @typedef {'FORWARD'|'BACKWARD'} core.model.TreeWalkerDirection
+ * @typedef {'FORWARD'|'BACKWARD'} engine.view.TreeWalkerDirection
  */

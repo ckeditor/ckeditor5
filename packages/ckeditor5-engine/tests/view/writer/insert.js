@@ -7,7 +7,7 @@
 
 'use strict';
 
-import Writer from '/ckeditor5/engine/view/writer.js';
+import { insert } from '/ckeditor5/engine/view/writer.js';
 import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import Element from '/ckeditor5/engine/view/element.js';
@@ -17,9 +17,7 @@ import { stringify, parse } from '/tests/engine/_utils/view.js';
 import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
 import Text from '/ckeditor5/engine/view/text.js';
 
-describe( 'Writer', () => {
-	let writer;
-
+describe( 'writer', () => {
 	/**
 	 * Executes test using `parse` and `stringify` utils functions.
 	 *
@@ -35,13 +33,9 @@ describe( 'Writer', () => {
 			view = new DocumentFragment( view );
 		}
 
-		const newRange = writer.insert( selection.getFirstPosition(), nodesToInsert );
+		const newRange = insert( selection.getFirstPosition(), nodesToInsert );
 		expect( stringify( view, newRange, { showType: true, showPriority: true } ) ).to.equal( expected );
 	}
-
-	beforeEach( () => {
-		writer = new Writer();
-	} );
 
 	describe( 'insert', () => {
 		it( 'should return collapsed range in insertion position when using empty array', () => {
@@ -157,7 +151,7 @@ describe( 'Writer', () => {
 			const container = new ContainerElement( 'p' );
 			const position = new Position( container, 0 );
 			expect( () => {
-				writer.insert( position, element );
+				insert( position, element );
 			} ).to.throw( CKEditorError, 'view-writer-insert-invalid-node' );
 		} );
 
@@ -168,8 +162,18 @@ describe( 'Writer', () => {
 			const position = new Position( container, 0 );
 
 			expect( () => {
-				writer.insert( position, root );
+				insert( position, root );
 			} ).to.throw( CKEditorError, 'view-writer-insert-invalid-node' );
+		} );
+
+		it( 'should throw when position is not placed inside container', () => {
+			const element = new Element( 'b' );
+			const position = new Position( element, 0 );
+			const attributeElement = new AttributeElement( 'i' );
+
+			expect( () => {
+				insert( position, attributeElement );
+			} ).to.throw( CKEditorError, 'view-writer-invalid-position-container' );
 		} );
 	} );
 } );

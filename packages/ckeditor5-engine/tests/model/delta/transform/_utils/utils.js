@@ -173,7 +173,7 @@ export function applyDelta( delta, document ) {
 
 export function getFilledDocument() {
 	const doc = new Document();
-	const root = doc.createRoot( 'root' );
+	const root = doc.createRoot();
 
 	root.insertChildren( 0, [
 		new Element( 'x' ),

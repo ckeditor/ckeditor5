@@ -7,7 +7,8 @@
 
 import History from '/ckeditor5/engine/model/history.js';
 import Delta from '/ckeditor5/engine/model/delta/delta.js';
-import NoOperation from '/ckeditor5/engine/model/operation/nooperation.js';
+import Operation from '/ckeditor5/engine/model/operation/operation.js';
+
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'History', () => {
@@ -19,166 +20,215 @@ describe( 'History', () => {
 
 	describe( 'constructor', () => {
 		it( 'should create an empty History instance', () => {
-			expect( history._deltas.length ).to.equal( 0 );
-			expect( history._historyPoints.size ).to.equal( 0 );
+			expect( Array.from( history.getDeltas() ).length ).to.equal( 0 );
 		} );
 	} );
 
-	describe( 'addOperation', () => {
-		it( 'should save delta containing passed operation in the history', () => {
+	describe( 'addDelta', () => {
+		it( 'should save delta in the history', () => {
 			let delta = new Delta();
-			let operation = new NoOperation( 0 );
+			delta.addOperation( new Operation( 0 ) );
 
-			delta.addOperation( operation );
-			history.addOperation( operation );
+			history.addDelta( delta );
 
-			expect( history._deltas.length ).to.equal( 1 );
-			expect( history._deltas[ 0 ] ).to.equal( delta );
+			const deltas = Array.from( history.getDeltas() );
+			expect( deltas.length ).to.equal( 1 );
+			expect( deltas[ 0 ] ).to.equal( delta );
 		} );
 
 		it( 'should save each delta only once', () => {
 			let delta = new Delta();
+			delta.addOperation( new Operation( 0 ) );
 
-			delta.addOperation( new NoOperation( 0 ) );
-			delta.addOperation( new NoOperation( 1 ) );
-			delta.addOperation( new NoOperation( 2 ) );
+			history.addDelta( delta );
+			history.addDelta( delta );
 
-			for ( let operation of delta.operations ) {
-				history.addOperation( operation );
-			}
-
-			expect( history._deltas.length ).to.equal( 1 );
-			expect( history._deltas[ 0 ] ).to.equal( delta );
+			const deltas = Array.from( history.getDeltas() );
+			expect( deltas.length ).to.equal( 1 );
+			expect( deltas[ 0 ] ).to.equal( delta );
 		} );
 
 		it( 'should save multiple deltas and keep their order', () => {
-			let deltaA = new Delta();
-			let deltaB = new Delta();
-			let deltaC = new Delta();
-
-			let deltas = [ deltaA, deltaB, deltaC ];
-
-			let i = 0;
+			let deltas = getDeltaSet();
 
 			for ( let delta of deltas ) {
-				delta.addOperation( new NoOperation( i++ ) );
-				delta.addOperation( new NoOperation( i++ ) );
+				history.addDelta( delta );
 			}
 
-			for ( let delta of deltas ) {
-				for ( let operation of delta.operations ) {
-					history.addOperation( operation );
-				}
-			}
+			const historyDeltas = Array.from( history.getDeltas() );
+			expect( historyDeltas ).to.deep.equal( deltas );
+		} );
 
-			expect( history._deltas.length ).to.equal( 3 );
-			expect( history._deltas[ 0 ] ).to.equal( deltaA );
-			expect( history._deltas[ 1 ] ).to.equal( deltaB );
-			expect( history._deltas[ 2 ] ).to.equal( deltaC );
+		it( 'should skip deltas that does not have operations', () => {
+			let delta = new Delta();
+
+			history.addDelta( delta );
+
+			expect( Array.from( history.getDeltas() ).length ).to.equal( 0 );
 		} );
 	} );
 
-	describe( 'getTransformedDelta', () => {
-		it( 'should transform given delta by deltas from history which were applied since the baseVersion of given delta', () => {
-			sinon.spy( History, '_transform' );
+	describe( 'getDelta', () => {
+		it( 'should return array with one delta with given base version', () => {
+			let delta = getDelta( 0 );
+			history.addDelta( delta );
 
-			let deltaA = new Delta();
-			deltaA.addOperation( new NoOperation( 0 ) );
-
-			let deltaB = new Delta();
-			deltaB.addOperation( new NoOperation( 1 ) );
-
-			let deltaC = new Delta();
-			deltaC.addOperation( new NoOperation( 2 ) );
-
-			let deltaD = new Delta();
-			deltaD.addOperation( new NoOperation( 3 ) );
-
-			let deltaX = new Delta();
-			deltaX.addOperation( new NoOperation( 1 ) );
-
-			history.addOperation( deltaA.operations[ 0 ] );
-			history.addOperation( deltaB.operations[ 0 ] );
-			history.addOperation( deltaC.operations[ 0 ] );
-			history.addOperation( deltaD.operations[ 0 ] );
-
-			// `deltaX` bases on the same history point as `deltaB` -- so it already acknowledges `deltaA` existence.
-			// It should be transformed by `deltaB` and all following deltas (`deltaC` and `deltaD`).
-			history.getTransformedDelta( deltaX );
-
-			// `deltaX` was not transformed by `deltaA`.
-			expect( History._transform.calledWithExactly( deltaX, deltaA ) ).to.be.false;
-
-			expect( History._transform.calledWithExactly( deltaX, deltaB ) ).to.be.true;
-			// We can't do exact call matching because after first transformation, what we are further transforming
-			// is no longer `deltaX` but a result of transforming `deltaX` and `deltaB`.
-			expect( History._transform.calledWithExactly( sinon.match.instanceOf( Delta ), deltaC ) ).to.be.true;
-			expect( History._transform.calledWithExactly( sinon.match.instanceOf( Delta ), deltaD ) ).to.be.true;
+			const historyDelta = history.getDelta( 0 );
+			expect( historyDelta ).to.deep.equal( [ delta ] );
 		} );
 
-		it( 'should correctly set base versions if multiple deltas are result of transformation', () => {
-			// Let's stub History._transform so it will always return two deltas with two operations each.
-			History._transform = function() {
-				let resultA = new Delta();
-				resultA.addOperation( new NoOperation( 1 ) );
-				resultA.addOperation( new NoOperation( 1 ) );
+		it( 'should return array with all updated deltas of delta with given base version', () => {
+			let delta = getDelta( 0 );
+			history.addDelta( delta );
 
-				let resultB = new Delta();
-				resultB.addOperation( new NoOperation( 1 ) );
-				resultB.addOperation( new NoOperation( 1 ) );
+			let deltas = getDeltaSet();
+			history.updateDelta( 0, deltas );
 
-				return [ resultA, resultB ];
-			};
-
-			let deltaA = new Delta();
-			deltaA.addOperation( new NoOperation( 0 ) );
-
-			let deltaX = new Delta();
-			deltaX.addOperation( new NoOperation( 0 ) );
-
-			history.addOperation( deltaA.operations[ 0 ] );
-
-			let result = history.getTransformedDelta( deltaX );
-
-			expect( result[ 0 ].operations[ 0 ].baseVersion ).to.equal( 1 );
-			expect( result[ 0 ].operations[ 1 ].baseVersion ).to.equal( 2 );
-			expect( result[ 1 ].operations[ 0 ].baseVersion ).to.equal( 3 );
-			expect( result[ 1 ].operations[ 1 ].baseVersion ).to.equal( 4 );
+			const historyDelta = history.getDelta( 0 );
+			expect( historyDelta ).to.deep.equal( deltas );
 		} );
 
-		it( 'should not transform given delta if it bases on current version of history', () => {
-			let deltaA = new Delta();
-			deltaA.addOperation( new NoOperation( 0 ) );
-
-			let deltaB = new Delta();
-			let opB = new NoOperation( 1 );
-			deltaB.addOperation( opB );
-
-			history.addOperation( deltaA.operations[ 0 ] );
-
-			let result = history.getTransformedDelta( deltaB );
-
-			expect( result.length ).to.equal( 1 );
-			expect( result[ 0 ] ).to.equal( deltaB );
-			expect( result[ 0 ].operations[ 0 ] ).to.equal( opB );
+		it( 'should return null if delta has not been found in history', () => {
+			expect( history.getDelta( -1 ) ).to.be.null;
+			expect( history.getDelta( 2 ) ).to.be.null;
+			expect( history.getDelta( 20 ) ).to.be.null;
 		} );
 
-		it( 'should throw if given delta bases on an incorrect version of history', () => {
-			let deltaA = new Delta();
-			deltaA.addOperation( new NoOperation( 0 ) );
-			deltaA.addOperation( new NoOperation( 1 ) );
+		it( 'should return null if delta has been removed by removeDelta', () => {
+			let delta = getDelta( 0 );
+			history.addDelta( delta );
+			history.removeDelta( 0 );
 
-			history.addOperation( deltaA.operations[ 0 ] );
-			history.addOperation( deltaA.operations[ 1 ] );
+			expect( history.getDelta( 0 ) ).to.be.null;
+		} );
+	} );
 
-			let deltaB = new Delta();
-			// Wrong base version - should be either 0 or 2, operation can't be based on an operation that is
-			// in the middle of other delta, because deltas are atomic, not dividable structures.
-			deltaB.addOperation( new NoOperation( 1 ) );
+	describe( 'getDeltas', () => {
+		let deltas;
 
+		beforeEach( () => {
+			deltas = getDeltaSet();
+
+			for ( let delta of deltas ) {
+				history.addDelta( delta );
+			}
+		} );
+
+		it( 'should return only history deltas from given base version', () => {
+			const historyDeltas = Array.from( history.getDeltas( 3 ) );
+			expect( historyDeltas ).to.deep.equal( deltas.slice( 1 ) );
+		} );
+
+		it( 'should return only history deltas to given base version', () => {
+			const historyDeltas = Array.from( history.getDeltas( 3, 6 ) );
+			expect( historyDeltas ).to.deep.equal( deltas.slice( 1, 2 ) );
+		} );
+
+		it( 'should return empty (finished) iterator if given history point is too high or negative', () => {
+			expect( Array.from( history.getDeltas( 20 ) ).length ).to.equal( 0 );
+			expect( Array.from( history.getDeltas( -1 ) ).length ).to.equal( 0 );
+		} );
+
+		it( 'should throw if given history point is "inside" delta', () => {
 			expect( () => {
-				history.getTransformedDelta( deltaB );
+				Array.from( history.getDeltas( 2 ) );
 			} ).to.throw( CKEditorError, /history-wrong-version/ );
 		} );
 	} );
+
+	describe( 'updateDelta', () => {
+		it( 'should substitute delta from history by given deltas', () => {
+			history.addDelta( getDelta( 0 ) );
+
+			const deltas = getDeltaSet();
+			history.updateDelta( 0, deltas );
+
+			const historyDeltas = Array.from( history.getDeltas() );
+			expect( historyDeltas ).to.deep.equal( deltas );
+		} );
+
+		it( 'should substitute all updated deltas by new deltas', () => {
+			history.addDelta( getDelta( 0 ) );
+
+			// Change original single delta to three deltas generated by `getDeltaSet`.
+			// All those deltas should now be seen under base version 0.
+			history.updateDelta( 0, getDeltaSet() );
+
+			const deltas = getDeltaSet();
+			// Change all three deltas from base version 0 to new set of deltas.
+			history.updateDelta( 0, deltas );
+
+			const historyDeltas = Array.from( history.getDeltas() );
+			expect( historyDeltas ).to.deep.equal( deltas );
+		} );
+
+		it( 'should do nothing if deltas for given base version has not been found in history', () => {
+			history.addDelta( getDelta( 0 ) );
+			history.removeDelta( 0 );
+
+			const deltas = getDeltaSet();
+
+			history.updateDelta( 0, deltas );
+
+			expect( Array.from( history.getDeltas() ).length ).to.equal( 0 );
+		} );
+	} );
+
+	describe( 'removeDelta', () => {
+		it( 'should remove deltas that do not have graveyard related operations', () => {
+			for ( let delta of getDeltaSet() ) {
+				history.addDelta( delta );
+			}
+
+			history.removeDelta( 3 );
+
+			const deltas = Array.from( history.getDeltas() );
+			expect( deltas.length ).to.equal( 2 );
+		} );
+
+		it( 'should remove multiple updated deltas', () => {
+			let delta = getDelta( 0 );
+			history.addDelta( delta );
+
+			let updatedDeltas = getDeltaSet( 0 );
+
+			history.updateDelta( 0, updatedDeltas );
+			history.removeDelta( 0 );
+
+			const deltas = Array.from( history.getDeltas() );
+			expect( deltas.length ).to.equal( 0 );
+		} );
+
+		it( 'should do nothing if deltas for given base version has not been found in history', () => {
+			const deltas = getDeltaSet();
+
+			for ( let delta of deltas ) {
+				history.addDelta( delta );
+			}
+
+			history.removeDelta( 12 );
+
+			expect( Array.from( history.getDeltas() ) ).to.deep.equal( deltas );
+		} );
+	} );
 } );
+
+function getDeltaSet() {
+	const deltas = [];
+
+	deltas.push( getDelta( 0 ) );
+	deltas.push( getDelta( 3 ) );
+	deltas.push( getDelta( 6 ) );
+
+	return deltas;
+}
+
+function getDelta( baseVersion ) {
+	const delta = new Delta();
+
+	for ( let i = 0; i < 3; i++ ) {
+		delta.addOperation( new Operation( i + baseVersion ) );
+	}
+
+	return delta;
+}

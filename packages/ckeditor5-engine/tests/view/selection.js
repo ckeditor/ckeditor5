@@ -9,6 +9,7 @@
 
 import Selection from '/ckeditor5/engine/view/selection.js';
 import Range from '/ckeditor5/engine/view/range.js';
+import Document from '/ckeditor5/engine/view/document.js';
 import Element from '/ckeditor5/engine/view/element.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
@@ -361,6 +362,19 @@ describe( 'Selection', () => {
 
 			expect( selection.anchor.isEqual( range3.end ) ).to.be.true;
 		} );
+
+		it( 'should fire change event', ( done ) => {
+			selection.on( 'change', () => {
+				expect( selection.rangeCount ).to.equal( 1 );
+				expect( selection.getFirstRange().isEqual( range1 ) ).to.be.true;
+				done();
+			} );
+
+			const otherSelection = new Selection();
+			otherSelection.addRange( range1 );
+
+			selection.setTo( otherSelection );
+		} );
 	} );
 
 	describe( 'collapseToStart', () => {
@@ -406,6 +420,30 @@ describe( 'Selection', () => {
 
 			fireSpy.restore();
 			expect( fireSpy.notCalled ).to.be.true;
+		} );
+	} );
+
+	describe( 'getEditableElement', () => {
+		it( 'should return null if no ranges in selection', () => {
+			expect( selection.getEditableElement() ).to.be.null;
+		} );
+
+		it( 'should return null if selection is placed in container that is not EditableElement', () => {
+			selection.addRange( range1 );
+
+			expect( selection.getEditableElement() ).to.be.null;
+		} );
+
+		it( 'should return EditableElement when selection is placed inside', () => {
+			const viewDocument = new Document();
+			const selection = viewDocument.selection;
+			const root = viewDocument.createRoot( 'div' );
+			const element = new Element( 'p' );
+			root.appendChildren( element );
+
+			selection.addRange( Range.createFromParentsAndOffsets( element, 0, element, 0 ) );
+
+			expect( selection.getEditableElement() ).to.equal( root );
 		} );
 	} );
 } );

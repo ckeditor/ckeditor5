@@ -24,11 +24,11 @@ describe( 'Document', () => {
 
 		viewDocument.addObserver( KeyObserver );
 
-		const viewRoot = viewDocument.createRoot( document.getElementById( 'editor' ) );
+		viewDocument.createRoot( document.getElementById( 'editor' ) );
 
 		document.getSelection().removeAllRanges();
 
-		viewDocument.focusedEditable = viewRoot;
+		viewDocument.isFocused = true;
 	} );
 
 	describe( 'jump over inline filler hack', () => {

@@ -8,6 +8,7 @@
 'use strict';
 
 import ObservableMixin from '/ckeditor5/utils/observablemixin.js';
+import Selection from '/ckeditor5/engine/view/selection.js';
 
 /**
  * Creates {@link engine.view.Document view Document} mock.
@@ -16,7 +17,8 @@ import ObservableMixin from '/ckeditor5/utils/observablemixin.js';
  */
 export default function createDocumentMock() {
 	const doc = Object.create( ObservableMixin );
-	doc.set( 'focusedEditable', null );
+	doc.set( 'isFocused', false );
+	doc.selection = new Selection();
 
 	return doc;
 }

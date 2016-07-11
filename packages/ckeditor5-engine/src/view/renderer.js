@@ -41,6 +41,13 @@ export default class Renderer {
 	 */
 	constructor( domConverter, selection ) {
 		/**
+		 * Set of DOM Documents instances.
+		 *
+		 * @member {Set.<Document>} engine.view.Renderer#domDocuments
+		 */
+		this.domDocuments = new Set();
+
+		/**
 		 * Converter instance.
 		 *
 		 * @readonly
@@ -90,13 +97,12 @@ export default class Renderer {
 		this._inlineFillerPosition = null;
 
 		/**
-		 * {@link engine.view.EditableElement} in which selection is allowed to be rendered.
-		 * If it is null, then selection will not be rendered.
+		 * Indicates if view document is focused and selection can be rendered. Selection will not be rendered if
+		 * this is set to `false`.
 		 *
-		 * @readonly
-		 * @member {engine.view.EditableElement|null} engine.view.Renderer#focusedEditable
+		 * @member {Boolean} engine.view.Renderer#isFocused
 		 */
-		this.focusedEditable = null;
+		this.isFocused = false;
 	}
 
 	/**
@@ -140,7 +146,7 @@ export default class Renderer {
 
 	/**
 	 * Render method checks {@link engine.view.Renderer#markedAttributes},
-	 * {@link engine.view.Renderer#markedChildren} and {@link engine.view.Renderer#markedTexts} and updats all
+	 * {@link engine.view.Renderer#markedChildren} and {@link engine.view.Renderer#markedTexts} and updates all
 	 * nodes which need to be updated. Then it clears all three sets. Also, every time render is called it compares and
 	 * if needed updates the selection.
 	 *
@@ -155,7 +161,7 @@ export default class Renderer {
 	 * {@link engine.view.DomConverter#getCorrespondingDomText corresponding DOM text}. The change will be handled
 	 * in the parent element.
 	 *
-	 * For elements, which child lists have changed, it calculates a {@link diff} and adds or removs children which have changed.
+	 * For elements, which child lists have changed, it calculates a {@link diff} and adds or removes children which have changed.
 	 *
 	 * Rendering also handles {@link engine.view.filler fillers}. Especially, it checks if the inline filler is needed
 	 * at selection position and adds or removes it. To prevent breaking text composition inline filler will not be
@@ -189,6 +195,7 @@ export default class Renderer {
 		}
 
 		this._updateSelection();
+		this._updateFocus();
 
 		this.markedTexts.clear();
 		this.markedAttributes.clear();
@@ -243,7 +250,7 @@ export default class Renderer {
 		const domFillerNode = domFillerPosition.parent;
 
 		// If there is no filler viewPositionToDom will return parent node, so domFillerNode will be an element.
-		if ( !( domFillerNode instanceof Text ) || !startsWithFiller( domFillerNode ) ) {
+		if ( !( this.domConverter.isText( domFillerNode ) ) || !startsWithFiller( domFillerNode ) ) {
 			/**
 			 * No inline filler on expected position.
 			 *
@@ -364,7 +371,7 @@ export default class Renderer {
 		if ( filler && filler.parent == viewElement ) {
 			const expectedNodeAfterFiller = expectedDomChildren[ filler.offset ];
 
-			if ( expectedNodeAfterFiller instanceof Text ) {
+			if ( this.domConverter.isText( expectedNodeAfterFiller ) ) {
 				expectedNodeAfterFiller.data = INLINE_FILLER + expectedNodeAfterFiller.data;
 			} else {
 				expectedDomChildren.splice( filler.offset, 0, domDocument.createTextNode( INLINE_FILLER ) );
@@ -392,7 +399,7 @@ export default class Renderer {
 				return true;
 			}
 			// Texts.
-			else if ( actualDomChild instanceof Text && expectedDomChild instanceof Text ) {
+			else if ( domConverter.isText( actualDomChild ) && domConverter.isText( expectedDomChild ) ) {
 				return actualDomChild.data === expectedDomChild.data;
 			}
 			// Block fillers.
@@ -412,11 +419,19 @@ export default class Renderer {
 	 * @private
 	 */
 	_updateSelection() {
-		if ( !this.focusedEditable ) {
+		// If there is no selection - remove it from DOM elements that belongs to the editor.
+		if ( this.selection.rangeCount === 0 ) {
+			this._removeDomSelction();
+
 			return;
 		}
 
-		const domRoot = this.domConverter.getCorrespondingDomElement( this.focusedEditable );
+		if ( !this.isFocused ) {
+			return;
+		}
+
+		const selectedEditable = this.selection.getEditableElement();
+		const domRoot = this.domConverter.getCorrespondingDomElement( selectedEditable );
 
 		if ( !domRoot ) {
 			return;
@@ -432,14 +447,44 @@ export default class Renderer {
 		domSelection.removeAllRanges();
 
 		for ( let range of this.selection.getRanges() ) {
-			// Update ranges only in currently focused editable.
-			if ( range.start.parent.getRoot() == this.focusedEditable ) {
+			// Update ranges only in currently selected editable.
+			if ( range.start.parent.getRoot() == selectedEditable ) {
 				const domRangeStart = this.domConverter.viewPositionToDom( range.start );
 				const domRangeEnd = this.domConverter.viewPositionToDom( range.end );
 				const domRange = new Range();
 				domRange.setStart( domRangeStart.parent, domRangeStart.offset );
 				domRange.setEnd( domRangeEnd.parent, domRangeEnd.offset );
 				domSelection.addRange( domRange );
+			}
+		}
+	}
+
+	_removeDomSelction() {
+		for ( let doc of this.domDocuments ) {
+			const domSelection = doc.getSelection();
+
+			if ( domSelection.rangeCount ) {
+				const activeDomElement = doc.activeElement;
+				const viewElement = this.domConverter.getCorrespondingViewElement( activeDomElement );
+
+				if ( activeDomElement && viewElement ) {
+					doc.getSelection().removeAllRanges();
+				}
+			}
+		}
+	}
+
+	/**
+	 * Checks if focus needs to be updated and possibly updates it.
+	 *
+	 * @private
+	 */
+	_updateFocus() {
+		if ( this.isFocused ) {
+			const editable = this.selection.getEditableElement();
+
+			if ( editable ) {
+				this.domConverter.focus( editable );
 			}
 		}
 	}

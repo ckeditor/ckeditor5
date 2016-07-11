@@ -10,7 +10,7 @@ import { keyCodes } from '../../utils/keyboard.js';
 /**
  * Set of utils related to block and inline fillers handling.
  *
- * Browsers do not allow to put caret in elements which does not have hight. Because of it, we need to fill all
+ * Browsers do not allow to put caret in elements which does not have height. Because of it, we need to fill all
  * empty elements which should be selectable with elements or characters called "fillers". Unfortunately there is no one
  * universal filler, this is why two types are uses:
  *
@@ -25,7 +25,7 @@ import { keyCodes } from '../../utils/keyboard.js';
  * `<b>` surrendered by text: `foo<b></b>bar`, if we want to put the caret there. CKEditor uses a sequence of the zero-width
  * spaces as an {@link engine.view.filler.INLINE_FILLER inline filler} having the predetermined
  * {@link engine.view.filler.INLINE_FILLER_LENGTH length}. A sequence is used, instead of a single character to
- * avoid threating random zero-width spaces as the inline filler. Disadvantage of the inline filler is that it is not
+ * avoid treating random zero-width spaces as the inline filler. Disadvantage of the inline filler is that it is not
  * transparent for the selection. The arrow key moves the caret between zero-width spaces characters, so the additional
  * code is needed to handle the caret.
  *

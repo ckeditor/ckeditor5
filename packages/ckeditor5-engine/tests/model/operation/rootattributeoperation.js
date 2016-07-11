@@ -10,14 +10,14 @@
 import Document from '/ckeditor5/engine/model/document.js';
 import RootAttributeOperation from '/ckeditor5/engine/model/operation/rootattributeoperation.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-import { jsonParseStringify } from '/tests/engine/model/_utils/utils.js';
+import { jsonParseStringify, wrapInDelta } from '/tests/engine/model/_utils/utils.js';
 
 describe( 'RootAttributeOperation', () => {
 	let doc, root;
 
 	beforeEach( () => {
 		doc = new Document();
-		root = doc.createRoot( 'root' );
+		root = doc.createRoot();
 	} );
 
 	describe( 'type', () => {
@@ -59,7 +59,7 @@ describe( 'RootAttributeOperation', () => {
 	} );
 
 	it( 'should add attribute on the root element', () => {
-		doc.applyOperation(
+		doc.applyOperation( wrapInDelta(
 			new RootAttributeOperation(
 				root,
 				'isNew',
@@ -67,7 +67,7 @@ describe( 'RootAttributeOperation', () => {
 				true,
 				doc.version
 			)
-		);
+		) );
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.hasAttribute( 'isNew' ) ).to.be.true;
@@ -76,7 +76,7 @@ describe( 'RootAttributeOperation', () => {
 	it( 'should change attribute on the root element', () => {
 		root.setAttribute( 'isNew', false );
 
-		doc.applyOperation(
+		doc.applyOperation( wrapInDelta(
 			new RootAttributeOperation(
 				root,
 				'isNew',
@@ -84,7 +84,7 @@ describe( 'RootAttributeOperation', () => {
 				true,
 				doc.version
 			)
-		);
+		) );
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getAttribute( 'isNew' ) ).to.be.true;
@@ -93,7 +93,7 @@ describe( 'RootAttributeOperation', () => {
 	it( 'should remove attribute from the root element', () => {
 		root.setAttribute( 'x', true );
 
-		doc.applyOperation(
+		doc.applyOperation( wrapInDelta(
 			new RootAttributeOperation(
 				root,
 				'x',
@@ -101,7 +101,7 @@ describe( 'RootAttributeOperation', () => {
 				null,
 				doc.version
 			)
-		);
+		) );
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.hasAttribute( 'x' ) ).to.be.false;
@@ -130,8 +130,8 @@ describe( 'RootAttributeOperation', () => {
 
 		let reverse = operation.getReversed();
 
-		doc.applyOperation( operation );
-		doc.applyOperation( reverse );
+		doc.applyOperation( wrapInDelta( operation ) );
+		doc.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.hasAttribute( 'x' ) ).to.be.false;
@@ -150,8 +150,8 @@ describe( 'RootAttributeOperation', () => {
 
 		let reverse = operation.getReversed();
 
-		doc.applyOperation( operation );
-		doc.applyOperation( reverse );
+		doc.applyOperation( wrapInDelta( operation ) );
+		doc.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.getAttribute( 'isNew' ) ).to.be.false;
@@ -170,8 +170,8 @@ describe( 'RootAttributeOperation', () => {
 
 		let reverse = operation.getReversed();
 
-		doc.applyOperation( operation );
-		doc.applyOperation( reverse );
+		doc.applyOperation( wrapInDelta( operation ) );
+		doc.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.getAttribute( 'foo' ) ).to.be.true;
@@ -179,7 +179,7 @@ describe( 'RootAttributeOperation', () => {
 
 	it( 'should throw an error when one try to remove and the attribute does not exists', () => {
 		expect( () => {
-			doc.applyOperation(
+			doc.applyOperation( wrapInDelta(
 				new RootAttributeOperation(
 					root,
 					'foo',
@@ -187,7 +187,7 @@ describe( 'RootAttributeOperation', () => {
 					null,
 					doc.version
 				)
-			);
+			) );
 		} ).to.throw( CKEditorError, /operation-rootattribute-no-attr-to-remove/ );
 	} );
 
@@ -195,7 +195,7 @@ describe( 'RootAttributeOperation', () => {
 		root.setAttribute( 'x', 1 );
 
 		expect( () => {
-			doc.applyOperation(
+			doc.applyOperation( wrapInDelta(
 				new RootAttributeOperation(
 					root,
 					'x',
@@ -203,7 +203,7 @@ describe( 'RootAttributeOperation', () => {
 					2,
 					doc.version
 				)
-			);
+			) );
 		} ).to.throw( CKEditorError, /operation-rootattribute-attr-exists/ );
 	} );
 
@@ -244,7 +244,7 @@ describe( 'RootAttributeOperation', () => {
 				key: 'key',
 				newValue: 'newValue',
 				oldValue: null,
-				root: 'root'
+				root: 'main'
 			} );
 		} );
 	} );

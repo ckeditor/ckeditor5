@@ -6,9 +6,11 @@
 'use strict';
 
 import Text from './text.js';
+import TextProxy from './textproxy.js';
 
 import compareArrays from '../../utils/comparearrays.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
+import EditableElement from './editableelement.js';
 
 /**
  * Position in the tree. Position is always located before or after a node.
@@ -187,12 +189,36 @@ export default class Position {
 	}
 
 	/**
+	 * Returns {@link engine.view.EditableElement EditableElement} instance that contains this position.
+	 *
+	 * @returns {engine.view.EditableElement|null} Returns closest EditableElement or null if none is found.
+	 */
+	getEditableElement() {
+		let editable = this.parent;
+
+		while ( !( editable instanceof EditableElement ) ) {
+			if ( editable.parent ) {
+				editable = editable.parent;
+			} else {
+				return null;
+			}
+		}
+
+		return editable;
+	}
+
+	/**
 	 * Creates a new position after the given node.
 	 *
-	 * @param {engine.view.Node} node Node after which the position should be located.
+	 * @param {engine.view.Node|engine.view.TextProxy} node Node or text proxy after which the position should be located.
 	 * @returns {engine.view.Position}
 	 */
 	static createAfter( node ) {
+		// {@link engine.view.TextProxy} is not a instance of {@link engine.view.Node} so we need do handle it in specific way.
+		if ( node instanceof TextProxy ) {
+			return new Position( node.textNode, node.index + node.data.length );
+		}
+
 		if ( !node.parent ) {
 			/**
 			 * You can not make a position after a root.
@@ -209,10 +235,15 @@ export default class Position {
 	/**
 	 * Creates a new position before the given node.
 	 *
-	 * @param {engine.view.node} node Node before which the position should be located.
+	 * @param {engine.view.Node|engine.view.TextProxy} node Node or text proxy before which the position should be located.
 	 * @returns {engine.view.Position}
 	 */
 	static createBefore( node ) {
+		// {@link engine.view.TextProxy} is not a instance of {@link engine.view.Node} so we need do handle it in specific way.
+		if ( node instanceof TextProxy ) {
+			return new Position( node.textNode, node.index );
+		}
+
 		if ( !node.parent ) {
 			/**
 			 * You cannot make a position before a root.

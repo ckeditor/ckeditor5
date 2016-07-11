@@ -16,16 +16,19 @@ import Renderer from '/ckeditor5/engine/view/renderer.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import { parse } from '/tests/engine/_utils/view.js';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, BR_FILLER } from '/ckeditor5/engine/view/filler.js';
-
+import testUtils from '/tests/ckeditor5/_utils/utils.js';
 import createElement from '/ckeditor5/utils/dom/createelement.js';
+
+testUtils.createSinonSandbox();
 
 describe( 'Renderer', () => {
 	let selection, domConverter, renderer;
 
-	before( () => {
+	beforeEach( () => {
 		selection = new Selection();
 		domConverter = new DomConverter();
 		renderer = new Renderer( domConverter, selection );
+		renderer.domDocuments.add( document );
 	} );
 
 	describe( 'markToSync', () => {
@@ -101,7 +104,7 @@ describe( 'Renderer', () => {
 	} );
 
 	describe( 'render', () => {
-		let viewRoot, domRoot;
+		let viewRoot, domRoot, selectionEditable;
 
 		beforeEach( () => {
 			viewRoot = new ViewElement( 'div' );
@@ -114,9 +117,14 @@ describe( 'Renderer', () => {
 			renderer.markedAttributes.clear();
 			renderer.markedChildren.clear();
 
-			renderer.focusedEditable = viewRoot;
-
 			selection.removeAllRanges();
+
+			selectionEditable = viewRoot;
+
+			renderer.isFocused = true;
+
+			// Fake selection editable - it is needed to render selection properly.
+			testUtils.sinon.stub( selection, 'getEditableElement', () => selectionEditable );
 		} );
 
 		it( 'should update attributes', () => {
@@ -286,8 +294,6 @@ describe( 'Renderer', () => {
 			const viewRoot = new ViewElement( 'p' );
 			viewRoot.appendChildren( viewP );
 			selection.setTo( newSelection );
-
-			renderer.focusedEditable = viewRoot;
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -487,6 +493,82 @@ describe( 'Renderer', () => {
 			expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domP.childNodes[ 1 ] );
 			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( INLINE_FILLER_LENGTH );
 			expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
+		} );
+
+		it( 'should move filler when selection is moved', () => {
+			// Step 1: <p>foo<b>"FILLER{}"</b></p>
+			const { view: viewP, selection: newSelection } = parse(
+				'<container:p>foo<attribute:b>[]</attribute:b><attribute:i></attribute:i></container:p>' );
+
+			viewRoot.appendChildren( viewP );
+			selection.setTo( newSelection );
+
+			renderer.markToSync( 'children', viewRoot );
+
+			renderer.render();
+
+			const domP = domRoot.childNodes[ 0 ];
+
+			expect( domP.childNodes.length ).to.equal( 3 );
+			expect( domP.childNodes[ 0 ].data ).to.equal( 'foo' );
+			expect( domP.childNodes[ 1 ].tagName.toLowerCase() ).to.equal( 'b' );
+			expect( domP.childNodes[ 1 ].childNodes.length ).to.equal( 1 );
+			expect( domP.childNodes[ 1 ].childNodes[ 0 ].data ).to.equal( INLINE_FILLER );
+			expect( domP.childNodes[ 2 ].tagName.toLowerCase() ).to.equal( 'i' );
+			expect( domP.childNodes[ 2 ].childNodes.length ).to.equal( 0 );
+
+			// Step 2: <p>foo<b></b><i>"FILLER{}"</i></p>
+			selection.removeAllRanges();
+			const viewI = viewP.getChild( 2 );
+			selection.addRange( ViewRange.createFromParentsAndOffsets( viewI, 0, viewI, 0 ) );
+
+			renderer.render();
+
+			expect( domP.childNodes.length ).to.equal( 3 );
+			expect( domP.childNodes[ 0 ].data ).to.equal( 'foo' );
+			expect( domP.childNodes[ 1 ].tagName.toLowerCase() ).to.equal( 'b' );
+			expect( domP.childNodes[ 1 ].childNodes.length ).to.equal( 0 );
+			expect( domP.childNodes[ 2 ].tagName.toLowerCase() ).to.equal( 'i' );
+			expect( domP.childNodes[ 2 ].childNodes.length ).to.equal( 1 );
+			expect( domP.childNodes[ 2 ].childNodes[ 0 ].data ).to.equal( INLINE_FILLER );
+		} );
+
+		it( 'should remove filler when text is added and selection removed', () => {
+			// Step 1: <p>foo<b>"FILLER{}"</b></p>
+			const { view: viewP, selection: newSelection } = parse( '<container:p>foo<attribute:b>[]</attribute:b></container:p>' );
+			const viewB = viewP.getChild( 1 );
+			viewRoot.appendChildren( viewP );
+			selection.setTo( newSelection );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			const domP = domRoot.childNodes[ 0 ];
+			expect( domP.childNodes.length ).to.equal( 2 );
+			expect( domP.childNodes[ 0 ].data ).to.equal( 'foo' );
+			expect( domP.childNodes[ 1 ].tagName.toLowerCase() ).to.equal( 'b' );
+			expect( domP.childNodes[ 1 ].childNodes.length ).to.equal( 1 );
+			expect( domP.childNodes[ 1 ].childNodes[ 0 ].data ).to.equal( INLINE_FILLER );
+
+			// Step 2: Add text node.
+			const viewText = new ViewText( 'x' );
+			viewB.appendChildren( viewText );
+			selection.removeAllRanges();
+			selection.addRange( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
+
+			renderer.markToSync( 'children', viewB );
+			renderer.render();
+
+			// Step 3: Remove selection from the view.
+			selection.removeAllRanges();
+
+			renderer.render();
+
+			expect( domP.childNodes.length ).to.equal( 2 );
+			expect( domP.childNodes[ 0 ].data ).to.equal( 'foo' );
+			expect( domP.childNodes[ 1 ].tagName.toLowerCase() ).to.equal( 'b' );
+			expect( domP.childNodes[ 1 ].childNodes.length ).to.equal( 1 );
+			expect( domP.childNodes[ 1 ].childNodes[ 0 ].data ).to.equal( 'x' );
 		} );
 
 		it( 'should handle typing in empty block, do nothing if changes are already applied', () => {
@@ -779,7 +861,7 @@ describe( 'Renderer', () => {
 			renderAndExpectNoChanges( renderer, domRoot );
 		} );
 
-		it( 'should not change selection if there is no focusedEditable', () => {
+		it( 'should not change selection if there is no editable with selection', () => {
 			const domDiv = createElement( document, 'div', null, 'not editable' );
 			document.body.appendChild( domDiv );
 
@@ -791,7 +873,7 @@ describe( 'Renderer', () => {
 			domRange.collapse( true );
 			domSelection.addRange( domRange );
 
-			renderer.focusedEditable = null;
+			selectionEditable = null;
 
 			const { view: viewP, selection: newSelection } = parse( '<container:p>fo{o}</container:p>' );
 
@@ -806,14 +888,41 @@ describe( 'Renderer', () => {
 			expect( domSelection.getRangeAt( 0 ).collapsed ).to.equal( true );
 		} );
 
-		it( 'should not add ranges if different editable is focused', () => {
+		it( 'should not change selection if there is no focus', () => {
+			const domDiv = createElement( document, 'div', null, 'not editable' );
+			document.body.appendChild( domDiv );
+
+			const domSelection = document.getSelection();
+
+			domSelection.removeAllRanges();
+			const domRange = new Range();
+			domRange.setStart( domDiv, 0 );
+			domRange.collapse( true );
+			domSelection.addRange( domRange );
+
+			renderer.isFocused = false;
+
+			const { view: viewP, selection: newSelection } = parse( '<container:p>fo{o}</container:p>' );
+
+			viewRoot.appendChildren( viewP );
+			selection.setTo( newSelection );
+
+			renderer.render();
+
+			expect( domSelection.rangeCount ).to.equal( 1 );
+			expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domDiv );
+			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 0 );
+			expect( domSelection.getRangeAt( 0 ).collapsed ).to.equal( true );
+		} );
+
+		it( 'should not add ranges if different editable is selected', () => {
 			const domHeader = document.createElement( 'h1' );
 			const viewHeader = new ViewElement( 'h1' );
 			document.body.appendChild( domHeader );
 
 			domConverter.bindElements( domHeader, viewHeader );
 
-			renderer.focusedEditable = viewHeader;
+			selectionEditable = viewHeader;
 
 			const { view: viewP, selection: newSelection } = parse( '<container:p>fo{o}</container:p>' );
 
@@ -872,6 +981,35 @@ describe( 'Renderer', () => {
 			expect( () => {
 				renderer.render();
 			} ).to.throw();
+		} );
+
+		it( 'should handle focusing element', () => {
+			const domFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
+			const editable = selection.getEditableElement();
+
+			renderer.render();
+
+			expect( editable ).to.equal( viewRoot );
+			expect( domFocusSpy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should not focus editable if isFocues is set to false', () => {
+			const domFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
+
+			renderer.isFocused = false;
+			renderer.render();
+
+			expect( domFocusSpy.calledOnce ).to.be.false;
+		} );
+
+		it( 'should not focus already focused DOM element', () => {
+			domRoot.setAttribute( 'contentEditable', true );
+			domRoot.focus();
+			const domFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
+
+			renderer.render();
+
+			expect( domFocusSpy.called ).to.be.false;
 		} );
 	} );
 } );

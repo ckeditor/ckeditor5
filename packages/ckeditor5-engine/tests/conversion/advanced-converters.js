@@ -20,7 +20,7 @@ import ViewElement from '/ckeditor5/engine/view/element.js';
 import ViewContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import ViewAttributeElement from '/ckeditor5/engine/view/attributeelement.js';
 import ViewText from '/ckeditor5/engine/view/text.js';
-import ViewWriter from  '/ckeditor5/engine/view/writer.js';
+import viewWriter from  '/ckeditor5/engine/view/writer.js';
 import ViewPosition from '/ckeditor5/engine/view/position.js';
 import ViewRange from '/ckeditor5/engine/view/range.js';
 
@@ -41,19 +41,17 @@ import {
 } from '/ckeditor5/engine/conversion/model-to-view-converters.js';
 import { convertToModelFragment, convertText } from '/ckeditor5/engine/conversion/view-to-model-converters.js';
 
-let modelDoc, modelRoot, viewRoot, mapper, writer, modelDispatcher, viewDispatcher;
+let modelDoc, modelRoot, viewRoot, mapper, modelDispatcher, viewDispatcher;
 
 beforeEach( () => {
 	modelDoc = new ModelDocument();
-	modelRoot = modelDoc.createRoot( 'root' );
+	modelRoot = modelDoc.createRoot();
 	viewRoot = new ViewContainerElement( 'div' );
 
 	mapper = new Mapper();
 	mapper.bindElements( modelRoot, viewRoot );
 
-	writer = new ViewWriter();
-
-	modelDispatcher = new ModelConversionDispatcher( { mapper, writer } );
+	modelDispatcher = new ModelConversionDispatcher( { mapper } );
 	// Schema is mocked up because we don't care about it in those tests.
 	viewDispatcher = new ViewConversionDispatcher( { schema: { check: () => true } } );
 
@@ -177,11 +175,11 @@ describe( 'image with caption converters', () => {
 
 					conversionApi.mapper.bindElements( modelCaption, viewCaption );
 					conversionApi.mapper.bindElements( data.item, viewImageHolder );
-					conversionApi.writer.insert( insertPosition, viewImageHolder );
+					viewWriter.insert( insertPosition, viewImageHolder );
 				}
 			} else {
 				conversionApi.mapper.bindElements( data.item, viewImage );
-				conversionApi.writer.insert( insertPosition, viewImage );
+				viewWriter.insert( insertPosition, viewImage );
 			}
 
 			evt.stop();
@@ -344,8 +342,8 @@ describe( 'custom attribute handling for given element', () => {
 				const viewOldA = elementCreator( data.attributeOldValue );
 				const viewNewA = elementCreator( data.attributeNewValue );
 
-				conversionApi.writer.unwrap( viewRange, viewOldA, evt.priority );
-				conversionApi.writer.wrap( viewRange, viewNewA, evt.priority );
+				viewWriter.unwrap( viewRange, viewOldA, evt.priority );
+				viewWriter.wrap( viewRange, viewNewA, evt.priority );
 
 				evt.stop();
 			};
@@ -412,7 +410,7 @@ describe( 'custom attribute handling for given element', () => {
 			const viewElement = new ViewContainerElement( 'blockquote' );
 
 			conversionApi.mapper.bindElements( data.item, viewElement );
-			conversionApi.writer.insert( viewPosition, viewElement );
+			viewWriter.insert( viewPosition, viewElement );
 
 			if ( consumable.consume( data.item, 'addAttribute:linkHref' ) ) {
 				const viewA = new ViewAttributeElement( 'a', { href: data.item.getAttribute( 'linkHref' ) }, new ViewText( 'see source' ) );
@@ -421,7 +419,7 @@ describe( 'custom attribute handling for given element', () => {
 					viewA.setAttribute( 'title', data.item.getAttribute( 'linkTitle' ) );
 				}
 
-				conversionApi.writer.insert( new ViewPosition( viewElement, viewElement.getChildCount() ), viewA );
+				viewWriter.insert( new ViewPosition( viewElement, viewElement.getChildCount() ), viewA );
 			}
 
 			evt.stop();
@@ -454,7 +452,7 @@ describe( 'custom attribute handling for given element', () => {
 			const viewA = viewElement.getChild( viewElement.getChildCount() - 1 );
 			const aIndex = viewA.getIndex();
 
-			conversionApi.writer.remove( ViewRange.createFromParentsAndOffsets( viewElement, aIndex, viewElement, aIndex + 1 ) );
+			viewWriter.remove( ViewRange.createFromParentsAndOffsets( viewElement, aIndex, viewElement, aIndex + 1 ) );
 
 			evt.stop();
 		} );

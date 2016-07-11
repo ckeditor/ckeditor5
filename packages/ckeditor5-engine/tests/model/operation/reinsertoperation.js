@@ -12,17 +12,18 @@ import ReinsertOperation from '/ckeditor5/engine/model/operation/reinsertoperati
 import RemoveOperation from '/ckeditor5/engine/model/operation/removeoperation.js';
 import MoveOperation from '/ckeditor5/engine/model/operation/moveoperation.js';
 import Position from '/ckeditor5/engine/model/position.js';
-import { jsonParseStringify } from '/tests/engine/model/_utils/utils.js';
+import Element from '/ckeditor5/engine/model/element.js';
+import { jsonParseStringify, wrapInDelta } from '/tests/engine/model/_utils/utils.js';
 
 describe( 'ReinsertOperation', () => {
 	let doc, root, graveyard, operation, graveyardPosition, rootPosition;
 
 	beforeEach( () => {
 		doc = new Document();
-		root = doc.createRoot( 'root' );
+		root = doc.createRoot();
 		graveyard = doc.graveyard;
 
-		graveyardPosition = new Position( graveyard, [ 0 ] );
+		graveyardPosition = new Position( graveyard, [ 0, 0 ] );
 		rootPosition = new Position( root, [ 0 ] );
 
 		operation = new ReinsertOperation(
@@ -70,28 +71,27 @@ describe( 'ReinsertOperation', () => {
 		expect( reverse.baseVersion ).to.equal( 1 );
 		expect( reverse.howMany ).to.equal( 2 );
 		expect( reverse.sourcePosition.isEqual( rootPosition ) ).to.be.true;
-		expect( reverse.targetPosition.isEqual( graveyardPosition ) ).to.be.true;
+		expect( reverse.targetPosition.root ).to.equal( graveyardPosition.root );
 	} );
 
 	it( 'should undo reinsert set of nodes by applying reverse operation', () => {
 		let reverse = operation.getReversed();
 
-		graveyard.insertChildren( 0, 'bar' );
+		const element = new Element();
+		element.insertChildren( 0, 'xx' );
+		graveyard.insertChildren( 0, element );
 
-		doc.applyOperation( operation );
+		doc.applyOperation( wrapInDelta( operation ) );
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getChildCount() ).to.equal( 2 );
+		expect( element.getChildCount() ).to.equal( 0 );
 
-		doc.applyOperation( reverse );
+		doc.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.getChildCount() ).to.equal( 0 );
-		expect( graveyard.getChildCount() ).to.equal( 3 );
-
-		expect( graveyard.getChild( 0 ).character ).to.equal( 'b' );
-		expect( graveyard.getChild( 1 ).character ).to.equal( 'a' );
-		expect( graveyard.getChild( 2 ).character ).to.equal( 'r' );
+		// Don't check `element` - nodes are moved to new holder element.
 	} );
 
 	describe( 'toJSON', () => {
