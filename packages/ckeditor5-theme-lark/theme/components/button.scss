@@ -67,22 +67,34 @@
 a.ck-button {
 	display: inline-block;
 	overflow: hidden;
-	padding: ck-spacing( 'small' ) ck-spacing();
+	padding: ck-spacing( 'small' );
 
 	@include ck-button( 'background' );
 	@include ck-unselectable();
 	@include ck-rounded-corners();
 
-	&.ck-button-notext {
-		padding: ck-spacing( 'small' );
+	@include ck-button-icon {
+		margin-left: 0;
+		margin-right: 0;
+	}
 
-		@include ck-button-icon {
-			margin-left: 0;
-			margin-right: 0;
+	&.ck-button-with-text {
+		padding: ck-spacing( 'small' ) ck-spacing();
+
+		.ck-icon {
+			&-left {
+				margin-left: -#{ck-spacing( 'small' )};
+				margin-right: ck-spacing( 'small' );
+			}
+
+			&-right {
+				margin-right: -#{ck-spacing( 'small' )};
+				margin-left: ck-spacing( 'small' );
+			}
 		}
 
 		.ck-button__label {
-			display: none;
+			display: block;
 		}
 	}
 
@@ -112,17 +124,10 @@ a.ck-button {
 		use * {
 			color: inherit;
 		}
-
-		&-left {
-			margin-left: -#{ck-spacing( 'small' )};
-		}
-
-		&-right {
-			margin-right: -#{ck-spacing( 'small' )};
-		}
 	}
 
 	.ck-button__label {
+		display: none;
 		float: left;
 		line-height: inherit;
 		font-size: inherit;
