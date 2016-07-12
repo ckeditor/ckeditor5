@@ -77,22 +77,14 @@ setData._parse = parse;
  */
 export function stringify( node, selectionOrPositionOrRange = null ) {
 	let selection;
-	let document;
 
-	if ( node instanceof RootElement ) {
-		document = node.document;
-	} else if ( node instanceof Element || node instanceof Text ) {
-		// If root is Element or Text - wrap it with DocumentFragment.
-
-		// If parent node is already a DocumentFragment - use it.
-		if ( node.parent instanceof DocumentFragment ) {
-			node = node.parent;
-		} else {
+	if ( node.parent ) {
+		node = node.parent;
+	} else {
+		if ( !( node instanceof RootElement || node instanceof DocumentFragment ) ) {
 			node = new DocumentFragment( node );
 		}
 	}
-
-	document = document || new Document();
 
 	const walker = new TreeWalker( {
 		boundaries: Range.createFromElement( node )
@@ -101,10 +93,10 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	if ( selectionOrPositionOrRange instanceof Selection ) {
 		selection = selectionOrPositionOrRange;
 	} else if ( selectionOrPositionOrRange instanceof Range ) {
-		selection = document.selection;
+		selection = new Selection();
 		selection.addRange( selectionOrPositionOrRange );
 	} else if ( selectionOrPositionOrRange instanceof Position ) {
-		selection = document.selection;
+		selection = new Selection();
 		selection.addRange( new Range( selectionOrPositionOrRange, selectionOrPositionOrRange ) );
 	}
 
