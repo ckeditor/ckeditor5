@@ -21,7 +21,6 @@ const minimist = require( 'minimist' );
 const sprite = require( 'gulp-svg-sprite' );
 const pipe = require( 'multipipe' );
 const filter = require( 'gulp-filter' );
-const mainUtils = require( '../utils' );
 
 const utils = {
 	/**
@@ -518,7 +517,7 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 	},
 
 	/**
-	 * Given a stream of .svg files it returns a stream containing JavaScript
+	 * Given a stream of `.svg` files it returns a stream containing JavaScript
 	 * icon sprite file.
 	 *
 	 * @returns {Stream}
@@ -612,5 +611,4 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 	}
 };
 
-// Extend top level utils.
-module.exports = Object.assign( utils, mainUtils );
+module.exports = utils;

@@ -16,6 +16,7 @@ const utils = require( './utils' );
 const rollup = require( 'rollup' ).rollup;
 const rollupBabel = require( 'rollup-plugin-babel' );
 const mkdirp = require( 'mkdirp' );
+const tools = require( '../../utils/tools' );
 
 module.exports = ( config ) => {
 	const args = utils.parseArguments();
@@ -29,7 +30,7 @@ module.exports = ( config ) => {
 		 * Removes all files from bundle directory.
 		 */
 		clean() {
-			return utils.clean( bundleDir, '*.*' );
+			return tools.clean( bundleDir, '*.*' );
 		},
 
 		/**
@@ -107,14 +108,14 @@ module.exports = ( config ) => {
 				} )
 				.then( () => {
 					// If everything went well then remove tmp directory.
-					utils.clean( bundleTmpDir, path.join( '' ) );
+					tools.clean( bundleTmpDir, path.join( '' ) );
 				} )
 				.catch( ( err ) => {
 					// If something went wrong then log error.
 					gutil.log( gutil.colors.red( err.stack ) );
 
 					// And remove tmp directory.
-					utils.clean( bundleTmpDir, path.join( '' ) );
+					tools.clean( bundleTmpDir, path.join( '' ) );
 
 					throw new Error( 'Build error.' );
 				} );

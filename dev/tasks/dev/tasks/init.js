@@ -5,8 +5,8 @@
 
 'use strict';
 
-const tools = require( '../utils/tools' );
-const log = require( '../utils/log' );
+const ckeditor5Dirs = require( '../../../utils/ckeditor5-dirs' );
+const log = require( '../../../utils/log' );
 
 /**
  * 1. Get CKEditor5 dependencies from package.json file.
@@ -19,7 +19,7 @@ const log = require( '../utils/log' );
  */
 module.exports = ( installTask, ckeditor5Path, packageJSON, workspaceRoot ) => {
 	// Get all CKEditor dependencies from package.json.
-	const dependencies = tools.getCKEditorDependencies( packageJSON.dependencies );
+	const dependencies = ckeditor5Dirs.getDependencies( packageJSON.dependencies );
 
 	if ( dependencies ) {
 		for ( let dependency in dependencies ) {

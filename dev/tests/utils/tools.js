@@ -10,7 +10,7 @@
 const chai = require( 'chai' );
 const sinon = require( 'sinon' );
 const expect = chai.expect;
-const tools = require( '../../tasks/dev/utils/tools' );
+const tools = require( '../../utils/tools' );
 const path = require( 'path' );
 const fs = require( 'fs' );
 let sandbox;
@@ -62,7 +62,7 @@ describe( 'utils', () => {
 			it( 'should not log when in silent mode', () => {
 				const sh = require( 'shelljs' );
 				const execStub = sandbox.stub( sh, 'exec' ).returns( { code: 0, stdout: 'out', stderr: 'err' } );
-				const log = require( '../../tasks/dev/utils/log' );
+				const log = require( '../../utils/log' );
 				const outFn = sandbox.spy();
 				const errFn = sandbox.spy();
 				log.configure( outFn, errFn );
@@ -77,7 +77,7 @@ describe( 'utils', () => {
 			it( 'should not log if no output from executed command', () => {
 				const sh = require( 'shelljs' );
 				const execStub = sandbox.stub( sh, 'exec' ).returns( { code: 0, stdout: '', stderr: '' } );
-				const log = require( '../../tasks/dev/utils/log' );
+				const log = require( '../../utils/log' );
 				const outFn = sandbox.spy();
 				const errFn = sandbox.spy();
 				log.configure( outFn, errFn );
@@ -144,36 +144,6 @@ describe( 'utils', () => {
 				expect( removeSymlinkStub.firstCall.args[ 0 ] ).to.equal( destination );
 				expect( symlinkStub.firstCall.args[ 0 ] ).to.equal( source );
 				expect( symlinkStub.firstCall.args[ 1 ] ).to.equal( destination );
-			} );
-		} );
-
-		describe( 'getCKEditorDependencies', () => {
-			it( 'should be defined', () => expect( tools.getCKEditorDependencies ).to.be.a( 'function' ) );
-
-			it( 'should return null if no CKEditor5 repository is found', () => {
-				const dependencies = {
-					'plugin1': '',
-					'plugin2': '',
-					'plugin3': ''
-				};
-				expect( tools.getCKEditorDependencies( dependencies ) ).to.equal( null );
-				expect( tools.getCKEditorDependencies() ).to.equal( null );
-			} );
-
-			it( 'should return only ckeditor5- dependencies', () => {
-				const dependencies = {
-					'plugin1': '',
-					'ckeditor5-plugin-image': 'ckeditor/ckeditor5-plugin-image',
-					'plugin2': '',
-					'ckeditor5-core': 'ckeditor/ckeditor5-core'
-				};
-				const ckeditorDependencies = tools.getCKEditorDependencies( dependencies );
-
-				expect( ckeditorDependencies ).to.be.an( 'object' );
-				expect( ckeditorDependencies.plugin1 ).to.be.a( 'undefined' );
-				expect( ckeditorDependencies.plugin2 ).to.be.a( 'undefined' );
-				expect( ckeditorDependencies[ 'ckeditor5-plugin-image' ] ).to.be.a( 'string' );
-				expect( ckeditorDependencies[ 'ckeditor5-core' ] ).to.be.a( 'string' );
 			} );
 		} );
 
@@ -294,21 +264,6 @@ describe( 'utils', () => {
 				sandbox.stub( fs, 'lstatSync' ).throws();
 
 				expect( tools.isSymlink( path ) ).to.equal( false );
-			} );
-		} );
-
-		describe( 'getCKE5Directories', () => {
-			it( 'should be defined', () => expect( tools.getCKE5Directories ).to.be.a( 'function' ) );
-
-			it( 'should return only ckeditor5 directories', () => {
-				const workspacePath = '/workspace/path';
-				const sourceDirectories = [ 'tools', 'ckeditor5', 'ckeditor5-core', '.bin', 'ckeditor5-plugin-image' ];
-				sandbox.stub( tools, 'getDirectories', () => sourceDirectories );
-				const directories = tools.getCKE5Directories( workspacePath );
-
-				expect( directories.length ).equal( 2 );
-				expect( directories[ 0 ] ).equal( 'ckeditor5-core' );
-				expect( directories[ 1 ] ).equal( 'ckeditor5-plugin-image' );
 			} );
 		} );
 
@@ -495,20 +450,6 @@ describe( 'utils', () => {
 				} catch ( e ) {}
 
 				expect( getUrlSpy.threw( error ) ).to.equal( true );
-			} );
-		} );
-
-		describe( 'getCKE5Symlinks', () => {
-			it( 'should return CKE5 symlinks from provided path', () => {
-				const fs = require( 'fs' );
-				const path = 'path/to/dir';
-				sandbox.stub( fs, 'readdirSync' ).returns( [ 'ckeditor5-core', 'ckeditor5-image', 'other-dependency' ] );
-				sandbox.stub( tools, 'isSymlink' ).returns( true );
-
-				const symlinks = tools.getCKE5Symlinks( path );
-				expect( symlinks.length ).to.equal( 2 );
-				expect( symlinks[ 0 ] ).to.equal( 'ckeditor5-core' );
-				expect( symlinks[ 1 ] ).to.equal( 'ckeditor5-image' );
 			} );
 		} );
 

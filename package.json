@@ -72,6 +72,7 @@
     "multipipe": "^0.3.0",
     "ncp": "^2.0.0",
     "node-sass": "^3.7.0",
+    "parse-gitignore": "^0.2.0",
     "pretty-bytes": "^3.0.1",
     "regenerator-runtime": "^0.9.5",
     "replace": "^0.3.0",

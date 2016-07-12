@@ -13,19 +13,10 @@ const installTask = require( './tasks/install' );
 const pluginCreateTask = require( './tasks/create-package' );
 const updateTask = require( './tasks/update' );
 const relinkTask = require( './tasks/relink' );
-const log = require( './utils/log' );
-const gutil = require( 'gulp-util' );
 
 module.exports = ( config ) => {
 	const ckeditor5Path = process.cwd();
 	const packageJSON = require( '../../../package.json' );
-
-	// Configure logging.
-	log.configure(
-		( msg ) => gutil.log( msg ),
-		( msg ) => gutil.log( gutil.colors.red( msg ) )
-	);
-
 	const tasks = {
 		updateRepositories() {
 			const options = minimist( process.argv.slice( 2 ), {

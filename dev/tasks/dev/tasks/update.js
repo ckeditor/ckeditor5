@@ -5,10 +5,11 @@
 
 'use strict';
 
-const tools = require( '../utils/tools' );
-const git = require( '../utils/git' );
+const tools = require( '../../../utils/tools' );
+const ckeditor5Dirs = require( '../../../utils/ckeditor5-dirs' );
+const git = require( '../../../utils/git' );
 const path = require( 'path' );
-const log = require( '../utils/log' );
+const log = require( '../../../utils/log' );
 
 /**
  * 1. Fetch all branches from each origin in main CKEditor 5 repository.
@@ -38,10 +39,10 @@ module.exports = ( installTask, ckeditor5Path, packageJSON, workspaceRoot, runNp
 	git.fetchAll( ckeditor5Path );
 
 	// Get all CKEditor dependencies from package.json.
-	const dependencies = tools.getCKEditorDependencies( packageJSON.dependencies );
+	const dependencies = ckeditor5Dirs.getDependencies( packageJSON.dependencies );
 
 	if ( dependencies ) {
-		const directories = tools.getCKE5Directories( workspaceAbsolutePath );
+		const directories = ckeditor5Dirs.getDirectories( workspaceAbsolutePath );
 
 		for ( let dependency in dependencies ) {
 			const repositoryURL = dependencies[ dependency ];
@@ -86,7 +87,7 @@ module.exports = ( installTask, ckeditor5Path, packageJSON, workspaceRoot, runNp
 
 	// Remove symlinks not used in this configuration.
 	const nodeModulesPath = path.join( ckeditor5Path, 'node_modules' );
-	const symlinks = tools.getCKE5Symlinks( nodeModulesPath );
+	const symlinks = ckeditor5Dirs.getSymlinks( nodeModulesPath );
 	symlinks
 		.filter( dir => typeof dependencies[ dir ] == 'undefined' )
 		.forEach( dir => {
