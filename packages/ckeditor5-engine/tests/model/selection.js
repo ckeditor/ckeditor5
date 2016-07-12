@@ -249,19 +249,29 @@ describe( 'Selection', () => {
 	} );
 
 	describe( 'focus', () => {
-		it( 'should return first end start', () => {
-			selection.addRange( range );
-
-			expect( selection.focus.isEqual( range.end ) ).to.be.true;
+		let r3;
+		beforeEach( () => {
+			const r1 = Range.createFromParentsAndOffsets( root, 2, root, 4 );
+			const r2 = Range.createFromParentsAndOffsets( root, 4, root, 6 );
+			r3 = Range.createFromParentsAndOffsets( root, 1, root, 2 );
+			selection.addRange( r1 );
+			selection.addRange( r2 );
 		} );
 
-		it( 'should return first range start when backward', () => {
-			selection.addRange( range, true );
+		it( 'should return correct focus when last added range is not backward one', () => {
+			selection.addRange( r3 );
 
-			expect( selection.focus.isEqual( range.start ) ).to.be.true;
+			expect( selection.focus.isEqual( r3.end ) ).to.be.true;
+		} );
+
+		it( 'should return correct focus when last added range is backward one', () => {
+			selection.addRange( r3, true );
+
+			expect( selection.focus.isEqual( r3.start ) ).to.be.true;
 		} );
 
 		it( 'should return null if no ranges in selection', () => {
+			selection.removeAllRanges();
 			expect( selection.focus ).to.be.null;
 		} );
 	} );
