@@ -308,15 +308,15 @@ describe( 'model test utils', () => {
 		test( 'sets elements attributes', {
 			data: '<a foo=1 bar=true car="x y"><b x="y"></b></a>',
 			output: '<a bar=true car="x y" foo=1><b x="y"></b></a>',
-			check( root ) {
-				expect( root.getChild( 0 ).getAttribute( 'car' ) ).to.equal( 'x y' );
+			check( a ) {
+				expect( a.getAttribute( 'car' ) ).to.equal( 'x y' );
 			}
 		} );
 
 		test( 'sets complex attributes', {
 			data: '<a foo={"a":1,"b":"c"}></a>',
-			check( root ) {
-				expect( root.getChild( 0 ).getAttribute( 'foo' ) ).to.have.property( 'a', 1 );
+			check( a ) {
+				expect( a.getAttribute( 'foo' ) ).to.have.property( 'a', 1 );
 			}
 		} );
 
@@ -326,6 +326,20 @@ describe( 'model test utils', () => {
 				expect( root.getChildCount() ).to.equal( 9 );
 				expect( root.getChild( 0 ) ).to.have.property( 'character', 'f' );
 				expect( root.getChild( 0 ).getAttribute( 'italic' ) ).to.equal( true );
+			}
+		} );
+
+		test( 'returns single parsed element', {
+			data: '<paragraph></paragraph>',
+			check( p ) {
+				expect( p instanceof Element ).to.be.true;
+			}
+		} );
+
+		test( 'returns DocumentFragment for multiple parsed elements', {
+			data: '<paragraph></paragraph><paragraph></paragraph>',
+			check( fragment ) {
+				expect( fragment instanceof DocumentFragment ).to.be.true;
 			}
 		} );
 
