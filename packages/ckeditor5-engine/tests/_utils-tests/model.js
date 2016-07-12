@@ -177,6 +177,10 @@ describe( 'model test utils', () => {
 				);
 			} );
 
+			it( 'writes only requested element', () => {
+				expect( stringify( elA ) ).to.equal( '<a></a>' );
+			} );
+
 			it( 'writes selection collapsed in an element', () => {
 				selection.collapse( root );
 

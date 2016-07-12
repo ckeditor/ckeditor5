@@ -76,18 +76,25 @@ setData._parse = parse;
  * @returns {String} HTML-like string representing the model.
  */
 export function stringify( node, selectionOrPositionOrRange = null ) {
-	let selection;
+	let selection, range;
 
-	if ( node.parent ) {
-		node = node.parent;
+	if ( node instanceof RootElement || node instanceof DocumentFragment ) {
+		range = Range.createFromElement( node );
 	} else {
-		if ( !( node instanceof RootElement || node instanceof DocumentFragment ) ) {
-			node = new DocumentFragment( node );
+		// Node is detached - create new document fragment.
+		if ( !node.parent ) {
+			const fragment = new DocumentFragment( node );
+			range = Range.createFromElement( fragment );
+		} else {
+			range = new Range(
+				Position.createBefore( node ),
+				Position.createAfter( node )
+			);
 		}
 	}
 
 	const walker = new TreeWalker( {
-		boundaries: Range.createFromElement( node )
+		boundaries: range
 	} );
 
 	if ( selectionOrPositionOrRange instanceof Selection ) {
@@ -101,7 +108,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	}
 
 	let ret = '';
-	let lastPosition = Position.createFromParentAndOffset( node, 0 );
+	let lastPosition = Position.createFromPosition( range.start );
 	const withSelection = !!selection;
 
 	for ( let value of walker ) {
