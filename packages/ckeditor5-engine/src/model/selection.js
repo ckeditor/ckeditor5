@@ -126,6 +126,10 @@ export default class Selection {
 	 * or backward - from end to start (`true`). Defaults to `false`.
 	 */
 	addRange( range, isBackward ) {
+		if ( !( range instanceof Range ) ) {
+			throw new CKEditorError( 'model-selection-invalid-range: Invalid Range.' );
+		}
+
 		this._pushRange( range );
 		this._lastRangeBackward = !!isBackward;
 
@@ -205,6 +209,10 @@ export default class Selection {
 		this._ranges = [];
 
 		for ( let range of newRanges ) {
+			if ( !( range instanceof Range ) ) {
+				throw new CKEditorError( 'model-selection-invalid-range: Invalid Range.' );
+			}
+
 			this._pushRange( range );
 		}
 

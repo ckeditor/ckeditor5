@@ -129,6 +129,10 @@ export default class Selection {
 	 * @param {engine.view.Range} range
 	 */
 	addRange( range, isBackward ) {
+		if ( !( range instanceof Range ) ) {
+			throw new CKEditorError( 'view-selection-invalid-range: Invalid Range.' );
+		}
+
 		this._pushRange( range );
 		this._lastRangeBackward = !!isBackward;
 		this.fire( 'change' );
@@ -259,6 +263,10 @@ export default class Selection {
 		this._ranges = [];
 
 		for ( let range of newRanges ) {
+			if ( !( range instanceof Range ) ) {
+				throw new CKEditorError( 'view-selection-invalid-range: Invalid Range.' );
+			}
+
 			this._pushRange( range );
 		}
 

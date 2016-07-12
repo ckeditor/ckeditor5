@@ -103,6 +103,12 @@ describe( 'Selection', () => {
 	} );
 
 	describe( 'addRange', () => {
+		it( 'should throw an error when range is invalid', () => {
+			expect( () => {
+				selection.addRange( { invalid: 'Range' } );
+			} ).to.throw( CKEditorError, 'model-selection-invalid-range: Invalid Range.' );
+		} );
+
 		it( 'should copy added ranges and store multiple ranges', () => {
 			selection.addRange( liveRange );
 			selection.addRange( range );
@@ -461,6 +467,12 @@ describe( 'Selection', () => {
 			selection.on( 'change:range', spy );
 
 			oldRanges = selection._ranges;
+		} );
+
+		it( 'should throw an error when range is invalid', () => {
+			expect( () => {
+				selection.setRanges( [ { invalid: 'range' } ] );
+			} ).to.throw( CKEditorError, 'model-selection-invalid-range: Invalid Range.' );
 		} );
 
 		it( 'should remove all ranges and add given ranges', () => {
