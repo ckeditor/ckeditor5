@@ -44,14 +44,6 @@ export default class LiveSelection extends Selection {
 		 * @member {engine.model.Document} engine.model.Selection#_document
 		 */
 		this._document = document;
-
-		/**
-		 * List of attributes set on current selection.
-		 *
-		 * @protected
-		 * @member {Map} engine.model.LiveSelection#_attrs
-		 */
-		this._attrs = new Map();
 	}
 
 	/**
@@ -128,93 +120,36 @@ export default class LiveSelection extends Selection {
 	}
 
 	/**
-	 * Removes all attributes from the selection.
-	 *
-	 * @fires engine.model.LiveSelection#change:attribute
+	 * @inheritDoc
 	 */
 	clearAttributes() {
-		this._attrs.clear();
 		this._setStoredAttributesTo( new Map() );
-
-		this.fire( 'change:attribute' );
+		super.clearAttributes();
 	}
 
 	/**
-	 * Gets an attribute value for given key or `undefined` if that attribute is not set on the selection.
-	 *
-	 * @param {String} key Key of attribute to look for.
-	 * @returns {*} Attribute value or `undefined`.
-	 */
-	getAttribute( key ) {
-		return this._attrs.get( key );
-	}
-
-	/**
-	 * Returns iterator that iterates over this selection attributes.
-	 *
-	 * @returns {Iterable.<*>}
-	 */
-	getAttributes() {
-		return this._attrs[ Symbol.iterator ]();
-	}
-
-	/**
-	 * Checks if the selection has an attribute for given key.
-	 *
-	 * @param {String} key Key of attribute to check.
-	 * @returns {Boolean} `true` if attribute with given key is set on selection, `false` otherwise.
-	 */
-	hasAttribute( key ) {
-		return this._attrs.has( key );
-	}
-
-	/**
-	 * Removes an attribute with given key from the selection.
-	 *
-	 * @fires engine.model.LiveSelection#change:attribute
-	 * @param {String} key Key of attribute to remove.
+	 * @inheritDoc
 	 */
 	removeAttribute( key ) {
-		this._attrs.delete( key );
 		this._removeStoredAttribute( key );
-
-		this.fire( 'change:attribute' );
+		super.removeAttribute( key );
 	}
 
 	/**
-	 * Sets attribute on the selection. If attribute with the same key already is set, it overwrites its values.
-	 *
-	 * @fires engine.model.LiveSelection#change:attribute
-	 * @param {String} key Key of attribute to set.
-	 * @param {*} value Attribute value.
+	 * @inheritDoc
 	 */
 	setAttribute( key, value ) {
-		this._attrs.set( key, value );
 		this._storeAttribute( key, value );
-
-		this.fire( 'change:attribute' );
+		super.setAttribute( key, value );
 	}
 
 	/**
-	 * Removes all attributes from the selection and sets given attributes.
-	 *
-	 * @fires engine.model.LiveSelection#change:attribute
-	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set.
+	 * @inheritDoc
 	 */
 	setAttributesTo( attrs ) {
-		this._attrs = toMap( attrs );
-		this._setStoredAttributesTo( this._attrs );
-
-		this.fire( 'change:attribute' );
+		this._setStoredAttributesTo( toMap( attrs ) );
+		super.setAttributesTo( attrs );
 	}
-
-	/**
-	 * Creates and returns an instance of {@link engine.model.LiveSelection} that is a clone of given selection,
-	 * meaning that it has same ranges and same direction as it.
-	 *
-	 * @params {engine.model.Selection} otherSelection Selection to be cloned.
-	 * @returns {engine.model.LiveSelection} `LiveSelection` instance that is a clone of given selection.
-	 */
 
 	/**
 	 * @inheritDoc
@@ -431,9 +366,3 @@ export default class LiveSelection extends Selection {
 		return storePrefix + key;
 	}
 }
-
-/**
- * Fired whenever selection attributes are changed.
- *
- * @event engine.model.LiveSelection#change:attribute
- */

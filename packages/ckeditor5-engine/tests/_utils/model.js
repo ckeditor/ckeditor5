@@ -76,34 +76,39 @@ setData._parse = parse;
  * @returns {String} HTML-like string representing the model.
  */
 export function stringify( node, selectionOrPositionOrRange = null ) {
-	let selection;
-	let document;
+	let selection, range;
 
-	if ( node instanceof RootElement ) {
-		document = node.document;
-	} else if ( node instanceof Element || node instanceof Text ) {
-		// If root is Element or Text - wrap it with DocumentFragment.
-		node = new DocumentFragment( node );
+	if ( node instanceof RootElement || node instanceof DocumentFragment ) {
+		range = Range.createFromElement( node );
+	} else {
+		// Node is detached - create new document fragment.
+		if ( !node.parent ) {
+			const fragment = new DocumentFragment( node );
+			range = Range.createFromElement( fragment );
+		} else {
+			range = new Range(
+				Position.createBefore( node ),
+				Position.createAfter( node )
+			);
+		}
 	}
 
-	document = document || new Document();
-
 	const walker = new TreeWalker( {
-		boundaries: Range.createFromElement( node )
+		boundaries: range
 	} );
 
 	if ( selectionOrPositionOrRange instanceof Selection ) {
 		selection = selectionOrPositionOrRange;
 	} else if ( selectionOrPositionOrRange instanceof Range ) {
-		selection = document.selection;
+		selection = new Selection();
 		selection.addRange( selectionOrPositionOrRange );
 	} else if ( selectionOrPositionOrRange instanceof Position ) {
-		selection = document.selection;
+		selection = new Selection();
 		selection.addRange( new Range( selectionOrPositionOrRange, selectionOrPositionOrRange ) );
 	}
 
 	let ret = '';
-	let lastPosition = Position.createFromParentAndOffset( node, 0 );
+	let lastPosition = Position.createFromPosition( range.start );
 	const withSelection = !!selection;
 
 	for ( let value of walker ) {
@@ -136,17 +141,18 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
  * and `selection` when selection ranges were included in data to parse.
  */
 export function parse( data, options = {} ) {
-	let document, root;
+	let root, selection;
 	let withSelection = false;
 	const rootName = options.rootName || 'main';
 
 	if ( options.document ) {
-		document = options.document;
+		const document = options.document;
 		root = document.getRoot( rootName );
 		root.removeChildren( 0, root.getChildCount() );
+		selection = document.selection;
 	} else {
-		document = new Document();
-		root = document.createRoot( '$root', rootName );
+		root = new DocumentFragment();
+		selection = new Selection();
 	}
 
 	const path = [];
@@ -189,8 +195,8 @@ export function parse( data, options = {} ) {
 
 		collapsedSelection( token ) {
 			withSelection = true;
-			document.selection.collapse( root, 'END' );
-			document.selection.setAttributesTo( token.attributes );
+			selection.collapse( root, 'END' );
+			selection.setAttributesTo( token.attributes );
 		},
 
 		selectionStart( token ) {
@@ -206,14 +212,14 @@ export function parse( data, options = {} ) {
 			withSelection = true;
 			selectionEnd = Position.createFromParentAndOffset( root, root.getChildCount() );
 
-			document.selection.setRanges(
+			selection.setRanges(
 				[ new Range( selectionStart, selectionEnd ) ],
 				selectionAttributes.backward
 			);
 
 			delete selectionAttributes.backward;
 
-			document.selection.setAttributesTo( selectionAttributes );
+			selection.setAttributesTo( selectionAttributes );
 		}
 	};
 
@@ -229,10 +235,15 @@ export function parse( data, options = {} ) {
 		throw new Error( 'Parse error - missing selection end.' );
 	}
 
+	// If root DocumentFragment contains only one element - return that element.
+	if ( root instanceof DocumentFragment && root.getChildCount() == 1 ) {
+		root = root.getChild( 0 );
+	}
+
 	if ( withSelection ) {
 		return {
 			model: root,
-			selection: document.selection
+			selection: selection
 		};
 	}
 
