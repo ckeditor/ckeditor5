@@ -100,6 +100,17 @@ describe( 'Node', () => {
 			expect( result2[ 1 ] ).to.equal( two );
 			expect( result2[ 0 ] ).to.equal( charR );
 		} );
+
+		it( 'should return ancestors including DocumentFragment', () => {
+			const fragment = new DocumentFragment( root );
+			const result = img.getAncestors();
+			root.remove();
+
+			expect( result.length ).to.equal( 3 );
+			expect( result[ 0 ] ).to.equal( fragment );
+			expect( result[ 1 ] ).to.equal( root );
+			expect( result[ 2 ] ).to.equal( two );
+		} );
 	} );
 
 	describe( 'getIndex', () => {

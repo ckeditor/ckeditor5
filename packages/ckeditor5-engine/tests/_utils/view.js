@@ -199,6 +199,11 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
 
 /**
  * Parses HTML-like string and returns view tree nodes.
+ *
+ * Empty string will be converted to empty {@link engine.view.DocumentFragment DocumentFragment}.
+ *
+ *		parse( '' ); // Returns instance of DocumentFragment.
+ *
  * Simple string will be converted to {@link engine.view.Text Text} node:
  *
  *		parse( 'foobar' ); // Returns instance of Text.
@@ -254,8 +259,19 @@ export function parse( data, options = {} ) {
 	const viewParser = new ViewParser();
 	const rangeParser = new RangeParser();
 
-	const view = viewParser.parse( data, options.rootElement );
+	let view = viewParser.parse( data, options.rootElement );
+
+	// If single Element or Text is returned - move it to the DocumentFragment.
+	if ( view instanceof ViewText || view instanceof ViewElement ) {
+		view = new ViewDocumentFragment( view );
+	}
+
 	const ranges = rangeParser.parse( view, options.order );
+
+	// If only one element is returned inside DocumentFragment - return that element.
+	if ( view instanceof ViewDocumentFragment && view.getChildCount() === 1 ) {
+		view = view.getChild( 0 );
+	}
 
 	// When ranges are present - return object containing view, and selection.
 	if ( ranges.length ) {
