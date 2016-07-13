@@ -8,10 +8,8 @@
 'use strict';
 
 import { breakRange } from '/ckeditor5/engine/view/writer.js';
-import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
-import Text from '/ckeditor5/engine/view/text.js';
 import Range from '/ckeditor5/engine/view/range.js';
 import { stringify, parse } from '/tests/engine/_utils/view.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
@@ -26,12 +24,8 @@ describe( 'writer', () => {
 	function test( input, expected ) {
 		let { view, selection } = parse( input );
 
-		if ( view instanceof AttributeElement || view instanceof Text ) {
-			view = new DocumentFragment( view );
-		}
-
 		const newRange = breakRange( selection.getFirstRange() );
-		expect( stringify( view, newRange, { showType: true } ) ).to.equal( expected );
+		expect( stringify( view.getRoot(), newRange, { showType: true } ) ).to.equal( expected );
 	}
 
 	describe( 'breakRange', () => {
