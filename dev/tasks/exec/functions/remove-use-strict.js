@@ -11,6 +11,12 @@ const replace = require( 'gulp-replace' );
 const mergeStream = require( 'merge-stream' );
 const filterGitignore = require( '../utils/filtergitignore' );
 
+const jshintrcDirs = [
+	'/',
+	'dev/',
+	'tests/'
+];
+
 /**
  * Removes lines with `'use strict';` directive.
  *
@@ -33,14 +39,18 @@ module.exports = function executeRemoveUseStrict( workdir ) {
 // @param {String} workdir Path of directory to be processed.
 // @returns {Stream}
 function updateJshintrc( workdir ) {
-	const jshintrcPath = path.join( workdir, '.jshintrc' );
-	const strictRegex = /("strict":.*?").*?(".*)/;
-	const replaceWith = 'implied';
+	const jshintrcGlob = jshintrcDirs.map(
+		dir => path.join( workdir, dir, '.jshintrc' )
+	);
 
-	return gulp.src( jshintrcPath )
+	// Match everything after `"strict":` apart from optional comma. This should be matched into separate group.
+	const strictRegex = /"strict":[^,\n\r]*(,?)$/m;
+	const replaceWith = '"strict": "implied"';
+
+	return gulp.src( jshintrcGlob, { base: workdir } )
 		.pipe( replace(
 			strictRegex,
-			`$1${ replaceWith }$2`
+			`${ replaceWith }$1`
 		) )
 		.pipe( gulp.dest( workdir ) );
 }
