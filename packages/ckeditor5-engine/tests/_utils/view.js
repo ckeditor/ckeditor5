@@ -268,7 +268,7 @@ export function parse( data, options = {} ) {
 	let view = viewParser.parse( data, options.rootElement );
 
 	// If single Element or Text is returned - move it to the DocumentFragment.
-	if ( view instanceof ViewText || view instanceof ViewElement ) {
+	if ( !options.rootElement && ( view instanceof ViewText || view instanceof ViewElement ) ) {
 		view = new ViewDocumentFragment( view );
 	}
 
@@ -288,6 +288,11 @@ export function parse( data, options = {} ) {
 			view: view,
 			selection: selection
 		};
+	}
+
+	// If single element is returned without selection - remove it from parent and return detached element.
+	if ( view.parent ) {
+		view.remove();
 	}
 
 	return view;

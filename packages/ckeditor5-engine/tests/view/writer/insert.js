@@ -8,14 +8,12 @@
 'use strict';
 
 import { insert } from '/ckeditor5/engine/view/writer.js';
-import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import Element from '/ckeditor5/engine/view/element.js';
 import Position from '/ckeditor5/engine/view/position.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import { stringify, parse } from '/tests/engine/_utils/view.js';
 import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
-import Text from '/ckeditor5/engine/view/text.js';
 
 describe( 'writer', () => {
 	/**
@@ -29,12 +27,8 @@ describe( 'writer', () => {
 		nodesToInsert = nodesToInsert.map( node => parse( node ) );
 		let { view, selection } = parse( input );
 
-		if ( view instanceof AttributeElement || view instanceof Text ) {
-			view = new DocumentFragment( view );
-		}
-
 		const newRange = insert( selection.getFirstPosition(), nodesToInsert );
-		expect( stringify( view, newRange, { showType: true, showPriority: true } ) ).to.equal( expected );
+		expect( stringify( view.parent, newRange, { showType: true, showPriority: true } ) ).to.equal( expected );
 	}
 
 	describe( 'insert', () => {
