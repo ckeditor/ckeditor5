@@ -199,11 +199,6 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
 
 /**
  * Parses HTML-like string and returns view tree nodes.
- *
- * Empty string will be converted to empty {@link engine.view.DocumentFragment DocumentFragment}.
- *
- *		parse( '' ); // Returns instance of DocumentFragment.
- *
  * Simple string will be converted to {@link engine.view.Text Text} node:
  *
  *		parse( 'foobar' ); // Returns instance of Text.
@@ -239,6 +234,17 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
  * represented by `start` position) use `lastRangeBackward` flag:
  *
  *		const { root, selection } = parse( `{foo}bar{baz}`, { lastRangeBackward: true } );
+ *
+ * Other examples and edge cases:
+ *
+ *		// Returns empty DocumentFragment.
+ *		parse( '' );
+ *
+ *		// Returns empty DocumentFragment and collapsed selection.
+ *		const { root, selection } = parse( '[]' );
+ *
+ *		// Returns Element and selection that is placed inside of DocumentFragment containing that element.
+ *		const { root, selection } = parse( '[<a></a>]' );
  *
  * @param {String} data HTML-like string to be parsed.
  * @param {Object} options
