@@ -38,7 +38,7 @@ export default class EnterCommand extends Command {
  */
 export function enterBlock( batch, selection, options = {} ) {
 	const defaultBlockName = options.defaultBlockName;
-	const doc = batch.doc;
+	const doc = batch.document;
 	const isSelectionEmpty = selection.isCollapsed;
 	const range = selection.getFirstRange();
 	const startElement = range.start.parent;
@@ -93,7 +93,7 @@ export function enterBlock( batch, selection, options = {} ) {
 }
 
 function splitBlock( batch, selection, splitPos, defaultBlockName ) {
-	const doc = batch.doc;
+	const doc = batch.document;
 	const parent = splitPos.parent;
 
 	if ( splitPos.isAtEnd() ) {
