@@ -34,17 +34,17 @@ export default class Batch {
 	/**
 	 * Creates Batch instance. Not recommended to use directly, use {@link engine.model.Document#batch} instead.
 	 *
-	 * @param {engine.model.Document} doc Document which this Batch changes.
+	 * @param {engine.model.Document} document Document which this Batch changes.
 	 * @param {'transparent'|'default'} [type='default'] Type of the batch.
 	 */
-	constructor( doc, type = 'default' ) {
+	constructor( document, type = 'default' ) {
 		/**
 		 * Document which this batch changes.
 		 *
 		 * @readonly
-		 * @member {engine.model.Document} engine.model.Batch#doc
+		 * @member {engine.model.Document} engine.model.Batch#document
 		 */
-		this.doc = doc;
+		this.document = document;
 
 		/**
 		 * Array of deltas which compose this batch.
@@ -123,13 +123,13 @@ export default class Batch {
  *			this.addDelta( delta );
  *
  *			// Create operations which should be components of this delta.
- *			const operation = new InsertOperation( position, nodes, this.doc.version );
+ *			const operation = new InsertOperation( position, nodes, this.document.version );
  *
  *			// Add operation to the delta. It is important to add operation before applying it.
  *			delta.addOperation( operation );
  *
  *			// Remember to apply every operation, no magic, you need to do it manually.
- *			this.doc.applyOperation( operation );
+ *			this.document.applyOperation( operation );
  *
  *			// Make this method chainable.
  *			return this;

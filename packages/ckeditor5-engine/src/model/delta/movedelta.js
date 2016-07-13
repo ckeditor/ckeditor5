@@ -79,9 +79,9 @@ export default class MoveDelta extends Delta {
 }
 
 function addMoveOperation( batch, delta, sourcePosition, howMany, targetPosition ) {
-	const operation = new MoveOperation( sourcePosition, howMany, targetPosition, batch.doc.version );
+	const operation = new MoveOperation( sourcePosition, howMany, targetPosition, batch.document.version );
 	delta.addOperation( operation );
-	batch.doc.applyOperation( operation );
+	batch.document.applyOperation( operation );
 }
 
 /**
