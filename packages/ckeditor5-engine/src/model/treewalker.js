@@ -29,11 +29,11 @@ export default class TreeWalker {
 	 * should be returned one by one as multiple {@link engine.model.CharacterProxy} (`true`) objects or as one
 	 * {@link engine.model.TextProxy} (`false`).
 	 * @param {Boolean} [options.shallow=false] Flag indicating whether iterator should enter elements or not. If the
-	 * iterator is shallow child nodes of any iterated node will not be returned along with `ELEMENT_END` tag.
-	 * @param {Boolean} [options.ignoreElementEnd=false] Flag indicating whether iterator should ignore `ELEMENT_END`
+	 * iterator is shallow child nodes of any iterated node will not be returned along with `elementEnd` tag.
+	 * @param {Boolean} [options.ignoreElementEnd=false] Flag indicating whether iterator should ignore `elementEnd`
 	 * tags. If the option is true walker will not return a parent node of start position. If this option is `true`
 	 * each {@link engine.model.Element} will be returned once, while if the option is `false` they might be returned
-	 * twice: for `'ELEMENT_START'` and `'ELEMENT_END'`.
+	 * twice: for `'elementStart'` and `'elementEnd'`.
 	 */
 	constructor( options = {} ) {
 		if ( !options.boundaries && !options.startPosition ) {
@@ -101,7 +101,7 @@ export default class TreeWalker {
 
 		/**
 		 * Flag indicating whether iterator should enter elements or not. If the iterator is shallow child nodes of any
-		 * iterated node will not be returned along with `ELEMENT_END` tag.
+		 * iterated node will not be returned along with `elementEnd` tag.
 		 *
 		 * @readonly
 		 * @member {Boolean} engine.model.TreeWalker#shallow
@@ -109,10 +109,10 @@ export default class TreeWalker {
 		this.shallow = !!options.shallow;
 
 		/**
-		 * Flag indicating whether iterator should ignore `ELEMENT_END` tags. If the option is true walker will not
+		 * Flag indicating whether iterator should ignore `elementEnd` tags. If the option is true walker will not
 		 * return a parent node of the start position. If this option is `true` each {@link engine.model.Element} will
 		 * be returned once, while if the option is `false` they might be returned twice:
-		 * for `'ELEMENT_START'` and `'ELEMENT_END'`.
+		 * for `'elementStart'` and `'elementEnd'`.
 		 *
 		 * @readonly
 		 * @member {Boolean} engine.model.TreeWalker#ignoreElementEnd
@@ -201,7 +201,7 @@ export default class TreeWalker {
 
 			this.position = position;
 
-			return formatReturnValue( 'ELEMENT_START', node, previousPosition, position, 1 );
+			return formatReturnValue( 'elementStart', node, previousPosition, position, 1 );
 		} else if ( node instanceof CharacterProxy ) {
 			if ( this.singleCharacters ) {
 				position.offset++;
@@ -234,7 +234,7 @@ export default class TreeWalker {
 			if ( this.ignoreElementEnd ) {
 				return this._next();
 			} else {
-				return formatReturnValue( 'ELEMENT_END', parent, previousPosition, position );
+				return formatReturnValue( 'elementEnd', parent, previousPosition, position );
 			}
 		}
 	}
@@ -276,12 +276,12 @@ export default class TreeWalker {
 				if ( this.ignoreElementEnd ) {
 					return this._previous();
 				} else {
-					return formatReturnValue( 'ELEMENT_END', node, previousPosition, position );
+					return formatReturnValue( 'elementEnd', node, previousPosition, position );
 				}
 			} else {
 				this.position = position;
 
-				return formatReturnValue( 'ELEMENT_START', node, previousPosition, position, 1 );
+				return formatReturnValue( 'elementStart', node, previousPosition, position, 1 );
 			}
 		} else if ( node instanceof CharacterProxy ) {
 			if ( this.singleCharacters ) {
@@ -311,7 +311,7 @@ export default class TreeWalker {
 			this.position = position;
 			this._visitedParent = parent.parent;
 
-			return formatReturnValue( 'ELEMENT_START', parent, previousPosition, position, 1 );
+			return formatReturnValue( 'elementStart', parent, previousPosition, position, 1 );
 		}
 	}
 }
@@ -331,7 +331,7 @@ function formatReturnValue( type, item, previousPosition, nextPosition, length )
 
 /**
  * Type of the step made by {@link engine.model.TreeWalker}.
- * Possible values: `'ELEMENT_START'` if walker is at the beginning of a node, `'ELEMENT_END'` if walker is at the end of node,
+ * Possible values: `'elementStart'` if walker is at the beginning of a node, `'elementEnd'` if walker is at the end of node,
  * `'CHARACTER'` if walker traversed over a character, or `'TEXT'` if walker traversed over multiple characters (available in
  * character merging mode, see {@link engine.model.TreeWalker#constructor}).
  *
@@ -345,20 +345,20 @@ function formatReturnValue( type, item, previousPosition, nextPosition, length )
  * @property {engine.model.TreeWalkerValueType} type
  * @property {engine.model.Item} item Item between old and new positions of {@link engine.model.TreeWalker}.
  * @property {engine.model.Position} previousPosition Previous position of the iterator.
- * * Forward iteration: For `'ELEMENT_END'` it is the last position inside the element. For all other types it is the
+ * * Forward iteration: For `'elementEnd'` it is the last position inside the element. For all other types it is the
  * position before the item. Note that it is more efficient to use this position then calculate the position before
  * the node using {@link engine.model.Position.createBefore}. It is also more efficient to get the
  * position after node by shifting `previousPosition` by `length`, using {@link engine.model.Position#getShiftedBy},
  * then calculate the position using {@link engine.model.Position.createAfter}.
- * * Backward iteration: For `'ELEMENT_START'` it is the first position inside the element. For all other types it is
+ * * Backward iteration: For `'elementStart'` it is the first position inside the element. For all other types it is
  * the position after item.
  * @property {engine.model.Position} nextPosition Next position of the iterator.
- * * Forward iteration: For `'ELEMENT_START'` it is the first position inside the element. For all other types it is
+ * * Forward iteration: For `'elementStart'` it is the first position inside the element. For all other types it is
  * the position after the item.
- * * Backward iteration: For `'ELEMENT_END'` it is last position inside element. For all other types it is the position
+ * * Backward iteration: For `'elementEnd'` it is last position inside element. For all other types it is the position
  * before the item.
- * @property {Number} [length] Length of the item. For `'ELEMENT_START'` and `'CHARACTER'` it is 1. For `'TEXT'` it is
- * the length of the text. For `'ELEMENT_END'` it is undefined.
+ * @property {Number} [length] Length of the item. For `'elementStart'` and `'CHARACTER'` it is 1. For `'TEXT'` it is
+ * the length of the text. For `'elementEnd'` it is undefined.
  */
 
 /**

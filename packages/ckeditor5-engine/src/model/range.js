@@ -48,12 +48,12 @@ export default class Range {
 	 * range.
 	 *
 	 * **Note:** iterator will not return a parent node of start position. This is in contrary to
-	 * {@link engine.model.TreeWalker} which will return that node with `'ELEMENT_END'` type. Iterator also
+	 * {@link engine.model.TreeWalker} which will return that node with `'elementEnd'` type. Iterator also
 	 * returns each {@link engine.model.Element} once, while simply used {@link engine.model.TreeWalker} might
-	 * return it twice: for `'ELEMENT_START'` and `'ELEMENT_END'`.
+	 * return it twice: for `'elementStart'` and `'elementEnd'`.
 	 *
 	 * **Note:** because iterator does not return {@link engine.model.TreeWalkerValue values} with the type of
-	 * `'ELEMENT_END'`, you can use {@link engine.model.TreeWalkerValue.previousPosition} as a position before the
+	 * `'elementEnd'`, you can use {@link engine.model.TreeWalkerValue.previousPosition} as a position before the
 	 * item.
 	 *
 	 * @see engine.model.TreeWalker

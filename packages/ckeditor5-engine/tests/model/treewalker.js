@@ -76,15 +76,15 @@ describe( 'TreeWalker', () => {
 
 		beforeEach( () => {
 			expected = [
-				{ type: 'ELEMENT_START', item: img1 },
-				{ type: 'ELEMENT_END', item: img1 },
-				{ type: 'ELEMENT_START', item: paragraph },
+				{ type: 'elementStart', item: img1 },
+				{ type: 'elementEnd', item: img1 },
+				{ type: 'elementStart', item: paragraph },
 				{ type: 'TEXT', text: 'ba', attrs: [ [ 'bold', true ] ] },
 				{ type: 'TEXT', text: 'r', attrs: [] },
-				{ type: 'ELEMENT_START', item: img2 },
-				{ type: 'ELEMENT_END', item: img2 },
+				{ type: 'elementStart', item: img2 },
+				{ type: 'elementEnd', item: img2 },
 				{ type: 'TEXT', text: 'x', attrs: [] },
-				{ type: 'ELEMENT_END', item: paragraph }
+				{ type: 'elementEnd', item: paragraph }
 			];
 		} );
 
@@ -137,8 +137,8 @@ describe( 'TreeWalker', () => {
 
 		it( 'should start iterating at the startPosition witch is not a root bound, going backward', () => {
 			let expected = [
-				{ type: 'ELEMENT_START', item: img1 },
-				{ type: 'ELEMENT_END', item: img1 }
+				{ type: 'elementStart', item: img1 },
+				{ type: 'elementEnd', item: img1 }
 			];
 
 			let iterator = new TreeWalker( { startPosition: new Position( root, [ 1 ] ), direction: 'BACKWARD' } );
@@ -158,11 +158,11 @@ describe( 'TreeWalker', () => {
 
 			before( () => {
 				expected = [
-					{ type: 'ELEMENT_START', item: paragraph },
+					{ type: 'elementStart', item: paragraph },
 					{ type: 'TEXT', text: 'ba', attrs: [ [ 'bold', true ] ] },
 					{ type: 'TEXT', text: 'r', attrs: [] },
-					{ type: 'ELEMENT_START', item: img2 },
-					{ type: 'ELEMENT_END', item: img2 }
+					{ type: 'elementStart', item: img2 },
+					{ type: 'elementEnd', item: img2 }
 				];
 
 				range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 1, 4 ] ) );
@@ -199,8 +199,8 @@ describe( 'TreeWalker', () => {
 				expected = [
 					{ type: 'TEXT', text: 'a', attrs: [ [ 'bold', true ] ] },
 					{ type: 'TEXT', text: 'r', attrs: [] },
-					{ type: 'ELEMENT_START', item: img2 },
-					{ type: 'ELEMENT_END', item: img2 }
+					{ type: 'elementStart', item: img2 },
+					{ type: 'elementEnd', item: img2 }
 				];
 
 				range = new Range( new Position( root, [ 1, 1 ] ), new Position( root, [ 1, 4 ] ) );
@@ -238,9 +238,9 @@ describe( 'TreeWalker', () => {
 
 			before( () => {
 				expected = [
-					{ type: 'ELEMENT_START', item: img1 },
-					{ type: 'ELEMENT_END', item: img1 },
-					{ type: 'ELEMENT_START', item: paragraph },
+					{ type: 'elementStart', item: img1 },
+					{ type: 'elementEnd', item: img1 },
+					{ type: 'elementStart', item: paragraph },
 					{ type: 'TEXT', text: 'b', attrs: [ [ 'bold', true ] ] }
 				];
 
@@ -279,8 +279,8 @@ describe( 'TreeWalker', () => {
 			it( 'should iterating from the start position', () => {
 				let expected = [
 					{ type: 'TEXT', text: 'r', attrs: [] },
-					{ type: 'ELEMENT_START', item: img2 },
-					{ type: 'ELEMENT_END', item: img2 }
+					{ type: 'elementStart', item: img2 },
+					{ type: 'elementEnd', item: img2 }
 				];
 
 				let range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 1, 4 ] ) );
@@ -302,8 +302,8 @@ describe( 'TreeWalker', () => {
 			it( 'should iterating from the start position going backward', () => {
 				let expected = [
 					{ type: 'TEXT', text: 'r', attrs: [] },
-					{ type: 'ELEMENT_START', item: img2 },
-					{ type: 'ELEMENT_END', item: img2 }
+					{ type: 'elementStart', item: img2 },
+					{ type: 'elementEnd', item: img2 }
 				];
 
 				let range = new Range( new Position( root, [ 1, 2 ] ), new Position( root, [ 1, 6 ] ) );
@@ -330,16 +330,16 @@ describe( 'TreeWalker', () => {
 
 			before( () => {
 				expected = [
-					{ type: 'ELEMENT_START', item: img1 },
-					{ type: 'ELEMENT_END', item: img1 },
-					{ type: 'ELEMENT_START', item: paragraph },
+					{ type: 'elementStart', item: img1 },
+					{ type: 'elementEnd', item: img1 },
+					{ type: 'elementStart', item: paragraph },
 					{ type: 'CHARACTER', text: 'b', attrs: [ [ 'bold', true ] ] },
 					{ type: 'CHARACTER', text: 'a', attrs: [ [ 'bold', true ] ] },
 					{ type: 'CHARACTER', text: 'r', attrs: [] },
-					{ type: 'ELEMENT_START', item: img2 },
-					{ type: 'ELEMENT_END', item: img2 },
+					{ type: 'elementStart', item: img2 },
+					{ type: 'elementEnd', item: img2 },
 					{ type: 'CHARACTER', text: 'x', attrs: [] },
-					{ type: 'ELEMENT_END', item: paragraph }
+					{ type: 'elementEnd', item: paragraph }
 				];
 			} );
 
@@ -379,7 +379,7 @@ describe( 'TreeWalker', () => {
 					{ type: 'CHARACTER', text: 'b', attrs: [ [ 'bold', true ] ] },
 					{ type: 'CHARACTER', text: 'a', attrs: [ [ 'bold', true ] ] },
 					{ type: 'CHARACTER', text: 'r', attrs: [] },
-					{ type: 'ELEMENT_START', item: img2 }
+					{ type: 'elementStart', item: img2 }
 				];
 
 				start = new Position( root, [ 1, 0 ] ); // p, 0
@@ -417,13 +417,13 @@ describe( 'TreeWalker', () => {
 		} );
 	} );
 
-	describe( 'iterate omitting child nodes and ELEMENT_END `shallow`', () => {
+	describe( 'iterate omitting child nodes and elementEnd `shallow`', () => {
 		let expected;
 
 		before( () => {
 			expected = [
-				{ type: 'ELEMENT_START', item: img1 },
-				{ type: 'ELEMENT_START', item: paragraph }
+				{ type: 'elementStart', item: img1 },
+				{ type: 'elementStart', item: paragraph }
 			];
 		} );
 
@@ -451,22 +451,22 @@ describe( 'TreeWalker', () => {
 		} );
 	} );
 
-	describe( 'iterate omitting ELEMENT_END `ignoreElementEnd`', () => {
+	describe( 'iterate omitting elementEnd `ignoreElementEnd`', () => {
 		describe( 'merged text', () => {
 			let expected;
 
 			before( () => {
 				expected = [
-					{ type: 'ELEMENT_START', item: img1 },
-					{ type: 'ELEMENT_START', item: paragraph },
+					{ type: 'elementStart', item: img1 },
+					{ type: 'elementStart', item: paragraph },
 					{ type: 'TEXT', text: 'ba', attrs: [ [ 'bold', true ] ] },
 					{ type: 'TEXT', text: 'r', attrs: [] },
-					{ type: 'ELEMENT_START', item: img2 },
+					{ type: 'elementStart', item: img2 },
 					{ type: 'TEXT', text: 'x', attrs: [] }
 				];
 			} );
 
-			it( 'should iterate ignoring ELEMENT_END', () => {
+			it( 'should iterate ignoring elementEnd', () => {
 				let iterator = new TreeWalker( { startPosition: rootBeginning, ignoreElementEnd: true } );
 				let i = 0;
 
@@ -478,7 +478,7 @@ describe( 'TreeWalker', () => {
 				expect( i ).to.equal( expected.length );
 			} );
 
-			it( 'should iterate ignoring ELEMENT_END going backward', () => {
+			it( 'should iterate ignoring elementEnd going backward', () => {
 				let iterator = new TreeWalker( {
 					startPosition: rootEnding,
 					ignoreElementEnd: true,
@@ -499,17 +499,17 @@ describe( 'TreeWalker', () => {
 
 			before( () => {
 				expected = [
-					{ type: 'ELEMENT_START', item: img1 },
-					{ type: 'ELEMENT_START', item: paragraph },
+					{ type: 'elementStart', item: img1 },
+					{ type: 'elementStart', item: paragraph },
 					{ type: 'CHARACTER', text: 'b', attrs: [ [ 'bold', true ] ] },
 					{ type: 'CHARACTER', text: 'a', attrs: [ [ 'bold', true ] ] },
 					{ type: 'CHARACTER', text: 'r', attrs: [] },
-					{ type: 'ELEMENT_START', item: img2 },
+					{ type: 'elementStart', item: img2 },
 					{ type: 'CHARACTER', text: 'x', attrs: [] }
 				];
 			} );
 
-			it( 'should return single characters ignoring ELEMENT_END', () => {
+			it( 'should return single characters ignoring elementEnd', () => {
 				let iterator = new TreeWalker( {
 					startPosition: rootBeginning,
 					singleCharacters: true,
@@ -525,7 +525,7 @@ describe( 'TreeWalker', () => {
 				expect( i ).to.equal( expected.length );
 			} );
 
-			it( 'should return single characters ignoring ELEMENT_END going backward', () => {
+			it( 'should return single characters ignoring elementEnd going backward', () => {
 				let iterator = new TreeWalker( {
 					startPosition: rootEnding,
 					singleCharacters: true,
@@ -551,9 +551,9 @@ function expectValue( value, expected, options ) {
 		expectText( value, expected, options );
 	} else if ( value.type == 'CHARACTER' ) {
 		expectCharacter( value, expected, options );
-	} else if ( value.type == 'ELEMENT_START' ) {
+	} else if ( value.type == 'elementStart' ) {
 		expectStart( value, expected, options );
-	} else if ( value.type == 'ELEMENT_END' ) {
+	} else if ( value.type == 'elementEnd' ) {
 		expectEnd( value, expected, options );
 	}
 }

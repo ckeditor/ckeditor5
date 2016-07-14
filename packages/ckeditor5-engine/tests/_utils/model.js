@@ -256,7 +256,7 @@ function writeItem( walkerValue, selection, options ) {
 	const type = walkerValue.type;
 	const item = walkerValue.item;
 
-	if ( type == 'ELEMENT_START' ) {
+	if ( type == 'elementStart' ) {
 		let attrs = writeAttributes( item.getAttributes() );
 
 		if ( attrs ) {
@@ -266,7 +266,7 @@ function writeItem( walkerValue, selection, options ) {
 		return `<${ item.name }>`;
 	}
 
-	if ( type == 'ELEMENT_END' ) {
+	if ( type == 'elementEnd' ) {
 		return `</${ item.name }>`;
 	}
 
