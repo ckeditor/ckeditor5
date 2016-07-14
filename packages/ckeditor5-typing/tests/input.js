@@ -4,7 +4,7 @@
  */
 
 import VirtualTestEditor from '/tests/ckeditor5/_utils/virtualtesteditor.js';
-import Typing from '/ckeditor5/typing/typing.js';
+import Input from '/ckeditor5/typing/input.js';
 import Paragraph from '/ckeditor5/paragraph/paragraph.js';
 
 import ModelRange from '/ckeditor5/engine/model/range.js';
@@ -20,14 +20,14 @@ import { getCode } from '/ckeditor5/utils/keyboard.js';
 import { getData as getModelData } from '/tests/engine/_utils/model.js';
 import { getData as getViewData } from '/tests/engine/_utils/view.js';
 
-describe( 'Typing feature', () => {
+describe( 'Input feature', () => {
 	let editor, model, modelRoot, view, viewRoot, listenter;
 
 	before( () => {
 		listenter = Object.create( EmitterMixin );
 
 		return VirtualTestEditor.create( {
-				features: [ Typing, Paragraph ]
+				features: [ Input, Paragraph ]
 			} )
 			.then( newEditor => {
 				// Mock image feature.
@@ -63,18 +63,18 @@ describe( 'Typing feature', () => {
 	} );
 
 	it( 'has a buffer configured to default value of config.typing.undoStep', () => {
-		expect( editor.plugins.get( Typing )._buffer ).to.have.property( 'limit', 20 );
+		expect( editor.plugins.get( Input )._buffer ).to.have.property( 'limit', 20 );
 	} );
 
 	it( 'has a buffer configured to config.typing.undoStep', () => {
 		return VirtualTestEditor.create( {
-				features: [ Typing ],
+				features: [ Input ],
 				typing: {
 					undoStep: 5
 				}
 			} )
 			.then( editor => {
-				expect( editor.plugins.get( Typing )._buffer ).to.have.property( 'limit', 5 );
+				expect( editor.plugins.get( Input )._buffer ).to.have.property( 'limit', 5 );
 			} );
 	} );
 
@@ -270,7 +270,7 @@ describe( 'Typing feature', () => {
 
 	describe( 'destroy', () => {
 		it( 'should destroy change buffer', () => {
-			const typing = new Typing( new VirtualTestEditor() );
+			const typing = new Input( new VirtualTestEditor() );
 			typing.init();
 
 			const destroy = typing._buffer.destroy = sinon.spy();
