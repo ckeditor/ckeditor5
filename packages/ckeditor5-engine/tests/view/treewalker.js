@@ -71,7 +71,7 @@ describe( 'TreeWalker', () => {
 
 		it( 'should throw if walking direction is unknown', () => {
 			expect( () => {
-				new TreeWalker( { startPosition: rootBeginning, direction: 'UNKNOWN' } );
+				new TreeWalker( { startPosition: rootBeginning, direction: 'unknown' } );
 			} ).to.throw( CKEditorError, /^tree-walker-unknown-direction/ );
 		} );
 	} );
