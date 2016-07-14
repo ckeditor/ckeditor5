@@ -11,7 +11,7 @@ import ChangeBuffer from './changebuffer.js';
 import count from '../utils/count.js';
 
 /**
- * Delete command. Used by the {@link delete.Delete delete feature} to handle <kbd>Delete</kbd> and
+ * Delete command. Used by the {@link typing.Delete delete feature} to handle <kbd>Delete</kbd> and
  * <kbd>Backspace</kbd> keys.
  *
  * @member delete
@@ -33,7 +33,7 @@ export default class DeleteCommand extends Command {
 		 * consume the content when selection is collapsed).
 		 *
 		 * @readonly
-		 * @member {'FORWARD'|'BACKWARD'} delete.DeleteCommand#direction
+		 * @member {'FORWARD'|'BACKWARD'} typing.DeleteCommand#direction
 		 */
 		this.direction = direction;
 
@@ -42,14 +42,14 @@ export default class DeleteCommand extends Command {
 		 *
 		 * @readonly
 		 * @private
-		 * @member {typing.ChangeBuffer} delete.DeleteCommand#buffer
+		 * @member {typing.ChangeBuffer} typing.DeleteCommand#buffer
 		 */
 		this._buffer = new ChangeBuffer( editor.document, editor.config.get( 'undo.step' ) );
 	}
 
 	/**
 	 * Executes the command: depending on whether the selection is collapsed or not, deletes its contents
-	 * or piece of content in the {@link delete.DeleteCommand#direction defined direction}.
+	 * or piece of content in the {@link typing.DeleteCommand#direction defined direction}.
 	 *
 	 * @param {Object} [options] The command options.
 	 * @param {'CHARACTER'} [options.unit='CHARACTER'] See {@link engine.model.composer.modifySelection}'s options.

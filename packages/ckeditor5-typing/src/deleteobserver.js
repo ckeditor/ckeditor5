@@ -45,8 +45,8 @@ export default class DeleteObserver extends Observer {
 /**
  * Event fired when the user tries to delete contents (e.g. presses <kbd>Delete</kbd> or <kbd>Backspace</kbd>).
  *
- * Note: This event is fired by the {@link delete.DeleteObserver observer}
- * (usually registered by the {@link delete.Delete delete feature}).
+ * Note: This event is fired by the {@link typing.DeleteObserver observer}
+ * (usually registered by the {@link typing.Delete delete feature}).
  *
  * @event engine.view.Document#delete
  * @param {engine.view.observer.DomEventData} data
