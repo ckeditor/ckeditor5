@@ -214,7 +214,7 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'writes selection collapsed at the end of the root', () => {
-				selection.collapse( root, 'END' );
+				selection.collapse( root, 'end' );
 
 				// Needed due to https://github.com/ckeditor/ckeditor5-engine/issues/320.
 				selection.clearAttributes();

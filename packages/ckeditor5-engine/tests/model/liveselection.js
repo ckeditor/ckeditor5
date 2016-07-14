@@ -167,7 +167,7 @@ describe( 'LiveSelection', () => {
 	describe( 'setFocus', () => {
 		it( 'modifies default range', () => {
 			const startPos = selection.getFirstPosition();
-			const endPos = Position.createAt( root, 'END' );
+			const endPos = Position.createAt( root, 'end' );
 
 			selection.setFocus( endPos );
 

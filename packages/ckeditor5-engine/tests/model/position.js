@@ -164,7 +164,7 @@ describe( 'position', () => {
 		} );
 
 		it( 'should create positions from node and flag', () => {
-			expect( Position.createAt( root, 'END' ) ).to.have.property( 'path' ).that.deep.equals( [ 2 ] );
+			expect( Position.createAt( root, 'end' ) ).to.have.property( 'path' ).that.deep.equals( [ 2 ] );
 
 			expect( Position.createAt( p, 'before' ) ).to.have.property( 'path' ).that.deep.equals( [ 0 ] );
 			expect( Position.createAt( a, 'before' ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 1 ] );
@@ -172,7 +172,7 @@ describe( 'position', () => {
 			expect( Position.createAt( p, 'after' ) ).to.have.property( 'path' ).that.deep.equals( [ 1 ] );
 			expect( Position.createAt( a, 'after' ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 2 ] );
 
-			expect( Position.createAt( ul, 'END' ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 2 ] );
+			expect( Position.createAt( ul, 'end' ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 2 ] );
 		} );
 	} );
 

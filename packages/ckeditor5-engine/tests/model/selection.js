@@ -206,7 +206,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'sets selection at the end of the given parent', () => {
-			selection.collapse( root, 'END' );
+			selection.collapse( root, 'end' );
 
 			expect( selection ).to.have.property( 'isCollapsed', true );
 
@@ -296,13 +296,13 @@ describe( 'Selection', () => {
 			const spy = sinon.spy();
 			selection.on( 'change:range', spy );
 
-			selection.setFocus( Position.createAt( root, 'END' ) );
+			selection.setFocus( Position.createAt( root, 'end' ) );
 
 			expect( spy.calledOnce ).to.be.true;
 		} );
 
 		it( 'throws if there are no ranges in selection', () => {
-			const endPos = Position.createAt( root, 'END' );
+			const endPos = Position.createAt( root, 'end' );
 
 			expect( () => {
 				selection.setFocus( endPos );
@@ -440,7 +440,7 @@ describe( 'Selection', () => {
 
 			selection.addRange( new Range( startPos, endPos ) );
 
-			selection.setFocus( root, 'END' );
+			selection.setFocus( root, 'end' );
 
 			expect( spy.calledOnce ).to.be.true;
 			expect( selection.focus.compareWith( newEndPos ) ).to.equal( 'SAME' );

@@ -448,7 +448,7 @@ export default class Position {
 	 *
 	 * * a {@link engine.model.Position position},
 	 * * parent element and offset (offset defaults to `0`),
-	 * * parent element and `'END'` (sets selection at the end of that element),
+	 * * parent element and `'end'` (sets selection at the end of that element),
 	 * * node and `'before'` or `'after'` (sets selection before or after the given node).
 	 *
 	 * This method is a shortcut to other constructors such as:
@@ -459,7 +459,7 @@ export default class Position {
 	 * * {@link engine.model.Position.createFromPosition}.
 	 *
 	 * @param {engine.model.Node|engine.model.Position} nodeOrPosition
-	 * @param {Number|'END'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
 	 * first parameter is a node.
 	 */
 	static createAt( nodeOrPosition, offset ) {
@@ -470,7 +470,7 @@ export default class Position {
 		} else {
 			node = nodeOrPosition;
 
-			if ( offset == 'END' ) {
+			if ( offset == 'end' ) {
 				offset = node.getChildCount();
 			} else if ( offset == 'before' ) {
 				return this.createBefore( node );

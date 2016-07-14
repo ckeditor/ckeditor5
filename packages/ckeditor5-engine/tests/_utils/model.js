@@ -195,7 +195,7 @@ export function parse( data, options = {} ) {
 
 		collapsedSelection( token ) {
 			withSelection = true;
-			selection.collapse( root, 'END' );
+			selection.collapse( root, 'end' );
 			selection.setAttributesTo( token.attributes );
 		},
 

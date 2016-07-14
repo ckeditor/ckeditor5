@@ -72,13 +72,13 @@ export default function modifySelection( selection, options = {} ) {
 	}
 	// 4.3. OK, we're entering a new element. So let's place there the focus.
 	else {
-		selection.setFocus( value.item, isForward ? 0 : 'END' );
+		selection.setFocus( value.item, isForward ? 0 : 'end' );
 	}
 }
 
 function getSearchRange( start, isForward ) {
 	const root = start.root;
-	const searchEnd = Position.createAt( root, isForward ? 'END' : 0 );
+	const searchEnd = Position.createAt( root, isForward ? 'end' : 0 );
 
 	if ( isForward ) {
 		return new Range( start, searchEnd );
