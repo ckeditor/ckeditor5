@@ -148,8 +148,8 @@ export default class Position {
 		const result = compareArrays( this.path, otherPosition.path );
 
 		switch ( result ) {
-			case 'SAME':
-				return 'SAME';
+			case 'same':
+				return 'same';
 
 			case 'prefix':
 				return 'before';
@@ -209,7 +209,7 @@ export default class Position {
 			return transformed;
 		}
 
-		if ( compareArrays( deletePosition.getParentPath(), this.getParentPath() ) == 'SAME' ) {
+		if ( compareArrays( deletePosition.getParentPath(), this.getParentPath() ) == 'same' ) {
 			// If nodes are removed from the node that is pointed by this position...
 			if ( deletePosition.offset < this.offset ) {
 				// And are removed from before an offset of that position...
@@ -260,7 +260,7 @@ export default class Position {
 			return transformed;
 		}
 
-		if ( compareArrays( insertPosition.getParentPath(), this.getParentPath() ) == 'SAME' ) {
+		if ( compareArrays( insertPosition.getParentPath(), this.getParentPath() ) == 'same' ) {
 			// If nodes are inserted in the node that is pointed by this position...
 			if ( insertPosition.offset < this.offset || ( insertPosition.offset == this.offset && insertBefore ) ) {
 				// And are inserted before an offset of that position...
@@ -369,7 +369,7 @@ export default class Position {
 	 * @returns {Boolean} True if positions are same.
 	 */
 	isEqual( otherPosition ) {
-		return this.compareWith( otherPosition ) == 'SAME';
+		return this.compareWith( otherPosition ) == 'same';
 	}
 
 	/**
@@ -386,7 +386,7 @@ export default class Position {
 		let compare = this.compareWith( otherPosition );
 
 		switch ( compare ) {
-			case 'SAME':
+			case 'same':
 				return true;
 
 			case 'before':
@@ -641,7 +641,7 @@ export default class Position {
 }
 
 /**
- * A flag indicating whether this position is `'before'` or `'after'` or `'SAME'` as given position.
+ * A flag indicating whether this position is `'before'` or `'after'` or `'same'` as given position.
  * If positions are in different roots `'different'` flag is returned.
  *
  * @typedef {String} engine.model.PositionRelation

@@ -338,7 +338,7 @@ export default class Selection {
 
 		const newFocus = Position.createAt( nodeOrPosition, offset );
 
-		if ( newFocus.compareWith( this.focus ) == 'SAME' ) {
+		if ( newFocus.compareWith( this.focus ) == 'same' ) {
 			return;
 		}
 

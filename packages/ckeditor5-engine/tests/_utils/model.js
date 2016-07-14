@@ -313,12 +313,12 @@ function writeSelection( currentPosition, selection ) {
 	const range = selection.getFirstRange();
 
 	// Handle end of the selection.
-	if ( !selection.isCollapsed && range.end.compareWith( currentPosition ) == 'SAME' ) {
+	if ( !selection.isCollapsed && range.end.compareWith( currentPosition ) == 'same' ) {
 		return '</selection>';
 	}
 
 	// Handle no match.
-	if ( range.start.compareWith( currentPosition ) != 'SAME' ) {
+	if ( range.start.compareWith( currentPosition ) != 'same' ) {
 		return '';
 	}
 

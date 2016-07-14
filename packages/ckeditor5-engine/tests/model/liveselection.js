@@ -171,8 +171,8 @@ describe( 'LiveSelection', () => {
 
 			selection.setFocus( endPos );
 
-			expect( selection.anchor.compareWith( startPos ) ).to.equal( 'SAME' );
-			expect( selection.focus.compareWith( endPos ) ).to.equal( 'SAME' );
+			expect( selection.anchor.compareWith( startPos ) ).to.equal( 'same' );
+			expect( selection.focus.compareWith( endPos ) ).to.equal( 'same' );
 		} );
 
 		it( 'detaches the range it replaces', () => {

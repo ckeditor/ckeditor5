@@ -462,11 +462,11 @@ describe( 'position', () => {
 	} );
 
 	describe( 'compareWith', () => {
-		it( 'should return SAME if positions are same', () => {
+		it( 'should return same if positions are same', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
 			const compared = new Position( root, [ 1, 2, 3 ] );
 
-			expect( position.compareWith( compared ) ).to.equal( 'SAME' );
+			expect( position.compareWith( compared ) ).to.equal( 'same' );
 		} );
 
 		it( 'should return before if the position is before compared one', () => {

@@ -132,7 +132,7 @@ export default class Position {
 	 */
 	compareWith( otherPosition ) {
 		if ( this.isEqual( otherPosition ) ) {
-			return 'SAME';
+			return 'same';
 		}
 
 		// If positions have same parent.
@@ -269,7 +269,7 @@ export default class Position {
 }
 
 /**
- * A flag indicating whether this position is `'before'` or `'after'` or `'SAME'` as given position.
+ * A flag indicating whether this position is `'before'` or `'after'` or `'same'` as given position.
  * If positions are in different roots `'different'` flag is returned.
  *
  * @typedef {String} engine.view.PositionRelation

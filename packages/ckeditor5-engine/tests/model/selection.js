@@ -317,8 +317,8 @@ describe( 'Selection', () => {
 
 			selection.setFocus( endPos );
 
-			expect( selection.anchor.compareWith( startPos ) ).to.equal( 'SAME' );
-			expect( selection.focus.compareWith( endPos ) ).to.equal( 'SAME' );
+			expect( selection.anchor.compareWith( startPos ) ).to.equal( 'same' );
+			expect( selection.focus.compareWith( endPos ) ).to.equal( 'same' );
 		} );
 
 		it( 'makes existing collapsed selection a backward selection', () => {
@@ -329,8 +329,8 @@ describe( 'Selection', () => {
 
 			selection.setFocus( endPos );
 
-			expect( selection.anchor.compareWith( startPos ) ).to.equal( 'SAME' );
-			expect( selection.focus.compareWith( endPos ) ).to.equal( 'SAME' );
+			expect( selection.anchor.compareWith( startPos ) ).to.equal( 'same' );
+			expect( selection.focus.compareWith( endPos ) ).to.equal( 'same' );
 			expect( selection.isBackward ).to.be.true;
 		} );
 
@@ -343,8 +343,8 @@ describe( 'Selection', () => {
 
 			selection.setFocus( newEndPos );
 
-			expect( selection.anchor.compareWith( startPos ) ).to.equal( 'SAME' );
-			expect( selection.focus.compareWith( newEndPos ) ).to.equal( 'SAME' );
+			expect( selection.anchor.compareWith( startPos ) ).to.equal( 'same' );
+			expect( selection.focus.compareWith( newEndPos ) ).to.equal( 'same' );
 		} );
 
 		it( 'makes existing non-collapsed selection a backward selection', () => {
@@ -356,8 +356,8 @@ describe( 'Selection', () => {
 
 			selection.setFocus( newEndPos );
 
-			expect( selection.anchor.compareWith( startPos ) ).to.equal( 'SAME' );
-			expect( selection.focus.compareWith( newEndPos ) ).to.equal( 'SAME' );
+			expect( selection.anchor.compareWith( startPos ) ).to.equal( 'same' );
+			expect( selection.focus.compareWith( newEndPos ) ).to.equal( 'same' );
 			expect( selection.isBackward ).to.be.true;
 		} );
 
@@ -370,8 +370,8 @@ describe( 'Selection', () => {
 
 			selection.setFocus( newEndPos );
 
-			expect( selection.anchor.compareWith( endPos ) ).to.equal( 'SAME' );
-			expect( selection.focus.compareWith( newEndPos ) ).to.equal( 'SAME' );
+			expect( selection.anchor.compareWith( endPos ) ).to.equal( 'same' );
+			expect( selection.focus.compareWith( newEndPos ) ).to.equal( 'same' );
 			expect( selection.isBackward ).to.be.false;
 		} );
 
@@ -384,8 +384,8 @@ describe( 'Selection', () => {
 
 			selection.setFocus( newEndPos );
 
-			expect( selection.anchor.compareWith( endPos ) ).to.equal( 'SAME' );
-			expect( selection.focus.compareWith( newEndPos ) ).to.equal( 'SAME' );
+			expect( selection.anchor.compareWith( endPos ) ).to.equal( 'same' );
+			expect( selection.focus.compareWith( newEndPos ) ).to.equal( 'same' );
 			expect( selection.isBackward ).to.be.true;
 		} );
 
@@ -410,11 +410,11 @@ describe( 'Selection', () => {
 			const ranges = Array.from( selection.getRanges() );
 
 			expect( ranges ).to.have.lengthOf( 2 );
-			expect( ranges[ 0 ].start.compareWith( startPos1 ) ).to.equal( 'SAME' );
-			expect( ranges[ 0 ].end.compareWith( endPos1 ) ).to.equal( 'SAME' );
+			expect( ranges[ 0 ].start.compareWith( startPos1 ) ).to.equal( 'same' );
+			expect( ranges[ 0 ].end.compareWith( endPos1 ) ).to.equal( 'same' );
 
-			expect( selection.anchor.compareWith( startPos2 ) ).to.equal( 'SAME' );
-			expect( selection.focus.compareWith( newEndPos ) ).to.equal( 'SAME' );
+			expect( selection.anchor.compareWith( startPos2 ) ).to.equal( 'same' );
+			expect( selection.focus.compareWith( newEndPos ) ).to.equal( 'same' );
 			expect( selection.isBackward ).to.be.true;
 
 			expect( spy.calledOnce ).to.be.true;
@@ -428,7 +428,7 @@ describe( 'Selection', () => {
 
 			selection.setFocus( startPos );
 
-			expect( selection.focus.compareWith( startPos ) ).to.equal( 'SAME' );
+			expect( selection.focus.compareWith( startPos ) ).to.equal( 'same' );
 			expect( selection.isCollapsed ).to.be.true;
 		} );
 
@@ -443,7 +443,7 @@ describe( 'Selection', () => {
 			selection.setFocus( root, 'end' );
 
 			expect( spy.calledOnce ).to.be.true;
-			expect( selection.focus.compareWith( newEndPos ) ).to.equal( 'SAME' );
+			expect( selection.focus.compareWith( newEndPos ) ).to.equal( 'same' );
 		} );
 	} );
 
