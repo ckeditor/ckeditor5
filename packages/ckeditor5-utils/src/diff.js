@@ -12,7 +12,7 @@
  * Calculates the difference between two arrays or strings producing an array containing a list of changes
  * necessary to transform input into output.
  *
- *		diff( 'aba', 'acca' ); // [ 'EQUAL', 'INSERT', 'INSERT', 'DELETE', 'EQUAL' ]
+ *		diff( 'aba', 'acca' ); // [ 'equal', 'insert', 'insert', 'delete', 'equal' ]
  *
  * @method utils.diff
  * @param {Array|String} a Input array or string.
@@ -27,7 +27,7 @@ export default function diff( a, b, cmp ) {
 		};
 
 	// Temporary action type statics.
-	let _INSERT, _DELETE;
+	let _insert, _delete;
 
 	// Swapped the arrays to use the shorter one as the first one.
 	if ( b.length < a.length ) {
@@ -37,11 +37,11 @@ export default function diff( a, b, cmp ) {
 		b = tmp;
 
 		// We swap the action types as well.
-		_INSERT = 'DELETE';
-		_DELETE = 'INSERT';
+		_insert = 'delete';
+		_delete = 'insert';
 	} else {
-		_INSERT = 'INSERT';
-		_DELETE = 'DELETE';
+		_insert = 'insert';
+		_delete = 'delete';
 	}
 
 	const m = a.length;
@@ -73,7 +73,7 @@ export default function diff( a, b, cmp ) {
 		}
 
 		// Push the action.
-		es[ k ].push( y1 > y2 ? _INSERT : _DELETE );
+		es[ k ].push( y1 > y2 ? _insert : _delete );
 
 		// Set the beginning coordinates.
 		let y = Math.max( y1, y2 );
@@ -84,7 +84,7 @@ export default function diff( a, b, cmp ) {
 			x++;
 			y++;
 			// Push no change action.
-			es[ k ].push( 'EQUAL' );
+			es[ k ].push( 'equal' );
 		}
 
 		return y;
