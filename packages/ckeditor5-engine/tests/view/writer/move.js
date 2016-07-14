@@ -8,10 +8,7 @@
 'use strict';
 
 import { move } from '/ckeditor5/engine/view/writer.js';
-import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import { stringify, parse } from '/tests/engine/_utils/view.js';
-import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
-import Text from '/ckeditor5/engine/view/text.js';
 
 describe( 'writer', () => {
 	/**
@@ -25,14 +22,6 @@ describe( 'writer', () => {
 	function test( source, destination, sourceAfterMove, destinationAfterMove ) {
 		let { view: srcView, selection: srcSelection } = parse( source );
 		let { view: dstView, selection: dstSelection } = parse( destination );
-
-		if ( srcView instanceof AttributeElement || srcView instanceof Text ) {
-			srcView = new DocumentFragment( srcView );
-		}
-
-		if ( dstView instanceof AttributeElement || dstView instanceof Text ) {
-			dstView = new DocumentFragment( dstView );
-		}
 
 		const newRange = move( srcSelection.getFirstRange(), dstSelection.getFirstPosition() );
 

@@ -301,6 +301,42 @@ describe( 'model test utils', () => {
 	} );
 
 	describe( 'parse', () => {
+		test( 'creates empty DocumentFragment from empty string', {
+			data: '',
+			check( fragment ) {
+				expect( fragment ).to.be.instanceOf( DocumentFragment );
+			}
+		} );
+
+		test( 'creates empty DocumentFragment with selection', {
+			data: '<selection />',
+			check( fragment, selection ) {
+				expect( fragment ).to.be.instanceOf( DocumentFragment );
+				expect( fragment.getChildCount() ).to.equal( 0 );
+				expect( selection.rangeCount ).to.equal( 1 );
+				expect( selection.getFirstRange().isEqual( Range.createFromParentsAndOffsets( fragment, 0, fragment, 0 ) ) ).to.be.true;
+			}
+		} );
+
+		test( 'returns Element if range is around single element', {
+			data: '<selection><a></a></selection>',
+			check( el, selection ) {
+				const fragment = el.parent;
+				expect( el ).to.be.instanceOf( Element );
+				expect( fragment ).to.be.instanceOf( DocumentFragment );
+				expect( selection.rangeCount ).to.equal( 1 );
+				expect( selection.getFirstRange().isEqual( Range.createFromParentsAndOffsets( fragment, 0, fragment, 1 ) ) ).to.be.true;
+			}
+		} );
+
+		test( 'returns DocumentFragment when multiple elements on root', {
+			data: '<a></a><b></b>',
+			check( fragment ) {
+				expect( fragment ).to.be.instanceOf( DocumentFragment );
+				expect( fragment.getChildCount() ).to.equal( 2 );
+			}
+		} );
+
 		test( 'creates elements', {
 			data: '<a></a><b><c></c></b>'
 		} );

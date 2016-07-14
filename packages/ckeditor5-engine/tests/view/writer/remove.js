@@ -13,7 +13,6 @@ import Range from '/ckeditor5/engine/view/range.js';
 import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import { stringify, parse } from '/tests/engine/_utils/view.js';
 import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
-import Text from '/ckeditor5/engine/view/text.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'writer', () => {
@@ -27,10 +26,6 @@ describe( 'writer', () => {
 	 */
 	function test( input, expectedResult, expectedRemoved ) {
 		let { view, selection } = parse( input );
-
-		if ( view instanceof AttributeElement || view instanceof Text ) {
-			view = new DocumentFragment( view );
-		}
 
 		const range = selection.getFirstRange();
 		const removed = remove( range );

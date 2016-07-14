@@ -311,6 +311,39 @@ describe( 'view test utils', () => {
 	} );
 
 	describe( 'parse', () => {
+		it( 'should return empty DocumentFragment for empty string', () => {
+			const fragment = parse( '' );
+
+			expect( fragment ).to.be.instanceOf( DocumentFragment );
+			expect( fragment.getChildCount() ).to.equal( 0 );
+		} );
+
+		it( 'should return empty DocumentFragment and Selection for string containing range only', () => {
+			const { view, selection } = parse( '[]' );
+
+			expect( view ).to.be.instanceOf( DocumentFragment );
+			expect( selection.rangeCount ).to.equal( 1 );
+			expect( selection.getFirstRange().isEqual( Range.createFromParentsAndOffsets( view, 0, view, 0 ) ) ).to.be.true;
+		} );
+
+		it( 'should return Element if range is around single element', () => {
+			const { view, selection } = parse( '[<b>foobar</b>]' );
+			const parent = view.parent;
+
+			expect( view ).to.be.instanceOf( Element );
+			expect( parent ).to.be.instanceOf( DocumentFragment );
+			expect( selection.rangeCount ).to.equal( 1 );
+			expect( selection.getFirstRange().isEqual( Range.createFromParentsAndOffsets( parent, 0, parent, 1 ) ) ).to.be.true;
+		} );
+
+		it( 'should create DocumentFragment when multiple elements on root', () => {
+			const view = parse( '<b></b><i></i>' );
+			expect( view ).to.be.instanceOf( DocumentFragment );
+			expect( view.getChildCount() ).to.equal( 2 );
+			expect( view.getChild( 0 ).isSimilar( new Element( 'b' ) ) ).to.be.true;
+			expect( view.getChild( 1 ).isSimilar( new Element( 'i' ) ) ).to.be.true;
+		} );
+
 		it( 'should parse text', () => {
 			const text = parse( 'foobar' );
 			expect( text ).to.be.instanceOf( Text );
@@ -367,14 +400,6 @@ describe( 'view test utils', () => {
 			parsed1.isSimilar( attribute1 );
 			expect( parsed1.isSimilar( attribute1 ) ).to.be.true;
 			expect( parsed2.isSimilar( attribute2 ) ).to.be.true;
-		} );
-
-		it( 'should create DocumentFragment when multiple elements on root', () => {
-			const view = parse( '<b></b><i></i>' );
-			expect( view ).to.be.instanceOf( DocumentFragment );
-			expect( view.getChildCount() ).to.equal( 2 );
-			expect( view.getChild( 0 ).isSimilar( new Element( 'b' ) ) ).to.be.true;
-			expect( view.getChild( 1 ).isSimilar( new Element( 'i' ) ) ).to.be.true;
 		} );
 
 		it( 'should paste nested elements and texts', () => {
@@ -471,13 +496,6 @@ describe( 'view test utils', () => {
 			expect( ranges[ 2 ].isEqual( Range.createFromParentsAndOffsets( view, 0, view, 1 ) ) ).to.be.true;
 			expect( selection.anchor.isEqual( ranges[ 2 ].end ) ).to.be.true;
 			expect( selection.focus.isEqual( ranges[ 2 ].start ) ).to.be.true;
-		} );
-
-		it( 'should return DocumentFragment if range is around single element', () => {
-			const { view, selection } = parse( '[<b>foobar</b>]' );
-			expect( view ).to.be.instanceOf( DocumentFragment );
-			expect( selection.rangeCount ).to.equal( 1 );
-			expect( selection.getFirstRange().isEqual( Range.createFromParentsAndOffsets( view, 0, view, 1 ) ) ).to.be.true;
 		} );
 
 		it( 'should throw when ranges order does not include all ranges', () => {

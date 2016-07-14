@@ -11,11 +11,9 @@ import { wrapPosition } from '/ckeditor5/engine/view/writer.js';
 import Text from '/ckeditor5/engine/view/text.js';
 import Element from '/ckeditor5/engine/view/element.js';
 import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
-import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import Position from '/ckeditor5/engine/view/position.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import { stringify, parse } from '/tests/engine/_utils/view.js';
-import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
 
 describe( 'wrapPosition', () => {
 	/**
@@ -27,10 +25,6 @@ describe( 'wrapPosition', () => {
 	 */
 	function test( input, unwrapAttribute, expected ) {
 		let { view, selection } = parse( input );
-
-		if ( view instanceof AttributeElement || view instanceof Text ) {
-			view = new DocumentFragment( view );
-		}
 
 		const newPosition = wrapPosition( selection.getFirstPosition(), parse( unwrapAttribute ) );
 		expect( stringify( view, newPosition, { showType: true, showPriority: true } ) ).to.equal( expected );

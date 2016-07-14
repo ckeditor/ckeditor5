@@ -11,7 +11,6 @@ import { unwrap } from '/ckeditor5/engine/view/writer.js';
 import Element from '/ckeditor5/engine/view/element.js';
 import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
-import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import Position from '/ckeditor5/engine/view/position.js';
 import Range from '/ckeditor5/engine/view/range.js';
 import Text from '/ckeditor5/engine/view/text.js';
@@ -29,12 +28,8 @@ describe( 'writer', () => {
 	function test( input, unwrapAttribute, expected ) {
 		let { view, selection } = parse( input );
 
-		if ( view instanceof AttributeElement || view instanceof Text ) {
-			view = new DocumentFragment( view );
-		}
-
 		const newRange = unwrap( selection.getFirstRange(), parse( unwrapAttribute ) );
-		expect( stringify( view, newRange, { showType: true, showPriority: true } ) ).to.equal( expected );
+		expect( stringify( view.getRoot(), newRange, { showType: true, showPriority: true } ) ).to.equal( expected );
 	}
 
 	describe( 'unwrap', () => {
