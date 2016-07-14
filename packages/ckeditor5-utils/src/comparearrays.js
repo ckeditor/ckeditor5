@@ -12,8 +12,8 @@
  * it means that arrays differ.
  *
  *		compareArrays( [ 0, 2 ], [ 0, 2 ] );		// 'SAME'
- *		compareArrays( [ 0, 2 ], [ 0, 2, 1 ] );		// 'PREFIX'
- *		compareArrays( [ 0, 2 ], [ 0 ] );			// 'EXTENSION'
+ *		compareArrays( [ 0, 2 ], [ 0, 2, 1 ] );		// 'prefix'
+ *		compareArrays( [ 0, 2 ], [ 0 ] );			// 'extension'
  *		compareArrays( [ 0, 2 ], [ 1, 2 ] );		// 0
  *		compareArrays( [ 0, 2 ], [ 0, 1 ] );		// 1
  *
@@ -38,9 +38,9 @@ export default function compareArrays( a, b ) {
 		return 'SAME';
 	} else if ( a.length < b.length ) {
 		// Compared array is shorter so it is a prefix of the other array.
-		return 'PREFIX';
+		return 'prefix';
 	} else {
 		// Compared array is longer so it is an extension of the other array.
-		return 'EXTENSION';
+		return 'extension';
 	}
 }
