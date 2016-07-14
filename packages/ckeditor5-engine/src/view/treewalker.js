@@ -217,7 +217,7 @@ export default class TreeWalker {
 
 				this.position = position;
 
-				return this._formatReturnValue( 'TEXT', item, previousPosition, position, charactersCount );
+				return this._formatReturnValue( 'text', item, previousPosition, position, charactersCount );
 			}
 		} else if ( typeof node == 'string' ) {
 			let textLength;
@@ -236,7 +236,7 @@ export default class TreeWalker {
 			position.offset += textLength;
 			this.position = position;
 
-			return this._formatReturnValue( 'TEXT', textProxy, previousPosition, position, textLength );
+			return this._formatReturnValue( 'text', textProxy, previousPosition, position, textLength );
 		} else {
 			// `node` is not set, we reached the end of current `parent`.
 			position = Position.createAfter( parent );
@@ -323,7 +323,7 @@ export default class TreeWalker {
 
 				this.position = position;
 
-				return this._formatReturnValue( 'TEXT', item, previousPosition, position, charactersCount );
+				return this._formatReturnValue( 'text', item, previousPosition, position, charactersCount );
 			}
 		} else if ( typeof node == 'string' ) {
 			let textLength;
@@ -343,7 +343,7 @@ export default class TreeWalker {
 
 			this.position = position;
 
-			return this._formatReturnValue( 'TEXT', textProxy, previousPosition, position, textLength );
+			return this._formatReturnValue( 'text', textProxy, previousPosition, position, textLength );
 		} else {
 			// `node` is not set, we reached the beginning of current `parent`.
 			position = Position.createBefore( parent );
@@ -409,7 +409,7 @@ export default class TreeWalker {
 /**
  * Type of the step made by {@link engine.view.TreeWalker}.
  * Possible values: `'elementStart'` if walker is at the beginning of a node, `'elementEnd'` if walker is at the end
- * of node, or `'TEXT'` if walker traversed over single and multiple characters.
+ * of node, or `'text'` if walker traversed over single and multiple characters.
  * For {@link engine.view.Text} `elementStart` and `elementEnd` is not returned.
  *
  * @typedef {String} engine.view.TreeWalkerValueType
@@ -436,7 +436,7 @@ export default class TreeWalker {
  * before the item.
  * * If the position is at the beginning or at the end of the {@link engine.view.Text} it is always moved from the
  * inside of the Text to its parent just before or just after Text.
- * @property {Number} [length] Length of the item. For `'elementStart'` it is 1. For `'TEXT'` it is
+ * @property {Number} [length] Length of the item. For `'elementStart'` it is 1. For `'text'` it is
  * the length of the text. For `'elementEnd'` it is undefined.
  */
 

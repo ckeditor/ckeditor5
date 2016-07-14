@@ -106,7 +106,7 @@ describe( 'TreeWalker', () => {
 					nextPosition: new Position( bold, 0 )
 				},
 				{
-					type: 'TEXT',
+					type: 'text',
 					text: 'abcd',
 					previousPosition: new Position( bold, 0 ),
 					nextPosition: new Position( bold, 1 )
@@ -118,7 +118,7 @@ describe( 'TreeWalker', () => {
 					nextPosition: new Position( paragraph, 1 )
 				},
 				{
-					type: 'TEXT',
+					type: 'text',
 					text: 'y',
 					previousPosition: new Position( paragraph, 1 ),
 					nextPosition: new Position( paragraph, 2 )
@@ -136,7 +136,7 @@ describe( 'TreeWalker', () => {
 					nextPosition: new Position( paragraph, 3 )
 				},
 				{
-					type: 'TEXT',
+					type: 'text',
 					text: 'x',
 					previousPosition: new Position( paragraph, 3 ),
 					nextPosition: new Position( paragraph, 4 )
@@ -240,7 +240,7 @@ describe( 'TreeWalker', () => {
 						nextPosition: new Position( bold, 0 )
 					},
 					{
-						type: 'TEXT',
+						type: 'text',
 						text: 'abcd',
 						previousPosition: new Position( bold, 0 ),
 						nextPosition: new Position( bold, 1 )
@@ -252,7 +252,7 @@ describe( 'TreeWalker', () => {
 						nextPosition: new Position( paragraph, 1 )
 					},
 					{
-						type: 'TEXT',
+						type: 'text',
 						text: 'y',
 						previousPosition: new Position( paragraph, 1 ),
 						nextPosition: new Position( paragraph, 2 )
@@ -303,7 +303,7 @@ describe( 'TreeWalker', () => {
 			before( () => {
 				expected = [
 					{
-						type: 'TEXT',
+						type: 'text',
 						text: 'bcd',
 						previousPosition: new Position( textAbcd, 1 ),
 						nextPosition: new Position( bold, 1 )
@@ -315,7 +315,7 @@ describe( 'TreeWalker', () => {
 						nextPosition: new Position( paragraph, 1 )
 					},
 					{
-						type: 'TEXT',
+						type: 'text',
 						text: 'y',
 						previousPosition: new Position( paragraph, 1 ),
 						nextPosition: new Position( paragraph, 2 )
@@ -394,7 +394,7 @@ describe( 'TreeWalker', () => {
 						nextPosition: new Position( bold, 0 )
 					},
 					{
-						type: 'TEXT',
+						type: 'text',
 						text: 'ab',
 						previousPosition: new Position( bold, 0 ),
 						nextPosition: new Position( textAbcd, 2 )
@@ -438,7 +438,7 @@ describe( 'TreeWalker', () => {
 			before( () => {
 				expected = [
 					{
-						type: 'TEXT',
+						type: 'text',
 						text: 'bc',
 						previousPosition: new Position( textAbcd, 1 ),
 						nextPosition: new Position( textAbcd, 3 )
@@ -480,7 +480,7 @@ describe( 'TreeWalker', () => {
 			it( 'should iterating from the start position', () => {
 				let expected = [
 					{
-						type: 'TEXT',
+						type: 'text',
 						text: 'y',
 						previousPosition: new Position( paragraph, 1 ),
 						nextPosition: new Position( paragraph, 2 )
@@ -517,7 +517,7 @@ describe( 'TreeWalker', () => {
 			it( 'should iterating from the start position going backward', () => {
 				let expected = [
 					{
-						type: 'TEXT',
+						type: 'text',
 						text: 'bcd',
 						previousPosition: new Position( textAbcd, 1 ),
 						nextPosition: new Position( bold, 1 )
@@ -529,7 +529,7 @@ describe( 'TreeWalker', () => {
 						nextPosition: new Position( paragraph, 1 )
 					},
 					{
-						type: 'TEXT',
+						type: 'text',
 						text: 'y',
 						previousPosition: new Position( paragraph, 1 ),
 						nextPosition: new Position( paragraph, 2 )
@@ -585,25 +585,25 @@ describe( 'TreeWalker', () => {
 						nextPosition: new Position( bold, 0 )
 					},
 					{
-						type: 'TEXT',
+						type: 'text',
 						text: 'a',
 						previousPosition: new Position( bold, 0 ),
 						nextPosition: new Position( textAbcd, 1 )
 					},
 					{
-						type: 'TEXT',
+						type: 'text',
 						text: 'b',
 						previousPosition: new Position( textAbcd, 1 ),
 						nextPosition: new Position( textAbcd, 2 )
 					},
 					{
-						type: 'TEXT',
+						type: 'text',
 						text: 'c',
 						previousPosition: new Position( textAbcd, 2 ),
 						nextPosition: new Position( textAbcd, 3 )
 					},
 					{
-						type: 'TEXT',
+						type: 'text',
 						text: 'd',
 						previousPosition: new Position( textAbcd, 3 ),
 						nextPosition: new Position( bold, 1 )
@@ -615,7 +615,7 @@ describe( 'TreeWalker', () => {
 						nextPosition: new Position( paragraph, 1 )
 					},
 					{
-						type: 'TEXT',
+						type: 'text',
 						text: 'y',
 						previousPosition: new Position( paragraph, 1 ),
 						nextPosition: new Position( paragraph, 2 )
@@ -633,7 +633,7 @@ describe( 'TreeWalker', () => {
 						nextPosition: new Position( paragraph, 3 )
 					},
 					{
-						type: 'TEXT',
+						type: 'text',
 						text: 'x',
 						previousPosition: new Position( paragraph, 3 ),
 						nextPosition: new Position( paragraph, 4 )
@@ -680,25 +680,25 @@ describe( 'TreeWalker', () => {
 			before( () => {
 				expected = [
 					{
-						type: 'TEXT',
+						type: 'text',
 						text: 'a',
 						previousPosition: new Position( bold, 0 ),
 						nextPosition: new Position( textAbcd, 1 )
 					},
 					{
-						type: 'TEXT',
+						type: 'text',
 						text: 'b',
 						previousPosition: new Position( textAbcd, 1 ),
 						nextPosition: new Position( textAbcd, 2 )
 					},
 					{
-						type: 'TEXT',
+						type: 'text',
 						text: 'c',
 						previousPosition: new Position( textAbcd, 2 ),
 						nextPosition: new Position( textAbcd, 3 )
 					},
 					{
-						type: 'TEXT',
+						type: 'text',
 						text: 'd',
 						previousPosition: new Position( textAbcd, 3 ),
 						nextPosition: new Position( bold, 1 )
@@ -710,7 +710,7 @@ describe( 'TreeWalker', () => {
 						nextPosition: new Position( paragraph, 1 )
 					},
 					{
-						type: 'TEXT',
+						type: 'text',
 						text: 'y',
 						previousPosition: new Position( paragraph, 1 ),
 						nextPosition: new Position( paragraph, 2 )
@@ -822,13 +822,13 @@ describe( 'TreeWalker', () => {
 						nextPosition: new Position( bold, 0 )
 					},
 					{
-						type: 'TEXT',
+						type: 'text',
 						text: 'abcd',
 						previousPosition: new Position( bold, 0 ),
 						nextPosition: new Position( bold, 1 )
 					},
 					{
-						type: 'TEXT',
+						type: 'text',
 						text: 'y',
 						previousPosition: new Position( paragraph, 1 ),
 						nextPosition: new Position( paragraph, 2 )
@@ -840,7 +840,7 @@ describe( 'TreeWalker', () => {
 						nextPosition: new Position( img2, 0 )
 					},
 					{
-						type: 'TEXT',
+						type: 'text',
 						text: 'x',
 						previousPosition: new Position( paragraph, 3 ),
 						nextPosition: new Position( paragraph, 4 )
@@ -899,31 +899,31 @@ describe( 'TreeWalker', () => {
 						nextPosition: new Position( bold, 0 )
 					},
 					{
-						type: 'TEXT',
+						type: 'text',
 						text: 'a',
 						previousPosition: new Position( bold, 0 ),
 						nextPosition: new Position( textAbcd, 1 )
 					},
 					{
-						type: 'TEXT',
+						type: 'text',
 						text: 'b',
 						previousPosition: new Position( textAbcd, 1 ),
 						nextPosition: new Position( textAbcd, 2 )
 					},
 					{
-						type: 'TEXT',
+						type: 'text',
 						text: 'c',
 						previousPosition: new Position( textAbcd, 2 ),
 						nextPosition: new Position( textAbcd, 3 )
 					},
 					{
-						type: 'TEXT',
+						type: 'text',
 						text: 'd',
 						previousPosition: new Position( textAbcd, 3 ),
 						nextPosition: new Position( bold, 1 )
 					},
 					{
-						type: 'TEXT',
+						type: 'text',
 						text: 'y',
 						previousPosition: new Position( paragraph, 1 ),
 						nextPosition: new Position( paragraph, 2 )
@@ -935,7 +935,7 @@ describe( 'TreeWalker', () => {
 						nextPosition: new Position( img2, 0 )
 					},
 					{
-						type: 'TEXT',
+						type: 'text',
 						text: 'x',
 						previousPosition: new Position( paragraph, 3 ),
 						nextPosition: new Position( paragraph, 4 )
@@ -992,7 +992,7 @@ function expectValue( value, expected, options = {} ) {
 	expect( value.previousPosition ).to.deep.equal( expectedPreviousPosition );
 	expect( value.nextPosition ).to.deep.equal( expectedNextPosition );
 
-	if ( value.type == 'TEXT' ) {
+	if ( value.type == 'text' ) {
 		expectText( value, expected );
 	} else if ( value.type == 'elementStart' ) {
 		expectStart( value, expected );
