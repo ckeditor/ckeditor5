@@ -11,7 +11,7 @@
  * a flag specifying the relation is returned. Flags are negative numbers, so whenever a number >= 0 is returned
  * it means that arrays differ.
  *
- *		compareArrays( [ 0, 2 ], [ 0, 2 ] );		// 'SAME'
+ *		compareArrays( [ 0, 2 ], [ 0, 2 ] );		// 'same'
  *		compareArrays( [ 0, 2 ], [ 0, 2, 1 ] );		// 'prefix'
  *		compareArrays( [ 0, 2 ], [ 0 ] );			// 'extension'
  *		compareArrays( [ 0, 2 ], [ 1, 2 ] );		// 0
@@ -35,7 +35,7 @@ export default function compareArrays( a, b ) {
 	// Both arrays were same at all points.
 	if ( a.length == b.length ) {
 		// If their length is also same, they are the same.
-		return 'SAME';
+		return 'same';
 	} else if ( a.length < b.length ) {
 		// Compared array is shorter so it is a prefix of the other array.
 		return 'prefix';

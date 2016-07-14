@@ -9,13 +9,13 @@ import compareArrays from '/ckeditor5/utils/comparearrays.js';
 
 describe( 'utils', () => {
 	describe( 'compareArrays', () => {
-		it( 'should return SAME flag, when arrays are same', () => {
+		it( 'should return same flag, when arrays are same', () => {
 			let a = [ 'abc', 0, 3 ];
 			let b = [ 'abc', 0, 3 ];
 
 			let result = compareArrays( a, b );
 
-			expect( result ).to.equal( 'SAME' );
+			expect( result ).to.equal( 'same' );
 		} );
 
 		it( 'should return prefix flag, when all n elements of first array are same as n first elements of the second array', () => {
