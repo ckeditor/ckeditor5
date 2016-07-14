@@ -19,16 +19,16 @@ import Range from '../range.js';
  * @method engine.model.composer.modifySelection
  * @param {engine.model.Selection} The selection to modify.
  * @param {Object} [options]
- * @param {'FORWARD'|'BACKWARD'} [options.direction='FORWARD'] The direction in which the selection should be modified.
+ * @param {'forward'|'backward'} [options.direction='forward'] The direction in which the selection should be modified.
  */
 export default function modifySelection( selection, options = {} ) {
-	const isForward = options.direction != 'BACKWARD';
+	const isForward = options.direction != 'backward';
 
 	const focus = selection.focus;
 	const walker = new TreeWalker( {
 		boundaries: getSearchRange( focus, isForward ),
 		singleCharacters: true,
-		direction: isForward ? 'FORWARD' : 'BACKWARD'
+		direction: isForward ? 'forward' : 'backward'
 	} );
 
 	let next = walker.next();

@@ -24,7 +24,7 @@ export default class TreeWalker {
 	 * @param {Object} options Object with configuration.
 	 * @param {engine.view.Range} [options.boundaries=null] Range to define boundaries of the iterator.
 	 * @param {engine.view.Position} [options.startPosition] Starting position.
-	 * @param {'FORWARD'|'BACKWARD'} [options.direction='FORWARD'] Walking direction.
+	 * @param {'forward'|'backward'} [options.direction='forward'] Walking direction.
 	 * @param {Boolean} [options.singleCharacters=false] Flag indicating whether all characters from
 	 * {@link engine.view.Text} should be returned as one {@link engine.view.Text} (`false`) ore one by one as
 	 * {@link engine.view.TextProxy} (`true`).
@@ -45,9 +45,9 @@ export default class TreeWalker {
 			throw new CKEditorError( 'tree-walker-no-start-position: Neither boundaries nor starting position have been defined.' );
 		}
 
-		if ( options.direction && options.direction != 'FORWARD' && options.direction != 'BACKWARD' ) {
+		if ( options.direction && options.direction != 'forward' && options.direction != 'backward' ) {
 			throw new CKEditorError(
-				'tree-walker-unknown-direction: Only `BACKWARD` and `FORWARD` direction allowed.',
+				'tree-walker-unknown-direction: Only `backward` and `forward` direction allowed.',
 				{ direction: options.direction }
 			);
 		}
@@ -55,7 +55,7 @@ export default class TreeWalker {
 		/**
 		 * Iterator boundaries.
 		 *
-		 * When the iterator is walking `FORWARD` on the end of boundary or is walking `BACKWARD`
+		 * When the iterator is walking `'forward'` on the end of boundary or is walking `'backward'`
 		 * on the start of boundary, then `{ done: true }` is returned.
 		 *
 		 * If boundaries are not defined they are set before first and after last child of the root node.
@@ -67,7 +67,7 @@ export default class TreeWalker {
 
 		/**
 		 * Iterator position. If start position is not defined then position depends on {@link #direction}. If direction is
-		 * `FORWARD` position starts form the beginning, when direction is `BACKWARD` position starts from the end.
+		 * `'forward'` position starts form the beginning, when direction is `'backward'` position starts from the end.
 		 *
 		 * @readonly
 		 * @member {engine.view.Position} engine.view.TreeWalker#position
@@ -75,16 +75,16 @@ export default class TreeWalker {
 		if ( options.startPosition ) {
 			this.position = Position.createFromPosition( options.startPosition );
 		} else {
-			this.position = Position.createFromPosition( options.boundaries[ options.direction == 'BACKWARD' ? 'end' : 'start' ] );
+			this.position = Position.createFromPosition( options.boundaries[ options.direction == 'backward' ? 'end' : 'start' ] );
 		}
 
 		/**
-		 * Walking direction. Defaults `FORWARD`.
+		 * Walking direction. Defaults `'forward'`.
 		 *
 		 * @readonly
-		 * @member {'BACKWARD'|'FORWARD'} engine.view.TreeWalker#direction
+		 * @member {'backward'|'forward'} engine.view.TreeWalker#direction
 		 */
-		this.direction = options.direction || 'FORWARD';
+		this.direction = options.direction || 'forward';
 
 		/**
 		 * Flag indicating whether all characters from {@link engine.view.Text} should be returned as one
@@ -145,7 +145,7 @@ export default class TreeWalker {
 	 * @returns {Object} Object implementing iterator interface, returning information about taken step.
 	 */
 	next() {
-		if ( this.direction == 'FORWARD' ) {
+		if ( this.direction == 'forward' ) {
 			return this._next();
 		} else {
 			return this._previous();
@@ -372,7 +372,7 @@ export default class TreeWalker {
 		if ( item instanceof TextProxy ) {
 			// Position is at the end of Text.
 			if ( item.index + item.data.length == item.textNode.data.length ) {
-				if ( this.direction == 'FORWARD' ) {
+				if ( this.direction == 'forward' ) {
 					nextPosition = Position.createAfter( item.textNode );
 					// When we change nextPosition of returned value we need also update walker current position.
 					this.position = nextPosition;
@@ -383,7 +383,7 @@ export default class TreeWalker {
 
 			// Position is at the begining ot the text.
 			if ( item.index === 0 ) {
-				if ( this.direction == 'FORWARD' ) {
+				if ( this.direction == 'forward' ) {
 					previousPosition = Position.createBefore( item.textNode );
 				} else {
 					nextPosition = Position.createBefore( item.textNode );
@@ -443,5 +443,5 @@ export default class TreeWalker {
 /**
  * Tree walking directions.
  *
- * @typedef {'FORWARD'|'BACKWARD'} engine.view.TreeWalkerDirection
+ * @typedef {'forward'|'backward'} engine.view.TreeWalkerDirection
  */

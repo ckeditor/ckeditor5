@@ -53,7 +53,7 @@ describe( 'Composer', () => {
 			composer.fire( 'modifySelection', {
 				selection: document.selection,
 				options: {
-					direction: 'BACKWARD'
+					direction: 'backward'
 				}
 			} );
 

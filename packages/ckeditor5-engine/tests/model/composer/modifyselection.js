@@ -38,7 +38,7 @@ describe( 'Delete utils', () => {
 					'does nothing on empty content (backward)',
 					'<selection />',
 					'<selection />',
-					{ direction: 'BACKWARD' }
+					{ direction: 'backward' }
 				);
 
 				test(
@@ -51,7 +51,7 @@ describe( 'Delete utils', () => {
 					'does nothing on root boundary (backward)',
 					'<p><selection />foo</p>',
 					'<p><selection />foo</p>',
-					{ direction: 'BACKWARD' }
+					{ direction: 'backward' }
 				);
 
 				test(
@@ -64,7 +64,7 @@ describe( 'Delete utils', () => {
 					'extends one character backward',
 					'<p>fo<selection />o</p>',
 					'<p>f<selection backward>o</selection>o</p>',
-					{ direction: 'BACKWARD' }
+					{ direction: 'backward' }
 				);
 
 				test(
@@ -77,7 +77,7 @@ describe( 'Delete utils', () => {
 					'extends one character backward (non-collapsed)',
 					'<p>foob<selection backward>a</selection>r</p>',
 					'<p>foo<selection backward>ba</selection>r</p>',
-					{ direction: 'BACKWARD' }
+					{ direction: 'backward' }
 				);
 
 				test(
@@ -90,14 +90,14 @@ describe( 'Delete utils', () => {
 					'extends to element boundary (backward)',
 					'<p>f<selection />oo</p>',
 					'<p><selection backward>f</selection>oo</p>',
-					{ direction: 'BACKWARD' }
+					{ direction: 'backward' }
 				);
 
 				test(
 					'shrinks forward selection (to collapsed)',
 					'<p>foo<selection>b</selection>ar</p>',
 					'<p>foo<selection />bar</p>',
-					{ direction: 'BACKWARD' }
+					{ direction: 'backward' }
 				);
 
 				test(
@@ -122,7 +122,7 @@ describe( 'Delete utils', () => {
 					'extends one element backward',
 					'<p>fo<img></img><selection />o</p>',
 					'<p>fo<selection backward><img></img></selection>o</p>',
-					{ direction: 'BACKWARD' }
+					{ direction: 'backward' }
 				);
 			} );
 
@@ -137,7 +137,7 @@ describe( 'Delete utils', () => {
 					'extends over boundary of empty elements (backward)',
 					'<p></p><p></p><p><selection /></p>',
 					'<p></p><p><selection backward></p><p></selection></p>',
-					{ direction: 'BACKWARD' }
+					{ direction: 'backward' }
 				);
 
 				test(
@@ -150,7 +150,7 @@ describe( 'Delete utils', () => {
 					'extends over boundary of non-empty elements (backward)',
 					'<p>a</p><p><selection />bcd</p>',
 					'<p>a<selection backward></p><p></selection>bcd</p>',
-					{ direction: 'BACKWARD' }
+					{ direction: 'backward' }
 				);
 
 				test(
@@ -163,7 +163,7 @@ describe( 'Delete utils', () => {
 					'extends over character after boundary (backward)',
 					'<p>abc<selection backward></p><p></selection>d</p>',
 					'<p>ab<selection backward>c</p><p></selection>d</p>',
-					{ direction: 'BACKWARD' }
+					{ direction: 'backward' }
 				);
 
 				test(
@@ -188,7 +188,7 @@ describe( 'Delete utils', () => {
 					'extends over element when next node is a text (backward)',
 					'ab<p><selection />c</p>',
 					'ab<selection backward><p></selection>c</p>',
-					{ direction: 'BACKWARD' }
+					{ direction: 'backward' }
 				);
 
 				test(
@@ -201,7 +201,7 @@ describe( 'Delete utils', () => {
 					'shrinks over boundary of empty elements (backward)',
 					'<p><selection></p><p></selection></p>',
 					'<p><selection /></p><p></p>',
-					{ direction: 'BACKWARD' }
+					{ direction: 'backward' }
 				);
 
 				test(
@@ -214,7 +214,7 @@ describe( 'Delete utils', () => {
 					'shrinks over boundary of non-empty elements (backward)',
 					'<p>a<selection></p><p></selection>b</p>',
 					'<p>a<selection /></p><p>b</p>',
-					{ direction: 'BACKWARD' }
+					{ direction: 'backward' }
 				);
 			} );
 		} );
@@ -223,7 +223,7 @@ describe( 'Delete utils', () => {
 			'updates selection attributes',
 			'<p><$text bold=true>foo</$text><selection>b</selection></p>',
 			'<p><$text bold=true>foo</$text><selection bold=true />b</p>',
-			{ direction: 'BACKWARD' }
+			{ direction: 'backward' }
 		);
 	} );
 

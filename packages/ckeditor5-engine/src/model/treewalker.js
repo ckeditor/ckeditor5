@@ -22,7 +22,7 @@ export default class TreeWalker {
 	 *
 	 * @constructor
 	 * @param {Object} [options={}] Object with configuration.
-	 * @param {'FORWARD'|'BACKWARD'} [options.direction='FORWARD'] Walking direction.
+	 * @param {'forward'|'backward'} [options.direction='forward'] Walking direction.
 	 * @param {engine.model.Range} [options.boundaries=null] Range to define boundaries of the iterator.
 	 * @param {engine.model.Position} [options.startPosition] Starting position.
 	 * @param {Boolean} [options.singleCharacters=false] Flag indicating whether all consecutive characters with the same attributes
@@ -45,27 +45,27 @@ export default class TreeWalker {
 			throw new CKEditorError( 'tree-walker-no-start-position: Neither boundaries nor starting position have been defined.' );
 		}
 
-		const direction = options.direction || 'FORWARD';
+		const direction = options.direction || 'forward';
 
-		if ( direction != 'FORWARD' && direction != 'BACKWARD' ) {
+		if ( direction != 'forward' && direction != 'backward' ) {
 			throw new CKEditorError(
-				'tree-walker-unknown-direction: Only `BACKWARD` and `FORWARD` direction allowed.',
+				'tree-walker-unknown-direction: Only `backward` and `forward` direction allowed.',
 				{ direction }
 			);
 		}
 
 		/**
-		 * Walking direction. Defaults `FORWARD`.
+		 * Walking direction. Defaults `'forward'`.
 		 *
 		 * @readonly
-		 * @member {'BACKWARD'|'FORWARD'} engine.model.TreeWalker#direction
+		 * @member {'backward'|'forward'} engine.model.TreeWalker#direction
 		 */
 		this.direction = direction;
 
 		/**
 		 * Iterator boundaries.
 		 *
-		 * When the iterator is walking `FORWARD` on the end of boundary or is walking `BACKWARD`
+		 * When the iterator is walking `'forward'` on the end of boundary or is walking `'backward'`
 		 * on the start of boundary, then `{ done: true }` is returned.
 		 *
 		 * If boundaries are not defined they are set before first and after last child of the root node.
@@ -78,8 +78,8 @@ export default class TreeWalker {
 		/**
 		 * Iterator position. This is always static position, even if the initial position was a
 		 * {@link engine.model.LivePosition live position}. If start position is not defined then position depends
-		 * on {@link #direction}. If direction is `FORWARD` position starts form the beginning, when direction
-		 * is `BACKWARD` position starts from the end.
+		 * on {@link #direction}. If direction is `'forward'` position starts form the beginning, when direction
+		 * is `'backward'` position starts from the end.
 		 *
 		 * @readonly
 		 * @member {engine.model.Position} engine.model.TreeWalker#position
@@ -87,7 +87,7 @@ export default class TreeWalker {
 		if ( options.startPosition ) {
 			this.position = Position.createFromPosition( options.startPosition );
 		} else {
-			this.position = Position.createFromPosition( this.boundaries[ this.direction == 'BACKWARD' ? 'end' : 'start' ] );
+			this.position = Position.createFromPosition( this.boundaries[ this.direction == 'backward' ? 'end' : 'start' ] );
 		}
 
 		/**
@@ -158,7 +158,7 @@ export default class TreeWalker {
 	 * @returns {Object} Object implementing iterator interface, returning information about taken step.
 	 */
 	next() {
-		if ( this.direction == 'FORWARD' ) {
+		if ( this.direction == 'forward' ) {
 			return this._next();
 		} else {
 			return this._previous();
@@ -364,5 +364,5 @@ function formatReturnValue( type, item, previousPosition, nextPosition, length )
 /**
  * Tree walking directions.
  *
- * @typedef {'FORWARD'|'BACKWARD'} engine.view.TreeWalkerDirection
+ * @typedef {'forward'|'backward'} engine.view.TreeWalkerDirection
  */

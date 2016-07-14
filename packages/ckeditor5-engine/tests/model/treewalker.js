@@ -88,7 +88,7 @@ describe( 'TreeWalker', () => {
 			];
 		} );
 
-		it( 'should provide iterator interface with default FORWARD direction', () => {
+		it( 'should provide iterator interface with default forward direction', () => {
 			let iterator = new TreeWalker( { startPosition: rootBeginning } );
 			let i = 0;
 
@@ -100,8 +100,8 @@ describe( 'TreeWalker', () => {
 			expect( i ).to.equal( expected.length );
 		} );
 
-		it( 'should provide iterator interface with FORWARD direction', () => {
-			let iterator = new TreeWalker( { startPosition: rootBeginning, direction: 'FORWARD' } );
+		it( 'should provide iterator interface with forward direction', () => {
+			let iterator = new TreeWalker( { startPosition: rootBeginning, direction: 'forward' } );
 			let i = 0;
 
 			for ( let value of iterator ) {
@@ -112,12 +112,12 @@ describe( 'TreeWalker', () => {
 			expect( i ).to.equal( expected.length );
 		} );
 
-		it( 'should provide iterator interface which BACKWARD direction', () => {
-			let iterator = new TreeWalker( { startPosition: rootEnding, direction: 'BACKWARD' } );
+		it( 'should provide iterator interface which backward direction', () => {
+			let iterator = new TreeWalker( { startPosition: rootEnding, direction: 'backward' } );
 			let i = expected.length;
 
 			for ( let value of iterator ) {
-				expectValue( value, expected[ --i ], { direction: 'BACKWARD' } );
+				expectValue( value, expected[ --i ], { direction: 'backward' } );
 			}
 
 			expect( i ).to.equal( 0 );
@@ -141,11 +141,11 @@ describe( 'TreeWalker', () => {
 				{ type: 'elementEnd', item: img1 }
 			];
 
-			let iterator = new TreeWalker( { startPosition: new Position( root, [ 1 ] ), direction: 'BACKWARD' } );
+			let iterator = new TreeWalker( { startPosition: new Position( root, [ 1 ] ), direction: 'backward' } );
 			let i = expected.length;
 
 			for ( let value of iterator ) {
-				expectValue( value, expected[ --i ], { direction: 'BACKWARD' } );
+				expectValue( value, expected[ --i ], { direction: 'backward' } );
 			}
 
 			expect( i ).to.equal( 0 );
@@ -181,11 +181,11 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should iterating over the range going backward', () => {
-				let iterator = new TreeWalker( { boundaries: range, direction: 'BACKWARD' } );
+				let iterator = new TreeWalker( { boundaries: range, direction: 'backward' } );
 				let i = expected.length;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ --i ], { direction: 'BACKWARD' } );
+					expectValue( value, expected[ --i ], { direction: 'backward' } );
 				}
 
 				expect( i ).to.equal( 0 );
@@ -221,12 +221,12 @@ describe( 'TreeWalker', () => {
 			it( 'should return part of the text going backward', () => {
 				let iterator = new TreeWalker( {
 					boundaries: range,
-					direction: 'BACKWARD' }
+					direction: 'backward' }
 				);
 				let i = expected.length;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ --i ], { direction: 'BACKWARD' } );
+					expectValue( value, expected[ --i ], { direction: 'backward' } );
 				}
 
 				expect( i ).to.equal( 0 );
@@ -263,12 +263,12 @@ describe( 'TreeWalker', () => {
 				let iterator = new TreeWalker( {
 					boundaries: range,
 					startPosition: range.end,
-					direction: 'BACKWARD'
+					direction: 'backward'
 				} );
 				let i = expected.length;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ --i ], { direction: 'BACKWARD' } );
+					expectValue( value, expected[ --i ], { direction: 'backward' } );
 				}
 
 				expect( i ).to.equal( 0 );
@@ -311,12 +311,12 @@ describe( 'TreeWalker', () => {
 				let iterator = new TreeWalker( {
 					boundaries: range,
 					startPosition: new Position( root, [ 1, 4 ] ),
-					direction: 'BACKWARD'
+					direction: 'backward'
 				} );
 				let i = expected.length;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ --i ], { direction: 'BACKWARD' } );
+					expectValue( value, expected[ --i ], { direction: 'backward' } );
 				}
 
 				expect( i ).to.equal( 0 );
@@ -359,12 +359,12 @@ describe( 'TreeWalker', () => {
 				let iterator = new TreeWalker( {
 					startPosition: rootEnding,
 					singleCharacters: true,
-					direction: 'BACKWARD' }
+					direction: 'backward' }
 				);
 				let i = expected.length;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ --i ], { direction: 'BACKWARD' } );
+					expectValue( value, expected[ --i ], { direction: 'backward' } );
 				}
 
 				expect( i ).to.equal( 0 );
@@ -404,12 +404,12 @@ describe( 'TreeWalker', () => {
 					boundaries: range,
 					singleCharacters: true,
 					startPosition: range.end,
-					direction: 'BACKWARD'
+					direction: 'backward'
 				} );
 				let i = expected.length;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ --i ], { direction: 'BACKWARD' } );
+					expectValue( value, expected[ --i ], { direction: 'backward' } );
 				}
 
 				expect( i ).to.equal( 0 );
@@ -440,11 +440,11 @@ describe( 'TreeWalker', () => {
 		} );
 
 		it( 'should not enter elements going backward', () => {
-			let iterator = new TreeWalker( { startPosition: rootEnding, shallow: true, direction: 'BACKWARD' } );
+			let iterator = new TreeWalker( { startPosition: rootEnding, shallow: true, direction: 'backward' } );
 			let i = expected.length;
 
 			for ( let value of iterator ) {
-				expectValue( value, expected[ --i ], { shallow: true, direction: 'BACKWARD' } );
+				expectValue( value, expected[ --i ], { shallow: true, direction: 'backward' } );
 			}
 
 			expect( i ).to.equal( 0 );
@@ -482,12 +482,12 @@ describe( 'TreeWalker', () => {
 				let iterator = new TreeWalker( {
 					startPosition: rootEnding,
 					ignoreElementEnd: true,
-					direction: 'BACKWARD'
+					direction: 'backward'
 				} );
 				let i = expected.length;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ --i ], { direction: 'BACKWARD' } );
+					expectValue( value, expected[ --i ], { direction: 'backward' } );
 				}
 
 				expect( i ).to.equal( 0 );
@@ -530,12 +530,12 @@ describe( 'TreeWalker', () => {
 					startPosition: rootEnding,
 					singleCharacters: true,
 					ignoreElementEnd: true,
-					direction: 'BACKWARD'
+					direction: 'backward'
 				} );
 				let i = expected.length;
 
 				for ( let value of iterator ) {
-					expectValue( value, expected[ --i ], { direction: 'BACKWARD' } );
+					expectValue( value, expected[ --i ], { direction: 'backward' } );
 				}
 
 				expect( i ).to.equal( 0 );
@@ -565,7 +565,7 @@ function expectText( value, expected, options = {} ) {
 	expect( Array.from( value.item.first._attrs ) ).to.deep.equal( expected.attrs );
 	expect( value.length ).to.equal( value.item.text.length );
 
-	if ( options.direction == 'BACKWARD' ) {
+	if ( options.direction == 'backward' ) {
 		previousPosition = Position.createAfter( value.item.last );
 		nextPosition = Position.createBefore( value.item.first );
 	} else {
@@ -584,7 +584,7 @@ function expectCharacter( value, expected, options = {} ) {
 	expect( Array.from( value.item._attrs ) ).to.deep.equal( expected.attrs );
 	expect( value.length ).to.equal( value.item.character.length );
 
-	if ( options.direction == 'BACKWARD' ) {
+	if ( options.direction == 'backward' ) {
 		previousPosition = Position.createAfter( value.item );
 		nextPosition = Position.createBefore( value.item );
 	} else {
@@ -602,7 +602,7 @@ function expectStart( value, expected, options = {} ) {
 	expect( value.item ).to.equal( expected.item );
 	expect( value.length ).to.equal( 1 );
 
-	if ( options.direction == 'BACKWARD' ) {
+	if ( options.direction == 'backward' ) {
 		previousPosition = Position.createAfter( value.item );
 		nextPosition = Position.createBefore( value.item );
 	} else {
@@ -623,7 +623,7 @@ function expectEnd( value, expected, options = {} ) {
 	expect( value.item ).to.equal( expected.item );
 	expect( value.length ).to.be.undefined;
 
-	if ( options.direction == 'BACKWARD' ) {
+	if ( options.direction == 'backward' ) {
 		previousPosition = Position.createAfter( value.item );
 		nextPosition = Position.createFromParentAndOffset( value.item, value.item.getChildCount() );
 	} else {
