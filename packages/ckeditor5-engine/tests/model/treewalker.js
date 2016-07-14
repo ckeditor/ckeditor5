@@ -333,12 +333,12 @@ describe( 'TreeWalker', () => {
 					{ type: 'elementStart', item: img1 },
 					{ type: 'elementEnd', item: img1 },
 					{ type: 'elementStart', item: paragraph },
-					{ type: 'CHARACTER', text: 'b', attrs: [ [ 'bold', true ] ] },
-					{ type: 'CHARACTER', text: 'a', attrs: [ [ 'bold', true ] ] },
-					{ type: 'CHARACTER', text: 'r', attrs: [] },
+					{ type: 'character', text: 'b', attrs: [ [ 'bold', true ] ] },
+					{ type: 'character', text: 'a', attrs: [ [ 'bold', true ] ] },
+					{ type: 'character', text: 'r', attrs: [] },
 					{ type: 'elementStart', item: img2 },
 					{ type: 'elementEnd', item: img2 },
-					{ type: 'CHARACTER', text: 'x', attrs: [] },
+					{ type: 'character', text: 'x', attrs: [] },
 					{ type: 'elementEnd', item: paragraph }
 				];
 			} );
@@ -376,9 +376,9 @@ describe( 'TreeWalker', () => {
 
 			before( () => {
 				expected = [
-					{ type: 'CHARACTER', text: 'b', attrs: [ [ 'bold', true ] ] },
-					{ type: 'CHARACTER', text: 'a', attrs: [ [ 'bold', true ] ] },
-					{ type: 'CHARACTER', text: 'r', attrs: [] },
+					{ type: 'character', text: 'b', attrs: [ [ 'bold', true ] ] },
+					{ type: 'character', text: 'a', attrs: [ [ 'bold', true ] ] },
+					{ type: 'character', text: 'r', attrs: [] },
 					{ type: 'elementStart', item: img2 }
 				];
 
@@ -501,11 +501,11 @@ describe( 'TreeWalker', () => {
 				expected = [
 					{ type: 'elementStart', item: img1 },
 					{ type: 'elementStart', item: paragraph },
-					{ type: 'CHARACTER', text: 'b', attrs: [ [ 'bold', true ] ] },
-					{ type: 'CHARACTER', text: 'a', attrs: [ [ 'bold', true ] ] },
-					{ type: 'CHARACTER', text: 'r', attrs: [] },
+					{ type: 'character', text: 'b', attrs: [ [ 'bold', true ] ] },
+					{ type: 'character', text: 'a', attrs: [ [ 'bold', true ] ] },
+					{ type: 'character', text: 'r', attrs: [] },
 					{ type: 'elementStart', item: img2 },
-					{ type: 'CHARACTER', text: 'x', attrs: [] }
+					{ type: 'character', text: 'x', attrs: [] }
 				];
 			} );
 
@@ -549,7 +549,7 @@ function expectValue( value, expected, options ) {
 
 	if ( value.type == 'text' ) {
 		expectText( value, expected, options );
-	} else if ( value.type == 'CHARACTER' ) {
+	} else if ( value.type == 'character' ) {
 		expectCharacter( value, expected, options );
 	} else if ( value.type == 'elementStart' ) {
 		expectStart( value, expected, options );

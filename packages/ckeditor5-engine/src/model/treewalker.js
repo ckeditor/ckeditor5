@@ -207,7 +207,7 @@ export default class TreeWalker {
 				position.offset++;
 				this.position = position;
 
-				return formatReturnValue( 'CHARACTER', node, previousPosition, position, 1 );
+				return formatReturnValue( 'character', node, previousPosition, position, 1 );
 			} else {
 				let charactersCount = node._nodeListText.text.length - node._index;
 				let offset = position.offset + charactersCount;
@@ -288,7 +288,7 @@ export default class TreeWalker {
 				position.offset--;
 				this.position = position;
 
-				return formatReturnValue( 'CHARACTER', node, previousPosition, position, 1 );
+				return formatReturnValue( 'character', node, previousPosition, position, 1 );
 			} else {
 				let charactersCount = node._index + 1;
 				let offset = position.offset - charactersCount;
@@ -332,7 +332,7 @@ function formatReturnValue( type, item, previousPosition, nextPosition, length )
 /**
  * Type of the step made by {@link engine.model.TreeWalker}.
  * Possible values: `'elementStart'` if walker is at the beginning of a node, `'elementEnd'` if walker is at the end of node,
- * `'CHARACTER'` if walker traversed over a character, or `'text'` if walker traversed over multiple characters (available in
+ * `'character'` if walker traversed over a character, or `'text'` if walker traversed over multiple characters (available in
  * character merging mode, see {@link engine.model.TreeWalker#constructor}).
  *
  * @typedef {String} engine.model.TreeWalkerValueType
@@ -357,7 +357,7 @@ function formatReturnValue( type, item, previousPosition, nextPosition, length )
  * the position after the item.
  * * Backward iteration: For `'elementEnd'` it is last position inside element. For all other types it is the position
  * before the item.
- * @property {Number} [length] Length of the item. For `'elementStart'` and `'CHARACTER'` it is 1. For `'text'` it is
+ * @property {Number} [length] Length of the item. For `'elementStart'` and `'character'` it is 1. For `'text'` it is
  * the length of the text. For `'elementEnd'` it is undefined.
  */
 

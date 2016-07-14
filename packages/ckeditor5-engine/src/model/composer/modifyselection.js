@@ -13,7 +13,7 @@ import Range from '../range.js';
  * Modifies the selection. Currently the supported modifications are:
  *
  * * Extending. The selection focus is moved in the specified `options.direction` with a step specified in `options.unit`
- * (defaults to `'CHARACTER'`, other values are not not yet supported).
+ * (defaults to `'character'`, other values are not not yet supported).
  * Note: if you extend a forward selection in a backward direction you will in fact shrink it.
  *
  * @method engine.model.composer.modifySelection
@@ -41,7 +41,7 @@ export default function modifySelection( selection, options = {} ) {
 	let value = next.value;
 
 	// 2. Consume next character.
-	if ( value.type == 'CHARACTER' ) {
+	if ( value.type == 'character' ) {
 		selection.setFocus( value.nextPosition );
 
 		return;
@@ -67,7 +67,7 @@ export default function modifySelection( selection, options = {} ) {
 
 	// 4.2. Character found after element end. Not really a valid case in our data model, but let's
 	// do something sensible and put the selection focus before that character.
-	if ( value.type == 'CHARACTER' ) {
+	if ( value.type == 'character' ) {
 		selection.setFocus( value.previousPosition );
 	}
 	// 4.3. OK, we're entering a new element. So let's place there the focus.
