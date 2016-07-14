@@ -142,7 +142,7 @@ export default class Position {
 	 */
 	compareWith( otherPosition ) {
 		if ( this.root != otherPosition.root ) {
-			return 'DIFFERENT';
+			return 'different';
 		}
 
 		const result = compareArrays( this.path, otherPosition.path );
@@ -642,7 +642,7 @@ export default class Position {
 
 /**
  * A flag indicating whether this position is `'before'` or `'after'` or `'SAME'` as given position.
- * If positions are in different roots `'DIFFERENT'` flag is returned.
+ * If positions are in different roots `'different'` flag is returned.
  *
  * @typedef {String} engine.model.PositionRelation
  */

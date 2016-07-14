@@ -281,13 +281,13 @@ describe( 'Position', () => {
 			expect( position.compareWith( compared ) ).to.equal( 'after' );
 		} );
 
-		it( 'should return DIFFERENT if positions are in different roots', () => {
+		it( 'should return different if positions are in different roots', () => {
 			const root1 = new Node();
 			const root2 = new Node();
 			const position = new Position( root1, 4 );
 			const compared = new Position( root2, 1 );
 
-			expect( position.compareWith( compared ) ).to.equal( 'DIFFERENT' );
+			expect( position.compareWith( compared ) ).to.equal( 'different' );
 		} );
 	} );
 

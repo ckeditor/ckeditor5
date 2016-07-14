@@ -152,7 +152,7 @@ export default class Position {
 		switch ( result ) {
 			case 0:
 				// No common ancestors found.
-				return 'DIFFERENT';
+				return 'different';
 
 			case 'PREFIX':
 				commonAncestorIndex = path.length - 1;
@@ -270,7 +270,7 @@ export default class Position {
 
 /**
  * A flag indicating whether this position is `'before'` or `'after'` or `'SAME'` as given position.
- * If positions are in different roots `'DIFFERENT'` flag is returned.
+ * If positions are in different roots `'different'` flag is returned.
  *
  * @typedef {String} engine.view.PositionRelation
  */
