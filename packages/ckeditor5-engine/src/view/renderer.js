@@ -383,12 +383,12 @@ export default class Renderer {
 		let i = 0;
 
 		for ( let action of actions ) {
-			if ( action === 'INSERT' ) {
+			if ( action === 'insert' ) {
 				insertAt( domElement, i, expectedDomChildren[ i ] );
 				i++;
-			} else if ( action === 'DELETE' ) {
+			} else if ( action === 'delete' ) {
 				remove( actualDomChildren[ i ] );
-			} else { // 'EQUAL'
+			} else { // 'equal'
 				i++;
 			}
 		}
