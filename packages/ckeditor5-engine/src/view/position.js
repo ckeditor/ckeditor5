@@ -154,11 +154,11 @@ export default class Position {
 				// No common ancestors found.
 				return 'different';
 
-			case 'PREFIX':
+			case 'prefix':
 				commonAncestorIndex = path.length - 1;
 				break;
 
-			case 'EXTENSION':
+			case 'extension':
 				commonAncestorIndex = otherPath.length - 1;
 				break;
 

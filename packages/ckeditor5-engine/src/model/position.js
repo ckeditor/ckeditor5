@@ -151,10 +151,10 @@ export default class Position {
 			case 'SAME':
 				return 'SAME';
 
-			case 'PREFIX':
+			case 'prefix':
 				return 'before';
 
-			case 'EXTENSION':
+			case 'extension':
 				return 'after';
 
 			default:
@@ -221,7 +221,7 @@ export default class Position {
 					transformed.offset -= howMany;
 				}
 			}
-		} else if ( compareArrays( deletePosition.getParentPath(), this.getParentPath() ) == 'PREFIX' ) {
+		} else if ( compareArrays( deletePosition.getParentPath(), this.getParentPath() ) == 'prefix' ) {
 			// If nodes are removed from a node that is on a path to this position...
 			const i = deletePosition.path.length - 1;
 
@@ -267,7 +267,7 @@ export default class Position {
 				// "Push" this positions offset.
 				transformed.offset += howMany;
 			}
-		} else if ( compareArrays( insertPosition.getParentPath(), this.getParentPath() ) == 'PREFIX' ) {
+		} else if ( compareArrays( insertPosition.getParentPath(), this.getParentPath() ) == 'prefix' ) {
 			// If nodes are inserted in a node that is on a path to this position...
 			const i = insertPosition.path.length - 1;
 
