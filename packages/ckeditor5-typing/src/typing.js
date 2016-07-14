@@ -222,7 +222,7 @@ class MutationHandler {
 
 		this._insert( modelPos, insertedText );
 
-		this.selectionPosition = ModelPosition.createAt( modelPos.parent, 'END' );
+		this.selectionPosition = ModelPosition.createAt( modelPos.parent, 'end' );
 
 		function compare( oldChild, newChild ) {
 			if ( oldChild instanceof ViewText && newChild instanceof ViewText ) {
