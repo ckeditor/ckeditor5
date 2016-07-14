@@ -235,6 +235,17 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
  *
  *		const { root, selection } = parse( `{foo}bar{baz}`, { lastRangeBackward: true } );
  *
+ * Other examples and edge cases:
+ *
+ *		// Returns empty DocumentFragment.
+ *		parse( '' );
+ *
+ *		// Returns empty DocumentFragment and collapsed selection.
+ *		const { root, selection } = parse( '[]' );
+ *
+ *		// Returns Element and selection that is placed inside of DocumentFragment containing that element.
+ *		const { root, selection } = parse( '[<a></a>]' );
+ *
  * @param {String} data HTML-like string to be parsed.
  * @param {Object} options
  * @param {Array.<Number>} [options.order] Array with order of parsed ranges added to returned
@@ -254,8 +265,19 @@ export function parse( data, options = {} ) {
 	const viewParser = new ViewParser();
 	const rangeParser = new RangeParser();
 
-	const view = viewParser.parse( data, options.rootElement );
+	let view = viewParser.parse( data, options.rootElement );
+
+	// If single Element or Text is returned - move it to the DocumentFragment.
+	if ( !options.rootElement && ( view instanceof ViewText || view instanceof ViewElement ) ) {
+		view = new ViewDocumentFragment( view );
+	}
+
 	const ranges = rangeParser.parse( view, options.order );
+
+	// If only one element is returned inside DocumentFragment - return that element.
+	if ( view instanceof ViewDocumentFragment && view.getChildCount() === 1 ) {
+		view = view.getChild( 0 );
+	}
 
 	// When ranges are present - return object containing view, and selection.
 	if ( ranges.length ) {
@@ -266,6 +288,11 @@ export function parse( data, options = {} ) {
 			view: view,
 			selection: selection
 		};
+	}
+
+	// If single element is returned without selection - remove it from parent and return detached element.
+	if ( view.parent ) {
+		view.remove();
 	}
 
 	return view;

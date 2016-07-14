@@ -123,7 +123,7 @@ export default class Node {
 		const ancestors = [];
 		let parent = options.includeNode ? this : this.parent;
 
-		while ( parent !== null ) {
+		while ( parent ) {
 			ancestors[ options.parentFirst ? 'push' : 'unshift' ]( parent );
 			parent = parent.parent;
 		}

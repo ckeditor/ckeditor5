@@ -53,12 +53,12 @@ register( 'weakInsert', function( position, nodes ) {
 	nodes = new NodeList( nodes );
 
 	for ( let node of nodes._nodes ) {
-		node._attrs = new Map( this.doc.selection.getAttributes() );
+		node._attrs = new Map( this.document.selection.getAttributes() );
 	}
 
-	const operation = new InsertOperation( position, nodes, this.doc.version );
+	const operation = new InsertOperation( position, nodes, this.document.version );
 	delta.addOperation( operation );
-	this.doc.applyOperation( operation );
+	this.document.applyOperation( operation );
 
 	return this;
 } );

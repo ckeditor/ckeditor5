@@ -130,9 +130,9 @@ register( 'removeAttr', function( key, nodeOrRange ) {
 
 function attribute( batch, key, value, nodeOrRange ) {
 	if ( nodeOrRange instanceof Range ) {
-		changeRange( batch, batch.doc, key, value, nodeOrRange );
+		changeRange( batch, batch.document, key, value, nodeOrRange );
 	} else {
-		changeNode( batch, batch.doc, key, value, nodeOrRange );
+		changeNode( batch, batch.document, key, value, nodeOrRange );
 	}
 }
 

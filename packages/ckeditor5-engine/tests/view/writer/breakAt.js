@@ -8,9 +8,6 @@
 'use strict';
 
 import { breakAt } from '/ckeditor5/engine/view/writer.js';
-import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
-import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
-import Text from '/ckeditor5/engine/view/text.js';
 import { stringify, parse } from '/tests/engine/_utils/view.js';
 
 describe( 'writer', () => {
@@ -24,13 +21,8 @@ describe( 'writer', () => {
 	function test( input, expected ) {
 		let { view, selection } = parse( input );
 
-		// Wrap attributes and text into DocumentFragment.
-		if ( view instanceof AttributeElement || view instanceof Text ) {
-			view = new DocumentFragment( view );
-		}
-
 		const newPosition = breakAt( selection.getFirstPosition() );
-		expect( stringify( view, newPosition, { showType: true, showPriority: true } ) ).to.equal( expected );
+		expect( stringify( view.getRoot(), newPosition, { showType: true, showPriority: true } ) ).to.equal( expected );
 	}
 
 	describe( 'breakAt', () => {

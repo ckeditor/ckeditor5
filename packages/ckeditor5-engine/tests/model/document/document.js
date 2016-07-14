@@ -158,7 +158,7 @@ describe( 'Document', () => {
 			const batch = doc.batch();
 
 			expect( batch ).to.be.instanceof( Batch );
-			expect( batch ).to.have.property( 'doc' ).that.equals( doc );
+			expect( batch ).to.have.property( 'document' ).that.equals( doc );
 		} );
 
 		it( 'should set given batch type', () => {

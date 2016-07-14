@@ -107,14 +107,14 @@ register( 'merge', function( position ) {
 	const positionAfter = Position.createFromParentAndOffset( nodeAfter, 0 );
 	const positionBefore = Position.createFromParentAndOffset( nodeBefore, nodeBefore.getChildCount() );
 
-	const move = new MoveOperation( positionAfter, nodeAfter.getChildCount(), positionBefore, this.doc.version );
+	const move = new MoveOperation( positionAfter, nodeAfter.getChildCount(), positionBefore, this.document.version );
 	move.isSticky = true;
 	delta.addOperation( move );
-	this.doc.applyOperation( move );
+	this.document.applyOperation( move );
 
-	const remove = new RemoveOperation( position, 1, this.doc.version );
+	const remove = new RemoveOperation( position, 1, this.document.version );
 	delta.addOperation( remove );
-	this.doc.applyOperation( remove );
+	this.document.applyOperation( remove );
 
 	return this;
 } );

@@ -121,14 +121,14 @@ register( 'wrap', function( range, elementOrString ) {
 	const delta = new WrapDelta();
 	this.addDelta( delta );
 
-	let insert = new InsertOperation( range.end, element, this.doc.version );
+	let insert = new InsertOperation( range.end, element, this.document.version );
 	delta.addOperation( insert );
-	this.doc.applyOperation( insert );
+	this.document.applyOperation( insert );
 
 	let targetPosition = Position.createFromParentAndOffset( element, 0 );
-	let move = new MoveOperation( range.start, range.end.offset - range.start.offset, targetPosition, this.doc.version );
+	let move = new MoveOperation( range.start, range.end.offset - range.start.offset, targetPosition, this.document.version );
 	delta.addOperation( move );
-	this.doc.applyOperation( move );
+	this.document.applyOperation( move );
 
 	return this;
 } );

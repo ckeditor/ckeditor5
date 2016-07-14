@@ -10,6 +10,7 @@ import Range from './range.js';
 import EmitterMixin from '../../utils/emittermixin.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 import mix from '../../utils/mix.js';
+import toMap from '../../utils/tomap.js';
 
 /**
  * `Selection` is a group of {@link engine.model.Range ranges} which has a direction specified by
@@ -37,6 +38,91 @@ export default class Selection {
 		 * @member {Array.<engine.model.Range>} engine.model.Selection#_ranges
 		 */
 		this._ranges = [];
+
+		/**
+		 * List of attributes set on current selection.
+		 *
+		 * @protected
+		 * @member {Map} engine.model.LiveSelection#_attrs
+		 */
+		this._attrs = new Map();
+	}
+
+	/**
+	 * Gets an attribute value for given key or `undefined` if that attribute is not set on the selection.
+	 *
+	 * @param {String} key Key of attribute to look for.
+	 * @returns {*} Attribute value or `undefined`.
+	 */
+	getAttribute( key ) {
+		return this._attrs.get( key );
+	}
+
+	/**
+	 * Returns iterator that iterates over this selection attributes.
+	 *
+	 * @returns {Iterable.<*>}
+	 */
+	getAttributes() {
+		return this._attrs[ Symbol.iterator ]();
+	}
+
+	/**
+	 * Checks if the selection has an attribute for given key.
+	 *
+	 * @param {String} key Key of attribute to check.
+	 * @returns {Boolean} `true` if attribute with given key is set on selection, `false` otherwise.
+	 */
+	hasAttribute( key ) {
+		return this._attrs.has( key );
+	}
+
+	/**
+	 * Removes all attributes from the selection.
+	 *
+	 * @fires engine.model.Selection#change:attribute
+	 */
+	clearAttributes() {
+		this._attrs.clear();
+
+		this.fire( 'change:attribute' );
+	}
+
+	/**
+	 * Removes an attribute with given key from the selection.
+	 *
+	 * @fires engine.model.Selection#change:attribute
+	 * @param {String} key Key of attribute to remove.
+	 */
+	removeAttribute( key ) {
+		this._attrs.delete( key );
+
+		this.fire( 'change:attribute' );
+	}
+
+	/**
+	 * Sets attribute on the selection. If attribute with the same key already is set, it overwrites its values.
+	 *
+	 * @fires engine.model.Selection#change:attribute
+	 * @param {String} key Key of attribute to set.
+	 * @param {*} value Attribute value.
+	 */
+	setAttribute( key, value ) {
+		this._attrs.set( key, value );
+
+		this.fire( 'change:attribute' );
+	}
+
+	/**
+	 * Removes all attributes from the selection and sets given attributes.
+	 *
+	 * @fires engine.model.Selection#change:attribute
+	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set.
+	 */
+	setAttributesTo( attrs ) {
+		this._attrs = toMap( attrs );
+
+		this.fire( 'change:attribute' );
 	}
 
 	/**
@@ -344,4 +430,10 @@ mix( Selection, EmitterMixin );
  * Fired whenever selection ranges are changed through {@link engine.model.Selection Selection API}.
  *
  * @event engine.model.Selection#change:range
+ */
+
+/**
+ * Fired whenever selection attributes are changed.
+ *
+ * @event engine.model.Selection#change:attribute
  */

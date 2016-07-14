@@ -111,21 +111,21 @@ register( 'split', function( position ) {
 
 	const copy = new Element( splitElement.name, splitElement._attrs );
 
-	const insert = new InsertOperation( Position.createAfter( splitElement ), copy, this.doc.version );
+	const insert = new InsertOperation( Position.createAfter( splitElement ), copy, this.document.version );
 
 	delta.addOperation( insert );
-	this.doc.applyOperation( insert );
+	this.document.applyOperation( insert );
 
 	const move = new MoveOperation(
 		position,
 		splitElement.getChildCount() - position.offset,
 		Position.createFromParentAndOffset( copy, 0 ),
-		this.doc.version
+		this.document.version
 	);
 	move.isSticky = true;
 
 	delta.addOperation( move );
-	this.doc.applyOperation( move );
+	this.document.applyOperation( move );
 
 	return this;
 } );

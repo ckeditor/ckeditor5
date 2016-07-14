@@ -177,6 +177,10 @@ describe( 'model test utils', () => {
 				);
 			} );
 
+			it( 'writes only requested element', () => {
+				expect( stringify( elA ) ).to.equal( '<a></a>' );
+			} );
+
 			it( 'writes selection collapsed in an element', () => {
 				selection.collapse( root );
 
@@ -297,6 +301,42 @@ describe( 'model test utils', () => {
 	} );
 
 	describe( 'parse', () => {
+		test( 'creates empty DocumentFragment from empty string', {
+			data: '',
+			check( fragment ) {
+				expect( fragment ).to.be.instanceOf( DocumentFragment );
+			}
+		} );
+
+		test( 'creates empty DocumentFragment with selection', {
+			data: '<selection />',
+			check( fragment, selection ) {
+				expect( fragment ).to.be.instanceOf( DocumentFragment );
+				expect( fragment.getChildCount() ).to.equal( 0 );
+				expect( selection.rangeCount ).to.equal( 1 );
+				expect( selection.getFirstRange().isEqual( Range.createFromParentsAndOffsets( fragment, 0, fragment, 0 ) ) ).to.be.true;
+			}
+		} );
+
+		test( 'returns Element if range is around single element', {
+			data: '<selection><a></a></selection>',
+			check( el, selection ) {
+				const fragment = el.parent;
+				expect( el ).to.be.instanceOf( Element );
+				expect( fragment ).to.be.instanceOf( DocumentFragment );
+				expect( selection.rangeCount ).to.equal( 1 );
+				expect( selection.getFirstRange().isEqual( Range.createFromParentsAndOffsets( fragment, 0, fragment, 1 ) ) ).to.be.true;
+			}
+		} );
+
+		test( 'returns DocumentFragment when multiple elements on root', {
+			data: '<a></a><b></b>',
+			check( fragment ) {
+				expect( fragment ).to.be.instanceOf( DocumentFragment );
+				expect( fragment.getChildCount() ).to.equal( 2 );
+			}
+		} );
+
 		test( 'creates elements', {
 			data: '<a></a><b><c></c></b>'
 		} );
@@ -308,15 +348,15 @@ describe( 'model test utils', () => {
 		test( 'sets elements attributes', {
 			data: '<a foo=1 bar=true car="x y"><b x="y"></b></a>',
 			output: '<a bar=true car="x y" foo=1><b x="y"></b></a>',
-			check( root ) {
-				expect( root.getChild( 0 ).getAttribute( 'car' ) ).to.equal( 'x y' );
+			check( a ) {
+				expect( a.getAttribute( 'car' ) ).to.equal( 'x y' );
 			}
 		} );
 
 		test( 'sets complex attributes', {
 			data: '<a foo={"a":1,"b":"c"}></a>',
-			check( root ) {
-				expect( root.getChild( 0 ).getAttribute( 'foo' ) ).to.have.property( 'a', 1 );
+			check( a ) {
+				expect( a.getAttribute( 'foo' ) ).to.have.property( 'a', 1 );
 			}
 		} );
 
@@ -326,6 +366,20 @@ describe( 'model test utils', () => {
 				expect( root.getChildCount() ).to.equal( 9 );
 				expect( root.getChild( 0 ) ).to.have.property( 'character', 'f' );
 				expect( root.getChild( 0 ).getAttribute( 'italic' ) ).to.equal( true );
+			}
+		} );
+
+		test( 'returns single parsed element', {
+			data: '<paragraph></paragraph>',
+			check( p ) {
+				expect( p instanceof Element ).to.be.true;
+			}
+		} );
+
+		test( 'returns DocumentFragment for multiple parsed elements', {
+			data: '<paragraph></paragraph><paragraph></paragraph>',
+			check( fragment ) {
+				expect( fragment instanceof DocumentFragment ).to.be.true;
 			}
 		} );
 
