@@ -213,7 +213,7 @@ export default class Selection {
 	 */
 	addRange( range, isBackward ) {
 		if ( !( range instanceof Range ) ) {
-			throw new CKEditorError( 'model-selection-invalid-range: Invalid Range.' );
+			throw new CKEditorError( 'selection-invalid-range: Invalid Range.' );
 		}
 
 		this._pushRange( range );
@@ -296,7 +296,7 @@ export default class Selection {
 
 		for ( let range of newRanges ) {
 			if ( !( range instanceof Range ) ) {
-				throw new CKEditorError( 'model-selection-invalid-range: Invalid Range.' );
+				throw new CKEditorError( 'selection-invalid-range: Invalid Range.' );
 			}
 
 			this._pushRange( range );
