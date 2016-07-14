@@ -152,16 +152,16 @@ export default class Position {
 				return 'SAME';
 
 			case 'PREFIX':
-				return 'BEFORE';
+				return 'before';
 
 			case 'EXTENSION':
-				return 'AFTER';
+				return 'after';
 
 			default:
 				if ( this.path[ result ] < otherPosition.path[ result ] ) {
-					return 'BEFORE';
+					return 'before';
 				} else {
-					return 'AFTER';
+					return 'after';
 				}
 		}
 	}
@@ -324,7 +324,7 @@ export default class Position {
 	 * @returns {Boolean} True if this position is after given position.
 	 */
 	isAfter( otherPosition ) {
-		return this.compareWith( otherPosition ) == 'AFTER';
+		return this.compareWith( otherPosition ) == 'after';
 	}
 
 	/**
@@ -359,7 +359,7 @@ export default class Position {
 	 * @returns {Boolean} True if this position is before given position.
 	 */
 	isBefore( otherPosition ) {
-		return this.compareWith( otherPosition ) == 'BEFORE';
+		return this.compareWith( otherPosition ) == 'before';
 	}
 
 	/**
@@ -389,12 +389,12 @@ export default class Position {
 			case 'SAME':
 				return true;
 
-			case 'BEFORE':
+			case 'before':
 				left = Position.createFromPosition( this );
 				right = Position.createFromPosition( otherPosition );
 				break;
 
-			case 'AFTER':
+			case 'after':
 				left = Position.createFromPosition( otherPosition );
 				right = Position.createFromPosition( this );
 				break;
@@ -449,7 +449,7 @@ export default class Position {
 	 * * a {@link engine.model.Position position},
 	 * * parent element and offset (offset defaults to `0`),
 	 * * parent element and `'END'` (sets selection at the end of that element),
-	 * * node and `'BEFORE'` or `'AFTER'` (sets selection before or after the given node).
+	 * * node and `'before'` or `'after'` (sets selection before or after the given node).
 	 *
 	 * This method is a shortcut to other constructors such as:
 	 *
@@ -459,7 +459,7 @@ export default class Position {
 	 * * {@link engine.model.Position.createFromPosition}.
 	 *
 	 * @param {engine.model.Node|engine.model.Position} nodeOrPosition
-	 * @param {Number|'END'|'BEFORE'|'AFTER'} [offset=0] Offset or one of the flags. Used only when
+	 * @param {Number|'END'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
 	 * first parameter is a node.
 	 */
 	static createAt( nodeOrPosition, offset ) {
@@ -472,9 +472,9 @@ export default class Position {
 
 			if ( offset == 'END' ) {
 				offset = node.getChildCount();
-			} else if ( offset == 'BEFORE' ) {
+			} else if ( offset == 'before' ) {
 				return this.createBefore( node );
-			} else if ( offset == 'AFTER' ) {
+			} else if ( offset == 'after' ) {
 				return this.createAfter( node );
 			} else if ( !offset ) {
 				offset = 0;
@@ -641,7 +641,7 @@ export default class Position {
 }
 
 /**
- * A flag indicating whether this position is `'BEFORE'` or `'AFTER'` or `'SAME'` as given position.
+ * A flag indicating whether this position is `'before'` or `'after'` or `'SAME'` as given position.
  * If positions are in different roots `'DIFFERENT'` flag is returned.
  *
  * @typedef {String} engine.model.PositionRelation

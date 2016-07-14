@@ -306,7 +306,7 @@ export default class Selection {
 	 *
 	 * @fires engine.model.Selection#change:range
 	 * @param {engine.model.Node|engine.model.Position} nodeOrPosition
-	 * @param {Number|'END'|'BEFORE'|'AFTER'} [offset=0] Offset or one of the flags. Used only when
+	 * @param {Number|'END'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
 	 * first parameter is a node.
 	 */
 	collapse( nodeOrPosition, offset ) {
@@ -323,7 +323,7 @@ export default class Selection {
 	 *
 	 * @fires engine.model.Selection#change:range
 	 * @param {engine.model.Node|engine.model.Position} nodeOrPosition
-	 * @param {Number|'END'|'BEFORE'|'AFTER'} [offset=0] Offset or one of the flags. Used only when
+	 * @param {Number|'END'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
 	 * first parameter is a node.
 	 */
 	setFocus( nodeOrPosition, offset ) {
@@ -348,7 +348,7 @@ export default class Selection {
 			this._popRange();
 		}
 
-		if ( newFocus.compareWith( anchor ) == 'BEFORE' ) {
+		if ( newFocus.compareWith( anchor ) == 'before' ) {
 			this.addRange( new Range( newFocus, anchor ), true );
 		} else {
 			this.addRange( new Range( anchor, newFocus ) );

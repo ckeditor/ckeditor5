@@ -49,7 +49,7 @@ export default function modifySelection( selection, options = {} ) {
 
 	// 3. We're entering an element, so let's consume it fully.
 	if ( value.type == ( isForward ? 'elementStart' : 'elementEnd' ) ) {
-		selection.setFocus( value.item, isForward ? 'AFTER' : 'BEFORE' );
+		selection.setFocus( value.item, isForward ? 'after' : 'before' );
 
 		return;
 	}

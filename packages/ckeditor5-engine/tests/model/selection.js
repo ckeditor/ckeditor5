@@ -216,7 +216,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'sets selection before the specified element', () => {
-			selection.collapse( root.getChild( 1 ), 'BEFORE' );
+			selection.collapse( root.getChild( 1 ), 'before' );
 
 			expect( selection ).to.have.property( 'isCollapsed', true );
 
@@ -226,7 +226,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'sets selection after the specified element', () => {
-			selection.collapse( root.getChild( 1 ), 'AFTER' );
+			selection.collapse( root.getChild( 1 ), 'after' );
 
 			expect( selection ).to.have.property( 'isCollapsed', true );
 

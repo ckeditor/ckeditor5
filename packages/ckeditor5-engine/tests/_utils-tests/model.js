@@ -198,7 +198,7 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'writes selection collapsed at the text left boundary', () => {
-				selection.collapse( elA, 'AFTER' );
+				selection.collapse( elA, 'after' );
 
 				expect( stringify( root, selection ) ).to.equal(
 					'<a></a><selection />foo<$text bold=true>bar</$text><b></b>'
@@ -206,7 +206,7 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'writes selection collapsed at the text right boundary', () => {
-				selection.collapse( elB, 'BEFORE' );
+				selection.collapse( elB, 'before' );
 
 				expect( stringify( root, selection ) ).to.equal(
 					'<a></a>foo<$text bold=true>bar</$text><selection bold=true /><b></b>'

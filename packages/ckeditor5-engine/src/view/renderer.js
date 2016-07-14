@@ -89,7 +89,7 @@ export default class Renderer {
 
 		/**
 		 * Position of the inline {@link engine.view.filler filler}.
-		 * It should always be put BEFORE the text which contains filler.
+		 * It should always be put before the text which contains filler.
 		 *
 		 * @private
 		 * @member {engine.view.Position} engine.view.Renderer#_inlineFillerPosition

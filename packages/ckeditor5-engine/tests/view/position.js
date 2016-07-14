@@ -265,20 +265,20 @@ describe( 'Position', () => {
 			expect( position.compareWith( compared ) ).to.equal( 'SAME' );
 		} );
 
-		it( 'should return BEFORE if the position is before compared one', () => {
+		it( 'should return before if the position is before compared one', () => {
 			const root = new Node();
 			const position = new Position( root, 0 );
 			const compared = new Position( root, 1 );
 
-			expect( position.compareWith( compared ) ).to.equal( 'BEFORE' );
+			expect( position.compareWith( compared ) ).to.equal( 'before' );
 		} );
 
-		it( 'should return AFTER if the position is after compared one', () => {
+		it( 'should return after if the position is after compared one', () => {
 			const root = new Node();
 			const position = new Position( root, 4 );
 			const compared = new Position( root, 1 );
 
-			expect( position.compareWith( compared ) ).to.equal( 'AFTER' );
+			expect( position.compareWith( compared ) ).to.equal( 'after' );
 		} );
 
 		it( 'should return DIFFERENT if positions are in different roots', () => {
