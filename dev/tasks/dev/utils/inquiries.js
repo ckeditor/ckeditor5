@@ -7,23 +7,23 @@
 
 const inquirer = require( 'inquirer' );
 const sanitize = require( './sanitize' );
-const DEFAULT_PLUGIN_NAME_PREFIX = 'ckeditor5-';
-const DEFAULT_PLUGIN_VERSION = '0.0.1';
-const DEFAULT_GITHUB_PATH_PREFIX = 'ckeditor/';
+const defaultPluginNamePrefix = 'ckeditor5-';
+const defaultPluginVersion = '0.0.1';
+const defaultGithubPathPrefix = 'ckeditor/';
 
 module.exports = {
 	getPackageName() {
 		return new Promise( ( resolve ) => {
 			inquirer.prompt( [ {
 				name: 'packageName',
-				message: 'Enter package name without ' + DEFAULT_PLUGIN_NAME_PREFIX + ' prefix:',
+				message: 'Enter package name without ' + defaultPluginNamePrefix + ' prefix:',
 				validate: ( input ) => {
 					const regexp = /^[\w-]+$/;
 
 					return regexp.test( input ) ? true : 'Please provide a valid package name.';
 				}
 			} ], ( answers ) => {
-				resolve( DEFAULT_PLUGIN_NAME_PREFIX + answers.packageName );
+				resolve( defaultPluginNamePrefix + answers.packageName );
 			} );
 		} );
 	},
@@ -44,7 +44,7 @@ module.exports = {
 			inquirer.prompt( [ {
 				name: 'version',
 				message: 'Enter package\'s initial version:',
-				default: DEFAULT_PLUGIN_VERSION
+				default: defaultPluginVersion
 			} ], ( answers ) => {
 				resolve( answers.version );
 			} );
@@ -52,7 +52,7 @@ module.exports = {
 	},
 
 	getPackageGitHubPath( packageName ) {
-		const defaultGitHubPath = DEFAULT_GITHUB_PATH_PREFIX + packageName;
+		const defaultGitHubPath = defaultGithubPathPrefix + packageName;
 
 		return new Promise( ( resolve ) => {
 			inquirer.prompt( [ {
