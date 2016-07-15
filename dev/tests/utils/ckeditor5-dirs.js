@@ -141,6 +141,29 @@ describe( 'utils', () => {
 						repositoryPath: '/workspace/path/ckeditor5/node_modules/ckeditor5-core'
 					} );
 			} );
+
+			it( 'should return only ckeditor5 directories in development mode, including root directory', () => {
+				sandbox.stub( ckeditor5Dirs, 'getDirectories', () => sourceDirectories );
+				sandbox.stub( ckeditor5Dirs, 'getDependencies', () => dependencies );
+				sandbox.stub( git, 'parseRepositoryUrl' ).returns( repositoryInfo );
+				const includeRoot = true;
+
+				const directories = ckeditor5Dirs.getDevDirectories( workspacePath, packageJSONDependencies, ckeditor5Path, includeRoot );
+
+				expect( directories.length ).equal( 3 );
+				expect( directories[ 0 ] ).eql( {
+						repositoryURL: 'ckeditor/ckeditor5-plugin-image',
+						repositoryPath: '/workspace/path/ckeditor5/node_modules/ckeditor5-plugin-image'
+					} );
+				expect( directories[ 1 ] ).eql( {
+						repositoryURL: 'ckeditor/ckeditor5-core',
+						repositoryPath: '/workspace/path/ckeditor5/node_modules/ckeditor5-core'
+					} );
+				expect( directories[ 2 ] ).eql( {
+						repositoryURL: 'ckeditor/ckeditor5',
+						repositoryPath: '/workspace/path/ckeditor5'
+					} );
+			} );
 		} );
 	} );
 } );
