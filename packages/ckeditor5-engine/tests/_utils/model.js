@@ -43,21 +43,67 @@ getData._stringify = stringify;
 
 /**
  * Sets the contents of the {@link engine.model.Document Document} provided as HTML-like string.
+ * It uses {@link engine.model.Document#enqueueChanges enqueueChanges} method.
+ *
+ * NOTE:
+ * Remember to register elements in {@link engine.model.Document#schema document's schema} before inserting them.
  *
  * @param {engine.model.Document} document
  * @param {String} data HTML-like string to write into Document.
  * @param {Object} options
- * @param {String} [options.rootName] Root name where parsed data will be stored. If not provided, default `main` name will be
- * used.
+ * @param {String} [options.rootName='main'] Root name where parsed data will be stored. If not provided, default `main`
+ * name will be used.
+ * @param {String} [options.batchType='transparent'] Batch type used for inserting elements. See {@link engine.model.Batch#type}.
  */
 export function setData( document, data, options = {} ) {
 	if ( !( document instanceof Document ) ) {
 		throw new TypeError( 'Document needs to be an instance of engine.model.Document.' );
 	}
 
-	setData._parse( data, {
-		document: document,
-		rootName: options.rootName
+	let model, selection;
+	const result = setData._parse( data );
+
+	if ( result.model && result.selection ) {
+		model = result.model;
+		selection = result.selection;
+	} else {
+		model = result;
+	}
+
+	// Save to model.
+	const modelRoot = document.getRoot( options.rootName || 'main' );
+
+	document.enqueueChanges( () => {
+		document.batch( options.batchType || 'transparent' )
+			.remove( Range.createFromElement( modelRoot ) )
+			.insert( Position.createAt( modelRoot, 0 ), model );
+
+		if ( selection ) {
+			const ranges = [];
+
+			for ( let range of selection.getRanges() ) {
+				let start, end;
+
+				// Each range returned from `parse()` method has its root placed in DocumentFragment.
+				// Here we convert each range to have its root re-calculated properly and be placed inside
+				// model document root.
+				if ( range.start.parent instanceof DocumentFragment ) {
+					start = Position.createFromParentAndOffset( modelRoot, range.start.offset );
+				} else {
+					start = Position.createFromParentAndOffset( range.start.parent, range.start.offset );
+				}
+
+				if ( range.end.parent instanceof DocumentFragment ) {
+					end = Position.createFromParentAndOffset( modelRoot, range.end.offset );
+				} else {
+					end = Position.createFromParentAndOffset( range.end.parent, range.end.offset );
+				}
+
+				ranges.push( new Range( start, end ) );
+			}
+
+			document.selection.setRanges( ranges, selection.isBackward );
+		}
 	} );
 }
 
@@ -133,27 +179,15 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
  *
  * @param {String} data HTML-like string to be parsed.
  * @param {Object} options
- * @param {engine.model.Document} [options.document] Document from which root element and selection will be used. If
- * not provided new {engine.model.Document document} instance will be created.
- * @param {String} [options.rootName='main'] When `document` option is provided this root name will be used to create
- * {engine.model.RootElement RootElement} instance.
- * @returns {engine.model.RootElement|Object} Returns parsed RootElement or object with two fields `model`
- * and `selection` when selection ranges were included in data to parse.
+ * @returns {engine.model.Element|engine.model.Text|engine.model.DocumentFragment|Object} Returns parsed model node or
+ * object with two fields `model` and `selection` when selection ranges were included in data to parse.
  */
-export function parse( data, options = {} ) {
+export function parse( data ) {
 	let root, selection;
 	let withSelection = false;
-	const rootName = options.rootName || 'main';
 
-	if ( options.document ) {
-		const document = options.document;
-		root = document.getRoot( rootName );
-		root.removeChildren( 0, root.getChildCount() );
-		selection = document.selection;
-	} else {
-		root = new DocumentFragment();
-		selection = new Selection();
-	}
+	root = new DocumentFragment();
+	selection = new Selection();
 
 	const path = [];
 	let selectionStart, selectionEnd, selectionAttributes, textAttributes;

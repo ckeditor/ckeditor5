@@ -16,6 +16,7 @@ describe( 'Delete utils', () => {
 
 	beforeEach( () => {
 		document = new Document();
+		document.schema.registerItem( 'p', '$block' );
 		document.createRoot();
 	} );
 

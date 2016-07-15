@@ -138,6 +138,7 @@ describe( 'DataController', () => {
 
 	describe( 'get', () => {
 		it( 'should get paragraph with text', () => {
+			modelDocument.schema.registerItem( 'paragraph', '$block' );
 			setData( modelDocument, '<paragraph>foo</paragraph>' );
 
 			BuildModelConverterFor( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
@@ -146,6 +147,7 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should get empty paragraph', () => {
+			modelDocument.schema.registerItem( 'paragraph', '$block' );
 			setData( modelDocument, '<paragraph></paragraph>' );
 
 			BuildModelConverterFor( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
@@ -154,6 +156,7 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should get two paragraphs', () => {
+			modelDocument.schema.registerItem( 'paragraph', '$block' );
 			setData( modelDocument, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 
 			BuildModelConverterFor( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
@@ -168,6 +171,7 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should get paragraphs without bold', () => {
+			modelDocument.schema.registerItem( 'paragraph', '$block' );
 			setData( modelDocument, '<paragraph>foo<$text bold=true>bar</$text></paragraph>' );
 
 			BuildModelConverterFor( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
@@ -176,6 +180,7 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should get paragraphs with bold', () => {
+			modelDocument.schema.registerItem( 'paragraph', '$block' );
 			setData( modelDocument, '<paragraph>foo<$text bold=true>bar</$text></paragraph>' );
 
 			BuildModelConverterFor( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
@@ -185,6 +190,7 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should get root name as a parameter', () => {
+			modelDocument.schema.registerItem( 'paragraph', '$block' );
 			setData( modelDocument, '<paragraph>foo</paragraph>', { rootName: 'main' } );
 			setData( modelDocument, 'Bar', { rootName: 'title' } );
 

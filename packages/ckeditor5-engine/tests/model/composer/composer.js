@@ -16,6 +16,7 @@ describe( 'Composer', () => {
 
 	beforeEach( () => {
 		document = new Document();
+		document.schema.registerItem( 'p', '$block' );
 		document.createRoot();
 
 		composer = new Composer();
