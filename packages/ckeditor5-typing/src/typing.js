@@ -177,13 +177,13 @@ class MutationHandler {
 			const viewPos = new ViewPosition( mutation.node, change.index );
 			const modelPos = this.editing.mapper.toModelPosition( viewPos );
 
-			if ( change.type == 'INSERT' ) {
+			if ( change.type == 'insert' ) {
 				const insertedText = change.values.join( '' );
 
 				this._insert( modelPos, insertedText );
 
 				this.selectionPosition = ModelPosition.createAt( modelPos.parent, modelPos.offset + insertedText.length );
-			} else /* if ( change.type == 'DELETE' ) */ {
+			} else /* if ( change.type == 'delete' ) */ {
 				this._remove( new ModelRange( modelPos, modelPos.getShiftedBy( change.howMany ) ), change.howMany );
 
 				this.selectionPosition = modelPos;
@@ -205,7 +205,7 @@ class MutationHandler {
 		const diffResult = diff( mutation.oldChildren, mutation.newChildren, compare );
 		const changes = diffToChanges( diffResult, mutation.newChildren );
 
-		// In case of [ REMOVE, INSERT, INSERT ] the previous check will not exit.
+		// In case of [ delete, insert, insert ] the previous check will not exit.
 		if ( changes.length > 1 ) {
 			return;
 		}
@@ -222,7 +222,7 @@ class MutationHandler {
 
 		this._insert( modelPos, insertedText );
 
-		this.selectionPosition = ModelPosition.createAt( modelPos.parent, 'END' );
+		this.selectionPosition = ModelPosition.createAt( modelPos.parent, 'end' );
 
 		function compare( oldChild, newChild ) {
 			if ( oldChild instanceof ViewText && newChild instanceof ViewText ) {
