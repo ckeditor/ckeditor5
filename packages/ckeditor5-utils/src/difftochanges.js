@@ -14,9 +14,9 @@
  *		const changes = diffToChanges( diff( input, output ), output );
  *
  *		changes.forEach( change => {
- *			if ( change.type == 'INSERT' ) {
+ *			if ( change.type == 'insert' ) {
  *				input.splice( change.index, 0, ...change.values );
- *			} else if ( change.type == 'DELETE' ) {
+ *			} else if ( change.type == 'delete' ) {
  *				input.splice( change.index, change.howMany );
  *			}
  *		} );
@@ -24,7 +24,7 @@
  *		input.join( '' ) == output.join( '' ); // -> true
  *
  * @method utils.diffToChanges
- * @param {Array.<'EQUAL'|'INSERT'|'DELETE'>} diff Result of {@link utils.diff}.
+ * @param {Array.<'equal'|'insert'|'delete'>} diff Result of {@link utils.diff}.
  * @param {String|Array} output The string or array which was passed as diff's output.
  * @returns {Array.<Object>} Set of changes (insert or delete) which need to be applied to the input
  * in order to transform it into the output.
@@ -35,32 +35,32 @@ export default function diffToChanges( diff, output ) {
 	let lastOperation;
 
 	diff.forEach( change => {
-		if ( change == 'EQUAL' ) {
+		if ( change == 'equal' ) {
 			pushLast();
 
 			index++;
-		} else if ( change == 'INSERT' ) {
-			if ( isContinuationOf( 'INSERT' ) ) {
+		} else if ( change == 'insert' ) {
+			if ( isContinuationOf( 'insert' ) ) {
 				lastOperation.values.push( output[ index ] );
 			} else {
 				pushLast();
 
 				lastOperation = {
-					type: 'INSERT',
+					type: 'insert',
 					index: index,
 					values: [ output[ index ] ]
 				};
 			}
 
 			index++;
-		} else /* if ( change == 'DELETE' ) */ {
-			if ( isContinuationOf( 'DELETE' ) ) {
+		} else /* if ( change == 'delete' ) */ {
+			if ( isContinuationOf( 'delete' ) ) {
 				lastOperation.howMany++;
 			} else {
 				pushLast();
 
 				lastOperation = {
-					type: 'DELETE',
+					type: 'delete',
 					index: index,
 					howMany: 1
 				};

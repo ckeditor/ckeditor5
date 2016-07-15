@@ -53,9 +53,9 @@ describe( 'diffToChanges', () => {
 		const changes = diffToChanges( diff( input, output ), output );
 
 		changes.forEach( change => {
-			if ( change.type == 'INSERT' ) {
+			if ( change.type == 'insert' ) {
 				input.splice( change.index, 0, ...change.values );
-			} else if ( change.type == 'DELETE' ) {
+			} else if ( change.type == 'delete' ) {
 				input.splice( change.index, change.howMany );
 			}
 		} );
@@ -70,9 +70,9 @@ describe( 'diffToChanges', () => {
 			const oldStrChars = Array.from( oldStr );
 
 			changes.forEach( change => {
-				if ( change.type == 'INSERT' ) {
+				if ( change.type == 'insert' ) {
 					oldStrChars.splice( change.index, 0, ...change.values );
-				} else if ( change.type == 'DELETE' ) {
+				} else if ( change.type == 'delete' ) {
 					oldStrChars.splice( change.index, change.howMany );
 				}
 			} );
