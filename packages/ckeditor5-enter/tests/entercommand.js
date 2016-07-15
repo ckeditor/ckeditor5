@@ -32,9 +32,9 @@ beforeEach( () => {
 
 describe( 'EnterCommand', () => {
 	it( 'enters a block using enqueueChanges', () => {
-		const spy = sinon.spy( doc, 'enqueueChanges' );
-
 		setData( doc, '<p>foo<selection /></p>' );
+
+		const spy = sinon.spy( doc, 'enqueueChanges' );
 
 		editor.execute( 'enter' );
 
