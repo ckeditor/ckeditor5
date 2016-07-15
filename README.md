@@ -6,7 +6,7 @@ CKEditor 5 – Development Repository
 
 ## Project Status (July 2016)
 
-Version 0.1.0 was released on July 8, 2016. This is the first developer preview of the new CKEditor 5, and the first demo-able version.
+Version 0.1.0 was released on July 14, 2016. This is the first developer preview of the new CKEditor 5, and the first demo-able version.
 
 **It is not production ready** and will be followed by several releases before it reaches its first stable 1.0.0 version.
 
