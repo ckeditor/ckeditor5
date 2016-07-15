@@ -127,26 +127,26 @@ function renderButton( ui ) {
 		ui.add( 'button-icon', button( {
 			label: i,
 			icon: i,
-			iconAlign: 'LEFT'
+			iconAlign: 'left'
 		} ) );
 	} );
 
 	ui.add( 'button-icon-custom', button( {
 		label: 'Icon to the left',
 		icon: 'bold',
-		iconAlign: 'LEFT'
+		iconAlign: 'left'
 	} ) );
 
 	ui.add( 'button-icon-custom', button( {
 		label: 'Icon to the right (RTL)',
 		icon: 'bold',
-		iconAlign: 'RIGHT'
+		iconAlign: 'right'
 	} ) );
 
 	const styledButton = button( {
 		label: 'Button with icon and custom styles',
 		icon: 'italic',
-		iconAlign: 'LEFT'
+		iconAlign: 'left'
 	} );
 
 	// TODO: It probably requires model interface.
@@ -157,7 +157,7 @@ function renderButton( ui ) {
 	ui.add( 'button-icon-states', button( {
 		label: 'Disabled',
 		icon: 'bold',
-		iconAlign: 'LEFT',
+		iconAlign: 'left',
 		isEnabled: false
 	} ) );
 
@@ -165,7 +165,7 @@ function renderButton( ui ) {
 		label: 'Bold',
 		noText: true,
 		icon: 'bold',
-		iconAlign: 'LEFT'
+		iconAlign: 'left'
 	} );
 
 	ui.add( 'button-icon-states', notextButton );
@@ -173,7 +173,7 @@ function renderButton( ui ) {
 	const colChangeButton = button( {
 		label: 'Icon follows text color',
 		icon: 'bold',
-		iconAlign: 'LEFT'
+		iconAlign: 'left'
 	} );
 
 	// TODO: It requires model interface.
@@ -192,7 +192,7 @@ function renderButton( ui ) {
 		ui.add( `button-responsive-${ i }`, button( {
 			label: 'Bold',
 			icon: 'bold',
-			iconAlign: 'LEFT',
+			iconAlign: 'left',
 			isEnabled: true
 		} ) );
 
@@ -200,7 +200,7 @@ function renderButton( ui ) {
 			label: 'Link',
 			noText: true,
 			icon: 'link',
-			iconAlign: 'LEFT'
+			iconAlign: 'left'
 		} );
 
 		// TODO: It requires model interface.
@@ -255,7 +255,7 @@ function renderToolbar( ui ) {
 		button( {
 			label: 'Button with icon',
 			icon: 'bold',
-			iconAlign: 'LEFT'
+			iconAlign: 'left'
 		} ),
 		dropdown(),
 		button()
@@ -270,7 +270,7 @@ function renderToolbar( ui ) {
 		button( {
 			label: 'Button with icon',
 			icon: 'bold',
-			iconAlign: 'LEFT'
+			iconAlign: 'left'
 		} )
 	] ) );
 
@@ -295,13 +295,13 @@ function renderToolbar( ui ) {
 		button( {
 			label: 'Link',
 			icon: 'link',
-			iconAlign: 'LEFT'
+			iconAlign: 'left'
 		} ),
 		toolbarSeparator(),
 		button( {
 			label: 'Unlink RTL',
 			icon: 'unlink',
-			iconAlign: 'RIGHT'
+			iconAlign: 'right'
 		} )
 	] ) );
 
@@ -314,17 +314,17 @@ function renderToolbar( ui ) {
 		button( {
 			label: 'Link',
 			icon: 'link',
-			iconAlign: 'LEFT'
+			iconAlign: 'left'
 		} ),
 		button( {
 			label: 'Unlink RTL',
 			icon: 'unlink',
-			iconAlign: 'RIGHT'
+			iconAlign: 'right'
 		} ),
 		button( {
 			label: 'Link',
 			icon: 'link',
-			iconAlign: 'LEFT'
+			iconAlign: 'left'
 		} )
 	] ) );
 }
