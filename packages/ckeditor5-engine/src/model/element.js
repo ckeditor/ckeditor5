@@ -190,7 +190,7 @@ export default class Element extends Node {
 		let text = '';
 
 		for ( let value of Range.createFromElement( this ) ) {
-			if ( value.type == 'TEXT' ) {
+			if ( value.type == 'text' ) {
 				text += value.item.text;
 			}
 		}

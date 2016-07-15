@@ -322,7 +322,7 @@ const ot = {
 			let aIsInside = rangeB.containsRange( rangeA ) &&
 				( rangeB.containsPosition( a.targetPosition ) || rangeB.start.isEqual( a.targetPosition ) || rangeB.end.isEqual( a.targetPosition ) );
 
-			if ( common !== null && ( aCompB === 'EXTENSION' || ( aCompB === 'SAME' && isStrong ) || aIsInside ) && !bTargetsToA ) {
+			if ( common !== null && ( aCompB === 'extension' || ( aCompB === 'same' && isStrong ) || aIsInside ) && !bTargetsToA ) {
 				// Here we do not need to worry that newTargetPosition is inside moved range, because that
 				// would mean that the MoveOperation targets into itself, and that is incorrect operation.
 				// Instead, we calculate the new position of that part of original range.

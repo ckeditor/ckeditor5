@@ -106,7 +106,7 @@ export default class Position {
 	 * @returns {Boolean} Returns `true` if this position is before given position.
 	 */
 	isBefore( otherPosition ) {
-		return this.compareWith( otherPosition ) == 'BEFORE';
+		return this.compareWith( otherPosition ) == 'before';
 	}
 
 	/**
@@ -120,7 +120,7 @@ export default class Position {
 	 * @returns {Boolean} Returns `true` if this position is after given position.
 	 */
 	isAfter( otherPosition ) {
-		return this.compareWith( otherPosition ) == 'AFTER';
+		return this.compareWith( otherPosition ) == 'after';
 	}
 
 	/**
@@ -132,12 +132,12 @@ export default class Position {
 	 */
 	compareWith( otherPosition ) {
 		if ( this.isEqual( otherPosition ) ) {
-			return 'SAME';
+			return 'same';
 		}
 
 		// If positions have same parent.
 		if ( this.parent === otherPosition.parent ) {
-			return this.offset - otherPosition.offset < 0 ? 'BEFORE' : 'AFTER';
+			return this.offset - otherPosition.offset < 0 ? 'before' : 'after';
 		}
 
 		// Get path from root to position's parent element.
@@ -152,13 +152,13 @@ export default class Position {
 		switch ( result ) {
 			case 0:
 				// No common ancestors found.
-				return 'DIFFERENT';
+				return 'different';
 
-			case 'PREFIX':
+			case 'prefix':
 				commonAncestorIndex = path.length - 1;
 				break;
 
-			case 'EXTENSION':
+			case 'extension':
 				commonAncestorIndex = otherPath.length - 1;
 				break;
 
@@ -175,17 +175,17 @@ export default class Position {
 		if ( commonAncestor === this.parent ) {
 			const index = this.offset - nextAncestor2.getIndex();
 
-			return index <= 0 ? 'BEFORE' : 'AFTER';
+			return index <= 0 ? 'before' : 'after';
 		} else if ( commonAncestor === otherPosition.parent ) {
 			const index = nextAncestor1.getIndex() - otherPosition.offset;
 
-			return index < 0 ? 'BEFORE' : 'AFTER';
+			return index < 0 ? 'before' : 'after';
 		}
 
 		const index = nextAncestor1.getIndex() - nextAncestor2.getIndex();
 
 		// Compare indexes of next ancestors inside common one.
-		return index < 0 ? 'BEFORE' : 'AFTER';
+		return index < 0 ? 'before' : 'after';
 	}
 
 	/**
@@ -269,8 +269,8 @@ export default class Position {
 }
 
 /**
- * A flag indicating whether this position is `'BEFORE'` or `'AFTER'` or `'SAME'` as given position.
- * If positions are in different roots `'DIFFERENT'` flag is returned.
+ * A flag indicating whether this position is `'before'` or `'after'` or `'same'` as given position.
+ * If positions are in different roots `'different'` flag is returned.
  *
  * @typedef {String} engine.view.PositionRelation
  */

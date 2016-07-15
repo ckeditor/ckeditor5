@@ -13,22 +13,22 @@ import Range from '../range.js';
  * Modifies the selection. Currently the supported modifications are:
  *
  * * Extending. The selection focus is moved in the specified `options.direction` with a step specified in `options.unit`
- * (defaults to `'CHARACTER'`, other values are not not yet supported).
+ * (defaults to `'character'`, other values are not not yet supported).
  * Note: if you extend a forward selection in a backward direction you will in fact shrink it.
  *
  * @method engine.model.composer.modifySelection
  * @param {engine.model.Selection} The selection to modify.
  * @param {Object} [options]
- * @param {'FORWARD'|'BACKWARD'} [options.direction='FORWARD'] The direction in which the selection should be modified.
+ * @param {'forward'|'backward'} [options.direction='forward'] The direction in which the selection should be modified.
  */
 export default function modifySelection( selection, options = {} ) {
-	const isForward = options.direction != 'BACKWARD';
+	const isForward = options.direction != 'backward';
 
 	const focus = selection.focus;
 	const walker = new TreeWalker( {
 		boundaries: getSearchRange( focus, isForward ),
 		singleCharacters: true,
-		direction: isForward ? 'FORWARD' : 'BACKWARD'
+		direction: isForward ? 'forward' : 'backward'
 	} );
 
 	let next = walker.next();
@@ -41,15 +41,15 @@ export default function modifySelection( selection, options = {} ) {
 	let value = next.value;
 
 	// 2. Consume next character.
-	if ( value.type == 'CHARACTER' ) {
+	if ( value.type == 'character' ) {
 		selection.setFocus( value.nextPosition );
 
 		return;
 	}
 
 	// 3. We're entering an element, so let's consume it fully.
-	if ( value.type == ( isForward ? 'ELEMENT_START' : 'ELEMENT_END' ) ) {
-		selection.setFocus( value.item, isForward ? 'AFTER' : 'BEFORE' );
+	if ( value.type == ( isForward ? 'elementStart' : 'elementEnd' ) ) {
+		selection.setFocus( value.item, isForward ? 'after' : 'before' );
 
 		return;
 	}
@@ -67,18 +67,18 @@ export default function modifySelection( selection, options = {} ) {
 
 	// 4.2. Character found after element end. Not really a valid case in our data model, but let's
 	// do something sensible and put the selection focus before that character.
-	if ( value.type == 'CHARACTER' ) {
+	if ( value.type == 'character' ) {
 		selection.setFocus( value.previousPosition );
 	}
 	// 4.3. OK, we're entering a new element. So let's place there the focus.
 	else {
-		selection.setFocus( value.item, isForward ? 0 : 'END' );
+		selection.setFocus( value.item, isForward ? 0 : 'end' );
 	}
 }
 
 function getSearchRange( start, isForward ) {
 	const root = start.root;
-	const searchEnd = Position.createAt( root, isForward ? 'END' : 0 );
+	const searchEnd = Position.createAt( root, isForward ? 'end' : 0 );
 
 	if ( isForward ) {
 		return new Range( start, searchEnd );

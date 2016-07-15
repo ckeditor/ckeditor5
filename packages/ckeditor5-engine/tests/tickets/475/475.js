@@ -51,7 +51,7 @@ export default class AutoLinker extends Feature {
 
 			for ( let value of changes.range.getItems( { singleCharacters: true } ) ) {
 				const walker = new TreeWalker( {
-					direction: 'BACKWARD',
+					direction: 'backward',
 					startPosition: Position.createAfter( value )
 				} );
 

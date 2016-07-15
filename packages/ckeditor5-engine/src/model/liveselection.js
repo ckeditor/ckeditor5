@@ -295,7 +295,7 @@ export default class LiveSelection extends Selection {
 			for ( let item of range ) {
 				// This is not an optimal solution because of https://github.com/ckeditor/ckeditor5-engine/issues/454.
 				// It can be done better by using `break;` instead of checking `attrs === null`.
-				if ( item.type == 'TEXT' && attrs === null ) {
+				if ( item.type == 'text' && attrs === null ) {
 					attrs = item.item.getAttributes();
 				}
 			}

@@ -142,26 +142,26 @@ export default class Position {
 	 */
 	compareWith( otherPosition ) {
 		if ( this.root != otherPosition.root ) {
-			return 'DIFFERENT';
+			return 'different';
 		}
 
 		const result = compareArrays( this.path, otherPosition.path );
 
 		switch ( result ) {
-			case 'SAME':
-				return 'SAME';
+			case 'same':
+				return 'same';
 
-			case 'PREFIX':
-				return 'BEFORE';
+			case 'prefix':
+				return 'before';
 
-			case 'EXTENSION':
-				return 'AFTER';
+			case 'extension':
+				return 'after';
 
 			default:
 				if ( this.path[ result ] < otherPosition.path[ result ] ) {
-					return 'BEFORE';
+					return 'before';
 				} else {
-					return 'AFTER';
+					return 'after';
 				}
 		}
 	}
@@ -209,7 +209,7 @@ export default class Position {
 			return transformed;
 		}
 
-		if ( compareArrays( deletePosition.getParentPath(), this.getParentPath() ) == 'SAME' ) {
+		if ( compareArrays( deletePosition.getParentPath(), this.getParentPath() ) == 'same' ) {
 			// If nodes are removed from the node that is pointed by this position...
 			if ( deletePosition.offset < this.offset ) {
 				// And are removed from before an offset of that position...
@@ -221,7 +221,7 @@ export default class Position {
 					transformed.offset -= howMany;
 				}
 			}
-		} else if ( compareArrays( deletePosition.getParentPath(), this.getParentPath() ) == 'PREFIX' ) {
+		} else if ( compareArrays( deletePosition.getParentPath(), this.getParentPath() ) == 'prefix' ) {
 			// If nodes are removed from a node that is on a path to this position...
 			const i = deletePosition.path.length - 1;
 
@@ -260,14 +260,14 @@ export default class Position {
 			return transformed;
 		}
 
-		if ( compareArrays( insertPosition.getParentPath(), this.getParentPath() ) == 'SAME' ) {
+		if ( compareArrays( insertPosition.getParentPath(), this.getParentPath() ) == 'same' ) {
 			// If nodes are inserted in the node that is pointed by this position...
 			if ( insertPosition.offset < this.offset || ( insertPosition.offset == this.offset && insertBefore ) ) {
 				// And are inserted before an offset of that position...
 				// "Push" this positions offset.
 				transformed.offset += howMany;
 			}
-		} else if ( compareArrays( insertPosition.getParentPath(), this.getParentPath() ) == 'PREFIX' ) {
+		} else if ( compareArrays( insertPosition.getParentPath(), this.getParentPath() ) == 'prefix' ) {
 			// If nodes are inserted in a node that is on a path to this position...
 			const i = insertPosition.path.length - 1;
 
@@ -324,7 +324,7 @@ export default class Position {
 	 * @returns {Boolean} True if this position is after given position.
 	 */
 	isAfter( otherPosition ) {
-		return this.compareWith( otherPosition ) == 'AFTER';
+		return this.compareWith( otherPosition ) == 'after';
 	}
 
 	/**
@@ -359,7 +359,7 @@ export default class Position {
 	 * @returns {Boolean} True if this position is before given position.
 	 */
 	isBefore( otherPosition ) {
-		return this.compareWith( otherPosition ) == 'BEFORE';
+		return this.compareWith( otherPosition ) == 'before';
 	}
 
 	/**
@@ -369,7 +369,7 @@ export default class Position {
 	 * @returns {Boolean} True if positions are same.
 	 */
 	isEqual( otherPosition ) {
-		return this.compareWith( otherPosition ) == 'SAME';
+		return this.compareWith( otherPosition ) == 'same';
 	}
 
 	/**
@@ -386,15 +386,15 @@ export default class Position {
 		let compare = this.compareWith( otherPosition );
 
 		switch ( compare ) {
-			case 'SAME':
+			case 'same':
 				return true;
 
-			case 'BEFORE':
+			case 'before':
 				left = Position.createFromPosition( this );
 				right = Position.createFromPosition( otherPosition );
 				break;
 
-			case 'AFTER':
+			case 'after':
 				left = Position.createFromPosition( otherPosition );
 				right = Position.createFromPosition( this );
 				break;
@@ -448,8 +448,8 @@ export default class Position {
 	 *
 	 * * a {@link engine.model.Position position},
 	 * * parent element and offset (offset defaults to `0`),
-	 * * parent element and `'END'` (sets selection at the end of that element),
-	 * * node and `'BEFORE'` or `'AFTER'` (sets selection before or after the given node).
+	 * * parent element and `'end'` (sets selection at the end of that element),
+	 * * node and `'before'` or `'after'` (sets selection before or after the given node).
 	 *
 	 * This method is a shortcut to other constructors such as:
 	 *
@@ -459,7 +459,7 @@ export default class Position {
 	 * * {@link engine.model.Position.createFromPosition}.
 	 *
 	 * @param {engine.model.Node|engine.model.Position} nodeOrPosition
-	 * @param {Number|'END'|'BEFORE'|'AFTER'} [offset=0] Offset or one of the flags. Used only when
+	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
 	 * first parameter is a node.
 	 */
 	static createAt( nodeOrPosition, offset ) {
@@ -470,11 +470,11 @@ export default class Position {
 		} else {
 			node = nodeOrPosition;
 
-			if ( offset == 'END' ) {
+			if ( offset == 'end' ) {
 				offset = node.getChildCount();
-			} else if ( offset == 'BEFORE' ) {
+			} else if ( offset == 'before' ) {
 				return this.createBefore( node );
-			} else if ( offset == 'AFTER' ) {
+			} else if ( offset == 'after' ) {
 				return this.createAfter( node );
 			} else if ( !offset ) {
 				offset = 0;
@@ -641,8 +641,8 @@ export default class Position {
 }
 
 /**
- * A flag indicating whether this position is `'BEFORE'` or `'AFTER'` or `'SAME'` as given position.
- * If positions are in different roots `'DIFFERENT'` flag is returned.
+ * A flag indicating whether this position is `'before'` or `'after'` or `'same'` as given position.
+ * If positions are in different roots `'different'` flag is returned.
  *
  * @typedef {String} engine.model.PositionRelation
  */

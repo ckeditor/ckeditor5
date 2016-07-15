@@ -195,7 +195,7 @@ export function parse( data, options = {} ) {
 
 		collapsedSelection( token ) {
 			withSelection = true;
-			selection.collapse( root, 'END' );
+			selection.collapse( root, 'end' );
 			selection.setAttributesTo( token.attributes );
 		},
 
@@ -256,7 +256,7 @@ function writeItem( walkerValue, selection, options ) {
 	const type = walkerValue.type;
 	const item = walkerValue.item;
 
-	if ( type == 'ELEMENT_START' ) {
+	if ( type == 'elementStart' ) {
 		let attrs = writeAttributes( item.getAttributes() );
 
 		if ( attrs ) {
@@ -266,7 +266,7 @@ function writeItem( walkerValue, selection, options ) {
 		return `<${ item.name }>`;
 	}
 
-	if ( type == 'ELEMENT_END' ) {
+	if ( type == 'elementEnd' ) {
 		return `</${ item.name }>`;
 	}
 
@@ -313,12 +313,12 @@ function writeSelection( currentPosition, selection ) {
 	const range = selection.getFirstRange();
 
 	// Handle end of the selection.
-	if ( !selection.isCollapsed && range.end.compareWith( currentPosition ) == 'SAME' ) {
+	if ( !selection.isCollapsed && range.end.compareWith( currentPosition ) == 'same' ) {
 		return '</selection>';
 	}
 
 	// Handle no match.
-	if ( range.start.compareWith( currentPosition ) != 'SAME' ) {
+	if ( range.start.compareWith( currentPosition ) != 'same' ) {
 		return '';
 	}
 
