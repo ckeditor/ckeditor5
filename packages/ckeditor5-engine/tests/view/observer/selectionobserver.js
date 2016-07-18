@@ -29,8 +29,8 @@ describe( 'SelectionObserver', () => {
 
 		viewDocument.createRoot( document.getElementById( 'main' ) );
 
-		mutationObserver = viewDocument.addObserver( MutationObserver );
-		selectionObserver = viewDocument.addObserver( SelectionObserver );
+		mutationObserver = viewDocument.getObserver( MutationObserver );
+		selectionObserver = viewDocument.getObserver( SelectionObserver );
 
 		viewRoot = viewDocument.getRoot();
 
