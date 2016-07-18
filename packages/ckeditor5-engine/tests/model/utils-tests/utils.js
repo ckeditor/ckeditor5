@@ -9,6 +9,7 @@ import { getNodesAndText, jsonParseStringify, wrapInDelta } from '/tests/engine/
 import Document from '/ckeditor5/engine/model/document.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import Element from '/ckeditor5/engine/model/element.js';
+import Text from '/ckeditor5/engine/model/text.js';
 import Operation from '/ckeditor5/engine/model/operation/operation.js';
 import Delta from '/ckeditor5/engine/model/delta/delta.js';
 
@@ -19,8 +20,8 @@ describe( 'getNodesAndText', () => {
 		doc = new Document();
 		root = doc.createRoot();
 
-		div = new Element( 'div', [], 'foobar' );
-		p = new Element( 'p', [], 'abcxyz' );
+		div = new Element( 'div', [], new Text( 'foobar' ) );
+		p = new Element( 'p', [], new Text( 'abcxyz' ) );
 
 		root.insertChildren( 0, [ div, p ] );
 	} );

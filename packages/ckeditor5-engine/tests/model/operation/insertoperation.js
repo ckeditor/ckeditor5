@@ -8,8 +8,8 @@
 'use strict';
 
 import Document from '/ckeditor5/engine/model/document.js';
-import Node from '/ckeditor5/engine/model/node.js';
 import NodeList from '/ckeditor5/engine/model/nodelist.js';
+import Element from '/ckeditor5/engine/model/element.js';
 import InsertOperation from '/ckeditor5/engine/model/operation/insertoperation.js';
 import RemoveOperation from '/ckeditor5/engine/model/operation/removeoperation.js';
 import Position from '/ckeditor5/engine/model/position.js';
@@ -34,7 +34,7 @@ describe( 'InsertOperation', () => {
 		expect( op.type ).to.equal( 'insert' );
 	} );
 
-	it( 'should insert node', () => {
+	it( 'should insert text node', () => {
 		doc.applyOperation( wrapInDelta(
 			new InsertOperation(
 				new Position( root, [ 0 ] ),
@@ -44,28 +44,43 @@ describe( 'InsertOperation', () => {
 		) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getChildCount() ).to.equal( 1 );
-		expect( root.getChild( 0 ).character ).to.equal( 'x' );
+		expect( root.getMaxOffset() ).to.equal( 1 );
+		expect( root.getChild( 0 ).data ).to.equal( 'x' );
+	} );
+
+	it( 'should insert element', () => {
+		doc.applyOperation( wrapInDelta(
+			new InsertOperation(
+				new Position( root, [ 0 ] ),
+				new Element( 'p' ),
+				doc.version
+			)
+		) );
+
+		expect( doc.version ).to.equal( 1 );
+		expect( root.getMaxOffset() ).to.equal( 1 );
+		expect( root.getChild( 0 ).name ).to.equal( 'p' );
 	} );
 
 	it( 'should insert set of nodes', () => {
 		doc.applyOperation( wrapInDelta(
 			new InsertOperation(
 				new Position( root, [ 0 ] ),
-				'bar',
+				[ 'bar', new Element( 'p' ), 'foo' ],
 				doc.version
 			)
 		) );
 
 		expect( doc.version ).to.equal( 1 );
+		expect( root.getMaxOffset() ).to.equal( 7 );
 		expect( root.getChildCount() ).to.equal( 3 );
-		expect( root.getChild( 0 ).character ).to.equal( 'b' );
-		expect( root.getChild( 1 ).character ).to.equal( 'a' );
-		expect( root.getChild( 2 ).character ).to.equal( 'r' );
+		expect( root.getChild( 0 ).data ).to.equal( 'bar' );
+		expect( root.getChild( 1 ).name ).to.equal( 'p' );
+		expect( root.getChild( 2 ).data ).to.equal( 'foo' );
 	} );
 
 	it( 'should insert between existing nodes', () => {
-		root.insertChildren( 0, 'xy' );
+		root.insertChildren( 0, new Text( 'xy' ) );
 
 		doc.applyOperation( wrapInDelta(
 			new InsertOperation(
@@ -76,12 +91,8 @@ describe( 'InsertOperation', () => {
 		) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getChildCount() ).to.equal( 5 );
-		expect( root.getChild( 0 ).character ).to.equal( 'x' );
-		expect( root.getChild( 1 ).character ).to.equal( 'b' );
-		expect( root.getChild( 2 ).character ).to.equal( 'a' );
-		expect( root.getChild( 3 ).character ).to.equal( 'r' );
-		expect( root.getChild( 4 ).character ).to.equal( 'y' );
+		expect( root.getMaxOffset() ).to.equal( 5 );
+		expect( root.getChild( 0 ).data ).to.equal( 'xbary' );
 	} );
 
 	it( 'should insert text', () => {
@@ -94,14 +105,8 @@ describe( 'InsertOperation', () => {
 		) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getChildCount() ).to.equal( 7 );
-		expect( root.getChild( 0 ).character ).to.equal( 'f' );
-		expect( root.getChild( 1 ).character ).to.equal( 'o' );
-		expect( root.getChild( 2 ).character ).to.equal( 'o' );
-		expect( root.getChild( 3 ).character ).to.equal( 'x' );
-		expect( root.getChild( 4 ).character ).to.equal( 'b' );
-		expect( root.getChild( 5 ).character ).to.equal( 'a' );
-		expect( root.getChild( 6 ).character ).to.equal( 'r' );
+		expect( root.getMaxOffset() ).to.equal( 7 );
+		expect( root.getChild( 0 ).data ).to.equal( 'fooxbar' );
 	} );
 
 	it( 'should create a RemoveOperation as a reverse', () => {
@@ -136,7 +141,7 @@ describe( 'InsertOperation', () => {
 		doc.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
-		expect( root.getChildCount() ).to.equal( 0 );
+		expect( root.getMaxOffset() ).to.equal( 0 );
 	} );
 
 	it( 'should undo insert set of nodes by applying reverse operation', () => {
@@ -155,14 +160,14 @@ describe( 'InsertOperation', () => {
 		doc.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
-		expect( root.getChildCount() ).to.equal( 0 );
+		expect( root.getMaxOffset() ).to.equal( 0 );
 	} );
 
 	it( 'should create operation with the same parameters when cloned', () => {
 		let position = new Position( root, [ 0 ] );
-		let nodeA = new Node();
-		let nodeB = new Node();
-		let nodes = new NodeList( [ nodeA, nodeB ] );
+		let nodeA = new Element( 'a' );
+		let nodeB = new Element( 'b' );
+		let nodes = [ nodeA, nodeB ];
 		let baseVersion = doc.version;
 
 		let op = new InsertOperation( position, nodes, baseVersion );
@@ -174,9 +179,9 @@ describe( 'InsertOperation', () => {
 
 		expect( clone ).to.be.instanceof( InsertOperation );
 		expect( clone.position.isEqual( position ) ).to.be.true;
-		expect( clone.nodeList.get( 0 ) ).to.equal( nodeA );
-		expect( clone.nodeList.get( 1 ) ).to.equal( nodeB );
-		expect( clone.nodeList.length ).to.equal( 2 );
+		expect( clone.nodes.getNode( 0 ) ).to.equal( nodeA );
+		expect( clone.nodes.getNode( 1 ) ).to.equal( nodeB );
+		expect( clone.nodes.length ).to.equal( 2 );
 		expect( clone.baseVersion ).to.equal( baseVersion );
 	} );
 
@@ -190,7 +195,7 @@ describe( 'InsertOperation', () => {
 			expect( serialized ).to.deep.equal( {
 				__className: 'engine.model.operation.InsertOperation',
 				baseVersion: 0,
-				nodeList: jsonParseStringify( new NodeList( 'x' ) ),
+				nodes: jsonParseStringify( new NodeList( [ new Text( 'x' ) ] ) ),
 				position: jsonParseStringify( position )
 			} );
 		} );
@@ -199,7 +204,11 @@ describe( 'InsertOperation', () => {
 	describe( 'fromJSON', () => {
 		it( 'should create proper InsertOperation from json object', () => {
 			const position = new Position( root, [ 0 ] );
-			const op = new InsertOperation( position, new Text( 'x' ), doc.version );
+			const op = new InsertOperation(
+				position,
+				[ new Text( 'x' ), new Element( 'p', [], new Text( 'foo' ) ), 'y' ],
+				doc.version
+			);
 
 			const serialized = jsonParseStringify( op );
 			const deserialized = InsertOperation.fromJSON( serialized, doc );

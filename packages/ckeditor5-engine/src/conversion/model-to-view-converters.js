@@ -81,7 +81,7 @@ export function insertText() {
 		consumable.consume( data.item, 'insert' );
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
-		const viewText = new ViewText( data.item.text );
+		const viewText = new ViewText( data.item.data );
 
 		viewWriter.insert( viewPosition, viewText );
 

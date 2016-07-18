@@ -8,7 +8,8 @@
 import LiveRange from './liverange.js';
 import Range from './range.js';
 import Position from './position.js';
-import CharacterProxy from './characterproxy.js';
+import Text from './text.js';
+import TextProxy from './textproxy.js';
 import toMap from '../../utils/tomap.js';
 
 import Selection from './selection.js';
@@ -199,11 +200,11 @@ export default class LiveSelection extends Selection {
 		const selectionParent = this.getFirstPosition().parent;
 
 		if ( this.isCollapsed && selectionParent.getChildCount() === 0 ) {
-			for ( let attr of selectionParent.getAttributes() ) {
-				if ( attr[ 0 ].indexOf( storePrefix ) === 0 ) {
-					const realKey = attr[ 0 ].substr( storePrefix.length );
+			for ( let key of selectionParent.getAttributeKeys() ) {
+				if ( key.indexOf( storePrefix ) === 0 ) {
+					const realKey = key.substr( storePrefix.length );
 
-					yield [ realKey, attr[ 1 ] ];
+					yield [ realKey, selectionParent.getAttribute( key ) ];
 				}
 			}
 		}
@@ -283,7 +284,6 @@ export default class LiveSelection extends Selection {
 	 */
 	_updateAttributes() {
 		const position = this.getFirstPosition();
-		const positionParent = position.parent;
 
 		let attrs = null;
 
@@ -302,8 +302,8 @@ export default class LiveSelection extends Selection {
 		} else {
 			// 2. If the selection is a caret or the range does not contain a character node...
 
-			const nodeBefore = positionParent.getChild( position.offset - 1 );
-			const nodeAfter = positionParent.getChild( position.offset );
+			const nodeBefore = position.textNode ? position.textNode : position.nodeBefore;
+			const nodeAfter = position.textNode ? position.textNode : position.nodeAfter;
 
 			// ...look at the node before caret and take attributes from it if it is a character node.
 			attrs = getAttrsIfCharacter( nodeBefore );
@@ -346,7 +346,7 @@ export default class LiveSelection extends Selection {
 		}
 
 		function getAttrsIfCharacter( node ) {
-			if ( node instanceof CharacterProxy ) {
+			if ( node instanceof TextProxy || node instanceof Text ) {
 				return node.getAttributes();
 			}
 

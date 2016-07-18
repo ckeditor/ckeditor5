@@ -109,7 +109,7 @@ register( 'split', function( position ) {
 		throw new CKEditorError( 'batch-split-root: Root element can not be split.' );
 	}
 
-	const copy = new Element( splitElement.name, splitElement._attrs );
+	const copy = new Element( splitElement.name, splitElement.getAttributes() );
 
 	const insert = new InsertOperation( Position.createAfter( splitElement ), copy, this.document.version );
 
@@ -118,7 +118,7 @@ register( 'split', function( position ) {
 
 	const move = new MoveOperation(
 		position,
-		splitElement.getChildCount() - position.offset,
+		splitElement.getMaxOffset() - position.offset,
 		Position.createFromParentAndOffset( copy, 0 ),
 		this.document.version
 	);

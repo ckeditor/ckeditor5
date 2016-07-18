@@ -9,6 +9,7 @@
 
 import Document from '/ckeditor5/engine/model/document.js';
 import Element from '/ckeditor5/engine/model/element.js';
+import Text from '/ckeditor5/engine/model/text.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import AttributeOperation from '/ckeditor5/engine/model/operation/attributeoperation.js';
@@ -62,7 +63,7 @@ describe( 'Document change event', () => {
 
 	it( 'should be fired when nodes are moved', () => {
 		const p1 = new Element( 'p' );
-		p1.insertChildren( 0, [ new Element( 'p' ), 'foo' ] );
+		p1.insertChildren( 0, [ new Element( 'p' ), new Text( 'foo' ) ] );
 
 		const p2 = new Element( 'p' );
 
@@ -84,7 +85,7 @@ describe( 'Document change event', () => {
 	} );
 
 	it( 'should be fired when multiple nodes are removed and reinserted', () => {
-		root.insertChildren( 0, 'foo' );
+		root.insertChildren( 0, new Text( 'foo' ) );
 
 		const removeOperation = new RemoveOperation( new Position( root, [ 0 ] ), 3, doc.version );
 		doc.applyOperation( wrapInDelta( removeOperation ) );
@@ -106,7 +107,7 @@ describe( 'Document change event', () => {
 	} );
 
 	it( 'should be fired when attribute is inserted', () => {
-		root.insertChildren( 0, 'foo' );
+		root.insertChildren( 0, new Text( 'foo' ) );
 
 		doc.applyOperation( wrapInDelta(
 			new AttributeOperation(

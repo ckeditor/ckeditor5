@@ -10,6 +10,7 @@
 import Document from '/ckeditor5/engine/model/document.js';
 import Element from '/ckeditor5/engine/model/element.js';
 import Position from '/ckeditor5/engine/model/position.js';
+import Text from '/ckeditor5/engine/model/text.js';
 
 import InsertOperation from '/ckeditor5/engine/model/operation/insertoperation.js';
 import InsertDelta from '/ckeditor5/engine/model/delta/insertdelta.js';
@@ -23,7 +24,7 @@ describe( 'Batch', () => {
 	beforeEach( () => {
 		doc = new Document();
 		root = doc.createRoot();
-		root.insertChildren( 0, 'abc' );
+		root.insertChildren( 0, new Text( 'abc' ) );
 
 		batch = doc.batch();
 
@@ -35,9 +36,10 @@ describe( 'Batch', () => {
 
 	describe( 'insert', () => {
 		it( 'should insert given nodes at given position', () => {
-			expect( root.getChildCount() ).to.equal( 5 );
-			expect( root.getChild( 2 ) ).to.equal( p );
-			expect( root.getChild( 3 ) ).to.equal( ul );
+			expect( root.getChildCount() ).to.equal( 4 );
+			expect( root.getMaxOffset() ).to.equal( 5 );
+			expect( root.getChild( 1 ) ).to.equal( p );
+			expect( root.getChild( 2 ) ).to.equal( ul );
 		} );
 
 		it( 'should be chainable', () => {
@@ -85,17 +87,17 @@ describe( 'InsertDelta', () => {
 		} );
 	} );
 
-	describe( 'nodeList', () => {
+	describe( 'nodes', () => {
 		it( 'should be null if there are no operations in delta', () => {
-			expect( insertDelta.nodeList ).to.be.null;
+			expect( insertDelta.nodes ).to.be.null;
 		} );
 
-		it( 'should be equal to the node list inserted by the delta', () => {
+		it( 'should be equal to the nodes inserted by the delta', () => {
 			let elementX = new Element( 'x' );
 			insertDelta.operations.push( new InsertOperation( new Position( root, [ 1, 2, 3 ] ), elementX, 0 ) );
 
-			expect( insertDelta.nodeList.length ).to.equal( 1 );
-			expect( insertDelta.nodeList.get( 0 ) ).to.equal( elementX );
+			expect( insertDelta.nodes.length ).to.equal( 1 );
+			expect( insertDelta.nodes.getNode( 0 ) ).to.equal( elementX );
 		} );
 	} );
 

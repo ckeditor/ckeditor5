@@ -56,7 +56,7 @@ export default class AutoLinker extends Feature {
 				} );
 
 				const currentValue = walker.next().value;
-				const text = currentValue.item.text;
+				const text = currentValue.item.data;
 
 				if ( !text ) {
 					return;
@@ -71,7 +71,7 @@ export default class AutoLinker extends Feature {
 				const doc = this.editor.document;
 				const url = matchedUrl[ 0 ];
 				const offset = _getLastPathPart( currentValue.nextPosition.path ) + matchedUrl.index;
-				const livePos = LivePosition.createFromParentAndOffset( currentValue.item.commonParent, offset );
+				const livePos = LivePosition.createFromParentAndOffset( currentValue.item.parent, offset );
 
 				doc.enqueueChanges( () => {
 					const urlRange = Range.createFromPositionAndShift( livePos, url.length );

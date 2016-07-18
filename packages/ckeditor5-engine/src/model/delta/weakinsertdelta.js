@@ -9,7 +9,7 @@ import InsertDelta from './insertdelta.js';
 import { register } from '../batch.js';
 import DeltaFactory from './deltafactory.js';
 import InsertOperation from '../operation/insertoperation.js';
-import NodeList from '../nodelist.js';
+import { normalizeNodes } from './../writer.js';
 
 /**
  * @classdesc
@@ -50,10 +50,10 @@ register( 'weakInsert', function( position, nodes ) {
 	const delta = new WeakInsertDelta();
 	this.addDelta( delta );
 
-	nodes = new NodeList( nodes );
+	nodes = normalizeNodes( nodes );
 
-	for ( let node of nodes._nodes ) {
-		node._attrs = new Map( this.document.selection.getAttributes() );
+	for ( let node of nodes ) {
+		node.setAttributesTo( this.document.selection.getAttributes() );
 	}
 
 	const operation = new InsertOperation( position, nodes, this.document.version );

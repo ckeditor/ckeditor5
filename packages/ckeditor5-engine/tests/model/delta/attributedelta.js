@@ -47,15 +47,13 @@ describe( 'Batch', () => {
 	}
 
 	describe( 'change attribute on node', () => {
-		let node, text, char;
+		let node, text;
 
 		beforeEach( () => {
 			node = new Element( 'p', { a: 1 } );
 			text = new Text( 'c', { a: 1 } );
 
 			root.insertChildren( 0, [ node, text ] );
-
-			char = root.getChild( 1 );
 		} );
 
 		describe( 'setAttr', () => {
@@ -72,13 +70,13 @@ describe( 'Batch', () => {
 			} );
 
 			it( 'should create the attribute on text node', () => {
-				batch.setAttr( 'b', 2, char );
+				batch.setAttr( 'b', 2, text );
 				expect( getOperationsCount() ).to.equal( 1 );
 				expect( root.getChild( 1 ).getAttribute( 'b' ) ).to.equal( 2 );
 			} );
 
 			it( 'should change the attribute of text node', () => {
-				batch.setAttr( 'a', 2, char );
+				batch.setAttr( 'a', 2, text );
 				expect( getOperationsCount() ).to.equal( 1 );
 				expect( root.getChild( 1 ).getAttribute( 'a' ) ).to.equal( 2 );
 			} );
@@ -110,7 +108,7 @@ describe( 'Batch', () => {
 			} );
 
 			it( 'should remove the attribute from character', () => {
-				batch.removeAttr( 'a', char );
+				batch.removeAttr( 'a', text );
 				expect( getOperationsCount() ).to.equal( 1 );
 				expect( root.getChild( 1 ).getAttribute( 'a' ) ).to.be.undefined;
 			} );
@@ -138,13 +136,13 @@ describe( 'Batch', () => {
 		beforeEach( () => {
 			root.insertChildren( 0, [
 				new Text( 'xxx', { a: 1 } ),
-				'xxx',
+				new Text( 'xxx' ),
 				new Text( 'xxx', { a: 1 } ),
 				new Text( 'xxx', { a: 2 } ),
-				'xxx',
+				new Text( 'xxx' ),
 				new Text( 'xxx', { a: 1 } ),
-				new Element( 'e', { a: 2 }, 'xxx' ),
-				'xxx'
+				new Element( 'e', { a: 2 }, new Text( 'xxx' ) ),
+				new Text( 'xxx' )
 			] );
 		} );
 

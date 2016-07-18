@@ -7,6 +7,7 @@
 
 import ModelDocumentFragment from '../model/documentfragment.js';
 import ModelText from '../model/text.js';
+import { normalizeNodes } from '../model/writer.js';
 
 /**
  * Contains {@link engine.view view} to {@link engine.model model} converters for
@@ -37,7 +38,7 @@ export function convertToModelFragment() {
 		if ( !data.output && consumable.test( data.input, { name: true } ) ) {
 			const convertedChildren = conversionApi.convertChildren( data.input, consumable, data );
 
-			data.output = new ModelDocumentFragment( convertedChildren );
+			data.output = new ModelDocumentFragment( normalizeNodes( convertedChildren ) );
 		}
 	};
 }

@@ -5,171 +5,185 @@
 
 'use strict';
 
-import CharacterProxy from './characterproxy.js';
-import toMap from '../../utils/tomap.js';
-
 /**
- * TextProxy is an aggregator for multiple CharacterProxy instances that are placed next to each other in
- * tree model, in the same parent, and all have same attributes set. Instances of this class are created and returned
- * in various algorithms that "merge characters" (see {@link engine.model.TreeWalker}, {@link engine.model.Range}).
+ * `TextProxy` represents a part of {@link engine.model.Text text node}.
  *
- * **Note:** TextProxy instances are created on the fly basing on the current state of tree model and attributes
- * set on characters. Because of this it is highly unrecommended to store references to TextProxy instances
- * because they might get invalidated due to operations on Document. This is especially true when you change
- * attributes of TextProxy.
+ * Since {@link engine.model.Position positions} can be placed between characters of a text node,
+ * {@link engine.model.Range ranges} may contain only parts of text nodes. When {@link engine.model.Range#getItems getting items}
+ * contained in such range, we need to represent a part of that text node, since returning the whole text node would be incorrect.
+ * `TextProxy` solves this issue.
  *
- * Difference between {@link engine.model.TextProxy} and {@link engine.model.Text} is that the former is a set of
- * nodes taken from tree model, while {@link engine.model.Text} is simply a string with attributes set.
+ * `TextProxy` has an API similar to {@link engine.model.Text Text} and allows to do most of the common tasks performed
+ * on model nodes.
  *
- * You should never create an instance of this class by your own. Instead, use string literals or {@link engine.model.Text}.
+ * **Note:** Some `TextProxy` instances may represent whole text node, not just a part of it.
+ *
+ * **Note:** `TextProxy` is not an instance of {@link engine.model.Node node}. Keep this in mind when using it as a
+ * parameter of methods.
+ *
+ * **Note:** `TextProxy` is readonly interface. If you want to perform changes on model data represented by a `TextProxy`
+ * use {@link engine.model.writer model writer API}.
+ *
+ * **Note:** `TextProxy` instances are created on the fly, basing on the current state of model. Because of this, it is
+ * highly unrecommended to store references to `TextProxy` instances. `TextProxy` instances are not refreshed when
+ * model changes, so they might get invalidated.
+ *
+ * `TextProxy` instances are created by {@link engine.model.TreeWalker model tree walker}. You should not need to create
+ * an instance of this class by your own.
  *
  * @memberOf engine.model
  */
 export default class TextProxy {
 	/**
-	 * Creates a text fragment.
+	 * Creates a text proxy.
 	 *
 	 * @protected
-	 * @param {engine.model.CharacterProxy} firstCharacter First character node contained in {@link engine.model.TextProxy}.
-	 * @param {Number} length Whole text contained in {@link engine.model.TextProxy}.
+	 * @param {engine.model.Text} textNode Text node which part is represented by this text proxy.
+	 * @param {Number} offsetInText Offset in {@link engine.model.TextProxy#textNode text node} from which the text proxy starts.
+	 * @param {Number} length Text proxy length, that is how many text node's characters, starting from `offsetInText` it represents.
 	 * @constructor
 	 */
-	constructor( firstCharacter, length ) {
+	constructor( textNode, offsetInText, length ) {
 		/**
-		 * First character node contained in {@link engine.model.TextProxy}.
+		 * Text node which part is represented by this text proxy.
 		 *
 		 * @readonly
-		 * @member {engine.model.CharacterProxy} engine.model.TextProxy#first
+		 * @member {engine.model.Text} engine.model.TextProxy#textNode
 		 */
-		this.first = firstCharacter;
+		this.textNode = textNode;
 
 		/**
-		 * Characters contained in {@link engine.model.TextProxy}.
+		 * Text data represented by this text proxy.
 		 *
 		 * @readonly
-		 * @member {String} engine.model.TextProxy#text
+		 * @member {String} engine.model.TextProxy#data
 		 */
-		this.text = firstCharacter._nodeListText.text.substr( this.first._index, length );
+		this.data = textNode.data.substring( offsetInText, offsetInText + length );
 
 		/**
-		 * Last {@link engine.model.CharacterProxy character node} contained in {@link engine.model.TextProxy}.
+		 * Offset in {@link engine.model.TextProxy#textNode text node} from which the text proxy starts.
 		 *
 		 * @readonly
-		 * @member {engine.model.CharacterProxy} engine.model.TextProxy#last
+		 * @member {Number} engine.model.TextProxy#offsetInText
 		 */
-		this.last = this.getCharAt( this.text.length - 1 );
+		this.offsetInText = offsetInText;
 	}
 
 	/**
-	 * A common parent of all character nodes contained in {@link engine.model.TextProxy}.
+	 * Parent of this text proxy, which is same as parent of text node represented by this text proxy.
 	 *
-	 * @type {engine.model.Element}
+	 * @readonly
+	 * @type {engine.model.Element|engine.model.DocumentFragment|null}
 	 */
-	get commonParent() {
-		return this.first.parent;
+	get parent() {
+		return this.textNode.parent;
 	}
 
 	/**
-	 * Gets a character at given index and creates a {@link engine.model.CharacterProxy} out of it.
+	 * Root of this text proxy, which is same as root of text node represented by this text proxy.
 	 *
-	 * @param {Number} index Character index.
-	 * @returns {engine.model.CharacterProxy}
+	 * @readonly
+	 * @type {engine.model.Element|engine.model.DocumentFragment}
 	 */
-	getCharAt( index ) {
-		if ( index < 0 || index >= this.text.length ) {
-			return null;
-		}
-
-		return new CharacterProxy( this.first._nodeListText, this.first._index + index );
+	get root() {
+		return this.textNode.root;
 	}
 
 	/**
-	 * Checks if the text fragment has an attribute for given key.
+	 * {@link engine.model.Document Document} that owns text node represented by this text proxy or `null` if the text node
+	 * has no parent or is inside a {@link engine.model.DocumentFragment DocumentFragment}.
+	 *
+	 * @returns {engine.model.Document|null}
+	 */
+	get document() {
+		return this.textNode.document;
+	}
+
+	/**
+	 * Offset at which this text proxy starts in it's parent.
+	 *
+	 * @see engine.model.Node#startOffset
+	 * @readonly
+	 * @type {Number}
+	 */
+	get startOffset() {
+		return this.textNode.startOffset + this.offsetInText;
+	}
+
+	/**
+	 * Offset size of this text proxy. Equal to the number of characters represented by the text proxy.
+	 *
+	 * @see engine.model.Node#offsetSize
+	 * @readonly
+	 * @type {Number}
+	 */
+	get offsetSize() {
+		return this.data.length;
+	}
+
+	/**
+	 * Offset at which this text proxy ends in it's parent.
+	 *
+	 * @see engine.model.Node#endOffset
+	 * @readonly
+	 * @type {Number}
+	 */
+	get endOffset() {
+		return this.startOffset + this.offsetSize;
+	}
+
+	/**
+	 * Gets path to this text proxy.
+	 *
+	 * @see engine.model.Node#getPath
+	 * @readonly
+	 * @type {Array.<Number>}
+	 */
+	getPath() {
+		const path = this.textNode.getPath();
+		path[ path.length - 1 ] += this.offsetInText;
+
+		return path;
+	}
+
+	/**
+	 * Checks if this text proxy has an attribute for given key.
 	 *
 	 * @param {String} key Key of attribute to check.
-	 * @returns {Boolean} `true` if attribute with given key is set on text fragment, `false` otherwise.
+	 * @returns {Boolean} `true` if attribute with given key is set on text proxy, `false` otherwise.
 	 */
 	hasAttribute( key ) {
-		return this.first.hasAttribute( key );
+		return this.textNode.hasAttribute( key );
 	}
 
 	/**
-	 * Gets an attribute value for given key or undefined it that attribute is not set on text fragment.
+	 * Gets an attribute value for given key or `undefined` if that attribute is not set on text proxy.
 	 *
 	 * @param {String} key Key of attribute to look for.
-	 * @returns {*} Attribute value or null.
+	 * @returns {*} Attribute value or `undefined`.
 	 */
 	getAttribute( key ) {
-		return this.first.getAttribute( key );
+		return this.textNode.getAttribute( key );
 	}
 
 	/**
-	 * Returns iterator that iterates over this text fragment attributes.
+	 * Returns iterator that iterates over this node's attributes. Attributes are returned as arrays containing two
+	 * items. First one is attribute key and second is attribute value.
+	 *
+	 * This format is accepted by native `Map` object and also can be passed in `Node` constructor.
 	 *
 	 * @returns {Iterable.<*>}
 	 */
 	getAttributes() {
-		return this.first.getAttributes();
+		return this.textNode.getAttributes();
 	}
 
 	/**
-	 * Sets attribute on the text fragment. If attribute with the same key already is set, it overwrites its values.
+	 * Returns iterator that iterates over this node's attribute keys.
 	 *
-	 * **Note:** Changing attributes of text fragment affects document state. This TextProxy instance properties
-	 * will be refreshed, but other may get invalidated. It is highly unrecommended to store references to TextProxy instances.
-	 *
-	 * @param {String} key Key of attribute to set.
-	 * @param {*} value Attribute value.
+	 * @returns {Iterator.<String>}
 	 */
-	setAttribute( key, value ) {
-		let index = this.first.getIndex();
-
-		this.commonParent._children.setAttribute( this.first.getIndex(), this.text.length, key, value );
-
-		this.first = this.commonParent.getChild( index );
-		this.last = this.getCharAt( this.text.length - 1 );
-	}
-
-	/**
-	 * Removes all attributes from the text fragment and sets given attributes.
-	 *
-	 * **Note:** Changing attributes of text fragment affects document state. This `TextProxy` instance properties
-	 * will be refreshed, but other may get invalidated. It is highly unrecommended to store references to TextProxy instances.
-	 *
-	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set.
-	 * See {@link engine.model.TextProxy#getAttributes}.
-	 */
-	setAttributesTo( attrs ) {
-		let attrsMap = toMap( attrs );
-
-		this.clearAttributes();
-
-		for ( let attr of attrsMap ) {
-			this.setAttribute( attr[ 0 ], attr[ 1 ] );
-		}
-	}
-
-	/**
-	 * Removes an attribute with given key from the text fragment.
-	 *
-	 * **Note:** Changing attributes of text fragment affects document state. This `TextProxy` instance properties
-	 * will be refreshed, but other may get invalidated. It is highly unrecommended to store references to TextProxy instances.
-	 *
-	 * @param {String} key Key of attribute to remove.
-	 */
-	removeAttribute( key ) {
-		this.setAttribute( key, null );
-	}
-
-	/**
-	 * Removes all attributes from the text fragment.
-	 *
-	 * **Note:** Changing attributes of text fragment affects document state. This `TextProxy` instance properties
-	 * will be refreshed, but other may get invalidated. It is highly unrecommended to store references to TextProxy instances.
-	 */
-	clearAttributes() {
-		for ( let attr of this.getAttributes() ) {
-			this.removeAttribute( attr[ 0 ] );
-		}
+	getAttributeKeys() {
+		return this.textNode.getAttributeKeys();
 	}
 }

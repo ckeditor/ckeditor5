@@ -12,6 +12,7 @@ import Element from '/ckeditor5/engine/model/element.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import LiveRange from '/ckeditor5/engine/model/liverange.js';
 import Range from '/ckeditor5/engine/model/range.js';
+import Text from '/ckeditor5/engine/model/text.js';
 
 describe( 'LiveRange', () => {
 	let doc, root, ul, p;
@@ -21,20 +22,20 @@ describe( 'LiveRange', () => {
 		root = doc.createRoot();
 
 		let lis = [
-			new Element( 'li', [], 'aaaaaaaaaa' ),
-			new Element( 'li', [], 'bbbbbbbbbb' ),
-			new Element( 'li', [], 'cccccccccc' ),
-			new Element( 'li', [], 'dddddddddd' ),
-			new Element( 'li', [], 'eeeeeeeeee' ),
-			new Element( 'li', [], 'ffffffffff' ),
-			new Element( 'li', [], 'gggggggggg' ),
-			new Element( 'li', [], 'hhhhhhhhhh' )
+			new Element( 'li', [], new Text( 'aaaaaaaaaa' ) ),
+			new Element( 'li', [], new Text( 'bbbbbbbbbb' ) ),
+			new Element( 'li', [], new Text( 'cccccccccc' ) ),
+			new Element( 'li', [], new Text( 'dddddddddd' ) ),
+			new Element( 'li', [], new Text( 'eeeeeeeeee' ) ),
+			new Element( 'li', [], new Text( 'ffffffffff' ) ),
+			new Element( 'li', [], new Text( 'gggggggggg' ) ),
+			new Element( 'li', [], new Text( 'hhhhhhhhhh' ) )
 		];
 
 		ul = new Element( 'ul', [], lis );
-		p = new Element( 'p', [], 'qwertyuiop' );
+		p = new Element( 'p', [], new Text( 'qwertyuiop' ) );
 
-		root.insertChildren( 0, [ ul, p, 'xyzxyz' ] );
+		root.insertChildren( 0, [ ul, p, new Text( 'xyzxyz' ) ] );
 	} );
 
 	it( 'should be an instance of Range', () => {

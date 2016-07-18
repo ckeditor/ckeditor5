@@ -7,6 +7,8 @@
 
 import Matcher from '../view/matcher.js';
 import ModelElement from '../model/element.js';
+import ModelPosition from '../model/position.js';
+import modelWriter from '../model/writer.js';
 import isIterable from '../../utils/isiterable.js';
 
 /**
@@ -272,7 +274,9 @@ class ViewConverterBuilder {
 					data.context.push( modelElement );
 
 					// Convert children of converted view element and append them to `modelElement`.
-					modelElement.appendChildren( conversionApi.convertChildren( data.input, consumable, data ) );
+					const modelChildren = conversionApi.convertChildren( data.input, consumable, data );
+					const insertPosition = ModelPosition.createAt( modelElement, 'end' );
+					modelWriter.insert( insertPosition, modelChildren );
 
 					// Remove created `modelElement` from the parents stack.
 					data.context.pop();

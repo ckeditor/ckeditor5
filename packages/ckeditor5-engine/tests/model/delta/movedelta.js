@@ -12,6 +12,7 @@ import Document from '/ckeditor5/engine/model/document.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import Element from '/ckeditor5/engine/model/element.js';
+import Text from '/ckeditor5/engine/model/text.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 import MoveDelta from '/ckeditor5/engine/model/delta/movedelta.js';
@@ -24,11 +25,11 @@ describe( 'Batch', () => {
 		doc = new Document();
 		root = doc.createRoot();
 
-		div = new Element( 'div', [], 'foobar' );
-		p = new Element( 'p', [], 'abcxyz' );
+		div = new Element( 'div', [], new Text( 'foobar' ) );
+		p = new Element( 'p', [], new Text( 'abcxyz' ) );
 
-		div.insertChildren( 4, [ new Element( 'p', [], 'gggg' ) ] );
-		div.insertChildren( 2, [ new Element( 'p', [], 'hhhh' ) ] );
+		div.insertChildren( 0, [ new Element( 'p', [], new Text( 'gggg' ) ) ] );
+		div.insertChildren( 2, [ new Element( 'p', [], new Text( 'hhhh' ) ) ] );
 
 		root.insertChildren( 0, [ div, p ] );
 
@@ -39,17 +40,17 @@ describe( 'Batch', () => {
 		it( 'should move specified node', () => {
 			batch.move( div, new Position( root, [ 2 ] ) );
 
-			expect( root.getChildCount() ).to.equal( 2 );
+			expect( root.getMaxOffset() ).to.equal( 2 );
 			expect( getNodesAndText( Range.createFromElement( root.getChild( 0 ) ) ) ).to.equal( 'abcxyz' );
-			expect( getNodesAndText( Range.createFromElement( root.getChild( 1 ) ) ) ).to.equal( 'foPhhhhPobPggggPar' );
+			expect( getNodesAndText( Range.createFromElement( root.getChild( 1 ) ) ) ).to.equal( 'PggggPfoobarPhhhhP' );
 		} );
 
 		it( 'should move flat range of nodes', () => {
 			let range = new Range( new Position( root, [ 0, 3 ] ), new Position( root, [ 0, 7 ] ) );
 			batch.move( range, new Position( root, [ 1, 3 ] ) );
 
-			expect( getNodesAndText( Range.createFromElement( root.getChild( 0 ) ) ) ).to.equal( 'foPhhhhPr' );
-			expect( getNodesAndText( Range.createFromElement( root.getChild( 1 ) ) ) ).to.equal( 'abcobPggggPaxyz' );
+			expect( getNodesAndText( Range.createFromElement( root.getChild( 0 ) ) ) ).to.equal( 'PggggPfoPhhhhP' );
+			expect( getNodesAndText( Range.createFromElement( root.getChild( 1 ) ) ) ).to.equal( 'abcobarxyz' );
 		} );
 
 		it( 'should throw if given range is not flat', () => {

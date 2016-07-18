@@ -10,6 +10,7 @@ import Position from '../position.js';
 import Range from '../range.js';
 import CKEditorError from '../../../utils/ckeditorerror.js';
 import compareArrays from '../../../utils/comparearrays.js';
+import writer from './../writer.js';
 
 /**
  * Operation to move list of subsequent nodes from one position in the document to another.
@@ -121,7 +122,7 @@ export default class MoveOperation extends Operation {
 			throw new CKEditorError(
 				'operation-move-position-invalid: Source position or target position is invalid.'
 			);
-		} else if ( sourceOffset + this.howMany > sourceElement.getChildCount() ) {
+		} else if ( sourceOffset + this.howMany > sourceElement.getMaxOffset() ) {
 			/**
 			 * The nodes which should be moved do not exist.
 			 *
@@ -155,21 +156,12 @@ export default class MoveOperation extends Operation {
 				}
 			}
 		}
-		// End of validation.
 
-		// If we move children in the same element and we remove elements on the position before the target we
-		// need to update a target offset.
-		if ( sourceElement === targetElement && sourceOffset < targetOffset ) {
-			targetOffset -= this.howMany;
-		}
-
-		const removedNodes = sourceElement.removeChildren( sourceOffset, this.howMany );
-
-		targetElement.insertChildren( targetOffset, removedNodes );
+		const range = writer.move( Range.createFromPositionAndShift( this.sourcePosition, this.howMany ), this.targetPosition );
 
 		return {
 			sourcePosition: this.sourcePosition,
-			range: Range.createFromPositionAndShift( this.movedRangeStart, this.howMany )
+			range: range
 		};
 	}
 

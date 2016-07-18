@@ -258,7 +258,7 @@ export default class Range {
 
 		// Go up.
 		while ( pos.path.length > diffAt + 1 ) {
-			let howMany = posParent.getChildCount() - pos.offset;
+			let howMany = posParent.getMaxOffset() - pos.offset;
 
 			if ( howMany !== 0 ) {
 				ranges.push( new Range( pos, pos.getShiftedBy( howMany ) ) );
@@ -491,7 +491,7 @@ export default class Range {
 	 * @returns {engine.model.Range} Created range.
 	 */
 	static createFromElement( element ) {
-		return this.createFromParentsAndOffsets( element, 0, element, element.getChildCount() );
+		return this.createFromParentsAndOffsets( element, 0, element, element.getMaxOffset() );
 	}
 
 	/**
@@ -501,7 +501,7 @@ export default class Range {
 	 * @returns {engine.model.Range} Created range.
 	 */
 	static createOnElement( element ) {
-		return this.createFromParentsAndOffsets( element.parent, element.getIndex(), element, 0 );
+		return this.createFromParentsAndOffsets( element.parent, element.startOffset, element, 0 );
 	}
 
 	/**
@@ -512,7 +512,10 @@ export default class Range {
 	 * @returns {engine.model.Range}
 	 */
 	static createFromPositionAndShift( position, shift ) {
-		return new this( position, position.getShiftedBy( shift ) );
+		const start = position;
+		const end = position.getShiftedBy( shift );
+
+		return shift > 0 ? new this( start, end ) : new this( end, start );
 	}
 
 	/**

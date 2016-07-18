@@ -27,8 +27,9 @@ export default class RemoveOperation extends MoveOperation {
 	 */
 	constructor( position, howMany, baseVersion ) {
 		const graveyard = position.root.document.graveyard;
+		const graveyardPosition = new Position( graveyard, [ graveyard.getMaxOffset(), 0 ] );
 
-		super( position, howMany, new Position( graveyard, [ graveyard.getChildCount(), 0 ] ), baseVersion );
+		super( position, howMany, graveyardPosition, baseVersion );
 	}
 
 	/**

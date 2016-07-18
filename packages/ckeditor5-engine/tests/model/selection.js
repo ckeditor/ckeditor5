@@ -9,6 +9,7 @@
 
 import Document from '/ckeditor5/engine/model/document.js';
 import Element from '/ckeditor5/engine/model/element.js';
+import Text from '/ckeditor5/engine/model/text.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import LiveRange from '/ckeditor5/engine/model/liverange.js';
@@ -20,7 +21,7 @@ import count from '/ckeditor5/utils/count.js';
 testUtils.createSinonSandbox();
 
 describe( 'Selection', () => {
-	let doc, root, selection, liveRange, range;
+	let doc, root, selection, liveRange, range, range1, range2, range3;
 
 	beforeEach( () => {
 		doc = new Document();
@@ -28,16 +29,20 @@ describe( 'Selection', () => {
 		root.appendChildren( [
 			new Element( 'p' ),
 			new Element( 'p' ),
-			new Element( 'p', [], 'foobar' ),
+			new Element( 'p', [], new Text( 'foobar' ) ),
 			new Element( 'p' ),
 			new Element( 'p' ),
 			new Element( 'p' ),
-			new Element( 'p', [], 'foobar' )
+			new Element( 'p', [], new Text( 'foobar' ) )
 		] );
 		selection = new Selection();
 
 		liveRange = new LiveRange( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
 		range = new Range( new Position( root, [ 2 ] ), new Position( root, [ 2, 2 ] ) );
+
+		range1 = new Range( new Position( root, [ 1 ] ), new Position( root, [ 4 ] ) );
+		range2 = new Range( new Position( root, [ 4 ] ), new Position( root, [ 5 ] ) );
+		range3 = new Range( new Position( root, [ 6 ] ), new Position( root, [ 7 ] ) );
 	} );
 
 	afterEach( () => {
@@ -218,7 +223,7 @@ describe( 'Selection', () => {
 
 			const focus = selection.focus;
 			expect( focus ).to.have.property( 'parent', root );
-			expect( focus ).to.have.property( 'offset', root.getChildCount() );
+			expect( focus ).to.have.property( 'offset', root.getMaxOffset() );
 		} );
 
 		it( 'sets selection before the specified element', () => {
@@ -538,13 +543,13 @@ describe( 'Selection', () => {
 
 		it( 'should return a range which start position is before all other ranges\' start positions', () => {
 			// This will not be the first range despite being added as first
-			selection.addRange( new Range( new Position( root, [ 4 ] ), new Position( root, [ 5 ] ) ) );
+			selection.addRange( range2 );
 
 			// This should be the first range.
-			selection.addRange( new Range( new Position( root, [ 1 ] ), new Position( root, [ 4 ] ) ) );
+			selection.addRange( range1 );
 
 			// A random range that is not first.
-			selection.addRange( new Range( new Position( root, [ 6 ] ), new Position( root, [ 7 ] ) ) );
+			selection.addRange( range3 );
 
 			let range = selection.getFirstRange();
 
@@ -559,14 +564,14 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should return a position that is in selection and is before any other position from the selection', () => {
-			// This will not be a range containing the first position despite being added as first
-			selection.addRange( new Range( new Position( root, [ 4 ] ), new Position( root, [ 5 ] ) ) );
+			// This will not be the first range despite being added as first
+			selection.addRange( range2 );
 
 			// This should be the first range.
-			selection.addRange( new Range( new Position( root, [ 1 ] ), new Position( root, [ 4 ] ) ) );
+			selection.addRange( range1 );
 
 			// A random range that is not first.
-			selection.addRange( new Range( new Position( root, [ 6 ] ), new Position( root, [ 7 ] ) ) );
+			selection.addRange( range3 );
 
 			let position = selection.getFirstPosition();
 
@@ -599,7 +604,7 @@ describe( 'Selection', () => {
 
 		beforeEach( () => {
 			root.insertChildren( 0, [
-				new Element( 'p', [], 'foobar' ),
+				new Element( 'p', [], new Text( 'foobar' ) ),
 				new Element( 'p', [], [] )
 			] );
 
@@ -631,7 +636,7 @@ describe( 'Selection', () => {
 		} );
 
 		describe( 'getAttributes', () => {
-			it( 'should return an iterator that iterates over all attributes set on the text fragment', () => {
+			it( 'should return an iterator that iterates over all attributes set on selection', () => {
 				selection.setRanges( [ rangeInFullP ] );
 				selection.setAttribute( 'foo', 'bar' );
 				selection.setAttribute( 'abc', 'xyz' );
@@ -639,6 +644,18 @@ describe( 'Selection', () => {
 				let attrs = Array.from( selection.getAttributes() );
 
 				expect( attrs ).to.deep.equal( [ [ 'foo', 'bar' ], [ 'abc', 'xyz' ] ] );
+			} );
+		} );
+
+		describe( 'getAttributeKeys', () => {
+			it( 'should return iterator that iterates over all attribute keys set on selection', () => {
+				selection.setRanges( [ rangeInFullP ] );
+				selection.setAttribute( 'foo', 'bar' );
+				selection.setAttribute( 'abc', 'xyz' );
+
+				let attrs = Array.from( selection.getAttributeKeys() );
+
+				expect( attrs ).to.deep.equal( [ 'foo', 'abc' ] );
 			} );
 		} );
 

@@ -5,7 +5,7 @@
 
 'use strict';
 
-import CharacterProxy from './characterproxy.js';
+import Text from './text.js';
 import TextProxy from './textproxy.js';
 import Element from './element.js';
 import Position from './position.js';
@@ -179,7 +179,7 @@ export default class TreeWalker {
 		const parent = this._visitedParent;
 
 		// We are at the end of the root.
-		if ( parent.parent === null && position.offset === parent.getChildCount() ) {
+		if ( parent.parent === null && position.offset === parent.getMaxOffset() ) {
 			return { done: true };
 		}
 
@@ -188,7 +188,7 @@ export default class TreeWalker {
 			return { done: true };
 		}
 
-		const node = parent.getChild( position.offset );
+		const node = position.textNode ? position.textNode : position.nodeAfter;
 
 		if ( node instanceof Element ) {
 			if ( !this.shallow ) {
@@ -202,28 +202,29 @@ export default class TreeWalker {
 			this.position = position;
 
 			return formatReturnValue( 'elementStart', node, previousPosition, position, 1 );
-		} else if ( node instanceof CharacterProxy ) {
-			if ( this.singleCharacters ) {
-				position.offset++;
-				this.position = position;
+		} else if ( node instanceof Text ) {
+			let charactersCount, offsetInTextNode;
 
-				return formatReturnValue( 'character', node, previousPosition, position, 1 );
+			if ( this.singleCharacters ) {
+				charactersCount = 1;
 			} else {
-				let charactersCount = node._nodeListText.text.length - node._index;
-				let offset = position.offset + charactersCount;
+				let offset = node.endOffset;
 
 				if ( this._boundaryEndParent == parent && this.boundaries.end.offset < offset ) {
 					offset = this.boundaries.end.offset;
-					charactersCount = offset - position.offset;
 				}
 
-				let textProxy = new TextProxy( node, charactersCount );
-
-				position.offset = offset;
-				this.position = position;
-
-				return formatReturnValue( 'text', textProxy, previousPosition, position, charactersCount );
+				charactersCount = offset - position.offset;
 			}
+
+			offsetInTextNode = position.offset - node.startOffset;
+
+			const item = new TextProxy( node, offsetInTextNode, charactersCount );
+
+			position.offset += charactersCount;
+			this.position = position;
+
+			return formatReturnValue( 'text', item, previousPosition, position, charactersCount );
 		} else {
 			// `node` is not set, we reached the end of current `parent`.
 			position.path.pop();
@@ -263,13 +264,13 @@ export default class TreeWalker {
 		}
 
 		// Get node just before current position
-		const node = parent.getChild( position.offset - 1 );
+		const node = position.textNode ? position.textNode : position.nodeBefore;
 
 		if ( node instanceof Element ) {
 			position.offset--;
 
 			if ( !this.shallow ) {
-				position.path.push( node.getChildCount() );
+				position.path.push( node.getMaxOffset() );
 				this.position = position;
 				this._visitedParent = node;
 
@@ -283,28 +284,29 @@ export default class TreeWalker {
 
 				return formatReturnValue( 'elementStart', node, previousPosition, position, 1 );
 			}
-		} else if ( node instanceof CharacterProxy ) {
-			if ( this.singleCharacters ) {
-				position.offset--;
-				this.position = position;
+		} else if ( node instanceof Text ) {
+			let charactersCount, offsetInTextNode;
 
-				return formatReturnValue( 'character', node, previousPosition, position, 1 );
+			if ( this.singleCharacters ) {
+				charactersCount = 1;
 			} else {
-				let charactersCount = node._index + 1;
-				let offset = position.offset - charactersCount;
+				let offset = node.startOffset;
 
 				if ( this._boundaryStartParent == parent && this.boundaries.start.offset > offset ) {
 					offset = this.boundaries.start.offset;
-					charactersCount = position.offset - offset;
 				}
 
-				let textFragment = new TextProxy( parent.getChild( offset ), charactersCount );
-
-				position.offset = offset;
-				this.position = position;
-
-				return formatReturnValue( 'text', textFragment, previousPosition, position, charactersCount );
+				charactersCount = position.offset - offset;
 			}
+
+			offsetInTextNode = position.offset - node.startOffset;
+
+			const item = new TextProxy( node, offsetInTextNode - charactersCount, charactersCount );
+
+			position.offset -= charactersCount;
+			this.position = position;
+
+			return formatReturnValue( 'text', item, previousPosition, position, charactersCount );
 		} else {
 			// `node` is not set, we reached the beginning of current `parent`.
 			position.path.pop();

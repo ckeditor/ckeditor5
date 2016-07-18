@@ -11,10 +11,9 @@ import Element from '/ckeditor5/engine/model/element.js';
 import Text from '/ckeditor5/engine/model/text.js';
 import TextProxy from '/ckeditor5/engine/model/textproxy.js';
 import Document from '/ckeditor5/engine/model/document.js';
-import CharacterProxy from '/ckeditor5/engine/model/characterproxy.js';
 
 describe( 'TextProxy', () => {
-	let doc, text, element, textFragment, root;
+	let doc, text, element, textProxy, root;
 
 	beforeEach( () => {
 		doc = new Document();
@@ -24,148 +23,53 @@ describe( 'TextProxy', () => {
 
 		text = new Text( 'foobar', { foo: 'bar' } );
 		element.insertChildren( 0, text );
-		textFragment = new TextProxy( element.getChild( 2 ), 3 );
+		textProxy = new TextProxy( text, 2, 3 );
 	} );
 
-	afterEach( () => {
-		element.removeChildren( 0, 1 );
+	it( 'should have data property', () => {
+		expect( textProxy ).to.have.property( 'data' ).that.equals( 'oba' );
 	} );
 
-	it( 'should have first property pointing to the first character node contained in TextProxy', () => {
-		let char = textFragment.first;
-
-		expect( char.getPath() ).to.deep.equal( [ 0, 2 ] );
-		expect( char.character ).to.equal( 'o' );
+	it( 'should have root', () => {
+		expect( textProxy ).to.have.property( 'root' ).that.equals( root );
 	} );
 
-	it( 'should have last property pointing to the last character node contained in TextProxy', () => {
-		let char = textFragment.last;
-
-		expect( char.getPath() ).to.deep.equal( [ 0, 4 ] );
-		expect( char.character ).to.equal( 'a' );
+	it( 'should have document', () => {
+		expect( textProxy ).to.have.property( 'document' ).that.equals( doc );
 	} );
 
-	it( 'should have text property', () => {
-		expect( textFragment ).to.have.property( 'text' ).that.equals( 'oba' );
-	} );
-
-	describe( 'getCharAt', () => {
-		it( 'should return CharacterProxy element representing proper tree model character node', () => {
-			let char = textFragment.getCharAt( 1 );
-
-			expect( char ).to.be.instanceof( CharacterProxy );
-			expect( char.character ).to.equal( 'b' );
-			expect( char.getAttribute( 'foo' ) ).to.equal( 'bar' );
-			expect( char.parent ).to.equal( element );
-		} );
-
-		it( 'should return null for wrong index', () => {
-			expect( textFragment.getCharAt( -1 ) ).to.be.null;
-			expect( textFragment.getCharAt( 4 ) ).to.be.null;
+	describe( 'getPath', () => {
+		it( 'should return path to the text proxy', () => {
+			expect( textProxy.getPath() ).to.deep.equal( [ 0, 2 ] );
 		} );
 	} );
 
 	describe( 'attributes interface', () => {
 		describe( 'hasAttribute', () => {
-			it( 'should return true if text fragment has attribute with given key', () => {
-				expect( textFragment.hasAttribute( 'foo' ) ).to.be.true;
+			it( 'should return true if text proxy has attribute with given key', () => {
+				expect( textProxy.hasAttribute( 'foo' ) ).to.be.true;
 			} );
 
-			it( 'should return false if text fragment does not have attribute with given key', () => {
-				expect( textFragment.hasAttribute( 'abc' ) ).to.be.false;
+			it( 'should return false if text proxy does not have attribute with given key', () => {
+				expect( textProxy.hasAttribute( 'abc' ) ).to.be.false;
 			} );
 		} );
 
 		describe( 'getAttribute', () => {
-			it( 'should return attribute with given key if text fragment has given attribute', () => {
-				expect( textFragment.getAttribute( 'foo' ) ).to.equal( 'bar' );
+			it( 'should return attribute with given key if text proxy has given attribute', () => {
+				expect( textProxy.getAttribute( 'foo' ) ).to.equal( 'bar' );
 			} );
 
-			it( 'should return undefined if text fragment does not have given attribute', () => {
-				expect( textFragment.getAttribute( 'bar' ) ).to.be.undefined;
+			it( 'should return undefined if text proxy does not have given attribute', () => {
+				expect( textProxy.getAttribute( 'bar' ) ).to.be.undefined;
 			} );
 		} );
 
 		describe( 'getAttributes', () => {
-			it( 'should return an iterator that iterates over all attributes set on the text fragment', () => {
-				let attrs = Array.from( textFragment.getAttributes() );
+			it( 'should return an iterator that iterates over all attributes set on the text proxy', () => {
+				let attrs = Array.from( textProxy.getAttributes() );
 
 				expect( attrs ).to.deep.equal( [ [ 'foo', 'bar' ] ] );
-			} );
-		} );
-
-		describe( 'setAttribute', () => {
-			it( 'should set attribute on characters contained in text fragment', () => {
-				textFragment.setAttribute( 'abc', 'xyz' );
-
-				expect( element.getChild( 0 ).getAttribute( 'abc' ) ).to.be.undefined;
-				expect( element.getChild( 1 ).getAttribute( 'abc' ) ).to.be.undefined;
-				expect( element.getChild( 2 ).getAttribute( 'abc' ) ).to.equal( 'xyz' );
-				expect( element.getChild( 3 ).getAttribute( 'abc' ) ).to.equal( 'xyz' );
-				expect( element.getChild( 4 ).getAttribute( 'abc' ) ).to.equal( 'xyz' );
-				expect( element.getChild( 5 ).getAttribute( 'abc' ) ).to.be.undefined;
-			} );
-
-			it( 'should remove attribute when passed attribute value is null', () => {
-				textFragment.setAttribute( 'foo', null );
-
-				expect( element.getChild( 0 ).hasAttribute( 'foo' ) ).to.be.true;
-				expect( element.getChild( 1 ).hasAttribute( 'foo' ) ).to.be.true;
-				expect( element.getChild( 2 ).hasAttribute( 'foo' ) ).to.be.false;
-				expect( element.getChild( 3 ).hasAttribute( 'foo' ) ).to.be.false;
-				expect( element.getChild( 4 ).hasAttribute( 'foo' ) ).to.be.false;
-				expect( element.getChild( 5 ).hasAttribute( 'foo' ) ).to.be.true;
-			} );
-
-			it( 'should correctly split and merge text fragments and refresh this text fragment properties', () => {
-				let otherTextProxy = new TextProxy( element.getChild( 5 ), 1 );
-				otherTextProxy.setAttribute( 'foo', null );
-				textFragment.setAttribute( 'foo', null );
-
-				expect( element._children._nodes.length ).to.equal( 2 );
-				expect( textFragment.first._nodeListText ).to.equal( element._children._nodes[ 1 ] );
-			} );
-		} );
-
-		describe( 'setAttributesTo', () => {
-			it( 'should remove all attributes from text fragment and set given ones', () => {
-				textFragment.setAttributesTo( { abc: 'xyz' } );
-
-				expect( element.getChild( 2 ).hasAttribute( 'foo' ) ).to.be.false;
-				expect( element.getChild( 3 ).hasAttribute( 'foo' ) ).to.be.false;
-				expect( element.getChild( 4 ).hasAttribute( 'foo' ) ).to.be.false;
-
-				expect( element.getChild( 2 ).getAttribute( 'abc' ) ).to.equal( 'xyz' );
-				expect( element.getChild( 3 ).getAttribute( 'abc' ) ).to.equal( 'xyz' );
-				expect( element.getChild( 4 ).getAttribute( 'abc' ) ).to.equal( 'xyz' );
-			} );
-		} );
-
-		describe( 'removeAttribute', () => {
-			it( 'should remove given attribute from text fragment', () => {
-				textFragment.removeAttribute( 'foo' );
-
-				expect( element.getChild( 0 ).hasAttribute( 'foo' ) ).to.be.true;
-				expect( element.getChild( 1 ).hasAttribute( 'foo' ) ).to.be.true;
-				expect( element.getChild( 2 ).hasAttribute( 'foo' ) ).to.be.false;
-				expect( element.getChild( 3 ).hasAttribute( 'foo' ) ).to.be.false;
-				expect( element.getChild( 4 ).hasAttribute( 'foo' ) ).to.be.false;
-				expect( element.getChild( 5 ).hasAttribute( 'foo' ) ).to.be.true;
-			} );
-		} );
-
-		describe( 'clearAttributes', () => {
-			it( 'should remove all attributes from text fragment', () => {
-				textFragment.setAttribute( 'abc', 'xyz' );
-				textFragment.clearAttributes();
-
-				expect( element.getChild( 2 ).hasAttribute( 'foo' ) ).to.be.false;
-				expect( element.getChild( 3 ).hasAttribute( 'foo' ) ).to.be.false;
-				expect( element.getChild( 4 ).hasAttribute( 'foo' ) ).to.be.false;
-
-				expect( element.getChild( 2 ).hasAttribute( 'abc' ) ).to.be.false;
-				expect( element.getChild( 3 ).hasAttribute( 'abc' ) ).to.be.false;
-				expect( element.getChild( 4 ).hasAttribute( 'abc' ) ).to.be.false;
 			} );
 		} );
 	} );

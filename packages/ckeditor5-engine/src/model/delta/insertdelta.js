@@ -33,8 +33,8 @@ export default class InsertDelta extends Delta {
 	 *
 	 * @type {engine.model.NodeList|null}
 	 */
-	get nodeList() {
-		return this._insertOperation ? this._insertOperation.nodeList : null;
+	get nodes() {
+		return this._insertOperation ? this._insertOperation.nodes : null;
 	}
 
 	/**

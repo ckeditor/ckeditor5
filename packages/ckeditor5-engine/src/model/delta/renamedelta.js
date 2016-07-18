@@ -34,7 +34,6 @@ export default class RenameDelta extends Delta {
 }
 
 function apply( batch, delta, operation ) {
-	batch.addDelta( delta );
 	delta.addOperation( operation );
 	batch.document.applyOperation( operation );
 }
@@ -49,6 +48,8 @@ function apply( batch, delta, operation ) {
  */
 register( 'rename', function( newName, element ) {
 	const delta = new RenameDelta();
+	this.addDelta( delta );
+
 	const newElement = new Element( newName );
 
 	apply(
@@ -58,7 +59,7 @@ register( 'rename', function( newName, element ) {
 
 	apply(
 		this, delta,
-		new MoveOperation( Position.createAt( element ), element.getChildCount(), Position.createAt( newElement ), this.document.version )
+		new MoveOperation( Position.createAt( element ), element.getMaxOffset(), Position.createAt( newElement ), this.document.version )
 	);
 
 	apply(

@@ -11,6 +11,7 @@ import Document from '/ckeditor5/engine/model/document.js';
 import MoveOperation from '/ckeditor5/engine/model/operation/moveoperation.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import Element from '/ckeditor5/engine/model/element.js';
+import Text from '/ckeditor5/engine/model/text.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import { jsonParseStringify, wrapInDelta } from '/tests/engine/model/_utils/utils.js';
 
@@ -60,16 +61,16 @@ describe( 'MoveOperation', () => {
 		) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getChildCount() ).to.equal( 2 );
+		expect( root.getMaxOffset() ).to.equal( 2 );
 		expect( root.getChild( 0 ).name ).to.equal( 'p1' );
 		expect( root.getChild( 1 ).name ).to.equal( 'p2' );
-		expect( p1.getChildCount() ).to.equal( 0 );
-		expect( p2.getChildCount() ).to.equal( 1 );
+		expect( p1.getMaxOffset() ).to.equal( 0 );
+		expect( p2.getMaxOffset() ).to.equal( 1 );
 		expect( p2.getChild( 0 ).name ).to.equal( 'x' );
 	} );
 
 	it( 'should move position of children in one node backward', () => {
-		root.insertChildren( 0, 'xbarx' );
+		root.insertChildren( 0, new Text( 'xbarx' ) );
 
 		doc.applyOperation( wrapInDelta(
 			new MoveOperation(
@@ -81,16 +82,12 @@ describe( 'MoveOperation', () => {
 		) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getChildCount() ).to.equal( 5 );
-		expect( root.getChild( 0 ).character ).to.equal( 'x' );
-		expect( root.getChild( 1 ).character ).to.equal( 'a' );
-		expect( root.getChild( 2 ).character ).to.equal( 'r' );
-		expect( root.getChild( 3 ).character ).to.equal( 'b' );
-		expect( root.getChild( 4 ).character ).to.equal( 'x' );
+		expect( root.getMaxOffset() ).to.equal( 5 );
+		expect( root.getChild( 0 ).data ).to.equal( 'xarbx' );
 	} );
 
 	it( 'should move position of children in one node forward', () => {
-		root.insertChildren( 0, 'xbarx' );
+		root.insertChildren( 0, new Text( 'xbarx' ) );
 
 		doc.applyOperation( wrapInDelta(
 			new MoveOperation(
@@ -102,12 +99,8 @@ describe( 'MoveOperation', () => {
 		) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getChildCount() ).to.equal( 5 );
-		expect( root.getChild( 0 ).character ).to.equal( 'x' );
-		expect( root.getChild( 1 ).character ).to.equal( 'r' );
-		expect( root.getChild( 2 ).character ).to.equal( 'b' );
-		expect( root.getChild( 3 ).character ).to.equal( 'a' );
-		expect( root.getChild( 4 ).character ).to.equal( 'x' );
+		expect( root.getMaxOffset() ).to.equal( 5 );
+		expect( root.getChild( 0 ).data ).to.equal( 'xrbax' );
 	} );
 
 	it( 'should create a proper MoveOperation as a reverse', () => {
@@ -146,22 +139,22 @@ describe( 'MoveOperation', () => {
 		doc.applyOperation( wrapInDelta( operation ) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getChildCount() ).to.equal( 2 );
-		expect( p1.getChildCount() ).to.equal( 0 );
-		expect( p2.getChildCount() ).to.equal( 1 );
+		expect( root.getMaxOffset() ).to.equal( 2 );
+		expect( p1.getMaxOffset() ).to.equal( 0 );
+		expect( p2.getMaxOffset() ).to.equal( 1 );
 		expect( p2.getChild( 0 ).name ).to.equal( 'x' );
 
 		doc.applyOperation( wrapInDelta( operation.getReversed() ) );
 
 		expect( doc.version ).to.equal( 2 );
-		expect( root.getChildCount() ).to.equal( 2 );
-		expect( p1.getChildCount() ).to.equal( 1 );
+		expect( root.getMaxOffset() ).to.equal( 2 );
+		expect( p1.getMaxOffset() ).to.equal( 1 );
 		expect( p1.getChild( 0 ).name ).to.equal( 'x' );
-		expect( p2.getChildCount() ).to.equal( 0 );
+		expect( p2.getMaxOffset() ).to.equal( 0 );
 	} );
 
 	it( 'should throw an error if number of nodes to move exceeds the number of existing nodes in given element', () => {
-		root.insertChildren( 0, 'xbarx' );
+		root.insertChildren( 0, new Text( 'xbarx' ) );
 
 		let operation = new MoveOperation(
 			new Position( root, [ 3 ] ),
@@ -175,8 +168,8 @@ describe( 'MoveOperation', () => {
 
 	it( 'should throw an error if target or source parent-element specified by position does not exist', () => {
 		let p = new Element( 'p' );
-		p.insertChildren( 0, 'foo' );
-		root.insertChildren( 0, [ 'ab', p ] );
+		p.insertChildren( 0, new Text( 'foo' ) );
+		root.insertChildren( 0, [ new Text( 'ab' ), p ] );
 
 		let operation = new MoveOperation(
 			new Position( root, [ 2, 0 ] ),
@@ -185,13 +178,13 @@ describe( 'MoveOperation', () => {
 			doc.version
 		);
 
-		root.removeChildren( 2, 1 );
+		root.removeChildren( 1 );
 
 		expect( () => doc.applyOperation( wrapInDelta( operation ) ) ).to.throw( CKEditorError, /operation-move-position-invalid/ );
 	} );
 
 	it( 'should throw an error if operation tries to move a range between the beginning and the end of that range', () => {
-		root.insertChildren( 0, 'xbarx' );
+		root.insertChildren( 0, new Text( 'xbarx' ) );
 
 		let operation = new MoveOperation(
 			new Position( root, [ 1 ] ),
@@ -205,7 +198,7 @@ describe( 'MoveOperation', () => {
 
 	it( 'should throw an error if operation tries to move a range into a sub-tree of a node that is in that range', () => {
 		let p = new Element( 'p', [], [ new Element( 'p' ) ] );
-		root.insertChildren( 0, [ 'ab', p, 'xy' ] );
+		root.insertChildren( 0, [ new Text( 'ab' ), p, new Text( 'xy' ) ] );
 
 		let operation = new MoveOperation(
 			new Position( root, [ 1 ] ),
@@ -219,7 +212,7 @@ describe( 'MoveOperation', () => {
 
 	it( 'should not throw an error if operation move a range into a sibling', () => {
 		let p = new Element( 'p' );
-		root.insertChildren( 0, [ 'ab', p, 'xy' ] );
+		root.insertChildren( 0, [ new Text( 'ab' ), p, new Text( 'xy' ) ] );
 
 		let operation = new MoveOperation(
 			new Position( root, [ 1 ] ),
@@ -234,15 +227,15 @@ describe( 'MoveOperation', () => {
 			}
 		).not.to.throw();
 
-		expect( root.getChildCount() ).to.equal( 4 );
-		expect( p.getChildCount() ).to.equal( 1 );
-		expect( p.getChild( 0 ).character ).to.equal( 'b' );
+		expect( root.getMaxOffset() ).to.equal( 4 );
+		expect( p.getMaxOffset() ).to.equal( 1 );
+		expect( p.getChild( 0 ).data ).to.equal( 'b' );
 	} );
 
 	it( 'should not throw when operation paths looks like incorrect but move is between different roots', () => {
 		let p = new Element( 'p' );
-		root.insertChildren( 0, [ 'a', p, 'b' ] );
-		doc.graveyard.insertChildren( 0, [ 'abc' ] );
+		root.insertChildren( 0, [ new Text( 'a' ), p, new Text( 'b' ) ] );
+		doc.graveyard.insertChildren( 0, new Text( 'abc' ) );
 
 		let operation = new MoveOperation(
 			new Position( doc.graveyard, [ 0 ] ),

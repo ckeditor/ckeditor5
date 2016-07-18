@@ -80,7 +80,7 @@ register( 'unwrap', function( element ) {
 
 	let sourcePosition = Position.createFromParentAndOffset( element, 0 );
 
-	const move = new MoveOperation( sourcePosition, element.getChildCount(), Position.createBefore( element ), this.document.version );
+	const move = new MoveOperation( sourcePosition, element.getMaxOffset(), Position.createBefore( element ), this.document.version );
 	move.isSticky = true;
 	delta.addOperation( move );
 	this.document.applyOperation( move );

@@ -131,19 +131,13 @@ describe( 'Range', () => {
 	} );
 
 	describe( 'static constructors', () => {
-		let p, f, o, z;
+		let p;
 
 		// root
 		//  |- p
-		//     |- f
-		//     |- o
-		//     |- z
+		//     |- foz
 		beforeEach( () => {
-			f = new Text( 'f' );
-			o = new Text( 'o' );
-			z = new Text( 'z' );
-
-			p = new Element( 'p', [], [ f, o, z ] );
+			p = new Element( 'p', [], new Text( 'foz' ) );
 
 			root.insertChildren( 0, [ p ] );
 		} );
@@ -275,9 +269,9 @@ describe( 'Range', () => {
 			let items = Array.from( range.getItems( { singleCharacters: true } ) );
 
 			expect( items.length ).to.equal( 3 );
-			expect( items[ 0 ].character ).to.equal( 'b' );
+			expect( items[ 0 ].data ).to.equal( 'b' );
 			expect( items[ 1 ] ).to.equal( e2 );
-			expect( items[ 2 ].character ).to.equal( 'x' );
+			expect( items[ 2 ].data ).to.equal( 'x' );
 		} );
 	} );
 
@@ -736,21 +730,21 @@ describe( 'Range', () => {
 
 	function mapNodesToNames( nodes ) {
 		return nodes.map( ( node ) => {
-			return ( node instanceof Element ) ? 'E:' + node.name : 'T:' + ( node.text || node.character );
+			return ( node instanceof Element ) ? 'E:' + node.name : 'T:' + node.data;
 		} );
 	}
 
 	function prepareRichRoot() {
 		root.insertChildren( 0, [
 			new Element( 'div', [], [
-				new Element( 'h', [], 'first' ),
-				new Element( 'p', [], 'lorem ipsum' )
+				new Element( 'h', [], new Text( 'first' ) ),
+				new Element( 'p', [], new Text( 'lorem ipsum' ) )
 			] ),
-			new Element( 'p', [], 'foo' ),
-			new Element( 'p', [], 'bar' ),
+			new Element( 'p', [], new Text( 'foo' ) ),
+			new Element( 'p', [], new Text( 'bar' ) ),
 			new Element( 'div', [], [
-				new Element( 'h', [], 'second' ),
-				new Element( 'p', [], 'lorem' )
+				new Element( 'h', [], new Text( 'second' ) ),
+				new Element( 'p', [], new Text( 'lorem' ) )
 			] )
 		] );
 	}

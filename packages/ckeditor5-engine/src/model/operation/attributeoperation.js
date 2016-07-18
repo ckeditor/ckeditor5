@@ -8,6 +8,7 @@
 import Operation from './operation.js';
 import Range from '../range.js';
 import CKEditorError from '../../../utils/ckeditorerror.js';
+import writer from '../writer.js';
 
 /**
  * Operation to change nodes' attribute. Using this class you can add, remove or change value of the attribute.
@@ -95,18 +96,18 @@ export default class AttributeOperation extends Operation {
 	}
 
 	_execute() {
+		// Validation.
 		for ( let item of this.range.getItems() ) {
 			if ( this.oldValue !== null && item.getAttribute( this.key ) !== this.oldValue ) {
 				/**
-				 * The attribute which should be removed does not exists for the given node.
+				 * Changed node has different attribute value than operation's old attribute value.
 				 *
-				 * @error operation-attribute-no-attr-to-remove
+				 * @error operation-attribute-wrong-old-value
 				 * @param {engine.model.Item} item
 				 * @param {String} key
-				 * @param {*} value
 				 */
 				throw new CKEditorError(
-					'operation-attribute-no-attr-to-remove: The attribute which should be removed does not exists for given node.',
+					'operation-attribute-wrong-old-value: Changed node has different attribute value than operation\'s old attribute value.',
 					{ item: item, key: this.key }
 				);
 			}
@@ -124,13 +125,10 @@ export default class AttributeOperation extends Operation {
 					{ node: item, key: this.key }
 				);
 			}
-
-			if ( this.newValue !== null ) {
-				item.setAttribute( this.key, this.newValue );
-			} else {
-				item.removeAttribute( this.key );
-			}
 		}
+
+		// Execution.
+		writer.setAttribute( this.range, this.key, this.newValue );
 
 		return { range: this.range, key: this.key, oldValue: this.oldValue, newValue: this.newValue };
 	}
