@@ -13,9 +13,9 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	features: [ 'delete', 'enter', 'typing', 'headings' ],
 	toolbar: [ 'headings' ]
 } )
-	.then( editor => {
-		window.editor = editor;
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
+.then( editor => {
+	window.editor = editor;
+} )
+.catch( err => {
+	console.error( err.stack );
+} );
