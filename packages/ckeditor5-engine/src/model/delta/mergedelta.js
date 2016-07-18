@@ -26,12 +26,16 @@ export default class MergeDelta extends Delta {
 	/**
 	 * Position between to merged nodes or `null` if the delta has no operations.
 	 *
+	 * @readonly
 	 * @type {engine.model.Position|null}
 	 */
 	get position() {
 		return this._removeOperation ? this._removeOperation.sourcePosition : null;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	getReversed() {
 		let delta = super.getReversed();
 
@@ -48,6 +52,7 @@ export default class MergeDelta extends Delta {
 	 * this might be an instance of {@link engine.model.operation.MoveOperation} instead of
 	 * {@link engine.model.operation.RemoveOperation}.
 	 *
+	 * @readonly
 	 * @protected
 	 * @type {engine.model.operation.MoveOperation|null}
 	 */
@@ -55,6 +60,9 @@ export default class MergeDelta extends Delta {
 		return this.operations[ 1 ] || null;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	get _reverseDeltaClass() {
 		return SplitDelta;
 	}
@@ -90,8 +98,7 @@ register( 'merge', function( position ) {
 		 *
 		 * @error batch-merge-no-element-before
 		 */
-		throw new CKEditorError(
-			'batch-merge-no-element-before: Node before merge position must be an element.' );
+		throw new CKEditorError( 'batch-merge-no-element-before: Node before merge position must be an element.' );
 	}
 
 	if ( !( nodeAfter instanceof Element ) ) {
@@ -100,8 +107,7 @@ register( 'merge', function( position ) {
 		 *
 		 * @error batch-merge-no-element-after
 		 */
-		throw new CKEditorError(
-			'batch-merge-no-element-after: Node after merge position must be an element.' );
+		throw new CKEditorError( 'batch-merge-no-element-after: Node after merge position must be an element.' );
 	}
 
 	const positionAfter = Position.createFromParentAndOffset( nodeAfter, 0 );

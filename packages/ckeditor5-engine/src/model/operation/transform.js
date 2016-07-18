@@ -16,10 +16,8 @@ import isEqual from '../../../utils/lib/lodash/isEqual.js';
 import compareArrays from '../../../utils/comparearrays.js';
 
 /**
- * Transforms given {@link engine.model.operation.Operation operation} by another
- * {@link engine.model.operation.Operation operation} and
- * returns the result of that transformation as an array containing one or more
- * {@link engine.model.operation.Operation operation} elements.
+ * Transforms given {@link engine.model.operation.Operation operation} by another {@link engine.model.operation.Operation operation}
+ * and returns the result of that transformation as an array containing one or more {@link engine.model.operation.Operation operations}.
  *
  * Operations work on specified positions, passed to them when they are created. Whenever {@link engine.model.Document document}
  * changes, we have to reflect those modifications by updating or "transforming" operations which are not yet applied.

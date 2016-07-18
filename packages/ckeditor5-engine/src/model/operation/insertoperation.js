@@ -15,7 +15,7 @@ import Text from '../text.js';
 import Element from '../element.js';
 
 /**
- * Operation to insert list of nodes on the given position in the tree data model.
+ * Operation to insert one or more nodes at given position in the model.
  *
  * @memberOf engine.model.operation
  * @extends engine.model.operation.Operation
@@ -48,11 +48,15 @@ export default class InsertOperation extends Operation {
 		this.nodes = new NodeList( normalizeNodes( nodes ) );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	get type() {
 		return 'insert';
 	}
 
 	/**
+	 * @inheritDoc
 	 * @returns {engine.model.operation.InsertOperation}
 	 */
 	clone() {
@@ -60,12 +64,16 @@ export default class InsertOperation extends Operation {
 	}
 
 	/**
+	 * @inheritDoc
 	 * @returns {engine.model.operation.RemoveOperation}
 	 */
 	getReversed() {
 		return new RemoveOperation( this.position, this.nodes.totalOffset, this.baseVersion + 1 );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	_execute() {
 		// What happens here is that we want original nodes be passed to writer because we want original nodes
 		// to be inserted to the model. But in InsertOperation, we want to keep those nodes as they were added
@@ -87,7 +95,7 @@ export default class InsertOperation extends Operation {
 	}
 
 	/**
-	 * Creates InsertOperation object from deserilized object, i.e. from parsed JSON string.
+	 * Creates `InsertOperation` object from deserilized object, i.e. from parsed JSON string.
 	 *
 	 * @param {Object} json Deserialized JSON object.
 	 * @param {engine.model.Document} document Document on which this operation will be applied.

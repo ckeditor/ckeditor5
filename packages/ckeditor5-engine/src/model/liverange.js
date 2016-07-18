@@ -10,7 +10,8 @@ import EmitterMixin from '../../utils/emittermixin.js';
 import mix from '../../utils/mix.js';
 
 /**
- * LiveRange is a Range in the Tree Model that updates itself as the tree changes. It may be used as a bookmark.
+ * `LiveRange` is a type of {@link engine.model.Range Range} that updates itself as {@link engine.model.Document document}
+ * is changed through operations. It may be used as a bookmark.
  *
  * **Note:** Be very careful when dealing with `LiveRange`. Each `LiveRange` instance bind events that might
  * have to be unbound. Use {@link engine.model.LiveRange#detach detach} whenever you don't need `LiveRange` anymore.
@@ -30,7 +31,7 @@ export default class LiveRange extends Range {
 	}
 
 	/**
-	 * Unbinds all events previously bound by LiveRange. Use it whenever you don't need LiveRange instance
+	 * Unbinds all events previously bound by `LiveRange`. Use it whenever you don't need `LiveRange` instance
 	 * anymore (i.e. when leaving scope in which it was declared or before re-assigning variable that was
 	 * referring to it).
 	 */
@@ -76,7 +77,7 @@ export default class LiveRange extends Range {
 }
 
 /**
- * Binds this LiveRange to the {@link engine.model.Document} that owns this range.
+ * Binds this `LiveRange` to the {@link engine.model.Document document} that owns this range's {@link engine.model.Range#root root}.
  *
  * @ignore
  * @private
@@ -89,25 +90,23 @@ function bindWithDocument() {
 		this.root.document,
 		'change',
 		( event, type, changes ) => {
-			fixBoundaries.call( this, type, changes.range, changes.sourcePosition );
+			transform.call( this, type, changes.range, changes.sourcePosition );
 		},
 		this
 	);
 }
 
 /**
- * LiveRange boundaries are instances of {@link engine.model.LivePosition}, so it is updated thanks to them. This method
- * additionally fixes the results of updating live positions taking into account that those live positions
- * are boundaries of a range. An example case for fixing live positions is end boundary is moved before start boundary.
+ * Updates this range accordingly to the updates applied to the model. Bases on change events.
  *
  * @ignore
  * @private
- * @method fixBoundaries
+ * @method transform
  * @param {String} type Type of changes applied to the Tree Model.
  * @param {engine.model.Range} range Range containing the result of applied change.
  * @param {engine.model.Position} [position] Additional position parameter provided by some change events.
  */
-function fixBoundaries( type, range, position ) {
+function transform( type, range, position ) {
 	/* jshint validthis: true */
 	let updated;
 	const howMany = range.end.offset - range.start.offset;

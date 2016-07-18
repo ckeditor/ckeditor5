@@ -21,6 +21,9 @@ import Position from '../position.js';
  * @memberOf engine.model.delta
  */
 export default class RenameDelta extends Delta {
+	/**
+	 * @inheritDoc
+	 */
 	get _reverseDeltaClass() {
 		return RenameDelta;
 	}
@@ -39,7 +42,7 @@ function apply( batch, delta, operation ) {
 }
 
 /**
- * Renames the given element.
+ * Renames given element.
  *
  * @chainable
  * @method engine.model.Batch#rename

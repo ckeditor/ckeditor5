@@ -28,18 +28,18 @@ export default class WeakInsertDelta extends InsertDelta {
 }
 
 /**
- * Inserts a node or nodes at the given position. {@link engine.model.Batch#weakInsert weakInsert} is commonly used for actions
+ * Inserts a node or nodes at given position. {@link engine.model.Batch#weakInsert weakInsert} is commonly used for actions
  * like typing or plain-text paste (without formatting). There are two differences between
  * {@link engine.model.Batch#insert insert} and {@link engine.model.Batch#weakInsert weakInsert}:
  *
  * * When using `weakInsert`, inserted nodes will have same attributes as the current attributes of
  * {@link engine.model.Document#selection document selection}.
- * * Normal behavior is that inserting inside range changed by
- * {@link engine.model.operation.AttributeOperation AttributeOperation} splits
- * the operation into two operations, which "omit" the inserted nodes. The correct behavior for `WeakInsertDelta` is that
+ * * If {@link engine.model.operation.InsertOperation insert operation} position is inside a range changed by
+ * {@link engine.model.operation.AttributeOperation attribute operation}, the attribute operation is split into two operations.
+ * Thanks to this, attribute change "omits" the inserted nodes. The correct behavior for `WeakInsertDelta` is that
  * {@link engine.model.operation.AttributeOperation AttributeOperation} does not "break" and also
- * applies attributes for inserted nodes.
- * The above has to be reflected during {@link engine.model.operation.transform operational transformation}.
+ * applies attributes for inserted nodes. This behavior has to be reflected during
+ * {@link engine.model.delta.transform delta transformation}.
  *
  * @chainable
  * @method engine.model.Batch#weakInsert

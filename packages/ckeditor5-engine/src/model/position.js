@@ -12,8 +12,21 @@ import compareArrays from '../../utils/comparearrays';
 import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
- * Position in the tree. Position is always located before or after a node.
- * See {@link #path} property for more information.
+ * Represents a position in the model tree.
+ *
+ * Since position in a model is represented by a {@link engine.model.Position#root position root} and
+ * {@link engine.model.Position#path position path} it is possible to create positions placed in non-existing elements.
+ * This requirement is important for {@link engine.model.operation.transfrom operational transformation}.
+ *
+ * Also, {@link engine.model.operation.Operation operations} kept in {@link engine.model.Document#history document history}
+ * are storing positions (and ranges) which were correct when those operations were applied, but may not be correct
+ * after document got changed.
+ *
+ * When changes are applied to model, it may also happen that {@link engine.model.Position#parent position parent} will change
+ * even if position path has not changed. Keep in mind, that if a position leads to non-existing element,
+ * {@link engine.model.Position#parent} and some other properties and methods will throw errors.
+ *
+ * In most cases, position with wrong path is caused by an error in code, but it is sometimes needed, as described above.
  *
  * @memberOf engine.model
  */
@@ -21,9 +34,8 @@ export default class Position {
 	/**
 	 * Creates a position.
 	 *
-	 * @param {engine.model.Element|engine.model.DocumentFragment} root
-	 * Root of the position path. Element (most often a {@link engine.model.RootElement}) or a document fragment.
-	 * @param {Array.<Number>} path Position path. See {@link engine.model.Position#path} property for more information.
+	 * @param {engine.model.Element|engine.model.DocumentFragment} root Root of the position.
+	 * @param {Array.<Number>} path Position path. See {@link engine.model.Position#path}.
 	 */
 	constructor( root, path ) {
 		if ( !( root instanceof Element ) && !( root instanceof DocumentFragment ) ) {
@@ -58,19 +70,31 @@ export default class Position {
 		this.root = root;
 
 		/**
-		 * Position of the node it the tree. Must contain at least one item. For example:
+		 * Position of the node it the tree.
 		 *
-		 *		 root
-		 *		  |- p         Before: [ 0 ]       After: [ 1 ]
-		 *		  |- ul        Before: [ 1 ]       After: [ 2 ]
-		 *		     |- li     Before: [ 1, 0 ]    After: [ 1, 1 ]
-		 *		     |  |- f   Before: [ 1, 0, 0 ] After: [ 1, 0, 1 ]
-		 *		     |  |- o   Before: [ 1, 0, 1 ] After: [ 1, 0, 2 ]
-		 *		     |  |- o   Before: [ 1, 0, 2 ] After: [ 1, 0, 3 ]
-		 *		     |- li     Before: [ 1, 1 ]    After: [ 1, 2 ]
-		 *		        |- b   Before: [ 1, 1, 0 ] After: [ 1, 1, 1 ]
-		 *		        |- a   Before: [ 1, 1, 1 ] After: [ 1, 1, 2 ]
-		 *		        |- r   Before: [ 1, 1, 2 ] After: [ 1, 1, 3 ]
+		 * Position can be placed before, after or in a {@link engine.model.Node node} if that node has
+		 * {@link engine.model.Node#offsetSize} greater than `1`. Items in position path are
+		 * {@link engine.model.Node#startOffset starting offsets} of position ancestors, starting from direct root children,
+		 * down to the position offset in it's parent.
+		 *
+		 *		 ROOT
+		 *		  |- P            before: [ 0 ]         after: [ 1 ]
+		 *		  |- UL           before: [ 1 ]         after: [ 2 ]
+		 *		     |- LI        before: [ 1, 0 ]      after: [ 1, 1 ]
+		 *		     |  |- foo    before: [ 1, 0, 0 ]   after: [ 1, 0, 3 ]
+		 *		     |- LI        before: [ 1, 1 ]      after: [ 1, 2 ]
+		 *		        |- bar    before: [ 1, 1, 0 ]   after: [ 1, 1, 3 ]
+		 *
+		 * `foo` and `bar` are representing {@link engine.model.Text text nodes}. Since text nodes has offset size
+		 * greater than `1` you can place position offset between their start and end:
+		 *
+		 *		 ROOT
+		 *		  |- P
+		 *		  |- UL
+		 *		     |- LI
+		 *		     |  |- f^o|o  ^ has path: [ 1, 0, 1 ]   | has path: [ 1, 0, 2 ]
+		 *		     |- LI
+		 *		        |- b^a|r  ^ has path: [ 1, 1, 1 ]   | has path: [ 1, 1, 2 ]
 		 *
 		 * @member {Array.<Number>} engine.model.Position#path
 		 */
@@ -98,9 +122,9 @@ export default class Position {
 	}
 
 	/**
-	 * Offset at which the position is located in the {@link #parent}.
+	 * Offset at which this position is located in it's {@link engine.model.Position#parent parent}. It is equal
+	 * to the last item in position {@link engine.model.Position#path path}.
 	 *
-	 * @readonly
 	 * @type {Number}
 	 */
 	get offset() {
@@ -108,8 +132,6 @@ export default class Position {
 	}
 
 	/**
-	 * Sets offset in the parent, which is the last element of the path.
-	 *
 	 * @param {Number} newOffset
 	 */
 	set offset( newOffset ) {
@@ -167,20 +189,22 @@ export default class Position {
 	}
 
 	/**
-	 * Returns the path to the parent, which is the {@link engine.model.Position#path} without the last element.
+	 * Returns a path to this position's parent. Parent path is equal to position {@link engine.model.Position#path path}
+	 * but without the last item.
 	 *
 	 * This method returns the parent path even if the parent does not exists.
 	 *
-	 * @returns {Number[]} Path to the parent.
+	 * @returns {Array.<Number>} Path to the parent.
 	 */
 	getParentPath() {
 		return this.path.slice( 0, -1 );
 	}
 
 	/**
-	 * Returns a new instance of Position with offset incremented by `shift` value.
+	 * Returns a new instance of `Position`, that has same {@link engine.model.Position#parent parent} but it's offset
+	 * is shifted by `shift` value (can be a negative value).
 	 *
-	 * @param {Number} shift How position offset should get changed. Accepts negative values.
+	 * @param {Number} shift Offset shift. Can be a negative value.
 	 * @returns {engine.model.Position} Shifted position.
 	 */
 	getShiftedBy( shift ) {
@@ -193,7 +217,7 @@ export default class Position {
 	}
 
 	/**
-	 * Returns this position after being updated by removing `howMany` nodes starting from `deletePosition`.
+	 * Returns a copy of this position that is updated by removing `howMany` nodes starting from `deletePosition`.
 	 * It may happen that this position is in a removed node. If that is the case, `null` is returned instead.
 	 *
 	 * @protected
@@ -242,7 +266,7 @@ export default class Position {
 	}
 
 	/**
-	 * Returns this position after being updated by inserting `howMany` nodes at `insertPosition`.
+	 * Returns a copy of this position that is updated by inserting `howMany` nodes at `insertPosition`.
 	 *
 	 * @protected
 	 * @param {engine.model.Position} insertPosition Position where nodes are inserted.
@@ -282,7 +306,7 @@ export default class Position {
 	}
 
 	/**
-	 * Returns this position after being updated by moving `howMany` nodes from `sourcePosition` to `targetPosition`.
+	 * Returns a copy of this position that is updated by moving `howMany` nodes from `sourcePosition` to `targetPosition`.
 	 *
 	 * @protected
 	 * @param {engine.model.Position} sourcePosition Position before the first element to move.
@@ -529,10 +553,9 @@ export default class Position {
 	}
 
 	/**
-	 * Creates a new position from the parent element and the offset in that element.
+	 * Creates a new position from the parent element and an offset in that element.
 	 *
-	 * @param {engine.model.Element|engine.model.DocumentFragment} parent Position's parent element or
-	 * document fragment.
+	 * @param {engine.model.Element|engine.model.DocumentFragment} parent Position's parent.
 	 * @param {Number} offset Position's offset.
 	 * @returns {engine.model.Position}
 	 */
@@ -543,7 +566,7 @@ export default class Position {
 			 *
 			 * @error position-parent-incorrect
 			 */
-			throw new CKEditorError( 'position-parent-incorrect: Position parent have to be a model element or model document fragment.' );
+			throw new CKEditorError( 'position-parent-incorrect: Position parent have to be a element or document fragment.' );
 		}
 
 		const path = parent.getPath();
@@ -554,7 +577,7 @@ export default class Position {
 	}
 
 	/**
-	 * Creates and returns a new instance of Position, which is equal to passed position.
+	 * Creates a new position, which is equal to passed position.
 	 *
 	 * @param {engine.model.Position} position Position to be cloned.
 	 * @returns {engine.model.Position}
@@ -564,11 +587,10 @@ export default class Position {
 	}
 
 	/**
-	 * Creates Element object from deserilized object, ie. from parsed JSON string.
+	 * Creates a `Position` instance from given plain object (i.e. parsed JSON string).
 	 *
-	 * @param {Object} json Deserialized JSON object.
-	 * @param {engine.model.Document} doc Document on which this operation will be applied.
-	 * @returns {engine.model.Position}
+	 * @param {Object} json Plain object to be converted to `Position`.
+	 * @returns {engine.model.Position} `Position` instance created using given plain object.
 	 */
 	static fromJSON( json, doc ) {
 		if ( json.root === '$graveyard' ) {

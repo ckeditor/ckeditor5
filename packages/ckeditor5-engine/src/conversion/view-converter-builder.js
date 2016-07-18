@@ -374,7 +374,7 @@ class ViewConverterBuilder {
 	}
 }
 
-// Helper function that sets given attributes on given `engine.model.Item` or `engine.model.DocumentFragment`.
+// Helper function that sets given attributes on given `engine.model.Node` or `engine.model.DocumentFragment`.
 function setAttributeOn( toChange, attribute, data, conversionApi ) {
 	if ( isIterable( toChange ) ) {
 		for ( let node of toChange ) {

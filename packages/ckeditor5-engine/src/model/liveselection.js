@@ -17,21 +17,24 @@ import Selection from './selection.js';
 const storePrefix = 'selection:';
 
 /**
- * `LiveSelection` is a special type of {@link engine.model.Selection selection} that listens to changes on a
+ * `LiveSelection` is a type of {@link engine.model.Selection selection} that listens to changes on a
  * {@link engine.model.Document document} and has it ranges updated accordingly. Internal implementation of this
  * mechanism bases on {@link engine.model.LiveRange live ranges}.
  *
- * Differences between {@link engine.model.Selection} and `LiveSelection` are three:
- * * there is always a range in `LiveSelection`, even if no ranges were added - in this case, there is a
- * "default range" in selection which is a collapsed range set at the beginning of the {@link engine.model.Document document},
- * * ranges added to this selection updates automatically when the document changes,
- * * live selection may have attributes.
+ * Differences between {@link engine.model.Selection} and `LiveSelection` are two:
+ * * there is always a range in `LiveSelection` - even if no ranges were added there is a
+ * {@link engine.model.LiveSelection#_getDefaultRange "default range"} present in the selection,
+ * * ranges added to this selection updates automatically when the document changes.
+ *
+ * Since `LiveSelection` uses {@link engine.model.LiveRange live ranges} and is updated when {@link engine.model.Document document}
+ * changes, it cannot be set on {@link engine.model.Node nodes} that are inside {@link engine.model.DocumentFragment document fragment}.
+ * If you need to represent a selection in document fragment, use {@link engine.model.Selection "normal" selection} instead.
  *
  * @memberOf engine.model
  */
 export default class LiveSelection extends Selection {
 	/**
-	 * Creates an empty document selection for given {@link engine.model.Document}.
+	 * Creates an empty live selection for given {@link engine.model.Document}.
 	 *
 	 * @param {engine.model.Document} document Document which owns this selection.
 	 */
@@ -169,7 +172,7 @@ export default class LiveSelection extends Selection {
 
 	/**
 	 * Returns a default range for this selection. The default range is a collapsed range that starts and ends
-	 * at the beginning of this selection's document {@link engine.model.Document#_getDefaultRoot default root}.
+	 * at the beginning of this selection's document's {@link engine.model.Document#_getDefaultRoot default root}.
 	 * This "artificial" range is important for algorithms that base on selection, so they won't break or need
 	 * special logic if there are no real ranges in the selection.
 	 *

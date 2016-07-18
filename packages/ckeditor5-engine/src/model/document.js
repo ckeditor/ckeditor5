@@ -13,12 +13,12 @@ import RootElement from './rootelement.js';
 import Batch from './batch.js';
 import History from './history.js';
 import LiveSelection from './liveselection.js';
-import EmitterMixin from '../../utils/emittermixin.js';
-import CKEditorError from '../../utils/ckeditorerror.js';
-import mix from '../../utils/mix.js';
 import Schema from './schema.js';
 import Composer from './composer/composer.js';
 import clone from '../../utils/lib/lodash/clone.js';
+import EmitterMixin from '../../utils/emittermixin.js';
+import CKEditorError from '../../utils/ckeditorerror.js';
+import mix from '../../utils/mix.js';
 
 const graveyardName = '$graveyard';
 
@@ -28,7 +28,7 @@ const graveyardName = '$graveyard';
  * represented by the separate root.
  *
  * All changes in the document are done by {@link engine.model.operation.Operation operations}. To create operations in
- * the simple way use use the {@link engine.model.Batch} API, for example:
+ * a simple way, use the {@link engine.model.Batch} API, for example:
  *
  *		doc.batch().insert( position, nodes ).split( otherPosition );
  *
@@ -38,7 +38,8 @@ const graveyardName = '$graveyard';
  */
 export default class Document {
 	/**
-	 * Creates an empty document instance with no {@link engine.model.Document#roots} (other than graveyard).
+	 * Creates an empty document instance with no {@link engine.model.Document#roots} (other than
+	 * a {@link engine.model.Document#graveyard graveyard root}).
 	 */
 	constructor() {
 		/**
