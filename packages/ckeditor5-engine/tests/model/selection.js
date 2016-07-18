@@ -111,7 +111,7 @@ describe( 'Selection', () => {
 		it( 'should throw an error when range is invalid', () => {
 			expect( () => {
 				selection.addRange( { invalid: 'Range' } );
-			} ).to.throw( CKEditorError, 'selection-invalid-range: Invalid Range.' );
+			} ).to.throw( CKEditorError, /selection-added-not-range/ );
 		} );
 
 		it( 'should copy added ranges and store multiple ranges', () => {
@@ -505,7 +505,7 @@ describe( 'Selection', () => {
 		it( 'should throw an error when range is invalid', () => {
 			expect( () => {
 				selection.setRanges( [ { invalid: 'range' } ] );
-			} ).to.throw( CKEditorError, 'selection-invalid-range: Invalid Range.' );
+			} ).to.throw( CKEditorError, /selection-added-not-range/ );
 		} );
 
 		it( 'should remove all ranges and add given ranges', () => {
@@ -533,6 +533,22 @@ describe( 'Selection', () => {
 		it( 'should fire exactly one update event', () => {
 			selection.setRanges( newRanges );
 			expect( spy.calledOnce ).to.be.true;
+		} );
+	} );
+
+	describe( 'setTo', () => {
+		it( 'should set selection to be same as given selection, using setRanges method', () => {
+			sinon.spy( selection, 'setRanges' );
+
+			const otherSelection = new Selection();
+			otherSelection.addRange( range1 );
+			otherSelection.addRange( range2, true );
+
+			selection.setTo( otherSelection );
+
+			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1, range2 ] );
+			expect( selection.isBackward ).to.be.true;
+			expect( selection.setRanges.calledOnce ).to.be.true;
 		} );
 	} );
 

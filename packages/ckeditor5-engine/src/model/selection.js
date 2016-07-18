@@ -275,10 +275,6 @@ export default class Selection {
 		this._ranges = [];
 
 		for ( let range of newRanges ) {
-			if ( !( range instanceof Range ) ) {
-				throw new CKEditorError( 'selection-invalid-range: Invalid Range.' );
-			}
-
 			this._pushRange( range );
 		}
 
@@ -493,6 +489,10 @@ export default class Selection {
 	 * @param {engine.model.Range} range Range to add.
 	 */
 	_pushRange( range ) {
+		if ( !( range instanceof Range ) ) {
+			throw new CKEditorError( 'selection-added-not-range: Trying to add an object that is not an instance of Range.' );
+		}
+
 		this._checkRange( range );
 		this._ranges.push( Range.createFromRange( range ) );
 	}
