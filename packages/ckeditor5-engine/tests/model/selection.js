@@ -579,6 +579,129 @@ describe( 'Selection', () => {
 		} );
 	} );
 
+	describe( 'getLastRange', () => {
+		it( 'should return null if no ranges were added', () => {
+			expect( selection.getLastRange() ).to.be.null;
+		} );
+
+		it( 'should return a range which start position is before all other ranges\' start positions', () => {
+			selection.addRange( range3 );
+			selection.addRange( range1 );
+			selection.addRange( range2 );
+
+			let range = selection.getLastRange();
+
+			expect( range.start.path ).to.deep.equal( [ 6 ] );
+			expect( range.end.path ).to.deep.equal( [ 7 ] );
+		} );
+	} );
+
+	describe( 'getLastPosition', () => {
+		it( 'should return null if no ranges were added', () => {
+			expect( selection.getLastPosition() ).to.be.null;
+		} );
+
+		it( 'should return a position that is in selection and is before any other position from the selection', () => {
+			selection.addRange( range3 );
+			selection.addRange( range1 );
+			selection.addRange( range2 );
+
+			let position = selection.getLastPosition();
+
+			expect( position.path ).to.deep.equal( [ 7 ] );
+		} );
+	} );
+
+	describe( 'isEqual', () => {
+		it( 'should return true if selections equal', () => {
+			selection.addRange( range1 );
+			selection.addRange( range2 );
+
+			const otherSelection = new Selection();
+			otherSelection.addRange( range1 );
+			otherSelection.addRange( range2 );
+
+			expect( selection.isEqual( otherSelection ) ).to.be.true;
+		} );
+
+		it( 'should return true if backward selections equal', () => {
+			selection.addRange( range1, true );
+
+			const otherSelection = new Selection();
+			otherSelection.addRange( range1, true );
+
+			expect( selection.isEqual( otherSelection ) ).to.be.true;
+		} );
+
+		it( 'should return false if ranges count does not equal', () => {
+			selection.addRange( range1 );
+			selection.addRange( range2 );
+
+			const otherSelection = new Selection();
+			otherSelection.addRange( range1 );
+
+			expect( selection.isEqual( otherSelection ) ).to.be.false;
+		} );
+
+		it( 'should return false if ranges do not equal', () => {
+			selection.addRange( range1 );
+
+			const otherSelection = new Selection();
+			otherSelection.addRange( range2 );
+
+			expect( selection.isEqual( otherSelection ) ).to.be.false;
+		} );
+
+		it( 'should return false if directions do not equal', () => {
+			selection.addRange( range1 );
+
+			const otherSelection = new Selection();
+			otherSelection.addRange( range1, true );
+
+			expect( selection.isEqual( otherSelection ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'collapseToStart', () => {
+		it( 'should collapse to start position and fire change event', () => {
+			selection.setRanges( [ range2, range1, range3 ] );
+			selection.collapseToStart();
+
+			expect( selection.rangeCount ).to.equal( 1 );
+			expect( selection.isCollapsed ).to.be.true;
+			expect( selection.getFirstPosition().isEqual( range1.start ) ).to.be.true;
+		} );
+
+		it( 'should do nothing if no ranges present', () => {
+			const spy = sinon.spy( selection, 'fire' );
+
+			selection.collapseToStart();
+
+			spy.restore();
+			expect( spy.notCalled ).to.be.true;
+		} );
+	} );
+
+	describe( 'collapseToEnd', () => {
+		it( 'should collapse to start position and fire change event', () => {
+			selection.setRanges( [ range2, range3, range1 ] );
+			selection.collapseToEnd();
+
+			expect( selection.rangeCount ).to.equal( 1 );
+			expect( selection.isCollapsed ).to.be.true;
+			expect( selection.getLastPosition().isEqual( range3.end ) ).to.be.true;
+		} );
+
+		it( 'should do nothing if no ranges present', () => {
+			const spy = sinon.spy( selection, 'fire' );
+
+			selection.collapseToEnd();
+
+			spy.restore();
+			expect( spy.notCalled ).to.be.true;
+		} );
+	} );
+
 	describe( 'createFromSelection', () => {
 		it( 'should return a Selection instance with same ranges and direction as given selection', () => {
 			selection.addRange( liveRange );

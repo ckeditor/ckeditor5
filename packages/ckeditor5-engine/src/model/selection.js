@@ -180,6 +180,27 @@ export default class Selection {
 	}
 
 	/**
+	 * Returns a copy of the last range in the selection. Last range is the one which {@link engine.model.Range#end end} position
+	 * {@link engine.model.Position#isAfter is after} end position of all other ranges (not to confuse with the range most
+	 * recently added to the selection).
+	 *
+	 * Returns `null` if there are no ranges in selection.
+	 *
+	 * @returns {engine.model.Range|null}
+	 */
+	getLastRange() {
+		let last = null;
+
+		for ( let range of this._ranges ) {
+			if ( !last || range.end.isAfter( last.end ) ) {
+				last = range;
+			}
+		}
+
+		return last ? Range.createFromRange( last ) : null;
+	}
+
+	/**
 	 * Returns the first position in the selection. First position is the position that {@link engine.model.Position#isBefore is before}
 	 * any other position in the selection.
 	 *
@@ -191,6 +212,20 @@ export default class Selection {
 		const first = this.getFirstRange();
 
 		return first ? Position.createFromPosition( first.start ) : null;
+	}
+
+	/**
+	 * Returns the last position in the selection. Last position is the position that {@link engine.model.Position#isAfter is after}
+	 * any other position in the selection.
+	 *
+	 * Returns `null` if there are no ranges in selection.
+	 *
+	 * @returns {engine.model.Position|null}
+	 */
+	getLastPosition() {
+		const lastRange = this.getLastRange();
+
+		return lastRange ? Position.createFromPosition( lastRange.end ) : null;
 	}
 
 	/**
@@ -253,6 +288,15 @@ export default class Selection {
 	}
 
 	/**
+	 * Sets this selection's ranges and direction to the ranges and direction of the given selection.
+	 *
+	 * @param {engine.model.Selection} otherSelection
+	 */
+	setTo( otherSelection ) {
+		this.setRanges( otherSelection.getRanges(), otherSelection.isBackward );
+	}
+
+	/**
 	 * Sets collapsed selection in the specified location.
 	 *
 	 * The location can be specified in the same form as {@link engine.model.Position.createAt} parameters.
@@ -267,6 +311,36 @@ export default class Selection {
 		const range = new Range( pos, pos );
 
 		this.setRanges( [ range ] );
+	}
+
+	/**
+	 * Collapses selection to the selection's {@link engine.model.Selection#getFirstPosition first position}.
+	 * All ranges, besides the collapsed one, will be removed. Nothing will change if there are no ranges stored
+	 * inside selection.
+	 *
+	 * @fires engine.view.Selection#change
+	 */
+	collapseToStart() {
+		const startPosition = this.getFirstPosition();
+
+		if ( startPosition !== null ) {
+			this.setRanges( [ new Range( startPosition, startPosition ) ] );
+		}
+	}
+
+	/**
+	 * Collapses selection to the selection's {@link engine.model.Selection#getLastPosition last position}.
+	 * All ranges, besides the collapsed one, will be removed. Nothing will change if there are no ranges stored
+	 * inside selection.
+	 *
+	 * @fires engine.view.Selection#change
+	 */
+	collapseToEnd() {
+		const endPosition = this.getLastPosition();
+
+		if ( endPosition !== null ) {
+			this.setRanges( [ new Range( endPosition, endPosition ) ] );
+		}
 	}
 
 	/**
@@ -406,7 +480,7 @@ export default class Selection {
 	 */
 	static createFromSelection( otherSelection ) {
 		const selection = new this();
-		selection.setRanges( otherSelection.getRanges(), otherSelection.isBackward );
+		selection.setTo( otherSelection );
 
 		return selection;
 	}
