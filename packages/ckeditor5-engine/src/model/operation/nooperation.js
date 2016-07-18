@@ -36,7 +36,7 @@ export default class NoOperation extends Operation {
 	}
 
 	/**
-	 * @inheritdoc
+	 * @inheritDoc
 	 */
 	_execute() {
 		// Do nothing.
