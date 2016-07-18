@@ -257,8 +257,7 @@ class ViewConverterBuilder {
 					const modelElement = element instanceof Function ? element( data.input ) : new ModelElement( element );
 
 					// Check whether generated structure is okay with `Schema`.
-					// TODO: Make it more sane after .getAttributeKeys() is available for ModelElement.
-					const keys = Array.from( modelElement.getAttributes() ).map( ( attribute ) => attribute[ 0 ] );
+					const keys = Array.from( modelElement.getAttributeKeys() );
 
 					if ( !conversionApi.schema.check( { name: modelElement.name, attributes: keys, inside: data.context } ) ) {
 						continue;
@@ -384,8 +383,8 @@ function setAttributeOn( toChange, attribute, data, conversionApi ) {
 		return;
 	}
 
-	// TODO: Make it more sane after .getAttributeKeys() is available for ModelElement.
-	const keys = Array.from( toChange.getAttributes() ).map( ( attribute ) => attribute[ 0 ] ).concat( attribute.key );
+	const keys = Array.from( toChange.getAttributeKeys() );
+	keys.push( attribute.key );
 
 	const schemaQuery = {
 		name: toChange.name || '$text',
