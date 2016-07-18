@@ -75,7 +75,6 @@
     "parse-gitignore": "^0.2.0",
     "pretty-bytes": "^3.0.1",
     "regenerator-runtime": "^0.9.5",
-    "parse-gitignore": "^0.2.0",
     "replace": "^0.3.0",
     "rollup": "^0.33.0",
     "rollup-plugin-babel": "^2.4.0",

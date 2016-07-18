@@ -79,19 +79,12 @@ module.exports = {
 		const directories = this.getDirectories( workspacePath );
 		const dependencies = this.getDependencies( packageJSON.dependencies );
 
-		if ( includeRoot ) {
-			// Add root dependency and directory.
-			dependencies.ckeditor5 = 'ckeditor/ckeditor5';
-			directories.push( 'ckeditor5' );
-		}
-
 		let devDirectories = [];
 
 		for ( let dependency in dependencies ) {
 			const repositoryURL = dependencies[ dependency ];
 			const urlInfo = git.parseRepositoryUrl( repositoryURL );
-			const isRootDep = dependency == 'ckeditor5';
-			const repositoryPath = isRootDep ? ckeditor5Path : path.join( ckeditor5Path, 'node_modules', dependency );
+			const repositoryPath = path.join( ckeditor5Path, 'node_modules', dependency );
 
 			// Check if repository's directory already exists.
 			if ( directories.indexOf( urlInfo.name ) > -1 ) {
@@ -100,6 +93,14 @@ module.exports = {
 					repositoryURL
 				} );
 			}
+		}
+
+		if ( includeRoot ) {
+			// Add root dependency and directory.
+			devDirectories.unshift( {
+				repositoryPath: ckeditor5Path,
+				repositoryURL: 'ckeditor/ckeditor5'
+			} );
 		}
 
 		return devDirectories;
