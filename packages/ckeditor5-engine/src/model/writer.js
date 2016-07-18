@@ -123,7 +123,7 @@ export function move( sourceRange, targetPosition ) {
 
 	// We have to fix `targetPosition` because model changed after nodes from `sourceRange` got removed and
 	// that change might have an impact on `targetPosition`.
-	targetPosition = targetPosition.getTransformedByDeletion( sourceRange.start, sourceRange.end.offset - sourceRange.start.offset );
+	targetPosition = targetPosition._getTransformedByDeletion( sourceRange.start, sourceRange.end.offset - sourceRange.start.offset );
 
 	return this.insert( targetPosition, nodes );
 }

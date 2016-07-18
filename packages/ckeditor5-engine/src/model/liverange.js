@@ -113,7 +113,7 @@ function transform( type, range, position ) {
 
 	switch ( type ) {
 		case 'insert':
-			updated = this.getTransformedByInsertion( range.start, howMany, false, true )[ 0 ];
+			updated = this._getTransformedByInsertion( range.start, howMany, false, true )[ 0 ];
 			break;
 
 		case 'move':
@@ -121,12 +121,12 @@ function transform( type, range, position ) {
 		case 'reinsert':
 			const sourcePosition = position;
 
-			// Range.getTransformedByMove is expecting `targetPosition` to be "before" move
+			// Range._getTransformedByMove is expecting `targetPosition` to be "before" move
 			// (before transformation). `range.start` is already after the move happened.
 			// We have to revert `range.start` to the state before the move.
-			const targetPosition = range.start.getTransformedByInsertion( sourcePosition, howMany );
+			const targetPosition = range.start._getTransformedByInsertion( sourcePosition, howMany );
 
-			const result = this.getTransformedByMove( sourcePosition, targetPosition, howMany, false, true );
+			const result = this._getTransformedByMove( sourcePosition, targetPosition, howMany, false, true );
 
 			// First item in the array is the "difference" part, so a part of the range
 			// that did not get moved. We use it as reference range and expand if possible.
@@ -134,7 +134,7 @@ function transform( type, range, position ) {
 
 			// We will check if there is other range and if it is touching the reference range.
 			// If it does, we will expand the reference range (at the beginning or at the end).
-			// Keep in mind that without settings `spread` flag, `getTransformedByMove` may
+			// Keep in mind that without settings `spread` flag, `_getTransformedByMove` may
 			// return maximum two ranges.
 			if ( result.length > 1 ) {
 				let otherRange = result[ 1 ];

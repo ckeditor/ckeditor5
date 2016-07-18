@@ -65,7 +65,7 @@ export default class MoveOperation extends Operation {
 		 *
 		 * @member {engine.model.Position} engine.model.operation.MoveOperation#movedRangeStart
 		 */
-		this.movedRangeStart = this.targetPosition.getTransformedByDeletion( this.sourcePosition, this.howMany );
+		this.movedRangeStart = this.targetPosition._getTransformedByDeletion( this.sourcePosition, this.howMany );
 
 		/**
 		 * Defines whether `MoveOperation` is sticky. If `MoveOperation` is sticky, during
@@ -101,7 +101,7 @@ export default class MoveOperation extends Operation {
 	 * @returns {engine.model.operation.MoveOperation}
 	 */
 	getReversed() {
-		let newTargetPosition = this.sourcePosition.getTransformedByInsertion( this.targetPosition, this.howMany );
+		let newTargetPosition = this.sourcePosition._getTransformedByInsertion( this.targetPosition, this.howMany );
 
 		const op = new this.constructor( this.movedRangeStart, this.howMany, newTargetPosition, this.baseVersion + 1 );
 		op.isSticky = this.isSticky;

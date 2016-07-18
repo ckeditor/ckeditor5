@@ -386,7 +386,7 @@ export default class Position {
 	 * @param {Number} howMany How many nodes are removed.
 	 * @returns {engine.model.Position|null} Transformed position or `null`.
 	 */
-	getTransformedByDeletion( deletePosition, howMany ) {
+	_getTransformedByDeletion( deletePosition, howMany ) {
 		let transformed = Position.createFromPosition( this );
 
 		// This position can't be affected if deletion was in a different root.
@@ -437,7 +437,7 @@ export default class Position {
 	 * set to `true`, this position will get transformed. If the flag is set to `false`, it won't.
 	 * @returns {engine.model.Position} Transformed position.
 	 */
-	getTransformedByInsertion( insertPosition, howMany, insertBefore ) {
+	_getTransformedByInsertion( insertPosition, howMany, insertBefore ) {
 		let transformed = Position.createFromPosition( this );
 
 		// This position can't be affected if insertion was in a different root.
@@ -480,12 +480,12 @@ export default class Position {
 	 * with the moved range if it is equal to one of range's boundaries.
 	 * @returns {engine.model.Position} Transformed position.
 	 */
-	getTransformedByMove( sourcePosition, targetPosition, howMany, insertBefore, sticky ) {
+	_getTransformedByMove( sourcePosition, targetPosition, howMany, insertBefore, sticky ) {
 		// Moving a range removes nodes from their original position. We acknowledge this by proper transformation.
-		let transformed = this.getTransformedByDeletion( sourcePosition, howMany );
+		let transformed = this._getTransformedByDeletion( sourcePosition, howMany );
 
 		// Then we update target position, as it could be affected by nodes removal too.
-		targetPosition = targetPosition.getTransformedByDeletion( sourcePosition, howMany );
+		targetPosition = targetPosition._getTransformedByDeletion( sourcePosition, howMany );
 
 		if ( transformed === null || ( sticky && transformed.isEqual( sourcePosition ) ) ) {
 			// This position is inside moved range (or sticks to it).
@@ -494,7 +494,7 @@ export default class Position {
 		} else {
 			// This position is not inside a removed range.
 			// In next step, we simply reflect inserting `howMany` nodes, which might further affect the position.
-			transformed = transformed.getTransformedByInsertion( targetPosition, howMany, insertBefore );
+			transformed = transformed._getTransformedByInsertion( targetPosition, howMany, insertBefore );
 		}
 
 		return transformed;

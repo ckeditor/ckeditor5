@@ -155,7 +155,7 @@ function transform( type, range, position ) {
 	switch ( type ) {
 		case 'insert':
 			let insertBefore = this.stickiness == 'STICKS_TO_NEXT';
-			transformed = this.getTransformedByInsertion( range.start, howMany, insertBefore );
+			transformed = this._getTransformedByInsertion( range.start, howMany, insertBefore );
 			break;
 
 		case 'move':
@@ -167,12 +167,12 @@ function transform( type, range, position ) {
 				( originalRange.start.isEqual( this ) && this.stickiness == 'STICKS_TO_NEXT' ) ||
 				( originalRange.end.isEqual( this ) && this.stickiness == 'STICKS_TO_PREVIOUS' );
 
-			// We can't use .getTransformedByMove() because we have a different if-condition.
+			// We can't use ._getTransformedByMove() because we have a different if-condition.
 			if ( gotMoved ) {
 				transformed = this._getCombined( position, range.start );
 			} else {
 				let insertBefore = this.stickiness == 'STICKS_TO_NEXT';
-				transformed = this.getTransformedByMove( position, range.start, howMany, insertBefore );
+				transformed = this._getTransformedByMove( position, range.start, howMany, insertBefore );
 			}
 			break;
 		default:

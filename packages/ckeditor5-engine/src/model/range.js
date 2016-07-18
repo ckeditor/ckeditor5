@@ -378,22 +378,22 @@ export default class Range {
 	 * Examples:
 	 *
 	 *		let range = new Range( new Position( root, [ 2, 7 ] ), new Position( root, [ 4, 0, 1 ] ) );
-	 *		let transformed = range.getTransformedByInsertion( new Position( root, [ 1 ] ), 2 );
+	 *		let transformed = range._getTransformedByInsertion( new Position( root, [ 1 ] ), 2 );
 	 *		// transformed array has one range from [ 4, 7 ] to [ 6, 0, 1 ]
 	 *
-	 *		transformed = range.getTransformedByInsertion( new Position( root, [ 4, 0, 0 ] ), 4 );
+	 *		transformed = range._getTransformedByInsertion( new Position( root, [ 4, 0, 0 ] ), 4 );
 	 *		// transformed array has one range from [ 2, 7 ] to [ 4, 0, 5 ]
 	 *
-	 *		transformed = range.getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 4 );
+	 *		transformed = range._getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 4 );
 	 *		// transformed array has one range, which is equal to original range
 	 *
-	 *		transformed = range.getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 4, true );
+	 *		transformed = range._getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 4, true );
 	 *		// transformed array has two ranges: from [ 2, 7 ] to [ 3, 2 ] and from [ 3, 6 ] to [ 4, 0, 1 ]
 	 *
-	 *		transformed = range.getTransformedByInsertion( new Position( root, [ 4, 0, 1 ] ), 4, false, false );
+	 *		transformed = range._getTransformedByInsertion( new Position( root, [ 4, 0, 1 ] ), 4, false, false );
 	 *		// transformed array has one range which is equal to original range because insertion is after the range boundary
 	 *
-	 *		transformed = range.getTransformedByInsertion( new Position( root, [ 4, 0, 1 ] ), 4, false, true );
+	 *		transformed = range._getTransformedByInsertion( new Position( root, [ 4, 0, 1 ] ), 4, false, true );
 	 *		// transformed array has one range: from [ 2, 7 ] to [ 4, 0, 5 ] because range was expanded
 	 *
 	 * @protected
@@ -405,7 +405,7 @@ export default class Range {
 	 * range boundary. Defaults to `false`.
 	 * @returns {Array.<engine.model.Range>} Result of the transformation.
 	 */
-	getTransformedByInsertion( insertPosition, howMany, spread = false, isSticky = false ) {
+	_getTransformedByInsertion( insertPosition, howMany, spread = false, isSticky = false ) {
 		if ( spread && this.containsPosition( insertPosition ) ) {
 			// Range has to be spread. The first part is from original start to the spread point.
 			// The other part is from spread point to the original end, but transformed by
@@ -414,8 +414,8 @@ export default class Range {
 			return [
 				new Range( this.start, insertPosition ),
 				new Range(
-					insertPosition.getTransformedByInsertion( insertPosition, howMany, true ),
-					this.end.getTransformedByInsertion( insertPosition, howMany, this.isCollapsed )
+					insertPosition._getTransformedByInsertion( insertPosition, howMany, true ),
+					this.end._getTransformedByInsertion( insertPosition, howMany, this.isCollapsed )
 				)
 			];
 		} else {
@@ -424,8 +424,8 @@ export default class Range {
 			let insertBeforeStart = range.isCollapsed ? isSticky : !isSticky;
 			let insertBeforeEnd = isSticky;
 
-			range.start = range.start.getTransformedByInsertion( insertPosition, howMany, insertBeforeStart );
-			range.end = range.end.getTransformedByInsertion( insertPosition, howMany, insertBeforeEnd );
+			range.start = range.start._getTransformedByInsertion( insertPosition, howMany, insertBeforeStart );
+			range.end = range.end._getTransformedByInsertion( insertPosition, howMany, insertBeforeEnd );
 
 			return [ range ];
 		}
@@ -443,7 +443,7 @@ export default class Range {
 	 * was inside the range. Defaults to `false`.
 	 * @returns {Array.<engine.model.Range>} Result of the transformation.
 	 */
-	getTransformedByMove( sourcePosition, targetPosition, howMany, spread, isSticky = false ) {
+	_getTransformedByMove( sourcePosition, targetPosition, howMany, spread, isSticky = false ) {
 		let result;
 
 		const moveRange = new Range( sourcePosition, sourcePosition.getShiftedBy( howMany ) );
@@ -453,25 +453,25 @@ export default class Range {
 
 		if ( differenceSet.length == 1 ) {
 			difference = new Range(
-				differenceSet[ 0 ].start.getTransformedByDeletion( sourcePosition, howMany ),
-				differenceSet[ 0 ].end.getTransformedByDeletion( sourcePosition, howMany )
+				differenceSet[ 0 ].start._getTransformedByDeletion( sourcePosition, howMany ),
+				differenceSet[ 0 ].end._getTransformedByDeletion( sourcePosition, howMany )
 			);
 		} else if ( differenceSet.length == 2 ) {
 			// This means that ranges were moved from the inside of this range.
 			// So we can operate on this range positions and we don't have to transform starting position.
 			difference = new Range(
 				this.start,
-				this.end.getTransformedByDeletion( sourcePosition, howMany )
+				this.end._getTransformedByDeletion( sourcePosition, howMany )
 			);
 		} else {
 			// 0.
 			difference = null;
 		}
 
-		const insertPosition = targetPosition.getTransformedByDeletion( sourcePosition, howMany );
+		const insertPosition = targetPosition._getTransformedByDeletion( sourcePosition, howMany );
 
 		if ( difference ) {
-			result = difference.getTransformedByInsertion( insertPosition, howMany, spread, isSticky );
+			result = difference._getTransformedByInsertion( insertPosition, howMany, spread, isSticky );
 		} else {
 			result = [];
 		}

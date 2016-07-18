@@ -496,10 +496,10 @@ describe( 'position', () => {
 		} );
 	} );
 
-	describe( 'getTransformedByInsertion', () => {
+	describe( '_getTransformedByInsertion', () => {
 		it( 'should return a new Position instance', () => {
 			const position = new Position( root, [ 0 ] );
-			const transformed = position.getTransformedByInsertion( new Position( root, [ 2 ] ), 4, false );
+			const transformed = position._getTransformedByInsertion( new Position( root, [ 2 ] ), 4, false );
 
 			expect( transformed ).not.to.equal( position );
 			expect( transformed ).to.be.instanceof( Position );
@@ -507,58 +507,58 @@ describe( 'position', () => {
 
 		it( 'should increment offset if insertion is in the same parent and closer offset', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position.getTransformedByInsertion( new Position( root, [ 1, 2, 2 ] ), 2, false );
+			const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 2, 2 ] ), 2, false );
 
 			expect( transformed.offset ).to.equal( 5 );
 		} );
 
 		it( 'should not increment offset if insertion position is in different root', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position.getTransformedByInsertion( new Position( otherRoot, [ 1, 2, 2 ] ), 2, false );
+			const transformed = position._getTransformedByInsertion( new Position( otherRoot, [ 1, 2, 2 ] ), 2, false );
 
 			expect( transformed.offset ).to.equal( 3 );
 		} );
 
 		it( 'should not increment offset if insertion is in the same parent and the same offset', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position.getTransformedByInsertion( new Position( root, [ 1, 2, 3 ] ), 2, false );
+			const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 2, 3 ] ), 2, false );
 
 			expect( transformed.offset ).to.equal( 3 );
 		} );
 
 		it( 'should increment offset if insertion is in the same parent and the same offset and it is inserted before', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position.getTransformedByInsertion( new Position( root, [ 1, 2, 3 ] ), 2, true );
+			const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 2, 3 ] ), 2, true );
 
 			expect( transformed.offset ).to.equal( 5 );
 		} );
 
 		it( 'should not increment offset if insertion is in the same parent and further offset', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position.getTransformedByInsertion( new Position( root, [ 1, 2, 4 ] ), 2, false );
+			const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 2, 4 ] ), 2, false );
 
 			expect( transformed.offset ).to.equal( 3 );
 		} );
 
 		it( 'should update path if insertion position parent is a node from that path and offset is before next node on that path', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position.getTransformedByInsertion( new Position( root, [ 1, 2 ] ), 2, false );
+			const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 2 ] ), 2, false );
 
 			expect( transformed.path ).to.deep.equal( [ 1, 4, 3 ] );
 		} );
 
 		it( 'should not update path if insertion position parent is a node from that path and offset is after next node on that path', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position.getTransformedByInsertion( new Position( root, [ 1, 3 ] ), 2, false );
+			const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 3 ] ), 2, false );
 
 			expect( transformed.path ).to.deep.equal( [ 1, 2, 3 ] );
 		} );
 	} );
 
-	describe( 'getTransformedByDeletion', () => {
+	describe( '_getTransformedByDeletion', () => {
 		it( 'should return a new Position instance', () => {
 			const position = new Position( root, [ 0 ] );
-			const transformed = position.getTransformedByDeletion( new Position( root, [ 2 ] ), 4 );
+			const transformed = position._getTransformedByDeletion( new Position( root, [ 2 ] ), 4 );
 
 			expect( transformed ).not.to.equal( position );
 			expect( transformed ).to.be.instanceof( Position );
@@ -566,86 +566,86 @@ describe( 'position', () => {
 
 		it( 'should return null if original position is inside one of removed nodes', () => {
 			const position = new Position( root, [ 1, 2 ] );
-			const transformed = position.getTransformedByDeletion( new Position( root, [ 0 ] ), 2 );
+			const transformed = position._getTransformedByDeletion( new Position( root, [ 0 ] ), 2 );
 
 			expect( transformed ).to.be.null;
 		} );
 
 		it( 'should decrement offset if deletion is in the same parent and closer offset', () => {
 			const position = new Position( root, [ 1, 2, 7 ] );
-			const transformed = position.getTransformedByDeletion( new Position( root, [ 1, 2, 2 ] ), 2 );
+			const transformed = position._getTransformedByDeletion( new Position( root, [ 1, 2, 2 ] ), 2 );
 
 			expect( transformed.offset ).to.equal( 5 );
 		} );
 
 		it( 'should return null if original position is between removed nodes', () => {
 			const position = new Position( root, [ 1, 2, 4 ] );
-			const transformed = position.getTransformedByDeletion( new Position( root, [ 1, 2, 3 ] ), 5 );
+			const transformed = position._getTransformedByDeletion( new Position( root, [ 1, 2, 3 ] ), 5 );
 
 			expect( transformed ).to.be.null;
 		} );
 
 		it( 'should not decrement offset if deletion position is in different root', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position.getTransformedByDeletion( new Position( otherRoot, [ 1, 2, 1 ] ), 2 );
+			const transformed = position._getTransformedByDeletion( new Position( otherRoot, [ 1, 2, 1 ] ), 2 );
 
 			expect( transformed.offset ).to.equal( 3 );
 		} );
 
 		it( 'should not decrement offset if deletion is in the same parent and further offset', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position.getTransformedByDeletion( new Position( root, [ 1, 2, 4 ] ), 2 );
+			const transformed = position._getTransformedByDeletion( new Position( root, [ 1, 2, 4 ] ), 2 );
 
 			expect( transformed.offset ).to.equal( 3 );
 		} );
 
 		it( 'should update path if deletion position parent is a node from that path and offset is before next node on that path', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position.getTransformedByDeletion( new Position( root, [ 1, 0 ] ), 2 );
+			const transformed = position._getTransformedByDeletion( new Position( root, [ 1, 0 ] ), 2 );
 
 			expect( transformed.path ).to.deep.equal( [ 1, 0, 3 ] );
 		} );
 
 		it( 'should not update path if deletion position parent is a node from that path and offset is after next node on that path', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position.getTransformedByDeletion( new Position( root, [ 1, 3 ] ), 2 );
+			const transformed = position._getTransformedByDeletion( new Position( root, [ 1, 3 ] ), 2 );
 
 			expect( transformed.path ).to.deep.equal( [ 1, 2, 3 ] );
 		} );
 	} );
 
-	describe( 'getTransformedByMove', () => {
+	describe( '_getTransformedByMove', () => {
 		it( 'should increment offset if a range was moved to the same parent and closer offset', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position.getTransformedByMove( new Position( root, [ 2 ] ), new Position( root, [ 1, 2, 0 ] ), 3, false );
+			const transformed = position._getTransformedByMove( new Position( root, [ 2 ] ), new Position( root, [ 1, 2, 0 ] ), 3, false );
 
 			expect( transformed.path ).to.deep.equal( [ 1, 2, 6 ] );
 		} );
 
 		it( 'should decrement offset if a range was moved from the same parent and closer offset', () => {
 			const position = new Position( root, [ 1, 2, 6 ] );
-			const transformed = position.getTransformedByMove( new Position( root, [ 1, 2, 0 ] ), new Position( root, [ 2 ] ), 3, false );
+			const transformed = position._getTransformedByMove( new Position( root, [ 1, 2, 0 ] ), new Position( root, [ 2 ] ), 3, false );
 
 			expect( transformed.path ).to.deep.equal( [ 1, 2, 3 ] );
 		} );
 
 		it( 'should decrement offset if position was at the end of a range and move was not sticky', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position.getTransformedByMove( new Position( root, [ 1, 2, 0 ] ), new Position( root, [ 2 ] ), 3, false );
+			const transformed = position._getTransformedByMove( new Position( root, [ 1, 2, 0 ] ), new Position( root, [ 2 ] ), 3, false );
 
 			expect( transformed.path ).to.deep.equal( [ 1, 2, 0 ] );
 		} );
 
 		it( 'should update path if position was at the end of a range and move was sticky', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position.getTransformedByMove( new Position( root, [ 1, 2, 0 ] ), new Position( root, [ 2 ] ), 3, false, true );
+			const transformed = position._getTransformedByMove( new Position( root, [ 1, 2, 0 ] ), new Position( root, [ 2 ] ), 3, false, true );
 
 			expect( transformed.path ).to.deep.equal( [ 5 ] );
 		} );
 
 		it( 'should update path if a range contained this position', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position.getTransformedByMove( new Position( root, [ 1, 1 ] ), new Position( root, [ 2, 1 ] ), 3, false );
+			const transformed = position._getTransformedByMove( new Position( root, [ 1, 1 ] ), new Position( root, [ 2, 1 ] ), 3, false );
 
 			expect( transformed.path ).to.deep.equal( [ 2, 2, 3 ] );
 		} );
