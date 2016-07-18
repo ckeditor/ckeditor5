@@ -11,6 +11,7 @@ import Document from '/ckeditor5/engine/model/document.js';
 import DocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
 import Element from '/ckeditor5/engine/model/element.js';
 import Text from '/ckeditor5/engine/model/text.js';
+import TextProxy from '/ckeditor5/engine/model/textproxy.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
@@ -38,17 +39,21 @@ describe( 'position', () => {
 		root = doc.createRoot();
 		otherRoot = doc.createRoot( '$root', 'otherRoot' );
 
-		li1 = new Element( 'li', [], 'foz' );
+		let foz = new Text( 'foz' );
 
-		f = li1.getChild( 0 );
-		o = li1.getChild( 1 );
-		z = li1.getChild( 2 );
+		li1 = new Element( 'li', [], foz );
 
-		li2 = new Element( 'li', [], 'bar' );
+		f = new TextProxy( foz, 0, 1 );
+		o = new TextProxy( foz, 1, 1 );
+		z = new TextProxy( foz, 2, 1 );
 
-		b = li2.getChild( 0 );
-		a = li2.getChild( 1 );
-		r = li2.getChild( 2 );
+		let bar = new Text( 'bar' );
+
+		li2 = new Element( 'li', [], bar );
+
+		b = new TextProxy( bar, 0, 1 );
+		a = new TextProxy( bar, 1, 1 );
+		r = new TextProxy( bar, 2, 1 );
 
 		ul = new Element( 'ul', [], [ li1, li2 ] );
 
@@ -281,7 +286,7 @@ describe( 'position', () => {
 		expect( position.path ).to.deep.equal( [ 1, 0, 4 ] );
 	} );
 
-	it( 'should have nodeBefore', () => {
+	it( 'should have nodeBefore if it is not inside a text node', () => {
 		expect( new Position( root, [ 0 ] ).nodeBefore ).to.be.null;
 		expect( new Position( root, [ 1 ] ).nodeBefore ).to.equal( p );
 		expect( new Position( root, [ 2 ] ).nodeBefore ).to.equal( ul );
@@ -293,9 +298,9 @@ describe( 'position', () => {
 		expect( new Position( root, [ 1, 2 ] ).nodeBefore ).to.equal( li2 );
 
 		expect( new Position( root, [ 1, 0, 0 ] ).nodeBefore ).to.be.null;
-		expect( new Position( root, [ 1, 0, 1 ] ).nodeBefore.character ).to.equal( 'f' );
-		expect( new Position( root, [ 1, 0, 2 ] ).nodeBefore.character ).to.equal( 'o' );
-		expect( new Position( root, [ 1, 0, 3 ] ).nodeBefore.character ).to.equal( 'z' );
+		expect( new Position( root, [ 1, 0, 1 ] ).nodeBefore ).to.be.null;
+		expect( new Position( root, [ 1, 0, 2 ] ).nodeBefore ).to.be.null;
+		expect( new Position( root, [ 1, 0, 3 ] ).nodeBefore.data ).to.equal( 'foz' );
 	} );
 
 	it( 'should have nodeAfter', () => {
@@ -309,9 +314,9 @@ describe( 'position', () => {
 		expect( new Position( root, [ 1, 1 ] ).nodeAfter ).to.equal( li2 );
 		expect( new Position( root, [ 1, 2 ] ).nodeAfter ).to.be.null;
 
-		expect( new Position( root, [ 1, 0, 0 ] ).nodeAfter.character ).to.equal( 'f' );
-		expect( new Position( root, [ 1, 0, 1 ] ).nodeAfter.character ).to.equal( 'o' );
-		expect( new Position( root, [ 1, 0, 2 ] ).nodeAfter.character ).to.equal( 'z' );
+		expect( new Position( root, [ 1, 0, 0 ] ).nodeAfter.data ).to.equal( 'foz' );
+		expect( new Position( root, [ 1, 0, 1 ] ).nodeAfter ).to.be.null;
+		expect( new Position( root, [ 1, 0, 2 ] ).nodeAfter ).to.be.null;
 		expect( new Position( root, [ 1, 0, 3 ] ).nodeAfter ).to.be.null;
 	} );
 
@@ -456,7 +461,7 @@ describe( 'position', () => {
 
 	describe( 'isAtEnd', () => {
 		it( 'should return true if position is at the end of its parent', () => {
-			expect( new Position( root, [ root.getChildCount() ] ).isAtEnd() ).to.be.true;
+			expect( new Position( root, [ root.getMaxOffset() ] ).isAtEnd() ).to.be.true;
 			expect( new Position( root, [ 0 ] ).isAtEnd() ).to.be.false;
 		} );
 	} );

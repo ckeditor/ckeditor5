@@ -10,6 +10,7 @@ import Element from './element.js';
 import last from '../../utils/lib/lodash/last.js';
 import compareArrays from '../../utils/comparearrays';
 import CKEditorError from '../../utils/ckeditorerror.js';
+import Text from './text.js';
 
 /**
  * Represents a position in the model tree.
@@ -102,23 +103,48 @@ export default class Position {
 	}
 
 	/**
-	 * Node directly after the position.
+	 * Position {@link engine.model.Position#offset offset} converted to an index in position's parent node. It is
+	 * equal to the {@link engine.model.Node#getIndex index} of a node after this position. If position is placed
+	 * in text node, position index is equal to the index of that text node.
 	 *
 	 * @readonly
-	 * @type {engine.model.Node}
+	 * @type {Number}
 	 */
-	get nodeAfter() {
-		return this.parent.getChild( this.offset ) || null;
+	get index() {
+		return this.parent.offsetToIndex( this.offset );
 	}
 
 	/**
-	 * Node directly before the position.
+	 * Returns {@link engine.model.Text text node} instance in which this position is placed or `null` if this
+	 * position is not in a text node.
+	 *
+	 * @readonly
+	 * @type {engine.model.Text|null}
+	 */
+	get textNode() {
+		let node = this.parent.getChild( this.index );
+
+		return ( node instanceof Text && node.startOffset < this.offset ) ? node : null;
+	}
+
+	/**
+	 * Node directly after this position or `null` if this position is in text node.
+	 *
+	 * @readonly
+	 * @type {engine.model.Node|null}
+	 */
+	get nodeAfter() {
+		return this.textNode === null ? this.parent.getChild( this.index ) : null;
+	}
+
+	/**
+	 * Node directly before this position or `null` if this position is in text node.
 	 *
 	 * @readonly
 	 * @type {Node}
 	 */
 	get nodeBefore() {
-		return this.parent.getChild( this.offset - 1 ) || null;
+		return this.textNode === null ? this.parent.getChild( this.index - 1 ) : null;
 	}
 
 	/**
@@ -139,7 +165,12 @@ export default class Position {
 	}
 
 	/**
-	 * Parent element of the position. The position is located at {@link #offset} in this element.
+	 * Parent element of this position.
+	 *
+	 * Keep in mind that `parent` value is calculated when the property is accessed. If {@link engine.model.Position#path position path}
+	 * leads to a non-existing element, `parent` property will throw error.
+	 *
+	 * Also it is a good idea to cache `parent` property if it is used frequently in an algorithm (i.e. in a long loop).
 	 *
 	 * @readonly
 	 * @type {engine.model.Element}
@@ -147,10 +178,8 @@ export default class Position {
 	get parent() {
 		let parent = this.root;
 
-		let i, len;
-
-		for ( i = 0, len = this.path.length - 1; i < len; i++ ) {
-			parent = parent.getChild( this.path[ i ] );
+		for ( let i = 0; i < this.path.length - 1; i++ ) {
+			parent = parent.getChild( parent.offsetToIndex( this.path[ i ] ) );
 		}
 
 		return parent;
@@ -214,6 +243,138 @@ export default class Position {
 		shifted.offset = offset < 0 ? 0 : offset;
 
 		return shifted;
+	}
+
+	/**
+	 * Checks whether this position is after given position.
+	 *
+	 * @see engine.model.Position#isBefore
+	 *
+	 * @param {engine.model.Position} otherPosition Position to compare with.
+	 * @returns {Boolean} True if this position is after given position.
+	 */
+	isAfter( otherPosition ) {
+		return this.compareWith( otherPosition ) == 'after';
+	}
+
+	/**
+	 * Checks whether this position is before given position.
+	 *
+	 * **Note:** watch out when using negation of the value returned by this method, because the negation will also
+	 * be `true` if positions are in different roots and you might not expect this. You should probably use
+	 * `a.isAfter( b ) || a.isEqual( b )` or `!a.isBefore( p ) && a.root == b.root` in most scenarios. If your
+	 * condition uses multiple `isAfter` and `isBefore` checks, build them so they do not use negated values, i.e.:
+	 *
+	 *		if ( a.isBefore( b ) && c.isAfter( d ) ) {
+	 *			// do A.
+	 *		} else {
+	 *			// do B.
+	 *		}
+	 *
+	 * or, if you have only one if-branch:
+	 *
+	 *		if ( !( a.isBefore( b ) && c.isAfter( d ) ) {
+	 *			// do B.
+	 *		}
+	 *
+	 * rather than:
+	 *
+	 *		if ( !a.isBefore( b ) || && !c.isAfter( d ) ) {
+	 *			// do B.
+	 *		} else {
+	 *			// do A.
+	 *		}
+	 *
+	 * @param {engine.model.Position} otherPosition Position to compare with.
+	 * @returns {Boolean} True if this position is before given position.
+	 */
+	isBefore( otherPosition ) {
+		return this.compareWith( otherPosition ) == 'before';
+	}
+
+	/**
+	 * Checks whether this position is equal to given position.
+	 *
+	 * @param {engine.model.Position} otherPosition Position to compare with.
+	 * @returns {Boolean} True if positions are same.
+	 */
+	isEqual( otherPosition ) {
+		return this.compareWith( otherPosition ) == 'same';
+	}
+
+	/**
+	 * Checks whether this position is touching given position. Positions touch when there are no text nodes
+	 * or empty nodes in a range between them. Technically, those positions are not equal but in many cases
+	 * they are very similar or even indistinguishable.
+	 *
+	 * @param {engine.model.Position} otherPosition Position to compare with.
+	 * @returns {Boolean} True if positions touch.
+	 */
+	isTouching( otherPosition ) {
+		let left = null;
+		let right = null;
+		let compare = this.compareWith( otherPosition );
+
+		switch ( compare ) {
+			case 'same':
+				return true;
+
+			case 'before':
+				left = Position.createFromPosition( this );
+				right = Position.createFromPosition( otherPosition );
+				break;
+
+			case 'after':
+				left = Position.createFromPosition( otherPosition );
+				right = Position.createFromPosition( this );
+				break;
+
+			default:
+				return false;
+		}
+
+		// Cached for optimization purposes.
+		let leftParent = left.parent;
+
+		while ( left.path.length + right.path.length ) {
+			if ( left.isEqual( right ) ) {
+				return true;
+			}
+
+			if ( left.path.length > right.path.length ) {
+				if ( left.offset !== leftParent.getMaxOffset() ) {
+					return false;
+				}
+
+				left.path = left.path.slice( 0, -1 );
+				leftParent = leftParent.parent;
+				left.offset++;
+			} else {
+				if ( right.offset !== 0 ) {
+					return false;
+				}
+
+				right.path = right.path.slice( 0, -1 );
+			}
+		}
+	}
+
+	/**
+	 * Returns `true` if position is at the beginning of its {@link engine.model.Position#parent parent}, `false` otherwise.
+	 *
+	 * @returns {Boolean}
+	 */
+	isAtStart() {
+		return this.offset === 0;
+	}
+
+	/**
+	 * Returns `true` if position is at the end of its {@link engine.model.Position#parent parent}, `false` otherwise.
+	 *
+	 * @returns {Boolean}
+	 */
+	isAtEnd() {
+		return this.offset == this.parent.getMaxOffset();
 	}
 
 	/**
@@ -340,131 +501,48 @@ export default class Position {
 	}
 
 	/**
-	 * Checks whether this position is after given position.
+	 * Returns a new position that is a combination of this position and given positions.
 	 *
-	 * @see engine.model.Position#isBefore
+	 * The combined position is a copy of this position transformed by moving a range starting at `source` position
+	 * to the `target` position. It is expected that this position is inside the moved range.
 	 *
-	 * @param {engine.model.Position} otherPosition Position to compare with.
-	 * @returns {Boolean} True if this position is after given position.
+	 * Example:
+	 *
+	 *		let original = new Position( root, [ 2, 3, 1 ] );
+	 *		let source = new Position( root, [ 2, 2 ] );
+	 *		let target = new Position( otherRoot, [ 1, 1, 3 ] );
+	 *		original._getCombined( source, target ); // path is [ 1, 1, 4, 1 ], root is `otherRoot`
+	 *
+	 * Explanation:
+	 *
+	 * We have a position `[ 2, 3, 1 ]` and move some nodes from `[ 2, 2 ]` to `[ 1, 1, 3 ]`. The original position
+	 * was inside moved nodes and now should point to the new place. The moved nodes will be after
+	 * positions `[ 1, 1, 3 ]`, `[ 1, 1, 4 ]`, `[ 1, 1, 5 ]`. Since our position was in the second moved node,
+	 * the transformed position will be in a sub-tree of a node at `[ 1, 1, 4 ]`. Looking at original path, we
+	 * took care of `[ 2, 3 ]` part of it. Now we have to add the rest of the original path to the transformed path.
+	 * Finally, the transformed position will point to `[ 1, 1, 4, 1 ]`.
+	 *
+	 * @protected
+	 * @param {engine.model.Position} source Beginning of the moved range.
+	 * @param {engine.model.Position} target Position where the range is moved.
+	 * @returns {engine.model.Position} Combined position.
 	 */
-	isAfter( otherPosition ) {
-		return this.compareWith( otherPosition ) == 'after';
-	}
+	_getCombined( source, target ) {
+		const i = source.path.length - 1;
 
-	/**
-	 * Checks whether this position is before given position.
-	 *
-	 * **Note:** watch out when using negation of the value returned by this method, because the negation will also
-	 * be `true` if positions are in different roots and you might not expect this. You should probably use
-	 * `a.isAfter( b ) || a.isEqual( b )` or `!a.isBefore( p ) && a.root == b.root` in most scenarios. If your
-	 * condition uses multiple `isAfter` and `isBefore` checks, build them so they do not use negated values, i.e.:
-	 *
-	 *		if ( a.isBefore( b ) && c.isAfter( d ) ) {
-	 *			// do A.
-	 *		} else {
-	 *			// do B.
-	 *		}
-	 *
-	 * or, if you have only one if-branch:
-	 *
-	 *		if ( !( a.isBefore( b ) && c.isAfter( d ) ) {
-	 *			// do B.
-	 *		}
-	 *
-	 * rather than:
-	 *
-	 *		if ( !a.isBefore( b ) || && !c.isAfter( d ) ) {
-	 *			// do B.
-	 *		} else {
-	 *			// do A.
-	 *		}
-	 *
-	 * @param {engine.model.Position} otherPosition Position to compare with.
-	 * @returns {Boolean} True if this position is before given position.
-	 */
-	isBefore( otherPosition ) {
-		return this.compareWith( otherPosition ) == 'before';
-	}
+		// The first part of a path to combined position is a path to the place where nodes were moved.
+		let combined = Position.createFromPosition( target );
 
-	/**
-	 * Checks whether this position equals given position.
-	 *
-	 * @param {engine.model.Position} otherPosition Position to compare with.
-	 * @returns {Boolean} True if positions are same.
-	 */
-	isEqual( otherPosition ) {
-		return this.compareWith( otherPosition ) == 'same';
-	}
+		// Then we have to update the rest of the path.
 
-	/**
-	 * Checks whether this position is touching given position. Positions touch when there are no characters
-	 * or empty nodes in a range between them. Technically, those positions are not equal but in many cases
-	 * they are very similar or even indistinguishable when they touch.
-	 *
-	 * @param {engine.model.Position} otherPosition Position to compare with.
-	 * @returns {Boolean} True if positions touch.
-	 */
-	isTouching( otherPosition ) {
-		let left = null;
-		let right = null;
-		let compare = this.compareWith( otherPosition );
+		// Fix the offset because this position might be after `from` position and we have to reflect that.
+		combined.offset = combined.offset + this.path[ i ] - source.offset;
 
-		switch ( compare ) {
-			case 'same':
-				return true;
+		// Then, add the rest of the path.
+		// If this position is at the same level as `from` position nothing will get added.
+		combined.path = combined.path.concat( this.path.slice( i + 1 ) );
 
-			case 'before':
-				left = Position.createFromPosition( this );
-				right = Position.createFromPosition( otherPosition );
-				break;
-
-			case 'after':
-				left = Position.createFromPosition( otherPosition );
-				right = Position.createFromPosition( this );
-				break;
-
-			default:
-				return false;
-		}
-
-		while ( left.path.length + right.path.length ) {
-			if ( left.isEqual( right ) ) {
-				return true;
-			}
-
-			if ( left.path.length > right.path.length ) {
-				if ( left.nodeAfter !== null ) {
-					return false;
-				}
-
-				left.path = left.path.slice( 0, -1 );
-				left.offset++;
-			} else {
-				if ( right.nodeBefore !== null ) {
-					return false;
-				}
-
-				right.path = right.path.slice( 0, -1 );
-			}
-		}
-	}
-
-	/**
-	 * Whether position is at the beginning of its {@link engine.model.Position#parent}.
-	 *
-	 * @returns {Boolean}
-	 */
-	isAtStart() {
-		return this.offset === 0;
-	}
-
-	/**
-	 * Whether position is at the end of its {@link engine.model.Position#parent}.
-	 *
-	 * @returns {Boolean}
-	 */
-	isAtEnd() {
-		return this.offset == this.parent.getChildCount();
+		return combined;
 	}
 
 	/**
@@ -472,8 +550,8 @@ export default class Position {
 	 *
 	 * * a {@link engine.model.Position position},
 	 * * parent element and offset (offset defaults to `0`),
-	 * * parent element and `'end'` (sets selection at the end of that element),
-	 * * node and `'before'` or `'after'` (sets selection before or after the given node).
+	 * * parent element and `'end'` (sets position at the end of that element),
+	 * * {@link engine.model.Item model item} and `'before'` or `'after'` (sets position before or after given model item).
 	 *
 	 * This method is a shortcut to other constructors such as:
 	 *
@@ -482,20 +560,18 @@ export default class Position {
 	 * * {@link engine.model.Position.createFromParentAndOffset},
 	 * * {@link engine.model.Position.createFromPosition}.
 	 *
-	 * @param {engine.model.Node|engine.model.Position} nodeOrPosition
+	 * @param {engine.model.Item|engine.model.Position} itemOrPosition
 	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
-	 * first parameter is a node.
+	 * first parameter is a {@link engine.model.Item model item}.
 	 */
-	static createAt( nodeOrPosition, offset ) {
-		let node;
-
-		if ( nodeOrPosition instanceof Position ) {
-			return this.createFromPosition( nodeOrPosition );
+	static createAt( itemOrPosition, offset ) {
+		if ( itemOrPosition instanceof Position ) {
+			return this.createFromPosition( itemOrPosition );
 		} else {
-			node = nodeOrPosition;
+			const node = itemOrPosition;
 
 			if ( offset == 'end' ) {
-				offset = node.getChildCount();
+				offset = node.getMaxOffset();
 			} else if ( offset == 'before' ) {
 				return this.createBefore( node );
 			} else if ( offset == 'after' ) {
@@ -509,47 +585,43 @@ export default class Position {
 	}
 
 	/**
-	 * Creates a new position after given node.
+	 * Creates a new position, after given {@link engine.model.Item model item}.
 	 *
-	 * @see {@link engine.model.TreeWalkerValue}
-	 *
-	 * @param {engine.model.Node} node Node the position should be directly after.
+	 * @param {engine.model.Item} item Item after which the position should be placed.
 	 * @returns {engine.model.Position}
 	 */
-	static createAfter( node ) {
-		if ( !node.parent ) {
+	static createAfter( item ) {
+		if ( !item.parent ) {
 			/**
 			 * You can not make position after root.
 			 *
 			 * @error position-after-root
-			 * @param {engine.model.Node} root
+			 * @param {engine.model.Item} root
 			 */
-			throw new CKEditorError( 'position-after-root: You can not make position after root.', { root: node } );
+			throw new CKEditorError( 'position-after-root: You can not make position after root.', { root: item } );
 		}
 
-		return this.createFromParentAndOffset( node.parent, node.getIndex() + 1 );
+		return this.createFromParentAndOffset( item.parent, item.endOffset );
 	}
 
 	/**
-	 * Creates a new position before the given node.
+	 * Creates a new position, before the given {@link engine.model.Item model item}.
 	 *
-	 * @see {@link engine.model.TreeWalkerValue}
-	 *
-	 * @param {engine.model.node} node Node the position should be directly before.
+	 * @param {engine.model.Item} item Item before which the position should be placed.
 	 * @returns {engine.model.Position}
 	 */
-	static createBefore( node ) {
-		if ( !node.parent ) {
+	static createBefore( item ) {
+		if ( !item.parent ) {
 			/**
 			 * You can not make position before root.
 			 *
 			 * @error position-before-root
-			 * @param {engine.model.Node} root
+			 * @param {engine.model.Item} root
 			 */
-			throw new CKEditorError( 'position-before-root: You can not make position before root.', { root: node } );
+			throw new CKEditorError( 'position-before-root: You can not make position before root.', { root: item } );
 		}
 
-		return this.createFromParentAndOffset( node.parent, node.getIndex() );
+		return this.createFromParentAndOffset( item.parent, item.startOffset );
 	}
 
 	/**
@@ -611,54 +683,6 @@ export default class Position {
 		}
 
 		return new Position( doc.getRoot( json.root ), json.path );
-	}
-
-	/**
-	 * Returns a new position that is a combination of this position and given positions. The combined
-	 * position is this position transformed by moving a range starting at `from` to `to` position.
-	 * It is expected that this position is inside the moved range.
-	 *
-	 * In other words, this method in a smart way "cuts out" `source` path from this position and
-	 * injects `target` path in it's place, while doing necessary fixes in order to get a correct path.
-	 *
-	 * Example:
-	 *
-	 * 	let original = new Position( root, [ 2, 3, 1 ] );
-	 * 	let source = new Position( root, [ 2, 2 ] );
-	 * 	let target = new Position( otherRoot, [ 1, 1, 3 ] );
-	 * 	let combined = original.getCombined( source, target );
-	 * 	// combined.path is [ 1, 1, 4, 1 ], combined.root is otherRoot
-	 *
-	 * Explanation:
-	 *
-	 * We have a position `[ 2, 3, 1 ]` and move some nodes from `[ 2, 2 ]` to `[ 1, 1, 3 ]`. The original position
-	 * was inside moved nodes and now should point to the new place. The moved nodes will be after
-	 * positions `[ 1, 1, 3 ]`, `[ 1, 1, 4 ]`, `[ 1, 1, 5 ]`. Since our position was in the second moved node,
-	 * the transformed position will be in a sub-tree of a node at `[ 1, 1, 4 ]`. Looking at original path, we
-	 * took care of `[ 2, 3 ]` part of it. Now we have to add the rest of the original path to the transformed path.
-	 * Finally, the transformed position will point to `[ 1, 1, 4, 1 ]`.
-	 *
-	 * @protected
-	 * @param {engine.model.Position} source Beginning of the moved range.
-	 * @param {engine.model.Position} target Position where the range is moved.
-	 * @returns {engine.model.Position} Combined position.
-	 */
-	_getCombined( source, target ) {
-		const i = source.path.length - 1;
-
-		// The first part of a path to combined position is a path to the place where nodes were moved.
-		let combined = Position.createFromPosition( target );
-
-		// Then we have to update the rest of the path.
-
-		// Fix the offset because this position might be after `from` position and we have to reflect that.
-		combined.offset = combined.offset + this.path[ i ] - source.offset;
-
-		// Then, add the rest of the path.
-		// If this position is at the same level as `from` position nothing will get added.
-		combined.path = combined.path.concat( this.path.slice( i + 1 ) );
-
-		return combined;
 	}
 }
 
