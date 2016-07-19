@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Command from './command.js';
 import TreeWalker from '../engine/model/treewalker.js';
 import Range from '../engine/model/range.js';

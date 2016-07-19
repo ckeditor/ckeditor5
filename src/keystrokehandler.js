@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import EmitterMixin from './utils/emittermixin.js';
 import { getCode, parseKeystroke } from './utils/keyboard.js';
 

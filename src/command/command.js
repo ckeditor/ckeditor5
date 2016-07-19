@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import ObservableMixin from '../utils/observablemixin.js';
 import mix from '../utils/mix.js';
 

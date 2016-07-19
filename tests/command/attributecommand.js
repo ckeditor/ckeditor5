@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Editor from '/ckeditor5/editor/editor.js';
 import Document from '/ckeditor5/engine/model/document.js';
 import AttributeCommand from '/ckeditor5/command/attributecommand.js';

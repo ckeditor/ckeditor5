@@ -5,8 +5,6 @@
 
 /* global require, bender */
 
-'use strict';
-
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
 import moduleTestUtils from '/tests/ckeditor5/_utils/module.js';
 

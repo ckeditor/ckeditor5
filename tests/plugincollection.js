@@ -5,8 +5,6 @@
 
 /* bender-tags: browser-only */
 
-'use strict';
-
 import moduleUtils from '/tests/ckeditor5/_utils/module.js';
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
 import Editor from '/ckeditor5/editor/editor.js';

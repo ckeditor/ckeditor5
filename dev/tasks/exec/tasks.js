@@ -23,6 +23,10 @@ const ckeditor5Dirs = require( '../../utils/ckeditor5-dirs' );
  *
  *		gulp exec --task task-name --repository ckeditor5-utils
  *
+ * Example of running task including root `ckeditor5` package
+ *
+ *		gulp exec --task task-name --include-root
+ *
  * @param {Object} config Task runner configuration.
  * @returns {Stream} Stream with processed files.
  */
@@ -75,8 +79,9 @@ function execute( execTask, ckeditor5Path, packageJSON, workspaceRoot, params ) 
 	const workspacePath = path.join( ckeditor5Path, workspaceRoot );
 	const mergedStream = merge();
 	const specificRepository = params.repository;
+	const includeRoot = !!params[ 'include-root' ];
 
-	let devDirectories = ckeditor5Dirs.getDevDirectories( workspacePath, packageJSON, ckeditor5Path );
+	let devDirectories = ckeditor5Dirs.getDevDirectories( workspacePath, packageJSON, ckeditor5Path, includeRoot );
 
 	if ( specificRepository ) {
 		devDirectories = devDirectories.filter( ( dir ) => {

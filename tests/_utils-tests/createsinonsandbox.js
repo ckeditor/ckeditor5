@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
 
 const obj = {
