@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import InsertOperation from './insertoperation.js';
 import AttributeOperation from './attributeoperation.js';
 import RootAttributeOperation from './rootattributeoperation.js';

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Matcher from '../view/matcher.js';
 import ModelElement from '../model/element.js';
 import isIterable from '../../utils/isiterable.js';

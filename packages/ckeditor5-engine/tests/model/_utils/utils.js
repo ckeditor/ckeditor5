@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import TreeWalker from '/ckeditor5/engine/model/treewalker.js';
 import Delta from '/ckeditor5/engine/model/delta/delta.js';
 

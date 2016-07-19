@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import TextProxy from '../model/textproxy.js';
 
 /**

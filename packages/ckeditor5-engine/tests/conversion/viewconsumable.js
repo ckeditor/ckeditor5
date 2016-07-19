@@ -5,8 +5,6 @@
 
 /* bender-tags: conversion */
 
-'use strict';
-
 import ViewElement from '/ckeditor5/engine/view/element.js';
 import ViewText from '/ckeditor5/engine/view/text.js';
 import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';

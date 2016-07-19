@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 /**
  * Contains {@link engine.view.Selection view selection} to {@link engine.model.Selection model selection} conversion
  * helper.

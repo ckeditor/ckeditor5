@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Observer from './observer.js';
 import MutationObserver from './mutationobserver.js';
 

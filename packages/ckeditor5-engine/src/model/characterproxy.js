@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Node from './node.js';
 import toMap from '../../utils/tomap.js';
 

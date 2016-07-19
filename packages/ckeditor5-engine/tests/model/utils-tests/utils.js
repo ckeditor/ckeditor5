@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import { getNodesAndText, jsonParseStringify, wrapInDelta } from '/tests/engine/model/_utils/utils.js';
 import Document from '/ckeditor5/engine/model/document.js';
 import Range from '/ckeditor5/engine/model/range.js';

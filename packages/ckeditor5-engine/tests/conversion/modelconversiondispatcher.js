@@ -5,8 +5,6 @@
 
 /* bender-tags: conversion */
 
-'use strict';
-
 import ModelConversionDispatcher from '/ckeditor5/engine/conversion/modelconversiondispatcher.js';
 import ModelDocument from '/ckeditor5/engine/model/document.js';
 import ModelText from '/ckeditor5/engine/model/text.js';

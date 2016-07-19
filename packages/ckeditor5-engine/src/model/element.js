@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Node from './node.js';
 import NodeList from './nodelist.js';
 import DocumentFragment from './documentfragment.js';

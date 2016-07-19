@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import InsertDelta from './insertdelta.js';
 import { register } from '../batch.js';
 import DeltaFactory from './deltafactory.js';

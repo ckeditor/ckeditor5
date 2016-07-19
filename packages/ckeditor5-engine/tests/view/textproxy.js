@@ -5,8 +5,6 @@
 
 /* bender-tags: view */
 
-'use strict';
-
 import TextProxy from '/ckeditor5/engine/view/textproxy.js';
 import Text from '/ckeditor5/engine/view/text.js';
 import ContainerElement from '/ckeditor5/engine/view/containerelement.js';

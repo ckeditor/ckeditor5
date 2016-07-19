@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import ViewDocument from './view/document.js';
 import MutationObserver from './view/observer/mutationobserver.js';
 import SelectionObserver from './view/observer/selectionobserver.js';

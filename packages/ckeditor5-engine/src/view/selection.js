@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import CKEditorError from '../../utils/ckeditorerror.js';
 import Range from './range.js';
 import Position from './position.js';

@@ -5,8 +5,6 @@
 
 /* bender-tags: model */
 
-'use strict';
-
 import Document from '/ckeditor5/engine/model/document.js';
 import Element from '/ckeditor5/engine/model/element.js';
 import RootElement from '/ckeditor5/engine/model/rootelement.js';

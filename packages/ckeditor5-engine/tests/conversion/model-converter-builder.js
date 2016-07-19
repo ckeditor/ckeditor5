@@ -5,8 +5,6 @@
 
 /* bender-tags: conversion */
 
-'use strict';
-
 import BuildModelConverterFor from '/ckeditor5/engine/conversion/model-converter-builder.js';
 
 import ModelDocument from '/ckeditor5/engine/model/document.js';

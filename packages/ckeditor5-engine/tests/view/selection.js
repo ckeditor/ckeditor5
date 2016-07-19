@@ -5,8 +5,6 @@
 
 /* bender-tags: view */
 
-'use strict';
-
 import Selection from '/ckeditor5/engine/view/selection.js';
 import Range from '/ckeditor5/engine/view/range.js';
 import Document from '/ckeditor5/engine/view/document.js';

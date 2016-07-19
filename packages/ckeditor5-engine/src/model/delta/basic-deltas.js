@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 // Deltas require `register` method that require `Batch` class and is defined in batch-base.js.
 // We would like to group all deltas files in one place, so we would only have to include batch.js
 // which would already have all default deltas registered.

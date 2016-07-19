@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Mapper from './conversion/mapper.js';
 
 import ModelConversionDispatcher from './conversion/modelconversiondispatcher.js';

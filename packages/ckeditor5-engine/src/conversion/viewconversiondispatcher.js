@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import ViewConsumable from './viewconsumable.js';
 import ViewElement from '../view/element.js';
 import ViewText from '../view/text.js';

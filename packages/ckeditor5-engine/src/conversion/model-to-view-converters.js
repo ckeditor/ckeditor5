@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import ModelTreeWalker from '../model/treewalker.js';
 import ModelRange from '../model/range.js';
 

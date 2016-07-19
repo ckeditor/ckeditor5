@@ -5,8 +5,6 @@
 
 /* bender-tags: view */
 
-'use strict';
-
 import count from '/ckeditor5/utils/count.js';
 import Node from '/ckeditor5/engine/view/node.js';
 import ViewElement from '/ckeditor5/engine/view/element.js';

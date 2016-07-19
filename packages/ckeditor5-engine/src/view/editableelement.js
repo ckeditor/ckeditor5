@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import ContainerElement from './containerelement.js';
 
 import mix from '../../utils/mix.js';

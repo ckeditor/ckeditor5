@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Document from '/ckeditor5/engine/view/document.js';
 import MutationObserver from '/ckeditor5/engine/view/observer/mutationobserver.js';
 import SelectionObserver from '/ckeditor5/engine/view/observer/selectionobserver.js';

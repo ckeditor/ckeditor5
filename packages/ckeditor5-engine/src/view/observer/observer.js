@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 /**
  * Abstract base observer class. Observers are classes which observe changes on DOM elements, do the preliminary
  * processing and fire events on the {@link engine.view.Document} objects. Observers can also add features to the view,

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import DocumentFragment from './documentfragment.js';
 import Element from './element.js';
 import last from '../../utils/lib/lodash/last.js';

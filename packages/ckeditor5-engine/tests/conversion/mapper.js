@@ -5,8 +5,6 @@
 
 /* bender-tags: conversion */
 
-'use strict';
-
 import Mapper from '/ckeditor5/engine/conversion/mapper.js';
 
 import ModelElement from '/ckeditor5/engine/model/element.js';

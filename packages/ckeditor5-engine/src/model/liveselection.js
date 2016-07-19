@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import LiveRange from './liverange.js';
 import Range from './range.js';
 import Position from './position.js';

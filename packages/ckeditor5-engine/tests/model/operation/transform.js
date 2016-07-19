@@ -5,8 +5,6 @@
 
 /* bender-tags: model, operation */
 
-'use strict';
-
 import transform from '/ckeditor5/engine/model/operation/transform.js';
 
 import Document from '/ckeditor5/engine/model/document.js';

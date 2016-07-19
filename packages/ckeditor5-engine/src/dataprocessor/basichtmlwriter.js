@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 /**
  * Basic HTML writer, it uses the native `innerHTML` property for basic conversion
  * from DocumentFragment to an HTML string.

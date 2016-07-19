@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import mix from '../../../utils/mix.js';
 import EmitterMixin from '../../../utils/emittermixin.js';
 import deleteContents from './deletecontents.js';

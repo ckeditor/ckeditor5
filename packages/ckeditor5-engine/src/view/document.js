@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Selection from './selection.js';
 import Renderer from './renderer.js';
 import DomConverter from './domconverter.js';

@@ -5,8 +5,6 @@
 
 /* bender-tags: model, delta */
 
-'use strict';
-
 import Delta from '/ckeditor5/engine/model/delta/delta.js';
 import Operation from '/ckeditor5/engine/model/operation/operation.js';
 import { jsonParseStringify } from '/tests/engine/model/_utils/utils.js';

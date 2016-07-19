@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Range from './range.js';
 import EmitterMixin from '../../utils/emittermixin.js';
 import mix from '../../utils/mix.js';

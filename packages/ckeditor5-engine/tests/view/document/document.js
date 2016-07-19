@@ -5,8 +5,6 @@
 
 /* bender-tags: view, browser-only */
 
-'use strict';
-
 import Document from '/ckeditor5/engine/view/document.js';
 import Observer from '/ckeditor5/engine/view/observer/observer.js';
 import Renderer from '/ckeditor5/engine/view/renderer.js';

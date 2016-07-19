@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import ViewElement from '../view/element.js';
 import ViewRange from '../view/range.js';
 import viewWriter from '../view/writer.js';

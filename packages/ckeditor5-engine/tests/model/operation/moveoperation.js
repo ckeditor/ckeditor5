@@ -5,8 +5,6 @@
 
 /* bender-tags: model, operation */
 
-'use strict';
-
 import Document from '/ckeditor5/engine/model/document.js';
 import MoveOperation from '/ckeditor5/engine/model/operation/moveoperation.js';
 import Position from '/ckeditor5/engine/model/position.js';

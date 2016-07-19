@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import toMap from '../../utils/tomap.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 

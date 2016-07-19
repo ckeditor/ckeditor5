@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import mix from '../../utils/mix.js';
 import isIterable from '../../utils/isiterable.js';
 import EmitterMixin from '../../utils/emittermixin.js';

@@ -5,8 +5,6 @@
 
 /* bender-tags: view, browser-only */
 
-'use strict';
-
 import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
 import Element from '/ckeditor5/engine/view/element.js';
 import { parse } from '/tests/engine/_utils/view.js';

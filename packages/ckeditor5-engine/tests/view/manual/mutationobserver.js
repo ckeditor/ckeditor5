@@ -5,8 +5,6 @@
 
 /* global console:false */
 
-'use strict';
-
 import Document from '/ckeditor5/engine/view/document.js';
 import MutationObserver from '/ckeditor5/engine/view/observer/mutationobserver.js';
 import { setData } from '/tests/engine/_utils/view.js';

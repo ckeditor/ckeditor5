@@ -5,8 +5,6 @@
 
 /* bender-tags: model */
 
-'use strict';
-
 import Text from '/ckeditor5/engine/model/text.js';
 
 describe( 'Text', () => {

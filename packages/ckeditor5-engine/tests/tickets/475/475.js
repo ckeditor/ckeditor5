@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import ClassicEditor from '/ckeditor5/editor-classic/classic.js';
 
 import Feature from '/ckeditor5/feature.js';

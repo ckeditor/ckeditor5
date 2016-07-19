@@ -5,8 +5,6 @@
 
 /* bender-tags: model, delta */
 
-'use strict';
-
 import Document from '/ckeditor5/engine/model/document.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import Range from '/ckeditor5/engine/model/range.js';
