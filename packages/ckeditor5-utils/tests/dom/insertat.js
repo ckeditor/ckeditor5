@@ -5,8 +5,6 @@
 
 /* bender-tags: dom, browser-only */
 
-'use strict';
-
 import insertAt from '/ckeditor5/utils/dom/insertat.js';
 
 describe( 'insertAt', () => {

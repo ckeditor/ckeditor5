@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import isString from '../lib/lodash/isString.js';
 import isIterable from '../isiterable.js';
 

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import toMap from '/ckeditor5/utils/tomap.js';
 import count from '/ckeditor5/utils/count.js';
 

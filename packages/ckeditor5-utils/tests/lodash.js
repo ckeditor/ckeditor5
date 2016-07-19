@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import extend from '/ckeditor5/utils/lib/lodash/extend.js';
 
 describe( 'utils', () => {

@@ -5,8 +5,6 @@
 
 /* bender-tags: dom, browser-only */
 
-'use strict';
-
 import remove from '/ckeditor5/utils/dom/remove.js';
 
 describe( 'remove', () => {

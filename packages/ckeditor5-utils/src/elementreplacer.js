@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 /**
  * Utility class allowing to hide existing HTML elements or replace them with given ones in a way that doesn't remove
  * the original elements from the DOM.

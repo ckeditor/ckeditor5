@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import EmitterMixin from './emittermixin.js';
 import CKEditorError from './ckeditorerror.js';
 import extend from './lib/lodash/extend.js';

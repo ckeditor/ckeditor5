@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 /* global console:false */
 
 import EmitterMixin from '/ckeditor5/utils/emittermixin.js';

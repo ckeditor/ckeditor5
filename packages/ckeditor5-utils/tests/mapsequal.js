@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import mapsEqual from '/ckeditor5/utils/mapsequal.js';
 
 describe( 'utils', () => {

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import uid from '/ckeditor5/utils/uid.js';
 
 describe( 'utils', () => {

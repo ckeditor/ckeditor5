@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import mix from '/ckeditor5/utils/mix.js';
 
 describe( 'utils', () => {

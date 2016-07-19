@@ -5,8 +5,6 @@
 
 /* bender-tags: browser-only */
 
-'use strict';
-
 import ElementReplacer from '/ckeditor5/utils/elementreplacer.js';
 
 describe( 'ElementReplacer', () => {

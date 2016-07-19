@@ -5,8 +5,6 @@
 
 /* globals console */
 
-'use strict';
-
 import log from '/ckeditor5/utils/log.js';
 
 let spy;

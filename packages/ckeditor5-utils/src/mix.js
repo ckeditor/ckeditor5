@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 /**
  * Copies enumerable properties and symbols from the objects given as 2nd+ parameters to the
  * prototype of first object (a constructor).

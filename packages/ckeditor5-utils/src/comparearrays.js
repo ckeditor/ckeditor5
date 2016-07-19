@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 /**
  * Compares how given arrays relate to each other. One array can be: same as another array, prefix of another array
  * or completely different. If arrays are different, first index at which they differ is returned. Otherwise,

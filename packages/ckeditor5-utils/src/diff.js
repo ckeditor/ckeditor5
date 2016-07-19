@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 // The following code is based on the "O(NP) Sequence Comparison Algorithm"
 // by Sun Wu, Udi Manber, Gene Myers, Webb Miller.
 

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import spy from '/ckeditor5/utils/spy.js';
 
 describe( 'utils', () => {

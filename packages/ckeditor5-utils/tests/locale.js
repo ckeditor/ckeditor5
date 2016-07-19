@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Locale from '/ckeditor5/utils/locale.js';
 
 describe( 'Locale', () => {

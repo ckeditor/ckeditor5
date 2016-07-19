@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import compareArrays from '/ckeditor5/utils/comparearrays.js';
 
 describe( 'utils', () => {

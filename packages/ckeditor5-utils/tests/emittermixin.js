@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
 import EventInfo from '/ckeditor5/utils/eventinfo.js';
 

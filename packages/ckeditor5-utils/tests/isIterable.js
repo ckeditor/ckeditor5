@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import isIterable from '/ckeditor5/utils/isiterable.js';
 
 describe( 'utils', () => {

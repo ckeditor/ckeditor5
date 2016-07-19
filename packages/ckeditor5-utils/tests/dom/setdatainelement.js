@@ -5,8 +5,6 @@
 
 /* bender-tags: dom, browser-only */
 
-'use strict';
-
 import setDataInElement from '/ckeditor5/utils/dom/setdatainelement.js';
 import getDataFromElement from '/ckeditor5/utils/dom/getdatafromelement.js';
 

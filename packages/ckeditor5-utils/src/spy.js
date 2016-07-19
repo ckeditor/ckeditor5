@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 /**
  * Creates a spy function (ala Sinon.js) that can be used to inspect call to it.
  *

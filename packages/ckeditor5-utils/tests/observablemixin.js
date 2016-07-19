@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
 import utilsTestUtils from '/tests/utils/_utils/utils.js';
 import ObservableMixin from '/ckeditor5/utils/observablemixin.js';

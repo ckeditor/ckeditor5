@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 /**
  * Creates a set of changes which need to be applied to the input in order to transform
  * it into the output. This function can be used with strings or arrays.

@@ -5,8 +5,6 @@
 
 /* bender-tags: dom, browser-only */
 
-'use strict';
-
 import indexOf from '/ckeditor5/utils/dom/indexof.js';
 
 describe( 'indexOf', () => {

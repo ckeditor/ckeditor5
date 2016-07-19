@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import { keyCodes, getCode, parseKeystroke } from '/ckeditor5/utils/keyboard.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 

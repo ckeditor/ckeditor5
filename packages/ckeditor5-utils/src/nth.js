@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 /**
  * Returns `nth` (starts from `0` of course) item of an `iterable`.
  *

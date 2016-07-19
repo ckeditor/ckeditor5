@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import diff from '/ckeditor5/utils/diff.js';
 import diffToChanges from '/ckeditor5/utils/difftochanges.js';
 

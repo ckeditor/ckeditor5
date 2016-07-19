@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'CKEditorError', () => {

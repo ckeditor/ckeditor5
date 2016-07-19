@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import CKEditorError from './ckeditorerror.js';
 
 /**

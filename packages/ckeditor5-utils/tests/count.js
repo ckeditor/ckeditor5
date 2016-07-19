@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import count from '/ckeditor5/utils/count.js';
 
 describe( 'utils', () => {

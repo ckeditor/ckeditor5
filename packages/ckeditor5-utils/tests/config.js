@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Config from '/ckeditor5/utils/config.js';
 
 let config;

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 /**
  * Checks whether given {Map}s are equal, that is has same size and same key-value pairs.
  *

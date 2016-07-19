@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import EventInfo from './eventinfo.js';
 import uid from './uid.js';
 

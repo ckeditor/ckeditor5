@@ -5,8 +5,6 @@
 
 /* global console */
 
-'use strict';
-
 /**
  * The logging module.
  *

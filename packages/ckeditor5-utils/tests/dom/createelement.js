@@ -5,8 +5,6 @@
 
 /* bender-tags: dom, browser-only */
 
-'use strict';
-
 import createElement from '/ckeditor5/utils/dom/createelement.js';
 
 describe( 'createElement', () => {

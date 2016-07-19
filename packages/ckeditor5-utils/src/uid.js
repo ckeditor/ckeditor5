@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 /**
  * Returns a unique id. This id is a number (starting from 1) which will never get repeated on successive calls
  * to this method.
