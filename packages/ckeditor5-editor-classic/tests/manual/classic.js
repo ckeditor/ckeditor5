@@ -5,8 +5,6 @@
 
 /* global console:false */
 
-'use strict';
-
 import ClassicEditor from '/ckeditor5/editor-classic/classic.js';
 import testUtils from '/tests/utils/_utils/utils.js';
 

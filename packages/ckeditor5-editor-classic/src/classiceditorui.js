@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import BoxedEditorUI from '../ui/editorui/boxed/boxededitorui.js';
 
 import EditableUI from '../ui/editableui/editableui.js';

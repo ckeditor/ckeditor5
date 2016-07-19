@@ -1,25 +1,23 @@
 {
-	"browser": true,
-	"esnext": true,
-
-	"expr": true,
-	"immed": true,
-	"loopfunc": true,
-	"noarg": true,
-	"nonbsp": true,
-	"strict": "global",
-	"undef": true,
-	"unused": true,
-	"varstmt": true,
-
-	"globals": {
-		"after": false,
-		"afterEach": false,
-		"before": false,
-		"beforeEach": false,
-		"describe": false,
-		"expect": false,
-		"it": false,
-		"sinon": false
-	}
+  "browser": true,
+  "esnext": true,
+  "expr": true,
+  "immed": true,
+  "loopfunc": true,
+  "noarg": true,
+  "nonbsp": true,
+  "strict": "implied",
+  "undef": true,
+  "unused": true,
+  "varstmt": true,
+  "globals": {
+    "after": false,
+    "afterEach": false,
+    "before": false,
+    "beforeEach": false,
+    "describe": false,
+    "expect": false,
+    "it": false,
+    "sinon": false
+  }
 }

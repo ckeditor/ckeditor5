@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import StandardEditor from '../editor/standardeditor.js';
 
 import HtmlDataProcessor from '../engine/dataprocessor/htmldataprocessor.js';

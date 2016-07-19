@@ -5,8 +5,6 @@
 
 /* bender-tags: editor, browser-only */
 
-'use strict';
-
 import ClassicEditorUI from '/ckeditor5/editor-classic/classiceditorui.js';
 import BoxedEditorUIView from '/ckeditor5/ui/editorui/boxed/boxededitoruiview.js';
 
