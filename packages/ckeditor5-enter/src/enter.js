@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Feature from '../feature.js';
 import EnterCommand from './entercommand.js';
 import EnterObserver from './enterobserver.js';

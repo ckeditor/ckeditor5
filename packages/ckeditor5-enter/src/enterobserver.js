@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Observer from '../engine/view/observer/observer.js';
 import DomEventData from '../engine/view/observer/domeventdata.js';
 import { keyCodes } from '../utils/keyboard.js';

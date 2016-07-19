@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import ViewDocument from '/ckeditor5/engine/view/document.js';
 import EnterObserver from '/ckeditor5/enter/enterobserver.js';
 import DomEventData from '/ckeditor5/engine/view/observer/domeventdata.js';

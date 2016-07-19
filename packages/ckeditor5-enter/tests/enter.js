@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import VirtualTestEditor from '/tests/ckeditor5/_utils/virtualtesteditor.js';
 import Enter from '/ckeditor5/enter/enter.js';
 import EnterCommand from '/ckeditor5/enter/entercommand.js';
