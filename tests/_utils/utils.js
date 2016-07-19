@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 /**
  * General test utils for CKEditor.
  */

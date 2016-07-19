@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Plugin from './plugin.js';
 
 /**

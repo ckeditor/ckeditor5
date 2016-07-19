@@ -5,8 +5,6 @@
 
 /* bender-tags: editor */
 
-'use strict';
-
 import Editor from '/ckeditor5/editor/editor.js';
 import Command from '/ckeditor5/command/command.js';
 import Locale from '/ckeditor5/utils/locale.js';

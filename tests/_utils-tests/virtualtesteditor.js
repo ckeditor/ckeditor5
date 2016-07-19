@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import StandardEditor from '/ckeditor5/editor/standardeditor.js';
 import VirtualTestEditor from '/tests/ckeditor5/_utils/virtualtesteditor.js';
 import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';

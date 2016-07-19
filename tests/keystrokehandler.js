@@ -5,8 +5,6 @@
 
 /* bender-tags: browser-only */
 
-'use strict';
-
 import VirtualTestEditor from '/tests/ckeditor5/_utils/virtualtesteditor.js';
 import KeystrokeHandler from '/ckeditor5/keystrokehandler.js';
 import { keyCodes } from '/ckeditor5/utils/keyboard.js';

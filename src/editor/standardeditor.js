@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Editor from './editor.js';
 import KeystrokeHandler from '../keystrokehandler.js';
 import EditingController from '../engine/editingcontroller.js';

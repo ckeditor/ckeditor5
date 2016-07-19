@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import EmitterMixin from '../utils/emittermixin.js';
 import Config from '../utils/config.js';
 import PluginCollection from '../plugincollection.js';

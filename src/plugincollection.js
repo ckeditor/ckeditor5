@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Plugin from './plugin.js';
 import CKEditorError from './utils/ckeditorerror.js';
 import log from './utils/log.js';
