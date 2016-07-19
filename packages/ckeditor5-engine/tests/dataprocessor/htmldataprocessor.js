@@ -67,18 +67,4 @@ describe( 'HtmlDataProcessor', () => {
 			} );
 		}
 	} );
-
-	describe( 'toData', () => {
-		it( 'should use HtmlWriter', () => {
-			const spy = sinon.spy( dataProcessor._htmlWriter, 'getHtml' );
-
-			const fragment = document.createDocumentFragment();
-			const paragraph = document.createElement( 'p' );
-			fragment.appendChild( paragraph );
-			dataProcessor.toData( fragment );
-
-			spy.restore();
-			sinon.assert.calledWithExactly( spy, fragment );
-		} );
-	} );
 } );

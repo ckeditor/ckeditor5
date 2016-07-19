@@ -12,8 +12,6 @@ import ViewConversionDispatcher from './conversion/viewconversiondispatcher.js';
 import { convertText, convertToModelFragment } from './conversion/view-to-model-converters.js';
 
 import ViewDocumentFragment from './view/documentfragment.js';
-import DomConverter from './view/domconverter.js';
-import { NBSP_FILLER } from './view/filler.js';
 
 import ModelRange from './model/range.js';
 import ModelPosition from './model/position.js';
@@ -63,14 +61,6 @@ export default class DataController {
 		 * @member {engine.conversion.Mapper} engine.DataController#_mapper
 		 */
 		this._mapper = new Mapper();
-
-		/**
-		 * DOM converter used during the conversion.
-		 *
-		 * @private
-		 * @member {engine.view.DomConverter} engine.DataController#_domConverter
-		 */
-		this._domConverter = new DomConverter( { blockFiller: NBSP_FILLER } );
 
 		/**
 		 * Model to view conversion dispatcher used by the {@link engine.DataController#get get method}.
@@ -137,11 +127,8 @@ export default class DataController {
 
 		this._mapper.clearBindings();
 
-		// view -> DOM.
-		const domDocumentFragment = this._domConverter.viewToDom( viewDocumentFragment, document );
-
-		// DOM -> data.
-		return this.processor.toData( domDocumentFragment );
+		// view -> data.
+		return this.processor.toData( viewDocumentFragment );
 	}
 
 	/**
@@ -175,11 +162,8 @@ export default class DataController {
 	 * @returns {engine.model.DocumentFragment} Parsed data.
 	 */
 	parse( data ) {
-		// data -> DOM.
-		const domDocumentFragment = this.processor.toDom( data );
-
-		// DOM -> view.
-		const viewDocumentFragment = this._domConverter.domToView( domDocumentFragment );
+		// data -> view.
+		const viewDocumentFragment = this.processor.toView( data );
 
 		// view -> model.
 		const modelDocumentFragment = this.viewToModel.convert( viewDocumentFragment, { context: [ '$root' ] } );

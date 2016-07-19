@@ -4,6 +4,8 @@
  */
 
 import BasicHtmlWriter from './basichtmlwriter.js';
+import DomConverter from '../view/domconverter.js';
+import { NBSP_FILLER } from '../view/filler.js';
 
 /**
  * HtmlDataProcessor class.
@@ -25,6 +27,8 @@ export default class HtmlDataProcessor {
 		 */
 		this._domParser = new DOMParser();
 
+		this._domConverter = new DomConverter( { blockFiller: NBSP_FILLER } );
+
 		/**
 		 * BasicHtmlWriter instance used to convert DOM elements to HTML string.
 		 *
@@ -35,13 +39,25 @@ export default class HtmlDataProcessor {
 	}
 
 	/**
-	 * Converts provided document fragment to data format - in this case HTML string.
+	 * Converts provided view document fragment to data format - in this case HTML string.
 	 *
-	 * @param {DocumentFragment} fragment
+	 * @param {engine.view.DocumentFragment} fragment
 	 * @returns {String}
 	 */
-	toData( fragment ) {
-		return this._htmlWriter.getHtml( fragment );
+	toData( viewFragment ) {
+		// Convert view DocumentFragment to DOM DocumentFragment.
+		const domFragment = this._domConverter.viewToDom( viewFragment, document );
+
+		// Convert DOM DocumentFragment to HTML output.
+		return this._htmlWriter.getHtml( domFragment );
+	}
+
+	toView( data ) {
+		// Convert input HTML data to DOM DocumentFragment.
+		const domFragment = this.toDom( data );
+
+		// Convert DOM DocumentFragment to view DocumentFragment.
+		return this._domConverter.domToView( domFragment );
 	}
 
 	/**
