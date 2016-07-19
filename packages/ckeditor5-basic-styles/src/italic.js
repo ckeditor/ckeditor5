@@ -26,7 +26,6 @@ export default class Italic extends Feature {
 			isEnabled: true,
 			isOn: false,
 			label: t( 'Italic' ),
-			noText: true,
 			icon: 'italic',
 			iconAlign: 'left'
 		} );

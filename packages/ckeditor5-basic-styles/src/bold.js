@@ -26,7 +26,6 @@ export default class Bold extends Feature {
 			isEnabled: true,
 			isOn: false,
 			label: t( 'Bold' ),
-			noText: true,
 			icon: 'bold',
 			iconAlign: 'left'
 		} );
