@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Command from '../command/command.js';
 import transform from '../engine/model/delta/transform.js';
 

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import BaseCommand from './basecommand.js';
 import { transformDelta as transformDelta } from './basecommand.js';
 

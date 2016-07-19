@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Feature from '../feature.js';
 import UndoEngine from './undoengine.js';
 import Model from '../ui/model.js';

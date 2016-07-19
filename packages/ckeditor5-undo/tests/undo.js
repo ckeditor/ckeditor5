@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import ClassicTestEditor from '/tests/ckeditor5/_utils/classictesteditor.js';
 import Undo from '/ckeditor5/undo/undo.js';
 import UndoEngine from '/ckeditor5/undo/undoengine.js';

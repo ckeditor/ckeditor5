@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Feature from '../feature.js';
 import UndoCommand from './undocommand.js';
 import RedoCommand from './redocommand.js';
