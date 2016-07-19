@@ -11,12 +11,6 @@ const replace = require( 'gulp-replace' );
 const filterGitignore = require( '../utils/filtergitignore' );
 const tools = require( '../../../utils/tools' );
 
-const jshintrcDirs = [
-	'/',
-	'dev/',
-	'tests/'
-];
-
 /**
  * Removes lines with `'use strict';` directive.
  *
@@ -29,6 +23,7 @@ const jshintrcDirs = [
  */
 module.exports = function executeRemoveUseStrict( workdir ) {
 	updateJshintrc( workdir );
+	reformatDevsJshintrc( workdir );
 
 	return removeUseStrict( workdir );
 };
@@ -37,7 +32,7 @@ module.exports = function executeRemoveUseStrict( workdir ) {
 //
 // @param {String} workdir Path of directory to be processed.
 function updateJshintrc( workdir ) {
-	jshintrcDirs.forEach(
+	[ '/', 'tests/' ].forEach(
 		dir => {
 			const jshintrcPath = path.join( workdir, dir, '.jshintrc' );
 
@@ -50,12 +45,21 @@ function updateJshintrc( workdir ) {
 	);
 }
 
+// Only reformats (to match other .jshintrc files and package.json code style) the .jshintrc from dev/.
+//
+// @param {String} workdir Path of directory to be processed.
+function reformatDevsJshintrc( workdir ) {
+	const jshintrcPath = path.join( workdir, 'dev', '.jshintrc' );
+
+	tools.updateJSONFile( jshintrcPath, json => json );
+}
+
 // Removes `'use strict';` directive from project's source files. Omits files listed in `.gitignore`.
 //
 // @param {String} workdir Path of directory to be processed.
 // @returns {Stream}
 function removeUseStrict( workdir ) {
-	const glob = path.join( workdir, '**/*.js' );
+	const glob = path.join( workdir, '@(src|tests)/**/*.js' );
 	const useStrictRegex = /^\s*'use strict';\s*$/gm;
 
 	return gulp.src( glob )
