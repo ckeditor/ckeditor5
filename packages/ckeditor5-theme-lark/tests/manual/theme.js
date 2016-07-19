@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import testUtils from '/tests/ui/_utils/utils.js';
 
 import Collection from '/ckeditor5/utils/collection.js';
