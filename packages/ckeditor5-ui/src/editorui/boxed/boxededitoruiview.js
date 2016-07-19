@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import EditorUIView from '../../editorui/editoruiview.js';
 import uid from '../../../utils/uid.js';
 import Template from '../../template.js';

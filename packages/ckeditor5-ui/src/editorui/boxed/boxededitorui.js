@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import EditorUI from '../../../ui/editorui/editorui.js';
 import ControllerCollection from '../../../ui/controllercollection.js';
 

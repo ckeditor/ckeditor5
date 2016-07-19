@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Model from './model.js';
 import Collection from '../utils/collection.js';
 import Region from './region.js';

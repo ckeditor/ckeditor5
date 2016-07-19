@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Editor from '/ckeditor5/editor/editor.js';
 import BoxedEditorUI from '/ckeditor5/ui/editorui/boxed/boxededitorui.js';
 import ControllerCollection from '/ckeditor5/ui/controllercollection.js';

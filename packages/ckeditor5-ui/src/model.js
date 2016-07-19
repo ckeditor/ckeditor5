@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import extend from '../utils/lib/lodash/extend.js';
 import mix from '../utils/mix.js';
 import ObservableMixin from '../utils/observablemixin.js';

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Collection from '../utils/collection.js';
 import CKEditorError from '../utils/ckeditorerror.js';
 import EmitterMixin from '../utils/emittermixin.js';

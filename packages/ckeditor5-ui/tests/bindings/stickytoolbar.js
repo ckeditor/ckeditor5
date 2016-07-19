@@ -5,8 +5,6 @@
 
 /* bender-tags: ui, toolbar */
 
-'use strict';
-
 import Editor from '/ckeditor5/editor/editor.js';
 import Model from '/ckeditor5/ui/model.js';
 import View from '/ckeditor5/ui/view.js';

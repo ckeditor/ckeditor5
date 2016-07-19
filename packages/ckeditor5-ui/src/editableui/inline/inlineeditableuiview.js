@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import EditableUIView from '../../editableui/editableuiview.js';
 import Template from '../../template.js';
 

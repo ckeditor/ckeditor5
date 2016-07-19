@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import EditorUIView from '/ckeditor5/ui/editorui/editoruiview.js';
 
 describe( 'EditorUIView', () => {

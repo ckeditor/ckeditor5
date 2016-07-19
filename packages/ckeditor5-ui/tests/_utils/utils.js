@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import View from '/ckeditor5/ui/view.js';
 import Controller from '/ckeditor5/ui/controller.js';
 import ControllerCollection from '/ckeditor5/ui/controllercollection.js';

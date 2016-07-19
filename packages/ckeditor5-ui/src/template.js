@@ -5,8 +5,6 @@
 
 /* global document */
 
-'use strict';
-
 import CKEditorError from '../utils/ckeditorerror.js';
 import mix from '../utils/mix.js';
 import EmitterMixin from '../utils/emittermixin.js';

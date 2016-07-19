@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import mix from '../../utils/mix.js';
 import ToolbarBindingsMixin from './toolbarbindingsmixin.js';
 import BaseToolbar from '../toolbar/toolbar.js';

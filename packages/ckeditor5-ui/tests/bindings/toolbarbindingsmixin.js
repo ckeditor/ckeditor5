@@ -5,8 +5,6 @@
 
 /* bender-tags: ui, toolbar */
 
-'use strict';
-
 import mix from '/ckeditor5/utils/mix.js';
 import Editor from '/ckeditor5/editor/editor.js';
 import Controller from '/ckeditor5/ui/controller.js';

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import EmitterMixin from '../utils/emittermixin.js';
 import uid from '../utils/uid.js';
 import extend from '../utils/lib/lodash/extend.js';
