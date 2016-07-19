@@ -185,6 +185,31 @@ describe( 'Element', () => {
 		} );
 	} );
 
+	describe( 'offsetToIndex', () => {
+		let element;
+
+		beforeEach( () => {
+			element = new Element( 'elem', [], [ new Element( 'p' ), new Text( 'bar' ), new Element( 'h' ) ] );
+		} );
+
+		it( 'should return index of a node that occupies given offset in this element', () => {
+			expect( element.offsetToIndex( 0 ) ).to.equal( 0 );
+			expect( element.offsetToIndex( 1 ) ).to.equal( 1 );
+			expect( element.offsetToIndex( 2 ) ).to.equal( 1 );
+			expect( element.offsetToIndex( 3 ) ).to.equal( 1 );
+			expect( element.offsetToIndex( 4 ) ).to.equal( 2 );
+		} );
+
+		it( 'should return 0 if offset is too low', () => {
+			expect( element.offsetToIndex( -1 ) ).to.equal( 0 );
+		} );
+
+		it( 'should return element\'s child count if offset is too high', () => {
+			expect( element.offsetToIndex( 5 ) ).to.equal( 3 );
+			expect( element.offsetToIndex( 33 ) ).to.equal( 3 );
+		} );
+	} );
+
 	describe( 'toJSON', () => {
 		it( 'should serialize empty element', () => {
 			let element = new Element( 'one' );

@@ -185,6 +185,26 @@ describe( 'InsertOperation', () => {
 		expect( clone.baseVersion ).to.equal( baseVersion );
 	} );
 
+	it( 'should save copies of inserted nodes after it is executed', () => {
+		let element = new Element( 'p', { key: 'value' } );
+
+		let op = new InsertOperation( new Position( root, [ 0 ] ), element, doc.version );
+		doc.applyOperation( wrapInDelta( op ) );
+
+		let text = new Text( 'text' );
+		let op2 = new InsertOperation( new Position( root, [ 0, 0 ] ), text, doc.version );
+		doc.applyOperation( wrapInDelta( op2 ) );
+
+		expect( op.nodes.getNode( 0 ) ).not.to.equal( element );
+		expect( op.nodes.getNode( 0 ).name ).to.equal( 'p' );
+		expect( Array.from( op.nodes.getNode( 0 ).getAttributes() ) ).to.deep.equal( [ [ 'key', 'value' ] ] );
+
+		expect( op.nodes.getNode( 0 ).getChildCount() ).to.equal( 0 );
+		expect( element.getChildCount() ).to.equal( 1 );
+
+		expect( op2.nodes.getNode( 0 ) ).not.to.equal( text );
+	} );
+
 	describe( 'toJSON', () => {
 		it( 'should create proper json object', () => {
 			const position = new Position( root, [ 0 ] );

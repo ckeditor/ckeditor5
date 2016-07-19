@@ -20,7 +20,7 @@ import { jsonParseStringify } from '/tests/engine/model/_utils/utils.js';
 testUtils.createSinonSandbox();
 
 describe( 'position', () => {
-	let doc, root, otherRoot, p, ul, li1, li2, f, o, z, b, a, r;
+	let doc, root, otherRoot, p, ul, li1, li2, f, o, z, b, a, r, foz, bar;
 
 	// root
 	//  |- p         Before: [ 0 ]       After: [ 1 ]
@@ -39,7 +39,7 @@ describe( 'position', () => {
 		root = doc.createRoot();
 		otherRoot = doc.createRoot( '$root', 'otherRoot' );
 
-		let foz = new Text( 'foz' );
+		foz = new Text( 'foz' );
 
 		li1 = new Element( 'li', [], foz );
 
@@ -47,7 +47,7 @@ describe( 'position', () => {
 		o = new TextProxy( foz, 1, 1 );
 		z = new TextProxy( foz, 2, 1 );
 
-		let bar = new Text( 'bar' );
+		bar = new Text( 'bar' );
 
 		li2 = new Element( 'li', [], bar );
 
@@ -278,6 +278,23 @@ describe( 'position', () => {
 		expect( new Position( root, [ 1, 0, 3 ] ) ).to.have.property( 'offset' ).that.equals( 3 );
 	} );
 
+	it( 'should have index', () => {
+		expect( new Position( root, [ 0 ] ) ).to.have.property( 'index' ).that.equals( 0 );
+		expect( new Position( root, [ 1 ] ) ).to.have.property( 'index' ).that.equals( 1 );
+		expect( new Position( root, [ 2 ] ) ).to.have.property( 'index' ).that.equals( 2 );
+
+		expect( new Position( root, [ 0, 0 ] ) ).to.have.property( 'index' ).that.equals( 0 );
+
+		expect( new Position( root, [ 1, 0 ] ) ).to.have.property( 'index' ).that.equals( 0 );
+		expect( new Position( root, [ 1, 1 ] ) ).to.have.property( 'index' ).that.equals( 1 );
+		expect( new Position( root, [ 1, 2 ] ) ).to.have.property( 'index' ).that.equals( 2 );
+
+		expect( new Position( root, [ 1, 0, 0 ] ) ).to.have.property( 'index' ).that.equals( 0 );
+		expect( new Position( root, [ 1, 0, 1 ] ) ).to.have.property( 'index' ).that.equals( 0 );
+		expect( new Position( root, [ 1, 0, 2 ] ) ).to.have.property( 'index' ).that.equals( 0 );
+		expect( new Position( root, [ 1, 0, 3 ] ) ).to.have.property( 'index' ).that.equals( 1 );
+	} );
+
 	it( 'should be able to set offset', () => {
 		let position = new Position( root, [ 1, 0, 2 ] );
 		position.offset = 4;
@@ -303,7 +320,7 @@ describe( 'position', () => {
 		expect( new Position( root, [ 1, 0, 3 ] ).nodeBefore.data ).to.equal( 'foz' );
 	} );
 
-	it( 'should have nodeAfter', () => {
+	it( 'should have nodeAfter if it is not inside a text node', () => {
 		expect( new Position( root, [ 0 ] ).nodeAfter ).to.equal( p );
 		expect( new Position( root, [ 1 ] ).nodeAfter ).to.equal( ul );
 		expect( new Position( root, [ 2 ] ).nodeAfter ).to.be.null;
@@ -318,6 +335,28 @@ describe( 'position', () => {
 		expect( new Position( root, [ 1, 0, 1 ] ).nodeAfter ).to.be.null;
 		expect( new Position( root, [ 1, 0, 2 ] ).nodeAfter ).to.be.null;
 		expect( new Position( root, [ 1, 0, 3 ] ).nodeAfter ).to.be.null;
+	} );
+
+	it( 'should have a text node property if it is in text node', () => {
+		expect( new Position( root, [ 0 ] ).textNode ).to.be.null;
+		expect( new Position( root, [ 1 ] ).textNode ).to.be.null;
+		expect( new Position( root, [ 2 ] ).textNode ).to.be.null;
+
+		expect( new Position( root, [ 0, 0 ] ).textNode ).to.be.null;
+
+		expect( new Position( root, [ 1, 0 ] ).textNode ).to.be.null;
+		expect( new Position( root, [ 1, 1 ] ).textNode ).to.be.null;
+		expect( new Position( root, [ 1, 2 ] ).textNode ).to.be.null;
+
+		expect( new Position( root, [ 1, 0, 0 ] ).textNode ).to.be.null;
+		expect( new Position( root, [ 1, 0, 1 ] ).textNode ).to.equal( foz );
+		expect( new Position( root, [ 1, 0, 2 ] ).textNode ).to.equal( foz );
+		expect( new Position( root, [ 1, 0, 3 ] ).textNode ).to.be.null;
+
+		expect( new Position( root, [ 1, 1, 0 ] ).textNode ).to.be.null;
+		expect( new Position( root, [ 1, 1, 1 ] ).textNode ).to.equal( bar );
+		expect( new Position( root, [ 1, 1, 2 ] ).textNode ).to.equal( bar );
+		expect( new Position( root, [ 1, 1, 3 ] ).textNode ).to.be.null;
 	} );
 
 	it( 'should have proper parent path', () => {

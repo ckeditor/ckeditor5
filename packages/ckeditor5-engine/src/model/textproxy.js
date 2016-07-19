@@ -107,7 +107,7 @@ export default class TextProxy {
 	 * @type {Number}
 	 */
 	get startOffset() {
-		return this.textNode.startOffset + this.offsetInText;
+		return this.textNode.startOffset !== null ? this.textNode.startOffset + this.offsetInText : null;
 	}
 
 	/**
@@ -129,7 +129,7 @@ export default class TextProxy {
 	 * @type {Number}
 	 */
 	get endOffset() {
-		return this.startOffset + this.offsetSize;
+		return this.startOffset !== null ? this.startOffset + this.offsetSize : null;
 	}
 
 	/**
@@ -141,7 +141,10 @@ export default class TextProxy {
 	 */
 	getPath() {
 		const path = this.textNode.getPath();
-		path[ path.length - 1 ] += this.offsetInText;
+
+		if ( path.length > 0 ) {
+			path[ path.length - 1 ] += this.offsetInText;
+		}
 
 		return path;
 	}

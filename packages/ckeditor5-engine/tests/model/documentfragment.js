@@ -39,6 +39,25 @@ describe( 'DocumentFragment', () => {
 		} );
 	} );
 
+	describe( 'iterator', () => {
+		it( 'should iterate over document fragment\'s children', () => {
+			let xx = new Text( 'xx' );
+			let p = new Element( 'p' );
+			let yy = new Text( 'yy' );
+			let frag = new DocumentFragment( [ xx, p, yy ] );
+
+			expect( Array.from( frag ) ).to.deep.equal( [ xx, p, yy ] );
+		} );
+	} );
+
+	describe( 'getPath', () => {
+		it( 'should return empty array', () => {
+			let frag = new DocumentFragment( [ new Text( 'x' ), new Element( 'p' ), new Text( 'y' ) ] );
+
+			expect( frag.getPath() ).to.deep.equal( [] );
+		} );
+	} );
+
 	describe( 'isEmpty', () => {
 		it( 'should return true if document fragment has no children', () => {
 			let frag = new DocumentFragment();
@@ -53,11 +72,28 @@ describe( 'DocumentFragment', () => {
 		} );
 	} );
 
-	describe( 'getPath', () => {
-		it( 'should return empty array', () => {
-			let frag = new DocumentFragment( [ new Text( 'x' ), new Element( 'p' ), new Text( 'y' ) ] );
+	describe( 'offsetToIndex', () => {
+		let frag;
 
-			expect( frag.getPath() ).to.deep.equal( [] );
+		beforeEach( () => {
+			frag = new Element( 'elem', [], [ new Element( 'p' ), new Text( 'bar' ), new Element( 'h' ) ] );
+		} );
+
+		it( 'should return index of a node that occupies given offset in this element', () => {
+			expect( frag.offsetToIndex( 0 ) ).to.equal( 0 );
+			expect( frag.offsetToIndex( 1 ) ).to.equal( 1 );
+			expect( frag.offsetToIndex( 2 ) ).to.equal( 1 );
+			expect( frag.offsetToIndex( 3 ) ).to.equal( 1 );
+			expect( frag.offsetToIndex( 4 ) ).to.equal( 2 );
+		} );
+
+		it( 'should return 0 if offset is too low', () => {
+			expect( frag.offsetToIndex( -1 ) ).to.equal( 0 );
+		} );
+
+		it( 'should return document fragment\'s child count if offset is too high', () => {
+			expect( frag.offsetToIndex( 5 ) ).to.equal( 3 );
+			expect( frag.offsetToIndex( 33 ) ).to.equal( 3 );
 		} );
 	} );
 
