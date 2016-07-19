@@ -5,8 +5,6 @@
 
 /* global console:false */
 
-'use strict';
-
 import ClassicEditor from '/ckeditor5/editor-classic/classic.js';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {

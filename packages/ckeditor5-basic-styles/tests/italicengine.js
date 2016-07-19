@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import ItalicEngine from '/ckeditor5/basic-styles/italicengine.js';
 import VirtualTestEditor from '/tests/ckeditor5/_utils/virtualtesteditor.js';
 import { getData as getModelData } from '/tests/engine/_utils/model.js';

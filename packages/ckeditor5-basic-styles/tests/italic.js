@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import ClassicTestEditor from '/tests/ckeditor5/_utils/classictesteditor.js';
 import Italic from '/ckeditor5/basic-styles/italic.js';
 import ItalicEngine from '/ckeditor5/basic-styles/italicengine.js';

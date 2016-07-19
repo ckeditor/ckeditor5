@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import BoldEngine from '/ckeditor5/basic-styles/boldengine.js';
 import VirtualTestEditor from '/tests/ckeditor5/_utils/virtualtesteditor.js';
 import { getData as getModelData } from '/tests/engine/_utils/model.js';

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import ClassicTestEditor from '/tests/ckeditor5/_utils/classictesteditor.js';
 import Bold from '/ckeditor5/basic-styles/bold.js';
 import BoldEngine from '/ckeditor5/basic-styles/boldengine.js';

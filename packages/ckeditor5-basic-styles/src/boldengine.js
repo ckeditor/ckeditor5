@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Feature from '../feature.js';
 import BuildModelConverterFor from '../engine/conversion/model-converter-builder.js';
 import BuildViewConverterFor from '../engine/conversion/view-converter-builder.js';

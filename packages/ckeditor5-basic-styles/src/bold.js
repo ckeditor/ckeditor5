@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Feature from '../feature.js';
 import BoldEngine from './boldengine.js';
 import ButtonController from '../ui/button/button.js';
