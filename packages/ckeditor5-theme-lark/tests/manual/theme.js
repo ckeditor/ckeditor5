@@ -161,14 +161,12 @@ function renderButton( ui ) {
 		isEnabled: false
 	} ) );
 
-	const notextButton = button( {
+	ui.add( 'button-icon-states', button( {
 		label: 'Bold',
-		noText: true,
+		withText: false,
 		icon: 'bold',
 		iconAlign: 'left'
-	} );
-
-	ui.add( 'button-icon-states', notextButton );
+	} ) );
 
 	const colChangeButton = button( {
 		label: 'Icon follows text color',
@@ -198,7 +196,7 @@ function renderButton( ui ) {
 
 		const notextButton = button( {
 			label: 'Link',
-			noText: true,
+			withText: false,
 			icon: 'link',
 			iconAlign: 'left'
 		} );
@@ -352,12 +350,12 @@ function icon( name ) {
 
 function button( {
 	label = 'Button',
-	noText = false,
 	isEnabled = true,
 	isOn = false,
+	withText = true,
 	icon, iconAlign
 } = {} ) {
-	const model = new Model( { label, noText, isEnabled, isOn, icon, iconAlign } );
+	const model = new Model( { label, isEnabled, isOn, withText, icon, iconAlign } );
 
 	return new Button( model, new ButtonView() );
 }
@@ -376,9 +374,10 @@ function dropdown( {
 	label = 'Dropdown',
 	isEnabled = true,
 	isOn = false,
+	withText = true,
 	content = new Model( { items: new Collection( { idProperty: 'label' } ) } )
 } = {} ) {
-	const model = new Model( { label, isEnabled, content, isOn } );
+	const model = new Model( { label, isEnabled, content, isOn, withText } );
 	const dropdown = new ListDropdown( model, new ListDropdownView() );
 
 	return dropdown;
