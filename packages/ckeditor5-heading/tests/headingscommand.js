@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import ModelTestEditor from '/tests/ckeditor5/_utils/modeltesteditor.js';
 import HeadingsCommand from '/ckeditor5/headings/headingscommand.js';
 import Range from '/ckeditor5/engine/model/range.js';

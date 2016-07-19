@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Feature from '../feature.js';
 import HeadingsEngine from './headingsengine.js';
 import Model from '../ui/model.js';

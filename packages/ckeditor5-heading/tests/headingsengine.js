@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import HeadingsEngine from '/ckeditor5/headings/headingsengine.js';
 import Paragraph from '/ckeditor5/paragraph/paragraph.js';
 import VirtualTestEditor from '/tests/ckeditor5/_utils/virtualtesteditor.js';

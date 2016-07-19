@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import ClassicTestEditor from '/tests/ckeditor5/_utils/classictesteditor.js';
 import Headings from '/ckeditor5/headings/headings.js';
 import HeadingsEngine from '/ckeditor5/headings/headingsengine.js';
