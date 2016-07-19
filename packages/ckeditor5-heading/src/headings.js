@@ -53,6 +53,7 @@ export default class Headings extends Feature {
 			isEnabled: true,
 			isOn: false,
 			label: 'Headings',
+			withText: true,
 			content: itemListModel
 		} );
 
