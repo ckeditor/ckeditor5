@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Feature from '../feature.js';
 import ChangeBuffer from './changebuffer.js';
 import ModelPosition from '../engine/model/position.js';

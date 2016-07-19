@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import VirtualTestEditor from '/tests/ckeditor5/_utils/virtualtesteditor.js';
 import Typing from '/ckeditor5/typing/typing.js';
 import Paragraph from '/ckeditor5/paragraph/paragraph.js';
