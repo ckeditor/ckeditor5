@@ -260,16 +260,28 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
  */
 export function parse( data, options = {} ) {
 	options.order = options.order || [];
-	const viewParser = new ViewParser();
 	const rangeParser = new RangeParser();
+	const processor = new HtmlDataProcessor();
 
-	let view = viewParser.parse( data, options.rootElement );
+	// let view = viewParser.parse( data, options.rootElement );
+	let view = processor.toView( data );
 
-	// If single Element or Text is returned - move it to the DocumentFragment.
-	if ( !options.rootElement && ( view instanceof ViewText || view instanceof ViewElement ) ) {
-		view = new ViewDocumentFragment( view );
+	// At this point we have a view tree with Elements that could have names like `attribute:b:1`. In the next step
+	// we need to parse Element's names and convert them to AttributeElements and ContainerElements.
+	view = _convertViewElements( view );
+
+	// If custom root is provided - move all nodes there.
+	if ( options.rootElement ) {
+		const root = options.rootElement;
+		const nodes = view.removeChildren( 0, view.getChildCount() );
+
+		root.removeChildren( 0, root.getChildCount() );
+		root.appendChildren( nodes );
+
+		view = root;
 	}
 
+	// Parse ranges included in the view text nodes.
 	const ranges = rangeParser.parse( view, options.order );
 
 	// If only one element is returned inside DocumentFragment - return that element.
@@ -489,216 +501,6 @@ class RangeParser {
 
 		return ranges;
 	}
-}
-
-/**
- * Private helper class used to convert given HTML-like string to view tree.
- *
- * @private
- */
-class ViewParser {
-	/**
-	 * Parses HTML-like string to view tree elements.
-	 *
-	 * @param {String} data
-	 * @param {engine.view.Element|engine.view.DocumentFragment} [rootElement=null] Default root to use when parsing elements.
-	 * When set to `null` root element will be created automatically. If set to
-	 * {@link engine.view.Element Element} or {@link engine.view.DocumentFragment DocumentFragment} - this node
-	 * will be used as root for all parsed nodes.
-	 * @returns {engine.view.Node|engine.view.DocumentFragment}
-	 */
-	parse( data, rootElement = null ) {
-		const htmlProcessor = new HtmlDataProcessor();
-
-		// Convert HTML string to DOM.
-		const domRoot = htmlProcessor.toDom( data );
-
-		// If root element is provided - remove all children from it.
-		if ( rootElement ) {
-			rootElement.removeChildren( 0, rootElement.getChildCount() );
-		}
-
-		// Convert DOM to View.
-		return this._walkDom( domRoot, rootElement );
-	}
-
-	/**
-	 * Walks through DOM elements and converts them to tree view elements.
-	 *
-	 * @private
-	 * @param {Node} domNode
-	 * @param {engine.view.Element|engine.view.DocumentFragment} [rootElement=null] Default root element to use
-	 * when parsing elements.
-	 * @returns {engine.view.Node|engine.view.DocumentFragment}
-	 */
-	_walkDom( domNode, rootElement = null ) {
-		const isDomElement = domNode instanceof window.Element;
-
-		if ( isDomElement || domNode instanceof window.DocumentFragment ) {
-			const children = domNode.childNodes;
-			const length = children.length;
-
-			// If there is only one element inside DOM DocumentFragment - use it as root.
-			if ( !isDomElement && length == 1 ) {
-				return this._walkDom( domNode.childNodes[ 0 ], rootElement );
-			}
-
-			let viewElement;
-
-			if ( isDomElement ) {
-				viewElement = this._convertElement( domNode );
-
-				if ( rootElement ) {
-					rootElement.appendChildren( viewElement );
-				}
-			} else {
-				viewElement = rootElement ? rootElement : new ViewDocumentFragment();
-			}
-
-			for ( let i = 0; i < children.length; i++ ) {
-				const child = children[ i ];
-				viewElement.appendChildren( this._walkDom( child ) );
-			}
-
-			return rootElement ? rootElement : viewElement;
-		}
-
-		return new ViewText( domNode.textContent );
-	}
-
-	/**
-	 * Converts DOM Element to {engine.view.Element view Element}.
-	 *
-	 * @private
-	 * @param {Element} domElement DOM element to convert.
-	 * @returns {engine.view.Element|engine.view.AttributeElement|engine.view.ContainerElement} Tree view
-	 * element converted from DOM element.
-	 */
-	_convertElement( domElement ) {
-		const info = this._convertElementName( domElement );
-		let viewElement;
-
-		if ( info.type == 'attribute' ) {
-			viewElement = new AttributeElement( info.name );
-
-			if ( info.priority !== null ) {
-				viewElement.priority = info.priority;
-			}
-		} else if ( info.type == 'container' ) {
-			viewElement = new ContainerElement( info.name );
-		} else {
-			viewElement = new ViewElement( info.name );
-		}
-
-		const attributes = domElement.attributes;
-		const attributesCount = attributes.length;
-
-		for ( let i = 0; i < attributesCount; i++ ) {
-			const attribute = attributes[ i ];
-			viewElement.setAttribute( attribute.name, attribute.value );
-		}
-
-		return viewElement;
-	}
-
-	/**
-	 * Converts DOM element tag name to information needed for creating {@link engine.view.Element view Element} instance.
-	 * Name can be provided in couple formats: as a simple element's name (`div`), as a type and name (`container:div`,
-	 * `attribute:span`), as a name and priority (`span:12`) and as a type, priority, name trio (`attribute:span:12`);
-	 *
-	 * @private
-	 * @param {Element} element DOM Element which tag name should be converted.
-	 * @returns {Object} info Object with parsed information.
-	 * @returns {String} info.name Parsed name of the element.
-	 * @returns {String|null} info.type Parsed type of the element, can be `attribute` or `container`.
-	 * @returns {Number|null} info.priority Parsed priority of the element.
-	 */
-	_convertElementName( element ) {
-		const parts = element.tagName.toLowerCase().split( ':' );
-
-		if ( parts.length == 1 ) {
-			return {
-				name: parts[ 0 ],
-				type: null,
-				priority: null
-			};
-		}
-
-		if ( parts.length == 2 ) {
-			// Check if type and name: container:div.
-			const type = this._convertType( parts[ 0 ] );
-
-			if ( type ) {
-				return {
-					name: parts[ 1 ],
-					type: type,
-					priority: null
-				};
-			}
-
-			// Check if name and priority: span:10.
-			const priority = this._convertPriority( parts[ 1 ] );
-
-			if ( priority !== null ) {
-				return {
-					name: parts[ 0 ],
-					type: 'attribute',
-					priority: priority
-				};
-			}
-
-			throw new Error( `Parse error - cannot parse element's tag name: ${ element.tagName.toLowerCase() }.` );
-		}
-
-		// Check if name is in format type:name:priority.
-		if ( parts.length === 3 ) {
-			const type = this._convertType( parts[ 0 ] );
-			const priority = this._convertPriority( parts[ 2 ] );
-
-			if ( type && priority !== null ) {
-				return {
-					name: parts[ 1 ],
-					type: type,
-					priority: priority
-				};
-			}
-		}
-
-		throw new Error( `Parse error - cannot parse element's tag name: ${ element.tagName.toLowerCase() }.` );
-	}
-
-	/**
-	 * Checks if element's type is allowed. Returns `attribute`, `container` or `null`.
-	 *
-	 * @private
-	 * @param {String} type
-	 * @returns {String|null}
-	 */
-	_convertType( type ) {
-		if ( type == 'container' || type == 'attribute' ) {
-			return type;
-		}
-
-		return null;
-	}
-
-	/**
-	 * Checks if given priority is allowed. Returns null if priority cannot be converted.
-	 *
-	 * @private
-	 * @param {String} priorityString
-	 * @returns {Number|Null}
-	 */
-	_convertPriority( priorityString ) {
-		const priority = parseInt( priorityString, 10 );
-
-		if ( !isNaN( priority ) ) {
-			return priority;
-		}
-
-		return null;
-	}
-
 }
 
 /**
@@ -955,4 +757,154 @@ class ViewStringify {
 
 		return attributes.join( ' ' );
 	}
+}
+
+// Converts {@link engine.view.Element Elements} to {@link engine.view.AttributeElement AttributeElements} and
+// {@link engine.view.ContainerElement ContainerElements}. It converts all tree starting from the `rootNode`.
+// Conversion is based on element names. See `_convertElement` method for more details.
+//
+// @param {engine.view.Element|engine.view.DocumentFragment|engine.view.Text} rootNode Root node to convert.
+// @returns {engine.view.Element|engine.view.DocumentFragment|engine.view.Text|engine.view.AttributeElement|
+// engine.view.ContainerElement} Root node of converted elements.
+function _convertViewElements( rootNode ) {
+	const isFragment = rootNode instanceof ViewDocumentFragment;
+
+	if ( rootNode instanceof ViewElement || isFragment ) {
+		// Convert element or leave document fragment.
+		const convertedElement = isFragment ? new ViewDocumentFragment() : _convertElement( rootNode );
+
+		// Convert all child nodes.
+		for ( let child of rootNode.getChildren() ) {
+			convertedElement.appendChildren( _convertViewElements( child ) );
+		}
+
+		return convertedElement;
+	}
+
+	return rootNode;
+}
+
+// Converts {@link engine.view.Element Element} to {@link engine.view.AttributeElement AttributeElement} or
+// {@link engine.view.ContainerElement ContainerElement}.
+// If element's name is in format `attribute:b:1` or `b:11` it will be converted to
+// {@link engine.view.AttributeElement AttributeElement} with priority 11.
+// If element's name is in format `container:p` - it will be converted to
+// {@link engine.view.ContainerElement ContainerElement}.
+// If element's name will not contain any information - {@link engine.view.Element view Element} will be returned.
+//
+// @param {engine.view.Element} viewElement View element to convert.
+// @returns {engine.view.Element|engine.view.AttributeElement|engine.view.ContainerElement} Tree view
+// element converted according to it's name.
+function _convertElement( viewElement ) {
+	const info = _convertElementName( viewElement );
+	let newElement;
+
+	if ( info.type == 'attribute' ) {
+		newElement = new AttributeElement( info.name );
+
+		if ( info.priority !== null ) {
+			newElement.priority = info.priority;
+		}
+	} else if ( info.type == 'container' ) {
+		newElement = new ContainerElement( info.name );
+	} else {
+		newElement = new ViewElement( info.name );
+	}
+
+	// Move attributes.
+	for ( let attributeKey of viewElement.getAttributeKeys() ) {
+		newElement.setAttribute( attributeKey, viewElement.getAttribute( attributeKey ) );
+	}
+
+	return newElement;
+}
+
+// Converts {@link engine.view.Element#name Element's name} information needed for creating
+// {@link engine.view.AttributeElement AttributeElement} or {@link engine.view.ContainerElement ContainerElement} instance.
+// Name can be provided in couple formats: as a simple element's name (`div`), as a type and name (`container:div`,
+// `attribute:span`), as a name and priority (`span:12`) and as a type, priority, name trio (`attribute:span:12`);
+//
+// @param {engine.view.Element} element Element which name should be converted.
+// @returns {Object} info Object with parsed information.
+// @returns {String} info.name Parsed name of the element.
+// @returns {String|null} info.type Parsed type of the element, can be `attribute` or `container`.
+// returns {Number|null} info.priority Parsed priority of the element.
+function _convertElementName( viewElement ) {
+	const parts = viewElement.name.split( ':' );
+
+	if ( parts.length == 1 ) {
+		return {
+			name: parts[ 0 ],
+			type: null,
+			priority: null
+		};
+	}
+
+	if ( parts.length == 2 ) {
+		// Check if type and name: container:div.
+		const type = _convertType( parts[ 0 ] );
+
+		if ( type ) {
+			return {
+				name: parts[ 1 ],
+				type: type,
+				priority: null
+			};
+		}
+
+		// Check if name and priority: span:10.
+		const priority = _convertPriority( parts[ 1 ] );
+
+		if ( priority !== null ) {
+			return {
+				name: parts[ 0 ],
+				type: 'attribute',
+				priority: priority
+			};
+		}
+
+		throw new Error( `Parse error - cannot parse element's name: ${ viewElement.name }.` );
+	}
+
+	// Check if name is in format type:name:priority.
+	if ( parts.length === 3 ) {
+		const type = _convertType( parts[ 0 ] );
+		const priority = _convertPriority( parts[ 2 ] );
+
+		if ( type && priority !== null ) {
+			return {
+				name: parts[ 1 ],
+				type: type,
+				priority: priority
+			};
+		}
+	}
+
+	throw new Error( `Parse error - cannot parse element's tag name: ${ viewElement.name }.` );
+}
+
+// Checks if element's type is allowed. Returns `attribute`, `container` or `null`.
+//
+// @param {String} type
+// @returns {String|null}
+function _convertType( type ) {
+	if ( type == 'container' || type == 'attribute' ) {
+		return type;
+	}
+
+	return null;
+}
+
+// Checks if given priority is allowed. Returns null if priority cannot be converted.
+//
+// @param {String} priorityString
+// returns {Number|Null}
+function _convertPriority( priorityString ) {
+	const priority = parseInt( priorityString, 10 );
+
+	if ( !isNaN( priority ) ) {
+		return priority;
+	}
+
+	return null;
 }
