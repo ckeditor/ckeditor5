@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Element from './element.js';
 import Text from './text.js';
 import TextProxy from './textproxy.js';

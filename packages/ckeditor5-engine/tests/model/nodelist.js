@@ -5,8 +5,6 @@
 
 /* bender-tags: model */
 
-'use strict';
-
 import NodeList from '/ckeditor5/engine/model/nodelist.js';
 import Element from '/ckeditor5/engine/model/element.js';
 import Text from '/ckeditor5/engine/model/text.js';

@@ -5,8 +5,6 @@
 
 /* bender-tags: browser-only */
 
-'use strict';
-
 import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
 import xssTemplates from '/tests/engine/dataprocessor/_utils/xsstemplates.js';
 

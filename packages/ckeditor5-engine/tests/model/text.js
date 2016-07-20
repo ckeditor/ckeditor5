@@ -5,8 +5,6 @@
 
 /* bender-tags: model */
 
-'use strict';
-
 import Text from '/ckeditor5/engine/model/text.js';
 import Node from '/ckeditor5/engine/model/node.js';
 import { jsonParseStringify } from '/tests/engine/model/_utils/utils.js';

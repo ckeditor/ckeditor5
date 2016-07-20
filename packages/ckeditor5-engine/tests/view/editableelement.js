@@ -5,8 +5,6 @@
 
 /* bender-tags: view */
 
-'use strict';
-
 import createDocumentMock from '/tests/engine/view/_utils/createdocumentmock.js';
 import RootEditableElement from '/ckeditor5/engine/view/rooteditableelement.js';
 import Range from '/ckeditor5/engine/view/range.js';

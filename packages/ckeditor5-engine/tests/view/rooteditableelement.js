@@ -5,8 +5,6 @@
 
 /* bender-tags: view */
 
-'use strict';
-
 import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import EditableElement from '/ckeditor5/engine/view/editableelement.js';
 import RootEditableElement from '/ckeditor5/engine/view/rooteditableelement.js';

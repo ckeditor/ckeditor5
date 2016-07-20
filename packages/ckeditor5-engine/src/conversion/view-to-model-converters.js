@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import ModelDocumentFragment from '../model/documentfragment.js';
 import ModelText from '../model/text.js';
 import { normalizeNodes } from '../model/writer.js';

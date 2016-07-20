@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import ModelPosition from '../model/position.js';
 import ViewPosition from '../view/position.js';
 import ModelRange from '../model/range.js';

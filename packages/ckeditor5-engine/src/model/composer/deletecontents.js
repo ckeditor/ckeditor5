@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import LivePosition from '../liveposition.js';
 import Position from '../position.js';
 import compareArrays from '../../../utils/comparearrays.js';

@@ -5,8 +5,6 @@
 
 /* bender-tags: view, browser-only */
 
-'use strict';
-
 import { breakRange } from '/ckeditor5/engine/view/writer.js';
 import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';

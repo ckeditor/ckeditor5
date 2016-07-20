@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 /**
  * `TextProxy` represents a part of {@link engine.model.Text text node}.
  *

@@ -5,8 +5,6 @@
 
 /* bender-tags: view */
 
-'use strict';
-
 import Range from '/ckeditor5/engine/view/range.js';
 import Position from '/ckeditor5/engine/view/position.js';
 import Element from '/ckeditor5/engine/view/element.js';

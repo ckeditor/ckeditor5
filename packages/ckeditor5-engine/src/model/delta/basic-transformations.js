@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import { addTransformationCase, defaultTransform } from './transform.js';
 
 import Range from '../range.js';

@@ -5,8 +5,6 @@
 
 /* bender-tags: view */
 
-'use strict';
-
 import ViewNode from '/ckeditor5/engine/view/node.js';
 import ViewText from '/ckeditor5/engine/view/text.js';
 

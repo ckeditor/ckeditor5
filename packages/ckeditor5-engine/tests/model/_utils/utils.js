@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import TreeWalker from '/ckeditor5/engine/model/treewalker.js';
 import Text from '/ckeditor5/engine/model/text.js';
 import TextProxy from '/ckeditor5/engine/model/textproxy.js';

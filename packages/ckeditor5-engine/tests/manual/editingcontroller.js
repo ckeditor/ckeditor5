@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import EditingController from '/ckeditor5/engine/editingcontroller.js';
 import Document from '/ckeditor5/engine/model/document.js';
 import ModelPosition from '/ckeditor5/engine/model/position.js';

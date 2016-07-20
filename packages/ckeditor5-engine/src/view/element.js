@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Node from './node.js';
 import objectToMap from '../../utils/objecttomap.js';
 import isIterable from '../../utils/isiterable.js';

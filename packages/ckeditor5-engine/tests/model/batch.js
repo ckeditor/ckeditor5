@@ -5,8 +5,6 @@
 
 /* bender-tags: model, delta */
 
-'use strict';
-
 import deltas from '/ckeditor5/engine/model/delta/basic-deltas.js'; // jshint ignore:line
 
 import Document from '/ckeditor5/engine/model/document.js';

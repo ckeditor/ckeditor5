@@ -5,8 +5,6 @@
 
 /* bender-tags: view, browser-only */
 
-'use strict';
-
 import { wrapPosition } from '/ckeditor5/engine/view/writer.js';
 import Text from '/ckeditor5/engine/view/text.js';
 import Element from '/ckeditor5/engine/view/element.js';

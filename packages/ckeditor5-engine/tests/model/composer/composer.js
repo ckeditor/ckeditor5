@@ -5,8 +5,6 @@
 
 /* bender-tags: model, composer */
 
-'use strict';
-
 import Document from '/ckeditor5/engine/model/document.js';
 import Composer from '/ckeditor5/engine/model/composer/composer.js';
 import { setData, getData } from '/tests/engine/_utils/model.js';

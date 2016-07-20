@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Operation from './operation.js';
 import Position from '../position.js';
 import Range from '../range.js';

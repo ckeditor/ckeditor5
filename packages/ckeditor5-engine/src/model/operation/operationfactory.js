@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import AttributeOperation from '../operation/attributeoperation.js';
 import InsertOperation from '../operation/insertoperation.js';
 import MoveOperation from '../operation/moveoperation.js';

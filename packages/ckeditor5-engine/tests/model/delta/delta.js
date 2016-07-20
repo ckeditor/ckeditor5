@@ -5,8 +5,6 @@
 
 /* bender-tags: model, delta */
 
-'use strict';
-
 import count from '/ckeditor5/utils/count.js';
 import Delta from '/ckeditor5/engine/model/delta/delta.js';
 import Operation from '/ckeditor5/engine/model/operation/operation.js';

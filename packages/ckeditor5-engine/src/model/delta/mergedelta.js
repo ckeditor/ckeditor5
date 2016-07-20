@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Delta from './delta.js';
 import DeltaFactory from './deltafactory.js';
 import SplitDelta from './splitdelta.js';

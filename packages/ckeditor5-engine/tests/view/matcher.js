@@ -5,8 +5,6 @@
 
 /* bender-tags: view */
 
-'use strict';
-
 import Matcher from '/ckeditor5/engine/view/matcher.js';
 import Element from '/ckeditor5/engine/view/element.js';
 

@@ -5,8 +5,6 @@
 
 /* bender-tags: view, browser-only */
 
-'use strict';
-
 import { insert } from '/ckeditor5/engine/view/writer.js';
 import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import Element from '/ckeditor5/engine/view/element.js';

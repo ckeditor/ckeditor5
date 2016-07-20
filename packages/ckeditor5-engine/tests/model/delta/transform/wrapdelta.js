@@ -5,8 +5,6 @@
 
 /* bender-tags: model, operation */
 
-'use strict';
-
 import transformations from '/ckeditor5/engine/model/delta/basic-transformations.js';
 /*jshint unused: false*/
 

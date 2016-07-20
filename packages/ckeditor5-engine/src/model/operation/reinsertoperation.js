@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import MoveOperation from './moveoperation.js';
 import RemoveOperation from './removeoperation.js';
 

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Consumable from './modelconsumable.js';
 import Range from '../model/range.js';
 import TextProxy from '../model/textproxy.js';

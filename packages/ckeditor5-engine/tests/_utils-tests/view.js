@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 /* bender-tags: browser-only */
 
 import { parse, stringify, getData, setData }from '/tests/engine/_utils/view.js';

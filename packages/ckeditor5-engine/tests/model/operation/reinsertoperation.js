@@ -5,8 +5,6 @@
 
 /* bender-tags: model, operation */
 
-'use strict';
-
 import Document from '/ckeditor5/engine/model/document.js';
 import ReinsertOperation from '/ckeditor5/engine/model/operation/reinsertoperation.js';
 import RemoveOperation from '/ckeditor5/engine/model/operation/removeoperation.js';

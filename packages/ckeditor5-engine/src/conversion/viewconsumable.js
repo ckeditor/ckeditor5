@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import isArray from '../../utils/lib/lodash/isArray.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 import ViewElement from '../view/element.js';

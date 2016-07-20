@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import operationTransform from '../operation/transform.js';
 import arrayUtils from '../../../utils/lib/lodash/array.js';
 

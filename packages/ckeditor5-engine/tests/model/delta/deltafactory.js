@@ -5,8 +5,6 @@
 
 /* bender-tags: model, delta */
 
-'use strict';
-
 import Delta from '/ckeditor5/engine/model/delta/delta.js';
 import InsertDelta from '/ckeditor5/engine/model/delta/insertdelta.js';
 

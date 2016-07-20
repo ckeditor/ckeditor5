@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 // Load all basic deltas and transformations, they register themselves, but they need to be imported somewhere.
 import deltas from './delta/basic-deltas.js'; // jshint ignore:line
 import transformations from './delta/basic-transformations.js'; // jshint ignore:line

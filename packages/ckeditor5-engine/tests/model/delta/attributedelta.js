@@ -5,8 +5,6 @@
 
 /* bender-tags: model, delta */
 
-'use strict';
-
 import count from '/ckeditor5/utils/count.js';
 import Document from '/ckeditor5/engine/model/document.js';
 import Text from '/ckeditor5/engine/model/text.js';

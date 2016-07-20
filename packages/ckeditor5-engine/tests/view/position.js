@@ -5,8 +5,6 @@
 
 /* bender-tags: view, browser-only */
 
-'use strict';
-
 import Position from '/ckeditor5/engine/view/position.js';
 import Node from '/ckeditor5/engine/view/node.js';
 import Element from '/ckeditor5/engine/view/element.js';

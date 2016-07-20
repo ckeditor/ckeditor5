@@ -5,8 +5,6 @@
 
 /* bender-tags: view, browser-only */
 
-'use strict';
-
 import { mergeAt } from '/ckeditor5/engine/view/writer.js';
 import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import Text from '/ckeditor5/engine/view/text.js';

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 /**
  * TextProxy is a wrapper for substring of {@link engine.view.Text}. Instance of this class is created by
  * {@link engine.view.TreeWalker} when only a part of {@link engine.view.Text} needs to be returned.

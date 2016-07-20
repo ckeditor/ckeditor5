@@ -5,8 +5,6 @@
 
 /* bender-tags: model */
 
-'use strict';
-
 import Document from '/ckeditor5/engine/model/document.js';
 import DocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
 import Node from '/ckeditor5/engine/model/node.js';

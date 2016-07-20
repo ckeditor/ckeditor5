@@ -5,8 +5,6 @@
 
 /* bender-tags: view */
 
-'use strict';
-
 import EditingController from '/ckeditor5/engine/editingcontroller.js';
 
 import ViewDocument from '/ckeditor5/engine/view/document.js';
