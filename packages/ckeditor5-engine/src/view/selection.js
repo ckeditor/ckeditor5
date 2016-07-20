@@ -213,10 +213,10 @@ export default class Selection {
 	}
 
 	/**
-	 * Two selections equal if they have the same ranges and directions.
+	 * Checks whether, this selection is equal to given selection. Selections equal if they have the same ranges and directions.
 	 *
 	 * @param {engine.view.Selection} otherSelection Selection to compare with.
-	 * @returns {Boolean} True if selections equal.
+	 * @returns {Boolean} `true` if selections are equal, `false` otherwise.
 	 */
 	isEqual( otherSelection ) {
 		const rangeCount = this.rangeCount;
@@ -273,24 +273,34 @@ export default class Selection {
 	}
 
 	/**
-	 * Set this selection's ranges and direction to the ranges and direction of the given selection.
+	 * Sets this selection's ranges and direction to the ranges and direction of the given selection.
 	 *
-	 * @param {engine.view.Selection} otherSelection Other selection.
+	 * @param {engine.view.Selection} otherSelection
 	 */
 	setTo( otherSelection ) {
-		this.removeAllRanges();
-
-		for ( let range of otherSelection.getRanges() ) {
-			this._pushRange( range );
-		}
-
-		this._lastRangeBackward = otherSelection._lastRangeBackward;
-		this.fire( 'change' );
+		this.setRanges( otherSelection.getRanges(), otherSelection.isBackward );
 	}
 
 	/**
-	 * Collapses selection to the {@link engine.view.Selection#getFirstPosition first position} in stored ranges.
-	 * All ranges will be removed beside one collapsed range. Nothing will be changed if there are no ranges stored
+	 * Sets collapsed selection in the specified location.
+	 *
+	 * The location can be specified in the same form as {@link engine.view.Position.createAt} parameters.
+	 *
+	 * @fires engine.view.Selection#change
+	 * @param {engine.view.Item|engine.view.Position} itemOrPosition
+	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * first parameter is a {@link engine.view.Item view item}.
+	 */
+	collapse( itemOrPosition, offset ) {
+		const pos = Position.createAt( itemOrPosition, offset );
+		const range = new Range( pos, pos );
+
+		this.setRanges( [ range ] );
+	}
+
+	/**
+	 * Collapses selection to the selection's {@link engine.view.Selection#getFirstPosition first position}.
+	 * All ranges, besides the collapsed one, will be removed. Nothing will change if there are no ranges stored
 	 * inside selection.
 	 *
 	 * @fires engine.view.Selection#change
@@ -300,13 +310,12 @@ export default class Selection {
 
 		if ( startPosition !== null ) {
 			this.setRanges( [ new Range( startPosition, startPosition ) ] );
-			this.fire( 'change' );
 		}
 	}
 
 	/**
-	 * Collapses selection to the {@link engine.view.Selection#getLastPosition last position} in stored ranges.
-	 * All ranges will be removed beside one collapsed range. Nothing will be changed if there are no ranges stored
+	 * Collapses selection to the selection's {@link engine.view.Selection#getLastPosition last position}.
+	 * All ranges, besides the collapsed one, will be removed. Nothing will change if there are no ranges stored
 	 * inside selection.
 	 *
 	 * @fires engine.view.Selection#change
@@ -316,7 +325,6 @@ export default class Selection {
 
 		if ( endPosition !== null ) {
 			this.setRanges( [ new Range( endPosition, endPosition ) ] );
-			this.fire( 'change' );
 		}
 	}
 
@@ -331,6 +339,20 @@ export default class Selection {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Creates and returns an instance of `Selection` that is a clone of given selection, meaning that it has same
+	 * ranges and same direction as this selection.
+	 *
+	 * @params {engine.view.Selection} otherSelection Selection to be cloned.
+	 * @returns {engine.view.Selection} `Selection` instance that is a clone of given selection.
+	 */
+	static createFromSelection( otherSelection ) {
+		const selection = new Selection();
+		selection.setTo( otherSelection );
+
+		return selection;
 	}
 
 	/**

@@ -537,7 +537,7 @@ export default class DomConverter {
 	 * and {@link engine.view.DomConverter#getCorrespondingDomDocumentFragment getCorrespondingDomDocumentFragment}
 	 * for document fragments.
 	 *
-	 * @param {engine.view.Node|engine.view.DomFragment} viewNode View node or document fragment.
+	 * @param {engine.view.Node|engine.view.DocumentFragment} viewNode View node or document fragment.
 	 * @returns {Node|DocumentFragment|null} Corresponding DOM node or document fragment.
 	 */
 	getCorrespondingDom( viewNode ) {

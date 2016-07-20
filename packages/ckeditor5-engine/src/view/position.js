@@ -84,6 +84,24 @@ export default class Position {
 	}
 
 	/**
+	 * Returns position root, that is the root of the position's parent element.
+	 *
+	 * @returns {engine.view.Node|engine.view.DocumentFragment} Position's root.
+	 */
+	getRoot() {
+		return this.parent.getRoot();
+	}
+
+	/**
+	 * Returns ancestors array of this position, that is this position's parent and it's ancestors.
+	 *
+	 * @returns {Array} Array with ancestors.
+	 */
+	getAncestors() {
+		return this.parent.getAncestors().concat( this.parent );
+	}
+
+	/**
 	 * Checks whether this position equals given position.
 	 *
 	 * @param {engine.view.Position} otherPosition Position to compare with.
@@ -119,6 +137,26 @@ export default class Position {
 	 */
 	isAfter( otherPosition ) {
 		return this.compareWith( otherPosition ) == 'after';
+	}
+
+	/**
+	 * Returns `true` if position is at the beginning of its {@link engine.view.Position#parent parent}, `false` otherwise.
+	 *
+	 * @returns {Boolean}
+	 */
+	isAtStart() {
+		return this.offset === 0;
+	}
+
+	/**
+	 * Returns `true` if position is at the end of its {@link engine.view.Position#parent parent}, `false` otherwise.
+	 *
+	 * @returns {Boolean}
+	 */
+	isAtEnd() {
+		const endOffset = this.parent instanceof Text ? this.parent.data.length : this.parent.getChildCount();
+
+		return this.offset === endOffset;
 	}
 
 	/**
@@ -206,53 +244,91 @@ export default class Position {
 	}
 
 	/**
-	 * Creates a new position after the given node.
+	 * Creates position at the given location. The location can be specified as:
 	 *
-	 * @param {engine.view.Node|engine.view.TextProxy} node Node or text proxy after which the position should be located.
+	 * * a {@link engine.view.Position position},
+	 * * parent element and offset (offset defaults to `0`),
+	 * * parent element and `'end'` (sets position at the end of that element),
+	 * * {@link engine.view.Item view item} and `'before'` or `'after'` (sets position before or after given view item).
+	 *
+	 * This method is a shortcut to other constructors such as:
+	 *
+	 * * {@link engine.view.Position.createBefore},
+	 * * {@link engine.view.Position.createAfter},
+	 * * {@link engine.view.Position.createFromPosition}.
+	 *
+	 * @param {engine.view.Item|engine.model.Position} itemOrPosition
+	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * first parameter is a {@link engine.view.Item view item}.
+	 */
+	static createAt( itemOrPosition, offset ) {
+		if ( itemOrPosition instanceof Position ) {
+			return this.createFromPosition( itemOrPosition );
+		} else {
+			let node = itemOrPosition;
+
+			if ( offset == 'end' ) {
+				offset = node instanceof Text ? node.data.length : node.getChildCount();
+			} else if ( offset == 'before' ) {
+				return this.createBefore( node );
+			} else if ( offset == 'after' ) {
+				return this.createAfter( node );
+			} else if ( !offset ) {
+				offset = 0;
+			}
+
+			return new Position( node, offset );
+		}
+	}
+
+	/**
+	 * Creates a new position after given view item.
+	 *
+	 * @param {engine.view.Item} item View item after which the position should be located.
 	 * @returns {engine.view.Position}
 	 */
-	static createAfter( node ) {
-		// {@link engine.view.TextProxy} is not a instance of {@link engine.view.Node} so we need do handle it in specific way.
-		if ( node instanceof TextProxy ) {
-			return new Position( node.textNode, node.index + node.data.length );
+	static createAfter( item ) {
+		// TextProxy is not a instance of Node so we need do handle it in specific way.
+		if ( item instanceof TextProxy ) {
+			return new Position( item.textNode, item.offsetInText + item.data.length );
 		}
 
-		if ( !node.parent ) {
+		if ( !item.parent ) {
 			/**
 			 * You can not make a position after a root.
 			 *
 			 * @error position-after-root
 			 * @param {engine.view.Node} root
 			 */
-			throw new CKEditorError( 'position-after-root: You can not make position after root.', { root: node } );
+			throw new CKEditorError( 'position-after-root: You can not make position after root.', { root: item } );
 		}
 
-		return new Position( node.parent, node.getIndex() + 1 );
+		return new Position( item.parent, item.getIndex() + 1 );
 	}
 
 	/**
-	 * Creates a new position before the given node.
+	 * Creates a new position before given view item.
 	 *
-	 * @param {engine.view.Node|engine.view.TextProxy} node Node or text proxy before which the position should be located.
+	 * @param {engine.view.Item} item View item before which the position should be located.
 	 * @returns {engine.view.Position}
 	 */
-	static createBefore( node ) {
-		// {@link engine.view.TextProxy} is not a instance of {@link engine.view.Node} so we need do handle it in specific way.
-		if ( node instanceof TextProxy ) {
-			return new Position( node.textNode, node.index );
+	static createBefore( item ) {
+		// TextProxy is not a instance of Node so we need do handle it in specific way.
+		if ( item instanceof TextProxy ) {
+			return new Position( item.textNode, item.offsetInText );
 		}
 
-		if ( !node.parent ) {
+		if ( !item.parent ) {
 			/**
 			 * You cannot make a position before a root.
 			 *
 			 * @error position-before-root
 			 * @param {engine.view.Node} root
 			 */
-			throw new CKEditorError( 'position-before-root: You can not make position before root.', { root: node } );
+			throw new CKEditorError( 'position-before-root: You can not make position before root.', { root: item } );
 		}
 
-		return new Position( node.parent, node.getIndex() );
+		return new Position( item.parent, item.getIndex() );
 	}
 
 	/**

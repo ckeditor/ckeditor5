@@ -7,12 +7,12 @@
 
 import count from '/ckeditor5/utils/count.js';
 import Node from '/ckeditor5/engine/view/node.js';
-import ViewElement from '/ckeditor5/engine/view/element.js';
+import Element from '/ckeditor5/engine/view/element.js';
 
 describe( 'Element', () => {
 	describe( 'constructor', () => {
 		it( 'should create element without attributes', () => {
-			const el = new ViewElement( 'p' );
+			const el = new Element( 'p' );
 
 			expect( el ).to.be.an.instanceof( Node );
 			expect( el ).to.have.property( 'name' ).that.equals( 'p' );
@@ -21,7 +21,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should create element with attributes as plain object', () => {
-			const el = new ViewElement( 'p', { foo: 'bar' } );
+			const el = new Element( 'p', { foo: 'bar' } );
 
 			expect( el ).to.have.property( 'name' ).that.equals( 'p' );
 			expect( count( el.getAttributeKeys() ) ).to.equal( 1 );
@@ -32,7 +32,7 @@ describe( 'Element', () => {
 			const attrs = new Map();
 			attrs.set( 'foo', 'bar' );
 
-			const el = new ViewElement( 'p', attrs );
+			const el = new Element( 'p', attrs );
 
 			expect( el ).to.have.property( 'name' ).that.equals( 'p' );
 			expect( count( el.getAttributeKeys() ) ).to.equal( 1 );
@@ -40,8 +40,8 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should create element with children', () => {
-			const child = new ViewElement( 'p', { foo: 'bar' } );
-			const parent = new ViewElement( 'div', [], [ child ] );
+			const child = new Element( 'p', { foo: 'bar' } );
+			const parent = new Element( 'div', [], [ child ] );
 
 			expect( parent ).to.have.property( 'name' ).that.equals( 'div' );
 			expect( parent.getChildCount() ).to.equal( 1 );
@@ -49,7 +49,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should move class attribute to class set ', () => {
-			const el = new ViewElement( 'p', { id: 'test', class: 'one two three' } );
+			const el = new Element( 'p', { id: 'test', class: 'one two three' } );
 
 			expect( el._attrs.has( 'class' ) ).to.be.false;
 			expect( el._attrs.has( 'id' ) ).to.be.true;
@@ -59,7 +59,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should move style attribute to style map', () => {
-			const el = new ViewElement( 'p', { id: 'test', style: 'one: style1; two:style2 ; three : url(http://ckeditor.com)' } );
+			const el = new Element( 'p', { id: 'test', style: 'one: style1; two:style2 ; three : url(http://ckeditor.com)' } );
 
 			expect( el._attrs.has( 'style' ) ).to.be.false;
 			expect( el._attrs.has( 'id' ) ).to.be.true;
@@ -72,9 +72,23 @@ describe( 'Element', () => {
 		} );
 	} );
 
+	describe( 'isEmpty', () => {
+		it( 'should return true if there are no children in element', () => {
+			const element = new Element( 'p' );
+
+			expect( element.isEmpty() ).to.be.true;
+		} );
+
+		it( 'should return false if there are children in element', () => {
+			const fragment = new Element( 'p', null, new Element( 'img' ) );
+
+			expect( fragment.isEmpty() ).to.be.false;
+		} );
+	} );
+
 	describe( 'clone', () => {
 		it( 'should clone element', () => {
-			const el = new ViewElement( 'p', { attr1: 'foo', attr2: 'bar' } );
+			const el = new Element( 'p', { attr1: 'foo', attr2: 'bar' } );
 			const clone = el.clone();
 
 			expect( clone ).to.not.equal( el );
@@ -84,9 +98,9 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should deeply clone element', () => {
-			const el = new ViewElement( 'p', { attr1: 'foo', attr2: 'bar' }, [
-				new ViewElement( 'b', { attr: 'baz' } ),
-				new ViewElement( 'span', { attr: 'qux' } )
+			const el = new Element( 'p', { attr1: 'foo', attr2: 'bar' }, [
+				new Element( 'b', { attr: 'baz' } ),
+				new Element( 'span', { attr: 'qux' } )
 			] );
 			const count = el.getChildCount();
 			const clone = el.clone( true );
@@ -108,9 +122,9 @@ describe( 'Element', () => {
 		} );
 
 		it( 'shouldn\'t clone any children when deep copy is not performed', () => {
-			const el = new ViewElement( 'p', { attr1: 'foo', attr2: 'bar' }, [
-				new ViewElement( 'b', { attr: 'baz' } ),
-				new ViewElement( 'span', { attr: 'qux' } )
+			const el = new Element( 'p', { attr1: 'foo', attr2: 'bar' }, [
+				new Element( 'b', { attr: 'baz' } ),
+				new Element( 'span', { attr: 'qux' } )
 			] );
 			const clone = el.clone( false );
 
@@ -122,7 +136,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should clone class attribute', () => {
-			const el = new ViewElement( 'p', { foo: 'bar' } );
+			const el = new Element( 'p', { foo: 'bar' } );
 			el.addClass( 'baz', 'qux' );
 			const clone = el.clone( false );
 
@@ -133,7 +147,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should clone style attribute', () => {
-			const el = new ViewElement( 'p', { style: 'color: red; font-size: 12px;' } );
+			const el = new Element( 'p', { style: 'color: red; font-size: 12px;' } );
 			const clone = el.clone( false );
 
 			expect( clone ).to.not.equal( el );
@@ -146,7 +160,7 @@ describe( 'Element', () => {
 	} );
 
 	describe( 'isSimilar', () => {
-		const el = new ViewElement( 'p', { foo: 'bar' } );
+		const el = new Element( 'p', { foo: 'bar' } );
 		it( 'should return false when comparing to non-element', () => {
 			expect( el.isSimilar( null ) ).to.be.false;
 			expect( el.isSimilar( {} ) ).to.be.false;
@@ -157,7 +171,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should return true for element with same attributes and name', () => {
-			const other = new ViewElement( 'p', { foo: 'bar' } );
+			const other = new Element( 'p', { foo: 'bar' } );
 			expect( el.isSimilar( other ) ).to.be.true;
 		} );
 
@@ -181,10 +195,10 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should compare class attribute', () => {
-			const el1 = new ViewElement( 'p' );
-			const el2 = new ViewElement( 'p' );
-			const el3 = new ViewElement( 'p' );
-			const el4 = new ViewElement( 'p' );
+			const el1 = new Element( 'p' );
+			const el2 = new Element( 'p' );
+			const el3 = new Element( 'p' );
+			const el4 = new Element( 'p' );
 
 			el1.addClass( 'foo', 'bar' );
 			el2.addClass( 'bar', 'foo' );
@@ -197,10 +211,10 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should compare styles attribute', () => {
-			const el1 = new ViewElement( 'p' );
-			const el2 = new ViewElement( 'p' );
-			const el3 = new ViewElement( 'p' );
-			const el4 = new ViewElement( 'p' );
+			const el1 = new Element( 'p' );
+			const el2 = new Element( 'p' );
+			const el3 = new Element( 'p' );
+			const el4 = new Element( 'p' );
 
 			el1.setStyle( 'color', 'red' );
 			el1.setStyle( 'top', '10px' );
@@ -221,11 +235,11 @@ describe( 'Element', () => {
 		let parent, el1, el2, el3, el4;
 
 		beforeEach( () => {
-			parent = new ViewElement( 'p' );
-			el1 = new ViewElement( 'el1' );
-			el2 = new ViewElement( 'el2' );
-			el3 = new ViewElement( 'el3' );
-			el4 = new ViewElement( 'el4' );
+			parent = new Element( 'p' );
+			el1 = new Element( 'el1' );
+			el2 = new Element( 'el2' );
+			el3 = new Element( 'el3' );
+			el4 = new Element( 'el4' );
 		} );
 
 		describe( 'insertion', () => {
@@ -327,7 +341,7 @@ describe( 'Element', () => {
 		let el;
 
 		beforeEach( () => {
-			el = new ViewElement( 'p' );
+			el = new Element( 'p' );
 		} );
 
 		describe( 'setAttribute', () => {
@@ -404,6 +418,26 @@ describe( 'Element', () => {
 
 			it( 'should return undefined if no style attribute', () => {
 				expect( el.getAttribute( 'style' ) ).to.be.undefined;
+			} );
+		} );
+
+		describe( 'getAttributes', () => {
+			it( 'should return attributes', () => {
+				el.setAttribute( 'foo', 'bar' );
+				el.setAttribute( 'abc', 'xyz' );
+
+				expect( Array.from( el.getAttributes() ) ).to.deep.equal( [ [ 'foo', 'bar' ], [ 'abc', 'xyz' ] ] );
+			} );
+
+			it( 'should return class and style attribute', () => {
+				el.setAttribute( 'class', 'abc' );
+				el.setAttribute( 'style', 'width:20px;' );
+				el.addClass( 'xyz' );
+				el.setStyle( 'font-weight', 'bold' );
+
+				expect( Array.from( el.getAttributes() ) ).to.deep.equal( [
+					[ 'class', 'abc xyz' ], [ 'style', 'width:20px;font-weight:bold;' ]
+				] );
 			} );
 		} );
 
@@ -494,7 +528,7 @@ describe( 'Element', () => {
 
 			it( 'should remove class attribute', () => {
 				el.addClass( 'foo', 'bar' );
-				const el2 = new ViewElement( 'p' );
+				const el2 = new Element( 'p' );
 				const removed1 = el.removeAttribute( 'class' );
 				const removed2 = el2.removeAttribute( 'class' );
 
@@ -508,7 +542,7 @@ describe( 'Element', () => {
 			it( 'should remove style attribute', () => {
 				el.setStyle( 'color', 'red' );
 				el.setStyle( 'position', 'fixed' );
-				const el2 = new ViewElement( 'p' );
+				const el2 = new Element( 'p' );
 				const removed1 = el.removeAttribute( 'style' );
 				const removed2 = el2.removeAttribute( 'style' );
 
@@ -525,7 +559,7 @@ describe( 'Element', () => {
 		let el;
 
 		beforeEach( () => {
-			el = new ViewElement( 'p' );
+			el = new Element( 'p' );
 		} );
 
 		describe( 'addClass', () => {
@@ -623,7 +657,7 @@ describe( 'Element', () => {
 		let el;
 
 		beforeEach( () => {
-			el = new ViewElement( 'p' );
+			el = new Element( 'p' );
 		} );
 
 		describe( 'setStyle', () => {

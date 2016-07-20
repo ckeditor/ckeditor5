@@ -49,6 +49,36 @@ describe( 'DocumentFragment', () => {
 		} );
 	} );
 
+	describe( 'getRoot', () => {
+		it( 'should return document fragment', () => {
+			const fragment = new DocumentFragment();
+
+			expect( fragment.root ).to.equal( fragment );
+		} );
+	} );
+
+	describe( 'getAncestors', () => {
+		it( 'should return empty array', () => {
+			const fragment = new DocumentFragment();
+
+			expect( fragment.getAncestors() ).to.deep.equal( [] );
+		} );
+	} );
+
+	describe( 'isEmpty', () => {
+		it( 'should return true if there are no children in document fragment', () => {
+			const fragment = new DocumentFragment();
+
+			expect( fragment.isEmpty() ).to.be.true;
+		} );
+
+		it( 'should return false if there are children in document fragment', () => {
+			const fragment = new DocumentFragment( [ new Element( 'p' ) ] );
+
+			expect( fragment.isEmpty() ).to.be.false;
+		} );
+	} );
+
 	describe( 'children manipulation methods', () => {
 		let fragment, el1, el2, el3, el4;
 

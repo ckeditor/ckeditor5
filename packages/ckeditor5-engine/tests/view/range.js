@@ -8,7 +8,16 @@
 import Range from '/ckeditor5/engine/view/range.js';
 import Position from '/ckeditor5/engine/view/position.js';
 import Element from '/ckeditor5/engine/view/element.js';
+import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import Text from '/ckeditor5/engine/view/text.js';
+import TreeWalker from '/ckeditor5/engine/view/treewalker.js';
+import { parse } from '/tests/engine/_utils/view.js';
+
+function getRange( view, options = {} ) {
+	const { selection } = parse( view, options );
+
+	return selection.getFirstRange();
+}
 
 describe( 'Range', () => {
 	describe( 'constructor', () => {
@@ -24,6 +33,50 @@ describe( 'Range', () => {
 			expect( range.end.parent ).to.equal( end.parent );
 			expect( range.start.offset ).to.equal( start.offset );
 			expect( range.end.offset ).to.equal( end.offset );
+		} );
+	} );
+
+	describe( 'iterator', () => {
+		it( 'should iterate over the range returning tree walker values', () => {
+			const range = getRange( '<p>fo{o</p><p>bar</p><p>xy}z</p>' );
+			const values = Array.from( range );
+
+			expect( values.length ).to.equal( 5 );
+			expect( values[ 0 ].item.data ).to.equal( 'o' );
+			expect( values[ 1 ].item.name ).to.equal( 'p' );
+			expect( values[ 2 ].item.data ).to.equal( 'bar' );
+			expect( values[ 3 ].item.name ).to.equal( 'p' );
+			expect( values[ 4 ].item.data ).to.equal( 'xy' );
+		} );
+	} );
+
+	describe( 'isFlat', () => {
+		it( 'should be true if range start and range end are in same parent', () => {
+			const range = getRange( '<p>f{oo}</p><p>bar</p>' );
+
+			expect( range.isFlat ).to.be.true;
+		} );
+
+		it( 'should be false if range start and range end are in different parents', () => {
+			const range = getRange( '<p>fo{o</p><p>b}ar</p>' );
+
+			expect( range.isFlat ).to.be.false;
+		} );
+	} );
+
+	describe( 'getRoot', () => {
+		it( 'should return root element in which range is created', () => {
+			const viewRoot = new Element( 'div' );
+			const range = getRange( '<p>f{oo</p><p>ba}r</p>', { rootElement: viewRoot } );
+
+			expect( range.getRoot() ).to.equal( viewRoot );
+		} );
+
+		it( 'should return document fragment in which range is created', () => {
+			const viewFrag = new DocumentFragment();
+			const range = getRange( '<p>f{oo</p><p>ba}r</p>', { rootElement: viewFrag } );
+
+			expect( range.getRoot() ).to.equal( viewFrag );
 		} );
 	} );
 
@@ -74,7 +127,72 @@ describe( 'Range', () => {
 		} );
 	} );
 
-	describe( 'isIntersecting', () => {
+	describe( 'containsPosition', () => {
+		let viewRoot, range;
+
+		beforeEach( () => {
+			viewRoot = new Element( 'div' );
+			range = getRange( '<p>fo{o</p><p>bar</p><p>xy}z</p>', { rootElement: viewRoot } );
+		} );
+
+		it( 'should return false if position is before range', () => {
+			const position = new Position( viewRoot.getChild( 0 ).getChild( 0 ), 1 ); // After "f".
+
+			expect( range.containsPosition( position ) ).to.be.false;
+		} );
+
+		it( 'should return false if position is after range', () => {
+			const position = new Position( viewRoot.getChild( 2 ).getChild( 0 ), 3 ); // After "z".
+
+			expect( range.containsPosition( position ) ).to.be.false;
+		} );
+
+		it( 'should return true if position is inside range', () => {
+			const position = new Position( viewRoot.getChild( 1 ).getChild( 0 ), 1 ); // After "b".
+
+			expect( range.containsPosition( position ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'containsRange', () => {
+		let viewRoot, range, beforeF, afterF, beforeB, afterX;
+
+		beforeEach( () => {
+			viewRoot = new Element( 'div' );
+			range = getRange( '<p>fo{o</p><p>bar</p><p>xy}z</p>', { rootElement: viewRoot } );
+
+			beforeF = new Position( viewRoot.getChild( 0 ).getChild( 0 ), 0 );
+			afterF = new Position( viewRoot.getChild( 0 ).getChild( 0 ), 1 );
+			beforeB = new Position( viewRoot.getChild( 1 ).getChild( 0 ), 0 );
+			afterX = new Position( viewRoot.getChild( 2 ).getChild( 0 ), 1 );
+		} );
+
+		it( 'should return false if ranges do not intersect', () => {
+			const otherRange = new Range( beforeF, afterF );
+
+			expect( range.containsRange( otherRange ) ).to.be.false;
+		} );
+
+		it( 'should return false if ranges intersect but only partially', () => {
+			const otherRange = new Range( afterF, afterX );
+
+			expect( range.containsRange( otherRange ) ).to.be.false;
+		} );
+
+		it( 'should return false if ranges are equal', () => {
+			const otherRange = Range.createFromRange( range );
+
+			expect( range.containsRange( otherRange ) ).to.be.false;
+		} );
+
+		it( 'should return true if given range is inside range', () => {
+			const otherRange = new Range( beforeB, afterX );
+
+			expect( range.containsRange( otherRange ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'other range interaction', () => {
 		let root, p1, p2, t1, t2, t3;
 
 		//            root
@@ -93,61 +211,337 @@ describe( 'Range', () => {
 			root = new Element( 'div', null, [ p1, p2 ] );
 		} );
 
-		it( 'should return true if given range is equal', () => {
-			const range = Range.createFromParentsAndOffsets( t1, 0, t3, 2 );
-			const otherRange = Range.createFromRange( range );
-			expect( range.isIntersecting( otherRange ) ).to.be.true;
-			expect( otherRange.isIntersecting( range ) ).to.be.true;
+		describe( 'isIntersecting', () => {
+			it( 'should return true if given range is equal', () => {
+				const range = Range.createFromParentsAndOffsets( t1, 0, t3, 2 );
+				const otherRange = Range.createFromRange( range );
+				expect( range.isIntersecting( otherRange ) ).to.be.true;
+				expect( otherRange.isIntersecting( range ) ).to.be.true;
+			} );
+
+			it( 'should return true if given range contains this range', () => {
+				const range = Range.createFromParentsAndOffsets( t1, 0, t3, 3 );
+				const otherRange = Range.createFromParentsAndOffsets( p1, 1, t2, 2 );
+
+				expect( range.isIntersecting( otherRange ) ).to.be.true;
+				expect( otherRange.isIntersecting( range ) ).to.be.true;
+			} );
+
+			it( 'should return true if given range ends in this range', () => {
+				const range = Range.createFromParentsAndOffsets( root, 1, t3, 3 );
+				const otherRange = Range.createFromParentsAndOffsets( t1, 0, p2, 0 );
+
+				expect( range.isIntersecting( otherRange ) ).to.be.true;
+				expect( otherRange.isIntersecting( range ) ).to.be.true;
+			} );
+
+			it( 'should return true if given range starts in this range', () => {
+				const range = Range.createFromParentsAndOffsets( t1, 0, t2, 3 );
+				const otherRange = Range.createFromParentsAndOffsets( p1, 1, p2, 0 );
+
+				expect( range.isIntersecting( otherRange ) ).to.be.true;
+				expect( otherRange.isIntersecting( range ) ).to.be.true;
+			} );
+
+			it( 'should return false if given range is fully before/after this range', () => {
+				const range = Range.createFromParentsAndOffsets( t1, 0, t2, 3 );
+				const otherRange = Range.createFromParentsAndOffsets( root, 1, t3, 0 );
+
+				expect( range.isIntersecting( otherRange ) ).to.be.false;
+				expect( otherRange.isIntersecting( range ) ).to.be.false;
+			} );
+
+			it( 'should return false if ranges are in different roots', () => {
+				const range = Range.createFromParentsAndOffsets( t1, 0, t2, 3 );
+				const otherRange = Range.createFromParentsAndOffsets( new Element( 'div' ), 1, t3, 0 );
+
+				expect( range.isIntersecting( otherRange ) ).to.be.false;
+				expect( otherRange.isIntersecting( range ) ).to.be.false;
+			} );
 		} );
 
-		it( 'should return true if given range contains this range', () => {
-			const range = Range.createFromParentsAndOffsets( t1, 0, t3, 3 );
-			const otherRange = Range.createFromParentsAndOffsets( p1, 1, t2, 2 );
+		describe( 'getDifference', () => {
+			it( 'should return range equal to original range if other range does not intersect with it', () => {
+				const range = Range.createFromParentsAndOffsets( t1, 0, t2, 3 );
+				const otherRange = Range.createFromParentsAndOffsets( root, 1, t3, 0 );
+				const difference = range.getDifference( otherRange );
 
-			expect( range.isIntersecting( otherRange ) ).to.be.true;
-			expect( otherRange.isIntersecting( range ) ).to.be.true;
+				expect( difference.length ).to.equal( 1 );
+				expect( difference[ 0 ].isEqual( range ) ).to.be.true;
+			} );
+
+			it( 'should return shrunken range if other range intersects with it', () => {
+				const range = Range.createFromParentsAndOffsets( root, 1, t3, 3 );
+				const otherRange = Range.createFromParentsAndOffsets( t1, 0, p2, 0 );
+				const difference = range.getDifference( otherRange );
+
+				expect( difference.length ).to.equal( 1 );
+
+				expect( difference[ 0 ].start.parent ).to.equal( p2 );
+				expect( difference[ 0 ].start.offset ).to.equal( 0 );
+				expect( difference[ 0 ].end.parent ).to.equal( t3 );
+				expect( difference[ 0 ].end.offset ).to.equal( 3 );
+			} );
+
+			it( 'should return an empty array if other range contains or is same as the original range', () => {
+				const range = Range.createFromParentsAndOffsets( p1, 1, t2, 2 );
+				const otherRange = Range.createFromParentsAndOffsets( t1, 0, t3, 3 );
+				const difference = range.getDifference( otherRange );
+
+				expect( difference.length ).to.equal( 0 );
+			} );
+
+			it( 'should two ranges if other range is contained by the original range', () => {
+				const range = Range.createFromParentsAndOffsets( t1, 0, t3, 3 );
+				const otherRange = Range.createFromParentsAndOffsets( p1, 1, t2, 2 );
+				const difference = range.getDifference( otherRange );
+
+				expect( difference.length ).to.equal( 2 );
+
+				expect( difference[ 0 ].start.parent ).to.equal( t1 );
+				expect( difference[ 0 ].start.offset ).to.equal( 0 );
+				expect( difference[ 0 ].end.parent ).to.equal( p1 );
+				expect( difference[ 0 ].end.offset ).to.equal( 1 );
+
+				expect( difference[ 1 ].start.parent ).to.equal( t2 );
+				expect( difference[ 1 ].start.offset ).to.equal( 2 );
+				expect( difference[ 1 ].end.parent ).to.equal( t3 );
+				expect( difference[ 1 ].end.offset ).to.equal( 3 );
+			} );
 		} );
 
-		it( 'should return true if given range ends in this range', () => {
-			const range = Range.createFromParentsAndOffsets( root, 1, t3, 3 );
-			const otherRange = Range.createFromParentsAndOffsets( t1, 0, p2, 0 );
+		describe( 'getIntersection', () => {
+			it( 'should return range equal to original range if other range contains it', () => {
+				const range = Range.createFromParentsAndOffsets( t2, 0, t3, 0 );
+				const otherRange = Range.createFromParentsAndOffsets( t1, 1, t3, 1 );
+				const intersection = range.getIntersection( otherRange );
 
-			expect( range.isIntersecting( otherRange ) ).to.be.true;
-			expect( otherRange.isIntersecting( range ) ).to.be.true;
-		} );
+				expect( intersection.isEqual( range ) ).to.be.true;
+			} );
 
-		it( 'should return true if given range starts in this range', () => {
-			const range = Range.createFromParentsAndOffsets( t1, 0, t2, 3 );
-			const otherRange = Range.createFromParentsAndOffsets( p1, 1, p2, 0 );
+			it( 'should return range equal to other range if it is contained in original range', () => {
+				const range = Range.createFromParentsAndOffsets( t1, 1, t3, 1 );
+				const otherRange = Range.createFromParentsAndOffsets( t2, 0, t3, 0 );
+				const intersection = range.getIntersection( otherRange );
 
-			expect( range.isIntersecting( otherRange ) ).to.be.true;
-			expect( otherRange.isIntersecting( range ) ).to.be.true;
-		} );
+				expect( intersection.isEqual( otherRange ) ).to.be.true;
+			} );
 
-		it( 'should return false if given range is fully before/after this range', () => {
-			const range = Range.createFromParentsAndOffsets( t1, 0, t2, 3 );
-			const otherRange = Range.createFromParentsAndOffsets( root, 1, t3, 0 );
+			it( 'should return null if ranges do not intersect', () => {
+				const range = Range.createFromParentsAndOffsets( t1, 0, t2, 3 );
+				const otherRange = Range.createFromParentsAndOffsets( t3, 0, t3, 3 );
+				const intersection = range.getIntersection( otherRange );
 
-			expect( range.isIntersecting( otherRange ) ).to.be.false;
-			expect( otherRange.isIntersecting( range ) ).to.be.false;
-		} );
+				expect( intersection ).to.be.null;
+			} );
 
-		it( 'should return false if ranges are in different roots', () => {
-			const range = Range.createFromParentsAndOffsets( t1, 0, t2, 3 );
-			const otherRange = Range.createFromParentsAndOffsets( new Element( 'div' ), 1, t3, 0 );
+			it( 'should return common part if ranges intersect partially', () => {
+				const range = Range.createFromParentsAndOffsets( t1, 0, t2, 3 );
+				const otherRange = Range.createFromParentsAndOffsets( t2, 0, t3, 3 );
+				const intersection = range.getIntersection( otherRange );
 
-			expect( range.isIntersecting( otherRange ) ).to.be.false;
-			expect( otherRange.isIntersecting( range ) ).to.be.false;
+				expect( intersection.start.parent ).to.equal( t2 );
+				expect( intersection.start.offset ).to.equal( 0 );
+				expect( intersection.end.parent ).to.equal( t2 );
+				expect( intersection.end.offset ).to.equal( 3 );
+			} );
 		} );
 	} );
 
-	describe( 'createFromRange', () => {
-		it( 'should create a new instance of Range that is equal to passed range', () => {
-			const range = new Range( new Position( {}, 0 ), new Position( {}, 1 ) );
-			const clone = Range.createFromRange( range );
+	describe( 'getWalker', () => {
+		it( 'should be possible to iterate using this method', () => {
+			const range = getRange( '<p>fo{o</p><p>ba}r</p><p>xyz</p>' );
+			const values = [];
 
-			expect( clone ).not.to.be.equal( range ); // clone is not pointing to the same object as position
-			expect( clone.isEqual( range ) ).to.be.true; // but they are equal in the position-sense
+			for ( let value of range.getWalker() ) {
+				values.push( value );
+			}
+
+			expect( values.length ).to.equal( 4 );
+			expect( values[ 0 ].item.data ).to.equal( 'o' );
+			expect( values[ 1 ].item.name ).to.equal( 'p' );
+			expect( values[ 1 ].type ).to.equal( 'elementEnd' );
+			expect( values[ 2 ].item.name ).to.equal( 'p' );
+			expect( values[ 2 ].type ).to.equal( 'elementStart' );
+			expect( values[ 3 ].item.data ).to.equal( 'ba' );
+		} );
+
+		it( 'should accept TreeWalker options', () => {
+			const range = getRange( '<p>foo</p><p>b{ar</p><p>xy}z</p>' );
+			const walker = range.getWalker( { singleCharacters: true, ignoreElementEnd: true } );
+			const values = [];
+
+			for ( let value of walker ) {
+				values.push( value );
+			}
+
+			expect( walker ).to.be.instanceof( TreeWalker );
+			expect( walker ).to.have.property( 'singleCharacters' ).that.is.true;
+
+			expect( values.length ).to.equal( 5 );
+			expect( values[ 0 ].item.data ).to.equal( 'a' );
+			expect( values[ 1 ].item.data ).to.equal( 'r' );
+			expect( values[ 2 ].item.name ).to.equal( 'p' );
+			expect( values[ 3 ].item.data ).to.equal( 'x' );
+			expect( values[ 4 ].item.data ).to.equal( 'y' );
+		} );
+	} );
+
+	describe( 'getItems', () => {
+		it( 'should return iterator that iterates over all view items in the range', () => {
+			const range = getRange( '<p>fo{o</p><p>bar</p><p>xy}z</p>' );
+			const nodes = [];
+
+			for ( let node of range.getItems() ) {
+				nodes.push( node );
+			}
+
+			expect( nodes.length ).to.equal( 5 );
+			expect( nodes[ 0 ].data ).to.equal( 'o' );
+			expect( nodes[ 1 ].name ).to.equal( 'p' );
+			expect( nodes[ 2 ].data ).to.equal( 'bar' );
+			expect( nodes[ 3 ].name ).to.equal( 'p' );
+			expect( nodes[ 4 ].data ).to.equal( 'xy' );
+		} );
+
+		it( 'should accept TreeWalker options', () => {
+			const range = getRange( '<p>foo</p><p>b{ar</p><p>xy}z</p>' );
+			const nodes = [];
+
+			for ( let node of range.getItems( { singleCharacters: true } ) ) {
+				nodes.push( node );
+			}
+
+			expect( nodes.length ).to.equal( 5 );
+			expect( nodes[ 0 ].data ).to.equal( 'a' );
+			expect( nodes[ 1 ].data ).to.equal( 'r' );
+			expect( nodes[ 2 ].name ).to.equal( 'p' );
+			expect( nodes[ 3 ].data ).to.equal( 'x' );
+			expect( nodes[ 4 ].data ).to.equal( 'y' );
+		} );
+	} );
+
+	describe( 'getPositions', () => {
+		it( 'should return iterator that iterates over all positions in the range', () => {
+			const range = getRange( '<p>fo{o</p><p>b}ar</p><p>xyz</p>' );
+			const positions = [];
+
+			for ( let position of range.getPositions() ) {
+				positions.push( position );
+			}
+
+			expect( positions.length ).to.equal( 5 );
+
+			expect( positions[ 0 ].parent.data ).to.equal( 'foo' ); // Inside text node "foo".
+			expect( positions[ 0 ].offset ).to.equal( 2 );
+
+			expect( positions[ 1 ].parent.name ).to.equal( 'p' ); // At the end of the first P element.
+			expect( positions[ 1 ].offset ).to.equal( 1 );
+
+			expect( positions[ 2 ].parent ).to.be.instanceof( DocumentFragment ); // In document fragment, between Ps.
+			expect( positions[ 2 ].offset ).to.equal( 1 );
+
+			expect( positions[ 3 ].parent.name ).to.equal( 'p' ); // At the beginning of the second P element.
+			expect( positions[ 3 ].offset ).to.equal( 0 );
+
+			expect( positions[ 4 ].parent.data ).to.equal( 'bar' ); // Inside text node "bar".
+			expect( positions[ 4 ].offset ).to.equal( 1 );
+		} );
+
+		it( 'should accept TreeWalker options', () => {
+			const range = getRange( '<p>foo</p><p>b{ar</p><p>xy}z</p>' );
+			const positions = [];
+
+			for ( let position of range.getPositions( { singleCharacters: true } ) ) {
+				positions.push( position );
+			}
+
+			expect( positions.length ).to.equal( 7 );
+
+			expect( positions[ 0 ].parent.data ).to.equal( 'bar' ); // "b^ar".
+			expect( positions[ 0 ].offset ).to.equal( 1 );
+
+			expect( positions[ 1 ].parent.data ).to.equal( 'bar' ); // "ba^r".
+			expect( positions[ 1 ].offset ).to.equal( 2 );
+
+			expect( positions[ 2 ].parent.name ).to.equal( 'p' ); // <p>bar^</p> -- at the end of P node.
+			expect( positions[ 2 ].offset ).to.equal( 1 );
+
+			expect( positions[ 3 ].parent ).to.be.instanceof( DocumentFragment ); // "</p>^<p>" -- between P nodes.
+			expect( positions[ 3 ].offset ).to.equal( 2 );
+
+			expect( positions[ 4 ].parent.name ).to.equal( 'p' ); // <p>^xyz</p> -- at the start of P node.
+			expect( positions[ 4 ].offset ).to.equal( 0 );
+
+			expect( positions[ 5 ].parent.data ).to.equal( 'xyz' ); // "x^yz".
+			expect( positions[ 5 ].offset ).to.equal( 1 );
+
+			expect( positions[ 6 ].parent.data ).to.equal( 'xyz' ); // "xy^z".
+			expect( positions[ 6 ].offset ).to.equal( 2 );
+		} );
+	} );
+
+	describe( 'static constructors', () => {
+		let div, p, foz;
+
+		beforeEach( () => {
+			foz = new Text( 'foz' );
+			p = new Element( 'p', null, foz );
+			div = new Element( 'div', null, p );
+		} );
+
+		describe( 'createFromElement', () => {
+			it( 'should return range', () => {
+				const range = Range.createFromElement( p );
+
+				expect( range.start.parent ).to.deep.equal( p );
+				expect( range.start.offset ).to.deep.equal( 0 );
+				expect( range.end.parent ).to.deep.equal( p );
+				expect( range.end.offset ).to.deep.equal( 1 );
+			} );
+		} );
+
+		describe( 'createFromParentsAndOffsets', () => {
+			it( 'should return range', () => {
+				const range = Range.createFromParentsAndOffsets( div, 0, foz, 1 );
+
+				expect( range.start.parent ).to.deep.equal( div );
+				expect( range.start.offset ).to.deep.equal( 0 );
+				expect( range.end.parent ).to.deep.equal( foz );
+				expect( range.end.offset ).to.deep.equal( 1 );
+			} );
+		} );
+
+		describe( 'createFromPositionAndShift', () => {
+			it( 'should make range from start position and offset', () => {
+				const position = new Position( foz, 1 );
+				const range = Range.createFromPositionAndShift( position, 2 );
+
+				expect( range ).to.be.instanceof( Range );
+				expect( range.start.isEqual( position ) ).to.be.true;
+				expect( range.end.parent ).to.equal( foz );
+				expect( range.end.offset ).to.deep.equal( 3 );
+			} );
+
+			it( 'should accept negative shift value', () => {
+				const position = new Position( foz, 3 );
+				const range = Range.createFromPositionAndShift( position, -1 );
+
+				expect( range ).to.be.instanceof( Range );
+				expect( range.end.isEqual( position ) ).to.be.true;
+				expect( range.start.parent ).to.equal( foz );
+				expect( range.start.offset ).to.deep.equal( 2 );
+			} );
+		} );
+
+		describe( 'createFromRange', () => {
+			it( 'should create a new instance of Range that is equal to passed range', () => {
+				const range = new Range( new Position( foz, 0 ), new Position( foz, 2 ) );
+				const clone = Range.createFromRange( range );
+
+				expect( clone ).not.to.be.equal( range ); // clone is not pointing to the same object as position
+				expect( clone.isEqual( range ) ).to.be.true; // but they are equal in the position-sense
+			} );
 		} );
 	} );
 } );

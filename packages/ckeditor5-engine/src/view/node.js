@@ -82,7 +82,7 @@ export default class Node {
 	 * Gets {@link engine.view.Document} reference, from the {@link engine.view.Node#getRoot root} or
 	 * returns null if the root has no reference to the {@link engine.view.Document}.
 	 *
-	 * @returns {engine.view.Document|null} View Document of the node or null.
+	 * @returns {engine.view.Document|null} View document of the node or null.
 	 */
 	getDocument() {
 		// Parent might be Node, null or DocumentFragment.
@@ -96,7 +96,7 @@ export default class Node {
 	/**
 	 * Gets the top parent for the node. If node has no parent it is the root itself.
 	 *
-	 * @returns {engine.view.Node}
+	 * @returns {engine.view.Node|engine.view.DocumentFragment}
 	 */
 	getRoot() {
 		let root = this;
