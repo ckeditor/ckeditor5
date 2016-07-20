@@ -7,49 +7,41 @@
 
 import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
 import xssTemplates from '/tests/engine/dataprocessor/_utils/xsstemplates.js';
+import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
+import { stringify, parse } from '/tests/engine/_utils/view.js';
 
 describe( 'HtmlDataProcessor', () => {
 	const dataProcessor = new HtmlDataProcessor();
 
-	describe( 'toDom', () => {
+	describe( 'toView', () => {
 		it( 'should return empty DocumentFragment when empty string is passed', () => {
-			const fragment = dataProcessor.toDom( '' );
-			expect( fragment ).to.be.an.instanceOf( DocumentFragment );
-			expect( fragment.childNodes.length ).to.equal( 0 );
+			const fragment = dataProcessor.toView( '' );
+			expect( fragment ).to.be.an.instanceOf( ViewDocumentFragment );
+			expect( fragment.getChildCount() ).to.equal( 0 );
 		} );
 
 		it( 'should convert HTML to DocumentFragment with single text node', () => {
-			const fragment = dataProcessor.toDom( 'foo bar' );
-			expect( fragment.childNodes.length ).to.equal( 1 );
-			expect( fragment.childNodes[ 0 ].nodeType ).to.equal( Node.TEXT_NODE );
-			expect( fragment.childNodes[ 0 ].textContent ).to.equal( 'foo bar' );
+			const fragment = dataProcessor.toView( 'foo bar' );
+
+			expect( stringify( fragment ) ).to.equal( 'foo bar' );
 		} );
 
 		it( 'should convert HTML to DocumentFragment with multiple child nodes', () => {
-			const fragment = dataProcessor.toDom( '<p>foo</p><p>bar</p>' );
-			expect( fragment.childNodes.length ).to.equal( 2 );
-			expect( fragment.childNodes[ 0 ].nodeType ).to.equal( Node.ELEMENT_NODE );
-			expect( fragment.childNodes[ 0 ].textContent ).to.equal( 'foo' );
-			expect( fragment.childNodes[ 1 ].nodeType ).to.equal( Node.ELEMENT_NODE );
-			expect( fragment.childNodes[ 1 ].textContent ).to.equal( 'bar' );
+			const fragment = dataProcessor.toView( '<p>foo</p><p>bar</p>' );
+
+			expect( stringify( fragment ) ).to.equal( '<p>foo</p><p>bar</p>' );
 		} );
 
 		it( 'should return only elements inside body tag', () => {
-			const fragment = dataProcessor.toDom( '<html><head></head><body><p>foo</p></body></html>' );
-			expect( fragment.childNodes.length ).to.equal( 1 );
-			expect( fragment.childNodes[ 0 ].textContent ).to.equal( 'foo' );
-			expect( fragment.childNodes[ 0 ].tagName.toLowerCase() ).to.equal( 'p' );
+			const fragment = dataProcessor.toView( '<html><head></head><body><p>foo</p></body></html>' );
+
+			expect( stringify( fragment ) ).to.equal( '<p>foo</p>' );
 		} );
 
 		it( 'should not add any additional nodes', () => {
-			const fragment = dataProcessor.toDom( 'foo <b>bar</b> text' );
-			expect( fragment.childNodes.length ).to.equal( 3 );
-			expect( fragment.childNodes[ 0 ].nodeType ).to.equal( Node.TEXT_NODE );
-			expect( fragment.childNodes[ 0 ].textContent ).to.equal( 'foo ' );
-			expect( fragment.childNodes[ 1 ].nodeType ).to.equal( Node.ELEMENT_NODE );
-			expect( fragment.childNodes[ 1 ].innerHTML ).to.equal( 'bar' );
-			expect( fragment.childNodes[ 2 ].nodeType ).to.equal( Node.TEXT_NODE );
-			expect( fragment.childNodes[ 2 ].textContent ).to.equal( ' text' );
+			const fragment = dataProcessor.toView( 'foo <b>bar</b> text' );
+
+			expect( stringify( fragment ) ).to.equal( 'foo <b>bar</b> text' );
 		} );
 
 		// Test against XSS attacks.
@@ -58,7 +50,7 @@ describe( 'HtmlDataProcessor', () => {
 
 			it( 'should prevent XSS attacks: ' + name, ( done ) => {
 				window.testXss = sinon.spy();
-				dataProcessor.toDom( input );
+				dataProcessor.toView( input );
 
 				setTimeout( () => {
 					sinon.assert.notCalled( window.testXss );
@@ -66,5 +58,26 @@ describe( 'HtmlDataProcessor', () => {
 				}, 10 );
 			} );
 		}
+	} );
+
+	describe( 'toData', () => {
+		it( 'should return empty string when empty DocumentFragment is passed', () => {
+			const fragment = new ViewDocumentFragment();
+
+			expect( dataProcessor.toData( fragment ) ).to.equal( '' );
+		} );
+
+		it( 'should return text if document fragment with single text node is passed', () => {
+			const fragment = new ViewDocumentFragment();
+			fragment.appendChildren( parse( 'foo bar' ) );
+
+			expect( dataProcessor.toData( fragment ) ).to.equal( 'foo bar' );
+		} );
+
+		it( 'should convert HTML to DocumentFragment with multiple child nodes', () => {
+			const fragment = parse( '<p>foo</p><p>bar</p>' );
+
+			expect( dataProcessor.toData( fragment ) ).to.equal( '<p>foo</p><p>bar</p>' );
+		} );
 	} );
 } );

@@ -119,7 +119,7 @@ export default class DataController {
 		const modelRoot = this.model.getRoot( rootName );
 		const modelRange = ModelRange.createFromElement( modelRoot );
 
-		// model -> view.
+		// model -> view
 		const viewDocumentFragment = new ViewDocumentFragment();
 		this._mapper.bindElements( modelRoot, viewDocumentFragment );
 
@@ -127,7 +127,7 @@ export default class DataController {
 
 		this._mapper.clearBindings();
 
-		// view -> data.
+		// view -> data
 		return this.processor.toData( viewDocumentFragment );
 	}
 
@@ -162,10 +162,10 @@ export default class DataController {
 	 * @returns {engine.model.DocumentFragment} Parsed data.
 	 */
 	parse( data ) {
-		// data -> view.
+		// data -> view
 		const viewDocumentFragment = this.processor.toView( data );
 
-		// view -> model.
+		// view -> model
 		const modelDocumentFragment = this.viewToModel.convert( viewDocumentFragment, { context: [ '$root' ] } );
 
 		return modelDocumentFragment;

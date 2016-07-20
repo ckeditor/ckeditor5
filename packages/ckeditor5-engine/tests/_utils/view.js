@@ -281,7 +281,7 @@ export function parse( data, options = {} ) {
 		view = root;
 	}
 
-	// Parse ranges included in the view text nodes.
+	// Parse ranges included in view text nodes.
 	const ranges = rangeParser.parse( view, options.order );
 
 	// If only one element is returned inside DocumentFragment - return that element.
@@ -760,7 +760,7 @@ class ViewStringify {
 }
 
 // Converts {@link engine.view.Element Elements} to {@link engine.view.AttributeElement AttributeElements} and
-// {@link engine.view.ContainerElement ContainerElements}. It converts all tree starting from the `rootNode`.
+// {@link engine.view.ContainerElement ContainerElements}. It converts whole tree starting from the `rootNode`.
 // Conversion is based on element names. See `_convertElement` method for more details.
 //
 // @param {engine.view.Element|engine.view.DocumentFragment|engine.view.Text} rootNode Root node to convert.
@@ -790,7 +790,8 @@ function _convertViewElements( rootNode ) {
 // {@link engine.view.AttributeElement AttributeElement} with priority 11.
 // If element's name is in format `container:p` - it will be converted to
 // {@link engine.view.ContainerElement ContainerElement}.
-// If element's name will not contain any information - {@link engine.view.Element view Element} will be returned.
+// If element's name will not contain any additional information - {@link engine.view.Element view Element}will be
+// returned.
 //
 // @param {engine.view.Element} viewElement View element to convert.
 // @returns {engine.view.Element|engine.view.AttributeElement|engine.view.ContainerElement} Tree view
