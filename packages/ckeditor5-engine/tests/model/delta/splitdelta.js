@@ -8,6 +8,7 @@
 import Document from '/ckeditor5/engine/model/document.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import Element from '/ckeditor5/engine/model/element.js';
+import Text from '/ckeditor5/engine/model/text.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 import MergeDelta from '/ckeditor5/engine/model/delta/mergedelta.js';
@@ -17,6 +18,8 @@ import InsertOperation from '/ckeditor5/engine/model/operation/insertoperation.j
 import MoveOperation from '/ckeditor5/engine/model/operation/moveoperation.js';
 import RemoveOperation from '/ckeditor5/engine/model/operation/removeoperation.js';
 
+import count from '/ckeditor5/utils/count.js';
+
 describe( 'Batch', () => {
 	let doc, root, p;
 
@@ -24,7 +27,7 @@ describe( 'Batch', () => {
 		doc = new Document();
 		root = doc.createRoot();
 
-		p = new Element( 'p', { key: 'value' }, 'foobar' );
+		p = new Element( 'p', { key: 'value' }, new Text( 'foobar' ) );
 
 		root.insertChildren( 0, p );
 	} );
@@ -33,44 +36,35 @@ describe( 'Batch', () => {
 		it( 'should split foobar to foo and bar', () => {
 			doc.batch().split( new Position( root, [ 0, 3 ] ) );
 
-			expect( root.getChildCount() ).to.equal( 2 );
+			expect( root.getMaxOffset() ).to.equal( 2 );
 
 			expect( root.getChild( 0 ).name ).to.equal( 'p' );
-			expect( root.getChild( 0 ).getChildCount() ).to.equal( 3 );
-			expect( root.getChild( 0 )._attrs.size ).to.equal( 1 );
+			expect( root.getChild( 0 ).getMaxOffset() ).to.equal( 3 );
+			expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 1 );
 			expect( root.getChild( 0 ).getAttribute( 'key' ) ).to.equal( 'value' );
-			expect( root.getChild( 0 ).getChild( 0 ).character ).to.equal( 'f' );
-			expect( root.getChild( 0 ).getChild( 1 ).character ).to.equal( 'o' );
-			expect( root.getChild( 0 ).getChild( 2 ).character ).to.equal( 'o' );
+			expect( root.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
 
 			expect( root.getChild( 1 ).name ).to.equal( 'p' );
-			expect( root.getChild( 1 ).getChildCount() ).to.equal( 3 );
-			expect( root.getChild( 1 )._attrs.size ).to.equal( 1 );
+			expect( root.getChild( 1 ).getMaxOffset() ).to.equal( 3 );
+			expect( count( root.getChild( 1 ).getAttributes() ) ).to.equal( 1 );
 			expect( root.getChild( 1 ).getAttribute( 'key' ) ).to.equal( 'value' );
-			expect( root.getChild( 1 ).getChild( 0 ).character ).to.equal( 'b' );
-			expect( root.getChild( 1 ).getChild( 1 ).character ).to.equal( 'a' );
-			expect( root.getChild( 1 ).getChild( 2 ).character ).to.equal( 'r' );
+			expect( root.getChild( 1 ).getChild( 0 ).data ).to.equal( 'bar' );
 		} );
 
 		it( 'should create an empty paragraph if we split at the end', () => {
 			doc.batch().split( new Position( root, [ 0, 6 ] ) );
 
-			expect( root.getChildCount() ).to.equal( 2 );
+			expect( root.getMaxOffset() ).to.equal( 2 );
 
 			expect( root.getChild( 0 ).name ).to.equal( 'p' );
-			expect( root.getChild( 0 ).getChildCount() ).to.equal( 6 );
-			expect( root.getChild( 0 )._attrs.size ).to.equal( 1 );
+			expect( root.getChild( 0 ).getMaxOffset() ).to.equal( 6 );
+			expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 1 );
 			expect( root.getChild( 0 ).getAttribute( 'key' ) ).to.equal( 'value' );
-			expect( root.getChild( 0 ).getChild( 0 ).character ).to.equal( 'f' );
-			expect( root.getChild( 0 ).getChild( 1 ).character ).to.equal( 'o' );
-			expect( root.getChild( 0 ).getChild( 2 ).character ).to.equal( 'o' );
-			expect( root.getChild( 0 ).getChild( 3 ).character ).to.equal( 'b' );
-			expect( root.getChild( 0 ).getChild( 4 ).character ).to.equal( 'a' );
-			expect( root.getChild( 0 ).getChild( 5 ).character ).to.equal( 'r' );
+			expect( root.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foobar' );
 
 			expect( root.getChild( 1 ).name ).to.equal( 'p' );
-			expect( root.getChild( 1 ).getChildCount() ).to.equal( 0 );
-			expect( root.getChild( 1 )._attrs.size ).to.equal( 1 );
+			expect( root.getChild( 1 ).getMaxOffset() ).to.equal( 0 );
+			expect( count( root.getChild( 1 ).getAttributes() ) ).to.equal( 1 );
 			expect( root.getChild( 1 ).getAttribute( 'key' ) ).to.equal( 'value' );
 		} );
 
@@ -168,7 +162,7 @@ describe( 'SplitDelta', () => {
 			splitDelta.operations.push( new MoveOperation( new Position( root, [ 1, 1, 4 ] ), 4, new Position( root, [ 1, 2, 0 ] ), 1 ) );
 
 			expect( splitDelta._cloneOperation ).to.be.instanceof( InsertOperation );
-			expect( splitDelta._cloneOperation.nodeList.get( 0 ) ).to.equal( p );
+			expect( splitDelta._cloneOperation.nodes.getNode( 0 ) ).to.equal( p );
 			expect( splitDelta._cloneOperation.position.path ).to.deep.equal( [ 1, 2 ] );
 		} );
 	} );

@@ -12,21 +12,21 @@ import ReinsertOperation from './reinsertoperation.js';
  * Operation to remove a range of nodes.
  *
  * @memberOf engine.model.operation
- * @extends engine.model.operation.Operation
  */
 export default class RemoveOperation extends MoveOperation {
 	/**
-	 *
 	 * Creates a remove operation.
 	 *
-	 * @param {engine.model.Position} position Position before the first node to remove.
-	 * @param {Number} howMany How many nodes to remove.
+	 * @param {engine.model.Position} position Position before the first {@link engine.model.Item model item} to remove.
+	 * @param {Number} howMany Offset size of removed range. {@link engine.model.Item Model items} will be removed starting
+	 * from `sourcePosition`, up to a `sourcePosition` with offset shifted by `howMany`.
 	 * @param {Number} baseVersion {@link engine.model.Document#version} on which operation can be applied.
 	 */
 	constructor( position, howMany, baseVersion ) {
 		const graveyard = position.root.document.graveyard;
+		const graveyardPosition = new Position( graveyard, [ graveyard.getMaxOffset(), 0 ] );
 
-		super( position, howMany, new Position( graveyard, [ graveyard.getChildCount(), 0 ] ), baseVersion );
+		super( position, howMany, graveyardPosition, baseVersion );
 	}
 
 	/**
@@ -57,9 +57,11 @@ export default class RemoveOperation extends MoveOperation {
 	}
 
 	/**
-	 * Flag informing whether this operation should insert "holder" element (`true`) or should remove nodes
-	 * into existing "holder" element (`false`). It is `true` for each `RemoveOperation` that is the first `RemoveOperation`
-	 * in it's delta which points to given holder element.
+	 * Flag informing whether this operation should insert "holder" element (`true`) or should move removed nodes
+	 * into existing "holder" element (`false`).
+	 *
+	 * It is `true` for each `RemoveOperation` that is the first `RemoveOperation` in it's delta that points to given holder element.
+	 * This way only one `RemoveOperation` in given delta will insert "holder" element.
 	 *
 	 * @protected
 	 * @type {Boolean}
@@ -88,6 +90,7 @@ export default class RemoveOperation extends MoveOperation {
 	}
 
 	/**
+	 * @inheritDoc
 	 * @returns {engine.model.operation.ReinsertOperation}
 	 */
 	getReversed() {
@@ -95,6 +98,7 @@ export default class RemoveOperation extends MoveOperation {
 	}
 
 	/**
+	 * @inheritDoc
 	 * @returns {engine.model.operation.RemoveOperation}
 	 */
 	clone() {
@@ -109,6 +113,7 @@ export default class RemoveOperation extends MoveOperation {
 	 * @inheritDoc
 	 */
 	_execute() {
+		// Insert "holder" element in graveyard root, if the operation needs it.
 		if ( this._needsHolderElement ) {
 			const graveyard = this.targetPosition.root;
 			const holderElement = new Element( '$graveyardHolder' );
@@ -116,6 +121,7 @@ export default class RemoveOperation extends MoveOperation {
 			graveyard.insertChildren( this.targetPosition.path[ 0 ], holderElement );
 		}
 
+		// Then, execute as a move operation.
 		return super._execute();
 	}
 

@@ -177,12 +177,12 @@ export default class ModelConversionDispatcher {
 			// Fire a separate addAttribute event for each attribute that was set on inserted items.
 			// This is important because most attributes converters will listen only to add/change/removeAttribute events.
 			// If we would not add this part, attributes on inserted nodes would not be converted.
-			for ( let attr of item.getAttributes() ) {
-				data.attributeKey = attr[ 0 ];
+			for ( let key of item.getAttributeKeys() ) {
+				data.attributeKey = key;
 				data.attributeOldValue = null;
-				data.attributeNewValue = attr[ 1 ];
+				data.attributeNewValue = item.getAttribute( key );
 
-				this._testAndFire( 'addAttribute:' + attr[ 0 ], data, consumable );
+				this._testAndFire( 'addAttribute:' + key, data, consumable );
 			}
 		}
 	}
@@ -266,9 +266,9 @@ export default class ModelConversionDispatcher {
 
 		this.fire( 'selection', data, consumable, this.conversionApi );
 
-		for ( let attr of selection.getAttributes() ) {
-			data.key = attr[ 0 ];
-			data.value = attr[ 1 ];
+		for ( let key of selection.getAttributeKeys() ) {
+			data.key = key;
+			data.value = selection.getAttribute( key );
 
 			// Do not fire event if the attribute has been consumed.
 			if ( consumable.test( selection, 'selectionAttribute:' + data.key ) ) {
@@ -293,8 +293,8 @@ export default class ModelConversionDispatcher {
 
 			consumable.add( item, 'insert' );
 
-			for ( let attr of item.getAttributes() ) {
-				consumable.add( item, 'addAttribute:' + attr[ 0 ] );
+			for ( let key of item.getAttributeKeys() ) {
+				consumable.add( item, 'addAttribute:' + key );
 			}
 		}
 
@@ -335,8 +335,8 @@ export default class ModelConversionDispatcher {
 
 		consumable.add( selection, 'selection' );
 
-		for ( let attr of selection.getAttributes() ) {
-			consumable.add( selection, 'selectionAttribute:' + attr[ 0 ] );
+		for ( let key of selection.getAttributeKeys() ) {
+			consumable.add( selection, 'selectionAttribute:' + key );
 		}
 
 		return consumable;

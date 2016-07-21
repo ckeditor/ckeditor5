@@ -14,7 +14,7 @@ import Range from '/ckeditor5/engine/model/range.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'TreeWalker', () => {
-	let doc, root, img1, paragraph, b, a, r, img2, x;
+	let doc, root, img1, paragraph, ba, r, img2, x;
 	let rootBeginning, rootEnding;
 
 	before( () => {
@@ -32,13 +32,12 @@ describe( 'TreeWalker', () => {
 		//     |
 		//     |- X
 
-		b = new Text( 'b', { bold: true } );
-		a = new Text( 'a', { bold: true } );
+		ba = new Text( 'ba', { bold: true } );
 		r = new Text( 'r' );
 		img2 = new Element( 'img2' );
 		x = new Text( 'x' );
 
-		paragraph = new Element( 'p', [], [ b, a, r, img2, x ] );
+		paragraph = new Element( 'p', [], [ ba, r, img2, x ] );
 		img1 = new Element( 'img1' );
 
 		root.insertChildren( 0, [ img1, paragraph ] );
@@ -77,11 +76,11 @@ describe( 'TreeWalker', () => {
 				{ type: 'elementStart', item: img1 },
 				{ type: 'elementEnd', item: img1 },
 				{ type: 'elementStart', item: paragraph },
-				{ type: 'text', text: 'ba', attrs: [ [ 'bold', true ] ] },
-				{ type: 'text', text: 'r', attrs: [] },
+				{ type: 'text', data: 'ba', attrs: [ [ 'bold', true ] ] },
+				{ type: 'text', data: 'r', attrs: [] },
 				{ type: 'elementStart', item: img2 },
 				{ type: 'elementEnd', item: img2 },
-				{ type: 'text', text: 'x', attrs: [] },
+				{ type: 'text', data: 'x', attrs: [] },
 				{ type: 'elementEnd', item: paragraph }
 			];
 		} );
@@ -157,8 +156,8 @@ describe( 'TreeWalker', () => {
 			before( () => {
 				expected = [
 					{ type: 'elementStart', item: paragraph },
-					{ type: 'text', text: 'ba', attrs: [ [ 'bold', true ] ] },
-					{ type: 'text', text: 'r', attrs: [] },
+					{ type: 'text', data: 'ba', attrs: [ [ 'bold', true ] ] },
+					{ type: 'text', data: 'r', attrs: [] },
 					{ type: 'elementStart', item: img2 },
 					{ type: 'elementEnd', item: img2 }
 				];
@@ -166,7 +165,7 @@ describe( 'TreeWalker', () => {
 				range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 1, 4 ] ) );
 			} );
 
-			it( 'should iterating over the range', () => {
+			it( 'should iterate over the range', () => {
 				let iterator = new TreeWalker( { boundaries: range } );
 				let i = 0;
 
@@ -178,7 +177,7 @@ describe( 'TreeWalker', () => {
 				expect( i ).to.equal( expected.length );
 			} );
 
-			it( 'should iterating over the range going backward', () => {
+			it( 'should iterate over the range going backward', () => {
 				let iterator = new TreeWalker( { boundaries: range, direction: 'backward' } );
 				let i = expected.length;
 
@@ -195,8 +194,8 @@ describe( 'TreeWalker', () => {
 
 			before( () => {
 				expected = [
-					{ type: 'text', text: 'a', attrs: [ [ 'bold', true ] ] },
-					{ type: 'text', text: 'r', attrs: [] },
+					{ type: 'text', data: 'a', attrs: [ [ 'bold', true ] ] },
+					{ type: 'text', data: 'r', attrs: [] },
 					{ type: 'elementStart', item: img2 },
 					{ type: 'elementEnd', item: img2 }
 				];
@@ -239,7 +238,7 @@ describe( 'TreeWalker', () => {
 					{ type: 'elementStart', item: img1 },
 					{ type: 'elementEnd', item: img1 },
 					{ type: 'elementStart', item: paragraph },
-					{ type: 'text', text: 'b', attrs: [ [ 'bold', true ] ] }
+					{ type: 'text', data: 'b', attrs: [ [ 'bold', true ] ] }
 				];
 
 				range = new Range( rootBeginning, new Position( root, [ 1, 1 ] ) );
@@ -276,7 +275,7 @@ describe( 'TreeWalker', () => {
 		describe( 'custom start position', () => {
 			it( 'should iterating from the start position', () => {
 				let expected = [
-					{ type: 'text', text: 'r', attrs: [] },
+					{ type: 'text', data: 'r', attrs: [] },
 					{ type: 'elementStart', item: img2 },
 					{ type: 'elementEnd', item: img2 }
 				];
@@ -299,7 +298,7 @@ describe( 'TreeWalker', () => {
 
 			it( 'should iterating from the start position going backward', () => {
 				let expected = [
-					{ type: 'text', text: 'r', attrs: [] },
+					{ type: 'text', data: 'r', attrs: [] },
 					{ type: 'elementStart', item: img2 },
 					{ type: 'elementEnd', item: img2 }
 				];
@@ -331,12 +330,12 @@ describe( 'TreeWalker', () => {
 					{ type: 'elementStart', item: img1 },
 					{ type: 'elementEnd', item: img1 },
 					{ type: 'elementStart', item: paragraph },
-					{ type: 'character', text: 'b', attrs: [ [ 'bold', true ] ] },
-					{ type: 'character', text: 'a', attrs: [ [ 'bold', true ] ] },
-					{ type: 'character', text: 'r', attrs: [] },
+					{ type: 'text', data: 'b', attrs: [ [ 'bold', true ] ] },
+					{ type: 'text', data: 'a', attrs: [ [ 'bold', true ] ] },
+					{ type: 'text', data: 'r', attrs: [] },
 					{ type: 'elementStart', item: img2 },
 					{ type: 'elementEnd', item: img2 },
-					{ type: 'character', text: 'x', attrs: [] },
+					{ type: 'text', data: 'x', attrs: [] },
 					{ type: 'elementEnd', item: paragraph }
 				];
 			} );
@@ -374,9 +373,9 @@ describe( 'TreeWalker', () => {
 
 			before( () => {
 				expected = [
-					{ type: 'character', text: 'b', attrs: [ [ 'bold', true ] ] },
-					{ type: 'character', text: 'a', attrs: [ [ 'bold', true ] ] },
-					{ type: 'character', text: 'r', attrs: [] },
+					{ type: 'text', data: 'b', attrs: [ [ 'bold', true ] ] },
+					{ type: 'text', data: 'a', attrs: [ [ 'bold', true ] ] },
+					{ type: 'text', data: 'r', attrs: [] },
 					{ type: 'elementStart', item: img2 }
 				];
 
@@ -457,10 +456,10 @@ describe( 'TreeWalker', () => {
 				expected = [
 					{ type: 'elementStart', item: img1 },
 					{ type: 'elementStart', item: paragraph },
-					{ type: 'text', text: 'ba', attrs: [ [ 'bold', true ] ] },
-					{ type: 'text', text: 'r', attrs: [] },
+					{ type: 'text', data: 'ba', attrs: [ [ 'bold', true ] ] },
+					{ type: 'text', data: 'r', attrs: [] },
 					{ type: 'elementStart', item: img2 },
-					{ type: 'text', text: 'x', attrs: [] }
+					{ type: 'text', data: 'x', attrs: [] }
 				];
 			} );
 
@@ -499,11 +498,11 @@ describe( 'TreeWalker', () => {
 				expected = [
 					{ type: 'elementStart', item: img1 },
 					{ type: 'elementStart', item: paragraph },
-					{ type: 'character', text: 'b', attrs: [ [ 'bold', true ] ] },
-					{ type: 'character', text: 'a', attrs: [ [ 'bold', true ] ] },
-					{ type: 'character', text: 'r', attrs: [] },
+					{ type: 'text', data: 'b', attrs: [ [ 'bold', true ] ] },
+					{ type: 'text', data: 'a', attrs: [ [ 'bold', true ] ] },
+					{ type: 'text', data: 'r', attrs: [] },
 					{ type: 'elementStart', item: img2 },
-					{ type: 'character', text: 'x', attrs: [] }
+					{ type: 'text', data: 'x', attrs: [] }
 				];
 			} );
 
@@ -547,8 +546,6 @@ function expectValue( value, expected, options ) {
 
 	if ( value.type == 'text' ) {
 		expectText( value, expected, options );
-	} else if ( value.type == 'character' ) {
-		expectCharacter( value, expected, options );
 	} else if ( value.type == 'elementStart' ) {
 		expectStart( value, expected, options );
 	} else if ( value.type == 'elementEnd' ) {
@@ -559,28 +556,9 @@ function expectValue( value, expected, options ) {
 function expectText( value, expected, options = {} ) {
 	let previousPosition, nextPosition;
 
-	expect( value.item.text ).to.equal( expected.text );
-	expect( Array.from( value.item.first._attrs ) ).to.deep.equal( expected.attrs );
-	expect( value.length ).to.equal( value.item.text.length );
-
-	if ( options.direction == 'backward' ) {
-		previousPosition = Position.createAfter( value.item.last );
-		nextPosition = Position.createBefore( value.item.first );
-	} else {
-		previousPosition = Position.createBefore( value.item.first );
-		nextPosition = Position.createAfter( value.item.last );
-	}
-
-	expect( value.previousPosition ).to.deep.equal( previousPosition );
-	expect( value.nextPosition ).to.deep.equal( nextPosition );
-}
-
-function expectCharacter( value, expected, options = {} ) {
-	let previousPosition, nextPosition;
-
-	expect( value.item.character ).to.equal( expected.text );
-	expect( Array.from( value.item._attrs ) ).to.deep.equal( expected.attrs );
-	expect( value.length ).to.equal( value.item.character.length );
+	expect( value.item.data ).to.equal( expected.data );
+	expect( Array.from( value.item.getAttributes() ) ).to.deep.equal( expected.attrs );
+	expect( value.length ).to.equal( value.item.data.length );
 
 	if ( options.direction == 'backward' ) {
 		previousPosition = Position.createAfter( value.item );
@@ -623,9 +601,9 @@ function expectEnd( value, expected, options = {} ) {
 
 	if ( options.direction == 'backward' ) {
 		previousPosition = Position.createAfter( value.item );
-		nextPosition = Position.createFromParentAndOffset( value.item, value.item.getChildCount() );
+		nextPosition = Position.createFromParentAndOffset( value.item, value.item.getMaxOffset() );
 	} else {
-		previousPosition = Position.createFromParentAndOffset( value.item, value.item.getChildCount() );
+		previousPosition = Position.createFromParentAndOffset( value.item, value.item.getMaxOffset() );
 		nextPosition = Position.createAfter( value.item );
 	}
 

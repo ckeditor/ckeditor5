@@ -3,120 +3,73 @@
  * For licensing, see LICENSE.md.
  */
 
-import toMap from '../../utils/tomap.js';
+import Node from './node.js';
 
 /**
- * Data structure for text with attributes. Note that `Text` is not a {@link engine.model.Node}. This class is used
- * as an aggregator for multiple characters that have same attributes. Example usage:
+ * Model text node. Type of {@link engine.model.Node node} that contains {@link engine.model.Text#data text data}.
  *
- *        let myElem = new Element( 'li', [], new Text( 'text with attributes', { foo: true, bar: true } ) );
+ * **Important:** see {@link engine.model.Node} to read about restrictions using `Text` and `Node` API.
+ *
+ * **Note:** keep in mind that `Text` instances might indirectly got removed from model tree when model is changed.
+ * This happens when {@link engine.model.writer model writer} is used to change model and the text node is merged with
+ * another text node. Then, both text nodes are removed and a new text node is inserted into the model. Because of
+ * this behavior, keeping references to `Text` is not recommended. Instead, consider creating
+ * {@link engine.model.LivePosition live position} placed before the text node.
  *
  * @memberOf engine.model
  */
-export default class Text {
+export default class Text extends Node {
 	/**
-	 * Creates a text with attributes.
+	 * Creates a text node.
 	 *
-	 * @param {String} text Described text.
-	 * @param {Iterable|Object} [attrs] Iterable collection of attributes.
+	 * @param {String} data Node's text.
+	 * @param {Object} [attrs] Node's attributes. See {@link utils.toMap} for a list of accepted values.
 	 */
-	constructor( text, attrs ) {
-		/**
-		 * Text.
-		 *
-		 * @readonly
-		 * @member {String} engine.model.Text#text
-		 */
-		this.text = text || '';
+	constructor( data, attrs ) {
+		super( attrs );
 
 		/**
-		 * List of attributes bound with the text.
+		 * Text data contained in this text node.
 		 *
-		 * @protected
-		 * @member {Map} engine.model.Text#_attrs
+		 * @type {String}
 		 */
-		this._attrs = toMap( attrs );
+		this.data = data || '';
 	}
 
 	/**
-	 * Checks if the text has an attribute for given key.
-	 *
-	 * @param {String} key Key of attribute to check.
-	 * @returns {Boolean} `true` if attribute with given key is set on text, `false` otherwise.
+	 * @inheritDoc
 	 */
-	hasAttribute( key ) {
-		return this._attrs.has( key );
+	get offsetSize() {
+		return this.data.length;
 	}
 
 	/**
-	 * Gets an attribute value for given key or undefined if that attribute is not set on text.
-	 *
-	 * @param {String} key Key of attribute to look for.
-	 * @returns {*} Attribute value or null.
+	 * Creates a copy of this text node and returns it. Created text node has same text data and attributes as original text node.
 	 */
-	getAttribute( key ) {
-		return this._attrs.get( key );
+	clone() {
+		return new Text( this.data, this.getAttributes() );
 	}
 
 	/**
-	 * Returns iterator that iterates over this text attributes.
+	 * Converts `Text` instance to plain object and returns it.
 	 *
-	 * @returns {Iterable.<*>}
-	 */
-	getAttributes() {
-		return this._attrs[ Symbol.iterator ]();
-	}
-
-	/**
-	 * Sets attribute on text. If attribute with the same key already is set, it overwrites its value.
-	 *
-	 * @param {String} key Key of attribute to set.
-	 * @param {*} value Attribute value.
-	 */
-	setAttribute( key, value ) {
-		this._attrs.set( key, value );
-	}
-
-	/**
-	 * Removes all attributes from text and sets given attributes.
-	 *
-	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set. See {@link engine.model.Text#getAttributes}.
-	 */
-	setAttributesTo( attrs ) {
-		this._attrs = toMap( attrs );
-	}
-
-	/**
-	 * Removes an attribute with given key from text.
-	 *
-	 * @param {String} key Key of attribute to remove.
-	 * @returns {Boolean} `true` if the attribute was set on text, `false` otherwise.
-	 */
-	removeAttribute( key ) {
-		return this._attrs.delete( key );
-	}
-
-	/**
-	 * Removes all attributes from text.
-	 */
-	clearAttributes() {
-		this._attrs.clear();
-	}
-
-	/**
-	 * Custom toJSON method to solve child-parent circular dependencies.
-	 *
-	 * @returns {Object} Clone of this object with the parent property replaced with its name.
+	 * @returns {Object} `Text` instance converted to plain object.
 	 */
 	toJSON() {
-		let json = {
-			text: this.text
-		};
+		let json = super.toJSON();
 
-		if ( this._attrs.size ) {
-			json.attributes = [ ...this._attrs ];
-		}
+		json.data = this.data;
 
 		return json;
+	}
+
+	/**
+	 * Creates a `Text` instance from given plain object (i.e. parsed JSON string).
+	 *
+	 * @param {Object} json Plain object to be converted to `Text`.
+	 * @returns {engine.model.Text} `Text` instance created using given plain object.
+	 */
+	static fromJSON( json ) {
+		return new Text( json.data, json.attributes );
 	}
 }

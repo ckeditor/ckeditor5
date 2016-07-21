@@ -7,6 +7,7 @@
 
 import Document from '/ckeditor5/engine/model/document.js';
 import Element from '/ckeditor5/engine/model/element.js';
+import Text from '/ckeditor5/engine/model/text.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
@@ -24,20 +25,16 @@ describe( 'Batch', () => {
 		doc = new Document();
 		root = doc.createRoot();
 
-		p = new Element( 'p', [], 'xyz' );
-		root.insertChildren( 0, [ 'a', p, 'b' ] );
+		p = new Element( 'p', [], new Text( 'xyz' ) );
+		root.insertChildren( 0, [ new Text( 'a' ), p, new Text( 'b' ) ] );
 	} );
 
 	describe( 'unwrap', () => {
 		it( 'should unwrap given element', () => {
 			doc.batch().unwrap( p );
 
-			expect( root.getChildCount() ).to.equal( 5 );
-			expect( root.getChild( 0 ).character ).to.equal( 'a' );
-			expect( root.getChild( 1 ).character ).to.equal( 'x' );
-			expect( root.getChild( 2 ).character ).to.equal( 'y' );
-			expect( root.getChild( 3 ).character ).to.equal( 'z' );
-			expect( root.getChild( 4 ).character ).to.equal( 'b' );
+			expect( root.getMaxOffset() ).to.equal( 5 );
+			expect( root.getChild( 0 ).data ).to.equal( 'axyzb' );
 		} );
 
 		it( 'should throw if element to unwrap has no parent', () => {

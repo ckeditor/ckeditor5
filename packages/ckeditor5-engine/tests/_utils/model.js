@@ -12,6 +12,7 @@ import Element from '/ckeditor5/engine/model/element.js';
 import DocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
 import Selection from '/ckeditor5/engine/model/selection.js';
 import Document from '/ckeditor5/engine/model/document.js';
+import writer from '/ckeditor5/engine/model/writer.js';
 
 /**
  * Writes the contents of the {@link engine.model.Document Document} to an HTML-like string.
@@ -146,7 +147,7 @@ export function parse( data, options = {} ) {
 	if ( options.document ) {
 		const document = options.document;
 		root = document.getRoot( rootName );
-		root.removeChildren( 0, root.getChildCount() );
+		root.removeChildren( 0, root.getMaxOffset() );
 		selection = document.selection;
 	} else {
 		root = new DocumentFragment();
@@ -158,7 +159,7 @@ export function parse( data, options = {} ) {
 
 	const handlers = {
 		text( token ) {
-			root.appendChildren( new Text( token.text, textAttributes ) );
+			writer.insert( Position.createFromParentAndOffset( root, root.getMaxOffset() ), new Text( token.data, textAttributes ) );
 		},
 
 		textStart( token ) {
@@ -176,7 +177,7 @@ export function parse( data, options = {} ) {
 
 		openingTag( token ) {
 			let el = new Element( token.name, token.attributes );
-			root.appendChildren( el );
+			writer.insert( Position.createFromParentAndOffset( root, root.getMaxOffset() ), el );
 
 			root = el;
 
@@ -198,7 +199,7 @@ export function parse( data, options = {} ) {
 		},
 
 		selectionStart( token ) {
-			selectionStart = Position.createFromParentAndOffset( root, root.getChildCount() );
+			selectionStart = Position.createFromParentAndOffset( root, root.getMaxOffset() );
 			selectionAttributes = token.attributes;
 		},
 
@@ -208,7 +209,7 @@ export function parse( data, options = {} ) {
 			}
 
 			withSelection = true;
-			selectionEnd = Position.createFromParentAndOffset( root, root.getChildCount() );
+			selectionEnd = Position.createFromParentAndOffset( root, root.getMaxOffset() );
 
 			selection.setRanges(
 				[ new Range( selectionStart, selectionEnd ) ],
@@ -274,7 +275,7 @@ function writeItem( walkerValue, selection, options ) {
 function writeText( walkerValue, selection, options ) {
 	const item = walkerValue.item;
 	const attrs = writeAttributes( item.getAttributes() );
-	let text = Array.from( item.text );
+	let text = Array.from( item.data );
 
 	if ( options.selection ) {
 		const startIndex = walkerValue.previousPosition.offset + 1;
@@ -285,7 +286,7 @@ function writeText( walkerValue, selection, options ) {
 			// Add the selection marker without changing any indexes, so if second marker must be added
 			// in the same loop it does not blow up.
 			text[ index - startIndex ] +=
-				writeSelection( Position.createFromParentAndOffset( item.commonParent, index ), selection );
+				writeSelection( Position.createFromParentAndOffset( item.parent, index ), selection );
 
 			index++;
 		}
@@ -406,7 +407,7 @@ const handlers = {
 	text( match ) {
 		return {
 			type: 'text',
-			text: match[ 0 ]
+			data: match[ 0 ]
 		};
 	}
 };

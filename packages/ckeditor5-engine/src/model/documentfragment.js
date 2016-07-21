@@ -4,25 +4,28 @@
  */
 
 import NodeList from './nodelist.js';
+import Element from './element.js';
+import Text from './text.js';
+import isIterable from '../../utils/isiterable.js';
 
 /**
- * DocumentFragment represents a part of Tree Model which does not have a common root but it's top level nodes
- * can be seen as siblings.
+ * DocumentFragment represents a part of model which does not have a common root but it's top-level nodes
+ * can be seen as siblings. In other words, it is a detached part of model tree, without a root.
  *
  * @memberOf engine.model
  */
 export default class DocumentFragment {
 	/**
-	 * Creates empty DocumentFragment.
+	 * Creates an empty `DocumentFragment`.
 	 *
-	 * @param {engine.model.NodeSet} children List of nodes contained inside the DocumentFragment.
+	 * @param {engine.model.Node|Iterable.<engine.model.Node>} children Nodes to be contained inside the `DocumentFragment`.
 	 */
 	constructor( children ) {
 		/**
-		 * List of nodes contained inside the DocumentFragment.
+		 * List of nodes contained inside the document fragment.
 		 *
-		 * @protected
-		 * @member {engine.model.NodeSet} engine.model.DocumentFragment#_children
+		 * @private
+		 * @member {engine.model.NodeList} engine.model.DocumentFragment#_children
 		 */
 		this._children = new NodeList();
 
@@ -32,14 +35,16 @@ export default class DocumentFragment {
 	}
 
 	/**
-	 * `DocumentFragment` iterator. Returns {@link engine.model.Node nodes} that are added to the `DocumentFragment`.
+	 * Returns an iterator that iterates over all nodes contained inside this document fragment.
+	 *
+	 * @returns {Iterator.<engine.model.Node>}
 	 */
 	[ Symbol.iterator ]() {
-		return this._children[ Symbol.iterator ]();
+		return this.getChildren();
 	}
 
 	/**
-	 * The root of `DocumentFragment`. Returns itself. Added for compatibility reasons with {@link engine.model.Element}.
+	 * Artificial root of `DocumentFragment`. Returns itself. Added for compatibility reasons.
 	 *
 	 * @readonly
 	 * @type {engine.model.DocumentFragment}
@@ -49,88 +54,186 @@ export default class DocumentFragment {
 	}
 
 	/**
-	 * Returns path to the `DocumentFragment` This is always equal to empty array and is added for compatibility reasons
-	 * with {@link engine.model.Element}.
+	 * Returns path to a `DocumentFragment`, which is an empty array. Added for compatibility reasons.
 	 *
-	 * @returns {Array} The path.
+	 * @returns {Array}
 	 */
 	getPath() {
 		return [];
 	}
 
 	/**
-	 * Gets child at the given index.
+	 * Returns `true` if there are no nodes inside this document fragment, `false` otherwise.
 	 *
-	 * @param {Number} index Index of child.
-	 * @returns {engine.model.Node} Child node.
+	 * @returns {Boolean}
 	 */
-	getChild( index ) {
-		return this._children.get( index );
+	isEmpty() {
+		return this.getChildCount() === 0;
 	}
 
 	/**
-	 * Gets the number of top-level elements of DocumentFragment.
+	 * Gets the child at the given index. Returns `null` if incorrect index was passed.
 	 *
-	 * @returns {Number} The number of top-level elements.
+	 * @param {Number} index Index of child.
+	 * @returns {engine.model.Node|null} Child node.
+	 */
+	getChild( index ) {
+		return this._children.getNode( index );
+	}
+
+	/**
+	 * Returns an index of the given child node. Returns `null` if given node is not a child of this document fragment.
+	 *
+	 * @param {engine.model.Node} node Child node to look for.
+	 * @returns {Number|null} Child node's index.
+	 */
+	getChildIndex( node ) {
+		return this._children.getNodeIndex( node );
+	}
+
+	/**
+	 * Returns an iterator that iterates over all of this document fragment's children.
+	 *
+	 * @returns {Iterable.<engine.model.Node>}
+	 */
+	getChildren() {
+		return this._children[ Symbol.iterator ]();
+	}
+
+	/**
+	 * Returns the number of this document fragment's children.
+	 *
+	 * @returns {Number}
 	 */
 	getChildCount() {
 		return this._children.length;
 	}
 
 	/**
-	 * Gets index of the given child node.
+	 * Returns the starting offset of given child. Starting offset is equal to the sum of
+	 * {engine.model.Node#offsetSize offset sizes} of all node's siblings that are before it. Returns `null` if
+	 * given node is not a child of this document fragment.
 	 *
-	 * @param {engine.model.Node} node Child node.
-	 * @returns {Number} Index of the child node.
+	 * @param {engine.model.Node} node Child node to look for.
+	 * @returns {Number|null} Child node's starting offset.
 	 */
-	getChildIndex( node ) {
-		return this._children.indexOf( node );
+	getChildStartOffset( node ) {
+		return this._children.getNodeStartOffset( node );
 	}
 
 	/**
-	 * Inserts a child node or a list of child nodes at the end of this DocumentFragment.
+	 * Returns the sum of {engine.model.Node#offsetSize offset sizes} of all of this document fragment's children.
 	 *
-	 * @param {engine.model.NodeSet} nodes The list of nodes to be inserted.
+	 * @returns {Number}
+	 */
+	getMaxOffset() {
+		return this._children.totalOffset;
+	}
+
+	/**
+	 * Converts offset "position" to index "position".
+	 *
+	 * Returns index of a node that occupies given offset. If given offset is too low, returns `0`. If given offset is
+	 * too high, returns {@link engine.model.DocumentFragment#getChildCount index after last child}.
+	 *
+	 *		const textNode = new Text( 'foo' );
+	 *		const pElement = new Element( 'p' );
+	 *		const docFrag = new DocumentFragment( [ textNode, pElement ] );
+	 *		docFrag.offsetToIndex( -1 ); // Returns 0, because offset is too low.
+	 *		docFrag.offsetToIndex( 0 ); // Returns 0, because offset 0 is taken by `textNode` which is at index 0.
+	 *		docFrag.offsetToIndex( 1 ); // Returns 0, because `textNode` has `offsetSize` equal to 3, so it occupies offset 1 too.
+	 *		docFrag.offsetToIndex( 2 ); // Returns 0.
+	 *		docFrag.offsetToIndex( 3 ); // Returns 1.
+	 *		docFrag.offsetToIndex( 4 ); // Returns 2. There are no nodes at offset 4, so last available index is returned.
+	 *
+	 * @param {Number} offset Offset to look for.
+	 * @returns {Number} Index of a node that occupies given offset.
+	 */
+	offsetToIndex( offset ) {
+		return this._children.offsetToIndex( offset );
+	}
+
+	/**
+	 * {@link engine.model.DocumentFragment#insertChildren Inserts} one or more nodes at the end of this document fragment.
+	 *
+	 * @param {engine.model.Node|Iterable.<engine.model.Node>} nodes Nodes to be inserted.
 	 */
 	appendChildren( nodes ) {
 		this.insertChildren( this.getChildCount(), nodes );
 	}
 
 	/**
-	 * Inserts a list of child nodes on the given index and sets the parent of these nodes to this DocumentFragment.
+	 * Inserts one or more nodes at the given index and sets {@link engine.model.Node#parent parent} of these nodes
+	 * to this document fragment.
 	 *
-	 * @param {Number} index Position where nodes should be inserted.
-	 * @param {engine.model.NodeSet} nodes The list of nodes to be inserted.
+	 * @param {Number} index Index at which nodes should be inserted.
+	 * @param {engine.model.Node|Iterable.<engine.model.Node>} nodes Nodes to be inserted.
 	 */
 	insertChildren( index, nodes ) {
-		let nodeList = new NodeList( nodes );
+		if ( !isIterable( nodes ) ) {
+			nodes = [ nodes ];
+		}
 
-		for ( let node of nodeList._nodes ) {
+		for ( let node of nodes ) {
 			node.parent = this;
 		}
 
-		// Clean original DocumentFragment so it won't contain nodes that were added somewhere else.
-		if ( nodes instanceof DocumentFragment ) {
-			nodes._children = new NodeList();
-		}
-
-		this._children.insert( index, nodeList );
+		this._children.insertNodes( index, nodes );
 	}
 
 	/**
-	 * Removes number of child nodes starting at the given index and set the parent of these nodes to `null`.
+	 * Removes one or more nodes starting at the given index and sets {@link engine.model.Node#parent parent} of these nodes to `null`.
 	 *
-	 * @param {Number} index Position of the first node to remove.
+	 * @param {Number} index Index of the first node to remove.
 	 * @param {Number} [howMany=1] Number of nodes to remove.
-	 * @returns {engine.model.NodeList} The list of removed nodes.
+	 * @returns {Array.<engine.model.Node>} Array containing removed nodes.
 	 */
 	removeChildren( index, howMany = 1 ) {
-		let nodeList = this._children.remove( index, howMany );
+		const nodes = this._children.removeNodes( index, howMany );
 
-		for ( let node of nodeList._nodes ) {
+		for ( let node of nodes ) {
 			node.parent = null;
 		}
 
-		return nodeList;
+		return nodes;
+	}
+
+	/**
+	 * Converts `DocumentFragment` instance to plain object and returns it.
+	 * Takes care of converting all of this document fragment's children.
+	 *
+	 * @returns {Object} `DocumentFragment` instance converted to plain object.
+	 */
+	toJSON() {
+		let json = [];
+
+		for ( let node of this._children ) {
+			json.push( node.toJSON() );
+		}
+
+		return json;
+	}
+
+	/**
+	 * Creates a `DocumentFragment` instance from given plain object (i.e. parsed JSON string).
+	 * Converts `DocumentFragment` children to proper nodes.
+	 *
+	 * @param {Object} json Plain object to be converted to `DocumentFragment`.
+	 * @returns {engine.model.DocumentFragment} `DocumentFragment` instance created using given plain object.
+	 */
+	static fromJSON( json ) {
+		let children = [];
+
+		for ( let child of json ) {
+			if ( child.name ) {
+				// If child has name property, it is an Element.
+				children.push( Element.fromJSON( child ) );
+			} else {
+				// Otherwise, it is a Text node.
+				children.push( Text.fromJSON( child ) );
+			}
+		}
+
+		return new DocumentFragment( children );
 	}
 }

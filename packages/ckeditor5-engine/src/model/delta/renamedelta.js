@@ -11,6 +11,7 @@ import RemoveOperation from '../operation/removeoperation.js';
 import MoveOperation from '../operation/moveoperation.js';
 import Element from '../element.js';
 import Position from '../position.js';
+import CKEditorError from '../../../utils/ckeditorerror.js';
 
 /**
  * To provide specific OT behavior and better collisions solving, the {@link engine.model.Batch#rename Batch#rename} method
@@ -19,6 +20,9 @@ import Position from '../position.js';
  * @memberOf engine.model.delta
  */
 export default class RenameDelta extends Delta {
+	/**
+	 * @inheritDoc
+	 */
 	get _reverseDeltaClass() {
 		return RenameDelta;
 	}
@@ -32,13 +36,12 @@ export default class RenameDelta extends Delta {
 }
 
 function apply( batch, delta, operation ) {
-	batch.addDelta( delta );
 	delta.addOperation( operation );
 	batch.document.applyOperation( operation );
 }
 
 /**
- * Renames the given element.
+ * Renames given element.
  *
  * @chainable
  * @method engine.model.Batch#rename
@@ -46,7 +49,18 @@ function apply( batch, delta, operation ) {
  * @param {engine.model.Element} element The element to rename.
  */
 register( 'rename', function( newName, element ) {
+	if ( !( element instanceof Element ) ) {
+		/**
+		 * Trying to rename an object which is not an instance of Element.
+		 *
+		 * @error batch-rename-not-element-instance
+		 */
+		throw new CKEditorError( 'batch-rename-not-element-instance: Trying to rename an object which is not an instance of Element.' );
+	}
+
 	const delta = new RenameDelta();
+	this.addDelta( delta );
+
 	const newElement = new Element( newName );
 
 	apply(
@@ -56,7 +70,7 @@ register( 'rename', function( newName, element ) {
 
 	apply(
 		this, delta,
-		new MoveOperation( Position.createAt( element ), element.getChildCount(), Position.createAt( newElement ), this.document.version )
+		new MoveOperation( Position.createAt( element ), element.getMaxOffset(), Position.createAt( newElement ), this.document.version )
 	);
 
 	apply(

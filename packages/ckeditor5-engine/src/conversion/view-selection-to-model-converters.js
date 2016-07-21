@@ -12,29 +12,28 @@
 
 /**
  * Function factory, creates a callback function which converts a {@link engine.view.Selection view selection} taken
- * from the {@link engine.view.Document#selectionChange} event and set in on the
- * {@link engine.model.Document#selection model}.
+ * from the {@link engine.view.Document#selectionChange} event and sets in on the {@link engine.model.Document#selection model}.
  *
- * Note that because there is not view selection change dispatcher nor any other advance view selection to model
- * conversion mechanism, this method is simple event listener.
+ * **Note**: because there is no view selection change dispatcher nor any other advanced view selection to model
+ * conversion mechanism, the callback should be set directly on view document.
  *
- *		view.document.on( 'selectionChange', convertSelectionChange( model, mapper ) );
+ *		view.document.on( 'selectionChange', convertSelectionChange( modelDocument, mapper ) );
  *
  * @function engine.conversion.viewSelectionToModel.convertSelectionChange
- * @param {engine.model.Document} model Document model on which selection should be updated.
+ * @param {engine.model.Document} modelDocument Model document on which selection should be updated.
  * @param {engine.conversion.Mapper} mapper Conversion mapper.
  * @returns {Function} {@link engine.view.Document#selectionChange} callback function.
  */
-export function convertSelectionChange( model, mapper ) {
+export function convertSelectionChange( modelDocument, mapper ) {
 	return ( evt, data ) => {
-		model.enqueueChanges( () => {
+		modelDocument.enqueueChanges( () => {
 			const viewSelection = data.newSelection;
 
-			model.selection.removeAllRanges();
+			modelDocument.selection.removeAllRanges();
 
 			for ( let viewRange of viewSelection.getRanges() ) {
 				const modelRange = mapper.toModelRange( viewRange );
-				model.selection.addRange( modelRange, viewSelection.isBackward );
+				modelDocument.selection.addRange( modelRange, viewSelection.isBackward );
 			}
 		} );
 	};

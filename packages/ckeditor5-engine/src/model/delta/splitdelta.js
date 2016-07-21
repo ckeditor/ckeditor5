@@ -30,6 +30,9 @@ export default class SplitDelta extends Delta {
 		return this._moveOperation ? this._moveOperation.sourcePosition : null;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	getReversed() {
 		let delta = super.getReversed();
 
@@ -41,12 +44,13 @@ export default class SplitDelta extends Delta {
 	}
 
 	/**
-	 * Operation in the delta that adds a node to the tree model where split elements will be moved to or `null` if
+	 * Operation in the delta that adds to model an element into which split nodes will be moved, or `null` if
 	 * there are no operations in the delta.
 	 *
-	 * Most commonly this will be insert operation, as `SplitDelta` has to create a new node. If `SplitDelta` was created
-	 * through {@link engine.model.delta.MergeDelta MergeDelta} {@link engine.model.delta.Delta#getReversed reversing},
-	 * this will be a reinsert operation, as we will want to "insert-back" the node that was removed by `MergeDelta`.
+	 * Most commonly this will be {@link engine.model.operation.InsertOperation an insert operation}, as `SplitDelta`
+	 * has to create a new node. If `SplitDelta` was created through {@link engine.model.delta.Delta#getReversed reversing}
+	 * a {@link engine.model.delta.MergeDelta merge delta}, this will be a {@link engine.model.operation.ReinsertOperation reinsert operation},
+	 * as we will want to re-insert the exact element that was removed by that merge delta.
 	 *
 	 * @protected
 	 * @type {engine.model.operation.InsertOpertaion|engine.model.operation.ReinsertOperation|null}
@@ -56,8 +60,8 @@ export default class SplitDelta extends Delta {
 	}
 
 	/**
-	 * Operation in the delta that moves nodes from after split position to their new parent
-	 * or `null` if there are no operations in the delta.
+	 * Operation in the delta that moves model items, that are after split position, to their new parent or `null`
+	 * if there are no operations in the delta.
 	 *
 	 * @protected
 	 * @type {engine.model.operation.MoveOperation|null}
@@ -66,6 +70,9 @@ export default class SplitDelta extends Delta {
 		return this.operations[ 1 ] || null;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	get _reverseDeltaClass() {
 		return MergeDelta;
 	}
@@ -77,15 +84,18 @@ export default class SplitDelta extends Delta {
 		return 'engine.model.delta.SplitDelta';
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	static get _priority() {
 		return 5;
 	}
 }
 
 /**
- * Splits a node at the given position.
+ * Splits an element at the given position.
  *
- * This cannot be a position inside the root element. The `batch-split-root` error will be thrown if
+ * The element cannot be a root element, as root element cannot be split. The `batch-split-root` error will be thrown if
  * you try to split the root element.
  *
  * @chainable
@@ -107,7 +117,7 @@ register( 'split', function( position ) {
 		throw new CKEditorError( 'batch-split-root: Root element can not be split.' );
 	}
 
-	const copy = new Element( splitElement.name, splitElement._attrs );
+	const copy = new Element( splitElement.name, splitElement.getAttributes() );
 
 	const insert = new InsertOperation( Position.createAfter( splitElement ), copy, this.document.version );
 
@@ -116,7 +126,7 @@ register( 'split', function( position ) {
 
 	const move = new MoveOperation(
 		position,
-		splitElement.getChildCount() - position.offset,
+		splitElement.getMaxOffset() - position.offset,
 		Position.createFromParentAndOffset( copy, 0 ),
 		this.document.version
 	);

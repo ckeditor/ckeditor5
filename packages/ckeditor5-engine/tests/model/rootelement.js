@@ -8,6 +8,7 @@
 import Document from '/ckeditor5/engine/model/document.js';
 import Element from '/ckeditor5/engine/model/element.js';
 import RootElement from '/ckeditor5/engine/model/rootelement.js';
+import count from '/ckeditor5/utils/count.js';
 
 describe( 'Element', () => {
 	describe( 'constructor', () => {
@@ -17,7 +18,7 @@ describe( 'Element', () => {
 
 			expect( root ).to.be.an.instanceof( Element );
 			expect( root ).to.have.property( 'document' ).that.equals( doc );
-			expect( root._attrs.size ).to.equal( 0 );
+			expect( count( root.getAttributes() ) ).to.equal( 0 );
 			expect( root.getChildCount() ).to.equal( 0 );
 		} );
 	} );

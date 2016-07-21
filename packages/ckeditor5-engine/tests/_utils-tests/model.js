@@ -29,7 +29,7 @@ describe( 'model test utils', () => {
 	describe( 'getData', () => {
 		it( 'should use stringify method', () => {
 			const stringifySpy = sandbox.spy( getData, '_stringify' );
-			root.appendChildren( new Element( 'b', null, [ 'btext' ] ) );
+			root.appendChildren( new Element( 'b', null, new Text( 'btext' ) ) );
 
 			expect( getData( document, { withoutSelection: true } ) ).to.equal( '<b>btext</b>' );
 			sinon.assert.calledOnce( stringifySpy );
@@ -38,7 +38,7 @@ describe( 'model test utils', () => {
 
 		it( 'should use stringify method with selection', () => {
 			const stringifySpy = sandbox.spy( getData, '_stringify' );
-			root.appendChildren( new Element( 'b', null, [ 'btext' ] ) );
+			root.appendChildren( new Element( 'b', null, new Text( 'btext' ) ) );
 			document.selection.addRange( Range.createFromParentsAndOffsets( root, 0, root, 1 ) );
 
 			expect( getData( document ) ).to.equal( '<selection><b>btext</b></selection>' );
@@ -94,21 +94,29 @@ describe( 'model test utils', () => {
 		} );
 
 		it( 'should stringify element', () => {
-			const element = new Element( 'a', null, [ new Element( 'b', null, 'btext' ), 'atext' ] );
+			const element = new Element( 'a', null, [
+				new Element( 'b', null, new Text( 'btext' ) ),
+				new Text( 'atext' )
+			] );
+
 			expect( stringify( element ) ).to.equal( '<a><b>btext</b>atext</a>' );
 		} );
 
 		it( 'should stringify document fragment', () => {
-			const fragment = new DocumentFragment( [ new Element( 'b', null, 'btext' ), 'atext' ] );
+			const fragment = new DocumentFragment( [
+				new Element( 'b', null, new Text( 'btext' ) ),
+				new Text( 'atext' )
+			] );
+
 			expect( stringify( fragment ) ).to.equal( '<b>btext</b>atext' );
 		} );
 
 		it( 'writes elements and texts', () => {
 			root.appendChildren( [
-				new Element( 'a', null, 'atext' ),
+				new Element( 'a', null, new Text( 'atext' ) ),
 				new Element( 'b', null, [
 					new Element( 'c1' ),
-					'ctext',
+					new Text( 'ctext' ),
 					new Element( 'c2' )
 				] ),
 				new Element( 'd' )
@@ -136,7 +144,7 @@ describe( 'model test utils', () => {
 		it( 'writes text attributes', () => {
 			root.appendChildren( [
 				new Text( 'foo', { bold: true } ),
-				'bar',
+				new Text( 'bar' ),
 				new Text( 'bom', { bold: true, italic: true } ),
 				new Element( 'a', null, [
 					new Text( 'pom', { underline: true, bold: true } )
@@ -160,7 +168,7 @@ describe( 'model test utils', () => {
 
 				root.appendChildren( [
 					elA,
-					'foo',
+					new Text( 'foo' ),
 					new Text( 'bar', { bold: true } ),
 					elB
 				] );
@@ -361,9 +369,12 @@ describe( 'model test utils', () => {
 		test( 'sets text attributes', {
 			data: '<$text bold=true italic=true>foo</$text><$text bold=true>bar</$text>bom',
 			check( root ) {
-				expect( root.getChildCount() ).to.equal( 9 );
-				expect( root.getChild( 0 ) ).to.have.property( 'character', 'f' );
+				expect( root.getChildCount() ).to.equal( 3 );
+				expect( root.getMaxOffset() ).to.equal( 9 );
+				expect( root.getChild( 0 ) ).to.have.property( 'data', 'foo' );
 				expect( root.getChild( 0 ).getAttribute( 'italic' ) ).to.equal( true );
+				expect( root.getChild( 1 ) ).to.have.property( 'data', 'bar' );
+				expect( root.getChild( 1 ).getAttribute( 'bold' ) ).to.equal( true );
 			}
 		} );
 
@@ -439,8 +450,11 @@ describe( 'model test utils', () => {
 
 			test( 'sets collapsed selection within a text', {
 				data: 'foo<selection />bar',
-				check( root ) {
-					expect( root.getChildCount() ).to.equal( 6 );
+				check( text, selection ) {
+					expect( text.offsetSize ).to.equal( 6 );
+					expect( text.getPath() ).to.deep.equal( [ 0 ] );
+					expect( selection.getFirstRange().start.path ).to.deep.equal( [ 3 ] );
+					expect( selection.getFirstRange().end.path ).to.deep.equal( [ 3 ] );
 				}
 			} );
 
@@ -454,7 +468,7 @@ describe( 'model test utils', () => {
 			test( 'sets collapsed selection between text and text with attributes', {
 				data: 'foo<selection /><$text bold=true>bar</$text>',
 				check( root, selection ) {
-					expect( root.getChildCount() ).to.equal( 6 );
+					expect( root.getMaxOffset() ).to.equal( 6 );
 					expect( selection.getAttribute( 'bold' ) ).to.be.undefined;
 				}
 			} );

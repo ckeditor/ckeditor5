@@ -13,6 +13,7 @@ import ModelTextProxy from '/ckeditor5/engine/model/textproxy.js';
 import ModelRange from '/ckeditor5/engine/model/range.js';
 import ModelPosition from '/ckeditor5/engine/model/position.js';
 import ModelWalker from '/ckeditor5/engine/model/treewalker.js';
+import modelWriter from '/ckeditor5/engine/model/writer.js';
 
 import ViewElement from '/ckeditor5/engine/view/element.js';
 import ViewContainerElement from '/ckeditor5/engine/view/containerelement.js';
@@ -109,7 +110,7 @@ function modelToString( item ) {
 	if ( item instanceof ModelTextProxy ) {
 		let attributes = modelAttributesToString( item );
 
-		result = attributes ? '<$text' + attributes + '>' + item.text + '</$text>' : item.text;
+		result = attributes ? '<$text' + attributes + '>' + item.data + '</$text>' : item.data;
 	} else {
 		let walker = new ModelWalker( { boundaries: ModelRange.createFromElement( item ), shallow: true } );
 
@@ -264,7 +265,9 @@ describe( 'image with caption converters', () => {
 	} );
 
 	it( 'should convert model images changes with caption to view', () => {
-		let modelElement = new ModelElement( 'image', { src: 'foo.jpg', title: 'foo' }, new ModelElement( 'caption', {}, 'foobar' ) );
+		let modelElement = new ModelElement( 'image', { src: 'foo.jpg', title: 'foo' }, [
+			new ModelElement( 'caption', {}, new ModelText( 'foobar' ) )
+		] );
 		modelRoot.appendChildren( modelElement );
 		modelDispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
 
@@ -491,17 +494,14 @@ describe( 'custom attribute handling for given element', () => {
 		expect( viewToString( viewRoot ) ).to.equal( '<div><a href="foo.html" title="Foo title">foo</a></div>' );
 
 		// Let's change link's attributes.
-		for ( let value of range ) {
-			value.item.setAttribute( 'linkHref', 'bar.html' );
-			value.item.setAttribute( 'linkTitle', 'Bar title' );
-		}
+		modelWriter.setAttribute( range, 'linkHref', 'bar.html' );
+		modelWriter.setAttribute( range, 'linkTitle', 'Bar title' );
 		modelDispatcher.convertAttribute( 'changeAttribute', range, 'linkHref', 'foo.html', 'bar.html' );
 		modelDispatcher.convertAttribute( 'changeAttribute', range, 'linkTitle', 'Foo title', 'Bar title' );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><a href="bar.html" title="Bar title">foo</a></div>' );
 
-		// Let's remove a letter from the link.
-		const removed = modelRoot.removeChildren( 0, 1 );
+		const removed = modelWriter.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 ) );
 		modelDoc.graveyard.appendChildren( removed );
 		modelDispatcher.convertRemove(
 			ModelPosition.createFromParentAndOffset( modelRoot, 0 ),
@@ -513,17 +513,13 @@ describe( 'custom attribute handling for given element', () => {
 		range = ModelRange.createFromElement( modelRoot );
 
 		// Let's remove just one attribute.
-		for ( let value of range ) {
-			value.item.removeAttribute( 'linkTitle' );
-		}
+		modelWriter.removeAttribute( range, 'linkTitle' );
 		modelDispatcher.convertAttribute( 'removeAttribute', range, 'linkTitle', 'Bar title', null );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><a href="bar.html">oo</a></div>' );
 
 		// Let's remove the other attribute.
-		for ( let value of range ) {
-			value.item.removeAttribute( 'linkHref' );
-		}
+		modelWriter.removeAttribute( range, 'linkHref' );
 		modelDispatcher.convertAttribute( 'removeAttribute', range, 'linkHref', 'bar.html', null );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div>oo</div>' );
@@ -535,13 +531,13 @@ describe( 'custom attribute handling for given element', () => {
 		let modelText = viewDispatcher.convert( viewElement )[ 0 ];
 
 		expect( modelText ).to.be.instanceof( ModelText );
-		expect( modelText.text ).to.equal( 'foo' );
+		expect( modelText.data ).to.equal( 'foo' );
 		expect( modelText.getAttribute( 'linkHref' ) ).to.equal( 'foo.html' );
 		expect( modelText.getAttribute( 'linkTitle' ) ).to.equal( 'Foo title' );
 	} );
 
 	it( 'should convert quote model element with linkHref and linkTitle attribute to view', () => {
-		let modelElement = new ModelElement( 'quote', { linkHref: 'foo.html', linkTitle: 'Foo source' }, 'foo' );
+		let modelElement = new ModelElement( 'quote', { linkHref: 'foo.html', linkTitle: 'Foo source' }, new ModelText( 'foo' ) );
 		modelRoot.appendChildren( modelElement );
 		modelDispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
 
@@ -620,7 +616,8 @@ it( 'default table view to model converter', () => {
 
 			for ( let i = 1; i < children.length; i++ ) {
 				if ( children[ i ] instanceof ModelText && children[ i - 1 ] instanceof ModelText ) {
-					children[ i - 1 ].text += ' ';
+					children.splice( i, 0, new ModelText( ' ' ) );
+					i++;
 				}
 			}
 
@@ -716,12 +713,12 @@ describe( 'universal converter', () => {
 		let modelElement = new ModelElement( 'table', { cellpadding: 5, cellspacing: 5 }, [
 			new ModelElement( 'tr', null, [
 				new ModelElement( 'td', null, [
-					'foo ',
+					new ModelText( 'foo ' ),
 					new ModelText( 'abc', { bold: true } ),
-					' bar'
+					new ModelText( ' bar' )
 				] ),
 				new ModelElement( 'td', null, [
-					new ModelElement( 'foo', { foo: 'bar' }, 'bar' )
+					new ModelElement( 'foo', { foo: 'bar' }, new ModelText( 'bar' ) )
 				] )
 			] )
 		] );

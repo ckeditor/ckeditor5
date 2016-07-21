@@ -39,6 +39,9 @@ export default class UnwrapDelta extends Delta {
 		return this.operations[ 0 ] || null;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	get _reverseDeltaClass() {
 		return WrapDelta;
 	}
@@ -50,13 +53,16 @@ export default class UnwrapDelta extends Delta {
 		return 'engine.model.delta.UnwrapDelta';
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	static get _priority() {
 		return 10;
 	}
 }
 
 /**
- * Unwraps specified element, that is moves all it's children before it and then removes it. Throws
+ * Unwraps given element, that is moves all it's children before it and then removes it. Throws
  * error if you try to unwrap an element that does not have a parent.
  *
  * @chainable
@@ -78,7 +84,7 @@ register( 'unwrap', function( element ) {
 
 	let sourcePosition = Position.createFromParentAndOffset( element, 0 );
 
-	const move = new MoveOperation( sourcePosition, element.getChildCount(), Position.createBefore( element ), this.document.version );
+	const move = new MoveOperation( sourcePosition, element.getMaxOffset(), Position.createBefore( element ), this.document.version );
 	move.isSticky = true;
 	delta.addOperation( move );
 	this.document.applyOperation( move );
