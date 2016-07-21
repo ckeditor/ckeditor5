@@ -6,15 +6,10 @@
 /* global console:false */
 
 import Document from '/ckeditor5/engine/view/document.js';
-import SelectionObserver from '/ckeditor5/engine/view/observer/selectionobserver.js';
-import MutationObserver from '/ckeditor5/engine/view/observer/mutationobserver.js';
 import { setData } from '/tests/engine/_utils/view.js';
 
 const viewDocument = new Document();
 viewDocument.createRoot( document.getElementById( 'editor' ) );
-
-viewDocument.addObserver( MutationObserver );
-viewDocument.addObserver( SelectionObserver );
 
 viewDocument.isFocused = true;
 
