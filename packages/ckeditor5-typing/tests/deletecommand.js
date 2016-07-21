@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import ModelTestEditor from '/tests/ckeditor5/_utils/modeltesteditor.js';
 import DeleteCommand from '/ckeditor5/typing/deletecommand.js';
 import { getData, setData } from '/tests/engine/_utils/model.js';
@@ -18,7 +16,7 @@ describe( 'DeleteCommand', () => {
 				editor = newEditor;
 				doc = editor.document;
 
-				const command = new DeleteCommand( editor, 'BACKWARD' );
+				const command = new DeleteCommand( editor, 'backward' );
 				editor.commands.set( 'delete', command );
 
 				doc.schema.registerItem( 'p', '$block' );
@@ -26,9 +24,9 @@ describe( 'DeleteCommand', () => {
 	} );
 
 	it( 'has direction', () => {
-		const command = new DeleteCommand( editor, 'FORWARD' );
+		const command = new DeleteCommand( editor, 'forward' );
 
-		expect( command ).to.have.property( 'direction', 'FORWARD' );
+		expect( command ).to.have.property( 'direction', 'forward' );
 	} );
 
 	describe( 'execute', () => {
@@ -84,15 +82,15 @@ describe( 'DeleteCommand', () => {
 			doc.composer.on( 'modifySelection', spy );
 			setData( doc, '<p>foo<selection />bar</p>' );
 
-			editor.commands.get( 'delete' ).direction = 'FORWARD';
+			editor.commands.get( 'delete' ).direction = 'forward';
 
-			editor.execute( 'delete', { unit: 'WORD' } );
+			editor.execute( 'delete', { unit: 'word' } );
 
 			expect( spy.callCount ).to.equal( 1 );
 
 			const modifyOpts = spy.args[ 0 ][ 1 ].options;
-			expect( modifyOpts ).to.have.property( 'direction', 'FORWARD' );
-			expect( modifyOpts ).to.have.property( 'unit', 'WORD' );
+			expect( modifyOpts ).to.have.property( 'direction', 'forward' );
+			expect( modifyOpts ).to.have.property( 'unit', 'word' );
 		} );
 	} );
 } );

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import ModelTestEditor from '/tests/ckeditor5/_utils/modeltesteditor.js';
 import DeleteCommand from '/ckeditor5/typing/deletecommand.js';
 import UndoEngine from '/ckeditor5/undo/undoengine.js';
@@ -25,7 +23,7 @@ beforeEach( () => {
 			editor = newEditor;
 			doc = editor.document;
 
-			const command = new DeleteCommand( editor, 'BACKWARD' );
+			const command = new DeleteCommand( editor, 'backward' );
 			editor.commands.set( 'delete', command );
 
 			doc.schema.registerItem( 'p', '$block' );

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import DeleteObserver from '/ckeditor5/typing/deleteobserver.js';
 import ViewDocument from '/ckeditor5/engine/view/document.js';
 import DomEventData from '/ckeditor5/engine/view/observer/domeventdata.js';
@@ -38,8 +36,8 @@ describe( 'DeleteObserver', () => {
 			expect( spy.calledOnce ).to.be.true;
 
 			const data = spy.args[ 0 ][ 1 ];
-			expect( data ).to.have.property( 'direction', 'FORWARD' );
-			expect( data ).to.have.property( 'unit', 'CHARACTER' );
+			expect( data ).to.have.property( 'direction', 'forward' );
+			expect( data ).to.have.property( 'unit', 'character' );
 		} );
 
 		it( 'is fired with a proper direction and unit', () => {
@@ -55,8 +53,8 @@ describe( 'DeleteObserver', () => {
 			expect( spy.calledOnce ).to.be.true;
 
 			const data = spy.args[ 0 ][ 1 ];
-			expect( data ).to.have.property( 'direction', 'BACKWARD' );
-			expect( data ).to.have.property( 'unit', 'WORD' );
+			expect( data ).to.have.property( 'direction', 'backward' );
+			expect( data ).to.have.property( 'unit', 'word' );
 		} );
 
 		it( 'is not fired on keydown when keyCode does not match backspace or delete', () => {

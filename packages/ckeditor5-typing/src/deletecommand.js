@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Command from '../command/command.js';
 import Selection from '../engine/model/selection.js';
 import ChangeBuffer from './changebuffer.js';
@@ -22,7 +20,7 @@ export default class DeleteCommand extends Command {
 	 * Creates instance of the command;
 	 *
 	 * @param {ckeditor5.Editor} editor
-	 * @param {'FORWARD'|'BACKWARD'} direction The directionality of the delete (in what direction it should
+	 * @param {'forward'|'backward'} direction The directionality of the delete (in what direction it should
 	 * consume the content when selection is collapsed).
 	 */
 	constructor( editor, direction ) {
@@ -33,7 +31,7 @@ export default class DeleteCommand extends Command {
 		 * consume the content when selection is collapsed).
 		 *
 		 * @readonly
-		 * @member {'FORWARD'|'BACKWARD'} typing.DeleteCommand#direction
+		 * @member {'forward'|'backward'} typing.DeleteCommand#direction
 		 */
 		this.direction = direction;
 
@@ -52,7 +50,7 @@ export default class DeleteCommand extends Command {
 	 * or piece of content in the {@link typing.DeleteCommand#direction defined direction}.
 	 *
 	 * @param {Object} [options] The command options.
-	 * @param {'CHARACTER'} [options.unit='CHARACTER'] See {@link engine.model.composer.modifySelection}'s options.
+	 * @param {'character'} [options.unit='character'] See {@link engine.model.composer.modifySelection}'s options.
 	 */
 	_doExecute( options = {} ) {
 		const doc = this.editor.document;

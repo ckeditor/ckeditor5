@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Feature from '../feature.js';
 import DeleteCommand from './deletecommand.js';
 import DeleteObserver from './deleteobserver.js';
@@ -22,11 +20,11 @@ export default class Delete extends Feature {
 
 		editingView.addObserver( DeleteObserver );
 
-		editor.commands.set( 'forwardDelete', new DeleteCommand( editor, 'FORWARD' ) );
-		editor.commands.set( 'delete', new DeleteCommand( editor, 'BACKWARD' ) );
+		editor.commands.set( 'forwardDelete', new DeleteCommand( editor, 'forward' ) );
+		editor.commands.set( 'delete', new DeleteCommand( editor, 'backward' ) );
 
 		this.listenTo( editingView, 'delete', ( evt, data ) => {
-			editor.execute( data.direction == 'FORWARD' ? 'forwardDelete' : 'delete' );
+			editor.execute( data.direction == 'forward' ? 'forwardDelete' : 'delete' );
 			data.preventDefault();
 		} );
 	}

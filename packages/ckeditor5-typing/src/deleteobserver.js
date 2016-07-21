@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Observer from '../engine/view/observer/observer.js';
 import DomEventData from '../engine/view/observer/domeventdata.js';
 import { keyCodes } from '../utils/keyboard.js';
@@ -23,14 +21,14 @@ export default class DeleteObserver extends Observer {
 			const deleteData = {};
 
 			if ( data.keyCode == keyCodes.delete ) {
-				deleteData.direction = 'FORWARD';
+				deleteData.direction = 'forward';
 			} else if ( data.keyCode == keyCodes.backspace ) {
-				deleteData.direction = 'BACKWARD';
+				deleteData.direction = 'backward';
 			} else {
 				return;
 			}
 
-			deleteData.unit = data.altKey ? 'WORD' : 'CHARACTER';
+			deleteData.unit = data.altKey ? 'word' : 'character';
 
 			document.fire( 'delete', new DomEventData( document, data.domEvent, deleteData ) );
 		} );
@@ -50,6 +48,6 @@ export default class DeleteObserver extends Observer {
  *
  * @event engine.view.Document#delete
  * @param {engine.view.observer.DomEventData} data
- * @param {'FORWARD'|'DELETE'} data.direction The direction in which the deletion should happen.
- * @param {'CHARACTER'|'WORD'} data.unit The "amount" of content that should be deleted.
+ * @param {'forward'|'delete'} data.direction The direction in which the deletion should happen.
+ * @param {'character'|'word'} data.unit The "amount" of content that should be deleted.
  */

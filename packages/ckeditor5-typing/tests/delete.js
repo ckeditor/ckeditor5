@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import VirtualTestEditor from '/tests/ckeditor5/_utils/virtualtesteditor.js';
 import Delete from '/ckeditor5/typing/delete.js';
 import DomEventData from '/ckeditor5/engine/view/observer/domeventdata.js';
@@ -23,8 +21,8 @@ describe( 'Delete feature', () => {
 	} );
 
 	it( 'creates two commands', () => {
-		expect( editor.commands.get( 'delete' ) ).to.have.property( 'direction', 'BACKWARD' );
-		expect( editor.commands.get( 'forwardDelete' ) ).to.have.property( 'direction', 'FORWARD' );
+		expect( editor.commands.get( 'delete' ) ).to.have.property( 'direction', 'backward' );
+		expect( editor.commands.get( 'forwardDelete' ) ).to.have.property( 'direction', 'forward' );
 	} );
 
 	it( 'listens to the editing view delete event', () => {
@@ -33,8 +31,8 @@ describe( 'Delete feature', () => {
 		const domEvt = getDomEvent();
 
 		view.fire( 'delete', new DomEventData( editingView, domEvt, {
-			direction: 'FORWARD',
-			unit: 'CHARACTER'
+			direction: 'forward',
+			unit: 'character'
 		} ) );
 
 		expect( spy.calledOnce ).to.be.true;
@@ -43,8 +41,8 @@ describe( 'Delete feature', () => {
 		expect( domEvt.preventDefault.calledOnce ).to.be.true;
 
 		view.fire( 'delete', new DomEventData( editingView, getDomEvent(), {
-			direction: 'BACKWARD',
-			unit: 'CHARACTER'
+			direction: 'backward',
+			unit: 'character'
 		} ) );
 
 		expect( spy.calledTwice ).to.be.true;
