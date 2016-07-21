@@ -24,7 +24,7 @@
  *
  * **Note:** `TextProxy` instances are created on the fly, basing on the current state of model. Because of this, it is
  * highly unrecommended to store references to `TextProxy` instances. `TextProxy` instances are not refreshed when
- * model changes, so they might get invalidated.
+ * model changes, so they might get invalidated. Instead, consider creating {@link engine.model.LivePosition live position}.
  *
  * `TextProxy` instances are created by {@link engine.model.TreeWalker model tree walker}. You should not need to create
  * an instance of this class by your own.

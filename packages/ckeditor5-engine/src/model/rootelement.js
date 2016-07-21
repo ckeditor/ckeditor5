@@ -25,8 +25,8 @@ export default class RootElement extends Element {
 		/**
 		 * Document that is an owner of this root.
 		 *
-		 * @readonly
-		 * @member {engine.model.Document} engine.model.RootElement#document
+		 * @private
+		 * @member {engine.model.Document} engine.model.RootElement#_doc
 		 */
 		this._doc = doc;
 

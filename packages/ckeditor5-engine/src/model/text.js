@@ -8,7 +8,7 @@ import Node from './node.js';
 /**
  * Model text node. Type of {@link engine.model.Node node} that contains {@link engine.model.Text#data text data}.
  *
- * **Important:** see {@link engine.model.Node} to read about restrictions using `Element` and `Node` API.
+ * **Important:** see {@link engine.model.Node} to read about restrictions using `Text` and `Node` API.
  *
  * **Note:** keep in mind that `Text` instances might indirectly got removed from model tree when model is changed.
  * This happens when {@link engine.model.writer model writer} is used to change model and the text node is merged with
