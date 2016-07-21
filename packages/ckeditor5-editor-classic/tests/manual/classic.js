@@ -12,7 +12,7 @@ let editor, editable, observer;
 
 function initEditor() {
 	ClassicEditor.create( document.querySelector( '#editor' ), {
-		features: [ 'delete', 'enter', 'typing', 'paragraph', 'undo', 'headings', 'basic-styles/bold', 'basic-styles/italic' ],
+		features: [ 'enter', 'typing', 'paragraph', 'undo', 'headings', 'basic-styles/bold', 'basic-styles/italic' ],
 		toolbar: [ 'headings', 'bold', 'italic', 'undo', 'redo' ]
 	} )
 	.then( newEditor => {
