@@ -29,22 +29,11 @@ export default class Text extends Node {
 		super( attrs );
 
 		/**
-		 * Node's text.
+		 * Text data contained in this text node.
 		 *
 		 * @type {String}
-		 * @private
 		 */
-		this._data = data || '';
-	}
-
-	/**
-	 * Text data contained in this text node.
-	 *
-	 * @readonly
-	 * @type {String}
-	 */
-	get data() {
-		return this._data;
+		this.data = data || '';
 	}
 
 	/**
