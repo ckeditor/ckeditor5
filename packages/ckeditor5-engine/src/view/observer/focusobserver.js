@@ -10,7 +10,7 @@ import DomEventObserver from './domeventobserver.js';
  * Focus observer handle also {@link engine.view.RootEditableElement#isFocused isFocused} property of the
  * {@link engine.view.RootEditableElement root elements}.
  *
- * Note that this observer is attached by the {@link engine.EditingController} and is available by default.
+ * Note that this observer is attached by the {@link engine.view.Document} and is available by default.
  *
  * @memberOf engine.view.observer
  * @extends engine.view.observer.DomEventObserver
@@ -44,7 +44,7 @@ export default class FocusObserver extends DomEventObserver {
  *
  * Introduced by {@link engine.view.observer.FocusObserver}.
  *
- * Note that because {@link engine.view.observer.FocusObserver} is attached by the {@link engine.EditingController}
+ * Note that because {@link engine.view.observer.FocusObserver} is attached by the {@link engine.view.Document}
  * this event is available by default.
  *
  * @see engine.view.observer.FocusObserver
@@ -57,7 +57,7 @@ export default class FocusObserver extends DomEventObserver {
  *
  * Introduced by {@link engine.view.observer.FocusObserver}.
  *
- * Note that because {@link engine.view.observer.FocusObserver} is attached by the {@link engine.EditingController}
+ * Note that because {@link engine.view.observer.FocusObserver} is attached by the {@link engine.view.Document}
  * this event is available by default.
  *
  * @see engine.view.observer.FocusObserver

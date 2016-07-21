@@ -14,7 +14,7 @@ describe( 'KeyObserver', () => {
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument();
-		observer = viewDocument.addObserver( KeyObserver );
+		observer = viewDocument.getObserver( KeyObserver );
 	} );
 
 	it( 'should define domEventType', () => {

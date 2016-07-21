@@ -21,7 +21,7 @@ describe( 'MutationObserver', () => {
 		viewDocument.selection.removeAllRanges();
 		document.getSelection().removeAllRanges();
 
-		mutationObserver = viewDocument.addObserver( MutationObserver );
+		mutationObserver = viewDocument.getObserver( MutationObserver );
 
 		viewDocument.on( 'mutations', ( evt, mutations ) => lastMutations = mutations );
 
