@@ -204,7 +204,7 @@ describe( 'UndoEngine integration', () => {
 		it( 'attributes then insert inside then undo', () => {
 			input( '<p>fo<selection>ob</selection>ar</p>' );
 
-			doc.batch().setAttr( 'bold', true, doc.selection.getFirstRange() );
+			doc.batch().setAttribute( doc.selection.getFirstRange(), 'bold', true );
 			output( '<p>fo<selection><$text bold=true>ob</$text></selection>ar</p>' );
 
 			setSelection( [ 0, 3 ], [ 0, 3 ] );

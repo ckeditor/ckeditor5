@@ -64,7 +64,7 @@ describe( 'RedoCommand', () => {
 			editor.document.selection.setRanges( [ r( 2, 4 ) ], true );
 			batch1 = doc.batch();
 			undo.addBatch( batch1 );
-			batch1.setAttr( 'key', 'value', r( 2, 4 ) );
+			batch1.setAttribute( r( 2, 4 ), 'key', 'value' );
 			/*
 			 [root]
 			 - f
