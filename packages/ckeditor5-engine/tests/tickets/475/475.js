@@ -85,6 +85,6 @@ function _getLastPathPart( path ) {
 }
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	features: [ 'delete', 'enter', 'typing', 'paragraph', 'undo', Link, AutoLinker ],
+	features: [ 'enter', 'typing', 'paragraph', 'undo', Link, AutoLinker ],
 	toolbar: [ 'undo', 'redo' ]
 } );
