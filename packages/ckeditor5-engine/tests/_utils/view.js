@@ -263,7 +263,7 @@ export function parse( data, options = {} ) {
 	const rangeParser = new RangeParser();
 	const processor = new HtmlDataProcessor();
 
-	// let view = viewParser.parse( data, options.rootElement );
+	// Convert data to view.
 	let view = processor.toView( data );
 
 	// At this point we have a view tree with Elements that could have names like `attribute:b:1`. In the next step
