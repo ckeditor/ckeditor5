@@ -13,7 +13,6 @@ import TextProxy from '/ckeditor5/engine/model/textproxy.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import writer from '/ckeditor5/engine/model/writer.js';
-import { normalizeNodes } from '/ckeditor5/engine/model/writer.js';
 import { getData } from '/tests/engine/_utils/model.js';
 
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
@@ -162,11 +161,11 @@ describe( 'normalizeNodes', () => {
 	it( 'should change single object into an array', () => {
 		const p = new Element( 'p' );
 
-		expect( normalizeNodes( p ) ).to.deep.equal( [ p ] );
+		expect( writer.normalizeNodes( p ) ).to.deep.equal( [ p ] );
 	} );
 
 	it( 'should change strings to text nodes', () => {
-		const text = normalizeNodes( 'abc' )[ 0 ];
+		const text = writer.normalizeNodes( 'abc' )[ 0 ];
 
 		expect( text ).to.be.instanceof( Text );
 		expect( text.data ).to.equal( 'abc' );
@@ -176,7 +175,7 @@ describe( 'normalizeNodes', () => {
 		const textNode = new Text( 'abc' );
 		const textProxy = new TextProxy( textNode, 1, 1 );
 
-		const text = normalizeNodes( textProxy )[ 0 ];
+		const text = writer.normalizeNodes( textProxy )[ 0 ];
 
 		expect( text ).to.be.instanceof( Text );
 		expect( text.data ).to.equal( 'b' );
@@ -185,11 +184,11 @@ describe( 'normalizeNodes', () => {
 	it( 'should not change elements', () => {
 		const p = new Element( 'p' );
 
-		expect( normalizeNodes( p )[ 0 ] ).to.equal( p );
+		expect( writer.normalizeNodes( p )[ 0 ] ).to.equal( p );
 	} );
 
 	it( 'should omit unrecognized objects', () => {
-		expect( normalizeNodes( 1 ) ).to.deep.equal( [] );
+		expect( writer.normalizeNodes( 1 ) ).to.deep.equal( [] );
 	} );
 
 	it( 'should accept arrays', () => {
@@ -197,7 +196,7 @@ describe( 'normalizeNodes', () => {
 		const image = new Element( 'image' );
 		const nodes = [ 'abc', text, image, 1, 'xyz' ];
 
-		const normalized = normalizeNodes( nodes );
+		const normalized = writer.normalizeNodes( nodes );
 
 		expect( normalized[ 0 ] ).to.be.instanceof( Text );
 		expect( normalized[ 1 ] ).to.equal( text );
@@ -206,7 +205,7 @@ describe( 'normalizeNodes', () => {
 	} );
 
 	it( 'should merge text nodes if mergeTextNodes flag is set to true', () => {
-		const normalized = normalizeNodes( [ 'foo', 'bar' ], true );
+		const normalized = writer.normalizeNodes( [ 'foo', 'bar' ], true );
 
 		expect( normalized.length ).to.equal( 1 );
 		expect( normalized[ 0 ].data ).to.equal( 'foobar' );
@@ -219,7 +218,7 @@ describe( 'normalizeNodes', () => {
 			'xyz'
 		];
 
-		const normalized = normalizeNodes( nodes, true );
+		const normalized = writer.normalizeNodes( nodes, true );
 
 		expect( normalized[ 0 ] ).to.be.instanceof( Text );
 		expect( normalized[ 0 ].getAttribute( 'bold' ) ).to.be.true;

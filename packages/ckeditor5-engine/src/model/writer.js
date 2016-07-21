@@ -32,7 +32,8 @@ export default {
 	remove,
 	move,
 	setAttribute,
-	removeAttribute
+	removeAttribute,
+	normalizeNodes
 };
 
 /**
