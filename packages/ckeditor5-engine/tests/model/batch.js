@@ -18,8 +18,8 @@ describe( 'Batch', () => {
 	it( 'should have registered basic methods', () => {
 		const batch = new Batch( new Document() );
 
-		expect( batch.setAttr ).to.be.a( 'function' );
-		expect( batch.removeAttr ).to.be.a( 'function' );
+		expect( batch.setAttribute ).to.be.a( 'function' );
+		expect( batch.removeAttribute ).to.be.a( 'function' );
 	} );
 
 	describe( 'type', () => {

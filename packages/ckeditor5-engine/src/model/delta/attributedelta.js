@@ -14,8 +14,8 @@ import RootElement from '../rootelement.js';
 import Element from '../element.js';
 
 /**
- * To provide specific OT behavior and better collisions solving, change methods ({@link engine.model.Batch#setAttr}
- * and {@link engine.model.Batch#removeAttr}) use `AttributeDelta` class which inherits from the `Delta` class and may
+ * To provide specific OT behavior and better collisions solving, change methods ({@link engine.model.Batch#setAttribute}
+ * and {@link engine.model.Batch#removeAttribute}) use `AttributeDelta` class which inherits from the `Delta` class and may
  * overwrite some methods.
  *
  * @memberOf engine.model.delta
@@ -81,8 +81,8 @@ export default class AttributeDelta extends Delta {
 }
 
 /**
- * To provide specific OT behavior and better collisions solving, change methods ({@link engine.model.Batch#setAttr}
- * and {@link engine.model.Batch#removeAttr}) use `RootAttributeDelta` class which inherits from the `Delta` class and may
+ * To provide specific OT behavior and better collisions solving, change methods ({@link engine.model.Batch#setAttribute}
+ * and {@link engine.model.Batch#removeAttribute}) use `RootAttributeDelta` class which inherits from the `Delta` class and may
  * overwrite some methods.
  *
  * @memberOf engine.model.delta
@@ -101,12 +101,12 @@ export class RootAttributeDelta extends Delta {
  * Sets the value of the attribute of the node or on the range.
  *
  * @chainable
- * @method engine.model.Batch#setAttr
+ * @method engine.model.Batch#setAttribute
+ * @param {engine.model.Node|engine.model.Range} nodeOrRange Node or range on which the attribute will be set.
  * @param {String} key Attribute key.
  * @param {*} value Attribute new value.
- * @param {engine.model.Node|engine.model.Range} nodeOrRange Node or range on which the attribute will be set.
  */
-register( 'setAttr', function( key, value, nodeOrRange ) {
+register( 'setAttribute', function( nodeOrRange, key, value ) {
 	attribute( this, key, value, nodeOrRange );
 
 	return this;
@@ -116,11 +116,11 @@ register( 'setAttr', function( key, value, nodeOrRange ) {
  * Removes an attribute from the range.
  *
  * @chainable
- * @method engine.model.Batch#removeAttr
- * @param {String} key Attribute key.
  * @param {engine.model.Node|engine.model.Range} nodeOrRange Node or range on which the attribute will be removed.
+ * @method engine.model.Batch#removeAttribute
+ * @param {String} key Attribute key.
  */
-register( 'removeAttr', function( key, nodeOrRange ) {
+register( 'removeAttribute', function( nodeOrRange, key ) {
 	attribute( this, key, null, nodeOrRange );
 
 	return this;

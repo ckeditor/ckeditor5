@@ -73,7 +73,7 @@ export default class AutoLinker extends Feature {
 
 				doc.enqueueChanges( () => {
 					const urlRange = Range.createFromPositionAndShift( livePos, url.length );
-					batch.setAttr( 'link', url, urlRange );
+					batch.setAttribute( urlRange, 'link', url );
 				} );
 			}
 		} );

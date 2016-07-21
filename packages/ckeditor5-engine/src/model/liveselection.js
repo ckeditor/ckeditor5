@@ -220,7 +220,7 @@ export default class LiveSelection extends Selection {
 			const storeKey = LiveSelection._getStoreAttributeKey( key );
 
 			this._document.enqueueChanges( () => {
-				this._document.batch().removeAttr( storeKey, selectionParent );
+				this._document.batch().removeAttribute( selectionParent, storeKey );
 			} );
 		}
 	}
@@ -240,7 +240,7 @@ export default class LiveSelection extends Selection {
 			const storeKey = LiveSelection._getStoreAttributeKey( key );
 
 			this._document.enqueueChanges( () => {
-				this._document.batch().setAttr( storeKey, value, selectionParent );
+				this._document.batch().setAttribute( selectionParent, storeKey, value );
 			} );
 		}
 	}
@@ -261,13 +261,13 @@ export default class LiveSelection extends Selection {
 				for ( let attr of this._getStoredAttributes() ) {
 					const storeKey = LiveSelection._getStoreAttributeKey( attr[ 0 ] );
 
-					batch.removeAttr( storeKey, selectionParent );
+					batch.removeAttribute( selectionParent, storeKey );
 				}
 
 				for ( let attr of attrs ) {
 					const storeKey = LiveSelection._getStoreAttributeKey( attr[ 0 ] );
 
-					batch.setAttr( storeKey, attr[ 1 ], selectionParent );
+					batch.setAttribute( selectionParent, storeKey, attr[ 1 ] );
 				}
 			} );
 		}
