@@ -14,7 +14,7 @@ import diffToChanges from '../utils/difftochanges.js';
 import { getCode } from '../utils/keyboard.js';
 
 /**
- * The typing feature. Handles... typing.
+ * Handles text input, coming from keyboard or other input methods.
  *
  * @memberOf typing
  * @extends ckeditor5.Feature

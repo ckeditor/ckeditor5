@@ -10,7 +10,7 @@ import DeleteObserver from './deleteobserver.js';
 /**
  * The delete and backspace feature. Handles <kbd>Delete</kbd> and <kbd>Backspace</kbd> keys in the editor.
  *
- * @memberOf delete
+ * @memberOf typing
  * @extends ckeditor5.Feature
  */
 export default class Delete extends Feature {

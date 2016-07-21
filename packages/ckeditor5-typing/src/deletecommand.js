@@ -12,7 +12,7 @@ import count from '../utils/count.js';
  * Delete command. Used by the {@link typing.Delete delete feature} to handle <kbd>Delete</kbd> and
  * <kbd>Backspace</kbd> keys.
  *
- * @member delete
+ * @member typing
  * @extends ckeditor5.command.Command
  */
 export default class DeleteCommand extends Command {

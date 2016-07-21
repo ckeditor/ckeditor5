@@ -10,7 +10,7 @@ import { keyCodes } from '../utils/keyboard.js';
 /**
  * Delete observer introduces the {@link engine.view.Document#delete} event.
  *
- * @memberOf delete
+ * @memberOf typing
  * @extends engine.view.observer.Observer
  */
 export default class DeleteObserver extends Observer {
