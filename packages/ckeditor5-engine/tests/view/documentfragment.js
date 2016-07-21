@@ -88,8 +88,8 @@ describe( 'DocumentFragment', () => {
 			} );
 
 			it( 'should fire change event when inserting', ( done ) => {
-				fragment.once( 'change', ( event, type ) => {
-					expect( type ).to.equal( 'children' );
+				fragment.once( 'change:children', ( event, node ) => {
+					expect( node ).to.equal( fragment );
 					done();
 				} );
 
@@ -97,8 +97,8 @@ describe( 'DocumentFragment', () => {
 			} );
 
 			it( 'should fire change event when appending', ( done ) => {
-				fragment.once( 'change', ( event, type ) => {
-					expect( type ).to.equal( 'children' );
+				fragment.once( 'change:children', ( event, node ) => {
+					expect( node ).to.equal( fragment );
 					done();
 				} );
 
@@ -174,8 +174,8 @@ describe( 'DocumentFragment', () => {
 			it( 'should fire change event', ( done ) => {
 				fragment.appendChildren( el1 );
 
-				fragment.once( 'change', ( event, type ) => {
-					expect( type ).to.equal( 'children' );
+				fragment.once( 'change:children', ( event, node ) => {
+					expect( node ).to.equal( fragment );
 					done();
 				} );
 
