@@ -263,9 +263,9 @@ function transformRangesByDeltas( ranges, deltas ) {
 
 				switch ( operation.type ) {
 					case 'insert':
-						result = ranges[ i ].getTransformedByInsertion(
+						result = ranges[ i ]._getTransformedByInsertion(
 							operation.position,
-							operation.nodeList.length,
+							operation.nodes.totalOffset,
 							true
 						);
 						break;
@@ -273,7 +273,7 @@ function transformRangesByDeltas( ranges, deltas ) {
 					case 'move':
 					case 'remove':
 					case 'reinsert':
-						result = ranges[ i ].getTransformedByMove(
+						result = ranges[ i ]._getTransformedByMove(
 							operation.sourcePosition,
 							operation.targetPosition,
 							operation.howMany,

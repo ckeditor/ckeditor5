@@ -8,6 +8,7 @@ import Range from '/ckeditor5/engine/model/range.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import UndoCommand from '/ckeditor5/undo/undocommand.js';
 import RedoCommand from '/ckeditor5/undo/redocommand.js';
+import { itemAt, getText } from '/tests/engine/model/_utils/utils.js';
 
 let editor, doc, root, redo, undo;
 
@@ -103,9 +104,9 @@ describe( 'RedoCommand', () => {
 			 - {o
 			 - o} (key: value)
 			 */
-			expect( Array.from( root._children._nodes.map( node => node.text ) ).join( '' ) ).to.equal( 'fbaroo' );
-			expect( root.getChild( 1 ).getAttribute( 'key' ) ).to.equal( 'value' );
-			expect( root.getChild( 5 ).getAttribute( 'key' ) ).to.equal( 'value' );
+			expect( getText( root ) ).to.equal( 'fbaroo' );
+			expect( itemAt( root, 1 ).getAttribute( 'key' ) ).to.equal( 'value' );
+			expect( itemAt( root, 5 ).getAttribute( 'key' ) ).to.equal( 'value' );
 
 			expect( editor.document.selection.getRanges().next().value.isEqual( r( 4, 6 ) ) ).to.be.true;
 			expect( editor.document.selection.isBackward ).to.be.false;
@@ -127,8 +128,8 @@ describe( 'RedoCommand', () => {
 			 - a
 			 - r
 			 */
-			expect( Array.from( root._children._nodes.map( node => node.text ) ).join( '' ) ).to.equal( 'foobar' );
-			expect( root._children._nodes.find( node => node.hasAttribute( 'key' ) ) ).to.be.undefined;
+			expect( getText( root ) ).to.equal( 'foobar' );
+			expect( Array.from( root.getChildren() ).find( node => node.hasAttribute( 'key' ) ) ).to.be.undefined;
 
 			expect( editor.document.selection.getRanges().next().value.isEqual( r( 2, 4 ) ) ).to.be.true;
 			expect( editor.document.selection.isBackward ).to.be.true;
@@ -144,9 +145,9 @@ describe( 'RedoCommand', () => {
 			 - a
 			 - r
 			 */
-			expect( Array.from( root._children._nodes.map( node => node.text ) ).join( '' ) ).to.equal( 'foobar' );
-			expect( root.getChild( 2 ).getAttribute( 'key' ) ).to.equal( 'value' );
-			expect( root.getChild( 3 ).getAttribute( 'key' ) ).to.equal( 'value' );
+			expect( getText( root ) ).to.equal( 'foobar' );
+			expect( itemAt( root, 2 ).getAttribute( 'key' ) ).to.equal( 'value' );
+			expect( itemAt( root, 3 ).getAttribute( 'key' ) ).to.equal( 'value' );
 
 			expect( editor.document.selection.getRanges().next().value.isEqual( r( 1, 3 ) ) ).to.be.true;
 			expect( editor.document.selection.isBackward ).to.be.false;
@@ -162,9 +163,9 @@ describe( 'RedoCommand', () => {
 			 - {o
 			 - o} (key: value)
 			 */
-			expect( Array.from( root._children._nodes.map( node => node.text ) ).join( '' ) ).to.equal( 'fbaroo' );
-			expect( root.getChild( 1 ).getAttribute( 'key' ) ).to.equal( 'value' );
-			expect( root.getChild( 5 ).getAttribute( 'key' ) ).to.equal( 'value' );
+			expect( getText( root ) ).to.equal( 'fbaroo' );
+			expect( itemAt( root, 1 ).getAttribute( 'key' ) ).to.equal( 'value' );
+			expect( itemAt( root, 5 ).getAttribute( 'key' ) ).to.equal( 'value' );
 
 			expect( editor.document.selection.getRanges().next().value.isEqual( r( 4, 6 ) ) ).to.be.true;
 			expect( editor.document.selection.isBackward ).to.be.false;
@@ -184,9 +185,9 @@ describe( 'RedoCommand', () => {
 			 - {o
 			 - o} (key: value)
 			 */
-			expect( Array.from( root._children._nodes.map( node => node.text ) ).join( '' ) ).to.equal( 'fbaroo' );
-			expect( root.getChild( 1 ).getAttribute( 'key' ) ).to.equal( 'value' );
-			expect( root.getChild( 5 ).getAttribute( 'key' ) ).to.equal( 'value' );
+			expect( getText( root ) ).to.equal( 'fbaroo' );
+			expect( itemAt( root, 1 ).getAttribute( 'key' ) ).to.equal( 'value' );
+			expect( itemAt( root, 5 ).getAttribute( 'key' ) ).to.equal( 'value' );
 
 			expect( editor.document.selection.getRanges().next().value.isEqual( r( 4, 6 ) ) ).to.be.true;
 			expect( editor.document.selection.isBackward ).to.be.false;
@@ -204,9 +205,9 @@ describe( 'RedoCommand', () => {
 			// Redo moving "oo" to the end of string. It should be "fboo".
 			redo._execute();
 
-			expect( Array.from( root._children._nodes.map( node => node.text ) ).join( '' ) ).to.equal( 'fboo' );
-			expect( root.getChild( 1 ).getAttribute( 'key' ) ).to.equal( 'value' );
-			expect( root.getChild( 3 ).getAttribute( 'key' ) ).to.equal( 'value' );
+			expect( getText( root ) ).to.equal( 'fboo' );
+			expect( itemAt( root, 1 ).getAttribute( 'key' ) ).to.equal( 'value' );
+			expect( itemAt( root, 3 ).getAttribute( 'key' ) ).to.equal( 'value' );
 
 			// Selection after redo is not working properly if there was another batch in-between.
 			// Thankfully this will be very rare situation outside of OT, because normally an applied batch
